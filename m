@@ -2,70 +2,68 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 769311C314A
-	for <lists+linux-btrfs@lfdr.de>; Mon,  4 May 2020 04:09:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD0EF1C33C8
+	for <lists+linux-btrfs@lfdr.de>; Mon,  4 May 2020 09:39:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726913AbgEDCJ1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 3 May 2020 22:09:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50190 "EHLO
+        id S1728117AbgEDHj2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 4 May 2020 03:39:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44710 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726415AbgEDCJ0 (ORCPT
+        by vger.kernel.org with ESMTP id S1727088AbgEDHj2 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 3 May 2020 22:09:26 -0400
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 510FDC061A0E
-        for <linux-btrfs@vger.kernel.org>; Sun,  3 May 2020 19:09:26 -0700 (PDT)
-Received: by mail-pg1-x533.google.com with SMTP id l20so7818092pgb.11
-        for <linux-btrfs@vger.kernel.org>; Sun, 03 May 2020 19:09:26 -0700 (PDT)
+        Mon, 4 May 2020 03:39:28 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D44EC061A0E
+        for <linux-btrfs@vger.kernel.org>; Mon,  4 May 2020 00:39:28 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id b8so71635pgi.11
+        for <linux-btrfs@vger.kernel.org>; Mon, 04 May 2020 00:39:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ka9q-net.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:autocrypt:message-id:date:user-agent
+        h=from:to:cc:references:autocrypt:subject:message-id:date:user-agent
          :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=flJuxYZbQXmHNjcZS0YgRdz+BKWBQ3AwgqOATJpUPv4=;
-        b=qFaBOKlpEcquhvGYRom8cUopJSE8ryZ3ucs9ZbvuS9Zf9BjlS4+CEm6nKgYDR/UCAC
-         S6zFSqRbqDOGFXMIM+HWeFePFTH03cBbxPS+sq6Da5IT717hS/b1Zw26aNQBDGSTxNeT
-         EznSFnqrUNCKe51VNDt+hOgksXTu3VbIoHA+XqpRNX/TDFVrDS+addIE3G5VqCaOH/XO
-         QurSBaCeBjMwqpLtUzV/f5iCyyFK+GP84+NF9hDF3+MBk+8R4y9rhrjFLFEGtAiiVlCB
-         zrkB4r0qaBKWXTFlyybwraPc2Ni2gF7JAWO8XhWzwz1+eo+LpRSqugwlmW5nK1n7mV5u
-         ovvw==
+        bh=iiPYQ5Y4Pt4dQGz2VKlIteNBVIFb67aiy9rdv7O6oro=;
+        b=r3ODmjjlG8b6z4u1f47C0f45NI5YR3ES7amxpXHE9cz8LRoLZg7n3ooy8EAW+s539E
+         SNpa7unlZa3yoWngnt0lD8pZieRPmeMblAxzZgRm5xdj6HK1RIojELEp8mXHAkpUMetc
+         j/rQ79QHAT4/F7SO+C+bQiQTN4U9/MYmPMsRuYEwfD4j78YtGPJCa76BG8lyeZY0vmGG
+         9NcQXLEvd8VKK68CcHmQPOARQkqF7B2ame4YjtSf1U6FI8oXb35nbifZRM1J9W+hDvWN
+         mZZk6+g8X70NmoSAUfMrQjMD2gI+b/qE43T8KH+qPavNCuKM4VdiHN7C39d0TBazDqZE
+         citg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
+        h=x-gm-message-state:from:to:cc:references:autocrypt:subject
          :message-id:date:user-agent:mime-version:in-reply-to
          :content-transfer-encoding:content-language;
-        bh=flJuxYZbQXmHNjcZS0YgRdz+BKWBQ3AwgqOATJpUPv4=;
-        b=T4uq1A++QU4mY3Cu6ql9TPsT12zgV8fFBHtNxQnh2ugnioqQvmeWmiCc4AfjfUXRK4
-         I+bvSmbaC/qoKfH5ASoTvxKR2AfkZE9E4/z1eOwTBli2aF1IxOisA7vmG7+UpBSVkLvO
-         ghr4bCKY+Cop8cKJeoZvatr8gxyipCzfBqFrkW1tHHv5UY7pgDP9H7y3jpkyKhuaaEVp
-         GCyfjYcPHc9Ljl6qBer2mRD0jSx5FsYFBeg+IVmmLPNGMCQZVHZmBmzGILFCP1WB3z7O
-         NRZkJtzYW+FMz3zdgcDLNne2Xkhce+uV0dtywRY1WbsFjVkwTKQGPk5UVoV5YLadU8xc
-         s4Mw==
-X-Gm-Message-State: AGi0Pua0WZG3iLw+wT7ZxkSHwd9H4QNLMI/zmodxL1i0FUVlT+D4Bgmz
-        NBGS/JVrCTnrK3zrO2fLzIH4AGK0hYJTxA==
-X-Google-Smtp-Source: APiQypLuj48SnUqSIuAie41+9l9Fpp0uVn9hxDP/4zaSpruftxljE27ln+kqBysZoWDiGwuja7lUYw==
-X-Received: by 2002:a62:cf06:: with SMTP id b6mr16419514pfg.9.1588558165357;
-        Sun, 03 May 2020 19:09:25 -0700 (PDT)
+        bh=iiPYQ5Y4Pt4dQGz2VKlIteNBVIFb67aiy9rdv7O6oro=;
+        b=de7ccRTcLUcSFmBG3jWhcG6kRgsXlkVC1iqZh/jyl2O/ASOsHwdmErqxCK8Ss6QKSX
+         PVUTYMi0s3IgkEz8jb03WWHyn8al648z6r0HLl1JnsTyeNrnZawGmDee9jNJjkUG+q/M
+         6U66If2c+wUCb4XyofqDmxayMka8OkEuaddTlV50p4NQVEOurG3Yp6ktdhohst3cSw5y
+         FofGT/OtnqbJ79XOdf0unKsZ06XMxziAFHbxfW2E/iqJM9nu8wobAj6hy7CxfRsv2qm7
+         0VDjNQLik9b56SwD16ZWWQDqZeFj06zARp7VaErsTDZ5PV39fX/s2CJHOanpz6g+5VQD
+         4WhQ==
+X-Gm-Message-State: AGi0PuaWqaMVtwpoB929sbYdwHxtm5F+YO1e7DE9LJs87/eUAFrh7QRD
+        7f4o/ytPvGBN/ozH2zowZah/Dw==
+X-Google-Smtp-Source: APiQypKTiWQUZpcvhQKKXbf++2lRISASfEu/wpAwRPna5aBtlAXCXPjeqX13q5CrgIZ29xH0cq2DvQ==
+X-Received: by 2002:a62:528e:: with SMTP id g136mr17221728pfb.165.1588577967610;
+        Mon, 04 May 2020 00:39:27 -0700 (PDT)
 Received: from selma.local ([2605:e000:1c0e:43f7:4dab:0:c88:4921])
-        by smtp.gmail.com with ESMTPSA id l1sm6575732pgn.66.2020.05.03.19.09.23
+        by smtp.gmail.com with ESMTPSA id d10sm1662773pgo.10.2020.05.04.00.39.25
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 03 May 2020 19:09:23 -0700 (PDT)
-Subject: Re: Extremely slow device removals
-To:     Chris Murphy <lists@colorremedies.com>,
-        Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-Cc:     Paul Jones <paul@pauljones.id.au>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-References: <14a8e382-0541-0f18-b969-ccf4b3254461@ka9q.net>
- <r8f4gb$8qt$1@ciao.gmane.io> <bc4c477a-dd68-9584-f383-369b65113d21@ka9q.net>
- <20200502033509.GG10769@hungrycats.org>
- <SYBPR01MB3897D20A8185249BF2A26B139EA80@SYBPR01MB3897.ausprd01.prod.outlook.com>
- <20200502060038.GK10769@hungrycats.org>
- <SYBPR01MB389730010988EC44E7D109EE9EA80@SYBPR01MB3897.ausprd01.prod.outlook.com>
- <CAMwB8mhGkcM3DCTusuHAi-cQcr-FrA5cq4hVYfv+65zn_QjAig@mail.gmail.com>
- <20200502074237.GM10769@hungrycats.org>
- <CAMwB8mg5npwzxFrBw8gdBt7KPbTb=M8d_MAGtbQbCoJS0GoMgA@mail.gmail.com>
- <20200502090946.GO10769@hungrycats.org>
- <CAJCQCtTGg+Rmisw9QAj4SMaDcZ5e_2h_83-3Hjd=FDC5krgjCg@mail.gmail.com>
+        Mon, 04 May 2020 00:39:26 -0700 (PDT)
 From:   Phil Karn <karn@ka9q.net>
+To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+Cc:     Alexandru Dordea <alex@dordea.net>,
+        Chris Murphy <lists@colorremedies.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+References: <8b647a7f-1223-fa9f-57c0-9a81a9bbeb27@ka9q.net>
+ <14a8e382-0541-0f18-b969-ccf4b3254461@ka9q.net>
+ <CAJCQCtQqdk3FAyc27PoyTXZkhcmvgDwt=oCR7Yw3yuqeOkr2oA@mail.gmail.com>
+ <bfa161e9-7389-6a83-edee-2c3adbcc7bda@ka9q.net>
+ <20200501024753.GE10769@hungrycats.org>
+ <b2cd0c70-b955-197c-d68b-cf77e102690c@ka9q.net>
+ <6F06C333-0C27-482A-9AE4-3C0123CC550A@dordea.net>
+ <bc37ccb3-119e-24da-4852-56962c93fd2d@ka9q.net>
+ <20200502041826.GH10769@hungrycats.org>
+ <f8435e33-686c-e9c0-313e-a00e526a2b49@ka9q.net>
 Autocrypt: addr=karn@ka9q.net; keydata=
  mQENBEw2mJ4BCADELiPsLFHDwapoSU7d2xNHxmwzzrFUCZWhO34kM6G5+o9GUNmGgMQ0BmXp
  I6hx77HHnrj9FC6kWh/bxBt3+o8HW+NTWzJSvf6kW7ThaNt7v9iewkS23JOMarAZs4qy6MhT
@@ -89,38 +87,43 @@ Autocrypt: addr=karn@ka9q.net; keydata=
  eNLccfX2AqAHfCT/LVLbgBpMRmwUJQThM+33Z2L9BqIM3awj2mOTmeDumpxiDfroU90mGc9c
  pXe4YrNIkL/N8eMzLe1bpu+mpPCiIrEO+dFA7N8jjVcOCQ4Lr8sU6cOsEdkaACZiNFKT99eb
  NkKigK8sEkDZc/AKhPCEsnaZpwBZPScOL88LLi7FHj9Osznt+uhWfbLe
-Message-ID: <84f76b99-95d0-3c85-0b4d-70298592986b@ka9q.net>
-Date:   Sun, 3 May 2020 19:09:22 -0700
+Subject: Re: Extremely slow device removals
+Message-ID: <2322cace-d7b7-7c7c-19a2-54a0cadf6d2e@ka9q.net>
+Date:   Mon, 4 May 2020 00:39:24 -0700
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
  Gecko/20100101 Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <CAJCQCtTGg+Rmisw9QAj4SMaDcZ5e_2h_83-3Hjd=FDC5krgjCg@mail.gmail.com>
+In-Reply-To: <f8435e33-686c-e9c0-313e-a00e526a2b49@ka9q.net>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Content-Language: en-US
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 5/2/20 10:48, Chris Murphy wrote:
-> In my very limited sample size from a single vendor, I've only seen SD
-> Card fail by becoming read only. i.e. hardware read-only, with the
-> kernel spewing sd/mmc related debugging info about the card (or card's
-> firmware). Maybe that's a good example? I suppose it's better to go
-> read-only with data still readable, and insofar as Btrfs was concerned
-> the data was correct, rather than start returning transiently bad
-> data. However, I only knew this due to data checksums.
+On 5/2/20 19:28, Phil Karn wrote:
+>
+> Thanks for everyone's help, but listening to everyone else also talk
+> about taking weeks or months to delete a drive, with terrible
+> performance for other applications because of all the background I/O, i=
+t
 
+After sending this message I built and installed kernel version 5.6.10.
+Then I pulled the drive I was trying to remove and retried the 'device
+remove' command. To my surprise, it went much faster than before. Still
+not nearly as fast as the 'device replace' I ran on another drive, but
+it finished in about 12 hours. This was in rescue mode with nothing else
+running except sshd so I could watch remotely.
 
-I use Raspberry Pis a lot, so I've been forced to acquaint myself with
-micro-SD cards. I don't see *that* many failures, but the ones I have
-seen are sudden and total, i.e, the card simply doesn't respond anymore.
-I think I also saw one suddenly drop to a capacity of 16 MB. Electrical
-abuse may have been a factor in some of these failures, in the others
-there was no obvious cause.
+I'm now running a full scrub; so far there hasn't been any damage. The
+remaining drives (two new 16TB and two old 6TB) are still very
+unbalanced. That's a job for another day, but I don't think I'll have
+the energy to remove any more drives from my array.
 
-I do trim them frequently to avoid write amplification.
+I booted back to 4.19.0-8 because of some apparent incompatibilities
+between the 5.6.10 kernel and my Debian buster userland binaries and
+config files, but that probably has nothing to do with btrfs.
 
 Phil
 
