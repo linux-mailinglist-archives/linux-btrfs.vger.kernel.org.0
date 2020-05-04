@@ -2,216 +2,127 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B57101C344D
-	for <lists+linux-btrfs@lfdr.de>; Mon,  4 May 2020 10:25:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2CDE1C349F
+	for <lists+linux-btrfs@lfdr.de>; Mon,  4 May 2020 10:38:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728052AbgEDIZu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 4 May 2020 04:25:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51912 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725941AbgEDIZt (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 4 May 2020 04:25:49 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C6A4C061A0E
-        for <linux-btrfs@vger.kernel.org>; Mon,  4 May 2020 01:25:49 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id e26so7428460wmk.5
-        for <linux-btrfs@vger.kernel.org>; Mon, 04 May 2020 01:25:49 -0700 (PDT)
+        id S1728139AbgEDIik (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 4 May 2020 04:38:40 -0400
+Received: from esa1.hgst.iphmx.com ([68.232.141.245]:51636 "EHLO
+        esa1.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726445AbgEDIij (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 4 May 2020 04:38:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1588581518; x=1620117518;
+  h=from:to:cc:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=/y2r486KCKo1S8I5b7nBrSucNxCA+ZHXZb6xI0D+wDs=;
+  b=c5G0BnC0LKKDFI4VVz73gAf/9kZ/qpmMdAF4I/IAioROhtrqFKCLfWGU
+   rjM0DY5P9JowblLGalS/er2hSbWR6U9p6nY7rqFQLVud7BmdLyOb6jiO+
+   PnrbIIulDY9Sj+YEL6LZfyrCeuUvD+AgOOe3/TYKRwZYQ43BcE25jQEVd
+   UJ6KfnazFrEwjk9vU/AT4DlJiarTi5nO2jdPSE4LCp5TVNdX3wbCCRcZq
+   5iAegDhrY5ZKQPArPUu8uzVLQYfSuTuIqVzoY9kIOnJsi9cU2UTlK0mg5
+   yqechrS/cQU8I4SY+dCBVUB0JezNGwRkc7CymqropXP0eqpaZXyrVxNYs
+   w==;
+IronPort-SDR: AHJLqaKSfTCi1DI3AmsfeXv0OEkASDDNBQPhHz6zWl+J23RolvBxHJNTdd5Wy/su7Hh34lRUxK
+ wT7OcI+7NfW79sHFu0oLw8SzZR6IUiur0Ehc8IEyqiMYnhJhsyaas6G12kfRYeyqISc1dMCbdE
+ BFnTQ+h7OapmRlFGy475Vr9UdW5w7tQzdpfEXS317QKIRR+spLuq1aCHSKMhhgFcYARP63nVEE
+ tUnJXsOrV8qN7qQzNdZRRYAOXNU2biFC1F1wBd5OT1Ca/AHju3+XnyMOcgEnpoMffkrPWu0QqJ
+ VsM=
+X-IronPort-AV: E=Sophos;i="5.73,351,1583164800"; 
+   d="scan'208";a="245695726"
+Received: from mail-co1nam11lp2177.outbound.protection.outlook.com (HELO NAM11-CO1-obe.outbound.protection.outlook.com) ([104.47.56.177])
+  by ob1.hgst.iphmx.com with ESMTP; 04 May 2020 16:38:37 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Mg4yiRvgMvAPDQZ3BwRJ+fQU3ZQCakhb1NCefu4NCWR7X42RhE5DnF4decWX4uBKgt7WbXsdjQXogg5/EZDhzdbZgrRDHV50YktQDIVP2GSwLlwENDy126k8z1x/arze/sRKdb/nhgslbShDy9TlGqe99HJ3Y+4p1zXAh+7wL8hNv67/dX+5EbFffGY8EZD5mshwsG7fxJ1cqk+W9O26EmHpT+zwzaQGNNNR1UPdt7xrNrAd8ygmSZoxORaWPZYYpOJYnA1U9uwxtltC0jIZ6gIp5JT+omYOBYPQOxcDpZh6Sjytz4KRvpaxRA10dtSP2kdHgJ3bSUtXdaheV1wIzQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=rkeWlw5J6E1secvvwPmpqDICUYC/gIq0hp9/LjmlIyc=;
+ b=PQuGiF/yDfHPK6Z6fRi1yoUU4zIxPifY5T/Zw7a4+jVz+NI6seL/W+dxwlJu80FtN0SbIbGTXZnANLkzCqfoCHTC2oklLID8wGVmuzG5qfOJu7nzVqia0hVbG8FGfuH5O0Kg77rvLLTELFSwO5YJx6Wgh1hJ8+81bcTBrinsO2pJQXBzIlq7mm63wR+BY8AIF32Cp4gHx2sF04CLoLDXSNnZpo8AYQqfPZljNNzaQy1usgD2CfBzKzcizvjoz+gEO53J4ofQUiheQ48zkN0KVCcESUFZmXtFIMUSUnQqnDDN7LFttHoA3YSIhiYt6s8QumDnXffTY6R8o72ZOnLRtg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=qtWRGm059oiS4ZjWBkmPkg6BCVa3uwP55uEIcAaxgV8=;
-        b=1HIHRQKVKuQBT7Z15VwMvCsC+kuQbcupVvnma6TA8OSlYuor00yF2vuYKRkPgr+KKO
-         35ujHQw3YZVMe0psHdqeoyMPz3lWVyg+uZbCYkyJROnPOpEaB1Uwbx3sdxVJRuT5Rf5t
-         y6KmRIxPL+CyYJ+yyxQ6APfh4wTkNpt256wdZpOrY7KlQpDmcgIGPLaScTOojIjbmfb8
-         vRhIPpmyRfhFIP+LnqskHilmX/YCIXlVtLjX7ZkqLUde+9qlFtRJmCVozSVZXl3mj4o9
-         pHl/KdDBaKth9qq5mFs1uNq7OeF6c3otQlJORQE8648V4yJlEThA8fReAED4RJogBE2c
-         i7PA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=qtWRGm059oiS4ZjWBkmPkg6BCVa3uwP55uEIcAaxgV8=;
-        b=PXr8ZlpZFSIuZ3PEpBWXT4jE8cJLYgRk3IfivZpgyO+JF7Ug1d/AuiRhSCvBezlpxC
-         67SaKMpqjZKkwNx20/JX57UCAIvCEDbnvMz+6upEM1LmW8oXw9hoAbY5UaOM4wb8aq8K
-         VwStbeVPu/6SVx+Hv5ZxIfHuw+hQPqhlvUKE5hb8Kv+pHjGKG18SkbUjL2+lBXuI4Y3H
-         L4CJi3rE2OCUJ0OJEswlSGG4IIkm4RWLtZy12aDL6mYDvHqa6mLUxDFMmJjgRIDJ/XGR
-         Jrb9ihpZeMLKc90aTTSOwZgufNwYqIx3CRna8ZO30sdL/f/Xe5nkwul10dIiY75pmWEH
-         gY8w==
-X-Gm-Message-State: AGi0PuZsh6ZiwMPt3P5Ad5K8qHcrFnJOC4M3AYR1Eit/l7vxZQbn6gVC
-        /QKkXsUuc7YxU8wvVfA/vHooQ2C60GpfaP7SX3C+VQ==
-X-Google-Smtp-Source: APiQypIS5J6gOHvFjUpvSQIhdKvFurHZqrgTkZHVQ8VMRg5t80ulnVxoD+sjIzpepIcrBrPgTloFgGLkgSzgRlYaoOs=
-X-Received: by 2002:a05:600c:2645:: with SMTP id 5mr13100586wmy.168.1588580748003;
- Mon, 04 May 2020 01:25:48 -0700 (PDT)
-MIME-Version: 1.0
-References: <CAJCQCtTp+DJ3LQhfLhFh0eFBPvksrCWyDi9_KiWxM_wk+i=45w@mail.gmail.com>
- <CAJCQCtSJWBy23rU2L8Kbo0GgmNXHTZxaE2ewY1yODEF+SKe-QA@mail.gmail.com> <2ae5353b-461b-6a87-227c-f13b0c2ccfe2@suse.com>
-In-Reply-To: <2ae5353b-461b-6a87-227c-f13b0c2ccfe2@suse.com>
-From:   Chris Murphy <lists@colorremedies.com>
-Date:   Mon, 4 May 2020 02:25:31 -0600
-Message-ID: <CAJCQCtT6rnH75f8wC8uf+-NnxEsZtmoRhM9cE37QTR0TF6xqJQ@mail.gmail.com>
-Subject: Re: 5.6, slow send/receive, < 1MB/s
-To:     Nikolay Borisov <nborisov@suse.com>
-Cc:     Chris Murphy <lists@colorremedies.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=rkeWlw5J6E1secvvwPmpqDICUYC/gIq0hp9/LjmlIyc=;
+ b=r0JyTTF0CwDyCIT2zoYokCW+gOVac3i1FUIO92W9NhrV81VaKVEtth63Gmsat8rv+z1BeccB4tTGEck4s2x9qZwq4yOM1o5Hk4BuC7SjGQBvp/VF5g+5UOZuS6yQd4lMoHAm0k8x8UoD1zOwiNy72HnfNHhqSb8TdlRwlqW9QrQ=
+Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
+ (2603:10b6:803:47::21) by SN4PR0401MB3519.namprd04.prod.outlook.com
+ (2603:10b6:803:46::10) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2958.29; Mon, 4 May
+ 2020 08:38:37 +0000
+Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
+ ([fe80::9854:2bc6:1ad2:f655]) by SN4PR0401MB3598.namprd04.prod.outlook.com
+ ([fe80::9854:2bc6:1ad2:f655%4]) with mapi id 15.20.2958.029; Mon, 4 May 2020
+ 08:38:37 +0000
+From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To:     Eric Biggers <ebiggers@kernel.org>,
+        Johannes Thumshirn <jth@kernel.org>
+CC:     David Sterba <dsterba@suse.cz>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        Richard Weinberger <richard@nod.at>,
+        Johannes Thumshirn <jthumshirn@suse.de>
+Subject: Re: [PATCH v2 1/2] btrfs: add authentication support
+Thread-Topic: [PATCH v2 1/2] btrfs: add authentication support
+Thread-Index: AQHWHUw3Fjk34p8J2kWvUrIfOj4HzQ==
+Date:   Mon, 4 May 2020 08:38:36 +0000
+Message-ID: <SN4PR0401MB35988C0D697D9900C411F1C09BA60@SN4PR0401MB3598.namprd04.prod.outlook.com>
+References: <20200428105859.4719-1-jth@kernel.org>
+ <20200428105859.4719-2-jth@kernel.org>
+ <20200501053908.GC1003@sol.localdomain>
+ <20200501063043.GE1003@sol.localdomain>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [129.253.240.72]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 7dcbd8d6-cea0-4fc8-ca8a-08d7f0068a03
+x-ms-traffictypediagnostic: SN4PR0401MB3519:
+x-microsoft-antispam-prvs: <SN4PR0401MB351944F4D26508533FD6A80E9BA60@SN4PR0401MB3519.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-forefront-prvs: 03932714EB
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: uuU6QI9LXgxaaRPnyJjlA4rc2jdF+bUhOP77+D4sJvnj4Dz+ImRoIKYeAOFM4P74N0+/iq8ckbFjETo+yYMHeB/8IFCyJTpvW3QGTnbPOLiicRFigD8TTW83VzsC5R1SjVi48KVLhdvIxjKKdyIlF23JKP+71LWXBCgSxC+FuAE0/aHC04KtJPVWfbG6UDgNOvJ8NWlnOk2deyqoxRhJU1KpD0hx/Y41olxmBK33lhpW9Fmzd44YYpxz/rxJguba2JNapFMyFe8Xy4ZM6G7FFzq5pUOythP8Wj8xzmvYN7JvJZUT/ldCo9DilsEeWZMe3jrPaiIflzhniKliIW06DkXDoQ4WPpOWmobvN1G2iNvSqcFAqVwsY1vfTxHJCLG/i37NwIeACKx1b8wCEBlP7FF56SkdviSl+56ocRExq1GV8Nu4Koz/Yt3z0LKylCpl
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR0401MB3598.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(366004)(396003)(39860400002)(346002)(376002)(136003)(86362001)(8676002)(71200400001)(4326008)(9686003)(4744005)(54906003)(110136005)(55016002)(316002)(53546011)(186003)(26005)(91956017)(52536014)(478600001)(7696005)(66446008)(66556008)(76116006)(64756008)(66946007)(66476007)(6506007)(2906002)(5660300002)(8936002)(33656002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: g8VezCtuYnyOeMqaDhwx73uSmjBfz26yhv6kpXbrifygJaL42c/450CfwniN+uJQH1cie12payOcIITgsK0/rzwJqOgQvHIvA6voKeYi6xQkpM41C3/ZOiNqFejn5SPK4voEGG+OBc/WZ6cDUxhwgxT/Kv1kCf706chX2Jfp6aAhymLoO5cnpaHNhWCpt1pUf0GWaOrCytyIGlz1/ba8T6U4eGKx5T3/RFSLuIQ9IuVEwD93FEVPsA5GzyAXohXjLRdKZjAN8C0nm7suA3SI5puZowlva7Za7rowC5aHPk+JszLrVNIMI8pLUhstnG0cdHwQaPLC0qkFhhXvFODb0ex8DJnmw8GylnC+49sJtq1OivX0CNsQKJ0D0prASupMV5xqc1IHR7ObkeE+IViOCCJgwRaD1eyIrZcC5j8HtI6CMDzDN2oiBZOwUzYoS3QQAcmuvrDh6dwbFmqtEqlWZ9jgQqGu5SwluQawhStMddRUfINnaiqLhseNWuPwfSLdl0ueLesJ2ct5tUjZZitjOAtDjRpCo0d+aDwRbt/LdBnzLEgWItXmE4bqo4l2fKoHp09NmVvTvw+T3FJeKGs751NNEuyILul22ziGrTmGb+X9kvotVji+XNvMf10S5M+jmrYWhAcYuNrY/5JslBtBHf7Z3Ze6x6uWaN2B0S5NBHQE+CzIJ5BkJqUAyDKje18LlMcLLppKi4b/4uklsfYFTf0qcpYnvX2NVTI1ixPu287bWu3NiEVesuXYB8TKIzHIM8ajOsxIbn9BAa5abM41IjoJqKBhXoUafnWBK0GrM2c=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7dcbd8d6-cea0-4fc8-ca8a-08d7f0068a03
+X-MS-Exchange-CrossTenant-originalarrivaltime: 04 May 2020 08:38:37.0159
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: gXuPE64i50pUIKC4RoHpqkz/py2X0K/FlHn+Yr7GPNeXjv/EcIf+MsY5HKuuSRqiTcYaFSXTmylFfKt+ovhZDMdk0mm/zFVBWrjWIx6X12Y=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN4PR0401MB3519
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, May 4, 2020 at 2:13 AM Nikolay Borisov <nborisov@suse.com> wrote:
->
->
->
-> On 4.05.20 =D0=B3. 11:03 =D1=87., Chris Murphy wrote:
-> > receive (rw,noatime,seclabel,compress-force=3Dzstd:5,space_cache=3Dv2,s=
-ubvolid=3D5,subvol=3D/)
-> > send    (rw,noatime,seclabel,compress=3Dzstd:1,nossd,notreelog,space_ca=
-che=3Dv2,subvolid=3D5,subvol=3D/)
-> >
-> > Both are on dm-crypt.
-> >
-> > perf top -g -U consumes about 85% CPU according to top, and every time
-> > I run it, the btrfs send performance *increases*. When I cancel this
-> > perf top command, it returns to the slower performance. Curious.
-> >
->
-> Well this still doesn't show the stack traces, after all the + sign
-> means you can expand that (with the 'e' key). But looking at this I
-> don't see any particular lock contention - just compression-related
-> functions.
-
-I'm not sure which ones...
-
-Samples
-  Children      Self  Shared Object       Symbol
--   62.58%     0.10%  [kernel]            [k]
-entry_SYSCALL_64_after_hwframe
-                                                       =E2=97=86
-   - 62.47% entry_SYSCALL_64_after_hwframe
-
-                              =E2=96=92
-      - 62.17% do_syscall_64
-
-                              =E2=96=92
-         - 23.84% ksys_read
-
-                              =E2=96=92
-            - 23.62% vfs_read
-
-                              =E2=96=92
-               - 14.79% proc_reg_read
-
-                              =E2=96=92
-                  - seq_read
-
-                              =E2=96=92
-                     - 7.07% s_show
-
-                              =E2=96=92
-                        - seq_printf
-
-                              =E2=96=92
-                           - vsnprintf
-
-                              =E2=96=92
-                                1.87% format_decode
-
-                              =E2=96=92
-                                1.49% number
-
-                              =E2=96=92
-                                0.84% string
-
-                              =E2=96=92
-                                0.68% memcpy_erms
-
-                              =E2=96=92
-                     - 6.23% s_next
-
-                              =E2=96=92
-                        - update_iter
-
-                              =E2=96=92
-                             4.49% module_get_kallsym
-
-                              =E2=96=92
-                             1.41% kallsyms_expand_symbol.constprop.0
-
-                              =E2=96=92
-                     - 0.79% s_start
-
-                              =E2=96=92
-                        - update_iter
-
-                              =E2=96=92
-                             0.57% module_get_kallsym
-
-                              =E2=96=92
-               - 8.38% new_sync_read
-
-                              =E2=96=92
-                  - 8.35% pipe_read
-
-                              =E2=96=92
-                     - 6.46% __mutex_lock.constprop.0
-
-                              =E2=96=92
-                          6.33% mutex_spin_on_owner
-
-                              =E2=96=92
-                     - 0.86% copy_page_to_iter
-
-                              =E2=96=92
-                        - 0.78% copyout
-
-                              =E2=96=92
-                             0.77% copy_user_enhanced_fast_string
-
-                              =E2=96=92
-         - 17.96% __x64_sys_splice
-
-                              =E2=96=92
-            - 17.92% do_splice
-
-                              =E2=96=92
-                 7.80% mutex_unlock
-
-                              =E2=96=92
-               - 4.55% pipe_double_lock
-
-                              =E2=96=92
-                  - 2.88% mutex_lock
-
-                              =E2=96=92
-                       0.95% _cond_resched
-
-                              =E2=96=92
-               - 2.61% mutex_lock
-
-                              =E2=96=92
-                    0.82% _cond_resched
-
-                              =E2=96=92
-                 0.52% pipe_unlock
-
-                              =E2=96=92
-         - 9.80% __x64_sys_ioctl
-
-                              =E2=96=92
-            - ksys_ioctl
-
-                              =E2=96=92
-               - 9.79% rpc_populate.constprop.0
-
-                              =E2=96=92
-For a higher level overview, try: perf top --sort comm,dso
-
-                              =E2=96=92
-
-
---=20
-Chris Murphy
+On 01/05/2020 08:30, Eric Biggers wrote:=0A=
+> btrfs also has an inode flag BTRFS_INODE_NODATASUM, which looks scary as =
+it=0A=
+> results in the file being unauthenticated.  Presumably the authentication=
+ of the=0A=
+> filesystem metadata is supposed to prevent this flag from being malicious=
+ly=0A=
+> cleared?  It might be a good idea to forbid this flag if the filesystem i=
+s using=0A=
+> the authentication feature.=0A=
+=0A=
+Yes indeed, authentication and nodatasum must be mutually exclusive.=0A=
+=0A=
+Thanks for spotting.=0A=
