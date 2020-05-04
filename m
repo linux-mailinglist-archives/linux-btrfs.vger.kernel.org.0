@@ -2,24 +2,24 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 146E51C4AC6
+	by mail.lfdr.de (Postfix) with ESMTP id 807331C4AC7
 	for <lists+linux-btrfs@lfdr.de>; Tue,  5 May 2020 01:58:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728467AbgEDX6f (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 4 May 2020 19:58:35 -0400
-Received: from mx2.suse.de ([195.135.220.15]:37894 "EHLO mx2.suse.de"
+        id S1728471AbgEDX6g (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 4 May 2020 19:58:36 -0400
+Received: from mx2.suse.de ([195.135.220.15]:37908 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728278AbgEDX6e (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 4 May 2020 19:58:34 -0400
+        id S1728278AbgEDX6g (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 4 May 2020 19:58:36 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 043BDABAD
-        for <linux-btrfs@vger.kernel.org>; Mon,  4 May 2020 23:58:34 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id CC54CAEB9
+        for <linux-btrfs@vger.kernel.org>; Mon,  4 May 2020 23:58:36 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v4 2/7] btrfs: block-group: Refactor how we read one block group item
-Date:   Tue,  5 May 2020 07:58:20 +0800
-Message-Id: <20200504235825.4199-3-wqu@suse.com>
+Subject: [PATCH v4 3/7] btrfs: block-group: Refactor how we delete one block group item
+Date:   Tue,  5 May 2020 07:58:21 +0800
+Message-Id: <20200504235825.4199-4-wqu@suse.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200504235825.4199-1-wqu@suse.com>
 References: <20200504235825.4199-1-wqu@suse.com>
@@ -30,167 +30,90 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Structure btrfs_block_group has the following members which are
-currently read from on-disk block group item and key:
-- Length
-  From item key.
-- Used
-- Flags
-  From block group item.
+When deleting a block group item, it's pretty straight forward, just
+delete the item pointed by the key.
 
-However for incoming skinny block group tree, we are going to read those
-members from different sources.
+However it will not be that straight-forward for incoming skinny block
+group item.
 
-This patch will refactor such read by:
-- Don't initialize btrfs_block_group::length at allocation
-  Caller should initialize them manually.
-  Also to avoid possible (well, only two callers) missing
-  initialization, add extra ASSERT() in btrfs_add_block_group_cache().
-
-- Refactor length/used/flags initialization into one function
-  The new function, fill_one_block_group() will handle the
-  initialization of such members.
-
-- Use btrfs_block_group::length to replace key::offset
-  Since skinny block group item would have a different meaning for its
-  key offset.
+So refactor the block group item deletion into a new function,
+remove_block_group_item(), also to make the already lengthy
+btrfs_remove_block_group() a little shorter.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/block-group.c | 47 ++++++++++++++++++++++++++++--------------
- 1 file changed, 32 insertions(+), 15 deletions(-)
+ fs/btrfs/block-group.c | 37 +++++++++++++++++++++++++------------
+ 1 file changed, 25 insertions(+), 12 deletions(-)
 
 diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-index 42dae6473354..57483ea07d51 100644
+index 57483ea07d51..914b1c2064ac 100644
 --- a/fs/btrfs/block-group.c
 +++ b/fs/btrfs/block-group.c
-@@ -161,6 +161,8 @@ static int btrfs_add_block_group_cache(struct btrfs_fs_info *info,
- 	struct rb_node *parent = NULL;
- 	struct btrfs_block_group *cache;
- 
-+	ASSERT(block_group->length != 0);
-+
- 	spin_lock(&info->block_group_cache_lock);
- 	p = &info->block_group_cache_tree.rb_node;
- 
-@@ -1768,7 +1770,7 @@ static void link_block_group(struct btrfs_block_group *cache)
- }
- 
- static struct btrfs_block_group *btrfs_create_block_group_cache(
--		struct btrfs_fs_info *fs_info, u64 start, u64 size)
-+		struct btrfs_fs_info *fs_info, u64 start)
- {
- 	struct btrfs_block_group *cache;
- 
-@@ -1784,7 +1786,6 @@ static struct btrfs_block_group *btrfs_create_block_group_cache(
+@@ -865,11 +865,34 @@ static void clear_incompat_bg_bits(struct btrfs_fs_info *fs_info, u64 flags)
  	}
- 
- 	cache->start = start;
--	cache->length = size;
- 
- 	cache->fs_info = fs_info;
- 	cache->full_stripe_len = btrfs_full_stripe_len(fs_info, start);
-@@ -1864,25 +1865,44 @@ static int check_chunk_block_group_mappings(struct btrfs_fs_info *fs_info)
- 	return ret;
  }
  
-+static int read_block_group_item(struct btrfs_block_group *cache,
-+				 struct btrfs_path *path,
-+				 const struct btrfs_key *key)
++static int remove_block_group_item(struct btrfs_trans_handle *trans,
++				   struct btrfs_path *path,
++				   struct btrfs_block_group *block_group)
 +{
-+	struct extent_buffer *leaf = path->nodes[0];
-+	struct btrfs_block_group_item bgi;
-+	int slot = path->slots[0];
++	struct btrfs_fs_info *fs_info = trans->fs_info;
++	struct btrfs_root *root;
++	struct btrfs_key key;
++	int ret;
 +
-+	cache->length = key->offset;
++	root = fs_info->extent_root;
++	key.objectid = block_group->start;
++	key.type = BTRFS_BLOCK_GROUP_ITEM_KEY;
++	key.offset = block_group->length;
 +
-+	read_extent_buffer(leaf, &bgi, btrfs_item_ptr_offset(leaf, slot),
-+			sizeof(bgi));
-+	cache->used = btrfs_stack_block_group_used(&bgi);
-+	cache->flags = btrfs_stack_block_group_flags(&bgi);
++	ret = btrfs_search_slot(trans, root, &key, path, -1, 1);
++	if (ret > 0)
++		ret = -ENOENT;
++	if (ret < 0)
++		return ret;
 +
-+	return 0;
++	ret = btrfs_del_item(trans, root, path);
++	return ret;
 +}
 +
- static int read_one_block_group(struct btrfs_fs_info *info,
- 				struct btrfs_path *path,
- 				const struct btrfs_key *key,
- 				int need_clear)
+ int btrfs_remove_block_group(struct btrfs_trans_handle *trans,
+ 			     u64 group_start, struct extent_map *em)
  {
--	struct extent_buffer *leaf = path->nodes[0];
- 	struct btrfs_block_group *cache;
- 	struct btrfs_space_info *space_info;
--	struct btrfs_block_group_item bgi;
- 	const bool mixed = btrfs_fs_incompat(info, MIXED_GROUPS);
--	int slot = path->slots[0];
- 	int ret;
+ 	struct btrfs_fs_info *fs_info = trans->fs_info;
+-	struct btrfs_root *root = fs_info->extent_root;
+ 	struct btrfs_path *path;
+ 	struct btrfs_block_group *block_group;
+ 	struct btrfs_free_cluster *cluster;
+@@ -1067,10 +1090,6 @@ int btrfs_remove_block_group(struct btrfs_trans_handle *trans,
  
- 	ASSERT(key->type == BTRFS_BLOCK_GROUP_ITEM_KEY);
+ 	spin_unlock(&block_group->space_info->lock);
  
--	cache = btrfs_create_block_group_cache(info, key->objectid, key->offset);
-+	cache = btrfs_create_block_group_cache(info, key->objectid);
- 	if (!cache)
- 		return -ENOMEM;
+-	key.objectid = block_group->start;
+-	key.type = BTRFS_BLOCK_GROUP_ITEM_KEY;
+-	key.offset = block_group->length;
+-
+ 	mutex_lock(&fs_info->chunk_mutex);
+ 	spin_lock(&block_group->lock);
+ 	block_group->removed = 1;
+@@ -1109,16 +1128,10 @@ int btrfs_remove_block_group(struct btrfs_trans_handle *trans,
+ 	/* Once for the block groups rbtree */
+ 	btrfs_put_block_group(block_group);
  
-+	ret = read_block_group_item(cache, path, key);
-+	if (ret < 0)
-+		goto error;
-+
- 	if (need_clear) {
- 		/*
- 		 * When we mount with old space cache, we need to
-@@ -1897,10 +1917,6 @@ static int read_one_block_group(struct btrfs_fs_info *info,
- 		if (btrfs_test_opt(info, SPACE_CACHE))
- 			cache->disk_cache_state = BTRFS_DC_CLEAR;
- 	}
--	read_extent_buffer(leaf, &bgi, btrfs_item_ptr_offset(leaf, slot),
--			   sizeof(bgi));
--	cache->used = btrfs_stack_block_group_used(&bgi);
--	cache->flags = btrfs_stack_block_group_flags(&bgi);
- 	if (!mixed && ((cache->flags & BTRFS_BLOCK_GROUP_METADATA) &&
- 	    (cache->flags & BTRFS_BLOCK_GROUP_DATA))) {
- 			btrfs_err(info,
-@@ -1928,15 +1944,15 @@ static int read_one_block_group(struct btrfs_fs_info *info,
- 	 * are empty, and we can just add all the space in and be done with it.
- 	 * This saves us _a_lot_ of time, particularly in the full case.
- 	 */
--	if (key->offset == cache->used) {
-+	if (cache->length == cache->used) {
- 		cache->last_byte_to_unpin = (u64)-1;
- 		cache->cached = BTRFS_CACHE_FINISHED;
- 		btrfs_free_excluded_extents(cache);
- 	} else if (cache->used == 0) {
- 		cache->last_byte_to_unpin = (u64)-1;
- 		cache->cached = BTRFS_CACHE_FINISHED;
--		add_new_free_space(cache, key->objectid,
--				   key->objectid + key->offset);
-+		add_new_free_space(cache, cache->start,
-+				   cache->start + cache->length);
- 		btrfs_free_excluded_extents(cache);
- 	}
+-	ret = btrfs_search_slot(trans, root, &key, path, -1, 1);
+-	if (ret > 0)
+-		ret = -EIO;
++	ret = remove_block_group_item(trans, path, block_group);
+ 	if (ret < 0)
+ 		goto out;
  
-@@ -1946,7 +1962,7 @@ static int read_one_block_group(struct btrfs_fs_info *info,
- 		goto error;
- 	}
- 	trace_btrfs_add_block_group(info, cache, 0);
--	btrfs_update_space_info(info, cache->flags, key->offset,
-+	btrfs_update_space_info(info, cache->flags, cache->length,
- 				cache->used, cache->bytes_super, &space_info);
+-	ret = btrfs_del_item(trans, root, path);
+-	if (ret)
+-		goto out;
+-
+ 	if (remove_em) {
+ 		struct extent_map_tree *em_tree;
  
- 	cache->space_info = space_info;
-@@ -2093,10 +2109,11 @@ int btrfs_make_block_group(struct btrfs_trans_handle *trans, u64 bytes_used,
- 
- 	btrfs_set_log_full_commit(trans);
- 
--	cache = btrfs_create_block_group_cache(fs_info, chunk_offset, size);
-+	cache = btrfs_create_block_group_cache(fs_info, chunk_offset);
- 	if (!cache)
- 		return -ENOMEM;
- 
-+	cache->length = size;
- 	cache->used = bytes_used;
- 	cache->flags = type;
- 	cache->last_byte_to_unpin = (u64)-1;
 -- 
 2.26.2
 
