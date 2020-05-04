@@ -2,24 +2,24 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02E431C4AC8
+	by mail.lfdr.de (Postfix) with ESMTP id 79B351C4AC9
 	for <lists+linux-btrfs@lfdr.de>; Tue,  5 May 2020 01:58:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728481AbgEDX6i (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 4 May 2020 19:58:38 -0400
-Received: from mx2.suse.de ([195.135.220.15]:37914 "EHLO mx2.suse.de"
+        id S1728487AbgEDX6l (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 4 May 2020 19:58:41 -0400
+Received: from mx2.suse.de ([195.135.220.15]:37920 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728278AbgEDX6i (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 4 May 2020 19:58:38 -0400
+        id S1728278AbgEDX6k (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 4 May 2020 19:58:40 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id C667EABAD
-        for <linux-btrfs@vger.kernel.org>; Mon,  4 May 2020 23:58:38 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 75A5AAEB9
+        for <linux-btrfs@vger.kernel.org>; Mon,  4 May 2020 23:58:40 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v4 4/7] btrfs: block-group: Refactor how we insert a block group item
-Date:   Tue,  5 May 2020 07:58:22 +0800
-Message-Id: <20200504235825.4199-5-wqu@suse.com>
+Subject: [PATCH v4 5/7] btrfs: block-group: Rename write_one_cahce_group()
+Date:   Tue,  5 May 2020 07:58:23 +0800
+Message-Id: <20200504235825.4199-6-wqu@suse.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200504235825.4199-1-wqu@suse.com>
 References: <20200504235825.4199-1-wqu@suse.com>
@@ -30,83 +30,86 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Currently the block group item insert is pretty straight forward, fill
-the block group item structure and insert it into extent tree.
+The name of this function contains the word "cache", which is left from
+the era where btrfs_block_group is called btrfs_block_group_cache.
 
-However the incoming skinny block group feature is going to change this,
-so this patch will refactor such insert into a new function,
-insert_block_group_item(), to make the incoming feature easier to add.
+Now this "cache" doesn't match any thing, and we have better namings for
+functions like read/insert/remove_block_group_item().
+
+So rename this function to update_block_group_item().
+
+Since we're here, also rename the local variables to be more like a
+Chrismas tree, and rename @extent_root to @root for later reuse.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/block-group.c | 41 +++++++++++++++++++++++++----------------
- 1 file changed, 25 insertions(+), 16 deletions(-)
+ fs/btrfs/block-group.c | 23 ++++++++++++-----------
+ 1 file changed, 12 insertions(+), 11 deletions(-)
 
 diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-index 914b1c2064ac..93e7835ca79d 100644
+index 93e7835ca79d..46846749b631 100644
 --- a/fs/btrfs/block-group.c
 +++ b/fs/btrfs/block-group.c
-@@ -2068,13 +2068,32 @@ int btrfs_read_block_groups(struct btrfs_fs_info *info)
- 	return ret;
+@@ -2346,23 +2346,24 @@ void btrfs_dec_block_group_ro(struct btrfs_block_group *cache)
+ 	spin_unlock(&sinfo->lock);
  }
  
-+static int insert_block_group_item(struct btrfs_trans_handle *trans,
-+				   struct btrfs_block_group *block_group)
-+{
-+	struct btrfs_fs_info *fs_info = trans->fs_info;
-+	struct btrfs_block_group_item bgi;
-+	struct btrfs_root *root;
-+	struct btrfs_key key;
-+
-+	spin_lock(&block_group->lock);
-+	btrfs_set_stack_block_group_used(&bgi, block_group->used);
-+	btrfs_set_stack_block_group_chunk_objectid(&bgi,
-+				BTRFS_FIRST_CHUNK_TREE_OBJECTID);
-+	btrfs_set_stack_block_group_flags(&bgi, block_group->flags);
-+	key.objectid = block_group->start;
-+	key.type = BTRFS_BLOCK_GROUP_ITEM_KEY;
-+	key.offset = block_group->length;
-+	spin_unlock(&block_group->lock);
-+
-+	root = fs_info->extent_root;
-+	return btrfs_insert_item(trans, root, &key, &bgi, sizeof(bgi));
-+}
-+
- void btrfs_create_pending_block_groups(struct btrfs_trans_handle *trans)
+-static int write_one_cache_group(struct btrfs_trans_handle *trans,
+-				 struct btrfs_path *path,
+-				 struct btrfs_block_group *cache)
++static int update_block_group_item(struct btrfs_trans_handle *trans,
++				   struct btrfs_path *path,
++				   struct btrfs_block_group *cache)
  {
  	struct btrfs_fs_info *fs_info = trans->fs_info;
- 	struct btrfs_block_group *block_group;
+-	int ret;
 -	struct btrfs_root *extent_root = fs_info->extent_root;
--	struct btrfs_block_group_item item;
--	struct btrfs_key key;
- 	int ret = 0;
+-	unsigned long bi;
+-	struct extent_buffer *leaf;
+ 	struct btrfs_block_group_item bgi;
++	struct extent_buffer *leaf;
++	struct btrfs_root *root;
+ 	struct btrfs_key key;
++	unsigned long bi;
++	int ret;
  
- 	if (!trans->can_flush_pending_bgs)
-@@ -2087,21 +2106,11 @@ void btrfs_create_pending_block_groups(struct btrfs_trans_handle *trans)
- 		if (ret)
- 			goto next;
+ 	key.objectid = cache->start;
+ 	key.type = BTRFS_BLOCK_GROUP_ITEM_KEY;
+ 	key.offset = cache->length;
++	root = fs_info->extent_root;
  
--		spin_lock(&block_group->lock);
--		btrfs_set_stack_block_group_used(&item, block_group->used);
--		btrfs_set_stack_block_group_chunk_objectid(&item,
--				BTRFS_FIRST_CHUNK_TREE_OBJECTID);
--		btrfs_set_stack_block_group_flags(&item, block_group->flags);
--		key.objectid = block_group->start;
--		key.type = BTRFS_BLOCK_GROUP_ITEM_KEY;
--		key.offset = block_group->length;
--		spin_unlock(&block_group->lock);
--
--		ret = btrfs_insert_item(trans, extent_root, &key, &item,
--					sizeof(item));
-+		ret = insert_block_group_item(trans, block_group);
- 		if (ret)
- 			btrfs_abort_transaction(trans, ret);
--		ret = btrfs_finish_chunk_alloc(trans, key.objectid, key.offset);
-+		ret = btrfs_finish_chunk_alloc(trans, block_group->start,
-+					block_group->length);
- 		if (ret)
- 			btrfs_abort_transaction(trans, ret);
- 		add_block_group_free_space(trans, block_group);
+-	ret = btrfs_search_slot(trans, extent_root, &key, path, 0, 1);
++	ret = btrfs_search_slot(trans, root, &key, path, 0, 1);
+ 	if (ret) {
+ 		if (ret > 0)
+ 			ret = -ENOENT;
+@@ -2674,7 +2675,7 @@ int btrfs_start_dirty_block_groups(struct btrfs_trans_handle *trans)
+ 			}
+ 		}
+ 		if (!ret) {
+-			ret = write_one_cache_group(trans, path, cache);
++			ret = update_block_group_item(trans, path, cache);
+ 			/*
+ 			 * Our block group might still be attached to the list
+ 			 * of new block groups in the transaction handle of some
+@@ -2823,7 +2824,7 @@ int btrfs_write_dirty_block_groups(struct btrfs_trans_handle *trans)
+ 			}
+ 		}
+ 		if (!ret) {
+-			ret = write_one_cache_group(trans, path, cache);
++			ret = update_block_group_item(trans, path, cache);
+ 			/*
+ 			 * One of the free space endio workers might have
+ 			 * created a new block group while updating a free space
+@@ -2840,7 +2841,7 @@ int btrfs_write_dirty_block_groups(struct btrfs_trans_handle *trans)
+ 			if (ret == -ENOENT) {
+ 				wait_event(cur_trans->writer_wait,
+ 				   atomic_read(&cur_trans->num_writers) == 1);
+-				ret = write_one_cache_group(trans, path, cache);
++				ret = update_block_group_item(trans, path, cache);
+ 			}
+ 			if (ret)
+ 				btrfs_abort_transaction(trans, ret);
 -- 
 2.26.2
 
