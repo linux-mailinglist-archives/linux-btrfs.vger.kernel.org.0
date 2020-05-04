@@ -2,140 +2,216 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32E011C341B
-	for <lists+linux-btrfs@lfdr.de>; Mon,  4 May 2020 10:13:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B57101C344D
+	for <lists+linux-btrfs@lfdr.de>; Mon,  4 May 2020 10:25:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728079AbgEDINe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 4 May 2020 04:13:34 -0400
-Received: from mx2.suse.de ([195.135.220.15]:35644 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726750AbgEDINd (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 4 May 2020 04:13:33 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 9DAF2AED5;
-        Mon,  4 May 2020 08:13:33 +0000 (UTC)
-Subject: Re: 5.6, slow send/receive, < 1MB/s
-To:     Chris Murphy <lists@colorremedies.com>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-References: <CAJCQCtTp+DJ3LQhfLhFh0eFBPvksrCWyDi9_KiWxM_wk+i=45w@mail.gmail.com>
- <CAJCQCtSJWBy23rU2L8Kbo0GgmNXHTZxaE2ewY1yODEF+SKe-QA@mail.gmail.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <2ae5353b-461b-6a87-227c-f13b0c2ccfe2@suse.com>
-Date:   Mon, 4 May 2020 11:13:30 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1728052AbgEDIZu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 4 May 2020 04:25:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51912 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725941AbgEDIZt (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 4 May 2020 04:25:49 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C6A4C061A0E
+        for <linux-btrfs@vger.kernel.org>; Mon,  4 May 2020 01:25:49 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id e26so7428460wmk.5
+        for <linux-btrfs@vger.kernel.org>; Mon, 04 May 2020 01:25:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=qtWRGm059oiS4ZjWBkmPkg6BCVa3uwP55uEIcAaxgV8=;
+        b=1HIHRQKVKuQBT7Z15VwMvCsC+kuQbcupVvnma6TA8OSlYuor00yF2vuYKRkPgr+KKO
+         35ujHQw3YZVMe0psHdqeoyMPz3lWVyg+uZbCYkyJROnPOpEaB1Uwbx3sdxVJRuT5Rf5t
+         y6KmRIxPL+CyYJ+yyxQ6APfh4wTkNpt256wdZpOrY7KlQpDmcgIGPLaScTOojIjbmfb8
+         vRhIPpmyRfhFIP+LnqskHilmX/YCIXlVtLjX7ZkqLUde+9qlFtRJmCVozSVZXl3mj4o9
+         pHl/KdDBaKth9qq5mFs1uNq7OeF6c3otQlJORQE8648V4yJlEThA8fReAED4RJogBE2c
+         i7PA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=qtWRGm059oiS4ZjWBkmPkg6BCVa3uwP55uEIcAaxgV8=;
+        b=PXr8ZlpZFSIuZ3PEpBWXT4jE8cJLYgRk3IfivZpgyO+JF7Ug1d/AuiRhSCvBezlpxC
+         67SaKMpqjZKkwNx20/JX57UCAIvCEDbnvMz+6upEM1LmW8oXw9hoAbY5UaOM4wb8aq8K
+         VwStbeVPu/6SVx+Hv5ZxIfHuw+hQPqhlvUKE5hb8Kv+pHjGKG18SkbUjL2+lBXuI4Y3H
+         L4CJi3rE2OCUJ0OJEswlSGG4IIkm4RWLtZy12aDL6mYDvHqa6mLUxDFMmJjgRIDJ/XGR
+         Jrb9ihpZeMLKc90aTTSOwZgufNwYqIx3CRna8ZO30sdL/f/Xe5nkwul10dIiY75pmWEH
+         gY8w==
+X-Gm-Message-State: AGi0PuZsh6ZiwMPt3P5Ad5K8qHcrFnJOC4M3AYR1Eit/l7vxZQbn6gVC
+        /QKkXsUuc7YxU8wvVfA/vHooQ2C60GpfaP7SX3C+VQ==
+X-Google-Smtp-Source: APiQypIS5J6gOHvFjUpvSQIhdKvFurHZqrgTkZHVQ8VMRg5t80ulnVxoD+sjIzpepIcrBrPgTloFgGLkgSzgRlYaoOs=
+X-Received: by 2002:a05:600c:2645:: with SMTP id 5mr13100586wmy.168.1588580748003;
+ Mon, 04 May 2020 01:25:48 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAJCQCtSJWBy23rU2L8Kbo0GgmNXHTZxaE2ewY1yODEF+SKe-QA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <CAJCQCtTp+DJ3LQhfLhFh0eFBPvksrCWyDi9_KiWxM_wk+i=45w@mail.gmail.com>
+ <CAJCQCtSJWBy23rU2L8Kbo0GgmNXHTZxaE2ewY1yODEF+SKe-QA@mail.gmail.com> <2ae5353b-461b-6a87-227c-f13b0c2ccfe2@suse.com>
+In-Reply-To: <2ae5353b-461b-6a87-227c-f13b0c2ccfe2@suse.com>
+From:   Chris Murphy <lists@colorremedies.com>
+Date:   Mon, 4 May 2020 02:25:31 -0600
+Message-ID: <CAJCQCtT6rnH75f8wC8uf+-NnxEsZtmoRhM9cE37QTR0TF6xqJQ@mail.gmail.com>
+Subject: Re: 5.6, slow send/receive, < 1MB/s
+To:     Nikolay Borisov <nborisov@suse.com>
+Cc:     Chris Murphy <lists@colorremedies.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Mon, May 4, 2020 at 2:13 AM Nikolay Borisov <nborisov@suse.com> wrote:
+>
+>
+>
+> On 4.05.20 =D0=B3. 11:03 =D1=87., Chris Murphy wrote:
+> > receive (rw,noatime,seclabel,compress-force=3Dzstd:5,space_cache=3Dv2,s=
+ubvolid=3D5,subvol=3D/)
+> > send    (rw,noatime,seclabel,compress=3Dzstd:1,nossd,notreelog,space_ca=
+che=3Dv2,subvolid=3D5,subvol=3D/)
+> >
+> > Both are on dm-crypt.
+> >
+> > perf top -g -U consumes about 85% CPU according to top, and every time
+> > I run it, the btrfs send performance *increases*. When I cancel this
+> > perf top command, it returns to the slower performance. Curious.
+> >
+>
+> Well this still doesn't show the stack traces, after all the + sign
+> means you can expand that (with the 'e' key). But looking at this I
+> don't see any particular lock contention - just compression-related
+> functions.
+
+I'm not sure which ones...
+
+Samples
+  Children      Self  Shared Object       Symbol
+-   62.58%     0.10%  [kernel]            [k]
+entry_SYSCALL_64_after_hwframe
+                                                       =E2=97=86
+   - 62.47% entry_SYSCALL_64_after_hwframe
+
+                              =E2=96=92
+      - 62.17% do_syscall_64
+
+                              =E2=96=92
+         - 23.84% ksys_read
+
+                              =E2=96=92
+            - 23.62% vfs_read
+
+                              =E2=96=92
+               - 14.79% proc_reg_read
+
+                              =E2=96=92
+                  - seq_read
+
+                              =E2=96=92
+                     - 7.07% s_show
+
+                              =E2=96=92
+                        - seq_printf
+
+                              =E2=96=92
+                           - vsnprintf
+
+                              =E2=96=92
+                                1.87% format_decode
+
+                              =E2=96=92
+                                1.49% number
+
+                              =E2=96=92
+                                0.84% string
+
+                              =E2=96=92
+                                0.68% memcpy_erms
+
+                              =E2=96=92
+                     - 6.23% s_next
+
+                              =E2=96=92
+                        - update_iter
+
+                              =E2=96=92
+                             4.49% module_get_kallsym
+
+                              =E2=96=92
+                             1.41% kallsyms_expand_symbol.constprop.0
+
+                              =E2=96=92
+                     - 0.79% s_start
+
+                              =E2=96=92
+                        - update_iter
+
+                              =E2=96=92
+                             0.57% module_get_kallsym
+
+                              =E2=96=92
+               - 8.38% new_sync_read
+
+                              =E2=96=92
+                  - 8.35% pipe_read
+
+                              =E2=96=92
+                     - 6.46% __mutex_lock.constprop.0
+
+                              =E2=96=92
+                          6.33% mutex_spin_on_owner
+
+                              =E2=96=92
+                     - 0.86% copy_page_to_iter
+
+                              =E2=96=92
+                        - 0.78% copyout
+
+                              =E2=96=92
+                             0.77% copy_user_enhanced_fast_string
+
+                              =E2=96=92
+         - 17.96% __x64_sys_splice
+
+                              =E2=96=92
+            - 17.92% do_splice
+
+                              =E2=96=92
+                 7.80% mutex_unlock
+
+                              =E2=96=92
+               - 4.55% pipe_double_lock
+
+                              =E2=96=92
+                  - 2.88% mutex_lock
+
+                              =E2=96=92
+                       0.95% _cond_resched
+
+                              =E2=96=92
+               - 2.61% mutex_lock
+
+                              =E2=96=92
+                    0.82% _cond_resched
+
+                              =E2=96=92
+                 0.52% pipe_unlock
+
+                              =E2=96=92
+         - 9.80% __x64_sys_ioctl
+
+                              =E2=96=92
+            - ksys_ioctl
+
+                              =E2=96=92
+               - 9.79% rpc_populate.constprop.0
+
+                              =E2=96=92
+For a higher level overview, try: perf top --sort comm,dso
+
+                              =E2=96=92
 
 
-On 4.05.20 г. 11:03 ч., Chris Murphy wrote:
-> receive (rw,noatime,seclabel,compress-force=zstd:5,space_cache=v2,subvolid=5,subvol=/)
-> send    (rw,noatime,seclabel,compress=zstd:1,nossd,notreelog,space_cache=v2,subvolid=5,subvol=/)
-> 
-> Both are on dm-crypt.
-> 
-> perf top -g -U consumes about 85% CPU according to top, and every time
-> I run it, the btrfs send performance *increases*. When I cancel this
-> perf top command, it returns to the slower performance. Curious.
-> 
-
-Well this still doesn't show the stack traces, after all the + sign
-means you can expand that (with the 'e' key). But looking at this I
-don't see any particular lock contention - just compression-related
-functions.
-
-> Samples
->   Children      Self  Shared Object        Symbol
-> +   40.56%     0.09%  [kernel]             [k] entry_SYSCALL_64_after_hwframe
-> +   40.30%     0.07%  [kernel]             [k] do_syscall_64
-> +   27.88%     0.00%  [kernel]             [k] ret_from_fork
-> +   27.88%     0.00%  [kernel]             [k] kthread
-> +   27.20%     0.02%  [kernel]             [k] process_one_work
-> +   25.69%     0.01%  [kernel]             [k] worker_thread
-> +   22.05%     0.01%  [kernel]             [k] btrfs_work_helper
-> +   19.01%     0.01%  [kernel]             [k] __x64_sys_splice
-> +   18.98%     2.02%  [kernel]             [k] do_splice
-> +   14.70%     0.00%  [kernel]             [k] async_cow_start
-> +   14.70%     0.00%  [kernel]             [k] compress_file_range
-> +   14.40%     0.00%  [kernel]             [k] temp_notif.12+0x4
-> +   13.20%     0.00%  [kernel]             [k] ZSTD_compressContinue_internal
-> +   13.14%     0.00%  [kernel]             [k] garp_protos+0x35
-> +   12.99%     0.01%  [kernel]             [k] nft_request_module
-> +   12.95%     0.01%  [kernel]             [k] ZSTD_compressStream
-> +   11.95%     0.01%  [kernel]             [k] ksys_read
-> +   11.87%     0.02%  [kernel]             [k] vfs_read
-> +   11.76%    11.45%  [kernel]             [k] fuse_perform_write
-> +   11.26%     0.02%  [kernel]             [k] do_idle
-> +   10.80%     0.01%  [kernel]             [k] cpuidle_enter
-> +   10.79%     0.01%  [kernel]             [k] cpuidle_enter_state
-> +   10.54%    10.54%  [kernel]             [k] mwait_idle_with_hints.constprop.0
-> +   10.33%     0.00%  libc-2.31.so         [.] splice
-> +    7.93%     7.59%  [kernel]             [k] mutex_unlock
-> +    7.38%     0.01%  [kernel]             [k] new_sync_read
-> +    7.36%     0.10%  [kernel]             [k] pipe_read
-> +    6.46%     0.07%  [kernel]             [k] __mutex_lock.constprop.0
-> +    6.34%     6.23%  [kernel]             [k] mutex_spin_on_owner
-> +    6.20%     0.00%  [kernel]             [k] secondary_startup_64
-> +    6.20%     0.00%  [kernel]             [k] cpu_startup_entry
-> +    6.05%     3.89%  [kernel]             [k] mutex_lock
-> +    5.78%     0.00%  [kernel]             [k] intel_idle
-> +    5.53%     0.00%  [kernel]             [k] iwl_mvm_mac_conf_tx
-> +    5.43%     0.00%  [kernel]             [k] run_one_async_start
-> +    5.43%     0.00%  [kernel]             [k] btrfs_submit_bio_start
-> +    5.31%     0.06%  [kernel]             [k] blake2b_update
-> +    5.11%     1.39%  [kernel]             [k] pipe_double_lock
-> +    4.28%     0.01%  [kernel]             [k] proc_reg_read
-> +    4.27%     0.09%  [kernel]             [k] seq_read
-> For a higher level overview, try: perf top --sort comm,dso
-> 
+--=20
+Chris Murphy
