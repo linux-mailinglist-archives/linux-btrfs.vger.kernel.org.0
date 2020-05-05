@@ -2,97 +2,51 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23FE61C5234
-	for <lists+linux-btrfs@lfdr.de>; Tue,  5 May 2020 11:51:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 749AA1C5296
+	for <lists+linux-btrfs@lfdr.de>; Tue,  5 May 2020 12:08:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728422AbgEEJvO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 5 May 2020 05:51:14 -0400
-Received: from zaphod.cobb.me.uk ([213.138.97.131]:44088 "EHLO
-        zaphod.cobb.me.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725766AbgEEJvN (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 5 May 2020 05:51:13 -0400
-Received: by zaphod.cobb.me.uk (Postfix, from userid 107)
-        id CC2AC9C41E; Tue,  5 May 2020 10:51:11 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cobb.uk.net;
-        s=201703; t=1588672271;
-        bh=Jlm3361NbEl/4DX2qOKfgO1ACapF6Weqp3DQgsEJ8Ys=;
-        h=Subject:To:References:From:Date:In-Reply-To:From;
-        b=SbevwB+UO94OPtMq+akaIXhj74PHalbcIFnQ9s3ypBkX2oX5W8N9JLb9lPHQsC+fh
-         q51TfhI8WwoeYZLI+Fbys2lOBaXbLDJReg5QO8JfbdKK3V8ZrMy9kMWVsc5iN/xB/V
-         PUU5U2mYGqfBFm9Era/WuQKcRmUEhqynWHjUzPSPfFZn/v2LvWMHkYP8d+DS7ke0Yv
-         3hpKPJnO6iO8oMzy+rZgISj4RGu1A29z57PQum2t8jU2kpBFlodF10s0rVfBy/RS9D
-         2PUFCDO4s0T1/kapsqB8jBKoL/o570mKs7Qqjf/mWrthaGiyE+5+UjtwvSbAHhEEPu
-         a2FIgbJZoklLA==
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on zaphod.cobb.me.uk
-X-Spam-Status: No, score=-0.8 required=12.0 tests=ALL_TRUSTED,DKIM_INVALID,
-        DKIM_SIGNED,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.2
-X-Spam-Level: 
-X-Spam-Bar: 
-Received: from black.home.cobb.me.uk (unknown [192.168.0.205])
-        by zaphod.cobb.me.uk (Postfix) with ESMTP id 90FED9C26E;
-        Tue,  5 May 2020 10:51:06 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cobb.uk.net;
-        s=201703; t=1588672266;
-        bh=Jlm3361NbEl/4DX2qOKfgO1ACapF6Weqp3DQgsEJ8Ys=;
-        h=Subject:To:References:From:Date:In-Reply-To:From;
-        b=qlc0uKl7qHFZkR50LkvJ7Vss4RJ0BJtmhp53UDuKXY4KmdZFsJgbcby2enJ8jpSZj
-         joaXll3oaWDkTeXtq4tFvqJDR/6dsOysoeQVH2zNQq54Ej+FW5heJ1TlbVQ79TjtXv
-         a3ifoj9kFnfhdlh9g3gXf3Ps6mVWHYOQJagszhqUkWs89apfG1BxPAMWvk8pUdwigC
-         ClUexxJVcNgTBTt/Lrhw7SSOjFvtdsoSiGsTi27oVjD02ewzeCA0N+sOqra0A+XiTX
-         gx4DJtNmFVE8tS/Evz1qqsRAFIrr3oT8SNhEmL8Y/vSu+NeoONu7oETjcTOofCzDYi
-         mZMC+ugZ7Upmg==
-Received: from [192.168.0.211] (novatech.home.cobb.me.uk [192.168.0.211])
-        by black.home.cobb.me.uk (Postfix) with ESMTPS id 3025DFAD79;
-        Tue,  5 May 2020 10:51:06 +0100 (BST)
-Subject: Re: btrfs-progs reports nonsense scrub status
-To:     Andrew Pam <andrew@sericyb.com.au>, linux-btrfs@vger.kernel.org
-References: <0d1cceb6-9295-1bdf-c427-60ba9b1ef0b3@sericyb.com.au>
-From:   Graham Cobb <g.btrfs@cobb.uk.net>
-Openpgp: preference=signencrypt
-Autocrypt: addr=g.btrfs@cobb.uk.net; prefer-encrypt=mutual; keydata=
- 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 myxb
-Message-ID: <fe7f6b83-aa2c-898e-648d-a8d86f5fd4d5@cobb.uk.net>
-Date:   Tue, 5 May 2020 10:51:05 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S1728689AbgEEKIb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 5 May 2020 06:08:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38280 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728238AbgEEKIb (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 5 May 2020 06:08:31 -0400
+Received: from smtp.ixydo.com (unknown [IPv6:2a01:4f8:192:8445:b0::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD1A0C061A0F
+        for <linux-btrfs@vger.kernel.org>; Tue,  5 May 2020 03:08:30 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by smtp.ixydo.com (Postfix) with ESMTP id 363BFF3E35
+        for <linux-btrfs@vger.kernel.org>; Tue,  5 May 2020 09:59:06 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at smtp.ixydo.com
+Received: from smtp.ixydo.com ([127.0.0.1])
+        by localhost (ht-mx-5.ixydo.net [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id xKd4EFKmzWYj for <linux-btrfs@vger.kernel.org>;
+        Tue,  5 May 2020 09:59:05 +0000 (UTC)
+Received: from [10.3.2.105] (unknown [88.98.92.14])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp.ixydo.com (Postfix) with ESMTPSA id BCB18F3FCB
+        for <linux-btrfs@vger.kernel.org>; Tue,  5 May 2020 09:59:05 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp.ixydo.com BCB18F3FCB
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mx.ixido.net; s=mail;
+        t=1588672745; bh=3Yc3gZAwi8i1r1bgPAqFuw05mpkioVgXFEZZ2NKybJQ=;
+        l=4203; h=To:From:Subject:Date:From;
+        b=FCmLKiXm4VtiYKwwe3R/0r+WHxta38Doh8HHXslUtmc2DVRMk5CH1ic4DbYs0U2QY
+         n90SxY5pTGf/yVR7poeU6Cc5dB5SObdrP0aeHyplbkd4A4k6zH1Y31oF98vBCZasgk
+         swVwYOJk0oMI3GyH05wKo4uT0dfP6W+Q3pSUgxGBadVsl6FIdHlhiI2PDJsEOswCJz
+         74fgkVQFl2tIjOziRqiLWYV4sTNIOBT8Q5mbwGSMrmODRmyYBsd9t9knDP2Ht/iyKK
+         Phw3ny/zcoRiLe7RtWBVoiBwQv/IysFPyEMhSV6sBLOFqG3I/uz83DUnfsny2FxiND
+         7TX5JUyyi856A==
+To:     linux-btrfs@vger.kernel.org
+From:   Jinn <linux-btrfs@mx.ixido.net>
+Subject: BTRFS critical: unable to find logical 39209762816 length 4096
+Message-ID: <85204219-e503-9e61-c4b5-9b3373f8a9f3@ixydo.com>
+Date:   Tue, 5 May 2020 10:59:05 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <0d1cceb6-9295-1bdf-c427-60ba9b1ef0b3@sericyb.com.au>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
@@ -101,24 +55,98 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 05/05/2020 06:46, Andrew Pam wrote:
-> $ sudo btrfs scrub status /home
-> UUID:             85069ce9-be06-4c92-b8c1-8a0f685e43c6
-> 	no stats available
-> Time left:        16964119:40:20
-> ETA:              Mon Aug  8 23:23:14 3955
-> Total to scrub:   7.30TiB
-> Bytes scrubbed:   10.20TiB
-> Rate:             288.06MiB/s
-> Error summary:    no errors found
+Hi,
 
-btrfs-progs version? (output from 'btrfs version')
+I have a filesystem that appears to have lost it's data.  I believe the ATA interface on the
+host has failed, which has lead to this problem.  It would be nice to recover the data if
+possible.  Prior to realizing the ATA bus was the issue I had two other BTRFS filesystems
+connected, all of which were repaired by connecting to another ATA bus then scrubbing.
 
-Is there actually a scrub in progress?
+This particular filesystem has no subvolume snapshots, though I have been using snapper on
+other filesystems to manage this.
 
-Presumably there is no stats file? Try 'cat
-/var/lib/btrfs/scrub.status.85069ce9-be06-4c92-b8c1-8a0f685e43c6'
+The filesystem can be mounted without issue, but when I try to scrub it aborts immediately
+with the following status.  Before disconnecting I believe the filesystem was being
+automatically remounted read-only when writes were attempted, though I haven't confirmed this.
 
-Is this a multi-device filesystem? See what 'btrfs scrub status -d
-/home' says.
+  $ sudo btrfs scrub status /mnt/crypt-timemachine
+  scrub status for a09ae23f-f5b9-4ff4-a29a-d2fd81c6d450
+          scrub started at Mon May  4 14:50:42 2020 and was aborted after 00:00:00
+          total bytes scrubbed: 264.00KiB with 0 errors
 
+In the kernel logs I see:
+
+  kernel: BTRFS critical (device dm-4): unable to find logical 39209762816 length 4096
+  kernel: BTRFS critical (device dm-4): unable to find logical 39209762816 length 4096
+  kernel: BTRFS critical (device dm-4): unable to find logical 39209762816 length 16384
+
+The output of btrfs check:
+
+  $ sudo btrfs check /dev/mapper/crypt-timemachine
+  Checking filesystem on /dev/mapper/crypt-timemachine
+  UUID: a09ae23f-f5b9-4ff4-a29a-d2fd81c6d450
+  checking extents
+  Couldn't map the block 39209762816
+  Invalid mapping for 39209762816-39209779200, got 588439879680-588976750592
+  Couldn't map the block 39209762816
+  bytenr mismatch, want=39209762816, have=0
+  ref mismatch on [39209762816 16384] extent item 0, found 1
+  tree backref 39209762816 parent 7 root 7 not found in extent tree
+  backpointer mismatch on [39209762816 16384]
+  owner ref check failed [39209762816 16384]
+  ref mismatch on [588965576704 16384] extent item 1, found 0
+  backref 588965576704 root 7 not referenced back 0x55ccdfad6660
+  incorrect global backref count on 588965576704 found 1 wanted 0
+  backpointer mismatch on [588965576704 16384]
+  owner ref check failed [588965576704 16384]
+  ERROR: errors found in extent allocation tree or chunk allocation
+  checking free space cache
+  checking fs roots
+  checking csums
+  Couldn't map the block 39209762816
+  Invalid mapping for 39209762816-39209779200, got 588439879680-588976750592
+  Couldn't map the block 39209762816
+  bytenr mismatch, want=39209762816, have=0
+  Error going to next leaf -5
+  checking root refs
+  found 712704 bytes used, error(s) found
+  total csum bytes: 8
+  total tree bytes: 147456
+  total fs tree bytes: 32768
+  total extent tree bytes: 16384
+  btree space waste bytes: 132656
+  file data blocks allocated: 532480
+   referenced 532480
+
+SMART output for the disk doesn't suggest any issues with the disk itself, i.e.
+Offline_Uncorrectable, UDMA_CRC_Error_Count, Reallocated_Event_Count,
+Current_Pending_Sector, Reallocated_Sector_Ct, Seek_Error_Rate, are all 0.  Extended offline
+tests are run regularly and have all completed without error.
+
+I've tried to scrub on multiple hosts with varying kernels and btrfs-progs
+
+1. Original host was Debian Buster on a backports kernel:
+   5.4.0-0.bpo.4-amd64 #1 SMP Debian 5.4.19-1~bpo10+1 (2020-03-09) x86_64 GNU/Linux
+
+   Started with stock btrfs-progs 4.20.1-2, then tried the package from backports,
+   btrfs-progs 5.2.1-1~bpo10+1
+
+2. Second host was Ubuntu 18.04 with a mainline kernel:
+   5.6.7-050607-generic #202004230933 SMP Thu Apr 23 09:35:28 UTC 2020 x86_64 GNU/Linux
+
+   Only tried stock btrfs-progs here: 4.15.1-1build1
+
+   Disk is connected via a USB to SATA adapter.
+
+3. Third system is a stocket Ubuntu 18.04
+   4.15.0-99-generic #100-Ubuntu SMP Wed Apr 22 20:32:56 UTC 2020 x86_64 GNU/Linux
+
+   With btrfs-progs 4.15.1-1build1.
+
+At this point is there any hope of recovering the data?  If not, is it worth trying to do a
+repair with `btrfs check`, or anything else?  Or should I just go ahead and re-format the disk?
+
+Any help is much appreciated.
+
+Thanks,
+Jinn
