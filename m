@@ -2,24 +2,24 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D152F1C4ACF
-	for <lists+linux-btrfs@lfdr.de>; Tue,  5 May 2020 02:02:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E92F41C4AD0
+	for <lists+linux-btrfs@lfdr.de>; Tue,  5 May 2020 02:02:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728297AbgEEACh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 4 May 2020 20:02:37 -0400
-Received: from mx2.suse.de ([195.135.220.15]:38706 "EHLO mx2.suse.de"
+        id S1728329AbgEEACj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 4 May 2020 20:02:39 -0400
+Received: from mx2.suse.de ([195.135.220.15]:38722 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728223AbgEEACh (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 4 May 2020 20:02:37 -0400
+        id S1728223AbgEEACj (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 4 May 2020 20:02:39 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id D5326AF01
-        for <linux-btrfs@vger.kernel.org>; Tue,  5 May 2020 00:02:37 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id A8DABAEE7
+        for <linux-btrfs@vger.kernel.org>; Tue,  5 May 2020 00:02:39 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v4 01/11] btrfs-progs: check/lowmem: Lookup block group item in a seperate function
-Date:   Tue,  5 May 2020 08:02:20 +0800
-Message-Id: <20200505000230.4454-2-wqu@suse.com>
+Subject: [PATCH v4 02/11] btrfs-progs: block-group: Refactor how we read one block group item
+Date:   Tue,  5 May 2020 08:02:21 +0800
+Message-Id: <20200505000230.4454-3-wqu@suse.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200505000230.4454-1-wqu@suse.com>
 References: <20200505000230.4454-1-wqu@suse.com>
@@ -30,123 +30,99 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-In check_chunk_item() we search extent tree for block group item.
+Structure btrfs_block_group has the following members which are
+currently read from on-disk block group item and key:
+- Length
+  From item key.
+- Used
+- Flags
+  From block group item.
 
-Refactor this part into a separate function, find_block_group_item(),
-so that later skinny-bg-tree feature can reuse it.
+However for incoming skinny block group tree, we are going to read those
+members from different sources.
+
+This patch will refactor such read by:
+- Refactor length/used/flags initialization into one function
+  The new function, fill_one_block_group() will handle the
+  initialization of such members.
+
+- Use btrfs_block_group::length to replace key::offset
+  Since skinny block group item would have a different meaning for its
+  key offset.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- check/mode-lowmem.c | 74 ++++++++++++++++++++++++++++-----------------
- 1 file changed, 47 insertions(+), 27 deletions(-)
+ extent-tree.c | 36 +++++++++++++++++++++++++++---------
+ 1 file changed, 27 insertions(+), 9 deletions(-)
 
-diff --git a/check/mode-lowmem.c b/check/mode-lowmem.c
-index 821ebc57c8ed..dbb90895127d 100644
---- a/check/mode-lowmem.c
-+++ b/check/mode-lowmem.c
-@@ -4499,6 +4499,50 @@ next:
- 	return 0;
+diff --git a/extent-tree.c b/extent-tree.c
+index bd7dbf551876..5fc4308336dd 100644
+--- a/extent-tree.c
++++ b/extent-tree.c
+@@ -172,6 +172,7 @@ static int btrfs_add_block_group_cache(struct btrfs_fs_info *info,
+ 	struct rb_node *parent = NULL;
+ 	struct btrfs_block_group *cache;
+ 
++	ASSERT(block_group->length != 0);
+ 	p = &info->block_group_cache_tree.rb_node;
+ 
+ 	while (*p) {
+@@ -2630,6 +2631,27 @@ error:
+ 	return ret;
  }
  
-+/*
-+ * Find the block group item with @bytenr, @len and @type
-+ *
-+ * Return 0 if found.
-+ * Return -ENOENT if not found.
-+ * Return <0 for fatal error.
-+ */
-+static int find_block_group_item(struct btrfs_fs_info *fs_info,
-+				 struct btrfs_path *path, u64 bytenr, u64 len,
-+				 u64 type)
++static int read_block_group_item(struct btrfs_block_group *cache,
++				 struct btrfs_path *path,
++				 const struct btrfs_key *key)
 +{
++	struct extent_buffer *leaf = path->nodes[0];
 +	struct btrfs_block_group_item bgi;
-+	struct btrfs_key key;
-+	int ret;
++	int slot = path->slots[0];
 +
-+	key.objectid = bytenr;
-+	key.type = BTRFS_BLOCK_GROUP_ITEM_KEY;
-+	key.offset = len;
++	ASSERT(key->type == BTRFS_BLOCK_GROUP_ITEM_KEY);
 +
-+	ret = btrfs_search_slot(NULL, fs_info->extent_root, &key, path, 0, 0);
-+	if (ret < 0)
-+		return ret;
-+	if (ret > 0) {
-+		ret = -ENOENT;
-+		error("chunk [%llu %llu) doesn't have related block group item",
-+		      bytenr, bytenr + len);
-+		goto out;
-+	}
-+	read_extent_buffer(path->nodes[0], &bgi,
-+			btrfs_item_ptr_offset(path->nodes[0], path->slots[0]),
-+			sizeof(bgi));
-+	if (btrfs_stack_block_group_flags(&bgi) != type) {
-+		error(
-+"chunk [%llu %llu) type mismatch with block group, block group has 0x%llx chunk has %llx",
-+		      bytenr, bytenr + len, btrfs_stack_block_group_flags(&bgi),
-+		      type);
-+		ret = -EUCLEAN;
-+	}
++	cache->start = key->objectid;
++	cache->length = key->offset;
 +
-+out:
-+	btrfs_release_path(path);
-+	return ret;
++	read_extent_buffer(leaf, &bgi, btrfs_item_ptr_offset(leaf, slot),
++			   sizeof(bgi));
++	cache->used = btrfs_stack_block_group_used(&bgi);
++	cache->flags = btrfs_stack_block_group_flags(&bgi);
++
++	return 0;
 +}
 +
  /*
-  * Check a chunk item.
-  * Including checking all referred dev_extents and block group
-@@ -4506,16 +4550,12 @@ next:
- static int check_chunk_item(struct btrfs_fs_info *fs_info,
- 			    struct extent_buffer *eb, int slot)
- {
--	struct btrfs_root *extent_root = fs_info->extent_root;
- 	struct btrfs_root *dev_root = fs_info->dev_root;
- 	struct btrfs_path path;
- 	struct btrfs_key chunk_key;
--	struct btrfs_key bg_key;
- 	struct btrfs_key devext_key;
- 	struct btrfs_chunk *chunk;
- 	struct extent_buffer *leaf;
--	struct btrfs_block_group_item *bi;
--	struct btrfs_block_group_item bg_item;
- 	struct btrfs_dev_extent *ptr;
- 	u64 length;
- 	u64 chunk_end;
-@@ -4542,31 +4582,11 @@ static int check_chunk_item(struct btrfs_fs_info *fs_info,
- 	}
- 	type = btrfs_chunk_type(eb, chunk);
+  * Read out one BLOCK_GROUP_ITEM and insert it into block group cache.
+  *
+@@ -2642,7 +2664,6 @@ static int read_one_block_group(struct btrfs_fs_info *fs_info,
+ 	struct extent_buffer *leaf = path->nodes[0];
+ 	struct btrfs_space_info *space_info;
+ 	struct btrfs_block_group *cache;
+-	struct btrfs_block_group_item bgi;
+ 	struct btrfs_key key;
+ 	int slot = path->slots[0];
+ 	int ret;
+@@ -2660,14 +2681,11 @@ static int read_one_block_group(struct btrfs_fs_info *fs_info,
+ 	cache = kzalloc(sizeof(*cache), GFP_NOFS);
+ 	if (!cache)
+ 		return -ENOMEM;
+-	read_extent_buffer(leaf, &bgi, btrfs_item_ptr_offset(leaf, slot),
+-			   sizeof(bgi));
+-	cache->start = key.objectid;
+-	cache->length = key.offset;
+-	cache->cached = 0;
+-	cache->pinned = 0;
+-	cache->flags = btrfs_stack_block_group_flags(&bgi);
+-	cache->used = btrfs_stack_block_group_used(&bgi);
++	ret = read_block_group_item(cache, path, &key);
++	if (ret < 0) {
++		free(cache);
++		return ret;
++	}
+ 	INIT_LIST_HEAD(&cache->dirty_list);
  
--	bg_key.objectid = chunk_key.offset;
--	bg_key.type = BTRFS_BLOCK_GROUP_ITEM_KEY;
--	bg_key.offset = length;
--
- 	btrfs_init_path(&path);
--	ret = btrfs_search_slot(NULL, extent_root, &bg_key, &path, 0, 0);
--	if (ret) {
--		error(
--		"chunk[%llu %llu) did not find the related block group item",
--			chunk_key.offset, chunk_end);
-+	ret = find_block_group_item(fs_info, &path, chunk_key.offset, length,
-+				    type);
-+	if (ret < 0)
- 		err |= REFERENCER_MISSING;
--	} else{
--		leaf = path.nodes[0];
--		bi = btrfs_item_ptr(leaf, path.slots[0],
--				    struct btrfs_block_group_item);
--		read_extent_buffer(leaf, &bg_item, (unsigned long)bi,
--				   sizeof(bg_item));
--		if (btrfs_stack_block_group_flags(&bg_item) != type) {
--			error(
--"chunk[%llu %llu) related block group item flags mismatch, wanted: %llu, have: %llu",
--				chunk_key.offset, chunk_end, type,
--				btrfs_stack_block_group_flags(&bg_item));
--			err |= REFERENCER_MISSING;
--		}
--	}
- 
- 	num_stripes = btrfs_chunk_num_stripes(eb, chunk);
- 	stripe_len = btrfs_stripe_length(fs_info, eb, chunk);
+ 	set_avail_alloc_bits(fs_info, cache->flags);
 -- 
 2.26.2
 
