@@ -2,136 +2,168 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9C871C5115
-	for <lists+linux-btrfs@lfdr.de>; Tue,  5 May 2020 10:48:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC3F71C5168
+	for <lists+linux-btrfs@lfdr.de>; Tue,  5 May 2020 10:55:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728827AbgEEIrX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 5 May 2020 04:47:23 -0400
-Received: from esa2.hgst.iphmx.com ([68.232.143.124]:39663 "EHLO
-        esa2.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725915AbgEEIrV (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 5 May 2020 04:47:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1588668452; x=1620204452;
-  h=from:to:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=mYyjbMGVvKAkvNpeYzGwdAzPW+mk83Y8ZIeRfo1vCnM=;
-  b=CB57/aLXYMtBRKwN9aNNBKc5XHcBMqJ5kr5B98oT7611Y0wsAleyw1Sq
-   xquzKKy39o3nAlOIQDDBKh8HYrMl2JHXTY1ZBjHVQ03M7HoRGAe19VRfE
-   pI4v+QNQcFUTdAbPwhXfqpgKM/dm0CJGmQLBpR/aIbR10FCvoSBpCuUba
-   DSfW84mExERo+QlS//KpC3whaYvrHN0/3NIVRdul1iJhwIsVyP+FWx1qw
-   p6tO2HirQ6Lrd/IoE4slp2Wd6Q7A2LQHdTO6vlqFipcm9YplkoN/xvweD
-   6iTEhrpC0Pi45vnonOBYbcfC7h2PqiB/9rBOKfP4Qnx+MEzg4ast3AkMU
-   w==;
-IronPort-SDR: TiJNP4NONy8WKkN+09OHhVv3qxxQez6TgSzQBCkScOxUSCO4qZrIDFwr8dySfwNrXT7R8mlFPg
- 7VatsQAtXj5fg04AYQHHYSjYneTN7/NCFW2towIPZdkDaPULvM8zj0p153rvpT0ta0DlIuOCRa
- CrbUiA0ECNwahIMIM2AaDY+uBHuvnhDwvmJDEfzJM3bcws9cN9u72GdmmaaPRWtauqMO3/1SRG
- 97UP7zAnhV5Vf8UCwNHF2kma30mH99anI9pzKhuTJ3ZY2LOC7bjg/p+eMmyyulUNunsT6mG4ee
- jlY=
-X-IronPort-AV: E=Sophos;i="5.73,354,1583164800"; 
-   d="scan'208";a="239560785"
-Received: from mail-mw2nam10lp2109.outbound.protection.outlook.com (HELO NAM10-MW2-obe.outbound.protection.outlook.com) ([104.47.55.109])
-  by ob1.hgst.iphmx.com with ESMTP; 05 May 2020 16:47:31 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=UkMgRMsJC3C9wOe5v8AZB75gUL2xQCOxwES89SHomzJa9RwrzpamXIiPCdsCKpMWi6XVKnz1tjePKFh+ij0UpQHySFCKlVJAXo3vEvkUmoTmyyrlMVxAWeCgFA/1ufNzt3owqPBlsbIJn03MP+NLHWwoT53b4oO6eqVG0HtTkfOpzpH6xLQJTZ6tWikZ18GtLVJKFDht7xghrw49kWewwK1Ge5DkNYKi177+jRjHjOW44/jqxFP88g6E8gSjjyci/p+da5NcG0dT3IQD7QcwtN4gaktre6bHsueJ2+juxARBt/GBRtNqc1TmROw1TKaazGuaTdltgKn4F/MjOMIOAA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pu0ihHaz9Ji7aXtVqTYjEZS8QOBBhnDuiNBDZqn/5R8=;
- b=darTtJUPA+EJ8JYw395CgFDG3nFv5fZjoMI5yeKxzVTo40J1F3IBepxSG37I0F/2PbaVrSwtZY6hJXtVOg6KByr4APY1oRm/vUeIqTeVJTk3fmJzrDDtcSRg50ueRlpfVp3c+kDKS+OLjOzSv+0qXv8k0ga4rtbxj0lG15c23AeBood8satfTKthIOafGpXs8P0n4me+eYnUs6/bnckqQV9X8tYrDhEU8DmJME8ZedyGjURwZzIQJbH3yXq+l6v3/fR3ZM4UR/cbd6gjPHFQfkgtnUcGrSqEj0ge5p7tVxtLQfx+c+wzk5EXgatyaOxCA6b4pW62h8q1JF9vJS1/gQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pu0ihHaz9Ji7aXtVqTYjEZS8QOBBhnDuiNBDZqn/5R8=;
- b=J8B3tNuG3fizQKxlsEHNN+M8euYIoHK84QjGaernsmuFr2+DcHNblZjJn8C4ZgavRq1SkrJVksPZTA91G2SUsMy0oTdmrya9OMf5YoI9+qsZ/o/YNvONMI+AhwgpVBlh7UcCTwHeC1YI1dX7nEKGY41bayjlYFdjKOvJOxtXMck=
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
- (2603:10b6:803:47::21) by SN4PR0401MB3600.namprd04.prod.outlook.com
- (2603:10b6:803:46::31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2979.26; Tue, 5 May
- 2020 08:47:14 +0000
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::9854:2bc6:1ad2:f655]) by SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::9854:2bc6:1ad2:f655%4]) with mapi id 15.20.2958.029; Tue, 5 May 2020
- 08:47:14 +0000
-From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To:     Qu Wenruo <wqu@suse.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+        id S1728268AbgEEIz4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 5 May 2020 04:55:56 -0400
+Received: from mout.gmx.net ([212.227.17.21]:39411 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725766AbgEEIzz (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 5 May 2020 04:55:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1588668946;
+        bh=4Uoxk4OxOAyppIn4Ph8M+HaeWmEBs0uQp7RWueyq15c=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=fMMEGeIcafI26az/xAYTamAkm7pYb60EVdeetVgD24PgInY0d7pfWzgo2Ltvz0bq3
+         V8pGDO654Myq1CbrPqP6wIePxGFjgDWlglB95qPR5up5Jis4pO5IVJYdYAIsjtuvi5
+         /SQ/YD9AZrcQ/eO6N33o7bYJ+C20VTyzUtJlNhpQ=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1N79yG-1j4ZzB3jQK-017T0d; Tue, 05
+ May 2020 10:55:46 +0200
 Subject: Re: [PATCH v4 3/7] btrfs: block-group: Refactor how we delete one
  block group item
-Thread-Topic: [PATCH v4 3/7] btrfs: block-group: Refactor how we delete one
- block group item
-Thread-Index: AQHWIm/wBSuie6ZMzUeAbwU/sq/ooQ==
-Date:   Tue, 5 May 2020 08:47:14 +0000
-Message-ID: <SN4PR0401MB35980F5B55AB37C71E789C1D9BA70@SN4PR0401MB3598.namprd04.prod.outlook.com>
+To:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        Qu Wenruo <wqu@suse.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
 References: <20200504235825.4199-1-wqu@suse.com>
  <20200504235825.4199-4-wqu@suse.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: suse.com; dkim=none (message not signed)
- header.d=none;suse.com; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [129.253.240.72]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 6eac70d3-6b9d-48a5-b839-08d7f0d0e8d8
-x-ms-traffictypediagnostic: SN4PR0401MB3600:
-x-microsoft-antispam-prvs: <SN4PR0401MB360058791D1783938C4476479BA70@SN4PR0401MB3600.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:8273;
-x-forefront-prvs: 0394259C80
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: x+QMiHRB9TO1ghbrtnPFcghx4DQe8s/Y+MH8s//UDmVB+DK7hfvIb00bOJjxDCXwzRR+24nLW1q9izK9822Yxb2s2PH9m3ASjbNIddUO4tfsDiwhK20/h8uVzD445z9BW2vIwH2g7M0xB+5nL1FIZocVBHBfthCQ29ORbTRiP06w0GG9DTB6UPG6n9dYsLSZKPLdlMoUVzJRyvvyKcdWEjo32+q5bR9xJjdOZIoLgJFlLoiuuTTRM4IJDgYOkQJhz58ToSBIeqPS9q+jsIpzJYw3AY7LqYRPzpGQRRX8vs91K3JgyZabMUNQC17aGYBXykWGKmf4XvRsjDuNqgIbrsZvQrKmarhQ9Bk95MFBPAYh3bT0jNggH+vjCEQrI63ee6sjtefZ8Bnu5cwrp0jyusbkhpEnZn5xS6nwVxYHeBjoCRGUZgQXsysFJ0Nhz8jfSL91FRE5ny/9NTfA5c93QMmspauP5+aFSWetKElkESXw705ICLUANytVqn3UBvDEwl6YfuToe8JVaSxNI8UbmA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR0401MB3598.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(136003)(396003)(376002)(346002)(39860400002)(366004)(33430700001)(33440700001)(8936002)(8676002)(86362001)(55016002)(33656002)(9686003)(478600001)(7696005)(71200400001)(186003)(2906002)(53546011)(6506007)(26005)(4744005)(52536014)(5660300002)(66446008)(64756008)(66556008)(66946007)(66476007)(91956017)(76116006)(316002)(110136005);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: 8G07Rop/QqWJzj2iAdf4oOr14MkTUFbKyrbrlXSaQCEYLkkl05jsdJQ8vkZ3aGDF7waq6Ys/gVdSypVd/qHS4dFkM3QnY7XX8K02oc1FYdtUQc0FiznKhRu4Q/79n0lnRr6TBsfwwqTD9Xf+4AuzWISpyMVVO4Q5QhO97GHHAovC5x0er09pfQhLVMBtABigQnBhL3FbKb0lOUcPM/4saNabFF9CW2SgdMGSdDiz/usHj2XCr0tCxpiSUlucOy93fJfu+wsBk31MZ5WBgT6ijOlKzjeIxo7sFNtOv8wgUNj6jU/EV3Mcv1Lh9KVa791WOql9BXEOhBl6LBXftCbCpPu6aGngal6pcy7YkV1XEfbtkjOfZPmD0MuwOWnjFnGe3EOIY2SBcPpeGZIocJv6HKUb+QSwCU++MyHGtPCrVOho2cCxsnf79TQs0LOXbc9ZsaYe4bw+zV9aUsXE6pLv3981e6UWOqSQExrOfEx8Q1yoWeLMASTdBOjqsPjlLSxsvPjZQfcMnkXWhY7i6tPJ2APUesfCAbsItBa1jXih7YxiTEQuXzOrIGbnFdSTKZRDcy/0GhXlxLcSmOh/bRbFWbjNvb46O6nQkcbn/ITEiK+bjaKZIGQ/QrpQojdu5apYY653dNKXTw7sCpf83BL7n/Txlj3fmT4MDlcukMKZ4t15NPAg2Nj6hxguNDVN9+yW/FzYWmyApNw948j4lXzl2SVsRjqMncBIK+68UsJm9UGnKTziPETTPCuXNV98t3ch1oKnOLx/qqD3cc1Ty9egJTGClb4VzDowR3vxS9x2Wms=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ <SN4PR0401MB35980F5B55AB37C71E789C1D9BA70@SN4PR0401MB3598.namprd04.prod.outlook.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
+ mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
+ PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
+ 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
+ D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
+ efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
+ ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
+ BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
+ 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
+ 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
+ EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
+ 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
+ ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
+ oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
+ fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
+ 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
+ ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
+ oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
+Message-ID: <bd019a91-406b-f913-1324-d4803f9b2223@gmx.com>
+Date:   Tue, 5 May 2020 16:55:42 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6eac70d3-6b9d-48a5-b839-08d7f0d0e8d8
-X-MS-Exchange-CrossTenant-originalarrivaltime: 05 May 2020 08:47:14.4856
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: pWgjnX4N0ubhvqZ3jrigNbZ7v6tsz6HLGrHMCroYcAnosnZ5PurZ1ysetVtiWSlqPdp7WxzADR2o9DcOHPoF7kGLs2lqmruA2tzulVnW/PY=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN4PR0401MB3600
+In-Reply-To: <SN4PR0401MB35980F5B55AB37C71E789C1D9BA70@SN4PR0401MB3598.namprd04.prod.outlook.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="UnIkOi0Y0R0L56UbHiv0Txvoj8Tb4CSCW"
+X-Provags-ID: V03:K1:ui3CJFJUxZp71zzQbT018ynmMhFHHH8ELhdWdMkvjt0QpgbJA10
+ HwqVKJxlpgKWlVX316XyKV1Ox9YUJtQvktvWE5zC4iqR01qZjg5fiQ7fUygdns8F9rkF6q7
+ fxOzysP3UFynejSDFM2SDKRj+zjIrdWrBhguDiC4WRQCRbc8Y27uu7JLAy1YIucyXxUtnP3
+ V1eFmCJjRzh2MSzRv/tsQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:HvKQo4mrD7k=:gsYC3tvd2294Mlv5U8G0P+
+ for4oRQU6h/qGj4uVDZJR4XxyMy1S7wCgxBTTxHF81TOXVTv6b1wEPT6xjDWqdnt7dDexSicA
+ jhw8s0BzNgiBFX1S6XxKCqoGSo+s35uHIwb7UC8tK4FMxE++M34oXqp2S/G22IVtiDpf3j1OT
+ 89oT0X3qKxY4fJg1iNX/AkVwdR4L3HNOnWITTf1ShWzsBGPJPEXBGMHGMYjBaoaVpN0+49Lb0
+ nw85GeK00S1ahqw3MhYWmxD2KRA84q7LVB2hO85tm2lWQwEEMBy2W6Dz+9whvRGKDWoZ40+wU
+ TweVQXUYnyEi42nRoBiNfibx0bEIGA+iHIRNcNzwx/8GhrrePAsJxdchu7uWVYYCnpEh/+R8C
+ +CVURKIy8/ZVJNkhuSURWV/u41KcPtQBen8Zcqm/dH5RTdPCgKMplJSxu2r0s/rDLTQ/7ir10
+ 5qkbaJW61KP61WmiWqIFCuQu2YWiXg5tKfdxeHyV251WWHBVZcMvzohnPWa5H+1yMeu1d2kzE
+ 7HIo4Q266HZXyQ/ycftG9KV+No7eRb8sVNkQ6JeBzANFaDZ4IdXZ7h6Cv1r69NZamyI8m4Q5S
+ AKa3RmqO4E/CKi/OFcKC4fXFWrlM/9te/ZJjx2XlJTOfYquqgT2D+xrEUtnDZQUxb5OYWjpov
+ qkvJjweOp5VnIz1Rj3dIK0kj0ufjJE0foLuobjgbTVkR7+wi94IYuCQCm0aU5jmWV+HNLRj0b
+ t3u8JHvnm9jm6/bcACjlGM0TbR7jwPd0Rz/+ZsqzRT0IJgNa5F8k3AxB0PBaYBvCqecRcamGM
+ GzaiXcxRX2mfjepiOR1qE7PysyXA8cuNliW9fqvhwgjE1sS9RqoS3A70ekUvfF+DjZroIK79a
+ aIaIs7W6P++Ouu35cZvBYj5c1gSHeKlhGgGQZa+6IUeZ4H4DN/xuLY8zO/68PmSUsSao3aya7
+ NBaUh4p98H57TG11uBVthjv4RANMN5sjEYskbtmDgIsBI7WrpD1VfOZCtnP0UzDva8b+K0Njk
+ rxmsg4LbNKoV251vV8yH7BeL6nfun+Ob8JUd8nwmI3Go5T3T90pZ37QwIhoXYBBrs5cF1w1HS
+ wZV4rW87Tt8uVUNXtpVHzfCm7kDUY//K7EFkf0bvN+vcP8uf04X+XnFtRnE7MnIsym3S7PnPa
+ 2IEZ7//CLE+PFEASo8KEZFrvCzEzr6yK2CJHtdkfqvqjOosMzTiGY68aaryxcgrlV7IV1peB1
+ ntflz3EXyAiUC8yet
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 05/05/2020 01:58, Qu Wenruo wrote:=0A=
-> When deleting a block group item, it's pretty straight forward, just=0A=
-> delete the item pointed by the key.=0A=
-> =0A=
-> However it will not be that straight-forward for incoming skinny block=0A=
-> group item.=0A=
-> =0A=
-> So refactor the block group item deletion into a new function,=0A=
-> remove_block_group_item(), also to make the already lengthy=0A=
-> btrfs_remove_block_group() a little shorter.=0A=
-=0A=
-I think this patch is useful even without the skinny_bg feature.=0A=
-=0A=
-> +static int remove_block_group_item(struct btrfs_trans_handle *trans,=0A=
-> +				   struct btrfs_path *path,=0A=
-> +				   struct btrfs_block_group *block_group)=0A=
-> +{=0A=
-> +	struct btrfs_fs_info *fs_info =3D trans->fs_info;=0A=
-> +	struct btrfs_root *root;=0A=
-=0A=
-Tiny nitpick, why not:=0A=
-=0A=
-	struct btrfs_root *root =3D fs_info->extent_root;=0A=
-=0A=
-Like it was in brtfs_remove_block_group()?=0A=
-=0A=
-Anyways looks good to me,=0A=
-Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>=0A=
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--UnIkOi0Y0R0L56UbHiv0Txvoj8Tb4CSCW
+Content-Type: multipart/mixed; boundary="CwqZSZ1c8otnCSYCFYaLPS8LAWtMrK2Te"
+
+--CwqZSZ1c8otnCSYCFYaLPS8LAWtMrK2Te
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+
+
+
+On 2020/5/5 =E4=B8=8B=E5=8D=884:47, Johannes Thumshirn wrote:
+> On 05/05/2020 01:58, Qu Wenruo wrote:
+>> When deleting a block group item, it's pretty straight forward, just
+>> delete the item pointed by the key.
+>>
+>> However it will not be that straight-forward for incoming skinny block=
+
+>> group item.
+>>
+>> So refactor the block group item deletion into a new function,
+>> remove_block_group_item(), also to make the already lengthy
+>> btrfs_remove_block_group() a little shorter.
+>=20
+> I think this patch is useful even without the skinny_bg feature.
+>=20
+>> +static int remove_block_group_item(struct btrfs_trans_handle *trans,
+>> +				   struct btrfs_path *path,
+>> +				   struct btrfs_block_group *block_group)
+>> +{
+>> +	struct btrfs_fs_info *fs_info =3D trans->fs_info;
+>> +	struct btrfs_root *root;
+>=20
+> Tiny nitpick, why not:
+>=20
+> 	struct btrfs_root *root =3D fs_info->extent_root;
+>=20
+> Like it was in brtfs_remove_block_group()?
+
+That's mostly for the skinny_bg_tree (6th) patch, as in that patch,
+skinny_bg_tree feature goes to pick bg_root other than extent root.
+
+So I didn't initialize root here, but leaves it assigned the same timing
+as key.
+
+Thanks,
+Qu
+
+>=20
+> Anyways looks good to me,
+> Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+>=20
+
+
+--CwqZSZ1c8otnCSYCFYaLPS8LAWtMrK2Te--
+
+--UnIkOi0Y0R0L56UbHiv0Txvoj8Tb4CSCW
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl6xKg4ACgkQwj2R86El
+/qgGsQf/dZxgXz87wXraB8UnpSZkpU5kHjw5Npl55r/SpGF5B+Fv7gaIZCo/R6oZ
+iN+B8Us/Ef9TY0icXO3D9148paGuwrp3xtIGdPxy+Sp670pPbLp95GMAHJXZHzi2
+La9jkjektEOLYcGajOA4JRjtNcR6wEl1sK5Sjzvto9qXYh7zxWm3Fsirssvk8bcV
+1JdqOBa85uOCHFoDgMnVCJX8mtiov4pjAWmcx+48w1mDM1CiakUN0V9E/0/7PDt4
+JLeczzbElX3q633h1lJTPZHBNyOkym59nSZQnByyNILqpJ/iwbnxYP9U7dqtI41D
+9wVuu8f5+iFEM7fMW+oJFHMvczt53Q==
+=l9AR
+-----END PGP SIGNATURE-----
+
+--UnIkOi0Y0R0L56UbHiv0Txvoj8Tb4CSCW--
