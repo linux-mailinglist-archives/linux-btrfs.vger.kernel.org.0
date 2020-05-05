@@ -2,113 +2,82 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 049711C5DC3
-	for <lists+linux-btrfs@lfdr.de>; Tue,  5 May 2020 18:43:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FAFA1C5E48
+	for <lists+linux-btrfs@lfdr.de>; Tue,  5 May 2020 19:03:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729604AbgEEQm7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 5 May 2020 12:42:59 -0400
-Received: from mx2.suse.de ([195.135.220.15]:37080 "EHLO mx2.suse.de"
+        id S1729885AbgEERDk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 5 May 2020 13:03:40 -0400
+Received: from mx2.suse.de ([195.135.220.15]:44766 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728804AbgEEQm7 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 5 May 2020 12:42:59 -0400
+        id S1729553AbgEERDk (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 5 May 2020 13:03:40 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 24B7FABF4
-        for <linux-btrfs@vger.kernel.org>; Tue,  5 May 2020 16:43:00 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 60D8FAED5;
+        Tue,  5 May 2020 17:03:41 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id E3B13DA726; Tue,  5 May 2020 18:42:09 +0200 (CEST)
-From:   David Sterba <dsterba@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: Btrfs progs pre-release 5.6.1-rc1
-Date:   Tue,  5 May 2020 18:42:09 +0200
-Message-Id: <20200505164209.14680-1-dsterba@suse.com>
-X-Mailer: git-send-email 2.25.0
+        id 08F11DA726; Tue,  5 May 2020 19:02:50 +0200 (CEST)
+Date:   Tue, 5 May 2020 19:02:50 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Anand Jain <anand.jain@oracle.com>
+Cc:     dsterba@suse.cz, linux-btrfs@vger.kernel.org, dsterba@suse.com,
+        nborisov@suse.com, josef@toxicpanda.com
+Subject: Re: [PATCH 3/3] btrfs: free alien device due to device add
+Message-ID: <20200505170250.GU18421@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Anand Jain <anand.jain@oracle.com>,
+        linux-btrfs@vger.kernel.org, dsterba@suse.com, nborisov@suse.com,
+        josef@toxicpanda.com
+References: <20200428152227.8331-1-anand.jain@oracle.com>
+ <20200428152227.8331-4-anand.jain@oracle.com>
+ <20200430133111.GL18421@twin.jikos.cz>
+ <af735fb7-e03d-b143-5eef-5b1b32c283bd@oracle.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <af735fb7-e03d-b143-5eef-5b1b32c283bd@oracle.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi,
+On Sat, May 02, 2020 at 04:01:28AM +0800, Anand Jain wrote:
+>   Ah. I didn't notice that. Will fix.
+> 
+> > As there's NULL passed, 
+> 
+>   NULL is passed to the 2nd argument skip_device
+> 
+> > all stale devices will be removed from the list,
+> 
+>   No, It means it does not have any particular device to skip.
+>   Added device is already part of mounted fs_device list,
+>   the loop skips its check. So no need to skip_device.
+> 
+> > but we can remove just the device being added, no?
+> 
+>   It does exactly that.
+>   btrfs_free_stale_devices(device_path, NULL);
+> 
+>   It removes the device from all other fs_devices which are _unmounted_.
 
-this is a pre-release of btrfs-progs, 5.6.1-rc1.
+Right, I got it wrong.
 
-The proper release is scheduled to tomorrow, +1 day (2020-05-06).
+> > And before the whole
+> > operation starts, not after. 
+> 
+>   What if the add fails? Then we have to add scanned device back to avoid
+>   that mess. why not remove after we have successfully add the device
+>   to the mounted fsid.
 
-The hilight of this minor release is the warning about multiple block groups
-profiles, printed by several commands:
+As there's no synchronization, there will be either need for a rollback
+action or stale information after the change is permanent (device added
+to new filesystem) but no fs_devices update happens.
 
-  WARNING: Multiple block group profiles detected, see 'man btrfs(5)'.
-  WARNING:   Data: single, raid1
+The difference is that when the device is removed first, the rollback
+happens only in exceptional cases, when the commit fails.
 
-And the summary of 'fi usage' prints:
-
-  Multiple profiles:                 yes      (data)
-
-This might need some fine tuning, or more to be put to documenation but
-I think the current status is ok so let's get it out to get feedback
-eventually.
-
-Changelog:
-
-  * print warning when multiple block group profiles exist, update 'fi usage'
-    summary, add docs to maual page explaining the situation
-  * build: optional support for libgcrypt or libsodium, providing hash
-    implementations
-  * other:
-    * fixed, updated and new tests
-    * cleanups
-    * updated docs
-
-Tarballs: https://www.kernel.org/pub/linux/kernel/people/kdave/btrfs-progs/
-Git: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/btrfs-progs.git
-
-Shortlog:
-
-Alexandru Ungureanu (2):
-      btrfs-progs: docs: improved asciidoc syntax to fix rendering issues
-      btrfs-progs: docs: add example on deleting a subvolume
-
-Anand Jain (1):
-      btrfs-progs: tests: drop trailing slash from TEST_TOP path
-
-David Sterba (19):
-      btrfs-progs: remove obsolete fs_info::fs_mutex
-      btrfs-progs: move backref.[ch] to kernel-shared/
-      btrfs-progs: add more hash implementation providers
-      btrfs-progs: docs: clarify mount options
-      btrfs-progs: tests: enhance README
-      btrfs-progs: tests: add coverage for multiple profiles warning
-      btrfs-progs: remove unused function btrfs_check_for_mixed_profiles_by_path
-      btrfs-progs: rename helpers for multiple block group checks
-      btrfs-progs: unexport btrfs_get_string_for_multiple_profiles
-      btrfs-progs: simplify string dump of block group profiles
-      btrfs-progs: simplify string separator checks in sprint_profiles
-      btrfs-progs: reorder single to be first in multiple bg list
-      btrfs-progs: adjust multiple block group warning format
-      btrfs-progs: fix detection of multiple profiles when generating the strings
-      btrfs-progs: fi usage: list multiple profiles type
-      btrfs-progs: docs: update section about multiple block group profiles
-      btrfs-progs: tests: clean loop devices created by tests
-      btrfs-progs: update CHANGES for 5.6.1
-      Btrfs progs v5.6.1-rc1
-
-Goffredo Baroncelli (5):
-      btrfs-progs: add code for checking mixed profile function
-      btrfs-progs: add mixed profiles check to some btrfs sub-commands.
-      btrfs-progs: fi usage: add check for multiple profiles
-      btrfs-progs: add further checks for multiple profiles
-      btrfs-progs: docs: add section about multiple profiles
-
-Marcos Paulo de Souza (1):
-      btrfs-progs: tests: mkfs/018, fix check for truncate command failure
-
-Qu Wenruo (6):
-      btrfs-progs: remove extent_buffer::tree member
-      btrfs-progs: do proper error handling in add_cache_extent()
-      btrfs-progs: fix bad kernel header non-flat include case
-      btrfs-progs: tests: filter output for run_check_stdout
-      btrfs-progs: tests: introduce expand_command() to inject aruguments more accurately
-      btrfs-progs: remove the duplicated @level parameter for btrfs_bin_search()
-
+OTOH the time window between commit and removal happens each time. The
+ohly hope here is that the window is really short so there's practically
+zero chance of another process to jump in trying to use the device.
