@@ -2,70 +2,113 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 955611C592D
-	for <lists+linux-btrfs@lfdr.de>; Tue,  5 May 2020 16:23:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 049711C5DC3
+	for <lists+linux-btrfs@lfdr.de>; Tue,  5 May 2020 18:43:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729705AbgEEOWu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 5 May 2020 10:22:50 -0400
-Received: from mx2.suse.de ([195.135.220.15]:50992 "EHLO mx2.suse.de"
+        id S1729604AbgEEQm7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 5 May 2020 12:42:59 -0400
+Received: from mx2.suse.de ([195.135.220.15]:37080 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729503AbgEEOWt (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 5 May 2020 10:22:49 -0400
+        id S1728804AbgEEQm7 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 5 May 2020 12:42:59 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id DB7D0AD03;
-        Tue,  5 May 2020 14:22:50 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 24B7FABF4
+        for <linux-btrfs@vger.kernel.org>; Tue,  5 May 2020 16:43:00 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 56F0ADA726; Tue,  5 May 2020 16:22:00 +0200 (CEST)
-Date:   Tue, 5 May 2020 16:22:00 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Nick Terrell <terrelln@fb.com>
-Cc:     Chris Murphy <lists@colorremedies.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Subject: Re: supporting zstd fast levels on Btrfs
-Message-ID: <20200505142200.GT18421@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Nick Terrell <terrelln@fb.com>,
-        Chris Murphy <lists@colorremedies.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-References: <CAJCQCtQSevDB5kaGTSS1TfQKen+BY5krKvHUZc4MKVPZCypiPg@mail.gmail.com>
- <BBF3FE73-8797-4E4F-9802-984897A42AF1@fb.com>
+        id E3B13DA726; Tue,  5 May 2020 18:42:09 +0200 (CEST)
+From:   David Sterba <dsterba@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: Btrfs progs pre-release 5.6.1-rc1
+Date:   Tue,  5 May 2020 18:42:09 +0200
+Message-Id: <20200505164209.14680-1-dsterba@suse.com>
+X-Mailer: git-send-email 2.25.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <BBF3FE73-8797-4E4F-9802-984897A42AF1@fb.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, May 05, 2020 at 04:39:45AM +0000, Nick Terrell wrote:
-> > On May 4, 2020, at 6:31 PM, Chris Murphy <lists@colorremedies.com> wrote:
-> > 
-> > Looks like since zstd v1.3.4 there are five negative levels (also
-> > --fast levels), that looks like they'd be in the ballpark of competing
-> > with lz4. That might be useful even with some of the faster NVMe
-> > drives, ~2G/s.
-> > 
-> > Any idea if it's possible or even likely?
-> 
-> Zstd in the kernel would have to be updated to a newer version for this to be possible.
-> As zstd development slows down, I want to spend some time to update the version in
-> the kernel. But, I don’t expect to find the time to do this for some time.
-> 
-> After that there is a limitation in the number of bits required to store the compression
-> Level. Last time I looked there were 15 possible values. These naturally map to
-> compression levels 1-15. That isn’t necessarily set in stone, but the BtrFS folks would
-> could answer that better.
+Hi,
 
-The 4 bits for level are arbitrary for now, only for in-memory tracking
-and not stored on-disk. Also I think that 15 levels should be enough, so
-even if the number can be changed I don't see it as likely.
+this is a pre-release of btrfs-progs, 5.6.1-rc1.
 
-Possible improvements in the speed/ratio trade offs in the levels sound
-OK to me, the only constraint is to keep the default at 3 with more or
-less same performance/ratio. Let's say the level 1 implementation can be
-changed to the fast levels as mentioned above, as this still meets the
-user expectation of fast/lor-ratio outcome.
+The proper release is scheduled to tomorrow, +1 day (2020-05-06).
+
+The hilight of this minor release is the warning about multiple block groups
+profiles, printed by several commands:
+
+  WARNING: Multiple block group profiles detected, see 'man btrfs(5)'.
+  WARNING:   Data: single, raid1
+
+And the summary of 'fi usage' prints:
+
+  Multiple profiles:                 yes      (data)
+
+This might need some fine tuning, or more to be put to documenation but
+I think the current status is ok so let's get it out to get feedback
+eventually.
+
+Changelog:
+
+  * print warning when multiple block group profiles exist, update 'fi usage'
+    summary, add docs to maual page explaining the situation
+  * build: optional support for libgcrypt or libsodium, providing hash
+    implementations
+  * other:
+    * fixed, updated and new tests
+    * cleanups
+    * updated docs
+
+Tarballs: https://www.kernel.org/pub/linux/kernel/people/kdave/btrfs-progs/
+Git: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/btrfs-progs.git
+
+Shortlog:
+
+Alexandru Ungureanu (2):
+      btrfs-progs: docs: improved asciidoc syntax to fix rendering issues
+      btrfs-progs: docs: add example on deleting a subvolume
+
+Anand Jain (1):
+      btrfs-progs: tests: drop trailing slash from TEST_TOP path
+
+David Sterba (19):
+      btrfs-progs: remove obsolete fs_info::fs_mutex
+      btrfs-progs: move backref.[ch] to kernel-shared/
+      btrfs-progs: add more hash implementation providers
+      btrfs-progs: docs: clarify mount options
+      btrfs-progs: tests: enhance README
+      btrfs-progs: tests: add coverage for multiple profiles warning
+      btrfs-progs: remove unused function btrfs_check_for_mixed_profiles_by_path
+      btrfs-progs: rename helpers for multiple block group checks
+      btrfs-progs: unexport btrfs_get_string_for_multiple_profiles
+      btrfs-progs: simplify string dump of block group profiles
+      btrfs-progs: simplify string separator checks in sprint_profiles
+      btrfs-progs: reorder single to be first in multiple bg list
+      btrfs-progs: adjust multiple block group warning format
+      btrfs-progs: fix detection of multiple profiles when generating the strings
+      btrfs-progs: fi usage: list multiple profiles type
+      btrfs-progs: docs: update section about multiple block group profiles
+      btrfs-progs: tests: clean loop devices created by tests
+      btrfs-progs: update CHANGES for 5.6.1
+      Btrfs progs v5.6.1-rc1
+
+Goffredo Baroncelli (5):
+      btrfs-progs: add code for checking mixed profile function
+      btrfs-progs: add mixed profiles check to some btrfs sub-commands.
+      btrfs-progs: fi usage: add check for multiple profiles
+      btrfs-progs: add further checks for multiple profiles
+      btrfs-progs: docs: add section about multiple profiles
+
+Marcos Paulo de Souza (1):
+      btrfs-progs: tests: mkfs/018, fix check for truncate command failure
+
+Qu Wenruo (6):
+      btrfs-progs: remove extent_buffer::tree member
+      btrfs-progs: do proper error handling in add_cache_extent()
+      btrfs-progs: fix bad kernel header non-flat include case
+      btrfs-progs: tests: filter output for run_check_stdout
+      btrfs-progs: tests: introduce expand_command() to inject aruguments more accurately
+      btrfs-progs: remove the duplicated @level parameter for btrfs_bin_search()
+
