@@ -2,111 +2,240 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3A8C1C5196
-	for <lists+linux-btrfs@lfdr.de>; Tue,  5 May 2020 11:11:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 467C11C51E5
+	for <lists+linux-btrfs@lfdr.de>; Tue,  5 May 2020 11:27:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728238AbgEEJL3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 5 May 2020 05:11:29 -0400
-Received: from esa6.hgst.iphmx.com ([216.71.154.45]:12159 "EHLO
-        esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725915AbgEEJL2 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 5 May 2020 05:11:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1588669888; x=1620205888;
-  h=from:to:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=6Lk3ypvTxTv7+ivlnEjKjseLEtkcEK/MDUAoSZslokg=;
-  b=MwDcmXfxWOj9AtAH1RJd41jCNAoxvuqEzLJn01664OW6f5ysvivznmf5
-   TeI492InujVbbmBI+09Hesqn75gODFyNWjsVKUwyab/DwMfInEAwAyvRP
-   qUqkUszNmri71XWIlFFvg/93QeYytNhFITnGek1VJJthg5A4KYcqcG6qG
-   l+uiQs0CLZCt2E4u/fbIt/ZTL4r0BXJmYRxcpVlH6f2ZvbtEDYqpDspOU
-   z1OZ5wZZCKXx5WF042TtdnhPawF4KsAUgJXmZLF0P6d7z+aQBYD7BdNNw
-   V/92aI3nK94wYGIdsnL8+PeJ78Z8DMmXiA3/kvpexASMv+jjIkNuCtdoV
-   A==;
-IronPort-SDR: soLYwzuS3Zl95VvUE9dJXZ596OYQoi63ISFC4ulhC76qsCHm1RNYnnCXQ5KNti5VaKXo4fl78M
- ZfX3E0Ndgy2s/W2d0wEPs80aQIfkeXWjbYq4ezlFAmHOdWtgCadMTA11e1o+ok/BhSIMnxnWAu
- QLulR01KvZLfceVwh1JDSZlPMcP2+JUDRa7yvknq67nXb+iOPNhzppmkV4H8TD0G249w9hxAh1
- lLoH9c5dFA9sGue9YdKFth3QbS8QrOD15ZY/zvllntnU15ekTwPBs6E4qO4SsoI+Re1VI2acg0
- MH0=
-X-IronPort-AV: E=Sophos;i="5.73,354,1583164800"; 
-   d="scan'208";a="138371238"
-Received: from mail-bn7nam10lp2105.outbound.protection.outlook.com (HELO NAM10-BN7-obe.outbound.protection.outlook.com) ([104.47.70.105])
-  by ob1.hgst.iphmx.com with ESMTP; 05 May 2020 17:11:27 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=D/al85rNRyy1pjw0vB2C/nPrD20JDeN56mqTgwRj2c5Tl4LqCdnfUyNK75T0+wVlb4GCLSiCci1ox2J+4Thk0mqv6hTQD2ht9cEbkevCMtYbyEN+XHV7QQM+4kkr9oYXffMZ9klHH0GAA/4Pg8bxuIOYoQyNTRV++zWAbPoSjxPRDPgyK1dtaAXyZutUQmYKAJMS1dCW62B/uDaKzyqHObqxG56mzHdRGL/3BsHugKcp4rxc/I+EkHnR9JSBgprM6nch+w6PlbzQjaZNBB53LkyTM4mK4hsWiUe7OEY3G3n/jTCwKp7iY6QXhEzFCyGaOeWnHGFr3i92qAZyG1NcLw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6Lk3ypvTxTv7+ivlnEjKjseLEtkcEK/MDUAoSZslokg=;
- b=Dfdcz93bf5Fns947hBAWw8LrY57M4guo1fe9HD7F0ffOxLfZ01U641KxVaaHqvb9bzA1pqZ5uIctnOjVlan6ykGK6IMLblcDnXbmP3YqYl5AVBMg2eLsT1qNzJoU0Lnk+TKf76x12ITQZZmbNyvpYcPVdWZ8Zxq2Sna+vq042UBzEbDs7T3eewoc4sAM80mEBM55SmQshwtvXUaHmWl8ybU5iHH+tCbF3h9rbb7R0iI3K1ccHJq1FJO1IENWya7jnEZeoH290gtxbgdpDCIsjqsR6q25eKc4CMHsaY7ZXqAWfW1ErtK1YqtDPK/IPTSoUiOq6Jt7hyF7JkTzXUuIrw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6Lk3ypvTxTv7+ivlnEjKjseLEtkcEK/MDUAoSZslokg=;
- b=uHu19DAbje/QJrLL1qwnu7GmdJSOE/OpSNORtaXKM0gyW8NCNTfouFOij3fVN/r6LZy28M59N3XZP35+4MuRzlHYO7MbI8avMxqx2XWZ+0GxTFUktCKIFBtRNPnvcEn1ZWyzz4Iyt09j3oxizZewMp4d/y9ahX2BIGw7Iu8emOc=
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
- (2603:10b6:803:47::21) by SN4PR0401MB3677.namprd04.prod.outlook.com
- (2603:10b6:803:45::16) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2958.21; Tue, 5 May
- 2020 09:11:26 +0000
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::9854:2bc6:1ad2:f655]) by SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::9854:2bc6:1ad2:f655%4]) with mapi id 15.20.2958.029; Tue, 5 May 2020
- 09:11:26 +0000
-From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To:     Qu Wenruo <wqu@suse.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH v4 5/7] btrfs: block-group: Rename write_one_cahce_group()
-Thread-Topic: [PATCH v4 5/7] btrfs: block-group: Rename
- write_one_cahce_group()
-Thread-Index: AQHWIm/ziLeF/85vLUaVux64UGn+OA==
-Date:   Tue, 5 May 2020 09:11:26 +0000
-Message-ID: <SN4PR0401MB35983D96B103B9734C0EBAB89BA70@SN4PR0401MB3598.namprd04.prod.outlook.com>
-References: <20200504235825.4199-1-wqu@suse.com>
- <20200504235825.4199-6-wqu@suse.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: suse.com; dkim=none (message not signed)
- header.d=none;suse.com; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [129.253.240.72]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 1a0346f4-9608-4559-886d-08d7f0d44a3f
-x-ms-traffictypediagnostic: SN4PR0401MB3677:
-x-microsoft-antispam-prvs: <SN4PR0401MB36778C3615A1AEC221E67F4E9BA70@SN4PR0401MB3677.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:2449;
-x-forefront-prvs: 0394259C80
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: MlS3ixYaVOS/dgw76djvAX95nDyjdCMDoFIeNJdnx/X9J/mRG9oUhsMllojere1R6b88+c2oKroTCL0TKWapkHhysWg96N5Wx1q8QduNVkVovesh7Ku07DDlRqynkDMX1Jr5LiEdbGiXG/AZPcj3kDi1kAYl5a3NlDjXjSjDPnLKLACEAlNwiijXUNqiyb3T7hbuLwJw3DL3unimiKZMKLmFEJ+x3WGCsg8d/5LYQvP4ybo8z77dMv+tct4X9qndlF6Uylk9wPaqoWGsKu/f6zOmojJKuL6i/WQjgDopmYeN/QE5B4puJgZjRn0TKAcdK9jH7RDXNwbL8WLYtEIeA8O70DN5zmL6W5IsjTPioVrziUrofOykjJYXCQxQ1r2UdyPXBLlUi2nmdtJ3UpaM+QXbZRN60HytOiHRUAjMVhB5kwE4HxW7nxd1Uz8Cpr3rnkx6mq27zJ8t1JqpbRkjRtQUDULjOznknA/Qfsny7OKJx7xXUVDWokhzIPEaC+scyxM8JRBrNHyBS0Ony9WnBg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR0401MB3598.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(136003)(39860400002)(346002)(376002)(396003)(366004)(33430700001)(7696005)(5660300002)(6506007)(91956017)(76116006)(9686003)(52536014)(66476007)(55016002)(66446008)(66946007)(66556008)(64756008)(558084003)(186003)(26005)(71200400001)(478600001)(86362001)(8936002)(110136005)(33440700001)(8676002)(33656002)(316002)(2906002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: j5ojXOulcFYfJxfAZkJUUupD9u1LpX3qTR4/97UFu9QXj1O9jC8MjnLYyHh+mqlFJQAmAhGR0kge3VjHS1JF22VU4DM/sDNQ0ruwReGln/pfP5d+DO2TT6ORwMR3pR7pj8mAKSDozDIVNbUmm3AOko0jXUQoCgiwy9hjoljX5ZymlQ1qJPszi6UpuCcKK9DygomjgpEg+zlv/jzgBpc3eRIXaTBpfgHkgsolBLkqZH5fsh1TJMASx7a2xHTAWecrRBRFzbCi/UmPOC3hYIQ9EiTj5lgCt19UFfOo3IoZndVWAXhKpHdQh9q4DJLAZYT1gOBG4+exjdkIxrct1z43JJHJXElX+xh0tIBfvE9aPGiyM/xieIYucMhlgyOo9ZSE60g9yJXRelVdYzjXeVfOBtXWuI20vKU5Yapnit2HfelqtKc2Zbq4yx0kaCCQXNDutR7+E2USPwfDsdIaKwrZMRsSh8FtAwiZu3WlGgUU951uoGY85ySTHJSMLSV5tft9fFCTSKvsPAIjHyxSGi03LxECCUDTUR9qy8FHIPGdWRukMPGz33VfRbE53BcfqkdEJ/qXzXKBerRp0Yhkw78vXYLd+vMpTVZbzzfe8Lsn4eQb9ELsGdFkFEMzrKKmQ+RjcwchCgSaQzzmh03KZMBywvKPKwYjDzK4inCmeHTqh+xv0uQjPdAf31VUyEDz20NCbCL/rOPOTRbzS8hnog6HowleMgqZJPzVpDwNdMPDHoNcWl/NpN2HidlmHc11PkTk451ETOvk2H0YQMaxCCnMhWN3cGtORKreBBarIt3HqsY=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1728627AbgEEJ1F (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 5 May 2020 05:27:05 -0400
+Received: from mout.gmx.net ([212.227.17.20]:34969 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728544AbgEEJ1E (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 5 May 2020 05:27:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1588670809;
+        bh=cPCHWML2APDGJaIqr+B8WZ7OTWu9fHRQfl42v8zgecc=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=L1xQ9fyEYJLvy8mzJVEj5DJc5d3pDY4aoz0h5lxos3Tsn2BuB+Omc/UKKzxF/+YJ7
+         wE3tqWG3/Fy8IMwUXOROSeUSPsP5X09dq8cdCVtTBIkAvAPzG9IRSPyWb8Dm0L/kdV
+         B/pGbq6UlhCBKp0j1KIclOYlGWzt/hK+onL6LM84=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MF3HU-1jKrEO1WNk-00FVBh; Tue, 05
+ May 2020 11:26:49 +0200
+Subject: Re: [PATCH v2 1/2] btrfs: add authentication support
+To:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        Eric Biggers <ebiggers@kernel.org>
+Cc:     Johannes Thumshirn <jth@kernel.org>,
+        David Sterba <dsterba@suse.cz>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        Richard Weinberger <richard@nod.at>
+References: <20200428105859.4719-1-jth@kernel.org>
+ <20200428105859.4719-2-jth@kernel.org>
+ <20200501053908.GC1003@sol.localdomain>
+ <SN4PR0401MB3598198E5FB728B68B39A1589BA60@SN4PR0401MB3598.namprd04.prod.outlook.com>
+ <20200504205935.GA51650@gmail.com>
+ <SN4PR0401MB359843476634082E8329168A9BA70@SN4PR0401MB3598.namprd04.prod.outlook.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
+ mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
+ PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
+ 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
+ D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
+ efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
+ ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
+ BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
+ 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
+ 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
+ EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
+ 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
+ ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
+ oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
+ fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
+ 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
+ ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
+ oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
+Message-ID: <d395520c-0763-8551-ec80-9cde9b39c3cd@gmx.com>
+Date:   Tue, 5 May 2020 17:26:41 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1a0346f4-9608-4559-886d-08d7f0d44a3f
-X-MS-Exchange-CrossTenant-originalarrivaltime: 05 May 2020 09:11:26.4036
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: AH9dgYJlDleAzBp/IuoRBSS7HKRVKAMiOdyCIBOgDs3d0DZYc2+zy9ChrxSKGDLGoAJ4xUFNEXUeBvhaUpM0pUAssC8vY8NXzYylhYQVZyQ=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN4PR0401MB3677
+In-Reply-To: <SN4PR0401MB359843476634082E8329168A9BA70@SN4PR0401MB3598.namprd04.prod.outlook.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="zYKK3JYJvbRUo4RLgvjOL0AJtB39E83Vg"
+X-Provags-ID: V03:K1:OwSaLDi+eTYa6MtDsML6bcUNizsqaks+95nLKGtbPA8leaT5kdn
+ 53LO33DPQPDEgVSuWk6CFRL3iYEs4rLxIxvGar262uf+SwvBckkAqhKv1QwbPNuqrz78w/2
+ oxDf4Vt0BprLsy1QsIp7daDLEo2dTy12J+GU+EOjHPKvE6uTQANMib++rhZHfhAdrUsNE6V
+ 4gqYwpId2Op95SPa2SAnw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:J9wiOGs+DEY=:jCdlp64Rer1YpUXUcNORXB
+ O1xoMSfUU4xs1O9kN+P8xx+gr5Z8ZWnD+khT3IkrbBLHQt/49Q6e710zJ+JJZjBXGvC/JddWY
+ aHYR7v9oDX3ACixn26bYJGRkH778qY87MBsKZP3tsd2dGpOIFN4VdW6ooC7fBie7lmoCimD4w
+ 0V7dfD+/toCvSD/04lBHCqGnRnpENaUY6Wjg/eg/a4CnW1HxNnFQLPd4rYiNCDE6EJpJBPeFD
+ lbi6Rga8cGY67qWVjJC0X8OSOO1AbI6eZr49/1q2EIM8ftb/cXKkytTMJvUCn4QwlxjvGdlZR
+ 6H4HQGLYZecxK3yXt/YZLZscEahB8HtFBM3m+G9lm0ZYZL6Pyxg1YoG9szRKZrtx+gEqzKAEj
+ VD4P4n9FFvosszFg7EljF5O2hilENhLntckG3hjuOjl+JSVUIUMDNx6ff9KfYssAIfu4s5fwC
+ 44feUaccOzhfkQ/ehKD6ohOxFs3Z4r7eToojUyZac2Mdo7AT5ZDk4W4T5LuxCPA626I8c+zwU
+ vvzRlic9kt+vsnN9w9QFhdYrTuyyCQibmngDdwiaohw2u9Asp2UwNDRy9kuw5xcf1tO3QpyFt
+ x2gnRezbLcQVCJlP/qlkrZWANLsyEVg0AYTPXgWmfQLORoL3ooAkYPVqIiRenUtDhH096Md4L
+ qYbbF8F1yhgXhvvZFw7RrFWnL7z76gm6xDCxEUe/lp1Iz3dUER/WimMTQE31LuEmdzp3njrQV
+ idsVikBFVcy8imPqYY6WKAX6sZ7WIBs8/IIoV1iaZF8ABTBozP3sYcXI++9vAcugIHsmcv74S
+ nZdjtyHQoT2+snwE98GSphcBV9857fV+c99z739MBDloBOQs3iYJxCtQjTh02JKB0Pq7QQ+m5
+ btHkcK8wVmXpG7ZQf9WvuixfWI6CZNr9AQJF0oLkfrvt75au8yVWATh2yLUvVYCxPyYMMwi6r
+ tXUK8/uU54/zB2ukj4nM4KwCgzwhedS3ZxHVuuImY+8hn7RPwoHV4AutCnkcR3fEpyh7KXGvN
+ nJ3WyXgcUrMfjFWQTsBICgcgMy0GMx7xhkh6VCYMuUF2ZB36INDqeXm7TvAgD+jebABya4gQz
+ VcEsn9JZ2Dv1P5LWrdiAj7HCWAzIsuYtz47mIRRpuYaersqabYspDAt34h4aTAdmpf+WXRoYJ
+ HsBzOoPAzLWyd2H4Nos7VACuim8on8Itzuc/ohkDYC5JvddmBZmpuEOlkCOCPr76pYVXLvBZx
+ pZFf1Xtjy19KxvbYp
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Looks good on its own as well,=0A=
-Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>=0A=
-=0A=
-Btw, you have a type in the Subject line s/cahce/cache/=0A=
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--zYKK3JYJvbRUo4RLgvjOL0AJtB39E83Vg
+Content-Type: multipart/mixed; boundary="FAlTnjRcEWkh2KrU0nYR3Oc9yIBUNRPwJ"
+
+--FAlTnjRcEWkh2KrU0nYR3Oc9yIBUNRPwJ
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+
+
+
+On 2020/5/5 =E4=B8=8B=E5=8D=884:11, Johannes Thumshirn wrote:
+> On 04/05/2020 22:59, Eric Biggers wrote:
+> [...]
+>=20
+>> But your proposed design doesn't do this completely, since some times =
+of offline
+>> modifications are still possible.
+>>
+>> So that's why I'm asking *exactly* what security properties it will pr=
+ovide.
+>=20
+> [...]
+>=20
+>> Does this mean that a parent node's checksum doesn't cover the checksu=
+m of its
+>> child nodes, but rather only their locations?  Doesn't that allow subt=
+rees to be
+>> swapped around without being detected?
+>=20
+> I was about to say "no you can't swap the subtrees as the header also=20
+> stores the address of the block", but please give me some more time to =
+
+> think about it. I don't want to give a wrong answer.
+
+My personal idea on this swap-tree attack is, the first key, generation,
+bytenr protection can prevent such case.
+
+The protection chain begins from superblock, and ends at the leaf tree
+blocks, as long as superblock is also protected by hmac hash, it should
+be safe.
+
+
+Btrfs protects parent-child relationship by:
+- Parent has the pointer (bytenr) of its child
+  The main protection. If attacker wants to swap one tree block, it must
+  change the parent tree block.
+  The parent is either a tree block (parent node), or root item in root
+  tree, or a super block.
+  All protected by hmac csum. Thus attack can only do such attach by
+  knowing the key.
+
+- Parent has the first key of its child
+  Unlike previous one, this is just an extra check, no extra protection.
+  And root item doesn't contain the first key.
+
+- Parent has the generation of its child tree block
+  This means, if the attacker wants to use old tree blocks (since btrfs
+  also do COW, at keeps tree blocks of previous transaction), it much
+  also revert its parent tree block/root item/superblock.
+  The chain ends at superblock, but superblock is never COWed, means
+  attacker can't easily re-create an old superblock to do such rollback
+  attack.
+
+  Also btrfs has backup super blocks, backup still differs from the
+  primary by its bytenr. Thus attacker still needs the key to regenerate
+  a valid primary super block to rollback.
+
+  But this still exposed a hole for attacker to utilize, the
+  usebackuproot mount option, to do such rollback attack.
+
+  So we need to do something about it.
+>=20
+> [...]
+>=20
+>> Actually, nothing in the current design prevents the whole filesystem =
+from being
+>> rolled back to an earlier state.  So, an attacker can actually both "c=
+hange the
+>> structure of the filesystem" and "roll back to an earlier state".
+>=20
+> Can you give an example how an attacker could do a rollback of the whol=
+e=20
+> filesystem without the key? What am I missing?
+
+As explained, attacker needs the key to regenerate the primary
+superblock, or use the usebackuproot mount option to abuse the recovery
+oriented mount option.
+
+The only attack I can thing of is re-generating the csum using
+non-authentic algorithm, mostly in user space.
+But it can be easily detected.
+
+Thanks,
+Qu
+
+>=20
+>> It very well might not be practical to provide rollback protection, an=
+d this
+>> feature would still be useful without it.  But I'm concerned that you'=
+re
+>> claiming that this feature provides rollback protection when it doesn'=
+t.
+>=20
+> OK.
+>=20
+> [...]
+>=20
+>> The data on disk isn't trusted.  Isn't that the whole point?  The file=
+system
+>> doesn't trust it until it is MAC'ed, and to do that it needs the MAC a=
+lgorithm.
+>=20
+> OK, will add this in the next round.
+>=20
+> Thanks,
+> 	Johannes
+>=20
+
+
+--FAlTnjRcEWkh2KrU0nYR3Oc9yIBUNRPwJ--
+
+--zYKK3JYJvbRUo4RLgvjOL0AJtB39E83Vg
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl6xMVEACgkQwj2R86El
+/qivTAf9E9rIR6vymjF3/2fHjkGINx4W66q1wSLzFZEYzSq4L1st/1nXq7tKemO5
+R/nrMnKUH92kYpb2vAIB8P69GBgpDYXeOwKgFNeQbf/sifR1WL9OfJi6oXLdtsju
+rQxq9LMU3lgo2UKrGprvm/bfe5INVz13EscM/7uMx8wkTgb39cZ4NWf9436LIXMJ
+pEfhNhxvpavmhVEqTcbrjxJ1GN5vy+lRnGDmEQ5KxeD70qGV2VzkKMHWz3tJaklu
+lYSp8kqQQBhxpGRyXIYRTze0ITijZd2PQucCDarQLpyw5RdEAfH4hOsBDmp6v9bd
+21gPmWhrcS59qCfhn0pp6/W3rP4BgA==
+=UDEK
+-----END PGP SIGNATURE-----
+
+--zYKK3JYJvbRUo4RLgvjOL0AJtB39E83Vg--
