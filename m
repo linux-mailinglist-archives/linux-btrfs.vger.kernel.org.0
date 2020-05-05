@@ -2,92 +2,125 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27FEC1C4DCB
-	for <lists+linux-btrfs@lfdr.de>; Tue,  5 May 2020 07:51:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 500D61C4F80
+	for <lists+linux-btrfs@lfdr.de>; Tue,  5 May 2020 09:46:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726367AbgEEFvl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 5 May 2020 01:51:41 -0400
-Received: from ipmail03.adl4.internode.on.net ([150.101.137.145]:60448 "EHLO
-        ipmail03.adl4.internode.on.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725320AbgEEFvl (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 5 May 2020 01:51:41 -0400
-X-Greylist: delayed 303 seconds by postgrey-1.27 at vger.kernel.org; Tue, 05 May 2020 01:51:39 EDT
-X-IronPort-Anti-Spam-Filtered: true
-X-IronPort-Anti-Spam-Result: =?us-ascii?q?A2BmCQCE/LBe/9y5pztmHgEBCxIMQIN?=
- =?us-ascii?q?xgUMyhE2Of4FkCJwDCwE8AQIEAQGGeiQ4EwIQAQEGAQEBAQEFBG2FYoYbgQs?=
- =?us-ascii?q?CJgI+LggBAYMignyzJ4EyiSyBQCJsKoxEGoIAgREnDAOEAYQygkWCYASZCpl?=
- =?us-ascii?q?HgTeBG4EDlw0jgkoBmlWvRCKBVjMaCBcZgyVPGA2QSwMXjjcvA2cCBggBAQM?=
- =?us-ascii?q?JWQEBkWsBAQ?=
-Received: from podling.glasswings.com.au ([59.167.185.220])
-  by ipmail03.adl4.internode.on.net with ESMTP; 05 May 2020 15:16:33 +0930
-Received: from dash ([192.168.21.15])
-        by podling.glasswings.com.au with esmtp (Exim 4.89)
-        (envelope-from <andrew@sericyb.com.au>)
-        id 1jVqPZ-00059z-8G
-        for linux-btrfs@vger.kernel.org; Tue, 05 May 2020 15:46:33 +1000
-To:     linux-btrfs@vger.kernel.org
-From:   Andrew Pam <andrew@sericyb.com.au>
-Subject: btrfs-progs reports nonsense scrub status
-Autocrypt: addr=andrew@sericyb.com.au; prefer-encrypt=mutual; keydata=
- mQGiBEPPxa8RBACcBTuSu02Fi+ZhvFj8wYJa8P2xF2djPveAkV5iuv/b1OTlzcdC7yJwNKq8
- STgXoe2C9orhZ+3lO0iIwCkZpYj3purc1CojYE0bFh8EAW85usWox+Nrqsb6JYaoJk0ekyfM
- gogjKGf7MUg4lDwfg1D6iiWJ0Dk6OZwARo9u97sqswCgwki1jozMbKx8LhkzbeNAonRxADED
- /2HcSy+OsR2byqdX2BbaZppXZJEzclQNR7BiSwTPVoOX0jcHY0Sn8rdBUlagSEhv4YJ4Tdwd
- QhPs3qcrFm2GQnStV19cLJ1DvO3TfLEikSetWotBv/6RanXRZRweRE4pm/zZMxX6+zcib+jb
- +UlFg7MSyu+z50g0Bf4b5xH6AW/DBACAsgsJaaD1lDOdFMK7jnUiYXI0Y+LfHJ6xOukYUNqC
- Yaxbw4Bk60DeP7hwUfVPMMxIJZdN+WsrtkijppJG6La9KqapYPu3ByapaLoIjtBOeTJfhcDN
- mcAqZaxDhZ6eIMi+IOyS6/2MK76aLEpYY+0+M8mzUZ3LXi/blYVbS7urobQkQW5kcmV3IFBh
- bSA8eGFubmlAZ2xhc3N3aW5ncy5jb20uYXU+iGEEExECACECGwMGCwkIBwMCAxUCAwMWAgEC
- HgECF4AFAkPPySICGQEACgkQGk9LI6KtAU50ZwCeJfVJEMTSK71XD+WR8z9stEhPovYAniEn
- wBEAHXMO4MlxJPMmnYJWG/rbuQINBEPPxbQQCADZy6E8nqM+1s3t1UaIKzGzF8PuA0R+/Zx3
- 5Uh4jHHoJyFt/uuJxyJzOrq9Ilz+fWXOrXK44Ga3wOQ6yR9tIhrGNoQ97Y2S5RSufjNVstS1
- otA0N3a6nUz44rAPwXfFhMKTlUjfUwuvQik3yEF1kyXEU7o78G/XG06M/9s1ur1k4hFvAfCE
- y/fXztx86bC5vlDq2r1MAwE+fMJG/Ok21OekdY0D3KrZ1kOi4kYgRoVIGlgfJE3OXi6W8Lko
- c/oO0UUtEoiKGGOBTewmU8N6G2F3OXiONnZIY+FD/NIe+3YAEWAIc5SoXQs4KCmNxaF6vxRQ
- STBOX2A9Y+LfY4lx5+HzAAMFB/9g0VGTdvnQvogs/0b+FdfvPVflwhbW9VMF12kWwgx9q0Gw
- xcWO8IJWlFQouam5u2QMVMKxsscphAPjWDYP8BVGWFx32/Z5XZnp2xOqjaFSG9BfbEqIUizL
- 9AEClL04eBKGmVrhPzr2d0Z7DgF5gxehVYZ7m9dW7heFnuiC+ZaYEGRvfyWsWsOihoDkbify
- Ms1RluUU23wKJFaZzafAX4caD9u3bIUaujKUGCh64nLkaxwmZD2QBw0T9jGCIssVCRHwQmTV
- 25eADYmSEwf3ONk4ljzfupTOpCLtNapGc3vZO84CQSv9bl3l24uBvVRWaqLJMO0NzAn+qbes
- U3w6WMBCiEkEGBECAAkFAkPPxbUCGwwACgkQGk9LI6KtAU59IACggRqLORG73pZUK1pRh02T
- 5kUwjTQAn1F0m2Mx72juiYwF0IKljJ7lR0TR
-Organization: Serious Cybernetics
-Face:   iVBORw0KGgoAAAANSUhEUgAAADAAAAAwBAMAAAClLOS0AAAALVBMVEUrHhk8LSRTQTZuVkmC
- UkaKalykaGZ3h7KmgG+ahH68lYWXn7mxmpTSqZ3CvLqleibHAAACZElEQVQ4y3XUPWvbQBgH8FOg
- Qzef3EKnEp+qIaOlGJzFi+Xg0YMFcoeMod/AFDpksMpxeHCSZhAYUxoo8mF16NylLYXUCG2F1uSW
- eCimJp+hz+nNctKesTH30/P87ySf0e1/Bsq/hZ4X/Qu+XxiEHNyH9blBsEoOorvwzSQVjAnRJtuw
- Mkk6MknhnGBSIQRiiF6ElZzNxlEBzpIuEKMSrG1gbaQXQz7GaiOHVd5GSpISw42cg0vlJ6TFC0NJ
- BOwuAaKZBmlkQGAKIwWrmrnv2K66l8KqUlFxCSFFo5T5jMchEpYyEqFS+bkQgge8qqVwI6ehoB4I
- ORYdNYUvGCswr3ORwImSA4KXzpICIU7QJIHTkoIVnaUFQoxQIwVopTi8AEcJVHFJ2QGAxUK3qTfK
- WlUhAYD6rsXEomt3snAAJMGtWW3xo+V0djKAxe4w7jf33rSDS3IxepjCLuyuzAJOx/RF4Pfo26cZ
- QMVjyPUpo8HPY/Y5u7tVqHhEYUELzgN4v4tSOEWK8ozG2wAIxK/sCS5RmeiUSfCDhRAfMljjJ4NW
- AvH9ivJnXn3wvhXvesGYCDYQjtAhAIRw65BynsMZLMqiVC7Jtdqc5z+4pYn0rsM453PP7s1nOawN
- pTaQMPW45403cLvENWoDuA6bTZ0CfC3VqQ0Z/BgGnRQqUJ26stdrAD/aAh6X+F2rPS0cnBWAbycl
- bFg8UbsAru3wQISzqAgf63xOu7YXhqG3dWr7tWHgD0yz53lbx/lP/+U4hNvRNMza1h/A737/U3h9
- 1d1vNnt3oR9eh65tO8N78CoMr2CT4wz+AgHlxhkkWxq2AAAAAElFTkSuQmCC
-Message-ID: <0d1cceb6-9295-1bdf-c427-60ba9b1ef0b3@sericyb.com.au>
-Date:   Tue, 5 May 2020 15:46:33 +1000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+        id S1728622AbgEEHqr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 5 May 2020 03:46:47 -0400
+Received: from esa3.hgst.iphmx.com ([216.71.153.141]:13185 "EHLO
+        esa3.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725833AbgEEHqp (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 5 May 2020 03:46:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1588664806; x=1620200806;
+  h=from:to:cc:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=sbx/u4ZTvzA0cK6Va53q3LNWpLrjLLXFzzh2z8Gu5tY=;
+  b=g9cD6T0+O5jE433VwiGeSh6uqxZpE4bBY00GsO/8PsdjLhFncFCDktu8
+   jzdwXt4QDX2dANj1mx7nmq3qISuMkmqOXfXcRTIzo7H7tEfdW5NVvUUux
+   R4Zuea77eyvPsAGMqKkd/WYBPGkLFG9iXzuxpTzqIuNQ4e8ci7yqj0ft2
+   hogPtGJ7LKKtd1qVclgyfLUCNqSsELaWwSH5UvGvhERD9FBZ/5bD1w1IF
+   NIhrJGOmLQu28LBoL2c6ufdqQg1+Wa8SpihGGyvwS/QtCvcWBm/ZS8NXR
+   1vMD3Gq0eXpjXgD3Pe7f9ScGIU4L0D9eI+enG04aY+9VTCwYklljCi0jK
+   g==;
+IronPort-SDR: YkC/YtCqJUvC6JaRWjQmRXrD/8ps8K1qb2wiyRNBuv6n4cKNKm7rqlnAopRy4H8CdmjX9HjivF
+ g/550R50LHY3lePX1UgWbk2mCkhpZwZqAljfzK72PTVvnU1I15on8q3L0OCaO2gc9wzqNfqXMO
+ ekrYTt7FDYGjcgwtq4bsQ+9Km4tMve52JDImVLvHgVqxz0q4oijx+SvZsGmvLnh6Qj94cVpY7E
+ 3iDFHxB9g306UAyzYVzUJddDDHae2lMyYCPzk4RuzU8Qfh5nNQcHDthDM9hqkepbck1NjA3T91
+ lCo=
+X-IronPort-AV: E=Sophos;i="5.73,354,1583164800"; 
+   d="scan'208";a="141280215"
+Received: from mail-dm6nam10lp2108.outbound.protection.outlook.com (HELO NAM10-DM6-obe.outbound.protection.outlook.com) ([104.47.58.108])
+  by ob1.hgst.iphmx.com with ESMTP; 05 May 2020 15:46:45 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=IzDBCmHssiUfSet/ffbajxNfO9vcgG9oJQ54a7wVPpcZDED/pyqg1KJq/MS87a2M9xIqQOM6O6V6rX3trKBD5J356tDL22Y+udqLsofag5u5ulEvhZ5W1FNUuNXeGH3qrDq1j/1FpK67aT2KS43LTJiocwzQa5UN7xB8fkwniaoErwl7tIntGHL/YVs55Aa9V0x7qq0fWhIqREEk/O+wZOKV5mR1WaUoUsI9Ddo3KNYU7hvffg3qADb42G3I3xO4nnW8oXmypEOihBa8f96C71EkiD9tWrbFkwpq2u4m0LDipvT8BWwbHTqq+D8BHQ5HVLrQp0pah8UstKmaDFTaNg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=sbx/u4ZTvzA0cK6Va53q3LNWpLrjLLXFzzh2z8Gu5tY=;
+ b=WLsXKLgJB/Rwg5Z76gTpw8rZ9K+NDgbhhkgdJjjB+aXL3/Q5RGS+P6xLozKK8hfExNKsl9AfArDsDT6VN/2vRBpQVVYjV1fVloPZEAlITQgIRE0Ik7oeIz9PXexPSq2K4vV9UIgfINVuy08EvFdusT5ALQIg2mr0y2rYouKbqbA091Khj9rK4MQmyGwCrLjaPD8Zd1elHSnHKda9nuWikryve+eloGGVt6CgN3JCNStdw03P650y/xZ7decVs0MRvJsb69fDYN5GSe+wqa5kh1Ub8K6mo3ggKrUgRNxVgFAIZB3w7EsoxKM+9V/6kp3a5Ev3aRkFH6SezCvp1r9hbw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=sbx/u4ZTvzA0cK6Va53q3LNWpLrjLLXFzzh2z8Gu5tY=;
+ b=Mbx3vqnEBStAh3wRRr4yco9xYXv+Hl5g3H6vHtnXLkrKi0cd3zOuZMCqq44wz5ZpgJA3JljhKXPYAwkaK6Kb2I4AP5hyvMcah0GQMJuI8/3A5nhj7fpLD6d0AtCzFO7dJ3TnUAvc0fFz2bdg04OChyhilDMWyXAc9nWvdhj+ZDA=
+Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
+ (2603:10b6:803:47::21) by SN4PR0401MB3632.namprd04.prod.outlook.com
+ (2603:10b6:803:46::20) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2958.19; Tue, 5 May
+ 2020 07:46:42 +0000
+Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
+ ([fe80::9854:2bc6:1ad2:f655]) by SN4PR0401MB3598.namprd04.prod.outlook.com
+ ([fe80::9854:2bc6:1ad2:f655%4]) with mapi id 15.20.2958.029; Tue, 5 May 2020
+ 07:46:42 +0000
+From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To:     Richard Weinberger <richard@nod.at>
+CC:     Eric Biggers <ebiggers@kernel.org>,
+        Johannes Thumshirn <jth@kernel.org>,
+        David Sterba <dsterba@suse.cz>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        david <david@sigma-star.at>,
+        Sascha Hauer <s.hauer@pengutronix.de>
+Subject: Re: [PATCH v2 1/2] btrfs: add authentication support
+Thread-Topic: [PATCH v2 1/2] btrfs: add authentication support
+Thread-Index: AQHWHUw3Fjk34p8J2kWvUrIfOj4HzQ==
+Date:   Tue, 5 May 2020 07:46:42 +0000
+Message-ID: <SN4PR0401MB359805375970F69ED7BDD5379BA70@SN4PR0401MB3598.namprd04.prod.outlook.com>
+References: <20200428105859.4719-1-jth@kernel.org>
+ <20200428105859.4719-2-jth@kernel.org>
+ <20200501053908.GC1003@sol.localdomain>
+ <SN4PR0401MB3598198E5FB728B68B39A1589BA60@SN4PR0401MB3598.namprd04.prod.outlook.com>
+ <769963893.184242.1588628271082.JavaMail.zimbra@nod.at>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: nod.at; dkim=none (message not signed)
+ header.d=none;nod.at; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [129.253.240.72]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 955afc94-947f-452a-1811-08d7f0c873e7
+x-ms-traffictypediagnostic: SN4PR0401MB3632:
+x-microsoft-antispam-prvs: <SN4PR0401MB36328B5131ADE86B7563D0749BA70@SN4PR0401MB3632.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:7219;
+x-forefront-prvs: 0394259C80
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: nqNA1tZohqInfEskprd43guG8QZSZLlI3+H0kdTOowykgzp1l4AfV2vYKE3/6A11DK1odBAfSvVIdmQhPcao0YbDb6bc7GH3FfGkFJQnJKpRfcKQ+8c5Cwqp35cM4cwwldwniD/JTa8TybTjp7hiovXvUBEZnPQlDMybTklYrvN0xke8X/xMUYFFw8w480uKyJJa2FXb3X5RZ6MFgwog6X8EMJlpECdDZFBrLPZoA1m427+UmSDCtWsgygysv7B2Z+RGfEXbBM6YDA0pDRtDtbHlaU7llmFZkT4Zl8EyRZ9OhE0AybRFbx6C0CoH1c8A/2SDZ9Kw4DYs5w9Nl6IVKNeAr8JggRX98VkTBHhorIGHmQif5HkXgg726DF/ZSCBtjjNtKhNlmqpS7/DNT9gfK5eSQd+txFzqj4S0Sw+sD+s2YPlrSVceTXk4BZAQO+xMw7GL4ThXvKN0W05oI2EEW2U4KTZ1lDk1X+ZpPr2nOCZbs0FbsFCLaLoeUHeXs0knlal9Fkae8QEfp15ilBgxw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR0401MB3598.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(39860400002)(396003)(366004)(346002)(136003)(376002)(33430700001)(86362001)(9686003)(5660300002)(54906003)(33656002)(316002)(4326008)(33440700001)(2906002)(6506007)(6916009)(478600001)(186003)(53546011)(26005)(66946007)(7696005)(66556008)(66446008)(76116006)(66476007)(64756008)(55016002)(8676002)(71200400001)(91956017)(52536014)(8936002)(4744005);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: TWrD7pFvqrzFLgXu2TpYd1IowCoqasJkYKbqaoO3g8qPlTnr/jciDJqIxynaz8Wc8zJteEuSSCK/Q12M0irG31jKLUke4O2tf0LNmiwH6gV3gAE0laVBmYRcYWx442vTIPn2aCfANbEmcgx26WXVAllwBs0BWal5LJNoJpJLmvfCO0zVIVWPIXInUKUyLlsqnFoROWQ4tuO/GTOjYQuS5+Wk8WjPN36GojMEWcmhPWbLoqLMR4i6zq6+B9wGjMoetjfYgMsuMe3XgRtJv2XfqSREz0r+XoAGC4B9l6XwTW8PTROA3PLwY5xpHwGlwzVH/Afw7ltZcfBSZQWwSlj0CKT/SWxdrntOczi+o0Ue/cjq256NHQYk5MthWVVnFiZ/PiZ+myHZKYbUJqBDjViwyT1ERKzh7+CDLzCHmYO9uB9SbuCPe/sTHXF7j+El/xhgxcTXquIhVnSx6VChqQZScku77Ro4ttdl0erwxIZiFldmggNBG8qW6tUFgr336E8UGIUTPlv1/l1fKZnA2Rq0cEhqJoW+i92JGnAQIgIZllER0C6aXuitPG1Sd6IBi7ileLwT1TQIy8NmypI1VuC9uCXrOb5uSddT2BEbgnJ+pPyNWX87clXDtKwI2/dSrEq2VoDB6qfWYa+7BPZNcxs72JeWmJIVq1yU6WNbzm55U/4kKTP+rkPb/HOQ0CTQCB1shlPit8qLF4dzTZCnYhenC/ij+gWzTedi+85vJmNiKPn7bCWKjIxOjWjfL1tUKPuTkIkw/DVI8QZljshaa+M/OhWtICuG2sc51Bl5iJKcVJw=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 955afc94-947f-452a-1811-08d7f0c873e7
+X-MS-Exchange-CrossTenant-originalarrivaltime: 05 May 2020 07:46:42.1706
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: ozWTS6Q/1bbiRlv0IwYAEJlbd26l3f3BeweqO+QKsbhWFV/gu2e/3GcsiJUvh7M78hQZfS5dPKqVDKpe6Z6HKCnqkYZATvyl59k8MRckRy4=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN4PR0401MB3632
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-$ sudo btrfs scrub status /home
-UUID:             85069ce9-be06-4c92-b8c1-8a0f685e43c6
-	no stats available
-Time left:        16964119:40:20
-ETA:              Mon Aug  8 23:23:14 3955
-Total to scrub:   7.30TiB
-Bytes scrubbed:   10.20TiB
-Rate:             288.06MiB/s
-Error summary:    no errors found
-
-Cheers,
-	Andrew
+On 04/05/2020 23:41, Richard Weinberger wrote:=0A=
+> Well, UBIFS stores auth_hash_name on disk but does not trust it.=0A=
+> It is always required to provide auth_hash_name as mount parameter.=0A=
+> At mount time it is compared to the stored name (among with other paramet=
+ers)=0A=
+> to detect misconfigurations.=0A=
+=0A=
+OK, thanks for the information.=0A=
+=0A=
+Will do so as well in v3=0A=
