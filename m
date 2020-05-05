@@ -2,67 +2,134 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 083131C4B8B
-	for <lists+linux-btrfs@lfdr.de>; Tue,  5 May 2020 03:32:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B829C1C4B94
+	for <lists+linux-btrfs@lfdr.de>; Tue,  5 May 2020 03:39:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726897AbgEEBcB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 4 May 2020 21:32:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42884 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726482AbgEEBcB (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 4 May 2020 21:32:01 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B226FC061A0F
-        for <linux-btrfs@vger.kernel.org>; Mon,  4 May 2020 18:31:59 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id f13so709954wrm.13
-        for <linux-btrfs@vger.kernel.org>; Mon, 04 May 2020 18:31:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=5CYpCegXlQbtl1zN5GJfo0qhdAWvCsr4w8LOw+5vf/8=;
-        b=qf88p9bBrJ8Eq1LpE1Qq1fizn6YGSYKOisWUI6R4zXbt6HNJdRRtHmtOTmqCxbdhYo
-         yoJ0h9I1iuUL0/lLS5uWZUdZJhM/HIALdwrakfEB9wy1A+ll8LqtOD+qztbRzFt3wtKw
-         np04zr73+HxLYQMaN+gkD5rim48TYhkEzvSqF6LemSHtZaZMzp6Nyc8EPLXhd5h/AQoo
-         jFmVX/zuDzDH2R29UkTLXEMN44k1+0/HSaJNhBC0RLvX6unDcDIF6hQD1WWrHAoGScv8
-         AipIZEPWopkcFjYn2XoxpW9YyWCmcgzHvnnVcraraB58wdL4uhsSbR2KRX7XJ7EKZvhr
-         4kkw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=5CYpCegXlQbtl1zN5GJfo0qhdAWvCsr4w8LOw+5vf/8=;
-        b=NNHfqN8lLfQQtJCNhSw+siYXCK8J+XfVBPCmV2cTCPdWrYmnmSJWkc+TimRJAJz52x
-         mEef5RJ1HCLaHz4qF5g9Zp97AIOeCd/Kct4PICE7jZcCv/k26flfib29fqQeBmXqKTdZ
-         YQKBT2Qn7F81sZ0B9m5D7ONv8cEoIX6DIe94Ip+Q5rHZzpx7B35qI56seUjXMmKRRTPk
-         iuRQVJEUpWSQs0K1aec0U+ZhZAninlF41nsukAlGUljJXexakmjLuiUonaUd3yW7qZLA
-         NLeG3L/BsIdcWkQ6LXxFVj9kcIlRAuZlrlV1xMIcjGfekz4tBXK8o/3Zf0sLPDOShbM6
-         o+3g==
-X-Gm-Message-State: AGi0Pub1vkf/rTeT7URqu70lKHn4B7ZAOzCDyFaWGWcemoeK7d4Lipdo
-        LdPi+s0g6rhlHG1MRj5uYWX292MWtHZOE/ACB5fpFhKQ
-X-Google-Smtp-Source: APiQypI4SZwvM9J31qrkiJLtpE/gAfPZ3Bv65R8HlEmYhp9IDAhm1ygQWT+mzwOS5KsZGJkb/wZwAip0zDt1+4httZo=
-X-Received: by 2002:a5d:5273:: with SMTP id l19mr748435wrc.42.1588642318261;
- Mon, 04 May 2020 18:31:58 -0700 (PDT)
+        id S1726549AbgEEBjY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 4 May 2020 21:39:24 -0400
+Received: from mail.synology.com ([211.23.38.101]:37536 "EHLO synology.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726516AbgEEBjY (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 4 May 2020 21:39:24 -0400
+Received: from _ (localhost [127.0.0.1])
+        by synology.com (Postfix) with ESMTPA id CBF9BCE7800D;
+        Tue,  5 May 2020 09:39:21 +0800 (CST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synology.com; s=123;
+        t=1588642761; bh=VwBa+0JWESTEADCpS3UDhX2NVHjc/Xg2qQe5Xwg/9xw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References;
+        b=P7+2OrzggzpTScqX3tZN1fQk2I7WkLqCLc4D4fY2Dg4Zz2ilSLNnXH9bUKBvH5tj0
+         TlSM+/XnYXtwwHIRibm0qQoQQzKPjmkKqgevMwgAkKv6SQDPfug4UWHrUQ7mT13iXv
+         m3+W79VGmMjEaWC6V8S0wMLpKggbQSG6d2WwdXrA=
 MIME-Version: 1.0
-From:   Chris Murphy <lists@colorremedies.com>
-Date:   Mon, 4 May 2020 19:31:42 -0600
-Message-ID: <CAJCQCtQSevDB5kaGTSS1TfQKen+BY5krKvHUZc4MKVPZCypiPg@mail.gmail.com>
-Subject: supporting zstd fast levels on Btrfs
-To:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Cc:     Nick Terrell <terrelln@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+Date:   Tue, 05 May 2020 09:39:21 +0800
+From:   robbieko <robbieko@synology.com>
+To:     dsterba@suse.cz, linux-btrfs@vger.kernel.org
+Cc:     linux-btrfs-owner@vger.kernel.org
+Subject: Re: [PATCH] Btrfs : improve the speed of compare orphan item and dead
+ roots with tree root when mount
+In-Reply-To: <31c590f2abee67d60ca8941f5e92e924@synology.com>
+References: <20200427080411.13273-1-robbieko@synology.com>
+ <20200427154628.GE18421@twin.jikos.cz>
+ <31c590f2abee67d60ca8941f5e92e924@synology.com>
+Message-ID: <b0f35dbab104cc8119327343f157a48a@synology.com>
+X-Sender: robbieko@synology.com
+User-Agent: Roundcube Webmail/1.1.2
+X-Synology-MCP-Status: no
+X-Synology-Spam-Flag: no
+X-Synology-Spam-Status: score=0, required 6, WHITELIST_FROM_ADDRESS 0
+X-Synology-Virus-Status: no
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Looks like since zstd v1.3.4 there are five negative levels (also
---fast levels), that looks like they'd be in the ballpark of competing
-with lz4. That might be useful even with some of the faster NVMe
-drives, ~2G/s.
+Hi
 
-Any idea if it's possible or even likely?
+Does anyone have suggestions ?
 
-Thanks!
+Thanks.
+Robbie Ko
 
--- 
-Chris Murphy
+robbieko 於 2020-04-28 11:12 寫到:
+> David Sterba 於 2020-04-27 23:46 寫到:
+>> On Mon, Apr 27, 2020 at 04:04:11PM +0800, robbieko wrote:
+>>> From: Robbie Ko <robbieko@synology.com>
+>>> 
+>>> When mounting, we handle deleted subvol and orphan items.
+>>> First, find add orphan roots, then add them to fs_root radix tree.
+>>> Second, in tree-root, process each orphan item, skip if it is dead 
+>>> root.
+>>> 
+>>> The original algorithm is based on the list of dead_roots,
+>>> one by one to visit and check whether the objectid is consistent,
+>>> the time complexity is O (n ^ 2).
+>>> When processing 50000 deleted subvols, it takes about 120s.
+>>> 
+>>> We can quickly check whether the orphan item is dead root
+>>> through the fs_roots radix tree.
+>>> 
+>>> Signed-off-by: Robbie Ko <robbieko@synology.com>
+>>> ---
+>>>  fs/btrfs/inode.c | 20 +++++++++-----------
+>>>  1 file changed, 9 insertions(+), 11 deletions(-)
+>>> 
+>>> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+>>> index 320d1062068d..1becf5c63e5a 100644
+>>> --- a/fs/btrfs/inode.c
+>>> +++ b/fs/btrfs/inode.c
+>>> @@ -3000,18 +3000,16 @@ int btrfs_orphan_cleanup(struct btrfs_root 
+>>> *root)
+>>>  			 * orphan must not get deleted.
+>>>  			 * find_dead_roots already ran before us, so if this
+>>>  			 * is a snapshot deletion, we should find the root
+>>> -			 * in the dead_roots list
+>>> +			 * in the fs_roots radix tree.
+>>>  			 */
+>>> -			spin_lock(&fs_info->trans_lock);
+>>> -			list_for_each_entry(dead_root, &fs_info->dead_roots,
+>>> -					    root_list) {
+>>> -				if (dead_root->root_key.objectid ==
+>>> -				    found_key.objectid) {
+>>> -					is_dead_root = 1;
+>>> -					break;
+>>> -				}
+>>> -			}
+>>> -			spin_unlock(&fs_info->trans_lock);
+>>> +
+>>> +			spin_lock(&fs_info->fs_roots_radix_lock);
+>>> +			dead_root = radix_tree_lookup(&fs_info->fs_roots_radix,
+>>> +							 (unsigned long)found_key.objectid);
+>>> +			if (dead_root && btrfs_root_refs(&dead_root->root_item) == 0)
+>>> +				is_dead_root = 1;
+>>> +			spin_unlock(&fs_info->fs_roots_radix_lock);
+>> 
+>> The list uses fs_info::trans_lock and the radix uses
+>> fs_roots_radix_lock. I'd like to know why you think it's safe.
+>> 
+>> The trans_lock is used for a lot of things, fs_roots_radix_lock is for
+>> the radix tree insertion/deletion/update/lookup so it does not seem 
+>> like
+>> an equivalent change. It could be functionally equivalent due to some
+>> other constraint, like that the number of references is 0 and the tree
+>> won't be ever touched outside of the orphan cleanup process.
+> 
+> Because btrfs_find_orphan_roots has already ran before us,
+> and added deleted subvol to fs_roots radix tree.
+> 
+> The fs root will only be removed from the fs_roots radix tree
+> after the cleaner is processed, and the cleaner will only start
+> execution after the mount is complete.
+> 
+> So we can directly find the root from the radix tree.
+> 
+>> 
+>> btrfs_orphan_cleanup can be called during the whole filesystem mount
+>> lifetime, so we can't rely on the mount time where nothing can 
+>> iterfere.
+> 
+> Only "tree root" will be used in this section of code,
+> and only mount time will be brought into tree root.
+
