@@ -2,168 +2,120 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC3F71C5168
-	for <lists+linux-btrfs@lfdr.de>; Tue,  5 May 2020 10:55:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC9961C516B
+	for <lists+linux-btrfs@lfdr.de>; Tue,  5 May 2020 10:56:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728268AbgEEIz4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 5 May 2020 04:55:56 -0400
-Received: from mout.gmx.net ([212.227.17.21]:39411 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725766AbgEEIzz (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 5 May 2020 04:55:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1588668946;
-        bh=4Uoxk4OxOAyppIn4Ph8M+HaeWmEBs0uQp7RWueyq15c=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=fMMEGeIcafI26az/xAYTamAkm7pYb60EVdeetVgD24PgInY0d7pfWzgo2Ltvz0bq3
-         V8pGDO654Myq1CbrPqP6wIePxGFjgDWlglB95qPR5up5Jis4pO5IVJYdYAIsjtuvi5
-         /SQ/YD9AZrcQ/eO6N33o7bYJ+C20VTyzUtJlNhpQ=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1N79yG-1j4ZzB3jQK-017T0d; Tue, 05
- May 2020 10:55:46 +0200
+        id S1728351AbgEEI4w (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 5 May 2020 04:56:52 -0400
+Received: from esa1.hgst.iphmx.com ([68.232.141.245]:10336 "EHLO
+        esa1.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725766AbgEEI4v (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 5 May 2020 04:56:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1588669011; x=1620205011;
+  h=from:to:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=ktpmxeIgq5Kaer8kr6QoveMa53LtNu1HSPWz6pcH/8Q=;
+  b=edXuzQfrUEku+XP0QJOqp/kkAW+QpoPydecoTo5dlMQkpVZi+5brYld6
+   OVi14K7noQodTQzyDL07EM83fnWZQjPMqQ4LipMa5R+Ta8ZJj5hTkCEj2
+   G7kz0Ys3m7Rm+1sFYrsKHU7EZtxHmtfqtFnQG24cnhNuxDDHuME9rfEzh
+   33VyTkQwIimeqbKDoRy+kJJMfGI6axJW06jJv+ZnNiFymje99LcCtKtmR
+   KjTTK7Q1cq9mUuo+gHTT2RJQqwKDcbeTDAgcreacOCdAG/ECsIlYmTkD3
+   /Bj5FJ3u4XNpl5T6OJe/Fp96NyJE9ysGhSky1WmU8iRr9aiK8K/jlvoW6
+   g==;
+IronPort-SDR: qTD4ROrXW9WPtBe8asONmD3+AdfJEfDn+D7r7xrJg9HVvsd9C/e5hX/5m88NPEcCcpRY31pJRA
+ lMRq8TLqATgzn84JbjwDsHQqi/zppo8XbomzDB8j3c7w5ywfojbsw9AJFcegFahiln3fR3/T8Q
+ 92cF56pN2PZ3tRcw/4hB++okDJ6QZfDmBbdWuBMRoOTPFNsXD5uV4f3yJvcCuhFNOLb7Oa5/O3
+ wDJcAnAMrOanplk/nIWPedxyyYTR3g9FuwQ077zLGdEDVYZH/hLJs6yExv5+bQvrwbXNDd/DpQ
+ sLA=
+X-IronPort-AV: E=Sophos;i="5.73,354,1583164800"; 
+   d="scan'208";a="245790274"
+Received: from mail-co1nam11lp2171.outbound.protection.outlook.com (HELO NAM11-CO1-obe.outbound.protection.outlook.com) ([104.47.56.171])
+  by ob1.hgst.iphmx.com with ESMTP; 05 May 2020 16:56:50 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=bCPExXtR4Fpj1qHDnSV9fcTATD4R99ghLzeMsDMHmTChcd0OFtq9jJmV6MoHyoBE4z2ZW1jeikJCIGU14m4iyEH1ib+IDTAZoT8MTs4+UVzp7lpfM7d6l8KHKJ7x4QZwaVauJIeCKlwpbJzeZ9vlQqwgj3u/k4I86Q9M+IuHnB3Lab3niogX3U6qFafbi82nOspFrnV7x0UMpd32bB8HRteXYjoUoJrQgE+pPjdqXCDmTuWuKgbBEK+b5+k3eAH4T6KOaMWqNVpCXmhsszq9Zmti0IrtO0G2ugDK/Mg5inkKL3WdGtcn3rG8O4lCIluk+ylEnBDkViVfugx9lhFRjA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ktpmxeIgq5Kaer8kr6QoveMa53LtNu1HSPWz6pcH/8Q=;
+ b=A4W9wCh87/5VDcA08COdnBZ51ZqWK085weD4mou2eekGUzduSGNla81Qr4SMrsXseCNV8r/MBE6p9S+8BKogPCx2tIrIii1fREaawPeNahs/FgmIt2QEeh9Hd9bLevE5xd2XhXWUPbiMc09UvXc/+0wVfeHRqeU3I0UGaTGJgHINS/ZdV+yY412ffbibGft8NPprWQ/2DUq303MrJrqICFbTSXBLHQD+3JvSqXEbIqBMrzkkIJ5Bk3GVNj1D03u5H0X3n5x0yKueq08igCF/RFGaiqEc3gypCheYFs19doKk9VG5kbieyJdX1bOFVb2HjmLZG9FGIQCfCKjmF8QE4A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ktpmxeIgq5Kaer8kr6QoveMa53LtNu1HSPWz6pcH/8Q=;
+ b=HW0zsKtsm3RCZTPCDtD3jCelsUKOqHimc5KpQ+3hpHeAABnKHoT+aWsUjwiPn8OuZwYDjxtLV4BFyDqeuxLyOVrOSDl68ncyJlabHkkxdkM00MMVGFSBhX9weyxag/twfqIk/U0l3TGXm2FbiskOJHfsjSbFkj1658XQeGRjaBA=
+Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
+ (2603:10b6:803:47::21) by SN4SPR01MB09.namprd04.prod.outlook.com
+ (2603:10b6:803:43::30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2958.29; Tue, 5 May
+ 2020 08:56:49 +0000
+Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
+ ([fe80::9854:2bc6:1ad2:f655]) by SN4PR0401MB3598.namprd04.prod.outlook.com
+ ([fe80::9854:2bc6:1ad2:f655%4]) with mapi id 15.20.2958.029; Tue, 5 May 2020
+ 08:56:49 +0000
+From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, Qu Wenruo <wqu@suse.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
 Subject: Re: [PATCH v4 3/7] btrfs: block-group: Refactor how we delete one
  block group item
-To:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        Qu Wenruo <wqu@suse.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Thread-Topic: [PATCH v4 3/7] btrfs: block-group: Refactor how we delete one
+ block group item
+Thread-Index: AQHWIm/wBSuie6ZMzUeAbwU/sq/ooQ==
+Date:   Tue, 5 May 2020 08:56:48 +0000
+Message-ID: <SN4PR0401MB3598F0E81F9FAF5BD665B1C79BA70@SN4PR0401MB3598.namprd04.prod.outlook.com>
 References: <20200504235825.4199-1-wqu@suse.com>
  <20200504235825.4199-4-wqu@suse.com>
  <SN4PR0401MB35980F5B55AB37C71E789C1D9BA70@SN4PR0401MB3598.namprd04.prod.outlook.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
- PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
- 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
- D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
- efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
- ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
- BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
- 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
- 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
- EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
- 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
- ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
- oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
- fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
- 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
- ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
- oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <bd019a91-406b-f913-1324-d4803f9b2223@gmx.com>
-Date:   Tue, 5 May 2020 16:55:42 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+ <bd019a91-406b-f913-1324-d4803f9b2223@gmx.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: gmx.com; dkim=none (message not signed)
+ header.d=none;gmx.com; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [129.253.240.72]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 0653fa4d-f932-4cfa-233a-08d7f0d23f48
+x-ms-traffictypediagnostic: SN4SPR01MB09:
+x-microsoft-antispam-prvs: <SN4SPR01MB0961F5E8FD824F6CF02E389BA70@SN4SPR01MB09.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:8273;
+x-forefront-prvs: 0394259C80
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 1CdWBQdnbb3mwh7A7zyBg92MmLDLf234eo/gT9j5J/d1yNGN+CwGS7Dhgy/zeyc8UzW0oAa9nH0sh/7qDFY2iQ6rUrXthSSVDR27bagXdPIG3ChNC0BAe6ATMehrjTWofhBW11cjjLZnX/ewBC7IX1+EbosCzb98cu8BvpeF68QEXMyBv1NbuFUJSAi0u+zhLmzr2VakT/i0wbWhKSkNtfWXdheTTCz6pVEv+Vze2p7zkZ+2yNlyVFSU5/JQiA1vNSqTRPRk631+lY0aC61POYbVNl3tpFHLYDkGsxflz5GDIAZTrmTPUVQPffSxAnJ5sALrEMNGEy7+H3rtHzR6lcxAgEuZ4360SsY21X/r/uRaGEhFqJFIyPia5qIe07R73lU8WlQxgTYhplt1HhP3EX6nsfHMMcEPQJfMtsRgEvvTyvmQpbR6ljD2EhPaKqtasp/wwrnu6Qz6ymTxTIL+EXdGWRAlTdcT8XPFWG/aJ85ZixlzkjBXR1RaAibLN96gSgg62DprnySRWvbPa15syw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR0401MB3598.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(396003)(376002)(39860400002)(136003)(366004)(346002)(33430700001)(33656002)(86362001)(2906002)(9686003)(55016002)(33440700001)(5660300002)(52536014)(4744005)(76116006)(66946007)(110136005)(53546011)(64756008)(66476007)(8936002)(316002)(26005)(66556008)(8676002)(66446008)(91956017)(186003)(7696005)(6506007)(478600001)(71200400001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: 35+I7GC9vRM6yVdh4+mFpJyk/Uu3977IEe+jbmnQ77WYkBK1kFR3DmnQzX6aWrqYe6cimwIPsBk83zF9yrllRC0AOZaBD0lkYs1+9A/qNXOWNmyMlQAksnoFobsgp5LRuKNXnUwCUWJKwtejudYkHAeVTy00mvYpIYB6hPYjTUSZmj8uHo4TTSvDQmzw3439DD2rT5y8fNBKFHBChqVa54Nlrdg8ETRUD1Oj24rC20UwbOytuXJoIWYsZ3aCb27eLPFyVLPRP7wCjEbO3PSFu45Ito3dtFKcKvstpAcY17gGuR0otlg5+DZ7dM8UbfvJ2Ufb+Xt9IOfMTrd0JJZNmCLnNzbgwouyvGx+PsHYpuHO1BTzJfZ4QVL/aA2I7WIFiTOb6IgSGJOaWc2W1rxbp6kgETek13Z+K42E7hdLZiRt+XOpaAyT8BGzwTbOuGA4qj87ppwghjIX9QGDDhs/XX952NpUj11YqgeWjkLrEyxcv9NEOMwro5guVOBkFklSWwfXc31r691VKBcJyaAILhoVb3JZPAoao/ZCYxjFlQHypVXuUylcXRYfy9JpZvqVk00RwX2EJs2PhZbAHVIvtPSeYfPFn/ulm/eG1/rWQRcGxs+tEQJaSevpFSJ2M+A2fUkGaA/A/qDLwDNOZTllONtGJf65nehEB4UxD4LB8UU27Skh3Vt5UP8EbIR0srBmYfp5U4JoqwXjE2XlngIpP8BP05mZiTdZ0InkeeyqZg/oAKYpzgYFDwU6MpmaFBEDlG/DXMZXb03Jrew2C+dnPm0QAZB2deCWhwbjous0zrc=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-In-Reply-To: <SN4PR0401MB35980F5B55AB37C71E789C1D9BA70@SN4PR0401MB3598.namprd04.prod.outlook.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="UnIkOi0Y0R0L56UbHiv0Txvoj8Tb4CSCW"
-X-Provags-ID: V03:K1:ui3CJFJUxZp71zzQbT018ynmMhFHHH8ELhdWdMkvjt0QpgbJA10
- HwqVKJxlpgKWlVX316XyKV1Ox9YUJtQvktvWE5zC4iqR01qZjg5fiQ7fUygdns8F9rkF6q7
- fxOzysP3UFynejSDFM2SDKRj+zjIrdWrBhguDiC4WRQCRbc8Y27uu7JLAy1YIucyXxUtnP3
- V1eFmCJjRzh2MSzRv/tsQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:HvKQo4mrD7k=:gsYC3tvd2294Mlv5U8G0P+
- for4oRQU6h/qGj4uVDZJR4XxyMy1S7wCgxBTTxHF81TOXVTv6b1wEPT6xjDWqdnt7dDexSicA
- jhw8s0BzNgiBFX1S6XxKCqoGSo+s35uHIwb7UC8tK4FMxE++M34oXqp2S/G22IVtiDpf3j1OT
- 89oT0X3qKxY4fJg1iNX/AkVwdR4L3HNOnWITTf1ShWzsBGPJPEXBGMHGMYjBaoaVpN0+49Lb0
- nw85GeK00S1ahqw3MhYWmxD2KRA84q7LVB2hO85tm2lWQwEEMBy2W6Dz+9whvRGKDWoZ40+wU
- TweVQXUYnyEi42nRoBiNfibx0bEIGA+iHIRNcNzwx/8GhrrePAsJxdchu7uWVYYCnpEh/+R8C
- +CVURKIy8/ZVJNkhuSURWV/u41KcPtQBen8Zcqm/dH5RTdPCgKMplJSxu2r0s/rDLTQ/7ir10
- 5qkbaJW61KP61WmiWqIFCuQu2YWiXg5tKfdxeHyV251WWHBVZcMvzohnPWa5H+1yMeu1d2kzE
- 7HIo4Q266HZXyQ/ycftG9KV+No7eRb8sVNkQ6JeBzANFaDZ4IdXZ7h6Cv1r69NZamyI8m4Q5S
- AKa3RmqO4E/CKi/OFcKC4fXFWrlM/9te/ZJjx2XlJTOfYquqgT2D+xrEUtnDZQUxb5OYWjpov
- qkvJjweOp5VnIz1Rj3dIK0kj0ufjJE0foLuobjgbTVkR7+wi94IYuCQCm0aU5jmWV+HNLRj0b
- t3u8JHvnm9jm6/bcACjlGM0TbR7jwPd0Rz/+ZsqzRT0IJgNa5F8k3AxB0PBaYBvCqecRcamGM
- GzaiXcxRX2mfjepiOR1qE7PysyXA8cuNliW9fqvhwgjE1sS9RqoS3A70ekUvfF+DjZroIK79a
- aIaIs7W6P++Ouu35cZvBYj5c1gSHeKlhGgGQZa+6IUeZ4H4DN/xuLY8zO/68PmSUsSao3aya7
- NBaUh4p98H57TG11uBVthjv4RANMN5sjEYskbtmDgIsBI7WrpD1VfOZCtnP0UzDva8b+K0Njk
- rxmsg4LbNKoV251vV8yH7BeL6nfun+Ob8JUd8nwmI3Go5T3T90pZ37QwIhoXYBBrs5cF1w1HS
- wZV4rW87Tt8uVUNXtpVHzfCm7kDUY//K7EFkf0bvN+vcP8uf04X+XnFtRnE7MnIsym3S7PnPa
- 2IEZ7//CLE+PFEASo8KEZFrvCzEzr6yK2CJHtdkfqvqjOosMzTiGY68aaryxcgrlV7IV1peB1
- ntflz3EXyAiUC8yet
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0653fa4d-f932-4cfa-233a-08d7f0d23f48
+X-MS-Exchange-CrossTenant-originalarrivaltime: 05 May 2020 08:56:49.0066
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Z2nzs+6iD9s9+ugokQz22IUjlLJV4tGaIBVViiVusCxG7mtRfD11jitZxNoCKdlpKxKWuZD+6L4ouR9KW+NL2od2iQM1XP4g9e8jLiqxHBk=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN4SPR01MB09
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---UnIkOi0Y0R0L56UbHiv0Txvoj8Tb4CSCW
-Content-Type: multipart/mixed; boundary="CwqZSZ1c8otnCSYCFYaLPS8LAWtMrK2Te"
-
---CwqZSZ1c8otnCSYCFYaLPS8LAWtMrK2Te
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-
-
-
-On 2020/5/5 =E4=B8=8B=E5=8D=884:47, Johannes Thumshirn wrote:
-> On 05/05/2020 01:58, Qu Wenruo wrote:
->> When deleting a block group item, it's pretty straight forward, just
->> delete the item pointed by the key.
->>
->> However it will not be that straight-forward for incoming skinny block=
-
->> group item.
->>
->> So refactor the block group item deletion into a new function,
->> remove_block_group_item(), also to make the already lengthy
->> btrfs_remove_block_group() a little shorter.
->=20
-> I think this patch is useful even without the skinny_bg feature.
->=20
->> +static int remove_block_group_item(struct btrfs_trans_handle *trans,
->> +				   struct btrfs_path *path,
->> +				   struct btrfs_block_group *block_group)
->> +{
->> +	struct btrfs_fs_info *fs_info =3D trans->fs_info;
->> +	struct btrfs_root *root;
->=20
-> Tiny nitpick, why not:
->=20
-> 	struct btrfs_root *root =3D fs_info->extent_root;
->=20
-> Like it was in brtfs_remove_block_group()?
-
-That's mostly for the skinny_bg_tree (6th) patch, as in that patch,
-skinny_bg_tree feature goes to pick bg_root other than extent root.
-
-So I didn't initialize root here, but leaves it assigned the same timing
-as key.
-
-Thanks,
-Qu
-
->=20
-> Anyways looks good to me,
-> Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
->=20
-
-
---CwqZSZ1c8otnCSYCFYaLPS8LAWtMrK2Te--
-
---UnIkOi0Y0R0L56UbHiv0Txvoj8Tb4CSCW
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl6xKg4ACgkQwj2R86El
-/qgGsQf/dZxgXz87wXraB8UnpSZkpU5kHjw5Npl55r/SpGF5B+Fv7gaIZCo/R6oZ
-iN+B8Us/Ef9TY0icXO3D9148paGuwrp3xtIGdPxy+Sp670pPbLp95GMAHJXZHzi2
-La9jkjektEOLYcGajOA4JRjtNcR6wEl1sK5Sjzvto9qXYh7zxWm3Fsirssvk8bcV
-1JdqOBa85uOCHFoDgMnVCJX8mtiov4pjAWmcx+48w1mDM1CiakUN0V9E/0/7PDt4
-JLeczzbElX3q633h1lJTPZHBNyOkym59nSZQnByyNILqpJ/iwbnxYP9U7dqtI41D
-9wVuu8f5+iFEM7fMW+oJFHMvczt53Q==
-=l9AR
------END PGP SIGNATURE-----
-
---UnIkOi0Y0R0L56UbHiv0Txvoj8Tb4CSCW--
+On 05/05/2020 10:55, Qu Wenruo wrote:=0A=
+> That's mostly for the skinny_bg_tree (6th) patch, as in that patch,=0A=
+> skinny_bg_tree feature goes to pick bg_root other than extent root.=0A=
+> =0A=
+> So I didn't initialize root here, but leaves it assigned the same timing=
+=0A=
+> as key.=0A=
+=0A=
+=0A=
+Ah OK I'm not this far in the patchset.=0A=
