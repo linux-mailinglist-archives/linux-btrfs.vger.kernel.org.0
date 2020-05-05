@@ -2,120 +2,111 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AC581C5194
-	for <lists+linux-btrfs@lfdr.de>; Tue,  5 May 2020 11:10:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3A8C1C5196
+	for <lists+linux-btrfs@lfdr.de>; Tue,  5 May 2020 11:11:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728180AbgEEJKv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 5 May 2020 05:10:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57530 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725915AbgEEJKv (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 5 May 2020 05:10:51 -0400
-Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED36AC061A0F
-        for <linux-btrfs@vger.kernel.org>; Tue,  5 May 2020 02:10:50 -0700 (PDT)
-Received: by mail-qv1-xf36.google.com with SMTP id di6so630555qvb.10
-        for <linux-btrfs@vger.kernel.org>; Tue, 05 May 2020 02:10:50 -0700 (PDT)
+        id S1728238AbgEEJL3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 5 May 2020 05:11:29 -0400
+Received: from esa6.hgst.iphmx.com ([216.71.154.45]:12159 "EHLO
+        esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725915AbgEEJL2 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 5 May 2020 05:11:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1588669888; x=1620205888;
+  h=from:to:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=6Lk3ypvTxTv7+ivlnEjKjseLEtkcEK/MDUAoSZslokg=;
+  b=MwDcmXfxWOj9AtAH1RJd41jCNAoxvuqEzLJn01664OW6f5ysvivznmf5
+   TeI492InujVbbmBI+09Hesqn75gODFyNWjsVKUwyab/DwMfInEAwAyvRP
+   qUqkUszNmri71XWIlFFvg/93QeYytNhFITnGek1VJJthg5A4KYcqcG6qG
+   l+uiQs0CLZCt2E4u/fbIt/ZTL4r0BXJmYRxcpVlH6f2ZvbtEDYqpDspOU
+   z1OZ5wZZCKXx5WF042TtdnhPawF4KsAUgJXmZLF0P6d7z+aQBYD7BdNNw
+   V/92aI3nK94wYGIdsnL8+PeJ78Z8DMmXiA3/kvpexASMv+jjIkNuCtdoV
+   A==;
+IronPort-SDR: soLYwzuS3Zl95VvUE9dJXZ596OYQoi63ISFC4ulhC76qsCHm1RNYnnCXQ5KNti5VaKXo4fl78M
+ ZfX3E0Ndgy2s/W2d0wEPs80aQIfkeXWjbYq4ezlFAmHOdWtgCadMTA11e1o+ok/BhSIMnxnWAu
+ QLulR01KvZLfceVwh1JDSZlPMcP2+JUDRa7yvknq67nXb+iOPNhzppmkV4H8TD0G249w9hxAh1
+ lLoH9c5dFA9sGue9YdKFth3QbS8QrOD15ZY/zvllntnU15ekTwPBs6E4qO4SsoI+Re1VI2acg0
+ MH0=
+X-IronPort-AV: E=Sophos;i="5.73,354,1583164800"; 
+   d="scan'208";a="138371238"
+Received: from mail-bn7nam10lp2105.outbound.protection.outlook.com (HELO NAM10-BN7-obe.outbound.protection.outlook.com) ([104.47.70.105])
+  by ob1.hgst.iphmx.com with ESMTP; 05 May 2020 17:11:27 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=D/al85rNRyy1pjw0vB2C/nPrD20JDeN56mqTgwRj2c5Tl4LqCdnfUyNK75T0+wVlb4GCLSiCci1ox2J+4Thk0mqv6hTQD2ht9cEbkevCMtYbyEN+XHV7QQM+4kkr9oYXffMZ9klHH0GAA/4Pg8bxuIOYoQyNTRV++zWAbPoSjxPRDPgyK1dtaAXyZutUQmYKAJMS1dCW62B/uDaKzyqHObqxG56mzHdRGL/3BsHugKcp4rxc/I+EkHnR9JSBgprM6nch+w6PlbzQjaZNBB53LkyTM4mK4hsWiUe7OEY3G3n/jTCwKp7iY6QXhEzFCyGaOeWnHGFr3i92qAZyG1NcLw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=6Lk3ypvTxTv7+ivlnEjKjseLEtkcEK/MDUAoSZslokg=;
+ b=Dfdcz93bf5Fns947hBAWw8LrY57M4guo1fe9HD7F0ffOxLfZ01U641KxVaaHqvb9bzA1pqZ5uIctnOjVlan6ykGK6IMLblcDnXbmP3YqYl5AVBMg2eLsT1qNzJoU0Lnk+TKf76x12ITQZZmbNyvpYcPVdWZ8Zxq2Sna+vq042UBzEbDs7T3eewoc4sAM80mEBM55SmQshwtvXUaHmWl8ybU5iHH+tCbF3h9rbb7R0iI3K1ccHJq1FJO1IENWya7jnEZeoH290gtxbgdpDCIsjqsR6q25eKc4CMHsaY7ZXqAWfW1ErtK1YqtDPK/IPTSoUiOq6Jt7hyF7JkTzXUuIrw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=xYCo/xRtu+Fn98AR7JBFnWgUkXF9PogWNEUwA9RWYHU=;
-        b=nhkYXu8vKAdMmOzeMItap1aZZ/6B0SKtR3pwpTQEeyZ1rkh66OtbQ7Y85sYVuONqxj
-         pCu04ZQqvJPi/wI78l3kXUETWtY3/5EfGOx9Gz7xOjhwIlxP3EBC6tUcdY3QiSH1ljI8
-         noBzrtiYQb9SfLUSZFWIErthIeWGjZijWlaE+O2RROuyqSEu1uQTV7q7Wulbn6L6bms7
-         6c8oN93F3yjEwIPAhPgbU3/QX3PWgF7nHaUywmSAKNx85NHenvrSC24hVmtSMaPlaEQy
-         zmy38vm0tH2bzGusVlta0WBKp7PRKB7y7ezbOM2efF4OL5Q9j/z55u2DzPgxYcr1GVSq
-         LFww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=xYCo/xRtu+Fn98AR7JBFnWgUkXF9PogWNEUwA9RWYHU=;
-        b=DNZYFWAPSHGn3nGjciJ6gMVr2YHnw/OrG+pdbhcDEuj5Ae4HgTtm034PExG8N1J59e
-         6ve/12kE3u6FHUDIuKSmd40qZZY67FzBzY3z/Pm/8dq39LStxngCh3pukDd6eOZH6oHZ
-         ea4PGd6gTyBELtqr5wIT/WxF/0S2f0rBsAtDwntY4LnSoDMkIRWwgQteJ7smnEg3B4eU
-         CwB67U+uXclBcFY9ENEpd+NhbaCJg9hmz0s9xX3SzWlJAuB7wRgpUc6uX2rV85XCB43R
-         suLRF9LCZdHcgzkMnvqQU/Beh8clH+z3y6jfASm7JRzdG7zPuwY9ewM2R1Y+/HvcLduo
-         rBlw==
-X-Gm-Message-State: AGi0PuacYtnWPQEgi/IZvPMPbREPrJ5MWsVFdGlC+AP2TuIzo1Tbva2C
-        5wpTCj1btVglw3A7OkK2RBKqF1tOc0iNXwCRWAoCA+43Yls=
-X-Google-Smtp-Source: APiQypJH7xi7dWT1GhA1MGd37686CDSFVhSboH/6KbmhuD2nsjb72xpnqDRsbOTySpzHv9c8J2XKFLOG1lCl5Q5ikd8=
-X-Received: by 2002:a05:6214:bc6:: with SMTP id ff6mr1729654qvb.43.1588669849932;
- Tue, 05 May 2020 02:10:49 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200411211414.GP13306@hungrycats.org> <b3e80e75-5d27-ec58-19af-11ba5a20e08c@gmx.com>
- <20200428045500.GA10769@hungrycats.org> <ea42b9cb-3754-3f47-8d3c-208760e1c2ac@gmx.com>
- <CAK-xaQYvgXuUtX6DKpOZ2NrvkYBfW9qgGOvMUCovAjVBO2Ay7g@mail.gmail.com> <a7d16528-b5c2-0dcb-27fa-8eee455fee55@gmx.com>
-In-Reply-To: <a7d16528-b5c2-0dcb-27fa-8eee455fee55@gmx.com>
-From:   Andrea Gelmini <andrea.gelmini@gmail.com>
-Date:   Tue, 5 May 2020 11:10:38 +0200
-Message-ID: <CAK-xaQajcwVdwBZ6DhZ5EYax2FL28a6_+ZfsPjV7sqXeQ3RVKQ@mail.gmail.com>
-Subject: Re: Balance loops: what we know so far
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
-        Linux BTRFS <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=6Lk3ypvTxTv7+ivlnEjKjseLEtkcEK/MDUAoSZslokg=;
+ b=uHu19DAbje/QJrLL1qwnu7GmdJSOE/OpSNORtaXKM0gyW8NCNTfouFOij3fVN/r6LZy28M59N3XZP35+4MuRzlHYO7MbI8avMxqx2XWZ+0GxTFUktCKIFBtRNPnvcEn1ZWyzz4Iyt09j3oxizZewMp4d/y9ahX2BIGw7Iu8emOc=
+Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
+ (2603:10b6:803:47::21) by SN4PR0401MB3677.namprd04.prod.outlook.com
+ (2603:10b6:803:45::16) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2958.21; Tue, 5 May
+ 2020 09:11:26 +0000
+Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
+ ([fe80::9854:2bc6:1ad2:f655]) by SN4PR0401MB3598.namprd04.prod.outlook.com
+ ([fe80::9854:2bc6:1ad2:f655%4]) with mapi id 15.20.2958.029; Tue, 5 May 2020
+ 09:11:26 +0000
+From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To:     Qu Wenruo <wqu@suse.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH v4 5/7] btrfs: block-group: Rename write_one_cahce_group()
+Thread-Topic: [PATCH v4 5/7] btrfs: block-group: Rename
+ write_one_cahce_group()
+Thread-Index: AQHWIm/ziLeF/85vLUaVux64UGn+OA==
+Date:   Tue, 5 May 2020 09:11:26 +0000
+Message-ID: <SN4PR0401MB35983D96B103B9734C0EBAB89BA70@SN4PR0401MB3598.namprd04.prod.outlook.com>
+References: <20200504235825.4199-1-wqu@suse.com>
+ <20200504235825.4199-6-wqu@suse.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: suse.com; dkim=none (message not signed)
+ header.d=none;suse.com; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [129.253.240.72]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 1a0346f4-9608-4559-886d-08d7f0d44a3f
+x-ms-traffictypediagnostic: SN4PR0401MB3677:
+x-microsoft-antispam-prvs: <SN4PR0401MB36778C3615A1AEC221E67F4E9BA70@SN4PR0401MB3677.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:2449;
+x-forefront-prvs: 0394259C80
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: MlS3ixYaVOS/dgw76djvAX95nDyjdCMDoFIeNJdnx/X9J/mRG9oUhsMllojere1R6b88+c2oKroTCL0TKWapkHhysWg96N5Wx1q8QduNVkVovesh7Ku07DDlRqynkDMX1Jr5LiEdbGiXG/AZPcj3kDi1kAYl5a3NlDjXjSjDPnLKLACEAlNwiijXUNqiyb3T7hbuLwJw3DL3unimiKZMKLmFEJ+x3WGCsg8d/5LYQvP4ybo8z77dMv+tct4X9qndlF6Uylk9wPaqoWGsKu/f6zOmojJKuL6i/WQjgDopmYeN/QE5B4puJgZjRn0TKAcdK9jH7RDXNwbL8WLYtEIeA8O70DN5zmL6W5IsjTPioVrziUrofOykjJYXCQxQ1r2UdyPXBLlUi2nmdtJ3UpaM+QXbZRN60HytOiHRUAjMVhB5kwE4HxW7nxd1Uz8Cpr3rnkx6mq27zJ8t1JqpbRkjRtQUDULjOznknA/Qfsny7OKJx7xXUVDWokhzIPEaC+scyxM8JRBrNHyBS0Ony9WnBg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR0401MB3598.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(136003)(39860400002)(346002)(376002)(396003)(366004)(33430700001)(7696005)(5660300002)(6506007)(91956017)(76116006)(9686003)(52536014)(66476007)(55016002)(66446008)(66946007)(66556008)(64756008)(558084003)(186003)(26005)(71200400001)(478600001)(86362001)(8936002)(110136005)(33440700001)(8676002)(33656002)(316002)(2906002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: j5ojXOulcFYfJxfAZkJUUupD9u1LpX3qTR4/97UFu9QXj1O9jC8MjnLYyHh+mqlFJQAmAhGR0kge3VjHS1JF22VU4DM/sDNQ0ruwReGln/pfP5d+DO2TT6ORwMR3pR7pj8mAKSDozDIVNbUmm3AOko0jXUQoCgiwy9hjoljX5ZymlQ1qJPszi6UpuCcKK9DygomjgpEg+zlv/jzgBpc3eRIXaTBpfgHkgsolBLkqZH5fsh1TJMASx7a2xHTAWecrRBRFzbCi/UmPOC3hYIQ9EiTj5lgCt19UFfOo3IoZndVWAXhKpHdQh9q4DJLAZYT1gOBG4+exjdkIxrct1z43JJHJXElX+xh0tIBfvE9aPGiyM/xieIYucMhlgyOo9ZSE60g9yJXRelVdYzjXeVfOBtXWuI20vKU5Yapnit2HfelqtKc2Zbq4yx0kaCCQXNDutR7+E2USPwfDsdIaKwrZMRsSh8FtAwiZu3WlGgUU951uoGY85ySTHJSMLSV5tft9fFCTSKvsPAIjHyxSGi03LxECCUDTUR9qy8FHIPGdWRukMPGz33VfRbE53BcfqkdEJ/qXzXKBerRp0Yhkw78vXYLd+vMpTVZbzzfe8Lsn4eQb9ELsGdFkFEMzrKKmQ+RjcwchCgSaQzzmh03KZMBywvKPKwYjDzK4inCmeHTqh+xv0uQjPdAf31VUyEDz20NCbCL/rOPOTRbzS8hnog6HowleMgqZJPzVpDwNdMPDHoNcWl/NpN2HidlmHc11PkTk451ETOvk2H0YQMaxCCnMhWN3cGtORKreBBarIt3HqsY=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1a0346f4-9608-4559-886d-08d7f0d44a3f
+X-MS-Exchange-CrossTenant-originalarrivaltime: 05 May 2020 09:11:26.4036
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: AH9dgYJlDleAzBp/IuoRBSS7HKRVKAMiOdyCIBOgDs3d0DZYc2+zy9ChrxSKGDLGoAJ4xUFNEXUeBvhaUpM0pUAssC8vY8NXzYylhYQVZyQ=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN4PR0401MB3677
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Il giorno mar 5 mag 2020 alle ore 01:48 Qu Wenruo
-<quwenruo.btrfs@gmx.com> ha scritto:
-
-> I mean, btrfs-image dump of the umounted fs.
-> (btrfs-image can compress the metadata, and won't include data, thus it
-> can be way smaller than the image)
-
-No problem to give you complete image, data and metadata.
-
-> At this stage, the image should be pretty small.
-> You can try restart the system and boot into liveCD and dump the image.
-
-Just to give you more possible info, here=C2=B9 you find all the files. I
-guess you figure out how to
-use it without my explain, but anyway, just for the record:
-
-- video.mkv : show you how I re-up the save-state of vm at the moment
-I saw the loop;
-- Virtualbox-Files.tar.bz2 : contains all the Virtualbox VM files, so
-you can run it up on your own. You can also view the history command I
-did;
-- ubuntu-iso.tar : just to make it easier, it's simply the iso Ubuntu
-I'm using, with the right path, so if you want to replicate my side;
-- sda1.btrfs.dd.bz2 : is the dd of all the BTRFS partition, just after
-the reset of the VM, but without mount it. So, if I mount it, I see
-this:
-
-[268398.481278] BTRFS: device fsid
-cdbf6911-63f6-410e-9d22-a0376dfcc8ce devid 1 transid 32588 /dev/loop35
-scanned by systemd-udevd (392357)
-[268404.681217] BTRFS info (device loop35): disk space caching is enabled
-[268404.681221] BTRFS info (device loop35): has skinny extents
-[268404.694708] BTRFS info (device loop35): enabling ssd optimizations
-[268404.700398] BTRFS info (device loop35): checking UUID tree
-[268404.722430] BTRFS info (device loop35): balance: resume -musage=3D2 -su=
-sage=3D2
-[268404.722523] BTRFS info (device loop35): relocating block group
-12546211840 flags metadata|dup
-[268404.752675] BTRFS info (device loop35): found 21 extents
-[268404.771509] BTRFS info (device loop35): relocating block group
-12512657408 flags system|dup
-[268404.792802] BTRFS info (device loop35): found 1 extents
-[268404.819137] BTRFS info (device loop35): relocating block group
-12210667520 flags metadata|dup
-[268404.858634] BTRFS info (device loop35): found 26 extents
-[268404.915321] BTRFS info (device loop35): balance: ended with status: 0
-
-Just in case:
-1aced5ec23425845a79966d9a78033aa  sda1.btrfs.dd.bz2
-93c9a2d50395383090dd031015ca8e89  ubuntu-iso.tar
-e9b3d49439cc41cd34fba078cf99c1b8  video.mkv
-663b9a55bbfdb51fc8a77569445a9102  Virtualbox-Files.tar.bz2
-
-Hope it helps,
-Gelma
-
-=C2=B9 http://mail.gelma.net/btrfs-vm/
+Looks good on its own as well,=0A=
+Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>=0A=
+=0A=
+Btw, you have a type in the Subject line s/cahce/cache/=0A=
