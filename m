@@ -2,171 +2,137 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0DE31C5277
-	for <lists+linux-btrfs@lfdr.de>; Tue,  5 May 2020 12:03:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEA201C52A7
+	for <lists+linux-btrfs@lfdr.de>; Tue,  5 May 2020 12:10:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728268AbgEEKDT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 5 May 2020 06:03:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37450 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725766AbgEEKDT (ORCPT
+        id S1728497AbgEEKKL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 5 May 2020 06:10:11 -0400
+Received: from ipmail03.adl4.internode.on.net ([150.101.137.145]:17272 "EHLO
+        ipmail03.adl4.internode.on.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728430AbgEEKKL (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 5 May 2020 06:03:19 -0400
-X-Greylist: delayed 251 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 05 May 2020 03:03:19 PDT
-Received: from smtp.ixydo.com (unknown [IPv6:2a01:4f8:192:8445:b0::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03503C061A0F
-        for <linux-btrfs@vger.kernel.org>; Tue,  5 May 2020 03:03:19 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by smtp.ixydo.com (Postfix) with ESMTP id D411CF3FDE
-        for <linux-btrfs@vger.kernel.org>; Tue,  5 May 2020 10:03:16 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at smtp.ixydo.com
-Received: from smtp.ixydo.com ([127.0.0.1])
-        by localhost (ht-mx-5.ixydo.net [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 7mPb8HR_UWUE for <linux-btrfs@vger.kernel.org>;
-        Tue,  5 May 2020 10:03:16 +0000 (UTC)
-Received: from [10.3.2.105] (unknown [88.98.92.14])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (No client certificate requested)
-        by smtp.ixydo.com (Postfix) with ESMTPSA id 6FAECF3FDA
-        for <linux-btrfs@vger.kernel.org>; Tue,  5 May 2020 10:03:16 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp.ixydo.com 6FAECF3FDA
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mx.ixido.net; s=mail;
-        t=1588672996; bh=js7NhqYj21vJCBdDlypqVrgIS+hjmGzY+4+mNnL78l8=;
-        l=5079; h=Subject:To:References:From:Date:In-Reply-To:From;
-        b=wj6USrCsY4SUaG+Xuhd+QjOxoeqyWeQjavn01etkeUMBL4H1pdpXeYXl8RkOGTf1B
-         Y7yL3YQceaDnDaWJ3uStzwpF2p6zLapNq1P+dXHS1iB0YE6XfIqsTVmbOp2NnuEgnc
-         bKBuqLdsvuHOQbnfcpec9uRQ1T5aT2Hw+fmOBe6631ShG6jTiZ/ORIsUjl1nScQ6iI
-         +NiGcmhlXyLGC62VFLKPU6SUZ3bHd78hTGWH/d/8biNzMBH3ClJYqLogunFFvF3qu3
-         YxqrodFSkcxgwMou6+I0C/tqGL5BvN9RRlEQjrsvs6/edgq319R6ZT0DHRucUkh8/w
-         b7UKYZozeh4Ow==
-Subject: Re: BTRFS critical: unable to find logical 39209762816 length 4096
-To:     linux-btrfs@vger.kernel.org
-References: <85204219-e503-9e61-c4b5-9b3373f8a9f3@ixydo.com>
-From:   Jinn <linux-btrfs@mx.ixido.net>
-Message-ID: <77ff2ead-a3d5-f26b-f2eb-17013240f76a@ixydo.com>
-Date:   Tue, 5 May 2020 11:03:16 +0100
+        Tue, 5 May 2020 06:10:11 -0400
+X-IronPort-Anti-Spam-Filtered: true
+X-IronPort-Anti-Spam-Result: =?us-ascii?q?A2DTAQDvOrFe/9y5pztmGwEBAQEBAQE?=
+ =?us-ascii?q?BBQEBARIBAQEDAwEBAUCBR4IqgUMyhE2Of4FkCCWbXgsBPAECBAEBhEQCgi0?=
+ =?us-ascii?q?kOBMCEAEBBgEBAQEBBQRthWKFcQEBAQECASNbCwsOCgICJgICPBsGAQwIAQG?=
+ =?us-ascii?q?DIoJdH7IXdoEyiUeBQCJsKoxEGoIAgREnDAOCWj5phneCYASZCplHgTeBG4E?=
+ =?us-ascii?q?Dlw0jnSCQF58tIoFWMxoIFxmDJU8YDZBLAxeONy8DZwIGCAEBAwlZAQGPJgS?=
+ =?us-ascii?q?CQQEB?=
+Received: from podling.glasswings.com.au ([59.167.185.220])
+  by ipmail03.adl4.internode.on.net with ESMTP; 05 May 2020 19:40:07 +0930
+Received: from dash ([192.168.21.15])
+        by podling.glasswings.com.au with esmtp (Exim 4.89)
+        (envelope-from <andrew@sericyb.com.au>)
+        id 1jVuWa-0003sS-Mh; Tue, 05 May 2020 20:10:04 +1000
+Subject: Re: btrfs-progs reports nonsense scrub status
+To:     Graham Cobb <g.btrfs@cobb.uk.net>, linux-btrfs@vger.kernel.org
+References: <0d1cceb6-9295-1bdf-c427-60ba9b1ef0b3@sericyb.com.au>
+ <fe7f6b83-aa2c-898e-648d-a8d86f5fd4d5@cobb.uk.net>
+From:   Andrew Pam <andrew@sericyb.com.au>
+Autocrypt: addr=andrew@sericyb.com.au; prefer-encrypt=mutual; keydata=
+ mQGiBEPPxa8RBACcBTuSu02Fi+ZhvFj8wYJa8P2xF2djPveAkV5iuv/b1OTlzcdC7yJwNKq8
+ STgXoe2C9orhZ+3lO0iIwCkZpYj3purc1CojYE0bFh8EAW85usWox+Nrqsb6JYaoJk0ekyfM
+ gogjKGf7MUg4lDwfg1D6iiWJ0Dk6OZwARo9u97sqswCgwki1jozMbKx8LhkzbeNAonRxADED
+ /2HcSy+OsR2byqdX2BbaZppXZJEzclQNR7BiSwTPVoOX0jcHY0Sn8rdBUlagSEhv4YJ4Tdwd
+ QhPs3qcrFm2GQnStV19cLJ1DvO3TfLEikSetWotBv/6RanXRZRweRE4pm/zZMxX6+zcib+jb
+ +UlFg7MSyu+z50g0Bf4b5xH6AW/DBACAsgsJaaD1lDOdFMK7jnUiYXI0Y+LfHJ6xOukYUNqC
+ Yaxbw4Bk60DeP7hwUfVPMMxIJZdN+WsrtkijppJG6La9KqapYPu3ByapaLoIjtBOeTJfhcDN
+ mcAqZaxDhZ6eIMi+IOyS6/2MK76aLEpYY+0+M8mzUZ3LXi/blYVbS7urobQkQW5kcmV3IFBh
+ bSA8eGFubmlAZ2xhc3N3aW5ncy5jb20uYXU+iGEEExECACECGwMGCwkIBwMCAxUCAwMWAgEC
+ HgECF4AFAkPPySICGQEACgkQGk9LI6KtAU50ZwCeJfVJEMTSK71XD+WR8z9stEhPovYAniEn
+ wBEAHXMO4MlxJPMmnYJWG/rbuQINBEPPxbQQCADZy6E8nqM+1s3t1UaIKzGzF8PuA0R+/Zx3
+ 5Uh4jHHoJyFt/uuJxyJzOrq9Ilz+fWXOrXK44Ga3wOQ6yR9tIhrGNoQ97Y2S5RSufjNVstS1
+ otA0N3a6nUz44rAPwXfFhMKTlUjfUwuvQik3yEF1kyXEU7o78G/XG06M/9s1ur1k4hFvAfCE
+ y/fXztx86bC5vlDq2r1MAwE+fMJG/Ok21OekdY0D3KrZ1kOi4kYgRoVIGlgfJE3OXi6W8Lko
+ c/oO0UUtEoiKGGOBTewmU8N6G2F3OXiONnZIY+FD/NIe+3YAEWAIc5SoXQs4KCmNxaF6vxRQ
+ STBOX2A9Y+LfY4lx5+HzAAMFB/9g0VGTdvnQvogs/0b+FdfvPVflwhbW9VMF12kWwgx9q0Gw
+ xcWO8IJWlFQouam5u2QMVMKxsscphAPjWDYP8BVGWFx32/Z5XZnp2xOqjaFSG9BfbEqIUizL
+ 9AEClL04eBKGmVrhPzr2d0Z7DgF5gxehVYZ7m9dW7heFnuiC+ZaYEGRvfyWsWsOihoDkbify
+ Ms1RluUU23wKJFaZzafAX4caD9u3bIUaujKUGCh64nLkaxwmZD2QBw0T9jGCIssVCRHwQmTV
+ 25eADYmSEwf3ONk4ljzfupTOpCLtNapGc3vZO84CQSv9bl3l24uBvVRWaqLJMO0NzAn+qbes
+ U3w6WMBCiEkEGBECAAkFAkPPxbUCGwwACgkQGk9LI6KtAU59IACggRqLORG73pZUK1pRh02T
+ 5kUwjTQAn1F0m2Mx72juiYwF0IKljJ7lR0TR
+Organization: Serious Cybernetics
+Face:   iVBORw0KGgoAAAANSUhEUgAAADAAAAAwBAMAAAClLOS0AAAALVBMVEUrHhk8LSRTQTZuVkmC
+ UkaKalykaGZ3h7KmgG+ahH68lYWXn7mxmpTSqZ3CvLqleibHAAACZElEQVQ4y3XUPWvbQBgH8FOg
+ Qzef3EKnEp+qIaOlGJzFi+Xg0YMFcoeMod/AFDpksMpxeHCSZhAYUxoo8mF16NylLYXUCG2F1uSW
+ eCimJp+hz+nNctKesTH30/P87ySf0e1/Bsq/hZ4X/Qu+XxiEHNyH9blBsEoOorvwzSQVjAnRJtuw
+ Mkk6MknhnGBSIQRiiF6ElZzNxlEBzpIuEKMSrG1gbaQXQz7GaiOHVd5GSpISw42cg0vlJ6TFC0NJ
+ BOwuAaKZBmlkQGAKIwWrmrnv2K66l8KqUlFxCSFFo5T5jMchEpYyEqFS+bkQgge8qqVwI6ehoB4I
+ ORYdNYUvGCswr3ORwImSA4KXzpICIU7QJIHTkoIVnaUFQoxQIwVopTi8AEcJVHFJ2QGAxUK3qTfK
+ WlUhAYD6rsXEomt3snAAJMGtWW3xo+V0djKAxe4w7jf33rSDS3IxepjCLuyuzAJOx/RF4Pfo26cZ
+ QMVjyPUpo8HPY/Y5u7tVqHhEYUELzgN4v4tSOEWK8ozG2wAIxK/sCS5RmeiUSfCDhRAfMljjJ4NW
+ AvH9ivJnXn3wvhXvesGYCDYQjtAhAIRw65BynsMZLMqiVC7Jtdqc5z+4pYn0rsM453PP7s1nOawN
+ pTaQMPW45403cLvENWoDuA6bTZ0CfC3VqQ0Z/BgGnRQqUJ26stdrAD/aAh6X+F2rPS0cnBWAbycl
+ bFg8UbsAru3wQISzqAgf63xOu7YXhqG3dWr7tWHgD0yz53lbx/lP/+U4hNvRNMza1h/A737/U3h9
+ 1d1vNnt3oR9eh65tO8N78CoMr2CT4wz+AgHlxhkkWxq2AAAAAElFTkSuQmCC
+Message-ID: <7023fbc0-2715-fa3a-58c1-ebe95054a9a4@sericyb.com.au>
+Date:   Tue, 5 May 2020 20:10:04 +1000
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <85204219-e503-9e61-c4b5-9b3373f8a9f3@ixydo.com>
+In-Reply-To: <fe7f6b83-aa2c-898e-648d-a8d86f5fd4d5@cobb.uk.net>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-I realized I missed a couple of further information commands:
+On 5/5/20 7:51 pm, Graham Cobb wrote:
+> On 05/05/2020 06:46, Andrew Pam wrote:
+>> $ sudo btrfs scrub status /home
+>> UUID:             85069ce9-be06-4c92-b8c1-8a0f685e43c6
+>> 	no stats available
+>> Time left:        16964119:40:20
+>> ETA:              Mon Aug  8 23:23:14 3955
+>> Total to scrub:   7.30TiB
+>> Bytes scrubbed:   10.20TiB
+>> Rate:             288.06MiB/s
+>> Error summary:    no errors found
+> 
+> btrfs-progs version? (output from 'btrfs version')
 
-  $ sudo btrfs fi show /mnt/crypt-timemachine
-  Label: 'timemachine'  uuid: a09ae23f-f5b9-4ff4-a29a-d2fd81c6d450
-          Total devices 1 FS bytes used 680.00KiB
-          devid    1 size 2.27TiB used 3.04GiB path /dev/mapper/crypt-timemachine
+btrfs-progs v5.4.1
 
-  $ sudo btrfs fi df /mnt/crypt-timemachine
-  Data, single: total=8.00MiB, used=520.00KiB
-  System, DUP: total=8.00MiB, used=16.00KiB
-  System, single: total=4.00MiB, used=0.00B
-  Metadata, DUP: total=1.50GiB, used=144.00KiB
-  Metadata, single: total=8.00MiB, used=0.00B
-  GlobalReserve, single: total=16.00MiB, used=0.00B
+> Is there actually a scrub in progress?
 
-On 05/05/2020 10:59, Jinn wrote:
-> Hi,
-> 
-> I have a filesystem that appears to have lost it's data.  I believe the ATA interface on the
-> host has failed, which has lead to this problem.  It would be nice to recover the data if
-> possible.  Prior to realizing the ATA bus was the issue I had two other BTRFS filesystems
-> connected, all of which were repaired by connecting to another ATA bus then scrubbing.
-> 
-> This particular filesystem has no subvolume snapshots, though I have been using snapper on
-> other filesystems to manage this.
-> 
-> The filesystem can be mounted without issue, but when I try to scrub it aborts immediately
-> with the following status.  Before disconnecting I believe the filesystem was being
-> automatically remounted read-only when writes were attempted, though I haven't confirmed this.
-> 
->   $ sudo btrfs scrub status /mnt/crypt-timemachine
->   scrub status for a09ae23f-f5b9-4ff4-a29a-d2fd81c6d450
->           scrub started at Mon May  4 14:50:42 2020 and was aborted after 00:00:00
->           total bytes scrubbed: 264.00KiB with 0 errors
-> 
-> In the kernel logs I see:
-> 
->   kernel: BTRFS critical (device dm-4): unable to find logical 39209762816 length 4096
->   kernel: BTRFS critical (device dm-4): unable to find logical 39209762816 length 4096
->   kernel: BTRFS critical (device dm-4): unable to find logical 39209762816 length 16384
-> 
-> The output of btrfs check:
-> 
->   $ sudo btrfs check /dev/mapper/crypt-timemachine
->   Checking filesystem on /dev/mapper/crypt-timemachine
->   UUID: a09ae23f-f5b9-4ff4-a29a-d2fd81c6d450
->   checking extents
->   Couldn't map the block 39209762816
->   Invalid mapping for 39209762816-39209779200, got 588439879680-588976750592
->   Couldn't map the block 39209762816
->   bytenr mismatch, want=39209762816, have=0
->   ref mismatch on [39209762816 16384] extent item 0, found 1
->   tree backref 39209762816 parent 7 root 7 not found in extent tree
->   backpointer mismatch on [39209762816 16384]
->   owner ref check failed [39209762816 16384]
->   ref mismatch on [588965576704 16384] extent item 1, found 0
->   backref 588965576704 root 7 not referenced back 0x55ccdfad6660
->   incorrect global backref count on 588965576704 found 1 wanted 0
->   backpointer mismatch on [588965576704 16384]
->   owner ref check failed [588965576704 16384]
->   ERROR: errors found in extent allocation tree or chunk allocation
->   checking free space cache
->   checking fs roots
->   checking csums
->   Couldn't map the block 39209762816
->   Invalid mapping for 39209762816-39209779200, got 588439879680-588976750592
->   Couldn't map the block 39209762816
->   bytenr mismatch, want=39209762816, have=0
->   Error going to next leaf -5
->   checking root refs
->   found 712704 bytes used, error(s) found
->   total csum bytes: 8
->   total tree bytes: 147456
->   total fs tree bytes: 32768
->   total extent tree bytes: 16384
->   btree space waste bytes: 132656
->   file data blocks allocated: 532480
->    referenced 532480
-> 
-> SMART output for the disk doesn't suggest any issues with the disk itself, i.e.
-> Offline_Uncorrectable, UDMA_CRC_Error_Count, Reallocated_Event_Count,
-> Current_Pending_Sector, Reallocated_Sector_Ct, Seek_Error_Rate, are all 0.  Extended offline
-> tests are run regularly and have all completed without error.
-> 
-> I've tried to scrub on multiple hosts with varying kernels and btrfs-progs
-> 
-> 1. Original host was Debian Buster on a backports kernel:
->    5.4.0-0.bpo.4-amd64 #1 SMP Debian 5.4.19-1~bpo10+1 (2020-03-09) x86_64 GNU/Linux
-> 
->    Started with stock btrfs-progs 4.20.1-2, then tried the package from backports,
->    btrfs-progs 5.2.1-1~bpo10+1
-> 
-> 2. Second host was Ubuntu 18.04 with a mainline kernel:
->    5.6.7-050607-generic #202004230933 SMP Thu Apr 23 09:35:28 UTC 2020 x86_64 GNU/Linux
-> 
->    Only tried stock btrfs-progs here: 4.15.1-1build1
-> 
->    Disk is connected via a USB to SATA adapter.
-> 
-> 3. Third system is a stocket Ubuntu 18.04
->    4.15.0-99-generic #100-Ubuntu SMP Wed Apr 22 20:32:56 UTC 2020 x86_64 GNU/Linux
-> 
->    With btrfs-progs 4.15.1-1build1.
-> 
-> At this point is there any hope of recovering the data?  If not, is it worth trying to do a
-> repair with `btrfs check`, or anything else?  Or should I just go ahead and re-format the disk?
-> 
-> Any help is much appreciated.
-> 
-> Thanks,
-> Jinn
-> 
+Yes.
+
+> Presumably there is no stats file? Try 'cat
+> /var/lib/btrfs/scrub.status.85069ce9-be06-4c92-b8c1-8a0f685e43c6'
+
+scrub status:1
+85069ce9-be06-4c92-b8c1-8a0f685e43c6:1|data_extents_scrubbed:116366415|tree_extents_scrubbed:1154955|data_bytes_scrubbed:7193709023232|tree_bytes_scrubbed:18922782720|read_errors:0|csum_errors:0|verify_errors:0|no_csum:363202|csum_discards:0|super_errors:0|malloc_errors:0|uncorrectable_errors:0|corrected_errors:0|last_physical:0|t_start:1588531014|t_resumed:0|duration:43505|canceled:0|finished:0
+85069ce9-be06-4c92-b8c1-8a0f685e43c6:2|data_extents_scrubbed:99457032|tree_extents_scrubbed:899136|data_bytes_scrubbed:6169469337600|tree_bytes_scrubbed:14731444224|read_errors:0|csum_errors:0|verify_errors:0|no_csum:306304|csum_discards:0|super_errors:0|malloc_errors:0|uncorrectable_errors:0|corrected_errors:0|last_physical:0|t_start:0|t_resumed:0|duration:37079|canceled:0|finished:0
+
+> Is this a multi-device filesystem?
+
+Yes.
+
+> See what 'btrfs scrub status -d /home' says.
+
+UUID:             85069ce9-be06-4c92-b8c1-8a0f685e43c6
+scrub device /dev/sda (id 1) status
+Scrub resumed:    Tue May  5 20:08:45 2020
+Status:           running
+Duration:         12:05:35
+Time left:        30907070:08:51
+ETA:              Sun Mar 17 11:18:10 5546
+Total to scrub:   3.66TiB
+Bytes scrubbed:   6.56TiB
+Rate:             158.11MiB/s
+Error summary:    no errors found
+scrub device /dev/sdb (id 2) status
+	no stats available
+Time left:        30720615:37:35
+ETA:              Mon Dec  8 12:46:54 5524
+Total to scrub:   3.66TiB
+Bytes scrubbed:   5.63TiB
+Rate:             159.07MiB/s
+Error summary:    no errors found
+
+Cheers,
+	Andrew
