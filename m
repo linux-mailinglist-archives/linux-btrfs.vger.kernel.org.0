@@ -2,33 +2,34 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39ED81C7D9E
-	for <lists+linux-btrfs@lfdr.de>; Thu,  7 May 2020 00:50:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC7851C7D9F
+	for <lists+linux-btrfs@lfdr.de>; Thu,  7 May 2020 00:52:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730410AbgEFWu2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 6 May 2020 18:50:28 -0400
-Received: from mout.gmx.net ([212.227.15.18]:44875 "EHLO mout.gmx.net"
+        id S1730301AbgEFWwb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 6 May 2020 18:52:31 -0400
+Received: from mout.gmx.net ([212.227.17.20]:47095 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729243AbgEFWu2 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 6 May 2020 18:50:28 -0400
+        id S1729243AbgEFWwb (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 6 May 2020 18:52:31 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1588805423;
-        bh=+ibddYhvjHajtwJFoS9dQS6RoFTkALpH8zVHTtQcu0g=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=B0JnpqyA3t4pIY4VbBsTFsB59WGGTPVf6XwfNVIEWj+Ttm2zIbey4sBYTWjHvIkdE
-         CojkBfHmGCLpYQF9WvCH/uigWWD8+69JJ0FBYBhqUCKT4nfTItzJmuzbvJUymF3lnD
-         9zB/IRbhBOzDJelRz63SsMMAy5dVrranNvDxznl4=
+        s=badeba3b8450; t=1588805542;
+        bh=wLCRYOBvVYM91kcQACdjuZ3mIosw5dHsshxxUY3piyc=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=Nt4JK1QbeU4SmBFkr4C3l+aG06W2GfmrvZUVuXyPOPiI/pjUMZVxay6wwdrDRiwEq
+         mJUAMqjamMx13XNGey5LCBCLdBcfazq4a9z8AlZwRuI5zBvn/pp7AAiOczbO8qXkoc
+         2bobkzYHZFdWcO4QAGSEHPTnejeETHE8QXeS6Bd8=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MRCK6-1jkoMU3VvY-00NCU4; Thu, 07
- May 2020 00:50:23 +0200
-Subject: Re: btrfs root fs started remounting ro
-To:     John Hendy <jw.hendy@gmail.com>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-References: <CA+M2ft9zjGm7XJw1BUm364AMqGSd3a8QgsvQDCWz317qjP=o8g@mail.gmail.com>
- <CA+M2ft895gy-zmDsax14pOgK3JmGxj6+1Z_itn3GhaGREBfDKw@mail.gmail.com>
- <87cb36b6-618d-5005-d832-53cd486084cb@gmx.com>
- <CA+M2ft8oLkTrav1=zW1AFRU+=44Yd6-fXYO5mhre4mi-1PANmw@mail.gmail.com>
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MfYLQ-1ivB9B1Dh2-00g3uA; Thu, 07
+ May 2020 00:52:21 +0200
+Subject: Re: [PATCH v4 02/11] btrfs-progs: block-group: Refactor how we read
+ one block group item
+To:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        Qu Wenruo <wqu@suse.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+References: <20200505000230.4454-1-wqu@suse.com>
+ <20200505000230.4454-3-wqu@suse.com>
+ <DM5PR0401MB3591BD0FCE7A13C5145BB7959BA40@DM5PR0401MB3591.namprd04.prod.outlook.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -54,263 +55,98 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
  ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
  oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <585fd229-29fd-1786-e971-8c90c2430218@gmx.com>
-Date:   Thu, 7 May 2020 06:50:20 +0800
+Message-ID: <20fe631b-5650-f6a5-2cf8-5603ac7dffc5@gmx.com>
+Date:   Thu, 7 May 2020 06:52:17 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <CA+M2ft8oLkTrav1=zW1AFRU+=44Yd6-fXYO5mhre4mi-1PANmw@mail.gmail.com>
+In-Reply-To: <DM5PR0401MB3591BD0FCE7A13C5145BB7959BA40@DM5PR0401MB3591.namprd04.prod.outlook.com>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="z3MFqYSl8AhjCzVXjNhr063aXIErudOR2"
-X-Provags-ID: V03:K1:YOsLzC0Xa52o8dNOw6L0Z0rx/XuCYmct8i8xPJbE2/L8zCYu3xd
- 8JLrjOZ8qq5sRE3HWuNQ9XoS1zqWTJq/7zk0Yvm31WKoA61rpMrZJNHzGaNk5KJPqwDgnJQ
- MzkrqElTEVmbuSDJdsBkasJJ2/0v2qcIZh4YRe3QvBrhsFgcnivbhrBbFwJxEE1QNLO/CgN
- Xf4c36SPpxqwxG/mFHCmQ==
+ boundary="gF2Cp8iTgishRzdl9yVVxLnQQX0uBv3zT"
+X-Provags-ID: V03:K1:Lod9GVunwyHuuV1xYM7QpxLRD7dGPNRijhc0cRvzlEGcif//nds
+ I26v+NV/KNIgi0lrjVcRAfkfWp9sUyOn10NuY+Y9mY2dCzh0cNeKvOKHxx11mXogksjI4RB
+ eyH26Ayg7dMtdYga9D1POmFQ5p0sBZq0XMcYSBMNMO7gB8IcPHElXhB413TqDnp8YxwFEfs
+ Pl6dYEA+R+VLhPUmwpaAA==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:M4TDf6zIeN4=:UvCKl+mEmzQjABhPLWc6H0
- 1853xR3soXaiOWkO1pwrSB0Zh65xCvscHvZV+0yB4uxDKoe7JdNO0EGd+b8KJKUwe0L8BRu5+
- mqdaEUq/L1xav9VAyVve8dRBKBYDFUUbyj0e9onzmCkirU3gO64cp5Y6rfWwWScBTPOrX9BEO
- D9ppv2H3HZMzeZEHFnTVFg6KIH7xKFsJerNKBq2paJBoVbTtMGFb0copaWL8AVefcCThufY0O
- 0tYfP8hR7IMgg4RQ/MFwX+sg8I6xZf1Br8AHlmSdUOTuO7DsG3azCHJ7fW/uIdtsLc05BLiq3
- UxPgcleN1GuJ4a5/6S7SWo0xXOZAkjPgq294YC8aXmOE2ZNRXtG57Fqru1bW9x+lia5fbrwY4
- 3FqSY1XXZKUX789C2HFfLMhklfEX9CdMT++BlxyabFCiZGGDNF5cYEaGCE4seoaGTsSvQae6L
- QL65VTrYIu/Cw9Ld7Mmv5NG2CQx344W30b+g7xpchBeaRysPDXpdlkSqUo2H6rTfFPO5F2LYO
- MER/J1eco6zMcdD6e1WMhYEPx9pBHuCQJbQxq7AV+YZnOmkxzi8L2PTIRLOR0/D34MlXJknA5
- HBmYRM9aFpM31nbVFWWVUYXpSpSbDVMSz7UuCJNVglhzl462+CZsD6qXqJ73+dxS5TVqN5xUL
- 9mrMxQcjM/6eNIamKZJvDYRS8C8hFxY48IQPmvb/mtwhzgfu6UVlRVwI+irT382gbJ5NWNm8X
- uUNqx6o3VT8cPHf5AeeBUtlffk+Fr8Je3ETitDi9KCc8joiZxv/KhBB2tFIhvEi4dBsz5+9vk
- YDKWzqBBIqOIB0AB8V7zAhawkhFdhzuEHME+4huRfU1dDZQz5oWDse/XV70ecf8eI6tPThkdh
- pD8AGfiqbtEWDbzcdgK68OV0J/r+hLo01BVVGIsIa1OJdPadlM5U3Bvm0dcsjuL5dNMC2foUf
- lLz0WbWq13+gsD3EuToed2XEZHfZmyhUKbJ9HkwEUbBV0sTlcOWeIBkYMPwEYa0sftePb331/
- VGT0M1ZCotFNMvCiXr6+mHgzGCkB8EXfQVqsUFtFurya8nxwo88fOdcy0xvdm5cG6u1AI4Y3t
- N5ugTwpcd/TPZwWhKvMuw/otxYy4mT9HmA9L7yDRvMAOl0TYUZ82a48GTxH7VBL1Ay7cKeP/4
- l3l9q2uxrFOtkTxzXrsmTk+evKRUweJ3BrPVY7zJ3T/t1VVA/NQRRnIEcNRb5S79HfkGt1rKL
- ykKkBA7B0p58/m48S
+X-UI-Out-Filterresults: notjunk:1;V03:K0:n8AAKQyn2RI=:zqlBn/h7ds7K3opW31Apm1
+ B2Pc4iz+Xu+qvA1kc4sImJ3R42HKMH5E/zFZGGVqku6axr6zDXZYvQeZ4U4u0QBQEEOaiZw7K
+ 03+UhUAM0chx0LCO0d0GqqeRs2GP/OXgXXLX25jZw2m2kBC5qJlvq3ZKssuyhfAvyxKsBEteo
+ WUn94PYQBJ37ntVvwPa/1gOJB4B8UH/osALl/9uDf186aKAbGCmKgdbQVFz/pWs+3vrhNu1PE
+ wAEyJozMa98bAzuTbq6tZjyL6uZ5pNC5qnPwSszBSU40/PDl7BWhlcwSrywnpR20mIJvHRzs1
+ hFUE8uzITSupT/4zSFZ6BqGbzj+3p53YA+31WHVkaBj0s/ibFDlEWm/RqTNm2CjyQgncgYKWA
+ odhrl+HccqYRTV9zjaucYq39z3Ak/0oPL1KMtfpbWX2BLd1unqO1SjHzxzuj/VinFYew87VWi
+ H3RsrZb4vXASXEzKsVONlvsMixxOE+2M2btSPajZHZfVtptdFHdFrxYVuvV/XQMSFGwKwIDLt
+ cRyRGDFro3RySpcnNeAT42pX8zjPJYgrtMte9wSXh0RAo2oMkbRgqasISbxw1weXFlLpJzUEn
+ X3TRjvIkWbWIS2TidHJTqAAzuOddzGRo7gd2um9W3IEiLTX5Y0GvK3R7OWqBAED56Uhh2+vxv
+ /If/SEYJ20EhljkQxyl89XJ4J+C/WrkqJ6FpJHOYph7NOfXlODmieNcfV7NSivdyd/lo+8cOc
+ ZZ3AIHrm3pd+dTqO0tug0Ohr23DeIOD0kddwCcNVkrOcvdisR7w4dmgEARUgDBV+SKuTWFWje
+ dxk3FqlaBH9GUijNRShW48nwMWuJUD2YE5DSc3+dTWoVtATrp4FuhwNo1IP70702NMn52yGfN
+ w8vApgpI1u/jRqd2kzrSsjCERSD4LNEfMA5hhlrnKEX1LEFSD8c7DaQPGdB2pipcxnjFzbO3N
+ N2aRgitgYyCuWiS8cSCENuFGrVhi38/QNn+yrmRGTzRgvToSDg12JG/BWzUMpNNnAfhsnTB91
+ UYp6nyj8cMoSpXtK+2H+4ko+xfqyhNc8GfVLUckQx+aBytKAysNWk9j3WCDR4B67JNb7evWxO
+ jZpp4o39QS2+ZDHj3rHtdrynU4r7HeT5IaN/pamEYQrbGlTNGRXhIjXgPBWOp8GWPja+66NSo
+ d+TnrxWFd2ulCKqK7J6PNHR6Ptdwgqg7quaKsvM4dohb/9Sennkzaq1Br4LoeCnl7BtZGIUTs
+ 257da9ovEW4fMQETY
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---z3MFqYSl8AhjCzVXjNhr063aXIErudOR2
-Content-Type: multipart/mixed; boundary="FNQ8mMZ6hzyIO2jbmrW9Hzr7mSVyxuELE"
+--gF2Cp8iTgishRzdl9yVVxLnQQX0uBv3zT
+Content-Type: multipart/mixed; boundary="QuqH1swrrcg86vXR8eKHK44SiCfqvGZu1"
 
---FNQ8mMZ6hzyIO2jbmrW9Hzr7mSVyxuELE
+--QuqH1swrrcg86vXR8eKHK44SiCfqvGZu1
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
 
 
 
-On 2020/5/6 =E4=B8=8B=E5=8D=8811:29, John Hendy wrote:
-> On Wed, May 6, 2020 at 1:13 AM Qu Wenruo <quwenruo.btrfs@gmx.com> wrote=
-:
->>
->>
->>
->> On 2020/5/6 =E4=B8=8B=E5=8D=8812:37, John Hendy wrote:
->>> Greetings,
->>>
->>>
->>> I'm following up to the below as this just occurred again. I think
->>> there is something odd between btrfs behavior and browsers. Since the=
+On 2020/5/7 =E4=B8=8A=E5=8D=881:27, Johannes Thumshirn wrote:
+> On 05/05/2020 02:02, Qu Wenruo wrote:
+>> - Use btrfs_block_group::length  to replace key::offset
+>>    Since skinny block group item would have a different meaning for it=
+s
+>>    key offset.
+>=20
+> Nope, you still use key->offset for cache->length
 
->>> last time, I was able to recover my drive, and have disabled
->>> continuous trim (and have not manually trimmed for that matter).
->>>
->>> I've switched to firefox almost exclusively (I can think of a handful=
+That's no problem for regular block group item, as in that case
+key->offset is block group length.
 
->>> of times using it), but the problem was related chromium cache and th=
-e
->>> problem this time was the file:
->>>
->>> .cache/mozilla/firefox/tqxxilph.default-release/cache2/entries/D8FD76=
-00C30A3A68D18D98B233F9C5DD3F7DDAD0
->>>
->>> In this particular instance, I suspended my computer, and resumed to
->>> find it read only. I opened it to reboot into windows, finding I
->>> couldn't save my open file in emacs.
->>>
->>> The dmesg is here: https://pastebin.com/B8nUkYzB
->>
->> The reason is write time tree checker, surprised it get triggered:
->>
->> [68515.682152] BTRFS critical (device dm-0): corrupt leaf: root=3D257
->> block=3D156161818624 slot=3D22 ino=3D1312604, name hash mismatch with =
-key,
->> have 0x000000007a63c07f expect 0x00000000006820bc
->>
->> In the dump included in the dmesg, unfortunately it doesn't include th=
-e
->> file name so I'm not sure which one is the culprit, but it has the ino=
-de
->> number, 1312604.
->=20
-> Thanks for the input. The inode resolves to this path, but it's the
-> same base path as the problematic file for btrfs scrub.
->=20
-> $ sudo btrfs inspect-internal inode-resolve 1312604 /home/jwhendy
-> /home/jwhendy/.cache/mozilla/firefox/tqxxilph.default-release/cache2/en=
-tries
->=20
->> But consider this is from write time tree checker, not from read time
->> tree checker, this means, it's not your on-disk data corrupted from th=
-e
->> very beginning, but possibly your RAM (maybe related to suspension?)
->> causing the problem.
->=20
-> Interesting. I suspend al the time and have never encountered this,
-> but I do recall sending an email (in firefox) and quickly closing my
-> computer afterward as the last thing I did.
->=20
->>>
->>> The file above was found uncorrectable via btrfs scrub, but after I
->>> manually deleted it the scrub succeeded on the second try with no
->>> errors.
->>
->> Unfortunately, it may not related to that file, unless that file has t=
-he
->> inode number 1312604.
->>
->> That to say, this is a completely different case.
->>
->> Considering your previous csum corruption, have you considered a full
->> memtest?
->=20
-> I can certainly do this. At what point could hardware be ruled out and
-> something else pursued or troubleshot? Or is this a lost cause to try
-> and understand?
-
-If a full memtest run finishes without problem, then we're hitting
-something impossible.
-
-As there shouldn't be anything causing write time tree checker error,
-especially for name hash.
+It looks like the sentence is not clear enough, what I mean is, after
+read_block_group_item(), there shouldn't be any key->offset user, but
+use block_group->length instead.
 
 Thanks,
 Qu
 
 >=20
-> Many thanks,
-> John
+>> +
+>> +	cache->start =3D key->objectid;
+>> +	cache->length =3D key->offset;
 >=20
->> Thanks,
->> Qu
->>
->>>
->>> $ btrfs --version
->>> btrfs-progs v5.6
->>>
->>> $ uname -a
->>> Linux voltaur 5.6.10-arch1-1 #1 SMP PREEMPT Sat, 02 May 2020 19:11:54=
-
->>> +0000 x86_64 GNU/Linux
->>>
->>> I don't know how to reproduce this at all, but it's always been
->>> browser cache related. There are similar issues out there, but no
->>> obvious pattern/solutions.
->>> - https://forum.manjaro.org/t/root-and-home-become-read-only/46944
->>> - https://bbs.archlinux.org/viewtopic.php?id=3D224243
->>>
->>> Anything else to check on why this might occur?
->>>
->>> Best regards,
->>> John
->>>
->>>
->>> On Wed, Feb 5, 2020 at 10:01 AM John Hendy <jw.hendy@gmail.com> wrote=
-:
->>>>
->>>> Greetings,
->>>>
->>>> I've had this issue occur twice, once ~1mo ago and once a couple of
->>>> weeks ago. Chromium suddenly quit on me, and when trying to start it=
-
->>>> again, it complained about a lock file in ~. I tried to delete it
->>>> manually and was informed I was on a read-only fs! I ended up biting=
-
->>>> the bullet and re-installing linux due to the number of dead end
->>>> threads and slow response rates on diagnosing these issues, and the
->>>> issue occurred again shortly after.
->>>>
->>>> $ uname -a
->>>> Linux whammy 5.5.1-arch1-1 #1 SMP PREEMPT Sat, 01 Feb 2020 16:38:40
->>>> +0000 x86_64 GNU/Linux
->>>>
->>>> $ btrfs --version
->>>> btrfs-progs v5.4
->>>>
->>>> $ btrfs fi df /mnt/misc/ # full device; normally would be mounting a=
- subvol on /
->>>> Data, single: total=3D114.01GiB, used=3D80.88GiB
->>>> System, single: total=3D32.00MiB, used=3D16.00KiB
->>>> Metadata, single: total=3D2.01GiB, used=3D769.61MiB
->>>> GlobalReserve, single: total=3D140.73MiB, used=3D0.00B
->>>>
->>>> This is a single device, no RAID, not on a VM. HP Zbook 15.
->>>> nvme0n1                                       259:5    0 232.9G  0 d=
-isk
->>>> =E2=94=9C=E2=94=80nvme0n1p1                                   259:6 =
-   0   512M  0
->>>> part  (/boot/efi)
->>>> =E2=94=9C=E2=94=80nvme0n1p2                                   259:7 =
-   0     1G  0 part  (/boot)
->>>> =E2=94=94=E2=94=80nvme0n1p3                                   259:8 =
-   0 231.4G  0 part (btrfs)
->>>>
->>>> I have the following subvols:
->>>> arch: used for / when booting arch
->>>> jwhendy: used for /home/jwhendy on arch
->>>> vault: shared data between distros on /mnt/vault
->>>> bionic: root when booting ubuntu bionic
->>>>
->>>> nvme0n1p3 is encrypted with dm-crypt/LUKS.
->>>>
->>>> dmesg, smartctl, btrfs check, and btrfs dev stats attached.
->>>>
->>>> If these are of interested, here are reddit threads where I posted t=
-he
->>>> issue and was referred here.
->>>> 1) https://www.reddit.com/r/btrfs/comments/ejqhyq/any_hope_of_recove=
-ring_from_various_errors_root/
->>>> 2)  https://www.reddit.com/r/btrfs/comments/erh0f6/second_time_btrfs=
-_root_started_remounting_as_ro/
->>>>
->>>> It has been suggested this is a hardware issue. I've already ordered=
- a
->>>> replacement m2.sata, but for sanity it would be great to know
->>>> definitively this was the case. If anything stands out above that
->>>> could indicate I'm not setup properly re. btrfs, that would also be
->>>> fantastic so I don't repeat the issue!
->>>>
->>>> The only thing I've stumbled on is that I have been mounting with
->>>> rd.luks.options=3Ddiscard and that manually running fstrim is prefer=
-red.
->>>>
->>>>
->>>> Many thanks for any input/suggestions,
->>>> John
->>
 
 
---FNQ8mMZ6hzyIO2jbmrW9Hzr7mSVyxuELE--
+--QuqH1swrrcg86vXR8eKHK44SiCfqvGZu1--
 
---z3MFqYSl8AhjCzVXjNhr063aXIErudOR2
+--gF2Cp8iTgishRzdl9yVVxLnQQX0uBv3zT
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl6zPywACgkQwj2R86El
-/qihuAf/dXjRfc8rWzyCy+LPkNQMM3oiF54JLAoWJ2Uf11p94FIPccefNbU0WUW8
-DpFjLnRm2F0U64nxph6R/xnMe4YBRaInKJsBnmsRM+VmgJxS60qnLUV6swGdHRPr
-FVutNhmMwiQ4apthKZ0ni4clIaSiSu18GchsfzVZD/HPuPBf25wtFaQFOkAUYHNC
-yjod8czNu5yJYwfiDtc5vTwqwdIKYOaTu8su6PGrFoEBTRnKsVBXTov0kDaAD5Zl
-q/65XIlmtFkJ84+9/0XgkzDrT3sAmh3ShacDl8CX+REqQWWVg9T8shgclESNqjFS
-GMwABIZWu2imFxBiVMOFVTAjCAijmg==
-=DlnO
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl6zP6EACgkQwj2R86El
+/qhTawgAg50x858uJFln3sRBGeQhZnERQpDJy9IAs/h8/MVA75wxf+rb7JRz1hZA
+X02a4GpxS5xYJ5C5PMqaiVOM+FTC/nBwpUSpfVA+fb/lxncaI7BC9YyiVx18PIqK
+V/72BrZTQ9ECiRW5WjocdIsAct5Lb/dEvRoEEa6Px11TTSK4whdsEFBqGdlcPTWp
+Ytn5mud8CWHK6/hAZg5V6RogM7eH5QkodJupmVipOHKa0Hkf3MDRZ6dTg1mrridI
+iPPFxibuT1j83WLVIWBZGloiIzwa001r81PFnuu2063NnD7rFq6Bss5x0ZDl4w/t
+Ro8LRREzWiA+jHilu1D5iSrJBnyD5A==
+=QdaP
 -----END PGP SIGNATURE-----
 
---z3MFqYSl8AhjCzVXjNhr063aXIErudOR2--
+--gF2Cp8iTgishRzdl9yVVxLnQQX0uBv3zT--
