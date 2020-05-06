@@ -2,268 +2,135 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8EF81C6829
-	for <lists+linux-btrfs@lfdr.de>; Wed,  6 May 2020 08:13:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BF3B1C6B1C
+	for <lists+linux-btrfs@lfdr.de>; Wed,  6 May 2020 10:10:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727937AbgEFGNf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 6 May 2020 02:13:35 -0400
-Received: from mout.gmx.net ([212.227.15.18]:58261 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727912AbgEFGNd (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 6 May 2020 02:13:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1588745609;
-        bh=b8pkvAlx3wsagcMjTM9EeUogF64ia8D1zcQ2mmTjRoQ=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=j3M8LhlBbmEGwJWfV5fzBfPcEi7bpny7r1ILmi20cKn5y/4eGERbDZaVaFWvANt8U
-         1B7dhb2WaRUVuKh8/G3O8jprJZsxxX4XFQtUXVCRtTvtI+5Crl9wA2czX3ZN9Xwd+g
-         1Feyf5ULHujIGeFI3cr35Ak8AY/YIJnmF0kJBK/M=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1N3siA-1j5uzu2YtM-00zqN1; Wed, 06
- May 2020 08:13:28 +0200
-Subject: Re: btrfs root fs started remounting ro
-To:     John Hendy <jw.hendy@gmail.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-References: <CA+M2ft9zjGm7XJw1BUm364AMqGSd3a8QgsvQDCWz317qjP=o8g@mail.gmail.com>
- <CA+M2ft895gy-zmDsax14pOgK3JmGxj6+1Z_itn3GhaGREBfDKw@mail.gmail.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
- PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
- 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
- D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
- efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
- ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
- BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
- 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
- 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
- EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
- 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
- ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
- oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
- fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
- 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
- ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
- oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <87cb36b6-618d-5005-d832-53cd486084cb@gmx.com>
-Date:   Wed, 6 May 2020 14:13:23 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1728532AbgEFIKo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 6 May 2020 04:10:44 -0400
+Received: from esa3.hgst.iphmx.com ([216.71.153.141]:1968 "EHLO
+        esa3.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728344AbgEFIKn (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 6 May 2020 04:10:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1588752643; x=1620288643;
+  h=from:to:cc:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=zKIXd+zu6yRMlKQqd5iMusD0JflgLhD3VHLDfH2DNF0=;
+  b=AX6ly7uud0Y5FdsnahE+qfTAx5b6UMNYcqkvhUoaVO9FfYafxD053Gyd
+   0fBJEzvZos4nZFYvZW2M1B5ID5xaYNhfRiMh1AwlXgximFN8NNhfqwI0m
+   nPcNCUZHkzCqkU1tOQvQ3o+RaAx4BOdHeUJjJWplH+fBLlX6LzCF0UpB0
+   qGWmzdiKVZxL+j1oAJXto1sZo6iNd0Z+hhBadnajaccP4JA/2AVH/lTNc
+   iUEiG0PBD0c2UPGITpRpo8WUglB1oJKKEoG5rMPTqMduMAZ+O6ffgBguS
+   FnGhEnulMXEcYLn7dq1QLfWjfQN6B82pbkYI/Cm0EFIje1Ogb6h0Y1ajv
+   w==;
+IronPort-SDR: 0ZgE8IuOQFkqDzxmQb2cL7wdFgzgkniMwRw1we6ZV5urG0un8uO+0nmxNjStFD92ODxCYYydFK
+ 8PsG63rIXv39JVZNPX3oS9+JQ68G3xKFs8ub5FR8j0ayMA5/PBgmPROrZTNZ71hKLbn7yXigOj
+ oEKXzQM3ID/W2nt06sTQkOSQ5mZH7OmuIZKY9ZKdT5MxaZ7VjoBSprT4uVA0yZP9yLOtw9MQ0b
+ 3P+ruvKSe5/1+NrkyeUCP/tUYerA+dOaKfiR4NeEnNd6Hs/hgHlqVIKkkJobs18AbXa5J2sNGH
+ Yjc=
+X-IronPort-AV: E=Sophos;i="5.73,358,1583164800"; 
+   d="scan'208";a="141368619"
+Received: from mail-bn8nam11lp2169.outbound.protection.outlook.com (HELO NAM11-BN8-obe.outbound.protection.outlook.com) ([104.47.58.169])
+  by ob1.hgst.iphmx.com with ESMTP; 06 May 2020 16:10:42 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=G16l7qqkWqR2Nu6GpARcFuXDZQYZ4JJ5dBfqQB5W7zGAGfJ1AtOj9e8dosLcSl+TkDTdnZtBIBu/jyFKd7JoD9irBMT3mDJW1EsYWqPHs2u2rd0KyqJ2IaK9pDyPmjiriCA1RwH/+sRGrgQYavm9j6iIGUb4WF6jjgZuAabGRkGIMCjjXrQx+rVJZjTfbE2GGSiUvehiohnVs57/eIedOwHD2QYMH4toJlQd4JcLzLw+/x8LIfQ5r13cmLtJ9V01xahT986bJ9qp9EvhIGjhG7V0WXgJKgSCZE37JcibJdp8owehcwanoGVeCsnTzR/INS0kWFKXyS+Wc1j2CHJsYQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=73C7Pm+beHxnSi4yiljI1RQLSgvzUXj+SmEocMur+jY=;
+ b=AsmLFFEXc1FC5TKF3GE8+VswQW1FIjdUBqKShL5Wwz9pFKXdvk3wF2sc+OGP5aYDPzqfkmKir/nsx45IY7PLRu/m1M67Iwo14NksIbrw7TTE29/NEZvxvRA7DqSCG7MzJR4dsXwZb7jeb5/cTbmAidXV/DYmUx6CPbyGSHI21x7AyeXdMvTmSogLKeg7h3QZWDAoktH8V7GfyKubXF/z+Ut/4Oue9sNjZJxKGKC9MeB5pHu5hz3LZQLLkpcbSVipwOPmsz4HdTFuldgabPsf50LgPw7DcjEjoz+00pBnkIjvgVvGID/UJDGiIgiIggbgrGbh//ERP3McsKFZ9Y9U2A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=73C7Pm+beHxnSi4yiljI1RQLSgvzUXj+SmEocMur+jY=;
+ b=OgnkX56/ZzIoeLKlyutekVlyy2l0/XD9c0Z8yR5FUzRGiTAe1XgCoRjp+KJkUtNzBPJZgPHA6c9uD3Nvi+NRDuLSu1wExX5r5UZpmH4zV5DsvWptntPBCqb18RORKoNTdUqnOWET/8iLLQrywImKsy+DJHtpVFvBQK6MBlqPznI=
+Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
+ (2603:10b6:803:47::21) by SN4PR0401MB3645.namprd04.prod.outlook.com
+ (2603:10b6:803:45::29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2958.29; Wed, 6 May
+ 2020 08:10:40 +0000
+Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
+ ([fe80::9854:2bc6:1ad2:f655]) by SN4PR0401MB3598.namprd04.prod.outlook.com
+ ([fe80::9854:2bc6:1ad2:f655%4]) with mapi id 15.20.2979.027; Wed, 6 May 2020
+ 08:10:39 +0000
+From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To:     "dsterba@suse.cz" <dsterba@suse.cz>
+CC:     Eric Biggers <ebiggers@kernel.org>,
+        Johannes Thumshirn <jth@kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        Richard Weinberger <richard@nod.at>,
+        Johannes Thumshirn <jthumshirn@suse.de>
+Subject: Re: [PATCH v2 1/2] btrfs: add authentication support
+Thread-Topic: [PATCH v2 1/2] btrfs: add authentication support
+Thread-Index: AQHWHUw3Fjk34p8J2kWvUrIfOj4HzQ==
+Date:   Wed, 6 May 2020 08:10:39 +0000
+Message-ID: <SN4PR0401MB3598AC8CE5F1C6B60A5C75D29BA40@SN4PR0401MB3598.namprd04.prod.outlook.com>
+References: <20200428105859.4719-1-jth@kernel.org>
+ <20200428105859.4719-2-jth@kernel.org>
+ <20200501053908.GC1003@sol.localdomain>
+ <20200501063043.GE1003@sol.localdomain>
+ <SN4PR0401MB35988C0D697D9900C411F1C09BA60@SN4PR0401MB3598.namprd04.prod.outlook.com>
+ <20200505223334.GZ18421@twin.jikos.cz>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: suse.cz; dkim=none (message not signed)
+ header.d=none;suse.cz; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [129.253.240.72]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: e29f4d3c-abd7-4a10-e088-08d7f194f70e
+x-ms-traffictypediagnostic: SN4PR0401MB3645:
+x-microsoft-antispam-prvs: <SN4PR0401MB3645FACF385822E189AE0FBE9BA40@SN4PR0401MB3645.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:6430;
+x-forefront-prvs: 03950F25EC
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: L+s1b4Y2ne9+cB5PEnYPWmTKcCH/z8jCgcJQs65D0AOnQQBFHQ1A4ahfdmZWcYVP9xWvNa2yhnOfvP8FCChNsS+9EllP2ZzY/h9QwB9h7lJkArHfpMcvd8+wcVuL1HFQHVes2weIfQlrTfp4FO3FVP5oMvnZHSj/zJBKKyxatqACQKNwxfmbJPaVY7o6l3Y5Fr6Yq/SMnLtdflrhwRn1ySwsEpHRfw/rY7sBmvCPJf/9tZ5XIfI2j50JbOjlyan7GRK8xjG47Cln85/lN1QvdhznDmsF5jDe0vdAGFWzC8zRTC/XEZbD0THR3P2UXtHPXTAmiUggrq9oj6DXEcS3t2BBA36Qx492EAy3CsHNGuMST9xd7SIfC1avOxmyr5k9+mmfo8H1UHVlZqc8rFWs5uSBuSMkXElnbNxVF9am2UCs6ifXMu6Y0DgXRNL3lheJHv0StMHfB7SCqyoeTwMmJN2cKTfgvJEgCrWYvxA8GM1bxUYriEhIzx64LsM8l8ZQWjJHdYZ6NCl0g1ypGGfXVg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR0401MB3598.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(396003)(39860400002)(136003)(366004)(376002)(346002)(33430700001)(55016002)(6506007)(53546011)(33656002)(9686003)(316002)(6916009)(33440700001)(86362001)(54906003)(8676002)(2906002)(8936002)(4326008)(76116006)(91956017)(478600001)(7696005)(5660300002)(52536014)(26005)(186003)(66946007)(4744005)(66446008)(66476007)(66556008)(64756008)(71200400001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: g9DyJ4Jfb5Mu8ZEPk9Qf82H4RgSjjyJm3pQxq6b1dC5Ayy9k3USFpnQUcGVsjsXEZ6a7LFrjuu3ifezLPrDxApej7r5lEiF27IZzsPZUjkvuzejVJKCOV37O81gXmFesLtHiL2EEXQN2EsmKf1Fdrt2EGczL8xjAMfHAAkwZy0resuf3j3loQ4It1TRczNJ/rakfaHGXuop0Er933tXVbhZ3KG4M9Oe8JC6w7dtZWh8vXfd3tXxax/eTg0rTtrEd/pv92uSDIa/NdJ1Gs7vRWW1XAcLH94MV0CsUgSnaWM+ZgZ3txBXM4uD7sqAcXNGqdkzcbvFS+6ydfTNPfn29eSrcT44DKi2W4fxIb/aDbWIEl2hNrfOrIEkLk5VYIF12pYCngS8wTFZK9DbkiHgpvanXvEwC9VcVtRyKyWsUW+XenJDQlPPLUruZc9hLIjTlIAYjVF5sP5KL8/Tv1hXaQA71LdjOjfVHz+Evuq1CTTpu/+uEWP4aauvCy3JfROEIXs4H+EyTkiGXyQEZImwoMQ0lg4WfX+BwXGS/KIkj1zj7aOXsis4hMJjW5QD2qxIt8qY0ug+7LZUB2KW+nulsnTuA5zNKkkDGhiZpp8X9u6/vmIHYExh9IeBcyeB0OFZy3TXqposgjITkX5QQ8neEQxhSAd0s7HK5ipMc+Rm9iuAXTZ7cXkxgNjC/AzS9dd0h8tmtB6I7NOrp6nMAZ4JT7lS/sXKDqCjM3MHD3Myvcn9CcRjqo8PI6CBwdCKNYDiv3f5JayForh88BgF7GUfXDK7MRCdlF7eXqCls5Z1dlQM=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-In-Reply-To: <CA+M2ft895gy-zmDsax14pOgK3JmGxj6+1Z_itn3GhaGREBfDKw@mail.gmail.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="tM1neJku5DnPENwCcyVqyz6RjBk7d4GAV"
-X-Provags-ID: V03:K1:NBP6Li9+tMzVOqy77KDICh42fD8S6ouNQYZdXBQzNtjJjdO0TKt
- 2OXzWnF8/XtxIYCbFFb+FsDWo+QuTHjB9z818AJeG1m9ltAV8C6r9HNoU0RSxdff8K3EL16
- Rl/yFSqTxXONiGD9F3F3ObKRXA/vqeoexlkS+udI4I1xzyyBQ5Ssz1QTqTnv+fz/KF0HHkQ
- RtOpA60Wxr0WAiS+/j2OQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:BvEAJhnyNeI=:nbVc1NrcAfqvcghIPkDXSW
- 9irAitvjxD6zZzNmvhvrFNRbCd5zvTYbHBY1Ne6/QSpfr//vtyLbARC/q+fv9Ws40fSbSL/uB
- 6dXc0JY4SY3jOAR6w9CyxDKN3ns9Og6ytiItnmw2GLS/WxTydc7nQRt528Okd2x6pgk4MHrzV
- WKoF+Oq3B299rPdsOuiuh7enCgbF6ajt72OCDgYEinEFoJZotlavWrgmjAJsA4ZNbwnIySUaf
- zcI3fFviNrWYVajFWH1tG5ZHjEsDJ0A+Z9oY4J93rSbVKc/RENxhY6OrJWafRCkk1ZBtsQcvH
- /yyfZinQWT0nYAKkL+uefMWHeB5TjlVeRvqsdmUSHwBi+Ud8n8ogJJpgL2z7bW2xrKRTmdg4n
- POMT5/HFrfJXc2BA60OGYPV2PIBKr/ynfnosX56z0lqw4mMr9xH8vSJN23rsqEVk6yfZu3k1g
- YO33CJRHfHA5gw9sUDct/0iWhsyF8pV4Powz3lTL0MA7lgIbeGRTaW9KtYRQD2d84L4dbLCTy
- inklj46M+VfUjZohERW9zBGVsJHu+nJSoUypmQRaHocO/MekUUbG6yh+i5IcIYAL3IL4Otlqg
- pwCliB8DBXEJKbbY6eyw05LH8l3Z6gvKCp4sHex5S0gAmdSxHb2xKcc2HY237grPnhq3Ejmz6
- tMYgfOS8Vmom303kOY7SAULwcXENcKe7c3hfmQXuFbges3yY+C3Den+3SxCLc8ZZi5gHZIZBz
- jV54lU4HEcTdmcOugzwPgUmTgyIYIdja7PeTt9uKc1d2uBACXBweIgV/wCEhfCuJCdZzydPfZ
- 2T8UZE+Gs9IZ7D6hMNatf13SgVVXfvPkcD1MdlfpZP5Gqp5PRoJEoBn71kmCas+lUZbUjCA8F
- SAoBoEnv/LrzP9Y5Vp1nvhCJf8p05TBC7898SyO5EzJH2PLX08mdG5Wx7rJCYw8ur+D4LUymI
- xz+RwQzcNVgfPIUSxlBszkIA6sjoHfsNvAlMCiJzkrcpayrLf0c37mkG9unNVCZfI2I9CLQ/2
- LhxXreUBbrS4L5UykS3lMffkqpOqgkxnHFAuvJpkVUzLW7zqrs+56w2HLIAS9gAv6BegcuXRM
- AFnrgXuDxUvKBB3EmJCF1LGwUcKu8cIIvjiJonPwDQr6il5TgIEhKAFTsAHCaWXETvKsxckdW
- YpdBZiT5x5SR2ihTz6x/oNqI59l1hZBb7gHxZ90BVsNnVLZjDvNDAJh3pTGW9FV5U+jh4bNlf
- R/yDSZ/W4GuIfuHbt
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e29f4d3c-abd7-4a10-e088-08d7f194f70e
+X-MS-Exchange-CrossTenant-originalarrivaltime: 06 May 2020 08:10:39.7496
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: wXy68EmbO+oSKphjR7SswJtf83v3fmP9k6+T2hRduKHeiDDPIxikU223ruM5i6P5YHK4QVVRirrd60oI7Fgk4my22PS1EiiW5/lj/A38ifA=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN4PR0401MB3645
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---tM1neJku5DnPENwCcyVqyz6RjBk7d4GAV
-Content-Type: multipart/mixed; boundary="JFeCZRhMUXH02W3kf2PNdIG3r1xnpDe5C"
-
---JFeCZRhMUXH02W3kf2PNdIG3r1xnpDe5C
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-
-
-
-On 2020/5/6 =E4=B8=8B=E5=8D=8812:37, John Hendy wrote:
-> Greetings,
->=20
->=20
-> I'm following up to the below as this just occurred again. I think
-> there is something odd between btrfs behavior and browsers. Since the
-> last time, I was able to recover my drive, and have disabled
-> continuous trim (and have not manually trimmed for that matter).
->=20
-> I've switched to firefox almost exclusively (I can think of a handful
-> of times using it), but the problem was related chromium cache and the
-> problem this time was the file:
->=20
-> .cache/mozilla/firefox/tqxxilph.default-release/cache2/entries/D8FD7600=
-C30A3A68D18D98B233F9C5DD3F7DDAD0
->=20
-> In this particular instance, I suspended my computer, and resumed to
-> find it read only. I opened it to reboot into windows, finding I
-> couldn't save my open file in emacs.
->=20
-> The dmesg is here: https://pastebin.com/B8nUkYzB
-
-The reason is write time tree checker, surprised it get triggered:
-
-[68515.682152] BTRFS critical (device dm-0): corrupt leaf: root=3D257
-block=3D156161818624 slot=3D22 ino=3D1312604, name hash mismatch with key=
-,
-have 0x000000007a63c07f expect 0x00000000006820bc
-
-In the dump included in the dmesg, unfortunately it doesn't include the
-file name so I'm not sure which one is the culprit, but it has the inode
-number, 1312604.
-
-
-But consider this is from write time tree checker, not from read time
-tree checker, this means, it's not your on-disk data corrupted from the
-very beginning, but possibly your RAM (maybe related to suspension?)
-causing the problem.
-
->=20
-> The file above was found uncorrectable via btrfs scrub, but after I
-> manually deleted it the scrub succeeded on the second try with no
-> errors.
-
-Unfortunately, it may not related to that file, unless that file has the
-inode number 1312604.
-
-That to say, this is a completely different case.
-
-Considering your previous csum corruption, have you considered a full
-memtest?
-
-Thanks,
-Qu
-
->=20
-> $ btrfs --version
-> btrfs-progs v5.6
->=20
-> $ uname -a
-> Linux voltaur 5.6.10-arch1-1 #1 SMP PREEMPT Sat, 02 May 2020 19:11:54
-> +0000 x86_64 GNU/Linux
->=20
-> I don't know how to reproduce this at all, but it's always been
-> browser cache related. There are similar issues out there, but no
-> obvious pattern/solutions.
-> - https://forum.manjaro.org/t/root-and-home-become-read-only/46944
-> - https://bbs.archlinux.org/viewtopic.php?id=3D224243
->=20
-> Anything else to check on why this might occur?
->=20
-> Best regards,
-> John
->=20
->=20
-> On Wed, Feb 5, 2020 at 10:01 AM John Hendy <jw.hendy@gmail.com> wrote:
->>
->> Greetings,
->>
->> I've had this issue occur twice, once ~1mo ago and once a couple of
->> weeks ago. Chromium suddenly quit on me, and when trying to start it
->> again, it complained about a lock file in ~. I tried to delete it
->> manually and was informed I was on a read-only fs! I ended up biting
->> the bullet and re-installing linux due to the number of dead end
->> threads and slow response rates on diagnosing these issues, and the
->> issue occurred again shortly after.
->>
->> $ uname -a
->> Linux whammy 5.5.1-arch1-1 #1 SMP PREEMPT Sat, 01 Feb 2020 16:38:40
->> +0000 x86_64 GNU/Linux
->>
->> $ btrfs --version
->> btrfs-progs v5.4
->>
->> $ btrfs fi df /mnt/misc/ # full device; normally would be mounting a s=
-ubvol on /
->> Data, single: total=3D114.01GiB, used=3D80.88GiB
->> System, single: total=3D32.00MiB, used=3D16.00KiB
->> Metadata, single: total=3D2.01GiB, used=3D769.61MiB
->> GlobalReserve, single: total=3D140.73MiB, used=3D0.00B
->>
->> This is a single device, no RAID, not on a VM. HP Zbook 15.
->> nvme0n1                                       259:5    0 232.9G  0 dis=
-k
->> =E2=94=9C=E2=94=80nvme0n1p1                                   259:6   =
- 0   512M  0
->> part  (/boot/efi)
->> =E2=94=9C=E2=94=80nvme0n1p2                                   259:7   =
- 0     1G  0 part  (/boot)
->> =E2=94=94=E2=94=80nvme0n1p3                                   259:8   =
- 0 231.4G  0 part (btrfs)
->>
->> I have the following subvols:
->> arch: used for / when booting arch
->> jwhendy: used for /home/jwhendy on arch
->> vault: shared data between distros on /mnt/vault
->> bionic: root when booting ubuntu bionic
->>
->> nvme0n1p3 is encrypted with dm-crypt/LUKS.
->>
->> dmesg, smartctl, btrfs check, and btrfs dev stats attached.
->>
->> If these are of interested, here are reddit threads where I posted the=
-
->> issue and was referred here.
->> 1) https://www.reddit.com/r/btrfs/comments/ejqhyq/any_hope_of_recoveri=
-ng_from_various_errors_root/
->> 2)  https://www.reddit.com/r/btrfs/comments/erh0f6/second_time_btrfs_r=
-oot_started_remounting_as_ro/
->>
->> It has been suggested this is a hardware issue. I've already ordered a=
-
->> replacement m2.sata, but for sanity it would be great to know
->> definitively this was the case. If anything stands out above that
->> could indicate I'm not setup properly re. btrfs, that would also be
->> fantastic so I don't repeat the issue!
->>
->> The only thing I've stumbled on is that I have been mounting with
->> rd.luks.options=3Ddiscard and that manually running fstrim is preferre=
-d.
->>
->>
->> Many thanks for any input/suggestions,
->> John
-
-
---JFeCZRhMUXH02W3kf2PNdIG3r1xnpDe5C--
-
---tM1neJku5DnPENwCcyVqyz6RjBk7d4GAV
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl6yVYMACgkQwj2R86El
-/qhPDQf+KBQVlgBESlvtfzybnecOHJjdIRBRlmWdFobkBCqSZv5dEpRz16/oVwdg
-fmMcLoWnh9UioLhCb9EYJEdqay+o4I2w2r78y081vr0dbS3RvWNu9veYbAsI6wEZ
-Y/zKbaLvfE6SOnKDHMhblGamiGGPcK6WU2XJFq2NWFtyDk7GGzk2a9XT1Bc5E315
-75iWcQC+AciD59ws9AmH+pxeN3axxGHFeU0+PcMEh4q5hlrXMhIJsKShQ5SnRZ7g
-c/qkPbbUOJYGd25a5U7QmhDb0uK74NiHSsLvZ4hNUed31DZRNncNSvAZtQqmgS68
-MwXme97FHVcZDvm7kranNANjA2XTtQ==
-=dDkB
------END PGP SIGNATURE-----
-
---tM1neJku5DnPENwCcyVqyz6RjBk7d4GAV--
+On 06/05/2020 00:34, David Sterba wrote:=0A=
+> On Mon, May 04, 2020 at 08:38:36AM +0000, Johannes Thumshirn wrote:=0A=
+>> On 01/05/2020 08:30, Eric Biggers wrote:=0A=
+>>> btrfs also has an inode flag BTRFS_INODE_NODATASUM, which looks scary a=
+s it=0A=
+>>> results in the file being unauthenticated.  Presumably the authenticati=
+on of the=0A=
+>>> filesystem metadata is supposed to prevent this flag from being malicio=
+usly=0A=
+>>> cleared?  It might be a good idea to forbid this flag if the filesystem=
+ is using=0A=
+>>> the authentication feature.=0A=
+>>=0A=
+>> Yes indeed, authentication and nodatasum must be mutually exclusive.=0A=
+> =0A=
+> Which also means that nodatacow can't be used as it implies nodatasum.=0A=
+> =0A=
+=0A=
+=0A=
+Yep, did this already.=0A=
