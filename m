@@ -2,225 +2,110 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 628481C74D6
-	for <lists+linux-btrfs@lfdr.de>; Wed,  6 May 2020 17:30:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D62461C77C9
+	for <lists+linux-btrfs@lfdr.de>; Wed,  6 May 2020 19:25:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729498AbgEFP3j (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 6 May 2020 11:29:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59486 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729594AbgEFP3i (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 6 May 2020 11:29:38 -0400
-Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F94AC061A0F
-        for <linux-btrfs@vger.kernel.org>; Wed,  6 May 2020 08:29:38 -0700 (PDT)
-Received: by mail-vs1-xe41.google.com with SMTP id g2so1258596vsb.4
-        for <linux-btrfs@vger.kernel.org>; Wed, 06 May 2020 08:29:38 -0700 (PDT)
+        id S1728939AbgEFRZB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 6 May 2020 13:25:01 -0400
+Received: from esa2.hgst.iphmx.com ([68.232.143.124]:53611 "EHLO
+        esa2.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725799AbgEFRZA (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 6 May 2020 13:25:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1588785915; x=1620321915;
+  h=from:to:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=Qcj5yX1cSUjuXyKRlZRB/0nKmk/ZHYNmZbXB2QYpeVw=;
+  b=RQdEkn5w3LDREAPQ5Fx8mHVouVIOURMgkAJWGl6fG9SUOtI1OSMwzTcu
+   +UJD9qVYxeWkPptfO6RugQmEudxupwsywzvkEi5gKFSQISE6gskgUK8RG
+   83KdcDsWdTUCsbzIzdfqMoeQWsKTwOAwOX8rPAWHUFY9Df7ggd6iA7Hdf
+   bBMKqiCPQ9/3F+xT7n6u31qDuaxQX82bSt05u/DjrBijvVmKuhbZkk7Tu
+   oufD5GB+NQOayD6Dpqe5je6COA00VOXEr0FHw/MCWPOkNdyoOGn8p/wZo
+   IX1DIk0cGm+2u7WUEvuzCbT7cq68vTyIauUwcg5Pio9a3Hbxu8yrHiZ7u
+   g==;
+IronPort-SDR: MXIcEUALob7nmM/O/n0yMMYMSgCaeQu/HuooY1vY542h8D1bftClZO6nToWoARCwfY5+qp7Om0
+ /0yDYdUDEIJVcnw261ku7TkQXrVuxD4cA+HbukMtKKfyLCNSvqITBJ608qCejz6MNPFOVe3ov1
+ yXLjQi39IowV0ABGDXKY4XOdjXiOv89b+R7gcwzCtlGCFrbCx7eL7Mkc0bd7d5YNnZA9Uo/B+d
+ sLxQaAem3D6cCS+tsu+kN5N4jejke7l3I1lz3BEbSjODonLN4A55iuFNqng/oxy/yhYubU5lCE
+ 9JE=
+X-IronPort-AV: E=Sophos;i="5.73,360,1583164800"; 
+   d="scan'208";a="239692664"
+Received: from mail-bn7nam10lp2102.outbound.protection.outlook.com (HELO NAM10-BN7-obe.outbound.protection.outlook.com) ([104.47.70.102])
+  by ob1.hgst.iphmx.com with ESMTP; 07 May 2020 01:25:14 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=PPyFvTwhRJAStorrFQThvr5xlF3n2yRr8whTMlLRLfdDDk+HcNmKOrmEUuKVOKZ07CyLhmR01dY48gqKbTocueWigwvvx11fS+y9mhzeeQNpVd6/S54CW5gJpcV/5e82FXrcjVJK93Q+MGkxCvlH/iaTIrc409meIHDT3dlbrXjEVqRD4nY6LqZSqkyaNmMop/u8Wnv2PVE9O8TCDMOKXKtwQDLDTLqnDj0n7jHrtGYFTxYiXtHVxAidhGTP6elyoQTaKI2TvgRk+EH4d70hzgKTOWNKqsaqepngBBXopGUzEraUemo7CV0NGmoXLcgKWICEsIZhxkx9kmCNRs+9HA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Qcj5yX1cSUjuXyKRlZRB/0nKmk/ZHYNmZbXB2QYpeVw=;
+ b=byQ8NLB3SHCpahHxFiVsdhtfttPv5K83CZXo1WgY94RXoZJp1pGg3u4LQ4OxbQEK7mbrNyGu3b8aHRMgkBwnyMAeVWP9uEAFPM8y4P7HhIs1o1U5FD83vVHD84j382HSFRulSvh7nNv+5yc098l9FMp1niLaM3DXJD2zuNYod4Cnb0T2eJKDNIsfreFIpMKExX5EKE3Lp/g3WpbSc2hpA9kuDPAdkqTo5d5rElCZUZ8bnNW5u+ydjQUw1WeR/n4HovEq6qDPIl3kGg52GM7nXGEqj8qKC2Y5C+gQ3OChKFcfI5ubDhU3ybX1nSjyi3Efop1f5fMp/9ILSRLF7J1gNQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=mklHEVS1nbQjZVt3KqK8sj09a44t087taIYExmznuWc=;
-        b=VBCjnyjcGFikAN3DEDRKl987jUIMVJGerEDzT1CDrsJqxA4XTs4VtFBAEjvIkJW8qe
-         Hdt2HrnR10oF/kxwo5B7VoQVLGmK6aDuz3szZJlOqPlupfAjQZe/OcXXDDSBYtg0sUhf
-         yRlCHe2RLGGJdHMGOz71Z022GyC+qfBtMPg70LiINRyw6mmK0oeBwhdHiQUzB+gCNMKQ
-         VKXtyt9/+DbEzXkkbsT5XDoecCHydQkfY7oph8kLPvdYJnivbBovLEWPELJMJTcYPYzZ
-         uaZNSp/nclUIq+0U4kSPaAbHeKZmLtBQaVCw7dLtfXI/UAu9gXqGYJhe0PbnOvtY3upG
-         fyNg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=mklHEVS1nbQjZVt3KqK8sj09a44t087taIYExmznuWc=;
-        b=MYJRqU3gXPk1UiiD23iYV89tHvwwQWrcrtkaOu+Pzbjfjupmb5a219KxNfWJ+yCQg9
-         cNvO65/pXX55SYSDUznTFBmv/o0d2zsLn3/9QD5OnKNC8KWFNH9MBNFOIR1EI08MaJWg
-         uymj9MiSXaN4fnWiGdcmesFuUa3J58Rv5CHxTkRfRWJcTD/P+dKoIIhLkpHgsrtx5u0i
-         wZLDkWVt/kWSlPkR+5IhL6CP3ath2jgwsSbvkECrTyckITm5enVOduFkmse/WRUSuKVf
-         nbnOkL4wg6B+Xy8vQZvgmIbttiOBGQybQ129+7VVz//U6PK7w7W5dy/LtjppKk+L1G4J
-         ZXjA==
-X-Gm-Message-State: AGi0PuY1jtjJYm269UlwVCkurVcUEl1nTJ9TchC4mGYcsLTtNIcmq/Ik
-        C2ijraSpca3p87d9qnkgE+Xg1BVByZnqtVesK5FH+wwaBbQ=
-X-Google-Smtp-Source: APiQypIhgQg809zmZNZEbV+6tAXJbHTE7m0Y/JKUZgeOLqXvurDOsJ2wnXynRZjk+S4CkRuRsvYa5R5G5s6ttkwlPGo=
-X-Received: by 2002:a67:ed51:: with SMTP id m17mr8173763vsp.158.1588778977147;
- Wed, 06 May 2020 08:29:37 -0700 (PDT)
-MIME-Version: 1.0
-References: <CA+M2ft9zjGm7XJw1BUm364AMqGSd3a8QgsvQDCWz317qjP=o8g@mail.gmail.com>
- <CA+M2ft895gy-zmDsax14pOgK3JmGxj6+1Z_itn3GhaGREBfDKw@mail.gmail.com> <87cb36b6-618d-5005-d832-53cd486084cb@gmx.com>
-In-Reply-To: <87cb36b6-618d-5005-d832-53cd486084cb@gmx.com>
-From:   John Hendy <jw.hendy@gmail.com>
-Date:   Wed, 6 May 2020 10:29:23 -0500
-Message-ID: <CA+M2ft8oLkTrav1=zW1AFRU+=44Yd6-fXYO5mhre4mi-1PANmw@mail.gmail.com>
-Subject: Re: btrfs root fs started remounting ro
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Qcj5yX1cSUjuXyKRlZRB/0nKmk/ZHYNmZbXB2QYpeVw=;
+ b=SDb/apizDijRyOYswq14rXKxD/e6T8K4A86YJzR7G+DOvS9oz27UH2G7R8DxUrIT5EjGf7VbnIpWiB7F0RmAyzLGCnrE4YakbOynKYDXNTTFO4rzj07eBH/lJAMVqlyf59VtF0SUHvXrdZQbXi2VdiS/OJHlmL8DprFBYFMepKk=
+Received: from DM5PR0401MB3591.namprd04.prod.outlook.com (2603:10b6:4:7e::15)
+ by DM5PR0401MB3528.namprd04.prod.outlook.com (2603:10b6:4:76::24) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2937.22; Wed, 6 May
+ 2020 17:24:59 +0000
+Received: from DM5PR0401MB3591.namprd04.prod.outlook.com
+ ([fe80::3c00:be66:e289:10f7]) by DM5PR0401MB3591.namprd04.prod.outlook.com
+ ([fe80::3c00:be66:e289:10f7%7]) with mapi id 15.20.2958.030; Wed, 6 May 2020
+ 17:24:58 +0000
+From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To:     Qu Wenruo <wqu@suse.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH v4 01/11] btrfs-progs: check/lowmem: Lookup block group
+ item in a seperate function
+Thread-Topic: [PATCH v4 01/11] btrfs-progs: check/lowmem: Lookup block group
+ item in a seperate function
+Thread-Index: AQHWInB+QG/pF9M4V0+Aajb8JshFiQ==
+Date:   Wed, 6 May 2020 17:24:58 +0000
+Message-ID: <DM5PR0401MB35919BB2506B1D57A9114F649BA40@DM5PR0401MB3591.namprd04.prod.outlook.com>
+References: <20200505000230.4454-1-wqu@suse.com>
+ <20200505000230.4454-2-wqu@suse.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: suse.com; dkim=none (message not signed)
+ header.d=none;suse.com; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [129.253.240.72]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: e269a9aa-27dd-41b6-f8ac-08d7f1e26707
+x-ms-traffictypediagnostic: DM5PR0401MB3528:
+x-microsoft-antispam-prvs: <DM5PR0401MB3528B95CCD20E5A9A149FA279BA40@DM5PR0401MB3528.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:1728;
+x-forefront-prvs: 03950F25EC
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR0401MB3591.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(376002)(346002)(136003)(39860400002)(396003)(366004)(33430700001)(66446008)(64756008)(66556008)(66476007)(33656002)(66946007)(5660300002)(9686003)(55016002)(316002)(8936002)(478600001)(76116006)(91956017)(186003)(8676002)(2906002)(26005)(19618925003)(4270600006)(33440700001)(558084003)(71200400001)(86362001)(52536014)(110136005)(7696005)(6506007);DIR:OUT;SFP:1102;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: CRwbmdEijloWA2AZcHvViGDMHxKGYhyGC0S5NWPMO2z7s8OoLPFXZQdzGtbfoiFUmDoJevvxu4M//d9yAsJrQ2+6/glJa5qgCzdhbtacy0x6Xgu5lgg1LxgZ53TVMWNJBq9ji5vecBoqNeoII3AiX9JVPt9zloGrPmLr9DulV6lw2jJoegY4/Inq9kCKQngd0qoekxobB/QEndEbHEyx/Jac6W/Z/Fie9RE4cMt3HXLYJjNGQ4k9hlPDxCoKwXJPa/CB9A+GuOS7od94mSKA6aEl9x+yknoyjIjGSZfFvz/yx7DrWMmNOE6GUuIlF1HRSoe8to9kX1sFwgEU8ypVh7i5kHG6W/ezruTkg0bTbLNAMF+rL3HiZTkZdO1SJZ/Iv5FHXCIP7FGbv22l27QWf1mwVLGy7ubraKu8uBXOjizYpXHZ4cMuaNdUWFygd8Y6CvZNqT/We59JOexJNqcn0Hw4JoKXWn9KKlHdFYbW64CKiecVGGbcY+BjKH7V9S0EUFbk09K+n2ytYWaAxdA48w==
+x-ms-exchange-antispam-messagedata: dK0/yXaiJpTip/ctR3kLIvNrdC3IFR+57uArn6MI6lHgB4Vaq26ioinrC1LPGCTFnUz4GACYrJwhXyyluD/zo1G5V+dBvMOWDUEFhvlL+VFKnrHayy8icI2TMGW3CHw59huRq89XmotozEJLWET/gDHd+XjX5uyI07/X1ik0G52DEtoWFfftpx2pmggq/xwuTQMNCzjm5xJS8qiB6jeI7rJpxhbKXmsYrP49SJcvNev7BJAmk9kt2iXkyqDls7p9eGpY6dE98krUiw/KzFxdRIQVcx1yhkliO13zVrF0HNCkXjrkXVFHrgN1HDwbuKy6zUvfZW8iMkHT7uBV7oJZLLu939RTtNIjBGitTV/brYTnLmv6BLGD50YmuiXqCs4l4lgkHoX/OZ7oi5gXntg+kVFRHVw4rc/JB5nZ7PWH3ynN7vawllljYjBDcLl6wMfsE1J0ueRIzYOrNc16IBMI/T2w/gh57e+k0FL+199+8BKnwHnIQafmR1jrYQz25SPDsMQgI8lNJzloOJB0F7rkO5XajKC6qsDh6JZpNdgIUoCtnaZ10TWWlTEtr7HRdZnQs+P8owrGlq+fnY3vnPqNe2KKQce+qqucuc8Or560RwloH6DOfqdYohurziINJC+5SI8ZQW7KMnJT+9RlfjJ9DL+K/aEdjB4IVSCSV3l1GbCMl+hwuMpZBfkhboxclPb9ycSCUzMNSSO/GNdgeukKXI1jQ/VKjW729nHDCYlGduTkh1exRwaSxkkJb6TfpVuxqF1rWpYi2bJZf6b3JKKp+slbCfJe3RBJ9ctfvCsMDQ8=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e269a9aa-27dd-41b6-f8ac-08d7f1e26707
+X-MS-Exchange-CrossTenant-originalarrivaltime: 06 May 2020 17:24:58.8193
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: /A2KlZPsLV7L3Qez9W77i5UhOYMeX8KpTtZgr1D9/DFz404SOoTj+VIGaK2qhG/tpqrypeXE7XV0lu0gm8XIKrSkjxXvuQ6t34T5REbjALo=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR0401MB3528
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, May 6, 2020 at 1:13 AM Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
->
->
->
-> On 2020/5/6 =E4=B8=8B=E5=8D=8812:37, John Hendy wrote:
-> > Greetings,
-> >
-> >
-> > I'm following up to the below as this just occurred again. I think
-> > there is something odd between btrfs behavior and browsers. Since the
-> > last time, I was able to recover my drive, and have disabled
-> > continuous trim (and have not manually trimmed for that matter).
-> >
-> > I've switched to firefox almost exclusively (I can think of a handful
-> > of times using it), but the problem was related chromium cache and the
-> > problem this time was the file:
-> >
-> > .cache/mozilla/firefox/tqxxilph.default-release/cache2/entries/D8FD7600=
-C30A3A68D18D98B233F9C5DD3F7DDAD0
-> >
-> > In this particular instance, I suspended my computer, and resumed to
-> > find it read only. I opened it to reboot into windows, finding I
-> > couldn't save my open file in emacs.
-> >
-> > The dmesg is here: https://pastebin.com/B8nUkYzB
->
-> The reason is write time tree checker, surprised it get triggered:
->
-> [68515.682152] BTRFS critical (device dm-0): corrupt leaf: root=3D257
-> block=3D156161818624 slot=3D22 ino=3D1312604, name hash mismatch with key=
-,
-> have 0x000000007a63c07f expect 0x00000000006820bc
->
-> In the dump included in the dmesg, unfortunately it doesn't include the
-> file name so I'm not sure which one is the culprit, but it has the inode
-> number, 1312604.
-
-Thanks for the input. The inode resolves to this path, but it's the
-same base path as the problematic file for btrfs scrub.
-
-$ sudo btrfs inspect-internal inode-resolve 1312604 /home/jwhendy
-/home/jwhendy/.cache/mozilla/firefox/tqxxilph.default-release/cache2/entrie=
-s
-
-> But consider this is from write time tree checker, not from read time
-> tree checker, this means, it's not your on-disk data corrupted from the
-> very beginning, but possibly your RAM (maybe related to suspension?)
-> causing the problem.
-
-Interesting. I suspend al the time and have never encountered this,
-but I do recall sending an email (in firefox) and quickly closing my
-computer afterward as the last thing I did.
-
-> >
-> > The file above was found uncorrectable via btrfs scrub, but after I
-> > manually deleted it the scrub succeeded on the second try with no
-> > errors.
->
-> Unfortunately, it may not related to that file, unless that file has the
-> inode number 1312604.
->
-> That to say, this is a completely different case.
->
-> Considering your previous csum corruption, have you considered a full
-> memtest?
-
-I can certainly do this. At what point could hardware be ruled out and
-something else pursued or troubleshot? Or is this a lost cause to try
-and understand?
-
-Many thanks,
-John
-
-> Thanks,
-> Qu
->
-> >
-> > $ btrfs --version
-> > btrfs-progs v5.6
-> >
-> > $ uname -a
-> > Linux voltaur 5.6.10-arch1-1 #1 SMP PREEMPT Sat, 02 May 2020 19:11:54
-> > +0000 x86_64 GNU/Linux
-> >
-> > I don't know how to reproduce this at all, but it's always been
-> > browser cache related. There are similar issues out there, but no
-> > obvious pattern/solutions.
-> > - https://forum.manjaro.org/t/root-and-home-become-read-only/46944
-> > - https://bbs.archlinux.org/viewtopic.php?id=3D224243
-> >
-> > Anything else to check on why this might occur?
-> >
-> > Best regards,
-> > John
-> >
-> >
-> > On Wed, Feb 5, 2020 at 10:01 AM John Hendy <jw.hendy@gmail.com> wrote:
-> >>
-> >> Greetings,
-> >>
-> >> I've had this issue occur twice, once ~1mo ago and once a couple of
-> >> weeks ago. Chromium suddenly quit on me, and when trying to start it
-> >> again, it complained about a lock file in ~. I tried to delete it
-> >> manually and was informed I was on a read-only fs! I ended up biting
-> >> the bullet and re-installing linux due to the number of dead end
-> >> threads and slow response rates on diagnosing these issues, and the
-> >> issue occurred again shortly after.
-> >>
-> >> $ uname -a
-> >> Linux whammy 5.5.1-arch1-1 #1 SMP PREEMPT Sat, 01 Feb 2020 16:38:40
-> >> +0000 x86_64 GNU/Linux
-> >>
-> >> $ btrfs --version
-> >> btrfs-progs v5.4
-> >>
-> >> $ btrfs fi df /mnt/misc/ # full device; normally would be mounting a s=
-ubvol on /
-> >> Data, single: total=3D114.01GiB, used=3D80.88GiB
-> >> System, single: total=3D32.00MiB, used=3D16.00KiB
-> >> Metadata, single: total=3D2.01GiB, used=3D769.61MiB
-> >> GlobalReserve, single: total=3D140.73MiB, used=3D0.00B
-> >>
-> >> This is a single device, no RAID, not on a VM. HP Zbook 15.
-> >> nvme0n1                                       259:5    0 232.9G  0 dis=
-k
-> >> =E2=94=9C=E2=94=80nvme0n1p1                                   259:6   =
- 0   512M  0
-> >> part  (/boot/efi)
-> >> =E2=94=9C=E2=94=80nvme0n1p2                                   259:7   =
- 0     1G  0 part  (/boot)
-> >> =E2=94=94=E2=94=80nvme0n1p3                                   259:8   =
- 0 231.4G  0 part (btrfs)
-> >>
-> >> I have the following subvols:
-> >> arch: used for / when booting arch
-> >> jwhendy: used for /home/jwhendy on arch
-> >> vault: shared data between distros on /mnt/vault
-> >> bionic: root when booting ubuntu bionic
-> >>
-> >> nvme0n1p3 is encrypted with dm-crypt/LUKS.
-> >>
-> >> dmesg, smartctl, btrfs check, and btrfs dev stats attached.
-> >>
-> >> If these are of interested, here are reddit threads where I posted the
-> >> issue and was referred here.
-> >> 1) https://www.reddit.com/r/btrfs/comments/ejqhyq/any_hope_of_recoveri=
-ng_from_various_errors_root/
-> >> 2)  https://www.reddit.com/r/btrfs/comments/erh0f6/second_time_btrfs_r=
-oot_started_remounting_as_ro/
-> >>
-> >> It has been suggested this is a hardware issue. I've already ordered a
-> >> replacement m2.sata, but for sanity it would be great to know
-> >> definitively this was the case. If anything stands out above that
-> >> could indicate I'm not setup properly re. btrfs, that would also be
-> >> fantastic so I don't repeat the issue!
-> >>
-> >> The only thing I've stumbled on is that I have been mounting with
-> >> rd.luks.options=3Ddiscard and that manually running fstrim is preferre=
-d.
-> >>
-> >>
-> >> Many thanks for any input/suggestions,
-> >> John
->
+Looks reasonable,=0A=
+Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>=0A=
