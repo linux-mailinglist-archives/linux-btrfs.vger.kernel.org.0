@@ -2,302 +2,123 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0BA21C7BF4
-	for <lists+linux-btrfs@lfdr.de>; Wed,  6 May 2020 23:07:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F2A51C7C59
+	for <lists+linux-btrfs@lfdr.de>; Wed,  6 May 2020 23:24:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729203AbgEFVHf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 6 May 2020 17:07:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56106 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728907AbgEFVHe (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 6 May 2020 17:07:34 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45E60C061A0F
-        for <linux-btrfs@vger.kernel.org>; Wed,  6 May 2020 14:07:34 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id g12so4331929wmh.3
-        for <linux-btrfs@vger.kernel.org>; Wed, 06 May 2020 14:07:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dyCYWxthLtsY3dY4SRNK13KDvT/8zWBcDX/CcK5kM98=;
-        b=zMNTOlZwXuF4+x4jaN6d6o0AEBDa1KuQrsaDaTIy7fVCL4RaBbgQYBcn7Fn0mOxF/N
-         FES+0Z99DUXvTb3FXJiJpbLDojOVsP6yFdG/12QlKPWVDNdj/jUpO03kzLtkEvt8UB9S
-         BMssqU5qnQWl0D9U98BKOi+ZHYyUecTtUimg/vbEwsbOnp/nRY1s4hWcSq3RiqabiImr
-         WbuFTpitk3JvI2SQVKjofIguL4A1+aDXSy+jmIlcLU1T915u/G5UUjILT1F/tftSfCvS
-         p9TF+lk0aPGq7+ESvwRzr8QvylrumY/fZ4bKsW1vacY5cmHZhOwJh+ZzOLuCMjWUo8hs
-         yQ3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dyCYWxthLtsY3dY4SRNK13KDvT/8zWBcDX/CcK5kM98=;
-        b=n9KiLa4ypWlw4mIqOJeyT+7bHISUQatWIx9HjV52fWIuVSy5cubN7S+VXXfmWbsXQJ
-         rAIKKBKZ1+TkGCLeAGIGWqDZRCOHwOAniY4FwhO2FLyGQtfIYWq/orwH4cRrexj0jttj
-         6fXD3A5IeY1d3DoaZeaSnpgPLYs0PeUqHHk/iB4qaEz/Qz2myDL8NEigeL63q4wGICJN
-         H6hsZB/Jow+KItGzyl/fOudQv04TTonOxlOBMUJCfmNDyvHGxeET+AN4plwk5P8C1cw3
-         YeyAHZruEh97YLr69pe08AaMFoviknA4YO4vnFk7AinL0Z6QhOpfxb6fMpJMQQZ5UxPj
-         BNSA==
-X-Gm-Message-State: AGi0PuadChQFR+m52GPN17NGbzTrPTlSiEIS8FubvozQS9L73sAe6/lz
-        wq4P3rc51ADD6yh9emEqtaxAxLwYfmfgBr9D5nZQn/jcmBC72g==
-X-Google-Smtp-Source: APiQypI64hDTkZJ8EiAegVCIfwmqruCtjQUfpUhyf2GiaqbCvTUADeURHqod4Wa3Bn/8HEakknPx0w9DBgR98VSC3jY=
-X-Received: by 2002:a05:600c:2645:: with SMTP id 5mr6266108wmy.168.1588799252633;
- Wed, 06 May 2020 14:07:32 -0700 (PDT)
+        id S1729543AbgEFVYO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 6 May 2020 17:24:14 -0400
+Received: from smtp-33.italiaonline.it ([213.209.10.33]:51326 "EHLO libero.it"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728621AbgEFVYN (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 6 May 2020 17:24:13 -0400
+Received: from venice.bhome ([94.37.193.252])
+        by smtp-33.iol.local with ESMTPA
+        id WRWUjnoahrZwsWRWUjruNU; Wed, 06 May 2020 23:24:11 +0200
+x-libjamoibt: 1601
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2014;
+        t=1588800251; bh=Rr2oEU9tu5OaKqs6OtlRMglgb9Avr/qHZB3V7YunWjE=;
+        h=From;
+        b=ccs66kgdFN8xKVl00MTQK7Cs1miLkmo/GVXFqjK43pkIM4WkZxrfAEdczGvxC8rOs
+         Bd6/OxfiK8tPJBWP/Nl4bgmjv49mMkTgP8mg/ccj7f9Gz/GPWFEPfnxte7cxWCs317
+         qgPRx/Ngwmb4OQLoewjX6MKXAKaSQFUTgjZqwiHLX3RUM68n3JIe+wdsI4KUcxjgo5
+         iZQ+ESqoGxOknoo2UT5xSeqHJBBmOwIvKEY/KlXnEYoOXZGp/my+51p67FpILuwB7r
+         x+68M6kQo8t9eezjEmOt5VMgSxb0pSu/6/sRP+tMz6836UrU/iKVQhZ1RDWZN0k+0L
+         zqE6Z/J+Ud15A==
+X-CNFS-Analysis: v=2.3 cv=ANbu9Azk c=1 sm=1 tr=0
+ a=m9MdMCwkAncLgtUozvdZtQ==:117 a=m9MdMCwkAncLgtUozvdZtQ==:17
+ a=IkcTkHD0fZMA:10 a=DsloTXpuAAAA:20 a=qTpr3AHhMGleqoAtVKkA:9
+ a=QEXdDO2ut3YA:10 a=CtvLCtAli4LrSFkZZ_cB:22
+Reply-To: kreijack@inwind.it
+Subject: Re: [PATCH v2 1/2] btrfs: add authentication support
+To:     Jeff Mahoney <jeffm@suse.com>,
+        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        Richard Weinberger <richard@nod.at>,
+        Johannes Thumshirn <jth@kernel.org>
+Cc:     David Sterba <dsterba@suse.cz>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        Eric Biggers <ebiggers@google.com>,
+        Johannes Thumshirn <jthumshirn@suse.de>,
+        david <david@sigma-star.at>,
+        Sascha Hauer <s.hauer@pengutronix.de>
+References: <20200428105859.4719-1-jth@kernel.org>
+ <20200428105859.4719-2-jth@kernel.org>
+ <164471725.184338.1588629556400.JavaMail.zimbra@nod.at>
+ <SN4PR0401MB3598DDEF9BF9BACA71A1041D9BA70@SN4PR0401MB3598.namprd04.prod.outlook.com>
+ <bc2811dd-8d1e-f2ff-7a9b-326fe4270b96@suse.com>
+From:   Goffredo Baroncelli <kreijack@libero.it>
+Message-ID: <fb18c698-5e47-1e1a-4977-b3b6ed7c0e7f@libero.it>
+Date:   Wed, 6 May 2020 23:24:10 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-References: <CAJCQCtTp+DJ3LQhfLhFh0eFBPvksrCWyDi9_KiWxM_wk+i=45w@mail.gmail.com>
- <CAJCQCtSJWBy23rU2L8Kbo0GgmNXHTZxaE2ewY1yODEF+SKe-QA@mail.gmail.com>
- <2ae5353b-461b-6a87-227c-f13b0c2ccfe2@suse.com> <CAJCQCtT6rnH75f8wC8uf+-NnxEsZtmoRhM9cE37QTR0TF6xqJQ@mail.gmail.com>
- <CAJCQCtSCzD-RtGH1tJjNN=PBgUfJARy0r1p1Ln0pU1eRNTmR9w@mail.gmail.com>
- <CAJCQCtQu4ffJYuOUWkhV_wR7L0ya7mTyt0tuLqbko-O8S+1fmg@mail.gmail.com> <CAJCQCtT=rStKTwUc86FyAp8C0D8eoRvgKHWYC3+e=fLJxJNUZA@mail.gmail.com>
-In-Reply-To: <CAJCQCtT=rStKTwUc86FyAp8C0D8eoRvgKHWYC3+e=fLJxJNUZA@mail.gmail.com>
-From:   Chris Murphy <lists@colorremedies.com>
-Date:   Wed, 6 May 2020 15:07:16 -0600
-Message-ID: <CAJCQCtT6zXdNOeTh1YTrWwji_QtK00hhiAP96ysrHdeg-DU3bw@mail.gmail.com>
-Subject: Re: 5.6, slow send/receive, < 1MB/s
-To:     Chris Murphy <lists@colorremedies.com>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Content-Type: multipart/mixed; boundary="00000000000013187105a501273f"
+In-Reply-To: <bc2811dd-8d1e-f2ff-7a9b-326fe4270b96@suse.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4wfB6yrYXHlXpIBjo7sxrpHbhO5DTCWgVdvubq4uIgFjr+HwhlZaviLrWMmhtMslEo5V1GeJ2bp2k0qr6p6PnT4sv7FU0xDgQX/fqMxY/iW5M51CC7ANme
+ +No2wcfKGVX7jXnWqXwHbU2TQupKvdVZ1p10pjYBxt/o7/pUxLDuwB+g4kXUF37dCvhS+Z3DFcGoafP/HZWM+GW3hkksTxkBnoraVEIlfueGRcNuWXbUgmP8
+ HuFumSYTMWidgMsSeHYsyr+wajrPSLrk63zJjQ6oNk4GflwRShIWzGCjKhc+VzSw/C6Vi9wa2lGJEUe+14Onml4j0g6fGJsdr+/oZwXc4rnw5Ih/1YTCSKkU
+ cBeO4wk4narW8PgTwNFZaM0qQ5WanEZIuhfIze6vzrdajYg4k6HkM7EWTmZkEWKsn3V+Zr2KGHhUqpWjJWJgeYbm7iP7gYrqOM2wfHg3qhJT4MLphRop/Xw5
+ U5N647KWPhEs02U5
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
---00000000000013187105a501273f
-Content-Type: text/plain; charset="UTF-8"
+On 5/5/20 2:36 PM, Jeff Mahoney wrote:
+> On 5/5/20 3:55 AM, Johannes Thumshirn wrote:
+>> On 04/05/2020 23:59, Richard Weinberger wrote:
+>>> Eric already raised doubts, let me ask more directly.
+>>> Does the checksum tree really cover all moving parts of BTRFS?
+>>>
+>>> I'm a little surprised how small your patch is.
+>>> Getting all this done for UBIFS was not easy and given that UBIFS is truly
+>>> copy-on-write it was still less work than it would be for other filesystems.
+>>>
+>>> If I understand the checksum tree correctly, the main purpose is protecting
+>>> you from flipping bits.
+>>> An attacker will perform much more sophisticated attacks.
+>>
+>> [ Adding Jeff with whom I did the design work ]
+>>
+>> The checksum tree only covers the file-system payload. But combined with
+>> the checksum field, which is the start of every on-disk structure, we
+>> have all parts of the filesystem checksummed.
+> 
+> That the checksums were originally intended for bitflip protection isn't
+> really relevant.  Using a different algorithm doesn't change the
+> fundamentals and the disk format was designed to use larger checksums
+> than crc32c.  The checksum tree covers file data.  The contextual
+> information is in the metadata describing the disk blocks and all the
+> metadata blocks have internal checksums that would also be
+> authenticated.  
 
-On Wed, May 6, 2020 at 3:04 PM Chris Murphy <lists@colorremedies.com> wrote:
->
-> On Tue, May 5, 2020 at 11:48 PM Chris Murphy <lists@colorremedies.com> wrote:
-> >
-> > btrfs-progs-5.6-1.fc32.x86_64
-> > kernel-5.6.8-300.fc32.x86_64
-> >
-> > I've created a new file system, filled it with ~600G, set the seed
-> > flag, and I'm creating a sprout by adding a 2nd device and removing
-> > the 1st. This used to go at device speeds. Today it's running at
-> > ~35M/s where I expect 95-120M/s. I don't know that it's related to
-> > send/receive performance.
->
-> Same brand new file system, and a second new file system, doing
-> send/receive with a single snapshot (no other snapshots or subvolumes
-> related to it) and I'm seeing this same abysmal performance. ~5MB/s
-> send. The instant I do 'perf top -g -U' on the send process, the send
-> performance increases 10x to over 50MB/s. As soon as I quit perf top,
-> abysmal performance. Both of these drives scrub at ~100M/s. I'm not
-> sure what's going on or how to get more information but it's a
-> regression.
->
-> I'll attach a few perf top text files to the next email.
 
-[chris@fnuc ~]$ sudo perf top -g -U -p 263438 -d 10
+> The only weak spot is that there has been a historical
+> race where a user submits a write using direct i/o and modifies the data
+> while in flight.  This will cause CRC failures already and that would
+> still happen with this.
+I faced this issue few years ago.
+However it would be sufficient to disable DIRECT IO for a DATASUM file.
+And I think that this should be done even for a "non authenticate" filesystem.
+Allow the users to use a feature that can cause a bad crc to me doesn't seems a good idea.
 
-The pid is for the 'btrfs send' process. Both btrfs send and receive
-processes are  using nearly 100% CPU which itself just seems
-excessive.
+BTW it seems that ZFS ignore O_DIRECT
+
+https://github.com/openzfs/zfs/issues/224
+
+
+> 
+> All that said, the biggest weak spot I see in the design was mentioned
+> on LWN: We require the key to mount the file system at all and there's
+> no way to have a read-only but still verifiable file system.  That's
+> worth examining further.
+> 
+> -Jeff
+> 
+
 
 -- 
-Chris Murphy
-
---00000000000013187105a501273f
-Content-Type: text/plain; charset="US-ASCII"; name="perftopsend1c.txt"
-Content-Disposition: attachment; filename="perftopsend1c.txt"
-Content-Transfer-Encoding: base64
-Content-ID: <f_k9vu0s6p0>
-X-Attachment-Id: f_k9vu0s6p0
-
-U2FtcGxlcwogIENoaWxkcmVuICAgICAgU2VsZiAgU2hhcmVkIE9iamVjdCAgICAgU3ltYm9sCisg
-ICA5Ni4zMSUgICAgIDAuMDIlICBba2VybmVsXSAgICAgICAgICBba10gZW50cnlfU1lTQ0FMTF82
-NF9hZnRlcl9od2ZyYW1lICAgICAgCisgICA5Ni4xOSUgICAgIDAuMDAlICBba2VybmVsXSAgICAg
-ICAgICBba10gZG9fc3lzY2FsbF82NCAgICAgICAgICAgICAgICAgICAgICAgCisgICA3Mi40OCUg
-ICAgIDAuMDAlICBsaWJjLTIuMzEuc28gICAgICBbLl0gc3BsaWNlICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgCisgICA3MS45OSUgICAgIDAuMDElICBba2VybmVsXSAgICAgICAgICBba10g
-X194NjRfc3lzX3NwbGljZSAgICAgICAgICAgICAgICAgICAgCisgICA3MS45MyUgICAgIDYuNTQl
-ICBba2VybmVsXSAgICAgICAgICBba10gZG9fc3BsaWNlICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgCisgICAzNC41NyUgICAgMzMuNDElICBba2VybmVsXSAgICAgICAgICBba10gbXV0ZXhfdW5s
-b2NrICAgICAgICAgICAgICAgICAgICAgICAgCisgICAyNy41MiUgICAgIDAuMDAlICBsaWJjLTIu
-MzEuc28gICAgICBbLl0gX19HSV9fX2lvY3RsICAgICAgICAgICAgICAgICAgICAgICAgCisgICAy
-NC4yMCUgICAgIDAuMDAlICBba2VybmVsXSAgICAgICAgICBba10gX194NjRfc3lzX2lvY3RsICAg
-ICAgICAgICAgICAgICAgICAgCisgICAyNC4yMCUgICAgIDAuMDAlICBba2VybmVsXSAgICAgICAg
-ICBba10ga3N5c19pb2N0bCAgICAgICAgICAgICAgICAgICAgICAgICAgCisgICAyNC4yMCUgICAg
-IDAuMDAlICBba2VybmVsXSAgICAgICAgICBba10gcnBjX3BvcHVsYXRlLmNvbnN0cHJvcC4wICAg
-ICAgICAgICAgCisgICAyNC4yMCUgICAgIDAuMDAlICBba2VybmVsXSAgICAgICAgICBba10gX2J0
-cmZzX2lvY3RsX3NlbmQgICAgICAgICAgICAgICAgICAgCisgICAyNC4yMCUgICAgIDAuMDMlICBb
-a2VybmVsXSAgICAgICAgICBba10gYnRyZnNfaW9jdGxfc2VuZCAgICAgICAgICAgICAgICAgICAg
-CisgICAyMy45NiUgICAgIDAuMDMlICBba2VybmVsXSAgICAgICAgICBba10gcHJvY2Vzc19leHRl
-bnQgICAgICAgICAgICAgICAgICAgICAgCisgICAyMS43MiUgICAgIDMuNzMlICBba2VybmVsXSAg
-ICAgICAgICBba10gc2VuZF9leHRlbnRfZGF0YSAgICAgICAgICAgICAgICAgICAgCisgICAxOS4w
-NiUgICAgMTIuNTIlICBba2VybmVsXSAgICAgICAgICBba10gbXV0ZXhfbG9jayAgICAgICAgICAg
-ICAgICAgICAgICAgICAgCisgICAxNy42MiUgICAgIDMuODMlICBba2VybmVsXSAgICAgICAgICBb
-a10gcGlwZV9kb3VibGVfbG9jayAgICAgICAgICAgICAgICAgICAgCisgICAgOC42NSUgICAgIDAu
-MDYlICBba2VybmVsXSAgICAgICAgICBba10gc2VuZF9jbWQgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgCisgICAgOC41MiUgICAgIDAuMDIlICBba2VybmVsXSAgICAgICAgICBba10ga2VybmVs
-X3dyaXRlICAgICAgICAgICAgICAgICAgICAgICAgCisgICAgOC40OSUgICAgIDAuMDUlICBba2Vy
-bmVsXSAgICAgICAgICBba10gdmZzX3dyaXRlICAgICAgICAgICAgICAgICAgICAgICAgICAgCisg
-ICAgOC4xMiUgICAgIDAuMDclICBba2VybmVsXSAgICAgICAgICBba10gbmV3X3N5bmNfd3JpdGUg
-ICAgICAgICAgICAgICAgICAgICAgCisgICAgOC4wNSUgICAgIDAuMjglICBba2VybmVsXSAgICAg
-ICAgICBba10gcGlwZV93cml0ZSAgICAgICAgICAgICAgICAgICAgICAgICAgCisgICAgNi41MCUg
-ICAgIDMuODIlICBba2VybmVsXSAgICAgICAgICBba10gX2NvbmRfcmVzY2hlZCAgICAgICAgICAg
-ICAgICAgICAgICAgCisgICAgNS43MCUgICAgIDAuMjclICBba2VybmVsXSAgICAgICAgICBba10g
-X19tdXRleF9sb2NrLmNvbnN0cHJvcC4wICAgICAgICAgICAgCisgICAgNS4zOSUgICAgIDAuMDIl
-ICBba2VybmVsXSAgICAgICAgICBba10gX19kb19wYWdlX2NhY2hlX3JlYWRhaGVhZCAgICAgICAg
-ICAgCisgICAgNS4zNCUgICAgIDUuMjQlICBba2VybmVsXSAgICAgICAgICBba10gbXV0ZXhfc3Bp
-bl9vbl9vd25lciAgICAgICAgICAgICAgICAgCisgICAgNS4xNSUgICAgIDUuMDAlICBba2VybmVs
-XSAgICAgICAgICBba10gbWVtY3B5X2VybXMgICAgICAgICAgICAgICAgICAgICAgICAgCisgICAg
-NC4xMyUgICAgIDAuMDAlICBba2VybmVsXSAgICAgICAgICBba10gcmVhZF9wYWdlcy5pc3JhLjAg
-ICAgICAgICAgICAgICAgICAgCisgICAgNC4wMCUgICAgIDAuMDUlICBba2VybmVsXSAgICAgICAg
-ICBba10gZXh0ZW50X3JlYWRwYWdlcyAgICAgICAgICAgICAgICAgICAgCisgICAgMy40MCUgICAg
-IDAuMTElICBba2VybmVsXSAgICAgICAgICBba10gY29weV9wYWdlX2Zyb21faXRlciAgICAgICAg
-ICAgICAgICAgCisgICAgMy4zMiUgICAgIDAuMTIlICBba2VybmVsXSAgICAgICAgICBba10gX2Nv
-cHlfZnJvbV9pdGVyICAgICAgICAgICAgICAgICAgICAgCisgICAgMi45NyUgICAgIDAuMjQlICBb
-a2VybmVsXSAgICAgICAgICBba10gX19hbGxvY19wYWdlc19ub2RlbWFzayAgICAgICAgICAgICAg
-CisgICAgMi43OSUgICAgIDIuMTMlICBba2VybmVsXSAgICAgICAgICBba10gcmN1X2FsbF9xcyAg
-ICAgICAgICAgICAgICAgICAgICAgICAgCisgICAgMi41MCUgICAgIDEuOTIlICBba2VybmVsXSAg
-ICAgICAgICBba10gcGlwZV91bmxvY2sgICAgICAgICAgICAgICAgICAgICAgICAgCisgICAgMi4z
-MSUgICAgIDEuMDclICBba2VybmVsXSAgICAgICAgICBba10gZ2V0X3BhZ2VfZnJvbV9mcmVlbGlz
-dCAgICAgICAgICAgICAgCisgICAgMS45NSUgICAgIDAuMDIlICBba2VybmVsXSAgICAgICAgICBb
-a10gdGx2X3B1dCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCisgICAgMS45MCUgICAgIDAu
-MjMlICBba2VybmVsXSAgICAgICAgICBba10gX19kb19yZWFkcGFnZSAgICAgICAgICAgICAgICAg
-ICAgICAgCisgICAgMS43OCUgICAgIDAuMTAlICBba2VybmVsXSAgICAgICAgICBba10gX19zY2hl
-ZHVsZSAgICAgICAgICAgICAgICAgICAgICAgICAgCisgICAgMS43NyUgICAgIDAuMDAlICBba2Vy
-bmVsXSAgICAgICAgICBba10gaXRlcmF0ZV9leHRlbnRfaW5vZGVzICAgICAgICAgICAgICAgCisg
-ICAgMS43NCUgICAgIDAuMDMlICBba2VybmVsXSAgICAgICAgICBba10gc2NoZWR1bGUgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgCisgICAgMS40OCUgICAgIDAuMDElICBba2VybmVsXSAgICAg
-ICAgICBba10gYXBpY190aW1lcl9pbnRlcnJ1cHQgICAgICAgICAgICAgICAgClByZXNzICc/JyBm
-b3IgaGVscCBvbiBrZXkgYmluZGluZ3MgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgCgo=
---00000000000013187105a501273f
-Content-Type: text/plain; charset="US-ASCII"; name="perftopsend3c.txt"
-Content-Disposition: attachment; filename="perftopsend3c.txt"
-Content-Transfer-Encoding: base64
-Content-ID: <f_k9vu0s7d2>
-X-Attachment-Id: f_k9vu0s7d2
-
-U2FtcGxlcwogIENoaWxkcmVuICAgICAgU2VsZiAgU2hhcmVkIE9iamVjICBTeW1ib2wKICAgICAg
-ICAgICAgICAgICAgICAgLSAxLjY0JSB0bHZfcHV0ICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAxLjYyJSBtZW1jcHlf
-ZXJtcyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAg
-ICAgLSAwLjc1JSBpdGVyYXRlX2V4dGVudF9pbm9kZXMgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAKKyAgIDk2LjY2JSAgICAgMC4wMSUgIFtrZXJuZWxdICAgICAgW2tdIGRvX3N5c2Nh
-bGxfNjQgICAgICAgICAgICAgICAgICAgICAgICAgICAKKyAgIDc0LjcwJSAgICAgMC4wMSUgIFtr
-ZXJuZWxdICAgICAgW2tdIF9feDY0X3N5c19zcGxpY2UgICAgICAgICAgICAgICAgICAgICAgICAK
-LSAgIDc0LjY0JSAgICAgNy40NiUgIFtrZXJuZWxdICAgICAgW2tdIGRvX3NwbGljZSAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAKICAgLSA1Mi45NyUgZG9fc3BsaWNlICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAz
-Mi42MSUgbXV0ZXhfdW5sb2NrICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAKICAgICAgLSAxNC4xOCUgcGlwZV9kb3VibGVfbG9jayAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgLSA5Ljk3JSBt
-dXRleF9sb2NrICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAKICAgICAgICAgICAgLSAzLjU5JSBfY29uZF9yZXNjaGVkICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAxLjMwJSByY3Vf
-YWxsX3FzICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAg
-ICAgICAgLSAzLjYyJSBfX211dGV4X2xvY2suY29uc3Rwcm9wLjAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAzLjQ1JSBtdXRleF9zcGluX29uX293
-bmVyICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgLSA5LjAx
-JSBtdXRleF9sb2NrICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAKICAgICAgICAgLSAzLjEyJSBfY29uZF9yZXNjaGVkICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAxLjE1JSBy
-Y3VfYWxsX3FzICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAKICAgICAgLSAxLjU5JSBfX211dGV4X2xvY2suY29uc3Rwcm9wLjAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAxLjU2JSBtdXRleF9zcGluX29u
-X293bmVyICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAg
-ICAxLjUxJSBwaXBlX3VubG9jayAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAKICAgLSA3LjQ2JSBzcGxpY2UgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICBlbnRyeV9T
-WVNDQUxMXzY0X2FmdGVyX2h3ZnJhbWUgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAKICAgICAgICBkb19zeXNjYWxsXzY0ICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICBfX3g2NF9zeXNfc3BsaWNl
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAK
-ICAgICAgLSBkb19zcGxpY2UgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAKLSAgIDMzLjcxJSAgICAzMi40MiUgIFtrZXJuZWxdICAg
-ICAgW2tdIG11dGV4X3VubG9jayAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgLSAzMi4z
-OSUgc3BsaWNlICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAKICAgICAgICBlbnRyeV9TWVNDQUxMXzY0X2FmdGVyX2h3ZnJhbWUgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICBkb19zeXNjYWxs
-XzY0ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAKICAgICAgICBfX3g2NF9zeXNfc3BsaWNlICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgLSBkb19zcGxpY2UgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAg
-ICAgICAgICAzMS42NyUgbXV0ZXhfdW5sb2NrICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAKICAgICAwLjk1JSBtdXRleF91bmxvY2sgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKKyAgIDI1LjExJSAg
-ICAgMC4wMCUgIGxpYmMtMi4zMS5zbyAgWy5dIHNwbGljZSAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAKKyAgIDIxLjk1JSAgICAgMC4wMiUgIFtrZXJuZWxdICAgICAgW2tdIGJ0cmZz
-X2lvY3RsX3NlbmQgICAgICAgICAgICAgICAgICAgICAgICAKKyAgIDIxLjc0JSAgICAgMC4wMyUg
-IFtrZXJuZWxdICAgICAgW2tdIHByb2Nlc3NfZXh0ZW50ICAgICAgICAgICAgICAgICAgICAgICAg
-ICAKKyAgIDIxLjI4JSAgICAxMy45NSUgIFtrZXJuZWxdICAgICAgW2tdIG11dGV4X2xvY2sgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAKKyAgIDE5LjYwJSAgICAgMy4yOSUgIFtrZXJuZWxd
-ICAgICAgW2tdIHNlbmRfZXh0ZW50X2RhdGEgICAgICAgICAgICAgICAgICAgICAgICAKKyAgIDE5
-LjI5JSAgICAgNC4zOCUgIFtrZXJuZWxdICAgICAgW2tdIHBpcGVfZG91YmxlX2xvY2sgICAgICAg
-ICAgICAgICAgICAgICAgICAKKyAgICA5LjI3JSAgICAgMC4wMCUgIGxpYmMtMi4zMS5zbyAgWy5d
-IF9fR0lfX19pb2N0bCAgICAgICAgICAgICAgICAgICAgICAgICAgICAKUHJlc3MgJz8nIGZvciBo
-ZWxwIG9uIGtleSBiaW5kaW5ncyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAKCg==
---00000000000013187105a501273f
-Content-Type: text/plain; charset="US-ASCII"; name="perftopsend2c.txt"
-Content-Disposition: attachment; filename="perftopsend2c.txt"
-Content-Transfer-Encoding: base64
-Content-ID: <f_k9vu0s7a1>
-X-Attachment-Id: f_k9vu0s7a1
-
-U2FtcGxlcwogIENoaWxkcmVuICAgICAgU2VsZiAgU2hhcmVkIE9iamVjICBTeW1ib2wKLSAgIDk2
-Ljg1JSAgICAgMC4wMiUgIFtrZXJuZWxdICAgICAgW2tdIGVudHJ5X1NZU0NBTExfNjRfYWZ0ZXJf
-aHdmcmFtZSAgICAgICAgICAKICAgLSAzMC41NCUgZW50cnlfU1lTQ0FMTF82NF9hZnRlcl9od2Zy
-YW1lICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgLSAzMC41MyUg
-ZG9fc3lzY2FsbF82NCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAKICAgICAgICAgLSAyOS4wNCUgX194NjRfc3lzX3NwbGljZSAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgLSA2MC43MiUgZG9f
-c3BsaWNlICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAK
-ICAgICAgICAgICAgICAgICAzMi40NyUgbXV0ZXhfdW5sb2NrICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgLSAxNC4zNyUgcGlwZV9kb3Vi
-bGVfbG9jayAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAg
-ICAgICAgICAgLSAxMC4yMSUgbXV0ZXhfbG9jayAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgLSAzLjcyJSBfY29uZF9yZXNjaGVk
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAg
-ICAgICAgICAxLjMzJSByY3VfYWxsX3FzICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAKICAgICAgICAgICAgICAgICAgLSAzLjM5JSBfX211dGV4X2xvY2suY29uc3Rwcm9wLjAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAzLjIw
-JSBtdXRleF9zcGluX29uX293bmVyICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAg
-ICAgICAgICAgICAgLSA5LjM1JSBtdXRleF9sb2NrICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgLSAzLjI1JSBfY29uZF9yZXNj
-aGVkICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAg
-ICAgICAgICAgICAxLjE2JSByY3VfYWxsX3FzICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAKICAgICAgICAgICAgICAgICAyLjE0JSBwaXBlX3VubG9jayAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgLSAxLjU4
-JSBfX211dGV4X2xvY2suY29uc3Rwcm9wLjAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAKICAgICAgICAgICAgICAgICAgICAxLjU2JSBtdXRleF9zcGluX29uX293bmVyICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgLSA3LjMyJSBfX3g2NF9zeXNfaW9j
-dGwgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAg
-ICAgICAgICBrc3lzX2lvY3RsICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICBycGNfcG9wdWxhdGUuY29uc3Rwcm9wLjAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICBf
-YnRyZnNfaW9jdGxfc2VuZCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAKICAgICAgICAgICAgLSBidHJmc19pb2N0bF9zZW5kICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgLSA5LjM5JSBw
-cm9jZXNzX2V4dGVudCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAK
-ICAgICAgICAgICAgICAgICAgLSA4LjgxJSBzZW5kX2V4dGVudF9kYXRhICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgLSAyLjY5JSBzZW5k
-X2NtZCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAg
-ICAgICAgICAgICAgICAgLSAyLjY0JSBrZXJuZWxfd3JpdGUgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgLSAyLjcxJSB2ZnNfd3Jp
-dGUgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgLSAyLjY4JSBuZXdfc3luY193cml0ZSAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgLSAzLjE0JSBwaXBlX3dyaXRl
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgLSAxLjE4JSBjb3B5X3BhZ2VfZnJvbV9pdGVyICAgICAgICAgICAgICAgICAKICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgLSAyLjg4JSBfY29weV9mcm9tX2l0
-ZXIgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAyLjcyJSBtZW1jcHlfZXJtcyAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgLSAwLjkzJSBfX2FsbG9jX3BhZ2VzX25vZGVtYXNrICAg
-ICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgLSAwLjk4
-JSBnZXRfcGFnZV9mcm9tX2ZyZWVsaXN0ICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAg
-LSAxLjc1JSBfX2RvX3BhZ2VfY2FjaGVfcmVhZGFoZWFkICAgICAgICAgICAgICAgICAgICAgICAg
-ICAKICAgICAgICAgICAgICAgICAgICAgICAgLSAxLjMzJSByZWFkX3BhZ2VzLmlzcmEuMCAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgLSAx
-LjQ5JSBleHRlbnRfcmVhZHBhZ2VzICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgLSAwLjkwJSBfX2RvX3JlYWRwYWdlICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgLSAwLjY2JSBfX2FsbG9j
-X3BhZ2VzX25vZGVtYXNrICAgICAgICAgICAgICAgICAgICAgICAgICAKUHJlc3MgJz8nIGZvciBo
-ZWxwIG9uIGtleSBiaW5kaW5ncyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAKCg==
---00000000000013187105a501273f--
+gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
+Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
