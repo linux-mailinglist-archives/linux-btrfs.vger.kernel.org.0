@@ -2,90 +2,108 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 545901C7A4E
-	for <lists+linux-btrfs@lfdr.de>; Wed,  6 May 2020 21:32:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 500E51C7B67
+	for <lists+linux-btrfs@lfdr.de>; Wed,  6 May 2020 22:40:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729163AbgEFTcE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 6 May 2020 15:32:04 -0400
-Received: from mail-40132.protonmail.ch ([185.70.40.132]:60836 "EHLO
-        mail-40132.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728433AbgEFTcE (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 6 May 2020 15:32:04 -0400
-Date:   Wed, 06 May 2020 19:31:53 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail; t=1588793522;
-        bh=Y0KA4epkPamwtLoOSwq9QDIbbwOsfXP5XukHH8kX4iM=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=PvqbiiglpvBOndAKUXegXTQX75DstgK7yIQvPz1Xvfe+Q1uN5gFA0Hx/3OYQB+ow7
-         5wDdR9rtmTQJANOMH+HPbGqRZm0jUOLaEAXDw5aVhsHibwt2XpBFjBda517cUXJRQ/
-         k9fntPrlU5N8xohzLnZAWICfv7Ppuz0WhpoHLOfI=
-To:     Chris Murphy <lists@colorremedies.com>
-From:   Nouts <nouts@protonmail.com>
-Cc:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        Qu Wenruo <quwenruo.btrfs@gmx.com>
-Reply-To: Nouts <nouts@protonmail.com>
-Subject: Re: Troubleshoot help needed - RAID1 not mounting : failed to read block groups
-Message-ID: <WWJvfdDerZkhiBg_J3WCgQq_oTtujW6_n-sw5WA-aCBzVuAKGh8NNpwTeLyD1ujMXAsGE1kkEy3ZeMVuZWMjx8mI8iz6P_SQV35A80mSZfo=@protonmail.com>
-In-Reply-To: <CAJCQCtTjWc=Z4mE604Pfc1tKbWcrJNT6qmPB=HVmM4N8MhFW3g@mail.gmail.com>
-References: <EvtqVyP9SQGLLtX4spGcgzbLaK45gh3h00n6u9QU19nuQi6g13oqfZf6dmGm-N8Rdd2ZCFl7zOeEBXRc_Whom2KYJA1eDUSQxgZPZgmI7Dc=@protonmail.com>
- <5oMc__tPC-OFYhHTtUghYtHMzySzDXlSlYC_S5_WjIFiA8eXfvsSxQpfaglOag0sNz7qtvMUzhCqdRzBOMokxeo2dFrfkWrLbBmmuWvME5s=@protonmail.com>
- <CAJCQCtT0mSYvN7FeCavsmKP9j_69JmZ0JdGz8ommhqag=GiM=Q@mail.gmail.com>
- <NmjvBWGDb0a1ZnPep0UnBmeFG4uSUMrxyiYDCir6RRsMyZzizVtCH_8tdd6Y_glmPbbusrKtVBCgGvV7Cc5UFCDqcvJ1PTgWi87x-0FacQ4=@protonmail.com>
- <CAJCQCtRWdovSOQd8r7YzxsQa4fxT9feB_R-nvG7BjvB-u1m2ew@mail.gmail.com>
- <XzvzKWYVgWGlgX7GSa5XGfQcMuM4od6BMpG63kC2X3thsAfl0i__swcKuMF3TcdiInqnifyiphevLoacMdYlEn7YDqj8JDLKFaZRZsoQx1Q=@protonmail.com>
- <CAJCQCtQ=hwE-wwPXEw_r+VOe36zsHYmpx7updj4JOMmQqQeM8w@mail.gmail.com>
- <ZL8K9EyQa7EnOmd3WjfSsNFy8hYbikAq4lO6CTK1vc-HoXoqpY9CKKcYd2xFCwEDvry2aLuZvbwK91-2_J-Zu6tDL6sovvr4jRIATnhmyMQ=@protonmail.com>
- <DQCllnVeUApb40W6_xKaNlAxRJlhCTeYnZEP5r3dZvF0AZejwemvJK-CWfNtV56zb5-LZaPuH-4WgD_-SxDeE2b_TYCRDeTo-2aN4atItbY=@protonmail.com>
- <CAJCQCtTjWc=Z4mE604Pfc1tKbWcrJNT6qmPB=HVmM4N8MhFW3g@mail.gmail.com>
+        id S1726927AbgEFUkZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 6 May 2020 16:40:25 -0400
+Received: from smtp-33.italiaonline.it ([213.209.10.33]:37606 "EHLO libero.it"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726538AbgEFUkZ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 6 May 2020 16:40:25 -0400
+Received: from venice.bhome ([94.37.193.252])
+        by smtp-33.iol.local with ESMTPA
+        id WQq5jnZY4rZwsWQq5jrngQ; Wed, 06 May 2020 22:40:22 +0200
+x-libjamoibt: 1601
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2014;
+        t=1588797622; bh=IX1qh9N0qaPPNnvKbUSWchwftr3A1KbhyZgDuoFdl4k=;
+        h=From;
+        b=uHzki6glcTesfBTggOaV8zwz9bCGPRIq9YgQEBNda4xSv1wiC4iQPrq7kRyg7Rxwp
+         ZmFX9WwMzYb2L8yWNEYZTT3dfnNmcVXzxAOBK8FOFi6kv7P6FVRW5EgwYFsI5iB55u
+         x+odhpgt6nv8bVeG003QVl0FzdGqFQZszAJZjjBHbRrwc+UbGPKCssxpTkiZaI2X/x
+         uEH9Zvbv9W6WW0hoZoYAQAas4R61YwV7t0bDwzvrmFQ9HB2sQXfZjRBgpWo+LHL1Qz
+         hQYSEZH26ygH3hazOnXPYyUIuZ8Qc0EfunFwsQQC653ovaokwnlzXFBwddpyc1osoP
+         NkZVHO+i3/59w==
+X-CNFS-Analysis: v=2.3 cv=ANbu9Azk c=1 sm=1 tr=0
+ a=m9MdMCwkAncLgtUozvdZtQ==:117 a=m9MdMCwkAncLgtUozvdZtQ==:17
+ a=IkcTkHD0fZMA:10 a=ifkeKN6-E4AdYMXjE3oA:9 a=QEXdDO2ut3YA:10
+ a=pHzHmUro8NiASowvMSCR:22 a=Ew2E2A-JSTLzCXPT_086:22
+Reply-To: kreijack@inwind.it
+Subject: btree [was Re: [PATCH v2 1/2] btrfs: add authentication support]
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        Eric Biggers <ebiggers@kernel.org>
+Cc:     Johannes Thumshirn <jth@kernel.org>,
+        David Sterba <dsterba@suse.cz>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        Richard Weinberger <richard@nod.at>
+References: <20200428105859.4719-1-jth@kernel.org>
+ <20200428105859.4719-2-jth@kernel.org>
+ <20200501053908.GC1003@sol.localdomain>
+ <SN4PR0401MB3598198E5FB728B68B39A1589BA60@SN4PR0401MB3598.namprd04.prod.outlook.com>
+ <20200504205935.GA51650@gmail.com>
+ <SN4PR0401MB359843476634082E8329168A9BA70@SN4PR0401MB3598.namprd04.prod.outlook.com>
+ <d395520c-0763-8551-ec80-9cde9b39c3cd@gmx.com>
+From:   Goffredo Baroncelli <kreijack@libero.it>
+Message-ID: <d649407a-7ca4-e9ee-f291-7845c89c622b@libero.it>
+Date:   Wed, 6 May 2020 22:40:21 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=7.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on mail.protonmail.ch
+In-Reply-To: <d395520c-0763-8551-ec80-9cde9b39c3cd@gmx.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4wfEyxU0b93HMuwtyrsMdQOLz92eh4cOSw8ejnQBVpKesXrlWhKp0yBULJcPNmd7ip9lS5zt4l7p2Dl74Pf6hRox09LF7xypsPul+CZ+qdi3BLxuJi6eR6
+ e3OTEm4s/YsrLYN8ixfRodGtPXQ3d5gHSgXWdtU89/wga9Z+WtCM2rqKuMhwOx5izGJfHgYVAM+EExOJFamExbtbK+eJcVK4VAyNPzyaHHD38bXEacJZ9SbX
+ /Rs9DHDn5CpIcHoXXNe7l44JTnbT1sBN6T6MwreP560XfAdcw7M6elcDoGUofAhPzx9uYYXHLjGyGX+erbXS39ut+gaiZK47z1lf80Zq8sT/VWlOGmg7LFVM
+ H9A91wqUvk/x5czdhv8UCsvX3iY3iValUocqzap7jCMVK78E+5o=
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello again,
+Hi Qu,
+
+I will go a bit off topic, because I am interested more in the understanding of the btrees than the topic of this thread
+On 5/5/20 11:26 AM, Qu Wenruo wrote:
+[...]
+> 
+> My personal idea on this swap-tree attack is, the first key, generation,
+> bytenr protection can prevent such case.
+> 
+> The protection chain begins from superblock, and ends at the leaf tree
+> blocks, as long as superblock is also protected by hmac hash, it should
+> be safe.
+> 
+> 
+> Btrfs protects parent-child relationship by:
+> - Parent has the pointer (bytenr) of its child
+>    The main protection. If attacker wants to swap one tree block, it must
+>    change the parent tree block.
+>    The parent is either a tree block (parent node), or root item in root
+>    tree, or a super block.
+>    All protected by hmac csum. Thus attack can only do such attach by
+>    knowing the key.
+> 
+> - Parent has the first key of its child
+>    Unlike previous one, this is just an extra check, no extra protection.
+>    And root item doesn't contain the first key.
+
+It always true ? When a key is inserted, we update the key of the parent to be equal to the first of the (right) child. However when a key is removed, this should be not mandatory. Is it enough that the parent key is greater (or equal) than the first key of the left node, and lesser than the last of the right node ?
+
+Supposing to have
+
+              10
+            /    \
+1 2 3 4 5         10 11 12 13
+
+If you remove 10 in the right child node, is it mandatory to updated the '10' in the parent node (to 11) ?
 
 
-Do you think someone will be able to tell us more about reports I provided =
-?
-I ordered a new drive that can fit all the data from a "restore", so I'll w=
-ait until it's delivered.
+[...]
 
-Nouts
-
-=E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90 Original Me=
-ssage =E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90
-On Saturday, May 2, 2020 7:53 PM, Chris Murphy <lists@colorremedies.com> wr=
-ote:
-
-> On Sat, May 2, 2020 at 9:51 AM Nouts nouts@protonmail.com wrote:
->
-> > Well, I changed my mind. I'll wait a few more days, for the beginning o=
-f the next week, if you have any magical command left :)
-> > I'm not sure to understand it but can a "restore" command dump all of t=
-he data in a new readable disc ?
->
-> Yes, that's the only way it works. It's an offline scraping tool. It
-> is possible for recovered files to be corrupt, the point of the tool
-> is to improve the chance of recovery. So it doesn't have the same
-> safeguards that Btrfs has, where EIO happens upon corruption being
-> detected.
->
-> https://btrfs.wiki.kernel.org/index.php/Restore
->
->
-> -------------------------------------------------------------------------=
----------------------------------------------------------------------------=
----------------------------------------------------------------------------=
----------------------------------------------------------------------------=
------------------------------------
->
-> Chris Murphy
-
-
+-- 
+gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
+Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
