@@ -2,34 +2,39 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC7851C7D9F
-	for <lists+linux-btrfs@lfdr.de>; Thu,  7 May 2020 00:52:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A244E1C7DA2
+	for <lists+linux-btrfs@lfdr.de>; Thu,  7 May 2020 00:57:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730301AbgEFWwb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 6 May 2020 18:52:31 -0400
-Received: from mout.gmx.net ([212.227.17.20]:47095 "EHLO mout.gmx.net"
+        id S1730102AbgEFW5v (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 6 May 2020 18:57:51 -0400
+Received: from mout.gmx.net ([212.227.15.19]:51757 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729243AbgEFWwb (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 6 May 2020 18:52:31 -0400
+        id S1729226AbgEFW5u (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 6 May 2020 18:57:50 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1588805542;
-        bh=wLCRYOBvVYM91kcQACdjuZ3mIosw5dHsshxxUY3piyc=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=Nt4JK1QbeU4SmBFkr4C3l+aG06W2GfmrvZUVuXyPOPiI/pjUMZVxay6wwdrDRiwEq
-         mJUAMqjamMx13XNGey5LCBCLdBcfazq4a9z8AlZwRuI5zBvn/pp7AAiOczbO8qXkoc
-         2bobkzYHZFdWcO4QAGSEHPTnejeETHE8QXeS6Bd8=
+        s=badeba3b8450; t=1588805862;
+        bh=jxNu9XqL7jnOBV+8rS6wyECRptl/XBxd0JxFLZiOM2o=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=HwOCwXEhI7C1cOfRZaG3SwtP2wHqCazVrfVzG2KYE7VCWbu57OEgmk3mBenGojnZD
+         mFLy2cAtfPFaDdPawWZR74vs6slFrOPrPK4GQXTycuLWMLPaypCNMFYVWOBlfy9z18
+         99aRtxPkT1jAHPICkwRWUMuCG4HOJM+kJsVWRzmU=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MfYLQ-1ivB9B1Dh2-00g3uA; Thu, 07
- May 2020 00:52:21 +0200
-Subject: Re: [PATCH v4 02/11] btrfs-progs: block-group: Refactor how we read
- one block group item
-To:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        Qu Wenruo <wqu@suse.com>,
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1M7K3i-1jVOeo0ISC-007ilW; Thu, 07
+ May 2020 00:57:42 +0200
+Subject: Re: btree [was Re: [PATCH v2 1/2] btrfs: add authentication support]
+To:     kreijack@inwind.it, Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+Cc:     Johannes Thumshirn <jth@kernel.org>,
+        David Sterba <dsterba@suse.cz>,
         "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-References: <20200505000230.4454-1-wqu@suse.com>
- <20200505000230.4454-3-wqu@suse.com>
- <DM5PR0401MB3591BD0FCE7A13C5145BB7959BA40@DM5PR0401MB3591.namprd04.prod.outlook.com>
+References: <20200428105859.4719-1-jth@kernel.org>
+ <20200428105859.4719-2-jth@kernel.org>
+ <20200501053908.GC1003@sol.localdomain>
+ <SN4PR0401MB3598198E5FB728B68B39A1589BA60@SN4PR0401MB3598.namprd04.prod.outlook.com>
+ <20200504205935.GA51650@gmail.com>
+ <SN4PR0401MB359843476634082E8329168A9BA70@SN4PR0401MB3598.namprd04.prod.outlook.com>
+ <d395520c-0763-8551-ec80-9cde9b39c3cd@gmx.com>
+ <d649407a-7ca4-e9ee-f291-7845c89c622b@libero.it>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -55,98 +60,148 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
  ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
  oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <20fe631b-5650-f6a5-2cf8-5603ac7dffc5@gmx.com>
-Date:   Thu, 7 May 2020 06:52:17 +0800
+Message-ID: <2ca44136-438d-2b88-160d-9a321cff6f49@gmx.com>
+Date:   Thu, 7 May 2020 06:57:38 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <DM5PR0401MB3591BD0FCE7A13C5145BB7959BA40@DM5PR0401MB3591.namprd04.prod.outlook.com>
+In-Reply-To: <d649407a-7ca4-e9ee-f291-7845c89c622b@libero.it>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="gF2Cp8iTgishRzdl9yVVxLnQQX0uBv3zT"
-X-Provags-ID: V03:K1:Lod9GVunwyHuuV1xYM7QpxLRD7dGPNRijhc0cRvzlEGcif//nds
- I26v+NV/KNIgi0lrjVcRAfkfWp9sUyOn10NuY+Y9mY2dCzh0cNeKvOKHxx11mXogksjI4RB
- eyH26Ayg7dMtdYga9D1POmFQ5p0sBZq0XMcYSBMNMO7gB8IcPHElXhB413TqDnp8YxwFEfs
- Pl6dYEA+R+VLhPUmwpaAA==
+ boundary="GKrMqDhfaAql14qnfaP8qJRIWZy8QVpwS"
+X-Provags-ID: V03:K1:UkxZiaIdNmJ2z7yaE1OJ2AW1vQ6RQ9jbPAzGMrVhTh/wx46eSrz
+ qRoQyfiBZCDe+VBbRIKw9EQGlHFZbeFz89YAA34c0Tw2DMgt4L3sEGFuwsnfZuFoOAvX1Mb
+ SKjO2RxvTNSdrCXa2koshsXfSE6QPtMtlh43+cyJhDKyJOtOe4dr50ueRrych5rvGNQvn6/
+ 4Ile28u8p3ZeeOBBUa3BA==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:n8AAKQyn2RI=:zqlBn/h7ds7K3opW31Apm1
- B2Pc4iz+Xu+qvA1kc4sImJ3R42HKMH5E/zFZGGVqku6axr6zDXZYvQeZ4U4u0QBQEEOaiZw7K
- 03+UhUAM0chx0LCO0d0GqqeRs2GP/OXgXXLX25jZw2m2kBC5qJlvq3ZKssuyhfAvyxKsBEteo
- WUn94PYQBJ37ntVvwPa/1gOJB4B8UH/osALl/9uDf186aKAbGCmKgdbQVFz/pWs+3vrhNu1PE
- wAEyJozMa98bAzuTbq6tZjyL6uZ5pNC5qnPwSszBSU40/PDl7BWhlcwSrywnpR20mIJvHRzs1
- hFUE8uzITSupT/4zSFZ6BqGbzj+3p53YA+31WHVkaBj0s/ibFDlEWm/RqTNm2CjyQgncgYKWA
- odhrl+HccqYRTV9zjaucYq39z3Ak/0oPL1KMtfpbWX2BLd1unqO1SjHzxzuj/VinFYew87VWi
- H3RsrZb4vXASXEzKsVONlvsMixxOE+2M2btSPajZHZfVtptdFHdFrxYVuvV/XQMSFGwKwIDLt
- cRyRGDFro3RySpcnNeAT42pX8zjPJYgrtMte9wSXh0RAo2oMkbRgqasISbxw1weXFlLpJzUEn
- X3TRjvIkWbWIS2TidHJTqAAzuOddzGRo7gd2um9W3IEiLTX5Y0GvK3R7OWqBAED56Uhh2+vxv
- /If/SEYJ20EhljkQxyl89XJ4J+C/WrkqJ6FpJHOYph7NOfXlODmieNcfV7NSivdyd/lo+8cOc
- ZZ3AIHrm3pd+dTqO0tug0Ohr23DeIOD0kddwCcNVkrOcvdisR7w4dmgEARUgDBV+SKuTWFWje
- dxk3FqlaBH9GUijNRShW48nwMWuJUD2YE5DSc3+dTWoVtATrp4FuhwNo1IP70702NMn52yGfN
- w8vApgpI1u/jRqd2kzrSsjCERSD4LNEfMA5hhlrnKEX1LEFSD8c7DaQPGdB2pipcxnjFzbO3N
- N2aRgitgYyCuWiS8cSCENuFGrVhi38/QNn+yrmRGTzRgvToSDg12JG/BWzUMpNNnAfhsnTB91
- UYp6nyj8cMoSpXtK+2H+4ko+xfqyhNc8GfVLUckQx+aBytKAysNWk9j3WCDR4B67JNb7evWxO
- jZpp4o39QS2+ZDHj3rHtdrynU4r7HeT5IaN/pamEYQrbGlTNGRXhIjXgPBWOp8GWPja+66NSo
- d+TnrxWFd2ulCKqK7J6PNHR6Ptdwgqg7quaKsvM4dohb/9Sennkzaq1Br4LoeCnl7BtZGIUTs
- 257da9ovEW4fMQETY
+X-UI-Out-Filterresults: notjunk:1;V03:K0:0rHFNjZTf/o=:KVhZMXZb/0N7G61VKutRrm
+ /f91grFzu5a3CDaWpThx8+9woXH/VN+0P/AJS1ujbjBM2BinKS2bDRkbkuS+oPmZ8N4eeDEXV
+ ETFadzCiRrJcn6yz2c92eHrU9QlWz1iQ/20WVA7un7cqHaGfM9TTvwo0TVtLzLprj+v+semSR
+ N6eTi5brepNVEd98Hs7Tq91sqJ1SC+VvAStMngS4JBGobt7/XRpqXItHVEulvkx28rzlC5H+V
+ vHSjmSdVoz33rnu5DJzNDg9tSmHcaquoSbUGQKF+8G1VVGMqv/gEyfcDT1mILTZ2rSmHBq6FN
+ MOxEGLzfSj0OlW9cwLASbbbKSnGIQQxZ5lID0mVrxOrrJELsfUCXQ42tOgADTVray+/2jfCbv
+ pZupxIrhS/ZWkyiICTAqZA/d02RaQoKr1Je0LKB0BUOHZQ6JFLQJR2nkhFlr7p6PAJMtdm5Es
+ zMjprKO2xluK7qH+KN8iQPuH6PDhr0lUpfyTgGUt6ioW2zcl8qJApHdRSRr9h8STNrrutQ9lT
+ w9RrS5akJJqS//nYEHYii8Tbmfuz14dDSYd/Dn6So7bBeXCF981A/K5sc0yBtlwpTMJ09hi0j
+ q+kgy5Fv5Gc6x4W5UqWYioDGcuf8Ag44pSfMyqeEgouCfc8bl5e1pMfcXTK94S+3UPNhcwbJz
+ e658T/CIv63N0ojURnNy0loDm9qSOXT6lhRmOwKeycWv5EjYA+x/q5tQGb2/suGoSXLT9lFaT
+ QhB+G/zjULu/gdrvW8tUzTDRyNghLd6rqWPtOK+zKnLkABTJAxXZ2d/+F0mb+nPFY9pSH181B
+ zZNJYKUTXdZ+VMqWdRBUn67IKYmaM/+/ughKg6lVFuLw2pJi5DYblTQ9h/WCwFeXpV+XutoP5
+ pQ/0je2C4TOf2ixvA+VmyyRywoBfGzWVD3Jmo6lrHdNboO3VeeIa3emg7kkmCAFt0yqUjbd5p
+ 6WE3535Y45iTtT4QUokJzqgPdTJ5OnBnSlaDO7nCrsxghypDIUnfAnowxBxslQqbwD6hN0PyV
+ IZ+5eGtVX60KxR72ZPCu28EzAWV9nAS0vpNSlH1GPhHAXbuUhXWQwMQUoz5CrGE7x4E3bvnLc
+ djlgUM2yMYduwJiy8TO1ZnvtWgH2D5sx4Bojaf6E7frDyPHvM5WcmFOQU8BVm5Cgm0IUuiDQI
+ cYIoIjZjF/rDFZNazOGhZZ9h3BQDBAbSpWfURGJBN3T/RkjBEFMERogZjZ7qot3MOmMJ76aVJ
+ 6qf7Kdv2CQQAeSDDO
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---gF2Cp8iTgishRzdl9yVVxLnQQX0uBv3zT
-Content-Type: multipart/mixed; boundary="QuqH1swrrcg86vXR8eKHK44SiCfqvGZu1"
+--GKrMqDhfaAql14qnfaP8qJRIWZy8QVpwS
+Content-Type: multipart/mixed; boundary="ExN8DTTJt8oBejO9kyXN0NSsFgCJiF7PA"
 
---QuqH1swrrcg86vXR8eKHK44SiCfqvGZu1
+--ExN8DTTJt8oBejO9kyXN0NSsFgCJiF7PA
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
 
 
 
-On 2020/5/7 =E4=B8=8A=E5=8D=881:27, Johannes Thumshirn wrote:
-> On 05/05/2020 02:02, Qu Wenruo wrote:
->> - Use btrfs_block_group::length  to replace key::offset
->>    Since skinny block group item would have a different meaning for it=
-s
->>    key offset.
+On 2020/5/7 =E4=B8=8A=E5=8D=884:40, Goffredo Baroncelli wrote:
+> Hi Qu,
 >=20
-> Nope, you still use key->offset for cache->length
+> I will go a bit off topic, because I am interested more in the
+> understanding of the btrees than the topic of this thread
 
-That's no problem for regular block group item, as in that case
-key->offset is block group length.
+Then removing unrelated CCs to reduce the noise.
 
-It looks like the sentence is not clear enough, what I mean is, after
-read_block_group_item(), there shouldn't be any key->offset user, but
-use block_group->length instead.
+> On 5/5/20 11:26 AM, Qu Wenruo wrote:
+> [...]
+>>
+>> My personal idea on this swap-tree attack is, the first key, generatio=
+n,
+>> bytenr protection can prevent such case.
+>>
+>> The protection chain begins from superblock, and ends at the leaf tree=
+
+>> blocks, as long as superblock is also protected by hmac hash, it shoul=
+d
+>> be safe.
+>>
+>>
+>> Btrfs protects parent-child relationship by:
+>> - Parent has the pointer (bytenr) of its child
+>> =C2=A0=C2=A0 The main protection. If attacker wants to swap one tree b=
+lock, it must
+>> =C2=A0=C2=A0 change the parent tree block.
+>> =C2=A0=C2=A0 The parent is either a tree block (parent node), or root =
+item in root
+>> =C2=A0=C2=A0 tree, or a super block.
+>> =C2=A0=C2=A0 All protected by hmac csum. Thus attack can only do such =
+attach by
+>> =C2=A0=C2=A0 knowing the key.
+>>
+>> - Parent has the first key of its child
+>> =C2=A0=C2=A0 Unlike previous one, this is just an extra check, no extr=
+a protection.
+>> =C2=A0=C2=A0 And root item doesn't contain the first key.
+>=20
+> It always true ? When a key is inserted, we update the key of the paren=
+t
+> to be equal to the first of the (right) child. However when a key is
+> removed, this should be not mandatory. Is it enough that the parent key=
+
+> is greater (or equal) than the first key of the left node, and lesser
+> than the last of the right node ?
+>=20
+> Supposing to have
+>=20
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 1 10=
+ (A)
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /=C2=A0=C2=
+=A0=C2=A0 \
+> 1 2 3 4 5 (B)=C2=A0=C2=A0=C2=A0=C2=A0 10 11 12 13 (C)
+>=20
+> If you remove 10 in the right child node, is it mandatory to updated th=
+e
+> '10' in the parent node (to 11) ?
+
+Yes. And we're always COW so tree block C and A will get COWed (and if A
+has parents, the path towards the tree root will get COWed).
+
+If we remove 10, then the result would be:
+	1 11 (Cowed A)
+       /    \
+1 ~ 5 (B)    11 12 13 (Cowed C)
 
 Thanks,
 Qu
 
 >=20
->> +
->> +	cache->start =3D key->objectid;
->> +	cache->length =3D key->offset;
+>=20
+> [...]
 >=20
 
 
---QuqH1swrrcg86vXR8eKHK44SiCfqvGZu1--
+--ExN8DTTJt8oBejO9kyXN0NSsFgCJiF7PA--
 
---gF2Cp8iTgishRzdl9yVVxLnQQX0uBv3zT
+--GKrMqDhfaAql14qnfaP8qJRIWZy8QVpwS
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl6zP6EACgkQwj2R86El
-/qhTawgAg50x858uJFln3sRBGeQhZnERQpDJy9IAs/h8/MVA75wxf+rb7JRz1hZA
-X02a4GpxS5xYJ5C5PMqaiVOM+FTC/nBwpUSpfVA+fb/lxncaI7BC9YyiVx18PIqK
-V/72BrZTQ9ECiRW5WjocdIsAct5Lb/dEvRoEEa6Px11TTSK4whdsEFBqGdlcPTWp
-Ytn5mud8CWHK6/hAZg5V6RogM7eH5QkodJupmVipOHKa0Hkf3MDRZ6dTg1mrridI
-iPPFxibuT1j83WLVIWBZGloiIzwa001r81PFnuu2063NnD7rFq6Bss5x0ZDl4w/t
-Ro8LRREzWiA+jHilu1D5iSrJBnyD5A==
-=QdaP
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl6zQOIACgkQwj2R86El
+/qj7aAf/Qd6wn1CaXeMXp15dz8DDqkDkU/osvWnxdoHYlM8ZV0BQxbY+/IhHwz28
+iQgnaAnx/tNxPqVJL3KiHSFsktm2i7IT+F/Zye4z/9HccBj5tBGaYyeGjjpTbuRy
+bJor4zOJ3Q8cEQKSoZ5WPU5mWQcvpOApmnAtIwX6Otf577+1PcMkLarhLT5qv7hl
+spMq9VPcXQfyMh4XX9H/RObtokSGI4tFgQh4Iug2cp/hHH7Xz8687DqgXDvtWs8N
+CzTwNbwB09NQ//UG9b+5zBnoX6kdK59nHf+8ypM6tfkED5s7NtOibQlBSa56eooL
+gWU/Jf6uLjlbNIRttB3Tibf6r4+Ypw==
+=rvU6
 -----END PGP SIGNATURE-----
 
---gF2Cp8iTgishRzdl9yVVxLnQQX0uBv3zT--
+--GKrMqDhfaAql14qnfaP8qJRIWZy8QVpwS--
