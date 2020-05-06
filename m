@@ -2,37 +2,31 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12BF41C67BC
-	for <lists+linux-btrfs@lfdr.de>; Wed,  6 May 2020 07:59:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8EF81C6829
+	for <lists+linux-btrfs@lfdr.de>; Wed,  6 May 2020 08:13:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726924AbgEFF7D (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 6 May 2020 01:59:03 -0400
-Received: from mout.gmx.net ([212.227.15.18]:50983 "EHLO mout.gmx.net"
+        id S1727937AbgEFGNf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 6 May 2020 02:13:35 -0400
+Received: from mout.gmx.net ([212.227.15.18]:58261 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725771AbgEFF7D (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 6 May 2020 01:59:03 -0400
+        id S1727912AbgEFGNd (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 6 May 2020 02:13:33 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1588744738;
-        bh=k/3kNsrvDRDzFmxxPE21fpPHFLmaKJPnI47mQNz3/XE=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=SnkdRG2cfYVUw3apl4WCDrfgy2ua5+RSi4QkJci7kPkBfOvEcXLmgtPHk3NDzj03P
-         jxMBco8qBcYlJggnwm8Jxes2XAWGeVOpTuldvopZK6dH99dkww+8BMoQaUu3ADypZX
-         JNsSZoc0mhi7ycAtI5K9lxpEqbUGpu7NQtOPGJOY=
+        s=badeba3b8450; t=1588745609;
+        bh=b8pkvAlx3wsagcMjTM9EeUogF64ia8D1zcQ2mmTjRoQ=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=j3M8LhlBbmEGwJWfV5fzBfPcEi7bpny7r1ILmi20cKn5y/4eGERbDZaVaFWvANt8U
+         1B7dhb2WaRUVuKh8/G3O8jprJZsxxX4XFQtUXVCRtTvtI+5Crl9wA2czX3ZN9Xwd+g
+         1Feyf5ULHujIGeFI3cr35Ak8AY/YIJnmF0kJBK/M=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
 Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MacSe-1iyo4h2P98-00c5QP; Wed, 06
- May 2020 07:58:58 +0200
-Subject: Re: Balance loops: what we know so far
-To:     Andrea Gelmini <andrea.gelmini@gmail.com>
-Cc:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
-        Linux BTRFS <linux-btrfs@vger.kernel.org>
-References: <20200411211414.GP13306@hungrycats.org>
- <b3e80e75-5d27-ec58-19af-11ba5a20e08c@gmx.com>
- <20200428045500.GA10769@hungrycats.org>
- <ea42b9cb-3754-3f47-8d3c-208760e1c2ac@gmx.com>
- <CAK-xaQYvgXuUtX6DKpOZ2NrvkYBfW9qgGOvMUCovAjVBO2Ay7g@mail.gmail.com>
- <a7d16528-b5c2-0dcb-27fa-8eee455fee55@gmx.com>
- <CAK-xaQajcwVdwBZ6DhZ5EYax2FL28a6_+ZfsPjV7sqXeQ3RVKQ@mail.gmail.com>
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1N3siA-1j5uzu2YtM-00zqN1; Wed, 06
+ May 2020 08:13:28 +0200
+Subject: Re: btrfs root fs started remounting ro
+To:     John Hendy <jw.hendy@gmail.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+References: <CA+M2ft9zjGm7XJw1BUm364AMqGSd3a8QgsvQDCWz317qjP=o8g@mail.gmail.com>
+ <CA+M2ft895gy-zmDsax14pOgK3JmGxj6+1Z_itn3GhaGREBfDKw@mail.gmail.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -58,169 +52,218 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
  ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
  oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <628479cc-9cc2-ac05-9a0f-20f3987284f3@gmx.com>
-Date:   Wed, 6 May 2020 13:58:54 +0800
+Message-ID: <87cb36b6-618d-5005-d832-53cd486084cb@gmx.com>
+Date:   Wed, 6 May 2020 14:13:23 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <CAK-xaQajcwVdwBZ6DhZ5EYax2FL28a6_+ZfsPjV7sqXeQ3RVKQ@mail.gmail.com>
+In-Reply-To: <CA+M2ft895gy-zmDsax14pOgK3JmGxj6+1Z_itn3GhaGREBfDKw@mail.gmail.com>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="enFJD0tPJ4HoO6bz1rFooJHfVirdcFVej"
-X-Provags-ID: V03:K1:9bxJckaQur3AYQYAbdf6JYNQK+pu/ybI0r5JSDGZP6C0J39uGZw
- hdGBC17NV2psVh6mJaLY5l5a9IDF645iUQSo/hWR9ofAkeVcDgpGOAy0ZCGnqS6sYjfB0NN
- cW/0iEd7z7zZacawvQHKqLnaK+so10fDi5ZB2Kw/vY5HfAls+7nPvQWWjffqELjRNm8xvS7
- 1msBQV2IJm5Uhx7vtZnyQ==
+ boundary="tM1neJku5DnPENwCcyVqyz6RjBk7d4GAV"
+X-Provags-ID: V03:K1:NBP6Li9+tMzVOqy77KDICh42fD8S6ouNQYZdXBQzNtjJjdO0TKt
+ 2OXzWnF8/XtxIYCbFFb+FsDWo+QuTHjB9z818AJeG1m9ltAV8C6r9HNoU0RSxdff8K3EL16
+ Rl/yFSqTxXONiGD9F3F3ObKRXA/vqeoexlkS+udI4I1xzyyBQ5Ssz1QTqTnv+fz/KF0HHkQ
+ RtOpA60Wxr0WAiS+/j2OQ==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:HlIpmPBc66Y=:49HJbtHL3chJU0B14S/drW
- j0YGSClDDcxTLzG75VBbV+khSXmSxZ0aw7m+Gn0qNFzkN7KESK4wd40eu+vP0MAiZuok6Qa2Z
- JISXRvE+e7bUmBlcGtOa2r55PCVnNTfIQT/1VvBKkfMJ5buSlz2dQIeoOVAKOLH3AiV9Lf81k
- 7qILyv/X+Nf5lT8wmqd6z+gU/NMQk7hZKGuQdoiDrAgNNnrg/5jwooeoI699zb5rLOJc9XZFq
- r7uTifxQNkYc2pJHuSB6WouLWc/N0uH89etS82RZEanNAw/JSKq7/MTMjr4unLCf5SEeEv8dQ
- gyb7+O6/lSM88KK0Nmz75FcuwZWBLDjM6JhGV9TxAKvRUxnx/oruutTuErcYdWGYDVL9yzeuL
- FvuAVdHWn6SlK/GeziXni9FzXjlGUWT0OOwESBqMdQrRPbdvyevGi5dmK3xPCKqywAOFOGaaM
- rCDpYfudTNp/GJQIE7qD/gG33Qeds+2coPOT5DLwiGoxrcjMMe8r78teObu130FXgjjXtoktv
- MMEU8H+pgY/RBjmBLLA54aZ/FDbE6j0f9NFqhhDJXArsvRJxtqCyQlOHfsVjxhtXLh/1zNWzs
- Db+EQw6aJJYPPAxAYdJchDOLQtICQuldF9AGz8HDR4u/RkBtWVEpoRgdaLGE4thXd+R8Byaoe
- hDmr4xQaYOEbHRvdJEXq14y5ai9hQZMqVIMMxZ+ByJGWh7+GAVO+YVmPz3H4w0l1k9sIa4/aG
- 61UTA46iqJqzRNosPVm9q36JucRxUpNm4s4VbO6egjgJKqzxy5G8MS1lRQJbWcYtTZeoDdBS7
- kkjX1vSDOyxdkKaPWICN8KFue+51k9op4AHKJVWP0Ftz7YhmXffEkZP5zcSD9hESSecdcCF2x
- PYcZENyovhGVh832/1skXFKgF5CDeYGarsB4ZobfCMSTqTdXyopqiTQTMWt3bD9aHil1BkhPX
- W0zEG2bqg9eHo/OxUPgz9Igem8Fzfot/WC3rdObrrFudc8wN7Ycy+CXt5/I5UVLnZ/mKZ/fkG
- r/tcb45eNFXB2YGIeAjVFoN5qUsnudV2px77m51hVoNGDig9MPDLyT2Lyw1Y6ZqxQ7SBTBkd2
- sRWXJMcsiYuwy8tQY33zrYNSVbibH9F44AavZ60jXoaoztoE13JtpHrbzGiq/LE58eL9APsH1
- wGM/0e2yxqQO5ulvdPqiBu366fKZgxM27fGpkthnhOBWsYoVbaZKD3+4F5GNEquALWmAaiX31
- dBvf/slWIJXOq89Y+
+X-UI-Out-Filterresults: notjunk:1;V03:K0:BvEAJhnyNeI=:nbVc1NrcAfqvcghIPkDXSW
+ 9irAitvjxD6zZzNmvhvrFNRbCd5zvTYbHBY1Ne6/QSpfr//vtyLbARC/q+fv9Ws40fSbSL/uB
+ 6dXc0JY4SY3jOAR6w9CyxDKN3ns9Og6ytiItnmw2GLS/WxTydc7nQRt528Okd2x6pgk4MHrzV
+ WKoF+Oq3B299rPdsOuiuh7enCgbF6ajt72OCDgYEinEFoJZotlavWrgmjAJsA4ZNbwnIySUaf
+ zcI3fFviNrWYVajFWH1tG5ZHjEsDJ0A+Z9oY4J93rSbVKc/RENxhY6OrJWafRCkk1ZBtsQcvH
+ /yyfZinQWT0nYAKkL+uefMWHeB5TjlVeRvqsdmUSHwBi+Ud8n8ogJJpgL2z7bW2xrKRTmdg4n
+ POMT5/HFrfJXc2BA60OGYPV2PIBKr/ynfnosX56z0lqw4mMr9xH8vSJN23rsqEVk6yfZu3k1g
+ YO33CJRHfHA5gw9sUDct/0iWhsyF8pV4Powz3lTL0MA7lgIbeGRTaW9KtYRQD2d84L4dbLCTy
+ inklj46M+VfUjZohERW9zBGVsJHu+nJSoUypmQRaHocO/MekUUbG6yh+i5IcIYAL3IL4Otlqg
+ pwCliB8DBXEJKbbY6eyw05LH8l3Z6gvKCp4sHex5S0gAmdSxHb2xKcc2HY237grPnhq3Ejmz6
+ tMYgfOS8Vmom303kOY7SAULwcXENcKe7c3hfmQXuFbges3yY+C3Den+3SxCLc8ZZi5gHZIZBz
+ jV54lU4HEcTdmcOugzwPgUmTgyIYIdja7PeTt9uKc1d2uBACXBweIgV/wCEhfCuJCdZzydPfZ
+ 2T8UZE+Gs9IZ7D6hMNatf13SgVVXfvPkcD1MdlfpZP5Gqp5PRoJEoBn71kmCas+lUZbUjCA8F
+ SAoBoEnv/LrzP9Y5Vp1nvhCJf8p05TBC7898SyO5EzJH2PLX08mdG5Wx7rJCYw8ur+D4LUymI
+ xz+RwQzcNVgfPIUSxlBszkIA6sjoHfsNvAlMCiJzkrcpayrLf0c37mkG9unNVCZfI2I9CLQ/2
+ LhxXreUBbrS4L5UykS3lMffkqpOqgkxnHFAuvJpkVUzLW7zqrs+56w2HLIAS9gAv6BegcuXRM
+ AFnrgXuDxUvKBB3EmJCF1LGwUcKu8cIIvjiJonPwDQr6il5TgIEhKAFTsAHCaWXETvKsxckdW
+ YpdBZiT5x5SR2ihTz6x/oNqI59l1hZBb7gHxZ90BVsNnVLZjDvNDAJh3pTGW9FV5U+jh4bNlf
+ R/yDSZ/W4GuIfuHbt
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---enFJD0tPJ4HoO6bz1rFooJHfVirdcFVej
-Content-Type: multipart/mixed; boundary="aBLPbvWTo4pbxNC9fEhg2C9th77PJVeAn"
+--tM1neJku5DnPENwCcyVqyz6RjBk7d4GAV
+Content-Type: multipart/mixed; boundary="JFeCZRhMUXH02W3kf2PNdIG3r1xnpDe5C"
 
---aBLPbvWTo4pbxNC9fEhg2C9th77PJVeAn
+--JFeCZRhMUXH02W3kf2PNdIG3r1xnpDe5C
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
 
 
 
-On 2020/5/5 =E4=B8=8B=E5=8D=885:10, Andrea Gelmini wrote:
-> Il giorno mar 5 mag 2020 alle ore 01:48 Qu Wenruo
-> <quwenruo.btrfs@gmx.com> ha scritto:
+On 2020/5/6 =E4=B8=8B=E5=8D=8812:37, John Hendy wrote:
+> Greetings,
 >=20
->> I mean, btrfs-image dump of the umounted fs.
->> (btrfs-image can compress the metadata, and won't include data, thus i=
-t
->> can be way smaller than the image)
 >=20
-> No problem to give you complete image, data and metadata.
+> I'm following up to the below as this just occurred again. I think
+> there is something odd between btrfs behavior and browsers. Since the
+> last time, I was able to recover my drive, and have disabled
+> continuous trim (and have not manually trimmed for that matter).
+>=20
+> I've switched to firefox almost exclusively (I can think of a handful
+> of times using it), but the problem was related chromium cache and the
+> problem this time was the file:
+>=20
+> .cache/mozilla/firefox/tqxxilph.default-release/cache2/entries/D8FD7600=
+C30A3A68D18D98B233F9C5DD3F7DDAD0
+>=20
+> In this particular instance, I suspended my computer, and resumed to
+> find it read only. I opened it to reboot into windows, finding I
+> couldn't save my open file in emacs.
+>=20
+> The dmesg is here: https://pastebin.com/B8nUkYzB
 
-Thanks for your dump.
+The reason is write time tree checker, surprised it get triggered:
 
-Do you still have the initial looping dmesg?
-The point here is to locate the offending block group.
+[68515.682152] BTRFS critical (device dm-0): corrupt leaf: root=3D257
+block=3D156161818624 slot=3D22 ino=3D1312604, name hash mismatch with key=
+,
+have 0x000000007a63c07f expect 0x00000000006820bc
 
-But anyway, your dump is already very interesting.
+In the dump included in the dmesg, unfortunately it doesn't include the
+file name so I'm not sure which one is the culprit, but it has the inode
+number, 1312604.
 
-- The dump has no reloc tree
-  Which means, the balance should already finished and all reloc tree
-  already cleaned up.
-  In theory, we should be able to continue to next chunk.
-  But in reality we're not.
 
-- There is a metadata chunk with data reloc tree leaf
-  If we're looping on block group 12210667520, then it's possible that
-  we're deadlooping on that block group, with "found 1 extents".
-  From the bytenr it indeed looks like the case.
-  But still, the initial dead loop dmesg would provide better proof to
-  this.
-  (Sorry, not sure if I could convert the vbox format to qcow2 nor how
-   to resume it to KVM/qemu, thus I still have to bother you to dump the
-   dmesg)
+But consider this is from write time tree checker, not from read time
+tree checker, this means, it's not your on-disk data corrupted from the
+very beginning, but possibly your RAM (maybe related to suspension?)
+causing the problem.
 
-If that's the case, it would be very interesting in how we're handling
-the data reloc tree.
-It would be very worthy digging then.
+>=20
+> The file above was found uncorrectable via btrfs scrub, but after I
+> manually deleted it the scrub succeeded on the second try with no
+> errors.
+
+Unfortunately, it may not related to that file, unless that file has the
+inode number 1312604.
+
+That to say, this is a completely different case.
+
+Considering your previous csum corruption, have you considered a full
+memtest?
 
 Thanks,
 Qu
 
 >=20
->> At this stage, the image should be pretty small.
->> You can try restart the system and boot into liveCD and dump the image=
-=2E
+> $ btrfs --version
+> btrfs-progs v5.6
 >=20
-> Just to give you more possible info, here=C2=B9 you find all the files.=
- I
-> guess you figure out how to
-> use it without my explain, but anyway, just for the record:
+> $ uname -a
+> Linux voltaur 5.6.10-arch1-1 #1 SMP PREEMPT Sat, 02 May 2020 19:11:54
+> +0000 x86_64 GNU/Linux
 >=20
-> - video.mkv : show you how I re-up the save-state of vm at the moment
-> I saw the loop;
-> - Virtualbox-Files.tar.bz2 : contains all the Virtualbox VM files, so
-> you can run it up on your own. You can also view the history command I
-> did;
-> - ubuntu-iso.tar : just to make it easier, it's simply the iso Ubuntu
-> I'm using, with the right path, so if you want to replicate my side;
-> - sda1.btrfs.dd.bz2 : is the dd of all the BTRFS partition, just after
-> the reset of the VM, but without mount it. So, if I mount it, I see
-> this:
+> I don't know how to reproduce this at all, but it's always been
+> browser cache related. There are similar issues out there, but no
+> obvious pattern/solutions.
+> - https://forum.manjaro.org/t/root-and-home-become-read-only/46944
+> - https://bbs.archlinux.org/viewtopic.php?id=3D224243
 >=20
-> [268398.481278] BTRFS: device fsid
-> cdbf6911-63f6-410e-9d22-a0376dfcc8ce devid 1 transid 32588 /dev/loop35
-> scanned by systemd-udevd (392357)
-> [268404.681217] BTRFS info (device loop35): disk space caching is enabl=
-ed
-> [268404.681221] BTRFS info (device loop35): has skinny extents
-> [268404.694708] BTRFS info (device loop35): enabling ssd optimizations
-> [268404.700398] BTRFS info (device loop35): checking UUID tree
-> [268404.722430] BTRFS info (device loop35): balance: resume -musage=3D2=
- -susage=3D2
-> [268404.722523] BTRFS info (device loop35): relocating block group
-> 12546211840 flags metadata|dup
-> [268404.752675] BTRFS info (device loop35): found 21 extents
-> [268404.771509] BTRFS info (device loop35): relocating block group
-> 12512657408 flags system|dup
-> [268404.792802] BTRFS info (device loop35): found 1 extents
-> [268404.819137] BTRFS info (device loop35): relocating block group
-> 12210667520 flags metadata|dup
-> [268404.858634] BTRFS info (device loop35): found 26 extents
-> [268404.915321] BTRFS info (device loop35): balance: ended with status:=
- 0
+> Anything else to check on why this might occur?
 >=20
-> Just in case:
-> 1aced5ec23425845a79966d9a78033aa  sda1.btrfs.dd.bz2
-> 93c9a2d50395383090dd031015ca8e89  ubuntu-iso.tar
-> e9b3d49439cc41cd34fba078cf99c1b8  video.mkv
-> 663b9a55bbfdb51fc8a77569445a9102  Virtualbox-Files.tar.bz2
+> Best regards,
+> John
 >=20
-> Hope it helps,
-> Gelma
 >=20
-> =C2=B9 http://mail.gelma.net/btrfs-vm/
->=20
+> On Wed, Feb 5, 2020 at 10:01 AM John Hendy <jw.hendy@gmail.com> wrote:
+>>
+>> Greetings,
+>>
+>> I've had this issue occur twice, once ~1mo ago and once a couple of
+>> weeks ago. Chromium suddenly quit on me, and when trying to start it
+>> again, it complained about a lock file in ~. I tried to delete it
+>> manually and was informed I was on a read-only fs! I ended up biting
+>> the bullet and re-installing linux due to the number of dead end
+>> threads and slow response rates on diagnosing these issues, and the
+>> issue occurred again shortly after.
+>>
+>> $ uname -a
+>> Linux whammy 5.5.1-arch1-1 #1 SMP PREEMPT Sat, 01 Feb 2020 16:38:40
+>> +0000 x86_64 GNU/Linux
+>>
+>> $ btrfs --version
+>> btrfs-progs v5.4
+>>
+>> $ btrfs fi df /mnt/misc/ # full device; normally would be mounting a s=
+ubvol on /
+>> Data, single: total=3D114.01GiB, used=3D80.88GiB
+>> System, single: total=3D32.00MiB, used=3D16.00KiB
+>> Metadata, single: total=3D2.01GiB, used=3D769.61MiB
+>> GlobalReserve, single: total=3D140.73MiB, used=3D0.00B
+>>
+>> This is a single device, no RAID, not on a VM. HP Zbook 15.
+>> nvme0n1                                       259:5    0 232.9G  0 dis=
+k
+>> =E2=94=9C=E2=94=80nvme0n1p1                                   259:6   =
+ 0   512M  0
+>> part  (/boot/efi)
+>> =E2=94=9C=E2=94=80nvme0n1p2                                   259:7   =
+ 0     1G  0 part  (/boot)
+>> =E2=94=94=E2=94=80nvme0n1p3                                   259:8   =
+ 0 231.4G  0 part (btrfs)
+>>
+>> I have the following subvols:
+>> arch: used for / when booting arch
+>> jwhendy: used for /home/jwhendy on arch
+>> vault: shared data between distros on /mnt/vault
+>> bionic: root when booting ubuntu bionic
+>>
+>> nvme0n1p3 is encrypted with dm-crypt/LUKS.
+>>
+>> dmesg, smartctl, btrfs check, and btrfs dev stats attached.
+>>
+>> If these are of interested, here are reddit threads where I posted the=
+
+>> issue and was referred here.
+>> 1) https://www.reddit.com/r/btrfs/comments/ejqhyq/any_hope_of_recoveri=
+ng_from_various_errors_root/
+>> 2)  https://www.reddit.com/r/btrfs/comments/erh0f6/second_time_btrfs_r=
+oot_started_remounting_as_ro/
+>>
+>> It has been suggested this is a hardware issue. I've already ordered a=
+
+>> replacement m2.sata, but for sanity it would be great to know
+>> definitively this was the case. If anything stands out above that
+>> could indicate I'm not setup properly re. btrfs, that would also be
+>> fantastic so I don't repeat the issue!
+>>
+>> The only thing I've stumbled on is that I have been mounting with
+>> rd.luks.options=3Ddiscard and that manually running fstrim is preferre=
+d.
+>>
+>>
+>> Many thanks for any input/suggestions,
+>> John
 
 
---aBLPbvWTo4pbxNC9fEhg2C9th77PJVeAn--
+--JFeCZRhMUXH02W3kf2PNdIG3r1xnpDe5C--
 
---enFJD0tPJ4HoO6bz1rFooJHfVirdcFVej
+--tM1neJku5DnPENwCcyVqyz6RjBk7d4GAV
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl6yUh4ACgkQwj2R86El
-/qi0SQgAoF0fJ2BI0ViGCRf/4+L/4VcNww8tHpzdQ9m7FMHyQMxqJdDTF3ypbZvg
-U9mNZ+BfpMBmutfeNUnqFRHRreb6Dcqs2cAZieLo6oQHVlcaK0Mi0PN2x6rL1oGN
-zdFHmFqRsaESOGVm5BBFsjklD1wCaEu+GBb/zesOg7IctGUyXzhHgjGUiOG1bzPm
-r/OVB9rhZQBSyiyNuBU5zOZkHqQsZGEVGVQC2FgfPSai96zaTjP/2pmjr5Vy62SZ
-jKDENSyvh4XgpPNdyMSpWdLnFQBrBwc015KE8wjxTPz+sgxznh12ldymKWAFacwh
-KPepscZlhIg+dFNxqWzpqjAyEWeZiw==
-=YPOv
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl6yVYMACgkQwj2R86El
+/qhPDQf+KBQVlgBESlvtfzybnecOHJjdIRBRlmWdFobkBCqSZv5dEpRz16/oVwdg
+fmMcLoWnh9UioLhCb9EYJEdqay+o4I2w2r78y081vr0dbS3RvWNu9veYbAsI6wEZ
+Y/zKbaLvfE6SOnKDHMhblGamiGGPcK6WU2XJFq2NWFtyDk7GGzk2a9XT1Bc5E315
+75iWcQC+AciD59ws9AmH+pxeN3axxGHFeU0+PcMEh4q5hlrXMhIJsKShQ5SnRZ7g
+c/qkPbbUOJYGd25a5U7QmhDb0uK74NiHSsLvZ4hNUed31DZRNncNSvAZtQqmgS68
+MwXme97FHVcZDvm7kranNANjA2XTtQ==
+=dDkB
 -----END PGP SIGNATURE-----
 
---enFJD0tPJ4HoO6bz1rFooJHfVirdcFVej--
+--tM1neJku5DnPENwCcyVqyz6RjBk7d4GAV--
