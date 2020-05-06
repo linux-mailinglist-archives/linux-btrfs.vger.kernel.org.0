@@ -2,168 +2,128 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 654701C6704
-	for <lists+linux-btrfs@lfdr.de>; Wed,  6 May 2020 06:38:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 986BE1C6794
+	for <lists+linux-btrfs@lfdr.de>; Wed,  6 May 2020 07:48:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725869AbgEFEiI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 6 May 2020 00:38:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42498 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725856AbgEFEiI (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 6 May 2020 00:38:08 -0400
-Received: from mail-vk1-xa43.google.com (mail-vk1-xa43.google.com [IPv6:2607:f8b0:4864:20::a43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28087C061A0F
-        for <linux-btrfs@vger.kernel.org>; Tue,  5 May 2020 21:38:07 -0700 (PDT)
-Received: by mail-vk1-xa43.google.com with SMTP id n207so173146vkf.8
-        for <linux-btrfs@vger.kernel.org>; Tue, 05 May 2020 21:38:07 -0700 (PDT)
+        id S1727768AbgEFFsU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 6 May 2020 01:48:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53392 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725771AbgEFFsT (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 6 May 2020 01:48:19 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 451E6C061A0F
+        for <linux-btrfs@vger.kernel.org>; Tue,  5 May 2020 22:48:19 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id s8so611236wrt.9
+        for <linux-btrfs@vger.kernel.org>; Tue, 05 May 2020 22:48:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=eLl1Pk8/saeVsDHwG+h1VL5FYUobDYlLCr4kXOCNdU4=;
-        b=nXTQOlqCcC9u4gXKuNCRYUVgadnv4kAq0IExlFoRrvtGqeG3oPE6xQxQEBjlqtdm89
-         BwSnKDnoux34Mj3jhyw6XarssjAkXD6YAtZvNP5IGp+eu97UE+kAutJapmjqEdwYKEPE
-         dAMhrAizjHbvanggMDiR5xwOKydVdWyQRHQAbZzfxEdteR+CFp0NjXJgQJ1GJRdQUu68
-         RBUkaQs8V7zA2jrDvkIOD7fDTProA1PPSaE8e8lk5MibdvowOGX3xnYn6/2stGIDZxp/
-         16nTFvdzb9NkU/LpUlrGwH3AVTYYDPA1CWrIhJgQr0zkDeQR1e2ZRQS3JxEahf/sIVeE
-         H9ig==
+         :cc;
+        bh=nb+ZAsd+36az6v5YABcysXKinaFM9KUQkzrdaFAWvl4=;
+        b=TDE0BXVyXxJjxxkYnEVBCw4QEwsUIbYWLsgu63wzIpLXab4dWWhQEvuIi7dZwp2Vl+
+         Ijk4wykzW+v5CqR1JCZf9b/BRPVly6ecn/zJv2uH7iVkzM9yf1JNeygE4ydzuGQseiYu
+         zqWtc/UkHrhMiqTKkU/A8c4x9DA35lNgRo9HhjNMMaoBQEsOoXE29hSsl+WKnCi1y0Sm
+         IJmaxs4bdbuMapjlLP0GT3VuKA6N0NqtxX9+LsseXAfq8HxRCvHO4XZL2f82G2grLswK
+         +fBLXVSh5lQJeSVVFTGnRzMcWoQjey+R+Ai+tsdbuo/I6NQJijsrj2+yfxUMpwsHHCKb
+         XHyg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:content-transfer-encoding;
-        bh=eLl1Pk8/saeVsDHwG+h1VL5FYUobDYlLCr4kXOCNdU4=;
-        b=pHJ7OFiU4EROmQMgnmcQbnxx3WIYBDNuS/2VBrtA6pI8uhObfBNOJkX5T0pTiCVmoD
-         dAoy04UF0KEmnCRWM3FNebyAJ1LraWbXVh8Q4oEKbv2qh3A8IEmJqPZhXrFX0fPoZPg9
-         oFnwBAf3GCIcJOaT75ucdxi/Fbhbkf8aRobXdWbMxgASbbTct5dIU/Rpma9xinDNdlFW
-         jr1llc+9/oYVIqh1JSKb1RuXqty36LRmdrMkzppUTsebf313aB4lnMZzv1wDnfc4UOpq
-         Q/wcnyKT8rErO57fnOJe9wLm5VScysQCi7NaHgcIJmeNMU9Ic2ASSIMTLZ92DfGxDvzu
-         OuFw==
-X-Gm-Message-State: AGi0PubuzY0/zQDsJX8ReaqD95An4qYzH2gI0AYNtQTK4rKT2X+S3U2+
-        ESv/wvpmErNBnKSsTTre9JaM9O55uxgnDBKwhWZ8r0fuMJw=
-X-Google-Smtp-Source: APiQypLLoF0m4DWgMG+pGSxmkVPKZxC5FZN4NewD2ZLHY+14qBNSpwA1qX31Zyn+5cs/kZh68WWkjdQOnnBS+lK9WI0=
-X-Received: by 2002:a1f:2c3:: with SMTP id 186mr5744104vkc.17.1588739885603;
- Tue, 05 May 2020 21:38:05 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=nb+ZAsd+36az6v5YABcysXKinaFM9KUQkzrdaFAWvl4=;
+        b=PhXD3nvuhGEhM+kp9uRqZvXgWaqDuCk7wsWHBdBuWcCPMuIeLLBqtz8gYww+i1KokP
+         pyrjvemEocMWKUXN0E+WWjlTMEIsexgocA6W2TROO3HUp97b7k/4slggTUMvRAmYtmCn
+         2tI3oSXNHWbRzHxI17pc+GKfum6mJijZiIsfFWeGHob1MjoFrmELvHqgtWXOkERlRSCR
+         emuayaYeP9HD8OaUl5dOzshzjYLN6YFvK6Wiev9MEdOfmAZ2apcotE4czQqOIyS+0F5W
+         9IQC5ec0lPFuqwLZRB4y/UapNykQ5tdFQ8NW/BsQZ2b6PD1B4V2lFeAlajiMX6OW5inA
+         9XRg==
+X-Gm-Message-State: AGi0Pua9osRJEf5ige2AxPQe5uNj++3yvH6v+JJqz22SaAI+RLx0815B
+        sBniOyyII5h+DkrUtSvlyd69oo70CW1ciSg+coTQdw==
+X-Google-Smtp-Source: APiQypLW92g+MhcLzHa9XkDdg9PiMhUSnGqj6MLaDiI39mCkY574pwgufgCbmU39hNLL6fdqjOywq3/Hjq4ejW2II4I=
+X-Received: by 2002:a5d:62cf:: with SMTP id o15mr2719966wrv.252.1588744098013;
+ Tue, 05 May 2020 22:48:18 -0700 (PDT)
 MIME-Version: 1.0
-References: <CA+M2ft9zjGm7XJw1BUm364AMqGSd3a8QgsvQDCWz317qjP=o8g@mail.gmail.com>
-In-Reply-To: <CA+M2ft9zjGm7XJw1BUm364AMqGSd3a8QgsvQDCWz317qjP=o8g@mail.gmail.com>
-From:   John Hendy <jw.hendy@gmail.com>
-Date:   Tue, 5 May 2020 23:37:53 -0500
-Message-ID: <CA+M2ft895gy-zmDsax14pOgK3JmGxj6+1Z_itn3GhaGREBfDKw@mail.gmail.com>
-Subject: Re: btrfs root fs started remounting ro
-To:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+References: <CAJCQCtTp+DJ3LQhfLhFh0eFBPvksrCWyDi9_KiWxM_wk+i=45w@mail.gmail.com>
+ <CAJCQCtSJWBy23rU2L8Kbo0GgmNXHTZxaE2ewY1yODEF+SKe-QA@mail.gmail.com>
+ <2ae5353b-461b-6a87-227c-f13b0c2ccfe2@suse.com> <CAJCQCtT6rnH75f8wC8uf+-NnxEsZtmoRhM9cE37QTR0TF6xqJQ@mail.gmail.com>
+ <CAJCQCtSCzD-RtGH1tJjNN=PBgUfJARy0r1p1Ln0pU1eRNTmR9w@mail.gmail.com>
+In-Reply-To: <CAJCQCtSCzD-RtGH1tJjNN=PBgUfJARy0r1p1Ln0pU1eRNTmR9w@mail.gmail.com>
+From:   Chris Murphy <lists@colorremedies.com>
+Date:   Tue, 5 May 2020 23:48:01 -0600
+Message-ID: <CAJCQCtQu4ffJYuOUWkhV_wR7L0ya7mTyt0tuLqbko-O8S+1fmg@mail.gmail.com>
+Subject: Re: 5.6, slow send/receive, < 1MB/s
+To:     Chris Murphy <lists@colorremedies.com>
+Cc:     Nikolay Borisov <nborisov@suse.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Greetings,
+btrfs-progs-5.6-1.fc32.x86_64
+kernel-5.6.8-300.fc32.x86_64
+
+I've created a new file system, filled it with ~600G, set the seed
+flag, and I'm creating a sprout by adding a 2nd device and removing
+the 1st. This used to go at device speeds. Today it's running at
+~35M/s where I expect 95-120M/s. I don't know that it's related to
+send/receive performance.
+
+The remove process with 'perf top -g -U' is only using 7% CPU, unlike
+the send/receive cases.
+
+Samples
+  Children      Self  Shared Objec  Symbol
+-   82.39%     0.04%  [kernel]      [k] relocate_block_group
+   - 17.88% relocate_block_group
+      - 7.78% prepare_to_relocate
+         - 7.21% btrfs_commit_transaction
+            - 7.51% btrfs_run_delayed_refs
+               - __btrfs_run_delayed_refs
+                  - 3.19% __tracepoint_kvm_mmu_spte_requested
+                     - 3.15% pipapo_get.constprop.0
+                        - 3.57% __add_to_free_space_tree
+                             3.61% btrfs_del_items
+                             1.37% btrfs_insert_empty_items
+                  - 1.41% __tracepoint_kvm_entry
+                    0.92% __tracepoint_kvm_apic_accept_irq
+      - 6.41% relocate_data_extent
+         - 7.52% relocate_file_extent_cluster
+            - 2.35% __do_page_cache_readahead
+               - 1.70% read_pages.isra.0
+                  - 2.03% extent_readpages
+                       1.32% __do_readpage
+                 0.93% __alloc_pages_nodemask
+            - 1.67% clear_extent_bit
+                 1.92% __clear_extent_bit
+            - 1.40% lock_extent_bits
+                 1.59% __set_extent_bit
+              1.19% btrfs_delalloc_reserve_metadata
+              1.15% __set_page_dirty_nobuffers
+      - 2.23% prepare_to_merge
+         - 1.84% btrfs_commit_transaction
+            - 2.15% btrfs_run_delayed_refs
+               - __btrfs_run_delayed_refs
+                    1.47% __btrfs_inc_extent_ref.isra.0
++   38.75%     0.47%  [kernel]      [k] __btrfs_run_delayed_refs
++   32.98%     0.21%  [kernel]      [k] relocate_file_extent_cluster
++   29.88%     0.00%  [kernel]      [k] relocate_data_extent
++   21.63%     0.00%  libc-2.31.so  [.] __GI___ioctl
++   21.46%     0.00%  [kernel]      [k] entry_SYSCALL_64_after_hwframe
++   21.46%     0.00%  [kernel]      [k] do_syscall_64
++   21.46%     0.00%  [kernel]      [k] __x64_sys_ioctl
++   21.46%     0.00%  [kernel]      [k] ksys_ioctl
++   21.46%     0.00%  [kernel]      [k] rpc_info_open
++   21.46%     0.00%  [kernel]      [k] btrfs_rm_device
+For a higher level overview, try: perf top --sort comm,dso
 
 
-I'm following up to the below as this just occurred again. I think
-there is something odd between btrfs behavior and browsers. Since the
-last time, I was able to recover my drive, and have disabled
-continuous trim (and have not manually trimmed for that matter).
-
-I've switched to firefox almost exclusively (I can think of a handful
-of times using it), but the problem was related chromium cache and the
-problem this time was the file:
-
-.cache/mozilla/firefox/tqxxilph.default-release/cache2/entries/D8FD7600C30A=
-3A68D18D98B233F9C5DD3F7DDAD0
-
-In this particular instance, I suspended my computer, and resumed to
-find it read only. I opened it to reboot into windows, finding I
-couldn't save my open file in emacs.
-
-The dmesg is here: https://pastebin.com/B8nUkYzB
-
-The file above was found uncorrectable via btrfs scrub, but after I
-manually deleted it the scrub succeeded on the second try with no
-errors.
-
-$ btrfs --version
-btrfs-progs v5.6
-
-$ uname -a
-Linux voltaur 5.6.10-arch1-1 #1 SMP PREEMPT Sat, 02 May 2020 19:11:54
-+0000 x86_64 GNU/Linux
-
-I don't know how to reproduce this at all, but it's always been
-browser cache related. There are similar issues out there, but no
-obvious pattern/solutions.
-- https://forum.manjaro.org/t/root-and-home-become-read-only/46944
-- https://bbs.archlinux.org/viewtopic.php?id=3D224243
-
-Anything else to check on why this might occur?
-
-Best regards,
-John
+And also running perf doesn't improve performance, which it does
+rather remarkably for send/receive.
 
 
-On Wed, Feb 5, 2020 at 10:01 AM John Hendy <jw.hendy@gmail.com> wrote:
->
-> Greetings,
->
-> I've had this issue occur twice, once ~1mo ago and once a couple of
-> weeks ago. Chromium suddenly quit on me, and when trying to start it
-> again, it complained about a lock file in ~. I tried to delete it
-> manually and was informed I was on a read-only fs! I ended up biting
-> the bullet and re-installing linux due to the number of dead end
-> threads and slow response rates on diagnosing these issues, and the
-> issue occurred again shortly after.
->
-> $ uname -a
-> Linux whammy 5.5.1-arch1-1 #1 SMP PREEMPT Sat, 01 Feb 2020 16:38:40
-> +0000 x86_64 GNU/Linux
->
-> $ btrfs --version
-> btrfs-progs v5.4
->
-> $ btrfs fi df /mnt/misc/ # full device; normally would be mounting a subv=
-ol on /
-> Data, single: total=3D114.01GiB, used=3D80.88GiB
-> System, single: total=3D32.00MiB, used=3D16.00KiB
-> Metadata, single: total=3D2.01GiB, used=3D769.61MiB
-> GlobalReserve, single: total=3D140.73MiB, used=3D0.00B
->
-> This is a single device, no RAID, not on a VM. HP Zbook 15.
-> nvme0n1                                       259:5    0 232.9G  0 disk
-> =E2=94=9C=E2=94=80nvme0n1p1                                   259:6    0 =
-  512M  0
-> part  (/boot/efi)
-> =E2=94=9C=E2=94=80nvme0n1p2                                   259:7    0 =
-    1G  0 part  (/boot)
-> =E2=94=94=E2=94=80nvme0n1p3                                   259:8    0 =
-231.4G  0 part (btrfs)
->
-> I have the following subvols:
-> arch: used for / when booting arch
-> jwhendy: used for /home/jwhendy on arch
-> vault: shared data between distros on /mnt/vault
-> bionic: root when booting ubuntu bionic
->
-> nvme0n1p3 is encrypted with dm-crypt/LUKS.
->
-> dmesg, smartctl, btrfs check, and btrfs dev stats attached.
->
-> If these are of interested, here are reddit threads where I posted the
-> issue and was referred here.
-> 1) https://www.reddit.com/r/btrfs/comments/ejqhyq/any_hope_of_recovering_=
-from_various_errors_root/
-> 2)  https://www.reddit.com/r/btrfs/comments/erh0f6/second_time_btrfs_root=
-_started_remounting_as_ro/
->
-> It has been suggested this is a hardware issue. I've already ordered a
-> replacement m2.sata, but for sanity it would be great to know
-> definitively this was the case. If anything stands out above that
-> could indicate I'm not setup properly re. btrfs, that would also be
-> fantastic so I don't repeat the issue!
->
-> The only thing I've stumbled on is that I have been mounting with
-> rd.luks.options=3Ddiscard and that manually running fstrim is preferred.
->
->
-> Many thanks for any input/suggestions,
-> John
+--
+Chris Murphy
