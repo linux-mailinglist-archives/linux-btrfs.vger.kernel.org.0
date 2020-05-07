@@ -2,160 +2,171 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFC951C7FBF
-	for <lists+linux-btrfs@lfdr.de>; Thu,  7 May 2020 03:12:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E1131C7FC1
+	for <lists+linux-btrfs@lfdr.de>; Thu,  7 May 2020 03:13:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728425AbgEGBMC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 6 May 2020 21:12:02 -0400
-Received: from ipmail03.adl4.internode.on.net ([150.101.137.145]:43487 "EHLO
-        ipmail03.adl4.internode.on.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728408AbgEGBMB (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 6 May 2020 21:12:01 -0400
-X-IronPort-Anti-Spam-Filtered: true
-X-IronPort-Anti-Spam-Result: =?us-ascii?q?A2CBBQCjX7Ne/9y5pztmHAEBAQEBAQc?=
- =?us-ascii?q?BARIBAQQEAQFAgUeCKoFDMoRNjn6BZC2bXgsBPAECBAEBhEQCggEkOBMCEAE?=
- =?us-ascii?q?BBgEBAQEBBQRthWKFcQEBAQECASNWBQsLDgoCAiYCAjwbBg0IAQGDIoJdH69?=
- =?us-ascii?q?fdoEyiROBQCJsKoxEGoIAgREnD4JaPmmGd4JgBJkKmUeBN4EbgQOXDSOdIK9?=
- =?us-ascii?q?EIoFWMxoIFxmDJU8YDZBLAxeONy8DZwIGCAEBAwlZAQGRawEB?=
-Received: from podling.glasswings.com.au ([59.167.185.220])
-  by ipmail03.adl4.internode.on.net with ESMTP; 07 May 2020 10:41:56 +0930
-Received: from dash ([192.168.21.15])
-        by podling.glasswings.com.au with esmtp (Exim 4.89)
-        (envelope-from <andrew@sericyb.com.au>)
-        id 1jWV4s-0005Jx-5U; Thu, 07 May 2020 11:11:54 +1000
-Subject: Re: btrfs-progs reports nonsense scrub status
-To:     Chris Murphy <lists@colorremedies.com>
-Cc:     Graham Cobb <g.btrfs@cobb.uk.net>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-References: <0d1cceb6-9295-1bdf-c427-60ba9b1ef0b3@sericyb.com.au>
- <fe7f6b83-aa2c-898e-648d-a8d86f5fd4d5@cobb.uk.net>
- <76dbd6a1-bddc-9a01-53db-bf3ba9fc8787@sericyb.com.au>
- <CAJCQCtSiEKi=ep-uh3fPVpKp3a8igTdTEm6i7cdPPkfHoDBA_g@mail.gmail.com>
-From:   Andrew Pam <andrew@sericyb.com.au>
-Autocrypt: addr=andrew@sericyb.com.au; prefer-encrypt=mutual; keydata=
- mQGiBEPPxa8RBACcBTuSu02Fi+ZhvFj8wYJa8P2xF2djPveAkV5iuv/b1OTlzcdC7yJwNKq8
- STgXoe2C9orhZ+3lO0iIwCkZpYj3purc1CojYE0bFh8EAW85usWox+Nrqsb6JYaoJk0ekyfM
- gogjKGf7MUg4lDwfg1D6iiWJ0Dk6OZwARo9u97sqswCgwki1jozMbKx8LhkzbeNAonRxADED
- /2HcSy+OsR2byqdX2BbaZppXZJEzclQNR7BiSwTPVoOX0jcHY0Sn8rdBUlagSEhv4YJ4Tdwd
- QhPs3qcrFm2GQnStV19cLJ1DvO3TfLEikSetWotBv/6RanXRZRweRE4pm/zZMxX6+zcib+jb
- +UlFg7MSyu+z50g0Bf4b5xH6AW/DBACAsgsJaaD1lDOdFMK7jnUiYXI0Y+LfHJ6xOukYUNqC
- Yaxbw4Bk60DeP7hwUfVPMMxIJZdN+WsrtkijppJG6La9KqapYPu3ByapaLoIjtBOeTJfhcDN
- mcAqZaxDhZ6eIMi+IOyS6/2MK76aLEpYY+0+M8mzUZ3LXi/blYVbS7urobQkQW5kcmV3IFBh
- bSA8eGFubmlAZ2xhc3N3aW5ncy5jb20uYXU+iGEEExECACECGwMGCwkIBwMCAxUCAwMWAgEC
- HgECF4AFAkPPySICGQEACgkQGk9LI6KtAU50ZwCeJfVJEMTSK71XD+WR8z9stEhPovYAniEn
- wBEAHXMO4MlxJPMmnYJWG/rbuQINBEPPxbQQCADZy6E8nqM+1s3t1UaIKzGzF8PuA0R+/Zx3
- 5Uh4jHHoJyFt/uuJxyJzOrq9Ilz+fWXOrXK44Ga3wOQ6yR9tIhrGNoQ97Y2S5RSufjNVstS1
- otA0N3a6nUz44rAPwXfFhMKTlUjfUwuvQik3yEF1kyXEU7o78G/XG06M/9s1ur1k4hFvAfCE
- y/fXztx86bC5vlDq2r1MAwE+fMJG/Ok21OekdY0D3KrZ1kOi4kYgRoVIGlgfJE3OXi6W8Lko
- c/oO0UUtEoiKGGOBTewmU8N6G2F3OXiONnZIY+FD/NIe+3YAEWAIc5SoXQs4KCmNxaF6vxRQ
- STBOX2A9Y+LfY4lx5+HzAAMFB/9g0VGTdvnQvogs/0b+FdfvPVflwhbW9VMF12kWwgx9q0Gw
- xcWO8IJWlFQouam5u2QMVMKxsscphAPjWDYP8BVGWFx32/Z5XZnp2xOqjaFSG9BfbEqIUizL
- 9AEClL04eBKGmVrhPzr2d0Z7DgF5gxehVYZ7m9dW7heFnuiC+ZaYEGRvfyWsWsOihoDkbify
- Ms1RluUU23wKJFaZzafAX4caD9u3bIUaujKUGCh64nLkaxwmZD2QBw0T9jGCIssVCRHwQmTV
- 25eADYmSEwf3ONk4ljzfupTOpCLtNapGc3vZO84CQSv9bl3l24uBvVRWaqLJMO0NzAn+qbes
- U3w6WMBCiEkEGBECAAkFAkPPxbUCGwwACgkQGk9LI6KtAU59IACggRqLORG73pZUK1pRh02T
- 5kUwjTQAn1F0m2Mx72juiYwF0IKljJ7lR0TR
-Organization: Serious Cybernetics
-Face:   iVBORw0KGgoAAAANSUhEUgAAADAAAAAwBAMAAAClLOS0AAAALVBMVEUrHhk8LSRTQTZuVkmC
- UkaKalykaGZ3h7KmgG+ahH68lYWXn7mxmpTSqZ3CvLqleibHAAACZElEQVQ4y3XUPWvbQBgH8FOg
- Qzef3EKnEp+qIaOlGJzFi+Xg0YMFcoeMod/AFDpksMpxeHCSZhAYUxoo8mF16NylLYXUCG2F1uSW
- eCimJp+hz+nNctKesTH30/P87ySf0e1/Bsq/hZ4X/Qu+XxiEHNyH9blBsEoOorvwzSQVjAnRJtuw
- Mkk6MknhnGBSIQRiiF6ElZzNxlEBzpIuEKMSrG1gbaQXQz7GaiOHVd5GSpISw42cg0vlJ6TFC0NJ
- BOwuAaKZBmlkQGAKIwWrmrnv2K66l8KqUlFxCSFFo5T5jMchEpYyEqFS+bkQgge8qqVwI6ehoB4I
- ORYdNYUvGCswr3ORwImSA4KXzpICIU7QJIHTkoIVnaUFQoxQIwVopTi8AEcJVHFJ2QGAxUK3qTfK
- WlUhAYD6rsXEomt3snAAJMGtWW3xo+V0djKAxe4w7jf33rSDS3IxepjCLuyuzAJOx/RF4Pfo26cZ
- QMVjyPUpo8HPY/Y5u7tVqHhEYUELzgN4v4tSOEWK8ozG2wAIxK/sCS5RmeiUSfCDhRAfMljjJ4NW
- AvH9ivJnXn3wvhXvesGYCDYQjtAhAIRw65BynsMZLMqiVC7Jtdqc5z+4pYn0rsM453PP7s1nOawN
- pTaQMPW45403cLvENWoDuA6bTZ0CfC3VqQ0Z/BgGnRQqUJ26stdrAD/aAh6X+F2rPS0cnBWAbycl
- bFg8UbsAru3wQISzqAgf63xOu7YXhqG3dWr7tWHgD0yz53lbx/lP/+U4hNvRNMza1h/A737/U3h9
- 1d1vNnt3oR9eh65tO8N78CoMr2CT4wz+AgHlxhkkWxq2AAAAAElFTkSuQmCC
-Message-ID: <9b763f5f-3e42-c26d-296c-e7a7d9cde036@sericyb.com.au>
-Date:   Thu, 7 May 2020 11:09:43 +1000
+        id S1728007AbgEGBNq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 6 May 2020 21:13:46 -0400
+Received: from mout.gmx.net ([212.227.15.15]:45429 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727819AbgEGBNq (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 6 May 2020 21:13:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1588814023;
+        bh=izLRpPzIc5Qw9YN5NN5SC9d6+EjJPx+3behmmiweWbs=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=WmpqkpWU2KhZbjUBQZ4EKH44sH5KxJUJ/wgTjvFzKifX11iDVPdbFr3dRxjClyjjm
+         0mkwjQJeScuvMlBP72iRO/XW8Do8uZNAZmF1xUHluXlMq06bcRO8AarRSQTKpfAa12
+         TkZ0ujdzKSKb71oA4BR+r+wT69ercl3y4AxSZhC4=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1Mn2W5-1iotA92GYx-00k5pg; Thu, 07
+ May 2020 03:13:43 +0200
+Subject: Re: Fwd: Read time tree block corruption detected
+To:     Tyler Richmond <t.d.richmond@gmail.com>,
+        linux-btrfs@vger.kernel.org
+References: <CAJheHN0FUe-ijMco1ZOc6iKF2zbPocOw+iiVNeTT1r-JuXOJww@mail.gmail.com>
+ <CAJheHN3J85eLmZZYs0-ACoUQFuv3FVHmAnoJTxB+Xu8CGnCy5A@mail.gmail.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
+ mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
+ PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
+ 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
+ D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
+ efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
+ ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
+ BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
+ 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
+ 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
+ EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
+ 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
+ ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
+ oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
+ fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
+ 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
+ ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
+ oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
+Message-ID: <a89afb42-facf-3e11-db53-c394cf8db2ce@gmx.com>
+Date:   Thu, 7 May 2020 09:13:39 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <CAJCQCtSiEKi=ep-uh3fPVpKp3a8igTdTEm6i7cdPPkfHoDBA_g@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <CAJheHN3J85eLmZZYs0-ACoUQFuv3FVHmAnoJTxB+Xu8CGnCy5A@mail.gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="7f7jTY2UoCMLv3h1qVFOLlW5pxreurhQm"
+X-Provags-ID: V03:K1:mC/IjPsHA/wJK7XbLjVLsk3BfXSDqxbG/B9Nj8cLHMEgp4p4jx6
+ jVVER+nIDeIKYzbaqjUuclsCGO7lfr1R/MVfU6JDDPwEY+lc4i8YJIeWvaTiHmWppElD8VL
+ Uywob4BFunGon9oIAozZVfmYZj1tXZ0JxgJTJfCrjiTD1onhbsr/9/Vm9H17P08bqNwRrU1
+ EEk1YX0XZpXhhoozIjfNA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:F9hxwsfqmo0=:5SLzQz5gVLSOplFncPmR7N
+ 0ZJtaEZv2XVt+0Eg+UblhA7bGcfan13wf5Ui+xj3uv950wBbIOI57fGxLG4i3Ab8297Q1cX6o
+ ivs4dJ+0BgX8rmzdivEoBwUL6vAT7r85CYgwwkQ+VJP9zf4lzmZqfx9gcgXF3YrrIJjd5Zy3f
+ 4gxxixaANj0pxYlAXcrtz1Dd0kKn2FG4jwJAHQie92+AvS1153+8mrnzV3lRZf1+lQgfrKNg+
+ s7YSs5ugamScLOf1TqnnJHg/VTaHXMO3u5EwwsIx4m9DKrJaeutCy4O0oUnoVFVV/TtkMCKps
+ tTawESqEExT8neMMUlzlrDcmXu89JcEUo6O4f2xUU9aTl6sqSDH8QAhgfC4tlYIH5scGjjbCP
+ B//xhDZQrRpbdZb+imT86q0jvI/LQdkrhMevDxWKJ1Gtg91DFHGry9HeRJo4SNX/vEV5d/Sso
+ 5GkvWnqAoa7C+ofoCpmKsRD6jEKwAG5SgwcI9fYakv6A/ypB+b8VG8qqG6sO5gHDxJZ6woByp
+ 7Kkz9xU1h5TdPHMHyukMl+E+hEqDn1PY1SWmkkz6EusLRRjlTqqa0Z+AHYi69hFYVZULMz1bq
+ CvPgq9+if0ejRa2FXQwJLOO3MimYgvwQWq9iudXd5he+o5ILP3dTJF0Ud/f8EDtcJu+dqYMet
+ DiCCfw973K2WY7fi4VzYgUQNqofDU/T1CIntQoCtj+dU+zcThvYgalV9KOsr1qpkIqDkIxkZY
+ bDL10fiC+Oo7+KAZjaFPbLbrUAf1dBcDqKW62LwVGKzT1UG0ppfiiOyXhpqvZ9TmTz003Iyod
+ xSUpENB4a9WLcRu4HBaAOmk71NtxRbzEqYBZ7RJJU+wYOutBkGmUGtIVyoW5zLFWiieKFQxJD
+ 9uv5Qz6A0VQ4mI9OMyN9IQJIcav/Mk5E8Qti/83PG2z2lrJsYDZBQs9vo5V1xWymnYqGhv1kR
+ PKzYYNS1kIpdEFJnI1Zl+9V3YtF09oc3SIj/c2L0lvVZ0raDe/tRlKYrqbiBt9aM8vEn0fp/a
+ UHi6E2riRaIcr5IjoN8hsOdsK/T7+bGbJc37InAJBkqwEl4l4V/CfVFEqxxDH/SCiAyTO+Rzm
+ 80t3tisCsGKk4apVeJ9G61tiaSVgj2TeZwB6cCTKYV9sLv9HsvpmfWx424PcCaafEaZlXF+Z4
+ BeUm5QUnyTOp/iqkb3k0dwgaaPbzDQ4eyNePjMlzgFd1htzGa2H6uEEDybfVRmSviORtYpDzg
+ z+faJpzhwJADm2h06
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 7/5/20 9:42 am, Chris Murphy wrote:
-> A raid1 volume has twice as many bytes to scrub as data reported by
-> df.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--7f7jTY2UoCMLv3h1qVFOLlW5pxreurhQm
+Content-Type: multipart/mixed; boundary="ePkylwHKvyTCBiht6c2oVKE4sj6r37N9I"
 
-It's scrubbed more than twice as many bytes, though.
+--ePkylwHKvyTCBiht6c2oVKE4sj6r37N9I
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-> Can you tell us what kernel version?
 
-5.4.0
 
-> And also what you get for:
-> $ sudo btrfs fi us /mp/
+On 2020/5/7 =E4=B8=8A=E5=8D=885:54, Tyler Richmond wrote:
+> Hello,
+>=20
+> I looked up this error and it basically says ask a developer to
+> determine if it's a false error or not. I just started getting some
+> slow response times, and looked at the dmesg log to find a ton of
+> these errors.
+>=20
+> [192088.446299] BTRFS critical (device sdh): corrupt leaf: root=3D5
+> block=3D203510940835840 slot=3D4 ino=3D1311670, invalid inode generatio=
+n:
+> has 18446744073709551492 expect [0, 6875827]
+> [192088.449823] BTRFS error (device sdh): block=3D203510940835840 read
+> time tree block corruption detected
+> [192088.459238] BTRFS critical (device sdh): corrupt leaf: root=3D5
+> block=3D203510940835840 slot=3D4 ino=3D1311670, invalid inode generatio=
+n:
+> has 18446744073709551492 expect [0, 6875827]
+> [192088.462773] BTRFS error (device sdh): block=3D203510940835840 read
+> time tree block corruption detected
+> [192088.464711] BTRFS critical (device sdh): corrupt leaf: root=3D5
+> block=3D203510940835840 slot=3D4 ino=3D1311670, invalid inode generatio=
+n:
+> has 18446744073709551492 expect [0, 6875827]
+> [192088.468457] BTRFS error (device sdh): block=3D203510940835840 read
+> time tree block corruption detected
+>=20
+> btrfs device stats, however, doesn't show any errors.
+>=20
+> Is there anything I should do about this, or should I just continue
+> using my array as normal?
 
-Overall:
-    Device size:		  10.92TiB
-    Device allocated:		   7.32TiB
-    Device unallocated:		   3.59TiB
-    Device missing:		     0.00B
-    Used:			   7.31TiB
-    Free (estimated):		   1.80TiB	(min: 1.80TiB)
-    Data ratio:			      2.00
-    Metadata ratio:		      2.00
-    Global reserve:		 512.00MiB	(used: 0.00B)
+This is caused by older kernel underflow inode generation.
 
-Data,RAID1: Size:3.65TiB, Used:3.65TiB (99.89%)
-   /dev/sda	   3.65TiB
-   /dev/sdb	   3.65TiB
+Latest btrfs-progs can fix it, using btrfs check --repair.
 
-Metadata,RAID1: Size:8.00GiB, Used:6.54GiB (81.74%)
-   /dev/sda	   8.00GiB
-   /dev/sdb	   8.00GiB
+Or you can go safer, by manually locating the inode using its inode
+number (1311670), and copy it to some new location using previous
+working kernel, then delete the old file, copy the new one back to fix it=
+=2E
 
-System,RAID1: Size:64.00MiB, Used:544.00KiB (0.83%)
-   /dev/sda	  64.00MiB
-   /dev/sdb	  64.00MiB
+Thanks,
+Qu
 
-Unallocated:
-   /dev/sda	   1.80TiB
-   /dev/sdb	   1.80TiB
+>=20
+> Thank you!
+>=20
 
-> $ df -h
 
-/dev/sda        5.5T  3.7T  1.9T  67% /home
+--ePkylwHKvyTCBiht6c2oVKE4sj6r37N9I--
 
-> I think what you're seeing is a bug. Most of the size reporting in
-> btrfs commands is in btrfs-progs; whereas the scrub is initiated by
-> user space, most of the work is done by the kernel. But I don't know
-> where the tracking code is.
+--7f7jTY2UoCMLv3h1qVFOLlW5pxreurhQm
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
-No kidding.  What concerns me now is that the scrub shows no signs of
-ever stopping:
+-----BEGIN PGP SIGNATURE-----
 
-$ sudo btrfs scrub status -d /home
-UUID:             85069ce9-be06-4c92-b8c1-8a0f685e43c6
-scrub device /dev/sda (id 1) status
-Scrub started:    Mon May  4 04:36:54 2020
-Status:           running
-Duration:         18:06:28
-Time left:        31009959:50:08
-ETA:              Fri Dec 13 03:58:24 5557
-Total to scrub:   3.66TiB
-Bytes scrubbed:   9.80TiB
-Rate:             157.58MiB/s
-Error summary:    no errors found
-scrub device /dev/sdb (id 2) status
-	no stats available
-Time left:        30892482:15:09
-ETA:              Wed Jul 19 05:23:25 5544
-Total to scrub:   3.66TiB
-Bytes scrubbed:   8.86TiB
-Rate:             158.18MiB/s
-Error summary:    no errors found
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl6zYMMACgkQwj2R86El
+/qj3Wgf+NiJw7E7IpN/7PK7NqhnkIqvaMzTGp5NvKtoWOO3ywA3bnf34Axi4gK+O
+ogtNozcwpGbROp5dxxPeBTi1GHuZqwRMbmKn22/GF7Zw1jIWM0OexecqWWbIQaLe
+cu6szoB68y+j6Xj/XHIqL4YSkLeK7cdn4HJpM9zXdB/1vNdx19+LyRITiIxjfhx1
+K03HgDFY16wndAErWxwwX9/nEgo1kOYXWn0Emdgl0OkHd8dDeVEDknDVmrZddUSU
+mV0TdkDuPBhIe2dedkQKLAQZqzDurZJqkKXK7Kyjt6W4bNzpy9/Uk9kQe6FlktKx
+bpJGz6ualx9Si5fuYuphUyy6VoKAzw==
+=N7YS
+-----END PGP SIGNATURE-----
 
-Cheers,
-	Andrew
+--7f7jTY2UoCMLv3h1qVFOLlW5pxreurhQm--
