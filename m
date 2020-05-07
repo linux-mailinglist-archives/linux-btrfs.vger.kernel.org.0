@@ -2,113 +2,60 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A08F81C8A1F
-	for <lists+linux-btrfs@lfdr.de>; Thu,  7 May 2020 14:07:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22D5A1C8A25
+	for <lists+linux-btrfs@lfdr.de>; Thu,  7 May 2020 14:10:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725923AbgEGMHi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 7 May 2020 08:07:38 -0400
-Received: from mx2.suse.de ([195.135.220.15]:48144 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725879AbgEGMHi (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 7 May 2020 08:07:38 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 4B213ABC7
-        for <linux-btrfs@vger.kernel.org>; Thu,  7 May 2020 12:07:38 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id CBCD9DA732; Thu,  7 May 2020 14:06:46 +0200 (CEST)
-From:   David Sterba <dsterba@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: Btrfs progs release 5.6.1
-Date:   Thu,  7 May 2020 14:06:46 +0200
-Message-Id: <20200507120646.12602-1-dsterba@suse.com>
-X-Mailer: git-send-email 2.25.0
+        id S1725939AbgEGMKl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 7 May 2020 08:10:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55592 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725903AbgEGMKk (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 7 May 2020 08:10:40 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8D2EC05BD43
+        for <linux-btrfs@vger.kernel.org>; Thu,  7 May 2020 05:10:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:To:From:Date:Sender:Reply-To:Cc:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=y0SL+tPZQSBPs5BEpfENU+Ai38sjODNR+CuZa3ybE4k=; b=BR+pqx25g77aBDsahr9NzgX8sJ
+        lPb0asieANT8kQysHZMy0V04VpFkgEqrRmtN4PNg2ncovEITFQOlaY/jfIzb82OtN+aXAc8XKMZg8
+        wHm4JH8lJdKhLaHfgRVgsUewpFea8YSu88RabBZGxD1pyvTq8JwDNHDJRqKJM6Koouqf5V4xQLOsu
+        yCf/f6300Em/7A/bt3LtBh/nZRD3hdSUYwiTfs/EC6dab+5ZkZBKSCqvoLvo+XwZud1yp0sKJ4y2y
+        8HRYVsCwJXXmsLfEEI+1dE6DWGLXt20yI3bebBh1pw8XiqfAGAspufi/BZ6HNeoW0tzKl41Edxv+O
+        K1yVBGPg==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jWfML-0000Iz-V0; Thu, 07 May 2020 12:10:37 +0000
+Date:   Thu, 7 May 2020 05:10:37 -0700
+From:   Christoph Hellwig <hch@infradead.org>
+To:     dsterba@suse.cz, Christoph Hellwig <hch@infradead.org>,
+        Goldwyn Rodrigues <rgoldwyn@suse.de>,
+        linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 4/9] btrfs: Switch to iomap_dio_rw() for dio
+Message-ID: <20200507121037.GA25363@infradead.org>
+References: <20200326210254.17647-1-rgoldwyn@suse.de>
+ <20200326210254.17647-5-rgoldwyn@suse.de>
+ <20200327081024.GA24827@infradead.org>
+ <20200327161348.to4upflzczkbbpfo@fiona>
+ <20200507061430.GA8939@infradead.org>
+ <20200507113741.GJ18421@twin.jikos.cz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200507113741.GJ18421@twin.jikos.cz>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi,
+On Thu, May 07, 2020 at 01:37:41PM +0200, David Sterba wrote:
+> On Wed, May 06, 2020 at 11:14:30PM -0700, Christoph Hellwig wrote:
+> > What is the status of this series?  I haven't really seen it posted
+> > any time recently, and it would be sad to miss 5.8..
+> 
+> I've been testing it and reporting to Goldwyn, but there are still
+> problems that don't seem to be fixable for 5.8 target.
 
-btrfs-progs version 5.6.1 have been released.
-
-The hilight of this minor release is the warning about multiple block groups
-profiles, printed by several commands:
-
-  WARNING: Multiple block group profiles detected, see 'man btrfs(5)'.
-  WARNING:   Data: single, raid1
-
-And the summary of 'fi usage' prints:
-
-  Multiple profiles:                 yes      (data)
-
-This might need some fine tuning, or more to be put to documenation but
-I think the current status is ok so let's get it out to get feedback
-eventually.
-
-Changelog:
-
-  * print warning when multiple block group profiles exist, update 'fi usage'
-    summary, add docs to maual page explaining the situation
-  * build: optional support for libgcrypt or libsodium, providing hash
-    implementations
-  * other:
-    * fixed, updated and new tests
-    * cleanups
-    * updated docs
-
-No change since rc1.
-
-Tarballs: https://www.kernel.org/pub/linux/kernel/people/kdave/btrfs-progs/
-Git: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/btrfs-progs.git
-
-Shortlog:
-
-Alexandru Ungureanu (2):
-      btrfs-progs: docs: improved asciidoc syntax to fix rendering issues
-      btrfs-progs: docs: add example on deleting a subvolume
-
-Anand Jain (1):
-      btrfs-progs: tests: drop trailing slash from TEST_TOP path
-
-David Sterba (19):
-      btrfs-progs: remove obsolete fs_info::fs_mutex
-      btrfs-progs: move backref.[ch] to kernel-shared/
-      btrfs-progs: add more hash implementation providers
-      btrfs-progs: docs: clarify mount options
-      btrfs-progs: tests: enhance README
-      btrfs-progs: tests: add coverage for multiple profiles warning
-      btrfs-progs: remove unused function btrfs_check_for_mixed_profiles_by_path
-      btrfs-progs: rename helpers for multiple block group checks
-      btrfs-progs: unexport btrfs_get_string_for_multiple_profiles
-      btrfs-progs: simplify string dump of block group profiles
-      btrfs-progs: simplify string separator checks in sprint_profiles
-      btrfs-progs: reorder single to be first in multiple bg list
-      btrfs-progs: adjust multiple block group warning format
-      btrfs-progs: fix detection of multiple profiles when generating the strings
-      btrfs-progs: fi usage: list multiple profiles type
-      btrfs-progs: docs: update section about multiple block group profiles
-      btrfs-progs: tests: clean loop devices created by tests
-      btrfs-progs: update CHANGES for 5.6.1
-      Btrfs progs v5.6.1
-
-Goffredo Baroncelli (5):
-      btrfs-progs: add code for checking mixed profile function
-      btrfs-progs: add mixed profiles check to some btrfs sub-commands.
-      btrfs-progs: fi usage: add check for multiple profiles
-      btrfs-progs: add further checks for multiple profiles
-      btrfs-progs: docs: add section about multiple profiles
-
-Marcos Paulo de Souza (1):
-      btrfs-progs: tests: mkfs/018, fix check for truncate command failure
-
-Qu Wenruo (6):
-      btrfs-progs: remove extent_buffer::tree member
-      btrfs-progs: do proper error handling in add_cache_extent()
-      btrfs-progs: fix bad kernel header non-flat include case
-      btrfs-progs: tests: filter output for run_check_stdout
-      btrfs-progs: tests: introduce expand_command() to inject aruguments more accurately
-      btrfs-progs: remove the duplicated @level parameter for btrfs_bin_search()
-
+What are the issues, and how can we help to resolve them?
