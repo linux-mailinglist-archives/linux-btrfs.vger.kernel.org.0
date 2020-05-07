@@ -2,269 +2,235 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6AC11C9583
-	for <lists+linux-btrfs@lfdr.de>; Thu,  7 May 2020 17:53:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F8C11C9BE2
+	for <lists+linux-btrfs@lfdr.de>; Thu,  7 May 2020 22:15:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726891AbgEGPxJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 7 May 2020 11:53:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34204 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726531AbgEGPxJ (ORCPT
+        id S1726515AbgEGUPH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 7 May 2020 16:15:07 -0400
+Received: from gateway21.websitewelcome.com ([192.185.45.175]:42725 "EHLO
+        gateway21.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726320AbgEGUPG (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 7 May 2020 11:53:09 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1CB9C05BD43
-        for <linux-btrfs@vger.kernel.org>; Thu,  7 May 2020 08:53:08 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id u4so4891019lfm.7
-        for <linux-btrfs@vger.kernel.org>; Thu, 07 May 2020 08:53:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=C/AXJ6sQUFOM3d7Q0le9bUFg6xPfG8tv82Vnc3Ew9sU=;
-        b=dhcAQPJ7PRraGksQSAzz/JemMTrN7kINGp7z2HZzOgOGhcIZduYaQGT67i4igkKV1e
-         9NwxL51dof5Gm+YuRyMMZ/IvVYP3035t8XQgPa+Iic02SKIihVYU/1hst08vuUjYZiSk
-         evguZ2wCcWUS0MwQw3nVBwOcrAjGuT4MZEgIuMwepTJvdMW4uNjTWujwsS6CdM6bfftl
-         A1DamEtdokiAWMdt1PkP68HD9SIJP95OOPUfNCvCwDrAdtLmmqfdj8HxkLqVEiOuyWpD
-         in9K9hxzgbkEWIdOGdeNyvd3WligmlcTeLz+REbwX0eev5TQUliSDwGUavZPlHT/AFlV
-         H+lw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=C/AXJ6sQUFOM3d7Q0le9bUFg6xPfG8tv82Vnc3Ew9sU=;
-        b=Uu1sGtxuHKTejvVVNhBX+bO3Vj25S6jdlGbBB4khLIFrrc3g/bt2NLFgehL8KYT+J4
-         y+JYN4CxtnioLLmuSEBIAfBYiDeJOj6X35mAZYcVt/334xo5iPPeA/I+EgNG+Pm3qGxF
-         FH/x1AN2uZpAFgApkqjpzhThj7OTXgeBb7Kgy60rFIgcECVBYDkO+DjD0X76fRGzjsgY
-         qBwmEI5mHLsAap6Rn3eRdrQ3asyDc6dN9WjXfFP/JLuS9xQLPlrdluWzGNC5pUdobx5L
-         h2GRN8KU4aaWDnFLZjb1Mpjh6CWIHkcYS1QjeyI1Tuplmlv/fTeu9QIkJt4KTpnoeSPZ
-         9jbg==
-X-Gm-Message-State: AGi0PuY6Lx+rPznOmk3hiTCPkjWaatX4d4XwQFlu4D7LBKFRFodZC4pA
-        /lbel7kY0AxDXE31kxUuLEVnaZnxzLAJv0KSfYY9etSs
-X-Google-Smtp-Source: APiQypJNo6mQYma/esqBgrl8+oZj2JtVpKFexhkvLPBmiJ4h1g3GJEjyLW7OVcFEX+C7PldTj+8CbGI+o//hMusRy2w=
-X-Received: by 2002:ac2:4945:: with SMTP id o5mr5607748lfi.21.1588866787259;
- Thu, 07 May 2020 08:53:07 -0700 (PDT)
+        Thu, 7 May 2020 16:15:06 -0400
+Received: from cm14.websitewelcome.com (cm14.websitewelcome.com [100.42.49.7])
+        by gateway21.websitewelcome.com (Postfix) with ESMTP id 8424F400D1604
+        for <linux-btrfs@vger.kernel.org>; Thu,  7 May 2020 15:15:05 -0500 (CDT)
+Received: from br540.hostgator.com.br ([108.179.252.180])
+        by cmsmtp with SMTP
+        id WmvBjc0nyXVkQWmvBjjuQk; Thu, 07 May 2020 15:15:05 -0500
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=mpdesouza.com; s=default; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=2gez+DGfLVmgeyVjnLwwcC9WMg44RTqvPEng9DKGnhg=; b=gFtMme1oOL2xMMFk25AEWyAKK4
+        pjN8mmGOWoBKCLdoPpG0KBZa/7upu2+pW0OI7fsWHOLa+QeqQ5Bip6NNz7etwX2QTbrnlwf/70TVf
+        Da8UBs3SjXsA7RtoTvaD3Y/M/atXu3kQZkiqnVdZr4FCE63I09/GLuwtwHDGIaSqY9l07r6BwhVz4
+        KzQWK311EKQGL48efHH4fl6pkWgu//wxKyRMgi9+rqJxDMUmGS8VCALI4PdzFnsZpR3VIKgRDvRu2
+        OIMFFxNMR1eKxJM5XZ6i3Hxj5uVzgBLoXSA0jeKnUFmBu1i7RGAwXAOchXKvXIWlN2E4KFkeJ2wgJ
+        Yg6lVlJQ==;
+Received: from [186.212.88.45] (port=41550 helo=hephaestus.prv.suse.net)
+        by br540.hostgator.com.br with esmtpsa (TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128)
+        (Exim 4.92)
+        (envelope-from <marcos@mpdesouza.com>)
+        id 1jWmvA-003P4B-Rv; Thu, 07 May 2020 17:15:05 -0300
+From:   Marcos Paulo de Souza <marcos@mpdesouza.com>
+To:     dsterba@suse.com, linux-btrfs@vger.kernel.org, wqu@suse.com,
+        fdmanana@suse.com
+Cc:     Marcos Paulo de Souza <mpdesouza@suse.com>
+Subject: [PATCH v1] btrfs: send: Emit file capabilities after chown
+Date:   Thu,  7 May 2020 17:18:04 -0300
+Message-Id: <20200507201804.1623-1-marcos@mpdesouza.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <CAJheHN0FUe-ijMco1ZOc6iKF2zbPocOw+iiVNeTT1r-JuXOJww@mail.gmail.com>
- <CAJheHN3J85eLmZZYs0-ACoUQFuv3FVHmAnoJTxB+Xu8CGnCy5A@mail.gmail.com>
- <a89afb42-facf-3e11-db53-c394cf8db2ce@gmx.com> <CAJheHN26GYa7ezw-Jw_y5voFicoywwEJ2pJ4KKx96x-WA2h1eA@mail.gmail.com>
- <CAJheHN18TmG7g=-Sgi36hVmWka4z99rQRfaf=3FCRvat07C8pg@mail.gmail.com> <bbd08948-6672-4fb1-0e84-802482da7228@gmx.com>
-In-Reply-To: <bbd08948-6672-4fb1-0e84-802482da7228@gmx.com>
-From:   Tyler Richmond <t.d.richmond@gmail.com>
-Date:   Thu, 7 May 2020 11:52:56 -0400
-Message-ID: <CAJheHN3qgr+FNq+N3DiAQaPkbdcmV+1O8TetAX_HLU5V304Phw@mail.gmail.com>
-Subject: Re: Fwd: Read time tree block corruption detected
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     Chris Murphy <lists@colorremedies.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - br540.hostgator.com.br
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - mpdesouza.com
+X-BWhitelist: no
+X-Source-IP: 186.212.88.45
+X-Source-L: No
+X-Exim-ID: 1jWmvA-003P4B-Rv
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: (hephaestus.prv.suse.net) [186.212.88.45]:41550
+X-Source-Auth: marcos@mpdesouza.com
+X-Email-Count: 4
+X-Source-Cap: bXBkZXNvNTM7bXBkZXNvNTM7YnI1NDAuaG9zdGdhdG9yLmNvbS5icg==
+X-Local-Domain: yes
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Thank you for helping. The end result of the scan was:
+From: Marcos Paulo de Souza <mpdesouza@suse.com>
 
+[PROBLEM]
+Whenever a chown is executed, all capabilities of the file being touched are
+lost.  When doing incremental send with a file with capabilities, there is a
+situation where the capability can be lost in the receiving side. The
+sequence of actions bellow shows the problem:
 
-[1/7] checking root items
-[2/7] checking extents
-[3/7] checking free space cache
-[4/7] checking fs roots
-[5/7] checking only csums items (without verifying data)
-there are no extents for csum range 0-69632
-csum exists for 0-69632 but there is no extent record
-...
-...
-there are no extents for csum range 946692096-946827264
-csum exists for 946692096-946827264 but there is no extent record
-there are no extents for csum range 946831360-947912704
-csum exists for 946831360-947912704 but there is no extent record
-ERROR: errors found in csum tree
-[6/7] checking root refs
-[7/7] checking quota groups skipped (not enabled on this FS)
-found 44157956026368 bytes used, error(s) found
-total csum bytes: 42038602716
-total tree bytes: 49688616960
-total fs tree bytes: 1256427520
-total extent tree bytes: 1709105152
-btree space waste bytes: 3172727316
-file data blocks allocated: 261625653436416
- referenced 47477768499200
+$ mount /dev/sda fs1
+$ mount /dev/sdb fs2
 
-What do I need to do to fix all of this?
+$ touch fs1/foo.bar
+$ setcap cap_sys_nice+ep fs1/foo.bar
+$ btrfs subvol snap -r fs1 fs1/snap_init
+$ btrfs send fs1/snap_init | btrfs receive fs2
 
-On Thu, May 7, 2020 at 1:52 AM Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
->
->
->
-> On 2020/5/7 =E4=B8=8B=E5=8D=881:43, Tyler Richmond wrote:
-> > Well, the repair doesn't look terribly successful.
-> >
-> > parent transid verify failed on 218620880703488 wanted 6875841 found 68=
-76224
-> > parent transid verify failed on 218620880703488 wanted 6875841 found 68=
-76224
-> > parent transid verify failed on 218620880703488 wanted 6875841 found 68=
-76224
-> > Ignoring transid failure
-> > ERROR: child eb corrupted: parent bytenr=3D225049956061184 item=3D84
-> > parent level=3D1
-> >                                             child level=3D4
->
-> This means there are more problems, not only the hash name mismatch.
->
-> This means the fs is already corrupted, the name hash is just one
-> unrelated symptom.
->
-> The only good news is, btrfs-progs abort the transaction, thus no
-> further damage to the fs.
->
-> Please run a plain btrfs-check to show what's the problem first.
->
-> Thanks,
-> Qu
->
-> > parent transid verify failed on 218620880703488 wanted 6875841 found 68=
-76224
-> > Ignoring transid failure
-> > ERROR: child eb corrupted: parent bytenr=3D225049956061184 item=3D84
-> > parent level=3D1
-> >                                             child level=3D4
-> > parent transid verify failed on 218620880703488 wanted 6875841 found 68=
-76224
-> > Ignoring transid failure
-> > ERROR: child eb corrupted: parent bytenr=3D225049956061184 item=3D84
-> > parent level=3D1
-> >                                             child level=3D4
-> > parent transid verify failed on 218620880703488 wanted 6875841 found 68=
-76224
-> > Ignoring transid failure
-> > ERROR: child eb corrupted: parent bytenr=3D225049956061184 item=3D84
-> > parent level=3D1
-> >                                             child level=3D4
-> > parent transid verify failed on 218620880703488 wanted 6875841 found 68=
-76224
-> > Ignoring transid failure
-> > ERROR: child eb corrupted: parent bytenr=3D225049956061184 item=3D84
-> > parent level=3D1
-> >                                             child level=3D4
-> > parent transid verify failed on 218620880703488 wanted 6875841 found 68=
-76224
-> > Ignoring transid failure
-> > ERROR: child eb corrupted: parent bytenr=3D225049956061184 item=3D84
-> > parent level=3D1
-> >                                             child level=3D4
-> > parent transid verify failed on 218620880703488 wanted 6875841 found 68=
-76224
-> > Ignoring transid failure
-> > ERROR: child eb corrupted: parent bytenr=3D225049956061184 item=3D84
-> > parent level=3D1
-> >                                             child level=3D4
-> > parent transid verify failed on 218620880703488 wanted 6875841 found 68=
-76224
-> > Ignoring transid failure
-> > ERROR: child eb corrupted: parent bytenr=3D225049956061184 item=3D84
-> > parent level=3D1
-> >                                             child level=3D4
-> > parent transid verify failed on 218620880703488 wanted 6875841 found 68=
-76224
-> > Ignoring transid failure
-> > ERROR: child eb corrupted: parent bytenr=3D225049956061184 item=3D84
-> > parent level=3D1
-> >                                             child level=3D4
-> > parent transid verify failed on 218620880703488 wanted 6875841 found 68=
-76224
-> > Ignoring transid failure
-> > ERROR: child eb corrupted: parent bytenr=3D225049956061184 item=3D84
-> > parent level=3D1
-> >                                             child level=3D4
-> > parent transid verify failed on 218620880703488 wanted 6875841 found 68=
-76224
-> > Ignoring transid failure
-> > ERROR: child eb corrupted: parent bytenr=3D225049956061184 item=3D84
-> > parent level=3D1
-> >                                             child level=3D4
-> > ERROR: failed to zero log tree: -17
-> > ERROR: attempt to start transaction over already running one
-> > WARNING: reserved space leaked, flag=3D0x4 bytes_reserved=3D4096
-> > extent buffer leak: start 225049066086400 len 4096
-> > extent buffer leak: start 225049066086400 len 4096
-> > WARNING: dirty eb leak (aborted trans): start 225049066086400 len 4096
-> > extent buffer leak: start 225049066094592 len 4096
-> > extent buffer leak: start 225049066094592 len 4096
-> > WARNING: dirty eb leak (aborted trans): start 225049066094592 len 4096
-> > extent buffer leak: start 225049066102784 len 4096
-> > extent buffer leak: start 225049066102784 len 4096
-> > WARNING: dirty eb leak (aborted trans): start 225049066102784 len 4096
-> > extent buffer leak: start 225049066131456 len 4096
-> > extent buffer leak: start 225049066131456 len 4096
-> > WARNING: dirty eb leak (aborted trans): start 225049066131456 len 4096
-> >
-> > What is going on?
-> >
-> > On Wed, May 6, 2020 at 9:30 PM Tyler Richmond <t.d.richmond@gmail.com> =
-wrote:
-> >>
-> >> Chris, I had used the correct mountpoint in the command. I just edited
-> >> it in the email to be /mountpoint for consistency.
-> >>
-> >> Qu, I'll try the repair. Fingers crossed!
-> >>
-> >> On Wed, May 6, 2020 at 9:13 PM Qu Wenruo <quwenruo.btrfs@gmx.com> wrot=
-e:
-> >>>
-> >>>
-> >>>
-> >>> On 2020/5/7 =E4=B8=8A=E5=8D=885:54, Tyler Richmond wrote:
-> >>>> Hello,
-> >>>>
-> >>>> I looked up this error and it basically says ask a developer to
-> >>>> determine if it's a false error or not. I just started getting some
-> >>>> slow response times, and looked at the dmesg log to find a ton of
-> >>>> these errors.
-> >>>>
-> >>>> [192088.446299] BTRFS critical (device sdh): corrupt leaf: root=3D5
-> >>>> block=3D203510940835840 slot=3D4 ino=3D1311670, invalid inode genera=
-tion:
-> >>>> has 18446744073709551492 expect [0, 6875827]
-> >>>> [192088.449823] BTRFS error (device sdh): block=3D203510940835840 re=
-ad
-> >>>> time tree block corruption detected
-> >>>> [192088.459238] BTRFS critical (device sdh): corrupt leaf: root=3D5
-> >>>> block=3D203510940835840 slot=3D4 ino=3D1311670, invalid inode genera=
-tion:
-> >>>> has 18446744073709551492 expect [0, 6875827]
-> >>>> [192088.462773] BTRFS error (device sdh): block=3D203510940835840 re=
-ad
-> >>>> time tree block corruption detected
-> >>>> [192088.464711] BTRFS critical (device sdh): corrupt leaf: root=3D5
-> >>>> block=3D203510940835840 slot=3D4 ino=3D1311670, invalid inode genera=
-tion:
-> >>>> has 18446744073709551492 expect [0, 6875827]
-> >>>> [192088.468457] BTRFS error (device sdh): block=3D203510940835840 re=
-ad
-> >>>> time tree block corruption detected
-> >>>>
-> >>>> btrfs device stats, however, doesn't show any errors.
-> >>>>
-> >>>> Is there anything I should do about this, or should I just continue
-> >>>> using my array as normal?
-> >>>
-> >>> This is caused by older kernel underflow inode generation.
-> >>>
-> >>> Latest btrfs-progs can fix it, using btrfs check --repair.
-> >>>
-> >>> Or you can go safer, by manually locating the inode using its inode
-> >>> number (1311670), and copy it to some new location using previous
-> >>> working kernel, then delete the old file, copy the new one back to fi=
-x it.
-> >>>
-> >>> Thanks,
-> >>> Qu
-> >>>
-> >>>>
-> >>>> Thank you!
-> >>>>
-> >>>
->
+$ chgrp adm fs1/foo.bar
+$ setcap cap_sys_nice+ep fs1/foo.bar
+
+$ btrfs subvol snap -r fs1 fs1/snap_complete
+$ btrfs subvol snap -r fs1 fs1/snap_incremental
+
+$ btrfs send fs1/snap_complete | btrfs receive fs2
+$ btrfs send -p fs1/snap_init fs1/snap_incremental | btrfs receive fs2
+
+At this point, only a chown was emitted by "btrfs send" since only the group
+was changed. This makes the cap_sys_nice capability to be dropped from
+fs2/snap_incremental/foo.bar
+
+[FIX]
+Only emit capabilities after chown is emitted. The current code
+first checks for xattrs that are new/changed, emits them, and later emit
+the chown. Now, __process_new_xattr skips capabilities, letting only
+finish_inode_if_needed to emit them, if they exist, for the inode being
+processed.
+
+Also, this patch also fixes a longstanding problem that was issuing an xattr
+_before_ chown. This behavior was being worked around in "btrfs receive"
+side by caching the capability and only applying it after chown. Now,
+xattrs are only emmited _after_ chown, making that hack not needed
+anymore.
+
+Link: https://github.com/kdave/btrfs-progs/issues/202
+Suggested-by: Filipe Manana <fdmanana@suse.com>
+Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
+---
+ The first version of the patch was an RFC
+
+ Changes from RFC:
+ * Explained about chown + drop capabilities problem in the commit message (suggested
+   by Filipe and David)
+ * Changed the commit message to show describe the fix (suggested by Filipe)
+ * Skip the xattr in __process_new_xattr if it's a capability, since it'll be
+   handled in finish_inode_if_needed now (suggested by Filipe).
+ * Created function send_capabilities to query if the inode has caps, and if
+   yes, emit them.
+ * Call send_capabilities in finish_inode_if_needed _after_ the needs_chown
+   check. (suggested by Filipe)
+
+ fs/btrfs/send.c | 69 +++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 69 insertions(+)
+
+diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
+index 6b86841315be..4f19965bdd82 100644
+--- a/fs/btrfs/send.c
++++ b/fs/btrfs/send.c
+@@ -23,6 +23,7 @@
+ #include "btrfs_inode.h"
+ #include "transaction.h"
+ #include "compression.h"
++#include "xattr.h"
+ 
+ /*
+  * Maximum number of references an extent can have in order for us to attempt to
+@@ -4545,6 +4546,10 @@ static int __process_new_xattr(int num, struct btrfs_key *di_key,
+ 	struct fs_path *p;
+ 	struct posix_acl_xattr_header dummy_acl;
+ 
++	/* capabilities are emitted by finish_inode_if_needed */
++	if (!strncmp(name, XATTR_NAME_CAPS, name_len))
++		return 0;
++
+ 	p = fs_path_alloc();
+ 	if (!p)
+ 		return -ENOMEM;
+@@ -5107,6 +5112,66 @@ static int send_extent_data(struct send_ctx *sctx,
+ 	return 0;
+ }
+ 
++/*
++ * Search for a capability xattr related to sctx->cur_ino. If the capability if
++ * found, call send_set_xattr function to emit it.
++ *
++ * Return %0 if there isn't a capability, or when the capability was emitted
++ * successfully, or < %0 if an error occurred.
++ */
++static int send_capabilities(struct send_ctx *sctx)
++{
++	struct fs_path *fspath = NULL;
++	struct btrfs_path *path;
++	struct btrfs_dir_item *di;
++	struct extent_buffer *leaf;
++	unsigned long data_ptr;
++	char *name = XATTR_NAME_CAPS;
++	char *buf = NULL;
++	int buf_len;
++	int ret = 0;
++
++	path = btrfs_alloc_path();
++	if (!path)
++		return -ENOMEM;
++
++	di = btrfs_lookup_xattr(NULL, sctx->send_root, path, sctx->cur_ino,
++				name, strlen(name), 0);
++	if (!di) {
++		/* there is no xattr for this inode */
++		goto out;
++	} else if (IS_ERR(di)) {
++		ret = PTR_ERR(di);
++		goto out;
++	}
++
++	leaf = path->nodes[0];
++	buf_len = btrfs_dir_data_len(leaf, di);
++
++	fspath = fs_path_alloc();
++	buf = kmalloc(buf_len, GFP_KERNEL);
++	if (!fspath || !buf) {
++		ret = -ENOMEM;
++		goto out;
++	}
++
++	ret = get_cur_path(sctx, sctx->cur_ino, sctx->cur_inode_gen, fspath);
++	if (ret < 0)
++		goto out;
++
++	data_ptr = (unsigned long)((char *)(di + 1) +
++				   btrfs_dir_name_len(leaf, di));
++	read_extent_buffer(leaf, buf, data_ptr,
++			   btrfs_dir_data_len(leaf, di));
++
++	ret = send_set_xattr(sctx, fspath, name, strlen(name), buf, buf_len);
++out:
++	kfree(buf);
++	fs_path_free(fspath);
++	btrfs_free_path(path);
++	return ret;
++}
++
+ static int clone_range(struct send_ctx *sctx,
+ 		       struct clone_root *clone_root,
+ 		       const u64 disk_byte,
+@@ -6010,6 +6075,10 @@ static int finish_inode_if_needed(struct send_ctx *sctx, int at_end)
+ 			goto out;
+ 	}
+ 
++	ret = send_capabilities(sctx);
++	if (ret < 0)
++		goto out;
++
+ 	/*
+ 	 * If other directory inodes depended on our current directory
+ 	 * inode's move/rename, now do their move/rename operations.
+-- 
+2.25.1
+
