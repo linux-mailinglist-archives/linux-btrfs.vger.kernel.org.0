@@ -2,161 +2,110 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEE591C8708
-	for <lists+linux-btrfs@lfdr.de>; Thu,  7 May 2020 12:41:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F0661C8786
+	for <lists+linux-btrfs@lfdr.de>; Thu,  7 May 2020 13:05:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726480AbgEGKk4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 7 May 2020 06:40:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41496 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726029AbgEGKk4 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 7 May 2020 06:40:56 -0400
-Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08DB7C061A10
-        for <linux-btrfs@vger.kernel.org>; Thu,  7 May 2020 03:40:56 -0700 (PDT)
-Received: by mail-vs1-xe41.google.com with SMTP id h30so3039796vsr.5
-        for <linux-btrfs@vger.kernel.org>; Thu, 07 May 2020 03:40:55 -0700 (PDT)
+        id S1726007AbgEGLFQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 7 May 2020 07:05:16 -0400
+Received: from esa1.hgst.iphmx.com ([68.232.141.245]:57123 "EHLO
+        esa1.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725809AbgEGLFP (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 7 May 2020 07:05:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1588849515; x=1620385515;
+  h=from:to:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
+  b=eaeu6D3cQg855Iw4jYj3oB0Rb7GozH4OPkO8gipx31v/85dPgHXOaZP3
+   W6yI2PM+13+Ihanho/IYeDenJf3NBJBUFdvHIzpEbHr0Uwb/QyP8nD/qe
+   olnv2rGg0gFw58i4M8uzjPIJPe3Ej2wgnUWo2+cx05Pl41Yty81Y4tWzg
+   d7N53Cj5HM60n7jr2wCkc209zjR5HQTd5V8HaXBmOTq6SP90illp2g36L
+   i/cl/ZjYXxNkALg3075hzb3YHhJYf0DCItq1dt0ndSjfRMX3p6alz2iVw
+   NrqOeXhyDx0AgYIkgnIGSJ8IKlHO2uWtCibVKWh5LZlQWS0QfUQR5ARRp
+   g==;
+IronPort-SDR: RGk/480VWgWwQPOxa8QE+G5mpy1x2yTXneYl58J8tKuH2egYt2TEsvVPtd+pdwXAzyDEs8bwvf
+ PY2S/88y8OJxM/qDYFCLoh0d3Df+g4zxO2r0q/52yB3bqF+M5IN+awsrTanp61BKrx3MNSe5rR
+ oirDZ+rp9NgtkEzZgQxsPvf8nMCQsuaHUlDtkyoWjP0dc/lT5X/mkoLNdPX14v5Pk29u5V/nxR
+ gGkbl6SHeEDDx1uPgf/0yO8zTY7VpWDs2RP7KqXZq7dhjr2qBMWbNT/JlsP6tFlpEwL79NlFw/
+ jUw=
+X-IronPort-AV: E=Sophos;i="5.73,363,1583164800"; 
+   d="scan'208";a="245994154"
+Received: from mail-bn3nam04lp2055.outbound.protection.outlook.com (HELO NAM04-BN3-obe.outbound.protection.outlook.com) ([104.47.46.55])
+  by ob1.hgst.iphmx.com with ESMTP; 07 May 2020 19:05:14 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=cOzs/zvAqL54jatcHI5n7+QqOQieK2kTd4UA2A1oqauKaeJrTV9Z1geuoOJEsVtlZ2MtwxJIRWYwENmGqgiaxz5EgCqt0cFBSBcex+7IHZ6XQDQ91A+/qLuXdjcg2XBHppeAnGEU0CGy0mazJQ5FEXgLQcyiLeyN7nAI9s9I2eQNS6ReEDlliBMVtj6Ph9c2EvXPgIRbuOX8NliK7I+uUVZzS/c7kmk2UhtJ4elo68NI4nvWo0P4JG8Nusj3YojfTZugUZFEIai3qCx7pBJXTo3drzJw0hgQBUXRF+QCXKaP3uYRIxHCqQLuj4sFjkgD1BAGXKHeY+dhSj/mQyWkkQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
+ b=RWPeBo/OB7J3TrwLCDV1TbcC5ZquDvWQZKwYhGpb+l9qUBYg9X6kznN5HI2tuK+jKNS7H98kzXqzBojU0ZsOrbXjEdU+WtmqbNPHUnU7ve7hFNW0UEDcCA3zNnPT+VrTqba0Dg0WTM/zT7l0OB+zl3kV/iD5ex4yAwvMXSqgEzgoUkNyVU3366YD57H72VEIq6ZY63MgCxs+yZuDtmTpADIF7l0cwjeP47A49EJbDZJaGefeVTBYiTaxoTGweqHoZor0CGX9kkQXAJdKQBYtiIp7HhCXPf8IUjSS1ad5/n4Ykikslfx+qIE8wDDCL8B6Qdm2k4mrlrXc0scVw2LU4g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc:content-transfer-encoding;
-        bh=cgP/X43HQpfE6oHSMUzqOkhqj2QoazbFw4zC8klZr8M=;
-        b=P/fA5beo81VetjpZbe1nTQS6eBrfPJ+iMqE7VEH0n/httlYINjEkJLZpsG5QHL5aPl
-         g5d04kfawQgdFI/Syi0fSxbdTd4rTiTM2fE+4PEKNZYjFpJ/RD11VXjETjoLQE0BVHw7
-         nuVOQhTaOeRjI/NNbQpoPSKkmUxl3NgkeIfu7XdfG+Zn061WQYWtHN9LsXBdtdFvRBnZ
-         AfGnS78C0j3oRpKPD8P/i7Df1Ew4q0oqnctQcRRmVZX/SKWZhDki5lbeMXqihdNH0jSs
-         0WVKrgKl5Bx5DivwMuWFjR/CHBjLiYK1u2VmocCtOwtlCZWTit6n2L5gjh2OPlzPDSzd
-         aQ/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc:content-transfer-encoding;
-        bh=cgP/X43HQpfE6oHSMUzqOkhqj2QoazbFw4zC8klZr8M=;
-        b=NF/Vlp73GOnznFTwC/R6kFt1djNJRQucUZfINvf0nM9dTjf8ZKWWPW1duNNNUgw25D
-         MYpJwuARFZiI2s6cGNX7ariPVvlliWjChBVG5oca7ptDQeM6pDImuyv5n0Veh0NXAvdE
-         aX6nVwb6dxsCT8OWXW+1TNjqO/cUJx7RK3BBFMzWiReytrYSAxIsC3os6F/+CgrasAu7
-         gyfQ2tTeLrgZVk7QYFXkXg1mnyCyFxQX0mC3PaQbvGEPEssSLw+6EKSfLWQFOKsvrgSR
-         q2k4OT9h8xoz8KFtFNWhplWW2XXFUIYKo6W7d743UCoWSQLznLsESqcOom6jeWDcKjqa
-         UHag==
-X-Gm-Message-State: AGi0PuYpuSa3HEFyc/p8NnPedavYD27O/2GhP25iob5w2mCcejq2u+cU
-        qftGCEo/SynBiKZ/i43SetIBWjpH49PovFitEN+7f/63
-X-Google-Smtp-Source: APiQypK1QOF0uOMrFrlw0b+0WLZNTSP3oWvUX6T5m06JGtKdtVe1krWNjXGCesun3Nj7jOcVN8qEuvd7M8gW9D2G2wI=
-X-Received: by 2002:a67:407:: with SMTP id 7mr11291302vse.95.1588848054523;
- Thu, 07 May 2020 03:40:54 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200507025440.6619-1-robbieko@synology.com>
-In-Reply-To: <20200507025440.6619-1-robbieko@synology.com>
-Reply-To: fdmanana@gmail.com
-From:   Filipe Manana <fdmanana@gmail.com>
-Date:   Thu, 7 May 2020 11:40:43 +0100
-Message-ID: <CAL3q7H4ebPEJy2jB3jYkzzx+U7SeN_UwoSQPc8hYn2WPK1bHcQ@mail.gmail.com>
-Subject: Re: [PATCH v2] Btrfs : improve the speed of compare orphan item and
- dead roots with tree root when mount
-To:     robbieko <robbieko@synology.com>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
+ b=DpTgMojoN6WUnvtL3y8avWScBqXy03YvHISBuDjsiL4vsGX6q9aJWgT9dEvrnAM1cW3htM1Adn/KDCCBE5NJQzqbPfIVPQj6tNPNYbTwXVSnUsrH+4uC80HYJolDh4NJK8W8rBnlj/ZvlVGlv8vi8X5vtIJGxdt0mk+iT9JioO4=
+Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
+ (2603:10b6:803:47::21) by SN4PR0401MB3695.namprd04.prod.outlook.com
+ (2603:10b6:803:4b::32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2979.30; Thu, 7 May
+ 2020 11:05:13 +0000
+Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
+ ([fe80::9854:2bc6:1ad2:f655]) by SN4PR0401MB3598.namprd04.prod.outlook.com
+ ([fe80::9854:2bc6:1ad2:f655%4]) with mapi id 15.20.2979.028; Thu, 7 May 2020
+ 11:05:13 +0000
+From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To:     Qu Wenruo <wqu@suse.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH v4 03/11] btrfs-progs: Rename btrfs_remove_block_group()
+ and free_block_group_item()
+Thread-Topic: [PATCH v4 03/11] btrfs-progs: Rename btrfs_remove_block_group()
+ and free_block_group_item()
+Thread-Index: AQHWInCD4XAYfeWld0OUIvxOh4L4OQ==
+Date:   Thu, 7 May 2020 11:05:13 +0000
+Message-ID: <SN4PR0401MB35986C8AB5D4CF196DFDEF909BA50@SN4PR0401MB3598.namprd04.prod.outlook.com>
+References: <20200505000230.4454-1-wqu@suse.com>
+ <20200505000230.4454-4-wqu@suse.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: suse.com; dkim=none (message not signed)
+ header.d=none;suse.com; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [129.253.240.72]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 37e9d3ad-08fc-4758-9bfe-08d7f2768448
+x-ms-traffictypediagnostic: SN4PR0401MB3695:
+x-microsoft-antispam-prvs: <SN4PR0401MB3695D1020A9DF5BAF45CD95F9BA50@SN4PR0401MB3695.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:1728;
+x-forefront-prvs: 03965EFC76
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 2QNiYBaGgdpGAPxszxKhnI9fdlokUURX2Mb896qLrUbglfDBe+uyFheNkw30g71LSPZQbYp6abtEd9uL3P57WomNJmyNIjDS9JzbPuZ52avlulshntKlh95uqfelAZRHyMyzJWGcjGTt4IgzLyQUEtL3koRERq5XegcPdcdOdGFPF5DsQYHGuE/GsF1kQ20bHa/JfqVSixzx+3qs7SCUEnp5JJrEDK3llTwbEgnOfWPL+anz3hfSBIUZa5APCk3ZEJLmaqkknm9dOGQp+b039XcQNbp9476DsW8xC4PGgA19wCS3KOAiP2CLTISbS7nzmFzv5xoWVLxqFH00TIthJqQyYUjEAQZPWUMxNPPEjTcUJCwlsOAnodZG5u3EsRz1PahpgmDzViCxTW8Aj9xYmSwODpDGkoHjt3q5/1/Aoo5RdeEUbqfLzz0Gd9+yI4E2GQ8vv5725FvDCmDL1jggjj3rD23yb2Vao4X2iAXAbO+GxL11QGn5vUNfr4VsKI/Xi1ZJaHOTxFjfGMvtqurHCw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR0401MB3598.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(136003)(39860400002)(366004)(396003)(376002)(346002)(33430700001)(6506007)(26005)(5660300002)(86362001)(7696005)(4270600006)(186003)(83300400001)(33656002)(83290400001)(83320400001)(83280400001)(83310400001)(52536014)(2906002)(76116006)(91956017)(66446008)(478600001)(66476007)(71200400001)(64756008)(66556008)(33440700001)(110136005)(66946007)(55016002)(558084003)(9686003)(316002)(8676002)(8936002)(19618925003);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: aWS9BBnHc9ZuZGES5rK+dkKwW+kEY8G50yf8e+lVhVp4385R5D+gx4qB2eXXEthvhjzK91SrSfil7X/8UJah6UNbJ5zkbT0yvZZ+jyBQhaGNVwejYOlVwUimBgWRK00IFsDnKZby2UM7aZTd4QJrjj1isoYRlkZtPP+Hx1b3Gjkb81cJD4HL2ocwKcTIwl0WFTzabgNQRRwwlVX6rGY3pGjkQFpNec0PjmLMyGO6AokLLjVKn2KrGXHxafB7KDcwmzGA8U5CFsYves8vVi3ML62HZpiWD7qWRT7F3v/i4OwWMMFz3nTWXQ9/3vkMyih2yeImFwoiTVoiDf4c17N81I3DIRmbwhIBu/yZ20lk30mbicGsc29Zsah1la9RpTaKUEvjjIwwLjfc9DdEvb8HWdRztH3Ih1j5GTXS4AB2kPlTMOfvxVsjPqhwrfTWUSUGmprbOjN2mG1ns84NqK4VY8Pg4Cbuf+wIaG0CIU6nQmPJrzafMqmsVsO4pC4dOdPE9BvMJR8f1LHxP1vBD9FgB0Tr35djwF4r1zUjgDoZo3Ie0jI2MGL1mFTSUwjT2fo+z1lT5VSBAga3GNjU4tWbuOtFOD/MpUOyfCs+kxPqVF8UVyfjIceBItz0zcTBBcsNS6ah1AJSevskDr2iivAvbVRV5rxg8VmQ9PyLOWCbnPx7O2+bEkoPnUfOHzvMqzSnS2CEbz2r8LafaDrrLaOW7EPY9bagWwH5WEtE9oDUAKzRFYpgTJwqXrPcSdQNJqR0lscfsu834BPIiByJupDZIgniSpZBuJnn1MOLPOi+xCw=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 37e9d3ad-08fc-4758-9bfe-08d7f2768448
+X-MS-Exchange-CrossTenant-originalarrivaltime: 07 May 2020 11:05:13.4269
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: HO295bCfz86xlUj/a+kjqSumWJyUbxYdikT5x3hhkM/HMAVEyWoTC4jj89ikm/1V6HLCAznxduGHLcU+fyPeKmELfwCYE4cnqCh2AMcDenw=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN4PR0401MB3695
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, May 7, 2020 at 4:27 AM robbieko <robbieko@synology.com> wrote:
->
-> From: Robbie Ko <robbieko@synology.com>
->
-> When mounting, we handle deleted subvol and orphan items.
-> First, find add orphan roots, then add them to fs_root radix tree.
-> Second, in tree-root, process each orphan item, skip if it is dead root.
->
-> The original algorithm is based on the list of dead_roots,
-> one by one to visit and check whether the objectid is consistent,
-> the time complexity is O (n ^ 2).
-> When processing 50000 deleted subvols, it takes about 120s.
->
-> Because btrfs_find_orphan_roots has already ran before us,
-> and added deleted subvol to fs_roots radix tree.
->
-> The fs root will only be removed from the fs_roots radix tree
-> after the cleaner is processed, and the cleaner will only start
-> execution after the mount is complete.
->
-> btrfs_orphan_cleanup can be called during the whole filesystem mount
-> lifetime, but only "tree root" will be used in this section of code,
-> and only mount time will be brought into tree root.
->
-> So we can quickly check whether the orphan item is dead root
-> through the fs_roots radix tree.
->
-> Signed-off-by: Robbie Ko <robbieko@synology.com>
-
-"Btrfs : improve the speed of compare orphan item and dead roots with
-tree root when mount"
-
-That's a really long subject and confusing - compare orphan item? All
-we do is check whether a root is dead or not.
-So I would suggest some shorter and clear:
-
-"Btrfs: speedup dead root detection during orphan cleanup"
-
-Other than that, looks good, thanks.
-
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
-
-> ---
-> Changes in v2:
-> - update changelog
-> ---
->  fs/btrfs/inode.c | 20 +++++++++-----------
->  1 file changed, 9 insertions(+), 11 deletions(-)
->
-> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> index 320d1062068d..1becf5c63e5a 100644
-> --- a/fs/btrfs/inode.c
-> +++ b/fs/btrfs/inode.c
-> @@ -3000,18 +3000,16 @@ int btrfs_orphan_cleanup(struct btrfs_root *root)
->                          * orphan must not get deleted.
->                          * find_dead_roots already ran before us, so if t=
-his
->                          * is a snapshot deletion, we should find the roo=
-t
-> -                        * in the dead_roots list
-> +                        * in the fs_roots radix tree.
->                          */
-> -                       spin_lock(&fs_info->trans_lock);
-> -                       list_for_each_entry(dead_root, &fs_info->dead_roo=
-ts,
-> -                                           root_list) {
-> -                               if (dead_root->root_key.objectid =3D=3D
-> -                                   found_key.objectid) {
-> -                                       is_dead_root =3D 1;
-> -                                       break;
-> -                               }
-> -                       }
-> -                       spin_unlock(&fs_info->trans_lock);
-> +
-> +                       spin_lock(&fs_info->fs_roots_radix_lock);
-> +                       dead_root =3D radix_tree_lookup(&fs_info->fs_root=
-s_radix,
-> +                                                        (unsigned long)f=
-ound_key.objectid);
-> +                       if (dead_root && btrfs_root_refs(&dead_root->root=
-_item) =3D=3D 0)
-> +                               is_dead_root =3D 1;
-> +                       spin_unlock(&fs_info->fs_roots_radix_lock);
-> +
->                         if (is_dead_root) {
->                                 /* prevent this orphan from being found a=
-gain */
->                                 key.offset =3D found_key.objectid - 1;
-> --
-> 2.17.1
->
-
-
---=20
-Filipe David Manana,
-
-=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
- right.=E2=80=9D
+Looks good,=0A=
+Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>=0A=
