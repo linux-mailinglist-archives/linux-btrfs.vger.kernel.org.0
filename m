@@ -2,27 +2,27 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D909A1C9C19
-	for <lists+linux-btrfs@lfdr.de>; Thu,  7 May 2020 22:20:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 548581C9C1A
+	for <lists+linux-btrfs@lfdr.de>; Thu,  7 May 2020 22:20:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726470AbgEGUU1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 7 May 2020 16:20:27 -0400
-Received: from mx2.suse.de ([195.135.220.15]:56174 "EHLO mx2.suse.de"
+        id S1728474AbgEGUUa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 7 May 2020 16:20:30 -0400
+Received: from mx2.suse.de ([195.135.220.15]:56192 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726320AbgEGUU1 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 7 May 2020 16:20:27 -0400
+        id S1726320AbgEGUUa (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 7 May 2020 16:20:30 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id A3B3FAE0A;
-        Thu,  7 May 2020 20:20:28 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 0CE59AE96;
+        Thu,  7 May 2020 20:20:31 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 4A383DA732; Thu,  7 May 2020 22:19:37 +0200 (CEST)
+        id A357DDA732; Thu,  7 May 2020 22:19:39 +0200 (CEST)
 From:   David Sterba <dsterba@suse.com>
 To:     linux-btrfs@vger.kernel.org
 Cc:     David Sterba <dsterba@suse.com>
-Subject: [PATCH 04/19] btrfs: don't use set/get token in leaf_space_used
-Date:   Thu,  7 May 2020 22:19:37 +0200
-Message-Id: <1cc25c58e0c35e35bc01e621de48649bdca6746d.1588853772.git.dsterba@suse.com>
+Subject: [PATCH 05/19] btrfs: preset set/get token with first page and drop condition
+Date:   Thu,  7 May 2020 22:19:39 +0200
+Message-Id: <9c4e4d9f5ba0d6bd0d01282c1132a4a624d938eb.1588853772.git.dsterba@suse.com>
 X-Mailer: git-send-email 2.25.0
 In-Reply-To: <cover.1588853772.git.dsterba@suse.com>
 References: <cover.1588853772.git.dsterba@suse.com>
@@ -33,43 +33,62 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The token is supposed to cache the last page used by the set/get
-helpers. In leaf_space_used the first and last items are accessed, it's
-not likely they'd be on the same page so there's some overhead caused
-updating the token address but not using it.
+All the set/get helpers first check if the token contains a cached
+address. After first use the address is always valid, but the extra
+check is done for each call.
+
+The token initialization can optimistically set it to the first extent
+buffer page, that we know always exists. Then the condition in all
+btrfs_token_*/btrfs_set_token_* can be simplified by removing the
+address check from the condition, but for development the assertion
+still makes sure it's valid.
 
 Signed-off-by: David Sterba <dsterba@suse.com>
 ---
- fs/btrfs/ctree.c | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
+ fs/btrfs/ctree.h        | 3 ++-
+ fs/btrfs/struct-funcs.c | 8 ++++----
+ 2 files changed, 6 insertions(+), 5 deletions(-)
 
-diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
-index 576111cdea1d..6dbeb23c59ec 100644
---- a/fs/btrfs/ctree.c
-+++ b/fs/btrfs/ctree.c
-@@ -3507,19 +3507,17 @@ static int leaf_space_used(struct extent_buffer *l, int start, int nr)
+diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+index 054ddb5d2425..fbe2f9fa9f3e 100644
+--- a/fs/btrfs/ctree.h
++++ b/fs/btrfs/ctree.h
+@@ -1352,7 +1352,8 @@ static inline void btrfs_init_map_token(struct btrfs_map_token *token,
+ 					struct extent_buffer *eb)
  {
- 	struct btrfs_item *start_item;
- 	struct btrfs_item *end_item;
--	struct btrfs_map_token token;
- 	int data_len;
- 	int nritems = btrfs_header_nritems(l);
- 	int end = min(nritems, start + nr) - 1;
+ 	token->eb = eb;
+-	token->kaddr = NULL;
++	token->kaddr = page_address(eb->pages[0]);
++	token->offset = 0;
+ }
  
- 	if (!nr)
- 		return 0;
--	btrfs_init_map_token(&token, l);
- 	start_item = btrfs_item_nr(start);
- 	end_item = btrfs_item_nr(end);
--	data_len = btrfs_token_item_offset(&token, start_item) +
--		btrfs_token_item_size(&token, start_item);
--	data_len = data_len - btrfs_token_item_offset(&token, end_item);
-+	data_len = btrfs_item_offset(l, start_item) +
-+		   btrfs_item_size(l, start_item);
-+	data_len = data_len - btrfs_item_offset(l, end_item);
- 	data_len += sizeof(struct btrfs_item) * nr;
- 	WARN_ON(data_len < 0);
- 	return data_len;
+ /* some macros to generate set/get functions for the struct fields.  This
+diff --git a/fs/btrfs/struct-funcs.c b/fs/btrfs/struct-funcs.c
+index cebd0b5e4f37..cef628a5a9e0 100644
+--- a/fs/btrfs/struct-funcs.c
++++ b/fs/btrfs/struct-funcs.c
+@@ -52,8 +52,8 @@ u##bits btrfs_get_token_##bits(struct btrfs_map_token *token,		\
+ 	u##bits res;							\
+ 									\
+ 	ASSERT(token);							\
+-									\
+-	if (token->kaddr && token->offset <= offset &&			\
++	ASSERT(token->kaddr);						\
++	if (token->offset <= offset &&					\
+ 	   (token->offset + PAGE_SIZE >= offset + size)) {	\
+ 		kaddr = token->kaddr;					\
+ 		p = kaddr + part_offset - token->offset;		\
+@@ -113,8 +113,8 @@ void btrfs_set_token_##bits(struct btrfs_map_token *token,		\
+ 	int size = sizeof(u##bits);					\
+ 									\
+ 	ASSERT(token);							\
+-									\
+-	if (token->kaddr && token->offset <= offset &&			\
++	ASSERT(token->kaddr);						\
++	if (token->offset <= offset &&					\
+ 	   (token->offset + PAGE_SIZE >= offset + size)) {	\
+ 		kaddr = token->kaddr;					\
+ 		p = kaddr + part_offset - token->offset;		\
 -- 
 2.25.0
 
