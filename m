@@ -2,274 +2,148 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F9861C81E0
-	for <lists+linux-btrfs@lfdr.de>; Thu,  7 May 2020 07:52:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6EF31C81EE
+	for <lists+linux-btrfs@lfdr.de>; Thu,  7 May 2020 07:56:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725862AbgEGFwU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 7 May 2020 01:52:20 -0400
-Received: from mout.gmx.net ([212.227.15.19]:59105 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725857AbgEGFwT (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 7 May 2020 01:52:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1588830734;
-        bh=34YHUyZI99/J1ob+oWVqEjfeh3G2gODj9+QKLtmSDr8=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=dxZe31uC8BZ5zEMMvF8glCt08spwOfsqk9rGbH9v3M+3/Hss5h0wjo/P/a6P46m74
-         6tm79xRIcU/rUeOdz/xRdnfFAuRxKby3gAsomc5vRn3WIyFYfvAx04T0XSWX9hzQE0
-         vuUX5K4A8PtkPsuwEtj350G6jTmU/sZyCYHgup9s=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MAONd-1jP7TO2jlb-00BrS5; Thu, 07
- May 2020 07:52:14 +0200
-Subject: Re: Fwd: Read time tree block corruption detected
-To:     Tyler Richmond <t.d.richmond@gmail.com>,
-        Chris Murphy <lists@colorremedies.com>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-References: <CAJheHN0FUe-ijMco1ZOc6iKF2zbPocOw+iiVNeTT1r-JuXOJww@mail.gmail.com>
- <CAJheHN3J85eLmZZYs0-ACoUQFuv3FVHmAnoJTxB+Xu8CGnCy5A@mail.gmail.com>
- <a89afb42-facf-3e11-db53-c394cf8db2ce@gmx.com>
- <CAJheHN26GYa7ezw-Jw_y5voFicoywwEJ2pJ4KKx96x-WA2h1eA@mail.gmail.com>
- <CAJheHN18TmG7g=-Sgi36hVmWka4z99rQRfaf=3FCRvat07C8pg@mail.gmail.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <bbd08948-6672-4fb1-0e84-802482da7228@gmx.com>
-Date:   Thu, 7 May 2020 13:52:04 +0800
+        id S1726491AbgEGF4d (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 7 May 2020 01:56:33 -0400
+Received: from ipmail03.adl6.internode.on.net ([150.101.137.143]:63384 "EHLO
+        ipmail03.adl6.internode.on.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725763AbgEGF4d (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 7 May 2020 01:56:33 -0400
+X-IronPort-Anti-Spam-Filtered: true
+X-IronPort-Anti-Spam-Result: =?us-ascii?q?A2CEBQCyorNe/9y5pztmHAEBAQEBAQc?=
+ =?us-ascii?q?BARIBAQQEAQFAgUeCKoFDMiqEI45/gWQtm14LATwBAgQBAYREAoIBJDgTAhA?=
+ =?us-ascii?q?BAQYBAQEBAQUEbYVihXEBAQEBAgEjVgULCw4GBAICJgICPBsGDQYCAQGDIoJ?=
+ =?us-ascii?q?dH69XdoEyiSCBQCJsKoxEGoIAgREnD4JaPmmGd4JgBI4cim6BTpd5gTeBG4E?=
+ =?us-ascii?q?Dlw0jnSCvRCKBVjMaCBcZgyRQGA2QSwMXjjcvAzA3AgYIAQEDCVkBAY8mBIJ?=
+ =?us-ascii?q?BAQE?=
+Received: from podling.glasswings.com.au ([59.167.185.220])
+  by ipmail03.adl6.internode.on.net with ESMTP; 07 May 2020 15:26:09 +0930
+Received: from dash ([192.168.21.15])
+        by podling.glasswings.com.au with esmtp (Exim 4.89)
+        (envelope-from <andrew@sericyb.com.au>)
+        id 1jWZVt-0003IU-Gt; Thu, 07 May 2020 15:56:05 +1000
+Subject: Re: btrfs-progs reports nonsense scrub status
+To:     Chris Murphy <lists@colorremedies.com>
+Cc:     Graham Cobb <g.btrfs@cobb.uk.net>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+References: <0d1cceb6-9295-1bdf-c427-60ba9b1ef0b3@sericyb.com.au>
+ <fe7f6b83-aa2c-898e-648d-a8d86f5fd4d5@cobb.uk.net>
+ <76dbd6a1-bddc-9a01-53db-bf3ba9fc8787@sericyb.com.au>
+ <CAJCQCtSiEKi=ep-uh3fPVpKp3a8igTdTEm6i7cdPPkfHoDBA_g@mail.gmail.com>
+ <9b763f5f-3e42-c26d-296c-e7a7d9cde036@sericyb.com.au>
+ <CAJCQCtTorye5PTcH6crVYES4eAwVphhx3Au6xd7tijef1HU8uA@mail.gmail.com>
+ <CAJCQCtRK+jEMVMz1QPCJCYqCciaaMZ5W+STabrdAQ5RyzWHhGA@mail.gmail.com>
+From:   Andrew Pam <andrew@sericyb.com.au>
+Autocrypt: addr=andrew@sericyb.com.au; prefer-encrypt=mutual; keydata=
+ mQGiBEPPxa8RBACcBTuSu02Fi+ZhvFj8wYJa8P2xF2djPveAkV5iuv/b1OTlzcdC7yJwNKq8
+ STgXoe2C9orhZ+3lO0iIwCkZpYj3purc1CojYE0bFh8EAW85usWox+Nrqsb6JYaoJk0ekyfM
+ gogjKGf7MUg4lDwfg1D6iiWJ0Dk6OZwARo9u97sqswCgwki1jozMbKx8LhkzbeNAonRxADED
+ /2HcSy+OsR2byqdX2BbaZppXZJEzclQNR7BiSwTPVoOX0jcHY0Sn8rdBUlagSEhv4YJ4Tdwd
+ QhPs3qcrFm2GQnStV19cLJ1DvO3TfLEikSetWotBv/6RanXRZRweRE4pm/zZMxX6+zcib+jb
+ +UlFg7MSyu+z50g0Bf4b5xH6AW/DBACAsgsJaaD1lDOdFMK7jnUiYXI0Y+LfHJ6xOukYUNqC
+ Yaxbw4Bk60DeP7hwUfVPMMxIJZdN+WsrtkijppJG6La9KqapYPu3ByapaLoIjtBOeTJfhcDN
+ mcAqZaxDhZ6eIMi+IOyS6/2MK76aLEpYY+0+M8mzUZ3LXi/blYVbS7urobQkQW5kcmV3IFBh
+ bSA8eGFubmlAZ2xhc3N3aW5ncy5jb20uYXU+iGEEExECACECGwMGCwkIBwMCAxUCAwMWAgEC
+ HgECF4AFAkPPySICGQEACgkQGk9LI6KtAU50ZwCeJfVJEMTSK71XD+WR8z9stEhPovYAniEn
+ wBEAHXMO4MlxJPMmnYJWG/rbuQINBEPPxbQQCADZy6E8nqM+1s3t1UaIKzGzF8PuA0R+/Zx3
+ 5Uh4jHHoJyFt/uuJxyJzOrq9Ilz+fWXOrXK44Ga3wOQ6yR9tIhrGNoQ97Y2S5RSufjNVstS1
+ otA0N3a6nUz44rAPwXfFhMKTlUjfUwuvQik3yEF1kyXEU7o78G/XG06M/9s1ur1k4hFvAfCE
+ y/fXztx86bC5vlDq2r1MAwE+fMJG/Ok21OekdY0D3KrZ1kOi4kYgRoVIGlgfJE3OXi6W8Lko
+ c/oO0UUtEoiKGGOBTewmU8N6G2F3OXiONnZIY+FD/NIe+3YAEWAIc5SoXQs4KCmNxaF6vxRQ
+ STBOX2A9Y+LfY4lx5+HzAAMFB/9g0VGTdvnQvogs/0b+FdfvPVflwhbW9VMF12kWwgx9q0Gw
+ xcWO8IJWlFQouam5u2QMVMKxsscphAPjWDYP8BVGWFx32/Z5XZnp2xOqjaFSG9BfbEqIUizL
+ 9AEClL04eBKGmVrhPzr2d0Z7DgF5gxehVYZ7m9dW7heFnuiC+ZaYEGRvfyWsWsOihoDkbify
+ Ms1RluUU23wKJFaZzafAX4caD9u3bIUaujKUGCh64nLkaxwmZD2QBw0T9jGCIssVCRHwQmTV
+ 25eADYmSEwf3ONk4ljzfupTOpCLtNapGc3vZO84CQSv9bl3l24uBvVRWaqLJMO0NzAn+qbes
+ U3w6WMBCiEkEGBECAAkFAkPPxbUCGwwACgkQGk9LI6KtAU59IACggRqLORG73pZUK1pRh02T
+ 5kUwjTQAn1F0m2Mx72juiYwF0IKljJ7lR0TR
+Organization: Serious Cybernetics
+Face:   iVBORw0KGgoAAAANSUhEUgAAADAAAAAwBAMAAAClLOS0AAAALVBMVEUrHhk8LSRTQTZuVkmC
+ UkaKalykaGZ3h7KmgG+ahH68lYWXn7mxmpTSqZ3CvLqleibHAAACZElEQVQ4y3XUPWvbQBgH8FOg
+ Qzef3EKnEp+qIaOlGJzFi+Xg0YMFcoeMod/AFDpksMpxeHCSZhAYUxoo8mF16NylLYXUCG2F1uSW
+ eCimJp+hz+nNctKesTH30/P87ySf0e1/Bsq/hZ4X/Qu+XxiEHNyH9blBsEoOorvwzSQVjAnRJtuw
+ Mkk6MknhnGBSIQRiiF6ElZzNxlEBzpIuEKMSrG1gbaQXQz7GaiOHVd5GSpISw42cg0vlJ6TFC0NJ
+ BOwuAaKZBmlkQGAKIwWrmrnv2K66l8KqUlFxCSFFo5T5jMchEpYyEqFS+bkQgge8qqVwI6ehoB4I
+ ORYdNYUvGCswr3ORwImSA4KXzpICIU7QJIHTkoIVnaUFQoxQIwVopTi8AEcJVHFJ2QGAxUK3qTfK
+ WlUhAYD6rsXEomt3snAAJMGtWW3xo+V0djKAxe4w7jf33rSDS3IxepjCLuyuzAJOx/RF4Pfo26cZ
+ QMVjyPUpo8HPY/Y5u7tVqHhEYUELzgN4v4tSOEWK8ozG2wAIxK/sCS5RmeiUSfCDhRAfMljjJ4NW
+ AvH9ivJnXn3wvhXvesGYCDYQjtAhAIRw65BynsMZLMqiVC7Jtdqc5z+4pYn0rsM453PP7s1nOawN
+ pTaQMPW45403cLvENWoDuA6bTZ0CfC3VqQ0Z/BgGnRQqUJ26stdrAD/aAh6X+F2rPS0cnBWAbycl
+ bFg8UbsAru3wQISzqAgf63xOu7YXhqG3dWr7tWHgD0yz53lbx/lP/+U4hNvRNMza1h/A737/U3h9
+ 1d1vNnt3oR9eh65tO8N78CoMr2CT4wz+AgHlxhkkWxq2AAAAAElFTkSuQmCC
+Message-ID: <7e54f0b9-d311-3d69-94dd-03279aa2dda2@sericyb.com.au>
+Date:   Thu, 7 May 2020 15:56:04 +1000
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <CAJheHN18TmG7g=-Sgi36hVmWka4z99rQRfaf=3FCRvat07C8pg@mail.gmail.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="8Zm51X4j0Wi6HNQyVa5m8GymviKVjiNfa"
-X-Provags-ID: V03:K1:Yg5GpBOI8U7d3enflUO+BXM+BDjGny/g5pqIVrk11n5uFvsKmc/
- DDUlrdNWd5TKtTofj8t0dHjQgGRQKR1TaGQbxsd/VlmumTlhZKlrZH9PpZxpuCWPCPhIKxJ
- 8LSa1Z6ncp93lQJGm5mQ6p6v7nu9PK/eCTRI+3slfO6LmMj5GmlH4TXnEfBNOSkJuwpgMnS
- qycQym1iiI7Cw6ZLCjr/w==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:2HP9vjTJKgM=:KP2xH60WH/nMxATbYt5s62
- yLxtao0e7U6U9XHHUjJStZfZ7L4Rhc/yqG3ZP8Fg5uJnJRLiJOLEuBqYc/Bl1KP7Mxf9UYKR/
- 1gPD85E4H3ymjpBmOwC6F7JmVeh2OEVn/sWUyVXf6pFrj4CgC/JeLF9PmW+GdX0nH1ANg01iP
- zn+ONq/mi+pkf9VOZ//gPiQwchZ2aZg1Q42h2h5vBRqafgXCT2N5Tv8HWgvgW4aS1oK5jysie
- t1rIu2BPRuVFVZjS/WRS+70DCa8O8PwRfQzfYLNh53hYj9b8Hob7A41UmN3e8bFPh5+sKrkNn
- 7UKG1eJwSqFUkSM1fJZen7zwK6yNUys0wdeJUY02oE3GIT0+nQeMFzUfmTBVAU5AelGy8lz4y
- sJJCMYLxWg50p8MqW9p6Iz6y0eWncKStr05kWVAogTk/l/IKVXOTq0+9tO23vMxur6VDGwKaB
- iBKfIaPa0GLlLduWiKTWp4Ts9DUBJTktIrc8d1mQbYJYqCi+JmadAorCxJX6Rxlja4RwPcyJL
- 0itl4pC3v6+z614etDgKVeQnYI1c/q3r/+qyoorFhXVzap8V1PUVgSgNmyWjPAxppWE4x0XZ2
- FmVqCZ6NU6PN8ZNyZEVN6RWCNw3F0YNyMPJcx8XRTJDX9QpNzTffcEN1rYOehwG5sb9dbiSzj
- 3pMcgNSyD22ltGfUdkVIX85r6eU7hQBYme8KvyWBrpcdRUYbkOUfRfF9T1flMzDUPDh6vepTu
- 3INFtBDs7+KmqP68vihfXTna/jhuzzruoWdgJj/NLrj+dl77pMrMvIH4lqM+t6qg8Ah1lIUna
- mnAXO4CIGwdOaIqU8WQGndU5JNaD5YLu910LUAAm1lU24B1A9st4NAIET6s0D44e5gSfkEW+t
- uZtNXONLSyOdhwHBvA3dcbo3cY5cZrheE2YaNlOUkZK4y5HEk2P5eAtOMLuA3MOQFE4KP6Agj
- OcJuh6JiyZ8ARBRV15r8pLRVkDoFn/egH4oheq3o/LamAsqXneax+51ZZVEAdSP7Bj5nLX5Ur
- Y9kjVCYQB1/ZO+63jxPXYvw8rB+wEmXRYgzqbkevXoSNyDnW+l0waS0c0Am6Z+Xlv1VQld4Iv
- Op/Etf3FQyzs/X+HoZoQB6ZhBfgIYeURGjiUlNGukTRJLhO+cdabGCBcsUnxVWwEUOXNPDnhO
- oRs/4tsAeQ7rpX50pHcoe4A/J1cQIPmiFA4o4ewU42hVoG3m9hPrj+ckx+EudCo0p3mvnQ93Z
- G774hN9Wzl4hIgRQ5
+In-Reply-To: <CAJCQCtRK+jEMVMz1QPCJCYqCciaaMZ5W+STabrdAQ5RyzWHhGA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---8Zm51X4j0Wi6HNQyVa5m8GymviKVjiNfa
-Content-Type: multipart/mixed; boundary="F2zCJ9yTKp65diBZQ21l8TiSuTDDU8caF"
+On 7/5/20 3:36 pm, Chris Murphy wrote:
+> This was fixed in 5.2.1. I'm not sure why you're seeing this.
+> 
+> commit 96ed8e801fa2fc2d8a99e757566293c05572ebe1
+> Author: Grzegorz Kowal <grzegorz@amuncode.org>
+> Date:   Sun Jul 7 14:58:56 2019 -0300
+> 
+>     btrfs-progs: scrub: fix ETA calculation
 
---F2zCJ9yTKp65diBZQ21l8TiSuTDDU8caF
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+Maybe not fixed under all conditions!  :)
 
+> What I would do is cancel the scrub. And then delete the applicable
+> file in /var/lib/btrfs, which is the file that keeps track of the
+> scrub. Then do 'btrfs scrub status' on that file system and it should
+> say there are no stats, but it'd be interesting to know if Total to
+> Scrub is sane.
 
+$ sudo btrfs scrub status /home
+UUID:             85069ce9-be06-4c92-b8c1-8a0f685e43c6
+	no stats available
+Total to scrub:   7.31TiB
+Rate:             0.00B/s
+Error summary:    no errors found
 
-On 2020/5/7 =E4=B8=8B=E5=8D=881:43, Tyler Richmond wrote:
-> Well, the repair doesn't look terribly successful.
->=20
-> parent transid verify failed on 218620880703488 wanted 6875841 found 68=
-76224
-> parent transid verify failed on 218620880703488 wanted 6875841 found 68=
-76224
-> parent transid verify failed on 218620880703488 wanted 6875841 found 68=
-76224
-> Ignoring transid failure
-> ERROR: child eb corrupted: parent bytenr=3D225049956061184 item=3D84
-> parent level=3D1
->                                             child level=3D4
+> You can also start another scrub, and then again check
+> status and see if it's still sane or not. If not I'd cancel it and
+> keep troubleshooting.
 
-This means there are more problems, not only the hash name mismatch.
+$ sudo btrfs scrub status -d /home
+UUID:             85069ce9-be06-4c92-b8c1-8a0f685e43c6
+scrub device /dev/sda (id 1) status
+Scrub started:    Thu May  7 15:44:21 2020
+Status:           running
+Duration:         0:06:53
+Time left:        9:23:26
+ETA:              Fri May  8 01:14:40 2020
+Total to scrub:   3.66TiB
+Bytes scrubbed:   45.24GiB
+Rate:             112.16MiB/s
+Error summary:    no errors found
+scrub device /dev/sdb (id 2) status
+Scrub started:    Thu May  7 15:44:21 2020
+Status:           running
+Duration:         0:06:53
+Time left:        9:24:50
+ETA:              Fri May  8 01:16:04 2020
+Total to scrub:   3.66TiB
+Bytes scrubbed:   45.12GiB
+Rate:             111.88MiB/s
+Error summary:    no errors found
 
-This means the fs is already corrupted, the name hash is just one
-unrelated symptom.
+Still sane after cancelling and resuming.
 
-The only good news is, btrfs-progs abort the transaction, thus no
-further damage to the fs.
+One thing that might be relevant:  On the original scrub, I started it
+on the mountpoint but initially cancelled and resumed it on the device
+/dev/sda rather than the mountpoint.  Could that trigger a bug?
 
-Please run a plain btrfs-check to show what's the problem first.
-
-Thanks,
-Qu
-
-> parent transid verify failed on 218620880703488 wanted 6875841 found 68=
-76224
-> Ignoring transid failure
-> ERROR: child eb corrupted: parent bytenr=3D225049956061184 item=3D84
-> parent level=3D1
->                                             child level=3D4
-> parent transid verify failed on 218620880703488 wanted 6875841 found 68=
-76224
-> Ignoring transid failure
-> ERROR: child eb corrupted: parent bytenr=3D225049956061184 item=3D84
-> parent level=3D1
->                                             child level=3D4
-> parent transid verify failed on 218620880703488 wanted 6875841 found 68=
-76224
-> Ignoring transid failure
-> ERROR: child eb corrupted: parent bytenr=3D225049956061184 item=3D84
-> parent level=3D1
->                                             child level=3D4
-> parent transid verify failed on 218620880703488 wanted 6875841 found 68=
-76224
-> Ignoring transid failure
-> ERROR: child eb corrupted: parent bytenr=3D225049956061184 item=3D84
-> parent level=3D1
->                                             child level=3D4
-> parent transid verify failed on 218620880703488 wanted 6875841 found 68=
-76224
-> Ignoring transid failure
-> ERROR: child eb corrupted: parent bytenr=3D225049956061184 item=3D84
-> parent level=3D1
->                                             child level=3D4
-> parent transid verify failed on 218620880703488 wanted 6875841 found 68=
-76224
-> Ignoring transid failure
-> ERROR: child eb corrupted: parent bytenr=3D225049956061184 item=3D84
-> parent level=3D1
->                                             child level=3D4
-> parent transid verify failed on 218620880703488 wanted 6875841 found 68=
-76224
-> Ignoring transid failure
-> ERROR: child eb corrupted: parent bytenr=3D225049956061184 item=3D84
-> parent level=3D1
->                                             child level=3D4
-> parent transid verify failed on 218620880703488 wanted 6875841 found 68=
-76224
-> Ignoring transid failure
-> ERROR: child eb corrupted: parent bytenr=3D225049956061184 item=3D84
-> parent level=3D1
->                                             child level=3D4
-> parent transid verify failed on 218620880703488 wanted 6875841 found 68=
-76224
-> Ignoring transid failure
-> ERROR: child eb corrupted: parent bytenr=3D225049956061184 item=3D84
-> parent level=3D1
->                                             child level=3D4
-> parent transid verify failed on 218620880703488 wanted 6875841 found 68=
-76224
-> Ignoring transid failure
-> ERROR: child eb corrupted: parent bytenr=3D225049956061184 item=3D84
-> parent level=3D1
->                                             child level=3D4
-> ERROR: failed to zero log tree: -17
-> ERROR: attempt to start transaction over already running one
-> WARNING: reserved space leaked, flag=3D0x4 bytes_reserved=3D4096
-> extent buffer leak: start 225049066086400 len 4096
-> extent buffer leak: start 225049066086400 len 4096
-> WARNING: dirty eb leak (aborted trans): start 225049066086400 len 4096
-> extent buffer leak: start 225049066094592 len 4096
-> extent buffer leak: start 225049066094592 len 4096
-> WARNING: dirty eb leak (aborted trans): start 225049066094592 len 4096
-> extent buffer leak: start 225049066102784 len 4096
-> extent buffer leak: start 225049066102784 len 4096
-> WARNING: dirty eb leak (aborted trans): start 225049066102784 len 4096
-> extent buffer leak: start 225049066131456 len 4096
-> extent buffer leak: start 225049066131456 len 4096
-> WARNING: dirty eb leak (aborted trans): start 225049066131456 len 4096
->=20
-> What is going on?
->=20
-> On Wed, May 6, 2020 at 9:30 PM Tyler Richmond <t.d.richmond@gmail.com> =
-wrote:
->>
->> Chris, I had used the correct mountpoint in the command. I just edited=
-
->> it in the email to be /mountpoint for consistency.
->>
->> Qu, I'll try the repair. Fingers crossed!
->>
->> On Wed, May 6, 2020 at 9:13 PM Qu Wenruo <quwenruo.btrfs@gmx.com> wrot=
-e:
->>>
->>>
->>>
->>> On 2020/5/7 =E4=B8=8A=E5=8D=885:54, Tyler Richmond wrote:
->>>> Hello,
->>>>
->>>> I looked up this error and it basically says ask a developer to
->>>> determine if it's a false error or not. I just started getting some
->>>> slow response times, and looked at the dmesg log to find a ton of
->>>> these errors.
->>>>
->>>> [192088.446299] BTRFS critical (device sdh): corrupt leaf: root=3D5
->>>> block=3D203510940835840 slot=3D4 ino=3D1311670, invalid inode genera=
-tion:
->>>> has 18446744073709551492 expect [0, 6875827]
->>>> [192088.449823] BTRFS error (device sdh): block=3D203510940835840 re=
-ad
->>>> time tree block corruption detected
->>>> [192088.459238] BTRFS critical (device sdh): corrupt leaf: root=3D5
->>>> block=3D203510940835840 slot=3D4 ino=3D1311670, invalid inode genera=
-tion:
->>>> has 18446744073709551492 expect [0, 6875827]
->>>> [192088.462773] BTRFS error (device sdh): block=3D203510940835840 re=
-ad
->>>> time tree block corruption detected
->>>> [192088.464711] BTRFS critical (device sdh): corrupt leaf: root=3D5
->>>> block=3D203510940835840 slot=3D4 ino=3D1311670, invalid inode genera=
-tion:
->>>> has 18446744073709551492 expect [0, 6875827]
->>>> [192088.468457] BTRFS error (device sdh): block=3D203510940835840 re=
-ad
->>>> time tree block corruption detected
->>>>
->>>> btrfs device stats, however, doesn't show any errors.
->>>>
->>>> Is there anything I should do about this, or should I just continue
->>>> using my array as normal?
->>>
->>> This is caused by older kernel underflow inode generation.
->>>
->>> Latest btrfs-progs can fix it, using btrfs check --repair.
->>>
->>> Or you can go safer, by manually locating the inode using its inode
->>> number (1311670), and copy it to some new location using previous
->>> working kernel, then delete the old file, copy the new one back to fi=
-x it.
->>>
->>> Thanks,
->>> Qu
->>>
->>>>
->>>> Thank you!
->>>>
->>>
-
-
---F2zCJ9yTKp65diBZQ21l8TiSuTDDU8caF--
-
---8Zm51X4j0Wi6HNQyVa5m8GymviKVjiNfa
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQFLBAEBCAA1FiEELd9y5aWlW6idqkLhwj2R86El/qgFAl6zogQXHHF1d2VucnVv
-LmJ0cmZzQGdteC5jb20ACgkQwj2R86El/qg7zwgAkpcjNRTleHl8rDuoMAVOrWPW
-n/1RxJECuPb01lyzx2dgqrb50nMweok+fYcO5rCTQ4AMzwP1L+gmD1s2tNTdQ6IV
-I2dVngt9ldlqvlGrbPgfjewfwM1JN3d6ZXNDv4xIW0gCYpJDPz/TnjBj/4wK1ayF
-TbtSoSMLbPZX7AvZgZKKtepYW/OztD029hiaWsvRgPW5kSY3iGhImU4CwnWrQCKY
-B35n5BsNcjBbiwMRef5+UXMw3g/8hTAjY9E72bDkw+67yhVH7YXGz4OGRj54a3xq
-IkdYRQJJsA9KGgRtsDjxhXkJzAy9F3NKUPcXQSztu2rPg4adkDCgEyf3xllOsA==
-=sdYv
------END PGP SIGNATURE-----
-
---8Zm51X4j0Wi6HNQyVa5m8GymviKVjiNfa--
+Cheers,
+	Andrew
