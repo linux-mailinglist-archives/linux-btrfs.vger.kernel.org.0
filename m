@@ -2,56 +2,56 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7728A1C7E35
-	for <lists+linux-btrfs@lfdr.de>; Thu,  7 May 2020 01:55:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1A2B1C7F6C
+	for <lists+linux-btrfs@lfdr.de>; Thu,  7 May 2020 02:52:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728463AbgEFXzS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 6 May 2020 19:55:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54096 "EHLO
+        id S1728194AbgEGAvc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 6 May 2020 20:51:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728455AbgEFXzS (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 6 May 2020 19:55:18 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE4E4C061A0F
-        for <linux-btrfs@vger.kernel.org>; Wed,  6 May 2020 16:55:17 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id i15so3757205wrx.10
-        for <linux-btrfs@vger.kernel.org>; Wed, 06 May 2020 16:55:17 -0700 (PDT)
+        with ESMTP id S1725887AbgEGAvb (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 6 May 2020 20:51:31 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 764E1C061A0F
+        for <linux-btrfs@vger.kernel.org>; Wed,  6 May 2020 17:51:31 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id a4so2957408lfh.12
+        for <linux-btrfs@vger.kernel.org>; Wed, 06 May 2020 17:51:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=vQ1vuMuhV5zRUe/0OFKOZxdhFSScnYmdn1HRum7uZKo=;
-        b=H2Uq+HNgMsl3g3vvk4OHIByg58dGrPJvlV8Bd3YtBo7kwcJYWFqPqEgE9K5PRqhpBF
-         cc9d1A0nbcgK+VWI52PhC6bYyPM8xAIzHKshXV1sKFivbQuHXBhBW3AnOEcLP+9OhIbR
-         3GZulZOw51K1bWf0ShAGtOdDgNPQZMQMEPN1eP41KB+qHqXnvIPrrz8umqomvbWuSEIq
-         to7vcsRbWY3ou050BJcwmcsPIw6Pu1lrYre5LMyT16E7wrZvnTglCyJ/PaCELquqyRJL
-         jt9FsXBgqbJJPe62dbS2aMDC0cVL1rQC7TYb+wVO6NHiiF01woMfQ3TNXsUnFXFQpo1s
-         SMSA==
+        bh=GQj3Ni0GQK6+NKvWSgo7ta4qp+1afvDKSMZ/nZjR5MA=;
+        b=l3tjj6JBDO7UWAIGGdKaJgozbED/qeqOxCk/HuUShGRb5b+4nFR2QHPMaGumGYa7Bq
+         +4kcsy02X4y1sF3M8t/nt2l3cTeKyS6W3sQ+9hJtzuEvY0vBrrQiZQS4mS/o/IkA1+aa
+         193fxR5kXfIEZ22ejEahAAuwCKbdi1V/Fd8oc3QqcB3hK/vlhppjNeDYjzoiPdc21wWL
+         Rt/kqPN8p90yvqOPelL85kZj74CcDnxj/QCMzbgvFvhunzzVhoxHegqgCLXOU34SP7B0
+         NsW0x8Y6+3DpfkLmb2p8lJEJt5LTIAMxhf2Vxs4MqUH8QLQJyVL0Q47xF08EUWbiihnY
+         2WLg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=vQ1vuMuhV5zRUe/0OFKOZxdhFSScnYmdn1HRum7uZKo=;
-        b=Ev7IPenGEJR5mBPu9Aah5lxOaAMvVPkB+wbNq4/Vl04tX55ysDnr0cw97O0U/BZNEq
-         RL68WGfQyIhwq9Yxm+hAYZT2urRgiXyq2DcGo3U+KztAMkEnykCuJxBZtIFcrPGIV15v
-         p01VAaL3gQ7eBCQHKDRIKwJJHqC7MlyehYDhXYMcSbDT6aV8tb6QnXX/1CdCVKFc4ii6
-         Z4atQxELRlhuw/tM2UDg2Is8yBxuioNnwHr0frv18GKU1M3Uj1ZvDaUIzAj07SmnDOCG
-         UuIVlATVnd7rchqMe/MJ3HnKTG3wGqzF+OzvA7OTuswsCDHipIP5nNczQWGse7BJtAl/
-         xnyQ==
-X-Gm-Message-State: AGi0PubN7SVUAE+59GYi9NTZsFYskXJRWyByUSdmaM0hVL+V3/Aempb0
-        F4WfW6Em4Ddg0ZD661bXy2hw+BPzYBRZi0nU/GMnWg7mtZkaOg==
-X-Google-Smtp-Source: APiQypIeo2xtFTZ/YTIh46u5DzF6GZJo0li7W2n5/bZVSikl8P+DUK6Ye6xyDMWX2AyMrP8+kE8KFzcpEzsWxk/P5AQ=
-X-Received: by 2002:a05:6000:1241:: with SMTP id j1mr9292915wrx.42.1588809316390;
- Wed, 06 May 2020 16:55:16 -0700 (PDT)
+        bh=GQj3Ni0GQK6+NKvWSgo7ta4qp+1afvDKSMZ/nZjR5MA=;
+        b=P4XbrAOOXUO+2byRREZRUkNQu6W6s3iDI2njoJyD77T5ysGVuCjWZRxEK93hgVxNpW
+         Y0MnEuEyCK/rhrsRyuAF6jL5/cSK3F3OHRKGrOPv2c967PBLDRU2u0X4FVEUm9nJV5E9
+         /vzmOtl7Jn5jzcyG2XpfC05annX1KiFZRfUm0/+C2GMvOj6Ysx/dWxvGD+VMGxvkX6uO
+         HNJaBEqWFVzKV8o5PTTuQ8vH1YLV2VOJp6b1po7Qfdga3ry0pT6yWmHk4tI9W4Xbh5Rt
+         CNEhbxeMfHHII8epwcO0WMEnxrw1m7gg8i7wDbCPQ/5N/WfhEXggvBnxw8dlJGec+KBC
+         c0fw==
+X-Gm-Message-State: AGi0Pua8f3Aff0YWYx7Q1nvwwatCcChKNTaZu17H7jPowWVDu0XrKzo+
+        Q+aKtge6u9Ckh1vBk0g6n0wHhlTnFYDgipc0iy6hUA==
+X-Google-Smtp-Source: APiQypKvxNvHogIk0ZYPtYoZ0SvIZDPBipLYbzymJQ1SzBmMxxqAFtH5Nm3TYhD5s7Zu93VWXRObVuYhF7G78IwqJ6Q=
+X-Received: by 2002:a19:6448:: with SMTP id b8mr6878929lfj.18.1588812689688;
+ Wed, 06 May 2020 17:51:29 -0700 (PDT)
 MIME-Version: 1.0
 References: <CAJheHN0FUe-ijMco1ZOc6iKF2zbPocOw+iiVNeTT1r-JuXOJww@mail.gmail.com>
- <CAJheHN3J85eLmZZYs0-ACoUQFuv3FVHmAnoJTxB+Xu8CGnCy5A@mail.gmail.com>
-In-Reply-To: <CAJheHN3J85eLmZZYs0-ACoUQFuv3FVHmAnoJTxB+Xu8CGnCy5A@mail.gmail.com>
-From:   Chris Murphy <lists@colorremedies.com>
-Date:   Wed, 6 May 2020 17:55:00 -0600
-Message-ID: <CAJCQCtTqxWymZK5Bb5V8FJfur2dJUgrwZs9b1D4CNWGYjvEv_A@mail.gmail.com>
+ <CAJheHN3J85eLmZZYs0-ACoUQFuv3FVHmAnoJTxB+Xu8CGnCy5A@mail.gmail.com> <CAJCQCtTqxWymZK5Bb5V8FJfur2dJUgrwZs9b1D4CNWGYjvEv_A@mail.gmail.com>
+In-Reply-To: <CAJCQCtTqxWymZK5Bb5V8FJfur2dJUgrwZs9b1D4CNWGYjvEv_A@mail.gmail.com>
+From:   Tyler Richmond <t.d.richmond@gmail.com>
+Date:   Wed, 6 May 2020 20:51:18 -0400
+Message-ID: <CAJheHN1rKTrUUF=jGdDwEDYtLYZZ1F2eME+at4kuvNQr1RfF1g@mail.gmail.com>
 Subject: Re: Read time tree block corruption detected
-To:     Tyler Richmond <t.d.richmond@gmail.com>
+To:     Chris Murphy <lists@colorremedies.com>
 Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
@@ -59,51 +59,69 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, May 6, 2020 at 3:54 PM Tyler Richmond <t.d.richmond@gmail.com> wrote:
+Kernel version is 5.4.0-28. Just upgraded to Ubuntu 20.04.
+btrfs-progs is version 5.6
+
+That inode search returned an error:
+ERROR: ino paths ioctl: Input/output error
+
+I don't use any subvolumes.
+
+The next command also resulted in an error. Replaced the actual
+mountpoint in the error with /mountpoint.
+
+ERROR: not a block device or regular file: /mountpoint/
+ERROR: device scan /mountpoint/: Input/output error
+
+Something definitely doesn't seem right.
+
+On Wed, May 6, 2020 at 7:55 PM Chris Murphy <lists@colorremedies.com> wrote:
 >
-> Hello,
+> On Wed, May 6, 2020 at 3:54 PM Tyler Richmond <t.d.richmond@gmail.com> wrote:
+> >
+> > Hello,
+> >
+> > I looked up this error and it basically says ask a developer to
+> > determine if it's a false error or not. I just started getting some
+> > slow response times, and looked at the dmesg log to find a ton of
+> > these errors.
+> >
+> > [192088.446299] BTRFS critical (device sdh): corrupt leaf: root=5
+> > block=203510940835840 slot=4 ino=1311670, invalid inode generation:
+> > has 18446744073709551492 expect [0, 6875827]
+> > [192088.449823] BTRFS error (device sdh): block=203510940835840 read
+> > time tree block corruption detected
+> > [192088.459238] BTRFS critical (device sdh): corrupt leaf: root=5
+> > block=203510940835840 slot=4 ino=1311670, invalid inode generation:
+> > has 18446744073709551492 expect [0, 6875827]
+> > [192088.462773] BTRFS error (device sdh): block=203510940835840 read
+> > time tree block corruption detected
+> > [192088.464711] BTRFS critical (device sdh): corrupt leaf: root=5
+> > block=203510940835840 slot=4 ino=1311670, invalid inode generation:
+> > has 18446744073709551492 expect [0, 6875827]
+> > [192088.468457] BTRFS error (device sdh): block=203510940835840 read
+> > time tree block corruption detected
+> >
+> > btrfs device stats, however, doesn't show any errors.
+> >
+> > Is there anything I should do about this, or should I just continue
+> > using my array as normal?
 >
-> I looked up this error and it basically says ask a developer to
-> determine if it's a false error or not. I just started getting some
-> slow response times, and looked at the dmesg log to find a ton of
-> these errors.
+> What kernel version? This looks like relatively recent kernel
+> reporting format. Can you search for inode 1311670? e.g.
 >
-> [192088.446299] BTRFS critical (device sdh): corrupt leaf: root=5
-> block=203510940835840 slot=4 ino=1311670, invalid inode generation:
-> has 18446744073709551492 expect [0, 6875827]
-> [192088.449823] BTRFS error (device sdh): block=203510940835840 read
-> time tree block corruption detected
-> [192088.459238] BTRFS critical (device sdh): corrupt leaf: root=5
-> block=203510940835840 slot=4 ino=1311670, invalid inode generation:
-> has 18446744073709551492 expect [0, 6875827]
-> [192088.462773] BTRFS error (device sdh): block=203510940835840 read
-> time tree block corruption detected
-> [192088.464711] BTRFS critical (device sdh): corrupt leaf: root=5
-> block=203510940835840 slot=4 ino=1311670, invalid inode generation:
-> has 18446744073709551492 expect [0, 6875827]
-> [192088.468457] BTRFS error (device sdh): block=203510940835840 read
-> time tree block corruption detected
+> $ sudo btrfs insp ino -v 1311670 /mountpoint
 >
-> btrfs device stats, however, doesn't show any errors.
+> Note that each subvolume has its own set of inodes. You need to point
+> the command to the correct subvolume. In this case it's root=5 which
+> is the default/top-level. As long as you haven't changed the default
+> subvolume, and you've mounted the file system without subvol or
+> subvolid option, it should point to the correct file that's affected
+> by this. And also maybe useful:
 >
-> Is there anything I should do about this, or should I just continue
-> using my array as normal?
-
-What kernel version? This looks like relatively recent kernel
-reporting format. Can you search for inode 1311670? e.g.
-
-$ sudo btrfs insp ino -v 1311670 /mountpoint
-
-Note that each subvolume has its own set of inodes. You need to point
-the command to the correct subvolume. In this case it's root=5 which
-is the default/top-level. As long as you haven't changed the default
-subvolume, and you've mounted the file system without subvol or
-subvolid option, it should point to the correct file that's affected
-by this. And also maybe useful:
-
-$ sudo btrfs insp dump-t -b 203510940835840 /mountpoint
-
-
-
--- 
-Chris Murphy
+> $ sudo btrfs insp dump-t -b 203510940835840 /mountpoint
+>
+>
+>
+> --
+> Chris Murphy
