@@ -2,32 +2,32 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6417C1CA7BF
-	for <lists+linux-btrfs@lfdr.de>; Fri,  8 May 2020 12:01:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98A7C1CA7C9
+	for <lists+linux-btrfs@lfdr.de>; Fri,  8 May 2020 12:01:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726616AbgEHKBP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 8 May 2020 06:01:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33436 "EHLO mail.kernel.org"
+        id S1726948AbgEHKBv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 8 May 2020 06:01:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34168 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725815AbgEHKBO (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 8 May 2020 06:01:14 -0400
+        id S1726083AbgEHKBu (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 8 May 2020 06:01:50 -0400
 Received: from debian6.Home (bl8-197-74.dsl.telepac.pt [85.241.197.74])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C0F3020870
-        for <linux-btrfs@vger.kernel.org>; Fri,  8 May 2020 10:01:12 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7A4C6215A4
+        for <linux-btrfs@vger.kernel.org>; Fri,  8 May 2020 10:01:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588932073;
-        bh=M27no53rkHAqnHc8iFlJHRCjKOO06UBkHM7CUGmyqV8=;
+        s=default; t=1588932109;
+        bh=11McgwhBPQrgq5qc4S91AOOvxmuFMgJuehUlihMKuOI=;
         h=From:To:Subject:Date:From;
-        b=oGDekiwlHTDjfTQJ+ckzn6q7IcauRjX5fQ82eyRqYNzGZfGLhxS2ftZRGh7zTVWEc
-         JgcfTzl/hemd8gIdUA1OkvRw0NEW/8el7K4fH1CZBYqfhUg9sfrVcFe3einMcRawZN
-         bKogos/zqdBN0YB4N46TOQjgIaFNp6sRuI3gk2XM=
+        b=JFE8+TiJ/H4oGWGnEEocq/J6433HdP6EVV+MCWzmQnnLa7/kZGK05vbmgg1MlbqI6
+         oIaQ1jBqE6mioAPvhb3P9U3CrbsIWAMQZjUDqhQ/WDEG8gUZYB1CU2kyo1cUogX9Lm
+         qjudQSj0540Li/kGoMusa/uUIYlRwj9qjnSmzzdI=
 From:   fdmanana@kernel.org
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 1/4] Btrfs: fix a race between scrub and block group removal/allocation
-Date:   Fri,  8 May 2020 11:01:10 +0100
-Message-Id: <20200508100110.6965-1-fdmanana@kernel.org>
+Subject: [PATCH 2/4] Btrfs: rename member 'trimming' of block group to a more generic name
+Date:   Fri,  8 May 2020 11:01:47 +0100
+Message-Id: <20200508100147.8202-1-fdmanana@kernel.org>
 X-Mailer: git-send-email 2.11.0
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
@@ -36,266 +36,294 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-When scrub is verifying the extents of a block group for a device, it is
-possible that the corresponding block group gets removed and its logical
-address and device extents get used for a new block group allocation.
-When this happens scrub incorrectly reports that errors were detected
-and, if the the new block group has a different profile then the old one,
-deleted block group, we can crash due to a null pointer dereference.
-Possibly other unexpected and weird consequences can happen as well.
+Back in 2014, commit 04216820fe83d5 ("Btrfs: fix race between fs trimming
+and block group remove/allocation"), I added the 'trimming' member to the
+block group structure. Its purpose was to prevent races between trimming
+and block group deletion/allocation by pinning the block group in a way
+that prevents its logical address and device extents from being reused
+while trimming is in progress for a block group, so that if another task
+deletes the block group and then another task allocates a new block group
+that gets the same logical address and device extents while the trimming
+task is still in progress.
 
-Consider the following sequence of actions that leads to the null pointer
-dereference crash when scrub is running in parallel with balance:
+After the previous fix for scrub (patch "Btrfs: fix a race between scrub
+and block group removal/allocation"), scrub now also has the same needs that
+trimming has, so the member name 'trimming' no longer makes sense.
+Since there is already a 'pinned' member in the block group that refers
+to space reservations (pinned bytes), rename the member to 'frozen',
+add a comment on top of it to describe its general purpose and rename
+the helpers to increment and decrement the counter as well, to match
+the new member name.
 
-1) Balance sets block group X to read-only mode and starts relocating it.
-   Block group X is a metadata block group, has a raid1 profile (two
-   device extents, each one in a different device) and a logical address
-   of 19424870400;
+The next patch in the series will move the helpers into a more suitable
+file (from free-space-cache.c to block-group.c).
 
-2) Scrub is running and finds device extent E, which belongs to block
-   group X. It enters scrub_stripe() to find all extents allocated to
-   block group X, the search is done using the extent tree;
-
-3) Balance finishes relocating block group X and removes block group X;
-
-4) Balance starts relocating another block group and when trying to
-   commit the current transaction as part of the preparation step
-   (prepare_to_relocate()), it blocks because scrub is running;
-
-5) The scrub task finds the metadata extent at the logical address
-   19425001472 and marks the pages of the extent to be read by a bio
-   (struct scrub_bio). The extent item's flags, which have the bit
-   BTRFS_EXTENT_FLAG_TREE_BLOCK set, are added to each page (struct
-   scrub_page). It is these flags in the scrub pages that tells the
-   bio's end io function (scrub_bio_end_io_worker) which type of extent
-   it is dealing with. At this point we end up with 4 pages in a bio
-   which is ready for submission (the metadata extent has a size of
-   16Kb, so that gives 4 pages on x86);
-
-6) At the next iteration of scrub_stripe(), scrub checks that there is a
-   pause request from the relocation task trying to commit a transaction,
-   therefore it submits the pending bio and pauses, waiting for the
-   transaction commit to complete before resuming;
-
-7) The relocation task commits the transaction. The device extent E, that
-   was used by our block group X, is now available for allocation, since
-   the commit root for the device tree was swapped by the transaction
-   commit;
-
-8) Another task doing a direct IO write allocates a new data block group Y
-   which ends using device extent E. This new block group Y also ends up
-   getting the same logical address that block group X had: 19424870400.
-   This happens because block group X was the block group with the highest
-   logical address and, when allocating Y, find_next_chunk() returns the
-   end offset of the current last block group to be used as the logical
-   address for the new block group, which is
-
-        18351128576 + 1073741824 = 19424870400
-
-   So our new block group Y has the same logical address and device extent
-   that block group X had. However Y is a data block group, while X was
-   a metadata one, and Y has a raid0 profile, while X had a raid1 profile;
-
-9) After allocating block group Y, the direct IO submits a bio to write
-   to device extent E;
-
-10) The read bio submitted by scrub reads the 4 pages (16Kb) from device
-    extent E, which now correspond to the data written by the task that
-    did a direct IO write. Then at the end io function associated with
-    the bio, scrub_bio_end_io_worker(), we call scrub_block_complete()
-    which calls scrub_checksum(). This later function checks the flags
-    of the first page, and sees that the bit BTRFS_EXTENT_FLAG_TREE_BLOCK
-    is set in the flags, so it assumes it has a metadata extent and
-    then calls scrub_checksum_tree_block(). That functions returns an
-    error, since interpreting data as a metadata extent causes the
-    checksum verification to fail.
-
-    So this makes scrub_checksum() call scrub_handle_errored_block(),
-    which determines 'failed_mirror_index' to be 1, since the device
-    extent E was allocated as the second mirror of block group X.
-
-    It allocates BTRFS_MAX_MIRRORS scrub_block structures as an array at
-    'sblocks_for_recheck', and all the memory is initialized to zeroes by
-    kcalloc().
-
-    After that it calls scrub_setup_recheck_block(), which is responsible
-    for filling each of those structures. However, when that function
-    calls btrfs_map_sblock() against the logical address of the metadata
-    extent, 19425001472, it gets a struct btrfs_bio ('bbio') that matches
-    the current block group Y. However block group Y has a raid0 profile
-    and not a raid1 profile like X had, so the following call returns 1:
-
-       scrub_nr_raid_mirrors(bbio)
-
-    And as a result scrub_setup_recheck_block() only initializes the
-    first (index 0) scrub_block structure in 'sblocks_for_recheck'.
-
-    Then scrub_recheck_block() is called by scrub_handle_errored_block()
-    with the second (index 1) scrub_block structure as the argument,
-    because 'failed_mirror_index' was previously set to 1.
-    This scrub_block was not initialized by scrub_setup_recheck_block(),
-    so it has zero pages, its 'page_count' member is 0 and its 'pagev'
-    page array has all members pointing to NULL.
-
-    Finally when scrub_recheck_block() calls scrub_recheck_block_checksum()
-    we have a NULL pointer dereference when accessing the flags of the first
-    page, as pavev[0] is NULL:
-
-    static void scrub_recheck_block_checksum(struct scrub_block *sblock)
-    {
-        (...)
-        if (sblock->pagev[0]->flags & BTRFS_EXTENT_FLAG_DATA)
-            scrub_checksum_data(sblock);
-        (...)
-    }
-
-    Producing a stack trace like the following:
-
-    [542998.008985] BUG: kernel NULL pointer dereference, address: 0000000000000028
-    [542998.010238] #PF: supervisor read access in kernel mode
-    [542998.010878] #PF: error_code(0x0000) - not-present page
-    [542998.011516] PGD 0 P4D 0
-    [542998.011929] Oops: 0000 [#1] PREEMPT SMP DEBUG_PAGEALLOC PTI
-    [542998.012786] CPU: 3 PID: 4846 Comm: kworker/u8:1 Tainted: G    B   W         5.6.0-rc7-btrfs-next-58 #1
-    [542998.014524] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
-    [542998.016065] Workqueue: btrfs-scrub btrfs_work_helper [btrfs]
-    [542998.017255] RIP: 0010:scrub_recheck_block_checksum+0xf/0x20 [btrfs]
-    [542998.018474] Code: 4c 89 e6 ...
-    [542998.021419] RSP: 0018:ffffa7af0375fbd8 EFLAGS: 00010202
-    [542998.022120] RAX: 0000000000000000 RBX: ffff9792e674d120 RCX: 0000000000000000
-    [542998.023178] RDX: 0000000000000001 RSI: ffff9792e674d120 RDI: ffff9792e674d120
-    [542998.024465] RBP: 0000000000000000 R08: 0000000000000067 R09: 0000000000000001
-    [542998.025462] R10: ffffa7af0375fa50 R11: 0000000000000000 R12: ffff9791f61fe800
-    [542998.026357] R13: ffff9792e674d120 R14: 0000000000000001 R15: ffffffffc0e3dfc0
-    [542998.027237] FS:  0000000000000000(0000) GS:ffff9792fb200000(0000) knlGS:0000000000000000
-    [542998.028327] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-    [542998.029261] CR2: 0000000000000028 CR3: 00000000b3b18003 CR4: 00000000003606e0
-    [542998.030301] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-    [542998.031316] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-    [542998.032380] Call Trace:
-    [542998.032752]  scrub_recheck_block+0x162/0x400 [btrfs]
-    [542998.033500]  ? __alloc_pages_nodemask+0x31e/0x460
-    [542998.034228]  scrub_handle_errored_block+0x6f8/0x1920 [btrfs]
-    [542998.035170]  scrub_bio_end_io_worker+0x100/0x520 [btrfs]
-    [542998.035991]  btrfs_work_helper+0xaa/0x720 [btrfs]
-    [542998.036735]  process_one_work+0x26d/0x6a0
-    [542998.037275]  worker_thread+0x4f/0x3e0
-    [542998.037740]  ? process_one_work+0x6a0/0x6a0
-    [542998.038378]  kthread+0x103/0x140
-    [542998.038789]  ? kthread_create_worker_on_cpu+0x70/0x70
-    [542998.039419]  ret_from_fork+0x3a/0x50
-    [542998.039875] Modules linked in: dm_snapshot dm_thin_pool ...
-    [542998.047288] CR2: 0000000000000028
-    [542998.047724] ---[ end trace bde186e176c7f96a ]---
-
-This issue has been around for a long time, possibly since scrub exists.
-The last time I ran into it was over 2 years ago. After recently fixing
-fstests to pass the "--full-balance" command line option to btrfs-progs
-when doing balance, several tests started to more heavily exercise balance
-with fsstress, scrub and other operations in parallel, and therefore
-started to hit this issue again (with btrfs/061 for example).
-
-Fix this by having scrub increment the 'trimming' counter of the block
-group, which pins the block group in such a way that it guarantees neither
-its logical address nor device extents can be reused by future block group
-allocations until we decrement the 'trimming' counter. Also make sure that
-on each iteration of scrub_stripe() we stop scrubbing the block group if
-it was removed already.
-
-A later patch in the series will rename the block group's 'trimming'
-counter and its helpers to a more generic name, since now it is not used
-exclusively for pinning while trimming anymore.
-
-CC: stable@vger.kernel.org
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/scrub.c | 38 ++++++++++++++++++++++++++++++++++++--
- 1 file changed, 36 insertions(+), 2 deletions(-)
+ fs/btrfs/block-group.c      | 29 ++++++++++++++++-------------
+ fs/btrfs/block-group.h      | 11 ++++++++++-
+ fs/btrfs/ctree.h            |  4 ++--
+ fs/btrfs/extent-tree.c      |  2 +-
+ fs/btrfs/free-space-cache.c | 25 +++++++++++++------------
+ fs/btrfs/scrub.c            |  6 +++---
+ fs/btrfs/transaction.c      |  2 +-
+ 7 files changed, 46 insertions(+), 33 deletions(-)
 
-diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
-index adaf8ab694d5..7c50ac5b6876 100644
---- a/fs/btrfs/scrub.c
-+++ b/fs/btrfs/scrub.c
-@@ -3046,7 +3046,8 @@ static noinline_for_stack int scrub_raid56_parity(struct scrub_ctx *sctx,
- static noinline_for_stack int scrub_stripe(struct scrub_ctx *sctx,
- 					   struct map_lookup *map,
- 					   struct btrfs_device *scrub_dev,
--					   int num, u64 base, u64 length)
-+					   int num, u64 base, u64 length,
-+					   struct btrfs_block_group *cache)
- {
- 	struct btrfs_path *path, *ppath;
- 	struct btrfs_fs_info *fs_info = sctx->fs_info;
-@@ -3284,6 +3285,20 @@ static noinline_for_stack int scrub_stripe(struct scrub_ctx *sctx,
- 				break;
- 			}
+diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+index f96ab9d6f3fe..138d9c6a84a2 100644
+--- a/fs/btrfs/block-group.c
++++ b/fs/btrfs/block-group.c
+@@ -1073,18 +1073,21 @@ int btrfs_remove_block_group(struct btrfs_trans_handle *trans,
+ 	spin_lock(&block_group->lock);
+ 	block_group->removed = 1;
+ 	/*
+-	 * At this point trimming can't start on this block group, because we
+-	 * removed the block group from the tree fs_info->block_group_cache_tree
+-	 * so no one can't find it anymore and even if someone already got this
+-	 * block group before we removed it from the rbtree, they have already
+-	 * incremented block_group->trimming - if they didn't, they won't find
+-	 * any free space entries because we already removed them all when we
+-	 * called btrfs_remove_free_space_cache().
++	 * At this point trimming or scrub can't start on this block group,
++	 * because we removed the block group from the rbtree
++	 * fs_info->block_group_cache_tree so no one can't find it anymore and
++	 * even if someone already got this block group before we removed it
++	 * from the rbtree, they have already incremented block_group->frozen -
++	 * if they didn't, for the trimming case they won't find any free space
++	 * entries because we already removed them all when we called
++	 * btrfs_remove_free_space_cache().
+ 	 *
+ 	 * And we must not remove the extent map from the fs_info->mapping_tree
+ 	 * to prevent the same logical address range and physical device space
+-	 * ranges from being reused for a new block group. This is because our
+-	 * fs trim operation (btrfs_trim_fs() / btrfs_ioctl_fitrim()) is
++	 * ranges from being reused for a new block group. This is needed to
++	 * avoid races with trimming and scrub.
++	 *
++	 * An fs trim operation (btrfs_trim_fs() / btrfs_ioctl_fitrim()) is
+ 	 * completely transactionless, so while it is trimming a range the
+ 	 * currently running transaction might finish and a new one start,
+ 	 * allowing for new block groups to be created that can reuse the same
+@@ -1095,7 +1098,7 @@ int btrfs_remove_block_group(struct btrfs_trans_handle *trans,
+ 	 * in place until the extents have been discarded completely when
+ 	 * the transaction commit has completed.
+ 	 */
+-	remove_em = (atomic_read(&block_group->trimming) == 0);
++	remove_em = (atomic_read(&block_group->frozen) == 0);
+ 	spin_unlock(&block_group->lock);
  
-+			/*
-+			 * If our block group was removed in the meanwhile, just
-+			 * stop scrubbing since there is no point in continuing.
-+			 * Continuing would prevent reusing its device extents
-+			 * for new block groups for a long time.
-+			 */
-+			spin_lock(&cache->lock);
-+			if (cache->removed) {
-+				spin_unlock(&cache->lock);
-+				ret = 0;
-+				goto out;
-+			}
-+			spin_unlock(&cache->lock);
-+
- 			extent = btrfs_item_ptr(l, slot,
- 						struct btrfs_extent_item);
- 			flags = btrfs_extent_flags(l, extent);
-@@ -3457,7 +3472,7 @@ static noinline_for_stack int scrub_chunk(struct scrub_ctx *sctx,
- 		if (map->stripes[i].dev->bdev == scrub_dev->bdev &&
- 		    map->stripes[i].physical == dev_offset) {
- 			ret = scrub_stripe(sctx, map, scrub_dev, i,
--					   chunk_offset, length);
-+					   chunk_offset, length, cache);
- 			if (ret)
- 				goto out;
- 		}
-@@ -3555,6 +3570,23 @@ int scrub_enumerate_chunks(struct scrub_ctx *sctx,
- 			goto skip;
+ 	mutex_unlock(&fs_info->chunk_mutex);
+@@ -1440,7 +1443,7 @@ void btrfs_delete_unused_bgs(struct btrfs_fs_info *fs_info)
+ 
+ 		/* Implicit trim during transaction commit. */
+ 		if (trimming)
+-			btrfs_get_block_group_trimming(block_group);
++			btrfs_freeze_block_group(block_group);
  
  		/*
-+		 * Make sure that while we are scrubbing the corresponding block
-+		 * group doesn't get its logical address and its device extents
-+		 * reused for another block group, which can possibly be of a
-+		 * different type and different profile. We do this to prevent
-+		 * false error detections and crashes due to bogus attempts to
-+		 * repair extents.
-+		 */
-+		spin_lock(&cache->lock);
-+		if (cache->removed) {
-+			spin_unlock(&cache->lock);
-+			btrfs_put_block_group(cache);
-+			goto skip;
-+		}
-+		btrfs_get_block_group_trimming(cache);
-+		spin_unlock(&cache->lock);
+ 		 * Btrfs_remove_chunk will abort the transaction if things go
+@@ -1450,7 +1453,7 @@ void btrfs_delete_unused_bgs(struct btrfs_fs_info *fs_info)
+ 
+ 		if (ret) {
+ 			if (trimming)
+-				btrfs_put_block_group_trimming(block_group);
++				btrfs_unfreeze_block_group(block_group);
+ 			goto end_trans;
+ 		}
+ 
+@@ -1799,7 +1802,7 @@ static struct btrfs_block_group *btrfs_create_block_group_cache(
+ 	INIT_LIST_HEAD(&cache->dirty_list);
+ 	INIT_LIST_HEAD(&cache->io_list);
+ 	btrfs_init_free_space_ctl(cache);
+-	atomic_set(&cache->trimming, 0);
++	atomic_set(&cache->frozen, 0);
+ 	mutex_init(&cache->free_space_lock);
+ 	btrfs_init_full_stripe_locks_tree(&cache->full_stripe_locks_root);
+ 
+diff --git a/fs/btrfs/block-group.h b/fs/btrfs/block-group.h
+index 107bb557ca8d..04967ea7ba2c 100644
+--- a/fs/btrfs/block-group.h
++++ b/fs/btrfs/block-group.h
+@@ -129,8 +129,17 @@ struct btrfs_block_group {
+ 	/* For read-only block groups */
+ 	struct list_head ro_list;
+ 
++	/*
++	 * When non-zero it means the block group's logical address and its
++	 * device extents can not be reused for future block group allocations
++	 * until the counter goes down to 0. This is to prevent them from being
++	 * reused while some task is still using the block group after it was
++	 * deleted - we want to make sure they can only be reused for new block
++	 * groups after that task is done with the deleted block group.
++	 */
++	atomic_t frozen;
 +
-+		/*
- 		 * we need call btrfs_inc_block_group_ro() with scrubs_paused,
- 		 * to avoid deadlock caused by:
- 		 * btrfs_inc_block_group_ro()
-@@ -3609,6 +3641,7 @@ int scrub_enumerate_chunks(struct scrub_ctx *sctx,
+ 	/* For discard operations */
+-	atomic_t trimming;
+ 	struct list_head discard_list;
+ 	int discard_index;
+ 	u64 discard_eligible_time;
+diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+index 8aa7b9dac405..bc10747d1a74 100644
+--- a/fs/btrfs/ctree.h
++++ b/fs/btrfs/ctree.h
+@@ -2498,8 +2498,8 @@ int btrfs_inc_extent_ref(struct btrfs_trans_handle *trans,
+ 			 struct btrfs_ref *generic_ref);
+ 
+ int btrfs_extent_readonly(struct btrfs_fs_info *fs_info, u64 bytenr);
+-void btrfs_get_block_group_trimming(struct btrfs_block_group *cache);
+-void btrfs_put_block_group_trimming(struct btrfs_block_group *cache);
++void btrfs_freeze_block_group(struct btrfs_block_group *cache);
++void btrfs_unfreeze_block_group(struct btrfs_block_group *cache);
+ void btrfs_clear_space_info_full(struct btrfs_fs_info *info);
+ 
+ enum btrfs_reserve_flush_enum {
+diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
+index 54a64d1e18c6..95e8598d30c9 100644
+--- a/fs/btrfs/extent-tree.c
++++ b/fs/btrfs/extent-tree.c
+@@ -2932,7 +2932,7 @@ int btrfs_finish_extent_commit(struct btrfs_trans_handle *trans)
+ 						   &trimmed);
+ 
+ 		list_del_init(&block_group->bg_list);
+-		btrfs_put_block_group_trimming(block_group);
++		btrfs_unfreeze_block_group(block_group);
+ 		btrfs_put_block_group(block_group);
+ 
+ 		if (ret) {
+diff --git a/fs/btrfs/free-space-cache.c b/fs/btrfs/free-space-cache.c
+index 3613da065a73..e9cfe9da6bbe 100644
+--- a/fs/btrfs/free-space-cache.c
++++ b/fs/btrfs/free-space-cache.c
+@@ -3762,12 +3762,12 @@ static int trim_bitmaps(struct btrfs_block_group *block_group,
+ 	return ret;
+ }
+ 
+-void btrfs_get_block_group_trimming(struct btrfs_block_group *cache)
++void btrfs_freeze_block_group(struct btrfs_block_group *cache)
+ {
+-	atomic_inc(&cache->trimming);
++	atomic_inc(&cache->frozen);
+ }
+ 
+-void btrfs_put_block_group_trimming(struct btrfs_block_group *block_group)
++void btrfs_unfreeze_block_group(struct btrfs_block_group *block_group)
+ {
+ 	struct btrfs_fs_info *fs_info = block_group->fs_info;
+ 	struct extent_map_tree *em_tree;
+@@ -3775,7 +3775,7 @@ void btrfs_put_block_group_trimming(struct btrfs_block_group *block_group)
+ 	bool cleanup;
+ 
+ 	spin_lock(&block_group->lock);
+-	cleanup = (atomic_dec_and_test(&block_group->trimming) &&
++	cleanup = (atomic_dec_and_test(&block_group->frozen) &&
+ 		   block_group->removed);
+ 	spin_unlock(&block_group->lock);
+ 
+@@ -3795,8 +3795,9 @@ void btrfs_put_block_group_trimming(struct btrfs_block_group *block_group)
+ 		free_extent_map(em);
+ 
+ 		/*
+-		 * We've left one free space entry and other tasks trimming
+-		 * this block group have left 1 entry each one. Free them.
++		 * We may have left one free space entry and other possible
++		 * tasks trimming this block group have left 1 entry each one.
++		 * Free them if any.
+ 		 */
+ 		__btrfs_remove_free_space_cache(block_group->free_space_ctl);
+ 	}
+@@ -3816,7 +3817,7 @@ int btrfs_trim_block_group(struct btrfs_block_group *block_group,
+ 		spin_unlock(&block_group->lock);
+ 		return 0;
+ 	}
+-	btrfs_get_block_group_trimming(block_group);
++	btrfs_freeze_block_group(block_group);
+ 	spin_unlock(&block_group->lock);
+ 
+ 	ret = trim_no_bitmap(block_group, trimmed, start, end, minlen, false);
+@@ -3829,7 +3830,7 @@ int btrfs_trim_block_group(struct btrfs_block_group *block_group,
+ 	if (rem)
+ 		reset_trimming_bitmap(ctl, offset_to_bitmap(ctl, end));
+ out:
+-	btrfs_put_block_group_trimming(block_group);
++	btrfs_unfreeze_block_group(block_group);
+ 	return ret;
+ }
+ 
+@@ -3846,11 +3847,11 @@ int btrfs_trim_block_group_extents(struct btrfs_block_group *block_group,
+ 		spin_unlock(&block_group->lock);
+ 		return 0;
+ 	}
+-	btrfs_get_block_group_trimming(block_group);
++	btrfs_freeze_block_group(block_group);
+ 	spin_unlock(&block_group->lock);
+ 
+ 	ret = trim_no_bitmap(block_group, trimmed, start, end, minlen, async);
+-	btrfs_put_block_group_trimming(block_group);
++	btrfs_unfreeze_block_group(block_group);
+ 
+ 	return ret;
+ }
+@@ -3868,13 +3869,13 @@ int btrfs_trim_block_group_bitmaps(struct btrfs_block_group *block_group,
+ 		spin_unlock(&block_group->lock);
+ 		return 0;
+ 	}
+-	btrfs_get_block_group_trimming(block_group);
++	btrfs_freeze_block_group(block_group);
+ 	spin_unlock(&block_group->lock);
+ 
+ 	ret = trim_bitmaps(block_group, trimmed, start, end, minlen, maxlen,
+ 			   async);
+ 
+-	btrfs_put_block_group_trimming(block_group);
++	btrfs_unfreeze_block_group(block_group);
+ 
+ 	return ret;
+ }
+diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
+index 7c50ac5b6876..2486f58d8205 100644
+--- a/fs/btrfs/scrub.c
++++ b/fs/btrfs/scrub.c
+@@ -3583,7 +3583,7 @@ int scrub_enumerate_chunks(struct scrub_ctx *sctx,
+ 			btrfs_put_block_group(cache);
+ 			goto skip;
+ 		}
+-		btrfs_get_block_group_trimming(cache);
++		btrfs_freeze_block_group(cache);
+ 		spin_unlock(&cache->lock);
+ 
+ 		/*
+@@ -3641,7 +3641,7 @@ int scrub_enumerate_chunks(struct scrub_ctx *sctx,
  		} else {
  			btrfs_warn(fs_info,
  				   "failed setting block group ro: %d", ret);
-+			btrfs_put_block_group_trimming(cache);
+-			btrfs_put_block_group_trimming(cache);
++			btrfs_unfreeze_block_group(cache);
  			btrfs_put_block_group(cache);
  			scrub_pause_off(fs_info);
  			break;
-@@ -3695,6 +3728,7 @@ int scrub_enumerate_chunks(struct scrub_ctx *sctx,
+@@ -3728,7 +3728,7 @@ int scrub_enumerate_chunks(struct scrub_ctx *sctx,
  			spin_unlock(&cache->lock);
  		}
  
-+		btrfs_put_block_group_trimming(cache);
+-		btrfs_put_block_group_trimming(cache);
++		btrfs_unfreeze_block_group(cache);
  		btrfs_put_block_group(cache);
  		if (ret)
  			break;
+diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
+index 8cede6eb9843..3b63f45cb546 100644
+--- a/fs/btrfs/transaction.c
++++ b/fs/btrfs/transaction.c
+@@ -141,7 +141,7 @@ void btrfs_put_transaction(struct btrfs_transaction *transaction)
+ 						 struct btrfs_block_group,
+ 						 bg_list);
+ 			list_del_init(&cache->bg_list);
+-			btrfs_put_block_group_trimming(cache);
++			btrfs_unfreeze_block_group(cache);
+ 			btrfs_put_block_group(cache);
+ 		}
+ 		WARN_ON(!list_empty(&transaction->dev_update_list));
 -- 
 2.11.0
 
