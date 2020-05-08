@@ -2,206 +2,147 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85DE21CA3E7
-	for <lists+linux-btrfs@lfdr.de>; Fri,  8 May 2020 08:33:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC8C41CA54D
+	for <lists+linux-btrfs@lfdr.de>; Fri,  8 May 2020 09:37:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726325AbgEHGdj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 8 May 2020 02:33:39 -0400
-Received: from mout.gmx.net ([212.227.17.21]:35311 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726009AbgEHGdj (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 8 May 2020 02:33:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1588919614;
-        bh=ZBCZX0fUUiQuWLw+Y9ZsVpos8GAUvFxtAMG/+GQzP7A=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=MGQCqk1RaEC1Dz4LsFW4mYWr5uNgye6Q+bANC05SipLFMhhHtcSfjQa1QbAJPfMHT
-         xMNc9SGJiNnkci/qsn3AI132eCwX4alGC8NHU5TUXv9wJ7NPls7KyTuCYULGd+exye
-         B1+v1jeKBoKZHRRUzMFLLypzsEnMziYXjETidelc=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1ML9yc-1jp1gn2phS-00IAwW; Fri, 08
- May 2020 08:33:34 +0200
-Subject: Re: Balance loops: what we know so far
-To:     Andrea Gelmini <andrea.gelmini@gmail.com>
-Cc:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
-        Linux BTRFS <linux-btrfs@vger.kernel.org>
-References: <20200411211414.GP13306@hungrycats.org>
- <b3e80e75-5d27-ec58-19af-11ba5a20e08c@gmx.com>
- <20200428045500.GA10769@hungrycats.org>
- <ea42b9cb-3754-3f47-8d3c-208760e1c2ac@gmx.com>
- <CAK-xaQYvgXuUtX6DKpOZ2NrvkYBfW9qgGOvMUCovAjVBO2Ay7g@mail.gmail.com>
- <a7d16528-b5c2-0dcb-27fa-8eee455fee55@gmx.com>
- <CAK-xaQajcwVdwBZ6DhZ5EYax2FL28a6_+ZfsPjV7sqXeQ3RVKQ@mail.gmail.com>
- <628479cc-9cc2-ac05-9a0f-20f3987284f3@gmx.com>
- <CAK-xaQYTNCv8tA=_cR1H4u-ZCy80UFFNjP+CLM1=zuNhoU_x_Q@mail.gmail.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
- PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
- 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
- D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
- efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
- ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
- BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
- 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
- 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
- EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
- 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
- ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
- oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
- fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
- 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
- ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
- oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <8c82f8e9-297d-09a4-a3c1-f1cd87100f44@gmx.com>
-Date:   Fri, 8 May 2020 14:33:28 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1726864AbgEHHhS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 8 May 2020 03:37:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40214 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726863AbgEHHhS (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 8 May 2020 03:37:18 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCA67C05BD09
+        for <linux-btrfs@vger.kernel.org>; Fri,  8 May 2020 00:37:17 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id v12so659489wrp.12
+        for <linux-btrfs@vger.kernel.org>; Fri, 08 May 2020 00:37:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=2uncTqviO8yb0R8S9xA4n25XBfLCuH1RAp4bZezJfpI=;
+        b=JWAwXfjfDtYgUQU0eIX2b6T4ADnB/n0lMGvBm06pN15Zr9ormsFeTlnFG0pw5IbMn3
+         i9dCQ17zrXQ3EjH7+maH51JlyyS2viELXTZx7T+Btx7Pg4IH6rUM+FQYuQFIVwF4PHE6
+         J4fevem3zlY3xM3Z8CTRfdENhsM3dPInGnvz92FF6K16Z+5EFHsrp/1FixDflLKYIaD7
+         B4fHGMrmG0cQg6Jc7v0eWlnp2UY4HPB0OZqTEitl477GMO93/okBLyBTGqqM63vEUzI6
+         /EXJeIL5ojaKsbzvFMKM321V4Rp5Ro6C+PgdfvN5lJP2Qf8ilqPnkl/82kdokhPnXIu2
+         Qb+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=2uncTqviO8yb0R8S9xA4n25XBfLCuH1RAp4bZezJfpI=;
+        b=NL3CSBSgx/rkjL7k6Lx64ws1/pnLvPmS3MSzc5lgi79y+iVR6FYqlmv7tIUMJFV6RQ
+         h8w3Ud8DqZI0AUQ0MkfVdM5PBrShu92uvHPE1zn2rGpmk5HcnHAesyAJOy23f+dgH4uX
+         w2M/DGMPh+oYjwbKtuLp1NYvrT6agidAZ5W/XWjLhRHzkfXrsYUJemO5pdR6bw11DI5T
+         ZJgGfDYDIcPCiwOBgZbPbGwtivJ+EqdB7epp9RC9GMlZlov5kEm+uAIG1K6SnmRT1qgR
+         cWgsyeW/NjvHGQcb356n70Z2X7nr50sLzFUvKryaXHY07CdqTB2ryXbWkBI0F0MrGNP+
+         9lOQ==
+X-Gm-Message-State: AGi0PuZ1pkX3XjiJDZq12Fs0vZf0h0/u2S6Tdu9Bzqerd0zsXpf2MygF
+        9gu669P5GfPisCR4/6n6DBmnhiMVqqvjiCu05lS8Vw==
+X-Google-Smtp-Source: APiQypKbt+AhhwY3+Myumo2/SO42YhdCHSgIB5iZx4dgVwo/UssKlHyNcRHqfeIRJRJiUfT4SA6KCpqM9DA3s4Pwklg=
+X-Received: by 2002:a5d:51cb:: with SMTP id n11mr1314291wrv.236.1588923436547;
+ Fri, 08 May 2020 00:37:16 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAK-xaQYTNCv8tA=_cR1H4u-ZCy80UFFNjP+CLM1=zuNhoU_x_Q@mail.gmail.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="x1dIv1NQ371yGtFZlqsox4jAx0MGdYVHg"
-X-Provags-ID: V03:K1:E3gakkPBH2Hd5UanyTI5G9L9uJ5RKoFI2G7vPTmWfhnjT3NDcHK
- RwprYNXblE7MFlB/+P09hSTiwvBRaxr89PskCv9KD8j+1aHjon8bwnKnmPKJECcgBj6Iqmg
- dVy+S27y+E1qDH4xJBuyPp9kdizFODHjtWQxsRicRE/h6al+ZzKE2mKYNqfLgIu1t3PKC2B
- v9Mzkzz2L/CBp9TPd1gaQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:fJvJTA3YnFg=:rpx24LkpWPvzy8TKx8L/qL
- Vkm3dT75WY/RuGCi9kN9Nlcw56jtdx0gXNN54/CrRh6vbz10db4G2qC+ucns7fl234onk7O6T
- OwgcPB4Phde4OnsKyNIx2MmyvIoNGWiVuqFCM+MBN+4XYeZBNxkhtBifDNcKPPxOpbWM5b4gS
- qNfy8G6lsVwFQMq8hbFnesEDbztev++87XMuj10HrvQCVVU/zKEI9J1X+vdJ1K4Tv1E3nGK7g
- qLjtcSIaikzfInmRjFjcJlOS9HxaHQ7fASFBaKnzONHcQNucLucEWs1pZFIJQf1O/4EJKMWCE
- CrnnN+ZkkblGnmn4gVgPtBIMc2RT+9TdzPiQ4Kkelrxq/5PT5r7J7BgBVzeH8K4b5BYfHFe+d
- KiCoPxlpV2/iLLodlBN79HVPeIrpPuhCDXWUfQ8CQRVRbVUnWM3Tr2/MmizRftyPxNsPtJnAv
- lSErsrdLyGtt17nBXmrbabEumXkqCNb9dpU6BuYhYVw+kP3AQeqDf6kyKiY9EgqHiExlNjcqR
- lbOSgxLAgXvKKhNe4d4DzCn8zrn32FwAic/ydKpt47rALankwcuUWfwbUrkDWXIbr+ckV4kkc
- mIHZdbrpQBLcDw6iImAUJrWl5iCi1gSA4/ApNAjQIZ0Y58uOkIKHby/qi36bLD4ckqgPUq1V/
- IMpBVQYmMS9061mVEG3syJlBGke3+6zRjfx/AhqC9U5ILGEaAjb8XO94OjuOpKupuUsr71hze
- 0rB8T3T0ZXjBLAgpi/qrHxwVRphCWZBS0fLfewXf4J2A/bjVFA3q2rJgRY/zBGFrTNS49x7j2
- /+FUSFJoLzbhjSymoAnDbMM+ZrQKtX3s5Irje/4UL9snvb2urSwYYRe+i71+sWOjKvuxATHW0
- apzMC5Cjyzg6WpCgO7PJauuKFYrgMKERfaePpg8ydBMsp44TBQT7fYwV72F3PkAzu2lVcvJuc
- NuSScqYkW7Q7FUV4DCPFGhmX3k30sMy2fUgsbxkvjQkv1rVJxcF2qXQpzvpIbymQY7wIAZXn0
- oYF/WY4SezktdfZXcllmQ8K8hm5fY86KFh3onVc+/FOQvMDWOUUwk29xX2kW6aIsxDnGzJ5dx
- dWYt9rjPjjKJtiWHyju7A6aTUI5iRufLxssxA99sc+ccvAn0JIHq53jJf4y8rM9hIPkCux7Ev
- RKbRpyYakpKHmzWskHG7qe5sO84ggRk9w9ncd4NiTTzupWs47xL9bv1DxxQawivXYbx3rL9kD
- i7/ozMpk4SVNXnT60
+References: <0d1cceb6-9295-1bdf-c427-60ba9b1ef0b3@sericyb.com.au>
+ <76dbd6a1-bddc-9a01-53db-bf3ba9fc8787@sericyb.com.au> <CAJCQCtSiEKi=ep-uh3fPVpKp3a8igTdTEm6i7cdPPkfHoDBA_g@mail.gmail.com>
+ <9b763f5f-3e42-c26d-296c-e7a7d9cde036@sericyb.com.au> <CAJCQCtTorye5PTcH6crVYES4eAwVphhx3Au6xd7tijef1HU8uA@mail.gmail.com>
+ <CAJCQCtRK+jEMVMz1QPCJCYqCciaaMZ5W+STabrdAQ5RyzWHhGA@mail.gmail.com>
+ <7e54f0b9-d311-3d69-94dd-03279aa2dda2@sericyb.com.au> <CAJCQCtT8VUvpo=fvcvhWpSNx_gt+ihk8orkkPuhdQ1nNnSMnPQ@mail.gmail.com>
+ <10b14d0b-9f10-609f-6365-f45c2ad20c6d@sericyb.com.au> <CAJCQCtSdWMnGKZLxJR85eDoVFTLGwYNnGqkVnah=qA6fCoVk_Q@mail.gmail.com>
+ <709e4c3f-15b3-3c8a-2b25-ea95f4958999@sericyb.com.au> <CAJCQCtTGygd22TYvsPS6RPydsAZoqQYDDV=K4w1yFgTn0+ba6A@mail.gmail.com>
+ <8ceacc86-96b7-44d2-d48d-234c6c4b45de@sericyb.com.au> <CAJCQCtQ4xOdNH79XDQdy=ExkNHbpbYdMMHG1fTeN7SeA+dTo7w@mail.gmail.com>
+ <8ab9f20d-eff0-93bf-a4a4-042473b4059e@sericyb.com.au> <CAJCQCtQvyncTMqATX2PkVkR1bRPaUvDUqCmj-bRJzfHEU2k4JQ@mail.gmail.com>
+ <ff173eb0-b6e8-5365-43a8-8f67d0da6c96@sericyb.com.au>
+In-Reply-To: <ff173eb0-b6e8-5365-43a8-8f67d0da6c96@sericyb.com.au>
+From:   Chris Murphy <lists@colorremedies.com>
+Date:   Fri, 8 May 2020 01:37:00 -0600
+Message-ID: <CAJCQCtTdHQAkaagTvCO-0SguakQx9p5iKmNbvmNYyxsBCqQ6Vw@mail.gmail.com>
+Subject: Re: btrfs-progs reports nonsense scrub status
+To:     Andrew Pam <andrew@sericyb.com.au>
+Cc:     Chris Murphy <lists@colorremedies.com>,
+        Graham Cobb <g.btrfs@cobb.uk.net>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---x1dIv1NQ371yGtFZlqsox4jAx0MGdYVHg
-Content-Type: multipart/mixed; boundary="n9sFLX1y3qXDyCNfIEudoLlDjynpqGlII"
+On Thu, May 7, 2020 at 10:52 PM Andrew Pam <andrew@sericyb.com.au> wrote:
+>
+> On 8/5/20 2:45 pm, Chris Murphy wrote:
+> > I don't know if space_cache v1 can negatively impact scrubs but it
+> > does negatively impact other things especially on larger file systems
+> > with a lot of free space remaining. v1 cache exists as data blocks, v2
+> > cache is a dedicated 'free space tree' and resides in fs metadata.
+> > It's the inverse of the extent tree.
+> >
+> > A conservative approach that might speed things up:
+> >
+> > # mount -o remount,clear_cache,nospace_cache /mnt
+> >
+> > Once it's done:
+> >
+> > # mount -o remount,clear_cache,space_cache=3Dv2 /mnt
+> >
+> > This sets a feature flag, and the next time you mount normally, it'll
+> > use v2. You could do this now during the scrub, but it might slow it
+> > down a bit while the new cache is being created. If the file system
+> > isn't busy it might take a minute to build.
+>
+> Thanks, I didn't know that - I just used the defaults in /etc/fstab as
+> follows:
+>
+> UUID=3D85069ce9-be06-4c92-b8c1-8a0f685e43c6 /home         btrfs
+> defaults,autodefrag,noatime
+>
+> I'll put space_cache=3Dv2 in there as well.
 
---n9sFLX1y3qXDyCNfIEudoLlDjynpqGlII
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+Is there anything else going on? What do you get for 'top -d 30'
 
+Autodefrag can sometimes be expensive, when it's doing copies in the
+background. This isn't inhibited during scrub.
 
-
-On 2020/5/7 =E4=B8=8A=E5=8D=882:24, Andrea Gelmini wrote:
-> Il giorno mer 6 mag 2020 alle ore 07:58 Qu Wenruo
-> <quwenruo.btrfs@gmx.com> ha scritto:
->> Thanks for your dump.
->>
->> Do you still have the initial looping dmesg?
->=20
-> Yeap, you can find the complete syslog here:
-> http://mail.gelma.net/btrfs-vm/syslog.txt
-
-This helps a lot!
->=20
->=20
->>   If we're looping on block group 12210667520, then it's possible that=
-
->=20
-> Oh, well, from the syslog above:
-> May  3 17:14:25 ubuntu kernel: [  586.735870] BTRFS info (device
-> sda1): balance: start -musage=3D2 -susage=3D2
-> May  3 17:14:25 ubuntu kernel: [  586.735974] BTRFS info (device
-> sda1): relocating block group 12479102976 flags system|dup
-> May  3 17:14:25 ubuntu kernel: [  586.833331] BTRFS info (device
-> sda1): relocating block group 12210667520 flags metadata|dup
-> May  3 17:14:25 ubuntu kernel: [  586.939172] BTRFS info (device
-> sda1): found 26 extents
-> May  3 17:14:25 ubuntu kernel: [  587.021568] BTRFS info (device
-> sda1): found 1 extents
-> (and then repeating lines like this)
-
-Exactly, this proved my assumption, something strange is happening for
-DATA RELOC TREE.
-
-That last one tree block is from DATA_RELOC tree, normally we would
-relocate it by creating reloc tree for it, and swap tree blocks.
-
-But we don't need to be that complex for DATA_RELOC tree, as unlike
-regular subvolume tree, no snapshot can be created for DATA_RELOC tree,
-thus we can handle it just like extent trees.
-
-Although I still don't understand why it doesn't work as usual, I'm
-working on a POC patch to change the behaivor, hoping to solve the proble=
-m.
-
-During that time, if you hit similar case, the same dump would provide
-great help to enhance btrfs.
-
-Thanks,
-Qu
-
->=20
->>   (Sorry, not sure if I could convert the vbox format to qcow2 nor how=
-
->>    to resume it to KVM/qemu, thus I still have to bother you to dump t=
-he
->>    dmesg)
->=20
-> I guess no way to migrate the saved state of VB to QEMU.
-> Anyway, I have prepared a minimal Lubuntu 20.04. It starts up, run
-> VirtualBox and let you to replicate what I see.
-> It's ~40GB. If you cat it on /dev/usb-stick you can boot up  (no way
-> to run it inside KVM because of VB need to access VT-x).
->=20
-> I'm uploading it. It takes lot of hours. I tell you know when done.
->=20
->> If that's the case, it would be very interesting in how we're handling=
-
->> the data reloc tree.
->> It would be very worthy digging then.
->=20
-> Good!
->=20
-> Ciao,
-> Gelma
->=20
+You do not need to put space_cache=3Dv2 in fstab. It's a one time use,
+and it needs to be used with clear_cache. When you use it, a feature
+flag will be set that will cause it to be used automatically each time
+the file system mounts. Really the only thing that needs to be in
+there is 'noatime'.
 
 
---n9sFLX1y3qXDyCNfIEudoLlDjynpqGlII--
+>
+> > Anyway, I'm pretty confident this scrub will finish in about 2.5 hours
+> > if you just leave it as is.
+>
+> I'm not.  It's still not reporting any forward progress, just moving the
+> ETA ahead:
+>
+> $ sudo btrfs scrub status -d /home
+> UUID:             85069ce9-be06-4c92-b8c1-8a0f685e43c6
+> scrub device /dev/sda (id 1) status
+> Scrub started:    Thu May  7 15:44:21 2020
+> Status:           running
+> Duration:         5:40:13
+> Time left:        1:23:04
+> ETA:              Fri May  8 16:11:31 2020
+> Total to scrub:   3.66TiB
+> Bytes scrubbed:   2.94TiB
+> Rate:             151.16MiB/s
 
---x1dIv1NQ371yGtFZlqsox4jAx0MGdYVHg
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+OK I screwed up the previous math. I love it when I do that. Since
+this is -d the numbers are for this device.
 
------BEGIN PGP SIGNATURE-----
+0.72T remaining
+0.72=C3=971024=C3=971024=C3=B7151=C3=B760=C3=B760=3D1h23
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl60/TgACgkQwj2R86El
-/qi98gf9F3ha/GhJHBeobdDaB4pDXjaBhXjQ26aDBXpHRpIrmA08tkSg0DUgOW7l
-kJ/AiMD0uixy+DJJ3F+LNyPa2Z0h+xcVxUxWcnghDSVF2+QvQ5OkEhyQIpJwC213
-eUfp6lAPGUgSOV4mXgZs0gqW6ZmLKwsQ8Ucj8YasEJHiA3oeRSAQsoodxXLB55fn
-xsqgdk0htCBE3SqNDYMCpN0dAjMRU0O31G0o0AL2MfC/SutggF6R0okIO2osyyIY
-SagvvulpCn/X4GuWmYzrKRIqXxyq5TML0DJO7Y0at0Er00J5CNKRkk8jdzzw1mJx
-NhD1D74vQDlTO1F80mQd+HbdvSyNpg==
-=HQa4
------END PGP SIGNATURE-----
+Are there any messages in dmesg?
 
---x1dIv1NQ371yGtFZlqsox4jAx0MGdYVHg--
+All of these numbers look sane, compared to your first post. But that
+ETA keeps increasing suggests the scrub isn't proceeding at the
+reported rate. As if it's busy doing something else.
+
+
+--=20
+Chris Murphy
