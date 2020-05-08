@@ -2,196 +2,143 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 962431C9DB6
-	for <lists+linux-btrfs@lfdr.de>; Thu,  7 May 2020 23:45:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8A271C9F71
+	for <lists+linux-btrfs@lfdr.de>; Fri,  8 May 2020 02:08:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727833AbgEGVo4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 7 May 2020 17:44:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60626 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726476AbgEGVoW (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 7 May 2020 17:44:22 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CED6CC05BD0A
-        for <linux-btrfs@vger.kernel.org>; Thu,  7 May 2020 14:44:21 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id re23so5883371ejb.4
-        for <linux-btrfs@vger.kernel.org>; Thu, 07 May 2020 14:44:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloud.ionos.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=5bOWsbby9E+qmMGJsuMwgUAgEfU2kO6P0jdaZ6pAtUk=;
-        b=byF7VyPnLI+nh2I1eprmmNFINZ+NJ5pkCzxdpNRuekTuNjT51vhh3CkV59wkiwN6XH
-         krwChNxiVaVptfaH/K+bCu0LY0cnQl5xilBXoOas9PauRDAkXOKPqe01yfPQuPx1XduZ
-         A0TAiHE+AOTm+JRQPZP2nACr3Ul4ObfdoQGrxi+Cpr1bPzmZoE1CWkqpf+/r3ex3IIW2
-         yZD1J7LPkidCeei/H6Hf6xaOAj2urjtMyLqyv0kw8rUdyUIpSq2wMms6dl/9ktOCl4VB
-         9T6Fo6/2uYHMb6SPeVBuh+nwu7QH+Z1b83muCKIBcRYEGskyNZwNJKFacUigra42hXmQ
-         eB9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=5bOWsbby9E+qmMGJsuMwgUAgEfU2kO6P0jdaZ6pAtUk=;
-        b=WODhu1apPs23tg9JHTKvdPeM9w0VjTANS7eBOGtSfSnKLBS6RSXHd1i5blrk9KUJmp
-         dhP5JienrsnKP/L1DTGhlpzLgKewbpdxoV5bodAlMCoePMzw3jmmUlAo6RBb1GeAZpzV
-         JK/burxdAy5LYNDgPQynz0QqE17nsscID+mo8ezQn+aTWlTHJmiNvcBU4okif6CtFuk1
-         gI4mDqqWDDxz9Z0IjOydUF21xrae8XEY8+esPG5/FL5Aog+oqIT/reVH5WgOfgJWyioG
-         H8SZqdl1LrExpfn/It7AdnvuTsSokvC8FiXZ/NdlrupvfP6F8x2jOUYO/eLRTxUUxTrQ
-         MtbQ==
-X-Gm-Message-State: AGi0PuaM7mXDMuTQ0SG1lR9x91MXgNphaxXPsMYUWsPo8E4+cnhJWgSn
-        8Cqb6KzeTD0DpaTBTZ5FBvjn/Q==
-X-Google-Smtp-Source: APiQypKvd5mkRt0RGmY7O6yLJA3U6CWrKQQMB1yksU+oUQ9QxRNgVpW7n33l2Cd6M0LU0va+oSuwEA==
-X-Received: by 2002:a17:906:3952:: with SMTP id g18mr14340273eje.191.1588887860372;
-        Thu, 07 May 2020 14:44:20 -0700 (PDT)
-Received: from ls00508.pb.local ([2001:1438:4010:2540:a1ee:a39a:b93a:c084])
-        by smtp.gmail.com with ESMTPSA id k3sm613530edi.60.2020.05.07.14.44.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 May 2020 14:44:19 -0700 (PDT)
-From:   Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
-To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     david@fromorbit.com, hch@infradead.org, willy@infradead.org,
-        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-Subject: [RFC PATCH V3 03/10] btrfs: use attach/detach_page_private
-Date:   Thu,  7 May 2020 23:43:53 +0200
-Message-Id: <20200507214400.15785-4-guoqing.jiang@cloud.ionos.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200507214400.15785-1-guoqing.jiang@cloud.ionos.com>
-References: <20200507214400.15785-1-guoqing.jiang@cloud.ionos.com>
+        id S1726885AbgEHAIp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 7 May 2020 20:08:45 -0400
+Received: from mout.gmx.net ([212.227.15.18]:58933 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726480AbgEHAIo (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 7 May 2020 20:08:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1588896518;
+        bh=GxRiHUxYrUSzw429CSMDt1JvcXCWICXdTiVHpCkBuO0=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=IfwIJO0LMkwCUyuDVuOQCk/0RvgoOZ0IGIWuY19NiP8WV54sGBuJp2xfzB3p8493q
+         TQFBb+6aw7H1wKzvpsWUhJ8Jxw21Ae0b5WoYgnWpQDik+FCtuuhpoIPDMz+Sy8GvQm
+         XiSNWosrcIZe8S8sudQTf9tdcqO2QnYL68zAoWQ0=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MiacH-1isr7S1hSh-00fg3c; Fri, 08
+ May 2020 02:08:38 +0200
+Subject: Re: [PATCH] btrfs: qgroup: Mark qgroup inconsistent if we're
+ inherting snapshot to a new qgroup
+To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <20200402063735.32808-1-wqu@suse.com>
+ <288d0020-380f-717e-ab05-3fe6dbc64cd5@suse.com>
+ <20200506150448.GH18421@twin.jikos.cz>
+ <c3c68cb4-4d7e-33ae-54fd-b4202148689a@gmx.com>
+ <20200507205110.GM18421@twin.jikos.cz>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Message-ID: <397ff8cc-af58-6523-b2dd-d67474ce7d38@gmx.com>
+Date:   Fri, 8 May 2020 08:08:33 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
+MIME-Version: 1.0
+In-Reply-To: <20200507205110.GM18421@twin.jikos.cz>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="VXZGIBnQG1hyVFHh4SuETXOmD8wriZOFH"
+X-Provags-ID: V03:K1:kBfaFnTzr0MUyTQVLcijTW++vXOx22BEBOIPspuGDkKBSzniBey
+ PRtZNQmZ+sJgVHWmdiOEStH9NO10+eEfICQG165hSDck7snKM9hjmG1SPXOjsDUhiMkObZV
+ H9AJQB4FcHAXZDngyZIXWP77tjzjlRuo4dXmI0gB56cGSZDzaok/w01F1xfGVa8XDTskobG
+ WS9QgwdNL2/MbpQSQ2+Gw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:0+3EmvLAvAQ=:rHnJcfU8FKw8HL9hL1N6TC
+ MJ15eIrmDkytXKjugOrC6a1ZSI63Ggw/6EViEA+inEgyt+PO83zvd8aKz8KwiVw8QPR9mCMgC
+ Rbvh+DZ0yPCZpIAzKoEKjRRr4RLiJ/VyhYAc8uLmWkFnHTd/+wS0rbfuRlZpHF+HkQwdFPohJ
+ Fdl6k+Sm//YY/vIe4lWWF/Jnslgh1QIii8NeNNq6I/R7MPkbwb19295qYBr5G8TTF0hWn1fCQ
+ 6DCGp4Y/Yp66tFl9s6CCSbCNFkoBvPQKJYXo0OABEJkfp/y51HigiUKBN39sPJSrLrmnx8U/r
+ x3F/l/juvrWUDWsM2zwZhbia4OkHlO/lBVoUKxER05fMTQryx6WYFk8cJZKtkNO0uRQbY2S3Z
+ RmeCLg1K5djO75GrL3jYx4mPnWovCXWDas+2UzHbBTyAyRVpGbILkV6I+pyQMt7XZPDKdUOla
+ ZkSrrprllGNi7RrR8JCen6DSOA59ihFCDbXLvwLJwklWejBN6xcYiVoPT7i68+GIFbm0sbWqy
+ ohsfFquGs9DmGNQdZL5yxx3cAG7fwRoAGigv4os//EluDEXiG+2yjuxhrfWyfUmVp+TE9/rUm
+ SAtxvEbiFUiDOtRkciYiSHvhDxSrNe3rL7V1V2V1WYs2p+T+dVSdQcIpt2yTQFVuwbcxlnDPb
+ niFXN/hxe3Qj5sv3aeqIJz9x9P4PgJpgHxFcxWQe1x2I7l/VELa5w1HV3o3M+7nEVVdUKsMFE
+ CwpTSdpfmg3UagQs68Xz0OVGaq4qwHYziIuAIpX3C1MadUDwvqTwVTYhztZGDM0CA5i88oNM/
+ ZDjWtBktB1aFGWi+5HboYOQoNJKdltfS/Hx3G+UBncpqVCGQgL+oy2VWfVQfMC6edWOlEHNNu
+ ZAHSZUTwu2WniKok2rTRknGR1/qufGfj+zENDsAeQDpYE3OLwudm11/tEYSiS7FxAGiqyvIle
+ +DmkZxnE6sNIsH47kWiSSUxfySMrpIslmPwCN7BdR3vthtNwmQ4R2epcwb6cevizStz5viR65
+ BApeY2JjybPc4H2D9yy10Twr9nsbpmAvrS8Kd37QOrGx4Sonv1gpybGaMjO7VyChlG1IfIgNj
+ kKziRXUDGw0I3M9RNogcsu2ejZLvQa4MOgD59+30mjK4f0bi4G6iC+GXkGcodxd4f/83pBwhv
+ Adx7punBvDwFKDjOTESNnNrbxBOkF5ukP6k0i5ak4gFuhBzIq475GcMT66Fp1AN5Uf5hVfx96
+ 7x42DhNILJmehjwjH
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Since the new pair function is introduced, we can call them to clean the
-code in btrfs.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--VXZGIBnQG1hyVFHh4SuETXOmD8wriZOFH
+Content-Type: multipart/mixed; boundary="NkKsAjPR69kzKYGFHG0I0C6Nwxiv9IImN"
 
-Cc: Chris Mason <clm@fb.com>
-Cc: Josef Bacik <josef@toxicpanda.com>
-Cc: David Sterba <dsterba@suse.com>
-Cc: linux-btrfs@vger.kernel.org
-Signed-off-by: Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
----
-RFC V2 -> RFC V3
-1. rename clear_page_private to detach_page_private.
+--NkKsAjPR69kzKYGFHG0I0C6Nwxiv9IImN
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-RFC -> RFC V2
-1. change the name of new functions to attach/clear_page_private.
-2. call attach_page_private(newpage, clear_page_private(page)) to
-   cleanup code further as suggested by Dave Chinner.
 
- fs/btrfs/disk-io.c   |  4 +---
- fs/btrfs/extent_io.c | 21 ++++++---------------
- fs/btrfs/inode.c     | 23 +++++------------------
- 3 files changed, 12 insertions(+), 36 deletions(-)
 
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index d10c7be10f3b..7278789ff8a7 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -980,9 +980,7 @@ static void btree_invalidatepage(struct page *page, unsigned int offset,
- 		btrfs_warn(BTRFS_I(page->mapping->host)->root->fs_info,
- 			   "page private not zero on page %llu",
- 			   (unsigned long long)page_offset(page));
--		ClearPagePrivate(page);
--		set_page_private(page, 0);
--		put_page(page);
-+		detach_page_private(page);
- 	}
- }
- 
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 39e45b8a5031..bf816387715b 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -3076,22 +3076,16 @@ static int submit_extent_page(unsigned int opf,
- static void attach_extent_buffer_page(struct extent_buffer *eb,
- 				      struct page *page)
- {
--	if (!PagePrivate(page)) {
--		SetPagePrivate(page);
--		get_page(page);
--		set_page_private(page, (unsigned long)eb);
--	} else {
-+	if (!PagePrivate(page))
-+		attach_page_private(page, eb);
-+	else
- 		WARN_ON(page->private != (unsigned long)eb);
--	}
- }
- 
- void set_page_extent_mapped(struct page *page)
- {
--	if (!PagePrivate(page)) {
--		SetPagePrivate(page);
--		get_page(page);
--		set_page_private(page, EXTENT_PAGE_PRIVATE);
--	}
-+	if (!PagePrivate(page))
-+		attach_page_private(page, (void *)EXTENT_PAGE_PRIVATE);
- }
- 
- static struct extent_map *
-@@ -4929,10 +4923,7 @@ static void btrfs_release_extent_buffer_pages(struct extent_buffer *eb)
- 			 * We need to make sure we haven't be attached
- 			 * to a new eb.
- 			 */
--			ClearPagePrivate(page);
--			set_page_private(page, 0);
--			/* One for the page private */
--			put_page(page);
-+			detach_page_private(page);
- 		}
- 
- 		if (mapped)
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 320d1062068d..a7f7ff0a8b7c 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -8303,11 +8303,8 @@ btrfs_readpages(struct file *file, struct address_space *mapping,
- static int __btrfs_releasepage(struct page *page, gfp_t gfp_flags)
- {
- 	int ret = try_release_extent_mapping(page, gfp_flags);
--	if (ret == 1) {
--		ClearPagePrivate(page);
--		set_page_private(page, 0);
--		put_page(page);
--	}
-+	if (ret == 1)
-+		detach_page_private(page);
- 	return ret;
- }
- 
-@@ -8329,14 +8326,8 @@ static int btrfs_migratepage(struct address_space *mapping,
- 	if (ret != MIGRATEPAGE_SUCCESS)
- 		return ret;
- 
--	if (page_has_private(page)) {
--		ClearPagePrivate(page);
--		get_page(newpage);
--		set_page_private(newpage, page_private(page));
--		set_page_private(page, 0);
--		put_page(page);
--		SetPagePrivate(newpage);
--	}
-+	if (page_has_private(page))
-+		attach_page_private(newpage, detach_page_private(page));
- 
- 	if (PagePrivate2(page)) {
- 		ClearPagePrivate2(page);
-@@ -8458,11 +8449,7 @@ static void btrfs_invalidatepage(struct page *page, unsigned int offset,
- 	}
- 
- 	ClearPageChecked(page);
--	if (PagePrivate(page)) {
--		ClearPagePrivate(page);
--		set_page_private(page, 0);
--		put_page(page);
--	}
-+	detach_page_private(page);
- }
- 
- /*
--- 
-2.17.1
+On 2020/5/8 =E4=B8=8A=E5=8D=884:51, David Sterba wrote:
+> On Thu, May 07, 2020 at 06:48:24AM +0800, Qu Wenruo wrote:
+>>>>> @@ -2809,6 +2821,8 @@ int btrfs_qgroup_inherit(struct btrfs_trans_h=
+andle *trans, u64 srcid,
+>>>>>  out:
+>>>>>  	if (!committing)
+>>>>>  		mutex_unlock(&fs_info->qgroup_ioctl_lock);
+>>>>> +	if (need_rescan)
+>>>>> +		fs_info->qgroup_flags |=3D BTRFS_QGROUP_STATUS_FLAG_INCONSISTENT=
+;
+>>>
+>>> This got me curious, a non-atomic change to qgroup_flags and without
+>>> any protection. The function is not running in a safe context (like
+>>> quota enable or disable) so lack of synchronization seems suspicious.=
+ I
+>>> grepped for other changes to the qgroup_flags and it's very
+>>> inconsistent. Sometimes it's the fs_info::qgroup_lock, no lokcing at =
+all
+>>> or no obvious lock but likely fs_info::qgroup_ioctl_lock or
+>>> qgroup_rescan_lock.
+>>>
+>>> I was considering using atomic bit updates but that would be another
+>>> patch.
+>>>
+>> Isn't the context safe because we're at the commit transaction critica=
+l
+>> section?
+>=20
+> I don't see why, the qgroup_flags could be changed from ioctls, eg.
+> adding a group relation and other places. Without protection the update=
 
+> can race and some of the changes lost.
+>=20
+Oh, you're right.
+
+Do I need another patch to address all the inconsistence?
+
+Thanks,
+Qu
+
+
+--NkKsAjPR69kzKYGFHG0I0C6Nwxiv9IImN--
+
+--VXZGIBnQG1hyVFHh4SuETXOmD8wriZOFH
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQFLBAEBCAA1FiEELd9y5aWlW6idqkLhwj2R86El/qgFAl60owEXHHF1d2VucnVv
+LmJ0cmZzQGdteC5jb20ACgkQwj2R86El/qg7KQf/UJT9EjxKLNeVh+evMKms4s9g
+VfhF+uxUpQH1MSGTZJMtGn7AcbUdoRi6zPYYS5BsSHG9+2waH8dHDDaV5ryCez/R
+HOiEhBC4tVMabJgkYfKBWbhvVnF6GkSt6v4ZHCYhxrfNExiEtN9V2M5QXbP4qPKR
+Oq+ltGkVbtsdknsn3aBSS7sOUqUEGKolaHwA9/ziuyllXhX5tQUf6Rh5FNc8b0l8
+t23w3hri+OlN61kU10uHG2eNXfc3PI/Z2X0frLrQeSaEzsoSkSsyNkK8t2KlTJoi
+k08zbGDKJIr+9EsrT5FFkQZT5F55I1qT3S9SrW2LEpWxrvWIVIQvEFPflBMnuQ==
+=iGic
+-----END PGP SIGNATURE-----
+
+--VXZGIBnQG1hyVFHh4SuETXOmD8wriZOFH--
