@@ -2,113 +2,426 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 432421CB0F5
-	for <lists+linux-btrfs@lfdr.de>; Fri,  8 May 2020 15:51:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E49F71CB104
+	for <lists+linux-btrfs@lfdr.de>; Fri,  8 May 2020 15:53:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728070AbgEHNuy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 8 May 2020 09:50:54 -0400
-Received: from esa6.hgst.iphmx.com ([216.71.154.45]:43225 "EHLO
-        esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726904AbgEHNuy (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 8 May 2020 09:50:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1588945853; x=1620481853;
-  h=from:to:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=G6auOH/Twffrbi6W/kE9Xo0SK1/FL+U7FpdhTYoJ3R8=;
-  b=MMoFNLo1tcN1GUfCHtMAOaKGA8o3ZHDSdagHG0hTfyyJOTDfuUkildBp
-   5DPcgaPN6sI7sFbJ5JD6WjddKGRlEdHXggjqXHuOmRYM07YM0dBUKJNAa
-   3M1waD/4MCGJFanIB7SkCffwRn3lF3uChsh39I2uk7VHRNHiSdWQSgLgQ
-   Wh76Cx4A7mX364hsg7Fz9lre+ESuF33OGQBjprdnliRERV154qBc0i2SX
-   mHI51NIRabuxeQ/XSxxfnvC+0v6MeTAJwYAeBQReBukleS2xBpjOId5Ka
-   kJxLDRnPd2rJuIkxgMxBFMBEPsYaZnxLYVAKYk67XnQKbuSarsD3yEKN6
-   g==;
-IronPort-SDR: 2G9g4k2Ft4mI0Lsa9r1EherQwkBlocDQMuNig/g0HfMViwFv0xWRZ/km348ie1womdL8VhEAsJ
- fMLn/YDOnkzrtBsumhz6xQxS5lLvBsx9tLZApBy96Qny3igWICoN9DPJWlVYrZBebG1N5izm9z
- zOm+mYGmGzayPUAmTz20W4ZitQE2qPSlAVRJqWCu+yK9+y1qCJJX5wqfjZ9Dn0IP6rWhfEIsDN
- RxCyvhQl7J/kxHjer9RVJVS1M1H/LemWYW1mePYvDvAme2sO5MFCO736gVejRWdyVb40hRahmw
- pXU=
-X-IronPort-AV: E=Sophos;i="5.73,367,1583164800"; 
-   d="scan'208";a="138659172"
-Received: from mail-bl2nam02lp2050.outbound.protection.outlook.com (HELO NAM02-BL2-obe.outbound.protection.outlook.com) ([104.47.38.50])
-  by ob1.hgst.iphmx.com with ESMTP; 08 May 2020 21:50:53 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=D3Kio53/xL9HyVJvooN4JbiDm4pJpEEasozHP5lr/DUd6d7sTNrah5drCBZkPCdNv/MrPpFGbGggsMOoDV0YNi0CRiK6+lZnXZOJevEh5ww9ddWeuOsARFJbAagEk1jdAMBH+EfrLEiia1nMk9hgzFsfWAluLcLQaJjaBuaqB6u0rTtCZmIk0saE3EYXYYQ9Onva8adKGBEZlmlhbSBPBP9GUmCrnfqXNI2yxsP7m3wTfMSnuqVfuleIZBEBfGrOTIXR/EIQjef95EMWSvC3OQh03tkCwh/2+XZ1tQ1Xitf4TTA6s/loRUtezWiM5dftMCDA4B38A0sFR1uV5A2/kA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=G6auOH/Twffrbi6W/kE9Xo0SK1/FL+U7FpdhTYoJ3R8=;
- b=iHuiejFSpgkssjTfDF8Zu20dC1vznMMCx7/rj6jxnmKpVbhLurgx1Ok/xFi+gec0AoHratZexA5yWw6FRgWckLafnfxmjs8wOjWzEhbesbrYZFRy0ULJV0wf5lXpm8xYv6DI1MOPq9rcBf4QJMZuLC1p2N6woKIO7Ap8glLgFTz6o6qABI8Ah0Ds2sh9lQp78lih412AgXxKZmYs0qFoToC6E8EYIm1ZBjFXVWg7YC9rHfyXYKtdPxnoIyhaA60RacI07nAGV/y7TKMBPiAWqcuoVkUS1LxBfwcDE4elW3Tha97jPL4wCUejg71CnsNqPw+7MbsAmftlnFnB265MCA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
+        id S1728261AbgEHNws (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 8 May 2020 09:52:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42148 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726904AbgEHNwr (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 8 May 2020 09:52:47 -0400
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6B82C05BD43
+        for <linux-btrfs@vger.kernel.org>; Fri,  8 May 2020 06:52:45 -0700 (PDT)
+Received: by mail-lf1-x141.google.com with SMTP id d25so1462409lfi.11
+        for <linux-btrfs@vger.kernel.org>; Fri, 08 May 2020 06:52:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=G6auOH/Twffrbi6W/kE9Xo0SK1/FL+U7FpdhTYoJ3R8=;
- b=qe5xFLCuGiO6oB99S1tdW0yPWBrmySFqSsGiNZD2RyVWFIntLp04o1ecx7kKa4xFa3fS2trjeiRGNYo8HvGiK/9FWNiDPx+GBCIN8gbYT7Iv73PTgAJ4ZLe6B8Ux6a4oIs2xf9e7jnNaRw82cMWvrR1Mp7Wb5o5NcODbQvj+DSw=
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
- (2603:10b6:803:47::21) by SN4PR0401MB3677.namprd04.prod.outlook.com
- (2603:10b6:803:45::16) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2958.21; Fri, 8 May
- 2020 13:50:52 +0000
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::9854:2bc6:1ad2:f655]) by SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::9854:2bc6:1ad2:f655%4]) with mapi id 15.20.2979.028; Fri, 8 May 2020
- 13:50:52 +0000
-From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To:     David Sterba <dsterba@suse.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH 10/19] btrfs: speed up btrfs_set_token_##bits helpers
-Thread-Topic: [PATCH 10/19] btrfs: speed up btrfs_set_token_##bits helpers
-Thread-Index: AQHWJK0MBzIYNsnT/kqSqfGLn8InRw==
-Date:   Fri, 8 May 2020 13:50:52 +0000
-Message-ID: <SN4PR0401MB3598C61E83CACAB99C7C44D69BA20@SN4PR0401MB3598.namprd04.prod.outlook.com>
-References: <cover.1588853772.git.dsterba@suse.com>
- <fafa95a12439369c9e6b323f3c46bbfad9efac1c.1588853772.git.dsterba@suse.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: suse.com; dkim=none (message not signed)
- header.d=none;suse.com; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [129.253.240.72]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 5d0ef786-4e2f-4914-f9b5-08d7f356d29d
-x-ms-traffictypediagnostic: SN4PR0401MB3677:
-x-microsoft-antispam-prvs: <SN4PR0401MB36772C90FF0F5929F62626E99BA20@SN4PR0401MB3677.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:4125;
-x-forefront-prvs: 039735BC4E
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: L9Ax+YBA3FhrGtgfZhVl92yOmtcG/j4xJ6TfNYWYMVFvzffZFMJMETCvG1TEPcLGaPu5mKsP6ANqXOJVzVPyQrDEHv/hVCEjS2UWBk9YnSm6QAuUMuOyGMTsl4ByFCCCXGf+2WI5OgDqurwcFrOVXMGk4+LB/C6nh3TLNqA+J6J487DEOt/+lsmdziqUYALnEqqsMSQ8v1aEVVl+KYRfk4C+Mk3DimfKSD70irg13xOw4Jhf/b+51MgZXPt6jfaKXqhyfkWe2wjIuCLM2rGcutLGpTNJT2K0PUbgZuiZc01UKBwpYvVr+RxSXkNjKsyKL/JKr7eQl91ocOalZ+t/Uo9mwj+HBwwvSzFBCiVhGT3+OCXJi5LbCtt1GKRfto/x9RutBx6+iO2athRbuvin2Qppi/9PvlrVcDbeYJZadEP0Ux7+5WyJUgQuvAKRKi8GLYus42cQ/mNgv9mlZQgScHIo5FEw59gN0qgKQsTp0Da9kXdIGZgICJkKlkJrgNF7Ekm0IcaRcSFJiDq1RZ/H+w==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR0401MB3598.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(376002)(136003)(39860400002)(346002)(396003)(366004)(33430700001)(26005)(8676002)(5660300002)(53546011)(6506007)(33656002)(55016002)(9686003)(110136005)(7696005)(86362001)(558084003)(478600001)(52536014)(66946007)(71200400001)(76116006)(91956017)(83290400001)(33440700001)(2906002)(83300400001)(83280400001)(83310400001)(83320400001)(316002)(186003)(66446008)(66556008)(64756008)(66476007)(8936002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: z46Y5Z+90aRA1CL80hJjIYfxwi+XgR90aYnXiwcaRMoVIjVq7ZaCZ2sQUUVelBV2qVrDeQl9hKUZHlxSky9xjdVLYsv/XulFHV0RhgTCAq3FGw0vu6cKaTuQQG+m/2ZakEFfndy0RDcvNalBmoZHj/hdfv7C2T1tMujfQbhpobc+N1/J4kSPW/xixH1OliKyR/oL2IazKyVcw8thi7zN95rOlXFg+qGH+gH5jJRxHRAWNDccAUX5qyCEcgfaY0iR0rCPLTzGbn9LTbaZFEtaLyeW6eNJ1kQIuC2Dyj3D0TwsfdCuoOzFV9g7/MHiRbuFOEf3fVGgvG2MR2rO8YjDb5cNVbRfAm8yjpdoTiMAKuYGPnLpwPf3Y032bZ5BH3D8rEzKrxE9jJhUNSyrUmiUKISc+SMTjPbXFT5ebZCFW34pNa6C9GxXp6ThUnNiWe0q+x66+xyMFRj/Qk12d2OqAt8cxv7Y5BSZorawi+U3mqZutKAta1OJtVz2PzaM67YP
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=eQ0tnAOxHeH12c7Laz+vMB4Qs8XzaNiPDbsYhR2qePs=;
+        b=Mlcr7HTfHoGzXu4e8foLMCFOqlhUfc1EaRfJp+3YqQneOd7O8r+BuXH8G8OYJGgH7l
+         It0+UEWhLuxsfx66/0hM7Rw23UfnfhesoUILp2fysA1APwqsZnIBuIORoQIWx2VUNb0K
+         lgA4FXUkZu3CEtlSeUvrq0SB0c3eIsug9dcXLaHWcBP5wiFcSXwTvoHZIzfsSfGTqyTq
+         /txfIITl1McFHVXtiFlaJQJat8EYQFy3yb9Ci+xoKzb8mLINarX9T8VfobBNF205IR0I
+         UyaJRZoODyD9lUuR8JczB6ROWm638Epl/+ya7bxqP5ezGoBwMCOAMOoaT8+EKK689Fpk
+         HOIg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=eQ0tnAOxHeH12c7Laz+vMB4Qs8XzaNiPDbsYhR2qePs=;
+        b=QhOh5G0pMPBbhk8ANioqx6Kh+bZfPKyzCR6KCigDRvJVXUdPY5GsrRLOxSRWYevmD4
+         Fhttx3KwjCpjewcDOAqcmJIGkLF0kCfBYswagngRL+vBKchfjDGwRLXBj/N8BwR1FQ1Q
+         53QSnNTNB96cLsxo8GrHgnLz1V1ojHAmO1jdq49F0a79Vy/Nt9Bx/Nb/B43sm4kxaK7i
+         mxpHQnLMSgp2HdFm0bVmMbQgBmC7SFJEscc2JL5OP2vqizqOsYcsIiFX64sDoFTVZFPr
+         CvPtGZefzNXnhfNXauzaoR5R/lIFRJxL/qhdKSwlKI370D3TqUZXX+IdOVCTOMDUDvB0
+         Iigw==
+X-Gm-Message-State: AOAM531okDUaoRyGcHph4+tx6fp6Hg1nAO59xg9FbZ6lZt6fhxfPv7Hh
+        09ZHX8A23TFpVLA7or6Nn8O4ztvHP/Ipq9k8oko=
+X-Google-Smtp-Source: ABdhPJwqn8RXL1Bvpf0JJmmyY1t+bW84O+QW3e9IEaVzdegefFicRf97JXaS2IoPV/2FAXohPqzwiXLyUsyi7sB3ahI=
+X-Received: by 2002:a19:5f04:: with SMTP id t4mr2005468lfb.208.1588945963648;
+ Fri, 08 May 2020 06:52:43 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5d0ef786-4e2f-4914-f9b5-08d7f356d29d
-X-MS-Exchange-CrossTenant-originalarrivaltime: 08 May 2020 13:50:52.1650
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 663+oiBclVElG4D6PUDP26tpOSTSZrJxOyw8vXRATj6Q4C2E+UWAgfaUpsd63tWhG2V/v7ht9S8q5OoaIJVw4S4+TivsTv0CrDXcPD7X+n8=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN4PR0401MB3677
+References: <CAJheHN0FUe-ijMco1ZOc6iKF2zbPocOw+iiVNeTT1r-JuXOJww@mail.gmail.com>
+ <CAJheHN3J85eLmZZYs0-ACoUQFuv3FVHmAnoJTxB+Xu8CGnCy5A@mail.gmail.com>
+ <a89afb42-facf-3e11-db53-c394cf8db2ce@gmx.com> <CAJheHN26GYa7ezw-Jw_y5voFicoywwEJ2pJ4KKx96x-WA2h1eA@mail.gmail.com>
+ <CAJheHN18TmG7g=-Sgi36hVmWka4z99rQRfaf=3FCRvat07C8pg@mail.gmail.com>
+ <bbd08948-6672-4fb1-0e84-802482da7228@gmx.com> <CAJheHN3qgr+FNq+N3DiAQaPkbdcmV+1O8TetAX_HLU5V304Phw@mail.gmail.com>
+ <155abe60-8970-c345-5f28-b4c2713d0c1e@gmx.com> <CAJheHN0EOPu9CuTT2hg=5HZskaC-yB2V5LSwNkrhP4XYYyv5+A@mail.gmail.com>
+ <63677627-ca0a-663e-5443-9bd1b12ff5a9@gmx.com> <CAJheHN2mQX7VZxMZo+-GBhxeOWFu1tYAUfJ9Ut7hokMh-+ua-Q@mail.gmail.com>
+ <5a9a2592-063a-5dfc-c157-47771d8bfb2b@gmx.com>
+In-Reply-To: <5a9a2592-063a-5dfc-c157-47771d8bfb2b@gmx.com>
+From:   Tyler Richmond <t.d.richmond@gmail.com>
+Date:   Fri, 8 May 2020 09:52:30 -0400
+Message-ID: <CAJheHN2-PbGC8S3f74CAFipsjxwXgip5N0zKG_xs-m8ky=WD2A@mail.gmail.com>
+Subject: Re: Fwd: Read time tree block corruption detected
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 07/05/2020 22:21, David Sterba wrote:=0A=
-> This is all wasteful. We know the number of bytes to read, 1/2/4/8 and=0A=
-=0A=
-Same question, s/read/write/?=0A=
-=0A=
-Otherwise,=0A=
-Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>=0A=
+5.6.1 also failed the same way. Here's the usage output. This is the
+part where you see I've been using RAID5 haha
+
+WARNING: RAID56 detected, not implemented
+Overall:
+    Device size:                  60.03TiB
+    Device allocated:             98.06GiB
+    Device unallocated:           59.93TiB
+    Device missing:                  0.00B
+    Used:                         92.56GiB
+    Free (estimated):                0.00B      (min: 8.00EiB)
+    Data ratio:                       0.00
+    Metadata ratio:                   2.00
+    Global reserve:              512.00MiB      (used: 0.00B)
+    Multiple profiles:                  no
+
+Data,RAID5: Size:40.35TiB, Used:40.12TiB (99.42%)
+   /dev/sdh        8.07TiB
+   /dev/sdf        8.07TiB
+   /dev/sdg        8.07TiB
+   /dev/sdd        8.07TiB
+   /dev/sdc        8.07TiB
+   /dev/sde        8.07TiB
+
+Metadata,RAID1: Size:49.00GiB, Used:46.28GiB (94.44%)
+   /dev/sdh       34.00GiB
+   /dev/sdf       32.00GiB
+   /dev/sdg       32.00GiB
+
+System,RAID1: Size:32.00MiB, Used:2.20MiB (6.87%)
+   /dev/sdf       32.00MiB
+   /dev/sdg       32.00MiB
+
+Unallocated:
+   /dev/sdh        2.81TiB
+   /dev/sdf        2.81TiB
+   /dev/sdg        2.81TiB
+   /dev/sdd        1.03TiB
+   /dev/sdc        1.03TiB
+   /dev/sde        1.03TiB
+
+On Fri, May 8, 2020 at 1:47 AM Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
+>
+>
+>
+> On 2020/5/8 =E4=B8=8B=E5=8D=881:12, Tyler Richmond wrote:
+> > If this is saying there's no extra space for metadata, is that why
+> > adding more files often makes the system hang for 30-90s? Is there
+> > anything I should do about that?
+>
+> I'm not sure about the hang though.
+>
+> It would be nice to give more info to diagnosis.
+> The output of 'btrfs fi usage' is useful for space usage problem.
+>
+> But the common idea is, to keep at 1~2 Gi unallocated (not avaiable
+> space in vanilla df command) space for btrfs.
+>
+> Thanks,
+> Qu
+>
+> >
+> > Thank you so much for all of your help. I love how flexible BTRFS is
+> > but when things go wrong it's very hard for me to troubleshoot.
+> >
+> > On Fri, May 8, 2020 at 1:07 AM Qu Wenruo <quwenruo.btrfs@gmx.com> wrote=
+:
+> >>
+> >>
+> >>
+> >> On 2020/5/8 =E4=B8=8B=E5=8D=8812:23, Tyler Richmond wrote:
+> >>> Something went wrong:
+> >>>
+> >>> Reinitialize checksum tree
+> >>> Unable to find block group for 0
+> >>> Unable to find block group for 0
+> >>> Unable to find block group for 0
+> >>> ctree.c:2272: split_leaf: BUG_ON `1` triggered, value 1
+> >>> btrfs(+0x6dd94)[0x55a933af7d94]
+> >>> btrfs(+0x71b94)[0x55a933afbb94]
+> >>> btrfs(btrfs_search_slot+0x11f0)[0x55a933afd6c8]
+> >>> btrfs(btrfs_csum_file_block+0x432)[0x55a933b19d09]
+> >>> btrfs(+0x360b2)[0x55a933ac00b2]
+> >>> btrfs(+0x46a3e)[0x55a933ad0a3e]
+> >>> btrfs(main+0x98)[0x55a933a9fe88]
+> >>> /lib/x86_64-linux-gnu/libc.so.6(__libc_start_main+0xf3)[0x7f263ed550b=
+3]
+> >>> btrfs(_start+0x2e)[0x55a933a9fa0e]
+> >>> Aborted
+> >>
+> >> This means no space for extra metadata...
+> >>
+> >> Anyway the csum tree problem shouldn't be a big thing, you could leave
+> >> it and call it a day.
+> >>
+> >> BTW, as long as btrfs check reports no extra problem for the inode
+> >> generation, it should be pretty safe to use the fs.
+> >>
+> >> Thanks,
+> >> Qu
+> >>>
+> >>> I just noticed I have btrfs-progs 5.6 installed and 5.6.1 is
+> >>> available. I'll let that try overnight?
+> >>>
+> >>> On Thu, May 7, 2020 at 8:11 PM Qu Wenruo <quwenruo.btrfs@gmx.com> wro=
+te:
+> >>>>
+> >>>>
+> >>>>
+> >>>> On 2020/5/7 =E4=B8=8B=E5=8D=8811:52, Tyler Richmond wrote:
+> >>>>> Thank you for helping. The end result of the scan was:
+> >>>>>
+> >>>>>
+> >>>>> [1/7] checking root items
+> >>>>> [2/7] checking extents
+> >>>>> [3/7] checking free space cache
+> >>>>> [4/7] checking fs roots
+> >>>>
+> >>>> Good news is, your fs is still mostly fine.
+> >>>>
+> >>>>> [5/7] checking only csums items (without verifying data)
+> >>>>> there are no extents for csum range 0-69632
+> >>>>> csum exists for 0-69632 but there is no extent record
+> >>>>> ...
+> >>>>> ...
+> >>>>> there are no extents for csum range 946692096-946827264
+> >>>>> csum exists for 946692096-946827264 but there is no extent record
+> >>>>> there are no extents for csum range 946831360-947912704
+> >>>>> csum exists for 946831360-947912704 but there is no extent record
+> >>>>> ERROR: errors found in csum tree
+> >>>>
+> >>>> Only extent tree is corrupted.
+> >>>>
+> >>>> Normally btrfs check --init-csum-tree should be able to handle it.
+> >>>>
+> >>>> But still, please be sure you're using the latest btrfs-progs to fix=
+ it.
+> >>>>
+> >>>> Thanks,
+> >>>> Qu
+> >>>>
+> >>>>> [6/7] checking root refs
+> >>>>> [7/7] checking quota groups skipped (not enabled on this FS)
+> >>>>> found 44157956026368 bytes used, error(s) found
+> >>>>> total csum bytes: 42038602716
+> >>>>> total tree bytes: 49688616960
+> >>>>> total fs tree bytes: 1256427520
+> >>>>> total extent tree bytes: 1709105152
+> >>>>> btree space waste bytes: 3172727316
+> >>>>> file data blocks allocated: 261625653436416
+> >>>>>  referenced 47477768499200
+> >>>>>
+> >>>>> What do I need to do to fix all of this?
+> >>>>>
+> >>>>> On Thu, May 7, 2020 at 1:52 AM Qu Wenruo <quwenruo.btrfs@gmx.com> w=
+rote:
+> >>>>>>
+> >>>>>>
+> >>>>>>
+> >>>>>> On 2020/5/7 =E4=B8=8B=E5=8D=881:43, Tyler Richmond wrote:
+> >>>>>>> Well, the repair doesn't look terribly successful.
+> >>>>>>>
+> >>>>>>> parent transid verify failed on 218620880703488 wanted 6875841 fo=
+und 6876224
+> >>>>>>> parent transid verify failed on 218620880703488 wanted 6875841 fo=
+und 6876224
+> >>>>>>> parent transid verify failed on 218620880703488 wanted 6875841 fo=
+und 6876224
+> >>>>>>> Ignoring transid failure
+> >>>>>>> ERROR: child eb corrupted: parent bytenr=3D225049956061184 item=
+=3D84
+> >>>>>>> parent level=3D1
+> >>>>>>>                                             child level=3D4
+> >>>>>>
+> >>>>>> This means there are more problems, not only the hash name mismatc=
+h.
+> >>>>>>
+> >>>>>> This means the fs is already corrupted, the name hash is just one
+> >>>>>> unrelated symptom.
+> >>>>>>
+> >>>>>> The only good news is, btrfs-progs abort the transaction, thus no
+> >>>>>> further damage to the fs.
+> >>>>>>
+> >>>>>> Please run a plain btrfs-check to show what's the problem first.
+> >>>>>>
+> >>>>>> Thanks,
+> >>>>>> Qu
+> >>>>>>
+> >>>>>>> parent transid verify failed on 218620880703488 wanted 6875841 fo=
+und 6876224
+> >>>>>>> Ignoring transid failure
+> >>>>>>> ERROR: child eb corrupted: parent bytenr=3D225049956061184 item=
+=3D84
+> >>>>>>> parent level=3D1
+> >>>>>>>                                             child level=3D4
+> >>>>>>> parent transid verify failed on 218620880703488 wanted 6875841 fo=
+und 6876224
+> >>>>>>> Ignoring transid failure
+> >>>>>>> ERROR: child eb corrupted: parent bytenr=3D225049956061184 item=
+=3D84
+> >>>>>>> parent level=3D1
+> >>>>>>>                                             child level=3D4
+> >>>>>>> parent transid verify failed on 218620880703488 wanted 6875841 fo=
+und 6876224
+> >>>>>>> Ignoring transid failure
+> >>>>>>> ERROR: child eb corrupted: parent bytenr=3D225049956061184 item=
+=3D84
+> >>>>>>> parent level=3D1
+> >>>>>>>                                             child level=3D4
+> >>>>>>> parent transid verify failed on 218620880703488 wanted 6875841 fo=
+und 6876224
+> >>>>>>> Ignoring transid failure
+> >>>>>>> ERROR: child eb corrupted: parent bytenr=3D225049956061184 item=
+=3D84
+> >>>>>>> parent level=3D1
+> >>>>>>>                                             child level=3D4
+> >>>>>>> parent transid verify failed on 218620880703488 wanted 6875841 fo=
+und 6876224
+> >>>>>>> Ignoring transid failure
+> >>>>>>> ERROR: child eb corrupted: parent bytenr=3D225049956061184 item=
+=3D84
+> >>>>>>> parent level=3D1
+> >>>>>>>                                             child level=3D4
+> >>>>>>> parent transid verify failed on 218620880703488 wanted 6875841 fo=
+und 6876224
+> >>>>>>> Ignoring transid failure
+> >>>>>>> ERROR: child eb corrupted: parent bytenr=3D225049956061184 item=
+=3D84
+> >>>>>>> parent level=3D1
+> >>>>>>>                                             child level=3D4
+> >>>>>>> parent transid verify failed on 218620880703488 wanted 6875841 fo=
+und 6876224
+> >>>>>>> Ignoring transid failure
+> >>>>>>> ERROR: child eb corrupted: parent bytenr=3D225049956061184 item=
+=3D84
+> >>>>>>> parent level=3D1
+> >>>>>>>                                             child level=3D4
+> >>>>>>> parent transid verify failed on 218620880703488 wanted 6875841 fo=
+und 6876224
+> >>>>>>> Ignoring transid failure
+> >>>>>>> ERROR: child eb corrupted: parent bytenr=3D225049956061184 item=
+=3D84
+> >>>>>>> parent level=3D1
+> >>>>>>>                                             child level=3D4
+> >>>>>>> parent transid verify failed on 218620880703488 wanted 6875841 fo=
+und 6876224
+> >>>>>>> Ignoring transid failure
+> >>>>>>> ERROR: child eb corrupted: parent bytenr=3D225049956061184 item=
+=3D84
+> >>>>>>> parent level=3D1
+> >>>>>>>                                             child level=3D4
+> >>>>>>> parent transid verify failed on 218620880703488 wanted 6875841 fo=
+und 6876224
+> >>>>>>> Ignoring transid failure
+> >>>>>>> ERROR: child eb corrupted: parent bytenr=3D225049956061184 item=
+=3D84
+> >>>>>>> parent level=3D1
+> >>>>>>>                                             child level=3D4
+> >>>>>>> ERROR: failed to zero log tree: -17
+> >>>>>>> ERROR: attempt to start transaction over already running one
+> >>>>>>> WARNING: reserved space leaked, flag=3D0x4 bytes_reserved=3D4096
+> >>>>>>> extent buffer leak: start 225049066086400 len 4096
+> >>>>>>> extent buffer leak: start 225049066086400 len 4096
+> >>>>>>> WARNING: dirty eb leak (aborted trans): start 225049066086400 len=
+ 4096
+> >>>>>>> extent buffer leak: start 225049066094592 len 4096
+> >>>>>>> extent buffer leak: start 225049066094592 len 4096
+> >>>>>>> WARNING: dirty eb leak (aborted trans): start 225049066094592 len=
+ 4096
+> >>>>>>> extent buffer leak: start 225049066102784 len 4096
+> >>>>>>> extent buffer leak: start 225049066102784 len 4096
+> >>>>>>> WARNING: dirty eb leak (aborted trans): start 225049066102784 len=
+ 4096
+> >>>>>>> extent buffer leak: start 225049066131456 len 4096
+> >>>>>>> extent buffer leak: start 225049066131456 len 4096
+> >>>>>>> WARNING: dirty eb leak (aborted trans): start 225049066131456 len=
+ 4096
+> >>>>>>>
+> >>>>>>> What is going on?
+> >>>>>>>
+> >>>>>>> On Wed, May 6, 2020 at 9:30 PM Tyler Richmond <t.d.richmond@gmail=
+.com> wrote:
+> >>>>>>>>
+> >>>>>>>> Chris, I had used the correct mountpoint in the command. I just =
+edited
+> >>>>>>>> it in the email to be /mountpoint for consistency.
+> >>>>>>>>
+> >>>>>>>> Qu, I'll try the repair. Fingers crossed!
+> >>>>>>>>
+> >>>>>>>> On Wed, May 6, 2020 at 9:13 PM Qu Wenruo <quwenruo.btrfs@gmx.com=
+> wrote:
+> >>>>>>>>>
+> >>>>>>>>>
+> >>>>>>>>>
+> >>>>>>>>> On 2020/5/7 =E4=B8=8A=E5=8D=885:54, Tyler Richmond wrote:
+> >>>>>>>>>> Hello,
+> >>>>>>>>>>
+> >>>>>>>>>> I looked up this error and it basically says ask a developer t=
+o
+> >>>>>>>>>> determine if it's a false error or not. I just started getting=
+ some
+> >>>>>>>>>> slow response times, and looked at the dmesg log to find a ton=
+ of
+> >>>>>>>>>> these errors.
+> >>>>>>>>>>
+> >>>>>>>>>> [192088.446299] BTRFS critical (device sdh): corrupt leaf: roo=
+t=3D5
+> >>>>>>>>>> block=3D203510940835840 slot=3D4 ino=3D1311670, invalid inode =
+generation:
+> >>>>>>>>>> has 18446744073709551492 expect [0, 6875827]
+> >>>>>>>>>> [192088.449823] BTRFS error (device sdh): block=3D203510940835=
+840 read
+> >>>>>>>>>> time tree block corruption detected
+> >>>>>>>>>> [192088.459238] BTRFS critical (device sdh): corrupt leaf: roo=
+t=3D5
+> >>>>>>>>>> block=3D203510940835840 slot=3D4 ino=3D1311670, invalid inode =
+generation:
+> >>>>>>>>>> has 18446744073709551492 expect [0, 6875827]
+> >>>>>>>>>> [192088.462773] BTRFS error (device sdh): block=3D203510940835=
+840 read
+> >>>>>>>>>> time tree block corruption detected
+> >>>>>>>>>> [192088.464711] BTRFS critical (device sdh): corrupt leaf: roo=
+t=3D5
+> >>>>>>>>>> block=3D203510940835840 slot=3D4 ino=3D1311670, invalid inode =
+generation:
+> >>>>>>>>>> has 18446744073709551492 expect [0, 6875827]
+> >>>>>>>>>> [192088.468457] BTRFS error (device sdh): block=3D203510940835=
+840 read
+> >>>>>>>>>> time tree block corruption detected
+> >>>>>>>>>>
+> >>>>>>>>>> btrfs device stats, however, doesn't show any errors.
+> >>>>>>>>>>
+> >>>>>>>>>> Is there anything I should do about this, or should I just con=
+tinue
+> >>>>>>>>>> using my array as normal?
+> >>>>>>>>>
+> >>>>>>>>> This is caused by older kernel underflow inode generation.
+> >>>>>>>>>
+> >>>>>>>>> Latest btrfs-progs can fix it, using btrfs check --repair.
+> >>>>>>>>>
+> >>>>>>>>> Or you can go safer, by manually locating the inode using its i=
+node
+> >>>>>>>>> number (1311670), and copy it to some new location using previo=
+us
+> >>>>>>>>> working kernel, then delete the old file, copy the new one back=
+ to fix it.
+> >>>>>>>>>
+> >>>>>>>>> Thanks,
+> >>>>>>>>> Qu
+> >>>>>>>>>
+> >>>>>>>>>>
+> >>>>>>>>>> Thank you!
+> >>>>>>>>>>
+> >>>>>>>>>
+> >>>>>>
+> >>>>
+> >>
+>
