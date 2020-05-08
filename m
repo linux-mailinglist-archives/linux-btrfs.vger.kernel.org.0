@@ -2,114 +2,266 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9B151CAA4A
-	for <lists+linux-btrfs@lfdr.de>; Fri,  8 May 2020 14:09:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0012D1CAA5D
+	for <lists+linux-btrfs@lfdr.de>; Fri,  8 May 2020 14:12:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726746AbgEHMJZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 8 May 2020 08:09:25 -0400
-Received: from esa5.hgst.iphmx.com ([216.71.153.144]:24462 "EHLO
-        esa5.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726627AbgEHMJZ (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 8 May 2020 08:09:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1588939764; x=1620475764;
-  h=from:to:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=78eyBpNRngf1zZLuEJLKRBlM/FuYOiMyut3IVfZghDU=;
-  b=HT++Enp2ZP1zLBNKJXREa/aZZESpR+bCvgZlqerPYWFtWqOR33o+DcP5
-   o6OgCQ1rSSOe0E2u8NwWqhDyBIQBAZ/5wnTpfHsMDNt7j8zM0NlifHjTy
-   zCKZ/7awlmbmwybi8V1aHacBZDVQ5LynSfnoY08216NdMlymZmt7c5IeI
-   Xhbv5/HK1gdfmYAA+TeNGfWKF4SqGih3gyDpsvRIWe7hvt9w+JxPikLo7
-   2omEtijhE4I6X85h60+Wu/RF3ZRT0da+SRcbCJnNGNhMlk2+Fl733L6ji
-   aIBaLl2berwvZo76NjbqAfc0O+QH3qdKaFcwHkQoRkffvct6H/g41+oIr
-   A==;
-IronPort-SDR: fGXdFc0ypWnu4/8CuvKdnDB7qwXIX2LyO/ThAyf+ozqdWOJFtZysiDYY9TDTtBkVt2SBLZv77f
- VLo+0K07EgN6TBPbXqF1ByveK9jKBnNpccwS7nLF8UbEyncg+aLMJvZ2R+M8GY5LM4JhKq9LN9
- 8cKd6OYiXjlD6yNU2ln/xiGzwN7C3BEC3afEF7UQCmScYYYAYhJGCp6vs53t99YNtZKAt2Nfg3
- A6w+IvVclBqG3E08OQWPcFSVBh4r9j5sx5lobitRqWhgPMVATdKxCMs+rcqotVYXXKSUBIoNlt
- BXs=
-X-IronPort-AV: E=Sophos;i="5.73,367,1583164800"; 
-   d="scan'208";a="137560562"
-Received: from mail-dm6nam12lp2173.outbound.protection.outlook.com (HELO NAM12-DM6-obe.outbound.protection.outlook.com) ([104.47.59.173])
-  by ob1.hgst.iphmx.com with ESMTP; 08 May 2020 20:09:24 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gObkuR6W0ExN0s0A9ypbafZkgZm4JIQU5w8PjTYKNLTLjxrXaUfJMnyp7pyZKPlA4mUuIFelyCCZ9keC8rcwci7M3UuR9vSvw0Z/L2h1FsBk/C3bNLQGK4V24CYmKx3cBEKMuCZwL5rLSUdnc+uu4rarL2CzyL8y9FeTzoz1M9pXTuXcDG4/CwwE8lozAV+s+aI551azXjg6R4h+k0Nt/0UYlbxJL68Z3ahIVNS2z7xwxEPbvSl+SidBSAjFC57RVdnu/QU71OPPCyS2axoi+cNPdfjBgMHEoU0hyJqAH5X4jjm01G5WRpfnGTID1kImC3pti6s3SC/TXtzGFeLt5Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Udn5zW+hopMFqeWVnjCCUhX+SaZX3h3OYjDecTqyWpM=;
- b=fjWfrbm01KWviYAeAjGWRIVHCOCW1qbw6lFHpyghIaQ0RG9kcOuKby9Lf63ScInbGFe3RCnGZs6NLU6of1SFNUt3pzwAkg3ZmzAharnfotUMrNI4JgZYkviEig0ztVdFiugmjFRur1yGPgPz3soUAEprxooVrQixCkn4McDbOXJsnS9zQFVBSbqISRD8sCxJQnZ2lDUek+VZHRlScYAYD2631HMLRmKGwe0hMQL5+GSkBL8jusqKpZLaa6zqKvJ4UhgELMh+rYDH2sywuBHg5YpERkYEIWr1/TFVtdDvjB/wr8qcy4+erYnhCstKaEWrMhm2MWc9aXffuT9cug6AWQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
+        id S1726701AbgEHMMu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 8 May 2020 08:12:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54748 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726627AbgEHMMu (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 8 May 2020 08:12:50 -0400
+Received: from mail-vs1-xe43.google.com (mail-vs1-xe43.google.com [IPv6:2607:f8b0:4864:20::e43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10027C05BD43
+        for <linux-btrfs@vger.kernel.org>; Fri,  8 May 2020 05:12:49 -0700 (PDT)
+Received: by mail-vs1-xe43.google.com with SMTP id y185so892986vsy.8
+        for <linux-btrfs@vger.kernel.org>; Fri, 08 May 2020 05:12:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Udn5zW+hopMFqeWVnjCCUhX+SaZX3h3OYjDecTqyWpM=;
- b=KQ7nD3M6Zp8sZ3Ne7fsdiz3pRzp8npGNpUynh0CEA2WAtNrNIDcJStK1SArnOkW8eqoQzwTA8y/mqKQa590kuE54uktP/v5WqxZyzxGTzartZfha4CT7lDvC3Q5SCFbdsHl0hkn70Faze0elssTWVATaNQJVhygL+55oHl/AGOs=
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
- (2603:10b6:803:47::21) by SN4PR0401MB3565.namprd04.prod.outlook.com
- (2603:10b6:803:47::17) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2958.27; Fri, 8 May
- 2020 12:09:15 +0000
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::9854:2bc6:1ad2:f655]) by SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::9854:2bc6:1ad2:f655%4]) with mapi id 15.20.2979.028; Fri, 8 May 2020
- 12:09:15 +0000
-From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To:     David Sterba <dsterba@suse.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH 02/19] btrfs: drop eb parameter from set/get token helpers
-Thread-Topic: [PATCH 02/19] btrfs: drop eb parameter from set/get token
- helpers
-Thread-Index: AQHWJKz0ZuoijrluZEi3YBtV6S+Efg==
-Date:   Fri, 8 May 2020 12:09:15 +0000
-Message-ID: <SN4PR0401MB3598EFE7FF6F223E36404FA19BA20@SN4PR0401MB3598.namprd04.prod.outlook.com>
-References: <cover.1588853772.git.dsterba@suse.com>
- <b8b135176911726d988ea5f686b93fbd351e47e2.1588853772.git.dsterba@suse.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: suse.com; dkim=none (message not signed)
- header.d=none;suse.com; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [46.244.194.6]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 6a7181e4-7f70-47ac-4713-08d7f348a091
-x-ms-traffictypediagnostic: SN4PR0401MB3565:
-x-microsoft-antispam-prvs: <SN4PR0401MB35657D7D9AF61C8E5DCFF1119BA20@SN4PR0401MB3565.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:1728;
-x-forefront-prvs: 039735BC4E
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: Hlbd0izb5etDdf8rwW9igtEHMjMnmvR9opo6qXNYJWNynylsfvmYpuhB7ix+jaOGPfRbMJPd4j8P/2ne990ydnkHaSPBIrA02Bsv/J6yDlLWyz7lv/VmbL33lH7QBQD+8vKN8PLbv2ICmmXJLZc6m9wcX05n0u1YRoFVIOukMJ0uLSU3Y2iFnzlFqI2LfWTjUtn3ISn2wU7vFcqKM3n9+AhQbKTvK9rTHYbptLHxCxRUluOueWJPWosetlPH3XM7ORaGuRJCpco1bM8C4eOLeQazBsGVL+EKq6xdJx+PxzI7w5aVJNvoxSEQzA0QO5hEUMYGNHeDfb2by2sg73ZNZqPTJ+yXXiK21LIsvNLQipo5Przr2MvctJm9V5oegWVK10UO/NrRZWkOa0kDCetzReWMqBC78dY1zZNWhLNaICWoqe09yoN82eBg29UDzk9R5q7LzB1/4ClEREN5U2DmFweVtaGUyD5Gk6nSB7qsD9A39Q97bdBSm7ZBIFhbB7Ty07ZztcZLTzHJiusKUrejwg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR0401MB3598.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(346002)(396003)(136003)(376002)(39860400002)(366004)(33430700001)(558084003)(91956017)(2906002)(110136005)(316002)(66556008)(66476007)(76116006)(83300400001)(66446008)(64756008)(33440700001)(83290400001)(8936002)(83280400001)(66946007)(83310400001)(83320400001)(52536014)(7696005)(86362001)(9686003)(71200400001)(8676002)(26005)(478600001)(6506007)(5660300002)(55016002)(53546011)(186003)(33656002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: h0KG9S8LE9LpgE4zXBx5Gp6QUd2vu2Kjjcq8OlSer8/CT0FooMj7/tmuLDnJdHLNn2JLOVZnCLhPLa0XAJMg0BKoZtZs2lAsATsppR3srFYQP9D2bcdZRvE97A4coIgIl28YNVohjm+reKQfZtcUNBnsztXBNZjjfwAONdThz4PYM4t6a40QsQ3Bu5Q26eZ84mjTNXCiyGVI6q4L2GOgw3rw4FbEsLVD8mLk4vrgDk5bYq2gx5/Mporiwd8QPfl4wXVepTtRtAg6IiVU9YzYdHN6YAu7zBFYx3dkHzKsuh95d+f6Jct76W6Py53txmiLxQZqlBwqCW+Wj1s0bFDpJ22cUJ+74MckReVIQGMnTtEsBvGZ6kM1/6fCSy0JrEUVebBkzLmOCGnyIMUukS08xzVDjoNUmgfgkTBYaw2Ir26zO0HkE34bLTZrDWGBwb4UF86RiJa3hHO+p9HhIPhGV655LZBysoAtYF5emVZN0dk=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc:content-transfer-encoding;
+        bh=aPlIZ0R8LOZrC8Y0uKRSktauzC0rp/zItPKmHA+5GpA=;
+        b=c357CVZ2XL5h/+F7ir3avnKZWfrxb7oevyJSCylUN5KOZes5jW1XoALdLA2bah0c3S
+         Hj8QgPuob+YW/EEc64Bwi6UJA6mluvetTIeymedbo5JTGn0K1Wq8Z7q4gMWT6RxfZHyX
+         mOfmDnq+oPwQwizN28hza6p6wG5UtfV5wlzwBExAOQ6LlJNmzbMhDA9KUSZDh/yoIfpN
+         Rig1oeZT/N8SYG4/BA61vxuuKi88XC2xl+WmUYpXb7NwkKLMMm1oOSXDgVyLLr9hO1qp
+         WkRKE54v2LU21uHhBg8SirRTdhp5OHZTG2XVcLoWJgQkTV7huRGadx9Z2mg8Tz9dc3Np
+         SAXw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc:content-transfer-encoding;
+        bh=aPlIZ0R8LOZrC8Y0uKRSktauzC0rp/zItPKmHA+5GpA=;
+        b=CCVZlh6Va/u3TfYDf8aYAlMJ7j4Y1DALZm+PWh8X2QJ3CRDno4z5BrsX1kRb/uLY0h
+         /x5JWRQyTcIRSEvs9SM6wfTEG42skpHlkhAHNvNpQa03D0+Vx9FPYyCpyB6Oj5Bt656k
+         iCd17EQgrGuMPluEZ8/vFZ6mgBnrZu3DxbSF2pVOoY/c0W94KlzoVUfYkS8b2o/KL7zG
+         mnqz967Dx38Aqk7DYYzjKAiztf9VO3SfEYauPtRuJY0FGUvBLLSnFMkMUWU+hvlJMfgC
+         sc38of88g+VeQLc+lsr3elX7dsCY//jmi/Quq2rj4KMMm1rPsNWkpiCm9Hmc1vCjNCQG
+         YkCw==
+X-Gm-Message-State: AGi0PubvHHoJ92+0iv4Mn5hXhQus6JqnKYuWIcnIMjNOh74HaJ0BdWGH
+        e3Aq3VkHsedOdjqWsrHnNgMoil1H0g3mnAyl5l8=
+X-Google-Smtp-Source: APiQypI5nTxNCG0yhiDKXMVG+si3eI35f3MWPurD7GYjXGBXjw4iCduJil/Yr/mjGXphTrdMuP1IH+3gcRLNjAhPgMc=
+X-Received: by 2002:a67:d789:: with SMTP id q9mr1560325vsj.206.1588939968087;
+ Fri, 08 May 2020 05:12:48 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6a7181e4-7f70-47ac-4713-08d7f348a091
-X-MS-Exchange-CrossTenant-originalarrivaltime: 08 May 2020 12:09:15.2285
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: BAooYwC0DkAwD1tD9ePmBtGktQdjXdt/h2bN0XWjUp04to0sj0z7+XsasoCBnwUiIWkEZ3U9UYpIp3l4VLLai5W95IYy7Z/J54pl8VlQY18=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN4PR0401MB3565
+References: <20200507201804.1623-1-marcos@mpdesouza.com>
+In-Reply-To: <20200507201804.1623-1-marcos@mpdesouza.com>
+Reply-To: fdmanana@gmail.com
+From:   Filipe Manana <fdmanana@gmail.com>
+Date:   Fri, 8 May 2020 13:12:37 +0100
+Message-ID: <CAL3q7H5PgpmGxPV8MdF_Z_HcxKfqrRYHF_6WtXp+HimipTx8=g@mail.gmail.com>
+Subject: Re: [PATCH v1] btrfs: send: Emit file capabilities after chown
+To:     Marcos Paulo de Souza <marcos@mpdesouza.com>
+Cc:     David Sterba <dsterba@suse.com>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        Qu Wenruo <wqu@suse.com>,
+        Filipe David Borba Manana <fdmanana@suse.com>,
+        Marcos Paulo de Souza <mpdesouza@suse.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 07/05/2020 22:20, David Sterba wrote:=0A=
-> +		push_space =3D push_space - btrfs_token_item_size(&token, item);=0A=
-=0A=
-Nit: push_space -=3D btrfs_token_item_size(&token, item);=0A=
-=0A=
-Anayways,=0A=
-Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>=0A=
+On Thu, May 7, 2020 at 9:16 PM Marcos Paulo de Souza
+<marcos@mpdesouza.com> wrote:
+>
+> From: Marcos Paulo de Souza <mpdesouza@suse.com>
+>
+> [PROBLEM]
+> Whenever a chown is executed, all capabilities of the file being touched =
+are
+> lost.  When doing incremental send with a file with capabilities, there i=
+s a
+> situation where the capability can be lost in the receiving side. The
+> sequence of actions bellow shows the problem:
+>
+> $ mount /dev/sda fs1
+> $ mount /dev/sdb fs2
+>
+> $ touch fs1/foo.bar
+> $ setcap cap_sys_nice+ep fs1/foo.bar
+> $ btrfs subvol snap -r fs1 fs1/snap_init
+> $ btrfs send fs1/snap_init | btrfs receive fs2
+>
+> $ chgrp adm fs1/foo.bar
+> $ setcap cap_sys_nice+ep fs1/foo.bar
+>
+> $ btrfs subvol snap -r fs1 fs1/snap_complete
+> $ btrfs subvol snap -r fs1 fs1/snap_incremental
+>
+> $ btrfs send fs1/snap_complete | btrfs receive fs2
+> $ btrfs send -p fs1/snap_init fs1/snap_incremental | btrfs receive fs2
+>
+> At this point, only a chown was emitted by "btrfs send" since only the gr=
+oup
+> was changed. This makes the cap_sys_nice capability to be dropped from
+> fs2/snap_incremental/foo.bar
+>
+> [FIX]
+> Only emit capabilities after chown is emitted. The current code
+> first checks for xattrs that are new/changed, emits them, and later emit
+> the chown. Now, __process_new_xattr skips capabilities, letting only
+> finish_inode_if_needed to emit them, if they exist, for the inode being
+> processed.
+>
+> Also, this patch also fixes a longstanding problem that was issuing an xa=
+ttr
+> _before_ chown. This behavior was being worked around in "btrfs receive"
+> side by caching the capability and only applying it after chown. Now,
+> xattrs are only emmited _after_ chown, making that hack not needed
+> anymore.
+>
+> Link: https://github.com/kdave/btrfs-progs/issues/202
+> Suggested-by: Filipe Manana <fdmanana@suse.com>
+> Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
+> ---
+>  The first version of the patch was an RFC
+>
+>  Changes from RFC:
+>  * Explained about chown + drop capabilities problem in the commit messag=
+e (suggested
+>    by Filipe and David)
+>  * Changed the commit message to show describe the fix (suggested by Fili=
+pe)
+>  * Skip the xattr in __process_new_xattr if it's a capability, since it'l=
+l be
+>    handled in finish_inode_if_needed now (suggested by Filipe).
+>  * Created function send_capabilities to query if the inode has caps, and=
+ if
+>    yes, emit them.
+>  * Call send_capabilities in finish_inode_if_needed _after_ the needs_cho=
+wn
+>    check. (suggested by Filipe)
+>
+>  fs/btrfs/send.c | 69 +++++++++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 69 insertions(+)
+>
+> diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
+> index 6b86841315be..4f19965bdd82 100644
+> --- a/fs/btrfs/send.c
+> +++ b/fs/btrfs/send.c
+> @@ -23,6 +23,7 @@
+>  #include "btrfs_inode.h"
+>  #include "transaction.h"
+>  #include "compression.h"
+> +#include "xattr.h"
+>
+>  /*
+>   * Maximum number of references an extent can have in order for us to at=
+tempt to
+> @@ -4545,6 +4546,10 @@ static int __process_new_xattr(int num, struct btr=
+fs_key *di_key,
+>         struct fs_path *p;
+>         struct posix_acl_xattr_header dummy_acl;
+>
+> +       /* capabilities are emitted by finish_inode_if_needed */
+> +       if (!strncmp(name, XATTR_NAME_CAPS, name_len))
+> +               return 0;
+> +
+>         p =3D fs_path_alloc();
+>         if (!p)
+>                 return -ENOMEM;
+> @@ -5107,6 +5112,66 @@ static int send_extent_data(struct send_ctx *sctx,
+>         return 0;
+>  }
+>
+> +/*
+> + * Search for a capability xattr related to sctx->cur_ino. If the capabi=
+lity if
+> + * found, call send_set_xattr function to emit it.
+> + *
+> + * Return %0 if there isn't a capability, or when the capability was emi=
+tted
+> + * successfully, or < %0 if an error occurred.
+> + */
+> +static int send_capabilities(struct send_ctx *sctx)
+> +{
+> +       struct fs_path *fspath =3D NULL;
+> +       struct btrfs_path *path;
+> +       struct btrfs_dir_item *di;
+> +       struct extent_buffer *leaf;
+> +       unsigned long data_ptr;
+> +       char *name =3D XATTR_NAME_CAPS;
+> +       char *buf =3D NULL;
+> +       int buf_len;
+> +       int ret =3D 0;
+> +
+> +       path =3D btrfs_alloc_path();
+
+So, I forgot this: use alloc_path_for_send() instead, we want a path
+that uses the commit root. Path allocations in send should always use
+that helper.
+
+Thanks.
+
+> +       if (!path)
+> +               return -ENOMEM;
+> +
+> +       di =3D btrfs_lookup_xattr(NULL, sctx->send_root, path, sctx->cur_=
+ino,
+> +                               name, strlen(name), 0);
+> +       if (!di) {
+> +               /* there is no xattr for this inode */
+> +               goto out;
+> +       } else if (IS_ERR(di)) {
+> +               ret =3D PTR_ERR(di);
+> +               goto out;
+> +       }
+> +
+> +       leaf =3D path->nodes[0];
+> +       buf_len =3D btrfs_dir_data_len(leaf, di);
+> +
+> +       fspath =3D fs_path_alloc();
+> +       buf =3D kmalloc(buf_len, GFP_KERNEL);
+> +       if (!fspath || !buf) {
+> +               ret =3D -ENOMEM;
+> +               goto out;
+> +       }
+> +
+> +       ret =3D get_cur_path(sctx, sctx->cur_ino, sctx->cur_inode_gen, fs=
+path);
+> +       if (ret < 0)
+> +               goto out;
+> +
+> +       data_ptr =3D (unsigned long)((char *)(di + 1) +
+> +                                  btrfs_dir_name_len(leaf, di));
+> +       read_extent_buffer(leaf, buf, data_ptr,
+> +                          btrfs_dir_data_len(leaf, di));
+> +
+> +       ret =3D send_set_xattr(sctx, fspath, name, strlen(name), buf, buf=
+_len);
+> +out:
+> +       kfree(buf);
+> +       fs_path_free(fspath);
+> +       btrfs_free_path(path);
+> +       return ret;
+> +}
+> +
+>  static int clone_range(struct send_ctx *sctx,
+>                        struct clone_root *clone_root,
+>                        const u64 disk_byte,
+> @@ -6010,6 +6075,10 @@ static int finish_inode_if_needed(struct send_ctx =
+*sctx, int at_end)
+>                         goto out;
+>         }
+>
+> +       ret =3D send_capabilities(sctx);
+> +       if (ret < 0)
+> +               goto out;
+> +
+>         /*
+>          * If other directory inodes depended on our current directory
+>          * inode's move/rename, now do their move/rename operations.
+> --
+> 2.25.1
+>
+
+
+--=20
+Filipe David Manana,
+
+=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
+ right.=E2=80=9D
