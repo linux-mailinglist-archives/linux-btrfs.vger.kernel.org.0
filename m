@@ -2,112 +2,127 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F03BA1CB1AC
-	for <lists+linux-btrfs@lfdr.de>; Fri,  8 May 2020 16:24:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D07831CB55C
+	for <lists+linux-btrfs@lfdr.de>; Fri,  8 May 2020 19:07:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727790AbgEHOYa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 8 May 2020 10:24:30 -0400
-Received: from esa1.hgst.iphmx.com ([68.232.141.245]:62028 "EHLO
-        esa1.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727082AbgEHOY3 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 8 May 2020 10:24:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1588947869; x=1620483869;
-  h=from:to:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=0E6Ujas/6VEYkHHwfDtVcZ/gWhqdkqVRs51nZQKNWxY=;
-  b=XhFazaPDmjY6BWEafbjuhOvm84U70KdGRkvQme7Cs1LYQNmb8y2dZuz/
-   HIPO89w9gDA6rf4HFhPxrkRaUxkYXHidzBvAD8U+aLa7Vd/X5+qHL9rr2
-   F9qAZCc5LpejcJOIoxqF/R87PIvzbj6kpWxHq9a4/hU/ZrT0Hv7jBVnUD
-   jO9MU3jdaV3ZayQtm2XeHnIGSwcA6vDK1HpGLVRBThL8eb0u7lXArZmQA
-   iX+byFiUTGV1w1dpWYnbZLvBfcjC4RLKG8kUUQqSyhb3NYpHkjTxov1f4
-   XYXZoO11elDyvquEhrmlmDtrbpmqCRKSbc6ZOkBgnDCY7J+VEtHMbGB51
-   A==;
-IronPort-SDR: q+xy66r/t0uEW/TNvBZAGgmRNw+4myf/z11o1sp54PCal32Hf3pzM7K4xZkHZPuvwgazWgiBFm
- iXQTPHVQ1Ywe/CeZ9N7B6KYklAqqvj37Xb222OwM5kPaAvAl3m8RNJqvjwYLRasF7jMZEyUWRR
- hSwwkUwABPEtzOk84JjWvyIl3UKkodvrwclB11DbIVzXNaUahfWnegOZ6Kgh8FQkc0PaUs0baa
- sLfQHI5nbubSm6+VGxWoioZnfgNNfymvQ/GCfGrrx3zC8FLV7deWK64BgdDLEeY6Qk+DEI4hi7
- 2A0=
-X-IronPort-AV: E=Sophos;i="5.73,367,1583164800"; 
-   d="scan'208";a="246119883"
-Received: from mail-mw2nam12lp2045.outbound.protection.outlook.com (HELO NAM12-MW2-obe.outbound.protection.outlook.com) ([104.47.66.45])
-  by ob1.hgst.iphmx.com with ESMTP; 08 May 2020 22:24:28 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gEMojWT4tKiRDyd57gq1sxnL2ODbJdY5d7F4ySQoAyvPYlZTTYI4qFTayQ/H7rCK0gcEmCBHZHMTjOex0pyWrDYxZtMk2duoAdstXk2tvDF3xG/hrKAxEUB8KDu1KhY/UZvU8X9bw/F8AkimQ9omX292FTeCUKyFF14bFoVYGMQX837ZIgd+NohjBVEIerQy2uxo19OAN3bCYUgh01F73FheCWdWssoWSFSqodaFXL0Ag73Rp1mKuhNX9YUm1vfG+Lb4Ohq/nlL8Ucuvsq7xfsu7OmWeb1FtoCRZz9pZlkmghRoOXmDXIK37XkdrT2h6GgTmDSU0W3QSBxQOK2zYMA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=0E6Ujas/6VEYkHHwfDtVcZ/gWhqdkqVRs51nZQKNWxY=;
- b=JK86C5XQCSOB1jOq7/I/3AgYCbXLdOjjMDw2OiyEZADTJRzS/1U0EtQcsG+UwgWBxHLbcJmUmDBW7GKvfhl2EmOLfG6BrUlfSQmgsHWtsFotF4xHSsGlfVDa7JldDx6Rk0EhkoMB9tlZ6fs1w0E5K7uO85VRcSpbslYmzI8ABzvy251sTdUcXkrz2ieK2YNkHxMNAGh3jHyeize11klqsgD+4wv/Nii/3G7R7XcZ3Er2Jv9v46Q2nNx0lFJvuBNkKrWKvYCU99c+cFLpS7Nz0uUO7/ZI9EaEr5WydR4y96AaoioSraGXmGlVE360TSyblPS2Jjhm0Jy9Npe4mDwhiw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=0E6Ujas/6VEYkHHwfDtVcZ/gWhqdkqVRs51nZQKNWxY=;
- b=x0wHRX+qT6A+ERgP7uYKJbri8UZQm2+kdNVepyWiTLrnn4Axz4/TuY3m3jPxcCNJ2+g9gSmdVS8iNcKTwnMNF3Gb58/XQwUPVSTkCi8OcGFLvnULXQCcyiCeii2i+DdvuZ7OgJ25XPWChVW/Tx1lYip9kp6jiuxeSMK9hS8lUxE=
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
- (2603:10b6:803:47::21) by SN4PR0401MB3680.namprd04.prod.outlook.com
- (2603:10b6:803:4e::12) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2958.20; Fri, 8 May
- 2020 14:24:28 +0000
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::9854:2bc6:1ad2:f655]) by SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::9854:2bc6:1ad2:f655%4]) with mapi id 15.20.2979.028; Fri, 8 May 2020
- 14:24:28 +0000
-From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To:     Qu Wenruo <wqu@suse.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH v4 05/11] btrfs-progs: block-group: Rename
- write_one_cahce_group()
-Thread-Topic: [PATCH v4 05/11] btrfs-progs: block-group: Rename
- write_one_cahce_group()
-Thread-Index: AQHWInCGB0VzyrsIGUSDKadj8OviDA==
-Date:   Fri, 8 May 2020 14:24:28 +0000
-Message-ID: <SN4PR0401MB3598287BA160561791DC1ED19BA20@SN4PR0401MB3598.namprd04.prod.outlook.com>
-References: <20200505000230.4454-1-wqu@suse.com>
- <20200505000230.4454-6-wqu@suse.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: suse.com; dkim=none (message not signed)
- header.d=none;suse.com; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [129.253.240.72]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 273bce30-7e11-4761-14bc-08d7f35b8440
-x-ms-traffictypediagnostic: SN4PR0401MB3680:
-x-microsoft-antispam-prvs: <SN4PR0401MB3680383FE23D5BE019CFD3FA9BA20@SN4PR0401MB3680.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:1728;
-x-forefront-prvs: 039735BC4E
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: cGVNTXHSQQppdutdk6dE/plkfx60XY1zFotWmEsoQnl6G2/8mQdw6LnW9DBcq+fpTcCova1RdgzKC/vH2KV7A4zeCatwK+JMfF8YkfnJJU6oJCs2sOdhwUj4ZLVPaT+/Q+AB3TtqjIVT/lV4O6vhKuYZj2gxEbuXj1mv9Yfl5Op3zZZsdXeQFOsEf8Nkl2p7CBF5hNMCaH75rBNLGw43HJf9FuHu7doQvDdv49W+MIFbMVfayjnvY/+/ZjJy9Na0JNTuzs67P3Zw5a19r7pCWgHpBX0HBZ958VeMuvMnNgbib1RgqYtlVnWwQndu/kn1cbYO1ZF9S4jIER20kul8aYmKVodG6s4f7JTum/uI3zHrti+aF4pXgEi8CBGgjHMnw2gKlIunPipeuymGnIgCu5Q0MdLSxd8BzHS2RYTRwM8X5o2fihCUQ89Gv8v7cgglmVW/kB5NQe52AsxHoidEtBAkyCHOWXvv4QrAcSEgr4gNWOHUlWqyr7AfY8kUgDqsgERhJU4FfAAyRW6OlRZAog==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR0401MB3598.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(396003)(39860400002)(346002)(376002)(136003)(366004)(33430700001)(558084003)(91956017)(76116006)(316002)(478600001)(19618925003)(83300400001)(83280400001)(33656002)(83320400001)(6506007)(4270600006)(83310400001)(83290400001)(55016002)(9686003)(186003)(26005)(52536014)(66946007)(64756008)(66476007)(71200400001)(110136005)(33440700001)(66446008)(66556008)(86362001)(8676002)(8936002)(5660300002)(2906002)(7696005);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: ZNr7hPyifIYUDJPSw+74Yeuljny06ZrTZF351EzoRx1FjiLRuieXOnsNKOEngN+zYDxIabh0p4Xshwo0wRR0rhNLPKmSOs6W2aWJSpU5min1LwN9mkxDS1ztOB7Jecusx10hP7CXkrO5qPxRzSgTJWZvg75JHDIrWHP7Nk2UOID4mmWILnNzVbC0EeV5CgbRDjw4KF8q4klZZ1nkWSywWiz750fgfJlipKfnWA9BU01dhRBE2RrjVbNjkYNmRMC8yyB7Dsge2r7N9s7YNJ8Gp2GbhIsyoGp0l5TBcbLsOBo85b4IUp2BmcGXG1J57T8vlfm2/KxqDgpDXLcjhd1Se9bblX9OsKMq8F42wgOLZl6yrIWg+u6y96WO9p0TKZ1ZAMky5ORSPSPLQtpaT3m5psnRQIAzlN7b0gZSl8psS1BA+yWpj/XwdfMHdHVk0FsPyMt9v4pvKa1QSWC7ly0VaFBEinnJMhf9YJPYECv+L8/d/89cPvtr/4mm+QDMkplL
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1726771AbgEHRGv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 8 May 2020 13:06:51 -0400
+Received: from ipmail03.adl2.internode.on.net ([150.101.137.141]:16709 "EHLO
+        ipmail03.adl2.internode.on.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726750AbgEHRGv (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 8 May 2020 13:06:51 -0400
+X-IronPort-Anti-Spam-Filtered: true
+X-IronPort-Anti-Spam-Result: =?us-ascii?q?A2ATAQAIkbVe/9y5pztmGwEBAQEBAQE?=
+ =?us-ascii?q?BBQEBARIBAQEDAwEBAUCBNgMBAQELAYIpgUMBMoRQjnuBZJwOCwE8AQIEAQG?=
+ =?us-ascii?q?ERAKCDiQ3Bg4CEAEBBgEBAQEBBQRthWKFcgYjVhALDgwCJgICPBsGAQwIAQG?=
+ =?us-ascii?q?DIoJ8sBCBMokkgUAibCoBjEMaggCBEScPglo+aYZ5gmAEmReZVIE5gRuBA5c?=
+ =?us-ascii?q?fI506kB2fOiOBVjMaCBcZgyVPGA2QSQMXjjcvA2cCBggBAQMJWQEBkT4BAQ?=
+Received: from podling.glasswings.com.au ([59.167.185.220])
+  by ipmail03.adl2.internode.on.net with ESMTP; 09 May 2020 02:36:42 +0930
+Received: from dash ([192.168.21.15])
+        by podling.glasswings.com.au with esmtp (Exim 4.89)
+        (envelope-from <andrew@sericyb.com.au>)
+        id 1jX6SM-0007oL-3V; Sat, 09 May 2020 03:06:38 +1000
+Subject: Re: btrfs-progs reports nonsense scrub status
+To:     Graham Cobb <g.btrfs@cobb.uk.net>,
+        Chris Murphy <lists@colorremedies.com>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+References: <0d1cceb6-9295-1bdf-c427-60ba9b1ef0b3@sericyb.com.au>
+ <CAJCQCtRK+jEMVMz1QPCJCYqCciaaMZ5W+STabrdAQ5RyzWHhGA@mail.gmail.com>
+ <7e54f0b9-d311-3d69-94dd-03279aa2dda2@sericyb.com.au>
+ <CAJCQCtT8VUvpo=fvcvhWpSNx_gt+ihk8orkkPuhdQ1nNnSMnPQ@mail.gmail.com>
+ <10b14d0b-9f10-609f-6365-f45c2ad20c6d@sericyb.com.au>
+ <CAJCQCtSdWMnGKZLxJR85eDoVFTLGwYNnGqkVnah=qA6fCoVk_Q@mail.gmail.com>
+ <709e4c3f-15b3-3c8a-2b25-ea95f4958999@sericyb.com.au>
+ <CAJCQCtTGygd22TYvsPS6RPydsAZoqQYDDV=K4w1yFgTn0+ba6A@mail.gmail.com>
+ <8ceacc86-96b7-44d2-d48d-234c6c4b45de@sericyb.com.au>
+ <CAJCQCtQ4xOdNH79XDQdy=ExkNHbpbYdMMHG1fTeN7SeA+dTo7w@mail.gmail.com>
+ <8ab9f20d-eff0-93bf-a4a4-042473b4059e@sericyb.com.au>
+ <CAJCQCtQvyncTMqATX2PkVkR1bRPaUvDUqCmj-bRJzfHEU2k4JQ@mail.gmail.com>
+ <ff173eb0-b6e8-5365-43a8-8f67d0da6c96@sericyb.com.au>
+ <CAJCQCtTdHQAkaagTvCO-0SguakQx9p5iKmNbvmNYyxsBCqQ6Vw@mail.gmail.com>
+ <ac6be0fa-96a7-fe0b-20c7-d7082ff66905@sericyb.com.au>
+ <c2b89240-38fd-7749-3f1a-8aeaec8470e0@cobb.uk.net>
+From:   Andrew Pam <andrew@sericyb.com.au>
+Autocrypt: addr=andrew@sericyb.com.au; prefer-encrypt=mutual; keydata=
+ mQGiBEPPxa8RBACcBTuSu02Fi+ZhvFj8wYJa8P2xF2djPveAkV5iuv/b1OTlzcdC7yJwNKq8
+ STgXoe2C9orhZ+3lO0iIwCkZpYj3purc1CojYE0bFh8EAW85usWox+Nrqsb6JYaoJk0ekyfM
+ gogjKGf7MUg4lDwfg1D6iiWJ0Dk6OZwARo9u97sqswCgwki1jozMbKx8LhkzbeNAonRxADED
+ /2HcSy+OsR2byqdX2BbaZppXZJEzclQNR7BiSwTPVoOX0jcHY0Sn8rdBUlagSEhv4YJ4Tdwd
+ QhPs3qcrFm2GQnStV19cLJ1DvO3TfLEikSetWotBv/6RanXRZRweRE4pm/zZMxX6+zcib+jb
+ +UlFg7MSyu+z50g0Bf4b5xH6AW/DBACAsgsJaaD1lDOdFMK7jnUiYXI0Y+LfHJ6xOukYUNqC
+ Yaxbw4Bk60DeP7hwUfVPMMxIJZdN+WsrtkijppJG6La9KqapYPu3ByapaLoIjtBOeTJfhcDN
+ mcAqZaxDhZ6eIMi+IOyS6/2MK76aLEpYY+0+M8mzUZ3LXi/blYVbS7urobQkQW5kcmV3IFBh
+ bSA8eGFubmlAZ2xhc3N3aW5ncy5jb20uYXU+iGEEExECACECGwMGCwkIBwMCAxUCAwMWAgEC
+ HgECF4AFAkPPySICGQEACgkQGk9LI6KtAU50ZwCeJfVJEMTSK71XD+WR8z9stEhPovYAniEn
+ wBEAHXMO4MlxJPMmnYJWG/rbuQINBEPPxbQQCADZy6E8nqM+1s3t1UaIKzGzF8PuA0R+/Zx3
+ 5Uh4jHHoJyFt/uuJxyJzOrq9Ilz+fWXOrXK44Ga3wOQ6yR9tIhrGNoQ97Y2S5RSufjNVstS1
+ otA0N3a6nUz44rAPwXfFhMKTlUjfUwuvQik3yEF1kyXEU7o78G/XG06M/9s1ur1k4hFvAfCE
+ y/fXztx86bC5vlDq2r1MAwE+fMJG/Ok21OekdY0D3KrZ1kOi4kYgRoVIGlgfJE3OXi6W8Lko
+ c/oO0UUtEoiKGGOBTewmU8N6G2F3OXiONnZIY+FD/NIe+3YAEWAIc5SoXQs4KCmNxaF6vxRQ
+ STBOX2A9Y+LfY4lx5+HzAAMFB/9g0VGTdvnQvogs/0b+FdfvPVflwhbW9VMF12kWwgx9q0Gw
+ xcWO8IJWlFQouam5u2QMVMKxsscphAPjWDYP8BVGWFx32/Z5XZnp2xOqjaFSG9BfbEqIUizL
+ 9AEClL04eBKGmVrhPzr2d0Z7DgF5gxehVYZ7m9dW7heFnuiC+ZaYEGRvfyWsWsOihoDkbify
+ Ms1RluUU23wKJFaZzafAX4caD9u3bIUaujKUGCh64nLkaxwmZD2QBw0T9jGCIssVCRHwQmTV
+ 25eADYmSEwf3ONk4ljzfupTOpCLtNapGc3vZO84CQSv9bl3l24uBvVRWaqLJMO0NzAn+qbes
+ U3w6WMBCiEkEGBECAAkFAkPPxbUCGwwACgkQGk9LI6KtAU59IACggRqLORG73pZUK1pRh02T
+ 5kUwjTQAn1F0m2Mx72juiYwF0IKljJ7lR0TR
+Organization: Serious Cybernetics
+Face:   iVBORw0KGgoAAAANSUhEUgAAADAAAAAwBAMAAAClLOS0AAAALVBMVEUrHhk8LSRTQTZuVkmC
+ UkaKalykaGZ3h7KmgG+ahH68lYWXn7mxmpTSqZ3CvLqleibHAAACZElEQVQ4y3XUPWvbQBgH8FOg
+ Qzef3EKnEp+qIaOlGJzFi+Xg0YMFcoeMod/AFDpksMpxeHCSZhAYUxoo8mF16NylLYXUCG2F1uSW
+ eCimJp+hz+nNctKesTH30/P87ySf0e1/Bsq/hZ4X/Qu+XxiEHNyH9blBsEoOorvwzSQVjAnRJtuw
+ Mkk6MknhnGBSIQRiiF6ElZzNxlEBzpIuEKMSrG1gbaQXQz7GaiOHVd5GSpISw42cg0vlJ6TFC0NJ
+ BOwuAaKZBmlkQGAKIwWrmrnv2K66l8KqUlFxCSFFo5T5jMchEpYyEqFS+bkQgge8qqVwI6ehoB4I
+ ORYdNYUvGCswr3ORwImSA4KXzpICIU7QJIHTkoIVnaUFQoxQIwVopTi8AEcJVHFJ2QGAxUK3qTfK
+ WlUhAYD6rsXEomt3snAAJMGtWW3xo+V0djKAxe4w7jf33rSDS3IxepjCLuyuzAJOx/RF4Pfo26cZ
+ QMVjyPUpo8HPY/Y5u7tVqHhEYUELzgN4v4tSOEWK8ozG2wAIxK/sCS5RmeiUSfCDhRAfMljjJ4NW
+ AvH9ivJnXn3wvhXvesGYCDYQjtAhAIRw65BynsMZLMqiVC7Jtdqc5z+4pYn0rsM453PP7s1nOawN
+ pTaQMPW45403cLvENWoDuA6bTZ0CfC3VqQ0Z/BgGnRQqUJ26stdrAD/aAh6X+F2rPS0cnBWAbycl
+ bFg8UbsAru3wQISzqAgf63xOu7YXhqG3dWr7tWHgD0yz53lbx/lP/+U4hNvRNMza1h/A737/U3h9
+ 1d1vNnt3oR9eh65tO8N78CoMr2CT4wz+AgHlxhkkWxq2AAAAAElFTkSuQmCC
+Message-ID: <ace72f18-724c-9f2c-082f-cb478b8a63ef@sericyb.com.au>
+Date:   Sat, 9 May 2020 03:06:37 +1000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 273bce30-7e11-4761-14bc-08d7f35b8440
-X-MS-Exchange-CrossTenant-originalarrivaltime: 08 May 2020 14:24:28.0661
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: ajVaFC3fMgLwPyanTl7LdLyRE4v7vvbwJ4w5JI/zwFvUhQuMT0o+zBpNdJs+R4m2OysueQ763fJ5BT4QjTvCL0ffAPwET4zHTxiRSWkwyRQ=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN4PR0401MB3680
+In-Reply-To: <c2b89240-38fd-7749-3f1a-8aeaec8470e0@cobb.uk.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Looks good,=0A=
-Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>=0A=
-=0A=
-=0A=
+And here we are again:
+
+$ sudo btrfs scrub status -d /home
+UUID:             85069ce9-be06-4c92-b8c1-8a0f685e43c6
+scrub device /dev/sda (id 1) status
+Scrub resumed:    Sat May  9 02:52:12 2020
+Status:           running
+Duration:         7:02:55
+Time left:        32261372:31:39
+ETA:              Fri Sep 17 23:35:41 5700
+Total to scrub:   3.66TiB
+Bytes scrubbed:   3.67TiB
+Rate:             151.47MiB/s
+Error summary:    no errors found
+scrub device /dev/sdb (id 2) status
+Scrub resumed:    Sat May  9 02:52:12 2020
+Status:           running
+Duration:         7:02:59
+Time left:        31973655:40:34
+ETA:              Mon Nov 21 19:44:36 5667
+Total to scrub:   3.66TiB
+Bytes scrubbed:   3.70TiB
+Rate:             152.83MiB/s
+Error summary:    no errors found
+
+I tried building btrfs-progs v5.6.1 from source, but it gives exactly
+the same results.
+
+Cheers,
+	Andrew
