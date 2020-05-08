@@ -2,120 +2,164 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4809D1CAA9C
-	for <lists+linux-btrfs@lfdr.de>; Fri,  8 May 2020 14:28:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C32481CACEC
+	for <lists+linux-btrfs@lfdr.de>; Fri,  8 May 2020 14:58:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727093AbgEHM2w (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 8 May 2020 08:28:52 -0400
-Received: from st43p00im-ztbu10063601.me.com ([17.58.63.174]:40751 "EHLO
-        st43p00im-ztbu10063601.me.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726616AbgEHM2v (ORCPT
+        id S1728584AbgEHM5T (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 8 May 2020 08:57:19 -0400
+Received: from ipmail04.adl3.internode.on.net ([150.101.137.10]:23363 "EHLO
+        ipmail04.adl3.internode.on.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728227AbgEHM5S (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 8 May 2020 08:28:51 -0400
-X-Greylist: delayed 481 seconds by postgrey-1.27 at vger.kernel.org; Fri, 08 May 2020 08:28:50 EDT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=icloud.com;
-        s=1a1hai; t=1588940448;
-        bh=qsx1g8im2C6KvnaVBZgSVvUOgevCt28lYUTy/vJMZj0=;
-        h=Content-Type:Subject:From:Date:Message-Id:To;
-        b=hNwcpb+u/5j576SDd+6At7V9oL87aOTDaKkhco9zTxDtuU9rUhN2d/lfgT2loea7p
-         h+MdvbpYyci8C4svrZO1cWv+kBS6kztulj6viXZvaIW1qxMguU0JkwAhcG7ivJJIhT
-         YOiZZNx3K58GpLXHqZhYDl+kAUQMTjL8/sHFZ8Cjl53sJhrGsKhagxZzpTFVYw9I+A
-         6/p92Uh5X34AxFH3Z/+qXjAD6BqWPAMJg7xULj+ad7HbbiADwcELSy9V3GmzRcps+v
-         YFQDxP2N8anaYAjOX27FqvFaaq+s7Lq2BDwYATl3rqzH9yw1U2NixV9GhEgLmjppCa
-         woX6kymdXNQCg==
-Received: from [192.168.15.23] (200-170-112-116.corp.ajato.com.br [200.170.112.116])
-        by st43p00im-ztbu10063601.me.com (Postfix) with ESMTPSA id E1B7970022A;
-        Fri,  8 May 2020 12:20:47 +0000 (UTC)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.80.23.2.2\))
-Subject: btrfs reports bad key ordering after out of memory situation
-From:   Christian Wimmer <telefonchris@icloud.com>
-In-Reply-To: <CAJCQCtRyr17kdSdozU4_ZxJL_VdCWZe7DCCuUuz0cy2AiJs3=A@mail.gmail.com>
-Date:   Fri, 8 May 2020 09:20:45 -0300
-Cc:     Qu Wenruo <quwenruo.btrfs@gmx.com>, Qu WenRuo <wqu@suse.com>,
-        Anand Jain <anand.jain@oracle.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <2E923657-A63F-45E6-B837-7F33E1648468@icloud.com>
-References: <20191206034406.40167-1-wqu@suse.com>
- <2a220d44-fb44-66cf-9414-f1d0792a5d4f@oracle.com>
- <762365A0-8BDF-454B-ABA9-AB2F0C958106@icloud.com>
- <94a6d1b2-ae32-5564-22ee-6982e952b100@suse.com>
- <4C0C9689-3ECF-4DF7-9F7E-734B6484AA63@icloud.com>
- <f7fe057d-adc1-ace5-03b3-0f0e608d68a3@gmx.com>
- <9FB359ED-EAD4-41DD-B846-1422F2DC4242@icloud.com>
- <256D0504-6AEE-4A0E-9C62-CDF975FDE32D@icloud.com>
- <e04d1937-d70c-c891-4eea-c6fb70a45ab5@gmx.com>
- <8B00108E-4450-4448-8663-E5A5C0343E26@icloud.com>
- <CAJCQCtQAFRdutyVOt7JALtVsn-EeXhzNYYjdKpmS1Ts_6-6nMA@mail.gmail.com>
- <CC877460-A434-408F-B47D-5FAD0B03518C@icloud.com>
- <CAJCQCtS+a2WU01QCHXycLT8ktca-XV5JkO-KwtjRRzeEa4xikQ@mail.gmail.com>
- <3F43DDB8-0372-4CDE-B143-D2727D3447BC@icloud.com>
- <CAJCQCtRUQ3bz--5B7Gs9aGYdo6ybkJWQFy61ohWEc2y1BJ6XHA@mail.gmail.com>
- <938B37BF-E134-4F24-AC4F-93FECA6047FC@icloud.com>
- <CAJCQCtROKcVBNuWkyF5kRgJMuQ4g4YSxh5GL6QmuAJL=A-JROw@mail.gmail.com>
- <25D1F99C-F34A-48D6-BF62-42225765FBC1@icloud.com>
- <CAJCQCtQxN17UL7swO7vU6-ORVmHfQHteUQZ7iS1w7Y5XLHTpVA@mail.gmail.com>
- <86147601-37F0-49C0-B6F8-0F5245750450@icloud.com>
- <CAJCQCtRkZPq-k6pX3bCJmj25HY4eDdAEUcgLwGSh_Mi6VEqdiQ@mail.gmail.com>
- <5EFA3F48-29DA-4D02-BF14-803DBEEB6BB2@icloud.com>
- <CAJCQCtRyr17kdSdozU4_ZxJL_VdCWZe7DCCuUuz0cy2AiJs3=A@mail.gmail.com>
-To:     Chris Murphy <lists@colorremedies.com>
-X-Mailer: Apple Mail (2.3608.80.23.2.2)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.676
- definitions=2020-05-08_12:2020-05-07,2020-05-08 signatures=0
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 clxscore=1011 mlxscore=0
- mlxlogscore=952 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-2002250000 definitions=main-2005080110
+        Fri, 8 May 2020 08:57:18 -0400
+X-IronPort-Anti-Spam-Filtered: true
+X-IronPort-Anti-Spam-Result: =?us-ascii?q?A2AxAABpVrVe/9y5pztmGgEBAQEBAQE?=
+ =?us-ascii?q?BAQEDAQEBARIBAQEBAgIBAQEBQIE1AwEBAQELAYF8LYFDATKEUI57gWQtmWa?=
+ =?us-ascii?q?BewsBPAECBAEBhEQCgg4kNgcOAhABAQYBAQEBAQUEbYVihXEBAQEBAgEjVgU?=
+ =?us-ascii?q?LCw4KAgImAgI8GwYBDAgBAYMigl0frxR2gTKJGoFAImwqAYxDGoIAgREnD4J?=
+ =?us-ascii?q?aPmmGeYJgBJkXmVSBOYEbgQOMWopFI506kB2fKwwmgVYzGggXGYMlTxgNkEk?=
+ =?us-ascii?q?DF4EDAQyNJy8DZwIGCAEBAwlZAQGOeSuCGgEB?=
+Received: from podling.glasswings.com.au ([59.167.185.220])
+  by ipmail04.adl3.internode.on.net with ESMTP; 08 May 2020 22:27:10 +0930
+Received: from dash ([192.168.21.15])
+        by podling.glasswings.com.au with esmtp (Exim 4.89)
+        (envelope-from <andrew@sericyb.com.au>)
+        id 1jX2Yt-0001qq-Qu; Fri, 08 May 2020 22:57:07 +1000
+Subject: Re: btrfs-progs reports nonsense scrub status
+To:     Graham Cobb <g.btrfs@cobb.uk.net>,
+        Chris Murphy <lists@colorremedies.com>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+References: <0d1cceb6-9295-1bdf-c427-60ba9b1ef0b3@sericyb.com.au>
+ <CAJCQCtRK+jEMVMz1QPCJCYqCciaaMZ5W+STabrdAQ5RyzWHhGA@mail.gmail.com>
+ <7e54f0b9-d311-3d69-94dd-03279aa2dda2@sericyb.com.au>
+ <CAJCQCtT8VUvpo=fvcvhWpSNx_gt+ihk8orkkPuhdQ1nNnSMnPQ@mail.gmail.com>
+ <10b14d0b-9f10-609f-6365-f45c2ad20c6d@sericyb.com.au>
+ <CAJCQCtSdWMnGKZLxJR85eDoVFTLGwYNnGqkVnah=qA6fCoVk_Q@mail.gmail.com>
+ <709e4c3f-15b3-3c8a-2b25-ea95f4958999@sericyb.com.au>
+ <CAJCQCtTGygd22TYvsPS6RPydsAZoqQYDDV=K4w1yFgTn0+ba6A@mail.gmail.com>
+ <8ceacc86-96b7-44d2-d48d-234c6c4b45de@sericyb.com.au>
+ <CAJCQCtQ4xOdNH79XDQdy=ExkNHbpbYdMMHG1fTeN7SeA+dTo7w@mail.gmail.com>
+ <8ab9f20d-eff0-93bf-a4a4-042473b4059e@sericyb.com.au>
+ <CAJCQCtQvyncTMqATX2PkVkR1bRPaUvDUqCmj-bRJzfHEU2k4JQ@mail.gmail.com>
+ <ff173eb0-b6e8-5365-43a8-8f67d0da6c96@sericyb.com.au>
+ <CAJCQCtTdHQAkaagTvCO-0SguakQx9p5iKmNbvmNYyxsBCqQ6Vw@mail.gmail.com>
+ <ac6be0fa-96a7-fe0b-20c7-d7082ff66905@sericyb.com.au>
+ <c2b89240-38fd-7749-3f1a-8aeaec8470e0@cobb.uk.net>
+From:   Andrew Pam <andrew@sericyb.com.au>
+Autocrypt: addr=andrew@sericyb.com.au; prefer-encrypt=mutual; keydata=
+ mQGiBEPPxa8RBACcBTuSu02Fi+ZhvFj8wYJa8P2xF2djPveAkV5iuv/b1OTlzcdC7yJwNKq8
+ STgXoe2C9orhZ+3lO0iIwCkZpYj3purc1CojYE0bFh8EAW85usWox+Nrqsb6JYaoJk0ekyfM
+ gogjKGf7MUg4lDwfg1D6iiWJ0Dk6OZwARo9u97sqswCgwki1jozMbKx8LhkzbeNAonRxADED
+ /2HcSy+OsR2byqdX2BbaZppXZJEzclQNR7BiSwTPVoOX0jcHY0Sn8rdBUlagSEhv4YJ4Tdwd
+ QhPs3qcrFm2GQnStV19cLJ1DvO3TfLEikSetWotBv/6RanXRZRweRE4pm/zZMxX6+zcib+jb
+ +UlFg7MSyu+z50g0Bf4b5xH6AW/DBACAsgsJaaD1lDOdFMK7jnUiYXI0Y+LfHJ6xOukYUNqC
+ Yaxbw4Bk60DeP7hwUfVPMMxIJZdN+WsrtkijppJG6La9KqapYPu3ByapaLoIjtBOeTJfhcDN
+ mcAqZaxDhZ6eIMi+IOyS6/2MK76aLEpYY+0+M8mzUZ3LXi/blYVbS7urobQkQW5kcmV3IFBh
+ bSA8eGFubmlAZ2xhc3N3aW5ncy5jb20uYXU+iGEEExECACECGwMGCwkIBwMCAxUCAwMWAgEC
+ HgECF4AFAkPPySICGQEACgkQGk9LI6KtAU50ZwCeJfVJEMTSK71XD+WR8z9stEhPovYAniEn
+ wBEAHXMO4MlxJPMmnYJWG/rbuQINBEPPxbQQCADZy6E8nqM+1s3t1UaIKzGzF8PuA0R+/Zx3
+ 5Uh4jHHoJyFt/uuJxyJzOrq9Ilz+fWXOrXK44Ga3wOQ6yR9tIhrGNoQ97Y2S5RSufjNVstS1
+ otA0N3a6nUz44rAPwXfFhMKTlUjfUwuvQik3yEF1kyXEU7o78G/XG06M/9s1ur1k4hFvAfCE
+ y/fXztx86bC5vlDq2r1MAwE+fMJG/Ok21OekdY0D3KrZ1kOi4kYgRoVIGlgfJE3OXi6W8Lko
+ c/oO0UUtEoiKGGOBTewmU8N6G2F3OXiONnZIY+FD/NIe+3YAEWAIc5SoXQs4KCmNxaF6vxRQ
+ STBOX2A9Y+LfY4lx5+HzAAMFB/9g0VGTdvnQvogs/0b+FdfvPVflwhbW9VMF12kWwgx9q0Gw
+ xcWO8IJWlFQouam5u2QMVMKxsscphAPjWDYP8BVGWFx32/Z5XZnp2xOqjaFSG9BfbEqIUizL
+ 9AEClL04eBKGmVrhPzr2d0Z7DgF5gxehVYZ7m9dW7heFnuiC+ZaYEGRvfyWsWsOihoDkbify
+ Ms1RluUU23wKJFaZzafAX4caD9u3bIUaujKUGCh64nLkaxwmZD2QBw0T9jGCIssVCRHwQmTV
+ 25eADYmSEwf3ONk4ljzfupTOpCLtNapGc3vZO84CQSv9bl3l24uBvVRWaqLJMO0NzAn+qbes
+ U3w6WMBCiEkEGBECAAkFAkPPxbUCGwwACgkQGk9LI6KtAU59IACggRqLORG73pZUK1pRh02T
+ 5kUwjTQAn1F0m2Mx72juiYwF0IKljJ7lR0TR
+Organization: Serious Cybernetics
+Face:   iVBORw0KGgoAAAANSUhEUgAAADAAAAAwBAMAAAClLOS0AAAALVBMVEUrHhk8LSRTQTZuVkmC
+ UkaKalykaGZ3h7KmgG+ahH68lYWXn7mxmpTSqZ3CvLqleibHAAACZElEQVQ4y3XUPWvbQBgH8FOg
+ Qzef3EKnEp+qIaOlGJzFi+Xg0YMFcoeMod/AFDpksMpxeHCSZhAYUxoo8mF16NylLYXUCG2F1uSW
+ eCimJp+hz+nNctKesTH30/P87ySf0e1/Bsq/hZ4X/Qu+XxiEHNyH9blBsEoOorvwzSQVjAnRJtuw
+ Mkk6MknhnGBSIQRiiF6ElZzNxlEBzpIuEKMSrG1gbaQXQz7GaiOHVd5GSpISw42cg0vlJ6TFC0NJ
+ BOwuAaKZBmlkQGAKIwWrmrnv2K66l8KqUlFxCSFFo5T5jMchEpYyEqFS+bkQgge8qqVwI6ehoB4I
+ ORYdNYUvGCswr3ORwImSA4KXzpICIU7QJIHTkoIVnaUFQoxQIwVopTi8AEcJVHFJ2QGAxUK3qTfK
+ WlUhAYD6rsXEomt3snAAJMGtWW3xo+V0djKAxe4w7jf33rSDS3IxepjCLuyuzAJOx/RF4Pfo26cZ
+ QMVjyPUpo8HPY/Y5u7tVqHhEYUELzgN4v4tSOEWK8ozG2wAIxK/sCS5RmeiUSfCDhRAfMljjJ4NW
+ AvH9ivJnXn3wvhXvesGYCDYQjtAhAIRw65BynsMZLMqiVC7Jtdqc5z+4pYn0rsM453PP7s1nOawN
+ pTaQMPW45403cLvENWoDuA6bTZ0CfC3VqQ0Z/BgGnRQqUJ26stdrAD/aAh6X+F2rPS0cnBWAbycl
+ bFg8UbsAru3wQISzqAgf63xOu7YXhqG3dWr7tWHgD0yz53lbx/lP/+U4hNvRNMza1h/A737/U3h9
+ 1d1vNnt3oR9eh65tO8N78CoMr2CT4wz+AgHlxhkkWxq2AAAAAElFTkSuQmCC
+Message-ID: <788a4e71-a1c7-523a-f080-b12bc07895a1@sericyb.com.au>
+Date:   Fri, 8 May 2020 22:54:57 +1000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
+MIME-Version: 1.0
+In-Reply-To: <c2b89240-38fd-7749-3f1a-8aeaec8470e0@cobb.uk.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi Chris,
+On 8/5/20 9:21 pm, Graham Cobb wrote:
+> If you are worried that it is somehow looping (bytes scrubbed going up
+> but not really making progress), use:
+> 
+> btrfs scrub status -dR /home
 
-after reducing all partition sizes to 2TB I run my system now since 3 =
-months without any problems. Many reboots and still very stable. =
-Yesterday I run into a situation where I run out of memory on my 48Gbyte =
-Virtual machine and suddenly the home partition was mounted read only. =
-After a reboot the system did not come back.
+Aha!  That's what I was looking for.
 
-I did a btrfs check =E2=80=94readonly /dev/sda2 and it reported=20
+> and look at last_physical (for each disk) - it should be always increasing.
+> 
+> Also, there have been bugs in cancel/resume in the past. There could be
+> more bugs lurking there, particularly for multi-device filesystems.
 
-btrfs restore -l  /dev/sdb2 test
- tree key (EXTENT_TREE ROOT_ITEM 0) 278911795200 level 2
- tree key (DEV_TREE ROOT_ITEM 0) 279226892288 level 0
- tree key (FS_TREE ROOT_ITEM 0) 22118400 level 0
- tree key (CSUM_TREE ROOT_ITEM 0) 437370880 level 2
- tree key (QUOTA_TREE ROOT_ITEM 0) 279164583936 level 0
- tree key (UUID_TREE ROOT_ITEM 0) 460750848 level 0
- tree key (257 ROOT_ITEM 0) 22642688 level 0
- tree key (258 ROOT_ITEM 0) 279163060224 level 1
- tree key (259 ROOT_ITEM 0) 278998171648 level 2
- tree key (260 ROOT_ITEM 0) 279162814464 level 2
- tree key (261 ROOT_ITEM 0) 594477056 level 0
- tree key (262 ROOT_ITEM 0) 278959783936 level 1
- tree key (263 ROOT_ITEM 0) 279005970432 level 2
- tree key (264 ROOT_ITEM 0) 279162961920 level 2
- tree key (265 ROOT_ITEM 0) 655015936 level 0
- tree key (266 ROOT_ITEM 0) 654376960 level 1
- tree key (267 ROOT_ITEM 0) 461029376 level 0
- tree key (268 ROOT_ITEM 0) 279156670464 level 2
-bad key ordering 192 193
-bad key ordering 192 193
- tree key (DATA_RELOC_TREE ROOT_ITEM 0) 43673436160 level 0
+Apparently!  Unfortunately since scrub blocks suspend, I have to use
+cancel/resume in my suspend pre/post scripts.
 
+> If you are going to cancel and resume, check last_physical for each
+> device before the cancel (using 'status -dR') and after the resume and
+> make sure they seem sensible (not gone backwards, or skipped massively
+> forward, or started again on a device which had already finished).
 
-Could you please help me to repair this system?
+$ sudo btrfs scrub status -dR /home
+UUID:             85069ce9-be06-4c92-b8c1-8a0f685e43c6
+scrub device /dev/sda (id 1) status
+Scrub started:    Thu May  7 15:44:21 2020
+Status:           running
+Duration:         5:40:13
+	data_extents_scrubbed: 51856478
+	tree_extents_scrubbed: 431748
+	data_bytes_scrubbed: 3228367126528
+	tree_bytes_scrubbed: 7073759232
+	read_errors: 0
+	csum_errors: 0
+	verify_errors: 0
+	no_csum: 179858
+	csum_discards: 0
+	super_errors: 0
+	malloc_errors: 0
+	uncorrectable_errors: 0
+	unverified_errors: 0
+	corrected_errors: 0
+	last_physical: 0
+scrub device /dev/sdb (id 2) status
+Scrub started:    Thu May  7 15:44:21 2020
+Status:           running
+Duration:         5:40:16
+	data_extents_scrubbed: 52452792
+	tree_extents_scrubbed: 431756
+	data_bytes_scrubbed: 3266540351488
+	tree_bytes_scrubbed: 7073890304
+	read_errors: 0
+	csum_errors: 0
+	verify_errors: 0
+	no_csum: 182034
+	csum_discards: 0
+	super_errors: 0
+	malloc_errors: 0
+	uncorrectable_errors: 0
+	unverified_errors: 0
+	corrected_errors: 0
+	last_physical: 0
 
-Which command I can use ?
+last_physical is zero.  That doesn't seem right.
 
-For the btrfs restore command I used the newest btrfs version.
-The btrfs version the system was running on is 4.19=20
-
-Thanks a lot,
-
-Chris
-
+Cheers,
+	Andrew
