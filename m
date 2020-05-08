@@ -2,47 +2,47 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B8AE1CB9AF
-	for <lists+linux-btrfs@lfdr.de>; Fri,  8 May 2020 23:20:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D7291CB9CE
+	for <lists+linux-btrfs@lfdr.de>; Fri,  8 May 2020 23:31:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727108AbgEHVUk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 8 May 2020 17:20:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55854 "EHLO
+        id S1727100AbgEHVbT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 8 May 2020 17:31:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727082AbgEHVUk (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 8 May 2020 17:20:40 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E632CC061A0C
-        for <linux-btrfs@vger.kernel.org>; Fri,  8 May 2020 14:20:39 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id i15so3530702wrx.10
-        for <linux-btrfs@vger.kernel.org>; Fri, 08 May 2020 14:20:39 -0700 (PDT)
+        with ESMTP id S1726950AbgEHVbT (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 8 May 2020 17:31:19 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3877EC061A0C
+        for <linux-btrfs@vger.kernel.org>; Fri,  8 May 2020 14:31:19 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id x4so11685240wmj.1
+        for <linux-btrfs@vger.kernel.org>; Fri, 08 May 2020 14:31:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=C5g00r4PilUhbVKB8L7xlfGef0yJyZCBxS69f4BZ9Ws=;
-        b=KH5HOfjFnisGVk4eq9saghrNiWPD3UDD7FNAWPAoFCDYNf7SHt39/Q3IsxVjPzEyS8
-         g/7sH7+g65dRrLmZGQN6GsSsq4nTS/FKdT97PeCCfPAtZJIbllByWFH9TyNPxngGhZ2w
-         Tf/URkcoiayHUcUgB6bl1/PKoPwRcM2tg+yyERUPDu8rVUvr7IUm2OWebw63AQN32IZb
-         GCu5XwOTghQHDg2L/tSR0suBMrtUr9PwHzNEOA4oVMApC6WEjntnR5cOb8RUjrDKM9E+
-         ZKVaBP2T2ZKtPfRZRLefsIyybcRgt5rFi7U3OWxkxAGaSFnp4zOaqpu0GtO0OrN4M5iB
-         ezjA==
+        bh=ITOWhMzHNg+Lp/CZlPtn9YDd1rMD0mVnbwI43AgCVKY=;
+        b=2HUfhPZz7dVotKHau+Q3/AUQPlUfavBSc6uiZawu6QRBoBwR1/ROtBe+mgiNVCXBu6
+         /+FuuN/3iwH/+eI+77iKbiz9o4OAxkWCkR871Fg3/v0OnYZsfpT0y2KCH3pHRN0lk0L1
+         whOp30xqOMDnglRWdpVEX3fWL2MOp17RiL3433HJo914AlcYMoIlikegRDOQ74cH/7rM
+         zmk8yfpyyyJAaEpkGac9L4Zm9nM/mlQycjE32qPeDYY+h+DwpK9xKAnxQppn3RoJ/ahJ
+         TA3+esK6gk1fFv3udMl02CiHWW1vEHusjO4GRku8fj8LrElbDcJTjVNok4sTflGBR0Cj
+         oPUw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=C5g00r4PilUhbVKB8L7xlfGef0yJyZCBxS69f4BZ9Ws=;
-        b=h0cNNBYx/jKe5xrj/emn/5+zU+UAawkBsLvubBCfU3FcZT+57b1ie+kYijHZmSxTm0
-         I6t2WnXeRLGDV2Ko2cA/RLm0xwWVlMjQQczkHQGlJRpA19IyX61hblpYfuRVKromU4Fs
-         3JMxWSn27cAS+sHrI0Q83xU/5f/4tOcgCvZ2kqrjM6xVCHp8UdoCFskKhMXfNb0y3ZnM
-         pIIEzNkOLZ6FIF/RhlXYnlpnzRF94WKy2LGRGQLqiB61FsYD2CPqGI8QekmC7xJp+AeT
-         asQBLSoSZ6Rr+LuZEHnVvnGh3AqNDZ/ELfoYDrlJtH+oIjpqyE02gvElxwwmR5rzMsDn
-         Hj8Q==
-X-Gm-Message-State: AGi0PuYvYJjg4iU5Wny/ZZzC1gF5MlVdqs141ianFOUEG15++Ak+DzCA
-        u661MdmWqGK6cNNpWC2I1k81wVxbfX/+xqXQ6aIOMnsVLuSCxA==
-X-Google-Smtp-Source: APiQypLsvwihiRc8gsR+QyLkUwYkvR14Q/N+B2/mzdQzK7PYkFtXyQFTflfHPVpztthNnHS9w7rfhPwJQLjnAR6+ZRs=
-X-Received: by 2002:adf:a449:: with SMTP id e9mr3954716wra.252.1588972838471;
- Fri, 08 May 2020 14:20:38 -0700 (PDT)
+        bh=ITOWhMzHNg+Lp/CZlPtn9YDd1rMD0mVnbwI43AgCVKY=;
+        b=g/QKXg+DawAtc6Odpv1wIgFa8ZebWzeQVIhqqdJNcnERCf7CPtIMbguy0dJmdJ+Xky
+         HoFY9SpJESs14gSdBU6You+vNmll/SqnmtugovrAn4C+W6v7RAX5cVZ/4w9qmoM6d2W0
+         oYwY0Sy8k+7LKozjyn+aOiNIMu04luR8HC00GGVxQV/nEKuN1sX2n3SDtgGhXHShq7NO
+         PkTEvQUTfepgBxqra4xu9jP5zk0G0VrqYM6E3NE2pBRffIKkYJPMdZYzfoSSPdEwA/wh
+         8WenxOLcBRMA3aX5GqbgXuo4LmyP9gzvGW0svMWXc8o7LB/Mokd8uepjI5EeC70dsz2i
+         zpFQ==
+X-Gm-Message-State: AGi0PuZwEx/XYK2UZ1ej9DAvVjYQn4nQ20+tHkyDH4SS45EUTwklf5EP
+        NCRA7rASckpM5ys8MQ20d1k5XxGnhidDbdJwe3rxaA==
+X-Google-Smtp-Source: APiQypLBJz9cck/Iz5nXrmFvv+mzV2ojuYlVzB2hOhR+6OR1Ut2C4owYj8rpty7RzWTunt3gx/Syb7LvX20N5Bzgvv0=
+X-Received: by 2002:a1c:2348:: with SMTP id j69mr1441000wmj.11.1588973477862;
+ Fri, 08 May 2020 14:31:17 -0700 (PDT)
 MIME-Version: 1.0
 References: <0d1cceb6-9295-1bdf-c427-60ba9b1ef0b3@sericyb.com.au>
  <CAJCQCtRK+jEMVMz1QPCJCYqCciaaMZ5W+STabrdAQ5RyzWHhGA@mail.gmail.com>
@@ -56,8 +56,8 @@ References: <0d1cceb6-9295-1bdf-c427-60ba9b1ef0b3@sericyb.com.au>
  <ace72f18-724c-9f2c-082f-cb478b8a63ef@sericyb.com.au>
 In-Reply-To: <ace72f18-724c-9f2c-082f-cb478b8a63ef@sericyb.com.au>
 From:   Chris Murphy <lists@colorremedies.com>
-Date:   Fri, 8 May 2020 15:20:21 -0600
-Message-ID: <CAJCQCtTV5PnJaQLNePrSfcC_aUo0CZgsQHNRpTNd=SLA3xau7Q@mail.gmail.com>
+Date:   Fri, 8 May 2020 15:31:01 -0600
+Message-ID: <CAJCQCtSq7Ocar4hJM0Z+Y7UeRM6Cfi_uwN=QM77F2Eg+MtnNWw@mail.gmail.com>
 Subject: Re: btrfs-progs reports nonsense scrub status
 To:     Andrew Pam <andrew@sericyb.com.au>
 Cc:     Graham Cobb <g.btrfs@cobb.uk.net>,
@@ -68,6 +68,9 @@ Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
+
+(gmail is super annoying sometimes, keyboard shortcuts that cause
+email to be sent)
 
 On Fri, May 8, 2020 at 11:06 AM Andrew Pam <andrew@sericyb.com.au> wrote:
 >
@@ -83,18 +86,6 @@ On Fri, May 8, 2020 at 11:06 AM Andrew Pam <andrew@sericyb.com.au> wrote:
 > ETA:              Fri Sep 17 23:35:41 5700
 > Total to scrub:   3.66TiB
 > Bytes scrubbed:   3.67TiB
-
-
-It's obviously a bug. But I don't know why.
-
-
-[ 1683.525602] BTRFS warning (device sda4): qgroup rescan init failed,
-qgroup is not enabled
-[chris@fmac ~]
-
-
-
-
 > Rate:             151.47MiB/s
 > Error summary:    no errors found
 > scrub device /dev/sdb (id 2) status
@@ -111,8 +102,24 @@ qgroup is not enabled
 > I tried building btrfs-progs v5.6.1 from source, but it gives exactly
 > the same results.
 
+Do you have qgroups enabled?
+
+$ sudo btrfs qgroup show /home
+ERROR: can't list qgroups: quotas not enabled
+
+What do you get for:
+
+$ sudo btrfs insp dump-s /dev/
+
+This dumps out the super block.
+
+There are scrub related fixes in linux git since 5.4.0 but I can't
+tell if any of them are related to this problem. My suggestion is
+scrub with kernel 5.7.rc4. If the problem happens, it's a current and
+unfixed bug. If it's been fixed, then it's a question of what commit
+fixed it and whether it's been backported, or can be, to 5.4 series.
 
 
 
---
+-- 
 Chris Murphy
