@@ -2,131 +2,300 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7BF41CA5ED
-	for <lists+linux-btrfs@lfdr.de>; Fri,  8 May 2020 10:20:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF0421CA79C
+	for <lists+linux-btrfs@lfdr.de>; Fri,  8 May 2020 11:57:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726689AbgEHIT7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 8 May 2020 04:19:59 -0400
-Received: from ipmail05.adl3.internode.on.net ([150.101.137.13]:15840 "EHLO
-        ipmail05.adl3.internode.on.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726616AbgEHIT6 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 8 May 2020 04:19:58 -0400
-X-IronPort-Anti-Spam-Filtered: true
-X-IronPort-Anti-Spam-Result: =?us-ascii?q?A2BJDQCEFbVe/9y5pztmHAEBAQEBAQc?=
- =?us-ascii?q?BARIBAQQEAQFAgUeCKoFDATKEUI58gWQtm2ELATwBAgQBAYREAoINJDgTAhA?=
- =?us-ascii?q?BAQYBAQEBAQUEbYVihXIBBSNWEAsOCgICJgICPBsGDQgBAYMignyve4EyiSW?=
- =?us-ascii?q?BQCJsKoxEGoIAgREnD4JaPmmGeYJgBJkXmVSBOYEbgQOXHyOdOq9YIoFWMxo?=
- =?us-ascii?q?IFxmDJU8YDZBMF443LwNnAgYIAQEDCVkBAZE+AQE?=
-Received: from podling.glasswings.com.au ([59.167.185.220])
-  by ipmail05.adl3.internode.on.net with ESMTP; 08 May 2020 17:49:54 +0930
-Received: from dash ([192.168.21.15])
-        by podling.glasswings.com.au with esmtp (Exim 4.89)
-        (envelope-from <andrew@sericyb.com.au>)
-        id 1jWyEa-0004GY-Fw; Fri, 08 May 2020 18:19:52 +1000
-Subject: Re: btrfs-progs reports nonsense scrub status
-To:     Chris Murphy <lists@colorremedies.com>
-Cc:     Graham Cobb <g.btrfs@cobb.uk.net>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-References: <0d1cceb6-9295-1bdf-c427-60ba9b1ef0b3@sericyb.com.au>
- <9b763f5f-3e42-c26d-296c-e7a7d9cde036@sericyb.com.au>
- <CAJCQCtTorye5PTcH6crVYES4eAwVphhx3Au6xd7tijef1HU8uA@mail.gmail.com>
- <CAJCQCtRK+jEMVMz1QPCJCYqCciaaMZ5W+STabrdAQ5RyzWHhGA@mail.gmail.com>
- <7e54f0b9-d311-3d69-94dd-03279aa2dda2@sericyb.com.au>
- <CAJCQCtT8VUvpo=fvcvhWpSNx_gt+ihk8orkkPuhdQ1nNnSMnPQ@mail.gmail.com>
- <10b14d0b-9f10-609f-6365-f45c2ad20c6d@sericyb.com.au>
- <CAJCQCtSdWMnGKZLxJR85eDoVFTLGwYNnGqkVnah=qA6fCoVk_Q@mail.gmail.com>
- <709e4c3f-15b3-3c8a-2b25-ea95f4958999@sericyb.com.au>
- <CAJCQCtTGygd22TYvsPS6RPydsAZoqQYDDV=K4w1yFgTn0+ba6A@mail.gmail.com>
- <8ceacc86-96b7-44d2-d48d-234c6c4b45de@sericyb.com.au>
- <CAJCQCtQ4xOdNH79XDQdy=ExkNHbpbYdMMHG1fTeN7SeA+dTo7w@mail.gmail.com>
- <8ab9f20d-eff0-93bf-a4a4-042473b4059e@sericyb.com.au>
- <CAJCQCtQvyncTMqATX2PkVkR1bRPaUvDUqCmj-bRJzfHEU2k4JQ@mail.gmail.com>
- <ff173eb0-b6e8-5365-43a8-8f67d0da6c96@sericyb.com.au>
- <CAJCQCtTdHQAkaagTvCO-0SguakQx9p5iKmNbvmNYyxsBCqQ6Vw@mail.gmail.com>
-From:   Andrew Pam <andrew@sericyb.com.au>
-Autocrypt: addr=andrew@sericyb.com.au; prefer-encrypt=mutual; keydata=
- mQGiBEPPxa8RBACcBTuSu02Fi+ZhvFj8wYJa8P2xF2djPveAkV5iuv/b1OTlzcdC7yJwNKq8
- STgXoe2C9orhZ+3lO0iIwCkZpYj3purc1CojYE0bFh8EAW85usWox+Nrqsb6JYaoJk0ekyfM
- gogjKGf7MUg4lDwfg1D6iiWJ0Dk6OZwARo9u97sqswCgwki1jozMbKx8LhkzbeNAonRxADED
- /2HcSy+OsR2byqdX2BbaZppXZJEzclQNR7BiSwTPVoOX0jcHY0Sn8rdBUlagSEhv4YJ4Tdwd
- QhPs3qcrFm2GQnStV19cLJ1DvO3TfLEikSetWotBv/6RanXRZRweRE4pm/zZMxX6+zcib+jb
- +UlFg7MSyu+z50g0Bf4b5xH6AW/DBACAsgsJaaD1lDOdFMK7jnUiYXI0Y+LfHJ6xOukYUNqC
- Yaxbw4Bk60DeP7hwUfVPMMxIJZdN+WsrtkijppJG6La9KqapYPu3ByapaLoIjtBOeTJfhcDN
- mcAqZaxDhZ6eIMi+IOyS6/2MK76aLEpYY+0+M8mzUZ3LXi/blYVbS7urobQkQW5kcmV3IFBh
- bSA8eGFubmlAZ2xhc3N3aW5ncy5jb20uYXU+iGEEExECACECGwMGCwkIBwMCAxUCAwMWAgEC
- HgECF4AFAkPPySICGQEACgkQGk9LI6KtAU50ZwCeJfVJEMTSK71XD+WR8z9stEhPovYAniEn
- wBEAHXMO4MlxJPMmnYJWG/rbuQINBEPPxbQQCADZy6E8nqM+1s3t1UaIKzGzF8PuA0R+/Zx3
- 5Uh4jHHoJyFt/uuJxyJzOrq9Ilz+fWXOrXK44Ga3wOQ6yR9tIhrGNoQ97Y2S5RSufjNVstS1
- otA0N3a6nUz44rAPwXfFhMKTlUjfUwuvQik3yEF1kyXEU7o78G/XG06M/9s1ur1k4hFvAfCE
- y/fXztx86bC5vlDq2r1MAwE+fMJG/Ok21OekdY0D3KrZ1kOi4kYgRoVIGlgfJE3OXi6W8Lko
- c/oO0UUtEoiKGGOBTewmU8N6G2F3OXiONnZIY+FD/NIe+3YAEWAIc5SoXQs4KCmNxaF6vxRQ
- STBOX2A9Y+LfY4lx5+HzAAMFB/9g0VGTdvnQvogs/0b+FdfvPVflwhbW9VMF12kWwgx9q0Gw
- xcWO8IJWlFQouam5u2QMVMKxsscphAPjWDYP8BVGWFx32/Z5XZnp2xOqjaFSG9BfbEqIUizL
- 9AEClL04eBKGmVrhPzr2d0Z7DgF5gxehVYZ7m9dW7heFnuiC+ZaYEGRvfyWsWsOihoDkbify
- Ms1RluUU23wKJFaZzafAX4caD9u3bIUaujKUGCh64nLkaxwmZD2QBw0T9jGCIssVCRHwQmTV
- 25eADYmSEwf3ONk4ljzfupTOpCLtNapGc3vZO84CQSv9bl3l24uBvVRWaqLJMO0NzAn+qbes
- U3w6WMBCiEkEGBECAAkFAkPPxbUCGwwACgkQGk9LI6KtAU59IACggRqLORG73pZUK1pRh02T
- 5kUwjTQAn1F0m2Mx72juiYwF0IKljJ7lR0TR
-Organization: Serious Cybernetics
-Face:   iVBORw0KGgoAAAANSUhEUgAAADAAAAAwBAMAAAClLOS0AAAALVBMVEUrHhk8LSRTQTZuVkmC
- UkaKalykaGZ3h7KmgG+ahH68lYWXn7mxmpTSqZ3CvLqleibHAAACZElEQVQ4y3XUPWvbQBgH8FOg
- Qzef3EKnEp+qIaOlGJzFi+Xg0YMFcoeMod/AFDpksMpxeHCSZhAYUxoo8mF16NylLYXUCG2F1uSW
- eCimJp+hz+nNctKesTH30/P87ySf0e1/Bsq/hZ4X/Qu+XxiEHNyH9blBsEoOorvwzSQVjAnRJtuw
- Mkk6MknhnGBSIQRiiF6ElZzNxlEBzpIuEKMSrG1gbaQXQz7GaiOHVd5GSpISw42cg0vlJ6TFC0NJ
- BOwuAaKZBmlkQGAKIwWrmrnv2K66l8KqUlFxCSFFo5T5jMchEpYyEqFS+bkQgge8qqVwI6ehoB4I
- ORYdNYUvGCswr3ORwImSA4KXzpICIU7QJIHTkoIVnaUFQoxQIwVopTi8AEcJVHFJ2QGAxUK3qTfK
- WlUhAYD6rsXEomt3snAAJMGtWW3xo+V0djKAxe4w7jf33rSDS3IxepjCLuyuzAJOx/RF4Pfo26cZ
- QMVjyPUpo8HPY/Y5u7tVqHhEYUELzgN4v4tSOEWK8ozG2wAIxK/sCS5RmeiUSfCDhRAfMljjJ4NW
- AvH9ivJnXn3wvhXvesGYCDYQjtAhAIRw65BynsMZLMqiVC7Jtdqc5z+4pYn0rsM453PP7s1nOawN
- pTaQMPW45403cLvENWoDuA6bTZ0CfC3VqQ0Z/BgGnRQqUJ26stdrAD/aAh6X+F2rPS0cnBWAbycl
- bFg8UbsAru3wQISzqAgf63xOu7YXhqG3dWr7tWHgD0yz53lbx/lP/+U4hNvRNMza1h/A737/U3h9
- 1d1vNnt3oR9eh65tO8N78CoMr2CT4wz+AgHlxhkkWxq2AAAAAElFTkSuQmCC
-Message-ID: <ac6be0fa-96a7-fe0b-20c7-d7082ff66905@sericyb.com.au>
-Date:   Fri, 8 May 2020 18:19:52 +1000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1726612AbgEHJ53 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 8 May 2020 05:57:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33736 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725815AbgEHJ52 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 8 May 2020 05:57:28 -0400
+Received: from mail-ua1-x943.google.com (mail-ua1-x943.google.com [IPv6:2607:f8b0:4864:20::943])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CDFAC05BD43
+        for <linux-btrfs@vger.kernel.org>; Fri,  8 May 2020 02:57:28 -0700 (PDT)
+Received: by mail-ua1-x943.google.com with SMTP id 47so432190uaj.12
+        for <linux-btrfs@vger.kernel.org>; Fri, 08 May 2020 02:57:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc:content-transfer-encoding;
+        bh=Bt60Vw4pY0Mr1aF5aBOaBXVcnu8zq13pGrGsuq4dsCw=;
+        b=eak1J3xOJ9TfE9TJfFVZF0pQ6A9CyaHUPTa3z8BOfg68Q4+qOe0g70gqt5WlDac3W9
+         jFXAYf2GXk9S+MkMvJfyJoekYxHxWX6kxjosRyCPwHVDnK/ogTFh0i1XoPtcnmBD4ulw
+         48b4hpvaF6Lx2g6bkN1kkR+A4iEsBYooRsTYfBTHC6zaz/x00cKTSOMXJAswO7mUnJMB
+         FOz/OJIFbgkHPdM++I/OeZuYV7Bj0Y7uLkGR0gHHJe0bLDAQuvC0Whcn4nvSVGxrDckF
+         lOXqQDEWZiKIgd1qUKADxeZbCZnvyCR/rfT4SW5Xlk9gKXJ4pXbthsZM/hWqiFlq0xn7
+         Ga0Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc:content-transfer-encoding;
+        bh=Bt60Vw4pY0Mr1aF5aBOaBXVcnu8zq13pGrGsuq4dsCw=;
+        b=oBZ7LeMYdLUIQQXuFqiHrFQw+N7CQ6EOixM82FS0YrLymA9FQyAcDyJlcJoaaRo1t6
+         MLsUOi/Mwol5s7kWCZj2IRb7SfG0OJhwYfmw3+tPUwY+ngGG2bUpHnod7iDXEk2PZIyQ
+         SAQ9fR10c3ABeYI9YS+wDpTCypm8bj6riZ1ruQVkUsq3ow2t26JIzjj6sW65OxWRgw8l
+         T8RIf0q/QEzUcuXZdulX0HJvESLuMfH/vdzKm3hFsNLBM69EOb3EwiHrK+2isf/W6hDN
+         BQso1HIGrBiieHGc5PfBFO0At1KRAR2OFQrdh/yaRA9sA6dq9+Y0W8xADQJYd+a1YrQf
+         IVUg==
+X-Gm-Message-State: AGi0PubnIEE3USFoJ85SF+saCA5bnod/icXjPRxFi2s2nyV8XBztpz00
+        9goNg2w+QFg90WwxF7iW4091pKo7rUOB9YSWkCI=
+X-Google-Smtp-Source: APiQypIwiAAJU9WZ5U1J6pSSLajwglynMtvWbYKaK/8Q31kTqW2yeA9zVr61WhGpuVYkrdWkARyShuH2mh2OqyyO4Cw=
+X-Received: by 2002:ab0:c16:: with SMTP id a22mr1118105uak.135.1588931847136;
+ Fri, 08 May 2020 02:57:27 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAJCQCtTdHQAkaagTvCO-0SguakQx9p5iKmNbvmNYyxsBCqQ6Vw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200507201804.1623-1-marcos@mpdesouza.com>
+In-Reply-To: <20200507201804.1623-1-marcos@mpdesouza.com>
+Reply-To: fdmanana@gmail.com
+From:   Filipe Manana <fdmanana@gmail.com>
+Date:   Fri, 8 May 2020 10:57:16 +0100
+Message-ID: <CAL3q7H5ood5KFwCnqOJLmd3p41JvGk-UTbvS=vYYHSzJ7ctQyQ@mail.gmail.com>
+Subject: Re: [PATCH v1] btrfs: send: Emit file capabilities after chown
+To:     Marcos Paulo de Souza <marcos@mpdesouza.com>
+Cc:     David Sterba <dsterba@suse.com>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        Qu Wenruo <wqu@suse.com>,
+        Filipe David Borba Manana <fdmanana@suse.com>,
+        Marcos Paulo de Souza <mpdesouza@suse.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 8/5/20 5:37 pm, Chris Murphy wrote:
-> Are there any messages in dmesg?
+On Thu, May 7, 2020 at 9:16 PM Marcos Paulo de Souza
+<marcos@mpdesouza.com> wrote:
+>
+> From: Marcos Paulo de Souza <mpdesouza@suse.com>
+>
+> [PROBLEM]
+> Whenever a chown is executed, all capabilities of the file being touched =
+are
+> lost.  When doing incremental send with a file with capabilities, there i=
+s a
+> situation where the capability can be lost in the receiving side. The
+> sequence of actions bellow shows the problem:
+>
+> $ mount /dev/sda fs1
+> $ mount /dev/sdb fs2
+>
+> $ touch fs1/foo.bar
+> $ setcap cap_sys_nice+ep fs1/foo.bar
+> $ btrfs subvol snap -r fs1 fs1/snap_init
+> $ btrfs send fs1/snap_init | btrfs receive fs2
+>
+> $ chgrp adm fs1/foo.bar
+> $ setcap cap_sys_nice+ep fs1/foo.bar
+>
+> $ btrfs subvol snap -r fs1 fs1/snap_complete
+> $ btrfs subvol snap -r fs1 fs1/snap_incremental
+>
+> $ btrfs send fs1/snap_complete | btrfs receive fs2
+> $ btrfs send -p fs1/snap_init fs1/snap_incremental | btrfs receive fs2
+>
+> At this point, only a chown was emitted by "btrfs send" since only the gr=
+oup
+> was changed. This makes the cap_sys_nice capability to be dropped from
+> fs2/snap_incremental/foo.bar
+>
+> [FIX]
+> Only emit capabilities after chown is emitted. The current code
+> first checks for xattrs that are new/changed, emits them, and later emit
+> the chown. Now, __process_new_xattr skips capabilities, letting only
+> finish_inode_if_needed to emit them, if they exist, for the inode being
+> processed.
+>
+> Also, this patch also fixes a longstanding problem that was issuing an xa=
+ttr
+> _before_ chown.
 
-Well this is interesting:
+This sentence seems an unnecessary duplication of what the previous
+paragraph said.
 
-[129682.760759] BTRFS info (device sda): scrub: finished on devid 2 with
-status: 0
-[129683.173404] BTRFS info (device sda): scrub: finished on devid 1 with
-status: 0
+> This behavior was being worked around in "btrfs receive"
+> side by caching the capability and only applying it after chown. Now,
+> xattrs are only emmited _after_ chown, making that hack not needed
+> anymore.
 
-But then:
+Right, lets add:
 
-$ sudo btrfs scrub status -d /home
-UUID:             85069ce9-be06-4c92-b8c1-8a0f685e43c6
-scrub device /dev/sda (id 1) status
-Scrub started:    Thu May  7 15:44:21 2020
-Status:           interrupted
-Duration:         5:40:13
-Total to scrub:   3.66TiB
-Rate:             151.16MiB/s
-Error summary:    no errors found
-scrub device /dev/sdb (id 2) status
-Scrub started:    Thu May  7 15:44:21 2020
-Status:           interrupted
-Duration:         5:40:16
-Total to scrub:   3.66TiB
-Rate:             152.92MiB/s
-Error summary:    no errors found
+CC: stable@vger.kernel.org
 
-So was it really "interrupted", or did it finish normally with no errors
-but btrfs-progs is reporting wrongly?
+With that and after a few kernels releases with the fix (lets in 6
+months maybe),
+we can remove the btrfs-progs stuff.
 
-Thanks,
-	Andrew
+Also please send the test case for fstests, to test that particular
+scenario in the changelog and others for which the btrfs-progs hack
+worked but we never got any test case:
+
+1) test that after a full send of a snapshot with a file with
+capabilities, the receiver still has the capabilities;
+2) test that if we add capabilities to a file which had none in the
+parent snapshot, the receiver gets the capabilities after an
+incremental send;
+3) test that if the capabilities and owner/group change in the second
+snapshot for a file, after an incremental send the receiver has the
+correct capabilities;
+4) the case for the changelog - if the onwer/group changes but the
+capabilities remain the same, after an incremental send the
+capabilities aren't lost
+
+>
+> Link: https://github.com/kdave/btrfs-progs/issues/202
+> Suggested-by: Filipe Manana <fdmanana@suse.com>
+> Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
+
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
+
+> ---
+>  The first version of the patch was an RFC
+>
+>  Changes from RFC:
+>  * Explained about chown + drop capabilities problem in the commit messag=
+e (suggested
+>    by Filipe and David)
+>  * Changed the commit message to show describe the fix (suggested by Fili=
+pe)
+>  * Skip the xattr in __process_new_xattr if it's a capability, since it'l=
+l be
+>    handled in finish_inode_if_needed now (suggested by Filipe).
+>  * Created function send_capabilities to query if the inode has caps, and=
+ if
+>    yes, emit them.
+>  * Call send_capabilities in finish_inode_if_needed _after_ the needs_cho=
+wn
+>    check. (suggested by Filipe)
+>
+>  fs/btrfs/send.c | 69 +++++++++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 69 insertions(+)
+>
+> diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
+> index 6b86841315be..4f19965bdd82 100644
+> --- a/fs/btrfs/send.c
+> +++ b/fs/btrfs/send.c
+> @@ -23,6 +23,7 @@
+>  #include "btrfs_inode.h"
+>  #include "transaction.h"
+>  #include "compression.h"
+> +#include "xattr.h"
+>
+>  /*
+>   * Maximum number of references an extent can have in order for us to at=
+tempt to
+> @@ -4545,6 +4546,10 @@ static int __process_new_xattr(int num, struct btr=
+fs_key *di_key,
+>         struct fs_path *p;
+>         struct posix_acl_xattr_header dummy_acl;
+>
+> +       /* capabilities are emitted by finish_inode_if_needed */
+> +       if (!strncmp(name, XATTR_NAME_CAPS, name_len))
+> +               return 0;
+> +
+>         p =3D fs_path_alloc();
+>         if (!p)
+>                 return -ENOMEM;
+> @@ -5107,6 +5112,66 @@ static int send_extent_data(struct send_ctx *sctx,
+>         return 0;
+>  }
+>
+> +/*
+> + * Search for a capability xattr related to sctx->cur_ino. If the capabi=
+lity if
+> + * found, call send_set_xattr function to emit it.
+> + *
+> + * Return %0 if there isn't a capability, or when the capability was emi=
+tted
+> + * successfully, or < %0 if an error occurred.
+> + */
+> +static int send_capabilities(struct send_ctx *sctx)
+> +{
+> +       struct fs_path *fspath =3D NULL;
+> +       struct btrfs_path *path;
+> +       struct btrfs_dir_item *di;
+> +       struct extent_buffer *leaf;
+> +       unsigned long data_ptr;
+> +       char *name =3D XATTR_NAME_CAPS;
+
+Can be "const", or get rid of name and use  XATTR_NAME_CAPS directly everyw=
+here.
+
+Anyway, it's more a subjective stylistic detail, not that relevant.
+
+Thanks, good work!
+
+
+> +       char *buf =3D NULL;
+> +       int buf_len;
+> +       int ret =3D 0;
+> +
+> +       path =3D btrfs_alloc_path();
+> +       if (!path)
+> +               return -ENOMEM;
+> +
+> +       di =3D btrfs_lookup_xattr(NULL, sctx->send_root, path, sctx->cur_=
+ino,
+> +                               name, strlen(name), 0);
+> +       if (!di) {
+> +               /* there is no xattr for this inode */
+> +               goto out;
+> +       } else if (IS_ERR(di)) {
+> +               ret =3D PTR_ERR(di);
+> +               goto out;
+> +       }
+> +
+> +       leaf =3D path->nodes[0];
+> +       buf_len =3D btrfs_dir_data_len(leaf, di);
+> +
+> +       fspath =3D fs_path_alloc();
+> +       buf =3D kmalloc(buf_len, GFP_KERNEL);
+> +       if (!fspath || !buf) {
+> +               ret =3D -ENOMEM;
+> +               goto out;
+> +       }
+> +
+> +       ret =3D get_cur_path(sctx, sctx->cur_ino, sctx->cur_inode_gen, fs=
+path);
+> +       if (ret < 0)
+> +               goto out;
+> +
+> +       data_ptr =3D (unsigned long)((char *)(di + 1) +
+> +                                  btrfs_dir_name_len(leaf, di));
+> +       read_extent_buffer(leaf, buf, data_ptr,
+> +                          btrfs_dir_data_len(leaf, di));
+> +
+> +       ret =3D send_set_xattr(sctx, fspath, name, strlen(name), buf, buf=
+_len);
+> +out:
+> +       kfree(buf);
+> +       fs_path_free(fspath);
+> +       btrfs_free_path(path);
+> +       return ret;
+> +}
+> +
+>  static int clone_range(struct send_ctx *sctx,
+>                        struct clone_root *clone_root,
+>                        const u64 disk_byte,
+> @@ -6010,6 +6075,10 @@ static int finish_inode_if_needed(struct send_ctx =
+*sctx, int at_end)
+>                         goto out;
+>         }
+>
+> +       ret =3D send_capabilities(sctx);
+> +       if (ret < 0)
+> +               goto out;
+> +
+>         /*
+>          * If other directory inodes depended on our current directory
+>          * inode's move/rename, now do their move/rename operations.
+> --
+> 2.25.1
+>
+
+
+--=20
+Filipe David Manana,
+
+=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
+ right.=E2=80=9D
