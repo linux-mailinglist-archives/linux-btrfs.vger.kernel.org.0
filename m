@@ -2,164 +2,110 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C32481CACEC
-	for <lists+linux-btrfs@lfdr.de>; Fri,  8 May 2020 14:58:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 260EC1CB03F
+	for <lists+linux-btrfs@lfdr.de>; Fri,  8 May 2020 15:27:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728584AbgEHM5T (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 8 May 2020 08:57:19 -0400
-Received: from ipmail04.adl3.internode.on.net ([150.101.137.10]:23363 "EHLO
-        ipmail04.adl3.internode.on.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728227AbgEHM5S (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 8 May 2020 08:57:18 -0400
-X-IronPort-Anti-Spam-Filtered: true
-X-IronPort-Anti-Spam-Result: =?us-ascii?q?A2AxAABpVrVe/9y5pztmGgEBAQEBAQE?=
- =?us-ascii?q?BAQEDAQEBARIBAQEBAgIBAQEBQIE1AwEBAQELAYF8LYFDATKEUI57gWQtmWa?=
- =?us-ascii?q?BewsBPAECBAEBhEQCgg4kNgcOAhABAQYBAQEBAQUEbYVihXEBAQEBAgEjVgU?=
- =?us-ascii?q?LCw4KAgImAgI8GwYBDAgBAYMigl0frxR2gTKJGoFAImwqAYxDGoIAgREnD4J?=
- =?us-ascii?q?aPmmGeYJgBJkXmVSBOYEbgQOMWopFI506kB2fKwwmgVYzGggXGYMlTxgNkEk?=
- =?us-ascii?q?DF4EDAQyNJy8DZwIGCAEBAwlZAQGOeSuCGgEB?=
-Received: from podling.glasswings.com.au ([59.167.185.220])
-  by ipmail04.adl3.internode.on.net with ESMTP; 08 May 2020 22:27:10 +0930
-Received: from dash ([192.168.21.15])
-        by podling.glasswings.com.au with esmtp (Exim 4.89)
-        (envelope-from <andrew@sericyb.com.au>)
-        id 1jX2Yt-0001qq-Qu; Fri, 08 May 2020 22:57:07 +1000
-Subject: Re: btrfs-progs reports nonsense scrub status
-To:     Graham Cobb <g.btrfs@cobb.uk.net>,
-        Chris Murphy <lists@colorremedies.com>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-References: <0d1cceb6-9295-1bdf-c427-60ba9b1ef0b3@sericyb.com.au>
- <CAJCQCtRK+jEMVMz1QPCJCYqCciaaMZ5W+STabrdAQ5RyzWHhGA@mail.gmail.com>
- <7e54f0b9-d311-3d69-94dd-03279aa2dda2@sericyb.com.au>
- <CAJCQCtT8VUvpo=fvcvhWpSNx_gt+ihk8orkkPuhdQ1nNnSMnPQ@mail.gmail.com>
- <10b14d0b-9f10-609f-6365-f45c2ad20c6d@sericyb.com.au>
- <CAJCQCtSdWMnGKZLxJR85eDoVFTLGwYNnGqkVnah=qA6fCoVk_Q@mail.gmail.com>
- <709e4c3f-15b3-3c8a-2b25-ea95f4958999@sericyb.com.au>
- <CAJCQCtTGygd22TYvsPS6RPydsAZoqQYDDV=K4w1yFgTn0+ba6A@mail.gmail.com>
- <8ceacc86-96b7-44d2-d48d-234c6c4b45de@sericyb.com.au>
- <CAJCQCtQ4xOdNH79XDQdy=ExkNHbpbYdMMHG1fTeN7SeA+dTo7w@mail.gmail.com>
- <8ab9f20d-eff0-93bf-a4a4-042473b4059e@sericyb.com.au>
- <CAJCQCtQvyncTMqATX2PkVkR1bRPaUvDUqCmj-bRJzfHEU2k4JQ@mail.gmail.com>
- <ff173eb0-b6e8-5365-43a8-8f67d0da6c96@sericyb.com.au>
- <CAJCQCtTdHQAkaagTvCO-0SguakQx9p5iKmNbvmNYyxsBCqQ6Vw@mail.gmail.com>
- <ac6be0fa-96a7-fe0b-20c7-d7082ff66905@sericyb.com.au>
- <c2b89240-38fd-7749-3f1a-8aeaec8470e0@cobb.uk.net>
-From:   Andrew Pam <andrew@sericyb.com.au>
-Autocrypt: addr=andrew@sericyb.com.au; prefer-encrypt=mutual; keydata=
- mQGiBEPPxa8RBACcBTuSu02Fi+ZhvFj8wYJa8P2xF2djPveAkV5iuv/b1OTlzcdC7yJwNKq8
- STgXoe2C9orhZ+3lO0iIwCkZpYj3purc1CojYE0bFh8EAW85usWox+Nrqsb6JYaoJk0ekyfM
- gogjKGf7MUg4lDwfg1D6iiWJ0Dk6OZwARo9u97sqswCgwki1jozMbKx8LhkzbeNAonRxADED
- /2HcSy+OsR2byqdX2BbaZppXZJEzclQNR7BiSwTPVoOX0jcHY0Sn8rdBUlagSEhv4YJ4Tdwd
- QhPs3qcrFm2GQnStV19cLJ1DvO3TfLEikSetWotBv/6RanXRZRweRE4pm/zZMxX6+zcib+jb
- +UlFg7MSyu+z50g0Bf4b5xH6AW/DBACAsgsJaaD1lDOdFMK7jnUiYXI0Y+LfHJ6xOukYUNqC
- Yaxbw4Bk60DeP7hwUfVPMMxIJZdN+WsrtkijppJG6La9KqapYPu3ByapaLoIjtBOeTJfhcDN
- mcAqZaxDhZ6eIMi+IOyS6/2MK76aLEpYY+0+M8mzUZ3LXi/blYVbS7urobQkQW5kcmV3IFBh
- bSA8eGFubmlAZ2xhc3N3aW5ncy5jb20uYXU+iGEEExECACECGwMGCwkIBwMCAxUCAwMWAgEC
- HgECF4AFAkPPySICGQEACgkQGk9LI6KtAU50ZwCeJfVJEMTSK71XD+WR8z9stEhPovYAniEn
- wBEAHXMO4MlxJPMmnYJWG/rbuQINBEPPxbQQCADZy6E8nqM+1s3t1UaIKzGzF8PuA0R+/Zx3
- 5Uh4jHHoJyFt/uuJxyJzOrq9Ilz+fWXOrXK44Ga3wOQ6yR9tIhrGNoQ97Y2S5RSufjNVstS1
- otA0N3a6nUz44rAPwXfFhMKTlUjfUwuvQik3yEF1kyXEU7o78G/XG06M/9s1ur1k4hFvAfCE
- y/fXztx86bC5vlDq2r1MAwE+fMJG/Ok21OekdY0D3KrZ1kOi4kYgRoVIGlgfJE3OXi6W8Lko
- c/oO0UUtEoiKGGOBTewmU8N6G2F3OXiONnZIY+FD/NIe+3YAEWAIc5SoXQs4KCmNxaF6vxRQ
- STBOX2A9Y+LfY4lx5+HzAAMFB/9g0VGTdvnQvogs/0b+FdfvPVflwhbW9VMF12kWwgx9q0Gw
- xcWO8IJWlFQouam5u2QMVMKxsscphAPjWDYP8BVGWFx32/Z5XZnp2xOqjaFSG9BfbEqIUizL
- 9AEClL04eBKGmVrhPzr2d0Z7DgF5gxehVYZ7m9dW7heFnuiC+ZaYEGRvfyWsWsOihoDkbify
- Ms1RluUU23wKJFaZzafAX4caD9u3bIUaujKUGCh64nLkaxwmZD2QBw0T9jGCIssVCRHwQmTV
- 25eADYmSEwf3ONk4ljzfupTOpCLtNapGc3vZO84CQSv9bl3l24uBvVRWaqLJMO0NzAn+qbes
- U3w6WMBCiEkEGBECAAkFAkPPxbUCGwwACgkQGk9LI6KtAU59IACggRqLORG73pZUK1pRh02T
- 5kUwjTQAn1F0m2Mx72juiYwF0IKljJ7lR0TR
-Organization: Serious Cybernetics
-Face:   iVBORw0KGgoAAAANSUhEUgAAADAAAAAwBAMAAAClLOS0AAAALVBMVEUrHhk8LSRTQTZuVkmC
- UkaKalykaGZ3h7KmgG+ahH68lYWXn7mxmpTSqZ3CvLqleibHAAACZElEQVQ4y3XUPWvbQBgH8FOg
- Qzef3EKnEp+qIaOlGJzFi+Xg0YMFcoeMod/AFDpksMpxeHCSZhAYUxoo8mF16NylLYXUCG2F1uSW
- eCimJp+hz+nNctKesTH30/P87ySf0e1/Bsq/hZ4X/Qu+XxiEHNyH9blBsEoOorvwzSQVjAnRJtuw
- Mkk6MknhnGBSIQRiiF6ElZzNxlEBzpIuEKMSrG1gbaQXQz7GaiOHVd5GSpISw42cg0vlJ6TFC0NJ
- BOwuAaKZBmlkQGAKIwWrmrnv2K66l8KqUlFxCSFFo5T5jMchEpYyEqFS+bkQgge8qqVwI6ehoB4I
- ORYdNYUvGCswr3ORwImSA4KXzpICIU7QJIHTkoIVnaUFQoxQIwVopTi8AEcJVHFJ2QGAxUK3qTfK
- WlUhAYD6rsXEomt3snAAJMGtWW3xo+V0djKAxe4w7jf33rSDS3IxepjCLuyuzAJOx/RF4Pfo26cZ
- QMVjyPUpo8HPY/Y5u7tVqHhEYUELzgN4v4tSOEWK8ozG2wAIxK/sCS5RmeiUSfCDhRAfMljjJ4NW
- AvH9ivJnXn3wvhXvesGYCDYQjtAhAIRw65BynsMZLMqiVC7Jtdqc5z+4pYn0rsM453PP7s1nOawN
- pTaQMPW45403cLvENWoDuA6bTZ0CfC3VqQ0Z/BgGnRQqUJ26stdrAD/aAh6X+F2rPS0cnBWAbycl
- bFg8UbsAru3wQISzqAgf63xOu7YXhqG3dWr7tWHgD0yz53lbx/lP/+U4hNvRNMza1h/A737/U3h9
- 1d1vNnt3oR9eh65tO8N78CoMr2CT4wz+AgHlxhkkWxq2AAAAAElFTkSuQmCC
-Message-ID: <788a4e71-a1c7-523a-f080-b12bc07895a1@sericyb.com.au>
-Date:   Fri, 8 May 2020 22:54:57 +1000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
-MIME-Version: 1.0
-In-Reply-To: <c2b89240-38fd-7749-3f1a-8aeaec8470e0@cobb.uk.net>
-Content-Type: text/plain; charset=utf-8
+        id S1727857AbgEHNZe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 8 May 2020 09:25:34 -0400
+Received: from esa6.hgst.iphmx.com ([216.71.154.45]:40935 "EHLO
+        esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726736AbgEHNZd (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 8 May 2020 09:25:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1588944332; x=1620480332;
+  h=from:to:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
+  b=M6ikkGIW+I9nIRtVG2MwcvbfwWkmtN1pxLBv6MjUiyDUyb1UwqQct4U7
+   tLCtdfCJFbmp+0EOkFms6C+/LuMMmib4Mg3Nc2cKkcYmjUiFeXD2UZmDq
+   J3GuXl3Jftn0GxHrR6goAvQGip04I1PZRJs8nUbZ90BfxnsRWZVkrx8pD
+   +2mK/J8u09GZdZSyg4wPdbSs8WEu1kllwTgNQaC9m3ILLn1pVr1ifM1uX
+   KbdhU4H1duCvUponQnDToQ1Iv2PY+uR+T6Gengqm/brZVrZ+lj6EQHM72
+   8Wbi+bCBmJwO4lubjrzMd1miExDnpxRF/9clzEqg/8J3hUvkEwJ0+mkLl
+   g==;
+IronPort-SDR: NY/BZfqx8uQS3hEbVb6NKNPKwGxQaEMktYKyJq8iUPlQHNXhPX7dm5Jd0xgUmdYbEvUALfsf8B
+ K8MWa0eJMwRcxzULpLwF6atn3KIHn/gir5463zc9bSDOxWZlS+6BcI1jcUwf6s4rZ1avqwNOau
+ oAWX2Qiucu4iOncj50o+end4E09vdyJ8dNvJJREPjSlEMYuy5tcOQunAL3V1vJhQFddBpA5Wt5
+ Qe22B+eKvgKk2jH+BbZV9TvEEXSjVuihyiQiBLmz+0FjOawOjgiMPTbC5lYKjN/CtG1k9gv9ZM
+ JG0=
+X-IronPort-AV: E=Sophos;i="5.73,367,1583164800"; 
+   d="scan'208";a="138657784"
+Received: from mail-co1nam04lp2051.outbound.protection.outlook.com (HELO NAM04-CO1-obe.outbound.protection.outlook.com) ([104.47.45.51])
+  by ob1.hgst.iphmx.com with ESMTP; 08 May 2020 21:25:32 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=hkv1z7sBuqiQEH9b/va7YfAgp3ZsAWVOAxPsFsFmV21D3C7d7lWyF0yEleU1V5E5yJLyDZD8/Z3ULU3H4aIdj2NY19U01PPgt1wUYRgaf8ZKT22OJUtYhYUEWSv1rvJXPIp/EJR1bM1Np7DY5oY/it6UR1xkRwVPzvwC8W6EvCqTvB+A9Z6uj9r5UWDd5aQINhfjT3df6tTDco5f709Vu+IAVjqE6KCqnKl3nebuQpZXWFnfA6cgA4XBpdSHJ6LCMPqSfJT3fPr48g4vJENDUI7IeT943sH+fuv98biGkhtsPrtI0tcMLZLYA5K1vvxygNYN5AMfCBYmsSJ06qGidw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
+ b=HGC/HMbsEvWihZ4XQu+aM31NUZ5Kulhqg/FC6MpnImhYRN5mOpfM+vj46uibMgoHF3xr5/r4nwRPkwjcZ/rw1VAL55UDgOFhcCT1wZm7R7Jdv6MUMqHQcnd1ItzTtFBfbeZInd25OyBq2Eu78Dnt9pJrqpB7HGaud9ODw441f7+Ugy5j5beYGszUzhVGigPNSuK2rOPLISAdqEc52C5Cg97eCxTk3ekJB+4BYRSW24/dbnvkDKiKITnXRV7H13SLLvc8iij8ukORIlJFWLJ4wx4YOeKx0G3K5Fl2mg43OlQ23VbIApFtlEgg7Vc4hHpTDoSzpd/yEHpx7cV53bYr0w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
+ b=z0zS8EqOE2i0XZAAi1jjWhliMvYLsKa6foAeqfpUlzGZK+0Eb0K7RJnF7/GhsCFzEm4e8Kn5oCz8mbJbPO85/uaPz5NJo633PnyPn4ETu+U90PMJKqvYPd5PDWn/ZFLrNswc36c1e0qxkc5w9jVEBqKhBGy+v95OSpBMEL3FhmA=
+Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
+ (2603:10b6:803:47::21) by SN4PR0401MB3662.namprd04.prod.outlook.com
+ (2603:10b6:803:47::23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2958.29; Fri, 8 May
+ 2020 13:25:30 +0000
+Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
+ ([fe80::9854:2bc6:1ad2:f655]) by SN4PR0401MB3598.namprd04.prod.outlook.com
+ ([fe80::9854:2bc6:1ad2:f655%4]) with mapi id 15.20.2979.028; Fri, 8 May 2020
+ 13:25:30 +0000
+From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To:     David Sterba <dsterba@suse.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH 03/19] btrfs: don't use set/get token for single
+ assignment in overwrite_item
+Thread-Topic: [PATCH 03/19] btrfs: don't use set/get token for single
+ assignment in overwrite_item
+Thread-Index: AQHWJKz0azTJChRKx0S2OlvYYRq44A==
+Date:   Fri, 8 May 2020 13:25:30 +0000
+Message-ID: <SN4PR0401MB35985FE3C51FF111BF80DA259BA20@SN4PR0401MB3598.namprd04.prod.outlook.com>
+References: <cover.1588853772.git.dsterba@suse.com>
+ <0ef38b64e78028c5b31de4952e8bf683f992c5df.1588853772.git.dsterba@suse.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: suse.com; dkim=none (message not signed)
+ header.d=none;suse.com; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [129.253.240.72]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 7f378a4e-1ad8-43e5-a6d5-08d7f35347a8
+x-ms-traffictypediagnostic: SN4PR0401MB3662:
+x-microsoft-antispam-prvs: <SN4PR0401MB366204AEE61A495CFBBE34C39BA20@SN4PR0401MB3662.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:1728;
+x-forefront-prvs: 039735BC4E
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: eNcAD2GUKvKO1T2w2CfP3nzmhk+u1C4i8G6cpSod7Z5davCcCCBYCh52dyP3HNslFg7KKscQKdFEGMHG7Rax2ZyUoKIOX0XvbOFUITuAKTmHJw7BwaDabXG9W96XdRoUQ0PxfSUYCBi0jzq29MqhpQDSioykBBM8RmdRhr6xuxg9BR04VH/DoOsQyNt8y+awyizHgNGDdHOg//NQI48U7KE8JBsVJDTnEersRZI6IOEeJIaUWi2AGTHOISzje3jd6lRair3+I935qUc+YPDAj71bMuCN1MpqwZuthW/jYypydHvqbXdzdam+T9nT6Wjq5kT/6qe0qi6GdRCYv4A1PYKtec0wCgwc+jAagET1ry+CRhDmnC8L2n+PpIw5MbOcO2fr5+5gHb8TTubhWahYFHKf1Yf9cSZMCsfuzWhVipO9B+j+vTAOA9ADsvSMTVav0iqiphScBFWqMjuz6AVvvBx8YHZ5U56SnO5B1nBQ9vQ/ELJNtHJ6Cv43X+xquiwrysCQFw8UOy+iWmMfxUSzAQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR0401MB3598.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(366004)(376002)(136003)(396003)(346002)(39860400002)(33430700001)(316002)(558084003)(33440700001)(83300400001)(4270600006)(110136005)(478600001)(26005)(83310400001)(83320400001)(83290400001)(186003)(83280400001)(52536014)(7696005)(71200400001)(55016002)(5660300002)(6506007)(91956017)(19618925003)(66946007)(2906002)(8936002)(66476007)(66556008)(8676002)(76116006)(86362001)(66446008)(9686003)(33656002)(64756008);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: Tj+6Pjfjv+ZxfinZhbbmMvIHz2QSLARqFtFHqxhtVz45q9Drs8tN1kP6LlIkQarunz8EcctJOvSVJI5rixNM/MUJ1GoDc1Uv1C/LYsgjhEBaus4kmWmsmkJXiljasqfdGJT6YhU/8rfkXU4QVnoVeEZoVyxhlH4FiE8woikFb/LhHlDdf6t66+BUoLV0HTJu436cEzFFrs+kUTpCNlo8UqyLBy5lY5vZ+xZ7D2x79QJ+kbVM0rmYw7UkOX3sHFAECYkEWI9z0knSvi0SE8mzaTtp6deA82O2McXMNFof8IeQz6aMNw6wk5ziHuGrThDufTKUnbIQ/MKBX5ECeigXr1E3GGO7PO2SanCbJdbyzpyG0AsK7DvjUdmc147knALqNsEWuc5vnuvfdRUWCBKYbT7suuhGg3V0ejxoKpaYGkdfeh1vmHzligLXpRetZynBnOpydKKXSjqSMwFizzZ/JsZlt+qnGlsxYdOZEDz/uQj97K7CitwlHFJbudNoRGDK
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7f378a4e-1ad8-43e5-a6d5-08d7f35347a8
+X-MS-Exchange-CrossTenant-originalarrivaltime: 08 May 2020 13:25:30.5145
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Nzf8l68vR1VUjFJDlJEPZQEehIRSmyheKhNOeovKkL4zNlzM18K1ymu+1kE1oeNgANgtvJsRH7kfamCZ2+GwuO7heoTf/NNjqTaycveApwI=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN4PR0401MB3662
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 8/5/20 9:21 pm, Graham Cobb wrote:
-> If you are worried that it is somehow looping (bytes scrubbed going up
-> but not really making progress), use:
-> 
-> btrfs scrub status -dR /home
-
-Aha!  That's what I was looking for.
-
-> and look at last_physical (for each disk) - it should be always increasing.
-> 
-> Also, there have been bugs in cancel/resume in the past. There could be
-> more bugs lurking there, particularly for multi-device filesystems.
-
-Apparently!  Unfortunately since scrub blocks suspend, I have to use
-cancel/resume in my suspend pre/post scripts.
-
-> If you are going to cancel and resume, check last_physical for each
-> device before the cancel (using 'status -dR') and after the resume and
-> make sure they seem sensible (not gone backwards, or skipped massively
-> forward, or started again on a device which had already finished).
-
-$ sudo btrfs scrub status -dR /home
-UUID:             85069ce9-be06-4c92-b8c1-8a0f685e43c6
-scrub device /dev/sda (id 1) status
-Scrub started:    Thu May  7 15:44:21 2020
-Status:           running
-Duration:         5:40:13
-	data_extents_scrubbed: 51856478
-	tree_extents_scrubbed: 431748
-	data_bytes_scrubbed: 3228367126528
-	tree_bytes_scrubbed: 7073759232
-	read_errors: 0
-	csum_errors: 0
-	verify_errors: 0
-	no_csum: 179858
-	csum_discards: 0
-	super_errors: 0
-	malloc_errors: 0
-	uncorrectable_errors: 0
-	unverified_errors: 0
-	corrected_errors: 0
-	last_physical: 0
-scrub device /dev/sdb (id 2) status
-Scrub started:    Thu May  7 15:44:21 2020
-Status:           running
-Duration:         5:40:16
-	data_extents_scrubbed: 52452792
-	tree_extents_scrubbed: 431756
-	data_bytes_scrubbed: 3266540351488
-	tree_bytes_scrubbed: 7073890304
-	read_errors: 0
-	csum_errors: 0
-	verify_errors: 0
-	no_csum: 182034
-	csum_discards: 0
-	super_errors: 0
-	malloc_errors: 0
-	uncorrectable_errors: 0
-	unverified_errors: 0
-	corrected_errors: 0
-	last_physical: 0
-
-last_physical is zero.  That doesn't seem right.
-
-Cheers,
-	Andrew
+Looks good,=0A=
+Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>=0A=
