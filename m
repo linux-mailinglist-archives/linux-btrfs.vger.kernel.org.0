@@ -2,65 +2,99 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 187711CC0E4
-	for <lists+linux-btrfs@lfdr.de>; Sat,  9 May 2020 13:23:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09D7E1CC147
+	for <lists+linux-btrfs@lfdr.de>; Sat,  9 May 2020 14:30:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727976AbgEILXJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 9 May 2020 07:23:09 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:4321 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726600AbgEILXI (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 9 May 2020 07:23:08 -0400
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id DD8CBFC340B6D1C401E5;
-        Sat,  9 May 2020 19:23:03 +0800 (CST)
-Received: from localhost (10.166.215.154) by DGGEMS404-HUB.china.huawei.com
- (10.3.19.204) with Microsoft SMTP Server id 14.3.487.0; Sat, 9 May 2020
- 19:22:57 +0800
-From:   YueHaibing <yuehaibing@huawei.com>
-To:     <clm@fb.com>, <josef@toxicpanda.com>, <dsterba@suse.com>
-CC:     <linux-btrfs@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        YueHaibing <yuehaibing@huawei.com>
-Subject: [PATCH -next] btrfs: Remove unused inline function btrfs_dev_extent_chunk_tree_uuid
-Date:   Sat, 9 May 2020 19:22:43 +0800
-Message-ID: <20200509112243.54176-1-yuehaibing@huawei.com>
-X-Mailer: git-send-email 2.10.2.windows.1
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.166.215.154]
-X-CFilter-Loop: Reflected
+        id S1728424AbgEIMaw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 9 May 2020 08:30:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60064 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726782AbgEIMau (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Sat, 9 May 2020 08:30:50 -0400
+Received: from localhost (unknown [137.135.114.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 22BE1218AC;
+        Sat,  9 May 2020 12:30:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589027449;
+        bh=sgeZRy05/q3hE24fl+OkO7CEGk/FtbbZGKZdpNs//QI=;
+        h=Date:From:To:To:To:CC:Cc:Subject:In-Reply-To:References:From;
+        b=N9sX+SbZu7UD4T+lGiawgKe4O3AyMAiZbb5YCjDdqaMviZfwoPmqUk9EL0fGpSPun
+         qM3AdHFO9gEB2Dnxdcb2Q1FrmsRXmZI4UCUU+6x2C2XfQJk8/IRZp47BggGMsRl5Cz
+         LvkD7ZMVwhGQU2QXXuTGVKnhEamZTe4WAygeuSmY=
+Date:   Sat, 09 May 2020 12:30:48 +0000
+From:   Sasha Levin <sashal@kernel.org>
+To:     Sasha Levin <sashal@kernel.org>
+To:     Filipe Manana <fdmanana@suse.com>
+To:     linux-btrfs@vger.kernel.org
+CC:     stable@vger.kernel.org
+Cc:     stable@vger.kernel.org
+Subject: Re: [PATCH 1/4] Btrfs: fix a race between scrub and block group removal/allocation
+In-Reply-To: <20200508100110.6965-1-fdmanana@kernel.org>
+References: <20200508100110.6965-1-fdmanana@kernel.org>
+Message-Id: <20200509123049.22BE1218AC@mail.kernel.org>
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-There's no callers in-tree anymore since
-commit d24ee97b96db ("btrfs: use new helpers to set uuids in eb")
+Hi
 
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
----
- fs/btrfs/ctree.h | 7 -------
- 1 file changed, 7 deletions(-)
+[This is an automated email]
 
-diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index 03ea7370aea7..0b78ab0213bb 100644
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -1643,13 +1643,6 @@ BTRFS_SETGET_FUNCS(dev_extent_chunk_objectid, struct btrfs_dev_extent,
- BTRFS_SETGET_FUNCS(dev_extent_chunk_offset, struct btrfs_dev_extent,
- 		   chunk_offset, 64);
- BTRFS_SETGET_FUNCS(dev_extent_length, struct btrfs_dev_extent, length, 64);
--
--static inline unsigned long btrfs_dev_extent_chunk_tree_uuid(struct btrfs_dev_extent *dev)
--{
--	unsigned long ptr = offsetof(struct btrfs_dev_extent, chunk_tree_uuid);
--	return (unsigned long)dev + ptr;
--}
--
- BTRFS_SETGET_FUNCS(extent_refs, struct btrfs_extent_item, refs, 64);
- BTRFS_SETGET_FUNCS(extent_generation, struct btrfs_extent_item,
- 		   generation, 64);
+This commit has been processed because it contains a -stable tag.
+The stable tag indicates that it's relevant for the following trees: all
+
+The bot has tested the following trees: v5.6.11, v5.4.39, v4.19.121, v4.14.179, v4.9.222, v4.4.222.
+
+v5.6.11: Build OK!
+v5.4.39: Build failed! Errors:
+    fs/btrfs/scrub.c:3291:20: error: dereferencing pointer to incomplete type ‘struct btrfs_block_group’
+    fs/btrfs/scrub.c:3472:31: error: passing argument 7 of ‘scrub_stripe’ from incompatible pointer type [-Werror=incompatible-pointer-types]
+
+v4.19.121: Build failed! Errors:
+    fs/btrfs/scrub.c:3289:20: error: dereferencing pointer to incomplete type ‘struct btrfs_block_group’
+    fs/btrfs/scrub.c:3470:31: error: passing argument 7 of ‘scrub_stripe’ from incompatible pointer type [-Werror=incompatible-pointer-types]
+
+v4.14.179: Failed to apply! Possible dependencies:
+    32934280967d ("Btrfs: clean up scrub is_dev_replace parameter")
+    c83488afc5a7 ("btrfs: Remove fs_info from btrfs_inc_block_group_ro")
+
+v4.9.222: Failed to apply! Possible dependencies:
+    0b246afa62b0 ("btrfs: root->fs_info cleanup, add fs_info convenience variables")
+    32934280967d ("Btrfs: clean up scrub is_dev_replace parameter")
+    5e00f1939f6e ("btrfs: convert btrfs_inc_block_group_ro to accept fs_info")
+    62d1f9fe97dd ("btrfs: remove trivial helper btrfs_find_tree_block")
+    c83488afc5a7 ("btrfs: Remove fs_info from btrfs_inc_block_group_ro")
+    cf8cddd38bab ("btrfs: don't abuse REQ_OP_* flags for btrfs_map_block")
+    da17066c4047 ("btrfs: pull node/sector/stripe sizes out of root and into fs_info")
+    de143792253e ("btrfs: struct btrfsic_state->root should be an fs_info")
+    fb456252d3d9 ("btrfs: root->fs_info cleanup, use fs_info->dev_root everywhere")
+
+v4.4.222: Failed to apply! Possible dependencies:
+    0132761017e0 ("btrfs: fix string and comment grammatical issues and typos")
+    09cbfeaf1a5a ("mm, fs: get rid of PAGE_CACHE_* and page_cache_{get,release} macros")
+    0b246afa62b0 ("btrfs: root->fs_info cleanup, add fs_info convenience variables")
+    0e749e54244e ("dax: increase granularity of dax_clear_blocks() operations")
+    32934280967d ("Btrfs: clean up scrub is_dev_replace parameter")
+    4420cfd3f51c ("staging: lustre: format properly all comment blocks for LNet core")
+    52db400fcd50 ("pmem, dax: clean up clear_pmem()")
+    5e00f1939f6e ("btrfs: convert btrfs_inc_block_group_ro to accept fs_info")
+    5fd88337d209 ("staging: lustre: fix all conditional comparison to zero in LNet layer")
+    b2e0d1625e19 ("dax: fix lifetime of in-kernel dax mappings with dax_map_atomic()")
+    bb7ab3b92e46 ("btrfs: Fix misspellings in comments.")
+    c83488afc5a7 ("btrfs: Remove fs_info from btrfs_inc_block_group_ro")
+    cf8cddd38bab ("btrfs: don't abuse REQ_OP_* flags for btrfs_map_block")
+    d1a5f2b4d8a1 ("block: use DAX for partition table reads")
+    de143792253e ("btrfs: struct btrfsic_state->root should be an fs_info")
+    e10624f8c097 ("pmem: fail io-requests to known bad blocks")
+
+
+NOTE: The patch will not be queued to stable trees until it is upstream.
+
+How should we proceed with this patch?
+
 -- 
-2.17.1
-
-
+Thanks
+Sasha
