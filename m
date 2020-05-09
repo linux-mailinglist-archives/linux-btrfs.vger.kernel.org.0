@@ -2,99 +2,76 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09D7E1CC147
-	for <lists+linux-btrfs@lfdr.de>; Sat,  9 May 2020 14:30:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E3341CC1F7
+	for <lists+linux-btrfs@lfdr.de>; Sat,  9 May 2020 15:59:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728424AbgEIMaw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 9 May 2020 08:30:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60064 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726782AbgEIMau (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 9 May 2020 08:30:50 -0400
-Received: from localhost (unknown [137.135.114.1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 22BE1218AC;
-        Sat,  9 May 2020 12:30:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589027449;
-        bh=sgeZRy05/q3hE24fl+OkO7CEGk/FtbbZGKZdpNs//QI=;
-        h=Date:From:To:To:To:CC:Cc:Subject:In-Reply-To:References:From;
-        b=N9sX+SbZu7UD4T+lGiawgKe4O3AyMAiZbb5YCjDdqaMviZfwoPmqUk9EL0fGpSPun
-         qM3AdHFO9gEB2Dnxdcb2Q1FrmsRXmZI4UCUU+6x2C2XfQJk8/IRZp47BggGMsRl5Cz
-         LvkD7ZMVwhGQU2QXXuTGVKnhEamZTe4WAygeuSmY=
-Date:   Sat, 09 May 2020 12:30:48 +0000
-From:   Sasha Levin <sashal@kernel.org>
-To:     Sasha Levin <sashal@kernel.org>
-To:     Filipe Manana <fdmanana@suse.com>
-To:     linux-btrfs@vger.kernel.org
-CC:     stable@vger.kernel.org
-Cc:     stable@vger.kernel.org
-Subject: Re: [PATCH 1/4] Btrfs: fix a race between scrub and block group removal/allocation
-In-Reply-To: <20200508100110.6965-1-fdmanana@kernel.org>
-References: <20200508100110.6965-1-fdmanana@kernel.org>
-Message-Id: <20200509123049.22BE1218AC@mail.kernel.org>
+        id S1727834AbgEIN7S (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 9 May 2020 09:59:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41228 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726942AbgEIN7S (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Sat, 9 May 2020 09:59:18 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37059C061A0C
+        for <linux-btrfs@vger.kernel.org>; Sat,  9 May 2020 06:59:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Jlsd1RU8Rv807WHz42h2pIi4EP4s09WYUVAs1sizdpo=; b=d9zRGmw8i5EAKcCbKYtr0mWSoi
+        ZBAiRbrutOHtyYxYhMrF/A7NG5Zu86S7gU1raMI1foi9URjywpBuDLlGi5mbFHcNsxS/ULIj+ywXg
+        JuJvoK0OYKZKycGx0YOcq8bCxYxtwnkX/HvsGAydf0am8bhXC2W8tO4Ao8GIIThq1ghGMzfup+4OE
+        4/BaQtqxtR2NTPRBlLIlmdYHn2qKEcJdOfswa1Vi+3N8FIVkWAuPkaib0WFPLRK8UWVVlnppT/et7
+        +xClbqEKaiJFDhPSauhL4h1DpUF1cyzuz+8hL7Gv5IZpVJ4rUahSnroMfbKB9uN2FD8jyQOmWC0k7
+        9c+uSH7A==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jXQ0Y-0006Iz-4a; Sat, 09 May 2020 13:59:14 +0000
+Date:   Sat, 9 May 2020 06:59:14 -0700
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Goldwyn Rodrigues <rgoldwyn@suse.de>
+Cc:     Christoph Hellwig <hch@infradead.org>, dsterba@suse.cz,
+        linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 4/9] btrfs: Switch to iomap_dio_rw() for dio
+Message-ID: <20200509135914.GA4962@infradead.org>
+References: <20200326210254.17647-1-rgoldwyn@suse.de>
+ <20200326210254.17647-5-rgoldwyn@suse.de>
+ <20200327081024.GA24827@infradead.org>
+ <20200327161348.to4upflzczkbbpfo@fiona>
+ <20200507061430.GA8939@infradead.org>
+ <20200507113741.GJ18421@twin.jikos.cz>
+ <20200507121037.GA25363@infradead.org>
+ <20200508031405.br4dcibcyuoluxum@fiona>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200508031405.br4dcibcyuoluxum@fiona>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi
+On Thu, May 07, 2020 at 10:14:05PM -0500, Goldwyn Rodrigues wrote:
+> geenric/475 fails because there are reservations left in the inode's
+> block reservations system which are not cleared out. So the system
+> triggers WARN_ON() while performing destroy_inode.
+> 
+> The problem is similar to described in:
+> 50745b0a7f46 ("Btrfs: Direct I/O: Fix space accounting")
+> 
+> To test the theory, I framed an ugly patch of using an extra field
+> in current-> task_struct to store a number which carries the reservation
+> currently remaining like the patch does and it works. So what we need is
+> a way to carry reservation information from btrfs_direct_write() to
+> iomap's direct ops ->submit_io() where the reservations are consumed.
+> 
+> We cannot use a similar solution of using current->journal_info
+> because fdatawrite sequence in iomap_dio_rw() uses
+> current->journal_info.
+> 
+> We cannot perform data reservations and release in iomap_begin() and
+> iomap_end() for performance and accounting issues.
 
-[This is an automated email]
-
-This commit has been processed because it contains a -stable tag.
-The stable tag indicates that it's relevant for the following trees: all
-
-The bot has tested the following trees: v5.6.11, v5.4.39, v4.19.121, v4.14.179, v4.9.222, v4.4.222.
-
-v5.6.11: Build OK!
-v5.4.39: Build failed! Errors:
-    fs/btrfs/scrub.c:3291:20: error: dereferencing pointer to incomplete type ‘struct btrfs_block_group’
-    fs/btrfs/scrub.c:3472:31: error: passing argument 7 of ‘scrub_stripe’ from incompatible pointer type [-Werror=incompatible-pointer-types]
-
-v4.19.121: Build failed! Errors:
-    fs/btrfs/scrub.c:3289:20: error: dereferencing pointer to incomplete type ‘struct btrfs_block_group’
-    fs/btrfs/scrub.c:3470:31: error: passing argument 7 of ‘scrub_stripe’ from incompatible pointer type [-Werror=incompatible-pointer-types]
-
-v4.14.179: Failed to apply! Possible dependencies:
-    32934280967d ("Btrfs: clean up scrub is_dev_replace parameter")
-    c83488afc5a7 ("btrfs: Remove fs_info from btrfs_inc_block_group_ro")
-
-v4.9.222: Failed to apply! Possible dependencies:
-    0b246afa62b0 ("btrfs: root->fs_info cleanup, add fs_info convenience variables")
-    32934280967d ("Btrfs: clean up scrub is_dev_replace parameter")
-    5e00f1939f6e ("btrfs: convert btrfs_inc_block_group_ro to accept fs_info")
-    62d1f9fe97dd ("btrfs: remove trivial helper btrfs_find_tree_block")
-    c83488afc5a7 ("btrfs: Remove fs_info from btrfs_inc_block_group_ro")
-    cf8cddd38bab ("btrfs: don't abuse REQ_OP_* flags for btrfs_map_block")
-    da17066c4047 ("btrfs: pull node/sector/stripe sizes out of root and into fs_info")
-    de143792253e ("btrfs: struct btrfsic_state->root should be an fs_info")
-    fb456252d3d9 ("btrfs: root->fs_info cleanup, use fs_info->dev_root everywhere")
-
-v4.4.222: Failed to apply! Possible dependencies:
-    0132761017e0 ("btrfs: fix string and comment grammatical issues and typos")
-    09cbfeaf1a5a ("mm, fs: get rid of PAGE_CACHE_* and page_cache_{get,release} macros")
-    0b246afa62b0 ("btrfs: root->fs_info cleanup, add fs_info convenience variables")
-    0e749e54244e ("dax: increase granularity of dax_clear_blocks() operations")
-    32934280967d ("Btrfs: clean up scrub is_dev_replace parameter")
-    4420cfd3f51c ("staging: lustre: format properly all comment blocks for LNet core")
-    52db400fcd50 ("pmem, dax: clean up clear_pmem()")
-    5e00f1939f6e ("btrfs: convert btrfs_inc_block_group_ro to accept fs_info")
-    5fd88337d209 ("staging: lustre: fix all conditional comparison to zero in LNet layer")
-    b2e0d1625e19 ("dax: fix lifetime of in-kernel dax mappings with dax_map_atomic()")
-    bb7ab3b92e46 ("btrfs: Fix misspellings in comments.")
-    c83488afc5a7 ("btrfs: Remove fs_info from btrfs_inc_block_group_ro")
-    cf8cddd38bab ("btrfs: don't abuse REQ_OP_* flags for btrfs_map_block")
-    d1a5f2b4d8a1 ("block: use DAX for partition table reads")
-    de143792253e ("btrfs: struct btrfsic_state->root should be an fs_info")
-    e10624f8c097 ("pmem: fail io-requests to known bad blocks")
-
-
-NOTE: The patch will not be queued to stable trees until it is upstream.
-
-How should we proceed with this patch?
-
--- 
-Thanks
-Sasha
+So just drop "btrfs: Use ->iomap_end() instead of btrfs_dio_data"
+from the series and be done with it?
