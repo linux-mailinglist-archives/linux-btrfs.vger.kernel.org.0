@@ -2,106 +2,119 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BB881CC496
-	for <lists+linux-btrfs@lfdr.de>; Sat,  9 May 2020 22:39:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D15E21CC49F
+	for <lists+linux-btrfs@lfdr.de>; Sat,  9 May 2020 23:01:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727067AbgEIUjT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 9 May 2020 16:39:19 -0400
-Received: from ipmail05.adl3.internode.on.net ([150.101.137.13]:59293 "EHLO
-        ipmail05.adl3.internode.on.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726019AbgEIUjT (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 9 May 2020 16:39:19 -0400
-X-IronPort-Anti-Spam-Filtered: true
-X-IronPort-Anti-Spam-Result: =?us-ascii?q?A2BOGQCDFLde/9y5pztlHAEBAQEBAQc?=
- =?us-ascii?q?BARIBAQQEAQFAgUcCgiiBRDKEUI57gWQtmWaBegsBPAECBAEBhEQCgg4kOgQ?=
- =?us-ascii?q?NAhABAQYBAQEBAQUEbYVihXIBBSNWEAsOCgICJgICPBsGDQgBAYMignyuWYE?=
- =?us-ascii?q?yiSqBQCJsKoxEGoIAgTgPglo+aYNHgzKCYASZF5lUgTmBG4EDlx8jgksBmm6?=
- =?us-ascii?q?vWw0SgVYzGggXGYMlTxgNnxovA2cCBggBAQMJWQEBixgrghoBAQ?=
-Received: from podling.glasswings.com.au ([59.167.185.220])
-  by ipmail05.adl3.internode.on.net with ESMTP; 10 May 2020 06:09:12 +0930
-Received: from dash ([192.168.21.15])
-        by podling.glasswings.com.au with esmtp (Exim 4.89)
-        (envelope-from <andrew@sericyb.com.au>)
-        id 1jXWFZ-0007Xd-JT; Sun, 10 May 2020 06:39:09 +1000
-Subject: Re: btrfs-progs reports nonsense scrub status
-To:     Chris Murphy <lists@colorremedies.com>
-Cc:     Su Yue <Damenly_Su@gmx.com>, Graham Cobb <g.btrfs@cobb.uk.net>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-References: <0d1cceb6-9295-1bdf-c427-60ba9b1ef0b3@sericyb.com.au>
- <10b14d0b-9f10-609f-6365-f45c2ad20c6d@sericyb.com.au>
- <CAJCQCtSdWMnGKZLxJR85eDoVFTLGwYNnGqkVnah=qA6fCoVk_Q@mail.gmail.com>
- <709e4c3f-15b3-3c8a-2b25-ea95f4958999@sericyb.com.au>
- <CAJCQCtTGygd22TYvsPS6RPydsAZoqQYDDV=K4w1yFgTn0+ba6A@mail.gmail.com>
- <8ceacc86-96b7-44d2-d48d-234c6c4b45de@sericyb.com.au>
- <CAJCQCtQ4xOdNH79XDQdy=ExkNHbpbYdMMHG1fTeN7SeA+dTo7w@mail.gmail.com>
- <8ab9f20d-eff0-93bf-a4a4-042473b4059e@sericyb.com.au>
- <CAJCQCtQvyncTMqATX2PkVkR1bRPaUvDUqCmj-bRJzfHEU2k4JQ@mail.gmail.com>
- <ff173eb0-b6e8-5365-43a8-8f67d0da6c96@sericyb.com.au>
- <CAJCQCtTdHQAkaagTvCO-0SguakQx9p5iKmNbvmNYyxsBCqQ6Vw@mail.gmail.com>
- <ac6be0fa-96a7-fe0b-20c7-d7082ff66905@sericyb.com.au>
- <c2b89240-38fd-7749-3f1a-8aeaec8470e0@cobb.uk.net>
- <ace72f18-724c-9f2c-082f-cb478b8a63ef@sericyb.com.au> <mu6h7cyw.fsf@gmx.com>
- <e1bf3b75-9a57-1c53-53f0-85d8c91e6340@sericyb.com.au>
- <CAJCQCtSe-QEsJcjkDwhpy+qYhYaxHhWM02z1dqB_LctaR+220Q@mail.gmail.com>
-From:   Andrew Pam <andrew@sericyb.com.au>
-Autocrypt: addr=andrew@sericyb.com.au; prefer-encrypt=mutual; keydata=
- mQGiBEPPxa8RBACcBTuSu02Fi+ZhvFj8wYJa8P2xF2djPveAkV5iuv/b1OTlzcdC7yJwNKq8
- STgXoe2C9orhZ+3lO0iIwCkZpYj3purc1CojYE0bFh8EAW85usWox+Nrqsb6JYaoJk0ekyfM
- gogjKGf7MUg4lDwfg1D6iiWJ0Dk6OZwARo9u97sqswCgwki1jozMbKx8LhkzbeNAonRxADED
- /2HcSy+OsR2byqdX2BbaZppXZJEzclQNR7BiSwTPVoOX0jcHY0Sn8rdBUlagSEhv4YJ4Tdwd
- QhPs3qcrFm2GQnStV19cLJ1DvO3TfLEikSetWotBv/6RanXRZRweRE4pm/zZMxX6+zcib+jb
- +UlFg7MSyu+z50g0Bf4b5xH6AW/DBACAsgsJaaD1lDOdFMK7jnUiYXI0Y+LfHJ6xOukYUNqC
- Yaxbw4Bk60DeP7hwUfVPMMxIJZdN+WsrtkijppJG6La9KqapYPu3ByapaLoIjtBOeTJfhcDN
- mcAqZaxDhZ6eIMi+IOyS6/2MK76aLEpYY+0+M8mzUZ3LXi/blYVbS7urobQkQW5kcmV3IFBh
- bSA8eGFubmlAZ2xhc3N3aW5ncy5jb20uYXU+iGEEExECACECGwMGCwkIBwMCAxUCAwMWAgEC
- HgECF4AFAkPPySICGQEACgkQGk9LI6KtAU50ZwCeJfVJEMTSK71XD+WR8z9stEhPovYAniEn
- wBEAHXMO4MlxJPMmnYJWG/rbuQINBEPPxbQQCADZy6E8nqM+1s3t1UaIKzGzF8PuA0R+/Zx3
- 5Uh4jHHoJyFt/uuJxyJzOrq9Ilz+fWXOrXK44Ga3wOQ6yR9tIhrGNoQ97Y2S5RSufjNVstS1
- otA0N3a6nUz44rAPwXfFhMKTlUjfUwuvQik3yEF1kyXEU7o78G/XG06M/9s1ur1k4hFvAfCE
- y/fXztx86bC5vlDq2r1MAwE+fMJG/Ok21OekdY0D3KrZ1kOi4kYgRoVIGlgfJE3OXi6W8Lko
- c/oO0UUtEoiKGGOBTewmU8N6G2F3OXiONnZIY+FD/NIe+3YAEWAIc5SoXQs4KCmNxaF6vxRQ
- STBOX2A9Y+LfY4lx5+HzAAMFB/9g0VGTdvnQvogs/0b+FdfvPVflwhbW9VMF12kWwgx9q0Gw
- xcWO8IJWlFQouam5u2QMVMKxsscphAPjWDYP8BVGWFx32/Z5XZnp2xOqjaFSG9BfbEqIUizL
- 9AEClL04eBKGmVrhPzr2d0Z7DgF5gxehVYZ7m9dW7heFnuiC+ZaYEGRvfyWsWsOihoDkbify
- Ms1RluUU23wKJFaZzafAX4caD9u3bIUaujKUGCh64nLkaxwmZD2QBw0T9jGCIssVCRHwQmTV
- 25eADYmSEwf3ONk4ljzfupTOpCLtNapGc3vZO84CQSv9bl3l24uBvVRWaqLJMO0NzAn+qbes
- U3w6WMBCiEkEGBECAAkFAkPPxbUCGwwACgkQGk9LI6KtAU59IACggRqLORG73pZUK1pRh02T
- 5kUwjTQAn1F0m2Mx72juiYwF0IKljJ7lR0TR
-Organization: Serious Cybernetics
-Face:   iVBORw0KGgoAAAANSUhEUgAAADAAAAAwBAMAAAClLOS0AAAALVBMVEUrHhk8LSRTQTZuVkmC
- UkaKalykaGZ3h7KmgG+ahH68lYWXn7mxmpTSqZ3CvLqleibHAAACZElEQVQ4y3XUPWvbQBgH8FOg
- Qzef3EKnEp+qIaOlGJzFi+Xg0YMFcoeMod/AFDpksMpxeHCSZhAYUxoo8mF16NylLYXUCG2F1uSW
- eCimJp+hz+nNctKesTH30/P87ySf0e1/Bsq/hZ4X/Qu+XxiEHNyH9blBsEoOorvwzSQVjAnRJtuw
- Mkk6MknhnGBSIQRiiF6ElZzNxlEBzpIuEKMSrG1gbaQXQz7GaiOHVd5GSpISw42cg0vlJ6TFC0NJ
- BOwuAaKZBmlkQGAKIwWrmrnv2K66l8KqUlFxCSFFo5T5jMchEpYyEqFS+bkQgge8qqVwI6ehoB4I
- ORYdNYUvGCswr3ORwImSA4KXzpICIU7QJIHTkoIVnaUFQoxQIwVopTi8AEcJVHFJ2QGAxUK3qTfK
- WlUhAYD6rsXEomt3snAAJMGtWW3xo+V0djKAxe4w7jf33rSDS3IxepjCLuyuzAJOx/RF4Pfo26cZ
- QMVjyPUpo8HPY/Y5u7tVqHhEYUELzgN4v4tSOEWK8ozG2wAIxK/sCS5RmeiUSfCDhRAfMljjJ4NW
- AvH9ivJnXn3wvhXvesGYCDYQjtAhAIRw65BynsMZLMqiVC7Jtdqc5z+4pYn0rsM453PP7s1nOawN
- pTaQMPW45403cLvENWoDuA6bTZ0CfC3VqQ0Z/BgGnRQqUJ26stdrAD/aAh6X+F2rPS0cnBWAbycl
- bFg8UbsAru3wQISzqAgf63xOu7YXhqG3dWr7tWHgD0yz53lbx/lP/+U4hNvRNMza1h/A737/U3h9
- 1d1vNnt3oR9eh65tO8N78CoMr2CT4wz+AgHlxhkkWxq2AAAAAElFTkSuQmCC
-Message-ID: <cc47670d-05dc-83aa-a3bf-17adda2119eb@sericyb.com.au>
-Date:   Sun, 10 May 2020 06:39:09 +1000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1727995AbgEIVBj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 9 May 2020 17:01:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50256 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727887AbgEIVBj (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sat, 9 May 2020 17:01:39 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A62AFC061A0C
+        for <linux-btrfs@vger.kernel.org>; Sat,  9 May 2020 14:01:37 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id a7so5833175pju.2
+        for <linux-btrfs@vger.kernel.org>; Sat, 09 May 2020 14:01:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ka9q-net.20150623.gappssmtp.com; s=20150623;
+        h=to:cc:references:from:autocrypt:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=nuuqKIef0dkAhdyafInT3psd0fQzs7IX2Q6WtONmTO8=;
+        b=Iw8Qecz4kCtD1rvtLj5l3Qd0NSpzyhQwqK3QUIuNj82FucRDv377bV6fZ+lKOFGjc0
+         LT9csz0sVgsLNKSXI7EWZ+4xgcyYFajA09fGXjqDsyLv/6kRg5sFh0Kr0f7aptnSRBMB
+         OZOHp2JD8uFjmSj1Mlk9LYuqTYnHaCBPuuH4LH5KqFm2rmS6qUO0E6xbQwxn1/0qkutr
+         P7WRibe4ieCkjkW7SRbsUh8H8TJi8/wT+0e/YwutrOpwpySz9B+NnAyPjhOfoITiii3+
+         RDIt8T/UTUfxzCJYUBroCNRHckijXOMxR732PhGK+ZoVu6lEc1MhOWCU6u4r83ifp4qN
+         71Kw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:references:from:autocrypt:subject
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-transfer-encoding:content-language;
+        bh=nuuqKIef0dkAhdyafInT3psd0fQzs7IX2Q6WtONmTO8=;
+        b=pnYBufNjq3sUhXhYpXjAN7VE/eG922PyaDlOTQ2PnSmGxE9CQMRlYTvonSl2y1TBC7
+         Eer45eF24ctK4VvI2nWdaY/JXUOOryKEIrmA/eHSPBWtdAle6HpV0+0FysR0YQcHbqzM
+         bb822qvo/uMQ3SkQjfceOC5Aa34t+YWtndyeWwiH3NA9Tb9kv1W3FYdZjgEpMfi07U/X
+         SWLv0C04rihUmh4aas+SBfzftThDiool+e3k4Tg4ICdNLJxBXQhprijLoHdqp9NOrMjB
+         R4LcXZ1GuYe/5YlL3OR1Uj8Yk47dQo0FTXll8NZjyy+DYJIAQnaYz7ZhBcY+uVFbgeD3
+         +vLg==
+X-Gm-Message-State: AGi0PuZbjC72pNQZmWqQ0r2eEjVPyH9ocBCHSC8lsjxOsJwWNX+7ntDy
+        VoCVG2soX4Rv9iMrz5fTLpa2rg==
+X-Google-Smtp-Source: APiQypIiouZFdUo1azF3eShVtnXkM9+WWE906R1r93uwBrf249LPDgRHfBSggklMALrZ/PPj7kiLww==
+X-Received: by 2002:a17:90a:e2d0:: with SMTP id fr16mr13156409pjb.146.1589058097034;
+        Sat, 09 May 2020 14:01:37 -0700 (PDT)
+Received: from selma.local (cpe-76-167-209-94.san.res.rr.com. [76.167.209.94])
+        by smtp.gmail.com with ESMTPSA id 82sm5230617pfv.214.2020.05.09.14.01.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 09 May 2020 14:01:35 -0700 (PDT)
+To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
+        Rich Rauenzahn <rrauenza@gmail.com>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+References: <CAG+QAKXuaah3tkhQLd7mD3bx+pc3JZdXkUg6yr0R8=Zv2vXnhw@mail.gmail.com>
+ <20200504230857.GQ10769@hungrycats.org>
+From:   Phil Karn <karn@ka9q.net>
+Autocrypt: addr=karn@ka9q.net; keydata=
+ mQENBEw2mJ4BCADELiPsLFHDwapoSU7d2xNHxmwzzrFUCZWhO34kM6G5+o9GUNmGgMQ0BmXp
+ I6hx77HHnrj9FC6kWh/bxBt3+o8HW+NTWzJSvf6kW7ThaNt7v9iewkS23JOMarAZs4qy6MhT
+ 1RW1/yWY7RimWxrmkKPTKKa0Ad4CWT6fcP3t+doqGslSQIeoTh0C33ZT+LY59Wcr224iXohN
+ 4Uu/nFe4yAHjtA+4Sesveo3Tyi8cbOgkcO6vij+pXesCcuhtGMlnE2dxRqbenrfVGLUVxNug
+ LkQdLWezaGGm+dcjWYk1xjtaDnsCpVaYCMsfYNADQPJAjAFu37pVdoXhseVXfzOUN2EXABEB
+ AAG0GVBoaWwgS2FybiA8a2FybkBrYTlxLm5ldD6JATgEEwECACIFAkw2mJ4CGwMGCwkIBwMC
+ BhUIAgkKCwQWAgMBAh4BAheAAAoJEPFOQ1TtRjRGU98H/Atsb/N4lNbzNdzdIRcHD9XgCEa1
+ UdR4mxgjwvLxS1nYRNdHwfTxvA5nxWfMx/0CB26VaNFdI3lkg/S0vYsSUu6M7l8Zb8v4JMyU
+ 4B4yvkFHZ3II5oilzIMa3e2cMfDz7TSwO1JcXyI5y9vHnvH65/LQF+QojDgzf3vXKiNdTXJp
+ 3nEa5IgMAB0rcSNsXFx8xbHi8s5niL9+1I7XTPvVMeXrMe8h4AG1nM/dK96WwmV+tLyXKYXn
+ xVeb9F4X9CNQbkn/xAH+egvKHHT3V7K9cAhrDfu9Qwpo7zKk/akBpLWG2kmkTOfhXjm3UQhv
+ MVgDmpeQIYa1HgAsKrsDQMzrIFm5AQ0ETDaYngEIAJmFdm0MmENzLEosD1FvGPJleWDYb0ah
+ 8dOk4XUug1RhW40f7AsugT75pKs9PolXt92920GdU727X3Jpgdj4kLDtIQA0KZrOXiEOZjIZ
+ WcROAyvTGyMs/P7Um1AGNM161Ga6/Wtlc076FN7EUQtzPbthH26M3lGWUX0Ccls/8Ep4qbnF
+ IrMRBxjaxKbqfKPTeU10pDykzA7s5hiNe7qaegvqD6YLseZ+6FqCn988YnLiIaFeNbWxUY5G
+ spjAsfesnAmpn5vhUqAGiizkNlAMIN31xvpLd93oM4/vORszIuN1UP2RlxL3s30BncZl2XOd
+ Mk1/59Sy70zVqF1ANyMrA18AEQEAAYkBHwQYAQIACQUCTDaYngIbDAAKCRDxTkNU7UY0Rszt
+ B/9ZPH9xw47lPkVJRbhgf0G7fdsxsyiuouAqOKklUNFSy4+qeGomjwE6YvdMybwGtaUGla7t
+ 2mDzrva+7Gzb0inXIgmahQPmM16F3GVxGoFL+QJ+7gD8Hco6e0/2kju7ZREDE7SOEwKb3lhD
+ eNLccfX2AqAHfCT/LVLbgBpMRmwUJQThM+33Z2L9BqIM3awj2mOTmeDumpxiDfroU90mGc9c
+ pXe4YrNIkL/N8eMzLe1bpu+mpPCiIrEO+dFA7N8jjVcOCQ4Lr8sU6cOsEdkaACZiNFKT99eb
+ NkKigK8sEkDZc/AKhPCEsnaZpwBZPScOL88LLi7FHj9Osznt+uhWfbLe
+Subject: Re: Western Digital Red's SMR and btrfs?
+Message-ID: <f7ae0b64-048d-3898-6e2d-5702e2f79f47@ka9q.net>
+Date:   Sat, 9 May 2020 14:00:16 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <CAJCQCtSe-QEsJcjkDwhpy+qYhYaxHhWM02z1dqB_LctaR+220Q@mail.gmail.com>
+In-Reply-To: <20200504230857.GQ10769@hungrycats.org>
 Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 10/5/20 6:28 am, Chris Murphy wrote:
-> OK so you haven't done a scrub from start to finish without a
-> cancel+suspend+resume?
+On 5/4/20 16:08, Zygo Blaxell wrote:
+> The basic problem with DM-SMR drives is that they cache writes in CMR
+> zones for a while, but they need significant idle periods (no read or
+> write commands from the host) to move the data back to SMR zones, or
+> they run out of CMR space and throttle writes from the host.
 
-I have not, because my system is set to suspend after 30 minutes to save
-power.  I will disable that and test a scrub with no suspend next.
+Does anybody know where the drive keeps all that metadata? On rotating
+disk, or in flash somewhere?
 
-Cheers,
-	Andrew
+Just wondering what happens when power suddenly fails during these
+rewrite operations.
+
+>
+> Some kinds of RAID rebuild don't provide sufficient idle time to comple=
+te
+> the CMR-to-SMR writeback, so the host gets throttled.  If the drive slo=
+ws
+
+My understanding is that large sequential writes can go directly to the
+SMR areas, which is an argument for a more conventional RAID array. How
+hard does btrfs try to do large sequential writes?
+
+
+
+
+
