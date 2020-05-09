@@ -2,127 +2,98 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75EFE1CBDCD
-	for <lists+linux-btrfs@lfdr.de>; Sat,  9 May 2020 07:35:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AD3B1CBE0E
+	for <lists+linux-btrfs@lfdr.de>; Sat,  9 May 2020 08:31:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728816AbgEIFfI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 9 May 2020 01:35:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48010 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725820AbgEIFfI (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sat, 9 May 2020 01:35:08 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E324C061A0C;
-        Fri,  8 May 2020 22:35:08 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id m7so1668452plt.5;
-        Fri, 08 May 2020 22:35:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=oVPqgvFYpDmjHxtwZexyhCeh0mu3Dntz+mgij6nVzYY=;
-        b=U8HaRP/fXpygxd+qh4WQ0oKNQCpdght8A3mk6BcJtbFiqDIaMMSunNcdSqGyfRksSj
-         9ippqZvDQkxJsJvHR2sDIKSKa9ZX7M78w+kFV+ouHXfTC/IummTNHD5uQrQORIwNJyz1
-         DWf6eeXlBuMurn9zDL3DcY3sw8hMfcvX+hAGVZ3u8Dsuf4HgXug6wcYsR6VkCiylivfn
-         +ax3ZJwvoTs817VAjPX5cLWMQiJ5aVvGK46V8Y/fbYLI6COm96wIRF24iIrgML7GeJRr
-         JLtzDGlnFe3jdU6URCSeATAheRgEcUW9Su3s+b0aP9Nt/6IYBnt44hsgNDcs96jz8Y+a
-         jAWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=oVPqgvFYpDmjHxtwZexyhCeh0mu3Dntz+mgij6nVzYY=;
-        b=E5LKH4Eqeo2HSNu6/zMyJp55ZXnEjWFfbHRdVMS0tsKsosdZQ33WUshEjoWJMo9pjV
-         Q0c5UNepFTwk0nfiZH7X3pUT5rPY1vOQYEwVOiDv668wnstMSU5k3A/G6RMG2C6OLJTH
-         Z1YbTSCWdaC7M4HGSI3A2kTvIVyY53mG/aYdVwiIbUdNlB1Oc1J0Q1C/60ZEuHO0EMfU
-         2oQNblLkKXqjJu9ZJApYIPf7zSN8ZhGFzCbvGkwWx1opclXE2iZN8j/lbXma7AUo5c5G
-         oRVmsPWNEyw4ZptdU39oObQwm+gSaikclJj1HAZgTcuVdhrd4ZAEp13Na6hMjil3dZsw
-         kgbQ==
-X-Gm-Message-State: AGi0PuZ7QjhE3zaajO6Q0t+79tNWVZfmC3ifNYSdq2q08Ex2FMKU2eCu
-        NgZky5cgRuMQDT8fvH5Yc/Y=
-X-Google-Smtp-Source: APiQypKux7Upd6mNxAE6TgYDmQtn6jZce4bi7lkCCj2wMxp51AS6zMkwHH3IJ9LmX39rSMrXLx4+BQ==
-X-Received: by 2002:a17:90a:8b:: with SMTP id a11mr9393946pja.163.1589002507599;
-        Fri, 08 May 2020 22:35:07 -0700 (PDT)
-Received: from localhost.localdomain ([223.72.62.216])
-        by smtp.gmail.com with ESMTPSA id w23sm2707446pge.92.2020.05.08.22.35.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 May 2020 22:35:06 -0700 (PDT)
-From:   Jia-Ju Bai <baijiaju1990@gmail.com>
-To:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com
-Cc:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jia-Ju Bai <baijiaju1990@gmail.com>
-Subject: [PATCH 4/4] fs: btrfs: fix a data race in btrfs_block_rsv_release()
-Date:   Sat,  9 May 2020 13:34:31 +0800
-Message-Id: <20200509053431.3860-1-baijiaju1990@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        id S1728887AbgEIGbF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 9 May 2020 02:31:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56936 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726115AbgEIGbF (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Sat, 9 May 2020 02:31:05 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 57F7221582;
+        Sat,  9 May 2020 06:31:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589005864;
+        bh=81utnN4zrAgW72M9wNpzgp3AaCEP64Akx0SQFZXO09s=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=MCO6u0J+FoEC3UBoCEJQkSUio6TPBDydtlraYjwL0sYAIuUNBJAJBnIcLavhMtGvs
+         W8rQEUe3kIH2BtFlQikqC1ETnSturH7OGt+Z7oMtd2jSedl1ZWkxuE7mf5x3zyR89D
+         Iek7AlYmNMNFIfgGbJEwfK2P4sr6s1w8TVm+dT/U=
+Date:   Sat, 9 May 2020 08:31:00 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Marcos Paulo de Souza <marcos@mpdesouza.com>
+Cc:     dsterba@suse.com, linux-btrfs@vger.kernel.org, wqu@suse.com,
+        fdmanana@suse.com, stable@vger.kernel.org,
+        Marcos Paulo de Souza <mpdesouza@suse.com>
+Subject: Re: [PATCH] btrfs: send: Emit file capabilities after chown
+Message-ID: <20200509063100.GA1684327@kroah.com>
+References: <20200508195436.24320-1-marcos@mpdesouza.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200508195436.24320-1-marcos@mpdesouza.com>
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The functions btrfs_block_rsv_release() and
-btrfs_update_delayed_refs_rsv() are concurrently executed at runtime in
-the following call contexts:
+On Fri, May 08, 2020 at 04:54:36PM -0300, Marcos Paulo de Souza wrote:
+> From: Marcos Paulo de Souza <mpdesouza@suse.com>
+> 
+> [PROBLEM]
+> Whenever a chown is executed, all capabilities of the file being touched are
+> lost.  When doing incremental send with a file with capabilities, there is a
+> situation where the capability can be lost in the receiving side. The
+> sequence of actions bellow shows the problem:
+> 
+> $ mount /dev/sda fs1
+> $ mount /dev/sdb fs2
+> 
+> $ touch fs1/foo.bar
+> $ setcap cap_sys_nice+ep fs1/foo.bar
+> $ btrfs subvol snap -r fs1 fs1/snap_init
+> $ btrfs send fs1/snap_init | btrfs receive fs2
+> 
+> $ chgrp adm fs1/foo.bar
+> $ setcap cap_sys_nice+ep fs1/foo.bar
+> 
+> $ btrfs subvol snap -r fs1 fs1/snap_complete
+> $ btrfs subvol snap -r fs1 fs1/snap_incremental
+> 
+> $ btrfs send fs1/snap_complete | btrfs receive fs2
+> $ btrfs send -p fs1/snap_init fs1/snap_incremental | btrfs receive fs2
+> 
+> At this point, only a chown was emitted by "btrfs send" since only the group
+> was changed. This makes the cap_sys_nice capability to be dropped from
+> fs2/snap_incremental/foo.bar
+> 
+> [FIX]
+> Only emit capabilities after chown is emitted. The current code
+> first checks for xattrs that are new/changed, emits them, and later emit
+> the chown. Now, __process_new_xattr skips capabilities, letting only
+> finish_inode_if_needed to emit them, if they exist, for the inode being
+> processed.
+> 
+> This behavior was being worked around in "btrfs receive"
+> side by caching the capability and only applying it after chown. Now,
+> xattrs are only emmited _after_ chown, making that hack not needed
+> anymore.
+> 
+> Link: https://github.com/kdave/btrfs-progs/issues/202
+> Suggested-by: Filipe Manana <fdmanana@suse.com>
+> Reviewed-by: Filipe Manana <fdmanana@suse.com>
+> Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
+> ---
 
-Thread 1:
-  btrfs_file_write_iter()
-    btrfs_buffered_write()
-      btrfs_delalloc_release_extents()
-        btrfs_inode_rsv_release()
-          __btrfs_block_rsv_release()
+<formletter>
 
-Thread 2:
-  finish_ordered_fn()
-    btrfs_finish_ordered_io()
-      insert_reserved_file_extent()
-        __btrfs_drop_extents()
-          btrfs_free_extent()
-            btrfs_add_delayed_data_ref()
-              btrfs_update_delayed_refs_rsv()
+This is not the correct way to submit patches for inclusion in the
+stable kernel tree.  Please read:
+    https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
+for how to do this properly.
 
-In __btrfs_block_rsv_release():
-  else if (... && !delayed_rsv->full)
-
-In btrfs_update_delayed_refs_rsv():
-  spin_lock(&delayed_rsv->lock);
-  delayed_rsv->size += num_bytes;
-  delayed_rsv->full = 0;
-  spin_unlock(&delayed_rsv->lock);
-
-Thus a data race for delayed_rsv->full can occur.
-This race was found and actually reproduced by our conccurency fuzzer.
-
-To fix this race, the spinlock delayed_rsv->lock is used to
-protect the access to delayed_rsv->full in btrfs_block_rsv_release().
-
-Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
----
- fs/btrfs/block-rsv.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
-
-diff --git a/fs/btrfs/block-rsv.c b/fs/btrfs/block-rsv.c
-index 27efec8f7c5b..89c53a7137b4 100644
---- a/fs/btrfs/block-rsv.c
-+++ b/fs/btrfs/block-rsv.c
-@@ -277,6 +277,11 @@ u64 btrfs_block_rsv_release(struct btrfs_fs_info *fs_info,
- 	struct btrfs_block_rsv *global_rsv = &fs_info->global_block_rsv;
- 	struct btrfs_block_rsv *delayed_rsv = &fs_info->delayed_refs_rsv;
- 	struct btrfs_block_rsv *target = NULL;
-+	unsigned short full = 0;
-+
-+	spin_lock(&delayed_rsv->lock);
-+	full = delayed_rsv->full;
-+	spin_unlock(&delayed_rsv->lock);
- 
- 	/*
- 	 * If we are the delayed_rsv then push to the global rsv, otherwise dump
-@@ -284,7 +289,7 @@ u64 btrfs_block_rsv_release(struct btrfs_fs_info *fs_info,
- 	 */
- 	if (block_rsv == delayed_rsv)
- 		target = global_rsv;
--	else if (block_rsv != global_rsv && !delayed_rsv->full)
-+	else if (block_rsv != global_rsv && !full)
- 		target = delayed_rsv;
- 
- 	if (target && block_rsv->space_info != target->space_info)
--- 
-2.17.1
-
+</formletter>
