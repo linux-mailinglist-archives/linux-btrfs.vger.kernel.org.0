@@ -2,119 +2,157 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D15E21CC49F
-	for <lists+linux-btrfs@lfdr.de>; Sat,  9 May 2020 23:01:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 145061CC4BB
+	for <lists+linux-btrfs@lfdr.de>; Sat,  9 May 2020 23:32:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727995AbgEIVBj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 9 May 2020 17:01:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50256 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727887AbgEIVBj (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sat, 9 May 2020 17:01:39 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A62AFC061A0C
-        for <linux-btrfs@vger.kernel.org>; Sat,  9 May 2020 14:01:37 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id a7so5833175pju.2
-        for <linux-btrfs@vger.kernel.org>; Sat, 09 May 2020 14:01:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ka9q-net.20150623.gappssmtp.com; s=20150623;
-        h=to:cc:references:from:autocrypt:subject:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=nuuqKIef0dkAhdyafInT3psd0fQzs7IX2Q6WtONmTO8=;
-        b=Iw8Qecz4kCtD1rvtLj5l3Qd0NSpzyhQwqK3QUIuNj82FucRDv377bV6fZ+lKOFGjc0
-         LT9csz0sVgsLNKSXI7EWZ+4xgcyYFajA09fGXjqDsyLv/6kRg5sFh0Kr0f7aptnSRBMB
-         OZOHp2JD8uFjmSj1Mlk9LYuqTYnHaCBPuuH4LH5KqFm2rmS6qUO0E6xbQwxn1/0qkutr
-         P7WRibe4ieCkjkW7SRbsUh8H8TJi8/wT+0e/YwutrOpwpySz9B+NnAyPjhOfoITiii3+
-         RDIt8T/UTUfxzCJYUBroCNRHckijXOMxR732PhGK+ZoVu6lEc1MhOWCU6u4r83ifp4qN
-         71Kw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:autocrypt:subject
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-transfer-encoding:content-language;
-        bh=nuuqKIef0dkAhdyafInT3psd0fQzs7IX2Q6WtONmTO8=;
-        b=pnYBufNjq3sUhXhYpXjAN7VE/eG922PyaDlOTQ2PnSmGxE9CQMRlYTvonSl2y1TBC7
-         Eer45eF24ctK4VvI2nWdaY/JXUOOryKEIrmA/eHSPBWtdAle6HpV0+0FysR0YQcHbqzM
-         bb822qvo/uMQ3SkQjfceOC5Aa34t+YWtndyeWwiH3NA9Tb9kv1W3FYdZjgEpMfi07U/X
-         SWLv0C04rihUmh4aas+SBfzftThDiool+e3k4Tg4ICdNLJxBXQhprijLoHdqp9NOrMjB
-         R4LcXZ1GuYe/5YlL3OR1Uj8Yk47dQo0FTXll8NZjyy+DYJIAQnaYz7ZhBcY+uVFbgeD3
-         +vLg==
-X-Gm-Message-State: AGi0PuZbjC72pNQZmWqQ0r2eEjVPyH9ocBCHSC8lsjxOsJwWNX+7ntDy
-        VoCVG2soX4Rv9iMrz5fTLpa2rg==
-X-Google-Smtp-Source: APiQypIiouZFdUo1azF3eShVtnXkM9+WWE906R1r93uwBrf249LPDgRHfBSggklMALrZ/PPj7kiLww==
-X-Received: by 2002:a17:90a:e2d0:: with SMTP id fr16mr13156409pjb.146.1589058097034;
-        Sat, 09 May 2020 14:01:37 -0700 (PDT)
-Received: from selma.local (cpe-76-167-209-94.san.res.rr.com. [76.167.209.94])
-        by smtp.gmail.com with ESMTPSA id 82sm5230617pfv.214.2020.05.09.14.01.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 09 May 2020 14:01:35 -0700 (PDT)
-To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
-        Rich Rauenzahn <rrauenza@gmail.com>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-References: <CAG+QAKXuaah3tkhQLd7mD3bx+pc3JZdXkUg6yr0R8=Zv2vXnhw@mail.gmail.com>
- <20200504230857.GQ10769@hungrycats.org>
-From:   Phil Karn <karn@ka9q.net>
-Autocrypt: addr=karn@ka9q.net; keydata=
- mQENBEw2mJ4BCADELiPsLFHDwapoSU7d2xNHxmwzzrFUCZWhO34kM6G5+o9GUNmGgMQ0BmXp
- I6hx77HHnrj9FC6kWh/bxBt3+o8HW+NTWzJSvf6kW7ThaNt7v9iewkS23JOMarAZs4qy6MhT
- 1RW1/yWY7RimWxrmkKPTKKa0Ad4CWT6fcP3t+doqGslSQIeoTh0C33ZT+LY59Wcr224iXohN
- 4Uu/nFe4yAHjtA+4Sesveo3Tyi8cbOgkcO6vij+pXesCcuhtGMlnE2dxRqbenrfVGLUVxNug
- LkQdLWezaGGm+dcjWYk1xjtaDnsCpVaYCMsfYNADQPJAjAFu37pVdoXhseVXfzOUN2EXABEB
- AAG0GVBoaWwgS2FybiA8a2FybkBrYTlxLm5ldD6JATgEEwECACIFAkw2mJ4CGwMGCwkIBwMC
- BhUIAgkKCwQWAgMBAh4BAheAAAoJEPFOQ1TtRjRGU98H/Atsb/N4lNbzNdzdIRcHD9XgCEa1
- UdR4mxgjwvLxS1nYRNdHwfTxvA5nxWfMx/0CB26VaNFdI3lkg/S0vYsSUu6M7l8Zb8v4JMyU
- 4B4yvkFHZ3II5oilzIMa3e2cMfDz7TSwO1JcXyI5y9vHnvH65/LQF+QojDgzf3vXKiNdTXJp
- 3nEa5IgMAB0rcSNsXFx8xbHi8s5niL9+1I7XTPvVMeXrMe8h4AG1nM/dK96WwmV+tLyXKYXn
- xVeb9F4X9CNQbkn/xAH+egvKHHT3V7K9cAhrDfu9Qwpo7zKk/akBpLWG2kmkTOfhXjm3UQhv
- MVgDmpeQIYa1HgAsKrsDQMzrIFm5AQ0ETDaYngEIAJmFdm0MmENzLEosD1FvGPJleWDYb0ah
- 8dOk4XUug1RhW40f7AsugT75pKs9PolXt92920GdU727X3Jpgdj4kLDtIQA0KZrOXiEOZjIZ
- WcROAyvTGyMs/P7Um1AGNM161Ga6/Wtlc076FN7EUQtzPbthH26M3lGWUX0Ccls/8Ep4qbnF
- IrMRBxjaxKbqfKPTeU10pDykzA7s5hiNe7qaegvqD6YLseZ+6FqCn988YnLiIaFeNbWxUY5G
- spjAsfesnAmpn5vhUqAGiizkNlAMIN31xvpLd93oM4/vORszIuN1UP2RlxL3s30BncZl2XOd
- Mk1/59Sy70zVqF1ANyMrA18AEQEAAYkBHwQYAQIACQUCTDaYngIbDAAKCRDxTkNU7UY0Rszt
- B/9ZPH9xw47lPkVJRbhgf0G7fdsxsyiuouAqOKklUNFSy4+qeGomjwE6YvdMybwGtaUGla7t
- 2mDzrva+7Gzb0inXIgmahQPmM16F3GVxGoFL+QJ+7gD8Hco6e0/2kju7ZREDE7SOEwKb3lhD
- eNLccfX2AqAHfCT/LVLbgBpMRmwUJQThM+33Z2L9BqIM3awj2mOTmeDumpxiDfroU90mGc9c
- pXe4YrNIkL/N8eMzLe1bpu+mpPCiIrEO+dFA7N8jjVcOCQ4Lr8sU6cOsEdkaACZiNFKT99eb
- NkKigK8sEkDZc/AKhPCEsnaZpwBZPScOL88LLi7FHj9Osznt+uhWfbLe
-Subject: Re: Western Digital Red's SMR and btrfs?
-Message-ID: <f7ae0b64-048d-3898-6e2d-5702e2f79f47@ka9q.net>
-Date:   Sat, 9 May 2020 14:00:16 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.7.0
+        id S1726908AbgEIVc1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 9 May 2020 17:32:27 -0400
+Received: from zaphod.cobb.me.uk ([213.138.97.131]:50638 "EHLO
+        zaphod.cobb.me.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726472AbgEIVc1 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sat, 9 May 2020 17:32:27 -0400
+Received: by zaphod.cobb.me.uk (Postfix, from userid 107)
+        id 454149C421; Sat,  9 May 2020 22:32:25 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cobb.uk.net;
+        s=201703; t=1589059945;
+        bh=1qFZHyY6o6ei9ALlCgXmp8jgj2wb+kF3/1MsJRFwIBk=;
+        h=Subject:To:References:From:Date:In-Reply-To:From;
+        b=BqEa2ABM+8UIbF2xrwR8LtfMLHds8+kR32E3fe9gWhNm1dLlYAM/m3n/aEtu0emi7
+         gOhWAyC8AfyJQ1Jv9rDSquxoPpqIi8i6VkGUQRCN4G8N1ywSQYrFtZvonTfN9+3iaN
+         7gBTQzkBi8E/j/btjfRIPFCz8I/4WlYm5KpJJiF2n3FtLRhkWl42Xb6C4ci4I2GsFs
+         Semsx7z+7G8zxSbHz34mxcnUwvyD/hkUgMXNllG4rGFi/jZjo3GSq8PgGdnIo1VKGM
+         v4PwgGAp7/vjJYhMPWg+P2JZ+weHvR3NlK5/LsXye6mfRaTMw4HyFgGRrcBNrbFqTY
+         fJRveNPSmdFfw==
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on zaphod.cobb.me.uk
+X-Spam-Status: No, score=-0.8 required=12.0 tests=ALL_TRUSTED,DKIM_INVALID,
+        DKIM_SIGNED,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.2
+X-Spam-Level: 
+X-Spam-Bar: 
+Received: from black.home.cobb.me.uk (unknown [192.168.0.205])
+        by zaphod.cobb.me.uk (Postfix) with ESMTP id F13D39C34F;
+        Sat,  9 May 2020 22:32:18 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cobb.uk.net;
+        s=201703; t=1589059939;
+        bh=1qFZHyY6o6ei9ALlCgXmp8jgj2wb+kF3/1MsJRFwIBk=;
+        h=Subject:To:References:From:Date:In-Reply-To:From;
+        b=RQyG2CbbjuNC5zlkBjvKC73e3BtfOejlslj1sNypFaYVCdWx4SwOi8k3+awdY927s
+         I1sSFtyPQKHftOOy3Uf1lEPpMitPGWFMvCJId/o+izpX62Ymj4XUfFFQRzw1pTSA7M
+         QDMTghsniEZ0aCaJCyI0tSVKPJ/zgFtwiOXl7SUDYqWBSvWPCn/dO9PrJobMJdgFmW
+         hcC6SFY0loU7y/i2ubtGSC4q7zoKZlEPm84Hm+nzKDBmfhJiWg4yhm5wImwpOWnENy
+         22eSneZ6YTrWhzk69/pFQmgoSs4LNF42yeHnGpNrd7sPhexGkMkXN5VsPchjyaH4E7
+         YtPQ8uOXRrdxQ==
+Received: from [192.168.0.211] (novatech.home.cobb.me.uk [192.168.0.211])
+        by black.home.cobb.me.uk (Postfix) with ESMTPS id 8921B101BFA;
+        Sat,  9 May 2020 22:32:18 +0100 (BST)
+Subject: Re: Exploring referenced extents
+To:     Steven Davies <btrfs-list@steev.me.uk>, linux-btrfs@vger.kernel.org
+References: <c9a53b726880c5d7dc8092c2078e23a5@steev.me.uk>
+From:   Graham Cobb <g.btrfs@cobb.uk.net>
+Openpgp: preference=signencrypt
+Autocrypt: addr=g.btrfs@cobb.uk.net; prefer-encrypt=mutual; keydata=
+ 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 myxb
+Message-ID: <d89caa53-a3b6-5c4e-a577-a89490064a40@cobb.uk.net>
+Date:   Sat, 9 May 2020 22:32:17 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-In-Reply-To: <20200504230857.GQ10769@hungrycats.org>
+In-Reply-To: <c9a53b726880c5d7dc8092c2078e23a5@steev.me.uk>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Content-Language: en-US
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 5/4/20 16:08, Zygo Blaxell wrote:
-> The basic problem with DM-SMR drives is that they cache writes in CMR
-> zones for a while, but they need significant idle periods (no read or
-> write commands from the host) to move the data back to SMR zones, or
-> they run out of CMR space and throttle writes from the host.
+On 09/05/2020 12:11, Steven Davies wrote:
+> For curiosity I'm trying to write a tool which will show me the size of
+> data extents belonging to which files in a snapshot are exclusive to
+> that snapshot as a way to show how much space would be freed if the
+> snapshot were to be deleted, and which files in the snapshot are taking
+> up the most space.
 
-Does anybody know where the drive keeps all that metadata? On rotating
-disk, or in flash somewhere?
+I have some scripts to do that. They are slow but seem to pretty much
+work. See https://github.com/GrahamCobb/extents-lists
 
-Just wondering what happens when power suddenly fails during these
-rewrite operations.
+> I'm working with Hans van Kranenburg's python-btrfs python library but
+> my knowledge of the filesystem structures isn't good enough to allow me
+> to figure out which bits of data I need to be able to achieve this. I'd
+> be grateful if anyone could help me along with this.
 
->
-> Some kinds of RAID rebuild don't provide sufficient idle time to comple=
-te
-> the CMR-to-SMR writeback, so the host gets throttled.  If the drive slo=
-ws
+Rewriting them to use Hans' library is one of the things I plan to do
+one day!
 
-My understanding is that large sequential writes can go directly to the
-SMR areas, which is an argument for a more conventional RAID array. How
-hard does btrfs try to do large sequential writes?
+> So far my idea is:
+> 
+> for each OS file in a subvolume:
+>   find its data extents
+>   for each extent:
+>     find what files reference it #1
+>     for each referencing file:
+>       determine which subvolumes it lives in #2
+>     if all references are within this subvolume:
+>       record the OS file path and extents it references
+> 
+> for each recorded file path
+>   find its data extents
+>   output its path and the total number of bytes in all recorded extents
+> (those which are not shared)
 
+My approach is different. I don't attempt to understand which files
+share extents, or which subvolumes they are in. Instead, I just try to
+analyse which extents are in use by a subvolume (or, actually, any set
+of files you specify).
 
+This is easy (but slow) to do. And makes answering some questions easy.
+However, it makes answering questions like "how many extents would
+really be freed if I deleted this subvolume" hard (the scripts end up
+working out the complete list of extents in use on the filesystem, and,
+separately,  the list of which would be in use if the subvolume was
+removed - the difference is the space freed up by deleting the subvolume).
 
+This often takes a day or two.
 
+I would be interested if you find a more efficient approach to working
+out how much space will be freed up if a set of files (such as
+particular subvolumes) are removed, allowing for snapshots, reflink
+copies and dedup.
+
+Graham
 
