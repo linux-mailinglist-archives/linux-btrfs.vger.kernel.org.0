@@ -2,27 +2,34 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE8C91CC5FB
-	for <lists+linux-btrfs@lfdr.de>; Sun, 10 May 2020 03:29:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C504A1CC5FF
+	for <lists+linux-btrfs@lfdr.de>; Sun, 10 May 2020 03:30:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728667AbgEJB3b (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 9 May 2020 21:29:31 -0400
-Received: from ipmail05.adl3.internode.on.net ([150.101.137.13]:8376 "EHLO
+        id S1728861AbgEJBac (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 9 May 2020 21:30:32 -0400
+Received: from ipmail05.adl3.internode.on.net ([150.101.137.13]:8444 "EHLO
         ipmail05.adl3.internode.on.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726630AbgEJB3a (ORCPT
+        by vger.kernel.org with ESMTP id S1726630AbgEJBac (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 9 May 2020 21:29:30 -0400
+        Sat, 9 May 2020 21:30:32 -0400
+X-IronPort-Anti-Spam-Filtered: true
+X-IronPort-Anti-Spam-Result: =?us-ascii?q?A2DqGQC5WLde/9y5pztmHAEBAQEBAQc?=
+ =?us-ascii?q?BARIBAQQEAQFAgUcCgiiBRDKEUI57gWQIJZlmgXoLATwBAgQBAYREAoIOJDo?=
+ =?us-ascii?q?EDQIQAQEGAQEBAQEFBG2FYoVyAQUjVhALDgoCAiYCAjwbBg0IAQGDIoJ8rla?=
+ =?us-ascii?q?BMokpgUAibCqMRBqCAIE4DAOCWj5phnmCYASZF5lUgTmBG4EDlx8jgkuab69?=
+ =?us-ascii?q?bCRaBVjMaCBcZgyVPGA1XnkMvA2cCBggBAQMJWQEBjV0BAQ?=
 Received: from podling.glasswings.com.au ([59.167.185.220])
-  by ipmail05.adl3.internode.on.net with ESMTP; 10 May 2020 10:58:58 +0930
+  by ipmail05.adl3.internode.on.net with ESMTP; 10 May 2020 11:00:28 +0930
 Received: from dash ([192.168.21.15])
         by podling.glasswings.com.au with esmtp (Exim 4.89)
         (envelope-from <andrew@sericyb.com.au>)
-        id 1jXam0-0006Wj-J4; Sun, 10 May 2020 11:28:56 +1000
+        id 1jXanT-0006Yb-L3; Sun, 10 May 2020 11:30:27 +1000
 Subject: Re: btrfs-progs reports nonsense scrub status
 To:     Chris Murphy <lists@colorremedies.com>
 Cc:     Graham Cobb <g.btrfs@cobb.uk.net>,
         Btrfs BTRFS <linux-btrfs@vger.kernel.org>
 References: <0d1cceb6-9295-1bdf-c427-60ba9b1ef0b3@sericyb.com.au>
+ <CAJCQCtSdWMnGKZLxJR85eDoVFTLGwYNnGqkVnah=qA6fCoVk_Q@mail.gmail.com>
  <709e4c3f-15b3-3c8a-2b25-ea95f4958999@sericyb.com.au>
  <CAJCQCtTGygd22TYvsPS6RPydsAZoqQYDDV=K4w1yFgTn0+ba6A@mail.gmail.com>
  <8ceacc86-96b7-44d2-d48d-234c6c4b45de@sericyb.com.au>
@@ -37,7 +44,6 @@ References: <0d1cceb6-9295-1bdf-c427-60ba9b1ef0b3@sericyb.com.au>
  <CAJCQCtSq7Ocar4hJM0Z+Y7UeRM6Cfi_uwN=QM77F2Eg+MtnNWw@mail.gmail.com>
  <04f481fd-b8e5-7df6-d547-ece9ab6b8154@sericyb.com.au>
  <CAJCQCtTdSSX15Y7YX7fAg+iKncZf09ZG6KnHmmo4S77OtGWWXw@mail.gmail.com>
- <CAJCQCtTcwGm8WF+AKX4CBBRQ2vYjj-ZPx66So3Qxvp8Y9j5rJg@mail.gmail.com>
 From:   Andrew Pam <andrew@sericyb.com.au>
 Autocrypt: addr=andrew@sericyb.com.au; prefer-encrypt=mutual; keydata=
  mQGiBEPPxa8RBACcBTuSu02Fi+ZhvFj8wYJa8P2xF2djPveAkV5iuv/b1OTlzcdC7yJwNKq8
@@ -76,12 +82,12 @@ Face:   iVBORw0KGgoAAAANSUhEUgAAADAAAAAwBAMAAAClLOS0AAAALVBMVEUrHhk8LSRTQTZuVkmC
  pTaQMPW45403cLvENWoDuA6bTZ0CfC3VqQ0Z/BgGnRQqUJ26stdrAD/aAh6X+F2rPS0cnBWAbycl
  bFg8UbsAru3wQISzqAgf63xOu7YXhqG3dWr7tWHgD0yz53lbx/lP/+U4hNvRNMza1h/A737/U3h9
  1d1vNnt3oR9eh65tO8N78CoMr2CT4wz+AgHlxhkkWxq2AAAAAElFTkSuQmCC
-Message-ID: <81e707a7-d00b-3349-fbf8-73df533d3e5a@sericyb.com.au>
-Date:   Sun, 10 May 2020 11:28:56 +1000
+Message-ID: <8736ce18-d57a-7982-f435-1aa9ef15e5eb@sericyb.com.au>
+Date:   Sun, 10 May 2020 11:30:27 +1000
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <CAJCQCtTcwGm8WF+AKX4CBBRQ2vYjj-ZPx66So3Qxvp8Y9j5rJg@mail.gmail.com>
+In-Reply-To: <CAJCQCtTdSSX15Y7YX7fAg+iKncZf09ZG6KnHmmo4S77OtGWWXw@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -90,13 +96,15 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 10/5/20 11:14 am, Chris Murphy wrote:
-> When you see this problem manifesting (no progress being made) the
-> /home file system is otherwise working normally? You can read and
-> write files OK?
+On 10/5/20 6:33 am, Chris Murphy wrote:
+> 1. That a scrub started, and allowed to finish without any
+> interruption, does finish. This is the only experience I have, but I'm
+> wondering whether you've tried this just to eliminate the possibility
+> of some weird multiple device scrub bug; or possibly something unique
+> about your file system state.
 
-Correct.  It works fine, although the "btrfs resume" process is
-generating heavy read I/O.
+I am testing this now.  Completion estimated in around 3 hours (7 hours
+total running time).
 
 Thanks,
 	Andrew
