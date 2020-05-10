@@ -2,196 +2,140 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90B0C1CCB44
-	for <lists+linux-btrfs@lfdr.de>; Sun, 10 May 2020 15:06:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 885291CCC6A
+	for <lists+linux-btrfs@lfdr.de>; Sun, 10 May 2020 18:52:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729075AbgEJNGI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 10 May 2020 09:06:08 -0400
-Received: from mout.gmx.net ([212.227.15.18]:48233 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728743AbgEJNGH (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 10 May 2020 09:06:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1589115965;
-        bh=heeZFpcoqY7ZfvW2N/AepF20bwtGEjUgJ4HeV+ZRZ+Q=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=cpBbBV1JOpmFqQJVUrbg27VYTRkl7QZhKHO/nmddFKpeMGjnAcHbgzANDUSFJjHnQ
-         vbF90IhMiEx1Yyk4I8jdMRwIbOpIIme7Utg0Q0CXeGL9baAQnxyYKerL8ZyGYngmrc
-         xlUKSo5ULZ+RHCIpOCMdb78q/5WDwD+lzanLdFe0=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MryXH-1ijntq0Roj-00nxoC; Sun, 10
- May 2020 15:06:04 +0200
-Subject: Re: Exploring referenced extents
-To:     Steven Davies <btrfs-list@steev.me.uk>
-Cc:     linux-btrfs@vger.kernel.org
-References: <c9a53b726880c5d7dc8092c2078e23a5@steev.me.uk>
- <13d76c35-fbbf-c5e1-20ee-70a9a716d11f@gmx.com>
- <f2784429472cb7f9cb4d5cbe4b609494@steev.me.uk>
- <f1a97a6f-4351-147a-ccf3-714387b0f07f@gmx.com>
- <8308bcdede193bdbd55ba10aae0e9370@steev.me.uk>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
- PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
- 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
- D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
- efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
- ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
- BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
- 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
- 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
- EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
- 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
- ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
- oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
- fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
- 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
- ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
- oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <58ef41dc-6256-bf1f-c9fc-159a02b94a70@gmx.com>
-Date:   Sun, 10 May 2020 21:05:55 +0800
+        id S1728146AbgEJQwF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 10 May 2020 12:52:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36164 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726446AbgEJQwE (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Sun, 10 May 2020 12:52:04 -0400
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2388BC061A0C
+        for <linux-btrfs@vger.kernel.org>; Sun, 10 May 2020 09:52:03 -0700 (PDT)
+Received: by mail-wr1-x42f.google.com with SMTP id g13so7926199wrb.8
+        for <linux-btrfs@vger.kernel.org>; Sun, 10 May 2020 09:52:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=to:from:subject:message-id:date:user-agent:mime-version
+         :content-language:content-transfer-encoding;
+        bh=anlZWCKm9k+ii/ucxEDKnqKYqjV7i4yqzIScGeZau6E=;
+        b=kUjI/j4kyCPtlX7nHLIM9aAb8kWLc5h2cYYIO4oVSR+Ik44484jQ70ZPzeW8F0KVz8
+         pw2BLhSnrfDvUwjqkTq1ZE4l0btg1msndSHu4u4U6Xue783R/wEm9sEO6FW3AtFT5JgV
+         it1Jhwm4s76Us8nqO1JQrb6Gr5rL54ZqIJfORffA3B3wHnoxm0bJpxzv6F+joFJ8l7eo
+         QCstogWwHyQ1Wz4e+w1qx1UBYjLGVwE4e/XghTaldc21YonHBZd4P4z/UBknrYpYydmk
+         abIfsVq+cNHEw3IBaXinh0o7dlYk/sNW07F11Tk4DU+NxcOuPUNftvmzwdlQy2c+nzKz
+         d1vA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:from:subject:message-id:date:user-agent
+         :mime-version:content-language:content-transfer-encoding;
+        bh=anlZWCKm9k+ii/ucxEDKnqKYqjV7i4yqzIScGeZau6E=;
+        b=U/iE/ITDIyys6KE4E6Pqdoq9I3iHdGkAQ8i0wMf2LeXQtnt8M6gdNwg5KujXz6DtvO
+         andwolzngnXg3D+5/qVSzSw5KYdw8EVKCOXNY9EgyVhUKxDlemdtqxix2mHD+nENPLEO
+         tws2UzqpMX5KcY0T0EatfPn4FohY0sWO+RkNYHJ6BFzqoZLuYAoZTlSin0+jYygid6Ym
+         H08sJtCasMgNDFKUSj9hVrGrb5kBxIlPOBtN5ZBlZPjCkewXQs2hupgrYy+JbVIBzp7q
+         pCoh+So7OatcJXdfmGZBaqE814EcUIzGEfm/DsyWZVm50Qy5V5GaclnDe57PnYe3nFa2
+         phbQ==
+X-Gm-Message-State: AGi0PuaWtAVh+MWaG3H0psJrFPClCCFUXw+MFr5FDPAimN+u7p124/NA
+        rSfaD4PjJghi3W5eiyL5pUjrjmFMxuY=
+X-Google-Smtp-Source: APiQypKjEHIS04edZMzdxTNdoxR3k8+ICrOekDF2Jtlhkmmg930Fn3tVxBhEZOEb9+MFeaMa/+O2Vg==
+X-Received: by 2002:adf:fa04:: with SMTP id m4mr14066810wrr.30.1589129521331;
+        Sun, 10 May 2020 09:52:01 -0700 (PDT)
+Received: from [10.0.0.2] (88-117-111-143.adsl.highway.telekom.at. [88.117.111.143])
+        by smtp.gmail.com with ESMTPSA id d1sm12700524wrx.65.2020.05.10.09.51.58
+        for <linux-btrfs@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 10 May 2020 09:52:00 -0700 (PDT)
+To:     linux-btrfs@vger.kernel.org
+From:   Christoph Heinrich <chheinml@gmail.com>
+Subject: unmountable filesystem: open_ctree failed
+Message-ID: <fbf7d9e2-f64c-4598-2ce4-e1a05a6ede33@gmail.com>
+Date:   Sun, 10 May 2020 18:51:54 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-In-Reply-To: <8308bcdede193bdbd55ba10aae0e9370@steev.me.uk>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="j1ynudO45ntdMJpURFlXmRkwARVUNVf84"
-X-Provags-ID: V03:K1:zrjTJ4qARrEEnabF8myinmgi7Mnzo5WNOjIz/YtulVDZYtHfbkt
- b5E5e4HSVzMKTyEo9TVpe0vbmDbqJkjJdKcP/2VX+xa/YtaI7fitX0rqP6cqyJSt5CTu+wb
- vj3GhN3MKls8S9F30JS7K4sgBjq5nPdwBeBpQa769msBEf3vSIbW7YQCsw1kbBUei3lBxU/
- iGT4d8lZixnkshJBfUglg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:YqB2P+avZUE=:MNe1YMzV0bBSm8u8Ff8O+N
- F+L2AbF8YdVEQ72zIXHtV3LxKgFe7XO2twUO2gc7XQBOQiLQlDGoUPu2cyj2EpFMNftPh/IsY
- K7vJyge+U+Jgkozf6ScIwVYkL8qS0iQHZA4DhKdj+LjROTgIWy3gijBKd0fzqQ61wmeAsQjOj
- n6nT2qSy6MTVG1tfEeqPa7OFcfmzpP9A5CSrpVLIWNLBrDFAqL2Q8WsNI5b2O6goK7ydDMncV
- YE9AowbMgmYZO0DPaadRyiVFFDs76PkH3GS/4eYjjeyTgbX0EDMEvF+hbHhpNHt4je5GnorBB
- 30q9+ng3h90bUVGcb1zUfuqlGQyC4Ked1LUq7rlOWFK2dY2tdlav7vWUxskJ64ddmYrplxUR7
- eaVMKEd/d+Swt59lYo1YgzP4XxdkMidf4ftDVRao53zKnSpun1GahV6wGhjIcgqSrxQUtvCV5
- 5GVpEsKpS98JwjJ/UgQIeUeweSPfdDGmSPlOtMUhdPmelBjVMTqOZdk/p7tXbjmCo6rzgT+el
- SuYsA4p5QTNvd3rh+17U1QO1T55IY68/laUutexy6t3jUvfOUc15tcHBhzmrnOALbyeQq/87A
- OlEp8aKifMFYbterngijZUUSqMVMOSDR9eecyi0btH+ngnCS6k+OgUk8v0FqAIyLHw1tcMCy7
- clQPzpsdPCZd9em6G6iKHUvRJfDk1GAqFfnivC4snnKAvZcnLDP2S5FEWwzI6IB5qhwC9Ycag
- fmbeXvUp7BfaXygad2ZwgXrGiBPbBQpGMWkw2RhCkhYUF0F8Yb6u/H3FEfOfSTBbqULMGyNNK
- 8K6psGtKagZYrV4YB/E5WrIm31B4eqEgocJ9L487CmGOiFfRf3NS8e+VOkYzMVnZM0p4gpEt7
- t/vrnLJsZHA++ANNBOBF5ZW7jeLyp6QMSvXCfv+TG8XWLfADFOZ+5wZGgXiEHenep3PDAs+5r
- FVaOFFhiOa5+3qvyTjnJ6+iAV6HUf8SHn4LxIAGYpra8zDH7vIykRssP3SdCWUAzW8fgkoQnG
- f1+oJMEOVJltXW/rshFbWaLRxNhiRnSvzQp7teQZgkYGCZLyWCfiYmGaCVF/W8kF/dEocd5kF
- loLUGrkDBQZkESvO7oThhdMN4xfFCpvKEt2EQ4m9RPUrOFoM+5oa76u5+iwD+huzpft6zUzGr
- iwnIJwhAl8nNQlrHEynzGapaydqi+D+LfiCtLGaKRt1/SVG4L1EiHsUj2qoEu5c+/aMk6757U
- 5bDYTC5X20jBhO6wH
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US-large
+Content-Transfer-Encoding: 7bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---j1ynudO45ntdMJpURFlXmRkwARVUNVf84
-Content-Type: multipart/mixed; boundary="oecwTewiGeCVWWbMvIQ4HDN8idzT3S1rr"
-
---oecwTewiGeCVWWbMvIQ4HDN8idzT3S1rr
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+Hello,
 
 
 
-On 2020/5/10 =E4=B8=8B=E5=8D=888:51, Steven Davies wrote:
-> On 2020-05-10 12:55, Qu Wenruo wrote:
->> On 2020/5/10 =E4=B8=8B=E5=8D=886:55, Steven Davies wrote:
->>> On 2020-05-10 02:20, Qu Wenruo wrote:
->=20
->>> Yes, I'm now stuck with a btrfs_extent_inline_ref of type
->>> BTRFS_SHARED_DATA_REF_KEY which I understand is a direct backref to a=
+my hard drive can't be mounted anymore.
 
->>> metadata block[1],
->>
->> Yep, SHARED_DATA_REF is the type for direct (shows the direct parent)
->> for data.
->> But there is also an indirect (just tell you how to search) one,
->> EXTENT_DATA_REF, and under most case, EXTENT_DATA_REF is more common.
->>
->>> but I don't understand how to search for that block
->>> itself. I got lucky with the rest of the code and have found all
->>> EXTENT_ITEM_KEYs for a file. The python library makes looking through=
+Two days ago the drive was very slow (<1kb/s read and write, but I didn't find any errors anywhere).
 
->>> the EXTENT_DATA_REF_KEYs easy but not the shared data refs.
->>
->> For EXTENT_DATA_REF, it contains rootid, objectid (inode number), offs=
-et
->> (not file offset, but a calculated one), and count.
->> That's pretty simple, since it contains the rootid and inode number.
->>
->> For SHARED_DATA_REF, you need to search the parent bytenr in extent tr=
-ee.
->> It can be SHARED_BLOCK_REF (direct meta ref) or TREE_BLOCK_REF (indire=
-ct
->> meta ref).
->>
->> For TREE_BLOCK_REF, although it contains the owner, you can't stop her=
-e,
->> but still do a search to build a full path towards that root node.
->> Then check each node to make sure if the node is also shared by other
->> trees.
->>
->> For SHARED_BLOCK_REF, you need to go to its parent again, until you
->> build the full path to the root node.
->>
->> Now you can see why the backref code used in balance and qgroup is
->> complex.
->=20
-> I can, I get the feeling that this is now way beyond my abilities and I=
-
-> can see why it will be very slow to run in practice - especially throug=
-h
-> the Python abstraction. Perhaps if knorrie adds backref walking helpers=
-
-> to python-btrfs it might become more feasible.
->=20
-Another problem here is, the btrfs tree search operation is all done on
-commit tree, which is the on-disk data (not the running transaction).
-
-Further more, since we need to search extent tree several times, and
-unlike kernel space, we can using a transaction handler to block current
-transaction being committed (which switch commit root with current root).=
+However after unplugging and plugging in again, everything seemed normal again, so I don't know if that's related.
 
 
-In user space, we don't have such ability to control transaction
-commitment, which means we can easily get transaction being committed
-during our long search, resulting bad result.
 
-It's already hard to do it in kernel space, it won't be any simpler for
-user space.
-
-Thanks,
-Qu
+When trying to mount it today I get that error:
 
 
---oecwTewiGeCVWWbMvIQ4HDN8idzT3S1rr--
 
---j1ynudO45ntdMJpURFlXmRkwARVUNVf84
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+mount: /mnt: wrong fs type, bad option, bad superblock on /dev/sdb, missing codepage or helper program, or other error.
 
------BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl63/DMACgkQwj2R86El
-/qj2lQf/VhhNp7amAHTuXDXaH0uz4qAymzKZv2vr95SlTK3uqB6Ewl3O70n3rAnm
-9oHm01n+SQ/VEcRbJ82ALlzB7tiHQvNSjzHazEkMX5Bn14dsIVgD50PDAAZzJ83w
-jbBPnNEnJ25Y4sliRSW0LzfY0W/ussrQGBQkcpQbx2kpZcKD2qcwg8DIoGlVHtYT
-h3PXRXO8gJscdvXgMzp0rkyVudW9SdAxOeCShFlXNb9LUYu3ujs7VT0gKOO/JxaF
-YinJt3R3nwyXSAPO65ab9jiwNiMwBztZSlkYZk4qGBRygU2jwj8Tjmaj0Ph32Jhq
-tVynVfoeH/sn1pZG2lm/QVEOeqlvcQ==
-=BQkU
------END PGP SIGNATURE-----
 
---j1ynudO45ntdMJpURFlXmRkwARVUNVf84--
+Mounting without -o results in dmesg:
+
+
+
+[14479.650956] BTRFS info (device sdb): disk space caching is enabled
+
+[14479.650963] BTRFS info (device sdb): has skinny extents
+
+[14499.742007] BTRFS error (device sdb): parent transid verify failed on 3437913341952 wanted 7041 found 6628
+
+[14499.753076] BTRFS error (device sdb): parent transid verify failed on 3437913341952 wanted 7041 found 6628
+
+[14499.753089] BTRFS error (device sdb): failed to read block groups: -5
+
+[14499.816157] BTRFS error (device sdb): open_ctree failed
+
+
+
+I already tried mounting with usebackuproot,nospace_cache,clear_cache, but that resulted in the same error messages as before.
+
+
+
+When running btrfs check I get the output:
+
+parent transid verify failed on 3437913341952 wanted 7041 found 6628
+
+parent transid verify failed on 3437913341952 wanted 7041 found 6628
+
+parent transid verify failed on 3437913341952 wanted 7041 found 6628
+
+Ignoring transid failure
+
+ERROR: child eb corrupted: parent bytenr=3437941538816 item=123 parent level=2 child level=0
+
+ERROR: failed to read block groups: Input/output error
+
+ERROR: cannot open file system
+
+
+
+ From what I've read so far, running btrfs-zero-log or btrfs check --repair may help,
+but it may also do more damage then good, so I'd rather ask then make the situation worse then it already is.
+
+
+
+kernel 5.6.11
+
+btrfs-progs 5.6
+
+
+
+Regards,
+
+Christoph
