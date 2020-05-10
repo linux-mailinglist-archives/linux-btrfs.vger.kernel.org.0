@@ -2,85 +2,118 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86B7E1CC4C5
-	for <lists+linux-btrfs@lfdr.de>; Sat,  9 May 2020 23:46:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 647821CC5EF
+	for <lists+linux-btrfs@lfdr.de>; Sun, 10 May 2020 03:14:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727976AbgEIVql (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 9 May 2020 17:46:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57166 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726120AbgEIVqk (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sat, 9 May 2020 17:46:40 -0400
-Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73829C061A0C
-        for <linux-btrfs@vger.kernel.org>; Sat,  9 May 2020 14:46:40 -0700 (PDT)
-Received: by mail-yb1-xb29.google.com with SMTP id i16so2967833ybq.9
-        for <linux-btrfs@vger.kernel.org>; Sat, 09 May 2020 14:46:40 -0700 (PDT)
+        id S1728500AbgEJBOp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 9 May 2020 21:14:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32914 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726565AbgEJBOp (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Sat, 9 May 2020 21:14:45 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0C06C061A0C
+        for <linux-btrfs@vger.kernel.org>; Sat,  9 May 2020 18:14:44 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id l18so6402828wrn.6
+        for <linux-btrfs@vger.kernel.org>; Sat, 09 May 2020 18:14:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Cl4p9F7SQnwxo5GotGgSTOIgscAX+sTfdVaI45M5BGM=;
-        b=Qo8BIomNvogjgk7F41sRMq8MlffT2lSvBdsYUmKkWWiIdRWowe8d/SshK32YASXQmy
-         Vy9tmk6LhyNT00ID19AhQ8hsK7vVdnWD3IeLYBO54qe8aG/KOxpRdkEy6082i0UM1+k4
-         2rq7btWuBx0tOd9jA/nMztcv4QGJOIVO3R+qnzYFDlb+U4qz7zVuri4xOY3ilubOOXaS
-         fTrTE6kvg9UjPOUSPj7zjpENDVJPE5u+vKBeahEYHGpwjMFOemFlVmqZU3fz1fTVvHQz
-         oO8bIWoJ14OEP+gukJ0bAXbDkAjcNdujLZtlVnH4I95uMFle2JCOE+jwFPBj/S2pEi+L
-         n5JQ==
+        bh=RPTrcYvDTV3XYu0DL5kyusrWBJyPV14wiZusTn9gp3M=;
+        b=hOAySApmaAVfrpVCfLXVAJFlyV+ORjPjfiQjXHLU/eRDLD90xFTl4V0GdGbspv/AEh
+         qCQQ/ALAxvGw1kjeiB4Wsn+u4cKbgbjNmpjzGj1WFIIVSNtkVtdGNKuhd2d/i9c6eLff
+         iTWiiDUMYsJeOhKZ3RJp4vgpm8ESxU/adDwaxfvDPMwsgwO8tglKadoEiaue4eUC+483
+         JbddKDkpPNKtug99QykKZ+lQFtXhu2cBX4whxpRLzfJnfMjgyL3nZeOkIKmfmFss4rfe
+         M9DavlbvqL4xsTBaImzhSmkH/15Bm3peeY9cgVRikefgRpkxH9Llxm8bpRWv319twnB7
+         lT+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Cl4p9F7SQnwxo5GotGgSTOIgscAX+sTfdVaI45M5BGM=;
-        b=EETqNVSXf0g8IFHZA/SaKagBeFkiy3ZBolqoTJx3AIwFvZONKN6TlmgZ4T7F3um3ue
-         mUWE7w7fSrsDN0RtWZnFRE1K+yVBg+sBFysqmWU92OrUfEP4rg4YjpnoM9GDQ+L33pmM
-         n12a9hp81D+hNmA6t/4i2oj7VNwU3JUKfGHOL3v5wuDN16WLmyLNNyeMBBdjcdEmUpha
-         gkBxQ1DQFiMMBXbqqObtaCyB5zH7JDvIu7E+ste4Fj3dz+4jA7tw7OwALXO0Orz9VgsH
-         yz+c72tVqfjoGGNc8KGxrojS0oKTGdMIRD/9LtSlRkYjxg1k0QFfK2kjVveEg2I32fE2
-         X9FQ==
-X-Gm-Message-State: AGi0PuZHWQ871ERP78yxX42UslqBh1XkaJ2CkkIXs1LlCiKey09TB/1Y
-        UoSAlnv0Ey/7PWJBrkiAaFJNUq+uUylyebwa/AoTEiI0
-X-Google-Smtp-Source: APiQypL1JQegQj7UnbgGEiCwUwJNXSxL2EZXxTun63anzGMgtyNFgjYAukvl9RybwpVIRhp0PPYYgfk1QTV3ccpTWms=
-X-Received: by 2002:a25:9848:: with SMTP id k8mr14305345ybo.102.1589060799205;
- Sat, 09 May 2020 14:46:39 -0700 (PDT)
+        bh=RPTrcYvDTV3XYu0DL5kyusrWBJyPV14wiZusTn9gp3M=;
+        b=K8sMoyJAhAmcoTijpFGE60sWzTsPMU9Qk6gyMKLsdRH1mLzABS9i7vU/cvH8Pw0BQX
+         ivhHDsfOAKey4m1KYiABQNj9iR0JhykrmioQkDUu4t3/cmvMLtw7A3fErw9d9nL3GX6F
+         yigMDr/zAFuICpbH9fhvkJS5SnDs3CN9yR4HnSL+35/k0q2vHSfGaEoSeM0zzWmlAqPV
+         XvNUm5+FGWrKrcTnPprcn9Rgc1yuCL9xQqapFXtJQLkOBCkXAhlYYNvsWxTpiu4E3xAZ
+         PXlZqIFAbOk6r06B/DqYDq/Yyzlx6Rm3gVpovikBb4Sj5zoKzA8BkO3DojrZ5gEKQklp
+         YsHw==
+X-Gm-Message-State: AGi0PubAroqF76P4QbVeYYb7Dh3DoTbf2Xl+AKKfhbbfv4cVg4/6vApZ
+        dam/KZz1B2uno4ZF9s7hfatmIFULe9qyw2HoC6r4/w==
+X-Google-Smtp-Source: APiQypI7tdPypA7CWzBcyMnip33szeMYXJbY2wtlzW4bBQh6nH5R6kFmFYfLLvhGDWQDCJ3n4UWYvA7XBt9HUTr3xGI=
+X-Received: by 2002:a5d:51cb:: with SMTP id n11mr10618846wrv.236.1589073282104;
+ Sat, 09 May 2020 18:14:42 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAG+QAKXuaah3tkhQLd7mD3bx+pc3JZdXkUg6yr0R8=Zv2vXnhw@mail.gmail.com>
- <20200504230857.GQ10769@hungrycats.org> <f7ae0b64-048d-3898-6e2d-5702e2f79f47@ka9q.net>
-In-Reply-To: <f7ae0b64-048d-3898-6e2d-5702e2f79f47@ka9q.net>
-From:   Steven Fosdick <stevenfosdick@gmail.com>
-Date:   Sat, 9 May 2020 22:46:27 +0100
-Message-ID: <CAG_8rEcdEK4XAx4D3Xg=O38zfs85YNk-xhT_cVtqZybnKXBkQg@mail.gmail.com>
-Subject: Re: Western Digital Red's SMR and btrfs?
-To:     Phil Karn <karn@ka9q.net>,
+References: <0d1cceb6-9295-1bdf-c427-60ba9b1ef0b3@sericyb.com.au>
+ <CAJCQCtT8VUvpo=fvcvhWpSNx_gt+ihk8orkkPuhdQ1nNnSMnPQ@mail.gmail.com>
+ <10b14d0b-9f10-609f-6365-f45c2ad20c6d@sericyb.com.au> <CAJCQCtSdWMnGKZLxJR85eDoVFTLGwYNnGqkVnah=qA6fCoVk_Q@mail.gmail.com>
+ <709e4c3f-15b3-3c8a-2b25-ea95f4958999@sericyb.com.au> <CAJCQCtTGygd22TYvsPS6RPydsAZoqQYDDV=K4w1yFgTn0+ba6A@mail.gmail.com>
+ <8ceacc86-96b7-44d2-d48d-234c6c4b45de@sericyb.com.au> <CAJCQCtQ4xOdNH79XDQdy=ExkNHbpbYdMMHG1fTeN7SeA+dTo7w@mail.gmail.com>
+ <8ab9f20d-eff0-93bf-a4a4-042473b4059e@sericyb.com.au> <CAJCQCtQvyncTMqATX2PkVkR1bRPaUvDUqCmj-bRJzfHEU2k4JQ@mail.gmail.com>
+ <ff173eb0-b6e8-5365-43a8-8f67d0da6c96@sericyb.com.au> <CAJCQCtTdHQAkaagTvCO-0SguakQx9p5iKmNbvmNYyxsBCqQ6Vw@mail.gmail.com>
+ <ac6be0fa-96a7-fe0b-20c7-d7082ff66905@sericyb.com.au> <c2b89240-38fd-7749-3f1a-8aeaec8470e0@cobb.uk.net>
+ <ace72f18-724c-9f2c-082f-cb478b8a63ef@sericyb.com.au> <CAJCQCtSq7Ocar4hJM0Z+Y7UeRM6Cfi_uwN=QM77F2Eg+MtnNWw@mail.gmail.com>
+ <04f481fd-b8e5-7df6-d547-ece9ab6b8154@sericyb.com.au> <CAJCQCtTdSSX15Y7YX7fAg+iKncZf09ZG6KnHmmo4S77OtGWWXw@mail.gmail.com>
+In-Reply-To: <CAJCQCtTdSSX15Y7YX7fAg+iKncZf09ZG6KnHmmo4S77OtGWWXw@mail.gmail.com>
+From:   Chris Murphy <lists@colorremedies.com>
+Date:   Sat, 9 May 2020 19:14:25 -0600
+Message-ID: <CAJCQCtTcwGm8WF+AKX4CBBRQ2vYjj-ZPx66So3Qxvp8Y9j5rJg@mail.gmail.com>
+Subject: Re: btrfs-progs reports nonsense scrub status
+To:     Chris Murphy <lists@colorremedies.com>
+Cc:     Andrew Pam <andrew@sericyb.com.au>,
+        Graham Cobb <g.btrfs@cobb.uk.net>,
         Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Cc:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
-        Rich Rauenzahn <rrauenza@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sat, 9 May 2020 at 22:02, Phil Karn <karn@ka9q.net> wrote:
-> My understanding is that large sequential writes can go directly to the
-> SMR areas, which is an argument for a more conventional RAID array. How
-> hard does btrfs try to do large sequential writes?
+On Sat, May 9, 2020 at 2:33 PM Chris Murphy <lists@colorremedies.com> wrote:
+>
+> On Sat, May 9, 2020 at 4:15 AM Andrew Pam <andrew@sericyb.com.au> wrote:
+> >
+> > $ uname -a
+> > Linux RainbowDash 5.7.0-050700rc4-generic #202005051752 SMP Tue May 5
+> > 21:56:32 UTC 2020 x86_64 x86_64 x86_64 GNU/Linux
+> >
+> > After a couple of cancel/resumes here we are again:
+>
+>
+> OK I didn't previously pick up on the fact that you're cancelling a
+> scrub. Suspending. Then resuming.
+>
+> Things to verify:
+>
+> 1. That a scrub started, and allowed to finish without any
+> interruption, does finish. This is the only experience I have, but I'm
+> wondering whether you've tried this just to eliminate the possibility
+> of some weird multiple device scrub bug; or possibly something unique
+> about your file system state.
+>
+> 2. That a scrub started, then cancelled, then resumed, also does
+> finish (or not).
+>
+> 3. That a scrub started, then cancelled, then suspend-to-RAM, then
+> resumed, also does finish (or not).
 
-Ok, so I had not heard of SMR before it was mentioned here and
-immediate read the links.  It did occur to me that large sequential
-writes could, in theory, go straight to SMR zones but it also occurred
-to be that it isn't completely straight forward.
 
-1. If the drive firmware is not declaring that the drive uses SMR, and
-therefore the host doesn't send a specific command to begin a
-sequential write, how many sectors in a row does the drive wait to
-receive before conclusion this is a large sequential operation?
+I just tried all three of these on my laptop, which has NVMe and
+5.7.0-0.rc4.1.fc33.x86_64+debug. And they all complete, with no odd
+reporting in user space for ETA, and progress seems normal.
 
-2. What happens if the sequential operation does not begin a the start
-of an SMR zone?
+I do see this in dmesg, which I think coincides with the cancel/abort
+[98580.937332] BTRFS info (device nvme0n1p7): scrub: not finished on
+devid 1 with status: -125
 
-The only thing that would make it easy is if the drive had a
-battery-backed RAM cache at least as big as an SMR zone, ideally about
-twice as big, so it could accumulate the data for one zone and then
-start writing that while accepting data for the next.  As I have no
-idea how big these zones are I have no idea how feasible that is.
+I don't know how the kernel and user space communicate scrub progress.
+I don't see anything in sysfs.
+
+When you see this problem manifesting (no progress being made) the
+/home file system is otherwise working normally? You can read and
+write files OK?
+
+
+-- 
+Chris Murphy
