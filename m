@@ -2,156 +2,270 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8C0F1CCAA1
-	for <lists+linux-btrfs@lfdr.de>; Sun, 10 May 2020 13:59:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B3F41CCAA2
+	for <lists+linux-btrfs@lfdr.de>; Sun, 10 May 2020 13:59:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727114AbgEJLw2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 10 May 2020 07:52:28 -0400
-Received: from zaphod.cobb.me.uk ([213.138.97.131]:36282 "EHLO
-        zaphod.cobb.me.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726629AbgEJLw1 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 10 May 2020 07:52:27 -0400
-Received: by zaphod.cobb.me.uk (Postfix, from userid 107)
-        id 137599C3DC; Sun, 10 May 2020 12:52:21 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cobb.uk.net;
-        s=201703; t=1589111541;
-        bh=Z7P+RCQa9JQykNGP/wXeBRE0+DWQh4Bh1d0qrKVLKUg=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=FCn+xHrL0jOnp9R/lclHRqfCD3ecEtGE4HVaayAUppJ4t8B0kp3FOaOoTmNaQ+K1+
-         3pYC2EEm9lWhUjHLAyhCBx6SdxOTGmkuValIaBFIw8BU3faEnzabkmaDrOs1lda4hy
-         6pg469v7DO7zqXuVbCgfcnpfZEq4EL79LSUWeSlTVF/O20MtAa/90P9rUJdL/dm2zC
-         rqYCaCBQQ+LC80JJy1Yl/5UN/WmaJsCtWxRMRBTnLWf85H3+bI8zzDqGGiWzvsRH2P
-         FlmKkuRLGQKkiOA2ESkGh5kSl1AUd8b2G4jjZ07niKH4tB9+tL0GBO7XrpkrtnIjCf
-         Iop3nLJHK/86Q==
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on zaphod.cobb.me.uk
-X-Spam-Status: No, score=-0.8 required=12.0 tests=ALL_TRUSTED,DKIM_INVALID,
-        DKIM_SIGNED autolearn=no autolearn_force=no version=3.4.2
-X-Spam-Level: 
-X-Spam-Bar: 
-Received: from black.home.cobb.me.uk (unknown [192.168.0.205])
-        by zaphod.cobb.me.uk (Postfix) with ESMTP id 085049B9D5;
-        Sun, 10 May 2020 12:52:18 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cobb.uk.net;
-        s=201703; t=1589111538;
-        bh=Z7P+RCQa9JQykNGP/wXeBRE0+DWQh4Bh1d0qrKVLKUg=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=WcVCkqnFRYtrY3gKhMf+4SFL+evRBjYIdVkADrcgTWZhzTXhaN5whED8eEqsLCvAK
-         ZVdTbieKPDxOh+PvFE/+xLnGxIRLx7QbGJOQJ7mBRL8b/KidYotOHodLtuzcEUU6aQ
-         UprNCYGzocw5EHLMQ0mkffyaBbi63db0wx5vRyir+Si+odKbhkNYL8T+QNFVCW9Me0
-         T+1IwFKFtC7W6jEQKpY5zdyfG+cLONv4GxayX7J8IURdWm/PkXGuSi+91oRrm/xen7
-         Z2vh2XmnZOm+B+pvquGi1g9nJXr90Pat8MJ8G88xfgJrVozxRggVi7qOG8/zHb97v4
-         E6OfgcM732QyQ==
-Received: from [192.168.0.211] (novatech.home.cobb.me.uk [192.168.0.211])
-        by black.home.cobb.me.uk (Postfix) with ESMTPS id 891381020C5;
-        Sun, 10 May 2020 12:52:17 +0100 (BST)
-Subject: Re: btrfs-progs reports nonsense scrub status
-To:     Chris Murphy <lists@colorremedies.com>
-Cc:     Andrew Pam <andrew@sericyb.com.au>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-References: <0d1cceb6-9295-1bdf-c427-60ba9b1ef0b3@sericyb.com.au>
- <709e4c3f-15b3-3c8a-2b25-ea95f4958999@sericyb.com.au>
- <CAJCQCtTGygd22TYvsPS6RPydsAZoqQYDDV=K4w1yFgTn0+ba6A@mail.gmail.com>
- <8ceacc86-96b7-44d2-d48d-234c6c4b45de@sericyb.com.au>
- <CAJCQCtQ4xOdNH79XDQdy=ExkNHbpbYdMMHG1fTeN7SeA+dTo7w@mail.gmail.com>
- <8ab9f20d-eff0-93bf-a4a4-042473b4059e@sericyb.com.au>
- <CAJCQCtQvyncTMqATX2PkVkR1bRPaUvDUqCmj-bRJzfHEU2k4JQ@mail.gmail.com>
- <ff173eb0-b6e8-5365-43a8-8f67d0da6c96@sericyb.com.au>
- <CAJCQCtTdHQAkaagTvCO-0SguakQx9p5iKmNbvmNYyxsBCqQ6Vw@mail.gmail.com>
- <ac6be0fa-96a7-fe0b-20c7-d7082ff66905@sericyb.com.au>
- <c2b89240-38fd-7749-3f1a-8aeaec8470e0@cobb.uk.net>
- <ace72f18-724c-9f2c-082f-cb478b8a63ef@sericyb.com.au>
- <CAJCQCtSq7Ocar4hJM0Z+Y7UeRM6Cfi_uwN=QM77F2Eg+MtnNWw@mail.gmail.com>
- <04f481fd-b8e5-7df6-d547-ece9ab6b8154@sericyb.com.au>
- <CAJCQCtTdSSX15Y7YX7fAg+iKncZf09ZG6KnHmmo4S77OtGWWXw@mail.gmail.com>
- <CAJCQCtTcwGm8WF+AKX4CBBRQ2vYjj-ZPx66So3Qxvp8Y9j5rJg@mail.gmail.com>
-From:   Graham Cobb <g.btrfs@cobb.uk.net>
-Openpgp: preference=signencrypt
-Autocrypt: addr=g.btrfs@cobb.uk.net; prefer-encrypt=mutual; keydata=
- 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 myxb
-Message-ID: <e2a308d2-690d-e6dd-8166-c56765aef54e@cobb.uk.net>
-Date:   Sun, 10 May 2020 12:52:16 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S1728340AbgEJLzx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 10 May 2020 07:55:53 -0400
+Received: from mout.gmx.net ([212.227.15.15]:47927 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726629AbgEJLzw (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Sun, 10 May 2020 07:55:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1589111749;
+        bh=PUt6ew7dxAU6EXaZ/7cCBF0YT6RZbntAB7PKM9jPaVE=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=TiQxUHbmiuxhPnwRpFIbbxtVL9WlwwZp+f+HqsYiM6aARbdwirAUppnAdw/FUQqIL
+         1yf6oMEGVkHrzlb5ksuAurZyI52cFsZhhMEYKgLw8viS/NCzAHxBsVCpOVB2vtjo6x
+         o4/DHo1IqVmr39u4LOu81+iePDfCSKuGFZL13lHU=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MLi8g-1jpHPR00kS-00Hg76; Sun, 10
+ May 2020 13:55:49 +0200
+Subject: Re: Exploring referenced extents
+To:     Steven Davies <btrfs-list@steev.me.uk>
+Cc:     linux-btrfs@vger.kernel.org
+References: <c9a53b726880c5d7dc8092c2078e23a5@steev.me.uk>
+ <13d76c35-fbbf-c5e1-20ee-70a9a716d11f@gmx.com>
+ <f2784429472cb7f9cb4d5cbe4b609494@steev.me.uk>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
+ mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
+ PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
+ 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
+ D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
+ efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
+ ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
+ BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
+ 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
+ 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
+ EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
+ 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
+ ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
+ oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
+ fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
+ 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
+ ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
+ oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
+Message-ID: <f1a97a6f-4351-147a-ccf3-714387b0f07f@gmx.com>
+Date:   Sun, 10 May 2020 19:55:45 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <CAJCQCtTcwGm8WF+AKX4CBBRQ2vYjj-ZPx66So3Qxvp8Y9j5rJg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <f2784429472cb7f9cb4d5cbe4b609494@steev.me.uk>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="pfwQKdoGz6mq5VujbulThLnZOrCInSu56"
+X-Provags-ID: V03:K1:6SzPpKpvLeI0P1Kwitr8k7eGkJOks/N0wNy7vzhTsG4W0hMHcud
+ lwhySAyJt4r/xNXDKaT9IyfesJQsEQ4DPHGmY3JuRxyLDZzlwkgPaTDk0sjIsw8+ZkaObz6
+ jU5JN6XnnGxCafVc0J1D3AB7TJuPgM9X2rtrkQ5V+BpjtS3x3ng5/8DDIg5za3uPEE7xViA
+ KoFSm1NrNEFp2NMy9shbA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:oI+KqAT9lSI=:V86gOps8gnkAM/O7A2CUEQ
+ zx6Zir1LUrUrsVBrhzUSpEV3cAuqvPeJUAdhHRVRVpSuPWO7MFYxucqnr95abaqPuxDMofZew
+ 58KG4R2MD+HYT1EhCDkMCZWXb+ziXGEMZG52EJDZvHg37dJF7L5nq0hFUeMz/FDlmQJvQlzQW
+ +iqJ8nVupWAjLfnRwJY/m1fiGu/HBJ5RlYZQ/Q3cwf4FM9o9/t93bW097qKZ2BW9xXKl+1L4Q
+ 6KpMQLM9bbDmyop/SX5TfDl99XUgTGSF0YhAqO6yOy3QVmZGlV2o9rohctJ+U7WxDM8cFWZUy
+ 7SueCZMprcz/B0+JowKRYew4XPww1t6tA36dERWvQVC0BM6CLoS5alrshflWrLFzyRUhi+uAB
+ QbcIZA1fWVcoytJLaIxltS5zHYGqDXiypTPjfymoclhlFCrxn+PVGdfV2WCPNPSHTUNJ5ZFot
+ lF+PhR/B1ux2PKvViSIN+UhqB2PL+WwMzf4Kl9K0DLp/0aIed865Pjwmqzx3CgjHfColOmkwa
+ nUF4e8NiWRHTbUMXkbt13rsi7jyEWw246OcMnZTXqdkJiO0U+ptZp3KxkbSarC3ZcHbYYPpCe
+ yu8Y9QeJSxfpq/DbYTLLSO7QyfwXh09zVEo+I6Q/B4DXKMLU5WYpxJgkeXhMKTE5w6zUMy6PA
+ 5VmZkDnB437o302bVxiq8SzqvkNgCjRvlI/RgTz4nuDXYiO0jNW9euQTwjQURmrnFtk70aYIE
+ NyHIBSJPLwZagFLdf3FQhr/21zb4tRiZWXjI9ivgfoePoX08PmfYKr/BXBs3ZFRYeOwgwoWEX
+ 4osMr2YwAY9SLHm18MnUdRwo0ps1C0R613SXrGU2eZ9/Fnr14bdj4+72dSOAiiyAEaA7fZikk
+ u+uWK4xi2FGc54rBizRVHHQ6It7g4c1X9K2umW/7Ia0q0eizqXCeQ5F1xY5dTgeLJZsPxo/hW
+ /IJc6PpxFpEAtt2Oxrn1HfGvgG+eNYU3r2RGrYgMOuHovgo8mOX5yBGQ5L+dClSn6lOfU24II
+ ILY4nSXlLC66Q1RXLquTdew0rsJ5cpy/tIALece5AMR01vZK2pr6Vs4ax7GvXjvP2h1wLrQaB
+ 2uADFnCif3yUsyI2jNtkZU+zZjBPkgqK/Nr3HOz+Py2l4StQBAhYz33Vaccjy9WHdII85st9G
+ NunsLRjTFSq2Zv+lWpAS8FH2X89fEDVgOnVkC3FmpnTVfR3qPWBvuKxji9f32kvc8Osmhdbte
+ fKSS/2dcrA+8grRF2
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 10/05/2020 02:14, Chris Murphy wrote:
-> I don't know how the kernel and user space communicate scrub progress.
-> I don't see anything in sysfs.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--pfwQKdoGz6mq5VujbulThLnZOrCInSu56
+Content-Type: multipart/mixed; boundary="9JIGQb0LJzv6S1WeY0d55YkK2HZUGwt0m"
 
-I did some work on btrfs-scrub a while ago to fix a bug in the way
-last_physical was being saved between cancel and restore.
+--9JIGQb0LJzv6S1WeY0d55YkK2HZUGwt0m
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-If I remember correctly, the way this works is that the scrub process
-receives stats about the scrub progress directly from the kernel on a
-socket it creates in /var/lib/btrfs, then writes updated stats into a
-file in /var/lib/btrfs/scrub.status.<UUID> to share with scrub status
-and keep a record. At the end of the scrub, the final stats are provided
-by the kernel into a buffer provided in the ioctl which are also then
-used to update the scrub.status file.
 
-I don't remember how often the stats are received from the kernel but it
-is frequently (not just at the end).
 
-Unless I am confused, if the bytes scrubbed numbers are going up, then
-the progress updates are being received from the kernel. The update
-includes the last_finished so there should be no way the scrub process
-can receive updated bytes scrubbed numbers without updated last_finished
-from the kernel.
+On 2020/5/10 =E4=B8=8B=E5=8D=886:55, Steven Davies wrote:
+> On 2020-05-10 02:20, Qu Wenruo wrote:
+>> On 2020/5/9 =E4=B8=8B=E5=8D=887:11, Steven Davies wrote:
+>>> For curiosity I'm trying to write a tool which will show me the size =
+of
+>>> data extents belonging to which files in a snapshot are exclusive to
+>>> that snapshot as a way to show how much space would be freed if the
+>>> snapshot were to be deleted,
+>>
+>> Isn't that what btrfs qgroup doing?
+>>
+>>> and which files in the snapshot are taking
+>>> up the most space.
+>>
+>> That would be interesting as qgroup only works at subvolume level.
+>>
+>>>
+>>> I'm working with Hans van Kranenburg's python-btrfs python library bu=
+t
+>>> my knowledge of the filesystem structures isn't good enough to allow =
+me
+>>> to figure out which bits of data I need to be able to achieve this. I=
+'d
+>>> be grateful if anyone could help me along with this.
+>>
+>> You may want to look into the on-disk format first.
+>>
+>> But spoiler alert, since qgroup has its performance impact (although
+>> hugely reduced in recent releases), it's unavoidable.
+>>
+>> So would be any similar methods.
+>> In fact, in your particular case, you need more work than qgroup, thus=
 
-HOWEVER, I think (I may be wrong) btrfs scrub status normally reads the
-stats from the file, not directly from the kernel. So it is actually
-reporting the data in the file written by scrub process. That does
-processing on the numbers (that was where the bug was which I found). It
-is possible there is still a bug in that processing -- if so it is
-possible that last_finished in the file could be zero even though it was
-received as non-zero from the kernel. So, we can't be sure, without
-adding logging to the scrub command, whether the kernel is really
-reporting zero.
+>> it would be slower than qgroup.
+>> Considering how many extra ioctl and context switches needed, I won't =
+be
+>> surprised if it's way slower than qgroup.
+>>
+>>>
+>>> So far my idea is:
+>>>
+>>> for each OS file in a subvolume:
+>>
+>> This can be done by ftw(), and don't cross subvolume boundary.
+>>
+>>> =C2=A0 find its data extents
+>>
+>> Fiemap.
+>>
+>>> =C2=A0 for each extent:
+>>> =C2=A0=C2=A0=C2=A0 find what files reference it #1
+>>
+>> Btrfs tree search ioctl, to search extent tree, and do backref walk ju=
+st
+>> like what we did in qgroup code.
+>>
+>>> =C2=A0=C2=A0=C2=A0 for each referencing file:
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 determine which subvolumes it lives in=
+ #2
+>>
+>> Unlike kernel, you also need to do this using btrfs tree search ioctl.=
 
-This is from memory. Sorry, I don't have time, at the moment, to go back
-to the scrub usermode code to check.
+>>
+>>> =C2=A0=C2=A0=C2=A0 if all references are within this subvolume:
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 record the OS file path and extents it=
+ references
+>>>
+>>> for each recorded file path
+>>> =C2=A0 find its data extents
+>>> =C2=A0 output its path and the total number of bytes in all recorded =
+extents
+>>> (those which are not shared)
+>>>
+>>> #1 and #2 are where my understanding breaks down. How do I find which=
+
+>>> files reference an extent and which subvolume those files are in?
+>>
+>> In short, you need the following skills (which would make you a btrfs
+>> developer already):
+>> - Basic btrfs tree search
+>> =C2=A0 Things like how btrfs btree works, and how to iterate them.
+>>
+>> - Basic user space file system interface understanding
+>> =C2=A0 Know tools like fiemap().
+>>
+>> - Btrfs extent tree understanding
+>> =C2=A0 Know how to interpret inline/keyed data/metadata indirect/direc=
+t
+>> =C2=A0 backref item.
+>> =C2=A0 This is the key and the most complex thing.
+>> =C2=A0 IIRC I have added some comments about this in recent backref.c =
+code.
+>=20
+> Yes, I'm now stuck with a btrfs_extent_inline_ref of type
+> BTRFS_SHARED_DATA_REF_KEY which I understand is a direct backref to a
+> metadata block[1],
+
+Yep, SHARED_DATA_REF is the type for direct (shows the direct parent)
+for data.
+But there is also an indirect (just tell you how to search) one,
+EXTENT_DATA_REF, and under most case, EXTENT_DATA_REF is more common.
+
+> but I don't understand how to search for that block
+> itself. I got lucky with the rest of the code and have found all
+> EXTENT_ITEM_KEYs for a file. The python library makes looking through
+> the EXTENT_DATA_REF_KEYs easy but not the shared data refs.
+
+For EXTENT_DATA_REF, it contains rootid, objectid (inode number), offset
+(not file offset, but a calculated one), and count.
+That's pretty simple, since it contains the rootid and inode number.
+
+For SHARED_DATA_REF, you need to search the parent bytenr in extent tree.=
+
+It can be SHARED_BLOCK_REF (direct meta ref) or TREE_BLOCK_REF (indirect
+meta ref).
+
+For TREE_BLOCK_REF, although it contains the owner, you can't stop here,
+but still do a search to build a full path towards that root node.
+Then check each node to make sure if the node is also shared by other tre=
+es.
+
+For SHARED_BLOCK_REF, you need to go to its parent again, until you
+build the full path to the root node.
+
+Now you can see why the backref code used in balance and qgroup is comple=
+x.
+
+Thanks,
+Qu
+
+>=20
+>> - Btrfs subvolume tree understanding
+>> =C2=A0 Know how btrfs organize files/dirs in its subvolume trees.
+>> =C2=A0 This is the key to locate which (subvolume, ino) owns a file ex=
+tent.
+>> =C2=A0 There are some pitfalls, like the backref item to file extent m=
+apping.
+>> =C2=A0 But should be easier than extent tree.
+>=20
+> [1]
+> https://btrfs.wiki.kernel.org/index.php/Data_Structures#btrfs_extent_in=
+line_ref
+>=20
+>=20
+> Thanks,
+
+
+--9JIGQb0LJzv6S1WeY0d55YkK2HZUGwt0m--
+
+--pfwQKdoGz6mq5VujbulThLnZOrCInSu56
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl6368EACgkQwj2R86El
+/qiy3gf/fIAStyGiWKAz7J9GOHOJaod8fzr4MBK00lZNWR1KqteiGZ0xb21Dmpwg
+Gg560WJsdMdnAgJkLp3/nEi33s/HHQRLHt10NZwjo66QsICMQnjIIdB/IbqfFaLC
+uNUqu56+NOni0qakrUqHzvpDbW5alkkUgzTG8srPtHWL+sfI4JJpKlnr1Q/eTzva
+ejmkOPKyA8JSj7ZGyzWJrHjGda5F0kejuEyhQKlQqAw70BJw8zdtL8gtJxVZj66P
+8g+4vmzN4nrT0SqysS/OAgEBQK4bUTCl1Ml6Z3EewQq+RJvt5UbZINBwDyV6I9gN
+yNNKnRwn29E19e7gooGRxw+3DSNsMQ==
+=tQ+M
+-----END PGP SIGNATURE-----
+
+--pfwQKdoGz6mq5VujbulThLnZOrCInSu56--
