@@ -2,255 +2,246 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89EE01CCF3A
-	for <lists+linux-btrfs@lfdr.de>; Mon, 11 May 2020 03:41:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 566E91CD00B
+	for <lists+linux-btrfs@lfdr.de>; Mon, 11 May 2020 05:02:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729184AbgEKBlQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 10 May 2020 21:41:16 -0400
-Received: from mout.gmx.net ([212.227.17.21]:41041 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729141AbgEKBlP (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 10 May 2020 21:41:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1589161273;
-        bh=lLVcDGrGU6tsQcjDI5TzafxIY0JMfUWp50fMNARsvQQ=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=kufUUY906HpfcgJz70cVYrMoaPhzgcZcA+LdzJxd+inCBDb48HPbEylFzkdPueFwX
-         zgIE/Ou/UGqlF836/cILjlmqgByqhVXzpTkJAVZT5NfhrcLunozFHa4vR+vnaNn+BU
-         ohNbP+A+LRs5ICbYbA5Y6n5EmYWq6Sozi1N2M+Kk=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MTRQq-1jfg9M1o6u-00Tkp3; Mon, 11
- May 2020 03:41:13 +0200
-Subject: Re: unmountable filesystem: open_ctree failed
-To:     Christoph Heinrich <chheinml@gmail.com>,
-        linux-btrfs@vger.kernel.org
-References: <fbf7d9e2-f64c-4598-2ce4-e1a05a6ede33@gmail.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
- PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
- 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
- D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
- efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
- ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
- BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
- 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
- 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
- EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
- 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
- ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
- oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
- fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
- 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
- ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
- oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <12c889a7-57d2-af96-cc27-5d75398db1d4@gmx.com>
-Date:   Mon, 11 May 2020 09:41:09 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1728795AbgEKDAs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 10 May 2020 23:00:48 -0400
+Received: from gateway23.websitewelcome.com ([192.185.48.104]:33202 "EHLO
+        gateway23.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728776AbgEKDAr (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Sun, 10 May 2020 23:00:47 -0400
+X-Greylist: delayed 1500 seconds by postgrey-1.27 at vger.kernel.org; Sun, 10 May 2020 23:00:46 EDT
+Received: from cm12.websitewelcome.com (cm12.websitewelcome.com [100.42.49.8])
+        by gateway23.websitewelcome.com (Postfix) with ESMTP id A253E962A
+        for <linux-btrfs@vger.kernel.org>; Sun, 10 May 2020 21:11:56 -0500 (CDT)
+Received: from br540.hostgator.com.br ([108.179.252.180])
+        by cmsmtp with SMTP
+        id XxvAj9AfP1s2xXxvAjhoCT; Sun, 10 May 2020 21:11:56 -0500
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=mpdesouza.com; s=default; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=SgOxC5Hy2mJUaXflEVGEYikEJMUS/+Fddn8hO6VA/6Q=; b=k6KwrZU5jpX6WUFs4EXa27+dS4
+        eVQds68PBE1kzahChLVpyQc201tgzvTvSc6uFFPtrjUJs7PrezsVRL1HyD9xZhOMY+CQJ5+jlkOhS
+        hTY8tRldDIWdEPTpJX2nKmH4kwqj6hUZJxWOdYKRnbChbGURs5mR8UHudKLeH7HPlncian3GGyy6p
+        C3YjXG/VevVHnHwvUit6BsSNXVBDdSic0l8DBywISF199z1648iL2fKbYYMRWQKipMMi8YqabN9s9
+        LWPArt5Ee4CNmeZVyr3X3UrZfeVEhmHu2rUYf5NYKQd7JdKD+XuDPiwLDhhU+AavnTO1uThR9gp7U
+        7wGPlqfw==;
+Received: from [191.248.104.141] (port=50344 helo=hephaestus.prv.suse.net)
+        by br540.hostgator.com.br with esmtpsa (TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128)
+        (Exim 4.92)
+        (envelope-from <marcos@mpdesouza.com>)
+        id 1jXxv9-002KhM-W0; Sun, 10 May 2020 23:11:56 -0300
+From:   Marcos Paulo de Souza <marcos@mpdesouza.com>
+To:     dsterba@suse.com, linux-btrfs@vger.kernel.org, wqu@suse.com,
+        fdmanana@suse.com
+Cc:     Marcos Paulo de Souza <mpdesouza@suse.com>, stable@vger.kernel.org
+Subject: [PATCH v3] btrfs: send: Emit file capabilities after chown
+Date:   Sun, 10 May 2020 23:15:07 -0300
+Message-Id: <20200511021507.26942-1-marcos@mpdesouza.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <fbf7d9e2-f64c-4598-2ce4-e1a05a6ede33@gmail.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="IByAywet2KEmi4v3LGBwDYOhqOukEVWit"
-X-Provags-ID: V03:K1:eKf4n+YtNYIC7IkFvpkIHmh7N+TK2DKFSDQEv0QdtBUJoBG9MgH
- mnkt88Trx4bSpK21paGBcvTd4/lSr3ylgMXeNrGOcFU8vCybXJqA/KpgSfvPbWm2H4N4p0t
- wdaRcL96Orzrc7LupBsDyBi4pfDH/6Nj87WkKC7KNM67dV3hMY6QodTYJGLjxz2HLu+kcDV
- UTczkjLNSctx9dDTg4zQA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:39aiaEEQ7hY=:2PPHccapB36fn9N9Tg7qC6
- PW7Na7y06EeEvmveljM1LxIy7dgF/MG87pstHjfE3Cs2j9pIJIRwCOfIuud4awPreCWbZunmD
- 1TzJVYrepdZZb9f7VMUlnx+SZoghOlwifyVHzfQMHcvwQy07uZmreaHn6kA4AOumn+1jZx5mj
- UWFPiFdHCHmd3ESlWjSGObz2aCL/uiSJ6a1eCRokyr07vjkIqMRBvkIHYUpUUI0YFFIBSvaes
- 0oFVWDKzkMB4EcCkDiIrxiwWlmSpgldonG9oTGFkzCf2EcCwhq5Ht2OBpPIFNYLWCGiKfYLNZ
- p9ydCx0vn4kWN2ZdEs6e6qtDUdHPlWKlJ0/IFTlXK/xmau+jxYQSivo93+1bowhtIfdl4UeSO
- UNCDcSNdfLEWfnxZ9EhBwtE1egKedwylQrWUPN5ooB+G+kyBaN5MCS4ZhrRergRV1PEiGh3qL
- Jtdbx6D2qVIk5+8JcF4vuX2Fv+0io9qxzgQgLKxrp49i6fdndsjjsyA359Ki0h4u3/EMsK6ga
- WWPwnnB4kX0LRY57wnr6cXFWy66mleORSuu3n4WY4An+YRiL77Pt1QhXWkKqP7vSEh3fPYjno
- BjtxJpTTo29PGsfrXPeaqYru4Q3wfXLSTlmPUuFXGZuZ1F7yxNIiuKEOdJ9EdVnEvaPfsocEp
- wk89aDoT8XOQ5Z9izmRNOHK1si8LgtIezSR6nrVxI42QNlJupzEItNd5QsjNEtaydVSjs/1AI
- myDn9VCdfM1pdNrkfsOUYoQx30irs7UchXCGK3HBVlQUI6hIMyUY9gX72MHd3FEsURSUxcj2P
- AGvke2tTT4/qGiJ6iWXr/CLIm1W1bD+qsxYG4d4rsYNGZoyPB+WdSwVyRI8pOHd6EZj0agdHb
- I+D1MYPuWzt+Gj8lrseimRC9lQxpSq2x5A0aTd8/MpCW7Wekv0tnRYaFOBu02I+KOlfCyO9aK
- QDDxEvrEhd2OY6Lpexn4HJjIdPhwJf5vpUhVDpYPU0Z4DrZSIkpkLX0uQk1rAuNvebW+U1/GO
- QVyhbpge58XqZvj6wp0fYGEBHiBnEZatLCJ0FuQ2fBR0c8hq4QA0UecTwfAQeqcV/2WfhUDqr
- du5gtpiGxOf5AWZta0e9SHm+yO2QqluFsHWiEqD/uH41wz2hvF0Sh154Re/Vn1zO38YkgePoe
- GeolQYMGg5XLzGKjlHgTSi1tMdldDwSVnvBk2lJrhbBiGZK7vxwaN8zR8QbosKij0Z5j3+3xO
- a2qi8nbmN+E2W0lXA
+Content-Transfer-Encoding: 8bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - br540.hostgator.com.br
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - mpdesouza.com
+X-BWhitelist: no
+X-Source-IP: 191.248.104.141
+X-Source-L: No
+X-Exim-ID: 1jXxv9-002KhM-W0
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: (hephaestus.prv.suse.net) [191.248.104.141]:50344
+X-Source-Auth: marcos@mpdesouza.com
+X-Email-Count: 5
+X-Source-Cap: bXBkZXNvNTM7bXBkZXNvNTM7YnI1NDAuaG9zdGdhdG9yLmNvbS5icg==
+X-Local-Domain: yes
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---IByAywet2KEmi4v3LGBwDYOhqOukEVWit
-Content-Type: multipart/mixed; boundary="gPuewIq4TJOEtyN3E135jqQaAWimsgeyd"
+From: Marcos Paulo de Souza <mpdesouza@suse.com>
 
---gPuewIq4TJOEtyN3E135jqQaAWimsgeyd
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+[PROBLEM]
+Whenever a chown is executed, all capabilities of the file being touched are
+lost.  When doing incremental send with a file with capabilities, there is a
+situation where the capability can be lost in the receiving side. The
+sequence of actions bellow shows the problem:
 
+$ mount /dev/sda fs1
+$ mount /dev/sdb fs2
 
+$ touch fs1/foo.bar
+$ setcap cap_sys_nice+ep fs1/foo.bar
+$ btrfs subvol snap -r fs1 fs1/snap_init
+$ btrfs send fs1/snap_init | btrfs receive fs2
 
-On 2020/5/11 =E4=B8=8A=E5=8D=8812:51, Christoph Heinrich wrote:
-> Hello,
->=20
->=20
->=20
-> my hard drive can't be mounted anymore.
->=20
-> Two days ago the drive was very slow (<1kb/s read and write, but I
-> didn't find any errors anywhere).
+$ chgrp adm fs1/foo.bar
+$ setcap cap_sys_nice+ep fs1/foo.bar
 
-Something looks tricky, and SMART reports no error?
+$ btrfs subvol snap -r fs1 fs1/snap_complete
+$ btrfs subvol snap -r fs1 fs1/snap_incremental
 
->=20
-> However after unplugging and plugging in again, everything seemed norma=
-l
-> again, so I don't know if that's related.
->=20
->=20
->=20
-> When trying to mount it today I get that error:
->=20
->=20
->=20
-> mount: /mnt: wrong fs type, bad option, bad superblock on /dev/sdb,
-> missing codepage or helper program, or other error.
->=20
->=20
->=20
-> Mounting without -o results in dmesg:
->=20
->=20
->=20
-> [14479.650956] BTRFS info (device sdb): disk space caching is enabled
->=20
-> [14479.650963] BTRFS info (device sdb): has skinny extents
->=20
-> [14499.742007] BTRFS error (device sdb): parent transid verify failed o=
-n
-> 3437913341952 wanted 7041 found 6628
->=20
-> [14499.753076] BTRFS error (device sdb): parent transid verify failed o=
-n
-> 3437913341952 wanted 7041 found 6628
+$ btrfs send fs1/snap_complete | btrfs receive fs2
+$ btrfs send -p fs1/snap_init fs1/snap_incremental | btrfs receive fs2
 
-Either btrfs or the disk failed to write certain data onto disk.
-This breaks the COW requirement and corrupted the extent tree.
+At this point, only a chown was emitted by "btrfs send" since only the group
+was changed. This makes the cap_sys_nice capability to be dropped from
+fs2/snap_incremental/foo.bar
 
-There is a pending patch to skip extent tree read, allow user to do RO
-mount and salvage data, but that's not merged for a long long time.
+[FIX]
+Only emit capabilities after chown is emitted. The current code
+first checks for xattrs that are new/changed, emits them, and later emit
+the chown. Now, __process_new_xattr skips capabilities, letting only
+finish_inode_if_needed to emit them, if they exist, for the inode being
+processed.
 
->=20
-> [14499.753089] BTRFS error (device sdb): failed to read block groups: -=
-5
->=20
-> [14499.816157] BTRFS error (device sdb): open_ctree failed
->=20
->=20
->=20
-> I already tried mounting with usebackuproot,nospace_cache,clear_cache,
-> but that resulted in the same error messages as before.
+This behavior was being worked around in "btrfs receive"
+side by caching the capability and only applying it after chown. Now,
+xattrs are only emmited _after_ chown, making that hack not needed
+anymore.
 
-Existing rescue options won't help.
+Link: https://github.com/kdave/btrfs-progs/issues/202
+CC: stable@vger.kernel.org
+Suggested-by: Filipe Manana <fdmanana@suse.com>
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
+Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
+---
+ Changes from v2:
+ * Tag Stable correctly
+ * Forgot to add v2 in the latest patch. Now set to v3 to avoid confusion
 
-In this case, your only hope would be salvaging data.
-Other than that pending patch, btrfs-restore is here.
+ Changes from v1:
+ * Constify name var in send_capabilities function (suggested by Filipe)
+ * Changed btrfs_alloc_path -> alloc_path_for_send() in send_capabilities
+  (suggested by Filipe)
+ * Removed a redundant sentence in the commit message (suggested by Filipe)
+ * Added the Reviewed-By tag from Filipe
 
->=20
->=20
->=20
-> When running btrfs check I get the output:
->=20
-> parent transid verify failed on 3437913341952 wanted 7041 found 6628
->=20
-> parent transid verify failed on 3437913341952 wanted 7041 found 6628
->=20
-> parent transid verify failed on 3437913341952 wanted 7041 found 6628
->=20
-> Ignoring transid failure
->=20
-> ERROR: child eb corrupted: parent bytenr=3D3437941538816 item=3D123 par=
-ent
-> level=3D2 child level=3D0
+ Changes from RFC:
+ * Explained about chown + drop capabilities problem in the commit message (suggested
+   by Filipe and David)
+ * Changed the commit message to show describe the fix (suggested by Filipe)
+ * Skip the xattr in __process_new_xattr if it's a capability, since it'll be
+   handled in finish_inode_if_needed now (suggested by Filipe).
+ * Created function send_capabilities to query if the inode has caps, and if
+   yes, emit them.
+ * Call send_capabilities in finish_inode_if_needed _after_ the needs_chown
+   check. (suggested by Filipe)
 
-Yeah, some write didn't reach disk.
-This means either the disk is reporting false FLUSH/FUA result (return
-before all data reach disk), or btrfs has something wrong.
+ fs/btrfs/send.c | 69 +++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 69 insertions(+)
 
-If you have run btrfs kernel between 5.2.15~5.3.0, it's possible that
-one kernel regression caused such problem.
+diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
+index 6b86841315be..2b378e32e7dc 100644
+--- a/fs/btrfs/send.c
++++ b/fs/btrfs/send.c
+@@ -23,6 +23,7 @@
+ #include "btrfs_inode.h"
+ #include "transaction.h"
+ #include "compression.h"
++#include "xattr.h"
+ 
+ /*
+  * Maximum number of references an extent can have in order for us to attempt to
+@@ -4545,6 +4546,10 @@ static int __process_new_xattr(int num, struct btrfs_key *di_key,
+ 	struct fs_path *p;
+ 	struct posix_acl_xattr_header dummy_acl;
+ 
++	/* capabilities are emitted by finish_inode_if_needed */
++	if (!strncmp(name, XATTR_NAME_CAPS, name_len))
++		return 0;
++
+ 	p = fs_path_alloc();
+ 	if (!p)
+ 		return -ENOMEM;
+@@ -5107,6 +5112,66 @@ static int send_extent_data(struct send_ctx *sctx,
+ 	return 0;
+ }
+ 
++/*
++ * Search for a capability xattr related to sctx->cur_ino. If the capability if
++ * found, call send_set_xattr function to emit it.
++ *
++ * Return %0 if there isn't a capability, or when the capability was emitted
++ * successfully, or < %0 if an error occurred.
++ */
++static int send_capabilities(struct send_ctx *sctx)
++{
++	struct fs_path *fspath = NULL;
++	struct btrfs_path *path;
++	struct btrfs_dir_item *di;
++	struct extent_buffer *leaf;
++	unsigned long data_ptr;
++	const char *name = XATTR_NAME_CAPS;
++	char *buf = NULL;
++	int buf_len;
++	int ret = 0;
++
++	path = alloc_path_for_send();
++	if (!path)
++		return -ENOMEM;
++
++	di = btrfs_lookup_xattr(NULL, sctx->send_root, path, sctx->cur_ino,
++				name, strlen(name), 0);
++	if (!di) {
++		/* there is no xattr for this inode */
++		goto out;
++	} else if (IS_ERR(di)) {
++		ret = PTR_ERR(di);
++		goto out;
++	}
++
++	leaf = path->nodes[0];
++	buf_len = btrfs_dir_data_len(leaf, di);
++
++	fspath = fs_path_alloc();
++	buf = kmalloc(buf_len, GFP_KERNEL);
++	if (!fspath || !buf) {
++		ret = -ENOMEM;
++		goto out;
++	}
++
++	ret = get_cur_path(sctx, sctx->cur_ino, sctx->cur_inode_gen, fspath);
++	if (ret < 0)
++		goto out;
++
++	data_ptr = (unsigned long)((char *)(di + 1) +
++				   btrfs_dir_name_len(leaf, di));
++	read_extent_buffer(leaf, buf, data_ptr,
++			   btrfs_dir_data_len(leaf, di));
++
++	ret = send_set_xattr(sctx, fspath, name, strlen(name), buf, buf_len);
++out:
++	kfree(buf);
++	fs_path_free(fspath);
++	btrfs_free_path(path);
++	return ret;
++}
++
+ static int clone_range(struct send_ctx *sctx,
+ 		       struct clone_root *clone_root,
+ 		       const u64 disk_byte,
+@@ -6010,6 +6075,10 @@ static int finish_inode_if_needed(struct send_ctx *sctx, int at_end)
+ 			goto out;
+ 	}
+ 
++	ret = send_capabilities(sctx);
++	if (ret < 0)
++		goto out;
++
+ 	/*
+ 	 * If other directory inodes depended on our current directory
+ 	 * inode's move/rename, now do their move/rename operations.
+-- 
+2.25.1
 
->=20
-> ERROR: failed to read block groups: Input/output error
->=20
-> ERROR: cannot open file system
->=20
->=20
->=20
-> From what I've read so far, running btrfs-zero-log or btrfs check
-> --repair may help,
-
---repair won't help afaik.
-But --init-exten-tree may help.
-
-The problem is, normally we use btrfs check to do a basic evaluation on
-how damaged the fs is (mostly to ensure fs trees are all OK).
-
-But in your case, btrfs check failed to continue, thus we don't now if
-that transid error is the only error.
-
-So if you want to salvage data, either go btrfs-restore or compile that
-out-of-tree patch.
-If you don't care the data, but want to take an adventure, try btrfs
-check --init-extent-tree, which can screw up the fs even more, or may
-save your fs to completely fine status.
-
-Thanks,
-Qu
-
-> but it may also do more damage then good, so I'd rather ask then make
-> the situation worse then it already is.
->=20
->=20
->=20
-> kernel 5.6.11
->=20
-> btrfs-progs 5.6
->=20
->=20
->=20
-> Regards,
->=20
-> Christoph
-
-
---gPuewIq4TJOEtyN3E135jqQaAWimsgeyd--
-
---IByAywet2KEmi4v3LGBwDYOhqOukEVWit
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl64rTUACgkQwj2R86El
-/qi5wAf/ST+ea2jGVp/VkrT7sk3uK2I+9OuGeLjIokEcA+krR62mxM9A8PDuQfkx
-V0W1Z/MkCEcHCkbCfFjH6Zed62RBtsGxvEqZBEi12r5r/pKKEvIsoTzett4oYT8K
-EVNdq13LpH6ZxJne/mvTmuaqAxQUP/7z3/Q9aPzFwnkLeCZvXN8OFS6GdSM8bzLT
-Y/Y0fgmPFA+wuro0ISYT56h+lHhCXmUtHbWb+G62qf+Rdpu6l1f5rBMcta4/tX7v
-WrX72JSeby+KHv6sPBb7oy4tUf7QAPcgDkHNHmaWQ/+RkvrB8ueez8iZFD53USV9
-9LCWrfUwqMXmePOASKoNx8MNfsNcXQ==
-=HM20
------END PGP SIGNATURE-----
-
---IByAywet2KEmi4v3LGBwDYOhqOukEVWit--
