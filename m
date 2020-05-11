@@ -2,119 +2,122 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 561BA1CDAD4
-	for <lists+linux-btrfs@lfdr.de>; Mon, 11 May 2020 15:11:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 465FB1CDAD6
+	for <lists+linux-btrfs@lfdr.de>; Mon, 11 May 2020 15:12:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728367AbgEKNLU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 11 May 2020 09:11:20 -0400
-Received: from mx2.suse.de ([195.135.220.15]:49244 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726687AbgEKNLU (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 11 May 2020 09:11:20 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 92431AC12;
-        Mon, 11 May 2020 13:11:21 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 71F7BDA823; Mon, 11 May 2020 15:10:28 +0200 (CEST)
-Date:   Mon, 11 May 2020 15:10:28 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Nikolay Borisov <nborisov@suse.com>
-Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 19/19] btrfs: update documentation of set/get helpers
-Message-ID: <20200511131028.GQ18421@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-References: <cover.1588853772.git.dsterba@suse.com>
- <86176aac59bae7968d271be7477fe8e36becc9fc.1588853772.git.dsterba@suse.com>
- <1cb28f67-1d0f-fe8d-af78-f0ebd3213172@suse.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1cb28f67-1d0f-fe8d-af78-f0ebd3213172@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+        id S1729763AbgEKNL7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 11 May 2020 09:11:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55556 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726687AbgEKNL7 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 11 May 2020 09:11:59 -0400
+Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A566C061A0C
+        for <linux-btrfs@vger.kernel.org>; Mon, 11 May 2020 06:11:58 -0700 (PDT)
+Received: by mail-qk1-x72a.google.com with SMTP id n14so9591394qke.8
+        for <linux-btrfs@vger.kernel.org>; Mon, 11 May 2020 06:11:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=clarafamily.com; s=google;
+        h=from:content-transfer-encoding:mime-version:subject:message-id:date
+         :to;
+        bh=LYw+wjZATmpSJ8tJp28A2Eefmb7wiJrV+s9FoCJs7EM=;
+        b=G0BOGl4v6rs5fl2u+b789LHdrJdxlmSfRbnIuh2M4UO+ASiBvHmRyXHzv174LTj+wb
+         An83MXhIugXPVudTxwRFe1ZS58JVit5edrQvqUagLrybSnKDJEdTr+DcP4HZagQWF70t
+         7dBHpUyFaDArD8bNbN/I4ymNsfJWGVgfaJzU4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:content-transfer-encoding:mime-version
+         :subject:message-id:date:to;
+        bh=LYw+wjZATmpSJ8tJp28A2Eefmb7wiJrV+s9FoCJs7EM=;
+        b=BATEMaDX2w3GZepqFjwQpo5Ye384XtGLbUsHIPJkNbU3VVauH9hTXIWtXH2CWVnVop
+         +Kphzt9mUeX2JLrhYFH0xJj7c+7wV04e9kjZHOZj7VDRI9oqoFVdAj+2M2y8kIEqX6Yk
+         xWdMdeNeNfj0823U9KnKG8GbzQrTKFC8R6uF4bFgqiNtNqRa5dOOis5om3HZR91ChJHP
+         lcPsycMgvqVPAFE2koBBtpbURomfuKh+SzUghV7G2M4R99c+GFKKd5NJxafGUrJBf04z
+         T8TZiScjfl0/EAz+Ja1RV/3QTxpQdEwwqStnjsoJYqRsglGvSuwD23zyUVuf/wjyR7+Q
+         6mjw==
+X-Gm-Message-State: AGi0PuawNSeuHpvJCF3WTStr8q/SNtfaTFShi5HQkeOh3Q1RB4WoQrPx
+        H9vQRQTWSyObvswecZKbACGGWun1pz4=
+X-Google-Smtp-Source: APiQypIE3NrM5TCA31Rn+IiLjvW1CsMVLf2o4RZIeaS/YiDoO/A+89QhDgyE6fF8cClV/2TUUVHRxA==
+X-Received: by 2002:a37:9c4e:: with SMTP id f75mr14926168qke.175.1589202717270;
+        Mon, 11 May 2020 06:11:57 -0700 (PDT)
+Received: from jasons-mbp.clara (CPE40623100049e-CM9050cac9ddf0.cpe.net.cable.rogers.com. [99.247.249.188])
+        by smtp.gmail.com with ESMTPSA id a24sm5799311qto.10.2020.05.11.06.11.56
+        for <linux-btrfs@vger.kernel.org>
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 11 May 2020 06:11:56 -0700 (PDT)
+From:   Jason Clara <jason@clarafamily.com>
+Content-Type: text/plain;
+        charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0 (Mac OS X Mail 11.5 \(3445.9.5\))
+Subject: Help with unmountable boot volume
+Message-Id: <14907AA2-4E26-4025-945E-4BCB87A32254@clarafamily.com>
+Date:   Mon, 11 May 2020 09:11:55 -0400
+To:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+X-Mailer: Apple Mail (2.3445.9.5)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, May 08, 2020 at 12:33:08AM +0300, Nikolay Borisov wrote:
-> On 7.05.20 г. 23:20 ч., David Sterba wrote:
-> > Signed-off-by: David Sterba <dsterba@suse.com>
-> > ---
-> >  fs/btrfs/struct-funcs.c | 29 ++++++++++++++++-------------
-> >  1 file changed, 16 insertions(+), 13 deletions(-)
-> > 
-> > diff --git a/fs/btrfs/struct-funcs.c b/fs/btrfs/struct-funcs.c
-> > index 225ef6d7e949..1021b80f70db 100644
-> > --- a/fs/btrfs/struct-funcs.c
-> > +++ b/fs/btrfs/struct-funcs.c
-> > @@ -39,23 +39,26 @@ static bool check_setget_bounds(const struct extent_buffer *eb,
-> >  }
-> >  
-> >  /*
-> > - * this is some deeply nasty code.
-> > + * Macro templates that define helpers to read/write extent buffer data of a
-> > + * given size, that are also used via ctree.h for access to item members via
-> > + * specialized helpers.
-> >   *
-> > - * The end result is that anyone who #includes ctree.h gets a
-> > - * declaration for the btrfs_set_foo functions and btrfs_foo functions,
-> > - * which are wrappers of btrfs_set_token_#bits functions and
-> > - * btrfs_get_token_#bits functions, which are defined in this file.
-> > + * Generic helpers:
-> > + * - btrfs_set_8 (for 8/16/32/64)
-> > + * - btrfs_get_8 (for 8/16/32/64)
-> >   *
-> > - * These setget functions do all the extent_buffer related mapping
-> > - * required to efficiently read and write specific fields in the extent
-> > - * buffers.  Every pointer to metadata items in btrfs is really just
-> > - * an unsigned long offset into the extent buffer which has been
-> > - * cast to a specific type.  This gives us all the gcc type checking.
-> > + * Generic helpes with a token, caching last page address:
-> 
-> nit: missing 'r' in 'helpers'. Without having looked into the code It's
-> not obvious what a "token" is in this context, is it worth it perhaps
-> documenting? ( I will take a look later and see if it's self-evident).
+I woke up this morning and my system had crashed and my root filesystem =
+was readonly.
 
-I could write it as
+Reboot failed when mounting the root filesystem, and now my system will =
+not boot.
 
-"Generic helpers with a token (a structure caching the address of most
-recently accessed page)"
+I had a USB I setup for recovery and booted into that and to help with =
+recovery but I am currently stuck.
 
-The use of 'last' is confusing as it's not the last as in the array.
+Some background into.
+Root file system is RAID 1 with two 1TB drives (Both M.2 one is NVME and =
+one is SATA)
+Original system is Ubuntu 18.04 with kernel 5.5.7 and btrfs-progs I =
+think was version 5.6
+I think last scrub on the pool was maybe 1-2 months ago.  But sure exact =
+timing.
 
-> > + * - btrfs_set_token_8 (for 8/16/32/64)
-> > + * - btrfs_get_token_8 (for 8/16/32/64)
-> >   *
-> > - * The extent buffer api is used to do the page spanning work required to
-> > - * have a metadata blocksize different from the page size.
-> > + * The set/get functions handle data spanning two pages transparently, in case
-> > + * metadata block size is larger than page.  Every pointer to metadata items is
->        ^^^^^
-> nit: s/metadata/btree/?
+My recovery environment is ubuntu 20.04 with kernel 5.6.7 and =
+btrfs-progs 5.6 and that is what I am running under at the moment
 
-The terms should be interchangeable, but in the previous sentence it's 'metadata'
-and this one continues, so I wonder how would 'btree' fit here.
+When I try to mount the filesystem I get the following error.
+boot@boot-live-usb:~$ sudo mount /dev/sdm2 /media/root/
+[sudo] password for boot:=20
+mount: /media/root: wrong fs type, bad option, bad superblock on =
+/dev/sdm2, missing codepage or helper program, or other error.
 
-All the structures here are on the higher level, so metadata etc, while
-b-tree node is the storage.
+With dmesg showing
+[Mon May 11 08:56:47 2020] BTRFS info (device nvme0n1p2): disk space =
+caching is enabled
+[Mon May 11 08:56:47 2020] BTRFS info (device nvme0n1p2): has skinny =
+extents
+[Mon May 11 08:56:47 2020] BTRFS error (device nvme0n1p2): bad tree =
+block start, want 2728265449472 have 5440864628575810330
+[Mon May 11 08:56:47 2020] BTRFS error (device nvme0n1p2): bad tree =
+block start, want 2728265449472 have 0
+[Mon May 11 08:56:47 2020] BTRFS error (device nvme0n1p2): failed to =
+read block groups: -5
+[Mon May 11 08:56:47 2020] BTRFS error (device nvme0n1p2): open_ctree =
+failed
 
-> > + * an offset into the extent buffer page array, cast to a specific type.  This
-> > + * gives us all the type checking.
-> >   *
-> > - * There are 2 variants defined, one with a token pointer and one without.
-> > + * The extent buffer pages stored in the array pages do not form a contiguous
-> > + * range, but the API functions assume the linear offset to the range from
-> 
-> nit: "contiguous physical range"
 
-Ok.
+Trying a readonly check on the filesystem gave me the following error
+boot@boot-live-usb:~$ sudo btrfs check --readonly /dev/sdm2=20
+Opening filesystem to check...
+checksum verify failed on 2728265449472 found 0000008B wanted 00000017
+checksum verify failed on 2728265449472 found 000000B6 wanted 00000000
+checksum verify failed on 2728265449472 found 0000008B wanted 00000017
+bad tree block 2728265449472, bytenr mismatch, want=3D2728265449472, =
+have=3D5440864628575810330
+ERROR: failed to read block groups: Input/output error
+ERROR: cannot open file system
 
-> > + * 0 to metadata node size.
-> >   */
-> >  
-> >  #define DEFINE_BTRFS_SETGET_BITS(bits)					\
-> > 
+I tried a restore (with -io options) to at least get as much data as I =
+could off just to be safe and it finished but there was a number of =
+checksum errors, bad tree block error and loop errors.  So not sure how =
+good the backup will be.
+
+Any help would be appreciated.  I have backups so I could format and =
+setup the system again, but would rather not if I don=E2=80=99t have =
+too.=
