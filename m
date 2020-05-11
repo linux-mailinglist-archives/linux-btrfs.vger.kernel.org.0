@@ -2,246 +2,157 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 566E91CD00B
-	for <lists+linux-btrfs@lfdr.de>; Mon, 11 May 2020 05:02:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C547F1CD08B
+	for <lists+linux-btrfs@lfdr.de>; Mon, 11 May 2020 06:06:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728795AbgEKDAs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 10 May 2020 23:00:48 -0400
-Received: from gateway23.websitewelcome.com ([192.185.48.104]:33202 "EHLO
-        gateway23.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728776AbgEKDAr (ORCPT
+        id S1725913AbgEKEGE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 11 May 2020 00:06:04 -0400
+Received: from esa5.hgst.iphmx.com ([216.71.153.144]:39521 "EHLO
+        esa5.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725562AbgEKEGD (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 10 May 2020 23:00:47 -0400
-X-Greylist: delayed 1500 seconds by postgrey-1.27 at vger.kernel.org; Sun, 10 May 2020 23:00:46 EDT
-Received: from cm12.websitewelcome.com (cm12.websitewelcome.com [100.42.49.8])
-        by gateway23.websitewelcome.com (Postfix) with ESMTP id A253E962A
-        for <linux-btrfs@vger.kernel.org>; Sun, 10 May 2020 21:11:56 -0500 (CDT)
-Received: from br540.hostgator.com.br ([108.179.252.180])
-        by cmsmtp with SMTP
-        id XxvAj9AfP1s2xXxvAjhoCT; Sun, 10 May 2020 21:11:56 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=mpdesouza.com; s=default; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=SgOxC5Hy2mJUaXflEVGEYikEJMUS/+Fddn8hO6VA/6Q=; b=k6KwrZU5jpX6WUFs4EXa27+dS4
-        eVQds68PBE1kzahChLVpyQc201tgzvTvSc6uFFPtrjUJs7PrezsVRL1HyD9xZhOMY+CQJ5+jlkOhS
-        hTY8tRldDIWdEPTpJX2nKmH4kwqj6hUZJxWOdYKRnbChbGURs5mR8UHudKLeH7HPlncian3GGyy6p
-        C3YjXG/VevVHnHwvUit6BsSNXVBDdSic0l8DBywISF199z1648iL2fKbYYMRWQKipMMi8YqabN9s9
-        LWPArt5Ee4CNmeZVyr3X3UrZfeVEhmHu2rUYf5NYKQd7JdKD+XuDPiwLDhhU+AavnTO1uThR9gp7U
-        7wGPlqfw==;
-Received: from [191.248.104.141] (port=50344 helo=hephaestus.prv.suse.net)
-        by br540.hostgator.com.br with esmtpsa (TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128)
-        (Exim 4.92)
-        (envelope-from <marcos@mpdesouza.com>)
-        id 1jXxv9-002KhM-W0; Sun, 10 May 2020 23:11:56 -0300
-From:   Marcos Paulo de Souza <marcos@mpdesouza.com>
-To:     dsterba@suse.com, linux-btrfs@vger.kernel.org, wqu@suse.com,
-        fdmanana@suse.com
-Cc:     Marcos Paulo de Souza <mpdesouza@suse.com>, stable@vger.kernel.org
-Subject: [PATCH v3] btrfs: send: Emit file capabilities after chown
-Date:   Sun, 10 May 2020 23:15:07 -0300
-Message-Id: <20200511021507.26942-1-marcos@mpdesouza.com>
-X-Mailer: git-send-email 2.25.1
+        Mon, 11 May 2020 00:06:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1589169963; x=1620705963;
+  h=from:to:cc:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=oBK1BOtbaF9L8wW8YkcbS5Jof1sUwzNNM62aw4At7ik=;
+  b=e/X4oXCSTkYRxKq/yYHn8gcAB9HcHPxTT0Tdk2koPRP8LwRh/yJj9izn
+   cnt8TfXgDhiGdsMghJepvZuWaMkyRq4WLK2xY+RXwxEZjzZ8LInE00aKE
+   GLwrjzYTWTcA39ozOPhfcgeYikWpWQoBs+wFUwzq3gSMrORPAmimwVMt8
+   MA0Ac1yP+pVjJv8LAMUK4BmjNIAsKJWYu5gjDVngHCa0ylL/qs3nx7KI+
+   Q56eGTdJnLLY0GW2k1PKmeSvQufkhu7zULV7LiOcj28kAciYzyzwBvKWF
+   oiQ9wr2d8dH6eJBZCH++Y+2L1hCf/uWmqojKgrdwM2jlZKaZzXMZO5MPu
+   w==;
+IronPort-SDR: 8aWafuH//GbDpHtbg6yo0LUYKNvG8KwSL3h6oMTiCSI6HeMTSW1x7HGWkDu3MrZ5JznjRXxP9H
+ TlsU7lOQDBlbbs56PFqsNGbIfWuQQ7K2NbaR1VJs7jb7fhooHJmbuMsefX/1FXqzI16sE8EsWj
+ lobfF903zs/WIvXAiz4/yB2uoew0+fbB+HvnFHR62U7iLHt5LIC8yXeAJucILlFttYE9kV2bO/
+ LxA34qkWl7LahGVALfjgXSHSEj14LxEmE/hrg9KNOMIFTffMtpeZkgY6bfiTrXOWE6cBM98CUU
+ asI=
+X-IronPort-AV: E=Sophos;i="5.73,378,1583164800"; 
+   d="scan'208";a="137709522"
+Received: from mail-dm6nam10lp2103.outbound.protection.outlook.com (HELO NAM10-DM6-obe.outbound.protection.outlook.com) ([104.47.58.103])
+  by ob1.hgst.iphmx.com with ESMTP; 11 May 2020 12:06:03 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=mhu/Gnahj23qMuoxv0YHMQHKxqajsOWvBUmn1oD3EZZCsdrHXFRb1H6wwC1y0SlhQuHhRUHZtc5CZlNtP9LUmSdlGhlYbqKkhgwmIhVvHx8NyIkfLuECU8OCubX/ikL9vXD7guOuctfmGYYkPLilXd8Jrujo1LEUs+x1usfmdVyOQJTVEmNtqjSq6soV0CPoxhs5vb8shKH7vW5JsIj4ExeWEtX3aZl4G5J+xdT0mC2xtfuegrenvdYq8jjWnHoGx2QTsSbYLm9UwCaLHWP0EYIU5ado/lDAFCcUEMFs76SAFX4JCc7nAse1OZZpVux7B4gSHJN/pZKl5Fgbb2qdkw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=M2V9guAK5cc7kzIDOYyW2UCHbi2rBhnrqWl/CnGtWcI=;
+ b=NoU5Lrxt4sCf0kEgWMgAKwCm2yvPr9cDxCKlcDdYytUGZ1peZcalZqEszWjGCu3Yvp+HikFCC496jLsohLzULGvzYm/O9vRSzTw8HES7cYZhyD+/dZLeXnepN7V6YXLefOiTHN1loE6yDjz7j4jTJo+pbvPvy/vB622gpZEz3DF+jb1L8Dkeoq7hAZEjcMjnbHuqKnQs0fendxmDDCj+a1EJwiKtJGDmRiqry64WhGHmSQzkc1tpBZsrYEER0xizirHEVlF0/u8VG73UoPQsehyslqqkQt4lggbIjh46HBirQ3WuGmE+GeINP1looMFrz9sCjX3P3McKrSpwryNBVw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=M2V9guAK5cc7kzIDOYyW2UCHbi2rBhnrqWl/CnGtWcI=;
+ b=af/XLhn+uOUZOMupxWSbNmZpmcOYe9IMHWknCFMfMlE325jfR5IJaTaU9ydtHNxdFl6twiGfrKDLt3P2tu1x3ED1uSVgh0Zrrdzaj+ypLYmIAiGmRShykKEhnkCEG5zI1qA+nf0BuP2kXj//iJ9TCi/scPNWwf/kxNCA3syIMwM=
+Received: from BY5PR04MB6900.namprd04.prod.outlook.com (2603:10b6:a03:229::20)
+ by BY5PR04MB6280.namprd04.prod.outlook.com (2603:10b6:a03:1e2::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2979.28; Mon, 11 May
+ 2020 04:06:00 +0000
+Received: from BY5PR04MB6900.namprd04.prod.outlook.com
+ ([fe80::b574:3071:da2f:7606]) by BY5PR04MB6900.namprd04.prod.outlook.com
+ ([fe80::b574:3071:da2f:7606%6]) with mapi id 15.20.2979.033; Mon, 11 May 2020
+ 04:06:00 +0000
+From:   Damien Le Moal <Damien.LeMoal@wdc.com>
+To:     Phil Karn <karn@ka9q.net>,
+        Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
+        Rich Rauenzahn <rrauenza@gmail.com>
+CC:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Subject: Re: Western Digital Red's SMR and btrfs?
+Thread-Topic: Western Digital Red's SMR and btrfs?
+Thread-Index: AQHWIEIpWSRJsaa3yU+OC7FuJNpSVA==
+Date:   Mon, 11 May 2020 04:06:00 +0000
+Message-ID: <BY5PR04MB69009A65502C25E208317161E7A10@BY5PR04MB6900.namprd04.prod.outlook.com>
+References: <CAG+QAKXuaah3tkhQLd7mD3bx+pc3JZdXkUg6yr0R8=Zv2vXnhw@mail.gmail.com>
+ <20200504230857.GQ10769@hungrycats.org>
+ <f7ae0b64-048d-3898-6e2d-5702e2f79f47@ka9q.net>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: ka9q.net; dkim=none (message not signed)
+ header.d=none;ka9q.net; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [129.253.182.57]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 4a8f30e8-13f7-4a24-c782-08d7f5609d94
+x-ms-traffictypediagnostic: BY5PR04MB6280:
+x-microsoft-antispam-prvs: <BY5PR04MB62800D4EC538C20BFC587CB3E7A10@BY5PR04MB6280.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-forefront-prvs: 04004D94E2
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: nYNcqTCSV4FskzIxkAKF9XvzPxlL0d24iCWYCum43TR0zDwe65PGwHLBUvkTDOdsUpIfrod0BFRN6EhOSYNPX4Zi4EBj7BXIHnyIdIadl578wklTLYlNIQ1uaDCSo6JojBacTCnJzd3ZrBR+v9ot5Dgit3T/TtMbU5YhO1z2ElYUiFKLBDssKdj6gxy2ReNxksWqn//UrNFyJUjht1JdPgK++BRNdzivB2jp4XC01urWSpfJkiDdZ5jtzhvdcmIr0xD6lZ12ZbpGo7I+pk6yJVhmnXYDZcILKWVCLIx88qLnClVVcGPMrGVZyzCfO7P9Kd30Qf+Yf9TM85n3GyZk6GTJff8hkmq4/1AdozRj2iPnN2Wd6IS9nb0fWebM79QwzzDDPE+zXQ6Y4o55Pzy4SBK4r95OGGr+5darw963MUvUd2pYgV+El1h6LeSB9/jLl5LI9qXh6U8nIbD1p76a9nb8g97McIZ86Z77RWWBlhXgxYI5rdescee1xymiMrn3WQvqw1Yzy7vIcSIMDCSk4Q==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR04MB6900.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(346002)(39860400002)(376002)(366004)(396003)(136003)(33430700001)(64756008)(66556008)(6506007)(53546011)(8936002)(186003)(9686003)(110136005)(478600001)(316002)(33440700001)(7696005)(26005)(8676002)(55016002)(4326008)(33656002)(66446008)(66946007)(86362001)(66476007)(5660300002)(52536014)(2906002)(71200400001)(76116006);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: V5CQDs+20QgLsv5ZiqtDr6+Wzoo/ek4N7Qumqd6j8UwAhAUYZnMWapi0vY9Ryt7l59xGdgNUPSgIBlF6egrokJhNONe1cDyFto6sZQeOR6RXNoY0EMgXPxdF1bqD05fQa8RCXs62ZXAda9Evz7zv0bGpxk6AwfB9sVnWUw4JSYFkV/+OTW0aX1hgzM56WW2muNDNuUXEXXerEj0WEnp1qwP0qrMeAK9mn4r+4PyzABzYh1flZXeeP4iiagjzI8eW8qrg6God7uWznVQGfTgvHUTa1yTeUCvQ07psaT5y+XD8o+lGFiD5vue/H+GDgonkSAiFFp6KWR9qqZLZiCIdQRwHixjwiKa0v0CQjliOFkck0jhMehNRMB1p0Awo6YiKBq+7b8uGR5YQD8MQTOdpu6wc5dvoqmtAWOP3XLPJfKjF7PC0RkTWnwY2e+lPUePMVn4c9PX2Dp9/p0At8QAocqCmafbf11GoIUVCUTwI7K/bjVFKSn2/4zbeimMrBB26
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - br540.hostgator.com.br
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - mpdesouza.com
-X-BWhitelist: no
-X-Source-IP: 191.248.104.141
-X-Source-L: No
-X-Exim-ID: 1jXxv9-002KhM-W0
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: (hephaestus.prv.suse.net) [191.248.104.141]:50344
-X-Source-Auth: marcos@mpdesouza.com
-X-Email-Count: 5
-X-Source-Cap: bXBkZXNvNTM7bXBkZXNvNTM7YnI1NDAuaG9zdGdhdG9yLmNvbS5icg==
-X-Local-Domain: yes
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4a8f30e8-13f7-4a24-c782-08d7f5609d94
+X-MS-Exchange-CrossTenant-originalarrivaltime: 11 May 2020 04:06:00.4239
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: UwR0zM7VL7ej/OMa7RJEy7tLEg0adXlUyVzjoEnhjfwnVAkeyaGnDfI7eGDv7yi3tieZ9evySt9aNCdD6byleQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR04MB6280
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Marcos Paulo de Souza <mpdesouza@suse.com>
-
-[PROBLEM]
-Whenever a chown is executed, all capabilities of the file being touched are
-lost.  When doing incremental send with a file with capabilities, there is a
-situation where the capability can be lost in the receiving side. The
-sequence of actions bellow shows the problem:
-
-$ mount /dev/sda fs1
-$ mount /dev/sdb fs2
-
-$ touch fs1/foo.bar
-$ setcap cap_sys_nice+ep fs1/foo.bar
-$ btrfs subvol snap -r fs1 fs1/snap_init
-$ btrfs send fs1/snap_init | btrfs receive fs2
-
-$ chgrp adm fs1/foo.bar
-$ setcap cap_sys_nice+ep fs1/foo.bar
-
-$ btrfs subvol snap -r fs1 fs1/snap_complete
-$ btrfs subvol snap -r fs1 fs1/snap_incremental
-
-$ btrfs send fs1/snap_complete | btrfs receive fs2
-$ btrfs send -p fs1/snap_init fs1/snap_incremental | btrfs receive fs2
-
-At this point, only a chown was emitted by "btrfs send" since only the group
-was changed. This makes the cap_sys_nice capability to be dropped from
-fs2/snap_incremental/foo.bar
-
-[FIX]
-Only emit capabilities after chown is emitted. The current code
-first checks for xattrs that are new/changed, emits them, and later emit
-the chown. Now, __process_new_xattr skips capabilities, letting only
-finish_inode_if_needed to emit them, if they exist, for the inode being
-processed.
-
-This behavior was being worked around in "btrfs receive"
-side by caching the capability and only applying it after chown. Now,
-xattrs are only emmited _after_ chown, making that hack not needed
-anymore.
-
-Link: https://github.com/kdave/btrfs-progs/issues/202
-CC: stable@vger.kernel.org
-Suggested-by: Filipe Manana <fdmanana@suse.com>
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
-Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
----
- Changes from v2:
- * Tag Stable correctly
- * Forgot to add v2 in the latest patch. Now set to v3 to avoid confusion
-
- Changes from v1:
- * Constify name var in send_capabilities function (suggested by Filipe)
- * Changed btrfs_alloc_path -> alloc_path_for_send() in send_capabilities
-  (suggested by Filipe)
- * Removed a redundant sentence in the commit message (suggested by Filipe)
- * Added the Reviewed-By tag from Filipe
-
- Changes from RFC:
- * Explained about chown + drop capabilities problem in the commit message (suggested
-   by Filipe and David)
- * Changed the commit message to show describe the fix (suggested by Filipe)
- * Skip the xattr in __process_new_xattr if it's a capability, since it'll be
-   handled in finish_inode_if_needed now (suggested by Filipe).
- * Created function send_capabilities to query if the inode has caps, and if
-   yes, emit them.
- * Call send_capabilities in finish_inode_if_needed _after_ the needs_chown
-   check. (suggested by Filipe)
-
- fs/btrfs/send.c | 69 +++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 69 insertions(+)
-
-diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
-index 6b86841315be..2b378e32e7dc 100644
---- a/fs/btrfs/send.c
-+++ b/fs/btrfs/send.c
-@@ -23,6 +23,7 @@
- #include "btrfs_inode.h"
- #include "transaction.h"
- #include "compression.h"
-+#include "xattr.h"
- 
- /*
-  * Maximum number of references an extent can have in order for us to attempt to
-@@ -4545,6 +4546,10 @@ static int __process_new_xattr(int num, struct btrfs_key *di_key,
- 	struct fs_path *p;
- 	struct posix_acl_xattr_header dummy_acl;
- 
-+	/* capabilities are emitted by finish_inode_if_needed */
-+	if (!strncmp(name, XATTR_NAME_CAPS, name_len))
-+		return 0;
-+
- 	p = fs_path_alloc();
- 	if (!p)
- 		return -ENOMEM;
-@@ -5107,6 +5112,66 @@ static int send_extent_data(struct send_ctx *sctx,
- 	return 0;
- }
- 
-+/*
-+ * Search for a capability xattr related to sctx->cur_ino. If the capability if
-+ * found, call send_set_xattr function to emit it.
-+ *
-+ * Return %0 if there isn't a capability, or when the capability was emitted
-+ * successfully, or < %0 if an error occurred.
-+ */
-+static int send_capabilities(struct send_ctx *sctx)
-+{
-+	struct fs_path *fspath = NULL;
-+	struct btrfs_path *path;
-+	struct btrfs_dir_item *di;
-+	struct extent_buffer *leaf;
-+	unsigned long data_ptr;
-+	const char *name = XATTR_NAME_CAPS;
-+	char *buf = NULL;
-+	int buf_len;
-+	int ret = 0;
-+
-+	path = alloc_path_for_send();
-+	if (!path)
-+		return -ENOMEM;
-+
-+	di = btrfs_lookup_xattr(NULL, sctx->send_root, path, sctx->cur_ino,
-+				name, strlen(name), 0);
-+	if (!di) {
-+		/* there is no xattr for this inode */
-+		goto out;
-+	} else if (IS_ERR(di)) {
-+		ret = PTR_ERR(di);
-+		goto out;
-+	}
-+
-+	leaf = path->nodes[0];
-+	buf_len = btrfs_dir_data_len(leaf, di);
-+
-+	fspath = fs_path_alloc();
-+	buf = kmalloc(buf_len, GFP_KERNEL);
-+	if (!fspath || !buf) {
-+		ret = -ENOMEM;
-+		goto out;
-+	}
-+
-+	ret = get_cur_path(sctx, sctx->cur_ino, sctx->cur_inode_gen, fspath);
-+	if (ret < 0)
-+		goto out;
-+
-+	data_ptr = (unsigned long)((char *)(di + 1) +
-+				   btrfs_dir_name_len(leaf, di));
-+	read_extent_buffer(leaf, buf, data_ptr,
-+			   btrfs_dir_data_len(leaf, di));
-+
-+	ret = send_set_xattr(sctx, fspath, name, strlen(name), buf, buf_len);
-+out:
-+	kfree(buf);
-+	fs_path_free(fspath);
-+	btrfs_free_path(path);
-+	return ret;
-+}
-+
- static int clone_range(struct send_ctx *sctx,
- 		       struct clone_root *clone_root,
- 		       const u64 disk_byte,
-@@ -6010,6 +6075,10 @@ static int finish_inode_if_needed(struct send_ctx *sctx, int at_end)
- 			goto out;
- 	}
- 
-+	ret = send_capabilities(sctx);
-+	if (ret < 0)
-+		goto out;
-+
- 	/*
- 	 * If other directory inodes depended on our current directory
- 	 * inode's move/rename, now do their move/rename operations.
--- 
-2.25.1
-
+On 2020/05/10 6:01, Phil Karn wrote:=0A=
+> On 5/4/20 16:08, Zygo Blaxell wrote:=0A=
+>> The basic problem with DM-SMR drives is that they cache writes in CMR=0A=
+>> zones for a while, but they need significant idle periods (no read or=0A=
+>> write commands from the host) to move the data back to SMR zones, or=0A=
+>> they run out of CMR space and throttle writes from the host.=0A=
+> =0A=
+> Does anybody know where the drive keeps all that metadata? On rotating=0A=
+> disk, or in flash somewhere?=0A=
+=0A=
+This is drive implementation dependent. That is not something defined by=0A=
+standards. Differences will exist between vendors and models.=0A=
+=0A=
+> Just wondering what happens when power suddenly fails during these=0A=
+> rewrite operations.=0A=
+=0A=
+The drive FW saves whatever information is needed, consistent with the driv=
+e=0A=
+write cache flush state. Exactly like an SSD would do too.=0A=
+=0A=
+=0A=
+>> Some kinds of RAID rebuild don't provide sufficient idle time to complet=
+e=0A=
+>> the CMR-to-SMR writeback, so the host gets throttled.  If the drive slow=
+s=0A=
+> =0A=
+> My understanding is that large sequential writes can go directly to the=
+=0A=
+> SMR areas, which is an argument for a more conventional RAID array. How=
+=0A=
+> hard does btrfs try to do large sequential writes?=0A=
+=0A=
+"large" is not a sufficient parameter to conclude/guess on any specific=0A=
+behavior. Alignment (start LBA) of the write command, sectors already writt=
+en or=0A=
+not, drive write cache on or off, drive write cache full or not, drive=0A=
+implementation differences, etc. There are a lot more parameters influencin=
+g how=0A=
+the drive will process writes. There is no simple statement that can be mad=
+e=0A=
+about how these drive work internally. This is completely vendor & model=0A=
+dependent, exactly like SSDs FTL implementations.=0A=
+=0A=
+=0A=
+-- =0A=
+Damien Le Moal=0A=
+Western Digital Research=0A=
