@@ -2,32 +2,32 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CAF41CD385
-	for <lists+linux-btrfs@lfdr.de>; Mon, 11 May 2020 10:10:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D34B91CD3F8
+	for <lists+linux-btrfs@lfdr.de>; Mon, 11 May 2020 10:31:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728283AbgEKIKB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 11 May 2020 04:10:01 -0400
-Received: from mout.gmx.net ([212.227.17.20]:51237 "EHLO mout.gmx.net"
+        id S1728544AbgEKIbl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 11 May 2020 04:31:41 -0400
+Received: from mout.gmx.net ([212.227.15.18]:38359 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726082AbgEKIKA (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 11 May 2020 04:10:00 -0400
+        id S1728454AbgEKIbl (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 11 May 2020 04:31:41 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1589184592;
-        bh=MX8OuKTBug6TJV5XFipirflhPJ5ekZn/KLkgh3jjzBM=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=lVGKJQXE6zi7m0bcmdYbVzc2b3RrQYNoCJVeK9+4ygjuaBriIVGAhCwDB2oOJAZtl
-         OtjvXbpRsYWBgTG6NHFKVIA4PqeVf4hK1MoqzIfidAozaKoq05EOBRmb4rmJwDmqz5
-         qIqO5ReqQK4Bk1fBPpmyvgM/MeHvJ8RfHOyZawbk=
+        s=badeba3b8450; t=1589185896;
+        bh=c7xuO/iP+qbEKaGk7yBrRzRRcENFL+Fuvt7JXu6DB6M=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=D9AF/0kA0YohDP5U7wbJuLDE+6w0h39KrPGR3JTQjarvl3NGstWnajK62AF61NiRz
+         2piyI+EoQp9YjevMPRLf2mzzoInUgTXBJQMJQ/N0jnDK0UGB8jtQpFTs70qsZpewx7
+         TV7RBEVgyoM2XvA2bOtNa8cxQ0rqr3A9pR6HrHnQ=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MybKf-1jAu1K3HFF-00yxz4; Mon, 11
- May 2020 10:09:52 +0200
-Subject: Re: [PATCH] btrfs: Add comment for BTRFS_ROOT_REF_COWS
-To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20200212074651.33008-1-wqu@suse.com>
- <20200214165334.GC2902@twin.jikos.cz>
- <54ffe5f9-19d1-f916-04fa-3eceedc5aca7@gmx.com>
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MwfWa-1jAd7F347m-00yAwC; Mon, 11
+ May 2020 10:31:36 +0200
+Subject: Re: Balance loops: what we know so far
+To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+Cc:     linux-btrfs@vger.kernel.org
+References: <20200411211414.GP13306@hungrycats.org>
+ <b3e80e75-5d27-ec58-19af-11ba5a20e08c@gmx.com>
+ <20200428045500.GA10769@hungrycats.org>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -53,174 +53,186 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
  ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
  oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <6a71630c-8a50-ce72-9379-72b95de733a9@gmx.com>
-Date:   Mon, 11 May 2020 16:09:47 +0800
+Message-ID: <4bebdd24-ccaa-1128-7870-b59b08086d83@gmx.com>
+Date:   Mon, 11 May 2020 16:31:32 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <54ffe5f9-19d1-f916-04fa-3eceedc5aca7@gmx.com>
+In-Reply-To: <20200428045500.GA10769@hungrycats.org>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="zJHRVdJCcTw12Ow7RH4nj0xzpkMu4jGrM"
-X-Provags-ID: V03:K1:UpoOOiQ48ZUBeTaDajGxeXfUJezjhMvrZDVrVpmAK1HBrT/68RX
- pX+simeY6xSLpS29yxIgvV7qaPnThnuHUTIuhlteDRb2UcDbBiJNQ/wqyEFQ8s6tgCOLDN1
- USq2PGAHDMn2ybyb5Xk/GmjujuSj7km1/+AzUhGjcTfPGZJ/DDBjLNizQY84oEZYgBBHiv7
- FHXU2Ovt0NThqab1UxjOg==
+ boundary="e54LpEXcYfRDhQDI0LkERYIodLxX9d5RO"
+X-Provags-ID: V03:K1:v+tQfZJIowoGHYHwv/6QtAUBdyvX1n07h1bEOm+ZmlXMI8D/1jJ
+ RlozaGep3gAgmQLlrGKTVoeV14Zs7wxAFd5nh1XtP3jgba1r+4b3fv5W2DZj/ydZ1Mh47XE
+ 9g//P41F+jxwNOSRlxlOa8YyHfrA3lnblybI0xVmGnxXR/KrlUYzptIJxnx7tQzXJJy50WW
+ ICaBfzxXZzgWm+m+h0aHQ==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:dXy6pzma1NE=:by62piQdimm/jqwvyXCkFi
- cKo4DDLtJfFXr4DNgSivE+g4S8LmUBXR0hd9D49l0xpwaguTowz5Ne/nlm6eDlwyFVckZEpNb
- FOFYhTMNVvrSVNI0guqxCxRTxsuU0ROb0BzHmLMfu/vePvuhbkR60ccCRggClSbddCrBFK/nk
- mvcpoTyRRzXAXttUaf/BZoK42azDuqUx+7GKx3NbaKqhQ2cg2PLhDgTLluHxITlYoO6SdMMf0
- u9BUftX3AaM9L/+0I8EF6GezeQQssknnVxOkzHLmKvqonVStdKYbAlD7UJdkXwPyG4hE2qQnb
- QiOx/O93eKt7t0x5+F8CKxdk2fusDAsF58czhlSSS45tyaN7MbJGatHxEMzyOU/GJsPpeDQIT
- efK0zOq//irEYOVAJMGygNtbup2fjj0q7prKVxGbi7+QkVbYK40XygAzQZydvcjhewFj0ig/y
- y4WvR1lPV521zAoI0vGdm2V+fc1K0vSZTssezp7OJKe9dNTRyJ+ce5S6nz6lqzE/q86CtzsTa
- cYe5CPrXl/tL9I/Ls8eybRvz+EUaF9cpWzTqVAty/j45WcauQs1qmPwWHwe9+T+YmTXMpJOHJ
- ls/B6DZKu56pPTyIV4qjpG03afVa2Z2oU1OrcCf6I/vCoDhamhlKetQyqbJJuksOd461lduiV
- FQ4iorrnJA3da/dMq1oq8PXQB9t1rwNsQtLClvRzIP46r2HwAutmA2JOtZ06zQ0tngmIhk9+J
- zqLTYpFJXfQk6k+5CdxybXG2JeP53DKBf50YQsldRSaLCBiP41N03KgjBbfyg95DbwLStHaZI
- BHSI4YQUe3p5RPfyHJXliyZik+fU5PSUpSui4knpOBd5w+FfPHwx7pgdJvAISk202sgGa6LY3
- TLHOFbp5sEqzoy15DvjL+DIVqqOXS7J2X9+hbSss8ykEcRD6mbYiNNRJGw2aoCxcrSt6RhGGN
- JuqtNZbNS3L7HzL9PVKd+38OQI4lrGLvWjBt4et7LVEvg1w7ttGzo/sxVRqepXvfOPV7w4rfC
- 2lYTaEjwnWAPxQr63CZUuwupTxu3HYNpJ0BeLkgVLjuh5O5SliqbmeRooYvdd8rjD2PctH+JE
- xdu2Gj7r1VpGECi+NcWITgmJ6NQMBpVyGllcv1A6lc+6h/6dguyBIMqmligl4UQeTiEVFynnt
- 3NduIDPkTF5WPl9m/0tdkysdVVNqAkMrwvNTr0672jddH6Ei10VtSbpuu+v8ow/SYndZvQED0
- qJtQZrsuMV41EWHLN
+X-UI-Out-Filterresults: notjunk:1;V03:K0:SIqu67wVkOo=:E2PZBuRsi8UDwxquJM4sFf
+ XjumwKOdVqPMXtnNMRfWws0XyT5cH3juy2Pvih9/UghGB3AxQgmliQ1fBpRwLEWi2K+NkpEdU
+ L79N5Px+mqX20IGPAzSrpRA2/Hr8bpWirHsu1PvpNXOTKniBBmtl8f+/dpDl+DJfmUJuAdsqt
+ SuLxKKemcyf4CjcJRPNi2T+bHEr0/DFo4AzZQVoCMIzPPTjnOTZbosL8XHAQ3MnPQVSiKVFKy
+ B6pfXzqj5LAbCzvqvz34YoyqcjJmtrgceyVWp0joYHt6tcitSkOKpGvhlhNDX8UaS2kwGXddM
+ XS8nrmq/1iamMSnU/FPLHOYqO47OKduxt91jCnKFaiIzI7BSxgF4qN7QQzQHD+2XkGrxJeVCw
+ ftdhKRZCm4posJEgDc2fGRC4VATZnbHgkIFPwnfyx5EmxHxMXODZKv8PLC3GO2tkfohV8kMc0
+ EezoTu1amlO7cqbhIMkO4bR101Vz+pjhMYx2gzG4gTZjQiQ8YBXsyF3QeQ5DTcxDHtKuip15A
+ UsFHyyrkJY0IxNx88zxMXDk+PPtLcHfGM30ntdrgDAhKYDxKCHV9gxGFMWlwwrBtt/DFCq3GS
+ bxPrx/+49ScIJm9NP+/+eo1g8010BM2isB7zptGRxrejyxlUBbkce05Tc0wWzAQEyJFFrcJ+S
+ oSrrYgEK2rOjDl9CkyitD0/+3W35CBk4yvZGSUNA+5zJWP5pQBxIOW6wxkTIo6Rhd6seH+LAT
+ Nou4P1/aCnlthbRPhpuQs2iGWZ6hWyKJnDAy3vGfMpZDkTzowDCtkC9b1xBCN5Xd0VSOQcMGz
+ PBLacUyh0FNNnwVk7Ysyx5KNqvgbT2My2qLWySVDKS3v0NNnDIZnXD3+j8UgBxldLEjqN9XQJ
+ +Vi3FfBdQsQCGkr/hNE/bDIZoafkHqFLqbdT5iitzkrUyA05yt+bw3jYX6RaunGKT0WoKqmER
+ XB9Z1GqO/x4t1ZJ/upNbBc8BXBnrIqWJOrBDJJzfznQrUlp9a/lIet7in8D9/M84TDRHE8eNT
+ ooFNK8R68BCJ4pfKb8HQUgy+TlfkJhFQE8X7Yotw7iaYapk6wUDNciGsCQOrP5CwA8WFEW9dP
+ SXoigVtR1h6bCN2UVrtmn05jU927UILWW25VLlO+8Es7o/sN749raQw7KuXBoZJsAXWoI4ZB+
+ 18D1tQ/SL1BtqilGPHoy9QccmRdV/D2N6Usjt73GR0wGbfWcpHGJGynQ0zMCFp4Zc4VCShZKp
+ L574+tTgH2BV7F0R2
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---zJHRVdJCcTw12Ow7RH4nj0xzpkMu4jGrM
-Content-Type: multipart/mixed; boundary="blXOef58qE7XgEaF63C9ZxxoUUyGX9SWG"
+--e54LpEXcYfRDhQDI0LkERYIodLxX9d5RO
+Content-Type: multipart/mixed; boundary="kbCguj7jt229YqRk0cXvwtMojh6vKCtRg"
 
---blXOef58qE7XgEaF63C9ZxxoUUyGX9SWG
-Content-Type: text/plain; charset=utf-8
+--kbCguj7jt229YqRk0cXvwtMojh6vKCtRg
+Content-Type: multipart/mixed;
+ boundary="------------EB6BFEAC4FE2D03EEA42E90C"
 Content-Language: en-US
+
+This is a multi-part message in MIME format.
+--------------EB6BFEAC4FE2D03EEA42E90C
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-Hi David,
+Hi Zygo,
 
-Any extra comment on this?
+Would you like to test this diff?
 
-=46rom my recent dig into relocation code, the REF_COW really only means
-if the tree blocks of one tree can be shared by multiple roots.
-(Just like subvolume trees).
+Although I haven't find a solid reason yet, there is another report and
+with the help from the reporter, it turns out that balance hangs at
+relocating DATA_RELOC tree block.
 
-It mostly affects:
-- How the root is updated at commit transaction
-  This bit is conflicting with TRACK_DIRTY, thus we need to manually
-  call record_root_in_trans() to mark one REF_COW root dirty.
+After some more digging, DATA_RELOC tree doesn't need REF_COW bit at all
+since we can't create snapshot for data reloc tree.
 
-- How relocation handles its tree blocks
-  For non-REF_COW trees, relocation just uses COW to do the relocation,
-  while for tree with such bit, it goes the path replace way.
+By removing the REF_COW bit, we could ensure that data reloc tree always
+get cowed for relocation (just like extent tree), this would hugely
+reduce the complexity for data reloc tree.
 
-
-Finally maybe a little off-topic, tree without REF_COW bit can still
-contain inodes/extent data, like root tree and data reloc tree.
-Root tree is the only exception where we have no REF_COW bit but still
-allow file extents to be created in it.
-(And I'm working on clear the REF_COW bit for data reloc tree, as we
-can't create snapshot for that root).
-
-
-Any more comment?
+Not sure if this would help, but it passes my local balance run.
 
 Thanks,
 Qu
 
-On 2020/2/17 =E4=B8=8B=E5=8D=883:06, Qu Wenruo wrote:
->=20
->=20
-> On 2020/2/15 =E4=B8=8A=E5=8D=8812:53, David Sterba wrote:
->> On Wed, Feb 12, 2020 at 03:46:51PM +0800, Qu Wenruo wrote:
->>> This bit is being used in too many locations while there is still no
->>> good enough explaination for how this bit is used.
->>>
->>> Not to mention its name really doesn't make much sense.
->>>
->>> So this patch will add my explanation on this bit, considering only
->>> subvolume trees, along with its reloc trees have this bit, to me it
->>> looks like this bit shows whether tree blocks of a root can be shared=
-=2E
->>
->> I think there's more tan just sharing, it should say something about
->> reference counted sharing. See eg. btrfs_block_can_be_shared:
->>
->>  864         /*
->>  865          * Tree blocks not in reference counted trees and tree ro=
-ots
->>  866          * are never shared. If a block was allocated after the l=
-ast
->>  867          * snapshot and the block was not allocated by tree reloc=
-ation,
->>  868          * we know the block is not shared.
->>  869          */
->>
->> And there can be more specialities found when grepping for REF_COWS. T=
-he
->> comment explaination should be complete or at least mention what's not=
+--------------EB6BFEAC4FE2D03EEA42E90C
+Content-Type: text/x-patch; charset=UTF-8;
+ name="0001-btrfs-Remove-the-REF_COW-bit-for-data-reloc-tree.patch"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: attachment;
+ filename*0="0001-btrfs-Remove-the-REF_COW-bit-for-data-reloc-tree.patch"
 
->> documenting. The I find the suggested version insufficient but don't
->> have a concrete suggestions for improvement. By reading the comment an=
-d
->> going through code I don't feel any wiser.
->>
->=20
-> I see nothing extra conflicting the "shared tree blocks" part from
-> btrfs_block_can_be_shared().
->=20
-> In fact, reloc tree can only be created for trees with REF_COW bit.
->=20
-> For tree without that bit, we go a completely different way to relocate=
+=46rom 82f3b96a68561b2de9712262cb652192b8ea9b1b Mon Sep 17 00:00:00 2001
+From: Qu Wenruo <wqu@suse.com>
+Date: Mon, 11 May 2020 16:27:43 +0800
+Subject: [PATCH] btrfs: Remove the REF_COW bit for data reloc tree
 
-> them, by just cowing the path (aka the cowonly bit in build_backref_tre=
-e()).
->=20
-> 	if (root) {
-> 		if (test_bit(BTRFS_ROOT_REF_COWS, &root->state)) {
-> 			BUG_ON(node->new_bytenr);
-> 			BUG_ON(!list_empty(&node->list));
-> 			btrfs_record_root_in_trans(trans, root);
-> 			root =3D root->reloc_root;
-> 			node->new_bytenr =3D root->node->start;
-> 			node->root =3D root;
-> 			list_add_tail(&node->list, &rc->backref_cache.changed);
-> 		} else {
-> 			path->lowest_level =3D node->level;
-> 			ret =3D btrfs_search_slot(trans, root, key, path, 0, 1);  <<<
-> 			btrfs_release_path(path);
-> 			if (ret > 0)
-> 				ret =3D 0;
-> 		}
->=20
-> So the "REF_COW means tree blocks can be shared" still looks pretty
-> valid to me.
->=20
-> Thanks,
-> Qu
->=20
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ fs/btrfs/disk-io.c    | 9 ++++++++-
+ fs/btrfs/inode.c      | 6 ++++--
+ fs/btrfs/relocation.c | 3 ++-
+ 3 files changed, 14 insertions(+), 4 deletions(-)
+
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index 56675d3cd23a..cb90966a8aab 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -1418,9 +1418,16 @@ static int btrfs_init_fs_root(struct btrfs_root *r=
+oot)
+ 	if (ret)
+ 		goto fail;
+=20
+-	if (root->root_key.objectid !=3D BTRFS_TREE_LOG_OBJECTID) {
++	if (root->root_key.objectid !=3D BTRFS_TREE_LOG_OBJECTID &&
++	    root->root_key.objectid !=3D BTRFS_DATA_RELOC_TREE_OBJECTID) {
+ 		set_bit(BTRFS_ROOT_REF_COWS, &root->state);
+ 		btrfs_check_and_init_root_item(&root->root_item);
++	} else if (root->root_key.objectid =3D=3D BTRFS_DATA_RELOC_TREE_OBJECTI=
+D) {
++		/*
++		 * Data reloc tree won't be snapshotted, thus it's COW only
++		 * tree, it's needed to set TRACK_DIRTY bit for it.
++		 */
++		set_bit(BTRFS_ROOT_TRACK_DIRTY, &root->state);
+ 	}
+=20
+ 	btrfs_init_free_ino_ctl(root);
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index 5d567082f95a..71841535c7ca 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -4129,7 +4129,8 @@ int btrfs_truncate_inode_items(struct btrfs_trans_h=
+andle *trans,
+ 	 * extent just the way it is.
+ 	 */
+ 	if (test_bit(BTRFS_ROOT_REF_COWS, &root->state) ||
+-	    root =3D=3D fs_info->tree_root)
++	    root =3D=3D fs_info->tree_root ||
++	    root->root_key.objectid =3D=3D BTRFS_DATA_RELOC_TREE_OBJECTID)
+ 		btrfs_drop_extent_cache(BTRFS_I(inode), ALIGN(new_size,
+ 					fs_info->sectorsize),
+ 					(u64)-1, 0);
+@@ -4334,7 +4335,8 @@ int btrfs_truncate_inode_items(struct btrfs_trans_h=
+andle *trans,
+=20
+ 		if (found_extent &&
+ 		    (test_bit(BTRFS_ROOT_REF_COWS, &root->state) ||
+-		     root =3D=3D fs_info->tree_root)) {
++		     root =3D=3D fs_info->tree_root ||
++		     root->root_key.objectid =3D=3D BTRFS_DATA_RELOC_TREE_OBJECTID)) {=
+
+ 			struct btrfs_ref ref =3D { 0 };
+=20
+ 			bytes_deleted +=3D extent_num_bytes;
+diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
+index f25deca18a5d..a85dd5d465f6 100644
+--- a/fs/btrfs/relocation.c
++++ b/fs/btrfs/relocation.c
+@@ -1087,7 +1087,8 @@ int replace_file_extents(struct btrfs_trans_handle =
+*trans,
+ 		 * if we are modifying block in fs tree, wait for readpage
+ 		 * to complete and drop the extent cache
+ 		 */
+-		if (root->root_key.objectid !=3D BTRFS_TREE_RELOC_OBJECTID) {
++		if (root->root_key.objectid !=3D BTRFS_TREE_RELOC_OBJECTID &&
++		    root->root_key.objectid !=3D BTRFS_DATA_RELOC_TREE_OBJECTID) {
+ 			if (first) {
+ 				inode =3D find_next_inode(root, key.objectid);
+ 				first =3D 0;
+--=20
+2.26.2
 
 
---blXOef58qE7XgEaF63C9ZxxoUUyGX9SWG--
+--------------EB6BFEAC4FE2D03EEA42E90C--
 
---zJHRVdJCcTw12Ow7RH4nj0xzpkMu4jGrM
+--kbCguj7jt229YqRk0cXvwtMojh6vKCtRg--
+
+--e54LpEXcYfRDhQDI0LkERYIodLxX9d5RO
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl65CEsACgkQwj2R86El
-/qienwf+IapBGelTrN9xnbdrX6vy0jHhzH8XYAqi+1pJ5PRFwlzRdSEcZIuLaAUE
-bgT4bQigEa27Cmn2ZTqBDyj67NGnN61A2PvO4jCb6lU8Cl29PS/YUVNni0Hbs4vx
-9Lml7NTnOiaftMJ9G25Hxq2VTRN/ONMcIcPfCKYModeu9Ogh95fl30RHPa+L4X/0
-6RONnowzlhe14azQ59M1gBATJbBp6JtcI/IizAc8MDMU3WEVPO56IPCrq52G85Ro
-NbFf+aUnT6yWckFsewZ95d4fSK2kiYZG8m/3Y0BWA7gX2ODT9XursJK2XH6DIyhn
-Axone108jRuc6qnSgk+SJd8KeQL+bA==
-=70QK
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl65DWQACgkQwj2R86El
+/qhxDwf/bC/IU0Rqzto7QDEMf2NpGbbVBLVsC+yzdU4hi95wMJP1Ty75ticQC4tv
+XzYNJrC0yWiLioWvPaBCssW8sDeU9lfbxr8C+nRP5VaRhPOS8Qhi0ox291rVopcX
+ikdtYX6YZFWK6WrzImbH/BKqFRRTGDFfxP66UgZB0ltMt5TYMlhH5uQVg+UQF568
+xt25aS194Izh/18gtj3/OBtaNTL1FGnLskxmh+XsT2/Q6BvPQDVxnylDOmjygZkr
+2J+01+G55ZvDRft9rirpLl4BdFdwgbA/BCjqAVqRhM6lPPw/59mQewx1LKRGXv/O
+wlmaeBUUpgv4M5e4VoMHjh8YrdjkAw==
+=cMHt
 -----END PGP SIGNATURE-----
 
---zJHRVdJCcTw12Ow7RH4nj0xzpkMu4jGrM--
+--e54LpEXcYfRDhQDI0LkERYIodLxX9d5RO--
