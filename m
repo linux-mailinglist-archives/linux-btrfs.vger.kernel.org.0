@@ -2,157 +2,108 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C49C1CD103
-	for <lists+linux-btrfs@lfdr.de>; Mon, 11 May 2020 06:50:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A478E1CD135
+	for <lists+linux-btrfs@lfdr.de>; Mon, 11 May 2020 07:06:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729206AbgEKErG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 11 May 2020 00:47:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33612 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726160AbgEKErF (ORCPT
+        id S1725983AbgEKFGi convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-btrfs@lfdr.de>); Mon, 11 May 2020 01:06:38 -0400
+Received: from james.kirk.hungrycats.org ([174.142.39.145]:46582 "EHLO
+        james.kirk.hungrycats.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725863AbgEKFGi (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 11 May 2020 00:47:05 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9106BC061A0C
-        for <linux-btrfs@vger.kernel.org>; Sun, 10 May 2020 21:47:04 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id y3so9158861wrt.1
-        for <linux-btrfs@vger.kernel.org>; Sun, 10 May 2020 21:47:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lS9czWPhR07pzFV+3JsW0p/5+Hy9pvtXQUaYuGP4x3U=;
-        b=WXeNFqKvSB9RJuX9SXnSDBvy/y8U4Spmb8rPzq+QZCECz/WrtCj4Csf0Z1vTxZaNEv
-         ctt8u8UjOQdNgVMbUPJ0bmIwNlUO+HbUshoTaPLnvTSTCJ7VJSXQEYX+9O3agYTR85Lk
-         1yJXO8dtXS9j4msQ/mvKloR1gAGPX1UVTctujkiVeFJX3kZg9B8dH60L7C75ZndvtdRY
-         Wyb2WKzpUW3wBOow4NZQSjw+Og9suiCr6TAlQPZ5eG+SmlekNXsmEp1TwiMhWVvakxjE
-         E+95jdoKm23xavT2VK7mGNnuOPAWnJ2v1rLbFSabdzdZH/ECB98IbeBPcidHBnfZ8QXl
-         BWfA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lS9czWPhR07pzFV+3JsW0p/5+Hy9pvtXQUaYuGP4x3U=;
-        b=Qbgorhfr3dKhvw1MgQCTh0fmRcj5Ly914FptiMfvEdcA7pM2W5H0m5ZegsoJRtvTY7
-         XmI5d7hbh31+NdzpyciGin76a0ztY7WO16aGV8f6ATkSFREz1yAfH9rvOnptNYayvt1o
-         uxEggd8qp0Cv6NkO8UBk7GG38wSLpiSY1sbQunMHLiXVVUoGHjRR/RGa6ayPdaDM79SW
-         08aHHwGs8xnR+zngE0XGPa8tGDqnqdfWTCd6Ohe0UPcS4ZEN3EPWySndb8Y64rmzqQLY
-         qBgxfskgXXI5tEhoyqVlr57VFTYAQPbGsfZbWUVo8na4mb8ge6e+LlnUhdMPySTK7cib
-         V27A==
-X-Gm-Message-State: AGi0PuZbEYbHDqmnXOWgth99TLjIzE4cEWwkEwntPx1Pu66neQqDe/pW
-        kTJOoN9sN0sT2YdQfsE2ikG1azVhkYGmidlhfA1V1A==
-X-Google-Smtp-Source: APiQypLC7fJAuMJQtm4rzqUy5bmIAxbD4X9llrPDp0f8AelwK1sSyiJFnAH7UFlO1v0/3+lfXUPGw5f/8pjZbfwdhkg=
-X-Received: by 2002:a05:6000:1241:: with SMTP id j1mr16448127wrx.42.1589172423294;
- Sun, 10 May 2020 21:47:03 -0700 (PDT)
+        Mon, 11 May 2020 01:06:38 -0400
+Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
+        id 560C26B938D; Mon, 11 May 2020 01:06:36 -0400 (EDT)
+Date:   Mon, 11 May 2020 01:06:35 -0400
+From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+To:     Steven Fosdick <stevenfosdick@gmail.com>
+Cc:     Phil Karn <karn@ka9q.net>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
+        Rich Rauenzahn <rrauenza@gmail.com>
+Subject: Re: Western Digital Red's SMR and btrfs?
+Message-ID: <20200511050635.GT10769@hungrycats.org>
+References: <CAG+QAKXuaah3tkhQLd7mD3bx+pc3JZdXkUg6yr0R8=Zv2vXnhw@mail.gmail.com>
+ <20200504230857.GQ10769@hungrycats.org>
+ <f7ae0b64-048d-3898-6e2d-5702e2f79f47@ka9q.net>
+ <CAG_8rEcdEK4XAx4D3Xg=O38zfs85YNk-xhT_cVtqZybnKXBkQg@mail.gmail.com>
 MIME-Version: 1.0
-References: <0d1cceb6-9295-1bdf-c427-60ba9b1ef0b3@sericyb.com.au>
- <CAJCQCtSdWMnGKZLxJR85eDoVFTLGwYNnGqkVnah=qA6fCoVk_Q@mail.gmail.com>
- <709e4c3f-15b3-3c8a-2b25-ea95f4958999@sericyb.com.au> <CAJCQCtTGygd22TYvsPS6RPydsAZoqQYDDV=K4w1yFgTn0+ba6A@mail.gmail.com>
- <8ceacc86-96b7-44d2-d48d-234c6c4b45de@sericyb.com.au> <CAJCQCtQ4xOdNH79XDQdy=ExkNHbpbYdMMHG1fTeN7SeA+dTo7w@mail.gmail.com>
- <8ab9f20d-eff0-93bf-a4a4-042473b4059e@sericyb.com.au> <CAJCQCtQvyncTMqATX2PkVkR1bRPaUvDUqCmj-bRJzfHEU2k4JQ@mail.gmail.com>
- <ff173eb0-b6e8-5365-43a8-8f67d0da6c96@sericyb.com.au> <CAJCQCtTdHQAkaagTvCO-0SguakQx9p5iKmNbvmNYyxsBCqQ6Vw@mail.gmail.com>
- <ac6be0fa-96a7-fe0b-20c7-d7082ff66905@sericyb.com.au> <c2b89240-38fd-7749-3f1a-8aeaec8470e0@cobb.uk.net>
- <ace72f18-724c-9f2c-082f-cb478b8a63ef@sericyb.com.au> <CAJCQCtSq7Ocar4hJM0Z+Y7UeRM6Cfi_uwN=QM77F2Eg+MtnNWw@mail.gmail.com>
- <04f481fd-b8e5-7df6-d547-ece9ab6b8154@sericyb.com.au> <CAJCQCtTdSSX15Y7YX7fAg+iKncZf09ZG6KnHmmo4S77OtGWWXw@mail.gmail.com>
- <b41da576-55b2-4599-10e9-e8aeb0e9ad20@sericyb.com.au>
-In-Reply-To: <b41da576-55b2-4599-10e9-e8aeb0e9ad20@sericyb.com.au>
-From:   Chris Murphy <lists@colorremedies.com>
-Date:   Sun, 10 May 2020 22:46:47 -0600
-Message-ID: <CAJCQCtSWwypfm2xjtJ2vP8O4LT2bFOY=omHMMPe8_Jq6jG_3qA@mail.gmail.com>
-Subject: Re: btrfs-progs reports nonsense scrub status
-To:     Andrew Pam <andrew@sericyb.com.au>
-Cc:     Chris Murphy <lists@colorremedies.com>,
-        Graham Cobb <g.btrfs@cobb.uk.net>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <CAG_8rEcdEK4XAx4D3Xg=O38zfs85YNk-xhT_cVtqZybnKXBkQg@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sun, May 10, 2020 at 7:39 PM Andrew Pam <andrew@sericyb.com.au> wrote:
->
-> On 10/5/20 6:33 am, Chris Murphy wrote:
-> > 2. That a scrub started, then cancelled, then resumed, also does
-> > finish (or not).
->
-> OK, I have now run a scrub with multiple cancel and resumes and that
-> also proceeded and finished normally as expected:
->
-> $ sudo ./btrfs scrub status -d /home
-> NOTE: Reading progress from status file
-> UUID:             85069ce9-be06-4c92-b8c1-8a0f685e43c6
-> scrub device /dev/sda (id 1) history
-> Scrub resumed:    Mon May 11 06:06:37 2020
-> Status:           finished
-> Duration:         7:27:31
-> Total to scrub:   3.67TiB
-> Rate:             142.96MiB/s
-> Error summary:    no errors found
-> scrub device /dev/sdb (id 2) history
-> Scrub resumed:    Mon May 11 06:06:37 2020
-> Status:           finished
-> Duration:         7:27:15
-> Total to scrub:   3.67TiB
-> Rate:             143.04MiB/s
-> Error summary:    no errors found
->
-> [54472.936094] BTRFS info (device sda): scrub: started on devid 2
-> [54472.936095] BTRFS info (device sda): scrub: started on devid 1
-> [55224.956293] BTRFS info (device sda): scrub: not finished on devid 1
-> with status: -125
-> [55226.356563] BTRFS info (device sda): scrub: not finished on devid 2
-> with status: -125
-> [58775.602370] BTRFS info (device sda): scrub: started on devid 1
-> [58775.602372] BTRFS info (device sda): scrub: started on devid 2
-> [72393.296199] BTRFS info (device sda): scrub: not finished on devid 1
-> with status: -125
-> [72393.296215] BTRFS info (device sda): scrub: not finished on devid 2
-> with status: -125
-> [77731.999603] BTRFS info (device sda): scrub: started on devid 1
-> [77731.999604] BTRFS info (device sda): scrub: started on devid 2
-> [87727.510382] BTRFS info (device sda): scrub: not finished on devid 1
-> with status: -125
-> [87727.582401] BTRFS info (device sda): scrub: not finished on devid 2
-> with status: -125
-> [89358.196384] BTRFS info (device sda): scrub: started on devid 1
-> [89358.196386] BTRFS info (device sda): scrub: started on devid 2
-> [89830.639654] BTRFS info (device sda): scrub: not finished on devid 2
-> with status: -125
-> [89830.856232] BTRFS info (device sda): scrub: not finished on devid 1
-> with status: -125
-> [94486.300097] BTRFS info (device sda): scrub: started on devid 2
-> [94486.300098] BTRFS info (device sda): scrub: started on devid 1
-> [96223.185459] BTRFS info (device sda): scrub: not finished on devid 1
-> with status: -125
-> [96223.227246] BTRFS info (device sda): scrub: not finished on devid 2
-> with status: -125
-> [97810.489388] BTRFS info (device sda): scrub: started on devid 1
-> [97810.540625] BTRFS info (device sda): scrub: started on devid 2
-> [98068.987932] BTRFS info (device sda): scrub: finished on devid 2 with
-> status: 0
-> [98085.771626] BTRFS info (device sda): scrub: finished on devid 1 with
-> status: 0
->
-> So by elimination it's starting to look like suspend-to-RAM might be
-> part of the problem.  That's what I'll test next.
->
+On Sat, May 09, 2020 at 10:46:27PM +0100, Steven Fosdick wrote:
+> On Sat, 9 May 2020 at 22:02, Phil Karn <karn@ka9q.net> wrote:
+> > My understanding is that large sequential writes can go directly to the
+> > SMR areas, which is an argument for a more conventional RAID array. How
+> > hard does btrfs try to do large sequential writes?
+> 
+> Ok, so I had not heard of SMR before it was mentioned here and
+> immediate read the links.  It did occur to me that large sequential
+> writes could, in theory, go straight to SMR zones but it also occurred
+> to be that it isn't completely straight forward.
 
-Power management is difficult. (I'm actually working on a git bisect
-right now, older laptop won't wake from suspend, 5.7 regression.)
+This is a nice overview:
 
-Do all the devices wake up correctly isn't always easy to get an
-answer to. They might all have power but did they really come up in
-the correct state? Thing is, you're reporting that iotop independently
-shows a transfer rate consistent with getting data off the drives.
+	https://www.snia.org/sites/default/files/Dunn-Feldman_SNIA_Tutorial_Shingled_Magnetic_Recording-r7_Final.pdf
 
-I also wonder whether the socket that Graham mentions, could get in
-some kind of stuck or confused state due to sleep/wake cycle? My case,
-NVMe, is maybe not the best example because that's just PCIe. In your
-case it's real drives, so it's SCSI, block, and maybe libata and other
-things.
+> 1. If the drive firmware is not declaring that the drive uses SMR, and
+> therefore the host doesn't send a specific command to begin a
+> sequential write, how many sectors in a row does the drive wait to
+> receive before conclusion this is a large sequential operation?
+> 
+> 2. What happens if the sequential operation does not begin a the start
+> of an SMR zone?
 
+In the event of a non-append write, a RMW operation performed on the
+entire zone.
 
+The exceptions would be data extents that are explicitly deleted
+(TRIM command), and it looks like a sequential overwrite at the _end_
+of a zone (i.e. starting in the middle on a sector boundary and writing
+sequentially to the end of the zone without writing elsewhere in between)
+can be executed without having to rewrite the entire zone (zones can be
+appended at any time, the head erases data forward of the write location).
+I don't know if any drives implement that.
 
---
-Chris Murphy
+In order to get conventional flush semantics to work, the drive has
+to write everything twice:  once to a log zone (which is either CMR
+or SMR), then copy from there back to the SMR zone to which it belongs
+("cleaning").  There is necessarily a seek in between, as the log zone
+and SMR data zones cannot coexist within a track.
+
+DM-SMR drives usually have smaller zones than HA-SMR drives, but we can
+only guess (or run a timing attack to find out).  This would allow the
+drive to track a few zones in the typical 256MB RAM cache size for the
+submarined SMR drives.
+
+This source reports zone sizes of 15-40MB for DM-SMR and 256MB for HA-SMR,
+with cache CMR sizes not exceeding 0.2% of capacity:
+
+	https://www.usenix.org/system/files/conference/hotstorage16/hotstorage16_wu.pdf
+
+btrfs should do OK as long as you use space_cache=v2--space cache v1
+would force the drive into slow RMW operations every 30 seconds, as it
+would be forcing the drive to complete cleaning operations in multiple
+zones.  Nobody should be using space_cache=v1 any more, and this is
+just yet another reason.
+
+Superblock updates would keep 2 zones updated all the time, effectively
+reducing the number of usable open zones in the drive permanently by 2.
+Longer commit intervals may help.
+
+> The only thing that would make it easy is if the drive had a
+> battery-backed RAM cache at least as big as an SMR zone, ideally about
+> twice as big, so it could accumulate the data for one zone and then
+> start writing that while accepting data for the next.  As I have no
+> idea how big these zones are I have no idea how feasible that is.
+
+Batteries and flash are expensive, so you can assume the drive has neither
+unless they are prominently featured in the marketing docs to explain
+the costs that are passed on to the customer.  All of the metadata and
+caches are stored on the spinning platters.
