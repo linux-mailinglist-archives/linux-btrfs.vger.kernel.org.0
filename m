@@ -2,123 +2,211 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 110081CDD73
-	for <lists+linux-btrfs@lfdr.de>; Mon, 11 May 2020 16:41:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F11031CDD9A
+	for <lists+linux-btrfs@lfdr.de>; Mon, 11 May 2020 16:45:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729546AbgEKOlv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 11 May 2020 10:41:51 -0400
-Received: from esa5.hgst.iphmx.com ([216.71.153.144]:65051 "EHLO
-        esa5.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728403AbgEKOlu (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 11 May 2020 10:41:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1589208110; x=1620744110;
-  h=from:to:cc:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=dSyuYebvdzPn5fkUwOdEweMNoXBWNiBRJH0Ig0f+otc=;
-  b=KDD41bBt3mSk6tgB88EvaociAGzvv9JQeUinmBDjklZ7PZKjgQXst70c
-   ZuwxDC0IF8flGViONhP1Xk4kuqGQDT9KGqeNzXGCf8sq/Z+wb1nczfCiT
-   le+ISgdVxw0qGCqaxGdq97Hpxa2Slry9DHNc1M4B0ijF8IDDJ7wnwJoNR
-   hLl/3Z2BHlu0E6si258g8MS7E/7Uj6Blfs7PZqSDwMtbYWCL87iBg+0+s
-   vdGS2BdWtt1wcPomxwn35ltN0lh/BfZu/4khNJMYoSS+jQtexGo5fOZNu
-   UgZgc+vCezC/2/c5NF0iIMTKZkq+qpetpL3o570oCWTPxzPeH4x7a7AaR
-   w==;
-IronPort-SDR: Uzx6+QaguTBURdIkU3Hw8vNzdS8KWZy7W4ubQBHgM5KhXZReVuVYt7722g6RrgH7qUouHy5c43
- oS9cg8z8PGzgodRa/lqTc2UWFhYGtENV9V/xfE60SpOBy5xNNcSqIMIoHgQPVHZE99hnm5c63/
- pCn2aOxbPUpzGFQopsMn9oBAzMu3K58pEQfwxAJYxWLUXh/ujDZ9xhTDcmWOQPO99mnylgg2sx
- g6kk3IWem27llIDfQAJrfQj9EOqayNVXHKTUogklbbL5fqARu10wGbOMi1C1NS1Uexi36izkn2
- AI4=
-X-IronPort-AV: E=Sophos;i="5.73,380,1583164800"; 
-   d="scan'208";a="137746633"
-Received: from mail-dm6nam10lp2100.outbound.protection.outlook.com (HELO NAM10-DM6-obe.outbound.protection.outlook.com) ([104.47.58.100])
-  by ob1.hgst.iphmx.com with ESMTP; 11 May 2020 22:41:47 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=TaYa4gnRKIl8LlTkIlV8pXdJoLNOp2De/yQ6T90bJXP5Tb0s65QQ5/CqtUsbZ+gowNFPN64RBhfjErP6+IHsPz5hQLo/jGOvhkz93Oj6BSdInaS4tUbzr0J4zjV/7OntiYWkhdktaN5XAiI4xr48d4t8MxYOlrtedbbibJkNoaM0tM9bzKHgL0L1rTitQGsOC1OUR/G95b2EiKYvZ40SxVqwU3dd3Vb1REiP6Mtsa4ZU3DNO35y/+ENfEEfqdgcl5Ig4liToUxMlbdWCuoiTkHPoIq3qPWTFVxXWdo+nIhFjS9KYwCr3LLvOtE50HyqNaYzbl+kQ/N2yH/mFhC8UnA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=WnttXheug1IF2Fbb6AilQ0eSs8bY1QxF3tx/jAFqLZ8=;
- b=J7snLqAeQMUE1EFSg5T0ZSVCsI4iYumAFJS46EZgxm2KBgDFIwpYkxFiOFCtrgWIqbCiY90t3LXkCAl7AarK8H6NWGGaVjPRr8oKysl42WgBX7ndpRX0lALVU0p3A+g9PGa+PmaO1D4Ndi0gLBv7LxhlMYX4eAs1xJYIRqQLfmTset4WH1LLOHH14kCA6XpmRsVo2xtmyK6ezVsWLnTVyI7FSt3MWhHRSS4naaDHS4LImpFEzfcsFPq7lIN27ixh6PSmyM+rlN9cDYFrK9aEzl5xwgO1kyq7SC2sIAQam+uQikQENapQZkGtf5KpEVAvRX6SV/sR/fHi02L91sInUw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=WnttXheug1IF2Fbb6AilQ0eSs8bY1QxF3tx/jAFqLZ8=;
- b=NfjFm3B2ryqxwYAmSbq465jM+m9wGIphixggmtRALssryDQYOgLTfLBwcTm0d2iZBn4ZVC9aRK30dxqTcDmXm5dZCi2j3BKeiwqi6Rc/yWnzhrSU44wc2tmN+Vv6KGKztIyfaIJOgUmP5R1syWehUpJG0pyPSGmxIWfcVVcSX5U=
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
- (2603:10b6:803:47::21) by SN4PR0401MB3662.namprd04.prod.outlook.com
- (2603:10b6:803:47::23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2958.29; Mon, 11 May
- 2020 14:41:42 +0000
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::9854:2bc6:1ad2:f655]) by SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::9854:2bc6:1ad2:f655%4]) with mapi id 15.20.2979.033; Mon, 11 May 2020
- 14:41:42 +0000
-From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To:     "dsterba@suse.cz" <dsterba@suse.cz>
-CC:     David Sterba <dsterba@suse.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH 02/19] btrfs: drop eb parameter from set/get token helpers
-Thread-Topic: [PATCH 02/19] btrfs: drop eb parameter from set/get token
- helpers
-Thread-Index: AQHWJKz0ZuoijrluZEi3YBtV6S+Efg==
-Date:   Mon, 11 May 2020 14:41:41 +0000
-Message-ID: <SN4PR0401MB35984ED6CA4231FCBBE1EDB19BA10@SN4PR0401MB3598.namprd04.prod.outlook.com>
-References: <cover.1588853772.git.dsterba@suse.com>
- <b8b135176911726d988ea5f686b93fbd351e47e2.1588853772.git.dsterba@suse.com>
- <SN4PR0401MB3598EFE7FF6F223E36404FA19BA20@SN4PR0401MB3598.namprd04.prod.outlook.com>
- <20200511130237.GP18421@twin.jikos.cz>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: suse.cz; dkim=none (message not signed)
- header.d=none;suse.cz; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [129.253.240.72]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 89052024-9625-4171-66a8-08d7f5b96bbc
-x-ms-traffictypediagnostic: SN4PR0401MB3662:
-x-microsoft-antispam-prvs: <SN4PR0401MB366255369E35C66553C24D3C9BA10@SN4PR0401MB3662.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:5236;
-x-forefront-prvs: 04004D94E2
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: ZLrlCUtRGyHTcaW7Wj4Vlx8RE+y29ltCiI7MlkArxzhr1/kScoNWAH4bencOtgiZbHU1IPpojGy34FpkKPafZ6pT8UOc84n9LFcrckQ1tQWPUVYRtgzXWJXPRWKSi18uEs2d2zTuPt4/8cNHxpapqDLxZ9Uhd6NNYLZTOGh5+b5H+k2kXTwODF01QnypycDXe3y3QQ8JO3fq51sz5Xs/f9AfDj6WfJd6hEEgJFNEtnmUvOL1v3TksmD5yGhh3wmUyVaYDxTIFmEIs2mYCXBUF/5mKQBsDuCW/8iVvDjSUK0TtLt7gY0Rm7IX6z/C3Urh6KyGtH56Xhxb4XuUkiP8DwlqVhqOXEuwGMXiSn8ERPXXR1yQn9lhTUCRUXFnt9hc6pMwMGtjbRlHiZHhE/M/9NCVAkC/bODiDCYzzl3/9Eb+JAlKXMEALtcRIzccdNb+6gYCzO9cVgAFK3Oag+R3ADLacs3AZskxxfbRlxfmwrXSAWkXr8pRI2Zcsgdvnajv7fQCNDekdSsAjsSXbEOocg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR0401MB3598.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(346002)(366004)(376002)(396003)(136003)(39860400002)(33430700001)(4744005)(8676002)(5660300002)(33440700001)(66556008)(66946007)(66476007)(91956017)(76116006)(66446008)(7696005)(64756008)(4326008)(478600001)(186003)(52536014)(2906002)(53546011)(33656002)(55016002)(8936002)(86362001)(26005)(6506007)(71200400001)(9686003)(54906003)(316002)(6916009);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: L6L/rgFk7zGfrrmzOJCN/ET+YTTdmxx+kmUkRu+nS8BfJwUbt3/EsIFeLoP6OED3cgaqhT8q/fd78pt7cxdBY9S4EHx2eFG7f8PXjOiEDe4NMi+PZgCiITwTdG1BmYlCwKXCWJIDKxqY7qEMPCkxlaq9nPLKCgvh7J3RzP1BUPZgcNmpKkp7oJImGu+mlqba72cj+n57bMwiHZEXjDEiFTwo2COdWKRReNNM/NG7SZweRKsoohUwwcRR7UWd5vM/ZeunPYxy63Ds/OgEFAUOXnHzjUjGmrwfjqAhXKPBKAY/XLPupdgrDyHic3zedv0BVGQ8FJ+vnZZAXM9XHc7ubeD53GJv0VYDMiGr09HTDzy2Mc3Gloee6ZmOcVKkegOMWJjFVBsOO6FNJaGI6FHCzIW8SXalLHl1+z7Kj4SIeSn+mk1WFoTfi/mUHUDL6MR0cRJ9EIEehRDK7FeriP21gldE8PGFoPh/DzVUGQdbiaAciENtntGpOFnWAQQTwOim
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1730402AbgEKOpl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 11 May 2020 10:45:41 -0400
+Received: from mx2.suse.de ([195.135.220.15]:51632 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729688AbgEKOpk (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 11 May 2020 10:45:40 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id EF18DAD72;
+        Mon, 11 May 2020 14:45:39 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 76262DA823; Mon, 11 May 2020 16:44:46 +0200 (CEST)
+Date:   Mon, 11 May 2020 16:44:46 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Marcos Paulo de Souza <marcos@mpdesouza.com>
+Cc:     dsterba@suse.com, linux-btrfs@vger.kernel.org, wqu@suse.com,
+        fdmanana@suse.com, Marcos Paulo de Souza <mpdesouza@suse.com>,
+        stable@vger.kernel.org
+Subject: Re: [PATCH v3] btrfs: send: Emit file capabilities after chown
+Message-ID: <20200511144445.GT18421@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz,
+        Marcos Paulo de Souza <marcos@mpdesouza.com>, dsterba@suse.com,
+        linux-btrfs@vger.kernel.org, wqu@suse.com, fdmanana@suse.com,
+        Marcos Paulo de Souza <mpdesouza@suse.com>, stable@vger.kernel.org
+References: <20200511021507.26942-1-marcos@mpdesouza.com>
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 89052024-9625-4171-66a8-08d7f5b96bbc
-X-MS-Exchange-CrossTenant-originalarrivaltime: 11 May 2020 14:41:42.0029
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 7qNADKQoOcyZMeyVMIL7pj3VKKjKp0B1jVDLG8mM84QKO4D0GfTWQ75MxbtymREcD5Niob3hqLZWcqxEXXcuEyTN3nT0vsQeCItvi0oTQ4M=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN4PR0401MB3662
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200511021507.26942-1-marcos@mpdesouza.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 11/05/2020 15:03, David Sterba wrote:=0A=
-> On Fri, May 08, 2020 at 12:09:15PM +0000, Johannes Thumshirn wrote:=0A=
->> On 07/05/2020 22:20, David Sterba wrote:=0A=
->>> +		push_space =3D push_space - btrfs_token_item_size(&token, item);=0A=
->>=0A=
->> Nit: push_space -=3D btrfs_token_item_size(&token, item);=0A=
-> =0A=
-> Yeah it could be done that way but I'd rather avoid mixing such small=0A=
-> fixups to a patch that's otherwise a mechanical change.=0A=
-> =0A=
-=0A=
-Fair enough=0A=
+On Sun, May 10, 2020 at 11:15:07PM -0300, Marcos Paulo de Souza wrote:
+> From: Marcos Paulo de Souza <mpdesouza@suse.com>
+> 
+> [PROBLEM]
+> Whenever a chown is executed, all capabilities of the file being touched are
+> lost.  When doing incremental send with a file with capabilities, there is a
+> situation where the capability can be lost in the receiving side. The
+> sequence of actions bellow shows the problem:
+> 
+> $ mount /dev/sda fs1
+> $ mount /dev/sdb fs2
+> 
+> $ touch fs1/foo.bar
+> $ setcap cap_sys_nice+ep fs1/foo.bar
+> $ btrfs subvol snap -r fs1 fs1/snap_init
+> $ btrfs send fs1/snap_init | btrfs receive fs2
+> 
+> $ chgrp adm fs1/foo.bar
+> $ setcap cap_sys_nice+ep fs1/foo.bar
+> 
+> $ btrfs subvol snap -r fs1 fs1/snap_complete
+> $ btrfs subvol snap -r fs1 fs1/snap_incremental
+> 
+> $ btrfs send fs1/snap_complete | btrfs receive fs2
+> $ btrfs send -p fs1/snap_init fs1/snap_incremental | btrfs receive fs2
+> 
+> At this point, only a chown was emitted by "btrfs send" since only the group
+> was changed. This makes the cap_sys_nice capability to be dropped from
+> fs2/snap_incremental/foo.bar
+> 
+> [FIX]
+> Only emit capabilities after chown is emitted. The current code
+> first checks for xattrs that are new/changed, emits them, and later emit
+> the chown. Now, __process_new_xattr skips capabilities, letting only
+> finish_inode_if_needed to emit them, if they exist, for the inode being
+> processed.
+> 
+> This behavior was being worked around in "btrfs receive"
+> side by caching the capability and only applying it after chown. Now,
+> xattrs are only emmited _after_ chown, making that hack not needed
+> anymore.
+> 
+> Link: https://github.com/kdave/btrfs-progs/issues/202
+> CC: stable@vger.kernel.org
+> Suggested-by: Filipe Manana <fdmanana@suse.com>
+> Reviewed-by: Filipe Manana <fdmanana@suse.com>
+> Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
+> ---
+>  Changes from v2:
+>  * Tag Stable correctly
+>  * Forgot to add v2 in the latest patch. Now set to v3 to avoid confusion
+> 
+>  Changes from v1:
+>  * Constify name var in send_capabilities function (suggested by Filipe)
+>  * Changed btrfs_alloc_path -> alloc_path_for_send() in send_capabilities
+>   (suggested by Filipe)
+>  * Removed a redundant sentence in the commit message (suggested by Filipe)
+>  * Added the Reviewed-By tag from Filipe
+> 
+>  Changes from RFC:
+>  * Explained about chown + drop capabilities problem in the commit message (suggested
+>    by Filipe and David)
+>  * Changed the commit message to show describe the fix (suggested by Filipe)
+>  * Skip the xattr in __process_new_xattr if it's a capability, since it'll be
+>    handled in finish_inode_if_needed now (suggested by Filipe).
+>  * Created function send_capabilities to query if the inode has caps, and if
+>    yes, emit them.
+>  * Call send_capabilities in finish_inode_if_needed _after_ the needs_chown
+>    check. (suggested by Filipe)
+> 
+>  fs/btrfs/send.c | 69 +++++++++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 69 insertions(+)
+> 
+> diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
+> index 6b86841315be..2b378e32e7dc 100644
+> --- a/fs/btrfs/send.c
+> +++ b/fs/btrfs/send.c
+> @@ -23,6 +23,7 @@
+>  #include "btrfs_inode.h"
+>  #include "transaction.h"
+>  #include "compression.h"
+> +#include "xattr.h"
+>  
+>  /*
+>   * Maximum number of references an extent can have in order for us to attempt to
+> @@ -4545,6 +4546,10 @@ static int __process_new_xattr(int num, struct btrfs_key *di_key,
+>  	struct fs_path *p;
+>  	struct posix_acl_xattr_header dummy_acl;
+>  
+> +	/* capabilities are emitted by finish_inode_if_needed */
+
+Comments should start with an uppercase
+
+> +	if (!strncmp(name, XATTR_NAME_CAPS, name_len))
+> +		return 0;
+> +
+>  	p = fs_path_alloc();
+>  	if (!p)
+>  		return -ENOMEM;
+> @@ -5107,6 +5112,66 @@ static int send_extent_data(struct send_ctx *sctx,
+>  	return 0;
+>  }
+>  
+> +/*
+> + * Search for a capability xattr related to sctx->cur_ino. If the capability if
+> + * found, call send_set_xattr function to emit it.
+> + *
+> + * Return %0 if there isn't a capability, or when the capability was emitted
+> + * successfully, or < %0 if an error occurred.
+> + */
+> +static int send_capabilities(struct send_ctx *sctx)
+> +{
+> +	struct fs_path *fspath = NULL;
+> +	struct btrfs_path *path;
+> +	struct btrfs_dir_item *di;
+> +	struct extent_buffer *leaf;
+> +	unsigned long data_ptr;
+> +	const char *name = XATTR_NAME_CAPS;
+> +	char *buf = NULL;
+> +	int buf_len;
+> +	int ret = 0;
+> +
+> +	path = alloc_path_for_send();
+> +	if (!path)
+> +		return -ENOMEM;
+> +
+> +	di = btrfs_lookup_xattr(NULL, sctx->send_root, path, sctx->cur_ino,
+> +				name, strlen(name), 0);
+
+As Filipe pointed out in previous iteration, this could be directly
+XATTR_NAME_CAPS instead of the temporary variable. I'd prefer it that
+way too, XATTR_NAME_CAPS is a plain string and strings get merged at
+link time. Also compiler replaces strlen("string") with the number.
+
+> +	if (!di) {
+> +		/* there is no xattr for this inode */
+> +		goto out;
+> +	} else if (IS_ERR(di)) {
+> +		ret = PTR_ERR(di);
+> +		goto out;
+> +	}
+> +
+> +	leaf = path->nodes[0];
+> +	buf_len = btrfs_dir_data_len(leaf, di);
+> +
+> +	fspath = fs_path_alloc();
+> +	buf = kmalloc(buf_len, GFP_KERNEL);
+> +	if (!fspath || !buf) {
+> +		ret = -ENOMEM;
+> +		goto out;
+> +	}
+> +
+> +	ret = get_cur_path(sctx, sctx->cur_ino, sctx->cur_inode_gen, fspath);
+> +	if (ret < 0)
+> +		goto out;
+> +
+> +	data_ptr = (unsigned long)((char *)(di + 1) +
+> +				   btrfs_dir_name_len(leaf, di));
+
+This is probably copy&pasted, but the char* typecast is not necessary
+and the whole expression could be
+
+	data_ptr = (unsigned long)(di + 1) + btrfs_dir_name_len(leaf, di);
+
+> +	read_extent_buffer(leaf, buf, data_ptr,
+> +			   btrfs_dir_data_len(leaf, di));
+
+btrfs_dir_data_len(leaf, di) is cached as buf_len from before so it
+should be used as well.
