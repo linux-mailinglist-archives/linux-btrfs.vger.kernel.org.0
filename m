@@ -2,137 +2,110 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D1F21D0158
-	for <lists+linux-btrfs@lfdr.de>; Tue, 12 May 2020 23:57:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE2FA1D01C5
+	for <lists+linux-btrfs@lfdr.de>; Wed, 13 May 2020 00:19:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731332AbgELV5T (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 12 May 2020 17:57:19 -0400
-Received: from mx2.suse.de ([195.135.220.15]:35174 "EHLO mx2.suse.de"
+        id S1728882AbgELWTN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 12 May 2020 18:19:13 -0400
+Received: from mx2.suse.de ([195.135.220.15]:43552 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731171AbgELV5T (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 12 May 2020 17:57:19 -0400
+        id S1728314AbgELWTN (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 12 May 2020 18:19:13 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id C5347AC85;
-        Tue, 12 May 2020 21:57:19 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 3FA7AAB99;
+        Tue, 12 May 2020 22:19:14 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id CE603DA70B; Tue, 12 May 2020 23:56:25 +0200 (CEST)
-Date:   Tue, 12 May 2020 23:56:25 +0200
+        id 5CB98DA70B; Wed, 13 May 2020 00:18:20 +0200 (CEST)
+Date:   Wed, 13 May 2020 00:18:20 +0200
 From:   David Sterba <dsterba@suse.cz>
 To:     Jia-Ju Bai <baijiaju1990@gmail.com>
 Cc:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
         linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/4] fs: btrfs: fix data races in
- extent_write_cache_pages()
-Message-ID: <20200512215625.GE18421@twin.jikos.cz>
+Subject: Re: [PATCH 4/4] fs: btrfs: fix a data race in
+ btrfs_block_rsv_release()
+Message-ID: <20200512221820.GF18421@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
 Mail-Followup-To: dsterba@suse.cz, Jia-Ju Bai <baijiaju1990@gmail.com>,
         clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
         linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200509052701.3156-1-baijiaju1990@gmail.com>
+References: <20200509053431.3860-1-baijiaju1990@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200509052701.3156-1-baijiaju1990@gmail.com>
+In-Reply-To: <20200509053431.3860-1-baijiaju1990@gmail.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sat, May 09, 2020 at 01:27:01PM +0800, Jia-Ju Bai wrote:
-> The function extent_write_cache_pages is concurrently executed with
-> itself at runtime in the following call contexts:
+On Sat, May 09, 2020 at 01:34:31PM +0800, Jia-Ju Bai wrote:
+> The functions btrfs_block_rsv_release() and
+> btrfs_update_delayed_refs_rsv() are concurrently executed at runtime in
+> the following call contexts:
 > 
 > Thread 1:
->   btrfs_sync_file()
->     start_ordered_ops()
->       btrfs_fdatawrite_range()
->         btrfs_writepages() [via function pointer]
->           extent_writepages()
->             extent_write_cache_pages()
+>   btrfs_file_write_iter()
+>     btrfs_buffered_write()
+>       btrfs_delalloc_release_extents()
+>         btrfs_inode_rsv_release()
+>           __btrfs_block_rsv_release()
 > 
 > Thread 2:
->   btrfs_writepages() 
->     extent_writepages()
->       extent_write_cache_pages()
+>   finish_ordered_fn()
+>     btrfs_finish_ordered_io()
+>       insert_reserved_file_extent()
+>         __btrfs_drop_extents()
+>           btrfs_free_extent()
+>             btrfs_add_delayed_data_ref()
+>               btrfs_update_delayed_refs_rsv()
 > 
-> In extent_write_cache_pages():
->   index = mapping->writeback_index;
->   ...
->   mapping->writeback_index = done_index;
+> In __btrfs_block_rsv_release():
+>   else if (... && !delayed_rsv->full)
 > 
-> The accesses to mapping->writeback_index are not synchronized, and thus
-> data races for this value can occur.
-> These data races were found and actually reproduced by our concurrency 
-> fuzzer.
+> In btrfs_update_delayed_refs_rsv():
+>   spin_lock(&delayed_rsv->lock);
+>   delayed_rsv->size += num_bytes;
+>   delayed_rsv->full = 0;
+>   spin_unlock(&delayed_rsv->lock);
 > 
-> To fix these races, the spinlock mapping->private_lock is used to
-> protect the accesses to mapping->writeback_index.
+> Thus a data race for delayed_rsv->full can occur.
+> This race was found and actually reproduced by our conccurency fuzzer.
+> 
+> To fix this race, the spinlock delayed_rsv->lock is used to
+> protect the access to delayed_rsv->full in btrfs_block_rsv_release().
 > 
 > Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
 > ---
->  fs/btrfs/extent_io.c | 7 ++++++-
+>  fs/btrfs/block-rsv.c | 7 ++++++-
 >  1 file changed, 6 insertions(+), 1 deletion(-)
 > 
-> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-> index 39e45b8a5031..8c33a60bde1d 100644
-> --- a/fs/btrfs/extent_io.c
-> +++ b/fs/btrfs/extent_io.c
-> @@ -4160,7 +4160,9 @@ static int extent_write_cache_pages(struct address_space *mapping,
+> diff --git a/fs/btrfs/block-rsv.c b/fs/btrfs/block-rsv.c
+> index 27efec8f7c5b..89c53a7137b4 100644
+> --- a/fs/btrfs/block-rsv.c
+> +++ b/fs/btrfs/block-rsv.c
+> @@ -277,6 +277,11 @@ u64 btrfs_block_rsv_release(struct btrfs_fs_info *fs_info,
+>  	struct btrfs_block_rsv *global_rsv = &fs_info->global_block_rsv;
+>  	struct btrfs_block_rsv *delayed_rsv = &fs_info->delayed_refs_rsv;
+>  	struct btrfs_block_rsv *target = NULL;
+> +	unsigned short full = 0;
+> +
+> +	spin_lock(&delayed_rsv->lock);
+> +	full = delayed_rsv->full;
+> +	spin_unlock(&delayed_rsv->lock);
 >  
->  	pagevec_init(&pvec);
->  	if (wbc->range_cyclic) {
-> +		spin_lock(&mapping->private_lock);
->  		index = mapping->writeback_index; /* Start from prev offset */
-> +		spin_unlock(&mapping->private_lock);
->  		end = -1;
->  		/*
->  		 * Start from the beginning does not need to cycle over the
-> @@ -4271,8 +4273,11 @@ static int extent_write_cache_pages(struct address_space *mapping,
->  			goto retry;
->  	}
->  
-> -	if (wbc->range_cyclic || (wbc->nr_to_write > 0 && range_whole))
-> +	if (wbc->range_cyclic || (wbc->nr_to_write > 0 && range_whole)) {
-> +		spin_lock(&mapping->private_lock);
->  		mapping->writeback_index = done_index;
-> +		spin_unlock(&mapping->private_lock);
+>  	/*
+>  	 * If we are the delayed_rsv then push to the global rsv, otherwise dump
+> @@ -284,7 +289,7 @@ u64 btrfs_block_rsv_release(struct btrfs_fs_info *fs_info,
+>  	 */
+>  	if (block_rsv == delayed_rsv)
+>  		target = global_rsv;
+> -	else if (block_rsv != global_rsv && !delayed_rsv->full)
+> +	else if (block_rsv != global_rsv && !full)
 
-I'm more and more curious what exactly is your fuzzer tool actualy
-reporting. Because adding the locks around the writeback index does not
-make any sense.
+This has been reported as suspicous
+https://lore.kernel.org/linux-btrfs/CAAwBoOJDjei5Hnem155N_cJwiEkVwJYvgN-tQrwWbZQGhFU=cA@mail.gmail.com/
 
-The variable is of type unsigned long, this is written atomically so the
-only theoretical problem is on an achritecture that is not capable of
-storing that in one go, which means a lot more problems eg. because
-pointers are assumed to be the same width as unsigned long.
-
-So torn write is not possible and the lock leads to the same result as
-if it wasn't there and the read and write would happen not serialized by
-the spinlock but somewhere on the way from CPU caches to memory.
-
-CPU1                                   CPU2
-
-lock
-index = mapping->writeback_index
-unlock
-                                       lock
-				       m->writeback_index = index;
-				       unlock
-
-Is the same as
-
-CPU1                                   CPU2
-
-
-index = mapping->writeback_index
-				       m->writeback_index = index;
-
-So maybe this makes your tool happy but there's no change from the
-correctness point of view, only added overhead from the lock/unlock
-calls.
-
-Lockless synchronization is a thing, using memory barriers etc., this
-was the case of some other patch, I think your tool needs to take that
-into account to give sensible results.
+and there's an answer that this is racy but does not cause any
+unexpected behaviour.
