@@ -2,71 +2,64 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F4211CF823
-	for <lists+linux-btrfs@lfdr.de>; Tue, 12 May 2020 16:58:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 047351CFA7F
+	for <lists+linux-btrfs@lfdr.de>; Tue, 12 May 2020 18:22:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728047AbgELO6I (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 12 May 2020 10:58:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42676 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727912AbgELO6H (ORCPT
+        id S1727811AbgELQWp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 12 May 2020 12:22:45 -0400
+Received: from out20-85.mail.aliyun.com ([115.124.20.85]:45734 "EHLO
+        out20-85.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725554AbgELQWp (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 12 May 2020 10:58:07 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D38BC061A0C
-        for <linux-btrfs@vger.kernel.org>; Tue, 12 May 2020 07:58:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=141qtMojYAAKBNeyQ8FyYOol4vvkjtB8nZhW0tCt9WU=; b=F7QIVxgWkbYozOxq54RMkP81Jg
-        wzRQbY3de9jgHil+xO1bEVNMtYIWJa7EGBUE4QQLJCJB8L0aKv+VVZfbLtYIfqFvGp7fsIGZUpp6j
-        0YDhNPRb4Cgl22JR+cMbg2k0plWnxDylpY+OTeK5dnRZahepBELoGMTjYatJlDVuMaA1gm2nA+iBR
-        PcQeQAvtt51AfkBhEeb0qWYQjZQgJAoiu+JuRj7qtOQRZ240g47dDJ0vfLy1HVhJnKAriFRQ0zQ4q
-        IsBErJcyRwV4VBz39MVgvocpWYFC7h+z9oDbUCUa0EBlj1GefWqhQxoXypzlVE13NJeIli+Hp149a
-        boeN+mpQ==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jYWMB-00063W-Ez; Tue, 12 May 2020 14:58:07 +0000
-Date:   Tue, 12 May 2020 07:58:07 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Goldwyn Rodrigues <rgoldwyn@suse.de>
-Cc:     Christoph Hellwig <hch@infradead.org>, dsterba@suse.cz,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 4/9] btrfs: Switch to iomap_dio_rw() for dio
-Message-ID: <20200512145807.GA23409@infradead.org>
-References: <20200326210254.17647-1-rgoldwyn@suse.de>
- <20200326210254.17647-5-rgoldwyn@suse.de>
- <20200327081024.GA24827@infradead.org>
- <20200327161348.to4upflzczkbbpfo@fiona>
- <20200507061430.GA8939@infradead.org>
- <20200507113741.GJ18421@twin.jikos.cz>
- <20200507121037.GA25363@infradead.org>
- <20200508031405.br4dcibcyuoluxum@fiona>
- <20200509135914.GA4962@infradead.org>
- <20200510040601.bub3du7g5kepeakw@fiona>
+        Tue, 12 May 2020 12:22:45 -0400
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.09756994|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.120746-0.00217786-0.877076;FP=0|0|0|0|0|-1|-1|-1;HT=e02c03300;MF=guan@eryu.me;NM=1;PH=DS;RN=6;RT=6;SR=0;TI=SMTPD_---.HXUvbOt_1589300561;
+Received: from localhost(mailfrom:guan@eryu.me fp:SMTPD_---.HXUvbOt_1589300561)
+          by smtp.aliyun-inc.com(10.147.42.22);
+          Wed, 13 May 2020 00:22:41 +0800
+Date:   Wed, 13 May 2020 00:22:41 +0800
+From:   Eryu Guan <guan@eryu.me>
+To:     Nikolay Borisov <nborisov@suse.com>
+Cc:     Omar Sandoval <osandov@osandov.com>, fstests@vger.kernel.org,
+        kernel-team@fb.com, linux-btrfs@vger.kernel.org,
+        Eryu Guan <guaneryu@gmail.com>
+Subject: Re: [PATCH fstests] btrfs/14{2,3}: use dm-dust instead of
+ fail_make_request
+Message-ID: <20200512162241.GC9345@desktop>
+References: <d992390752c612acd0893ee3db929e77affded2b.1586983958.git.osandov@fb.com>
+ <47d3f830-bd55-c4f1-78d5-7648bc0cd44c@suse.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200510040601.bub3du7g5kepeakw@fiona>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <47d3f830-bd55-c4f1-78d5-7648bc0cd44c@suse.com>
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sat, May 09, 2020 at 11:06:01PM -0500, Goldwyn Rodrigues wrote:
-> > > We cannot perform data reservations and release in iomap_begin() and
-> > > iomap_end() for performance and accounting issues.
-> > 
-> > So just drop "btrfs: Use ->iomap_end() instead of btrfs_dio_data"
-> > from the series and be done with it?
+On Tue, May 12, 2020 at 09:15:50AM +0300, Nikolay Borisov wrote:
 > 
-> We are using current->journal_info for fdatawrite sequence hence using
-> that as a temporary pointer does not work since iomap_dio_rw() performs
-> the fdatawrite sequence.
+> 
+> On 15.04.20 г. 23:54 ч., Omar Sandoval wrote:
+> > From: Omar Sandoval <osandov@fb.com>
+> > 
+> > These two tests test direct I/O and buffered read repair, respectively,
+> > with fail_make_request. However, by using "fail_make_request/times",
+> > they rely on repair having a specific I/O pattern. My pending Btrfs
+> > direct I/O refactoring patch series changes this I/O pattern and thus
+> > breaks this test.
+> > 
+> > The dm-dust target (added in v5.2) emulates a device with bad blocks
+> > that are fixed when written to (like a device that remaps bad blocks).
+> > This is exactly what we want for testing repair. Add some common dm-dust
+> > helpers and update the tests to use dm-dust.
+> > 
+> > Signed-off-by: Omar Sandoval <osandov@fb.com>
+> 
+> Eryu, are you going to merge this patch ?
 
-Ok. but in that case they never really should have been separate patches.
+The dmdust part seems fine to me, could you or other btrfs folks help
+review the btrfs change? That'd be appreciated!
 
-Can someone help me to understand who consumes the reservation create by
-btrfs_delalloc_reserve_space?  Most importantly if this is done by
-something called from btrfs_dio_iomap_begin or from btrfs_submit_direct.
+Thanks,
+Eryu
