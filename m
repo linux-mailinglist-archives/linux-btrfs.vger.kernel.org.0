@@ -2,30 +2,31 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15AD61CEABD
-	for <lists+linux-btrfs@lfdr.de>; Tue, 12 May 2020 04:26:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F38A21CEAC1
+	for <lists+linux-btrfs@lfdr.de>; Tue, 12 May 2020 04:31:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728110AbgELC0p (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 11 May 2020 22:26:45 -0400
-Received: from mout.gmx.net ([212.227.17.21]:38839 "EHLO mout.gmx.net"
+        id S1728110AbgELCa6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 11 May 2020 22:30:58 -0400
+Received: from mout.gmx.net ([212.227.17.22]:45005 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727892AbgELC0p (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 11 May 2020 22:26:45 -0400
+        id S1727892AbgELCa6 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 11 May 2020 22:30:58 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1589250402;
-        bh=4mI/TXs6VVcgX2aowoAQ15s6ucLfLPECS6xMWEBXiIg=;
+        s=badeba3b8450; t=1589250651;
+        bh=FkQctqB3YgJhHBKDAYkjGJK0wSlfOj9MJccoaSuFJ3I=;
         h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=bKkJ0yE6oSTwqNrGSXxW92WPscsIMFHTSWju6zWR0sgIy+cS5j+7t5sGh15LudADM
-         Pkrw5CgGGYrEMILQmOuet6yS8OXG196vSq7cqNZocm2htbvLhxIDNuqUYglCY805tL
-         G7WFuK70ZcXqgpYpnJvWCSZqqg/TMO1fwyN7l2hI=
+        b=NzAQPtvgvHqkeT7HowKDcRnFiRbrFP6AWAIuIuOyN41k1/+eA2svh73zZcrBrO5xU
+         tD4/KbdeXfQhjo0qXf5+n3eX/6L4KM2kU43yialUGzYC42fh/a7da9I6i9D9opRqFO
+         s0+zMluE/cqJOQfmM2IWhiQGLc2SRcODGF3bvTCQ=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1N3bSt-1j7tsQ1q4Z-010cXo; Tue, 12
- May 2020 04:26:42 +0200
-Subject: Re: Help with unmountable boot volume
-To:     Jason Clara <jason@clarafamily.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-References: <14907AA2-4E26-4025-945E-4BCB87A32254@clarafamily.com>
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1McYCb-1iyRdv24lh-00d15i; Tue, 12
+ May 2020 04:30:51 +0200
+Subject: Re: [PATCH v4 00/11] btrfs-progs: Support for SKINNY_BG_TREE feature
+To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <20200505000230.4454-1-wqu@suse.com>
+ <20200511185810.GX18421@twin.jikos.cz>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -51,156 +52,156 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
  ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
  oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <1b10886e-c2ec-a301-99e5-34a284e06bd8@gmx.com>
-Date:   Tue, 12 May 2020 10:26:38 +0800
+Message-ID: <ce5fe286-fa4a-e282-3b92-564cab62b776@gmx.com>
+Date:   Tue, 12 May 2020 10:30:47 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <14907AA2-4E26-4025-945E-4BCB87A32254@clarafamily.com>
+In-Reply-To: <20200511185810.GX18421@twin.jikos.cz>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="RDb2HCE6z1YklXWPp7Tj5pqW0IzZrmfJu"
-X-Provags-ID: V03:K1:f16KZC8UvvlJ3iGtDaUKOmW0Qq0KTUTQWFVIctZv80ZmULXCMH4
- Sxp2TUjKJ6vGbE3bsmReRFqKYGkfTN5ms2GJfCR6LQCDA19/ftYv8Q3+U3WxMyWRRGputQ1
- JGlXX/LyaRksWNKbatTc0hKHSCw+t9lEgf4sxh64iTbYqVxMLneEm0maU6MzSHazrLaHQOL
- CdXz5antGMjJ82BLp73Ug==
+ boundary="cMGhb17zTFFlQPT4woTjI9OhywqiVR2u1"
+X-Provags-ID: V03:K1:YlNolYHkRC3/MCRvuomfNphQHFPF/tq1eALNZbx/dNQlXP6HC/M
+ rPmJhKx837WMFLGk4TJqbXWQoZH/Ms9mUzPMaN3sBARLX9c27FfDYWvB6XbZhM/HLcxItWy
+ zgHC0GFwnf9dPyjPQJUKFxP6t+78QpVZ7D9Okw0wkmNzbHW/ZInYDX0Sj3oX/dAG9bWlAlZ
+ 43NSv+JgECOAaBJIkD82w==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:WNl84Qr+pa4=:DDUJ4zgAMjBM4BN2F+ZTA6
- GJULZQrKpQQ+TOrtXNItDQRSNB0GfvtpBPGItfa0Rba0FfNAogr3nsTg9utavTVupVyvq+gQO
- q6gw71ACicIByzu48kZkZk2zTNao4wdbxCLp4I7iksT5W3Hp7l6oFmoowqCEcgWWoJweYlbyv
- pw4mAB5e+EYjgA/LCexY0anZQX0P5MVwgufRKG0DqNSr9FYCORVqLeQ93nTswPqIz6bKdz4/n
- 6o6rwAC/CM06dDNBYEYZm/zFhuFKdhx+M8CFXa7ro65ysCS6x10qK+HTRLzaUcQviX8+zuRW9
- yNF0GTkjEWc2HKWjFkePBwRWlksXPpwKPsEOEXFPw55/vfkv6ax7ISvw2BPIucAMg2KK8W8Qz
- 8vFUQbfCFMnZoiwO3pfevF5YnAv5nlM7leQBQiH8OZYQma61kDzZlAe83fPVA0BFC58kHPyxU
- z7ckSGPHDHx6Vvi6M+IaieclM0Wgri6KM13/ujcXBOtL/s8pUxOQD+a57lXaSIUWoJUr2kk7E
- 6KjxJtf/3g5x/EnNC+Aof+4IRs9F2OLwrlC8rmsnZzZyCeJUML314SJXxSChWKpdDtkZmWu3h
- NZegf+7jqWyNygM2jkMSs/iBL4FO7Jh6vr1QbhGLAXiM28nMsLK6SQjD7S9/bGD2CHLdpAMYu
- yKMz1RTKPpLBqw87us+6rtsqYryLbj0P79TMXwLwXRqQTaPaKwvihdlUqJMOxXvwQNorOA88B
- E8EwZ2glXcfxB4akv7ONRjmfDO+lglEP3vSsWJq/TLdTggctMyNyDq466UaPdLGnFzDjm8q2i
- jq1GQ2S/r9L6Y+c+wzANNA/IpEl5TCwNnoPl90gZA7p+OwqxLe/3kDzp6i2ZQacRbEVjyF87/
- zLBWWjcHeyszTrVMdA4APBbhE4MzHsQmcoVDFim3AiJREW/RaUxPZyejamw/XoWv1vRqD6Kwf
- L5M0wVZrFj1WWskI6qVbpySQJq4FtF7+3rovL70/6hq+coFiAVQ2ndOUgVCoJU4nj9B9odjAR
- TnngMKclrUhzvvRaRdYEdlvtWJkjKWHra4JZZM1xIRgKMNxvs23iqJx1pQYE1G0QwBcL22PeR
- Nf+Ql1r2G9y1vHFsGYTJCRk22tCcpEFZg3hJxt4Ee4z+5YHUOWn9NiTn3UXGJgXnrI3tCmVic
- WR9QdGRU8lUrHNWvgmPsVzJxZAPyX+zY70cgMPNS9INXeiB9c7rkoQAJO+Lqx8SYFVuqAq4XH
- gFytn13NWsw9Y5vsP
+X-UI-Out-Filterresults: notjunk:1;V03:K0:eFTM272a9y8=:Ga5oeYz4UYUhBTJPdultJS
+ kspuUc66WLMNzdrVoMC2nxI9pWlvdVcX3PL6FfpY3Z37Xgwv64M9OlOBbFiM66iHkr8Fa4qEW
+ 6Huy5rRnDTr47xPCCqcnCkgW6s22Gr/FizPecS/L7rTHbTzEWCGOe/rlWRERDnpP3g8iSMe8T
+ +5hFe3z6BUB+gjN0oxBKFY/O6VnKha9KnZwctQDVJS9QU5CyfYwwLidGbFVgCxlR1Dz/A6DbZ
+ DbombQVXpyfwjomXLVriyQArCVerhdj4HnXesONvD9SqBlxUmHdRC7HftTlyT4VvYTkVfRe1/
+ rFP7Eje6u0mqRvDyYuep82yP26GcfV40SRdjE3zCrgN+E3xFsBq+2MIqVsZMBJZlGDqlzPJRz
+ mlCftV3SuZe+FfqAv6oUIOawCcYTpDZdOG4dSIJuwSSvYKxIdvhPZFOppX22GqGvLQaIE7H83
+ UoBKdxVEQLea4qoc648QHM6FUzsALNseyUG4wZo8T4v2UKxo167KXDIcMIWI2V7druA1F/2Ae
+ KrwY3cKD10wNdtca+ntLSBny3m+zBJyC2lPKgcjHEGz48OVkcDU0tL5+edRIoYuPqpOWOD7L2
+ BLNje150a9HaNr0xWz7a0IEu5gub4GPiVVNh9JWYCyF95TJCAhT3/+xWsy//99xB8mKpfmk5t
+ TzzuBkLhe3BY9uMvDOJd9xw5PejH1DEsDHzJbXGAk0UBu3lbPu14HmLB4sqDpvYNeadgxbq6u
+ 1RjdYxPzWoqyA2/dV433dm3Of+bWQmF0KFECkqRI/fDeLPQwNz1Gk6kdVut5FSk6WHKnErrHk
+ gyvRPh+a5p6Ob/BEpXWEtCxpkt/lfhCy207pk2HYtqg7dYy9jXz3CwMKft7kDaqR+bTxzV55Q
+ zs9VXnOZEwWjannzOIrm9OZ/GmMYQoGvZBbxyO6riK3Syc8Si8Q8/GriBTr1rUWGJsuRW2oTK
+ g2L6aJFG/bvFgonCAUv6b/1r6OAwRJFUVZjgjvmOr5Rod7blEcS4pl0mrTg0hpp9ss2NAYkEF
+ LRTlc70UJld0r8cw+R9LlO/CkKgbNuCu/4b0kCXrfJ0b1MFHQZtPSrpZXAFVhUqWoM4zwpbx+
+ lJH5Pa/oRrynQ/B1o+7CvPrapaIWSUVx5AuOcmSMtdD5R14pR1SPEyfsHbEUWp745AZdPRmw/
+ KHR+6Ug83mnpfJG9qMG+MOe7/SlhItAvALd+laZLagW8qa1IxDLgJboR3+pF+uxYDLNERiBQe
+ 5CnrMK20Vegd2WcxU
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---RDb2HCE6z1YklXWPp7Tj5pqW0IzZrmfJu
-Content-Type: multipart/mixed; boundary="ZFoUrSe8Bua4sW2PQNHWxNRaUzDFgPzUS"
+--cMGhb17zTFFlQPT4woTjI9OhywqiVR2u1
+Content-Type: multipart/mixed; boundary="cqe6u9xVdu1vR2Jfofbj6lYoFAZ3S0QOM"
 
---ZFoUrSe8Bua4sW2PQNHWxNRaUzDFgPzUS
+--cqe6u9xVdu1vR2Jfofbj6lYoFAZ3S0QOM
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
 
 
 
-On 2020/5/11 =E4=B8=8B=E5=8D=889:11, Jason Clara wrote:
-> I woke up this morning and my system had crashed and my root filesystem=
- was readonly.
->=20
-> Reboot failed when mounting the root filesystem, and now my system will=
- not boot.
->=20
-> I had a USB I setup for recovery and booted into that and to help with =
-recovery but I am currently stuck.
->=20
-> Some background into.
-> Root file system is RAID 1 with two 1TB drives (Both M.2 one is NVME an=
-d one is SATA)
-> Original system is Ubuntu 18.04 with kernel 5.5.7 and btrfs-progs I thi=
-nk was version 5.6
-> I think last scrub on the pool was maybe 1-2 months ago.  But sure exac=
-t timing.
->=20
-> My recovery environment is ubuntu 20.04 with kernel 5.6.7 and btrfs-pro=
-gs 5.6 and that is what I am running under at the moment
->=20
-> When I try to mount the filesystem I get the following error.
-> boot@boot-live-usb:~$ sudo mount /dev/sdm2 /media/root/
-> [sudo] password for boot:=20
-> mount: /media/root: wrong fs type, bad option, bad superblock on /dev/s=
-dm2, missing codepage or helper program, or other error.
->=20
-> With dmesg showing
-> [Mon May 11 08:56:47 2020] BTRFS info (device nvme0n1p2): disk space ca=
-ching is enabled
-> [Mon May 11 08:56:47 2020] BTRFS info (device nvme0n1p2): has skinny ex=
-tents
-> [Mon May 11 08:56:47 2020] BTRFS error (device nvme0n1p2): bad tree blo=
-ck start, want 2728265449472 have 5440864628575810330
-> [Mon May 11 08:56:47 2020] BTRFS error (device nvme0n1p2): bad tree blo=
-ck start, want 2728265449472 have 0
+On 2020/5/12 =E4=B8=8A=E5=8D=882:58, David Sterba wrote:
+> On Tue, May 05, 2020 at 08:02:19AM +0800, Qu Wenruo wrote:
+>> This patchset can be fetched from github:
+>> https://github.com/adam900710/btrfs-progs/tree/skinny_bg_tree
+>> Which is based on v5.6 tag, with extra cleanups (sent to mail list) ap=
+plied.
+>>
+>> This patchset provides the needed user space infrastructure for SKINNY=
+_BG_TREE
+>> feature.
+>>
+>> Since it's an new incompatible feature, unlike SKINNY_METADATA, btrfs-=
+progs
+>> is needed to convert existing fs (unmounted) to new format, and
+>> vice-verse.
+>>
+>> Now btrfstune can convert regular extent tree fs to bg tree fs to
+>> improve mount time.
+>>
+>> For the performance improvement, please check the kernel patchset cove=
+r
+>> letter or the last patch.
+>> (SPOILER ALERT: It's super fast)
+>>
+>> Changelog:
+>> v2:
+>> - Rebase to v5.2.2 tag
+>> - Add btrfstune ability to convert existing fs to BG_TREE feature
+>>
+>> v3:
+>> - Fix a bug that temp chunks are not cleaned up properly
+>>   This is caused by wrong timing btrfs_convert_to_bg_tree() is called.=
 
-This means both copy is corrupted.
-Furthermore, the second copy looks like being completely trimmed.
-
-Are you using discard mount option?
-
-> [Mon May 11 08:56:47 2020] BTRFS error (device nvme0n1p2): failed to re=
-ad block groups: -5
-
-Again, extent tree corruption.
-
-Normally we'd recommend to do restore (already done), or go skipbg mount
-option (out of tree, need to compile kernel).
-
-But considering the data loss is from wiped tree blocks, I believe it
-won't be the only corruption.
-
-> [Mon May 11 08:56:47 2020] BTRFS error (device nvme0n1p2): open_ctree f=
-ailed
+>>   It should be called after temp chunks cleaned up.
+>>
+>> - Fix a bug that an extent buffer get leaked
+>>   This is caused by newly created bg tree not added to dirty list.
+>>
+>> v4:
+>> - Go with skinny bg tree other than regular block group item
+>>   We're introducing a new incompatible feature anyway, why not go
+>>   extreme?
+>>
+>> - Use the same refactor as kernel.
+>>   To make code much cleaner and easier to read.
+>>
+>> - Add the ability to rollback to regular extent tree.
+>>   So confident tester can try SKINNY_BG_TREE using their real world
+>>   data, and rollback if they still want to mount it using older kernel=
+s.
+>>
+>> Qu Wenruo (11):
+>>   btrfs-progs: check/lowmem: Lookup block group item in a seperate
+>>     function
+>>   btrfs-progs: block-group: Refactor how we read one block group item
+>>   btrfs-progs: Rename btrfs_remove_block_group() and
+>>     free_block_group_item()
+>>   btrfs-progs: block-group: Refactor how we insert a block group item
+>>   btrfs-progs: block-group: Rename write_one_cahce_group()
 >=20
+> I'll add the above patches independently, for the rest I don't know. I
+> still think the separate tree is somehow wrong so have to convince
+> myself that it's not.
 >=20
-> Trying a readonly check on the filesystem gave me the following error
-> boot@boot-live-usb:~$ sudo btrfs check --readonly /dev/sdm2=20
-> Opening filesystem to check...
-> checksum verify failed on 2728265449472 found 0000008B wanted 00000017
-> checksum verify failed on 2728265449472 found 000000B6 wanted 00000000
-> checksum verify failed on 2728265449472 found 0000008B wanted 00000017
-> bad tree block 2728265449472, bytenr mismatch, want=3D2728265449472, ha=
-ve=3D5440864628575810330
-> ERROR: failed to read block groups: Input/output error
-> ERROR: cannot open file system
->=20
-> I tried a restore (with -io options) to at least get as much data as I =
-could off just to be safe and it finished but there was a number of check=
-sum errors, bad tree block error and loop errors.  So not sure how good t=
-he backup will be.
->=20
-> Any help would be appreciated.  I have backups so I could format and se=
-tup the system again, but would rather not if I don=E2=80=99t have too.
->=20
-Another very dangerous try is, btrfs check --init-extent-tree.
+One interesting advantage here is, separate block group tree would
+hugely reduce the possibility to fail to mount due to corrupted extent tr=
+ee.
+There are two reports of different corruption on extent tree already in
+the mail list in the last 24 hours.
 
-But it won't end up well due to the data loss.
+While the skinny bg tree could hugely reduce the amount of block group
+items, which means less possibility to corrupt.
+
+And since we have less tree blocks for block group tree, the cow cost
+would also be reduced obviously.
+As one BGI (just a key) get modified, all modification to other keys in
+that leaf won't lead to new COW until next transaction.
+
+So personally I believe it's much better than regular extent tree.
 
 Thanks,
 Qu
 
 
---ZFoUrSe8Bua4sW2PQNHWxNRaUzDFgPzUS--
+--cqe6u9xVdu1vR2Jfofbj6lYoFAZ3S0QOM--
 
---RDb2HCE6z1YklXWPp7Tj5pqW0IzZrmfJu
+--cMGhb17zTFFlQPT4woTjI9OhywqiVR2u1
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl66CV4ACgkQwj2R86El
-/qi4RQf+LOQ4KiDiz9R8F5aI2BHo6VmnsFlRAamyWpNsAcaGJYm18OloKL52YF4j
-+4CpZ1FdP6v1Uk0RWi0d2/BCe5fMJbze4iGQHLGbM0CxORcZTdlAGf6Ff42GlFOd
-6brMaiCY3w+lOdHf7/kfnCDQDf2HIwhuXvvtJTLV6qC/WztGjAY1V6kxcL8I9HUw
-e7r7acBjR75CA1bdizGqKv/xePX0jb1lUBvipdrU42iytVuEERbsHw7U1Ke5L7u0
-LiAS/ZtohCXXVvBCRloWkV8FBNgn4BSkKQkE7PlwPazylSmczaZyvwivhxMCnqMQ
-yBMHBO1cW+9deVdxUoppJprqIiddlw==
-=MX0b
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl66ClcACgkQwj2R86El
+/qiJeAf+M0XIa6125ZvximupuZyfDddv7y9yxMFMvYJH3O95yupPYOJUXwomcdXi
+eeGbqPtgTm+J4heQrkaq2Sdscq8GpAb5dxojZ6qPk7PMhRW+AL9waWJcJVzOlMvw
+lP5JzLjLBRYc3jERJIlX9wdp9PW6e1YMEYPbw9ZXYaXifzTKvMZPNDmGpl6o1J1d
+PwhuDPEYPWDzXm5xBylLhjcUY9TmmUrBTCJFKHJOv4oNURLj94WaVtdFOWYzDoJx
+RCfsMbV8xP5zZ0Q/zlg70j95gwrBpcH9gP8IvCG/6eZIVQVtXBFso1lOc/Q0dsDx
+Iofjl5NBcVAlbecDPxKCj5gkK3BeTg==
+=0GEA
 -----END PGP SIGNATURE-----
 
---RDb2HCE6z1YklXWPp7Tj5pqW0IzZrmfJu--
+--cMGhb17zTFFlQPT4woTjI9OhywqiVR2u1--
