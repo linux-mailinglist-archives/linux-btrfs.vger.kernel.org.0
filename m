@@ -2,125 +2,165 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 611F31CEEEC
-	for <lists+linux-btrfs@lfdr.de>; Tue, 12 May 2020 10:15:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC68D1CEEFD
+	for <lists+linux-btrfs@lfdr.de>; Tue, 12 May 2020 10:21:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728912AbgELIPq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 12 May 2020 04:15:46 -0400
-Received: from esa1.hgst.iphmx.com ([68.232.141.245]:5432 "EHLO
-        esa1.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725813AbgELIPq (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 12 May 2020 04:15:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1589271345; x=1620807345;
-  h=from:to:cc:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=1mOd1PpcVxAPOKVpxCJ5rFyQ/ZKgxww5QFerlcWPR50=;
-  b=TRAxwXpsDjKMsg/suf9BfK0Rp/vGsV7+f095js8rbeWiy8xmwcNa42zJ
-   irtQxVxweQhlkrcs3yBRAvh0Fp2QUCp7jFnwcDqRwSw2DAMag6cuiQWnk
-   F2rZGPrmWm1IpEORbOh0hiz9h3bPSHK1BMZ1+FcYifPMKLDGlIxOTkHWB
-   5iTlw/u/yAsQE+YArRi0mDIxvNNecQRq3uPXD4vQNvK+QrYkcM0UmR38x
-   iRaTjPiRLYtxUcowOalwq0eRKkoVOwrfl6Wa4qxuqhZHM4ILksm0Jkabm
-   N7bOBLAPA8aqverIAV74EO9Oi0FmZ8l/hUzM8RDmMargGWYROv9ScwP00
-   A==;
-IronPort-SDR: ogmg+m8/GpjRcpMkDRzJn59DqEXPr6E903FOPqlW+gIT94pMGpkqqyxvJN01DhttWxhwoXoY+b
- AY1fySOYtuMjr0n7zQ2z2LUtVRJAt/YoxHTe0Df6qfFOBkf0iB4LsGCpcLBL8vWGfUkyP8gQMm
- tudDh2rqO5gpwJfdguBQRc3NLay+gGDxyjWY+YOAO1w+zA5QjYy1F5fH91gXJxwdm2miBtYTWe
- ZxGUKnUUdVnmmvT9goozI4MsC8hi+RMkEWoWcWseFGUW7pBWpctiSebdXnTWtFytjr1bP56sS/
- qSM=
-X-IronPort-AV: E=Sophos;i="5.73,383,1583164800"; 
-   d="scan'208";a="246402051"
-Received: from mail-bn8nam12lp2174.outbound.protection.outlook.com (HELO NAM12-BN8-obe.outbound.protection.outlook.com) ([104.47.55.174])
-  by ob1.hgst.iphmx.com with ESMTP; 12 May 2020 16:15:31 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ABCczrA4GaAcH2Q0l6bd4Uf0+DBtVmjFeMsAYXf3Sxmt0GkoPwFTfN5L+hrsD5u8wDbiAiOAkxeLuh8MQwuR3BV70QEYYML7delK7vXTDHgYF7M1kV5Iq7oFNoyjbiOtP9qgn1cJy8KV2PRXRW6mMaCSYjCr5kC1FimkM+EvakIm0S+VaWCGp27bWIwXhY1ha7F2dRyEQEjhTxTFvbdZm8NxDeQeqRzZe7b5fSFTL3h9mb+eV4B5casm5LcwBiWD/EC7jWbYQGfO33OicJ8oDqq3rl4WkwBWZ2OCNFtU8s4eRTpVK0Gl6TDwAT/yGNTXEyWOUMmTc2+XQWRf5rOTIQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=K/DrfRndjDu31JfJbGOUhdaMP+eShaVaQbL9W+Jl9QA=;
- b=gSB0HmM8VxXZ1N3UJrVEa157Mj/mTi6btXqcu3TV6ty1Tybb0+ZgfwgSJwCdjU98O4ZcfZNtL1vbTE6PQiSwsIJoSicRnnj+8LlaTj9TbRlrStOIdTSku4D4vUMfPs1obiZN4pyg9u+KM92F3fsueJ9yFzpzVfiCU9P5Lq+VMpYCSqjSBlq9N6wTu6UdW+8Wb+RWc9P5nSrJL1iQgikEvqdyxpdkCLmqHGnABywsIF54Y61WRAgyx+bs8/EGxy51cGllldSCaHsrHgD+f0spKi6JOAIt3Dpk2BootoJAmPWsu0cLxYzXVFclYEha4pk9wxHlbhy1WTTj439jsVkatg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=K/DrfRndjDu31JfJbGOUhdaMP+eShaVaQbL9W+Jl9QA=;
- b=OJbeXYVNeT9JZCs4u8hOundUfJilNrgNV9dxeAYZ1bTqx+eLKdLUIbfsvuQNX7FKGcqnovVVu0Q4/2a4Y1P9OuuDCYsbhEubTUF0CjGO18WsCfe7As4Pr2gfzIR8x+DTWGpB+yeMi3qT4WdPGF/YjrziQOLnjaLgkJA/tjYbyJM=
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
- (2603:10b6:803:47::21) by SN4PR0401MB3679.namprd04.prod.outlook.com
- (2603:10b6:803:46::15) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2979.35; Tue, 12 May
- 2020 08:15:30 +0000
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::9854:2bc6:1ad2:f655]) by SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::9854:2bc6:1ad2:f655%4]) with mapi id 15.20.2979.033; Tue, 12 May 2020
- 08:15:30 +0000
-From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To:     Anand Jain <anand.jain@oracle.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-CC:     "dsterba@suse.com" <dsterba@suse.com>
-Subject: Re: [PATCH] btrfs: unexport btrfs_compress_set_level()
-Thread-Topic: [PATCH] btrfs: unexport btrfs_compress_set_level()
-Thread-Index: AQHWKB+h2yr9rMcR2Uq7UYxD7T+asQ==
-Date:   Tue, 12 May 2020 08:15:30 +0000
-Message-ID: <SN4PR0401MB3598DFA809736C9AE6F79AFA9BBE0@SN4PR0401MB3598.namprd04.prod.outlook.com>
-References: <20200512053751.22092-1-anand.jain@oracle.com>
- <SN4PR0401MB3598A397B1E8CDAE64C51DF59BBE0@SN4PR0401MB3598.namprd04.prod.outlook.com>
- <8acf6de2-38dd-034a-c666-4d1861f7b175@oracle.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: oracle.com; dkim=none (message not signed)
- header.d=none;oracle.com; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [129.253.240.72]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: df524d93-8225-4417-6870-08d7f64ca2af
-x-ms-traffictypediagnostic: SN4PR0401MB3679:
-x-microsoft-antispam-prvs: <SN4PR0401MB3679D9DAC097058DF2E466D79BBE0@SN4PR0401MB3679.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:5797;
-x-forefront-prvs: 0401647B7F
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: S3AjCfnXxoKRwbqy56w3w4uO+Usy8c485sQYhd+B8UI+D0rU94q3uSYCgs6v8Acp/bF+XsfRr7NgRtCjKPe6dx/qTinFx8YzCTmjKllCza4mnXFr/dx94rTCZvEnRNiNwss/fwCUwperIG2wwBdag2PLDOET8PJMW9arCHGXEXMNA0TlkmgqZ+JkZeY+eVXEWVFFl9qoWVh/0To/IvjKkcgtr+SBCNMqjPhSzC5tvh1EEF+VUJFU9RxLhEgURSAY9hIht7B2YQFU3WivfbI63mseuzv0sS2f15IVmXwNmqg6/kqxkm4XxAIwZAB9pcvlHo1Iqu8HAcbYLjCHYWNGdcCqWUgHD/EGQdIjU5X+SKeTNAuhfO4TOWMOni0Gq7WlenyTYZWcv39XV+m5pPRJeg+bxuxctcjhnaBsuZ2UFzzC/8/n02Mp9M0NFTIU6uhlkUK5mD/DucIqyLidUPIoRf/Ze1YSKyHEGgUmcHwYtVPMb0eHQBpnAwuBUW2mxQ2YDFNYgoPUSy0fWTtUT2yS+w==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR0401MB3598.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(346002)(366004)(376002)(39860400002)(396003)(136003)(33430700001)(64756008)(66476007)(186003)(52536014)(66946007)(33656002)(26005)(4326008)(5660300002)(76116006)(66556008)(8676002)(8936002)(4744005)(2906002)(86362001)(91956017)(66446008)(55016002)(53546011)(6506007)(71200400001)(316002)(478600001)(110136005)(7696005)(33440700001)(9686003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: y8VsWsb3voQH8P/XtZGHLcCbvuPk6muA1ETWvjimHmplwYMyazzYJiiHvoDY12V9Y96Gz/TIfdAWIt1ArOZTUTMPM2zMcetu+UrKPPWNh+5jZ1db7da3O/YeF9OXlabhQI5AF62bysy0bE9M3APS+KrAo+Z8Az0us/zve2S13oA2hEOlG1q/dPCUjgx0T5uopick7eDIaieqfo3dKDUSLXbYnxSUi4lOCEVrPKPwCegI2h4T9NNC9NNIC9ii+QKYHEUlHc2r5VoU1qjl7t/eJ87qU2OSdLg+Zf2kTArsyvR8PToj0Qb80eSMvHgcM5Dt2VZNQkEmQ7N6HYs7UajNPFFCKetZzHMAc0jdhYMpOUtWv3ICBDRJXtOnU5iagNDCHvxx9MB6scYIC8S8Ey9puplGL91MuqY2qJCRRjT9/rCnKGFEoHgqGv8uXp82kjLII9KXIa+PsqPI/ADiKP1j+xbRnZZcCjbCXh1aoyDoTju4hOoRvj83hTjEuaioqDig
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1728891AbgELIVI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 12 May 2020 04:21:08 -0400
+Received: from mx2.suse.de ([195.135.220.15]:54060 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725823AbgELIVI (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 12 May 2020 04:21:08 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id D074BAB91;
+        Tue, 12 May 2020 08:21:08 +0000 (UTC)
+Subject: Re: [PATCH v4 00/11] btrfs-progs: Support for SKINNY_BG_TREE feature
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, dsterba@suse.cz,
+        Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+References: <20200505000230.4454-1-wqu@suse.com>
+ <20200511185810.GX18421@twin.jikos.cz>
+ <ce5fe286-fa4a-e282-3b92-564cab62b776@gmx.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <61c92960-038f-068c-8ee8-a6d657739f16@suse.com>
+Date:   Tue, 12 May 2020 11:21:04 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: df524d93-8225-4417-6870-08d7f64ca2af
-X-MS-Exchange-CrossTenant-originalarrivaltime: 12 May 2020 08:15:30.1897
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Y6g5Zxad+IteCPWqknwAxk79qNI/CkeWDFSllsRBC4gYIm7wuy1oEl/WKU8Id+TEGQDmPeaIynKlDH8J/sfz/RLFswU/CWjoOmxLFic9Rgw=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN4PR0401MB3679
+In-Reply-To: <ce5fe286-fa4a-e282-3b92-564cab62b776@gmx.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 12/05/2020 10:14, Anand Jain wrote:=0A=
-> =0A=
->> Why did you move the function?=0A=
-> =0A=
->   Oh. In the original code, in compression.c the function call=0A=
->   (in btrfs_compress_pages()) come first before the function definition.=
-=0A=
->   So to avoid the re-declaration moved the function up.=0A=
-> =0A=
->> Apart from that,=0A=
->> Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>=0A=
-> =0A=
-> Thanks.=0A=
-> =0A=
-=0A=
-Ok, thanks.=0A=
+
+
+On 12.05.20 г. 5:30 ч., Qu Wenruo wrote:
+> 
+> 
+> On 2020/5/12 上午2:58, David Sterba wrote:
+>> On Tue, May 05, 2020 at 08:02:19AM +0800, Qu Wenruo wrote:
+>>> This patchset can be fetched from github:
+>>> https://github.com/adam900710/btrfs-progs/tree/skinny_bg_tree
+>>> Which is based on v5.6 tag, with extra cleanups (sent to mail list) applied.
+>>>
+>>> This patchset provides the needed user space infrastructure for SKINNY_BG_TREE
+>>> feature.
+>>>
+>>> Since it's an new incompatible feature, unlike SKINNY_METADATA, btrfs-progs
+>>> is needed to convert existing fs (unmounted) to new format, and
+>>> vice-verse.
+>>>
+>>> Now btrfstune can convert regular extent tree fs to bg tree fs to
+>>> improve mount time.
+>>>
+>>> For the performance improvement, please check the kernel patchset cover
+>>> letter or the last patch.
+>>> (SPOILER ALERT: It's super fast)
+>>>
+>>> Changelog:
+>>> v2:
+>>> - Rebase to v5.2.2 tag
+>>> - Add btrfstune ability to convert existing fs to BG_TREE feature
+>>>
+>>> v3:
+>>> - Fix a bug that temp chunks are not cleaned up properly
+>>>   This is caused by wrong timing btrfs_convert_to_bg_tree() is called.
+>>>   It should be called after temp chunks cleaned up.
+>>>
+>>> - Fix a bug that an extent buffer get leaked
+>>>   This is caused by newly created bg tree not added to dirty list.
+>>>
+>>> v4:
+>>> - Go with skinny bg tree other than regular block group item
+>>>   We're introducing a new incompatible feature anyway, why not go
+>>>   extreme?
+>>>
+>>> - Use the same refactor as kernel.
+>>>   To make code much cleaner and easier to read.
+>>>
+>>> - Add the ability to rollback to regular extent tree.
+>>>   So confident tester can try SKINNY_BG_TREE using their real world
+>>>   data, and rollback if they still want to mount it using older kernels.
+>>>
+>>> Qu Wenruo (11):
+>>>   btrfs-progs: check/lowmem: Lookup block group item in a seperate
+>>>     function
+>>>   btrfs-progs: block-group: Refactor how we read one block group item
+>>>   btrfs-progs: Rename btrfs_remove_block_group() and
+>>>     free_block_group_item()
+>>>   btrfs-progs: block-group: Refactor how we insert a block group item
+>>>   btrfs-progs: block-group: Rename write_one_cahce_group()
+>>
+>> I'll add the above patches independently, for the rest I don't know. I
+>> still think the separate tree is somehow wrong so have to convince
+>> myself that it's not.
+>>
+> One interesting advantage here is, separate block group tree would
+> hugely reduce the possibility to fail to mount due to corrupted extent tree.
+> There are two reports of different corruption on extent tree already in
+> the mail list in the last 24 hours.
+> 
+> While the skinny bg tree could hugely reduce the amount of block group
+> items, which means less possibility to corrupt.
+> 
+> And since we have less tree blocks for block group tree, the cow cost
+> would also be reduced obviously.
+> As one BGI (just a key) get modified, all modification to other keys in
+> that leaf won't lead to new COW until next transaction.
+> 
+> So personally I believe it's much better than regular extent tree.
+
+Perhaps it will be more convincing if you could substantiate those
+claims with numbers. I.e run some benchmarks and show numbers under what
+cases the added complexity brings positives to the table.
+
+> 
+> Thanks,
+> Qu
+> 
