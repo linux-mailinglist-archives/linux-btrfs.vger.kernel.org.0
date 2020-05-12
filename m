@@ -2,206 +2,67 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F38A21CEAC1
-	for <lists+linux-btrfs@lfdr.de>; Tue, 12 May 2020 04:31:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80DC01CEBB6
+	for <lists+linux-btrfs@lfdr.de>; Tue, 12 May 2020 05:55:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728110AbgELCa6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 11 May 2020 22:30:58 -0400
-Received: from mout.gmx.net ([212.227.17.22]:45005 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727892AbgELCa6 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 11 May 2020 22:30:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1589250651;
-        bh=FkQctqB3YgJhHBKDAYkjGJK0wSlfOj9MJccoaSuFJ3I=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=NzAQPtvgvHqkeT7HowKDcRnFiRbrFP6AWAIuIuOyN41k1/+eA2svh73zZcrBrO5xU
-         tD4/KbdeXfQhjo0qXf5+n3eX/6L4KM2kU43yialUGzYC42fh/a7da9I6i9D9opRqFO
-         s0+zMluE/cqJOQfmM2IWhiQGLc2SRcODGF3bvTCQ=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1McYCb-1iyRdv24lh-00d15i; Tue, 12
- May 2020 04:30:51 +0200
-Subject: Re: [PATCH v4 00/11] btrfs-progs: Support for SKINNY_BG_TREE feature
-To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20200505000230.4454-1-wqu@suse.com>
- <20200511185810.GX18421@twin.jikos.cz>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
- PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
- 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
- D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
- efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
- ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
- BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
- 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
- 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
- EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
- 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
- ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
- oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
- fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
- 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
- ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
- oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <ce5fe286-fa4a-e282-3b92-564cab62b776@gmx.com>
-Date:   Tue, 12 May 2020 10:30:47 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
-MIME-Version: 1.0
-In-Reply-To: <20200511185810.GX18421@twin.jikos.cz>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="cMGhb17zTFFlQPT4woTjI9OhywqiVR2u1"
-X-Provags-ID: V03:K1:YlNolYHkRC3/MCRvuomfNphQHFPF/tq1eALNZbx/dNQlXP6HC/M
- rPmJhKx837WMFLGk4TJqbXWQoZH/Ms9mUzPMaN3sBARLX9c27FfDYWvB6XbZhM/HLcxItWy
- zgHC0GFwnf9dPyjPQJUKFxP6t+78QpVZ7D9Okw0wkmNzbHW/ZInYDX0Sj3oX/dAG9bWlAlZ
- 43NSv+JgECOAaBJIkD82w==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:eFTM272a9y8=:Ga5oeYz4UYUhBTJPdultJS
- kspuUc66WLMNzdrVoMC2nxI9pWlvdVcX3PL6FfpY3Z37Xgwv64M9OlOBbFiM66iHkr8Fa4qEW
- 6Huy5rRnDTr47xPCCqcnCkgW6s22Gr/FizPecS/L7rTHbTzEWCGOe/rlWRERDnpP3g8iSMe8T
- +5hFe3z6BUB+gjN0oxBKFY/O6VnKha9KnZwctQDVJS9QU5CyfYwwLidGbFVgCxlR1Dz/A6DbZ
- DbombQVXpyfwjomXLVriyQArCVerhdj4HnXesONvD9SqBlxUmHdRC7HftTlyT4VvYTkVfRe1/
- rFP7Eje6u0mqRvDyYuep82yP26GcfV40SRdjE3zCrgN+E3xFsBq+2MIqVsZMBJZlGDqlzPJRz
- mlCftV3SuZe+FfqAv6oUIOawCcYTpDZdOG4dSIJuwSSvYKxIdvhPZFOppX22GqGvLQaIE7H83
- UoBKdxVEQLea4qoc648QHM6FUzsALNseyUG4wZo8T4v2UKxo167KXDIcMIWI2V7druA1F/2Ae
- KrwY3cKD10wNdtca+ntLSBny3m+zBJyC2lPKgcjHEGz48OVkcDU0tL5+edRIoYuPqpOWOD7L2
- BLNje150a9HaNr0xWz7a0IEu5gub4GPiVVNh9JWYCyF95TJCAhT3/+xWsy//99xB8mKpfmk5t
- TzzuBkLhe3BY9uMvDOJd9xw5PejH1DEsDHzJbXGAk0UBu3lbPu14HmLB4sqDpvYNeadgxbq6u
- 1RjdYxPzWoqyA2/dV433dm3Of+bWQmF0KFECkqRI/fDeLPQwNz1Gk6kdVut5FSk6WHKnErrHk
- gyvRPh+a5p6Ob/BEpXWEtCxpkt/lfhCy207pk2HYtqg7dYy9jXz3CwMKft7kDaqR+bTxzV55Q
- zs9VXnOZEwWjannzOIrm9OZ/GmMYQoGvZBbxyO6riK3Syc8Si8Q8/GriBTr1rUWGJsuRW2oTK
- g2L6aJFG/bvFgonCAUv6b/1r6OAwRJFUVZjgjvmOr5Rod7blEcS4pl0mrTg0hpp9ss2NAYkEF
- LRTlc70UJld0r8cw+R9LlO/CkKgbNuCu/4b0kCXrfJ0b1MFHQZtPSrpZXAFVhUqWoM4zwpbx+
- lJH5Pa/oRrynQ/B1o+7CvPrapaIWSUVx5AuOcmSMtdD5R14pR1SPEyfsHbEUWp745AZdPRmw/
- KHR+6Ug83mnpfJG9qMG+MOe7/SlhItAvALd+laZLagW8qa1IxDLgJboR3+pF+uxYDLNERiBQe
- 5CnrMK20Vegd2WcxU
+        id S1728115AbgELDzS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 11 May 2020 23:55:18 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:39330 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727942AbgELDzS (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 11 May 2020 23:55:18 -0400
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxn9wXHrpeBpwzAA--.21S2;
+        Tue, 12 May 2020 11:55:03 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>
+Cc:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xuefeng Li <lixuefeng@loongson.cn>
+Subject: [PATCH] btrfs: Remove duplicated include in block-group.c
+Date:   Tue, 12 May 2020 11:55:03 +0800
+Message-Id: <1589255703-7193-1-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9Dxn9wXHrpeBpwzAA--.21S2
+X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
+        VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUUYO7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E
+        6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28Cjx
+        kF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0cI8I
+        cVCY1x0267AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z2
+        80aVCY1x0267AKxVWxJr0_GcWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IE
+        w4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMc
+        vjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v
+        4I1lc2xSY4AK67AK6r48MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI
+        8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AK
+        xVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI
+        8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Zr0_Wr1UMIIF0xvEx4A2
+        jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43
+        ZEXa7VUjHGQDUUUUU==
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---cMGhb17zTFFlQPT4woTjI9OhywqiVR2u1
-Content-Type: multipart/mixed; boundary="cqe6u9xVdu1vR2Jfofbj6lYoFAZ3S0QOM"
+disk-io.h is included more than once in block-group.c, remove it.
 
---cqe6u9xVdu1vR2Jfofbj6lYoFAZ3S0QOM
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+---
+ fs/btrfs/block-group.c | 1 -
+ 1 file changed, 1 deletion(-)
 
+diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+index 696f471..d3d5cf4 100644
+--- a/fs/btrfs/block-group.c
++++ b/fs/btrfs/block-group.c
+@@ -7,7 +7,6 @@
+ #include "disk-io.h"
+ #include "free-space-cache.h"
+ #include "free-space-tree.h"
+-#include "disk-io.h"
+ #include "volumes.h"
+ #include "transaction.h"
+ #include "ref-verify.h"
+-- 
+2.1.0
 
-
-On 2020/5/12 =E4=B8=8A=E5=8D=882:58, David Sterba wrote:
-> On Tue, May 05, 2020 at 08:02:19AM +0800, Qu Wenruo wrote:
->> This patchset can be fetched from github:
->> https://github.com/adam900710/btrfs-progs/tree/skinny_bg_tree
->> Which is based on v5.6 tag, with extra cleanups (sent to mail list) ap=
-plied.
->>
->> This patchset provides the needed user space infrastructure for SKINNY=
-_BG_TREE
->> feature.
->>
->> Since it's an new incompatible feature, unlike SKINNY_METADATA, btrfs-=
-progs
->> is needed to convert existing fs (unmounted) to new format, and
->> vice-verse.
->>
->> Now btrfstune can convert regular extent tree fs to bg tree fs to
->> improve mount time.
->>
->> For the performance improvement, please check the kernel patchset cove=
-r
->> letter or the last patch.
->> (SPOILER ALERT: It's super fast)
->>
->> Changelog:
->> v2:
->> - Rebase to v5.2.2 tag
->> - Add btrfstune ability to convert existing fs to BG_TREE feature
->>
->> v3:
->> - Fix a bug that temp chunks are not cleaned up properly
->>   This is caused by wrong timing btrfs_convert_to_bg_tree() is called.=
-
->>   It should be called after temp chunks cleaned up.
->>
->> - Fix a bug that an extent buffer get leaked
->>   This is caused by newly created bg tree not added to dirty list.
->>
->> v4:
->> - Go with skinny bg tree other than regular block group item
->>   We're introducing a new incompatible feature anyway, why not go
->>   extreme?
->>
->> - Use the same refactor as kernel.
->>   To make code much cleaner and easier to read.
->>
->> - Add the ability to rollback to regular extent tree.
->>   So confident tester can try SKINNY_BG_TREE using their real world
->>   data, and rollback if they still want to mount it using older kernel=
-s.
->>
->> Qu Wenruo (11):
->>   btrfs-progs: check/lowmem: Lookup block group item in a seperate
->>     function
->>   btrfs-progs: block-group: Refactor how we read one block group item
->>   btrfs-progs: Rename btrfs_remove_block_group() and
->>     free_block_group_item()
->>   btrfs-progs: block-group: Refactor how we insert a block group item
->>   btrfs-progs: block-group: Rename write_one_cahce_group()
->=20
-> I'll add the above patches independently, for the rest I don't know. I
-> still think the separate tree is somehow wrong so have to convince
-> myself that it's not.
->=20
-One interesting advantage here is, separate block group tree would
-hugely reduce the possibility to fail to mount due to corrupted extent tr=
-ee.
-There are two reports of different corruption on extent tree already in
-the mail list in the last 24 hours.
-
-While the skinny bg tree could hugely reduce the amount of block group
-items, which means less possibility to corrupt.
-
-And since we have less tree blocks for block group tree, the cow cost
-would also be reduced obviously.
-As one BGI (just a key) get modified, all modification to other keys in
-that leaf won't lead to new COW until next transaction.
-
-So personally I believe it's much better than regular extent tree.
-
-Thanks,
-Qu
-
-
---cqe6u9xVdu1vR2Jfofbj6lYoFAZ3S0QOM--
-
---cMGhb17zTFFlQPT4woTjI9OhywqiVR2u1
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl66ClcACgkQwj2R86El
-/qiJeAf+M0XIa6125ZvximupuZyfDddv7y9yxMFMvYJH3O95yupPYOJUXwomcdXi
-eeGbqPtgTm+J4heQrkaq2Sdscq8GpAb5dxojZ6qPk7PMhRW+AL9waWJcJVzOlMvw
-lP5JzLjLBRYc3jERJIlX9wdp9PW6e1YMEYPbw9ZXYaXifzTKvMZPNDmGpl6o1J1d
-PwhuDPEYPWDzXm5xBylLhjcUY9TmmUrBTCJFKHJOv4oNURLj94WaVtdFOWYzDoJx
-RCfsMbV8xP5zZ0Q/zlg70j95gwrBpcH9gP8IvCG/6eZIVQVtXBFso1lOc/Q0dsDx
-Iofjl5NBcVAlbecDPxKCj5gkK3BeTg==
-=0GEA
------END PGP SIGNATURE-----
-
---cMGhb17zTFFlQPT4woTjI9OhywqiVR2u1--
