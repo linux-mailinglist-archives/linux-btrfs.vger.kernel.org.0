@@ -2,396 +2,402 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0D411CF6B2
-	for <lists+linux-btrfs@lfdr.de>; Tue, 12 May 2020 16:15:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C6831CF6D4
+	for <lists+linux-btrfs@lfdr.de>; Tue, 12 May 2020 16:16:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730082AbgELOPR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 12 May 2020 10:15:17 -0400
-Received: from mx2.suse.de ([195.135.220.15]:37052 "EHLO mx2.suse.de"
+        id S1730411AbgELOQd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 12 May 2020 10:16:33 -0400
+Received: from mx2.suse.de ([195.135.220.15]:37718 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729408AbgELOPR (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 12 May 2020 10:15:17 -0400
+        id S1730410AbgELOQc (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 12 May 2020 10:16:32 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 48B6FACCE
-        for <linux-btrfs@vger.kernel.org>; Tue, 12 May 2020 14:15:17 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 85E24AD7D
+        for <linux-btrfs@vger.kernel.org>; Tue, 12 May 2020 14:16:32 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id A13DBDA70B; Tue, 12 May 2020 16:14:23 +0200 (CEST)
+        id ED9E9DA70B; Tue, 12 May 2020 16:15:38 +0200 (CEST)
 From:   David Sterba <dsterba@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: Bug 5.7-rc: root leak, eb leak
-Date:   Tue, 12 May 2020 16:14:23 +0200
-Message-Id: <a1b2a3320c72e9bcd355caf93cc72fc093807c67e63be0fd59a5fbc1a3a6587f.dsterba@suse.com>
+Subject: Bug 5.7-rc: write-time leaf corruption detected
+Date:   Tue, 12 May 2020 16:15:38 +0200
+Message-Id: <29b671353fff0d745e2e99d420585c1f25fab107dd63b8e1a812c384875575b8.dsterba@suse.com>
 X-Mailer: git-send-email 2.25.0
 In-Reply-To: <5e955017351005f2cc4c0210f401935203de8496c56cb76f53547d435f502803.dsterba@suse.com>
 References: 
 MIME-Version: 1.0
 Reference: <5e955017351005f2cc4c0210f401935203de8496c56cb76f53547d435f502803.dsterba@suse.com>
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Root an eb leak.=0D
-=0D
-Johannes bisected the problem, the first bad commit is one of=0D
-=0D
-0e996e7fcf2e3a "btrfs: move ino_cache_inode dropping out of btrfs_free_fs_r=
-oot"=0D
-3fd6372758d91d "btrfs: make the extent buffer leak check per fs info"=0D
-8c38938c7bb096 "btrfs: move the root freeing stuff into btrfs_put_root"=0D
-=0D
-Reproduced on btrfs/028, I was able to reproduce it once on btrfs/125 (log=
-=0D
-below). This is most likely a regression.=0D
-=0D
-btrfs/125		[19:31:06][ 7063.961647] run fstests btrfs/125 at 2020-02-21 19:=
-31:06=0D
-[ 7064.376156] BTRFS info (device vda): disk space caching is enabled=0D
-[ 7064.379500] BTRFS info (device vda): has skinny extents=0D
-[ 7067.890863] BTRFS: device fsid f88a762d-a155-40a2-b259-1a9331583726 devi=
-d 1 transid 5 /dev/vdb scanned by mkfs.btrfs (28576)=0D
-[ 7067.895033] BTRFS: device fsid f88a762d-a155-40a2-b259-1a9331583726 devi=
-d 2 transid 5 /dev/vdc scanned by mkfs.btrfs (28576)=0D
-[ 7067.899388] BTRFS: device fsid f88a762d-a155-40a2-b259-1a9331583726 devi=
-d 3 transid 5 /dev/vdd scanned by mkfs.btrfs (28576)=0D
-[ 7067.919633] BTRFS info (device vdb): disk space caching is enabled=0D
-[ 7067.922349] BTRFS info (device vdb): has skinny extents=0D
-[ 7067.924430] BTRFS info (device vdb): flagging fs with big metadata featu=
-re=0D
-[ 7067.931360] BTRFS info (device vdb): checking UUID tree=0D
-[ 7068.117606] BTRFS: device fsid f88a762d-a155-40a2-b259-1a9331583726 devi=
-d 2 transid 7 /dev/vdc scanned by mount (28618)=0D
-[ 7068.121547] BTRFS: device fsid f88a762d-a155-40a2-b259-1a9331583726 devi=
-d 1 transid 7 /dev/vdb scanned by mount (28618)=0D
-[ 7068.125450] BTRFS info (device vdb): allowing degraded mounts=0D
-[ 7068.127457] BTRFS info (device vdb): disk space caching is enabled=0D
-[ 7068.129299] BTRFS info (device vdb): has skinny extents=0D
-[ 7068.132805] BTRFS warning (device vdb): devid 3 uuid 9049eb45-e68b-41d4-=
-9fa1-e1b0e08fa552 is missing=0D
-[ 7068.135869] BTRFS warning (device vdb): devid 3 uuid 9049eb45-e68b-41d4-=
-9fa1-e1b0e08fa552 is missing=0D
-[ 7070.095641] BTRFS: device fsid cf4bb9b1-6c5c-46d2-8fd6-b9f427137ade devi=
-d 1 transid 250 /dev/vda scanned by btrfs (28646)=0D
-[ 7070.118262] BTRFS info (device vdb): disk space caching is enabled=0D
-[ 7070.120662] BTRFS info (device vdb): has skinny extents=0D
-[ 7080.724838] BTRFS info (device vdb): balance: start -d -m -s=0D
-[ 7080.733528] BTRFS info (device vdb): relocating block group 217710592 fl=
-ags data|raid5=0D
-[ 7081.001862] btrfs_print_data_csum_error: 16829 callbacks suppressed=0D
-[ 7081.001870] BTRFS warning (device vdb): csum failed root -9 ino 257 off =
-2228224 csum 0xa9a2deb9 expected csum 0x8941f998 mirror 1=0D
-[ 7081.013321] BTRFS warning (device vdb): csum failed root -9 ino 257 off =
-2236416 csum 0x85a94242 expected csum 0x8941f998 mirror 1=0D
-[ 7081.018428] BTRFS warning (device vdb): csum failed root -9 ino 257 off =
-2240512 csum 0x95ef75cb expected csum 0x8941f998 mirror 1=0D
-[ 7081.018843] repair_io_failure: 17181 callbacks suppressed=0D
-[ 7081.018847] BTRFS info (device vdb): read error corrected: ino 257 off 2=
-236416 (dev /dev/vdd sector 195344)=0D
-[ 7081.022838] BTRFS info (device vdb): read error corrected: ino 257 off 2=
-228224 (dev /dev/vdd sector 195328)=0D
-[ 7081.022915] BTRFS warning (device vdb): csum failed root -9 ino 257 off =
-2244608 csum 0x4f96cecf expected csum 0x8941f998 mirror 1=0D
-[ 7081.023009] BTRFS warning (device vdb): csum failed root -9 ino 257 off =
-2248704 csum 0xa8fc61d5 expected csum 0x8941f998 mirror 1=0D
-[ 7081.023090] BTRFS warning (device vdb): csum failed root -9 ino 257 off =
-2252800 csum 0xedb728d1 expected csum 0x8941f998 mirror 1=0D
-[ 7081.023134] BTRFS info (device vdb): read error corrected: ino 257 off 2=
-240512 (dev /dev/vdd sector 195352)=0D
-[ 7081.023168] BTRFS warning (device vdb): csum failed root -9 ino 257 off =
-2256896 csum 0xeb11484f expected csum 0x8941f998 mirror 1=0D
-[ 7081.023248] BTRFS warning (device vdb): csum failed root -9 ino 257 off =
-2260992 csum 0xc31d9456 expected csum 0x8941f998 mirror 1=0D
-[ 7081.023324] BTRFS warning (device vdb): csum failed root -9 ino 257 off =
-2265088 csum 0xff9caf51 expected csum 0x8941f998 mirror 1=0D
-[ 7081.023328] BTRFS info (device vdb): read error corrected: ino 257 off 2=
-244608 (dev /dev/vdd sector 195360)=0D
-[ 7081.023399] BTRFS warning (device vdb): csum failed root -9 ino 257 off =
-2269184 csum 0x866f9727 expected csum 0x8941f998 mirror 1=0D
-[ 7081.023497] BTRFS info (device vdb): read error corrected: ino 257 off 2=
-248704 (dev /dev/vdd sector 195368)=0D
-[ 7081.023680] BTRFS info (device vdb): read error corrected: ino 257 off 2=
-252800 (dev /dev/vdd sector 195376)=0D
-[ 7081.023846] BTRFS info (device vdb): read error corrected: ino 257 off 2=
-256896 (dev /dev/vdd sector 195384)=0D
-[ 7081.024009] BTRFS info (device vdb): read error corrected: ino 257 off 2=
-265088 (dev /dev/vdd sector 195400)=0D
-[ 7081.024012] BTRFS info (device vdb): read error corrected: ino 257 off 2=
-260992 (dev /dev/vdd sector 195392)=0D
-[ 7081.024217] BTRFS info (device vdb): read error corrected: ino 257 off 2=
-269184 (dev /dev/vdd sector 195408)=0D
-[ 7082.760255] BTRFS error (device vdb): bad tree block start, want 3905945=
-6 have 30539776=0D
-[ 7082.760267] BTRFS error (device vdb): bad tree block start, want 3907584=
-0 have 30556160=0D
-[ 7082.764139] BTRFS error (device vdb): bad tree block start, want 3905945=
-6 have 30539776=0D
-[ 7082.770746] BTRFS error (device vdb): bad tree block start, want 3905945=
-6 have 30539776=0D
-[ 7082.770769] BTRFS error (device vdb): bad tree block start, want 3907584=
-0 have 30556160=0D
-[ 7082.773961] BTRFS error (device vdb): bad tree block start, want 3905945=
-6 have 30539776=0D
-[ 7082.779340] BTRFS error (device vdb): bad tree block start, want 3905945=
-6 have 30539776=0D
-[ 7082.779357] BTRFS error (device vdb): bad tree block start, want 3907584=
-0 have 30556160=0D
-[ 7082.782367] BTRFS error (device vdb): bad tree block start, want 3905945=
-6 have 30539776=0D
-[ 7082.788031] BTRFS error (device vdb): bad tree block start, want 3905945=
-6 have 30539776=0D
-[ 7084.736674] BTRFS info (device vdb): balance: ended with status: -5=0D
-[failed, exit status 1][ 7084.791281] BTRFS info (device vdb): at unmount d=
-elalloc count 1994752=0D
-[ 7084.891149] ------------[ cut here ]------------=0D
-[ 7084.893431] WARNING: CPU: 0 PID: 28679 at fs/btrfs/block-group.c:3367 bt=
-rfs_free_block_groups+0x225/0x2b0 [btrfs]=0D
-[ 7084.898426] Modules linked in: dm_flakey dm_mod dax btrfs blake2b_generi=
-c libcrc32c crc32c_intel xor zstd_decompress zstd_compress xxhash lzo_compr=
-ess lzo_decompress raid6_pq loop=0D
-[ 7084.904875] CPU: 0 PID: 28679 Comm: umount Not tainted 5.6.0-rc2-default=
-+ #1003=0D
-[ 7084.908207] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS =
-rel-1.12.0-59-gc9ba527-rebuilt.opensuse.org 04/01/2014=0D
-[ 7084.912188] RIP: 0010:btrfs_free_block_groups+0x225/0x2b0 [btrfs]=0D
-[ 7084.914049] Code: 49 be 22 01 00 00 00 00 ad de e8 66 b5 21 cc e8 e1 3d =
-ba cb 48 89 df e8 f9 7e ff ff 48 8b 83 78 12 00 00 49 39 c5 75 4a eb 76 <0f=
-> 0b 31 c9 31 d2 4c 89 e6 48 89 df e8 aa 6c ff ff 48 89 ef e8 b2=0D
-[ 7084.918227] RSP: 0018:ffffba52492ffdd8 EFLAGS: 00010206=0D
-[ 7084.919331] RAX: ffff9a44ecdbd908 RBX: ffff9a44e6a2c000 RCX: 00000000000=
-00001=0D
-[ 7084.920735] RDX: 0000000000000000 RSI: ffffffffc056ae01 RDI: ffff9a44ecd=
-bcc00=0D
-[ 7084.922886] RBP: ffff9a44ecdbd908 R08: 0000000000000000 R09: 00000000000=
-00000=0D
-[ 7084.925048] R10: 0000000000000000 R11: 0000000000000000 R12: ffff9a44ecd=
-bd800=0D
-[ 7084.927217] R13: ffff9a44e6a2d278 R14: dead000000000122 R15: dead0000000=
-00100=0D
-[ 7084.929430] FS:  00007f1a27c27800(0000) GS:ffff9a44fe600000(0000) knlGS:=
-0000000000000000=0D
-[ 7084.932270] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033=0D
-[ 7084.934179] CR2: 00007ffdda6eac48 CR3: 0000000018df5001 CR4: 00000000001=
-60ef0=0D
-[ 7084.935958] Call Trace:=0D
-[ 7084.936818]  close_ctree+0x24b/0x2a0 [btrfs]=0D
-[ 7084.948688]  generic_shutdown_super+0x69/0x100=0D
-[ 7084.950163]  kill_anon_super+0x14/0x30=0D
-[ 7084.951525]  btrfs_kill_super+0x12/0x20 [btrfs]=0D
-[ 7084.953001]  deactivate_locked_super+0x2c/0x70=0D
-[ 7084.954495]  cleanup_mnt+0x100/0x160=0D
-[ 7084.955810]  task_work_run+0x90/0xc0=0D
-[ 7084.957364]  exit_to_usermode_loop+0x96/0xa0=0D
-[ 7084.958890]  do_syscall_64+0x1df/0x210=0D
-[ 7084.960255]  entry_SYSCALL_64_after_hwframe+0x49/0xbe=0D
-[ 7084.961756] RIP: 0033:0x7f1a27e6a3f7=0D
-[ 7084.962903] Code: fa 0b 00 f7 d8 64 89 01 48 83 c8 ff c3 66 0f 1f 44 00 =
-00 31 f6 e9 09 00 00 00 66 0f 1f 84 00 00 00 00 00 b8 a6 00 00 00 0f 05 <48=
-> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 69 fa 0b 00 f7 d8 64 89 01 48=0D
-[ 7084.967021] RSP: 002b:00007ffdda6ebc58 EFLAGS: 00000246 ORIG_RAX: 000000=
-00000000a6=0D
-[ 7084.968916] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 00007f1a27e=
-6a3f7=0D
-[ 7084.971111] RDX: 0000000000000000 RSI: 0000000000000000 RDI: 00005588b93=
-1cb70=0D
-[ 7084.973181] RBP: 00005588b931c960 R08: 0000000000000000 R09: 00007ffdda6=
-ea9d0=0D
-[ 7084.975183] R10: 00005588b931cb90 R11: 0000000000000246 R12: 00005588b93=
-1cb70=0D
-[ 7084.976700] R13: 0000000000000000 R14: 00005588b931ca58 R15: 00000000000=
-00000=0D
-[ 7084.978291] irq event stamp: 0=0D
-[ 7084.979126] hardirqs last  enabled at (0): [<0000000000000000>] 0x0=0D
-[ 7084.980404] hardirqs last disabled at (0): [<ffffffff8c07f423>] copy_pro=
-cess+0x653/0x1b40=0D
-[ 7084.983042] softirqs last  enabled at (0): [<ffffffff8c07f423>] copy_pro=
-cess+0x653/0x1b40=0D
-[ 7084.985822] softirqs last disabled at (0): [<0000000000000000>] 0x0=0D
-[ 7084.987748] ---[ end trace 4ff66fac35aae386 ]---=0D
-[ 7084.989590] BTRFS info (device vdb): space_info 1 has 3983872000 free, i=
-s not full=0D
-[ 7084.992242] BTRFS info (device vdb): space_info total=3D4294967296, used=
-=3D212926464, pinned=3D0, reserved=3D0, may_use=3D98168832, readonly=3D0=0D
-[ 7084.995211] BTRFS info (device vdb): global_block_rsv: size 0 reserved 0=
-=0D
-[ 7084.996814] BTRFS info (device vdb): trans_block_rsv: size 0 reserved 0=
-=0D
-[ 7084.998581] BTRFS info (device vdb): chunk_block_rsv: size 0 reserved 0=
-=0D
-[ 7084.999979] BTRFS info (device vdb): delayed_block_rsv: size 0 reserved =
-0=0D
-[ 7085.001941] BTRFS info (device vdb): delayed_refs_rsv: size 0 reserved 0=
-=0D
-[ 7085.003886] ------------[ cut here ]------------=0D
-[ 7085.005362] WARNING: CPU: 0 PID: 28679 at fs/btrfs/block-group.c:3367 bt=
-rfs_free_block_groups+0x225/0x2b0 [btrfs]=0D
-[ 7085.007985] Modules linked in: dm_flakey dm_mod dax btrfs blake2b_generi=
-c libcrc32c crc32c_intel xor zstd_decompress zstd_compress xxhash lzo_compr=
-ess lzo_decompress raid6_pq loop=0D
-[ 7085.011615] CPU: 0 PID: 28679 Comm: umount Tainted: G        W         5=
-.6.0-rc2-default+ #1003=0D
-[ 7085.014036] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS =
-rel-1.12.0-59-gc9ba527-rebuilt.opensuse.org 04/01/2014=0D
-[ 7085.017209] RIP: 0010:btrfs_free_block_groups+0x225/0x2b0 [btrfs]=0D
-[ 7085.018961] Code: 49 be 22 01 00 00 00 00 ad de e8 66 b5 21 cc e8 e1 3d =
-ba cb 48 89 df e8 f9 7e ff ff 48 8b 83 78 12 00 00 49 39 c5 75 4a eb 76 <0f=
-> 0b 31 c9 31 d2 4c 89 e6 48 89 df e8 aa 6c ff ff 48 89 ef e8 b2=0D
-[ 7085.024282] RSP: 0018:ffffba52492ffdd8 EFLAGS: 00010206=0D
-[ 7085.025741] RAX: ffff9a44ecdbcd08 RBX: ffff9a44e6a2c000 RCX: 00000000001=
-70009=0D
-[ 7085.027170] RDX: 0000000000000000 RSI: 0000000000170009 RDI: ffffffff8c2=
-54b8e=0D
-[ 7085.028565] RBP: ffff9a44ecdbcd08 R08: 0000000000000001 R09: 00000000000=
-00000=0D
-[ 7085.030727] R10: 0000000000000000 R11: 0000000000000000 R12: ffff9a44ecd=
-bcc00=0D
-[ 7085.032258] R13: ffff9a44e6a2d278 R14: dead000000000122 R15: dead0000000=
-00100=0D
-[ 7085.033991] FS:  00007f1a27c27800(0000) GS:ffff9a44fe600000(0000) knlGS:=
-0000000000000000=0D
-[ 7085.035879] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033=0D
-[ 7085.037420] CR2: 00007ffdda6eac48 CR3: 0000000018df5001 CR4: 00000000001=
-60ef0=0D
-[ 7085.039250] Call Trace:=0D
-[ 7085.040374]  close_ctree+0x24b/0x2a0 [btrfs]=0D
-[ 7085.041745]  generic_shutdown_super+0x69/0x100=0D
-[ 7085.042982]  kill_anon_super+0x14/0x30=0D
-[ 7085.043963]  btrfs_kill_super+0x12/0x20 [btrfs]=0D
-[ 7085.045184]  deactivate_locked_super+0x2c/0x70=0D
-[ 7085.046319]  cleanup_mnt+0x100/0x160=0D
-[ 7085.047229]  task_work_run+0x90/0xc0=0D
-[ 7085.048130]  exit_to_usermode_loop+0x96/0xa0=0D
-[ 7085.049689]  do_syscall_64+0x1df/0x210=0D
-[ 7085.050849]  entry_SYSCALL_64_after_hwframe+0x49/0xbe=0D
-[ 7085.052025] RIP: 0033:0x7f1a27e6a3f7=0D
-[ 7085.053230] Code: fa 0b 00 f7 d8 64 89 01 48 83 c8 ff c3 66 0f 1f 44 00 =
-00 31 f6 e9 09 00 00 00 66 0f 1f 84 00 00 00 00 00 b8 a6 00 00 00 0f 05 <48=
-> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 69 fa 0b 00 f7 d8 64 89 01 48=0D
-[ 7085.057154] RSP: 002b:00007ffdda6ebc58 EFLAGS: 00000246 ORIG_RAX: 000000=
-00000000a6=0D
-[ 7085.059659] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 00007f1a27e=
-6a3f7=0D
-[ 7085.061346] RDX: 0000000000000000 RSI: 0000000000000000 RDI: 00005588b93=
-1cb70=0D
-[ 7085.062762] RBP: 00005588b931c960 R08: 0000000000000000 R09: 00007ffdda6=
-ea9d0=0D
-[ 7085.064108] R10: 00005588b931cb90 R11: 0000000000000246 R12: 00005588b93=
-1cb70=0D
-[ 7085.066292] R13: 0000000000000000 R14: 00005588b931ca58 R15: 00000000000=
-00000=0D
-[ 7085.068449] irq event stamp: 0=0D
-[ 7085.069512] hardirqs last  enabled at (0): [<0000000000000000>] 0x0=0D
-[ 7085.071228] hardirqs last disabled at (0): [<ffffffff8c07f423>] copy_pro=
-cess+0x653/0x1b40=0D
-[ 7085.073611] softirqs last  enabled at (0): [<ffffffff8c07f423>] copy_pro=
-cess+0x653/0x1b40=0D
-[ 7085.076362] softirqs last disabled at (0): [<0000000000000000>] 0x0=0D
-[ 7085.077966] ---[ end trace 4ff66fac35aae387 ]---=0D
-[ 7085.079100] BTRFS info (device vdb): space_info 4 has 176652288 free, is=
- not full=0D
-[ 7085.081031] BTRFS info (device vdb): space_info total=3D178913280, used=
-=3D294912, pinned=3D0, reserved=3D0, may_use=3D1703936, readonly=3D262144=0D
-[ 7085.083715] BTRFS info (device vdb): global_block_rsv: size 0 reserved 0=
-=0D
-[ 7085.085270] BTRFS info (device vdb): trans_block_rsv: size 0 reserved 0=
-=0D
-[ 7085.087169] BTRFS info (device vdb): chunk_block_rsv: size 0 reserved 0=
-=0D
-[ 7085.088634] BTRFS info (device vdb): delayed_block_rsv: size 0 reserved =
-0=0D
-[ 7085.090714] BTRFS info (device vdb): delayed_refs_rsv: size 0 reserved 0=
-=0D
-[ 7085.092457] BTRFS warning (device vdb): page private not zero on page 39=
-485440=0D
-[ 7085.094946] BTRFS warning (device vdb): page private not zero on page 39=
-489536=0D
-[ 7085.097735] BTRFS warning (device vdb): page private not zero on page 39=
-493632=0D
-[ 7085.100235] BTRFS warning (device vdb): page private not zero on page 39=
-497728=0D
-[ 7085.102806] VFS: Busy inodes after unmount of vdb. Self-destruct in 5 se=
-conds.  Have a nice day...=0D
-[ 7085.109816] BTRFS error (device vdb): leaked root 18446744073709551607-0=
- refcount 1=0D
-[ 7085.112211] ------------[ cut here ]------------=0D
-[ 7085.113493] WARNING: CPU: 0 PID: 28679 at fs/btrfs/disk-io.c:2040 btrfs_=
-put_root+0x11a/0x130 [btrfs]=0D
-[ 7085.115537] Modules linked in: dm_flakey dm_mod dax btrfs blake2b_generi=
-c libcrc32c crc32c_intel xor zstd_decompress zstd_compress xxhash lzo_compr=
-ess lzo_decompress raid6_pq loop=0D
-[ 7085.119049] CPU: 0 PID: 28679 Comm: umount Tainted: G        W         5=
-.6.0-rc2-default+ #1003=0D
-[ 7085.121446] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS =
-rel-1.12.0-59-gc9ba527-rebuilt.opensuse.org 04/01/2014=0D
-[ 7085.123866] RIP: 0010:btrfs_put_root+0x11a/0x130 [btrfs]=0D
-[ 7085.125532] Code: e8 fb a0 2c cc 48 89 ef 5b 5d 41 5c e9 bf fd d8 cb 5b =
-be 03 00 00 00 5d 41 5c e9 d1 1d f7 cb c3 e8 cb be da cb e9 3f ff ff ff <0f=
-> 0b e9 2a ff ff ff 66 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00=0D
-[ 7085.130769] RSP: 0018:ffffba52492ffe38 EFLAGS: 00010282=0D
-[ 7085.132146] RAX: ffff9a44d8ee7720 RBX: ffff9a44e6a2c000 RCX: 00000000000=
-00001=0D
-[ 7085.134361] RDX: 0000000000000000 RSI: ffffffff8c1015d9 RDI: ffff9a44f9f=
-5c828=0D
-[ 7085.136552] RBP: ffff9a44f9f5c000 R08: 0000000000000000 R09: 00000000000=
-00000=0D
-[ 7085.138720] R10: 0000000000000000 R11: 0000000000000000 R12: ffff9a44f9f=
-5cb70=0D
-[ 7085.140819] R13: ffff9a44f9f5c000 R14: 0000000000000000 R15: ffff9a44df0=
-ca388=0D
-[ 7085.142991] FS:  00007f1a27c27800(0000) GS:ffff9a44fe600000(0000) knlGS:=
-0000000000000000=0D
-[ 7085.145164] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033=0D
-[ 7085.146560] CR2: 00007ffdda6eac48 CR3: 0000000018df5001 CR4: 00000000001=
-60ef0=0D
-[ 7085.147920] Call Trace:=0D
-[ 7085.148780]  btrfs_check_leaked_roots+0x88/0xa0 [btrfs]=0D
-[ 7085.150186]  btrfs_free_fs_info+0xcf/0x100 [btrfs]=0D
-[ 7085.151319]  deactivate_locked_super+0x2c/0x70=0D
-[ 7085.152361]  cleanup_mnt+0x100/0x160=0D
-[ 7085.153533]  task_work_run+0x90/0xc0=0D
-[ 7085.154532]  exit_to_usermode_loop+0x96/0xa0=0D
-[ 7085.155547]  do_syscall_64+0x1df/0x210=0D
-[ 7085.156513]  entry_SYSCALL_64_after_hwframe+0x49/0xbe=0D
-[ 7085.157868] RIP: 0033:0x7f1a27e6a3f7=0D
-[ 7085.158883] Code: fa 0b 00 f7 d8 64 89 01 48 83 c8 ff c3 66 0f 1f 44 00 =
-00 31 f6 e9 09 00 00 00 66 0f 1f 84 00 00 00 00 00 b8 a6 00 00 00 0f 05 <48=
-> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 69 fa 0b 00 f7 d8 64 89 01 48=0D
-[ 7085.162740] RSP: 002b:00007ffdda6ebc58 EFLAGS: 00000246 ORIG_RAX: 000000=
-00000000a6=0D
-[ 7085.164658] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 00007f1a27e=
-6a3f7=0D
-[ 7085.166939] RDX: 0000000000000000 RSI: 0000000000000000 RDI: 00005588b93=
-1cb70=0D
-[ 7085.169078] RBP: 00005588b931c960 R08: 0000000000000000 R09: 00007ffdda6=
-ea9d0=0D
-[ 7085.171238] R10: 00005588b931cb90 R11: 0000000000000246 R12: 00005588b93=
-1cb70=0D
-[ 7085.173154] R13: 0000000000000000 R14: 00005588b931ca58 R15: 00000000000=
-00000=0D
-[ 7085.175417] irq event stamp: 0=0D
-[ 7085.176768] hardirqs last  enabled at (0): [<0000000000000000>] 0x0=0D
-[ 7085.178525] hardirqs last disabled at (0): [<ffffffff8c07f423>] copy_pro=
-cess+0x653/0x1b40=0D
-[ 7085.180485] softirqs last  enabled at (0): [<ffffffff8c07f423>] copy_pro=
-cess+0x653/0x1b40=0D
-[ 7085.183751] softirqs last disabled at (0): [<0000000000000000>] 0x0=0D
-[ 7085.185701] ---[ end trace 4ff66fac35aae388 ]---=0D
-[ 7085.187428] BTRFS: buffer leak start 39485440 len 16384 refs 1 bflags 52=
-9 owner 18446744073709551607=0D
- [19:31:27]- output mismatch (see /tmp/fstests/results//btrfs/125.out.bad)=
-=0D
-    --- tests/btrfs/125.out	2018-04-12 16:57:00.616225550 +0000=0D
-    +++ /tmp/fstests/results//btrfs/125.out.bad	2020-02-21 19:31:27.7320000=
-00 +0000=0D
-    @@ -3,5 +3,5 @@=0D
-     Write data with degraded mount=0D
-     =0D
-     Mount normal and balance=0D
-    -=0D
-    -Mount degraded but with other dev=0D
-    +failed: '/sbin/btrfs balance start /tmp/scratch'=0D
-    +(see /tmp/fstests/results//btrfs/125.full for details)=0D
-    ...=0D
-    (Run 'diff -u /tmp/fstests/tests/btrfs/125.out /tmp/fstests/results//bt=
-rfs/125.out.bad'  to see the entire diff)=0D
+Happened once in a VM, defaul mkfs/mount options.
+
+generic/457		[05:40:52][17606.984360] run fstests generic/457 at 2020-05-04 05:40:52
+[17607.625840] BTRFS: device fsid ae51523a-71e7-4730-9097-faeca36779be devid 1 transid 5 /dev/vdb scanned by mkfs.btrfs (27036)
+[17607.664903] BTRFS info (device vdb): disk space caching is enabled
+[17607.667422] BTRFS info (device vdb): has skinny extents
+[17607.669552] BTRFS info (device vdb): flagging fs with big metadata feature
+[17607.681613] BTRFS info (device vdb): checking UUID tree
+[17607.921588] BTRFS: device fsid 16238d8a-1af3-4fa1-b3bc-fd6f04469192 devid 1 transid 5 /dev/mapper/logwrites-test scanned by mkfs.btrfs (27101)
+[17607.948085] BTRFS info (device dm-0): turning on sync discard
+[17607.952647] BTRFS info (device dm-0): disk space caching is enabled
+[17607.955088] BTRFS info (device dm-0): has skinny extents
+[17607.956924] BTRFS info (device dm-0): flagging fs with big metadata feature
+[17607.966128] BTRFS info (device dm-0): checking UUID tree
+[17608.092098] BTRFS critical (device dm-0): corrupt leaf: root=18446744073709551610 block=30949376 slot=104, csum end range (13807616) goes beyond the start range (13717504) of the next csum item
+[17608.098129] BTRFS info (device dm-0): leaf 30949376 gen 6 total ptrs 121 free space 6325 owner 18446744073709551610
+[17608.102727] BTRFS info (device dm-0): refs 2 lock (w:0 r:0 bw:0 br:0 sw:0 sr:0) lock_owner 0 current 27162
+[17608.106426] 	item 0 key (257 1 0) itemoff 16123 itemsize 160
+[17608.108766] 		inode generation 6 size 262144 mode 100600
+[17608.110947] 	item 1 key (257 12 256) itemoff 16103 itemsize 20
+[17608.112698] 	item 2 key (257 108 0) itemoff 16050 itemsize 53
+[17608.114568] 		extent data disk bytenr 13631488 nr 262144
+[17608.116352] 		extent data offset 0 nr 262144 ram 262144
+[17608.118082] 	item 3 key (258 1 0) itemoff 15890 itemsize 160
+[17608.119920] 		inode generation 6 size 262144 mode 100600
+[17608.121605] 	item 4 key (258 12 256) itemoff 15871 itemsize 19
+[17608.123293] 	item 5 key (258 108 0) itemoff 15818 itemsize 53
+[17608.125212] 		extent data disk bytenr 13905920 nr 4096
+[17608.126851] 		extent data offset 0 nr 4096 ram 4096
+[17608.128342] 	item 6 key (258 108 4096) itemoff 15765 itemsize 53
+[17608.130106] 		extent data disk bytenr 13631488 nr 262144
+[17608.131774] 		extent data offset 0 nr 4096 ram 262144
+[17608.133330] 	item 7 key (258 108 8192) itemoff 15712 itemsize 53
+[17608.135151] 		extent data disk bytenr 13631488 nr 262144
+[17608.136680] 		extent data offset 8192 nr 8192 ram 262144
+[17608.137931] 	item 8 key (258 108 16384) itemoff 15659 itemsize 53
+[17608.139257] 		extent data disk bytenr 13631488 nr 262144
+[17608.140939] 		extent data offset 204800 nr 16384 ram 262144
+[17608.142255] 	item 9 key (258 108 32768) itemoff 15606 itemsize 53
+[17608.143941] 		extent data disk bytenr 13910016 nr 28672
+[17608.145576] 		extent data offset 0 nr 28672 ram 28672
+[17608.147165] 	item 10 key (258 108 61440) itemoff 15553 itemsize 53
+[17608.148964] 		extent data disk bytenr 13631488 nr 262144
+[17608.150563] 		extent data offset 249856 nr 8192 ram 262144
+[17608.152204] 	item 11 key (258 108 69632) itemoff 15500 itemsize 53
+[17608.153974] 		extent data disk bytenr 13631488 nr 262144
+[17608.155588] 		extent data offset 69632 nr 126976 ram 262144
+[17608.157099] 	item 12 key (258 108 196608) itemoff 15447 itemsize 53
+[17608.158698] 		extent data disk bytenr 13938688 nr 4096
+[17608.160123] 		extent data offset 0 nr 4096 ram 4096
+[17608.161300] 	item 13 key (258 108 200704) itemoff 15394 itemsize 53
+[17608.162597] 		extent data disk bytenr 0 nr 0
+[17608.164057] 		extent data offset 0 nr 28672 ram 28672
+[17608.165782] 	item 14 key (258 108 229376) itemoff 15341 itemsize 53
+[17608.167691] 		extent data disk bytenr 13942784 nr 4096
+[17608.169259] 		extent data offset 0 nr 4096 ram 4096
+[17608.170821] 	item 15 key (258 108 233472) itemoff 15288 itemsize 53
+[17608.172687] 		extent data disk bytenr 13631488 nr 262144
+[17608.174310] 		extent data offset 233472 nr 12288 ram 262144
+[17608.175993] 	item 16 key (258 108 245760) itemoff 15235 itemsize 53
+[17608.177821] 		extent data disk bytenr 13946880 nr 16384
+[17608.179440] 		extent data offset 0 nr 16384 ram 16384
+[17608.181043] 	item 17 key (259 1 0) itemoff 15075 itemsize 160
+[17608.182796] 		inode generation 6 size 262144 mode 100600
+[17608.184424] 	item 18 key (259 12 256) itemoff 15056 itemsize 19
+[17608.186085] 	item 19 key (259 108 0) itemoff 15003 itemsize 53
+[17608.187859] 		extent data disk bytenr 13975552 nr 4096
+[17608.189525] 		extent data offset 0 nr 4096 ram 4096
+[17608.191074] 	item 20 key (259 108 4096) itemoff 14950 itemsize 53
+[17608.192816] 		extent data disk bytenr 13631488 nr 262144
+[17608.194464] 		extent data offset 0 nr 4096 ram 262144
+[17608.196206] 	item 21 key (259 108 8192) itemoff 14897 itemsize 53
+[17608.198212] 		extent data disk bytenr 13631488 nr 262144
+[17608.200048] 		extent data offset 8192 nr 106496 ram 262144
+[17608.201684] 	item 22 key (259 108 114688) itemoff 14844 itemsize 53
+[17608.203659] 		extent data disk bytenr 14217216 nr 49152
+[17608.205398] 		extent data offset 0 nr 49152 ram 49152
+[17608.207126] 	item 23 key (259 108 163840) itemoff 14791 itemsize 53
+[17608.209019] 		extent data disk bytenr 13631488 nr 262144
+[17608.210736] 		extent data offset 163840 nr 98304 ram 262144
+[17608.212371] 	item 24 key (261 1 0) itemoff 14631 itemsize 160
+[17608.222944] 		inode generation 6 size 262144 mode 100600
+[17608.224637] 	item 25 key (261 12 256) itemoff 14612 itemsize 19
+[17608.226400] 	item 26 key (261 108 0) itemoff 14559 itemsize 53
+[17608.228169] 		extent data disk bytenr 14123008 nr 4096
+[17608.229794] 		extent data offset 0 nr 4096 ram 4096
+[17608.231292] 	item 27 key (261 108 4096) itemoff 14506 itemsize 53
+[17608.233203] 		extent data disk bytenr 13631488 nr 262144
+[17608.234794] 		extent data offset 0 nr 4096 ram 262144
+[17608.236362] 	item 28 key (261 108 8192) itemoff 14453 itemsize 53
+[17608.238102] 		extent data disk bytenr 13631488 nr 262144
+[17608.239782] 		extent data offset 8192 nr 16384 ram 262144
+[17608.241587] 	item 29 key (261 108 24576) itemoff 14400 itemsize 53
+[17608.243431] 		extent data disk bytenr 13631488 nr 262144
+[17608.245176] 		extent data offset 212992 nr 36864 ram 262144
+[17608.246991] 	item 30 key (261 108 61440) itemoff 14347 itemsize 53
+[17608.248868] 		extent data disk bytenr 13631488 nr 262144
+[17608.250456] 		extent data offset 61440 nr 114688 ram 262144
+[17608.252333] 	item 31 key (261 108 176128) itemoff 14294 itemsize 53
+[17608.254343] 		extent data disk bytenr 14135296 nr 61440
+[17608.256131] 		extent data offset 0 nr 61440 ram 61440
+[17608.257857] 	item 32 key (261 108 237568) itemoff 14241 itemsize 53
+[17608.259864] 		extent data disk bytenr 13631488 nr 262144
+[17608.261484] 		extent data offset 237568 nr 24576 ram 262144
+[17608.263134] 	item 33 key (262 1 0) itemoff 14081 itemsize 160
+[17608.264865] 		inode generation 6 size 178311 mode 100600
+[17608.266625] 	item 34 key (262 12 256) itemoff 14062 itemsize 19
+[17608.268551] 	item 35 key (262 108 0) itemoff 14009 itemsize 53
+[17608.270363] 		extent data disk bytenr 14196736 nr 4096
+[17608.272019] 		extent data offset 0 nr 4096 ram 4096
+[17608.273505] 	item 36 key (262 108 4096) itemoff 13956 itemsize 53
+[17608.275387] 		extent data disk bytenr 13631488 nr 262144
+[17608.277125] 		extent data offset 0 nr 4096 ram 262144
+[17608.278780] 	item 37 key (262 108 8192) itemoff 13903 itemsize 53
+[17608.280507] 		extent data disk bytenr 13631488 nr 262144
+[17608.282163] 		extent data offset 8192 nr 106496 ram 262144
+[17608.283866] 	item 38 key (262 108 114688) itemoff 13850 itemsize 53
+[17608.285727] 		extent data disk bytenr 14200832 nr 4096
+[17608.287264] 		extent data offset 0 nr 4096 ram 4096
+[17608.288719] 	item 39 key (262 108 118784) itemoff 13797 itemsize 53
+[17608.290696] 		extent data disk bytenr 0 nr 0
+[17608.292237] 		extent data offset 0 nr 49152 ram 49152
+[17608.293667] 	item 40 key (262 108 167936) itemoff 13744 itemsize 53
+[17608.295436] 		extent data disk bytenr 14209024 nr 4096
+[17608.297051] 		extent data offset 0 nr 4096 ram 4096
+[17608.298583] 	item 41 key (262 108 172032) itemoff 13691 itemsize 53
+[17608.300573] 		extent data disk bytenr 13631488 nr 262144
+[17608.302323] 		extent data offset 172032 nr 8192 ram 262144
+[17608.304112] 	item 42 key (263 1 0) itemoff 13531 itemsize 160
+[17608.305810] 		inode generation 6 size 262144 mode 100600
+[17608.307444] 	item 43 key (263 12 256) itemoff 13512 itemsize 19
+[17608.309108] 	item 44 key (263 108 0) itemoff 13459 itemsize 53
+[17608.310760] 		extent data disk bytenr 14266368 nr 4096
+[17608.312269] 		extent data offset 0 nr 4096 ram 4096
+[17608.313883] 	item 45 key (263 108 4096) itemoff 13406 itemsize 53
+[17608.315659] 		extent data disk bytenr 13631488 nr 262144
+[17608.317133] 		extent data offset 0 nr 4096 ram 262144
+[17608.318691] 	item 46 key (263 108 8192) itemoff 13353 itemsize 53
+[17608.320417] 		extent data disk bytenr 13631488 nr 262144
+[17608.321851] 		extent data offset 8192 nr 81920 ram 262144
+[17608.323351] 	item 47 key (263 108 90112) itemoff 13300 itemsize 53
+[17608.325222] 		extent data disk bytenr 14319616 nr 4096
+[17608.326968] 		extent data offset 0 nr 4096 ram 4096
+[17608.328583] 	item 48 key (263 108 94208) itemoff 13247 itemsize 53
+[17608.330364] 		extent data disk bytenr 0 nr 0
+[17608.331708] 		extent data offset 0 nr 45056 ram 45056
+[17608.333200] 	item 49 key (263 108 139264) itemoff 13194 itemsize 53
+[17608.334979] 		extent data disk bytenr 14323712 nr 4096
+[17608.336570] 		extent data offset 0 nr 4096 ram 4096
+[17608.338023] 	item 50 key (263 108 143360) itemoff 13141 itemsize 53
+[17608.340091] 		extent data disk bytenr 13631488 nr 262144
+[17608.341746] 		extent data offset 143360 nr 8192 ram 262144
+[17608.343400] 	item 51 key (263 108 151552) itemoff 13088 itemsize 53
+[17608.345228] 		extent data disk bytenr 14327808 nr 61440
+[17608.346924] 		extent data offset 0 nr 61440 ram 61440
+[17608.348626] 	item 52 key (263 108 212992) itemoff 13035 itemsize 53
+[17608.350371] 		extent data disk bytenr 14270464 nr 49152
+[17608.351985] 		extent data offset 0 nr 49152 ram 49152
+[17608.353542] 	item 53 key (264 1 0) itemoff 12875 itemsize 160
+[17608.355125] 		inode generation 6 size 247974 mode 100600
+[17608.356813] 	item 54 key (264 12 256) itemoff 12856 itemsize 19
+[17608.358539] 	item 55 key (264 108 0) itemoff 12803 itemsize 53
+[17608.360340] 		extent data disk bytenr 14471168 nr 4096
+[17608.361935] 		extent data offset 0 nr 4096 ram 4096
+[17608.363426] 	item 56 key (264 108 4096) itemoff 12750 itemsize 53
+[17608.365224] 		extent data disk bytenr 13631488 nr 262144
+[17608.366836] 		extent data offset 0 nr 4096 ram 262144
+[17608.368439] 	item 57 key (264 108 8192) itemoff 12697 itemsize 53
+[17608.370226] 		extent data disk bytenr 13631488 nr 262144
+[17608.371714] 		extent data offset 8192 nr 8192 ram 262144
+[17608.373157] 	item 58 key (264 108 16384) itemoff 12644 itemsize 53
+[17608.374820] 		extent data disk bytenr 14483456 nr 4096
+[17608.376495] 		extent data offset 0 nr 4096 ram 4096
+[17608.378014] 	item 59 key (264 108 20480) itemoff 12591 itemsize 53
+[17608.379882] 		extent data disk bytenr 0 nr 0
+[17608.381425] 		extent data offset 0 nr 20480 ram 20480
+[17608.383188] 	item 60 key (264 108 40960) itemoff 12538 itemsize 53
+[17608.385037] 		extent data disk bytenr 14487552 nr 4096
+[17608.386644] 		extent data offset 0 nr 4096 ram 4096
+[17608.388191] 	item 61 key (264 108 45056) itemoff 12485 itemsize 53
+[17608.390035] 		extent data disk bytenr 13631488 nr 262144
+[17608.391634] 		extent data offset 45056 nr 20480 ram 262144
+[17608.393440] 	item 62 key (264 108 65536) itemoff 12432 itemsize 53
+[17608.395464] 		extent data disk bytenr 14475264 nr 4096
+[17608.397179] 		extent data offset 0 nr 4096 ram 4096
+[17608.398675] 	item 63 key (264 108 69632) itemoff 12379 itemsize 53
+[17608.400412] 		extent data disk bytenr 0 nr 0
+[17608.401843] 		extent data offset 0 nr 28672 ram 49152
+[17608.403409] 	item 64 key (264 108 98304) itemoff 12326 itemsize 53
+[17608.405389] 		extent data disk bytenr 14491648 nr 20480
+[17608.407111] 		extent data offset 0 nr 8192 ram 20480
+[17608.408795] 	item 65 key (264 108 106496) itemoff 12273 itemsize 53
+[17608.410757] 		extent data disk bytenr 14561280 nr 53248
+[17608.412483] 		extent data offset 0 nr 53248 ram 53248
+[17608.414166] 	item 66 key (264 108 159744) itemoff 12220 itemsize 53
+[17608.416164] 		extent data disk bytenr 13631488 nr 262144
+[17608.417897] 		extent data offset 159744 nr 16384 ram 262144
+[17608.419677] 	item 67 key (264 108 176128) itemoff 12167 itemsize 53
+[17608.421598] 		extent data disk bytenr 13631488 nr 262144
+[17608.423313] 		extent data offset 237568 nr 4096 ram 262144
+[17608.425051] 	item 68 key (264 108 180224) itemoff 12114 itemsize 53
+[17608.427009] 		extent data disk bytenr 13631488 nr 262144
+[17608.428787] 		extent data offset 180224 nr 45056 ram 262144
+[17608.430588] 	item 69 key (264 108 225280) itemoff 12061 itemsize 53
+[17608.432457] 		extent data disk bytenr 14614528 nr 16384
+[17608.434122] 		extent data offset 0 nr 16384 ram 16384
+[17608.435663] 	item 70 key (264 108 241664) itemoff 12008 itemsize 53
+[17608.437520] 		extent data disk bytenr 13631488 nr 262144
+[17608.439160] 		extent data offset 241664 nr 8192 ram 262144
+[17608.440869] 	item 71 key (265 1 0) itemoff 11848 itemsize 160
+[17608.442586] 		inode generation 6 size 193781 mode 100600
+[17608.444197] 	item 72 key (265 12 256) itemoff 11829 itemsize 19
+[17608.446043] 	item 73 key (265 108 0) itemoff 11776 itemsize 53
+[17608.447726] 		extent data disk bytenr 14524416 nr 4096
+[17608.449507] 		extent data offset 0 nr 4096 ram 4096
+[17608.451142] 	item 74 key (265 108 4096) itemoff 11723 itemsize 53
+[17608.452883] 		extent data disk bytenr 13631488 nr 262144
+[17608.454517] 		extent data offset 0 nr 4096 ram 262144
+[17608.456136] 	item 75 key (265 108 8192) itemoff 11670 itemsize 53
+[17608.458065] 		extent data disk bytenr 13631488 nr 262144
+[17608.459732] 		extent data offset 8192 nr 110592 ram 262144
+[17608.461260] 	item 76 key (265 108 118784) itemoff 11617 itemsize 53
+[17608.462918] 		extent data disk bytenr 14528512 nr 28672
+[17608.464562] 		extent data offset 0 nr 28672 ram 28672
+[17608.466204] 	item 77 key (265 108 147456) itemoff 11564 itemsize 53
+[17608.468161] 		extent data disk bytenr 0 nr 0
+[17608.469631] 		extent data offset 8192 nr 4096 ram 12288
+[17608.471331] 	item 78 key (265 108 151552) itemoff 11511 itemsize 53
+[17608.473363] 		extent data disk bytenr 14557184 nr 4096
+[17608.474920] 		extent data offset 0 nr 4096 ram 4096
+[17608.476499] 	item 79 key (265 108 155648) itemoff 11458 itemsize 53
+[17608.478306] 		extent data disk bytenr 13631488 nr 262144
+[17608.479921] 		extent data offset 155648 nr 40960 ram 262144
+[17608.481652] 	item 80 key (266 1 0) itemoff 11298 itemsize 160
+[17608.483268] 		inode generation 6 size 262144 mode 100600
+[17608.484849] 	item 81 key (266 12 256) itemoff 11279 itemsize 19
+[17608.486489] 	item 82 key (266 108 0) itemoff 11226 itemsize 53
+[17608.488298] 		extent data disk bytenr 14712832 nr 4096
+[17608.489866] 		extent data offset 0 nr 4096 ram 4096
+[17608.491399] 	item 83 key (266 108 4096) itemoff 11173 itemsize 53
+[17608.493255] 		extent data disk bytenr 13631488 nr 262144
+[17608.494898] 		extent data offset 0 nr 4096 ram 262144
+[17608.496504] 	item 84 key (266 108 8192) itemoff 11120 itemsize 53
+[17608.498434] 		extent data disk bytenr 13631488 nr 262144
+[17608.500033] 		extent data offset 8192 nr 73728 ram 262144
+[17608.501619] 	item 85 key (266 108 81920) itemoff 11067 itemsize 53
+[17608.503455] 		extent data disk bytenr 14741504 nr 4096
+[17608.505086] 		extent data offset 0 nr 4096 ram 4096
+[17608.506648] 	item 86 key (266 108 86016) itemoff 11014 itemsize 53
+[17608.508346] 		extent data disk bytenr 13631488 nr 262144
+[17608.509862] 		extent data offset 86016 nr 28672 ram 262144
+[17608.511645] 	item 87 key (266 108 114688) itemoff 10961 itemsize 53
+[17608.513620] 		extent data disk bytenr 13631488 nr 262144
+[17608.515403] 		extent data offset 36864 nr 28672 ram 262144
+[17608.517234] 	item 88 key (266 108 143360) itemoff 10908 itemsize 53
+[17608.519248] 		extent data disk bytenr 13631488 nr 262144
+[17608.520976] 		extent data offset 143360 nr 16384 ram 262144
+[17608.522635] 	item 89 key (266 108 159744) itemoff 10855 itemsize 53
+[17608.524583] 		extent data disk bytenr 14745600 nr 12288
+[17608.526254] 		extent data offset 0 nr 12288 ram 12288
+[17608.527858] 	item 90 key (266 108 172032) itemoff 10802 itemsize 53
+[17608.538634] 		extent data disk bytenr 13631488 nr 262144
+[17608.540392] 		extent data offset 172032 nr 36864 ram 262144
+[17608.542156] 	item 91 key (266 108 208896) itemoff 10749 itemsize 53
+[17608.544104] 		extent data disk bytenr 14716928 nr 4096
+[17608.545664] 		extent data offset 0 nr 4096 ram 4096
+[17608.547207] 	item 92 key (266 108 212992) itemoff 10696 itemsize 53
+[17608.549038] 		extent data disk bytenr 0 nr 0
+[17608.550440] 		extent data offset 0 nr 32768 ram 32768
+[17608.552056] 	item 93 key (266 108 245760) itemoff 10643 itemsize 53
+[17608.553997] 		extent data disk bytenr 14721024 nr 4096
+[17608.555578] 		extent data offset 0 nr 4096 ram 4096
+[17608.557113] 	item 94 key (266 108 249856) itemoff 10590 itemsize 53
+[17608.558861] 		extent data disk bytenr 14688256 nr 24576
+[17608.560439] 		extent data offset 12288 nr 12288 ram 24576
+[17608.562137] 	item 95 key (267 1 0) itemoff 10430 itemsize 160
+[17608.563756] 		inode generation 6 size 262144 mode 100600
+[17608.565261] 	item 96 key (267 12 256) itemoff 10411 itemsize 19
+[17608.566912] 	item 97 key (267 108 0) itemoff 10358 itemsize 53
+[17608.568715] 		extent data disk bytenr 14737408 nr 4096
+[17608.570283] 		extent data offset 0 nr 4096 ram 4096
+[17608.571810] 	item 98 key (267 108 4096) itemoff 10305 itemsize 53
+[17608.573502] 		extent data disk bytenr 13631488 nr 262144
+[17608.575033] 		extent data offset 0 nr 4096 ram 262144
+[17608.576507] 	item 99 key (267 108 8192) itemoff 10252 itemsize 53
+[17608.578416] 		extent data disk bytenr 13631488 nr 262144
+[17608.581054] 		extent data offset 8192 nr 167936 ram 262144
+[17608.583613] 	item 100 key (267 108 176128) itemoff 10199 itemsize 53
+[17608.585846] 		extent data disk bytenr 13631488 nr 262144
+[17608.587883] 		extent data offset 188416 nr 4096 ram 262144
+[17608.590034] 	item 101 key (267 108 180224) itemoff 10146 itemsize 53
+[17608.592397] 		extent data disk bytenr 13631488 nr 262144
+[17608.594415] 		extent data offset 180224 nr 81920 ram 262144
+[17608.595941] 	item 102 key (18446744073709551606 128 13631488) itemoff 10142 itemsize 4
+[17608.598465] 	item 103 key (18446744073709551606 128 13635584) itemoff 10082 itemsize 60
+[17608.601262] 	item 104 key (18446744073709551606 128 13697024) itemoff 9974 itemsize 108
+[17608.604090] 	item 105 key (18446744073709551606 128 13717504) itemoff 9946 itemsize 28
+[17608.606573] 	item 106 key (18446744073709551606 128 13774848) itemoff 9930 itemsize 16
+[17608.609125] 	item 107 key (18446744073709551606 128 13803520) itemoff 9842 itemsize 88
+[17608.611709] 	item 108 key (18446744073709551606 128 13905920) itemoff 9786 itemsize 56
+[17608.614269] 	item 109 key (18446744073709551606 128 13975552) itemoff 9782 itemsize 4
+[17608.616992] 	item 110 key (18446744073709551606 128 14123008) itemoff 9778 itemsize 4
+[17608.619523] 	item 111 key (18446744073709551606 128 14135296) itemoff 9710 itemsize 68
+[17608.622144] 	item 112 key (18446744073709551606 128 14209024) itemoff 9706 itemsize 4
+[17608.624841] 	item 113 key (18446744073709551606 128 14217216) itemoff 9538 itemsize 168
+[17608.627409] 	item 114 key (18446744073709551606 128 14471168) itemoff 9530 itemsize 8
+[17608.630034] 	item 115 key (18446744073709551606 128 14479360) itemoff 9510 itemsize 20
+[17608.632681] 	item 116 key (18446744073709551606 128 14499840) itemoff 9498 itemsize 12
+[17608.635448] 	item 117 key (18446744073709551606 128 14524416) itemoff 9394 itemsize 104
+[17608.638122] 	item 118 key (18446744073709551606 128 14700544) itemoff 9382 itemsize 12
+[17608.640633] 	item 119 key (18446744073709551606 128 14712832) itemoff 9370 itemsize 12
+[17608.643227] 	item 120 key (18446744073709551606 128 14737408) itemoff 9350 itemsize 20
+[17608.645834] BTRFS error (device dm-0): block=30949376 write time tree block corruption detected
+[17608.648714] ------------[ cut here ]------------
+[17608.650272] WARNING: CPU: 2 PID: 27162 at fs/btrfs/disk-io.c:537 btree_csum_one_bio+0x297/0x2a0 [btrfs]
+[17608.652972] Modules linked in: dm_snapshot dm_thin_pool dm_persistent_data dm_bio_prison dm_bufio dm_log_writes dm_flakey dm_mod dax btrfs blake2b_generic libcrc32c crc32c_intel xor zstd_decompress zstd_compress xxhash lzo_compress lzo_decompress raid6_pq loop [last unloaded: scsi_debug]
+[17608.660683] CPU: 2 PID: 27162 Comm: fsx Tainted: G             L    5.7.0-rc3-default+ #1094
+[17608.663520] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.12.0-59-gc9ba527-rebuilt.opensuse.org 04/01/2014
+[17608.667102] RIP: 0010:btree_csum_one_bio+0x297/0x2a0 [btrfs]
+[17608.668919] Code: bc fd ff ff e8 aa e7 f0 c2 31 f6 48 89 3c 24 e8 ff 7b ff ff 48 8b 3c 24 48 c7 c6 78 75 25 c0 48 8b 17 4c 89 e7 e8 84 bc 0b 00 <0f> 0b e9 8f fd ff ff 66 90 0f 1f 44 00 00 48 89 f7 e9 53 fd ff ff
+[17608.674610] RSP: 0018:ffffafbb81e978b8 EFLAGS: 00010292
+[17608.676299] RAX: 0000000000000000 RBX: ffff94287f810f00 RCX: 0000000000000001
+[17608.678260] RDX: 0000000000000000 RSI: ffffffff83109fc2 RDI: ffffffff8310a096
+[17608.680484] RBP: 0000000000000001 R08: 0000000000000000 R09: 0000000000000000
+[17608.682645] R10: 0000000000000000 R11: 0000000000008ca0 R12: ffff94285f298000
+[17608.684681] R13: ffff94274100bd30 R14: 0000000000000000 R15: 00000000ffffff8b
+[17608.686659] FS:  00007f3479617b80(0000) GS:ffff94287ba00000(0000) knlGS:0000000000000000
+[17608.689240] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[17608.691150] CR2: 0000000000466000 CR3: 000000010227f001 CR4: 0000000000160ee0
+[17608.693354] Call Trace:
+[17608.694341]  btree_submit_bio_hook+0x74/0xc0 [btrfs]
+[17608.696162]  submit_one_bio+0x2b/0x40 [btrfs]
+[17608.698391]  btree_write_cache_pages+0x373/0x440 [btrfs]
+[17608.700085]  ? lock_acquire+0xa3/0x400
+[17608.701257]  ? __filemap_fdatawrite_range+0xad/0x110
+[17608.702736]  do_writepages+0x40/0xe0
+[17608.703953]  ? do_raw_spin_unlock+0x4b/0xc0
+[17608.705290]  ? _raw_spin_unlock+0x1f/0x30
+[17608.706571]  ? wbc_attach_and_unlock_inode+0x194/0x2a0
+[17608.708167]  __filemap_fdatawrite_range+0xce/0x110
+[17608.709679]  btrfs_write_marked_extents+0x68/0x160 [btrfs]
+[17608.711384]  btrfs_sync_log+0x1a8/0xd40 [btrfs]
+[17608.712892]  ? btrfs_log_inode+0x370/0xe20 [btrfs]
+[17608.714459]  ? lock_acquire+0xa3/0x400
+[17608.715803]  ? lockref_put_or_lock+0x9/0x30
+[17608.717115]  ? dput+0x20/0x490
+[17608.718172]  ? dput+0x20/0x490
+[17608.719271]  ? do_raw_spin_unlock+0x4b/0xc0
+[17608.720639]  ? _raw_spin_unlock+0x1f/0x30
+[17608.722002]  btrfs_sync_file+0x335/0x490 [btrfs]
+[17608.723610]  __x64_sys_msync+0x19e/0x200
+[17608.724924]  do_syscall_64+0x50/0x210
+[17608.726143]  entry_SYSCALL_64_after_hwframe+0x49/0xb3
+[17608.727719] RIP: 0033:0x7f34797f2743
+[17608.729030] Code: 64 89 02 48 c7 c0 ff ff ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 64 8b 04 25 18 00 00 00 85 c0 75 14 b8 1a 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 55 c3 0f 1f 40 00 48 83 ec 28 89 54 24 1c 48
+[17608.734572] RSP: 002b:00007ffe84f11858 EFLAGS: 00000246 ORIG_RAX: 000000000000001a
+[17608.736913] RAX: ffffffffffffffda RBX: 00000000000008c8 RCX: 00007f34797f2743
+[17608.738902] RDX: 0000000000000004 RSI: 000000000000293f RDI: 00007f3479814000
+[17608.740949] RBP: 00000000000278c8 R08: 000000000000001f R09: 00007f3479814900
+[17608.742896] R10: fffffffffffffd0c R11: 0000000000000246 R12: 0000000000002077
+[17608.744810] R13: 000000000000293f R14: 00007f3479814000 R15: 0000000000000000
+[17608.746764] irq event stamp: 0
+[17608.747948] hardirqs last  enabled at (0): [<0000000000000000>] 0x0
+[17608.749754] hardirqs last disabled at (0): [<ffffffff83081b0b>] copy_process+0x67b/0x1b00
+[17608.752428] softirqs last  enabled at (0): [<ffffffff83081b0b>] copy_process+0x67b/0x1b00
+[17608.754935] softirqs last disabled at (0): [<0000000000000000>] 0x0
+[17608.756871] ---[ end trace ddba49bd36651725 ]---
+[17608.758590] BTRFS: error (device dm-0) in btrfs_sync_log:3089: errno=-5 IO failure
