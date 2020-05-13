@@ -2,24 +2,24 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 004781D0629
-	for <lists+linux-btrfs@lfdr.de>; Wed, 13 May 2020 07:02:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC4C61D065F
+	for <lists+linux-btrfs@lfdr.de>; Wed, 13 May 2020 07:26:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726138AbgEMFCG convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-btrfs@lfdr.de>); Wed, 13 May 2020 01:02:06 -0400
-Received: from james.kirk.hungrycats.org ([174.142.39.145]:46552 "EHLO
+        id S1728436AbgEMFY6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 13 May 2020 01:24:58 -0400
+Received: from james.kirk.hungrycats.org ([174.142.39.145]:33378 "EHLO
         james.kirk.hungrycats.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725898AbgEMFCG (ORCPT
+        with ESMTP id S1725977AbgEMFY6 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 13 May 2020 01:02:06 -0400
+        Wed, 13 May 2020 01:24:58 -0400
 Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
-        id 2E8B76BF208; Wed, 13 May 2020 01:02:05 -0400 (EDT)
-Date:   Wed, 13 May 2020 01:02:05 -0400
+        id 431096BF28F; Wed, 13 May 2020 01:24:52 -0400 (EDT)
+Date:   Wed, 13 May 2020 01:24:52 -0400
 From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
 To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
 Cc:     linux-btrfs@vger.kernel.org
 Subject: Re: Balance loops: what we know so far
-Message-ID: <20200513050204.GX10769@hungrycats.org>
+Message-ID: <20200513052452.GY10769@hungrycats.org>
 References: <20200411211414.GP13306@hungrycats.org>
  <b3e80e75-5d27-ec58-19af-11ba5a20e08c@gmx.com>
  <20200428045500.GA10769@hungrycats.org>
@@ -30,7 +30,7 @@ References: <20200411211414.GP13306@hungrycats.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 8bit
 In-Reply-To: <b7b8bbf8-119b-02ea-5fad-0f7c3abab07d@gmx.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-btrfs-owner@vger.kernel.org
@@ -70,10 +70,8 @@ On Wed, May 13, 2020 at 10:28:37AM +0800, Qu Wenruo wrote:
 > 
 > But I'm interesting in that, after that 30804 loops, it found its way to
 > next block group?!
-
-No, it got cancelled.  My test scripts start a balance every (hour +/-
-random(1 hour) and cancels a balance on a similar schedule.
-
+> 
+> > 
 > > Here's the block group that is failing, and some poking around with it:
 > 
 > In fact, such poking would be the most valuable part.
@@ -105,7 +103,29 @@ random(1 hour) and cancels a balance on a similar schedule.
 > > I added a loop counter to the log message):
 > 
 > Then it means the last one get properly relocated.
-> 
+
+No.  In these cases the extent is removed by other filesystem activity.
+If balance gets stuck looping, it can never break out of a loop if it
+is the only writer on the filesystem.  I've left it looping for days,
+it makes no progress.
+
+When balance is looping, it is always stuck waiting until the extents
+are removed by something else.  In this particular case, the extent was
+overwritten by another process removing the extent's last reference so
+it was no longer part of the block group any more.  It is possible to
+break a balance loop by simply deleting all the files with extents in
+the block group.
+
+I wrote some scripts that dump out the extents in the looping block
+group, find the files they belong to, and run the defrag ioctl on them,
+thereby removing all the extents in the block group so the balance loop
+will end, without deleting the data.  I used the script for a while and
+was able to balance hundreds of block groups more than I would have been
+able to without the script; however, the script couldn't run defrag on
+extents that were not reachable through open() (e.g. extents referenced
+by a deleted snapshot), so it couldn't work around the balance loops in
+all cases.
+
 > The cleanup for the first 4 doesn't happen properly.
 > > 
 > > 	[Tue May 12 09:44:22 2020] BTRFS info (device dm-0): found 5 extents, loops 378, stage: update data pointers
@@ -139,20 +159,11 @@ random(1 hour) and cancels a balance on a similar schedule.
 > 
 > I'm a little surprised about the it's using logical ino ioctl, not just
 > TREE_SEARCH.
-
-Tree search can't read shared backrefs because they refer directly to
-disk blocks, not to object/type/offset tuples.  It would be nice to have
-an ioctl that can read a metadata block (or even a data block) by bytenr.
-
-Or even better, just a fd that can be obtained by some ioctl to access
-the btrfs virtual address space with pread().
-
+> 
 > I guess if we could get a plain tree search based one (it only search
 > commit root, which is exactly balance based on), it would be easier to
 > do the digging.
-
-That would be nice.  I have an application for it.  ;)
-
+> 
 > > 	OSError: [Errno 22] Invalid argument
 > > 
 > > 	root@tester:~# btrfs ins log 4368594108416 /media/testfs/
@@ -186,48 +197,143 @@ That would be nice.  I have an application for it.  ;)
 > 
 > Thanks for the new clues,
 > Qu
+> 
+> >  I have those
+> > nearly continuously in my test environment, which is creating and deleting
+> > snapshots all the time.
+> > 
+> > 	root@tester:~# btrfs ins log 4368594108416 -P /media/testfs/
+> > 	inode 20838190 offset 0 root 10347
+> > 	inode 20838190 offset 0 root 8013
+> > 	inode 20838190 offset 0 root 10332
+> > 	inode 20838190 offset 0 root 10330
+> > 	inode 20838190 offset 0 root 10331
+> > 	inode 20838190 offset 0 root 10328
+> > 	inode 20838190 offset 0 root 10329
+> > 	inode 20838190 offset 0 root 10343
+> > 	inode 20838190 offset 0 root 10333
+> > 	inode 20838190 offset 0 root 10334
+> > 	inode 20838190 offset 0 root 10336
+> > 	inode 20838190 offset 0 root 10338
+> > 	inode 20838190 offset 0 root 10325
+> > 	inode 20838190 offset 0 root 10349
+> > 	inode 20838190 offset 0 root 10320
+> > 	inode 20838190 offset 0 root 10321
+> > 	inode 20838190 offset 0 root 10322
+> > 	inode 20838190 offset 0 root 10323
+> > 	inode 20838190 offset 0 root 10324
+> > 	inode 20838190 offset 0 root 10326
+> > 	inode 20838190 offset 0 root 10327
+> > 	root@tester:~# btrfs sub list -d /media/testfs/
+> > 	ID 10201 gen 1321166 top level 0 path DELETED
+> > 	ID 10210 gen 1321166 top level 0 path DELETED
+> > 	ID 10230 gen 1321166 top level 0 path DELETED
+> > 	ID 10254 gen 1321166 top level 0 path DELETED
+> > 	ID 10257 gen 1321166 top level 0 path DELETED
+> > 	ID 10274 gen 1321166 top level 0 path DELETED
+> > 	ID 10281 gen 1321166 top level 0 path DELETED
+> > 	ID 10287 gen 1321166 top level 0 path DELETED
+> > 	ID 10296 gen 1321166 top level 0 path DELETED
+> > 	ID 10298 gen 1321166 top level 0 path DELETED
+> > 	ID 10299 gen 1321166 top level 0 path DELETED
+> > 	ID 10308 gen 1321166 top level 0 path DELETED
+> > 	ID 10311 gen 1321166 top level 0 path DELETED
+> > 	ID 10313 gen 1321166 top level 0 path DELETED
+> > 	ID 10315 gen 1321166 top level 0 path DELETED
+> > 	ID 10317 gen 1321166 top level 0 path DELETED
+> > 	ID 10322 gen 1321166 top level 0 path DELETED
+> > 	ID 10323 gen 1321166 top level 0 path DELETED
+> > 	ID 10327 gen 1321166 top level 0 path DELETED
+> > 	ID 10328 gen 1321166 top level 0 path DELETED
+> > 	ID 10330 gen 1321166 top level 0 path DELETED
+> > 	ID 10333 gen 1321166 top level 0 path DELETED
+> > 
+> > 
+> >>> Thanks,
+> >>> Qu
+> >>
+> >>> From 82f3b96a68561b2de9712262cb652192b8ea9b1b Mon Sep 17 00:00:00 2001
+> >>> From: Qu Wenruo <wqu@suse.com>
+> >>> Date: Mon, 11 May 2020 16:27:43 +0800
+> >>> Subject: [PATCH] btrfs: Remove the REF_COW bit for data reloc tree
+> >>>
+> >>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> >>> ---
+> >>>  fs/btrfs/disk-io.c    | 9 ++++++++-
+> >>>  fs/btrfs/inode.c      | 6 ++++--
+> >>>  fs/btrfs/relocation.c | 3 ++-
+> >>>  3 files changed, 14 insertions(+), 4 deletions(-)
+> >>>
+> >>> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+> >>> index 56675d3cd23a..cb90966a8aab 100644
+> >>> --- a/fs/btrfs/disk-io.c
+> >>> +++ b/fs/btrfs/disk-io.c
+> >>> @@ -1418,9 +1418,16 @@ static int btrfs_init_fs_root(struct btrfs_root *root)
+> >>>  	if (ret)
+> >>>  		goto fail;
+> >>>  
+> >>> -	if (root->root_key.objectid != BTRFS_TREE_LOG_OBJECTID) {
+> >>> +	if (root->root_key.objectid != BTRFS_TREE_LOG_OBJECTID &&
+> >>> +	    root->root_key.objectid != BTRFS_DATA_RELOC_TREE_OBJECTID) {
+> >>>  		set_bit(BTRFS_ROOT_REF_COWS, &root->state);
+> >>>  		btrfs_check_and_init_root_item(&root->root_item);
+> >>> +	} else if (root->root_key.objectid == BTRFS_DATA_RELOC_TREE_OBJECTID) {
+> >>> +		/*
+> >>> +		 * Data reloc tree won't be snapshotted, thus it's COW only
+> >>> +		 * tree, it's needed to set TRACK_DIRTY bit for it.
+> >>> +		 */
+> >>> +		set_bit(BTRFS_ROOT_TRACK_DIRTY, &root->state);
+> >>>  	}
+> >>>  
+> >>>  	btrfs_init_free_ino_ctl(root);
+> >>> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+> >>> index 5d567082f95a..71841535c7ca 100644
+> >>> --- a/fs/btrfs/inode.c
+> >>> +++ b/fs/btrfs/inode.c
+> >>> @@ -4129,7 +4129,8 @@ int btrfs_truncate_inode_items(struct btrfs_trans_handle *trans,
+> >>>  	 * extent just the way it is.
+> >>>  	 */
+> >>>  	if (test_bit(BTRFS_ROOT_REF_COWS, &root->state) ||
+> >>> -	    root == fs_info->tree_root)
+> >>> +	    root == fs_info->tree_root ||
+> >>> +	    root->root_key.objectid == BTRFS_DATA_RELOC_TREE_OBJECTID)
+> >>>  		btrfs_drop_extent_cache(BTRFS_I(inode), ALIGN(new_size,
+> >>>  					fs_info->sectorsize),
+> >>>  					(u64)-1, 0);
+> >>> @@ -4334,7 +4335,8 @@ int btrfs_truncate_inode_items(struct btrfs_trans_handle *trans,
+> >>>  
+> >>>  		if (found_extent &&
+> >>>  		    (test_bit(BTRFS_ROOT_REF_COWS, &root->state) ||
+> >>> -		     root == fs_info->tree_root)) {
+> >>> +		     root == fs_info->tree_root ||
+> >>> +		     root->root_key.objectid == BTRFS_DATA_RELOC_TREE_OBJECTID)) {
+> >>>  			struct btrfs_ref ref = { 0 };
+> >>>  
+> >>>  			bytes_deleted += extent_num_bytes;
+> >>> diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
+> >>> index f25deca18a5d..a85dd5d465f6 100644
+> >>> --- a/fs/btrfs/relocation.c
+> >>> +++ b/fs/btrfs/relocation.c
+> >>> @@ -1087,7 +1087,8 @@ int replace_file_extents(struct btrfs_trans_handle *trans,
+> >>>  		 * if we are modifying block in fs tree, wait for readpage
+> >>>  		 * to complete and drop the extent cache
+> >>>  		 */
+> >>> -		if (root->root_key.objectid != BTRFS_TREE_RELOC_OBJECTID) {
+> >>> +		if (root->root_key.objectid != BTRFS_TREE_RELOC_OBJECTID &&
+> >>> +		    root->root_key.objectid != BTRFS_DATA_RELOC_TREE_OBJECTID) {
+> >>>  			if (first) {
+> >>>  				inode = find_next_inode(root, key.objectid);
+> >>>  				first = 0;
+> >>> -- 
+> >>> 2.26.2
+> >>>
+> >>
+> >>
+> >>
+> >>
+> > 
+> > 
+> 
 
-Here's a fun one:
 
-1.  Delete all the files on a filesystem where balance loops
-have occurred.
 
-2.  Verify there are no data blocks (one data block group
-with used = 0):
-
-# show_block_groups.py /testfs/
-block group vaddr 435969589248 length 1073741824 flags METADATA|RAID1 used 180224 used_pct 0
-block group vaddr 4382686969856 length 33554432 flags SYSTEM|RAID1 used 16384 used_pct 0
-block group vaddr 4383794266112 length 1073741824 flags DATA used 0 used_pct 0
-
-3.  Create a new file with a single reference in the only (root) subvol:
-# head -c 1024m > file
-# sync
-# show_block_groups.py .
-block group vaddr 435969589248 length 1073741824 flags METADATA|RAID1 used 1245184 used_pct 0
-block group vaddr 4382686969856 length 33554432 flags SYSTEM|RAID1 used 16384 used_pct 0
-block group vaddr 4384868007936 length 1073741824 flags DATA used 961708032 used_pct 90
-block group vaddr 4385941749760 length 1073741824 flags DATA used 112033792 used_pct 10
-
-4.  Run balance, and it immediately loops on a single extent:
-# btrfs balance start -d .
-[Wed May 13 00:41:58 2020] BTRFS info (device dm-0): balance: start -d
-[Wed May 13 00:41:58 2020] BTRFS info (device dm-0): relocating block group 4385941749760 flags data
-[Wed May 13 00:42:00 2020] BTRFS info (device dm-0): found 1 extents, loops 1, stage: move data extents
-[Wed May 13 00:42:00 2020] BTRFS info (device dm-0): found 1 extents, loops 2, stage: update data pointers
-[Wed May 13 00:42:01 2020] BTRFS info (device dm-0): found 1 extents, loops 3, stage: update data pointers
-[Wed May 13 00:42:01 2020] BTRFS info (device dm-0): found 1 extents, loops 4, stage: update data pointers
-[Wed May 13 00:42:01 2020] BTRFS info (device dm-0): found 1 extents, loops 5, stage: update data pointers
-[Wed May 13 00:42:01 2020] BTRFS info (device dm-0): found 1 extents, loops 6, stage: update data pointers
-[Wed May 13 00:42:01 2020] BTRFS info (device dm-0): found 1 extents, loops 7, stage: update data pointers
-[Wed May 13 00:42:02 2020] BTRFS info (device dm-0): found 1 extents, loops 8, stage: update data pointers
-[Wed May 13 00:42:02 2020] BTRFS info (device dm-0): found 1 extents, loops 9, stage: update data pointers
-[Wed May 13 00:42:02 2020] BTRFS info (device dm-0): found 1 extents, loops 10, stage: update data pointers
-[Wed May 13 00:42:02 2020] BTRFS info (device dm-0): found 1 extents, loops 11, stage: update data pointers
-[etc...]
-
-I tried it a 3 more times time and there was no loop.  The 5th try looped again.
-
-There might be a correlation with cancels.  After a fresh boot, I can
-often balance a few dozen block groups before there's a loop, but if I
-cancel a balance, the next balance almost always loops.
