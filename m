@@ -2,175 +2,100 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BED61D1262
-	for <lists+linux-btrfs@lfdr.de>; Wed, 13 May 2020 14:11:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBCB41D1276
+	for <lists+linux-btrfs@lfdr.de>; Wed, 13 May 2020 14:16:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731811AbgEMMLh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 13 May 2020 08:11:37 -0400
-Received: from mout.gmx.net ([212.227.15.15]:35945 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731072AbgEMMLg (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 13 May 2020 08:11:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1589371887;
-        bh=9dntaNbHhyWzaRxCYzt57WEoG8NhG1PDbvULCQjzvps=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=IluWe2GiHNFurigWe0JJ8H3KnJSblM4t5SZ1NBfUGMhZOnIxgp8BOwatoaS/GBlKS
-         35LqDN7m/dCH2DeKv2v2UNW0Ylw546ww8VG0xys7VOpv9XXq0qL3MG74LMQJMnWzy7
-         k6EHkb5eca0EbnGeGumgypRVEnSgzpjptPLXPCi4=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MSKyI-1jfLWA1MTI-00SiEA; Wed, 13
- May 2020 14:11:27 +0200
-Subject: Re: Bug 5.7-rc: root leak, eb leak
-To:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        "dsterba@suse.cz" <dsterba@suse.cz>,
-        David Sterba <dsterba@suse.com>
-Cc:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-References: <5e955017351005f2cc4c0210f401935203de8496c56cb76f53547d435f502803.dsterba@suse.com>
- <a1b2a3320c72e9bcd355caf93cc72fc093807c67e63be0fd59a5fbc1a3a6587f.dsterba@suse.com>
- <20200512230333.GH18421@twin.jikos.cz>
- <SN4PR0401MB3598D62552D8D47F2446121B9BBF0@SN4PR0401MB3598.namprd04.prod.outlook.com>
- <fa11e7ec-d785-455e-02f9-c45d607c0b52@gmx.com>
- <SN4PR0401MB3598875C33493DDC0D8BA60D9BBF0@SN4PR0401MB3598.namprd04.prod.outlook.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
- PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
- 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
- D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
- efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
- ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
- BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
- 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
- 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
- EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
- 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
- ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
- oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
- fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
- 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
- ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
- oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <2dd7f27b-e505-aee5-2ffa-7e72f4623479@gmx.com>
-Date:   Wed, 13 May 2020 20:11:21 +0800
+        id S1732006AbgEMMQb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 13 May 2020 08:16:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43862 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731675AbgEMMQb (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 13 May 2020 08:16:31 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C636DC061A0C
+        for <linux-btrfs@vger.kernel.org>; Wed, 13 May 2020 05:16:30 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id m12so21397307wmc.0
+        for <linux-btrfs@vger.kernel.org>; Wed, 13 May 2020 05:16:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=to:from:subject:message-id:date:user-agent:mime-version
+         :content-transfer-encoding:content-language;
+        bh=stqQD7OeRevl8LVGu4ZtQhuagDuL+Z/Oyh3THNwpoJI=;
+        b=mKSQQK/82sqle6+gKHxyqBVb3BlWFZt21UGWow1uMDurCMviQbUikre6eFO4LWp0gO
+         h8RdhvKEtA0kA01kIuO/UgB6oB5zOJcpTT4/06hRYy7jdfAKkjkFccJcItw8thtLS2HC
+         Mfc74d5Yr/BHp/SBgJMeDG5c8xcORVnDYiob2oacGeq4Lj8NVPDSY1rKW/j678RTSYQz
+         UkhLm9BOtXqdgcok7n8JEJiHeJbRDD24wJWfNIXLGDTVAaWDYFKnSvjPh4T/RfCdAhZp
+         9N8zNPmeBKukd9+vt5Td5wcfPgrxtkgQiEdz5uha8+zMhAUnxS2J1YdOYNvJZAGt+0No
+         Ugvw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:from:subject:message-id:date:user-agent
+         :mime-version:content-transfer-encoding:content-language;
+        bh=stqQD7OeRevl8LVGu4ZtQhuagDuL+Z/Oyh3THNwpoJI=;
+        b=lalvo4hLcghmp1M69bR/xLa7iEUo2mb+h2OUcXLuu+jId6C2sMz+xRmoRG+aefeZLH
+         WCRvKy8Bju3LwtoB6MoSED7m8zIpb2HoIBvNwO/udIN32o19CvokexGC4Z128D7XFJaa
+         Ku1rQ2OGEdqPNB6VCcGMVnwbjLjTlLSlti/Yl94IY4gw2atxOIUE/fHwP9qy64GdY/5i
+         5nGNN8ZP7VU+UN+Y4K430ZD6KymJUQGQYnwIkhT2cmn53atN7DhKZ0BCtEHEtvD5pS+4
+         zWruwcgDxjgUI2AmtD3kshDr9JI3Ifs0oC3Y2HxiMIll3jX66dWEYv8nHZ21qd+akOKh
+         lO0w==
+X-Gm-Message-State: AGi0PuYUOVBPcmETECC/EQemi9w3L/YWFA4HgZSCHnesu8W539gVqbPT
+        OIUHQ/wRq7kwpG2IbYd459WRbAxp
+X-Google-Smtp-Source: APiQypLTr7X77BcGNxfwqVHn30KtJ6ER6vN4i4DcyCLiXERBmYCmhCKEuwE7yXqxayz/D6AF8x4l1Q==
+X-Received: by 2002:a1c:59c3:: with SMTP id n186mr41438114wmb.24.1589372189124;
+        Wed, 13 May 2020 05:16:29 -0700 (PDT)
+Received: from [192.168.168.63] (dslb-002-202-217-216.002.202.pools.vodafone-ip.de. [2.202.217.216])
+        by smtp.gmail.com with ESMTPSA id g9sm17720299wru.7.2020.05.13.05.16.28
+        for <linux-btrfs@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 May 2020 05:16:28 -0700 (PDT)
+To:     linux-btrfs@vger.kernel.org
+From:   =?UTF-8?Q?Ren=c3=a9_Fricke-M=c3=bcller?= <rene.fricke94@gmail.com>
+Subject: Error when using btrfs subvolume snapshot & send | receive
+Message-ID: <57021127-01ea-6533-6de6-56c4f22c4a5b@gmail.com>
+Date:   Wed, 13 May 2020 14:16:27 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <SN4PR0401MB3598875C33493DDC0D8BA60D9BBF0@SN4PR0401MB3598.namprd04.prod.outlook.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="DNfzaektbLxvkisr0oBjMd09Ji2WbBeSW"
-X-Provags-ID: V03:K1:skUkcT/P+Xr4aPOn1qgqIxl8aP8oa98x48sOaPnMM7ifd6PD6J0
- 31B5fIC4IIuftN6mj2ZMno0yQPECLND6SOux6Z1L0OBqIK3XBSHyzp835NlKX7/d3uox/w2
- /g33WPE0/fv35dXNne/JDdebv80y/hqZcj03C4SWm9il/stNbhaM6OaT6Ln2v80CLR4at0g
- Nkxhkh4MgSvq2HkvbkJ3g==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:DxP5c2/aFl8=:oQZVWufVrnUdj6A5jxIexo
- 9E9hUVSFSJVgqq3GYXHTHf2fEBHp0Jdtp4keXl+56+1JyoybspvrllxvORSDaXMANpRFPCOwJ
- JA4eqd8wz6EHKX3eO4V27PJtuYpj9t/uEuibn/E3TzYOStviHrsHW7/iEwdxOkGJAid56FWkT
- O4vzLtUts0RZ0hpeZOzDXONWwFpo6SXIAgTPjz9/RgKsA59+vuqZ5gNdF5Pfy/AjXzo8kj13M
- swSTfc/Jbrpp9bIDIdDGuthrUi2e4OhOZBPkRhcP5N0pIRt7CglaDRMRLYe2nuI8jTDpA1fWu
- pvvEMIHkzBGbe7nUQ7FAT6A08sBnImySw++fTiz3xQeMTKCIRAjpCeMKftvyIetYdTmE4lDyb
- cos7D/LLPLRYHD3lm3T29Xw8fw4gyI+wC2/VrpE+gAYO/mGk3zLbB3Il104s/xZevAH0Gsn75
- IPRrtyCNxejuSYkvhFXLhxgvxkPWG8b1/oDUnw8ewPuPipaD79mVg/m95G7cVVxKpv1pdEiqX
- 6scucsV/xcVdvxAnnd6oF0WJ3weYsT25N1g2UXTdvr3gwWFVdNAAYQAUTDWrGHu4g562eoE0k
- 5UW9WR7rXHjcooiYEMWcs+k3jBv1dirMUPTvCjnqv/nbQrz39dD77qSAxBR/AUJ9vhfteKa5z
- OK7i4Y+KK4Y1lTY5/suSfFMxatUzCvzNN/CXZeiXaEqWdgUPEtHdPihmn3DhWNQVH0eb5qpo7
- DoEcA5NdE4RL/nBQwyqrfY2YSUOD5tLt+/UuV9auaqhPVzfPrfJM1gvjshu9TjSX7neBSL22R
- AExn45tylPIhmHy/6Ue7MsyXkT/V1Cm1zpShmzoqgvFFmnVyU2xc9SPrmm7ZukVBPjuZHA7eR
- od0vKSr8bWKMkJTES1LtFn03YcD0X5rlsCgKa/ZqZNytteQe79GTj0juV17ZCCpiQ2I/zsfxC
- fmhVpJ+TRJ/pJ6VSOrd/Hqsxv0mojC9RIhRYnrwQUeS2DcBZ57OrgmuqFsHv0aZWVp++IC7S/
- pO1C9LSHJZzaj1asmJW9q9wbmW97FkmHRmiKwZKfrD6OfNpXiIzvV4UZZbfCiJxvBz9681fW7
- 4/8cj/RP3SxkKX+C9DcGT1Xa4WDqFwbHXsw0wD4tZ411Xz5pp5RXk6Hrbq1OBku8TG3XNkFFr
- 2SDkt0R4Syip9sxvgSkbzo7quV2De31sOyucrbFeFiriXMAIl8crfxWBOf4S77zvS9F/d6s8l
- qPMceGpJwbJddi0s7
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---DNfzaektbLxvkisr0oBjMd09Ji2WbBeSW
-Content-Type: multipart/mixed; boundary="dicDz93W2OfluVoDqQRvw2NmwAKkJUgHy"
+Hello,
 
---dicDz93W2OfluVoDqQRvw2NmwAKkJUgHy
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+I have some trouble using btrfs snapshots on Ubuntu 19.10.
 
+I am creating snapshots of my /-subvolume and use send | receive for 
+incremental transferring. Sometimes I get errors like "ERROR: cannot 
+open /media/Backup/OS/snapshots/snap_2020-05-13_11:39/o13170-19818-0: No 
+such file or directory"
 
+When I look deeper with the -v option, it seems like btrfs is creating a 
+folder or something, moves it and then tries to rename the original folder.
 
-On 2020/5/13 =E4=B8=8B=E5=8D=888:06, Johannes Thumshirn wrote:
-> On 13/05/2020 13:57, Qu Wenruo wrote:
->>
->>
->> On 2020/5/13 =E4=B8=8B=E5=8D=887:54, Johannes Thumshirn wrote:
->>> On 13/05/2020 01:04, David Sterba wrote:
->>> [...]
->>>>
->>>> Johannes, do you have logs from the test?
->>>
->>>
->>>
->>> I recreated the logs for btrfs/028 (dmesg, kmemleak and fstests log).=
- Please find them attached.
->>>
->>
->> BTW, what's the line of open_ctree+0x137c/0x277a?
->=20
->=20
-> Here we go:
-> (gdb) l *(open_ctree+0x137c/0x277a)
-> 0x122acd is in open_ctree (fs/btrfs/disk-io.c:2826).
-> 2821            u64 generation;
-> 2822            u64 features;
-> 2823            u16 csum_type;
-> 2824            struct btrfs_key location;
-> 2825            struct btrfs_super_block *disk_super;
-> 2826            struct btrfs_fs_info *fs_info =3D btrfs_sb(sb);
-> 2827            struct btrfs_root *tree_root;
-> 2828            struct btrfs_root *chunk_root;
-> 2829            int ret;
-> 2830            int err =3D -EINVAL;
->=20
-> So its:
-> 2826            struct btrfs_fs_info *fs_info =3D btrfs_sb(sb);
->=20
-This doesn't make sense.
+The error occures on different devices, but only when I make snapshots 
+of the root of my os subvolume. The error occures only from time to time 
+(perhaps every 5th to 15th snapshot) the only solution to send a new 
+snapshot complete and then send incremental snapshots.
 
-That line doesn't even call read_tree_block() nor even any function call.=
+I tried different kernels:
+Currently I am using 5.3.0-51-generic on one device but also tried 5.5 
+and 5.6.11.
+
+I found this topic on github, where some people have the same errors. 
+(but I am using an own script, not that program)
+
+https://github.com/digint/btrbk/issues/223 
+<https://github.com/digint/btrbk/issues/223>
 
 
-This looks really strange.
-
-Thanks,
-Qu
+Can you confirm this error and/or help me?
 
 
---dicDz93W2OfluVoDqQRvw2NmwAKkJUgHy--
+Kind Regards
 
---DNfzaektbLxvkisr0oBjMd09Ji2WbBeSW
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl674+kACgkQwj2R86El
-/qjWtwf/cPTbqatfgzeu8uhP9ikCCNPnSe6Hgp95jmuevqnbApoChPDDWdMxTdZ4
-RkU8VjAlGcjio1K134oV6w5tulqNK7St3W99En6ZAyh4aL9zSrX+lzfY6S5roXfr
-7T306PMyAKrPXVOTWY6qxePol+vvO/5g0la/3pLFwr7WvnToypDe2VctsL9UFMQI
-0kbSmTIIrlc3ZSRnE9jjytl8Av2Ou+cL3IpaLilw3/DElJK6EnZfYYbLfLUB8hIh
-q2UIgIV3SxAsEhCXniV8PlEtWRvIebZHTQu9uvINGJ9eNPMV+F8GKn/hvGminRzI
-2ceyr1ZjdeONvcU6WGrG+pfMb2bgnA==
-=/zjb
------END PGP SIGNATURE-----
-
---DNfzaektbLxvkisr0oBjMd09Ji2WbBeSW--
+René
