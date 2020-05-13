@@ -2,146 +2,175 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 697CB1D1241
-	for <lists+linux-btrfs@lfdr.de>; Wed, 13 May 2020 14:06:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BED61D1262
+	for <lists+linux-btrfs@lfdr.de>; Wed, 13 May 2020 14:11:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732677AbgEMMGK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 13 May 2020 08:06:10 -0400
-Received: from esa6.hgst.iphmx.com ([216.71.154.45]:30994 "EHLO
-        esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732233AbgEMMGK (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 13 May 2020 08:06:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1589371570; x=1620907570;
-  h=from:to:cc:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=hSFGAVVFbdCkbmTtHYPP23wQsxmg2teEi+bm0Obp/5I=;
-  b=HV9TKvgGDcBq5snaBBde/+49El94CVd+rx0TyfaZ9g9/R2QDMILdGScI
-   HA5YPXBZAuvRsNhSJa3SQAs3yfMUF62R3bR9VLPngJmxAAC21K5qxXM8C
-   mfmpVKCrF+XGCHLZkiBP1cn53S/Ee9a5odxde4V25EPFGGLs30L6cv7on
-   cOZshr4LdA9JiMh3jr99YHZTPsyFVB+Qv+ABg/Z5UnQkJHJMcHsBfgZ1Z
-   E8dBfl9+FlLyIeJpu08SAuW4OHtldPy4AqDWecBx5Xpj10rXhyEDB340w
-   9A/ZXXZaxatRAiVW7uEjCg8MQyTZkHkLhkWzefO3a8WDeQTSRoYBPvKAa
-   A==;
-IronPort-SDR: QkCSYM12JiQ73wqD/acS47o4jeWBZ4OpXIFHaIkx1lpGZGVwz7KzYKlsa4X3sPVQ5JIFWjYI6z
- zsMQpxvPcI8GNe1ZTf2tKveTRtqFqJdQ6XUJL3jxvU0jOJHxoQdUR7C8xtn+qZZyrAQF75EeHG
- 0j1i4tQE063UeSNxtfv9LZ9U3k4qtqF8rLjVY9noGX8Zn2Ngphb7O6Jse0jJgKEPIzftVTAQEx
- Sj0sueAfGpFstjg+squ/dtlyYww+C38pP7zzyLWIg83G/jQfkSnFAl37We8/hM12JvN739zpHe
- CJ8=
-X-IronPort-AV: E=Sophos;i="5.73,387,1583164800"; 
-   d="scan'208";a="139009309"
-Received: from mail-bn8nam11lp2168.outbound.protection.outlook.com (HELO NAM11-BN8-obe.outbound.protection.outlook.com) ([104.47.58.168])
-  by ob1.hgst.iphmx.com with ESMTP; 13 May 2020 20:06:09 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=XzngUj7o/As58Nh9EYXS1LL7nlD52Px6t6CLRFdLvCVAcX71RNOIefeJd6yp7bXxLiIWMosefax+rX/IXeZbvnTHaXQ1ag/JVDgWUmpgv5j2R714uQgQnsBo0eKulwBcSO7k0rXn06tbmzkJfQvw/fAJuXEj8JdKAPEE6HSqmoN91aOrLTZse4cJGCpEguIMuc9Uz/irXcoLVI9KUxk8jWYi/2FUeQFXeIuUnqXAepbI/Q6D+HpwCH2seAt6hHO7mAMlnMincfuh+IRKOGbgujUS6GJQkvXWk0ZnYArZRNx3A0R7k8WctUkoTe0nIKfwV6LZJ/EsWVLzzaHCawL16A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+jID2J+82r/1567Gl7nmIB3pcvfC91qXuYe7Okcb4cs=;
- b=MMFS89SNHBHRCBN8Li2Y0k8Vq1RUQyFS1OyCXlNpKyFqf+8K/Eg87fCNmNi8i0jy+/L8UsOqUOiCL4eQI1YCTEkGL76jhpC1ygQUQdL2Iw1JK9hcDW3Gs43JbO3nW6ZWRthySV5iJahlmG+FJQaY1EheqTmi7/6YeH40kLXULWPFVJA9F2SLCWL1LUGvQq38dzejefgbCk4PIcVlg99mqJ/ubdpPmID3vxZMpZJw5OE22LEVYwUg0EAl9enTPLv8PNfqXqYpIHkeGlHYtzBSTls9ZUhU5UjuPEtRKubaBMbMNlG5FD9LVRikE/W6fbQ0dwtqcQmLd+Jlv77Q2jd/Hw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+jID2J+82r/1567Gl7nmIB3pcvfC91qXuYe7Okcb4cs=;
- b=OGMFu12tnbhYoeTzFiCyxBrGS2H8T934bnUmadvwfuvJO941bu3LXznOr3s1DOFUwfSFsh4smwqBo0RGf170ECA+WlbU3CxWTmmLQ88dBAnV3Fg/+QZdR49mCZRXM+Q9HEueuuBSCl3RhzQA/mGJU5XPeTv2aL9jqeFQij8aeJ4=
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
- (2603:10b6:803:47::21) by SN4PR0401MB3584.namprd04.prod.outlook.com
- (2603:10b6:803:47::10) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2979.33; Wed, 13 May
- 2020 12:06:08 +0000
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::9854:2bc6:1ad2:f655]) by SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::9854:2bc6:1ad2:f655%4]) with mapi id 15.20.3000.022; Wed, 13 May 2020
- 12:06:08 +0000
-From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        id S1731811AbgEMMLh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 13 May 2020 08:11:37 -0400
+Received: from mout.gmx.net ([212.227.15.15]:35945 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731072AbgEMMLg (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 13 May 2020 08:11:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1589371887;
+        bh=9dntaNbHhyWzaRxCYzt57WEoG8NhG1PDbvULCQjzvps=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=IluWe2GiHNFurigWe0JJ8H3KnJSblM4t5SZ1NBfUGMhZOnIxgp8BOwatoaS/GBlKS
+         35LqDN7m/dCH2DeKv2v2UNW0Ylw546ww8VG0xys7VOpv9XXq0qL3MG74LMQJMnWzy7
+         k6EHkb5eca0EbnGeGumgypRVEnSgzpjptPLXPCi4=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MSKyI-1jfLWA1MTI-00SiEA; Wed, 13
+ May 2020 14:11:27 +0200
+Subject: Re: Bug 5.7-rc: root leak, eb leak
+To:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
         "dsterba@suse.cz" <dsterba@suse.cz>,
         David Sterba <dsterba@suse.com>
-CC:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: Re: Bug 5.7-rc: root leak, eb leak
-Thread-Topic: Bug 5.7-rc: root leak, eb leak
-Thread-Index: AQHWKGfW6Ky5qVZQwUmLt+jF5CrP/Q==
-Date:   Wed, 13 May 2020 12:06:07 +0000
-Message-ID: <SN4PR0401MB3598875C33493DDC0D8BA60D9BBF0@SN4PR0401MB3598.namprd04.prod.outlook.com>
+Cc:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
 References: <5e955017351005f2cc4c0210f401935203de8496c56cb76f53547d435f502803.dsterba@suse.com>
  <a1b2a3320c72e9bcd355caf93cc72fc093807c67e63be0fd59a5fbc1a3a6587f.dsterba@suse.com>
  <20200512230333.GH18421@twin.jikos.cz>
  <SN4PR0401MB3598D62552D8D47F2446121B9BBF0@SN4PR0401MB3598.namprd04.prod.outlook.com>
  <fa11e7ec-d785-455e-02f9-c45d607c0b52@gmx.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: gmx.com; dkim=none (message not signed)
- header.d=none;gmx.com; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [129.253.240.72]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: b894d744-fecb-4c13-c94a-08d7f7360501
-x-ms-traffictypediagnostic: SN4PR0401MB3584:
-x-microsoft-antispam-prvs: <SN4PR0401MB3584E28200953B79EAFABF899BBF0@SN4PR0401MB3584.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:5516;
-x-forefront-prvs: 0402872DA1
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 2HaLT63qFh5mv55VCdnUErEiiE1iIJ1XPoV16qtvuFnixC4nA9jG/q1Ch9MSw5wugcguCE0+BsidI+uBwmMurzfeVVukQAOi6kH/0VKl+ozYPiP4dHjzXfoDHAbaRrm0tFfcISX14LgXP3759W1dNQY2UjrLe+ThaDwiLAWBscREm1f2OtcUVRK5wRPwDV47cJtsNo2yDUhXwqBDFNuET8q9IZfXdDnn5LCSp9Rx3c/PLfJkHY/qHRsZm+pX9YxyR0jbb1TU+ZPq0hG0VO12oxvAyNviyX2JFn/yDbN6U8U0P4qBkPlmc0EpykuirPqE9xaLDSRQz1KB3EJOZ3ibBkzLJqCcrxmvsl0S1TQmd2n2BAfe3/mzII/pdsmwsW6/mWFxqNej6E/Z+8CdRF+BTlBsKd45rPcglOsCg90s3YG6xhoau79wvg/rfgh525V/c78VbxJUjNTM6VQpt8bH55QJFozpjkaIUzo27xf5JMWZNYE1orJPKmIvIIZGXX3nUvfyDJCv4zL2uvXDLywHeA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR0401MB3598.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(366004)(39860400002)(376002)(346002)(136003)(396003)(33430700001)(66446008)(33656002)(55016002)(91956017)(316002)(9686003)(478600001)(86362001)(110136005)(33440700001)(2906002)(71200400001)(8936002)(7696005)(26005)(64756008)(4744005)(6506007)(52536014)(53546011)(66556008)(66946007)(186003)(5660300002)(4326008)(66476007)(76116006)(8676002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: ZOPVl12nXQwEuoCTk9npxl40Gb4BdB8ZRFMLsVemmS/oPo40nmnKMSI/fi+lNokcSwA5s8inyw2vTZKvV4JuETJTj3X+WJtUGIzOpm0DiOXfZMPlUs1XA0iBHN+IWQTKZEYXSgqXSwCfO0CdkfYN8W+b0HoG8PbdPPn4+eoUYxU0+EjO/2a7XwrNCQlD0ceG6JDOqEuZ6Oux3N5oU1FahO52AZx3mdsOx1jA2WNnoNDNiEkBHEX4fQ6X0hLHywjbcjrG5jeP0HmKZTV7tXYnqUqJ2arcPrRgP0dGvovDonNfW99BbQXxHO4oX6o03MHF6+tJmkFNvXDFZAV/md7G4Gst17S+mSKGKPO38M4s9IgtdtiLy5Wp9ECUD2g46ORUFAuU5j1YIMhKgiZq9UvLkVodtTvMHi9k06pl9h1VJT7TQa6egsJmraU63+lCgZcBFRl9OXCKSoYPLPh60JxwSkjuw794vNIkAy63SkfvpQgRjiL9PNTtk24vSYTz+L2w
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="iso-2022-jp"
-Content-Transfer-Encoding: quoted-printable
+ <SN4PR0401MB3598875C33493DDC0D8BA60D9BBF0@SN4PR0401MB3598.namprd04.prod.outlook.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
+ mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
+ PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
+ 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
+ D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
+ efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
+ ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
+ BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
+ 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
+ 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
+ EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
+ 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
+ ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
+ oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
+ fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
+ 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
+ ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
+ oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
+Message-ID: <2dd7f27b-e505-aee5-2ffa-7e72f4623479@gmx.com>
+Date:   Wed, 13 May 2020 20:11:21 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b894d744-fecb-4c13-c94a-08d7f7360501
-X-MS-Exchange-CrossTenant-originalarrivaltime: 13 May 2020 12:06:07.8413
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: DtpquQTItFElOBzvpdsA/xpTShgjQ2k598HKxejNPyYLlFSGuUE2svfrTdEQqUHnZDUExKKUkMGT/ZpqEoASdqGIzO4CGkGXcqRC4M1uHY0=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN4PR0401MB3584
+In-Reply-To: <SN4PR0401MB3598875C33493DDC0D8BA60D9BBF0@SN4PR0401MB3598.namprd04.prod.outlook.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="DNfzaektbLxvkisr0oBjMd09Ji2WbBeSW"
+X-Provags-ID: V03:K1:skUkcT/P+Xr4aPOn1qgqIxl8aP8oa98x48sOaPnMM7ifd6PD6J0
+ 31B5fIC4IIuftN6mj2ZMno0yQPECLND6SOux6Z1L0OBqIK3XBSHyzp835NlKX7/d3uox/w2
+ /g33WPE0/fv35dXNne/JDdebv80y/hqZcj03C4SWm9il/stNbhaM6OaT6Ln2v80CLR4at0g
+ Nkxhkh4MgSvq2HkvbkJ3g==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:DxP5c2/aFl8=:oQZVWufVrnUdj6A5jxIexo
+ 9E9hUVSFSJVgqq3GYXHTHf2fEBHp0Jdtp4keXl+56+1JyoybspvrllxvORSDaXMANpRFPCOwJ
+ JA4eqd8wz6EHKX3eO4V27PJtuYpj9t/uEuibn/E3TzYOStviHrsHW7/iEwdxOkGJAid56FWkT
+ O4vzLtUts0RZ0hpeZOzDXONWwFpo6SXIAgTPjz9/RgKsA59+vuqZ5gNdF5Pfy/AjXzo8kj13M
+ swSTfc/Jbrpp9bIDIdDGuthrUi2e4OhOZBPkRhcP5N0pIRt7CglaDRMRLYe2nuI8jTDpA1fWu
+ pvvEMIHkzBGbe7nUQ7FAT6A08sBnImySw++fTiz3xQeMTKCIRAjpCeMKftvyIetYdTmE4lDyb
+ cos7D/LLPLRYHD3lm3T29Xw8fw4gyI+wC2/VrpE+gAYO/mGk3zLbB3Il104s/xZevAH0Gsn75
+ IPRrtyCNxejuSYkvhFXLhxgvxkPWG8b1/oDUnw8ewPuPipaD79mVg/m95G7cVVxKpv1pdEiqX
+ 6scucsV/xcVdvxAnnd6oF0WJ3weYsT25N1g2UXTdvr3gwWFVdNAAYQAUTDWrGHu4g562eoE0k
+ 5UW9WR7rXHjcooiYEMWcs+k3jBv1dirMUPTvCjnqv/nbQrz39dD77qSAxBR/AUJ9vhfteKa5z
+ OK7i4Y+KK4Y1lTY5/suSfFMxatUzCvzNN/CXZeiXaEqWdgUPEtHdPihmn3DhWNQVH0eb5qpo7
+ DoEcA5NdE4RL/nBQwyqrfY2YSUOD5tLt+/UuV9auaqhPVzfPrfJM1gvjshu9TjSX7neBSL22R
+ AExn45tylPIhmHy/6Ue7MsyXkT/V1Cm1zpShmzoqgvFFmnVyU2xc9SPrmm7ZukVBPjuZHA7eR
+ od0vKSr8bWKMkJTES1LtFn03YcD0X5rlsCgKa/ZqZNytteQe79GTj0juV17ZCCpiQ2I/zsfxC
+ fmhVpJ+TRJ/pJ6VSOrd/Hqsxv0mojC9RIhRYnrwQUeS2DcBZ57OrgmuqFsHv0aZWVp++IC7S/
+ pO1C9LSHJZzaj1asmJW9q9wbmW97FkmHRmiKwZKfrD6OfNpXiIzvV4UZZbfCiJxvBz9681fW7
+ 4/8cj/RP3SxkKX+C9DcGT1Xa4WDqFwbHXsw0wD4tZ411Xz5pp5RXk6Hrbq1OBku8TG3XNkFFr
+ 2SDkt0R4Syip9sxvgSkbzo7quV2De31sOyucrbFeFiriXMAIl8crfxWBOf4S77zvS9F/d6s8l
+ qPMceGpJwbJddi0s7
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 13/05/2020 13:57, Qu Wenruo wrote:=0A=
-> =0A=
-> =0A=
-> On 2020/5/13 =1B$B2<8a=1B(B7:54, Johannes Thumshirn wrote:=0A=
->> On 13/05/2020 01:04, David Sterba wrote:=0A=
->> [...]=0A=
->>>=0A=
->>> Johannes, do you have logs from the test?=0A=
->>=0A=
->>=0A=
->>=0A=
->> I recreated the logs for btrfs/028 (dmesg, kmemleak and fstests log). Pl=
-ease find them attached.=0A=
->>=0A=
-> =0A=
-> BTW, what's the line of open_ctree+0x137c/0x277a?=0A=
-=0A=
-=0A=
-Here we go:=0A=
-(gdb) l *(open_ctree+0x137c/0x277a)=0A=
-0x122acd is in open_ctree (fs/btrfs/disk-io.c:2826).=0A=
-2821            u64 generation;=0A=
-2822            u64 features;=0A=
-2823            u16 csum_type;=0A=
-2824            struct btrfs_key location;=0A=
-2825            struct btrfs_super_block *disk_super;=0A=
-2826            struct btrfs_fs_info *fs_info =3D btrfs_sb(sb);=0A=
-2827            struct btrfs_root *tree_root;=0A=
-2828            struct btrfs_root *chunk_root;=0A=
-2829            int ret;=0A=
-2830            int err =3D -EINVAL;=0A=
-=0A=
-So its:=0A=
-2826            struct btrfs_fs_info *fs_info =3D btrfs_sb(sb);=0A=
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--DNfzaektbLxvkisr0oBjMd09Ji2WbBeSW
+Content-Type: multipart/mixed; boundary="dicDz93W2OfluVoDqQRvw2NmwAKkJUgHy"
+
+--dicDz93W2OfluVoDqQRvw2NmwAKkJUgHy
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+
+
+
+On 2020/5/13 =E4=B8=8B=E5=8D=888:06, Johannes Thumshirn wrote:
+> On 13/05/2020 13:57, Qu Wenruo wrote:
+>>
+>>
+>> On 2020/5/13 =E4=B8=8B=E5=8D=887:54, Johannes Thumshirn wrote:
+>>> On 13/05/2020 01:04, David Sterba wrote:
+>>> [...]
+>>>>
+>>>> Johannes, do you have logs from the test?
+>>>
+>>>
+>>>
+>>> I recreated the logs for btrfs/028 (dmesg, kmemleak and fstests log).=
+ Please find them attached.
+>>>
+>>
+>> BTW, what's the line of open_ctree+0x137c/0x277a?
+>=20
+>=20
+> Here we go:
+> (gdb) l *(open_ctree+0x137c/0x277a)
+> 0x122acd is in open_ctree (fs/btrfs/disk-io.c:2826).
+> 2821            u64 generation;
+> 2822            u64 features;
+> 2823            u16 csum_type;
+> 2824            struct btrfs_key location;
+> 2825            struct btrfs_super_block *disk_super;
+> 2826            struct btrfs_fs_info *fs_info =3D btrfs_sb(sb);
+> 2827            struct btrfs_root *tree_root;
+> 2828            struct btrfs_root *chunk_root;
+> 2829            int ret;
+> 2830            int err =3D -EINVAL;
+>=20
+> So its:
+> 2826            struct btrfs_fs_info *fs_info =3D btrfs_sb(sb);
+>=20
+This doesn't make sense.
+
+That line doesn't even call read_tree_block() nor even any function call.=
+
+
+This looks really strange.
+
+Thanks,
+Qu
+
+
+--dicDz93W2OfluVoDqQRvw2NmwAKkJUgHy--
+
+--DNfzaektbLxvkisr0oBjMd09Ji2WbBeSW
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl674+kACgkQwj2R86El
+/qjWtwf/cPTbqatfgzeu8uhP9ikCCNPnSe6Hgp95jmuevqnbApoChPDDWdMxTdZ4
+RkU8VjAlGcjio1K134oV6w5tulqNK7St3W99En6ZAyh4aL9zSrX+lzfY6S5roXfr
+7T306PMyAKrPXVOTWY6qxePol+vvO/5g0la/3pLFwr7WvnToypDe2VctsL9UFMQI
+0kbSmTIIrlc3ZSRnE9jjytl8Av2Ou+cL3IpaLilw3/DElJK6EnZfYYbLfLUB8hIh
+q2UIgIV3SxAsEhCXniV8PlEtWRvIebZHTQu9uvINGJ9eNPMV+F8GKn/hvGminRzI
+2ceyr1ZjdeONvcU6WGrG+pfMb2bgnA==
+=/zjb
+-----END PGP SIGNATURE-----
+
+--DNfzaektbLxvkisr0oBjMd09Ji2WbBeSW--
