@@ -2,34 +2,31 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAB361D235B
-	for <lists+linux-btrfs@lfdr.de>; Thu, 14 May 2020 02:02:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DE921D235E
+	for <lists+linux-btrfs@lfdr.de>; Thu, 14 May 2020 02:06:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732817AbgENACF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 13 May 2020 20:02:05 -0400
-Received: from mout.gmx.net ([212.227.15.19]:43633 "EHLO mout.gmx.net"
+        id S1732810AbgENAGQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 13 May 2020 20:06:16 -0400
+Received: from mout.gmx.net ([212.227.15.18]:49915 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732806AbgENACE (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 13 May 2020 20:02:04 -0400
+        id S1732806AbgENAGQ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 13 May 2020 20:06:16 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1589414516;
-        bh=vMmE71/PglsxE3jLt+ppMEn/Jg4EDfeJ7vN91ROBceQ=;
+        s=badeba3b8450; t=1589414767;
+        bh=QAKJwFcloKZgFjZNKPs7dXI+ootwCCyu/1PD3S1AKB4=;
         h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=Blwez6aon5GtfonZR2jGUU7irJOHrjF47W+EJxV5pxP+SEPlGrbJoWt1pc2u93fc/
-         AN2kevB4z9L0XgU+YLYumSp0TyAcCbgKtCrVADzlFpIncxO/ZrVC+B/FlvCEZtvz4L
-         2UnO8a3a8QmiUEcnQAeFdGE1bqe64LM13XOLqtgQ=
+        b=RkNYvvWdVx614AUaenbXlZyOqXHoDvSvwUSczeprJPVCqefB9uah2ZTTbzpAhHpX8
+         /hIiQa3Fq66XDtUAKQs65Ur/8Bh4cwMvpyXdFVvxtlMN9Hrlpnu9FTr/s6FyPT//qP
+         +Dw7PWqQLqS+0auNstSAwp61wIMQAM3XWQ3tHq5c=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
 Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1M42jK-1jZ1Jz2qPo-0000bK; Thu, 14
- May 2020 02:01:56 +0200
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1Mz9Yv-1jDnFF3MN1-00wG9L; Thu, 14
+ May 2020 02:06:07 +0200
 Subject: Re: [PATCH 2/2] btrfs: Don't set SHAREABLE flag for data reloc tree
-To:     dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
-        Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
 References: <20200513061611.111807-1-wqu@suse.com>
- <20200513061611.111807-3-wqu@suse.com>
- <84d3fb22-3845-b952-88ca-c5ce31ab967f@suse.com>
- <2dc7bd7b-dc68-613e-f668-0462829f380f@gmx.com>
- <20200513135152.GJ18421@twin.jikos.cz>
+ <20200513061611.111807-3-wqu@suse.com> <20200513140157.GK18421@twin.jikos.cz>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -55,67 +52,118 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
  ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
  oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <12c06d3e-276a-9d5b-c7d9-6716884d6b76@gmx.com>
-Date:   Thu, 14 May 2020 08:01:52 +0800
+Message-ID: <08819168-7e48-8e91-c1c9-1f554dd2e4e6@gmx.com>
+Date:   Thu, 14 May 2020 08:06:03 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.8.0
 MIME-Version: 1.0
-In-Reply-To: <20200513135152.GJ18421@twin.jikos.cz>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:6Djeb01Dz5JwQz1OqUi3Q+I0d20SuDz8xdAd27wevkBQMkz96S0
- SBDUoP2KFFDVYFc0mVzHcf6Xg1Pg1KxlxFx4uBH3PWyYuqRdKz+YdzYckHLJsoyMYSBXX5i
- +XYCp3kgyLaRkQb1n/5h3VsfPfBOSsiA/77QWhF6yGB2Xw8sx7lRdd5rS4E+MYhGuYO/RNr
- ARksacD7eZ55kuEHqKBOg==
+In-Reply-To: <20200513140157.GK18421@twin.jikos.cz>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="PbPkvkF9PjrjULwWU6mcBPhecOhzVAahD"
+X-Provags-ID: V03:K1:hb+qb0Fj1guqVQmAUBVFUr7c1vIWKnFX/drj5q7wCEXTveVdXCj
+ qYLHQrb5m4GWx5dF+s/o+eCc32w6jvak5ZaR4EwxMSdTJ3MJ8x1xVXILrRP8Hg2O4hANzQ4
+ le+znif77zq+nvxtLGKiD0Z4eWR3pvZoaoySjjx/EmQEESY8SCGveEEaeGfkFaT6s+QLCFc
+ Cdj6hf20wHknG5ZmDSn+A==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:CTjZStPrMNY=:57ZYKwg/odsTUlypqu6wlH
- I2pZEm5mgCYrGPnV4mY537AoCSg6MFQO2mUPFSEw7pchc9S3RT+oBExvic1nHPPRcoEW7RT7B
- rBOFL13oQDhBXeYbQzNok9I7q9Ni546LIkhUxN44haxTvdqsw7Brw+kLOlUOWEqKQb28Idl4P
- I8fzEk/LP5PpQmjcDVWa67+R+AuVjWM6owXt1OP42Do4FZh2wI3kq5+C/X5CT1laKugxHXBtB
- x+5x96vVAxkC5Zej7fDt62YEhN4Szmwj2cGuq8SfvwkHP0p9UIBHb5vO+1DkyYpzZyDExFfYY
- rBue9VM32i+MJPFWaAPKSY5RhUlSIY0Kjx4Jr4b0C3xoiH0OA4Qom9dE05HZ2iJwGz3iMH2KC
- WSnmoieUSot3qV9ojJV1uMIMg39vpqWZJ1UZbD48Cok6D0he8VxHci3XpJn+3G+/jDRwbCq2O
- lO6hTu6KEITtWE0cPZbzn5lDM7pufdM+1naIwdsf4J1JvLMy54LwkAib8Q+guJjZSwsdXj7tB
- Mv5bbIlVnUf3RpxbW9B7bwbO6li9EhLuBBoXXW4tlItBbOd76b/Bb5ReFfTpoLtUUvnAd6WVV
- iVGtLL/Nn+NwU6Au8IxQAKOpeaetUeWdu0nNdhGTEUXM075ZeGJ0GARLuLSURykiz8oAOY58R
- ngaq4DhiOCe0EXH9nsYsdx66rUp3KVdqdHenOyxvHfW7bAdZhRnQOITSKptv9MJOkfXynRUAh
- 3YdNHpxRHvWMHFkNPJMpQ54LXNEKT0y+pjK7GGsM5jvtFLeZ2AebyqXK0TN0GVVhV/6SKiuhp
- 6Zk2wf4e+8f2sjDIthbd0dQnvXoZqrs6wp00LZOfJEjcg77EOJ1EdrMBarPxVUMUEFwzcdfmr
- LYsRewT6wuiW4BNLkx9vj4hlIa2mwRqLoOOGIGErGcz3toHlL1Ne+pQCB4Q6TccfIILbVJCMO
- kcVsjZt1uvcmOJAlGoYChjkayAB8QHAwXSZhPclhgLVlDGGhoww7gkcnNzsC4UhZXfkuBAgII
- gHaE+IvbIZdtUjdgcsf58G/XDbqvkQLu7Jiss4MVyTuhqqmNMQ+4KoGq3435sk47waCOZXayE
- so3PyD1IgJfQOsQ0lpa5+iISf1FnaV6D2Qp0FGN5ayCNfilAltgD6loaJ6aVO+nuW5xW5VED2
- bxU7gmsDaT+jZ8rvQZPZXEOtW5c9AWWLPSerTQe82V6X6oKMejWM/CT+4XwCrH+JKOYvn+dHt
- 2NTI6PnhqRtO+r/4X
+X-UI-Out-Filterresults: notjunk:1;V03:K0:L3+fWcu9D3w=:Y5OFiFtWXSRZ01vBGtV9eX
+ Fpe5zhv9avRb/wpKR1YXBJsDG6XBW+qqe/fyP/ox1U6PzfYpnIy6/xNahIZDJ+Ioaca9bYb3s
+ oGq3eTibzFaYhWv57EEA3JRzWBtRkaTFqtNBPcoo3tYsiHjoqkbXpbHyA+Qb/+ROkoZrFMj7Y
+ sBv6DMvxSSRdE0Y5G4R8Ru6ke1748m52KyJolryIUft0tRqSWAWhHSTR81TGM5+qYLmimItZW
+ n/uxsKQTgj6o2HFy25yhX3PdqdwbBPFmECttyNFPsDvLZNl1OCob4Tvn3hx/16ACWp8NMYphK
+ StBhs+PEXVncMPPJLriy/rXSWmXIPtC7ex8bol7lL5NTUMFpvRlihkj9WC67hBBEEkZFpfCN2
+ FIbMvJ3WuPOiH956gtWppzpBoQxmhMsbNPLy1jdOCGDdngOjO1bZ7zSTYFg/+sQxXypME5q7H
+ EC7yosnelcbA1qR2sZKvFBaKCICTzWHgMQimeSb4NbgBH7yFk0FkBqYX6mFtexcH4Q1SCkFup
+ 16VpetenZA65lbxHlNqykGwaOXrPTVQXN4xS+lroORuDHlNvQWUugelZKTil3v4HirFBGOK02
+ Q8oBuf1zezF4+Kary4MreFd1S+twCD2rgi0TyCgejmBxHvdXMo/aZT2bSJ7snBAWCaCV+KP/Q
+ 9BM8H4NlE1CzJManwdG1+Xru7KvX1mdDN5/EaBZwn5ZfW4suo+OwfoLSkN7dORfb7chfIo6Jt
+ GuWtH8SI0TWUlRyH7vSyua/2DzaNuF+m3stSS+RADlNNWZYzEuBXi6a7v6hPTKbhT/mVU7Rt3
+ lQK59aISjUXqTQojFjMK3X23ErvwuNcSGUp8RP75q1THbPpCrCHIakCyfyL3Z3Tu1MrJEWkem
+ Z7nZn5ybguEaglGmwMz7hTnyXzrTGLSwctvbwZeC3pNCxTNDb5rtOJIN7TpxRlCdJolpewJ4X
+ rxul1vw8M7luZdYLVr+vBdJytzytk/fRvZxfHKQQukhyQidFc1gPGbmty417eE95SsklQ/jQb
+ DPPgkJuCIMoVYHSeiv0h+2AS7ztR34NFdCW9EWBehrCxKIqsqThjlPqoRWFnsKIQdwRZH/2Jt
+ SrUQateMWakJlgV8l+8tK7HuQ1hqmwDoaPGhAjp0zzTFgGpkXLKfp3VUTH4gFMQzblRaM8LC2
+ u3Sw1Mwas8cz4uowhGm2N+QiR04mpcT46VvuVN+GErshvK1bbuprtDZS8YgNaaRX323Zb1VBF
+ NtMzqINVIU+7nNrAV
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--PbPkvkF9PjrjULwWU6mcBPhecOhzVAahD
+Content-Type: multipart/mixed; boundary="aoCDMXkNDv5hJ4IsoAaC0oUJKf9LjyPCE"
+
+--aoCDMXkNDv5hJ4IsoAaC0oUJKf9LjyPCE
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
 
-On 2020/5/13 =E4=B8=8B=E5=8D=889:51, David Sterba wrote:
-> On Wed, May 13, 2020 at 02:49:11PM +0800, Qu Wenruo wrote:
->>>>  {
->>>>  	struct inode *inode =3D NULL;
->>>>  	struct btrfs_trans_handle *trans;
->>>> -	struct btrfs_root *root;
->>>> +	struct btrfs_root *root =3D fs_info->dreloc_root;
->>>
->>> So why haven't you added code in btrfs_get_fs_root to quickly return a
->>> refcounted root and instead reference it without incrementing the refc=
-ount?
->>
->> This is exactly the same as how we handle fs_root.
->> And since the lifespan of data reloc root will be the same as the fs, I
->> don't think there is any need for it to be grabbed each time we need it=
-.
->
-> I'd vote for some consistency in the refcounting, ie. even if it's for
-> the same life span as the filesystem, set the reference.
->
-OK, I'll call grab and put in next version.
+
+On 2020/5/13 =E4=B8=8B=E5=8D=8810:01, David Sterba wrote:
+> On Wed, May 13, 2020 at 02:16:11PM +0800, Qu Wenruo wrote:
+>> -	if (root->root_key.objectid !=3D BTRFS_TREE_LOG_OBJECTID) {
+>> +	if (root->root_key.objectid !=3D BTRFS_TREE_LOG_OBJECTID &&
+>> +	    root->root_key.objectid !=3D BTRFS_DATA_RELOC_TREE_OBJECTID) {
+>=20
+>>  	if (test_bit(BTRFS_ROOT_SHAREABLE, &root->state) ||
+>> -	    root =3D=3D fs_info->tree_root)
+>> +	    root =3D=3D fs_info->tree_root || root =3D=3D fs_info->dreloc_ro=
+ot)
+>=20
+>>  		if (found_extent &&
+>>  		    (test_bit(BTRFS_ROOT_SHAREABLE, &root->state) ||
+>> -		     root =3D=3D fs_info->tree_root)) {
+>> +		     root =3D=3D fs_info->tree_root ||
+>> +		     root =3D=3D fs_info->dreloc_root)) {
+>=20
+> Lots of repeated conditions, though not all of them exactly the same. I=
+
+> was thinking about adding some helpers but don't have a good suggestion=
+=2E
+
+The good news is, only inode truncating cares that much.
+All other locations won't bother at all.
+
+The concern here is, INODE_ITEM can exist in trees without SHAREABLE
+(REF_COWS).
+The original exception is root tree (v1 space cache uses INODE_ITEM).
+
+As we don't set SHAREABLE flag for data reloc tree now, it's adding the
+exception.
+
+I could find a way to make it more readable, by separating the regular
+SHAREABLE check and two exceptions and wrap it into a function.
 
 Thanks,
 Qu
+
+>=20
+> The concern is about too much special casing, it's eg tree_root +
+> data_reloc_tree, or SHAREABLE + tree_reloc + data_reloc, etc. The
+> helpers should capture the common semantics of the condition and also
+> reduce the surface for future errors.
+>=20
+
+
+--aoCDMXkNDv5hJ4IsoAaC0oUJKf9LjyPCE--
+
+--PbPkvkF9PjrjULwWU6mcBPhecOhzVAahD
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl68i2sACgkQwj2R86El
+/qiV8Af/YO9zZBhCPNsbBWyNk7jIgkTlZU7xAoCK4uLL7H2gdhrCfp5ArlPGMB5O
+oFX1+Fc4fG9En20joOlEX5OVbAXQv8AE+oVYRofBJSuH5Jp4Z7ZpjoFFPGZPg9fU
+DAtZT7PeVQZCpGk+BxjfkVOvf+X2kenVfDXyRzYXvmQF346Vts5X+Xdub+3yEIMO
+lxHw4LW0ZfFqRYPGhwO6oFxPSVwQAAASRTMt3q6A454vYMsICVky6UaIEtKSz0li
+rIKGWAZAArKGRyuDM/BnDw6XyiWp0vVmydy7BFVpN8TPXD5VtEeBCTExa8MtFa2R
+zzc/1upbG2N1C0sOAnzVik2xbYV9Zg==
+=7q/s
+-----END PGP SIGNATURE-----
+
+--PbPkvkF9PjrjULwWU6mcBPhecOhzVAahD--
