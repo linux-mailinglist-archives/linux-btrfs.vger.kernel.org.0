@@ -2,153 +2,197 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96BEC1D28CE
-	for <lists+linux-btrfs@lfdr.de>; Thu, 14 May 2020 09:33:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1193C1D29B3
+	for <lists+linux-btrfs@lfdr.de>; Thu, 14 May 2020 10:09:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726088AbgENHdj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 14 May 2020 03:33:39 -0400
-Received: from mx2.suse.de ([195.135.220.15]:41006 "EHLO mx2.suse.de"
+        id S1726094AbgENII6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 14 May 2020 04:08:58 -0400
+Received: from mout.gmx.net ([212.227.17.20]:39875 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725999AbgENHdj (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 14 May 2020 03:33:39 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 6A36BACED
-        for <linux-btrfs@vger.kernel.org>; Thu, 14 May 2020 07:33:40 +0000 (UTC)
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 3/3] btrfs: Don't set SHAREABLE flag for data reloc tree
-Date:   Thu, 14 May 2020 15:33:25 +0800
-Message-Id: <20200514073325.33343-4-wqu@suse.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200514073325.33343-1-wqu@suse.com>
-References: <20200514073325.33343-1-wqu@suse.com>
+        id S1726024AbgENII5 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 14 May 2020 04:08:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1589443732;
+        bh=9wNQ8p1WxSx3B4H2QI7uSMUF2UWg6SN42NZvV25JOyA=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=SxZGcSVoAqYnbX5X5CSkB6YT7WKT59TXitdeym5uVWI3+e70D7kYKOOtHdQdL5MAc
+         fboA66yB6QkrJI4DDUEFAJpp33bVC1MndB0CwS9qtGx9XnK5SWLOWfUiyVSuPD79rZ
+         eJZDUvdoBY2tZ05PJLIaWKwObUG0nGMLvqEHrjxs=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MFKGP-1jJxZi3qlV-00Fmff; Thu, 14
+ May 2020 10:08:52 +0200
+Subject: Re: Balance loops: what we know so far
+To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+Cc:     linux-btrfs@vger.kernel.org
+References: <20200411211414.GP13306@hungrycats.org>
+ <b3e80e75-5d27-ec58-19af-11ba5a20e08c@gmx.com>
+ <20200428045500.GA10769@hungrycats.org>
+ <4bebdd24-ccaa-1128-7870-b59b08086d83@gmx.com>
+ <20200512134306.GV10769@hungrycats.org>
+ <20200512141108.GW10769@hungrycats.org>
+ <b7b8bbf8-119b-02ea-5fad-0f7c3abab07d@gmx.com>
+ <20200513052452.GY10769@hungrycats.org>
+ <6fcccf0b-108d-75d2-ad53-3f7837478319@gmx.com>
+ <20200513122140.GA10769@hungrycats.org>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
+ mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
+ PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
+ 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
+ D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
+ efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
+ ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
+ BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
+ 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
+ 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
+ EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
+ 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
+ ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
+ oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
+ fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
+ 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
+ ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
+ oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
+Message-ID: <3b3c805d-7c75-5fe7-1ed8-4a7841b16647@gmx.com>
+Date:   Thu, 14 May 2020 16:08:48 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200513122140.GA10769@hungrycats.org>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="A9py9pxakxoHNE5eMqmTx8a9O8aBuXzVA"
+X-Provags-ID: V03:K1:CUv52Nm+0Gtg9VCEl9r0GFtohsDpHyg+6Wy5GKza6p64U+BvM+6
+ DATyFJ/uuhiy3xQUcgEDn2jr+A/2qCQ1PTxvH3xVJZgZ8MRPZDBhnk4EzMSF244z+UWW13+
+ RDZl4QB32vxnSvoFbV3ZaxY0krVqEe7DlpkpcfBQwVmaXJKzfiPx4ZlkcDaQBq4zXMLLwO9
+ beg3YaJ7YAkrxgPeZsYBw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:8LAHILoqchM=:Z38F+qcKztidM+/zg1/ARN
+ 88SjCG+GfF+gUGuPb8tiJn442DWZBF7rbPI0hbVWLwcNMpWuuSn/WTqMMdj8XpAVFswkJz1rl
+ kOOG4PpOt1nTTrAlT4IKiVIF6YPm0YyeEC7IjpI8JSUnhQm20xiMEe3dUPcM8w+LN+zmztU1X
+ 1achfTK3VUU4uei5CinLW/b+C1jvG3EC6xjj1etlXQmz6Vi5erCYT+mNnwi0rw7uzWg2aGJZK
+ lq7VENrbcLQn7Y/wulgPLE5aQxbxmTa2CGsh9dS1lZgKWWTIpX/Pu3uMFStJgX95yeDkq0JWY
+ yTC7t7Srj6XEji63g+BPSfP4x6muT/pVwV4SSLQvtFXITTGZRexC6L2mtm0lzc/HUQnZ8L9HY
+ 9/goYXyXfjZx9BdErwvT6t8EdKXQdvwBNDoC27vp1L1N395Z+n3E9gYF1nVW+Cj73AzeFloZ1
+ gXG08UQI017fnTQ2RszPdzS9eHNtp1r7W8BOZHgI80tGw2zAeNcvoF/DZx/Rq07rac2ijrxLI
+ 7vrfkuNvQMkbWAu01dJXfsm70fQmoO8GcmgDqHGuwaYdN5yBl5myv/B3/wsz8nS1lqafKk7v1
+ qxnRfmunMx2BHL4087f86+MegA1W801/q3ZWSK6sEimHQc1q3qk+EC3956ZbLsVpCISco+ywx
+ Zr/m4+BoGmlwIPsRBKrragns3Ci7tsJBGc5olJUZNuC2yCWc/jMlu9HXJ2l1+Fg/VBZuSMUGE
+ ilxZM7AsmV1A8354goViGc9JTyqnobROVhkzMgxm1NBSzM6m0tTt39iRe62pTlteopxj17pF7
+ 07W/0qGUCwaDVT4+rs0xsvlHCnOrHMDj1WZn91SP8p0wMd8Fz3R4gaEHa7P9V1EIBGwimJyVt
+ FbC5rPULpa5Vgj5REA17ISqsrJJeV+i7BWGN9KWoYExhAU4YG7OlFM3gArZLiOnnCb3YInXnP
+ SHaAf1Onr5k5r1BrQahluAaaIhAV9g6X/IDQc/PxP41vE1eYPZIZNeeugwNOvQbIERZh6Vwgr
+ 15FD1h7obq1bifRc0AK9s/7LyGH6iD8wh75xcA6/0kmgAKZmPZ4RL1DRPS82ZpcpJpU3UFff5
+ JvqetAj4wVG7ByqokGA3xX+ktKPKWl8kQJOcvNke0pEYtr6PlvXD1VBOQvXO0PZmxIMvLBcCj
+ z3PB7GCxG5N6G7cVSXhdoWbaqPXIBB8pWhwXVzD+3UR9aEf/hpChXRkxaWdJjfOZz/eZYdAYT
+ xriFHyZbWhdvghgKN
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-SHAREABLE flag is set for subvolumes because users can create snapshot
-for subvolumes, thus sharing tree blocks of them.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--A9py9pxakxoHNE5eMqmTx8a9O8aBuXzVA
+Content-Type: multipart/mixed; boundary="FhVsha24yzHB0pcqDTHjDAtccx6Fl64eC"
 
-But data reloc tree are not exposed to user space, as it's only an
-internal tree for data relocation, thus it doesn't need the full path
-replacement treat at all.
+--FhVsha24yzHB0pcqDTHjDAtccx6Fl64eC
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-This patch will make data reloc tree just a non-shareable tree, and add
-btrfs_fs_info::data_reloc_root for data reloc tree, so relocation code can
-grab it from fs_info directly.
 
-This would slightly improve tree relocation, as now data reloc tree
-can go through regular COW routine to get relocated, without bothering
-the complex tree reloc tree routine.
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/ctree.h      |  1 +
- fs/btrfs/disk-io.c    | 14 +++++++++++++-
- fs/btrfs/relocation.c | 17 ++++++-----------
- 3 files changed, 20 insertions(+), 12 deletions(-)
+On 2020/5/13 =E4=B8=8B=E5=8D=888:21, Zygo Blaxell wrote:
+> On Wed, May 13, 2020 at 07:23:40PM +0800, Qu Wenruo wrote:
+>>
+>>
+[...]
+>=20
+> Kernel log:
+>=20
+> 	[96199.614869][ T9676] BTRFS info (device dm-0): balance: start -d
+> 	[96199.616086][ T9676] BTRFS info (device dm-0): relocating block grou=
+p 4396679168000 flags data
+> 	[96199.782217][ T9676] BTRFS info (device dm-0): relocating block grou=
+p 4395605426176 flags data
+> 	[96199.971118][ T9676] BTRFS info (device dm-0): relocating block grou=
+p 4394531684352 flags data
+> 	[96220.858317][ T9676] BTRFS info (device dm-0): found 13 extents, loo=
+ps 1, stage: move data extents
+> 	[...]
+> 	[121403.509718][ T9676] BTRFS info (device dm-0): found 13 extents, lo=
+ops 131823, stage: update data pointers
+> 	(qemu) stop
+>=20
+> btrfs-image URL:
+>=20
+> 	http://www.furryterror.org/~zblaxell/tmp/.fsinqz/image.bin
+>=20
+The image shows several very strange result.
 
-diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index 65c09aea4cb9..d3be34316677 100644
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -582,6 +582,7 @@ struct btrfs_fs_info {
- 	struct btrfs_root *quota_root;
- 	struct btrfs_root *uuid_root;
- 	struct btrfs_root *free_space_root;
-+	struct btrfs_root *data_reloc_root;
- 
- 	/* the log root tree is a directory of all the other log roots */
- 	struct btrfs_root *log_root_tree;
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 76b165ad497f..fced949b150c 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -1419,7 +1419,8 @@ static int btrfs_init_fs_root(struct btrfs_root *root)
- 	if (ret)
- 		goto fail;
- 
--	if (root->root_key.objectid != BTRFS_TREE_LOG_OBJECTID) {
-+	if (root->root_key.objectid != BTRFS_TREE_LOG_OBJECTID &&
-+	    root->root_key.objectid != BTRFS_DATA_RELOC_TREE_OBJECTID) {
- 		set_bit(BTRFS_ROOT_SHAREABLE, &root->state);
- 		btrfs_check_and_init_root_item(&root->root_item);
- 	}
-@@ -1525,6 +1526,7 @@ void btrfs_free_fs_info(struct btrfs_fs_info *fs_info)
- 	btrfs_put_root(fs_info->uuid_root);
- 	btrfs_put_root(fs_info->free_space_root);
- 	btrfs_put_root(fs_info->fs_root);
-+	btrfs_put_root(fs_info->data_reloc_root);
- 	btrfs_check_leaked_roots(fs_info);
- 	btrfs_extent_buffer_leak_debug_check(fs_info);
- 	kfree(fs_info->super_copy);
-@@ -1981,6 +1983,7 @@ static void free_root_pointers(struct btrfs_fs_info *info, bool free_chunk_root)
- 	free_root_extent_buffers(info->quota_root);
- 	free_root_extent_buffers(info->uuid_root);
- 	free_root_extent_buffers(info->fs_root);
-+	free_root_extent_buffers(info->data_reloc_root);
- 	if (free_chunk_root)
- 		free_root_extent_buffers(info->chunk_root);
- 	free_root_extent_buffers(info->free_space_root);
-@@ -2287,6 +2290,15 @@ static int btrfs_read_roots(struct btrfs_fs_info *fs_info)
- 	set_bit(BTRFS_ROOT_TRACK_DIRTY, &root->state);
- 	fs_info->csum_root = root;
- 
-+	location.objectid = BTRFS_DATA_RELOC_TREE_OBJECTID;
-+	root = btrfs_get_fs_root(fs_info, &location, true);
-+	if (IS_ERR(root)) {
-+		ret = PTR_ERR(root);
-+		goto out;
-+	}
-+	set_bit(BTRFS_ROOT_TRACK_DIRTY, &root->state);
-+	fs_info->data_reloc_root = root;
-+
- 	location.objectid = BTRFS_QUOTA_TREE_OBJECTID;
- 	root = btrfs_read_tree_root(tree_root, &location);
- 	if (!IS_ERR(root)) {
+For one, although we're relocating block group 4394531684352, the
+previous two block groups doesn't really get relocated.
+
+There are still extents there, all belongs to data reloc tree.
+
+Furthermore, the data reloc tree inode 620 should be evicted when
+previous block group relocation finishes.
+
+So I'm considering something went wrong in data reloc tree, would you
+please try the following diff?
+(Either on vanilla kernel or with my previous useless patch)
+
+Thanks,
+Qu
+
 diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-index 437b782c57e6..9afc1a6928cf 100644
+index 9afc1a6928cf..ef9e18bab6f6 100644
 --- a/fs/btrfs/relocation.c
 +++ b/fs/btrfs/relocation.c
-@@ -3470,14 +3470,12 @@ struct inode *create_reloc_inode(struct btrfs_fs_info *fs_info,
- {
- 	struct inode *inode = NULL;
- 	struct btrfs_trans_handle *trans;
--	struct btrfs_root *root;
-+	struct btrfs_root *root = btrfs_grab_root(fs_info->data_reloc_root);
- 	struct btrfs_key key;
- 	u64 objectid;
- 	int err = 0;
- 
--	root = read_fs_root(fs_info, BTRFS_DATA_RELOC_TREE_OBJECTID);
--	if (IS_ERR(root))
--		return ERR_CAST(root);
-+	ASSERT(root);
- 
- 	trans = btrfs_start_transaction(root, 6);
- 	if (IS_ERR(trans)) {
-@@ -3870,13 +3868,10 @@ int btrfs_recover_relocation(struct btrfs_root *root)
- 
- 	if (err == 0) {
- 		/* cleanup orphan inode in data relocation tree */
--		fs_root = read_fs_root(fs_info, BTRFS_DATA_RELOC_TREE_OBJECTID);
--		if (IS_ERR(fs_root)) {
--			err = PTR_ERR(fs_root);
--		} else {
--			err = btrfs_orphan_cleanup(fs_root);
--			btrfs_put_root(fs_root);
--		}
-+		fs_root = btrfs_grab_root(fs_info->data_reloc_root);
-+		ASSERT(fs_root);
-+		err = btrfs_orphan_cleanup(fs_root);
-+		btrfs_put_root(fs_root);
- 	}
- 	return err;
- }
--- 
-2.26.2
+@@ -3498,6 +3498,7 @@ struct inode *create_reloc_inode(struct
+btrfs_fs_info *fs_info,
+        BTRFS_I(inode)->index_cnt =3D group->start;
 
+        err =3D btrfs_orphan_add(trans, BTRFS_I(inode));
++       WARN_ON(atomic_read(inode->i_count) !=3D 1);
+ out:
+        btrfs_put_root(root);
+        btrfs_end_transaction(trans);
+@@ -3681,6 +3682,7 @@ int btrfs_relocate_block_group(struct
+btrfs_fs_info *fs_info, u64 group_start)
+ out:
+        if (err && rw)
+                btrfs_dec_block_group_ro(rc->block_group);
++       WARN_ON(atomic_read(inode->i_count) !=3D 1);
+        iput(rc->data_inode);
+        btrfs_put_block_group(rc->block_group);
+        free_reloc_control(rc);
+
+
+--FhVsha24yzHB0pcqDTHjDAtccx6Fl64eC--
+
+--A9py9pxakxoHNE5eMqmTx8a9O8aBuXzVA
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl68/JAACgkQwj2R86El
+/qh4gQf6A3gOJQJx0QuqixX89XvSsKqY4T7H1eDfa+PHRun7rougifP1Xn80sXEn
+rNK3XVkSKJS8Q3b0Q5U9Jo4YOsZ3g0nuDmLeYpfNiiVVMlfhTbL6f//C7v+pagNP
+izn7MMJkU/dJMENemAAUknao5MatlWdvsLGF2+Ew7KPFKRjHB7mKTf5uHwRlY+2L
+gqdCK/5OOFqGo5bz+/cjKW9mthHMIyPRJauJ6XTnVOQHIELmpA8/Sjg/szOXCR3x
+x8MEo7K11thgLhIiQOFH9fzE4tqXZ8Frco9rhxECIN9iZRx93JCNSpiJgQR96Hzj
+BcMUrZMg2YCbELmKuFmQBuKwgbIX5g==
+=ioJa
+-----END PGP SIGNATURE-----
+
+--A9py9pxakxoHNE5eMqmTx8a9O8aBuXzVA--
