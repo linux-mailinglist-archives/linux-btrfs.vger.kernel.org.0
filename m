@@ -2,178 +2,130 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABAF61D2B22
-	for <lists+linux-btrfs@lfdr.de>; Thu, 14 May 2020 11:19:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4614B1D2B4A
+	for <lists+linux-btrfs@lfdr.de>; Thu, 14 May 2020 11:24:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725977AbgENJTb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 14 May 2020 05:19:31 -0400
-Received: from mail.synology.com ([211.23.38.101]:46482 "EHLO synology.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725878AbgENJTb (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 14 May 2020 05:19:31 -0400
-Received: from localhost.localdomain (unknown [10.17.32.181])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by synology.com (Postfix) with ESMTPSA id 3C7B6CE837BC;
-        Thu, 14 May 2020 17:19:29 +0800 (CST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synology.com; s=123;
-        t=1589447969; bh=7o1EvNZfCBmVyaVN97ASp0bEnfZw25Xdp8eNB1L1IeU=;
-        h=From:To:Cc:Subject:Date;
-        b=D77v2JK+DJR5u9gwsAQ9bwvkbI2csaE/ycNNGx94qY1ilid+gxNKQuUlpLMJi3AId
-         xea8n8Meb7kN1s+MI3bnW0tlBJLbWAxubTuTmffpX7IkEN7uv4ctcpCpkpPnP012mL
-         qX+5C3ewaTsEsUN/L9iygpV8CCYEzz4mOtGmUa1g=
-From:   robbieko <robbieko@synology.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     Robbie Ko <robbieko@synology.com>
-Subject: [PATCH] Btrfs: reduce lock contention when create snapshot
-Date:   Thu, 14 May 2020 17:19:18 +0800
-Message-Id: <20200514091918.30294-1-robbieko@synology.com>
-X-Mailer: git-send-email 2.17.1
-X-Synology-MCP-Status: no
-X-Synology-Spam-Flag: no
-X-Synology-Spam-Status: score=0, required 6, WHITELIST_FROM_ADDRESS 0
-X-Synology-Virus-Status: no
+        id S1726033AbgENJYm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 14 May 2020 05:24:42 -0400
+Received: from mail-wr1-f65.google.com ([209.85.221.65]:44512 "EHLO
+        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725878AbgENJYl (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 14 May 2020 05:24:41 -0400
+Received: by mail-wr1-f65.google.com with SMTP id 50so2905009wrc.11;
+        Thu, 14 May 2020 02:24:40 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=HvLcRj3zFxBfrwvPJw8Re1n0yA4eLs/LIsJCgzVzMpU=;
+        b=Wfa7s4KOnvy2WzGq5GAQqe6zsCqtq+vgOYACvyWVQfDCLwTmzWnlDxGOyCHLw1gx+l
+         Ezcfys6ihKO73hbP3IKQsEnbPYwzQOpSfKPkEzkXuwOTLOyOxlciYY7f9O6iwta+vu9p
+         1Oe35wOVz+RiwzB/4eVhG9pD5GZr/46QUCbXZVclNZuoQv7fETtJViYrK23XQNHttjVm
+         fKOn84+VMk5jRB8xGiq5stnmLFbZRRmjeMFu1jVCis/OTaOnI/GYjileppWHi0GtOSyj
+         tK83ltTYz0YcTD6E2SXU3BQrSSknLkn9Nple3YaKNeS149VytLSYzHV41DBtVVlQz01u
+         2q3w==
+X-Gm-Message-State: AOAM532aHs6T1QD7eOWCb0FRvGO+vVQOPJWd2b/SyIZEoT4QkeAKP37y
+        CcaYgjmfLjT7Ry/pqyr6aPY=
+X-Google-Smtp-Source: ABdhPJzMksLJ4HOEMDykfeERVMe+0JLicmjf2ryyiIAz2rIlrZvHs1eJh9g0Ll74wg/sb2kVU6cV2A==
+X-Received: by 2002:adf:fa4d:: with SMTP id y13mr4490865wrr.263.1589448279652;
+        Thu, 14 May 2020 02:24:39 -0700 (PDT)
+Received: from linux-t19r.fritz.box (ppp-46-244-223-154.dynamic.mnet-online.de. [46.244.223.154])
+        by smtp.gmail.com with ESMTPSA id z132sm38877763wmc.29.2020.05.14.02.24.38
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 14 May 2020 02:24:39 -0700 (PDT)
+From:   Johannes Thumshirn <jth@kernel.org>
+To:     David Sterba <dsterba@suse.cz>
+Cc:     linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        Eric Biggers <ebiggers@google.com>,
+        Richard Weinberger <richard@nod.at>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Subject: [PATCH v3 0/3] Add file-system authentication to BTRFS
+Date:   Thu, 14 May 2020 11:24:12 +0200
+Message-Id: <20200514092415.5389-1-jth@kernel.org>
+X-Mailer: git-send-email 2.26.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Robbie Ko <robbieko@synology.com>
+From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 
-When creating a snapshot, it takes a long time because
-flush dirty data is required.
+This series adds file-system authentication to BTRFS. 
 
-But we have taken two resources as shown below:
-1. Destination directory inode lock
-2. Global subvol semaphore
+Unlike other verified file-system techniques like fs-verity the
+authenticated version of BTRFS does not need extra meta-data on disk.
 
-This will cause subvol destroy/create/setflag blocked,
-until the snapshot is created.
+This works because in BTRFS every on-disk block has a checksum, for meta-data
+the checksum is in the header of each meta-data item. For data blocks, a
+separate checksum tree exists, which holds the checksums for each block.
 
-We fix by flush dirty data first to reduce the time of
-the critical section, and then lock the relevant resources.
+Currently BRTFS supports CRC32C, XXHASH64, SHA256 and Blake2b for checksumming
+these blocks. This series adds a new checksum algorithm, HMAC(SHA-256), which
+does need an authentication key. When no, or an incoreect authentication key
+is supplied no valid checksum can be generated and a read, fsck or scrub
+operation would detect invalid or tampered blocks once the file-system is
+mounted again with the correct key. 
 
-Signed-off-by: Robbie Ko <robbieko@synology.com>
----
- fs/btrfs/ioctl.c | 70 ++++++++++++++++++++++++++++--------------------
- 1 file changed, 41 insertions(+), 29 deletions(-)
+Getting the key inside the kernel is out of scope of this implementation, the
+file-system driver assumes the key is already in the kernel's keyring at mount
+time.
 
-diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-index 40b729dce91c..d0c1598dc51e 100644
---- a/fs/btrfs/ioctl.c
-+++ b/fs/btrfs/ioctl.c
-@@ -748,7 +748,6 @@ static int create_snapshot(struct btrfs_root *root, struct inode *dir,
- 	struct btrfs_pending_snapshot *pending_snapshot;
- 	struct btrfs_trans_handle *trans;
- 	int ret;
--	bool snapshot_force_cow = false;
- 
- 	if (!test_bit(BTRFS_ROOT_REF_COWS, &root->state))
- 		return -EINVAL;
-@@ -771,27 +770,6 @@ static int create_snapshot(struct btrfs_root *root, struct inode *dir,
- 		goto free_pending;
- 	}
- 
--	/*
--	 * Force new buffered writes to reserve space even when NOCOW is
--	 * possible. This is to avoid later writeback (running dealloc) to
--	 * fallback to COW mode and unexpectedly fail with ENOSPC.
--	 */
--	btrfs_drew_read_lock(&root->snapshot_lock);
--
--	ret = btrfs_start_delalloc_snapshot(root);
--	if (ret)
--		goto dec_and_free;
--
--	/*
--	 * All previous writes have started writeback in NOCOW mode, so now
--	 * we force future writes to fallback to COW mode during snapshot
--	 * creation.
--	 */
--	atomic_inc(&root->snapshot_force_cow);
--	snapshot_force_cow = true;
--
--	btrfs_wait_ordered_extents(root, U64_MAX, 0, (u64)-1);
--
- 	btrfs_init_block_rsv(&pending_snapshot->block_rsv,
- 			     BTRFS_BLOCK_RSV_TEMP);
- 	/*
-@@ -806,7 +784,7 @@ static int create_snapshot(struct btrfs_root *root, struct inode *dir,
- 					&pending_snapshot->block_rsv, 8,
- 					false);
- 	if (ret)
--		goto dec_and_free;
-+		goto free_pending;
- 
- 	pending_snapshot->dentry = dentry;
- 	pending_snapshot->root = root;
-@@ -848,11 +826,6 @@ static int create_snapshot(struct btrfs_root *root, struct inode *dir,
- fail:
- 	btrfs_put_root(pending_snapshot->snap);
- 	btrfs_subvolume_release_metadata(fs_info, &pending_snapshot->block_rsv);
--dec_and_free:
--	if (snapshot_force_cow)
--		atomic_dec(&root->snapshot_force_cow);
--	btrfs_drew_read_unlock(&root->snapshot_lock);
--
- free_pending:
- 	kfree(pending_snapshot->root_item);
- 	btrfs_free_path(pending_snapshot->path);
-@@ -983,6 +956,45 @@ static noinline int btrfs_mksubvol(const struct path *parent,
- 	return error;
- }
- 
-+static noinline int btrfs_mksnapshot(const struct path *parent,
-+				   const char *name, int namelen,
-+				   struct btrfs_root *root,
-+				   bool readonly,
-+				   struct btrfs_qgroup_inherit *inherit)
-+{
-+	int ret;
-+	bool snapshot_force_cow = false;
-+
-+	/*
-+	 * Force new buffered writes to reserve space even when NOCOW is
-+	 * possible. This is to avoid later writeback (running dealloc) to
-+	 * fallback to COW mode and unexpectedly fail with ENOSPC.
-+	 */
-+	btrfs_drew_read_lock(&root->snapshot_lock);
-+
-+	ret = btrfs_start_delalloc_snapshot(root);
-+	if (ret)
-+		goto out;
-+
-+	/*
-+	 * All previous writes have started writeback in NOCOW mode, so now
-+	 * we force future writes to fallback to COW mode during snapshot
-+	 * creation.
-+	 */
-+	atomic_inc(&root->snapshot_force_cow);
-+	snapshot_force_cow = true;
-+
-+	btrfs_wait_ordered_extents(root, U64_MAX, 0, (u64)-1);
-+
-+	ret = btrfs_mksubvol(parent, name, namelen,
-+			     root, readonly, inherit);
-+out:
-+	if (snapshot_force_cow)
-+		atomic_dec(&root->snapshot_force_cow);
-+	btrfs_drew_read_unlock(&root->snapshot_lock);
-+	return ret;
-+}
-+
- /*
-  * When we're defragging a range, we don't want to kick it off again
-  * if it is really just waiting for delalloc to send it down.
-@@ -1762,7 +1774,7 @@ static noinline int __btrfs_ioctl_snap_create(struct file *file,
- 			 */
- 			ret = -EPERM;
- 		} else {
--			ret = btrfs_mksubvol(&file->f_path, name, namelen,
-+			ret = btrfs_mksnapshot(&file->f_path, name, namelen,
- 					     BTRFS_I(src_inode)->root,
- 					     readonly, inherit);
- 		}
+There was interest in also using keyed Blake2b from the community, but this
+support is not yet included.
+
+I have CCed Eric Biggers and Richard Weinberger in the submission, as they
+previously have worked on filesystem authentication and I hope we can get
+input from them as well.
+
+Example usage:
+Create a file-system with authentication key 0123456
+mkfs.btrfs --csum "hmac(sha256)" --auth-key 0123456 /dev/disk
+
+Add the key to the kernel's keyring as keyid 'btrfs:foo'
+keyctl add logon btrfs:foo 0123456 @u
+
+Mount the fs using the 'btrfs:foo' key
+mount -t btrfs -o auth_key=btrfs:foo,auth_hash_name="hmac(sha256)" /dev/disk /mnt/point
+
+Note, this is a re-base of the work I did when I was still at SUSE, hence the
+S-o-b being my SUSE address, while the Author being with my WDC address (to
+not generate bouncing mails).
+
+Changes since v2:
+- Select CONFIG_CRYPTO_HMAC and CONFIG_KEYS (kbuild robot)
+- Fix double free in error path
+- Fix memory leak in error path
+- Disallow nodatasum and nodatacow when authetication is use (Eric)
+- Pass in authentication algorithm as mount option (Eric)
+- Don't use the work "replay" in the documentation, as it is wrong and
+  harmful in this context (Eric)
+- Force key name to begin with 'btrfs:' (Eric)
+- Use '4' as on-disk checksum type for HMAC(SHA256) to not have holes in the
+  checksum types array.
+
+Changes since v1:
+- None, only rebased the series
+
+Johannes Thumshirn (3):
+  btrfs: rename btrfs_parse_device_options back to
+    btrfs_parse_early_options
+  btrfs: add authentication support
+  btrfs: document btrfs authentication
+
+ .../filesystems/btrfs-authentication.rst      | 168 ++++++++++++++++++
+ fs/btrfs/Kconfig                              |   2 +
+ fs/btrfs/ctree.c                              |  22 ++-
+ fs/btrfs/ctree.h                              |   5 +-
+ fs/btrfs/disk-io.c                            |  71 +++++++-
+ fs/btrfs/ioctl.c                              |   7 +-
+ fs/btrfs/super.c                              |  65 ++++++-
+ include/uapi/linux/btrfs_tree.h               |   1 +
+ 8 files changed, 326 insertions(+), 15 deletions(-)
+ create mode 100644 Documentation/filesystems/btrfs-authentication.rst
+
 -- 
-2.17.1
+2.26.1
 
