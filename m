@@ -2,177 +2,120 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E86EC1D1FE9
-	for <lists+linux-btrfs@lfdr.de>; Wed, 13 May 2020 22:15:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAB361D235B
+	for <lists+linux-btrfs@lfdr.de>; Thu, 14 May 2020 02:02:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388033AbgEMUP0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 13 May 2020 16:15:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34200 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2390352AbgEMUPK (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 13 May 2020 16:15:10 -0400
-Received: from syrinx.knorrie.org (syrinx.knorrie.org [IPv6:2001:888:2177::4d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E80AC061A0C
-        for <linux-btrfs@vger.kernel.org>; Wed, 13 May 2020 13:15:10 -0700 (PDT)
-Received: from [IPv6:2a02:a213:2b80:f000::12] (unknown [IPv6:2a02:a213:2b80:f000::12])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by syrinx.knorrie.org (Postfix) with ESMTPSA id 3A4EE608F580A;
-        Wed, 13 May 2020 22:15:07 +0200 (CEST)
-Subject: Re: Exploring referenced extents
-To:     Steven Davies <btrfs-list@steev.me.uk>
-Cc:     linux-btrfs@vger.kernel.org
-References: <c9a53b726880c5d7dc8092c2078e23a5@steev.me.uk>
- <3e9446ef-955b-351c-8238-9ca07ee38bf6@knorrie.org>
- <ac22328714cb200989294a451fc9930b@steev.me.uk>
-From:   Hans van Kranenburg <hans@knorrie.org>
-Autocrypt: addr=hans@knorrie.org; keydata=
- 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
-Message-ID: <b628d43b-88ab-7c8b-139e-7c79f6325e35@knorrie.org>
-Date:   Wed, 13 May 2020 22:15:06 +0200
+        id S1732817AbgENACF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 13 May 2020 20:02:05 -0400
+Received: from mout.gmx.net ([212.227.15.19]:43633 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732806AbgENACE (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 13 May 2020 20:02:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1589414516;
+        bh=vMmE71/PglsxE3jLt+ppMEn/Jg4EDfeJ7vN91ROBceQ=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=Blwez6aon5GtfonZR2jGUU7irJOHrjF47W+EJxV5pxP+SEPlGrbJoWt1pc2u93fc/
+         AN2kevB4z9L0XgU+YLYumSp0TyAcCbgKtCrVADzlFpIncxO/ZrVC+B/FlvCEZtvz4L
+         2UnO8a3a8QmiUEcnQAeFdGE1bqe64LM13XOLqtgQ=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1M42jK-1jZ1Jz2qPo-0000bK; Thu, 14
+ May 2020 02:01:56 +0200
+Subject: Re: [PATCH 2/2] btrfs: Don't set SHAREABLE flag for data reloc tree
+To:     dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
+        Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+References: <20200513061611.111807-1-wqu@suse.com>
+ <20200513061611.111807-3-wqu@suse.com>
+ <84d3fb22-3845-b952-88ca-c5ce31ab967f@suse.com>
+ <2dc7bd7b-dc68-613e-f668-0462829f380f@gmx.com>
+ <20200513135152.GJ18421@twin.jikos.cz>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
+ mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
+ PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
+ 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
+ D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
+ efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
+ ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
+ BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
+ 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
+ 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
+ EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
+ 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
+ ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
+ oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
+ fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
+ 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
+ ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
+ oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
+Message-ID: <12c06d3e-276a-9d5b-c7d9-6716884d6b76@gmx.com>
+Date:   Thu, 14 May 2020 08:01:52 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-In-Reply-To: <ac22328714cb200989294a451fc9930b@steev.me.uk>
+In-Reply-To: <20200513135152.GJ18421@twin.jikos.cz>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:6Djeb01Dz5JwQz1OqUi3Q+I0d20SuDz8xdAd27wevkBQMkz96S0
+ SBDUoP2KFFDVYFc0mVzHcf6Xg1Pg1KxlxFx4uBH3PWyYuqRdKz+YdzYckHLJsoyMYSBXX5i
+ +XYCp3kgyLaRkQb1n/5h3VsfPfBOSsiA/77QWhF6yGB2Xw8sx7lRdd5rS4E+MYhGuYO/RNr
+ ARksacD7eZ55kuEHqKBOg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:CTjZStPrMNY=:57ZYKwg/odsTUlypqu6wlH
+ I2pZEm5mgCYrGPnV4mY537AoCSg6MFQO2mUPFSEw7pchc9S3RT+oBExvic1nHPPRcoEW7RT7B
+ rBOFL13oQDhBXeYbQzNok9I7q9Ni546LIkhUxN44haxTvdqsw7Brw+kLOlUOWEqKQb28Idl4P
+ I8fzEk/LP5PpQmjcDVWa67+R+AuVjWM6owXt1OP42Do4FZh2wI3kq5+C/X5CT1laKugxHXBtB
+ x+5x96vVAxkC5Zej7fDt62YEhN4Szmwj2cGuq8SfvwkHP0p9UIBHb5vO+1DkyYpzZyDExFfYY
+ rBue9VM32i+MJPFWaAPKSY5RhUlSIY0Kjx4Jr4b0C3xoiH0OA4Qom9dE05HZ2iJwGz3iMH2KC
+ WSnmoieUSot3qV9ojJV1uMIMg39vpqWZJ1UZbD48Cok6D0he8VxHci3XpJn+3G+/jDRwbCq2O
+ lO6hTu6KEITtWE0cPZbzn5lDM7pufdM+1naIwdsf4J1JvLMy54LwkAib8Q+guJjZSwsdXj7tB
+ Mv5bbIlVnUf3RpxbW9B7bwbO6li9EhLuBBoXXW4tlItBbOd76b/Bb5ReFfTpoLtUUvnAd6WVV
+ iVGtLL/Nn+NwU6Au8IxQAKOpeaetUeWdu0nNdhGTEUXM075ZeGJ0GARLuLSURykiz8oAOY58R
+ ngaq4DhiOCe0EXH9nsYsdx66rUp3KVdqdHenOyxvHfW7bAdZhRnQOITSKptv9MJOkfXynRUAh
+ 3YdNHpxRHvWMHFkNPJMpQ54LXNEKT0y+pjK7GGsM5jvtFLeZ2AebyqXK0TN0GVVhV/6SKiuhp
+ 6Zk2wf4e+8f2sjDIthbd0dQnvXoZqrs6wp00LZOfJEjcg77EOJ1EdrMBarPxVUMUEFwzcdfmr
+ LYsRewT6wuiW4BNLkx9vj4hlIa2mwRqLoOOGIGErGcz3toHlL1Ne+pQCB4Q6TccfIILbVJCMO
+ kcVsjZt1uvcmOJAlGoYChjkayAB8QHAwXSZhPclhgLVlDGGhoww7gkcnNzsC4UhZXfkuBAgII
+ gHaE+IvbIZdtUjdgcsf58G/XDbqvkQLu7Jiss4MVyTuhqqmNMQ+4KoGq3435sk47waCOZXayE
+ so3PyD1IgJfQOsQ0lpa5+iISf1FnaV6D2Qp0FGN5ayCNfilAltgD6loaJ6aVO+nuW5xW5VED2
+ bxU7gmsDaT+jZ8rvQZPZXEOtW5c9AWWLPSerTQe82V6X6oKMejWM/CT+4XwCrH+JKOYvn+dHt
+ 2NTI6PnhqRtO+r/4X
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi!
 
-On 5/13/20 10:08 PM, Steven Davies wrote:
-> On 2020-05-11 02:21, Hans van Kranenburg wrote:
->> Hi!
-> 
-> Thanks for your insights!
-> 
->> On 5/9/20 1:11 PM, Steven Davies wrote:
->>> For curiosity I'm trying to write a tool which will show me the size 
->>> of
->>> data extents belonging to which files in a snapshot are exclusive to
->>> that snapshot as a way to show how much space would be freed if the
->>> snapshot were to be deleted, and which files in the snapshot are 
->>> taking
->>> up the most space.
-> 
-> <snip lots of useful information>
-> 
-> This is what I was missing when I read the documentation:
-> 
->>>      find what files reference it #1
->>>      for each referencing file:
->>>        determine which subvolumes it lives in #2
+
+On 2020/5/13 =E4=B8=8B=E5=8D=889:51, David Sterba wrote:
+> On Wed, May 13, 2020 at 02:49:11PM +0800, Qu Wenruo wrote:
+>>>>  {
+>>>>  	struct inode *inode =3D NULL;
+>>>>  	struct btrfs_trans_handle *trans;
+>>>> -	struct btrfs_root *root;
+>>>> +	struct btrfs_root *root =3D fs_info->dreloc_root;
+>>>
+>>> So why haven't you added code in btrfs_get_fs_root to quickly return a
+>>> refcounted root and instead reference it without incrementing the refc=
+ount?
 >>
->> For this, we delegate the work to the running linux kernel code, to ask
->> it who's using the extent at this disk_bytenr.
->>
->> https://python-btrfs.readthedocs.io/en/stable/btrfs.html#btrfs.ioctl.logical_to_ino_v2
->>
->> The main thing you're looking for is the ignore_offset option, which
->> will give you a list of *any* user of *any* data in that extent, 
->> instead
->> of only the first 4096 bytes in it which disk_bytenr itself is part of.
-> 
-> I did rework the script - albeit not the way you suggested (I still walk 
-> the file tree and look up the extents) because my subvolumes are small 
-> and stored on relatively fast SSDs, and this way allows me to narrow the 
-> search to a single directory - but it seems to work now.
+>> This is exactly the same as how we handle fs_root.
+>> And since the lifespan of data reloc root will be the same as the fs, I
+>> don't think there is any need for it to be grabbed each time we need it=
+.
+>
+> I'd vote for some consistency in the refcounting, ie. even if it's for
+> the same life span as the filesystem, set the reference.
+>
+OK, I'll call grab and put in next version.
 
-Haha, wonderful! Of course, the thing you're learning here is that you
-can do whatever you want, so that it best fits your own special
-situation. You don't have to rely on a pre-baked tool with command line
-options which just cannot do that single thing that you were looking for.
-
-> It isn't pretty 
-> yet either! It's succeeded in telling me that the reason the oldest 
-> snapshot of my / subvolume is huge is because it contains a dump of 
-> linux-firmware that's not shared by anything.
-> 
-> Next job - make it into a tree-like utility.
-
-I trust there will be more ideas later... :) Have fun, and share some of
-the results, they might inspire others, like you already have seen
-happening in this mail thread.
-
-> 
-> https://github.com/daviessm/btrfs-snapshots-diff/blob/4003a3fdec70c2a0de348e75a6576f9342754f54/btrfs-subvol-size.py
-
-Knorrie
+Thanks,
+Qu
