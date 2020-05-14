@@ -2,27 +2,28 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1193C1D29B3
-	for <lists+linux-btrfs@lfdr.de>; Thu, 14 May 2020 10:09:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 777841D2AB8
+	for <lists+linux-btrfs@lfdr.de>; Thu, 14 May 2020 10:55:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726094AbgENII6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 14 May 2020 04:08:58 -0400
-Received: from mout.gmx.net ([212.227.17.20]:39875 "EHLO mout.gmx.net"
+        id S1725978AbgENIza (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 14 May 2020 04:55:30 -0400
+Received: from mout.gmx.net ([212.227.17.21]:56097 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726024AbgENII5 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 14 May 2020 04:08:57 -0400
+        id S1725925AbgENIz2 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 14 May 2020 04:55:28 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1589443732;
-        bh=9wNQ8p1WxSx3B4H2QI7uSMUF2UWg6SN42NZvV25JOyA=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=SxZGcSVoAqYnbX5X5CSkB6YT7WKT59TXitdeym5uVWI3+e70D7kYKOOtHdQdL5MAc
-         fboA66yB6QkrJI4DDUEFAJpp33bVC1MndB0CwS9qtGx9XnK5SWLOWfUiyVSuPD79rZ
-         eJZDUvdoBY2tZ05PJLIaWKwObUG0nGMLvqEHrjxs=
+        s=badeba3b8450; t=1589446522;
+        bh=y6hLxXK5ADtqbPHainWmanMRtSyPjD2pP3Sz+LmkbhY=;
+        h=X-UI-Sender-Class:Subject:From:To:Cc:References:Date:In-Reply-To;
+        b=Zy6ZB25rd9XCeqv6qARp1+VIB5VnRQi6+OwOfCx9G8wHFVLx1CoM36gSyudldLyEI
+         3i1G5kHReLp61Uii3KnQHCV29hWQpZlqUT3ywCyiPaeSNjZyN0Y9km8Qp/9Fv/B+Uy
+         nabliWPQRMZfY8Lxfqx9OHvVm23jPrbRiDt5Krs0=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
 Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MFKGP-1jJxZi3qlV-00Fmff; Thu, 14
- May 2020 10:08:52 +0200
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MMGRK-1jqGWl1kEo-00JHLT; Thu, 14
+ May 2020 10:55:22 +0200
 Subject: Re: Balance loops: what we know so far
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
 Cc:     linux-btrfs@vger.kernel.org
 References: <20200411211414.GP13306@hungrycats.org>
@@ -35,7 +36,7 @@ References: <20200411211414.GP13306@hungrycats.org>
  <20200513052452.GY10769@hungrycats.org>
  <6fcccf0b-108d-75d2-ad53-3f7837478319@gmx.com>
  <20200513122140.GA10769@hungrycats.org>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+ <3b3c805d-7c75-5fe7-1ed8-4a7841b16647@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
  8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
@@ -60,139 +61,154 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
  ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
  oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <3b3c805d-7c75-5fe7-1ed8-4a7841b16647@gmx.com>
-Date:   Thu, 14 May 2020 16:08:48 +0800
+Message-ID: <70689a06-dc5f-5102-c0bb-23eadad88383@gmx.com>
+Date:   Thu, 14 May 2020 16:55:18 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.8.0
 MIME-Version: 1.0
-In-Reply-To: <20200513122140.GA10769@hungrycats.org>
+In-Reply-To: <3b3c805d-7c75-5fe7-1ed8-4a7841b16647@gmx.com>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="A9py9pxakxoHNE5eMqmTx8a9O8aBuXzVA"
-X-Provags-ID: V03:K1:CUv52Nm+0Gtg9VCEl9r0GFtohsDpHyg+6Wy5GKza6p64U+BvM+6
- DATyFJ/uuhiy3xQUcgEDn2jr+A/2qCQ1PTxvH3xVJZgZ8MRPZDBhnk4EzMSF244z+UWW13+
- RDZl4QB32vxnSvoFbV3ZaxY0krVqEe7DlpkpcfBQwVmaXJKzfiPx4ZlkcDaQBq4zXMLLwO9
- beg3YaJ7YAkrxgPeZsYBw==
+ boundary="yqOXgPv0xtq1vW0z4gjPde8N1OJelpN4T"
+X-Provags-ID: V03:K1:Nsfh+O0vkEUUMOM/u1gDMrqzE74absO47SBPhB8I289mIy39+Ys
+ Jgvga2xtWWW8lckRrwsqTzgLNgJHKb5Hif1Uxx87xym3NgIS0VVL/CCQG7zkJ4fYOI+LV3n
+ hFAnYP6fEBiWd1lSv68TrLx+iEF8NnMuA82QO4eOxoxOrBhlcSt3T4JUXJz70sfnNfvyY6t
+ l5qzdOlBPAKPBhNAXdfUw==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:8LAHILoqchM=:Z38F+qcKztidM+/zg1/ARN
- 88SjCG+GfF+gUGuPb8tiJn442DWZBF7rbPI0hbVWLwcNMpWuuSn/WTqMMdj8XpAVFswkJz1rl
- kOOG4PpOt1nTTrAlT4IKiVIF6YPm0YyeEC7IjpI8JSUnhQm20xiMEe3dUPcM8w+LN+zmztU1X
- 1achfTK3VUU4uei5CinLW/b+C1jvG3EC6xjj1etlXQmz6Vi5erCYT+mNnwi0rw7uzWg2aGJZK
- lq7VENrbcLQn7Y/wulgPLE5aQxbxmTa2CGsh9dS1lZgKWWTIpX/Pu3uMFStJgX95yeDkq0JWY
- yTC7t7Srj6XEji63g+BPSfP4x6muT/pVwV4SSLQvtFXITTGZRexC6L2mtm0lzc/HUQnZ8L9HY
- 9/goYXyXfjZx9BdErwvT6t8EdKXQdvwBNDoC27vp1L1N395Z+n3E9gYF1nVW+Cj73AzeFloZ1
- gXG08UQI017fnTQ2RszPdzS9eHNtp1r7W8BOZHgI80tGw2zAeNcvoF/DZx/Rq07rac2ijrxLI
- 7vrfkuNvQMkbWAu01dJXfsm70fQmoO8GcmgDqHGuwaYdN5yBl5myv/B3/wsz8nS1lqafKk7v1
- qxnRfmunMx2BHL4087f86+MegA1W801/q3ZWSK6sEimHQc1q3qk+EC3956ZbLsVpCISco+ywx
- Zr/m4+BoGmlwIPsRBKrragns3Ci7tsJBGc5olJUZNuC2yCWc/jMlu9HXJ2l1+Fg/VBZuSMUGE
- ilxZM7AsmV1A8354goViGc9JTyqnobROVhkzMgxm1NBSzM6m0tTt39iRe62pTlteopxj17pF7
- 07W/0qGUCwaDVT4+rs0xsvlHCnOrHMDj1WZn91SP8p0wMd8Fz3R4gaEHa7P9V1EIBGwimJyVt
- FbC5rPULpa5Vgj5REA17ISqsrJJeV+i7BWGN9KWoYExhAU4YG7OlFM3gArZLiOnnCb3YInXnP
- SHaAf1Onr5k5r1BrQahluAaaIhAV9g6X/IDQc/PxP41vE1eYPZIZNeeugwNOvQbIERZh6Vwgr
- 15FD1h7obq1bifRc0AK9s/7LyGH6iD8wh75xcA6/0kmgAKZmPZ4RL1DRPS82ZpcpJpU3UFff5
- JvqetAj4wVG7ByqokGA3xX+ktKPKWl8kQJOcvNke0pEYtr6PlvXD1VBOQvXO0PZmxIMvLBcCj
- z3PB7GCxG5N6G7cVSXhdoWbaqPXIBB8pWhwXVzD+3UR9aEf/hpChXRkxaWdJjfOZz/eZYdAYT
- xriFHyZbWhdvghgKN
+X-UI-Out-Filterresults: notjunk:1;V03:K0:7tBNtolbnVI=:36SuwsRUCbeR2yoU1X0YZl
+ 3nu69aJgaprUE7LeVLu5+MGBEFklskKTN/Fx7WO417V6o3DJBpDbWqn82ZF7W6nhSjbweV95z
+ LaNFlcw/dr9rBqIs86M2wO7MMEUnT6sYPvT0sbcmVCq8X/A3F/U2VeIR14aPfGc2kw1rupwSg
+ bSxvV4Kci+qkCOf5kOjlmo6NZ1t8xHNzy/6JzBqurrvnRMTH6OZO/vY2P4/Jp1q0oj1P0OqdS
+ JJS8Jf8kbudEOY77A5iws42C/49Ae9nkxMtxkjfrSsmOEO8i7GfOlYLg66h61t7ZsmDCha6qd
+ k0s5y0gAXzAL6ujGJdrd30VKnQnL8SrJR9y82rFeoEv4gDPZe54+3dLUVVpY8UiRzeKOmMqj/
+ Cw/iTTGFIPrfMBD9kjp2pjhdiEf2y4nMmSbVZwSbqiwbaaffPf2H9D0pLxHfh9plPDURXMAdE
+ RvCFLjbfoMKc8zHdei+wuhATpTq+XMOJzmCGNsb/9prbeq8HfA1MoTcp6qVAls3VEl8d7SSNA
+ D83TRA0PGVbH8r3b1EeYh4YnbLNNw/+JKp/cuiL9ORlDvAKc4daap9A3d4z0axRx15iideYfm
+ OknzrDc5r0QmIlnfePa2o2UJwy/pyTb9M6EyRgtooAGF6PNi/0k/T6asQ45Q7gFcgyuAm5FZr
+ O2YpsQfjr2i9ailXfbCV8OyHL9fTACJ8xNPpD241uBKnyEgnX03YPGQgD9JkecX0HNiCcBddz
+ fYKY5Rk3VE419unRBC/O43cjwfHE4yXHUCwv5Fzdg4OF/wD4TB51BfBiO2JNRTsy1on/hCtg9
+ 1V3XDgRoDXT7102nH/CsWIESao2zeJj/MbPz6flwaALgpYdrmAZ2AZRBxxqLNUiYr56/xivoF
+ uCyjJT9SN1D/OV1FJ7/B/6K0FZR2gMrrEL4HAeoGlDq9kA6bkicyJ1F8deyGqJLMW09dRe4q4
+ udyyT2T4JTDpvlhwJQUM+LhUF9OpKJLwXLoKvpbcW6GD1huPDsFfeHJ7h2ZWu2Q1LLIzMELci
+ riWlo9SPM6DBrTiwJDHagP9JiVV5w8y3pNvcyGOUT9OMG9jwbdMO/sivXMMWEXsHCZGz+NokR
+ nMfB2o4Fw2YSXSO6x4yccLLO51WkFXuGPhwJb7/6CpbljFnDdCXvLSqdvu443GizcaWfUeJck
+ p+jAZ1yeioHmyzokKi/rcOOtOMqwAjU0NucdHst4c5a1uTXG39T7MuFcjZ6L+u4/E9pvHZxms
+ EQP/BX7lPjksPHQj2
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---A9py9pxakxoHNE5eMqmTx8a9O8aBuXzVA
-Content-Type: multipart/mixed; boundary="FhVsha24yzHB0pcqDTHjDAtccx6Fl64eC"
+--yqOXgPv0xtq1vW0z4gjPde8N1OJelpN4T
+Content-Type: multipart/mixed; boundary="Y9HkY0V9IJGz1MF3bhS951Tqu6TkkR7CJ"
 
---FhVsha24yzHB0pcqDTHjDAtccx6Fl64eC
+--Y9HkY0V9IJGz1MF3bhS951Tqu6TkkR7CJ
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
 
 
 
-On 2020/5/13 =E4=B8=8B=E5=8D=888:21, Zygo Blaxell wrote:
-> On Wed, May 13, 2020 at 07:23:40PM +0800, Qu Wenruo wrote:
+On 2020/5/14 =E4=B8=8B=E5=8D=884:08, Qu Wenruo wrote:
+>=20
+>=20
+> On 2020/5/13 =E4=B8=8B=E5=8D=888:21, Zygo Blaxell wrote:
+>> On Wed, May 13, 2020 at 07:23:40PM +0800, Qu Wenruo wrote:
+>>>
+>>>
+> [...]
 >>
+>> Kernel log:
 >>
-[...]
+>> 	[96199.614869][ T9676] BTRFS info (device dm-0): balance: start -d
+>> 	[96199.616086][ T9676] BTRFS info (device dm-0): relocating block gro=
+up 4396679168000 flags data
+>> 	[96199.782217][ T9676] BTRFS info (device dm-0): relocating block gro=
+up 4395605426176 flags data
+>> 	[96199.971118][ T9676] BTRFS info (device dm-0): relocating block gro=
+up 4394531684352 flags data
+>> 	[96220.858317][ T9676] BTRFS info (device dm-0): found 13 extents, lo=
+ops 1, stage: move data extents
+>> 	[...]
+>> 	[121403.509718][ T9676] BTRFS info (device dm-0): found 13 extents, l=
+oops 131823, stage: update data pointers
+>> 	(qemu) stop
+>>
+>> btrfs-image URL:
+>>
+>> 	http://www.furryterror.org/~zblaxell/tmp/.fsinqz/image.bin
+>>
+> The image shows several very strange result.
 >=20
-> Kernel log:
+> For one, although we're relocating block group 4394531684352, the
+> previous two block groups doesn't really get relocated.
 >=20
-> 	[96199.614869][ T9676] BTRFS info (device dm-0): balance: start -d
-> 	[96199.616086][ T9676] BTRFS info (device dm-0): relocating block grou=
-p 4396679168000 flags data
-> 	[96199.782217][ T9676] BTRFS info (device dm-0): relocating block grou=
-p 4395605426176 flags data
-> 	[96199.971118][ T9676] BTRFS info (device dm-0): relocating block grou=
-p 4394531684352 flags data
-> 	[96220.858317][ T9676] BTRFS info (device dm-0): found 13 extents, loo=
-ps 1, stage: move data extents
-> 	[...]
-> 	[121403.509718][ T9676] BTRFS info (device dm-0): found 13 extents, lo=
-ops 131823, stage: update data pointers
-> 	(qemu) stop
+> There are still extents there, all belongs to data reloc tree.
 >=20
-> btrfs-image URL:
+> Furthermore, the data reloc tree inode 620 should be evicted when
+> previous block group relocation finishes.
 >=20
-> 	http://www.furryterror.org/~zblaxell/tmp/.fsinqz/image.bin
->=20
-The image shows several very strange result.
+> So I'm considering something went wrong in data reloc tree, would you
+> please try the following diff?
+> (Either on vanilla kernel or with my previous useless patch)
 
-For one, although we're relocating block group 4394531684352, the
-previous two block groups doesn't really get relocated.
+Oh, my previous testing patch is doing wrong inode put for data reloc
+tree, thus it's possible to lead to such situation.
 
-There are still extents there, all belongs to data reloc tree.
+Thankfully the v2 for upstream gets the problem fixed.
 
-Furthermore, the data reloc tree inode 620 should be evicted when
-previous block group relocation finishes.
-
-So I'm considering something went wrong in data reloc tree, would you
-please try the following diff?
-(Either on vanilla kernel or with my previous useless patch)
+Thus it goes back to the original stage, still no faster way to
+reproduce the problem...
 
 Thanks,
 Qu
+>=20
+> Thanks,
+> Qu
+>=20
+> diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
+> index 9afc1a6928cf..ef9e18bab6f6 100644
+> --- a/fs/btrfs/relocation.c
+> +++ b/fs/btrfs/relocation.c
+> @@ -3498,6 +3498,7 @@ struct inode *create_reloc_inode(struct
+> btrfs_fs_info *fs_info,
+>         BTRFS_I(inode)->index_cnt =3D group->start;
+>=20
+>         err =3D btrfs_orphan_add(trans, BTRFS_I(inode));
+> +       WARN_ON(atomic_read(inode->i_count) !=3D 1);
+>  out:
+>         btrfs_put_root(root);
+>         btrfs_end_transaction(trans);
+> @@ -3681,6 +3682,7 @@ int btrfs_relocate_block_group(struct
+> btrfs_fs_info *fs_info, u64 group_start)
+>  out:
+>         if (err && rw)
+>                 btrfs_dec_block_group_ro(rc->block_group);
+> +       WARN_ON(atomic_read(inode->i_count) !=3D 1);
+>         iput(rc->data_inode);
+>         btrfs_put_block_group(rc->block_group);
+>         free_reloc_control(rc);
+>=20
 
-diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-index 9afc1a6928cf..ef9e18bab6f6 100644
---- a/fs/btrfs/relocation.c
-+++ b/fs/btrfs/relocation.c
-@@ -3498,6 +3498,7 @@ struct inode *create_reloc_inode(struct
-btrfs_fs_info *fs_info,
-        BTRFS_I(inode)->index_cnt =3D group->start;
 
-        err =3D btrfs_orphan_add(trans, BTRFS_I(inode));
-+       WARN_ON(atomic_read(inode->i_count) !=3D 1);
- out:
-        btrfs_put_root(root);
-        btrfs_end_transaction(trans);
-@@ -3681,6 +3682,7 @@ int btrfs_relocate_block_group(struct
-btrfs_fs_info *fs_info, u64 group_start)
- out:
-        if (err && rw)
-                btrfs_dec_block_group_ro(rc->block_group);
-+       WARN_ON(atomic_read(inode->i_count) !=3D 1);
-        iput(rc->data_inode);
-        btrfs_put_block_group(rc->block_group);
-        free_reloc_control(rc);
+--Y9HkY0V9IJGz1MF3bhS951Tqu6TkkR7CJ--
 
-
---FhVsha24yzHB0pcqDTHjDAtccx6Fl64eC--
-
---A9py9pxakxoHNE5eMqmTx8a9O8aBuXzVA
+--yqOXgPv0xtq1vW0z4gjPde8N1OJelpN4T
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl68/JAACgkQwj2R86El
-/qh4gQf6A3gOJQJx0QuqixX89XvSsKqY4T7H1eDfa+PHRun7rougifP1Xn80sXEn
-rNK3XVkSKJS8Q3b0Q5U9Jo4YOsZ3g0nuDmLeYpfNiiVVMlfhTbL6f//C7v+pagNP
-izn7MMJkU/dJMENemAAUknao5MatlWdvsLGF2+Ew7KPFKRjHB7mKTf5uHwRlY+2L
-gqdCK/5OOFqGo5bz+/cjKW9mthHMIyPRJauJ6XTnVOQHIELmpA8/Sjg/szOXCR3x
-x8MEo7K11thgLhIiQOFH9fzE4tqXZ8Frco9rhxECIN9iZRx93JCNSpiJgQR96Hzj
-BcMUrZMg2YCbELmKuFmQBuKwgbIX5g==
-=ioJa
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl69B3YACgkQwj2R86El
+/qhDJQgAi+QbZRrGP+ctBjn0mD1TINhdg/NhrU0eBMROxO7SZqjv0VqGGTt+2YJt
+6ndwMz2Dxv+1Iv7Pws/BJPWYvKlOiikTUruganR1mIHPXXJUYCXBWEZEULe/+Ps3
+PFPKUlDya0O3jTNYgbP44OgTkfRp+Lu2CRoEGMevU/OGh1m7C5VfK8WodgcbFXA1
+7P8CQD5H2oTkweFoQuFAxcw+rXJfskq1q7XUgvVUYgQqq1WC6eTotJ1OYIMbUsK/
+OA6UzhPvs8x4aw6ckZ/w8ac9tj2XPn3ruNahiHUh+o3bm5GoMwXJ7zAKt5Wk8Lkb
+Zdh96JztC4wk6kVGnh0ubsne5DciQg==
+=Dw8R
 -----END PGP SIGNATURE-----
 
---A9py9pxakxoHNE5eMqmTx8a9O8aBuXzVA--
+--yqOXgPv0xtq1vW0z4gjPde8N1OJelpN4T--
