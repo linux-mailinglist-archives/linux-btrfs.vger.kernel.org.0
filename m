@@ -2,57 +2,57 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 180721D30DE
-	for <lists+linux-btrfs@lfdr.de>; Thu, 14 May 2020 15:17:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCA8E1D3122
+	for <lists+linux-btrfs@lfdr.de>; Thu, 14 May 2020 15:21:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726142AbgENNQ7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 14 May 2020 09:16:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52270 "EHLO
+        id S1726098AbgENNU6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 14 May 2020 09:20:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726073AbgENNQ7 (ORCPT
+        by vger.kernel.org with ESMTP id S1726011AbgENNU6 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 14 May 2020 09:16:59 -0400
-Received: from mail-vk1-xa41.google.com (mail-vk1-xa41.google.com [IPv6:2607:f8b0:4864:20::a41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0EDFC061A0C
-        for <linux-btrfs@vger.kernel.org>; Thu, 14 May 2020 06:16:58 -0700 (PDT)
-Received: by mail-vk1-xa41.google.com with SMTP id v23so735845vke.13
-        for <linux-btrfs@vger.kernel.org>; Thu, 14 May 2020 06:16:58 -0700 (PDT)
+        Thu, 14 May 2020 09:20:58 -0400
+Received: from mail-vk1-xa44.google.com (mail-vk1-xa44.google.com [IPv6:2607:f8b0:4864:20::a44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D72BAC061A0C
+        for <linux-btrfs@vger.kernel.org>; Thu, 14 May 2020 06:20:57 -0700 (PDT)
+Received: by mail-vk1-xa44.google.com with SMTP id z3so92435vka.10
+        for <linux-btrfs@vger.kernel.org>; Thu, 14 May 2020 06:20:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:reply-to:from:date:message-id
          :subject:to:cc:content-transfer-encoding;
-        bh=JHmSvOfqI9zv1aLO7Ij5kREGyIzSMH6xuRmSF/8a1cU=;
-        b=eZIUyzBX23piR2p8DwUHv6+T+PL8FQjVzSYWdDsnbXRLHIrcANkmtwTYE2KMdO9U3G
-         n0KqrodIFf0X6Grfhh3XFG7dgkUFFnQ0eMEViFd29xwarzQ2iRZ8HencqWeMoGOQAHFl
-         H7IFELgzWtWzef71IAfbp+cq/mnY1hu1GWfuIGJGyrcpw8NTeto/xBHgQq3Zad6TH+DA
-         7XXwMou/1ytdE8uFSnYGeZnYK9D9Dry47/m4p3OFlOfm+GA9fcSGpeobrHFK6L6zx6N6
-         J9ryJJzwSDqeRD+qAM9JpiE7sn/jgQ3GsvEFfLuEACbO6+aKID9GWSjOPENHVJwnWWPU
-         Pbgw==
+        bh=Hwb7F/rC2WcHIU0TqB0pyaDR8cULaRfYzo6HxdYb+h8=;
+        b=NvwLocQRGudU61Jl7dRbuG56faPz75HaLgBBhSBW6sGcd6dG9PS/T+wHnuZM4yJwXx
+         qRYsdeedLA8TIuw/v9OuWe2VKICfVr0nVmS5jrb3YhjcfAl2RbbxUtGwktYBxVZcolni
+         bFItEhSrwBVqVzOEXXCVQtq22YgC9LAndCr+KH03qF3SpaFlS23mzW2uo/Gnu9ObTTwp
+         7f6aj2wYaOPrbHy/EgXTxH733bAnUnKIRVEKI5icsiF1VSXZkGD+vrQqyoinYY2Mz8Ps
+         YJppWdOQbU30mUpj1cZnnw7mCn99u/uyq+uwS66+s3UGRYOY9dZMMFpl+zV/yrkmKMOi
+         c0CQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
          :from:date:message-id:subject:to:cc:content-transfer-encoding;
-        bh=JHmSvOfqI9zv1aLO7Ij5kREGyIzSMH6xuRmSF/8a1cU=;
-        b=POsYJgh3hi+1Fg10Js3jEnqDGHthqcm2ZEKU54aDYBiLGaN+fTnXWl7TbQ8+bgwoBi
-         YteF5r6laMqQ/nMgtH/3AsV3N0lPtCPcJLp2l3nIxu/Ir7PoMI/HwhMo8W/81FPUJn3A
-         VAXMzkWRKUxFgFT/S6GeB5TtX5XOZX+txbV/Nn4CAlqxXJ+F9TKwwH3tvYFLoKCcHOHH
-         UwkACTuPRQibGOppRZ+z8zXm1NFi4A2GWz1zEaNd2K6uAOh9Rwy4x3RS4dZWst/y1VOX
-         bomwH/9FUrN6v+USaE9x94K2DWhctdlU9qjUE3PAt5LY1Cvd30DZGsPT76jurri5fGwR
-         PdbA==
-X-Gm-Message-State: AOAM533GYw6BfDz7tSO2uiaeaygmX2V2TbVjJfHBwKE8fp6T1gYx0p7o
-        Dwpw3eNGHJXKnKF94n6MDj7xdLVt4tbAk4ZlO7q0EA==
-X-Google-Smtp-Source: ABdhPJweeiY/Hez6hVl/LfDzeNSmO/Kc75/kJ380spYGsWvf8NjuhaDjsLMe1pii0RQz1M0x1Rr85yE5vAJxwrGQW6w=
-X-Received: by 2002:a1f:94d7:: with SMTP id w206mr3445591vkd.24.1589462217880;
- Thu, 14 May 2020 06:16:57 -0700 (PDT)
+        bh=Hwb7F/rC2WcHIU0TqB0pyaDR8cULaRfYzo6HxdYb+h8=;
+        b=KAvOjlxgE67dC6AWeJoAoJozC0BEz/UM5MUTJn/1yo8DG/exfcpuyb/KMwFRbxXLuj
+         GtujDmfh9wts87D+0pkK/9GX7UHgbcvKiQRmEu5uaAXlZU/R8K02PD+weu8Pk8LUUD5I
+         NalVvBL6nXWc7KEYfX9sD1f8ENdpft7G9AZvVox7zSgroWjPiJJa2sTTrtCUyk0S1pBc
+         3tusWAHH7VHkD2H/E5kIzp3rSVcQvZpLlwAS9hBaYGVjN2SZsO4uEA/3kGFfRCPD4xN0
+         anFg+1SuRHPxm+3pQKgnPaTDpJ3c4DDrlImk7GcD9alqf1hvw08KzA4G7uUqJSdu4nzK
+         Ld0g==
+X-Gm-Message-State: AOAM530EhTwSrgnlXMDsrL/khKReVr8+4aNnP2zXJI560Y+BQaXz8eOt
+        nHNP+JLwj4h+EPwuX7LGeu5Dj0iTw5blfa0T/tHwbw==
+X-Google-Smtp-Source: ABdhPJxxQLkTBcrYHtm3daG6b5pe6ssqDwbrY7q4r4ICiRgkXN7IEewFTNwf2gj/pZBxWq3X8OIP/ZqJohViY2qxdrA=
+X-Received: by 2002:a1f:3485:: with SMTP id b127mr3330259vka.69.1589462456914;
+ Thu, 14 May 2020 06:20:56 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200514091918.30294-1-robbieko@synology.com>
-In-Reply-To: <20200514091918.30294-1-robbieko@synology.com>
+References: <20200514073325.33343-1-wqu@suse.com> <20200514073325.33343-3-wqu@suse.com>
+In-Reply-To: <20200514073325.33343-3-wqu@suse.com>
 Reply-To: fdmanana@gmail.com
 From:   Filipe Manana <fdmanana@gmail.com>
-Date:   Thu, 14 May 2020 14:16:46 +0100
-Message-ID: <CAL3q7H7xg=vjSGgtV8BYL5aWqnvi+CwPqnJ3kiVQgQm=X7Pk5Q@mail.gmail.com>
-Subject: Re: [PATCH] Btrfs: reduce lock contention when create snapshot
-To:     robbieko <robbieko@synology.com>
+Date:   Thu, 14 May 2020 14:20:46 +0100
+Message-ID: <CAL3q7H701a1eK9rfuZHnRitPNae4vG0DzXK-s86GUMQX0QwQQQ@mail.gmail.com>
+Subject: Re: [PATCH v2 2/3] btrfs: inode: Cleanup the log tree exceptions in btrfs_truncate_inode_items()
+To:     Qu Wenruo <wqu@suse.com>
 Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
@@ -61,164 +61,128 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, May 14, 2020 at 10:20 AM robbieko <robbieko@synology.com> wrote:
+On Thu, May 14, 2020 at 8:35 AM Qu Wenruo <wqu@suse.com> wrote:
 >
-> From: Robbie Ko <robbieko@synology.com>
+> There are a lot of root owner check in btrfs_truncate_inode_items()
+> like:
 >
-> When creating a snapshot, it takes a long time because
-> flush dirty data is required.
+>         if (test_bit(BTRFS_ROOT_SHAREABLE, &root->state) ||
+>             root =3D=3D fs_info->tree_root)
 >
-> But we have taken two resources as shown below:
-> 1. Destination directory inode lock
-> 2. Global subvol semaphore
+> But considering that, there are only those trees can have INODE_ITEMs:
+> - tree root (For v1 space cache)
+> - subvolume trees
+> - tree reloc trees
+> - data reloc tree
+> - log trees
 >
-> This will cause subvol destroy/create/setflag blocked,
-> until the snapshot is created.
+> And since subvolume/tree reloc/data reloc trees all have SHAREABLE bit,
+> and we're checking tree root manually, so above check is just excluding
+> log trees.
 >
-> We fix by flush dirty data first to reduce the time of
-> the critical section, and then lock the relevant resources.
+> This patch will replace two of such checks to a much simpler one:
 >
-> Signed-off-by: Robbie Ko <robbieko@synology.com>
-
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
-
-Looks good, thanks.
-
+>         if (root->root_key.objectid !=3D BTRFS_TREE_LOG_OBJECTID)
+>
+> This would merge btrfs_drop_extent_cache() and lock_extent_bits() call
+> into the same if branch.
+>
+> Also since we're here, add one comment explaining why we don't want to
+> call lock_extent_bits()/drop_extent_cache() on log trees.
+>
+> Finally replace ALIGN()/ALIGN_DOWN() to round_up()/round_down(), as I'm
+> always bad at determing the alignement direction.
+>
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
 > ---
->  fs/btrfs/ioctl.c | 70 ++++++++++++++++++++++++++++--------------------
->  1 file changed, 41 insertions(+), 29 deletions(-)
+>  fs/btrfs/inode.c | 27 ++++++++++++++-------------
+>  1 file changed, 14 insertions(+), 13 deletions(-)
 >
-> diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-> index 40b729dce91c..d0c1598dc51e 100644
-> --- a/fs/btrfs/ioctl.c
-> +++ b/fs/btrfs/ioctl.c
-> @@ -748,7 +748,6 @@ static int create_snapshot(struct btrfs_root *root, s=
-truct inode *dir,
->         struct btrfs_pending_snapshot *pending_snapshot;
->         struct btrfs_trans_handle *trans;
->         int ret;
-> -       bool snapshot_force_cow =3D false;
+> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+> index a6c26c10ffc5..771af55038bf 100644
+> --- a/fs/btrfs/inode.c
+> +++ b/fs/btrfs/inode.c
+> @@ -4101,7 +4101,7 @@ int btrfs_truncate_inode_items(struct btrfs_trans_h=
+andle *trans,
+>         u64 bytes_deleted =3D 0;
+>         bool be_nice =3D false;
+>         bool should_throttle =3D false;
+> -       const u64 lock_start =3D ALIGN_DOWN(new_size, fs_info->sectorsize=
+);
+> +       const u64 lock_start =3D round_down(new_size, fs_info->sectorsize=
+);
+
+Hum, seriously? Why does ALIGN_DOWN confuses you? ALIGN, means to
+align, and the DOWN part is very explicit about the direction.
+
+>         struct extent_state *cached_state =3D NULL;
 >
->         if (!test_bit(BTRFS_ROOT_REF_COWS, &root->state))
->                 return -EINVAL;
-> @@ -771,27 +770,6 @@ static int create_snapshot(struct btrfs_root *root, =
-struct inode *dir,
->                 goto free_pending;
->         }
+>         BUG_ON(new_size > 0 && min_type !=3D BTRFS_EXTENT_DATA_KEY);
+> @@ -4121,20 +4121,22 @@ int btrfs_truncate_inode_items(struct btrfs_trans=
+_handle *trans,
+>                 return -ENOMEM;
+>         path->reada =3D READA_BACK;
 >
-> -       /*
-> -        * Force new buffered writes to reserve space even when NOCOW is
-> -        * possible. This is to avoid later writeback (running dealloc) t=
-o
-> -        * fallback to COW mode and unexpectedly fail with ENOSPC.
-> -        */
-> -       btrfs_drew_read_lock(&root->snapshot_lock);
+> -       if (root->root_key.objectid !=3D BTRFS_TREE_LOG_OBJECTID)
+> -               lock_extent_bits(&BTRFS_I(inode)->io_tree, lock_start, (u=
+64)-1,
+> -                                &cached_state);
 > -
-> -       ret =3D btrfs_start_delalloc_snapshot(root);
-> -       if (ret)
-> -               goto dec_and_free;
-> -
-> -       /*
-> -        * All previous writes have started writeback in NOCOW mode, so n=
-ow
-> -        * we force future writes to fallback to COW mode during snapshot
-> -        * creation.
-> -        */
-> -       atomic_inc(&root->snapshot_force_cow);
-> -       snapshot_force_cow =3D true;
-> -
-> -       btrfs_wait_ordered_extents(root, U64_MAX, 0, (u64)-1);
-> -
->         btrfs_init_block_rsv(&pending_snapshot->block_rsv,
->                              BTRFS_BLOCK_RSV_TEMP);
 >         /*
-> @@ -806,7 +784,7 @@ static int create_snapshot(struct btrfs_root *root, s=
-truct inode *dir,
->                                         &pending_snapshot->block_rsv, 8,
->                                         false);
->         if (ret)
-> -               goto dec_and_free;
-> +               goto free_pending;
+> -        * We want to drop from the next block forward in case this new s=
+ize is
+> -        * not block aligned since we will be keeping the last block of t=
+he
+> -        * extent just the way it is.
+> +        * There will be a lot of exceptions for log trees, as log inodes=
+ are
+> +        * not real inodes, but an anchor for logged inodes.
+
+This is a very confusing sentence, you're saying logged inodes are an
+"anchor" (whatever that means) to themselves.
+Either leave nothing as it was, or just say log tree operations aren't
+supposed to change anything on the inodes.
+
+Thanks.
+
+>          */
+> -       if (test_bit(BTRFS_ROOT_SHAREABLE, &root->state) ||
+> -           root =3D=3D fs_info->tree_root)
+> -               btrfs_drop_extent_cache(BTRFS_I(inode), ALIGN(new_size,
+> +       if (root->root_key.objectid !=3D BTRFS_TREE_LOG_OBJECTID) {
+> +               /*
+> +                * We want to drop from the next block forward in case th=
+is
+> +                * new size is not block aligned since we will be keeping=
+ the
+> +                * last block of the extent just the way it is.
+> +                */
+> +               lock_extent_bits(&BTRFS_I(inode)->io_tree, lock_start, (u=
+64)-1,
+> +                                &cached_state);
+> +               btrfs_drop_extent_cache(BTRFS_I(inode), round_up(new_size=
+,
+>                                         fs_info->sectorsize),
+>                                         (u64)-1, 0);
+> +       }
 >
->         pending_snapshot->dentry =3D dentry;
->         pending_snapshot->root =3D root;
-> @@ -848,11 +826,6 @@ static int create_snapshot(struct btrfs_root *root, =
-struct inode *dir,
->  fail:
->         btrfs_put_root(pending_snapshot->snap);
->         btrfs_subvolume_release_metadata(fs_info, &pending_snapshot->bloc=
-k_rsv);
-> -dec_and_free:
-> -       if (snapshot_force_cow)
-> -               atomic_dec(&root->snapshot_force_cow);
-> -       btrfs_drew_read_unlock(&root->snapshot_lock);
-> -
->  free_pending:
->         kfree(pending_snapshot->root_item);
->         btrfs_free_path(pending_snapshot->path);
-> @@ -983,6 +956,45 @@ static noinline int btrfs_mksubvol(const struct path=
- *parent,
->         return error;
->  }
+>         /*
+>          * This function is also used to drop the items in the log tree b=
+efore
+> @@ -4335,8 +4337,7 @@ int btrfs_truncate_inode_items(struct btrfs_trans_h=
+andle *trans,
+>                 should_throttle =3D false;
 >
-> +static noinline int btrfs_mksnapshot(const struct path *parent,
-> +                                  const char *name, int namelen,
-> +                                  struct btrfs_root *root,
-> +                                  bool readonly,
-> +                                  struct btrfs_qgroup_inherit *inherit)
-> +{
-> +       int ret;
-> +       bool snapshot_force_cow =3D false;
-> +
-> +       /*
-> +        * Force new buffered writes to reserve space even when NOCOW is
-> +        * possible. This is to avoid later writeback (running dealloc) t=
-o
-> +        * fallback to COW mode and unexpectedly fail with ENOSPC.
-> +        */
-> +       btrfs_drew_read_lock(&root->snapshot_lock);
-> +
-> +       ret =3D btrfs_start_delalloc_snapshot(root);
-> +       if (ret)
-> +               goto out;
-> +
-> +       /*
-> +        * All previous writes have started writeback in NOCOW mode, so n=
-ow
-> +        * we force future writes to fallback to COW mode during snapshot
-> +        * creation.
-> +        */
-> +       atomic_inc(&root->snapshot_force_cow);
-> +       snapshot_force_cow =3D true;
-> +
-> +       btrfs_wait_ordered_extents(root, U64_MAX, 0, (u64)-1);
-> +
-> +       ret =3D btrfs_mksubvol(parent, name, namelen,
-> +                            root, readonly, inherit);
-> +out:
-> +       if (snapshot_force_cow)
-> +               atomic_dec(&root->snapshot_force_cow);
-> +       btrfs_drew_read_unlock(&root->snapshot_lock);
-> +       return ret;
-> +}
-> +
->  /*
->   * When we're defragging a range, we don't want to kick it off again
->   * if it is really just waiting for delalloc to send it down.
-> @@ -1762,7 +1774,7 @@ static noinline int __btrfs_ioctl_snap_create(struc=
-t file *file,
->                          */
->                         ret =3D -EPERM;
->                 } else {
-> -                       ret =3D btrfs_mksubvol(&file->f_path, name, namel=
-en,
-> +                       ret =3D btrfs_mksnapshot(&file->f_path, name, nam=
-elen,
->                                              BTRFS_I(src_inode)->root,
->                                              readonly, inherit);
->                 }
+>                 if (found_extent &&
+> -                   (test_bit(BTRFS_ROOT_SHAREABLE, &root->state) ||
+> -                    root =3D=3D fs_info->tree_root)) {
+> +                   root->root_key.objectid !=3D BTRFS_TREE_LOG_OBJECTID)=
+ {
+>                         struct btrfs_ref ref =3D { 0 };
+>
+>                         bytes_deleted +=3D extent_num_bytes;
 > --
-> 2.17.1
+> 2.26.2
 >
 
 
