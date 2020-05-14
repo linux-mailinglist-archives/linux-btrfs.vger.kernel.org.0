@@ -2,46 +2,45 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C25FD1D2B88
-	for <lists+linux-btrfs@lfdr.de>; Thu, 14 May 2020 11:35:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A77D31D2B8A
+	for <lists+linux-btrfs@lfdr.de>; Thu, 14 May 2020 11:35:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726105AbgENJfG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 14 May 2020 05:35:06 -0400
-Received: from mail-wr1-f47.google.com ([209.85.221.47]:41180 "EHLO
-        mail-wr1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725878AbgENJfF (ORCPT
+        id S1726124AbgENJfH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 14 May 2020 05:35:07 -0400
+Received: from mail-wm1-f68.google.com ([209.85.128.68]:34280 "EHLO
+        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726101AbgENJfG (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 14 May 2020 05:35:05 -0400
-Received: by mail-wr1-f47.google.com with SMTP id h17so2965132wrc.8
-        for <linux-btrfs@vger.kernel.org>; Thu, 14 May 2020 02:35:04 -0700 (PDT)
+        Thu, 14 May 2020 05:35:06 -0400
+Received: by mail-wm1-f68.google.com with SMTP id g14so13869976wme.1
+        for <linux-btrfs@vger.kernel.org>; Thu, 14 May 2020 02:35:05 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=QFGtS7iNjUcdSLCLPWnO4stRBHLfU3RsWUTCNjCGcHI=;
-        b=MWKkh7+pspq9PHVfqUXgqsUwciFIPg1Jfscy+SVMk3bMo1v7H4D6onVxaqOdBQ1oEA
-         +KFWnOF7TEuQ0sFftNoFY8AZ6i6trv1Trk5sSJKWloto1wfCf//8XQ9xZ2Fr7XTsx3r7
-         CW5D4rwDXV9z88LLdHch7ng4Tr+i333Ld6XOy6DMIJr99mbMa4wRR6b9u8DkTBGx00wt
-         bmKOgNr8vJBjqTmVClntgZTHq007hwZHY+VZAP+r1DvqzN/U/LZ+S9y2f8GmOhjntVVu
-         zbjd8UAVvuKSjiZapUJ1rMlcccnVOsAMIf0nMy2eDy3+sbJPLF7LiND4NyY0EIo+OpH6
-         LWVw==
-X-Gm-Message-State: AOAM531ABBfmxRJ8ldELadqIE69CGjfxHjr2d8hU/eQaMXnkVXhMwxub
-        2L3w7yjxBILvQNQ4GhcKMpY=
-X-Google-Smtp-Source: ABdhPJyjnhOk+cTGV40BveOlIy+sRYPpK8TrxfH080RbsTvd9F2gWzO/CQnOIICSt7di4+TywjRnbA==
-X-Received: by 2002:adf:8169:: with SMTP id 96mr4340399wrm.283.1589448903618;
-        Thu, 14 May 2020 02:35:03 -0700 (PDT)
+        bh=d/+ZwHImVpfg2fbfG7e5tTb1Y0zb8CYXoOlm10QItlg=;
+        b=n0K5lAp2RHxnZ7i89q5THhI4HYVRgliHOYtM9CJiT6f1l56zP702qLx8TtIUdsh+IN
+         ACH19ZR34sXPKhixrUoDUK1Nmi4qJRTnmTiDPqg+iBLkaFqgp8bGhJfs041MTiojtR8U
+         ooJ0auT4mQJ3q9S/ybHmkPY+6k8MZiRPjPkAjro9RU1s2kKAJs5Z1rawkwTEJwp0q2v6
+         vI93X4oWha/5w2OvZa65mdG76DFzWfMmCUDuZ+wzD2IetJft6CRRQBnvh4WHcPjCzqhK
+         yITLLKXOGzi0VwXCNM5+5jAHzfTMF7nv93YjhAZ8mb9pPdf/4spvapwvJ2ABHKPngwQt
+         4w+g==
+X-Gm-Message-State: AGi0PuavzFlQySVVgdn+5HqU9x4dPRGvvUuw7Wz6AqePDRZuHF+mbKYg
+        GU8o/T45Hms7ud/zEh2DiBE=
+X-Google-Smtp-Source: APiQypJEsH5Ov1DyHf8V6jULVOM37Vn6pYcvc9uMEb3YAsU0G62dSLi8PwnQvgHRZbMJj/NK41FvIQ==
+X-Received: by 2002:a1c:770f:: with SMTP id t15mr46773396wmi.178.1589448904852;
+        Thu, 14 May 2020 02:35:04 -0700 (PDT)
 Received: from linux-t19r.fritz.box (ppp-46-244-223-154.dynamic.mnet-online.de. [46.244.223.154])
-        by smtp.gmail.com with ESMTPSA id l12sm3522750wrh.20.2020.05.14.02.35.01
+        by smtp.gmail.com with ESMTPSA id l12sm3522750wrh.20.2020.05.14.02.35.03
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 14 May 2020 02:35:03 -0700 (PDT)
+        Thu, 14 May 2020 02:35:04 -0700 (PDT)
 From:   Johannes Thumshirn <jth@kernel.org>
 To:     David Sterba <dsterba@suse.cz>
 Cc:     "linux-btrfs @ vger . kernel . org" <linux-btrfs@vger.kernel.org>,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        Johannes Thumshirn <jthumshirn@suse.de>
-Subject: [PATCH v2 4/5] btrfs-progs: add --auth-key to dump-super
-Date:   Thu, 14 May 2020 11:34:32 +0200
-Message-Id: <20200514093433.6818-5-jth@kernel.org>
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Subject: [PATCH v2 5/5] btrfs-progs: add auth key to check
+Date:   Thu, 14 May 2020 11:34:33 +0200
+Message-Id: <20200514093433.6818-6-jth@kernel.org>
 X-Mailer: git-send-email 2.26.1
 In-Reply-To: <20200514093433.6818-1-jth@kernel.org>
 References: <20200514093433.6818-1-jth@kernel.org>
@@ -54,150 +53,80 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 
-Add auth-key option for btrfs inspect-internal dump-super so we can dump an
-authenticated super-block and check for it's integrity.
+Add auth-key option for btrfs check so we can check an authenticated
+file-system.
 
-Signed-off-by: Johannes Thumshirn <jthumshirn@suse.de>
+Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 ---
- cmds/inspect-dump-super.c | 35 ++++++++++++++++++++++++-----------
- 1 file changed, 24 insertions(+), 11 deletions(-)
+ check/main.c | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
 
-diff --git a/cmds/inspect-dump-super.c b/cmds/inspect-dump-super.c
-index dd42d180..1bc806e9 100644
---- a/cmds/inspect-dump-super.c
-+++ b/cmds/inspect-dump-super.c
-@@ -35,11 +35,13 @@
- #include "crypto/crc32c.h"
- #include "common/help.h"
- 
--static int check_csum_sblock(void *sb, int csum_size, u16 csum_type)
-+static int check_csum_sblock(void *sb, int csum_size, u16 csum_type,
-+			     char *auth_key)
- {
-+	struct btrfs_fs_info dummy_fs_info = { .auth_key = auth_key };
- 	u8 result[BTRFS_CSUM_SIZE];
- 
--	btrfs_csum_data(NULL, csum_type, (u8 *)sb + BTRFS_CSUM_SIZE,
-+	btrfs_csum_data(&dummy_fs_info, csum_type, (u8 *)sb + BTRFS_CSUM_SIZE,
- 			result, BTRFS_SUPER_INFO_SIZE - BTRFS_CSUM_SIZE);
- 
- 	return !memcmp(sb, result, csum_size);
-@@ -326,7 +328,8 @@ static bool is_valid_csum_type(u16 csum_type)
- 	}
- }
- 
--static void dump_superblock(struct btrfs_super_block *sb, int full)
-+static void dump_superblock(struct btrfs_super_block *sb, int full,
-+			    char *auth_key)
- {
- 	int i;
- 	char *s, buf[BTRFS_UUID_UNPARSED_SIZE];
-@@ -353,11 +356,11 @@ static void dump_superblock(struct btrfs_super_block *sb, int full)
- 	printf("csum\t\t\t0x");
- 	for (i = 0, p = sb->csum; i < csum_size; i++)
- 		printf("%02x", p[i]);
--	if (csum_type == BTRFS_CSUM_TYPE_HMAC_SHA256)
-+	if (csum_type == BTRFS_CSUM_TYPE_HMAC_SHA256 && !auth_key)
- 		printf(" [NO KEY FOR HMAC]");
- 	else if (!is_valid_csum_type(csum_type))
- 		printf(" [UNKNOWN CSUM TYPE OR SIZE]");
--	else if (check_csum_sblock(sb, csum_size, csum_type))
-+	else if (check_csum_sblock(sb, csum_size, csum_type, auth_key))
- 		printf(" [match]");
- 	else
- 		printf(" [DON'T MATCH]");
-@@ -485,7 +488,7 @@ static void dump_superblock(struct btrfs_super_block *sb, int full)
- }
- 
- static int load_and_dump_sb(char *filename, int fd, u64 sb_bytenr, int full,
--		int force)
-+		int force, char *auth_key)
- {
- 	u8 super_block_data[BTRFS_SUPER_INFO_SIZE];
- 	struct btrfs_super_block *sb;
-@@ -510,7 +513,7 @@ static int load_and_dump_sb(char *filename, int fd, u64 sb_bytenr, int full,
- 		error("bad magic on superblock on %s at %llu",
- 				filename, (unsigned long long)sb_bytenr);
- 	} else {
--		dump_superblock(sb, full);
-+		dump_superblock(sb, full, auth_key);
- 	}
- 	return 0;
- }
-@@ -524,6 +527,7 @@ static const char * const cmd_inspect_dump_super_usage[] = {
- 	"-s|--super <super>    specify which copy to print out (values: 0, 1, 2)",
- 	"-F|--force            attempt to dump superblocks with bad magic",
- 	"--bytenr <offset>     specify alternate superblock offset",
-+	"--auth-key <key>      specify authentication key for authenticated file-system",
- 	"",
- 	"Deprecated syntax:",
- 	"-s <bytenr>           specify alternate superblock offset, values other than 0, 1, 2",
-@@ -546,16 +550,19 @@ static int cmd_inspect_dump_super(const struct cmd_struct *cmd,
- 	int ret = 0;
- 	u64 arg;
- 	u64 sb_bytenr = btrfs_sb_offset(0);
+diff --git a/check/main.c b/check/main.c
+index 21b37e66..bb848edb 100644
+--- a/check/main.c
++++ b/check/main.c
+@@ -9937,6 +9937,7 @@ static const char * const cmd_check_usage[] = {
+ 	"       --clear-space-cache v1|v2   clear space cache for v1 or v2",
+ 	"  check and reporting options:",
+ 	"       --check-data-csum           verify checksums of data blocks",
++	"       --auth-key                  key for authenticated file-system",
+ 	"       -Q|--qgroup-report          print a report on qgroup consistency",
+ 	"       -E|--subvol-extents <subvolid>",
+ 	"                                   print subvolume extents and sharing state",
+@@ -9965,6 +9966,7 @@ static int cmd_check(const struct cmd_struct *cmd, int argc, char **argv)
+ 	int qgroup_report_ret;
+ 	unsigned ctree_flags = OPEN_CTREE_EXCLUSIVE;
+ 	int force = 0;
 +	char *auth_key = NULL;
  
- 	while (1) {
+ 	while(1) {
  		int c;
--		enum { GETOPT_VAL_BYTENR = 257 };
-+		enum { GETOPT_VAL_BYTENR = 257, GETOPT_VAL_AUTHKEY, };
+@@ -9972,7 +9974,7 @@ static int cmd_check(const struct cmd_struct *cmd, int argc, char **argv)
+ 			GETOPT_VAL_INIT_EXTENT, GETOPT_VAL_CHECK_CSUM,
+ 			GETOPT_VAL_READONLY, GETOPT_VAL_CHUNK_TREE,
+ 			GETOPT_VAL_MODE, GETOPT_VAL_CLEAR_SPACE_CACHE,
+-			GETOPT_VAL_FORCE };
++			GETOPT_VAL_FORCE, GETOPT_VAL_AUTH_KEY };
  		static const struct option long_options[] = {
- 			{"all", no_argument, NULL, 'a'},
- 			{"bytenr", required_argument, NULL, GETOPT_VAL_BYTENR },
- 			{"full", no_argument, NULL, 'f'},
- 			{"force", no_argument, NULL, 'F'},
- 			{"super", required_argument, NULL, 's' },
-+			{"auth-key", required_argument, NULL,
-+				GETOPT_VAL_AUTHKEY },
- 			{NULL, 0, NULL, 0}
+ 			{ "super", required_argument, NULL, 's' },
+ 			{ "repair", no_argument, NULL, GETOPT_VAL_REPAIR },
+@@ -9995,6 +9997,8 @@ static int cmd_check(const struct cmd_struct *cmd, int argc, char **argv)
+ 			{ "clear-space-cache", required_argument, NULL,
+ 				GETOPT_VAL_CLEAR_SPACE_CACHE},
+ 			{ "force", no_argument, NULL, GETOPT_VAL_FORCE },
++			{ "auth-key", required_argument, NULL,
++				GETOPT_VAL_AUTH_KEY },
+ 			{ NULL, 0, NULL, 0}
  		};
  
-@@ -602,13 +609,16 @@ static int cmd_inspect_dump_super(const struct cmd_struct *cmd,
- 			sb_bytenr = arg;
- 			all = 0;
- 			break;
-+		case GETOPT_VAL_AUTHKEY:
-+			auth_key = strdup(optarg);
-+			break;
- 		default:
- 			usage_unknown_option(cmd, argv);
+@@ -10082,6 +10086,9 @@ static int cmd_check(const struct cmd_struct *cmd, int argc, char **argv)
+ 			case GETOPT_VAL_FORCE:
+ 				force = 1;
+ 				break;
++			case GETOPT_VAL_AUTH_KEY:
++				auth_key = strdup(optarg);
++				break;
  		}
  	}
  
- 	if (check_argc_min(argc - optind, 1))
--		return 1;
-+		goto out;
+@@ -10162,7 +10169,7 @@ static int cmd_check(const struct cmd_struct *cmd, int argc, char **argv)
+ 		ctree_flags |= OPEN_CTREE_PARTIAL;
  
- 	for (i = optind; i < argc; i++) {
- 		filename = argv[i];
-@@ -625,7 +635,8 @@ static int cmd_inspect_dump_super(const struct cmd_struct *cmd,
- 			for (idx = 0; idx < BTRFS_SUPER_MIRROR_MAX; idx++) {
- 				sb_bytenr = btrfs_sb_offset(idx);
- 				if (load_and_dump_sb(filename, fd,
--						sb_bytenr, full, force)) {
-+						sb_bytenr, full, force,
-+						auth_key)) {
- 					close(fd);
- 					ret = 1;
- 					goto out;
-@@ -634,13 +645,15 @@ static int cmd_inspect_dump_super(const struct cmd_struct *cmd,
- 				putchar('\n');
- 			}
- 		} else {
--			load_and_dump_sb(filename, fd, sb_bytenr, full, force);
-+			load_and_dump_sb(filename, fd, sb_bytenr, full, force,
-+					 auth_key);
- 			putchar('\n');
- 		}
- 		close(fd);
- 	}
+ 	info = open_ctree_fs_info(argv[optind], bytenr, tree_root_bytenr,
+-				  chunk_root_bytenr, ctree_flags, NULL);
++				  chunk_root_bytenr, ctree_flags, auth_key);
+ 	if (!info) {
+ 		error("cannot open file system");
+ 		ret = -EIO;
+@@ -10508,6 +10515,8 @@ err_out:
+ 	if (ctx.progress_enabled)
+ 		task_deinit(ctx.info);
  
- out:
 +	free(auth_key);
- 	return ret;
++
+ 	return err;
  }
- DEFINE_SIMPLE_COMMAND(inspect_dump_super, "dump-super");
+ DEFINE_SIMPLE_COMMAND(check, "check");
 -- 
 2.26.1
 
