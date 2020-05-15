@@ -2,119 +2,80 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D42851D4901
-	for <lists+linux-btrfs@lfdr.de>; Fri, 15 May 2020 11:03:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D7C71D4969
+	for <lists+linux-btrfs@lfdr.de>; Fri, 15 May 2020 11:24:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727929AbgEOJDc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 15 May 2020 05:03:32 -0400
-Received: from esa5.hgst.iphmx.com ([216.71.153.144]:58821 "EHLO
-        esa5.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726722AbgEOJDc (ORCPT
+        id S1727917AbgEOJYL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 15 May 2020 05:24:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43128 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727825AbgEOJYL (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 15 May 2020 05:03:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1589533412; x=1621069412;
-  h=from:to:cc:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=PGluKrHbbo/t0QA/kJqn/XXAjkVocGIcPPnfWUgNYN8=;
-  b=fTAG3rJZVI2me1ojPICYTskWzP6AuW9l1gHh67Yte5vb/l3676fIx0Fr
-   GpSgM333OfVrFKvHl2vk5jhb8xS3+65g8cHtY4ghwQAmkdEp4u3KdOACY
-   LmysT/MHPmU+Oo28mOtl7eTiL9Q5de0vi+LLNl9NvL5iQ3Z1saWxS5x2H
-   5x4wYTbc32qt26aa8jG8velPhcEySGQqTRCeM6+Xv6j9lgMhnxj2Wj3q7
-   uMUvDct7Ppxvp0udV65L2aZCZx31bwbOLhadwPS9EkSwOcAh+lms7sQGQ
-   fQ1MZATGLMxWJFPO1mTCAfUbGrAFcCOLaHL+OQGF6K8BjsWaWmHXDOA7W
-   Q==;
-IronPort-SDR: 3u6rIZ1nWBHtEaKB3usG6g/pYl2mzx9wLsm9tX/ffDLHYTJMIPG/MyoU/+gcmA9plLv5nJ6u83
- teux2CrMyrTkVlUsmZFs01jCSjxb00yoOfB6Gbzd+cbylWP1w7RPlhOcxFoY30I9r26g9UuVcq
- cdo/iSr2u9auHwSm1+qTz6RplN7qaqEX03o3HYsKrwPBtQoLEWnsT6HIQGDZM3ioIsnvM6cpGw
- pQWl6odrX704pDgDWJS29pSijb50+Kw88xZeLihefIBZzbt+vGN/2Ae5khFuBe9hVXnYw/OiWU
- MGQ=
-X-IronPort-AV: E=Sophos;i="5.73,394,1583164800"; 
-   d="scan'208";a="138103900"
-Received: from mail-dm6nam12lp2174.outbound.protection.outlook.com (HELO NAM12-DM6-obe.outbound.protection.outlook.com) ([104.47.59.174])
-  by ob1.hgst.iphmx.com with ESMTP; 15 May 2020 17:03:31 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=bsNTVjBowCJse4Zohy+uNmiN7sAKbvD6Jn/zss/wrI9RM6ptGuuW79YsnMU1m1N/o7Xy/l25px2HMrR5tBZCQYo7lR8DmGMs+hfhYjTPGNcgPqiYCwlJMANcXis4c9dwzTLCKZz8pWCGFsyGXQxZPZffVj+VyAhqvi0KA47TfpzcyzE1mmijIeEC4c0OyGeA1XP5LYQ4vhabAK1psIGhfD2jHV8RTGlj5KyzQchSkBmNvh511TfvGOe0Z0Nm7+N1pbQgjDDfkNZuNpGVn8aRQu9jYyxamvaZEDQx/otZG5DTidkIBz+ZoOLBja/CJ9hIdZzTmmFuLBjNVMUVwQ6YmA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=PGluKrHbbo/t0QA/kJqn/XXAjkVocGIcPPnfWUgNYN8=;
- b=hsTNDTXC8JegBEEX1Qjde/mjGg+aT2pd7JV/3Q7z3YQiwMF+zJxclyinCh06t6hJ75XJpjtnSFaMKtejBsK14CLUzkPNNnlM58nOk0RaBm97DRJGkRbbAVgIOFdZFyeNHkqisQxj90tSPSQSUjluw57MdTZ+5G8TH7VvD9IUvZ0qI+Ygr5zxOhufaBeXsfW0JhnWrhGeuHVyom979MJKSqaxO7USkOvZ54joGoc4uBOQTIHTNFN2AF1WuKopigsCEbRK3BZRvkFiCMuW7gSKUErRz2XFYsX17tO5k6Mm+MDQpd3p7vvKAHbtumICgswkg73B9oEQehOAOxskzJJuJQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
+        Fri, 15 May 2020 05:24:11 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B05EC061A0C;
+        Fri, 15 May 2020 02:24:10 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id l19so1454979lje.10;
+        Fri, 15 May 2020 02:24:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=PGluKrHbbo/t0QA/kJqn/XXAjkVocGIcPPnfWUgNYN8=;
- b=HcHJCSFJYHeuq2NvomLEd4vF8hCSfqNnX3xRDlCiv9A+q0K18xE55NXoplfNRhsTAePSocin6p75g6cohyQbDkqxat+UHr6/tuNaN6b2sRBrXLE9driNDUMeAyf1rf9SQoXmSrMeWrwHKWwA1mQua3J2RZZWjB3ZHttW3bGo5vA=
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
- (2603:10b6:803:47::21) by SN4PR0401MB3664.namprd04.prod.outlook.com
- (2603:10b6:803:4b::12) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2958.29; Fri, 15 May
- 2020 09:03:30 +0000
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::9854:2bc6:1ad2:f655]) by SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::9854:2bc6:1ad2:f655%4]) with mapi id 15.20.3000.022; Fri, 15 May 2020
- 09:03:29 +0000
-From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To:     Bo YU <tsu.yubo@gmail.com>, "clm@fb.com" <clm@fb.com>,
-        "josef@toxicpanda.com" <josef@toxicpanda.com>,
-        "sterba@suse.com" <sterba@suse.com>
-CC:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH -next] fs/btrfs: Fix unlocking in btrfs_ref_tree_mod
-Thread-Topic: [PATCH -next] fs/btrfs: Fix unlocking in btrfs_ref_tree_mod
-Thread-Index: AQHWKl8K6GclIOarbkSiVL0aew+onA==
-Date:   Fri, 15 May 2020 09:03:29 +0000
-Message-ID: <SN4PR0401MB35985CFC199D20362EBFD8E09BBD0@SN4PR0401MB3598.namprd04.prod.outlook.com>
-References: <20200515021731.cb5y557wsxf66fo3@debian.debian-2>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [129.253.240.72]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 8cd07720-b420-4245-8dc1-08d7f8aed651
-x-ms-traffictypediagnostic: SN4PR0401MB3664:
-x-microsoft-antispam-prvs: <SN4PR0401MB36642A2C48DE29CCF6DDF60A9BBD0@SN4PR0401MB3664.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:4714;
-x-forefront-prvs: 04041A2886
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: PW63a04D8fZ4VNDX9CTt0fCTetrzukro4832205WyoCVVCbdOixgyZWnOTLjn7bjdbs6X+uhBlE7tgiSfy5Klujv+GQTfO1Kbj0KACZ9vyioCHU5X2NwUdfa03nRE6a0LXlzLxS7g4gXmQHQsiWY9shIbwUtjwxnmdEB8GOKSoNzoJTf6gnV04TinaaWLFo8ncfBBdxQXi9IgMLZRwcki0DzezU9FHwYN3vAsZ9WG6CHJe+RNZaU/mAT34dHHglNMx2+lDq14/lnDt1S6yBoAOGWkMGPmFsHMx0CYyPKZZDlUPbFy1yskNnhRCsG3GrdPi0zFujpS/xa5Az/Foqi8Nar+RG6SCZNnH97QId1KXIuVFkxvzgAJoSWAx+BPFY4cgSNZ4ncf6zXM0JTloJQnvF7UP5ba1axgIpW3/4OnkZqBlqzPb0GKCTB7/llapqK
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR0401MB3598.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(136003)(39860400002)(346002)(376002)(366004)(396003)(316002)(8936002)(5660300002)(478600001)(66476007)(64756008)(33656002)(66556008)(66946007)(8676002)(2906002)(52536014)(4744005)(4326008)(76116006)(66446008)(9686003)(6506007)(7696005)(53546011)(91956017)(54906003)(26005)(71200400001)(86362001)(186003)(110136005)(55016002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: 4M87CzxJoeYz0gErfQOmqOo5i+ujF05VA+ZPGD/8mX3CgFnlBr6y6xfPQ7YzaGyst3M5BB7LIwa1h0s3er2RSJOW/h9TWEJii/7/th5x4N6K9e6xw5mq11vmL7r4q/XkLXZ5XA2GD5Z3j0b0rIaNSvKv7qTUbbmJqW73mkiM0c2qBGpr7yOyQyQArHFDkfJFUbzG6hPNzcNa+dEIMqvPsJbgsD7Ht5Dr0KeDgtaNkE8Qajv+zHUEkfDiBeU/Ki8vB7UqdFkJlAmPREsy87idy3WK9162NcpvE8mvWWRgfYfHfgM3uuPSOulIjHBW3zUIlCdf3+ywZl16oqcdXYSkZG+rHYqvPoXUZw8gk+mV6OFkqN2/b9tCAC56yLRLQJCs4ttd91TDIeK4loDByUrrBcD5FU6i57QblQukVMnTnMe+B6lS0PL6ffRqzyi2pQRzVhEwxUEQTbDzTIFcmF6gZVPl4g8cpgeKnlgWH35JZPZbFTaEHLN/pMbkeLrAIGbP
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=b4HN69hvAxNrKtFX3cEwdX4CzgjCipjYhqqjmfpMvn4=;
+        b=hIriAWOy1p+4acNH2XQv3Jh4M5FeOOMDWHmGL+S0YJbxS7YXk+DdQwX19nvR5qM30+
+         s4W/K7FdDJ26TyBi4Bv7/pGymP8dnU/zG482HsOSaUK56eqT1unCNMC6KvnczGOjy1cR
+         LWDqKZyqUrT1do0HYwd89K9n4yJ5OAYGX3ar8gvnVky2qFXwtmhdJSx41VQv/vLSyfPZ
+         /0KPRofovYl3n/onlgTU+ikybQb3is85/Dv1VPbtL3+mfW8b2WE4eJtvRS0xIn3MKkqR
+         2e1FUfDgv8isaMmI+OqwZ1y2qyPy5Jpg13iolFJ+gPHTX+qy4QBtGe1yenG7gX8DXFrE
+         tpDQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=b4HN69hvAxNrKtFX3cEwdX4CzgjCipjYhqqjmfpMvn4=;
+        b=gIgsNI6mYtQWzdh1p3XemSbZv6CnRiMZEzrLm8qq63c4QqP1OzKYhDXG7H/s/Vw8l7
+         +cclwg9gf1TZ2MJMKc+6/TlC6CExUrXEbLrnriV1Iw0VKvgFjiEqxSKSOvUcCaU1Ol19
+         0cuJTcmK4Ju0bGLHDvTTssxkxFTCNrsa6yq/6a56PP9ay/B7lx1B81FVgQ3GbImBWqCh
+         eQBeCviWEZW/yjOqj8bi2hbb2VV0g3pj840Z7kK/M2Bb7WWkm4tc8PW6+w8rN9p03aud
+         WHBd1IMxJ/cJjkASzFXWgHDBh9b1DmeF4/h6BWhiZLqtNsKl/F8inIHt9/dgKAJz+GEA
+         zCjw==
+X-Gm-Message-State: AOAM533T4ogwx3qzj3gOqtDTjHtgwO+TFlOLy64UmB3VcJ9YsTM9+8zq
+        hSbs3nH6vRsIfXeOOnQPsYJNzGouGyJ46OB9gII=
+X-Google-Smtp-Source: ABdhPJxqhBbSrg8tCxhJyS+sWLLZoa8qH+jxXWgEv6AhM+XGSKLzKOru+Paq7nMeAOnXyRyIVIudd62cmmzQTAW5g6Y=
+X-Received: by 2002:a2e:b8c9:: with SMTP id s9mr1791449ljp.100.1589534648591;
+ Fri, 15 May 2020 02:24:08 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8cd07720-b420-4245-8dc1-08d7f8aed651
-X-MS-Exchange-CrossTenant-originalarrivaltime: 15 May 2020 09:03:29.8911
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: NtFTIhgJKvzQirIKd9aNKaAfJDaqCbtaLPMXjPc1DwOGwRn1n1md50AzrmLmNmHNgAMne8B+ccB7FX0GFGjvVBHzsrORG3GaDn3hiatnjIU=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN4PR0401MB3664
+References: <20200515021731.cb5y557wsxf66fo3@debian.debian-2> <SN4PR0401MB35985CFC199D20362EBFD8E09BBD0@SN4PR0401MB3598.namprd04.prod.outlook.com>
+In-Reply-To: <SN4PR0401MB35985CFC199D20362EBFD8E09BBD0@SN4PR0401MB3598.namprd04.prod.outlook.com>
+From:   Bo YU <tsu.yubo@gmail.com>
+Date:   Fri, 15 May 2020 17:23:56 +0800
+Message-ID: <CAKq8=3KyewqQLdo-GjERuOfKe5ZrmQ+bRPfFRWiyZkjdEVvSeA@mail.gmail.com>
+Subject: Re: [PATCH -next] fs/btrfs: Fix unlocking in btrfs_ref_tree_mod
+To:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+Cc:     "clm@fb.com" <clm@fb.com>,
+        "josef@toxicpanda.com" <josef@toxicpanda.com>,
+        "sterba@suse.com" <sterba@suse.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 15/05/2020 04:17, Bo YU wrote:=0A=
-> It adds spin_lock() in add_block_entry() but out path does not unlock=0A=
-> it.=0A=
-=0A=
-Which call path doesn't unlock it? There is an out_unlock label with a =0A=
-spin_unlock() right above your insert. So either coverity messed something=
-=0A=
-up or the call path that needs the unlock has to jump to out_unlock instead=
-=0A=
-of out.=0A=
+Hi,
+On Fri, May 15, 2020 at 5:03 PM Johannes Thumshirn
+<Johannes.Thumshirn@wdc.com> wrote:
+>
+> On 15/05/2020 04:17, Bo YU wrote:
+> > It adds spin_lock() in add_block_entry() but out path does not unlock
+> > it.
+>
+> Which call path doesn't unlock it? There is an out_unlock label with a
+> spin_unlock() right above your insert. So either coverity messed something
+> up or the call path that needs the unlock has to jump to out_unlock instead
+> of out.
+This is out label without unlocking it. It will be offered spin_lock
+in add_block_entry()
+for be. But here I was worried about that unlock it in if() whether it
+is right or not.
