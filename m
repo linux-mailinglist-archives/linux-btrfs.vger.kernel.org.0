@@ -2,95 +2,117 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15CCB1D4377
-	for <lists+linux-btrfs@lfdr.de>; Fri, 15 May 2020 04:18:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02D9C1D4398
+	for <lists+linux-btrfs@lfdr.de>; Fri, 15 May 2020 04:40:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727113AbgEOCRr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 14 May 2020 22:17:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32950 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726122AbgEOCRq (ORCPT
+        id S1728055AbgEOCj5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 14 May 2020 22:39:57 -0400
+Received: from ipmail05.adl3.internode.on.net ([150.101.137.13]:36872 "EHLO
+        ipmail05.adl3.internode.on.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727840AbgEOCjz (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 14 May 2020 22:17:46 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DAFBC061A0C;
-        Thu, 14 May 2020 19:17:46 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id u10so311763pls.8;
-        Thu, 14 May 2020 19:17:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :user-agent;
-        bh=dP2dgHJL+/ZZAyIJxLUBe2ULDQdO+RZITSQnrYFRs8k=;
-        b=Ut1seaLFauwVnQHgW/+30SJULYTJuUnde7WoEdAECG6S+bjjEqZYspgxBjp4Tuelzf
-         LYsRNO/vSHPNcUPEWDrJQ0AWifCWK0QcHVrQpiE/iNNeMT8fhAVSYvgFwdA+XRDa4o/T
-         IK1YdH4t8OJq4aWYiUEd/E6VPaYHp0DiRjdEVPAfF+OF6xnSnLH1WPi4cfgusm+gj/pO
-         ukVboi+pOr1pjfBUrFbILXGce3ALXsjR0ZxkKY4Crq15bk5naKbH2V2x/CSqs5LAdZui
-         TLTY96B9fpUrvv7ucIQgqN7xnnQ1NLMIorsxqGNV9skzOeC1MBzHLnfU6+dkWP5vqKxm
-         2tdg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=dP2dgHJL+/ZZAyIJxLUBe2ULDQdO+RZITSQnrYFRs8k=;
-        b=DhkcOBW58VP/FKDSAJ4CthmQ6rKTW5MhUHwIpz4VdqLD28vpOyDNmrkA9IAYCMc8fT
-         t1NO09mZY942Jo9HEH22JmmG9YVbYW58KHCyCtTZh2P7vt/YFz1wMAA09Ea7rg4UE6O8
-         6IAkF8JJYqmOHuk1zMqI7FcsgsYIjFxWoKAyFbXj0/XdOw9X8ByUgtztg6iDubWI5QoZ
-         6kaLhfXw4xU3EkLT1wJQZr0AKuHyC3LtheeAeR7TWeEl0xsZU80KjTclC6mfsKAdadpn
-         iGdG24L/+M083oQwxl0UUo+2F/jnB95kvoiSxb7PvjfSh0nzG8pVNc+f/dOJlBIHFa5+
-         /1yw==
-X-Gm-Message-State: AOAM532KszpmjbHtsT57vhz0UlYcdZC7s96Lm0WGlMK4suME104m6+Je
-        Ba8bTJfloFMQLBgMz4lOc48=
-X-Google-Smtp-Source: ABdhPJxXbdIBZIjwkn7ZbY+hGsjbDKfIfe1ZdO9VXxwzM1xJNTPv8EDLt6su+DiiWRPBkEf4kiwP3Q==
-X-Received: by 2002:a17:902:328:: with SMTP id 37mr1557483pld.35.1589509065945;
-        Thu, 14 May 2020 19:17:45 -0700 (PDT)
-Received: from debian.debian-2 ([154.223.71.34])
-        by smtp.gmail.com with ESMTPSA id d2sm439366pfa.164.2020.05.14.19.17.42
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 14 May 2020 19:17:44 -0700 (PDT)
-Date:   Fri, 15 May 2020 10:17:40 +0800
-From:   Bo YU <tsu.yubo@gmail.com>
-To:     clm@fb.com, josef@toxicpanda.com, sterba@suse.com
-Cc:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        tsu.yubo@gmail.com
-Subject: [PATCH -next] fs/btrfs: Fix unlocking in btrfs_ref_tree_mod
-Message-ID: <20200515021731.cb5y557wsxf66fo3@debian.debian-2>
+        Thu, 14 May 2020 22:39:55 -0400
+X-IronPort-Anti-Spam-Filtered: true
+X-IronPort-Anti-Spam-Result: =?us-ascii?q?A2DqAgBdAL5e/9y5pztmGwEBAQEBAQE?=
+ =?us-ascii?q?BBQEBARIBAQEDAwEBAUCBR4IsgUQyhFGOeIFsJZtiCwE8AQIEAQGERAKCFSQ?=
+ =?us-ascii?q?4EwIQAQEGAQEBAQEFBG2FYoVxAQEBAQIBI1YFCwsOCgICJgICPBsGAQwIAQG?=
+ =?us-ascii?q?DIoJdH7EhdoEyiTKBQCJsKoxCGoIAgTgMA4JaPmmGeYJgBI4jiwGBUJgOgTu?=
+ =?us-ascii?q?BHYEElzUIG51PkDafVCKBVjMaCBcZgyVPGA2fGi8DZwIGCAEBAwlZAQGMEyu?=
+ =?us-ascii?q?CGgEB?=
+Received: from podling.glasswings.com.au ([59.167.185.220])
+  by ipmail05.adl3.internode.on.net with ESMTP; 15 May 2020 12:09:50 +0930
+Received: from dash ([192.168.21.15])
+        by podling.glasswings.com.au with esmtp (Exim 4.89)
+        (envelope-from <andrew@sericyb.com.au>)
+        id 1jZQGL-0000Y4-LC; Fri, 15 May 2020 12:39:49 +1000
+Subject: Re: btrfs-progs reports nonsense scrub status
+To:     Graham Cobb <g.btrfs@cobb.uk.net>,
+        Chris Murphy <lists@colorremedies.com>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+References: <0d1cceb6-9295-1bdf-c427-60ba9b1ef0b3@sericyb.com.au>
+ <8ab9f20d-eff0-93bf-a4a4-042473b4059e@sericyb.com.au>
+ <CAJCQCtQvyncTMqATX2PkVkR1bRPaUvDUqCmj-bRJzfHEU2k4JQ@mail.gmail.com>
+ <ff173eb0-b6e8-5365-43a8-8f67d0da6c96@sericyb.com.au>
+ <CAJCQCtTdHQAkaagTvCO-0SguakQx9p5iKmNbvmNYyxsBCqQ6Vw@mail.gmail.com>
+ <ac6be0fa-96a7-fe0b-20c7-d7082ff66905@sericyb.com.au>
+ <c2b89240-38fd-7749-3f1a-8aeaec8470e0@cobb.uk.net>
+ <ace72f18-724c-9f2c-082f-cb478b8a63ef@sericyb.com.au>
+ <CAJCQCtSq7Ocar4hJM0Z+Y7UeRM6Cfi_uwN=QM77F2Eg+MtnNWw@mail.gmail.com>
+ <04f481fd-b8e5-7df6-d547-ece9ab6b8154@sericyb.com.au>
+ <CAJCQCtTdSSX15Y7YX7fAg+iKncZf09ZG6KnHmmo4S77OtGWWXw@mail.gmail.com>
+ <b41da576-55b2-4599-10e9-e8aeb0e9ad20@sericyb.com.au>
+ <CAJCQCtSWwypfm2xjtJ2vP8O4LT2bFOY=omHMMPe8_Jq6jG_3qA@mail.gmail.com>
+ <65cdf796-02f6-d20f-4b7f-b258d1685e2c@sericyb.com.au>
+ <CAJCQCtS3OKrM2_bEVVhTEnqtOrV4aN80bpkYa60QfB9dz97anQ@mail.gmail.com>
+ <17b75152-10c7-d44f-bf0d-38e7cfcd4eb0@cobb.uk.net>
+From:   Andrew Pam <andrew@sericyb.com.au>
+Autocrypt: addr=andrew@sericyb.com.au; prefer-encrypt=mutual; keydata=
+ mQGiBEPPxa8RBACcBTuSu02Fi+ZhvFj8wYJa8P2xF2djPveAkV5iuv/b1OTlzcdC7yJwNKq8
+ STgXoe2C9orhZ+3lO0iIwCkZpYj3purc1CojYE0bFh8EAW85usWox+Nrqsb6JYaoJk0ekyfM
+ gogjKGf7MUg4lDwfg1D6iiWJ0Dk6OZwARo9u97sqswCgwki1jozMbKx8LhkzbeNAonRxADED
+ /2HcSy+OsR2byqdX2BbaZppXZJEzclQNR7BiSwTPVoOX0jcHY0Sn8rdBUlagSEhv4YJ4Tdwd
+ QhPs3qcrFm2GQnStV19cLJ1DvO3TfLEikSetWotBv/6RanXRZRweRE4pm/zZMxX6+zcib+jb
+ +UlFg7MSyu+z50g0Bf4b5xH6AW/DBACAsgsJaaD1lDOdFMK7jnUiYXI0Y+LfHJ6xOukYUNqC
+ Yaxbw4Bk60DeP7hwUfVPMMxIJZdN+WsrtkijppJG6La9KqapYPu3ByapaLoIjtBOeTJfhcDN
+ mcAqZaxDhZ6eIMi+IOyS6/2MK76aLEpYY+0+M8mzUZ3LXi/blYVbS7urobQkQW5kcmV3IFBh
+ bSA8eGFubmlAZ2xhc3N3aW5ncy5jb20uYXU+iGEEExECACECGwMGCwkIBwMCAxUCAwMWAgEC
+ HgECF4AFAkPPySICGQEACgkQGk9LI6KtAU50ZwCeJfVJEMTSK71XD+WR8z9stEhPovYAniEn
+ wBEAHXMO4MlxJPMmnYJWG/rbuQINBEPPxbQQCADZy6E8nqM+1s3t1UaIKzGzF8PuA0R+/Zx3
+ 5Uh4jHHoJyFt/uuJxyJzOrq9Ilz+fWXOrXK44Ga3wOQ6yR9tIhrGNoQ97Y2S5RSufjNVstS1
+ otA0N3a6nUz44rAPwXfFhMKTlUjfUwuvQik3yEF1kyXEU7o78G/XG06M/9s1ur1k4hFvAfCE
+ y/fXztx86bC5vlDq2r1MAwE+fMJG/Ok21OekdY0D3KrZ1kOi4kYgRoVIGlgfJE3OXi6W8Lko
+ c/oO0UUtEoiKGGOBTewmU8N6G2F3OXiONnZIY+FD/NIe+3YAEWAIc5SoXQs4KCmNxaF6vxRQ
+ STBOX2A9Y+LfY4lx5+HzAAMFB/9g0VGTdvnQvogs/0b+FdfvPVflwhbW9VMF12kWwgx9q0Gw
+ xcWO8IJWlFQouam5u2QMVMKxsscphAPjWDYP8BVGWFx32/Z5XZnp2xOqjaFSG9BfbEqIUizL
+ 9AEClL04eBKGmVrhPzr2d0Z7DgF5gxehVYZ7m9dW7heFnuiC+ZaYEGRvfyWsWsOihoDkbify
+ Ms1RluUU23wKJFaZzafAX4caD9u3bIUaujKUGCh64nLkaxwmZD2QBw0T9jGCIssVCRHwQmTV
+ 25eADYmSEwf3ONk4ljzfupTOpCLtNapGc3vZO84CQSv9bl3l24uBvVRWaqLJMO0NzAn+qbes
+ U3w6WMBCiEkEGBECAAkFAkPPxbUCGwwACgkQGk9LI6KtAU59IACggRqLORG73pZUK1pRh02T
+ 5kUwjTQAn1F0m2Mx72juiYwF0IKljJ7lR0TR
+Organization: Serious Cybernetics
+Face:   iVBORw0KGgoAAAANSUhEUgAAADAAAAAwBAMAAAClLOS0AAAALVBMVEUrHhk8LSRTQTZuVkmC
+ UkaKalykaGZ3h7KmgG+ahH68lYWXn7mxmpTSqZ3CvLqleibHAAACZElEQVQ4y3XUPWvbQBgH8FOg
+ Qzef3EKnEp+qIaOlGJzFi+Xg0YMFcoeMod/AFDpksMpxeHCSZhAYUxoo8mF16NylLYXUCG2F1uSW
+ eCimJp+hz+nNctKesTH30/P87ySf0e1/Bsq/hZ4X/Qu+XxiEHNyH9blBsEoOorvwzSQVjAnRJtuw
+ Mkk6MknhnGBSIQRiiF6ElZzNxlEBzpIuEKMSrG1gbaQXQz7GaiOHVd5GSpISw42cg0vlJ6TFC0NJ
+ BOwuAaKZBmlkQGAKIwWrmrnv2K66l8KqUlFxCSFFo5T5jMchEpYyEqFS+bkQgge8qqVwI6ehoB4I
+ ORYdNYUvGCswr3ORwImSA4KXzpICIU7QJIHTkoIVnaUFQoxQIwVopTi8AEcJVHFJ2QGAxUK3qTfK
+ WlUhAYD6rsXEomt3snAAJMGtWW3xo+V0djKAxe4w7jf33rSDS3IxepjCLuyuzAJOx/RF4Pfo26cZ
+ QMVjyPUpo8HPY/Y5u7tVqHhEYUELzgN4v4tSOEWK8ozG2wAIxK/sCS5RmeiUSfCDhRAfMljjJ4NW
+ AvH9ivJnXn3wvhXvesGYCDYQjtAhAIRw65BynsMZLMqiVC7Jtdqc5z+4pYn0rsM453PP7s1nOawN
+ pTaQMPW45403cLvENWoDuA6bTZ0CfC3VqQ0Z/BgGnRQqUJ26stdrAD/aAh6X+F2rPS0cnBWAbycl
+ bFg8UbsAru3wQISzqAgf63xOu7YXhqG3dWr7tWHgD0yz53lbx/lP/+U4hNvRNMza1h/A737/U3h9
+ 1d1vNnt3oR9eh65tO8N78CoMr2CT4wz+AgHlxhkkWxq2AAAAAElFTkSuQmCC
+Message-ID: <80853990-b894-e4c6-a4d3-9b47a1055211@sericyb.com.au>
+Date:   Fri, 15 May 2020 12:37:39 +1000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Disposition: inline
-User-Agent: NeoMutt/20170113 (1.7.2)
+In-Reply-To: <17b75152-10c7-d44f-bf0d-38e7cfcd4eb0@cobb.uk.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-It adds spin_lock() in add_block_entry() but out path does not unlock
-it.
+On 15/5/20 2:18 am, Graham Cobb wrote:
+> Try scrub resume restarts the scrub and backgrounds it. Maybe there is
+> something strange about background processes created in the restore
+> script. What happens if you specify "-B" on the resume?
 
-Detected by CoversityScan, CID# 1463343:(Missing unlock)
+Then the resume does not occur.  After the resume from suspend-to-RAM,
+no "btrfs" process is running and the status still shows as "aborted".
+This suggests that the "btrfs resume -B" fails when run from within the
+systemd post-resume script.
 
-Fixes: fd708b81d972a (Btrfs: add a extent ref verify tool)
-Signed-off-by: Bo YU <tsu.yubo@gmail.com>
----
- fs/btrfs/ref-verify.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+> Try adding a sleep after the cancel (or logic to see if the scrub
+> process has actually exited).
 
-diff --git a/fs/btrfs/ref-verify.c b/fs/btrfs/ref-verify.c
-index 7887317033c9..8f644511006d 100644
---- a/fs/btrfs/ref-verify.c
-+++ b/fs/btrfs/ref-verify.c
-@@ -894,8 +894,10 @@ int btrfs_ref_tree_mod(struct btrfs_fs_info *fs_info,
- out_unlock:
- 	spin_unlock(&fs_info->ref_verify_lock);
- out:
--	if (ret)
-+	if (ret) {
-+		spin_unlock(&fs_info->ref_verify_lock);
- 		btrfs_clear_opt(fs_info->mount_opt, REF_VERIFY);
-+	}
- 	return ret;
- }
+I tried adding both "killall -s0 -w btrfs" and "sleep 5" - even with
+these changes, the "btrfs resume" (without -B option) once again shows
+"last_physical: 0"
 
---
-2.11.0
-
+Thanks,
+	Andrew
