@@ -2,135 +2,153 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 184A31D4B4B
-	for <lists+linux-btrfs@lfdr.de>; Fri, 15 May 2020 12:45:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DE851D4C92
+	for <lists+linux-btrfs@lfdr.de>; Fri, 15 May 2020 13:28:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728230AbgEOKo7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 15 May 2020 06:44:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55768 "EHLO
+        id S1726047AbgEOL2F (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 15 May 2020 07:28:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728013AbgEOKo6 (ORCPT
+        with ESMTP id S1726003AbgEOL2E (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 15 May 2020 06:44:58 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EABCDC061A0C;
-        Fri, 15 May 2020 03:44:56 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id 188so1397410lfa.10;
-        Fri, 15 May 2020 03:44:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=RP/C+T1G9Ut2iOKolnfVAMBSxN8RIC6J9bPF0F0wsOU=;
-        b=VgV4vnHk/xDyNeMazwEiccDn0tx607GkqAOjIVpkNcQlpKA0yk6QiIq2iiw/SvrSMB
-         /9T4YYOqWgMKy3laVmhj6LZUdWgwoI8hGn47Dm0lPfoPycjfU6/wMY1nl29Fao6HPGAM
-         IUyMLt/wNsvIUCri6O4MQM7X4ETd6JL163HEvI61Wu8j/lpbVYHQK8LOQEYoGqlyiy8v
-         dhgExbU/7wjjZ5mWJCq05sx5zobMgfSBZuJkoRRgZoeg530AGaW6dfWL+HC+0xOaCOc5
-         7ya49tN5yXHlC12FfLWHVvjka9pwf8SJ/y7szscZMq2whuiUq5QemangKzSbVyXtIL68
-         Dd9g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RP/C+T1G9Ut2iOKolnfVAMBSxN8RIC6J9bPF0F0wsOU=;
-        b=qOd1kp5WQhzrb7JYhcDMid2k+Lw0hCrXkN8g5euwtwQaI/BUgI9EHqb9JceckVgD/t
-         cvLLzJF3dZRgOwP8y1L4DwQjNAW4Iap9+l/cBiSzWqaljQQOhNjpvfwHWOmrG8i9EWFo
-         VWUqh9VtLmyFbn8sNLSATNyBtFJoJmmfDmI0Y0a1koyciUkKvR7pSh8gylsQlOwwalfj
-         KvANTVuZsu6PgiBEyjN29EEbsJeg50IsV2q9X4zecsKtLiJg4JStwga2uR1U8t+PWRa8
-         NpPllxATe/WRE6YtxVVNWflQouL89PlvObZeL9yA7hmlFXyxOk9KOqyxA36u/HYUwSVR
-         U6AQ==
-X-Gm-Message-State: AOAM5316VJ2h+ZCR7pFHA4C05Im1jRGfohBuEnqWV3qvdw2FBwf+CFJH
-        7lkK5YNieQ8QzZ3Sf0tsMQcOEsSkROfQDFIZBOg=
-X-Google-Smtp-Source: ABdhPJwrShfI7gSIURk9dxTDqiEefZ5tzPAA1hhJWtIIiOZzjgjSBp4ntBv8ZrLyRmdnBk7A5M2eKz4h7R+uK1TVd10=
-X-Received: by 2002:ac2:5212:: with SMTP id a18mr1971443lfl.83.1589539495366;
- Fri, 15 May 2020 03:44:55 -0700 (PDT)
+        Fri, 15 May 2020 07:28:04 -0400
+Received: from zaphod.cobb.me.uk (zaphod.cobb.me.uk [IPv6:2001:41c8:51:983::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4928BC061A0C
+        for <linux-btrfs@vger.kernel.org>; Fri, 15 May 2020 04:28:04 -0700 (PDT)
+Received: by zaphod.cobb.me.uk (Postfix, from userid 107)
+        id 208D79BD44; Fri, 15 May 2020 12:28:01 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cobb.uk.net;
+        s=201703; t=1589542081;
+        bh=GIKsI7rB7O0vNPwxV0/4dZI1pzJkmkKN3FgdbOaSj3A=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=e0477wzTnEHc127YPtDE8W3JQKB86kGyVzagBDQ8c0ZrwKsRORdWiBPtv6fnlbVxg
+         ipK+u2PXfotzj9AkfJhp1pP5NoIZPA2prZrheur2V43PrAGQ7+oMPwn05/u4AP4OfT
+         sXeQREbKEk1ZqNjyVhxpF+YQ/JhFdMc6hlXwAZkgN4U9oRcJrNH/2ReH1HZIEtvEU2
+         enbJOagCd3UH6R7Z5gw2iKrC+4d0E2LTR+o7vwkRp+VoTPoATw7ewiTyUdg5TaFV5e
+         CyqbdSS2ewLGT+f3zsSb4KCHEyz9CJUqVR7ObmlHJwLetWFnt9MLOrfF4m6l2kQ7tV
+         DCQqXnzrsjaSw==
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on zaphod.cobb.me.uk
+X-Spam-Status: No, score=-0.8 required=12.0 tests=ALL_TRUSTED,DKIM_INVALID,
+        DKIM_SIGNED,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.2
+X-Spam-Level: 
+X-Spam-Bar: 
+Received: from black.home.cobb.me.uk (unknown [192.168.0.205])
+        by zaphod.cobb.me.uk (Postfix) with ESMTP id F41D89B89F;
+        Fri, 15 May 2020 12:27:53 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cobb.uk.net;
+        s=201703; t=1589542074;
+        bh=GIKsI7rB7O0vNPwxV0/4dZI1pzJkmkKN3FgdbOaSj3A=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=eb0hFsqisQPjywYykr87EuUW2IXv7K20q9qFkPMwiSqS3B4KO+/O5Zt94o07f2kVv
+         4Hkf+hRIqyFMBDoMnt9tiu/bMelxTAlnv4tILPBPOvZtHUbIbFyjPE1TRmPMP8pW1g
+         7Dro5jv4L8DkugGCRZR+a02Su07fl6R9BYkltfOctbL61JtEOSOwjHWXhO/xe22Ru9
+         LLIiUjNNbM+SIAzy9dXBPHvqANZzGqbbbClp0JF3jKRHwri4Ah2SD3Eam+zfWnQVV8
+         6Oct9bxhmKj7JYBu/mxk4fDl00a2RM9erYPlff3oWGSl/nLc/qz45o/TfJtypaMjCw
+         n6dHHgjNFqQqQ==
+Received: from [192.168.0.211] (novatech.home.cobb.me.uk [192.168.0.211])
+        by black.home.cobb.me.uk (Postfix) with ESMTPS id 95B32104806;
+        Fri, 15 May 2020 12:27:53 +0100 (BST)
+Subject: Re: btrfs-progs reports nonsense scrub status
+To:     Andrew Pam <andrew@sericyb.com.au>,
+        Chris Murphy <lists@colorremedies.com>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+References: <0d1cceb6-9295-1bdf-c427-60ba9b1ef0b3@sericyb.com.au>
+ <CAJCQCtQvyncTMqATX2PkVkR1bRPaUvDUqCmj-bRJzfHEU2k4JQ@mail.gmail.com>
+ <ff173eb0-b6e8-5365-43a8-8f67d0da6c96@sericyb.com.au>
+ <CAJCQCtTdHQAkaagTvCO-0SguakQx9p5iKmNbvmNYyxsBCqQ6Vw@mail.gmail.com>
+ <ac6be0fa-96a7-fe0b-20c7-d7082ff66905@sericyb.com.au>
+ <c2b89240-38fd-7749-3f1a-8aeaec8470e0@cobb.uk.net>
+ <ace72f18-724c-9f2c-082f-cb478b8a63ef@sericyb.com.au>
+ <CAJCQCtSq7Ocar4hJM0Z+Y7UeRM6Cfi_uwN=QM77F2Eg+MtnNWw@mail.gmail.com>
+ <04f481fd-b8e5-7df6-d547-ece9ab6b8154@sericyb.com.au>
+ <CAJCQCtTdSSX15Y7YX7fAg+iKncZf09ZG6KnHmmo4S77OtGWWXw@mail.gmail.com>
+ <b41da576-55b2-4599-10e9-e8aeb0e9ad20@sericyb.com.au>
+ <CAJCQCtSWwypfm2xjtJ2vP8O4LT2bFOY=omHMMPe8_Jq6jG_3qA@mail.gmail.com>
+ <65cdf796-02f6-d20f-4b7f-b258d1685e2c@sericyb.com.au>
+ <CAJCQCtS3OKrM2_bEVVhTEnqtOrV4aN80bpkYa60QfB9dz97anQ@mail.gmail.com>
+ <17b75152-10c7-d44f-bf0d-38e7cfcd4eb0@cobb.uk.net>
+ <80853990-b894-e4c6-a4d3-9b47a1055211@sericyb.com.au>
+From:   Graham Cobb <g.btrfs@cobb.uk.net>
+Openpgp: preference=signencrypt
+Autocrypt: addr=g.btrfs@cobb.uk.net; prefer-encrypt=mutual; keydata=
+ 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 myxb
+Message-ID: <9840023e-9bc4-50d1-bb22-7636e7f7df4f@cobb.uk.net>
+Date:   Fri, 15 May 2020 12:27:52 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-References: <20200515021731.cb5y557wsxf66fo3@debian.debian-2>
- <SN4PR0401MB35985CFC199D20362EBFD8E09BBD0@SN4PR0401MB3598.namprd04.prod.outlook.com>
- <CAKq8=3KyewqQLdo-GjERuOfKe5ZrmQ+bRPfFRWiyZkjdEVvSeA@mail.gmail.com> <SN4PR0401MB35989B816CB1DA4BCB75B1FC9BBD0@SN4PR0401MB3598.namprd04.prod.outlook.com>
-In-Reply-To: <SN4PR0401MB35989B816CB1DA4BCB75B1FC9BBD0@SN4PR0401MB3598.namprd04.prod.outlook.com>
-From:   Bo YU <tsu.yubo@gmail.com>
-Date:   Fri, 15 May 2020 18:44:44 +0800
-Message-ID: <CAKq8=3L7u05wneTt=DRPNU6dCrg=OMN-Zcp9XgTcd3MWbjPKUg@mail.gmail.com>
-Subject: Re: [PATCH -next] fs/btrfs: Fix unlocking in btrfs_ref_tree_mod
-To:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-Cc:     "clm@fb.com" <clm@fb.com>,
-        "josef@toxicpanda.com" <josef@toxicpanda.com>,
-        "sterba@suse.com" <sterba@suse.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <80853990-b894-e4c6-a4d3-9b47a1055211@sericyb.com.au>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, May 15, 2020 at 5:36 PM Johannes Thumshirn
-<Johannes.Thumshirn@wdc.com> wrote:
->
-> On 15/05/2020 11:24, Bo YU wrote:
-> > Hi,
-> > On Fri, May 15, 2020 at 5:03 PM Johannes Thumshirn
-> > <Johannes.Thumshirn@wdc.com> wrote:
-> >>
-> >> On 15/05/2020 04:17, Bo YU wrote:
-> >>> It adds spin_lock() in add_block_entry() but out path does not unlock
-> >>> it.
-> >>
-> >> Which call path doesn't unlock it? There is an out_unlock label with a
-> >> spin_unlock() right above your insert. So either coverity messed something
-> >> up or the call path that needs the unlock has to jump to out_unlock instead
-> >> of out.
-> > This is out label without unlocking it. It will be offered spin_lock
-> > in add_block_entry()
-> > for be. But here I was worried about that unlock it in if() whether it
-> > is right or not.
-> >
->
-> No add_block_entry() returns with the ref_verify_lock held on success only:
-> static struct block_entry *add_block_entry(struct btrfs_fs_info *fs_info,
->                                            u64 bytenr, u64 len,
->                                            u64 root_objectid)
-> {
->         struct block_entry *be = NULL, *exist;
->         struct root_entry *re = NULL;
->
->         re = kzalloc(sizeof(struct root_entry), GFP_KERNEL);
->         be = kzalloc(sizeof(struct block_entry), GFP_KERNEL);
->         if (!be || !re) {
->                 kfree(re);
->                 kfree(be);
->                 return ERR_PTR(-ENOMEM);
->         }
->         be->bytenr = bytenr;
->         be->len = len;
->
->         re->root_objectid = root_objectid;
->         re->num_refs = 0;
->
->         spin_lock(&fs_info->ref_verify_lock);
-> [...]
->
->
-> While the code caller checks for an error:
->
-> if (action == BTRFS_ADD_DELAYED_EXTENT) {
->                 /*
->                  * For subvol_create we'll just pass in whatever the parent root
->                  * is and the new root objectid, so let's not treat the passed
->                  * in root as if it really has a ref for this bytenr.
->                  */
->                 be = add_block_entry(fs_info, bytenr, num_bytes, ref_root);
->                 if (IS_ERR(be)) {
->                         kfree(ref);
->                         kfree(ra);
->                         ret = PTR_ERR(be);
->                         goto out;
->                 }
->
-> So if add_block_entry returns -ENOMEM it didn't take the lock and thus no unlock
-> is needed.
-Ok,  I got it. Please drop it.
-Thank you!
->
-> Or did I miss something?
+On 15/05/2020 03:37, Andrew Pam wrote:
+> On 15/5/20 2:18 am, Graham Cobb wrote:
+>> Try scrub resume restarts the scrub and backgrounds it. Maybe there is
+>> something strange about background processes created in the restore
+>> script. What happens if you specify "-B" on the resume?
+> 
+> Then the resume does not occur.  After the resume from suspend-to-RAM,
+> no "btrfs" process is running and the status still shows as "aborted".
+> This suggests that the "btrfs resume -B" fails when run from within the
+> systemd post-resume script.
+
+Maybe something special about the post-resume script. Have you tried not
+resuming the scrub in the systemd script but doing it by hand after
+everything has settled down?
+
+> 
+>> Try adding a sleep after the cancel (or logic to see if the scrub
+>> process has actually exited).
+> 
+> I tried adding both "killall -s0 -w btrfs" and "sleep 5" - even with
+> these changes, the "btrfs resume" (without -B option) once again shows
+> "last_physical: 0"
+
+Oh well, worth a try.
+
+Did you try running the resume using my logging patch? Was the 0 for
+last_physical definitely being returned from the kernel in the ioctl
+response? It may mean running it manually (or redirecting stderr to a file).
+
+Graham
