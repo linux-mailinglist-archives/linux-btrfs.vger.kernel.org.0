@@ -2,104 +2,110 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F39B1D596D
-	for <lists+linux-btrfs@lfdr.de>; Fri, 15 May 2020 20:48:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A9701D5A01
+	for <lists+linux-btrfs@lfdr.de>; Fri, 15 May 2020 21:29:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726907AbgEOSsM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 15 May 2020 14:48:12 -0400
-Received: from mx2.suse.de ([195.135.220.15]:52164 "EHLO mx2.suse.de"
+        id S1726197AbgEOT3b (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 15 May 2020 15:29:31 -0400
+Received: from mx2.suse.de ([195.135.220.15]:37892 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726730AbgEOSsI (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 15 May 2020 14:48:08 -0400
+        id S1726168AbgEOT3b (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 15 May 2020 15:29:31 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id ADA54AE95;
-        Fri, 15 May 2020 18:48:09 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 5929EAB3D;
+        Fri, 15 May 2020 19:29:32 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 32271DA732; Fri, 15 May 2020 20:47:14 +0200 (CEST)
-Date:   Fri, 15 May 2020 20:47:13 +0200
+        id B8870DA732; Fri, 15 May 2020 21:28:36 +0200 (CEST)
+Date:   Fri, 15 May 2020 21:28:35 +0200
 From:   David Sterba <dsterba@suse.cz>
 To:     Qu Wenruo <wqu@suse.com>
 Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v3 3/3] btrfs: Don't set SHAREABLE flag for data reloc
- tree
-Message-ID: <20200515184713.GP18421@twin.jikos.cz>
+Subject: Re: [PATCH v3 2/3] btrfs: inode: Cleanup the log tree exceptions in
+ btrfs_truncate_inode_items()
+Message-ID: <20200515192835.GQ18421@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
 Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
         linux-btrfs@vger.kernel.org
 References: <20200515060142.23609-1-wqu@suse.com>
- <20200515060142.23609-4-wqu@suse.com>
+ <20200515060142.23609-3-wqu@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200515060142.23609-4-wqu@suse.com>
+In-Reply-To: <20200515060142.23609-3-wqu@suse.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, May 15, 2020 at 02:01:42PM +0800, Qu Wenruo wrote:
-> @@ -1525,6 +1526,7 @@ void btrfs_free_fs_info(struct btrfs_fs_info *fs_info)
->  	btrfs_put_root(fs_info->uuid_root);
->  	btrfs_put_root(fs_info->free_space_root);
->  	btrfs_put_root(fs_info->fs_root);
-> +	btrfs_put_root(fs_info->data_reloc_root);
->  	btrfs_check_leaked_roots(fs_info);
->  	btrfs_extent_buffer_leak_debug_check(fs_info);
->  	kfree(fs_info->super_copy);
+On Fri, May 15, 2020 at 02:01:41PM +0800, Qu Wenruo wrote:
+> There are a lot of root owner check in btrfs_truncate_inode_items()
+> like:
+> 
+> 	if (test_bit(BTRFS_ROOT_SHAREABLE, &root->state) ||
+> 	    root == fs_info->tree_root)
+> 
+> But considering that, there are only those trees can have INODE_ITEMs:
+> - tree root (For v1 space cache)
+> - subvolume trees
+> - tree reloc trees
+> - data reloc tree
+> - log trees
+> 
+> And since subvolume/tree reloc/data reloc trees all have SHAREABLE bit,
+> and we're checking tree root manually, so above check is just excluding
+> log trees.
+> 
+> This patch will replace two of such checks to a much simpler one:
+> 
+> 	if (root->root_key.objectid != BTRFS_TREE_LOG_OBJECTID)
+> 
+> This would merge btrfs_drop_extent_cache() and lock_extent_bits() call
+> into the same if branch.
+> 
+> Finally replace ALIGN() with round_up(), as I'm always bad at determing
+> the alignement direction.
 
-> +	location.objectid = BTRFS_DATA_RELOC_TREE_OBJECTID;
-> +	root = btrfs_get_fs_root(fs_info, &location, true);
-> +	if (IS_ERR(root)) {
-> +		ret = PTR_ERR(root);
-> +		goto out;
-> +	}
-> +	set_bit(BTRFS_ROOT_TRACK_DIRTY, &root->state);
-> +	fs_info->data_reloc_root = root;
+Alert
 
-I've read the code more carefully, the data reloc tree needs to be read
-as the others, like fs_tree as you said before. A new tree has the
-reference count set to 1, which is what I missed before, so calling
-btrfs_get_fs_root would set it to 2 and then btrfs_free_fs_info won't
-free it as it expects refs == 1. Sorry for misleading you.
-
-> @@ -3470,14 +3470,12 @@ struct inode *create_reloc_inode(struct btrfs_fs_info *fs_info,
->  {
->  	struct inode *inode = NULL;
->  	struct btrfs_trans_handle *trans;
-> -	struct btrfs_root *root;
-> +	struct btrfs_root *root = btrfs_grab_root(fs_info->data_reloc_root);
-
-Which means you can use the pointer directly as you had in previous
-versions.
-
->  	struct btrfs_key key;
->  	u64 objectid;
->  	int err = 0;
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+>  fs/btrfs/inode.c | 21 +++++++++------------
+>  1 file changed, 9 insertions(+), 12 deletions(-)
+> 
+> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+> index a6c26c10ffc5..ae6b47edabc5 100644
+> --- a/fs/btrfs/inode.c
+> +++ b/fs/btrfs/inode.c
+> @@ -4121,20 +4121,18 @@ int btrfs_truncate_inode_items(struct btrfs_trans_handle *trans,
+>  		return -ENOMEM;
+>  	path->reada = READA_BACK;
 >  
-> -	root = read_fs_root(fs_info, BTRFS_DATA_RELOC_TREE_OBJECTID);
-> -	if (IS_ERR(root))
-> -		return ERR_CAST(root);
-> +	ASSERT(root);
->  
->  	trans = btrfs_start_transaction(root, 6);
->  	if (IS_ERR(trans)) {
-> @@ -3870,13 +3868,10 @@ int btrfs_recover_relocation(struct btrfs_root *root)
->  
->  	if (err == 0) {
->  		/* cleanup orphan inode in data relocation tree */
-> -		fs_root = read_fs_root(fs_info, BTRFS_DATA_RELOC_TREE_OBJECTID);
-> -		if (IS_ERR(fs_root)) {
-> -			err = PTR_ERR(fs_root);
-> -		} else {
-> -			err = btrfs_orphan_cleanup(fs_root);
-> -			btrfs_put_root(fs_root);
-> -		}
-> +		fs_root = btrfs_grab_root(fs_info->data_reloc_root);
-> +		ASSERT(fs_root);
-> +		err = btrfs_orphan_cleanup(fs_root);
-> +		btrfs_put_root(fs_root);
+> -	if (root->root_key.objectid != BTRFS_TREE_LOG_OBJECTID)
+> +	if (root->root_key.objectid != BTRFS_TREE_LOG_OBJECTID) {
+> +		/*
+> +		 * We want to drop from the next block forward in case this
+> +		 * new size is not block aligned since we will be keeping the
+> +		 * last block of the extent just the way it is.
+> +		 */
 
-Here it's fine to grab/put so it's clear the tree is in use but it's
-merely for clarity.
+The comment is misplaced, it belongs to the 'drop extent cache' part
+
+>  		lock_extent_bits(&BTRFS_I(inode)->io_tree, lock_start, (u64)-1,
+>  				 &cached_state);
+> -
+> -	/*
+> -	 * We want to drop from the next block forward in case this new size is
+> -	 * not block aligned since we will be keeping the last block of the
+> -	 * extent just the way it is.
+> -	 */
+> -	if (test_bit(BTRFS_ROOT_SHAREABLE, &root->state) ||
+> -	    root == fs_info->tree_root)
+> -		btrfs_drop_extent_cache(BTRFS_I(inode), ALIGN(new_size,
+
+here.
+
+Regarding ALIGN -> round_up, please don't put such unrelated changes to
+one patch.
