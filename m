@@ -2,68 +2,73 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80E781D5824
-	for <lists+linux-btrfs@lfdr.de>; Fri, 15 May 2020 19:41:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 045601D5843
+	for <lists+linux-btrfs@lfdr.de>; Fri, 15 May 2020 19:49:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726191AbgEORll (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 15 May 2020 13:41:41 -0400
-Received: from mx2.suse.de ([195.135.220.15]:52096 "EHLO mx2.suse.de"
+        id S1726292AbgEORtZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 15 May 2020 13:49:25 -0400
+Received: from mx2.suse.de ([195.135.220.15]:54294 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726144AbgEORll (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 15 May 2020 13:41:41 -0400
+        id S1726219AbgEORtY (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 15 May 2020 13:49:24 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 9EC72B03C;
-        Fri, 15 May 2020 17:41:42 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 20CCBAA7C;
+        Fri, 15 May 2020 17:49:26 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 7738EDA732; Fri, 15 May 2020 19:40:47 +0200 (CEST)
-Date:   Fri, 15 May 2020 19:40:47 +0200
+        id EBA67DA732; Fri, 15 May 2020 19:48:30 +0200 (CEST)
+Date:   Fri, 15 May 2020 19:48:30 +0200
 From:   David Sterba <dsterba@suse.cz>
 To:     Anand Jain <anand.jain@oracle.com>
-Cc:     linux-btrfs@vger.kernel.org, dsterba@suse.com
-Subject: Re: [PATCH] btrfs: fix lockdep warning chunk_mutex vs
- device_list_mutex
-Message-ID: <20200515174047.GN18421@twin.jikos.cz>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs: fix comment drop reference to volume_mutex
+Message-ID: <20200515174830.GO18421@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
 Mail-Followup-To: dsterba@suse.cz, Anand Jain <anand.jain@oracle.com>,
-        linux-btrfs@vger.kernel.org, dsterba@suse.com
-References: <52b6ff4c2da5838393f5bd754310cfa6abcfcc7b3efb3c63c8d95824cb163d6d.dsterba@suse.com>
- <20200513194659.34493-1-anand.jain@oracle.com>
+        linux-btrfs@vger.kernel.org
+References: <20200513174245.25956-1-anand.jain@oracle.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200513194659.34493-1-anand.jain@oracle.com>
+In-Reply-To: <20200513174245.25956-1-anand.jain@oracle.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, May 14, 2020 at 03:46:59AM +0800, Anand Jain wrote:
-> A full list of tests just started.
+On Thu, May 14, 2020 at 01:42:45AM +0800, Anand Jain wrote:
+> No functional changes.
+> commit dccdb07bc996 (btrfs: kill btrfs_fs_info::volume_mutex)
+> killed the volume_mutex. Drop all references to volumes_mutex
+> including the comment sections.
 > 
->  fs/btrfs/volumes.c | 8 +++++---
->  1 file changed, 5 insertions(+), 3 deletions(-)
+> Fixes: dccdb07bc996 (btrfs: kill btrfs_fs_info::volume_mutex)
+
+The right format is
+
+Fixes: hash ("subject")
+
+but fixing a comment does not really need that tag and be backported to
+stable kernels.
+
+> Signed-off-by: Anand Jain <anand.jain@oracle.com>
+> ---
+>  fs/btrfs/volumes.c | 1 -
+>  1 file changed, 1 deletion(-)
 > 
 > diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> index 60ab41c12e50..ebc8565d0f73 100644
+> index be1e047a489e..60ab41c12e50 100644
 > --- a/fs/btrfs/volumes.c
 > +++ b/fs/btrfs/volumes.c
-> @@ -984,7 +984,6 @@ static struct btrfs_fs_devices *clone_fs_devices(struct btrfs_fs_devices *orig)
->  	if (IS_ERR(fs_devices))
->  		return fs_devices;
->  
+> @@ -280,7 +280,6 @@ static int __btrfs_map_block(struct btrfs_fs_info *fs_info,
+>   * ============
+>   *
+>   * uuid_mutex
+> - *   volume_mutex
+>   *     device_list_mutex
+>   *       chunk_mutex
+>   *     balance_mutex
 
-So now here's the device_list_mutex taken by a caller but inside
-clone_fs_devices there's
-
-	fs_devices = alloc_fs_devices(orig->fsid, NULL);
-
-just before this line and it does a GFP_KERNEL allocation. This could
-deadlock through the allocator trying to flush data and then superblock
-write locking the device_list_mutex again.
-
-> -	mutex_lock(&orig->device_list_mutex);
->  	fs_devices->total_devices = orig->total_devices;
->  
->  	list_for_each_entry(orig_dev, &orig->devices, dev_list) {
+As this removes one level, the other locks should be un-indented. I'll
+fix that, no need to resend.
