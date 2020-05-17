@@ -2,87 +2,100 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36EAA1D63E7
-	for <lists+linux-btrfs@lfdr.de>; Sat, 16 May 2020 22:02:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84B101D6C9F
+	for <lists+linux-btrfs@lfdr.de>; Sun, 17 May 2020 21:54:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726615AbgEPUCA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 16 May 2020 16:02:00 -0400
-Received: from mailrelay4-3.pub.mailoutpod1-cph3.one.com ([46.30.212.13]:47940
-        "EHLO mailrelay4-3.pub.mailoutpod1-cph3.one.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726607AbgEPUB7 (ORCPT
+        id S1726278AbgEQTya (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 17 May 2020 15:54:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53664 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726269AbgEQTya (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 16 May 2020 16:01:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=lechevalier.se; s=20191106;
-        h=content-transfer-encoding:content-type:in-reply-to:mime-version:date:
-         message-id:from:references:cc:to:subject:from;
-        bh=sHVqFasshW4u0j95CpEBKjZD4Jc7JL+N5hz55dWrSCo=;
-        b=dWFL1HrOZZCmwlnWPIVAxikr5W4PL95Q0Mi2hVTsXeRxG8jAYV1RRbOaYmC6nE03hU9busIW2ZD8m
-         CkN6bAkBejF9hUJTma44a1oOY3Xkgj4hWD4etrDSi+c8sdzIQ6lqojPQd6QqYJt59cf/ozIV5qmkdZ
-         C9Hsfro8SJFAwJyHV0QnSRrW0s5FiPzFHSl3XYx5jDWMPXfrws80xvbQ+7WUmVP0B2GYFmgdIKmnYg
-         RFJBBOjiAjehNmjFNE6X0dnpLJM8Zl1GahAw2ReZ5fXIcZ0IWX+1eSrK39viHCbJWkyAIg9GNVExYc
-         +4NPS/InsFMFt48r2SMmwhs8ostdRYQ==
-X-HalOne-Cookie: 6095bbeeaf78d14d21daf5b220c0bd515379eb8b
-X-HalOne-ID: 18253b7a-97b0-11ea-b305-d0431ea8bb10
-Received: from [10.0.88.22] (unknown [98.128.186.112])
-        by mailrelay4.pub.mailoutpod1-cph3.one.com (Halon) with ESMTPSA
-        id 18253b7a-97b0-11ea-b305-d0431ea8bb10;
-        Sat, 16 May 2020 20:01:56 +0000 (UTC)
-Subject: Re: cp -a leaves some compressed data.
-To:     linux-btrfs <linux-btrfs@vger.kernel.org>
-Cc:     fdmanana@gmail.com
-References: <b3f880.1227fea8.1721e54aeeb@lechevalier.se>
- <CAL3q7H4zkS=9U2+ig=6a3WDF2NXDDZkmnw9havUKi5EbB0t6Og@mail.gmail.com>
-From:   A L <mail@lechevalier.se>
-Message-ID: <af4712e3-d7eb-6ba7-0ecd-155e5ee17bc3@lechevalier.se>
-Date:   Sat, 16 May 2020 22:01:56 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
-MIME-Version: 1.0
-In-Reply-To: <CAL3q7H4zkS=9U2+ig=6a3WDF2NXDDZkmnw9havUKi5EbB0t6Og@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        Sun, 17 May 2020 15:54:30 -0400
+X-Greylist: delayed 160 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 17 May 2020 12:54:29 PDT
+Received: from mxa2.seznam.cz (mxa2.seznam.cz [IPv6:2a02:598:2::90])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0775C061A0C
+        for <linux-btrfs@vger.kernel.org>; Sun, 17 May 2020 12:54:29 -0700 (PDT)
+Received: from email.seznam.cz
+        by email-smtpc1b.ng.seznam.cz (email-smtpc1b.ng.seznam.cz [10.23.13.15])
+        id 1e2a13ce64de791f1e2a11b9;
+        Sun, 17 May 2020 21:54:28 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=seznam.cz; s=beta;
+        t=1589745268; bh=OF46sT8Rut0RW+IZX4RejcJRVh7Xm2AC8J2YkrZr3L8=;
+        h=Received:Message-ID:Subject:From:To:Date:Content-Type:X-Mailer:
+         Mime-Version:Content-Transfer-Encoding;
+        b=M36ssdTXTTc3iJ9tj62Hn4sLX0UGoer0XxeE3nkUFhDvgrzv8iKN/9VYvI/U4zd96
+         psyOJvi57fIPOdFFgSZHLzAXBjI4msxMpj7WzutXh4fijdTIzaVjv7ntjE/Q+n+54u
+         QIXj0/QTOxj1CAgkyKavjJmvhYhN40mnEkTCUpfc=
+Received: from lisicky.cdnet.czf (82-150-191-10.client.rionet.cz [82.150.191.10])
+        by email-relay8.ng.seznam.cz (Seznam SMTPD 1.3.114) with ESMTP;
+        Sun, 17 May 2020 21:51:44 +0200 (CEST)  
+Message-ID: <1e6bc0e299901f90613550570446777fbccdc21e.camel@seznam.cz>
+Subject: I can't mount image
+From:   =?UTF-8?Q?Ji=C5=99=C3=AD_Lisick=C3=BD?= <jiri_lisicky@seznam.cz>
+To:     linux-btrfs@vger.kernel.org
+Date:   Sun, 17 May 2020 21:51:43 +0200
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5 (3.28.5-5.el7) 
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Language: en-GB
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Hi, I have Jolla 1 Phone, which use btrfs. With bad battery, phone x times suddenly turned off. Now is bricked. I go into recovery mode
+and copy image to my PC with Fedora Live 31 with kernel 5.6.6.
 
-On 2020-05-16 19:18, Filipe Manana wrote:
-> On Sat, May 16, 2020 at 5:51 PM A L <mail@lechevalier.se> wrote:
->> Dear all,
->>
->> I did some testing on copying files with the +c (compression) xattrs set.
->>
->> As far as I can tell, 'cp - a' only sets any xattrs after copying the data. This means that a compressed file should end up without compression, but still with the +c xattr set. However this is not entirely true. Some small amount of data is still getting compressed.
->>
->> I would like to understand why.
-> As discussed on the mailing list:
->
-> cp copies the xattr only after copying the file data. Since the data
-> is written to the destination using buffered IO, it is possible that
-> while copying the data the system flushes dirty pages for whatever
-> reason (due to memory pressure, someone called sync(2), etc) - this
-> data will not be compressed since the file doesn't have yet the
-> compression xattr. If the remaining data is flushed after cp finishes,
-> then that data can end up compressed, since the file has the
-> compression xattr at that point. Typically for small files, all the
-> data ends up getting flushed after cp finishes, so we don't see any
-> surprising behaviour.
->
-> I'll look into changing 'cp''s behaviour to copy xattrs before file
-> data next week, unless you or someone else is interested in doing it.
->
-> Thanks.
->
-Based on what you say, the file operations are happening asynchronous in 
-the background, rather than synchronous. I guess 'cp' and other tools 
-like it should issue a 'fsync' call between setting the xattrs and 
-writing data? Is this specific to Btrfs, or is it a Linux design choice?
+~ # losetup --find --show /home/jirka/tmp/jolla.img
+/dev/loop0
 
-Also, thanks for looking into changing cp to do the xattrs before 
-writing data. I had also asked about this on the coreutils mailing list: 
-https://lists.gnu.org/archive/html/coreutils/2020-05/msg00011.html
+~ # btrfs fi show
+Label: 'sailfish'  uuid: 86180ca0-d351-4551-b262-22b49e1adf47
+ Total devices 1 FS bytes used 4.73GiB
+  devid    1 size 13.75GiB used 13.75GiB path /dev/loop0
 
-Thanks
+~ # mount -t btrfs /dev/loop0 ~/mnt
+mount: /dev/loop0: can't read superblock
+
+~ # mount -t btrfs -o usebackuproot /dev/loop0 ~/mnt
+mount: /dev/loop0: can't read superblock
+
+~ # btrfs rescue super-recover /dev/loop0
+All supers are valid, no need to recover
+
+~ # LC_ALL=C btrfs rescue zero-log /dev/loop0
+Clearing log on /dev/loop0, previous log_root 0, level 0
+
+~ # LC_ALL=C mount -t btrfs /dev/loop0 ~/mnt
+mount: mount /dev/loop0 on /root/mnt failed: No space left on device
+
+~ # mount -t btrfs -o ro /dev/loop0 ~/mnt
+
+~ # btrfs fi df ~/mnt
+Data, single: total=13.08GiB, used=4.51GiB
+System, DUP: total=8.00MiB, used=4.00KiB
+System, single: total=4.00MiB, used=0.00B
+Metadata, DUP: total=330.00MiB, used=224.30MiB
+Metadata, single: total=8.00MiB, used=0.00B
+GlobalReserve, single: total=512.00MiB, used=406.37MiB
+
+~ # truncate --size=2GB ~/tmp/space
+~ # losetup --find --show ~/tmp/space
+/dev/loop1
+
+~ # btrfs device add /dev/loop1 ~/mnt/
+Performing full device TRIM /dev/loop1 (1.86GiB) ...
+ERROR: error adding device '/dev/loop1': Read-only file system
+
+When I mount, in syslog appears:
+BTRFS info (device loop0): disk space caching is enabled
+BTRFS info (device loop0): creating UUID tree
+BTRFS warning (device loop0): block group 144703488 has wrong amount of free space
+BTRFS warning (device loop0): failed to load free space cache for block group 144703488, rebuilding it now
+BTRFS warning (device loop0): failed to create the UUID tree: -28
+BTRFS: open_ctree failed
+
+So now I can mount readonly, but is there any way to repair this filesystem?
+Thanks Jirka
+
