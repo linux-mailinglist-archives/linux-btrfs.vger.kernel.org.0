@@ -2,59 +2,103 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 199181D7E14
-	for <lists+linux-btrfs@lfdr.de>; Mon, 18 May 2020 18:15:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 765F71D7E31
+	for <lists+linux-btrfs@lfdr.de>; Mon, 18 May 2020 18:19:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727035AbgERQPE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 18 May 2020 12:15:04 -0400
-Received: from smtp-16.italiaonline.it ([213.209.10.16]:56792 "EHLO libero.it"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726958AbgERQPE (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 18 May 2020 12:15:04 -0400
-X-Greylist: delayed 488 seconds by postgrey-1.27 at vger.kernel.org; Mon, 18 May 2020 12:15:03 EDT
-Received: from [10.4.143.172] ([5.171.62.62])
-        by smtp-16.iol.local with ESMTPA
-        id aiI1jgYikj8kvaiI1jKTZU; Mon, 18 May 2020 18:06:53 +0200
-x-libjamoibt: 1601
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=inwind.it; s=s2014;
-        t=1589818013; bh=TESd6kOLMoqAErH++zjbPh2egGJz/R26HrYrc1ow1FM=;
-        h=From;
-        b=p4cQaAR0k/wr770SIo1BK6hQYJwc4HI1cQ9VTNdC2CuMJUPHdxsLsquX/LoBPnn9v
-         C8hoYN4qMzv8KEMmS44V5MgC3JIBkDCD4jM7b10cvGwIkh56BOW5e98DprrmWp142W
-         yRJB7Q5vCtR/csYB8qs2SCVFdXtaDf0/7dEOWXUDtUbskRd4nThGWLRn63WFYf1Wg9
-         dtwSfOxClNz6Vb6HvvWAPsx0N3jH8cz+lcXMBDx2pmmKS2x/wBwMe/eXCsdDWR32/y
-         DgB8/h9OMXV8d68AJsptlvgx0OFJQDxTPe7/upsE370y6oMHOW5TUAgLk33+v/eNk0
-         o5BfVSwpQ0U8w==
-X-CNFS-Analysis: v=2.3 cv=V9gDLtvi c=1 sm=1 tr=0
- a=gdRHAZOQ3OoQmxiyLczz1Q==:117 a=gdRHAZOQ3OoQmxiyLczz1Q==:17
- a=HpEJnUlJZJkA:10 a=IkcTkHD0fZMA:10 a=iox4zFpeAAAA:8 a=t3d8J0w1t5YOCH763iIA:9
- a=QEXdDO2ut3YA:10 a=WzC6qhA0u3u7Ye7llzcV:22
-Message-ID: <aeaffa7fb6502f288397d95613815d58@smtp-16.iol.local>
-Date:   Mon, 18 May 2020 18:06:52 +0200
+        id S1728015AbgERQTv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 18 May 2020 12:19:51 -0400
+Received: from mx2.suse.de ([195.135.220.15]:43486 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727005AbgERQTu (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 18 May 2020 12:19:50 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id AB4E2B272;
+        Mon, 18 May 2020 16:19:51 +0000 (UTC)
 Subject: Re: how to recover unmountable partition (crash while resizing)?
-From:   Antonio Muci <a.mux@inwind.it>
-To:     Nikolay Borisov <nborisov@suse.com>
+To:     Antonio Muci <a.mux@inwind.it>
 Cc:     linux-btrfs@vger.kernel.org
+References: <aeaffa7fb6502f288397d95613815d58@smtp-16.iol.local>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <052196e0-6d72-b395-283c-6c5bd57ddedb@suse.com>
+Date:   Mon, 18 May 2020 19:19:47 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
+In-Reply-To: <aeaffa7fb6502f288397d95613815d58@smtp-16.iol.local>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: base64
-X-CMAE-Envelope: MS4wfG0yUW3oubtUaD+w50zLruSydlKyr0sf1E0gCF1Mcy622Tm70zGXPtrYvebeBYrJEiv4zIjTsRpWqS76vMLt7Wc0xtUjsqxPvvlekLiFDWBS+BBptNMt
- HMUJGEhBNjeXjglkJslva8LZhh6U8bmygF2loEI0bYdNmx3At6izRKHdhDnFdiphPA6Tdzos7fI3+tDczZUCIy2M/kgMk68RRX4=
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-WWVzLCB0aGF0IHNhbWUgb25lLk9uIE1heSAxOCwgMjAyMCA1OjMzIFBNLCBOaWtvbGF5IEJvcmlz
-b3YgPG5ib3Jpc292QHN1c2UuY29tPiB3cm90ZToKPgo+Cj4KPiBPbiAxOC4wNS4yMCDQsy4gMTc6
-MTEg0YcuLCBhLm11eEBpbndpbmQuaXQgd3JvdGU6IAo+ID4gSGksIAo+ID4gCj4gPiBkdWUgdG8g
-YSBjcmFzaCB3aGlsZSByZXNpemluZyBteSAvIGJ0cmZzIHBhcnRpdGlvbiB3aXRoIGdwYXJ0ZWQs
-IG15IEhEIHdhcyBsZWZ0IGluIGEgdW5tb3VudGFibGUgc3RhdGUuIAo+ID4gCj4gPiBUaGlzIGlz
-IG9uIG1lOiByZXNpemluZyBhIHBhcnRpdGlvbiBtb3ZpbmcgaXQgdG8gdGhlIHJpZ2h0IHZpYSBn
-cGFydGVkIGlzIGEgcmlza3kgb3BlcmF0aW9uIHBlciBzZS4gCj4gPiAKPiA+IEkgYW0gY29uZmlk
-ZW50IHRoYXQgYWxsIG15IGRhdGEgaXMgc3RpbGwgaW4gdGhlIEhELCBhbmQgd2l0aCBwcm9wZXIg
-Z3VpZGFuY2UgZnJvbSB0aGUgdG9vbHMgaXQgd2lsbCBiZSBwb3NzaWJsZSB0byBtb3VudCBiYWNr
-IHRoZSBmcy4gVGhlIFVJIG9mIHRoZSB0b29scyBpcyBhIGJpdCBoYXJkIGZvciBtZSB0byB1bmRl
-cnN0YW5kLiAKPgo+IFNvIHdoYXQga2VybmVsIHZlcnNpb24gd2VyZSB5b3UgcnVubmluZyB3aGVu
-IHRoZSBjcmFzaCBoYXBwZW5lZCwgaXMgaXQgCj4gdGhlIHNhbWUgYXMgZnJvbSBMaXZlVVNCPyAK
 
+
+On 18.05.20 г. 19:06 ч., Antonio Muci wrote:
+> Yes, that same one.On May 18, 2020 5:33 PM, Nikolay Borisov <nborisov@suse.com> wrote:
+>>
+>>
+>>
+>> On 18.05.20 г. 17:11 ч., a.mux@inwind.it wrote: 
+>>> Hi, 
+>>>
+>>> due to a crash while resizing my / btrfs partition with gparted, my HD was left in a unmountable state. 
+>>>
+>>> This is on me: resizing a partition moving it to the right via gparted is a risky operation per se. 
+>>>
+>>> I am confident that all my data is still in the HD, and with proper guidance from the tools it will be possible to mount back the fs. The UI of the tools is a bit hard for me to understand. 
+>>
+>> So what kernel version were you running when the crash happened, is it 
+>> the same as from LiveUSB? 
+
+Can you check if your distro kernel has upstream commit
+18dfa7117a3f379862dcd3f67cadd678013bb9dd - it did land in the upstream
+5.3 kernel so you should have it but better safe than sorry. Also,
+provide the output of btrfs check /dev/broken-device. But recompile to
+the latest version of btrfs-progs. This command is read only so it can't
+cause more harm than is already done. Also what kind of disk is the one
+you tried to resize - i.e a usb drive or normal SATA ? Is it ssd or hdd?
