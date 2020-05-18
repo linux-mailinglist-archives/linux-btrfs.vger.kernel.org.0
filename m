@@ -2,103 +2,137 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A21B1D8B99
-	for <lists+linux-btrfs@lfdr.de>; Tue, 19 May 2020 01:24:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC1361D8BC0
+	for <lists+linux-btrfs@lfdr.de>; Tue, 19 May 2020 01:45:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726733AbgERXYG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 18 May 2020 19:24:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56854 "EHLO
+        id S1728250AbgERXp2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 18 May 2020 19:45:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726628AbgERXYG (ORCPT
+        with ESMTP id S1726407AbgERXp1 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 18 May 2020 19:24:06 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEF60C061A0C
-        for <linux-btrfs@vger.kernel.org>; Mon, 18 May 2020 16:24:05 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id k13so11664091wrx.3
-        for <linux-btrfs@vger.kernel.org>; Mon, 18 May 2020 16:24:05 -0700 (PDT)
+        Mon, 18 May 2020 19:45:27 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65764C061A0C
+        for <linux-btrfs@vger.kernel.org>; Mon, 18 May 2020 16:45:27 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id m12so1200057wmc.0
+        for <linux-btrfs@vger.kernel.org>; Mon, 18 May 2020 16:45:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=udyklszmFAR42I79mJUedTW7pQebVBOxfk2NtLIL2Kc=;
-        b=lty+rix3smCrTaoNVq4+Jidwyaig4hKRFq/uas4Qoh1+NfNgBwNWdi8RD9tOaEZ43l
-         9hjb8/XvheS3JheKeEXUcvTmz/Xqv+b2G+7HB+MIO/HjpKXWxiqrm+wH3ozUKzCtCceU
-         Wbm9/I7wv812r7JlhhSvdaB4rLfN5IXW3lAV6Sg1ieMlSmqgS+7v5b87yoUWLOjyvr6/
-         xjeALnWVQtU9iC+ni3OjLWN/SjnzVl4rruvf1DgL+p+eG2mqi7/FEFuSjg5G2tBnozt3
-         MNhoK4LwuIxbURkucPrVatNsMN+dipSyAhHS6ijJpTw/5QTy+A8uS7zUBF2Ls4UlC7Lx
-         nVKA==
+         :cc:content-transfer-encoding;
+        bh=NI4QH+VlzZV2i2gRNkvk49R1S9p9J6ybZTfZ18ic3KQ=;
+        b=GLcPGC4DqMwohuXlKUCXcuKpIhUviWgjLNm47dj7SvIK2gr/JLqVZ++bvbtsiaJp4e
+         9Ct9hoq8Mvwt5C46Ox5suD2uz4pfNsI0CAH9VsFhsJ2UZbz8++urgK54rILLxdx4AwBF
+         HreOlzlsV7NzIegd+xWIkWK3pjzoNothUANfhWrX4yNZ9uAQwLEWmG8gL49I8yPC2QgU
+         5bHNmsLEpeD1ww2xLAYi/d+UqLKjvdl+fBL0ogRp8RRxWLmHbxFp6OYv4kw3bh9KfR01
+         GPz7hGQ0kcAqiARDMKY4+wVJzS84AG8LccWnwdsxCQyvo57rtT5mh8XxuLCMwBCWbCd3
+         7P/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=udyklszmFAR42I79mJUedTW7pQebVBOxfk2NtLIL2Kc=;
-        b=nQL60zyA08fhvMnUxhuFFZo6MZdaZzZjFfAGgjT6L48vYaKwdGSwYiiXvJ5mH5/iSS
-         mZPMeGAVhMZRotVHUbDZRae/wA686jPtfiXImKgaObt4Hmj1puWIU0u3/1Ghty8ZmNjO
-         zNP/CmR5PEs6dgnJsD1xDNDF9CDVTftqZ6SnRO8p0WAv4PvyYBGdz+tp43HPPN+pHu54
-         CjwEOtUro5xXrpZj4RwsK6y4IKH4AeDH8UAU5aKKVYyQrBcFwsJD8Aa6cH1z/du7uJ6R
-         0JoquRu0s+bX/mU9uYEkhr3+bvn+O4pqwMkNqTGdousJLwjOIKbM8N7PzTTBclaLSc5d
-         JU+w==
-X-Gm-Message-State: AOAM533mZUkGISVW1qDNk6HVNZI8Mcm/SF7svzotPpoTUUjvjS2Oo22j
-        N6p1bcSTxrrNcJEQ2EIhXw2gfT6dfF858+B4H6Pgx5rk868=
-X-Google-Smtp-Source: ABdhPJzwjxH0LrDsvZ/umcXkdmGSSGdAcgF/nYpEYAP7YlDFEgTQq15bfdiR8hjbkDL/vQOoKqs3oFgxRV+KbDmmFbM=
-X-Received: by 2002:adf:f38b:: with SMTP id m11mr21956850wro.65.1589844243198;
- Mon, 18 May 2020 16:24:03 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=NI4QH+VlzZV2i2gRNkvk49R1S9p9J6ybZTfZ18ic3KQ=;
+        b=mRrQOt6oQ2asGpSTCBxuU9EplTWiMLjlOfweJi6php9EIfvxk50LGy1TYs2TJn+ccr
+         PVwG5SYMN3YQAcpnkH7UROLaMbSC4QBnT7i42wiNzkygXxZuWwSnZsB1w4N9gx55T0NW
+         DcLOMA5znqH1LQ3skHtZyP4U4uEpvq3Y2ro8yak/PaeA58wwdIZWxcm1IQ+Ww0jkTORX
+         ssPgrUJ0a1s20+rxhDJ8e9IQxmTIp4i+6ChGwemDK+9752uKZK5GtPbLezJPd86tXrvo
+         F7a02POhbqOzn+NPKJSl9HEPf/PJDVNV7LnLz4dEDHMr35T0QrrYpkByMtVg0wQf//lp
+         1uJg==
+X-Gm-Message-State: AOAM5315liYC8yTIj2Id8pUdtiLIhHk455S4DDI0cHRYgl8ROHBdcDKh
+        qaDq7w5YKGsOJ8nwE6WwwZYJ8Dir7f1OVsqPTn6aRB4OoB4=
+X-Google-Smtp-Source: ABdhPJzY0Ouv0qiXT6wMAkGLCLNpdJ64XEzIo/iLDbJ0AFRElV9Dp08RP+j8hHq2DN1BR6l8UYzAwpJIIaiuKKZUCRs=
+X-Received: by 2002:a1c:2348:: with SMTP id j69mr1983174wmj.11.1589845526108;
+ Mon, 18 May 2020 16:45:26 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAGAeKuuvqGsJaZr_JWBYk3uhQoJz+07+Sgo_YVrwL9C_UF=cfA@mail.gmail.com>
-In-Reply-To: <CAGAeKuuvqGsJaZr_JWBYk3uhQoJz+07+Sgo_YVrwL9C_UF=cfA@mail.gmail.com>
+References: <1e6bc0e299901f90613550570446777fbccdc21e.camel@seznam.cz>
+In-Reply-To: <1e6bc0e299901f90613550570446777fbccdc21e.camel@seznam.cz>
 From:   Chris Murphy <lists@colorremedies.com>
-Date:   Mon, 18 May 2020 17:23:47 -0600
-Message-ID: <CAJCQCtR4zz+JzETFjmwPvqyzkSBYp-9PC7T6aP2+_Xkg5n3tSw@mail.gmail.com>
-Subject: Re: I think he's dead, Jim
-To:     Justin Engwer <justin@mautobu.com>
+Date:   Mon, 18 May 2020 17:45:09 -0600
+Message-ID: <CAJCQCtSWX0J69SokSOgAhdcQ6qkKHfaPVhbF4anjCtVFACOVnQ@mail.gmail.com>
+Subject: Re: I can't mount image
+To:     =?UTF-8?B?SmnFmcOtIExpc2lja8O9?= <jiri_lisicky@seznam.cz>
 Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, May 18, 2020 at 2:51 PM Justin Engwer <justin@mautobu.com> wrote:
+On Sun, May 17, 2020 at 1:54 PM Ji=C5=99=C3=AD Lisick=C3=BD <jiri_lisicky@s=
+eznam.cz> wrote:
 >
-> Hi,
+> Hi, I have Jolla 1 Phone, which use btrfs. With bad battery, phone x time=
+s suddenly turned off. Now is bricked. I go into recovery mode
+> and copy image to my PC with Fedora Live 31 with kernel 5.6.6.
 >
-> I'm hoping to get some (or all) data back from what I can only assume
-> is the dreaded write hole. I did a fairly lengthy post on reddit that
-> you can find here:
-> https://old.reddit.com/r/btrfs/comments/glbde0/btrfs_died_last_night_pulling_out_hair_all_day/
+> ~ # losetup --find --show /home/jirka/tmp/jolla.img
+> /dev/loop0
 >
-> TLDR; BTRFS keeps dropping to RO. System sometimes completely locks up
-> and needs to be hard powered off because of read activity on BTRFS.
-> See reddit link for actual errors.
+> ~ # btrfs fi show
+> Label: 'sailfish'  uuid: 86180ca0-d351-4551-b262-22b49e1adf47
+>  Total devices 1 FS bytes used 4.73GiB
+>   devid    1 size 13.75GiB used 13.75GiB path /dev/loop0
+>
+> ~ # mount -t btrfs /dev/loop0 ~/mnt
+> mount: /dev/loop0: can't read superblock
+>
+> ~ # mount -t btrfs -o usebackuproot /dev/loop0 ~/mnt
+> mount: /dev/loop0: can't read superblock
+>
+> ~ # btrfs rescue super-recover /dev/loop0
+> All supers are valid, no need to recover
 
-Almost no one will follow the links. You've got a problem, which is
-unfortunate, but you're also asking for help so you kinda need to make
-it easy for readers to understand the setup instead of having to go
-digging for it elsewhere. And also it's needed for archive
-searchability, which an external reference doesn't provide.
+Weird. How does it not read the superblock, but all superblocks are
+valid? What do you get for
 
-a. kernel and btrfs-progs version; ideally also include some kernel
-history for this file system
-b. basics of the storage stack: what are the physical drives, how are
-they connected,
-c. if VM, what's the hypervisor, are the drives being passed through,
-what caching mode
-d. mkfs command used to create; or just state the metadata and data
-profiles; or paste 'btrfs fi us /mnt'
-e. ideally a complete dmesg (start to finish, not snipped) at the time
-of the original problem, this might be the prior boot; it's probably
-too big to attach to the list so in that case nextcloud, dropbox,
-pastebin, etc.
-f. a current dmesg for the mount failure
-g. btrfs check --readonly /dev/
+btrfs insp dump-s -fa /dev/loop0
 
 
-I thought we had a FAQ item with what info we wanted reported to the
-list, but I can't find it.
+> ~ # LC_ALL=3DC btrfs rescue zero-log /dev/loop0
+> Clearing log on /dev/loop0, previous log_root 0, level 0
+
+This is not advised except in specific cases which the man page gives
+examples of.
 
 
-Thanks,
+> ~ # btrfs fi df ~/mnt
+> Data, single: total=3D13.08GiB, used=3D4.51GiB
+> System, DUP: total=3D8.00MiB, used=3D4.00KiB
+> System, single: total=3D4.00MiB, used=3D0.00B
+> Metadata, DUP: total=3D330.00MiB, used=3D224.30MiB
+> Metadata, single: total=3D8.00MiB, used=3D0.00B
+> GlobalReserve, single: total=3D512.00MiB, used=3D406.37MiB
+>
+> ~ # truncate --size=3D2GB ~/tmp/space
+> ~ # losetup --find --show ~/tmp/space
+> /dev/loop1
+>
+> ~ # btrfs device add /dev/loop1 ~/mnt/
+> Performing full device TRIM /dev/loop1 (1.86GiB) ...
+> ERROR: error adding device '/dev/loop1': Read-only file system
+>
+> When I mount, in syslog appears:
+> BTRFS info (device loop0): disk space caching is enabled
+> BTRFS info (device loop0): creating UUID tree
+> BTRFS warning (device loop0): block group 144703488 has wrong amount of f=
+ree space
+> BTRFS warning (device loop0): failed to load free space cache for block g=
+roup 144703488, rebuilding it now
+> BTRFS warning (device loop0): failed to create the UUID tree: -28
+> BTRFS: open_ctree failed
+>
+> So now I can mount readonly, but is there any way to repair this filesyst=
+em?
 
--- 
+Definitely get things off of it now while you can.
+
+Fedora 31 has btrfs-progs 5.6 current. I suggest posting the output from
+
+# btrfs check --readonly /dev/
+
+
+
+--=20
 Chris Murphy
