@@ -2,103 +2,65 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 765F71D7E31
-	for <lists+linux-btrfs@lfdr.de>; Mon, 18 May 2020 18:19:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F7731D7E4C
+	for <lists+linux-btrfs@lfdr.de>; Mon, 18 May 2020 18:23:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728015AbgERQTv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 18 May 2020 12:19:51 -0400
-Received: from mx2.suse.de ([195.135.220.15]:43486 "EHLO mx2.suse.de"
+        id S1728043AbgERQXH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 18 May 2020 12:23:07 -0400
+Received: from mx2.suse.de ([195.135.220.15]:44138 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727005AbgERQTu (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 18 May 2020 12:19:50 -0400
+        id S1727938AbgERQXH (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 18 May 2020 12:23:07 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id AB4E2B272;
-        Mon, 18 May 2020 16:19:51 +0000 (UTC)
-Subject: Re: how to recover unmountable partition (crash while resizing)?
-To:     Antonio Muci <a.mux@inwind.it>
-Cc:     linux-btrfs@vger.kernel.org
-References: <aeaffa7fb6502f288397d95613815d58@smtp-16.iol.local>
-From:   Nikolay Borisov <nborisov@suse.com>
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <052196e0-6d72-b395-283c-6c5bd57ddedb@suse.com>
-Date:   Mon, 18 May 2020 19:19:47 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        by mx2.suse.de (Postfix) with ESMTP id AAF27B271;
+        Mon, 18 May 2020 16:23:08 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 49847DA7AD; Mon, 18 May 2020 18:22:12 +0200 (CEST)
+Date:   Mon, 18 May 2020 18:22:12 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v3 0/3] btrfs: REF_COWS bit rework
+Message-ID: <20200518162212.GX18421@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+References: <20200515060142.23609-1-wqu@suse.com>
+ <20200515194559.GR18421@twin.jikos.cz>
+ <17637fb6-1b76-32bb-b6ab-468eda982c60@gmx.com>
+ <d280611d-b4ea-7365-7775-520814368b26@gmx.com>
+ <20200518150331.GU18421@twin.jikos.cz>
+ <20200518153859.GW18421@twin.jikos.cz>
 MIME-Version: 1.0
-In-Reply-To: <aeaffa7fb6502f288397d95613815d58@smtp-16.iol.local>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200518153859.GW18421@twin.jikos.cz>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Mon, May 18, 2020 at 05:38:59PM +0200, David Sterba wrote:
+> On Mon, May 18, 2020 at 05:03:31PM +0200, David Sterba wrote:
+> > On Mon, May 18, 2020 at 01:13:34PM +0800, Qu Wenruo wrote:
+> > - btrfs_read_tree_root
+> > - btrfs_init_fs_root
+> 
+> With
+> 
+> 2291         location.objectid = BTRFS_DATA_RELOC_TREE_OBJECTID;
+> 2292         root = btrfs_read_tree_root(tree_root, &location);
+> 2293         if (IS_ERR(root)) {
+> 2294                 ret = PTR_ERR(root);
+> 2295                 goto out;
+> 2296         }
+> 2297         ret = btrfs_init_fs_root(root);
+> 2298         if (ret)
+> 2299                 goto out;
+> 2300         set_bit(BTRFS_ROOT_TRACK_DIRTY, &root->state);
+> 2301         fs_info->data_reloc_root = root;
 
-
-On 18.05.20 г. 19:06 ч., Antonio Muci wrote:
-> Yes, that same one.On May 18, 2020 5:33 PM, Nikolay Borisov <nborisov@suse.com> wrote:
->>
->>
->>
->> On 18.05.20 г. 17:11 ч., a.mux@inwind.it wrote: 
->>> Hi, 
->>>
->>> due to a crash while resizing my / btrfs partition with gparted, my HD was left in a unmountable state. 
->>>
->>> This is on me: resizing a partition moving it to the right via gparted is a risky operation per se. 
->>>
->>> I am confident that all my data is still in the HD, and with proper guidance from the tools it will be possible to mount back the fs. The UI of the tools is a bit hard for me to understand. 
->>
->> So what kernel version were you running when the crash happened, is it 
->> the same as from LiveUSB? 
-
-Can you check if your distro kernel has upstream commit
-18dfa7117a3f379862dcd3f67cadd678013bb9dd - it did land in the upstream
-5.3 kernel so you should have it but better safe than sorry. Also,
-provide the output of btrfs check /dev/broken-device. But recompile to
-the latest version of btrfs-progs. This command is read only so it can't
-cause more harm than is already done. Also what kind of disk is the one
-you tried to resize - i.e a usb drive or normal SATA ? Is it ssd or hdd?
+Enough experimenting, I don't want to leave misc-next in a broken state
+so will add get_fs_root back.
