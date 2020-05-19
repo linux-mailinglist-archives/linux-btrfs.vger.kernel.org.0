@@ -2,323 +2,231 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B2C71DA30B
-	for <lists+linux-btrfs@lfdr.de>; Tue, 19 May 2020 22:44:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CD3C1DA512
+	for <lists+linux-btrfs@lfdr.de>; Wed, 20 May 2020 01:00:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727949AbgESUov (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 19 May 2020 16:44:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59332 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726178AbgESUov (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 19 May 2020 16:44:51 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B6C6C08C5C0
-        for <linux-btrfs@vger.kernel.org>; Tue, 19 May 2020 13:44:51 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id n5so697413wmd.0
-        for <linux-btrfs@vger.kernel.org>; Tue, 19 May 2020 13:44:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ADlC8nzllFrlxcAJMJZNE6U2ntc1JEdJNWhCWxM281Q=;
-        b=sOwd5z0Q1w1qSrsITgjd5DoPbvlXQrLWvLoKWgqNg0FHPCsSbnXn+lBlB9qjgUuTD2
-         qSUDBT8S3cfnrfnA9Yx9QRy2tfIX0W89lCHQErKYMTkNXx0Ju6vxoF2Losai8isLCEPN
-         I+Niz0Q2nZNKtXYW0OlS+YK7eCc/U/e+ycnGmtbdggZKXH+LcsTJH5hIGZHkfFiCPtxr
-         GFwnFal+5TsnvmUS+2/qDxhn1ma4O+viQkIYzApcqieVG/5hIdT/RjuCz9MItsInfTeF
-         Oom2F53SMJvf7I7p58dV4P+M1IU9K8J6Y5sBtp15M1aU0oWtdiKnYAxq97iuSz8Dqrjl
-         1xkw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ADlC8nzllFrlxcAJMJZNE6U2ntc1JEdJNWhCWxM281Q=;
-        b=TXJ7MEaG0YGv7Tycg7eTvEjDf+2G9W03+s1wOcqvSQVtnrHlRR26Ev424k7yKzQXxT
-         th5Lq9JnnczgF1AiwVjXWSrx0/iU3BjOybWr+s7NxNwhZ1DMMcbUOmgDKEn/I/tsBpFJ
-         IpOkFUJsjTv5sU7KuDCxc0jTztVoIStCnJq33Tz1WZ6DdIrHfrkZ42PNyavpKhxKEQCh
-         zaaLD/ErZYyubasXQ/YMq1giHBIpQ1YfkRCh9GlXYw8Qzxbiwffuv/lqueDnQ5kZ+o3z
-         zpmR4rS9o7zJMLY7wwCuI0aMnGmwOjGbo+WnWmIpr4Tl5zFN/ryoZ3MtYfNxhJ8P/ZKh
-         GLZQ==
-X-Gm-Message-State: AOAM530IuCaX3kDgWD99fQWX0RQMCcYPCsaEGRJQ/c8mLio4zgWJ+GUe
-        mcDw9IX7f0VlwWdPJWlGVSPu6P1elOQAlO0DJfPgfAiO/N/zcA==
-X-Google-Smtp-Source: ABdhPJzb721vastCiLigvXYqnwSdCoPX+jRcOd97u/Y5/nB0KswxQ4/GMBylK4tVq1RmQ/FQv+x+bqeaz8pbYtgyL7M=
-X-Received: by 2002:a05:600c:228d:: with SMTP id 13mr1248863wmf.182.1589921089748;
- Tue, 19 May 2020 13:44:49 -0700 (PDT)
+        id S1726352AbgESXAi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 19 May 2020 19:00:38 -0400
+Received: from mout.gmx.net ([212.227.17.20]:38551 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726064AbgESXAh (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 19 May 2020 19:00:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1589929230;
+        bh=jP4KFdh4imixYkR5ffe6P8Ofjcf1og2o16EKusj1HhM=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=UtT3qiWfbJlV3hTFQxaBttZbc4urjWvz1gKGuy9FL1RTXnACpNZEfVBKEslWdDdWS
+         AAnipWLf8ZK+NkTfjcbH5/NFpiaNDzgfQXiTv9xTjRnkZWz4GCiXEqdeslMIWHXFCH
+         4zL6k4uOtUmarqkHaf0CIU/4s9U+zHRGQ5K0h7bA=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MBlxM-1jl37h3plM-00CAYU; Wed, 20
+ May 2020 01:00:30 +0200
+Subject: Re: [PATCH] btrfs: relocation: Fix reloc root leakage and the NULL
+ pointer reference caused by the leakage
+To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <20200519021320.13979-1-wqu@suse.com>
+ <20200519140414.GD18421@twin.jikos.cz>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
+ mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
+ PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
+ 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
+ D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
+ efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
+ ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
+ BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
+ 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
+ 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
+ EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
+ 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
+ ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
+ oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
+ fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
+ 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
+ ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
+ oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
+Message-ID: <49d73606-df91-d030-cb70-c34796c792b3@gmx.com>
+Date:   Wed, 20 May 2020 07:00:26 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-References: <CAGAeKuuvqGsJaZr_JWBYk3uhQoJz+07+Sgo_YVrwL9C_UF=cfA@mail.gmail.com>
- <CAJCQCtR4zz+JzETFjmwPvqyzkSBYp-9PC7T6aP2+_Xkg5n3tSw@mail.gmail.com>
- <CAGAeKuv3y=rHvRsq6SVSQ+NadyUaFES94PpFu1zD74cO3B_eLA@mail.gmail.com>
- <CAJCQCtQXR+x4mG+jT34nhkE69sP94yio-97MLmd_ugKS+m96DQ@mail.gmail.com> <CAGAeKuvP=BUeBfsYLpp2xZoEdCWVwY-reAddNwxZL8UFrWf_yg@mail.gmail.com>
-In-Reply-To: <CAGAeKuvP=BUeBfsYLpp2xZoEdCWVwY-reAddNwxZL8UFrWf_yg@mail.gmail.com>
-From:   Chris Murphy <lists@colorremedies.com>
-Date:   Tue, 19 May 2020 14:44:33 -0600
-Message-ID: <CAJCQCtSfMKoucwoaYAnRDgh8QmwHUOR9D5VuN4c6AUw9isNf2A@mail.gmail.com>
-Subject: Re: I think he's dead, Jim
-To:     Justin Engwer <justin@mautobu.com>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200519140414.GD18421@twin.jikos.cz>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="Kj0lTTYfb8ECCysYD39CDRCO81hDhtgbk"
+X-Provags-ID: V03:K1:S0u5OJxOIgNQwU+IQlsNAQJ2DQa53l0DkVOao1zLTQgVJ/CU2l0
+ MSxSLEZZiS2rmmqWuEbmXiZB9PgAEtpEi+HEe6oABG7Iy0cWWKAmhcZbuB9dHFXylK2/ddx
+ 41carbODS91ect+QmeOWXYP2Sc5yy0OoDy7C6tvohe1gfQ/SDPu1t97mlCYFc8JuBQtpStH
+ mUy/Jn1++DNCX60b7effg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:eY6V7H79BWQ=:Fr2fOdYs9n/tcKyw5392qS
+ L7c1axcOlgNUjRpekytZ18uxisaWIP3VhMPPPxgPyc+z9cBWGrSBQb9GEmdCP5PMPryEH797f
+ XaLiLFBvHvn5ffkxCPseOMktqO30J6Yzk8bI7EKtAbKcSr3m3qRa4dR3TC9rcG8PrURy74Xx5
+ Moyt90HYHOZFHnymKgp/dLoL/Wuqvc+CV9tLbKRiWE5bFSw4vnyaUs5XQgewkp6K9cxOMdHd3
+ PGezdwbh4D9uEOvkjejknICPj4Ki1sVEybdF4PXmZHfRKyyqz3O+kXc8ljVuQN7VAoUbo5moQ
+ BwKTe7VY9gdogKv1KcfShsV+O0zBzPCmd+pgMYDtURLgTN/h9z7X0Zt8L1lb6QcGMM+BoS739
+ Zwy1MV+6pgMApZh1mJSk7cHhkGjx2eUV7IaEE5hI8Y4Gqw2M4MvpVQeJbyq+YDeW2qaib+2Ra
+ wTjyDvDKSrF1tfjlRCKYqplmNlkEv96EEboRMU4g+5CtV/4FXX4PATP6lj4GIf+2UJu4Z36FY
+ gtOL8ce+j5Y3y4r95UKSDymNZklyzyvp561YtdDd8N01mTnO/99rvg1jl7tjua3zkQuCBaZhG
+ NfHQhg0sNn7fxBEauz6uX1uGt9yUu/fAHgKBJuixxKonGlubr3IFbxHciO+7gVZMAV7dmmTvi
+ m1jW5pDbvgjyOz0v01Sr1iyK5sdlbQLCeIc8nBJS2W9c0LCxHGH1yRcxuXxB11Fn2iJAzfOcB
+ 0qkc+2ow0T6VP30/E0sYzofKQEIfs2rwSA3RIdz9M3Jf87/Qh5PLkjHgnQdkwrLNP9rCu6jZN
+ 88JgaMBJemQ/Nc7f6ETQsif3w63SAYldtP5NM/JC4Oy0rIyNgcEk7mGi+nkIPdmuQNBUI+MtF
+ Pk8N9liJbJPc2orvoBiT1OazTGwM2la54iDo9gJ0I9lQnNt/KXvoCV4d9oVu700Q5xPpVA2XZ
+ 1TEACagpReXt87+04aGgcwXjHZYfDijWCxTYHxBz4fOmcAEQbpYOGxDR2OO1091jYUT3i+OkP
+ gupwDzyiZLg7TGufqvMo6g9PZn44C+S7+KXs7iSyIbHQNdujSxni1XHmXvUyh6FO195cwDPur
+ xfOA3Z92/YJ9tbE0GpPbBj/53eoU40QaZgO3CiNXs9pMbmAdIt/4UzE1R1jR+Tm5URA6eoDUV
+ 5rO2laldsXWXD/mKFut8l4cCtX5btGHBntdS9NsIiIAgLWI/JijjWZMwoV0waYXfvdVNfnnLf
+ 2c5+Sqy/H+JFQT7F5
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, May 19, 2020 at 12:45 PM Justin Engwer <justin@mautobu.com> wrote:
->
-> On Mon, May 18, 2020 at 7:03 PM Chris Murphy <lists@colorremedies.com> wrote:
-> >
-> > On Mon, May 18, 2020 at 6:47 PM Justin Engwer <justin@mautobu.com> wrote:
-> > >
-> > > Thanks for getting back to me Chris. Here's the info requested:
-> > >
-> > > a. Kernels are:
-> > > CentOS Linux (5.5.2-1.el7.elrepo.x86_64) 7 (Core)
-> > > CentOS Linux (4.16.7-1.el7.elrepo.x86_64) 7 (Core)
-> > > CentOS Linux (4.4.213-1.el7.elrepo.x86_64) 7 (Core)
-> > >
-> > > I was originally on 4.4, then updated to 4.16. After updating to 5.5 I
-> > > must have screwed up the grub boot default as it started booting to
-> > > 4.4.
-> >
-> > The problem happened while using kernel 5.5.2?
-> >
->
-> Likely 4.4
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--Kj0lTTYfb8ECCysYD39CDRCO81hDhtgbk
+Content-Type: multipart/mixed; boundary="3Df4YASSaQNeELJoZNqOqZ16Nr9zD5Lo8"
 
-While it's a long term supported kernel, this is really difficult for
-Btrfs because some fixes and features just don't ever get backported.
-File systems are increasingly non-deterministic the older they get,
-even with a static never changing kernel version. The LTS kernels are
-perhaps best suited for distributions (public or internal) with
-dedicated dev teams.
-
-For example:
-$ git diff --shortstat v4.4..v5.6 -- fs/btrfs
- 109 files changed, 52729 insertions(+), 36600 deletions(-)
-$ git diff --shortstat v4.4..v5.6 -- fs/btrfs/raid56.c
- 1 file changed, 396 insertions(+), 373 deletions(-)
-$ wc -l fs/btrfs/raid56.c
-2749 fs/btrfs/raid56.c
-
-Has this bug you're running into been fixed? *shrug*
-
-I think if you're using raid1 or raid10 you could use 4.19 series but
-you're probably still better off using something more recent, in
-particular for raid56 so that you can use metadata raid1c3 instead of
-raid6.
+--3Df4YASSaQNeELJoZNqOqZ16Nr9zD5Lo8
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
 
 
+On 2020/5/19 =E4=B8=8B=E5=8D=8810:04, David Sterba wrote:
+> On Tue, May 19, 2020 at 10:13:20AM +0800, Qu Wenruo wrote:
+>> [BUG]
+>> When balance is canceled, there is a pretty high chance that unmountin=
+g
+>> the fs can lead to lead the NULL pointer dereference:
+>>
+>>   BTRFS warning (device dm-3): page private not zero on page 223158272=
+
+>>   ...
+>>   BTRFS warning (device dm-3): page private not zero on page 223162368=
+
+>>   BTRFS error (device dm-3): leaked root 18446744073709551608-304 refc=
+ount 1
+>>   BUG: kernel NULL pointer dereference, address: 0000000000000168
+>>   #PF: supervisor read access in kernel mode
+>>   #PF: error_code(0x0000) - not-present page
+>>   PGD 0 P4D 0
+>>   Oops: 0000 [#1] PREEMPT SMP NOPTI
+>>   CPU: 2 PID: 5793 Comm: umount Tainted: G           O      5.7.0-rc5-=
+custom+ #53
+>>   Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 0.0.0 02/06=
+/2015
+>>   RIP: 0010:__lock_acquire+0x5dc/0x24c0
+>>   Call Trace:
+>>    lock_acquire+0xab/0x390
+>>    _raw_spin_lock+0x39/0x80
+>>    btrfs_release_extent_buffer_pages+0xd7/0x200 [btrfs]
+>>    release_extent_buffer+0xb2/0x170 [btrfs]
+>>    free_extent_buffer+0x66/0xb0 [btrfs]
+>>    btrfs_put_root+0x8e/0x130 [btrfs]
+>>    btrfs_check_leaked_roots.cold+0x5/0x5d [btrfs]
+>>    btrfs_free_fs_info+0xe5/0x120 [btrfs]
+>>    btrfs_kill_super+0x1f/0x30 [btrfs]
+>>    deactivate_locked_super+0x3b/0x80
+>>    deactivate_super+0x3e/0x50
+>>    cleanup_mnt+0x109/0x160
+>>    __cleanup_mnt+0x12/0x20
+>>    task_work_run+0x67/0xa0
+>>    exit_to_usermode_loop+0xc5/0xd0
+>>    syscall_return_slowpath+0x205/0x360
+>>    do_syscall_64+0x6e/0xb0
+>>    entry_SYSCALL_64_after_hwframe+0x49/0xb3
+>>   RIP: 0033:0x7fd028ef740b
+>>
+>> [CAUSE]
+>> When balance is canceled, all reloc roots are marked orphan, and orpha=
+n
+>> reloc roots are going to be cleaned up.
+>>
+>> However for orphan reloc roots and merged reloc roots, their lifespan
+>> are quite different:
+>> 	Merged reloc roots	|	Orphan reloc roots by cancel
+>> --------------------------------------------------------------------
+>> create_reloc_root()		| create_reloc_root()
+>> |- refs =3D=3D 1			| |- refs =3D=3D 1
+>> 				|
+>> btrfs_grab_root(reloc_root);	| btrfs_grab_root(reloc_root);
+>> |- refs =3D=3D 2			| |- refs =3D=3D 2
+>> 				|
+>> root->reloc_root =3D reloc_root;	| root->reloc_root =3D reloc_root;
+>> 		>>> No difference so far <<<
+>> 				|
+>> prepare_to_merge()		| prepare_to_merge()
+>> |- btrfs_set_root_refs(item, 1);| |- if (!err) (err =3D=3D -EINTR)
+>> 				|
+>> merge_reloc_roots()		| merge_reloc_roots()
+>> |- merge_reloc_root()		| |- Doing nothing to put reloc root
+>>    |- insert_dirty_subvol()	| |- refs =3D=3D 2
+>>       |- __del_reloc_root()	|
+>>          |- btrfs_put_root()	|
+>>             |- refs =3D=3D 1	|
+>> 		>>> Now orphan reloc roots still have refs 2 <<<
+>> 				|
+>> clean_dirty_subvols()		| clean_dirty_subvols()
+>> |- btrfs_drop_snapshot()	| |- btrfS_drop_snapshot()
+>>    |- reloc_root get freed	|    |- reloc_root still has refs 2
+>> 				|	related ebs get freed, but
+>> 				|	reloc_root still recorded in
+>> 				|	allocated_roots
+>> btrfs_check_leaked_roots()	| btrfs_check_leaked_roots()
+>> |- No leaked roots		| |- Leaked reloc_roots detected
+>> 				| |- btrfs_put_root()
+>> 				|    |- free_extent_buffer(root->node);
+>> 				|       |- eb already freed, caused NULL
+>> 				|	   pointer dereference
+>>
+>> [FIX]
+>> The fix is to clear fs_root->reloc_root and put it at
+>> merge_reloc_roots() time, so that we won't leak reloc roots.
+>>
+>> Fixes: d2311e698578 ("btrfs: relocation: Delay reloc tree deletion aft=
+er merge_reloc_roots")
+>=20
+> Thanks. I've applied it before my cleanups (read_fs_root) but the fix
+> still depends on the refcounted root trees so it's no applicable to any=
+
+> older stable trees.
+>=20
+No problem, I would craft fixes for older branches.
+
+But for that case, what's the proper tags to specify the stable kernel
+ranges?
+
+Thanks,
+Qu
 
 
->
-> > These:
-> > parent transid verify failed on 2788917248 wanted 173258 found 173174
-> >
-> > suggest that the problem didn't happen too long ago. But the
-> > difficulty I see is that the "found" ranges from 172716 to 173167.
-> >
-> > A further difficulty is the wanted ranges from 173237 to 173258. That
-> > is really significant.
-> >
-> > Have there been crashes/power failures while the file system was being written?
-> >
->
-> Given the system is hard locking up when btrfs is accessing some data,
-> yes most likely.
+--3Df4YASSaQNeELJoZNqOqZ16Nr9zD5Lo8--
 
-I don't expect hard lockups just because a power fail or crash has
-confused the file system state on disk. If the proper ordering has
-been honored, none of the written garbage is pointedd to by any
-superblock. So the difficult but important question is, why might the
-proper ordering not have been honored?
+--Kj0lTTYfb8ECCysYD39CDRCO81hDhtgbk
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
-At least the Btrfs developers have said Btrfs theoretically does the
-correct thing order wise; and dm-log-writes is one of the
-contributions they've made so all file systems can test and do better
-with respect to power failures.
+-----BEGIN PGP SIGNATURE-----
 
-Anyway, the question is more looking for a possibly prior event(s)
-that might explain the transid discrepancies. And yeah crashes and
-powerfails can do that, but it takes other things too like writes
-being committed out of order - which is difficult to ensure with
-multiple device file systems. Especially if they aren't telling the
-whole truth when data is actually committed to stable media, but claim
-so even when the data is merely in the write cache.
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl7EZQoACgkQwj2R86El
+/qi+WAgAnbXykYomELAHDjlapZztW9w5ytLUfENqa4WhWrAFQyAMqrRbLfMLtrz8
+u5yCy+GSu1lM1wNz71TfT4Z8LRJ7kDMnV1hQMmUYSPyQOWTgq4Ur6P0JNByJ4n79
+C2BejaHaXtBjwSnT8hhk77ZuuVb2QfNA+i8WBPyWhvZBZ467NgcSqIOArH6nuMxk
+rMrI2JvfnC1t3xCgvbmuUOW4Re7mZrtHZ+NvcWQi61yt7w8AhOMWmtargReaEO6h
+qeYhZI8BO9gol92cetYnp3sQuq/iyStAcqcNdmWy/bf5kzy5Uw01yJ5gkF22syal
+KB0eInv0mLIEPsv05qMMhsa0YfP1iA==
+=XZXk
+-----END PGP SIGNATURE-----
 
-
-
-> Working on restoring. Will start with the 4 "good" drives. I recall
-> years ago working in a computer repair shop if a drive was bad and we
-> left it in the freezer overnight we could get data from it for a few
-> hours, then it would be completely dead afterward. Might be worth a
-> shot if nothing else works.
->
-> Does BTRFS store whole files on single drives then use a parity across
-> all of them or does it break single large files up, store them across
-> different drives, then parity?
-
-The latter.
-
-The stripe element size is 64KiB (a.k.a. strip size, a.k.a. chunk in
-mdadm terminology; btrfs chunks are the same as block groups). The
-striping is per block group. And the order isn't always consistent.
-
-So if metadata and data are raid6, it means everything is in 64KiB
-"strips". Including the file system itself.
-
-
->
-> >
-> > > b. Physical drives are identical seagate SATA 3tb drives. Ancient
-> > > bastards. Connected through a combination of LSI HBA and motherboard.
-> >
-> > Does the LSI HBA have a cache enabled? If its battery backed it's
-> > probably OK but otherwise it should be disabled. And the write caches
-> > on the drives should be disabled. That's the conservative
-> > configuration. If the controller and drives really honor FUA/fsync
-> > then it's OK to leave the write caches enabled. But the problem is if
-> > they honor different flushes in different order you end up with an
-> > inconsistent file system. And that's bad for Btrfs because repairing
-> > inconsistency is difficult. It really just needs to be avoided in the
-> > first place.
-> >
->
-> All cards are LSI 9211 or 9200 in the system. None of them have onboard caching.
-
-Use hdparm -W to check the write cache on the drives and disable it on
-all drives. Make sure not to use small w option -w, see man page.
-
-
-> > I think that's a bug on the face of it. It shouldn't indefinitely hang.
-> >
->
-> Now mounts on Fedora. Drops to RO quickly though. See
-> https://pastebin.com/94BbRamb
-
-May 19 10:46:59 localhost.localdomain kernel: BTRFS: error (device
-sdb) in btrfs_remove_chunk:2959: errno=-117 unknown
-May 19 10:46:59 localhost.localdomain kernel: BTRFS info (device sdb):
-forced readonly
-
-It consistently gets tripped up removing block groups.
-
-
-> I put the drives in a box with Fedora Rawhide connected directly to
-> the motherboard. It looks like all of the supers are the same.
->
-> [root@localhost ~]# btrfs rescue super -v /dev/sdb
-> All Devices:
->         Device: id = 4, name = /dev/sdh
->         Device: id = 2, name = /dev/sdf
->         Device: id = 5, name = /dev/sde
->         Device: id = 3, name = /dev/sdd
->         Device: id = 1, name = /dev/sdb
->
-> Before Recovering:
->         [All good supers]:
->                 device name = /dev/sdh
->                 superblock bytenr = 65536
->
->                 device name = /dev/sdh
->                 superblock bytenr = 67108864
->
->                 device name = /dev/sdh
->                 superblock bytenr = 274877906944
->
->                 device name = /dev/sdf
->                 superblock bytenr = 65536
->
->                 device name = /dev/sdf
->                 superblock bytenr = 67108864
->
->                 device name = /dev/sdf
->                 superblock bytenr = 274877906944
->
->                 device name = /dev/sde
->                 superblock bytenr = 65536
->
->                 device name = /dev/sde
->                 superblock bytenr = 67108864
->
->                 device name = /dev/sde
->                 superblock bytenr = 274877906944
->
->                 device name = /dev/sdd
->                 superblock bytenr = 65536
->
->                 device name = /dev/sdd
->                 superblock bytenr = 67108864
->
->                 device name = /dev/sdd
->                 superblock bytenr = 274877906944
->
->                 device name = /dev/sdb
->                 superblock bytenr = 65536
->
->                 device name = /dev/sdb
->                 superblock bytenr = 67108864
->
->                 device name = /dev/sdb
->                 superblock bytenr = 274877906944
->
->         [All bad supers]:
->
-> All supers are valid, no need to recover
-
-Interesting.
-
-
->
->
->
-> I tried all mounting all three supers on sdb using "btrfs-select-super
-> -s 0 /dev/sdb" and mounting with "mount /dev/sdb btrfs/ -t btrfs -o
-> ro,nologreplay,degraded".  Still unable to get data. syslog here:
-> https://pastebin.com/94BbRamb
->
-> Results of btrfs check:
->
-> [root@localhost ~]# btrfs check --readonly /dev/sde
-> Opening filesystem to check...
-> Checking filesystem on /dev/sde
-> UUID: 64961501-b1d1-4470-8461-5c47aa5e72c6
-> [1/7] checking root items
-> parent transid verify failed on 2788917248 wanted 173258 found 173174
-> checksum verify failed on 2788917248 found 000000E4 wanted 00000029
-> checksum verify failed on 2788917248 found 000000E4 wanted 00000029
-> bad tree block 2788917248, bytenr mismatch, want=2788917248, have=1438426880
-> ERROR: failed to repair root items: Input/output error
-
-
-btrfs inspect dump-t --follow -b 2788917248 /anydev/
-
-
-
-
->
-> [root@localhost ~]# btrfs check -s 2 --readonly /dev/sde
-> using SB copy 2, bytenr 274877906944
-> Opening filesystem to check...
-> Checking filesystem on /dev/sde
-> UUID: 64961501-b1d1-4470-8461-5c47aa5e72c6
-> [1/7] checking root items
-> parent transid verify failed on 2788917248 wanted 173258 found 173174
-> checksum verify failed on 2788917248 found 000000E4 wanted 00000029
-> checksum verify failed on 2788917248 found 000000E4 wanted 00000029
-> bad tree block 2788917248, bytenr mismatch, want=2788917248, have=1438426880
-> ERROR: failed to repair root items: Input/output error
->
->
-> I highly doubt any of this is a bug. This pretty much sums up my
-> feelings right now: https://imgflip.com/i/422w78
-
-It's probably not any one thing. That's the difficulty. There are
-certainly a lot of bug fixes between 4.4 and 5.6. But also write
-caches enabled, who knows if one or more drives fib about commits
-actually being on disk, loss of writes in write cache during power
-fail, etc. And these things can accumulate, not just happen all at the
-same time.
-
-
---
-Chris Murphy
+--Kj0lTTYfb8ECCysYD39CDRCO81hDhtgbk--
