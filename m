@@ -2,108 +2,156 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A649E1DBD83
-	for <lists+linux-btrfs@lfdr.de>; Wed, 20 May 2020 21:01:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DB681DBDA9
+	for <lists+linux-btrfs@lfdr.de>; Wed, 20 May 2020 21:11:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726560AbgETTBq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 20 May 2020 15:01:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42558 "EHLO
+        id S1726747AbgETTLA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 20 May 2020 15:11:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726510AbgETTBp (ORCPT
+        with ESMTP id S1726693AbgETTLA (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 20 May 2020 15:01:45 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 978DFC061A0E
-        for <linux-btrfs@vger.kernel.org>; Wed, 20 May 2020 12:01:45 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id u188so4027970wmu.1
-        for <linux-btrfs@vger.kernel.org>; Wed, 20 May 2020 12:01:45 -0700 (PDT)
+        Wed, 20 May 2020 15:11:00 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C82C2C061A0E
+        for <linux-btrfs@vger.kernel.org>; Wed, 20 May 2020 12:10:59 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id h4so3504055wmb.4
+        for <linux-btrfs@vger.kernel.org>; Wed, 20 May 2020 12:10:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=nz8pI7+CvZtfz1DVUU1CuN5DLmLipSnRcseAJTFLYNw=;
-        b=PDusE6kLzzhvEC5DzHDilKLvOSzOV98XxsjSxoKNWsRkW3t8l8fTErT+bkgI+TmBoD
-         ULeSS33LJohHHZry62pkvDWZ3Do6yR2ve8/RyH0SWpKV0IAljByDXF9h+zS5YScXpC3O
-         2F0SHxqosSDzox7vlNXAspeYcJwk5AH6bVfigJh3H1wak3pzYHkOknWNekQ0G6G8kI4J
-         EXqn9nl83QA39P81UUZOiGEFxidx7rOfuwrJLZYJaMI9bvyEypZ/qldk6/6XFPnH2Yio
-         OYcyFbo9NTDwSlkRz7vzn4U1vf47xhY5IimN77b4M9q3v1P5tiJMUUFhMHgb9541MMIQ
-         VN0w==
+         :cc;
+        bh=k2TXsNUQODZo0IkWWLQfJ0xL3QnpBsf0RYYr0LZo5i8=;
+        b=H1L1UpMmcdXs9Pwb/6YaCSqyTR08VJD+KzR/ws3JjBgwOWhOntKOSrfSbQOSyuV15k
+         970InbBAfMtDmumxDR3MHs2G+QMcjvlwC6jLAfscmydf1ceu7ORSGd8jdiEjP8lQWqCF
+         gpH53XBP/dsBjTD6CowSq6JQpXRFt6TR/3YBpdlXmLov8uNFykxvQ6Frr9ywf4MlvmdE
+         ngjg8vvjgbUmxaEK7oAz9Shqkv8HQPLngljoUVAKz+6UUMmcOH53arGaHaJ2QX4kpf0C
+         jhe9uz4KWHHb7Y1O86AweEwuzFho7aE3oTdEndcyG+sAEeAzI+T8rUwmIX0cFtfiZa0V
+         KwaA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=nz8pI7+CvZtfz1DVUU1CuN5DLmLipSnRcseAJTFLYNw=;
-        b=AL7oXlb/0QN6dN9qdG0icrRZrPx9bT0uocKgXnYkeArFnh8o2jbAWXtgBiN9mSVmjH
-         Bg3OgdAPrRF3HHP7ln8b1q5QUs/lJBuRE0IxiOEwfpmoWTxDSjOc5YgWIKC2Xy76tihz
-         8ztLUtpqVa1Q5XsTONPI/grjo/5qtUQ4TpOAHOA91O4RyxFYefNw3H6de2T7km7ZSn/r
-         gJow1a84U+fhE/iAuWSKFrIBOyNypHe8W9wPOIp7+eZBwYBNiIQO6xkgm5HNMKOwyyDh
-         CUjD3s+AqEJi44WAgc2yGAck0Xo20VXSmUEA/7tNL3cfdeb4HFkR605AyZXGcHOt48q1
-         /T4w==
-X-Gm-Message-State: AOAM530tv+ObYgbG7sU0PwHLoXjyAWmeks7vWxl9+OZMPqGE770IxbNV
-        p1FM9TZfqrOAd7v0xVKhks9ApVnktJrMNmy7Lf4P93FgxHc=
-X-Google-Smtp-Source: ABdhPJwO924wKfy7nuNk/HFptVPT1TyAmgNqO+WXyArpXUQRlyLL0ujkC4CTJkAfi2PTy5kCjtxmS8oEfBIsvOFJQoA=
-X-Received: by 2002:a7b:c4cc:: with SMTP id g12mr5667623wmk.168.1590001304288;
- Wed, 20 May 2020 12:01:44 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=k2TXsNUQODZo0IkWWLQfJ0xL3QnpBsf0RYYr0LZo5i8=;
+        b=hcN9DpKhSPlAXDA08HI5nfhrwkC/4lglkjnHw3TrNhv6cNw6rguC4ABT2el2MRvkjH
+         bEgXXRFTH5UZmiZJpWtouXtcyDktz5li/H1vOQUzsFW46MwQV6PAT0P6fsaHwS0C/47L
+         toUXWxdAWxLAgiv3tik6kKR+vR9cHppXq/tRBMiUqOyhSiKUefW3dSRLD+6XuHQFn7d1
+         ygGDmNztnVCiBlBc2OAQ9cTjWIV1HCgb9CMI7ZkvKGc7mEg4MItBrezHok8cW8haR+79
+         p82FK2owyEXGglFPfUrxYujWL4bwgFQDcEBcgzLPPaGxD+X7cfh1+h88ug2Y0u25mGmP
+         LQdA==
+X-Gm-Message-State: AOAM532oA0+K4bbHAG+OyP7ZPaRnhWexdvpUjHkgbh3jYEkaQ7pSLDhI
+        0PIqn8W6xNyWH0nSUsleIB6NWqFEYclX6eTW18vPNqhB2qQ=
+X-Google-Smtp-Source: ABdhPJzHwjJ5/CUM+tQAiW2jEusYbPa6r5/VS8HERlt+EoASIRHvlZ975HFfJ4VljUsDiOx05YeO5irosnt8j6GJIJE=
+X-Received: by 2002:a7b:c4cc:: with SMTP id g12mr5694717wmk.168.1590001858418;
+ Wed, 20 May 2020 12:10:58 -0700 (PDT)
 MIME-Version: 1.0
-References: <9d2d57e7-29d9-42c2-be55-fb8ee50db40e@localhost>
- <CAJCQCtQ9HzjjaV20txtoHAWG7tTVWaqdk6wf5QtB5v+w2p4b2Q@mail.gmail.com>
- <f6d9ee8a-c0da-4b19-af3a-3c58c9c1478e@localhost> <343f7aa9-4cff-45b7-8635-4ca19014c4e5@localhost>
-In-Reply-To: <343f7aa9-4cff-45b7-8635-4ca19014c4e5@localhost>
+References: <CAHzb4voyyBxOPNV0b72XTNTP6jNGibki+UMF31U_HqumUSMfSg@mail.gmail.com>
+In-Reply-To: <CAHzb4voyyBxOPNV0b72XTNTP6jNGibki+UMF31U_HqumUSMfSg@mail.gmail.com>
 From:   Chris Murphy <lists@colorremedies.com>
-Date:   Wed, 20 May 2020 13:01:28 -0600
-Message-ID: <CAJCQCtQi3KZvKGO17YoQ3AroiePjywhhNAFjdKFD0DwL3tkbLg@mail.gmail.com>
-Subject: Re: Need help recovering broken RAID5 array (parent transid verify failed)
-To:     Emil Heimpel <broetchenrackete@gmail.com>
-Cc:     Chris Murphy <lists@colorremedies.com>,
-        Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Date:   Wed, 20 May 2020 13:10:42 -0600
+Message-ID: <CAJCQCtSpWcA7yUJ7S=TkPmfLQr8+Y8TdiepxDzZFgv8KA-uEaw@mail.gmail.com>
+Subject: Re: BTRFS RAID 5 Array looks clean in some states, but cannot mount
+ and cannot recover
+To:     Panicx <panicx@gmail.com>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, May 20, 2020 at 5:56 AM Emil Heimpel <broetchenrackete@gmail.com> w=
-rote:
+On Wed, May 20, 2020 at 8:47 AM Panicx <panicx@gmail.com> wrote:
 >
-> Hi again,
+> Hello all,
 >
-> I ran find-root and using the first found root (that is not in the superb=
-lock) seems to be finding data with btrfs-restore (only did a dry-run, beca=
-use I don't have the space at the moment to do a full restore). At least I =
-got warnings about folders where it stopped looping and I recognized the fo=
-lders. It is still not showing any files, but maybe I misunderstood what th=
-e dry-run option is suppose to be doing.
+> I had a recovery event a few days ago that completed, and as far as I
+> can tell, the array is clean.
+> root@xubuntu:/mnt/md0# mdadm -D /dev/mapper/vg0-lv0
+> /dev/mapper/vg0-lv0:
+>         Version : 1.2
+>   Creation Time : Mon Mar 30 19:44:30 2020
+>      Raid Level : raid5
+>      Array Size : 17571291136 (16757.29 GiB 17993.00 GB)
+>   Used Dev Size : unknown
+>    Raid Devices : 4
+>   Total Devices : 4
+>     Persistence : Superblock is persistent
 >
-> Because the generation of the root is higher than expected, I don't know =
-which root is expected to be the best option to choose from. One that is cl=
-osest to the root the super thinks is the correct one (fe 30122555883520(ge=
-n: 116442 level: 0)) or the one with the highest generation (30122107502592=
-(gen: 116502 level: 1))? To be honest I don't think I quite understand gene=
-rations and levels :)
+>   Intent Bitmap : Internal
+>
+>     Update Time : Tue May 19 19:04:43 2020
+>           State : clean
+>  Active Devices : 4
+> Working Devices : 4
+>  Failed Devices : 0
+>   Spare Devices : 0
+>
+>          Layout : left-symmetric
+>      Chunk Size : 128K
+>
+>            Name : TNAS-2CC8E6:UTOSUSER-X86-S64
+>            UUID : cc80e7cd:c6b902c4:ef36b897:409e8f96
+>          Events : 18518
+>
+>     Number   Major   Minor   RaidDevice State
+>        0       8       20        0      active sync   /dev/sdb4
+>        1       8       36        1      active sync   /dev/sdc4
+>        2       8       52        2      active sync   /dev/sdd4
+>        4       8        4        3      active sync   /dev/sda4
+>
+> I cannot mount it:
+> root@xubuntu:/mnt/md0# mount -t btrfs /dev/mapper/vg0-lv0 /mnt/md0/
+> mount: /mnt/md0: wrong fs type, bad option, bad superblock on
+> /dev/mapper/vg0-lv0, missing codepage or helper program, or other
+> error.
+>
+> I cannot check it:
+> root@xubuntu:/mnt/md0# btrfsck /dev/mapper/vg0-lv0
+> bytenr mismatch, want=441707118592, have=0
+> Couldn't read tree root
+> ERROR: cannot open file system
+>
+> I cannot mount it readonly with the backuproot option, either:
+> root@xubuntu:/mnt/md0# mount -t btrfs -o ro,usebackuproot
+> /dev/mapper/vg0-lv0 /mnt/md0/
+> mount: /mnt/md0: wrong fs type, bad option, bad superblock on
+> /dev/mapper/vg0-lv0, missing codepage or helper program, or other
+> error.
+>
+> Please help :)  I'd like to get some baby photos/vids out of that
+> array before I call it a lost cause.  Some of the photos are for
+> babies that aren't here anymore, and they are all I have.
+>
+> root@xubuntu:/mnt/md0#   uname -a
+> Linux xubuntu 4.15.0-20-generic #21-Ubuntu SMP Tue Apr 24 06:15:38 UTC
+> 2018 i686 i686 i686 GNU/Linux
+> root@xubuntu:/mnt/md0#   btrfs --version
+> btrfs-progs v4.15.1
+> root@xubuntu:/mnt/md0#   btrfs fi show
+> Label: none  uuid: 9ef00e00-ea8a-4b29-b8b1-4ce6e85a7e7f
+>         Total devices 1 FS bytes used 5.59TiB
+>         devid    1 size 16.36TiB used 5.64TiB path /dev/mapper/vg0-lv0
+> ## Note: I cannot mount the filesystem:
+> root@xubuntu:/mnt/md0# btrfs fi df /mnt/md0
+> ERROR: not a btrfs filesystem: /mnt/md0
 
-Yeah it's confusing.
+I strongly advise not doing anything that changes things on disk.
+Repairs will do writes. You need to be certain you understand the
+problem before proceeding with any repair.
 
-I think there's extent tree corruption and I'm not sure it can be
-repaired. I suggest 'btrfs restore' until you're satisfied, and then
-you can try 'btrfs check --init-extent-tree' and see if it can fix the
-extent tree. It's maybe a 50/50 chance, hard to say. If it completes,
-follow it up with 'btrfs check' without options, and see if it
-complains about anything else.
+# btrfs rescue super -v /anydevice/
+# btrfs insp dump-s /anydevice/
 
-One thing that's important to consider is using space_cache v2. The
-default space_cache v1 puts free space metadata into data chunks,
-subjecting them to raid56, which is not great. Since you went to the
-effort to use raid1 metadata, best to also use space_cache=3Dv2 at first
-mount, putting free space metadata into metadata chunks. It's expected
-to be the default soon, I guess, but I'm not sure what the time frame
-is.
+This won't fix anything but will state if any supers are found and if
+they're good or bad, and then print one of them.
 
-Also consider using hdparm -W (capital W not lower case, see man page)
-to disable the write cache on all drives if you're not certain they
-consistently honor FUA or fsync.
+I suspect that the raid has not in fact been properly resumed and you
+will need very careful and explicit advice from the linux-raid@ list.
+Tell them everything that happened from the creation of the array, to
+the problem that happened, to any fixes you attempted. Many data loss
+cases involving raid are caused by users assuming a repair that is not
+indicated and the repair attempt makes data recovery impossible.
 
 
---=20
+-- 
 Chris Murphy
