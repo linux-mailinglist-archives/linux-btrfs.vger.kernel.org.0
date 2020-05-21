@@ -2,128 +2,75 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B59971DD43A
-	for <lists+linux-btrfs@lfdr.de>; Thu, 21 May 2020 19:24:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3A641DDB48
+	for <lists+linux-btrfs@lfdr.de>; Fri, 22 May 2020 01:48:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728717AbgEURY0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 21 May 2020 13:24:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54138 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728553AbgEURY0 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 21 May 2020 13:24:26 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3181EC061A0E
-        for <linux-btrfs@vger.kernel.org>; Thu, 21 May 2020 10:24:26 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id r10so3471273pgv.8
-        for <linux-btrfs@vger.kernel.org>; Thu, 21 May 2020 10:24:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mautobu-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6jW7odiwO4H4GQl0b2ws7CCn/lijJK6trRTlGtHpzcs=;
-        b=WAKc8ltbkDS+Z6D9yMjWElSiUk7wRW4ntGBQ4NHL12MxR67aFHqqeU+7asxJXgtHhE
-         8lwyuagV2j3vez3PKR4u3QeA3mWEze8aFc6+V8ZnEL8zJpoeihFt/b3lDMq4gxwoDj6n
-         gok6gJTOBvJMJmS4ylXJpEuDq32XX7i7V/LAit8prJJn9rMTYumZTpFrQWkACHAWMotR
-         dyQEeU8n0VN9Y8zkpMwuFgTameOwCDvgFQZGH1q8lCyuURiJuy6gWV/IwXjJ1dA3h66f
-         R7hEwcSWIq+qTaXuSQgBaGJckQKYu82NPVe3ngyyqSXDe6rKKVA7mdmMvPv57rA96RHX
-         IqkA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6jW7odiwO4H4GQl0b2ws7CCn/lijJK6trRTlGtHpzcs=;
-        b=W0VFOq+SwmOhFgJEdiqgn98vL5yFcLCvG/ZpHHabuGe8YWbIVZnddPLp1Hz99WBxKe
-         OzlMUTQEq1Ni7vfNfFNV4bNnOOft7g1ooR7DNoBX9DY3KoC8Sj4JdMiaEEuH8d3bnFfO
-         NLOrXinTvYNaL5Jvp9mGp5TxRqmhFdnko9wBNMHIuCJ99R8Ord7Z0dKU3O2tB4GTY1Dn
-         4ceMgO/HB2tsNLFGbeeoYpTD4LlQbsnUxn3IwuQYa22aqe3UPyYIk9SnKt8/D0pvx59n
-         rtDnYRJutIPKffYLUOUk6JyUOz/EGYLX9keNhHalhCWhEtnbYdHsKu2maWzFI5X8Yl9O
-         21WA==
-X-Gm-Message-State: AOAM530E8p8nmLnzRlG2xWqeWn7Nt36S8yP9agrzxQj4Hb4TRg7rlAWz
-        qemcm5edd/NZxoKjZuwut42h+fKYhQEOqO8Kf5RlGxl+9dg=
-X-Google-Smtp-Source: ABdhPJyBuwQHyimKPRlu7X9tKYyRytXP0lHGNNVd01VcU/5vk37tMypt9S2I5b1xEN8Bgc6UJseXz4qwqxAkSsOwISc=
-X-Received: by 2002:a62:1702:: with SMTP id 2mr10544751pfx.243.1590081865517;
- Thu, 21 May 2020 10:24:25 -0700 (PDT)
+        id S1728762AbgEUXsl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 21 May 2020 19:48:41 -0400
+Received: from bezitopo.org ([45.55.162.231]:57384 "EHLO marozi.bezitopo.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728537AbgEUXsk (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 21 May 2020 19:48:40 -0400
+Received: from bezitopo.org (unknown [IPv6:2001:5b0:211f:ee48:4e72:b9ff:fe7b:8dbf])
+        by marozi.bezitopo.org (Postfix) with ESMTPSA id C95325FB5F
+        for <linux-btrfs@vger.kernel.org>; Thu, 21 May 2020 19:48:38 -0400 (EDT)
+Received: from puma.localnet (localhost [127.0.0.1])
+        by bezitopo.org (Postfix) with ESMTP id BBC69117F7
+        for <linux-btrfs@vger.kernel.org>; Thu, 21 May 2020 19:48:26 -0400 (EDT)
+From:   Pierre Abbat <phma@bezitopo.org>
+To:     linux-btrfs@vger.kernel.org
+Subject: Re: Trying to mount hangs
+Date:   Thu, 21 May 2020 19:48:26 -0400
+Message-ID: <7541432.rVhWMRgfCE@puma>
+In-Reply-To: <87436f2d-40d2-5fa1-cdee-4cc4f63e68c9@gmx.com>
+References: <2549429.Qys7a5ZjRC@puma> <87436f2d-40d2-5fa1-cdee-4cc4f63e68c9@gmx.com>
 MIME-Version: 1.0
-References: <CAGAeKuuvqGsJaZr_JWBYk3uhQoJz+07+Sgo_YVrwL9C_UF=cfA@mail.gmail.com>
- <20200520013255.GD10769@hungrycats.org> <20200520205319.GA26435@latitude> <20200521062043.GE10769@hungrycats.org>
-In-Reply-To: <20200521062043.GE10769@hungrycats.org>
-From:   Justin Engwer <justin@mautobu.com>
-Date:   Thu, 21 May 2020 10:24:14 -0700
-Message-ID: <CAGAeKuvtrXwFrLN+PmPNfKSv0UVkxzzro+dckXJAXxrSkq4ZSg@mail.gmail.com>
-Subject: Re: I think he's dead, Jim
-To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-Cc:     Johannes Hirte <johannes.hirte@datenkhaos.de>,
-        linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-So, in my case at least, I'd guess that dropping the kernel from 4.16
-to 4.4 combined with a failed disk is what the root cause was.
+On Thursday, May 21, 2020 3:56:01 AM EDT Qu Wenruo wrote:
+> That doesn't sound good. But according to your btrfs check result, your
+> memory doesn't look good.
+> There seems to be a memory bit flip.
+> 
+> A full memtest is highly recommended.
+> 
+> And since your hardware is not functioning reliable, everything can go
+> wrong.
 
-I've done what little recovery I can of the current state of files
-using btrfs restore. Is there a means of rebuilding the metadata using
-the existing data on the drives? Can I put that metadata elsewhere in
-a different location so not to overwrite anything? I'm thinking of
-moving onto destructive recovery at this point anyway.
+There was a thunderstorm. The power blinked twice within a few minutes. That 
+could have easily caused the bit flip.
 
-Cheers,
-Justin
+> > UUID: 1f5a6f23-a7ef-46c6-92b1-84fc2f684931
+> > [1/7] checking root items
+> > [2/7] checking extents
+> > incorrect local backref count on 4186230784 root 257 owner 99013 offset
+> > 5033684992 found 1 wanted 2097153 back 0x5589817e5ef0
+> 
+> Here, the 2097153 is 0x200001, it's an obvious bitflip.
+> 
+> And since it's in extent tree, even write time tree checker can't detect it.
+> 
+> But that problem is not a big thing, btrfs check --repair can fix it.
+> 
+> Still, memtest first, only process to try repair after your memory is fixed.
 
-On Wed, May 20, 2020 at 11:20 PM Zygo Blaxell
-<ce3g8jdj@umail.furryterror.org> wrote:
->
-> On Wed, May 20, 2020 at 10:53:19PM +0200, Johannes Hirte wrote:
-> > On 2020 Mai 19, Zygo Blaxell wrote:
-> > >
-> > > Corollary:  Never use space_cache=v1 with raid5 or raid6 data.
-> > > space_cache=v1 puts some metadata (free space cache) in data block
-> > > groups, so it violates the "never use raid5 or raid6 for metadata" rule.
-> > > space_cache=v2 eliminates this problem by storing the free space tree
-> > > in metadata block groups.
-> > >
-> >
-> > This should not be a real problem, as the space-cache can be discarded
-> > and rebuild anytime. Or do I miss something?
->
-> Keep in mind that there are multiple reasons to not use space_cache=v1;
-> space_cache=v1 is quite slow, especially on filesystems big enough that
-> raid5 is in play, even when it's not recovering from integrity failures.
->
-> The free space cache (v1) is stored in nodatacow inodes, so it has all
-> the btrfs RAID data integrity problems of nodatasum, plus the parity
-> corruption and write hole issues of raid5.  Free space tree (v2) is
-> stored in metadata, so it has csums to detect data corruption and transid
-> checks for dropped writes, and if you are using raid1 metadata you also
-> avoid the parity corruption bug in btrfs's raid5/6 implementation and
-> the write hole.  v2 is faster too, especially at commit time.
->
-> The probability of undetected space_cache=v1 failure is low, but not zero.
-> In the event of failure, the filesystem should detect the error when it
-> tries to create new entries in the extent tree--they'll overlap existing
-> allocated blocks, and the filesystem will force itself read-only, so
-> there should be no permanent damage other than killing any application
-> that was writing to the disk at the time.
->
-> Come to think of it, though, the space_cache=v1 problems are not specific
-> to raid5.  You shouldn't use space_cache=v1 with raid1 or raid10 data
-> either, for the same reasons.
->
-> In the raid5/6 case it's a bit simpler:   kernels that can't do
-> space_cache=v2 (4.4 and earlier) don't have working raid5 recovery either.
->
-> > --
-> > Regards,
-> >   Johannes Hirte
-> >
+"btrfs check" gave me a "device busy" error. (When I booted the M.2, this was 
+caused by the hung mount process, but it happened even when I booted the flash 
+drive. I don't know why.) I couldn't repair it. I had to get a new drive and 
+recover the files to the new drive.
 
+Trying to mount the corrupt filesystem consistently hangs. That indicates a bug 
+in mount. How can I send you the corrupt filesystem so that you can debug 
+mount?
 
-
+Pierre
 -- 
+The Black Garden on the Mountain is not on the Black Mountain.
 
-Justin Engwer
-Mautobu Business Services
-250-415-3709
+
+
