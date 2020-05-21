@@ -2,105 +2,128 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C162B1DCC15
-	for <lists+linux-btrfs@lfdr.de>; Thu, 21 May 2020 13:27:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B59971DD43A
+	for <lists+linux-btrfs@lfdr.de>; Thu, 21 May 2020 19:24:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729045AbgEUL1e (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 21 May 2020 07:27:34 -0400
-Received: from mout.gmx.net ([212.227.15.19]:34329 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729002AbgEUL1d (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 21 May 2020 07:27:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1590060452;
-        bh=hK2C3ORyCD0Tr2/PIrg1lvZ3WybHgchElY31AG/ILxk=;
-        h=X-UI-Sender-Class:Date:From:To:Subject:References:In-Reply-To;
-        b=AVNqT/PZY3A+a5w7q8x1ne+GWJYOFjI+CoQ1x6J85op2GVqVsBatw0VaoL+8hf1KV
-         U9ACfiln0vKBiXZq0WQbjnLyv00QSVJMM2E1vEEBBRLJYQoMb0QcLsRecS0ved9vGY
-         Zfz1J4t4bKsbdaH/sExB8EisYQS2QXFcpFUEeXhI=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from mail.gomer.local ([77.185.50.222]) by mail.gmx.com (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MWRVh-1jZBCi3x2h-00XxTy for
- <linux-btrfs@vger.kernel.org>; Thu, 21 May 2020 13:27:32 +0200
-Received: by mail.gomer.local (Postfix, from userid 1000)
-        id 4B2D9453C9E1; Thu, 21 May 2020 13:27:31 +0200 (CEST)
-Date:   Thu, 21 May 2020 13:27:31 +0200
-From:   =?iso-8859-1?Q?J=F6rg?= Ebertz <joerg.ebertz@gmx.net>
-To:     linux-btrfs@vger.kernel.org
-Subject: Re: Tree-Checker-Error on vServer-Directory
-Message-ID: <20200521112731.GC1838@ehud.gomer.local>
-References: <20200520155428.GA1810@ehud.gomer.local>
- <f4ef60a7-df8b-71dc-5679-1628c0dda2ea@gmx.com>
+        id S1728717AbgEURY0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 21 May 2020 13:24:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54138 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728553AbgEURY0 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 21 May 2020 13:24:26 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3181EC061A0E
+        for <linux-btrfs@vger.kernel.org>; Thu, 21 May 2020 10:24:26 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id r10so3471273pgv.8
+        for <linux-btrfs@vger.kernel.org>; Thu, 21 May 2020 10:24:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mautobu-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6jW7odiwO4H4GQl0b2ws7CCn/lijJK6trRTlGtHpzcs=;
+        b=WAKc8ltbkDS+Z6D9yMjWElSiUk7wRW4ntGBQ4NHL12MxR67aFHqqeU+7asxJXgtHhE
+         8lwyuagV2j3vez3PKR4u3QeA3mWEze8aFc6+V8ZnEL8zJpoeihFt/b3lDMq4gxwoDj6n
+         gok6gJTOBvJMJmS4ylXJpEuDq32XX7i7V/LAit8prJJn9rMTYumZTpFrQWkACHAWMotR
+         dyQEeU8n0VN9Y8zkpMwuFgTameOwCDvgFQZGH1q8lCyuURiJuy6gWV/IwXjJ1dA3h66f
+         R7hEwcSWIq+qTaXuSQgBaGJckQKYu82NPVe3ngyyqSXDe6rKKVA7mdmMvPv57rA96RHX
+         IqkA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6jW7odiwO4H4GQl0b2ws7CCn/lijJK6trRTlGtHpzcs=;
+        b=W0VFOq+SwmOhFgJEdiqgn98vL5yFcLCvG/ZpHHabuGe8YWbIVZnddPLp1Hz99WBxKe
+         OzlMUTQEq1Ni7vfNfFNV4bNnOOft7g1ooR7DNoBX9DY3KoC8Sj4JdMiaEEuH8d3bnFfO
+         NLOrXinTvYNaL5Jvp9mGp5TxRqmhFdnko9wBNMHIuCJ99R8Ord7Z0dKU3O2tB4GTY1Dn
+         4ceMgO/HB2tsNLFGbeeoYpTD4LlQbsnUxn3IwuQYa22aqe3UPyYIk9SnKt8/D0pvx59n
+         rtDnYRJutIPKffYLUOUk6JyUOz/EGYLX9keNhHalhCWhEtnbYdHsKu2maWzFI5X8Yl9O
+         21WA==
+X-Gm-Message-State: AOAM530E8p8nmLnzRlG2xWqeWn7Nt36S8yP9agrzxQj4Hb4TRg7rlAWz
+        qemcm5edd/NZxoKjZuwut42h+fKYhQEOqO8Kf5RlGxl+9dg=
+X-Google-Smtp-Source: ABdhPJyBuwQHyimKPRlu7X9tKYyRytXP0lHGNNVd01VcU/5vk37tMypt9S2I5b1xEN8Bgc6UJseXz4qwqxAkSsOwISc=
+X-Received: by 2002:a62:1702:: with SMTP id 2mr10544751pfx.243.1590081865517;
+ Thu, 21 May 2020 10:24:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f4ef60a7-df8b-71dc-5679-1628c0dda2ea@gmx.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Provags-ID: V03:K1:rj24uY08X0OZRWTVwG+VrgMLuHJJejiRXuleNPAX8TmkTxbPg2M
- 7jzTHKomA/VgWNakJ7JxJH0KtgeKoLEOR6IHaO9n7+v0tkWnfLCVIgf/497K42vj/jzyMy5
- 9SBZYVM3YCO7SanpBd6qBHn1heNMPEQ/Q9fbrkMKa+RQCCxRKJT8NYqAkeZxvlytUFDNbaQ
- gsV4NbN3Htf61uYOzKzsA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:JLKCqBRqaX0=:cI0+mlwrJ2whYKIMUtzGMN
- MEwedqoFMZfHvVoukhza2ODSaQVvXc9OYzMlXQUYXK0im9FM6dK2GYuNN0n6WSnyK6SMw6K/5
- 5kqMXfvaHOk03BDmBRNpRUtqK7NdNS+Mv06c4bj2kQOd4Pp8tiWQkv8TJ1BMsGZ991FDH50Gp
- eJ0m8KgWRmtb6DGk29lIKCOhKiSJdHuClR2uodS24wLB3Nm201jnSta1kGTaUFRYLD3IeBQYD
- GxwBCwoa3z374ZPDaEdQZwn61QikQqmoCbm9HvO83d1xkJj5dYJSgH3+8ap+4ifOzp4D+rQ6D
- MPFvUlVCoE+36sUA69rPyndtkh1nvwSL3G46Xz4ZIx4D8LVNLCY/q2kMBaVfKAJ6bfO4+V/KF
- BuhqkNmDKkZkrhtRMSz7/lx1+Nn4XI1rC1+hjykxMz5LI57cvHZyFrd/vx6z+GPxM8AaH0660
- 0Mxd0AD5IdVhdmuLfmHq5L+KGJp8g98U/0ryzvqDj5YNKcl3o+Dn1F3VtD5jMcvBDkqDYONcZ
- u8AU8aZwPfVB31l+SLk8491MGG3PXPpwiSvc1IYGi5WvVrSzSCKi/p1PxwCYF0b+T4Wy5yLKR
- ix0IeG02S7UupnvZJcN4Z+4EBG1KBkr8RTWSf/To15CZcqUhPs8MH+o4kAoUeqte72D3S0me1
- RZM4IBiLRYdVccj6lgD+pcT5y0nzHcxCukzPpvVFeYGM2XMwfXpiPTIg+L2RTqF4H+IrN12JW
- adTkKtK1fQec8gnLDt5OXHxA5O6ch5VqTgCSg7bVpnK6lcGirT4C589weIBjhLhSQikYOZw3b
- xvl642mxLilqi80XlO7SO+EsHnRwRgUoXPAW1M5Z3+4V2ho4fnFu1G0uni0BVGREQJqJq003d
- OTa683Aildmel4fmXJqNExfHR1BGf+nP54pI5MBYrq41sQVETVFFQFsrCucavPWDRHMbRAOui
- O/FllsvrLoW9Edr4ayA3ppznjWlxAiobDS7emMZydXd3usXujnyJ84feWeSPvRx7RTxW4Lu55
- 623J1Wn/KSo1LcVqWRoTrWLOzRW/gKRJnIt2WB5TRmjsK++0OwPY3XeLghxK3+xyJDnUKeNhb
- VGUP6Cilzh6Jp03eGCkG8gsM/sbk5cGth8VGoP06kuKUHN1TZjvOf4NMknKI6LM0ujwK7sKdS
- Z6qYUaqLhl6Cv4oxo3tyWONipFJhJT9l0v1JovfF5eu/hr4OTxeaD4a7RIz4PbJfltJFNxxO4
- dQoap7WY2fBkyryky
-Content-Transfer-Encoding: quoted-printable
+References: <CAGAeKuuvqGsJaZr_JWBYk3uhQoJz+07+Sgo_YVrwL9C_UF=cfA@mail.gmail.com>
+ <20200520013255.GD10769@hungrycats.org> <20200520205319.GA26435@latitude> <20200521062043.GE10769@hungrycats.org>
+In-Reply-To: <20200521062043.GE10769@hungrycats.org>
+From:   Justin Engwer <justin@mautobu.com>
+Date:   Thu, 21 May 2020 10:24:14 -0700
+Message-ID: <CAGAeKuvtrXwFrLN+PmPNfKSv0UVkxzzro+dckXJAXxrSkq4ZSg@mail.gmail.com>
+Subject: Re: I think he's dead, Jim
+To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+Cc:     Johannes Hirte <johannes.hirte@datenkhaos.de>,
+        linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 2020-05-21, Qu Wenruo wrote:
+So, in my case at least, I'd guess that dropping the kernel from 4.16
+to 4.4 combined with a failed disk is what the root cause was.
 
-> Btrfs check hasn't add such restrict check yet, and btrfs scrub doesn't
-> check the tree contents.
+I've done what little recovery I can of the current state of files
+using btrfs restore. Is there a means of rebuilding the metadata using
+the existing data on the drives? Can I put that metadata elsewhere in
+a different location so not to overwrite anything? I'm thinking of
+moving onto destructive recovery at this point anyway.
+
+Cheers,
+Justin
+
+On Wed, May 20, 2020 at 11:20 PM Zygo Blaxell
+<ce3g8jdj@umail.furryterror.org> wrote:
 >
-> Furthermore, from the bit, it looks like a memory bitflip, and it is
-> definitely caused in older kernels which doesn't has such comprehensive
-> check.
-
-Running rsync on the entire file system should trigger tree-checker, if
-there are other damaged inodes, right?
-
-> If it's a memory bitflip, it's highly recommended to run a full memtest
-> to ensure your memory is OK.
-
-I'll do that.
-
-> To recover your data, it can be done by removing the offending inodes
-> with older kernel.
+> On Wed, May 20, 2020 at 10:53:19PM +0200, Johannes Hirte wrote:
+> > On 2020 Mai 19, Zygo Blaxell wrote:
+> > >
+> > > Corollary:  Never use space_cache=v1 with raid5 or raid6 data.
+> > > space_cache=v1 puts some metadata (free space cache) in data block
+> > > groups, so it violates the "never use raid5 or raid6 for metadata" rule.
+> > > space_cache=v2 eliminates this problem by storing the free space tree
+> > > in metadata block groups.
+> > >
+> >
+> > This should not be a real problem, as the space-cache can be discarded
+> > and rebuild anytime. Or do I miss something?
 >
-> The inode can be located using the inode number provided in the dmesg.
+> Keep in mind that there are multiple reasons to not use space_cache=v1;
+> space_cache=v1 is quite slow, especially on filesystems big enough that
+> raid5 is in play, even when it's not recovering from integrity failures.
+>
+> The free space cache (v1) is stored in nodatacow inodes, so it has all
+> the btrfs RAID data integrity problems of nodatasum, plus the parity
+> corruption and write hole issues of raid5.  Free space tree (v2) is
+> stored in metadata, so it has csums to detect data corruption and transid
+> checks for dropped writes, and if you are using raid1 metadata you also
+> avoid the parity corruption bug in btrfs's raid5/6 implementation and
+> the write hole.  v2 is faster too, especially at commit time.
+>
+> The probability of undetected space_cache=v1 failure is low, but not zero.
+> In the event of failure, the filesystem should detect the error when it
+> tries to create new entries in the extent tree--they'll overlap existing
+> allocated blocks, and the filesystem will force itself read-only, so
+> there should be no permanent damage other than killing any application
+> that was writing to the disk at the time.
+>
+> Come to think of it, though, the space_cache=v1 problems are not specific
+> to raid5.  You shouldn't use space_cache=v1 with raid1 or raid10 data
+> either, for the same reasons.
+>
+> In the raid5/6 case it's a bit simpler:   kernels that can't do
+> space_cache=v2 (4.4 and earlier) don't have working raid5 recovery either.
+>
+> > --
+> > Regards,
+> >   Johannes Hirte
+> >
 
-  sudo find / -inum 55495 -print
 
-gave me
 
- /vserver
+-- 
 
-To remove the inode, I run
-
-  sudo mkdir /vserver2
-  sudo cp -a --reflink /vserver /vserver2
-  sudo rm /vserver
-  sudo mv /vserver2 /vserver
-
-correct?
-
-Joerg
+Justin Engwer
+Mautobu Business Services
+250-415-3709
