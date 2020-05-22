@@ -2,26 +2,31 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FE951DE708
-	for <lists+linux-btrfs@lfdr.de>; Fri, 22 May 2020 14:38:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD4A31DE709
+	for <lists+linux-btrfs@lfdr.de>; Fri, 22 May 2020 14:39:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729334AbgEVMiz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 22 May 2020 08:38:55 -0400
-Received: from mx2.suse.de ([195.135.220.15]:59014 "EHLO mx2.suse.de"
+        id S1729363AbgEVMi7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 22 May 2020 08:38:59 -0400
+Received: from mx2.suse.de ([195.135.220.15]:59028 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728801AbgEVMiz (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 22 May 2020 08:38:55 -0400
+        id S1729353AbgEVMi7 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 22 May 2020 08:38:59 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 3D499AD46;
-        Fri, 22 May 2020 12:38:57 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 1FFE2AED9;
+        Fri, 22 May 2020 12:39:00 +0000 (UTC)
 From:   Goldwyn Rodrigues <rgoldwyn@suse.de>
 To:     linux-btrfs@vger.kernel.org
-Cc:     hch@infradead.org, dsterba@suse.cz
-Subject: [PATCH 0/7 v8] btrfs direct-io using iomap
-Date:   Fri, 22 May 2020 07:38:30 -0500
-Message-Id: <20200522123837.1196-1-rgoldwyn@suse.de>
+Cc:     hch@infradead.org, dsterba@suse.cz,
+        Goldwyn Rodrigues <rgoldwyn@suse.com>,
+        Johannes Thumshirn <jthumshirn@suse.de>,
+        Christoph Hellwig <hch@lst.de>
+Subject: [PATCH 1/7] fs: Export generic_file_buffered_read()
+Date:   Fri, 22 May 2020 07:38:31 -0500
+Message-Id: <20200522123837.1196-2-rgoldwyn@suse.de>
 X-Mailer: git-send-email 2.25.0
+In-Reply-To: <20200522123837.1196-1-rgoldwyn@suse.de>
+References: <20200522123837.1196-1-rgoldwyn@suse.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
@@ -29,58 +34,82 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an effort to use iomap for direct I/O in btrfs. This would
-change the call from __blockdev_direct_io() to iomap_dio_rw().
+From: Goldwyn Rodrigues <rgoldwyn@suse.com>
 
-The main objective is to lose the buffer head and use bio defined by
-iomap code, and hopefully to use more of generic-FS codebase.
+Export generic_file_buffered_read() to be used to
+supplement incomplete direct reads.
 
-These patches are based and tested on kdave/for-next-20200511. I
-have tested it against xfstests/btrfs.
+While we are at it, correct the comments and variable names.
 
-The tree is available at
-https://github.com/goldwynr/linux/tree/dio-merge
+Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
+Reviewed-by: Johannes Thumshirn <jthumshirn@suse.de>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+---
+ include/linux/fs.h |  2 ++
+ mm/filemap.c       | 13 +++++++------
+ 2 files changed, 9 insertions(+), 6 deletions(-)
 
-
-Changes since v1
-- Incorporated back the efficiency change for inode locking
-- Review comments about coding style and git comments
-- Merge related patches into one
-- Direct read to go through btrfs_direct_IO()
-- Removal of no longer used function dio_end_io()
-
-Changes since v2
-- aligning iomap offset/length to the position/length of I/O
-- Removed btrfs_dio_data
-- Removed BTRFS_INODE_READDIO_NEED_LOCK
-- Re-incorporating write efficiency changes caused lockdep_assert() in
-  iomap to be triggered, remove that code.
-
-Changes since v3
-- Fixed freeze on generic/095. Use iomap_end() to account for
-  failed/incomplete dio instead of btrfs_dio_data
-
-Changes since v4
-- moved lockdep_assert_held() to functions calling iomap_dio_rw()
-  This may be called immidiately after calling inode lock and
-  may feel not required, but it seems important.
-- Removed comments which are no longer required
-- Changed commit comments to make them more appropriate
-
-Changes since v5
-- restore inode_dio_wait() in truncate
-- Removed lockdep_assert_held() near callers
-
-Changes since v6
-- Fixed hangs due to underlying device failures
-- Removed the patch to wait while releasing pages
-
-Changes since v7
-- Moved reservation into btrfs iomap begin()/end() for correct
-  reservation cleanup in case of device error.
-- Merged patches switch to iomap, and adding btrfs_iomap_end()
-  for easier bisection. The switch to iomap would fail in case
-  of dio after buffered writes.
-
-
+diff --git a/include/linux/fs.h b/include/linux/fs.h
+index 45cc10cdf6dd..366c533d30cd 100644
+--- a/include/linux/fs.h
++++ b/include/linux/fs.h
+@@ -3124,6 +3124,8 @@ extern int generic_file_rw_checks(struct file *file_in, struct file *file_out);
+ extern int generic_copy_file_checks(struct file *file_in, loff_t pos_in,
+ 				    struct file *file_out, loff_t pos_out,
+ 				    size_t *count, unsigned int flags);
++extern ssize_t generic_file_buffered_read(struct kiocb *iocb,
++		struct iov_iter *to, ssize_t already_read);
+ extern ssize_t generic_file_read_iter(struct kiocb *, struct iov_iter *);
+ extern ssize_t __generic_file_write_iter(struct kiocb *, struct iov_iter *);
+ extern ssize_t generic_file_write_iter(struct kiocb *, struct iov_iter *);
+diff --git a/mm/filemap.c b/mm/filemap.c
+index 23a051a7ef0f..27df1cf35eb4 100644
+--- a/mm/filemap.c
++++ b/mm/filemap.c
+@@ -1979,7 +1979,7 @@ static void shrink_readahead_size_eio(struct file_ra_state *ra)
+  * generic_file_buffered_read - generic file read routine
+  * @iocb:	the iocb to read
+  * @iter:	data destination
+- * @written:	already copied
++ * @copied:	already copied
+  *
+  * This is a generic file read routine, and uses the
+  * mapping->a_ops->readpage() function for the actual low-level stuff.
+@@ -1988,11 +1988,11 @@ static void shrink_readahead_size_eio(struct file_ra_state *ra)
+  * of the logic when it comes to error handling etc.
+  *
+  * Return:
+- * * total number of bytes copied, including those the were already @written
++ * * total number of bytes copied, including those that were @copied
+  * * negative error code if nothing was copied
+  */
+-static ssize_t generic_file_buffered_read(struct kiocb *iocb,
+-		struct iov_iter *iter, ssize_t written)
++ssize_t generic_file_buffered_read(struct kiocb *iocb,
++		struct iov_iter *iter, ssize_t copied)
+ {
+ 	struct file *filp = iocb->ki_filp;
+ 	struct address_space *mapping = filp->f_mapping;
+@@ -2133,7 +2133,7 @@ static ssize_t generic_file_buffered_read(struct kiocb *iocb,
+ 		prev_offset = offset;
+ 
+ 		put_page(page);
+-		written += ret;
++		copied += ret;
+ 		if (!iov_iter_count(iter))
+ 			goto out;
+ 		if (ret < nr) {
+@@ -2241,8 +2241,9 @@ static ssize_t generic_file_buffered_read(struct kiocb *iocb,
+ 
+ 	*ppos = ((loff_t)index << PAGE_SHIFT) + offset;
+ 	file_accessed(filp);
+-	return written ? written : error;
++	return copied ? copied : error;
+ }
++EXPORT_SYMBOL_GPL(generic_file_buffered_read);
+ 
+ /**
+  * generic_file_read_iter - generic filesystem read routine
+-- 
+2.25.0
 
