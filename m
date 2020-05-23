@@ -2,57 +2,60 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E6321DFA9B
-	for <lists+linux-btrfs@lfdr.de>; Sat, 23 May 2020 21:06:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 529291DFBAA
+	for <lists+linux-btrfs@lfdr.de>; Sun, 24 May 2020 01:21:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387507AbgEWTGz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 23 May 2020 15:06:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37996 "EHLO
+        id S2388034AbgEWXVv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 23 May 2020 19:21:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726790AbgEWTGz (ORCPT
+        with ESMTP id S2388010AbgEWXVv (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 23 May 2020 15:06:55 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0967C061A0E
-        for <linux-btrfs@vger.kernel.org>; Sat, 23 May 2020 12:06:54 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id a2so16591064ejb.10
-        for <linux-btrfs@vger.kernel.org>; Sat, 23 May 2020 12:06:54 -0700 (PDT)
+        Sat, 23 May 2020 19:21:51 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4230C061A0E
+        for <linux-btrfs@vger.kernel.org>; Sat, 23 May 2020 16:21:50 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id c71so1527453wmd.5
+        for <linux-btrfs@vger.kernel.org>; Sat, 23 May 2020 16:21:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
+        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :content-transfer-encoding;
-        bh=gFcbtr1w9lbE9orv4J551QU+Arj05Sj9ZADz4fQaLmY=;
-        b=EnMcXj7/RpdC3y3mzZ+TIHHsty5GbVVUXfBFVEYSAHZDrWR3/MEdhy5PNEL//dBNQd
-         DFdX4lSNFdUc2+XXlBGCpBJJLRv281XYa3tan1vtC0KVqyu1uSelQFF0/JH+SmovjDsz
-         SV7BjPMse1NMG+AcJn0Pj9o7gkji9eCG8GYHKT1o9RINaTgR1Bi+byuNd2kWtEwsk2ll
-         j5BNcTJQ5NpZ83GCXhFtQXMXYMTtWAWCJWJ566LcudgbBytCS+sN5qrW8XdmTWIqm3Fv
-         iEcKj3iKKPOJa4t0fqEKLvrF+TGByjLsdMqJiW3uP3TNrQkudYRrO+xIRIaAxSXTUGFD
-         0wWA==
+        bh=5LD3PHJkCZ//stLTmXPZ9wkFEdR5qZBQ+05z24HzKQo=;
+        b=N5jN8EiHWQDeipblaSDtZlQrJc7I8pjP5Zy6hJton3csaXAyHg1IrFD/Ot1gpNXbAw
+         pbvLosv9PFit3F4cBfwjXQFujvL0i3zPvECZ9He9oNoWM9wKJNH1gkoF30YR/XyZAowf
+         53FSQrOrcBmMwo51NgCLV+krE4GXoMmmO5l691wrzpAOp+vtu54TY3VjEB/UiBm8fdd+
+         Eg3G95VysHbIRZk4YJS1qBAenk75RtHv6DmJXJiEvUokGFC63eWKYJ24uPQWRNLL/vYU
+         i8a90pTb3W2tz7LGJb9jYbAdV5QIIbBZxXUJah2vb9dKtXMKR+SDckHeKZUBnfNULQSB
+         2vlw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=gFcbtr1w9lbE9orv4J551QU+Arj05Sj9ZADz4fQaLmY=;
-        b=l33sbuaWyatzsG06AyTNDqKfGMi5N4H58N7csT80dwx+sfTtWkAWisKi4xcY0P/ArR
-         J+g64iRLe5+q5eLolfC6+khpWVT8PYkfXMMPLaaHk8iBF7tpI/fn2OYIZCJOgiBNF+3n
-         MGA/m/smwhEuWssKfKCnq2FQWClt7bQ+FrJu0Y91mTpy9TBFsQbeztJkya4gGh0C9Asf
-         Li/skG+q+Tuz7gBkstsbmUIA41aFauzijZzuoFOFIDymxATixKOV0IVA5/7Hd1Dlssgv
-         4pV4XWg09fzNvYwh67tCszyGwMYS83c/hZSmrpalSCixJqOCloha7CMinHieGm+3wCG4
-         Zq+Q==
-X-Gm-Message-State: AOAM531DKFzXPluYaHR8Ti1PbeN8RaDA2eKzf6pRGEe8TgSIYMddjR1+
-        Jk+u+sre5dAhX3A0Fdl7uT18H6E3FHGOTsyOAgI=
-X-Google-Smtp-Source: ABdhPJyLrXSTxHrg930Ikr5zMzz4HYWr91y6typoRYBVwIcyTMgZ4yly/ZzciRFKuhWf5ne/5/9AU3IAueim3OFXHf4=
-X-Received: by 2002:a17:906:f891:: with SMTP id lg17mr12564948ejb.405.1590260813584;
- Sat, 23 May 2020 12:06:53 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:content-transfer-encoding;
+        bh=5LD3PHJkCZ//stLTmXPZ9wkFEdR5qZBQ+05z24HzKQo=;
+        b=JmtUf8f/bb39bV8pCeH9NiYo5nYELmUfTR+b9cCGMu4p0ED5AlyWqKQvcy2CPJ/FFS
+         8y8jYCdPLLTj84gUvw6uN5xJjTSWGEsRa1aOjJrIuc0Rj7WTVgHEs7Fxq7tthKM1PpAC
+         GVZ2mVTGa83470NndW3jsBPALP1nsCXW4fnlgZC8O5xlq+nzOG2L8yRHZWP0nteCa/R5
+         iTVKqPWKchLB2bDa2O33KuNE3AIUg6413nvW73mUxQQho78Nm1WiqTCL4CSc1qCg5Vrs
+         ealpy6/ESGjhB+lXcp1faASCKOrDidAtHxsYT0pyV3GTq/lbCldB/V21B2VQYruiX9V9
+         Z4kw==
+X-Gm-Message-State: AOAM530PKCa4Q15tA91GyWeWvdmgKQJ8XXDMQHGqZlL5p2zGUL12QVtW
+        l6W0+VTBC+IIJpRRJ5SwvXw/fXS/fpJ3AoxMtE3Scw==
+X-Google-Smtp-Source: ABdhPJyVJgxxJVpDY9insgMX6W4W7G8Oh6wrR0fBtN3/ValDDe+pJNsgheDGKqmofXkzKWCVe0Ap8/pllpiRBgywY/0=
+X-Received: by 2002:a05:600c:2219:: with SMTP id z25mr18406362wml.128.1590276109183;
+ Sat, 23 May 2020 16:21:49 -0700 (PDT)
 MIME-Version: 1.0
-Received: by 2002:aa7:c48c:0:0:0:0:0 with HTTP; Sat, 23 May 2020 12:06:53
- -0700 (PDT)
-Reply-To: bukuriderv@gmail.com
-From:   Bukuri Dervishi <monika.morocz1@gmail.com>
-Date:   Sat, 23 May 2020 21:06:53 +0200
-Message-ID: <CAKUQEUU8TirTB6s5XYUSO-S-0m4PWLu5deN6rpunHGZNbRmDHQ@mail.gmail.com>
-Subject: URGENT
-To:     undisclosed-recipients:;
+References: <1e6bc0e299901f90613550570446777fbccdc21e.camel@seznam.cz>
+ <CAJCQCtSWX0J69SokSOgAhdcQ6qkKHfaPVhbF4anjCtVFACOVnQ@mail.gmail.com>
+ <139f40a70cf37da2fef682c5c3d660671d8af88d.camel@seznam.cz>
+ <CAJCQCtQXBphGneiHJT_O7VHgZkfqfHaxmkAwFEzGPXY5E7U_cA@mail.gmail.com> <3bc39223e567b7a4eca13bc554c74ef0c36fbaf2.camel@seznam.cz>
+In-Reply-To: <3bc39223e567b7a4eca13bc554c74ef0c36fbaf2.camel@seznam.cz>
+From:   Chris Murphy <lists@colorremedies.com>
+Date:   Sat, 23 May 2020 17:21:33 -0600
+Message-ID: <CAJCQCtQmTan=rrRJ2ALM25DnUt05Xdsuae9GR88L5mB=OR+QVA@mail.gmail.com>
+Subject: Re: I can't mount image
+To:     =?UTF-8?B?SmnFmcOtIExpc2lja8O9?= <jiri_lisicky@seznam.cz>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
@@ -60,31 +63,42 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Ramadan Kareem to you,
+On Sat, May 23, 2020 at 8:38 AM Ji=C5=99=C3=AD Lisick=C3=BD <jiri_lisicky@s=
+eznam.cz> wrote:
+>
+> [root@localhost-live tmp] # btrfs rescue super -v /dev/loop4
+> All Devices:
+>         Device: id =3D 1, name =3D /dev/loop4
+>
+> Before Recovering:
+>         [All good supers]:
+>                 device name =3D /dev/loop4
+>                 superblock bytenr =3D 65536
+>
+>                 device name =3D /dev/loop4
+>                 superblock bytenr =3D 67108864
+>
+>         [All bad supers]:
+>
+> All supers are valid, no need to recover
 
-My name is Bukuri Dervishi, I=E2=80=99m a citizen of Albania base in Turkey
-for my previous business. This is a confidential message, I have lost
-two of my children due to covid19; early February we came to Italy on
-visit without knowing that things was about to fall appart. Not only
-did my children die as a result of covid19; I also tested
-positive, and it has defied all forms of medical treatment,
+OK. So they're good.
 
-I may have only a few days to live, as a result of that I want to
-donate my entire Money thirteen million five hundred and eighty
-thousand usd($13,580 million usd) to you for charity work as my
-promise to God since I will not be needing the money any more. I'm
-donating the money to you because I do not have any other heir and my
-trusted Steward who would have handly this assignment is incapable due
-to old age and ill health.
+>
+>
+>
+> [root@localhost-live tmp]# mount -o ro,recovery /dev/loop4 ./mnt
+> mount: /home/jirka/tmp/mnt: can't read superblock on /dev/loop4.
 
-I am given you 40% for this job while you are to give 20% to my former
-Steward and donate the remaining 40% for charitable works such as to
-donate 20% towards the fight of coronavirus and 20% to the less
-priviledges in the society. I will give you
-more details on how to get the money. Kindly let me know if you are
-capable to handle this,and if you can=E2=80=99t please kindly reject the
-offer.
 
-Thanks and stay safe
-Regards
-Bukuri Dervishi.
+But it can't be read? This doesn't make sense. What kernel messages
+are reported at the time of the mount attempt? When using a newer
+kernel, the recovery command is deprecated but should still work. The
+new command is 'usebackuproot'
+
+What do you get for:
+
+# btrfs insp dump-s -fa /dev/
+
+--=20
+Chris Murphy
