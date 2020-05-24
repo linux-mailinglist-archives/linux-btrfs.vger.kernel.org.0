@@ -2,145 +2,538 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71FBB1DFEEB
-	for <lists+linux-btrfs@lfdr.de>; Sun, 24 May 2020 14:32:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A183F1E02A0
+	for <lists+linux-btrfs@lfdr.de>; Sun, 24 May 2020 21:52:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728217AbgEXMcm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 24 May 2020 08:32:42 -0400
-Received: from mout.gmx.net ([212.227.15.19]:44075 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726734AbgEXMcl (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 24 May 2020 08:32:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1590323551;
-        bh=gX7WBZuN0hWUqwyuA/7cyMaKNRH9Hl0+0ZN/w+PcdLg=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=LGzZVu/u97gX3biA6JpFOX7o9k76ibjt9HL+wdDHlAA2ZQ/OD7MuNYpHi9MztwCZL
-         3OJTHCValL3BfI/nRM2KUY8LQbW8/FvJuNP1To9/9vW61xECMPLVdlBmK9tqCUIhtC
-         +RdaFJw9epAaCW2SIdiDm9BbzGjjOvq7Kv5CY9oc=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MJE2D-1jIgU928gF-00Kh6Y; Sun, 24
- May 2020 14:32:31 +0200
-Subject: Re: Trying to mount hangs
-To:     Pierre Abbat <phma@bezitopo.org>, linux-btrfs@vger.kernel.org
-References: <2549429.Qys7a5ZjRC@puma> <19884168.u0ROftlITR@puma>
- <76e60f34-9831-3bda-4b71-fcc5f9b46a7c@gmx.com> <12830569.d4mHp5BhJh@puma>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
- PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
- 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
- D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
- efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
- ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
- BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
- 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
- 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
- EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
- 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
- ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
- oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
- fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
- 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
- ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
- oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <cf88e4ad-c2da-d5e7-5388-2434f39dd81b@gmx.com>
-Date:   Sun, 24 May 2020 20:32:27 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
-MIME-Version: 1.0
-In-Reply-To: <12830569.d4mHp5BhJh@puma>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="3P8t7GhHwFtOx5gatGVsnOxG64oMwOVSb"
-X-Provags-ID: V03:K1:618AMUXf3mf7p0M5XN+6IgKNcUWzHRJE7seJ7gUQUnaXuxdti2b
- Kije9s6uQz59csY/Xeb/zafpvbM4IXYscEeWVT14HowsPa5dylbhXi9vPOq/XstsLzY7vTQ
- zSsiRhzhPha4Qywix7xOEKBxgGzexguu3rQE/DTZ9zyDxZCp5b0jbw/X4ub+PA4gavLR+mO
- 02BkbL3tl/unwWU2kAVSA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:lDtG/KMk6Bw=:29lR94J+FSJ6E5F02KHt8H
- YMhe8C+VsRizAey37KuGNJ4SzC1dQpce9zbQC6Ozd5fsEvlk35NG6ISUdJjULGiZZpSq+C9md
- G1yYEpdIJNPNON6SC7tA2nBTHw8Bfdk8ZxyDtNhfznZVTz89i9inDy1ECUSvL/wXL2mbbXuOa
- fmwCrvuCwsuVG3L7C4RYlpiegdKrzKBXUB7OZq42cN/r86TBZKDmIhr0Ob2xKK7/s3B06NzL8
- ppOlsXxNor1gYZNOcbKusfXkODVRI+9cpVDE2hSaM/r38mx9THGUHgIqgQTjT31kSC51ZnFhO
- tRPDs54dEhYVXfW61wkv/MFOfKVWSbD2UpBDOLUABYx5PZ5KioErzMo59Sv+wmPgk1/wWxHC/
- NJRce8ENcpGcLzHUL0cXv0GsjAlq7ZPHsGeXo6n/tOT7ZJ7zl/2b9LXQRxua9Iq+XntU2BpuS
- 9H98bfsBxWoT/8zP+WBvt5pnshCLAMNsMLBjTwmZjeLtWv1kQkiFxi4zOvUYMlTJAuai27bpo
- Kq2VdUlkiPf6Oi+8WnpUvNMLfd/g83c/bmaLxqDBz6LXCMAXN7/nA2vtiewN7jroXXMrrlKWU
- 6qKJ0aLrR2BJjHBJIexlcOObNBfXd+2++rRPKwioY212tILPGvGqu9Hvqx5j+4jLqPMHGJ4a1
- imSsoTYA+ZUUK4Od9fSud/iMlgMZYcxjhYY22WLzlt8+LGsmo/GPffXRqiPQkI2zfeoeo/7uf
- BHcwf3zctkNj2XYpF0USG63EQ06BN4ge45kNGwQQLbESZrtmKTEewIN7sIndIRcuPUUk3HQ/d
- G7ro8PZqv/WW+gM2J69CMmS0PrQS6ygb2nSfTnm+PIISrV0j5LcpYnqsFNOJxcoJtTIwhLRM2
- zR09krgb/wvVNE+CRk1kQEMPlIKGakL2fVnizmVrbtuegxobHUSbiQJSDLZFOWXXLMEkobkqS
- jqzbCamqYqk5g+QjKP6m2L4ILTy6cbbsqZLrz+HRuDyJVcJB+RoTBXtjN2vgdqqr+sKwY+Fv3
- 7BEoBXYrBDM2w4SVVYg6nK+eKD98QuA25/fVT7z1/TlpV+cSbxTNxbYjfzfN3fPjFeFKLIXsU
- +f7AHf2Zq1WIppLVCK4Gy52BsKbL5BqG7F+RYqdMiaqYahjZqoG5tT80knkSFtEvl/DyI4Zo1
- 8UwoQIIU0KqaEgsxC5Ek9dmABL6sGLzYiWcggpxLMLfsgVjoY4RiaPrwE9HV15zfunZh5OdIZ
- ll2fEYENuh4jtLPqw
+        id S2388045AbgEXTvu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 24 May 2020 15:51:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41604 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388029AbgEXTvt (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Sun, 24 May 2020 15:51:49 -0400
+Received: from mxa2.seznam.cz (mxa2.seznam.cz [IPv6:2a02:598:2::90])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19474C061A0E
+        for <linux-btrfs@vger.kernel.org>; Sun, 24 May 2020 12:51:48 -0700 (PDT)
+Received: from email.seznam.cz
+        by email-smtpc28b.ng.seznam.cz (email-smtpc28b.ng.seznam.cz [10.23.18.41])
+        id 3152b8e44ba6d2353152ba93;
+        Sun, 24 May 2020 21:51:45 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=seznam.cz; s=beta;
+        t=1590349905; bh=QBYO9lN21p/vd4k4XolwPwiFU3F4WFKBugiZ9lPOgZE=;
+        h=Received:Message-ID:Subject:From:To:Date:In-Reply-To:References:
+         Content-Type:X-Mailer:Mime-Version:Content-Transfer-Encoding;
+        b=AUdqUi3GBFPLc3sASk3dM/qD4KewsDgSfff2HsHyX/QMly2pAKFvL55ZMollF2v74
+         Cv/IJXKpWamU+phR+/GCO0EJZNhf9Z6dL7XVMfO59X7P6AulgPA+TFaR1bYoAHP0nG
+         Z9tAbF6vOl/e0BvPE+I+F40eG+4XS/afC8tkdVB0=
+Received: from lisicky.cdnet.czf (82-150-191-10.client.rionet.cz [82.150.191.10])
+        by email-relay4.ng.seznam.cz (Seznam SMTPD 1.3.114) with ESMTP;
+        Sun, 24 May 2020 21:51:39 +0200 (CEST)  
+Message-ID: <4a07e00332bfdcd4ca666724c5c1fabc8ba402f0.camel@seznam.cz>
+Subject: Re: I can't mount image
+From:   =?UTF-8?Q?Ji=C5=99=C3=AD_Lisick=C3=BD?= <jiri_lisicky@seznam.cz>
+To:     Chris Murphy <lists@colorremedies.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Date:   Sun, 24 May 2020 21:51:38 +0200
+In-Reply-To: <CAJCQCtQmTan=rrRJ2ALM25DnUt05Xdsuae9GR88L5mB=OR+QVA@mail.gmail.com>
+References: <1e6bc0e299901f90613550570446777fbccdc21e.camel@seznam.cz>
+         <CAJCQCtSWX0J69SokSOgAhdcQ6qkKHfaPVhbF4anjCtVFACOVnQ@mail.gmail.com>
+         <139f40a70cf37da2fef682c5c3d660671d8af88d.camel@seznam.cz>
+         <CAJCQCtQXBphGneiHJT_O7VHgZkfqfHaxmkAwFEzGPXY5E7U_cA@mail.gmail.com>
+         <3bc39223e567b7a4eca13bc554c74ef0c36fbaf2.camel@seznam.cz>
+         <CAJCQCtQmTan=rrRJ2ALM25DnUt05Xdsuae9GR88L5mB=OR+QVA@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5 (3.28.5-8.el7) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---3P8t7GhHwFtOx5gatGVsnOxG64oMwOVSb
-Content-Type: multipart/mixed; boundary="EHvios2tIeUwFhDpuvIoxBJojqeJUVEDU"
-
---EHvios2tIeUwFhDpuvIoxBJojqeJUVEDU
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-
-
-
-On 2020/5/24 =E4=B8=8B=E5=8D=888:10, Pierre Abbat wrote:
-> On Sunday, May 24, 2020 5:24:19 AM EDT Qu Wenruo wrote:
->>
->> Didn't get the image.
->>
->> Maybe it's blocked by the mail list filter?
+Chris Murphy p=C3=AD=C5=A1e v So 23. 05. 2020 v 17:21 -0600:
+> On Sat, May 23, 2020 at 8:38 AM Ji=C5=99=C3=AD Lisick=C3=BD <jiri_lisicky=
+@seznam.cz> wrote:
+> >=20
+> > [root@localhost-live tmp] # btrfs rescue super -v /dev/loop4
+> > All Devices:
+> >         Device: id =3D 1, name =3D /dev/loop4
+> >=20
+> > Before Recovering:
+> >         [All good supers]:
+> >                 device name =3D /dev/loop4
+> >                 superblock bytenr =3D 65536
+> >=20
+> >                 device name =3D /dev/loop4
+> >                 superblock bytenr =3D 67108864
+> >=20
+> >         [All bad supers]:
+> >=20
+> > All supers are valid, no need to recover
 >=20
-> You (not the list) should have gotten an email from wetransfer.com at 6=
-:43=20
-> UTC. The file is 165 megabytes, which is too big to send by email.
-
-I guess the gmx, nor may wqu@suse.com/wqu@suse.cz is able to receive
-such large attachment.
-
-Would you mind to submit it locations like google drive with password
-protection?
-
-Thanks,
-Qu
+> OK. So they're good.
 >=20
-> Pierre
+> >=20
+> >=20
+> >=20
+> > [root@localhost-live tmp]# mount -o ro,recovery /dev/loop4 ./mnt
+> > mount: /home/jirka/tmp/mnt: can't read superblock on /dev/loop4.
 >=20
+>=20
+> But it can't be read? This doesn't make sense. What kernel messages
+> are reported at the time of the mount attempt? When using a newer
+> kernel, the recovery command is deprecated but should still work. The
+> new command is 'usebackuproot'
+
+[root@localhost-live tmp]# mount -o usebackuproot /dev/loop4 ./mnt
+mount: /home/jirka/tmp/mnt: can't read superblock on /dev/loop4.
+
+log:
+May 24 15:33:56 localhost-live kernel: BTRFS info (device loop4): trying to=
+ use backup root at mount time
+May 24 15:33:56 localhost-live kernel: BTRFS info (device loop4): disk spac=
+e caching is enabled
+May 24 15:33:56 localhost-live kernel: BTRFS critical (device loop4): corru=
+pt leaf: root=3D1 block=3D48295936 slot=3D2, invalid root item size, have 2=
+39 expect 439
+May 24 15:33:56 localhost-live kernel: BTRFS critical (device loop4): corru=
+pt leaf: root=3D1 block=3D48295936 slot=3D5, invalid root item size, have 2=
+39 expect 439
+May 24 15:33:56 localhost-live kernel: BTRFS critical (device loop4): corru=
+pt leaf: root=3D1 block=3D48295936 slot=3D7, invalid root item size, have 2=
+39 expect 439
+May 24 15:33:56 localhost-live kernel: BTRFS warning (device loop4): mismat=
+ching generation and generation_v2 found in root item. This root was probab=
+ly mounted with an older kernel. Resetting all new fields.
+May 24 15:33:56 localhost-live kernel: BTRFS warning (device loop4): mismat=
+ching generation and generation_v2 found in root item. This root was probab=
+ly mounted with an older kernel. Resetting all new fields.
+May 24 15:33:56 localhost-live kernel: BTRFS error (device loop4): qgroup g=
+eneration mismatch, marked as inconsistent
+May 24 15:33:56 localhost-live kernel: BTRFS info (device loop4): start tre=
+e-log replay
+May 24 15:33:56 localhost-live kernel: BTRFS critical (device loop4): corru=
+pt leaf: root=3D18446744073709551610 block=3D94920704 slot=3D0, invalid roo=
+t item size, have 239 expect 439
+May 24 15:33:56 localhost-live kernel: ------------[ cut here ]------------
+May 24 15:33:56 localhost-live kernel: btrfs bad mapping eb start 94920704 =
+len 4096, wanted 3857 439
+May 24 15:33:56 localhost-live kernel: WARNING: CPU: 1 PID: 174 at fs/btrfs=
+/extent_io.c:5549 read_extent_buffer+0x10f/0x140 [btrfs]
+May 24 15:33:56 localhost-live kernel: Modules linked in: nft_fib_inet nft_=
+fib_ipv4 nft_fib_ipv6 nft_fib nft_reject_inet nf_reject_ipv4 nf_reject_ipv6=
+ nft_reject nft_ct nf_tables_set nft_chain_nat ip6table_nat ip6table_mangle=
+ ip6table_raw ip6table_security iptable_nat nf_nat nf_conntrack nf_defrag_i=
+pv6 nf_defrag_ipv4 iptable_mangle iptable_raw iptable_security ip_set nf_ta=
+bles nfnetlink ip6table_filter ip6_tables iptable_filter snd_hda_codec_hdmi=
+ snd_hda_codec_realtek snd_hda_codec_generic ledtrig_audio intel_rapl_msr i=
+ntel_rapl_common x86_pkg_temp_thermal snd_hda_intel intel_powerclamp snd_in=
+tel_dspcfg snd_hda_codec coretemp i915 snd_hda_core kvm_intel snd_hwdep snd=
+_seq kvm snd_seq_device joydev snd_pcm irqbypass intel_cstate intel_uncore =
+snd_timer intel_rapl_perf snd cec ppdev iTCO_wdt hp_wmi mei_hdcp iTCO_vendo=
+r_support mei_wdt parport_pc sparse_keymap soundcore parport rfkill i2c_alg=
+o_bit wmi_bmof drm_kms_helper mei_me tpm_infineon mei i2c_i801 lpc_ich pcsp=
+kr drm ip_tables nls_utf8 isofs squashfs dm_multipath
+May 24 15:33:56 localhost-live kernel:  8021q garp mrp stp llc crct10dif_pc=
+lmul crc32_pclmul e1000e ghash_clmulni_intel serio_raw wmi video btrfs blak=
+e2b_generic xor zstd_compress raid6_pq libcrc32c crc32c_intel zstd_decompre=
+ss sunrpc be2iscsi bnx2i cnic uio cxgb4i cxgb4 cxgb3i cxgb3 mdio libcxgbi l=
+ibcxgb qla4xxx iscsi_boot_sysfs iscsi_tcp libiscsi_tcp libiscsi loop fuse s=
+csi_transport_iscsi
+May 24 15:33:56 localhost-live kernel: CPU: 1 PID: 174 Comm: kworker/u8:3 N=
+ot tainted 5.6.6-300.fc32.x86_64 #1
+May 24 15:33:56 localhost-live kernel: Hardware name: Hewlett-Packard HP Co=
+mpaq Elite 8300 SFF/3397, BIOS K01 v02.05 05/07/2012
+May 24 15:33:56 localhost-live kernel: Workqueue: btrfs-endio-meta btrfs_wo=
+rk_helper [btrfs]
+May 24 15:33:56 localhost-live kernel: RIP: 0010:read_extent_buffer+0x10f/0=
+x140 [btrfs]
+May 24 15:33:56 localhost-live kernel: Code: c3 8b 0e 89 4d 00 89 c1 8b 74 =
+0e fc 89 74 0d fc e9 72 ff ff ff 48 89 d1 4d 89 e0 4c 89 ca 48 c7 c7 e0 91 =
+4d c0 e8 38 a4 c8 f9 <0f> 0b 31 f6 4c 89 e2 48 89 ef 5d 41 5c e9 bf 31 5d f=
+a 89 c1 0f b7
+May 24 15:33:56 localhost-live kernel: RSP: 0018:ffffb49dc026ba40 EFLAGS: 0=
+0010286
+May 24 15:33:56 localhost-live kernel: RAX: 000000000000003d RBX: ffff9a370=
+48b0000 RCX: 0000000000000007
+May 24 15:33:56 localhost-live kernel: RDX: 00000000fffffff8 RSI: 000000000=
+0000082 RDI: ffff9a37d6a99cc0
+May 24 15:33:56 localhost-live kernel: RBP: ffffb49dc026ba59 R08: 000000000=
+0000422 R09: ffffb49dc026b8d0
+May 24 15:33:56 localhost-live kernel: R10: 0000000000000005 R11: 000000000=
+0000000 R12: 00000000000001b7
+May 24 15:33:56 localhost-live kernel: R13: 0000000000000065 R14: ffff9a370=
+570f5a8 R15: 0000000000000f9b
+May 24 15:33:56 localhost-live kernel: FS:  0000000000000000(0000) GS:ffff9=
+a37d6a80000(0000) knlGS:0000000000000000
+May 24 15:33:56 localhost-live kernel: CS:  0010 DS: 0000 ES: 0000 CR0: 000=
+0000080050033
+May 24 15:33:56 localhost-live kernel: CR2: 00007ffb02c1f2b8 CR3: 00000000a=
+960a005 CR4: 00000000000606e0
+May 24 15:33:56 localhost-live kernel: Call Trace:
+May 24 15:33:56 localhost-live kernel:  check_root_item+0x8b/0x180 [btrfs]
+May 24 15:33:56 localhost-live kernel:  ? crc_42+0x1e/0x1e [crc32c_intel]
+May 24 15:33:56 localhost-live kernel:  ? crc32c_pcl_intel_update+0xa4/0xb0=
+ [crc32c_intel]
+May 24 15:33:56 localhost-live kernel:  ? crc32c_intel_init+0x20/0x20 [crc3=
+2c_intel]
+May 24 15:33:56 localhost-live kernel:  ? csum_tree_block+0x11f/0x130 [btrf=
+s]
+May 24 15:33:56 localhost-live kernel:  ? intel_cpufreq_target+0x140/0x140
+May 24 15:33:56 localhost-live kernel:  ? update_load_avg+0x7a/0x640
+May 24 15:33:56 localhost-live kernel:  ? intel_cpufreq_target+0x140/0x140
+May 24 15:33:56 localhost-live kernel:  ? enqueue_entity+0x177/0x770
+May 24 15:33:56 localhost-live kernel:  ? btrfs_get_32+0x38/0x80 [btrfs]
+May 24 15:33:56 localhost-live kernel:  check_leaf+0x489/0x1530 [btrfs]
+May 24 15:33:56 localhost-live kernel:  ? clear_state_bit+0x140/0x1a0 [btrf=
+s]
+May 24 15:33:56 localhost-live kernel:  ? map_private_extent_buffer+0xd0/0x=
+d0 [btrfs]
+May 24 15:33:56 localhost-live kernel:  btree_readpage_end_io_hook+0x2de/0x=
+320 [btrfs]
+May 24 15:33:56 localhost-live kernel:  end_bio_extent_readpage+0x1c0/0x710=
+ [btrfs]
+May 24 15:33:56 localhost-live kernel:  ? __rq_qos_done_bio+0x24/0x30
+May 24 15:33:56 localhost-live kernel:  end_workqueue_fn+0x29/0x40 [btrfs]
+May 24 15:33:56 localhost-live kernel:  btrfs_work_helper+0xd6/0x3a0 [btrfs=
+]
+May 24 15:33:56 localhost-live kernel:  process_one_work+0x1b4/0x380
+May 24 15:33:56 localhost-live kernel:  worker_thread+0x53/0x3e0
+May 24 15:33:56 localhost-live kernel:  ? process_one_work+0x380/0x380
+May 24 15:33:56 localhost-live kernel:  kthread+0x115/0x140
+May 24 15:33:56 localhost-live kernel:  ? __kthread_bind_mask+0x60/0x60
+May 24 15:33:56 localhost-live kernel:  ret_from_fork+0x35/0x40
+May 24 15:33:56 localhost-live kernel: ---[ end trace 013462e0cfd87fc0 ]---
+May 24 15:33:56 localhost-live kernel: BTRFS critical (device loop4): corru=
+pt leaf: root=3D18446744073709551610 block=3D94920704 slot=3D1, invalid roo=
+t item size, have 239 expect 439
+May 24 15:33:56 localhost-live kernel: BTRFS error (device loop4): parent t=
+ransid verify failed on 94920704 wanted 2727500 found 2727499
+May 24 15:33:56 localhost-live kernel: BTRFS critical (device loop4): corru=
+pt leaf: root=3D18446744073709551610 block=3D94920704 slot=3D0, invalid roo=
+t item size, have 239 expect 439
+May 24 15:33:56 localhost-live kernel: ------------[ cut here ]------------
+May 24 15:33:56 localhost-live kernel: btrfs bad mapping eb start 94920704 =
+len 4096, wanted 3857 439
+May 24 15:33:56 localhost-live kernel: WARNING: CPU: 1 PID: 174 at fs/btrfs=
+/extent_io.c:5549 read_extent_buffer+0x10f/0x140 [btrfs]
+May 24 15:33:56 localhost-live kernel: Modules linked in: nft_fib_inet nft_=
+fib_ipv4 nft_fib_ipv6 nft_fib nft_reject_inet nf_reject_ipv4 nf_reject_ipv6=
+ nft_reject nft_ct nf_tables_set nft_chain_nat ip6table_nat ip6table_mangle=
+ ip6table_raw ip6table_security iptable_nat nf_nat nf_conntrack nf_defrag_i=
+pv6 nf_defrag_ipv4 iptable_mangle iptable_raw iptable_security ip_set nf_ta=
+bles nfnetlink ip6table_filter ip6_tables iptable_filter snd_hda_codec_hdmi=
+ snd_hda_codec_realtek snd_hda_codec_generic ledtrig_audio intel_rapl_msr i=
+ntel_rapl_common x86_pkg_temp_thermal snd_hda_intel intel_powerclamp snd_in=
+tel_dspcfg snd_hda_codec coretemp i915 snd_hda_core kvm_intel snd_hwdep snd=
+_seq kvm snd_seq_device joydev snd_pcm irqbypass intel_cstate intel_uncore =
+snd_timer intel_rapl_perf snd cec ppdev iTCO_wdt hp_wmi mei_hdcp iTCO_vendo=
+r_support mei_wdt parport_pc sparse_keymap soundcore parport rfkill i2c_alg=
+o_bit wmi_bmof drm_kms_helper mei_me tpm_infineon mei i2c_i801 lpc_ich pcsp=
+kr drm ip_tables nls_utf8 isofs squashfs dm_multipath
+May 24 15:33:56 localhost-live kernel:  8021q garp mrp stp llc crct10dif_pc=
+lmul crc32_pclmul e1000e ghash_clmulni_intel serio_raw wmi video btrfs blak=
+e2b_generic xor zstd_compress raid6_pq libcrc32c crc32c_intel zstd_decompre=
+ss sunrpc be2iscsi bnx2i cnic uio cxgb4i cxgb4 cxgb3i cxgb3 mdio libcxgbi l=
+ibcxgb qla4xxx iscsi_boot_sysfs iscsi_tcp libiscsi_tcp libiscsi loop fuse s=
+csi_transport_iscsi
+May 24 15:33:56 localhost-live kernel: CPU: 1 PID: 174 Comm: kworker/u8:3 T=
+ainted: G        W         5.6.6-300.fc32.x86_64 #1
+May 24 15:33:56 localhost-live kernel: Hardware name: Hewlett-Packard HP Co=
+mpaq Elite 8300 SFF/3397, BIOS K01 v02.05 05/07/2012
+May 24 15:33:56 localhost-live kernel: Workqueue: btrfs-endio-meta btrfs_wo=
+rk_helper [btrfs]
+May 24 15:33:56 localhost-live kernel: RIP: 0010:read_extent_buffer+0x10f/0=
+x140 [btrfs]
+May 24 15:33:56 localhost-live kernel: Code: c3 8b 0e 89 4d 00 89 c1 8b 74 =
+0e fc 89 74 0d fc e9 72 ff ff ff 48 89 d1 4d 89 e0 4c 89 ca 48 c7 c7 e0 91 =
+4d c0 e8 38 a4 c8 f9 <0f> 0b 31 f6 4c 89 e2 48 89 ef 5d 41 5c e9 bf 31 5d f=
+a 89 c1 0f b7
+May 24 15:33:56 localhost-live kernel: RSP: 0018:ffffb49dc026ba40 EFLAGS: 0=
+0010286
+May 24 15:33:56 localhost-live kernel: RAX: 000000000000003d RBX: ffff9a370=
+48b0000 RCX: 0000000000000007
+May 24 15:33:56 localhost-live kernel: RDX: 00000000fffffff8 RSI: 000000000=
+0000082 RDI: ffff9a37d6a99cc0
+May 24 15:33:56 localhost-live kernel: RBP: ffffb49dc026ba59 R08: 000000000=
+0000452 R09: ffffb49dc026b8d0
+May 24 15:33:56 localhost-live kernel: R10: 0000000000000005 R11: 000000000=
+0000000 R12: 00000000000001b7
+May 24 15:33:56 localhost-live kernel: R13: 0000000000000065 R14: ffff9a370=
+570f5a8 R15: 0000000000000f9b
+May 24 15:33:56 localhost-live kernel: FS:  0000000000000000(0000) GS:ffff9=
+a37d6a80000(0000) knlGS:0000000000000000
+May 24 15:33:56 localhost-live kernel: CS:  0010 DS: 0000 ES: 0000 CR0: 000=
+0000080050033
+May 24 15:33:56 localhost-live kernel: CR2: 00007ffb02c13700 CR3: 00000000a=
+960a005 CR4: 00000000000606e0
+May 24 15:33:56 localhost-live kernel: Call Trace:
+May 24 15:33:56 localhost-live kernel:  check_root_item+0x8b/0x180 [btrfs]
+May 24 15:33:56 localhost-live kernel:  ? __find_get_block+0xb6/0x2f0
+May 24 15:33:56 localhost-live kernel:  ? crc_42+0x1e/0x1e [crc32c_intel]
+May 24 15:33:56 localhost-live kernel:  ? crc32c_pcl_intel_update+0xa4/0xb0=
+ [crc32c_intel]
+May 24 15:33:56 localhost-live kernel:  ? crc32c_intel_init+0x20/0x20 [crc3=
+2c_intel]
+May 24 15:33:56 localhost-live kernel:  ? csum_tree_block+0x11f/0x130 [btrf=
+s]
+May 24 15:33:56 localhost-live kernel:  ? ext4_mark_iloc_dirty+0x61f/0x830
+May 24 15:33:56 localhost-live kernel:  ? intel_cpufreq_target+0x140/0x140
+May 24 15:33:56 localhost-live kernel:  ? btrfs_get_32+0x38/0x80 [btrfs]
+May 24 15:33:56 localhost-live kernel:  check_leaf+0x489/0x1530 [btrfs]
+May 24 15:33:56 localhost-live kernel:  ? check_preempt_curr+0x7e/0x90
+May 24 15:33:56 localhost-live kernel:  ? ttwu_do_wakeup+0x19/0x140
+May 24 15:33:56 localhost-live kernel:  ? map_private_extent_buffer+0xd0/0x=
+d0 [btrfs]
+May 24 15:33:56 localhost-live kernel:  btree_readpage_end_io_hook+0x2de/0x=
+320 [btrfs]
+May 24 15:33:56 localhost-live kernel:  end_bio_extent_readpage+0x1c0/0x710=
+ [btrfs]
+May 24 15:33:56 localhost-live kernel:  ? __rq_qos_done_bio+0x24/0x30
+May 24 15:33:56 localhost-live kernel:  end_workqueue_fn+0x29/0x40 [btrfs]
+May 24 15:33:56 localhost-live kernel:  btrfs_work_helper+0xd6/0x3a0 [btrfs=
+]
+May 24 15:33:56 localhost-live kernel:  process_one_work+0x1b4/0x380
+May 24 15:33:56 localhost-live kernel:  worker_thread+0x53/0x3e0
+May 24 15:33:56 localhost-live kernel:  ? process_one_work+0x380/0x380
+May 24 15:33:56 localhost-live kernel:  kthread+0x115/0x140
+May 24 15:33:56 localhost-live kernel:  ? __kthread_bind_ma33:56 localhost-=
+live kernel:  ret_from_fork+0x35/0x40
+May 24 15:33:56 localhost-live kernel: ---[ end trace 013462e0cfd87fc1 ]---
+May 24 15:33:56 localhost-live kernel: BTRFS critical (device loop4): corru=
+pt leaf: root=3D18446744073709551610 block=3D94920704 slot=3D1, invalid roo=
+t item size, have 239 expect 439
+May 24 15:33:56 localhost-live kernel: BTRFS error (device loop4): parent t=
+ransid verify failed on 94920704 wanted 2727500 found 2727499
+May 24 15:33:56 localhost-live kernel: BTRFS warning (device loop4): failed=
+ to read log tree
+May 24 15:33:57 localhost-live kernel: BTRFS error (device loop4): open_ctr=
+ee failed
+
+> What do you get for:
+>=20
+> # btrfs insp dump-s -fa /dev/
+>=20
+[root@localhost-live tmp]# btrfs insp dump-s -fa /dev/loop4
+superblock: bytenr=3D65536, device=3D/dev/loop4
+---------------------------------------------------------
+csum_type		0 (crc32c)
+csum_size		4
+csum			0xdc2c003a [match]
+bytenr			65536
+flags			0x1
+			( WRITTEN )
+magic			_BHRfS_M [match]
+fsid			86180ca0-d351-4551-b262-22b49e1adf47
+metadata_uuid		86180ca0-d351-4551-b262-22b49e1adf47
+label			sailfish
+generation		2727499
+root			30703616
+sys_array_size		226
+chunk_root_generation	2342945
+root_level		1
+chunk_root		20971520
+chunk_root_level	0
+log_root		94920704
+log_root_transid	0
+log_root_level		0
+total_bytes		14761832448
+bytes_used		5075300352
+sectorsize		4096
+nodesize		4096
+leafsize (deprecated)	4096
+stripesize		4096
+root_dir		6
+num_devices		1
+compat_flags		0x0
+compat_ro_flags		0x0
+incompat_flags		0x3
+			( MIXED_BACKREF |
+			  DEFAULT_SUBVOL )
+cache_generation	2727498
+uuid_tree_generation	0
+dev_item.uuid		bb3ff90e-e471-48d6-af4e-add19a0a532d
+dev_item.fsid		86180ca0-d351-4551-b262-22b49e1adf47 [match]
+dev_item.type		0
+dev_item.total_bytes	14761832448
+dev_item.bytes_used	14761787392
+dev_item.io_align	4096
+dev_item.io_width	4096
+dev_item.sector_size	4096
+dev_item.devid		1
+dev_item.dev_group	0
+dev_item.seek_speed	0
+dev_item.bandwidth	0
+dev_item.generation	0
+sys_chunk_array[2048]:
+	item 0 key (FIRST_CHUNK_TREE CHUNK_ITEM 0)
+		length 4194304 owner 2 stripe_len 65536 type SYSTEM
+		io_align 4096 io_width 4096 sector_size 4096
+		num_stripes 1 sub_stripes 0
+			stripe 0 devid 1 offset 0
+			dev_uuid bb3ff90e-e471-48d6-af4e-add19a0a532d
+	item 1 key (FIRST_CHUNK_TREE CHUNK_ITEM 20971520)
+		length 8388608 owner 2 stripe_len 65536 type SYSTEM|DUP
+		io_align 65536 io_width 65536 sector_size 4096
+		num_stripes 2 sub_stripes 0
+			stripe 0 devid 1 offset 20971520
+			dev_uuid bb3ff90e-e471-48d6-af4e-add19a0a532d
+			stripe 1 devid 1 offset 29360128
+			dev_uuid bb3ff90e-e471-48d6-af4e-add19a0a532d
+backup_roots[4]:
+	backup 0:
+		backup_tree_root:	114339840	gen: 2727497	level: 1
+		backup_chunk_root:	20971520	gen: 2342945	level: 0
+		backup_extent_root:	117129216	gen: 2727498	level: 2
+		backup_fs_root:		88788992	gen: 1765467	level: 0
+		backup_dev_root:	49008640	gen: 2727493	level: 0
+		backup_csum_root:	116412416	gen: 2727498	level: 2
+		backup_total_bytes:	14761832448
+		backup_bytes_used:	5075410944
+		backup_num_devices:	1
+
+	backup 1:
+		backup_tree_root:	48250880	gen: 2727498	level: 1
+		backup_chunk_root:	20971520	gen: 2342945	level: 0
+		backup_extent_root:	89980928	gen: 2727499	level: 2
+		backup_fs_root:		88788992	gen: 1765467	level: 0
+		backup_dev_root:	49008640	gen: 2727493	level: 0
+		backup_csum_root:	89243648	gen: 2727499	level: 2
+		backup_total_bytes:	14761832448
+		backup_bytes_used:	5075365888
+		backup_num_devices:	1
+
+	backup 2:
+		backup_tree_root:	90173440	gen: 2727495	level: 1
+		backup_chunk_root:	20971520	gen: 2342945	level: 0
+		backup_extent_root:	84922368	gen: 2727495	level: 2
+		backup_fs_root:		88788992	gen: 1765467	level: 0
+		backup_dev_root:	49008640	gen: 2727493	level: 0
+		backup_csum_root:	94969856	gen: 2727496	level: 2
+		backup_total_bytes:	14761832448
+		backup_bytes_used:	5075275776
+		backup_num_devices:	1
+
+	backup 3:
+		backup_tree_root:	102043648	gen: 2727496	level: 1
+		backup_chunk_root:	20971520	gen: 2342945	level: 0
+		backup_extent_root:	98189312	gen: 2727496	level: 2
+		backup_fs_root:		88788992	gen: 1765467	level: 0
+		backup_dev_root:	49008640	gen: 2727493	level: 0
+		backup_csum_root:	97951744	gen: 2727496	level: 2
+		backup_total_bytes:	14761832448
+		backup_bytes_used:	5075275776
+		backup_num_devices:	1
 
 
---EHvios2tIeUwFhDpuvIoxBJojqeJUVEDU--
+superblock: bytenr=3D67108864, device=3D/dev/loop4
+---------------------------------------------------------
+csum_type		0 (crc32c)
+csum_size		4
+csum			0x7c4d28f4 [match]
+bytenr			67108864
+flags			0x1
+			( WRITTEN )
+magic			_BHRfS_M [match]
+fsid			86180ca0-d351-4551-b262-22b49e1adf47
+metadata_uuid		86180ca0-d351-4551-b262-22b49e1adf47
+label			sailfish
+generation		2727499
+root			30703616
+sys_array_size		226
+chunk_root_generation	2342945
+root_level		1
+chunk_root		20971520
+chunk_root_level	0
+log_root		94920704
+log_root_transid	0
+log_root_level		0
+total_bytes		14761832448
+bytes_used		5075300352
+sectorsize		4096
+nodesize		4096
+leafsize (deprecated)	4096
+stripesize		4096
+root_dir		6
+num_devices		1
+compat_flags		0x0
+compat_ro_flags		0x0
+incompat_flags		0x3
+			( MIXED_BACKREF |
+			  DEFAULT_SUBVOL )
+cache_generation	2727498
+uuid_tree_generation	0
+dev_item.uuid		bb3ff90e-e471-48d6-af4e-add19a0a532d
+dev_item.fsid		86180ca0-d351-4551-b262-22b49e1adf47 [match]
+dev_item.type		0
+dev_item.total_bytes	14761832448
+dev_item.bytes_used	14761787392
+dev_item.io_align	4096
+dev_item.io_width	4096
+dev_item.sector_size	4096
+dev_item.devid		1
+dev_item.dev_group	0
+dev_item.seek_speed	0
+dev_item.bandwidth	0
+dev_item.generation	0
+sys_chunk_array[2048]:
+	item 0 key (FIRST_CHUNK_TREE CHUNK_ITEM 0)
+		length 4194304 owner 2 stripe_len 65536 type SYSTEM
+		io_align 4096 io_width 4096 sector_size 4096
+		num_stripes 1 sub_stripes 0
+			stripe 0 devid 1 offset 0
+			dev_uuid bb3ff90e-e471-48d6-af4e-add19a0a532d
+	item 1 key (FIRST_CHUNK_TREE CHUNK_ITEM 20971520)
+		length 8388608 owner 2 stripe_len 65536 type SYSTEM|DUP
+		io_align 65536 io_width 65536 sector_size 4096
+		num_stripes 2 sub_stripes 0
+			stripe 0 devid 1 offset 20971520
+			dev_uuid bb3ff90e-e471-48d6-af4e-add19a0a532d
+			stripe 1 devid 1 offset 29360128
+			dev_uuid bb3ff90e-e471-48d6-af4e-add19a0a532d
+backup_roots[4]:
+	backup 0:
+		backup_tree_root:	114339840	gen: 2727497	level: 1
+		backup_chunk_root:	20971520	gen: 2342945	level: 0
+		backup_extent_root:	117129216	gen: 2727498	level: 2
+		backup_fs_root:		88788992	gen: 1765467	level: 0
+		backup_dev_root:	49008640	gen: 2727493	level: 0
+		backup_csum_root:	116412416	gen: 2727498	level: 2
+		backup_total_bytes:	14761832448
+		backup_bytes_used:	5075410944
+		backup_num_devices:	1
 
---3P8t7GhHwFtOx5gatGVsnOxG64oMwOVSb
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+	backup 1:
+		backup_tree_root:	48250880	gen: 2727498	level: 1
+		backup_chunk_root:	20971520	gen: 2342945	level: 0
+		backup_extent_root:	89980928	gen: 2727499	level: 2
+		backup_fs_root:		88788992	gen: 1765467	level: 0
+		backup_dev_root:	49008640	gen: 2727493	level: 0
+		backup_csum_root:	89243648	gen: 2727499	level: 2
+		backup_total_bytes:	14761832448
+		backup_bytes_used:	5075365888
+		backup_num_devices:	1
 
------BEGIN PGP SIGNATURE-----
+	backup 2:
+		backup_tree_root:	90173440	gen: 2727495	level: 1
+		backup_chunk_root:	20971520	gen: 2342945	level: 0
+		backup_extent_root:	84922368	gen: 2727495	level: 2
+		backup_fs_root:		88788992	gen: 1765467	level: 0
+		backup_dev_root:	49008640	gen: 2727493	level: 0
+		backup_csum_root:	94969856	gen: 2727496	level: 2
+		backup_total_bytes:	14761832448
+		backup_bytes_used:	5075275776
+		backup_num_devices:	1
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl7KaVsACgkQwj2R86El
-/qho/Qf/akXsKn2zJ7UPF8xHlq/TYeLBZlJI7jKyBj80VjWpuVkSCgji3yewOv01
-tUO5UFFinbLkdqq2aySa1ea/UwyrxGJBI7voBXW2C5lS0dt27cdYt3QOX1LV1acb
-K5MBDQBloJSNY4Yx4bHZIi05Y7Lub/O4lcUxPNcQfdD0NWBlLciVzEsM3Cb6/pWS
-XKsoCB6f4S9j526t8oghUt5G9i1YgmqmRMr9fQhhJjbFuYlKcNNQkFOAlBqQeGo2
-dqddr6hsZD97UeyKv4GTpl52jvN9nwWXR4TxxCQBxaHGB28Bd2BbE4+fK+hK2kDv
-2Z5pH9QZoHJP2aaaleGnwaC6eNVUrQ==
-=3laM
------END PGP SIGNATURE-----
+	backup 3:
+		backup_tree_root:	102043648	gen: 2727496	level: 1
+		backup_chunk_root:	20971520	gen: 2342945	level: 0
+		backup_extent_root:	98189312	gen: 2727496	level: 2
+		backup_fs_root:		88788992	gen: 1765467	level: 0
+		backup_dev_root:	49008640	gen: 2727493	level: 0
+		backup_csum_root:	97951744	gen: 2727496	level: 2
+		backup_total_bytes:	14761832448
+		backup_bytes_used:	5075275776
+		backup_num_devices:	1
 
---3P8t7GhHwFtOx5gatGVsnOxG64oMwOVSb--
+
