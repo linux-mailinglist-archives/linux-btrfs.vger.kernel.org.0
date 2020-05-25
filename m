@@ -2,65 +2,59 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDA2A1E0F7D
-	for <lists+linux-btrfs@lfdr.de>; Mon, 25 May 2020 15:28:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 509501E0FD5
+	for <lists+linux-btrfs@lfdr.de>; Mon, 25 May 2020 15:50:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390790AbgEYN2c (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 25 May 2020 09:28:32 -0400
-Received: from mx2.suse.de ([195.135.220.15]:53250 "EHLO mx2.suse.de"
+        id S2403914AbgEYNux (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 25 May 2020 09:50:53 -0400
+Received: from mx2.suse.de ([195.135.220.15]:34856 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388737AbgEYN2c (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 25 May 2020 09:28:32 -0400
+        id S2403912AbgEYNux (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 25 May 2020 09:50:53 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 3386CABC2;
-        Mon, 25 May 2020 13:28:34 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id F3014B027;
+        Mon, 25 May 2020 13:50:54 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id BF892DA728; Mon, 25 May 2020 15:27:34 +0200 (CEST)
-Date:   Mon, 25 May 2020 15:27:34 +0200
+        id 908F1DA728; Mon, 25 May 2020 15:49:55 +0200 (CEST)
+Date:   Mon, 25 May 2020 15:49:55 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Goffredo Baroncelli <kreijack@libero.it>
+To:     Qu Wenruo <wqu@suse.com>
 Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs-progs: add RAID5/6 support to btrfs fi us
-Message-ID: <20200525132734.GT18421@twin.jikos.cz>
+Subject: Re: [PATCH 0/2] btrfs-progs: check: Detect overlapping csum item
+Message-ID: <20200525134955.GU18421@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Goffredo Baroncelli <kreijack@libero.it>,
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
         linux-btrfs@vger.kernel.org
-References: <20200318211157.11090-1-kreijack@libero.it>
+References: <20200304072701.38403-1-wqu@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200318211157.11090-1-kreijack@libero.it>
+In-Reply-To: <20200304072701.38403-1-wqu@suse.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Mar 18, 2020 at 10:11:56PM +0100, Goffredo Baroncelli wrote:
-> this patch adds support for the raid5/6 profiles in the command
-> 'btrfs filesystem usage'.
+On Wed, Mar 04, 2020 at 03:26:59PM +0800, Qu Wenruo wrote:
+> There is one report about tree-checker rejecting overlapping csum item.
+
+Do you have link of the report?
+
+I think the bug has been fixed by "btrfs: fix corrupt log due to
+concurrent fsync of inodes with shared extents".
+
+> I haven't yet seen another report, thus the problem doesn't look
+> widespread, thus maybe some regression in older kernels.
 > 
-> Until now the problem was that the value r_{data,metadata}_used is not
-> easy to get for a RAID5/6, because it depends by the number of disks.
-> And in a filesystem it is possible to have several raid5/6 chunks with a
-> different number of disks.
+> At least let btrfs check to detect such problem.
+> If we had another report, I'll spending extra time for the repair
+> functionality (it's not that simple, as it involves a lot of csum item
+> operation, and unexpected overlapping range).
+> 
+> Qu Wenruo (2):
+>   btrfs-progs: check: Detect overlap csum items
+>   btrfs-progs: fsck-tests: Add test image for overlapping csum item
 
-I'd like to get the raid56 'fi du' fixed but the way you implement it
-seems to be a too big leap. I've tried to review this patch several
-times but always got the impression that reworking the calculations to
-make it work for some profiles will most likely break something else. It
-has happened in the past.
-
-So, let's start with the case where the filesystem does not have
-multiple profiles per block group type, eg. just raid5 for data and
-calculate that.
-
-If this also covers the raid56 case with different stripe counts, then
-good but as this is special case I won't mind addressing it separately.
-
-The general case of multiple profiles per type is probably an
-intermediate state of converting profiles, we can return something sane
-if possible or warn as what we have now.
-
-I'm fine if you say you're not going to implement that.
+Added to devel.
