@@ -2,101 +2,124 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FDFC1E1543
-	for <lists+linux-btrfs@lfdr.de>; Mon, 25 May 2020 22:40:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E84AD1E17EC
+	for <lists+linux-btrfs@lfdr.de>; Tue, 26 May 2020 00:47:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390414AbgEYUkE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 25 May 2020 16:40:04 -0400
-Received: from smtp-34.italiaonline.it ([213.209.10.34]:51495 "EHLO libero.it"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2389950AbgEYUkD (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 25 May 2020 16:40:03 -0400
-Received: from venice.bhome ([94.37.169.164])
-        by smtp-34.iol.local with ESMTPA
-        id dJtAjLkyUtrlwdJtAj8MJX; Mon, 25 May 2020 22:40:01 +0200
-x-libjamoibt: 1601
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2014;
-        t=1590439201; bh=rMKi23xcYQsoGd4XaTyy/E4EDQkbeKg165g0qcyvTC0=;
-        h=From;
-        b=tWDjJyyRmaQV8I9A6tOx3RBiWHP6+eH5tvn8Dji6++JT6uHvdKD6E/vAeBaoxPqLG
-         usYIPv9F5XhF+m//PpVtRmEjD0AFZeJP2A3G2XEullbWfB0/aOyLbbwRnLAJ5Ku9Q0
-         b92MFmSjG8tSrpEP+tHp7kWqT6KiT4++HoeuVhiOgKMvHxqDuzOAsrQsPHARe5bGV4
-         YAPvHaspNLs2CiHRc6DbZ7jAicFJA+HRDO4fsTtViillKGzfXKcTuEJzUc9YVYsn6W
-         anQg5NNXEnaCLAa7YAL2lM8/ulENOpx0M9WzkcgbFK+cSzEMVzKuFAD7ZV0Z9a3q2P
-         1RgCkvQnVtudw==
-X-CNFS-Analysis: v=2.3 cv=TOE7tGta c=1 sm=1 tr=0
- a=ZMZ8MMmEMFyyBR6AU47QNg==:117 a=ZMZ8MMmEMFyyBR6AU47QNg==:17
- a=IkcTkHD0fZMA:10 a=40O-eZYNRSQPSXI9VYIA:9 a=lT_7I3K7BEpWP4jG:21
- a=dog5HGTVdPGmN9ol:21 a=QEXdDO2ut3YA:10
-Reply-To: kreijack@inwind.it
-Subject: Re: [PATCH] btrfs-progs: add RAID5/6 support to btrfs fi us
-To:     dsterba@suse.cz, linux-btrfs@vger.kernel.org
-References: <20200318211157.11090-1-kreijack@libero.it>
- <20200525132734.GT18421@twin.jikos.cz>
-From:   Goffredo Baroncelli <kreijack@libero.it>
-Message-ID: <a1819577-dec1-6f99-65cd-4675c59695d6@libero.it>
-Date:   Mon, 25 May 2020 22:40:00 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S2388093AbgEYWrt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 25 May 2020 18:47:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40858 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729554AbgEYWrt (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 25 May 2020 18:47:49 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4458DC061A0E
+        for <linux-btrfs@vger.kernel.org>; Mon, 25 May 2020 15:47:49 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id x6so4919642wrm.13
+        for <linux-btrfs@vger.kernel.org>; Mon, 25 May 2020 15:47:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=IOPgJmKYSQAFEbVqqBHVC75KIoQJNmlm3TIJkAsErWY=;
+        b=aXXQ+8E/Ly6+/PA5+8mLz8bASoGtqi95Je7URWa9mR2mJ8URgAEPT70FfCeJJnKrIy
+         z1yez57l9PnDicXDerYXqqKi8mZI9iMbTI+495qMcG6C0CBMoIh7DkGUi1p7ZLK1B36z
+         +77fCirt1+2GC5CMiM//pVHKfI1X5znipb2L/CmWlE6pNc7ukJGUGUE9HIfCUGC5J1lJ
+         A+1bxPQq06VoLwmpjQ3mCHZrZnujPcfx8g692Nyonp0EIW4R6yESEKhifM6Hc1LmWUcg
+         FWK+ZnvnIB1tctgu1Ziegp/YI5dWLveYXM0rWB1PGaFy2VRzyxWZrQd1OxDO5REC5GEX
+         vV9g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=IOPgJmKYSQAFEbVqqBHVC75KIoQJNmlm3TIJkAsErWY=;
+        b=kBp0kgAGkuZKt9ShMGXnxtcRedZadvRHepwYSaNUOE06QsHNndmFKtx0Drx89qTeeh
+         ukvmWPGezXpktZd7Unu6M5dn07lfjuyZXidEGizPQQ9o4OngknYG+62m954i8qgbgYLe
+         s3HAOVA/AmMfqyQNJJuOOB/BgLyOTwhM4t9V7EvXu0otVDawBsxvhPK5JTpHEpK9CgSJ
+         YhM0qGqIqit2YrOJShhEfhScIRqv5BOPcwl/iAtSJom5Xzva/vYIlJdtqsFI194MA2fn
+         2fu9k6XLDgHwh6kS7JWGCVtJBti7zYFz9RalHYTfiK3qRDA66ySOwUGdZSkNx3XThRV5
+         l/Cg==
+X-Gm-Message-State: AOAM531Jm05S0VfAkduU1GG70imGmpifTkj0gf5dlxFT+pVprPAgMRDA
+        svsh/FwyzbR3eg3oqGqbQnCscFsN99NkqcMfQtOyVdgeDjATFg==
+X-Google-Smtp-Source: ABdhPJyHJW3Q3UarEVfNQnSPGE7Gg8UApDUuiM7a5cFB+3KZ0pssuosY9t0bu461oTbvpxhzbZg8391IqSkLtpYc5/k=
+X-Received: by 2002:a5d:4d4d:: with SMTP id a13mr8045942wru.252.1590446867770;
+ Mon, 25 May 2020 15:47:47 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200525132734.GT18421@twin.jikos.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4wfFiMTP8dX0kZ1RlGAMhS2dsTYK1dm0zNqqMbMmzEb90gThAcMAUiu4W0BLRWhbaeFCpRVwJ4wPCPquKDm/QeBTsYo7UvADFwq98/xFWsXPZ/ILgaJVV5
- buf9hIvZdZ+JAuMYyJC7VJv7TTzlavo7BUUiadfijo7ocfDIEX+XuiVX6T6+kqmbQgGqmMT0txEyckn8BbdUuVEQfeydIKJhU3Q=
+References: <20200524213059.GI23519@merlins.org> <CAJCQCtTWkRijC51qny+gLqFO=z-Jek4mbKN0O6udLKzzeNe_vw@mail.gmail.com>
+ <20200525201620.GA19850@merlins.org> <CAJCQCtSqdJnVCPQEEeE1W3ux48tWerQuu-2_rySUdYM7GZJR9Q@mail.gmail.com>
+ <20200525203916.GB19850@merlins.org>
+In-Reply-To: <20200525203916.GB19850@merlins.org>
+From:   Chris Murphy <lists@colorremedies.com>
+Date:   Mon, 25 May 2020 16:47:31 -0600
+Message-ID: <CAJCQCtQgeYE3XPFACru08qhSOTxv5N9icj4xV27rG81UeaVa=g@mail.gmail.com>
+Subject: Re: 5.5 kernel and btrfs-progs v5.6 create and cannot fix 'root
+ 204162 inode 14058737 errors 1000, some csum missing'
+To:     Marc MERLIN <marc@merlins.org>
+Cc:     Chris Murphy <lists@colorremedies.com>,
+        Su Yue <Damenly_Su@gmx.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
+        Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Su Yue <suy.fnst@cn.fujitsu.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 5/25/20 3:27 PM, David Sterba wrote:
-> On Wed, Mar 18, 2020 at 10:11:56PM +0100, Goffredo Baroncelli wrote:
->> this patch adds support for the raid5/6 profiles in the command
->> 'btrfs filesystem usage'.
->>
->> Until now the problem was that the value r_{data,metadata}_used is not
->> easy to get for a RAID5/6, because it depends by the number of disks.
->> And in a filesystem it is possible to have several raid5/6 chunks with a
->> different number of disks.
-> 
-> I'd like to get the raid56 'fi du' fixed but the way you implement it
-> seems to be a too big leap. I've tried to review this patch several
-> times but always got the impression that reworking the calculations to
-> make it work for some profiles will most likely break something else. It
-> has happened in the past.
+On Mon, May 25, 2020 at 2:39 PM Marc MERLIN <marc@merlins.org> wrote:
+>
+> On Mon, May 25, 2020 at 02:24:03PM -0600, Chris Murphy wrote:
+> > OK I didn't understand that the problem is with only the sending file
+> > system, not the receive file system. And also it sounds like the send
+> > did not cause the problem, but it's somehow a pre-existing problem
+> > that --repair isn't completely fixing up, or maybe is making different
+> > (or worse).
+>
+> Correct on all points.
+>
+> > So I guess the real question is what happened to this file system
+> > before the send, that got it into this weird state.
+>
+> That too, but honestly there are a lot of variables, and it feels like a
+> bit of wild goose chase.
 
-I understand your fear. Frankly speaking this code is quite complex.
-More than it should be (even without the raid56 support).
+Maybe. The story arc on Btrfs is that check --repair only fixes the
+things it knows how to fix. It's gotten better but still has the scary
+warning, and lately has a 10 second delay to really make sure the user
+meant to use it. And regardless of mode, it's slow and just can't
+scale. Neither does "wipe and restore from backup". So the problems of
+inconsistency need to be understood to avoid the problem in the first
+place.
 
-I am looking for a solution less intrusive. Let me few days and I will
-update the patch.
 
-Then we can discuss its validity.
+>
+> Basically it looked like the issues with the FS are pretty minor (I was
+> able to cp -av the entire data without any file error), but that btrfs
+> check --repair is unable to make it right, which will likely force me to
+> wipe and restore.
+> I know chedk is WIP, and that's why I'm providing feedback :)
 
-  
-> So, let's start with the case where the filesystem does not have
-> multiple profiles per block group type, eg. just raid5 for data and
-> calculate that.
-> 
-> If this also covers the raid56 case with different stripe counts, then
-> good but as this is special case I won't mind addressing it separately.
-> 
-> The general case of multiple profiles per type is probably an
-> intermediate state of converting profiles, we can return something sane
-> if possible or warn as what we have now.
+What about finding inode 14058737 and deleting it? In all of the
+listed subvolumes? And then unmount and check again?
 
-Another possibility is when a drive is added and a balance is not performed.
 
-However this should be "safe" because it would underestimate the free space.
+> > > > Is no-holes enabled on either file system?
+> > >
+> > > Not intentionally. How do I check?
+> >
+> > btrfs insp dump-s
+> >
+> > It's not yet the default and can't be inadvertently enabled so chances
+> > are it's the original holes implementation.
+>
+> The filesystem was definitely created a while ago (2-3 years?)
+>
+> I have been recently been playing with bees, but I'm reasonably sure I didn't run in on that filesystem
+> it lists support for "HOLE extents and btrfs no-holes feature"
 
-> 
-> I'm fine if you say you're not going to implement that.
-> 
-
-I want to work on that.
+It's default except for LZO.
 
 
 -- 
-gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
-Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
+Chris Murphy
