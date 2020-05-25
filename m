@@ -2,130 +2,100 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A6F71E10D7
-	for <lists+linux-btrfs@lfdr.de>; Mon, 25 May 2020 16:44:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FA0A1E12CD
+	for <lists+linux-btrfs@lfdr.de>; Mon, 25 May 2020 18:38:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390921AbgEYOoK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 25 May 2020 10:44:10 -0400
-Received: from mx2.suse.de ([195.135.220.15]:39058 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388687AbgEYOoK (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 25 May 2020 10:44:10 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 4DEF3B16D;
-        Mon, 25 May 2020 14:44:11 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 92245DA72D; Mon, 25 May 2020 16:43:11 +0200 (CEST)
-Date:   Mon, 25 May 2020 16:43:11 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Marcos Paulo de Souza <marcos@mpdesouza.com>
-Cc:     dsterba@suse.com, wqu@suse.com, linux-btrfs@vger.kernel.org,
-        Marcos Paulo de Souza <mpdesouza@suse.com>
-Subject: Re: [PATCH v4 00/11] btrfs-progs: mkfs: Quota support through
- -Q|--quota
-Message-ID: <20200525144311.GV18421@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz,
-        Marcos Paulo de Souza <marcos@mpdesouza.com>, dsterba@suse.com,
-        wqu@suse.com, linux-btrfs@vger.kernel.org,
-        Marcos Paulo de Souza <mpdesouza@suse.com>
-References: <20200318202148.14828-1-marcos@mpdesouza.com>
+        id S1731358AbgEYQiQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 25 May 2020 12:38:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38378 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726308AbgEYQiQ (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 25 May 2020 12:38:16 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 263F1C061A0E
+        for <linux-btrfs@vger.kernel.org>; Mon, 25 May 2020 09:38:16 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id r9so519514wmh.2
+        for <linux-btrfs@vger.kernel.org>; Mon, 25 May 2020 09:38:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+taEBbntBIey2kxpE3hppjU9begMPWR13852w8Zq978=;
+        b=fP8R+pCXgRV5Dt4VjphuS/OKAPEEMb5lZORSiU9CCrAFcTRfavxvkmT3+kC/Shgn9s
+         ezQDME7nqq9ien6dDiX03kEWcRlUQFlDF5rQO52RKK1ggr8ZXaBtHjmruQOCFo/9i/H3
+         D2GzqF4YZhvjlvuL4WigjjBzHAwZe7pWe2nhKSA13mrRzSJUzW4h3QRCS2aWXgPouMJv
+         vkx8kxAfuNPnn1y3Slpjo62SB9+0YGz/5Uiul/YtMKlFWtwEoOkyZvWHU3W0H5d4vL/k
+         8d8CH95eLYKbbEOvCai4M7kqNuFz9lny9vP6SkRriGJ0idFepW5H3Pec1c6yae0pM6OO
+         f9gA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+taEBbntBIey2kxpE3hppjU9begMPWR13852w8Zq978=;
+        b=DjDirVtTM4aTR+j5QhiPOl+cXg/2jeP07jp0adSl6St5by+79v8oHovhwfWof8olIt
+         gtti8d+w9AHbt1KxqLk3rNMvfwbq0/t7vANmV5aaOt+NEJ4pAHtBhVAo53jHlmNz24vC
+         fqJy6QPn5BgQA5kiSluMJjXecCTTYNogvQ4Hbz9Iu2y4kCYr9QPyJvwzvao24+XtZlcW
+         dWGtWF7Y0D9PVTRNUtpW9f2p8jfz8bvEs6fUtXcZHWP1pwws1kjR6w2Vi4XoTWvdkEQ5
+         XsQkTwjSMISWwPbkVc0sksLhT3CsWsQcLVAYbw+Wqk4y0raYMcOMRBTg6qozswRx9OL0
+         uhBQ==
+X-Gm-Message-State: AOAM532FLDSj9HFyVJSiNsm2ljC5Id1/MTnfn7jxHLfam8b828RZ802P
+        IqZRVyaAUGZjgYMTKcsAEzqA3TEk0ghOYDR2pIKqIiDPm2Q=
+X-Google-Smtp-Source: ABdhPJxsZOuwptfwzSR3+MGohclrMi0QFhwRwWIeFM04JH0CDMvVFHrWg3ClBdNcMEKxUxB87jMjzUDrRHC1sbj3Vmo=
+X-Received: by 2002:a05:600c:228d:: with SMTP id 13mr27127771wmf.182.1590424694867;
+ Mon, 25 May 2020 09:38:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200318202148.14828-1-marcos@mpdesouza.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+References: <20200524213059.GI23519@merlins.org>
+In-Reply-To: <20200524213059.GI23519@merlins.org>
+From:   Chris Murphy <lists@colorremedies.com>
+Date:   Mon, 25 May 2020 10:37:58 -0600
+Message-ID: <CAJCQCtTWkRijC51qny+gLqFO=z-Jek4mbKN0O6udLKzzeNe_vw@mail.gmail.com>
+Subject: Re: 5.5 kernel and btrfs-progs v5.6 create and cannot fix 'root
+ 204162 inode 14058737 errors 1000, some csum missing'
+To:     Marc MERLIN <marc@merlins.org>
+Cc:     Su Yue <Damenly_Su@gmx.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
+        Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Su Yue <suy.fnst@cn.fujitsu.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Mar 18, 2020 at 05:21:37PM -0300, Marcos Paulo de Souza wrote:
-> From: Marcos Paulo de Souza <mpdesouza@suse.com>
-> 
-> Hi guys,
-> 
-> This if the forth version of this patchset. The last submission of these patches
-> was in 2018[1]. This version is based on top on the current devel branch, with
-> minor cleanups, minor conflicts and only a real fix in patch 0008. I would like
-> to ask you guys to review these patches, since v3 didn't receive any feedback at
-> the time.
-> 
-> I only added my SoB in three patches, which were those were I needed a manual
-> intervention, or a specific fix as I mentioned.
-> 
-> Thanks for your review,
->   Marcos
-> 
-> Original cover letter for Wenruo:
-> This patchset adds quota support, which means the result fs will have
-> quota enabled by default, and its accounting is already consistent, no
-> manually rescan or quota enable is needed.
-> 
-> The overall design of such support is:
-> 1) Create needed tree
->    Both btrfs_root and real root item and tree root leaf.
->    For this, a new infrastructure, btrfs_create_tree(), is added for
->    this.
-> 
-> 2) Fill quota root with basic skeleton
->    Only 3 items are really needed
->    a) global quota status item
->    b) quota info for specified qgroup
->    c) quota limit for specified qgroup
-> 
->    Currently we insert all qgroup items for all existing file trees.
->    If we're going to support extra subvolume at mkfs time, just pass the
->    subvolume id into insert_qgroup_items().
-> 
->    The content doesn't matter at all.
-> 
-> 3) Repair qgroups using infrastructure from qgroup-verify
->    In fact, qgroup repair is just offline rescan.
->    Although the original qgroup-verify infrastructure is mostly noisy,
->    modify it a little to make it silent to function as offline quota
->    rescan.
-> 
-> And such support is mainly designed for developers and QA guys.
-> 
-> As to enable quota, before we must normally mount the fs, enable quota
-> (and rescan if needed).
-> This ioctl based procedure is not common, and fstests doesn't provide
-> such support.
-> (Not to mention sometimes rescan itself can be buggy)
-> 
-> There are several attempts to make fstests to support it, but due to
-> different reasons, all these attempts failed.
-> 
-> To make it easier to test all existing test cases with btrfs quota
-> enabled, the current best method is to support quota at mkfs time, and
-> here comes the patchset.
-> 
-> [1]: https://lore.kernel.org/linux-btrfs/20180807081938.21348-1-wqu@suse.com/T/#m107735cecbf4729b599e6e4eee0a54802909b30d
-> 
-> Qu Wenruo (11):
->   btrfs-progs: qgroup-verify: Avoid NULL pointer dereference for later
->     silent qgroup repair
->   btrfs-progs: qgroup-verify: Also repair qgroup status version
->   btrfs-progs: qgroup-verify: Use fs_info->readonly to check if we
->     should repair qgroups
->   btrfs-progs: qgroup-verify: Move qgroup classification out of
->     report_qgroups
->   btrfs-progs: qgroup-verify: Allow repair_qgroups function to do silent
->     repair
->   btrfs-progs: ctree: Introduce function to create an empty tree
->   btrfs-progs: mkfs: Introduce function to insert qgroup info and limit
->     items
->   btrfs-progs: mkfs: Introduce function to setup quota root and rescan
+On Sun, May 24, 2020 at 3:31 PM Marc MERLIN <marc@merlins.org> wrote:
+>
+> My data is fine, it's double backed up and the filesystem is still mountable without issues.
+> But I had an error that broke btrfs send, and after fixing it with repair, I'm stuck with thses 'csum missing'
 
-I've applied the above with some fixes to devel.
+I'm not following the sequence of events. The send|receive failed? Did
+you try deleting the failed received snapshot?
 
->   btrfs-progs: mkfs: Introduce mkfs time quota support
->   btrfs-progs: test/mkfs: Add test case for -Q|--quota option
->   btrfs-progs: test/mkfs: Add test case for --rootdir and --quota
 
-The option name needs to be -R as used to be in V2 of Qu's original
-patchset. I don't know why this got changed to the single purpose -Q but
--R will be used to specifiy runtime options, similar to what -O does
-now.
+> which I was able to fix with the repair below, but now I'm stuck with the 'some csum missing'.
+> Checking filesystem on /dev/mapper/cr
+> UUID: 4cb82363-e833-444e-b23e-1597a14a8aab
+> [1/7] checking root items
+> [2/7] checking extents
+> data backref 2694234112 root 356 owner 14058737 offset 0 num_refs 0 not found in extent tree
+> incorrect local backref count on 2694234112 root 356 owner 14058737 offset 0 found 1 wanted 0 back 0x55e7383a3a00
+> incorrect local backref count on 2694234112 root 2147484004 owner 14058737 offset 0 found 0 wanted 1 back 0x55e733d1c2b0
+> backref disk bytenr does not match extent record, bytenr=2694234112, ref bytenr=0
+> backpointer mismatch on [2694234112 8192]
+> ERROR: errors found in extent allocation tree or chunk allocation
+> [3/7] checking free space cache
+> [4/7] checking fs roots
+> root 356 inode 33037179 errors 100, file extent discount
+> Found file extent holes:
+>         start: 0, len: 8192
+> root 203332 inode 33037179 errors 100, file extent discount
+> Found file extent holes:
+>         start: 0, len: 8192
+
+
+Is no-holes enabled on either file system?
+
+
+-- 
+Chris Murphy
