@@ -2,140 +2,101 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B5161E1542
-	for <lists+linux-btrfs@lfdr.de>; Mon, 25 May 2020 22:39:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FDFC1E1543
+	for <lists+linux-btrfs@lfdr.de>; Mon, 25 May 2020 22:40:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390391AbgEYUjR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 25 May 2020 16:39:17 -0400
-Received: from magic.merlins.org ([209.81.13.136]:35970 "EHLO
-        mail1.merlins.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389950AbgEYUjR (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 25 May 2020 16:39:17 -0400
-Received: from merlin by mail1.merlins.org with local (Exim 4.92 #3)
-        id 1jdJsS-0006lI-H5 by authid <merlin>; Mon, 25 May 2020 13:39:16 -0700
-Date:   Mon, 25 May 2020 13:39:16 -0700
-From:   Marc MERLIN <marc@merlins.org>
-To:     Chris Murphy <lists@colorremedies.com>
-Cc:     Su Yue <Damenly_Su@gmx.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
-        Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Su Yue <suy.fnst@cn.fujitsu.com>
-Subject: Re: 5.5 kernel and btrfs-progs v5.6 create and cannot fix 'root
- 204162 inode 14058737 errors 1000, some csum missing'
-Message-ID: <20200525203916.GB19850@merlins.org>
-References: <20200524213059.GI23519@merlins.org>
- <CAJCQCtTWkRijC51qny+gLqFO=z-Jek4mbKN0O6udLKzzeNe_vw@mail.gmail.com>
- <20200525201620.GA19850@merlins.org>
- <CAJCQCtSqdJnVCPQEEeE1W3ux48tWerQuu-2_rySUdYM7GZJR9Q@mail.gmail.com>
+        id S2390414AbgEYUkE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 25 May 2020 16:40:04 -0400
+Received: from smtp-34.italiaonline.it ([213.209.10.34]:51495 "EHLO libero.it"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2389950AbgEYUkD (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 25 May 2020 16:40:03 -0400
+Received: from venice.bhome ([94.37.169.164])
+        by smtp-34.iol.local with ESMTPA
+        id dJtAjLkyUtrlwdJtAj8MJX; Mon, 25 May 2020 22:40:01 +0200
+x-libjamoibt: 1601
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2014;
+        t=1590439201; bh=rMKi23xcYQsoGd4XaTyy/E4EDQkbeKg165g0qcyvTC0=;
+        h=From;
+        b=tWDjJyyRmaQV8I9A6tOx3RBiWHP6+eH5tvn8Dji6++JT6uHvdKD6E/vAeBaoxPqLG
+         usYIPv9F5XhF+m//PpVtRmEjD0AFZeJP2A3G2XEullbWfB0/aOyLbbwRnLAJ5Ku9Q0
+         b92MFmSjG8tSrpEP+tHp7kWqT6KiT4++HoeuVhiOgKMvHxqDuzOAsrQsPHARe5bGV4
+         YAPvHaspNLs2CiHRc6DbZ7jAicFJA+HRDO4fsTtViillKGzfXKcTuEJzUc9YVYsn6W
+         anQg5NNXEnaCLAa7YAL2lM8/ulENOpx0M9WzkcgbFK+cSzEMVzKuFAD7ZV0Z9a3q2P
+         1RgCkvQnVtudw==
+X-CNFS-Analysis: v=2.3 cv=TOE7tGta c=1 sm=1 tr=0
+ a=ZMZ8MMmEMFyyBR6AU47QNg==:117 a=ZMZ8MMmEMFyyBR6AU47QNg==:17
+ a=IkcTkHD0fZMA:10 a=40O-eZYNRSQPSXI9VYIA:9 a=lT_7I3K7BEpWP4jG:21
+ a=dog5HGTVdPGmN9ol:21 a=QEXdDO2ut3YA:10
+Reply-To: kreijack@inwind.it
+Subject: Re: [PATCH] btrfs-progs: add RAID5/6 support to btrfs fi us
+To:     dsterba@suse.cz, linux-btrfs@vger.kernel.org
+References: <20200318211157.11090-1-kreijack@libero.it>
+ <20200525132734.GT18421@twin.jikos.cz>
+From:   Goffredo Baroncelli <kreijack@libero.it>
+Message-ID: <a1819577-dec1-6f99-65cd-4675c59695d6@libero.it>
+Date:   Mon, 25 May 2020 22:40:00 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJCQCtSqdJnVCPQEEeE1W3ux48tWerQuu-2_rySUdYM7GZJR9Q@mail.gmail.com>
-X-Sysadmin: BOFH
-X-URL:  http://marc.merlins.org/
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-SA-Exim-Connect-IP: <locally generated>
-X-SA-Exim-Mail-From: marc@merlins.org
+In-Reply-To: <20200525132734.GT18421@twin.jikos.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4wfFiMTP8dX0kZ1RlGAMhS2dsTYK1dm0zNqqMbMmzEb90gThAcMAUiu4W0BLRWhbaeFCpRVwJ4wPCPquKDm/QeBTsYo7UvADFwq98/xFWsXPZ/ILgaJVV5
+ buf9hIvZdZ+JAuMYyJC7VJv7TTzlavo7BUUiadfijo7ocfDIEX+XuiVX6T6+kqmbQgGqmMT0txEyckn8BbdUuVEQfeydIKJhU3Q=
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, May 25, 2020 at 02:24:03PM -0600, Chris Murphy wrote:
-> OK I didn't understand that the problem is with only the sending file
-> system, not the receive file system. And also it sounds like the send
-> did not cause the problem, but it's somehow a pre-existing problem
-> that --repair isn't completely fixing up, or maybe is making different
-> (or worse).
- 
-Correct on all points.
-
-> So I guess the real question is what happened to this file system
-> before the send, that got it into this weird state.
-
-That too, but honestly there are a lot of variables, and it feels like a
-bit of wild goose chase. 
-
-Basically it looked like the issues with the FS are pretty minor (I was
-able to cp -av the entire data without any file error), but that btrfs
-check --repair is unable to make it right, which will likely force me to
-wipe and restore.
-I know chedk is WIP, and that's why I'm providing feedback :)
-
-> > > Is no-holes enabled on either file system?
-> >
-> > Not intentionally. How do I check?
+On 5/25/20 3:27 PM, David Sterba wrote:
+> On Wed, Mar 18, 2020 at 10:11:56PM +0100, Goffredo Baroncelli wrote:
+>> this patch adds support for the raid5/6 profiles in the command
+>> 'btrfs filesystem usage'.
+>>
+>> Until now the problem was that the value r_{data,metadata}_used is not
+>> easy to get for a RAID5/6, because it depends by the number of disks.
+>> And in a filesystem it is possible to have several raid5/6 chunks with a
+>> different number of disks.
 > 
-> btrfs insp dump-s
+> I'd like to get the raid56 'fi du' fixed but the way you implement it
+> seems to be a too big leap. I've tried to review this patch several
+> times but always got the impression that reworking the calculations to
+> make it work for some profiles will most likely break something else. It
+> has happened in the past.
+
+I understand your fear. Frankly speaking this code is quite complex.
+More than it should be (even without the raid56 support).
+
+I am looking for a solution less intrusive. Let me few days and I will
+update the patch.
+
+Then we can discuss its validity.
+
+  
+> So, let's start with the case where the filesystem does not have
+> multiple profiles per block group type, eg. just raid5 for data and
+> calculate that.
 > 
-> It's not yet the default and can't be inadvertently enabled so chances
-> are it's the original holes implementation.
+> If this also covers the raid56 case with different stripe counts, then
+> good but as this is special case I won't mind addressing it separately.
+> 
+> The general case of multiple profiles per type is probably an
+> intermediate state of converting profiles, we can return something sane
+> if possible or warn as what we have now.
 
-The filesystem was definitely created a while ago (2-3 years?)
+Another possibility is when a drive is added and a balance is not performed.
 
-I have been recently been playing with bees, but I'm reasonably sure I didn't run in on that filesystem
-it lists support for "HOLE extents and btrfs no-holes feature"
+However this should be "safe" because it would underestimate the free space.
 
+> 
+> I'm fine if you say you're not going to implement that.
+> 
 
-saruman:~# btrfs insp dump-s /dev/mapper/cr
-superblock: bytenr=65536, device=/dev/mapper/cr
----------------------------------------------------------
-csum_type               0 (crc32c)
-csum_size               4
-csum                    0x34a9cfed [match]
-bytenr                  65536
-flags                   0x1
-                        ( WRITTEN )
-magic                   _BHRfS_M [match]
-fsid                    4cb82363-e833-444e-b23e-1597a14a8aab
-metadata_uuid           4cb82363-e833-444e-b23e-1597a14a8aab
-label                   btrfs_boot
-generation              3801933
-root                    1686707896320
-sys_array_size          97
-chunk_root_generation   3801931
-root_level              1
-chunk_root              1679158165504
-chunk_root_level        1
-log_root                0
-log_root_transid        0
-log_root_level          0
-total_bytes             161057079296
-bytes_used              112391540736
-sectorsize              4096
-nodesize                16384
-leafsize (deprecated)   16384
-stripesize              4096
-root_dir                6
-num_devices             1
-compat_flags            0x0
-compat_ro_flags         0x0
-incompat_flags          0x169
-                        ( MIXED_BACKREF |
-                          COMPRESS_LZO |
-                          BIG_METADATA |
-                          EXTENDED_IREF |
-                          SKINNY_METADATA )
-cache_generation        3801932
-uuid_tree_generation    3801932
-dev_item.uuid           924bcb26-9c4c-4106-b3ce-1bb66e66de1f
-dev_item.fsid           4cb82363-e833-444e-b23e-1597a14a8aab [match]
-dev_item.type           0
-dev_item.total_bytes    161057079296
-dev_item.bytes_used     136423931904
-dev_item.io_align       4096
-dev_item.io_width       4096
-dev_item.sector_size    4096
-dev_item.devid          1
-dev_item.dev_group      0
-dev_item.seek_speed     0
-dev_item.bandwidth      0
-dev_item.generation     0
+I want to work on that.
 
 
 -- 
-"A mouse is a device used to point at the xterm you want to type in" - A.S.R.
- 
-Home page: http://marc.merlins.org/  
+gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
+Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
