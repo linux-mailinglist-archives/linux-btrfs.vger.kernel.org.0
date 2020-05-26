@@ -2,99 +2,101 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBCA61E19BB
-	for <lists+linux-btrfs@lfdr.de>; Tue, 26 May 2020 05:12:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 129E31E1BA8
+	for <lists+linux-btrfs@lfdr.de>; Tue, 26 May 2020 09:00:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388534AbgEZDMQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 25 May 2020 23:12:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54808 "EHLO
+        id S1731341AbgEZHAh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 26 May 2020 03:00:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388526AbgEZDMP (ORCPT
+        with ESMTP id S1731358AbgEZHAf (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 25 May 2020 23:12:15 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D22ACC05BD43
-        for <linux-btrfs@vger.kernel.org>; Mon, 25 May 2020 20:12:14 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id h188so11471088lfd.7
-        for <linux-btrfs@vger.kernel.org>; Mon, 25 May 2020 20:12:14 -0700 (PDT)
+        Tue, 26 May 2020 03:00:35 -0400
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 696B3C03E97E
+        for <linux-btrfs@vger.kernel.org>; Tue, 26 May 2020 00:00:34 -0700 (PDT)
+Received: by mail-ot1-x343.google.com with SMTP id a68so15447891otb.10
+        for <linux-btrfs@vger.kernel.org>; Tue, 26 May 2020 00:00:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=zdxUWMWXTEs/zs0LJh1bxLoOHpDg1k5nkLimqXptzik=;
-        b=CknBwaUFtv0qxcVtdA7R6Jj4nDGs83jnlaCAHY8tFtSKP1xCU7pzaNlKPl8Tuzr6Ur
-         vSH43RyRXnD80fgK+5tXGSGbhXwMMjLTu4Csncj1uGERJ2SjbHNSHb+LuGvY6EYwCOyX
-         RWV+ji7MYgpakoMt9kdkX9yZqifYO55ScahlCTG1u4+NYXw7gZzI3L1dSe7kcUHcQKsF
-         pq0rpUA4hTUL9875uQ9b0gjd+IG/gdM0TK/wZHQZMJ1yEiID2bRJt/WGX2M4cK86RvZE
-         A1JARcnVJYfsfo1h0fSWgpJMyOWRFwFncmtzBhxSZpYKj9yzdQrdvtx465LsOPaV5Qpv
-         i6rw==
+        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
+        bh=rAYoLqKmbiaK3R2W2sdPMCtSeMR8XcWM0OyJ+Cyvku8=;
+        b=pUzsQ+dJRwwu6+buHoi+gkTZlLsou+l3L8E9dhGDYFENvJC+E1ZmLLTKcjZS9DVGIq
+         tznmxVx5EECrTU9+GEYMqbWUe18l41JmJTF7nCQbaYUMQRWnBiGmFEJ9pC24NmQI0p7T
+         vCn0w/etcqgJTgnbdBSVP04sVHzl2b2PlSzxNQbENTI6vYPk7XP904+e5FF6SqUh6f2P
+         7H9fZMbsU1YUgQdM1X6H//CqaZYCBdanAqn6ZqHDEaHGUcZwXsmFM0YMvjTViZnRDSwe
+         vYIDMrQ8ytT6MW5E8CM4wdSvSFDDLrlYJxna+m9pdDt6XcLvnzQTxnQAzxaMgPWnfKQO
+         yFJA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=zdxUWMWXTEs/zs0LJh1bxLoOHpDg1k5nkLimqXptzik=;
-        b=DdmUwL4y6xAfgq3g/PURI33jKDvKVyocOhu9j1h3+w993iY0Ba8X4sIVruLX5E6ydb
-         wqDvgbD3wtHM+yRRP68JBF5b1cHMv/3i/GmIt7WrIm71R9uW0/KofMlPtpHJCictHWw6
-         jrO4tfRcXLCaqPV8V1jKDJ661wyqc6++rySnddaQs6h9sdMw5aJOIkuAb+KFZA03Dw/N
-         38qX5rLJhMVnfUE26CCxtmCJWgTMtNe3amC0zbWZwIj2/vnZoeRCYgF7iBX3QlQ6Lyqt
-         67c59hNMfN34yu+ypUjs7LY2/gUhyIubdBcy2eK4IOGV/f90nboCZbPREfYcFMDnfGfo
-         YwuQ==
-X-Gm-Message-State: AOAM533YgB9ACMOGqIGaTNRNASG0lEWPvproKZG0I9b6nHd+RGuI6U/S
-        3brGKOXntJ2tr/mNsK6p0n6wf5kEQZGHGg/ubf8=
-X-Google-Smtp-Source: ABdhPJy2qPB46BILmPyKqosm8Z7szM2RrpD11173aPrpY4SjufCQmGWqqjboWELjfnGcjKpIgv8pYh937w8d074ItNg=
-X-Received: by 2002:a19:6e0e:: with SMTP id j14mr4718488lfc.155.1590462731699;
- Mon, 25 May 2020 20:12:11 -0700 (PDT)
+        h=x-gm-message-state:mime-version:reply-to:sender:from:date
+         :message-id:subject:to;
+        bh=rAYoLqKmbiaK3R2W2sdPMCtSeMR8XcWM0OyJ+Cyvku8=;
+        b=uCfDGXBnZsftYS4cA4AXUuIAK63v1C9a8elsDKspgLAiKdjLcZpdRZCYqnUBtWakB8
+         0pWy1STGL1EnnKP/Yk65aXlF/lb2TNzYUYnG+8M3jKz5WciKiHCam2q1j3J1/5ZQl6UW
+         BEZcmhymJp9YMl9IFSBwu0p7Pr2i4NjZPsl0awNdZBGlloBY/fqfpehq6wHWyntls0TE
+         ZN+kSOUQ7Lx0MGaSoeks2LWWdVrNdYf/ivC9CXq9WWwpQicJQglkPHRZZlmqbXZpHI3Q
+         9QuFfILvu13twpeOFa0/qmDawLwguhatAgH9MX6cDzfzEVGGAeAEWgSJTEbyi4rXATjt
+         QMpg==
+X-Gm-Message-State: AOAM530cpXrhbc7EywiSE07/298fk22lDveGyUOhKlmhWpi9kN+p0Xbs
+        F3+cUSQADRixXqkSu9l0y3C+aF1wvv7m3dBNGF4=
+X-Google-Smtp-Source: ABdhPJxIBFW4Gu7+Zd4p9NiBGoSnWCJXeuwk9GarSwaAM+xTmrXYX6pnbET/hi09HSve2Rhsw6SvEwwoLAfxJj+otlk=
+X-Received: by 2002:a9d:5cc9:: with SMTP id r9mr23921713oti.111.1590476433619;
+ Tue, 26 May 2020 00:00:33 -0700 (PDT)
 MIME-Version: 1.0
-Received: by 2002:a05:6504:11d9:0:0:0:0 with HTTP; Mon, 25 May 2020 20:12:11
+Reply-To: mr_mohammadahmed62@yahoo.com
+Received: by 2002:ac9:235e:0:0:0:0:0 with HTTP; Tue, 26 May 2020 00:00:33
  -0700 (PDT)
-Reply-To: ayishagddafio@mail.ru
-From:   AISHA GADDAFI <bunny2320123@gmail.com>
-Date:   Mon, 25 May 2020 20:12:11 -0700
-Message-ID: <CA+z0umGrhjTnmwKm_p=TV=2zRBA2F_qwUvgFOWGTCtzBoDZuGQ@mail.gmail.com>
-Subject: Lieber Freund (Assalamu Alaikum),?
+From:   Mr Mohamad Ahmed <mohamadahmed0055@gmail.com>
+Date:   Tue, 26 May 2020 00:00:33 -0700
+X-Google-Sender-Auth: FEQjXwQdDGa5EvQUsCh-XCgEzpQ
+Message-ID: <CALK9TcOD6_a_B7qzQ-s2co1LqRK1qsCuFC=-_6yXsEu5_Vuk6Q@mail.gmail.com>
+Subject: GREETINGS FROM MR.MOHAMMAD AHMED / CAN I TRUST YOU?
 To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
---=20
-Lieber Freund (Assalamu Alaikum),
+My Dear Friend.
 
-Ich bin vor einer privaten Suche auf Ihren E-Mail-Kontakt gesto=C3=9Fen
-Ihre Hilfe. Mein Name ist Aisha Al-Qaddafi, eine alleinerziehende
-Mutter und eine Witwe
-mit drei Kindern. Ich bin die einzige leibliche Tochter des Sp=C3=A4tlibysc=
-hen
-Pr=C3=A4sident (verstorbener Oberst Muammar Gaddafi).
+Greetings.
 
-Ich habe Investmentfonds im Wert von siebenundzwanzig Millionen
-f=C3=BCnfhunderttausend
-United State Dollar ($ 27.500.000.00) und ich brauche eine
-vertrauensw=C3=BCrdige Investition
-Manager / Partner aufgrund meines aktuellen Fl=C3=BCchtlingsstatus bin ich =
-jedoch
-M=C3=B6glicherweise interessieren Sie sich f=C3=BCr die Unterst=C3=BCtzung =
-von
-Investitionsprojekten in Ihrem Land
-Von dort aus k=C3=B6nnen wir in naher Zukunft Gesch=C3=A4ftsbeziehungen auf=
-bauen.
+I know this message will come to you as a surprise, My name is Mr.
+Mohammad Ahmed a banker with Bank of Africa Burkina Faso West Africa,
+Please i want to transfer an abandoned sum of 13.5 Million United
+States Dollars into your account, if you are interested do not
+Hesitate to get back to me with your personal information listed
+bellow for trust and confident to enable me feed you with more details
+on how the fund will be transfer into your account.
 
-Ich bin bereit, mit Ihnen =C3=BCber das Verh=C3=A4ltnis zwischen Investitio=
-n und
-Unternehmensgewinn zu verhandeln
-Basis f=C3=BCr die zuk=C3=BCnftige Investition Gewinne zu erzielen.
+My dear you will provide account for transfer of the fund in your
+favor by our bank management and once the fund transferred into your
+account 50% is for you and 50% for me.
 
-Wenn Sie bereit sind, dieses Projekt in meinem Namen zu bearbeiten,
-antworten Sie bitte dringend
-Damit ich Ihnen mehr Informationen =C3=BCber die Investmentfonds geben kann=
-.
+The transaction is risk free and there will be no harm, I will like
+you to respond back to me immediately after reading this message to
+enable us proceed ahead for mutual benefit.
 
-Ihre dringende Antwort wird gesch=C3=A4tzt. schreibe mir an diese email adr=
-esse (
-ayishagddafio@mail.ru ) zur weiteren Diskussion.
+My  Dear  i know the source of the fund and I assure you of receiving
+it into your account without any problem, Read this message and if we
+have business urgently get back to me with your personal information
+required bellow for more details.
 
-Freundliche Gr=C3=BC=C3=9Fe
-Frau Aisha Al-Qaddafi
+I am looking forward to hear back from you urgently.
+
+1. Full name:.........
+2. Home Address:.........
+3. Phone.............
+4. Occupation:.............
+5. Age:............
+6. Country:........
+7. Sex........
+8. Your Passport or ID card or Driving License
+
+Thanks.
+
+Yours faithfully
+
+Mr. Mohammad Ahmed.
