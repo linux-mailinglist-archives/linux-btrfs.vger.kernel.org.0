@@ -2,155 +2,96 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A99CD1E24EC
-	for <lists+linux-btrfs@lfdr.de>; Tue, 26 May 2020 17:03:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA9C21E2560
+	for <lists+linux-btrfs@lfdr.de>; Tue, 26 May 2020 17:24:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729601AbgEZPD0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 26 May 2020 11:03:26 -0400
-Received: from esa2.hgst.iphmx.com ([68.232.143.124]:33826 "EHLO
-        esa2.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727978AbgEZPDZ (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 26 May 2020 11:03:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1590505427; x=1622041427;
-  h=from:to:cc:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=c/S0KmlL/NuWufrRLIXbVmf8tgPAl3cl5313/XfCp/8=;
-  b=i14vs3R/dkfrcZvpo4eQwFWdbQFXRS+TNFqgtCb4xvFncQUWUskbFrlX
-   nSNJ5ZfcD1ntWLq0vCksq5Hr3FZKGYRCTsGlLu5/gXvUajqlLqBrrzRP1
-   4RQle6yootz111jh/DKu0PnDpXx3xeHWvpLM0okrCd9GoDyDQczrbOHvf
-   tSaRvXxsuaqpGVxWuUt4kxQSjMW/fhikYJLYRvf67Zu1vE7pgp/uHiJp+
-   SwK1SWe9HICFDrGqkHjcewPtfXKGwzjoIuj/X1TZPtcSypLIV8Wr2U6i/
-   8OczSsiMu4za6c0wpa7MLtIqy2A3T269cvSfht38m4E795t7689hobvY8
-   A==;
-IronPort-SDR: C9vbVVGc1rA9TGNqYCfrbrxTqYrJHUGir0Ndvhe1HamBY/o+2RH6U+jMt3D9VvephZqqjzFHrr
- 7h3R8ykasUX54QFndKufAHNil6uqk1TKL29PuXQRY2istOQmHWQ+sF3iIfDWyG9YerIOHROHrc
- XLvj86pmDv7XjYYv3AjxbDdLeZA1QJ++US56G+Lrj+l13+BBBcwb0AkJFDrNl983KYUluOzPMJ
- dnXVY3A0v0P3Z3/S2rEX1fk+RijVUC89bHRmrxwwt837Qy2pTppuLTlt3ox/scf4dkSMsKaKtj
- ucY=
-X-IronPort-AV: E=Sophos;i="5.73,437,1583164800"; 
-   d="scan'208";a="241331790"
-Received: from mail-bn8nam12lp2176.outbound.protection.outlook.com (HELO NAM12-BN8-obe.outbound.protection.outlook.com) ([104.47.55.176])
-  by ob1.hgst.iphmx.com with ESMTP; 26 May 2020 23:03:45 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gV5zgU+Z142dta8DIyt1kILOA1LvV2a0eDorzc0/cnFqecd2uRCDAZl+JBBm3S84zJDodsp4HNvnnx6gDicOAvojczI7f8Zw3zGTWAN1h1se1zHxPa4lE1zQs2BzbXk2P2WKrKEUW2nsgM/RWAK2LUfHUfH/dVTC1juJRfBooMgIllJYHGJhHld24Pkn3FG+heSyagtHJFJmTzZItlKQFF+RnuvGcRKLffwSLnTG57xDPrUZXrJ2GQtADshXBNuCSYnqQveSuvQOwnqWK4CC36pp+mOJePpBO3v5Qvo6Jpla8L1BR/fywEboXm4m9Z6jfZWeeOZSN/ivM3UtaF6f6g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RhLPuBdNFgJU6GyiJqoRhaUw5b+jzPPKs1my0ZWV/ow=;
- b=QD1lKoRs1fcWi3SSBCmdZXLhmRQDlfcMoWShImXhyvW7fzfhuEO7IAWMcwefpm0cipKTczuyh8gV45F2fs5zgQJh4OOQZ620HXwKZCGlH1iaw4DF2Mcjg84o5H27X7Brg1DULPfpQTAPeW+tlwjO+9zN+gcrc1SXj+r9L5Ds+Qa8AfHsSnjRfs8wX3N0htB1EM3NYcP/dlgHPFtunGQv368pDoNDl23I4GB+3EETF9IGtapnb7RhiNgPBjYt/9R7UbErkS+SGKV7yTzXgSap5y6v0Mgjs8XerOn+R0vA8kqJnG/6SUB9ing3+r0Ua4tow52VC6KY1VqdxHu9n0Ybog==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RhLPuBdNFgJU6GyiJqoRhaUw5b+jzPPKs1my0ZWV/ow=;
- b=kgzXB2c8oUnuf5qs9fl7LEdY1Bk+Al8JCO6oqhrHpGsYJRngaIGkR2SN+uLdjds7On9klC5l4jt4b2VVmx6DWHlAllF0US88hpKaP/KIN0H1qpEKjANhjsH0g68ejuW2AMvGWGPnEr1wLPz66kSodIFYcWdyYbLkerdWHMQSpDk=
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
- (2603:10b6:803:47::21) by SN4PR0401MB3614.namprd04.prod.outlook.com
- (2603:10b6:803:4b::19) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3021.23; Tue, 26 May
- 2020 15:03:19 +0000
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::1447:186c:326e:30b2]) by SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::1447:186c:326e:30b2%7]) with mapi id 15.20.3021.029; Tue, 26 May 2020
- 15:03:18 +0000
-From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To:     Goldwyn Rodrigues <rgoldwyn@suse.de>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-CC:     "hch@infradead.org" <hch@infradead.org>,
-        "dsterba@suse.cz" <dsterba@suse.cz>,
-        Goldwyn Rodrigues <rgoldwyn@suse.com>
-Subject: Re: [PATCH 4/7] btrfs: Switch to iomap_dio_rw() for dio
-Thread-Topic: [PATCH 4/7] btrfs: Switch to iomap_dio_rw() for dio
-Thread-Index: AQHWMDX/eMsyjdaGjEG/aVl6rTY++A==
-Date:   Tue, 26 May 2020 15:03:18 +0000
-Message-ID: <SN4PR0401MB35981C3BAEDA15CC85D13AE79BB00@SN4PR0401MB3598.namprd04.prod.outlook.com>
-References: <20200522123837.1196-1-rgoldwyn@suse.de>
- <20200522123837.1196-5-rgoldwyn@suse.de>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: suse.de; dkim=none (message not signed)
- header.d=none;suse.de; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [129.253.240.72]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 3c70929a-3bbf-4e59-b25b-08d80185ece1
-x-ms-traffictypediagnostic: SN4PR0401MB3614:
-x-ld-processed: b61c8803-16f3-4c35-9b17-6f65f441df86,ExtAddr
-x-microsoft-antispam-prvs: <SN4PR0401MB361485F14A2BA4D71352173C9BB00@SN4PR0401MB3614.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:4125;
-x-forefront-prvs: 041517DFAB
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: Tyy073MsfnOFvkzr39+A5kAZBwyp4P9CnTWmkRX5kVY47aZHdL4hQG9LK2seDrMu0zDja6jLZvpzliwgzN22auF3scI6tJgT4MRbOHv+U67d8O+W8r4ZMV96uCUA6NJUKSnZsGHVC29ij+NZqi5EwlDKfGFPYpr3uy0RDQWAZnb4PDQ/RVT4DDNMCim3ZwkIi5/0a7jBBvtXtic6Ch9a1qS+YXJWBbpcMJzkC9cfQUc6E9Djew4IzmjybQGX1C8uCUx8Sf5aBP3Jn4GFAxqdvTv4Ngrn7w5ef28iSJptxu6OE5ifvx8pI9KThxoqD/qcyFkbHVnXqvwaUyLlLRZWkg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR0401MB3598.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(39840400004)(346002)(396003)(376002)(136003)(366004)(86362001)(8676002)(4326008)(478600001)(316002)(6506007)(8936002)(54906003)(9686003)(7696005)(2906002)(110136005)(55016002)(52536014)(71200400001)(26005)(33656002)(186003)(66946007)(76116006)(66476007)(91956017)(5660300002)(66446008)(64756008)(66556008);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: 9RIA9E/b4QJhOK4Q7eB7y9ioBmO4Ugfaz1MjqrbWj3ToLBc052zSfqybhfygXoqdZXEukCOLFd4gbblZuOepDFq/Zig/Hnip3o+u7KD3hHVm0L5qtaNWn9EkNftXr4w7gsDTit+NcurgjCIk4lYidaiLQT4l8JM7DD+UrW1zFioQJ49OlNkVU7LkuOjp9ZvhTXvxfl5vqzkZii6YeSv9sYJtCTVtUhtuAVBrR6rBejT+rE+vYgZYq4UzFWv0aBWcLFM0ebPuCAqPsG/u2QuspqVRIjWjbjySuXMF50BhARoQwXviwJBYij/MY1ZmaODqxsT/zL9i/dz1DlSE7NkQBDExcKksAn3k22jrN2lJI3rIqLJvhpFlfDj+/tumzpSPSHpW79L/zY3WseiR/Yfa1mz191jYp0BR2/AD0UuVbZruANoK+LcayueIJjxVYmw9zFKV5g0iecR2No8Wq6lqP3krSopItyyQ/n50ua5p2z3i1AsPSEG0YE/vLx0K6kEe
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1729309AbgEZPYx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 26 May 2020 11:24:53 -0400
+Received: from mx2.suse.de ([195.135.220.15]:40204 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728626AbgEZPYx (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 26 May 2020 11:24:53 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id E3899AB3D;
+        Tue, 26 May 2020 15:24:53 +0000 (UTC)
+Subject: Re: [PATCH 1/3] btrfs: remove pointless out label in
+ find_first_block_group
+To:     Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        David Sterba <dsterba@suse.cz>
+Cc:     linux-btrfs@vger.kernel.org
+References: <20200526142124.36202-1-johannes.thumshirn@wdc.com>
+ <20200526142124.36202-2-johannes.thumshirn@wdc.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <fce3d7f8-23b8-b417-f5d3-3f6af7738118@suse.com>
+Date:   Tue, 26 May 2020 18:24:49 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3c70929a-3bbf-4e59-b25b-08d80185ece1
-X-MS-Exchange-CrossTenant-originalarrivaltime: 26 May 2020 15:03:18.7938
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 39qCSKHm1y8Ust7UpQsInX8UkYCEKOwcRVpOtMj79S5pLlmwuIxkxk5VDbwj5qFL07cdVJJ4IcDVjkfLS9a3I2JMzGsFEZiJE30gPcMpXAY=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN4PR0401MB3614
+In-Reply-To: <20200526142124.36202-2-johannes.thumshirn@wdc.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Just as a heads up, this one gives me lot's of Page cache invalidation=0A=
-failure prints from dio_warn_stale_pagecache() on btrfs/004 with =0A=
-current misc-next:=0A=
-=0A=
-[   16.607545] Page cache invalidation failure on direct I/O.  Possible dat=
-a corruption due to collision with buffered I/O!=0A=
-[   16.609328] File: /mnt/scratch/next/p0/d0/d77/de2/d5c/dc9/fee PID: 766 C=
-omm: fsstress=0A=
-[   16.743572] BTRFS info (device zram1): disk space caching is enabled=0A=
-[   16.744620] BTRFS info (device zram1): has skinny extents=0A=
-[   16.747458] BTRFS info (device zram1): enabling ssd optimizations=0A=
-[   18.303877] Page cache invalidation failure on direct I/O.  Possible dat=
-a corruption due to collision with buffered I/O!=0A=
-[   18.305476] File: /mnt/scratch/bgnoise/p0/d5/d53/d21/f27 PID: 2064 Comm:=
- fsstress=0A=
-[   18.768426] Page cache invalidation failure on direct I/O.  Possible dat=
-a corruption due to collision with buffered I/O!=0A=
-[   18.770074] File: /mnt/scratch/bgnoise/p0/d9/de/f15 PID: 2490 Comm: fsst=
-ress=0A=
-[   18.916118] Page cache invalidation failure on direct I/O.  Possible dat=
-a corruption due to collision with buffered I/O!=0A=
-[   18.917843] File: /mnt/scratch/bgnoise/p0/f0 PID: 2694 Comm: fsstress=0A=
-[   21.170384] Page cache invalidation failure on direct I/O.  Possible dat=
-a corruption due to collision with buffered I/O!=0A=
-[   21.172375] File: /mnt/scratch/bgnoise/p0/f3 PID: 4325 Comm: fsstress=0A=
-[   21.812452] Page cache invalidation failure on direct I/O.  Possible dat=
-a corruption due to collision with buffered I/O!=0A=
-[   21.814232] File: /mnt/scratch/bgnoise/p0/fb PID: 5000 Comm: fsstress=0A=
-[   21.826027] Page cache invalidation failure on direct I/O.  Possible dat=
-a corruption due to collision with buffered I/O!=0A=
-[   21.827741] File: /mnt/scratch/bgnoise/p0/fb PID: 5000 Comm: fsstress=0A=
-[   22.127966] Page cache invalidation failure on direct I/O.  Possible dat=
-a corruption due to collision with buffered I/O!=0A=
-[   22.129413] File: /mnt/scratch/bgnoise/p0/df/d28/d26/f3b PID: 5196 Comm:=
- fsstress=0A=
-[   22.160542] Page cache invalidation failure on direct I/O.  Possible dat=
-a corruption due to collision with buffered I/O!=0A=
-[   22.161972] File: /mnt/scratch/bgnoise/p0/df/d10/d5f/f64 PID: 5196 Comm:=
- fsstress=0A=
-[   23.696400] Page cache invalidation failure on direct I/O.  Possible dat=
-a corruption due to collision with buffered I/O!=0A=
-[   23.698115] File: /mnt/scratch/bgnoise/p0/f0 PID: 6562 Comm: fsstress=0A=
-=0A=
-I have no idea yet why but I'm investigating.=0A=
+
+
+On 26.05.20 г. 17:21 ч., Johannes Thumshirn wrote:
+> The 'out' label in find_first_block_group() does not do anything in terms
+> of cleanup.
+> 
+> It is better to directly return 'ret' instead of jumping to out to not
+> confuse readers. Additionally there is no need to initialize ret with 0.
+> 
+> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+
+I personally prefer returning fast aka the way you've done it but dunno
+if David is a fan of this. In any case:
+
+
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
