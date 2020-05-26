@@ -2,204 +2,72 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01A0D1E23FF
-	for <lists+linux-btrfs@lfdr.de>; Tue, 26 May 2020 16:21:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAD4F1E2407
+	for <lists+linux-btrfs@lfdr.de>; Tue, 26 May 2020 16:26:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728073AbgEZOVj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 26 May 2020 10:21:39 -0400
-Received: from esa1.hgst.iphmx.com ([68.232.141.245]:15676 "EHLO
-        esa1.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726811AbgEZOVi (ORCPT
+        id S1726882AbgEZO0P (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 26 May 2020 10:26:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46006 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726437AbgEZO0O (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 26 May 2020 10:21:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1590502897; x=1622038897;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=VR1ItsBlp1d05PqxlMrWHBw9Qt8at6uO9u44E7ZZksE=;
-  b=KGwZaRvXmnxLe04+FZdEm5X3feSPPp4jnFghouT9kFxo0rCyghWClUHh
-   5P8eZWd4aEdLv03uoiuhg0zNM89D8V6EH7btrnwbyH1XRMDiZAdPz7TPR
-   BQ0KwGZi0KrIoMFC2uX9D1aX3Lr4QYcdXudIn1sd2hCnvFTs32S8XnZwI
-   7CPx3jPvLcIMeJwkEtKDah0k6gyQnIMzXoK64Oj9HT7QS7s/K4J9BiFBZ
-   NxiR5DKjbGdemXO1PAFmErbocUhmjTAaS8x/lSMeiHYLSqBeiC2IuKxeM
-   aYopGEr4nsY5WytNmlvsxgjXAsiWF3/J9h4TYGOcycx38F89gKf2Aia/n
-   g==;
-IronPort-SDR: IzzDVf/46vGeUmDqDoMIlqYG3UJSyKoZYem/OZQC94+bAHH6dJO+KIWrcIuG0OBuquZEg7pMGE
- FZFhAWsfZ2V61lMZ26PBuS9AG50NIei1WvBnzcxykiEzVFemSu+iLooj7UbaBMUuTG50z0C7ek
- SewK58d4oKcd9THYIO005Xvzxap78XtlOa7IZx0P7dyuKbzk+GQI/23p50jXiYrxSU2Ohmet4u
- pJWPQ6HA8GR6BlJ1Cd6gzh5SpQrr+wFZZ0bK6d67ih3Rq5VcCHiDlHK+i5b/P7iOlrvj07mTAQ
- nEs=
-X-IronPort-AV: E=Sophos;i="5.73,437,1583164800"; 
-   d="scan'208";a="247571876"
-Received: from h199-255-45-15.hgst.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 26 May 2020 22:21:37 +0800
-IronPort-SDR: qmTjDlv9qKrtd+yTnLmhkkYLPT3Na8tWpUbtjTNef3Di8akEktpApdkBSnr3iUYCOpfy7fMafB
- /Chr3Vuk4M3CJYqInh2GN8uXZISb9opu8=
-Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 May 2020 07:10:56 -0700
-IronPort-SDR: DVtlyO8dN91xZh+Hnz3p4r8Y9cCWIhTyrQamIDAMVUV4iYcjhweSasnQvYU18lHf1p5OmNmhOd
- Maczmawroj6A==
-WDCIronportException: Internal
-Received: from unknown (HELO redsun60.ssa.fujisawa.hgst.com) ([10.149.66.36])
-  by uls-op-cesaip02.wdc.com with ESMTP; 26 May 2020 07:21:37 -0700
-From:   Johannes Thumshirn <johannes.thumshirn@wdc.com>
-To:     David Sterba <dsterba@suse.cz>
-Cc:     linux-btrfs@vger.kernel.org,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Subject: [PATCH 3/3] btrfs: factor out reading of bg from find_frist_block_group
-Date:   Tue, 26 May 2020 23:21:24 +0900
-Message-Id: <20200526142124.36202-4-johannes.thumshirn@wdc.com>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200526142124.36202-1-johannes.thumshirn@wdc.com>
-References: <20200526142124.36202-1-johannes.thumshirn@wdc.com>
+        Tue, 26 May 2020 10:26:14 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DB18C03E96D
+        for <linux-btrfs@vger.kernel.org>; Tue, 26 May 2020 07:26:10 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id z5so24070573ejb.3
+        for <linux-btrfs@vger.kernel.org>; Tue, 26 May 2020 07:26:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=ZQhM7TJuYSkXXSbKn+XvFcUoDeD40iwyfLzqSYzDTCM=;
+        b=tLsC3KhOF83L0IdekkxurtBxepeJXdzb7SgdkSCwdNZgo4KYyeoaxvABHTO7X/Id2X
+         vRRDbL0ZImXa2VwoJA5PGVKopBcEIgky+17d4+/kTTTf6ctBGEFps7M+4/zeJLwiX6pu
+         g6BBcUg8pPaCV3kyMFza2u8OnlrIQT/xODCZkerzs9FDQL0zyeaQS8c09nzV6iV5emht
+         P38O4hxTdhuRtmGy4NuA4CR9bwJ7YXwM4nImVrPBminDtzc055tarLdSkg/XE+H9bEd/
+         LLz/OTl9ycNY+4cDTyyzVmrZ4diOYNWmhMV4nc0Kj6KHWl0sZDuMXetKEdcl6kGGDiC/
+         eV3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=ZQhM7TJuYSkXXSbKn+XvFcUoDeD40iwyfLzqSYzDTCM=;
+        b=iC9kBW4i40cUuKpRqGZGgBcFcHJbX3PIqt8VMBq8gpkHiYfThHEdX0GZaYj+WD4FdJ
+         Sxlz29LtiipjX/1nL0iRlMKjQLxSfmbHLQmAyI1JCUD4XHlVIsPd6a6+sBPlJ1NjmWCP
+         tUgubv4RfInJBDxg0N6yLfC0He81MMgCO4LAwSGUJX+q5hZ76Ou4lUaIccK7PzhoNMXa
+         WChFLOm3qM25wwCRY//xlKLd4Qq45wNCeVGYolnJEH6f6+7dAXBZ4xaEkf6UF9D7juB/
+         NbdxNWAsg11nn3fdviYoQ4vi2MXYw8AT3406K4yt4YBPzBDdkcIn9SQVjoMPpOLZvDk3
+         UxLA==
+X-Gm-Message-State: AOAM531agN6cTEfL1qeQfIJTEVbmaRKQx/inXhcuEzP2r8DKYqLWBdVE
+        I9NV1BvQ4Yhk0QaxI4WD80b2tIM3QJTO5ir0iiI=
+X-Google-Smtp-Source: ABdhPJz49QBtqEQ8nP/6ODk40wws8ojPZYNf7Cvmq1YDp/xE9Cvo+ideTJEtjlRcSJgyfI2NOrSlfuH1miK69592yWY=
+X-Received: by 2002:a17:906:3604:: with SMTP id q4mr1393357ejb.69.1590503169168;
+ Tue, 26 May 2020 07:26:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: by 2002:aa7:cf04:0:0:0:0:0 with HTTP; Tue, 26 May 2020 07:26:08
+ -0700 (PDT)
+Reply-To: mrmohamedmusa5@gmail.com
+From:   Mr Mohamed Musa <chandrineabdalla@gmail.com>
+Date:   Tue, 26 May 2020 16:26:08 +0200
+Message-ID: <CAGGK=vqH2gDQvdtJ64mCVf-dgD0Yt6cHD4Kq-cdAuvSs1-pPGQ@mail.gmail.com>
+Subject: REPLY ME IMMEDIATELY
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-When find_first_block_group() finds a block group item in the extent-tree,
-it does a lookup of the object in the extent mapping tree and does further
-checks on the item.
+Assalamu alaikum
 
-Factor out this step from find_first_block_group() so we can further
-simplify the code.
+My name is Mr. Mohamed Musa, I am a staff working with the Bank Of
+Africa here in Ouagadougou,Burkina Faso.
 
-As a bonus we even get a slight decrease in size:
-$ ./scripts/bloat-o-meter btrfs_old.ko btrfs.ko
-add/remove: 0/0 grow/shrink: 0/2 up/down: 0/-2503 (-2503)
-Function                                     old     new   delta
-btrfs_read_block_groups.cold                 462     337    -125
-btrfs_read_block_groups                     4787    2409   -2378
-Total: Before=2369371, After=2366868, chg -0.11%
+I want you to help me in receiving the sum of Twenty Seven Million Two
+Hundred thousand Dollars ($27,200,000) into your Bank Account. This
+fund was deposited in the bank here by a foreign customer who died
+accidentally alongside with his entire family members many years ago.
+Nobody had asked for this fund till now Please Contact me with my
+Email: mrmohamedmusa5@gmail.com: for more details.
 
-Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
----
- fs/btrfs/block-group.c | 95 ++++++++++++++++++++++--------------------
- 1 file changed, 49 insertions(+), 46 deletions(-)
-
-diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-index c4462e4c8413..3d9e0ee1d1be 100644
---- a/fs/btrfs/block-group.c
-+++ b/fs/btrfs/block-group.c
-@@ -1522,6 +1522,52 @@ void btrfs_mark_bg_unused(struct btrfs_block_group *bg)
- 	spin_unlock(&fs_info->unused_bgs_lock);
- }
- 
-+static int read_bg_from_eb(struct btrfs_fs_info *fs_info, struct btrfs_key *key,
-+			   struct extent_buffer *leaf, int slot)
-+{
-+	struct extent_map_tree *em_tree;
-+	struct extent_map *em;
-+	struct btrfs_block_group_item bg;
-+	u64 flags;
-+	int ret = 0;
-+
-+	em_tree = &fs_info->mapping_tree;
-+	read_lock(&em_tree->lock);
-+	em = lookup_extent_mapping(em_tree, key->objectid, key->offset);
-+	read_unlock(&em_tree->lock);
-+	if (!em) {
-+		btrfs_err(fs_info,
-+			  "logical %llu len %llu found bg but no related chunk",
-+			  key->objectid, key->offset);
-+		return -ENOENT;
-+	}
-+
-+	if (em->start != key->objectid || em->len != key->offset) {
-+		btrfs_err(fs_info,
-+			  "block group %llu len %llu mismatch with chunk %llu len %llu",
-+			  key->objectid, key->offset, em->start, em->len);
-+		ret = -EUCLEAN;
-+		goto out_free_em;
-+	}
-+
-+	read_extent_buffer(leaf, &bg, btrfs_item_ptr_offset(leaf, slot),
-+			   sizeof(bg));
-+	flags = btrfs_stack_block_group_flags(&bg) &
-+		BTRFS_BLOCK_GROUP_TYPE_MASK;
-+
-+	if (flags != (em->map_lookup->type & BTRFS_BLOCK_GROUP_TYPE_MASK)) {
-+		btrfs_err(fs_info,
-+			  "block group %llu len %llu type flags 0x%llx mismatch with chunk type flags 0x%llx",
-+			  key->objectid, key->offset, flags,
-+			  (BTRFS_BLOCK_GROUP_TYPE_MASK & em->map_lookup->type));
-+		ret = -EUCLEAN;
-+	}
-+
-+out_free_em:
-+	free_extent_map(em);
-+	return ret;
-+}
-+
- static int find_first_block_group(struct btrfs_fs_info *fs_info,
- 				  struct btrfs_path *path,
- 				  struct btrfs_key *key)
-@@ -1530,8 +1576,6 @@ static int find_first_block_group(struct btrfs_fs_info *fs_info,
- 	int ret;
- 	struct btrfs_key found_key;
- 	struct extent_buffer *leaf;
--	struct btrfs_block_group_item bg;
--	u64 flags;
- 	int slot;
- 
- 	ret = btrfs_search_slot(NULL, root, key, path, 0, 0);
-@@ -1552,50 +1596,9 @@ static int find_first_block_group(struct btrfs_fs_info *fs_info,
- 		btrfs_item_key_to_cpu(leaf, &found_key, slot);
- 
- 		if (found_key.objectid >= key->objectid &&
--		    found_key.type == BTRFS_BLOCK_GROUP_ITEM_KEY) {
--			struct extent_map_tree *em_tree;
--			struct extent_map *em;
--
--			em_tree = &fs_info->mapping_tree;
--			read_lock(&em_tree->lock);
--			em = lookup_extent_mapping(em_tree, found_key.objectid,
--						   found_key.offset);
--			read_unlock(&em_tree->lock);
--			if (!em) {
--				btrfs_err(fs_info,
--			"logical %llu len %llu found bg but no related chunk",
--					  found_key.objectid, found_key.offset);
--				ret = -ENOENT;
--			} else if (em->start != found_key.objectid ||
--				   em->len != found_key.offset) {
--				btrfs_err(fs_info,
--		"block group %llu len %llu mismatch with chunk %llu len %llu",
--					  found_key.objectid, found_key.offset,
--					  em->start, em->len);
--				ret = -EUCLEAN;
--			} else {
--				read_extent_buffer(leaf, &bg,
--					btrfs_item_ptr_offset(leaf, slot),
--					sizeof(bg));
--				flags = btrfs_stack_block_group_flags(&bg) &
--					BTRFS_BLOCK_GROUP_TYPE_MASK;
--
--				if (flags != (em->map_lookup->type &
--					      BTRFS_BLOCK_GROUP_TYPE_MASK)) {
--					btrfs_err(fs_info,
--"block group %llu len %llu type flags 0x%llx mismatch with chunk type flags 0x%llx",
--						found_key.objectid,
--						found_key.offset, flags,
--						(BTRFS_BLOCK_GROUP_TYPE_MASK &
--						 em->map_lookup->type));
--					ret = -EUCLEAN;
--				} else {
--					ret = 0;
--				}
--			}
--			free_extent_map(em);
--			return ret;
--		}
-+		    found_key.type == BTRFS_BLOCK_GROUP_ITEM_KEY)
-+			return read_bg_from_eb(fs_info, &found_key, leaf, slot);
-+
- 		path->slots[0]++;
- 	}
- 
--- 
-2.24.1
-
+Mr. Mohamed Musa
