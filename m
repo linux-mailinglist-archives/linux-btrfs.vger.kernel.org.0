@@ -2,97 +2,80 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B150E1E2239
-	for <lists+linux-btrfs@lfdr.de>; Tue, 26 May 2020 14:48:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 953541E23FC
+	for <lists+linux-btrfs@lfdr.de>; Tue, 26 May 2020 16:21:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727983AbgEZMse (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 26 May 2020 08:48:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59140 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726882AbgEZMse (ORCPT
+        id S1726939AbgEZOVg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 26 May 2020 10:21:36 -0400
+Received: from esa1.hgst.iphmx.com ([68.232.141.245]:15674 "EHLO
+        esa1.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726437AbgEZOVg (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 26 May 2020 08:48:34 -0400
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EACEBC03E96D
-        for <linux-btrfs@vger.kernel.org>; Tue, 26 May 2020 05:48:33 -0700 (PDT)
-Received: by mail-io1-xd44.google.com with SMTP id o5so21750752iow.8
-        for <linux-btrfs@vger.kernel.org>; Tue, 26 May 2020 05:48:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=58ee3MtHg1EWWgwHj/N2sVhSpUFRNt4/r4iB0jWAe/w=;
-        b=HleX+Zc5CT0Cn9VMRoqdx/JgZix4n6U0oQ9Tn2GKMp5BB2JdSCIlY6YyHoZhPSNfyu
-         ocCESD6jm11nkvRoo5B1wm0o+vAgLrRZRjIr5eQrSgKj6R2pq0GdtDcnn5JOcf05XrSk
-         1Fc1epzGydRHIhxUYEAhm1OKV741TkRaEEy4MHZFV2oLb2tClYCfYVJvFGdd7N0Gsm9c
-         Q1SDCiT7pBxl1/AVw7sRlmr5allnWB6VTcMV8NkENOb4mZ1Ltr6zQqknKtDfpqH9OERR
-         iXDGhRu6sZxzxzENtyu4v3q51JHZt/h6u4skvuYeivsk4PHgMkiunTUiD67PUSNeXb0E
-         EBWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=58ee3MtHg1EWWgwHj/N2sVhSpUFRNt4/r4iB0jWAe/w=;
-        b=Lkig2bdpBc7TrIT7O+Ij11YSYje/f0X+Cx5cKnc6juz7BgdLNfdHJL6bqammRRY0ZM
-         B+2fwa1kKHtE8xi+PPxwjX1//I3KQ+Q93224Nwiz7z2zkt2n39iP796JGlh7afjVPhVL
-         ufD0NFNgx/s2gtHJn1lreiYu825WNkF60i7NXDTnsoMTzC5aAf+sL1vyJ67gEO/WLzdS
-         XVXkeMIgnCgBn5bM0F6EqT9ZoXGnAEv00YOyGFZB15h4i20DKqL3e3DnTbKhbmtQf1iT
-         /dh547EKNWMcMssl/cJ4/Z9oISa4No+r88HuTzLsJz1ikZjsx6rTTZ0Kc0VpbemvuyTg
-         f6jg==
-X-Gm-Message-State: AOAM533ROV3A+7jFXh1aPpMofnUZGO4lD16N6rQbaAIYTCLRfv+ZdJJd
-        fhoPog5uqWWVhtzio3tvPbWf2HC9Gc2fQp7LjXuziAfEuvM=
-X-Google-Smtp-Source: ABdhPJyy8iKhbpbWoOqSsv9vEmjOKjmamYT+fNkumYnFMZHz2at9NAY7ayE4OuWAF1BfjLL4v5ePqh8j8Mrsl6HwwLs=
-X-Received: by 2002:a6b:1487:: with SMTP id 129mr4519205iou.197.1590497313047;
- Tue, 26 May 2020 05:48:33 -0700 (PDT)
+        Tue, 26 May 2020 10:21:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1590502895; x=1622038895;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=1Vg8ByXNMirVH+KYy2/prxpv2O/CQYC3LADm4k/WnKs=;
+  b=AydyPJtyvui9UGukAhM2WQuNU+eWnq4gpPi184QmKUzDOioMkSZrwFIq
+   wPbhlDJvETliCUlo1etFUJApg2sDhi9ul56cQM817LOQUG3oncTSc3Wkx
+   bvtPvPzL0PTmzcb6R8T9WavEcmhSMtQPfUenBsrsyZE945ldriMp0e0wB
+   cDXFJGLL+jXv8aEqpsth1s97xdXT8CbPJ2Rhdgdm32H1xYRl2K4qmZLqS
+   JMuGfkY1RuFgSnW7bVSpiQvlj9XPbBu5/gYAVDpEDMquzLZSi9TgnchbZ
+   Af3BQzCQdrh77FWtgGZG9xnWJAXnb42dzQCZTVPGSK7yjCzob9h9KXINh
+   g==;
+IronPort-SDR: qq7L8uKLjCtozqPesseeggrjI+Va8oNjzyDlNBLj8Z2yTdib/lQkKkh1x5DfbRFnYovHQp+IWn
+ 4SZrVIJ9Zzta0vgLzMj8qOEVeQep4F0eIKLUs6neea81XBBzWMh7LjagiHZ0mpY6N6Q9AoXZjX
+ jP5E7mCsIJMewerG67vLl/xGYBwghOi1b7u8mNKCDhBIduuCovsDCAG7NqNpdBSPakUxciKT0D
+ SjtPpyUilHBhm9puj2Jc9eRE7dSBtRd84uGGqwPkr4cBwZ8Fn1M3rIyoxS/fxqn+2aCrMy1PH7
+ LGM=
+X-IronPort-AV: E=Sophos;i="5.73,437,1583164800"; 
+   d="scan'208";a="247571873"
+Received: from h199-255-45-15.hgst.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
+  by ob1.hgst.iphmx.com with ESMTP; 26 May 2020 22:21:35 +0800
+IronPort-SDR: ONweaomnSLpeLRSa08owHWZPtcTgyGynlenVFS5dB+8wvCWo7NzCxsMHHzfqElMcF4z3x4/6XO
+ uToN0/YT+ZzIV/x0nqPnVll+IfRsfCl8Q=
+Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
+  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 May 2020 07:10:54 -0700
+IronPort-SDR: xKInQMTTY5oJkjOaHGxRRbxA0E+bkVhuyeFSIWSquEENfWntF45rGsYqvp3xe7NIhIhjKQhBqZ
+ ZzDkj3WX9qZw==
+WDCIronportException: Internal
+Received: from unknown (HELO redsun60.ssa.fujisawa.hgst.com) ([10.149.66.36])
+  by uls-op-cesaip02.wdc.com with ESMTP; 26 May 2020 07:21:34 -0700
+From:   Johannes Thumshirn <johannes.thumshirn@wdc.com>
+To:     David Sterba <dsterba@suse.cz>
+Cc:     linux-btrfs@vger.kernel.org,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Subject: [PATCH 0/3] 3 small cleanups for find_first_block_group
+Date:   Tue, 26 May 2020 23:21:21 +0900
+Message-Id: <20200526142124.36202-1-johannes.thumshirn@wdc.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-References: <CAGAeKut52ymR5WVDTxJgQ=-fZzJ+pU8oVF89p4mBO-eaoAHiKw@mail.gmail.com>
-In-Reply-To: <CAGAeKut52ymR5WVDTxJgQ=-fZzJ+pU8oVF89p4mBO-eaoAHiKw@mail.gmail.com>
-From:   Neal Gompa <ngompa13@gmail.com>
-Date:   Tue, 26 May 2020 08:47:57 -0400
-Message-ID: <CAEg-Je_KWY5BpG0LKD4yDCVC7CdYbmxfCxxNy1pf5ACfZSnMRQ@mail.gmail.com>
-Subject: Re: Planning out new fs. Am I missing anything?
-To:     Justin Engwer <justin@mautobu.com>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sun, May 24, 2020 at 9:35 PM Justin Engwer <justin@mautobu.com> wrote:
->
-> Hi, I'm the guy who lost all his VMs due to a massive configuration overs=
-ight.
->
-> I'm looking to implement the remaining 4 x 3tb drives into a new fs
-> and just want someone to look over things. I'm intending to use them
-> for backup storage (veeam).
->
-> Centos 7 Kernel 5.5.2-1.el7.elrepo.x86_64
-> btrfs-progs v4.9.1
->
-> mkfs.btrfs -m raid1c4 -d raid1 /dev/disk/by-id/ata-ST3000*-part1
-> echo "UUID=3Dwhatever /mnt/btrfs/ btrfs defaults,space_cache=3Dv2 0 2" >>=
- /etc/fstab
-> mount /mnt/btrfs
->
-> RAID1 over 4 disks and RAID1C4 metadata. Mounting with space_cache=3Dv2.
-> Any other mount switches or btrfs creation switches I should be aware
-> of? Should I consider RAID5/6 instead? 6tb should be sufficient, so
-> it's not like I'd get anything out of RAID5, but RAID6 I suppose could
-> provide a little more safety in the case of multiple drive failures at
-> once.
->
+While trying to learn the Block Group code I've found some cleanup
+possibilities for find_first_block_group().
 
-In general, this looks fine, but I'd suggest that you switch to CentOS 8.
+Here's a proposal to make $ffbg a bit more easier to read by untangling the
+gotos and if statements.
 
-There's a COPR for btrfs-progs for EL8 that's keeps in sync with
-Fedora: https://copr.fedorainfracloud.org/coprs/ngompa/btrfs-progs-el8/
+The patch set is based on misc-next from May 26 morning with 
+HEAD 3f4a266717ed ("btrfs: split btrfs_direct_IO to read and write part")
+and xfstests showed no regressions to the base misc-next in my test setup.
 
-For CentOS 8, you should continue to plan to use ELRepo.org kernels. :)
+Johannes Thumshirn (3):
+  btrfs: remove pointless out label in find_first_block_group
+  btrfs: get mapping tree directly from fsinfo in find_first_block_group
+  btrfs: factor out reading of bg from find_frist_block_group
 
+ fs/btrfs/block-group.c | 103 +++++++++++++++++++++--------------------
+ 1 file changed, 53 insertions(+), 50 deletions(-)
 
---=20
-=E7=9C=9F=E5=AE=9F=E3=81=AF=E3=81=84=E3=81=A4=E3=82=82=E4=B8=80=E3=81=A4=EF=
-=BC=81/ Always, there's only one truth!
+-- 
+2.24.1
+
