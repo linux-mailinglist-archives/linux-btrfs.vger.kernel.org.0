@@ -2,26 +2,26 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA9C21E2560
-	for <lists+linux-btrfs@lfdr.de>; Tue, 26 May 2020 17:24:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 115FD1E2561
+	for <lists+linux-btrfs@lfdr.de>; Tue, 26 May 2020 17:25:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729309AbgEZPYx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 26 May 2020 11:24:53 -0400
-Received: from mx2.suse.de ([195.135.220.15]:40204 "EHLO mx2.suse.de"
+        id S1728626AbgEZPZ3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 26 May 2020 11:25:29 -0400
+Received: from mx2.suse.de ([195.135.220.15]:40772 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728626AbgEZPYx (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 26 May 2020 11:24:53 -0400
+        id S1727921AbgEZPZ3 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 26 May 2020 11:25:29 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id E3899AB3D;
-        Tue, 26 May 2020 15:24:53 +0000 (UTC)
-Subject: Re: [PATCH 1/3] btrfs: remove pointless out label in
+        by mx2.suse.de (Postfix) with ESMTP id 4D67DAB3D;
+        Tue, 26 May 2020 15:25:30 +0000 (UTC)
+Subject: Re: [PATCH 2/3] btrfs: get mapping tree directly from fsinfo in
  find_first_block_group
 To:     Johannes Thumshirn <johannes.thumshirn@wdc.com>,
         David Sterba <dsterba@suse.cz>
 Cc:     linux-btrfs@vger.kernel.org
 References: <20200526142124.36202-1-johannes.thumshirn@wdc.com>
- <20200526142124.36202-2-johannes.thumshirn@wdc.com>
+ <20200526142124.36202-3-johannes.thumshirn@wdc.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  xsFNBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -65,12 +65,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  KIuxEcV8wcVjr+Wr9zRl06waOCkgrQbTPp631hToxo+4rA1jiQF2M80HAet65ytBVR2pFGZF
  zGYYLqiG+mpUZ+FPjxk9kpkRYz61mTLSY7tuFljExfJWMGfgSg1OxfLV631jV1TcdUnx+h3l
  Sqs2vMhAVt14zT8mpIuu2VNxcontxgVr1kzYA/tQg32fVRbGr449j1gw57BV9i0vww==
-Message-ID: <fce3d7f8-23b8-b417-f5d3-3f6af7738118@suse.com>
-Date:   Tue, 26 May 2020 18:24:49 +0300
+Message-ID: <6206fde8-719f-bad0-a13f-af55a0790f3d@suse.com>
+Date:   Tue, 26 May 2020 18:25:26 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <20200526142124.36202-2-johannes.thumshirn@wdc.com>
+In-Reply-To: <20200526142124.36202-3-johannes.thumshirn@wdc.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -82,16 +82,13 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 26.05.20 г. 17:21 ч., Johannes Thumshirn wrote:
-> The 'out' label in find_first_block_group() does not do anything in terms
-> of cleanup.
+> We already have an fs_info in our function parameters, there's no need to
+> do the maths again and get fs_info from the extent_root just to get the
+> mapping_tree.
 > 
-> It is better to directly return 'ret' instead of jumping to out to not
-> confuse readers. Additionally there is no need to initialize ret with 0.
+> Instead directly grab the mapping_tree from fs_info.
 > 
 > Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 
-I personally prefer returning fast aka the way you've done it but dunno
-if David is a fan of this. In any case:
-
-
 Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+
