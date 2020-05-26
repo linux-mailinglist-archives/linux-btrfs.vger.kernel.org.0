@@ -2,26 +2,26 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 115FD1E2561
-	for <lists+linux-btrfs@lfdr.de>; Tue, 26 May 2020 17:25:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A7631E2584
+	for <lists+linux-btrfs@lfdr.de>; Tue, 26 May 2020 17:33:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728626AbgEZPZ3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 26 May 2020 11:25:29 -0400
-Received: from mx2.suse.de ([195.135.220.15]:40772 "EHLO mx2.suse.de"
+        id S1729088AbgEZPdb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 26 May 2020 11:33:31 -0400
+Received: from mx2.suse.de ([195.135.220.15]:48626 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727921AbgEZPZ3 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 26 May 2020 11:25:29 -0400
+        id S1727898AbgEZPdb (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 26 May 2020 11:33:31 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 4D67DAB3D;
-        Tue, 26 May 2020 15:25:30 +0000 (UTC)
-Subject: Re: [PATCH 2/3] btrfs: get mapping tree directly from fsinfo in
- find_first_block_group
+        by mx2.suse.de (Postfix) with ESMTP id 13718AC61;
+        Tue, 26 May 2020 15:33:32 +0000 (UTC)
+Subject: Re: [PATCH 3/3] btrfs: factor out reading of bg from
+ find_frist_block_group
 To:     Johannes Thumshirn <johannes.thumshirn@wdc.com>,
         David Sterba <dsterba@suse.cz>
 Cc:     linux-btrfs@vger.kernel.org
 References: <20200526142124.36202-1-johannes.thumshirn@wdc.com>
- <20200526142124.36202-3-johannes.thumshirn@wdc.com>
+ <20200526142124.36202-4-johannes.thumshirn@wdc.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  xsFNBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -65,12 +65,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  KIuxEcV8wcVjr+Wr9zRl06waOCkgrQbTPp631hToxo+4rA1jiQF2M80HAet65ytBVR2pFGZF
  zGYYLqiG+mpUZ+FPjxk9kpkRYz61mTLSY7tuFljExfJWMGfgSg1OxfLV631jV1TcdUnx+h3l
  Sqs2vMhAVt14zT8mpIuu2VNxcontxgVr1kzYA/tQg32fVRbGr449j1gw57BV9i0vww==
-Message-ID: <6206fde8-719f-bad0-a13f-af55a0790f3d@suse.com>
-Date:   Tue, 26 May 2020 18:25:26 +0300
+Message-ID: <ac073d60-7df1-bd20-1da5-350672d5b780@suse.com>
+Date:   Tue, 26 May 2020 18:33:28 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <20200526142124.36202-3-johannes.thumshirn@wdc.com>
+In-Reply-To: <20200526142124.36202-4-johannes.thumshirn@wdc.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -82,13 +82,52 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 26.05.20 г. 17:21 ч., Johannes Thumshirn wrote:
-> We already have an fs_info in our function parameters, there's no need to
-> do the maths again and get fs_info from the extent_root just to get the
-> mapping_tree.
+> When find_first_block_group() finds a block group item in the extent-tree,
+> it does a lookup of the object in the extent mapping tree and does further
+> checks on the item.
 > 
-> Instead directly grab the mapping_tree from fs_info.
+> Factor out this step from find_first_block_group() so we can further
+> simplify the code.
+> 
+> As a bonus we even get a slight decrease in size:
+> $ ./scripts/bloat-o-meter btrfs_old.ko btrfs.ko
+> add/remove: 0/0 grow/shrink: 0/2 up/down: 0/-2503 (-2503)
+> Function                                     old     new   delta
+> btrfs_read_block_groups.cold                 462     337    -125
+> btrfs_read_block_groups                     4787    2409   -2378
+> Total: Before=2369371, After=2366868, chg -0.11%
+
+Always be careful of such results since this is likely due to less
+inlining. The bulk of the size overhead is likely in the new function
+and now those have been replaced by a 'call' and a function prologue
+etc. So this doesn't always mean better performance is all I'm trying to
+say ;)
+
 > 
 > Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 
 Reviewed-by: Nikolay Borisov <nborisov@suse.com>
 
+Although look down for one minor discussion point.
+
+> ---
+>  fs/btrfs/block-group.c | 95 ++++++++++++++++++++++--------------------
+>  1 file changed, 49 insertions(+), 46 deletions(-)
+> 
+> diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+> index c4462e4c8413..3d9e0ee1d1be 100644
+> --- a/fs/btrfs/block-group.c
+> +++ b/fs/btrfs/block-group.c
+> @@ -1522,6 +1522,52 @@ void btrfs_mark_bg_unused(struct btrfs_block_group *bg)
+>  	spin_unlock(&fs_info->unused_bgs_lock);
+>  }
+>  
+> +static int read_bg_from_eb(struct btrfs_fs_info *fs_info, struct btrfs_key *key,
+> +			   struct extent_buffer *leaf, int slot)
+
+nit: I wonder if instead of passing leaf/slot it'll be better to pass
+btrfs_path, since that function always refers to nodes/slots [0]. My gut
+feeling is this provides better interface abstraction, but this is
+effectively a private, function so I might be overthinking it.
+
+<snip>
