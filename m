@@ -2,82 +2,92 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 167FA1E20A7
-	for <lists+linux-btrfs@lfdr.de>; Tue, 26 May 2020 13:07:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 607B81E2165
+	for <lists+linux-btrfs@lfdr.de>; Tue, 26 May 2020 13:54:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388748AbgEZLHU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 26 May 2020 07:07:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43356 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388712AbgEZLHS (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 26 May 2020 07:07:18 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93A83C03E97E
-        for <linux-btrfs@vger.kernel.org>; Tue, 26 May 2020 04:07:16 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id w3so14542300qkb.6
-        for <linux-btrfs@vger.kernel.org>; Tue, 26 May 2020 04:07:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=hkIoRcujtNuWrr5qDxULHzVB1yVIdfOVBx6NUNkuGoQ=;
-        b=NuHU7rnTVF0bpCTwmpxhoqfzIibqgQ11j2Udibb7voNO1m8aj23Wx5KFvS4gRCUDVs
-         FdXp5JEauCH/K10Hgbez8HfkkVmZUh4uDuRZN1xdQr4wQm7BTplCUbR2xdvkXrmnUi0f
-         QmulZkDmHjut41U6IZR/7mkEyqCM13groqVmC/AsGm8mGBED2bKhtd/SFUdm3sQ1syls
-         csOPXxOjiqaLP80EzQwUIx87ouTNwm4L7/dFGPBz1je17G93ikQt1OrPZ08vB4oAfJH6
-         IolYCe0U5fEQBiilnqodsWPWVPwo++hRHwCPJtBtUz/tvs0Hom5ya2omXkK4HDaE2PQH
-         dT/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=hkIoRcujtNuWrr5qDxULHzVB1yVIdfOVBx6NUNkuGoQ=;
-        b=I/mhZEEeGX0Otr0KVGLD7ctNoxcvTJ6IKxdPmxjQ+QkMOWEMAfDg+PXOBTVi3bnE11
-         9mJD+FW563JtZa+VkEuBkW93eCvN/hRfgJPpGfEcv3Ctf0ENxRIqz5rJfyVsu6ib+XYQ
-         C3t7jjL92tgMZeJ9G5IZAebmaglMW784sDO00mE6lBRjhi5bvfyhah7q/zQhYawrW95Q
-         NZ6L8Ny1ifeRFVqCtW6HrWKAc7IIQxLhCLUyy1VPWvfogmZtwEYv0ENmJGv4a4H57iPA
-         bFSmNZOXqrWAm1gayDCM6dj/IpQneyBC/fBLmCJz3k6+X3T49WQVgqUUQvfhIB2JF5Ea
-         C3tw==
-X-Gm-Message-State: AOAM531IFXJJ/ZHgAqVcQX7a1Xutw5ZMDOSR4LBcYbWnp7gSblifT5JY
-        Uzgcp7jH332QEYqz56bYCJc07bj/I8hRfHQbS/k=
-X-Google-Smtp-Source: ABdhPJxomtVFUoLqDxn+VP/fSEi8ZhRRIYPsfHB6jaVRMcNEg/NqLqZb5LuaxdK02ykJMQYF5hOgMREozSrzX4/CCPE=
-X-Received: by 2002:a05:620a:110d:: with SMTP id o13mr657309qkk.212.1590491235802;
- Tue, 26 May 2020 04:07:15 -0700 (PDT)
+        id S1732026AbgEZLyB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 26 May 2020 07:54:01 -0400
+Received: from mx2.suse.de ([195.135.220.15]:57216 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728513AbgEZLyB (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 26 May 2020 07:54:01 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 07DF9AC69;
+        Tue, 26 May 2020 11:54:02 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 3A4FADA72D; Tue, 26 May 2020 13:53:01 +0200 (CEST)
+Date:   Tue, 26 May 2020 13:53:00 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+Cc:     "dsterba@suse.cz" <dsterba@suse.cz>,
+        Johannes Thumshirn <jth@kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        Eric Biggers <ebiggers@google.com>,
+        Richard Weinberger <richard@nod.at>
+Subject: Re: [PATCH v3 0/3] Add file-system authentication to BTRFS
+Message-ID: <20200526115300.GY18421@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz,
+        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        Johannes Thumshirn <jth@kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        Eric Biggers <ebiggers@google.com>,
+        Richard Weinberger <richard@nod.at>
+References: <20200514092415.5389-1-jth@kernel.org>
+ <20200525131040.GS18421@twin.jikos.cz>
+ <SN4PR0401MB35986E7B3F88F1EB288051A79BB00@SN4PR0401MB3598.namprd04.prod.outlook.com>
 MIME-Version: 1.0
-Received: by 2002:ad4:4563:0:0:0:0:0 with HTTP; Tue, 26 May 2020 04:07:13
- -0700 (PDT)
-Reply-To: scdn-1@tlen.pl
-From:   "Mr. Scott Donald" <davidaminu1@gmail.com>
-Date:   Tue, 26 May 2020 04:07:13 -0700
-Message-ID: <CALe=1L0EoUDPcdA8rO326gmXkjqkhTdnarDypJ611mWvt7mE9g@mail.gmail.com>
-Subject: Urgent Reply,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <SN4PR0401MB35986E7B3F88F1EB288051A79BB00@SN4PR0401MB3598.namprd04.prod.outlook.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Dear Friend,
-I'm Mr. Scott Donald a Successful business Man. dealing with
-Exportation, I got your mail contact through search to let you know my
-Ugly Situation Am a dying Man here in Los Angeles California Hospital
-Bed in (USA), I Lost my Wife and my only Daughter for Covid-19 i'm
-dying with same symptoms. my Doctor open-up to me that i don't have
-enough time to live any more, i have a project that am about to
-handover to you. i have already instructed the Barclays Bank of London
-to transfer my fund sum of =C2=A33,7M GBP to you as to enable you give 50%
-to Charitable Home and take 50% i have given all i have here in
-America to Charitable home I ask my Doctor to help me keep you notice
-when i'm no more please, allow me to see you on my Doctor whatsapp
-video call very urgent please, here is my Doctor Whatsapp Number for
-urgent notice +13019692737
+On Tue, May 26, 2020 at 07:50:53AM +0000, Johannes Thumshirn wrote:
+> On 25/05/2020 15:11, David Sterba wrote:
+> > On Thu, May 14, 2020 at 11:24:12AM +0200, Johannes Thumshirn wrote:
+> > As mentioned in the discussion under LWN article, https://lwn.net/Articles/818842/
+> > ZFS implements split hash where one half is (partial) authenticated hash
+> > and the other half is a checksum. This allows to have at least some sort
+> > of verification when the auth key is not available. This applies to the
+> > fixed size checksum area of metadata blocks, for data we can afford to
+> > store both hashes in full.
+> > 
+> > I like this idea, however it brings interesting design decisions, "what
+> > if" and corner cases:
+> > 
+> > - what hashes to use for the plain checksum, and thus what's the split
+> > - what if one hash matches and the other not
+> > - increased checksum calculation time due to doubled block read
+> > - whether to store the same parital hash+checksum for data too
+> > 
+> > As the authenticated hash is the main usecase, I'd reserve most of the
+> > 32 byte buffer to it and use a weak hash for checksum: 24 bytes for HMAC
+> > and 8 bytes for checksum. As an example: sha256+xxhash or
+> > blake2b+xxhash.
+> > 
+> > I'd outright skip crc32c for the checksum so we have only small number
+> > of authenticated checksums and avoid too many options, eg.
+> > hmac-sha256-crc32c etc. The result will be still 2 authenticated hashes
+> > with the added checksum hardcoded to xxhash.
+> 
+> Hmm I'm really not a fan of this. We would have to use something like 
+> sha2-224 to get the room for the 2nd checksum. So we're using a weaker
+> hash just so we can add a second checksum.
 
-Hope To Hear From You. i'm sending this email to you for the second
-times yet no response from you.
+The idea is to calculate full hash (32 bytes) and store only the part
+(24 bytes). Yes this means there's some information loss and weakening,
+but enables a usecase.
 
-My Regards.
+> On the other hand you've asked 
+> me to add the known pieces of information into the hashes as a salt to
+> "make attacks harder at a small cost".
 
-Mr. Scott Donald
+Yes and this makes it harder to attack the hash, it should be there
+regardless of the additional checksums.
