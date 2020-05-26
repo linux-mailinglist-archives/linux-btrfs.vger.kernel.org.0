@@ -2,89 +2,89 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58EB31E1864
-	for <lists+linux-btrfs@lfdr.de>; Tue, 26 May 2020 02:13:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4CB11E19B1
+	for <lists+linux-btrfs@lfdr.de>; Tue, 26 May 2020 05:01:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728684AbgEZANP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 25 May 2020 20:13:15 -0400
-Received: from magic.merlins.org ([209.81.13.136]:39802 "EHLO
-        mail1.merlins.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725969AbgEZANO (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 25 May 2020 20:13:14 -0400
-Received: from merlin by mail1.merlins.org with local (Exim 4.92 #3)
-        id 1jdNDS-0004Se-MO by authid <merlin>; Mon, 25 May 2020 17:13:10 -0700
-Date:   Mon, 25 May 2020 17:13:10 -0700
-From:   Marc MERLIN <marc@merlins.org>
-To:     Chris Murphy <lists@colorremedies.com>
-Cc:     Su Yue <Damenly_Su@gmx.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
-        Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Su Yue <suy.fnst@cn.fujitsu.com>
-Subject: Re: 5.5 kernel and btrfs-progs v5.6 create and cannot fix 'root
- 204162 inode 14058737 errors 1000, some csum missing'
-Message-ID: <20200526001310.GG19850@merlins.org>
+        id S2388470AbgEZDBR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 25 May 2020 23:01:17 -0400
+Received: from sefru.de ([176.9.70.71]:59288 "EHLO sefru.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388439AbgEZDBR (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 25 May 2020 23:01:17 -0400
+X-Greylist: delayed 1008 seconds by postgrey-1.27 at vger.kernel.org; Mon, 25 May 2020 23:01:16 EDT
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=bxx5.de;
+        s=dkim2016; h=Content-Transfer-Encoding:Content-Type:MIME-Version:Date:
+        Message-ID:To:Subject:From:Sender:Reply-To:Cc:Content-ID:Content-Description:
+        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=xfPXHiRygPBWbO12tgoISQv4XctGOlHyVjD/QguDJqI=; b=IrzB60W6eODmFZFERrTbLdFy9/
+        6FxrLglxGzDmFXRHJ9TQzCj+DyxOzUT+NfTuk6H0N1Rji1zHLWMLp2BdLEKT2v4sGpIm8o7eQ+h/U
+        N6selqkWZ4//vuW96cBV12lXZ8SfsiiXNItn+lu+8TO8YZUASXlUcX1ZETd9SHxix+v3wJnCFC0El
+        qz9W6KeVIHS7geS8jrGbXDGNaadMfYaN+UM6lfcJ+9Xcw2Apg8LgKB1syYGhKnexb1d9I8yNN19vO
+        uPWS4oVprzIYqySTyhytEAmX8A6XNMzyxVYS9yDatV/23zJOO/3iSSVnwfxUTqf3lj50Vde5Rusi7
+        vJRTq1ZA==;
+From:   Michael Thomas <mt@bxx5.de>
+Subject: Any news about rescue data from a raid5 in the last years?
+To:     linux-btrfs@vger.kernel.org
+Message-ID: <41c53dd1-b553-bc2e-115d-b227f97c43c2@merkens.info>
+Date:   Tue, 26 May 2020 04:44:25 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJCQCtQaN+4TY4_Y-CwPBQTtrJ52E-cc-A1+Nt2jOsyTrkX9fw@mail.gmail.com>
- <CAJCQCtQgeYE3XPFACru08qhSOTxv5N9icj4xV27rG81UeaVa=g@mail.gmail.com>
-X-Sysadmin: BOFH
-X-URL:  http://marc.merlins.org/
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-SA-Exim-Connect-IP: <locally generated>
-X-SA-Exim-Mail-From: marc@merlins.org
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, May 25, 2020 at 04:47:31PM -0600, Chris Murphy wrote:
-> Maybe. The story arc on Btrfs is that check --repair only fixes the
-> things it knows how to fix. It's gotten better but still has the scary
+Hey,
 
-that's always been true indeed :)
+I just wanted to ask if it's maybe possible to restore data from an old, 
+failed, raid5 btrfs fs. There are some files on it which I lost lately 
+and before I format the drives I wanted to give it another shot after 
+some (6?) years.
+I'm not sure what I tried before, but there are 3 drives there, was 4 
+before but 1 died (and this seems to be the problem of the disaster).
+I tried to add 1 new, but that didn't worked.
+So, there are 3 devices and as far as I understand, there are still no 
+good tools to rescue data from them, are they? btrfs restore and other 
+seems only compatible with 1 drive.
 
-> warning, and lately has a 10 second delay to really make sure the user
-> meant to use it. And regardless of mode, it's slow and just can't
-> scale. Neither does "wipe and restore from backup". So the problems of
-> inconsistency need to be understood to avoid the problem in the first
-> place.
+But maybe someone can give me a hint what I can try before giving up.
 
-that's ideal, but honestly it's a multi prong approach. I'm stil hoping
-that check --repair can improve.
- 
-> What about finding inode 14058737 and deleting it? In all of the
-> listed subvolumes? And then unmount and check again?
- 
-it's in all the subvolumes, including the btrfs send ones. 
-So sure, I can delete my btrfs send snapshots and have to start over,
-but really btrfs check should fix this better than rm, even if it makes
-the file not what it was. I can always replace it with a good copy
- 
-On Mon, May 25, 2020 at 04:51:51PM -0600, Chris Murphy wrote:
-> Before deleting it, can you check if chattr +C is set? Or what kind of
-> file is this? Because there's an old loophole in older kernels where
+If I try to mount:
+mount -o 
+degraded,subvol=data,ro,device=/dev/mapper/sdb,device=/dev/mapper/sdd,device=/dev/mapper/sde 
+/dev/mapper/sde /mnt/test
 
-saruman:~# lsattr /mnt/mnt/root/usr/share/locale/en_GB/LC_MESSAGES/gstreamer-1.0.mo
--------------------- /mnt/mnt/root/usr/share/locale/en_GB/LC_MESSAGES/gstreamer-1.0.mo
+dmesg give this errors:
+BTRFS warning (device dm-4): suspicious: generation < 
+chunk_root_generation: 176279 < 176413
+BTRFS info (device dm-4): allowing degraded mounts
+BTRFS info (device dm-4): disk space caching is enabled
+BTRFS warning (device dm-4): devid 4 uuid 
+16490fb1-df5e-4c81-9c07-4f799d0fc132 is missing
+BTRFS warning (device dm-4): devid 5 uuid 
+36436209-c0d4-4a5e-9176-d44c94cb4b39 is missing
+BTRFS critical (device dm-4): corrupt leaf: block=1095416938496 slot=151 
+extent bytenr=1095389085696 len=16384 invalid generation, have 176581 
+expect (0, 176280]
+BTRFS error (device dm-4): block=1095416938496 read time tree block 
+corruption detected
+BTRFS critical (device dm-4): corrupt leaf: block=1095416938496 slot=151 
+extent bytenr=1095389085696 len=16384 invalid generation, have 176581 
+expect (0, 176280]
+BTRFS error (device dm-4): block=1095416938496 read time tree block 
+corruption detected
+BTRFS warning (device dm-4): failed to read root (objectid=4): -5
+BTRFS error (device dm-4): open_ctree failed
 
-> You could try just making a 'cp --reflink=never' copy of the file. And
-> delete the original (and all of its copies in all subvolumes). Now
-> 'btrfs check'.
+(usebackuproot changed nothing and super-recover prints "All supers are 
+valid, no need to recover")
 
-I can restore the file from backup without issues, it's more that with
-btrfs send, I'm not allowed to delete the inode until it cycles out, and
-I can't cycle it out because btrfs send dies when it sees the
-inconsistent state.
+Do you have any hint, advice to get (some of) this data back?
 
-I mean, yes, I can do this and delete all the snapshots, I was just
-hoping to do slighty better as this is close to wiping the filesystem
-and starting over (actually it's mostly the same to be honest)
 
-Marc
--- 
-"A mouse is a device used to point at the xterm you want to type in" - A.S.R.
- 
-Home page: http://marc.merlins.org/  
+Best,
+Michael
