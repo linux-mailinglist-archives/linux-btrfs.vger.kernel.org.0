@@ -2,175 +2,102 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 858581E3EC4
-	for <lists+linux-btrfs@lfdr.de>; Wed, 27 May 2020 12:16:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA06F1E3EF5
+	for <lists+linux-btrfs@lfdr.de>; Wed, 27 May 2020 12:28:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387909AbgE0KQU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 27 May 2020 06:16:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56744 "EHLO mail.kernel.org"
+        id S2387891AbgE0K2R (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 27 May 2020 06:28:17 -0400
+Received: from mx2.suse.de ([195.135.220.15]:44488 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387852AbgE0KQU (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 27 May 2020 06:16:20 -0400
-Received: from debian6.Home (bl8-197-74.dsl.telepac.pt [85.241.197.74])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A491D2088E
-        for <linux-btrfs@vger.kernel.org>; Wed, 27 May 2020 10:16:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590574579;
-        bh=xApqRwcrrfyOWWcwxVMpKEBYZNSFu9numkKDVnIkwpc=;
-        h=From:To:Subject:Date:From;
-        b=GiaU9IsNNgdQ+xmo3153jg6yR20DmncjDCM4SI0Qez3PAaMef5HIfTPb94buFSz4I
-         OWfCnPeVKwoTMijp7eoI9ytq+3OZsRcO5yzq4zJxF42Vrr0KQhx5HndJfiRbEcJPdC
-         1SY1YytTrv7jO9j2fndnVlb84Np/VEpJ8sgEc5Jw=
-From:   fdmanana@kernel.org
+        id S1727018AbgE0K2Q (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 27 May 2020 06:28:16 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id CA85AAC51
+        for <linux-btrfs@vger.kernel.org>; Wed, 27 May 2020 10:28:17 +0000 (UTC)
+From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 3/3] Btrfs: fix space_info bytes_may_use underflow during space cache writeout
-Date:   Wed, 27 May 2020 11:16:19 +0100
-Message-Id: <20200527101619.26531-1-fdmanana@kernel.org>
-X-Mailer: git-send-email 2.11.0
+Subject: [PATCH 0/6] btrfs-progs: btrfs-image related fixes
+Date:   Wed, 27 May 2020 18:28:04 +0800
+Message-Id: <20200527102810.147999-1-wqu@suse.com>
+X-Mailer: git-send-email 2.26.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
+This branch can be fetched from github:
+https://github.com/adam900710/btrfs-progs/tree/image_fixes
 
-We always preallocate a data extent for writing a free space cache, which
-causes writeback to always try the nocow path first, since the free space
-inode has the prealloc bit set in its flags.
+Since there are two binary files updates, and one big code move, it's
+recommended to fetch github repo, in case some patches didn't reach mail
+list.
 
-However if the block group that contains the data extent for the space
-cache has been turned to RO mode due to a running scrub or balance for
-example, we have to fallback to the cow path. In that case once a new data
-extent is allocated we end up calling btrfs_add_reserved_bytes(), which
-decrements the counter named bytes_may_use from the data space_info object
-with the expection that this counter was previously incremented with the
-same amount (the size of the data extent).
+This is inspried by one log tree replay dead loop bug, where the kind
+reporter, Pierre Abbat <phma@bezitopo.org>, gave the btrfs-image to
+reproduce it.
 
-However when we started writeout of the space cache at cache_save_setup(),
-we incremented the value of the bytes_may_use counter through a call to
-btrfs_check_data_free_space() and then decremented it through a call to
-btrfs_prealloc_file_range_trans() immediately after. So when starting the
-writeback if we fallback to cow mode we have to increment the counter
-bytes_may_use of the data space_info again to compensate for the extent
-allocation done by the cow path.
+Then the image fails to pass check due to the existing log tree
+conflicting with device/chunk fixup.
+As log tree blocks are not recorded in extent tree, later COW can use
+log tree blocks and cause transid mismatch.
 
-When this issue happens we are incorrectly decrementing the bytes_may_use
-counter and when its current value is smaller then the amount we try to
-subtract we end up with the following warning:
+To address the problem, this patchset will:
+- Don't do any fixup if the source dump is single device
+  Since the dump has the full super block contents, we can easily check
+  if the source fs is single deivce.
 
- ------------[ cut here ]------------
- WARNING: CPU: 3 PID: 657 at fs/btrfs/space-info.h:115 btrfs_add_reserved_bytes+0x3d6/0x4e0 [btrfs]
- Modules linked in: btrfs blake2b_generic xor raid6_pq libcrc32c (...)
- CPU: 3 PID: 657 Comm: kworker/u8:7 Tainted: G        W         5.6.0-rc7-btrfs-next-58 #5
- Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
- Workqueue: writeback wb_workfn (flush-btrfs-1591)
- RIP: 0010:btrfs_add_reserved_bytes+0x3d6/0x4e0 [btrfs]
- Code: ff ff 48 (...)
- RSP: 0000:ffffa41608f13660 EFLAGS: 00010287
- RAX: 0000000000001000 RBX: ffff9615b93ae400 RCX: 0000000000000000
- RDX: 0000000000000002 RSI: 0000000000000000 RDI: ffff9615b96ab410
- RBP: fffffffffffee000 R08: 0000000000000001 R09: 0000000000000000
- R10: ffff961585e62a40 R11: 0000000000000000 R12: ffff9615b96ab400
- R13: ffff9615a1a2a000 R14: 0000000000012000 R15: ffff9615b93ae400
- FS:  0000000000000000(0000) GS:ffff9615bb200000(0000) knlGS:0000000000000000
- CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
- CR2: 000055cbbc2ae178 CR3: 0000000115794006 CR4: 00000000003606e0
- DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
- DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
- Call Trace:
-  find_free_extent+0x4a0/0x16c0 [btrfs]
-  btrfs_reserve_extent+0x91/0x180 [btrfs]
-  cow_file_range+0x12d/0x490 [btrfs]
-  btrfs_run_delalloc_range+0x9f/0x6d0 [btrfs]
-  ? find_lock_delalloc_range+0x221/0x250 [btrfs]
-  writepage_delalloc+0xe8/0x150 [btrfs]
-  __extent_writepage+0xe8/0x4c0 [btrfs]
-  extent_write_cache_pages+0x237/0x530 [btrfs]
-  extent_writepages+0x44/0xa0 [btrfs]
-  do_writepages+0x23/0x80
-  __writeback_single_inode+0x59/0x700
-  writeback_sb_inodes+0x267/0x5f0
-  __writeback_inodes_wb+0x87/0xe0
-  wb_writeback+0x382/0x590
-  ? wb_workfn+0x4a2/0x6c0
-  wb_workfn+0x4a2/0x6c0
-  process_one_work+0x26d/0x6a0
-  worker_thread+0x4f/0x3e0
-  ? process_one_work+0x6a0/0x6a0
-  kthread+0x103/0x140
-  ? kthread_create_worker_on_cpu+0x70/0x70
-  ret_from_fork+0x3a/0x50
- irq event stamp: 0
- hardirqs last  enabled at (0): [<0000000000000000>] 0x0
- hardirqs last disabled at (0): [<ffffffffb2abdedf>] copy_process+0x74f/0x2020
- softirqs last  enabled at (0): [<ffffffffb2abdedf>] copy_process+0x74f/0x2020
- softirqs last disabled at (0): [<0000000000000000>] 0x0
- ---[ end trace bd7c03622e0b0a52 ]---
- ------------[ cut here ]------------
+  The chunk/device fixup is mostly for older btrfs-image behavior, which
+  always restores the fs into SINGLE profile.
+  However since commit 9088ab6a1067 ("btrfs-progs: make btrfs-image
+  restore to support dup"), btrfs-image can restore into DUP profile,
+  allowing us to do exact replay for single device fs.
+  This is patch 5.
 
-So fix this by incrementing the bytes_may_use counter of the data
-space_info when we fallback to the cow path. If the cow path is successful
-the counter is decremented after extent allocation (by
-btrfs_add_reserved_bytes()), if it fails it ends up being decremented as
-well when clearing the delalloc range (extent_clear_unlock_delalloc()).
+- Pin down all log tree blocks for fixup
+  For cases we still need to fixup chunk/device items, at least pin down
+  all log tree blocks to avoid transid mimsatch.
+  This is patch 6.
 
-This could be triggered sporadically by the test case generic/061 from
-fstests.
+After above fixes, fsck/012 and fsck/035 fails, due to bad original
+images.
+The old btrfs-image can fixup those bad device total_bytes and
+bytes_used, but that just hides the problem.
+We still need to update those images to make them correct, so here comes
+patch 3 and 4.
 
-Fixes: 82d5902d9c681b ("Btrfs: Support reading/writing on disk free ino cache")
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- fs/btrfs/inode.c | 20 +++++++++++++++-----
- 1 file changed, 15 insertions(+), 5 deletions(-)
+During the debugging of btrfs-image restore, I found dump_superblock()
+would help a lot to expose bad values in images, so is
+btrfs_print_leaf().
 
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 9edfe2453d86..85295f6d40e6 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -1363,6 +1363,8 @@ static int fallback_to_cow(struct inode *inode,
- 			   int *page_started,
- 			   unsigned long *nr_written)
- {
-+	const bool is_space_ino = btrfs_is_free_space_inode(BTRFS_I(inode));
-+	const u64 range_bytes = end + 1 - start;
- 	struct extent_io_tree *io_tree = &BTRFS_I(inode)->io_tree;
- 	u64 range_start = start;
- 	u64 count;
-@@ -1390,19 +1392,27 @@ static int fallback_to_cow(struct inode *inode,
- 	 *    that if the COW path fails for any reason, it decrements (through
- 	 *    extent_clear_unlock_delalloc()) the bytes_may_use counter of the
- 	 *    data space info, which we incremented in the step above.
-+	 *
-+	 * If we need to fallback to cow and the inode corresponds to a free
-+	 * space cache inode, we must also increment bytes_may_use of the data
-+	 * space_info for the same reason. Space caches always get a prealloc
-+	 * extent for them, however scrub or balance may have set the block
-+	 * group that contains that extent to RO mode.
- 	 */
--	count = count_range_bits(io_tree, &range_start, end, end + 1 - start,
-+	count = count_range_bits(io_tree, &range_start, end, range_bytes,
- 				 EXTENT_NORESERVE, 0);
--	if (count > 0) {
-+	if (count > 0 || is_space_ino) {
-+		const u64 bytes = is_space_ino ? range_bytes : count;
- 		struct btrfs_fs_info *fs_info = BTRFS_I(inode)->root->fs_info;
- 		struct btrfs_space_info *sinfo = fs_info->data_sinfo;
- 
- 		spin_lock(&sinfo->lock);
--		btrfs_space_info_update_bytes_may_use(fs_info, sinfo, count);
-+		btrfs_space_info_update_bytes_may_use(fs_info, sinfo, bytes);
- 		spin_unlock(&sinfo->lock);
- 
--		clear_extent_bit(io_tree, start, end, EXTENT_NORESERVE, 0, 0,
--				 NULL);
-+		if (count > 0)
-+			clear_extent_bit(io_tree, start, end, EXTENT_NORESERVE,
-+					 0, 0, NULL);
- 	}
- 
- 	return cow_file_range(inode, locked_page, start, end, page_started,
+Enahance them to be more handy for usage inside gdb, and here comes
+patch 1 and 2.
+
+
+Qu Wenruo (6):
+  btrfs-progs: Allow btrfs_print_leaf() to be called on dummy eb whose
+    fs_info is NULL
+  btrfs-progs: print-tree: Export dump_superblock()
+  btrfs-progs: fsck-tests: Update the image in 012
+  btrfs-progs: fsck-tests: Update the image of test case 035
+  btrfs-progs: image: Don't modify the chunk and device tree if  the
+    source dump is single device
+  btrfs-progs: image: Pin down log tree blocks before fixup
+
+ cmds/inspect-dump-super.c                     | 454 +-----------------
+ image/main.c                                  |  86 +++-
+ print-tree.c                                  | 449 ++++++++++++++++-
+ print-tree.h                                  |   1 +
+ .../012-leaf-corruption/good.img.xz           | Bin 0 -> 186392 bytes
+ .../012-leaf-corruption/no_data_extent.tar.xz | Bin 130260 -> 0 bytes
+ tests/fsck-tests/012-leaf-corruption/test.sh  |  17 +-
+ .../offset_by_one.img                         | Bin 3072 -> 3072 bytes
+ 8 files changed, 540 insertions(+), 467 deletions(-)
+ create mode 100644 tests/fsck-tests/012-leaf-corruption/good.img.xz
+ delete mode 100644 tests/fsck-tests/012-leaf-corruption/no_data_extent.tar.xz
+
 -- 
-2.11.0
+2.26.2
 
