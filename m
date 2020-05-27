@@ -2,114 +2,68 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D16F71E3EB6
-	for <lists+linux-btrfs@lfdr.de>; Wed, 27 May 2020 12:11:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 996511E3EC1
+	for <lists+linux-btrfs@lfdr.de>; Wed, 27 May 2020 12:15:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729777AbgE0KLM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 27 May 2020 06:11:12 -0400
-Received: from mx2.suse.de ([195.135.220.15]:60726 "EHLO mx2.suse.de"
+        id S2387881AbgE0KPz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 27 May 2020 06:15:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56572 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728993AbgE0KLM (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 27 May 2020 06:11:12 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 00EABAE28;
-        Wed, 27 May 2020 10:11:13 +0000 (UTC)
-From:   Nikolay Borisov <nborisov@suse.com>
+        id S2387852AbgE0KPx (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 27 May 2020 06:15:53 -0400
+Received: from debian6.Home (bl8-197-74.dsl.telepac.pt [85.241.197.74])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id AB8F0208B8
+        for <linux-btrfs@vger.kernel.org>; Wed, 27 May 2020 10:15:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1590574553;
+        bh=ottdDgRwXyDbwhf38e1U1M6jpsj4eWQS6cB9EJbfpVo=;
+        h=From:To:Subject:Date:From;
+        b=Ush9yDeQR9uLw1g5VUNRwJZmm6vkMoYdvoFiMsRCIc+30+8x2GTOR0uhmccM1OBNg
+         YTizDyuXvBnKuqy24q1FRtpSHru2lftIP2OEL1l6AOpd2IKu6v6Cngg+dK/onaFRau
+         XgcZyiLVxd1fSPyxl/+5VWDvqC5Jfb75MTJZVg/M=
+From:   fdmanana@kernel.org
 To:     linux-btrfs@vger.kernel.org
-Cc:     Nikolay Borisov <nborisov@suse.com>
-Subject: [PATCH] btrfs: Simplify setup_nodes_for_search
-Date:   Wed, 27 May 2020 13:11:09 +0300
-Message-Id: <20200527101109.7492-1-nborisov@suse.com>
-X-Mailer: git-send-email 2.17.1
+Subject: [PATCH 1/3] Btrfs: fix wrong file range cleanup after an error filling dealloc range
+Date:   Wed, 27 May 2020 11:15:53 +0100
+Message-Id: <20200527101553.25396-1-fdmanana@kernel.org>
+X-Mailer: git-send-email 2.11.0
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The function is needlessly convoluted. Fix that by:
+From: Filipe Manana <fdmanana@suse.com>
 
-* Removing redundant sret variable definition in both if arms
-* Replace the again/done labels with direct return statements, the
-function is short enough and doesn't do anything special upon exit.
+If an error happens while running dellaloc in COW mode for a range, we can
+end up calling extent_clear_unlock_delalloc() for a range that goes beyond
+our range's end offset by 1 byte, which affects 1 extra page. This results
+in clearing bits and doing page operations (such as a page unlock) outside
+our target range.
 
-Signed-off-by: Nikolay Borisov <nborisov@suse.com>
+Fix that by calling extent_clear_unlock_delalloc() with an inclusive end
+offset, instead of an exclusive end offset, at cow_file_range().
+
+Fixes: a315e68f6e8b30 ("Btrfs: fix invalid attempt to free reserved space on failure to cow range")
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/ctree.c | 33 ++++++++++++---------------------
- 1 file changed, 12 insertions(+), 21 deletions(-)
+ fs/btrfs/inode.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
-index 72a3389d2d87..bd1d54e6b4cc 100644
---- a/fs/btrfs/ctree.c
-+++ b/fs/btrfs/ctree.c
-@@ -2436,55 +2436,46 @@ setup_nodes_for_search(struct btrfs_trans_handle *trans,
-
- 	if ((p->search_for_split || ins_len > 0) && btrfs_header_nritems(b) >=
- 	    BTRFS_NODEPTRS_PER_BLOCK(fs_info) - 3) {
--		int sret;
-
- 		if (*write_lock_level < level + 1) {
- 			*write_lock_level = level + 1;
- 			btrfs_release_path(p);
--			goto again;
-+			return -EAGAIN;
- 		}
-
- 		btrfs_set_path_blocking(p);
- 		reada_for_balance(fs_info, p, level);
--		sret = split_node(trans, root, p, level);
-+		ret = split_node(trans, root, p, level);
-+
-+		BUG_ON(ret > 0);
-+		if (ret)
-+			return ret;
-
--		BUG_ON(sret > 0);
--		if (sret) {
--			ret = sret;
--			goto done;
--		}
- 		b = p->nodes[level];
- 	} else if (ins_len < 0 && btrfs_header_nritems(b) <
- 		   BTRFS_NODEPTRS_PER_BLOCK(fs_info) / 2) {
--		int sret;
-
- 		if (*write_lock_level < level + 1) {
- 			*write_lock_level = level + 1;
- 			btrfs_release_path(p);
--			goto again;
-+			return -EAGAIN;
- 		}
-
- 		btrfs_set_path_blocking(p);
- 		reada_for_balance(fs_info, p, level);
--		sret = balance_level(trans, root, p, level);
-+		ret = balance_level(trans, root, p, level);
-+
-+		if (ret)
-+			return ret;
-
--		if (sret) {
--			ret = sret;
--			goto done;
--		}
- 		b = p->nodes[level];
- 		if (!b) {
- 			btrfs_release_path(p);
--			goto again;
-+			return -EAGAIN;
- 		}
- 		BUG_ON(btrfs_header_nritems(b) == 1);
- 	}
- 	return 0;
--
--again:
--	ret = -EAGAIN;
--done:
--	return ret;
- }
-
- int btrfs_find_item(struct btrfs_root *fs_root, struct btrfs_path *path,
---
-2.17.1
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index 320d1062068d..79f833f920d3 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -1142,7 +1142,7 @@ static noinline int cow_file_range(struct inode *inode,
+ 	 */
+ 	if (extent_reserved) {
+ 		extent_clear_unlock_delalloc(inode, start,
+-					     start + cur_alloc_size,
++					     start + cur_alloc_size - 1,
+ 					     locked_page,
+ 					     clear_bits,
+ 					     page_ops);
+-- 
+2.11.0
 
