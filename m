@@ -2,63 +2,58 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 849061E4D50
-	for <lists+linux-btrfs@lfdr.de>; Wed, 27 May 2020 20:48:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C62F1E4E87
+	for <lists+linux-btrfs@lfdr.de>; Wed, 27 May 2020 21:48:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726957AbgE0Srw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 27 May 2020 14:47:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56646 "EHLO
+        id S1728323AbgE0Tso (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 27 May 2020 15:48:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726770AbgE0Srg (ORCPT
+        with ESMTP id S1726129AbgE0Tso (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 27 May 2020 14:47:36 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 583CDC008634
-        for <linux-btrfs@vger.kernel.org>; Wed, 27 May 2020 11:41:12 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id q11so13001705wrp.3
-        for <linux-btrfs@vger.kernel.org>; Wed, 27 May 2020 11:41:12 -0700 (PDT)
+        Wed, 27 May 2020 15:48:44 -0400
+Received: from mail-vs1-xe44.google.com (mail-vs1-xe44.google.com [IPv6:2607:f8b0:4864:20::e44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C64C5C05BD1E
+        for <linux-btrfs@vger.kernel.org>; Wed, 27 May 2020 12:48:42 -0700 (PDT)
+Received: by mail-vs1-xe44.google.com with SMTP id v26so14484270vsa.1
+        for <linux-btrfs@vger.kernel.org>; Wed, 27 May 2020 12:48:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=PWNMZFYDlyQB4xa2P67RaXs3SsINgtYYV4uVegCiE50=;
-        b=O5BNeYRDou/1Ddic0mE/rtmpYGt9KXsU111IPk+JrGiywMmKTtvO1ZYKMWSqRqyH1J
-         NkpmYi2Y6hjV04x1KBfZVW8lFdcf00D3pxKuIr4Mf324hpNl+0IGVkg+Y1zV0xPVtddU
-         HbGUbm6/0yzl6XgPs77NdRPeXxb6HtWcvY2boceEOvwDWIrifIIj7p2KwENgF/nV1bXi
-         peSzFJPnNb7gthQMSij4smJErwdD8UPT9CDjRlkJDyoMRMSzlcMw7idF7AxeEgQEgLBc
-         0MNSn/K4Re6nnWAAzODhjPaNzlCBEs/ZKIivUArogl+PbgNHioUmcsu9p9FnS6ZjB/xr
-         OjJw==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc:content-transfer-encoding;
+        bh=JwwOc+0zly87QaWbprg4WYTQMZEauRC9ihULxRO7+ok=;
+        b=RWc125zmElPoI7IX/eiPcBPO6Sh5+LviDqW73pZpQHYELCn6SqbqZYVbQky0BPA7DU
+         oPVBz7dXI49HZG1TchjP24lJKbWry1VaJlPoJsoCSotdU3D+plylzOJjYXGGQtM1d2hg
+         qwKHXXlTwAp6DaPKX32zH2t0PI/74CXyWLZkvsOLPOJ6gwil4nZ0tPwVEWfruZeNoR2U
+         cfrJGxSuFtIGsA3gq9SZn6BIsr3r1i8sskpuAdyUtEFo5KU41xIeoWJtq5SYTSjOCokJ
+         KeOk+Rs58XwxNfWCFKKEQu1J3ACAPvr/6Bo2C/9h+2QnvPimF9rkqZOrFH+Ni/OhHpbF
+         GDYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=PWNMZFYDlyQB4xa2P67RaXs3SsINgtYYV4uVegCiE50=;
-        b=NeN24ihqJpsON4BVghyudyR5Htv3ElcdxKfziQ2kdadJA0h+ad84hdBre1v9iHaRt9
-         ai64G6lDb2GUnXEibkW/br5NGoE3ov2v3idFarTrveRVqrjytXvlUrCmDzTmpxcwLR5+
-         E3Iq7Q82FcitVkDQLHAcxjqfil2ix8U2yJQKUH/0vt+VPam4+RUmDrAFdNHFxgupoN0Q
-         bSTVSBPNyXeco9pJ756XkfU2PdU5fnl1WYh5AAhQM46WPi7rcjTq3CHgNJK7a02DjhrC
-         i36Kp7pTmcXNPFc0d4Z/+F9h4vp6CZXbux/XzThUgC3UvY4CjxA3T9+XqdU02Djsc8Cd
-         RxBw==
-X-Gm-Message-State: AOAM533BGouRuGQJXkW8i/Vx+8l11Xgm0W7MhLSMVKBfv0prc7cRdTdN
-        2MrtRTQAAVYVkBYZBKWlw/XugS1BHp3W7Jzs+gSMqw==
-X-Google-Smtp-Source: ABdhPJx5h6fA9dSeSHd5qX+wLv/eEgrw6zjx2jHRdX1nGjNWWnYXzuTt+UQLlN3DlXnhbD5u2kc/O6FRbxPmmgH4FBg=
-X-Received: by 2002:a5d:4d4d:: with SMTP id a13mr17118329wru.252.1590604871090;
- Wed, 27 May 2020 11:41:11 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc:content-transfer-encoding;
+        bh=JwwOc+0zly87QaWbprg4WYTQMZEauRC9ihULxRO7+ok=;
+        b=VpuJzfJck7hLZo4YAWGAG8YCwFst2pdd6XbZ1vlnGEMu2u5OcMann9Quf6/crgB/fV
+         Eumpbo89IYPxzruxdThe8qkzA3Id6nRR9/BKRbJY1QMvXhZb8ZqTLQgOPeHfK/Ap8ZWZ
+         nd61WhdTvyj2rb0rXPbjJSSRXuqXVeffW3N/1XbRZ9jVH32JnFwl6o2JyzGiSjJY18y9
+         sHMNjp+MCCM7HY4pdtPZjZwn1uVcRw8KSK7lVWJgkIQgKQaBvisTfnR7ffOuNlUFKu3R
+         rHBr1qcbJZjx/jQPH48L4I0+ktzEqx/m61VtrW3HtcQQLc6Ok2ob3oFJbQReSjQSRc4/
+         RRFg==
+X-Gm-Message-State: AOAM530jainQ2fG7suwKP5ouGbjLhFulaf37ya4A1R/OxydUWSAQy2Z+
+        wBLm5n6h70SBfJhnn51SlKFnGIKxd/adZN7wy/E=
+X-Google-Smtp-Source: ABdhPJwnOGJektcwV8U6gHe7NHqt1fa+eniNGUorFzMNbOorxUzMBZUmHUTprH+T1TuWUqZFzUuhUHqabmiXvjw787I=
+X-Received: by 2002:a67:dc89:: with SMTP id g9mr626571vsk.206.1590608922021;
+ Wed, 27 May 2020 12:48:42 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAGAeKut52ymR5WVDTxJgQ=-fZzJ+pU8oVF89p4mBO-eaoAHiKw@mail.gmail.com>
- <CAJCQCtSyJp0LiaO246NcEX-p7rk8-h1NocW4o4rJgN=B1Kwrug@mail.gmail.com>
- <46fa65a3-137b-3164-0998-12bb996c15ef@gmail.com> <CAJCQCtTmcRfrZEtdnUgF0CkFFWDW-d5-LtM4SFKO4F7Xr9ai_A@mail.gmail.com>
- <0d3b740d-a431-cca0-3841-a85e49ffff9e@libero.it>
-In-Reply-To: <0d3b740d-a431-cca0-3841-a85e49ffff9e@libero.it>
-From:   Chris Murphy <lists@colorremedies.com>
-Date:   Wed, 27 May 2020 12:40:55 -0600
-Message-ID: <CAJCQCtTt0cusvmo-W3vUqmWNbGeH1f3JFSD4gLNBE2_38avd9A@mail.gmail.com>
-Subject: Re: Planning out new fs. Am I missing anything?
-To:     Goffredo Baroncelli <kreijack@inwind.it>
-Cc:     Chris Murphy <lists@colorremedies.com>,
-        Andrei Borzenkov <arvidjaar@gmail.com>,
-        Justin Engwer <justin@mautobu.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+References: <20200527101104.7441-1-nborisov@suse.com>
+In-Reply-To: <20200527101104.7441-1-nborisov@suse.com>
+Reply-To: fdmanana@gmail.com
+From:   Filipe Manana <fdmanana@gmail.com>
+Date:   Wed, 27 May 2020 20:48:31 +0100
+Message-ID: <CAL3q7H5vZdvgs7Jsu3jp-9BFyv=XyBEJQOE-xytgzmud2we5Gw@mail.gmail.com>
+Subject: Re: [PATCH] btrfs: Remove BTRFS_INODE_IN_DELALLOC_LIST flag
+To:     Nikolay Borisov <nborisov@suse.com>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
@@ -66,44 +61,94 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, May 27, 2020 at 10:23 AM Goffredo Baroncelli <kreijack@libero.it> w=
-rote:
+On Wed, May 27, 2020 at 12:42 PM Nikolay Borisov <nborisov@suse.com> wrote:
 >
-> Hi All,
->
-> On 5/27/20 8:25 AM, Chris Murphy wrote:
-> > On Tue, May 26, 2020 at 11:22 PM Andrei Borzenkov <arvidjaar@gmail.com>=
- wrote:
-> >>
-> >> 27.05.2020 05:20, Chris Murphy =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
-> >>>
-> >>> single, dup, raid0, raid1 (all), raid10 are safe and stable.
-> >>
-> >> Until btrfs can reliably detect and automatically handle outdated devi=
-ce
-> >> I would not call any multi-device profiles "safe", at least unconditio=
-nally.
-> >
-> > I agree.
-> >
->
-> Checking the generation of each device should be sufficient to detect "ou=
-tdated" devices. Why this check is not performed ?
-> May be that I am missing something ?
+> The flag simply replicates whether btrfs_inode::delallocs_inodes list
+> is empty or not. Just defer this check to the list management functions
+> (btrfs_add_delalloc_inodes/__btrfs_del_delalloc_inode) which are
+> always called under btrfs_root::delalloc_lock.
 
-But transid isn't unique enough except in isolation. Degraded volumes
-are treated completely independently. So if I take a 2x raid1 and
-mount each one degraded on separate computers and modify them. Then
-join them back together, how can Btrfs resolve the differences? It's a
-mess. Yes that is obviously a kind of sabotage. While not literal
-sabotage, the effect is the same if you have alternating degraded
-drives in successive boots.
+The flag is there to avoid taking the root's delalloc_lock spinlock
+everytime a range is marked for delalloc for any inode of the
+subvolume.
+Have you measured performance with very high concurrency of buffered
+writes against files in the same subvolume?
 
-So you just cannot use degraded with either fstab or rootflags. It's
-bad advice to anyone who gives it and we need to be vigilant about
-recommending against it. Maybe the man 5 btrfs page should expressly
-say not to include degraded in fstab, or at least warn there are
-consequences.
+Thanks.
+
+>
+> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
+> ---
+>  fs/btrfs/btrfs_inode.h |  1 -
+>  fs/btrfs/inode.c       | 11 ++---------
+>  2 files changed, 2 insertions(+), 10 deletions(-)
+>
+> diff --git a/fs/btrfs/btrfs_inode.h b/fs/btrfs/btrfs_inode.h
+> index aeff56a0e105..da6743c70412 100644
+> --- a/fs/btrfs/btrfs_inode.h
+> +++ b/fs/btrfs/btrfs_inode.h
+> @@ -27,7 +27,6 @@ enum {
+>         BTRFS_INODE_HAS_ASYNC_EXTENT,
+>         BTRFS_INODE_NEEDS_FULL_SYNC,
+>         BTRFS_INODE_COPY_EVERYTHING,
+> -       BTRFS_INODE_IN_DELALLOC_LIST,
+>         BTRFS_INODE_HAS_PROPS,
+>         BTRFS_INODE_SNAPSHOT_FLUSH,
+>  };
+> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+> index 7d2f6e55a234..3e87a6644e09 100644
+> --- a/fs/btrfs/inode.c
+> +++ b/fs/btrfs/inode.c
+> @@ -1865,8 +1865,6 @@ static void btrfs_add_delalloc_inodes(struct btrfs_=
+root *root,
+>         if (list_empty(&BTRFS_I(inode)->delalloc_inodes)) {
+>                 list_add_tail(&BTRFS_I(inode)->delalloc_inodes,
+>                               &root->delalloc_inodes);
+> -               set_bit(BTRFS_INODE_IN_DELALLOC_LIST,
+> -                       &BTRFS_I(inode)->runtime_flags);
+>                 root->nr_delalloc_inodes++;
+>                 if (root->nr_delalloc_inodes =3D=3D 1) {
+>                         spin_lock(&fs_info->delalloc_root_lock);
+> @@ -1887,8 +1885,6 @@ void __btrfs_del_delalloc_inode(struct btrfs_root *=
+root,
+>
+>         if (!list_empty(&inode->delalloc_inodes)) {
+>                 list_del_init(&inode->delalloc_inodes);
+> -               clear_bit(BTRFS_INODE_IN_DELALLOC_LIST,
+> -                         &inode->runtime_flags);
+>                 root->nr_delalloc_inodes--;
+>                 if (!root->nr_delalloc_inodes) {
+>                         ASSERT(list_empty(&root->delalloc_inodes));
+> @@ -1944,8 +1940,7 @@ void btrfs_set_delalloc_extent(struct inode *inode,=
+ struct extent_state *state,
+>                 BTRFS_I(inode)->delalloc_bytes +=3D len;
+>                 if (*bits & EXTENT_DEFRAG)
+>                         BTRFS_I(inode)->defrag_bytes +=3D len;
+> -               if (do_list && !test_bit(BTRFS_INODE_IN_DELALLOC_LIST,
+> -                                        &BTRFS_I(inode)->runtime_flags))
+> +               if (do_list)
+>                         btrfs_add_delalloc_inodes(root, inode);
+>                 spin_unlock(&BTRFS_I(inode)->lock);
+>         }
+> @@ -2014,9 +2009,7 @@ void btrfs_clear_delalloc_extent(struct inode *vfs_=
+inode,
+>                                          fs_info->delalloc_batch);
+>                 spin_lock(&inode->lock);
+>                 inode->delalloc_bytes -=3D len;
+> -               if (do_list && inode->delalloc_bytes =3D=3D 0 &&
+> -                   test_bit(BTRFS_INODE_IN_DELALLOC_LIST,
+> -                                       &inode->runtime_flags))
+> +               if (do_list && inode->delalloc_bytes =3D=3D 0)
+>                         btrfs_del_delalloc_inode(root, inode);
+>                 spin_unlock(&inode->lock);
+>         }
+> --
+> 2.17.1
+>
+
 
 --=20
-Chris Murphy
+Filipe David Manana,
+
+=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
+ right.=E2=80=9D
