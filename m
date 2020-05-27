@@ -2,93 +2,125 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA2531E3545
-	for <lists+linux-btrfs@lfdr.de>; Wed, 27 May 2020 04:12:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 544821E3577
+	for <lists+linux-btrfs@lfdr.de>; Wed, 27 May 2020 04:21:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725971AbgE0CM3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 26 May 2020 22:12:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43398 "EHLO
+        id S1726069AbgE0CVI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 26 May 2020 22:21:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725379AbgE0CM2 (ORCPT
+        with ESMTP id S1725836AbgE0CVI (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 26 May 2020 22:12:28 -0400
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84E5EC061A0F
-        for <linux-btrfs@vger.kernel.org>; Tue, 26 May 2020 19:12:28 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id v19so1578020wmj.0
-        for <linux-btrfs@vger.kernel.org>; Tue, 26 May 2020 19:12:28 -0700 (PDT)
+        Tue, 26 May 2020 22:21:08 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1872C061A0F
+        for <linux-btrfs@vger.kernel.org>; Tue, 26 May 2020 19:21:06 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id c3so18183664wru.12
+        for <linux-btrfs@vger.kernel.org>; Tue, 26 May 2020 19:21:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=wOyBFRf6ercbT1aMAY7G8hcA9DusxjkcZkfnTI1uPMY=;
-        b=GF9b3TtiURi5ambb40vuY/PWcF6SUXHi0bqulAWRodZ99GG1j9Be+uTJVfYIOXOPag
-         lVk9mFixmMZHvjuuotJr8HwYBbUcBoqYgAnEXjp/H2xDeLkW/27NRDruEwQTWwN8LRUr
-         pTrTWbuwr4+G5cX/If3no925Y1uVUXuYAmFCfzRt9Q1U11+D+kth1ydj9jwdXyEhtan8
-         pvhDZxbgWIxdpHOjCNaFX6hcMxhyM1Uv3l5N5llWtXqBclad73loWoAy0WYc0auj4R93
-         fJ30bx48CulxhPuNjGwnLLpJ1g7Kr22i4/fRy1sBiXDHZ+u76bJMgEZtV/PwO3WGVLNK
-         e+gw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=710liskjMynXDxkmidpoFhbrjw8fu7pPM4yNQswldmA=;
+        b=L98gcpZaTCoH19noiIVvoizwKEkMGTb+XDfrVC2wPVLQVOC/CYuiMQ+xsl735OIRhz
+         lPn5ZJslgzyFE+052ZtzF+0v+iK+ZgflJzJaPEMo9qCczh5lE9suiNIil1RZulI1xWAi
+         mgJ5IWZo/MZqriMthG86GsxJqoSXMo9b2ueNh2jC+NBIewohLEd/A9ts8huNLPUNO0og
+         gADzN1NOrM+I8Kbdif9dz2BV4tsqIpU2RXMyscsf5L7nUoVeYsvNsLU37pcDYqlOvmS2
+         wQUnRn6HEM89es9tqX4+uyX753oku46NtuM7i9dv4B/Vy3r7298RS0ME2YHQ4Xi0HVlF
+         jONQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=wOyBFRf6ercbT1aMAY7G8hcA9DusxjkcZkfnTI1uPMY=;
-        b=MJdSasadC1IdgmsZ5XBFI7DFn+BtD/P6dQTPSKNiOklx8+QJJfmemdeLVmfm44VNiZ
-         NGll++/t74K/7WoPg7lO8QrVOPtRyH7An22F1suEkhovkUv2907peoJKzA4F6XSqQlj2
-         DygIedgxb7F6pqqXolj1uPayXzQIBT6EB7Rn0FZrhXDN4VZKbk6ligyM+HfsK+f8P+1/
-         UVo6o8mavyXI3od2SGHaM2QQ0Lm33wy435F4+/6gaaDqKdfJcGdhPgoa/k5iqht/DA2W
-         hRmYY2XXOSyfKLwlFi05uRBTsG/j6wEs7j9d4cYfNvLAlTq93TM7CbQ+uu3ZMaL53Y8K
-         DCpw==
-X-Gm-Message-State: AOAM532cH0rd5YpuPReojnN5qhPeKi1e9efSuqHz0Hoig8Yo4aVbZw1M
-        DSDbwhXevZSOaHhYeEBgPpRI1tqmHpFC6wvjRtzgg4kgvCmSmA==
-X-Google-Smtp-Source: ABdhPJwVN3tCFHCMWaI6BUlI/Cvr7JLSFs7XQdh62hyHDmLzKC1Lj4XhhbnbyA5mNo7ypzmzwNmJozZhMrQs+T6BITw=
-X-Received: by 2002:a1c:4105:: with SMTP id o5mr1842943wma.168.1590545546802;
- Tue, 26 May 2020 19:12:26 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=710liskjMynXDxkmidpoFhbrjw8fu7pPM4yNQswldmA=;
+        b=hDN3nMEatyqJd/G9EuRm8om7iVKGwSoKek+dXa39HmhG0y8ECdu3pzyk+sCBjGO758
+         QJWX1+Qwk1tx+89Z0Zwri4veWIDJsKex6EYPdx3dBUGuSmcxtDYFzpskvR8rTGPogg8G
+         Ulse1tm+ve14RZeG5dY0GfEE1JEICBGWrJgysnO2VkmkhoPKuClQcwOghkknq2KQWXyr
+         WcdCCe5uK/kXiUn7KlPNoi4Vi3lHX2QPnd54CYomnkK0WCc0/xhz7Bwq6QqMuHwYKTfI
+         N3qzIz1hcWuDnoiWCK6tsqN4kgCVZCUt8RBzpnq3UbnPagu77INq01YcNuFMlx2f4bxD
+         VaDg==
+X-Gm-Message-State: AOAM531I0UnNDdp2jowIFJ5UfgcqvnYmta648+JfxdDPrtaB1Zl1QzOW
+        s5qDkjUEMghVk4r95fOqzpvVhrOp43X9/HVQ15K5XnyBoxQbxw==
+X-Google-Smtp-Source: ABdhPJxxdCbJQA2zdD5FmxznEzq3DXQvo0poCg37eDqap7IKm4qkbvVw7AAGFgYIg6MlRMMo2hrHlsSaRRrQyqEEF2M=
+X-Received: by 2002:adf:e883:: with SMTP id d3mr12754589wrm.274.1590546062958;
+ Tue, 26 May 2020 19:21:02 -0700 (PDT)
 MIME-Version: 1.0
+References: <CAGAeKut52ymR5WVDTxJgQ=-fZzJ+pU8oVF89p4mBO-eaoAHiKw@mail.gmail.com>
+In-Reply-To: <CAGAeKut52ymR5WVDTxJgQ=-fZzJ+pU8oVF89p4mBO-eaoAHiKw@mail.gmail.com>
 From:   Chris Murphy <lists@colorremedies.com>
-Date:   Tue, 26 May 2020 20:12:10 -0600
-Message-ID: <CAJCQCtQVPFi7fB+p4HEVy1Gw3AjzrvQ8qcY6cRbKj3T-+7yVxA@mail.gmail.com>
-Subject: space_cache=v1 and v2 at the time time?
-To:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Date:   Tue, 26 May 2020 20:20:46 -0600
+Message-ID: <CAJCQCtSyJp0LiaO246NcEX-p7rk8-h1NocW4o4rJgN=B1Kwrug@mail.gmail.com>
+Subject: Re: Planning out new fs. Am I missing anything?
+To:     Justin Engwer <justin@mautobu.com>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-What are the implications of not clearing v1 before enabling v2?
+On Sun, May 24, 2020 at 7:13 PM Justin Engwer <justin@mautobu.com> wrote:
+>
+> Hi, I'm the guy who lost all his VMs due to a massive configuration oversight.
+>
+> I'm looking to implement the remaining 4 x 3tb drives into a new fs
+> and just want someone to look over things. I'm intending to use them
+> for backup storage (veeam).
+>
+> Centos 7 Kernel 5.5.2-1.el7.elrepo.x86_64
+> btrfs-progs v4.9.1
 
-From btrfs insp dump-t, I still see the v1 bitmaps present:
+I suggest updating the btrfs-progs, that's old.
+>
+> mkfs.btrfs -m raid1c4 -d raid1 /dev/disk/by-id/ata-ST3000*-part1
+> echo "UUID=whatever /mnt/btrfs/ btrfs defaults,space_cache=v2 0 2" >> /etc/fstab
+> mount /mnt/btrfs
 
-root tree
-leaf 6468501504 items 42 free space 9246 generation 22 owner ROOT_TREE
-leaf 6468501504 flags 0x1(WRITTEN) backref revision 1
-...
-    item 30 key (FREE_SPACE UNTYPED 22020096) itemoff 11145 itemsize 41
-        location key (256 INODE_ITEM 0)
-        cache generation 17 entries 0 bitmaps 0
-    item 31 key (FREE_SPACE UNTYPED 1095761920) itemoff 11104 itemsize 41
-        location key (257 INODE_ITEM 0)
-        cache generation 17 entries 0 bitmaps 0
-...
+Add noatime.
+https://lwn.net/Articles/499293/
+
+I don't recommend space_cache=v2 in fstab. Use it once manually with
+clear_cache,space_cache=v2, and a feature flag will be set to use it
+from that point on. Soon v2 will be the default and you won't have to
+worry about this at all.
+
+fs_passno should be 0 for btrfs. man fsck.btrfs - it's a no op, it's
+not designed for unattended use during startup. XFS is the same.
 
 
-And later the free space tree:
+> RAID1 over 4 disks and RAID1C4 metadata. Mounting with space_cache=v2.
+> Any other mount switches or btrfs creation switches I should be aware
+> of? Should I consider RAID5/6 instead? 6tb should be sufficient, so
+> it's not like I'd get anything out of RAID5, but RAID6 I suppose could
+> provide a little more safety in the case of multiple drive failures at
+> once.
 
-free space tree key (FREE_SPACE_TREE ROOT_ITEM 0)
-leaf 6471073792 items 39 free space 15196 generation 22 owner FREE_SPACE_TREE
-leaf 6471073792 flags 0x1(WRITTEN) backref revision 1
-fs uuid 3c464210-08c7-4cf0-b175-e4b781ebea19
-chunk uuid f1d18732-7c3d-401c-8637-e7d4d9c7a0b8
-    item 0 key (1048576 FREE_SPACE_INFO 4194304) itemoff 16275 itemsize 8
-        free space info extent count 2 flags 0
-    item 1 key (1048576 FREE_SPACE_EXTENT 16384) itemoff 16275 itemsize 0
-        free space extent
-    item 2 key (1081344 FREE_SPACE_EXTENT 4161536) itemoff 16275 itemsize 0
-        free space extent
-...
+single, dup, raid0, raid1 (all), raid10 are safe and stable. raid56
+has caveats and you need to take precautions that kinda amount to hand
+holding. If there is a crash or power fail you need to do a scrub
+(full file system scrub) when raid56. It's a good idea, but not "very
+necessary" with other profiles. If you mount raid56 degraided, you
+seriously need to consider not doing writes or being very skeptical of
+depending on those writes because there's some evidence of degraded
+writes being corrupted.
 
-I was surprised there's no warning when I use space_cache=v2 without
-first clearing v1.
+You can check the archives for more information from Zygo, about
+raid56 pitfalls. It is table on stable storage. But the point of any
+raid is to withstand a non-stable situation like a device failure. And
+there's still work needed on raid56 to get to that point, without
+handholding.
 
+If you need raid5, you might consider mdadm for the raid5, and then
+format it with btrfs using defaults which will get you DUP metadata
+and single copy data. You'll get cheap snapshots. Faster scrubs. And
+warnings for any corruptions of metadata or data.
+
+Also consider mkfs.btrfs --checksum=xxhash, but you definitely need
+btrfs-progs 5.5 or newer, and kernel 5.6 or newer. If those are too
+new for your use case, skip it. crc32c is fine, but it is intended for
+detection of casual incidental corruption and can't be  used for
+dedup. xxhash64 is about as fast, but much better collision
+resistance.
 
 -- 
 Chris Murphy
