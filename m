@@ -2,246 +2,230 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 765871E3F47
-	for <lists+linux-btrfs@lfdr.de>; Wed, 27 May 2020 12:42:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E4001E3F75
+	for <lists+linux-btrfs@lfdr.de>; Wed, 27 May 2020 12:58:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729939AbgE0KmG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 27 May 2020 06:42:06 -0400
-Received: from mout.gmx.net ([212.227.17.21]:52707 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729354AbgE0KmG (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 27 May 2020 06:42:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1590576120;
-        bh=l3oPI2FpBLFlz0S4jM1NfqkYgjPdrl1JWuBILDi7gl4=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=NlkUKuxJ1vBZjbI+auXYorwDFEik6xPdgIN3bolngqVtCyraE7hUAxFFxGHsWjlEU
-         fejlHNzDzhz/PoZduyM1cyJ0e/S2/ybDP4mgR7UdVx+9fko1Su7tdk3UaMS31rpgma
-         ZfZxcl++q1ZyY0+7HEw+usXND3VFL4QJP3NOb3M8=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MG9kC-1jnrFj2JGW-00GbpZ; Wed, 27
- May 2020 12:42:00 +0200
-Subject: Re: Trying to mount hangs
-To:     Pierre Abbat <phma@bezitopo.org>, linux-btrfs@vger.kernel.org
-References: <2549429.Qys7a5ZjRC@puma>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
+        id S1729989AbgE0K6X (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 27 May 2020 06:58:23 -0400
+Received: from m4a0072g.houston.softwaregrp.com ([15.124.2.130]:49942 "EHLO
+        m4a0072g.houston.softwaregrp.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726649AbgE0K6V (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 27 May 2020 06:58:21 -0400
+Received: FROM m4a0072g.houston.softwaregrp.com (15.120.17.146) BY m4a0072g.houston.softwaregrp.com WITH ESMTP
+ FOR linux-btrfs@vger.kernel.org;
+ Wed, 27 May 2020 10:57:11 +0000
+Received: from M4W0335.microfocus.com (2002:f78:1193::f78:1193) by
+ M4W0334.microfocus.com (2002:f78:1192::f78:1192) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1591.10; Wed, 27 May 2020 10:46:58 +0000
+Received: from NAM02-SN1-obe.outbound.protection.outlook.com (15.124.8.14) by
+ M4W0335.microfocus.com (15.120.17.147) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1591.10 via Frontend Transport; Wed, 27 May 2020 10:46:58 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=UZy1ABuQuC3BHrXVZgbA0dZ3NdLhkZNsVGvW8alpkpgbWACtPOxvKFiludfxtTc7hPYFv6t/QdFIV1wAJrCameOwhiFfHwwNPvyRYR3uUy+GlAC1p5WZPbNmjtQNiHMU36djmejbN7dDprz8JXS4ZDCBRn4wymPJSnYr1Xh3n+cI7HDeu6ayWAio7kkCKXWrL8Ke0H0GsqocugumB2NCxyYsMx1YjTh2u4l2DK1MlzCB4GD3f07GkCHOeFfZiuf9VxLuBi93zATMsUMdNdjR9423FqI+2UjK/x5uIkeO860iMzZiZhGCjGQGpoIdNd2cNkIuY9xOG3MZIwXGvofSSQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=wGt8JHLSvocIWHF3jpNvQYtDkgiwZhuCrzLH1V0XPLs=;
+ b=F0WCoYvzRYCiwO9ISSBHKMate0W0eyapO8tnk+51HPYpBRGsDTxFucYkcjhgtf6KEDGBv6er7Q0rc1WOKXz6iPjI9RBhVgTTr7CeXqt8Rb//aoMdNy0VxIvWTFOtdCbzXQwhp1ku2HLyfT2T5Hv1nlh+rgoeXBQeT5oq5wpnXxYXBkDwnLsBnuP047EU1sAW3Soc/tnRg98XoApkV1tbH4W3LLh4XmjIXfpsh7SzOPXURtIu5Xeh/pVYXl1AFOfhthB05EZVh3dn2qTg/WcknbXmsN0lCWu5u3fsFbTPTnKyjmSZXTbZbp/f8s0Mx3h9D33grOVYZQqNur9PjLUO9g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=suse.com;
+Received: from DM6PR18MB2411.namprd18.prod.outlook.com (2603:10b6:5:15c::18)
+ by DM6PR18MB3033.namprd18.prod.outlook.com (2603:10b6:5:189::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3045.17; Wed, 27 May
+ 2020 10:46:57 +0000
+Received: from DM6PR18MB2411.namprd18.prod.outlook.com
+ ([fe80::8916:a3e5:9bf:d14f]) by DM6PR18MB2411.namprd18.prod.outlook.com
+ ([fe80::8916:a3e5:9bf:d14f%7]) with mapi id 15.20.3045.018; Wed, 27 May 2020
+ 10:46:57 +0000
+Subject: Re: [PATCH 0/6] btrfs-progs: btrfs-image related fixes
+From:   Qu Wenruo <wqu@suse.com>
+To:     <linux-btrfs@vger.kernel.org>
+References: <20200527102810.147999-1-wqu@suse.com>
+Autocrypt: addr=wqu@suse.com; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
  8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
  1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
  9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
  gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
- PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
- 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
- D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
- efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
- ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
- BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
- 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
- 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
- EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
- 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
- ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
- oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
- fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
- 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
- ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
- oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <ec5b61f1-a46c-393a-d152-7f9a2ca743d3@gmx.com>
-Date:   Wed, 27 May 2020 18:41:56 +0800
+ AAG0GFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPokBTQQTAQgAOAIbAwULCQgHAgYVCAkKCwIE
+ FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJdnDWhAAoJEMI9kfOhJf6oZgoH
+ 90uqoGyUh5UWtiT9zjUcvlMTCpd/QSgwagDuY+tEdVPaKlcnTNAvZKWSit8VuocjrOFbTLwb
+ vZ43n5f/l/1QtwMgQei/RMY2XhW+totimzlHVuxVaIDwkF+zc+pUI6lDPnULZHS3mWhbVr9N
+ vZAAYVV7GesyyFpZiNm7GLvLmtEdYbc9OnIAOZb3eKfY3mWEs0eU0MxikcZSOYy3EWY3JES7
+ J9pFgBrCn4hF83tPH2sphh1GUFii+AUGBMY/dC6VgMKbCugg+u/dTZEcBXxD17m+UcbucB/k
+ F2oxqZBEQrb5SogdIq7Y9dZdlf1m3GRRJTX7eWefZw10HhFhs1mwx7kBDQRZ1YGvAQgAqlPr
+ YeBLMv3PAZ75YhQIwH6c4SNcB++hQ9TCT5gIQNw51+SQzkXIGgmzxMIS49cZcE4KXk/kHw5h
+ ieQeQZa60BWVRNXwoRI4ib8okgDuMkD5Kz1WEyO149+BZ7HD4/yK0VFJGuvDJR8T7RZwB69u
+ VSLjkuNZZmCmDcDzS0c/SJOg5nkxt1iTtgUETb1wNKV6yR9XzRkrEW/qShChyrS9fNN8e9c0
+ MQsC4fsyz9Ylx1TOY/IF/c6rqYoEEfwnpdlz0uOM1nA1vK+wdKtXluCa79MdfaeD/dt76Kp/
+ o6CAKLLcjU1Iwnkq1HSrYfY3HZWpvV9g84gPwxwxX0uXquHxLwARAQABiQE8BBgBCAAmAhsM
+ FiEELd9y5aWlW6idqkLhwj2R86El/qgFAl2cNa4FCQlqTn8ACgkQwj2R86El/qhXBAf/eXLP
+ HDNTkHRPxoDnwhscIHJDHlsszke25AFltJQ1adoaYCbsQVv4Mn5rQZ1Gon54IMdxBN3r/B08
+ rGVPatIfkycMCShr+rFHPKnExhQ7Wr555fq+sQ1GOwOhr1xLEqAhBMp28u9m8hnkqL36v+AF
+ hjTwRtS+tRMZfoG6n72xAj984l56G9NPfs/SOKl6HR0mCDXwJGZAOdtyRmqddi53SXi5N4H1
+ jWX1xFshp7nIkRm6hEpISEWr/KKLbAiKKbP0ql5tP5PinJeIBlDv4g/0+aGoGg4dELTnfEVk
+ jMC8cJ/LiIaR/OEOF9S2nSeTQoBmusTz+aqkbogvvYGam6uDYw==
+Message-ID: <51ac5cc9-5902-663e-da51-b5a5004ec719@suse.com>
+Date:   Wed, 27 May 2020 18:46:53 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.8.0
-MIME-Version: 1.0
-In-Reply-To: <2549429.Qys7a5ZjRC@puma>
+In-Reply-To: <20200527102810.147999-1-wqu@suse.com>
 Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="XJqLOKYez3CSU7SWoNRTh2Iljg5GTnIzK"
-X-Provags-ID: V03:K1:dKe6YjG8fzZppzYcypYyR/jjmSOHA6ky4IHM5HnX5ckLOqRnEg8
- b53XZkSUFDB1wzQkpUqLSvkWyoingFUhvc4+aDxN1d+FwsdVIcyjZXAmfE69uxVqQogo1q6
- BCqnXnCdRQ17v7AVgs3bDmfQhXa12K8mMcZUJod83+YQF7E1Z9J4ycacPr5LkIJC/77TPCb
- 7/2RzMKYrRqEv1CMVD5Tw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:9HlLWJmhp+g=:lU5ADIr3Xd5V2GHV2GrNrC
- cEsodQ4ydtvFR+cGTck+5UnvnpHJLrI7KF8/k1wckFS3AOHFyJQbY27V60cXR8cX0Q4LPDbXW
- NpktK3s8t3XcuTdjoD/qrm5zUsVfG1Pn/9xeLZZdwfUh41sJHN6NsEdf1GY4fdV3OWdPahtPf
- i99YH5sUh4a0uPSc45Iu64mkjB0Iip0a3MM8AOlu0QOZUDfbkIpSIPRV+tlY0EMlJHwnKAxev
- jKxfCtT3KcA34sRbhBz5F9N0crbDp61/o2DxhJGFharRFiF2v6CNP/SuEEHL85U/LDK0csnXy
- ZHP8bmrMdzSFaH5DFxwydo8Y3OJsH4UKyRiOhUuq/BmtVOf9eAo66PtcT8KoFEYFPovFUnHRS
- 7iKGfVTDH3mzJQzk6X6Y/MiW+qAWOqRoxvaK7Ial/LcqRCeS9yIcyYfINz7y4ziG2/0eb53eo
- E/a7GPQ4tQUAx4H8AMkq/VcxdCHdz1Ifd1Rc+CWrwcFUXOy/cftiPJiIG50QD12HtyFdcMx40
- LaGUAGoReFuTPWWn6+pZbNHnjvFMWoK5ljF86cAHQJO5sVPAj7R+sQYOkkik5iFNZc6QS8iHN
- uhjErDoDYMVpqVfl37np+H4W+NPWkohtRMIL11+ioQlTZ3QjBDSj6y+4S9BAFmgrT1jUrQ7Gh
- 6jQjQdS+3PiPjhqPlbBOG1p7Pb0zSVjfvzHxa0FaF6BklLi5Izz8MX5aNMJUm3z9CJBeT+vEw
- Pp9ch2ZnicGGE+hqVNXrwPRm/QBo3jp1Ss/ZXUPoLuS0KtLp8FHgSKcJHDOmxpM52GIaZL9Z/
- IEwrufqsjUa5w2Siv/rnK0NmMj4JtCmsdAziITJDXoZfwKKkVCyE5UYjZEjZ3zhsKYqZx2mTa
- 5AW71WsKwRBhXUVxEv6grxHm+KDBvnkwmBhBI0LDd1gN/U3j7EspThE+PjbEzDxdgIbAuPqj7
- UXYOIH+g2+o8DCmNArCKQsU9Iy5SnlhgzfISZlDhpLKJzvD7TpbHfWyqRVAzjOk++A6ZdIjbX
- hhi2RBgEcFKx7IQdlbn0nPMbhGc+ULmj84IoxClXwqZXkNnYEdJCOKNMqm0jcw37QmA8SfANk
- phIEOKeG4llhVu6FoO27508x3N5CtKc5xznEUtYVNvY9klnGBcT5/3+Jt2nW5o2gvOg0A7SA4
- FVBUjrCByKt5ia/L5Uk8vRVJiwLSD8ge+AElwi8Hzi5Y9JgM0JziOAuXCgfNYPBEZH7+Vfn5J
- HkbBedA9S9jfNoqT9
+        protocol="application/pgp-signature";
+        boundary="DIAEaQhBKoeEKqCL7b5l4saJOpJkfV7ap"
+X-ClientProxiedBy: BY5PR17CA0007.namprd17.prod.outlook.com
+ (2603:10b6:a03:1b8::20) To DM6PR18MB2411.namprd18.prod.outlook.com
+ (2603:10b6:5:15c::18)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [0.0.0.0] (149.28.201.231) by BY5PR17CA0007.namprd17.prod.outlook.com (2603:10b6:a03:1b8::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3045.17 via Frontend Transport; Wed, 27 May 2020 10:46:56 +0000
+X-Originating-IP: [149.28.201.231]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 31505a7e-e4cb-44d0-bdc7-08d8022b4717
+X-MS-TrafficTypeDiagnostic: DM6PR18MB3033:
+X-Microsoft-Antispam-PRVS: <DM6PR18MB3033EB8EE33D45DA947DA406D6B10@DM6PR18MB3033.namprd18.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-Forefront-PRVS: 04163EF38A
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: izOQZ67ilPceXwFGftx6xpxjePzmMc8MLAbmI8H4VrhmwJeYxgKQ0r06sWUPOLP/llewOXO7IqvbK26e2Y5BX0/bvcyvqVvig53pjOr0gmqCE6CjGzUttdevFEW/zN+BKTFPjH1nX8CdTSCUsFIe/nRqUiTBUprTHMFOx74M8ZzZTgNIfk6TAfs79k2KDhMu0DkkMTlKljQfFeoV06IqTup+liZ3efkPHau08oJ8bVI5/1EvnE24C9RbYXP+sFSJ4zDdvnfTJl0F04/6o2z3bK+buDYbTw18OW+Gls7TaEwbD3IyMorQChkWqaKPxg5kP1ZhifbQM6knzjlOMJwDWTy0Ojk8DlRlhYx743FbTB2TQ/vF+34SBvfXKxiKACl04NmMLuzM7001gjtlA4hgIfHAYhUBqXe+wIKrcNbZ2jM/sXS5EwDAl5A00J5coe4MbBu6E9KLYWn+j2ZvTUpBW0hlUVgXu35UGNPAReizYo9vfgaEnnzpFFIsfS74j8av7tC1CBIUG0UDMD5qMv8XJw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR18MB2411.namprd18.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(39860400002)(346002)(376002)(136003)(396003)(366004)(31686004)(2616005)(956004)(33964004)(52116002)(186003)(966005)(316002)(16526019)(16576012)(26005)(478600001)(6666004)(21480400003)(2906002)(86362001)(31696002)(36756003)(83380400001)(8676002)(8936002)(6486002)(66476007)(5660300002)(66556008)(6706004)(66946007)(6916009)(235185007)(78286006)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: N9eMbtAZeVqC7uOtHMawAa9Iaih4zVknmSjMYKiSolErCPseObt52Y48v3RoEPV2g2YA9/IQ8ll27v6PmOKIWzF41MMxnGELvTdoxh3XfHj8tTaFwINp4vc8DqGlgww0dIqr3UJbO5xG3RHePMzOQRvm7bUXKWExfSEv/fcvXzxSLdHLS8w7C0k4+u2JJ87nAJyfO0OCDFf408vY9li9dT+iREoETlDy2DKPS9mXW9IVSWkgBTUE6WITNP5+it1xfhUlQZKxtFTy+rk9Q6OfEE5hX5I0797tP6uTDwIwAok3IjRdkiWv2F/bdt1XgECzD6wk/wjja3kumiFTsOlFBWE8WwvrcJTo4gssV3bW8HKxryzw0BKEzyDafQk/32qRT/lpD4rTQj30wZBofQDFUd7Oiw++zbJy56bO1mmWT7a+IEno3WiQj+lG04tSF5tQg/5nr3tN/XR2+MzjX1ZoW8r8WtHF5+OEMWUoUy400Do=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 31505a7e-e4cb-44d0-bdc7-08d8022b4717
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 May 2020 10:46:57.7279
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 856b813c-16e5-49a5-85ec-6f081e13b527
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: oAJxoRKMBgJIlYQJIxVlVTzIvtnc+qSFYI6xzHZnaEIi4TTbuyMJbzdzfpSztyZq
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR18MB3033
+X-OriginatorOrg: suse.com
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---XJqLOKYez3CSU7SWoNRTh2Iljg5GTnIzK
-Content-Type: multipart/mixed; boundary="P7veg7XjeujAK2kmRCOMx5t4svd8LBgfr"
+--DIAEaQhBKoeEKqCL7b5l4saJOpJkfV7ap
+Content-Type: multipart/mixed; boundary="Qa8deb6tFvJVUFGRGNczS3kNTydm3RYad"
 
---P7veg7XjeujAK2kmRCOMx5t4svd8LBgfr
+--Qa8deb6tFvJVUFGRGNczS3kNTydm3RYad
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
 
 
 
-On 2020/5/21 =E4=B8=8A=E5=8D=889:34, Pierre Abbat wrote:
-> I am not on the list, so please copy me.
-
-Sorry for the late reply, as it takes me extra time handling the
-btrfs-image bug which delayed me quite a lot.
-
-The good news is, the bug of dead looping is already fixed (or at least
-can be rejected gracefully) in latest upstream kernel.
-
+On 2020/5/27 =E4=B8=8B=E5=8D=886:28, Qu Wenruo wrote:
+> This branch can be fetched from github:
+> https://github.com/adam900710/btrfs-progs/tree/image_fixes
 >=20
-> What does "looping too much" mean?
-
-This is caused by corrupted extent tree. As I mentioned, there is a bit
-flip in extent tree, making reference count of one extent jumped from
-0x1 to 0x200001.
-
-And then since your fs has dirty log tree, during log replay btrfs is
-trying to locate the non-existing 0x200000 extents refs, leading to the
-dead loop.
-
+> Since there are two binary files updates, and one big code move, it's
+> recommended to fetch github repo, in case some patches didn't reach mai=
+l
+> list.
 >=20
-> phma@puma:~$ uname -a
-> Linux puma 5.3.0-7625-generic #27~1576774560~19.10~f432cd8-Ubuntu SMP T=
-hu Dec=20
+> This is inspried by one log tree replay dead loop bug, where the kind
+> reporter, Pierre Abbat <phma@bezitopo.org>, gave the btrfs-image to
+> reproduce it.
+>=20
+> Then the image fails to pass check due to the existing log tree
+> conflicting with device/chunk fixup.
+> As log tree blocks are not recorded in extent tree, later COW can use
+> log tree blocks and cause transid mismatch.
+>=20
+> To address the problem, this patchset will:
+> - Don't do any fixup if the source dump is single device
+>   Since the dump has the full super block contents, we can easily check=
 
-In v5.4, we introduced new extent item check, f82d1c7ca8ae ("btrfs:
-tree-checker: Add EXTENT_ITEM and METADATA_ITEM check"), which will
-rejects such obviously bad extent item, and avoid falling into the dead
-loop.
+>   if the source fs is single deivce.
+>=20
+>   The chunk/device fixup is mostly for older btrfs-image behavior, whic=
+h
+>   always restores the fs into SINGLE profile.
+>   However since commit 9088ab6a1067 ("btrfs-progs: make btrfs-image
+>   restore to support dup"), btrfs-image can restore into DUP profile,
+>   allowing us to do exact replay for single device fs.
+>   This is patch 5.
 
-So you're just one version short to avoid the bug.
+As expected, patch 3 can't survive the mail list filter.
+It's 402K, so I guess one needs to grab it from github anyway.
 
 Thanks,
 Qu
+>=20
+> - Pin down all log tree blocks for fixup
+>   For cases we still need to fixup chunk/device items, at least pin dow=
+n
+>   all log tree blocks to avoid transid mimsatch.
+>   This is patch 6.
+>=20
+> After above fixes, fsck/012 and fsck/035 fails, due to bad original
+> images.
+> The old btrfs-image can fixup those bad device total_bytes and
+> bytes_used, but that just hides the problem.
+> We still need to update those images to make them correct, so here come=
+s
+> patch 3 and 4.
+>=20
+> During the debugging of btrfs-image restore, I found dump_superblock()
+> would help a lot to expose bad values in images, so is
+> btrfs_print_leaf().
+>=20
+> Enahance them to be more handy for usage inside gdb, and here comes
+> patch 1 and 2.
+>=20
+>=20
+> Qu Wenruo (6):
+>   btrfs-progs: Allow btrfs_print_leaf() to be called on dummy eb whose
+>     fs_info is NULL
+>   btrfs-progs: print-tree: Export dump_superblock()
+>   btrfs-progs: fsck-tests: Update the image in 012
+>   btrfs-progs: fsck-tests: Update the image of test case 035
+>   btrfs-progs: image: Don't modify the chunk and device tree if  the
+>     source dump is single device
+>   btrfs-progs: image: Pin down log tree blocks before fixup
+>=20
+>  cmds/inspect-dump-super.c                     | 454 +-----------------=
 
-> 19 20:35:37 UTC  x86_64 x86_64 x86_64 GNU/Linux
-> phma@puma:~$ btrfs --version
-> btrfs-progs v5.2.1=20
-> phma@puma:~$ sudo su
-> [sudo] password for phma:=20
-> root@puma:/home/phma# btrfs fi show
-> Label: none  uuid: 155a20c7-2264-4923-b082-288a3c146384
->         Total devices 1 FS bytes used 67.60GiB
->         devid    1 size 158.00GiB used 70.02GiB path /dev/mapper/concol=
-or-
-> cougar
->=20
-> Label: none  uuid: 10c61748-efe7-4b9c-b1f7-041dc45d894b
->         Total devices 1 FS bytes used 53.36GiB
->         devid    1 size 127.98GiB used 56.02GiB path /dev/mapper/cougar=
--crypt
->=20
-> Label: none  uuid: 1f5a6f23-a7ef-46c6-92b1-84fc2f684931
->         Total devices 1 FS bytes used 92.58GiB
->         devid    1 size 158.00GiB used 131.00GiB path /dev/mapper/puma-=
-cougar
->=20
-> root@puma:/home/phma# btrfs check /dev/mapper/puma-cougar=20
-> Opening filesystem to check...
-> Checking filesystem on /dev/mapper/puma-cougar
-> UUID: 1f5a6f23-a7ef-46c6-92b1-84fc2f684931
-> [1/7] checking root items
-> [2/7] checking extents
-> incorrect local backref count on 4186230784 root 257 owner 99013 offset=
-=20
-> 5033684992 found 1 wanted 2097153 back 0x5589817e5ef0
-> backpointer mismatch on [4186230784 188416]
-> ERROR: errors found in extent allocation tree or chunk allocation
-> [3/7] checking free space cache
-> [4/7] checking fs roots
-> root 257 inode 30648207 errors 100, file extent discount
-> Found file extent holes:
->         start: 0, len: 4096
-> root 257 inode 30648208 errors 100, file extent discount
-> Found file extent holes:
->         start: 0, len: 4096
-> root 257 inode 30648209 errors 100, file extent discount
-> Found file extent holes:
->         start: 0, len: 4096
-> root 257 inode 30648210 errors 100, file extent discount
-> Found file extent holes:
->         start: 0, len: 4096
-> root 257 inode 30648211 errors 100, file extent discount
-> Found file extent holes:
->         start: 0, len: 4096
-> root 257 inode 30648212 errors 100, file extent discount
-> Found file extent holes:
->         start: 0, len: 4096
-> root 257 inode 30648213 errors 100, file extent discount
-> Found file extent holes:
->         start: 0, len: 4096
-> root 257 inode 30648214 errors 100, file extent discount
-> Found file extent holes:
->         start: 0, len: 4096
-> root 257 inode 30648215 errors 100, file extent discount
-> Found file extent holes:
->         start: 0, len: 4096
-> root 257 inode 30648216 errors 100, file extent discount
-> Found file extent holes:
->         start: 0, len: 4096
-> root 257 inode 30648217 errors 100, file extent discount
-> Found file extent holes:
->         start: 0, len: 4096
-> root 257 inode 30648218 errors 100, file extent discount
-> Found file extent holes:
->         start: 0, len: 4096
-> root 257 inode 30648219 errors 100, file extent discount
-> Found file extent holes:
->         start: 0, len: 4096
-> root 257 inode 30648220 errors 100, file extent discount
-> Found file extent holes:
->         start: 0, len: 4096
-> ERROR: errors found in fs roots
-> found 99403300864 bytes used, error(s) found
-> total csum bytes: 96230456
-> total tree bytes: 737820672
-> total fs tree bytes: 534069248
-> total extent tree bytes: 75481088
-> btree space waste bytes: 129276390
-> file data blocks allocated: 10627425239040
->  referenced 68243042304
->=20
-> Pierre
+>  image/main.c                                  |  86 +++-
+>  print-tree.c                                  | 449 ++++++++++++++++-
+>  print-tree.h                                  |   1 +
+>  .../012-leaf-corruption/good.img.xz           | Bin 0 -> 186392 bytes
+>  .../012-leaf-corruption/no_data_extent.tar.xz | Bin 130260 -> 0 bytes
+>  tests/fsck-tests/012-leaf-corruption/test.sh  |  17 +-
+>  .../offset_by_one.img                         | Bin 3072 -> 3072 bytes=
+
+>  8 files changed, 540 insertions(+), 467 deletions(-)
+>  create mode 100644 tests/fsck-tests/012-leaf-corruption/good.img.xz
+>  delete mode 100644 tests/fsck-tests/012-leaf-corruption/no_data_extent=
+=2Etar.xz
 >=20
 
 
---P7veg7XjeujAK2kmRCOMx5t4svd8LBgfr--
+--Qa8deb6tFvJVUFGRGNczS3kNTydm3RYad--
 
---XJqLOKYez3CSU7SWoNRTh2Iljg5GTnIzK
+--DIAEaQhBKoeEKqCL7b5l4saJOpJkfV7ap
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl7OQ/QACgkQwj2R86El
-/qi3YAf7BVPyu//7p5f+VtXdOy/OZhETEyeT9ynjb2vAtE4QOAT6qRnEBUxQHaeG
-48r3eNQNSqfRoNd9FOgNbdNL3wzRGzsacmrK9lGN3e16YUluwTtEh/28SG7tnWpC
-rMl/x2jw6i6NtStt5HkuQ7wsJOo2TkAB0ES9ua+sPBMxUOHXau2yvSgB1pf44cdJ
-H9WA3OsqrCf/5wRg8WvSHaMRDY9EI2iYKkk5QobZxVuJsHB1aAVmceQcFsjZlYFP
-aaJIBqordwx7QXfXeoYnPVH3EZtsAH5dMQmbR8bOasPjYjZm19+YlE/QVkz6OwiL
-9sZgJPu0VN3BuGlq0wJJHf7tBB1gQQ==
-=f2oW
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl7ORR0ACgkQwj2R86El
+/qhFqAf/Xc2nmnFSQzbDQ52vOG1xacTlWOe+A5WCtq0arVrHoXZPk+UyLq2SVPHP
+kHgmYJUtmfmPkInAiurXcHNX/YB98JGtTZCA7ZPeqCCWXbEI+adkRirSugANCCHA
+joavcixZWDWRkk9cEeC/vfiTxUlk27/nLXqJZzWlTgrcU0aP8WrSNdB47kwXxQY9
+2JKhvWUVsNqg6lD4E1oa2DY5qFU28SovK2ItsY14YyjuUdKlVAtNiXx6441A087N
+gyflqhuwyCYB+PzeHWTOICp97yNQxsMxQ7OewsL1Rv9d9nqhVD6m4EfXHvOWRwvB
+FkpIxhhI0hkRM2eGiI6Do/H5KdHWBg==
+=yIA+
 -----END PGP SIGNATURE-----
 
---XJqLOKYez3CSU7SWoNRTh2Iljg5GTnIzK--
+--DIAEaQhBKoeEKqCL7b5l4saJOpJkfV7ap--
