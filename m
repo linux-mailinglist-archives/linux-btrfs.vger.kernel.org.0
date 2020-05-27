@@ -2,114 +2,127 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D51E1E4EB7
-	for <lists+linux-btrfs@lfdr.de>; Wed, 27 May 2020 21:59:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A5821E4F65
+	for <lists+linux-btrfs@lfdr.de>; Wed, 27 May 2020 22:37:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727843AbgE0T73 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 27 May 2020 15:59:29 -0400
-Received: from smtp-34.italiaonline.it ([213.209.10.34]:52817 "EHLO libero.it"
+        id S1727969AbgE0Uh4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 27 May 2020 16:37:56 -0400
+Received: from smtp-35.italiaonline.it ([213.209.10.35]:44398 "EHLO libero.it"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726701AbgE0T72 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 27 May 2020 15:59:28 -0400
-X-Greylist: delayed 488 seconds by postgrey-1.27 at vger.kernel.org; Wed, 27 May 2020 15:59:27 EDT
+        id S1726921AbgE0Uhz (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 27 May 2020 16:37:55 -0400
 Received: from venice.bhome ([78.12.136.199])
-        by smtp-34.iol.local with ESMTPA
-        id e257jebNytrlwe257jJKkP; Wed, 27 May 2020 21:51:18 +0200
+        by smtp-35.iol.local with ESMTPA
+        id e2oDjlBCFLNQWe2oDjo7pW; Wed, 27 May 2020 22:37:54 +0200
 x-libjamoibt: 1601
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=inwind.it; s=s2014;
-        t=1590609078; bh=xUgI3EBQYYpoF9ncYwjN36+7GwSVSuF/lFx1B0yBUs8=;
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2014;
+        t=1590611874; bh=RXdyw7I7cBSzYa1j62Pc2FG/MEIx6XgJp6HAgw0FNX8=;
         h=From;
-        b=vnujpAlVyfWT/SbukgbTu4CZGC3ZTonA5W/xWoYTSKq2TxOluFj2QJCaZvGW7oDQf
-         602bP2QvmYKygqwb/3oazmsMZZq+uKpzP+tgDqBj0TrIKIt/3m4kyMgBbRHv45zqRJ
-         hKl1Y5SAoXEVxW4LMLZtjfi0OGjK2bJ0U+SPoCYc9FhcalXR0+UH83WLOKN3Dd2R1P
-         qD4UH+PFCmyzzI9vbDHtqqlCI0r8043QBp9NLohWylhsToqjUGCMVM3f0Ds+Gzpc0G
-         F225x2Q/CCewguHVbTnJZ7w+olbDurWZWYr0W92eznRcNgl9a/fjc3c9K04+Xv8W2u
-         PMo3pvvlqDYOg==
-X-CNFS-Analysis: v=2.3 cv=TOE7tGta c=1 sm=1 tr=0
+        b=WXzfz4M3F3fopO/BPEIdhD3j6qNYFP/rDRXmG+y/4mQoYYVwOHLyjko2xJzA6Srq9
+         OEV8pI8JROzYA3qP0r3ZUJok182BSyHTHQ+hoj9NMFwKJ36pzn7O965Ef/2XMh5Z/8
+         Elxl0VvkjAsGn0MJhlrbaTpokPmoZfBSn+tUIBJKIS50pwX1bg7xTQfLwEKVDCHtM9
+         cGFK0HL0PGmBqUV7qmeJQvPB9/m0dGZKGrIb8obO+fhTwIKxnhna8n2ZpLerUScRW2
+         HU83GwnjVOL14xTD8RpzgxzXZCMuasylFfCyUqj83iEjF0QxSQxR8b30cxVGGXpuxg
+         HztEdFuacUGwg==
+X-CNFS-Analysis: v=2.3 cv=LKsYv6e9 c=1 sm=1 tr=0
  a=kx39m2EDZI1V9vDwKCQCcA==:117 a=kx39m2EDZI1V9vDwKCQCcA==:17
- a=IkcTkHD0fZMA:10 a=pGLkceISAAAA:8 a=4ioPoZy6ZwoBv4AQaZ4A:9 a=QEXdDO2ut3YA:10
-Reply-To: kreijack@inwind.it
-Subject: Re: Planning out new fs. Am I missing anything?
-To:     Chris Murphy <lists@colorremedies.com>
-Cc:     Andrei Borzenkov <arvidjaar@gmail.com>,
-        Justin Engwer <justin@mautobu.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-References: <CAGAeKut52ymR5WVDTxJgQ=-fZzJ+pU8oVF89p4mBO-eaoAHiKw@mail.gmail.com>
- <CAJCQCtSyJp0LiaO246NcEX-p7rk8-h1NocW4o4rJgN=B1Kwrug@mail.gmail.com>
- <46fa65a3-137b-3164-0998-12bb996c15ef@gmail.com>
- <CAJCQCtTmcRfrZEtdnUgF0CkFFWDW-d5-LtM4SFKO4F7Xr9ai_A@mail.gmail.com>
- <0d3b740d-a431-cca0-3841-a85e49ffff9e@libero.it>
- <CAJCQCtTt0cusvmo-W3vUqmWNbGeH1f3JFSD4gLNBE2_38avd9A@mail.gmail.com>
-From:   Goffredo Baroncelli <kreijack@inwind.it>
-Message-ID: <a53aaabf-412e-2124-49fd-c995dc5dc473@inwind.it>
-Date:   Wed, 27 May 2020 21:51:17 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+ a=T537hWVpV7_BkzWz0EwA:9 a=9QsNii9Oh3O0Hkhw:21 a=LXJyeTO21fNu0dah:21
+From:   Goffredo Baroncelli <kreijack@libero.it>
+To:     linux-btrfs@vger.kernel.org
+Cc:     DanglingPointer <danglingpointerexception@gmail.com>,
+        Joshua Houghton <joshua.houghton@yandex.ru>,
+        David Sterba <dsterba@suse.com>
+Subject: [PATCH V2] btrfs-progs: add RAID5/6 support to btrfs fi us
+Date:   Wed, 27 May 2020 22:37:47 +0200
+Message-Id: <20200527203748.32860-1-kreijack@libero.it>
+X-Mailer: git-send-email 2.27.0.rc2
 MIME-Version: 1.0
-In-Reply-To: <CAJCQCtTt0cusvmo-W3vUqmWNbGeH1f3JFSD4gLNBE2_38avd9A@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-CMAE-Envelope: MS4wfIQwmAhiaRoE7YRdKiePKG+Ub9BHyWysb/tNhzmY4d+yZxCAY9mHZ8IPv8YPEAuq6HOcDkLuVoO7q6JxHLWSVQ6ZiIS8d4puf+y4EPE/aJTreXXePlA+
- 29D2bjz/F82TUzvEZNj4IGSwaTCfjULU8WqTR5Kk43OPXFd0UIKZSNIYSHgciPCv3p6kFGT2KuD+LLfaMTHnlF5fJNAby2MzvdIq3wD8Lvzu3G1wiCHkfpcI
- 06A2c+OID8j4Qh5YEvE1dUETs+n/lqVTVMnXD0Usohk=
+X-CMAE-Envelope: MS4wfHf1WVmlbQFBby4NokLPJbGeGwF55xax9BA0sav+b0UYMK/I0wWaVOXRxlKPeI0ulvG5+kBdrWC2X35GurGgNPJE7kaxauOlQGzBDH693pKxzRXcD5ML
+ Dh29O5BZ6W0sRG4FH88OljyT/NL6KPO/kwZiS3RPoZAN6BUSrYv5n+QHtUK5CHZYp4RkmijxqV92QdsWRHJ+Umt2fsmcb5/mPGgr7ss00q/eIsLBuEbq53YU
+ Tg+FGXIIWJYlrxQNw7OdW9TtFUi+Tcj3yx1FmH9P5ulV9pT+eh5bR9ye2YfYJ6ui
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 5/27/20 8:40 PM, Chris Murphy wrote:
-> On Wed, May 27, 2020 at 10:23 AM Goffredo Baroncelli <kreijack@libero.it> wrote:
->>
->> Hi All,
->>
->> On 5/27/20 8:25 AM, Chris Murphy wrote:
->>> On Tue, May 26, 2020 at 11:22 PM Andrei Borzenkov <arvidjaar@gmail.com> wrote:
->>>>
->>>> 27.05.2020 05:20, Chris Murphy пишет:
->>>>>
->>>>> single, dup, raid0, raid1 (all), raid10 are safe and stable.
->>>>
->>>> Until btrfs can reliably detect and automatically handle outdated device
->>>> I would not call any multi-device profiles "safe", at least unconditionally.
->>>
->>> I agree.
->>>
->>
->> Checking the generation of each device should be sufficient to detect "outdated" devices. Why this check is not performed ?
->> May be that I am missing something ?
-> 
-> But transid isn't unique enough except in isolation. Degraded volumes
-> are treated completely independently. So if I take a 2x raid1 and
-> mount each one degraded on separate computers and modify them. Then
-> join them back together, how can Btrfs resolve the differences? It's a
-> mess. Yes that is obviously a kind of sabotage. While not literal
-> sabotage, the effect is the same if you have alternating degraded
-> drives in successive boots.
 
-Even tough we can't close all the holes, we can reduce the likelihood of a this issue.
+Hi all,
 
-Anyway mounting a filesystem with different generation number is wrong. And the
-fact the we can't prevent all the kind of mismatches doesn't mean that
-we don't have to do anything.
+this patch adds support for the raid5/6 profiles in the command
+'btrfs filesystem usage'.
 
-I am thinking about adding a "opt in" check. I.e. if the mismatch happens
-btrfs should raise a warning. If a flag is passed at mount (like
-mount -o prevent-generation-mismatch) and the generations don't match,
-the mount fails.
+Until now the problem was that the value r_{data,metadata}_used is not
+easy to get for a RAID5/6, because it depends by the number of disks.
+And in a filesystem it is possible to have several raid5/6 chunks with a
+different number of disks.
 
-Then, on the basis of feedback returned, in the future we can change the
-flags from "opt in" to "opt out" (mount -o no-prevent-generation-mismatch)
+In order to bypass this issue, I compute these values from the 
+r_{data,metadata,system}_chunks values and the ratio
+l_*_used / l_*_chunks.
 
-> 
-> So you just cannot use degraded with either fstab or rootflags. It's
-> bad advice to anyone who gives it and we need to be vigilant about
-> recommending against it. Maybe the man 5 btrfs page should expressly
-> say not to include degraded in fstab, or at least warn there are
-> consequences.
-> 
+So now if you run btrfs fi us in a raid6 filesystem you get:
 
+$ sudo btrfs fi us / 
+Overall:
+    Device size:		  40.00GiB
+    Device allocated:		   8.28GiB
+    Device unallocated:		  31.72GiB
+    Device missing:		     0.00B
+    Used:			   5.00GiB
+    Free (estimated):		  17.36GiB	(min: 17.36GiB)
+    Data ratio:			      2.00
+    Metadata ratio:		      0.00
+    Global reserve:		   3.25MiB	(used: 0.00B)
+
+Data,RAID6: Size:4.00GiB, Used:2.50GiB (62.53%)
+[...]
+
+Instead before:
+
+$ sudo btrfs fi us /
+WARNING: RAID56 detected, not implemented
+WARNING: RAID56 detected, not implemented
+WARNING: RAID56 detected, not implemented
+Overall:
+    Device size:		  40.00GiB
+    Device allocated:		     0.00B
+    Device unallocated:		  40.00GiB
+    Device missing:		     0.00B
+    Used:			     0.00B
+    Free (estimated):		     0.00B	(min: 8.00EiB)
+    Data ratio:			      0.00
+    Metadata ratio:		      0.00
+    Global reserve:		   3.25MiB	(used: 0.00B)
+
+Data,RAID6: Size:4.00GiB, Used:2.50GiB (62.53%)
+[...]
+
+
+I want to point out that this patch should be compatible with my
+previous patches set (the ones related to the new ioctl 
+BTRFS_IOC_GET_CHUNK_INFO). If both are merged we will have a 'btrfs fi us'
+commands with full support a raid5/6 filesystem without needing root
+capability.
+
+I rewrote the patch after some David's comments about the difficult to
+review it because I changed too much code. So this time I tried to be less
+intrusive. I leaved the old logic and I computed only the missing
+values.
+
+Comments are welcome.
+BR
+G.Baroncelli
+
+V2:
+The patch is completely rewritten to be less intrusive
+
+V1:
+First issue
 
 -- 
 gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
 Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
+
+
+
