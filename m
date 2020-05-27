@@ -2,68 +2,82 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B5E71E4303
-	for <lists+linux-btrfs@lfdr.de>; Wed, 27 May 2020 15:12:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2F8B1E438B
+	for <lists+linux-btrfs@lfdr.de>; Wed, 27 May 2020 15:25:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387617AbgE0NMf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 27 May 2020 09:12:35 -0400
-Received: from mx2.suse.de ([195.135.220.15]:37210 "EHLO mx2.suse.de"
+        id S2387766AbgE0NZ2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 27 May 2020 09:25:28 -0400
+Received: from mx2.suse.de ([195.135.220.15]:46836 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387581AbgE0NMf (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 27 May 2020 09:12:35 -0400
+        id S2387479AbgE0NZ2 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 27 May 2020 09:25:28 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 529DCAEE2;
-        Wed, 27 May 2020 13:12:36 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id B2477AC77;
+        Wed, 27 May 2020 13:25:29 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 8D7D2DA72D; Wed, 27 May 2020 15:11:35 +0200 (CEST)
-Date:   Wed, 27 May 2020 15:11:35 +0200
+        id 1A244DA72D; Wed, 27 May 2020 15:24:29 +0200 (CEST)
+Date:   Wed, 27 May 2020 15:24:29 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     Johannes Thumshirn <jth@kernel.org>,
-        David Sterba <dsterba@suse.cz>, linux-fsdevel@vger.kernel.org,
+To:     Johannes Thumshirn <jth@kernel.org>
+Cc:     David Sterba <dsterba@suse.cz>, linux-fsdevel@vger.kernel.org,
         linux-btrfs@vger.kernel.org, Eric Biggers <ebiggers@google.com>,
         Richard Weinberger <richard@nod.at>,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Subject: Re: [PATCH v3 0/3] Add file-system authentication to BTRFS
-Message-ID: <20200527131135.GD18421@twin.jikos.cz>
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        Johannes Thumshirn <jthumshirn@suse.de>
+Subject: Re: [PATCH v3 2/3] btrfs: add authentication support
+Message-ID: <20200527132428.GE18421@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        Johannes Thumshirn <jth@kernel.org>, linux-fsdevel@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, Eric Biggers <ebiggers@google.com>,
+Mail-Followup-To: dsterba@suse.cz, Johannes Thumshirn <jth@kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        Eric Biggers <ebiggers@google.com>,
         Richard Weinberger <richard@nod.at>,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        Johannes Thumshirn <jthumshirn@suse.de>
 References: <20200514092415.5389-1-jth@kernel.org>
- <5663c6ca-87d4-8a98-3338-e9a077f4c82f@gmx.com>
+ <20200514092415.5389-3-jth@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <5663c6ca-87d4-8a98-3338-e9a077f4c82f@gmx.com>
+In-Reply-To: <20200514092415.5389-3-jth@kernel.org>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, May 27, 2020 at 10:08:06AM +0800, Qu Wenruo wrote:
-> > Changes since v2:
-> > - Select CONFIG_CRYPTO_HMAC and CONFIG_KEYS (kbuild robot)
-> > - Fix double free in error path
-> > - Fix memory leak in error path
-> > - Disallow nodatasum and nodatacow when authetication is use (Eric)
+On Thu, May 14, 2020 at 11:24:14AM +0200, Johannes Thumshirn wrote:
+> From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+> Example usage:
+> Create a file-system with authentication key 0123456
+> mkfs.btrfs --csum "hmac(sha256)" --auth-key 0123456 /dev/disk
 > 
-> Since we're disabling NODATACOW usages, can we also disable the
-> following features?
-> - v1 space cache
->   V1 space cache uses NODATACOW file to store space cache, althouhg it
->   has inline csum, but it's fixed to crc32c. So attacker can easily
->   utilize this hole to mess space cache, and do some DoS attack.
+> Add the key to the kernel's keyring as keyid 'btrfs:foo'
+> keyctl add logon btrfs:foo 0123456 @u
 > 
-> - fallocate
->   I'm not 100% sure about this, but since nodatacow is already a second
->   class citizen in btrfs, maybe not supporting fallocate is not a
->   strange move.
+> Mount the fs using the 'btrfs:foo' key
+> mount -o auth_key=btrfs:foo,auth_hash_name="hmac(sha256)" /dev/disk /mnt/point
 
-- swapfile
-  NODATACOW is required for swapfile, so authentication and swapfile are
-  mutualy exclusive.
+I tried to follow the example but the filesystem does not mount. But
+what almost shocked me was the way the key is specified on the userspace
+side.
+
+$ mkfs.btrfs --csum "hmac(sha256)" --auth-key 0123456 /dev/disk
+
+"0123456" are the raw bytes of the key? Seriously?
+
+And how it's passed to the hmac code:
+
+ gcry_mac_hd_t mac;
+ gcry_mac_open(&mac, GCRY_MAC_HMAC_SHA256, 0, NULL);
+ gcry_mac_setkey(mac, fs_info->auth_key, strlen(fs_info->auth_key));
+ gcry_mac_write(mac, buf, length);
+ gcry_mac_read(mac, out, &length);
+
+Strlen means the key must avoid char 0 and I don't think we want do any
+decoding from ascii-hex format, when there's the whole keyctl
+infrastructure.
+
+The key for all userspace commands needs to be specified the same way as
+for kernel, ie. "--auth-key btrfs:foo" and use the appropriate ioctls to
+read the key bytes.
