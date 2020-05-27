@@ -2,24 +2,24 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80CB81E3EFB
-	for <lists+linux-btrfs@lfdr.de>; Wed, 27 May 2020 12:28:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E10251E3EFC
+	for <lists+linux-btrfs@lfdr.de>; Wed, 27 May 2020 12:28:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387990AbgE0K2d (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 27 May 2020 06:28:33 -0400
-Received: from mx2.suse.de ([195.135.220.15]:44620 "EHLO mx2.suse.de"
+        id S2387996AbgE0K2f (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 27 May 2020 06:28:35 -0400
+Received: from mx2.suse.de ([195.135.220.15]:44656 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387985AbgE0K2b (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 27 May 2020 06:28:31 -0400
+        id S2387985AbgE0K2f (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 27 May 2020 06:28:35 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 6C0A4ABE3
-        for <linux-btrfs@vger.kernel.org>; Wed, 27 May 2020 10:28:32 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id B9699AC51
+        for <linux-btrfs@vger.kernel.org>; Wed, 27 May 2020 10:28:36 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 5/6] btrfs-progs: image: Don't modify the chunk and device tree if  the source dump is single device
-Date:   Wed, 27 May 2020 18:28:09 +0800
-Message-Id: <20200527102810.147999-6-wqu@suse.com>
+Subject: [PATCH 6/6] btrfs-progs: image: Pin down log tree blocks before fixup
+Date:   Wed, 27 May 2020 18:28:10 +0800
+Message-Id: <20200527102810.147999-7-wqu@suse.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200527102810.147999-1-wqu@suse.com>
 References: <20200527102810.147999-1-wqu@suse.com>
@@ -30,106 +30,113 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Btrfs-image -r doesn't always create exactly the same fs of the original
-fs, this is because btrfs-image can create dump from multi-device, and
-restore it to single device.
+Although btrfs-image will dump log tree, we will modify the restored
+image if it's not a multi-device restore.
 
-Thus we need some special modification to chunk and device tree. This
-behavior is mostly to handle the old behavior where we always restore
-the metadata into SINGLE profile no matter what.
+In that case, since log tree blocks are not recorded in extent tree,
+extent allocator will try to re-use the tree blocks belonging to log
+trees, this would lead to transid mismatch if btrfs-restore chooses to
+do device/chunk fixup.
 
-However this is not needed if the source fs only has one device, in that
-case, we can use all the metadata as is, no need to modify the fs at
-all, resulting an exact copy of metadata.
-
-This patch will do extra check when doing restore, to avoid modify the
-restored fs if the source is also single device.
+This patch will fix such problem by pinning down all the log trees
+blocks before fixing up the device and chunk trees.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- image/main.c | 20 +++++++++++++++++++-
- 1 file changed, 19 insertions(+), 1 deletion(-)
+ image/main.c | 66 ++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 66 insertions(+)
 
 diff --git a/image/main.c b/image/main.c
-index 10f6182e0eac..48d8fcd5078c 100644
+index 48d8fcd5078c..71ea131c8c29 100644
 --- a/image/main.c
 +++ b/image/main.c
-@@ -103,6 +103,7 @@ struct mdrestore_struct {
- 	struct rb_root physical_tree;
- 	struct list_head list;
- 	struct list_head overlapping_chunks;
-+	struct btrfs_super_block *original_super;
- 	size_t num_items;
- 	u32 nodesize;
- 	u64 devid;
-@@ -1085,6 +1086,12 @@ static int update_super(struct mdrestore_struct *mdres, u8 *buffer)
- 	u8 *ptr, *write_ptr;
- 	int old_num_stripes;
- 
-+	/* No need to fix, use all data as is */
-+	if (btrfs_super_num_devices(mdres->original_super) == 1) {
-+		new_array_size = btrfs_super_sys_array_size(super);
-+		goto finish;
-+	}
-+
- 	write_ptr = ptr = super->sys_chunk_array;
- 	array_size = btrfs_super_sys_array_size(super);
- 
-@@ -1135,6 +1142,7 @@ static int update_super(struct mdrestore_struct *mdres, u8 *buffer)
- 		cur += btrfs_chunk_item_size(old_num_stripes);
- 	}
- 
-+finish:
- 	if (mdres->clear_space_cache)
- 		btrfs_set_super_cache_generation(super, 0);
- 
-@@ -1203,6 +1211,8 @@ static int fixup_chunk_tree_block(struct mdrestore_struct *mdres,
- 	u64 bytenr = async->start;
- 	int i;
- 
-+	if (btrfs_super_num_devices(mdres->original_super) == 1)
-+		return 0;
- 	if (size_left % mdres->nodesize)
- 		return 0;
- 
-@@ -1373,6 +1383,8 @@ static void *restore_worker(void *data)
- 
- 		if (!mdres->multi_devices) {
- 			if (async->start == BTRFS_SUPER_INFO_OFFSET) {
-+				memcpy(mdres->original_super, outbuf,
-+				       BTRFS_SUPER_INFO_SIZE);
- 				if (mdres->old_restore) {
- 					update_super_old(outbuf);
- 				} else {
-@@ -1474,6 +1486,7 @@ static void mdrestore_destroy(struct mdrestore_struct *mdres, int num_threads)
- 
- 	pthread_cond_destroy(&mdres->cond);
- 	pthread_mutex_destroy(&mdres->mutex);
-+	free(mdres->original_super);
+@@ -2500,6 +2500,66 @@ out:
+ 	return ret;
  }
  
- static int mdrestore_init(struct mdrestore_struct *mdres,
-@@ -1500,6 +1513,10 @@ static int mdrestore_init(struct mdrestore_struct *mdres,
- 	mdres->last_physical_offset = 0;
- 	mdres->alloced_chunks = 0;
- 
-+	mdres->original_super = malloc(BTRFS_SUPER_INFO_SIZE);
-+	if (!mdres->original_super)
-+		return -ENOMEM;
++static int iter_tree_blocks(struct btrfs_fs_info *fs_info,
++			    struct extent_buffer *eb, bool pin)
++{
++	void (*func)(struct btrfs_fs_info *fs_info, u64 bytenr, u64 num_bytes);
++	int nritems;
++	int level;
++	int i;
++	int ret;
 +
- 	if (!num_threads)
- 		return 0;
- 
-@@ -2606,7 +2623,8 @@ static int restore_metadump(const char *input, FILE *out, int old_restore,
++	if (pin)
++		func = btrfs_pin_extent;
++	else
++		func = btrfs_unpin_extent;
++
++	func(fs_info, eb->start, eb->len);
++
++	level = btrfs_header_level(eb);
++	nritems = btrfs_header_nritems(eb);
++	if (level == 0)
++		return 0;
++
++	for (i = 0; i < nritems; i++) {
++		u64 bytenr;
++		struct extent_buffer *tmp;
++
++		if (level == 0) {
++			struct btrfs_root_item *ri;
++			struct btrfs_key key;
++
++			btrfs_item_key_to_cpu(eb, &key, i);
++			if (key.type != BTRFS_ROOT_ITEM_KEY)
++				continue;
++			ri = btrfs_item_ptr(eb, i, struct btrfs_root_item);
++			bytenr = btrfs_disk_root_bytenr(eb, ri);
++			tmp = read_tree_block(fs_info, bytenr, 0);
++			if (!extent_buffer_uptodate(tmp)) {
++				error("unable to read log root block");
++				return -EIO;
++			}
++			ret = iter_tree_blocks(fs_info, tmp, pin);
++			free_extent_buffer(tmp);
++			if (ret)
++				return ret;
++		} else {
++			bytenr = btrfs_node_blockptr(eb, i);
++			tmp = read_tree_block(fs_info, bytenr, 0);
++			if (!extent_buffer_uptodate(tmp)) {
++				error("unable to read log root block");
++				return -EIO;
++			}
++			ret = iter_tree_blocks(fs_info, tmp, pin);
++			free_extent_buffer(tmp);
++			if (ret)
++				return ret;
++		}
++	}
++
++	return 0;
++}
++
+ static int fixup_chunks_and_devices(struct btrfs_fs_info *fs_info,
+ 			 struct mdrestore_struct *mdres, int out_fd)
+ {
+@@ -2516,6 +2576,9 @@ static int fixup_chunks_and_devices(struct btrfs_fs_info *fs_info,
+ 		return PTR_ERR(trans);
  	}
- 	ret = wait_for_worker(&mdrestore);
  
--	if (!ret && !multi_devices && !old_restore) {
-+	if (!ret && !multi_devices && !old_restore &&
-+	    btrfs_super_num_devices(mdrestore.original_super) != 1) {
- 		struct btrfs_root *root;
- 		struct stat st;
- 
++	if (btrfs_super_log_root(fs_info->super_copy) &&
++	    fs_info->log_root_tree)
++		iter_tree_blocks(fs_info, fs_info->log_root_tree->node, true);
+ 	fixup_block_groups(trans);
+ 	ret = fixup_dev_extents(trans);
+ 	if (ret < 0)
+@@ -2530,6 +2593,9 @@ static int fixup_chunks_and_devices(struct btrfs_fs_info *fs_info,
+ 		error("unable to commit transaction: %d", ret);
+ 		return ret;
+ 	}
++	if (btrfs_super_log_root(fs_info->super_copy) &&
++	    fs_info->log_root_tree)
++		iter_tree_blocks(fs_info, fs_info->log_root_tree->node, false);
+ 	return 0;
+ error:
+ 	errno = -ret;
 -- 
 2.26.2
 
