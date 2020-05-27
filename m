@@ -2,110 +2,174 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 596391E4105
-	for <lists+linux-btrfs@lfdr.de>; Wed, 27 May 2020 13:59:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44AB61E410D
+	for <lists+linux-btrfs@lfdr.de>; Wed, 27 May 2020 13:59:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729973AbgE0L57 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 27 May 2020 07:57:59 -0400
-Received: from esa1.hgst.iphmx.com ([68.232.141.245]:33868 "EHLO
-        esa1.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729959AbgE0L55 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 27 May 2020 07:57:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1590580676; x=1622116676;
-  h=from:to:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
-  b=a5VzF84F/D4cl4ijSsNB1D/wiCeloJpg8sl5iqMM/7wA6tATV8UM30jY
-   dTaSYKCaVYuvmIZ/GxmDcF4YXEaiyYKfAMANjMNKyRJIom4x11vWo1m9P
-   AEpuolROBJzQzUWyAK1k9e7OGebJVUCkX+vF5fJBBl/I23AgLFIfSja4a
-   93q6haGSwLbolF2jUYSgR44F8j49UsljjL078YaJtY7dPDHFZCcBDmCap
-   L9BmZ7q+OPYrd0c/6neXcCvUhO3Gme+5MTopWQybJSQ+HIY7NR6dk8Of/
-   Xk77tczV+8gc3hryvYEAHup4qI64Yjrg1ZLpxvdZzAwgrJhDnZQIgArqD
-   w==;
-IronPort-SDR: /2A/JSHH+mMZ4nQpFXDxzdy6JPvbHtZZ49qkVmKnYIIiQqD3AcITRVZjRsuJGxBTsThoTc3sLb
- 2ftk504LfCo6eQiOP15qjRIeUhThINlghf+nNOWqOJPILXftQN4uuDyvXJEA9LGpFck2hOOK8F
- RjpUJLUSE1oO+CtOkc+MYA8QTpTDhvdEfO5sHJ37hACTYU0vZ5YRtFOMqg/bmJXfVaFHPqCKAw
- iezw7oGlh4Hzg6iAxCKkR2hfi6RcJCB8MFjhtNSHJDbCXq7JiViQeDxvVX/Qcs8+o/qVTO8xhs
- GA8=
-X-IronPort-AV: E=Sophos;i="5.73,441,1583164800"; 
-   d="scan'208";a="247663796"
-Received: from mail-bn3nam04lp2059.outbound.protection.outlook.com (HELO NAM04-BN3-obe.outbound.protection.outlook.com) ([104.47.46.59])
-  by ob1.hgst.iphmx.com with ESMTP; 27 May 2020 19:57:55 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PNSiQEg5DlZg4GEDZEu1UhA9fuhjdBH8HQzVugCpO2onknZ2a+kk27wNkq4YZgbHjs3kFrS3j/Pprzlr8wDjmj3XABxqsTa4qGjQnzvxkP+LmAKnbG4mB86hIg00vaI7avJiEbPKuD4U25fXpsrK+PVW5cwOfv6XKVFTABLmOTfD+lTIeHgYvswqSfGRgaii2Ivd9O5QpBcOAnR5mG/czQDQkiIvsIu3W8de1bNMb4HETxeJvDvyz9UI/kSTH3BSbtNj+ZzJ+PT9GuxfICpze5OwMWQNSQkSI76DfFDAUvva8PqUof3z4IzvxersrVUpPcMQkyWOV8Ntea/qXd7RBA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
- b=dfpxavMf1QK7eScTO3ep2rqaBN4FqLdrwIQIH7o8KsedcnLumFqfr5onF9bVE+583VVCOoduwABkl4wWncblZLXaVpqIKIRZudNz+csU82kuoZPdlOkkrnMiEyRrrjVn8YuuGqG2E56NIhbx5qyE71cMQb2RZtsLtEo3dMi+k/1qApkbzry+CLsM7ZyP4ImvdCGY7L9CmKKr4mN7Y2KKbz6j3odXXfaLF/mgAktE//aoDgQgW5I66E/erOl2MIGdzVq7pYwfpkOLqBFFMr/I0WtYv4MYzEW7oj/YoB21ZXvOmGFioZE5lfeFYwelZw+cnafa14lsmEGELp1pV1pd4Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
- b=Re4TZy6SUSBREy5wWJGBV3asEfmtDW+xlB9txHpqQBGJlhyuDw9hO7HeYnXy3d3GMkrcKf9j302nl0sl5T91schyADGcb9062P7HHlr3fwwdqn3ef8UCb5yPsoxFk75Gs9h+Thu/cgDaYhdPkG7+EYF6WvbT6xWgy0cuD4MBRsk=
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
- (2603:10b6:803:47::21) by SN4PR0401MB3533.namprd04.prod.outlook.com
- (2603:10b6:803:45::22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3021.24; Wed, 27 May
- 2020 11:57:54 +0000
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::1447:186c:326e:30b2]) by SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::1447:186c:326e:30b2%7]) with mapi id 15.20.3021.029; Wed, 27 May 2020
- 11:57:54 +0000
-From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To:     Nikolay Borisov <nborisov@suse.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH] btrfs: remove redundant local var in
- read_block_for_search
-Thread-Topic: [PATCH] btrfs: remove redundant local var in
- read_block_for_search
-Thread-Index: AQHWNA8jWQu64sWLKEWwwDtOcLCZbg==
-Date:   Wed, 27 May 2020 11:57:54 +0000
-Message-ID: <SN4PR0401MB359871307124BA735070B3E59BB10@SN4PR0401MB3598.namprd04.prod.outlook.com>
-References: <20200527101059.7391-1-nborisov@suse.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: suse.com; dkim=none (message not signed)
- header.d=none;suse.com; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [129.253.240.72]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: f18eba91-c8ab-4627-b336-08d80235306d
-x-ms-traffictypediagnostic: SN4PR0401MB3533:
-x-microsoft-antispam-prvs: <SN4PR0401MB353393532C69B588A9022A469BB10@SN4PR0401MB3533.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:1728;
-x-forefront-prvs: 04163EF38A
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: IgUXmenO/nSmusJyPCQD42lHCSUTrGkJAyc3MJRogci8ZjWudjzO4YAIFlGxwoitzgDOvLguD+d7/08P/71FGGTkdePluzRXxnO93DOVX2d22L5iK7xCAANLuxC93a8RIdZamG4f8GU1aDLIvlj2U7CWNw2qCehycojxzt0fDQFlLPiU6J4H4TvOqdIEUEFa+Euk0zJnXoTmhA7LiNKUtdD4II3rO9WwswWkXmTIcN2PvWoofxjGRp1NoicbaNWHGjPPC5lZT51vWzr5TyreuNJC54VlDeEZLm8pLRikdI8arQ1qf1koRFwov/Avsq+AzRBC5V5KOZ3nYGuhjMRMtA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR0401MB3598.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(346002)(376002)(396003)(39860400002)(366004)(136003)(52536014)(91956017)(478600001)(5660300002)(66556008)(66476007)(64756008)(66946007)(66446008)(9686003)(19618925003)(76116006)(2906002)(33656002)(55016002)(6506007)(7696005)(8676002)(26005)(71200400001)(110136005)(558084003)(316002)(86362001)(4270600006)(8936002)(186003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: VnqehKjc1nyK5cQR4LaXf997n43x7vBLqMotK+bGUgI4iCRz+2I41BPiTX3m6b8yWFMbPDqRktqrn9am5GOxccGlj2V5uiEC12wCMrkJQ2t0ZzVJr4LQTbQLL20ObKtJNa6kHNyWDikfkYq1UOWJeri/nqZ4diE6i/sO0tqsKBUaaVe12+aDCrehgSNbBbw+r5TvbBJR6kPTcxaY4MRpogui8XBHwcgGqfWNcd+UtdLGWIg4jVtAzOU8NSFLIHw7eiaNqNI2IYPFjRmr2VSLQkU3VWQSPOGjBSp1PlSHZmdeSB50dfi9h1S1i2OgAK7jN+0FnXqLGPiV/9LCRgzvQhuqm/2zJrpxi6PVZElhFiUE9eeCd25aC7E2MLVexFj4pzXCKXzGqkG7L8SaoS6szDGu+l2tpybIBp0HV0MxYLLYFUYOGSga9AWeub5KRVm1p/a4zpFYC7bEvYZqKufQssfKz1aFEOlFmHyzIfwdPm7yOc6XhyA8c0tkTXEfDNdy
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1726487AbgE0L7X (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 27 May 2020 07:59:23 -0400
+Received: from mout.gmx.net ([212.227.17.20]:53917 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725819AbgE0L7R (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 27 May 2020 07:59:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1590580741;
+        bh=/4ZxwbojsP0H8jvnRJLfQPi+JeuPy72LvcnXI0WW84A=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=RsCITmXv1ILnW0AuRCdyGmp/COa+Gu1DtzNhgc2O9Vuyp53o7g8obh3B8BTNaMp3h
+         uq0lj43A9TorKaL1lc5t+Kjoa70MXzhy1gqvd4tT+GYY5axyTXeiU0XU6myOI/C8XW
+         TQ+Q9Zb+rsUvwzXm096XgqgQfTN/KhyyIuEu0H4s=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MGz1f-1jqr1L3duV-00E7uW; Wed, 27
+ May 2020 13:59:01 +0200
+Subject: Re: [PATCH v3 0/3] Add file-system authentication to BTRFS
+To:     dsterba@suse.cz, Johannes Thumshirn <jth@kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        Eric Biggers <ebiggers@google.com>,
+        Richard Weinberger <richard@nod.at>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>
+References: <20200514092415.5389-1-jth@kernel.org>
+ <5663c6ca-87d4-8a98-3338-e9a077f4c82f@gmx.com>
+ <20200527112725.GA18421@suse.cz>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
+ mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
+ PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
+ 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
+ D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
+ efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
+ ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
+ BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
+ 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
+ 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
+ EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
+ 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
+ ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
+ oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
+ fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
+ 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
+ ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
+ oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
+Message-ID: <db7c0e64-66fb-15a8-b976-92423b044ecf@gmx.com>
+Date:   Wed, 27 May 2020 19:58:56 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f18eba91-c8ab-4627-b336-08d80235306d
-X-MS-Exchange-CrossTenant-originalarrivaltime: 27 May 2020 11:57:54.0274
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 4AaiPkbeRMR4/hNork2jYpL92xQc9x0PU9DLmF67yDomPpi/HBs7sCGiJKaQ/muu1gF5wYJ1Y3xNZVptNh8e0G9jVa98tCPukihF7RS7I6k=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN4PR0401MB3533
+In-Reply-To: <20200527112725.GA18421@suse.cz>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="I5jE12PKb4pwHIIDDaXWTzr99utTzjnwN"
+X-Provags-ID: V03:K1:4Ulk2ZUwpFYBxEMgs7b1MlPvqtBqKv2XsNobGAgzL3ztWevmXUL
+ E5Phy9Rv7E4FgGiQRT99Lj6vyazmmffQKhZajsOig+QXtyAwEu6vlUvoXgWaErS9BZ+yQFq
+ kSXDnKxe+bUWIw1ZcL+MZAkAknn/xcbJIOhuNuuLNeXErBc5ehgcqOPU9XSx/01HwBXZKQD
+ sDc6VIPG/Ds3EbhJII1PQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:8QbOsWp2X8c=:5SQOKAKaIGrV1hGBm1PMSp
+ gVB4qIZaDxfYu1ThcKpnd8PgML4hCjb+V48TuM8aRWMK3tYd66VR7It9oaF8VRSy/910Ce2BJ
+ eBGwlllHmZBALC83ZtjWgVzLsqK4T7T62tfyjHPbDV5yiYIQDl44s3c/P123OPpNlaXNKfoTu
+ U17TJePZ8OdALgz0OKZKqfk2NpDLOhNZhtjGTxRiIU1eC5VIGojoosQWI/9FALWl131CK7rAx
+ UEF8xSNvht4VI7/eiaeaxqFsWdUKQ+hwLZDs4raIrENC6bpNZJxnp0UYXRp5mNoBQO4sM77Rr
+ qQAwm229cdnl06fFDVnz1fRKQWmYl6Y3Dz2CnQh8Wr9o+k9e2yEd8S+npQhaLOX3isjs445Tl
+ pADndNVSY9YApxjQJXSq/4PObCBlb1cqop3BsFBnyrlrrUc4ZQ1vFRFZQa1KpoJPAr89HN5I+
+ a0oMspoEOdH9QG6t9o7DVQ2QduxZbnTGHCcPGfTQ8NX/REnTBAl27OngTXnaYJG8JBagKEuTD
+ woQMTU8XDQdDGiD2XihyUbwQty/dzfGmNPWEX8OLwS6B9DnR0+T6g1EWe8RlGZqWHeB9vmNZN
+ dfq6ZSboXAn53OssPOA8AZWRuqnQ+BhsJw3Izib7f5seUxAO99PD9wXaAxnmSTeAk+lQGZMkY
+ gr1sw1M07dZpYdZzZzqM6J05QCj3WBTxFmq409XfkszpAi5cmVvXK3RR7E77vgzjZLOC33I3x
+ FO+8bv2A5qJzbjbMQD+isvLQDqJamgwpBIpKvB79AOlLet7v7OOBF8cxpDdIzlE2Oo9bWkJCl
+ pbNTJ1iZfhnP8zzBJOmqJje9+NZo0nXsIVhKPDL8WM/HasUXxiFFtmys0irVqHf5WhzQcjP/f
+ 9quJH3tvA+owQij5uAHk79a4qvrTQ6Hf+gNMttZLZ/FVCXZPsaUMvZRkSojfhF4L5MpUnbC4Z
+ pS1txrXCMRtFUTouoTIK3exU4A8dmHfewOu8tHV8+vtD/VO38ooh3SKPF+tD+wWAK5rcTAO3L
+ 1svGhP4O8xxWZpub2t6K2arIUwq76BKNb+0PyEeeMNZwW78McJREaP+vw+Byp5+rTZvAbXF9y
+ QyE1JoyKF8pC96KoYJhpaGfgvW3fBAD5ZA7xZWMfe6qMGdWgMpdIKqlPsyIdKEdOurftcHh75
+ AgVgWYR3MNdSmgQZ7Ad9w8R+7ujwmrVb2FOaCCLtLpDjveKWQFnOqSI5a+YjxmAnQDVfSTOaL
+ 3iad6JRyx59lewPkk
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Looks good,=0A=
-Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>=0A=
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--I5jE12PKb4pwHIIDDaXWTzr99utTzjnwN
+Content-Type: multipart/mixed; boundary="irJgq6ndamF6Nvqx6F1w4NWkw2cdWTifN"
+
+--irJgq6ndamF6Nvqx6F1w4NWkw2cdWTifN
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+
+
+
+On 2020/5/27 =E4=B8=8B=E5=8D=887:27, David Sterba wrote:
+> On Wed, May 27, 2020 at 10:08:06AM +0800, Qu Wenruo wrote:
+>>> Changes since v2:
+>>> - Select CONFIG_CRYPTO_HMAC and CONFIG_KEYS (kbuild robot)
+>>> - Fix double free in error path
+>>> - Fix memory leak in error path
+>>> - Disallow nodatasum and nodatacow when authetication is use (Eric)
+>>
+>> Since we're disabling NODATACOW usages, can we also disable the
+>> following features?
+>> - v1 space cache
+>>   V1 space cache uses NODATACOW file to store space cache, althouhg it=
+
+>>   has inline csum, but it's fixed to crc32c. So attacker can easily
+>>   utilize this hole to mess space cache, and do some DoS attack.
+>=20
+> That's a good point.
+>=20
+> The v1 space cache will be phased out but it won't be in a timeframe
+> we'll get in the authentication. At this point we don't even have a way=
+
+> to select v2 at mkfs time (it's work in progress though), so it would b=
+e
+> required to switch to v2 on the first mount.
+>=20
+>> - fallocate
+>>   I'm not 100% sure about this, but since nodatacow is already a secon=
+d
+>>   class citizen in btrfs, maybe not supporting fallocate is not a
+>>   strange move.
+>=20
+> Fallocate is a standard file operation, not supporting would be quite
+> strange. What's the problem with fallocate and authentication?
+>=20
+As said, I'm not that sure about preallocate, but that's the remaining
+user of nodatacow.
+Although it's a pretty common interface, but in btrfs it doesn't really
+make much sense.
+In case like fallocate then snapshot use case, there is really no
+benefit from writing into fallocated range.
+
+Not to mention the extra cross-ref check involved when writing into
+possible preallocated range.
+
+Thanks,
+Qu
+
+
+--irJgq6ndamF6Nvqx6F1w4NWkw2cdWTifN--
+
+--I5jE12PKb4pwHIIDDaXWTzr99utTzjnwN
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl7OVgAACgkQwj2R86El
+/qi6pQf9GlhhFZR4RYAQi8goFJs2uJRE7ch31FzGoAl+mbEzttKrA0pxBNOBmxcX
+TKbmL8CD6YKcNCODOoSZuD9UEDqLq3p83y6oxkxLep1+JB91evcsIGo6Su+099rj
+xh13C4UbzJm8GBvjpAq5bMoogSwalPwEhMWKdiQDQh8TSwp5j/mPpKN9U6jemAqF
+T3UKah4IZAqfvvHIaN/tPUXzEj5FDKyGeUGcQIZM4MdcznoUJxpdJhiYs4sxraZs
+4C+5a/89t3ee3osYhLEK3JhRnBvDtSVFTlW8G8J6AbSjFVh5WGNw6rO+23c1WJFX
+7rci5Am+FUkwFSIIYTdz8yGicEwm5g==
+=cRGg
+-----END PGP SIGNATURE-----
+
+--I5jE12PKb4pwHIIDDaXWTzr99utTzjnwN--
