@@ -2,50 +2,55 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C50C31E42ED
-	for <lists+linux-btrfs@lfdr.de>; Wed, 27 May 2020 15:07:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12A5B1E434D
+	for <lists+linux-btrfs@lfdr.de>; Wed, 27 May 2020 15:17:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730176AbgE0NH0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 27 May 2020 09:07:26 -0400
-Received: from mx2.suse.de ([195.135.220.15]:33384 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729834AbgE0NH0 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 27 May 2020 09:07:26 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 31820AD5D;
-        Wed, 27 May 2020 13:07:28 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id E5640DA72D; Wed, 27 May 2020 15:06:27 +0200 (CEST)
-Date:   Wed, 27 May 2020 15:06:27 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Cc:     David Sterba <dsterba@suse.cz>, linux-btrfs@vger.kernel.org,
-        Nikolay Borisov <nborisov@suse.com>
-Subject: Re: [PATCH v2 1/3] btrfs: remove pointless out label in
- find_first_block_group
-Message-ID: <20200527130627.GC18421@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        linux-btrfs@vger.kernel.org, Nikolay Borisov <nborisov@suse.com>
-References: <20200527081227.3408-1-johannes.thumshirn@wdc.com>
- <20200527081227.3408-2-johannes.thumshirn@wdc.com>
+        id S1730248AbgE0NRG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 27 May 2020 09:17:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33090 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730244AbgE0NRG (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 27 May 2020 09:17:06 -0400
+X-Greylist: delayed 368 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 27 May 2020 06:17:05 PDT
+Received: from msa13.plala.or.jp (msa13.plala.or.jp [IPv6:2400:7800:0:502e::13])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id AB7D8C08C5C1;
+        Wed, 27 May 2020 06:17:05 -0700 (PDT)
+Received: from mwebp13 ([172.23.13.133]) by msa12.plala.or.jp with ESMTP
+          id <20200527131056.MIPU4246.msa12.plala.or.jp@mwebp13>;
+          Wed, 27 May 2020 22:10:56 +0900
+Date:   Wed, 27 May 2020 22:10:56 +0900
+From:   "Mrs.Judith Rice" <hamurafujimi@tmail.plala.or.jp>
+Reply-To: jonesevansje@gmail.com
+Message-ID: <20200527221056.JYBIZ.815.root@mwebp13>
+Subject: Spende
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200527081227.3408-2-johannes.thumshirn@wdc.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Content-Type: text/plain; charset=iso-2022-jp
+Content-Transfer-Encoding: 7bit
+X-Priority: 3 (Normal)
+Sensitivity: Normal
+X-VirusScan: Outbound; mvir-ac12; Wed, 27 May 2020 22:10:57 +0900
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, May 27, 2020 at 05:12:25PM +0900, Johannes Thumshirn wrote:
-> The 'out' label in find_first_block_group() does not do anything in terms
-> of cleanup.
-> 
-> It is better to directly return 'ret' instead of jumping to out to not
-> confuse readers. Additionally there is no need to initialize ret with 0.
+Attn:
 
-https://www.kernel.org/doc/html/latest/process/coding-style.html#centralized-exiting-of-functions
+Es tut uns leid, dass wir Sie aufgrund eines Mismanagent of Beneficaries-Fonds von unseren ernannten Zonal Managern versp&#228;tet kontaktiert haben. Bitte beachten Sie, dass Sie qualifiziert sind, die Zahlung von 900.000,00 USD an der ATM-Karte mit neunhunderttausend Dollar zu erhalten.
+
+Als Entsch&#228;digung von WORLD BANK / IWF (Internationaler W&#228;hrungsfonds) f&#252;r die automatisch &#252;ber einen E-Mail-Wahlautomaten gezogenen, die in der Vergangenheit noch nicht abgeschlossene Transaktionen hatten.
+
+F&#252;r weitere Informationen kontaktieren Sie bitte Rev.EVANS JONES ( jonesevansje@gmail.com )
+
+Bitte senden Sie ihm Ihre pers&#246;nlichen Daten wie:
+
+Vollst&#228;ndiger Name:
+Wohnanschrift:
+Telefonnummer:
+Herkunftsland:
+
+Gr&#252;&#223;e,
+Mrs. Judith Rice
+
