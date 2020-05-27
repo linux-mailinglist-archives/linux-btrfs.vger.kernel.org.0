@@ -2,72 +2,97 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 937541E3EB2
-	for <lists+linux-btrfs@lfdr.de>; Wed, 27 May 2020 12:11:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 854431E3EB3
+	for <lists+linux-btrfs@lfdr.de>; Wed, 27 May 2020 12:11:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729711AbgE0KLC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 27 May 2020 06:11:02 -0400
-Received: from mx2.suse.de ([195.135.220.15]:60630 "EHLO mx2.suse.de"
+        id S1729733AbgE0KLH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 27 May 2020 06:11:07 -0400
+Received: from mx2.suse.de ([195.135.220.15]:60654 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726907AbgE0KLC (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 27 May 2020 06:11:02 -0400
+        id S1726907AbgE0KLH (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 27 May 2020 06:11:07 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id F069FAB5C;
-        Wed, 27 May 2020 10:11:03 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 7B0D5AB5C;
+        Wed, 27 May 2020 10:11:08 +0000 (UTC)
 From:   Nikolay Borisov <nborisov@suse.com>
 To:     linux-btrfs@vger.kernel.org
 Cc:     Nikolay Borisov <nborisov@suse.com>
-Subject: [PATCH] btrfs: remove redundant local var in read_block_for_search
-Date:   Wed, 27 May 2020 13:10:59 +0300
-Message-Id: <20200527101059.7391-1-nborisov@suse.com>
+Subject: [PATCH] btrfs: Remove BTRFS_INODE_IN_DELALLOC_LIST flag
+Date:   Wed, 27 May 2020 13:11:04 +0300
+Message-Id: <20200527101104.7441-1-nborisov@suse.com>
 X-Mailer: git-send-email 2.17.1
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The local 'b' variable is only used to directly read values from passed
-extent buffer. So eliminate  it and directly use the input parameter. Furthermore
-this shrinks the size of the following functions:
-
-./scripts/bloat-o-meter ctree.orig fs/btrfs/ctree.o
-add/remove: 0/0 grow/shrink: 0/2 up/down: 0/-73 (-73)
-Function                                     old     new   delta
-read_block_for_search.isra                   876     871      -5
-push_node_left                              1112    1044     -68
-Total: Before=50348, After=50275, chg -0.14%
+The flag simply replicates whether btrfs_inode::delallocs_inodes list
+is empty or not. Just defer this check to the list management functions
+(btrfs_add_delalloc_inodes/__btrfs_del_delalloc_inode) which are
+always called under btrfs_root::delalloc_lock.
 
 Signed-off-by: Nikolay Borisov <nborisov@suse.com>
 ---
- fs/btrfs/ctree.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+ fs/btrfs/btrfs_inode.h |  1 -
+ fs/btrfs/inode.c       | 11 ++---------
+ 2 files changed, 2 insertions(+), 10 deletions(-)
 
-diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
-index 3ab307b4b294..72a3389d2d87 100644
---- a/fs/btrfs/ctree.c
-+++ b/fs/btrfs/ctree.c
-@@ -2335,16 +2335,15 @@ read_block_for_search(struct btrfs_root *root, struct btrfs_path *p,
- 	struct btrfs_fs_info *fs_info = root->fs_info;
- 	u64 blocknr;
- 	u64 gen;
--	struct extent_buffer *b = *eb_ret;
- 	struct extent_buffer *tmp;
- 	struct btrfs_key first_key;
- 	int ret;
- 	int parent_level;
+diff --git a/fs/btrfs/btrfs_inode.h b/fs/btrfs/btrfs_inode.h
+index aeff56a0e105..da6743c70412 100644
+--- a/fs/btrfs/btrfs_inode.h
++++ b/fs/btrfs/btrfs_inode.h
+@@ -27,7 +27,6 @@ enum {
+ 	BTRFS_INODE_HAS_ASYNC_EXTENT,
+ 	BTRFS_INODE_NEEDS_FULL_SYNC,
+ 	BTRFS_INODE_COPY_EVERYTHING,
+-	BTRFS_INODE_IN_DELALLOC_LIST,
+ 	BTRFS_INODE_HAS_PROPS,
+ 	BTRFS_INODE_SNAPSHOT_FLUSH,
+ };
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index 7d2f6e55a234..3e87a6644e09 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -1865,8 +1865,6 @@ static void btrfs_add_delalloc_inodes(struct btrfs_root *root,
+ 	if (list_empty(&BTRFS_I(inode)->delalloc_inodes)) {
+ 		list_add_tail(&BTRFS_I(inode)->delalloc_inodes,
+ 			      &root->delalloc_inodes);
+-		set_bit(BTRFS_INODE_IN_DELALLOC_LIST,
+-			&BTRFS_I(inode)->runtime_flags);
+ 		root->nr_delalloc_inodes++;
+ 		if (root->nr_delalloc_inodes == 1) {
+ 			spin_lock(&fs_info->delalloc_root_lock);
+@@ -1887,8 +1885,6 @@ void __btrfs_del_delalloc_inode(struct btrfs_root *root,
 
--	blocknr = btrfs_node_blockptr(b, slot);
--	gen = btrfs_node_ptr_generation(b, slot);
--	parent_level = btrfs_header_level(b);
--	btrfs_node_key_to_cpu(b, &first_key, slot);
-+	blocknr = btrfs_node_blockptr(*eb_ret, slot);
-+	gen = btrfs_node_ptr_generation(*eb_ret, slot);
-+	parent_level = btrfs_header_level(*eb_ret);
-+	btrfs_node_key_to_cpu(*eb_ret, &first_key, slot);
-
- 	tmp = find_extent_buffer(fs_info, blocknr);
- 	if (tmp) {
+ 	if (!list_empty(&inode->delalloc_inodes)) {
+ 		list_del_init(&inode->delalloc_inodes);
+-		clear_bit(BTRFS_INODE_IN_DELALLOC_LIST,
+-			  &inode->runtime_flags);
+ 		root->nr_delalloc_inodes--;
+ 		if (!root->nr_delalloc_inodes) {
+ 			ASSERT(list_empty(&root->delalloc_inodes));
+@@ -1944,8 +1940,7 @@ void btrfs_set_delalloc_extent(struct inode *inode, struct extent_state *state,
+ 		BTRFS_I(inode)->delalloc_bytes += len;
+ 		if (*bits & EXTENT_DEFRAG)
+ 			BTRFS_I(inode)->defrag_bytes += len;
+-		if (do_list && !test_bit(BTRFS_INODE_IN_DELALLOC_LIST,
+-					 &BTRFS_I(inode)->runtime_flags))
++		if (do_list)
+ 			btrfs_add_delalloc_inodes(root, inode);
+ 		spin_unlock(&BTRFS_I(inode)->lock);
+ 	}
+@@ -2014,9 +2009,7 @@ void btrfs_clear_delalloc_extent(struct inode *vfs_inode,
+ 					 fs_info->delalloc_batch);
+ 		spin_lock(&inode->lock);
+ 		inode->delalloc_bytes -= len;
+-		if (do_list && inode->delalloc_bytes == 0 &&
+-		    test_bit(BTRFS_INODE_IN_DELALLOC_LIST,
+-					&inode->runtime_flags))
++		if (do_list && inode->delalloc_bytes == 0)
+ 			btrfs_del_delalloc_inode(root, inode);
+ 		spin_unlock(&inode->lock);
+ 	}
 --
 2.17.1
 
