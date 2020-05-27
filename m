@@ -2,174 +2,120 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44AB61E410D
-	for <lists+linux-btrfs@lfdr.de>; Wed, 27 May 2020 13:59:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1643F1E4233
+	for <lists+linux-btrfs@lfdr.de>; Wed, 27 May 2020 14:25:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726487AbgE0L7X (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 27 May 2020 07:59:23 -0400
-Received: from mout.gmx.net ([212.227.17.20]:53917 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725819AbgE0L7R (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 27 May 2020 07:59:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1590580741;
-        bh=/4ZxwbojsP0H8jvnRJLfQPi+JeuPy72LvcnXI0WW84A=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=RsCITmXv1ILnW0AuRCdyGmp/COa+Gu1DtzNhgc2O9Vuyp53o7g8obh3B8BTNaMp3h
-         uq0lj43A9TorKaL1lc5t+Kjoa70MXzhy1gqvd4tT+GYY5axyTXeiU0XU6myOI/C8XW
-         TQ+Q9Zb+rsUvwzXm096XgqgQfTN/KhyyIuEu0H4s=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MGz1f-1jqr1L3duV-00E7uW; Wed, 27
- May 2020 13:59:01 +0200
-Subject: Re: [PATCH v3 0/3] Add file-system authentication to BTRFS
-To:     dsterba@suse.cz, Johannes Thumshirn <jth@kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        Eric Biggers <ebiggers@google.com>,
-        Richard Weinberger <richard@nod.at>,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>
-References: <20200514092415.5389-1-jth@kernel.org>
- <5663c6ca-87d4-8a98-3338-e9a077f4c82f@gmx.com>
- <20200527112725.GA18421@suse.cz>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
- PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
- 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
- D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
- efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
- ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
- BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
- 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
- 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
- EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
- 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
- ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
- oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
- fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
- 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
- ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
- oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <db7c0e64-66fb-15a8-b976-92423b044ecf@gmx.com>
-Date:   Wed, 27 May 2020 19:58:56 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1730014AbgE0MZj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 27 May 2020 08:25:39 -0400
+Received: from esa5.hgst.iphmx.com ([216.71.153.144]:40907 "EHLO
+        esa5.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728948AbgE0MZh (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 27 May 2020 08:25:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1590582338; x=1622118338;
+  h=from:to:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=ctQAxgvugJODM/Wd0CLRROC2KxRevpXXbmBSI45yeAI=;
+  b=hNu67C1jeqK5akqdOhaXGpXabp+sW5R9uAaRSnbMVq5ZAdj4kQgJIqxy
+   SthROX/UK/dnTz2gdGCRoVoMwfZ0CP8xRBeExiAdpv4O9C3HU4lvFWvrP
+   DCPadL81/7MlD3kguPE/skvhqoiyU/886T0stv15DE4IoVrb6NAU8Ism4
+   tD62lCa4wGEATZN+P+WwHnGVvRjFjmGR9o0IdnsMmF+VAeFk5UGLZvaAy
+   P6idkpXfjEK7RVnMPclIG5XUJ17FsN2fC6Clt8KCtEUk7L7+sxNU276Vo
+   R8eNrfwC7F8nKmVga288SGBd8eo6OWeH8aXtBuyltp2tI193WJWm2pALX
+   Q==;
+IronPort-SDR: WQZwOLW6iOd3gJAvmuj7YuGiZsvz3JlztOylFaBrF3w4NFWuD7Xl7oGKG63sCq0Pc2kjKp9/md
+ ZpuRXdIzMUuycDHQnam6dYAL5XqpbCX78hKO7CjJMOFwgDx6MbXN0Nve9+CwuaBy4WAclQZUEx
+ s3/L4Hl7cEUPyJeRyPMQhpjprVOtwEa94klhDT25OcgxeXUsIF2Ool4Ed3zMY200jDB83IeDCl
+ RjUyP8w2rybYHJnP3XRGT9zZT3Rt0xuOdHxFgY53q1QRDJTJOxFbto+9BCbX9V90fCBSxhZR43
+ EQU=
+X-IronPort-AV: E=Sophos;i="5.73,441,1583164800"; 
+   d="scan'208";a="138938417"
+Received: from mail-dm6nam10lp2107.outbound.protection.outlook.com (HELO NAM10-DM6-obe.outbound.protection.outlook.com) ([104.47.58.107])
+  by ob1.hgst.iphmx.com with ESMTP; 27 May 2020 20:25:37 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=UX13I33oPEQNz1HC5pbalGwz1HB+QbWF5xjuGvgQ45xBKen1CE03GTzWsxSnWBGjBcRMr6Pmvmmcs76V00b2KrqJqrDdyQ3TnfbiYrnGhtq8gF0nJUdgZ4MNkEPOrC0MXkHdkiBCWA96i9IoNElOhBcITCsfZ+taZGTLIXSAbdEJMkPL3OJw/l1OC2FEkdMzb2BgNSkZA0wlzXI+jxxJmpG+VO9/hQoOBBt/50MfPe4wPRZrI9LyRfp49BNhbQfMIY+WFmE9Vo05L4YeaOMhiCTDlhQD4MHjXx7gdUMluJUMJuhqCSjAloQstmervAQJEW54UZeYFrV/v/PwV2DJSA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=VBNJC8vnMmk7yiYTb6AgzJvdwmzPNMg3Mknlv/OufJk=;
+ b=W0TcBeVTvW4wFBItMU07entojc8mIwBH6WHnsfIvYGRdrkGLxIWMHgGfvlTkjdGzaJD+DqQfWmY7P63i5HnFX7wwashRq8UkSTQW6SDoAnxuJQw3dJlH+n7MADljiJ3IaqLfSbkwHKVd5IZtwE85vZMWPD8sTINVeMQnIVfwKZVm4JA9L+bVbjy0kfEM0suJgdEGMJ48k7OLeP5IOvkUcKT2zJ+JCEWVd4X4zhlAYbb05+5cUE4J9+aKMeeSvIoOYzThyeXgvOawfxJW4E2RJbyl5tY6yggHKShsmElUI7KrR35to+wM4YCMbuvxnfKyfu4l8vZ4+5YFmy2Rrun51A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=VBNJC8vnMmk7yiYTb6AgzJvdwmzPNMg3Mknlv/OufJk=;
+ b=OqX9D60DOuHucKNXEsa6lL3MRVzlF6uFujFIxcBNeuUhyd04tEDJL54+otJQ3J/wQcCL2EF7GYgCTwDS6AaALGORQgtPNNLaNnezGsxG59oUaw7AayBvsjYMMAkmBWzX2seBBE4yZIN23EV45bnCMUhmhT/ObslgKhnCqsd94LE=
+Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
+ (2603:10b6:803:47::21) by SN4PR0401MB3663.namprd04.prod.outlook.com
+ (2603:10b6:803:46::19) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3021.27; Wed, 27 May
+ 2020 12:25:35 +0000
+Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
+ ([fe80::1447:186c:326e:30b2]) by SN4PR0401MB3598.namprd04.prod.outlook.com
+ ([fe80::1447:186c:326e:30b2%7]) with mapi id 15.20.3021.029; Wed, 27 May 2020
+ 12:25:35 +0000
+From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To:     Nikolay Borisov <nborisov@suse.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH] btrfs: Open code key_search
+Thread-Topic: [PATCH] btrfs: Open code key_search
+Thread-Index: AQHWNA8hqY5plwE1gUuhgwgCTdFgPg==
+Date:   Wed, 27 May 2020 12:25:35 +0000
+Message-ID: <SN4PR0401MB3598A1745DF9F32092AFD2269BB10@SN4PR0401MB3598.namprd04.prod.outlook.com>
+References: <20200527101053.7340-1-nborisov@suse.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: suse.com; dkim=none (message not signed)
+ header.d=none;suse.com; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [129.253.240.72]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 3558f648-6e0b-4c34-471d-08d802390e71
+x-ms-traffictypediagnostic: SN4PR0401MB3663:
+x-microsoft-antispam-prvs: <SN4PR0401MB36634E6B30A1F0FBE3B1BEC29BB10@SN4PR0401MB3663.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:1728;
+x-forefront-prvs: 04163EF38A
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: nK/StI1s2VXuyTs8Qu3W5stqLfsvH4iMtg8/njT+FQvWVJ/BXF+xW1+FLHPcPMJDPB/gnbur5QaBFZyOc35ILB+BXCbo7wQzJAoeL8qrJpladFENkJwkMfYwkieiJ/o9Zp44WanmVe60Xbchdxf2WPEA4KCm6KpR87l7JRrk2FuuSBlXmJcEKeHCF0e6NL2T53gUyh0fAeJxouOZeU4Yfu3e1h0BFbT7ZeKUSPKfrWhMQdoNUgh+GfP7qCmUiMxISJeIWF4EkN6OEQ3mlh/ILGIeomWn8tyuGFflzNepS+9EESV4HM1bbt0CVnRj0rwph9ijqAwfJ3t2BIC6D3poEA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR0401MB3598.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(376002)(366004)(346002)(136003)(39860400002)(396003)(86362001)(71200400001)(5660300002)(76116006)(91956017)(64756008)(55016002)(6506007)(66556008)(66946007)(7696005)(53546011)(66476007)(66446008)(186003)(26005)(52536014)(478600001)(110136005)(316002)(2906002)(558084003)(33656002)(8936002)(8676002)(9686003);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: 0oW/nJr7OvnqF1+fVvOSmd/byZeVvq7zBxx1LEyGL7njmhRjitdPdcDP4ITEcKbGSei2AvjdI/Xc56XIluS2ibeQ6xyEmMa7D5dUXlVAgchOm+eVtRe6EuaCiXOaAUpp2tFT3inZ1XvSuobMu0LkP2WU/YwFRBD2NBaEJpSvaTntTtMJQ56Jh6PDa4a7sITZSqG3Qmpor/aXjV3rX+rxWH8XrPKCJ72ilk48SjdvFapFJZ+4rIFUy57nNdMvaGIm+wlTA0rQ8F/tHjiiGDrF2k/Am2u+zFAoA6bTuBAqFEYM1WX/WMudm3lD5SqFREC97JPTj7eL1+znhp/ZHgM9UK8cBEbpGd+kASNP4RGNPMM0m1NAei7i3EqlaPRYDSym5kAhznmgR/nrEgEjjAvFST3pYqEvVNOYOjEWyO9HVAVaV1eU/johYNZDYmX6A2Wn4M0A94RBc0eAI0cYdYkxuETuqm6Weu1ez2GmFswxtM/RRRe9dsAM1V0e4bPNE/Dd
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-In-Reply-To: <20200527112725.GA18421@suse.cz>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="I5jE12PKb4pwHIIDDaXWTzr99utTzjnwN"
-X-Provags-ID: V03:K1:4Ulk2ZUwpFYBxEMgs7b1MlPvqtBqKv2XsNobGAgzL3ztWevmXUL
- E5Phy9Rv7E4FgGiQRT99Lj6vyazmmffQKhZajsOig+QXtyAwEu6vlUvoXgWaErS9BZ+yQFq
- kSXDnKxe+bUWIw1ZcL+MZAkAknn/xcbJIOhuNuuLNeXErBc5ehgcqOPU9XSx/01HwBXZKQD
- sDc6VIPG/Ds3EbhJII1PQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:8QbOsWp2X8c=:5SQOKAKaIGrV1hGBm1PMSp
- gVB4qIZaDxfYu1ThcKpnd8PgML4hCjb+V48TuM8aRWMK3tYd66VR7It9oaF8VRSy/910Ce2BJ
- eBGwlllHmZBALC83ZtjWgVzLsqK4T7T62tfyjHPbDV5yiYIQDl44s3c/P123OPpNlaXNKfoTu
- U17TJePZ8OdALgz0OKZKqfk2NpDLOhNZhtjGTxRiIU1eC5VIGojoosQWI/9FALWl131CK7rAx
- UEF8xSNvht4VI7/eiaeaxqFsWdUKQ+hwLZDs4raIrENC6bpNZJxnp0UYXRp5mNoBQO4sM77Rr
- qQAwm229cdnl06fFDVnz1fRKQWmYl6Y3Dz2CnQh8Wr9o+k9e2yEd8S+npQhaLOX3isjs445Tl
- pADndNVSY9YApxjQJXSq/4PObCBlb1cqop3BsFBnyrlrrUc4ZQ1vFRFZQa1KpoJPAr89HN5I+
- a0oMspoEOdH9QG6t9o7DVQ2QduxZbnTGHCcPGfTQ8NX/REnTBAl27OngTXnaYJG8JBagKEuTD
- woQMTU8XDQdDGiD2XihyUbwQty/dzfGmNPWEX8OLwS6B9DnR0+T6g1EWe8RlGZqWHeB9vmNZN
- dfq6ZSboXAn53OssPOA8AZWRuqnQ+BhsJw3Izib7f5seUxAO99PD9wXaAxnmSTeAk+lQGZMkY
- gr1sw1M07dZpYdZzZzqM6J05QCj3WBTxFmq409XfkszpAi5cmVvXK3RR7E77vgzjZLOC33I3x
- FO+8bv2A5qJzbjbMQD+isvLQDqJamgwpBIpKvB79AOlLet7v7OOBF8cxpDdIzlE2Oo9bWkJCl
- pbNTJ1iZfhnP8zzBJOmqJje9+NZo0nXsIVhKPDL8WM/HasUXxiFFtmys0irVqHf5WhzQcjP/f
- 9quJH3tvA+owQij5uAHk79a4qvrTQ6Hf+gNMttZLZ/FVCXZPsaUMvZRkSojfhF4L5MpUnbC4Z
- pS1txrXCMRtFUTouoTIK3exU4A8dmHfewOu8tHV8+vtD/VO38ooh3SKPF+tD+wWAK5rcTAO3L
- 1svGhP4O8xxWZpub2t6K2arIUwq76BKNb+0PyEeeMNZwW78McJREaP+vw+Byp5+rTZvAbXF9y
- QyE1JoyKF8pC96KoYJhpaGfgvW3fBAD5ZA7xZWMfe6qMGdWgMpdIKqlPsyIdKEdOurftcHh75
- AgVgWYR3MNdSmgQZ7Ad9w8R+7ujwmrVb2FOaCCLtLpDjveKWQFnOqSI5a+YjxmAnQDVfSTOaL
- 3iad6JRyx59lewPkk
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3558f648-6e0b-4c34-471d-08d802390e71
+X-MS-Exchange-CrossTenant-originalarrivaltime: 27 May 2020 12:25:35.0671
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Soz2wlc8+16qi15jiS4ly9pi0BsmtHzNN/7g3qa+ep7YSFNMt3uJsI+vn7cwQnUD5BLYg9v0H9gvs9yFGmw9yGDbmsxo8C67sgt5kMyFPPE=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN4PR0401MB3663
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---I5jE12PKb4pwHIIDDaXWTzr99utTzjnwN
-Content-Type: multipart/mixed; boundary="irJgq6ndamF6Nvqx6F1w4NWkw2cdWTifN"
-
---irJgq6ndamF6Nvqx6F1w4NWkw2cdWTifN
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-
-
-
-On 2020/5/27 =E4=B8=8B=E5=8D=887:27, David Sterba wrote:
-> On Wed, May 27, 2020 at 10:08:06AM +0800, Qu Wenruo wrote:
->>> Changes since v2:
->>> - Select CONFIG_CRYPTO_HMAC and CONFIG_KEYS (kbuild robot)
->>> - Fix double free in error path
->>> - Fix memory leak in error path
->>> - Disallow nodatasum and nodatacow when authetication is use (Eric)
->>
->> Since we're disabling NODATACOW usages, can we also disable the
->> following features?
->> - v1 space cache
->>   V1 space cache uses NODATACOW file to store space cache, althouhg it=
-
->>   has inline csum, but it's fixed to crc32c. So attacker can easily
->>   utilize this hole to mess space cache, and do some DoS attack.
->=20
-> That's a good point.
->=20
-> The v1 space cache will be phased out but it won't be in a timeframe
-> we'll get in the authentication. At this point we don't even have a way=
-
-> to select v2 at mkfs time (it's work in progress though), so it would b=
-e
-> required to switch to v2 on the first mount.
->=20
->> - fallocate
->>   I'm not 100% sure about this, but since nodatacow is already a secon=
-d
->>   class citizen in btrfs, maybe not supporting fallocate is not a
->>   strange move.
->=20
-> Fallocate is a standard file operation, not supporting would be quite
-> strange. What's the problem with fallocate and authentication?
->=20
-As said, I'm not that sure about preallocate, but that's the remaining
-user of nodatacow.
-Although it's a pretty common interface, but in btrfs it doesn't really
-make much sense.
-In case like fallocate then snapshot use case, there is really no
-benefit from writing into fallocated range.
-
-Not to mention the extra cross-ref check involved when writing into
-possible preallocated range.
-
-Thanks,
-Qu
-
-
---irJgq6ndamF6Nvqx6F1w4NWkw2cdWTifN--
-
---I5jE12PKb4pwHIIDDaXWTzr99utTzjnwN
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl7OVgAACgkQwj2R86El
-/qi6pQf9GlhhFZR4RYAQi8goFJs2uJRE7ch31FzGoAl+mbEzttKrA0pxBNOBmxcX
-TKbmL8CD6YKcNCODOoSZuD9UEDqLq3p83y6oxkxLep1+JB91evcsIGo6Su+099rj
-xh13C4UbzJm8GBvjpAq5bMoogSwalPwEhMWKdiQDQh8TSwp5j/mPpKN9U6jemAqF
-T3UKah4IZAqfvvHIaN/tPUXzEj5FDKyGeUGcQIZM4MdcznoUJxpdJhiYs4sxraZs
-4C+5a/89t3ee3osYhLEK3JhRnBvDtSVFTlW8G8J6AbSjFVh5WGNw6rO+23c1WJFX
-7rci5Am+FUkwFSIIYTdz8yGicEwm5g==
-=cRGg
------END PGP SIGNATURE-----
-
---I5jE12PKb4pwHIIDDaXWTzr99utTzjnwN--
+On 27/05/2020 12:11, Nikolay Borisov wrote:=0A=
+=0A=
+Looks good,=0A=
+Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>=0A=
+=0A=
+One nit though:=0A=
+=0A=
+> +			ret =3D btrfs_bin_search(b, key, &slot);=0A=
+> +			prev_cmp =3D ret;=0A=
+=0A=
+I actually find:=0A=
+			ret =3D prev_cmp =3D brtfs_bin_search(b, key, &slot);=0A=
+=0A=
+a bit more readable in this case.=0A=
