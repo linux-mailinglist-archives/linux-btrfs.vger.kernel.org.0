@@ -2,80 +2,107 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 245651E67A8
-	for <lists+linux-btrfs@lfdr.de>; Thu, 28 May 2020 18:46:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F9741E67AB
+	for <lists+linux-btrfs@lfdr.de>; Thu, 28 May 2020 18:46:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405156AbgE1Qp6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 28 May 2020 12:45:58 -0400
-Received: from mx2.suse.de ([195.135.220.15]:37682 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2405140AbgE1Qp5 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 28 May 2020 12:45:57 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id B0BFFACCC;
-        Thu, 28 May 2020 16:45:55 +0000 (UTC)
-Date:   Thu, 28 May 2020 11:45:53 -0500
-From:   Goldwyn Rodrigues <rgoldwyn@suse.de>
-To:     "Darrick J. Wong" <darrick.wong@oracle.com>
-Cc:     linux-btrfs@vger.kernel.org, hch@infradead.org, dsterba@suse.cz
-Subject: Re: [PATCH 3/7] iomap: Remove lockdep_assert_held()
-Message-ID: <20200528164553.qnjnwjm6c6hlunjc@fiona>
-References: <20200522123837.1196-1-rgoldwyn@suse.de>
- <20200522123837.1196-4-rgoldwyn@suse.de>
- <20200528154014.GA8198@magnolia>
+        id S2405167AbgE1QqO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 28 May 2020 12:46:14 -0400
+Received: from smtp-34.italiaonline.it ([213.209.10.34]:50099 "EHLO libero.it"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2405154AbgE1QqN (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 28 May 2020 12:46:13 -0400
+Received: from venice.bhome ([78.12.136.199])
+        by smtp-34.iol.local with ESMTPA
+        id eLfVjm4lwtrlweLfVjO3Vx; Thu, 28 May 2020 18:46:09 +0200
+x-libjamoibt: 1601
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2014;
+        t=1590684369; bh=xH7WARBwm8vx3FpqaRsiSUBjQfz1PvJnEhNHC/VLQFc=;
+        h=From;
+        b=pbOewf8y455u9iC3izx5XZwe7puHFHJ/xHKOyhA+uXdt7dHc1A4rOSynHhSHOThiX
+         fLx2fqXfg7D/jY9WNzxZA4UWBWsDEaLguKw0BNQ+UeUxg6enhWK8FNarM6Ua0YP7l8
+         SVSIyqKSQh5et4svk3AVmgoV3a5mC1g1ta2I0nsjuSPNdhG0c72BZ0Ue5v6RrjG0yx
+         k5CmkauZpY/M8jTzmWrypUvZ0okLV6jCXz6dBL1Z84L/9ZeAsjhbyYEQEVvef8bsZI
+         yPTLZqAbdYHiRGwt8KYQN8S5Ay34h+1txeVxryHOY9o6J6RK6iVhv+StFJtZzq2iLJ
+         Eqr6ul1IY8dhg==
+X-CNFS-Analysis: v=2.3 cv=TOE7tGta c=1 sm=1 tr=0
+ a=kx39m2EDZI1V9vDwKCQCcA==:117 a=kx39m2EDZI1V9vDwKCQCcA==:17
+ a=IkcTkHD0fZMA:10 a=MxUByxnuJ-PMbodASgkA:9 a=QEXdDO2ut3YA:10
+Reply-To: kreijack@inwind.it
+Subject: Re: [PATCH V2] btrfs-progs: add RAID5/6 support to btrfs fi us
+To:     dsterba@suse.cz, linux-btrfs@vger.kernel.org,
+        DanglingPointer <danglingpointerexception@gmail.com>,
+        Joshua Houghton <joshua.houghton@yandex.ru>,
+        David Sterba <dsterba@suse.com>
+References: <20200527203748.32860-1-kreijack@libero.it>
+ <20200528160721.GN18421@twin.jikos.cz>
+From:   Goffredo Baroncelli <kreijack@libero.it>
+Message-ID: <a705e6ad-cc99-b802-ec03-1ce56b04a95d@libero.it>
+Date:   Thu, 28 May 2020 18:46:08 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200528154014.GA8198@magnolia>
-User-Agent: NeoMutt/20180716
+In-Reply-To: <20200528160721.GN18421@twin.jikos.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4wfKcMcf6JvCqv1xUMukjXIKCy/u+HenVh648OonUa6wyrm8Jd/LiuvtFhcRNTz2el0VfWEBv1CVwF5f0S3t7p09kUWcBPQIp+4jTdtgc0NvfabmDbg9q7
+ UjpOWFF3f/dsJnLlKn/zYU57F04u2WL3IHxj/WV19xlbhbfdY5HxrV2AUIzRvWkndJYzHYUCuJZWKp2hLY3vW9OfBttl5Z0xS1CaS88EhZbR5vTOrOznnezR
+ JrzsLo0KFtVSKxrJRCFSDLKYBulkzCKoyUPy3cUbbA0s813YupNYoXtHK1EWYizmUtJqzjf8sbis2VNtQZefhA==
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On  8:40 28/05, Darrick J. Wong wrote:
-> On Fri, May 22, 2020 at 07:38:33AM -0500, Goldwyn Rodrigues wrote:
-> > From: Goldwyn Rodrigues <rgoldwyn@suse.com>
-> > 
-> > Filesystems such as btrfs can perform direct I/O without holding the
-> > inode->i_rwsem in some of the cases like writing within i_size.
-> > So, remove the check for lockdep_assert_held() in iomap_dio_rw()
-> > 
-> > Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
-> > Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
-> > ---
-> >  fs/iomap/direct-io.c | 2 --
-> >  1 file changed, 2 deletions(-)
-> > 
-> > diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
-> > index f88ba6e7f6af..e4addfc58107 100644
-> > --- a/fs/iomap/direct-io.c
-> > +++ b/fs/iomap/direct-io.c
-> > @@ -416,8 +416,6 @@ iomap_dio_rw(struct kiocb *iocb, struct iov_iter *iter,
-> >  	struct blk_plug plug;
-> >  	struct iomap_dio *dio;
-> >  
-> > -	lockdep_assert_held(&inode->i_rwsem);
-> > -
+On 5/28/20 6:07 PM, David Sterba wrote:
+> On Wed, May 27, 2020 at 10:37:47PM +0200, Goffredo Baroncelli wrote:
+>> this patch adds support for the raid5/6 profiles in the command
+>> 'btrfs filesystem usage'.
 > 
-> I could've sworn that I saw a reply from Dave asking to hoist this check
-> into all the /other/ iomap_dio_rw callers, but I can't find it and maybe
-> I just dreamed the whole thing.
-
-It did happen! However, hch mentioned it is not required [1].
-I did promise him to remove the entire concept of dio_sem
-locking in btrfs, and just rely on inode->i_mutex. It is still a work in
-progress.
-
+>> $ sudo btrfs fi us /
+>> Overall:
+>>      Device size:		  40.00GiB
+>>      Device allocated:		   8.28GiB
+>>      Device unallocated:		  31.72GiB
+>>      Device missing:		     0.00B
+>>      Used:			   5.00GiB
+>>      Free (estimated):		  17.36GiB	(min: 17.36GiB)
+>>      Data ratio:			      2.00
+>>      Metadata ratio:		      0.00
+>>      Global reserve:		   3.25MiB	(used: 0.00B)
+>>
+>> Data,RAID6: Size:4.00GiB, Used:2.50GiB (62.53%)
 > 
-> Also, please cc fsdevel any time you make change to fs/iomap/, even if
-> we've already reviewed the patches.
+>> Instead before:
+>>
+>> $ sudo btrfs fi us /
+>> WARNING: RAID56 detected, not implemented
+>> WARNING: RAID56 detected, not implemented
+>> WARNING: RAID56 detected, not implemented
+>> Overall:
+>>      Device size:		  40.00GiB
+>>      Device allocated:		     0.00B
+>>      Device unallocated:		  40.00GiB
+>>      Device missing:		     0.00B
+>>      Used:			     0.00B
+>>      Free (estimated):		     0.00B	(min: 8.00EiB)
+>>      Data ratio:			      0.00
+>>      Metadata ratio:		      0.00
+>>      Global reserve:		   3.25MiB	(used: 0.00B)
+>>
+>> Data,RAID6: Size:4.00GiB, Used:2.50GiB (62.53%)
+> 
+>> I rewrote the patch after some David's comments about the difficult to
+>> review it because I changed too much code. So this time I tried to be less
+>> intrusive. I leaved the old logic and I computed only the missing
+>> values.
+> 
+> Thanks, that's what I expected. Patch added to devel.
 > 
 
-Yes, missed that. Sorry.
-
-[1] https://www.spinics.net/lists/linux-btrfs/msg96016.html
+Greath ! Many thanks
+BR
+G.Baroncelli
 
 -- 
-Goldwyn
+gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
+Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
