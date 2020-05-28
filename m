@@ -2,24 +2,23 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB2681E6E4F
-	for <lists+linux-btrfs@lfdr.de>; Fri, 29 May 2020 00:02:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EE781E6E58
+	for <lists+linux-btrfs@lfdr.de>; Fri, 29 May 2020 00:04:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436838AbgE1WCt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 28 May 2020 18:02:49 -0400
-Received: from syrinx.knorrie.org ([82.94.188.77]:53358 "EHLO
+        id S2436864AbgE1WEE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 28 May 2020 18:04:04 -0400
+Received: from syrinx.knorrie.org ([82.94.188.77]:53412 "EHLO
         syrinx.knorrie.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2436834AbgE1WCa (ORCPT
+        with ESMTP id S2436845AbgE1WEC (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 28 May 2020 18:02:30 -0400
-X-Greylist: delayed 3531 seconds by postgrey-1.27 at vger.kernel.org; Thu, 28 May 2020 18:02:28 EDT
+        Thu, 28 May 2020 18:04:02 -0400
 Received: from [IPv6:2a02:a213:2b80:f000::12] (unknown [IPv6:2a02:a213:2b80:f000::12])
         (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by syrinx.knorrie.org (Postfix) with ESMTPSA id 15AA260924D04;
-        Fri, 29 May 2020 00:02:24 +0200 (CEST)
-Subject: Re: [PATCH 4/4] btrfs: add preferred_metadata mode
+        by syrinx.knorrie.org (Postfix) with ESMTPSA id 7150C60924D05;
+        Fri, 29 May 2020 00:03:58 +0200 (CEST)
+Subject: Re: [PATCH 1/4] Add an ioctl to set/retrive the device properties
 To:     Goffredo Baroncelli <kreijack@libero.it>,
         linux-btrfs@vger.kernel.org
 Cc:     Michael <mclaud@roznica.com.ua>, Hugo Mills <hugo@carfax.org.uk>,
@@ -30,7 +29,7 @@ Cc:     Michael <mclaud@roznica.com.ua>, Hugo Mills <hugo@carfax.org.uk>,
         Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
         Goffredo Baroncelli <kreijack@inwind.it>
 References: <20200528183451.16654-1-kreijack@libero.it>
- <20200528183451.16654-5-kreijack@libero.it>
+ <20200528183451.16654-2-kreijack@libero.it>
 From:   Hans van Kranenburg <hans@knorrie.org>
 Autocrypt: addr=hans@knorrie.org; keydata=
  mQINBFo2pooBEADwTBe/lrCa78zuhVkmpvuN+pXPWHkYs0LuAgJrOsOKhxLkYXn6Pn7e3xm+
@@ -106,12 +105,12 @@ Autocrypt: addr=hans@knorrie.org; keydata=
  vT3RH0/CpPJgveWV5xDOKuhD8j5l7FME+t2RWP+gyLid6dE0C7J03ir90PlTEkMEHEzyJMPt
  OhO05Phy+d51WPTo1VSKxhL4bsWddHLfQoXW8RQ388Q69JG4m+JhNH/XvWe3aQFpYP+GZuzO
  hkMez0lHCaVOOLBSKHkAHh9i0/pH+/3hfEa4NsoHCpyy
-Message-ID: <61d2188a-290c-5d6f-ec32-6cacd3f63ce8@knorrie.org>
-Date:   Fri, 29 May 2020 00:02:23 +0200
+Message-ID: <50158c8d-ee70-9692-ab4b-5ce1b159d158@knorrie.org>
+Date:   Fri, 29 May 2020 00:03:57 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <20200528183451.16654-5-kreijack@libero.it>
+In-Reply-To: <20200528183451.16654-2-kreijack@libero.it>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -125,229 +124,184 @@ Hi,
 On 5/28/20 8:34 PM, Goffredo Baroncelli wrote:
 > From: Goffredo Baroncelli <kreijack@inwind.it>
 > 
-> When this mode is enabled,
-
-The commit message does not mention if this is either only a convenience
-during development and testing of the feature to be able to quickly turn
-it on/off, or if you intend to have this into the final change set.
-
-> the allocation policy of the chunk
-> is so modified:
-> - allocation of metadata chunk: priority is given to preferred_metadata
->   disks.
-> - allocation of data chunk: priority is given to a non preferred_metadata
->   disk.
-> 
-> When a striped profile is involved (like RAID0,5,6), the logic
-> is a bit more complex. If there are enough disks, the data profiles
-> are stored on the non preferred_metadata disks; instead the metadata
-> profiles are stored on the preferred_metadata disk.
-> If the disks are not enough, then the profile is allocated on all
-> the disks.
-> 
-> Example: assuming that sda, sdb, sdc are ssd disks, and sde, sdf are
-> non preferred_metadata ones.
-> A data profile raid6, will be stored on sda, sdb, sdc, sde, sdf (sde
-> and sdf are not enough to host a raid5 profile).
-> A metadata profile raid6, will be stored on sda, sdb, sdc (these
-> are enough to host a raid6 profile).
-> 
-> To enable this mode pass -o dedicated_metadata at mount time.
-
-Is it dedicated_metadata or preferred_metadata?
-
 > Signed-off-by: Goffredo Baroncelli <kreijack@inwind.it>
-> ---
->  fs/btrfs/ctree.h   |  1 +
->  fs/btrfs/super.c   |  8 +++++
->  fs/btrfs/volumes.c | 89 ++++++++++++++++++++++++++++++++++++++++++++--
->  fs/btrfs/volumes.h |  1 +
->  4 files changed, 97 insertions(+), 2 deletions(-)
 > 
-> diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-> index 03ea7370aea7..779760fd27b1 100644
-> --- a/fs/btrfs/ctree.h
-> +++ b/fs/btrfs/ctree.h
-> @@ -1239,6 +1239,7 @@ static inline u32 BTRFS_MAX_XATTR_SIZE(const struct btrfs_fs_info *info)
->  #define BTRFS_MOUNT_NOLOGREPLAY		(1 << 27)
->  #define BTRFS_MOUNT_REF_VERIFY		(1 << 28)
->  #define BTRFS_MOUNT_DISCARD_ASYNC	(1 << 29)
-> +#define BTRFS_MOUNT_PREFERRED_METADATA	(1 << 30)
+> ---
+>  fs/btrfs/ioctl.c           | 67 ++++++++++++++++++++++++++++++++++++++
+>  fs/btrfs/volumes.c         |  2 +-
+>  fs/btrfs/volumes.h         |  2 ++
+>  include/uapi/linux/btrfs.h | 40 +++++++++++++++++++++++
+>  4 files changed, 110 insertions(+), 1 deletion(-)
+> 
+> diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+> index 40b729dce91c..cba3fa942e2f 100644
+> --- a/fs/btrfs/ioctl.c
+> +++ b/fs/btrfs/ioctl.c
+> @@ -4724,6 +4724,71 @@ static int btrfs_ioctl_set_features(struct file *file, void __user *arg)
+>  	return ret;
+>  }
 >  
->  #define BTRFS_DEFAULT_COMMIT_INTERVAL	(30)
->  #define BTRFS_DEFAULT_MAX_INLINE	(2048)
-> diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-> index 438ecba26557..80700dc9dcf8 100644
-> --- a/fs/btrfs/super.c
-> +++ b/fs/btrfs/super.c
-> @@ -359,6 +359,7 @@ enum {
->  #ifdef CONFIG_BTRFS_FS_REF_VERIFY
->  	Opt_ref_verify,
->  #endif
-> +	Opt_preferred_metadata,
->  	Opt_err,
->  };
+> +static long btrfs_ioctl_dev_properties(struct file *file,
+> +						void __user *argp)
+> +{
+> +	struct inode *inode = file_inode(file);
+> +	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
+> +	struct btrfs_ioctl_dev_properties dev_props;
+> +	struct btrfs_device	*device;
+> +        struct btrfs_root *root = fs_info->chunk_root;
+> +        struct btrfs_trans_handle *trans;
+
+FYI, the code contains a big mix of spaces and tabs to indent lines.
+
+> +	int ret;
+> +	u64 prev_type;
+> +
+> +	if (!capable(CAP_SYS_ADMIN))
+> +		return -EPERM;
+> +
+> +	if (copy_from_user(&dev_props, argp, sizeof(dev_props)))
+> +		return -EFAULT;
+> +
+> +	device = btrfs_find_device(fs_info->fs_devices, dev_props.devid,
+> +				NULL, NULL, false);
+> +	if (!device) {
+> +		btrfs_info(fs_info, "change_dev_properties: unable to find device %llu",
+> +			   dev_props.devid);
+> +		return -ENODEV;
+> +	}
+> +
+> +	if (dev_props.properties & BTRFS_DEV_PROPERTY_READ) {
+> +		u64 props = dev_props.properties;
+> +		memset(&dev_props, 0, sizeof(dev_props));
+> +		if (props & BTRFS_DEV_PROPERTY_TYPE) {
+> +			dev_props.properties = BTRFS_DEV_PROPERTY_TYPE;
+> +			dev_props.type = device->type;
+> +		}
+> +		if(copy_to_user(argp, &dev_props, sizeof(dev_props)))
+> +			return -EFAULT;
+> +		return 0;
+> +	}
+> +
+> +	/* it is possible to set only BTRFS_DEV_PROPERTY_TYPE for now */
+> +	if (dev_props.properties & ~(BTRFS_DEV_PROPERTY_TYPE))
+> +		return -EPERM;
+> +
+> +	trans = btrfs_start_transaction(root, 0);
+> +        if (IS_ERR(trans))
+> +                return PTR_ERR(trans);
+> +
+> +	prev_type = device->type;
+> +	device->type = dev_props.type;
+> +	ret = btrfs_update_device(trans, device);
+> +
+> +        if (ret < 0) {
+> +                btrfs_abort_transaction(trans, ret);
+> +                btrfs_end_transaction(trans);
+> +		device->type = prev_type;
+> +		return  ret;
+> +        }
+> +
+> +        ret = btrfs_commit_transaction(trans);
+> +	if (ret < 0)
+> +		device->type = prev_type;
+> +
+> +	return ret;
+> +
+> +}
+> +
+>  static int _btrfs_ioctl_send(struct file *file, void __user *argp, bool compat)
+>  {
+>  	struct btrfs_ioctl_send_args *arg;
+> @@ -4907,6 +4972,8 @@ long btrfs_ioctl(struct file *file, unsigned int
+>  		return btrfs_ioctl_get_subvol_rootref(file, argp);
+>  	case BTRFS_IOC_INO_LOOKUP_USER:
+>  		return btrfs_ioctl_ino_lookup_user(file, argp);
+> +	case BTRFS_IOC_DEV_PROPERTIES:
+> +		return btrfs_ioctl_dev_properties(file, argp);
+>  	}
 >  
-> @@ -430,6 +431,7 @@ static const match_table_t tokens = {
->  #ifdef CONFIG_BTRFS_FS_REF_VERIFY
->  	{Opt_ref_verify, "ref_verify"},
->  #endif
-> +	{Opt_preferred_metadata, "preferred_metadata"},
->  	{Opt_err, NULL},
->  };
->  
-> @@ -881,6 +883,10 @@ int btrfs_parse_options(struct btrfs_fs_info *info, char *options,
->  			btrfs_set_opt(info->mount_opt, REF_VERIFY);
->  			break;
->  #endif
-> +		case Opt_preferred_metadata:
-> +			btrfs_set_and_info(info, PREFERRED_METADATA,
-> +					"enabling preferred_metadata");
-> +			break;
->  		case Opt_err:
->  			btrfs_err(info, "unrecognized mount option '%s'", p);
->  			ret = -EINVAL;
-> @@ -1403,6 +1409,8 @@ static int btrfs_show_options(struct seq_file *seq, struct dentry *dentry)
->  #endif
->  	if (btrfs_test_opt(info, REF_VERIFY))
->  		seq_puts(seq, ",ref_verify");
-> +	if (btrfs_test_opt(info, PREFERRED_METADATA))
-> +		seq_puts(seq, ",preferred_metadata");
->  	seq_printf(seq, ",subvolid=%llu",
->  		  BTRFS_I(d_inode(dentry))->root->root_key.objectid);
->  	seq_puts(seq, ",subvol=");
+>  	return -ENOTTY;
 > diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> index 5265f54c2931..c68efb15e473 100644
+> index be1e047a489e..5265f54c2931 100644
 > --- a/fs/btrfs/volumes.c
 > +++ b/fs/btrfs/volumes.c
-> @@ -4770,6 +4770,56 @@ static int btrfs_cmp_device_info(const void *a, const void *b)
->  	return 0;
+> @@ -2710,7 +2710,7 @@ int btrfs_init_new_device(struct btrfs_fs_info *fs_info, const char *device_path
+>  	return ret;
 >  }
 >  
-> +/*
-> + * sort the devices in descending order by preferred_metadata,
-> + * max_avail, total_avail
-> + */
-> +static int btrfs_cmp_device_info_metadata(const void *a, const void *b)
-> +{
-> +	const struct btrfs_device_info *di_a = a;
-> +	const struct btrfs_device_info *di_b = b;
-> +
-> +	/* metadata -> preferred_metadata first */
-> +	if (di_a->preferred_metadata && !di_b->preferred_metadata)
-> +		return -1;
-> +	if (!di_a->preferred_metadata && di_b->preferred_metadata)
-> +		return 1;
-> +	if (di_a->max_avail > di_b->max_avail)
-> +		return -1;
-> +	if (di_a->max_avail < di_b->max_avail)
-> +		return 1;
-> +	if (di_a->total_avail > di_b->total_avail)
-> +		return -1;
-> +	if (di_a->total_avail < di_b->total_avail)
-> +		return 1;
-> +	return 0;
-> +}
-> +
-> +/*
-> + * sort the devices in descending order by !preferred_metadata,
-> + * max_avail, total_avail
-> + */
-> +static int btrfs_cmp_device_info_data(const void *a, const void *b)
-> +{
-> +	const struct btrfs_device_info *di_a = a;
-> +	const struct btrfs_device_info *di_b = b;
-> +
-> +	/* data -> preferred_metadata last */
-> +	if (di_a->preferred_metadata && !di_b->preferred_metadata)
-> +		return 1;
-> +	if (!di_a->preferred_metadata && di_b->preferred_metadata)
-> +		return -1;
-> +	if (di_a->max_avail > di_b->max_avail)
-> +		return -1;
-> +	if (di_a->max_avail < di_b->max_avail)
-> +		return 1;
-> +	if (di_a->total_avail > di_b->total_avail)
-> +		return -1;
-> +	if (di_a->total_avail < di_b->total_avail)
-> +		return 1;
-> +	return 0;
-> +}
-> +
->  static void check_raid56_incompat_flag(struct btrfs_fs_info *info, u64 type)
+> -static noinline int btrfs_update_device(struct btrfs_trans_handle *trans,
+> +int btrfs_update_device(struct btrfs_trans_handle *trans,
+>  					struct btrfs_device *device)
 >  {
->  	if (!(type & BTRFS_BLOCK_GROUP_RAID56_MASK))
-> @@ -4885,6 +4935,7 @@ static int gather_device_info(struct btrfs_fs_devices *fs_devices,
->  	int ndevs = 0;
->  	u64 max_avail;
->  	u64 dev_offset;
-> +	int nr_preferred_metadata = 0;
->  
->  	/*
->  	 * in the first pass through the devices list, we gather information
-> @@ -4937,15 +4988,49 @@ static int gather_device_info(struct btrfs_fs_devices *fs_devices,
->  		devices_info[ndevs].max_avail = max_avail;
->  		devices_info[ndevs].total_avail = total_avail;
->  		devices_info[ndevs].dev = device;
-> +		devices_info[ndevs].preferred_metadata = !!(device->type &
-> +			BTRFS_DEV_PREFERRED_METADATA);
-> +		if (devices_info[ndevs].preferred_metadata)
-> +			nr_preferred_metadata++;
->  		++ndevs;
->  	}
->  	ctl->ndevs = ndevs;
->  
-> +	BUG_ON(nr_preferred_metadata > ndevs);
->  	/*
->  	 * now sort the devices by hole size / available space
->  	 */
-> -	sort(devices_info, ndevs, sizeof(struct btrfs_device_info),
-> -	     btrfs_cmp_device_info, NULL);
-> +	if (((ctl->type & BTRFS_BLOCK_GROUP_DATA) &&
-> +	     (ctl->type & BTRFS_BLOCK_GROUP_METADATA)) ||
-> +	    !btrfs_test_opt(info, PREFERRED_METADATA)) {
-> +		/* mixed bg or PREFERRED_METADATA not set */
-> +		sort(devices_info, ctl->ndevs, sizeof(struct btrfs_device_info),
-> +			     btrfs_cmp_device_info, NULL);
-> +	} else {
-> +		/*
-> +		 * if PREFERRED_METADATA is set, sort the device considering
-> +		 * also the kind (preferred_metadata or not). Limit the
-> +		 * availables devices to the ones of the same kind, to avoid
-> +		 * that a striped profile, like raid5, spreads to all kind of
-> +		 * devices.
-> +		 * It is allowed to use different kinds of devices if the ones
-> +		 * of the same kind are not enough alone.
-> +		 */
-> +		if (ctl->type & BTRFS_BLOCK_GROUP_DATA) {
-> +			int nr_data = ctl->ndevs - nr_preferred_metadata;
-> +			sort(devices_info, ctl->ndevs,
-> +				     sizeof(struct btrfs_device_info),
-> +				     btrfs_cmp_device_info_data, NULL);
-> +			if (nr_data >= ctl->devs_min)
-> +				ctl->ndevs = nr_data;
-> +		} else { /* non data -> metadata and system */
-> +			sort(devices_info, ctl->ndevs,
-> +				     sizeof(struct btrfs_device_info),
-> +				     btrfs_cmp_device_info_metadata, NULL);
-> +			if (nr_preferred_metadata >= ctl->devs_min)
-> +				ctl->ndevs = nr_preferred_metadata;
-> +		}
-> +	}
->  
->  	return 0;
->  }
+>  	int ret;
 > diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
-> index 0ac5bf2b95e6..d39c3b0e7569 100644
+> index f067b5934c46..0ac5bf2b95e6 100644
 > --- a/fs/btrfs/volumes.h
 > +++ b/fs/btrfs/volumes.h
-> @@ -347,6 +347,7 @@ struct btrfs_device_info {
->  	u64 dev_offset;
->  	u64 max_avail;
->  	u64 total_avail;
-> +	int preferred_metadata:1;
+> @@ -577,5 +577,7 @@ bool btrfs_check_rw_degradable(struct btrfs_fs_info *fs_info,
+>  int btrfs_bg_type_to_factor(u64 flags);
+>  const char *btrfs_bg_type_to_raid_name(u64 flags);
+>  int btrfs_verify_dev_extents(struct btrfs_fs_info *fs_info);
+> +int btrfs_update_device(struct btrfs_trans_handle *trans,
+> +                                        struct btrfs_device *device);
+>  
+>  #endif
+> diff --git a/include/uapi/linux/btrfs.h b/include/uapi/linux/btrfs.h
+> index e6b6cb0f8bc6..bb096075677d 100644
+> --- a/include/uapi/linux/btrfs.h
+> +++ b/include/uapi/linux/btrfs.h
+> @@ -842,6 +842,44 @@ struct btrfs_ioctl_get_subvol_rootref_args {
+>  		__u8 align[7];
 >  };
 >  
->  struct btrfs_raid_attr {
+> +#define BTRFS_DEV_PROPERTY_TYPE		(1ULL << 0)
+> +#define BTRFS_DEV_PROPERTY_DEV_GROUP	(1ULL << 1)
+> +#define BTRFS_DEV_PROPERTY_SEEK_SPEED	(1ULL << 2)
+> +#define BTRFS_DEV_PROPERTY_BANDWIDTH	(1ULL << 3)
+> +#define BTRFS_DEV_PROPERTY_READ		(1ULL << 60)
+> +
+> +/*
+> + * The ioctl BTRFS_IOC_DEV_PROPERTIES can read and write the device properties.
+> + *
+> + * The properties that the user want to write have to be set
+> + * in the 'properties' field using the BTRFS_DEV_PROPERTY_xxxx constants.
+> + *
+> + * If the ioctl is used to read the device properties, the bit
+> + * BTRFS_DEV_PROPERTY_READ has to be set in the 'properties' field.
+> + * In this case the properties that the user want have to be set in the
+> + * 'properties' field. The kernel doesn't return a property that was not
+> + * required, however it may return a subset of the requested properties.
+> + * The returned properties have the corrispondent BTRFS_DEV_PROPERTY_xxxx
+> + * flag set in the 'properties' field.
+> + *
+> + * Up to 2020/05/11 the only properties that can be read/write is the 'type'
+> + * one.
+> + */
+> +struct btrfs_ioctl_dev_properties {
+> +	__u64	devid;
+> +	__u64	properties;
+> +	__u64	type;
+> +	__u32	dev_group;
+> +	__u8	seek_speed;
+> +	__u8	bandwidth;
+> +
+> +	/*
+> +	 * for future expansion
+> +	 */
+> +	__u8	unused1[2];
+> +	__u64	unused2[4];
+> +};
+> +
+>  /* Error codes as returned by the kernel */
+>  enum btrfs_err_code {
+>  	BTRFS_ERROR_DEV_RAID1_MIN_NOT_MET = 1,
+> @@ -970,5 +1008,7 @@ enum btrfs_err_code {
+>  				struct btrfs_ioctl_ino_lookup_user_args)
+>  #define BTRFS_IOC_SNAP_DESTROY_V2 _IOW(BTRFS_IOCTL_MAGIC, 63, \
+>  				struct btrfs_ioctl_vol_args_v2)
+> +#define BTRFS_IOC_DEV_PROPERTIES _IOW(BTRFS_IOCTL_MAGIC, 64, \
+> +				struct btrfs_ioctl_dev_properties)
+>  
+>  #endif /* _UAPI_LINUX_BTRFS_H */
 > 
 
