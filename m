@@ -2,32 +2,29 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB82B1E6D12
-	for <lists+linux-btrfs@lfdr.de>; Thu, 28 May 2020 23:03:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E71AA1E6D1B
+	for <lists+linux-btrfs@lfdr.de>; Thu, 28 May 2020 23:04:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407500AbgE1VDn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 28 May 2020 17:03:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47208 "EHLO
+        id S2436493AbgE1VEa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 28 May 2020 17:04:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47304 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2407418AbgE1VDi (ORCPT
+        with ESMTP id S2407504AbgE1VEP (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 28 May 2020 17:03:38 -0400
+        Thu, 28 May 2020 17:04:15 -0400
 Received: from syrinx.knorrie.org (syrinx.knorrie.org [IPv6:2001:888:2177::4d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E11AC08C5C6
-        for <linux-btrfs@vger.kernel.org>; Thu, 28 May 2020 14:03:38 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1664BC08C5C6
+        for <linux-btrfs@vger.kernel.org>; Thu, 28 May 2020 14:04:15 -0700 (PDT)
 Received: from [IPv6:2a02:a213:2b80:f000::12] (unknown [IPv6:2a02:a213:2b80:f000::12])
         (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by syrinx.knorrie.org (Postfix) with ESMTPSA id CA75560924A9D;
-        Thu, 28 May 2020 23:03:31 +0200 (CEST)
-Subject: Re: [PATCH rfc v3] New ioctl BTRFS_IOC_GET_CHUNK_INFO.
-To:     kreijack@inwind.it, dsterba@suse.cz, linux-btrfs@vger.kernel.org,
-        Josef Bacik <josef@toxicpanda.com>
-References: <20200319203913.3103-1-kreijack@libero.it>
- <20200319203913.3103-2-kreijack@libero.it>
- <20200525171430.GX18421@twin.jikos.cz>
- <f1a34303-3b1a-dcda-8e67-458b3522e863@libero.it>
+        by syrinx.knorrie.org (Postfix) with ESMTPSA id 42D8D60924AB1;
+        Thu, 28 May 2020 23:04:07 +0200 (CEST)
+Subject: Re: space_cache=v1 and v2 at the time time?
+To:     Chris Murphy <lists@colorremedies.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+References: <CAJCQCtQVPFi7fB+p4HEVy1Gw3AjzrvQ8qcY6cRbKj3T-+7yVxA@mail.gmail.com>
 From:   Hans van Kranenburg <hans@knorrie.org>
 Autocrypt: addr=hans@knorrie.org; keydata=
  mQINBFo2pooBEADwTBe/lrCa78zuhVkmpvuN+pXPWHkYs0LuAgJrOsOKhxLkYXn6Pn7e3xm+
@@ -103,15 +100,15 @@ Autocrypt: addr=hans@knorrie.org; keydata=
  vT3RH0/CpPJgveWV5xDOKuhD8j5l7FME+t2RWP+gyLid6dE0C7J03ir90PlTEkMEHEzyJMPt
  OhO05Phy+d51WPTo1VSKxhL4bsWddHLfQoXW8RQ388Q69JG4m+JhNH/XvWe3aQFpYP+GZuzO
  hkMez0lHCaVOOLBSKHkAHh9i0/pH+/3hfEa4NsoHCpyy
-Message-ID: <c879054a-c002-8b9b-4db5-e32caf8a732b@knorrie.org>
-Date:   Thu, 28 May 2020 23:03:30 +0200
+Message-ID: <c33f3305-a265-d2a4-75e3-9bdd850604f8@knorrie.org>
+Date:   Thu, 28 May 2020 23:04:07 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <f1a34303-3b1a-dcda-8e67-458b3522e863@libero.it>
+In-Reply-To: <CAJCQCtQVPFi7fB+p4HEVy1Gw3AjzrvQ8qcY6cRbKj3T-+7yVxA@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
@@ -119,85 +116,42 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 Hi,
 
-On 5/26/20 10:19 PM, Goffredo Baroncelli wrote:
-> On 5/25/20 7:14 PM, David Sterba wrote:
->> I'll start with the data structures
->>
->> On Thu, Mar 19, 2020 at 09:39:13PM +0100, Goffredo Baroncelli wrote:
->>> From: Goffredo Baroncelli <kreijack@inwind.it>
->>> +struct btrfs_chunk_info_stripe {
->>> +	__u64 devid;
->>> +	__u64 offset;
->>> +	__u8 dev_uuid[BTRFS_UUID_SIZE];
->>> +};
->>> +
->>> +struct btrfs_chunk_info {
->>> +	/* logical start of this chunk */
->>> +	__u64 offset;
->>> +	/* size of this chunk in bytes */
->>> +	__u64 length;
->>> +
->>> +	__u64 stripe_len;
->>> +	__u64 type;
->>> +
->>> +	/* 2^16 stripes is quite a lot, a second limit is the size of a single
->>> +	 * item in the btree
->>> +	 */
->>> +	__u16 num_stripes;
->>> +
->>> +	/* sub stripes only matter for raid10 */
->>> +	__u16 sub_stripes;
->>> +
->>> +	struct btrfs_chunk_info_stripe stripes[1];
->>> +	/* additional stripes go here */
->>> +};
->>
->> This looks like a copy of btrfs_chunk and stripe, only removing items
->> not needed for the chunk information. Rather than copying the
->> unnecessary fileds like dev_uuid in stripe, this should be designed for
->> data exchange with the usecase in mind.
+On 5/27/20 4:12 AM, Chris Murphy wrote:
+> What are the implications of not clearing v1 before enabling v2?
 > 
-> There are two clients for this api:
-> - btrfs fi us
-> - btrfs dev us
+> From btrfs insp dump-t, I still see the v1 bitmaps present:
 > 
-> We can get rid of:
-> 	- "offset" fields (2x)
-> 	- "uuid" fields
-> 
-> However the "offset" fields can be used to understand where a logical map
-> is on the physical disks. I am thinking about a graphical tool to show this
-> mapping, which doesn't exits yet -).
-> The offset field may be used as key to get further information (like the chunk
-> usage, see below)
-> 
-> Regarding the UUID field, I agree it can be removed because it is redundant (there
-> is already the devid)
+> root tree
+> leaf 6468501504 items 42 free space 9246 generation 22 owner ROOT_TREE
+> leaf 6468501504 flags 0x1(WRITTEN) backref revision 1
+> ...
+>     item 30 key (FREE_SPACE UNTYPED 22020096) itemoff 11145 itemsize 41
+>         location key (256 INODE_ITEM 0)
+>         cache generation 17 entries 0 bitmaps 0
+>     item 31 key (FREE_SPACE UNTYPED 1095761920) itemoff 11104 itemsize 41
+>         location key (257 INODE_ITEM 0)
+>         cache generation 17 entries 0 bitmaps 0
+> ...
 > 
 > 
->>
->> The format does not need follow the exact layout that kernel uses, ie.
->> chunk info with one embedded stripe and then followed by variable length
->> array of further stripes. This is convenient in one way but not in
->> another one. Alternatively each chunk can be emitted as a single entry,
->> duplicating part of the common fields and adding the stripe-specific
->> ones. This is for consideration.
->>
->> I've looked at my old code doing the chunk dump based on the search
->> ioctl and found that it also allows to read the chunk usage, with one
->> extra search to the block group item where the usage is stored. As this
->> is can be slow, it should be optional. Ie. the main ioctl structure
->> needs flags where this can be requested.
+> And later the free space tree:
 > 
-> This info could be very useful. I think to something like a balance of
-> chunks which are near filled (or near empty). The question is if we
-> should have a different ioctl.
+> free space tree key (FREE_SPACE_TREE ROOT_ITEM 0)
+> leaf 6471073792 items 39 free space 15196 generation 22 owner FREE_SPACE_TREE
+> leaf 6471073792 flags 0x1(WRITTEN) backref revision 1
+> fs uuid 3c464210-08c7-4cf0-b175-e4b781ebea19
+> chunk uuid f1d18732-7c3d-401c-8637-e7d4d9c7a0b8
+>     item 0 key (1048576 FREE_SPACE_INFO 4194304) itemoff 16275 itemsize 8
+>         free space info extent count 2 flags 0
+>     item 1 key (1048576 FREE_SPACE_EXTENT 16384) itemoff 16275 itemsize 0
+>         free space extent
+>     item 2 key (1081344 FREE_SPACE_EXTENT 4161536) itemoff 16275 itemsize 0
+>         free space extent
+> ...
+> 
+> I was surprised there's no warning when I use space_cache=v2 without
+> first clearing v1.
 
-Do you mean that you want to allow to a non root user to run btrfs balance?
-
-Otherwise, no. IMO convenience functions for quickly retrieving a
-specific subset of data should be created as reusable library functions
-in the calling code, not as a redundant extra IOCTL that has to be
-maintained.
+It's just sitting there, occupying some space, doing nothing.
 
 Hans
