@@ -2,29 +2,36 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E71AA1E6D1B
-	for <lists+linux-btrfs@lfdr.de>; Thu, 28 May 2020 23:04:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 883761E6E44
+	for <lists+linux-btrfs@lfdr.de>; Fri, 29 May 2020 00:00:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436493AbgE1VEa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 28 May 2020 17:04:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47304 "EHLO
+        id S2436756AbgE1WAL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 28 May 2020 18:00:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2407504AbgE1VEP (ORCPT
+        with ESMTP id S2436730AbgE1V75 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 28 May 2020 17:04:15 -0400
+        Thu, 28 May 2020 17:59:57 -0400
 Received: from syrinx.knorrie.org (syrinx.knorrie.org [IPv6:2001:888:2177::4d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1664BC08C5C6
-        for <linux-btrfs@vger.kernel.org>; Thu, 28 May 2020 14:04:15 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DAB6C08C5C6
+        for <linux-btrfs@vger.kernel.org>; Thu, 28 May 2020 14:59:57 -0700 (PDT)
 Received: from [IPv6:2a02:a213:2b80:f000::12] (unknown [IPv6:2a02:a213:2b80:f000::12])
         (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by syrinx.knorrie.org (Postfix) with ESMTPSA id 42D8D60924AB1;
-        Thu, 28 May 2020 23:04:07 +0200 (CEST)
-Subject: Re: space_cache=v1 and v2 at the time time?
-To:     Chris Murphy <lists@colorremedies.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-References: <CAJCQCtQVPFi7fB+p4HEVy1Gw3AjzrvQ8qcY6cRbKj3T-+7yVxA@mail.gmail.com>
+        by syrinx.knorrie.org (Postfix) with ESMTPSA id F38EF60924CB5;
+        Thu, 28 May 2020 23:59:54 +0200 (CEST)
+Subject: Re: [RFC][PATCH V4] btrfs: preferred_metadata: preferred device for
+ metadata
+To:     Goffredo Baroncelli <kreijack@libero.it>,
+        linux-btrfs@vger.kernel.org
+Cc:     Michael <mclaud@roznica.com.ua>, Hugo Mills <hugo@carfax.org.uk>,
+        Martin Svec <martin.svec@zoner.cz>,
+        Wang Yugui <wangyugui@e16-tech.com>,
+        Paul Jones <paul@pauljones.id.au>,
+        Adam Borowski <kilobyte@angband.pl>,
+        Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+References: <20200528183451.16654-1-kreijack@libero.it>
 From:   Hans van Kranenburg <hans@knorrie.org>
 Autocrypt: addr=hans@knorrie.org; keydata=
  mQINBFo2pooBEADwTBe/lrCa78zuhVkmpvuN+pXPWHkYs0LuAgJrOsOKhxLkYXn6Pn7e3xm+
@@ -100,58 +107,119 @@ Autocrypt: addr=hans@knorrie.org; keydata=
  vT3RH0/CpPJgveWV5xDOKuhD8j5l7FME+t2RWP+gyLid6dE0C7J03ir90PlTEkMEHEzyJMPt
  OhO05Phy+d51WPTo1VSKxhL4bsWddHLfQoXW8RQ388Q69JG4m+JhNH/XvWe3aQFpYP+GZuzO
  hkMez0lHCaVOOLBSKHkAHh9i0/pH+/3hfEa4NsoHCpyy
-Message-ID: <c33f3305-a265-d2a4-75e3-9bdd850604f8@knorrie.org>
-Date:   Thu, 28 May 2020 23:04:07 +0200
+Message-ID: <8f85f920-b0d0-3c11-3fd2-2f831efb37f4@knorrie.org>
+Date:   Thu, 28 May 2020 23:59:54 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <CAJCQCtQVPFi7fB+p4HEVy1Gw3AjzrvQ8qcY6cRbKj3T-+7yVxA@mail.gmail.com>
+In-Reply-To: <20200528183451.16654-1-kreijack@libero.it>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi,
+Hi!
 
-On 5/27/20 4:12 AM, Chris Murphy wrote:
-> What are the implications of not clearing v1 before enabling v2?
+On 5/28/20 8:34 PM, Goffredo Baroncelli wrote:
 > 
-> From btrfs insp dump-t, I still see the v1 bitmaps present:
+> [the previous patches sets called this mode ssd_metadata]
 > 
-> root tree
-> leaf 6468501504 items 42 free space 9246 generation 22 owner ROOT_TREE
-> leaf 6468501504 flags 0x1(WRITTEN) backref revision 1
-> ...
->     item 30 key (FREE_SPACE UNTYPED 22020096) itemoff 11145 itemsize 41
->         location key (256 INODE_ITEM 0)
->         cache generation 17 entries 0 bitmaps 0
->     item 31 key (FREE_SPACE UNTYPED 1095761920) itemoff 11104 itemsize 41
->         location key (257 INODE_ITEM 0)
->         cache generation 17 entries 0 bitmaps 0
-> ...
+> Hi all,
 > 
-> 
-> And later the free space tree:
-> 
-> free space tree key (FREE_SPACE_TREE ROOT_ITEM 0)
-> leaf 6471073792 items 39 free space 15196 generation 22 owner FREE_SPACE_TREE
-> leaf 6471073792 flags 0x1(WRITTEN) backref revision 1
-> fs uuid 3c464210-08c7-4cf0-b175-e4b781ebea19
-> chunk uuid f1d18732-7c3d-401c-8637-e7d4d9c7a0b8
->     item 0 key (1048576 FREE_SPACE_INFO 4194304) itemoff 16275 itemsize 8
->         free space info extent count 2 flags 0
->     item 1 key (1048576 FREE_SPACE_EXTENT 16384) itemoff 16275 itemsize 0
->         free space extent
->     item 2 key (1081344 FREE_SPACE_EXTENT 4161536) itemoff 16275 itemsize 0
->         free space extent
-> ...
-> 
-> I was surprised there's no warning when I use space_cache=v2 without
-> first clearing v1.
+> This is an RFC; I wrote this patch because I find the idea interesting
+> even though it adds more complication to the chunk allocator.
 
-It's just sitting there, occupying some space, doing nothing.
+Thanks for working on this. This is an often discussed feature request.
+So, taking it to the next level by actually writing PoC code helps a lot
+I guess.
 
+> The initial idea was to store the metadata on the ssd and to leave the data
+> on the rotational disks. The kind of disk was determined from the rotational
+> flag. However looking only at the rotational flags is not flexible enough. So
+> I added a device property called "preferred_metadata" to mark a device
+> as preferred for metadata.
+> 
+> A separate patches set is sent to extend the "btrfs property" command
+> for supporting the preferred_metadata device flag. The basic usage is:
+> 
+>     $ # set a new value
+>     $ sudo btrfs property set /dev/vde preferred_metadata 1
+>     
+>     $ # get the current value
+>     $ sudo btrfs property get /dev/vde preferred_metadata
+>     devid=4, path=/dev/vde: dedicated_metadata=1
+> 
+> This new mode is enabled passing the option "preferred_metadata" at mount time.
+> This policy of allocation is the default one. However if this doesn't permit
+> a chunk allocation, the "classic" one is used.
+> 
+> Some examples: (/dev/sd[abc] are marked as preferred_metadata,
+> and /dev/sd[ef] are not)
+> 
+> Non striped profile: metadata->raid1, data->raid1
+> The data is stored on /dev/sd[ef], metadata is stored on /dev/sd[abc].
+> When /dev/sd[ef] are full, then the data chunk is allocated also on
+> /dev/sd[abc].
+> 
+> Striped profile: metadata->raid6, data->raid6
+> raid6 requires 3 disks at minimum, so /dev/sd[ef] are not enough for a
+> data profile raid6. To allow a data chunk allocation, the data profile raid6
+> will be stored on all the disks /dev/sd[abcdef].
+> Instead the metadata profile raid6 will be allocated on /dev/sd[abc],
+> because these are enough to host this chunk.
+> 
+> The patches set is composed by four patches:
+> 
+> - The first patch adds the ioctl to update the btrfs_dev_item.type field.
+> The ioctl is generic to handle more fields, however now only the "type"
+> field is supported.
+
+What are your thoughts about the chicken/egg situation of changing these
+properties only when the filesystem is mounted?
+
+E.g. mkfs puts metadata on the wrong disk, and then only after actually
+mounting, I have to find out how to find out where metadata is actually
+placed, and then play around with btrfs balance options until I get
+everything moved to my preferred disks. Do you have any ideas about
+improving the out of the box usability of this?
+
+> - The second patch adds the flag BTRFS_DEV_PREFERRED_METADATA which is
+> used to mark a device as "preferred_metadata"
+> 
+> - The third patch exports the btrfs_dev_item.type field via sysfs files
+> /sys/fs/btrfs/<UUID>/devinfo/<devid>/type
+> 
+> It is possible only to read the value. It is not implemented the updated
+> of the value because in btrfs/stsfs.c there is a comment that states:
+> "We don't want to do full transaction commit from inside sysfs".
+> 
+> - The fourth patch implements this new mode
+> 
+> Changelog:
+> v4: - renamed ssd_metadata to preferred_metadata
+>     - add the device property "preferred_metadata"
+>     - add the ioctl BTRFS_IOC_DEV_PROPERTIES
+>     - export the btrfs_dev_item.type values via sysfs
+> v3: - correct the collision between BTRFS_MOUNT_DISCARD_ASYNC and
+>       BTRFS_MOUNT_SSD_METADATA.
+> v2: - rebased to v5.6.2
+>     - correct the comparison about the rotational disks (>= instead of >)
+>     - add the flag rotational to the struct btrfs_device_info to
+>       simplify the comparison function (btrfs_cmp_device_info*() )
+> v1: - first issue
+> 
+> [...]
+Another question: what is your opinion about device replace? Should it
+leave properties of the destination device alone, or should it copy the
+bit over?
+
+If I'm replacing my ssd with metadata with a larger one, then what
+should I expect to happen by default as user (already having forgotten
+about that property command that I had to use to actually make it work
+months ago)?
+
+Thanks,
 Hans
