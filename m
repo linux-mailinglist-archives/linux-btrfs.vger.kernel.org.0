@@ -2,100 +2,94 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CAE41E83D2
-	for <lists+linux-btrfs@lfdr.de>; Fri, 29 May 2020 18:37:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EE271E83DF
+	for <lists+linux-btrfs@lfdr.de>; Fri, 29 May 2020 18:40:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726886AbgE2Qha (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 29 May 2020 12:37:30 -0400
-Received: from smtp-34.italiaonline.it ([213.209.10.34]:52770 "EHLO libero.it"
+        id S1726039AbgE2Qkc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 29 May 2020 12:40:32 -0400
+Received: from smtp-34.italiaonline.it ([213.209.10.34]:36556 "EHLO libero.it"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725795AbgE2Qh3 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 29 May 2020 12:37:29 -0400
+        id S1725795AbgE2Qkb (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 29 May 2020 12:40:31 -0400
 Received: from venice.bhome ([78.12.136.199])
         by smtp-34.iol.local with ESMTPA
-        id ei0djvyMitrlwei0djTNlG; Fri, 29 May 2020 18:37:27 +0200
+        id ei3Yjw096trlwei3YjTOfN; Fri, 29 May 2020 18:40:28 +0200
 x-libjamoibt: 1601
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2014;
-        t=1590770247; bh=RoUGvMp/GcYXERS3KTf8P/i8j/6eY+PvWs3WCY08A7Y=;
+        t=1590770429; bh=BOo80PcWm5DSBdox6ZzYYi/IT5OpTIRVJi4va4NiaPg=;
         h=From;
-        b=YocuBZWrkzzzIkN/mQvEIBM87YOu4g0dT+/p7swAbEj3NKsWR8lD2ncPUOdC/7MNQ
-         Zeyydw0uCidJcAaebj5BURHpgCzvoM1iIixIwfdKTk1GhOB0+RIYZe4QnUIRSbOUTi
-         cSMaRK05WaBBc+xGOnN25H1UaWMz+M6kL76NrbdkVVbvKiwwWK+i3mvFGGp1lvee1a
-         P1aAu1N2VE6jMeDq+wWtUDemcnJc26vE1IyFxv9es4oqmeGM2S/gocw6/69ekmnuib
-         4b6M0OhLmawf/xsKpb/+j9E5X4861vNj8FJZVVk5o8/OtajON3O+q+uKILKj8gjnlF
-         iQYbJGzq3j/MQ==
+        b=Tb53lC4tAStnKQiP/1J1ORwIZs8pVPKJMxny+gErgDsfiVSFub5ZnyVKbzDDwdVJY
+         1aKVxAuHM7JfiyqGAYa1maomizgcxctepqldam4SBKVmWhcUGIFCvQOaOo0J9pnwC1
+         /SmNqUvhr3if+d3Pycm+EOWg38d77/8trS7p73dnEBQ1CIkHQak6T9UvXPf8DWQnMK
+         VRUBHhzWdt3IwXYF15S2U7q+DbiA9YWRyVXF3Rh8hwtjULnV8hCsYtdh5zTImMJoYb
+         07IwFHWcXggJMIAaej11+lDxJVjwpVe7FII7VIqj04tMJtgW2KjE3sOxuRcBUMCb7+
+         Hoa2ZtBxFCHqA==
 X-CNFS-Analysis: v=2.3 cv=TOE7tGta c=1 sm=1 tr=0
  a=kx39m2EDZI1V9vDwKCQCcA==:117 a=kx39m2EDZI1V9vDwKCQCcA==:17
- a=IkcTkHD0fZMA:10 a=tvJWwJrz6FzJT4ICdCwA:9 a=QEXdDO2ut3YA:10
+ a=IkcTkHD0fZMA:10 a=9JHKcJSvL7YlFLJJR0QA:9 a=QEXdDO2ut3YA:10
 Reply-To: kreijack@inwind.it
-Subject: Re: [RFC][PATCH V4] btrfs: preferred_metadata: preferred device for
- metadata
+Subject: Re: [RFC][PATCH V3] btrfs: ssd_metadata: storing metadata on SSD
 To:     Hans van Kranenburg <hans@knorrie.org>, linux-btrfs@vger.kernel.org
 Cc:     Michael <mclaud@roznica.com.ua>, Hugo Mills <hugo@carfax.org.uk>,
         Martin Svec <martin.svec@zoner.cz>,
-        Wang Yugui <wangyugui@e16-tech.com>,
-        Paul Jones <paul@pauljones.id.au>,
-        Adam Borowski <kilobyte@angband.pl>,
-        Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-References: <20200528183451.16654-1-kreijack@libero.it>
- <8f85f920-b0d0-3c11-3fd2-2f831efb37f4@knorrie.org>
+        Wang Yugui <wangyugui@e16-tech.com>
+References: <20200405082636.18016-1-kreijack@libero.it>
+ <a84d7342-47ed-e162-3047-f7ccdc77fdf1@knorrie.org>
 From:   Goffredo Baroncelli <kreijack@libero.it>
-Message-ID: <f1982b10-2b02-5a6c-a613-c961de4fa6db@libero.it>
-Date:   Fri, 29 May 2020 18:37:27 +0200
+Message-ID: <218577c2-ef0d-3bc8-fa7a-52fcac143c6d@libero.it>
+Date:   Fri, 29 May 2020 18:40:28 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.8.1
 MIME-Version: 1.0
-In-Reply-To: <8f85f920-b0d0-3c11-3fd2-2f831efb37f4@knorrie.org>
+In-Reply-To: <a84d7342-47ed-e162-3047-f7ccdc77fdf1@knorrie.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4wfBEVoty9/QP3Ife2p/lKPend/SKXg4qttD75MFMii1RHWS9m/7EXG92JeTrjmVzkG5Rb2ItUso89rHQNpdl9uS2w0VvStYKU0zEQB02pyt7/Oj5aJOJU
- /fEsnvasIEvSw5mOl81fFG+BEcZrYYyhzKhWmUC0gSbAQArs2ANaoHkVt3NYGdJOCo0R8UtP/xvNkRciY+TF5pwmn+wm9vc7ItCTQspUvwCvkEYGV/kp7b2T
- DfzP+KShDN4KjYVk+HvqfGSKW1YNpqTpsRhneDRk4Pcb0QENFANFhUWcycWt4M0e6QcvzXFjG6E2H4XHAjvkfGFdxW4ZsUTWlxoNvic3s+TNF0h2BGT0t0LK
- 5MT/Q1HgSO8hDNlqRCplBWmLFzTF6+U0AhU55yrUw1ALRZj/wE0Jobz1i4Z1HoYrDDedtOIsP+JyrTUhbYuZR8vX6xwStw==
+X-CMAE-Envelope: MS4wfB2wZ6o4ge6kfx31HXJqwKtnNRj+l0aRLcCUSOof+elOsF67cG9QAQ4ANiEH7DbHylJigak7E2q5Sk3YG/7SKZamr+1xrVf28ZRPoFdYZlRLMnAyh7Cj
+ 19xi7xYrvsoHcT5EvGVBj5ra7HLMncebkNHpzKBGBB5nmv5o9epxPl71r/EhP0NipVtseDmhsKCF2fu6laEpHTtQq3kzFyFsm/qxHktjbqpPNVPXnrUXrSXq
+ fiMm9GcG2sO+EJK2QtMqGm7QW6kORnQqTNFeRngWV/nZo/NOUMciVHt0om+58zaknQdU7Afe/OHzC08Q/mlejxzTbGKg69EvUslXSIpW7Jk=
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 5/28/20 11:59 PM, Hans van Kranenburg wrote:
-> Hi!
+On 5/29/20 6:06 PM, Hans van Kranenburg wrote:
+> Hi Goffredo,
 > 
-> On 5/28/20 8:34 PM, Goffredo Baroncelli wrote:
->>
->> [the previous patches sets called this mode ssd_metadata]
->>
->> Hi all,
+> On 4/5/20 10:26 AM, Goffredo Baroncelli wrote:
 >>
 >> This is an RFC; I wrote this patch because I find the idea interesting
 >> even though it adds more complication to the chunk allocator.
+>>
+>> The core idea is to store the metadata on the ssd and to leave the data
+>> on the rotational disks. BTRFS looks at the rotational flags to
+>> understand the kind of disks.
 > 
-> Thanks for working on this. This is an often discussed feature request.
-> So, taking it to the next level by actually writing PoC code helps a lot
-> I guess.
+> Like I said yesterday, thanks for working on these kind of proof of
+> concepts. :)
 > 
->> The initial idea was to store the metadata on the ssd and to leave the data
->> on the rotational disks. The kind of disk was determined from the rotational
->> flag. However looking only at the rotational flags is not flexible enough. So
->> I added a device property called "preferred_metadata" to mark a device
->> as preferred for metadata.
->>
->> A separate patches set is sent to extend the "btrfs property" command
->> for supporting the preferred_metadata device flag. The basic usage is:
->>
->>      $ # set a new value
->>      $ sudo btrfs property set /dev/vde preferred_metadata 1
->>      
->>      $ # get the current value
->>      $ sudo btrfs property get /dev/vde preferred_metadata
->>      devid=4, path=/dev/vde: dedicated_metadata=1
->>
->> This new mode is enabled passing the option "preferred_metadata" at mount time.
->> This policy of allocation is the default one. However if this doesn't permit
+> Even while this can't be a final solution, it's still very useful in the
+> meantime for users for which this is sufficient right now.
+> 
+> I simply did not realize before that it was possible to just set that
+> rotational flag myself using an udev rule... How convenient.
+> 
+> -# cat /etc/udev/rules.d/99-yolo.rules
+> ACTION=="add|change",
+> ENV{ID_FS_UUID_SUB_ENC}=="4139fb4c-e7c4-49c7-a4ce-5c86f683ffdc",
+> ATTR{queue/rotational}="1"
+> ACTION=="add|change",
+> ENV{ID_FS_UUID_SUB_ENC}=="192139f4-1618-4089-95fd-4a863db9416b",
+> ATTR{queue/rotational}="0"
+
+Yes but of course this should be an exception than the default
+
+> 
+>> This new mode is enabled passing the option ssd_metadata at mount time.
+>> This policy of allocation is the "preferred" one. If this doesn't permit
 >> a chunk allocation, the "classic" one is used.
 >>
->> Some examples: (/dev/sd[abc] are marked as preferred_metadata,
->> and /dev/sd[ef] are not)
+>> Some examples: (/dev/sd[abc] are ssd, and /dev/sd[ef] are rotational)
 >>
 >> Non striped profile: metadata->raid1, data->raid1
 >> The data is stored on /dev/sd[ef], metadata is stored on /dev/sd[abc].
@@ -108,82 +102,25 @@ On 5/28/20 11:59 PM, Hans van Kranenburg wrote:
 >> will be stored on all the disks /dev/sd[abcdef].
 >> Instead the metadata profile raid6 will be allocated on /dev/sd[abc],
 >> because these are enough to host this chunk.
->>
->> The patches set is composed by four patches:
->>
->> - The first patch adds the ioctl to update the btrfs_dev_item.type field.
->> The ioctl is generic to handle more fields, however now only the "type"
->> field is supported.
 > 
-> What are your thoughts about the chicken/egg situation of changing these
-> properties only when the filesystem is mounted?
-
-The logic is related only to a chunk allocation. I.e. if you have a not
-empty filesystem, after enabling the preferred_metadata "mode", in order
-to get the benefit a full balance is required.
-
+> Yes, and while the explanation above focuses on multi-disk profiles, it
+> might be useful (for the similar section in later versions) to
+> explicitly mention that for single profile, the same algorithm will just
+> cause it to overflow to a less preferred disk if the preferred one is
+> completely full. Neat!
 > 
-> E.g. mkfs puts metadata on the wrong disk, and then only after actually
-> mounting, I have to find out how to find out where metadata is actually
-> placed, and then play around with btrfs balance options until I get
-> everything moved to my preferred disks. Do you have any ideas about
-> improving the out of the box usability of this?
-
-In order to figure out where the (meta)data are placed, "btrfs fi us"
-is your friend.
-Of course setting this at mkfs.btrfs time is a good suggestion.
-
+> I've been testing this change on top of my 4.19 kernel, and also tried
+> to come up with some edge cases, doing ridiculous things to generate
+> metadata usage en do stuff like btrfs fi resize to push metadata away
+> from the prefered device etc... No weird things happened.
 > 
->> - The second patch adds the flag BTRFS_DEV_PREFERRED_METADATA which is
->> used to mark a device as "preferred_metadata"
->>
->> - The third patch exports the btrfs_dev_item.type field via sysfs files
->> /sys/fs/btrfs/<UUID>/devinfo/<devid>/type
->>
->> It is possible only to read the value. It is not implemented the updated
->> of the value because in btrfs/stsfs.c there is a comment that states:
->> "We don't want to do full transaction commit from inside sysfs".
->>
->> - The fourth patch implements this new mode
->>
->> Changelog:
->> v4: - renamed ssd_metadata to preferred_metadata
->>      - add the device property "preferred_metadata"
->>      - add the ioctl BTRFS_IOC_DEV_PROPERTIES
->>      - export the btrfs_dev_item.type values via sysfs
->> v3: - correct the collision between BTRFS_MOUNT_DISCARD_ASYNC and
->>        BTRFS_MOUNT_SSD_METADATA.
->> v2: - rebased to v5.6.2
->>      - correct the comparison about the rotational disks (>= instead of >)
->>      - add the flag rotational to the struct btrfs_device_info to
->>        simplify the comparison function (btrfs_cmp_device_info*() )
->> v1: - first issue
->>
->> [...]
-> Another question: what is your opinion about device replace? Should it
-> leave properties of the destination device alone, or should it copy the
-> bit over?
->
-> If I'm replacing my ssd with metadata with a larger one, then what
-> should I expect to happen by default as user (already having forgotten
-> about that property command that I had to use to actually make it work
-> months ago)?
+> I guess there will be no further work on this V3, the only comment I
+> would have now is that an Opt_no_ssd_metadata would be nice for testing,
+> but I can hack that in myself.
 
-In the previous attempt I rtried  to detect automatically which disk is faster
-looking at the rotation flag. However someone pointed me that even from
-a sata ssd and a pci nvme there is an huge speed differences (even tough
-the latency is more important).
-This to say that an automatic logic is not the best possible choice for all
-the cases .
-Then the next step was to add a flag to mark explicitly the devices for
-metadata.
+Because ssd_metadata is not a default, what would be the purpouse of
+Opt_no_ssd_metadata ?
 
-I think that "replacing" and "adding" doesn't have a "sane" default. There will
-be always a case where an user replace an ssd with an mechanical hdd or
-a case where an ssd is added where there is already an pci nvme.
-
-What would make sense is an additional option to btrfs add/replace
-that allows to specify if the disk should be preferred for metadata or not.
 > 
 > Thanks,
 > Hans
