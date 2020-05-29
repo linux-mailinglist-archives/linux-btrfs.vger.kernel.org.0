@@ -2,302 +2,191 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A71A1E8399
-	for <lists+linux-btrfs@lfdr.de>; Fri, 29 May 2020 18:26:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CAE41E83D2
+	for <lists+linux-btrfs@lfdr.de>; Fri, 29 May 2020 18:37:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726939AbgE2Q0q (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 29 May 2020 12:26:46 -0400
-Received: from smtp-34.italiaonline.it ([213.209.10.34]:55517 "EHLO libero.it"
+        id S1726886AbgE2Qha (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 29 May 2020 12:37:30 -0400
+Received: from smtp-34.italiaonline.it ([213.209.10.34]:52770 "EHLO libero.it"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725601AbgE2Q0o (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 29 May 2020 12:26:44 -0400
+        id S1725795AbgE2Qh3 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 29 May 2020 12:37:29 -0400
 Received: from venice.bhome ([78.12.136.199])
         by smtp-34.iol.local with ESMTPA
-        id ehqAjvrrOtrlwehqAjTKZw; Fri, 29 May 2020 18:26:41 +0200
+        id ei0djvyMitrlwei0djTNlG; Fri, 29 May 2020 18:37:27 +0200
 x-libjamoibt: 1601
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2014;
-        t=1590769601; bh=70T8zdHnTfPbA5yNLbiYGjWOWz3/L1nnckVxdmSW8H8=;
+        t=1590770247; bh=RoUGvMp/GcYXERS3KTf8P/i8j/6eY+PvWs3WCY08A7Y=;
         h=From;
-        b=dNmSoeXt9unXPE+/Gg2y/HiHSY8E4vxUvYeMmaOD4aBebjx8KJ1KEuyJATqopGkpg
-         2FMzgezbqwIwovZE2HSUFI+gtznFdhfuF59flds/mtEiJyBVBm+dLPES4iSik2ubAi
-         1WuAouLKsq34NrepUPZKyzB/+2g5mlQpF7D8CUF2tUgs7QKCKfpYQCnlVIEhRMpSub
-         ZhZiN/tgs9xcdmEPhtWCarfqvaXTXxBixdk0vzRpF3hQJEfz5acrQY0Zw1/PMl8qBH
-         cCz4jm0vleK0NFayjUd4No6CYau9uZo9SeJ0gtNzDWzdxo4sBZakKodyDzTSjjTZPq
-         2owMSY7Rf1bAw==
+        b=YocuBZWrkzzzIkN/mQvEIBM87YOu4g0dT+/p7swAbEj3NKsWR8lD2ncPUOdC/7MNQ
+         Zeyydw0uCidJcAaebj5BURHpgCzvoM1iIixIwfdKTk1GhOB0+RIYZe4QnUIRSbOUTi
+         cSMaRK05WaBBc+xGOnN25H1UaWMz+M6kL76NrbdkVVbvKiwwWK+i3mvFGGp1lvee1a
+         P1aAu1N2VE6jMeDq+wWtUDemcnJc26vE1IyFxv9es4oqmeGM2S/gocw6/69ekmnuib
+         4b6M0OhLmawf/xsKpb/+j9E5X4861vNj8FJZVVk5o8/OtajON3O+q+uKILKj8gjnlF
+         iQYbJGzq3j/MQ==
 X-CNFS-Analysis: v=2.3 cv=TOE7tGta c=1 sm=1 tr=0
  a=kx39m2EDZI1V9vDwKCQCcA==:117 a=kx39m2EDZI1V9vDwKCQCcA==:17
- a=IkcTkHD0fZMA:10 a=QON92jhBR0XcCgRq9rIA:9 a=QEXdDO2ut3YA:10
- a=pHzHmUro8NiASowvMSCR:22 a=nt3jZW36AmriUCFCBwmW:22
+ a=IkcTkHD0fZMA:10 a=tvJWwJrz6FzJT4ICdCwA:9 a=QEXdDO2ut3YA:10
 Reply-To: kreijack@inwind.it
-Subject: Re: [PATCH 4/4] btrfs: add preferred_metadata mode
+Subject: Re: [RFC][PATCH V4] btrfs: preferred_metadata: preferred device for
+ metadata
 To:     Hans van Kranenburg <hans@knorrie.org>, linux-btrfs@vger.kernel.org
 Cc:     Michael <mclaud@roznica.com.ua>, Hugo Mills <hugo@carfax.org.uk>,
         Martin Svec <martin.svec@zoner.cz>,
         Wang Yugui <wangyugui@e16-tech.com>,
         Paul Jones <paul@pauljones.id.au>,
         Adam Borowski <kilobyte@angband.pl>,
-        Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
-        Goffredo Baroncelli <kreijack@inwind.it>
+        Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
 References: <20200528183451.16654-1-kreijack@libero.it>
- <20200528183451.16654-5-kreijack@libero.it>
- <61d2188a-290c-5d6f-ec32-6cacd3f63ce8@knorrie.org>
+ <8f85f920-b0d0-3c11-3fd2-2f831efb37f4@knorrie.org>
 From:   Goffredo Baroncelli <kreijack@libero.it>
-Message-ID: <83e19781-1733-47bb-dc07-876ca82e94c1@libero.it>
-Date:   Fri, 29 May 2020 18:26:38 +0200
+Message-ID: <f1982b10-2b02-5a6c-a613-c961de4fa6db@libero.it>
+Date:   Fri, 29 May 2020 18:37:27 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.8.1
 MIME-Version: 1.0
-In-Reply-To: <61d2188a-290c-5d6f-ec32-6cacd3f63ce8@knorrie.org>
+In-Reply-To: <8f85f920-b0d0-3c11-3fd2-2f831efb37f4@knorrie.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4wfOPJS3yE8yYAiC3cVrd+9JytA4xOZgBdDnnZziR7KjAPtKcuSa+SqlLUiRnhLKz7ta1VdfsfZGtp31oE8jHzbEASFncTS5WJUO91+773FVSDjKaSm33V
- Zv/loB1BMMuMscNx3EsbQYXH8yWNYcFunQIRuB8a36ZXAAhimnC9yPpAAqfZfnfQx2vNqzA02aj9bPAPGOY9dq9ynu4VmM6BvbrszT1k+BtzEikiHPYiVasN
- CyD0MlhcrIrVnRwoicG7l1TcCrGDZ9OqL2aexSeEjp3L+FAbx92aThp9BqKyZyO2W48MeyiBYKj9EPloqZ39W+J6gErQET2+YpLT3zf016mGwqpYquyOpe8u
- LTAg8NXiDOYGTk4C+YV0R/U7VrTz2AMsh13bARdZUn85sjQF8FgP6t9154g5q0BiGK4k02HPSxdEiJQ1JCffq8HRSFCJUSsqh+mccuvrm8dBbtdpD8A=
+X-CMAE-Envelope: MS4wfBEVoty9/QP3Ife2p/lKPend/SKXg4qttD75MFMii1RHWS9m/7EXG92JeTrjmVzkG5Rb2ItUso89rHQNpdl9uS2w0VvStYKU0zEQB02pyt7/Oj5aJOJU
+ /fEsnvasIEvSw5mOl81fFG+BEcZrYYyhzKhWmUC0gSbAQArs2ANaoHkVt3NYGdJOCo0R8UtP/xvNkRciY+TF5pwmn+wm9vc7ItCTQspUvwCvkEYGV/kp7b2T
+ DfzP+KShDN4KjYVk+HvqfGSKW1YNpqTpsRhneDRk4Pcb0QENFANFhUWcycWt4M0e6QcvzXFjG6E2H4XHAjvkfGFdxW4ZsUTWlxoNvic3s+TNF0h2BGT0t0LK
+ 5MT/Q1HgSO8hDNlqRCplBWmLFzTF6+U0AhU55yrUw1ALRZj/wE0Jobz1i4Z1HoYrDDedtOIsP+JyrTUhbYuZR8vX6xwStw==
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 5/29/20 12:02 AM, Hans van Kranenburg wrote:
-> Hi,
+On 5/28/20 11:59 PM, Hans van Kranenburg wrote:
+> Hi!
 > 
 > On 5/28/20 8:34 PM, Goffredo Baroncelli wrote:
->> From: Goffredo Baroncelli <kreijack@inwind.it>
 >>
->> When this mode is enabled,
+>> [the previous patches sets called this mode ssd_metadata]
+>>
+>> Hi all,
+>>
+>> This is an RFC; I wrote this patch because I find the idea interesting
+>> even though it adds more complication to the chunk allocator.
 > 
-> The commit message does not mention if this is either only a convenience
-> during development and testing of the feature to be able to quickly turn
-> it on/off, or if you intend to have this into the final change set.
+> Thanks for working on this. This is an often discussed feature request.
+> So, taking it to the next level by actually writing PoC code helps a lot
+> I guess.
+> 
+>> The initial idea was to store the metadata on the ssd and to leave the data
+>> on the rotational disks. The kind of disk was determined from the rotational
+>> flag. However looking only at the rotational flags is not flexible enough. So
+>> I added a device property called "preferred_metadata" to mark a device
+>> as preferred for metadata.
+>>
+>> A separate patches set is sent to extend the "btrfs property" command
+>> for supporting the preferred_metadata device flag. The basic usage is:
+>>
+>>      $ # set a new value
+>>      $ sudo btrfs property set /dev/vde preferred_metadata 1
+>>      
+>>      $ # get the current value
+>>      $ sudo btrfs property get /dev/vde preferred_metadata
+>>      devid=4, path=/dev/vde: dedicated_metadata=1
+>>
+>> This new mode is enabled passing the option "preferred_metadata" at mount time.
+>> This policy of allocation is the default one. However if this doesn't permit
+>> a chunk allocation, the "classic" one is used.
+>>
+>> Some examples: (/dev/sd[abc] are marked as preferred_metadata,
+>> and /dev/sd[ef] are not)
+>>
+>> Non striped profile: metadata->raid1, data->raid1
+>> The data is stored on /dev/sd[ef], metadata is stored on /dev/sd[abc].
+>> When /dev/sd[ef] are full, then the data chunk is allocated also on
+>> /dev/sd[abc].
+>>
+>> Striped profile: metadata->raid6, data->raid6
+>> raid6 requires 3 disks at minimum, so /dev/sd[ef] are not enough for a
+>> data profile raid6. To allow a data chunk allocation, the data profile raid6
+>> will be stored on all the disks /dev/sd[abcdef].
+>> Instead the metadata profile raid6 will be allocated on /dev/sd[abc],
+>> because these are enough to host this chunk.
+>>
+>> The patches set is composed by four patches:
+>>
+>> - The first patch adds the ioctl to update the btrfs_dev_item.type field.
+>> The ioctl is generic to handle more fields, however now only the "type"
+>> field is supported.
+> 
+> What are your thoughts about the chicken/egg situation of changing these
+> properties only when the filesystem is mounted?
 
-Good question. IMHO for the initial devel phase I think that it is useful to have
-a preferred_metadata disk (opt-in). Then we could reverse the logic and
-default to preferred_metadata. Of course then we will have a
-no-preferred_metadata flag (opt-out)
-> 
->> the allocation policy of the chunk
->> is so modified:
->> - allocation of metadata chunk: priority is given to preferred_metadata
->>    disks.
->> - allocation of data chunk: priority is given to a non preferred_metadata
->>    disk.
->>
->> When a striped profile is involved (like RAID0,5,6), the logic
->> is a bit more complex. If there are enough disks, the data profiles
->> are stored on the non preferred_metadata disks; instead the metadata
->> profiles are stored on the preferred_metadata disk.
->> If the disks are not enough, then the profile is allocated on all
->> the disks.
->>
->> Example: assuming that sda, sdb, sdc are ssd disks, and sde, sdf are
->> non preferred_metadata ones.
->> A data profile raid6, will be stored on sda, sdb, sdc, sde, sdf (sde
->> and sdf are not enough to host a raid5 profile).
->> A metadata profile raid6, will be stored on sda, sdb, sdc (these
->> are enough to host a raid6 profile).
->>
->> To enable this mode pass -o dedicated_metadata at mount time.
-> 
-> Is it dedicated_metadata or preferred_metadata?
+The logic is related only to a chunk allocation. I.e. if you have a not
+empty filesystem, after enabling the preferred_metadata "mode", in order
+to get the benefit a full balance is required.
 
-It was an copy&paste error. It should be preferred_metadata
 > 
->> Signed-off-by: Goffredo Baroncelli <kreijack@inwind.it>
->> ---
->>   fs/btrfs/ctree.h   |  1 +
->>   fs/btrfs/super.c   |  8 +++++
->>   fs/btrfs/volumes.c | 89 ++++++++++++++++++++++++++++++++++++++++++++--
->>   fs/btrfs/volumes.h |  1 +
->>   4 files changed, 97 insertions(+), 2 deletions(-)
+> E.g. mkfs puts metadata on the wrong disk, and then only after actually
+> mounting, I have to find out how to find out where metadata is actually
+> placed, and then play around with btrfs balance options until I get
+> everything moved to my preferred disks. Do you have any ideas about
+> improving the out of the box usability of this?
+
+In order to figure out where the (meta)data are placed, "btrfs fi us"
+is your friend.
+Of course setting this at mkfs.btrfs time is a good suggestion.
+
+> 
+>> - The second patch adds the flag BTRFS_DEV_PREFERRED_METADATA which is
+>> used to mark a device as "preferred_metadata"
 >>
->> diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
->> index 03ea7370aea7..779760fd27b1 100644
->> --- a/fs/btrfs/ctree.h
->> +++ b/fs/btrfs/ctree.h
->> @@ -1239,6 +1239,7 @@ static inline u32 BTRFS_MAX_XATTR_SIZE(const struct btrfs_fs_info *info)
->>   #define BTRFS_MOUNT_NOLOGREPLAY		(1 << 27)
->>   #define BTRFS_MOUNT_REF_VERIFY		(1 << 28)
->>   #define BTRFS_MOUNT_DISCARD_ASYNC	(1 << 29)
->> +#define BTRFS_MOUNT_PREFERRED_METADATA	(1 << 30)
->>   
->>   #define BTRFS_DEFAULT_COMMIT_INTERVAL	(30)
->>   #define BTRFS_DEFAULT_MAX_INLINE	(2048)
->> diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
->> index 438ecba26557..80700dc9dcf8 100644
->> --- a/fs/btrfs/super.c
->> +++ b/fs/btrfs/super.c
->> @@ -359,6 +359,7 @@ enum {
->>   #ifdef CONFIG_BTRFS_FS_REF_VERIFY
->>   	Opt_ref_verify,
->>   #endif
->> +	Opt_preferred_metadata,
->>   	Opt_err,
->>   };
->>   
->> @@ -430,6 +431,7 @@ static const match_table_t tokens = {
->>   #ifdef CONFIG_BTRFS_FS_REF_VERIFY
->>   	{Opt_ref_verify, "ref_verify"},
->>   #endif
->> +	{Opt_preferred_metadata, "preferred_metadata"},
->>   	{Opt_err, NULL},
->>   };
->>   
->> @@ -881,6 +883,10 @@ int btrfs_parse_options(struct btrfs_fs_info *info, char *options,
->>   			btrfs_set_opt(info->mount_opt, REF_VERIFY);
->>   			break;
->>   #endif
->> +		case Opt_preferred_metadata:
->> +			btrfs_set_and_info(info, PREFERRED_METADATA,
->> +					"enabling preferred_metadata");
->> +			break;
->>   		case Opt_err:
->>   			btrfs_err(info, "unrecognized mount option '%s'", p);
->>   			ret = -EINVAL;
->> @@ -1403,6 +1409,8 @@ static int btrfs_show_options(struct seq_file *seq, struct dentry *dentry)
->>   #endif
->>   	if (btrfs_test_opt(info, REF_VERIFY))
->>   		seq_puts(seq, ",ref_verify");
->> +	if (btrfs_test_opt(info, PREFERRED_METADATA))
->> +		seq_puts(seq, ",preferred_metadata");
->>   	seq_printf(seq, ",subvolid=%llu",
->>   		  BTRFS_I(d_inode(dentry))->root->root_key.objectid);
->>   	seq_puts(seq, ",subvol=");
->> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
->> index 5265f54c2931..c68efb15e473 100644
->> --- a/fs/btrfs/volumes.c
->> +++ b/fs/btrfs/volumes.c
->> @@ -4770,6 +4770,56 @@ static int btrfs_cmp_device_info(const void *a, const void *b)
->>   	return 0;
->>   }
->>   
->> +/*
->> + * sort the devices in descending order by preferred_metadata,
->> + * max_avail, total_avail
->> + */
->> +static int btrfs_cmp_device_info_metadata(const void *a, const void *b)
->> +{
->> +	const struct btrfs_device_info *di_a = a;
->> +	const struct btrfs_device_info *di_b = b;
->> +
->> +	/* metadata -> preferred_metadata first */
->> +	if (di_a->preferred_metadata && !di_b->preferred_metadata)
->> +		return -1;
->> +	if (!di_a->preferred_metadata && di_b->preferred_metadata)
->> +		return 1;
->> +	if (di_a->max_avail > di_b->max_avail)
->> +		return -1;
->> +	if (di_a->max_avail < di_b->max_avail)
->> +		return 1;
->> +	if (di_a->total_avail > di_b->total_avail)
->> +		return -1;
->> +	if (di_a->total_avail < di_b->total_avail)
->> +		return 1;
->> +	return 0;
->> +}
->> +
->> +/*
->> + * sort the devices in descending order by !preferred_metadata,
->> + * max_avail, total_avail
->> + */
->> +static int btrfs_cmp_device_info_data(const void *a, const void *b)
->> +{
->> +	const struct btrfs_device_info *di_a = a;
->> +	const struct btrfs_device_info *di_b = b;
->> +
->> +	/* data -> preferred_metadata last */
->> +	if (di_a->preferred_metadata && !di_b->preferred_metadata)
->> +		return 1;
->> +	if (!di_a->preferred_metadata && di_b->preferred_metadata)
->> +		return -1;
->> +	if (di_a->max_avail > di_b->max_avail)
->> +		return -1;
->> +	if (di_a->max_avail < di_b->max_avail)
->> +		return 1;
->> +	if (di_a->total_avail > di_b->total_avail)
->> +		return -1;
->> +	if (di_a->total_avail < di_b->total_avail)
->> +		return 1;
->> +	return 0;
->> +}
->> +
->>   static void check_raid56_incompat_flag(struct btrfs_fs_info *info, u64 type)
->>   {
->>   	if (!(type & BTRFS_BLOCK_GROUP_RAID56_MASK))
->> @@ -4885,6 +4935,7 @@ static int gather_device_info(struct btrfs_fs_devices *fs_devices,
->>   	int ndevs = 0;
->>   	u64 max_avail;
->>   	u64 dev_offset;
->> +	int nr_preferred_metadata = 0;
->>   
->>   	/*
->>   	 * in the first pass through the devices list, we gather information
->> @@ -4937,15 +4988,49 @@ static int gather_device_info(struct btrfs_fs_devices *fs_devices,
->>   		devices_info[ndevs].max_avail = max_avail;
->>   		devices_info[ndevs].total_avail = total_avail;
->>   		devices_info[ndevs].dev = device;
->> +		devices_info[ndevs].preferred_metadata = !!(device->type &
->> +			BTRFS_DEV_PREFERRED_METADATA);
->> +		if (devices_info[ndevs].preferred_metadata)
->> +			nr_preferred_metadata++;
->>   		++ndevs;
->>   	}
->>   	ctl->ndevs = ndevs;
->>   
->> +	BUG_ON(nr_preferred_metadata > ndevs);
->>   	/*
->>   	 * now sort the devices by hole size / available space
->>   	 */
->> -	sort(devices_info, ndevs, sizeof(struct btrfs_device_info),
->> -	     btrfs_cmp_device_info, NULL);
->> +	if (((ctl->type & BTRFS_BLOCK_GROUP_DATA) &&
->> +	     (ctl->type & BTRFS_BLOCK_GROUP_METADATA)) ||
->> +	    !btrfs_test_opt(info, PREFERRED_METADATA)) {
->> +		/* mixed bg or PREFERRED_METADATA not set */
->> +		sort(devices_info, ctl->ndevs, sizeof(struct btrfs_device_info),
->> +			     btrfs_cmp_device_info, NULL);
->> +	} else {
->> +		/*
->> +		 * if PREFERRED_METADATA is set, sort the device considering
->> +		 * also the kind (preferred_metadata or not). Limit the
->> +		 * availables devices to the ones of the same kind, to avoid
->> +		 * that a striped profile, like raid5, spreads to all kind of
->> +		 * devices.
->> +		 * It is allowed to use different kinds of devices if the ones
->> +		 * of the same kind are not enough alone.
->> +		 */
->> +		if (ctl->type & BTRFS_BLOCK_GROUP_DATA) {
->> +			int nr_data = ctl->ndevs - nr_preferred_metadata;
->> +			sort(devices_info, ctl->ndevs,
->> +				     sizeof(struct btrfs_device_info),
->> +				     btrfs_cmp_device_info_data, NULL);
->> +			if (nr_data >= ctl->devs_min)
->> +				ctl->ndevs = nr_data;
->> +		} else { /* non data -> metadata and system */
->> +			sort(devices_info, ctl->ndevs,
->> +				     sizeof(struct btrfs_device_info),
->> +				     btrfs_cmp_device_info_metadata, NULL);
->> +			if (nr_preferred_metadata >= ctl->devs_min)
->> +				ctl->ndevs = nr_preferred_metadata;
->> +		}
->> +	}
->>   
->>   	return 0;
->>   }
->> diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
->> index 0ac5bf2b95e6..d39c3b0e7569 100644
->> --- a/fs/btrfs/volumes.h
->> +++ b/fs/btrfs/volumes.h
->> @@ -347,6 +347,7 @@ struct btrfs_device_info {
->>   	u64 dev_offset;
->>   	u64 max_avail;
->>   	u64 total_avail;
->> +	int preferred_metadata:1;
->>   };
->>   
->>   struct btrfs_raid_attr {
+>> - The third patch exports the btrfs_dev_item.type field via sysfs files
+>> /sys/fs/btrfs/<UUID>/devinfo/<devid>/type
 >>
+>> It is possible only to read the value. It is not implemented the updated
+>> of the value because in btrfs/stsfs.c there is a comment that states:
+>> "We don't want to do full transaction commit from inside sysfs".
+>>
+>> - The fourth patch implements this new mode
+>>
+>> Changelog:
+>> v4: - renamed ssd_metadata to preferred_metadata
+>>      - add the device property "preferred_metadata"
+>>      - add the ioctl BTRFS_IOC_DEV_PROPERTIES
+>>      - export the btrfs_dev_item.type values via sysfs
+>> v3: - correct the collision between BTRFS_MOUNT_DISCARD_ASYNC and
+>>        BTRFS_MOUNT_SSD_METADATA.
+>> v2: - rebased to v5.6.2
+>>      - correct the comparison about the rotational disks (>= instead of >)
+>>      - add the flag rotational to the struct btrfs_device_info to
+>>        simplify the comparison function (btrfs_cmp_device_info*() )
+>> v1: - first issue
+>>
+>> [...]
+> Another question: what is your opinion about device replace? Should it
+> leave properties of the destination device alone, or should it copy the
+> bit over?
+>
+> If I'm replacing my ssd with metadata with a larger one, then what
+> should I expect to happen by default as user (already having forgotten
+> about that property command that I had to use to actually make it work
+> months ago)?
+
+In the previous attempt I rtried  to detect automatically which disk is faster
+looking at the rotation flag. However someone pointed me that even from
+a sata ssd and a pci nvme there is an huge speed differences (even tough
+the latency is more important).
+This to say that an automatic logic is not the best possible choice for all
+the cases .
+Then the next step was to add a flag to mark explicitly the devices for
+metadata.
+
+I think that "replacing" and "adding" doesn't have a "sane" default. There will
+be always a case where an user replace an ssd with an mechanical hdd or
+a case where an ssd is added where there is already an pci nvme.
+
+What would make sense is an additional option to btrfs add/replace
+that allows to specify if the disk should be preferred for metadata or not.
+> 
+> Thanks,
+> Hans
 > 
 
 
