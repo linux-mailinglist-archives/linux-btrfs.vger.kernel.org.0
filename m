@@ -2,26 +2,24 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 335E91E86FD
-	for <lists+linux-btrfs@lfdr.de>; Fri, 29 May 2020 20:54:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4BE21E870F
+	for <lists+linux-btrfs@lfdr.de>; Fri, 29 May 2020 20:59:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727109AbgE2SyJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 29 May 2020 14:54:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53696 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725795AbgE2SyI (ORCPT
+        id S1727830AbgE2S7E (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 29 May 2020 14:59:04 -0400
+Received: from syrinx.knorrie.org ([82.94.188.77]:39912 "EHLO
+        syrinx.knorrie.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725865AbgE2S7D (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 29 May 2020 14:54:08 -0400
-Received: from syrinx.knorrie.org (syrinx.knorrie.org [IPv6:2001:888:2177::4d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FD2DC03E969
-        for <linux-btrfs@vger.kernel.org>; Fri, 29 May 2020 11:54:08 -0700 (PDT)
+        Fri, 29 May 2020 14:59:03 -0400
 Received: from [IPv6:2a02:a213:2b80:f000::12] (unknown [IPv6:2a02:a213:2b80:f000::12])
         (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by syrinx.knorrie.org (Postfix) with ESMTPSA id 2AE0C60927CB4;
-        Fri, 29 May 2020 20:54:07 +0200 (CEST)
+        by syrinx.knorrie.org (Postfix) with ESMTPSA id 660B960927CCE;
+        Fri, 29 May 2020 20:59:01 +0200 (CEST)
 Subject: Re: [PATCH rfc v3] New ioctl BTRFS_IOC_GET_CHUNK_INFO.
+From:   Hans van Kranenburg <hans@knorrie.org>
 To:     kreijack@inwind.it, dsterba@suse.cz, linux-btrfs@vger.kernel.org,
         Josef Bacik <josef@toxicpanda.com>
 References: <20200319203913.3103-1-kreijack@libero.it>
@@ -30,7 +28,7 @@ References: <20200319203913.3103-1-kreijack@libero.it>
  <f1a34303-3b1a-dcda-8e67-458b3522e863@libero.it>
  <c879054a-c002-8b9b-4db5-e32caf8a732b@knorrie.org>
  <5d757a91-503b-64b7-3416-5a26bb03022f@inwind.it>
-From:   Hans van Kranenburg <hans@knorrie.org>
+ <f5f75774-0a35-bd35-7d80-71d1f1a285a1@knorrie.org>
 Autocrypt: addr=hans@knorrie.org; keydata=
  mQINBFo2pooBEADwTBe/lrCa78zuhVkmpvuN+pXPWHkYs0LuAgJrOsOKhxLkYXn6Pn7e3xm+
  ySfxwtFmqLUMPWujQYF0r5C6DteypL7XvkPP+FPVlQnDIifyEoKq8JZRPsAFt1S87QThYPC3
@@ -105,118 +103,34 @@ Autocrypt: addr=hans@knorrie.org; keydata=
  vT3RH0/CpPJgveWV5xDOKuhD8j5l7FME+t2RWP+gyLid6dE0C7J03ir90PlTEkMEHEzyJMPt
  OhO05Phy+d51WPTo1VSKxhL4bsWddHLfQoXW8RQ388Q69JG4m+JhNH/XvWe3aQFpYP+GZuzO
  hkMez0lHCaVOOLBSKHkAHh9i0/pH+/3hfEa4NsoHCpyy
-Message-ID: <f5f75774-0a35-bd35-7d80-71d1f1a285a1@knorrie.org>
-Date:   Fri, 29 May 2020 20:54:06 +0200
+Message-ID: <8d62d259-a073-97ff-5f21-8417c445d48b@knorrie.org>
+Date:   Fri, 29 May 2020 20:59:01 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <5d757a91-503b-64b7-3416-5a26bb03022f@inwind.it>
+In-Reply-To: <f5f75774-0a35-bd35-7d80-71d1f1a285a1@knorrie.org>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 5/29/20 6:23 PM, Goffredo Baroncelli wrote:
-> On 5/28/20 11:03 PM, Hans van Kranenburg wrote:
->> Hi,
->>
->> On 5/26/20 10:19 PM, Goffredo Baroncelli wrote:
->>> On 5/25/20 7:14 PM, David Sterba wrote:
->>>> I'll start with the data structures
-> [...]
->>>>
->>>> This looks like a copy of btrfs_chunk and stripe, only removing items
->>>> not needed for the chunk information. Rather than copying the
->>>> unnecessary fileds like dev_uuid in stripe, this should be designed for
->>>> data exchange with the usecase in mind.
->>>
->>> There are two clients for this api:
->>> - btrfs fi us
->>> - btrfs dev us
->>>
->>> We can get rid of:
->>> 	- "offset" fields (2x)
->>> 	- "uuid" fields
->>>
->>> However the "offset" fields can be used to understand where a logical map
->>> is on the physical disks. I am thinking about a graphical tool to show this
->>> mapping, which doesn't exits yet -).
->>> The offset field may be used as key to get further information (like the chunk
->>> usage, see below)
->>>
->>> Regarding the UUID field, I agree it can be removed because it is redundant (there
->>> is already the devid)
->>>
->>>
->>>>
->>>> The format does not need follow the exact layout that kernel uses, ie.
->>>> chunk info with one embedded stripe and then followed by variable length
->>>> array of further stripes. This is convenient in one way but not in
->>>> another one. Alternatively each chunk can be emitted as a single entry,
->>>> duplicating part of the common fields and adding the stripe-specific
->>>> ones. This is for consideration.
->>>>
->>>> I've looked at my old code doing the chunk dump based on the search
->>>> ioctl and found that it also allows to read the chunk usage, with one
->>>> extra search to the block group item where the usage is stored. As this
->>>> is can be slow, it should be optional. Ie. the main ioctl structure
->>>> needs flags where this can be requested.
->>>
->>> This info could be very useful. I think to something like a balance of
->>> chunks which are near filled (or near empty). The question is if we
->>> should have a different ioctl.
->>
->> Do you mean that you want to allow to a non root user to run btrfs balance?
-> No at all. The balance is an expensive operation that IMHO need root
-> privileges to be started.
+On 5/29/20 8:54 PM, Hans van Kranenburg wrote:
+> On 5/29/20 6:23 PM, Goffredo Baroncelli wrote:
 > 
->>
->> Otherwise, no. IMO convenience functions for quickly retrieving a
->> specific subset of data should be created as reusable library functions
->> in the calling code, not as a redundant extra IOCTL that has to be
->> maintained.
+>> Another case use is to visulize how
+>> the chunk are filled, or how the disks are used..
 > 
-> I think that there is a misunderstood. There is no intention to take the
-> place of the current balance ioctl.
+> An example of that is btrfs-heatmap.
 
-Ok, I'll rephrase. Using it to improve balance is not an argument for
-adding a new IOCTL, since it has to run as root anyway, and then you can
-use the SEARCH IOCTL. And as long as there's a few helper functions
-which do the plumbing, SEARCH isn't that bad at just getting some chunk
-and block group info.
+Oops, forgot the example. Here's it showing data and metadata getting
+sorted out while doing some balance after setting things up for the
+preferred metadata/data placement. It's two 10G disks, and it's the
+'physical' view, so the left half is the "slow" part and the right half
+is the "fast" part of the filesystem, fun. :)
 
--# python3
->>> import btrfs
->>> with btrfs.FileSystem('/') as fs:
-...     for chunk in fs.chunks():
-...         print(fs.block_group(chunk.vaddr))
-...
-block group vaddr 13631488 length 8388608 flags DATA used 8388608
-used_pct 100
-block group vaddr 22020096 length 8388608 flags SYSTEM|DUP used 114688
-used_pct 1
-block group vaddr 30408704 length 1073741824 flags METADATA|DUP used
-889061376 used_pct 83
-block group vaddr 1104150528 length 1073741824 flags DATA used
-1073741824 used_pct 100
-block group vaddr 2177892352 length 1073741824 flags DATA used
-1073741824 used_pct 100
-[...]
+https://syrinx.knorrie.org/~knorrie/btrfs/keep/2020-05-29-ssd_metadata.mp4
 
-> The aim of this ioctl is only to get information about the chunk distribution.
-> Getting the chunk information could help to perform a better balance.
-> I.e. a balance which start from the chunk more empty the go forward
-> processing the chunk more filled.
-
-An example of this is the existing btrfs-balance-least-used program.
-
-> Another case use is to visulize how
-> the chunk are filled, or how the disks are used..
-
-An example of that is btrfs-heatmap.
-
-Hfgl,
 Hans
