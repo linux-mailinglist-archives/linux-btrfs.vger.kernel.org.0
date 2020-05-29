@@ -2,135 +2,132 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4BE21E870F
-	for <lists+linux-btrfs@lfdr.de>; Fri, 29 May 2020 20:59:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEC2D1E88CC
+	for <lists+linux-btrfs@lfdr.de>; Fri, 29 May 2020 22:21:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727830AbgE2S7E (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 29 May 2020 14:59:04 -0400
-Received: from syrinx.knorrie.org ([82.94.188.77]:39912 "EHLO
-        syrinx.knorrie.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725865AbgE2S7D (ORCPT
+        id S1727909AbgE2UVD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 29 May 2020 16:21:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39020 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726975AbgE2UVB (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 29 May 2020 14:59:03 -0400
-Received: from [IPv6:2a02:a213:2b80:f000::12] (unknown [IPv6:2a02:a213:2b80:f000::12])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by syrinx.knorrie.org (Postfix) with ESMTPSA id 660B960927CCE;
-        Fri, 29 May 2020 20:59:01 +0200 (CEST)
-Subject: Re: [PATCH rfc v3] New ioctl BTRFS_IOC_GET_CHUNK_INFO.
-From:   Hans van Kranenburg <hans@knorrie.org>
-To:     kreijack@inwind.it, dsterba@suse.cz, linux-btrfs@vger.kernel.org,
-        Josef Bacik <josef@toxicpanda.com>
-References: <20200319203913.3103-1-kreijack@libero.it>
- <20200319203913.3103-2-kreijack@libero.it>
- <20200525171430.GX18421@twin.jikos.cz>
- <f1a34303-3b1a-dcda-8e67-458b3522e863@libero.it>
- <c879054a-c002-8b9b-4db5-e32caf8a732b@knorrie.org>
- <5d757a91-503b-64b7-3416-5a26bb03022f@inwind.it>
- <f5f75774-0a35-bd35-7d80-71d1f1a285a1@knorrie.org>
-Autocrypt: addr=hans@knorrie.org; keydata=
- mQINBFo2pooBEADwTBe/lrCa78zuhVkmpvuN+pXPWHkYs0LuAgJrOsOKhxLkYXn6Pn7e3xm+
- ySfxwtFmqLUMPWujQYF0r5C6DteypL7XvkPP+FPVlQnDIifyEoKq8JZRPsAFt1S87QThYPC3
- mjfluLUKVBP21H3ZFUGjcf+hnJSN9d9MuSQmAvtJiLbRTo5DTZZvO/SuQlmafaEQteaOswme
- DKRcIYj7+FokaW9n90P8agvPZJn50MCKy1D2QZwvw0g2ZMR8yUdtsX6fHTe7Ym+tHIYM3Tsg
- 2KKgt17NTxIqyttcAIaVRs4+dnQ23J98iFmVHyT+X2Jou+KpHuULES8562QltmkchA7YxZpT
- mLMZ6TPit+sIocvxFE5dGiT1FMpjM5mOVCNOP+KOup/N7jobCG15haKWtu9k0kPz+trT3NOn
- gZXecYzBmasSJro60O4bwBayG9ILHNn+v/ZLg/jv33X2MV7oYXf+ustwjXnYUqVmjZkdI/pt
- 30lcNUxCANvTF861OgvZUR4WoMNK4krXtodBoEImjmT385LATGFt9HnXd1rQ4QzqyMPBk84j
- roX5NpOzNZrNJiUxj+aUQZcINtbpmvskGpJX0RsfhOh2fxfQ39ZP/0a2C59gBQuVCH6C5qsY
- rc1qTIpGdPYT+J1S2rY88AvPpr2JHZbiVqeB3jIlwVSmkYeB/QARAQABtCZIYW5zIHZhbiBL
- cmFuZW5idXJnIDxoYW5zQGtub3JyaWUub3JnPokCTgQTAQoAOBYhBOJv1o/B6NS2GUVGTueB
- VzIYDCpVBQJaNq7KAhsDBQsJCAcDBRUKCQgLBRYCAwEAAh4BAheAAAoJEOeBVzIYDCpVgDMQ
- ANSQMebh0Rr6RNhfA+g9CKiCDMGWZvHvvq3BNo9TqAo9BC4neAoVciSmeZXIlN8xVALf6rF8
- lKy8L1omocMcWw7TlvZHBr2gZHKlFYYC34R2NvxS0xO8Iw5rhEU6paYaKzlrvxuXuHMVXgjj
- bM3zBiN8W4b9VW1MoynP9nvm1WaGtFI9GIyK9j6mBCU+N5hpvFtt4DBmuWjzdDkd3sWUufYd
- nQhGimWHEg95GWhQUiFvr4HRvYJpbjRRRQG3O/5Fm0YyTYZkI5CDzQIm5lhqKNqmuf2ENstS
- 8KcBImlbwlzEpK9Pa3Z5MUeLZ5Ywwv+d11fyhk53aT9bipdEipvcGa6DrA0DquO4WlQR+RKU
- ywoGTgntwFu8G0+tmD8J1UE6kIzFwE5kiFWjM0rxv1tAgV9ZWqmp3sbI7vzbZXn+KI/wosHV
- iDeW5rYg+PdmnOlYXQIJO+t0KmF5zJlSe7daylKZKTYtk7w1Fq/Oh1Rps9h1C4sXN8OAUO7h
- 1SAnEtehHfv52nPxwZiI6eqbvqV0uEEyLFS5pCuuwmPpC8AmOrciY2T8T+4pmkJNO2Nd3jOP
- cnJgAQrxPvD7ACp/85LParnoz5c9/nPHJB1FgbAa7N5d8ubqJgi+k9Q2lAL9vBxK67aZlFZ0
- Kd7u1w1rUlY12KlFWzxpd4TuHZJ8rwi7PUceuQINBFo2sK8BEADSZP5cKnGl2d7CHXdpAzVF
- 6K4Hxwn5eHyKC1D/YvsY+otq3PnfLJeMf1hzv2OSrGaEAkGJh/9yXPOkQ+J1OxJJs9CY0fqB
- MvHZ98iTyeFAq+4CwKcnZxLiBchQJQd0dFPujtcoMkWgzp3QdzONdkK4P7+9XfryPECyCSUF
- ib2aEkuU3Ic4LYfsBqGR5hezbJqOs96ExMnYUCEAS5aeejr3xNb8NqZLPqU38SQCTLrAmPAX
- glKVnYyEVxFUV8EXXY6AK31lRzpCqmPxLoyhPAPda9BXchRluy+QOyg+Yn4Q2DSwbgCYPrxo
- HTZKxH+E+JxCMfSW35ZE5ufvAbY3IrfHIhbNnHyxbTRgYMDbTQCDyN9F2Rvx3EButRMApj+v
- OuaMBJF/fWfxL3pSIosG9Q7uPc+qJvVMHMRNnS0Y1QQ5ZPLG0zI5TeHzMnGmSTbcvn/NOxDe
- 6EhumcclFS0foHR78l1uOhUItya/48WCJE3FvOS3+KBhYvXCsG84KVsJeen+ieX/8lnSn0d2
- ZvUsj+6wo+d8tcOAP+KGwJ+ElOilqW29QfV4qvqmxnWjDYQWzxU9WGagU3z0diN97zMEO4D8
- SfUu72S5O0o9ATgid9lEzMKdagXP94x5CRvBydWu1E5CTgKZ3YZv+U3QclOG5p9/4+QNbhqH
- W4SaIIg90CFMiwARAQABiQRsBBgBCgAgFiEE4m/Wj8Ho1LYZRUZO54FXMhgMKlUFAlo2sK8C
- GwICQAkQ54FXMhgMKlXBdCAEGQEKAB0WIQRJbJ13A1ob3rfuShiywd9yY2FfbAUCWjawrwAK
- CRCywd9yY2FfbMKbEACIGLdFrD5j8rz/1fm8xWTJlOb3+o5A6fdJ2eyPwr5njJZSG9i5R28c
- dMmcwLtVisfedBUYLaMBmCEHnj7ylOgJi60HE74ZySX055hKECNfmA9Q7eidxta5WeXeTPSb
- PwTQkAgUZ576AO129MKKP4jkEiNENePMuYugCuW7XGR+FCEC2efYlVwDQy24ZfR9Q1dNK2ny
- 0gH1c+313l0JcNTKjQ0e7M9KsQSKUr6Tk0VGTFZE2dp+dJF1sxtWhJ6Ci7N1yyj3buFFpD9c
- kj5YQFqBkEwt3OGtYNuLfdwR4d47CEGdQSm52n91n/AKdhRDG5xvvADG0qLGBXdWvbdQFllm
- v47TlJRDc9LmwpIqgtaUGTVjtkhw0SdiwJX+BjhtWTtrQPbseDe2pN3gWte/dPidJWnj8zzS
- ggZ5otY2reSvM+79w/odUlmtaFx+IyFITuFnBVcMF0uGmQBBxssew8rePQejYQHz0bZUDNbD
- VaZiXqP4njzBJu5+nzNxQKzQJ0VDF6ve5K49y0RpT4IjNOupZ+OtlZTQyM7moag+Y6bcJ7KK
- 8+MRdRjGFFWP6H/RCSFAfoOGIKTlZHubjgetyQhMwKJQ5KnGDm+XUkeIWyevPfCVPNvqF2q3
- viQm0taFit8L+x7ATpolZuSCat5PSXtgx1liGjBpPKnERxyNLQ/erRNcEACwEJliFbQm+c2i
- 6ccpx2cdtyAI1yzWuE0nr9DqpsEbIZzTCIVyry/VZgdJ27YijGJWesj/ie/8PtpDu0Cf1pty
- QOKSpC9WvRCFGJPGS8MmvzepmX2DYQ5MSKTO5tRJZ8EwCFfd9OxX2g280rdcDyCFkY3BYrf9
- ic2PTKQokx+9sLCHAC/+feSx/MA/vYpY1EJwkAr37mP7Q8KA9PCRShJziiljh5tKQeIG4sz1
- QjOrS8WryEwI160jKBBNc/M5n2kiIPCrapBGsL58MumrtbL53VimFOAJaPaRWNSdWCJSnVSv
- kCHMl/1fRgzXEMpEmOlBEY0Kdd1Ut3S2cuwejzI+WbrQLgeps2N70Ztq50PkfWkj0jeethhI
- FqIJzNlUqVkHl1zCWSFsghxiMyZmqULaGcSDItYQ+3c9fxIO/v0zDg7bLeG9Zbj4y8E47xqJ
- 6brtAAEJ1RIM42gzF5GW71BqZrbFFoI0C6AzgHjaQP1xfj7nBRSBz4ObqnsuvRr7H6Jme5rl
- eg7COIbm8R7zsFjF4tC6k5HMc1tZ8xX+WoDsurqeQuBOg7rggmhJEpDK2f+g8DsvKtP14Vs0
- Sn7fVJi87b5HZojry1lZB2pXUH90+GWPF7DabimBki4QLzmyJ/ENH8GspFulVR3U7r3YYQ5K
- ctOSoRq9pGmMi231Q+xx9LkCDQRaOtArARAA50ylThKbq0ACHyomxjQ6nFNxa9ICp6byU9Lh
- hKOax0GB6l4WebMsQLhVGRQ8H7DT84E7QLRYsidEbneB1ciToZkL5YFFaVxY0Hj1wKxCFcVo
- CRNtOfoPnHQ5m/eDLaO4o0KKL/kaxZwTn2jnl6BQDGX1Aak0u4KiUlFtoWn/E/NIv5QbTGSw
- IYuzWqqYBIzFtDbiQRvGw0NuKxAGMhwXy8VP05mmNwRdyh/CC4rWQPBTvTeMwr3nl8/G+16/
- cn4RNGhDiGTTXcX03qzZ5jZ5N7GLY5JtE6pTpLG+EXn5pAnQ7MvuO19cCbp6Dj8fXRmI0SVX
- WKSo0A2C8xH6KLCRfUMzD7nvDRU+bAHQmbi5cZBODBZ5yp5CfIL1KUCSoiGOMpMin3FrarIl
- cxhNtoE+ya23A+JVtOwtM53ESra9cJL4WPkyk/E3OvNDmh8U6iZXn4ZaKQTHaxN9yvmAUhZQ
- iQi/sABwxCcQQ2ydRb86Vjcbx+FUr5OoEyQS46gc3KN5yax9D3H9wrptOzkNNMUhFj0oK0fX
- /MYDWOFeuNBTYk1uFRJDmHAOp01rrMHRogQAkMBuJDMrMHfolivZw8RKfdPzgiI500okLTzH
- C0wgSSAOyHKGZjYjbEwmxsl3sLJck9IPOKvqQi1DkvpOPFSUeX3LPBIav5UUlXt0wjbzInUA
- EQEAAYkCNgQYAQoAIBYhBOJv1o/B6NS2GUVGTueBVzIYDCpVBQJaOtArAhsMAAoJEOeBVzIY
- DCpV4kgP+wUh3BDRhuKaZyianKroStgr+LM8FIUwQs3Fc8qKrcDaa35vdT9cocDZjkaGHprp
- mlN0OuT2PB+Djt7am2noV6Kv1C8EnCPpyDBCwa7DntGdGcGMjH9w6aR4/ruNRUGS1aSMw8sR
- QgpTVWEyzHlnIH92D+k+IhdNG+eJ6o1fc7MeC0gUwMt27Im+TxVxc0JRfniNk8PUAg4kvJq7
- z7NLBUcJsIh3hM0WHQH9AYe/mZhQq5oyZTsz4jo/dWFRSlpY7zrDS2TZNYt4cCfZj1bIdpbf
- SpRi9M3W/yBF2WOkwYgbkqGnTUvr+3r0LMCH2H7nzENrYxNY2kFmDX9bBvOWsWpcMdOEo99/
- Iayz5/q2d1rVjYVFRm5U9hG+C7BYvtUOnUvSEBeE4tnJBMakbJPYxWe61yANDQubPsINB10i
- ngzsm553yqEjLTuWOjzdHLpE4lzD416ExCoZy7RLEHNhM1YQSI2RNs8umlDfZM9Lek1+1kgB
- vT3RH0/CpPJgveWV5xDOKuhD8j5l7FME+t2RWP+gyLid6dE0C7J03ir90PlTEkMEHEzyJMPt
- OhO05Phy+d51WPTo1VSKxhL4bsWddHLfQoXW8RQ388Q69JG4m+JhNH/XvWe3aQFpYP+GZuzO
- hkMez0lHCaVOOLBSKHkAHh9i0/pH+/3hfEa4NsoHCpyy
-Message-ID: <8d62d259-a073-97ff-5f21-8417c445d48b@knorrie.org>
-Date:   Fri, 29 May 2020 20:59:01 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        Fri, 29 May 2020 16:21:01 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03A23C03E969
+        for <linux-btrfs@vger.kernel.org>; Fri, 29 May 2020 13:21:00 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id z5so3324285ejb.3
+        for <linux-btrfs@vger.kernel.org>; Fri, 29 May 2020 13:20:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:sender:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=Qxa3M/MvhiqYKdmf/w4n6AgdA8qRvXt1CZdlD0nn0dE=;
+        b=Wory6WK+oDlOWEcRoDt+0+BwTOy9GvA8rPYpGJf8Md+2mJDLoyrIRamSFm49MWOgkH
+         6kI/VGCheyNUiLm1mGksOMEn5Hfk+u47SldEZriTLqyOx2/+bdV6MfmfliLjLvcy4xXG
+         H6Mjp9r3x5NU+Cn/5qOosfg+qFT2I3eeq9JQEHjP9xeaYlHHXt2Odc8s0Q5AuuohOAJT
+         zIerFBFT9frPC+uIhaMokKO6MmQOdcguwT+hLZijH+NfO5HJdQkLeU00J90ylWpb2OiF
+         Z/wECX8NPBbW0fBqVH0uZUMTCA77/82fcq978xxFcMgXXI5A5AoYEd9nMEirErUipT0v
+         lenw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:sender:from:date
+         :message-id:subject:to:content-transfer-encoding;
+        bh=Qxa3M/MvhiqYKdmf/w4n6AgdA8qRvXt1CZdlD0nn0dE=;
+        b=Fb8Qubm2eOFXPxw8Wd/C8h8pZ22+aofEttV4abt13HALDVM8dQIYi2RZLXZkO4IJNI
+         nzPnbom3hJUS958vjyMe0zeAi77XMH4HZQc8xg6yi4XgQKEWs0boc9wAqEvcypmXaJwT
+         VuTjgzlHeeGkutUzbOCRtBJZUj1GK3BKGFijr/bsG6Z26e5W9V5zyUIXC2IdMiLAztxX
+         a5S+wYjzrDgiyLD4ZAH9vZHsKMG1Pb0QBVCFXzJlpDWHrKnHYisyIy5Unqlm3PC62Kzs
+         1hyR9QHcwURFrkN45Gk1Z3TgSWdwAHIUaZsJSKrWHBx8nXs3Y+zEr4dwKy2VjxOiJiL9
+         VuDA==
+X-Gm-Message-State: AOAM530RC/1+MKYfEXAypZt2drJiIBqXKcPY4CgF5UybnkMKLUi8QkH1
+        HQeQ/5ZfQtRwU6qjpqdbFlEDTMWlTsE5J6WPN8/ik4Rm
+X-Google-Smtp-Source: ABdhPJwytCaqiE6GGyfoOO8fx7FpHpuYt93xGN2qNM7gsjAOGrZQHeYQnsFc5AcaCGBHFW52mqggvSLA8Fd20lp6wYw=
+X-Received: by 2002:a17:906:aac8:: with SMTP id kt8mr9495236ejb.460.1590783344288;
+ Fri, 29 May 2020 13:15:44 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <f5f75774-0a35-bd35-7d80-71d1f1a285a1@knorrie.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Reply-To: rmst227@gmail.com
+Received: by 2002:ab4:9cc9:0:0:0:0:0 with HTTP; Fri, 29 May 2020 13:15:43
+ -0700 (PDT)
+From:   "R.Mustafa" <rm2568590@gmail.com>
+Date:   Fri, 29 May 2020 22:15:43 +0200
+X-Google-Sender-Auth: yH5ZOE3YJ5k9xnBSH0ASf0mU1UA
+Message-ID: <CADxkk6VA=UzauhmZ1Hi1tnBZb_7joZrWMZg0VsOC4GXs4rVV8Q@mail.gmail.com>
+Subject: Assalamualaikum My Dear Friend,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 5/29/20 8:54 PM, Hans van Kranenburg wrote:
-> On 5/29/20 6:23 PM, Goffredo Baroncelli wrote:
-> 
->> Another case use is to visulize how
->> the chunk are filled, or how the disks are used..
-> 
-> An example of that is btrfs-heatmap.
+Assalamualaikum My Dear Friend,
 
-Oops, forgot the example. Here's it showing data and metadata getting
-sorted out while doing some balance after setting things up for the
-preferred metadata/data placement. It's two 10G disks, and it's the
-'physical' view, so the left half is the "slow" part and the right half
-is the "fast" part of the filesystem, fun. :)
+Before I introduce myself, I wish to inform you that this letter is
+not a hoax mail and I urge you to treat it serious. This letter must
+come to you as a big surprise, but I believe it is only a day that
+people meet and become great friends and business partners. Please I
+want you to read this letter very carefully and I must apologize for
+barging this message into your mail box without any formal
+introduction due to the urgency and confidentiality of this business
+and I know that this message will come to you as a surprise. Please
+this is not a joke and I will not like you to joke with it ok, with
+due respect to your person and much sincerity of purpose, I make this
+contact with you as I believe that you can be of great assistance to
+me. My name is Mr.Rasheed Umaru Mustafa, from Burkina Faso, West
+Africa. I work in Bank Of Africa United Bank for Africa (UBA) as telex
+manager, please see this as a confidential message and do not reveal
+it to another person and let me know whether you can be of assistance
+regarding my proposal below because it is top secret.
 
-https://syrinx.knorrie.org/~knorrie/btrfs/keep/2020-05-29-ssd_metadata.mp4
+I am about to retire from active Banking service to start a new life
+but I am skeptical to reveal this particular secret to a stranger. You
+must assure me that everything will be handled confidentially because
+we are not going to suffer again in life. It has been 10 years now
+that most of the greedy African Politicians used our bank to launder
+money overseas through the help of their Political advisers. Most of
+the funds which they transferred out of the shores of Africa were gold
+and oil money that was supposed to have been used to develop the
+continent. Their Political advisers always inflated the amounts before
+transferring to foreign accounts, so I also used the opportunity to
+divert part of the funds hence I am aware that there is no official
+trace of how much was transferred as all the accounts used for such
+transfers were being closed after transfer.I acted as the Bank Officer
+to most of the politicians and when I discovered that they were using
+me to succeed in their greedy act; I also cleaned some of their
+banking records from the Bank files and no one cared to ask me because
+the money was too much for them to control. They laundered over
+$5billion Dollars during the process.
 
-Hans
+Before I sent this message to you, I have already diverted
+($10.5million Dollars) to an escrow account belonging to no one in the
+bank. The bank isanxious now to know who the beneficiary to the funds
+is because they have made a lot of profits with the funds. It is more
+than Eight years now and most of the politicians are no longer using
+our bank to transfer funds overseas. The ($10.5million Dollars) has
+been laying waste in our bank and I don=E2=80=99t want to retire from the b=
+ank
+without transferring the funds to a foreign account to enable me share
+the proceeds with the receiver (a foreigner). The money will be shared
+60% for me and 40% for you. There is no one coming to ask you about
+the funds because I secured everything. I only want you to assist me
+by providing a reliable bank account where the funds can be
+transferred.
+
+You are not to face any difficulties or legal implications as I am
+going to handle the transfer personally. If you are capable of
+receiving the funds,
+do let me know immediately to enable me give you a detailed
+information on what to do. For me, I have not stolen the money from
+anyone because the other people that took the whole money did not face
+any problems. This is my chance to grab my own life opportunity but
+you must keep the details of the funds secret to avoid any leakages as
+no one in the bank knows about my plans. Please get back to me if you
+are interested and capable to handle this project, I shall intimate
+you on what to do when I hear from your confirmation and acceptance.
+If you are capable of being my trusted associate, do declare your
+consent to me I am looking forward to hearing from you immediately for
+further information.
+
+Thanks with my best regards.
+Mr.Rasheed.U.Mustafa.
