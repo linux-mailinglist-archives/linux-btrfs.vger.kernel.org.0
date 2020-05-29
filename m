@@ -2,187 +2,217 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C9AC1E7B01
-	for <lists+linux-btrfs@lfdr.de>; Fri, 29 May 2020 12:55:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 219031E7B82
+	for <lists+linux-btrfs@lfdr.de>; Fri, 29 May 2020 13:18:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725920AbgE2Kzq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 29 May 2020 06:55:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35496 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725795AbgE2Kzp (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 29 May 2020 06:55:45 -0400
-Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B660C03E969;
-        Fri, 29 May 2020 03:55:45 -0700 (PDT)
-Received: by mail-vs1-xe41.google.com with SMTP id t4so1246388vsq.0;
-        Fri, 29 May 2020 03:55:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc:content-transfer-encoding;
-        bh=1QIrHboYpvTgFpYZIQzYJ/WjTtt+j6wK2PtEXIJTrUg=;
-        b=OyqfQtKp2v6T3zrMHuufhS5CDVC7Qgl1i2ab9QM2T5ghSYfVloizeVEEiS5JYXWAKl
-         ynpE2/Jb2Uu2cbRnoS6WxHuV7B3bZ9pf5xHzVYkkV/JcMhy8HjJFtJJuKNCIVa0p48AA
-         Jw+cpEcZSUNqvXMRQVWxQvrfX6HtBkK3naFI/WsnKVUk+mWdyuPWSECAF3dVAnFs1SIl
-         5aRI7s0Odf0VbSFsNIGFFMmWZE8MzwTSwbmaavdnHzrM7mSHWE9AorevKdYjrHGnL++s
-         KGDFbJvg/m0+8ra8ZJXySfwZvJ/K8CqrSY733zJeCgqUUeSu0O/PxMp37d3Z/5ofykpF
-         8fFA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc:content-transfer-encoding;
-        bh=1QIrHboYpvTgFpYZIQzYJ/WjTtt+j6wK2PtEXIJTrUg=;
-        b=iT9IqBhUm7/qWg7DEGM+6fY1jkytMjt7oX95WxQgPtxCyRXGpClkWPAeTUuJjT7LH2
-         r5LKBtwfNoLL9fgveuho15ygltYRis+q6vwY9qaIQ9ReezJL2BeslvrJ9Afja4iV0Y3U
-         AvfiJNUcWXwixyElRIXAXDAJZECoMDaAQAEoF+AEA/WCAXEZpbCDPWQF6BR6W85Zpd5x
-         +kAYik51rAE4AITEWYhnfISK/CnWp9AQiR49qSbNKbQPqJxb8/V5ZXih9h6kafxWS29z
-         ysIgiHwvXMVJS1qylLwOhzAKcsRLEzEnlUdbWet+wT1K1euWsyOwGRmCGDdXNa3VUAqY
-         IeAA==
-X-Gm-Message-State: AOAM533H2gzJHXigLJPrMQqDSwyohl7pEtwqmHGpTOuYwPR/76Yig+k2
-        ZNA98QTcOs6emsnpTSYk5M8T45sIVbx6dCIqR2M=
-X-Google-Smtp-Source: ABdhPJxgZrgfRTiBtCGnFfsRDcEdRTPnV9EiEbJKNo9+TOWnbvwfaIQqvCEdXWRPUIhzu3gBvQKgKs65gW9OyIBWVi8=
-X-Received: by 2002:a67:cf4d:: with SMTP id f13mr4946101vsm.90.1590749744534;
- Fri, 29 May 2020 03:55:44 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200528192103.xm45qoxqmkw7i5yl@fiona> <20200529002319.GQ252930@magnolia>
-In-Reply-To: <20200529002319.GQ252930@magnolia>
-Reply-To: fdmanana@gmail.com
-From:   Filipe Manana <fdmanana@gmail.com>
-Date:   Fri, 29 May 2020 11:55:33 +0100
-Message-ID: <CAL3q7H4Mit=P9yHsZXKsVxMN0=7m7gS2ZqiGTbyFz5Aid9t3hQ@mail.gmail.com>
-Subject: Re: [PATCH] iomap: Return zero in case of unsuccessful pagecache
- invalidation before DIO
-To:     "Darrick J. Wong" <darrick.wong@oracle.com>
-Cc:     Goldwyn Rodrigues <rgoldwyn@suse.de>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>,
-        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        Christoph Hellwig <hch@infradead.org>, dsterba@suse.cz
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        id S1725863AbgE2LS2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 29 May 2020 07:18:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51222 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725306AbgE2LS1 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 29 May 2020 07:18:27 -0400
+Received: from debian6.Home (bl8-197-74.dsl.telepac.pt [85.241.197.74])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 00160207D4
+        for <linux-btrfs@vger.kernel.org>; Fri, 29 May 2020 11:18:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1590751106;
+        bh=crxyfdt6rnGfp9wFioD3r5foO1ugTwziMi7RU4hS2os=;
+        h=From:To:Subject:Date:From;
+        b=FfZyiNmBE+L7Fz27tm3g0PnNBlm0gB6+4CQ+wPlV4HgleGv5R8nWiNZVzBY3Q6L2H
+         gWruEecFNj4iExpsOYqYOlpewh94sDNIDv5UG5okxBBtkOG2KOD528/G1zK+l0HMJW
+         m3tb2PzFb8hVEdktIiyKlKxBEPmQSD59rxKp9jjs=
+From:   fdmanana@kernel.org
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH 1/2] Btrfs: fix race between block group removal and block group creation
+Date:   Fri, 29 May 2020 12:18:23 +0100
+Message-Id: <20200529111823.12510-1-fdmanana@kernel.org>
+X-Mailer: git-send-email 2.11.0
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, May 29, 2020 at 1:23 AM Darrick J. Wong <darrick.wong@oracle.com> w=
-rote:
->
-> On Thu, May 28, 2020 at 02:21:03PM -0500, Goldwyn Rodrigues wrote:
-> >
-> > Filesystems such as btrfs are unable to guarantee page invalidation
-> > because pages could be locked as a part of the extent. Return zero
->
-> Locked for what?  filemap_write_and_wait_range should have just cleaned
-> them off.
+From: Filipe Manana <fdmanana@suse.com>
 
-Yes, it will be confusing even for someone more familiar with btrfs.
-The changelog could be more detailed to make it clear what's happening and =
-why.
+There is a race between block group removal and block group creation
+when the removal is completed by a task running fitrim or scrub. When
+this happens we end up failing the block group creation with an error
+-EEXIST since we attempt to insert a duplicate block group item key
+in the extent tree. That results in a transaction abort.
 
-So what happens:
+The race happens like this:
 
-1) iomap_dio_rw() calls filemap_write_and_wait_range().
-    That starts delalloc for all dirty pages in the range and then
-waits for writeback to complete.
-    This is enough for most filesystems at least (if not all except btrfs).
+1) Task A is doing a fitrim, and at btrfs_trim_block_group() it freezes
+   block group X with btrfs_freeze_block_group() (until very recently
+   that was named btrfs_get_block_group_trimming());
 
-2) However, in btrfs once writeback finishes, a job is queued to run
-on a dedicated workqueue, to execute the function
-btrfs_finish_ordered_io().
-    So that job will be run after filemap_write_and_wait_range() returns.
-    That function locks the file range (using a btrfs specific data
-structure), does a bunch of things (updating several btrees), and then
-unlocks the file range.
+2) Task B starts removing block group X, either because it's now unused
+   or due to relocation for example. So at btrfs_remove_block_group(),
+   while holding the chunk mutex and the block group's lock, it sets
+   the 'removed' flag of the block group and it sets the local variable
+   'remove_em' to false, because the block group is currently frozen
+   (its 'frozen' counter is > 0, until very recently this counter was
+   named 'trimming');
 
-3) While iomap calls invalidate_inode_pages2_range(), which ends up
-calling the btrfs callback btfs_releasepage(),
-    btrfs_finish_ordered_io() is running and has the file range locked
-(this is what Goldwyn means by "pages could be locked", which is
-confusing because it's not about any locked struct page).
+3) Task B unlocks the block group and the chunk mutex;
 
-4) Because the file range is locked, btrfs_releasepage() returns 0
-(page can't be released), this happens in the helper function
-try_release_extent_state().
-    Any page in that range is not dirty nor under writeback anymore
-and, in fact, btrfs_finished_ordered_io() doesn't do anything with the
-pages, it's only updating metadata.
+4) Task A is done trimming the block group and unfreezes the block group
+   by calling btrfs_unfreeze_block_group() (until very recently this was
+   named btrfs_put_block_group_trimming()). In this function we lock the
+   block group and set the local variable 'cleanup' to true because we
+   were able to decrement the block group's 'frozen' counter down to 0 and
+   the flag 'removed' is set in the block group.
 
-    btrfs_releasepage() in this case could release the pages, but
-there are other contextes where the file range is locked, the pages
-are still not dirty and not under writeback, where this would not be
-safe to do.
+   Since 'cleanup' is set to true, it locks the chunk mutex and removes
+   the extent mapping representing the block group from the mapping tree;
 
-5) So because of that invalidate_inode_pages2_range() returns
-non-zero, the iomap code prints that warning message and then proceeds
-with doing a direct IO write anyway.
+5) Task C allocates a new block group Y and it picks up the logical address
+   that block group X had as the logical address for Y, because X was the
+   block group with the highest logical address and now the second block
+   group with the highest logical address, the last in the fs mapping tree,
+   ends at an offset corresponding to block group X's logical address (this
+   logical address selection is done at volumes.c:find_next_chunk()).
 
-What happens currently in btrfs, before Goldwyn's patchset:
+   At this point the new block group Y does not have yet its item added
+   to the extent tree (nor the corresponding device extent items and
+   chunk item in the device and chunk trees). The new group Y is added to
+   the list of pending block groups in the transaction handle;
 
-1) generic_file_direct_write() also calls filemap_write_and_wait_range().
-2) After that it calls invalidate_inode_pages2_range() too, but if
-that returns non-zero, it doesn't print any warning and falls back to
-a buffered write.
+6) Before task B proceeds to removing the block group item for block
+   group X from the extent tree, which has a key matching:
 
-So Goldwyn here is effectively adding that behaviour from
-generic_file_direct_write() to iomap.
+   (X logical offset, BTRFS_BLOCK_GROUP_ITEM_KEY, length)
 
-Thanks.
+   task C while ending its transaction handle calls
+   btrfs_create_pending_block_groups(), which finds block group Y and
+   tries to insert the block group item for Y into the exten tree, which
+   fails with -EEXIST since logical offset is the same that X had and
+   task B hasn't yet deleted the key from the extent tree.
+   This failure results in a transaction abort, producing a stack like
+   the following:
 
->
-> > in case a page cache invalidation is unsuccessful so filesystems can
-> > fallback to buffered I/O. This is similar to
-> > generic_file_direct_write().
-> >
-> > This takes care of the following invalidation warning during btrfs
-> > mixed buffered and direct I/O using iomap_dio_rw():
-> >
-> > Page cache invalidation failure on direct I/O.  Possible data
-> > corruption due to collision with buffered I/O!
-> >
-> > Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
-> >
-> > diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
-> > index e4addfc58107..215315be6233 100644
-> > --- a/fs/iomap/direct-io.c
-> > +++ b/fs/iomap/direct-io.c
-> > @@ -483,9 +483,15 @@ iomap_dio_rw(struct kiocb *iocb, struct iov_iter *=
-iter,
-> >        */
-> >       ret =3D invalidate_inode_pages2_range(mapping,
-> >                       pos >> PAGE_SHIFT, end >> PAGE_SHIFT);
-> > -     if (ret)
-> > -             dio_warn_stale_pagecache(iocb->ki_filp);
-> > -     ret =3D 0;
-> > +     /*
-> > +      * If a page can not be invalidated, return 0 to fall back
-> > +      * to buffered write.
-> > +      */
-> > +     if (ret) {
-> > +             if (ret =3D=3D -EBUSY)
-> > +                     ret =3D 0;
-> > +             goto out_free_dio;
->
-> XFS doesn't fall back to buffered io when directio fails, which means
-> this will cause a regression there.
->
-> Granted mixing write types is bogus...
->
-> --D
->
-> > +     }
-> >
-> >       if (iov_iter_rw(iter) =3D=3D WRITE && !wait_for_completion &&
-> >           !inode->i_sb->s_dio_done_wq) {
-> >
-> > --
-> > Goldwyn
+------------[ cut here ]------------
+ BTRFS: Transaction aborted (error -17)
+ WARNING: CPU: 2 PID: 19736 at fs/btrfs/block-group.c:2074 btrfs_create_pending_block_groups+0x1eb/0x260 [btrfs]
+ Modules linked in: btrfs blake2b_generic xor raid6_pq (...)
+ CPU: 2 PID: 19736 Comm: fsstress Tainted: G        W         5.6.0-rc7-btrfs-next-58 #5
+ Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+ RIP: 0010:btrfs_create_pending_block_groups+0x1eb/0x260 [btrfs]
+ Code: ff ff ff 48 8b 55 50 f0 48 (...)
+ RSP: 0018:ffffa4160a1c7d58 EFLAGS: 00010286
+ RAX: 0000000000000000 RBX: ffff961581909d98 RCX: 0000000000000000
+ RDX: 0000000000000001 RSI: ffffffffb3d63990 RDI: 0000000000000001
+ RBP: ffff9614f3356a58 R08: 0000000000000000 R09: 0000000000000001
+ R10: ffff9615b65b0040 R11: 0000000000000000 R12: ffff961581909c10
+ R13: ffff9615b0c32000 R14: ffff9614f3356ab0 R15: ffff9614be779000
+ FS:  00007f2ce2841e80(0000) GS:ffff9615bae00000(0000) knlGS:0000000000000000
+ CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+ CR2: 0000555f18780000 CR3: 0000000131d34005 CR4: 00000000003606e0
+ DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+ DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+ Call Trace:
+  btrfs_start_dirty_block_groups+0x398/0x4e0 [btrfs]
+  btrfs_commit_transaction+0xd0/0xc50 [btrfs]
+  ? btrfs_attach_transaction_barrier+0x1e/0x50 [btrfs]
+  ? __ia32_sys_fdatasync+0x20/0x20
+  iterate_supers+0xdb/0x180
+  ksys_sync+0x60/0xb0
+  __ia32_sys_sync+0xa/0x10
+  do_syscall_64+0x5c/0x280
+  entry_SYSCALL_64_after_hwframe+0x49/0xbe
+ RIP: 0033:0x7f2ce1d4d5b7
+ Code: 83 c4 08 48 3d 01 (...)
+ RSP: 002b:00007ffd8b558c58 EFLAGS: 00000202 ORIG_RAX: 00000000000000a2
+ RAX: ffffffffffffffda RBX: 000000000000002c RCX: 00007f2ce1d4d5b7
+ RDX: 00000000ffffffff RSI: 00000000186ba07b RDI: 000000000000002c
+ RBP: 0000555f17b9e520 R08: 0000000000000012 R09: 000000000000ce00
+ R10: 0000000000000078 R11: 0000000000000202 R12: 0000000000000032
+ R13: 0000000051eb851f R14: 00007ffd8b558cd0 R15: 0000555f1798ec20
+ irq event stamp: 0
+ hardirqs last  enabled at (0): [<0000000000000000>] 0x0
+ hardirqs last disabled at (0): [<ffffffffb2abdedf>] copy_process+0x74f/0x2020
+ softirqs last  enabled at (0): [<ffffffffb2abdedf>] copy_process+0x74f/0x2020
+ softirqs last disabled at (0): [<0000000000000000>] 0x0
+ ---[ end trace bd7c03622e0b0a9c ]---
 
+Fix this simply by making btrfs_remove_block_group() remove the block
+group's item from the extent tree before it flags the block group as
+removed. Also make the free space deletion from the free space tree
+before flagging the block group as removed, to avoid a similar race
+with adding and removing free space entries for the free space tree.
 
+Fixes: 04216820fe83d5 ("Btrfs: fix race between fs trimming and block group remove/allocation")
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+---
+ fs/btrfs/block-group.c | 39 +++++++++++++++++++++++++--------------
+ 1 file changed, 25 insertions(+), 14 deletions(-)
 
---=20
-Filipe David Manana,
+diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+index 33a61f95916a..5e0e994c87bb 100644
+--- a/fs/btrfs/block-group.c
++++ b/fs/btrfs/block-group.c
+@@ -1065,10 +1065,35 @@ int btrfs_remove_block_group(struct btrfs_trans_handle *trans,
+ 
+ 	spin_unlock(&block_group->space_info->lock);
+ 
++	/*
++	 * Remove the free space for the block group from the free space tree
++	 * and the block group's item from the extent tree before marking the
++	 * block group as removed. This is to prevent races with tasks that
++	 * freeze and unfreeze a block group, this task and another task
++	 * allocating a new block group - the unfreeze task ends up removing
++	 * the block group's extent map before the task calling this function
++	 * deletes the block group item from the extent tree, allowing for
++	 * another task to attempt to create another block group with the same
++	 * item key (and failing with -EEXIST and a transaction abort).
++	 */
++	ret = remove_block_group_free_space(trans, block_group);
++	if (ret)
++		goto out_put_group;
++
+ 	key.objectid = block_group->start;
+ 	key.type = BTRFS_BLOCK_GROUP_ITEM_KEY;
+ 	key.offset = block_group->length;
+ 
++	ret = btrfs_search_slot(trans, root, &key, path, -1, 1);
++	if (ret > 0)
++		ret = -EIO;
++	if (ret < 0)
++		goto out;
++
++	ret = btrfs_del_item(trans, root, path);
++	if (ret)
++		goto out;
++
+ 	mutex_lock(&fs_info->chunk_mutex);
+ 	spin_lock(&block_group->lock);
+ 	block_group->removed = 1;
+@@ -1103,23 +1128,9 @@ int btrfs_remove_block_group(struct btrfs_trans_handle *trans,
+ 
+ 	mutex_unlock(&fs_info->chunk_mutex);
+ 
+-	ret = remove_block_group_free_space(trans, block_group);
+-	if (ret)
+-		goto out_put_group;
+-
+ 	/* Once for the block groups rbtree */
+ 	btrfs_put_block_group(block_group);
+ 
+-	ret = btrfs_search_slot(trans, root, &key, path, -1, 1);
+-	if (ret > 0)
+-		ret = -EIO;
+-	if (ret < 0)
+-		goto out;
+-
+-	ret = btrfs_del_item(trans, root, path);
+-	if (ret)
+-		goto out;
+-
+ 	if (remove_em) {
+ 		struct extent_map_tree *em_tree;
+ 
+-- 
+2.11.0
 
-=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
- right.=E2=80=9D
