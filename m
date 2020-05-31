@@ -2,143 +2,141 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A29C61E95D7
-	for <lists+linux-btrfs@lfdr.de>; Sun, 31 May 2020 07:59:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B51E1E9A08
+	for <lists+linux-btrfs@lfdr.de>; Sun, 31 May 2020 21:08:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726138AbgEaF7B (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 31 May 2020 01:59:01 -0400
-Received: from smtp-34.italiaonline.it ([213.209.10.34]:57658 "EHLO libero.it"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725898AbgEaF7B (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 31 May 2020 01:59:01 -0400
-Received: from venice.bhome ([78.12.136.199])
-        by smtp-34.iol.local with ESMTPA
-        id fGzpj76IptrlwfGzqjYznj; Sun, 31 May 2020 07:58:58 +0200
-x-libjamoibt: 1601
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2014;
-        t=1590904738; bh=tDkMPEgUTTVeUhMvLAPuROBnpwamynyLgQgkQWpiZnU=;
-        h=From;
-        b=pivykRpenVhMZcSnsz1p7B+rwUWe/bMS72G1X/xBdzBo5nWTjVid9AUYldgxDBAuN
-         CRbTi9ll70zaUNb9lHRh2Oj/NrSCgeNPq9JfdHQgc8GxxTd3TkVI9BIUYer5KYcgjq
-         /STyrhE4lKi2XclUVhSDVgRxm39o9X3KMR9xfDx14UZqG+oxbt4qKHjstaSke9jTqW
-         WrcvZ4J2yEElbTCBf/8bEcK1ogp/m6whjy4N2APBtZWk6VPzkp4Ewlr+SQPY3YhdYY
-         raouJTHyREK71DRrFh9Zl6DBhqtjONulb9R7rz6F5CVUiP3pc+aIC8cxVAJulX/wF0
-         a0fMqaCEubOCA==
-X-CNFS-Analysis: v=2.3 cv=TOE7tGta c=1 sm=1 tr=0
- a=kx39m2EDZI1V9vDwKCQCcA==:117 a=kx39m2EDZI1V9vDwKCQCcA==:17
- a=IkcTkHD0fZMA:10 a=VwQbUJbxAAAA:8 a=uXg4I6zrJaTsmWq3GB0A:9 a=QEXdDO2ut3YA:10
- a=AjGcO6oz07-iQ99wixmX:22
-Reply-To: kreijack@inwind.it
-Subject: Re: [BUG][PATCH] btrfs: a mixed profile DUP and RAID1C3/RAID1C4
- prevent to alloc a new chunk
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
-Cc:     David Sterba <dsterba@suse.cz>
-References: <20200530185321.8373-1-kreijack@libero.it>
- <fc8f88a4-3812-a0dc-99ab-929b27d7530a@gmx.com>
-From:   Goffredo Baroncelli <kreijack@libero.it>
-Message-ID: <747b37b9-52a2-6b8e-f7bb-8ea5ca13f74e@libero.it>
-Date:   Sun, 31 May 2020 07:58:57 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.1
+        id S1728241AbgEaTIT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 31 May 2020 15:08:19 -0400
+Received: from gateway21.websitewelcome.com ([192.185.45.175]:36040 "EHLO
+        gateway21.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726008AbgEaTIS (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Sun, 31 May 2020 15:08:18 -0400
+Received: from cm17.websitewelcome.com (cm17.websitewelcome.com [100.42.49.20])
+        by gateway21.websitewelcome.com (Postfix) with ESMTP id DA892400CBFB5
+        for <linux-btrfs@vger.kernel.org>; Sun, 31 May 2020 14:08:15 -0500 (CDT)
+Received: from br540.hostgator.com.br ([108.179.252.180])
+        by cmsmtp with SMTP
+        id fTJfjlS1fAGTXfTJfjxCqk; Sun, 31 May 2020 14:08:15 -0500
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=mpdesouza.com; s=default; h=Content-Transfer-Encoding:MIME-Version:
+        Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=6jhSDteDhglDICeIfISWQj/P+OPCcc5dAHYY+wv1KeE=; b=MkNGUcJMpDeLrUqRnXLhpJrvA6
+        kQGHZHlJNitcjvYIkK+E0J7tNwTtEr3AXw/AmGf+l+TvV+aTT/qcQde43WqLWoLweErXtAsJ4cjtD
+        g+h/Dmlf1ykIqjdE/qemqNV0rC7aLO3P69eWnHgiNmVd399cqHGWOgo2llY2FqZht/PI2caBiPeSH
+        beohsGPdbQyRPFdZD949V1yQEZUtmiTNo38IquWLBGzU7uIWJuAZ6hpQA4SJn/cf+B5wahXu6x6j5
+        A1sq/kMgnloz/0u9azWnegrSFsJcSnNXHICl+yGw3Wd3zErrHfvwB2rd/SMgYMTF/sO6oufON8Sum
+        v8qQevWg==;
+Received: from [179.185.220.196] (port=48190 helo=[192.168.0.172])
+        by br540.hostgator.com.br with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <marcos@mpdesouza.com>)
+        id 1jfTJf-002ENi-Ak; Sun, 31 May 2020 16:08:15 -0300
+Message-ID: <2ba1eb8434c13dd0c2a421ee12b824ad9e90fe4e.camel@mpdesouza.com>
+Subject: Re: [PATCHv3 0/3] btrfs-progs: Auto resize fs after device replace
+From:   Marcos Paulo de Souza <marcos@mpdesouza.com>
+To:     dsterba@suse.com, linux-btrfs@vger.kernel.org, wqu@suse.com
+Cc:     Marcos Paulo de Souza <mpdesouza@suse.com>
+Date:   Sun, 31 May 2020 16:11:45 -0300
+In-Reply-To: <20200416004642.9941-1-marcos@mpdesouza.com>
+References: <20200416004642.9941-1-marcos@mpdesouza.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.2 
 MIME-Version: 1.0
-In-Reply-To: <fc8f88a4-3812-a0dc-99ab-929b27d7530a@gmx.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-CMAE-Envelope: MS4wfHJlef4JTh7iiZqzRleOeMdHPBTd547qKWB1673N4Z+OAfpgK3BlptVVWEaxaxTXjq46ezPxMLt0Wjs4tqRWPy7vNUrmg9f24a+l00xCNeJJfXSNaiEj
- fkRflVH+Or/ZGFSwvvx/qmTl7QMu0r33ptMQB20v8l6nl2/K9u0ZU0P5gMOQmN2SlPlrbAK3V5qEEYXQx2nnlobFY/jzVJCfDCWAJAmyjyetXBfehexQc4XY
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - br540.hostgator.com.br
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - mpdesouza.com
+X-BWhitelist: no
+X-Source-IP: 179.185.220.196
+X-Source-L: No
+X-Exim-ID: 1jfTJf-002ENi-Ak
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: ([192.168.0.172]) [179.185.220.196]:48190
+X-Source-Auth: marcos@mpdesouza.com
+X-Email-Count: 3
+X-Source-Cap: bXBkZXNvNTM7bXBkZXNvNTM7YnI1NDAuaG9zdGdhdG9yLmNvbS5icg==
+X-Local-Domain: yes
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 5/31/20 2:51 AM, Qu Wenruo wrote:
-> 
-> 
-> On 2020/5/31 上午2:53, Goffredo Baroncelli wrote:
->>
->> Hi All,
->>
->> after the thread "Question: how understand the raid profile of a btrfs
->> filesystem" [*] I was working to cleanup the function
->> btrfs_reduce_alloc_profile(), when I figured that it was incompatible with
->> a mixed profile of DUP and RAID1C3/RAID1C4.
->>
->> This is a very uncommon situation; to be honest it very unlikely that it will
->> happen at all.
->>
->> However if the filesystem has a mixed profiles of DUP and RAID1C3/RAID1C4 (of
->> the same type of chunk of course, i.e. if you have metadata RAID1C3 and data
->> DUP there is no problem because the type of chunks are different), the function
->> btrfs_reduce_alloc_profile() returns both the profiles and subsequent calls
->> to alloc_profile_is_valid() return invalid.
->>
->> The problem is how the function btrfs_reduce_alloc_profile "reduces" the
->> profiles.
->>
->> [...]
->> static u64 btrfs_reduce_alloc_profile(struct btrfs_fs_info *fs_info, u64 flags)
->> [...]
->>          allowed &= flags;
->>
->>          if (allowed & BTRFS_BLOCK_GROUP_RAID6)
->>                  allowed = BTRFS_BLOCK_GROUP_RAID6;
->>          else if (allowed & BTRFS_BLOCK_GROUP_RAID5)
->>                  allowed = BTRFS_BLOCK_GROUP_RAID5;
->>          else if (allowed & BTRFS_BLOCK_GROUP_RAID10)
->>                  allowed = BTRFS_BLOCK_GROUP_RAID10;
->>          else if (allowed & BTRFS_BLOCK_GROUP_RAID1)
->>                  allowed = BTRFS_BLOCK_GROUP_RAID1;
->>          else if (allowed & BTRFS_BLOCK_GROUP_RAID0)
->>                  allowed = BTRFS_BLOCK_GROUP_RAID0;
->>
->> 	flags &= ~BTRFS_BLOCK_GROUP_PROFILE_MASK;
->>
->> [...]
->>
->> "allowed" are all the possibles profiles allowed by the disks.
->> "flags" contains the existing profiles.
->>
->> If "flags" contains both DUP, RAID1C3 no reduction is performed and both
->> the profiles are returned.
->>
->> If full conversion from DUP to RAID1C3 is performed, there is no problem.
->> But a partial conversion from DUP to RAID1C3 is performed, then there is no
->> possibility to allocate a new chunk.
->>
->> On my tests the filesystem was never corrupted, but only force to RO.
->> However I was unable to exit from this state without my patch.
-> 
-> This in facts exposed the long existing bug that btrfs has no on-disk
-> indicator for the target chunk time, thus we need to be "creative" to
-> handle chunk profiles.
+Humble ping :)
 
-Fully agree; this patch is... a patch to correct a bug. Changing to having
-a persistent field is a lot more complicated.
-
+On Wed, 2020-04-15 at 21:46 -0300, Marcos Paulo de Souza wrote:
+> From: Marcos Paulo de Souza <mpdesouza@suse.com>
 > 
-> I'm wondering if we could add new persistent item in chunk tree or super
-> block to solve the problem
-
-I suggest to add a new object in the trees. I think that the superblock should
-be reserved for info which allow to detect / identify the filesystem (i.e.
-FDID - Disk UUID, Label basic data for the boot) and nothing more.
-
-Moreover having an object stored in the tree, it would be possible to
-think to and extendible structure (an object has a size)
-to allow future expansion.
-
+> Changes from v2:
+> * Fixed the code format after moving function resize_filesystem in
+> patch 0001
+>   (suggested by David)
+> * Sorted the resize_filesystem function prototype in patch 0001
+> (suggested by
+>   David)
+> * Changed the -a into long argument --autoresize in patch 0002
+> (suggested by
+>   David)
+> * Translate srcdev if the argument is not a devid (suggested by
+> David)
+> * This also changes the way we use the ioctl, now only passing devid
+> to the
+>   kernel, instead of passing the path and letting the kernel to
+> translate
+> * Add tests to check the autoresize functionality
 > 
-> Any idea on this, David?
+> Changes from v1:
+> * Reworded the help message and the docs telling the user that the fs
+> will be
+>   resized to it's max size (suggested by Qu)
+> * Added a warning message saying that the resize failed, asking the
+> user to
+>   resize manually. (suggested by Qu)
 > 
-> Thanks,
-> Qu
+> Both changes were done only in patch 0002.
 > 
->>
->> [*] https://lore.kernel.org/linux-btrfs/517dac49-5f57-2754-2134-92d716e50064@alice.it/
->>
+> Anand suggested this job to be done in kernel side, atomically, but
+> as I
+> received a good review from Qu I decided to send a v3 of this
+> patchset.
+> 
+> Please review, thanks!
+> 
+> Original cover-letter[1]:
+> These two patches make possible to resize the fs after a successful
+> replace
+> finishes. The flag -a is responsible for doing it (-r is already use,
+> so -a in
+> this context means "automatically").
+> 
+> The first patch just moves the resize rationale to utils.c and the
+> second patch
+> adds the flag an calls resize if -a is informed replace finishes
+> successfully.
+> 
+> Please review!
+> 
+> Marcos Paulo de Souza (3):
+>   btrfs-progs: Move resize into functionaly into utils.c
+>   btrfs-progs: replace: New argument to resize the fs after replace
+>   btrfs-progs: tests: misc: Add some replace tests
+> 
+>  Documentation/btrfs-replace.asciidoc        |   5 +-
+>  cmds/filesystem.c                           |  58 +----------
+>  cmds/replace.c                              | 105 +++++++++++++-----
+> --
+>  common/utils.c                              |  60 +++++++++++
+>  common/utils.h                              |   2 +
+>  tests/misc-tests/039-replace-device/test.sh |  56 +++++++++++
+>  6 files changed, 192 insertions(+), 94 deletions(-)
+>  create mode 100755 tests/misc-tests/039-replace-device/test.sh
+> 
 
-
--- 
-gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
-Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
