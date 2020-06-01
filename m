@@ -2,22 +2,22 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E0351EA5E9
-	for <lists+linux-btrfs@lfdr.de>; Mon,  1 Jun 2020 16:31:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C03131EA5FD
+	for <lists+linux-btrfs@lfdr.de>; Mon,  1 Jun 2020 16:35:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727770AbgFAObD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 1 Jun 2020 10:31:03 -0400
-Received: from mx2.suse.de ([195.135.220.15]:36400 "EHLO mx2.suse.de"
+        id S1727104AbgFAOfP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 1 Jun 2020 10:35:15 -0400
+Received: from mx2.suse.de ([195.135.220.15]:37760 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726067AbgFAObD (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 1 Jun 2020 10:31:03 -0400
+        id S1726073AbgFAOfP (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 1 Jun 2020 10:35:15 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 6CE99ACF3;
-        Mon,  1 Jun 2020 14:31:03 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 165A5AD5D;
+        Mon,  1 Jun 2020 14:35:15 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 421D1DA79B; Mon,  1 Jun 2020 16:30:57 +0200 (CEST)
-Date:   Mon, 1 Jun 2020 16:30:57 +0200
+        id ED0DADA79B; Mon,  1 Jun 2020 16:35:10 +0200 (CEST)
+Date:   Mon, 1 Jun 2020 16:35:10 +0200
 From:   David Sterba <dsterba@suse.cz>
 To:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
 Cc:     "dsterba@suse.cz" <dsterba@suse.cz>,
@@ -28,7 +28,7 @@ Cc:     "dsterba@suse.cz" <dsterba@suse.cz>,
         Richard Weinberger <richard@nod.at>,
         Johannes Thumshirn <jthumshirn@suse.de>
 Subject: Re: [PATCH v3 2/3] btrfs: add authentication support
-Message-ID: <20200601143056.GT18421@twin.jikos.cz>
+Message-ID: <20200601143510.GU18421@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
 Mail-Followup-To: dsterba@suse.cz,
         Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
@@ -61,17 +61,9 @@ On Wed, May 27, 2020 at 06:04:57PM +0000, Johannes Thumshirn wrote:
 > Up to now I haven't been able to add a key to the kernel's keyring which 
 > can be read back to user-space.
 
-This needs permissions on the key and I think keys from some keyrings
-cannot be read back even with the permissions set. There's an ioctl
-equivalent of 'keyctl read' which I used to emulate the reading. Setting
-the permissions is cumbersome, as it needs to manually craft the hexa
-value, but otherwise would seems a better way than either specifying the
-key payload on command line or storing it in a file.
-
-I've looked at other projects using keys, eg. ecryptfs-utils, it uses
-keyctl_read_alloc, so that seems to be the preferred way.
-
-> How about passing in a key file, like it is done in UBIFS? Should be doable
-> both with libsodium and libgcrypt.
-
-Keyfile would be better, that's what dm-crypt uses, but still.
+I was researching a possibility to use libkcapi, the API to use kernel
+crypto implementaion, in order to avoid passing the raw key to userspace
+completely. Basically, setting up what hash and key to use, pass the
+buffer and get back the hash. API-wise it's just one more line to
+specify the key -- by the numerical id. But no such interface is there,
+only the raw bytes translating the request to the .setkey callback.
