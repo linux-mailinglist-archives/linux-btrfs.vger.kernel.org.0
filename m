@@ -2,286 +2,168 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A20F91EB004
-	for <lists+linux-btrfs@lfdr.de>; Mon,  1 Jun 2020 22:10:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11F0F1EB04C
+	for <lists+linux-btrfs@lfdr.de>; Mon,  1 Jun 2020 22:37:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728367AbgFAUKO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 1 Jun 2020 16:10:14 -0400
-Received: from gateway34.websitewelcome.com ([192.185.149.222]:36517 "EHLO
-        gateway34.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726944AbgFAUKO (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 1 Jun 2020 16:10:14 -0400
-X-Greylist: delayed 1488 seconds by postgrey-1.27 at vger.kernel.org; Mon, 01 Jun 2020 16:10:12 EDT
-Received: from cm14.websitewelcome.com (cm14.websitewelcome.com [100.42.49.7])
-        by gateway34.websitewelcome.com (Postfix) with ESMTP id 9C1532171A32
-        for <linux-btrfs@vger.kernel.org>; Mon,  1 Jun 2020 14:45:24 -0500 (CDT)
-Received: from br540.hostgator.com.br ([108.179.252.180])
-        by cmsmtp with SMTP
-        id fqNAjjJiHXVkQfqNAjkoOK; Mon, 01 Jun 2020 14:45:24 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=mpdesouza.com; s=default; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=Q1JreXTZjrSrmapWwl5nnZf/bmirF8RiJudrX89Jpk8=; b=BXucgNdg2y94QtR6EokKp9ulvQ
-        EsT1Ycq/0jYdhHzqz85wMsZLVVy/Q7aV9BiCkFBmAdbeHPpyP68BciBjMsjUJQLjXC/GPtOrOBPVQ
-        ilUp3ZHdyXqkotXuLbd+YtNY113ffYw29fN3GueGZxDEcv7u9s7f/1VVgg8s5uTyrxNjpS/o67BQS
-        8FJULRmFFPj7QbDgeXO4qcOBPf5SnFEat3KD7EBwDaBmuexeDpCdz51iaA2nt0z31sCHOgABIMoGV
-        za74wB5UPyBhHerLBHnZLBY8+o6nqk7SnoiCjSzoSrN0em2j/GCBZwp/SvR4bWcIZEv4lBTXxOYDD
-        r9D46a4g==;
-Received: from 179.187.207.6.dynamic.adsl.gvt.net.br ([179.187.207.6]:60492 helo=hephaestus.suse.de)
-        by br540.hostgator.com.br with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <marcos@mpdesouza.com>)
-        id 1jfqN9-002a1h-TG; Mon, 01 Jun 2020 16:45:24 -0300
-From:   Marcos Paulo de Souza <marcos@mpdesouza.com>
-To:     dsterba@suse.com, linux-btrfs@vger.kernel.org, fdmanana@suse.com,
-        fstests@vger.kernel.org
-Cc:     Marcos Paulo de Souza <mpdesouza@suse.com>
-Subject: [PATCH v2] btrfs: test if the capability is kept on incremental send
-Date:   Mon,  1 Jun 2020 16:48:45 -0300
-Message-Id: <20200601194845.11829-1-marcos@mpdesouza.com>
-X-Mailer: git-send-email 2.26.2
+        id S1728158AbgFAUft (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 1 Jun 2020 16:35:49 -0400
+Received: from syrinx.knorrie.org ([82.94.188.77]:47152 "EHLO
+        syrinx.knorrie.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727875AbgFAUfr (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 1 Jun 2020 16:35:47 -0400
+Received: from [IPv6:2a02:a213:2b80:f000::12] (unknown [IPv6:2a02:a213:2b80:f000::12])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by syrinx.knorrie.org (Postfix) with ESMTPSA id E18F46092DF71;
+        Mon,  1 Jun 2020 22:35:44 +0200 (CEST)
+Subject: Re: space_cache=v1 and v2 at the time time?
+To:     dsterba@suse.cz, Chris Murphy <lists@colorremedies.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+References: <CAJCQCtQVPFi7fB+p4HEVy1Gw3AjzrvQ8qcY6cRbKj3T-+7yVxA@mail.gmail.com>
+ <c33f3305-a265-d2a4-75e3-9bdd850604f8@knorrie.org>
+ <20200601175252.GC18421@twin.jikos.cz>
+From:   Hans van Kranenburg <hans@knorrie.org>
+Autocrypt: addr=hans@knorrie.org; keydata=
+ mQINBFo2pooBEADwTBe/lrCa78zuhVkmpvuN+pXPWHkYs0LuAgJrOsOKhxLkYXn6Pn7e3xm+
+ ySfxwtFmqLUMPWujQYF0r5C6DteypL7XvkPP+FPVlQnDIifyEoKq8JZRPsAFt1S87QThYPC3
+ mjfluLUKVBP21H3ZFUGjcf+hnJSN9d9MuSQmAvtJiLbRTo5DTZZvO/SuQlmafaEQteaOswme
+ DKRcIYj7+FokaW9n90P8agvPZJn50MCKy1D2QZwvw0g2ZMR8yUdtsX6fHTe7Ym+tHIYM3Tsg
+ 2KKgt17NTxIqyttcAIaVRs4+dnQ23J98iFmVHyT+X2Jou+KpHuULES8562QltmkchA7YxZpT
+ mLMZ6TPit+sIocvxFE5dGiT1FMpjM5mOVCNOP+KOup/N7jobCG15haKWtu9k0kPz+trT3NOn
+ gZXecYzBmasSJro60O4bwBayG9ILHNn+v/ZLg/jv33X2MV7oYXf+ustwjXnYUqVmjZkdI/pt
+ 30lcNUxCANvTF861OgvZUR4WoMNK4krXtodBoEImjmT385LATGFt9HnXd1rQ4QzqyMPBk84j
+ roX5NpOzNZrNJiUxj+aUQZcINtbpmvskGpJX0RsfhOh2fxfQ39ZP/0a2C59gBQuVCH6C5qsY
+ rc1qTIpGdPYT+J1S2rY88AvPpr2JHZbiVqeB3jIlwVSmkYeB/QARAQABtCZIYW5zIHZhbiBL
+ cmFuZW5idXJnIDxoYW5zQGtub3JyaWUub3JnPokCTgQTAQoAOBYhBOJv1o/B6NS2GUVGTueB
+ VzIYDCpVBQJaNq7KAhsDBQsJCAcDBRUKCQgLBRYCAwEAAh4BAheAAAoJEOeBVzIYDCpVgDMQ
+ ANSQMebh0Rr6RNhfA+g9CKiCDMGWZvHvvq3BNo9TqAo9BC4neAoVciSmeZXIlN8xVALf6rF8
+ lKy8L1omocMcWw7TlvZHBr2gZHKlFYYC34R2NvxS0xO8Iw5rhEU6paYaKzlrvxuXuHMVXgjj
+ bM3zBiN8W4b9VW1MoynP9nvm1WaGtFI9GIyK9j6mBCU+N5hpvFtt4DBmuWjzdDkd3sWUufYd
+ nQhGimWHEg95GWhQUiFvr4HRvYJpbjRRRQG3O/5Fm0YyTYZkI5CDzQIm5lhqKNqmuf2ENstS
+ 8KcBImlbwlzEpK9Pa3Z5MUeLZ5Ywwv+d11fyhk53aT9bipdEipvcGa6DrA0DquO4WlQR+RKU
+ ywoGTgntwFu8G0+tmD8J1UE6kIzFwE5kiFWjM0rxv1tAgV9ZWqmp3sbI7vzbZXn+KI/wosHV
+ iDeW5rYg+PdmnOlYXQIJO+t0KmF5zJlSe7daylKZKTYtk7w1Fq/Oh1Rps9h1C4sXN8OAUO7h
+ 1SAnEtehHfv52nPxwZiI6eqbvqV0uEEyLFS5pCuuwmPpC8AmOrciY2T8T+4pmkJNO2Nd3jOP
+ cnJgAQrxPvD7ACp/85LParnoz5c9/nPHJB1FgbAa7N5d8ubqJgi+k9Q2lAL9vBxK67aZlFZ0
+ Kd7u1w1rUlY12KlFWzxpd4TuHZJ8rwi7PUceuQINBFo2sK8BEADSZP5cKnGl2d7CHXdpAzVF
+ 6K4Hxwn5eHyKC1D/YvsY+otq3PnfLJeMf1hzv2OSrGaEAkGJh/9yXPOkQ+J1OxJJs9CY0fqB
+ MvHZ98iTyeFAq+4CwKcnZxLiBchQJQd0dFPujtcoMkWgzp3QdzONdkK4P7+9XfryPECyCSUF
+ ib2aEkuU3Ic4LYfsBqGR5hezbJqOs96ExMnYUCEAS5aeejr3xNb8NqZLPqU38SQCTLrAmPAX
+ glKVnYyEVxFUV8EXXY6AK31lRzpCqmPxLoyhPAPda9BXchRluy+QOyg+Yn4Q2DSwbgCYPrxo
+ HTZKxH+E+JxCMfSW35ZE5ufvAbY3IrfHIhbNnHyxbTRgYMDbTQCDyN9F2Rvx3EButRMApj+v
+ OuaMBJF/fWfxL3pSIosG9Q7uPc+qJvVMHMRNnS0Y1QQ5ZPLG0zI5TeHzMnGmSTbcvn/NOxDe
+ 6EhumcclFS0foHR78l1uOhUItya/48WCJE3FvOS3+KBhYvXCsG84KVsJeen+ieX/8lnSn0d2
+ ZvUsj+6wo+d8tcOAP+KGwJ+ElOilqW29QfV4qvqmxnWjDYQWzxU9WGagU3z0diN97zMEO4D8
+ SfUu72S5O0o9ATgid9lEzMKdagXP94x5CRvBydWu1E5CTgKZ3YZv+U3QclOG5p9/4+QNbhqH
+ W4SaIIg90CFMiwARAQABiQRsBBgBCgAgFiEE4m/Wj8Ho1LYZRUZO54FXMhgMKlUFAlo2sK8C
+ GwICQAkQ54FXMhgMKlXBdCAEGQEKAB0WIQRJbJ13A1ob3rfuShiywd9yY2FfbAUCWjawrwAK
+ CRCywd9yY2FfbMKbEACIGLdFrD5j8rz/1fm8xWTJlOb3+o5A6fdJ2eyPwr5njJZSG9i5R28c
+ dMmcwLtVisfedBUYLaMBmCEHnj7ylOgJi60HE74ZySX055hKECNfmA9Q7eidxta5WeXeTPSb
+ PwTQkAgUZ576AO129MKKP4jkEiNENePMuYugCuW7XGR+FCEC2efYlVwDQy24ZfR9Q1dNK2ny
+ 0gH1c+313l0JcNTKjQ0e7M9KsQSKUr6Tk0VGTFZE2dp+dJF1sxtWhJ6Ci7N1yyj3buFFpD9c
+ kj5YQFqBkEwt3OGtYNuLfdwR4d47CEGdQSm52n91n/AKdhRDG5xvvADG0qLGBXdWvbdQFllm
+ v47TlJRDc9LmwpIqgtaUGTVjtkhw0SdiwJX+BjhtWTtrQPbseDe2pN3gWte/dPidJWnj8zzS
+ ggZ5otY2reSvM+79w/odUlmtaFx+IyFITuFnBVcMF0uGmQBBxssew8rePQejYQHz0bZUDNbD
+ VaZiXqP4njzBJu5+nzNxQKzQJ0VDF6ve5K49y0RpT4IjNOupZ+OtlZTQyM7moag+Y6bcJ7KK
+ 8+MRdRjGFFWP6H/RCSFAfoOGIKTlZHubjgetyQhMwKJQ5KnGDm+XUkeIWyevPfCVPNvqF2q3
+ viQm0taFit8L+x7ATpolZuSCat5PSXtgx1liGjBpPKnERxyNLQ/erRNcEACwEJliFbQm+c2i
+ 6ccpx2cdtyAI1yzWuE0nr9DqpsEbIZzTCIVyry/VZgdJ27YijGJWesj/ie/8PtpDu0Cf1pty
+ QOKSpC9WvRCFGJPGS8MmvzepmX2DYQ5MSKTO5tRJZ8EwCFfd9OxX2g280rdcDyCFkY3BYrf9
+ ic2PTKQokx+9sLCHAC/+feSx/MA/vYpY1EJwkAr37mP7Q8KA9PCRShJziiljh5tKQeIG4sz1
+ QjOrS8WryEwI160jKBBNc/M5n2kiIPCrapBGsL58MumrtbL53VimFOAJaPaRWNSdWCJSnVSv
+ kCHMl/1fRgzXEMpEmOlBEY0Kdd1Ut3S2cuwejzI+WbrQLgeps2N70Ztq50PkfWkj0jeethhI
+ FqIJzNlUqVkHl1zCWSFsghxiMyZmqULaGcSDItYQ+3c9fxIO/v0zDg7bLeG9Zbj4y8E47xqJ
+ 6brtAAEJ1RIM42gzF5GW71BqZrbFFoI0C6AzgHjaQP1xfj7nBRSBz4ObqnsuvRr7H6Jme5rl
+ eg7COIbm8R7zsFjF4tC6k5HMc1tZ8xX+WoDsurqeQuBOg7rggmhJEpDK2f+g8DsvKtP14Vs0
+ Sn7fVJi87b5HZojry1lZB2pXUH90+GWPF7DabimBki4QLzmyJ/ENH8GspFulVR3U7r3YYQ5K
+ ctOSoRq9pGmMi231Q+xx9LkCDQRaOtArARAA50ylThKbq0ACHyomxjQ6nFNxa9ICp6byU9Lh
+ hKOax0GB6l4WebMsQLhVGRQ8H7DT84E7QLRYsidEbneB1ciToZkL5YFFaVxY0Hj1wKxCFcVo
+ CRNtOfoPnHQ5m/eDLaO4o0KKL/kaxZwTn2jnl6BQDGX1Aak0u4KiUlFtoWn/E/NIv5QbTGSw
+ IYuzWqqYBIzFtDbiQRvGw0NuKxAGMhwXy8VP05mmNwRdyh/CC4rWQPBTvTeMwr3nl8/G+16/
+ cn4RNGhDiGTTXcX03qzZ5jZ5N7GLY5JtE6pTpLG+EXn5pAnQ7MvuO19cCbp6Dj8fXRmI0SVX
+ WKSo0A2C8xH6KLCRfUMzD7nvDRU+bAHQmbi5cZBODBZ5yp5CfIL1KUCSoiGOMpMin3FrarIl
+ cxhNtoE+ya23A+JVtOwtM53ESra9cJL4WPkyk/E3OvNDmh8U6iZXn4ZaKQTHaxN9yvmAUhZQ
+ iQi/sABwxCcQQ2ydRb86Vjcbx+FUr5OoEyQS46gc3KN5yax9D3H9wrptOzkNNMUhFj0oK0fX
+ /MYDWOFeuNBTYk1uFRJDmHAOp01rrMHRogQAkMBuJDMrMHfolivZw8RKfdPzgiI500okLTzH
+ C0wgSSAOyHKGZjYjbEwmxsl3sLJck9IPOKvqQi1DkvpOPFSUeX3LPBIav5UUlXt0wjbzInUA
+ EQEAAYkCNgQYAQoAIBYhBOJv1o/B6NS2GUVGTueBVzIYDCpVBQJaOtArAhsMAAoJEOeBVzIY
+ DCpV4kgP+wUh3BDRhuKaZyianKroStgr+LM8FIUwQs3Fc8qKrcDaa35vdT9cocDZjkaGHprp
+ mlN0OuT2PB+Djt7am2noV6Kv1C8EnCPpyDBCwa7DntGdGcGMjH9w6aR4/ruNRUGS1aSMw8sR
+ QgpTVWEyzHlnIH92D+k+IhdNG+eJ6o1fc7MeC0gUwMt27Im+TxVxc0JRfniNk8PUAg4kvJq7
+ z7NLBUcJsIh3hM0WHQH9AYe/mZhQq5oyZTsz4jo/dWFRSlpY7zrDS2TZNYt4cCfZj1bIdpbf
+ SpRi9M3W/yBF2WOkwYgbkqGnTUvr+3r0LMCH2H7nzENrYxNY2kFmDX9bBvOWsWpcMdOEo99/
+ Iayz5/q2d1rVjYVFRm5U9hG+C7BYvtUOnUvSEBeE4tnJBMakbJPYxWe61yANDQubPsINB10i
+ ngzsm553yqEjLTuWOjzdHLpE4lzD416ExCoZy7RLEHNhM1YQSI2RNs8umlDfZM9Lek1+1kgB
+ vT3RH0/CpPJgveWV5xDOKuhD8j5l7FME+t2RWP+gyLid6dE0C7J03ir90PlTEkMEHEzyJMPt
+ OhO05Phy+d51WPTo1VSKxhL4bsWddHLfQoXW8RQ388Q69JG4m+JhNH/XvWe3aQFpYP+GZuzO
+ hkMez0lHCaVOOLBSKHkAHh9i0/pH+/3hfEa4NsoHCpyy
+Message-ID: <8883fb1b-4b5c-eae4-bbb3-babc4528399e@knorrie.org>
+Date:   Mon, 1 Jun 2020 22:35:44 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
+In-Reply-To: <20200601175252.GC18421@twin.jikos.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - br540.hostgator.com.br
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - mpdesouza.com
-X-BWhitelist: no
-X-Source-IP: 179.187.207.6
-X-Source-L: No
-X-Exim-ID: 1jfqN9-002a1h-TG
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 179.187.207.6.dynamic.adsl.gvt.net.br (hephaestus.suse.de) [179.187.207.6]:60492
-X-Source-Auth: marcos@mpdesouza.com
-X-Email-Count: 4
-X-Source-Cap: bXBkZXNvNTM7bXBkZXNvNTM7YnI1NDAuaG9zdGdhdG9yLmNvbS5icg==
-X-Local-Domain: yes
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Marcos Paulo de Souza <mpdesouza@suse.com>
+Hi,
 
-This test exercises full send and incremental send operations for cases
-where files have capabilities, ensuring the capabilities aren't lost in
-the process.
+On 6/1/20 7:52 PM, David Sterba wrote:
+> On Thu, May 28, 2020 at 11:04:07PM +0200, Hans van Kranenburg wrote:
+>> Hi,
+>>
+>> On 5/27/20 4:12 AM, Chris Murphy wrote:
+>>> What are the implications of not clearing v1 before enabling v2?
+>>>
+>>> From btrfs insp dump-t, I still see the v1 bitmaps present:
+>>>
+>>> root tree
+>>> leaf 6468501504 items 42 free space 9246 generation 22 owner ROOT_TREE
+>>> leaf 6468501504 flags 0x1(WRITTEN) backref revision 1
+>>> ...
+>>>     item 30 key (FREE_SPACE UNTYPED 22020096) itemoff 11145 itemsize 41
+>>>         location key (256 INODE_ITEM 0)
+>>>         cache generation 17 entries 0 bitmaps 0
+>>>     item 31 key (FREE_SPACE UNTYPED 1095761920) itemoff 11104 itemsize 41
+>>>         location key (257 INODE_ITEM 0)
+>>>         cache generation 17 entries 0 bitmaps 0
+>>> ...
+>>>
+>>>
+>>> And later the free space tree:
+>>>
+>>> free space tree key (FREE_SPACE_TREE ROOT_ITEM 0)
+>>> leaf 6471073792 items 39 free space 15196 generation 22 owner FREE_SPACE_TREE
+>>> leaf 6471073792 flags 0x1(WRITTEN) backref revision 1
+>>> fs uuid 3c464210-08c7-4cf0-b175-e4b781ebea19
+>>> chunk uuid f1d18732-7c3d-401c-8637-e7d4d9c7a0b8
+>>>     item 0 key (1048576 FREE_SPACE_INFO 4194304) itemoff 16275 itemsize 8
+>>>         free space info extent count 2 flags 0
+>>>     item 1 key (1048576 FREE_SPACE_EXTENT 16384) itemoff 16275 itemsize 0
+>>>         free space extent
+>>>     item 2 key (1081344 FREE_SPACE_EXTENT 4161536) itemoff 16275 itemsize 0
+>>>         free space extent
+>>> ...
+>>>
+>>> I was surprised there's no warning when I use space_cache=v2 without
+>>> first clearing v1.
+>>
+>> It's just sitting there, occupying some space, doing nothing.
+> 
+> Hm that's not ideal, right? There's support in btrfs check,
+> "btrfs check --clear-space-cache v1", but it needs unmounted filesystem.
+> I don't remember if that was discussed when v2 was introduced, but it
+> seems strange. As we want to make v2 default soon, the conversion should
+> work without such surprises.
 
-There was a problem with kernel <=5.7 that was making capabilities to be lost
-after a combination of full + incremental send. This behavior was fixed by the
-following patch:
+I guess the most straightforward thing to do would be to execute a copy
+of this remove space cache v1 code before creating the v2 tree when
+mounting first time with v2 enabled.
 
-btrfs: send: Emit file capabilities after chown
-
-Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
----
-
- Changes from v1:
- * Remove the steps to reproduce a problem fixes in btrfs code. (Filipe)
- * Remove the underscore from the local function names (Filipe)
- * Change function name _check_xattr -> check_capabilities (Filipe)
- * Rename all local variables to be lowercase (Filipe)
- * Put FS1 and FS2 variables in the global context of the test (Filipe)
- * Changes all occurrences of _fail into a simple echo (Filipe)
- * Declare some local variables as "local" (Filipe)
- * Some Capability -> Capabilities, since we are dealing with multiple capabilities (Filipe)
- * Some cap -> capabilities, inc -> incremental (Filipe)
- * Add missing "send group" (Filipe)
-
- tests/btrfs/214     | 152 ++++++++++++++++++++++++++++++++++++++++++++
- tests/btrfs/214.out |   6 ++
- tests/btrfs/group   |   1 +
- 3 files changed, 159 insertions(+)
- create mode 100755 tests/btrfs/214
- create mode 100644 tests/btrfs/214.out
-
-diff --git a/tests/btrfs/214 b/tests/btrfs/214
-new file mode 100755
-index 00000000..113bbb27
---- /dev/null
-+++ b/tests/btrfs/214
-@@ -0,0 +1,152 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright (C) 2020 SUSE Linux Products GmbH. All Rights Reserved.
-+#
-+# FS QA Test 214
-+#
-+# Test if the file capabilities aren't lost after full and incremental send
-+#
-+seq=`basename $0`
-+seqres=$RESULT_DIR/$seq
-+echo "QA output created by $seq"
-+
-+here=`pwd`
-+tmp=/tmp/$$
-+status=1	# failure is the default!
-+trap "cleanup; exit \$status" 0 1 2 3 15
-+
-+# get standard environment, filters and checks
-+. ./common/rc
-+. ./common/filter
-+
-+# remove previous $seqres.full before test
-+rm -f $seqres.full
-+
-+_supported_fs btrfs
-+_supported_os Linux
-+_require_scratch
-+_require_command "$SETCAP_PROG" setcap
-+_require_command "$GETCAP_PROG" getcap
-+
-+FS1="$SCRATCH_MNT/fs1"
-+FS2="$SCRATCH_MNT/fs2"
-+
-+cleanup()
-+{
-+	cd /
-+	rm -f $tmp.*
-+}
-+
-+check_capabilities()
-+{
-+	local file
-+	local cap
-+	local ret
-+	file="$1"
-+	cap="$2"
-+	ret=$($GETCAP_PROG "$file")
-+	if [ -z "$ret" ]; then
-+		echo "$ret"
-+		echo "missing capability in file $file"
-+	fi
-+	if [[ "$ret" != *$cap* ]]; then
-+		echo "$cap"
-+		echo "Capabilities do not match. Output: $ret"
-+	fi
-+}
-+
-+setup()
-+{
-+	_scratch_mkfs >/dev/null
-+	_scratch_mount
-+
-+	$BTRFS_UTIL_PROG subvolume create "$FS1" > /dev/null
-+	$BTRFS_UTIL_PROG subvolume create "$FS2" > /dev/null
-+}
-+
-+full_nocap_inc_withcap_send()
-+{
-+	local ret
-+
-+	setup
-+
-+	# Test full send containing a file without capabilities
-+	touch "$FS1/foo.bar"
-+	$BTRFS_UTIL_PROG subvolume snapshot -r "$FS1" "$FS1/snap_init" >/dev/null
-+	$BTRFS_UTIL_PROG send "$FS1/snap_init" -q | $BTRFS_UTIL_PROG receive "$FS2" -q
-+	# ensure that we don't have capabilities set
-+	ret=$($GETCAP_PROG "$FS2/snap_init/foo.bar")
-+	if [ -n "$ret" ]; then
-+		echo "File contains capabilities when it shouldn't"
-+	fi
-+
-+	# Test if incremental send brings the newly added capability
-+	$SETCAP_PROG "cap_sys_ptrace+ep cap_sys_nice+ep" "$FS1/foo.bar"
-+	$BTRFS_UTIL_PROG subvolume snapshot -r "$FS1" "$FS1/snap_inc" >/dev/null
-+	$BTRFS_UTIL_PROG send -p "$FS1/snap_init" "$FS1/snap_inc" -q | \
-+					$BTRFS_UTIL_PROG receive "$FS2" -q
-+	check_capabilities "$FS2/snap_inc/foo.bar" "cap_sys_ptrace,cap_sys_nice+ep"
-+
-+	_scratch_unmount
-+}
-+
-+roundtrip_send()
-+{
-+	local files
-+
-+	# files should include foo.bar
-+	files="$1"
-+
-+	setup
-+
-+	# create files on fs1, must contain foo.bar
-+	for f in $files; do
-+		touch "$FS1/$f"
-+	done
-+
-+	# Test full send, checking if the receiving side keeps the capabilities
-+	$SETCAP_PROG "cap_sys_ptrace+ep cap_sys_nice+ep" "$FS1/foo.bar"
-+	$BTRFS_UTIL_PROG subvolume snapshot -r "$FS1" "$FS1/snap_init" >/dev/null
-+	$BTRFS_UTIL_PROG send "$FS1/snap_init" -q | $BTRFS_UTIL_PROG receive "$FS2" -q
-+	check_capabilities "$FS2/snap_init/foo.bar" "cap_sys_ptrace,cap_sys_nice+ep"
-+
-+	# Test incremental send with different owner/group but same capabilities
-+	chgrp 100 "$FS1/foo.bar"
-+	$SETCAP_PROG "cap_sys_ptrace+ep cap_sys_nice+ep" "$FS1/foo.bar"
-+	$BTRFS_UTIL_PROG subvolume snapshot -r "$FS1" "$FS1/snap_inc" >/dev/null
-+	check_capabilities "$FS1/snap_inc/foo.bar" "cap_sys_ptrace,cap_sys_nice+ep"
-+	$BTRFS_UTIL_PROG send -p "$FS1/snap_init" "$FS1/snap_inc" -q | \
-+				$BTRFS_UTIL_PROG receive "$FS2" -q
-+	check_capabilities "$FS2/snap_inc/foo.bar" "cap_sys_ptrace,cap_sys_nice+ep"
-+
-+	# Test capabilities after incremental send with different group and capabilities
-+	chgrp 0 "$FS1/foo.bar"
-+	$SETCAP_PROG "cap_sys_time+ep cap_syslog+ep" "$FS1/foo.bar"
-+	$BTRFS_UTIL_PROG subvolume snapshot -r "$FS1" "$FS1/snap_inc2" >/dev/null
-+	check_capabilities "$FS1/snap_inc2/foo.bar" "cap_sys_time,cap_syslog+ep"
-+	$BTRFS_UTIL_PROG send -p "$FS1/snap_inc" "$FS1/snap_inc2" -q | \
-+				$BTRFS_UTIL_PROG receive "$FS2"  -q
-+	check_capabilities "$FS2/snap_inc2/foo.bar" "cap_sys_time,cap_syslog+ep"
-+
-+	_scratch_unmount
-+}
-+
-+# real QA test starts here
-+
-+echo "Test full send + file without capabilities, then incremental send bringing a new capability"
-+full_nocap_inc_withcap_send
-+
-+echo "Testing if foo.bar alone can keep its capabilities"
-+roundtrip_send "foo.bar"
-+
-+echo "Test foo.bar being the first item among other files"
-+roundtrip_send "foo.bar foo.bax foo.baz"
-+
-+echo "Test foo.bar with objectid between two other files"
-+roundtrip_send "foo1 foo.bar foo3"
-+
-+echo "Test foo.bar being the last item among other files"
-+roundtrip_send "foo1 foo2 foo.bar"
-+
-+status=0
-+exit
-diff --git a/tests/btrfs/214.out b/tests/btrfs/214.out
-new file mode 100644
-index 00000000..197a39a9
---- /dev/null
-+++ b/tests/btrfs/214.out
-@@ -0,0 +1,6 @@
-+QA output created by 214
-+Test full send + file without capabilities, then incremental send bringing a new capability
-+Testing if foo.bar alone can keep its capabilities
-+Test foo.bar being the first item among other files
-+Test foo.bar with objectid between two other files
-+Test foo.bar being the last item among other files
-diff --git a/tests/btrfs/group b/tests/btrfs/group
-index 9e48ecc1..505665b5 100644
---- a/tests/btrfs/group
-+++ b/tests/btrfs/group
-@@ -216,3 +216,4 @@
- 211 auto quick log prealloc
- 212 auto balance dangerous
- 213 auto balance dangerous
-+214 auto quick send snapshot
--- 
-2.26.2
-
+K
