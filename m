@@ -2,89 +2,53 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E93BA1EA6B7
-	for <lists+linux-btrfs@lfdr.de>; Mon,  1 Jun 2020 17:17:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD5141EA6CB
+	for <lists+linux-btrfs@lfdr.de>; Mon,  1 Jun 2020 17:23:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728106AbgFAPQT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 1 Jun 2020 11:16:19 -0400
-Received: from mx2.suse.de ([195.135.220.15]:53238 "EHLO mx2.suse.de"
+        id S1727000AbgFAPXE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 1 Jun 2020 11:23:04 -0400
+Received: from mx2.suse.de ([195.135.220.15]:56926 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727118AbgFAPQT (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 1 Jun 2020 11:16:19 -0400
+        id S1726125AbgFAPXE (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 1 Jun 2020 11:23:04 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 2AB53AC5B;
-        Mon,  1 Jun 2020 15:16:19 +0000 (UTC)
-Date:   Mon, 1 Jun 2020 10:16:14 -0500
-From:   Goldwyn Rodrigues <rgoldwyn@suse.de>
-To:     "Darrick J. Wong" <darrick.wong@oracle.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        Johannes.Thumshirn@wdc.com, hch@infradead.org, dsterba@suse.cz,
-        fdmanana@gmail.com
-Subject: Re: [PATCH] iomap: Return zero in case of unsuccessful pagecache
- invalidation before DIO
-Message-ID: <20200601151614.pxy7in4jrvuuy7nx@fiona>
-References: <20200528192103.xm45qoxqmkw7i5yl@fiona>
- <20200529002319.GQ252930@magnolia>
+        by mx2.suse.de (Postfix) with ESMTP id 2E442ADF7;
+        Mon,  1 Jun 2020 15:23:05 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 354F6DA79B; Mon,  1 Jun 2020 17:23:01 +0200 (CEST)
+From:   David Sterba <dsterba@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     David Sterba <dsterba@suse.com>
+Subject: [PATCH 0/9] Scrub cleanups
+Date:   Mon,  1 Jun 2020 17:23:00 +0200
+Message-Id: <cover.1591024792.git.dsterba@suse.com>
+X-Mailer: git-send-email 2.25.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200529002319.GQ252930@magnolia>
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 17:23 28/05, Darrick J. Wong wrote:
-> On Thu, May 28, 2020 at 02:21:03PM -0500, Goldwyn Rodrigues wrote:
-> > 
-> > Filesystems such as btrfs are unable to guarantee page invalidation
-> > because pages could be locked as a part of the extent. Return zero
-> 
-> Locked for what?  filemap_write_and_wait_range should have just cleaned
-> them off.
-> 
-> > in case a page cache invalidation is unsuccessful so filesystems can
-> > fallback to buffered I/O. This is similar to
-> > generic_file_direct_write().
-> > 
-> > This takes care of the following invalidation warning during btrfs
-> > mixed buffered and direct I/O using iomap_dio_rw():
-> > 
-> > Page cache invalidation failure on direct I/O.  Possible data
-> > corruption due to collision with buffered I/O!
-> > 
-> > Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
-> > 
-> > diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
-> > index e4addfc58107..215315be6233 100644
-> > --- a/fs/iomap/direct-io.c
-> > +++ b/fs/iomap/direct-io.c
-> > @@ -483,9 +483,15 @@ iomap_dio_rw(struct kiocb *iocb, struct iov_iter *iter,
-> >  	 */
-> >  	ret = invalidate_inode_pages2_range(mapping,
-> >  			pos >> PAGE_SHIFT, end >> PAGE_SHIFT);
-> > -	if (ret)
-> > -		dio_warn_stale_pagecache(iocb->ki_filp);
-> > -	ret = 0;
-> > +	/*
-> > +	 * If a page can not be invalidated, return 0 to fall back
-> > +	 * to buffered write.
-> > +	 */
-> > +	if (ret) {
-> > +		if (ret == -EBUSY)
-> > +			ret = 0;
-> > +		goto out_free_dio;
-> 
-> XFS doesn't fall back to buffered io when directio fails, which means
-> this will cause a regression there.
-> 
-> Granted mixing write types is bogus...
-> 
+Remove kmaps, simplify the checksum calculations.
 
-I have not seen page invalidation failure errors on XFS, but what should
-happen hypothetically if they do occur? Carry on with the direct I/O?
-Would an error return like -ENOTBLK be better?
+David Sterba (9):
+  btrfs: scrub: remove kmap/kunmap of pages
+  btrfs: scrub: unify naming of page address variables
+  btrfs: scrub: simplify superblock checksum calculation
+  btrfs: scrub: remove temporary csum array in scrub_checksum_super
+  btrfs: scrub: clean up temporary page variables in
+    scrub_checksum_super
+  btrfs: scrub: simplify data block checksum calculation
+  btrfs: scrub: clean up temporary page variables in scrub_checksum_data
+  btrfs: scrub: simplify tree block checksum calculation
+  btrfs: scrub: clean up temporary page variables in
+    scrub_checksum_tree_block
+
+ fs/btrfs/scrub.c | 151 +++++++++++++----------------------------------
+ 1 file changed, 42 insertions(+), 109 deletions(-)
 
 -- 
-Goldwyn
+2.25.0
+
