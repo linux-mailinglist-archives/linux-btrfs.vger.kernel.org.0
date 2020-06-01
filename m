@@ -2,25 +2,25 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BFB81EA713
-	for <lists+linux-btrfs@lfdr.de>; Mon,  1 Jun 2020 17:39:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E25781EA70A
+	for <lists+linux-btrfs@lfdr.de>; Mon,  1 Jun 2020 17:39:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728193AbgFAPiG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 1 Jun 2020 11:38:06 -0400
-Received: from mx2.suse.de ([195.135.220.15]:34084 "EHLO mx2.suse.de"
+        id S1728146AbgFAPh5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 1 Jun 2020 11:37:57 -0400
+Received: from mx2.suse.de ([195.135.220.15]:34082 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728090AbgFAPhz (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 1 Jun 2020 11:37:55 -0400
+        id S1728097AbgFAPh4 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 1 Jun 2020 11:37:56 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id AC912B21D;
+        by mx2.suse.de (Postfix) with ESMTP id 00677B21A;
         Mon,  1 Jun 2020 15:37:56 +0000 (UTC)
 From:   Nikolay Borisov <nborisov@suse.com>
 To:     linux-btrfs@vger.kernel.org
 Cc:     Nikolay Borisov <nborisov@suse.com>
-Subject: [PATCH 37/46] btrfs: Make btrfs_qgroup_reserve_data take btrfs_inode
-Date:   Mon,  1 Jun 2020 18:37:35 +0300
-Message-Id: <20200601153744.31891-38-nborisov@suse.com>
+Subject: [PATCH 38/46] btrfs: Make btrfs_free_reserved_data_space_noquota take btrfs_fs_info
+Date:   Mon,  1 Jun 2020 18:37:36 +0300
+Message-Id: <20200601153744.31891-39-nborisov@suse.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200601153744.31891-1-nborisov@suse.com>
 References: <20200601153744.31891-1-nborisov@suse.com>
@@ -29,110 +29,91 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-There's only a single use of vfs_inode in a tracepoint so let's take btrfs_inode
-directly.
+No point in taking an inode only to get btrfs_fs_info from it, instead take
+btrfs_fs_info directly.
 
 Signed-off-by: Nikolay Borisov <nborisov@suse.com>
 ---
- fs/btrfs/delalloc-space.c |  2 +-
- fs/btrfs/file.c           |  7 ++++---
- fs/btrfs/qgroup.c         | 10 +++++-----
- fs/btrfs/qgroup.h         |  2 +-
- 4 files changed, 11 insertions(+), 10 deletions(-)
+ fs/btrfs/delalloc-space.c | 9 ++++-----
+ fs/btrfs/delalloc-space.h | 4 ++--
+ fs/btrfs/inode.c          | 7 +++----
+ 3 files changed, 9 insertions(+), 11 deletions(-)
 
 diff --git a/fs/btrfs/delalloc-space.c b/fs/btrfs/delalloc-space.c
-index 0ee25dde18d3..212dd9648b87 100644
+index 212dd9648b87..489df364bb04 100644
 --- a/fs/btrfs/delalloc-space.c
 +++ b/fs/btrfs/delalloc-space.c
-@@ -253,7 +253,7 @@ int btrfs_check_data_free_space(struct inode *inode,
- 		return ret;
-
+@@ -255,7 +255,7 @@ int btrfs_check_data_free_space(struct inode *inode,
  	/* Use new btrfs_qgroup_reserve_data to reserve precious data space. */
--	ret = btrfs_qgroup_reserve_data(inode, reserved, start, len);
-+	ret = btrfs_qgroup_reserve_data(BTRFS_I(inode), reserved, start, len);
+ 	ret = btrfs_qgroup_reserve_data(BTRFS_I(inode), reserved, start, len);
  	if (ret < 0)
- 		btrfs_free_reserved_data_space_noquota(inode, start, len);
+-		btrfs_free_reserved_data_space_noquota(inode, start, len);
++		btrfs_free_reserved_data_space_noquota(fs_info, start, len);
  	else
-diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-index cd1bfd571749..2b3e935baabc 100644
---- a/fs/btrfs/file.c
-+++ b/fs/btrfs/file.c
-@@ -3189,7 +3189,7 @@ static int btrfs_zero_range(struct inode *inode,
- 		if (ret < 0)
- 			goto out;
- 		space_reserved = true;
--		ret = btrfs_qgroup_reserve_data(inode, &data_reserved,
-+		ret = btrfs_qgroup_reserve_data(BTRFS_I(inode), &data_reserved,
- 						alloc_start, bytes_to_reserve);
- 		if (ret)
- 			goto out;
-@@ -3363,8 +3363,9 @@ static long btrfs_fallocate(struct file *file, int mode,
- 				free_extent_map(em);
- 				break;
- 			}
--			ret = btrfs_qgroup_reserve_data(inode, &data_reserved,
--					cur_offset, last_byte - cur_offset);
-+			ret = btrfs_qgroup_reserve_data(BTRFS_I(inode),
-+					&data_reserved, cur_offset,
-+					last_byte - cur_offset);
- 			if (ret < 0) {
- 				cur_offset = last_byte;
- 				free_extent_map(em);
-diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
-index c884f3ec89a0..e5fab553afb7 100644
---- a/fs/btrfs/qgroup.c
-+++ b/fs/btrfs/qgroup.c
-@@ -3392,11 +3392,11 @@ btrfs_qgroup_rescan_resume(struct btrfs_fs_info *fs_info)
-  *       same @reserved, caller must ensure when error happens it's OK
-  *       to free *ALL* reserved space.
+ 		ret = 0;
+ 	return ret;
+@@ -269,10 +269,9 @@ int btrfs_check_data_free_space(struct inode *inode,
+  * which we can't sleep and is sure it won't affect qgroup reserved space.
+  * Like clear_bit_hook().
   */
--int btrfs_qgroup_reserve_data(struct inode *inode,
-+int btrfs_qgroup_reserve_data(struct btrfs_inode *inode,
- 			struct extent_changeset **reserved_ret, u64 start,
- 			u64 len)
+-void btrfs_free_reserved_data_space_noquota(struct inode *inode, u64 start,
+-					    u64 len)
++void btrfs_free_reserved_data_space_noquota(struct btrfs_fs_info *fs_info,
++					    u64 start, u64 len)
  {
--	struct btrfs_root *root = BTRFS_I(inode)->root;
-+	struct btrfs_root *root = inode->root;
- 	struct ulist_node *unode;
- 	struct ulist_iterator uiter;
- 	struct extent_changeset *reserved;
-@@ -3419,12 +3419,12 @@ int btrfs_qgroup_reserve_data(struct inode *inode,
- 	reserved = *reserved_ret;
- 	/* Record already reserved space */
- 	orig_reserved = reserved->bytes_changed;
--	ret = set_record_extent_bits(&BTRFS_I(inode)->io_tree, start,
-+	ret = set_record_extent_bits(&inode->io_tree, start,
- 			start + len -1, EXTENT_QGROUP_RESERVED, reserved);
+-	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
+ 	struct btrfs_space_info *data_sinfo;
 
- 	/* Newly reserved space */
- 	to_reserve = reserved->bytes_changed - orig_reserved;
--	trace_btrfs_qgroup_reserve_data(inode, start, len,
-+	trace_btrfs_qgroup_reserve_data(&inode->vfs_inode, start, len,
- 					to_reserve, QGROUP_RESERVE);
- 	if (ret < 0)
- 		goto cleanup;
-@@ -3438,7 +3438,7 @@ int btrfs_qgroup_reserve_data(struct inode *inode,
- 	/* cleanup *ALL* already reserved ranges */
- 	ULIST_ITER_INIT(&uiter);
- 	while ((unode = ulist_next(&reserved->range_changed, &uiter)))
--		clear_extent_bit(&BTRFS_I(inode)->io_tree, unode->val,
-+		clear_extent_bit(&inode->io_tree, unode->val,
- 				 unode->aux, EXTENT_QGROUP_RESERVED, 0, 0, NULL);
- 	/* Also free data bytes of already reserved one */
- 	btrfs_qgroup_free_refroot(root->fs_info, root->root_key.objectid,
-diff --git a/fs/btrfs/qgroup.h b/fs/btrfs/qgroup.h
-index 139cad24a95d..a22a1d3dae25 100644
---- a/fs/btrfs/qgroup.h
-+++ b/fs/btrfs/qgroup.h
-@@ -344,7 +344,7 @@ int btrfs_verify_qgroup_counts(struct btrfs_fs_info *fs_info, u64 qgroupid,
- #endif
+ 	/* Make sure the range is aligned to sectorsize */
+@@ -303,7 +302,7 @@ void btrfs_free_reserved_data_space(struct inode *inode,
+ 	      round_down(start, root->fs_info->sectorsize);
+ 	start = round_down(start, root->fs_info->sectorsize);
 
- /* New io_tree based accurate qgroup reserve API */
--int btrfs_qgroup_reserve_data(struct inode *inode,
-+int btrfs_qgroup_reserve_data(struct btrfs_inode *inode,
- 			struct extent_changeset **reserved, u64 start, u64 len);
- int btrfs_qgroup_release_data(struct btrfs_inode *inode, u64 start, u64 len);
- int btrfs_qgroup_free_data(struct btrfs_inode *inode,
+-	btrfs_free_reserved_data_space_noquota(inode, start, len);
++	btrfs_free_reserved_data_space_noquota(btrfs_sb(inode->i_sb), start, len);
+ 	btrfs_qgroup_free_data(BTRFS_I(inode), reserved, start, len);
+ }
+
+diff --git a/fs/btrfs/delalloc-space.h b/fs/btrfs/delalloc-space.h
+index 54466fbd7075..57ab719a9a79 100644
+--- a/fs/btrfs/delalloc-space.h
++++ b/fs/btrfs/delalloc-space.h
+@@ -13,8 +13,8 @@ void btrfs_free_reserved_data_space(struct inode *inode,
+ void btrfs_delalloc_release_space(struct inode *inode,
+ 				  struct extent_changeset *reserved,
+ 				  u64 start, u64 len, bool qgroup_free);
+-void btrfs_free_reserved_data_space_noquota(struct inode *inode, u64 start,
+-					    u64 len);
++void btrfs_free_reserved_data_space_noquota(struct btrfs_fs_info *fs_info,
++					    u64 start, u64 len);
+ void btrfs_delalloc_release_metadata(struct btrfs_inode *inode, u64 num_bytes,
+ 				     bool qgroup_free);
+ int btrfs_delalloc_reserve_space(struct inode *inode,
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index ed9ecb46208f..cb27836b3d4f 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -2063,9 +2063,8 @@ void btrfs_clear_delalloc_extent(struct inode *vfs_inode,
+ 		if (root->root_key.objectid != BTRFS_DATA_RELOC_TREE_OBJECTID &&
+ 		    do_list && !(state->state & EXTENT_NORESERVE) &&
+ 		    (*bits & EXTENT_CLEAR_DATA_RESV))
+-			btrfs_free_reserved_data_space_noquota(
+-					&inode->vfs_inode,
+-					state->start, len);
++			btrfs_free_reserved_data_space_noquota(fs_info,
++							state->start, len);
+
+ 		percpu_counter_add_batch(&fs_info->delalloc_bytes, -len,
+ 					 fs_info->delalloc_batch);
+@@ -7228,7 +7227,7 @@ static int btrfs_get_blocks_direct_write(struct extent_map **map,
+ 			 * use the existing or preallocated extent, so does not
+ 			 * need to adjust btrfs_space_info's bytes_may_use.
+ 			 */
+-			btrfs_free_reserved_data_space_noquota(inode, start,
++			btrfs_free_reserved_data_space_noquota(fs_info, start,
+ 							       len);
+ 			goto skip_cow;
+ 		}
 --
 2.17.1
 
