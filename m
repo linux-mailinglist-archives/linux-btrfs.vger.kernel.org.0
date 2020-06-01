@@ -2,27 +2,27 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 039E11EA6D0
+	by mail.lfdr.de (Postfix) with ESMTP id 790F31EA6D1
 	for <lists+linux-btrfs@lfdr.de>; Mon,  1 Jun 2020 17:23:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727841AbgFAPXQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 1 Jun 2020 11:23:16 -0400
-Received: from mx2.suse.de ([195.135.220.15]:57008 "EHLO mx2.suse.de"
+        id S1727862AbgFAPXS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 1 Jun 2020 11:23:18 -0400
+Received: from mx2.suse.de ([195.135.220.15]:57030 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726125AbgFAPXP (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 1 Jun 2020 11:23:15 -0400
+        id S1726125AbgFAPXS (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 1 Jun 2020 11:23:18 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 91A82ADF7;
-        Mon,  1 Jun 2020 15:23:16 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id D2BCFB175;
+        Mon,  1 Jun 2020 15:23:18 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 9B5D9DA79B; Mon,  1 Jun 2020 17:23:12 +0200 (CEST)
+        id DE57DDA79B; Mon,  1 Jun 2020 17:23:14 +0200 (CEST)
 From:   David Sterba <dsterba@suse.com>
 To:     linux-btrfs@vger.kernel.org
 Cc:     David Sterba <dsterba@suse.com>
-Subject: [PATCH 5/9] btrfs: scrub: clean up temporary page variables in scrub_checksum_super
-Date:   Mon,  1 Jun 2020 17:23:12 +0200
-Message-Id: <2a57542d694e1857ec8ea6be2cbccf0e82630fc7.1591024792.git.dsterba@suse.com>
+Subject: [PATCH 6/9] btrfs: scrub: simplify data block checksum calculation
+Date:   Mon,  1 Jun 2020 17:23:14 +0200
+Message-Id: <8fa6b04b12f289eba740727af0378bb1b07b7de5.1591024792.git.dsterba@suse.com>
 X-Mailer: git-send-email 2.25.0
 In-Reply-To: <cover.1591024792.git.dsterba@suse.com>
 References: <cover.1591024792.git.dsterba@suse.com>
@@ -33,60 +33,58 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Add proper variable for the scrub page and use it instead of repeatedly
-dereferencing the other structures.
+We have sectorsize same as PAGE_SIZE, the checksum can be calculated in
+one go.
 
 Signed-off-by: David Sterba <dsterba@suse.com>
 ---
- fs/btrfs/scrub.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+ fs/btrfs/scrub.c | 24 +++---------------------
+ 1 file changed, 3 insertions(+), 21 deletions(-)
 
 diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
-index abb39c5255d2..aecaf5c7f655 100644
+index aecaf5c7f655..16c83130d884 100644
 --- a/fs/btrfs/scrub.c
 +++ b/fs/btrfs/scrub.c
-@@ -1904,23 +1904,23 @@ static int scrub_checksum_super(struct scrub_block *sblock)
- 	struct btrfs_fs_info *fs_info = sctx->fs_info;
- 	SHASH_DESC_ON_STACK(shash, fs_info->csum_shash);
- 	u8 calculated_csum[BTRFS_CSUM_SIZE];
--	struct page *page;
-+	struct scrub_page *spage;
+@@ -1789,37 +1789,19 @@ static int scrub_checksum_data(struct scrub_block *sblock)
+ 	u8 *on_disk_csum;
+ 	struct page *page;
  	char *kaddr;
- 	int fail_gen = 0;
- 	int fail_cor = 0;
+-	u64 len;
+-	int index;
  
  	BUG_ON(sblock->page_count < 1);
--	page = sblock->pagev[0]->page;
--	kaddr = page_address(page);
-+	spage = sblock->pagev[0];
-+	kaddr = page_address(spage->page);
- 	s = (struct btrfs_super_block *)kaddr;
+ 	if (!sblock->pagev[0]->have_csum)
+ 		return 0;
  
--	if (sblock->pagev[0]->logical != btrfs_super_bytenr(s))
-+	if (spage->logical != btrfs_super_bytenr(s))
- 		++fail_cor;
+-	shash->tfm = fs_info->csum_shash;
+-	crypto_shash_init(shash);
+-
+ 	on_disk_csum = sblock->pagev[0]->csum;
+ 	page = sblock->pagev[0]->page;
+ 	kaddr = page_address(page);
  
--	if (sblock->pagev[0]->generation != btrfs_super_generation(s))
-+	if (spage->generation != btrfs_super_generation(s))
- 		++fail_gen;
+-	len = sctx->fs_info->sectorsize;
+-	index = 0;
+-	for (;;) {
+-		u64 l = min_t(u64, len, PAGE_SIZE);
+-
+-		crypto_shash_update(shash, kaddr, l);
+-		len -= l;
+-		if (len == 0)
+-			break;
+-		index++;
+-		BUG_ON(index >= sblock->page_count);
+-		BUG_ON(!sblock->pagev[index]->page);
+-		page = sblock->pagev[index]->page;
+-		kaddr = page_address(page);
+-	}
++	shash->tfm = fs_info->csum_shash;
++	crypto_shash_init(shash);
++	crypto_shash_digest(shash, kaddr, PAGE_SIZE, csum);
  
--	if (!scrub_check_fsid(s->fsid, sblock->pagev[0]))
-+	if (!scrub_check_fsid(s->fsid, spage))
- 		++fail_cor;
- 
- 	shash->tfm = fs_info->csum_shash;
-@@ -1941,10 +1941,10 @@ static int scrub_checksum_super(struct scrub_block *sblock)
- 		++sctx->stat.super_errors;
- 		spin_unlock(&sctx->stat_lock);
- 		if (fail_cor)
--			btrfs_dev_stat_inc_and_print(sblock->pagev[0]->dev,
-+			btrfs_dev_stat_inc_and_print(spage->dev,
- 				BTRFS_DEV_STAT_CORRUPTION_ERRS);
- 		else
--			btrfs_dev_stat_inc_and_print(sblock->pagev[0]->dev,
-+			btrfs_dev_stat_inc_and_print(spage->dev,
- 				BTRFS_DEV_STAT_GENERATION_ERRS);
- 	}
+-	crypto_shash_final(shash, csum);
+ 	if (memcmp(csum, on_disk_csum, sctx->csum_size))
+ 		sblock->checksum_error = 1;
  
 -- 
 2.25.0
