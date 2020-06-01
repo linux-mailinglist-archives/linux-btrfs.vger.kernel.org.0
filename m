@@ -2,141 +2,98 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B51E1E9A08
-	for <lists+linux-btrfs@lfdr.de>; Sun, 31 May 2020 21:08:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4D1E1E9DD4
+	for <lists+linux-btrfs@lfdr.de>; Mon,  1 Jun 2020 08:05:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728241AbgEaTIT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 31 May 2020 15:08:19 -0400
-Received: from gateway21.websitewelcome.com ([192.185.45.175]:36040 "EHLO
-        gateway21.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726008AbgEaTIS (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 31 May 2020 15:08:18 -0400
-Received: from cm17.websitewelcome.com (cm17.websitewelcome.com [100.42.49.20])
-        by gateway21.websitewelcome.com (Postfix) with ESMTP id DA892400CBFB5
-        for <linux-btrfs@vger.kernel.org>; Sun, 31 May 2020 14:08:15 -0500 (CDT)
-Received: from br540.hostgator.com.br ([108.179.252.180])
-        by cmsmtp with SMTP
-        id fTJfjlS1fAGTXfTJfjxCqk; Sun, 31 May 2020 14:08:15 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=mpdesouza.com; s=default; h=Content-Transfer-Encoding:MIME-Version:
-        Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=6jhSDteDhglDICeIfISWQj/P+OPCcc5dAHYY+wv1KeE=; b=MkNGUcJMpDeLrUqRnXLhpJrvA6
-        kQGHZHlJNitcjvYIkK+E0J7tNwTtEr3AXw/AmGf+l+TvV+aTT/qcQde43WqLWoLweErXtAsJ4cjtD
-        g+h/Dmlf1ykIqjdE/qemqNV0rC7aLO3P69eWnHgiNmVd399cqHGWOgo2llY2FqZht/PI2caBiPeSH
-        beohsGPdbQyRPFdZD949V1yQEZUtmiTNo38IquWLBGzU7uIWJuAZ6hpQA4SJn/cf+B5wahXu6x6j5
-        A1sq/kMgnloz/0u9azWnegrSFsJcSnNXHICl+yGw3Wd3zErrHfvwB2rd/SMgYMTF/sO6oufON8Sum
-        v8qQevWg==;
-Received: from [179.185.220.196] (port=48190 helo=[192.168.0.172])
-        by br540.hostgator.com.br with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <marcos@mpdesouza.com>)
-        id 1jfTJf-002ENi-Ak; Sun, 31 May 2020 16:08:15 -0300
-Message-ID: <2ba1eb8434c13dd0c2a421ee12b824ad9e90fe4e.camel@mpdesouza.com>
-Subject: Re: [PATCHv3 0/3] btrfs-progs: Auto resize fs after device replace
-From:   Marcos Paulo de Souza <marcos@mpdesouza.com>
-To:     dsterba@suse.com, linux-btrfs@vger.kernel.org, wqu@suse.com
-Cc:     Marcos Paulo de Souza <mpdesouza@suse.com>
-Date:   Sun, 31 May 2020 16:11:45 -0300
-In-Reply-To: <20200416004642.9941-1-marcos@mpdesouza.com>
-References: <20200416004642.9941-1-marcos@mpdesouza.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.2 
+        id S1726116AbgFAGE7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 1 Jun 2020 02:04:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37592 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726110AbgFAGE7 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 1 Jun 2020 02:04:59 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 090AAC061A0E
+        for <linux-btrfs@vger.kernel.org>; Sun, 31 May 2020 23:04:59 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id m2so387109pjv.2
+        for <linux-btrfs@vger.kernel.org>; Sun, 31 May 2020 23:04:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:subject:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=0ixIfgR76rR0lA/8CDFY6EhXkzH4KhYv9Hu5igSrAPM=;
+        b=uClaMosYP42tfqb9cfhHHkvuXTQvfMuzdTPR6bcQeAXvtuqtWtEkLRGkXV8B4k8xLO
+         Z78r8Hy+au+AutR/35/la/8Knv7sYn6TDknHbHhe4jKXwPi36Hju4ag+K78kqN2pbwo4
+         I9rxUyxMMRoqo8tN0/MMktSLqaMJBgd538xskgZyBt/SrewdPzjOxNaGp+OMsHgD/zha
+         ESrD61QAZR7efs6rsQ1Y/6sIiyoWyDA8QLU5UaDsw0DA5B5aapgB0rHciXirZJAJ24pc
+         e4WKop0G58x5+gnGPBq/cUEJftOpk1iXODG2mEJWdTVaNVZRrBoAMgqrZTXRgya0sliY
+         otWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=0ixIfgR76rR0lA/8CDFY6EhXkzH4KhYv9Hu5igSrAPM=;
+        b=QQuGWGsN3qp6gE2AfHJEp0lWS8qnFjyrPqGWp4ibuW2yqS7mC1Y/8vbf5DlBcBC1uJ
+         FyqdlhXa/e4uCmvHCsnx6cO0LZUd0izImtht/SLq27dbIBVGNtMmWXgyEIYxDgDTCLoE
+         PXyYpG/FqsfOUfwzdAbO/eEYGSszZUAIrvpXJ76MAplq45O2fr+hhLB2JQEdfCrC9gx4
+         uCQTQffDbVCG0hDg2/h0/l0XyZuBj7/kzu2ecbiOH/juZIeBXy1sUL+byyehkEfb8i1A
+         Xj6ghcjGpP9SPnlvtpQ6yXTh9q4+WFO0hulYvqir0WKTOp0a117HJ68769NK0+iR7k/7
+         k0nQ==
+X-Gm-Message-State: AOAM530Rzjry7CZO4oL02QnVHTeiYr9TO4xHgcUDaUaGKK5m5OM11an6
+        io5HNzEzqWmhUCkvrnWGa0o=
+X-Google-Smtp-Source: ABdhPJw6kiycKHFCffK70j83498fb2SOL/iB3L9OWlOZOXhE+zIN7a19CaWrkKUH9pT5BZnjSILcKg==
+X-Received: by 2002:a17:902:d914:: with SMTP id c20mr5524153plz.269.1590991498581;
+        Sun, 31 May 2020 23:04:58 -0700 (PDT)
+Received: from ?IPv6:2406:3003:2006:2288:8cce:f943:4082:634d? ([2406:3003:2006:2288:8cce:f943:4082:634d])
+        by smtp.gmail.com with ESMTPSA id x77sm6770304pfc.4.2020.05.31.23.04.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 31 May 2020 23:04:57 -0700 (PDT)
+From:   Anand Jain <p10sonu@gmail.com>
+X-Google-Original-From: Anand Jain <anand.jain@oracle.com>
+Subject: Re: [BUG][PATCH] btrfs: a mixed profile DUP and RAID1C3/RAID1C4
+ prevent to alloc a new chunk
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        Goffredo Baroncelli <kreijack@libero.it>,
+        linux-btrfs@vger.kernel.org
+Cc:     David Sterba <dsterba@suse.cz>
+References: <20200530185321.8373-1-kreijack@libero.it>
+ <fc8f88a4-3812-a0dc-99ab-929b27d7530a@gmx.com>
+Message-ID: <c767c663-d6b0-da5a-f065-fc1198fc319e@oracle.com>
+Date:   Mon, 1 Jun 2020 14:04:54 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
+In-Reply-To: <fc8f88a4-3812-a0dc-99ab-929b27d7530a@gmx.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - br540.hostgator.com.br
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - mpdesouza.com
-X-BWhitelist: no
-X-Source-IP: 179.185.220.196
-X-Source-L: No
-X-Exim-ID: 1jfTJf-002ENi-Ak
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: ([192.168.0.172]) [179.185.220.196]:48190
-X-Source-Auth: marcos@mpdesouza.com
-X-Email-Count: 3
-X-Source-Cap: bXBkZXNvNTM7bXBkZXNvNTM7YnI1NDAuaG9zdGdhdG9yLmNvbS5icg==
-X-Local-Domain: yes
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Humble ping :)
 
-On Wed, 2020-04-15 at 21:46 -0300, Marcos Paulo de Souza wrote:
-> From: Marcos Paulo de Souza <mpdesouza@suse.com>
 > 
-> Changes from v2:
-> * Fixed the code format after moving function resize_filesystem in
-> patch 0001
->   (suggested by David)
-> * Sorted the resize_filesystem function prototype in patch 0001
-> (suggested by
->   David)
-> * Changed the -a into long argument --autoresize in patch 0002
-> (suggested by
->   David)
-> * Translate srcdev if the argument is not a devid (suggested by
-> David)
-> * This also changes the way we use the ioctl, now only passing devid
-> to the
->   kernel, instead of passing the path and letting the kernel to
-> translate
-> * Add tests to check the autoresize functionality
+> This in facts exposed the long existing bug that btrfs has no on-disk
+> indicator for the target chunk time, thus we need to be "creative" to
+> handle chunk profiles.
 > 
-> Changes from v1:
-> * Reworded the help message and the docs telling the user that the fs
-> will be
->   resized to it's max size (suggested by Qu)
-> * Added a warning message saying that the resize failed, asking the
-> user to
->   resize manually. (suggested by Qu)
+
+> I'm wondering if we could add new persistent item in chunk tree or super
+> block to solve the problem.
 > 
-> Both changes were done only in patch 0002.
+
+  +1. That will also fix the chunk size discrepancy between mkfs and kernel.
+
+Thanks, Anand
+
+
+> Any idea on this, David?
 > 
-> Anand suggested this job to be done in kernel side, atomically, but
-> as I
-> received a good review from Qu I decided to send a v3 of this
-> patchset.
+> Thanks,
+> Qu
 > 
-> Please review, thanks!
-> 
-> Original cover-letter[1]:
-> These two patches make possible to resize the fs after a successful
-> replace
-> finishes. The flag -a is responsible for doing it (-r is already use,
-> so -a in
-> this context means "automatically").
-> 
-> The first patch just moves the resize rationale to utils.c and the
-> second patch
-> adds the flag an calls resize if -a is informed replace finishes
-> successfully.
-> 
-> Please review!
-> 
-> Marcos Paulo de Souza (3):
->   btrfs-progs: Move resize into functionaly into utils.c
->   btrfs-progs: replace: New argument to resize the fs after replace
->   btrfs-progs: tests: misc: Add some replace tests
-> 
->  Documentation/btrfs-replace.asciidoc        |   5 +-
->  cmds/filesystem.c                           |  58 +----------
->  cmds/replace.c                              | 105 +++++++++++++-----
-> --
->  common/utils.c                              |  60 +++++++++++
->  common/utils.h                              |   2 +
->  tests/misc-tests/039-replace-device/test.sh |  56 +++++++++++
->  6 files changed, 192 insertions(+), 94 deletions(-)
->  create mode 100755 tests/misc-tests/039-replace-device/test.sh
-> 
+>>
+>> [*] https://lore.kernel.org/linux-btrfs/517dac49-5f57-2754-2134-92d716e50064@alice.it/
+>>
 
