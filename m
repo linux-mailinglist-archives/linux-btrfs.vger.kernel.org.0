@@ -2,117 +2,66 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 161DE1EA041
-	for <lists+linux-btrfs@lfdr.de>; Mon,  1 Jun 2020 10:44:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2468C1EA135
+	for <lists+linux-btrfs@lfdr.de>; Mon,  1 Jun 2020 11:51:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728258AbgFAIoa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 1 Jun 2020 04:44:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38832 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726142AbgFAIo3 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 1 Jun 2020 04:44:29 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B0D94206E2;
-        Mon,  1 Jun 2020 08:44:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591001068;
-        bh=++2cB/ePJhne1YRp0fru1zBYoji5d1nprT5N9O4udpk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=wVfow37nJUctQuczEjtuvdKVbO338MPrWmtxn6qzZZHMLNELwOQlIvzJoFUuF/1kq
-         q5DWi1Wf0naUXbCdA1uSgSP2CWJRK7dS8k1Y+Djaw8xRkHX+tVonEUHstDVdezlly+
-         CKUb/UU3oTLuSzgUFnUcgt1pHUYemwJpSNjNMHJk=
-Date:   Mon, 1 Jun 2020 10:44:26 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Tao pilgrim <pilgrimtao@gmail.com>
-Cc:     Jens Axboe <axboe@kernel.dk>, hch@lst.de, sth@linux.ibm.com,
-        viro@zeniv.linux.org.uk, clm@fb.com, jaegeuk@kernel.org,
-        hch@infradead.org, Mark Fasheh <mark@fasheh.com>,
-        dhowells@redhat.com, balbi@kernel.org, damien.lemoal@wdc.com,
-        bvanassche@acm.org, ming.lei@redhat.com,
-        martin.petersen@oracle.com, satyat@google.com,
-        chaitanya.kulkarni@wdc.com, houtao1@huawei.com,
-        asml.silence@gmail.com, ajay.joshi@wdc.com,
-        linux-kernel@vger.kernel.org,
-        Muchun Song <songmuchun@bytedance.com>, hoeppner@linux.ibm.com,
-        heiko.carstens@de.ibm.com, gor@linux.ibm.com,
-        borntraeger@de.ibm.com, linux-s390@vger.kernel.org,
-        sagi@grimberg.me, linux-nvme@lists.infradead.org,
-        linux-usb@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
-        dsterba@suse.com, linux-btrfs@vger.kernel.org, chao@kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, darrick.wong@oracle.com,
-        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        jlbec@evilplan.org, joseph.qi@linux.alibaba.com,
-        ocfs2-devel@oss.oracle.com, deepa.kernel@gmail.com
-Subject: Re: [PATCH v2] blkdev: Replace blksize_bits() with ilog2()
-Message-ID: <20200601084426.GB1667318@kroah.com>
-References: <20200529141100.37519-1-pilgrimtao@gmail.com>
- <c8412d98-0328-0976-e5f9-5beddc148a35@kernel.dk>
- <CAAWJmAZOQQQeNiTr48OSRRdO2pG+q4c=6gjT55CkWC5FN=HXmA@mail.gmail.com>
+        id S1725970AbgFAJvD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 1 Jun 2020 05:51:03 -0400
+Received: from [203.124.39.163] ([203.124.39.163]:52938 "EHLO
+        hrl.comsats.net.pk" rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725788AbgFAJvD (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 1 Jun 2020 05:51:03 -0400
+X-Greylist: delayed 902 seconds by postgrey-1.27 at vger.kernel.org; Mon, 01 Jun 2020 05:51:03 EDT
+X-AuditID: cb7c2cae-967ff70000001120-05-5ed4c91fefd0
+Received: from server.fdhlpk.com (210-56-15-163.Dialup.Attock.comsats.net.pk [210.56.27.163])
+        by hrl.comsats.net.pk (Symantec Messaging Gateway) with SMTP id 3B.66.04384.F19C4DE5; Mon,  1 Jun 2020 14:23:44 +0500 (PKT)
+Received: from [::1] (port=41208 helo=server.fdhlpk.com)
+        by server.fdhlpk.com with esmtpa (Exim 4.93)
+        (envelope-from <info@fdhlpk.com>)
+        id 1jfgql-0003oG-KN; Mon, 01 Jun 2020 14:35:19 +0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAAWJmAZOQQQeNiTr48OSRRdO2pG+q4c=6gjT55CkWC5FN=HXmA@mail.gmail.com>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 01 Jun 2020 14:35:19 +0500
+From:   "Mr.Goerge cliford" <info@fdhlpk.com>
+To:     undisclosed-recipients:;
+Subject: RE RE THANK YOU.
+Reply-To: george_clifford4@aol.com
+Mail-Reply-To: george_clifford4@aol.com
+Message-ID: <09e91c9f9a28dc6177228bfae28a60b4@fdhlpk.com>
+X-Sender: info@fdhlpk.com
+User-Agent: Roundcube Webmail/1.3.8
+X-Brightmail-Tracker: H4sIAAAAAAAAA02SfUxTZxTG8973fpQOwxVxXJDJQB2Jm1WTxZ1ljVkqw6vDZYnGmWUZsskE
+        wWoKQZftj+sYVUvcCqOt7SiDQhk2zMmHA/yAFfmGdRWKDBWsUPmUokBltjpnYcn87zknz3nO
+        7yRHhIPvUuGiFHlGkkKemBZNi8keWFWy4dUOx6eb5sYZeOroY+DmRRsDk2N3EAw8+Y2ECsGE
+        4O/hdgzXOg+Bc24UgzLrAgNao54Erb6ZAr3NwkD3qJOG69luDPrqFgJuF14ioGbejsHQ1czA
+        1JQTg0kthzuPqhjorTdh+KXtKQmn28oQDGU5SDDPtxLQn2Un4Ff1KQxZBUUY/iy7jqHi97M0
+        tDaVMjAt3KBhoMtDg9ckEKAqPwg/5H+D4B+fmQJdayEDuXnfIpi+XEFC47iAwHfpNgE9I+UM
+        nHepCJipdTw/8cwZDMbKFgocE7cw2CfMCNpPPUOQ1RkMOq0UvAvnCDD75jC4mk+TkOOspME1
+        0keDJddAQa0mh4J7rgUMlj92wOxEBEz3p717gDcP2Em+pDyf4sesFxj+p+HvMH9/rIHmHzY7
+        Kd5sqiZ5i7Wd5HsKSN6sDuK9NfUMX2e9h/imx27E1z06iXmv0oj5gvvd9IdxH4ulB5LSUjKT
+        FBu37hcn68ad9FEfcVzp6SAEVEWoUICIY9/kBI+LVCGxKJi9hTiXt/K/oglx3Z0/Y79rGbuc
+        69D7XSIRZt/hTl7Z5G9jNpKrnS5YtJDsOk6YGqH9mmZf587WllJ+HcJGcMYfRxb1CjaMM+T0
+        LS4OZqO5ds/0YuQyNoZrs8iW2sDVzbjQUqSMu6JpoZYI3uYaLmqoJeYwTmW9RvhHV7JrOOfk
+        y2q03PACp+F/TsMLnEUIW1BwsiJN8vmRw+mJGekSeVKG5GhqFXr+w11fv3G+Dn0/5JY0IUIU
+        EC4QguSxefb90HWTvREyIXVffGyj3PRFZP9249BkcWg6dH+Zw3z2wCDqatRveOVqTE9Il304
+        L3Nt0Ue+/doHmaA09A0G3hVSDw2/tnHfQrzkoVBcrIsKbNeF2roPhtusK3ePeqTebZE7dwYm
+        KCXnPNItqwNKE6THjog3F9SsF4990nrimKZUtjqqJHUXJybLwmKL1g7E/SU5/taNGNtWQv2V
+        OHWNqiEiOaTspn3VVLLqaq/cvT1P9mSiN2g0LmXwg7ZST9BQREOKqXqbmcgctYl2xL+U+97l
+        +hj3CVPGigSLMip7Zk/h4YTs+WKF1rbFqokdzN9ra3s27nPnD87u2l2tiSbTkxM3r8eK9MR/
+        AZHZ3E/0AwAA
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Jun 01, 2020 at 03:22:01PM +0800, Tao pilgrim wrote:
-> On Fri, May 29, 2020 at 10:13 PM Jens Axboe <axboe@kernel.dk> wrote:
-> >
-> > On 5/29/20 8:11 AM, Kaitao Cheng wrote:
-> > > There is a function named ilog2() exist which can replace blksize.
-> > > The generated code will be shorter and more efficient on some
-> > > architecture, such as arm64. And ilog2() can be optimized according
-> > > to different architecture.
-> >
-> > When you posted this last time, I said:
-> >
-> > "I like the simplification, but do you have any results to back up
-> >  that claim? Is the generated code shorter? Runs faster?"
-> >
-> 
-> Hi  Jens Axboe:
-> 
-> I did a test on ARM64.
-> unsigned int ckt_blksize(int size)
-> {
->    return blksize_bits(size);
-> }
-> unsigned int ckt_ilog2(int size)
-> {
->     return ilog2(size);
-> }
-> 
-> When I compiled it into assembly code, I got the following result,
-> 
-> 0000000000000088 <ckt_blksize>:
->       88: 2a0003e8 mov w8, w0
->       8c: 321d03e0 orr w0, wzr, #0x8
->       90: 11000400 add w0, w0, #0x1
->       94: 7108051f cmp w8, #0x201
->       98: 53017d08 lsr w8, w8, #1
->       9c: 54ffffa8 b.hi 90 <ckt_blksize+0x8>
->       a0: d65f03c0 ret
->       a4: d503201f nop
-> 
-> 00000000000000a8 <ckt_ilog2>:
->       a8: 320013e8 orr w8, wzr, #0x1f
->       ac: 5ac01009 clz w9, w0
->       b0: 4b090108 sub w8, w8, w9
->       b4: 7100001f cmp w0, #0x0
->       b8: 5a9f1100 csinv w0, w8, wzr, ne
->       bc: d65f03c0 ret
-> 
-> The generated code of ilog2  is shorter , and  runs faster
 
-But does this code path actually show up anywhere that is actually
-measurable as mattering?
 
-If so, please show that benchmark results.
-
-thanks,
-
-greg k-h
+-- 
+Compliment of the day and hope you are in good health in this time of
+pandemic crisis This message is the last notification about USD14.5
+million bearing our Name as Beneficiary, all effort to reach you have
+not to Be successful, Please if you receive this message kindly respond
+back stating your Desire To make the claim reconfirm your full name and
+age, Mr.Cliford
