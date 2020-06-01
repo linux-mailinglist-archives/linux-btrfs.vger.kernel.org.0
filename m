@@ -2,61 +2,89 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D622D1EA687
-	for <lists+linux-btrfs@lfdr.de>; Mon,  1 Jun 2020 17:08:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E93BA1EA6B7
+	for <lists+linux-btrfs@lfdr.de>; Mon,  1 Jun 2020 17:17:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726289AbgFAPIA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 1 Jun 2020 11:08:00 -0400
-Received: from mx2.suse.de ([195.135.220.15]:49590 "EHLO mx2.suse.de"
+        id S1728106AbgFAPQT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 1 Jun 2020 11:16:19 -0400
+Received: from mx2.suse.de ([195.135.220.15]:53238 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726176AbgFAPIA (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 1 Jun 2020 11:08:00 -0400
+        id S1727118AbgFAPQT (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 1 Jun 2020 11:16:19 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 6A6AAAC5B;
-        Mon,  1 Jun 2020 15:08:00 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 23003DA79B; Mon,  1 Jun 2020 17:07:55 +0200 (CEST)
-Date:   Mon, 1 Jun 2020 17:07:55 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Anand Jain <anand.jain@oracle.com>
-Cc:     dsterba@suse.cz, dsterba@suse.com, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v7 rebased 0/5] readmirror feature (sysfs and in-memory
- only approach; with new read_policy device)
-Message-ID: <20200601150755.GX18421@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Anand Jain <anand.jain@oracle.com>,
-        dsterba@suse.com, linux-btrfs@vger.kernel.org
-References: <1586173871-5559-1-git-send-email-anand.jain@oracle.com>
- <a963d6c8-f0ec-7d41-ff0a-26d3ef9d013d@oracle.com>
- <20200515195858.GS18421@twin.jikos.cz>
- <c61a44bf-04ab-01a0-3fbe-4d5970827085@oracle.com>
- <20200522134656.GL18421@twin.jikos.cz>
- <a240b771-bec4-dfc5-bfff-e4ee820bc481@oracle.com>
+        by mx2.suse.de (Postfix) with ESMTP id 2AB53AC5B;
+        Mon,  1 Jun 2020 15:16:19 +0000 (UTC)
+Date:   Mon, 1 Jun 2020 10:16:14 -0500
+From:   Goldwyn Rodrigues <rgoldwyn@suse.de>
+To:     "Darrick J. Wong" <darrick.wong@oracle.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        Johannes.Thumshirn@wdc.com, hch@infradead.org, dsterba@suse.cz,
+        fdmanana@gmail.com
+Subject: Re: [PATCH] iomap: Return zero in case of unsuccessful pagecache
+ invalidation before DIO
+Message-ID: <20200601151614.pxy7in4jrvuuy7nx@fiona>
+References: <20200528192103.xm45qoxqmkw7i5yl@fiona>
+ <20200529002319.GQ252930@magnolia>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <a240b771-bec4-dfc5-bfff-e4ee820bc481@oracle.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <20200529002319.GQ252930@magnolia>
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, May 26, 2020 at 03:23:08PM +0800, Anand Jain wrote:
-> > Yes that's the usecase and the possibility to make more targeted tests
-> > is also good, but that still means the feature is half-baked and missing
-> > the main part. If it was out of scope, ok fair, but I don't want to
-> > merge it at that state. It would be embarassing to announce mirror
-> > selection followed by "ah no it's useless for anything than this special
-> > usecase".
+On 17:23 28/05, Darrick J. Wong wrote:
+> On Thu, May 28, 2020 at 02:21:03PM -0500, Goldwyn Rodrigues wrote:
+> > 
+> > Filesystems such as btrfs are unable to guarantee page invalidation
+> > because pages could be locked as a part of the extent. Return zero
 > 
-> I didn't realize the need for default policy is prioritized before this 
-> patch set.
+> Locked for what?  filemap_write_and_wait_range should have just cleaned
+> them off.
+> 
+> > in case a page cache invalidation is unsuccessful so filesystems can
+> > fallback to buffered I/O. This is similar to
+> > generic_file_direct_write().
+> > 
+> > This takes care of the following invalidation warning during btrfs
+> > mixed buffered and direct I/O using iomap_dio_rw():
+> > 
+> > Page cache invalidation failure on direct I/O.  Possible data
+> > corruption due to collision with buffered I/O!
+> > 
+> > Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
+> > 
+> > diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
+> > index e4addfc58107..215315be6233 100644
+> > --- a/fs/iomap/direct-io.c
+> > +++ b/fs/iomap/direct-io.c
+> > @@ -483,9 +483,15 @@ iomap_dio_rw(struct kiocb *iocb, struct iov_iter *iter,
+> >  	 */
+> >  	ret = invalidate_inode_pages2_range(mapping,
+> >  			pos >> PAGE_SHIFT, end >> PAGE_SHIFT);
+> > -	if (ret)
+> > -		dio_warn_stale_pagecache(iocb->ki_filp);
+> > -	ret = 0;
+> > +	/*
+> > +	 * If a page can not be invalidated, return 0 to fall back
+> > +	 * to buffered write.
+> > +	 */
+> > +	if (ret) {
+> > +		if (ret == -EBUSY)
+> > +			ret = 0;
+> > +		goto out_free_dio;
+> 
+> XFS doesn't fall back to buffered io when directio fails, which means
+> this will cause a regression there.
+> 
+> Granted mixing write types is bogus...
+> 
 
-The updated default policy has been asked for for a long time so this is
-what makes it important.
+I have not seen page invalidation failure errors on XFS, but what should
+happen hypothetically if they do occur? Carry on with the direct I/O?
+Would an error return like -ENOTBLK be better?
 
-> Potential default read policy is interesting, looking into it.
-
-Thanks.
+-- 
+Goldwyn
