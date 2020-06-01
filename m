@@ -2,168 +2,161 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11F0F1EB04C
-	for <lists+linux-btrfs@lfdr.de>; Mon,  1 Jun 2020 22:37:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1977A1EB0B4
+	for <lists+linux-btrfs@lfdr.de>; Mon,  1 Jun 2020 23:09:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728158AbgFAUft (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 1 Jun 2020 16:35:49 -0400
-Received: from syrinx.knorrie.org ([82.94.188.77]:47152 "EHLO
-        syrinx.knorrie.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727875AbgFAUfr (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 1 Jun 2020 16:35:47 -0400
-Received: from [IPv6:2a02:a213:2b80:f000::12] (unknown [IPv6:2a02:a213:2b80:f000::12])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by syrinx.knorrie.org (Postfix) with ESMTPSA id E18F46092DF71;
-        Mon,  1 Jun 2020 22:35:44 +0200 (CEST)
-Subject: Re: space_cache=v1 and v2 at the time time?
-To:     dsterba@suse.cz, Chris Murphy <lists@colorremedies.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-References: <CAJCQCtQVPFi7fB+p4HEVy1Gw3AjzrvQ8qcY6cRbKj3T-+7yVxA@mail.gmail.com>
- <c33f3305-a265-d2a4-75e3-9bdd850604f8@knorrie.org>
- <20200601175252.GC18421@twin.jikos.cz>
-From:   Hans van Kranenburg <hans@knorrie.org>
-Autocrypt: addr=hans@knorrie.org; keydata=
- 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
-Message-ID: <8883fb1b-4b5c-eae4-bbb3-babc4528399e@knorrie.org>
-Date:   Mon, 1 Jun 2020 22:35:44 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        id S1728605AbgFAVIy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 1 Jun 2020 17:08:54 -0400
+Received: from mail-mw2nam12olkn2087.outbound.protection.outlook.com ([40.92.23.87]:6314
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727875AbgFAVIu (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 1 Jun 2020 17:08:50 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ZUQpT6AFlKV+1KHnRsMivrNaRalD5WWL7WLLxb1bzRBRyukmZc1vZE+mC/7jaXkSEqW1qJtlBLFOpY5GlxVzG5BM6R1YmtLejKOdPAvqdUxb5ZZ/fn6Ut9vA6al0vtR42VL52ibpL6EfPq/oLSJCHbRnKroTYCTzhW1QTkV31mxuCCPPCK2UZHroOBu05AR+J73SpsPAERR8jHyA9xuFxoVB3yblWwc6UuB3OGfhxxJnTgSbpYpuQRrp7KiW7/TPCYgcN3mAJfkJ3NlG+cwX9Dl5XMfinVu/Bs0+/fDLI0ec8snvKvxwDMpQhGoMMaoQJwuc/4q4lSiwH8G2jNXkaQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=LRMOQoPQlBa5TnSwk/HWVOEoqZ1JX5YYqBwbaaOVkYA=;
+ b=Tl0bfjM2gmuoSVyYp0ocLcFBPQMO5zkPPxy/ms8/I9WRp4dZ8jmechM2SkhkpsQzPLs2PcehUSgpDGPt/lJund4PfzXGNfPZzQ9VMbWAElKPNBGusBnqtia1LV+nS1QUE/LfbIFM71Fu9C50XW8nnmIneFH45R1pBW5yuX058RU80ejl1rli7DJusXer8SldXGHQKOma2lLaglwEMDdMkKOIVlbcq9MrZ0/Bzb+0uZjnuZeNW1ITB8K1LrteNFqxBKELBT7rdcQh0bxNXSDsod2wwqVPgleB2r7zYUFHYv7/uy5sWvHCnoOrOpjK9As6S/f0epRKXHcSwx+x1eo4Lw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+Received: from DM6NAM12FT019.eop-nam12.prod.protection.outlook.com
+ (2a01:111:e400:fc64::42) by
+ DM6NAM12HT174.eop-nam12.prod.protection.outlook.com (2a01:111:e400:fc64::321)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3066.8; Mon, 1 Jun
+ 2020 21:08:48 +0000
+Received: from DM6PR02MB4427.namprd02.prod.outlook.com
+ (2a01:111:e400:fc64::51) by DM6NAM12FT019.mail.protection.outlook.com
+ (2a01:111:e400:fc64::84) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3066.8 via Frontend
+ Transport; Mon, 1 Jun 2020 21:08:48 +0000
+X-IncomingTopHeaderMarker: OriginalChecksum:5E3B88AB89454266F266AC13D3A3DB3A84904D7A4D4D64958D1F9A29918994D1;UpperCasedChecksum:185A6150F0D2CDF505888EA0858503A84AC5327BE1FA84BA3CE42A505FCD6E6E;SizeAsReceived:8641;Count:46
+Received: from DM6PR02MB4427.namprd02.prod.outlook.com
+ ([fe80::1910:a162:220e:24e8]) by DM6PR02MB4427.namprd02.prod.outlook.com
+ ([fe80::1910:a162:220e:24e8%3]) with mapi id 15.20.3045.022; Mon, 1 Jun 2020
+ 21:08:48 +0000
+Message-ID: <DM6PR02MB44274C6B16F173291A82C4A8C98A0@DM6PR02MB4427.namprd02.prod.outlook.com>
+Subject: Massive filesystem corruption, potentially related to
+ eCryptfs-on-btrfs
+From:   Xuanrui Qi <me@xuanruiqi.com>
+To:     linux-btrfs@vger.kernel.org
+Date:   Tue, 02 Jun 2020 06:08:42 +0900
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.3 
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: TY2PR01CA0022.jpnprd01.prod.outlook.com
+ (2603:1096:404:a::34) To DM6PR02MB4427.namprd02.prod.outlook.com
+ (2603:10b6:5:29::20)
+X-Microsoft-Original-Message-ID: <32042f1e664522c598ddedcf9aff1e38f07f2e96.camel@xuanruiqi.com>
 MIME-Version: 1.0
-In-Reply-To: <20200601175252.GC18421@twin.jikos.cz>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from xuanruiwork (2402:6b00:36b2:c000:d0:7f49:f7b4:c27b) by TY2PR01CA0022.jpnprd01.prod.outlook.com (2603:1096:404:a::34) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3045.21 via Frontend Transport; Mon, 1 Jun 2020 21:08:47 +0000
+X-Microsoft-Original-Message-ID: <32042f1e664522c598ddedcf9aff1e38f07f2e96.camel@xuanruiqi.com>
+X-TMN:  [sR0+rKKrHS0oxAPIhHOXQWa7mZ2L2ICP3bNiczj3WgWqtBqPetSBI2WCtGJzbh4a]
+X-MS-PublicTrafficType: Email
+X-IncomingHeaderCount: 46
+X-EOPAttributedMessage: 0
+X-MS-Office365-Filtering-Correlation-Id: 2ccc5bb2-b8a9-4cfe-a1e2-08d8066ffa12
+X-MS-TrafficTypeDiagnostic: DM6NAM12HT174:
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: q0Pl/Vjk0qgoHxgB1cnXRp4+05B6wCho9mJzGagFb0Rpij8nPFEALup0aaMH/yTdVm+D9Z5Sxqbo2HPcywAkbZPfmUFG5Xi5hrTiMjuT9dcxnrD/edk1Y5Js3pjlV7z+gS4iu+5eM/xojGVD9r3cizCE85nL7bFScQpMC6gqpr9h93ckDX1YAGwLS6BgifJVBdL5ldJwJ6PXaKffl8+4zQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:0;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR02MB4427.namprd02.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:;DIR:OUT;SFP:1901;
+X-MS-Exchange-AntiSpam-MessageData: jpMyz9gbouFqgFhQyUeVYjxhPVpmMvcSSFmeJSeRgUgIc4SVEmZmxhRol5ygXarMomuSr+ePOMEgZfPrtjRRECOOaJbY1vZXtFg6l6Ky/x8cfVfbDzvu/H98k9lHgax/33JzrXS6S65Xx162lTn5+J9YeJiLAz5aH4+nJBtNm+qYFA6seQGYA3jM4E60hd0tqcq6YTamfGSdJaKsG8OY/Q==
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2ccc5bb2-b8a9-4cfe-a1e2-08d8066ffa12
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Jun 2020 21:08:48.3474
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-FromEntityHeader: Internet
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6NAM12HT174
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi,
+Hello all,
 
-On 6/1/20 7:52 PM, David Sterba wrote:
-> On Thu, May 28, 2020 at 11:04:07PM +0200, Hans van Kranenburg wrote:
->> Hi,
->>
->> On 5/27/20 4:12 AM, Chris Murphy wrote:
->>> What are the implications of not clearing v1 before enabling v2?
->>>
->>> From btrfs insp dump-t, I still see the v1 bitmaps present:
->>>
->>> root tree
->>> leaf 6468501504 items 42 free space 9246 generation 22 owner ROOT_TREE
->>> leaf 6468501504 flags 0x1(WRITTEN) backref revision 1
->>> ...
->>>     item 30 key (FREE_SPACE UNTYPED 22020096) itemoff 11145 itemsize 41
->>>         location key (256 INODE_ITEM 0)
->>>         cache generation 17 entries 0 bitmaps 0
->>>     item 31 key (FREE_SPACE UNTYPED 1095761920) itemoff 11104 itemsize 41
->>>         location key (257 INODE_ITEM 0)
->>>         cache generation 17 entries 0 bitmaps 0
->>> ...
->>>
->>>
->>> And later the free space tree:
->>>
->>> free space tree key (FREE_SPACE_TREE ROOT_ITEM 0)
->>> leaf 6471073792 items 39 free space 15196 generation 22 owner FREE_SPACE_TREE
->>> leaf 6471073792 flags 0x1(WRITTEN) backref revision 1
->>> fs uuid 3c464210-08c7-4cf0-b175-e4b781ebea19
->>> chunk uuid f1d18732-7c3d-401c-8637-e7d4d9c7a0b8
->>>     item 0 key (1048576 FREE_SPACE_INFO 4194304) itemoff 16275 itemsize 8
->>>         free space info extent count 2 flags 0
->>>     item 1 key (1048576 FREE_SPACE_EXTENT 16384) itemoff 16275 itemsize 0
->>>         free space extent
->>>     item 2 key (1081344 FREE_SPACE_EXTENT 4161536) itemoff 16275 itemsize 0
->>>         free space extent
->>> ...
->>>
->>> I was surprised there's no warning when I use space_cache=v2 without
->>> first clearing v1.
->>
->> It's just sitting there, occupying some space, doing nothing.
-> 
-> Hm that's not ideal, right? There's support in btrfs check,
-> "btrfs check --clear-space-cache v1", but it needs unmounted filesystem.
-> I don't remember if that was discussed when v2 was introduced, but it
-> seems strange. As we want to make v2 default soon, the conversion should
-> work without such surprises.
+I have just recovered from a massive filesystem corruption problem
+which turned out to be a total nightmare, and I have strong reason to
+suspect that it is related to eCryptfs-encrypted folders on btrfs.
 
-I guess the most straightforward thing to do would be to execute a copy
-of this remove space cache v1 code before creating the v2 tree when
-mounting first time with v2 enabled.
+I run Arch Linux and have my /home directory as a btrfs partition. My
+user's home directory (/home/xuanrui) is encrypted using eCryptFS.
 
-K
+I ran into a massive filesystem corrpution issue a while ago. When
+reading certain files or occasionally writing to files, I encounter FS
+errors (mainly checksum errors, but also other I/O errors). Then my
+file system becomes read-only because errors were encountered.
+
+A `btrfs scrub` identified a dozen of checksum errors which were "not
+correctable", and `btrfs check --repair` (and `btrfs check --repair --
+init-csum-tree`) also failed to fix anything. The former crashed in a
+segfault, and the latter refused to write anything because of an "I/O
+error".
+
+Unfortunately, I don't have any logs because I had to nuke (wipe & re-
+make) my filesystem as the solution. However, after the reformatting I
+gave up using eCryptFs, and the file corruption bugs have not
+reappeared since. Initially I suspected that it was a hardware issue,
+but I did a SMART test and no errors were detected; I strongly suspect
+that it is related to eCryptFS.
+
+System info:
+
+uname -a:
+
+Linux xuanruiwork 5.6.15-3-clear #1 SMP Sun, 31 May 2020 19:57:42 +0000
+x86_64 GNU/Linux
+
+btrfs --version:
+btrfs-progs v5.6.1
+
+(the rest is from after the reformat, but the setup is identical to
+before the reformat sans eCryptFS)
+
+btrfs fi show:
+Label: none  uuid: 823961e1-6b9e-4ab8-b5a7-c17eb8c40d64
+	Total devices 1 FS bytes used 57.58GiB
+	devid    1 size 332.94GiB used 60.02GiB path /dev/sda3
+
+btrfs fi df /home:
+Data, single: total=59.01GiB, used=57.26GiB
+System, single: total=4.00MiB, used=16.00KiB
+Metadata, single: total=1.01GiB, used=328.25MiB
+GlobalReserve, single: total=75.17MiB, used=0.00B
+
+Some output from dmesg (note that /dev/sda1 is not the corrupted
+filesystem; these corruptions seem to have been self-corrected by
+btrfs):
+
+[    3.434351] BTRFS: device fsid 823961e1-6b9e-4ab8-b5a7-c17eb8c40d64
+devid 1 transid 79 /dev/sda3 scanned by systemd-udevd (519)
+[    3.440896] BTRFS: device fsid a3892669-1ad8-4ff3-9747-0f8c405c0e6a
+devid 1 transid 4769881 /dev/sda1 scanned by systemd-udevd (487)
+[    3.461539] BTRFS info (device sda1): disk space caching is enabled
+[    3.461540] BTRFS info (device sda1): has skinny extents
+[    3.464079] BTRFS info (device sda1): bdev /dev/sda1 errs: wr 0, rd
+0, flush 0, corrupt 14, gen 0
+[    3.510991] BTRFS info (device sda1): enabling ssd optimizations
+[    5.938153] BTRFS info (device sda1): disk space caching is enabled
+[    7.072974] BTRFS info (device sda3): enabling ssd optimizations
+[    7.072977] BTRFS info (device sda3): disk space caching is enabled
+[    7.072978] BTRFS info (device sda3): has skinny extents
+[ 3710.968433] BTRFS warning (device sda3): qgroup rescan init failed,
+qgroup is not enabled
+[ 7412.459332] BTRFS info (device sda1): scrub: started on devid 1
+[ 7545.641724] BTRFS info (device sda1): scrub: finished on devid 1
+with status: 0
+[ 8244.846830] BTRFS info (device sda3): scrub: started on devid 1
+[ 8369.651774] BTRFS info (device sda3): scrub: finished on devid 1
+with status: 0
+
+If anyone could look into the issue, it would be greatly appreciated.
+
+Best,
+Xuanrui
+
