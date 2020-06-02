@@ -2,211 +2,318 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C3851EB915
-	for <lists+linux-btrfs@lfdr.de>; Tue,  2 Jun 2020 12:06:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF3981EB9BA
+	for <lists+linux-btrfs@lfdr.de>; Tue,  2 Jun 2020 12:39:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726706AbgFBKGU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 2 Jun 2020 06:06:20 -0400
-Received: from esa1.hgst.iphmx.com ([68.232.141.245]:65304 "EHLO
-        esa1.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726580AbgFBKGT (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 2 Jun 2020 06:06:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1591092378; x=1622628378;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=j+G4hck7pggCHnnCWwM2KH5bU56FwbyHNxegkWWZrIY=;
-  b=cGn6cAhunCSqGRaPLamP4vs97tbOAJjy9DdDg0Spdl3EWGSU+z+euvgs
-   v1EZdrImY5XnBQnyrcnIZKo+703K4kOMbW+a7XpPh6Ef+RqZLcWZE8YnW
-   kkT2al5SRfI9LpLa4meJbwwfrAZnBx8tJ6y/fFEsb6iBsz2MAw9rGVvJA
-   ILU/+AUvIUUwJyX+F80Atoo+lmkD0Z457H7Gt0ptZ3AUnF34acOf/z6zJ
-   MUnLR4Keh5J4Lr3ToNC4vjzeOn177wqaaio9hclH188V1jnWWNw/mX+YV
-   Q8XVJNg+UhFJFo3+NQGpYlKFvFluGoQ1tyrOvu0fdm8sTbOI9tME97em7
-   w==;
-IronPort-SDR: 0SV/J8Rncsi5p7McDDHmFqKqh7OQyUQV7IK2bHpD/uer/7FKarS8G8KHdSOf0Fusa3pP8j82+/
- KBK7gif1wxUNmwTz6bKn+GIsr1F7MSBFVhX28+k7Skuu1B/t2eE8vn0w4inJY7ocQLjhTB7I4b
- 6IH+Nsw3h7obxljJXoLn4BRv91+v9w0nzH+f4EYrpfAsI8PvuTeC1l/dWQuGdx15htbkHZzSWy
- zpnO5+6FM8QhJGhfw8U4eNei7HMTh+HEnZ/wJU2WvpaN39b2CSQwUgK+SM570Hn98V1A38dRJ9
- DIY=
-X-IronPort-AV: E=Sophos;i="5.73,463,1583164800"; 
-   d="scan'208";a="248104355"
-Received: from h199-255-45-15.hgst.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 02 Jun 2020 18:06:04 +0800
-IronPort-SDR: UOnWZJ3ILiynNDEC/THbbjKIfBlFxs9PtlrIk6cC1GHACpjKsKoG05BK+MQTSDBvw/gCR6dLvF
- DuBbgdHUdiDPCTtNoWNBClABlHAllq7l8=
-Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jun 2020 02:55:11 -0700
-IronPort-SDR: zOoc/F5jIX1ejIHLLTeqQiy31oKv620lJMbaBP+3+X8HVSJmOk6P7+NGLma7rderJpYtU/4LG9
- wPSx3+IUwpDQ==
-WDCIronportException: Internal
-Received: from unknown (HELO redsun60.ssa.fujisawa.hgst.com) ([10.149.66.36])
-  by uls-op-cesaip02.wdc.com with ESMTP; 02 Jun 2020 03:06:04 -0700
-From:   Johannes Thumshirn <johannes.thumshirn@wdc.com>
-To:     David Sterba <dsterba@suse.cz>
-Cc:     Nikolay Borisov <nborisov@suse.com>, linux-btrfs@vger.kernel.org,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Subject: [PATCH v3 2/2] btrfs: factor out reading of bg from find_frist_block_group
-Date:   Tue,  2 Jun 2020 19:05:57 +0900
-Message-Id: <20200602100557.6938-3-johannes.thumshirn@wdc.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200602100557.6938-1-johannes.thumshirn@wdc.com>
-References: <20200602100557.6938-1-johannes.thumshirn@wdc.com>
+        id S1726964AbgFBKjI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 2 Jun 2020 06:39:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51682 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726110AbgFBKjI (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 2 Jun 2020 06:39:08 -0400
+Received: from mail-vs1-xe43.google.com (mail-vs1-xe43.google.com [IPv6:2607:f8b0:4864:20::e43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D86C6C061A0E;
+        Tue,  2 Jun 2020 03:39:07 -0700 (PDT)
+Received: by mail-vs1-xe43.google.com with SMTP id q2so1751215vsr.1;
+        Tue, 02 Jun 2020 03:39:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc:content-transfer-encoding;
+        bh=X0+2uYq8iHGOkFMcLDAGvrfjXzDfeE0e0hOMTI6ZNzU=;
+        b=Jz7bA60Z9XxghnhoH50NfXtiYu4M46bZCCZE54lFVpk9tY4SRdAZBF4pCa//Z1bmaj
+         g+GaZaflcLFGgoTeuhRPpv3Ocw7hgESaIQA1ky9p3TWrwmd8la7V31RE/QYZGwB+j3F4
+         cmD5q42ewE9I5C1sif0T0DP8XmiN2k0IBxbNEaoHXGLpTHOioE+GXfEy0PCO3hE3xiST
+         B/9RFnmnaxGHjvq8PVpBbVArf9fnP2SGCxdPycsBdcG/AfZmqL/MTIHnjNPXAKbas/sa
+         Q8y44cPG8MG/R+vD8eQrkhfG5NYyBSd19y9YOwZuVJNQrd9fNMlPhjjLAq1PxcbccivO
+         mXFQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc:content-transfer-encoding;
+        bh=X0+2uYq8iHGOkFMcLDAGvrfjXzDfeE0e0hOMTI6ZNzU=;
+        b=S1UIOYTHGEJt+2QsRAAVSGMFaHrf3QETVYUT7essKpOeTGwzHedkgb4N6CQu0eiiIr
+         qbv0IMDJoD09/rSvzgXJiDOR6nvcLDE42moo5ixxiF/zIewZFG8/Hk+IaoCOsEThBYTF
+         SuVnWpOoWzd6KUigvBAOEun9ejVDrRbeFLxO6qyAlZcNgoTtkxqc9M95jJNexHBmGZvu
+         fapIbTs6ul4V3LsubJj4SGU/9+4P1jcucznWpTFRydgqwm6ewUYEPw4+IosPgJ8FeVi9
+         qH2HiAWTVT3e9dLI7F3jOCF2fXgozFJC6WNpjamaijJc3Y1CzFU0SveswwLyFuMFcDMQ
+         7xSg==
+X-Gm-Message-State: AOAM5321w+hnwRA61HSqLxYhKBGtkOOW2Nci4LAY6uGbaPtYTeaOaSh5
+        MSd84P793LJ22RsbFuYDQVzHEM0yXYxy8l+5TUi9wg==
+X-Google-Smtp-Source: ABdhPJwD1/xPQHlWSKDvoEMa43FtS55bW+D35q4IcMC+VoITbIbK6ZzKU1Wu2eaV+ctDUesyupliZkze4BHrrwNETxc=
+X-Received: by 2002:a67:2dc1:: with SMTP id t184mr4780521vst.90.1591094346941;
+ Tue, 02 Jun 2020 03:39:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200601194845.11829-1-marcos@mpdesouza.com>
+In-Reply-To: <20200601194845.11829-1-marcos@mpdesouza.com>
+Reply-To: fdmanana@gmail.com
+From:   Filipe Manana <fdmanana@gmail.com>
+Date:   Tue, 2 Jun 2020 11:38:56 +0100
+Message-ID: <CAL3q7H5oUVMqnk6ZcjiKzjqvqab8sPcBJWjaK6uoC0mXT5a26Q@mail.gmail.com>
+Subject: Re: [PATCH v2] btrfs: test if the capability is kept on incremental send
+To:     Marcos Paulo de Souza <marcos@mpdesouza.com>
+Cc:     David Sterba <dsterba@suse.com>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        fstests <fstests@vger.kernel.org>,
+        Marcos Paulo de Souza <mpdesouza@suse.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-When find_first_block_group() finds a block group item in the extent-tree,
-it does a lookup of the object in the extent mapping tree and does further
-checks on the item.
+On Mon, Jun 1, 2020 at 9:08 PM Marcos Paulo de Souza
+<marcos@mpdesouza.com> wrote:
+>
+> From: Marcos Paulo de Souza <mpdesouza@suse.com>
+>
+> This test exercises full send and incremental send operations for cases
+> where files have capabilities, ensuring the capabilities aren't lost in
+> the process.
+>
+> There was a problem with kernel <=3D5.7 that was making capabilities to b=
+e lost
+> after a combination of full + incremental send. This behavior was fixed b=
+y the
+> following patch:
+>
+> btrfs: send: Emit file capabilities after chown
+>
+> Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
 
-Factor out this step from find_first_block_group() so we can further
-simplify the code.
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
 
-While we're at it, we can also just return early in
-find_first_block_group(), if the tree slot isn't found.
+Thanks.
 
-Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+> ---
+>
+>  Changes from v1:
+>  * Remove the steps to reproduce a problem fixes in btrfs code. (Filipe)
+>  * Remove the underscore from the local function names (Filipe)
+>  * Change function name _check_xattr -> check_capabilities (Filipe)
+>  * Rename all local variables to be lowercase (Filipe)
+>  * Put FS1 and FS2 variables in the global context of the test (Filipe)
+>  * Changes all occurrences of _fail into a simple echo (Filipe)
+>  * Declare some local variables as "local" (Filipe)
+>  * Some Capability -> Capabilities, since we are dealing with multiple ca=
+pabilities (Filipe)
+>  * Some cap -> capabilities, inc -> incremental (Filipe)
+>  * Add missing "send group" (Filipe)
+>
+>  tests/btrfs/214     | 152 ++++++++++++++++++++++++++++++++++++++++++++
+>  tests/btrfs/214.out |   6 ++
+>  tests/btrfs/group   |   1 +
+>  3 files changed, 159 insertions(+)
+>  create mode 100755 tests/btrfs/214
+>  create mode 100644 tests/btrfs/214.out
+>
+> diff --git a/tests/btrfs/214 b/tests/btrfs/214
+> new file mode 100755
+> index 00000000..113bbb27
+> --- /dev/null
+> +++ b/tests/btrfs/214
+> @@ -0,0 +1,152 @@
+> +#! /bin/bash
+> +# SPDX-License-Identifier: GPL-2.0
+> +# Copyright (C) 2020 SUSE Linux Products GmbH. All Rights Reserved.
+> +#
+> +# FS QA Test 214
+> +#
+> +# Test if the file capabilities aren't lost after full and incremental s=
+end
+> +#
+> +seq=3D`basename $0`
+> +seqres=3D$RESULT_DIR/$seq
+> +echo "QA output created by $seq"
+> +
+> +here=3D`pwd`
+> +tmp=3D/tmp/$$
+> +status=3D1       # failure is the default!
+> +trap "cleanup; exit \$status" 0 1 2 3 15
+> +
+> +# get standard environment, filters and checks
+> +. ./common/rc
+> +. ./common/filter
+> +
+> +# remove previous $seqres.full before test
+> +rm -f $seqres.full
+> +
+> +_supported_fs btrfs
+> +_supported_os Linux
+> +_require_scratch
+> +_require_command "$SETCAP_PROG" setcap
+> +_require_command "$GETCAP_PROG" getcap
+> +
+> +FS1=3D"$SCRATCH_MNT/fs1"
+> +FS2=3D"$SCRATCH_MNT/fs2"
+> +
+> +cleanup()
+> +{
+> +       cd /
+> +       rm -f $tmp.*
+> +}
+> +
+> +check_capabilities()
+> +{
+> +       local file
+> +       local cap
+> +       local ret
+> +       file=3D"$1"
+> +       cap=3D"$2"
+> +       ret=3D$($GETCAP_PROG "$file")
+> +       if [ -z "$ret" ]; then
+> +               echo "$ret"
+> +               echo "missing capability in file $file"
+> +       fi
+> +       if [[ "$ret" !=3D *$cap* ]]; then
+> +               echo "$cap"
+> +               echo "Capabilities do not match. Output: $ret"
+> +       fi
+> +}
+> +
+> +setup()
+> +{
+> +       _scratch_mkfs >/dev/null
+> +       _scratch_mount
+> +
+> +       $BTRFS_UTIL_PROG subvolume create "$FS1" > /dev/null
+> +       $BTRFS_UTIL_PROG subvolume create "$FS2" > /dev/null
+> +}
+> +
+> +full_nocap_inc_withcap_send()
+> +{
+> +       local ret
+> +
+> +       setup
+> +
+> +       # Test full send containing a file without capabilities
+> +       touch "$FS1/foo.bar"
+> +       $BTRFS_UTIL_PROG subvolume snapshot -r "$FS1" "$FS1/snap_init" >/=
+dev/null
+> +       $BTRFS_UTIL_PROG send "$FS1/snap_init" -q | $BTRFS_UTIL_PROG rece=
+ive "$FS2" -q
+> +       # ensure that we don't have capabilities set
+> +       ret=3D$($GETCAP_PROG "$FS2/snap_init/foo.bar")
+> +       if [ -n "$ret" ]; then
+> +               echo "File contains capabilities when it shouldn't"
+> +       fi
+> +
+> +       # Test if incremental send brings the newly added capability
+> +       $SETCAP_PROG "cap_sys_ptrace+ep cap_sys_nice+ep" "$FS1/foo.bar"
+> +       $BTRFS_UTIL_PROG subvolume snapshot -r "$FS1" "$FS1/snap_inc" >/d=
+ev/null
+> +       $BTRFS_UTIL_PROG send -p "$FS1/snap_init" "$FS1/snap_inc" -q | \
+> +                                       $BTRFS_UTIL_PROG receive "$FS2" -=
+q
+> +       check_capabilities "$FS2/snap_inc/foo.bar" "cap_sys_ptrace,cap_sy=
+s_nice+ep"
+> +
+> +       _scratch_unmount
+> +}
+> +
+> +roundtrip_send()
+> +{
+> +       local files
+> +
+> +       # files should include foo.bar
+> +       files=3D"$1"
+> +
+> +       setup
+> +
+> +       # create files on fs1, must contain foo.bar
+> +       for f in $files; do
+> +               touch "$FS1/$f"
+> +       done
+> +
+> +       # Test full send, checking if the receiving side keeps the capabi=
+lities
+> +       $SETCAP_PROG "cap_sys_ptrace+ep cap_sys_nice+ep" "$FS1/foo.bar"
+> +       $BTRFS_UTIL_PROG subvolume snapshot -r "$FS1" "$FS1/snap_init" >/=
+dev/null
+> +       $BTRFS_UTIL_PROG send "$FS1/snap_init" -q | $BTRFS_UTIL_PROG rece=
+ive "$FS2" -q
+> +       check_capabilities "$FS2/snap_init/foo.bar" "cap_sys_ptrace,cap_s=
+ys_nice+ep"
+> +
+> +       # Test incremental send with different owner/group but same capab=
+ilities
+> +       chgrp 100 "$FS1/foo.bar"
+> +       $SETCAP_PROG "cap_sys_ptrace+ep cap_sys_nice+ep" "$FS1/foo.bar"
+> +       $BTRFS_UTIL_PROG subvolume snapshot -r "$FS1" "$FS1/snap_inc" >/d=
+ev/null
+> +       check_capabilities "$FS1/snap_inc/foo.bar" "cap_sys_ptrace,cap_sy=
+s_nice+ep"
+> +       $BTRFS_UTIL_PROG send -p "$FS1/snap_init" "$FS1/snap_inc" -q | \
+> +                               $BTRFS_UTIL_PROG receive "$FS2" -q
+> +       check_capabilities "$FS2/snap_inc/foo.bar" "cap_sys_ptrace,cap_sy=
+s_nice+ep"
+> +
+> +       # Test capabilities after incremental send with different group a=
+nd capabilities
+> +       chgrp 0 "$FS1/foo.bar"
+> +       $SETCAP_PROG "cap_sys_time+ep cap_syslog+ep" "$FS1/foo.bar"
+> +       $BTRFS_UTIL_PROG subvolume snapshot -r "$FS1" "$FS1/snap_inc2" >/=
+dev/null
+> +       check_capabilities "$FS1/snap_inc2/foo.bar" "cap_sys_time,cap_sys=
+log+ep"
+> +       $BTRFS_UTIL_PROG send -p "$FS1/snap_inc" "$FS1/snap_inc2" -q | \
+> +                               $BTRFS_UTIL_PROG receive "$FS2"  -q
+> +       check_capabilities "$FS2/snap_inc2/foo.bar" "cap_sys_time,cap_sys=
+log+ep"
+> +
+> +       _scratch_unmount
+> +}
+> +
+> +# real QA test starts here
+> +
+> +echo "Test full send + file without capabilities, then incremental send =
+bringing a new capability"
+> +full_nocap_inc_withcap_send
+> +
+> +echo "Testing if foo.bar alone can keep its capabilities"
+> +roundtrip_send "foo.bar"
+> +
+> +echo "Test foo.bar being the first item among other files"
+> +roundtrip_send "foo.bar foo.bax foo.baz"
+> +
+> +echo "Test foo.bar with objectid between two other files"
+> +roundtrip_send "foo1 foo.bar foo3"
+> +
+> +echo "Test foo.bar being the last item among other files"
+> +roundtrip_send "foo1 foo2 foo.bar"
+> +
+> +status=3D0
+> +exit
+> diff --git a/tests/btrfs/214.out b/tests/btrfs/214.out
+> new file mode 100644
+> index 00000000..197a39a9
+> --- /dev/null
+> +++ b/tests/btrfs/214.out
+> @@ -0,0 +1,6 @@
+> +QA output created by 214
+> +Test full send + file without capabilities, then incremental send bringi=
+ng a new capability
+> +Testing if foo.bar alone can keep its capabilities
+> +Test foo.bar being the first item among other files
+> +Test foo.bar with objectid between two other files
+> +Test foo.bar being the last item among other files
+> diff --git a/tests/btrfs/group b/tests/btrfs/group
+> index 9e48ecc1..505665b5 100644
+> --- a/tests/btrfs/group
+> +++ b/tests/btrfs/group
+> @@ -216,3 +216,4 @@
+>  211 auto quick log prealloc
+>  212 auto balance dangerous
+>  213 auto balance dangerous
+> +214 auto quick send snapshot
+> --
+> 2.26.2
+>
 
----
- fs/btrfs/block-group.c | 102 ++++++++++++++++++++++-------------------
- 1 file changed, 56 insertions(+), 46 deletions(-)
 
-diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-index e5641b6a3097..95b9b170b460 100644
---- a/fs/btrfs/block-group.c
-+++ b/fs/btrfs/block-group.c
-@@ -1522,21 +1522,70 @@ void btrfs_mark_bg_unused(struct btrfs_block_group *bg)
- 	spin_unlock(&fs_info->unused_bgs_lock);
- }
- 
-+static int read_bg_from_eb(struct btrfs_fs_info *fs_info, struct btrfs_key *key,
-+			   struct btrfs_path *path)
-+{
-+	struct extent_map_tree *em_tree;
-+	struct extent_map *em;
-+	struct btrfs_block_group_item bg;
-+	struct extent_buffer *leaf;
-+	int slot;
-+	u64 flags;
-+	int ret = 0;
-+
-+	slot = path->slots[0];
-+	leaf = path->nodes[0];
-+
-+	em_tree = &fs_info->mapping_tree;
-+	read_lock(&em_tree->lock);
-+	em = lookup_extent_mapping(em_tree, key->objectid, key->offset);
-+	read_unlock(&em_tree->lock);
-+	if (!em) {
-+		btrfs_err(fs_info,
-+			  "logical %llu len %llu found bg but no related chunk",
-+			  key->objectid, key->offset);
-+		return -ENOENT;
-+	}
-+
-+	if (em->start != key->objectid || em->len != key->offset) {
-+		btrfs_err(fs_info,
-+			  "block group %llu len %llu mismatch with chunk %llu len %llu",
-+			  key->objectid, key->offset, em->start, em->len);
-+		ret = -EUCLEAN;
-+		goto out_free_em;
-+	}
-+
-+	read_extent_buffer(leaf, &bg, btrfs_item_ptr_offset(leaf, slot),
-+			   sizeof(bg));
-+	flags = btrfs_stack_block_group_flags(&bg) &
-+		BTRFS_BLOCK_GROUP_TYPE_MASK;
-+
-+	if (flags != (em->map_lookup->type & BTRFS_BLOCK_GROUP_TYPE_MASK)) {
-+		btrfs_err(fs_info,
-+			  "block group %llu len %llu type flags 0x%llx mismatch with chunk type flags 0x%llx",
-+			  key->objectid, key->offset, flags,
-+			  (BTRFS_BLOCK_GROUP_TYPE_MASK & em->map_lookup->type));
-+		ret = -EUCLEAN;
-+	}
-+
-+out_free_em:
-+	free_extent_map(em);
-+	return ret;
-+}
-+
- static int find_first_block_group(struct btrfs_fs_info *fs_info,
- 				  struct btrfs_path *path,
- 				  struct btrfs_key *key)
- {
- 	struct btrfs_root *root = fs_info->extent_root;
--	int ret = 0;
-+	int ret;
- 	struct btrfs_key found_key;
- 	struct extent_buffer *leaf;
--	struct btrfs_block_group_item bg;
--	u64 flags;
- 	int slot;
- 
- 	ret = btrfs_search_slot(NULL, root, key, path, 0, 0);
- 	if (ret < 0)
--		goto out;
-+		return ret;
- 
- 	while (1) {
- 		slot = path->slots[0];
-@@ -1553,49 +1602,10 @@ static int find_first_block_group(struct btrfs_fs_info *fs_info,
- 
- 		if (found_key.objectid >= key->objectid &&
- 		    found_key.type == BTRFS_BLOCK_GROUP_ITEM_KEY) {
--			struct extent_map_tree *em_tree;
--			struct extent_map *em;
--
--			em_tree = &fs_info->mapping_tree;
--			read_lock(&em_tree->lock);
--			em = lookup_extent_mapping(em_tree, found_key.objectid,
--						   found_key.offset);
--			read_unlock(&em_tree->lock);
--			if (!em) {
--				btrfs_err(fs_info,
--			"logical %llu len %llu found bg but no related chunk",
--					  found_key.objectid, found_key.offset);
--				ret = -ENOENT;
--			} else if (em->start != found_key.objectid ||
--				   em->len != found_key.offset) {
--				btrfs_err(fs_info,
--		"block group %llu len %llu mismatch with chunk %llu len %llu",
--					  found_key.objectid, found_key.offset,
--					  em->start, em->len);
--				ret = -EUCLEAN;
--			} else {
--				read_extent_buffer(leaf, &bg,
--					btrfs_item_ptr_offset(leaf, slot),
--					sizeof(bg));
--				flags = btrfs_stack_block_group_flags(&bg) &
--					BTRFS_BLOCK_GROUP_TYPE_MASK;
--
--				if (flags != (em->map_lookup->type &
--					      BTRFS_BLOCK_GROUP_TYPE_MASK)) {
--					btrfs_err(fs_info,
--"block group %llu len %llu type flags 0x%llx mismatch with chunk type flags 0x%llx",
--						found_key.objectid,
--						found_key.offset, flags,
--						(BTRFS_BLOCK_GROUP_TYPE_MASK &
--						 em->map_lookup->type));
--					ret = -EUCLEAN;
--				} else {
--					ret = 0;
--				}
--			}
--			free_extent_map(em);
--			goto out;
-+			ret = read_bg_from_eb(fs_info, &found_key, path);
-+			break;
- 		}
-+
- 		path->slots[0]++;
- 	}
- out:
--- 
-2.26.2
+--=20
+Filipe David Manana,
 
+=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
+ right.=E2=80=9D
