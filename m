@@ -2,96 +2,236 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6952B1EB263
-	for <lists+linux-btrfs@lfdr.de>; Tue,  2 Jun 2020 01:50:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39F021EB2EA
+	for <lists+linux-btrfs@lfdr.de>; Tue,  2 Jun 2020 03:19:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728411AbgFAXu4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 1 Jun 2020 19:50:56 -0400
-Received: from sonic306-22.consmr.mail.ne1.yahoo.com ([66.163.189.84]:35989
-        "EHLO sonic306-22.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726099AbgFAXu4 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 1 Jun 2020 19:50:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1591055453; bh=DPYuw2gUpgtMJzJhlH/AVmRGu2wSKCY1C+f8nOCoxu0=; h=Date:From:Reply-To:Subject:References:From:Subject; b=Q2iEzGYFhPTBtRocC3xTpkcMqNLRv8LjqA1oRhICcHrgsHW+P03FAqhbP/dT+mNtkToKOsRSHxplZKXZs2d3BcBElCcv/MXmalWECC7BaUi5cOr5J5LCz/xGjPET8C5mMdu3ta1DFXYYM6EAdvgbjnkVpOHbEkavGD6hrWAmSmzxM9ql+Dt5K8GwqabcR5oMYJYZFzeyrJ88SD9Usf4Q3q1wQC3fD8MbQPG/PTrZHWKgET6f9JE1LWxc20NKKv+fPeYDN0fcluAq4kyIzhYYOr5XtgNG5bTiADqCizhwtykjkvNTb8NM4UCkP6pOpsE2CKJhL0MXk71l5DiWJMwyPg==
-X-YMail-OSG: 3BXddi4VM1lKgkm3CeSbrRF9cr5SxIREMHx4D2f_ww105GcJexBzf7mVYI_dEzW
- Fq.aP60dKRfJmI03u0VED35JtsCVLJsOZChlTrr0v7idMAObX8YFnWHKDyK5d4xLTSk1DlZDPxuD
- KxmVtzZWCZMHOzkbyoGlwLrMmiAbodoVqlxgWWZbXmrewN3sDUd4atfQOZzTYLtxyWtvAcchKFva
- x7LEuLa829m.9XwNGkomyrfK8niRL1vbqXw0xgHW5wBLKdzdtDBREPqnQ_IP0du_zP5jgB34VT64
- JEVcI9EUiiZmBo5QhKoLGp5KKTVpsVP9XotoAWoOsgZu1ZEGUn7E1VDRE3LEq9gXCSBe2Hwhm9Wi
- ufQXGe5Ehqqlg6eSwuLEgAJceZI_VfEoXWB5HqjBzaKJ2j5nfxGfqatbT9tlQcsT27bxuhuMRmeG
- bYwwnGjWUfrb1thxKfue1KNuhUTYEOwvJKPNYWtqr0cnnq47E5Zy7LoRvNqfzhregnTDyylK.yaK
- 8cVrywxa1rnMgWYDFCrRQitCDnDi4bPYBS9gKLpP.7qUmW1mHwofp6PjqVHpSWt.R23uVV2Ml3Qg
- sGDK_SfQXe2ERR8pXoVkYep1TKjkveJkE8X9WzvQZsBtG.JXk3QtE6WNiROLuk5HC330kk4SPyLK
- f3nyaztcE1Jvv9qSWviB9vn3m6XAJnxTCVhDXaPTxNair65QHKweFpGqCruXYQ81VfAo.yvGMCF8
- D6ksV6JnS95IfNjFIWvbrFOQBYecDga7oeaTHXTW7mVXYhOSSEQEm5UmFCFcigVU.1zICJsYA7jl
- 5TANXtJpyz1CvoX7q5NFkwAokHQOQC36O9oKlelwYSWzGVGz_vFqHVS6K6vLk4Sjn4IzcZLnAfXq
- 2xT6iAslxXKqIWMTngijz6dwos.WZaqbmFEAQplkzBwRgQSSsGI4Z2H.O4LwUl8jDkfcOlnWkzJi
- lRe.i4h9tyVNGb_H8lhZk1nGuVk3IJmpZ1donstp41os4FVyNJ8aiLFf516QpMpdNGlMBHfDNN4i
- etbkq0NCSP3IKtbEuy_4qTQd.D4WT_5Ad4d49Bju.grSiLMwTfV1uqFcGg1Wbqd2IG5ILdVVrFJg
- PHxxkTXfCHzix2fGHCCM5EJbqt9HRWksJ3ax8_OD5pSq_9cEW5KRy1Zh71ZlAkTyH4AQ_A3YP.Fi
- mNGHpGufoFxsBuFEZaKQI10tfIYLAqqqPsnFIDdMP48KLIuJJgoOgtjA63aNGO4sBNwXdrdSofUX
- dJ0e_Tl61T2cHlLebxU4yBX_ZdDze5m2ZGZhws9S0APNPD9GY0kXkJvB3aVH7lB.oPIyZnG2pIMc
- 0HQ--
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic306.consmr.mail.ne1.yahoo.com with HTTP; Mon, 1 Jun 2020 23:50:53 +0000
-Date:   Mon, 1 Jun 2020 23:50:49 +0000 (UTC)
-From:   "Mina A. Brunel" <mrsminaabrunel2334@gmail.com>
-Reply-To: bmrsminaa232@gmail.com
-Message-ID: <1740421953.1165274.1591055449538@mail.yahoo.com>
-Subject: My Dear in the lord
+        id S1725910AbgFBBTG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 1 Jun 2020 21:19:06 -0400
+Received: from mout.gmx.net ([212.227.15.18]:59687 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725793AbgFBBTF (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 1 Jun 2020 21:19:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1591060741;
+        bh=aFNaSCFczaZf8pKgIheNivm4l5ihiAwR2d0nOwq7DL8=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=ZlfksrZCGvzSXaYpBvh0lKkV3J/mOQIUhQnEBL+gNY1s0lN3ynBqT0kubdcIcmHkP
+         Py3NS76yFCgckvph3R6oIB7r0D53UsatqKoL7v+Ypv8RPS9TVqzxfoFMzEvLDFck/y
+         9TSgEU+agj+nkZKBgBSTHG/823PfgwJb8A/gfouU=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MD9T1-1joPuH3cJ7-0096sr; Tue, 02
+ Jun 2020 03:19:01 +0200
+Subject: Re: Massive filesystem corruption, potentially related to
+ eCryptfs-on-btrfs
+To:     Xuanrui Qi <me@xuanruiqi.com>, linux-btrfs@vger.kernel.org
+References: <DM6PR02MB44274C6B16F173291A82C4A8C98A0@DM6PR02MB4427.namprd02.prod.outlook.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
+ mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
+ PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
+ 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
+ D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
+ efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
+ ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
+ BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
+ 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
+ 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
+ EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
+ 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
+ ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
+ oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
+ fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
+ 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
+ ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
+ oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
+Message-ID: <bf3629ad-730d-3808-38e5-8c42eccbaf5e@gmx.com>
+Date:   Tue, 2 Jun 2020 09:18:57 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-References: <1740421953.1165274.1591055449538.ref@mail.yahoo.com>
-X-Mailer: WebService/1.1.16037 YMailNodin Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.61 Safari/537.36
-To:     unlisted-recipients:; (no To-header on input)
+In-Reply-To: <DM6PR02MB44274C6B16F173291A82C4A8C98A0@DM6PR02MB4427.namprd02.prod.outlook.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="QrV3FNVFYO9xzbmKkiYYlmoPb8OG0nPAl"
+X-Provags-ID: V03:K1:0J37DkYX6d+vcbxTzeFM5OgFykBdUlSJmeFLtbfNVgB7G9T43WJ
+ pMd8hSdLx1WIUY3o/gx58dYzMyDGMeiPb+4bk5Ze+5hyQ5gYbnpAGAe4Ps3vsbAKC76I9Cn
+ kG2NC3WseabrSJDy3/CaVh/BGBcRBd5G2qzcpM/5l/8togWxP+eaXX5jvGMzj/DBhR6AuIt
+ cxG1l6mklCAhJIExuXqJg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:6giPL3Spo4E=:BMrtjOJiCOREO7l4eP9G9B
+ DYvF5VUQIemBx/cQmsXz2jA2NVPo9WPVPuMVmBw1CUOFtUovDvA2o22tn+6h5bVYuMus3K56V
+ QRpvj1t51n6EwEIBN/vsB0Dzfikt9pkkJtOyJ/IVFQwl+TSUliav+PdhOhjbFBSJnFkKA85OZ
+ 5vREBG9UI5w812UrQKnzWk3P4RxtHLSyK0f3CyfgV9CjAmKBMbfgEqsDAB8HyanGBXkLBNgi8
+ NzcL/f5wm/xNbLWymbn6XP7VImj+OLlhCzmIyfirHbEy/LfMxk29Q1s2VFUV2imOga2Wu7/hk
+ wi9dE3jlzBGijKEszVnpmzZ5LbX2WfBACpgksdvqTLmSCMehw8oEJ2s406MN1VVOuBuDD5Wec
+ 1TG8no1YGVgcDciBwmdOLSxfqxGO9kRF+nWDoCUpDuMU1GK0RQ4JJpaojXwk/PdcwP7U/i2t8
+ ps2Ta/a9iJzNT/Gjq3kfi/e8v7BeoXFotQaY3mEqgdhHi5fBpGea4y2ZABpcuWbPPXt/o/nVI
+ RX9i2q7WfLl4DOqYd3Z4NoLHG9exqVrDr8u1w6Fw4OqFvBY0RLkMpWROEcK+N3AMbCgsi19gp
+ 1e1r2047JRRu+XkDI7AyXZ9SzouZlurLhF59N3Dj9KgMFuSw225CtnTZLsnA4y2Olp7WNcSI7
+ EAwp94bX7fw/ZCCFS7eiik38I7tUwQdZZmWiDI30b0lOV4TPWo5+uqEYv4VvJottvAxUGrIPL
+ IIkFxi/jgxDaIcHk7svb7xbnLQ0gIi47QQARvEFftLEiX7B1YA+lJ4bIpYzzYrhc0eSQdh/iu
+ P1S0CP4JgIG3PosQZozCSPhiw+xcGDSG7NVYrRx69v4jrUDqO5iIUZspYMSjr87ElLWjiJRT5
+ bjaIBDpHVMzJDyYBNxg9QAD25jkFDFNT5UB8gPOTRTIJ/2QQ1dQ2X7Tvo28esLjoADuUpcI2M
+ b4ywwLbIkNJTDhQcW1ZFnojNmw3V+GFJSUFcJT4NI+2rmIuYAIJHnvBPMLh6mE0JzH/p2CEeo
+ KdnQ+Nht8RCV54DmvKQZmCVyCZnjU1eBV6d6yz+Kh2gUUh5wI3qLOA8Zo8ea1/vL+HjGLnKrG
+ fa5V2toCmggDJIp4nm3hbPTlkGE85L2H3A/ZlD4/4+U/1RxnlbJaSgUwp8KFPiEM28ZKjRcgX
+ Kaqkdy+fbJPuy1EZ/11nRGHGaxFvFnQPkO+/n763ndT8GCjcgnCKfrNk9A6A8jBtrQ7a8XX9e
+ 2NdpxkSs7smtLyGrL
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--QrV3FNVFYO9xzbmKkiYYlmoPb8OG0nPAl
+Content-Type: multipart/mixed; boundary="URmYucHVWZ1yUCF39GElMSl5JPu4SPJoS"
+
+--URmYucHVWZ1yUCF39GElMSl5JPu4SPJoS
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
 
-My Dear in the lord
+
+On 2020/6/2 =E4=B8=8A=E5=8D=885:08, Xuanrui Qi wrote:
+> Hello all,
+>=20
+> I have just recovered from a massive filesystem corruption problem
+> which turned out to be a total nightmare, and I have strong reason to
+> suspect that it is related to eCryptfs-encrypted folders on btrfs.
+>=20
+> I run Arch Linux and have my /home directory as a btrfs partition. My
+> user's home directory (/home/xuanrui) is encrypted using eCryptFS.
+>=20
+> I ran into a massive filesystem corrpution issue a while ago. When
+> reading certain files or occasionally writing to files, I encounter FS
+> errors (mainly checksum errors, but also other I/O errors). Then my
+> file system becomes read-only because errors were encountered.
+
+It's a pity we won't get the dmesg of that incident, what would be super
+useful to debug.
+
+>=20
+> A `btrfs scrub` identified a dozen of checksum errors which were "not
+> correctable", and `btrfs check --repair` (and `btrfs check --repair --
+> init-csum-tree`)
+
+Not recommended, but the output may still help.
+
+> also failed to fix anything. The former crashed in a
+> segfault, and the latter refused to write anything because of an "I/O
+> error".
+>=20
+> Unfortunately, I don't have any logs because I had to nuke (wipe & re-
+> make) my filesystem as the solution. However, after the reformatting I
+> gave up using eCryptFs, and the file corruption bugs have not
+> reappeared since.
+
+That's a little strange. I guess there is some buffered IO mixed with
+direct IO, which is known to cause csum mismatch, while other fs just
+can't detect such data corruption and pretend nothing happened.
+
+But normally, csum read shouldn't lead to RO, thus I believe there are
+more problems of that previous failure.
+
+> Initially I suspected that it was a hardware issue,
+> but I did a SMART test and no errors were detected; I strongly suspect
+> that it is related to eCryptFS.
+>=20
+> System info:
+>=20
+> uname -a:
+>=20
+> Linux xuanruiwork 5.6.15-3-clear #1 SMP Sun, 31 May 2020 19:57:42 +0000=
+
+> x86_64 GNU/Linux
+>=20
+> btrfs --version:
+> btrfs-progs v5.6.1
+>=20
+> (the rest is from after the reformat, but the setup is identical to
+> before the reformat sans eCryptFS)
+>=20
+> btrfs fi show:
+> Label: none  uuid: 823961e1-6b9e-4ab8-b5a7-c17eb8c40d64
+> 	Total devices 1 FS bytes used 57.58GiB
+> 	devid    1 size 332.94GiB used 60.02GiB path /dev/sda3
+>=20
+> btrfs fi df /home:
+> Data, single: total=3D59.01GiB, used=3D57.26GiB
+> System, single: total=3D4.00MiB, used=3D16.00KiB
+> Metadata, single: total=3D1.01GiB, used=3D328.25MiB
+> GlobalReserve, single: total=3D75.17MiB, used=3D0.00B
+>=20
+> Some output from dmesg (note that /dev/sda1 is not the corrupted
+> filesystem; these corruptions seem to have been self-corrected by
+> btrfs):
+>=20
+> [    3.434351] BTRFS: device fsid 823961e1-6b9e-4ab8-b5a7-c17eb8c40d64
+> devid 1 transid 79 /dev/sda3 scanned by systemd-udevd (519)
+> [    3.440896] BTRFS: device fsid a3892669-1ad8-4ff3-9747-0f8c405c0e6a
+> devid 1 transid 4769881 /dev/sda1 scanned by systemd-udevd (487)
+> [    3.461539] BTRFS info (device sda1): disk space caching is enabled
+> [    3.461540] BTRFS info (device sda1): has skinny extents
+> [    3.464079] BTRFS info (device sda1): bdev /dev/sda1 errs: wr 0, rd
+> 0, flush 0, corrupt 14, gen 0
+
+Corruption count 14 doesn't seem good.
+
+> [    3.510991] BTRFS info (device sda1): enabling ssd optimizations
+> [    5.938153] BTRFS info (device sda1): disk space caching is enabled
+> [    7.072974] BTRFS info (device sda3): enabling ssd optimizations
+> [    7.072977] BTRFS info (device sda3): disk space caching is enabled
+> [    7.072978] BTRFS info (device sda3): has skinny extents
+> [ 3710.968433] BTRFS warning (device sda3): qgroup rescan init failed,
+> qgroup is not enabled
+
+And btrfs is trying to init qgroup rescan while qgroup is not enabled?
+That's doesn't sound good either.
+
+> [ 7412.459332] BTRFS info (device sda1): scrub: started on devid 1
+> [ 7545.641724] BTRFS info (device sda1): scrub: finished on devid 1
+> with status: 0
+> [ 8244.846830] BTRFS info (device sda3): scrub: started on devid 1
+> [ 8369.651774] BTRFS info (device sda3): scrub: finished on devid 1
+> with status: 0
+
+Any log on `btrfs check` without --repair?
+
+Thanks,
+Qu
+>=20
+> If anyone could look into the issue, it would be greatly appreciated.
+>=20
+> Best,
+> Xuanrui
+>=20
 
 
-My name is Mrs. Mina A. Brunel I am a Norway Citizen who is living in Burki=
-na Faso, I am married to Mr. Brunel Patrice, a politicians who owns a small=
- gold company in Burkina Faso; He died of Leprosy and Radesyge, in year Feb=
-ruary 2010, During his lifetime he deposited the sum of =E2=82=AC 8.5 Milli=
-on Euro) Eight million, Five hundred thousand Euros in a bank in Ouagadougo=
-u the capital city of of Burkina in West Africa. The money was from the sal=
-e of his company and death benefits payment and entitlements of my deceased=
- husband by his company.
+--URmYucHVWZ1yUCF39GElMSl5JPu4SPJoS--
 
-I am sending you this message with heavy tears in my eyes and great sorrow =
-in my heart, and also praying that it will reach you in good health because=
- I am not in good health, I sleep every night without knowing if I may be a=
-live to see the next day. I am suffering from long time cancer and presentl=
-y I am partially suffering from Leprosy, which has become difficult for me =
-to move around. I was married to my late husband for more than 6 years with=
-out having a child and my doctor confided that I have less chance to live, =
-having to know when the cup of death will come, I decided to contact you to=
- claim the fund since I don't have any relation I grew up from an orphanage=
- home.
+--QrV3FNVFYO9xzbmKkiYYlmoPb8OG0nPAl
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
-I have decided to donate this money for the support of helping Motherless b=
-abies/Less privileged/Widows and churches also to build the house of God be=
-cause I am dying and diagnosed with cancer for about 3 years ago. I have de=
-cided to donate from what I have inherited from my late husband to you for =
-the good work of Almighty God; I will be going in for an operation surgery =
-soon.
+-----BEGIN PGP SIGNATURE-----
 
-Now I want you to stand as my next of kin to claim the funds for charity pu=
-rposes. Because of this money remains unclaimed after my death, the bank ex=
-ecutives or the government will take the money as unclaimed fund and maybe =
-use it for selfishness and worthless ventures, I need a very honest person =
-who can claim this money and use it for Charity works, for orphanages, wido=
-ws and also build schools and churches for less privilege that will be name=
-d after my late husband and my name.
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl7VqQEACgkQwj2R86El
+/qhRFwf/QogXESrfW++47gMYmF1SmT0zVcKPhjKW6dJXgZaNuW3C71EIdIZzTZs+
+LfJZjK4HwNrFvf3Q4ZQOkuQEPB8luzydV4Ca+n/OLqRKxMQy7OPLnOLMtxHuuM0l
+Uphi6LlKiJMw4wE4PewN+v26ju0Z+Wx2uCwYeuPhEJUQhbqfuN0nSvxhsqA5xQKB
+JabMpzy0FSt5AJ05XsG46MhOcDA5FolvWKNpS6z7h+IHsyS0t8QERVuWd3YZdfeE
+LQHq08KQy2Yk59iPDegcEcXsPrEaYHkLyOJ0vJymQzMXFYmT6YVMPrku1HUm33IH
+2lT1Yvv5FXvNFGzgdk8DiOU2G8tVTg==
+=5INF
+-----END PGP SIGNATURE-----
 
-I need your urgent answer to know if you will be able to execute this proje=
-ct, and I will give you more information on how the fund will be transferre=
-d to your bank account or online banking.
-
-Thanks
-Mrs. Mina A. Brunel
+--QrV3FNVFYO9xzbmKkiYYlmoPb8OG0nPAl--
