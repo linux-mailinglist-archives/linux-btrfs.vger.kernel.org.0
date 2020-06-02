@@ -2,108 +2,193 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCC4C1EB7C1
-	for <lists+linux-btrfs@lfdr.de>; Tue,  2 Jun 2020 10:59:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C80A31EB805
+	for <lists+linux-btrfs@lfdr.de>; Tue,  2 Jun 2020 11:10:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726183AbgFBI7B (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 2 Jun 2020 04:59:01 -0400
-Received: from esa5.hgst.iphmx.com ([216.71.153.144]:16381 "EHLO
-        esa5.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726012AbgFBI7B (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 2 Jun 2020 04:59:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1591088340; x=1622624340;
-  h=from:to:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
-  b=RVteMg6CGQu7EE8LPO2FOPZtuySTpRZjKvAIrmF1YPs0xMMkgAU75P0B
-   1BIHtRlcqpe7Fm6PmMd9k1t31PluMw7GJoOAcoVvp2oZB5d6yK3uEkrE7
-   IgtU5BO6A7FRgh4p9c7CrX4FixB55i9GKCw8+G7aiELNrT/rXfMkfZWYe
-   HI8MCA49EmHCf2o05S+0SRh92RI4YTjaakW/mIpRJsngWpWZxQKkw54ws
-   hoTPeh2WCY0f32o1X0bqHK1938Y3HJyP7ruKFWZOlsXsmqOmPFhCfEYi2
-   xuegzkKV/W2KFzfMTBvV0EbZ/DERBnAbA4bPZCSWVoeqh4yOddJfkdWfi
-   A==;
-IronPort-SDR: DLsbN1gw3VNRtKA0I385upvnzxhOsoSLcwqNU4dbQUc9k3coBZ0xIvxs8ZGNG8c3zs2jCh0Ikr
- +gnuft7zz1KYaatD3PXl0kXnu/tZNlI3Av4ETVkRXbVmBv6DIhNoMPkpJU2WoxnKkg+w3MfjYz
- 6d57AqEJO7BDaMxYqdmxsY6NW+i+ii6v5ZYa40YQ6E5LIzUBchyZfUE2DbYgZYk8dKpxrXKQVY
- 6dpVsG3dvilke8QNlPcVyJSZwdpUbexHseMaESoDCFHcYKE2nr94PtMWJ/+V+cwCAAgC2Erpkk
- 3hs=
-X-IronPort-AV: E=Sophos;i="5.73,463,1583164800"; 
-   d="scan'208";a="139334609"
-Received: from mail-co1nam11lp2175.outbound.protection.outlook.com (HELO NAM11-CO1-obe.outbound.protection.outlook.com) ([104.47.56.175])
-  by ob1.hgst.iphmx.com with ESMTP; 02 Jun 2020 16:59:00 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AOCWkgQCHmyTNynKchFNFIMgWiYMqYAKtJqxNpPH3G1MXYfodEUxpqs+n7vAsgGBS4sByQs/JORiBVRs9O2xxP3r035GMkCY/ZxF2c0M4gkJy0b4xWIyhtNcx9FoGtnEGIfHq8E+mUg5y3g/DTyTDB6AQQn0XUjIRdODYGC+ZYCY5ilIQwlj6VPYvV9y+3xLiLyU2jXMsQQSC4VYCVvRej1WiMI92ZX/hEKRxuSyyDK7X9BoWBHT9Ot2bQzeEcPtgHbCDCO1oLcr3TlR+9boL9lKWsusoo5z/K3lxN0u1/ldmTReUNhrK7gt+wIq9h1n3N0bnBwQ1iagf8/Yfc+BuA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
- b=bD+6wozCbEpj+Mh+6gzXpyDl97A842Liv1aE0E+hBEeF9k1ExWGVUExrUfoR5zDuCcwDYNB703/YGNH7dqm8N6dMz+zxWeyLEMlxqkjeQRS9IysCVNswixL6LTlEmqoHzMghi/qAZwVDckL0CbFi8jHBb29mXVbWMGIeRazcKbdha3z0QjekTFQgcU1PVa5fQhvxWdILB6jFgLmUDYw2Pt9zsZRfLInbwm61JUiWKKaKgpSLstq3B4zDrlB9PMq7ilRmp5OPOJJE1U7/CrEM4AuV8ljIgBsDJkRgr5Yj4LdHyBHpFdhYcT1jdolOMjnow1vtTICLGtltV4hV7Pp+DQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
- b=ayIugjmfFbIQFha/tSu1F/SRZeWrtx+Q+njZgtosFwk5QzLQOvGVqWJhI3VesZw136R8XiGa4ctmD88PAnRLbHRdQrK9XmEUpW5NOSQ8WRlHXp/tnpSzUOa/OuUkPoevvna+y2RHjcvZ0ZJVyh7tF+OsJuyE7mh18tFYmqmOXkg=
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
- (2603:10b6:803:47::21) by SN4PR0401MB3695.namprd04.prod.outlook.com
- (2603:10b6:803:4b::32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3045.21; Tue, 2 Jun
- 2020 08:58:58 +0000
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::1447:186c:326e:30b2]) by SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::1447:186c:326e:30b2%7]) with mapi id 15.20.3045.022; Tue, 2 Jun 2020
- 08:58:58 +0000
-From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To:     Nikolay Borisov <nborisov@suse.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH 05/46] btrfs: Make create_io_em take btrfs_inode
-Thread-Topic: [PATCH 05/46] btrfs: Make create_io_em take btrfs_inode
-Thread-Index: AQHWOCqgKGsgrMW8VkGS24Y68SO8Tw==
-Date:   Tue, 2 Jun 2020 08:58:58 +0000
-Message-ID: <SN4PR0401MB35988A272CDE9ECD440A1D3A9B8B0@SN4PR0401MB3598.namprd04.prod.outlook.com>
-References: <20200601153744.31891-1-nborisov@suse.com>
- <20200601153744.31891-6-nborisov@suse.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: suse.com; dkim=none (message not signed)
- header.d=none;suse.com; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [129.253.240.72]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: d351d9b6-6ffc-4029-4dc1-08d806d33008
-x-ms-traffictypediagnostic: SN4PR0401MB3695:
-x-microsoft-antispam-prvs: <SN4PR0401MB369509110960A777984958E39B8B0@SN4PR0401MB3695.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:1728;
-x-forefront-prvs: 0422860ED4
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: pmA7IG99vNZbwMjlKEBBkAk7BSIx53NDYL0InE65X/pA54PYBE1wMEGYDcoLMgTpH3LTFUwqxShteupO9DuGaMwGD1o6QrsIFf9s8FCIjtZz2FP1Ac38SlmgoPW2nDldagRKku6lQW703jC9QYyj/jgjmzr0H3FSQkAMdvWkvERxGDOQ9Eg+1RrJR7pVkSSa8j1/JZaktm4+AwyWleQH6KKEscpD4WMsBXQi6StTXDOE4YvirupBRRZegKyW9PCVEAMQXgU3QZeog/EcqIGarB5WgMuiw6nPpMw0CMKERWCgj3oU9uA+0yBEPyT0y/jfstwh9OAJOYvKFSm2Elgo2A==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR0401MB3598.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(39860400002)(366004)(136003)(376002)(396003)(346002)(8676002)(76116006)(8936002)(91956017)(5660300002)(66476007)(6506007)(64756008)(110136005)(9686003)(26005)(66946007)(55016002)(558084003)(2906002)(66556008)(66446008)(19618925003)(316002)(52536014)(186003)(71200400001)(33656002)(478600001)(4270600006)(7696005)(86362001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: i7QTWZohkx9mbA5NOhZMpGimH4QR2SKcY0lWQ6WixihuHqPutzIJnvDtyW3vvLdVID/RxiQUb6snrcIlBfrViWQuSKcz1N04d7y76KVXprDOR2EO0G+jHeZqSMSnNNZ7/kIjk7bK/5jYix6C7qX5FbCa7d89DnOxVbP/XZCHChQazTtFvzjjeohNh4Gr9EbeU93wmLyZs9gCAqZtNjUUy84CbZBo3zq85pyvzP4pAfHOrbwzB9bdgjqC7XdZvWyyBjU2V6xRsLSwr7eafUQg/rIJDEwLtKyKou1vLCwHq7rJTQblSp27OriL8ExSvsFLRh5j+hD9XUCo8plCncVwP0PXz1uhdFdnHnaaNgOBCwAtxsWZlHqoU5TUHTmM9xaFaLS+btyLeiUyHtKJBj7WMma0G3cvNZ/UROvdQ7SGJkklgY+8gFGDrgNCc0/sx3LAaaxBYdipx0RO5ApQGVl1N12FX3w0f39s5rhR38+qFArG0gO1zWqO0v9td+ngWlsc
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1727832AbgFBJJN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 2 Jun 2020 05:09:13 -0400
+Received: from mx2.suse.de ([195.135.220.15]:42928 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726160AbgFBJJM (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 2 Jun 2020 05:09:12 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 2A904AC2C
+        for <linux-btrfs@vger.kernel.org>; Tue,  2 Jun 2020 09:09:13 +0000 (UTC)
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH v9 0/5] Introduce per-profile available space array to avoid over-confident can_overcommit()
+Date:   Tue,  2 Jun 2020 17:09:00 +0800
+Message-Id: <20200602090905.63899-1-wqu@suse.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d351d9b6-6ffc-4029-4dc1-08d806d33008
-X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Jun 2020 08:58:58.5662
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: j3/VbKwei3B65c6AIUwu/E5KucUA5NSzdiUw8P/MTT6SN50SkoOpkTBfu55a1fbDpd0ahhoVMb6pmgWrw67UsLoNBgos9XcEde5sS/3Fsvs=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN4PR0401MB3695
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Looks good,=0A=
-Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>=0A=
+There are several bug reports of ENOSPC error in
+btrfs_run_delalloc_range().
+
+With some extra info from one reporter, it turns out that
+can_overcommit() is using a wrong way to calculate allocatable metadata
+space.
+
+The most typical case would look like:
+  devid 1 unallocated:	1G
+  devid 2 unallocated:  10G
+  metadata profile:	RAID1
+
+In above case, we can at most allocate 1G chunk for metadata, due to
+unbalanced disk free space.
+But current can_overcommit() uses factor based calculation, which never
+consider the disk free space balance.
+
+
+To address this problem, here comes the per-profile available space
+array, which gets updated every time a chunk get allocated/removed or a
+device get grown or shrunk.
+
+This provides a quick way for hotter place like can_overcommit() to grab
+an estimation on how many bytes it can over-commit.
+
+The per-profile available space calculation tries to keep the behavior
+of chunk allocator, thus it can handle uneven disks pretty well.
+
+And statfs() can also grab that pre-calculated value for instance usage.
+
+Since this patch introduced a new failure pattern, some new error
+handling are introduced:
+- __btrfs_alloc_chunk()
+  At the end of that function where calc_per_profile_avail() get called,
+  if it failed due to -ENOMEM, we will revert device used space, and
+  remove the allocated chunk.
+  This is the only new error handling added by patch 5.
+
+- btrfs_remove_chunk()
+  There is no good way to revert the change. So here we abort
+  transaction, just like what the old error handling does.
+
+- btrfs_grow_device()
+  This function has its problem by not reverting device used space from
+  the very beginning.
+  This patchset will enhance it in patch 4.
+
+- btrfs_shrink_device()
+- btrfs_init_new_device()
+- btrfs_rm_device()
+  This function already has good error handling, reuse it.
+
+- btrfs_verify_dev_extents()
+  Mount time error will lead to mount failure, nothing to worry about.
+
+Contents of the patchset:
+Patch 1:	Core facility, with basic (not perfect) error handling
+Patch 2:	Fix for over-confident can_overcommit()
+Patch 3:	Make statfs() more accurate
+Patch 4:	Better error handling for btrfs_grow_device()
+Patch 5:	Better error handling for __btrfs_alloc_chunk()
+
+If needed, patch 4 and patch 5 can be merged into patch 1.
+
+Changelog:
+v1:
+- Fix a bug where we forgot to update per-profile array after allocating
+  a chunk.
+  To avoid ABBA deadlock, this introduce a small windows at the end
+  __btrfs_alloc_chunk(), it's not elegant but should be good enough
+  before we rework chunk and device list mutex.
+  
+- Make statfs() to use virtual chunk allocator to do better estimation
+  Now statfs() can report not only more accurate result, but can also
+  handle RAID5/6 better.
+
+v2:
+- Fix a deadlock caused by acquiring device_list_mutex under
+  __btrfs_alloc_chunk()
+  There is no need to acquire device_list_mutex when holding
+  chunk_mutex.
+  Fix it and remove the lockdep assert.
+
+v3:
+- Use proper chunk_mutex instead of device_list_mutex
+  Since they are protecting two different things, and we only care about
+  alloc_list, we should only use chunk_mutex.
+  With improved lock situation, it's easier to fold
+  calc_per_profile_available() calls into the first patch.
+
+- Add performance benchmark for statfs() modification
+  As Facebook seems to run into some problems with statfs() calls, add
+  some basic ftrace results.
+
+v4:
+- Keep the lock-free design for statfs()
+  As extra sleeping in statfs() may not be a good idea, keep the old
+  lock-free design, and use factor based calculation as fall back.
+
+v5:
+- Enhance btrfs_update_device() error handling in btrfs_grow_device()
+- Ensure all failure caused by calc_per_profile_available() is the same
+  with existing error handling
+- Fix a bug where chunk_mutex is not released in btrfs_shrink_device()
+
+v6:
+- Don't update the array if we hit any error.
+  To avoid calling calc_per_profile_avail() in error handling path.
+
+- Re-order the patchset
+  Make the core facility the first patch.
+  Error handling improvement in later patches.
+
+- Add better error handling
+  Improve one existing bad error handling, and provide a better solution
+  for __btrfs_alloc_chunk()
+
+v7:
+- Remove btrfs_calc_avail_data_space() completely
+  Now we only need to grab the pre-calculated number, no need for a
+  function over 100 lines.
+
+- Keep the 0-avail-if-metadata-exhausted behavior
+  Now it's handled by space_info->full, which indicates if we can
+  allocate new chunks in metadata space info.
+  We have no need to bother that now.
+
+v8:
+- Cosmetic changes
+  * Comment fixes
+  * Use rounddown() to replace one open-code
+  * while() loop reformat
+  * Remove one redundant 0-size check
+  * Add one lockdep_assert() for calc_one_profile_avail()
+  * Use atomic64_t to remove spinlock
+
+- Add two more timing to call calc_per_profile_avail()
+  * btrfs_rm_device()
+  * btrfs_init_new_device()
+
+v9:
+- Rebased to latest misc-next branch
+  Minor conflicts due to chunk allocator refactor
+
+- Remove redundant virtual allocation clear
+
+Qu Wenruo (5):
+  btrfs: Introduce per-profile available space facility
+  btrfs: space-info: Use per-profile available space in can_overcommit()
+  btrfs: statfs: Use pre-calculated per-profile available space
+  btrfs: Reset device size when btrfs_update_device() failed in
+    btrfs_grow_device()
+  btrfs: volumes: Revert device used bytes when calc_per_profile_avail()
+    failed
+
+ fs/btrfs/space-info.c |  14 +--
+ fs/btrfs/super.c      | 131 ++---------------------
+ fs/btrfs/volumes.c    | 242 ++++++++++++++++++++++++++++++++++++++----
+ fs/btrfs/volumes.h    |  10 ++
+ 4 files changed, 244 insertions(+), 153 deletions(-)
+
+-- 
+2.26.2
+
