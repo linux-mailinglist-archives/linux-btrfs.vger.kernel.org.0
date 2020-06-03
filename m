@@ -2,25 +2,25 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B9E41EC911
-	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Jun 2020 07:57:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03DFF1EC912
+	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Jun 2020 07:57:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726042AbgFCFz6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        id S1726038AbgFCFz6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
         Wed, 3 Jun 2020 01:55:58 -0400
-Received: from mx2.suse.de ([195.135.220.15]:42468 "EHLO mx2.suse.de"
+Received: from mx2.suse.de ([195.135.220.15]:42466 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725916AbgFCFz4 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        id S1725917AbgFCFz4 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
         Wed, 3 Jun 2020 01:55:56 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 524F7AFF8;
+        by mx2.suse.de (Postfix) with ESMTP id 7E2ECAFFD;
         Wed,  3 Jun 2020 05:55:56 +0000 (UTC)
 From:   Nikolay Borisov <nborisov@suse.com>
 To:     linux-btrfs@vger.kernel.org
 Cc:     Nikolay Borisov <nborisov@suse.com>
-Subject: [PATCH 07/46] btrfs: Make btrfs_csum_one_bio takae btrfs_inode
-Date:   Wed,  3 Jun 2020 08:55:07 +0300
-Message-Id: <20200603055546.3889-8-nborisov@suse.com>
+Subject: [PATCH 08/46] btrfs: Make __btrfs_drop_extents take btrfs_inode
+Date:   Wed,  3 Jun 2020 08:55:08 +0300
+Message-Id: <20200603055546.3889-9-nborisov@suse.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200603055546.3889-1-nborisov@suse.com>
 References: <20200603055546.3889-1-nborisov@suse.com>
@@ -29,111 +29,153 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Will enable converting btrfs_submit_compressed_write to btrfs_inode more
-easily.
+It has only 4 uses of a vfs_inode for inode_sub_bytes but unifies
+the interface with the non  __ prefixed version. Will also makes
+converting its callers to btrfs_inode easier.
 
 Signed-off-by: Nikolay Borisov <nborisov@suse.com>
 ---
- fs/btrfs/compression.c | 5 +++--
- fs/btrfs/ctree.h       | 4 ++--
- fs/btrfs/file-item.c   | 3 +--
- fs/btrfs/inode.c       | 8 ++++----
- 4 files changed, 10 insertions(+), 10 deletions(-)
-
-diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
-index c6e648603f85..4f52cd8af517 100644
---- a/fs/btrfs/compression.c
-+++ b/fs/btrfs/compression.c
-@@ -475,7 +475,8 @@ blk_status_t btrfs_submit_compressed_write(struct inode *inode, u64 start,
- 			BUG_ON(ret); /* -ENOMEM */
-
- 			if (!skip_sum) {
--				ret = btrfs_csum_one_bio(inode, bio, start, 1);
-+				ret = btrfs_csum_one_bio(BTRFS_I(inode), bio,
-+							 start, 1);
- 				BUG_ON(ret); /* -ENOMEM */
- 			}
-
-@@ -507,7 +508,7 @@ blk_status_t btrfs_submit_compressed_write(struct inode *inode, u64 start,
- 	BUG_ON(ret); /* -ENOMEM */
-
- 	if (!skip_sum) {
--		ret = btrfs_csum_one_bio(inode, bio, start, 1);
-+		ret = btrfs_csum_one_bio(BTRFS_I(inode), bio, start, 1);
- 		BUG_ON(ret); /* -ENOMEM */
- 	}
+ fs/btrfs/ctree.h    |  2 +-
+ fs/btrfs/file.c     | 23 ++++++++++++-----------
+ fs/btrfs/inode.c    |  4 ++--
+ fs/btrfs/tree-log.c |  4 ++--
+ 4 files changed, 17 insertions(+), 16 deletions(-)
 
 diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index 3e8063f9b30a..55add0881615 100644
+index 55add0881615..bd69e912e8d6 100644
 --- a/fs/btrfs/ctree.h
 +++ b/fs/btrfs/ctree.h
-@@ -2830,8 +2830,8 @@ int btrfs_lookup_file_extent(struct btrfs_trans_handle *trans,
- int btrfs_csum_file_blocks(struct btrfs_trans_handle *trans,
- 			   struct btrfs_root *root,
- 			   struct btrfs_ordered_sum *sums);
--blk_status_t btrfs_csum_one_bio(struct inode *inode, struct bio *bio,
--		       u64 file_start, int contig);
-+blk_status_t btrfs_csum_one_bio(struct btrfs_inode *inode, struct bio *bio,
-+				u64 file_start, int contig);
- int btrfs_lookup_csums_range(struct btrfs_root *root, u64 start, u64 end,
- 			     struct list_head *list, int search_commit);
- void btrfs_extent_item_to_extent_map(struct btrfs_inode *inode,
-diff --git a/fs/btrfs/file-item.c b/fs/btrfs/file-item.c
-index 9d311e834b20..7d5ec71615b8 100644
---- a/fs/btrfs/file-item.c
-+++ b/fs/btrfs/file-item.c
-@@ -522,10 +522,9 @@ int btrfs_lookup_csums_range(struct btrfs_root *root, u64 start, u64 end,
-  *		 means this bio can contains potentially discontigous bio vecs
-  *		 so the logical offset of each should be calculated separately.
+@@ -2964,7 +2964,7 @@ void btrfs_drop_extent_cache(struct btrfs_inode *inode, u64 start, u64 end,
+ 			     int skip_pinned);
+ extern const struct file_operations btrfs_file_operations;
+ int __btrfs_drop_extents(struct btrfs_trans_handle *trans,
+-			 struct btrfs_root *root, struct inode *inode,
++			 struct btrfs_root *root, struct btrfs_inode *inode,
+ 			 struct btrfs_path *path, u64 start, u64 end,
+ 			 u64 *drop_end, int drop_cache,
+ 			 int replace_extent,
+diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+index fde125616687..01745c0651cb 100644
+--- a/fs/btrfs/file.c
++++ b/fs/btrfs/file.c
+@@ -731,7 +731,7 @@ void btrfs_drop_extent_cache(struct btrfs_inode *inode, u64 start, u64 end,
+  * is deleted from the tree.
   */
--blk_status_t btrfs_csum_one_bio(struct inode *vfsinode, struct bio *bio,
-+blk_status_t btrfs_csum_one_bio(struct btrfs_inode *inode, struct bio *bio,
- 		       u64 file_start, int contig)
- {
--	struct btrfs_inode *inode = BTRFS_I(vfsinode);
- 	struct btrfs_fs_info *fs_info = inode->root->fs_info;
- 	SHASH_DESC_ON_STACK(shash, fs_info->csum_shash);
- 	struct btrfs_ordered_sum *sums;
+ int __btrfs_drop_extents(struct btrfs_trans_handle *trans,
+-			 struct btrfs_root *root, struct inode *inode,
++			 struct btrfs_root *root, struct btrfs_inode *inode,
+ 			 struct btrfs_path *path, u64 start, u64 end,
+ 			 u64 *drop_end, int drop_cache,
+ 			 int replace_extent,
+@@ -744,7 +744,8 @@ int __btrfs_drop_extents(struct btrfs_trans_handle *trans,
+ 	struct btrfs_ref ref = { 0 };
+ 	struct btrfs_key key;
+ 	struct btrfs_key new_key;
+-	u64 ino = btrfs_ino(BTRFS_I(inode));
++	struct inode *vfs_inode = &inode->vfs_inode;
++	u64 ino = btrfs_ino(inode);
+ 	u64 search_start = start;
+ 	u64 disk_bytenr = 0;
+ 	u64 num_bytes = 0;
+@@ -762,9 +763,9 @@ int __btrfs_drop_extents(struct btrfs_trans_handle *trans,
+ 	int leafs_visited = 0;
+
+ 	if (drop_cache)
+-		btrfs_drop_extent_cache(BTRFS_I(inode), start, end - 1, 0);
++		btrfs_drop_extent_cache(inode, start, end - 1, 0);
+
+-	if (start >= BTRFS_I(inode)->disk_i_size && !replace_extent)
++	if (start >= inode->disk_i_size && !replace_extent)
+ 		modify_tree = 0;
+
+ 	update_refs = (test_bit(BTRFS_ROOT_SHAREABLE, &root->state) ||
+@@ -935,7 +936,7 @@ int __btrfs_drop_extents(struct btrfs_trans_handle *trans,
+ 							extent_end - end);
+ 			btrfs_mark_buffer_dirty(leaf);
+ 			if (update_refs && disk_bytenr > 0)
+-				inode_sub_bytes(inode, end - key.offset);
++				inode_sub_bytes(vfs_inode, end - key.offset);
+ 			break;
+ 		}
+
+@@ -955,7 +956,7 @@ int __btrfs_drop_extents(struct btrfs_trans_handle *trans,
+ 							start - key.offset);
+ 			btrfs_mark_buffer_dirty(leaf);
+ 			if (update_refs && disk_bytenr > 0)
+-				inode_sub_bytes(inode, extent_end - start);
++				inode_sub_bytes(vfs_inode, extent_end - start);
+ 			if (end == extent_end)
+ 				break;
+
+@@ -979,7 +980,7 @@ int __btrfs_drop_extents(struct btrfs_trans_handle *trans,
+
+ 			if (update_refs &&
+ 			    extent_type == BTRFS_FILE_EXTENT_INLINE) {
+-				inode_sub_bytes(inode,
++				inode_sub_bytes(vfs_inode,
+ 						extent_end - key.offset);
+ 				extent_end = ALIGN(extent_end,
+ 						   fs_info->sectorsize);
+@@ -993,7 +994,7 @@ int __btrfs_drop_extents(struct btrfs_trans_handle *trans,
+ 						key.offset - extent_offset);
+ 				ret = btrfs_free_extent(trans, &ref);
+ 				BUG_ON(ret); /* -ENOMEM */
+-				inode_sub_bytes(inode,
++				inode_sub_bytes(vfs_inode,
+ 						extent_end - key.offset);
+ 			}
+
+@@ -1082,8 +1083,8 @@ int btrfs_drop_extents(struct btrfs_trans_handle *trans,
+ 	path = btrfs_alloc_path();
+ 	if (!path)
+ 		return -ENOMEM;
+-	ret = __btrfs_drop_extents(trans, root, inode, path, start, end, NULL,
+-				   drop_cache, 0, 0, NULL);
++	ret = __btrfs_drop_extents(trans, root, BTRFS_I(inode), path, start,
++				   end, NULL, drop_cache, 0, 0, NULL);
+ 	btrfs_free_path(path);
+ 	return ret;
+ }
+@@ -2610,7 +2611,7 @@ int btrfs_punch_hole_range(struct inode *inode, struct btrfs_path *path,
+
+ 	cur_offset = start;
+ 	while (cur_offset < end) {
+-		ret = __btrfs_drop_extents(trans, root, inode, path,
++		ret = __btrfs_drop_extents(trans, root, BTRFS_I(inode), path,
+ 					   cur_offset, end + 1, &drop_end,
+ 					   1, 0, 0, NULL);
+ 		if (ret != -ENOSPC) {
 diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 7615b73feb30..d20afd95ab4d 100644
+index d20afd95ab4d..810065cd38a2 100644
 --- a/fs/btrfs/inode.c
 +++ b/fs/btrfs/inode.c
-@@ -2149,7 +2149,7 @@ static blk_status_t btrfs_submit_bio_start(void *private_data, struct bio *bio,
- 	struct inode *inode = private_data;
- 	blk_status_t ret = 0;
+@@ -322,7 +322,7 @@ static noinline int cow_file_range_inline(struct inode *inode, u64 start,
+ 		extent_item_size = btrfs_file_extent_calc_inline_size(
+ 		    inline_len);
 
--	ret = btrfs_csum_one_bio(inode, bio, 0, 0);
-+	ret = btrfs_csum_one_bio(BTRFS_I(inode), bio, 0, 0);
- 	BUG_ON(ret); /* -ENOMEM */
- 	return 0;
- }
-@@ -2214,7 +2214,7 @@ static blk_status_t btrfs_submit_bio_hook(struct inode *inode, struct bio *bio,
- 					  0, inode, btrfs_submit_bio_start);
- 		goto out;
- 	} else if (!skip_sum) {
--		ret = btrfs_csum_one_bio(inode, bio, 0, 0);
-+		ret = btrfs_csum_one_bio(BTRFS_I(inode), bio, 0, 0);
- 		if (ret)
- 			goto out;
- 	}
-@@ -7597,7 +7597,7 @@ static blk_status_t btrfs_submit_bio_start_direct_io(void *private_data,
- {
- 	struct inode *inode = private_data;
- 	blk_status_t ret;
--	ret = btrfs_csum_one_bio(inode, bio, offset, 1);
-+	ret = btrfs_csum_one_bio(BTRFS_I(inode), bio, offset, 1);
- 	BUG_ON(ret); /* -ENOMEM */
- 	return 0;
- }
-@@ -7658,7 +7658,7 @@ static inline blk_status_t btrfs_submit_dio_bio(struct bio *bio,
- 		 * If we aren't doing async submit, calculate the csum of the
- 		 * bio now.
- 		 */
--		ret = btrfs_csum_one_bio(inode, bio, file_offset, 1);
-+		ret = btrfs_csum_one_bio(BTRFS_I(inode), bio, file_offset, 1);
- 		if (ret)
- 			goto err;
- 	} else {
+-	ret = __btrfs_drop_extents(trans, root, inode, path,
++	ret = __btrfs_drop_extents(trans, root, BTRFS_I(inode), path,
+ 				   start, aligned_end, NULL,
+ 				   1, 1, extent_item_size, &extent_inserted);
+ 	if (ret) {
+@@ -2480,7 +2480,7 @@ static int insert_reserved_file_extent(struct btrfs_trans_handle *trans,
+ 	 * the caller is expected to unpin it and allow it to be merged
+ 	 * with the others.
+ 	 */
+-	ret = __btrfs_drop_extents(trans, root, inode, path, file_pos,
++	ret = __btrfs_drop_extents(trans, root, BTRFS_I(inode), path, file_pos,
+ 				   file_pos + num_bytes, NULL, 0,
+ 				   1, sizeof(*fi), &extent_inserted);
+ 	if (ret)
+@@ -4146,7 +4146,7 @@ static int log_one_extent(struct btrfs_trans_handle *trans,
+ 	if (ret)
+ 		return ret;
+
+-	ret = __btrfs_drop_extents(trans, log, &inode->vfs_inode, path, em->start,
++	ret = __btrfs_drop_extents(trans, log, inode, path, em->start,
+ 				   em->start + em->len, NULL, 0, 1,
+ 				   sizeof(*fi), &extent_inserted);
+ 	if (ret)
 --
 2.17.1
 
