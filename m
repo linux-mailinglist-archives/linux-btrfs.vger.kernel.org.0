@@ -2,23 +2,23 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F058B1ECD6A
-	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Jun 2020 12:23:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4ECF61ECD6C
+	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Jun 2020 12:24:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726830AbgFCKXH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 3 Jun 2020 06:23:07 -0400
-Received: from mx2.suse.de ([195.135.220.15]:60540 "EHLO mx2.suse.de"
+        id S1726066AbgFCKYH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 3 Jun 2020 06:24:07 -0400
+Received: from mx2.suse.de ([195.135.220.15]:32866 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725828AbgFCKXG (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 3 Jun 2020 06:23:06 -0400
+        id S1725828AbgFCKYG (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 3 Jun 2020 06:24:06 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 6CD6BB152;
-        Wed,  3 Jun 2020 10:23:07 +0000 (UTC)
-Subject: Re: [PATCH 2/3] btrfs: rename btrfs_block_group::count
+        by mx2.suse.de (Postfix) with ESMTP id 7206FAD07;
+        Wed,  3 Jun 2020 10:24:07 +0000 (UTC)
+Subject: Re: [PATCH 3/3] btrfs: use helper btrfs_get_block_group
 To:     Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org
 References: <20200603101020.143372-1-anand.jain@oracle.com>
- <20200603101020.143372-3-anand.jain@oracle.com>
+ <20200603101020.143372-4-anand.jain@oracle.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  xsFNBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -62,12 +62,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  KIuxEcV8wcVjr+Wr9zRl06waOCkgrQbTPp631hToxo+4rA1jiQF2M80HAet65ytBVR2pFGZF
  zGYYLqiG+mpUZ+FPjxk9kpkRYz61mTLSY7tuFljExfJWMGfgSg1OxfLV631jV1TcdUnx+h3l
  Sqs2vMhAVt14zT8mpIuu2VNxcontxgVr1kzYA/tQg32fVRbGr449j1gw57BV9i0vww==
-Message-ID: <83f1f3a1-2f2d-3eb0-3954-a992e5e6b0a8@suse.com>
-Date:   Wed, 3 Jun 2020 13:23:03 +0300
+Message-ID: <9f0e2286-0eae-d3fb-147e-1cb71ccfe290@suse.com>
+Date:   Wed, 3 Jun 2020 13:24:03 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.8.0
 MIME-Version: 1.0
-In-Reply-To: <20200603101020.143372-3-anand.jain@oracle.com>
+In-Reply-To: <20200603101020.143372-4-anand.jain@oracle.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -79,18 +79,13 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 3.06.20 г. 13:10 ч., Anand Jain wrote:
-> The name 'count' is a very commonly used name. It is often difficult to
-> review the code to check if there is any leak. So rename it to
-> 'bg_count', which is unique enough.
-> 
-> This patch also serves as a preparatory patch to either make sure
-> btrfs_get_block_group() is used instead of open coded the same or just
-> open code every where as btrfs_get_block_group() is a one-liner.
+> Use the helper function where it is open coded to increment the
+> block_group reference count 'bg_count' so that it is less confusing
+> while reviewing the code. As btrfs_get_block_group() is a one-liner
+> we could have open-coded it, but its partner function
+> btrfs_put_block_group() isn't one-liner which does the free part in it.
 > 
 > Signed-off-by: Anand Jain <anand.jain@oracle.com>
 
-This introduces unnecessary churn, instead if all uses happen through
-the btrfs_get_block_group/put apis you can simply grep for those. All
-other uses are RO. Also bg_count is not very descriptive given this is
-really a refcount. Open-coding probably would be fine if this type is
-switched to refcount_t rather than an atomic_t.
+
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
