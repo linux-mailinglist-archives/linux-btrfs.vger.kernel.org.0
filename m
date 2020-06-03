@@ -2,101 +2,231 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5C811ED155
-	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Jun 2020 15:49:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 123041ED675
+	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Jun 2020 21:03:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725986AbgFCNtK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 3 Jun 2020 09:49:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50108 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725971AbgFCNst (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 3 Jun 2020 09:48:49 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A516C08C5C9
-        for <linux-btrfs@vger.kernel.org>; Wed,  3 Jun 2020 06:48:49 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id h188so1357861lfd.7
-        for <linux-btrfs@vger.kernel.org>; Wed, 03 Jun 2020 06:48:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
-        bh=H8rDQEJouwBJIElP/Vpqq+PrvTZxQQy2H7A/MvyMMB0=;
-        b=LImzFWfFZ5MGhzJT1qzCsgEXVo7xW37sUIdrDLCKiXHQE0/Tq0rYX6Af/ld5dvlhmE
-         opFt8B8vUrhAfyxGIRs7eIQZmnu+cHCt7Dz4gEu/fnBWHDlMa8iVHDbM7XgqJUtNcgor
-         I4Oj1yGJ3ygOniFn6Dr+FHDS5BV48N/ldz+eBwWbR5/ADnYCL6KuztRZu9mrKJOxMODU
-         fmVICwwGmTYXXsgICTxE6unupuMdGq6+YZvkWKysZVLYK3Wwxrg7U2ecMo3WGycHWcU1
-         w35jxyjuynpm30G3kj/I18A4vO2Y2WN0kfTajUkGc1Xe9t84eQuWhnB4AGlAS8dbrawc
-         iC3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:sender:from:date
-         :message-id:subject:to;
-        bh=H8rDQEJouwBJIElP/Vpqq+PrvTZxQQy2H7A/MvyMMB0=;
-        b=fa25Vi00A/DV8JssO20HMcTbkgK1Q9/or15ccfAWSw8lJCH/vSZtR0i6WVgUkUfjjk
-         HISE+3eSFdGDWyDY/LLRsFfbZKzC6NZSIAy5qHi2drSHmhyTohMqiFnUeb7C1RSrXiiR
-         dAtlbXYmQurSdOn3QbewOl1z6tf5r2iGHBA7rGNxgbmjEVDNQShMIzVj3xwMwrT7Uki1
-         3N8uUO6w6CiaSjjib77UCpc1LE2CgI56bmZJB08oEycYpy7+myXyaC8f75iikELHTd2N
-         Ojph3MR8y0Erp1T0lP1ey5U00Lf+992W8ouxUhG9+vBa4ZiLSx9f6o+KVeIdx7XbqSoj
-         ip3A==
-X-Gm-Message-State: AOAM530aYK4fw6Jh8oK1z0C4VJpiqhqpYv0djETWE2Sbg3nxyotxfc4t
-        bQoci7E8HXd9v4aKQU+sgScLr3Nlssif30aJpKQ=
-X-Google-Smtp-Source: ABdhPJzc66PsPJ7uf2JiXrqj7zfh07Ra5BpBms0TPKeexmxkWkfXYY+ch/Os+E85wJbdOE6Lm+0ANdybV/7KRG4HAcU=
-X-Received: by 2002:a05:6512:308e:: with SMTP id z14mr2566308lfd.29.1591192127287;
- Wed, 03 Jun 2020 06:48:47 -0700 (PDT)
+        id S1726095AbgFCTDM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 3 Jun 2020 15:03:12 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:52426 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725821AbgFCTDL (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 3 Jun 2020 15:03:11 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 053J2UA9103435;
+        Wed, 3 Jun 2020 19:02:58 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ content-transfer-encoding : in-reply-to; s=corp-2020-01-29;
+ bh=o7+fler5zTGTJ+y6IwAfjprQ49fo/OV69viq3ZJ03Z8=;
+ b=exHuLHlPmoKUl/g6Df8m0R4b/kBt8w5qmGL8h1QMwiMg4ZJn5xh6zcI5uOWJ/QAJteae
+ 9sjTEPNflDCgZI3NXnLOAEh/X3kLauv5JLGXp9gwjq8hmCpEIkC2Lviuyidsdcu7vMNR
+ oaUEBDAzUQgZfI7/4o74jbMclbCkLURv3vSvr10zj8qaVL7uFG8LAIllmvVg35oH3IIG
+ MGeJL/9J1nb3Ze5OypiWemywiczFIDUoa0mZKKrMllvKhdkq1rhwH1L4Zpwa/jeeroq7
+ 0xKmeGl6hioq9o3uLi9ASYFLvD1+WpUdHjI1lJz9vNFBGq85w73HBBq2wG70yXOnwkLz oA== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2120.oracle.com with ESMTP id 31bfemawu1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 03 Jun 2020 19:02:57 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 053IvTIL093545;
+        Wed, 3 Jun 2020 19:02:57 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3030.oracle.com with ESMTP id 31c12rb6bx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 03 Jun 2020 19:02:57 +0000
+Received: from abhmp0002.oracle.com (abhmp0002.oracle.com [141.146.116.8])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 053J2tJM023799;
+        Wed, 3 Jun 2020 19:02:55 GMT
+Received: from localhost (/10.159.239.239)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 03 Jun 2020 12:02:55 -0700
+Date:   Wed, 3 Jun 2020 12:02:52 -0700
+From:   "Darrick J. Wong" <darrick.wong@oracle.com>
+To:     Filipe Manana <fdmanana@gmail.com>
+Cc:     Goldwyn Rodrigues <rgoldwyn@suse.de>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        Christoph Hellwig <hch@infradead.org>, dsterba@suse.cz
+Subject: Re: [PATCH] iomap: Return zero in case of unsuccessful pagecache
+ invalidation before DIO
+Message-ID: <20200603190252.GG8204@magnolia>
+References: <20200528192103.xm45qoxqmkw7i5yl@fiona>
+ <20200529002319.GQ252930@magnolia>
+ <20200601151614.pxy7in4jrvuuy7nx@fiona>
+ <CAL3q7H60xa0qW4XdneDdeQyNcJZx7DxtwDiYkuWB5NoUVPYdwQ@mail.gmail.com>
+ <CAL3q7H4=N2pfnBSiJ+TApy9kwvcPE5sB92sxcVZN10bxZqQpaA@mail.gmail.com>
 MIME-Version: 1.0
-Reply-To: susanjones.wife@gmail.com
-Received: by 2002:a19:a405:0:0:0:0:0 with HTTP; Wed, 3 Jun 2020 06:48:46 -0700 (PDT)
-From:   "Mrs.Susan Jones" <joneswife.susan@gmail.com>
-Date:   Wed, 3 Jun 2020 14:48:46 +0100
-X-Google-Sender-Auth: aH2vam-ZraP3yG1gz3ryctMgTE4
-Message-ID: <CALBhdBfusXWup1N4iFuTS3D1AZxWbZbTDS_qa-wA3FkbkE7MrQ@mail.gmail.com>
-Subject: HELLO: I AM MRS SUSAN JONES
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAL3q7H4=N2pfnBSiJ+TApy9kwvcPE5sB92sxcVZN10bxZqQpaA@mail.gmail.com>
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9641 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 phishscore=0 malwarescore=0
+ adultscore=0 suspectscore=5 spamscore=0 bulkscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2006030146
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9641 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 suspectscore=5
+ mlxlogscore=999 priorityscore=1501 bulkscore=0 phishscore=0 clxscore=1015
+ impostorscore=0 adultscore=0 spamscore=0 mlxscore=0 lowpriorityscore=0
+ cotscore=-2147483648 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2006030147
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
--- 
-OUR GOLDEN OPPORTUNITY
+On Wed, Jun 03, 2020 at 12:32:15PM +0100, Filipe Manana wrote:
+> On Wed, Jun 3, 2020 at 12:23 PM Filipe Manana <fdmanana@gmail.com> wrote:
+> >
+> > On Mon, Jun 1, 2020 at 4:16 PM Goldwyn Rodrigues <rgoldwyn@suse.de> wrote:
+> > >
+> > > On 17:23 28/05, Darrick J. Wong wrote:
+> > > > On Thu, May 28, 2020 at 02:21:03PM -0500, Goldwyn Rodrigues wrote:
+> > > > >
+> > > > > Filesystems such as btrfs are unable to guarantee page invalidation
+> > > > > because pages could be locked as a part of the extent. Return zero
+> > > >
+> > > > Locked for what?  filemap_write_and_wait_range should have just cleaned
+> > > > them off.
+> > > >
+> > > > > in case a page cache invalidation is unsuccessful so filesystems can
+> > > > > fallback to buffered I/O. This is similar to
+> > > > > generic_file_direct_write().
+> > > > >
+> > > > > This takes care of the following invalidation warning during btrfs
+> > > > > mixed buffered and direct I/O using iomap_dio_rw():
+> > > > >
+> > > > > Page cache invalidation failure on direct I/O.  Possible data
+> > > > > corruption due to collision with buffered I/O!
+> > > > >
+> > > > > Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
+> > > > >
+> > > > > diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
+> > > > > index e4addfc58107..215315be6233 100644
+> > > > > --- a/fs/iomap/direct-io.c
+> > > > > +++ b/fs/iomap/direct-io.c
+> > > > > @@ -483,9 +483,15 @@ iomap_dio_rw(struct kiocb *iocb, struct iov_iter *iter,
+> > > > >      */
+> > > > >     ret = invalidate_inode_pages2_range(mapping,
+> > > > >                     pos >> PAGE_SHIFT, end >> PAGE_SHIFT);
+> > > > > -   if (ret)
+> > > > > -           dio_warn_stale_pagecache(iocb->ki_filp);
+> > > > > -   ret = 0;
+> > > > > +   /*
+> > > > > +    * If a page can not be invalidated, return 0 to fall back
+> > > > > +    * to buffered write.
+> > > > > +    */
+> > > > > +   if (ret) {
+> > > > > +           if (ret == -EBUSY)
+> > > > > +                   ret = 0;
+> > > > > +           goto out_free_dio;
+> > > >
+> > > > XFS doesn't fall back to buffered io when directio fails, which means
+> > > > this will cause a regression there.
+> > > >
+> > > > Granted mixing write types is bogus...
+> > > >
+> > >
+> > > I have not seen page invalidation failure errors on XFS, but what should
 
-Hello Dear Friend,
+What happens if you try to dirty an mmap page at the same time as
+issuing a directio?
 
-Complement of the day, i hope you are doing great today. However, I am
-Mrs.Susan Jones, an auditor with one of the new generation banks here
-in Burkina Faso.
+> > > happen hypothetically if they do occur? Carry on with the direct I/O?
+> > > Would an error return like -ENOTBLK be better?
 
-I am writing you this letter based on the latest development at my
-Department. i discovered some abandoned huge amount of money, Ten
-Million, Five hundred thousand  United States Dollars.($10.500.000).
-Now I am only contacting you as a foreigner because this money cannot
-be approved to a local bank account here, but can only be approved to
-any foreign account and foreign beneficiary because the money is in US
-dollars
+In the old days, we would only WARN when we encountered collisions like
+this.  How about only setting EIO in the mapping if we fail the
+pagecache invalidation in directio completion?  If a buffered write
+dirties the page after the direct write thread flushes the dirty pages
+but before invalidation, we can argue that we didn't lose anything; the
+direct write simply happened after the buffered write.
 
-This will be  a legitimate transaction once you accept to build trust
-with me and follow simple instruction doing the transfer process,
-until the total sum transfer out of the bank here to your own bank
-account any where in the world, and I agreed to share the total money
-50/50 with you once you successful confirmed it in your bank account.
-But any expenses doing the transfer process will be deduct from the
-amount before sharing, If you are interested to work with me and
-provide a good receiving bank account, get back to me as soon as
-possible with the following details below.
+XFS doesn't implement buffered write fallback, and it never has.  Either
+the entire directio succeeds, or it returns a negative error code.  Some
+of the iomap_dio_rw callers (ext4, jfs2) will notice a short direct
+write and try to finish the rest with buffered io, but xfs and zonefs do
+not.
 
-Your full name
-Your Profession
-Your direct mobile phone number
-Your Scanned International passport or any of your identity
+The net effect of this (on xfs anyway) is that when buffered and direct
+writes collide, before we'd make the buffered writer lose, now we make
+the direct writer lose.
 
-NOTE: PLEASE IT YOU ARE NOT INTERESTED DON'T BORDER TO RESPOND BACK TO
-AVOID TIME WASTED.
+You also /could/ propose teaching xfs how to fall back to an
+invalidating synchronous buffered write like ext4 does, but that's not
+part of this patch set, and that's not a behavior I want to introduce
+suddenly during the merge window.
 
-As soon as I receive these data's, I will forward to you the
-application form which you will send to the bank for the claim and
-transfer of the fund into your bank account as the  new beneficial.
+> > It doesn't make much to me to emit the warning and then proceed to the
+> > direct IO write path anyway, as if nothing happened.
+> > If we are concerned about possible corruption, we should either return
+> > an error or fallback to buffered IO just like
+> > generic_file_direct_write() did, and not allow the possibility for
+> > corruptions.
+> >
+> > Btw, this is causing a regression in Btrfs now. The problem is that
+> > dio_warn_stale_pagecache() sets an EIO error in the inode's mapping:
+> >
+> > errseq_set(&inode->i_mapping->wb_err, -EIO);
+> >
+> > So the next fsync on the file will return that error, despite the
+> > fsync having completed successfully with any errors.
+> >
+> > Since patchset to make btrfs direct IO use iomap is already in Linus'
+> > tree, we need to fix this somehow.
 
-I am waiting to hear from you soon
+Y'all /just/ sent the pull request containing that conversion 2 days
+ago.  Why did you move forward with that when you knew there were
+unresolved fstests failures?
 
-Yours
-Mrs.Susan Jones
+> > This makes generic/547 fail often for example - buffered write against
+> > file + direct IO write + fsync - the later returns -EIO.
+> 
+> Just to make it clear, despite the -EIO error, there was actually no
+> data loss or corruption (generic/547 checks that),
+> since the direct IO write path in btrfs figures out there's a buffered
+> write still ongoing and waits for it to complete before proceeding
+> with the dio write.
+> 
+> Nevertheless, it's still a regression, -EIO shouldn't be returned as
+> everything went fine.
+
+Now I'm annoyed because I feel like you're trying to strong-arm me into
+making last minute changes to iomap when you could have held off for
+another cycle.
+
+While I'm pretty sure your analysis is correct that we could /probably/
+get away with only setting EIO if we can't invalidate the cache after
+we've already written the disk blocks directly (because then we really
+did lose something), I /really/ want these kinds of behavioral changes
+to shared code to soak in for-next for long enough that we can work out
+the kinks without exposing the upstream kernel to unnecessary risk.
+
+This conversation would be /much/ different had you not just merged the
+btrfs directio iomap conversion yesterday.
+
+--D
+
+> 
+> >
+> > Thanks.
+> >
+> > >
+> > > --
+> > > Goldwyn
+> >
+> >
+> >
+> > --
+> > Filipe David Manana,
+> >
+> > “Whether you think you can, or you think you can't — you're right.”
+> 
+> 
+> 
+> -- 
+> Filipe David Manana,
+> 
+> “Whether you think you can, or you think you can't — you're right.”
