@@ -2,25 +2,25 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74F801EC920
-	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Jun 2020 07:57:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2C8C1EC91F
+	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Jun 2020 07:57:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726135AbgFCF4S (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 3 Jun 2020 01:56:18 -0400
-Received: from mx2.suse.de ([195.135.220.15]:42444 "EHLO mx2.suse.de"
+        id S1726129AbgFCF4R (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 3 Jun 2020 01:56:17 -0400
+Received: from mx2.suse.de ([195.135.220.15]:42484 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726088AbgFCF4C (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        id S1726034AbgFCF4C (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
         Wed, 3 Jun 2020 01:56:02 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id A639EAFC3;
+        by mx2.suse.de (Postfix) with ESMTP id D66B5AF8D;
         Wed,  3 Jun 2020 05:56:04 +0000 (UTC)
 From:   Nikolay Borisov <nborisov@suse.com>
 To:     linux-btrfs@vger.kernel.org
 Cc:     Nikolay Borisov <nborisov@suse.com>
-Subject: [PATCH 45/46] btrfs make btrfs_set_inode_last_trans take btrfs_inode
-Date:   Wed,  3 Jun 2020 08:55:45 +0300
-Message-Id: <20200603055546.3889-46-nborisov@suse.com>
+Subject: [PATCH 46/46] btrfs: Make btrfs_qgroup_check_reserved_leak take btrfs_inode
+Date:   Wed,  3 Jun 2020 08:55:46 +0300
+Message-Id: <20200603055546.3889-47-nborisov@suse.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200603055546.3889-1-nborisov@suse.com>
 References: <20200603055546.3889-1-nborisov@suse.com>
@@ -29,71 +29,80 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Instead of making multiple calls to BTRFS_I simply take btrfs_inode
-as an input paramter.
-
+vfs_inode is used only for the inode number everything else
+requires btrfs_inode.
 
 Signed-off-by: Nikolay Borisov <nborisov@suse.com>
 ---
- fs/btrfs/inode.c       |  6 +++---
- fs/btrfs/transaction.h | 12 ++++++------
- 2 files changed, 9 insertions(+), 9 deletions(-)
+ fs/btrfs/inode.c  |  2 +-
+ fs/btrfs/qgroup.c | 12 ++++++------
+ fs/btrfs/qgroup.h |  2 +-
+ 3 files changed, 8 insertions(+), 8 deletions(-)
 
 diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 39161a440125..df1a347c1814 100644
+index df1a347c1814..2991ac7142d6 100644
 --- a/fs/btrfs/inode.c
 +++ b/fs/btrfs/inode.c
-@@ -3468,7 +3468,7 @@ static noinline int btrfs_update_inode_item(struct btrfs_trans_handle *trans,
-
- 	fill_inode_item(trans, leaf, inode_item, inode);
- 	btrfs_mark_buffer_dirty(leaf);
--	btrfs_set_inode_last_trans(trans, inode);
-+	btrfs_set_inode_last_trans(trans, BTRFS_I(inode));
- 	ret = 0;
- failed:
- 	btrfs_free_path(path);
-@@ -3498,7 +3498,7 @@ noinline int btrfs_update_inode(struct btrfs_trans_handle *trans,
-
- 		ret = btrfs_delayed_update_inode(trans, root, inode);
- 		if (!ret)
--			btrfs_set_inode_last_trans(trans, inode);
-+			btrfs_set_inode_last_trans(trans, BTRFS_I(inode));
- 		return ret;
+@@ -8499,7 +8499,7 @@ void btrfs_destroy_inode(struct inode *inode)
+ 			btrfs_put_ordered_extent(ordered);
+ 		}
  	}
-
-@@ -6010,7 +6010,7 @@ static struct inode *btrfs_new_inode(struct btrfs_trans_handle *trans,
- 	inode_tree_add(inode);
-
- 	trace_btrfs_inode_new(inode);
--	btrfs_set_inode_last_trans(trans, inode);
-+	btrfs_set_inode_last_trans(trans, BTRFS_I(inode));
-
- 	btrfs_update_root_times(trans, root);
-
-diff --git a/fs/btrfs/transaction.h b/fs/btrfs/transaction.h
-index bf102e64bfb2..6f65fff6cf50 100644
---- a/fs/btrfs/transaction.h
-+++ b/fs/btrfs/transaction.h
-@@ -156,13 +156,13 @@ struct btrfs_pending_snapshot {
- };
-
- static inline void btrfs_set_inode_last_trans(struct btrfs_trans_handle *trans,
--					      struct inode *inode)
-+					      struct btrfs_inode *inode)
+-	btrfs_qgroup_check_reserved_leak(inode);
++	btrfs_qgroup_check_reserved_leak(BTRFS_I(inode));
+ 	inode_tree_del(inode);
+ 	btrfs_drop_extent_cache(BTRFS_I(inode), 0, (u64)-1, 0);
+ 	btrfs_inode_clear_file_extent_range(BTRFS_I(inode), 0, (u64)-1);
+diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
+index e5fab553afb7..453545ea2f41 100644
+--- a/fs/btrfs/qgroup.c
++++ b/fs/btrfs/qgroup.c
+@@ -3741,7 +3741,7 @@ void btrfs_qgroup_convert_reserved_meta(struct btrfs_root *root, int num_bytes)
+  * Check qgroup reserved space leaking, normally at destroy inode
+  * time
+  */
+-void btrfs_qgroup_check_reserved_leak(struct inode *inode)
++void btrfs_qgroup_check_reserved_leak(struct btrfs_inode *inode)
  {
--	spin_lock(&BTRFS_I(inode)->lock);
--	BTRFS_I(inode)->last_trans = trans->transaction->transid;
--	BTRFS_I(inode)->last_sub_trans = BTRFS_I(inode)->root->log_transid;
--	BTRFS_I(inode)->last_log_commit = BTRFS_I(inode)->root->last_log_commit;
--	spin_unlock(&BTRFS_I(inode)->lock);
-+	spin_lock(&inode->lock);
-+	inode->last_trans = trans->transaction->transid;
-+	inode->last_sub_trans = inode->root->log_transid;
-+	inode->last_log_commit = inode->root->last_log_commit;
-+	spin_unlock(&inode->lock);
- }
+ 	struct extent_changeset changeset;
+ 	struct ulist_node *unode;
+@@ -3749,19 +3749,19 @@ void btrfs_qgroup_check_reserved_leak(struct inode *inode)
+ 	int ret;
 
- /*
+ 	extent_changeset_init(&changeset);
+-	ret = clear_record_extent_bits(&BTRFS_I(inode)->io_tree, 0, (u64)-1,
++	ret = clear_record_extent_bits(&inode->io_tree, 0, (u64)-1,
+ 			EXTENT_QGROUP_RESERVED, &changeset);
+
+ 	WARN_ON(ret < 0);
+ 	if (WARN_ON(changeset.bytes_changed)) {
+ 		ULIST_ITER_INIT(&iter);
+ 		while ((unode = ulist_next(&changeset.range_changed, &iter))) {
+-			btrfs_warn(BTRFS_I(inode)->root->fs_info,
++			btrfs_warn(inode->root->fs_info,
+ 				"leaking qgroup reserved space, ino: %lu, start: %llu, end: %llu",
+-				inode->i_ino, unode->val, unode->aux);
++				inode->vfs_inode.i_ino, unode->val, unode->aux);
+ 		}
+-		btrfs_qgroup_free_refroot(BTRFS_I(inode)->root->fs_info,
+-				BTRFS_I(inode)->root->root_key.objectid,
++		btrfs_qgroup_free_refroot(inode->root->fs_info,
++				inode->root->root_key.objectid,
+ 				changeset.bytes_changed, BTRFS_QGROUP_RSV_DATA);
+
+ 	}
+diff --git a/fs/btrfs/qgroup.h b/fs/btrfs/qgroup.h
+index a22a1d3dae25..741d21a4147a 100644
+--- a/fs/btrfs/qgroup.h
++++ b/fs/btrfs/qgroup.h
+@@ -399,7 +399,7 @@ void btrfs_qgroup_free_meta_all_pertrans(struct btrfs_root *root);
+  */
+ void btrfs_qgroup_convert_reserved_meta(struct btrfs_root *root, int num_bytes);
+
+-void btrfs_qgroup_check_reserved_leak(struct inode *inode);
++void btrfs_qgroup_check_reserved_leak(struct btrfs_inode *inode);
+
+ /* btrfs_qgroup_swapped_blocks related functions */
+ void btrfs_qgroup_init_swapped_blocks(
 --
 2.17.1
 
