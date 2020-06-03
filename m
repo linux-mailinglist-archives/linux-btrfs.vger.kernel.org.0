@@ -2,88 +2,95 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27CE61ECF30
-	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Jun 2020 14:01:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACAFC1ECF96
+	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Jun 2020 14:16:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726154AbgFCMBC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 3 Jun 2020 08:01:02 -0400
-Received: from mout.gmx.net ([212.227.15.19]:43647 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725833AbgFCMBB (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 3 Jun 2020 08:01:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1591185660;
-        bh=Iqzoi6HuUo57XbcgDQ7JkRprhiEB7dt6hbVTU42NJWE=;
-        h=X-UI-Sender-Class:From:To:Subject:Date:Reply-To;
-        b=VCJWCaj7X7D1wNIGIbMXK46N/L9TGSrofZBqEO9LhG8i0cJLEzEI6OlSCMyhb7iSB
-         Pd+F4hzNQxFdwrtTCIIDeZl4jvMAo8Rd+g9L/pf6OenO0wCw04Es8p96phE3jYoXiK
-         nbgWpbP2p3T89coVL1meC6CEjShUUDH6mvEGfpmg=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [10.63.0.34] ([194.99.106.9]) by mail.gmx.com (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1N8XTv-1itjEA28rB-014TIr for
- <linux-btrfs@vger.kernel.org>; Wed, 03 Jun 2020 14:01:00 +0200
-From:   "Adam Gold" <awg1@gmx.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: btrfs raid1 encryption alternatives
-Date:   Wed, 03 Jun 2020 12:00:58 +0000
-Message-Id: <em0da60a8d-9abc-4bc5-a91e-ebe48a4503f6@desktop-31mlcgh>
-Reply-To: "Adam Gold" <awg1@gmx.com>
-User-Agent: eM_Client/7.2.38732.0
-Mime-Version: 1.0
-Content-Type: text/plain; format=flowed; charset=utf-8
+        id S1726154AbgFCMQM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 3 Jun 2020 08:16:12 -0400
+Received: from sonic302-2.consmr.mail.bf2.yahoo.com ([74.6.135.41]:42536 "EHLO
+        sonic302-2.consmr.mail.bf2.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725859AbgFCMQM (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 3 Jun 2020 08:16:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1591186570; bh=+NKq2YP/4c3bLm2HmGhxa/KCZOXr0NIUKHs/ECuC0yk=; h=Date:From:Reply-To:Subject:References:From:Subject; b=gIcKU6kBi7FWPh8uuDQdtwWnFpKVD7h62XNnYzjILsNE+dwLPYxK7fkKyKUpHlBJ9aPYhQJrQWhrIa81JFnI5BosvSNOjik4F+6W8B9ixlt96NihwMElFtjSV47CjrjGH0aRwjegzu3mG+hOXnbcVKpV/n8OYaTaKZxu0yAU095a+IlkSdLdImNl2CQbXo5hbNL78GENinr5VwLM+oSTGpiGvWBzOeEpvcYKbq2fShxwWl6FCcZeOezGi36E0lT60mRuDRkk9YXYEL5baCTQVkrNUy0IHtZpdLgTi4rVZD3a3/DdHmysfFhAeARQ7Oq17vPlMw0KDWK1hsriflikuA==
+X-YMail-OSG: io.Yk9IVM1ngZurFCTtf.wfwcoMzdQryrZ4l5gvatBuEnFVKsBnPD6tuH_FAUWX
+ 9x0zIAeAGwpUPGg2v42MHGLpI53MsW71Kza4bmg7OfCIdKvdeXyZr3NQB8e4CZN29YmuZ1EOSVup
+ pwqjIgF6rTSmxPtaCj50tCnVR.R7MrcG0F61bjsA2RYueI6c1.wPSwG_S6WSYg7iHubEf3KFNy01
+ 2nuXQSCDTZYF_PdptRE1I7gQwhWG523VMKzHrmp90HCu9rjUPVF8WfGzIQHU8O.gMdh7tUhiRIgL
+ hZ5QKuMrYYfvg23b2GJAWooSpkzOGfaSIk5_4nN3kAoPCEdGsM2iWbhYHkthrV.ME_EhB4u9fFac
+ TvnhEvjwIp0Qvqtmc.x.a.TWcUt.mjnN7M.nWKXTR.vdZgzUAlziZVFqDP8YufxTOgbXhfW0DwWi
+ sR7htWwZlP3iP906MIafDXWcU0uG4X_Go.Sa1QVyfMXzA2.VQf287LvngxmoLf6TZPqGdQYWhviX
+ J4R4YCCwXhi7WuDTY2oi8t2J7kjUC2wdkZ8wMOfmHvnY0hnbT.qrw8wlSqNX5p0mQ.tk77YwqONm
+ hyZXBDlokHosr1aDRj1j3bi0O_ThirKSHgrzRVpsLEv0lKNAwzdl91fCNOtfdxUdsl77DBcjG_de
+ ktBQyUPl1byi_nz6grBxgTVN7kPhv3oGAlT.tPILspFBYw4LheCE_k0cra1DMH0aiLB9.xVKnS88
+ e0b7PNBtJwlAvRq_VihsyuCuvzw8Fl4taDzxvBJ4NIFNomiph.h73BRF1UADBdfvJb9F0ei3_7sJ
+ J.fmbw5VHFGHF471s8ZcbJoZIj2AGZ6lvD_nQmUrudkxYLNvyJFgrnJOdTWQBynOOUGXdipdAggi
+ Tlo02cGyM7_PqUEFCZDHBXXfxMN4rEGUK7G3Xst6qYx0_xcoEAJa4bEW1H878i42H1UMYbVRqrXE
+ 8Dd2XvjC4JWSlWcXZTEOYfUcKoe1w2wuN1kK2fbKvljr9vpMhsnjnnkv.JQsa8s12.cqu0FP87A8
+ xv_aZh4rL4TjIH3EAM_nARegQw4HTaI1XdiJ4MO.T_DkwMOMsOFNO7QaKfPGv84VT9.6DCsjJPCT
+ QxSQKJESwOAOAhRwLSBSvZhynPGdmt8cSMlYWa.5eT5nyUNORY7fG.u0bqX08.EDr6R1XYyPG64U
+ zq4nruep6Y0HyWGJpAiazF9I9z5j0.j4vzwQWm_ObIrlGwA4NisgXiRGpPRehHA5DcQE_zgicsap
+ KkX9A.7RY.6BRZws0yrS3OUeComEwSz7vMEiL0UhcpF7gCyboh5vFxMOeAsp7I3VlpmDnGMMz
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic302.consmr.mail.bf2.yahoo.com with HTTP; Wed, 3 Jun 2020 12:16:10 +0000
+Date:   Wed, 3 Jun 2020 12:16:06 +0000 (UTC)
+From:   "Mrs. Mina A. Brunel" <mrsminaabrunelm@gmail.com>
+Reply-To: mrs.minaabrunel2021@aol.com
+Message-ID: <1402604192.1378944.1591186566036@mail.yahoo.com>
+Subject: My Dear in the lord
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:VLVZy0fF357RlwBZVBHp0PvG3Fiz+NMVHOumWk59/C3IAp4x2w0
- Jrxo5EEYGWwIXGjGQpQGwHZy1ICr4yz6YBOwBCaVmlDFLV5DQK2BJloHUwKnsUZGyN+P787
- A9PIh2wlDNrL8vAKiVDwsmJCoXWOwbb6qZuRGq4jVSaZr6p8YM3l10ih5L4CnzCLRzpQl/9
- 8Xwuk3N0XZda4W5jvaFEg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:F0/gd2Lho4A=:Q+K23O0SR3+jJ6IkY147uz
- t+z0w27E1veJ6jHx5Q/iMF+OgeVXDlnAeXnlzof9KREFIk86Bt4qDEVDRR7wNiVVSuNviDY0O
- F/XZTxHaXhG8DNSJfwb66Wgn2eL90zUcKSVcwMAo7tw51SUeEPju6GhpLst/h151/R2v018X9
- H1IFEU4umcK07g+ZA66ruSer/QYCQVpP+Noml4nqKagANotktMPwGEgLeD1zRAnyWHQ3IXPYT
- rn8mLtCvTSpYhXtxGsHFrvdoFS7mlJFS9Xtou3E3fPwiylgzGwh0goDKxdoEAsJkdAq83smE9
- OYt+lWXuXlP5FPOlbuVceLaa0kueQiqEBXJfPLsEf5HSzuPweGQ6EQA0w378zF97EsIAwgCe2
- Jf/krXgyL1lQBvBRxvKv8qRBlp4cyX3Dl582xOvXefxLg1SY+Nh5Dqw6xEchLrruEzTaHmjxc
- zCMuOV5wuyeQRV80jEButOb5eccwEC5vOMO3fQunuI+pcbadcppwjryzHtC2asC9qQ5QoQyKk
- OI/8/p5VPLQFk8M6PfIoRNVtfpGytkt5p6YA5sjGKuuo3nvhF2VPlBAU3GfQzym9KuIHvcKEu
- ShqKwd2QBvul9FdDX1F0weXunq+EFpqp+PV3Uqp/KOfFDY0jyX/AlvJyDGEN4dE0wojOYVMUU
- YCUp8EYFvdBAJ/C5rXKoSlTAXfr5PolEGB7wCz5db9OcDIi6yVcWPWJDUOV45A7SjoXCcuuPC
- Z3Gj3yfxlxNYDTMauyhlCFd6lp0ohalHJaujaIJr6OXWVre28De50+2pIH+l0Nu1CYT2OW8x4
- 3pxlTzKyaDYSK8j2W917GN3i0SgtXG0Ws2O7umM2IYROnBw5r3MzJKRo3vGE0cmrG5DDhUqHI
- UnCyA05OhzFfLm7a/6TFkiSKZGooVH4NU6dn5BSLI/vRZXDI6qRi1/tVMH4/AfqbfYm+SnkNS
- kRnuBPh8fhcgWrdZfplxtrSeQK10k+t0VZjGOKJlRMTwJJSslCu6jlZNkQmkrVtxe2MDGWi+b
- n+AJj56uhHgpAOPoy1sBa72jkY4vz+xhi6/pdQSRnJ8rsrpPfyHoRvccAq8EpvwveP0DVCEqy
- BK/PCenJZ0WrMgymOyIX6Tejao7r2/4TswJPonhURdMRgqbazeiQGRPgNgYC9/5FXs/XGwual
- yT5isnmkVZl5ysK0u938b7R5FRc3L8SyoI3+xuJ8XzKiOLgMfCx05L3jyTOl+AaGAbY98U5rX
- qOAt0CP8meJiAvxK8
+References: <1402604192.1378944.1591186566036.ref@mail.yahoo.com>
+X-Mailer: WebService/1.1.16037 YMailNodin Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:77.0) Gecko/20100101 Firefox/77.0
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-I'm intending to create a raid1 mirror using usb3 disks attached to an=20
-overclocked Raspberry Pi 4. It might not be going into a data center any=20
-time soon but I've done it before and it ran without fault. It will be=20
-used for used for general backup and media.
 
-Last time I used btrfs only, but I want an encryption layer this time=20
-for which I'm going to use plain-dmcrypt. My understanding is that, like=20
-with zfs, btrfs should be proximate to the disk sectors so one can make=20
-best use of all its features (compression, scrubbing etc). I'm=20
-considering the following two options:
 
-1) sda+sdb --> PV --> VG --> btrfs_pool_LV (100% of VG) -->=20
-plain-dmcrypt
-2) sda+sdb --> plain-dmcrypt --> /dev/mapper/btrfs_raid1 --> /mnt/btrfs
+My Dear in the lord
 
-I look at 1) and wonder whether the lvm layers are redundant but they (I=20
-believe transparently) allow btrfs to format sda+sdb directly .
 
-My question is, then, in 2) once /dev/mapper/btrfs_raid1 has been=20
-opened, is it de facto identical to /dev/sda+/dev/sdb from scenario 1)=20
-and will therefore allow btrfs to use all its capabilities. I believe=20
-that in scenario 1) will only have to decrypt the LV whereas in 2) I'll=20
-have to decrypt both disks but I'm not too fussed about that.
+My name is Mrs. Mina A. Brunel I am a Norway Citizen who is living in Burki=
+na Faso, I am married to Mr. Brunel Patrice, a politician who owns a small =
+gold company in Burkina Faso; He died of Leprosy and Radesyge, in the year =
+February 2010, During his lifetime he deposited the sum of =E2=82=AC 8.5 Mi=
+llion Euro) Eight million, Five hundred thousand Euros in a bank in Ouagado=
+ugou the capital city of Burkina Faso in West Africa. The money was from th=
+e sale of his company and death benefits payment and entitlements of my dec=
+eased husband by his company.
 
-Thanks in advance for your attention.
+I am sending you this message with heavy tears in my eyes and great sorrow =
+in my heart, and also praying that it will reach you in good health because=
+ I am not in good health, I sleep every night without knowing if I may be a=
+live to see the next day. I am suffering from long time cancer and presentl=
+y I am partially suffering from Leprosy, which has become difficult for me =
+to move around. I was married to my late husband for more than 6 years with=
+out having a child and my doctor confided that I have less chance to live, =
+having to know when the cup of death will come, I decided to contact you to=
+ claim the fund since I don't have any relation I grew up from an orphanage=
+ home.
 
+I have decided to donate this money for the support of helping Motherless b=
+abies/Less privileged/Widows and churches also to build the house of God be=
+cause I am dying and diagnosed with cancer for about 3 years ago. I have de=
+cided to donate from what I have inherited from my late husband to you for =
+the good work of Almighty God; I will be going in for an operation surgery =
+soon.
+
+Now I want you to stand as my next of kin to claim the funds for charity pu=
+rposes. Because of this money remains unclaimed after my death, the bank ex=
+ecutives or the government will take the money as unclaimed fund and maybe =
+use it for selfishness and worthless ventures, I need a very honest person =
+who can claim this money and use it for Charity works, for orphanages, wido=
+ws and also build schools and churches for less privilege that will be name=
+d after my late husband and my name.
+
+I need your urgent answer to know if you will be able to execute this proje=
+ct, and I will give you more information on how the fund will be transferre=
+d to your bank account or online banking.
+
+Thanks
+Mrs. Mina A. Brunel
