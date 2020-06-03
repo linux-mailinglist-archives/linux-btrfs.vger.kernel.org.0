@@ -2,25 +2,25 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 590C91EC922
-	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Jun 2020 07:57:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5172D1EC919
+	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Jun 2020 07:57:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726143AbgFCF4W (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 3 Jun 2020 01:56:22 -0400
-Received: from mx2.suse.de ([195.135.220.15]:42484 "EHLO mx2.suse.de"
+        id S1726115AbgFCF4J (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 3 Jun 2020 01:56:09 -0400
+Received: from mx2.suse.de ([195.135.220.15]:42510 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726068AbgFCF4B (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        id S1726071AbgFCF4B (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
         Wed, 3 Jun 2020 01:56:01 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id A2F3BAFFD;
+        by mx2.suse.de (Postfix) with ESMTP id D7B76B013;
         Wed,  3 Jun 2020 05:56:02 +0000 (UTC)
 From:   Nikolay Borisov <nborisov@suse.com>
 To:     linux-btrfs@vger.kernel.org
 Cc:     Nikolay Borisov <nborisov@suse.com>
-Subject: [PATCH 36/46] btrfs: Make btrfs_dirty_pages take btrfs_inode
-Date:   Wed,  3 Jun 2020 08:55:36 +0300
-Message-Id: <20200603055546.3889-37-nborisov@suse.com>
+Subject: [PATCH 37/46] btrfs: Make btrfs_qgroup_reserve_data take btrfs_inode
+Date:   Wed,  3 Jun 2020 08:55:37 +0300
+Message-Id: <20200603055546.3889-38-nborisov@suse.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200603055546.3889-1-nborisov@suse.com>
 References: <20200603055546.3889-1-nborisov@suse.com>
@@ -29,129 +29,110 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-There is a single use of the generic vfs_inode so let's take btrfs_inode as
-a parameter and remove couple of redundant BTRFS_I() calls.
+There's only a single use of vfs_inode in a tracepoint so let's take btrfs_inode
+directly.
 
 Signed-off-by: Nikolay Borisov <nborisov@suse.com>
 ---
- fs/btrfs/ctree.h            |  2 +-
- fs/btrfs/file.c             | 26 +++++++++++++-------------
- fs/btrfs/free-space-cache.c |  5 +++--
- 3 files changed, 17 insertions(+), 16 deletions(-)
+ fs/btrfs/delalloc-space.c |  2 +-
+ fs/btrfs/file.c           |  7 ++++---
+ fs/btrfs/qgroup.c         | 10 +++++-----
+ fs/btrfs/qgroup.h         |  2 +-
+ 4 files changed, 11 insertions(+), 10 deletions(-)
 
-diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index 05a7cef660fc..9a28a2bd4769 100644
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -2980,7 +2980,7 @@ int btrfs_punch_hole_range(struct inode *inode, struct btrfs_path *path,
- int btrfs_mark_extent_written(struct btrfs_trans_handle *trans,
- 			      struct btrfs_inode *inode, u64 start, u64 end);
- int btrfs_release_file(struct inode *inode, struct file *file);
--int btrfs_dirty_pages(struct inode *inode, struct page **pages,
-+int btrfs_dirty_pages(struct btrfs_inode *inode, struct page **pages,
- 		      size_t num_pages, loff_t pos, size_t write_bytes,
- 		      struct extent_state **cached);
- int btrfs_fdatawrite_range(struct inode *inode, loff_t start, loff_t end);
+diff --git a/fs/btrfs/delalloc-space.c b/fs/btrfs/delalloc-space.c
+index 0ee25dde18d3..212dd9648b87 100644
+--- a/fs/btrfs/delalloc-space.c
++++ b/fs/btrfs/delalloc-space.c
+@@ -253,7 +253,7 @@ int btrfs_check_data_free_space(struct inode *inode,
+ 		return ret;
+
+ 	/* Use new btrfs_qgroup_reserve_data to reserve precious data space. */
+-	ret = btrfs_qgroup_reserve_data(inode, reserved, start, len);
++	ret = btrfs_qgroup_reserve_data(BTRFS_I(inode), reserved, start, len);
+ 	if (ret < 0)
+ 		btrfs_free_reserved_data_space_noquota(inode, start, len);
+ 	else
 diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-index aa43d77bfd98..cd1bfd571749 100644
+index cd1bfd571749..2b3e935baabc 100644
 --- a/fs/btrfs/file.c
 +++ b/fs/btrfs/file.c
-@@ -500,18 +500,18 @@ static int btrfs_find_new_delalloc_bytes(struct btrfs_inode *inode,
-  * this also makes the decision about creating an inline extent vs
-  * doing real data extents, marking pages dirty and delalloc as required.
+@@ -3189,7 +3189,7 @@ static int btrfs_zero_range(struct inode *inode,
+ 		if (ret < 0)
+ 			goto out;
+ 		space_reserved = true;
+-		ret = btrfs_qgroup_reserve_data(inode, &data_reserved,
++		ret = btrfs_qgroup_reserve_data(BTRFS_I(inode), &data_reserved,
+ 						alloc_start, bytes_to_reserve);
+ 		if (ret)
+ 			goto out;
+@@ -3363,8 +3363,9 @@ static long btrfs_fallocate(struct file *file, int mode,
+ 				free_extent_map(em);
+ 				break;
+ 			}
+-			ret = btrfs_qgroup_reserve_data(inode, &data_reserved,
+-					cur_offset, last_byte - cur_offset);
++			ret = btrfs_qgroup_reserve_data(BTRFS_I(inode),
++					&data_reserved, cur_offset,
++					last_byte - cur_offset);
+ 			if (ret < 0) {
+ 				cur_offset = last_byte;
+ 				free_extent_map(em);
+diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
+index c884f3ec89a0..e5fab553afb7 100644
+--- a/fs/btrfs/qgroup.c
++++ b/fs/btrfs/qgroup.c
+@@ -3392,11 +3392,11 @@ btrfs_qgroup_rescan_resume(struct btrfs_fs_info *fs_info)
+  *       same @reserved, caller must ensure when error happens it's OK
+  *       to free *ALL* reserved space.
   */
--int btrfs_dirty_pages(struct inode *inode, struct page **pages,
-+int btrfs_dirty_pages(struct btrfs_inode *inode, struct page **pages,
- 		      size_t num_pages, loff_t pos, size_t write_bytes,
- 		      struct extent_state **cached)
+-int btrfs_qgroup_reserve_data(struct inode *inode,
++int btrfs_qgroup_reserve_data(struct btrfs_inode *inode,
+ 			struct extent_changeset **reserved_ret, u64 start,
+ 			u64 len)
  {
--	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
-+	struct btrfs_fs_info *fs_info = inode->root->fs_info;
- 	int err = 0;
- 	int i;
- 	u64 num_bytes;
- 	u64 start_pos;
- 	u64 end_of_last_block;
- 	u64 end_pos = pos + write_bytes;
--	loff_t isize = i_size_read(inode);
-+	loff_t isize = i_size_read(&inode->vfs_inode);
- 	unsigned int extra_bits = 0;
+-	struct btrfs_root *root = BTRFS_I(inode)->root;
++	struct btrfs_root *root = inode->root;
+ 	struct ulist_node *unode;
+ 	struct ulist_iterator uiter;
+ 	struct extent_changeset *reserved;
+@@ -3419,12 +3419,12 @@ int btrfs_qgroup_reserve_data(struct inode *inode,
+ 	reserved = *reserved_ret;
+ 	/* Record already reserved space */
+ 	orig_reserved = reserved->bytes_changed;
+-	ret = set_record_extent_bits(&BTRFS_I(inode)->io_tree, start,
++	ret = set_record_extent_bits(&inode->io_tree, start,
+ 			start + len -1, EXTENT_QGROUP_RESERVED, reserved);
 
- 	start_pos = pos & ~((u64) fs_info->sectorsize - 1);
-@@ -524,13 +524,13 @@ int btrfs_dirty_pages(struct inode *inode, struct page **pages,
- 	 * The pages may have already been dirty, clear out old accounting so
- 	 * we can set things up properly
- 	 */
--	clear_extent_bit(&BTRFS_I(inode)->io_tree, start_pos, end_of_last_block,
-+	clear_extent_bit(&inode->io_tree, start_pos, end_of_last_block,
- 			 EXTENT_DELALLOC | EXTENT_DO_ACCOUNTING | EXTENT_DEFRAG,
- 			 0, 0, cached);
+ 	/* Newly reserved space */
+ 	to_reserve = reserved->bytes_changed - orig_reserved;
+-	trace_btrfs_qgroup_reserve_data(inode, start, len,
++	trace_btrfs_qgroup_reserve_data(&inode->vfs_inode, start, len,
+ 					to_reserve, QGROUP_RESERVE);
+ 	if (ret < 0)
+ 		goto cleanup;
+@@ -3438,7 +3438,7 @@ int btrfs_qgroup_reserve_data(struct inode *inode,
+ 	/* cleanup *ALL* already reserved ranges */
+ 	ULIST_ITER_INIT(&uiter);
+ 	while ((unode = ulist_next(&reserved->range_changed, &uiter)))
+-		clear_extent_bit(&BTRFS_I(inode)->io_tree, unode->val,
++		clear_extent_bit(&inode->io_tree, unode->val,
+ 				 unode->aux, EXTENT_QGROUP_RESERVED, 0, 0, NULL);
+ 	/* Also free data bytes of already reserved one */
+ 	btrfs_qgroup_free_refroot(root->fs_info, root->root_key.objectid,
+diff --git a/fs/btrfs/qgroup.h b/fs/btrfs/qgroup.h
+index 139cad24a95d..a22a1d3dae25 100644
+--- a/fs/btrfs/qgroup.h
++++ b/fs/btrfs/qgroup.h
+@@ -344,7 +344,7 @@ int btrfs_verify_qgroup_counts(struct btrfs_fs_info *fs_info, u64 qgroupid,
+ #endif
 
--	if (!btrfs_is_free_space_inode(BTRFS_I(inode))) {
-+	if (!btrfs_is_free_space_inode(inode)) {
- 		if (start_pos >= isize &&
--		    !(BTRFS_I(inode)->flags & BTRFS_INODE_PREALLOC)) {
-+		    !(inode->flags & BTRFS_INODE_PREALLOC)) {
- 			/*
- 			 * There can't be any extents following eof in this case
- 			 * so just set the delalloc new bit for the range
-@@ -538,16 +538,15 @@ int btrfs_dirty_pages(struct inode *inode, struct page **pages,
- 			 */
- 			extra_bits |= EXTENT_DELALLOC_NEW;
- 		} else {
--			err = btrfs_find_new_delalloc_bytes(BTRFS_I(inode),
--							    start_pos,
-+			err = btrfs_find_new_delalloc_bytes(inode, start_pos,
- 							    num_bytes, cached);
- 			if (err)
- 				return err;
- 		}
- 	}
-
--	err = btrfs_set_extent_delalloc(BTRFS_I(inode), start_pos,
--					end_of_last_block, extra_bits, cached);
-+	err = btrfs_set_extent_delalloc(inode, start_pos, end_of_last_block,
-+					extra_bits, cached);
- 	if (err)
- 		return err;
-
-@@ -564,7 +563,7 @@ int btrfs_dirty_pages(struct inode *inode, struct page **pages,
- 	 * at this time.
- 	 */
- 	if (end_pos > isize)
--		i_size_write(inode, end_pos);
-+		i_size_write(&inode->vfs_inode, end_pos);
- 	return 0;
- }
-
-@@ -1743,8 +1742,9 @@ static noinline ssize_t btrfs_buffered_write(struct kiocb *iocb,
- 					fs_info->sectorsize);
-
- 		if (copied > 0)
--			ret = btrfs_dirty_pages(inode, pages, dirty_pages,
--						pos, copied, &cached_state);
-+			ret = btrfs_dirty_pages(BTRFS_I(inode), pages,
-+						dirty_pages, pos, copied,
-+						&cached_state);
-
- 		/*
- 		 * If we have not locked the extent range, because the range's
-diff --git a/fs/btrfs/free-space-cache.c b/fs/btrfs/free-space-cache.c
-index 55955bd424d7..e806341f4580 100644
---- a/fs/btrfs/free-space-cache.c
-+++ b/fs/btrfs/free-space-cache.c
-@@ -1334,8 +1334,9 @@ static int __btrfs_write_out_cache(struct btrfs_root *root, struct inode *inode,
- 	io_ctl_zero_remaining_pages(io_ctl);
-
- 	/* Everything is written out, now we dirty the pages in the file. */
--	ret = btrfs_dirty_pages(inode, io_ctl->pages, io_ctl->num_pages, 0,
--				i_size_read(inode), &cached_state);
-+	ret = btrfs_dirty_pages(BTRFS_I(inode), io_ctl->pages,
-+				io_ctl->num_pages, 0, i_size_read(inode),
-+				&cached_state);
- 	if (ret)
- 		goto out_nospc;
-
+ /* New io_tree based accurate qgroup reserve API */
+-int btrfs_qgroup_reserve_data(struct inode *inode,
++int btrfs_qgroup_reserve_data(struct btrfs_inode *inode,
+ 			struct extent_changeset **reserved, u64 start, u64 len);
+ int btrfs_qgroup_release_data(struct btrfs_inode *inode, u64 start, u64 len);
+ int btrfs_qgroup_free_data(struct btrfs_inode *inode,
 --
 2.17.1
 
