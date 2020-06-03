@@ -2,90 +2,110 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ECF61ECD6C
-	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Jun 2020 12:24:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1C141ECD99
+	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Jun 2020 12:33:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726066AbgFCKYH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 3 Jun 2020 06:24:07 -0400
-Received: from mx2.suse.de ([195.135.220.15]:32866 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725828AbgFCKYG (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 3 Jun 2020 06:24:06 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 7206FAD07;
-        Wed,  3 Jun 2020 10:24:07 +0000 (UTC)
-Subject: Re: [PATCH 3/3] btrfs: use helper btrfs_get_block_group
-To:     Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org
+        id S1725922AbgFCKdQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 3 Jun 2020 06:33:16 -0400
+Received: from esa2.hgst.iphmx.com ([68.232.143.124]:1612 "EHLO
+        esa2.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725917AbgFCKdO (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 3 Jun 2020 06:33:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1591180423; x=1622716423;
+  h=from:to:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
+  b=cRit90LJPQncTKVofmRbmuYvk11PD5ghNoF9gsLt63Hpd9yUDYbH6B+H
+   Rg/xr5HjjFeMfHb9SEhmAehVfDBn4S6hinqq/yowcDAOBaTnQC6LcfpAW
+   TGibstmqNyVz06aoSsVGcUAgm9uELnXvIIT9YRsVMMsK72thjKe10V780
+   eDTKzQ9EpQef5Tb6Fy8nLN41CfEiQEKWBEpoj2L7miY1VlU7sjdiuyOCn
+   ygRQOL1/zwDKUOaJlJd3Xk19iW+rUvajw6CZ64qVWHHMRuhOF2F9LGygY
+   pPHxdVeoOOMQtdtETOyMJZrtIvLN4F/iLL8KZly+QbwG2SomGiTOt48dM
+   w==;
+IronPort-SDR: JArkHyaDUSRZnXoK4rF3ewMVBCi5zc04CMrZh1SjT9KxA0hQEsatRRGY2j/QQY7be4fT/vHVKL
+ btm/N9Xz0SPlCiVQK38dj1mq5UVMMLt/Vk1KjtKI1zMXPJvGGvkVevzNJgdvBY10aOQO/cVO8W
+ SVIc+3JSb2yBd0jTrKtUJINnbmaXNkmGjx48P6oGLIo2UjL9yFEvjXFFI6dRo8FJbAln54X0Vo
+ Qmox5RNQR/ikANHDAH84+zsZsVpPZV7vZfu7wy8nVQjYK9R7Gm/JF8lCJPNhsSF6JB17DpFA8v
+ GPU=
+X-IronPort-AV: E=Sophos;i="5.73,467,1583164800"; 
+   d="scan'208";a="241963574"
+Received: from mail-mw2nam12lp2043.outbound.protection.outlook.com (HELO NAM12-MW2-obe.outbound.protection.outlook.com) ([104.47.66.43])
+  by ob1.hgst.iphmx.com with ESMTP; 03 Jun 2020 18:33:41 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=OkV45In4lbcM4k/HTvOdchM8Wuy3TXbzVc/HvKZowp7PZSMlnBOWT0fzaTKbJARyDQYmWq+zXW9NhiT3Qauu4kMu9wlhxwdavJBglGrw6TU86XksurlPYVRHwij5FTxIOMELCsZzhiLgf+euZydyIfzVJif2YJE6M9KWNZcXkZF1gezRx7KFGW8WmJM5qvE8qk6s0gXR61khJH4tGoOIyzwVuU+kQ7CDYeATt4y5NVEWtmHTy4Jfw8K8LXKqgdx3Ub8cn3bZBikA4PjkLavEpKzKHSQShE0WeCLuhpiRz0Ifkj6PQNLzMt1Bi0WlU+fjKcl/XqAn6dFCvAWFuyxwtA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
+ b=lx5FfijtLUfs80/TpTTrMee9j3IBdmOemNnoqEaG1AC7Ci3bkl392F2YbFUk/HGG5OLLCtMppqiQQR5wT21CRo9e7AffUJmEZkGiL01QfQuGt0FWtmrhQbgg9dsNmMW/yWzW/PQ+EnuB/wTe+mVs7rEvq0S3usMs6F0eBFkytY9dWGX7qEqMWBuJtrXE5NsYQuRnArgWMGySEY56UxppqS3TVQGyEUs/2Q3fgcCRnDK5+kbGeTW/tB3J4rAh5yfWEByhRDlj7DEtGjR0wcz3e8uTGg4qeqDUGfstfMp1DkGjxyX1hIxeN4pJbiB/M0/NuK9hIYMloPHdpIG87TTBIA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
+ b=Xpk/6qPTAMiLWN8ASgJzyaFWDruRmLPupBIVKuaYVJhnBBjEzfWqac1b/vitpEC90AGK9BRMeNeC68xalyf2p1DP6DVflN+Koa79xoqUv+7wVVq8MF67mEHqQDInruj5MbpcpMNDkNVvpnHknhcWbgZOZ4SYIt0559toAXuqjP8=
+Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
+ (2603:10b6:803:47::21) by SN4PR0401MB3647.namprd04.prod.outlook.com
+ (2603:10b6:803:47::20) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3066.18; Wed, 3 Jun
+ 2020 10:33:11 +0000
+Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
+ ([fe80::1447:186c:326e:30b2]) by SN4PR0401MB3598.namprd04.prod.outlook.com
+ ([fe80::1447:186c:326e:30b2%7]) with mapi id 15.20.3045.022; Wed, 3 Jun 2020
+ 10:33:10 +0000
+From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To:     Anand Jain <anand.jain@oracle.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH 1/3] btrfs: fix btrfs_return_cluster_to_free_space()
+ return
+Thread-Topic: [PATCH 1/3] btrfs: fix btrfs_return_cluster_to_free_space()
+ return
+Thread-Index: AQHWOY9EURe1twg0zU68xT5C2XdEvw==
+Date:   Wed, 3 Jun 2020 10:33:10 +0000
+Message-ID: <SN4PR0401MB359861D2A24DF457607D56689B880@SN4PR0401MB3598.namprd04.prod.outlook.com>
 References: <20200603101020.143372-1-anand.jain@oracle.com>
- <20200603101020.143372-4-anand.jain@oracle.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <9f0e2286-0eae-d3fb-147e-1cb71ccfe290@suse.com>
-Date:   Wed, 3 Jun 2020 13:24:03 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
-MIME-Version: 1.0
-In-Reply-To: <20200603101020.143372-4-anand.jain@oracle.com>
-Content-Type: text/plain; charset=utf-8
+ <20200603101020.143372-2-anand.jain@oracle.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: oracle.com; dkim=none (message not signed)
+ header.d=none;oracle.com; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [129.253.240.72]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 3ed94392-1224-48d0-43a0-08d807a9836b
+x-ms-traffictypediagnostic: SN4PR0401MB3647:
+x-microsoft-antispam-prvs: <SN4PR0401MB3647E9EA2CC97D631951D19E9B880@SN4PR0401MB3647.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:1728;
+x-forefront-prvs: 04238CD941
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: JApMKwX3JxZ9BlnAH7EW39+G7wW8mxskPUcRmYO5W1DfrNyZq+Kww+88+BrjyHDGx522vF3C9xJsmZl5UI92kfeg1z4bCQjpKDadgE4FvYnNRSF6axa3VfxtvZeSSKTzaE4BM0EzsrvQUZN4XQ5tAu4e9cn6hRblpkI1+tBSqnenXlkwzQiJz7zcx88BKEsflymvlXoCbZNOtvbpsDNrtKAhnR8fwCUjWeiz/MzmAajI+0VMEUj5n88R2sWwz7Ofe12WcqupUoxrau9Z3HP41KEm6Et9cvnhAMQ5iaqeAILUHfdilRlaEBMfzwmXBWGA261rVrlWJ5uEsXy7Z/gCmw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR0401MB3598.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(376002)(39860400002)(366004)(136003)(396003)(346002)(478600001)(86362001)(4270600006)(2906002)(8676002)(19618925003)(6506007)(66476007)(5660300002)(91956017)(76116006)(110136005)(26005)(8936002)(52536014)(33656002)(55016002)(66556008)(66946007)(186003)(66446008)(558084003)(64756008)(9686003)(7696005)(71200400001)(316002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: q3kTPeuA/vg1BPB0mCV0NsNc8RE5lynOqN8fXpPLtCwp3To2KQnZNnOdwgOvmfjFYJQS9lFOTKi4mub4Bb2UKkrt3aWeGaQqKxHHNLajs57mNsuB0t35fkCoEjgEEaTvNUDckgaFtaoiAccgx3XX+U0+P4fv2KTnRzU/8H4QQJIveX1GALym3+PuhcNxsj66eYl7Uf5zZfNjxSsVI0CUij9VNSqO7K3haAxWbuR890ilbp9RANDzV1r0KNkY6QFaM/RCQ54iMe39PWzPzMBVyags6eubev+bhizD9YMiarCbq101o13Dp4NwRx4VWqSRUOINXFr2GWpVRaPv96cAodyPpyityYa9FFyBiEk63HLe/g/2XHbpwwfU2u3hO5uwOHOEe5CoNFtTI1DBhezUaLKFbnsi8sZwUIieVnqVXC0Rf1bNonndrFiB/wjIUSyDgktv4yJHLOvWgLh8zbiPIe269jGdDug2jK4n+LDLykemPEZzsHOqktgLoDC2C3Ia
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3ed94392-1224-48d0-43a0-08d807a9836b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Jun 2020 10:33:10.6998
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: +EdTLToRV+35kdDJLqdkGiahW3qfWquF2mjtDL6L5ogw7j0zGgjRTqEEbDoVW6KS+8Wm7B7cAk/OzhG4ld7eebC+Z1/PsMJn40IV20+iJMk=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN4PR0401MB3647
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 3.06.20 г. 13:10 ч., Anand Jain wrote:
-> Use the helper function where it is open coded to increment the
-> block_group reference count 'bg_count' so that it is less confusing
-> while reviewing the code. As btrfs_get_block_group() is a one-liner
-> we could have open-coded it, but its partner function
-> btrfs_put_block_group() isn't one-liner which does the free part in it.
-> 
-> Signed-off-by: Anand Jain <anand.jain@oracle.com>
-
-
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+Looks good,=0A=
+Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>=0A=
