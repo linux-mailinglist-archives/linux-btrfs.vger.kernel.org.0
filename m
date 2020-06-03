@@ -2,25 +2,25 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 220641EC926
-	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Jun 2020 07:57:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EE751EC908
+	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Jun 2020 07:56:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726154AbgFCF4a (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 3 Jun 2020 01:56:30 -0400
-Received: from mx2.suse.de ([195.135.220.15]:42466 "EHLO mx2.suse.de"
+        id S1726093AbgFCF4C (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 3 Jun 2020 01:56:02 -0400
+Received: from mx2.suse.de ([195.135.220.15]:42442 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726016AbgFCFz6 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        id S1726023AbgFCFz6 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
         Wed, 3 Jun 2020 01:55:58 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 8F73FAFF8;
+        by mx2.suse.de (Postfix) with ESMTP id BF173AFFD;
         Wed,  3 Jun 2020 05:55:59 +0000 (UTC)
 From:   Nikolay Borisov <nborisov@suse.com>
 To:     linux-btrfs@vger.kernel.org
 Cc:     Nikolay Borisov <nborisov@suse.com>
-Subject: [PATCH 22/46] btrfs: Make cow_file_range_async take btrfs_inode
-Date:   Wed,  3 Jun 2020 08:55:22 +0300
-Message-Id: <20200603055546.3889-23-nborisov@suse.com>
+Subject: [PATCH 23/46] btrfs: Make btrfs_dec_test_first_ordered_pending take btrfs_inode
+Date:   Wed,  3 Jun 2020 08:55:23 +0300
+Message-Id: <20200603055546.3889-24-nborisov@suse.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200603055546.3889-1-nborisov@suse.com>
 References: <20200603055546.3889-1-nborisov@suse.com>
@@ -29,77 +29,75 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-It only uses vfs inode for assigning it to the async_chunk function.
+It doesn't really need vfs_inode but btrfs_inode.
 
 Signed-off-by: Nikolay Borisov <nborisov@suse.com>
 ---
- fs/btrfs/inode.c | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+ fs/btrfs/inode.c        | 8 ++++----
+ fs/btrfs/ordered-data.c | 7 +++----
+ fs/btrfs/ordered-data.h | 2 +-
+ 3 files changed, 8 insertions(+), 9 deletions(-)
 
 diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 2798154f2c48..192a2f0ce4ba 100644
+index 192a2f0ce4ba..561bd8b4d7f3 100644
 --- a/fs/btrfs/inode.c
 +++ b/fs/btrfs/inode.c
-@@ -1215,13 +1215,13 @@ static noinline void async_cow_free(struct btrfs_work *work)
- 		kvfree(async_chunk->pending);
- }
+@@ -7558,10 +7558,10 @@ static void __endio_write_update_ordered(struct inode *inode,
 
--static int cow_file_range_async(struct inode *inode,
-+static int cow_file_range_async(struct btrfs_inode *inode,
- 				struct writeback_control *wbc,
- 				struct page *locked_page,
- 				u64 start, u64 end, int *page_started,
- 				unsigned long *nr_written)
+ 	while (ordered_offset < offset + bytes) {
+ 		last_offset = ordered_offset;
+-		if (btrfs_dec_test_first_ordered_pending(inode, &ordered,
+-							   &ordered_offset,
+-							   ordered_bytes,
+-							   uptodate)) {
++		if (btrfs_dec_test_first_ordered_pending(BTRFS_I(inode), &ordered,
++							 &ordered_offset,
++							 ordered_bytes,
++							 uptodate)) {
+ 			btrfs_init_work(&ordered->work, finish_ordered_fn, NULL,
+ 					NULL);
+ 			btrfs_queue_work(wq, &ordered->work);
+diff --git a/fs/btrfs/ordered-data.c b/fs/btrfs/ordered-data.c
+index b3e3ab28dd78..4d32876649a5 100644
+--- a/fs/btrfs/ordered-data.c
++++ b/fs/btrfs/ordered-data.c
+@@ -290,12 +290,12 @@ void btrfs_add_ordered_sum(struct btrfs_ordered_extent *entry,
+  * file_offset is updated to one byte past the range that is recorded as
+  * complete.  This allows you to walk forward in the file.
+  */
+-int btrfs_dec_test_first_ordered_pending(struct inode *inode,
++int btrfs_dec_test_first_ordered_pending(struct btrfs_inode *inode,
+ 				   struct btrfs_ordered_extent **cached,
+ 				   u64 *file_offset, u64 io_size, int uptodate)
  {
 -	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
+-	struct btrfs_ordered_inode_tree *tree;
 +	struct btrfs_fs_info *fs_info = inode->root->fs_info;
- 	struct cgroup_subsys_state *blkcg_css = wbc_blkcg_css(wbc);
- 	struct async_cow *ctx;
- 	struct async_chunk *async_chunk;
-@@ -1233,9 +1233,9 @@ static int cow_file_range_async(struct inode *inode,
- 	unsigned nofs_flag;
- 	const unsigned int write_flags = wbc_to_write_flags(wbc);
++	struct btrfs_ordered_inode_tree *tree = &inode->ordered_tree;
+ 	struct rb_node *node;
+ 	struct btrfs_ordered_extent *entry = NULL;
+ 	int ret;
+@@ -304,7 +304,6 @@ int btrfs_dec_test_first_ordered_pending(struct inode *inode,
+ 	u64 dec_start;
+ 	u64 to_dec;
 
--	unlock_extent(&BTRFS_I(inode)->io_tree, start, end);
-+	unlock_extent(&inode->io_tree, start, end);
-
--	if (BTRFS_I(inode)->flags & BTRFS_INODE_NOCOMPRESS &&
-+	if (inode->flags & BTRFS_INODE_NOCOMPRESS &&
- 	    !btrfs_test_opt(fs_info, FORCE_COMPRESS)) {
- 		num_chunks = 1;
- 		should_compress = false;
-@@ -1255,8 +1255,8 @@ static int cow_file_range_async(struct inode *inode,
- 			PAGE_SET_WRITEBACK | PAGE_END_WRITEBACK |
- 			PAGE_SET_ERROR;
-
--		extent_clear_unlock_delalloc(BTRFS_I(inode), start, end,
--					     locked_page, clear_bits, page_ops);
-+		extent_clear_unlock_delalloc(inode, start, end, locked_page,
-+					     clear_bits, page_ops);
- 		return -ENOMEM;
- 	}
-
-@@ -1273,9 +1273,9 @@ static int cow_file_range_async(struct inode *inode,
- 		 * igrab is called higher up in the call chain, take only the
- 		 * lightweight reference for the callback lifetime
- 		 */
--		ihold(inode);
-+		ihold(&inode->vfs_inode);
- 		async_chunk[i].pending = &ctx->num_chunks;
--		async_chunk[i].inode = inode;
-+		async_chunk[i].inode = &inode->vfs_inode;
- 		async_chunk[i].start = start;
- 		async_chunk[i].end = cur_end;
- 		async_chunk[i].write_flags = write_flags;
-@@ -1815,7 +1815,7 @@ int btrfs_run_delalloc_range(struct inode *inode, struct page *locked_page,
- 	} else {
- 		set_bit(BTRFS_INODE_HAS_ASYNC_EXTENT,
- 			&BTRFS_I(inode)->runtime_flags);
--		ret = cow_file_range_async(inode, wbc, locked_page, start, end,
-+		ret = cow_file_range_async(BTRFS_I(inode), wbc, locked_page, start, end,
- 					   page_started, nr_written);
- 	}
- 	if (ret)
+-	tree = &BTRFS_I(inode)->ordered_tree;
+ 	spin_lock_irqsave(&tree->lock, flags);
+ 	node = tree_search(tree, *file_offset);
+ 	if (!node) {
+diff --git a/fs/btrfs/ordered-data.h b/fs/btrfs/ordered-data.h
+index a0c6c31fc79b..d9819bfcd3ec 100644
+--- a/fs/btrfs/ordered-data.h
++++ b/fs/btrfs/ordered-data.h
+@@ -150,7 +150,7 @@ void btrfs_remove_ordered_extent(struct inode *inode,
+ int btrfs_dec_test_ordered_pending(struct inode *inode,
+ 				   struct btrfs_ordered_extent **cached,
+ 				   u64 file_offset, u64 io_size, int uptodate);
+-int btrfs_dec_test_first_ordered_pending(struct inode *inode,
++int btrfs_dec_test_first_ordered_pending(struct btrfs_inode *inode,
+ 				   struct btrfs_ordered_extent **cached,
+ 				   u64 *file_offset, u64 io_size,
+ 				   int uptodate);
 --
 2.17.1
 
