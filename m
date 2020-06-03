@@ -2,159 +2,101 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18B391ED0FD
-	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Jun 2020 15:37:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5C811ED155
+	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Jun 2020 15:49:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725930AbgFCNhf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 3 Jun 2020 09:37:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48286 "EHLO
+        id S1725986AbgFCNtK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 3 Jun 2020 09:49:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725810AbgFCNhe (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 3 Jun 2020 09:37:34 -0400
-Received: from mail-vs1-xe43.google.com (mail-vs1-xe43.google.com [IPv6:2607:f8b0:4864:20::e43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99E6EC08C5C0
-        for <linux-btrfs@vger.kernel.org>; Wed,  3 Jun 2020 06:37:33 -0700 (PDT)
-Received: by mail-vs1-xe43.google.com with SMTP id y123so1392696vsb.6
-        for <linux-btrfs@vger.kernel.org>; Wed, 03 Jun 2020 06:37:33 -0700 (PDT)
+        with ESMTP id S1725971AbgFCNst (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 3 Jun 2020 09:48:49 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A516C08C5C9
+        for <linux-btrfs@vger.kernel.org>; Wed,  3 Jun 2020 06:48:49 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id h188so1357861lfd.7
+        for <linux-btrfs@vger.kernel.org>; Wed, 03 Jun 2020 06:48:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=B6kU6YsH8+v6lRnrEBnjU77lMQrxZSMuDt4AvqFz+4A=;
-        b=INtW4yapCobcpH/ZP4a0kNd6h6SOtZlwY0RT5XdZmoCMfB1KIOh1m/FPXOWtrvww7U
-         qR4qrdX071+o9XlrTG/ILF8gy6KpuTPZ4stjBEnydtG0emCLKR35yYWqEpm1avTy/1tx
-         J+5/Au3PCsBbH5m+moizBR8zFpdjcHgypxW2L4V6xmkTONaKZdEYbVKp7odmmS/kRwl7
-         gJSQa102VUNRxi0fLLqmBdJH/7qHeE/UZ1EUZYbmBJNu2VIHATMZhOouJqph8lvT/iTB
-         VY978abOh+FjJQBE290m08iaGrVF5vkHqLz+JiampYC5Tc9acK7lXX054asnaqR16ueZ
-         8ktw==
+        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
+        bh=H8rDQEJouwBJIElP/Vpqq+PrvTZxQQy2H7A/MvyMMB0=;
+        b=LImzFWfFZ5MGhzJT1qzCsgEXVo7xW37sUIdrDLCKiXHQE0/Tq0rYX6Af/ld5dvlhmE
+         opFt8B8vUrhAfyxGIRs7eIQZmnu+cHCt7Dz4gEu/fnBWHDlMa8iVHDbM7XgqJUtNcgor
+         I4Oj1yGJ3ygOniFn6Dr+FHDS5BV48N/ldz+eBwWbR5/ADnYCL6KuztRZu9mrKJOxMODU
+         fmVICwwGmTYXXsgICTxE6unupuMdGq6+YZvkWKysZVLYK3Wwxrg7U2ecMo3WGycHWcU1
+         w35jxyjuynpm30G3kj/I18A4vO2Y2WN0kfTajUkGc1Xe9t84eQuWhnB4AGlAS8dbrawc
+         iC3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=B6kU6YsH8+v6lRnrEBnjU77lMQrxZSMuDt4AvqFz+4A=;
-        b=RtH7he3vLyvckPRE1AyL1tvuwMm4/KNLQyqa0r9RCmm0wRtvhySN9oy9BCDyk8u6ff
-         BwHtHefcMK6yZHBzZki9ksY3Ly1mAMpMXyv7c9oRVflXYJROvFk4gzL2Nve5gLSnCo2E
-         AsuENLrl0OHYWOp5g3oATJbkbNczWJexNb7UkLkHzbblWj6lDwVRGSN0SJQakLw8pN8/
-         I4YeMYjeSABc17bLZZV1NO331qKXsOt7huBZ0DbPHpwPE1m6kdIy9RUDUDiDKKGRhJTl
-         drXvNrF6YNtYrsPlTBrtEkrxjVdNDJHYL5zzG8f6IBFvyhEkCOk0gKA29IftRPCvsQTf
-         qBfA==
-X-Gm-Message-State: AOAM531wqYnpKmGazZ7wra7KTFFR0+S2sUE5nCq8FhuXjX7yAL5uq89n
-        EhDdgDcr8YugrkmyozP2+eUlzgAyxA2rw9smbfzcr4YP
-X-Google-Smtp-Source: ABdhPJxe+ct1ZsQv9Yp3UezUNYFQJLxHk0tj/djmxrAQ5iziC7Y9thU5RPlY+PIeyTl92ZmmAzUMJ67AzJIzV8xvY1A=
-X-Received: by 2002:a67:1c04:: with SMTP id c4mr23018632vsc.133.1591191452525;
- Wed, 03 Jun 2020 06:37:32 -0700 (PDT)
+        h=x-gm-message-state:mime-version:reply-to:sender:from:date
+         :message-id:subject:to;
+        bh=H8rDQEJouwBJIElP/Vpqq+PrvTZxQQy2H7A/MvyMMB0=;
+        b=fa25Vi00A/DV8JssO20HMcTbkgK1Q9/or15ccfAWSw8lJCH/vSZtR0i6WVgUkUfjjk
+         HISE+3eSFdGDWyDY/LLRsFfbZKzC6NZSIAy5qHi2drSHmhyTohMqiFnUeb7C1RSrXiiR
+         dAtlbXYmQurSdOn3QbewOl1z6tf5r2iGHBA7rGNxgbmjEVDNQShMIzVj3xwMwrT7Uki1
+         3N8uUO6w6CiaSjjib77UCpc1LE2CgI56bmZJB08oEycYpy7+myXyaC8f75iikELHTd2N
+         Ojph3MR8y0Erp1T0lP1ey5U00Lf+992W8ouxUhG9+vBa4ZiLSx9f6o+KVeIdx7XbqSoj
+         ip3A==
+X-Gm-Message-State: AOAM530aYK4fw6Jh8oK1z0C4VJpiqhqpYv0djETWE2Sbg3nxyotxfc4t
+        bQoci7E8HXd9v4aKQU+sgScLr3Nlssif30aJpKQ=
+X-Google-Smtp-Source: ABdhPJzc66PsPJ7uf2JiXrqj7zfh07Ra5BpBms0TPKeexmxkWkfXYY+ch/Os+E85wJbdOE6Lm+0ANdybV/7KRG4HAcU=
+X-Received: by 2002:a05:6512:308e:: with SMTP id z14mr2566308lfd.29.1591192127287;
+ Wed, 03 Jun 2020 06:48:47 -0700 (PDT)
 MIME-Version: 1.0
-From:   Thorsten Rehm <thorsten.rehm@gmail.com>
-Date:   Wed, 3 Jun 2020 15:37:21 +0200
-Message-ID: <CABT3_pzBdRqe7SRBptM1E5MPJfwEGF6=YBovmZdj1Vxjs21iNQ@mail.gmail.com>
-Subject: corrupt leaf; invalid root item size
-To:     linux-btrfs@vger.kernel.org
+Reply-To: susanjones.wife@gmail.com
+Received: by 2002:a19:a405:0:0:0:0:0 with HTTP; Wed, 3 Jun 2020 06:48:46 -0700 (PDT)
+From:   "Mrs.Susan Jones" <joneswife.susan@gmail.com>
+Date:   Wed, 3 Jun 2020 14:48:46 +0100
+X-Google-Sender-Auth: aH2vam-ZraP3yG1gz3ryctMgTE4
+Message-ID: <CALBhdBfusXWup1N4iFuTS3D1AZxWbZbTDS_qa-wA3FkbkE7MrQ@mail.gmail.com>
+Subject: HELLO: I AM MRS SUSAN JONES
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi,
+-- 
+OUR GOLDEN OPPORTUNITY
 
-I've updated my system (Debian testing) [1] several months ago (~
-December) and I noticed a lot of corrupt leaf messages flooding my
-kern.log [2]. Furthermore my system had some trouble, e.g.
-applications were terminated after some uptime, due to the btrfs
-filesystem errors. This was with kernel 5.3.
-The last time I tried was with Kernel 5.6.0-1-amd64 and the problem persists.
+Hello Dear Friend,
 
-I've downgraded my kernel to 4.19.0-8-amd64 from the Debian Stable
-release and with this kernel there aren't any corrupt leaf messages
-and the problem is gone. IMHO, it must be something coming with kernel
-5.3 (or 5.x).
+Complement of the day, i hope you are doing great today. However, I am
+Mrs.Susan Jones, an auditor with one of the new generation banks here
+in Burkina Faso.
 
-My harddisk is a SSD which is responsible for the root partition. I've
-encrypted my filesystem with LUKS and just right after I entered my
-password at the boot, the first corrupt leaf errors appear.
+I am writing you this letter based on the latest development at my
+Department. i discovered some abandoned huge amount of money, Ten
+Million, Five hundred thousand  United States Dollars.($10.500.000).
+Now I am only contacting you as a foreigner because this money cannot
+be approved to a local bank account here, but can only be approved to
+any foreign account and foreign beneficiary because the money is in US
+dollars
 
-An error message looks like this:
-May  7 14:39:34 foo kernel: [  100.162145] BTRFS critical (device
-dm-0): corrupt leaf: root=1 block=35799040 slot=32, invalid root item
-size, have 239 expect 439
+This will be  a legitimate transaction once you accept to build trust
+with me and follow simple instruction doing the transfer process,
+until the total sum transfer out of the bank here to your own bank
+account any where in the world, and I agreed to share the total money
+50/50 with you once you successful confirmed it in your bank account.
+But any expenses doing the transfer process will be deduct from the
+amount before sharing, If you are interested to work with me and
+provide a good receiving bank account, get back to me as soon as
+possible with the following details below.
 
-"root=1", "slot=32", "have 239 expect 439" is always the same at every
-error line. Only the block number changes.
+Your full name
+Your Profession
+Your direct mobile phone number
+Your Scanned International passport or any of your identity
 
-Interestingly it's the very same as reported to the ML here [3]. I've
-contacted the reporter, but he didn't have a solution for me, because
-he changed to a different filesystem.
+NOTE: PLEASE IT YOU ARE NOT INTERESTED DON'T BORDER TO RESPOND BACK TO
+AVOID TIME WASTED.
 
-I've already tried "btrfs scrub" and "btrfs check --readonly /" in
-rescue mode, but w/o any errors. I've also checked the S.M.A.R.T.
-values of the SSD, which are fine. Furthermore I've tested my RAM, but
-again, w/o any errors.
+As soon as I receive these data's, I will forward to you the
+application form which you will send to the bank for the claim and
+transfer of the fund into your bank account as the  new beneficial.
 
-So, I have no more ideas what I can do. Could you please help me to
-investigate this further? Could it be a bug?
+I am waiting to hear from you soon
 
-Thank you very much.
-
-Best regards,
-Thorsten
-
-
-
-1:
-$ cat /etc/debian_version
-bullseye/sid
-
-$ uname -a
-[no problem with this kernel]
-Linux foo 4.19.0-8-amd64 #1 SMP Debian 4.19.98-1 (2020-01-26) x86_64 GNU/Linux
-
-$ btrfs --version
-btrfs-progs v5.6
-
-$ sudo btrfs fi show
-Label: 'slash'  uuid: 65005d0f-f8ea-4f77-8372-eb8b53198685
-        Total devices 1 FS bytes used 7.33GiB
-        devid    1 size 115.23GiB used 26.08GiB path /dev/mapper/sda5_crypt
-
-$ btrfs fi df /
-Data, single: total=22.01GiB, used=7.16GiB
-System, DUP: total=32.00MiB, used=4.00KiB
-System, single: total=4.00MiB, used=0.00B
-Metadata, DUP: total=2.00GiB, used=168.19MiB
-Metadata, single: total=8.00MiB, used=0.00B
-GlobalReserve, single: total=25.42MiB, used=0.00B
-
-
-2:
-[several messages per second]
-May  7 14:39:34 foo kernel: [  100.162145] BTRFS critical (device
-dm-0): corrupt leaf: root=1 block=35799040 slot=32, invalid root item
-size, have 239 expect 439
-May  7 14:39:35 foo kernel: [  100.998530] BTRFS critical (device
-dm-0): corrupt leaf: root=1 block=35885056 slot=32, invalid root item
-size, have 239 expect 439
-May  7 14:39:35 foo kernel: [  101.348650] BTRFS critical (device
-dm-0): corrupt leaf: root=1 block=35926016 slot=32, invalid root item
-size, have 239 expect 439
-May  7 14:39:36 foo kernel: [  101.619437] BTRFS critical (device
-dm-0): corrupt leaf: root=1 block=35995648 slot=32, invalid root item
-size, have 239 expect 439
-May  7 14:39:36 foo kernel: [  101.874069] BTRFS critical (device
-dm-0): corrupt leaf: root=1 block=36184064 slot=32, invalid root item
-size, have 239 expect 439
-May  7 14:39:36 foo kernel: [  102.339087] BTRFS critical (device
-dm-0): corrupt leaf: root=1 block=36319232 slot=32, invalid root item
-size, have 239 expect 439
-May  7 14:39:37 foo kernel: [  102.629429] BTRFS critical (device
-dm-0): corrupt leaf: root=1 block=36380672 slot=32, invalid root item
-size, have 239 expect 439
-May  7 14:39:37 foo kernel: [  102.839669] BTRFS critical (device
-dm-0): corrupt leaf: root=1 block=36487168 slot=32, invalid root item
-size, have 239 expect 439
-May  7 14:39:37 foo kernel: [  103.109183] BTRFS critical (device
-dm-0): corrupt leaf: root=1 block=36597760 slot=32, invalid root item
-size, have 239 expect 439
-May  7 14:39:37 foo kernel: [  103.299101] BTRFS critical (device
-dm-0): corrupt leaf: root=1 block=36626432 slot=32, invalid root item
-size, have 239 expect 439
-
-3:
-https://lore.kernel.org/linux-btrfs/19acbd39-475f-bd72-e280-5f6c6496035c@web.de/
+Yours
+Mrs.Susan Jones
