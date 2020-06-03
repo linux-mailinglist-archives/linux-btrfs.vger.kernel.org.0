@@ -2,91 +2,174 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59EFD1ECD56
-	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Jun 2020 12:17:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D869F1ECD62
+	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Jun 2020 12:20:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725888AbgFCKRy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 3 Jun 2020 06:17:54 -0400
-Received: from mx2.suse.de ([195.135.220.15]:55422 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725854AbgFCKRx (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 3 Jun 2020 06:17:53 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 45518AC2C;
-        Wed,  3 Jun 2020 10:17:54 +0000 (UTC)
-Subject: Re: [PATCH 1/3] btrfs: fix btrfs_return_cluster_to_free_space()
- return
-To:     Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org
-References: <20200603101020.143372-1-anand.jain@oracle.com>
- <20200603101020.143372-2-anand.jain@oracle.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <187222a6-cc35-cff6-3b89-bc0e114daf00@suse.com>
-Date:   Wed, 3 Jun 2020 13:17:50 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1725854AbgFCKUN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 3 Jun 2020 06:20:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45788 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725881AbgFCKUB (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 3 Jun 2020 06:20:01 -0400
+Received: from mail-vs1-xe43.google.com (mail-vs1-xe43.google.com [IPv6:2607:f8b0:4864:20::e43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 397D2C08C5C0
+        for <linux-btrfs@vger.kernel.org>; Wed,  3 Jun 2020 03:19:55 -0700 (PDT)
+Received: by mail-vs1-xe43.google.com with SMTP id o2so1079321vsr.0
+        for <linux-btrfs@vger.kernel.org>; Wed, 03 Jun 2020 03:19:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc:content-transfer-encoding;
+        bh=SUHUshMgpbPkjYkz4JPkklCN9tt8d7J0bXRb05TQa4c=;
+        b=jriZGt+itQQTiIiUZWObbr/+b2l8U/7NgkyirrIKOkkY9m09Bzh18Z7vWAIJnmFqqg
+         QLxW2E5CW1A2ARX0e0Nl7cNJJ/E6A8C9ktJGX5wTQ80CQyS7S85UTz/JlFpPEfl80GG8
+         xlPF5r+0rPObkYMl2tj0/ZTFnuUTIt56i9fFanghtQ4uUx8E6aLBdYyHAlZEbEBlON5/
+         4jIoZDSQpDFST9xMDLOBXsC258NEPc66mPbsTSK0KMGJPih4pwxTxVErDT7ytP0+sPYU
+         wcG17m8BhEuF+pvtTrWt2S97WlT9AyhpDrLGBighucKk0b0KMcIUNQeydSs9kOpM+IfB
+         2Plw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc:content-transfer-encoding;
+        bh=SUHUshMgpbPkjYkz4JPkklCN9tt8d7J0bXRb05TQa4c=;
+        b=eWTMRbls0u75wgCNKtu79APDZHAElb45i7x7ItGwhCtMD1E624teOspuifKJFhlDtB
+         iP/DFH4qTZre6Pp3t6WyBH3ZeRuvDbnzwbI9c/qbaIM/gcdAdcmeALfaC4H2xODJQVbA
+         HrkQA0dg7AoJAiLfWXbzu4/EbI8xRdcGvH8AEq1j1E8+GqsnCgsyKOff+3XATNzqRvml
+         u77ryImyI9yov3C+p4AnsY7sxSFNbcCioL+JYlDdFuoyQ2elFH1FqxekwrABUYz+y4oP
+         QFk4ZrHCOSjGBmfA97hNa9n0C0UzLFtxy0x82D6OmlRMa83j/YDgNsdH+X/GshVQWgSG
+         2B2A==
+X-Gm-Message-State: AOAM5328D8lZpz6RRTV0bS9Bova/p6sC5IeXfBhP24dHTy+H/XrrlNDn
+        t91AZyseLY6rxe13RIjY9JxqciiObosawrAqY7E=
+X-Google-Smtp-Source: ABdhPJxi03hqliHQ2yhTBrYKpRb74nwnEKlhB1AeX9YGUsNzJa09cyqqaBJoZEIGGOOlfhDnvqVlsMQhEQBUvPR3s0U=
+X-Received: by 2002:a67:2dc1:: with SMTP id t184mr8238591vst.90.1591179593276;
+ Wed, 03 Jun 2020 03:19:53 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200603101020.143372-2-anand.jain@oracle.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20200603101020.143372-1-anand.jain@oracle.com> <20200603101020.143372-3-anand.jain@oracle.com>
+In-Reply-To: <20200603101020.143372-3-anand.jain@oracle.com>
+Reply-To: fdmanana@gmail.com
+From:   Filipe Manana <fdmanana@gmail.com>
+Date:   Wed, 3 Jun 2020 11:19:42 +0100
+Message-ID: <CAL3q7H7g6DA7S27RM8o=uG7wbXbvKYKvc6ot2qnnaY1A73kPhA@mail.gmail.com>
+Subject: Re: [PATCH 2/3] btrfs: rename btrfs_block_group::count
+To:     Anand Jain <anand.jain@oracle.com>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Wed, Jun 3, 2020 at 11:13 AM Anand Jain <anand.jain@oracle.com> wrote:
+>
+> The name 'count' is a very commonly used name. It is often difficult to
+> review the code to check if there is any leak. So rename it to
+> 'bg_count', which is unique enough.
 
+Hum? Seriously?
 
-On 3.06.20 г. 13:10 ч., Anand Jain wrote:
-> __btrfs_return_cluster_to_free_space() returns only 0. And all its parent
-> functions don't need the return value either so make this a void function.
-> 
-> Further, as none of the callers of btrfs_return_cluster_to_free_space() is
-> actually using the return from this function, make this function also
-> return void.
-> 
+count to bg_count?
+It's a member of the block group structure, adding a bg_ prefix adds
+no value at all, we know the count is related to the block group.
+I could somewhat understand if you named it 'refcount' instead.
+
+Thanks.
+
+>
+> This patch also serves as a preparatory patch to either make sure
+> btrfs_get_block_group() is used instead of open coded the same or just
+> open code every where as btrfs_get_block_group() is a one-liner.
+>
 > Signed-off-by: Anand Jain <anand.jain@oracle.com>
+> ---
+>  fs/btrfs/block-group.c      | 8 ++++----
+>  fs/btrfs/block-group.h      | 2 +-
+>  fs/btrfs/free-space-cache.c | 4 ++--
+>  3 files changed, 7 insertions(+), 7 deletions(-)
+>
+> diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+> index 31ca2cfb7e3e..8111f6750063 100644
+> --- a/fs/btrfs/block-group.c
+> +++ b/fs/btrfs/block-group.c
+> @@ -118,12 +118,12 @@ u64 btrfs_get_alloc_profile(struct btrfs_fs_info *f=
+s_info, u64 orig_flags)
+>
+>  void btrfs_get_block_group(struct btrfs_block_group *cache)
+>  {
+> -       atomic_inc(&cache->count);
+> +       atomic_inc(&cache->bg_count);
+>  }
+>
+>  void btrfs_put_block_group(struct btrfs_block_group *cache)
+>  {
+> -       if (atomic_dec_and_test(&cache->count)) {
+> +       if (atomic_dec_and_test(&cache->bg_count)) {
+>                 WARN_ON(cache->pinned > 0);
+>                 WARN_ON(cache->reserved > 0);
+>
+> @@ -1805,7 +1805,7 @@ static struct btrfs_block_group *btrfs_create_block=
+_group_cache(
+>
+>         cache->discard_index =3D BTRFS_DISCARD_INDEX_UNUSED;
+>
+> -       atomic_set(&cache->count, 1);
+> +       atomic_set(&cache->bg_count, 1);
+>         spin_lock_init(&cache->lock);
+>         init_rwsem(&cache->data_rwsem);
+>         INIT_LIST_HEAD(&cache->list);
+> @@ -3379,7 +3379,7 @@ int btrfs_free_block_groups(struct btrfs_fs_info *i=
+nfo)
+>                 ASSERT(list_empty(&block_group->dirty_list));
+>                 ASSERT(list_empty(&block_group->io_list));
+>                 ASSERT(list_empty(&block_group->bg_list));
+> -               ASSERT(atomic_read(&block_group->count) =3D=3D 1);
+> +               ASSERT(atomic_read(&block_group->bg_count) =3D=3D 1);
+>                 btrfs_put_block_group(block_group);
+>
+>                 spin_lock(&info->block_group_cache_lock);
+> diff --git a/fs/btrfs/block-group.h b/fs/btrfs/block-group.h
+> index b6ee70a039c7..f0ef8be08747 100644
+> --- a/fs/btrfs/block-group.h
+> +++ b/fs/btrfs/block-group.h
+> @@ -115,7 +115,7 @@ struct btrfs_block_group {
+>         struct list_head list;
+>
+>         /* Usage count */
+> -       atomic_t count;
+> +       atomic_t bg_count;
+>
+>         /*
+>          * List of struct btrfs_free_clusters for this block group.
+> diff --git a/fs/btrfs/free-space-cache.c b/fs/btrfs/free-space-cache.c
+> index 1bf08c855edb..169b1117c1a3 100644
+> --- a/fs/btrfs/free-space-cache.c
+> +++ b/fs/btrfs/free-space-cache.c
+> @@ -2925,7 +2925,7 @@ void btrfs_return_cluster_to_free_space(
+>                 spin_unlock(&cluster->lock);
+>                 return;
+>         }
+> -       atomic_inc(&block_group->count);
+> +       atomic_inc(&block_group->bg_count);
+>         spin_unlock(&cluster->lock);
+>
+>         ctl =3D block_group->free_space_ctl;
+> @@ -3355,7 +3355,7 @@ int btrfs_find_space_cluster(struct btrfs_block_gro=
+up *block_group,
+>                 list_del_init(&entry->list);
+>
+>         if (!ret) {
+> -               atomic_inc(&block_group->count);
+> +               atomic_inc(&block_group->bg_count);
+>                 list_add_tail(&cluster->block_group_list,
+>                               &block_group->cluster_list);
+>                 cluster->block_group =3D block_group;
+> --
+> 2.25.1
+>
 
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+
+--=20
+Filipe David Manana,
+
+=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
+ right.=E2=80=9D
