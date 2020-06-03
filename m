@@ -2,25 +2,25 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B9201EC90A
+	by mail.lfdr.de (Postfix) with ESMTP id F37561EC90B
 	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Jun 2020 07:56:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726098AbgFCF4E (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        id S1726099AbgFCF4E (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
         Wed, 3 Jun 2020 01:56:04 -0400
-Received: from mx2.suse.de ([195.135.220.15]:42496 "EHLO mx2.suse.de"
+Received: from mx2.suse.de ([195.135.220.15]:42510 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726036AbgFCFz6 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        id S1726041AbgFCFz6 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
         Wed, 3 Jun 2020 01:55:58 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id A6753B012;
+        by mx2.suse.de (Postfix) with ESMTP id DB990B00A;
         Wed,  3 Jun 2020 05:56:00 +0000 (UTC)
 From:   Nikolay Borisov <nborisov@suse.com>
 To:     linux-btrfs@vger.kernel.org
 Cc:     Nikolay Borisov <nborisov@suse.com>
-Subject: [PATCH 27/46] btrfs: Make inode_need_compress take btrfs_inode
-Date:   Wed,  3 Jun 2020 08:55:27 +0300
-Message-Id: <20200603055546.3889-28-nborisov@suse.com>
+Subject: [PATCH 28/46] btrfs: Make need_force_cow take btrfs_inode
+Date:   Wed,  3 Jun 2020 08:55:28 +0300
+Message-Id: <20200603055546.3889-29-nborisov@suse.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200603055546.3889-1-nborisov@suse.com>
 References: <20200603055546.3889-1-nborisov@suse.com>
@@ -29,75 +29,54 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Simply gets rid of superfluous BTRFS_I() calls.
+Gets rid of superfulous BTRFS_I() calls and prepare for converting
+btrfs_run_delalloc_range to using btrfs_inode.
 
 Signed-off-by: Nikolay Borisov <nborisov@suse.com>
 ---
- fs/btrfs/inode.c | 23 ++++++++++++-----------
- 1 file changed, 12 insertions(+), 11 deletions(-)
+ fs/btrfs/inode.c | 13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
 
 diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 1c3704b18f3a..c44e2ded2597 100644
+index c44e2ded2597..709253e2470a 100644
 --- a/fs/btrfs/inode.c
 +++ b/fs/btrfs/inode.c
-@@ -423,29 +423,30 @@ static inline bool inode_can_compress(struct btrfs_inode *inode)
-  * Check if the inode needs to be submitted to compression, based on mount
-  * options, defragmentation, properties or heuristics.
-  */
--static inline int inode_need_compress(struct inode *inode, u64 start, u64 end)
-+static inline int inode_need_compress(struct btrfs_inode *inode, u64 start,
-+				      u64 end)
- {
--	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
-+	struct btrfs_fs_info *fs_info = inode->root->fs_info;
-
--	if (!inode_can_compress(BTRFS_I(inode))) {
-+	if (!inode_can_compress(inode)) {
- 		WARN(IS_ENABLED(CONFIG_BTRFS_DEBUG),
- 			KERN_ERR "BTRFS: unexpected compression for ino %llu\n",
--			btrfs_ino(BTRFS_I(inode)));
-+			btrfs_ino(inode));
- 		return 0;
- 	}
- 	/* force compress */
- 	if (btrfs_test_opt(fs_info, FORCE_COMPRESS))
- 		return 1;
- 	/* defrag ioctl */
--	if (BTRFS_I(inode)->defrag_compress)
-+	if (inode->defrag_compress)
- 		return 1;
- 	/* bad compression ratios */
--	if (BTRFS_I(inode)->flags & BTRFS_INODE_NOCOMPRESS)
-+	if (inode->flags & BTRFS_INODE_NOCOMPRESS)
- 		return 0;
- 	if (btrfs_test_opt(fs_info, COMPRESS) ||
--	    BTRFS_I(inode)->flags & BTRFS_INODE_COMPRESS ||
--	    BTRFS_I(inode)->prop_compress)
--		return btrfs_compress_heuristic(inode, start, end);
-+	    inode->flags & BTRFS_INODE_COMPRESS ||
-+	    inode->prop_compress)
-+		return btrfs_compress_heuristic(&inode->vfs_inode, start, end);
- 	return 0;
+@@ -1772,11 +1772,11 @@ static noinline int run_delalloc_nocow(struct btrfs_inode *inode,
+ 	return ret;
  }
 
-@@ -551,7 +552,7 @@ static noinline int compress_file_range(struct async_chunk *async_chunk)
- 	 * inode has not been flagged as nocompress.  This flag can
- 	 * change at any time if we discover bad compression ratios.
+-static inline int need_force_cow(struct inode *inode, u64 start, u64 end)
++static inline int need_force_cow(struct btrfs_inode *inode, u64 start, u64 end)
+ {
+
+-	if (!(BTRFS_I(inode)->flags & BTRFS_INODE_NODATACOW) &&
+-	    !(BTRFS_I(inode)->flags & BTRFS_INODE_PREALLOC))
++	if (!(inode->flags & BTRFS_INODE_NODATACOW) &&
++	    !(inode->flags & BTRFS_INODE_PREALLOC))
+ 		return 0;
+
+ 	/*
+@@ -1784,9 +1784,8 @@ static inline int need_force_cow(struct inode *inode, u64 start, u64 end)
+ 	 * if is not zero, it means the file is defragging.
+ 	 * Force cow if given extent needs to be defragged.
  	 */
--	if (inode_need_compress(inode, start, end)) {
-+	if (inode_need_compress(BTRFS_I(inode), start, end)) {
- 		WARN_ON(pages);
- 		pages = kcalloc(nr_pages, sizeof(struct page *), GFP_NOFS);
- 		if (!pages) {
-@@ -1809,7 +1810,7 @@ int btrfs_run_delalloc_range(struct inode *inode, struct page *locked_page,
+-	if (BTRFS_I(inode)->defrag_bytes &&
+-	    test_range_bit(&BTRFS_I(inode)->io_tree, start, end,
+-			   EXTENT_DEFRAG, 0, NULL))
++	if (inode->defrag_bytes &&
++	    test_range_bit(&inode->io_tree, start, end, EXTENT_DEFRAG, 0, NULL))
+ 		return 1;
+
+ 	return 0;
+@@ -1801,7 +1800,7 @@ int btrfs_run_delalloc_range(struct inode *inode, struct page *locked_page,
+ 		struct writeback_control *wbc)
+ {
+ 	int ret;
+-	int force_cow = need_force_cow(inode, start, end);
++	int force_cow = need_force_cow(BTRFS_I(inode), start, end);
+
+ 	if (BTRFS_I(inode)->flags & BTRFS_INODE_NODATACOW && !force_cow) {
  		ret = run_delalloc_nocow(BTRFS_I(inode), locked_page, start, end,
- 					 page_started, 0, nr_written);
- 	} else if (!inode_can_compress(BTRFS_I(inode)) ||
--		   !inode_need_compress(inode, start, end)) {
-+		   !inode_need_compress(BTRFS_I(inode), start, end)) {
- 		ret = cow_file_range(BTRFS_I(inode), locked_page, start, end,
- 				      page_started, nr_written, 1);
- 	} else {
 --
 2.17.1
 
