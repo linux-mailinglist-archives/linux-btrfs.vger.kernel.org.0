@@ -2,24 +2,25 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 102FA1ECAA5
-	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Jun 2020 09:36:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F22D21ECAC7
+	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Jun 2020 09:45:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725275AbgFCHgS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 3 Jun 2020 03:36:18 -0400
-Received: from mx2.suse.de ([195.135.220.15]:60652 "EHLO mx2.suse.de"
+        id S1726003AbgFCHpC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 3 Jun 2020 03:45:02 -0400
+Received: from mx2.suse.de ([195.135.220.15]:35796 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725866AbgFCHgS (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 3 Jun 2020 03:36:18 -0400
+        id S1725275AbgFCHo6 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 3 Jun 2020 03:44:58 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 01619AC96;
-        Wed,  3 Jun 2020 07:36:18 +0000 (UTC)
-Subject: Re: [PATCH v2 3/3] Btrfs: remove no longer necessary chunk mutex
- locking cases
-To:     fdmanana@kernel.org, linux-btrfs@vger.kernel.org
-References: <20200601181227.28585-1-fdmanana@kernel.org>
+        by mx2.suse.de (Postfix) with ESMTP id 79939ADAB;
+        Wed,  3 Jun 2020 07:44:59 +0000 (UTC)
+Subject: Re: [PATCH 1/3] Btrfs: fix a block group ref counter leak after
+ failure to remove block group
 From:   Nikolay Borisov <nborisov@suse.com>
+To:     fdmanana@kernel.org, linux-btrfs@vger.kernel.org
+References: <20200601181206.24852-1-fdmanana@kernel.org>
+ <0b010680-f286-f858-8cfd-94dc888ca7a4@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  xsFNBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
  T7g+RbfPFlmQp+EwFWOtABXlKC54zgSf+uulGwx5JAUFVUIRBmnHOYi/lUiE0yhpnb1KCA7f
@@ -62,12 +63,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  KIuxEcV8wcVjr+Wr9zRl06waOCkgrQbTPp631hToxo+4rA1jiQF2M80HAet65ytBVR2pFGZF
  zGYYLqiG+mpUZ+FPjxk9kpkRYz61mTLSY7tuFljExfJWMGfgSg1OxfLV631jV1TcdUnx+h3l
  Sqs2vMhAVt14zT8mpIuu2VNxcontxgVr1kzYA/tQg32fVRbGr449j1gw57BV9i0vww==
-Message-ID: <5cfa6533-aede-051b-8695-97ecc0d88b4c@suse.com>
-Date:   Wed, 3 Jun 2020 10:36:15 +0300
+Message-ID: <207d40cc-051c-4c4a-62c8-3343e53294ad@suse.com>
+Date:   Wed, 3 Jun 2020 10:44:55 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.8.0
 MIME-Version: 1.0
-In-Reply-To: <20200601181227.28585-1-fdmanana@kernel.org>
+In-Reply-To: <0b010680-f286-f858-8cfd-94dc888ca7a4@suse.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -78,33 +79,56 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 1.06.20 г. 21:12 ч., fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
+On 3.06.20 г. 10:32 ч., Nikolay Borisov wrote:
 > 
-> Initially when the 'removed' flag was added to a block group to avoid
-> races between block group removal and fitrim, by commit 04216820fe83d5
-> ("Btrfs: fix race between fs trimming and block group remove/allocation"),
-> we had to lock the chunks mutex because we could be moving the block
-> group from its current list, the pending chunks list, into the pinned
-> chunks list, or we could just be adding it to the pinned chunks if it was
-> not in the pending chunks list. Both lists were protected by the chunk
-> mutex.
 > 
-> However we no longer have those lists since commit 1c11b63eff2a67
-> ("btrfs: replace pending/pinned chunks lists with io tree"), and locking
-> the chunk mutex is no longer necessary because of that. The same happens
-> at btrfs_unfreeze_block_group(), we lock the chunk mutex because the block
-> group's extent map could be part of the pinned chunks list and the call
-> to remove_extent_mapping() could be deleting it from that list, which
-> used to be protected by that mutex.
+> On 1.06.20 г. 21:12 ч., fdmanana@kernel.org wrote:
+>> From: Filipe Manana <fdmanana@suse.com>
+>>
+>> When removing a block group, if we fail to delete the block group's item
+>> from the extent tree, we jump to the 'out' label and end up decrementing
+>> the block group's reference count once only (by 1), resulting in a counter
+>> leak because the block group at that point was already removed from the
+>> block group cache rbtree - so we have to decrement the reference count
+>> twice, once for the rbtree and once for our lookup at the start of the
+>> function.
 > 
-> So just remove those lock and unlock calls as they are not needed anymore.
+> However I'm having hard time reconciling this. The block group is
+> removed from the block_group_cache_tree after we've called
+> btrfs_del_item. So if btrfs_del_item or btrfs_search_slot fail the code
+> jumps at out_put_group and puts the reference acquired at the beginning
+> of the function via btrfs_lookup_block_group.
 > 
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+> I think what you meant is if we fail to delete the block group's item
+> from the freespace tree, that is if we fail
+> remove_block_group_free_space, then we'd have a ref leak. With this
+> modification to the changelog:
+> 
 
-The critical section really involves checking btrfs_block_group::frozen
-and btrfs_block_group::removed  atomically which is ensured by holding
-btrfs_block_group::lock. And in the unfreeze function we only modify the
-mapping tree under the tree's write lock, so:
+Looking again in this function without this patch the sequence of
+remove_block_group_free_space/btrfs_put_block-group/remove_block_group_item
+is really bogus.
 
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+1. If remove_block_group_free_space fails the code would jump to
+out_put_group which would leak the ref count for the rb tree
+
+2. If remove_block_group_item (removal from extent tree) fails then the
+code would jump to out: which won't drop the reference taken in
+btrfs_remove_block_group...
+
+> Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+> 
+>>
+>> To make things less error prone, decrement the reference count for the
+>> rbtree immediately after removing the block group from it. This also
+>> eleminates the need for two different exit labels on error, renaming
+>> 'out_put_label' to just 'out' and removing the old 'out'.
+> 
+> I agree with this.
+> 
+>>
+>> Fixes: f6033c5e333238 ("btrfs: fix block group leak when removing fails")
+>> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+> 
+> <snip>
+> 
