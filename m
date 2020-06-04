@@ -2,613 +2,455 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 063D11EE9E3
-	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Jun 2020 19:57:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4728F1EEE00
+	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Jun 2020 00:55:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730247AbgFDR5Y (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 4 Jun 2020 13:57:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57448 "EHLO
+        id S1728047AbgFDWz1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 4 Jun 2020 18:55:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730008AbgFDR5X (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 4 Jun 2020 13:57:23 -0400
-Received: from mail-vs1-xe43.google.com (mail-vs1-xe43.google.com [IPv6:2607:f8b0:4864:20::e43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8726CC08C5C0
-        for <linux-btrfs@vger.kernel.org>; Thu,  4 Jun 2020 10:57:23 -0700 (PDT)
-Received: by mail-vs1-xe43.google.com with SMTP id t132so3796497vst.2
-        for <linux-btrfs@vger.kernel.org>; Thu, 04 Jun 2020 10:57:23 -0700 (PDT)
+        with ESMTP id S1726221AbgFDWz1 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 4 Jun 2020 18:55:27 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8752DC08C5C0
+        for <linux-btrfs@vger.kernel.org>; Thu,  4 Jun 2020 15:55:25 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id w7so6069082edt.1
+        for <linux-btrfs@vger.kernel.org>; Thu, 04 Jun 2020 15:55:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=gsZir8E/QtxqYjT2vy7aWP7BTEq+WFxQfJ/1fOxgLUE=;
-        b=KCjF9FiZmxnRY8kFWzykjLaNri879JvQQvIViYOvbHLETCue5Gs3Sm4ZJcP9jX819m
-         ap0+9NeJawH5wVI6lnOOpPiCz3zllw0yXLxOde0MuRjB58iexogjK4JAmXaV52mcoaGl
-         QrI6/4m9I3LBag2TV/l4k0hiNi+IcxrYHy/8TT3fLPHvMxMAFHk1wR1JscECiRSSz+V2
-         a1i4XODcCwEQrsYFH2yhFu5P6E5K2ZNhcAU7cVlOILz71CJXGvR/MIqERggRMI55yGhV
-         f4yGmiVAfslsT5OENr+CevxoGpv2iTf4YdwJSixfcbXsbRhX3MmEvd9QDxWe9FD2nphu
-         2LmA==
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=F/M2MCKoGOfK6srOJLFkkf+hShVQ5Zob+Uddt/sYEWM=;
+        b=L7R6I1ihcp3ImGwD74R0K83kzT4VM1eMdwwlkE4FHYAlm6a8Y4rUD1ZFtmAQI5ER80
+         XL8O4YrtraZZHs2yX1RXG4Eqs5M0RcbNMPyKs+Qc8rR1tYl6u/RDax1IE6Q4Yio63KwE
+         IFeeGNi/fOQcRwGOnXuSTuKl144UBvE2Abvi8EQx/PHTBq1ZEM48RyUL0UQBbzIIly45
+         3YPfOHM7ZlmLTUZQVWdCJrdA7w996EMOIE/Vhl5p7CJvnADwZ9/VqshDUohSgaxsTZR3
+         vvOGALzPaR+xbIqd5AokqQfhPAPGBOffXBpKZs4N+lFjQ1sdAO1tx6f+56ofvqcRfccD
+         lPtQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=gsZir8E/QtxqYjT2vy7aWP7BTEq+WFxQfJ/1fOxgLUE=;
-        b=jqBs6I+Z//mgjuRChLS8Ss233P9soVNplYWVyc682xAfw97mM0t8KOWJHPjn6NttBK
-         beDxvYO6l1x/2eDTR6j+aO/9fLtTrwqA5aXfPV6hsYwPyaUrUwrdXymxacEliiM9ye/I
-         d/oM+sCyM/XSbxRqnNkK3G7Sq/+5d8kYKPFgg7NgSQFSBykLwlFVSiHN+Ky5h3DopoRy
-         aVeR88sD1y979ziAYESAvkJnKeHIXn+lSNAl2GT2MacHQcjlVJll3SVCaj9CO2F5yCN3
-         8mYUmAIlVbWacXCRgE+AV8a3HZZjEzM0gO1lqX1WqxUcHTze2zlMET9JL7ylP9j7/bFm
-         8n3w==
-X-Gm-Message-State: AOAM530tbZ2BpH0j5cM4N4ZNaYij+W62f4hImUhPVXmWupW2q4PHYU0p
-        4KSk5xjTs83XSHnHwfkR97K2jC2CMsDHZ0Br3JGL7Mkd
-X-Google-Smtp-Source: ABdhPJzQryfOu+xm6QMqraO04A8NPd1wr82mAdGKhZe0dXXY5X3O/iHs5vL986EpMHwQfovOkO+5J3kPDDhGijkLMJg=
-X-Received: by 2002:a67:c489:: with SMTP id d9mr1172047vsk.133.1591293442346;
- Thu, 04 Jun 2020 10:57:22 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=F/M2MCKoGOfK6srOJLFkkf+hShVQ5Zob+Uddt/sYEWM=;
+        b=iBCxipvJWucUPWURh6wBy+wvTye4ipMJNYRWSbukNnX3hLTK7w7Twy2ZfK1pw4YMRo
+         sAficuOQyhrk0VXYEA8Zu1kc3gECUaXk+vRDdwrZ1Z2yYcLMal32lCM1W9dFh1plT2Ap
+         LAS/dxXs8j0j3qflkJufcrMufBama6JN9BsokTCvjpgbGJeG5ckuSpZFNh5+3zLWCwuQ
+         4lsAcJ+rVx/emm1NlX6aXYx19vgJ1BuBNMxUaXKuyuUbpBu/Z4bhs8S7Q2mrJGZhN1TQ
+         KG/nHmXWYFk4nAzq+tEoH+t/We/KLHuI3sYtG03zsopyeGT0x0EVcaw94Nxl8SW9Zn+I
+         lW+w==
+X-Gm-Message-State: AOAM530uaXzZKGGD0X1LB/ULxgdLBEeYGUvazk6Pq0x5hRwVY7a2umX9
+        mYDW7a1HFGge0m7uqVBKGbzBAEjlCNFKMw==
+X-Google-Smtp-Source: ABdhPJyDhWoOsm5+HvnS5VeW7o61qgi0bjVJXwVGlkZOfarYHWwnhb8WcP9AsRWutAnNtatNo+5nQQ==
+X-Received: by 2002:a50:a701:: with SMTP id h1mr5134872edc.170.1591311323424;
+        Thu, 04 Jun 2020 15:55:23 -0700 (PDT)
+Received: from [127.0.0.1] (p5796740f.dip0.t-ipconnect.de. [87.150.116.15])
+        by smtp.gmail.com with ESMTPSA id rp21sm3016131ejb.97.2020.06.04.15.55.22
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 04 Jun 2020 15:55:22 -0700 (PDT)
+Date:   Thu, 4 Jun 2020 22:55:19 +0000 (UTC)
+From:   Emil Heimpel <broetchenrackete@gmail.com>
+To:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Cc:     Chris Murphy <lists@colorremedies.com>,
+        Qu Wenruo <quwenruo.btrfs@gmx.com>
+Message-ID: <6e239aa3-734e-42fb-9226-110e390092e1@gmail.com>
+In-Reply-To: <21913a92-5059-405f-b2d4-91e785ab77bd@gmail.com>
+References: <9d2d57e7-29d9-42c2-be55-fb8ee50db40e@localhost> <CAJCQCtQ9HzjjaV20txtoHAWG7tTVWaqdk6wf5QtB5v+w2p4b2Q@mail.gmail.com> <f6d9ee8a-c0da-4b19-af3a-3c58c9c1478e@localhost> <343f7aa9-4cff-45b7-8635-4ca19014c4e5@localhost> <CAJCQCtQi3KZvKGO17YoQ3AroiePjywhhNAFjdKFD0DwL3tkbLg@mail.gmail.com> <21913a92-5059-405f-b2d4-91e785ab77bd@gmail.com>
+Subject: Re: Need help recovering broken RAID5 array (parent transid verify
+ failed)
 MIME-Version: 1.0
-References: <CABT3_pzBdRqe7SRBptM1E5MPJfwEGF6=YBovmZdj1Vxjs21iNQ@mail.gmail.com>
- <5fdc798c-c8eb-b4cf-b247-e70f5fd49fc4@gmx.com> <CABT3_pwG1CrxYBDXTzQZLVGYkLoxKpexEdyJWnm_7TCaskbOeA@mail.gmail.com>
- <1cf994f7-3efb-67ac-d5b1-22929e8ef3fd@gmx.com> <CABT3_pxFv0KAjO2DfmikeeT+yN-3BiDj=Mu_a=dC-K9DyL-T3w@mail.gmail.com>
- <b477b613-2190-2c2f-7fab-f9b712ece187@gmx.com>
-In-Reply-To: <b477b613-2190-2c2f-7fab-f9b712ece187@gmx.com>
-From:   Thorsten Rehm <thorsten.rehm@gmail.com>
-Date:   Thu, 4 Jun 2020 19:57:10 +0200
-Message-ID: <CABT3_pycYRemohAVAbczjre0ruHL_k+pSMBP+ax0Rzcfq2B=BA@mail.gmail.com>
-Subject: Re: corrupt leaf; invalid root item size
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
+X-Correlation-ID: <6e239aa3-734e-42fb-9226-110e390092e1@gmail.com>
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hmm, ok wait a minute:
+Hi,
 
-"But still, if you're using metadata without copy (aka, SINGLE, RAID0)
-then it would be a completely different story."
+I checked the smart values for all drives including short tests and all see=
+m fine. I found these in journalctl and they must have happened during the =
+balance:
 
-It's a single disk (SSD):
+May 08 08:26:10 BlueQ kernel: sd 11:0:3:0: [sdg] tag#2446 FAILED Result: ho=
+stbyte=3DDID_OK driverbyte=3DDRIVER_OK cmd_age=3D9s
+May 08 08:26:10 BlueQ kernel: sd 11:0:3:0: [sdg] tag#2446 CDB: Read(16) 88 =
+00 00 00 00 00 42 84 13 18 00 00 00 08 00 00
+May 08 08:26:10 BlueQ kernel: blk_update_request: I/O error, dev sdg, secto=
+r 1115951896 op 0x0:(READ) flags 0x80700 phys_seg 1 prio class 0
 
-root@grml ~ # btrfs filesystem usage /mnt
-Overall:
-    Device size:         115.23GiB
-    Device allocated:          26.08GiB
-    Device unallocated:          89.15GiB
-    Device missing:             0.00B
-    Used:               7.44GiB
-    Free (estimated):         104.04GiB    (min: 59.47GiB)
-    Data ratio:                  1.00
-    Metadata ratio:              2.00
-    Global reserve:          25.25MiB    (used: 0.00B)
+...
 
-Data,single: Size:22.01GiB, Used:7.11GiB (32.33%)
-   /dev/mapper/foo      22.01GiB
+May 08 10:53:27 BlueQ kernel: sd 11:0:2:0: [sdf] tag#2455 FAILED Result: ho=
+stbyte=3DDID_OK driverbyte=3DDRIVER_OK cmd_age=3D4s
+May 08 10:53:27 BlueQ kernel: sd 11:0:2:0: [sdf] tag#2455 CDB: Read(16) 88 =
+00 00 00 00 00 42 60 db 10 00 00 00 08 00 00
+May 08 10:53:27 BlueQ kernel: blk_update_request: I/O error, dev sdf, secto=
+r 1113643792 op 0x0:(READ) flags 0x80700 phys_seg 1 prio class 0
 
-Metadata,single: Size:8.00MiB, Used:0.00B (0.00%)
-   /dev/mapper/foo       8.00MiB
+...
 
-Metadata,DUP: Size:2.00GiB, Used:167.81MiB (8.19%)
-   /dev/mapper/foo       4.00GiB
+May 08 12:55:14 BlueQ kernel: sd 11:0:2:0: [sdf] tag#3311 FAILED Result: ho=
+stbyte=3DDID_OK driverbyte=3DDRIVER_OK cmd_age=3D4s
+May 08 12:55:14 BlueQ kernel: sd 11:0:2:0: [sdf] tag#3311 CDB: Read(16) 88 =
+00 00 00 00 00 42 60 7b 38 00 00 00 30 00 00=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 May 08 12:55:14 BlueQ kernel:=
+ blk_update_request: I/O error, dev sdf, sector 1113619256 op 0x0:(READ) fl=
+ags 0x80700 phys_seg 6 prio class 0
+May 08 12:55:23 BlueQ kernel: BTRFS info (device sdc1): read error correcte=
+d: ino 1254360 off 0 (dev /dev/sdf1 sector 1113617208)
+May 08 12:55:23 BlueQ kernel: BTRFS info (device sdc1): read error correcte=
+d: ino 1254360 off 4096 (dev /dev/sdf1 sector 1113617216)
+May 08 12:55:23 BlueQ kernel: BTRFS info (device sdc1): read error correcte=
+d: ino 1254360 off 8192 (dev /dev/sdf1 sector 1113617224)
+May 08 12:55:23 BlueQ kernel: BTRFS info (device sdc1): read error correcte=
+d: ino 1254360 off 12288 (dev /dev/sdf1 sector 1113617232)
+May 08 12:55:23 BlueQ kernel: BTRFS info (device sdc1): read error correcte=
+d: ino 1254360 off 16384 (dev /dev/sdf1 sector 1113617240)
+May 08 12:55:23 BlueQ kernel: BTRFS info (device sdc1): read error correcte=
+d: ino 1254360 off 20480 (dev /dev/sdf1 sector 1113617248)
 
-System,single: Size:4.00MiB, Used:0.00B (0.00%)
-   /dev/mapper/foo       4.00MiB
+...
 
-System,DUP: Size:32.00MiB, Used:4.00KiB (0.01%)
-   /dev/mapper/foo      64.00MiB
+May 08 13:51:51 BlueQ kernel: sd 11:0:2:0: [sdf] tag#2470 FAILED Result: ho=
+stbyte=3DDID_OK driverbyte=3DDRIVER_OK cmd_age=3D4s
+May 08 13:51:51 BlueQ kernel: sd 11:0:2:0: [sdf] tag#2470 CDB: Read(16) 88 =
+00 00 00 00 00 42 64 19 a0 00 00 00 10 00 00=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 May 08 13:51:51 BlueQ kernel:=
+ blk_update_request: I/O error, dev sdf, sector 1113856416 op 0x0:(READ) fl=
+ags 0x80700 phys_seg 2 prio class 0
+May 08 13:51:51 BlueQ kernel: BTRFS info (device sdc1): read error correcte=
+d: ino 1266969 off 0 (dev /dev/sdf1 sector 1113854368)
+May 08 13:51:51 BlueQ kernel: BTRFS info (device sdc1): read error correcte=
+d: ino 1266969 off 4096 (dev /dev/sdf1 sector 1113854376)
 
-Unallocated:
-   /dev/mapper/foo      89.15GiB
+...
 
+May 08 23:09:19 BlueQ kernel: sd 11:0:2:0: [sdf] tag#2480 FAILED Result: ho=
+stbyte=3DDID_OK driverbyte=3DDRIVER_OK cmd_age=3D4s=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 May 08 23:09:19 BlueQ kernel:=
+ sd 11:0:2:0: [sdf] tag#2480 CDB: Read(16) 88 00 00 00 00 00 ab 00 30 80 00=
+ 00 01 00 00 00=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0 May 08 23:09:19 BlueQ kernel: blk_update_request: I/O error=
+, dev sdf, sector 2868916352 op 0x0:(READ) flags 0x80700 phys_seg 16 prio c=
+lass 0
+May 08 23:09:19 BlueQ kernel: BTRFS info (device sdc1): read error correcte=
+d: ino 5126 off 196608 (dev /dev/sdf1 sector 2868914304)
+May 08 23:09:19 BlueQ kernel: BTRFS info (device sdc1): read error correcte=
+d: ino 5126 off 200704 (dev /dev/sdf1 sector 2868914312)
+May 08 23:09:19 BlueQ kernel: BTRFS info (device sdc1): read error correcte=
+d: ino 5126 off 204800 (dev /dev/sdf1 sector 2868914320)
+May 08 23:09:19 BlueQ kernel: BTRFS info (device sdc1): read error correcte=
+d: ino 5126 off 208896 (dev /dev/sdf1 sector 2868914328)
+May 08 23:09:19 BlueQ kernel: BTRFS info (device sdc1): read error correcte=
+d: ino 5126 off 212992 (dev /dev/sdf1 sector 2868914336)
+May 08 23:09:19 BlueQ kernel: BTRFS info (device sdc1): read error correcte=
+d: ino 5126 off 217088 (dev /dev/sdf1 sector 2868914344)
+May 08 23:09:19 BlueQ kernel: BTRFS info (device sdc1): read error correcte=
+d: ino 5126 off 221184 (dev /dev/sdf1 sector 2868914352)
+May 08 23:09:19 BlueQ kernel: BTRFS info (device sdc1): read error correcte=
+d: ino 5126 off 225280 (dev /dev/sdf1 sector 2868914360)
+May 08 23:09:19 BlueQ kernel: BTRFS info (device sdc1): read error correcte=
+d: ino 5126 off 229376 (dev /dev/sdf1 sector 2868914368)
+May 08 23:09:19 BlueQ kernel: BTRFS info (device sdc1): read error correcte=
+d: ino 5126 off 233472 (dev /dev/sdf1 sector 2868914376)
 
-root@grml ~ # btrfs filesystem df /mnt
-Data, single: total=3D22.01GiB, used=3D7.11GiB
-System, DUP: total=3D32.00MiB, used=3D4.00KiB
-System, single: total=3D4.00MiB, used=3D0.00B
-Metadata, DUP: total=3D2.00GiB, used=3D167.81MiB
-Metadata, single: total=3D8.00MiB, used=3D0.00B
-GlobalReserve, single: total=3D25.25MiB, used=3D0.00B
+...#btrfs balance started probably
 
-I did also a fstrim:
+May 09 04:34:52 BlueQ kernel: BTRFS info (device sdc1): found 26 extents, s=
+tage: move data extents
+May 09 04:34:53 BlueQ kernel: BTRFS info (device sdc1): found 26 extents, s=
+tage: update data pointers
+May 09 04:34:53 BlueQ kernel: BTRFS info (device sdc1): relocating block gr=
+oup 21793982906368 flags data|raid5
+May 09 04:35:26 BlueQ kernel: BTRFS info (device sdc1): found 26 extents, s=
+tage: move data extents
+May 09 04:35:27 BlueQ kernel: BTRFS info (device sdc1): found 26 extents, s=
+tage: update data pointers
+May 09 04:35:28 BlueQ kernel: BTRFS info (device sdc1): relocating block gr=
+oup 21790761680896 flags data|raid5
+#repeating a lot
 
-root@grml ~ # cryptsetup --allow-discards open /dev/sda5 foo
-Enter passphrase for /dev/sda5:
-root@grml ~ # mount -o discard /dev/mapper/foo /mnt
-root@grml ~ # fstrim -v /mnt/
-/mnt/: 105.8 GiB (113600049152 bytes) trimmed
-fstrim -v /mnt/  0.00s user 5.34s system 0% cpu 10:28.70 total
+...
 
-The kern.log in the runtime of fstrim:
---- snip ---
-Jun 04 12:32:02 grml kernel: BTRFS critical (device dm-0): corrupt
-leaf: root=3D1 block=3D32505856 slot=3D32, invalid root item size, have 239
-expect 439
-Jun 04 12:32:02 grml kernel: BTRFS critical (device dm-0): corrupt
-leaf: root=3D1 block=3D32813056 slot=3D32, invalid root item size, have 239
-expect 439
-Jun 04 12:32:37 grml kernel: BTRFS info (device dm-0): turning on sync disc=
-ard
-Jun 04 12:32:37 grml kernel: BTRFS info (device dm-0): disk space
-caching is enabled
-Jun 04 12:32:37 grml kernel: BTRFS critical (device dm-0): corrupt
-leaf: root=3D1 block=3D32813056 slot=3D32, invalid root item size, have 239
-expect 439
-Jun 04 12:32:37 grml kernel: BTRFS info (device dm-0): enabling ssd
-optimizations
-Jun 04 12:34:35 grml kernel: BTRFS critical (device dm-0): corrupt
-leaf: root=3D1 block=3D32382976 slot=3D32, invalid root item size, have 239
-expect 439
-Jun 04 12:36:50 grml kernel: BTRFS info (device dm-0): turning on sync disc=
-ard
-Jun 04 12:36:50 grml kernel: BTRFS info (device dm-0): disk space
-caching is enabled
-Jun 04 12:36:50 grml kernel: BTRFS critical (device dm-0): corrupt
-leaf: root=3D1 block=3D32382976 slot=3D32, invalid root item size, have 239
-expect 439
-Jun 04 12:36:50 grml kernel: BTRFS info (device dm-0): enabling ssd
-optimizations
---- snap ---
+May 09 05:11:52 BlueQ kernel: BTRFS info (device sdc1): found 29 extents, s=
+tage: move data extents=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+ May 09 05:11:53 BlueQ kernel: BTRFS info (device sdc1): found 29 extents, =
+stage: update data pointers=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 May 09 05:11:5=
+4 BlueQ kernel: BTRFS info (device sdc1): relocating block group 2155561222=
+1440 flags data|raid5=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+ May 09 05:12:04 BlueQ kernel: BTRFS warning (device sdc1): csum failed roo=
+t -9 ino 382 off 440291328 csum 0x2ac15d26 expected csum 0xd26a9dcb mirror =
+1
+May 09 05:12:04 BlueQ kernel: BTRFS warning (device sdc1): csum failed root=
+ -9 ino 382 off 440295424 csum 0x2ac15d26 expected csum 0x85d5d3bb mirror 1
+May 09 05:12:04 BlueQ kernel: BTRFS warning (device sdc1): csum failed root=
+ -9 ino 382 off 440299520 csum 0x2ac15d26 expected csum 0x20cd77c6 mirror 1
+May 09 05:12:04 BlueQ kernel: BTRFS warning (device sdc1): csum failed root=
+ -9 ino 382 off 440303616 csum 0x2ac15d26 expected csum 0x67d2b42b mirror 1
+May 09 05:12:04 BlueQ kernel: BTRFS warning (device sdc1): csum failed root=
+ -9 ino 382 off 440307712 csum 0x2ac15d26 expected csum 0xc77fc7cd mirror 1
+May 09 05:12:04 BlueQ kernel: BTRFS warning (device sdc1): csum failed root=
+ -9 ino 382 off 440311808 csum 0x2ac15d26 expected csum 0xe4409fd6 mirror 1
+May 09 05:12:04 BlueQ kernel: BTRFS warning (device sdc1): csum failed root=
+ -9 ino 382 off 440315904 csum 0x2ac15d26 expected csum 0x99156670 mirror 1
+May 09 05:12:04 BlueQ kernel: BTRFS warning (device sdc1): csum failed root=
+ -9 ino 382 off 440320000 csum 0x2ac15d26 expected csum 0xfd4f65c0 mirror 1
+May 09 05:12:04 BlueQ kernel: BTRFS warning (device sdc1): csum failed root=
+ -9 ino 382 off 440324096 csum 0x2ac15d26 expected csum 0xbc27383b mirror 1
+May 09 05:12:04 BlueQ kernel: BTRFS warning (device sdc1): csum failed root=
+ -9 ino 382 off 440328192 csum 0x2ac15d26 expected csum 0x84fb6b1f mirror 1
+May 09 05:12:05 BlueQ kernel: repair_io_failure: 6 callbacks suppressed
+May 09 05:12:05 BlueQ kernel: BTRFS info (device sdc1): read error correcte=
+d: ino 382 off 440291328 (dev /dev/sda1 sector 6697578792)
+May 09 05:12:05 BlueQ kernel: BTRFS info (device sdc1): read error correcte=
+d: ino 382 off 440295424 (dev /dev/sda1 sector 6697578800)
+May 09 05:12:05 BlueQ kernel: BTRFS info (device sdc1): read error correcte=
+d: ino 382 off 440303616 (dev /dev/sda1 sector 6697578816)
+May 09 05:12:05 BlueQ kernel: BTRFS info (device sdc1): read error correcte=
+d: ino 382 off 440299520 (dev /dev/sda1 sector 6697578808)
+May 09 05:12:05 BlueQ kernel: BTRFS info (device sdc1): read error correcte=
+d: ino 382 off 440307712 (dev /dev/sda1 sector 6697578824)
+May 09 05:12:05 BlueQ kernel: BTRFS info (device sdc1): read error correcte=
+d: ino 382 off 440311808 (dev /dev/sda1 sector 6697578832)
+May 09 05:12:05 BlueQ kernel: BTRFS info (device sdc1): read error correcte=
+d: ino 382 off 440315904 (dev /dev/sda1 sector 6697578840)
+May 09 05:12:05 BlueQ kernel: BTRFS info (device sdc1): read error correcte=
+d: ino 382 off 440320000 (dev /dev/sda1 sector 6697578848)
+May 09 05:12:05 BlueQ kernel: BTRFS info (device sdc1): read error correcte=
+d: ino 382 off 440324096 (dev /dev/sda1 sector 6697578856)
+May 09 05:12:06 BlueQ kernel: BTRFS info (device sdc1): read error correcte=
+d: ino 382 off 440328192 (dev /dev/sda1 sector 6697578864)
+May 09 05:12:36 BlueQ kernel: btrfs_print_data_csum_error: 349 callbacks su=
+ppressed
+May 09 05:12:36 BlueQ kernel: BTRFS warning (device sdc1): csum failed root=
+ -9 ino 382 off 3137126400 csum 0x2ac15d26 expected csum 0xde18d96f m>
+May 09 05:12:36 BlueQ kernel: BTRFS warning (device sdc1): csum failed root=
+ -9 ino 382 off 3137130496 csum 0x2ac15d26 expected csum 0xda0ff7db m>
+May 09 05:12:36 BlueQ kernel: BTRFS warning (device sdc1): csum failed root=
+ -9 ino 382 off 3137134592 csum 0x2ac15d26 expected csum 0xf76a890c m>
+May 09 05:12:36 BlueQ kernel: BTRFS warning (device sdc1): csum failed root=
+ -9 ino 382 off 3137138688 csum 0x2ac15d26 expected csum 0x228317a4 m>
+May 09 05:12:37 BlueQ kernel: BTRFS warning (device sdc1): csum failed root=
+ -9 ino 382 off 3138387968 csum 0x2ac15d26 expected csum 0xcf6b7db7 m>
+May 09 05:12:37 BlueQ kernel: BTRFS warning (device sdc1): csum failed root=
+ -9 ino 382 off 3138519040 csum 0x2ac15d26 expected csum 0xa992d2c0 m>
+May 09 05:12:37 BlueQ kernel: BTRFS warning (device sdc1): csum failed root=
+ -9 ino 382 off 3138650112 csum 0x2ac15d26 expected csum 0xfeae0823 m>
+May 09 05:12:37 BlueQ kernel: BTRFS warning (device sdc1): csum failed root=
+ -9 ino 382 off 3138523136 csum 0x2ac15d26 expected csum 0xf05799e5 m>
+May 09 05:12:37 BlueQ kernel: BTRFS warning (device sdc1): csum failed root=
+ -9 ino 382 off 3138527232 csum 0x2ac15d26 expected csum 0x41210896 m>
+May 09 05:12:37 BlueQ kernel: BTRFS warning (device sdc1): csum failed root=
+ -9 ino 382 off 3138531328 csum 0x2ac15d26 expected csum 0x8ff1d037 m>
+May 09 05:12:37 BlueQ kernel: repair_io_failure: 350 callbacks suppressed
 
-Furthermore the system runs for years now. I can't remember exactly,
-but think for 4-5 years. I've started with Debian Testing and just
-upgraded my system on a regular basis. And and I started with btrfs of
-course, but I can't remember with which version...
+... #Happily balancing for over 24h without warnings or errors...
 
-The problem is still there after the fstrim. Any further suggestions?
+May 10 08:32:41 BlueQ kernel: BTRFS info (device sdc1): relocating block gr=
+oup 10412162809856 flags data|raid5
+May 10 08:33:17 BlueQ kernel: sd 11:0:3:0: attempting task abort!scmd(0x000=
+00000931cd1e4), outstanding for 7174 ms & timeout 7000 ms
+May 10 08:33:17 BlueQ kernel: sd 11:0:3:0: [sdg] tag#1340 CDB: ATA command =
+pass through(16) 85 06 20 00 00 00 00 00 00 00 00 00 00 00 e5 00
+May 10 08:33:17 BlueQ kernel: scsi target11:0:3: handle(0x000c), sas_addres=
+s(0x4433221107000000), phy(7)
+May 10 08:33:17 BlueQ kernel: scsi target11:0:3: enclosure logical id(0x590=
+b11c022f3fb00), slot(4)
+May 10 08:33:21 BlueQ kernel: sd 11:0:3:0: task abort: SUCCESS scmd(0x00000=
+000931cd1e4)=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 May 10 08:33:21 Blue=
+Q kernel: sd 11:0:3:0: [sdg] tag#1342 FAILED Result: hostbyte=3DDID_OK driv=
+erbyte=3DDRIVER_SENSE cmd_age=3D14s
+May 10 08:33:21 BlueQ kernel: sd 11:0:3:0: [sdg] tag#1342 Sense Key : Not R=
+eady [current]
+May 10 08:33:21 BlueQ kernel: sd 11:0:3:0: [sdg] tag#1342 Add. Sense: Logic=
+al unit not ready, cause not reportable
+May 10 08:33:21 BlueQ kernel: sd 11:0:3:0: [sdg] tag#1342 CDB: Synchronize =
+Cache(10) 35 00 00 00 00 00 00 00 00 00
+May 10 08:33:21 BlueQ kernel: blk_update_request: I/O error, dev sdg, secto=
+r 0 op 0x1:(WRITE) flags 0x800 phys_seg 0 prio class 0
+May 10 08:33:21 BlueQ kernel: BTRFS error (device sdc1): bdev /dev/sdg1 err=
+s: wr 0, rd 0, flush 1, corrupt 0, gen 0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 May 10 0=
+8:33:21 BlueQ kernel: sd 11:0:3:0: [sdg] tag#1343 FAILED Result: hostbyte=
+=3DDID_OK driverbyte=3DDRIVER_SENSE cmd_age=3D14s
+May 10 08:33:21 BlueQ kernel: sd 11:0:3:0: [sdg] tag#1343 Sense Key : Not R=
+eady [current]
+May 10 08:33:21 BlueQ kernel: sd 11:0:3:0: [sdg] tag#1343 Add. Sense: Logic=
+al unit not ready, cause not reportable
+May 10 08:33:21 BlueQ kernel: sd 11:0:3:0: [sdg] tag#1343 CDB: Write(16) 8a=
+ 00 00 00 00 02 0a 9a a0 80 00 00 0a 00 00 00
+May 10 08:33:21 BlueQ kernel: blk_update_request: I/O error, dev sdg, secto=
+r 8767840384 op 0x1:(WRITE) flags 0x0 phys_seg 61 prio class 0
+May 10 08:33:21 BlueQ kernel: sd 11:0:3:0: [sdg] tag#1280 FAILED Result: ho=
+stbyte=3DDID_OK driverbyte=3DDRIVER_SENSE cmd_age=3D14s
+May 10 08:33:21 BlueQ kernel: sd 11:0:3:0: [sdg] tag#1280 Sense Key : Not R=
+eady [current]
+May 10 08:33:21 BlueQ kernel: sd 11:0:3:0: [sdg] tag#1280 Add. Sense: Logic=
+al unit not ready, cause not reportable
+May 10 08:33:21 BlueQ kernel: sd 11:0:3:0: [sdg] tag#1280 CDB: Write(16) 8a=
+ 00 00 00 00 02 0a 9a aa 80 00 00 0a 00 00 00
+May 10 08:33:21 BlueQ kernel: blk_update_request: I/O error, dev sdg, secto=
+r 8767842944 op 0x1:(WRITE) flags 0x0 phys_seg 65 prio class 0
+May 10 08:33:21 BlueQ kernel: blk_update_request: I/O error, dev sdg, secto=
+r 8767855488 op 0x1:(WRITE) flags 0x4000 phys_seg 37 prio class 0
+May 10 08:33:21 BlueQ kernel: BTRFS warning (device sdc1): lost page write =
+due to IO error on /dev/sdg1
+May 10 08:33:21 BlueQ kernel: BTRFS error (device sdc1): bdev /dev/sdg1 err=
+s: wr 1, rd 0, flush 1, corrupt 0, gen 0
+May 10 08:33:21 BlueQ kernel: BTRFS warning (device sdc1): lost page write =
+due to IO error on /dev/sdg1
+May 10 08:33:21 BlueQ kernel: BTRFS error (device sdc1): bdev /dev/sdg1 err=
+s: wr 2, rd 0, flush 1, corrupt 0, gen 0
+May 10 08:33:21 BlueQ kernel: BTRFS warning (device sdc1): lost page write =
+due to IO error on /dev/sdg1
+May 10 08:33:21 BlueQ kernel: BTRFS error (device sdc1): bdev /dev/sdg1 err=
+s: wr 3, rd 0, flush 1, corrupt 0, gen 0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 May 10 0=
+8:33:21 BlueQ udisksd[3593]: Error performing housekeeping for drive /org/f=
+reedesktop/UDisks2/drives/ST5000DM000_1FK178_W4J10239: Error >
+0000: 00 00 00 00=C2=A0 00 00 00 00=C2=A0 00 00 00 00=C2=A0 00 00 00 00=C2=
+=A0=C2=A0=C2=A0 ................
+0010: 00 00 00 00=C2=A0 00 00 00 00=C2=A0 00 00 00 00=C2=A0 00 00 00 00=C2=
+=A0=C2=A0=C2=A0 ................
+(g-io-error-quark, 0)
+May 10 08:33:21 BlueQ kernel: BTRFS error (device sdc1): error writing prim=
+ary super block to device 2
+May 10 08:33:23 BlueQ kernel: BTRFS error (device sdc1): bdev /dev/sdg1 err=
+s: wr 3, rd 0, flush 2, corrupt 0, gen 0
+May 10 08:33:23 BlueQ kernel: BTRFS warning (device sdc1): lost page write =
+due to IO error on /dev/sdg1
+May 10 08:33:23 BlueQ kernel: BTRFS error (device sdc1): bdev /dev/sdg1 err=
+s: wr 4, rd 0, flush 2, corrupt 0, gen 0
+May 10 08:33:23 BlueQ kernel: BTRFS warning (device sdc1): lost page write =
+due to IO error on /dev/sdg1
 
-And isn't it a little bit strange, that someone had a very similiar problem=
-?
-https://lore.kernel.org/linux-btrfs/19acbd39-475f-bd72-e280-5f6c6496035c@we=
-b.de/
+Do I need to worry about the hdds?
 
-root=3D1, slot=3D32, and "invalid root item size, have 239 expect 439" are
-identical to my errors.
+Emil
+P. S.: Not sure if my previous email reached the ML....?
 
-Thx so far!
+Jun 3, 2020 10:44:49 Emil Heimpel <broetchenrackete@gmail.com>:
 
-
-
-On Thu, Jun 4, 2020 at 2:06 PM Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
->
->
->
-> On 2020/6/4 =E4=B8=8B=E5=8D=886:52, Thorsten Rehm wrote:
-> > The disk in question is my root (/) partition. If the filesystem is
-> > that highly damaged, I have to reinstall my system. We will see, if
-> > it's come to that. Maybe we find something interesting on the way...
-> > I've downloaded the latest grml daily image and started my system from
-> > a usb stick. Here we go:
-> >
-> > root@grml ~ # uname -r
-> > 5.6.0-2-amd64
-> >
-> > root@grml ~ # cryptsetup open /dev/sda5 foo
-> >
-> >                                                                   :(
-> > Enter passphrase for /dev/sda5:
-> >
-> > root@grml ~ # file -L -s /dev/mapper/foo
-> > /dev/mapper/foo: BTRFS Filesystem label "slash", sectorsize 4096,
-> > nodesize 4096, leafsize 4096,
-> > UUID=3D65005d0f-f8ea-4f77-8372-eb8b53198685, 7815716864/123731968000
-> > bytes used, 1 devices
-> >
-> > root@grml ~ # btrfs check /dev/mapper/foo
-> > Opening filesystem to check...
-> > Checking filesystem on /dev/mapper/foo
-> > UUID: 65005d0f-f8ea-4f77-8372-eb8b53198685
-> > [1/7] checking root items
-> > [2/7] checking extents
-> > [3/7] checking free space cache
-> > [4/7] checking fs roots
-> > [5/7] checking only csums items (without verifying data)
-> > [6/7] checking root refs
-> > [7/7] checking quota groups skipped (not enabled on this FS)
-> > found 7815716864 bytes used, no error found
-> > total csum bytes: 6428260
-> > total tree bytes: 175968256
-> > total fs tree bytes: 149475328
-> > total extent tree bytes: 16052224
-> > btree space waste bytes: 43268911
-> > file data blocks allocated: 10453221376
-> >  referenced 8746053632
->
-> Errr, this is a super good news, all your fs metadata is completely fine
-> (at least for the first copy).
-> Which is completely different from the kernel dmesg.
->
-> >
-> > root@grml ~ # lsblk /dev/sda5 --fs
-> > NAME  FSTYPE      FSVER LABEL UUID
-> > FSAVAIL FSUSE% MOUNTPOINT
-> > sda5  crypto_LUKS 1           d2b4fa40-8afd-4e16-b207-4d106096fd22
-> > =E2=94=94=E2=94=80foo btrfs             slash 65005d0f-f8ea-4f77-8372-e=
-b8b53198685
-> >
-> > root@grml ~ # mount /dev/mapper/foo /mnt
-> > root@grml ~ # btrfs scrub start /mnt
-> >
-> > root@grml ~ # journalctl -k --no-pager | grep BTRFS
-> > Jun 04 10:33:04 grml kernel: BTRFS: device label slash devid 1 transid
-> > 24750795 /dev/dm-0 scanned by systemd-udevd (3233)
-> > Jun 04 10:45:17 grml kernel: BTRFS info (device dm-0): disk space
-> > caching is enabled
-> > Jun 04 10:45:17 grml kernel: BTRFS critical (device dm-0): corrupt
-> > leaf: root=3D1 block=3D54222848 slot=3D32, invalid root item size, have=
- 239
-> > expect 439
->
-> One error line without "read time corruption" line means btrfs kernel
-> indeed skipped to next copy.
-> In this case, there is one copy (aka the first copy) corrupted.
-> Strangely, if it's the first copy in kernel, it should also be the first
-> copy in btrfs check.
->
-> And no problem reported from btrfs check, that's already super strange.
->
-> > Jun 04 10:45:17 grml kernel: BTRFS info (device dm-0): enabling ssd
-> > optimizations
-> > Jun 04 10:45:17 grml kernel: BTRFS info (device dm-0): checking UUID tr=
-ee
-> > Jun 04 10:45:38 grml kernel: BTRFS info (device dm-0): scrub: started o=
-n devid 1
-> > Jun 04 10:45:49 grml kernel: BTRFS critical (device dm-0): corrupt
-> > leaf: root=3D1 block=3D29552640 slot=3D32, invalid root item size, have=
- 239
-> > expect 439
-> > Jun 04 10:46:25 grml kernel: BTRFS critical (device dm-0): corrupt
-> > leaf: root=3D1 block=3D29741056 slot=3D32, invalid root item size, have=
- 239
-> > expect 439
-> > Jun 04 10:46:31 grml kernel: BTRFS info (device dm-0): scrub: finished
-> > on devid 1 with status: 0
-> > Jun 04 10:46:56 grml kernel: BTRFS critical (device dm-0): corrupt
-> > leaf: root=3D1 block=3D29974528 slot=3D32, invalid root item size, have=
- 239
-> > expect 439
->
-> This means the corrupted copy are also there for several (and I guess
-> unrelated) tree blocks.
-> For scrub I guess it just try to read the good copy without bothering
-> the bad one it found, so no error reported in scrub.
->
-> But still, if you're using metadata without copy (aka, SINGLE, RAID0)
-> then it would be a completely different story.
->
->
-> >
-> > root@grml ~ # btrfs scrub status /mnt
-> > UUID:             65005d0f-f8ea-4f77-8372-eb8b53198685
-> > Scrub started:    Thu Jun  4 10:45:38 2020
-> > Status:           finished
-> > Duration:         0:00:53
-> > Total to scrub:   7.44GiB
-> > Rate:             143.80MiB/s
-> > Error summary:    no errors found
-> >
-> >
-> > root@grml ~ # for block in 54222848 29552640 29741056 29974528; do
-> > btrfs ins dump-tree -b $block /dev/dm-0; done
-> > btrfs-progs v5.6
-> > leaf 54222848 items 33 free space 1095 generation 24750795 owner ROOT_T=
-REE
-> > leaf 54222848 flags 0x1(WRITTEN) backref revision 1
-> > fs uuid 65005d0f-f8ea-4f77-8372-eb8b53198685
-> > chunk uuid 137764f6-c8e6-45b3-b275-82d8558c1ff9
-> >     item 0 key (289 INODE_ITEM 0) itemoff 3835 itemsize 160
-> >         generation 24703953 transid 24703953 size 262144 nbytes 8595701=
-760
-> ...
-> >         cache generation 24750791 entries 139 bitmaps 8
-> >     item 32 key (DATA_RELOC_TREE ROOT_ITEM 0) itemoff 1920 itemsize 239
->
-> So it's still there. The first copy is corrupted. Just btrfs-progs can't
-> detect it.
->
-> >         generation 4 root_dirid 256 bytenr 29380608 level 0 refs 1
-> >         lastsnap 0 byte_limit 0 bytes_used 4096 flags 0x0(none)
-> >         drop key (0 UNKNOWN.0 0) level 0
-> > btrfs-progs v5.6
-> > leaf 29552640 items 33 free space 1095 generation 24750796 owner ROOT_T=
-REE
-> > leaf 29552640 flags 0x1(WRITTEN) backref revision 1
-> > fs uuid 65005d0f-f8ea-4f77-8372-eb8b53198685
-> > chunk uuid 137764f6-c8e6-45b3-b275-82d8558c1ff9
-> ...
-> >     item 32 key (DATA_RELOC_TREE ROOT_ITEM 0) itemoff 1920 itemsize 239
-> >         generation 4 root_dirid 256 bytenr 29380608 level 0 refs 1
-> >         lastsnap 0 byte_limit 0 bytes_used 4096 flags 0x0(none)
-> >         drop key (0 UNKNOWN.0 0) level 0
->
-> This is different from previous copy, which means it should be an CoWed
-> tree blocks.
->
-> > btrfs-progs v5.6
-> > leaf 29741056 items 33 free space 1095 generation 24750797 owner ROOT_T=
-REE
->
-> Even newer one.
->
-> ...
-> > btrfs-progs v5.6
-> > leaf 29974528 items 33 free space 1095 generation 24750798 owner ROOT_T=
-REE
->
-> Newer.
->
-> So It looks the bad copy exists for a while, but at the same time we
-> still have one good copy to let everything float.
->
-> To kill all the old corrupted copies, if it supports TRIM/DISCARD, I
-> recommend to run scrub first, then fstrim on the fs.
->
-> If it's HDD, I recommend to run a btrfs balance -m to relocate all
-> metadata blocks, to get rid the bad copies.
->
-> Of course, all using v5.3+ kernels.
->
-> Thanks,
-> Qu
-> >
-> > On Thu, Jun 4, 2020 at 12:00 PM Qu Wenruo <quwenruo.btrfs@gmx.com> wrot=
-e:
-> >>
-> >>
-> >>
-> >> On 2020/6/4 =E4=B8=8B=E5=8D=885:45, Thorsten Rehm wrote:
-> >>> Thank you for you answer.
-> >>> I've just updated my system, did a reboot and it's running with a
-> >>> 5.6.0-2-amd64 now.
-> >>> So, this is how my kern.log looks like, just right after the start:
-> >>>
-> >>
-> >>>
-> >>> There are too many blocks. I just picked three randomly:
-> >>
-> >> Looks like we need more result, especially some result doesn't match a=
-t all.
-> >>
-> >>>
-> >>> =3D=3D=3D Block 33017856 =3D=3D=3D
-> >>> $ btrfs ins dump-tree -b 33017856 /dev/dm-0
-> >>> btrfs-progs v5.6
-> >>> leaf 33017856 items 51 free space 17 generation 24749502 owner FS_TRE=
-E
-> >>> leaf 33017856 flags 0x1(WRITTEN) backref revision 1
-> >>> fs uuid 65005d0f-f8ea-4f77-8372-eb8b53198685
-> >>> chunk uuid 137764f6-c8e6-45b3-b275-82d8558c1ff9
-> >> ...
-> >>>         item 31 key (4000670 EXTENT_DATA 1933312) itemoff 2299 itemsi=
-ze 53
-> >>>                 generation 24749502 type 1 (regular)
-> >>>                 extent data disk byte 1126502400 nr 4096
-> >>>                 extent data offset 0 nr 8192 ram 8192
-> >>>                 extent compression 2 (lzo)
-> >>>         item 32 key (4000670 EXTENT_DATA 1941504) itemoff 2246 itemsi=
-ze 53
-> >>>                 generation 24749502 type 1 (regular)
-> >>>                 extent data disk byte 0 nr 0
-> >>>                 extent data offset 1937408 nr 4096 ram 4194304
-> >>>                 extent compression 0 (none)
-> >> Not root item at all.
-> >> At least for this copy, it looks like kernel got one completely bad
-> >> copy, then discarded it and found a good copy.
-> >>
-> >> That's very strange, especially when all the other involved ones seems
-> >> random and all at slot 32 is not a coincident.
-> >>
-> >>
-> >>> =3D=3D=3D Block 44900352  =3D=3D=3D
-> >>> btrfs ins dump-tree -b 44900352 /dev/dm-0
-> >>> btrfs-progs v5.6
-> >>> leaf 44900352 items 19 free space 591 generation 24749527 owner FS_TR=
-EE
-> >>> leaf 44900352 flags 0x1(WRITTEN) backref revision 1
-> >>
-> >> This block doesn't even have slot 32... It only have 19 items, thus sl=
-ot
-> >> 0 ~ slot 18.
-> >> And its owner, FS_TREE shouldn't have ROOT_ITEM.
-> >>
-> >>>
-> >>>
-> >>> =3D=3D=3D Block 55352561664 =3D=3D=3D
-> >>> $ btrfs ins dump-tree -b 55352561664 /dev/dm-0
-> >>> btrfs-progs v5.6
-> >>> leaf 55352561664 items 33 free space 1095 generation 24749497 owner R=
-OOT_TREE
-> >>> leaf 55352561664 flags 0x1(WRITTEN) backref revision 1
-> >>> fs uuid 65005d0f-f8ea-4f77-8372-eb8b53198685
-> >>> chunk uuid 137764f6-c8e6-45b3-b275-82d8558c1ff9
-> >> ...
-> >>>         item 32 key (DATA_RELOC_TREE ROOT_ITEM 0) itemoff 1920 itemsi=
-ze 239
-> >>>                 generation 4 root_dirid 256 bytenr 29380608 level 0 r=
-efs 1
-> >>>                 lastsnap 0 byte_limit 0 bytes_used 4096 flags 0x0(non=
-e)
-> >>>                 drop key (0 UNKNOWN.0 0) level 0
-> >>
-> >> This looks like the offending tree block.
-> >> Slot 32, item size 239, which is ROOT_ITEM, but in valid size.
-> >>
-> >> Since you're here, I guess a btrfs check without --repair on the
-> >> unmounted fs would help to identify the real damage.
-> >>
-> >> And again, the fs looks very damaged, it's highly recommended to backu=
-p
-> >> your data asap.
-> >>
-> >> Thanks,
-> >> Qu
-> >>
-> >>> --- snap ---
-> >>>
-> >>>
-> >>>
-> >>> On Thu, Jun 4, 2020 at 3:31 AM Qu Wenruo <quwenruo.btrfs@gmx.com> wro=
-te:
-> >>>>
-> >>>>
-> >>>>
-> >>>> On 2020/6/3 =E4=B8=8B=E5=8D=889:37, Thorsten Rehm wrote:
-> >>>>> Hi,
-> >>>>>
-> >>>>> I've updated my system (Debian testing) [1] several months ago (~
-> >>>>> December) and I noticed a lot of corrupt leaf messages flooding my
-> >>>>> kern.log [2]. Furthermore my system had some trouble, e.g.
-> >>>>> applications were terminated after some uptime, due to the btrfs
-> >>>>> filesystem errors. This was with kernel 5.3.
-> >>>>> The last time I tried was with Kernel 5.6.0-1-amd64 and the problem=
- persists.
-> >>>>>
-> >>>>> I've downgraded my kernel to 4.19.0-8-amd64 from the Debian Stable
-> >>>>> release and with this kernel there aren't any corrupt leaf messages
-> >>>>> and the problem is gone. IMHO, it must be something coming with ker=
-nel
-> >>>>> 5.3 (or 5.x).
-> >>>>
-> >>>> V5.3 introduced a lot of enhanced metadata sanity checks, and they c=
-atch
-> >>>> such *obviously* wrong metadata.
-> >>>>>
-> >>>>> My harddisk is a SSD which is responsible for the root partition. I=
-'ve
-> >>>>> encrypted my filesystem with LUKS and just right after I entered my
-> >>>>> password at the boot, the first corrupt leaf errors appear.
-> >>>>>
-> >>>>> An error message looks like this:
-> >>>>> May  7 14:39:34 foo kernel: [  100.162145] BTRFS critical (device
-> >>>>> dm-0): corrupt leaf: root=3D1 block=3D35799040 slot=3D32, invalid r=
-oot item
-> >>>>> size, have 239 expect 439
-> >>>>
-> >>>> Btrfs root items have fixed size. This is already something very bad=
-.
-> >>>>
-> >>>> Furthermore, the item size is smaller than expected, which means we =
-can
-> >>>> easily get garbage. I'm a little surprised that older kernel can eve=
-n
-> >>>> work without crashing the whole kernel.
-> >>>>
-> >>>> Some extra info could help us to find out how badly the fs is corrup=
-ted.
-> >>>> # btrfs ins dump-tree -b 35799040 /dev/dm-0
-> >>>>
-> >>>>>
-> >>>>> "root=3D1", "slot=3D32", "have 239 expect 439" is always the same a=
-t every
-> >>>>> error line. Only the block number changes.
-> >>>>
-> >>>> And dumps for the other block numbers too.
-> >>>>
-> >>>>>
-> >>>>> Interestingly it's the very same as reported to the ML here [3]. I'=
-ve
-> >>>>> contacted the reporter, but he didn't have a solution for me, becau=
-se
-> >>>>> he changed to a different filesystem.
-> >>>>>
-> >>>>> I've already tried "btrfs scrub" and "btrfs check --readonly /" in
-> >>>>> rescue mode, but w/o any errors. I've also checked the S.M.A.R.T.
-> >>>>> values of the SSD, which are fine. Furthermore I've tested my RAM, =
-but
-> >>>>> again, w/o any errors.
-> >>>>
-> >>>> This doesn't look like a bit flip, so not RAM problems.
-> >>>>
-> >>>> Don't have any better advice until we got the dumps, but I'd recomme=
-nd
-> >>>> to backup your data since it's still possible.
-> >>>>
-> >>>> Thanks,
-> >>>> Qu
-> >>>>
-> >>>>>
-> >>>>> So, I have no more ideas what I can do. Could you please help me to
-> >>>>> investigate this further? Could it be a bug?
-> >>>>>
-> >>>>> Thank you very much.
-> >>>>>
-> >>>>> Best regards,
-> >>>>> Thorsten
-> >>>>>
-> >>>>>
-> >>>>>
-> >>>>> 1:
-> >>>>> $ cat /etc/debian_version
-> >>>>> bullseye/sid
-> >>>>>
-> >>>>> $ uname -a
-> >>>>> [no problem with this kernel]
-> >>>>> Linux foo 4.19.0-8-amd64 #1 SMP Debian 4.19.98-1 (2020-01-26) x86_6=
-4 GNU/Linux
-> >>>>>
-> >>>>> $ btrfs --version
-> >>>>> btrfs-progs v5.6
-> >>>>>
-> >>>>> $ sudo btrfs fi show
-> >>>>> Label: 'slash'  uuid: 65005d0f-f8ea-4f77-8372-eb8b53198685
-> >>>>>         Total devices 1 FS bytes used 7.33GiB
-> >>>>>         devid    1 size 115.23GiB used 26.08GiB path /dev/mapper/sd=
-a5_crypt
-> >>>>>
-> >>>>> $ btrfs fi df /
-> >>>>> Data, single: total=3D22.01GiB, used=3D7.16GiB
-> >>>>> System, DUP: total=3D32.00MiB, used=3D4.00KiB
-> >>>>> System, single: total=3D4.00MiB, used=3D0.00B
-> >>>>> Metadata, DUP: total=3D2.00GiB, used=3D168.19MiB
-> >>>>> Metadata, single: total=3D8.00MiB, used=3D0.00B
-> >>>>> GlobalReserve, single: total=3D25.42MiB, used=3D0.00B
-> >>>>>
-> >>>>>
-> >>>>> 2:
-> >>>>> [several messages per second]
-> >>>>> May  7 14:39:34 foo kernel: [  100.162145] BTRFS critical (device
-> >>>>> dm-0): corrupt leaf: root=3D1 block=3D35799040 slot=3D32, invalid r=
-oot item
-> >>>>> size, have 239 expect 439
-> >>>>> May  7 14:39:35 foo kernel: [  100.998530] BTRFS critical (device
-> >>>>> dm-0): corrupt leaf: root=3D1 block=3D35885056 slot=3D32, invalid r=
-oot item
-> >>>>> size, have 239 expect 439
-> >>>>> May  7 14:39:35 foo kernel: [  101.348650] BTRFS critical (device
-> >>>>> dm-0): corrupt leaf: root=3D1 block=3D35926016 slot=3D32, invalid r=
-oot item
-> >>>>> size, have 239 expect 439
-> >>>>> May  7 14:39:36 foo kernel: [  101.619437] BTRFS critical (device
-> >>>>> dm-0): corrupt leaf: root=3D1 block=3D35995648 slot=3D32, invalid r=
-oot item
-> >>>>> size, have 239 expect 439
-> >>>>> May  7 14:39:36 foo kernel: [  101.874069] BTRFS critical (device
-> >>>>> dm-0): corrupt leaf: root=3D1 block=3D36184064 slot=3D32, invalid r=
-oot item
-> >>>>> size, have 239 expect 439
-> >>>>> May  7 14:39:36 foo kernel: [  102.339087] BTRFS critical (device
-> >>>>> dm-0): corrupt leaf: root=3D1 block=3D36319232 slot=3D32, invalid r=
-oot item
-> >>>>> size, have 239 expect 439
-> >>>>> May  7 14:39:37 foo kernel: [  102.629429] BTRFS critical (device
-> >>>>> dm-0): corrupt leaf: root=3D1 block=3D36380672 slot=3D32, invalid r=
-oot item
-> >>>>> size, have 239 expect 439
-> >>>>> May  7 14:39:37 foo kernel: [  102.839669] BTRFS critical (device
-> >>>>> dm-0): corrupt leaf: root=3D1 block=3D36487168 slot=3D32, invalid r=
-oot item
-> >>>>> size, have 239 expect 439
-> >>>>> May  7 14:39:37 foo kernel: [  103.109183] BTRFS critical (device
-> >>>>> dm-0): corrupt leaf: root=3D1 block=3D36597760 slot=3D32, invalid r=
-oot item
-> >>>>> size, have 239 expect 439
-> >>>>> May  7 14:39:37 foo kernel: [  103.299101] BTRFS critical (device
-> >>>>> dm-0): corrupt leaf: root=3D1 block=3D36626432 slot=3D32, invalid r=
-oot item
-> >>>>> size, have 239 expect 439
-> >>>>>
-> >>>>> 3:
-> >>>>> https://lore.kernel.org/linux-btrfs/19acbd39-475f-bd72-e280-5f6c649=
-6035c@web.de/
-> >>>>>
-> >>>>
-> >>
->
+> Hi again.
+>=20
+> I think I managed to restore all data to a new backup except one old Syst=
+embackup image from a laptop. Of course there could be files that weren't f=
+ound at all, but I didn't notice any.
+>=20
+> I tried init-extent-tree with and without the alternate root tree block, =
+but both failed. Both seemed to crash with a segmentation fault, see attach=
+ed logs and dmesg-snippets for more information. I did disable write cache =
+on all drives with hdparm as suggested.
+>=20
+> Now I'm not sure what the best way to go forward is. If you have further =
+suggestions I could try to repair the array, I would try them today. Otherw=
+ise I would format the drives and create a new array (Metadata raid1(C3?), =
+data raid5, checksum maybe sha or blake2, maybe zstd compression, space_cac=
+he v2). If you have any suggestions for the new array feel free to tell me!
+>=20
+> Thank you for the help so far!
+>=20
+> Emil
+>=20
+> dmesg logs:
+>=20
+> "btrfs check --init-extent-tree -p /dev/sda1
+> [1534223.372937] btrfs[181698]: segfault at 10 ip 00007f3ef8358d77 sp 000=
+07ffd4c006ee0 error 4 in libc-2.31.so[7f3ef82f6000+14d000]
+> [1534223.372949] Code: 88 08 00 00 0f 86 39 04 00 00 8b 35 b7 bf 13 00 85=
+ f6 0f 85 ab 05 00 00 41 f6 44 24 08 01 75 24 49 8b 04 24 49 29 c4 48 01 c3=
+ <49> 8b 54 24 08 48 83 e2 f8 48 39 c2 0f 85 09 06 00 00 4c 89 e7 e8
+> [1534223.373107] audit: type=3D1701 audit(1591128122.557:1822): auid=3D10=
+00 uid=3D0 gid=3D0 ses=3D39 pid=3D181698 comm=3D"btrfs" exe=3D"/usr/bin/btr=
+fs" sig=3D11 res=3D1
+>=20
+> btrfs check --init-extent-tree -r 30122107502592 -p /dev/sda1
+> [1535246.991899] sd 11:0:3:0: [sdg] tag#46 FAILED Result: hostbyte=3DDID_=
+OK driverbyte=3DDRIVER_OK cmd_age=3D9s
+> [1535246.991905] sd 11:0:3:0: [sdg] tag#46 CDB: Read(16) 88 00 00 00 00 0=
+2 46 30 d9 00 00 00 00 08 00 00
+> [1535246.991909] blk_update_request: I/O error, dev sdg, sector 976754099=
+2 op 0x0:(READ) flags 0x80700 phys_seg 1 prio class 0
+> [1535251.466041] sd 11:0:2:0: [sdf] tag#11 FAILED Result: hostbyte=3DDID_=
+OK driverbyte=3DDRIVER_OK cmd_age=3D4s
+> [1535251.466047] sd 11:0:2:0: [sdf] tag#11 CDB: Read(16) 88 00 00 00 00 0=
+1 d1 c0 be 00 00 00 00 08 00 00
+> [1535251.466051] blk_update_request: I/O error, dev sdf, sector 781403699=
+2 op 0x0:(READ) flags 0x80700 phys_seg 1 prio class 0
+> [1535328.853062] btrfs[181874]: segfault at 10 ip 00007f6c9c447d77 sp 000=
+07ffc666cc940 error 4 in libc-2.31.so[7f6c9c3e5000+14d000]
+> [1535328.853069] Code: 88 08 00 00 0f 86 39 04 00 00 8b 35 b7 bf 13 00 85=
+ f6 0f 85 ab 05 00 00 41 f6 44 24 08 01 75 24 49 8b 04 24 49 29 c4 48 01 c3=
+ <49> 8b 54 24 08 48 83 e2 f8 48 39 c2 0f 85 09 06 00 00 4c 89 e7 e8
+> [1535328.853097] audit: type=3D1701 audit(1591129228.050:1845): auid=3D10=
+00 uid=3D0 gid=3D0 ses=3D39 pid=3D181874 comm=3D"btrfs" exe=3D"/usr/bin/btr=
+fs" sig=3D11 res=3D1"
+>=20
+> Log from failed restore:
+> ERROR: exhausted mirros trying to read (3 > 2)
+> Error copying data for /path/to/file/xxxxxxxxxxxxxx.vhdx
+>=20
+> May 20, 2020 21:01:45 Chris Murphy <lists@colorremedies.com>:
+>=20
+>> On Wed, May 20, 2020 at 5:56 AM Emil Heimpel <broetchenrackete@gmail.com=
+> wrote:
+>>>=20
+>>> Hi again,
+>>>=20
+>>> I ran find-root and using the first found root (that is not in the supe=
+rblock) seems to be finding data with btrfs-restore (only did a dry-run, be=
+cause I don't have the space at the moment to do a full restore). At least =
+I got warnings about folders where it stopped looping and I recognized the =
+folders. It is still not showing any files, but maybe I misunderstood what =
+the dry-run option is suppose to be doing.
+>>>=20
+>>> Because the generation of the root is higher than expected, I don't kno=
+w which root is expected to be the best option to choose from. One that is =
+closest to the root the super thinks is the correct one (fe 30122555883520(=
+gen: 116442 level: 0)) or the one with the highest generation (301221075025=
+92(gen: 116502 level: 1))? To be honest I don't think I quite understand ge=
+nerations and levels :)
+>>=20
+>> Yeah it's confusing.
+>>=20
+>> I think there's extent tree corruption and I'm not sure it can be
+>> repaired. I suggest 'btrfs restore' until you're satisfied, and then
+>> you can try 'btrfs check --init-extent-tree' and see if it can fix the
+>> extent tree. It's maybe a 50/50 chance, hard to say. If it completes,
+>> follow it up with 'btrfs check' without options, and see if it
+>> complains about anything else.
+>>=20
+>> One thing that's important to consider is using space_cache v2. The
+>> default space_cache v1 puts free space metadata into data chunks,
+>> subjecting them to raid56, which is not great. Since you went to the
+>> effort to use raid1 metadata, best to also use space_cache=3Dv2 at first
+>> mount, putting free space metadata into metadata chunks. It's expected
+>> to be the default soon, I guess, but I'm not sure what the time frame
+>> is.
+>>=20
+>> Also consider using hdparm -W (capital W not lower case, see man page)
+>> to disable the write cache on all drives if you're not certain they
+>> consistently honor FUA or fsync.
+>>=20
+>> --=20
+>> Chris Murphy
+>>=20
