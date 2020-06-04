@@ -2,107 +2,116 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06FF71EE51F
-	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Jun 2020 15:17:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C6F81EE616
+	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Jun 2020 15:55:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727850AbgFDNRI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 4 Jun 2020 09:17:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42136 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726003AbgFDNRH (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 4 Jun 2020 09:17:07 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6529C08C5C0
-        for <linux-btrfs@vger.kernel.org>; Thu,  4 Jun 2020 06:17:07 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id q8so5855518qkm.12
-        for <linux-btrfs@vger.kernel.org>; Thu, 04 Jun 2020 06:17:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=EmTrW/KFeVH6j0RQlirEd1CmsWkJxATeLA5oX8xG4Dg=;
-        b=Bpmc4oB5r6+qtw540m2lw05XwbRPHTufPthIR9q5+BZuDZ4lnOHep0syx5voirxtcf
-         9ZePbFajtvwMUJhBI5QkORabFHWnKRLIft+8Q+2y1eYBhp9SFZDLL0tVHt/U9B5sXtyr
-         09Q0n5DzZoKI710lEVGNsdsRi8oIV+GPlLTWW7MLSXhBTM0q1wXVd9g/W6u5xck1DxS/
-         Qw84q2ICrN2vf+ovQsvau+dBp/zUPkzp6lzjB6L0zlEKTzHtaqB7EhUceZr8XMkqopTL
-         b2pK317oQs7tHrmWk2fXj+5YpYsY3bhjcilzBUBb7BlUfCzoNN5mmMOe0IAzcpaA7H42
-         NDiw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=EmTrW/KFeVH6j0RQlirEd1CmsWkJxATeLA5oX8xG4Dg=;
-        b=GheOvmjhFMx6v4C5H5ra47CYZ8aJO7Zxw6b7muC30f45+RW/aGpvBNF+0CgEGpfIwV
-         WOlRcotdlXeKbvcRDxQCM4S1LjuPdkF1kU8x6UtcCxrj2MKnlrYZIwMkSgjTFgme8OL+
-         olHnr9bnoa5HNtU/zdAtIFk5cjI8fHazaL+D4psYsXxxB08ZaXtnj6wRxakyDmStC1p/
-         SGfsyfXY92kV9mbhL/+5c+l7rfhOZt/lwZu7QMq+TUAr33/8NNXPJ5FgMn5VfmsRc/fR
-         nMcf6fGKXbvNZdTtjfd+OqH/xB6pG2+rpHozlxL3G2OLiFxqkrJflTvsbHJWr+GwxMCx
-         UPyA==
-X-Gm-Message-State: AOAM533Yd1HJYYowLn/hXe/VF6dCifLFL/1j7BiAn3F+SD+Y2bsdfspK
-        yQVRUozSpReWz1zoNrZaLV52mRUiEQuVXg==
-X-Google-Smtp-Source: ABdhPJwiC9kEfOiCkRwW2Mm8UNum+95B173K8xfWjPLCetA943l7a7EBIPlYHQIrk3O2WzrHOAxn0Q==
-X-Received: by 2002:a37:9b05:: with SMTP id d5mr4181955qke.76.1591276626548;
-        Thu, 04 Jun 2020 06:17:06 -0700 (PDT)
-Received: from ?IPv6:2620:10d:c0a8:11c9::1051? ([2620:10d:c091:480::1:c550])
-        by smtp.gmail.com with ESMTPSA id f7sm4018640qkk.88.2020.06.04.06.17.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 04 Jun 2020 06:17:05 -0700 (PDT)
-Subject: Re: [PATCH v7 2/2] btrfs: Introduce new mount option to skip block
- group items scan
-To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-References: <20200604071807.61345-1-wqu@suse.com>
- <20200604071807.61345-3-wqu@suse.com>
-From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <8303441a-d192-7c7c-bd22-fdce2bb894bc@toxicpanda.com>
-Date:   Thu, 4 Jun 2020 09:17:03 -0400
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.8.1
+        id S1728873AbgFDNzl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 4 Jun 2020 09:55:41 -0400
+Received: from mx2.suse.de ([195.135.220.15]:57296 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728337AbgFDNzl (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 4 Jun 2020 09:55:41 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id A9129ACCC;
+        Thu,  4 Jun 2020 13:55:42 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id B47ECDA818; Thu,  4 Jun 2020 15:55:35 +0200 (CEST)
+Date:   Thu, 4 Jun 2020 15:55:35 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     "Darrick J. Wong" <darrick.wong@oracle.com>
+Cc:     Filipe Manana <fdmanana@gmail.com>,
+        Goldwyn Rodrigues <rgoldwyn@suse.de>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        Christoph Hellwig <hch@infradead.org>
+Subject: Re: [PATCH] iomap: Return zero in case of unsuccessful pagecache
+ invalidation before DIO
+Message-ID: <20200604135535.GD27034@suse.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Filipe Manana <fdmanana@gmail.com>,
+        Goldwyn Rodrigues <rgoldwyn@suse.de>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        Christoph Hellwig <hch@infradead.org>
+References: <20200528192103.xm45qoxqmkw7i5yl@fiona>
+ <20200529002319.GQ252930@magnolia>
+ <20200601151614.pxy7in4jrvuuy7nx@fiona>
+ <CAL3q7H60xa0qW4XdneDdeQyNcJZx7DxtwDiYkuWB5NoUVPYdwQ@mail.gmail.com>
+ <CAL3q7H4=N2pfnBSiJ+TApy9kwvcPE5sB92sxcVZN10bxZqQpaA@mail.gmail.com>
+ <20200603190252.GG8204@magnolia>
 MIME-Version: 1.0
-In-Reply-To: <20200604071807.61345-3-wqu@suse.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200603190252.GG8204@magnolia>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 6/4/20 3:18 AM, Qu Wenruo wrote:
-> [PROBLEM]
-> There are some reports of corrupted fs which can't be mounted due to
-> corrupted extent tree.
+On Wed, Jun 03, 2020 at 12:02:52PM -0700, Darrick J. Wong wrote:
+> > > So the next fsync on the file will return that error, despite the
+> > > fsync having completed successfully with any errors.
+> > >
+> > > Since patchset to make btrfs direct IO use iomap is already in Linus'
+> > > tree, we need to fix this somehow.
 > 
-> However under such situation, it's more likely the fs/subvolume trees
-> are still fine.
-> 
-> For such case we normally go btrfs-restore and salvage as much as we
-> can. However btrfs-restore can't list subvolumes as "btrfs subv list",
-> making it harder to restore a fs.
-> 
-> [ENHANCEMENT]
-> This patch will introduce a new mount option "rescue=skipbg" to skip
-> the mount time block group scan, and use chunk info solely to populate
-> fake block group cache.
-> 
-> The mount option has the following dependency:
-> - RO mount
->    Obviously.
-> 
-> - No dirty log.
->    Either there is no log, or use rescue=nologreplay mount option.
-> 
-> - No way to remoutn RW
->    Similar to rescue=nologreplay option.
-> 
-> This allow kernel to accept all extent tree corruption, even when the
-> whole extent tree is corrupted, and allow user to salvage data and
-> subvolume info.
-> 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> Y'all /just/ sent the pull request containing that conversion 2 days
+> ago.  Why did you move forward with that when you knew there were
+> unresolved fstests failures?
 
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+Because we didn't know that. And the whole mixed buffered io and dio is
+considered obscure, documented as 'do not do that', that tests that
+report the warning are more of an annyonance (btrfs/004).
 
-Thanks,
+That the test generic/547 sometimes returns EIO on fsync is a
+regression, reported after the pull request had been merged, but with a
+proposed fix that is not that intrusive, so this all counts as a normal
+development.
 
-Josef
+There is always some risk merging code the like dio-iomap and it was
+known but with an ultimate fallback plan to revert it in case we
+encounter problems that are not solvable before release. But we're not
+there yet.
+
+> > > This makes generic/547 fail often for example - buffered write against
+> > > file + direct IO write + fsync - the later returns -EIO.
+> > 
+> > Just to make it clear, despite the -EIO error, there was actually no
+> > data loss or corruption (generic/547 checks that),
+> > since the direct IO write path in btrfs figures out there's a buffered
+> > write still ongoing and waits for it to complete before proceeding
+> > with the dio write.
+> > 
+> > Nevertheless, it's still a regression, -EIO shouldn't be returned as
+> > everything went fine.
+> 
+> Now I'm annoyed because I feel like you're trying to strong-arm me into
+> making last minute changes to iomap when you could have held off for
+> another cycle.
+
+The patchset was held off for several releases, gradually making into
+state where it can be merged, assuming we will be able to fix potential
+regressions. Besides SUSE people involved in the patchset, Christoph
+asked why it's not merged and how can he help to move it forward. He's
+listed as iomap maintainer so it's not like we were pushing code without
+maintainers' involved.
+
+Regarding the last minute change, that's not something we'd ask you to
+do without testing first. There are 4 filesystems using iomap for
+direct io, making sure it does not regress on them is something I'd
+consider necessary before asking you to merge it.
+
+This patchset is lacking that but it started a discussion to understand
+the full extent of the bug. We're not in rc5 where calling it 'last
+minute' would be appropriate.
+
+The big-hammer option to revert 4 patches is still there. If the fix
+turns out to require changes beyond iomap and btrfs code, I'd consider
+that as a good reason and I'm ready to do the revert (say rc2 at the
+latest).
