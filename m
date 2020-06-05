@@ -2,175 +2,267 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 223EB1EFDB4
-	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Jun 2020 18:27:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 803D21F011B
+	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Jun 2020 22:44:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728390AbgFEQ1H (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 5 Jun 2020 12:27:07 -0400
-Received: from mta-p6.oit.umn.edu ([134.84.196.206]:44608 "EHLO
-        mta-p6.oit.umn.edu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726879AbgFEQ1F (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 5 Jun 2020 12:27:05 -0400
-Received: from localhost (unknown [127.0.0.1])
-        by mta-p6.oit.umn.edu (Postfix) with ESMTP id 49dp2H45X6z9vZ2Y
-        for <linux-btrfs@vger.kernel.org>; Fri,  5 Jun 2020 16:27:03 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at umn.edu
-Received: from mta-p6.oit.umn.edu ([127.0.0.1])
-        by localhost (mta-p6.oit.umn.edu [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id NgHuglfgDK0r for <linux-btrfs@vger.kernel.org>;
-        Fri,  5 Jun 2020 11:27:03 -0500 (CDT)
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com [209.85.208.72])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mta-p6.oit.umn.edu (Postfix) with ESMTPS id 49dp2H16tzz9vZ2b
-        for <linux-btrfs@vger.kernel.org>; Fri,  5 Jun 2020 11:27:03 -0500 (CDT)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mta-p6.oit.umn.edu 49dp2H16tzz9vZ2b
-DKIM-Filter: OpenDKIM Filter v2.11.0 mta-p6.oit.umn.edu 49dp2H16tzz9vZ2b
-Received: by mail-ed1-f72.google.com with SMTP id o12so4113253edj.12
-        for <linux-btrfs@vger.kernel.org>; Fri, 05 Jun 2020 09:27:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=d.umn.edu; s=google;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=WIvP0FRbwun7CTMmvfSr3LZNYtmOFSx7mJ3M1NpkWJs=;
-        b=K7OTZzRN+krNuAcfdUDSNVzyexCu56vuwADOkp45B+szbf73VCr1lu435/9UUmbN6S
-         3Xysdy/iU6EYd0hGGCMzfLAg5lF/G00h+S3WTIRUwzpoPy+0D6pgFS57yIgwdw16Y2Fa
-         CVfhwbNyt3YFTRmOpgO98g0nl5UVX70wYb/hDJv03q0Zmp8xHE+FR/4wohDS9j4rrFC7
-         YIa+RfxiG8NoIdLqu5eAPBXoZuOxn2JlrZZCUouf2G8nI561DLLuAknnOnvwxJeJroJa
-         DtB0PzVHlvh7eu4nGoszMLcJloMa+pWRixGgRy0PZ86ArJjKTxiyqWAQOGjrY7TUl9Ej
-         yV7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=WIvP0FRbwun7CTMmvfSr3LZNYtmOFSx7mJ3M1NpkWJs=;
-        b=nhbPA1FbTbCns8cettQrCcrsfxuAc90Og9/j8cALqqL7iIUmvIZzxc41wz572zMZKg
-         o2Om/Pvd13d4W19sITM5Pd+z6g/xLQtbe4udlgQQop3wiYGG55Sv8LhFXSqPxTX/mIVy
-         OfnsIdmT4egEgRJu4ODlUWMQHMZ4dtXEkHNxONGkUvpjPqq7xK7WnPB1VKQCSKCkixjZ
-         O9fpsmnBjpYZ1XYHdCrojv1BjFSMVkhiJFL3z+AhalJEvl6+dKgGIbmhIIt8NsmuIuKK
-         7fY2ImmjVvFuiOWWgCPmEop5D2oAtAT66/yTAC8fGCWZd5BvfK7x5zem4LQfoTPf5W/1
-         8TPA==
-X-Gm-Message-State: AOAM533mIiqWdYYgHzYhfq0AD/ydl4qCK9t7dBQGfW31okLDrGQziiVn
-        tLL0HNMMcmLTYFiEGtaTHtK8fR+rFkb1eCH3LLFNOQCIBOSj4gGbWeXtBeP/bYzOtiKUbn+EasY
-        d4u3DOSDWbyHmO0PA1H1X4+JDXt3oNxYiK5VFj1Jsiv8=
-X-Received: by 2002:a50:b0e2:: with SMTP id j89mr10270861edd.257.1591374421631;
-        Fri, 05 Jun 2020 09:27:01 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxmWOOy6EzC6jO0nBcyED30d7kQ/Sl1/vn1UxbAMezU8rSmUkbzWjfZ/VWbhF2Ffg1oLl1ck36ULIPW7sw1vfw=
-X-Received: by 2002:a50:b0e2:: with SMTP id j89mr10270846edd.257.1591374421392;
- Fri, 05 Jun 2020 09:27:01 -0700 (PDT)
+        id S1728211AbgFEUn7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 5 Jun 2020 16:43:59 -0400
+Received: from mx2.suse.de ([195.135.220.15]:46086 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728130AbgFEUn6 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 5 Jun 2020 16:43:58 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 08E8DABE4;
+        Fri,  5 Jun 2020 20:44:00 +0000 (UTC)
+Date:   Fri, 5 Jun 2020 15:43:45 -0500
+From:   Goldwyn Rodrigues <rgoldwyn@suse.de>
+To:     Filipe Manana <fdmanana@gmail.com>
+Cc:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        "hch@infradead.org" <hch@infradead.org>,
+        "dsterba@suse.cz" <dsterba@suse.cz>
+Subject: Re: [PATCH 4/7] btrfs: Switch to iomap_dio_rw() for dio
+Message-ID: <20200605204345.benpwz2rwfivovmn@fiona>
+References: <20200522123837.1196-1-rgoldwyn@suse.de>
+ <20200522123837.1196-5-rgoldwyn@suse.de>
+ <SN4PR0401MB35981C3BAEDA15CC85D13AE79BB00@SN4PR0401MB3598.namprd04.prod.outlook.com>
+ <20200526164428.sirhx6yjsghxpnqt@fiona>
+ <CAL3q7H6eVOTggceRgZakmoh8jNRJm5BXwNqE0Mx3By5_GgH5YA@mail.gmail.com>
+ <20200528163450.uykayisbrn6hfm2z@fiona>
+ <CAL3q7H700X4E5-NjTWcWwosBwLuKeFPOPx00f+OVn=2fBfmJbQ@mail.gmail.com>
+ <20200528183848.siuljkvqmxbqa436@fiona>
+ <CAL3q7H4SMOJEkAgQEd+i=yeJP20Mv7AthbxaE2==BVr=SGtyjg@mail.gmail.com>
+ <CAL3q7H6Hvjzi_bcKZFprApkrnoUDFGHO9wD52xSjS1rZ0_cbVA@mail.gmail.com>
 MIME-Version: 1.0
-From:   Matt Zagrabelny <mzagrabe@d.umn.edu>
-Date:   Fri, 5 Jun 2020 11:26:50 -0500
-Message-ID: <CAOLfK3Wr9e+gE3v_=30etzxNr8=JgzUK5PEkq1wTDbaKCRKgZw@mail.gmail.com>
-Subject: readonly btrfs
-To:     linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAL3q7H6Hvjzi_bcKZFprApkrnoUDFGHO9wD52xSjS1rZ0_cbVA@mail.gmail.com>
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Greetings,
+On 16:17 05/06, Filipe Manana wrote:
+> On Wed, Jun 3, 2020 at 12:35 PM Filipe Manana <fdmanana@gmail.com> wrote:
+> >
+> > On Thu, May 28, 2020 at 7:38 PM Goldwyn Rodrigues <rgoldwyn@suse.de> wrote:
+> > >
+> > > On 17:45 28/05, Filipe Manana wrote:
+> > > > On Thu, May 28, 2020 at 5:34 PM Goldwyn Rodrigues <rgoldwyn@suse.de> wrote:
+> > > > > > And who locked the extent range before?
+> > > > >
+> > > > > This is usually locked by a previous buffered write or read.
+> > > >
+> > > > A previous buffered write/read that has already finished or is still
+> > > > in progress?
+> > > >
+> > > > Because if it has finished we're not supposed to have the file range
+> > > > locked anymore.
+> > >
+> > > In progress. Mixing buffered I/O with direct writes.
+> > >
+> > > >
+> > > > >
+> > > > > >
+> > > > > > That seems alarming to me, specially if it's a direct IO write failing
+> > > > > > to invalidate the page cache, since a subsequent buffered read could
+> > > > > > get stale data (what's in the page cache), and not what the direct IO
+> > > > > > write wrote.
+> > > > > >
+> > > > > > Can you elaborate more on all those details?
+> > > > >
+> > > > > The origin of the message is when iomap_dio_rw() tries to invalidate the
+> > > > > inode pages, but fails and calls dio_warn_stale_pagecache().
+> > > > >
+> > > > > In the vanilla code, generic_file_direct_write() aborts direct writes
+> > > > > and returns 0 so that it may fallback to buffered I/O. Perhaps this
+> > > > > should be changed in iomap_dio_rw() as well. I will write a patch to
+> > > > > accomodate that.
+> > > >
+> > > > On vanilla we have no problems of mixing buffered and direct
+> > > > operations as long as they are done sequentially at least.
+> > > > And even if done concurrently we take several measures to ensure that
+> > > > are no surprises (locking ranges, waiting for any ordered extents in
+> > > > progress, etc).
+> > >
+> > > Yes, it is because of the code in generic_file_direct_write(). Anyways,
+> > > I did some tests with the following patch, and it seems to work. I will
+> > > send a formal patch to so that it gets incorporated in iomap sequence as
+> > > well.
+> > >
+> > > diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
+> > > index e4addfc58107..215315be6233 100644
+> > > --- a/fs/iomap/direct-io.c
+> > > +++ b/fs/iomap/direct-io.c
+> > > @@ -483,9 +483,15 @@ iomap_dio_rw(struct kiocb *iocb, struct iov_iter *iter,
+> > >          */
+> > >         ret = invalidate_inode_pages2_range(mapping,
+> > >                         pos >> PAGE_SHIFT, end >> PAGE_SHIFT);
+> > > -       if (ret)
+> > > -               dio_warn_stale_pagecache(iocb->ki_filp);
+> > > -       ret = 0;
+> > > +       /*
+> > > +        * If a page can not be invalidated, return 0 to fall back
+> > > +        * to buffered write.
+> > > +        */
+> > > +       if (ret) {
+> > > +               if (ret == -EBUSY)
+> > > +                       ret = 0;
+> > > +               goto out_free_dio;
+> > > +       }
+> > >
+> > >         if (iov_iter_rw(iter) == WRITE && !wait_for_completion &&
+> > >             !inode->i_sb->s_dio_done_wq) {
+> > >
+> > >
+> >
+> > Thanks. As I just replied on another thread for that patch, we
+> > actually have a regression.
+> > There's more than the annoying warning in dmesg, it also sets -EIO on
+> > the inode's mapping and makes future fsyncs return that error despite
+> > the fact that no actual errors or corruptions happened:
+> >
+> > https://patchwork.kernel.org/patch/11576677/
+> >
+> 
+> There's also some deadlock/hang, I have triggered it twice today with
+> generic/113 on two different VMs:
+> 
+> [14621.297370] INFO: task kworker/1:117:15962 blocked for more than 120 seconds.
+> [14621.298491]       Not tainted 5.7.0-rc7-btrfs-next-59 #1
+> [14621.299231] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs"
+> disables this message.
+> [14621.300523] kworker/1:117   D    0 15962      2 0x80004000
+> [14621.301558] Workqueue: dio/sdb iomap_dio_complete_work
+> [14621.302389] Call Trace:
+> [14621.302877]  __schedule+0x384/0xa30
+> [14621.303555]  schedule+0x33/0xe0
+> [14621.304167]  rwsem_down_write_slowpath+0x2c2/0x750
+> [14621.305121]  ? btrfs_sync_file+0x1fe/0x4d0 [btrfs]
+> [14621.306217]  btrfs_sync_file+0x1fe/0x4d0 [btrfs]
+> [14621.307113]  iomap_dio_complete+0x11b/0x260
+> [14621.307888]  ? aio_fsync_work+0x5b0/0x5b0
+> [14621.308585]  iomap_dio_complete_work+0x17/0x30
+> [14621.309476]  process_one_work+0x275/0x6b0
+> [14621.310275]  worker_thread+0x4f/0x3e0
+> [14621.310869]  ? process_one_work+0x6b0/0x6b0
+> [14621.311403]  kthread+0x12a/0x170
+> [14621.311819]  ? kthread_create_worker_on_cpu+0x70/0x70
+> [14621.312460]  ret_from_fork+0x3a/0x50
+> [14621.312983] INFO: task kworker/1:199:16063 blocked for more than 120 seconds.
+> [14621.313921]       Not tainted 5.7.0-rc7-btrfs-next-59 #1
+> [14621.314680] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs"
+> disables this message.
+> [14621.315724] kworker/1:199   D    0 16063      2 0x80004000
+> [14621.316445] Workqueue: dio/sdb iomap_dio_complete_work
+> [14621.317101] Call Trace:
+> [14621.317437]  __schedule+0x384/0xa30
+> [14621.317928]  schedule+0x33/0xe0
+> [14621.318339]  rwsem_down_write_slowpath+0x2c2/0x750
+> [14621.318981]  ? btrfs_sync_file+0x1fe/0x4d0 [btrfs]
+> [14621.319609]  btrfs_sync_file+0x1fe/0x4d0 [btrfs]
+> [14621.320203]  iomap_dio_complete+0x11b/0x260
+> [14621.320721]  ? aio_fsync_work+0x5b0/0x5b0
+> [14621.321249]  iomap_dio_complete_work+0x17/0x30
+> [14621.321844]  process_one_work+0x275/0x6b0
+> [14621.322376]  worker_thread+0x4f/0x3e0
+> [14621.322871]  ? process_one_work+0x6b0/0x6b0
+> [14621.323408]  kthread+0x12a/0x170
+> [14621.323827]  ? kthread_create_worker_on_cpu+0x70/0x70
+> [14621.324473]  ret_from_fork+0x3a/0x50
+> [14621.324983] INFO: task aio-stress:16274 blocked for more than 120 seconds.
+> [14621.325896]       Not tainted 5.7.0-rc7-btrfs-next-59 #1
+> [14621.326579] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs"
+> disables this message.
+> [14621.327580] aio-stress      D    0 16274  14855 0x00004000
+> [14621.328280] Call Trace:
+> [14621.328602]  __schedule+0x384/0xa30
+> [14621.329056]  schedule+0x33/0xe0
+> [14621.329478]  rwsem_down_write_slowpath+0x2c2/0x750
+> [14621.330118]  ? btrfs_sync_file+0x219/0x4d0 [btrfs]
+> [14621.330747]  btrfs_sync_file+0x219/0x4d0 [btrfs]
+> [14621.331346]  iomap_dio_complete+0x11b/0x260
+> [14621.331886]  iomap_dio_rw+0x3bc/0x4c0
+> [14621.332372]  ? btrfs_file_write_iter+0x645/0x870 [btrfs]
+> [14621.333076]  btrfs_file_write_iter+0x645/0x870 [btrfs]
+> [14621.333749]  aio_write+0x148/0x1d0
+> [14621.334196]  ? lock_acquire+0xb1/0x4a0
+> [14621.334682]  ? __might_fault+0x3e/0x90
+> [14621.335172]  ? __fget_files+0x132/0x270
+> [14621.335668]  ? io_submit_one+0x946/0x1630
+> [14621.336184]  io_submit_one+0x946/0x1630
+> [14621.336680]  ? lock_acquire+0xb1/0x4a0
+> [14621.337175]  ? __might_fault+0x3e/0x90
+> [14621.337707]  ? __x64_sys_io_submit+0x9c/0x330
+> [14621.338269]  __x64_sys_io_submit+0x9c/0x330
+> [14621.338812]  ? do_syscall_64+0x5c/0x280
+> [14621.339303]  do_syscall_64+0x5c/0x280
+> [14621.339774]  entry_SYSCALL_64_after_hwframe+0x49/0xb3
+> [14621.340416] RIP: 0033:0x7fb6cd395717
+> [14621.340875] Code: Bad RIP value.
+> [14621.341304] RSP: 002b:00007fb6bf7e1de8 EFLAGS: 00000202 ORIG_RAX:
+> 00000000000000d1
+> [14621.342262] RAX: ffffffffffffffda RBX: 0000560d3d92ea60 RCX: 00007fb6cd395717
+> [14621.343180] RDX: 0000560d3d92ea60 RSI: 0000000000000008 RDI: 00007fb6cdb32000
+> [14621.344081] RBP: 0000000000000008 R08: 0000150e50ac6651 R09: 00000000003081a8
+> [14621.344981] R10: 00007fb6bf7e1df0 R11: 0000000000000202 R12: 0000560d3d8fe110
+> [14621.345897] R13: 00007fb6bf7e1e10 R14: 00007fb6bf7e1e00 R15: 0000560d3d8fe110
+> [14621.346820] INFO: lockdep is turned off.
+> [14742.125500] INFO: task kworker/1:117:15962 blocked for more than 241 seconds.
+> [14742.126456]       Not tainted 5.7.0-rc7-btrfs-next-59 #1
+> [14742.127156] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs"
+> disables this message.
+> [14742.128156] kworker/1:117   D    0 15962      2 0x80004000
+> [14742.128875] Workqueue: dio/sdb iomap_dio_complete_work
+> [14742.129633] Call Trace:
+> [14742.130010]  __schedule+0x384/0xa30
+> [14742.130494]  schedule+0x33/0xe0
+> [14742.131068]  rwsem_down_write_slowpath+0x2c2/0x750
+> [14742.131956]  ? btrfs_sync_file+0x1fe/0x4d0 [btrfs]
+> [14742.132834]  btrfs_sync_file+0x1fe/0x4d0 [btrfs]
+> [14742.133712]  iomap_dio_complete+0x11b/0x260
+> [14742.134475]  ? aio_fsync_work+0x5b0/0x5b0
+> [14742.135205]  iomap_dio_complete_work+0x17/0x30
+> [14742.136018]  process_one_work+0x275/0x6b0
+> [14742.136677]  worker_thread+0x4f/0x3e0
+> [14742.137154]  ? process_one_work+0x6b0/0x6b0
+> [14742.137805]  kthread+0x12a/0x170
+> [14742.138236]  ? kthread_create_worker_on_cpu+0x70/0x70
+> [14742.138901]  ret_from_fork+0x3a/0x50
+> [14742.139389] INFO: task kworker/1:199:16063 blocked for more than 241 seconds.
+> [14742.140305]       Not tainted 5.7.0-rc7-btrfs-next-59 #1
+> [14742.140998] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs"
+> disables this message.
+> [14742.142056] kworker/1:199   D    0 16063      2 0x80004000
+> [14742.142877] Workqueue: dio/sdb iomap_dio_complete_work
+> [14742.143397] Call Trace:
+> [14742.143654]  __schedule+0x384/0xa30
+> [14742.144017]  schedule+0x33/0xe0
+> [14742.144352]  rwsem_down_write_slowpath+0x2c2/0x750
+> [14742.144859]  ? btrfs_sync_file+0x1fe/0x4d0 [btrfs]
+> [14742.145386]  btrfs_sync_file+0x1fe/0x4d0 [btrfs]
+> [14742.145863]  iomap_dio_complete+0x11b/0x260
+> [14742.146289]  ? aio_fsync_work+0x5b0/0x5b0
+> [14742.146701]  iomap_dio_complete_work+0x17/0x30
+> [14742.147168]  process_one_work+0x275/0x6b0
+> [14742.147579]  worker_thread+0x4f/0x3e0
+> [14742.147954]  ? process_one_work+0x6b0/0x6b0
+> [14742.148377]  kthread+0x12a/0x170
+> [14742.148722]  ? kthread_create_worker_on_cpu+0x70/0x70
+> [14742.149257]  ret_from_fork+0x3a/0x50
+> [14742.149671] INFO: task aio-stress:16274 blocked for more than 241 seconds.
+> [14742.150376]       Not tainted 5.7.0-rc7-btrfs-next-59 #1
+> [14742.150948] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs"
+> disables this message.
+> [14742.151962] aio-stress      D    0 16274  14855 0x00004000
+> (...)
+> 
 
-I'm getting a readonly btrfs filesystem. Here is the relevant dmesg:
+Seems like the btrfs_inode->dio_sem. Would you have more information on
+which process is holding on to it, or if there was a failure?
 
-Linux version 5.5.0-1-amd64 (debian-kernel@lists.debian.org) (gcc
-version 9.3.0 (Debian 9.3.0-8)) #1 SMP Debian 5.5.13-2 (2020-03-30)
-[...]
-BTRFS error (device sda2): tree first key mismatch detected,
-bytenr=165532581888 parent_transid=2459281 key
-expected=(68186292224,169,1073741824) has=(68186292224,169,0)
-BTRFS error (device sda2): tree first key mismatch detected,
-bytenr=165532581888 parent_transid=2459281 key
-expected=(68186292224,169,1073741824) has=(68186292224,169,0)
-BTRFS error (device sda2): tree first key mismatch detected,
-bytenr=165532581888 parent_transid=2459281 key
-expected=(68186292224,169,1073741824) has=(68186292224,169,0)
-BTRFS error (device sda2): tree first key mismatch detected,
-bytenr=165532581888 parent_transid=2459281 key
-expected=(68186292224,169,1073741824) has=(68186292224,169,0)
-BTRFS error (device sda2): tree first key mismatch detected,
-bytenr=165532581888 parent_transid=2459281 key
-expected=(68186292224,169,1073741824) has=(68186292224,169,0)
-BTRFS error (device sda2): tree first key mismatch detected,
-bytenr=165532581888 parent_transid=2459281 key
-expected=(68186292224,169,1073741824) has=(68186292224,169,0)
-BTRFS error (device sda2): tree first key mismatch detected,
-bytenr=165532581888 parent_transid=2459281 key
-expected=(68186292224,169,1073741824) has=(68186292224,169,0)
-BTRFS error (device sda2): tree first key mismatch detected,
-bytenr=165532581888 parent_transid=2459281 key
-expected=(68186292224,169,1073741824) has=(68186292224,169,0)
-BTRFS error (device sda2): tree first key mismatch detected,
-bytenr=165532581888 parent_transid=2459281 key
-expected=(68186292224,169,1073741824) has=(68186292224,169,0)
-BTRFS error (device sda2): tree first key mismatch detected,
-bytenr=165532581888 parent_transid=2459281 key
-expected=(68186292224,169,1073741824) has=(68186292224,169,0)
-BTRFS error (device sda2): tree first key mismatch detected,
-bytenr=165532581888 parent_transid=2459281 key
-expected=(68186292224,169,1073741824) has=(68186292224,169,0)
-------------[ cut here ]------------
-BTRFS: Transaction aborted (error -117)
-WARNING: CPU: 3 PID: 286 at fs/btrfs/extent-tree.c:2209
-btrfs_run_delayed_refs+0x1a1/0x1f0 [btrfs]
-Modules linked in: cmac bnep cpufreq_userspace cpufreq_powersave
-cpufreq_conservative binfmt_misc nls_ascii nls_cp437 vfat fat
-intel_rapl_msr intel_rapl_common x86_pkg_temp_thermal intel_powerclamp
-coretemp uvcvideo kvm_intel kvm btusb videobuf2_vmalloc
-videobuf2_memops btrtl videobuf2_v4l2 btbcm irqbypass videobuf2_common
-btintel iwldvm mac80211 bluetooth videodev dell_laptop
-crct10dif_pclmul drbg ghash_clmulni_intel ansi_cprng
-snd_hda_codec_hdmi snd_hda_codec_idt ecdh_generic aesni_intel
-snd_hda_codec_generic ecc dell_smm_hwmon libarc4 crypto_simd crc16 mc
-ledtrig_audio cryptd ppdev snd_hda_intel glue_helper joydev mei_wdt
-iTCO_wdt snd_intel_dspcfg dell_wmi snd_hda_codec dell_smbios wmi_bmof
-iwlwifi dell_smo8800 snd_hda_core iTCO_vendor_support intel_cstate
-snd_hwdep intel_uncore snd_pcm watchdog sg intel_rapl_perf pcspkr
-snd_timer serio_raw sparse_keymap parport_pc dcdbas dell_rbtn cfg80211
-dell_wmi_descriptor mei_me efi_pstore snd ac efivars evdev mei parport
-soundcore
- rfkill efivarfs ip_tables x_tables autofs4 btrfs blake2b_generic xor
-zstd_decompress zstd_compress raid6_pq libcrc32c crc32c_generic sr_mod
-cdrom sd_mod hid_generic usbhid hid nouveau mxm_wmi i2c_algo_bit ttm
-ahci libahci xhci_pci drm_kms_helper libata xhci_hcd sdhci_pci
-crc32_pclmul ehci_pci drm cqhci ehci_hcd psmouse crc32c_intel sdhci
-i2c_i801 e1000e scsi_mod usbcore mmc_core lpc_ich ptp mfd_core
-usb_common pps_core wmi battery video button
-CPU: 3 PID: 286 Comm: btrfs-transacti Tainted: G        W
-5.5.0-1-amd64 #1 Debian 5.5.13-2
-Hardware name: Dell Inc. Latitude E6430/0H3MT5, BIOS A18 01/18/2016
-RIP: 0010:btrfs_run_delayed_refs+0x1a1/0x1f0 [btrfs]
-Code: 41 5f c3 49 8b 54 24 50 f0 48 0f ba aa 28 17 00 00 02 72 1b 83
-f8 fb 74 37 89 c6 48 c7 c7 40 c0 84 c0 89 04 24 e8 71 47 2f f3 <0f> 0b
-8b 04 24 89 c1 ba a1 08 00 00 4c 89 e7 89 04 24 48 c7 c6 00
-RSP: 0018:ffffaec08084fe00 EFLAGS: 00010286
-RAX: 0000000000000000 RBX: 00000000000001a8 RCX: 0000000000000007
-RDX: 0000000000000007 RSI: 0000000000000096 RDI: ffff98501dcd9a40
-RBP: ffff984fb22e7d58 R08: 000000000000047c R09: 0000000000000004
-R10: 0000000000000000 R11: 0000000000000001 R12: ffff98501af1ae38
-R13: ffff98501bad1230 R14: ffff98501bad0378 R15: ffff984fb22e7c00
-FS:  0000000000000000(0000) GS:ffff98501dcc0000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000563a7b0aa168 CR3: 000000028bc0a001 CR4: 00000000001606e0
-Call Trace:
- btrfs_commit_transaction+0x57/0xa20 [btrfs]
- ? start_transaction+0xbb/0x4c0 [btrfs]
- transaction_kthread+0x13c/0x180 [btrfs]
- kthread+0xf9/0x130
- ? btrfs_cleanup_transaction+0x5c0/0x5c0 [btrfs]
- ? kthread_park+0x90/0x90
- ret_from_fork+0x35/0x40
----[ end trace 717f06ffcf003459 ]---
-BTRFS: error (device sda2) in btrfs_run_delayed_refs:2209: errno=-117 unknown
-BTRFS info (device sda2): forced readonly
+I will try to reproduce at my end. Thanks for testing.
 
-Is this a helpful message for the developers?
-
-Does it look like hardware failure?
-
-I can provide more details.
-
-Let me know what you think.
-
-Thanks,
-
--Matt
+-- 
+Goldwyn
