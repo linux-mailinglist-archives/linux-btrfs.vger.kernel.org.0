@@ -2,119 +2,68 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A9441F0A20
-	for <lists+linux-btrfs@lfdr.de>; Sun,  7 Jun 2020 07:23:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BA431F0A25
+	for <lists+linux-btrfs@lfdr.de>; Sun,  7 Jun 2020 07:28:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726238AbgFGFXH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 7 Jun 2020 01:23:07 -0400
-Received: from rere.qmqm.pl ([91.227.64.183]:49219 "EHLO rere.qmqm.pl"
+        id S1726292AbgFGF2B (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 7 Jun 2020 01:28:01 -0400
+Received: from rere.qmqm.pl ([91.227.64.183]:13440 "EHLO rere.qmqm.pl"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726192AbgFGFXH (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 7 Jun 2020 01:23:07 -0400
+        id S1725998AbgFGF2A (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Sun, 7 Jun 2020 01:28:00 -0400
 Received: from remote.user (localhost [127.0.0.1])
-        by rere.qmqm.pl (Postfix) with ESMTPSA id 49flCD2Nn0z2d
-        for <linux-btrfs@vger.kernel.org>; Sun,  7 Jun 2020 07:23:04 +0200 (CEST)
+        by rere.qmqm.pl (Postfix) with ESMTPSA id 49flJt2LpXz2d
+        for <linux-btrfs@vger.kernel.org>; Sun,  7 Jun 2020 07:27:58 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
-        t=1591507384; bh=A0frEzvrBcXUpI9PXCY1rXV04DsQqw13dWkBZ1U/IPA=;
+        t=1591507678; bh=BkK3PLU4uEXVvBUd4EkCc3WdWOPKZAM5MJ+CjSap6L4=;
         h=Date:From:To:Subject:References:In-Reply-To:From;
-        b=aWWj4BLrlrYfnC8bBkl3UTRKpFMnd0te15kisv0J1x9X/ZaVg82BawL3c6zLKQQ/k
-         acNcGze7Jlhy3kCr67JsHE+H7vJ/PI1z2edZhDiHKoKIITLV2/1WGmUXwUpLEl1Kkl
-         VtROtYPcoo2ab6DIjVfQy3shVFfPQe88KZRrPa4jPkjT6zBVJkNmeAkcT2HqGq/PrB
-         fP+zzd3dbyNDFPlZqrWY2KmO513qwploHQyGc1xp95hVxEvHd/xuemnMrPvbqe3WR8
-         w7jrR9BUrPbrOpoAi9tr4PjouBithwdJFYGnamTxf7BNFUGsO2qoyIM3HYK+BBAQw6
-         SQHulvILOifvQ==
+        b=CKOzvwBZ5eZGk1fgl74rIllEbEgib83EXjbyP+HHdqtR8N31dDfmJ33eNhWWN27By
+         JiVdtDkUwstmzI4lnERrUZJkfSM1EXroRmwbAxy29pLw6EuHWwWuImKctr+D+8Tvmy
+         4ZzBoa+YqsU/o6SeSHL0F8VWOC7S4LhG9X8Tz4+fLBgtsgCq+y/XEeiqNE/mUI5kyN
+         3JRKXy6Jmw9IaohLjaITNniPAPIGIzim4vKcyvOzwIfHWeD7Z2TgdaMDg3+eqsA5Me
+         CN4PmNcThabDXZt9VBz2iFAxjSzmmT7u6dNpy+A6YtI1Z3IjbyIPkSQMd0800+1QOS
+         6vNCPbyDtsVTw==
 X-Virus-Status: Clean
 X-Virus-Scanned: clamav-milter 0.102.2 at mail
-Date:   Sun, 7 Jun 2020 07:23:03 +0200
+Date:   Sun, 7 Jun 2020 07:27:57 +0200
 From:   =?iso-8859-2?B?TWljaGGzoE1pcm9zs2F3?= <mirq-linux@rere.qmqm.pl>
 To:     linux-btrfs@vger.kernel.org
 Subject: Re: balance + ENOFS -> readonly filesystem
-Message-ID: <20200607052303.GF12913@qmqm.qmqm.pl>
+Message-ID: <20200607052757.GG12913@qmqm.qmqm.pl>
 References: <20200607051217.GE12913@qmqm.qmqm.pl>
+ <20200607052303.GF12913@qmqm.qmqm.pl>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-2
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20200607051217.GE12913@qmqm.qmqm.pl>
+In-Reply-To: <20200607052303.GF12913@qmqm.qmqm.pl>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sun, Jun 07, 2020 at 07:12:17AM +0200, Micha=B3=A0Miros=B3aw wrote:
-> Dear btrfs developers,
+On Sun, Jun 07, 2020 at 07:23:03AM +0200, Micha=B3=A0Miros=B3aw wrote:
+> On Sun, Jun 07, 2020 at 07:12:17AM +0200, Micha=B3=A0Miros=B3aw wrote:
+> > Dear btrfs developers,
+> >=20
+> > I just added a new disk to already almost full filesystem and tried to
+> > enable raid1 for metadata (transcript below). The operation failed and
+> > left the filesystem in readonly state. Is this expected?
 >=20
-> I just added a new disk to already almost full filesystem and tried to
-> enable raid1 for metadata (transcript below). The operation failed and
-> left the filesystem in readonly state. Is this expected?
+> This doesn't look good:
+>=20
+> # btrfs balance start -musage=3D90 .
+> Segmentation fault
 
-This doesn't look good:
-
-# btrfs balance start -musage=3D90 .
-Segmentation fault
+# umount ...
+<hang>
 
 # dmesg | tail ...
-[11215.910301] BTRFS info (device dm-5): balance: start -musage=3D90 -susag=
-e=3D90
-[11215.910966] ------------[ cut here ]------------
-[11215.910967] kernel BUG at fs/btrfs/relocation.c:4291!
-[11215.910972] invalid opcode: 0000 [#1] PREEMPT SMP PTI
-[11215.910974] CPU: 4 PID: 19615 Comm: btrfs Tainted: G        W  O      5.=
-6.15mq+ #376
-[11215.910975] Hardware name: System manufacturer System Product Name/P8Z68=
--V PRO, BIOS 3603 11/09/2012
-[11215.910999] RIP: 0010:create_reloc_inode.isra.40+0xf2/0x220 [btrfs]
-[11215.911001] Code: 48 85 c0 74 25 4c 89 f1 48 89 c2 48 89 de 48 89 04 24 =
-4c 89 e7 e8 0e c7 f9 ff 4c 8b 04 24 85 c0 74 0a 4c 89 c7 e8 4e 56 f8 ff <0f=
-> 0b 49 63 40 40 ba 11 00 00 00 4d 8b 38 48 8d 04 80 48 8d 74 80
-[11215.911002] RSP: 0018:ffffc9000ab2fb88 EFLAGS: 00010286
-[11215.911003] RAX: 0000000000000000 RBX: ffff8883f502c000 RCX: 00000000001=
-23c6c
-[11215.911005] RDX: 0000000000000002 RSI: 0000000000123c64 RDI: 00000000000=
-37140
-[11215.911006] RBP: ffff888405e80000 R08: ffff88829f76ae00 R09: 00000000000=
-00000
-[11215.911007] R10: 00000000ffffffff R11: 0000000000000000 R12: ffff88831b3=
-a8340
-[11215.911008] R13: ffff8882f6614448 R14: 0000000000000107 R15: 00000000fff=
-ffffe
-[11215.911009] FS:  00007f0ecb8978c0(0000) GS:ffff88840ed00000(0000) knlGS:=
-0000000000000000
-[11215.911010] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[11215.911012] CR2: 0000558614da72d8 CR3: 00000002be854001 CR4: 00000000000=
-606e0
-[11215.911013] Call Trace:
-[11215.911033]  btrfs_relocate_block_group+0xe4/0x310 [btrfs]
-[11215.911049]  btrfs_relocate_chunk+0x31/0xe0 [btrfs]
-[11215.911065]  btrfs_balance+0x899/0xf70 [btrfs]
-[11215.911085]  btrfs_ioctl_balance+0x2d4/0x390 [btrfs]
-[11215.911102]  btrfs_ioctl+0x1652/0x31d0 [btrfs]
-[11215.911106]  ? _raw_spin_unlock+0x24/0x40
-[11215.911108]  ? __handle_mm_fault+0xb8d/0x1210
-[11215.911115]  ? ksys_ioctl+0x81/0xc0
-[11215.911130]  ? btrfs_ioctl_get_supported_features+0x20/0x20 [btrfs]
-[11215.911132]  ksys_ioctl+0x81/0xc0
-[11215.911134]  __x64_sys_ioctl+0x11/0x20
-[11215.911136]  do_syscall_64+0x4f/0x210
-[11215.911139]  entry_SYSCALL_64_after_hwframe+0x49/0xbe
-[11215.911140] RIP: 0033:0x7f0ecb98e427
-[11215.911142] Code: 00 00 90 48 8b 05 69 7a 0c 00 64 c7 00 26 00 00 00 48 =
-c7 c0 ff ff ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 b8 10 00 00 00 0f 05 <48=
-> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 39 7a 0c 00 f7 d8 64 89 01 48
-[11215.911143] RSP: 002b:00007ffd51b7fdc8 EFLAGS: 00000202 ORIG_RAX: 000000=
-0000000010
-[11215.911144] RAX: ffffffffffffffda RBX: 0000000000000001 RCX: 00007f0ecb9=
-8e427
-[11215.911145] RDX: 00007ffd51b7fe58 RSI: 00000000c4009420 RDI: 00000000000=
-00003
-[11215.911147] RBP: 00007ffd51b7fe58 R08: 0000558614d9f2a0 R09: 00000000000=
-00231
-[11215.911148] R10: fffffffffffffa4c R11: 0000000000000202 R12: 00000000000=
-00003
-[11215.911149] R13: 00007ffd51b82750 R14: 0000000000000001 R15: 00000000000=
-00000
-[11215.911153] Modules linked in: uas usb_storage rfcomm fuse cpufreq_power=
+[11564.462208] ------------[ cut here ]------------
+[11564.462215] WARNING: CPU: 0 PID: 26569 at fs/namespace.c:1093 cleanup_mn=
+t+0x11f/0x140
+[11564.462216] Modules linked in: uas usb_storage rfcomm fuse cpufreq_power=
 save cpufreq_userspace cpufreq_conservative nfc nf_conntrack_netlink overla=
 y xfrm_user xfrm4_tunnel tunnel4 ipcomp xfrm_ipcomp esp4 ah4 af_key xfrm_al=
 go cmac vboxnetadp(O) vboxnetflt(O) bridge stp llc bnep vboxdrv(O) binfmt_m=
@@ -128,34 +77,63 @@ mu10k1 snd_util_mem snd_ac97_codec ac97_bus emu10k1_gp snd_rawmidi gameport=
 hci_pci snd_hwdep xhci_hcd snd_pcm_oss snd_mixer_oss snd_pcm snd_timer snd =
 soundcore nvidia_drm(O) nft_masq wmi drm_kms_helper cfbfillrect syscopyarea=
  cfbimgblt sysfillrect sysimgblt
-[11215.911176]  fb_sys_fops cfbcopyarea fb font fbdev drm drm_panel_orienta=
+[11564.462240]  fb_sys_fops cfbcopyarea fb font fbdev drm drm_panel_orienta=
 tion_quirks nvidia_modeset(O) nft_redir nvidia(O) i2c_core nf_tables_set nf=
 t_chain_nat nf_nat nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 nft_counter n=
 f_tables nfnetlink nfsd auth_rpcgss nfs_acl lockd grace sunrpc loop firewir=
 e_sbp2 firewire_core crc_itu_t ecryptfs autofs4 input_leds raid10 raid456 l=
 ibcrc32c async_raid6_recov async_memcpy async_pq raid6_pq async_xor xor asy=
 nc_tx raid0 multipath linear e1000e video backlight
-[11215.911193] ---[ end trace 0d99142474b285fb ]---
-[11215.911208] RIP: 0010:create_reloc_inode.isra.40+0xf2/0x220 [btrfs]
-[11215.911209] Code: 48 85 c0 74 25 4c 89 f1 48 89 c2 48 89 de 48 89 04 24 =
-4c 89 e7 e8 0e c7 f9 ff 4c 8b 04 24 85 c0 74 0a 4c 89 c7 e8 4e 56 f8 ff <0f=
-> 0b 49 63 40 40 ba 11 00 00 00 4d 8b 38 48 8d 04 80 48 8d 74 80
-[11215.911210] RSP: 0018:ffffc9000ab2fb88 EFLAGS: 00010286
-[11215.911212] RAX: 0000000000000000 RBX: ffff8883f502c000 RCX: 00000000001=
-23c6c
-[11215.911213] RDX: 0000000000000002 RSI: 0000000000123c64 RDI: 00000000000=
-37140
-[11215.911214] RBP: ffff888405e80000 R08: ffff88829f76ae00 R09: 00000000000=
-00000
-[11215.911215] R10: 00000000ffffffff R11: 0000000000000000 R12: ffff88831b3=
-a8340
-[11215.911216] R13: ffff8882f6614448 R14: 0000000000000107 R15: 00000000fff=
-ffffe
-[11215.911217] FS:  00007f0ecb8978c0(0000) GS:ffff88840ed00000(0000) knlGS:=
+[11564.462256] CPU: 0 PID: 26569 Comm: umount Tainted: G      D W  O      5=
+=2E6.15mq+ #376
+[11564.462258] Hardware name: System manufacturer System Product Name/P8Z68=
+-V PRO, BIOS 3603 11/09/2012
+[11564.462260] RIP: 0010:cleanup_mnt+0x11f/0x140
+[11564.462261] Code: 00 00 8b 87 24 01 00 00 85 c0 74 0a c7 87 24 01 00 00 =
+00 00 00 00 e8 80 fa ff ff eb 86 48 89 ef e8 36 bb 01 00 e9 09 ff ff ff <0f=
+> 0b e9 f4 fe ff ff c7 87 24 01 00 00 00 00 00 00 e9 52 ff ff ff
+[11564.462263] RSP: 0018:ffffc9000f43feb8 EFLAGS: 00010202
+[11564.462264] RAX: 0000000000000001 RBX: ffff8883e6839dc0 RCX: 00000000000=
+00008
+[11564.462265] RDX: 0000000000000008 RSI: 0000000000000000 RDI: ffffffff823=
+362a8
+[11564.462266] RBP: ffff8883b0481e00 R08: 0000000000000000 R09: 00000000000=
+00007
+[11564.462267] R10: 0000000000000000 R11: 0000000000000001 R12: ffff8883e68=
+39700
+[11564.462268] R13: ffffffff8277e280 R14: 0000000000000000 R15: ffff8883e68=
+39e30
+[11564.462270] FS:  00007f8349f51200(0000) GS:ffff88840ec00000(0000) knlGS:=
 0000000000000000
-[11215.911219] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[11215.911220] CR2: 0000558614da72d8 CR3: 00000002be854001 CR4: 00000000000=
-606e0
-
-Best Regards,
-Micha=B3 Miros=B3aw
+[11564.462271] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[11564.462272] CR2: 00007f834a45e560 CR3: 00000003e7dd2001 CR4: 00000000000=
+606f0
+[11564.462273] Call Trace:
+[11564.462279]  task_work_run+0x8a/0xb0
+[11564.462283]  exit_to_usermode_loop+0xd1/0xf0
+[11564.462285]  do_syscall_64+0x1a3/0x210
+[11564.462288]  entry_SYSCALL_64_after_hwframe+0x49/0xbe
+[11564.462290] RIP: 0033:0x7f834a37c327
+[11564.462291] Code: eb 0b 00 f7 d8 64 89 01 48 83 c8 ff c3 66 0f 1f 44 00 =
+00 31 f6 e9 09 00 00 00 66 0f 1f 84 00 00 00 00 00 b8 a6 00 00 00 0f 05 <48=
+> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 39 eb 0b 00 f7 d8 64 89 01 48
+[11564.462293] RSP: 002b:00007fffef4dc528 EFLAGS: 00000246 ORIG_RAX: 000000=
+00000000a6
+[11564.462294] RAX: 0000000000000000 RBX: 0000558d96b2aa40 RCX: 00007f834a3=
+7c327
+[11564.462295] RDX: 0000000000000001 RSI: 0000000000000000 RDI: 0000558d96b=
+37e10
+[11564.462296] RBP: 0000000000000000 R08: 0000558d96b33400 R09: 0000558d96b=
+29010
+[11564.462297] R10: 00007f834a43bb80 R11: 0000000000000246 R12: 0000558d96b=
+37e10
+[11564.462298] R13: 00007f834a4a01c4 R14: 0000558d96b2ab38 R15: 0000558d96b=
+372e0
+[11564.462303] irq event stamp: 0
+[11564.462304] hardirqs last  enabled at (0): [<0000000000000000>] 0x0
+[11564.462307] hardirqs last disabled at (0): [<ffffffff810aff62>] copy_pro=
+cess+0xa22/0x1da0
+[11564.462309] softirqs last  enabled at (0): [<ffffffff810aff62>] copy_pro=
+cess+0xa22/0x1da0
+[11564.462310] softirqs last disabled at (0): [<0000000000000000>] 0x0
+[11564.462311] ---[ end trace 0d99142474b285fc ]---
