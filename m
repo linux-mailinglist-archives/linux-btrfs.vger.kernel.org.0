@@ -2,33 +2,33 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AFDE1F1389
-	for <lists+linux-btrfs@lfdr.de>; Mon,  8 Jun 2020 09:22:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82C8E1F138A
+	for <lists+linux-btrfs@lfdr.de>; Mon,  8 Jun 2020 09:24:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728951AbgFHHW4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 8 Jun 2020 03:22:56 -0400
-Received: from mout.gmx.net ([212.227.15.15]:43613 "EHLO mout.gmx.net"
+        id S1728953AbgFHHYV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 8 Jun 2020 03:24:21 -0400
+Received: from mout.gmx.net ([212.227.17.21]:35291 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727977AbgFHHWz (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 8 Jun 2020 03:22:55 -0400
+        id S1727977AbgFHHYU (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 8 Jun 2020 03:24:20 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1591600965;
-        bh=7VJDwygZOrIbZgthHyQupSLOE0eivY1QBelna6aCrAY=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=UgYvbtq/o0YLsIZ/Qr8Rp3pPW5pE9VoMQn9cW8PHWx9WvKVBGoNAbrvSnOatL+qtR
-         KA3WVObf71fBfy9qyDzf+pnbr4ueeWcz+IYVxhxK58Rs1ul4AflYfznusVwQJS0FWf
-         sf+QC+7JJ+Mpj29FhstLUU5szJG02k7twpQ3uAvw=
+        s=badeba3b8450; t=1591601055;
+        bh=bxQ4+S9/6j7Zb8/88IoFsrvuBs56bBKkpECeNE5CHcI=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=GdruskfFqFq/kYVmNKeDV9LXBLrnXG0Bu1XuipuDvZwVWQcr3fEvrKNSm0zvbz8O6
+         lbraS0+Bo7Uu1fNL+Wf04dbkczq0b9H53/871kC7Thkszy0IuCbhARWFg6Ugj1bNxK
+         jjRixYAmq1pf/xV88KsxADgXEE2GpeL/HE9k6tpQ=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1M1poA-1jg0GD0jou-002Hao; Mon, 08
- Jun 2020 09:22:45 +0200
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1N5VD8-1itvls1gxG-016vUS; Mon, 08
+ Jun 2020 09:24:15 +0200
 Subject: Re: [PATCH 2/2] btrfs: qgroup: catch reserved space leakage at
  unmount time
-To:     Nikolay Borisov <nborisov@suse.com>, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
+To:     =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+        Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
 References: <20200607072512.31721-1-wqu@suse.com>
- <20200607072512.31721-3-wqu@suse.com>
- <b460820d-f326-8876-7f3b-b9842d245de3@suse.com>
+ <20200607072512.31721-3-wqu@suse.com> <20200608072000.GA6516@qmqm.qmqm.pl>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -54,50 +54,57 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
  ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
  oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <d0815ea3-0ccb-dbd3-203f-5f47e08b1a8d@gmx.com>
-Date:   Mon, 8 Jun 2020 15:22:41 +0800
+Message-ID: <4e6fd959-f04c-6c0d-9e13-86942ef47f12@gmx.com>
+Date:   Mon, 8 Jun 2020 15:24:10 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.8.1
 MIME-Version: 1.0
-In-Reply-To: <b460820d-f326-8876-7f3b-b9842d245de3@suse.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:utw8/oSZLxZknLlJwfkq6m+/etuXyn15S8xTLcg/vekkRmGJzgd
- Fopfbsc1jL++vXjAWrQe37piUDIkYCxN32Wo5ku78FytpkiqosTnSgeO+bwj/w4RLDPqA/M
- OQ7EBGtBbPC0afzuMFiUoXUN8SGfJO8vKs+wR4QwYODVZzouFa8yf6eW6q/DdNDVi5E1l7z
- iQrwxC+3wUHg+GSutNctw==
+In-Reply-To: <20200608072000.GA6516@qmqm.qmqm.pl>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="sdjfwdfLmrFCW0B4trriZFPEpzdNmopCT"
+X-Provags-ID: V03:K1:bM/8G8H1dugWBW9N+dtQ5lw+7Aw9DP2wN6GtVRuRAyVoMH6Enwq
+ VH4f1cc8g011u4bT0ftzmqLKr3p3sBjMER8hYX4vXDU9J3v8IP0qCkUmLuIx5twMvx2KWVm
+ I4kzKO3QqM+5357kU+HAtbZn7rVKANJjWYyaPJDbMiEtO8DHo2RvOIfNeJp055qk+XoNxeM
+ bIeTp3bfOH3M6Va2rhtcQ==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:q3k4aoWVI3E=:MB4pSSsaW47lWbKrsr1eT0
- BQGKWv5LHygQZiJ69gGz2OXkoVQqMvG5vhYi1X1hxvstEUcWLdAY6oXa040csmjqLHPckU0uZ
- 5k/AHdPnAlP6IxvQ+WrRTwEFajMC9kN2r9ov31z65hny6ZUsXxkjB6RJyLo0NYmgnZhFXQGc7
- mR2gp+ukGsd9CDFrKYolPaWluMhALWxHeiQ+RSSP+gCRy2zjMTvju+3y8h5jideRs7v2XVitt
- 7Ainf5leFKF58RmbvQD3fOI0PFCyTECoNkx1jZ6onvAgZRQhPqj+CdjKadmgQ8dz31JYcP1NL
- WbLIa6FsNQW+fVCKfOoSl2iyIciwmPWlHBOKS7qiJN5zDVSAEGP2YlYQnf7Z2J+FxnuNaCvkn
- Aors6rl7PJp5QIj1kalLYo3+Q9P5wXYq9GRYxmPIPFSgD+AdfC4ZHA8zCTmihAURIY58eoWqT
- unmdeu5hFPHb9Gjb5GKlRhRWtJcQ7e7eTLGIdKlKC5VY1mxusvyZRlzQQXH8iTI6rvvRWLObL
- k63xw9gdA/XlCjtKHVDUgi8hzKb46t/muKDu8Iv78krqyT1CRkqfnFW1Qz6I/bMchbNcMLEYx
- KNhsFNmauul55d3zsysa5xlv7PZDtiwiSGxVG3fO3idUXNjEecxqf1V6z0ag1yMQiOtwBQgYg
- q5AFSuJ6DwLBwbD5KbO6OVFP5G1y0DbqVJmJHx13+TVdwTTm4Ov59YfFj4PAiyvMnLmdD6jbz
- ST6vPKHMxxCVPCHzOvHlL+lvtRcyci6+UczhvbWwqcmuM/XUUXuekGBbVkWj1GhdusAJ4frN6
- avTmnPQj514kdRaRn9EduPsStyx0mYxQNDudsKCUaoJRxUa5C6YrSzoEduSCZCicWe+UPREZ9
- KzVjhtRi9XPfSa45Ofk7OywQEQeIk7OltxIYhZKHfuYixAnOdeHW+/NVpxbAqnu8qXNVmJ2xG
- zgaIxU8KLdqya2nWnTBenmXnxqvB9iobGm2EuEihLE6vfeLLxyRdt4g09FmTTf6mWrzbJl9OV
- bZLo8Lsk4RN1M4z+C52FUVVufXtquzPvRWHRIRU6j5pjrIMZQUZdBVOgTWOwDz8CPvGXs2arX
- DIOET+zBPykOTyM6pGvav/aCtM5dBBfikIBRtrlO4EyMGmoKgU+QFwV1z+SR1QkwjESrQB/05
- ITgkTcqOpQtHH+ILBjjefKbjAjalyz1iNN3VN6FFRco/BTZbcL6AksSo+ggUe9NQPUqUT3+d4
- M88UxD1TdgCo7L2Y1
+X-UI-Out-Filterresults: notjunk:1;V03:K0:MmKZwoqOeh0=:qi/4oEDc9rpQRKYC8DPY1L
+ VHr1SRzwE/vO1Jo/8PPiFY5eFc2fgMeUT+xETdU6EFqWev2A4FvHIOK3+hEG/LqXzamNTSOwO
+ iUvbfS5H6rOvtnZ26zhpzCU3sGGyWlLCjg0IrJ1s8+0H9aBaMBlHAyHuNvDWYwNltt5qPHHgw
+ ZbPULAmQy6vetne8MMH5lRVkorRPzhnj/knAws0yXeRPah0gHY6uQigNfhGOEBxRUp/3xOAzJ
+ PPcoTLco6H0a8/CjbZXatkeJ5GkSarxsS/bJdAf/3uCcKI5+kTth5BgZpX9Po2ueORAIrXEB2
+ 5lYQ8XQqFQ5/jVUXzJXjeJDptCuWbCQZ5uO0ghhvtqw588cp/f9ZSbD9UZtXj2Wf3Omcu9HW6
+ fBTjeJaaH3y8JQZbKEVhkqEztpM1+LXF5gU7S6jO9OHsX9BedPnIaoeepm+eYANkJtTbsleJM
+ D7b/nJ6iZwKpEfkRjR4Lu2i9TXQzEGSzvTQQiHv//1u93ypITCH9nasBgtI+R06ewIoTTfj+I
+ lTTKzjb9ixLfLcsgFetBh8+RrNcQsiFrcKYBw9e1rHvGNLKApaRh4kruRUpn0Wci7Ltpw5axw
+ ckGUEU4qHNgF85i/OjevBOLDzkWHO/AMLgSbT6UhVZnVAfFtbJS/EqsCQUB4VOb4HwXNhNYle
+ oFlAYs/qi5uYN2VaJLZ5ghUV6JtjSqOKI1wB1zg+nGYeDUBWLjN+dZAmA6rT69oSfGGPwdGlO
+ 3ACzuXbp55YfwAa1h0un8GirMASNFANFexUicjcT+tkrncYf6EDN9KE0qzUBSeKDOrNCSW1K8
+ k127aKr12+6C1j/VV4KYOzBv44BtxqWhnZZ4JNUKXkjZ2Nv3rXDc7stvx9Mv4Nvhv3qB/vlNa
+ e6MF0J7RUVAN0/IKC0K74QBoupoC/M+xIreuB/zRsQ436okpejQ7kgAAyr5jEuvtzthJl8M0r
+ D6UEWT6DSdNaNPAi6WYoGPotm9Rb4wR82I4j3mpKFfthGz4GFGphAZbPlUBGWRThRrPBjJAoi
+ iXQs8l3ctXLlSThGm72fQme+hBd6fXw8K2mEhKviS5Z2TYq/wZbEd8D02CWoAbt9MBpuK9vqv
+ GcZDuea8shu6/0qjnDHWr+jfMqIZjav8cnwh0APfiDWrjE0CueoUCaaQXZXh0wUlXKuhoTqrr
+ 4ja13x2yA3ZoUBBLSJHOsS4K+SRqzpHwzx7nb4+MhXuq7BVk17Ub/P881feEfpUza0EctvIbP
+ 1MS+oIHtv4GAzcfry
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--sdjfwdfLmrFCW0B4trriZFPEpzdNmopCT
+Content-Type: multipart/mixed; boundary="oVC35Z7gzl84vm0HHWreK4HvcxCgYlrXF"
+
+--oVC35Z7gzl84vm0HHWreK4HvcxCgYlrXF
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
 
-On 2020/6/8 =E4=B8=8B=E5=8D=882:58, Nikolay Borisov wrote:
->
->
-> On 7.06.20 =D0=B3. 10:25 =D1=87., Qu Wenruo wrote:
+
+On 2020/6/8 =E4=B8=8B=E5=8D=883:20, Micha=C5=82 Miros=C5=82aw wrote:
+> On Sun, Jun 07, 2020 at 03:25:12PM +0800, Qu Wenruo wrote:
 >> Signed-off-by: Qu Wenruo <wqu@suse.com>
 >> ---
 >>  fs/btrfs/disk-io.c |  6 ++++++
@@ -109,123 +116,54 @@ On 2020/6/8 =E4=B8=8B=E5=8D=882:58, Nikolay Borisov wrote:
 >> index f8ec2d8606fd..48d047e64461 100644
 >> --- a/fs/btrfs/disk-io.c
 >> +++ b/fs/btrfs/disk-io.c
->> @@ -4058,6 +4058,12 @@ void __cold close_ctree(struct btrfs_fs_info *fs=
-_info)
+>> @@ -4058,6 +4058,12 @@ void __cold close_ctree(struct btrfs_fs_info *f=
+s_info)
 >>  	ASSERT(list_empty(&fs_info->delayed_iputs));
 >>  	set_bit(BTRFS_FS_CLOSING_DONE, &fs_info->flags);
->>
+>> =20
 >> +	if (btrfs_qgroup_has_leak(fs_info)) {
 >> +		WARN(IS_ENABLED(CONFIG_BTRFS_DEBUG),
 >> +		     KERN_ERR "BTRFS: qgroup reserved space leaked\n");
 >> +		btrfs_err(fs_info, "qgroup reserved space leaked\n");
-> I don't think the message from the WARN() brings any value, it's simply
-> duplicated by the btrfs_err. IMO it's more concise to do:
->
-> WARN_ON(IS_ENABLED(CONFIG_BTRFS_DEBUG));
-> btrfs_err(qgroup reserved space leaked);
->
-> without losing any information whatsoever.
-
-Makes sense, also another cleanup item for existing similar cases.
-
->
 >> +	}
->
-> Is it safe calling this code here? workqueues are being destroyed after
-> it in btrfs_stop_all_workers so it's possible that they have some
-> lingering work which in turn might cause false positive in this check ?
+>=20
+> This looks like debugging aid, so:
+>=20
+> if (IS_ENABLED(CONFIG_BTRFS_DEBUG))
+> 	btrfs_check_qgroup_leak(fs_info);
+>=20
+> would be more readable (WARN() pushed to the function).
 
-The safety here is as safe as other calls in close_ctree(), we expect no
-new trans started nor existing running trans (finish ordered io call),
-and no dirty pages (invalidate/release page call)
-
-So at this timing there should be nothing to modify qgroup and we're safe.
-Or did I miss something for the close_ctree() context?
-
->> +
->>  	btrfs_free_qgroup_config(fs_info);
->>  	ASSERT(list_empty(&fs_info->delalloc_roots));
->>
->> diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
->> index 5bd4089ad0e1..3fccf2ffdcf1 100644
->> --- a/fs/btrfs/qgroup.c
->> +++ b/fs/btrfs/qgroup.c
->> @@ -505,6 +505,49 @@ int btrfs_read_qgroup_config(struct btrfs_fs_info =
-*fs_info)
->>  	return ret < 0 ? ret : 0;
->>  }
->>
->> +static u64 btrfs_qgroup_subvolid(u64 qgroupid)
->> +{
->> +	return (qgroupid & ((1ULL << BTRFS_QGROUP_LEVEL_SHIFT) - 1));
->> +}
->> +/*
->> + * Get called for close_ctree() when quota is still enabled.
->> + * This verifies we don't leak some reserved space.
->> + *
->> + * Return false if no reserved space is left.
->> + * Return true if some reserved space is leaked.
->> + */
->> +bool btrfs_qgroup_has_leak(struct btrfs_fs_info *fs_info)
->> +{
->> +	struct btrfs_qgroup *qgroup;
->
-> nit:This variable is used only in the loop below just define it there to
-> reduce its scope.
-
-Sure.
+We want to check to be executed even on production system, but just less
+noisy (no kernel backtrace dump).
+Just like tree-checker and EXTENT_QUOTA_RESERVED check.
 
 Thanks,
 Qu
 
->
->> +	struct rb_node *node;
->> +	bool ret =3D false;
->> +
->> +	if (!test_bit(BTRFS_FS_QUOTA_ENABLED, &fs_info->flags))
->> +		return ret;
->> +	/*
->> +	 * Since we're unmounting, there is no race and no need to grab
->> +	 * qgroup lock.
->> +	 * And here we don't go post order to provide a more user friendly
->> +	 * sorted result.
->> +	 */
->> +	for (node =3D rb_first(&fs_info->qgroup_tree); node; node =3D rb_next=
-(node)) {
->> +		int i;
->> +
->> +		qgroup =3D rb_entry(node, struct btrfs_qgroup, node);
->> +		for (i =3D 0; i < BTRFS_QGROUP_RSV_LAST; i++) {
->> +			if (qgroup->rsv.values[i]) {
->> +				ret =3D true;
->> +				btrfs_warn(fs_info,
->> +		"qgroup %llu/%llu has unreleased space, type=3D%d rsv=3D%llu",
->> +				   btrfs_qgroup_level(qgroup->qgroupid),
->> +				   btrfs_qgroup_subvolid(qgroup->qgroupid),
->> +				   i, qgroup->rsv.values[i]);
->> +			}
->> +		}
->> +	}
->> +	return ret;
->> +}
->> +
->>  /*
->>   * This is called from close_ctree() or open_ctree() or btrfs_quota_di=
-sable(),
->>   * first two are in single-threaded paths.And for the third one, we ha=
-ve set
->> diff --git a/fs/btrfs/qgroup.h b/fs/btrfs/qgroup.h
->> index 1bc654459469..e3e9f9df8320 100644
->> --- a/fs/btrfs/qgroup.h
->> +++ b/fs/btrfs/qgroup.h
->> @@ -415,5 +415,5 @@ int btrfs_qgroup_add_swapped_blocks(struct btrfs_tr=
-ans_handle *trans,
->>  int btrfs_qgroup_trace_subtree_after_cow(struct btrfs_trans_handle *tr=
-ans,
->>  		struct btrfs_root *root, struct extent_buffer *eb);
->>  void btrfs_qgroup_destroy_extent_records(struct btrfs_transaction *tra=
-ns);
->> -
->> +bool btrfs_qgroup_has_leak(struct btrfs_fs_info *fs_info);
->>  #endif
->>
+>=20
+> Best Regards,
+> Micha=C5=82 Miros=C5=82aw
+>=20
+
+
+--oVC35Z7gzl84vm0HHWreK4HvcxCgYlrXF--
+
+--sdjfwdfLmrFCW0B4trriZFPEpzdNmopCT
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl7d55oACgkQwj2R86El
+/qhrZAf9EZlyzYTWKGNuryxKEpZ4npwEEdS1Owksen/VUzhnWFHRRxoei2aFHFbY
+zxpqIJ2iBkPAaIfdXmyJHyk7cUuhlCjHghKSMJzT2lcm0Tp8b+FLUHWOr9xqSvT0
+gKjw+vEJHw9qGJ5BtKa97OEsZCMfE2ZlQir4cP9ZQFmbFfBDzdbHTTT88IBPfZvh
+cl17BUcm/oKMSStIoaSxBW7BONTO8l+NOMvKirP+kSYjnm1uBTApfkPfqaPqw6qS
+mXr9li7hGgXquc3rBPBHzXY+9UmPnVxZA1HXwatVdoYNcYdSPHbVIpY33WBT30Cf
+2lx+9olkZ8xg1yQZDQj5x+7Tm96cWw==
+=kWsJ
+-----END PGP SIGNATURE-----
+
+--sdjfwdfLmrFCW0B4trriZFPEpzdNmopCT--
