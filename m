@@ -2,171 +2,187 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F5F81F1594
-	for <lists+linux-btrfs@lfdr.de>; Mon,  8 Jun 2020 11:38:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B66721F159B
+	for <lists+linux-btrfs@lfdr.de>; Mon,  8 Jun 2020 11:40:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729278AbgFHJh6 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-btrfs@lfdr.de>); Mon, 8 Jun 2020 05:37:58 -0400
-Received: from m4a0072g.houston.softwaregrp.com ([15.124.2.130]:43687 "EHLO
-        m4a0072g.houston.softwaregrp.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729149AbgFHJh5 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 8 Jun 2020 05:37:57 -0400
-Received: FROM m4a0072g.houston.softwaregrp.com (15.120.17.146) BY m4a0072g.houston.softwaregrp.com WITH ESMTP;
- Mon,  8 Jun 2020 09:36:33 +0000
-Received: from M9W0068.microfocus.com (2002:f79:bf::f79:bf) by
- M4W0334.microfocus.com (2002:f78:1192::f78:1192) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1591.10; Mon, 8 Jun 2020 09:37:09 +0000
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (15.124.72.12) by
- M9W0068.microfocus.com (15.121.0.191) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1591.10 via Frontend Transport; Mon, 8 Jun 2020 09:37:09 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZeBccXUUA7MfgNBh1msYnEcb3pB13FHGfjCE25RIEp85nPXedGMWNMoZcjvffiAXYKozxDJTx6iO0cudqMt7Xn6XHppR48me1RfQmU1IUXhxH2z5hybwVfPfCBS6PDSF5FGyhstOQdLRDtzwB2Sy5NRbt2mnpbk9xnKd/KslRlh0KyAn3exVa7xyKccQs1zIeTbQzVGrXgoZvwJgYmyT+GXuvzB+woBVwitJa3S8tPVhP/mawFbi7i6uiTu5/xqJlLnUPsNbejVYPY3hTVoRIpegkmErmxO4rsId9bEQ10tNy83GsiBRtfLcGrCd6il4ocjuTzNZutGLxKgqP6ZrYg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=J79Kcv8zOSa5fbL5RLpobNtr9KcyzXcKfXe69gz6Kro=;
- b=exb7UpegmtiGcCr1zvwrZFggjEIwCrvsZk7KTeGTu6cR8s+KSRIKCrT/hCdCzx0udE15pvQgdqkCyiPrnlFH1NaGhoXL7leMIKPAkYNaV2FR/fe8FNDv4ME7CCbTnAkmN9UYiE9kUhWMGMdhDZm/qni4noq6LdQMI6IKkq9LWfHtFDBUuYI7RxSrz9Pc4I8SOrRJ2Lvus6/5rOAUYQ1MdyAN4O0afcP/8VsRwFBwgho2OfTT4h5nULbcQo4fI/voRL6Bnxmirwqu8LlEM5GaLTlW0bndjszg/b9iWBCbNUcHdLlpD9oriEtI2q6WCRW6tvKeEudNcIN/paXwZSrU/Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=suse.com;
-Received: from MN2PR18MB2416.namprd18.prod.outlook.com (2603:10b6:208:a9::25)
- by MN2PR18MB3039.namprd18.prod.outlook.com (2603:10b6:208:104::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3066.18; Mon, 8 Jun
- 2020 09:37:08 +0000
-Received: from MN2PR18MB2416.namprd18.prod.outlook.com
- ([fe80::8cf0:641e:631d:7a6]) by MN2PR18MB2416.namprd18.prod.outlook.com
- ([fe80::8cf0:641e:631d:7a6%4]) with mapi id 15.20.3066.023; Mon, 8 Jun 2020
- 09:37:08 +0000
-Subject: Re: [PATCH 2/2] btrfs: qgroup: catch reserved space leakage at
- unmount time
-To:     =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        Qu Wenruo <quwenruo.btrfs@gmx.com>
-CC:     <linux-btrfs@vger.kernel.org>
-References: <20200607072512.31721-1-wqu@suse.com>
- <20200607072512.31721-3-wqu@suse.com> <20200608072000.GA6516@qmqm.qmqm.pl>
- <4e6fd959-f04c-6c0d-9e13-86942ef47f12@gmx.com>
- <20200608074414.GA1124@qmqm.qmqm.pl>
-From:   Qu Wenruo <wqu@suse.com>
-Autocrypt: addr=wqu@suse.com; keydata=
+        id S1729199AbgFHJkN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 8 Jun 2020 05:40:13 -0400
+Received: from mout.gmx.net ([212.227.15.18]:48777 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729172AbgFHJkM (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 8 Jun 2020 05:40:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1591609202;
+        bh=4izXd3f13y8zmEGnnuaSTYWlmPodQjQ6paYVhGT1i1c=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=PzgnHGJVWqAe67ZarF/ZCpxUq+LhRDxOJzQdNxxwLNEN1SgS/PQjIjVavfn8HK9AA
+         TgYUC+ukW007tJlaxIIT1BN5jpM2eq06XJURa1DsmpiCcTP9XzSBfwMLKiQC3L7lhE
+         OtyhZWV+vW4SGQnMm9NmxHbNsnXbPtnjpvu+7pS0=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MwfWa-1ikVrc0kPK-00y7Eq; Mon, 08
+ Jun 2020 11:40:02 +0200
+Subject: Re: [PATCH v7 1/2] btrfs: Introduce "rescue=" mount option
+To:     Anand Jain <anand.jain@oracle.com>, dsterba@suse.cz,
+        Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+References: <20200604071807.61345-1-wqu@suse.com>
+ <20200604071807.61345-2-wqu@suse.com>
+ <3659322f-0687-d179-ff89-f3a303fe2379@oracle.com>
+ <20200605113638.GB27795@twin.jikos.cz>
+ <006ff0d7-517f-e505-e8cd-529029e1e203@oracle.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
  8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
  1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
  9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
  gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0GFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPokBTQQTAQgAOAIbAwULCQgHAgYVCAkKCwIE
- FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJdnDWhAAoJEMI9kfOhJf6oZgoH
- 90uqoGyUh5UWtiT9zjUcvlMTCpd/QSgwagDuY+tEdVPaKlcnTNAvZKWSit8VuocjrOFbTLwb
- vZ43n5f/l/1QtwMgQei/RMY2XhW+totimzlHVuxVaIDwkF+zc+pUI6lDPnULZHS3mWhbVr9N
- vZAAYVV7GesyyFpZiNm7GLvLmtEdYbc9OnIAOZb3eKfY3mWEs0eU0MxikcZSOYy3EWY3JES7
- J9pFgBrCn4hF83tPH2sphh1GUFii+AUGBMY/dC6VgMKbCugg+u/dTZEcBXxD17m+UcbucB/k
- F2oxqZBEQrb5SogdIq7Y9dZdlf1m3GRRJTX7eWefZw10HhFhs1mwx7kBDQRZ1YGvAQgAqlPr
- YeBLMv3PAZ75YhQIwH6c4SNcB++hQ9TCT5gIQNw51+SQzkXIGgmzxMIS49cZcE4KXk/kHw5h
- ieQeQZa60BWVRNXwoRI4ib8okgDuMkD5Kz1WEyO149+BZ7HD4/yK0VFJGuvDJR8T7RZwB69u
- VSLjkuNZZmCmDcDzS0c/SJOg5nkxt1iTtgUETb1wNKV6yR9XzRkrEW/qShChyrS9fNN8e9c0
- MQsC4fsyz9Ylx1TOY/IF/c6rqYoEEfwnpdlz0uOM1nA1vK+wdKtXluCa79MdfaeD/dt76Kp/
- o6CAKLLcjU1Iwnkq1HSrYfY3HZWpvV9g84gPwxwxX0uXquHxLwARAQABiQE8BBgBCAAmAhsM
- FiEELd9y5aWlW6idqkLhwj2R86El/qgFAl2cNa4FCQlqTn8ACgkQwj2R86El/qhXBAf/eXLP
- HDNTkHRPxoDnwhscIHJDHlsszke25AFltJQ1adoaYCbsQVv4Mn5rQZ1Gon54IMdxBN3r/B08
- rGVPatIfkycMCShr+rFHPKnExhQ7Wr555fq+sQ1GOwOhr1xLEqAhBMp28u9m8hnkqL36v+AF
- hjTwRtS+tRMZfoG6n72xAj984l56G9NPfs/SOKl6HR0mCDXwJGZAOdtyRmqddi53SXi5N4H1
- jWX1xFshp7nIkRm6hEpISEWr/KKLbAiKKbP0ql5tP5PinJeIBlDv4g/0+aGoGg4dELTnfEVk
- jMC8cJ/LiIaR/OEOF9S2nSeTQoBmusTz+aqkbogvvYGam6uDYw==
-Message-ID: <57012b68-4a19-d4ca-1a9f-4ae65182f44f@suse.com>
-Date:   Mon, 8 Jun 2020 17:37:03 +0800
+ AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
+ PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
+ 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
+ D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
+ efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
+ ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
+ BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
+ 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
+ 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
+ EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
+ 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
+ ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
+ oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
+ fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
+ 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
+ ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
+ oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
+Message-ID: <b6832877-a372-c307-f07f-0a205bee2dce@gmx.com>
+Date:   Mon, 8 Jun 2020 17:39:58 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.8.1
-In-Reply-To: <20200608074414.GA1124@qmqm.qmqm.pl>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 8BIT
-X-ClientProxiedBy: BYAPR04CA0035.namprd04.prod.outlook.com
- (2603:10b6:a03:40::48) To MN2PR18MB2416.namprd18.prod.outlook.com
- (2603:10b6:208:a9::25)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [0.0.0.0] (149.28.201.231) by BYAPR04CA0035.namprd04.prod.outlook.com (2603:10b6:a03:40::48) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3066.19 via Frontend Transport; Mon, 8 Jun 2020 09:37:07 +0000
-X-Originating-IP: [149.28.201.231]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 71d1cc08-6fe0-4b11-a0fc-08d80b8f8328
-X-MS-TrafficTypeDiagnostic: MN2PR18MB3039:
-X-Microsoft-Antispam-PRVS: <MN2PR18MB3039E6E03CF88B5B7F10D022D6850@MN2PR18MB3039.namprd18.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-Forefront-PRVS: 042857DBB5
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: imb7Zl9WYXvcD3WYaXm6nDdhxz+iNB3YePkQtZBEfXF1jWxvxT0yj13JWhiyB7YH7VW7xhT592SrxQI6bgK2KFvGjMsUN5d+kugckizOQL+0iBbVYemTpXogdR4mAUGXoBbn7I5nQAkWWKLC14icqhFw9kvR9GA4NcgGZSagtNKvr+ida0oEWp9SIWmRs2UALuo1bmyfoV3zERie5lIoWXrMAlA7pAGR/xiJoccCnb1Fm7xjlhJwxEHWBb7f2iwVTjAJX1MDLb6RFAQj4gHUEFe0PfnfttAZT1a4dUQQeXUj5sxhNkoG4GdNivrYpsB8Wv/lPO9PA8APNsjTcR8cZGMV5/jAggaoXNZBA1eeguhb1FiGc1DPzBi6S5Ea/VP1f/C4TMaIvWak6tmAaqD1bFmvdBugwtcVJpaFyOaBCjae4TTSkIZD07nzQFzrC/AO
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR18MB2416.namprd18.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(136003)(396003)(346002)(366004)(39860400002)(376002)(83380400001)(31686004)(66574014)(16576012)(8936002)(6486002)(36756003)(5660300002)(316002)(2906002)(8676002)(4326008)(26005)(6666004)(86362001)(110136005)(52116002)(6706004)(956004)(66476007)(16526019)(186003)(66946007)(478600001)(31696002)(66556008)(2616005)(78286006)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: /ukajS7+1kSiULxqpGI4nHzz3gMaBCakmj2Qrjw7xPMRGV5blTuON+WNoT4s6YV1/Cu3+huOJUrdW9ZVOKvqx2vx36dYGp1VZFjGWPS7m9rriB8LXrIx7PhqxmqRyZ7Y+VdzCzEc5n6yaBwy9OAsZYfC/l82USgWz+n/S3SVf3MvYSafU3dfE6TeehTEOTpJJ9ypt2W2+7947tYZ7fB4POpwW6lRchez9GK1upUn2pSPEmRGdMfx5noWCh/7t5HjSF4+g3cpdme4OJNyP5cTJppYnyM2stdDXIhQgqW+KIjYLzw2TVUOLAESrj4HBWUKdpvRzn9W/TOTi0lbI7zgneBE/9+pdZxHHWtmZPe+Q6DGU/t0+hcSdKnpVeO0SmuaR3kxo/tl8eoqPRZlfnHdEPHZBYoXdjNR94xJv89GDiCK0yKvvJQuzba1VY9rVMrVrBMTRb2stP62hyoB6SCOUruKvLi2r78Z7TW53AOqyHc=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 71d1cc08-6fe0-4b11-a0fc-08d80b8f8328
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Jun 2020 09:37:08.3181
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 856b813c-16e5-49a5-85ec-6f081e13b527
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: RpNmVrtUYFF0ka0BT9xMCVXd5n2kIXpGv6ONffkCe11PRXOCab/GiDflcfUvTH5d
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR18MB3039
-X-OriginatorOrg: suse.com
+In-Reply-To: <006ff0d7-517f-e505-e8cd-529029e1e203@oracle.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="NkPQtwJTcZpcBXNTxS3BCaGd1JwmiCav3"
+X-Provags-ID: V03:K1:Xkvo9EdMiWiM5nDoXtmQmrNpkQU06BIaaFHETgxxw6OK7guGuSO
+ byDSTpny3OsPH+kGOUXoPiKzY9LI1Q+3QLw2J3gilAjpH+l1v+4+ScYvsv9Tobi9PHvu2oD
+ ZHjuzjOe4xg8m+KY0uIbzb0zMjLxKrGN07x8mftGVlf7xHtvKRxlrXszm8F04kh29S6zwDN
+ 8vXuqWQBoVO/+g6UfKP3A==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:mkAVODrBYos=:3T6kVELCPXYZujH5Mbj3aw
+ cBpqtZqpccBJigjZHJPXW9fLAH6QCBnNv0Sb4MeHBpXMpQQSsJR+8OihkcQx1/3nk5yS7kQby
+ 32mm7SdNIyXgLusfR9zXW5ErXdlSIqpCdOJ9M4jg2KCT9DUyA7xbgK9vBwR3Duw1R+NWA6+Oa
+ vYWdWUMuzy82yKEpkrQVFF9e5mBnKAu4PJ95bYGFgW2oJWfKgxlmsxmVyBBDZw6eFy7rlGa3b
+ 3LYNQhyrcKkE/1YuFQ3IzSXIBf4BgMpsfGVPhbkEIXTZeSkTIz8E2OihiSY6M3tWCbrUq6vm0
+ NVmxrAMrsUP6pVFE8wf77djavxbA6vNHyFNo8EsWb+q2gVP5NtjWGz1wfdckJFz54NHnG/ep3
+ Q/qHEVzCSz7cAEpCKVXCC3t+oCGB5ypg6qLw1jsBLGz7KnwfgrO46FhRqtZ807lSNXGJCvw1j
+ 82q4Z8L8f4h7/27Tley5XxosTMe3ywLZvOUcdkbh/AotX4LNpJpDSnS1KuVZ02hYMUVQVmI1T
+ v2UnJtd6K8s3+sTtfLHym36dxHXGJMKZ1DX61tAbUgxfH739Qvo+oTMkgGI4yzJxB3w0driEC
+ tShtzDQBJQ3zsJtcy0Zd9I02/J0NcjK7OjrDZW2z2Zipgz0kKbgFONNG1L7kmeKOKXPR9azeA
+ PrzKYiyMQ5FzykFUyuqWVPVgyjrjbDUp4OZ5mibLU3yEXQTeD1SdHDE//70oY6mjjntllcJpj
+ DYkbksL9Dt0AW5XNvXSwli+MDvkx4RX0WXEU59Bs3mzC33Bl0tAbMhfjHgKSMHu2gtlUBSoE+
+ kZ1aNrQ8N1JCqUk5W8LE0pA9sLYgTRBiekJ+BfxP1PI9VDDKxsLBBK9k2kVZ/e0Z3wk82BR5i
+ Lct8wEuvgUMeadVUF33YcHzZclnW1fuKB40YJEepFURtUiNA9c0DE3jPsae69wFTapNsdpjgN
+ op41BLYEW3kNVgFNzve0yRmjSF/Vkeu+yeBVx4cxxEVvuPDFj8x/trFnPqgQ9d+XEAi8FTJ4f
+ 7CYcr0j0ZiVkVt3HbsIb+I2CjaWoQl/o1bhEEjU7XN9h4D95/dgxajIIqFuAPg6zy6w2wravh
+ 20tG8KQbUq7sSQrOjCGrqAbgpJME3RgZuSbG6f1GPfTAu7LTt+J1zXp7ddbiBrCFUz7XnrizC
+ VangjUrY4YMmohBx6rRXjU/c7djOVHLg17zsZGnwJTfMunG1G6GjyXromukelzOczOwVbHdC2
+ puNh5nGQSD1uHXjrf
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--NkPQtwJTcZpcBXNTxS3BCaGd1JwmiCav3
+Content-Type: multipart/mixed; boundary="rrSXec6RYSWcXhNiaGtDF1fpDlcTLNZVq"
+
+--rrSXec6RYSWcXhNiaGtDF1fpDlcTLNZVq
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
 
-On 2020/6/8 下午3:44, Michał Mirosław wrote:
-> On Mon, Jun 08, 2020 at 03:24:10PM +0800, Qu Wenruo wrote:
->> On 2020/6/8 下午3:20, Michał Mirosław wrote:
->>> On Sun, Jun 07, 2020 at 03:25:12PM +0800, Qu Wenruo wrote:
->>>> Signed-off-by: Qu Wenruo <wqu@suse.com>
->>>> ---
->>>>  fs/btrfs/disk-io.c |  6 ++++++
->>>>  fs/btrfs/qgroup.c  | 43 +++++++++++++++++++++++++++++++++++++++++++
->>>>  fs/btrfs/qgroup.h  |  2 +-
->>>>  3 files changed, 50 insertions(+), 1 deletion(-)
+
+On 2020/6/8 =E4=B8=8B=E5=8D=884:11, Anand Jain wrote:
+> On 5/6/20 7:36 pm, David Sterba wrote:
+>> On Fri, Jun 05, 2020 at 06:04:01PM +0800, Anand Jain wrote:
+>>> On 4/6/20 3:18 pm, Qu Wenruo wrote:
+>>>> This patch introduces a new "rescue=3D" mount option group for all t=
+hose
+>>>> mount options for data recovery.
 >>>>
->>>> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
->>>> index f8ec2d8606fd..48d047e64461 100644
->>>> --- a/fs/btrfs/disk-io.c
->>>> +++ b/fs/btrfs/disk-io.c
->>>> @@ -4058,6 +4058,12 @@ void __cold close_ctree(struct btrfs_fs_info *fs_info)
->>>>  	ASSERT(list_empty(&fs_info->delayed_iputs));
->>>>  	set_bit(BTRFS_FS_CLOSING_DONE, &fs_info->flags);
->>>>  
->>>> +	if (btrfs_qgroup_has_leak(fs_info)) {
->>>> +		WARN(IS_ENABLED(CONFIG_BTRFS_DEBUG),
->>>> +		     KERN_ERR "BTRFS: qgroup reserved space leaked\n");
->>>> +		btrfs_err(fs_info, "qgroup reserved space leaked\n");
->>>> +	}
+>>>> Different rescue sub options are seperated by ':'. E.g
+>>>> "ro,rescue=3Dnologreplay:usebackuproot".
+>>>> (The original plan is to use ';', but ';' needs to be escaped/quoted=
+,
+>>>> or it will be interpreted by bash)
 >>>
->>> This looks like debugging aid, so:
->>>
->>> if (IS_ENABLED(CONFIG_BTRFS_DEBUG))
->>> 	btrfs_check_qgroup_leak(fs_info);
->>>
->>> would be more readable (WARN() pushed to the function).
+>>> =C2=A0=C2=A0 I fell ':' isn't suitable here.
 >>
->> We want to check to be executed even on production system, but just less
->> noisy (no kernel backtrace dump).
->> Just like tree-checker and EXTENT_QUOTA_RESERVED check.
-> 
-> In that case I suggest:
-> 
-> btrfs_err(...);
-> WARN_ON(IS_ENABLED(CONFIG_BTRFS_DEBUG));
-> 
-> as I expect people look for messages before the Oops for more information.
+>> What do you suggest then?
+>>
+>=20
+> There isn't any other choice, right? Probably that's the reason for
+> -o device it is -o device=3Ddev1,device=3Ddev2 still remains separated?=
 
-Yep, exactly what Nik suggested and what I would do in next version.
+> IMO if there isn't a choice it is ok to leave them separate.
+>=20
+> But as I commented in the other thread instead of
+> -o rescue=3Dskipbg:another1:another2 why not just -o rescue
+> and mount thread shall skip the checks that fail and mount the
+> fs in RO if possible.
+
+That would make dependency complex. The skipbg already needs nologreplay
+and RO, and usebackuproot sometimes doesn't work as expected (in fact,
+that mount option has fewer success than we thought).
+
+I don't want to spend too much code on a salvage mount option group.
 
 Thanks,
 Qu
-> 
-> Best Regards,
-> Michał Mirosław
-> 
+
+> The dmesg -k must show the checks that
+> were failed and had to skip to make the RO mount successful.
+> So, that becomes clear about the errors which lead to the current RO
+> mount, instead of going through the logs to figure out. This is a more
+> user-friendly approach as there is one rescue option. But I am not
+> sure if it is possible?
+>=20
+> Thanks, Anand
+>=20
+>=20
+>>>> And obviously, user can specify rescue options one by one like:
+>>>> "ro,rescue=3Dnologreplay,rescue=3Dusebackuproot"
+>>>
+>>> =C2=A0=C2=A0 This should suffice right?
+>>
+>> Setting the rescue=3D value separately should be supported, but requir=
+ing
+>> to write the option name for each value defeats the purpose to make it=
+
+>> compact and user friendly.
+>>
+>=20
+
+
+--rrSXec6RYSWcXhNiaGtDF1fpDlcTLNZVq--
+
+--NkPQtwJTcZpcBXNTxS3BCaGd1JwmiCav3
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl7eB24ACgkQwj2R86El
+/qgv4ggAhOUY4puQ2WySA8yk1UpxQna08dcfM6hjOxchMD2HihEIdZZbSSW9Vz4J
+slcV1O5uLuJkq7fbjsS2B1TTZp1jXHf+7WRcPd57mT9WdzZbn1QCx7pYH/t9Mn+n
+4AokGkGsSielHnF8ao9MqVkFuMElHXp7uyePKnxF/6GF//z/VNAQoDGDllj9pJvP
+79CQGOSqU6w1bCvpnZBeecR2ko1CfU8WK/6qy4iLTdrT5iw//hHHSK1vWlcKJMYo
+eqYDei/r+2pzDFerFECZd0IwPnK0dvhFKSYAWHHtNplokzevrQ6Ds+tDF0VNh3k3
+96E7K9Q8wfzi76+UBBOZ8KrJY8tlBA==
+=GZFC
+-----END PGP SIGNATURE-----
+
+--NkPQtwJTcZpcBXNTxS3BCaGd1JwmiCav3--
