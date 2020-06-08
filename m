@@ -2,694 +2,218 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 887701F1B2B
-	for <lists+linux-btrfs@lfdr.de>; Mon,  8 Jun 2020 16:41:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20B721F1BA6
+	for <lists+linux-btrfs@lfdr.de>; Mon,  8 Jun 2020 17:05:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729997AbgFHOlz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 8 Jun 2020 10:41:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44238 "EHLO
+        id S1730100AbgFHPFN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 8 Jun 2020 11:05:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729948AbgFHOlx (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 8 Jun 2020 10:41:53 -0400
-Received: from mail-vk1-xa42.google.com (mail-vk1-xa42.google.com [IPv6:2607:f8b0:4864:20::a42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD10BC08C5C2
-        for <linux-btrfs@vger.kernel.org>; Mon,  8 Jun 2020 07:41:51 -0700 (PDT)
-Received: by mail-vk1-xa42.google.com with SMTP id i1so4027795vkp.8
-        for <linux-btrfs@vger.kernel.org>; Mon, 08 Jun 2020 07:41:51 -0700 (PDT)
+        with ESMTP id S1730033AbgFHPFM (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 8 Jun 2020 11:05:12 -0400
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3400DC08C5C2
+        for <linux-btrfs@vger.kernel.org>; Mon,  8 Jun 2020 08:05:12 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id c185so17516173qke.7
+        for <linux-btrfs@vger.kernel.org>; Mon, 08 Jun 2020 08:05:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=3DoBr6d1tF3CB/IBEQc727Zwv6TZcPjxGIJs/unVqPo=;
-        b=rYUUIT72h79gQcmpBGebt/JphFpv0MrjtuL4qTXjQn/KcRR670fYG1XgD7Vn+dh/xn
-         oxvNA5HbxwZFw+VCFwyQPJi7exmmyD5ixPNSRWUwPpdpArelhEZBWUNbtY7Mxwx8KkMe
-         SEXkKiCWFzB1oik8pgwD7ek0pO0E03KzdPGuty7liienvmJXXEH/JtoT0UFYTfZAvLrP
-         y9TUXCMEa+KjjU5YHXVtRkp/uTB1jjtgcdJ9vuYS+z4bJz2AAleGE29c12dkUM9cUzOm
-         m8HBcsDJDs1RaewBNGPr5gmykcl08O5OhK+2LGHQjvrE4/s8rycP8UVk4EFrNQduqS4t
-         +lag==
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=y4uncGzb48EUbwR9+q9ldqWvwnBRS0WjPqkDwMYfy1E=;
+        b=dRnrrmg2Ub+ZiaI6qKuksEJkRIOANTtPqHsbbW6g9uPSTo2b2B+GmXoc3cWycQyosR
+         fWQUgtv1Ewxxl6qmtreeBRgOBybsI7KlILlHnLe4CT7Pe0vcP/XpIcUodhDBzPe9ZxKE
+         7PUY3lr6G3jDE2/c2wkk+VBpRtSo5JJ2f3jToO1IYssHbnPpgVQ7kr7P2uA1V/XyzXuB
+         r7OrrRCyR149F5VfnBUtmucK6Wb2/9xFPKfEEEXR8PfWHW0z6g5nv+Grhddy1CboDwoS
+         ZABHIJaDNLb4Ek/yNAC+0omO3TcM/Rv/kzn7krEVcEZ1o7IpNFHKJ3LmJd9t5a+LBGNw
+         r0zw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=3DoBr6d1tF3CB/IBEQc727Zwv6TZcPjxGIJs/unVqPo=;
-        b=YE2HDI+TUxkeRNrLjB4w063PKrbZbiZ0nVeqRvtZBQn1SdN3Z3sU9HNQATu8JG8kk7
-         isBOuoOyghqTySRQKXLwQ3owzHcYTLOu6hdjoE/3Ng6aDfKXFZdCt221RMLg2yCtRDvV
-         SEnjaWKGFLAvVJr8IrdGHaqCAPm36WD9RdlGtAZPt7ta5xRvJ2raugHnMccDKHhQUt8V
-         B92GfCVugFYPTHMPmQcwKTnOA68DpUA7tx114oODcFtLypsH4Q4BczP0ccJ+s99nSzYF
-         Wh/5DnmUDLozC+rwIe3zL8QRUpPb8yY6SmFcJJm3SeRO9liHU5JJpYMbp9AQjCCjTcc4
-         1h9A==
-X-Gm-Message-State: AOAM531UhpepyJG+bUmV2E2QtxjZSe9zW0Cnr2QyHj3ZMEJFVSSr3XP9
-        FEp+EwjFJhzHSOqmoLtfKXXXcFb3vMrqNhEL9+w=
-X-Google-Smtp-Source: ABdhPJwA4G9VXj5N1szPw83e5hB9qbQk4y8NE24NtpmYwJWdbfmUoTjJ67G8zr+EzA7Pk65WkwjunMjFClFPX0Ckgqo=
-X-Received: by 2002:a1f:205:: with SMTP id 5mr13253676vkc.32.1591627310489;
- Mon, 08 Jun 2020 07:41:50 -0700 (PDT)
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=y4uncGzb48EUbwR9+q9ldqWvwnBRS0WjPqkDwMYfy1E=;
+        b=Z40LyAQBpPJS6Fq0/EGmosPLaNQtKP6E/iywjfpI3LjMN+Hhaoh1uHQe/lXt1rIHKM
+         xIomEs083PGS7wGvHiG6SfRE9qujw5Z6gSp9LdObmOYgKSAOX0pHLi23Ue2/LIwSo6LC
+         7+a9eKA0GAp/nzfcDHhD7vrdO0oELgqyfzDbNRU9pDngv05ozzodOIbvICPvNUgBLiwK
+         uTLrMdHTOCyv6YmT4fgslBfB0cnykpdAIP0KFO6SlW6j8zvzWqdXRXeOtUyfrObLmoSo
+         2rTv6r0THipgcZL6RsL72IBMD4y4eZBeqNl9Zmyo7nuxIePoYDRq3icyZH/acRmvgAsI
+         4PAg==
+X-Gm-Message-State: AOAM531oDCRHcXHXiOSVUlZJy6QnzPPd/nTH/KB7ZzvDEFaW5cz4K9oY
+        oDBPT+vyzNzhyE0uFdk9Dtja5XqEQ7q1ig==
+X-Google-Smtp-Source: ABdhPJwPSwBjnV5YbGoHmOhsrL0uaL7UVCvNIYczRDwQNn4h33phPW0dvErL+CidmCFd3cgnviCsRQ==
+X-Received: by 2002:ae9:ed51:: with SMTP id c78mr22208649qkg.412.1591628710837;
+        Mon, 08 Jun 2020 08:05:10 -0700 (PDT)
+Received: from ?IPv6:2620:10d:c0a8:11d9::10a4? ([2620:10d:c091:480::1:ae5a])
+        by smtp.gmail.com with ESMTPSA id x54sm8223933qta.42.2020.06.08.08.05.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 08 Jun 2020 08:05:09 -0700 (PDT)
+Subject: Re: [PATCH 1/2] Btrfs: fix data block group relocation failure due to
+ concurrent scrub
+To:     fdmanana@kernel.org, linux-btrfs@vger.kernel.org
+References: <20200608123255.26354-1-fdmanana@kernel.org>
+From:   Josef Bacik <josef@toxicpanda.com>
+Message-ID: <56d58c6e-cb64-af1b-d57e-281a5d376776@toxicpanda.com>
+Date:   Mon, 8 Jun 2020 11:05:08 -0400
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.9.0
 MIME-Version: 1.0
-References: <CABT3_pzBdRqe7SRBptM1E5MPJfwEGF6=YBovmZdj1Vxjs21iNQ@mail.gmail.com>
- <5fdc798c-c8eb-b4cf-b247-e70f5fd49fc4@gmx.com> <CABT3_pwG1CrxYBDXTzQZLVGYkLoxKpexEdyJWnm_7TCaskbOeA@mail.gmail.com>
- <1cf994f7-3efb-67ac-d5b1-22929e8ef3fd@gmx.com> <CABT3_pxFv0KAjO2DfmikeeT+yN-3BiDj=Mu_a=dC-K9DyL-T3w@mail.gmail.com>
- <b477b613-2190-2c2f-7fab-f9b712ece187@gmx.com> <CABT3_pycYRemohAVAbczjre0ruHL_k+pSMBP+ax0Rzcfq2B=BA@mail.gmail.com>
- <CABT3_pxz3hvCx3aKh5vibro1GX3t42kCV5pd=CsL5n+uJSW13w@mail.gmail.com> <d88f134b-2728-efb3-5be6-9ed114c27cd8@gmx.com>
-In-Reply-To: <d88f134b-2728-efb3-5be6-9ed114c27cd8@gmx.com>
-From:   Thorsten Rehm <thorsten.rehm@gmail.com>
-Date:   Mon, 8 Jun 2020 16:41:38 +0200
-Message-ID: <CABT3_pyOs0G8D5uqJAQXxvQHFanEbniH0fAhntLvf8_hUEY5aw@mail.gmail.com>
-Subject: Re: corrupt leaf; invalid root item size
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200608123255.26354-1-fdmanana@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-I just have to start my system with kernel 5.6. After that, the
-slot=3D32 error lines will be written. And only these lines:
+On 6/8/20 8:32 AM, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
+> 
+> When running relocation of a data block group while scrub is running in
+> parallel, it is possible that the relocation will fail and abort the
+> current transaction with an -EINVAL error:
+> 
+>     [134243.988595] BTRFS info (device sdc): found 14 extents, stage: move data extents
+>     [134243.999871] ------------[ cut here ]------------
+>     [134244.000741] BTRFS: Transaction aborted (error -22)
+>     [134244.001692] WARNING: CPU: 0 PID: 26954 at fs/btrfs/ctree.c:1071 __btrfs_cow_block+0x6a7/0x790 [btrfs]
+>     [134244.003380] Modules linked in: btrfs blake2b_generic xor raid6_pq (...)
+>     [134244.012577] CPU: 0 PID: 26954 Comm: btrfs Tainted: G        W         5.6.0-rc7-btrfs-next-58 #5
+>     [134244.014162] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+>     [134244.016184] RIP: 0010:__btrfs_cow_block+0x6a7/0x790 [btrfs]
+>     [134244.017151] Code: 48 c7 c7 (...)
+>     [134244.020549] RSP: 0018:ffffa41607863888 EFLAGS: 00010286
+>     [134244.021515] RAX: 0000000000000000 RBX: ffff9614bdfe09c8 RCX: 0000000000000000
+>     [134244.022822] RDX: 0000000000000001 RSI: ffffffffb3d63980 RDI: 0000000000000001
+>     [134244.024124] RBP: ffff961589e8c000 R08: 0000000000000000 R09: 0000000000000001
+>     [134244.025424] R10: ffffffffc0ae5955 R11: 0000000000000000 R12: ffff9614bd530d08
+>     [134244.026725] R13: ffff9614ced41b88 R14: ffff9614bdfe2a48 R15: 0000000000000000
+>     [134244.028024] FS:  00007f29b63c08c0(0000) GS:ffff9615ba600000(0000) knlGS:0000000000000000
+>     [134244.029491] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>     [134244.030560] CR2: 00007f4eb339b000 CR3: 0000000130d6e006 CR4: 00000000003606f0
+>     [134244.031997] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+>     [134244.033153] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+>     [134244.034484] Call Trace:
+>     [134244.034984]  btrfs_cow_block+0x12b/0x2b0 [btrfs]
+>     [134244.035859]  do_relocation+0x30b/0x790 [btrfs]
+>     [134244.036681]  ? do_raw_spin_unlock+0x49/0xc0
+>     [134244.037460]  ? _raw_spin_unlock+0x29/0x40
+>     [134244.038235]  relocate_tree_blocks+0x37b/0x730 [btrfs]
+>     [134244.039245]  relocate_block_group+0x388/0x770 [btrfs]
+>     [134244.040228]  btrfs_relocate_block_group+0x161/0x2e0 [btrfs]
+>     [134244.041323]  btrfs_relocate_chunk+0x36/0x110 [btrfs]
+>     [134244.041345]  btrfs_balance+0xc06/0x1860 [btrfs]
+>     [134244.043382]  ? btrfs_ioctl_balance+0x27c/0x310 [btrfs]
+>     [134244.045586]  btrfs_ioctl_balance+0x1ed/0x310 [btrfs]
+>     [134244.045611]  btrfs_ioctl+0x1880/0x3760 [btrfs]
+>     [134244.049043]  ? do_raw_spin_unlock+0x49/0xc0
+>     [134244.049838]  ? _raw_spin_unlock+0x29/0x40
+>     [134244.050587]  ? __handle_mm_fault+0x11b3/0x14b0
+>     [134244.051417]  ? ksys_ioctl+0x92/0xb0
+>     [134244.052070]  ksys_ioctl+0x92/0xb0
+>     [134244.052701]  ? trace_hardirqs_off_thunk+0x1a/0x1c
+>     [134244.053511]  __x64_sys_ioctl+0x16/0x20
+>     [134244.054206]  do_syscall_64+0x5c/0x280
+>     [134244.054891]  entry_SYSCALL_64_after_hwframe+0x49/0xbe
+>     [134244.055819] RIP: 0033:0x7f29b51c9dd7
+>     [134244.056491] Code: 00 00 00 (...)
+>     [134244.059767] RSP: 002b:00007ffcccc1dd08 EFLAGS: 00000202 ORIG_RAX: 0000000000000010
+>     [134244.061168] RAX: ffffffffffffffda RBX: 0000000000000001 RCX: 00007f29b51c9dd7
+>     [134244.062474] RDX: 00007ffcccc1dda0 RSI: 00000000c4009420 RDI: 0000000000000003
+>     [134244.063771] RBP: 0000000000000003 R08: 00005565cea4b000 R09: 0000000000000000
+>     [134244.065032] R10: 0000000000000541 R11: 0000000000000202 R12: 00007ffcccc2060a
+>     [134244.066327] R13: 00007ffcccc1dda0 R14: 0000000000000002 R15: 00007ffcccc1dec0
+>     [134244.067626] irq event stamp: 0
+>     [134244.068202] hardirqs last  enabled at (0): [<0000000000000000>] 0x0
+>     [134244.069351] hardirqs last disabled at (0): [<ffffffffb2abdedf>] copy_process+0x74f/0x2020
+>     [134244.070909] softirqs last  enabled at (0): [<ffffffffb2abdedf>] copy_process+0x74f/0x2020
+>     [134244.072392] softirqs last disabled at (0): [<0000000000000000>] 0x0
+>     [134244.073432] ---[ end trace bd7c03622e0b0a99 ]---
+> 
+> The -EINVAL error comes from the following chain of function calls:
+> 
+>    __btrfs_cow_block() <-- aborts the transaction
+>      btrfs_reloc_cow_block()
+>        replace_file_extents()
+>          get_new_location() <-- returns -EINVAL
+> 
+> When relocating a data block group, for each allocated extent of the block
+> group, we preallocate another extent (at prealloc_file_extent_cluster()),
+> associated with the data relocation inode, and then dirty all its pages.
+> These preallocated extents have, and must have, the same size that extents
+> from the data block group being relocated have.
+> 
+> Later before we start the relocation stage that updates pointers (bytenr
+> field of file extent items) to point to the the new extents, we trigger
+> writeback for the data relocation inode. The expectation is that writeback
+> will write the pages to the previously preallocated extents, that it
+> follows the NOCOW path. That is generally the case, however, if a scrub
+> is running it may have turned the block group that contains those extents
+> into RO mode, in which case writeback falls back to the COW path.
+> 
+> However in the COW path instead of allocating exactly one extent with the
+> expected size, the allocator may end up allocating several smaller extents
+> due to free space fragmentation - because we tell it at cow_file_range()
+> that the minimum allocation size can match the filesystem's sector size.
+> This later breaks the relocation's expectation that an extent associated
+> to a file extent item in the data relocation inode has the same size as
+> the respective extent pointed by a file extent item in another tree - in
+> this case the extent to which the relocation inode poins to is smaller,
+> causing relocation.c:get_new_location() to return -EINVAL.
+> 
+> For example, if we are relocating a data block group X that has a logical
+> address of X and the block group has an extent allocated at the logical
+> address X + 128Kb with a size of 64Kb:
+> 
+> 1) At prealloc_file_extent_cluster() we allocate an extent for the data
+>     relocation inode with a size of 64Kb and associate it to the file
+>     offset 128Kb (X + 128Kb - X) of the data relocation inode. This
+>     preallocated extent was allocated at block group Z;
+> 
+> 2) A scrub running in parallel turns block group Z into RO mode and
+>     starts scrubing its extents;
+> 
+> 3) Relocation triggers writeback for the data relocation inode;
+> 
+> 4) When running delalloc (btrfs_run_delalloc_range()), we try first the
+>     NOCOW path because the data relocation inode has BTRFS_INODE_PREALLOC
+>     set in its flags. However, because block group Z is in RO mode, the
+>     NOCOW path (run_delalloc_nocow()) falls back into the COW path, by
+>     calling cow_file_range();
+> 
+> 5) At cow_file_range(), in the first iteration of the while loop we call
+>     btrfs_reserve_extent() to allocate a 64Kb extent and pass it a minimum
+>     allocation size of 4Kb (fs_info->sectorsize). Due to free space
+>     fragmentation, btrfs_reserve_extent() ends up allocating two extents
+>     of 32Kb each, each one on a different iteration of that while loop;
+> 
+> 6) Writeback of the data relocation inode completes;
+> 
+> 7) Relocation proceeds and ends up at relocation.c:replace_file_extents(),
+>     with a leaf which has a file extent item that points to the data extent
+>     from block group X, that has a logical address (bytenr) of X + 128Kb
+>     and a size of 64Kb. Then it calls get_new_location(), which does a
+>     lookup in the data relocation tree for a file extent item starting at
+>     offset 128Kb (X + 128Kb - X) and belonging to the data relocation
+>     inode. It finds a corresponding file extent item, however that item
+>     points to an extent that has a size of 32Kb, which doesn't match the
+>     expected size of 64Kb, resuling in -EINVAL being returned from this
+>     function and propagated up to __btrfs_cow_block(), which aborts the
+>     current transaction.
+> 
+> To fix this make sure that at cow_file_range() when we call the allocator
+> we pass it a minimum allocation size corresponding the desired extent size
+> if the inode belongs to the data relocation tree, otherwise pass it the
+> filesystem's sector size as the minimum allocation size.
+> 
+> CC: stable@vger.kernel.org # 4.4+
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
-$ grep 'BTRFS critical' kern.log.1 | wc -l
-1191
+Nice catch,
 
-$ grep 'slot=3D32' kern.log.1 | wc -l
-1191
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 
-$ grep 'corruption' kern.log.1 | wc -l
-0
+Thanks,
 
-Period: 10 Minutes (~1200 lines in 10 minutes).
-
-On Mon, Jun 8, 2020 at 3:29 PM Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
->
->
->
-> On 2020/6/8 =E4=B8=8B=E5=8D=889:25, Thorsten Rehm wrote:
-> > Hi,
-> >
-> > any more ideas to investigate this?
->
-> If you can still hit the same bug, and the fs is still completely fine,
-> I could craft some test patches for you tomorrow.
->
-> The idea behind it is to zero out all the memory for any bad eb.
-> Thus bad eb cache won't affect other read.
-> If that hugely reduced the frequency, I guess that would be the case.
->
->
-> But I'm still very interested in, have you hit "read time tree block
-> corruption detected" lines? Or just such slot=3D32 error lines?
->
-> Thanks,
-> Qu
->
-> >
-> > On Thu, Jun 4, 2020 at 7:57 PM Thorsten Rehm <thorsten.rehm@gmail.com> =
-wrote:
-> >>
-> >> Hmm, ok wait a minute:
-> >>
-> >> "But still, if you're using metadata without copy (aka, SINGLE, RAID0)
-> >> then it would be a completely different story."
-> >>
-> >> It's a single disk (SSD):
-> >>
-> >> root@grml ~ # btrfs filesystem usage /mnt
-> >> Overall:
-> >>     Device size:         115.23GiB
-> >>     Device allocated:          26.08GiB
-> >>     Device unallocated:          89.15GiB
-> >>     Device missing:             0.00B
-> >>     Used:               7.44GiB
-> >>     Free (estimated):         104.04GiB    (min: 59.47GiB)
-> >>     Data ratio:                  1.00
-> >>     Metadata ratio:              2.00
-> >>     Global reserve:          25.25MiB    (used: 0.00B)
-> >>
-> >> Data,single: Size:22.01GiB, Used:7.11GiB (32.33%)
-> >>    /dev/mapper/foo      22.01GiB
-> >>
-> >> Metadata,single: Size:8.00MiB, Used:0.00B (0.00%)
-> >>    /dev/mapper/foo       8.00MiB
-> >>
-> >> Metadata,DUP: Size:2.00GiB, Used:167.81MiB (8.19%)
-> >>    /dev/mapper/foo       4.00GiB
-> >>
-> >> System,single: Size:4.00MiB, Used:0.00B (0.00%)
-> >>    /dev/mapper/foo       4.00MiB
-> >>
-> >> System,DUP: Size:32.00MiB, Used:4.00KiB (0.01%)
-> >>    /dev/mapper/foo      64.00MiB
-> >>
-> >> Unallocated:
-> >>    /dev/mapper/foo      89.15GiB
-> >>
-> >>
-> >> root@grml ~ # btrfs filesystem df /mnt
-> >> Data, single: total=3D22.01GiB, used=3D7.11GiB
-> >> System, DUP: total=3D32.00MiB, used=3D4.00KiB
-> >> System, single: total=3D4.00MiB, used=3D0.00B
-> >> Metadata, DUP: total=3D2.00GiB, used=3D167.81MiB
-> >> Metadata, single: total=3D8.00MiB, used=3D0.00B
-> >> GlobalReserve, single: total=3D25.25MiB, used=3D0.00B
-> >>
-> >> I did also a fstrim:
-> >>
-> >> root@grml ~ # cryptsetup --allow-discards open /dev/sda5 foo
-> >> Enter passphrase for /dev/sda5:
-> >> root@grml ~ # mount -o discard /dev/mapper/foo /mnt
-> >> root@grml ~ # fstrim -v /mnt/
-> >> /mnt/: 105.8 GiB (113600049152 bytes) trimmed
-> >> fstrim -v /mnt/  0.00s user 5.34s system 0% cpu 10:28.70 total
-> >>
-> >> The kern.log in the runtime of fstrim:
-> >> --- snip ---
-> >> Jun 04 12:32:02 grml kernel: BTRFS critical (device dm-0): corrupt
-> >> leaf: root=3D1 block=3D32505856 slot=3D32, invalid root item size, hav=
-e 239
-> >> expect 439
-> >> Jun 04 12:32:02 grml kernel: BTRFS critical (device dm-0): corrupt
-> >> leaf: root=3D1 block=3D32813056 slot=3D32, invalid root item size, hav=
-e 239
-> >> expect 439
-> >> Jun 04 12:32:37 grml kernel: BTRFS info (device dm-0): turning on sync=
- discard
-> >> Jun 04 12:32:37 grml kernel: BTRFS info (device dm-0): disk space
-> >> caching is enabled
-> >> Jun 04 12:32:37 grml kernel: BTRFS critical (device dm-0): corrupt
-> >> leaf: root=3D1 block=3D32813056 slot=3D32, invalid root item size, hav=
-e 239
-> >> expect 439
-> >> Jun 04 12:32:37 grml kernel: BTRFS info (device dm-0): enabling ssd
-> >> optimizations
-> >> Jun 04 12:34:35 grml kernel: BTRFS critical (device dm-0): corrupt
-> >> leaf: root=3D1 block=3D32382976 slot=3D32, invalid root item size, hav=
-e 239
-> >> expect 439
-> >> Jun 04 12:36:50 grml kernel: BTRFS info (device dm-0): turning on sync=
- discard
-> >> Jun 04 12:36:50 grml kernel: BTRFS info (device dm-0): disk space
-> >> caching is enabled
-> >> Jun 04 12:36:50 grml kernel: BTRFS critical (device dm-0): corrupt
-> >> leaf: root=3D1 block=3D32382976 slot=3D32, invalid root item size, hav=
-e 239
-> >> expect 439
-> >> Jun 04 12:36:50 grml kernel: BTRFS info (device dm-0): enabling ssd
-> >> optimizations
-> >> --- snap ---
-> >>
-> >> Furthermore the system runs for years now. I can't remember exactly,
-> >> but think for 4-5 years. I've started with Debian Testing and just
-> >> upgraded my system on a regular basis. And and I started with btrfs of
-> >> course, but I can't remember with which version...
-> >>
-> >> The problem is still there after the fstrim. Any further suggestions?
-> >>
-> >> And isn't it a little bit strange, that someone had a very similiar pr=
-oblem?
-> >> https://lore.kernel.org/linux-btrfs/19acbd39-475f-bd72-e280-5f6c649603=
-5c@web.de/
-> >>
-> >> root=3D1, slot=3D32, and "invalid root item size, have 239 expect 439"=
- are
-> >> identical to my errors.
-> >>
-> >> Thx so far!
-> >>
-> >>
-> >>
-> >> On Thu, Jun 4, 2020 at 2:06 PM Qu Wenruo <quwenruo.btrfs@gmx.com> wrot=
-e:
-> >>>
-> >>>
-> >>>
-> >>> On 2020/6/4 =E4=B8=8B=E5=8D=886:52, Thorsten Rehm wrote:
-> >>>> The disk in question is my root (/) partition. If the filesystem is
-> >>>> that highly damaged, I have to reinstall my system. We will see, if
-> >>>> it's come to that. Maybe we find something interesting on the way...
-> >>>> I've downloaded the latest grml daily image and started my system fr=
-om
-> >>>> a usb stick. Here we go:
-> >>>>
-> >>>> root@grml ~ # uname -r
-> >>>> 5.6.0-2-amd64
-> >>>>
-> >>>> root@grml ~ # cryptsetup open /dev/sda5 foo
-> >>>>
-> >>>>                                                                   :(
-> >>>> Enter passphrase for /dev/sda5:
-> >>>>
-> >>>> root@grml ~ # file -L -s /dev/mapper/foo
-> >>>> /dev/mapper/foo: BTRFS Filesystem label "slash", sectorsize 4096,
-> >>>> nodesize 4096, leafsize 4096,
-> >>>> UUID=3D65005d0f-f8ea-4f77-8372-eb8b53198685, 7815716864/123731968000
-> >>>> bytes used, 1 devices
-> >>>>
-> >>>> root@grml ~ # btrfs check /dev/mapper/foo
-> >>>> Opening filesystem to check...
-> >>>> Checking filesystem on /dev/mapper/foo
-> >>>> UUID: 65005d0f-f8ea-4f77-8372-eb8b53198685
-> >>>> [1/7] checking root items
-> >>>> [2/7] checking extents
-> >>>> [3/7] checking free space cache
-> >>>> [4/7] checking fs roots
-> >>>> [5/7] checking only csums items (without verifying data)
-> >>>> [6/7] checking root refs
-> >>>> [7/7] checking quota groups skipped (not enabled on this FS)
-> >>>> found 7815716864 bytes used, no error found
-> >>>> total csum bytes: 6428260
-> >>>> total tree bytes: 175968256
-> >>>> total fs tree bytes: 149475328
-> >>>> total extent tree bytes: 16052224
-> >>>> btree space waste bytes: 43268911
-> >>>> file data blocks allocated: 10453221376
-> >>>>  referenced 8746053632
-> >>>
-> >>> Errr, this is a super good news, all your fs metadata is completely f=
-ine
-> >>> (at least for the first copy).
-> >>> Which is completely different from the kernel dmesg.
-> >>>
-> >>>>
-> >>>> root@grml ~ # lsblk /dev/sda5 --fs
-> >>>> NAME  FSTYPE      FSVER LABEL UUID
-> >>>> FSAVAIL FSUSE% MOUNTPOINT
-> >>>> sda5  crypto_LUKS 1           d2b4fa40-8afd-4e16-b207-4d106096fd22
-> >>>> =E2=94=94=E2=94=80foo btrfs             slash 65005d0f-f8ea-4f77-837=
-2-eb8b53198685
-> >>>>
-> >>>> root@grml ~ # mount /dev/mapper/foo /mnt
-> >>>> root@grml ~ # btrfs scrub start /mnt
-> >>>>
-> >>>> root@grml ~ # journalctl -k --no-pager | grep BTRFS
-> >>>> Jun 04 10:33:04 grml kernel: BTRFS: device label slash devid 1 trans=
-id
-> >>>> 24750795 /dev/dm-0 scanned by systemd-udevd (3233)
-> >>>> Jun 04 10:45:17 grml kernel: BTRFS info (device dm-0): disk space
-> >>>> caching is enabled
-> >>>> Jun 04 10:45:17 grml kernel: BTRFS critical (device dm-0): corrupt
-> >>>> leaf: root=3D1 block=3D54222848 slot=3D32, invalid root item size, h=
-ave 239
-> >>>> expect 439
-> >>>
-> >>> One error line without "read time corruption" line means btrfs kernel
-> >>> indeed skipped to next copy.
-> >>> In this case, there is one copy (aka the first copy) corrupted.
-> >>> Strangely, if it's the first copy in kernel, it should also be the fi=
-rst
-> >>> copy in btrfs check.
-> >>>
-> >>> And no problem reported from btrfs check, that's already super strang=
-e.
-> >>>
-> >>>> Jun 04 10:45:17 grml kernel: BTRFS info (device dm-0): enabling ssd
-> >>>> optimizations
-> >>>> Jun 04 10:45:17 grml kernel: BTRFS info (device dm-0): checking UUID=
- tree
-> >>>> Jun 04 10:45:38 grml kernel: BTRFS info (device dm-0): scrub: starte=
-d on devid 1
-> >>>> Jun 04 10:45:49 grml kernel: BTRFS critical (device dm-0): corrupt
-> >>>> leaf: root=3D1 block=3D29552640 slot=3D32, invalid root item size, h=
-ave 239
-> >>>> expect 439
-> >>>> Jun 04 10:46:25 grml kernel: BTRFS critical (device dm-0): corrupt
-> >>>> leaf: root=3D1 block=3D29741056 slot=3D32, invalid root item size, h=
-ave 239
-> >>>> expect 439
-> >>>> Jun 04 10:46:31 grml kernel: BTRFS info (device dm-0): scrub: finish=
-ed
-> >>>> on devid 1 with status: 0
-> >>>> Jun 04 10:46:56 grml kernel: BTRFS critical (device dm-0): corrupt
-> >>>> leaf: root=3D1 block=3D29974528 slot=3D32, invalid root item size, h=
-ave 239
-> >>>> expect 439
-> >>>
-> >>> This means the corrupted copy are also there for several (and I guess
-> >>> unrelated) tree blocks.
-> >>> For scrub I guess it just try to read the good copy without bothering
-> >>> the bad one it found, so no error reported in scrub.
-> >>>
-> >>> But still, if you're using metadata without copy (aka, SINGLE, RAID0)
-> >>> then it would be a completely different story.
-> >>>
-> >>>
-> >>>>
-> >>>> root@grml ~ # btrfs scrub status /mnt
-> >>>> UUID:             65005d0f-f8ea-4f77-8372-eb8b53198685
-> >>>> Scrub started:    Thu Jun  4 10:45:38 2020
-> >>>> Status:           finished
-> >>>> Duration:         0:00:53
-> >>>> Total to scrub:   7.44GiB
-> >>>> Rate:             143.80MiB/s
-> >>>> Error summary:    no errors found
-> >>>>
-> >>>>
-> >>>> root@grml ~ # for block in 54222848 29552640 29741056 29974528; do
-> >>>> btrfs ins dump-tree -b $block /dev/dm-0; done
-> >>>> btrfs-progs v5.6
-> >>>> leaf 54222848 items 33 free space 1095 generation 24750795 owner ROO=
-T_TREE
-> >>>> leaf 54222848 flags 0x1(WRITTEN) backref revision 1
-> >>>> fs uuid 65005d0f-f8ea-4f77-8372-eb8b53198685
-> >>>> chunk uuid 137764f6-c8e6-45b3-b275-82d8558c1ff9
-> >>>>     item 0 key (289 INODE_ITEM 0) itemoff 3835 itemsize 160
-> >>>>         generation 24703953 transid 24703953 size 262144 nbytes 8595=
-701760
-> >>> ...
-> >>>>         cache generation 24750791 entries 139 bitmaps 8
-> >>>>     item 32 key (DATA_RELOC_TREE ROOT_ITEM 0) itemoff 1920 itemsize =
-239
-> >>>
-> >>> So it's still there. The first copy is corrupted. Just btrfs-progs ca=
-n't
-> >>> detect it.
-> >>>
-> >>>>         generation 4 root_dirid 256 bytenr 29380608 level 0 refs 1
-> >>>>         lastsnap 0 byte_limit 0 bytes_used 4096 flags 0x0(none)
-> >>>>         drop key (0 UNKNOWN.0 0) level 0
-> >>>> btrfs-progs v5.6
-> >>>> leaf 29552640 items 33 free space 1095 generation 24750796 owner ROO=
-T_TREE
-> >>>> leaf 29552640 flags 0x1(WRITTEN) backref revision 1
-> >>>> fs uuid 65005d0f-f8ea-4f77-8372-eb8b53198685
-> >>>> chunk uuid 137764f6-c8e6-45b3-b275-82d8558c1ff9
-> >>> ...
-> >>>>     item 32 key (DATA_RELOC_TREE ROOT_ITEM 0) itemoff 1920 itemsize =
-239
-> >>>>         generation 4 root_dirid 256 bytenr 29380608 level 0 refs 1
-> >>>>         lastsnap 0 byte_limit 0 bytes_used 4096 flags 0x0(none)
-> >>>>         drop key (0 UNKNOWN.0 0) level 0
-> >>>
-> >>> This is different from previous copy, which means it should be an CoW=
-ed
-> >>> tree blocks.
-> >>>
-> >>>> btrfs-progs v5.6
-> >>>> leaf 29741056 items 33 free space 1095 generation 24750797 owner ROO=
-T_TREE
-> >>>
-> >>> Even newer one.
-> >>>
-> >>> ...
-> >>>> btrfs-progs v5.6
-> >>>> leaf 29974528 items 33 free space 1095 generation 24750798 owner ROO=
-T_TREE
-> >>>
-> >>> Newer.
-> >>>
-> >>> So It looks the bad copy exists for a while, but at the same time we
-> >>> still have one good copy to let everything float.
-> >>>
-> >>> To kill all the old corrupted copies, if it supports TRIM/DISCARD, I
-> >>> recommend to run scrub first, then fstrim on the fs.
-> >>>
-> >>> If it's HDD, I recommend to run a btrfs balance -m to relocate all
-> >>> metadata blocks, to get rid the bad copies.
-> >>>
-> >>> Of course, all using v5.3+ kernels.
-> >>>
-> >>> Thanks,
-> >>> Qu
-> >>>>
-> >>>> On Thu, Jun 4, 2020 at 12:00 PM Qu Wenruo <quwenruo.btrfs@gmx.com> w=
-rote:
-> >>>>>
-> >>>>>
-> >>>>>
-> >>>>> On 2020/6/4 =E4=B8=8B=E5=8D=885:45, Thorsten Rehm wrote:
-> >>>>>> Thank you for you answer.
-> >>>>>> I've just updated my system, did a reboot and it's running with a
-> >>>>>> 5.6.0-2-amd64 now.
-> >>>>>> So, this is how my kern.log looks like, just right after the start=
-:
-> >>>>>>
-> >>>>>
-> >>>>>>
-> >>>>>> There are too many blocks. I just picked three randomly:
-> >>>>>
-> >>>>> Looks like we need more result, especially some result doesn't matc=
-h at all.
-> >>>>>
-> >>>>>>
-> >>>>>> =3D=3D=3D Block 33017856 =3D=3D=3D
-> >>>>>> $ btrfs ins dump-tree -b 33017856 /dev/dm-0
-> >>>>>> btrfs-progs v5.6
-> >>>>>> leaf 33017856 items 51 free space 17 generation 24749502 owner FS_=
-TREE
-> >>>>>> leaf 33017856 flags 0x1(WRITTEN) backref revision 1
-> >>>>>> fs uuid 65005d0f-f8ea-4f77-8372-eb8b53198685
-> >>>>>> chunk uuid 137764f6-c8e6-45b3-b275-82d8558c1ff9
-> >>>>> ...
-> >>>>>>         item 31 key (4000670 EXTENT_DATA 1933312) itemoff 2299 ite=
-msize 53
-> >>>>>>                 generation 24749502 type 1 (regular)
-> >>>>>>                 extent data disk byte 1126502400 nr 4096
-> >>>>>>                 extent data offset 0 nr 8192 ram 8192
-> >>>>>>                 extent compression 2 (lzo)
-> >>>>>>         item 32 key (4000670 EXTENT_DATA 1941504) itemoff 2246 ite=
-msize 53
-> >>>>>>                 generation 24749502 type 1 (regular)
-> >>>>>>                 extent data disk byte 0 nr 0
-> >>>>>>                 extent data offset 1937408 nr 4096 ram 4194304
-> >>>>>>                 extent compression 0 (none)
-> >>>>> Not root item at all.
-> >>>>> At least for this copy, it looks like kernel got one completely bad
-> >>>>> copy, then discarded it and found a good copy.
-> >>>>>
-> >>>>> That's very strange, especially when all the other involved ones se=
-ems
-> >>>>> random and all at slot 32 is not a coincident.
-> >>>>>
-> >>>>>
-> >>>>>> =3D=3D=3D Block 44900352  =3D=3D=3D
-> >>>>>> btrfs ins dump-tree -b 44900352 /dev/dm-0
-> >>>>>> btrfs-progs v5.6
-> >>>>>> leaf 44900352 items 19 free space 591 generation 24749527 owner FS=
-_TREE
-> >>>>>> leaf 44900352 flags 0x1(WRITTEN) backref revision 1
-> >>>>>
-> >>>>> This block doesn't even have slot 32... It only have 19 items, thus=
- slot
-> >>>>> 0 ~ slot 18.
-> >>>>> And its owner, FS_TREE shouldn't have ROOT_ITEM.
-> >>>>>
-> >>>>>>
-> >>>>>>
-> >>>>>> =3D=3D=3D Block 55352561664 =3D=3D=3D
-> >>>>>> $ btrfs ins dump-tree -b 55352561664 /dev/dm-0
-> >>>>>> btrfs-progs v5.6
-> >>>>>> leaf 55352561664 items 33 free space 1095 generation 24749497 owne=
-r ROOT_TREE
-> >>>>>> leaf 55352561664 flags 0x1(WRITTEN) backref revision 1
-> >>>>>> fs uuid 65005d0f-f8ea-4f77-8372-eb8b53198685
-> >>>>>> chunk uuid 137764f6-c8e6-45b3-b275-82d8558c1ff9
-> >>>>> ...
-> >>>>>>         item 32 key (DATA_RELOC_TREE ROOT_ITEM 0) itemoff 1920 ite=
-msize 239
-> >>>>>>                 generation 4 root_dirid 256 bytenr 29380608 level =
-0 refs 1
-> >>>>>>                 lastsnap 0 byte_limit 0 bytes_used 4096 flags 0x0(=
-none)
-> >>>>>>                 drop key (0 UNKNOWN.0 0) level 0
-> >>>>>
-> >>>>> This looks like the offending tree block.
-> >>>>> Slot 32, item size 239, which is ROOT_ITEM, but in valid size.
-> >>>>>
-> >>>>> Since you're here, I guess a btrfs check without --repair on the
-> >>>>> unmounted fs would help to identify the real damage.
-> >>>>>
-> >>>>> And again, the fs looks very damaged, it's highly recommended to ba=
-ckup
-> >>>>> your data asap.
-> >>>>>
-> >>>>> Thanks,
-> >>>>> Qu
-> >>>>>
-> >>>>>> --- snap ---
-> >>>>>>
-> >>>>>>
-> >>>>>>
-> >>>>>> On Thu, Jun 4, 2020 at 3:31 AM Qu Wenruo <quwenruo.btrfs@gmx.com> =
-wrote:
-> >>>>>>>
-> >>>>>>>
-> >>>>>>>
-> >>>>>>> On 2020/6/3 =E4=B8=8B=E5=8D=889:37, Thorsten Rehm wrote:
-> >>>>>>>> Hi,
-> >>>>>>>>
-> >>>>>>>> I've updated my system (Debian testing) [1] several months ago (=
-~
-> >>>>>>>> December) and I noticed a lot of corrupt leaf messages flooding =
-my
-> >>>>>>>> kern.log [2]. Furthermore my system had some trouble, e.g.
-> >>>>>>>> applications were terminated after some uptime, due to the btrfs
-> >>>>>>>> filesystem errors. This was with kernel 5.3.
-> >>>>>>>> The last time I tried was with Kernel 5.6.0-1-amd64 and the prob=
-lem persists.
-> >>>>>>>>
-> >>>>>>>> I've downgraded my kernel to 4.19.0-8-amd64 from the Debian Stab=
-le
-> >>>>>>>> release and with this kernel there aren't any corrupt leaf messa=
-ges
-> >>>>>>>> and the problem is gone. IMHO, it must be something coming with =
-kernel
-> >>>>>>>> 5.3 (or 5.x).
-> >>>>>>>
-> >>>>>>> V5.3 introduced a lot of enhanced metadata sanity checks, and the=
-y catch
-> >>>>>>> such *obviously* wrong metadata.
-> >>>>>>>>
-> >>>>>>>> My harddisk is a SSD which is responsible for the root partition=
-. I've
-> >>>>>>>> encrypted my filesystem with LUKS and just right after I entered=
- my
-> >>>>>>>> password at the boot, the first corrupt leaf errors appear.
-> >>>>>>>>
-> >>>>>>>> An error message looks like this:
-> >>>>>>>> May  7 14:39:34 foo kernel: [  100.162145] BTRFS critical (devic=
-e
-> >>>>>>>> dm-0): corrupt leaf: root=3D1 block=3D35799040 slot=3D32, invali=
-d root item
-> >>>>>>>> size, have 239 expect 439
-> >>>>>>>
-> >>>>>>> Btrfs root items have fixed size. This is already something very =
-bad.
-> >>>>>>>
-> >>>>>>> Furthermore, the item size is smaller than expected, which means =
-we can
-> >>>>>>> easily get garbage. I'm a little surprised that older kernel can =
-even
-> >>>>>>> work without crashing the whole kernel.
-> >>>>>>>
-> >>>>>>> Some extra info could help us to find out how badly the fs is cor=
-rupted.
-> >>>>>>> # btrfs ins dump-tree -b 35799040 /dev/dm-0
-> >>>>>>>
-> >>>>>>>>
-> >>>>>>>> "root=3D1", "slot=3D32", "have 239 expect 439" is always the sam=
-e at every
-> >>>>>>>> error line. Only the block number changes.
-> >>>>>>>
-> >>>>>>> And dumps for the other block numbers too.
-> >>>>>>>
-> >>>>>>>>
-> >>>>>>>> Interestingly it's the very same as reported to the ML here [3].=
- I've
-> >>>>>>>> contacted the reporter, but he didn't have a solution for me, be=
-cause
-> >>>>>>>> he changed to a different filesystem.
-> >>>>>>>>
-> >>>>>>>> I've already tried "btrfs scrub" and "btrfs check --readonly /" =
-in
-> >>>>>>>> rescue mode, but w/o any errors. I've also checked the S.M.A.R.T=
-.
-> >>>>>>>> values of the SSD, which are fine. Furthermore I've tested my RA=
-M, but
-> >>>>>>>> again, w/o any errors.
-> >>>>>>>
-> >>>>>>> This doesn't look like a bit flip, so not RAM problems.
-> >>>>>>>
-> >>>>>>> Don't have any better advice until we got the dumps, but I'd reco=
-mmend
-> >>>>>>> to backup your data since it's still possible.
-> >>>>>>>
-> >>>>>>> Thanks,
-> >>>>>>> Qu
-> >>>>>>>
-> >>>>>>>>
-> >>>>>>>> So, I have no more ideas what I can do. Could you please help me=
- to
-> >>>>>>>> investigate this further? Could it be a bug?
-> >>>>>>>>
-> >>>>>>>> Thank you very much.
-> >>>>>>>>
-> >>>>>>>> Best regards,
-> >>>>>>>> Thorsten
-> >>>>>>>>
-> >>>>>>>>
-> >>>>>>>>
-> >>>>>>>> 1:
-> >>>>>>>> $ cat /etc/debian_version
-> >>>>>>>> bullseye/sid
-> >>>>>>>>
-> >>>>>>>> $ uname -a
-> >>>>>>>> [no problem with this kernel]
-> >>>>>>>> Linux foo 4.19.0-8-amd64 #1 SMP Debian 4.19.98-1 (2020-01-26) x8=
-6_64 GNU/Linux
-> >>>>>>>>
-> >>>>>>>> $ btrfs --version
-> >>>>>>>> btrfs-progs v5.6
-> >>>>>>>>
-> >>>>>>>> $ sudo btrfs fi show
-> >>>>>>>> Label: 'slash'  uuid: 65005d0f-f8ea-4f77-8372-eb8b53198685
-> >>>>>>>>         Total devices 1 FS bytes used 7.33GiB
-> >>>>>>>>         devid    1 size 115.23GiB used 26.08GiB path /dev/mapper=
-/sda5_crypt
-> >>>>>>>>
-> >>>>>>>> $ btrfs fi df /
-> >>>>>>>> Data, single: total=3D22.01GiB, used=3D7.16GiB
-> >>>>>>>> System, DUP: total=3D32.00MiB, used=3D4.00KiB
-> >>>>>>>> System, single: total=3D4.00MiB, used=3D0.00B
-> >>>>>>>> Metadata, DUP: total=3D2.00GiB, used=3D168.19MiB
-> >>>>>>>> Metadata, single: total=3D8.00MiB, used=3D0.00B
-> >>>>>>>> GlobalReserve, single: total=3D25.42MiB, used=3D0.00B
-> >>>>>>>>
-> >>>>>>>>
-> >>>>>>>> 2:
-> >>>>>>>> [several messages per second]
-> >>>>>>>> May  7 14:39:34 foo kernel: [  100.162145] BTRFS critical (devic=
-e
-> >>>>>>>> dm-0): corrupt leaf: root=3D1 block=3D35799040 slot=3D32, invali=
-d root item
-> >>>>>>>> size, have 239 expect 439
-> >>>>>>>> May  7 14:39:35 foo kernel: [  100.998530] BTRFS critical (devic=
-e
-> >>>>>>>> dm-0): corrupt leaf: root=3D1 block=3D35885056 slot=3D32, invali=
-d root item
-> >>>>>>>> size, have 239 expect 439
-> >>>>>>>> May  7 14:39:35 foo kernel: [  101.348650] BTRFS critical (devic=
-e
-> >>>>>>>> dm-0): corrupt leaf: root=3D1 block=3D35926016 slot=3D32, invali=
-d root item
-> >>>>>>>> size, have 239 expect 439
-> >>>>>>>> May  7 14:39:36 foo kernel: [  101.619437] BTRFS critical (devic=
-e
-> >>>>>>>> dm-0): corrupt leaf: root=3D1 block=3D35995648 slot=3D32, invali=
-d root item
-> >>>>>>>> size, have 239 expect 439
-> >>>>>>>> May  7 14:39:36 foo kernel: [  101.874069] BTRFS critical (devic=
-e
-> >>>>>>>> dm-0): corrupt leaf: root=3D1 block=3D36184064 slot=3D32, invali=
-d root item
-> >>>>>>>> size, have 239 expect 439
-> >>>>>>>> May  7 14:39:36 foo kernel: [  102.339087] BTRFS critical (devic=
-e
-> >>>>>>>> dm-0): corrupt leaf: root=3D1 block=3D36319232 slot=3D32, invali=
-d root item
-> >>>>>>>> size, have 239 expect 439
-> >>>>>>>> May  7 14:39:37 foo kernel: [  102.629429] BTRFS critical (devic=
-e
-> >>>>>>>> dm-0): corrupt leaf: root=3D1 block=3D36380672 slot=3D32, invali=
-d root item
-> >>>>>>>> size, have 239 expect 439
-> >>>>>>>> May  7 14:39:37 foo kernel: [  102.839669] BTRFS critical (devic=
-e
-> >>>>>>>> dm-0): corrupt leaf: root=3D1 block=3D36487168 slot=3D32, invali=
-d root item
-> >>>>>>>> size, have 239 expect 439
-> >>>>>>>> May  7 14:39:37 foo kernel: [  103.109183] BTRFS critical (devic=
-e
-> >>>>>>>> dm-0): corrupt leaf: root=3D1 block=3D36597760 slot=3D32, invali=
-d root item
-> >>>>>>>> size, have 239 expect 439
-> >>>>>>>> May  7 14:39:37 foo kernel: [  103.299101] BTRFS critical (devic=
-e
-> >>>>>>>> dm-0): corrupt leaf: root=3D1 block=3D36626432 slot=3D32, invali=
-d root item
-> >>>>>>>> size, have 239 expect 439
-> >>>>>>>>
-> >>>>>>>> 3:
-> >>>>>>>> https://lore.kernel.org/linux-btrfs/19acbd39-475f-bd72-e280-5f6c=
-6496035c@web.de/
-> >>>>>>>>
-> >>>>>>>
-> >>>>>
-> >>>
->
+Josef
