@@ -2,117 +2,76 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 559511F3AA2
-	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Jun 2020 14:28:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DBC61F3F1E
+	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Jun 2020 17:21:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729344AbgFIM2D (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 9 Jun 2020 08:28:03 -0400
-Received: from mx2.suse.de ([195.135.220.15]:51012 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726903AbgFIM2A (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 9 Jun 2020 08:28:00 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 851C3AAC6;
-        Tue,  9 Jun 2020 12:28:00 +0000 (UTC)
-Date:   Tue, 9 Jun 2020 14:27:55 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-acpi@vger.kernel.org,
-        netdev@vger.kernel.org, Joe Perches <joe@perches.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jason Baron <jbaron@akamai.com>, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [PATCH v3 2/7] dynamic_debug: Group debug messages by level
- bitmask
-Message-ID: <20200609122755.GE23752@linux-b0ei>
-References: <20200609104604.1594-1-stanimir.varbanov@linaro.org>
- <20200609104604.1594-3-stanimir.varbanov@linaro.org>
+        id S1730640AbgFIPU7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 9 Jun 2020 11:20:59 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:50388 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729678AbgFIPU7 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 9 Jun 2020 11:20:59 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 059FIPcE103042;
+        Tue, 9 Jun 2020 15:20:57 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=lJ9TPtJaaTcSaOsaQCptngZSDffJmyCshbPP/OHqD34=;
+ b=rhfFSTeOnZZ4jZ0uW2zS9+P+I2pRIR8ho55uu6BzfEm/SHlYgIpO1EdFz85F+7rFG0FQ
+ LhwCS7U6uho2P1qassAqPTIQo/tpqxPFKFiYy9EsnWqzRajYG6TBcuejPiDnFklKmQSL
+ T5zH3N9AZnQR/AN50JGWGf5Z6i3efpXb64SRnmIwef552vojff+TJLru9zuFfdoHvt8P
+ 8uoHRfqeMooKF6mJSiWDxGtbePAl2axaUfqBgYmwYSxqED5zierMSjxdhURNV7zCzJKq
+ 5wDunfXAdfacO8aOkQ0onMcQPSnDkwMYyHFK0gYqNNm3ter5M/Sx5vh9C7BplVCe9dwE ng== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2120.oracle.com with ESMTP id 31g3smwa2q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 09 Jun 2020 15:20:57 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 059FJjlh168896;
+        Tue, 9 Jun 2020 15:20:56 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3030.oracle.com with ESMTP id 31gn2wvcjk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 09 Jun 2020 15:20:56 +0000
+Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 059FKunY006097;
+        Tue, 9 Jun 2020 15:20:56 GMT
+Received: from [192.168.1.102] (/39.109.231.106)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 09 Jun 2020 08:20:55 -0700
+Subject: Re: [PATCH 1/3] Btrfs: remove the start argument from
+ btrfs_free_reserved_data_space_noquota()
+To:     fdmanana@kernel.org, linux-btrfs@vger.kernel.org
+References: <20200609101933.29459-1-fdmanana@kernel.org>
+From:   Anand Jain <anand.jain@oracle.com>
+Message-ID: <3cd70934-1fce-bcdf-92f1-88dca42e6bdd@oracle.com>
+Date:   Tue, 9 Jun 2020 23:20:52 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200609104604.1594-3-stanimir.varbanov@linaro.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200609101933.29459-1-fdmanana@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9647 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 phishscore=0 malwarescore=0
+ bulkscore=0 adultscore=0 mlxlogscore=999 spamscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2006090117
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9647 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 priorityscore=1501
+ lowpriorityscore=0 impostorscore=0 cotscore=-2147483648 suspectscore=0
+ spamscore=0 bulkscore=0 malwarescore=0 phishscore=0 mlxscore=0
+ mlxlogscore=999 clxscore=1011 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2004280000 definitions=main-2006090117
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue 2020-06-09 13:45:59, Stanimir Varbanov wrote:
-> This will allow dynamic debug users and driver writers to group
-> debug messages by level bitmask.  The level bitmask should be a
-> hex number.
-> 
-> Done this functionality by extending dynamic debug metadata with
-> new level member and propagate it over all the users.  Also
-> introduce new dynamic_pr_debug_level and dynamic_dev_dbg_level
-> macros to be used by the drivers.
-
-Could you please provide more details?
-
-What is the use case?
-What is the exact meaning of the level value?
-How the levels will get defined?
-
-Dynamic debug is used for messages with KERN_DEBUG log level.
-Is this another dimension of the message leveling?
-
-Given that the filter is defined by bits, it is rather grouping
-by context or so.
 
 
-> diff --git a/lib/dynamic_debug.c b/lib/dynamic_debug.c
-> index 8f199f403ab5..5d28d388f6dd 100644
-> --- a/lib/dynamic_debug.c
-> +++ b/lib/dynamic_debug.c
-> @@ -55,6 +55,7 @@ struct ddebug_query {
->  	const char *function;
->  	const char *format;
->  	unsigned int first_lineno, last_lineno;
-> +	unsigned int level;
->  };
->  
->  struct ddebug_iter {
-> @@ -187,6 +188,18 @@ static int ddebug_change(const struct ddebug_query *query,
->  
->  			nfound++;
->  
-> +#ifdef CONFIG_JUMP_LABEL
-> +			if (query->level && query->level & dp->level) {
-> +				if (flags & _DPRINTK_FLAGS_PRINT)
-> +					static_branch_enable(&dp->key.dd_key_true);
-> +				else
-> +					static_branch_disable(&dp->key.dd_key_true);
-> +			} else if (query->level &&
-> +				   flags & _DPRINTK_FLAGS_PRINT) {
-> +				static_branch_disable(&dp->key.dd_key_true);
-> +				continue;
-> +			}
-> +#endif
+looks good.
 
-This looks like a hack in the existing code:
-
-  + It is suspicious that "continue" is only in one branch. It means
-    that static_branch_enable/disable() might get called 2nd time
-    by the code below. Or newflags are not stored when there is a change.
-
-  + It changes the behavior and the below vpr_info("changed ...")
-    is not called.
-
-Or do I miss anything?
-
->			newflags = (dp->flags & mask) | flags;
->  			if (newflags == dp->flags)
->  				continue;
-
-Best Regards,
-Petr
+Reviewed-by: Anand Jain <anand.jain@oracle.com>
