@@ -2,86 +2,149 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 570791F395E
-	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Jun 2020 13:16:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BB9B1F39AE
+	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Jun 2020 13:29:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728420AbgFILQS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 9 Jun 2020 07:16:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41230 "EHLO mail.kernel.org"
+        id S1727017AbgFIL3C (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 9 Jun 2020 07:29:02 -0400
+Received: from mx2.suse.de ([195.135.220.15]:37418 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726083AbgFILQS (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 9 Jun 2020 07:16:18 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 50236207ED;
-        Tue,  9 Jun 2020 11:16:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591701377;
-        bh=xU2wxxxrsLRWawYxncEIYiWeqskYMvCbos9vXfMghc4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=fvtwVxjvZX99zxaniwh1G9/o2C8apo21iA4dq2KWDskckwppNIRJ7QPE53zLAXYIc
-         uBRlDf2dbCmgFsC0L1EUriB6WOyjiI5+3kKbIm+iBUHkklkqL/+wNHQlTMei9K6B15
-         rbg0aciyOuk2Uh1MInUEg34BZpUyEO9NZkiVt2aA=
-Date:   Tue, 9 Jun 2020 13:16:15 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-acpi@vger.kernel.org,
-        netdev@vger.kernel.org, Joe Perches <joe@perches.com>,
-        Jason Baron <jbaron@akamai.com>,
-        Jonathan Corbet <corbet@lwn.net>
-Subject: Re: [PATCH v3 1/7] Documentation: dynamic-debug: Add description of
- level bitmask
-Message-ID: <20200609111615.GD780233@kroah.com>
-References: <20200609104604.1594-1-stanimir.varbanov@linaro.org>
- <20200609104604.1594-2-stanimir.varbanov@linaro.org>
+        id S1728730AbgFIL2s (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 9 Jun 2020 07:28:48 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 19E90AD2A;
+        Tue,  9 Jun 2020 11:28:49 +0000 (UTC)
+Subject: Re: [PATCH 3/3] Btrfs: only allocate necessary space when relocating
+ a data block group
+To:     Filipe Manana <fdmanana@kernel.org>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
+References: <20200609101953.29559-1-fdmanana@kernel.org>
+ <b7c4a96d-df7c-b0b5-d1c5-aff5c458b032@suse.com>
+ <CAL3q7H6zqxy_8=4vmYH_4mzi_M=tMXj5+0DE9a-KEjkry1V_xQ@mail.gmail.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <35478dac-ba19-1674-2771-9a35ba564c4e@suse.com>
+Date:   Tue, 9 Jun 2020 14:28:44 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200609104604.1594-2-stanimir.varbanov@linaro.org>
+In-Reply-To: <CAL3q7H6zqxy_8=4vmYH_4mzi_M=tMXj5+0DE9a-KEjkry1V_xQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Jun 09, 2020 at 01:45:58PM +0300, Stanimir Varbanov wrote:
-> This adds description of the level bitmask feature.
+
+
+On 9.06.20 г. 13:57 ч., Filipe Manana wrote:
+> On Tue, Jun 9, 2020 at 11:50 AM Nikolay Borisov <nborisov@suse.com> wrote:
+>>
+>>
+>>
+>> On 9.06.20 г. 13:19 ч., fdmanana@kernel.org wrote:
+>>> From: Filipe Manana <fdmanana@suse.com>
+>>>
+>>> When relocating a data block group we group extents from the block group
+>>> into a cluster and when the cluster reaches a certain number of extents
+>>> we do the relocation.
+>>
+>> We don't reserve more space because the cluster is guaranteed to contain
+>> contiguous extents, namely in relocate_data_extent we have:
+>>
+>> if (cluster->nr > 0 && extent_key->objectid != cluster->end + 1)
+>> {
+>>    ret = relocate_file_extent_cluster(inode, cluster);
+>>    if (ret)
+>>       return ret;
+>>    cluster->nr = 0;
+>> }
+>>
+>> Cluster->end points to the end offset of the last added extent and the
+>> check above ensures that the one which is currently added is also
+>> contiguous. So relocate_file_extent_cluster is always called with
+>> contiguous range of data extents, which might actually be less than
+>> MAX_EXTENTS.
+>>
+>> As a matter of fact this is a rather hard requirement since
+>> prealloc_file_extent_cluster assumes that since when it iterates the
+>> extents in the cluster it does:
+>>
+>> if (nr + 1 < cluster->nr)
+>>
+>>    end = cluster->boundary[nr + 1] - 1 - offset;
+>>
+>> else
+>>
+>>    end = cluster->end - offset;
+>>
+>> If those extents weren't contiguous we'd be preallocating more space in
+>> the data reloc inode.
 > 
-> Cc: Jonathan Corbet <corbet@lwn.net> (maintainer:DOCUMENTATION)
+> Yes, thanks.
+> I was biased by the gap detection at prealloc_file_extent_cluster()
+> and missed that, which in this case can't happen.
 > 
-> Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
-> ---
->  Documentation/admin-guide/dynamic-debug-howto.rst | 10 ++++++++++
->  1 file changed, 10 insertions(+)
+> So lets drop this.
 > 
-> diff --git a/Documentation/admin-guide/dynamic-debug-howto.rst b/Documentation/admin-guide/dynamic-debug-howto.rst
-> index 0dc2eb8e44e5..c2b751fc8a17 100644
-> --- a/Documentation/admin-guide/dynamic-debug-howto.rst
-> +++ b/Documentation/admin-guide/dynamic-debug-howto.rst
-> @@ -208,6 +208,12 @@ line
->  	line -1605          // the 1605 lines from line 1 to line 1605
->  	line 1600-          // all lines from line 1600 to the end of the file
->  
-> +level
-> +    The given level will be a bitmask ANDed with the level of the each ``pr_debug()``
-> +    callsite. This will allow to group debug messages and show only those of the
-> +    same level.  The -p flag takes precedence over the given level. Note that we can
-> +    have up to five groups of debug messages.
 
-As was pointed out, this isn't a "level", it's some arbitrary type of
-"grouping".
+Thinking a bit more about this the following check is redundant, since
+extents are guaranteed to be contiguous:
 
-But step back, why?  What is wrong with the existing control of dynamic
-debug messages that you want to add another type of arbitrary grouping
-to it?  And who defines that grouping?  Will it be
-driver/subsystem/arch/author specific?  Or kernel-wide?
 
-This feels like it could easily get out of hand really quickly.
+if (cur_offset < start)
 
-Why not just use tracepoints if you really want to be fine-grained?
+   btrfs_free_reserved_data_space(inode, data_reserved,
 
-thanks,
+                                        cur_offset, start - cur_offset);
 
-greg k-h
+
+
+This was added as part of 18513091af948 but IMO it's bogus since
+clustered data extent reloc landed much earlier, in
+0257bb82d21bedff26541bcf12f1461c23f9ed61. A good cleanup would be to
+simply remove this check.
