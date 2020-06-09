@@ -2,128 +2,117 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32D521F3886
-	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Jun 2020 12:49:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C3A81F38AE
+	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Jun 2020 12:50:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728707AbgFIKsz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 9 Jun 2020 06:48:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60780 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728923AbgFIKsL (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 9 Jun 2020 06:48:11 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49F93C0085C8
-        for <linux-btrfs@vger.kernel.org>; Tue,  9 Jun 2020 03:47:49 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id mb16so21825382ejb.4
-        for <linux-btrfs@vger.kernel.org>; Tue, 09 Jun 2020 03:47:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=Oemz0y6Halgxd9K+njjbf/y07mF1lR81JfjGGt4j8Io=;
-        b=iITZQzepYu0FYulcuAhfuDWi/16M56AofW8Jkk4EXje7LbpCfGgXUXt4mVAD9S9GAw
-         P+KF91qsLae1yBZk64Eg+7MySqXAxm70J5T+GDaXmvB6yqpm1YwWgnx0eILvxCZQa4MO
-         X2ZWDcSlKGJFb11dXXX6js7YuCRCGcjtoaxJFWBRsMondULfk44oem6UjT7ztiVd3pyU
-         szY/KiRL3JZp7Io/US70tlqqcMRIAEfqU8yow87c1sn10HkU9ATAn19ec8IL4Jx1OUil
-         GB2SP9aX8K7qOmh+/5PsYzLi1cxu80fu6P2jMFuHf47QqwLcm+UOIaNkIVo62p22r1QP
-         dvVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=Oemz0y6Halgxd9K+njjbf/y07mF1lR81JfjGGt4j8Io=;
-        b=Fgd9ABKZlMwqTMb534GvI+jEqdlRM+D5cAcGuFtnN8TZyrP6iXQ9l5tZd0e59cldZy
-         jiarXUHG/tcDf2QBFUaDkyJdh6oW8+bIeupERSuJhL0r6DNOieU5Qm8u3CNLCQr/mnby
-         TS4k+q1+puJHYa+HpX1qjLRG1ZXkeetfKbwmfZcapdOxR2Gy3Zd5lKFKOAjmaFFlkuLS
-         YglVInGTrNfewPeYGG4PgBL8VawTLCXgW996gACkF2exexV6EwYfXTRNqdZVsCQezMC0
-         /0sc2M6THY4fsvQUKHf898dor0/t/D4vwhHJHHZ5Svt/0t3MwCdReQwD2CQO4ELxhd0/
-         plFA==
-X-Gm-Message-State: AOAM530xm/MDsf4XkUJh/nGMngTxD4POlX4ugg8hWgjvkJAQSLZf+8iO
-        /h5bjaQLzkCdZ6/qWZatC4RFyA==
-X-Google-Smtp-Source: ABdhPJwmQrjonfoCvhtTfzguHCYRItN0w74Xgjx0CUyTWFohneAUdPJcTlC7X6PECCEadzOmV1lOkw==
-X-Received: by 2002:a17:906:b097:: with SMTP id x23mr24627789ejy.227.1591699667897;
-        Tue, 09 Jun 2020 03:47:47 -0700 (PDT)
-Received: from localhost.localdomain (hst-221-69.medicom.bg. [84.238.221.69])
-        by smtp.gmail.com with ESMTPSA id qt19sm12267763ejb.14.2020.06.09.03.47.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Jun 2020 03:47:47 -0700 (PDT)
-From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
-To:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-acpi@vger.kernel.org,
-        netdev@vger.kernel.org
-Cc:     Joe Perches <joe@perches.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jason Baron <jbaron@akamai.com>,
-        Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Subject: [PATCH v3 7/7] venus: Add a debugfs file for SSR trigger
-Date:   Tue,  9 Jun 2020 13:46:04 +0300
-Message-Id: <20200609104604.1594-8-stanimir.varbanov@linaro.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200609104604.1594-1-stanimir.varbanov@linaro.org>
-References: <20200609104604.1594-1-stanimir.varbanov@linaro.org>
+        id S1727775AbgFIKux (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 9 Jun 2020 06:50:53 -0400
+Received: from mx2.suse.de ([195.135.220.15]:44266 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726886AbgFIKuv (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 9 Jun 2020 06:50:51 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 621D5AD78;
+        Tue,  9 Jun 2020 10:50:53 +0000 (UTC)
+Subject: Re: [PATCH 3/3] Btrfs: only allocate necessary space when relocating
+ a data block group
+To:     fdmanana@kernel.org, linux-btrfs@vger.kernel.org
+References: <20200609101953.29559-1-fdmanana@kernel.org>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <b7c4a96d-df7c-b0b5-d1c5-aff5c458b032@suse.com>
+Date:   Tue, 9 Jun 2020 13:50:48 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
+MIME-Version: 1.0
+In-Reply-To: <20200609101953.29559-1-fdmanana@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The SSR (SubSystem Restart) is used to simulate an error on FW
-side of Venus. We support following type of triggers - fatal error,
-div by zero and watchdog IRQ.
 
-Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
----
- drivers/media/platform/qcom/venus/dbgfs.c | 31 +++++++++++++++++++++++
- 1 file changed, 31 insertions(+)
 
-diff --git a/drivers/media/platform/qcom/venus/dbgfs.c b/drivers/media/platform/qcom/venus/dbgfs.c
-index a2465fe8e20b..59d52e5af64a 100644
---- a/drivers/media/platform/qcom/venus/dbgfs.c
-+++ b/drivers/media/platform/qcom/venus/dbgfs.c
-@@ -9,6 +9,35 @@
- 
- extern int venus_fw_debug;
- 
-+static int trigger_ssr_open(struct inode *inode, struct file *file)
-+{
-+	file->private_data = inode->i_private;
-+	return 0;
-+}
-+
-+static ssize_t trigger_ssr_write(struct file *filp, const char __user *buf,
-+				 size_t count, loff_t *ppos)
-+{
-+	struct venus_core *core = filp->private_data;
-+	u32 ssr_type;
-+	int ret;
-+
-+	ret = kstrtou32_from_user(buf, count, 4, &ssr_type);
-+	if (ret)
-+		return ret;
-+
-+	ret = hfi_core_trigger_ssr(core, ssr_type);
-+	if (ret < 0)
-+		return ret;
-+
-+	return count;
-+}
-+
-+static const struct file_operations ssr_fops = {
-+	.open = trigger_ssr_open,
-+	.write = trigger_ssr_write,
-+};
-+
- int venus_dbgfs_init(struct venus_core *core)
- {
- 	core->root = debugfs_create_dir("venus", NULL);
-@@ -17,6 +46,8 @@ int venus_dbgfs_init(struct venus_core *core)
- 
- 	debugfs_create_x32("fw_level", 0644, core->root, &venus_fw_debug);
- 
-+	debugfs_create_file("trigger_ssr", 0200, core->root, core, &ssr_fops);
-+
- 	return 0;
- }
- 
--- 
-2.17.1
+On 9.06.20 г. 13:19 ч., fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
+> 
+> When relocating a data block group we group extents from the block group
+> into a cluster and when the cluster reaches a certain number of extents
+> we do the relocation.
 
+We don't reserve more space because the cluster is guaranteed to contain
+contiguous extents, namely in relocate_data_extent we have:
+
+if (cluster->nr > 0 && extent_key->objectid != cluster->end + 1)
+{
+   ret = relocate_file_extent_cluster(inode, cluster);
+   if (ret)
+      return ret;
+   cluster->nr = 0;
+}
+
+Cluster->end points to the end offset of the last added extent and the
+check above ensures that the one which is currently added is also
+contiguous. So relocate_file_extent_cluster is always called with
+contiguous range of data extents, which might actually be less than
+MAX_EXTENTS.
+
+As a matter of fact this is a rather hard requirement since
+prealloc_file_extent_cluster assumes that since when it iterates the
+extents in the cluster it does:
+
+if (nr + 1 < cluster->nr)
+
+   end = cluster->boundary[nr + 1] - 1 - offset;
+
+else
+
+   end = cluster->end - offset;
+
+If those extents weren't contiguous we'd be preallocating more space in
+the data reloc inode.
