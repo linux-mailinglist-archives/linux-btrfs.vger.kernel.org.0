@@ -2,32 +2,32 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 417421F37DB
-	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Jun 2020 12:19:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 996A91F37DD
+	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Jun 2020 12:20:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728676AbgFIKTu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 9 Jun 2020 06:19:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41388 "EHLO mail.kernel.org"
+        id S1728609AbgFIKT4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 9 Jun 2020 06:19:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41490 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728609AbgFIKTp (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 9 Jun 2020 06:19:45 -0400
+        id S1727928AbgFIKT4 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 9 Jun 2020 06:19:56 -0400
 Received: from debian8.Home (bl8-197-74.dsl.telepac.pt [85.241.197.74])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5FB6B2078D
-        for <linux-btrfs@vger.kernel.org>; Tue,  9 Jun 2020 10:19:44 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5E8E62078D
+        for <linux-btrfs@vger.kernel.org>; Tue,  9 Jun 2020 10:19:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591697984;
-        bh=3MDnqAr51iuvNKy3uecVl00sTH63DkdXgEN4DPDNWQA=;
+        s=default; t=1591697995;
+        bh=FarDqpTkFNNCri/dendFQbIjF9YUV54s+Jdw7jZro9M=;
         h=From:To:Subject:Date:From;
-        b=FW1RrUrsSM9E3WRWIqhHKLm09bF9qYNfn7kMQeOcRKAAM61AvJAlosdaXnWnCNoPI
-         H88TvDQe8xIfGwsaT2N/CorelCvCbjKSvtbZ3S8+Xm9iG3wx3i7uslLlFQ+9poGP6p
-         CATD770TaFqIEH0uBgfnWDyLBkCKQ6wyXTCBP+m8=
+        b=QMrLO0ZhezF8uhNoN+aSXOwgz6nc8btEItJQGabFWuWoIxFkvHL0ZH8FWc7yk3/nE
+         tKGunxcpg7EVNjNwJV57I+k3no6dgj/yaqqA6aLsYoB2zThVZHcaQ00vqrY7P2/dWH
+         pqIpn+fClveVNrX91c4MlVJEWddCexNNIaYx2vW4=
 From:   fdmanana@kernel.org
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 2/3] Btrfs: use btrfs_alloc_data_chunk_ondemand() when allocating space for relocation
-Date:   Tue,  9 Jun 2020 11:19:42 +0100
-Message-Id: <20200609101942.29509-1-fdmanana@kernel.org>
+Subject: [PATCH 3/3] Btrfs: only allocate necessary space when relocating a data block group
+Date:   Tue,  9 Jun 2020 11:19:53 +0100
+Message-Id: <20200609101953.29559-1-fdmanana@kernel.org>
 X-Mailer: git-send-email 2.11.0
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
@@ -36,77 +36,106 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-We currently use btrfs_check_data_free_space() when allocating space for
-relocating data extents, but that is not necessary because that function
-combines btrfs_alloc_data_chunk_ondemand(), which does the actual space
-reservation, and btrfs_qgroup_reserve_data().
+When relocating a data block group we group extents from the block group
+into a cluster and when the cluster reaches a certain number of extents
+we do the relocation.
 
-We can use btrfs_alloc_data_chunk_ondemand() directly because we know we
-do not need to reserve qgroup space since we are dealing with a relocation
-tree, which can never have qgroups (btrfs_qgroup_reserve_data() does
-nothing as is_fstree() returns false for a relocation tree).
+The first step is reserving data space and we try to reserve more space
+than we need if the block group is not full, when there are gaps between
+the collected extents. What happens is we attempt to reserve an amount of
+space that corresponds to the different between the end offset of the last
+extent and the start offset of the first extent. This can cause us to fail
+with -ENOSPC even when we have enough free space for relocating all the
+extents. We should skip space reservation for any gaps which always exist
+for block groups that are not full. Non full block groups are the ones
+which are useful to relocate, therefore a common use case.
 
-Conversely we can use btrfs_free_reserved_data_space_noquota() directly
-instead of btrfs_free_reserved_data_space(), since we had no qgroup
-reservation when allocating space.
-
-This change is preparatory work for another patch in this series that
-makes relocation reserve the exact amount of space it needs to relocate
-a data block group. The function btrfs_check_data_free_space() has
-the incovenient of requiring a start offset argument and we will want to
-be able to allocate space for multiple ranges, which are not consecutive,
-at once.
+So fix this by tracking the total number of bytes used for all the extents
+in the cluster and then reserving an amount of space that matches exactly
+the sum of the sizes of all the collected extents.
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/relocation.c | 14 ++++++--------
- 1 file changed, 6 insertions(+), 8 deletions(-)
+ fs/btrfs/relocation.c | 16 +++++++++-------
+ 1 file changed, 9 insertions(+), 7 deletions(-)
 
 diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-index 3bbae80c752f..11d156995446 100644
+index 11d156995446..7ec75229d86f 100644
 --- a/fs/btrfs/relocation.c
 +++ b/fs/btrfs/relocation.c
-@@ -2585,13 +2585,12 @@ int prealloc_file_extent_cluster(struct inode *inode,
+@@ -108,6 +108,7 @@ struct tree_block {
+ struct file_extent_cluster {
+ 	u64 start;
+ 	u64 end;
++	u64 total_bytes;
+ 	u64 boundary[MAX_EXTENTS];
+ 	unsigned int nr;
+ };
+@@ -2583,14 +2584,14 @@ int prealloc_file_extent_cluster(struct inode *inode,
+ 	int nr = 0;
+ 	int ret = 0;
  	u64 prealloc_start = cluster->start - offset;
- 	u64 prealloc_end = cluster->end - offset;
+-	u64 prealloc_end = cluster->end - offset;
  	u64 cur_offset;
--	struct extent_changeset *data_reserved = NULL;
++	u64 allocated = 0;
  
  	BUG_ON(cluster->start != cluster->boundary[0]);
  	inode_lock(inode);
  
--	ret = btrfs_check_data_free_space(inode, &data_reserved, prealloc_start,
--					  prealloc_end + 1 - prealloc_start);
-+	ret = btrfs_alloc_data_chunk_ondemand(BTRFS_I(inode),
-+					      prealloc_end + 1 - prealloc_start);
+ 	ret = btrfs_alloc_data_chunk_ondemand(BTRFS_I(inode),
+-					      prealloc_end + 1 - prealloc_start);
++					      cluster->total_bytes);
  	if (ret)
  		goto out;
  
-@@ -2606,8 +2605,8 @@ int prealloc_file_extent_cluster(struct inode *inode,
+@@ -2604,21 +2605,19 @@ int prealloc_file_extent_cluster(struct inode *inode,
+ 
  		lock_extent(&BTRFS_I(inode)->io_tree, start, end);
  		num_bytes = end + 1 - start;
- 		if (cur_offset < start)
--			btrfs_free_reserved_data_space(inode, data_reserved,
--					cur_offset, start - cur_offset);
-+			btrfs_free_reserved_data_space_noquota(inode,
-+						       start - cur_offset);
+-		if (cur_offset < start)
+-			btrfs_free_reserved_data_space_noquota(inode,
+-						       start - cur_offset);
  		ret = btrfs_prealloc_file_range(inode, 0, start,
  						num_bytes, num_bytes,
  						end + 1, &alloc_hint);
-@@ -2618,11 +2617,10 @@ int prealloc_file_extent_cluster(struct inode *inode,
+ 		cur_offset = end + 1;
++		allocated += num_bytes;
+ 		unlock_extent(&BTRFS_I(inode)->io_tree, start, end);
+ 		if (ret)
+ 			break;
  		nr++;
  	}
- 	if (cur_offset < prealloc_end)
--		btrfs_free_reserved_data_space(inode, data_reserved,
--				cur_offset, prealloc_end + 1 - cur_offset);
-+		btrfs_free_reserved_data_space_noquota(inode,
-+					       prealloc_end + 1 - cur_offset);
+-	if (cur_offset < prealloc_end)
++	if (allocated < cluster->total_bytes)
+ 		btrfs_free_reserved_data_space_noquota(inode,
+-					       prealloc_end + 1 - cur_offset);
++				       cluster->total_bytes - allocated);
  out:
  	inode_unlock(inode);
--	extent_changeset_free(data_reserved);
  	return ret;
- }
+@@ -2809,6 +2808,7 @@ int relocate_data_extent(struct inode *inode, struct btrfs_key *extent_key,
+ 		if (ret)
+ 			return ret;
+ 		cluster->nr = 0;
++		cluster->total_bytes = 0;
+ 	}
  
+ 	if (!cluster->nr)
+@@ -2818,12 +2818,14 @@ int relocate_data_extent(struct inode *inode, struct btrfs_key *extent_key,
+ 	cluster->end = extent_key->objectid + extent_key->offset - 1;
+ 	cluster->boundary[cluster->nr] = extent_key->objectid;
+ 	cluster->nr++;
++	cluster->total_bytes += extent_key->offset;
+ 
+ 	if (cluster->nr >= MAX_EXTENTS) {
+ 		ret = relocate_file_extent_cluster(inode, cluster);
+ 		if (ret)
+ 			return ret;
+ 		cluster->nr = 0;
++		cluster->total_bytes = 0;
+ 	}
+ 	return 0;
+ }
 -- 
 2.11.0
 
