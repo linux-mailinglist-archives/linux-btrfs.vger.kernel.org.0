@@ -2,140 +2,115 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 996A91F37DD
-	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Jun 2020 12:20:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C3241F386C
+	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Jun 2020 12:47:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728609AbgFIKT4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 9 Jun 2020 06:19:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41490 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727928AbgFIKT4 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 9 Jun 2020 06:19:56 -0400
-Received: from debian8.Home (bl8-197-74.dsl.telepac.pt [85.241.197.74])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5E8E62078D
-        for <linux-btrfs@vger.kernel.org>; Tue,  9 Jun 2020 10:19:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591697995;
-        bh=FarDqpTkFNNCri/dendFQbIjF9YUV54s+Jdw7jZro9M=;
-        h=From:To:Subject:Date:From;
-        b=QMrLO0ZhezF8uhNoN+aSXOwgz6nc8btEItJQGabFWuWoIxFkvHL0ZH8FWc7yk3/nE
-         tKGunxcpg7EVNjNwJV57I+k3no6dgj/yaqqA6aLsYoB2zThVZHcaQ00vqrY7P2/dWH
-         pqIpn+fClveVNrX91c4MlVJEWddCexNNIaYx2vW4=
-From:   fdmanana@kernel.org
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 3/3] Btrfs: only allocate necessary space when relocating a data block group
-Date:   Tue,  9 Jun 2020 11:19:53 +0100
-Message-Id: <20200609101953.29559-1-fdmanana@kernel.org>
-X-Mailer: git-send-email 2.11.0
+        id S1728756AbgFIKri (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 9 Jun 2020 06:47:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60748 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727995AbgFIKre (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 9 Jun 2020 06:47:34 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 939BCC08C5C3
+        for <linux-btrfs@vger.kernel.org>; Tue,  9 Jun 2020 03:47:33 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id x1so21784497ejd.8
+        for <linux-btrfs@vger.kernel.org>; Tue, 09 Jun 2020 03:47:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=p+3qxG4IVGjzzVjW9GQuIsYW/5Su4XmyAq4tUI3f9kc=;
+        b=YcyHykJcGW6dvg5l+6eVeEGZXy3JVntamLO7FbHdJOBvI8KQWdvEYbRjXwsYElyby9
+         Ed/vzFhjeBRCMCvh4PDj/Nj8oWxpFlXwRtAyUw+ZnFPaXzn3b0mqjE7LamQ0gCRi2epp
+         LiKPhT51jkXhhik1ICQ06wB/qfHgHprjhxvAJI02yGbDt9zuZhx5NmCyLqUhr5aZbC7m
+         6iV2TFgRU+862dqtrw52VFrT8PGgNFAyVYkxSv4o3/crC4qBT6SdFyyoor9/dTTS+1V+
+         TNQ2fLUQD8hyTkb3jo+DLaYhB56HCMzDNN6NQ4QywZ2z/eeUd+hlNKcpi5XMx7ozmrfO
+         ZRHQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=p+3qxG4IVGjzzVjW9GQuIsYW/5Su4XmyAq4tUI3f9kc=;
+        b=Ug/NAs8yi4CtYsha+Pczip4hkjUxIJdvyxMIPVmtM3lnar2ZhScTxo2RuTsq/RYOL/
+         sWZLvxFPBQUn/41g8cV2vMN91gKwJvwn4rghCF7MT7oH0F+77U1NL5wwQTfkZFcr4Yaz
+         1sDxJRceuNO4NfUgttTg/dPGIPwQhv3u6Fx8wNNKDFrgJ3xgtEHP8/gVsAiJ07e1NBx1
+         If0tFf55fro2TuEMAjyngbHor8JxK5BMbHQQvTqcKClHpPptgLrhLX/h4kRbsQR16mdp
+         mFx5bS+OoJbKq/SvxCfvRq+lwLkGvwa2ok/GhWTPJ79C++JX1++YCmDH+/MKwU4uE0bI
+         KPyQ==
+X-Gm-Message-State: AOAM530fDIFkxnFi0npflhO1o0DijQ9PvhvxvtZeVApCzgiH38I6cE4D
+        WM0GrtJQe3cuOymGgrcg+ik0Sw==
+X-Google-Smtp-Source: ABdhPJwOKge6Hzbdo61zDo+biArgiANhUoagULJsDuRSfbmyRyi170/EUHj7g5antha/fljvEu9kYw==
+X-Received: by 2002:a17:906:3483:: with SMTP id g3mr24541480ejb.373.1591699650514;
+        Tue, 09 Jun 2020 03:47:30 -0700 (PDT)
+Received: from localhost.localdomain (hst-221-69.medicom.bg. [84.238.221.69])
+        by smtp.gmail.com with ESMTPSA id qt19sm12267763ejb.14.2020.06.09.03.47.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Jun 2020 03:47:29 -0700 (PDT)
+From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
+To:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-acpi@vger.kernel.org,
+        netdev@vger.kernel.org
+Cc:     Joe Perches <joe@perches.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jason Baron <jbaron@akamai.com>,
+        Stanimir Varbanov <stanimir.varbanov@linaro.org>
+Subject: [PATCH v3 0/7] Venus dynamic debug
+Date:   Tue,  9 Jun 2020 13:45:57 +0300
+Message-Id: <20200609104604.1594-1-stanimir.varbanov@linaro.org>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
+Hello,
 
-When relocating a data block group we group extents from the block group
-into a cluster and when the cluster reaches a certain number of extents
-we do the relocation.
+Here is the third version of dynamic debug improvements in Venus
+driver.  As has been suggested on previous version by Joe [1] I've
+made the relevant changes in dynamic debug core to handle leveling
+as more generic way and not open-code/workaround it in the driver.
 
-The first step is reserving data space and we try to reserve more space
-than we need if the block group is not full, when there are gaps between
-the collected extents. What happens is we attempt to reserve an amount of
-space that corresponds to the different between the end offset of the last
-extent and the start offset of the first extent. This can cause us to fail
-with -ENOSPC even when we have enough free space for relocating all the
-extents. We should skip space reservation for any gaps which always exist
-for block groups that are not full. Non full block groups are the ones
-which are useful to relocate, therefore a common use case.
+About changes:
+ - added change in the dynamic_debug and in documentation
+ - added respective pr_debug_level and dev_dbg_level
 
-So fix this by tracking the total number of bytes used for all the extents
-in the cluster and then reserving an amount of space that matches exactly
-the sum of the sizes of all the collected extents.
+regards,
+Stan
 
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- fs/btrfs/relocation.c | 16 +++++++++-------
- 1 file changed, 9 insertions(+), 7 deletions(-)
+[1] https://lkml.org/lkml/2020/5/21/668
 
-diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-index 11d156995446..7ec75229d86f 100644
---- a/fs/btrfs/relocation.c
-+++ b/fs/btrfs/relocation.c
-@@ -108,6 +108,7 @@ struct tree_block {
- struct file_extent_cluster {
- 	u64 start;
- 	u64 end;
-+	u64 total_bytes;
- 	u64 boundary[MAX_EXTENTS];
- 	unsigned int nr;
- };
-@@ -2583,14 +2584,14 @@ int prealloc_file_extent_cluster(struct inode *inode,
- 	int nr = 0;
- 	int ret = 0;
- 	u64 prealloc_start = cluster->start - offset;
--	u64 prealloc_end = cluster->end - offset;
- 	u64 cur_offset;
-+	u64 allocated = 0;
- 
- 	BUG_ON(cluster->start != cluster->boundary[0]);
- 	inode_lock(inode);
- 
- 	ret = btrfs_alloc_data_chunk_ondemand(BTRFS_I(inode),
--					      prealloc_end + 1 - prealloc_start);
-+					      cluster->total_bytes);
- 	if (ret)
- 		goto out;
- 
-@@ -2604,21 +2605,19 @@ int prealloc_file_extent_cluster(struct inode *inode,
- 
- 		lock_extent(&BTRFS_I(inode)->io_tree, start, end);
- 		num_bytes = end + 1 - start;
--		if (cur_offset < start)
--			btrfs_free_reserved_data_space_noquota(inode,
--						       start - cur_offset);
- 		ret = btrfs_prealloc_file_range(inode, 0, start,
- 						num_bytes, num_bytes,
- 						end + 1, &alloc_hint);
- 		cur_offset = end + 1;
-+		allocated += num_bytes;
- 		unlock_extent(&BTRFS_I(inode)->io_tree, start, end);
- 		if (ret)
- 			break;
- 		nr++;
- 	}
--	if (cur_offset < prealloc_end)
-+	if (allocated < cluster->total_bytes)
- 		btrfs_free_reserved_data_space_noquota(inode,
--					       prealloc_end + 1 - cur_offset);
-+				       cluster->total_bytes - allocated);
- out:
- 	inode_unlock(inode);
- 	return ret;
-@@ -2809,6 +2808,7 @@ int relocate_data_extent(struct inode *inode, struct btrfs_key *extent_key,
- 		if (ret)
- 			return ret;
- 		cluster->nr = 0;
-+		cluster->total_bytes = 0;
- 	}
- 
- 	if (!cluster->nr)
-@@ -2818,12 +2818,14 @@ int relocate_data_extent(struct inode *inode, struct btrfs_key *extent_key,
- 	cluster->end = extent_key->objectid + extent_key->offset - 1;
- 	cluster->boundary[cluster->nr] = extent_key->objectid;
- 	cluster->nr++;
-+	cluster->total_bytes += extent_key->offset;
- 
- 	if (cluster->nr >= MAX_EXTENTS) {
- 		ret = relocate_file_extent_cluster(inode, cluster);
- 		if (ret)
- 			return ret;
- 		cluster->nr = 0;
-+		cluster->total_bytes = 0;
- 	}
- 	return 0;
- }
+Stanimir Varbanov (7):
+  Documentation: dynamic-debug: Add description of level bitmask
+  dynamic_debug: Group debug messages by level bitmask
+  dev_printk: Add dev_dbg_level macro over dynamic one
+  printk: Add pr_debug_level macro over dynamic one
+  venus: Add debugfs interface to set firmware log level
+  venus: Make debug infrastructure more flexible
+  venus: Add a debugfs file for SSR trigger
+
+ .../admin-guide/dynamic-debug-howto.rst       | 10 +++
+ drivers/media/platform/qcom/venus/Makefile    |  2 +-
+ drivers/media/platform/qcom/venus/core.c      |  5 ++
+ drivers/media/platform/qcom/venus/core.h      |  8 +++
+ drivers/media/platform/qcom/venus/dbgfs.c     | 57 +++++++++++++++++
+ drivers/media/platform/qcom/venus/dbgfs.h     | 12 ++++
+ drivers/media/platform/qcom/venus/helpers.c   |  2 +-
+ drivers/media/platform/qcom/venus/hfi_msgs.c  | 30 ++++-----
+ drivers/media/platform/qcom/venus/hfi_venus.c | 27 ++++++--
+ .../media/platform/qcom/venus/pm_helpers.c    |  3 +-
+ drivers/media/platform/qcom/venus/vdec.c      | 63 +++++++++++++++++--
+ drivers/media/platform/qcom/venus/venc.c      |  4 ++
+ fs/btrfs/ctree.h                              | 12 ++--
+ include/linux/acpi.h                          |  3 +-
+ include/linux/dev_printk.h                    | 12 +++-
+ include/linux/dynamic_debug.h                 | 55 +++++++++++-----
+ include/linux/net.h                           |  3 +-
+ include/linux/printk.h                        |  9 ++-
+ lib/dynamic_debug.c                           | 30 +++++++++
+ 19 files changed, 289 insertions(+), 58 deletions(-)
+ create mode 100644 drivers/media/platform/qcom/venus/dbgfs.c
+ create mode 100644 drivers/media/platform/qcom/venus/dbgfs.h
+
 -- 
-2.11.0
+2.17.1
 
