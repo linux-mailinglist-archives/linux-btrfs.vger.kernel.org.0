@@ -2,49 +2,50 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C3241F386C
-	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Jun 2020 12:47:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A25E91F3870
+	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Jun 2020 12:47:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728756AbgFIKri (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 9 Jun 2020 06:47:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60748 "EHLO
+        id S1728206AbgFIKrs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 9 Jun 2020 06:47:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727995AbgFIKre (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 9 Jun 2020 06:47:34 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 939BCC08C5C3
-        for <linux-btrfs@vger.kernel.org>; Tue,  9 Jun 2020 03:47:33 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id x1so21784497ejd.8
-        for <linux-btrfs@vger.kernel.org>; Tue, 09 Jun 2020 03:47:33 -0700 (PDT)
+        with ESMTP id S1728299AbgFIKrh (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 9 Jun 2020 06:47:37 -0400
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71E7FC08C5C8
+        for <linux-btrfs@vger.kernel.org>; Tue,  9 Jun 2020 03:47:36 -0700 (PDT)
+Received: by mail-ed1-x543.google.com with SMTP id g1so15936355edv.6
+        for <linux-btrfs@vger.kernel.org>; Tue, 09 Jun 2020 03:47:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id;
-        bh=p+3qxG4IVGjzzVjW9GQuIsYW/5Su4XmyAq4tUI3f9kc=;
-        b=YcyHykJcGW6dvg5l+6eVeEGZXy3JVntamLO7FbHdJOBvI8KQWdvEYbRjXwsYElyby9
-         Ed/vzFhjeBRCMCvh4PDj/Nj8oWxpFlXwRtAyUw+ZnFPaXzn3b0mqjE7LamQ0gCRi2epp
-         LiKPhT51jkXhhik1ICQ06wB/qfHgHprjhxvAJI02yGbDt9zuZhx5NmCyLqUhr5aZbC7m
-         6iV2TFgRU+862dqtrw52VFrT8PGgNFAyVYkxSv4o3/crC4qBT6SdFyyoor9/dTTS+1V+
-         TNQ2fLUQD8hyTkb3jo+DLaYhB56HCMzDNN6NQ4QywZ2z/eeUd+hlNKcpi5XMx7ozmrfO
-         ZRHQ==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=U9rt/3Vl/6zlHKoX8Sru+cTCnsVpfXdCh6OHWoOo9RE=;
+        b=FRLTeeLV+htxuHSVemMkC/H0jDbDMDBVLljGbI5nXTP0IhqF5MnV9KiofVJzjeP4z4
+         0zwVRhu75Q4no06LDdOJshGV1LHb0S3tOA05xbRD40Dma+wJmAO9YFhwn5dctpuYIEWq
+         ZLG3B+MAt29+JMNIQpeV11RNkNvsbXBA5Qgnm/0GE1KBf7nXFDBsqux+9o5VA0MU1ZWv
+         AXpnSTeeFLZAnaiYcjBmlBixwTTthdz+l8s1TM87XZiEztoLc5XuK1HttYXUW9jSdJRS
+         axs60D+IuuCnv1d2SKcZyZLFlz73Q6gnl4DPgbVQDWWCv71BwouRU8hzz7qDRGuGQR6V
+         gaYQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=p+3qxG4IVGjzzVjW9GQuIsYW/5Su4XmyAq4tUI3f9kc=;
-        b=Ug/NAs8yi4CtYsha+Pczip4hkjUxIJdvyxMIPVmtM3lnar2ZhScTxo2RuTsq/RYOL/
-         sWZLvxFPBQUn/41g8cV2vMN91gKwJvwn4rghCF7MT7oH0F+77U1NL5wwQTfkZFcr4Yaz
-         1sDxJRceuNO4NfUgttTg/dPGIPwQhv3u6Fx8wNNKDFrgJ3xgtEHP8/gVsAiJ07e1NBx1
-         If0tFf55fro2TuEMAjyngbHor8JxK5BMbHQQvTqcKClHpPptgLrhLX/h4kRbsQR16mdp
-         mFx5bS+OoJbKq/SvxCfvRq+lwLkGvwa2ok/GhWTPJ79C++JX1++YCmDH+/MKwU4uE0bI
-         KPyQ==
-X-Gm-Message-State: AOAM530fDIFkxnFi0npflhO1o0DijQ9PvhvxvtZeVApCzgiH38I6cE4D
-        WM0GrtJQe3cuOymGgrcg+ik0Sw==
-X-Google-Smtp-Source: ABdhPJwOKge6Hzbdo61zDo+biArgiANhUoagULJsDuRSfbmyRyi170/EUHj7g5antha/fljvEu9kYw==
-X-Received: by 2002:a17:906:3483:: with SMTP id g3mr24541480ejb.373.1591699650514;
-        Tue, 09 Jun 2020 03:47:30 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=U9rt/3Vl/6zlHKoX8Sru+cTCnsVpfXdCh6OHWoOo9RE=;
+        b=J0GW9NxFCB18tl0TVHYbePeNc/vRFDhZJMJtVuuWHp3bJkO/+y69/MrD1sDJZ0pWnn
+         gFZr78T/MZrFDsdXrzxXTjFolRMkkb4/1oBq2enA9G7FBjkfq30xu2kBacBPmJ5xyZov
+         31LSmprZKr6ioqGiWVqe1Qtjusk5wWynLD8dzfft1SNw9dHnQEUtekn+PuePvG0iIqGY
+         lAsgXeyr5FKqPO4wmUFNuZPlnvZP4cis/3SW5Ag5sW3ntCPxp3DfZSPiVF0KI8poYzBy
+         cc3/SbE5CLct4JtaAFYoCRJlG9rtxJF/I8VqwvRk/423lnl0nyLJRbQdstikKlN20o6K
+         5xEw==
+X-Gm-Message-State: AOAM533KGiLekH3/r7pHTIIJ2gKjulWhi4ieJ0hS35lpqY0wFFnmeoda
+        TpmfzSQhHtQoFh+KdhPHldirnw==
+X-Google-Smtp-Source: ABdhPJz+fdaUtgiiLd8gXAw1zn+Ihd7jWg7g+4P4sGhrrGs3vMrDi8lIPiEbt8jFBzavbp4Ebo9fZw==
+X-Received: by 2002:a50:b0e2:: with SMTP id j89mr26765993edd.257.1591699655083;
+        Tue, 09 Jun 2020 03:47:35 -0700 (PDT)
 Received: from localhost.localdomain (hst-221-69.medicom.bg. [84.238.221.69])
-        by smtp.gmail.com with ESMTPSA id qt19sm12267763ejb.14.2020.06.09.03.47.28
+        by smtp.gmail.com with ESMTPSA id qt19sm12267763ejb.14.2020.06.09.03.47.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Jun 2020 03:47:29 -0700 (PDT)
+        Tue, 09 Jun 2020 03:47:34 -0700 (PDT)
 From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
 To:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
@@ -53,64 +54,56 @@ To:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
 Cc:     Joe Perches <joe@perches.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Jason Baron <jbaron@akamai.com>,
-        Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Subject: [PATCH v3 0/7] Venus dynamic debug
-Date:   Tue,  9 Jun 2020 13:45:57 +0300
-Message-Id: <20200609104604.1594-1-stanimir.varbanov@linaro.org>
+        Stanimir Varbanov <stanimir.varbanov@linaro.org>,
+        Jonathan Corbet <corbet@lwn.net>
+Subject: [PATCH v3 1/7] Documentation: dynamic-debug: Add description of level bitmask
+Date:   Tue,  9 Jun 2020 13:45:58 +0300
+Message-Id: <20200609104604.1594-2-stanimir.varbanov@linaro.org>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200609104604.1594-1-stanimir.varbanov@linaro.org>
+References: <20200609104604.1594-1-stanimir.varbanov@linaro.org>
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello,
+This adds description of the level bitmask feature.
 
-Here is the third version of dynamic debug improvements in Venus
-driver.  As has been suggested on previous version by Joe [1] I've
-made the relevant changes in dynamic debug core to handle leveling
-as more generic way and not open-code/workaround it in the driver.
+Cc: Jonathan Corbet <corbet@lwn.net> (maintainer:DOCUMENTATION)
 
-About changes:
- - added change in the dynamic_debug and in documentation
- - added respective pr_debug_level and dev_dbg_level
+Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
+---
+ Documentation/admin-guide/dynamic-debug-howto.rst | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-regards,
-Stan
-
-[1] https://lkml.org/lkml/2020/5/21/668
-
-Stanimir Varbanov (7):
-  Documentation: dynamic-debug: Add description of level bitmask
-  dynamic_debug: Group debug messages by level bitmask
-  dev_printk: Add dev_dbg_level macro over dynamic one
-  printk: Add pr_debug_level macro over dynamic one
-  venus: Add debugfs interface to set firmware log level
-  venus: Make debug infrastructure more flexible
-  venus: Add a debugfs file for SSR trigger
-
- .../admin-guide/dynamic-debug-howto.rst       | 10 +++
- drivers/media/platform/qcom/venus/Makefile    |  2 +-
- drivers/media/platform/qcom/venus/core.c      |  5 ++
- drivers/media/platform/qcom/venus/core.h      |  8 +++
- drivers/media/platform/qcom/venus/dbgfs.c     | 57 +++++++++++++++++
- drivers/media/platform/qcom/venus/dbgfs.h     | 12 ++++
- drivers/media/platform/qcom/venus/helpers.c   |  2 +-
- drivers/media/platform/qcom/venus/hfi_msgs.c  | 30 ++++-----
- drivers/media/platform/qcom/venus/hfi_venus.c | 27 ++++++--
- .../media/platform/qcom/venus/pm_helpers.c    |  3 +-
- drivers/media/platform/qcom/venus/vdec.c      | 63 +++++++++++++++++--
- drivers/media/platform/qcom/venus/venc.c      |  4 ++
- fs/btrfs/ctree.h                              | 12 ++--
- include/linux/acpi.h                          |  3 +-
- include/linux/dev_printk.h                    | 12 +++-
- include/linux/dynamic_debug.h                 | 55 +++++++++++-----
- include/linux/net.h                           |  3 +-
- include/linux/printk.h                        |  9 ++-
- lib/dynamic_debug.c                           | 30 +++++++++
- 19 files changed, 289 insertions(+), 58 deletions(-)
- create mode 100644 drivers/media/platform/qcom/venus/dbgfs.c
- create mode 100644 drivers/media/platform/qcom/venus/dbgfs.h
-
+diff --git a/Documentation/admin-guide/dynamic-debug-howto.rst b/Documentation/admin-guide/dynamic-debug-howto.rst
+index 0dc2eb8e44e5..c2b751fc8a17 100644
+--- a/Documentation/admin-guide/dynamic-debug-howto.rst
++++ b/Documentation/admin-guide/dynamic-debug-howto.rst
+@@ -208,6 +208,12 @@ line
+ 	line -1605          // the 1605 lines from line 1 to line 1605
+ 	line 1600-          // all lines from line 1600 to the end of the file
+ 
++level
++    The given level will be a bitmask ANDed with the level of the each ``pr_debug()``
++    callsite. This will allow to group debug messages and show only those of the
++    same level.  The -p flag takes precedence over the given level. Note that we can
++    have up to five groups of debug messages.
++
+ The flags specification comprises a change operation followed
+ by one or more flag characters.  The change operation is one
+ of the characters::
+@@ -346,6 +352,10 @@ Examples
+   // add module, function to all enabled messages
+   nullarbor:~ # echo -n '+mf' > <debugfs>/dynamic_debug/control
+ 
++  // enable all messages in file with 0x01 level bitmask
++  nullarbor:~ # echo -n 'file foo.c level 0x01 +p' >
++                                <debugfs>/dynamic_debug/control
++
+   // boot-args example, with newlines and comments for readability
+   Kernel command line: ...
+     // see whats going on in dyndbg=value processing
 -- 
 2.17.1
 
