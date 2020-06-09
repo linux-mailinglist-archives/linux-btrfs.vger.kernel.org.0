@@ -2,80 +2,159 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57F741F470A
-	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Jun 2020 21:23:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10EB91F477F
+	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Jun 2020 21:49:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731022AbgFITXv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 9 Jun 2020 15:23:51 -0400
-Received: from a4-5.smtp-out.eu-west-1.amazonses.com ([54.240.4.5]:51188 "EHLO
-        a4-5.smtp-out.eu-west-1.amazonses.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730673AbgFITXt (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 9 Jun 2020 15:23:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
-        s=pqvuhxtqt36lwjpmqkszlz7wxaih4qwj; d=urbackup.org; t=1591730627;
-        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding;
-        bh=SEXwxRFRXsMpPQTHQd2YMA/cvh8tTL/R2ppldTjQQj8=;
-        b=WFFqQ8mpezGzOAYT0OQJ84YyVFE036PWZWGGfxfTg/iPcqqSWVax7XCy2d+3CHsY
-        YAnwxdYrueJ9uWEDZgheP7GJ+Pk4F4rTt3Lq9nG6ZQOrNX0YbankBe61lmuQbn3kTHH
-        FL1p0VUyNSfH+SR9PYe0HWa7nDOBnOs+IG591A54=
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
-        s=shh3fegwg5fppqsuzphvschd53n6ihuv; d=amazonses.com; t=1591730627;
-        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding:Feedback-ID;
-        bh=SEXwxRFRXsMpPQTHQd2YMA/cvh8tTL/R2ppldTjQQj8=;
-        b=flHj7i79KS3XbM9vs5nZdfGzoeLD9gL6wVVoWJvPjEBlg3skM5YoN+pbejCDWdtT
-        rsAcdXTkJWC3f0M3yricXBA9A6Y0X785o+dstwvAnseZA6C3vN5pmeY+uSwlZMYf8Xr
-        e28f3F6nWuDNq0UKiljd/YP5AZHPzwlbM5FBmJ9s=
-Subject: Re: BTRFS File Delete Speed Scales With File Size?
-To:     Adam Borowski <kilobyte@angband.pl>,
-        "Ellis H. Wilson III" <ellisw@panasas.com>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-References: <8ab42255-8a67-e40e-29ea-5e79de55d6f5@panasas.com>
- <20200609175347.GA1139@angband.pl>
-From:   Martin Raiber <martin@urbackup.org>
-Message-ID: <010201729a89e30f-803b97fd-3193-4b88-b349-ec6073bc211c-000000@eu-west-1.amazonses.com>
-Date:   Tue, 9 Jun 2020 19:23:47 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        id S1731859AbgFITth (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 9 Jun 2020 15:49:37 -0400
+Received: from mx2.suse.de ([195.135.220.15]:37882 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730817AbgFITth (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 9 Jun 2020 15:49:37 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 43CE1AE0F;
+        Tue,  9 Jun 2020 19:49:39 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id CB1DDDA790; Tue,  9 Jun 2020 21:49:29 +0200 (CEST)
+From:   David Sterba <dsterba@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     David Sterba <dsterba@suse.com>
+Subject: [PATCH] btrfs: add little-endian optimized key helpers
+Date:   Tue,  9 Jun 2020 21:49:26 +0200
+Message-Id: <20200609194926.9343-1-dsterba@suse.com>
+X-Mailer: git-send-email 2.25.0
 MIME-Version: 1.0
-In-Reply-To: <20200609175347.GA1139@angband.pl>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-SES-Outgoing: 2020.06.09-54.240.4.5
-Feedback-ID: 1.eu-west-1.zKMZH6MF2g3oUhhjaE2f3oQ8IBjABPbvixQzV8APwT0=:AmazonSES
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 09.06.2020 19:53 Adam Borowski wrote:
-> On Tue, Jun 09, 2020 at 11:31:41AM -0400, Ellis H. Wilson III wrote:
->> We have a few engineers looking through BTRFS code presently for answers to
->> this, but I was interested to get input from the experts in parallel to
->> hopefully understand this issue quickly.
->>
->> We find that removes of large amounts of data can take a significant amount
->> of time in BTRFS on HDDs -- in fact it appears to scale linearly with the
->> size of the file.  I'd like to better understand the mechanics underpinning
->> that behavior.
->>
->> See the attached graph for a quick experiment that demonstrates this
->> behavior.  In this experiment I use 40 threads to perform deletions of
->> previous written data in parallel.  10,000 files in every case and I scale
->> files by powers of two from 16MB to 16GB.  Thus, the raw amount of data
->> deleted also expands by 2x every step.  Frankly I expected deletion of a
->> file to be predominantly a metadata operation and not scale with the size of
->> the file, but perhaps I'm misunderstanding that.
-> The size of metadata is, after a small constant bit, proportional to the
-> number of extents.  Which in turn depends on file size.  With compression
-> off, extents may be as big as 1GB (which would make their number
-> negligible), but that's clearly not happening in your case.
->
-> There are tools which can show extent layout. I'd recommend python3-btrfs,
-> which includes /usr/share/doc/python3-btrfs/examples/show_file.py that
-> prints everything available about the list of extents.
+The CPU and on-disk keys are mapped to two different structures because
+of the endianity. There's an intermediate buffer used to do the
+conversion, but this is not necessary when CPU and on-disk endianity
+matches.
 
-Also there is a 4 byte CRC checksum per 4K block that needs to be 
-removed. Mount with "nodatasum" and run your tests to confirm this is 
-the cause.
+Add optimized versions of helpers that take disk_key and use the buffer
+directly for CPU keys or drop the intermediate buffer and conversion.
+
+This saves a lot of stack space accross many functions and removes about
+6K of generated binary code:
+
+   text    data     bss     dec     hex filename
+1090439   17468   14912 1122819  112203 pre/btrfs.ko
+1084613   17456   14912 1116981  110b35 post/btrfs.ko
+
+Delta: -5826
+
+Signed-off-by: David Sterba <dsterba@suse.com>
+---
+ fs/btrfs/ctree.c | 17 +++++++++++++++++
+ fs/btrfs/ctree.h | 48 ++++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 65 insertions(+)
+
+diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
+index 3a7648bff42c..de7ad39bcafd 100644
+--- a/fs/btrfs/ctree.c
++++ b/fs/btrfs/ctree.c
+@@ -1501,6 +1501,22 @@ static int close_blocks(u64 blocknr, u64 other, u32 blocksize)
+ 	return 0;
+ }
+ 
++#ifdef __LITTLE_ENDIAN
++
++/*
++ * Compare two keys, on little-endian the disk order is same as CPU order and
++ * we can avoid the conversion.
++ */
++static int comp_keys(const struct btrfs_disk_key *disk_key,
++		     const struct btrfs_key *k2)
++{
++	const struct btrfs_key *k1 = (const struct btrfs_key *)disk_key;
++
++	return btrfs_comp_cpu_keys(k1, k2);
++}
++
++#else
++
+ /*
+  * compare two keys in a memcmp fashion
+  */
+@@ -1513,6 +1529,7 @@ static int comp_keys(const struct btrfs_disk_key *disk,
+ 
+ 	return btrfs_comp_cpu_keys(&k1, k2);
+ }
++#endif
+ 
+ /*
+  * same as comp_keys only with two btrfs_key's
+diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+index 161533040978..5aa68119122f 100644
+--- a/fs/btrfs/ctree.h
++++ b/fs/btrfs/ctree.h
+@@ -1894,6 +1894,52 @@ BTRFS_SETGET_STACK_FUNCS(disk_key_objectid, struct btrfs_disk_key,
+ BTRFS_SETGET_STACK_FUNCS(disk_key_offset, struct btrfs_disk_key, offset, 64);
+ BTRFS_SETGET_STACK_FUNCS(disk_key_type, struct btrfs_disk_key, type, 8);
+ 
++#ifdef __LITTLE_ENDIAN
++
++/*
++ * Optimized helpers for little-endian architectures where CPU and on-disk
++ * structures have the same endianity and we can skip conversions.
++ */
++
++static inline void btrfs_disk_key_to_cpu(struct btrfs_key *cpu_key,
++					 const struct btrfs_disk_key *disk_key)
++{
++	memcpy(cpu_key, disk_key, sizeof(struct btrfs_key));
++}
++
++static inline void btrfs_cpu_key_to_disk(struct btrfs_disk_key *disk_key,
++					 const struct btrfs_key *cpu_key)
++{
++	memcpy(disk_key, cpu_key, sizeof(struct btrfs_key));
++}
++
++static inline void btrfs_node_key_to_cpu(const struct extent_buffer *eb,
++					 struct btrfs_key *cpu_key, int nr)
++{
++	struct btrfs_disk_key *disk_key = (struct btrfs_disk_key *)cpu_key;
++
++	btrfs_node_key(eb, disk_key, nr);
++}
++
++static inline void btrfs_item_key_to_cpu(const struct extent_buffer *eb,
++					 struct btrfs_key *cpu_key, int nr)
++{
++	struct btrfs_disk_key *disk_key = (struct btrfs_disk_key *)cpu_key;
++
++	btrfs_item_key(eb, disk_key, nr);
++}
++
++static inline void btrfs_dir_item_key_to_cpu(const struct extent_buffer *eb,
++					     const struct btrfs_dir_item *item,
++					     struct btrfs_key *cpu_key)
++{
++	struct btrfs_disk_key *disk_key = (struct btrfs_disk_key *)cpu_key;
++
++	btrfs_dir_item_key(eb, item, disk_key);
++}
++
++#else
++
+ static inline void btrfs_disk_key_to_cpu(struct btrfs_key *cpu,
+ 					 const struct btrfs_disk_key *disk)
+ {
+@@ -1935,6 +1981,8 @@ static inline void btrfs_dir_item_key_to_cpu(const struct extent_buffer *eb,
+ 	btrfs_disk_key_to_cpu(key, &disk_key);
+ }
+ 
++#endif
++
+ /* struct btrfs_header */
+ BTRFS_SETGET_HEADER_FUNCS(header_bytenr, struct btrfs_header, bytenr, 64);
+ BTRFS_SETGET_HEADER_FUNCS(header_generation, struct btrfs_header,
+-- 
+2.25.0
 
