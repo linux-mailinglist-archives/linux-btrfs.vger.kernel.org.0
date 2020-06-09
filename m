@@ -2,168 +2,140 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E98901F3465
-	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Jun 2020 08:51:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C85001F37DA
+	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Jun 2020 12:19:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727850AbgFIGvZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 9 Jun 2020 02:51:25 -0400
-Received: from ex13-edg-ou-002.vmware.com ([208.91.0.190]:4735 "EHLO
-        EX13-EDG-OU-002.vmware.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727842AbgFIGvW (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 9 Jun 2020 02:51:22 -0400
-Received: from sc9-mailhost2.vmware.com (10.113.161.72) by
- EX13-EDG-OU-002.vmware.com (10.113.208.156) with Microsoft SMTP Server id
- 15.0.1156.6; Mon, 8 Jun 2020 23:51:20 -0700
-Received: from vikash-ubuntu-virtual-machine.eng.vmware.com (unknown [10.197.103.194])
-        by sc9-mailhost2.vmware.com (Postfix) with ESMTP id 23DBEB27A3;
-        Tue,  9 Jun 2020 02:51:21 -0400 (EDT)
-From:   Vikash Bansal <bvikas@vmware.com>
-To:     <gregkh@linuxfoundation.org>
-CC:     <stable@vger.kernel.org>, <srivatsab@vmware.com>,
-        <srivatsa@csail.mit.edu>, <amakhalov@vmware.com>,
-        <srinidhir@vmware.com>, <bvikas@vmware.com>, <anishs@vmware.com>,
-        <vsirnapalli@vmware.com>, <akaher@vmware.com>, <clm@fb.com>,
-        <josef@toxicpanda.com>, <dsterba@suse.com>,
-        <anand.jain@oracle.com>, <linux-btrfs@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Qu Wenruo <wqu@suse.com>
-Subject: [PATCH v4.19.y 2/2] btrfs: Detect unbalanced tree with empty leaf before crashing btree operations
-Date:   Tue, 9 Jun 2020 12:20:18 +0530
-Message-ID: <20200609065018.26378-3-bvikas@vmware.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200609065018.26378-1-bvikas@vmware.com>
-References: <20200609065018.26378-1-bvikas@vmware.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-Received-SPF: None (EX13-EDG-OU-002.vmware.com: bvikas@vmware.com does not
- designate permitted sender hosts)
+        id S1728729AbgFIKTi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 9 Jun 2020 06:19:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41262 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728676AbgFIKTh (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 9 Jun 2020 06:19:37 -0400
+Received: from debian8.Home (bl8-197-74.dsl.telepac.pt [85.241.197.74])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id F04DD2078D
+        for <linux-btrfs@vger.kernel.org>; Tue,  9 Jun 2020 10:19:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1591697976;
+        bh=2XRX3g3R8uIlE0Y2IL5cfbenXlr/6V5HfNNqRsbq98s=;
+        h=From:To:Subject:Date:From;
+        b=fbQ0yyc7oL0xnnQ6NCrcjFflYZqMD4fA8jD0AY43L1k5wPUB9+2yoUXYL5ADPjYHk
+         OzxsOlBblbefQKBiS341xsgmMh20YSsZvYJJbq2JDDAvr4gHZ6KkAtbm9hSkuMfnDV
+         E0CZFy/eVN/q83gLUcz0fTZBu5q3DLSfiQzL5uQU=
+From:   fdmanana@kernel.org
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH 1/3] Btrfs: remove the start argument from btrfs_free_reserved_data_space_noquota()
+Date:   Tue,  9 Jun 2020 11:19:33 +0100
+Message-Id: <20200609101933.29459-1-fdmanana@kernel.org>
+X-Mailer: git-send-email 2.11.0
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Qu Wenruo <wqu@suse.com>
+From: Filipe Manana <fdmanana@suse.com>
 
-commit 62fdaa52a3d00a875da771719b6dc537ca79fce1 upstream
+The start argument for btrfs_free_reserved_data_space_noquota() is only
+used to make sure the amount of bytes we decrement from the bytes_may_use
+counter of the data space_info object is aligned to the filesystem's
+sector size. It serves no other purpose.
 
-[BUG]
-With crafted image, btrfs will panic at btree operations:
+All its current callers always pass a length argument that is already
+aligned to the sector size, so we can make the start argument go away.
+In fact its presence makes it impossible to use it in a context where we
+just want to free a number of bytes for a range for which either we do
+not know its start offset or for freeing multiple ranges at once (which
+are not contiguous).
 
-  kernel BUG at fs/btrfs/ctree.c:3894!
-  invalid opcode: 0000 [#1] SMP PTI
-  CPU: 0 PID: 1138 Comm: btrfs-transacti Not tainted 5.0.0-rc8+ #9
-  RIP: 0010:__push_leaf_left+0x6b6/0x6e0
-  RSP: 0018:ffffc0bd4128b990 EFLAGS: 00010246
-  RAX: 0000000000000000 RBX: ffffa0a4ab8f0e38 RCX: 0000000000000000
-  RDX: ffffa0a280000000 RSI: 0000000000000000 RDI: ffffa0a4b3814000
-  RBP: ffffc0bd4128ba38 R08: 0000000000001000 R09: ffffc0bd4128b948
-  R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000240
-  R13: ffffa0a4b556fb60 R14: ffffa0a4ab8f0af0 R15: ffffa0a4ab8f0af0
-  FS: 0000000000000000(0000) GS:ffffa0a4b7a00000(0000) knlGS:0000000000000000
-  CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-  CR2: 00007f2461c80020 CR3: 000000022b32a006 CR4: 00000000000206f0
-  Call Trace:
-  ? _cond_resched+0x1a/0x50
-  push_leaf_left+0x179/0x190
-  btrfs_del_items+0x316/0x470
-  btrfs_del_csums+0x215/0x3a0
-  __btrfs_free_extent.isra.72+0x5a7/0xbe0
-  __btrfs_run_delayed_refs+0x539/0x1120
-  btrfs_run_delayed_refs+0xdb/0x1b0
-  btrfs_commit_transaction+0x52/0x950
-  ? start_transaction+0x94/0x450
-  transaction_kthread+0x163/0x190
-  kthread+0x105/0x140
-  ? btrfs_cleanup_transaction+0x560/0x560
-  ? kthread_destroy_worker+0x50/0x50
-  ret_from_fork+0x35/0x40
-  Modules linked in:
-  ---[ end trace c2425e6e89b5558f ]---
+This change is preparatory work for a patch (third patch in this series)
+that makes relocation of data block groups that are not full reserve less
+data space.
 
-[CAUSE]
-The offending csum tree looks like this:
-
-  checksum tree key (CSUM_TREE ROOT_ITEM 0)
-  node 29741056 level 1 items 14 free 107 generation 19 owner CSUM_TREE
-          ...
-          key (EXTENT_CSUM EXTENT_CSUM 85975040) block 29630464 gen 17
-          key (EXTENT_CSUM EXTENT_CSUM 89911296) block 29642752 gen 17 <<<
-          key (EXTENT_CSUM EXTENT_CSUM 92274688) block 29646848 gen 17
-          ...
-
-  leaf 29630464 items 6 free space 1 generation 17 owner CSUM_TREE
-          item 0 key (EXTENT_CSUM EXTENT_CSUM 85975040) itemoff 3987 itemsize 8
-                  range start 85975040 end 85983232 length 8192
-          ...
-  leaf 29642752 items 0 free space 3995 generation 17 owner 0
-                      ^ empty leaf            invalid owner ^
-
-  leaf 29646848 items 1 free space 602 generation 17 owner CSUM_TREE
-          item 0 key (EXTENT_CSUM EXTENT_CSUM 92274688) itemoff 627 itemsize 3368
-                  range start 92274688 end 95723520 length 3448832
-
-So we have a corrupted csum tree where one tree leaf is completely
-empty, causing unbalanced btree, thus leading to unexpected btree
-balance error.
-
-[FIX]
-For this particular case, we handle it in two directions to catch it:
-- Check if the tree block is empty through btrfs_verify_level_key()
-  So that invalid tree blocks won't be read out through
-  btrfs_search_slot() and its variants.
-
-- Check 0 tree owner in tree checker
-  NO tree is using 0 as its tree owner, detect it and reject at tree
-  block read time.
-
-Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=202821
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
-Signed-off-by: Qu Wenruo <wqu@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
-Signed-off-by: Vikash Bansal <bvikas@vmware.com>
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/disk-io.c      | 10 ++++++++++
- fs/btrfs/tree-checker.c |  6 ++++++
- 2 files changed, 16 insertions(+)
+ fs/btrfs/delalloc-space.c | 11 ++++-------
+ fs/btrfs/delalloc-space.h |  2 +-
+ fs/btrfs/inode.c          |  5 ++---
+ 3 files changed, 7 insertions(+), 11 deletions(-)
 
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index da7a2a530647..aa1cfd37ddc2 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -438,6 +438,16 @@ int btrfs_verify_level_key(struct btrfs_fs_info *fs_info,
- 	 */
- 	if (btrfs_header_generation(eb) > fs_info->last_trans_committed)
- 		return 0;
-+
-+	/* We have @first_key, so this @eb must have at least one item */
-+	if (btrfs_header_nritems(eb) == 0) {
-+		btrfs_err(fs_info,
-+		"invalid tree nritems, bytenr=%llu nritems=0 expect >0",
-+			  eb->start);
-+		WARN_ON(IS_ENABLED(CONFIG_BTRFS_DEBUG));
-+		return -EUCLEAN;
-+	}
-+
- 	if (found_level)
- 		btrfs_node_key_to_cpu(eb, &found_key, 0);
+diff --git a/fs/btrfs/delalloc-space.c b/fs/btrfs/delalloc-space.c
+index 1245739a3a6e..d05648f882ca 100644
+--- a/fs/btrfs/delalloc-space.c
++++ b/fs/btrfs/delalloc-space.c
+@@ -255,7 +255,7 @@ int btrfs_check_data_free_space(struct inode *inode,
+ 	/* Use new btrfs_qgroup_reserve_data to reserve precious data space. */
+ 	ret = btrfs_qgroup_reserve_data(inode, reserved, start, len);
+ 	if (ret < 0)
+-		btrfs_free_reserved_data_space_noquota(inode, start, len);
++		btrfs_free_reserved_data_space_noquota(inode, len);
  	else
-diff --git a/fs/btrfs/tree-checker.c b/fs/btrfs/tree-checker.c
-index 3ec712cba58e..235c2970b944 100644
---- a/fs/btrfs/tree-checker.c
-+++ b/fs/btrfs/tree-checker.c
-@@ -509,6 +509,12 @@ static int check_leaf(struct btrfs_fs_info *fs_info, struct extent_buffer *leaf,
- 				    owner);
- 			return -EUCLEAN;
+ 		ret = 0;
+ 	return ret;
+@@ -269,16 +269,13 @@ int btrfs_check_data_free_space(struct inode *inode,
+  * which we can't sleep and is sure it won't affect qgroup reserved space.
+  * Like clear_bit_hook().
+  */
+-void btrfs_free_reserved_data_space_noquota(struct inode *inode, u64 start,
++void btrfs_free_reserved_data_space_noquota(struct inode *inode,
+ 					    u64 len)
+ {
+ 	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
+ 	struct btrfs_space_info *data_sinfo;
+ 
+-	/* Make sure the range is aligned to sectorsize */
+-	len = round_up(start + len, fs_info->sectorsize) -
+-	      round_down(start, fs_info->sectorsize);
+-	start = round_down(start, fs_info->sectorsize);
++	ASSERT(IS_ALIGNED(len, fs_info->sectorsize));
+ 
+ 	data_sinfo = fs_info->data_sinfo;
+ 	spin_lock(&data_sinfo->lock);
+@@ -303,7 +300,7 @@ void btrfs_free_reserved_data_space(struct inode *inode,
+ 	      round_down(start, root->fs_info->sectorsize);
+ 	start = round_down(start, root->fs_info->sectorsize);
+ 
+-	btrfs_free_reserved_data_space_noquota(inode, start, len);
++	btrfs_free_reserved_data_space_noquota(inode, len);
+ 	btrfs_qgroup_free_data(inode, reserved, start, len);
+ }
+ 
+diff --git a/fs/btrfs/delalloc-space.h b/fs/btrfs/delalloc-space.h
+index 54466fbd7075..fe8c6aafb25b 100644
+--- a/fs/btrfs/delalloc-space.h
++++ b/fs/btrfs/delalloc-space.h
+@@ -13,7 +13,7 @@ void btrfs_free_reserved_data_space(struct inode *inode,
+ void btrfs_delalloc_release_space(struct inode *inode,
+ 				  struct extent_changeset *reserved,
+ 				  u64 start, u64 len, bool qgroup_free);
+-void btrfs_free_reserved_data_space_noquota(struct inode *inode, u64 start,
++void btrfs_free_reserved_data_space_noquota(struct inode *inode,
+ 					    u64 len);
+ void btrfs_delalloc_release_metadata(struct btrfs_inode *inode, u64 num_bytes,
+ 				     bool qgroup_free);
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index e75a77a4e068..2173df2da9c7 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -2093,7 +2093,7 @@ void btrfs_clear_delalloc_extent(struct inode *vfs_inode,
+ 		    (*bits & EXTENT_CLEAR_DATA_RESV))
+ 			btrfs_free_reserved_data_space_noquota(
+ 					&inode->vfs_inode,
+-					state->start, len);
++					len);
+ 
+ 		percpu_counter_add_batch(&fs_info->delalloc_bytes, -len,
+ 					 fs_info->delalloc_batch);
+@@ -7258,8 +7258,7 @@ static int btrfs_get_blocks_direct_write(struct extent_map **map,
+ 			 * use the existing or preallocated extent, so does not
+ 			 * need to adjust btrfs_space_info's bytes_may_use.
+ 			 */
+-			btrfs_free_reserved_data_space_noquota(inode, start,
+-							       len);
++			btrfs_free_reserved_data_space_noquota(inode, len);
+ 			goto skip_cow;
  		}
-+		/* Unknown tree */
-+		if (owner == 0) {
-+			generic_err(fs_info, leaf, 0,
-+				"invalid owner, root 0 is not defined");
-+			return -EUCLEAN;
-+		}
- 		key.objectid = owner;
- 		key.type = BTRFS_ROOT_ITEM_KEY;
- 		key.offset = (u64)-1;
+ 	}
 -- 
-2.23.1
+2.11.0
 
