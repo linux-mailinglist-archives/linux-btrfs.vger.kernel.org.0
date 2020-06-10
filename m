@@ -2,65 +2,104 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24F0F1F4B9F
-	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Jun 2020 04:59:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E54D1F4BB2
+	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Jun 2020 05:11:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726017AbgFJC7J (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 9 Jun 2020 22:59:09 -0400
-Received: from mail104.syd.optusnet.com.au ([211.29.132.246]:38302 "EHLO
-        mail104.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725927AbgFJC7I (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 9 Jun 2020 22:59:08 -0400
-Received: from dread.disaster.area (pa49-180-124-177.pa.nsw.optusnet.com.au [49.180.124.177])
-        by mail104.syd.optusnet.com.au (Postfix) with ESMTPS id 25BD5821015;
-        Wed, 10 Jun 2020 12:59:02 +1000 (AEST)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1jiqxA-0002Vq-P3; Wed, 10 Jun 2020 12:59:00 +1000
-Date:   Wed, 10 Jun 2020 12:59:00 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Goldwyn Rodrigues <rgoldwyn@suse.de>
-Cc:     darrick.wong@oracle.com, linux-btrfs@vger.kernel.org,
-        fdmanana@gmail.com, linux-fsdevel@vger.kernel.org, hch@lst.de,
-        linux-xfs@vger.kernel.org
-Subject: Re: [PATCH 0/3] Transient errors in Direct I/O
-Message-ID: <20200610025900.GA2005@dread.disaster.area>
-References: <20200605204838.10765-1-rgoldwyn@suse.de>
+        id S1726102AbgFJDKq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 9 Jun 2020 23:10:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43434 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726030AbgFJDKp (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 9 Jun 2020 23:10:45 -0400
+Received: from mail-vk1-xa41.google.com (mail-vk1-xa41.google.com [IPv6:2607:f8b0:4864:20::a41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46A8AC05BD1E;
+        Tue,  9 Jun 2020 20:10:43 -0700 (PDT)
+Received: by mail-vk1-xa41.google.com with SMTP id e1so228946vkd.1;
+        Tue, 09 Jun 2020 20:10:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KZBhwJpe3f99/5LDVB8Bc5/cCcPk7wAvZ6DTVQ9hBQo=;
+        b=avSeW6EdipkgvBtqfFwap8GyOTxynTVR7JqrquqYKuotU0/nUvlM7xlHlJ1tAitGDu
+         QUYLYb87xZef7qj3qeDE1k4EmFE1cbYmQBfwIp09ULfRs+wYjiabO06Gibetk1NLU5gJ
+         rz5CnO6egYTloKqDOFWswZX+Qro6lyuXdsGra+adGQtRrNeqz0rCxNlGxP7ZObqx4AUF
+         stvyFWZSCqViy5vTX6NLyPyMg06O5duxH5cDOYMXNueL8NZbQl9UJrPYb9l3LdrILH6E
+         mdsSwmmV1rLAh1NQeFdUB2r7ptxXppY9s3qS69KO4aMfegJuLl9rYGsN+J8hVyUg8zJP
+         qYFw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KZBhwJpe3f99/5LDVB8Bc5/cCcPk7wAvZ6DTVQ9hBQo=;
+        b=DWA14aZkwaQ44lR6kIP/BMdQn4DL4eG6pG7wJnebWakrj9MO9orf8XJX+UG8M0BpgG
+         S3C/EObVpyMUfau8z9puNbItd7aMAav0hZcBdcF4Ol+rEuJ0kU/sqB5rjO0mv4dMV0A+
+         3FjC1LJWCDCyw68s/RTa6DrRXby8dc1ige7lg9XPj45QlHBw5tdkIHuOvi5T1GKanGbU
+         nx2BjSqqiE5xQp/3QeP9AmvwTCb/+aVvqLe50B0ZArdkRbu0mIpzpDVB8uIpf3o1JiiP
+         DtXdOGNCOXeyolQoavxa/7o8QdQsoW5EPVLTTub2KGpz7OnFHyLaWGU0+IFVMXRyTGyr
+         IHFA==
+X-Gm-Message-State: AOAM533ajg6jBaBWKQ/YfLn6b5quzMNkN8X9ME5uK5DMTUz/4jdVOShM
+        OzOXjOR5uKdvDbKHtOKT5kxF7sqpINDNxldHZFI=
+X-Google-Smtp-Source: ABdhPJwhJJbrVDdVhPbiFe8woY8RZS6gzI8WAuQcnLKqPCqx6QB1rkMVrPvxE9COyN4yin3SLa4xOGD0F8W2ftqaENc=
+X-Received: by 2002:a1f:9094:: with SMTP id s142mr886695vkd.6.1591758642398;
+ Tue, 09 Jun 2020 20:10:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200605204838.10765-1-rgoldwyn@suse.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=W5xGqiek c=1 sm=1 tr=0
-        a=k3aV/LVJup6ZGWgigO6cSA==:117 a=k3aV/LVJup6ZGWgigO6cSA==:17
-        a=kj9zAlcOel0A:10 a=nTHF0DUjJn0A:10 a=7-415B0cAAAA:8
-        a=5PYHEG6Ngi7WJpX9KO8A:9 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
+References: <20200609104604.1594-1-stanimir.varbanov@linaro.org>
+ <20200609111323.GA19604@bombadil.infradead.org> <c239d5df-e069-2091-589e-30f341c2cbd3@infradead.org>
+ <9a79aded6981ec47f1f8b317b784e6e44158ac61.camel@perches.com>
+ <CAJfuBxwyDysP30cMWDusw4CsSQitchA5hOKkpk1PktbsbCKTSw@mail.gmail.com> <6115b15ced02686f7408417411ff758445b42421.camel@perches.com>
+In-Reply-To: <6115b15ced02686f7408417411ff758445b42421.camel@perches.com>
+From:   jim.cromie@gmail.com
+Date:   Tue, 9 Jun 2020 21:10:15 -0600
+Message-ID: <CAJfuBxzd1Jmd726_zYxfjPy1YgTpcLzLU_fh=pd5FEBaVFCWrw@mail.gmail.com>
+Subject: Re: [PATCH v3 0/7] Venus dynamic debug
+To:     Joe Perches <joe@perches.com>
+Cc:     Stanimir Varbanov <stanimir.varbanov@linaro.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Linux Documentation List <linux-doc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, linux-media@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        linux-acpi@vger.kernel.org, netdev@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jason Baron <jbaron@akamai.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-[ Please cc the XFS list on XFS and iomap infrastructure changes.]
+On Tue, Jun 9, 2020 at 4:23 PM Joe Perches <joe@perches.com> wrote:
+>
+> On Tue, 2020-06-09 at 15:21 -0600, jim.cromie@gmail.com wrote:
+> >
+> > As Joe noted, there is a lot of ad-hockery to possibly clean up,
+> > but I dont grok how these levels should be distinguished from
+> > KERN_(WARN|INFO|DEBUG) constants.
+>
+> These are not KERN_<LEVEL> at all, all are emitted at KERN_DEBUG
 
-On Fri, Jun 05, 2020 at 03:48:35PM -0500, Goldwyn Rodrigues wrote:
-> In current scenarios, for XFS, it would mean that a page invalidation
-> would end up being a writeback error. So, if iomap returns zero, fall
-> back to biffered I/O. XFS has never supported fallback to buffered I/O.
-> I hope it is not "never will" ;)
+yes indeed.  but they are chosen by programmer, fixed by compiler.  not dynamic.
+<pmladek@suse.com> also noted the conceptual adjacency (ambiguity),
+and referenced KERN_<lvl>
 
-I wouldn't say "never", but we are not going to change XFS behaviour
-because btrfs has a page invalidation vs DIO bug in it...
 
-If you want to make a specific filesystem fall back to buffered IO
-in this case, pass a new flag into iomap_dio_rw() to conditionally
-abort the DIO on invalidation failure and let filesystem
-implementations opt-in to use that flag.
 
-Cheers,
+If we need this extra query-term, lets call it   mbits / mflags /
+module_flags / module_bits
+it needs to be module specific, so also requiring "module foo" search
+term in the query.
+( "modflags" is no good, cuz "mod" also means "modified" - just mflags
+is better )
 
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+Already, we have function, file, module, all of which convey semantic
+structure of the code,
+and they also match wildcards, so " function foo_*_* " is an effective grouping.
+Id think this would cover most cases.
+
+Finally, all "module venus +p " callsites could be explicitly
+specified individually in
+universe=`grep venus control | wc -l`
+lines, likely a small set.
+Using the semantic structure exposed by `grep venus control`, it would
+likely be far less.
