@@ -2,55 +2,57 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E36C1F54E1
-	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Jun 2020 14:33:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C50A41F54E2
+	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Jun 2020 14:33:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729127AbgFJMdV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 10 Jun 2020 08:33:21 -0400
-Received: from esa4.hgst.iphmx.com ([216.71.154.42]:12377 "EHLO
+        id S1729154AbgFJMdW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 10 Jun 2020 08:33:22 -0400
+Received: from esa4.hgst.iphmx.com ([216.71.154.42]:12382 "EHLO
         esa4.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727927AbgFJMdU (ORCPT
+        with ESMTP id S1729029AbgFJMdV (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 10 Jun 2020 08:33:20 -0400
+        Wed, 10 Jun 2020 08:33:21 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1591792400; x=1623328400;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=WyQ6EdGrDBJ85L50q4rornSAZwekDOExXJYAO+7r67g=;
-  b=C/hVVfafXaI0K0jdesUZfT4HHXlBOn2vLRGSanOu2oCnqceDkb/a/4N2
-   8sqGdBAXrj42FTciIzD2g/TSEYPaBL3lZG7MmYKOFiM+Ie6tE+3KyCSpr
-   5A9fvMBa2O1jPYFNhxtKNqOs0Sti55rp3hoHOaYEX0LmQ0BBa1kqdXeJ/
-   57+Uy5PlPo61oX80cQYCOxvKx/6l/ZOUwTMv4lf9ctnm/gY4Mc0OpMMB8
-   te16d+/vOyOK8XOHlWQVuIrh2vCog7tdZt/f4AhNuVduRk5qAJoUBzOOw
-   8gsu5DUJKeqadODBaBSkobKSyQsmNiunrh1rLyK/A1dkUEKzMXZ7fYjho
-   w==;
-IronPort-SDR: 6ljXuC/AMUHD/P6rZ2AuBSAOzXNkOONc9g1Z0+sytbT7EX2/L8UzAp8eI5szWtbv3x7Zesh2jS
- dCfgdMfmFOMKfCkATh1S4ZnkHoU2GKFrlw25s/2v4Z6MiRC/UHe9Gv3yll9HDbEDXJ8CjkPhl3
- JZJeGpI74v/nFHC8q9nTECf7HOGKHt5derIhtRNAdRVFj9aF+s0wgsyiqMqZeUCPJZrU0bKkTb
- vmwZHGPHqcNrtx+MTDLFnwCNeW03YS2PI1rq5rbG4ibCizFSDtbJyFu7pOs1lISuXbshy+btUq
- tfY=
+  t=1591792401; x=1623328401;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=OjdGgV/iUg9JxZsGLsOUpeBmloXD5kGKiFkSnh5FCc4=;
+  b=Y9V+fFDM4qC7LMS4osyOMkXywWlhNfEmWWYypmfBZMSv9GjI4n7+GafO
+   wSF02/4pKB8Q6UWthOrU67txCTEsWd5qwj94Bt1k0J2atsRSqEmuPG246
+   k34KS4XGKM+gtC1nyOpOZQL6tAz+yuP+3El9KW0WbrlgTo+taaE3oMuJ2
+   Oq+C723JJy/hPy9UV5mhYO5uGihVWoWCxxJRkwdX+51aQ3EdVhA74IWVC
+   FFvlF5LOWKi6bzoJcYuzFuXI2v1h2zHsFtoZWlPmzV9iykKApD+pH3f1j
+   Pjh5em0yZPDkqh5OjTcZDIl5ZuSGht4IYcitkUown2eGDLexAAfEn9FvJ
+   Q==;
+IronPort-SDR: PeslH6MbR5XRkE9pN9fE2DQ/AXHgjGnY/nAwASJYtdYzBAN6sOY+pQ6YfWuyV1oHAu5Qkqb2+x
+ QSeJcK+mPtSRoMThL5DyYXegBcBFgoHpNtWSS6sj9sfWGLlzSx1ojENTOGvv5G7NslgOoER2tB
+ syBR2byWy2hK0ABmPp2QjGGSGtwm61YnHnWwLwVwtpGl90nPoVXXKI5AeI/PW73OkKs1H3ZyRi
+ a1rGDor1ZMPjZ3n9e3MC+sJPXMxkVib6NBizTVrdlE02NyoXT4xmkC5LaHDcIDO3/IMQR5DE0d
+ sPE=
 X-IronPort-AV: E=Sophos;i="5.73,496,1583164800"; 
-   d="scan'208";a="139632682"
+   d="scan'208";a="139632684"
 Received: from uls-op-cesaip01.wdc.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 10 Jun 2020 20:33:04 +0800
-IronPort-SDR: PkwAYLJ8WqiNBNFt91CFRnA58Md53fWD3v6YyibY6xCZTrxWNiHkMeIxIohDHUjNT4tMNsIvhF
- k/oToltAp4BJZoHfFvMZlVwA1PPSuTljo=
+  by ob1.hgst.iphmx.com with ESMTP; 10 Jun 2020 20:33:05 +0800
+IronPort-SDR: gwxkbQDThKmd00SgvgOsuPBr/8WwrrwXLst5PwFYvlmFnLU8hn6Yoyfkdm2A/NAjov7Ehf0wQT
+ hWL5gxQH+zQRjMUcHT9jppJFNGxbGzYB8=
 Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jun 2020 05:22:31 -0700
-IronPort-SDR: jy8XDn+LBgWYTAeoKcFFDfxyQEtAgUiYs76y+XIGglhB0pKbaRz7/QNNJGSEd+p1A0qFDSKaJp
- d3s1fqskvLEg==
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jun 2020 05:22:32 -0700
+IronPort-SDR: Xp/O7BPACJrmB+8loD5lVqdovcOGxUmfaYthqtbvp2er8qOUSxhAqrUqu1p4UbVpj2yb6LacZJ
+ RtcEyTrRYXpw==
 WDCIronportException: Internal
 Received: from unknown (HELO redsun60.ssa.fujisawa.hgst.com) ([10.149.66.36])
-  by uls-op-cesaip01.wdc.com with ESMTP; 10 Jun 2020 05:33:03 -0700
+  by uls-op-cesaip01.wdc.com with ESMTP; 10 Jun 2020 05:33:04 -0700
 From:   Johannes Thumshirn <johannes.thumshirn@wdc.com>
 To:     David Sterba <dsterba@suse.cz>
 Cc:     linux-btrfs@vger.kernel.org,
         Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Subject: [PATCH 00/15] btrfs-progs: simplify chunk allocation a bit
-Date:   Wed, 10 Jun 2020 21:32:43 +0900
-Message-Id: <20200610123258.12382-1-johannes.thumshirn@wdc.com>
+Subject: [PATCH 01/15] btrfs-progs: simplify minimal stripe number checking
+Date:   Wed, 10 Jun 2020 21:32:44 +0900
+Message-Id: <20200610123258.12382-2-johannes.thumshirn@wdc.com>
 X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200610123258.12382-1-johannes.thumshirn@wdc.com>
+References: <20200610123258.12382-1-johannes.thumshirn@wdc.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
@@ -58,31 +60,98 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-While playing a bit with the RAID code, I've come up with some cleanups for
-the chunk allocatin in progs. It's not aligned to what we're doing in the
-kernel, but the code has diverged so much it is a daunting task to converge it
-again.
+In btrfs_alloc_chunk_ctrl() we have a recurring pattern, first we assign
+num stripes, then we test if num_stripes is smaller than a hardcoded
+boundary and after that we set min_stripes to this magic value.
 
-Johannes Thumshirn (15):
-  btrfs-progs: simplify minimal stripe number checking
-  btrfs-progs: simplify assignment of number of RAID stripes
-  btrfs-progs: introduce alloc_chunk_ctl structure
-  btrfs-progs: cache number of devices for chunk allocation
-  btrfs-progs: pass alloc_chunk_ctl to chunk_bytes_by_type
-  btrfs-progs: introduce raid profile table for chunk allocation
-  btrfs-progs: consolidate assignment of minimal stripe number
-  btrfs-progs: consolidate assignment of sub_stripes
-  btrfs-progs: consolidate setting of RAID1 stripes
-  btrfs-progs: do table lookup for simple RAID profiles' num_stripes
-  btrfs-progs: consolidate num_stripes sanity check
-  btrfs-progs: compactify num_stripe setting in btrfs_alloc_chunk
-  btrfs-progs: introduce init_alloc_chunk_ctl
-  btrfs-progs: don't pretend RAID56 has a different stripe length
-  btrfs-progs: consolidate num_stripes setting for striping RAID levels
+Reverse the logic by first assigning min_stripes and then testing
+num_stripes against min_stripes.
 
- volumes.c | 261 +++++++++++++++++++++++++++++++-----------------------
- 1 file changed, 148 insertions(+), 113 deletions(-)
+This will help further refactoring.
 
+Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+---
+ volumes.c | 30 +++++++++++++++---------------
+ 1 file changed, 15 insertions(+), 15 deletions(-)
+
+diff --git a/volumes.c b/volumes.c
+index 7f84fbbaa742..089363f66473 100644
+--- a/volumes.c
++++ b/volumes.c
+@@ -1054,25 +1054,25 @@ int btrfs_alloc_chunk(struct btrfs_trans_handle *trans,
+ 		}
+ 	}
+ 	if (type & BTRFS_BLOCK_GROUP_RAID1) {
+-		num_stripes = min_t(u64, 2,
++		min_stripes = 2;
++		num_stripes = min_t(u64, min_stripes,
+ 				  btrfs_super_num_devices(info->super_copy));
+-		if (num_stripes < 2)
++		if (num_stripes < min_stripes)
+ 			return -ENOSPC;
+-		min_stripes = 2;
+ 	}
+ 	if (type & BTRFS_BLOCK_GROUP_RAID1C3) {
+-		num_stripes = min_t(u64, 3,
++		min_stripes = 3;
++		num_stripes = min_t(u64, min_stripes,
+ 				  btrfs_super_num_devices(info->super_copy));
+-		if (num_stripes < 3)
++		if (num_stripes < min_stripes)
+ 			return -ENOSPC;
+-		min_stripes = 3;
+ 	}
+ 	if (type & BTRFS_BLOCK_GROUP_RAID1C4) {
+-		num_stripes = min_t(u64, 4,
++		min_stripes = 4;
++		num_stripes = min_t(u64, min_stripes,
+ 				  btrfs_super_num_devices(info->super_copy));
+-		if (num_stripes < 4)
++		if (num_stripes < min_stripes)
+ 			return -ENOSPC;
+-		min_stripes = 4;
+ 	}
+ 	if (type & BTRFS_BLOCK_GROUP_DUP) {
+ 		num_stripes = 2;
+@@ -1085,32 +1085,32 @@ int btrfs_alloc_chunk(struct btrfs_trans_handle *trans,
+ 		min_stripes = 2;
+ 	}
+ 	if (type & (BTRFS_BLOCK_GROUP_RAID10)) {
++		min_stripes = 4;
+ 		num_stripes = btrfs_super_num_devices(info->super_copy);
+ 		if (num_stripes > max_stripes)
+ 			num_stripes = max_stripes;
+-		if (num_stripes < 4)
++		if (num_stripes < min_stripes)
+ 			return -ENOSPC;
+ 		num_stripes &= ~(u32)1;
+ 		sub_stripes = 2;
+-		min_stripes = 4;
+ 	}
+ 	if (type & (BTRFS_BLOCK_GROUP_RAID5)) {
++		min_stripes = 2;
+ 		num_stripes = btrfs_super_num_devices(info->super_copy);
+ 		if (num_stripes > max_stripes)
+ 			num_stripes = max_stripes;
+-		if (num_stripes < 2)
++		if (num_stripes < min_stripes)
+ 			return -ENOSPC;
+-		min_stripes = 2;
+ 		stripe_len = find_raid56_stripe_len(num_stripes - 1,
+ 				    btrfs_super_stripesize(info->super_copy));
+ 	}
+ 	if (type & (BTRFS_BLOCK_GROUP_RAID6)) {
++		min_stripes = 3;
+ 		num_stripes = btrfs_super_num_devices(info->super_copy);
+ 		if (num_stripes > max_stripes)
+ 			num_stripes = max_stripes;
+-		if (num_stripes < 3)
++		if (num_stripes < min_stripes)
+ 			return -ENOSPC;
+-		min_stripes = 3;
+ 		stripe_len = find_raid56_stripe_len(num_stripes - 2,
+ 				    btrfs_super_stripesize(info->super_copy));
+ 	}
 -- 
 2.26.2
 
