@@ -2,27 +2,25 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDC2B1F4A82
-	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Jun 2020 02:58:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30D831F4A96
+	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Jun 2020 03:04:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726142AbgFJA6J (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 9 Jun 2020 20:58:09 -0400
-Received: from mx2.suse.de ([195.135.220.15]:33454 "EHLO mx2.suse.de"
+        id S1726040AbgFJBEu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 9 Jun 2020 21:04:50 -0400
+Received: from mx2.suse.de ([195.135.220.15]:34882 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726130AbgFJA6H (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 9 Jun 2020 20:58:07 -0400
+        id S1725988AbgFJBEu (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 9 Jun 2020 21:04:50 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 6729DAE17
-        for <linux-btrfs@vger.kernel.org>; Wed, 10 Jun 2020 00:58:09 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 6ECC1AD78
+        for <linux-btrfs@vger.kernel.org>; Wed, 10 Jun 2020 01:04:52 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 5/5] btrfs: qgroup: catch reserved space leakage at unmount time
-Date:   Wed, 10 Jun 2020 08:57:51 +0800
-Message-Id: <20200610005751.10645-6-wqu@suse.com>
+Subject: [PATCH v3 0/5] btrfs: qgroup: detect and fix leaked data reserved space
+Date:   Wed, 10 Jun 2020 09:04:39 +0800
+Message-Id: <20200610010444.13583-1-wqu@suse.com>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200610005751.10645-1-wqu@suse.com>
-References: <20200610005751.10645-1-wqu@suse.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
@@ -30,109 +28,99 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Before this patch, btrfs qgroup completely relies on per-inode extent io
-tree to detect reserved data space leakage.
+ghere is an internal report complaining that qgroup is only half of the
+limit, but they still get EDQUOT errors.
 
-However previous bug has already shown how release page before
-btrfs_finish_ordered_io() could lead to leakage, and since it's
-QGROUP_RESERVED bit cleared without triggering qgroup rsv, it can't be
-detected by per-inode extent io tree.
+With some extra debugging patch added, it turns out that even fsstress
+with 10 steps can sometimes cause qgroup reserved data space to leak.
 
-So this patch adds another (and hopefully the final) safe net to catch
-qgroup data reserved space leakage.
+The root cause is the chaotic lifespan of qgroup data rsv.
+Here is the chart explaining the difference between the old and new
+lifespan of qgroup data rsv:
+  ||: Qgroup data rsv is reserved
+   |: Qgroup data rsv is released but not freed
+    : Qgroup data rsv is freed
 
-At least the new safe net catches all the leakage during development, so
-it should be pretty useful in the real world.
+	The old		The new
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/disk-io.c |  6 ++++++
- fs/btrfs/qgroup.c  | 43 +++++++++++++++++++++++++++++++++++++++++++
- fs/btrfs/qgroup.h  |  2 +-
- 3 files changed, 50 insertions(+), 1 deletion(-)
+	   TT		   TT		Page get dirtied
+ 	   ||		   ||
+           ||		   ||
+  	   || ------------ || --------- btrfs_run_delalloc_range()
+	   ||		    |		|- btrfs_add_ordered_extent()
+	   ||		    |
+	    | ------------  | --------- btrfs_finish_ordered_io()
+	    |		    |
+	      ------------    --------- btrfs_account_extents()
 
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index f8ec2d8606fd..48d047e64461 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -4058,6 +4058,12 @@ void __cold close_ctree(struct btrfs_fs_info *fs_info)
- 	ASSERT(list_empty(&fs_info->delayed_iputs));
- 	set_bit(BTRFS_FS_CLOSING_DONE, &fs_info->flags);
- 
-+	if (btrfs_qgroup_has_leak(fs_info)) {
-+		WARN(IS_ENABLED(CONFIG_BTRFS_DEBUG),
-+		     KERN_ERR "BTRFS: qgroup reserved space leaked\n");
-+		btrfs_err(fs_info, "qgroup reserved space leaked\n");
-+	}
-+
- 	btrfs_free_qgroup_config(fs_info);
- 	ASSERT(list_empty(&fs_info->delalloc_roots));
- 
-diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
-index 5bd4089ad0e1..3fccf2ffdcf1 100644
---- a/fs/btrfs/qgroup.c
-+++ b/fs/btrfs/qgroup.c
-@@ -505,6 +505,49 @@ int btrfs_read_qgroup_config(struct btrfs_fs_info *fs_info)
- 	return ret < 0 ? ret : 0;
- }
- 
-+static u64 btrfs_qgroup_subvolid(u64 qgroupid)
-+{
-+	return (qgroupid & ((1ULL << BTRFS_QGROUP_LEVEL_SHIFT) - 1));
-+}
-+/*
-+ * Get called for close_ctree() when quota is still enabled.
-+ * This verifies we don't leak some reserved space.
-+ *
-+ * Return false if no reserved space is left.
-+ * Return true if some reserved space is leaked.
-+ */
-+bool btrfs_qgroup_has_leak(struct btrfs_fs_info *fs_info)
-+{
-+	struct btrfs_qgroup *qgroup;
-+	struct rb_node *node;
-+	bool ret = false;
-+
-+	if (!test_bit(BTRFS_FS_QUOTA_ENABLED, &fs_info->flags))
-+		return ret;
-+	/*
-+	 * Since we're unmounting, there is no race and no need to grab
-+	 * qgroup lock.
-+	 * And here we don't go post order to provide a more user friendly
-+	 * sorted result.
-+	 */
-+	for (node = rb_first(&fs_info->qgroup_tree); node; node = rb_next(node)) {
-+		int i;
-+
-+		qgroup = rb_entry(node, struct btrfs_qgroup, node);
-+		for (i = 0; i < BTRFS_QGROUP_RSV_LAST; i++) {
-+			if (qgroup->rsv.values[i]) {
-+				ret = true;
-+				btrfs_warn(fs_info,
-+		"qgroup %llu/%llu has unreleased space, type=%d rsv=%llu",
-+				   btrfs_qgroup_level(qgroup->qgroupid),
-+				   btrfs_qgroup_subvolid(qgroup->qgroupid),
-+				   i, qgroup->rsv.values[i]);
-+			}
-+		}
-+	}
-+	return ret;
-+}
-+
- /*
-  * This is called from close_ctree() or open_ctree() or btrfs_quota_disable(),
-  * first two are in single-threaded paths.And for the third one, we have set
-diff --git a/fs/btrfs/qgroup.h b/fs/btrfs/qgroup.h
-index 1bc654459469..e3e9f9df8320 100644
---- a/fs/btrfs/qgroup.h
-+++ b/fs/btrfs/qgroup.h
-@@ -415,5 +415,5 @@ int btrfs_qgroup_add_swapped_blocks(struct btrfs_trans_handle *trans,
- int btrfs_qgroup_trace_subtree_after_cow(struct btrfs_trans_handle *trans,
- 		struct btrfs_root *root, struct extent_buffer *eb);
- void btrfs_qgroup_destroy_extent_records(struct btrfs_transaction *trans);
--
-+bool btrfs_qgroup_has_leak(struct btrfs_fs_info *fs_info);
- #endif
+Since there is a large window between btrfs_add_ordered_extent() and
+btrfs_finish_ordered_io(), during which page can be released and clear
+the QGROUP_RESERVED bit.
+
+In fact during dio, dio will try to flush the range, and then invalidate
+the pages before submitting direct IO.
+
+Due to the fact that filemap_write_and_wait_range() will only wait for
+page writeback get cleared, not page dirty cleared, so it will release
+pages before btrfs_finish_ordered_io() get executed, and clearing
+QGROUP_RESERVED bit without triggering qgroup rsv release, leading to
+qgroup data rsv leakage.
+
+With the new timing, QGROUP_RESERVED bit is cleared before
+filemap_write_and_wait_range() returns, and doing proper qgroup rsv
+releasing, so there is no window to screw up qgroup rsv anymore.
+
+Although to co-operate the timing change, quite some existing chaotic
+btrfs_qgroup_release/free_data() calls must be modified/removed to
+follow the more restrict calling protocol.
+
+But overall, this make the qgroup data rsv lifespan more clear, so it
+should be still worthy.
+
+After all the big timing change and fixes, add an extra and hopefully
+final safe net to catch qgroup data rsv leakage.
+Now extent io tree based QGROUP_RESERVED bit should detect case like
+missing btrfs_qgroup_release/free_data() call, while the unmount check
+should detect unexpected QGROUP_RESERVED bit clearing.
+
+The existing test case btrfs/022 can already catch the bug pretty
+reliably.
+
+Changelog:
+v2:
+- Change the lifespan of qgroup data rsv
+  From the original whac-a-mole method to a more proper timing, to
+  use ordered extents as the proper owner of qgroup data rsv.
+
+- Add commit message for the final patch
+
+- Adds extra refactor to make insert_reserved_file_extent() use less
+  parameters
+
+v3:
+- Remove the redundant WARN() message
+
+- Reduce the scope of struct btrfs_qgroup in btrfs_qgroup_has_leak()
+
+Qu Wenruo (5):
+  btrfs: inode: refactor the parameters of insert_reserved_file_extent()
+  btrfs: inode: move the qgroup reserved data space release into the
+    callers of insert_reserved_file_extent()
+  btrfs: file: reserve qgroup space after the hole punch range locked
+  btrfs: change the timing for qgroup reserved space for ordered extents
+    to fix reserved space leak
+  btrfs: qgroup: catch reserved space leakage at unmount time
+
+ fs/btrfs/ctree.h        |   6 +-
+ fs/btrfs/disk-io.c      |   5 ++
+ fs/btrfs/file.c         |   8 +--
+ fs/btrfs/inode.c        | 119 +++++++++++++++++++++++-----------------
+ fs/btrfs/ordered-data.c |  22 +++++++-
+ fs/btrfs/ordered-data.h |   3 +
+ fs/btrfs/qgroup.c       |  43 +++++++++++++++
+ fs/btrfs/qgroup.h       |   2 +-
+ 8 files changed, 151 insertions(+), 57 deletions(-)
+
 -- 
 2.26.2
 
