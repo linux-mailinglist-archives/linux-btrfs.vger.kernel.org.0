@@ -2,82 +2,99 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42FC81F4E4E
-	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Jun 2020 08:35:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 831481F4E82
+	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Jun 2020 09:00:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726098AbgFJGfi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 10 Jun 2020 02:35:38 -0400
-Received: from smtprelay0048.hostedemail.com ([216.40.44.48]:35340 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725988AbgFJGfg (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 10 Jun 2020 02:35:36 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay08.hostedemail.com (Postfix) with ESMTP id 90372182CF665;
-        Wed, 10 Jun 2020 06:35:34 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:968:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2553:2559:2562:2828:3138:3139:3140:3141:3142:3353:3622:3865:3866:3867:3868:3870:3871:3872:3873:3874:4321:5007:6119:6742:7903:8604:9393:10004:10400:10848:11232:11658:11914:12297:12663:12740:12760:12895:13069:13255:13311:13357:13439:14659:14721:21080:21433:21627:30054:30062:30075:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: fork19_2e0cbf626dc9
-X-Filterd-Recvd-Size: 2396
-Received: from XPS-9350.home (unknown [47.151.136.130])
-        (Authenticated sender: joe@perches.com)
-        by omf05.hostedemail.com (Postfix) with ESMTPA;
-        Wed, 10 Jun 2020 06:35:32 +0000 (UTC)
-Message-ID: <f94b2abe85d7c849ca76677ff5a1e0b272bb3bdf.camel@perches.com>
-Subject: Re: [PATCH v3 1/7] Documentation: dynamic-debug: Add description of
- level bitmask
-From:   Joe Perches <joe@perches.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Stanimir Varbanov <stanimir.varbanov@linaro.org>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-acpi@vger.kernel.org,
-        netdev@vger.kernel.org, Jason Baron <jbaron@akamai.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Jim Cromie <jim.cromie@gmail.com>
-Date:   Tue, 09 Jun 2020 23:35:31 -0700
-In-Reply-To: <20200610063103.GD1907120@kroah.com>
-References: <20200609104604.1594-1-stanimir.varbanov@linaro.org>
-         <20200609104604.1594-2-stanimir.varbanov@linaro.org>
-         <20200609111615.GD780233@kroah.com>
-         <ba32bfa93ac2e147c2e0d3a4724815a7bbf41c59.camel@perches.com>
-         <20200610063103.GD1907120@kroah.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.2-0ubuntu1 
+        id S1726196AbgFJHAR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 10 Jun 2020 03:00:17 -0400
+Received: from mx2.suse.de ([195.135.220.15]:59712 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726109AbgFJHAR (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 10 Jun 2020 03:00:17 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 88F3DAB76;
+        Wed, 10 Jun 2020 07:00:18 +0000 (UTC)
+Subject: Re: [PATCH] btrfs: add little-endian optimized key helpers
+To:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
+References: <20200609194926.9343-1-dsterba@suse.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ xsFNBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
+ T7g+RbfPFlmQp+EwFWOtABXlKC54zgSf+uulGwx5JAUFVUIRBmnHOYi/lUiE0yhpnb1KCA7f
+ u/W+DkwGerXqhhe9TvQoGwgCKNfzFPZoM+gZrm+kWv03QLUCr210n4cwaCPJ0Nr9Z3c582xc
+ bCUVbsjt7BN0CFa2BByulrx5xD9sDAYIqfLCcZetAqsTRGxM7LD0kh5WlKzOeAXj5r8DOrU2
+ GdZS33uKZI/kZJZVytSmZpswDsKhnGzRN1BANGP8sC+WD4eRXajOmNh2HL4P+meO1TlM3GLl
+ EQd2shHFY0qjEo7wxKZI1RyZZ5AgJnSmehrPCyuIyVY210CbMaIKHUIsTqRgY5GaNME24w7h
+ TyyVCy2qAM8fLJ4Vw5bycM/u5xfWm7gyTb9V1TkZ3o1MTrEsrcqFiRrBY94Rs0oQkZvunqia
+ c+NprYSaOG1Cta14o94eMH271Kka/reEwSZkC7T+o9hZ4zi2CcLcY0DXj0qdId7vUKSJjEep
+ c++s8ncFekh1MPhkOgNj8pk17OAESanmDwksmzh1j12lgA5lTFPrJeRNu6/isC2zyZhTwMWs
+ k3LkcTa8ZXxh0RfWAqgx/ogKPk4ZxOXQEZetkEyTFghbRH2BIwARAQABzSJOaWtvbGF5IEJv
+ cmlzb3YgPG5ib3Jpc292QHN1c2UuZGU+wsF4BBMBAgAiBQJYijkSAhsDBgsJCAcDAgYVCAIJ
+ CgsEFgIDAQIeAQIXgAAKCRBxvoJG5T8oV/B6D/9a8EcRPdHg8uLEPywuJR8URwXzkofT5bZE
+ IfGF0Z+Lt2ADe+nLOXrwKsamhweUFAvwEUxxnndovRLPOpWerTOAl47lxad08080jXnGfYFS
+ Dc+ew7C3SFI4tFFHln8Y22Q9075saZ2yQS1ywJy+TFPADIprAZXnPbbbNbGtJLoq0LTiESnD
+ w/SUC6sfikYwGRS94Dc9qO4nWyEvBK3Ql8NkoY0Sjky3B0vL572Gq0ytILDDGYuZVo4alUs8
+ LeXS5ukoZIw1QYXVstDJQnYjFxYgoQ5uGVi4t7FsFM/6ykYDzbIPNOx49Rbh9W4uKsLVhTzG
+ BDTzdvX4ARl9La2kCQIjjWRg+XGuBM5rxT/NaTS78PXjhqWNYlGc5OhO0l8e5DIS2tXwYMDY
+ LuHYNkkpMFksBslldvNttSNei7xr5VwjVqW4vASk2Aak5AleXZS+xIq2FADPS/XSgIaepyTV
+ tkfnyreep1pk09cjfXY4A7qpEFwazCRZg9LLvYVc2M2eFQHDMtXsH59nOMstXx2OtNMcx5p8
+ 0a5FHXE/HoXz3p9bD0uIUq6p04VYOHsMasHqHPbsMAq9V2OCytJQPWwe46bBjYZCOwG0+x58
+ fBFreP/NiJNeTQPOa6FoxLOLXMuVtpbcXIqKQDoEte9aMpoj9L24f60G4q+pL/54ql2VRscK
+ d87BTQRYigc+ARAAyJSq9EFk28++SLfg791xOh28tLI6Yr8wwEOvM3wKeTfTZd+caVb9gBBy
+ wxYhIopKlK1zq2YP7ZjTP1aPJGoWvcQZ8fVFdK/1nW+Z8/NTjaOx1mfrrtTGtFxVBdSCgqBB
+ jHTnlDYV1R5plJqK+ggEP1a0mr/rpQ9dFGvgf/5jkVpRnH6BY0aYFPprRL8ZCcdv2DeeicOO
+ YMobD5g7g/poQzHLLeT0+y1qiLIFefNABLN06Lf0GBZC5l8hCM3Rpb4ObyQ4B9PmL/KTn2FV
+ Xq/c0scGMdXD2QeWLePC+yLMhf1fZby1vVJ59pXGq+o7XXfYA7xX0JsTUNxVPx/MgK8aLjYW
+ hX+TRA4bCr4uYt/S3ThDRywSX6Hr1lyp4FJBwgyb8iv42it8KvoeOsHqVbuCIGRCXqGGiaeX
+ Wa0M/oxN1vJjMSIEVzBAPi16tztL/wQtFHJtZAdCnuzFAz8ue6GzvsyBj97pzkBVacwp3/Mw
+ qbiu7sDz7yB0d7J2tFBJYNpVt/Lce6nQhrvon0VqiWeMHxgtQ4k92Eja9u80JDaKnHDdjdwq
+ FUikZirB28UiLPQV6PvCckgIiukmz/5ctAfKpyYRGfez+JbAGl6iCvHYt/wAZ7Oqe/3Cirs5
+ KhaXBcMmJR1qo8QH8eYZ+qhFE3bSPH446+5oEw8A9v5oonKV7zMAEQEAAcLBXwQYAQIACQUC
+ WIoHPgIbDAAKCRBxvoJG5T8oV1pyD/4zdXdOL0lhkSIjJWGqz7Idvo0wjVHSSQCbOwZDWNTN
+ JBTP0BUxHpPu/Z8gRNNP9/k6i63T4eL1xjy4umTwJaej1X15H8Hsh+zakADyWHadbjcUXCkg
+ OJK4NsfqhMuaIYIHbToi9K5pAKnV953xTrK6oYVyd/Rmkmb+wgsbYQJ0Ur1Ficwhp6qU1CaJ
+ mJwFjaWaVgUERoxcejL4ruds66LM9Z1Qqgoer62ZneID6ovmzpCWbi2sfbz98+kW46aA/w8r
+ 7sulgs1KXWhBSv5aWqKU8C4twKjlV2XsztUUsyrjHFj91j31pnHRklBgXHTD/pSRsN0UvM26
+ lPs0g3ryVlG5wiZ9+JbI3sKMfbdfdOeLxtL25ujs443rw1s/PVghphoeadVAKMPINeRCgoJH
+ zZV/2Z/myWPRWWl/79amy/9MfxffZqO9rfugRBORY0ywPHLDdo9Kmzoxoxp9w3uTrTLZaT9M
+ KIuxEcV8wcVjr+Wr9zRl06waOCkgrQbTPp631hToxo+4rA1jiQF2M80HAet65ytBVR2pFGZF
+ zGYYLqiG+mpUZ+FPjxk9kpkRYz61mTLSY7tuFljExfJWMGfgSg1OxfLV631jV1TcdUnx+h3l
+ Sqs2vMhAVt14zT8mpIuu2VNxcontxgVr1kzYA/tQg32fVRbGr449j1gw57BV9i0vww==
+Message-ID: <42a0f017-ddf8-c109-649b-0b56755366cc@suse.com>
+Date:   Wed, 10 Jun 2020 10:00:13 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20200609194926.9343-1-dsterba@suse.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, 2020-06-10 at 08:31 +0200, Greg Kroah-Hartman wrote:
-> On Tue, Jun 09, 2020 at 09:58:07AM -0700, Joe Perches wrote:
-> > On Tue, 2020-06-09 at 13:16 +0200, Greg Kroah-Hartman wrote:
-> > > What is wrong with the existing control of dynamic
-> > > debug messages that you want to add another type of arbitrary grouping
-> > > to it? 
-> > 
-> > There is no existing grouping mechanism.
+
+
+On 9.06.20 г. 22:49 ч., David Sterba wrote:
+> The CPU and on-disk keys are mapped to two different structures because
+> of the endianity. There's an intermediate buffer used to do the
+> conversion, but this is not necessary when CPU and on-disk endianity
+> matches.
 > 
-> info/warn/err/dbg is what I am referring to.
+> Add optimized versions of helpers that take disk_key and use the buffer
+> directly for CPU keys or drop the intermediate buffer and conversion.
 > 
-> > Many drivers and some subsystems used an internal one
-> > before dynamic debug.
-> > 
-> > $ git grep "MODULE_PARM.*\bdebug\b"|wc -l
-> > 501
+> This saves a lot of stack space accross many functions and removes about
+> 6K of generated binary code:
 > 
-> Yes, and it's horrid and needs to be cleaned up, not added to.
+>    text    data     bss     dec     hex filename
+> 1090439   17468   14912 1122819  112203 pre/btrfs.ko
+> 1084613   17456   14912 1116981  110b35 post/btrfs.ko
+> 
+> Delta: -5826
+> 
+> Signed-off-by: David Sterba <dsterba@suse.com>
 
-Or unified so driver authors have a standardized mechanism
-rather than reinventing or doing things differently.
-
-> In the beginning, yes, adding loads of different types of debugging
-> options to a driver is needed by the author, but by the time it is added
-> to the kernel, all of that should be able to be removed and only a
-> single "enable debug" should be all that is needed.
-
-No one does that.
-
-
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
