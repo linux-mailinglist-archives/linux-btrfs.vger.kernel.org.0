@@ -2,94 +2,138 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B340B1F5D12
-	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Jun 2020 22:24:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 511B81F5D39
+	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Jun 2020 22:30:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728143AbgFJUYB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 10 Jun 2020 16:24:01 -0400
-Received: from smtprelay0047.hostedemail.com ([216.40.44.47]:59744 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726277AbgFJUYA (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 10 Jun 2020 16:24:00 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay04.hostedemail.com (Postfix) with ESMTP id 3B0161828F22B;
-        Wed, 10 Jun 2020 20:23:59 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2693:2828:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3870:3872:3874:4250:4321:5007:6119:6691:7903:10004:10400:11026:11232:11473:11658:11914:12043:12296:12297:12740:12760:12895:13069:13311:13357:13439:14659:14721:21080:21433:21611:21627:21740:21939:21990:30012:30045:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: way23_5c0de7b26dce
-X-Filterd-Recvd-Size: 2982
-Received: from XPS-9350.home (unknown [47.151.136.130])
-        (Authenticated sender: joe@perches.com)
-        by omf05.hostedemail.com (Postfix) with ESMTPA;
-        Wed, 10 Jun 2020 20:23:57 +0000 (UTC)
-Message-ID: <2fab7f999a6b5e5354b23d06aea31c5018b9ce18.camel@perches.com>
-Subject: Re: [PATCH v3 6/7] venus: Make debug infrastructure more flexible
-From:   Joe Perches <joe@perches.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-acpi@vger.kernel.org,
-        netdev@vger.kernel.org, Jason Baron <jbaron@akamai.com>
-Date:   Wed, 10 Jun 2020 13:23:56 -0700
-In-Reply-To: <31e1aa72b41f9ff19094476033511442bb6ccda0.camel@perches.com>
-References: <20200609104604.1594-1-stanimir.varbanov@linaro.org>
-         <20200609104604.1594-7-stanimir.varbanov@linaro.org>
-         <20200609111414.GC780233@kroah.com>
-         <dc85bf9e-e3a6-15a1-afaa-0add3e878573@linaro.org>
-         <20200610133717.GB1906670@kroah.com>
-         <31e1aa72b41f9ff19094476033511442bb6ccda0.camel@perches.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.2-0ubuntu1 
+        id S1728175AbgFJUad (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 10 Jun 2020 16:30:33 -0400
+Received: from mx2.suse.de ([195.135.220.15]:35814 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727083AbgFJUac (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 10 Jun 2020 16:30:32 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 0A4E9B033;
+        Wed, 10 Jun 2020 20:30:33 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id EA1E8DA794; Wed, 10 Jun 2020 22:30:23 +0200 (CEST)
+Date:   Wed, 10 Jun 2020 22:30:23 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     kreijack@inwind.it
+Cc:     dsterba@suse.cz, linux-btrfs@vger.kernel.org,
+        Josef Bacik <josef@toxicpanda.com>
+Subject: Re: [PATCH rfc v3] New ioctl BTRFS_IOC_GET_CHUNK_INFO.
+Message-ID: <20200610203023.GL27795@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, kreijack@inwind.it,
+        linux-btrfs@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>
+References: <20200319203913.3103-1-kreijack@libero.it>
+ <20200319203913.3103-2-kreijack@libero.it>
+ <20200525171430.GX18421@twin.jikos.cz>
+ <f1a34303-3b1a-dcda-8e67-458b3522e863@libero.it>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f1a34303-3b1a-dcda-8e67-458b3522e863@libero.it>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, 2020-06-10 at 12:49 -0700, Joe Perches wrote:
-> On Wed, 2020-06-10 at 15:37 +0200, Greg Kroah-Hartman wrote:
-> > Please work with the infrastructure we have, we have spent a lot of time
-> > and effort to make it uniform to make it easier for users and
-> > developers.
+On Tue, May 26, 2020 at 10:19:35PM +0200, Goffredo Baroncelli wrote:
+> On 5/25/20 7:14 PM, David Sterba wrote:
+> > I'll start with the data structures
+> > 
+> > On Thu, Mar 19, 2020 at 09:39:13PM +0100, Goffredo Baroncelli wrote:
+> >> From: Goffredo Baroncelli <kreijack@inwind.it>
+> >> +struct btrfs_chunk_info_stripe {
+> >> +	__u64 devid;
+> >> +	__u64 offset;
+> >> +	__u8 dev_uuid[BTRFS_UUID_SIZE];
+> >> +};
+> >> +
+> >> +struct btrfs_chunk_info {
+> >> +	/* logical start of this chunk */
+> >> +	__u64 offset;
+> >> +	/* size of this chunk in bytes */
+> >> +	__u64 length;
+> >> +
+> >> +	__u64 stripe_len;
+> >> +	__u64 type;
+> >> +
+> >> +	/* 2^16 stripes is quite a lot, a second limit is the size of a single
+> >> +	 * item in the btree
+> >> +	 */
+> >> +	__u16 num_stripes;
+> >> +
+> >> +	/* sub stripes only matter for raid10 */
+> >> +	__u16 sub_stripes;
+> >> +
+> >> +	struct btrfs_chunk_info_stripe stripes[1];
+> >> +	/* additional stripes go here */
+> >> +};
+> > 
+> > This looks like a copy of btrfs_chunk and stripe, only removing items
+> > not needed for the chunk information. Rather than copying the
+> > unnecessary fileds like dev_uuid in stripe, this should be designed for
+> > data exchange with the usecase in mind.
 > 
-> Not quite.
+> There are two clients for this api:
+> - btrfs fi us
+> - btrfs dev us
 > 
-> This lack of debug grouping by type has been a
-> _long_ standing issue with drivers.
+> We can get rid of:
+> 	- "offset" fields (2x)
+> 	- "uuid" fields
 > 
-> > Don't regress and try to make driver-specific ways of doing
-> > things, that way lies madness...
+> However the "offset" fields can be used to understand where a logical map
+> is on the physical disks. I am thinking about a graphical tool to show this
+> mapping, which doesn't exits yet -).
+> The offset field may be used as key to get further information (like the chunk
+> usage, see below)
 > 
-> It's not driver specific, it allows driver developers to
-> better isolate various debug states instead of keeping
-> lists of specific debug messages and enabling them
-> individually.
+> Regarding the UUID field, I agree it can be removed because it is redundant (there
+> is already the devid)
 
-For instance, look at the homebrew content in
-drivers/gpu/drm/drm_print.c that does _not_ use
-dynamic_debug.
+Offset is ok. I had something like this:
 
-MODULE_PARM_DESC(debug, "Enable debug output, where each bit enables a debug category.\n"
-"\t\tBit 0 (0x01)  will enable CORE messages (drm core code)\n"
-"\t\tBit 1 (0x02)  will enable DRIVER messages (drm controller code)\n"
-"\t\tBit 2 (0x04)  will enable KMS messages (modesetting code)\n"
-"\t\tBit 3 (0x08)  will enable PRIME messages (prime code)\n"
-"\t\tBit 4 (0x10)  will enable ATOMIC messages (atomic code)\n"
-"\t\tBit 5 (0x20)  will enable VBL messages (vblank code)\n"
-"\t\tBit 7 (0x80)  will enable LEASE messages (leasing code)\n"
-"\t\tBit 8 (0x100) will enable DP messages (displayport code)");
-module_param_named(debug, __drm_debug, int, 0600);
+struct dump_chunks_entry {
+       u64 devid;
+       u64 start;
+       u64 lstart;
+       u64 length;
+       u64 flags;
+       u64 used;
+};
 
-void drm_dev_dbg(const struct device *dev, enum drm_debug_category category,
-		 const char *format, ...)
-{
-	struct va_format vaf;
-	va_list args;
+This selects the most interesting data from the CHUNK_ITEM, except the
+'used' member, see below.
 
-	if (!drm_debug_enabled(category))
-		return;
+> > The format does not need follow the exact layout that kernel uses, ie.
+> > chunk info with one embedded stripe and then followed by variable length
+> > array of further stripes. This is convenient in one way but not in
+> > another one. Alternatively each chunk can be emitted as a single entry,
+> > duplicating part of the common fields and adding the stripe-specific
+> > ones. This is for consideration.
+> > 
+> > I've looked at my old code doing the chunk dump based on the search
+> > ioctl and found that it also allows to read the chunk usage, with one
+> > extra search to the block group item where the usage is stored. As this
+> > is can be slow, it should be optional. Ie. the main ioctl structure
+> > needs flags where this can be requested.
+> 
+> This info could be very useful. I think to something like a balance of
+> chunks which are near filled (or near empty). The question is if we
+> should have a different ioctl.
 
+I was not proposing a new ioctl but designing the data exchange format
+to optionally provide a way to pass more information, like the usage.
+The reference to search ioctl was merely to point out that there's one
+more search for BLOCK_GROUP_ITEM where the 'used' is stored. As this is
+potentially expensive, it won't be filled by default.
 
+The structure above does not capture all the chunk data. We could pack
+more such structures into one ioctl call. I think that num_stripes is
+missing from there as this would make possible the raid56 calculations
+but otherwise it should be it.
