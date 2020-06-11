@@ -2,107 +2,189 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59DBF1F6D74
-	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Jun 2020 20:27:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A95F1F6F56
+	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Jun 2020 23:20:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726978AbgFKS06 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 11 Jun 2020 14:26:58 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:51112 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726673AbgFKS06 (ORCPT
+        id S1726407AbgFKVTt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 11 Jun 2020 17:19:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38622 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726153AbgFKVTt (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 11 Jun 2020 14:26:58 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05BICp31093364;
-        Thu, 11 Jun 2020 18:15:43 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=yY9mgjAZBq115x8OhOWw0g8V2RMnEBoWyNyFIiniJZw=;
- b=sbPV9P5le7JGBLoLAw2SMfl/+aWZXq0es+BZ+ijBK9z0sF72qx0RyzXTuR8wtAIHzkxV
- iZqs0d9EnG4EOrKe3ThEdgUw0g2CiOh7sCFxUUWyGghY6rj3Y/CqAp0B6Pm+koWzC9fs
- 1wqSlOzUaQg5i1YfOJ0SxouJtW2ezr8NesSWZ+lc8Gg1Yu9kU52Aq+XpYsItGd263wsE
- qmwLorc+fa6lvfpzpA0Gz0sh29fFwjX5WMOOZHY31fCP/vrbdoyIEaOZly0UeDwJ9kjN
- zStOMOa0fzwRropvu91lAVn4m3rGr+1ZqRGHII1FmxgWnGjz0PsoBqEvXhO8SmP1isYZ 9w== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2120.oracle.com with ESMTP id 31g3sn97my-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 11 Jun 2020 18:15:43 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05BI3o05186190;
-        Thu, 11 Jun 2020 18:13:43 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3030.oracle.com with ESMTP id 31gn327rpu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 11 Jun 2020 18:13:43 +0000
-Received: from abhmp0002.oracle.com (abhmp0002.oracle.com [141.146.116.8])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 05BIDfRJ024508;
-        Thu, 11 Jun 2020 18:13:41 GMT
-Received: from [192.168.1.102] (/39.109.231.106)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 11 Jun 2020 11:13:41 -0700
-Subject: Re: [PATCH v2 00/16] btrfs-progs: global verbose and quiet option
-To:     dsterba@suse.cz, David Sterba <dsterba@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <1574678357-22222-1-git-send-email-anand.jain@oracle.com>
- <8a2bac99-5c07-2aa9-fe3b-e09f2ad16213@oracle.com>
- <20200114114047.GC3929@suse.cz>
- <d38e842d-e2a7-5d27-3157-72532c3526b4@oracle.com>
- <b3981267-d64c-ebbf-233c-ea821cb7257f@oracle.com>
- <20200605092413.GA27795@twin.jikos.cz>
-From:   Anand Jain <anand.jain@oracle.com>
-Message-ID: <17ad44fb-3e32-76f8-50f6-88160e7225fe@oracle.com>
-Date:   Fri, 12 Jun 2020 02:13:29 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        Thu, 11 Jun 2020 17:19:49 -0400
+Received: from mail-vs1-xe44.google.com (mail-vs1-xe44.google.com [IPv6:2607:f8b0:4864:20::e44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C6D3C08C5C1;
+        Thu, 11 Jun 2020 14:19:49 -0700 (PDT)
+Received: by mail-vs1-xe44.google.com with SMTP id l10so4172286vsr.10;
+        Thu, 11 Jun 2020 14:19:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1anzsAXDWtZ5K2mcw80BCvcE8icDfice76lV0jTfYAA=;
+        b=MDmWelydbeCksVJLKPT78OCVuxJO7+H8IZANEJiiHrDodWUvLU72wq7aPJTlhDS9ET
+         lzRiOTs5ZBFUxua0uaYzb49RHWtkB0aJ8WsOukLaGXz7MevMpN0OJVkJPYYoEQhyz4De
+         DvwjfglVq3hOlo0hCgYIaum4siPju5qAl1/7sl/Gk2syvCDHKhxdSOzBP4YCC9nLwzLz
+         FHWaihN0x/MYoVNyiUNP2aSRq3Xwxn2qMwZHBPeRMgTHs76BxCGi4Qqgsq90h87xiSlx
+         LI3HPDW8AcHw0dONu7B1FbrI7I8bNoE+gVlspuUFVWXzi3kgOo7bKwuBZUd+k60wN8wL
+         vOVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1anzsAXDWtZ5K2mcw80BCvcE8icDfice76lV0jTfYAA=;
+        b=hiiU4k8qzznbIqoGiGzoS8AWYvOX/Ij5RDCafAUkg1WQH2KLojYvRfRAxGbtBbrt0o
+         xdoz5fger1tKZ0s5fH7arLNZ1iwxR3vmsBaT4WN/yxpFYOvUqZJeZWPtN1vSCpfT7wMs
+         0AD5/RpaDlG54iMhPrItxQ+gb2j0KRR/DfnZY8y2TysJX4/GGjij59GeJ/blW//YvGt+
+         Scw9G5gIgCKdiORlbOk0Bi4wDwxqHekZsxToOAYKAONdwij0eD52pQm/BeaTiBiuRaPn
+         mMo2znV57zo98S0j3lwQobw4U+Sgb4oqa+CWTqEay5rgUn7ZiKLLs1zQp4+CuFuKL9TA
+         yizA==
+X-Gm-Message-State: AOAM532EFmIWdKVS12iyyqs1B1HMkd0iHlDmfA4N3GlJ1be5st+maU/g
+        9fUmRPD4NzvK8tuYyY2l/NFOymLSl9c4Ni+mJqnpW6H9t6I=
+X-Google-Smtp-Source: ABdhPJy+E0/cF9nMa5aGYNVdqiPt5XHzlP8rg8uxvtC9H/Knxv9lR9jMJT25654cQYCFU37wUugHZOkb+Vlxac3CO5s=
+X-Received: by 2002:a67:8bc5:: with SMTP id n188mr8094751vsd.78.1591910387709;
+ Thu, 11 Jun 2020 14:19:47 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200605092413.GA27795@twin.jikos.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9649 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 phishscore=0 malwarescore=0
- bulkscore=0 adultscore=0 mlxlogscore=999 spamscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2006110143
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9649 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 priorityscore=1501
- lowpriorityscore=0 impostorscore=0 cotscore=-2147483648 suspectscore=0
- spamscore=0 bulkscore=0 malwarescore=0 phishscore=0 mlxscore=0
- mlxlogscore=999 clxscore=1015 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2004280000 definitions=main-2006110143
+References: <20200609104604.1594-7-stanimir.varbanov@linaro.org>
+ <20200609111414.GC780233@kroah.com> <dc85bf9e-e3a6-15a1-afaa-0add3e878573@linaro.org>
+ <20200610133717.GB1906670@kroah.com> <31e1aa72b41f9ff19094476033511442bb6ccda0.camel@perches.com>
+ <2fab7f999a6b5e5354b23d06aea31c5018b9ce18.camel@perches.com>
+ <20200611062648.GA2529349@kroah.com> <bc92ee5948c3e71b8f1de1930336bbe162d00b34.camel@perches.com>
+ <20200611105217.73xwkd2yczqotkyo@holly.lan> <ed7dd5b4-aace-7558-d012-fb16ce8c92d6@linaro.org>
+ <20200611121817.narzkqf5x7cvl6hp@holly.lan>
+In-Reply-To: <20200611121817.narzkqf5x7cvl6hp@holly.lan>
+From:   jim.cromie@gmail.com
+Date:   Thu, 11 Jun 2020 15:19:21 -0600
+Message-ID: <CAJfuBxzE=A0vzsjNai_jU_16R_P0haYA-FHnjZcaHOR_3fy__A@mail.gmail.com>
+Subject: Re: [PATCH v3 6/7] venus: Make debug infrastructure more flexible
+To:     Daniel Thompson <daniel.thompson@linaro.org>
+Cc:     Stanimir Varbanov <stanimir.varbanov@linaro.org>,
+        Joe Perches <joe@perches.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux Documentation List <linux-doc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, linux-media@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        linux-acpi@vger.kernel.org, netdev@vger.kernel.org,
+        Jason Baron <jbaron@akamai.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+trimmed..
+
+> > > Currently I think there not enough "levels" to map something like
+> > > drm.debug to the new dyn dbg feature. I don't think it is intrinsic
+> > > but I couldn't find the bit of the code where the 5-bit level in struct
+> > > _ddebug is converted from a mask to a bit number and vice-versa.
+> >
+> > Here [1] is Joe's initial suggestion. But I decided that bitmask is a
+> > good start for the discussion.
+> >
+> > I guess we can add new member uint "level" in struct _ddebug so that we
+> > can cover more "levels" (types, groups).
+>
+> I don't think it is allocating only 5 bits that is the problem!
+>
+> The problem is that those 5 bits need not be encoded as a bitmask by
+> dyndbg, that can simply be the category code for the message. They only
+> need be converted into a mask when we compare them to the mask provided
+> by the user.
+>
+>
+> Daniel.
 
 
-> Also, many options that have their own --verbose option should update
-> the help text to note that it's an alias of the global.
-> 
-> I'm going to take another look today, the scope of the change might be
-> too big to do in one go so some incremental steps might be needed.
+heres what I have in mind.  whats described here is working.
+I'll send it out soon
 
-  As global verbose depends on the local verbose to log messages, if
-  local verbose used stderr then the global verbose uses the stderr.
-  For example
-  patch:
-     btrfs-progs: send: use global verbose and quiet options
+commit 20298ec88cc2ed64269c8be7b287a24e60a5347e
+Author: Jim Cromie <jim.cromie@gmail.com>
+Date:   Wed Jun 10 12:55:08 2020 -0600
 
-  ------------------
-   ./btrfs send --help
-  <snip>
-     -v|--verbose     enable verbose output to stderr, each occurrence of
-                      this option increases verbosity
-     -q|--quiet       suppress all messages, except errors
+    dyndbg: WIP towards module->debugflags based callsite controls
 
-     Global options:
-     -v|--verbose       increase output verbosity
-     -q|--quiet         print only errors
-  ------------------
+    There are *lots* of ad-hoc debug printing solutions in kernel,
+    this is a 1st attempt at providing a common mechanism for many of them.
 
-  IMO verbose should be stdout. Should it be ok to change to stdout as it
-  is under verbose?
+    Basically, there are 2 styles of debug printing:
+    - levels, with increasing verbosity, 1-10 forex
+    - bits/flags, independently controlling separate groups of dprints
 
-Thanks.
+    This patch does bits/flags (with no distinction made yet between 2)
+
+    API:
+
+    - change pr_debug(...)  -->  pr_debug_typed(type_id=0, ...)
+    - all existing uses have type_id=0
+    - developer creates exclusive types of log messages with type_id>0
+      1, 2, 3 are disjoint groups, for example: hi, mid, low
+
+    - !!type_id is just an additional callsite selection criterion
+
+      Qfoo() { echo module foo $* >/proc/dynamic_debug/control }
+      Qfoo +p               # all groups, including default 0
+      Qfoo mflags 1 +p      # only group 1
+      Qfoo mflags 12 +p     # TBD[1]: groups 1 or 2
+      Qfoo mflags 0 +p      # ignored atm TBD[2]
+      Qfoo mflags af +p     # TBD[3]: groups a or f (10 or 15)
+
+    so patch does:
+
+    - add u32 debugflags to struct module. Each bit is a separate print-class.
+
+    - add unsigned int mflags into struct ddebug_query
+      mflags matched in ddebug_change
+
+    - add unsigned int type_id:5 to struct _ddebug
+      picks a single debugflag bit.  No subclass or multitype nonsense.
+      nice and dense, packs with other members.
+      we will have a lot of struct _ddebugs.
+
+    - in ddebug_change()
+      filter on !! module->debugflags,
+      IFF query->module is given, and matches dt->mod_name
+      and query->mflags is given, and bitmatches module->debugflags
+
+    - in parse_query()
+      accept new query term: mflags $arg
+      populate query->mflags
+      arg-type needs some attention, but basic plumbing is there
+
+    WIP: not included:
+
+    - pr_debug_typed( bitpos=0, ....)
+      aka: pr_debug_class() or pr_debug_id()
+      the bitpos is 1<<shift, allowing a single type. no ISA relations.
+      this covers OP's high,mid,low case, many others
+
+    - no way to exersize new code in ddebug_change
+      need pr_debug_typed() to make a (not-null) typed callsite.
+      also no way to set module->debugflags
+
+    Im relying on:
+    cdf6d00696 dynamic_debug: don't duplicate modname in ddebug_add_module
+
+    which copies the ptr-val from module->name to dt->mod_name, which
+    allowed == tests instead of strcmp.
+
+    That equivalence and a (void*) cast in use of container_of() seem to
+    do the trick to get the module, then module->debugflags.
+
+    Notes:
+
+    1- A query ANDs all its query terms together, so Qfoo() above
+    requires both "module foo" AND all additional query terms given in $*
+
+    But since callsite type_id creates disjoint groups, "mflags 12" is
+    nonsense if it means groups 1 AND 2.  Here, 1 OR 2 is meaningful, if
+    its not judged to be too confusing.
+
+    2- im not sure what this does atm, or should do
+       Qfoo mflags 0 +p      # select only untyped ? or no flags check at all ?
+
+    3- since modflags has 32 bits, [1-9a-v] could select any single type_id
+       it is succinct, but arcane.
+       its a crude alphanumeric map for developers to make flags mnemonic
+       maybe query keyword should be mbits
