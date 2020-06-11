@@ -2,88 +2,88 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69D551F69A7
-	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Jun 2020 16:11:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE3921F69AD
+	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Jun 2020 16:12:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726924AbgFKOLG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 11 Jun 2020 10:11:06 -0400
-Received: from mx2.suse.de ([195.135.220.15]:41724 "EHLO mx2.suse.de"
+        id S1728098AbgFKOLi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 11 Jun 2020 10:11:38 -0400
+Received: from mx2.suse.de ([195.135.220.15]:41852 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726444AbgFKOLG (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 11 Jun 2020 10:11:06 -0400
+        id S1726444AbgFKOLc (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 11 Jun 2020 10:11:32 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 40745AFE6;
-        Thu, 11 Jun 2020 14:11:09 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id E3900DA82A; Thu, 11 Jun 2020 16:10:58 +0200 (CEST)
-Date:   Thu, 11 Jun 2020 16:10:58 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Anand Jain <anand.jain@oracle.com>
-Cc:     dsterba@suse.cz, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 1/8] btrfs-progs: quota rescan: add quiet option
-Message-ID: <20200611141058.GQ27795@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Anand Jain <anand.jain@oracle.com>,
-        linux-btrfs@vger.kernel.org
-References: <20200608063851.8874-1-anand.jain@oracle.com>
- <20200608063851.8874-2-anand.jain@oracle.com>
- <20200610083044.GF27795@twin.jikos.cz>
- <743a28a8-0ab2-0aa6-6c83-f4702d97597f@oracle.com>
+        by mx2.suse.de (Postfix) with ESMTP id 99F98AC4E;
+        Thu, 11 Jun 2020 14:11:34 +0000 (UTC)
+Date:   Thu, 11 Jun 2020 09:11:27 -0500
+From:   Goldwyn Rodrigues <rgoldwyn@suse.de>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     darrick.wong@oracle.com, linux-btrfs@vger.kernel.org,
+        fdmanana@gmail.com, linux-fsdevel@vger.kernel.org, hch@lst.de
+Subject: Re: [PATCH 0/3] Transient errors in Direct I/O
+Message-ID: <20200611141127.ir7b3ohd3c3qtunu@fiona>
+References: <20200605204838.10765-1-rgoldwyn@suse.de>
+ <3e11c9ae-15c5-c52a-2e8a-14756a5ef967@gmx.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="5sto64odfm4e5q74"
 Content-Disposition: inline
-In-Reply-To: <743a28a8-0ab2-0aa6-6c83-f4702d97597f@oracle.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <3e11c9ae-15c5-c52a-2e8a-14756a5ef967@gmx.com>
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Jun 11, 2020 at 09:16:37PM +0800, Anand Jain wrote:
-> On 10/6/20 4:30 pm, David Sterba wrote:
-> > On Mon, Jun 08, 2020 at 02:38:44PM +0800, Anand Jain wrote:
-> >> Enable the quiet option to the btrfs(8) quota rescan command.
-> >> Does the job quietly. For example:
-> >>    btrfs --quiet quota rescan
-> >>
-> >> Signed-off-by: Anand Jain <anand.jain@oracle.com>
-> >> ---
-> >>   cmds/quota.c | 4 +++-
-> >>   1 file changed, 3 insertions(+), 1 deletion(-)
-> >>
-> >> diff --git a/cmds/quota.c b/cmds/quota.c
-> >> index 075fc79816ad..4a68f9db081b 100644
-> >> --- a/cmds/quota.c
-> >> +++ b/cmds/quota.c
-> >> @@ -108,6 +108,8 @@ static const char * const cmd_quota_rescan_usage[] = {
-> >>   	"",
-> >>   	"-s   show status of a running rescan operation",
-> >>   	"-w   wait for rescan operation to finish (can be already in progress)",
-> >> +	HELPINFO_INSERT_GLOBALS,
-> >> +	HELPINFO_INSERT_QUIET,
-> >>   	NULL
-> >>   };
-> >>   
-> >> @@ -172,7 +174,7 @@ static int cmd_quota_rescan(const struct cmd_struct *cmd, int argc, char **argv)
-> >>   	}
-> >>   
-> >>   	if (ret == 0) {
-> >> -		printf("quota rescan started\n");
-> >> +		pr_verbose(-1, "quota rescan started\n");
-> > 
-> > That the raw value -1 is used here is not nice, I assume it means print
-> > unless there was another setting of the verbosity (nothing if -q,
-> > otherwise yes).
-> 
->   Yes that's right. In v3 I have defined -1 as
-> 
->   #define MUST_LOG  -1
-> 
->   I ran out of ideas to name it more sensibly, open to suggestions.
 
-Ok, sounds reasonable to me. It can be documented and used only for the
-messages that must be printed due to backward compatibility.
+--5sto64odfm4e5q74
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I have merged the first part to devel, so please send this patchset once
-you have it ready.
+On 13:31 10/06, Qu Wenruo wrote:
+>=20
+>=20
+> On 2020/6/6 =E4=B8=8A=E5=8D=884:48, Goldwyn Rodrigues wrote:
+> > In current scenarios, for XFS, it would mean that a page invalidation
+> > would end up being a writeback error. So, if iomap returns zero, fall
+> > back to biffered I/O. XFS has never supported fallback to buffered I/O.
+> > I hope it is not "never will" ;)
+> >=20
+> > With mixed buffered and direct writes in btrfs, the pages may not be
+> > released the extent may be locked in the ordered extents cleanup thread,
+>=20
+> I'm wondering can we handle this case in a different way.
+>=20
+> In fact btrfs has its own special handling for invalidating pages.
+> Btrfs will first look for any ordered extents covering the page, finish
+> the ordered extent manually, then invalidate the page.
+>=20
+> I'm not sure why invalidate_inode_pages2_range() used in dio iomap code
+> does not use the fs specific invalidatepage(), but only do_lander_page()
+> then releasepage().
+>=20
+> Shouldn'y we btrfs implement the lander_page() to handle ordered extents
+> properly?
+> Or is there any special requirement?
+>=20
+
+The problem is aops->launder_page() is called only if PG_Dirty is
+set. In this case it is not because we just performed a writeback.
+
+Also, it is not just ordered ordered extent writeback which may lock
+the extent, a buffered read can lock as well.
+
+--=20
+Goldwyn
+
+--5sto64odfm4e5q74
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQTvlrIsQO1vhIr1p4dJubB2MCI4bAUCXuI7jgAKCRBJubB2MCI4
+bEfPAJ9HfkChoGOyrZyo+gPEM8LqFxx0wACghgxv83hSZSqKilVjluqS68xyFYU=
+=5kAN
+-----END PGP SIGNATURE-----
+
+--5sto64odfm4e5q74--
