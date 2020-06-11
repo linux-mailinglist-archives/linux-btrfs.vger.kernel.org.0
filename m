@@ -2,74 +2,97 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 044EE1F69B6
-	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Jun 2020 16:13:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 972531F69CB
+	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Jun 2020 16:20:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728015AbgFKONi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 11 Jun 2020 10:13:38 -0400
-Received: from mx2.suse.de ([195.135.220.15]:43320 "EHLO mx2.suse.de"
+        id S1728189AbgFKOTv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 11 Jun 2020 10:19:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37468 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727053AbgFKONh (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 11 Jun 2020 10:13:37 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id E9093B016;
-        Thu, 11 Jun 2020 14:13:39 +0000 (UTC)
-Date:   Thu, 11 Jun 2020 09:13:33 -0500
-From:   Goldwyn Rodrigues <rgoldwyn@suse.de>
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     darrick.wong@oracle.com, linux-btrfs@vger.kernel.org,
-        fdmanana@gmail.com, linux-fsdevel@vger.kernel.org, hch@lst.de,
-        linux-xfs@vger.kernel.org
-Subject: Re: [PATCH 0/3] Transient errors in Direct I/O
-Message-ID: <20200611141333.odbshenpn2zndn3a@fiona>
-References: <20200605204838.10765-1-rgoldwyn@suse.de>
- <20200610025900.GA2005@dread.disaster.area>
- <20200610050510.GL2040@dread.disaster.area>
+        id S1726936AbgFKOTv (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 11 Jun 2020 10:19:51 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0882F20801;
+        Thu, 11 Jun 2020 14:19:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1591885190;
+        bh=iBtLF+CBhTmtuou9PxAkvWs1JyESEMIpwdk/QHqOQXI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=z3qJLpU6SJwDEAgOqrrIDTRc+I7WXjSzI0eD7wi4GcSwrhXNh4RsdUlWEUaGkc9TY
+         SxxyaVsM4dId5UyIYKx+SqOx4VBiChgA5BPQJIo+6LTHzFPveocjceexsM6Dt1yBKn
+         DNtlMfGNvQh6k0Y8v3uyCiIOGdH5Khj5mO+PerWI=
+Date:   Thu, 11 Jun 2020 16:19:43 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Markus Elfring <Markus.Elfring@web.de>
+Cc:     Liao Pingfang <liao.pingfang@zte.com.cn>,
+        linux-btrfs@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Chris Mason <clm@fb.com>,
+        David Sterba <dsterba@suse.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Wang Liang <wang.liang82@zte.com.cn>,
+        Xue Zhihong <xue.zhihong@zte.com.cn>,
+        Yi Wang <wang.yi59@zte.com.cn>
+Subject: Re: [PATCH v2] btrfs: Remove error messages for failed memory
+ allocations
+Message-ID: <20200611141943.GA1245098@kroah.com>
+References: <59c4741e-5749-4782-33f8-cc3a30ecf5e5@web.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200610050510.GL2040@dread.disaster.area>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <59c4741e-5749-4782-33f8-cc3a30ecf5e5@web.de>
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 15:05 10/06, Dave Chinner wrote:
-> On Wed, Jun 10, 2020 at 12:59:00PM +1000, Dave Chinner wrote:
-> > [ Please cc the XFS list on XFS and iomap infrastructure changes.]
-> > 
-> > On Fri, Jun 05, 2020 at 03:48:35PM -0500, Goldwyn Rodrigues wrote:
-> > > In current scenarios, for XFS, it would mean that a page invalidation
-> > > would end up being a writeback error. So, if iomap returns zero, fall
-> > > back to biffered I/O. XFS has never supported fallback to buffered I/O.
-> > > I hope it is not "never will" ;)
-> > 
-> > I wouldn't say "never", but we are not going to change XFS behaviour
-> > because btrfs has a page invalidation vs DIO bug in it...
+On Thu, Jun 11, 2020 at 04:00:21PM +0200, Markus Elfring wrote:
+> > As there is a dump_stack() done on memory allocation
+> > failures, these messages might as well be deleted instead.
 > 
-> Let me point out a specific "oh shit, I didn't think of that" sort
-> of problem that your blind fallback to buffered IO causes. Do this
-> via direct IO:
+> * I imagine that an other wording variant can become clearer
+>   for the change description.
 > 
-> 	pwritev2(RWF_NOWAIT)
-> 
-> now have it fail invalidation in the direct IO path and fallback to
-> buffered write. What does buffered write do with it?
+> * I suggest to reconsider the patch subject.
 > 
 > 
-> 	if (iocb->ki_flags & IOCB_NOWAIT)
-> 		return -EOPNOTSUPP;
+> …
+> > +++ b/fs/btrfs/check-integrity.c
+> > @@ -632,7 +632,6 @@  static int btrfsic_process_superblock(struct btrfsic_state *state,
+> >
+> >  	selected_super = kzalloc(sizeof(*selected_super), GFP_NOFS);
+> >  	if (NULL == selected_super) {
+> > -		pr_info("btrfsic: error, kmalloc failed!\n");
+> >  		return -ENOMEM;
+> >  	}
 > 
-> Yup, userspace gets a completely spurious and bogus -EOPNOTSUPP
-> error to pwritev2() because some 3rd party is accessing the same
-> file via mmap or buffered IO.
+> 
+> How do you think about to use the following error handling instead?
+> 
+> 	if (!selected_super)
+> 		return -ENOMEM;
 > 
 
-Oh shit, I didn't think about that!
 
-I think adding a flag to iomap_dio_rw() to return in case of page
-invalidation failure is the best option for now.
+Hi,
 
--- 
-Goldwyn
+This is the semi-friendly patch-bot of Greg Kroah-Hartman.
+
+Markus, you seem to have sent a nonsensical or otherwise pointless
+review comment to a patch submission on a Linux kernel developer mailing
+list.  I strongly suggest that you not do this anymore.  Please do not
+bother developers who are actively working to produce patches and
+features with comments that, in the end, are a waste of time.
+
+Patch submitter, please ignore Markus's suggestion; you do not need to
+follow it at all.  The person/bot/AI that sent it is being ignored by
+almost all Linux kernel maintainers for having a persistent pattern of
+behavior of producing distracting and pointless commentary, and
+inability to adapt to feedback.  Please feel free to also ignore emails
+from them.
+
+thanks,
+
+greg k-h's patch email bot
