@@ -2,135 +2,70 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D60781F65F7
-	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Jun 2020 12:52:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8330D1F667F
+	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Jun 2020 13:20:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727774AbgFKKwZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 11 Jun 2020 06:52:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54164 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726995AbgFKKwW (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 11 Jun 2020 06:52:22 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D8C3C08C5C2
-        for <linux-btrfs@vger.kernel.org>; Thu, 11 Jun 2020 03:52:22 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id x6so5625374wrm.13
-        for <linux-btrfs@vger.kernel.org>; Thu, 11 Jun 2020 03:52:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=RcwomoC+Ma2mWugiGJC6MsfrL5L8dR3rfJt4NSp2F1A=;
-        b=LpJtM6ydrDbbhtItKZv2qWLETVFuKYqehoy0/u7rITHuUcoPswXsgTwlrq1L/Xz5sS
-         cX38+CtF/0s982isrNgOw1gU+VnYdGwhYGN3SvWXcy2GKCejOXvH7DtPdc2FYgLzghXg
-         pwB553g48U+lMNMQmz7Gpr67q6gyVB5f2x/I0qRsaLNrYhE4QqD6W6gdUnbKBMNMKwTM
-         ImxtNRhaUo5A+b+XlGD/ha3fYdNI+Bj2f/s+tBf473k+HvbErQw52mPJM+FHYtuaQbIZ
-         byERlh/+fSQLZJX6jL3mRVhB//6kfiCk1hn1KxCDpg2brcXrAunaX/y1caMhA+q3DanH
-         fgvQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=RcwomoC+Ma2mWugiGJC6MsfrL5L8dR3rfJt4NSp2F1A=;
-        b=IlUBO0ILWrq+PCy1XPxwB94oaNrz0w2hFRKDJ7RptHHr4FoauE3EAdymyB/kBQsGNP
-         5ezC5DIxchOvkg9R8oNXXTdxsj3dSuD7PDp49xTkPGFOUgYD41DkTgf9PyM1gOFceN7I
-         y6gZ87s2ACxmce0gZGHDYY/719tNftCM8+btg02vodQ0S7Z2YpQTE1Td4siK5HuSW4dq
-         UAS3LQM2/BuKx40+dky8WWudCBSalVlGHdSyouWGM2RXrSI8x78gZOSFAGhnTuwAS3M5
-         gKMY1LLihVDdhAAXk158liWQmu79MdkuaZOJMprz6ovgeTIBMsAH3K+sa2SeWW4alspW
-         V10Q==
-X-Gm-Message-State: AOAM531kmWcdkPIxGaGphRKMJcntaCS3dEZAHGMxPBtiXlUi1QiTSC0c
-        kyjDxcJ2xWcZpJI0kscVReCWTg==
-X-Google-Smtp-Source: ABdhPJxRDOlxqgu72sbIjFJnoqPirslj0v0jSqfMN3rVOPmEkZMzmS6dsNJsp6VRHW5n4kPM4nvvZg==
-X-Received: by 2002:a5d:6150:: with SMTP id y16mr9531737wrt.219.1591872740691;
-        Thu, 11 Jun 2020 03:52:20 -0700 (PDT)
-Received: from holly.lan (cpc141214-aztw34-2-0-cust773.18-1.cable.virginm.net. [86.9.19.6])
-        by smtp.gmail.com with ESMTPSA id z8sm4361959wru.33.2020.06.11.03.52.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Jun 2020 03:52:19 -0700 (PDT)
-Date:   Thu, 11 Jun 2020 11:52:17 +0100
-From:   Daniel Thompson <daniel.thompson@linaro.org>
-To:     Joe Perches <joe@perches.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Stanimir Varbanov <stanimir.varbanov@linaro.org>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-acpi@vger.kernel.org,
-        netdev@vger.kernel.org, Jason Baron <jbaron@akamai.com>
-Subject: Re: [PATCH v3 6/7] venus: Make debug infrastructure more flexible
-Message-ID: <20200611105217.73xwkd2yczqotkyo@holly.lan>
-References: <20200609104604.1594-1-stanimir.varbanov@linaro.org>
- <20200609104604.1594-7-stanimir.varbanov@linaro.org>
- <20200609111414.GC780233@kroah.com>
- <dc85bf9e-e3a6-15a1-afaa-0add3e878573@linaro.org>
- <20200610133717.GB1906670@kroah.com>
- <31e1aa72b41f9ff19094476033511442bb6ccda0.camel@perches.com>
- <2fab7f999a6b5e5354b23d06aea31c5018b9ce18.camel@perches.com>
- <20200611062648.GA2529349@kroah.com>
- <bc92ee5948c3e71b8f1de1930336bbe162d00b34.camel@perches.com>
+        id S1727950AbgFKLUg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 11 Jun 2020 07:20:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45256 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727942AbgFKLUf (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 11 Jun 2020 07:20:35 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2BF622078D;
+        Thu, 11 Jun 2020 11:20:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1591874433;
+        bh=0+sxtBect72jPqO+rq641H6d/+ec4oVrijKYw9rAwo0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dCcT0jSPypweAOdofLdfgp2pOpmONzVnSW9dyk2kGe1bYIp7OWl4/97f6iD4a2Cql
+         B1T5zVmzFd7/toMVNoMgVCll0xC4ubCB/z8JdeTauCsDa9YSbfaV6OI1qtuWtqM51N
+         GgP57QNq8vl3kaebrObZaGsXGqN8Un/7ssRmkiWY=
+Date:   Thu, 11 Jun 2020 13:20:27 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Vikash Bansal <bvikas@vmware.com>
+Cc:     stable@vger.kernel.org, srivatsab@vmware.com,
+        srivatsa@csail.mit.edu, amakhalov@vmware.com, srinidhir@vmware.com,
+        anishs@vmware.com, vsirnapalli@vmware.com, akaher@vmware.com,
+        clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
+        anand.jain@oracle.com, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4.19.y 0/2] btrfs: Fix for CVE-2019-18885
+Message-ID: <20200611112027.GJ3802953@kroah.com>
+References: <20200609065018.26378-1-bvikas@vmware.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <bc92ee5948c3e71b8f1de1930336bbe162d00b34.camel@perches.com>
+In-Reply-To: <20200609065018.26378-1-bvikas@vmware.com>
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Jun 10, 2020 at 11:42:43PM -0700, Joe Perches wrote:
-> On Thu, 2020-06-11 at 08:26 +0200, Greg Kroah-Hartman wrote:
-> > On Wed, Jun 10, 2020 at 01:23:56PM -0700, Joe Perches wrote:
-> > > On Wed, 2020-06-10 at 12:49 -0700, Joe Perches wrote:
-> > > > On Wed, 2020-06-10 at 15:37 +0200, Greg Kroah-Hartman wrote:
-> > > > > Please work with the infrastructure we have, we have spent a lot of time
-> > > > > and effort to make it uniform to make it easier for users and
-> > > > > developers.
-> > > > 
-> > > > Not quite.
-> > > > 
-> > > > This lack of debug grouping by type has been a
-> > > > _long_ standing issue with drivers.
-> > > > 
-> > > > > Don't regress and try to make driver-specific ways of doing
-> > > > > things, that way lies madness...
-> > > > 
-> > > > It's not driver specific, it allows driver developers to
-> > > > better isolate various debug states instead of keeping
-> > > > lists of specific debug messages and enabling them
-> > > > individually.
-> > > 
-> > > For instance, look at the homebrew content in
-> > > drivers/gpu/drm/drm_print.c that does _not_ use
-> > > dynamic_debug.
-> > > 
-> > > MODULE_PARM_DESC(debug, "Enable debug output, where each bit enables a debug category.\n"
-> > > "\t\tBit 0 (0x01)  will enable CORE messages (drm core code)\n"
-> > > "\t\tBit 1 (0x02)  will enable DRIVER messages (drm controller code)\n"
-> > > "\t\tBit 2 (0x04)  will enable KMS messages (modesetting code)\n"
-> > > "\t\tBit 3 (0x08)  will enable PRIME messages (prime code)\n"
-> > > "\t\tBit 4 (0x10)  will enable ATOMIC messages (atomic code)\n"
-> > > "\t\tBit 5 (0x20)  will enable VBL messages (vblank code)\n"
-> > > "\t\tBit 7 (0x80)  will enable LEASE messages (leasing code)\n"
-> > > "\t\tBit 8 (0x100) will enable DP messages (displayport code)");
-> > > module_param_named(debug, __drm_debug, int, 0600);
-> > > 
-> > > void drm_dev_dbg(const struct device *dev, enum drm_debug_category category,
-> > > 		 const char *format, ...)
-> > > {
-> > > 	struct va_format vaf;
-> > > 	va_list args;
-> > > 
-> > > 	if (!drm_debug_enabled(category))
-> > > 		return;
-> > 
-> > Ok, and will this proposal be able to handle stuff like this?
+On Tue, Jun 09, 2020 at 12:20:16PM +0530, Vikash Bansal wrote:
+> CVE Description:
+> NVD Site Link: https://nvd.nist.gov/vuln/detail?vulnId=CVE-2019-18885
 > 
-> Yes, that's the entire point.
+> It was discovered that the btrfs file system in the Linux kernel did not
+> properly validate metadata, leading to a NULL pointer dereference. An
+> attacker could use this to specially craft a file system image that, when
+> mounted, could cause a denial of service (system crash).
+> 
+> [PATCH v4.19.y 1/2]:
+> Backporting of upsream commit 09ba3bc9dd15:
+> btrfs: merge btrfs_find_device and find_device
+> 
+> [PATCH v4.19.y 2/2]:
+> Backporting of upstream commit 62fdaa52a3d0:
+> btrfs: Detect unbalanced tree with empty leaf before crashing
+> 
+> On NVD site link of "commit 09ba3bc9dd150457c506e4661380a6183af651c1" 
+> was given as the fix for this CVE. But the issue was still reproducible.
+> So had to apply patch "Commit 62fdaa52a3d00a875da771719b6dc537ca79fce1"
+> to fix the issue.
 
-Currently I think there not enough "levels" to map something like
-drm.debug to the new dyn dbg feature. I don't think it is intrinsic
-but I couldn't find the bit of the code where the 5-bit level in struct
-_ddebug is converted from a mask to a bit number and vice-versa.
+Looks good, now queued up,t hanks.
 
-
-Daniel.
+greg k-h
