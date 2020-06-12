@@ -2,76 +2,77 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90BEE1F7C1F
-	for <lists+linux-btrfs@lfdr.de>; Fri, 12 Jun 2020 19:13:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC1BB1F7C72
+	for <lists+linux-btrfs@lfdr.de>; Fri, 12 Jun 2020 19:24:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726112AbgFLRNY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 12 Jun 2020 13:13:24 -0400
-Received: from mx2.suse.de ([195.135.220.15]:49904 "EHLO mx2.suse.de"
+        id S1726278AbgFLRYW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 12 Jun 2020 13:24:22 -0400
+Received: from mx2.suse.de ([195.135.220.15]:56760 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726089AbgFLRNX (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 12 Jun 2020 13:13:23 -0400
+        id S1726089AbgFLRYV (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 12 Jun 2020 13:24:21 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 93BBDADF8;
-        Fri, 12 Jun 2020 17:13:26 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id B91E8AF01;
+        Fri, 12 Jun 2020 17:24:24 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id A30D1DA7C3; Fri, 12 Jun 2020 19:13:15 +0200 (CEST)
-Date:   Fri, 12 Jun 2020 19:13:15 +0200
+        id C66A9DA7C3; Fri, 12 Jun 2020 19:24:13 +0200 (CEST)
+Date:   Fri, 12 Jun 2020 19:24:13 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Greed Rong <greedrong@gmail.com>
-Cc:     dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        linux-btrfs@vger.kernel.org
-Subject: Re: BTRFS: Transaction aborted (error -24)
-Message-ID: <20200612171315.GW27795@twin.jikos.cz>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org, Greed Rong <greedrong@gmail.com>
+Subject: Re: [PATCH] btrfs: Share the same anonymous block device for the
+ whole filesystem
+Message-ID: <20200612172413.GX27795@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Greed Rong <greedrong@gmail.com>,
-        Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
-References: <CA+UqX+NTrZ6boGnWHhSeZmEY5J76CTqmYjO2S+=tHJX7nb9DPw@mail.gmail.com>
- <20200611112031.GM27795@twin.jikos.cz>
- <a7802701-5c8d-5937-1a80-2bcf62a94704@gmx.com>
- <20200611135244.GP27795@twin.jikos.cz>
- <CA+UqX+OcP_S6U37BHkGgzyDVNAud5vYOucL_WpNLhfU-T=+Vnw@mail.gmail.com>
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org, Greed Rong <greedrong@gmail.com>
+References: <20200612064237.13439-1-wqu@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CA+UqX+OcP_S6U37BHkGgzyDVNAud5vYOucL_WpNLhfU-T=+Vnw@mail.gmail.com>
+In-Reply-To: <20200612064237.13439-1-wqu@suse.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Jun 12, 2020 at 11:15:43AM +0800, Greed Rong wrote:
-> This server is used for network storage. When a new client arrives, I
-> create a snapshot of the workspace subvolume for this client. And
-> delete it when the client disconnects.
+On Fri, Jun 12, 2020 at 02:42:37PM +0800, Qu Wenruo wrote:
+> [BUG]
+> There is a bug report about transaction abort due to -EMFILE error.
+> 
+>   ------------[ cut here ]------------
+>   BTRFS: Transaction aborted (error -24)
+>   WARNING: CPU: 17 PID: 17041 at fs/btrfs/transaction.c:1576 create_pending_snapshot+0xbc4/0xd10 [btrfs]
+>   RIP: 0010:create_pending_snapshot+0xbc4/0xd10 [btrfs]
+>   Call Trace:
+>    create_pending_snapshots+0x82/0xa0 [btrfs]
+>    btrfs_commit_transaction+0x275/0x8c0 [btrfs]
+>    btrfs_mksubvol+0x4b9/0x500 [btrfs]
+>    btrfs_ioctl_snap_create_transid+0x174/0x180 [btrfs]
+>    btrfs_ioctl_snap_create_v2+0x11c/0x180 [btrfs]
+>    btrfs_ioctl+0x11a4/0x2da0 [btrfs]
+>    do_vfs_ioctl+0xa9/0x640
+>    ksys_ioctl+0x67/0x90
+>    __x64_sys_ioctl+0x1a/0x20
+>    do_syscall_64+0x5a/0x110
+>    entry_SYSCALL_64_after_hwframe+0x44/0xa9
+>   ---[ end trace 33f2f83f3d5250e9 ]---
+>   BTRFS: error (device sda1) in create_pending_snapshot:1576: errno=-24 unknown
+>   BTRFS info (device sda1): forced readonly
+>   BTRFS warning (device sda1): Skipping commit of aborted transaction.
+>   BTRFS: error (device sda1) in cleanup_transaction:1831: errno=-24 unknown
+> 
+> The workload involves creating and deleting a lot of snapshots in a
+> short period.
 
-NFS, cephfs and overlayfs use the same pool of ids, in combination with
-btrfs snapshots the consumption might be higher than in other setups.
+The ids get returned to the IDA range once the last reference to the
+root object is reached, but there's no distinction between a regular
+subvolume and a deleted one.
 
-> Most workspaces are PC game programs. It contains thousands of files
-> and Its size ranges from 1GB to 20GB.
-
-We can rule out regular files, they don't affect that, and the numbers
-you posted are all normal.
-
-> About 200 windows clients access this server through samba. About 20
-> snapshots create/delete in one minute.
-
-This is contributing to the overall consumption of the ids from the
-pool, but now it's shared among the network filesystem and btrfs.
-
-Possible explanation would be leak of the ids, once this state is hit
-it's permament so no new snapshots could be created or the network
-clients will start getting some other error.
-
-If there's no leak, then all objects that have the id attached would
-need to be active, ie. snapshot part of a path, network client
-connected to it's path. This also means some sort of caching, so the ids
-are not returned back right away.
-
-For the subvolumes the ids get returned once the subvolume is deleted
-and cleaned, which might take time and contribute to the pool
-exhaustion. I need to do some tests to see if we could release the ids
-earlier.
+I think we could call free_anon_bdev once the subvolume is deleted in
+btrfs_delete_subvolume and not wait until it gets processed by
+btrfs_clean_one_deleted_snapshot . This should be save, as once the
+subvolume disappears from the file hierarchy, the bdev cannot be queried
+by users.
