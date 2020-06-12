@@ -2,79 +2,103 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E98B1F7CC5
-	for <lists+linux-btrfs@lfdr.de>; Fri, 12 Jun 2020 20:19:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B62631F7D16
+	for <lists+linux-btrfs@lfdr.de>; Fri, 12 Jun 2020 20:46:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726258AbgFLSQr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 12 Jun 2020 14:16:47 -0400
-Received: from magic.merlins.org ([209.81.13.136]:46466 "EHLO
-        mail1.merlins.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726085AbgFLSQr (ORCPT
+        id S1726272AbgFLSqV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 12 Jun 2020 14:46:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39086 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726085AbgFLSqU (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 12 Jun 2020 14:16:47 -0400
-Received: from c-24-5-124-255.hsd1.ca.comcast.net ([24.5.124.255]:39352 helo=sauron.svh.merlins.org)
-        by mail1.merlins.org with esmtpsa 
-        (Cipher TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92 #3)
-        id 1jjoEQ-0003F8-Gm by authid <merlins.org> with srv_auth_plain; Fri, 12 Jun 2020 11:16:46 -0700
-Received: from merlin by sauron.svh.merlins.org with local (Exim 4.92)
-        (envelope-from <marc@merlins.org>)
-        id 1jjoEQ-0004dE-6G; Fri, 12 Jun 2020 11:16:46 -0700
-Date:   Fri, 12 Jun 2020 11:16:46 -0700
-From:   Marc MERLIN <marc@merlins.org>
-To:     dsterba@suse.cz, linux-btrfs@vger.kernel.org
-Subject: Re: Is SATA ALPM safe with btrfs now (no more corruption)?
-Message-ID: <20200612181646.GB1128@merlins.org>
-References: <20200529042615.GA32752@merlins.org>
- <20200601173925.GB18421@twin.jikos.cz>
+        Fri, 12 Jun 2020 14:46:20 -0400
+Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCE74C03E96F
+        for <linux-btrfs@vger.kernel.org>; Fri, 12 Jun 2020 11:46:20 -0700 (PDT)
+Received: by mail-qv1-xf43.google.com with SMTP id dp10so4813041qvb.10
+        for <linux-btrfs@vger.kernel.org>; Fri, 12 Jun 2020 11:46:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=9/NRoi3N5btW+GkWR9nezt4D94UVzOVAt3ZE0q0Ktbw=;
+        b=C58Md6VkbL2H/eOrsZCkLic6AK/Ye+ElsfWifE+b16JJLb/467aKl7P7VI+2yzKnAD
+         602086Jacw1Yys4reWuHIrMhpZiuSWtPFqJnjUQrjlyvTPIfwA8mMAfu5GSP7veozlz0
+         2NVAzSK2WfQsxJ/faCT7HiaF3NWDk4PqkMqB0AfEWExE4O9LfTpM5miQ7mcZUDDVYIHX
+         ot8qG3F1wRtmj0Lfgh4LPMiLZgMihh/KWq2ugfJs6EqhvwNdo+G3nUrIDYsMShOemgjr
+         OkRl7cNJyDl/F9bjMbPKmusNwH77uloFvjs5sMSi9J8Dy1IgnBKBDF34QZ2QoWXS2rH0
+         GZhw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=9/NRoi3N5btW+GkWR9nezt4D94UVzOVAt3ZE0q0Ktbw=;
+        b=YCoGp3KqTlysAfqZJBo8g5qHTTItIuLRhjfJywb2xEMgnAsEjBsVyBvQq5BDwyy+1y
+         u1QAKHLFAe2vLLbzqL2De26truvBHtPx2OF6uYiHyv58MsRWjkSEP/eyMiO0M3BiStrB
+         Pjas5ouM1FXAnpTMsuh+amMtr3OfFY0GiIp0wIF24yu8R+QR+lmi8oyy+9CmxGSgVASX
+         E+b4CZzwxm8gjzhDh9/Gp+L53oJg+cGcvHCJZZgsqnOSb0BJjYQ7q4F9JUCvDHqPRCG0
+         7NhW7malrOLugaI0SmSh7JEpmDg7441+aWJqbcW83qzU23iU6omV46lt3USdO6yu9bn8
+         31bw==
+X-Gm-Message-State: AOAM532+npNvdWNGFqKUlPzOjCOaOOQ2TpEo9OWbrH5ZsqCIj+8Ds3XY
+        5DAcLm+kB5Jm9WxOfz9qQY6gD3TcKfqZwA==
+X-Google-Smtp-Source: ABdhPJwYxfrkkxF4Q+i2m2OtTPahSlmZVpF4jaqcuRUbzUqE+vpMNNS7fuWY5VecqLDDa0Gju5//sw==
+X-Received: by 2002:a0c:d444:: with SMTP id r4mr13890120qvh.67.1591987579846;
+        Fri, 12 Jun 2020 11:46:19 -0700 (PDT)
+Received: from ?IPv6:2620:10d:c0a8:11e1::11c4? ([2620:10d:c091:480::1:487c])
+        by smtp.gmail.com with ESMTPSA id k6sm5223610qte.52.2020.06.12.11.46.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 12 Jun 2020 11:46:19 -0700 (PDT)
+Subject: Re: [PATCH v3 1/5] btrfs: inode: refactor the parameters of
+ insert_reserved_file_extent()
+To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+References: <20200610010444.13583-1-wqu@suse.com>
+ <20200610010444.13583-2-wqu@suse.com>
+From:   Josef Bacik <josef@toxicpanda.com>
+Message-ID: <53a233f4-52cd-dedc-0099-31f9ff3c5bdc@toxicpanda.com>
+Date:   Fri, 12 Jun 2020 14:46:18 -0400
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200601173925.GB18421@twin.jikos.cz>
-X-Sysadmin: BOFH
-X-URL:  http://marc.merlins.org/
-X-SA-Exim-Connect-IP: 24.5.124.255
-X-SA-Exim-Mail-From: marc@merlins.org
+In-Reply-To: <20200610010444.13583-2-wqu@suse.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Jun 01, 2020 at 07:39:25PM +0200, David Sterba wrote:
-> On Thu, May 28, 2020 at 09:26:15PM -0700, Marc MERLIN wrote:
-> > TLP allows SATA power management: SATA_LINKPWR_ON_BAT=max_performance
-> > 
-> > There are some old posts that talk about corruption if you enable this
-> > with btrfs:
-> > https://wiki.archlinux.org/index.php/TLP#Btrfs
-> > says not to enable it
-> > 
-> > https://forum.manjaro.org/t/btrfs-corruption-with-tlp/25158
-> > 
-> > https://github.com/linrunner/TLP/issues/128
-> > says it may not be safe
-> > 
-> > https://www.reddit.com/r/archlinux/comments/5tm5uh/btrfs_and_tlp/
-> > also talks about corruption
-> > 
-> > https://www.reddit.com/r/archlinux/comments/4f5xvh/saving_power_is_the_btrfs_dataloss_warning_still/
-> > say it's probably ok
-> > 
-> > My feeling is that it's probably ok nowadays with a 5.6+ kernel.
-> > 
-> > Would anyone disagree?
+On 6/9/20 9:04 PM, Qu Wenruo wrote:
+> Function insert_reserved_file_extent() takes a long list of parameters,
+> which are all for btrfs_file_extent_item, even including two reserved
+> members, encryption and other_encoding.
 > 
-> I don't and reading the posts, it's a hardware problem leading to
-> filesystem corruption. It's affecting all filesystem but the detection
-> capabilities differ, so it stuck with btrfs.
+> This makes the parameter list unnecessary long for a function which only
+> get called twice.
 > 
-> At least the Arch wiki note can be removed, I don't see any value
-> keeping it there, the fixes to ATA subsystem have been merged to 4.15.
+> This patch will refactor the parameter list, by using
+> btrfs_file_extent_item as parameter directly to hugely reduce the number
+> of parameters.
+> 
+> Also, since there are only two callers, one in btrfs_finish_ordered_io()
+> which inserts file extent for ordered extent, and one
+> __btrfs_prealloc_file_range().
+> 
+> These two call sites have completely different context, where ordered
+> extent can be compressed, but will always be regular extent, while the
+> preallocated one is never going to be compressed and always has PREALLOC
+> type.
+> 
+> So use two small wrapper for these two different call sites to improve
+> readability.
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
 
-Sorry, it looks like I never replied to you. Thanks for confirming my
-guess.
+I like this,
 
-Marc
--- 
-"A mouse is a device used to point at the xterm you want to type in" - A.S.R.
- 
-Home page: http://marc.merlins.org/                       | PGP 7F55D5F27AAF9D08
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+
+Thanks,
+
+Josef
