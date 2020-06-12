@@ -2,63 +2,52 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C93F1F7B08
-	for <lists+linux-btrfs@lfdr.de>; Fri, 12 Jun 2020 17:39:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 583CA1F7BCE
+	for <lists+linux-btrfs@lfdr.de>; Fri, 12 Jun 2020 18:48:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726296AbgFLPjn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 12 Jun 2020 11:39:43 -0400
-Received: from mx2.suse.de ([195.135.220.15]:55954 "EHLO mx2.suse.de"
+        id S1726452AbgFLQsJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 12 Jun 2020 12:48:09 -0400
+Received: from mx2.suse.de ([195.135.220.15]:59604 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726085AbgFLPjn (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 12 Jun 2020 11:39:43 -0400
+        id S1726449AbgFLQsJ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 12 Jun 2020 12:48:09 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 5C3E4AAF1;
-        Fri, 12 Jun 2020 15:39:46 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 4B312AAC7;
+        Fri, 12 Jun 2020 16:48:12 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 75E7BDA7C3; Fri, 12 Jun 2020 17:39:35 +0200 (CEST)
-Date:   Fri, 12 Jun 2020 17:39:35 +0200
+        id 6485DDA7C3; Fri, 12 Jun 2020 18:48:01 +0200 (CEST)
+Date:   Fri, 12 Jun 2020 18:48:01 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Anand Jain <anand.jain@oracle.com>
-Cc:     linux-btrfs@vger.kernel.org, dsterba@suse.com
-Subject: Re: [PATCH v3 02/16] btrfs-progs: add global verbose and quiet
- options and helper functions
-Message-ID: <20200612153935.GU27795@twin.jikos.cz>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org, Greed Rong <greedrong@gmail.com>
+Subject: Re: [PATCH] btrfs: Share the same anonymous block device for the
+ whole filesystem
+Message-ID: <20200612164801.GV27795@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Anand Jain <anand.jain@oracle.com>,
-        linux-btrfs@vger.kernel.org, dsterba@suse.com
-References: <1574678357-22222-3-git-send-email-anand.jain@oracle.com>
- <20200612105606.18210-1-anand.jain@oracle.com>
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org, Greed Rong <greedrong@gmail.com>
+References: <20200612064237.13439-1-wqu@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200612105606.18210-1-anand.jain@oracle.com>
+In-Reply-To: <20200612064237.13439-1-wqu@suse.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Jun 12, 2020 at 06:56:06PM +0800, Anand Jain wrote:
-> Add btrfs(8) global --verbose and --quiet command options to show
-> verbose or no output from the sub-commands.
-> By introducing global a %bconf::verbose memeber to transpire the same
-> down to the sub-command.
-> Further the added helper function pr_verbose() helps to logs the verbose
-> messages, based on the state of the %bconf::verbose. And further HELPINFO_
-> defines are provides for the usage.
-> 
-> Suggested-by: David Sterba <dsterba@suse.com>
-> Signed-off-by: Anand Jain <anand.jain@oracle.com>
-> ---
-> v3:
->   Add define MUST_LOG
->   Add comment about the argument %level in the function pr_verbose()
+On Fri, Jun 12, 2020 at 02:42:37PM +0800, Qu Wenruo wrote:
+> For anonymous block device, we have at most 1 << 20 devices to allocate,
+> which looks quite a lot, but if we have a workload which created 1
+> snapshots per second, we only need 12 days to exhaust the whole pool.
 
-Now you've created quite some chaos here, why didn't you just send v3 as
-a standalone patchset? Replies to individual patches works for small
-fixups but not as a whole new iteration.
+1<<20 is 1M and that would mean that there that many snapshots active at
+the same time in order to allocate all the anonymous block devices. Once
+a snapshot is not part of any path the device number is released and can
+be reused. So simply multiplying the numbers does not reflect the
+reality.
 
-The second part now depends on this v3 that has the MUST_LOG define
-burried in patch 2/16, while it should have been one extra patch to the
-second part and we'd be done with that. I'll sort it out somehow but ...
+A plausible explanation is leak of the anon bdev by something else than
+btrfs on the system.
