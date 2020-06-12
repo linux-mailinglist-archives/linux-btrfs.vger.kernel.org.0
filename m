@@ -2,105 +2,107 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72B2F1F7D36
-	for <lists+linux-btrfs@lfdr.de>; Fri, 12 Jun 2020 20:53:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82C9F1F7E63
+	for <lists+linux-btrfs@lfdr.de>; Fri, 12 Jun 2020 23:24:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726311AbgFLSxk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 12 Jun 2020 14:53:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40232 "EHLO
+        id S1726388AbgFLVYg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 12 Jun 2020 17:24:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35198 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726085AbgFLSxh (ORCPT
+        with ESMTP id S1726314AbgFLVYc (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 12 Jun 2020 14:53:37 -0400
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AECFCC08C5C1
-        for <linux-btrfs@vger.kernel.org>; Fri, 12 Jun 2020 11:53:36 -0700 (PDT)
-Received: by mail-qt1-x844.google.com with SMTP id d27so7937580qtg.4
-        for <linux-btrfs@vger.kernel.org>; Fri, 12 Jun 2020 11:53:36 -0700 (PDT)
+        Fri, 12 Jun 2020 17:24:32 -0400
+Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2147C03E96F
+        for <linux-btrfs@vger.kernel.org>; Fri, 12 Jun 2020 14:24:30 -0700 (PDT)
+Received: by mail-oi1-x241.google.com with SMTP id d67so10011842oig.6
+        for <linux-btrfs@vger.kernel.org>; Fri, 12 Jun 2020 14:24:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=iICettaesXrLBNyjieSQFyngYroMDvyTiHPigqCP8P0=;
-        b=2NEp8DwU942D7kgoIVF1eCSEPmyvxGjDUfpEDQRXr8OcRNiL59154htLTvUl4ptOoV
-         pV9pivXzofwuR8kPCez2ss5meKqwArGkzxOdaP1SQctfXHNe0qe/dcGnSmEVIdKPOfX9
-         VYiYe2LzHiMk7r/MU1T3QMRMW0yxSXASv4Jf9tKncB9BZyTZxFYg7tD+WAnNYVA5L8pu
-         9V+X1ibCRnXF2nUJB7etfYwMhSagS4kYUqKnDDbLGrTN56Jkcjk7zNmeVfwaQEFKfSHN
-         JDLbLeLrfkh5ysZMr6D+gwt9AoocdxDxS8zxupshmR3Ea6IJHG8H712ICSpNQRTh+xy8
-         YHGQ==
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=kaiczH+ep67s7CtIpBFGYirMf9KguSJE+rWfPnhvRaM=;
+        b=eRNis4OMnZrRDplmSMt/3zLdAx/9tw6XTLV83RYZGlfj6MLBFpNUAxVfTqVkXJDOh/
+         tFrMEaMKIobVGs3aFDIZF9PlVRl5O+gLIIya2W+zs3sIOXKAWC2whKk/hN3/4GU+4ZQ0
+         QvfbUSNDTKU3BH0vmcRNJO1q9GuEjKGfOtE6TOYCuNj/8itgceVS0dh5nZCZ1Tz+6JZr
+         sf5pWAVo5HR3qoENO+L2aVxTkRb1VJUY5EGTTVcKocJqCengXaY1BC/VwVJPZEkHmEdA
+         jLJ4RywnrbTyq6BJNtG1kmAKczO4xLadidGQR3KOd+S7F9JOODOPQlLuQ+9Xrjl4kUev
+         CQcQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=iICettaesXrLBNyjieSQFyngYroMDvyTiHPigqCP8P0=;
-        b=Bh3V5RL1v6xdayE88GTpI/bhlO2He/pjCpcCzljSDVyqRV5hG+/+hAt8XJF0eWPXsC
-         2OmpgB18Se5pY8CBgyzivjCbTEkDf6jUkIG7dvK02wka4adNCBkOEFocEInGm8C1HrS0
-         tc2kNqr9041GFzt8FPQbgHBwLoYZn9kapaU1JoW6Gsg6QKkKmPVyyN0rG3DY6WE9T9WG
-         qNCBVruvQPyW9J3m3ybNCLkeX9sameQraFeCGjoCMCNH3/QY1nspRg/mZgtBbJ7U/itF
-         V7h8TshMd7JflCk41nXxC17kZ5J/mgpmVVeA5V6XPe8yA9ZvXthMBEdTqFpvJiQ2ag5X
-         LwyA==
-X-Gm-Message-State: AOAM530F85KvXqhdeg7bSiARb4w6ha9/g0t/y0K3ACc5tb4PYPAfCpEZ
-        EG4WA0UiddvDXKc1ga0v6dk8uQ==
-X-Google-Smtp-Source: ABdhPJzMSZ406KHo/Fem3i/mDKQoM132caKo9D6mg9ys2xvp3Rhr5gLlYxL+H0s1iOp2ZrSIleLX7Q==
-X-Received: by 2002:ac8:378f:: with SMTP id d15mr4597196qtc.136.1591988015791;
-        Fri, 12 Jun 2020 11:53:35 -0700 (PDT)
-Received: from ?IPv6:2620:10d:c0a8:11e1::11c4? ([2620:10d:c091:480::1:487c])
-        by smtp.gmail.com with ESMTPSA id q24sm5182484qkj.103.2020.06.12.11.53.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 12 Jun 2020 11:53:35 -0700 (PDT)
-Subject: Re: [PATCH] generic/471: adapt test when running on btrfs to avoid
- failure on RWF_NOWAIT write
-To:     fdmanana@kernel.org, fstests@vger.kernel.org
-Cc:     linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
-References: <20200612140604.2790275-1-fdmanana@kernel.org>
-From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <b231cb6c-6fe9-6ee8-f5cb-3464c791e17c@toxicpanda.com>
-Date:   Fri, 12 Jun 2020 14:53:34 -0400
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.9.0
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=kaiczH+ep67s7CtIpBFGYirMf9KguSJE+rWfPnhvRaM=;
+        b=Jv6C6ms/g3D+9g+QBYmlTAQl5xdvP63yIK/PgP0lV/8s7md9+yqPplngVmepX2t3b5
+         aVfGXdneyeYMemEySpzTiGR3bcQ2Z/n4ktFD1eWaTIzZ9VOxihr2IUPuJQG6+CHFx9Wj
+         2emoVeb+IuPuP1oCPFPlTEpoofYFZsHLTXVENeR1iGVUsQvUPsqpOzjZn1GzDk5PxxE7
+         RbpQS/QFE6azf02fmfTb+JrWc+8MX4cvnshbiH2/z5b3tw0nTpghBtxxTfUk5tnIWW3Q
+         vmVwVo9Ux60qmT3YgAr1cVoE3ovfKRbM7TGC7N/YGhMr0MqU/BRLB49VvGsBG1LobPyY
+         WPBA==
+X-Gm-Message-State: AOAM533/YVLqKVBQqBCCO1LDcJZ3fD4WUmFLN2Gq2uVhLoRMXHnMITIh
+        Y7j65l4uHltdtB+KQYApJZhDtma34Am06btX1N4=
+X-Google-Smtp-Source: ABdhPJwDkJXYZ/JFic/5XuI6qBJ7jl6sx9JJK/8tRk0SLbquw9saSs/TMR7vI8c1On1cm2dvW34DgZcGpYbip21hUyU=
+X-Received: by 2002:aca:564e:: with SMTP id k75mr780643oib.2.1591997069958;
+ Fri, 12 Jun 2020 14:24:29 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200612140604.2790275-1-fdmanana@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Received: by 2002:a05:6838:20ce:0:0:0:0 with HTTP; Fri, 12 Jun 2020 14:24:29
+ -0700 (PDT)
+Reply-To: mgaddafi034@gmail.com
+From:   Aisha Gaddafi <asani4006@gmail.com>
+Date:   Fri, 12 Jun 2020 14:24:29 -0700
+Message-ID: <CADM5EyEgKZNxk4nh5MbizAmCkYVJ6Q0NuqG+hDWXYdJs+19ZZg@mail.gmail.com>
+Subject: Hello Dear
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 6/12/20 10:06 AM, fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
-> 
-> This test currently always fails on btrfs:
-> 
-> generic/471 2s ... - output mismatch (see ...results//generic/471.out.bad)
->      --- tests/generic/471.out   2020-06-10 19:29:03.850519863 +0100
->      +++ /home/fdmanana/git/hub/xfstests/results//generic/471.out.bad   ...
->      @@ -2,12 +2,10 @@
->       pwrite: Resource temporarily unavailable
->       wrote 8388608/8388608 bytes at offset 0
->       XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
->      -RWF_NOWAIT time is within limits.
->      +pwrite: Resource temporarily unavailable
->      +(standard_in) 1: syntax error
->      +RWF_NOWAIT took  seconds
-> 
-> This is because btrfs is a COW filesystem and an attempt to write into a
-> previously written file range allocating a new extent (or multiple).
-> The only exceptions are when attempting to write to a file range with a
-> preallocated/unwritten extent or when writing to a NOCOW file that has
-> extents allocated in the target range already.
-> 
-> The test currently expects that writing into a previously written file
-> range succeeds, but that is not true on btrfs since we are not dealing
-> with a NOCOW file. So to make the test pass on btrfs, set the NOCOW bit
-> on the file when the filesystem is btrfs.
-> 
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+Assalamu Alaikum Wa Rahmatullahi Wa Barakatuh,
 
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+Hello Dear
 
-Thanks,
+How are you doing today,I came across your e-mail contact prior a
+private search while in need of your assistance.
+ I hope my mail meet you in good condition of health? Dear I have
+decided to contact you after much thought considering the fact that we
+have not meet before, but because of some circumstance obliged me, I
+decided to contact you due to the urgency of my present situation here
+in the refugee camp for your rescue and also for a business
+venture/project which I need your assistant in this business
+establishment in your country as my foreign partner as well as my
+legal appointed trustee.
 
-Josef
+I am Aisha Muammar Gaddafi, the only daughter of the embattled
+president of Libya, Hon. Muammar Gaddafi. Am a single Mother and a
+Widow with three Children.
+ I am currently residing in Burkina Faso unfortunately as a refugee. I
+am writing this mail with tears and sorrow from my heart asking for
+your urgent help. I have passed through pains and sorrowful moment
+since the death of my late father.
+
+At the meantime, my family is the target of Western nations led by
+Nato who wants to destroy my father at all costs. Our investments and
+bank accounts in several countries are their targets to freeze. My
+Father of blessed memory deposited the sum of Twenty Seven Million,
+Five Hundred Thousand, Dollars ($27.500.000.000) in Bank Of Africa
+Burkina Faso which he used my name as the next of kin. I have been
+commissioned by the Bank to present an interested foreign
+investor/partner who can stand as my trustee and receive the fund in
+his account for a possible investment in his country due to my refugee
+status here in Burkina Faso.
+
+I am in search of an honest and reliable person who will help me and
+stand as my trustee so that I will present him to the Bank for the
+transfer of the fund to his bank account overseas. I have chosen to
+contact you after my prayers and I believe that you will not betray my
+trust. But rather take me as your own sister or daughter. I am willing
+to negotiate investment/business profit sharing ratio with you base on
+the future investment earning profits.
+Apologetic for my pictures I will enclose it in my next mail and more
+about me when I hear from you okay. Please I want you to contact me
+here (mgaddafi034@gmail.com) for more details.
+
+best regard
+Yours Sincerely.
+Aisha Gaddafi
