@@ -2,160 +2,180 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D22051F775E
-	for <lists+linux-btrfs@lfdr.de>; Fri, 12 Jun 2020 13:37:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B694C1F782C
+	for <lists+linux-btrfs@lfdr.de>; Fri, 12 Jun 2020 14:56:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725955AbgFLLhU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 12 Jun 2020 07:37:20 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:48760 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725872AbgFLLhT (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 12 Jun 2020 07:37:19 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05CBR44r176619;
-        Fri, 12 Jun 2020 11:37:15 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=corp-2020-01-29;
- bh=H1dj24sC3/x0GsqF9E3RKr1EmeyygG7ixuelSU9tBiE=;
- b=IUztN2NaPCwD6RWdftSLnYheIq5jkn9+9xTFxY+8Y1soKHB1xv1OISe8LaqoBWAmK/bR
- Q0DqOrdnsUAObvwIF+QIz0j+NO+mw3IbU8NMURq94EgLMfnAGSVqsg/5cXx2S/+yPYgk
- JoqgWLPxZViQU1CTJE4smOG1W2XbDRPceVG6uRi7jDd/xD2k2dRBeZLSmXKzQRlrRW6A
- JIii51dvGOfJ+HVJqsNP0osZJsf+GTI3RaQZvUrz2g2SufzLr5FypHV+YTS6kmnshCx9
- JtIoN6H30JIJJqOLR7Vxdz3JGbn++1F2wNKqCEdM8CWc9L2dEcBLjtmz6IV8bWkh50zY 0g== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2120.oracle.com with ESMTP id 31g3sncgj5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 12 Jun 2020 11:37:15 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05CBWcwB086030;
-        Fri, 12 Jun 2020 11:37:15 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3020.oracle.com with ESMTP id 31m8x40e2y-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 12 Jun 2020 11:37:14 +0000
-Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 05CBQabA028754;
-        Fri, 12 Jun 2020 11:26:36 GMT
-Received: from localhost.localdomain (/39.109.231.106)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 12 Jun 2020 04:26:35 -0700
-From:   Anand Jain <anand.jain@oracle.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     dsterba@suse.com
-Subject: [PATCH v3 12/16] btrfs-progs: inspect-internal inode-resolve: use global verbose
-Date:   Fri, 12 Jun 2020 19:26:27 +0800
-Message-Id: <20200612112627.3962-1-anand.jain@oracle.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <1574678357-22222-13-git-send-email-anand.jain@oracle.com>
-References: <1574678357-22222-13-git-send-email-anand.jain@oracle.com>
+        id S1726259AbgFLM4v (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 12 Jun 2020 08:56:51 -0400
+Received: from mout.gmx.net ([212.227.15.19]:35659 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726053AbgFLM4v (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 12 Jun 2020 08:56:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1591966599;
+        bh=VTJplPqtvpt9ww8ZNgx1qet60fizYRhcm+r1jt2PMl0=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=CeUdSdD4A0/eCqKCTDahhZXZXtOeFAFpSrr1XpgKvtaRzJmQ9k3S1YkG3gGOxULq7
+         vevm3pV2wZDxpksUMMc9nUDzGCJ5eTgatW1QtTClWrmCd1TBuAT2zZULqd0nYrhpay
+         zKa3ufF9saR5ZZLHRvxV5+98+iNjEKdXvJhFcBWM=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1Mkpf3-1j4Ikj1rKB-00mHtG; Fri, 12
+ Jun 2020 14:56:39 +0200
+Subject: Re: [PATCH 0/3] Transient errors in Direct I/O
+To:     Goldwyn Rodrigues <rgoldwyn@suse.de>
+Cc:     darrick.wong@oracle.com, linux-btrfs@vger.kernel.org,
+        fdmanana@gmail.com, linux-fsdevel@vger.kernel.org, hch@lst.de
+References: <20200605204838.10765-1-rgoldwyn@suse.de>
+ <3e11c9ae-15c5-c52a-2e8a-14756a5ef967@gmx.com>
+ <20200611141127.ir7b3ohd3c3qtunu@fiona>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
+ mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
+ PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
+ 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
+ D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
+ efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
+ ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
+ BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
+ 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
+ 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
+ EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
+ 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
+ ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
+ oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
+ fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
+ 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
+ ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
+ oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
+Message-ID: <00904015-86c8-f6a9-4173-ff51fe58e506@gmx.com>
+Date:   Fri, 12 Jun 2020 20:56:30 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9649 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 adultscore=0
- suspectscore=1 malwarescore=0 mlxlogscore=999 bulkscore=0 spamscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2004280000 definitions=main-2006120086
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9649 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 priorityscore=1501
- lowpriorityscore=0 impostorscore=0 cotscore=-2147483648 suspectscore=1
- spamscore=0 bulkscore=0 malwarescore=0 phishscore=0 mlxscore=0
- mlxlogscore=999 clxscore=1015 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2004280000 definitions=main-2006120086
+In-Reply-To: <20200611141127.ir7b3ohd3c3qtunu@fiona>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="R9A6TcfViGjRVeCs196xigoHfekKsiW7R"
+X-Provags-ID: V03:K1:MQY6kx9Nb+otai+C7lqtb4eo7HTvPcm0lCtKiPcIJuEb+UN5b/d
+ pIg0FGkEBS+d2foAAFKrO40bFL+bdZ2C+3YH5kD9Hr8cUQZmhi7MoQSROth3ff7xWKlhPKi
+ KWsmWmzTXFcMJHxj8XRVy8apAD05rjmHkzTwYtLCclIVNlxGVOIAcWBNtKTRmqq1s/b7si0
+ fS/WFK1/B+HAyCi9G+yTg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:1j4EG4humrA=:17lrgb9eEXIl8RzMaDv2AZ
+ LxrcJwSOAFQojVfxjfsmuVxJX0FnvM4OjrTEHktufsX4v8P6R4+IKghKiUi2WB0Sn6L+EkGbA
+ shMIBQRj5g6bYXtXvqE4pnPfBLvZRbCxw2P4bHqkZljsfufkknHYU5CfhipfCy6srjA3Zz5kv
+ Xkv+PE5t5sxbGp7YyiGuftpVxJSW4duKdCE9TXtLXBEXknll29ZFWifLzhd1KYHzCoElnQwk+
+ i8cefJjgrEOgsVZURKPBLdkvInakKljybWb9XuAjatyrt5LppiiSVaHfpBvkG7MdwS4fQHD7t
+ q8E7hGikLO7r00GAMpB+HmdIF2bzT7KA9KRhX73RmSr9l2IzXojA4bE5oFSn7D7T3fwoyGrzz
+ Zhlp61htlkHtD4frfNwdX7Z2cru8wJOgoOCbZebSUb+GZsy3A4TL1Cxs0E2vMUPUWmqa9AMGI
+ f7Ber/91x/m8ic0hxPBPERWomWMlsklzxgGPyvafa3omYEmA7zNEwvSFf/8oZhRH5JWa0jnQq
+ IV7gSKMps05ZKlLfwQbTD20SHU3kBanC14Cdct6v851ttnDZUwd15UDzlY5oBkI+4x8CtNA+A
+ XMHdwtjzVdWctYESt6oKTKjOG2xqpnULMUUknkV+08fVuY3c/l+epN3d1ZYfZCf4MigvpNufN
+ mMTKVl7asynEP6OwvKOfb3a3XIi43SQ9q//kk2ENZmCUhJz96yezX7hsuItGmG89kBUGh8aS2
+ jKV+xm0NKKQGIBIVtUPUoxIQBfz3LEtw7b/6KGHoUrb0E1U5YBo5mOPWz2UjSHwZ1I2lM+WDN
+ E0LfkMGcMXPHLP1Ix7qnZTObvCDwXN3xSNnCGci5gIPmPbV8sCLvWxKoyuEps4JftRi2MMvp9
+ yIul0FQWF5l9RqmATh3k7cf42bX/DhvXUJJa9m4GWBivTHoTH89RvVHdsLQ4NniZds+z6H9kH
+ pGm6NCf/hf7n4cGXxX4Y4mbCa2hfaFJ30pR4SFfzjXlo63VcCHJCAq1mzV6IAB7UV+dvzJ0ZF
+ HU/n1us3FL6b5vzI1nAwxDDX2QitLMPBHQqfifKsYk5LMQXMybjY+6IUf22P83/K2VXkMta62
+ A3ATmD2y+RY6gSWB8BmoBqbUdjPSZCMbtHmMIKFGvosW1pl+aLAsLsjyold8i9WvkbxRTRYaV
+ j2y9SVHdeOpRHCkZujRTNuqK5HNigpVvEIJ98BOs6XURB3lgc15RzsOeNy7sBiPWmZ4MFu8v0
+ uoRurLVrZpkJLre4p
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Transpire global --verbose option down to the
-btrfs inspect-internal inode-resolve sub-command.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--R9A6TcfViGjRVeCs196xigoHfekKsiW7R
+Content-Type: multipart/mixed; boundary="8WTKqTGFdzO5Wp1G7LJNwXHjPhSRvhI21"
 
-Suggested-by: David Sterba <dsterba@suse.com>
-Signed-off-by: Anand Jain <anand.jain@oracle.com>
----
-v3: update help and documentation
-v2: Use new helper functions and defines
-     HELPINFO_INSERT_GLOBALS, BTRFS_BCONF_UNSET, BTRFS_BCONF_QUIET
-     bconf_be_verbose(), bconf_be_quiet()
+--8WTKqTGFdzO5Wp1G7LJNwXHjPhSRvhI21
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
- Documentation/btrfs-inspect-internal.asciidoc |  1 +
- cmds/inspect.c                                | 22 +++++++++----------
- 2 files changed, 12 insertions(+), 11 deletions(-)
 
-diff --git a/Documentation/btrfs-inspect-internal.asciidoc b/Documentation/btrfs-inspect-internal.asciidoc
-index 0718070d8905..e8d4c861603d 100644
---- a/Documentation/btrfs-inspect-internal.asciidoc
-+++ b/Documentation/btrfs-inspect-internal.asciidoc
-@@ -139,6 +139,7 @@ at 'path', ie. all hardlinks
- +
- -v::::
- verbose mode, print count of returned paths and ioctl() return value
-+This option is merged to the global verbose option
- 
- *logical-resolve* [-Pvo] [-s <bufsize>] <logical> <path>::
- (needs root privileges)
-diff --git a/cmds/inspect.c b/cmds/inspect.c
-index 5b946da08b72..b0d3c8102400 100644
---- a/cmds/inspect.c
-+++ b/cmds/inspect.c
-@@ -56,12 +56,11 @@ static int __ino_to_path_fd(u64 inum, int fd, int verbose, const char *prepend)
- 		goto out;
- 	}
- 
--	if (verbose)
--		printf("ioctl ret=%d, bytes_left=%lu, bytes_missing=%lu, "
--			"cnt=%d, missed=%d\n", ret,
--			(unsigned long)fspath->bytes_left,
--			(unsigned long)fspath->bytes_missing,
--			fspath->elem_cnt, fspath->elem_missed);
-+	pr_verbose(1,
-+	"ioctl ret=%d, bytes_left=%lu, bytes_missing=%lu cnt=%d, missed=%d\n",
-+		   ret, (unsigned long)fspath->bytes_left,
-+		   (unsigned long)fspath->bytes_missing, fspath->elem_cnt,
-+		   fspath->elem_missed);
- 
- 	for (i = 0; i < fspath->elem_cnt; ++i) {
- 		u64 ptr;
-@@ -83,7 +82,9 @@ static const char * const cmd_inspect_inode_resolve_usage[] = {
- 	"btrfs inspect-internal inode-resolve [-v] <inode> <path>",
- 	"Get file system paths for the given inode",
- 	"",
--	"-v   verbose mode",
-+	"-v   verbose mode. This option is merged to the global verbose option",
-+	HELPINFO_INSERT_GLOBALS,
-+	HELPINFO_INSERT_VERBOSE,
- 	NULL
- };
- 
-@@ -91,7 +92,6 @@ static int cmd_inspect_inode_resolve(const struct cmd_struct *cmd,
- 				     int argc, char **argv)
- {
- 	int fd;
--	int verbose = 0;
- 	int ret;
- 	DIR *dirstream = NULL;
- 
-@@ -103,7 +103,7 @@ static int cmd_inspect_inode_resolve(const struct cmd_struct *cmd,
- 
- 		switch (c) {
- 		case 'v':
--			verbose = 1;
-+			bconf_be_verbose();
- 			break;
- 		default:
- 			usage_unknown_option(cmd, argv);
-@@ -117,8 +117,8 @@ static int cmd_inspect_inode_resolve(const struct cmd_struct *cmd,
- 	if (fd < 0)
- 		return 1;
- 
--	ret = __ino_to_path_fd(arg_strtou64(argv[optind]), fd, verbose,
--			       argv[optind+1]);
-+	ret = __ino_to_path_fd(arg_strtou64(argv[optind]), fd,
-+			       bconf.verbose, argv[optind+1]);
- 	close_file_or_dir(fd, dirstream);
- 	return !!ret;
- 
--- 
-2.25.1
 
+On 2020/6/11 =E4=B8=8B=E5=8D=8810:11, Goldwyn Rodrigues wrote:
+> On 13:31 10/06, Qu Wenruo wrote:
+>>
+>>
+>> On 2020/6/6 =E4=B8=8A=E5=8D=884:48, Goldwyn Rodrigues wrote:
+>>> In current scenarios, for XFS, it would mean that a page invalidation=
+
+>>> would end up being a writeback error. So, if iomap returns zero, fall=
+
+>>> back to biffered I/O. XFS has never supported fallback to buffered I/=
+O.
+>>> I hope it is not "never will" ;)
+>>>
+>>> With mixed buffered and direct writes in btrfs, the pages may not be
+>>> released the extent may be locked in the ordered extents cleanup thre=
+ad,
+>>
+>> I'm wondering can we handle this case in a different way.
+>>
+>> In fact btrfs has its own special handling for invalidating pages.
+>> Btrfs will first look for any ordered extents covering the page, finis=
+h
+>> the ordered extent manually, then invalidate the page.
+>>
+>> I'm not sure why invalidate_inode_pages2_range() used in dio iomap cod=
+e
+>> does not use the fs specific invalidatepage(), but only do_lander_page=
+()
+>> then releasepage().
+>>
+>> Shouldn'y we btrfs implement the lander_page() to handle ordered exten=
+ts
+>> properly?
+>> Or is there any special requirement?
+>>
+>=20
+> The problem is aops->launder_page() is called only if PG_Dirty is
+> set. In this case it is not because we just performed a writeback.
+
+For the dio iomap code, before btrfs_finish_ordered_io(), the pages in
+ordered ranges are still dirty.
+So launder_page() here can still get triggered to finish the ordered exte=
+nt.
+
+>=20
+> Also, it is not just ordered ordered extent writeback which may lock
+> the extent, a buffered read can lock as well.
+>=20
+That's right.
+But at least that would greatly reduce the possibility for btrfs to fall
+back to buffered IO, right?
+
+Thanks,
+Qu
+
+
+--8WTKqTGFdzO5Wp1G7LJNwXHjPhSRvhI21--
+
+--R9A6TcfViGjRVeCs196xigoHfekKsiW7R
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl7je34ACgkQwj2R86El
+/qgXpAgAjcBsKzvPY1s5vfGNdnfui6rPNrDqMAq2q6brYVp4YMuIc1MasNS+KDSK
+jr+myjC880TvMa2qAUCbLSZ+ar+j7TAZ7cTjkgBs1pki5c6KCVqJjZKMGK55pETP
+U3jZ5JeVctEGvVWt5DzrwvQcO2iQid/of2Hzuuu4Zp7ukQqCCRIVKFA5vZRyWQF2
+rI/F1gIqTfSmNCmBTvqTcaN4ONRwsTO/B6tTiCtxxnb8kezw6judGxrVIV80ik0D
+mRt/MWrfBXrZTqVwm+M6OnDAy2wY93G0L8VKedYI9UM0e1P4D0JpJlNJx6SAqA3a
+b8TEafvPgklcbGuISMedE7l48kg1qg==
+=iN1+
+-----END PGP SIGNATURE-----
+
+--R9A6TcfViGjRVeCs196xigoHfekKsiW7R--
