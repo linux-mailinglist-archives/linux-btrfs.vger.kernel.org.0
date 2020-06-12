@@ -2,64 +2,64 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FF841F76F8
-	for <lists+linux-btrfs@lfdr.de>; Fri, 12 Jun 2020 12:57:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1B131F76FE
+	for <lists+linux-btrfs@lfdr.de>; Fri, 12 Jun 2020 12:59:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726332AbgFLK5j (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 12 Jun 2020 06:57:39 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:54796 "EHLO
+        id S1726100AbgFLK7g (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 12 Jun 2020 06:59:36 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:56188 "EHLO
         userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725868AbgFLK5j (ORCPT
+        with ESMTP id S1725911AbgFLK7g (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 12 Jun 2020 06:57:39 -0400
+        Fri, 12 Jun 2020 06:59:36 -0400
 Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05CAqi5f071631;
-        Fri, 12 Jun 2020 10:57:34 GMT
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05CAmxqI069842;
+        Fri, 12 Jun 2020 10:59:32 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding; s=corp-2020-01-29;
- bh=GK+Hw8zzfVjEc9KvJTv/staKn6hXxfU5jIuGqOmB5UQ=;
- b=RGflN0/I3lvcSyb0lSRyIg+4R96MYDSHaT2SPCsPE6J2RuPcBdBywLEWKRGizsY5UtKd
- 4M9hB9oYBmQcK/R8sf8DsnqoPQQVt4oMhQEMPFq/aZis0AoagySeYm7wI/LN7NNI4gUO
- x6EFOlNcZhtvXRea/oxWxrfxe9jpJyD8cXgWP3IRwjG+JeAa/2DDkwlg6dy7FZApRXZC
- VVzMuXpMTogz/rL2C/jUT41FpXNWf7F9niCC4SmGhnzyrseylyWoPA5OxqI9MUS5ioyk
- hM+UBq4ndSmGhuzmcQDGsTzbMdCdSVrm1BrRCRk/FdXPFmkyY/BnS7BibBD3ZByQYqQl Mw== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2130.oracle.com with ESMTP id 31g2jrmhn9-1
+ bh=wcKFITtEUpAUU6Ch5rKCG09tzJ90qzDlRJ/uMwWd6E0=;
+ b=eTzee7bJ+tNzqeWEEJkBBdP1cefRP9CdxZb3WACmMQgggs7E3W/tmAd0RQKMaBkGi5dg
+ jN8aoMDwA2DYqMYG74Q03S3vBJfSGKjBTncQzi4ZU0GdaEMzU5N5dHy7gPW1DcI1Gsjg
+ NyxEhWHtJJk1c0spw8VnK10iNME7AL8SdrHAw6B06j9jtz8Wz250GcHMVWkVOUWy33RS
+ BjSDkWyEtkGrbytk4ZYcTf6WLP/YjXLfmn8dovVW3gZen9f6y5bepTl7CjbJsL5LJpC7
+ qPYOIVUVWF76y8Nu7rZRUUU1MMSzLunuoWKAuJN+7Pu/YbO43JhkMghZmnyVOVYjPkVL jw== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2130.oracle.com with ESMTP id 31g2jrmhx0-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 12 Jun 2020 10:57:34 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05CAr3Rx067099;
-        Fri, 12 Jun 2020 10:57:34 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3020.oracle.com with ESMTP id 31m8bhr8t5-1
+        Fri, 12 Jun 2020 10:59:32 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05CAsGGb146476;
+        Fri, 12 Jun 2020 10:59:32 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3030.oracle.com with ESMTP id 31m8c4g73h-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 12 Jun 2020 10:57:33 +0000
-Received: from abhmp0016.oracle.com (abhmp0016.oracle.com [141.146.116.22])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 05CAuaN1018467;
-        Fri, 12 Jun 2020 10:56:36 GMT
+        Fri, 12 Jun 2020 10:59:32 +0000
+Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 05CAxU8Q023473;
+        Fri, 12 Jun 2020 10:59:30 GMT
 Received: from localhost.localdomain (/39.109.231.106)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 12 Jun 2020 03:56:32 -0700
+        with ESMTP ; Fri, 12 Jun 2020 03:59:21 -0700
 From:   Anand Jain <anand.jain@oracle.com>
 To:     linux-btrfs@vger.kernel.org
 Cc:     dsterba@suse.com
-Subject: [PATCH v3 02/16] btrfs-progs: add global verbose and quiet options and helper functions
-Date:   Fri, 12 Jun 2020 18:56:06 +0800
-Message-Id: <20200612105606.18210-1-anand.jain@oracle.com>
+Subject: [PATCH v3 03/16] btrfs-progs: send: use global verbose and quiet options
+Date:   Fri, 12 Jun 2020 18:58:56 +0800
+Message-Id: <20200612105856.18329-1-anand.jain@oracle.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <1574678357-22222-3-git-send-email-anand.jain@oracle.com>
-References: <1574678357-22222-3-git-send-email-anand.jain@oracle.com>
+In-Reply-To: <1574678357-22222-4-git-send-email-anand.jain@oracle.com>
+References: <1574678357-22222-4-git-send-email-anand.jain@oracle.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9649 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxscore=0 malwarescore=0
- mlxlogscore=999 adultscore=0 phishscore=0 bulkscore=0 suspectscore=1
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2006120081
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 suspectscore=3
+ malwarescore=0 mlxscore=0 bulkscore=0 phishscore=0 adultscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2006120081
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9649 signatures=668680
 X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 impostorscore=0
- cotscore=-2147483648 priorityscore=1501 spamscore=0 suspectscore=1
+ cotscore=-2147483648 priorityscore=1501 spamscore=0 suspectscore=3
  lowpriorityscore=0 bulkscore=0 mlxlogscore=999 malwarescore=0 mlxscore=0
  phishscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2004280000 definitions=main-2006120081
@@ -68,224 +68,135 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Add btrfs(8) global --verbose and --quiet command options to show
-verbose or no output from the sub-commands.
-By introducing global a %bconf::verbose memeber to transpire the same
-down to the sub-command.
-Further the added helper function pr_verbose() helps to logs the verbose
-messages, based on the state of the %bconf::verbose. And further HELPINFO_
-defines are provides for the usage.
+Transpire global --verbose and --quiet options down to the btrfs send
+sub-command.
 
 Suggested-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Anand Jain <anand.jain@oracle.com>
 ---
-v3:
-  Add define MUST_LOG
-  Add comment about the argument %level in the function pr_verbose()
-v2:
-  Add missing -q along with --quiet.
-  Create and use bconf_be_verbose() and bconf_be_quiet().
-  Change help wordings for verbose and quiet.
-  Define and use BTRFS_BCONF_UNSET and BTRFS_BCONF_QUIET.
-  Use HELPINFO_INSERT_GLOBALS.
+v3: update help and documentation
+v2: Use new helper function and defines
+    HELPINFO_INSERT_GLOBALS, BTRFS_BCONF_UNSET, BTRFS_BCONF_QUIET
+    bconf_be_verbose(), bconf_be_quiet()
 
- btrfs.c           | 20 ++++++++++++++++++--
- common/help.h     |  5 +++++
- common/messages.c | 30 ++++++++++++++++++++++++++++++
- common/messages.h |  4 ++++
- common/utils.c    | 14 ++++++++++++++
- common/utils.h    | 11 +++++++++++
- 6 files changed, 82 insertions(+), 2 deletions(-)
+ Documentation/btrfs-send.asciidoc |  6 +++--
+ cmds/send.c                       | 39 ++++++++++++++++++++-----------
+ 2 files changed, 29 insertions(+), 16 deletions(-)
 
-diff --git a/btrfs.c b/btrfs.c
-index 72dad6fb3983..eb3b6183eb21 100644
---- a/btrfs.c
-+++ b/btrfs.c
-@@ -27,7 +27,7 @@
- #include "common/box.h"
+diff --git a/Documentation/btrfs-send.asciidoc b/Documentation/btrfs-send.asciidoc
+index cd7ada76d14a..f76e808eed9e 100644
+--- a/Documentation/btrfs-send.asciidoc
++++ b/Documentation/btrfs-send.asciidoc
+@@ -58,9 +58,11 @@ is useful to show the differences in metadata.
  
- static const char * const btrfs_cmd_group_usage[] = {
--	"btrfs [--help] [--version] [--format <format>] <group> [<group>...] <command> [<args>]",
-+	"btrfs [--help] [--version] [--format <format>] [-v|--verbose] [-q|--quiet] <group> [<group>...] <command> [<args>]",
+ -v|--verbose::
+ enable verbose output, print generated commands in a readable form, (each
+-occurrence of this option increases the verbosity level)
++occurrence of this option increases the verbosity level). This option is
++merged to the global verbose option.
+ -q|--quiet::
+-suppress all messages except errors
++suppress all messages except errors. This option is merged to the global quiet
++option.
+ 
+ EXIT STATUS
+ -----------
+diff --git a/cmds/send.c b/cmds/send.c
+index 7ce6c3273857..b2afc6668f95 100644
+--- a/cmds/send.c
++++ b/cmds/send.c
+@@ -48,11 +48,6 @@
+ 
+ #define SEND_BUFFER_SIZE	SZ_64K
+ 
+-/*
+- * Default is 1 for historical reasons, changing may break scripts that expect
+- * the 'At subvol' message.
+- */
+-static int g_verbose = 1;
+ 
+ struct btrfs_send {
+ 	int send_fd;
+@@ -292,10 +287,10 @@ static int do_send(struct btrfs_send *send, u64 parent_root_id,
+ 				"Try upgrading your kernel or don't use -e.\n");
+ 		goto out;
+ 	}
+-	if (g_verbose > 1)
++	if (bconf.verbose > 1)
+ 		fprintf(stderr, "BTRFS_IOC_SEND returned %d\n", ret);
+ 
+-	if (g_verbose > 1)
++	if (bconf.verbose > 1)
+ 		fprintf(stderr, "joining genl thread\n");
+ 
+ 	close(pipefd[1]);
+@@ -458,8 +453,13 @@ static const char * const cmd_send_usage[] = {
+ 	"                 to transfer changes. This mode is faster and useful to",
+ 	"                 show the differences in metadata.",
+ 	"-v|--verbose     enable verbose output to stderr, each occurrence of",
+-	"                 this option increases verbosity",
+-	"-q|--quiet       suppress all messages, except errors",
++	"                 this option increases verbosity. This option is",
++	"                 merged to the global verbose option.",
++	"-q|--quiet       suppress all messages, except errors. This option is",
++	"                 merged to the global quiet option.",
++	HELPINFO_INSERT_GLOBALS,
++	HELPINFO_INSERT_VERBOSE,
++	HELPINFO_INSERT_QUIET,
  	NULL
  };
  
-@@ -248,6 +248,8 @@ static int handle_global_options(int argc, char **argv)
- 		{ "version", no_argument, NULL, OPT_VERSION },
- 		{ "format", required_argument, NULL, OPT_FORMAT },
- 		{ "full", no_argument, NULL, OPT_FULL },
-+		{ "verbose", no_argument, NULL, 'v' },
-+		{ "quiet", no_argument, NULL, 'q' },
- 		{ NULL, 0, NULL, 0}
- 	};
- 	int shift;
-@@ -259,7 +261,7 @@ static int handle_global_options(int argc, char **argv)
- 	while (1) {
- 		int c;
+@@ -482,6 +482,17 @@ static int cmd_send(const struct cmd_struct *cmd, int argc, char **argv)
+ 	send.dump_fd = fileno(stdout);
+ 	outname[0] = 0;
  
--		c = getopt_long(argc, argv, "+", long_options, NULL);
-+		c = getopt_long(argc, argv, "+vq", long_options, NULL);
- 		if (c < 0)
- 			break;
- 
-@@ -270,6 +272,12 @@ static int handle_global_options(int argc, char **argv)
- 		case OPT_FORMAT:
- 			handle_output_format(optarg);
- 			break;
-+		case 'v':
-+			bconf_be_verbose();
-+			break;
-+		case 'q':
-+			bconf_be_quiet();
-+			break;
- 		default:
- 			fprintf(stderr, "Unknown global option: %s\n",
- 					argv[optind - 1]);
-@@ -310,6 +318,14 @@ static void handle_special_globals(int shift, int argc, char **argv)
- 			cmd_execute(&cmd_struct_version, argc, argv);
- 			exit(0);
- 		}
-+
-+	for (i = 0; i < shift; i++)
-+		if (strcmp(argv[i], "--verbose") == 0)
-+			bconf_be_verbose();
-+
-+	for (i = 0; i < shift; i++)
-+		if (strcmp(argv[i], "--quiet") == 0)
-+			bconf_be_quiet();
- }
- 
- static const struct cmd_group btrfs_cmd_group = {
-diff --git a/common/help.h b/common/help.h
-index 91874abfe207..dbc5259d2277 100644
---- a/common/help.h
-+++ b/common/help.h
-@@ -60,6 +60,11 @@
- #define HELPINFO_INSERT_GLOBALS		"",					\
- 					"Global options:"
- #define HELPINFO_INSERT_FORMAT		"--foramt TYPE"
-+/*
-+ * Global verbose option for the sub-commands
-+ */
-+#define HELPINFO_INSERT_VERBOSE	"-v|--verbose       increase output verbosity"
-+#define HELPINFO_INSERT_QUIET	"-q|--quiet         print only errors"
- 
- struct cmd_struct;
- struct cmd_group;
-diff --git a/common/messages.c b/common/messages.c
-index 0e5694ecd467..43ababe77519 100644
---- a/common/messages.c
-+++ b/common/messages.c
-@@ -17,6 +17,7 @@
- #include <stdio.h>
- #include <stdarg.h>
- #include "common/messages.h"
-+#include "common/utils.h"
- 
- __attribute__ ((format (printf, 1, 2)))
- void __btrfs_warning(const char *fmt, ...)
-@@ -75,3 +76,32 @@ int __btrfs_error_on(int condition, const char *fmt, ...)
- 
- 	return 1;
- }
-+
-+/*
-+ * Print verbose helper function
-+ * level: Minimum verbose level at which the message has to be printed.
-+ *
-+ * Values for argument level:
-+ * MUST_LOG - Will log the message unless a quiet option is set.
-+ *            Used where messages have to be printed for backward compatibility.
-+ * > 0        Prints the message at the corresponding level.
-+ */
-+__attribute__ ((format (printf, 2, 3)))
-+void pr_verbose(int level, const char *fmt, ...)
-+{
-+	va_list args;
-+
-+	if (bconf.verbose == BTRFS_BCONF_QUIET || level == BTRFS_BCONF_QUIET)
-+		return;
-+
 +	/*
-+	 * level is set by the threads requesting to print only if the command
-+	 * verbose option is higher than the level.
++	 * For send, verbose default is 1 (insteasd of 0) for historical reasons,
++	 * changing may break scripts that expect the 'At subvol' message. But do
++	 * it only when bconf.verbose is unset (-1) and also adjust the value,
++	 * if global verbose is already set.
 +	 */
-+	if (bconf.verbose < level)
-+		return;
-+
-+	va_start(args, fmt);
-+	vfprintf(stdout, fmt, args);
-+	va_end(args);
-+}
-diff --git a/common/messages.h b/common/messages.h
-index 596047948fef..288b32a77c10 100644
---- a/common/messages.h
-+++ b/common/messages.h
-@@ -96,3 +96,7 @@ __attribute__ ((format (printf, 2, 3)))
- int __btrfs_error_on(int condition, const char *fmt, ...);
- 
- #endif
-+
-+#define	MUST_LOG	-1
-+__attribute__ ((format (printf, 2, 3)))
-+void pr_verbose(int level, const char *fmt, ...);
-diff --git a/common/utils.c b/common/utils.c
-index ebc50de2c143..0301efb0a348 100644
---- a/common/utils.c
-+++ b/common/utils.c
-@@ -1679,6 +1679,20 @@ u8 rand_u8(void)
- void btrfs_config_init(void)
- {
- 	bconf.output_format = CMD_FORMAT_TEXT;
-+	bconf.verbose = BTRFS_BCONF_UNSET;
-+}
-+
-+void bconf_be_verbose(void)
-+{
 +	if (bconf.verbose == BTRFS_BCONF_UNSET)
 +		bconf.verbose = 1;
-+	else
++	else if (bconf.verbose > BTRFS_BCONF_QUIET)
 +		bconf.verbose++;
-+}
 +
-+void bconf_be_quiet(void)
-+{
-+	bconf.verbose = BTRFS_BCONF_QUIET;
- }
+ 	optind = 0;
+ 	while (1) {
+ 		enum { GETOPT_VAL_SEND_NO_DATA = 256 };
+@@ -497,10 +508,10 @@ static int cmd_send(const struct cmd_struct *cmd, int argc, char **argv)
  
- /* Returns total size of main memory in bytes, -1UL if error. */
-diff --git a/common/utils.h b/common/utils.h
-index 1172618b8bb1..c650819644e5 100644
---- a/common/utils.h
-+++ b/common/utils.h
-@@ -117,16 +117,27 @@ unsigned long total_memory(void);
- void print_device_info(struct btrfs_device *device, char *prefix);
- void print_all_devices(struct list_head *devices);
+ 		switch (c) {
+ 		case 'v':
+-			g_verbose++;
++			bconf_be_verbose();
+ 			break;
+ 		case 'q':
+-			g_verbose = 0;
++			bconf_be_quiet();
+ 			break;
+ 		case 'e':
+ 			new_end_cmd_semantic = 1;
+@@ -680,8 +691,8 @@ static int cmd_send(const struct cmd_struct *cmd, int argc, char **argv)
+ 		}
+ 	}
  
-+#define BTRFS_BCONF_UNSET	-1
-+#define BTRFS_BCONF_QUIET	 0
- /*
-  * Global program state, configurable by command line and available to
-  * functions without extra context passing.
-  */
- struct btrfs_config {
- 	unsigned int output_format;
-+
-+	/* values
-+	 *   BTRFS_BCONF_QUIET
-+	 *   BTRFS_BCONF_UNSET
-+	 *   > 0: Verbose level
-+	 */
-+	int verbose;
- };
- extern struct btrfs_config bconf;
+-	if ((send_flags & BTRFS_SEND_FLAG_NO_FILE_DATA) && g_verbose > 1)
+-		if (g_verbose > 1)
++	if ((send_flags & BTRFS_SEND_FLAG_NO_FILE_DATA) && bconf.verbose > 1)
++		if (bconf.verbose > 1)
+ 			fprintf(stderr, "Mode NO_FILE_DATA enabled\n");
  
- void btrfs_config_init(void);
-+void bconf_be_verbose(void);
-+void bconf_be_quiet(void);
+ 	for (i = optind; i < argc; i++) {
+@@ -691,7 +702,7 @@ static int cmd_send(const struct cmd_struct *cmd, int argc, char **argv)
+ 		free(subvol);
+ 		subvol = argv[i];
  
- /* Pseudo random number generator wrappers */
- int rand_int(void);
+-		if (g_verbose > 0)
++		if (bconf.verbose > BTRFS_BCONF_QUIET)
+ 			fprintf(stderr, "At subvol %s\n", subvol);
+ 
+ 		subvol = realpath(subvol, NULL);
 -- 
 2.25.1
 
