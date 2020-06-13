@@ -2,109 +2,176 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7607E1F7F0F
-	for <lists+linux-btrfs@lfdr.de>; Sat, 13 Jun 2020 00:48:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F67C1F7FEF
+	for <lists+linux-btrfs@lfdr.de>; Sat, 13 Jun 2020 02:38:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726329AbgFLWsM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 12 Jun 2020 18:48:12 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:60240 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726304AbgFLWsM (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 12 Jun 2020 18:48:12 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05CMlKC2161186;
-        Fri, 12 Jun 2020 22:48:05 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=Gp/UDyip3kX9iLputsLhEy7cftgTlc711qrjZpoq6Cc=;
- b=gGjb/snEqsXK23pFNFrR+v5USkexQBeO6p2LbkWMipOm/xB6RykIJFnMjzQaFy5KZSAQ
- Yd/V3/d3Zd5DeVzR4S0tbxw49JqPmtdgnUCVaiiDxpB4iBcCNEu/FXx7SuYh9imcv5HM
- m8umIpoRd9CE556yTCvgLDyCftgiwtlDhWPqvp8EOztI9K9pENvjQYP2FhiyVrrj4m/w
- 40uQzWwzwFORtIvjiI9klblIE78wJxnd9z67TEl3YPNXieOm/UgGe7jZiDWka7l4s8zs
- h6eVev7nRQLOoeJlroFJb1NN6MvpIP8nPyNo2/h8EZimnaC14MH53/E7h3NSzaW/4+wt nA== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 31jepp99xt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 12 Jun 2020 22:48:05 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05CMm0Bo158140;
-        Fri, 12 Jun 2020 22:48:05 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3020.oracle.com with ESMTP id 31mhgjws08-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 12 Jun 2020 22:48:05 +0000
-Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 05CMm3ww020677;
-        Fri, 12 Jun 2020 22:48:04 GMT
-Received: from [192.168.1.102] (/39.109.231.106)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 12 Jun 2020 15:48:03 -0700
-Subject: Re: [PATCH v3 02/16] btrfs-progs: add global verbose and quiet
- options and helper functions
-To:     dsterba@suse.cz, linux-btrfs@vger.kernel.org, dsterba@suse.com
-References: <1574678357-22222-3-git-send-email-anand.jain@oracle.com>
- <20200612105606.18210-1-anand.jain@oracle.com>
- <20200612153935.GU27795@twin.jikos.cz>
-From:   Anand Jain <anand.jain@oracle.com>
-Message-ID: <eba7d4f9-82b1-49c7-54c1-c4a6dcf905ac@oracle.com>
-Date:   Sat, 13 Jun 2020 06:48:00 +0800
+        id S1726385AbgFMAiU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 12 Jun 2020 20:38:20 -0400
+Received: from mout.gmx.net ([212.227.17.20]:33275 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726372AbgFMAiS (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 12 Jun 2020 20:38:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1592008689;
+        bh=D8eOGD4E7aTf4DsHx5NVPBvOJroAZ0XpNw1Nm4QtmJc=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=G7krF6UGR9XqfAVOl0PKvTg8DFq94VBHeX+09h3QwDCzx/c/EnV0CDeVwB7D4mizx
+         lCPO9qWjhqveocAUrulQBfIQGBF6VaJUlr/0BWMulOeIhFNhGfNF4StCgygXrkD+OX
+         yC6dkemdcFngqzACYY1bNocoJWBtWe7teRsiReXo=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1McH9Y-1jBvoa3taG-00ciqS; Sat, 13
+ Jun 2020 02:38:09 +0200
+Subject: Re: [PATCH] btrfs: Share the same anonymous block device for the
+ whole filesystem
+To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org, Greed Rong <greedrong@gmail.com>
+References: <20200612064237.13439-1-wqu@suse.com>
+ <20200612164801.GV27795@twin.jikos.cz>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
+ mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
+ PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
+ 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
+ D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
+ efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
+ ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
+ BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
+ 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
+ 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
+ EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
+ 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
+ ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
+ oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
+ fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
+ 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
+ ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
+ oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
+Message-ID: <704f930d-1e1e-beb2-f45b-69ae2e6bb1bf@gmx.com>
+Date:   Sat, 13 Jun 2020 08:38:04 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-In-Reply-To: <20200612153935.GU27795@twin.jikos.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9650 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxlogscore=999
- adultscore=0 phishscore=0 malwarescore=0 mlxscore=0 spamscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2004280000 definitions=main-2006120170
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9650 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 suspectscore=0
- priorityscore=1501 bulkscore=0 clxscore=1015 phishscore=0 impostorscore=0
- malwarescore=0 mlxscore=0 cotscore=-2147483648 adultscore=0 spamscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2004280000 definitions=main-2006120170
+In-Reply-To: <20200612164801.GV27795@twin.jikos.cz>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="13CLadS0qXjp1j6OzuzGXTkyNxq4yN1EU"
+X-Provags-ID: V03:K1:iv3KI1t+ikr2POwImOQ+z/0hCe5X6Cv8pMkjZ2MwCc8PVgzGea4
+ U8JSGnNIhTqVdzSJRH7/ZAbbvK+Cjqy3dBxKw7FDUPB64PexQ0tVe29Jj9jX+uy5wzBDe89
+ x7sfUkGYQ3jqvTj1c+aNbH6JH2LSmcFYXtHdmBNTgnfUhqdwuRohLavCZQdKJBjoel5oSvU
+ JAngmGzk11k1BwNHMixGQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:BHxUsCYClXM=:P6HfYVn4odIWkTlAtCD81W
+ gb/KNqcrcyMANZZH7Q0PiymGLRDXyogPm9ixHn4qGNGYgGFlpNr9IDceNOJsNbTQpnXESpJiQ
+ Inpm/2J7JmRoY6+UZ2CjZORCzryO0JuLHU1kw0eBqwAurDBFvcZwTwnUbDN8iX8390fDz1dTW
+ jiSWIAScBQRQtl6aMm+tJ3ocKjnJTzPYSc6lIoi5FFuMxDZDBLkQiPwf5STN+4WCPzC3KeXDZ
+ BSc89Ymkzy8PwSmItJt6h3N7hi9Wi46Hz8zCYne6NWif/W62jcihG5NcyCI0X+xTxcj6HmPeU
+ CHPz0d2GLU3VRTgS3Buzb1Th06HkeZ4b7TEPQTBJSYaTjL0gr/U7vjeiYOgotrfN52oK5A2xx
+ pXAGQNjv9SXdItVaH3cVnF5MITmy2KNYM/ahgZddIotMvRFQL7kNoOP+3o/m81aW3yAZ/8B9l
+ 1eW9ODi4q7IFsmLaxiUGewR/PMNa2sianvBpd+lW5zsnE0bw//pcp5P0u46TwA786CJg0fC4j
+ NjXLFmKi3nw+09Xt7Ri1DptUCRvwYBFU2zUh7rpP/5cJUP+Vj7cgl1BPGDbp7kG9QknfDthmY
+ AnGoxoOWI4A4Cja8RawMP7JNMioWtetc3eu6Xqd3RTYIcliUY2VspVv1YGif/bP07UhZWN9ap
+ wVv0O2s29yP4DH7Dw28WuIgt2E+eOUoEdaWc70IOprgnSmvKYTFrR8BRx5A58Mih5e5Td7sYH
+ UNZIKnXgTWkdVMd8xgQ90KP7OuXv0dCpoZ1o7e2zu6twck5tj7hNAI41D2IPl4QRp/K/it0Q4
+ R61whfqSCtGZ2jT5Gebgx36S7AOMVKevWuYJzZ1gz6cKOheVwUoSGCgrmqVmKKC1YDsAPmVXG
+ bPFvPtn2UcOhYkFqm+cvYLvSD66suzS0vj4atoxQnge6I10ASbV6iXACnhPw7geqgqbNfvioW
+ JudeX74Jz8EI6vJr3zedtKIsEP+6hY/SZIZVELeo2huZaqr3NALbIJTxFS5d/T91WrRZpMHgm
+ 5bDvGlEd6imTUNasAuuJWi1Hso9wu3K+LzI3NFNTZaJFjIuJjPk1FcY08/+y13E9tE0oDcWOs
+ kU0qV5B68Ijjr/AKBgcI2819qpfJ8Paksq2FgjvuxmPLwXwIRX9HAKgnse6HddAAko8tqf6Br
+ nsjVT4g+5X93eOpWVMeuJo1bqKppgMn5oimdM2d52E954Q24rITXKttTdQMQOUPsg7IQDTeuO
+ axUZ7t/PnRRcXdoM5
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--13CLadS0qXjp1j6OzuzGXTkyNxq4yN1EU
+Content-Type: multipart/mixed; boundary="j0S3Sn1PkPNYtb4YKVv5YpMqm9r0VtKyV"
+
+--j0S3Sn1PkPNYtb4YKVv5YpMqm9r0VtKyV
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
 
-On 12/6/20 11:39 pm, David Sterba wrote:
-> On Fri, Jun 12, 2020 at 06:56:06PM +0800, Anand Jain wrote:
->> Add btrfs(8) global --verbose and --quiet command options to show
->> verbose or no output from the sub-commands.
->> By introducing global a %bconf::verbose memeber to transpire the same
->> down to the sub-command.
->> Further the added helper function pr_verbose() helps to logs the verbose
->> messages, based on the state of the %bconf::verbose. And further HELPINFO_
->> defines are provides for the usage.
->>
->> Suggested-by: David Sterba <dsterba@suse.com>
->> Signed-off-by: Anand Jain <anand.jain@oracle.com>
->> ---
->> v3:
->>    Add define MUST_LOG
->>    Add comment about the argument %level in the function pr_verbose()
-> 
-> Now you've created quite some chaos here, why didn't you just send v3 as
-> a standalone patchset? Replies to individual patches works for small
-> fixups but not as a whole new iteration.
-> 
-> The second part now depends on this v3 that has the MUST_LOG define
-> burried in patch 2/16, while it should have been one extra patch to the
-> second part and we'd be done with that. I'll sort it out somehow but ...
-> 
 
-  Yeah, standalone patch would have been simpler. It was painful at my
-  end too. Sorry about that.
+On 2020/6/13 =E4=B8=8A=E5=8D=8812:48, David Sterba wrote:
+> On Fri, Jun 12, 2020 at 02:42:37PM +0800, Qu Wenruo wrote:
+>> For anonymous block device, we have at most 1 << 20 devices to allocat=
+e,
+>> which looks quite a lot, but if we have a workload which created 1
+>> snapshots per second, we only need 12 days to exhaust the whole pool.
+>=20
+> 1<<20 is 1M and that would mean that there that many snapshots active a=
+t
+> the same time in order to allocate all the anonymous block devices. Onc=
+e
+> a snapshot is not part of any path the device number is released and ca=
+n
+> be reused. So simply multiplying the numbers does not reflect the
+> reality.
 
-  On a different topic. I checked with you before - by legacy send.c and
-  receive.c use stderr for verbosity. Is it a regression to change these
-  to stdout now?
+Yes, but for that number we can still exhaust the pool if the subvolumes
+are not cleaned up.
 
+>=20
+> A plausible explanation is leak of the anon bdev by something else than=
+
+> btrfs on the system.
+>=20
+
+I'm not sure if it's a leak. As you can see the free_anon_bdev() call in
+btrfs_put_root().
+
+
+Although I understand that we use bdev as a namespace seperator, but I'm
+still not confident about whether it's that important.
+
+One point is, I didn't see much users of bdev member to distinguish any
+subvolume, no to mention the "sub" nature of subvolume.
+It's not a full volume, since it already shares the chunk, extent, dev,
+root trees, if it shares the same bdev, it won't cause any new users any
+problem.
+
+That's why I'm pushing the RFC patch. Are there that many users relying
+on bdev to distinguish different subvolumes? Any example would be very
+helpful.
+
+Another problem is, for such lightweight btrfs subvolume, there are only
+that many things we can do to reduce the frequency to hit such problem.
+We can never eliminate the problem.
+
+If the bdev problem is really affecting a lot of existing users, I can
+make the behavior toggleable, using mount option maybe?
+
+Thanks,
+Qu
+
+
+--j0S3Sn1PkPNYtb4YKVv5YpMqm9r0VtKyV--
+
+--13CLadS0qXjp1j6OzuzGXTkyNxq4yN1EU
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl7kH+wACgkQwj2R86El
+/qgeXAf/Vcl/nGP1itrLcgsT5yEd3MFwC67CWkBFv6NlA2fCzA9uVV85KabBWJmN
+f2/InRJWnj+FzQxI+b1Ahyf/2Xzm8+DpcgoaObrtcJ0/Um9yUbtzbz/4djRHrjL7
+mx+3uttEm5c5MY4BuIBu55DR1Kf4GWdKPJyS8yxByazpcV4fuxi0y8CPjTh84C9c
+Ik+Ou8eBCi/Njc/DjEICrFoeNBTLWvls8zY//IkQUEkGtLQU2djfzM+86TAAtl6X
+L6SQn28dT3Wi0g8S11NUD4RzNDQ45r6StbXa5KERMGaGsjm5VQQZVVh/VkAaMx4c
+bmAvpHarFF5MhyG06dNPjHd9BmMZ5Q==
+=SdnU
+-----END PGP SIGNATURE-----
+
+--13CLadS0qXjp1j6OzuzGXTkyNxq4yN1EU--
