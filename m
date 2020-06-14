@@ -2,79 +2,56 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 623E51F88AA
-	for <lists+linux-btrfs@lfdr.de>; Sun, 14 Jun 2020 13:59:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B0481F88EC
+	for <lists+linux-btrfs@lfdr.de>; Sun, 14 Jun 2020 15:22:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726856AbgFNL4Q (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 14 Jun 2020 07:56:16 -0400
-Received: from mx2.suse.de ([195.135.220.15]:58794 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725815AbgFNL4Q (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 14 Jun 2020 07:56:16 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 65DFFAB76;
-        Sun, 14 Jun 2020 11:56:18 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 7B00CDA7C3; Sun, 14 Jun 2020 13:56:06 +0200 (CEST)
-From:   David Sterba <dsterba@suse.com>
-To:     torvalds@linux-foundation.org
-Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Btrfs updates for 5.8, part 2
-Date:   Sun, 14 Jun 2020 13:56:05 +0200
-Message-Id: <cover.1592135316.git.dsterba@suse.com>
-X-Mailer: git-send-email 2.25.0
+        id S1727125AbgFNNWi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 14 Jun 2020 09:22:38 -0400
+Received: from mailrelay2-3.pub.mailoutpod1-cph3.one.com ([46.30.212.11]:57393
+        "EHLO mailrelay2-3.pub.mailoutpod1-cph3.one.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726925AbgFNNWh (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Sun, 14 Jun 2020 09:22:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=lechevalier.se; s=20191106;
+        h=content-transfer-encoding:content-type:mime-version:date:message-id:subject:
+         from:to:from;
+        bh=Y+U91OF3KQBXKXaqml13BFJilQ4+1dU03WIu2evPdak=;
+        b=WcAZ7sVPyR0R54eKdm7Y2gnRjWcFks/wsy/dUK+gxYbzv211YEeAJ4OGaQnBhOS+mrghNrE9Fl59j
+         ioPvDaUB9GylwJPpxoblLHiKEdJKbX9gVEEIWubHuhouBzI3maNGfC347aNDkJCT1eIu/zaUEBGg/k
+         5LykAmnFMxWDOtUpkwNDWLVn8nXr5/uaZ3XinWcU0FLozM6QnvdnE+rHi6PbiFajQLxv4pf5UsOWGf
+         7ieiWFpDcNeNnPMRJLIb1wjjFzRczkJtGDS5enyKs5XYuGnMEpvf6JPpWg3ClnKS4Py3XMr9AYqI3y
+         j28AXXisDQQJwA9K5YTFnJjQig7+Hag==
+X-HalOne-Cookie: d8bc95d91d426bd2c8d2ef17fb4ea087a4caccfa
+X-HalOne-ID: 1c0fe08f-ae42-11ea-8885-d0431ea8a290
+Received: from [192.168.0.10] (h-131-138.a357.priv.bahnhof.se [81.170.131.138])
+        by mailrelay2.pub.mailoutpod1-cph3.one.com (Halon) with ESMTPSA
+        id 1c0fe08f-ae42-11ea-8885-d0431ea8a290;
+        Sun, 14 Jun 2020 13:22:35 +0000 (UTC)
+To:     linux-btrfs Mailinglist <linux-btrfs@vger.kernel.org>
+From:   A L <mail@lechevalier.se>
+Subject: Should "btrfs filesystem defrag -r" follow symlinks?
+Message-ID: <852f6e36-6adc-0455-5c2b-0477b0c72270@lechevalier.se>
+Date:   Sun, 14 Jun 2020 15:22:34 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-GB
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi,
+It is not clear from the man page at 
+https://btrfs.wiki.kernel.org/index.php/Manpage/btrfs-filesystem if 
+`btrfs filesystem defrag -r` should follow symbolic links or not. 
+Perhaps the man-page should mention which behaviour is default.
 
-this reverts the direct io port to iomap infrastructure of btrfs merged
-in the first pull request. We found problems in invalidate page that
-don't seem to be fixable as regressions or without changing iomap code
-that would not affect other filesystems.
+I did some basic tests and it seems that on my setup it does not follow 
+symlinks.
+Perhaps improve defragment with an option to follow symlinks and/or 
+subvolumes should be added?
 
-There are 4 patches reverted in total, but 3 of them are followup
-cleanups needed to revert a43a67a2d715540c13 cleanly. The result is the
-buffer head based implementation of direct io.
-
-There's one trivial conflict that git does not auto-resolve, in the
-address space operations readpages has been replaced by readahead and
-this change is in the context of the direct io callback diff.
-
-Reverts are not great, but under current circumstances I don't see
-better options. Please pull, thanks.
-
-----------------------------------------------------------------
-The following changes since commit 2166e5edce9ac1edf3b113d6091ef72fcac2d6c4:
-
-  btrfs: fix space_info bytes_may_use underflow during space cache writeout (2020-05-28 14:01:53 +0200)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.8-part2-tag
-
-for you to fetch changes up to 55e20bd12a56e06c38b953177bb162cbbaa96004:
-
-  Revert "btrfs: switch to iomap_dio_rw() for dio" (2020-06-14 01:19:02 +0200)
-
-----------------------------------------------------------------
-David Sterba (4):
-      Revert "btrfs: split btrfs_direct_IO to read and write part"
-      Revert "btrfs: remove BTRFS_INODE_READDIO_NEED_LOCK"
-      Revert "fs: remove dio_end_io()"
-      Revert "btrfs: switch to iomap_dio_rw() for dio"
-
- fs/btrfs/Kconfig       |   1 -
- fs/btrfs/btrfs_inode.h |  18 +++
- fs/btrfs/ctree.h       |   4 -
- fs/btrfs/file.c        |  97 +------------
- fs/btrfs/inode.c       | 379 +++++++++++++++++++++++++++++++------------------
- fs/direct-io.c         |  19 +++
- include/linux/fs.h     |   2 +
- 7 files changed, 286 insertions(+), 234 deletions(-)
+Thanks!
