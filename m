@@ -2,56 +2,75 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B0481F88EC
-	for <lists+linux-btrfs@lfdr.de>; Sun, 14 Jun 2020 15:22:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6274C1F8915
+	for <lists+linux-btrfs@lfdr.de>; Sun, 14 Jun 2020 15:57:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727125AbgFNNWi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 14 Jun 2020 09:22:38 -0400
-Received: from mailrelay2-3.pub.mailoutpod1-cph3.one.com ([46.30.212.11]:57393
-        "EHLO mailrelay2-3.pub.mailoutpod1-cph3.one.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726925AbgFNNWh (ORCPT
+        id S1727025AbgFNN5Y (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 14 Jun 2020 09:57:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38270 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726856AbgFNN5X (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 14 Jun 2020 09:22:37 -0400
+        Sun, 14 Jun 2020 09:57:23 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AB13C05BD43
+        for <linux-btrfs@vger.kernel.org>; Sun, 14 Jun 2020 06:57:23 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id x1so14618257ejd.8
+        for <linux-btrfs@vger.kernel.org>; Sun, 14 Jun 2020 06:57:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=lechevalier.se; s=20191106;
-        h=content-transfer-encoding:content-type:mime-version:date:message-id:subject:
-         from:to:from;
-        bh=Y+U91OF3KQBXKXaqml13BFJilQ4+1dU03WIu2evPdak=;
-        b=WcAZ7sVPyR0R54eKdm7Y2gnRjWcFks/wsy/dUK+gxYbzv211YEeAJ4OGaQnBhOS+mrghNrE9Fl59j
-         ioPvDaUB9GylwJPpxoblLHiKEdJKbX9gVEEIWubHuhouBzI3maNGfC347aNDkJCT1eIu/zaUEBGg/k
-         5LykAmnFMxWDOtUpkwNDWLVn8nXr5/uaZ3XinWcU0FLozM6QnvdnE+rHi6PbiFajQLxv4pf5UsOWGf
-         7ieiWFpDcNeNnPMRJLIb1wjjFzRczkJtGDS5enyKs5XYuGnMEpvf6JPpWg3ClnKS4Py3XMr9AYqI3y
-         j28AXXisDQQJwA9K5YTFnJjQig7+Hag==
-X-HalOne-Cookie: d8bc95d91d426bd2c8d2ef17fb4ea087a4caccfa
-X-HalOne-ID: 1c0fe08f-ae42-11ea-8885-d0431ea8a290
-Received: from [192.168.0.10] (h-131-138.a357.priv.bahnhof.se [81.170.131.138])
-        by mailrelay2.pub.mailoutpod1-cph3.one.com (Halon) with ESMTPSA
-        id 1c0fe08f-ae42-11ea-8885-d0431ea8a290;
-        Sun, 14 Jun 2020 13:22:35 +0000 (UTC)
-To:     linux-btrfs Mailinglist <linux-btrfs@vger.kernel.org>
-From:   A L <mail@lechevalier.se>
-Subject: Should "btrfs filesystem defrag -r" follow symlinks?
-Message-ID: <852f6e36-6adc-0455-5c2b-0477b0c72270@lechevalier.se>
-Date:   Sun, 14 Jun 2020 15:22:34 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=XXiibj26cwiCy87WU+u2jxQnAx+tvjXXNcEInMJCZoA=;
+        b=LpEhNc0xST1UJQH6bY6x3RPAf2zNdI51hg/n7bknozfzbn890e1OuisMJ6qsTz6A6U
+         UgmTrKwKK1VpwM0IDkDBJi9NqIMrXyseMwJ+XfELfbBmzdbD48Zu8D6Ci2u2diDOPJ4J
+         RE+vb8u02m2MKzrW8xvFdCHwns+zo0pxf/Tyy7B7v0jh8Rfv+sY4+XmUW+XRhQ+nfV+v
+         1PSbaow93eDvgRoqNIlIYjsbAChoMRt57BvsaoUx3csEP7s1drv1NBnZWwznpVYjO4cC
+         /D40N5KGr812+82zlefZmAfdf/O2DvPK9S9SXpCdPrv5Y3o6E4p0+Ii0AQQwr04LxLfx
+         9M1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=XXiibj26cwiCy87WU+u2jxQnAx+tvjXXNcEInMJCZoA=;
+        b=ehWsjhnr0feSyQR9yYreFleMEfrwfM0gpPkujwQeLRZplWWJzTm6DovxQtFa639nDf
+         srlS+3Mtdtk/lrPEsvNLAcsbmH7tPxq/Z7QL/I8tkHaqWnrF6BuFGECdXLzC/eVz5noq
+         w1f14snbPdP+/i4kZU4HAnUGpM0y2T5fY1C04fjCRS6n8dtUxNmTsP6xpYW/W/tQd/Qa
+         kPgA2vOF3rs8G30LxpMZfNXksyZ5YELbr4cwzGD82mGCtcXFoKou8r4EPUJGaS3ZRrxs
+         qOSkmes5pQ5hYv5MVYnaXRBh6cctZqHuo0d9QsqcAExzSrecBuZbM+0Pi7Jc07rZTqea
+         LObg==
+X-Gm-Message-State: AOAM530NNXj5IHob2C7GTvTp+LeuYfsxYjkhdQay6QnCmFup/+EErG+d
+        fUSsP6Fpi7lTgMv0UXmwBst44DkdzOS8HbGXhQ==
+X-Google-Smtp-Source: ABdhPJzBObPGT8/rCuF4BWqB7p6PAqLlxqtIMMDTGO5JSG/jKUen/sdo7FJmJjEFEhpoGtU4ZTpZYaO2GBgH9lPErQw=
+X-Received: by 2002:a17:906:4056:: with SMTP id y22mr20996582ejj.304.1592143041281;
+ Sun, 14 Jun 2020 06:57:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-GB
+Received: by 2002:a17:906:bce5:0:0:0:0 with HTTP; Sun, 14 Jun 2020 06:57:20
+ -0700 (PDT)
+Reply-To: idrisomar259@gmail.com
+From:   idris omar <mrs.rima.marwan@gmail.com>
+Date:   Sun, 14 Jun 2020 06:57:20 -0700
+Message-ID: <CAJb=y3ogX26cb4adhjbxkzpC4mz0pLtLp1O4mJuh-5yWOcTzRA@mail.gmail.com>
+Subject: hello
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-It is not clear from the man page at 
-https://btrfs.wiki.kernel.org/index.php/Manpage/btrfs-filesystem if 
-`btrfs filesystem defrag -r` should follow symbolic links or not. 
-Perhaps the man-page should mention which behaviour is default.
+-- 
+Sir / Madam,
 
-I did some basic tests and it seems that on my setup it does not follow 
-symlinks.
-Perhaps improve defragment with an option to follow symlinks and/or 
-subvolumes should be added?
+Hi Friend I am the accountant and auditing manager of the
+International Finance Bank Plc bf I want to transfer an abandoned sum
+of 10.5 millions USD  to your account.50% will be for you. No risk
+involved.
 
-Thanks!
+Contact me for more details.
+
+Kindly reply me back to my alternative email address (
+idrisomar259@gmail.com  )
+
+Thanks,
+
+Mr Idris Omar
