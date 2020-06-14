@@ -2,95 +2,203 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6286B1F871E
-	for <lists+linux-btrfs@lfdr.de>; Sun, 14 Jun 2020 07:06:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E98171F8720
+	for <lists+linux-btrfs@lfdr.de>; Sun, 14 Jun 2020 07:16:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725385AbgFNFGH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 14 Jun 2020 01:06:07 -0400
-Received: from sonic307-3.consmr.mail.bf2.yahoo.com ([74.6.134.42]:33309 "EHLO
-        sonic307-3.consmr.mail.bf2.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725267AbgFNFGH (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 14 Jun 2020 01:06:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1592111165; bh=Sq0m1vvm2SZTihycyLIp46MmEaT+M4u+5ZuM67ujUHw=; h=Date:From:Reply-To:Subject:References:From:Subject; b=tqOuEA2ZFkyiO5sAPpFSACFYInwAo8ss+8AVdTzJlw8kkA+GP+776EgmTLapp7cXxtRdP1sgcHSfjF5Mwegg+qqC/IPz3e/iVgIoQC7QE8LgBVSi7xc4Y3CGjfkxWzdJKpRlrTVfjeh4EPIU9G+WDfzNvcYAaGJSDCgfCwl/L1lSrkjVz+7y2EeZ6NjA56Cx/bqPkmBh9OkPh1iQpczP+IcJbaoGLsnzwDr8OFSa+EWudIHUtJeR0qa/Di21EVj/ty7/i5UEW8JL5P53xn6rV70+Dcleyj9RVfu3Z/ws3To6d1FDfcJtOLAnDDlmzzyiUN0C+wE4jR1PjNjOSdBOSg==
-X-YMail-OSG: 0WG6dAAVM1lFxwwmLZ6maYeZof9IjfM6dBMxOfxJ1rlFx6Ux0mIqpVvpF1Gcp4R
- wH9E7pIRBS3MKJVOUaTp9eMRB7yuL5_w09sXVHUx5DviYUOUXoqfYTKavnCKBDwpw3bx_zYGbVBx
- Ye8Ik5n_C8wKQrl_oMa1I72cFdeK0VcW4Zv2kWAjOMr1UMxzZQESOrLXcR9lnO.BuLZUp9SOGiV_
- IwdcAr.RnFwaW4hW.PBn9q73kwDMXylIKOUHItcfv9wCXwB9pMY0J7y7VtDAP0g6Rlc_KmIZp_IW
- kz.NAGCgWuYZy7FkMdyKSIe8iD_Cx7lio3F773CZemiMdJR15QkoWKm17QYX_v06r18BP9Ji9P.E
- ans7U4TOzsorT9ZzCK1lsOq6Ja9YuQiXePjn.VieIHt7.zTPAfwKzEY0sErdbm4lyEF8DgDF6vvQ
- LrdeYw9JD_GIe_eMZfG4_fsdVlZ9o9KQOp3.S_38rPjvT.ixD8ekIEhV8yH8tLRrO44TKMFtSi5w
- b.ny0PZ_RtXmwIgkcEMDf0Oe4tT29PGA.gOlRE6xBPCK.Ii78GWhCKkFlvNGh5QjmTVdm4k_Awqw
- zDmqxvgmEhK296cDM_u2zV7ZhTlL3O2FyncpLX1EpiHUljRkhe.IzF_DmXJRfXQ6ogW5Dt9z5B.P
- xP_Lfs8GJrkCEcgG3ZuM9URD.Nf99Zmu9Y2GrDH1mn2r447tpQHeSAACj.hpohe2QJEylN4dwPGQ
- NxFeUdFP1Zhp.R.CXUJcORsgvAI.evuS8czyHeWgARwbl183esS6XyGSSw69QLCSf31uS1TFFCBF
- LPDRs5cbKJgnERa7bqUmNDP5OZVIaMg18.n1XsE6Iqgq8X2Btt.9mF.STdpZXbllJL7Q3i_aUAgu
- W3O2qiZZjgAp86x9wkxXcbiYRqrG1l2IzGA3WwN48NquaozJBwAar0abeJt0YTQUIltI2Xws_4ob
- YSomhSfh2Dg8.l5joAlBPu1N9WYSG083u6wISzadOdb_7LNGY1VYqRBaDAqTaRGJGFKKZ5M6yMua
- FYfxrxb3TI4wXhRQqx7V5X_qNYJ0RDON28DuKu1tpuVYuTXxJIVB8RllRzm8dTmwRzZzaRtNGjKu
- XhZXKqFuXatcSgIo6Gtn6vGEFGl59OjhSi82m3dyOWZ2fXvpbrJr5iIkYlVYpjc.JkRHnB2swywU
- 0qgDV.DyupAEyDpz3Nkrjhr7WKCIDjlL.Y6dXKuTyyIf.MfJh1PQ8Gx3vfIemBgUaSJ6sFSDWNpq
- MioTGHrHEiTwBX11Bvir4nbTSRnPZeQETHbWHV_Z6hxXdDfaco7Rn8c3WW5Q.FW1Pe7GBrA--
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic307.consmr.mail.bf2.yahoo.com with HTTP; Sun, 14 Jun 2020 05:06:05 +0000
-Date:   Sun, 14 Jun 2020 05:06:03 +0000 (UTC)
-From:   "Mrs. Mina A. Brunel" <annahbruun6@gmail.com>
-Reply-To: mrsminaabrunel63@gmail.com
-Message-ID: <1277630289.354182.1592111163514@mail.yahoo.com>
-Subject: My Dear in the lord
+        id S1725773AbgFNFOZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 14 Jun 2020 01:14:25 -0400
+Received: from mout.gmx.net ([212.227.15.19]:59261 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725265AbgFNFOZ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Sun, 14 Jun 2020 01:14:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1592111660;
+        bh=3/ZS2auAkiplEnkiLQL28Ptvl5+4tlILg6YqbxMWw2Q=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=hBEiA4kPvGnmRUi0IqwAsBvx31CB2KbJamzH+vWtmkVU2yIbx7ZkTDWPCsleq+Sg8
+         GYpLFbxqBZl05gFEkZUkgr7uigTkGGO5tN23COLmzYYLc2h8hWrP2G+2o1WNGgiRzw
+         3rMaloB6oXq552oIsH9hz/ss04H9Soo+lVO66CVI=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MoO6M-1j8l9v1jw0-00onhw; Sun, 14
+ Jun 2020 07:14:20 +0200
+Subject: Re: [PATCH] generic/471: adapt test when running on btrfs to avoid
+ failure on RWF_NOWAIT write
+To:     fdmanana@kernel.org, fstests@vger.kernel.org
+Cc:     linux-btrfs@vger.kernel.org
+References: <20200612140604.2790275-1-fdmanana@kernel.org>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
+ mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
+ PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
+ 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
+ D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
+ efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
+ ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
+ BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
+ 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
+ 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
+ EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
+ 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
+ ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
+ oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
+ fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
+ 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
+ ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
+ oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
+Message-ID: <89ce0d58-5c7b-2cb9-ba8b-d4320340c234@gmx.com>
+Date:   Sun, 14 Jun 2020 13:14:15 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-References: <1277630289.354182.1592111163514.ref@mail.yahoo.com>
-X-Mailer: WebService/1.1.16119 YMailNodin Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36
-To:     unlisted-recipients:; (no To-header on input)
+In-Reply-To: <20200612140604.2790275-1-fdmanana@kernel.org>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="CCt0xB5v7qxSVLqzIdVcUOL65qXf68EmK"
+X-Provags-ID: V03:K1:dEVX5yYud1tMCKPntAaMsTarZQp3pzgQbuTU+n1ybhR4W55miTe
+ xfINCBrgbo2Ylp5f8vk6geSmLhQDzk/icbkOOQJxarzO67et5YZOFq6hl8czFKVYJgm7RCl
+ QPca+hEZtsPYAu/2oUY+aLjLqs4MXXKd9/3Tq4Sg/IiIjP/M3f+4XbiZwpMMfc1hIL86N2g
+ 6x5t0qrfCtseHgR9nQyig==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:blquaHcfZZ8=:xTaOeI20+auTlaeVXfUmIm
+ sGeHF5/C8ilzSEqKpg5bx6PN65X2pXAQPysw76xJwDFWi2CVMiH1fkQSc83NO7y8Y+a6sW6FJ
+ 7fkEuXJb40MYyl5LTwaK1IF38juy9TdRLfjVYoBM9YchXUH+OMaAwz9C3NmiDVskmHSy10VKX
+ OCKHecBD/UmGEwWTKMEFgV/rRQSE0p7nyHa0+Y23cEWzfwX7k0Fa0TERKbkiKzl3B5JCDIRJw
+ Ov5MrcZy6DMwVJjNi0Mf/wmSuKRaYbiBIQYcR65R6wws1RWUpXtNgw3UHCtiwQATDlEb+t3LK
+ I5UOU7sjLxXw9JAV7NlFCQoQVuhZRamCS+6nkJWtFkDvQRgadt5IrNDWMRJvgLzMauFwJ3xGS
+ C84Bu5NTz7nScFF+5DFR6rOpQewZ7dypYEE9fu8bTZBFdn5RopjWvOs+Wnuw1RC5LHq0rF8eB
+ wEMSQkFPa3irGsv9w2EIqDPfaWRNVE6voalSbA8x6M0qpEVHQLD/O4nSzERPJxyOlZy3L27Ov
+ 7CAK1nuj4k3GA7SchbWmd+by+jmsRZHdAaGspdvpf4sfL4YpzijV0XJ5Ca3aBnJU2DzSg27cU
+ C/JQBkoEKa9iOEEQcGgC7N3OJDHtZQbh+ZUZ3j4sRWvej9nBy/Y6yN7zkHo1GJi0LeQCmRnsr
+ QhYkxV+abc9EvfQKzRZceATSJeJY+HNN0xK6ciyfkGOL/B91/jh6P2YqpSsXcZ04nxEzC4Efn
+ mwkvSIzkzr881SLmzZuS9L+wEg10gsjPZq/r1R5W39++8S8OioPzxdVjjg2zGzmiPTFDQhnKr
+ h2e7xGS4fJcIrmDbMoiG/t2eVShFe02WcWhuihh06DZxlP8/YWfghsoGA/3aa3AicXbRce2IJ
+ G+4J7pQbAWhY+zHY1meGmKf2gJ3uAZ1zsb1B12RgtlwhPUrNK+26xetAAI8F3YiMTG0OCksfE
+ 5GJCgeIPc0fmIW7xlA53kRrCrevnqVFttdmKCQOmmVFWZxCwHQM4uG4vzwDWIhBcu6NxAnPT6
+ q08wLbpzaskmXAXkg+39UUYaR0bj50mCSeLFNLHwp4a88wB2X2rMPmu4LuiVPzx/pCUiTVgoh
+ uvLYv0IPKhoQktxudJNGL1/pCVXVAJ3Fkc/+mf5E02v+Om53ohuudksmwViMRmBvk6CslgEyw
+ zKjgvkbbyHA2Blfsr2TnGhS7YFJQ4UL8jGFjd1NATjJEaOCHrNR4C0hbvc2vJRh5YIJ9f+y1C
+ Kn/ld6amgGrB5aK6h
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--CCt0xB5v7qxSVLqzIdVcUOL65qXf68EmK
+Content-Type: multipart/mixed; boundary="cDmvKFquN440NFPGakq3ZCis0sFJpv3gi"
+
+--cDmvKFquN440NFPGakq3ZCis0sFJpv3gi
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
 
-My Dear in the lord
+
+On 2020/6/12 =E4=B8=8B=E5=8D=8810:06, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
+>=20
+> This test currently always fails on btrfs:
+>=20
+> generic/471 2s ... - output mismatch (see ...results//generic/471.out.b=
+ad)
+>     --- tests/generic/471.out   2020-06-10 19:29:03.850519863 +0100
+>     +++ /home/fdmanana/git/hub/xfstests/results//generic/471.out.bad   =
+=2E..
+>     @@ -2,12 +2,10 @@
+>      pwrite: Resource temporarily unavailable
+>      wrote 8388608/8388608 bytes at offset 0
+>      XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+>     -RWF_NOWAIT time is within limits.
+>     +pwrite: Resource temporarily unavailable
+>     +(standard_in) 1: syntax error
+>     +RWF_NOWAIT took  seconds
+>=20
+> This is because btrfs is a COW filesystem and an attempt to write into =
+a
+> previously written file range allocating a new extent (or multiple).
+> The only exceptions are when attempting to write to a file range with a=
+
+> preallocated/unwritten extent or when writing to a NOCOW file that has
+> extents allocated in the target range already.
+>=20
+> The test currently expects that writing into a previously written file
+> range succeeds, but that is not true on btrfs since we are not dealing
+> with a NOCOW file. So to make the test pass on btrfs, set the NOCOW bit=
+
+> on the file when the filesystem is btrfs.
+
+Completely agree with the point for btrfs.
+
+>=20
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+> ---
+>  tests/generic/471 | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
+>=20
+> diff --git a/tests/generic/471 b/tests/generic/471
+> index 7513f023..e9856b52 100755
+> --- a/tests/generic/471
+> +++ b/tests/generic/471
+> @@ -37,6 +37,17 @@ fi
+> =20
+>  mkdir $testdir
+> =20
+> +# Btrfs is a COW filesystem, so a RWF_NOWAIT write will always fail wi=
+th -EAGAIN
+> +# when writing to a file range except if it's a NOCOW file and an exte=
+nt for the
+> +# range already exists or if it's a COW file and preallocated/unwritte=
+n extent
+> +# exists in the target range. So to make sure that the last write succ=
+eeds on
+> +# all filesystems, use a NOCOW file on btrfs.
+> +if [ $FSTYP =3D=3D "btrfs" ]; then
+
+Although I'm not sure if really only specific to btrfs.
+XFS has its always_cow sysfs interface to make data write to always do
+COW, just like what btrfs do by default.
+
+Thus I believe this may be needed for all fses, and just ignore the
+error if the fs doesn't support COW.
+
+Thanks,
+Qu
+
+> +	_require_chattr C
+> +	touch $testdir/f1
+> +	$CHATTR_PROG +C $testdir/f1
+> +fi
+> +
+>  # Create a file with pwrite nowait (will fail with EAGAIN)
+>  $XFS_IO_PROG -f -d -c "pwrite -N -V 1 -b 1M 0 1M" $testdir/f1
+> =20
+>=20
 
 
-My name is Mrs. Mina A. Brunel I am a Norway Citizen who is living in Burki=
-na Faso, I am married to Mr. Brunel Patrice, a politicians who owns a small=
- gold company in Burkina Faso; He died of Leprosy and Radesyge, in year Feb=
-ruary 2010, During his lifetime he deposited the sum of =E2=82=AC 8.5 Milli=
-on Euro) Eight million, Five hundred thousand Euros in a bank in Rome the c=
-apital city of Italy in Southern Europe. The money was from the sale of his=
- company and death benefits payment and entitlements of my deceased husband=
- by his company.
+--cDmvKFquN440NFPGakq3ZCis0sFJpv3gi--
 
-I am sending you this message with heavy tears in my eyes and great sorrow =
-in my heart, and also praying that it will reach you in good health because=
- I am not in good health, I sleep every night without knowing if I may be a=
-live to see the next day. I am suffering from long time cancer and presentl=
-y I am partially suffering from Leprosy, which has become difficult for me =
-to move around. I was married to my late husband for more than 6 years with=
-out having a child and my doctor confided that I have less chance to live, =
-having to know when the cup of death will come, I decided to contact you to=
- claim the fund since I don't have any relation I grew up from an orphanage=
- home.
+--CCt0xB5v7qxSVLqzIdVcUOL65qXf68EmK
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
-I have decided to donate this money for the support of helping Motherless b=
-abies/Less privileged/Widows and churches also to build the house of God be=
-cause I am dying and diagnosed with cancer for about 3 years ago. I have de=
-cided to donate from what I have inherited from my late husband to you for =
-the good work of Almighty God; I will be going in for an operation surgery =
-soon.
+-----BEGIN PGP SIGNATURE-----
 
-Now I want you to stand as my next of kin to claim the funds for charity pu=
-rposes. Because of this money remains unclaimed after my death, the bank ex=
-ecutives or the government will take the money as unclaimed fund and maybe =
-use it for selfishness and worthless ventures, I need a very honest person =
-who can claim this money and use it for Charity works, for orphanages, wido=
-ws and also build schools and churches for less privilege that will be name=
-d after my late husband and my name.
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl7lsicACgkQwj2R86El
+/qiyCwgApS00iFHUb0CTdBRjbpM9bIXEo9CydjZHJjJt48FA58XQoBkPYpWKDRmB
+2dNFDOXJPTwrlWkefUnSmm48Sl5E7zg9Z5zPPZ00i6qOoWeh7B/3gWjkbOKKZpLa
+Du4Jz4nrpCPCCpbiEsBOJTExeHCORYis3FnJvCZQ3f9olJX4WNhpVwyPIfNkHtCY
+scc67bxG/ClDftJsCSFFTadle6jQShr7Ue/uD+gyfM+/ImdaxRkJiHXL/jDdZGKw
+RaZVP/IAgAVIKSIhFIJJ1JgbFA3XD6yCKDK/uOTrwUaOLZBa77wzndNUq1h9PM7c
+Ypwb9pUJgR/lOrEIYjp494Ou/Ntgmw==
+=31WX
+-----END PGP SIGNATURE-----
 
-I need your urgent answer to know if you will be able to execute this proje=
-ct, and I will give you more information on how the fund will be transferre=
-d to your bank account or online banking.
-
-Thanks
-Mrs. Mina A. Brunel
+--CCt0xB5v7qxSVLqzIdVcUOL65qXf68EmK--
