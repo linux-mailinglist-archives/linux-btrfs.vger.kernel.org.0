@@ -2,203 +2,259 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E98171F8720
-	for <lists+linux-btrfs@lfdr.de>; Sun, 14 Jun 2020 07:16:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C9461F8886
+	for <lists+linux-btrfs@lfdr.de>; Sun, 14 Jun 2020 13:07:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725773AbgFNFOZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 14 Jun 2020 01:14:25 -0400
-Received: from mout.gmx.net ([212.227.15.19]:59261 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725265AbgFNFOZ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 14 Jun 2020 01:14:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1592111660;
-        bh=3/ZS2auAkiplEnkiLQL28Ptvl5+4tlILg6YqbxMWw2Q=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=hBEiA4kPvGnmRUi0IqwAsBvx31CB2KbJamzH+vWtmkVU2yIbx7ZkTDWPCsleq+Sg8
-         GYpLFbxqBZl05gFEkZUkgr7uigTkGGO5tN23COLmzYYLc2h8hWrP2G+2o1WNGgiRzw
-         3rMaloB6oXq552oIsH9hz/ss04H9Soo+lVO66CVI=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MoO6M-1j8l9v1jw0-00onhw; Sun, 14
- Jun 2020 07:14:20 +0200
-Subject: Re: [PATCH] generic/471: adapt test when running on btrfs to avoid
- failure on RWF_NOWAIT write
-To:     fdmanana@kernel.org, fstests@vger.kernel.org
-Cc:     linux-btrfs@vger.kernel.org
-References: <20200612140604.2790275-1-fdmanana@kernel.org>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
- PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
- 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
- D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
- efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
- ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
- BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
- 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
- 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
- EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
- 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
- ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
- oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
- fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
- 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
- ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
- oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <89ce0d58-5c7b-2cb9-ba8b-d4320340c234@gmx.com>
-Date:   Sun, 14 Jun 2020 13:14:15 +0800
+        id S1727036AbgFNLHE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 14 Jun 2020 07:07:04 -0400
+Received: from smtp-34.italiaonline.it ([213.209.10.34]:59720 "EHLO libero.it"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726965AbgFNLGc (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Sun, 14 Jun 2020 07:06:32 -0400
+Received: from venice.bhome ([78.12.136.199])
+        by smtp-34.iol.local with ESMTPA
+        id kQT5jesOetrlwkQT5jwBye; Sun, 14 Jun 2020 13:06:28 +0200
+x-libjamoibt: 1601
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=inwind.it; s=s2014;
+        t=1592132788; bh=/k/FBGXl8gBOpAgQlZbZD/eprw+sAT+SLcsn6/22K2k=;
+        h=From;
+        b=kgLMz5sfEFkqUgxvKWWGx0dNgXnpYrEYSdJTpd2PktS2k1SJPRV9j2lKNcBy2R9Wu
+         Ex6Ek8+gcXgHupQDFRtt9spV7IIueCogSegZw+SF2LcgtaChsNIUQObEbWBV4mcyi0
+         tjaFCEMDhOxj4yLj0XLNYPgcGaXusbzRi1BqV2srCbf2DWHbcYwIt5eOekgd9rmVGd
+         Dr69Bgvl2tDOjFwZ49DZxKmAwkaW7+2AGtdsQmfuMJU50DTHxy3fREwUaqo0IAPIdF
+         w9ciCGGTzMq4YCYwTLL98f7pKGL0waQ0LUz+jTjYNjQKlSdWeij0/SGvPYCIi2VA6U
+         QoK/c5QgSdk4A==
+X-CNFS-Analysis: v=2.3 cv=TOE7tGta c=1 sm=1 tr=0
+ a=kx39m2EDZI1V9vDwKCQCcA==:117 a=kx39m2EDZI1V9vDwKCQCcA==:17
+ a=IkcTkHD0fZMA:10 a=_XWl5NMPOCL_FlYR2_oA:9 a=ldc33jUJ-eSerI9a:21
+ a=dxTL3XpELyMygeVq:21 a=QEXdDO2ut3YA:10
+Reply-To: kreijack@inwind.it
+Subject: Re: [PATCH rfc v3] New ioctl BTRFS_IOC_GET_CHUNK_INFO.
+From:   Goffredo Baroncelli <kreijack@inwind.it>
+To:     dsterba@suse.cz
+References: <20200319203913.3103-1-kreijack@libero.it>
+ <20200319203913.3103-2-kreijack@libero.it>
+ <20200525171430.GX18421@twin.jikos.cz>
+ <f1a34303-3b1a-dcda-8e67-458b3522e863@libero.it>
+ <20200610203023.GL27795@twin.jikos.cz>
+ <d75fcfa5-0320-c6c2-13df-329cfdf45eaf@inwind.it>
+Cc:     linux-btrfs@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>
+Message-ID: <28fc9170-e8f8-7009-eb62-0bf680620f6b@inwind.it>
+Date:   Sun, 14 Jun 2020 13:06:27 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+ Thunderbird/68.8.1
 MIME-Version: 1.0
-In-Reply-To: <20200612140604.2790275-1-fdmanana@kernel.org>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="CCt0xB5v7qxSVLqzIdVcUOL65qXf68EmK"
-X-Provags-ID: V03:K1:dEVX5yYud1tMCKPntAaMsTarZQp3pzgQbuTU+n1ybhR4W55miTe
- xfINCBrgbo2Ylp5f8vk6geSmLhQDzk/icbkOOQJxarzO67et5YZOFq6hl8czFKVYJgm7RCl
- QPca+hEZtsPYAu/2oUY+aLjLqs4MXXKd9/3Tq4Sg/IiIjP/M3f+4XbiZwpMMfc1hIL86N2g
- 6x5t0qrfCtseHgR9nQyig==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:blquaHcfZZ8=:xTaOeI20+auTlaeVXfUmIm
- sGeHF5/C8ilzSEqKpg5bx6PN65X2pXAQPysw76xJwDFWi2CVMiH1fkQSc83NO7y8Y+a6sW6FJ
- 7fkEuXJb40MYyl5LTwaK1IF38juy9TdRLfjVYoBM9YchXUH+OMaAwz9C3NmiDVskmHSy10VKX
- OCKHecBD/UmGEwWTKMEFgV/rRQSE0p7nyHa0+Y23cEWzfwX7k0Fa0TERKbkiKzl3B5JCDIRJw
- Ov5MrcZy6DMwVJjNi0Mf/wmSuKRaYbiBIQYcR65R6wws1RWUpXtNgw3UHCtiwQATDlEb+t3LK
- I5UOU7sjLxXw9JAV7NlFCQoQVuhZRamCS+6nkJWtFkDvQRgadt5IrNDWMRJvgLzMauFwJ3xGS
- C84Bu5NTz7nScFF+5DFR6rOpQewZ7dypYEE9fu8bTZBFdn5RopjWvOs+Wnuw1RC5LHq0rF8eB
- wEMSQkFPa3irGsv9w2EIqDPfaWRNVE6voalSbA8x6M0qpEVHQLD/O4nSzERPJxyOlZy3L27Ov
- 7CAK1nuj4k3GA7SchbWmd+by+jmsRZHdAaGspdvpf4sfL4YpzijV0XJ5Ca3aBnJU2DzSg27cU
- C/JQBkoEKa9iOEEQcGgC7N3OJDHtZQbh+ZUZ3j4sRWvej9nBy/Y6yN7zkHo1GJi0LeQCmRnsr
- QhYkxV+abc9EvfQKzRZceATSJeJY+HNN0xK6ciyfkGOL/B91/jh6P2YqpSsXcZ04nxEzC4Efn
- mwkvSIzkzr881SLmzZuS9L+wEg10gsjPZq/r1R5W39++8S8OioPzxdVjjg2zGzmiPTFDQhnKr
- h2e7xGS4fJcIrmDbMoiG/t2eVShFe02WcWhuihh06DZxlP8/YWfghsoGA/3aa3AicXbRce2IJ
- G+4J7pQbAWhY+zHY1meGmKf2gJ3uAZ1zsb1B12RgtlwhPUrNK+26xetAAI8F3YiMTG0OCksfE
- 5GJCgeIPc0fmIW7xlA53kRrCrevnqVFttdmKCQOmmVFWZxCwHQM4uG4vzwDWIhBcu6NxAnPT6
- q08wLbpzaskmXAXkg+39UUYaR0bj50mCSeLFNLHwp4a88wB2X2rMPmu4LuiVPzx/pCUiTVgoh
- uvLYv0IPKhoQktxudJNGL1/pCVXVAJ3Fkc/+mf5E02v+Om53ohuudksmwViMRmBvk6CslgEyw
- zKjgvkbbyHA2Blfsr2TnGhS7YFJQ4UL8jGFjd1NATjJEaOCHrNR4C0hbvc2vJRh5YIJ9f+y1C
- Kn/ld6amgGrB5aK6h
+In-Reply-To: <d75fcfa5-0320-c6c2-13df-329cfdf45eaf@inwind.it>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-CMAE-Envelope: MS4wfKvNkgSnk/SHOXWAPxiV0vwzixyCG7nSBTYugQD0SdAzaJTr6tLUZMscGhW0y75oy3W6sqhmUAwvG6Da5lSCV94Pa9SLopd3NCczLPIp7bDW50LJImU7
+ A0v22jR7un81gFgN5SMmfc74KKEcJ9xR2uP2R+m4Jhzf+5B7DY2EHBEe04S4qpdqU0BOYB8QlBS0CXcfGd4ev54f0qdWigOZ3CsguZ4i4t/+HunGQxHmraQB
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---CCt0xB5v7qxSVLqzIdVcUOL65qXf68EmK
-Content-Type: multipart/mixed; boundary="cDmvKFquN440NFPGakq3ZCis0sFJpv3gi"
+Hi david,
 
---cDmvKFquN440NFPGakq3ZCis0sFJpv3gi
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+On 6/11/20 1:50 PM, Goffredo Baroncelli wrote:
+> On 6/10/20 10:30 PM, David Sterba wrote:
+>> On Tue, May 26, 2020 at 10:19:35PM +0200, Goffredo Baroncelli wrote:
+>>> On 5/25/20 7:14 PM, David Sterba wrote:
+>>>> I'll start with the data structures
+>>>>
+>>>> On Thu, Mar 19, 2020 at 09:39:13PM +0100, Goffredo Baroncelli wrote:
+>>>>> From: Goffredo Baroncelli <kreijack@inwind.it>
+>>>>> +struct btrfs_chunk_info_stripe {
+>>>>> +    __u64 devid;
+>>>>> +    __u64 offset;
+>>>>> +    __u8 dev_uuid[BTRFS_UUID_SIZE];
+>>>>> +};
+>>>>> +
+>>>>> +struct btrfs_chunk_info {
+>>>>> +    /* logical start of this chunk */
+>>>>> +    __u64 offset;
+>>>>> +    /* size of this chunk in bytes */
+>>>>> +    __u64 length;
+>>>>> +
+>>>>> +    __u64 stripe_len;
+>>>>> +    __u64 type;
+>>>>> +
+>>>>> +    /* 2^16 stripes is quite a lot, a second limit is the size of a single
+>>>>> +     * item in the btree
+>>>>> +     */
+>>>>> +    __u16 num_stripes;
+>>>>> +
+>>>>> +    /* sub stripes only matter for raid10 */
+>>>>> +    __u16 sub_stripes;
+>>>>> +
+>>>>> +    struct btrfs_chunk_info_stripe stripes[1];
+>>>>> +    /* additional stripes go here */
+>>>>> +};
+>>>>
+>>>> This looks like a copy of btrfs_chunk and stripe, only removing items
+>>>> not needed for the chunk information. Rather than copying the
+>>>> unnecessary fileds like dev_uuid in stripe, this should be designed for
+>>>> data exchange with the usecase in mind.
+>>>
+>>> There are two clients for this api:
+>>> - btrfs fi us
+>>> - btrfs dev us
+>>>
+>>> We can get rid of:
+>>>     - "offset" fields (2x)
+>>>     - "uuid" fields
+>>>
+>>> However the "offset" fields can be used to understand where a logical map
+>>> is on the physical disks. I am thinking about a graphical tool to show this
+>>> mapping, which doesn't exits yet -).
+>>> The offset field may be used as key to get further information (like the chunk
+>>> usage, see below)
+>>>
+>>> Regarding the UUID field, I agree it can be removed because it is redundant (there
+>>> is already the devid)
+>>
+>> Offset is ok. I had something like this:
+>>
+>> struct dump_chunks_entry {
+>>         u64 devid;
+>>         u64 start;
+>>         u64 lstart;
+>>         u64 length;
+>>         u64 flags;
+>>         u64 used;
+>> };
+>>
+>> This selects the most interesting data from the CHUNK_ITEM, except the
+>> 'used' member, see below.
+> 
+> 
+> The structure above is a structure "device basis". This means that for (e.g.) raidX chunks the fields:
+> - lstart
+> - length
+> - flags
+> - used
+> are repeated
+> 
+> In fact only devid and start are device specific.
+> I see the following possibilities
+> 
+> 1)
+> 
+> struct dump_chunks_entry {
+>           u64 lstart;
+>           u64 length;
+>           u64 flags;
+>           u64 used;
+>           u64 start;
+>       u64 devid;
+> }
+> 
+> pro: simple api
+> cons: waste of space (60% of data are repeated
+> 
+> 2)
+> 
+> struct dump_chunk_disk_entry {
+>           u64 devid;
+>           u64 start;
+> }
+> 
+> struct dump_chunks_entry {
+>           u64 lstart;
+>           u64 length;
+>           u64 flags;
+>           u64 used;
+>       u16 disks_count;
+>       struct dump_chunk_disk_entry disks[]
+> };
+> 
+> pro: smaller data
+> cons: variable length data
+> 
+> 3)
+> 
+> two different ioctl
+> 
+> BTRFS_IOC_DUMP_BLOCK_GROUP
+> 
+> struct dump_block_group {
+>      u64    lstart
+>      u64    used
+>      u64    length
+>      u64    flags
+> }
+> 
+> BTRFS_IOC_DUMP_CHUNK
+> 
+> struct dump_chunks_entry {
+>           u64 lstart;
+>           u64 start;
+>       u64 devid;
+> }
+> 
+> 
+> Where the filed lstart is the key
+> 
+> pro: smaller data (only lstart is repeated); quite orthogonal api
+> cons: two IOCTLs
+> 
+> Considering that having as optional the "used" field, means to have two ioctl (or one ioctl with a parameter, but this is not so different).
+> More I think, more I like option 3), however I am less happy to loose an information like sub_stripes (will something like RAID50 comes to BTRFS ?). Unfortunately to have this information, we need to duplicate it for each dump_chunks_entry...
+> 
+> GB
+
+After some more thinking, I reached the conclusion that we should have two IOCTLs. The first one, is like the original one (where each item contains near all the information chunk related, with at the end an array of device-id involved+offset). The only exception is the removal of the UUID fields (and eventually the stripe_len/substripe/num_stripe/substripe fields). This could give us a good representation of the chunks layout.
+
+The second one is an IOCTL to get the list of the block_group_item. Basically return a little less information than the previous one, with the notability exception of the "used".
+
+My original idea was to lighting the chunk_info IOCTL and get most information from the block_group IOCTL. However I fear that if an user is interested only to the chunk layout (i.e. to answer to question like which device is used ?), he has to perform 2 ioctl. So after some thinking I returned to my original layout, with a second IOCTL to return the used values (eventually with other fields...)
+
+Have an unique ioctl which could return both the information is quite complex because doing so we should merge two lists with all the exception of the case (what if we have a block_group without a chunk_item ? or the opposite ? ).
+
+What is your opinion ?
+
+BR
+G.Baroncelli
+
+> 
+> 
+> 
+> 
+> 
+>>
+>>>> The format does not need follow the exact layout that kernel uses, ie.
+>>>> chunk info with one embedded stripe and then followed by variable length
+>>>> array of further stripes. This is convenient in one way but not in
+>>>> another one. Alternatively each chunk can be emitted as a single entry,
+>>>> duplicating part of the common fields and adding the stripe-specific
+>>>> ones. This is for consideration.
+>>>>
+>>>> I've looked at my old code doing the chunk dump based on the search
+>>>> ioctl and found that it also allows to read the chunk usage, with one
+>>>> extra search to the block group item where the usage is stored. As this
+>>>> is can be slow, it should be optional. Ie. the main ioctl structure
+>>>> needs flags where this can be requested.
+>>>
+>>> This info could be very useful. I think to something like a balance of
+>>> chunks which are near filled (or near empty). The question is if we
+>>> should have a different ioctl.
+>>
+>> I was not proposing a new ioctl but designing the data exchange format
+>> to optionally provide a way to pass more information, like the usage.
+>> The reference to search ioctl was merely to point out that there's one
+>> more search for BLOCK_GROUP_ITEM where the 'used' is stored. As this is
+>> potentially expensive, it won't be filled by default.
+>>
+>> The structure above does not capture all the chunk data. We could pack
+>> more such structures into one ioctl call. I think that num_stripes is
+>> missing from there as this would make possible the raid56 calculations
+>> but otherwise it should be it.
+>>
+> 
+> 
 
 
-
-On 2020/6/12 =E4=B8=8B=E5=8D=8810:06, fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
->=20
-> This test currently always fails on btrfs:
->=20
-> generic/471 2s ... - output mismatch (see ...results//generic/471.out.b=
-ad)
->     --- tests/generic/471.out   2020-06-10 19:29:03.850519863 +0100
->     +++ /home/fdmanana/git/hub/xfstests/results//generic/471.out.bad   =
-=2E..
->     @@ -2,12 +2,10 @@
->      pwrite: Resource temporarily unavailable
->      wrote 8388608/8388608 bytes at offset 0
->      XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
->     -RWF_NOWAIT time is within limits.
->     +pwrite: Resource temporarily unavailable
->     +(standard_in) 1: syntax error
->     +RWF_NOWAIT took  seconds
->=20
-> This is because btrfs is a COW filesystem and an attempt to write into =
-a
-> previously written file range allocating a new extent (or multiple).
-> The only exceptions are when attempting to write to a file range with a=
-
-> preallocated/unwritten extent or when writing to a NOCOW file that has
-> extents allocated in the target range already.
->=20
-> The test currently expects that writing into a previously written file
-> range succeeds, but that is not true on btrfs since we are not dealing
-> with a NOCOW file. So to make the test pass on btrfs, set the NOCOW bit=
-
-> on the file when the filesystem is btrfs.
-
-Completely agree with the point for btrfs.
-
->=20
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
-> ---
->  tests/generic/471 | 11 +++++++++++
->  1 file changed, 11 insertions(+)
->=20
-> diff --git a/tests/generic/471 b/tests/generic/471
-> index 7513f023..e9856b52 100755
-> --- a/tests/generic/471
-> +++ b/tests/generic/471
-> @@ -37,6 +37,17 @@ fi
-> =20
->  mkdir $testdir
-> =20
-> +# Btrfs is a COW filesystem, so a RWF_NOWAIT write will always fail wi=
-th -EAGAIN
-> +# when writing to a file range except if it's a NOCOW file and an exte=
-nt for the
-> +# range already exists or if it's a COW file and preallocated/unwritte=
-n extent
-> +# exists in the target range. So to make sure that the last write succ=
-eeds on
-> +# all filesystems, use a NOCOW file on btrfs.
-> +if [ $FSTYP =3D=3D "btrfs" ]; then
-
-Although I'm not sure if really only specific to btrfs.
-XFS has its always_cow sysfs interface to make data write to always do
-COW, just like what btrfs do by default.
-
-Thus I believe this may be needed for all fses, and just ignore the
-error if the fs doesn't support COW.
-
-Thanks,
-Qu
-
-> +	_require_chattr C
-> +	touch $testdir/f1
-> +	$CHATTR_PROG +C $testdir/f1
-> +fi
-> +
->  # Create a file with pwrite nowait (will fail with EAGAIN)
->  $XFS_IO_PROG -f -d -c "pwrite -N -V 1 -b 1M 0 1M" $testdir/f1
-> =20
->=20
-
-
---cDmvKFquN440NFPGakq3ZCis0sFJpv3gi--
-
---CCt0xB5v7qxSVLqzIdVcUOL65qXf68EmK
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl7lsicACgkQwj2R86El
-/qiyCwgApS00iFHUb0CTdBRjbpM9bIXEo9CydjZHJjJt48FA58XQoBkPYpWKDRmB
-2dNFDOXJPTwrlWkefUnSmm48Sl5E7zg9Z5zPPZ00i6qOoWeh7B/3gWjkbOKKZpLa
-Du4Jz4nrpCPCCpbiEsBOJTExeHCORYis3FnJvCZQ3f9olJX4WNhpVwyPIfNkHtCY
-scc67bxG/ClDftJsCSFFTadle6jQShr7Ue/uD+gyfM+/ImdaxRkJiHXL/jDdZGKw
-RaZVP/IAgAVIKSIhFIJJ1JgbFA3XD6yCKDK/uOTrwUaOLZBa77wzndNUq1h9PM7c
-Ypwb9pUJgR/lOrEIYjp494Ou/Ntgmw==
-=31WX
------END PGP SIGNATURE-----
-
---CCt0xB5v7qxSVLqzIdVcUOL65qXf68EmK--
+-- 
+gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
+Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
