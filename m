@@ -2,32 +2,32 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12D931F9ED2
+	by mail.lfdr.de (Postfix) with ESMTP id 8C1A11F9ED3
 	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Jun 2020 19:49:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729842AbgFORtR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 15 Jun 2020 13:49:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54726 "EHLO mail.kernel.org"
+        id S1731192AbgFORtn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 15 Jun 2020 13:49:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54780 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728585AbgFORtP (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 15 Jun 2020 13:49:15 -0400
+        id S1728585AbgFORtm (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 15 Jun 2020 13:49:42 -0400
 Received: from debian8.Home (bl8-197-74.dsl.telepac.pt [85.241.197.74])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E4E932080D
-        for <linux-btrfs@vger.kernel.org>; Mon, 15 Jun 2020 17:49:14 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 55E002080D
+        for <linux-btrfs@vger.kernel.org>; Mon, 15 Jun 2020 17:49:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592243355;
-        bh=5zpsZEGYXt9jJp/7PM79QTRTtStHqJU3uDAK7mzvbBU=;
+        s=default; t=1592243381;
+        bh=F8h5FGYGVLB1VK9ztGf5EeZi/jnZO/T9I2q9zTtGAXU=;
         h=From:To:Subject:Date:From;
-        b=TzHEm35dwZ1EdpaG5tTBlFTIUIvH7VijxXMenG94Sq7ARiVARphkHzR5S67BX6keZ
-         4ucXYNUz5IE1xLll4NLHVCc1li6XPCyN2rCSGFFdqoZj9/KpOBm7SLqE+7o5Hu4T7T
-         5NBUJ02rs+i98XpkwAT5yg61OiubgMQkAcM4KtSs=
+        b=JtstoVmA1+c7RM5cfWDD23yTywb5ppsquUfGzjHMAVHuOsG3eSMyr9qA2Js1Rq+jD
+         aftqThQOyftqO9wxP/nSlCSsva4jgvSgupC2voKjrNhDncj/ifezZ7S0Mc7nB5ZYiR
+         hMQ1nvQEApwsYR4UgbsID0GBObfDQ06LUDt468zo=
 From:   fdmanana@kernel.org
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 3/4] Btrfs: fix RWF_NOWAIT write not failling when we need to cow
-Date:   Mon, 15 Jun 2020 18:49:13 +0100
-Message-Id: <20200615174913.14943-1-fdmanana@kernel.org>
+Subject: [PATCH 4/4] Btrfs: fix RWF_NOWAIT writes blocking on extent locks and waiting for IO
+Date:   Mon, 15 Jun 2020 18:49:39 +0100
+Message-Id: <20200615174939.15004-1-fdmanana@kernel.org>
 X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -38,79 +38,122 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-If we attempt to do a RWF_NOWAIT write against a file range for which we
-can only do NOCOW for a part of it, due to the existence of holes or
-shared extents for example, we proceed with the write as if it were
-possible to NOCOW the whole range.
+A RWF_NOWAIT write is not supposed to wait on filesystem locks that can be
+held for a long time or for ongoing IO to complete.
 
-Example:
+However when calling check_can_nocow(), if the inode has prealloc extents
+or has the NOCOW flag set, we can block on extent (file range) locks
+through the call to btrfs_lock_and_flush_ordered_range(). Such lock can
+take a significant amount of time to be available. For example, a fiemap
+task may be running, and iterating through the entire file range checking
+all extents and doing backref walking to determine if they are shared,
+or a readpage operation may be in progress.
 
-  $ mkfs.btrfs -f /dev/sdb
-  $ mount /dev/sdb /mnt
+Also at btrfs_lock_and_flush_ordered_range(), called by check_can_nocow(),
+after locking the file range we wait for any existing ordered extent that
+is in progress to complete. Another operation that can take a significant
+amount of time and defeat the purpose of RWF_NOWAIT.
 
-  $ touch /mnt/sdj/bar
-  $ chattr +C /mnt/sdj/bar
-
-  $ xfs_io -d -c "pwrite -S 0xab -b 256K 0 256K" /mnt/bar
-  wrote 262144/262144 bytes at offset 0
-  256 KiB, 1 ops; 0.0003 sec (694.444 MiB/sec and 2777.7778 ops/sec)
-
-  $ xfs_io -c "fpunch 64K 64K" /mnt/bar
-  $ sync
-
-  $ xfs_io -d -c "pwrite -N -V 1 -b 128K -S 0xfe 0 128K" /mnt/bar
-  wrote 131072/131072 bytes at offset 0
-  128 KiB, 1 ops; 0.0007 sec (160.051 MiB/sec and 1280.4097 ops/sec)
-
-This last write should fail with -EAGAIN since the file range from 64K to
-128Kb is a hole. On xfs it fails, as expected, but on ext4 it currently
-succeeds because apparently it is expensive to check if there are extents
-allocated for the whole range, but I'll check with the ext4 people.
-
-Fix the issue by checking if check_can_nocow() returns a number of
-NOCOW'able bytes smaller then the requested number of bytes, and if it
-does return -EAGAIN.
+So fix this by trying to lock the file range and if it's currently locked
+return -EAGAIN to user space. If we are able to lock the file range without
+waiting and there is an ordered extent in the range, return -EAGAIN as
+well, instead of waiting for it to complete. Finally, don't bother trying
+to lock the snapshot lock of the root when attempting a RWF_NOWAIT write,
+as that is only important for buffered writes.
 
 Fixes: edf064e7c6fec3 ("btrfs: nowait aio support")
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/file.c | 12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+ fs/btrfs/file.c | 37 ++++++++++++++++++++++++++-----------
+ 1 file changed, 26 insertions(+), 11 deletions(-)
 
 diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-index 04faa04fccd1..78481d1e5e6e 100644
+index 78481d1e5e6e..e5da2508f002 100644
 --- a/fs/btrfs/file.c
 +++ b/fs/btrfs/file.c
-@@ -1904,18 +1904,28 @@ static ssize_t btrfs_file_write_iter(struct kiocb *iocb,
- 	pos = iocb->ki_pos;
- 	count = iov_iter_count(from);
- 	if (iocb->ki_flags & IOCB_NOWAIT) {
-+		size_t nocow_bytes = count;
- 		/*
- 		 * We will allocate space in case nodatacow is not set,
- 		 * so bail
+@@ -1533,7 +1533,7 @@ lock_and_cleanup_extent_if_need(struct btrfs_inode *inode, struct page **pages,
+ }
+ 
+ static noinline int check_can_nocow(struct btrfs_inode *inode, loff_t pos,
+-				    size_t *write_bytes)
++				    size_t *write_bytes, bool nowait)
+ {
+ 	struct btrfs_fs_info *fs_info = inode->root->fs_info;
+ 	struct btrfs_root *root = inode->root;
+@@ -1541,27 +1541,43 @@ static noinline int check_can_nocow(struct btrfs_inode *inode, loff_t pos,
+ 	u64 num_bytes;
+ 	int ret;
+ 
+-	if (!btrfs_drew_try_write_lock(&root->snapshot_lock))
++	if (!nowait && !btrfs_drew_try_write_lock(&root->snapshot_lock))
+ 		return -EAGAIN;
+ 
+ 	lockstart = round_down(pos, fs_info->sectorsize);
+ 	lockend = round_up(pos + *write_bytes,
+ 			   fs_info->sectorsize) - 1;
++	num_bytes = lockend - lockstart + 1;
+ 
+-	btrfs_lock_and_flush_ordered_range(inode, lockstart,
+-					   lockend, NULL);
++	if (nowait) {
++		struct btrfs_ordered_extent *ordered;
++
++		if (!try_lock_extent(&inode->io_tree, lockstart, lockend))
++			return -EAGAIN;
++
++		ordered = btrfs_lookup_ordered_range(inode, lockstart,
++						     num_bytes);
++		if (ordered) {
++			btrfs_put_ordered_extent(ordered);
++			ret = -EAGAIN;
++			goto out_unlock;
++		}
++	} else {
++		btrfs_lock_and_flush_ordered_range(inode, lockstart,
++						   lockend, NULL);
++	}
+ 
+-	num_bytes = lockend - lockstart + 1;
+ 	ret = can_nocow_extent(&inode->vfs_inode, lockstart, &num_bytes,
+ 			NULL, NULL, NULL);
+ 	if (ret <= 0) {
+ 		ret = 0;
+-		btrfs_drew_write_unlock(&root->snapshot_lock);
++		if (!nowait)
++			btrfs_drew_write_unlock(&root->snapshot_lock);
+ 	} else {
+ 		*write_bytes = min_t(size_t, *write_bytes ,
+ 				     num_bytes - pos + lockstart);
+ 	}
+-
++out_unlock:
+ 	unlock_extent(&inode->io_tree, lockstart, lockend);
+ 
+ 	return ret;
+@@ -1633,7 +1649,7 @@ static noinline ssize_t btrfs_buffered_write(struct kiocb *iocb,
+ 			if ((BTRFS_I(inode)->flags & (BTRFS_INODE_NODATACOW |
+ 						      BTRFS_INODE_PREALLOC)) &&
+ 			    check_can_nocow(BTRFS_I(inode), pos,
+-					&write_bytes) > 0) {
++					    &write_bytes, false) > 0) {
+ 				/*
+ 				 * For nodata cow case, no need to reserve
+ 				 * data space.
+@@ -1911,12 +1927,11 @@ static ssize_t btrfs_file_write_iter(struct kiocb *iocb,
  		 */
  		if (!(BTRFS_I(inode)->flags & (BTRFS_INODE_NODATACOW |
  					      BTRFS_INODE_PREALLOC)) ||
--		    check_can_nocow(BTRFS_I(inode), pos, &count) <= 0) {
-+		    check_can_nocow(BTRFS_I(inode), pos, &nocow_bytes) <= 0) {
+-		    check_can_nocow(BTRFS_I(inode), pos, &nocow_bytes) <= 0) {
++		    check_can_nocow(BTRFS_I(inode), pos, &nocow_bytes,
++				    true) <= 0) {
  			inode_unlock(inode);
  			return -EAGAIN;
  		}
- 		/* check_can_nocow() locks the snapshot lock on success */
- 		btrfs_drew_write_unlock(&root->snapshot_lock);
-+		/*
-+		 * There are holes in the range or parts of the range that must
-+		 * be COWed (shared extents, RO block groups, etc), so just bail
-+		 * out.
-+		 */
-+		if (nocow_bytes < count) {
-+			inode_unlock(inode);
-+			return -EAGAIN;
-+		}
- 	}
- 
- 	current->backing_dev_info = inode_to_bdi(inode);
+-		/* check_can_nocow() locks the snapshot lock on success */
+-		btrfs_drew_write_unlock(&root->snapshot_lock);
+ 		/*
+ 		 * There are holes in the range or parts of the range that must
+ 		 * be COWed (shared extents, RO block groups, etc), so just bail
 -- 
 2.26.2
 
