@@ -2,32 +2,32 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FD071F93F3
-	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Jun 2020 11:53:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48F1D1F93F7
+	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Jun 2020 11:54:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728899AbgFOJww (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 15 Jun 2020 05:52:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47742 "EHLO mail.kernel.org"
+        id S1728773AbgFOJyh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 15 Jun 2020 05:54:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48706 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728368AbgFOJwv (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 15 Jun 2020 05:52:51 -0400
+        id S1726111AbgFOJyh (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 15 Jun 2020 05:54:37 -0400
 Received: from debian8.Home (bl8-197-74.dsl.telepac.pt [85.241.197.74])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A9A702068E
-        for <linux-btrfs@vger.kernel.org>; Mon, 15 Jun 2020 09:52:50 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0520C2068E
+        for <linux-btrfs@vger.kernel.org>; Mon, 15 Jun 2020 09:54:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592214771;
-        bh=YfpQThCi9rSIuVP96dsApV7xqAHMemWRscXSmvISKss=;
+        s=default; t=1592214876;
+        bh=OaEFtUSxCGPid++aisaZqdyRF/8e4HZl/TED4s0q7H4=;
         h=From:To:Subject:Date:From;
-        b=tMVJLAj/2DhlF2BrxiomaJ1r9ReO4f9kmfaJ0Mqfq9bwEpMTguiy2qdsBGHOaS8Pb
-         5E+JCWthm1CjDqw1q3n3EGbbHkEzRBq8bvHEFzIaEKCJemrQOKbvpicQ+sdn6oJmfm
-         0r6PSZ62szN0pLdAtwtF9wRihdjD4wtwIdPdecmA=
+        b=HMEA/EBuYffBpynzCsYTU++54nAH1LqGL+A/ztAioAFgy1sXtjnMb5UjAOAtkO+q7
+         Z4vLL6XfiFLOn2l7NSqVN275qF2t8JOdL+bCg6Ueajzv62M4bamVUxhEXAxfT5olNc
+         LbrAew5/HZJxaRN5IKMIJOkuj36gjBPmvtwYipv4=
 From:   fdmanana@kernel.org
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 2/2] Btrfs: remove no longer used trans_list member of struct btrfs_ordered_extent
-Date:   Mon, 15 Jun 2020 10:36:58 +0100
-Message-Id: <20200615093658.287160-1-fdmanana@kernel.org>
+Subject: [PATCH] Btrfs: check if a log root exists before locking the log_mutex on unlink
+Date:   Mon, 15 Jun 2020 10:38:44 +0100
+Message-Id: <20200615093844.287269-1-fdmanana@kernel.org>
 X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -38,56 +38,143 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-The 'trans_list' member of an ordered extent was used to keep track of the
-ordered extents for which a transaction commit had to wait. These were
-ordered extents that were started and logged by an fsync. However we don't
-do that anymore and before we stopped doing it we changed the approach to
-wait for the ordered extents in commit 161c3549b45aee ("Btrfs: change how
-we wait for pending ordered extents"), which stopped using that list and
-therefore the 'trans_list' member is not used anymore since that commit.
-So just remove it since it's doing nothing and making each ordered extent
-structure waste memory (2 pointers).
+This brings back an optimization that commit e678934cbe5f02 ("btrfs:
+Remove unnecessary check from join_running_log_trans") removed, but in
+a different form. So it's almost equivalent to a revert.
 
+That commit removed an optimization where we avoid locking a root's
+log_mutex when there is no log tree created in the current transaction.
+The affected code path is triggered through unlink operations.
+
+That commit was based on the assumption that the optimization was not
+necessary because we used to have the following checks when the patch
+was authored:
+
+  int btrfs_del_dir_entries_in_log(...)
+  {
+        (...)
+        if (dir->logged_trans < trans->transid)
+            return 0;
+
+        ret = join_running_log_trans(root);
+        (...)
+   }
+
+   int btrfs_del_inode_ref_in_log(...)
+   {
+        (...)
+        if (inode->logged_trans < trans->transid)
+            return 0;
+
+        ret = join_running_log_trans(root);
+        (...)
+   }
+
+However before that patch was merged, another patch was merged first which
+replaced those checks because they were buggy.
+
+That other patch corresponds to commit 803f0f64d17769 ("Btrfs: fix fsync
+not persisting dentry deletions due to inode evictions"). The assumption
+that if the logged_trans field of an inode had a smaller value then the
+current transaction's generation (transid) meant that the inode was not
+logged in the current transaction was only correct if the inode was not
+evicted and reloaded in the current transaction. So the corresponding bug
+fix changed those checks and replaced them with the following helper
+function:
+
+  static bool inode_logged(struct btrfs_trans_handle *trans,
+                           struct btrfs_inode *inode)
+  {
+        if (inode->logged_trans == trans->transid)
+                return true;
+
+        if (inode->last_trans == trans->transid &&
+            test_bit(BTRFS_INODE_NEEDS_FULL_SYNC, &inode->runtime_flags) &&
+            !test_bit(BTRFS_FS_LOG_RECOVERING, &trans->fs_info->flags))
+                return true;
+
+        return false;
+  }
+
+So if we have a subvolume without a log tree in the current transaction
+(because we had no fsyncs), every time we unlink an inode we can end up
+trying to lock the log_mutex of the root through join_running_log_trans()
+twice, once for the inode being unlinked (by btrfs_del_inode_ref_in_log())
+and once for the parent directory (with btrfs_del_dir_entries_in_log()).
+
+This means if we have several unlink operations happening in parallel for
+inodes in the same subvolume, and the those inodes and/or their parent
+inode were changed in the current transaction, we end up having a lot of
+contention on the log_mutex.
+
+The test robots from intel reported a -30.7% performance regression for
+a REAIM test after commit e678934cbe5f02 ("btrfs: Remove unnecessary check
+from join_running_log_trans").
+
+So just bring back the optimization to join_running_log_trans() where we
+check first if a log root exists before trying to lock the log_mutex. This
+is done by checking for a bit that is set on the root when a log tree is
+created and removed when a log tree is freed (at transaction commit time).
+
+Commit e678934cbe5f02 ("btrfs: Remove unnecessary check from
+join_running_log_trans") was merged in the 5.4 merge window while commit
+803f0f64d17769 ("Btrfs: fix fsync not persisting dentry deletions due to
+inode evictions") was merged in the 5.3 merge window. But the first
+commit was actually authored before the second commit (May 23 2019 vs
+June 19 2019).
+
+Reported-by: kernel test robot <rong.a.chen@intel.com>
+Link: https://lore.kernel.org/lkml/20200611090233.GL12456@shao2-debian/
+Fixes: e678934cbe5f02 ("btrfs: Remove unnecessary check from join_running_log_trans")
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/ordered-data.c | 2 --
- fs/btrfs/ordered-data.h | 3 ---
- 2 files changed, 5 deletions(-)
+ fs/btrfs/ctree.h    | 2 ++
+ fs/btrfs/tree-log.c | 5 +++++
+ 2 files changed, 7 insertions(+)
 
-diff --git a/fs/btrfs/ordered-data.c b/fs/btrfs/ordered-data.c
-index 73d5352c401b..350e5da001f0 100644
---- a/fs/btrfs/ordered-data.c
-+++ b/fs/btrfs/ordered-data.c
-@@ -197,7 +197,6 @@ static int __btrfs_add_ordered_extent(struct inode *inode, u64 file_offset,
- 	INIT_LIST_HEAD(&entry->root_extent_list);
- 	INIT_LIST_HEAD(&entry->work_list);
- 	init_completion(&entry->completion);
--	INIT_LIST_HEAD(&entry->trans_list);
+diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+index 30ce7039bc27..d404cce8ae40 100644
+--- a/fs/btrfs/ctree.h
++++ b/fs/btrfs/ctree.h
+@@ -1009,6 +1009,8 @@ enum {
+ 	BTRFS_ROOT_DEAD_RELOC_TREE,
+ 	/* Mark dead root stored on device whose cleanup needs to be resumed */
+ 	BTRFS_ROOT_DEAD_TREE,
++	/* The root has a log tree. Used only for subvolume roots. */
++	BTRFS_ROOT_HAS_LOG_TREE,
+ };
  
- 	trace_btrfs_ordered_extent_add(inode, entry);
+ /*
+diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
+index 920cee312f4e..cd5348f352dd 100644
+--- a/fs/btrfs/tree-log.c
++++ b/fs/btrfs/tree-log.c
+@@ -169,6 +169,7 @@ static int start_log_trans(struct btrfs_trans_handle *trans,
+ 		if (ret)
+ 			goto out;
  
-@@ -428,7 +427,6 @@ void btrfs_put_ordered_extent(struct btrfs_ordered_extent *entry)
- 	trace_btrfs_ordered_extent_put(entry->inode, entry);
++		set_bit(BTRFS_ROOT_HAS_LOG_TREE, &root->state);
+ 		clear_bit(BTRFS_ROOT_MULTI_LOG_TASKS, &root->state);
+ 		root->log_start_pid = current->pid;
+ 	}
+@@ -195,6 +196,9 @@ static int join_running_log_trans(struct btrfs_root *root)
+ {
+ 	int ret = -ENOENT;
  
- 	if (refcount_dec_and_test(&entry->refs)) {
--		ASSERT(list_empty(&entry->trans_list));
- 		ASSERT(list_empty(&entry->root_extent_list));
- 		ASSERT(RB_EMPTY_NODE(&entry->rb_node));
- 		if (entry->inode)
-diff --git a/fs/btrfs/ordered-data.h b/fs/btrfs/ordered-data.h
-index 35e81b80bd5d..8c6b31babcda 100644
---- a/fs/btrfs/ordered-data.h
-+++ b/fs/btrfs/ordered-data.h
-@@ -101,9 +101,6 @@ struct btrfs_ordered_extent {
- 	/* list of checksums for insertion when the extent io is done */
- 	struct list_head list;
- 
--	/* If the transaction needs to wait on this ordered extent */
--	struct list_head trans_list;
--
- 	/* used to wait for the BTRFS_ORDERED_COMPLETE bit */
- 	wait_queue_head_t wait;
- 
++	if (!test_bit(BTRFS_ROOT_HAS_LOG_TREE, &root->state))
++		return ret;
++
+ 	mutex_lock(&root->log_mutex);
+ 	if (root->log_root) {
+ 		ret = 0;
+@@ -3303,6 +3307,7 @@ int btrfs_free_log(struct btrfs_trans_handle *trans, struct btrfs_root *root)
+ 	if (root->log_root) {
+ 		free_log_tree(trans, root->log_root);
+ 		root->log_root = NULL;
++		clear_bit(BTRFS_ROOT_HAS_LOG_TREE, &root->state);
+ 	}
+ 	return 0;
+ }
 -- 
 2.26.2
 
