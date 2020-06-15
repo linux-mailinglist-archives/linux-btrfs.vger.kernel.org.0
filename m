@@ -2,32 +2,33 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C1A11F9ED3
-	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Jun 2020 19:49:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C200B1F9ED8
+	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Jun 2020 19:50:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731192AbgFORtn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 15 Jun 2020 13:49:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54780 "EHLO mail.kernel.org"
+        id S1731208AbgFORuf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 15 Jun 2020 13:50:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55106 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728585AbgFORtm (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 15 Jun 2020 13:49:42 -0400
+        id S1728585AbgFORuf (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 15 Jun 2020 13:50:35 -0400
 Received: from debian8.Home (bl8-197-74.dsl.telepac.pt [85.241.197.74])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 55E002080D
-        for <linux-btrfs@vger.kernel.org>; Mon, 15 Jun 2020 17:49:41 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DD2CF20679;
+        Mon, 15 Jun 2020 17:50:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592243381;
-        bh=F8h5FGYGVLB1VK9ztGf5EeZi/jnZO/T9I2q9zTtGAXU=;
-        h=From:To:Subject:Date:From;
-        b=JtstoVmA1+c7RM5cfWDD23yTywb5ppsquUfGzjHMAVHuOsG3eSMyr9qA2Js1Rq+jD
-         aftqThQOyftqO9wxP/nSlCSsva4jgvSgupC2voKjrNhDncj/ifezZ7S0Mc7nB5ZYiR
-         hMQ1nvQEApwsYR4UgbsID0GBObfDQ06LUDt468zo=
+        s=default; t=1592243434;
+        bh=oF9T3WX20U4gIU/vCnvsQ6/wJMcZdnBsn8YMMAZrm34=;
+        h=From:To:Cc:Subject:Date:From;
+        b=PC5hwJTh1jgI/pbSnapPDB3+vLh34S+J0lSKPDdW4e3qXMkLT/eo+lOlxZycnJQe6
+         EYdDQlRHrt65+ZwUznEdIK3ou0GLnAyBzZp1VqLttfeBNZgFK2Ib3otamNX+vJj5ER
+         aL8Nv9PDbDNr2sbHclQCGO0Ix/Z7L+D0v2UC1/rM=
 From:   fdmanana@kernel.org
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 4/4] Btrfs: fix RWF_NOWAIT writes blocking on extent locks and waiting for IO
-Date:   Mon, 15 Jun 2020 18:49:39 +0100
-Message-Id: <20200615174939.15004-1-fdmanana@kernel.org>
+To:     fstests@vger.kernel.org
+Cc:     linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
+Subject: [PATCH] btrfs: test creating a snapshot after RWF_NOWAIT write works as expected
+Date:   Mon, 15 Jun 2020 18:50:28 +0100
+Message-Id: <20200615175028.15090-1-fdmanana@kernel.org>
 X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -38,122 +39,125 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-A RWF_NOWAIT write is not supposed to wait on filesystem locks that can be
-held for a long time or for ongoing IO to complete.
+Test that creating a snapshot after writing to a file using a RWF_NOWAIT
+works, does not hang the snapshot creation task, and we are able to read
+the data after.
 
-However when calling check_can_nocow(), if the inode has prealloc extents
-or has the NOCOW flag set, we can block on extent (file range) locks
-through the call to btrfs_lock_and_flush_ordered_range(). Such lock can
-take a significant amount of time to be available. For example, a fiemap
-task may be running, and iterating through the entire file range checking
-all extents and doing backref walking to determine if they are shared,
-or a readpage operation may be in progress.
+Currently btrfs hangs when creating the snapshot due to a missing unlock
+of a snapshot lock, but it is fixed by a patch with the following subject:
 
-Also at btrfs_lock_and_flush_ordered_range(), called by check_can_nocow(),
-after locking the file range we wait for any existing ordered extent that
-is in progress to complete. Another operation that can take a significant
-amount of time and defeat the purpose of RWF_NOWAIT.
+  "btrfs: fix hang on snapshot creation after RWF_NOWAIT write"
 
-So fix this by trying to lock the file range and if it's currently locked
-return -EAGAIN to user space. If we are able to lock the file range without
-waiting and there is an ordered extent in the range, return -EAGAIN as
-well, instead of waiting for it to complete. Finally, don't bother trying
-to lock the snapshot lock of the root when attempting a RWF_NOWAIT write,
-as that is only important for buffered writes.
-
-Fixes: edf064e7c6fec3 ("btrfs: nowait aio support")
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/file.c | 37 ++++++++++++++++++++++++++-----------
- 1 file changed, 26 insertions(+), 11 deletions(-)
+ tests/btrfs/214     | 66 +++++++++++++++++++++++++++++++++++++++++++++
+ tests/btrfs/214.out | 14 ++++++++++
+ tests/btrfs/group   |  1 +
+ 3 files changed, 81 insertions(+)
+ create mode 100755 tests/btrfs/214
+ create mode 100644 tests/btrfs/214.out
 
-diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-index 78481d1e5e6e..e5da2508f002 100644
---- a/fs/btrfs/file.c
-+++ b/fs/btrfs/file.c
-@@ -1533,7 +1533,7 @@ lock_and_cleanup_extent_if_need(struct btrfs_inode *inode, struct page **pages,
- }
- 
- static noinline int check_can_nocow(struct btrfs_inode *inode, loff_t pos,
--				    size_t *write_bytes)
-+				    size_t *write_bytes, bool nowait)
- {
- 	struct btrfs_fs_info *fs_info = inode->root->fs_info;
- 	struct btrfs_root *root = inode->root;
-@@ -1541,27 +1541,43 @@ static noinline int check_can_nocow(struct btrfs_inode *inode, loff_t pos,
- 	u64 num_bytes;
- 	int ret;
- 
--	if (!btrfs_drew_try_write_lock(&root->snapshot_lock))
-+	if (!nowait && !btrfs_drew_try_write_lock(&root->snapshot_lock))
- 		return -EAGAIN;
- 
- 	lockstart = round_down(pos, fs_info->sectorsize);
- 	lockend = round_up(pos + *write_bytes,
- 			   fs_info->sectorsize) - 1;
-+	num_bytes = lockend - lockstart + 1;
- 
--	btrfs_lock_and_flush_ordered_range(inode, lockstart,
--					   lockend, NULL);
-+	if (nowait) {
-+		struct btrfs_ordered_extent *ordered;
+diff --git a/tests/btrfs/214 b/tests/btrfs/214
+new file mode 100755
+index 00000000..c835e844
+--- /dev/null
++++ b/tests/btrfs/214
+@@ -0,0 +1,66 @@
++#! /bin/bash
++# SPDX-License-Identifier: GPL-2.0
++# Copyright (C) 2020 SUSE Linux Products GmbH. All Rights Reserved.
++#
++# FSQA Test No. 214
++#
++# Test that creating a snapshot after writing to a file using a RWF_NOWAIT
++# works, does not hang the snapshot creation task, and we are able to read
++# the data after.
++#
++seq=`basename $0`
++seqres=$RESULT_DIR/$seq
++echo "QA output created by $seq"
++tmp=/tmp/$$
++status=1	# failure is the default!
++trap "_cleanup; exit \$status" 0 1 2 3 15
 +
-+		if (!try_lock_extent(&inode->io_tree, lockstart, lockend))
-+			return -EAGAIN;
++_cleanup()
++{
++	cd /
++	rm -f $tmp.*
++}
 +
-+		ordered = btrfs_lookup_ordered_range(inode, lockstart,
-+						     num_bytes);
-+		if (ordered) {
-+			btrfs_put_ordered_extent(ordered);
-+			ret = -EAGAIN;
-+			goto out_unlock;
-+		}
-+	} else {
-+		btrfs_lock_and_flush_ordered_range(inode, lockstart,
-+						   lockend, NULL);
-+	}
- 
--	num_bytes = lockend - lockstart + 1;
- 	ret = can_nocow_extent(&inode->vfs_inode, lockstart, &num_bytes,
- 			NULL, NULL, NULL);
- 	if (ret <= 0) {
- 		ret = 0;
--		btrfs_drew_write_unlock(&root->snapshot_lock);
-+		if (!nowait)
-+			btrfs_drew_write_unlock(&root->snapshot_lock);
- 	} else {
- 		*write_bytes = min_t(size_t, *write_bytes ,
- 				     num_bytes - pos + lockstart);
- 	}
--
-+out_unlock:
- 	unlock_extent(&inode->io_tree, lockstart, lockend);
- 
- 	return ret;
-@@ -1633,7 +1649,7 @@ static noinline ssize_t btrfs_buffered_write(struct kiocb *iocb,
- 			if ((BTRFS_I(inode)->flags & (BTRFS_INODE_NODATACOW |
- 						      BTRFS_INODE_PREALLOC)) &&
- 			    check_can_nocow(BTRFS_I(inode), pos,
--					&write_bytes) > 0) {
-+					    &write_bytes, false) > 0) {
- 				/*
- 				 * For nodata cow case, no need to reserve
- 				 * data space.
-@@ -1911,12 +1927,11 @@ static ssize_t btrfs_file_write_iter(struct kiocb *iocb,
- 		 */
- 		if (!(BTRFS_I(inode)->flags & (BTRFS_INODE_NODATACOW |
- 					      BTRFS_INODE_PREALLOC)) ||
--		    check_can_nocow(BTRFS_I(inode), pos, &nocow_bytes) <= 0) {
-+		    check_can_nocow(BTRFS_I(inode), pos, &nocow_bytes,
-+				    true) <= 0) {
- 			inode_unlock(inode);
- 			return -EAGAIN;
- 		}
--		/* check_can_nocow() locks the snapshot lock on success */
--		btrfs_drew_write_unlock(&root->snapshot_lock);
- 		/*
- 		 * There are holes in the range or parts of the range that must
- 		 * be COWed (shared extents, RO block groups, etc), so just bail
++# get standard environment, filters and checks
++. ./common/rc
++. ./common/filter
++. ./common/attr
++
++# real QA test starts here
++_supported_fs btrfs
++_supported_os Linux
++_require_scratch
++_require_odirect
++_require_xfs_io_command pwrite -N
++_require_chattr C
++
++rm -f $seqres.full
++
++_scratch_mkfs >>$seqres.full 2>&1
++_scratch_mount
++
++# RWF_NOWAIT writes require NOCOW
++touch $SCRATCH_MNT/f
++$CHATTR_PROG +C $SCRATCH_MNT/f
++
++$XFS_IO_PROG -d -c "pwrite -S 0xab 0 64K" $SCRATCH_MNT/f | _filter_xfs_io
++
++# Now do a WEF_WRITE into a range containing a NOCOWable extent.
++$XFS_IO_PROG -d -c "pwrite -N -V 1 -S 0xfe 0 64K" $SCRATCH_MNT/f \
++	| _filter_xfs_io
++
++$BTRFS_UTIL_PROG subvolume snapshot -r $SCRATCH_MNT $SCRATCH_MNT/snap \
++	| _filter_scratch
++
++# Unmount, mount again and verify the file in the subvolume and snapshot has
++# the correct data.
++_scratch_cycle_mount
++
++echo "File data in the subvolume:"
++od -A d -t x1 $SCRATCH_MNT/f
++
++echo "File data in the snapshot:"
++od -A d -t x1 $SCRATCH_MNT/snap/f
++
++status=0
++exit
+diff --git a/tests/btrfs/214.out b/tests/btrfs/214.out
+new file mode 100644
+index 00000000..6cc66972
+--- /dev/null
++++ b/tests/btrfs/214.out
+@@ -0,0 +1,14 @@
++QA output created by 214
++wrote 65536/65536 bytes at offset 0
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
++wrote 65536/65536 bytes at offset 0
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
++Create a readonly snapshot of 'SCRATCH_MNT' in 'SCRATCH_MNT/snap'
++File data in the subvolume:
++0000000 fe fe fe fe fe fe fe fe fe fe fe fe fe fe fe fe
++*
++0065536
++File data in the snapshot:
++0000000 fe fe fe fe fe fe fe fe fe fe fe fe fe fe fe fe
++*
++0065536
+diff --git a/tests/btrfs/group b/tests/btrfs/group
+index 9e48ecc1..a3706e7d 100644
+--- a/tests/btrfs/group
++++ b/tests/btrfs/group
+@@ -216,3 +216,4 @@
+ 211 auto quick log prealloc
+ 212 auto balance dangerous
+ 213 auto balance dangerous
++214 auto quick snapshot
 -- 
 2.26.2
 
