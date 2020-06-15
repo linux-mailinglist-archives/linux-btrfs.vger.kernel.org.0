@@ -2,108 +2,120 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BF561F9924
-	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Jun 2020 15:40:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 912211F9C20
+	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Jun 2020 17:42:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730321AbgFONkk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 15 Jun 2020 09:40:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58634 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730144AbgFONkj (ORCPT
+        id S1730213AbgFOPmu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 15 Jun 2020 11:42:50 -0400
+Received: from remote-3.kharan.ch ([163.172.214.34]:36562 "EHLO
+        remote-3.kharan.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727785AbgFOPmu (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 15 Jun 2020 09:40:39 -0400
-Received: from mail-vk1-xa41.google.com (mail-vk1-xa41.google.com [IPv6:2607:f8b0:4864:20::a41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DA12C061A0E;
-        Mon, 15 Jun 2020 06:40:39 -0700 (PDT)
-Received: by mail-vk1-xa41.google.com with SMTP id q69so3923975vkq.10;
-        Mon, 15 Jun 2020 06:40:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc:content-transfer-encoding;
-        bh=ElaXRnkNmeRMuixjwpXiTNYKpSD0dU9yi1zQJdGOluc=;
-        b=gHc+o9kgsumsCqjFesloEU/ufyWX3VJyGjRWxqDxYYrVadZMzpQraiPKM4R2zuvFiR
-         RheoNEJW7LqiQmhnQlXxlIC2qFIkde7Qq5se95PpPOwJWDj1AgZOBP7uv2ZG5rSTVXA2
-         KMkipN8Th899KgSJGXhQg+0e91S8wU7ku5NxCDhl2Ax9QZ6nbDYEz68b8DFI7Pnnvn6y
-         wax7l16e4qLJ+rYAzCUHPVFmwiIJ7iuQzoFRp46BdWzHvWNcT/DrbtJ0qRIpjHTJ0Lzp
-         LiJ8ZIUOoO6iyavd6kIh8sWBxmMu7kbg2t7Bu9RJvj5earU32OF2/Sz0wZW8uN/kYHA7
-         4xrw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc:content-transfer-encoding;
-        bh=ElaXRnkNmeRMuixjwpXiTNYKpSD0dU9yi1zQJdGOluc=;
-        b=KEQG2MJnYcTh+X9PVMQDHFjU1xd5IqULvPweUJ+CtCF5FL+h/+1jdyA66oFBJF5jpT
-         dgbsyNEqxFJReMPVTMGfN3G7KGNcz8Zvxbm579MRZphhNgwQkdVB080M2XYMN1mxZVRE
-         wfeEa8q5J+Q/7LP4ZoYXrHuUdw3z111nLlb+Yb2yUI2E8FQNGz9fAX8n+RB/PBsHUJiU
-         2IpXEKBOVTpznaYkzl10GpI21kjmwk3h7XHXkuwjGeu29Lz/EzcGH9wwBKhogWYPbqeX
-         +2AFLcpyBB4CaOS0XIr/EKDhO0KmwXe0unYV/WxCPJntdvs6LMvn6jEVAYwYvq2UkhxH
-         6c7A==
-X-Gm-Message-State: AOAM530xz9GWY1nj9Cz77Cfqi2VDsFIeDrosmE/+T/kjaATmlVNG1bbS
-        U7fizvf6YenmeXo2fq6pBhIST2zkrkxzEmPk9EM=
-X-Google-Smtp-Source: ABdhPJzMsRmgLZgO5xdVqsMeaOp9UyayolhyawQghYl9NToy2NJyfX8dqzUamTlqtF5+WFy1lmHCyClZU5ofEEU+LkQ=
-X-Received: by 2002:a1f:de43:: with SMTP id v64mr17099201vkg.13.1592228438394;
- Mon, 15 Jun 2020 06:40:38 -0700 (PDT)
+        Mon, 15 Jun 2020 11:42:50 -0400
+X-Greylist: delayed 306 seconds by postgrey-1.27 at vger.kernel.org; Mon, 15 Jun 2020 11:42:48 EDT
+Received: from remote-3.kharan.ch (localhost [127.0.0.1])
+        by remote-3.kharan.ch (Postfix) with ESMTPA id B36D26291D4
+        for <linux-btrfs@vger.kernel.org>; Mon, 15 Jun 2020 17:35:49 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kharan.ch; s=remote-3;
+        t=1592235349;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=3mMt3LR0XOXpTcmmBMJUlygWs0YxyE1P+viwcUh7cto=;
+        b=pw87IJ1hqt1qdUbfjuv5djyf6WVROpl5jxG2G7tyjiXjK0x/qhH0U6Txfg6WYFqL1cdLhk
+        BzcuwqjxHNGPU/NCXuXcdtFYUqBn8LR821TbusMlgcs/O5ZPRI4C5A7/BCW7H4oW/96MDZ
+        Y1d1bGaCeRjaMpP3iKOFyhQNJqQIRgLClmkp8u4x0aVDtenLnbhMTwjnWKrYeDLMt65pyE
+        yYA7guDmkYT6mL/y2aMEqvri6vKXEp/+KoCKebw99RP2Z69Vpwl+AKLIH04eLwyTy5kc6y
+        Xs2CUsca3TWnHiX3o7o6A4C+pTKdh3viGHTQWj7440RpVM+ycpdF3THAmyUzow==
 MIME-Version: 1.0
-References: <cover.1592135316.git.dsterba@suse.com> <CAHk-=whbO-6zmwfQaX2=cDfsq_sN1PZ6_CAbqLgw3DUptnFrPg@mail.gmail.com>
- <20200615125701.GY27795@twin.jikos.cz> <20200615132632.GA27848@infradead.org>
-In-Reply-To: <20200615132632.GA27848@infradead.org>
-Reply-To: fdmanana@gmail.com
-From:   Filipe Manana <fdmanana@gmail.com>
-Date:   Mon, 15 Jun 2020 14:40:26 +0100
-Message-ID: <CAL3q7H52qbmGdoq4U6ChZrqFBz+ufpfqJoRZBNhWnJVaAeKm=g@mail.gmail.com>
-Subject: Re: [GIT PULL] Btrfs updates for 5.8, part 2
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     dsterba@suse.cz, Linus Torvalds <torvalds@linux-foundation.org>,
-        David Sterba <dsterba@suse.com>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Date:   Mon, 15 Jun 2020 17:35:49 +0200
+From:   Andreas Egli <btrfs@kharan.ch>
+To:     linux-btrfs@vger.kernel.org
+Subject: BTRFS fails to mount: failed to read chunk tree: -22 / failed to read
+ block groups: -5
+User-Agent: Roundcube Webmail/1.4.3
+Message-ID: <96c925837dc675d8f3c53a849f413d64@eglimail.net>
+X-Sender: btrfs@kharan.ch
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Jun 15, 2020 at 2:29 PM Christoph Hellwig <hch@infradead.org> wrote=
-:
->
-> On Mon, Jun 15, 2020 at 02:57:01PM +0200, David Sterba wrote:
-> > On Sun, Jun 14, 2020 at 09:50:17AM -0700, Linus Torvalds wrote:
-> > > On Sun, Jun 14, 2020 at 4:56 AM David Sterba <dsterba@suse.com> wrote=
-:
-> > > >
-> > > > Reverts are not great, but under current circumstances I don't see
-> > > > better options.
-> > >
-> > > Pulled. Are people discussing how to make iomap work for everybody?
-> > > It's a bit sad if we can't have the major filesystems move away from
-> > > the old buffer head interfaces to a common more modern one..
-> >
-> > Yes, it's fixable and we definitely want to move to iomap. The direct t=
-o
-> > buffered fallback would fix one of the problems, but this would also
-> > mean that xfs would start doing that. Such change should be treated mor=
-e
-> > like a feature development than a bugfix, imposed by another filesystem=
-,
-> > and xfs people rightfully complained.
->
-> We can trivially key that off a flag at least for 5.8.  I suspect the
-> fallback actually is the right thing for XFS in the long run for that
-> particular case.
+Hi
 
-We also have another regression (a deadlock) [1] introduced by the patchset=
-.
-I haven't looked into detail to figure out if it can be completely
-solved in btrfs or if it would need a change on iomap.
-Goldwyn was looking into it, but I don't know if he made any progress.
+Tonight my server was unexpectedly reset (probably a power failure) and 
+after rebooting, the BTRFS storage fails to mount. Any tips how to 
+recover the file system?
 
-[1] https://lore.kernel.org/linux-btrfs/CAL3q7H4F9iQJy3tgwZrWOKwenAnnn7oSth=
-QZUMEJ_vWx3WE3WQ@mail.gmail.com/#t
+The initial mount during booting failed with this error:
+[   42.652725] BTRFS info (device dm-10): disk space caching is enabled
+[   42.652727] BTRFS info (device dm-10): has skinny extents
+[   48.391412] BTRFS error (device dm-10): parent transid verify failed 
+on 83880106754048 wanted 1169790 found 1061077
+[   48.404444] BTRFS error (device dm-10): parent transid verify failed 
+on 83880106754048 wanted 1169790 found 1061077
+[   48.406191] BTRFS error (device dm-10): failed to read block groups: 
+-5
+[   48.438823] BTRFS error (device dm-10): open_ctree failed
+[   48.455307] BTRFS info (device dm-10): disk space caching is enabled
+[   48.455310] BTRFS info (device dm-10): has skinny extents
+[   48.605760] BTRFS error (device dm-10): super_total_bytes 
+70011474444288 mismatch with fs_devices total_rw_bytes 140022948888576
+[   48.606835] BTRFS error (device dm-10): failed to read chunk tree: 
+-22
+[   49.024105] BTRFS error (device dm-10): open_ctree failed
 
---=20
-Filipe David Manana,
+Subsequent mount attempts fail with:
+[49958.728511] BTRFS info (device dm-10): disk space caching is enabled
+[49958.728512] BTRFS info (device dm-10): has skinny extents
+[49963.631430] BTRFS error (device dm-10): parent transid verify failed 
+on 83880106754048 wanted 1169790 found 1061077
+[49963.631803] BTRFS error (device dm-10): parent transid verify failed 
+on 83880106754048 wanted 1169790 found 1061077
+[49963.631813] BTRFS error (device dm-10): failed to read block groups: 
+-5
+[49964.033692] BTRFS error (device dm-10): open_ctree failed
 
-=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
- right.=E2=80=9D
+The filesystem spans multiple devices with all data & metadata stored as 
+raid1.
+
+$ sudo btrfs check /dev/mapper/b1d1crypt
+Opening filesystem to check...
+parent transid verify failed on 83880106754048 wanted 1169790 found 
+1061077
+parent transid verify failed on 83880106754048 wanted 1169790 found 
+1061077
+parent transid verify failed on 83880106754048 wanted 1169790 found 
+1061077
+Ignoring transid failure
+leaf parent key incorrect 83880106754048
+ERROR: failed to read block groups: Operation not permitted
+ERROR: cannot open file system
+
+$ sudo btrfs fi show
+Label: 'cluster_storage'  uuid: 060fc2fb-5742-465f-898c-173b9db4b668
+         Total devices 13 FS bytes used 20.75TiB
+         devid    1 size 7.28TiB used 5.64TiB path /dev/mapper/b1d1crypt
+         devid    3 size 2.73TiB used 1.09TiB path /dev/mapper/b1d3crypt
+         devid    4 size 2.73TiB used 1.09TiB path /dev/mapper/b1d4crypt
+         devid    6 size 2.73TiB used 1.09TiB path /dev/mapper/b1d6crypt
+         devid    7 size 7.28TiB used 5.64TiB path /dev/mapper/b2d1crypt
+         devid    9 size 2.73TiB used 1.09TiB path /dev/mapper/b2d3crypt
+         devid   10 size 2.73TiB used 1.09TiB path /dev/mapper/b2d4crypt
+         devid   12 size 2.73TiB used 1.09TiB path /dev/mapper/b2d6crypt
+         devid   13 size 2.73TiB used 1.09TiB path /dev/mapper/b2d2crypt
+         devid   14 size 7.28TiB used 5.64TiB path /dev/mapper/b1d2crypt
+         devid   15 size 7.28TiB used 5.64TiB path /dev/mapper/b2d5crypt
+         devid   16 size 12.73TiB used 11.09TiB path 
+/dev/mapper/b1d7crypt
+         devid   17 size 2.73TiB used 1.49TiB path /dev/mapper/b1d5crypt
+
+$ uname -a
+Linux htpc 5.4.0-37-generic #41-Ubuntu SMP Wed Jun 3 18:57:02 UTC 2020 
+x86_64 x86_64 x86_64 GNU/Linux
+
+$ btrfs --version
+btrfs-progs v5.4.1
