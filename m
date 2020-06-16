@@ -2,66 +2,66 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BA361FBEDF
-	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Jun 2020 21:21:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62AA41FBEE2
+	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Jun 2020 21:23:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730973AbgFPTVj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 16 Jun 2020 15:21:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51614 "EHLO
+        id S1730214AbgFPTXH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 16 Jun 2020 15:23:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730585AbgFPTVi (ORCPT
+        with ESMTP id S1728861AbgFPTXG (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 16 Jun 2020 15:21:38 -0400
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A254C061573
-        for <linux-btrfs@vger.kernel.org>; Tue, 16 Jun 2020 12:21:38 -0700 (PDT)
-Received: by mail-qt1-x844.google.com with SMTP id w90so16441446qtd.8
-        for <linux-btrfs@vger.kernel.org>; Tue, 16 Jun 2020 12:21:38 -0700 (PDT)
+        Tue, 16 Jun 2020 15:23:06 -0400
+Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E485C061573
+        for <linux-btrfs@vger.kernel.org>; Tue, 16 Jun 2020 12:23:06 -0700 (PDT)
+Received: by mail-qv1-xf41.google.com with SMTP id y9so10067086qvs.4
+        for <linux-btrfs@vger.kernel.org>; Tue, 16 Jun 2020 12:23:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=g9D3Z7RJxpilal1nOosk34XAlFwP3N2mqaocQMtpXRc=;
-        b=HeQoMhUQEvNqgT+i/QaXv5yffuHDFYDvPmCzLRZBCWvGG93RHq2FfH6EMgorkYvDYI
-         UA7jILhcz8eAusAV/vUgdWNcFDZww1AOrkgK/pWL09y6Ljqg8WxQoC8cmPMnK/H3IBO4
-         +pWBvo7BjQFIQZ8+W+YnBKfjkt33+gGZnMA62IvgFMhkatLWQJaS26rf/lkjbqPtqtgc
-         b3c3Z89ZGjt0jLSOoCA8WhUhGGfmyAEUrt338vi/iv1IFg7sBMEb8qw3m8PAO6sL7Rsb
-         q0y2TYBb/FiAgEfXX117mDLTIyJii76KdHt41WMWQdPmGJMWXufrPyYjT3UdU1YoZdB0
-         1OqQ==
+        bh=GloZIzdRwMOk/waJkh0ke5BHZ4BwRtOlhVBY9tLGFgE=;
+        b=u64xdh4WqsqPSB6V1tCAwPZydxwdje/40qQURbK/3/bLhQ9Vo5305qhhZS7xRFUeRg
+         tbsFsVTOyT0pDcl1/fNAUaIlaF+tHYuq5HM1GL8XKm66PKOpTo1fhlaZz6HR4gDUSPwK
+         SwlnEBJxyDE2JKn/vr8qtJwlQLCmapxNlamkxcc2vzbtjdAjUqhTMRfc4Zr0UvL9aEZ5
+         9ohzJqtxvrKjWm26smMHrLq/DY1ThNFoREJS0es0itN+R5M5pRkbOCydWvTvYmtu8nSA
+         CU0JsEPoxQC4LFK/xs7t6Xq47PzuUuMIFjb+aMmoNEQ06KNdZZIpekEizSBcGJDOhtLR
+         Pqgg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=g9D3Z7RJxpilal1nOosk34XAlFwP3N2mqaocQMtpXRc=;
-        b=PMQXc9+2R8YxmeNDqBYjHf1d35bBGt0dFCljTZebTXT8xztrzIMyRfSqq1xi/V5DNS
-         c4dNxLplIBxxKtAT5iWENovXkemd1G3TjbUrzEsP15aIOJqC6kL23LwI4W11NhfM0CWR
-         0AHJtxOBpH/JZrSRA0yJNdX7dkmD2ZQa2i8sTOL+SG3N9Px/0fKjikcxcNQWQ1y4LqkX
-         GO+ceFrQ/6Ja+5ocqi/RLjLIJlsaIAZPFe26Eumtvo5/vrHjI137wrx8xcHKsiNgI0Xk
-         3ISz+coVOnYyKpJuEzToW+uZhVJaDjOYcshiruQaAfFkvDJK1z3Zb2pKNt5eCeP8aDqB
-         Ap6A==
-X-Gm-Message-State: AOAM533YZY+rwDrrJNGo4Qt5uQpadMiAfLuJab3EwCOUs1LnOByB+td6
-        dRk0nmLokY7lGq0ORv8mfORE9A==
-X-Google-Smtp-Source: ABdhPJyQbGQwxlUVO8h48OFskPGVZtI/oTS7odvL3v9Ra7qLdUntP4v1VGrkVBuChqXx9GVxzOQ9vw==
-X-Received: by 2002:ac8:6f55:: with SMTP id n21mr22633036qtv.175.1592335297517;
-        Tue, 16 Jun 2020 12:21:37 -0700 (PDT)
+        bh=GloZIzdRwMOk/waJkh0ke5BHZ4BwRtOlhVBY9tLGFgE=;
+        b=qI1Cuh0HzzDRR6AGYeLfwUEQMTtZ9lX1A+U8DRMCK8gkokvPdt1escweG82i+KZsAU
+         0K6UyeMaprltDEK9ZscloR6rgbe+uny212Un6bjgjhTz+yqABLp0ITyo2Npzuo+t7vSq
+         7mNSDZbTWICM3UJU5Ncb7vgPdficwUrpAESqtfxvVhIubWyH9PwODNpyaWNmTtiEY2p2
+         6Dzq60gTntBhedPNFtTfbgawfKQcrUB8H+34Knna1YhSTEgZAp3N9IlzSFcc9HKLqm5Z
+         qc0E1j/ACu9H56y05EdM5Uig7GqWtJzOY1eH/kn8nZU7FBC9XejdEm7SHnUrPDfTjjRA
+         Ov6A==
+X-Gm-Message-State: AOAM531MT2Me/L7YjbeE598ow68SxzPGdfWqtqeoJPv3N4q1NKX+EPUP
+        K687b+uhm6IQGCGPiTcJqG6C2g==
+X-Google-Smtp-Source: ABdhPJz0+8eEAnlirDSePn+CctEFFSRnXqI8l5IeJc25qgW6pVook80rHNLVncmzvJpiDN4JU5vABw==
+X-Received: by 2002:a0c:ecc6:: with SMTP id o6mr3895653qvq.243.1592335385712;
+        Tue, 16 Jun 2020 12:23:05 -0700 (PDT)
 Received: from [192.168.1.45] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id k20sm16254320qtu.16.2020.06.16.12.21.36
+        by smtp.gmail.com with ESMTPSA id d193sm15074564qke.124.2020.06.16.12.23.04
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 16 Jun 2020 12:21:36 -0700 (PDT)
-Subject: Re: [PATCH 1/4] btrfs: disk-io: don't allocate anonymous block device
- for user invisible roots
+        Tue, 16 Jun 2020 12:23:04 -0700 (PDT)
+Subject: Re: [PATCH 4/4] btrfs: free anon_dev earlier to prevent exhausting
+ anonymous block device pool
 To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
 Cc:     Greed Rong <greedrong@gmail.com>
 References: <20200616021737.44617-1-wqu@suse.com>
- <20200616021737.44617-2-wqu@suse.com>
+ <20200616021737.44617-5-wqu@suse.com>
 From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <945eb526-8dbb-e5ce-9933-27ac20f6db91@toxicpanda.com>
-Date:   Tue, 16 Jun 2020 15:21:35 -0400
+Message-ID: <605ee3c8-0afa-5c00-9c66-fa385c20ce99@toxicpanda.com>
+Date:   Tue, 16 Jun 2020 15:23:03 -0400
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
  Gecko/20100101 Thunderbird/68.9.0
 MIME-Version: 1.0
-In-Reply-To: <20200616021737.44617-2-wqu@suse.com>
+In-Reply-To: <20200616021737.44617-5-wqu@suse.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -107,22 +107,14 @@ On 6/15/20 10:17 PM, Qu Wenruo wrote:
 > time to hit such limit.
 > 
 > [WORKAROUND]
-> Since it's not possible to completely solve the problem, we can only
-> workaround it.
+> Here we can free btrfs_root::anon_dev as long as the subvolume is no
+> longer visible to users.
 > 
-> Firstly, we can reduce the user of anon_dev. Data reloc tree is not visible
-> to users, thus it doesn't need anon_dev at all.
+> By freeing it earlier we reclaim the anon_dev quicker, hopefully to
+> reduce the chance of exhausting the pool.
 > 
-> This patch will do extra check on root objectid, to rule out roots who
-> don't need anon_dev.
-> Although currently it's only data reloc tree and orphan roots.
-> 
-> Reported-by: Greed Rong <greedrong@gmail.com>
-> Link: https://lore.kernel.org/linux-btrfs/CA+UqX+NTrZ6boGnWHhSeZmEY5J76CTqmYjO2S+=tHJX7nb9DPw@mail.gmail.com/
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
 
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
-
-Thanks,
+Why isn't this happening as part of the root teardown once all the references to 
+it are gone?  Thanks,
 
 Josef
