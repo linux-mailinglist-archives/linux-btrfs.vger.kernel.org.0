@@ -2,86 +2,74 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C5251FB605
-	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Jun 2020 17:23:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D5281FB63C
+	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Jun 2020 17:34:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729223AbgFPPXZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 16 Jun 2020 11:23:25 -0400
-Received: from mx2.suse.de ([195.135.220.15]:60842 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728899AbgFPPXZ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:23:25 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id BF7C9B1C2;
-        Tue, 16 Jun 2020 15:23:27 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id C847ADA7C3; Tue, 16 Jun 2020 17:23:14 +0200 (CEST)
-Date:   Tue, 16 Jun 2020 17:23:14 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Filipe Manana <fdmanana@kernel.org>
-Cc:     dsterba@suse.cz, linux-btrfs <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH 1/4] Btrfs: fix hang on snapshot creation after
- RWF_NOWAIT write
-Message-ID: <20200616152314.GG27795@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Filipe Manana <fdmanana@kernel.org>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>
-References: <20200615174601.14559-1-fdmanana@kernel.org>
- <20200616143420.GC27795@twin.jikos.cz>
- <CAL3q7H4BWscwaA4PL2wKuejHgifZ6ea4Eq+pt-cZAQenxF9s3w@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAL3q7H4BWscwaA4PL2wKuejHgifZ6ea4Eq+pt-cZAQenxF9s3w@mail.gmail.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+        id S1729801AbgFPPcT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 16 Jun 2020 11:32:19 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:33526 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729311AbgFPPcT (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:32:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1592321538;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=Rapzz6MrSVpeRVwJm6x5SQPvv++uc4wAZZK6zSqqYMI=;
+        b=S7B5R68ajDZ20aVoVRUgoDTuoLwFkMtOTrqA6vHi9oj2W4rD3DRtr0CRcpVNvq7GNF0bTZ
+        DnMp69HN873XGajzhbo5Sg9Lw/L3mGh5fbMJDeWvDnp6aJpkoiZjpDTNw889i+qyG9GoXV
+        Xg3rAAyxBPfvmujCuSJOGno7otcAE1Q=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-387-zn6-aWQrP7aNGDm5Hrovow-1; Tue, 16 Jun 2020 11:32:16 -0400
+X-MC-Unique: zn6-aWQrP7aNGDm5Hrovow-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8682F87342B;
+        Tue, 16 Jun 2020 15:32:15 +0000 (UTC)
+Received: from llong.com (ovpn-114-156.rdu2.redhat.com [10.10.114.156])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id EA06B5D9D3;
+        Tue, 16 Jun 2020 15:32:11 +0000 (UTC)
+From:   Waiman Long <longman@redhat.com>
+To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>
+Cc:     linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        Waiman Long <longman@redhat.com>
+Subject: [PATCH] btrfs: Use kfree() in btrfs_ioctl_get_subvol_info()
+Date:   Tue, 16 Jun 2020 11:31:59 -0400
+Message-Id: <20200616153159.10691-1-longman@redhat.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Jun 16, 2020 at 04:17:19PM +0100, Filipe Manana wrote:
-> On Tue, Jun 16, 2020 at 3:34 PM David Sterba <dsterba@suse.cz> wrote:
-> > On Mon, Jun 15, 2020 at 06:46:01PM +0100, fdmanana@kernel.org wrote:
-> > > From: Filipe Manana <fdmanana@suse.com>
-> > > --- a/fs/btrfs/file.c
-> > > +++ b/fs/btrfs/file.c
-> > > @@ -1914,6 +1914,8 @@ static ssize_t btrfs_file_write_iter(struct kiocb *iocb,
-> > >                       inode_unlock(inode);
-> > >                       return -EAGAIN;
-> > >               }
-> > > +             /* check_can_nocow() locks the snapshot lock on success */
-> > > +             btrfs_drew_write_unlock(&root->snapshot_lock);
-> >
-> > That's quite ugly that the locking semantics of check_can_nocow is
-> > hidden, this should be cleaned up too.
-> >
-> > The whole condition
-> >
-> > 1909                 if (!(BTRFS_I(inode)->flags & (BTRFS_INODE_NODATACOW |
-> > 1910                                               BTRFS_INODE_PREALLOC)) ||
-> > 1911                     check_can_nocow(BTRFS_I(inode), pos, &count) <= 0)
-> >
-> > has 2 parts and it's not obvious from the context when the lock actually is
-> > taken. The flags check could be pushed down to check_can_nocow, the
-> > same but negated condition can be found in btrfs_file_write_iter so this
-> > would make it something like:
-> >
-> >         if (check_can_nocow(inode, pos, &count) <= 0) {
-> >                 /* fallback */
-> >                 return ...;
-> >         }
-> >         /*
-> >          * the lock is taken and needs to be unlocked at the right time
-> >          */
-> >
-> > Suggestions to rename check_can_nocow welcome too.
-> 
-> Sure, I can understand it may look not obvious on first sight at least.
-> 
-> Here I'm only focusing on functional problems and kept this fix as
-> small as possible to backport to stable releases,
-> as this is a bug that directly impacts user experience.
+In btrfs_ioctl_get_subvol_info(), there is a classic case where kzalloc()
+was incorrectly paired with kzfree(). According to David Sterba, there
+isn't any sensitive information in the subvol_info that needs to be
+cleared before freeing. So kzfree() isn't really needed, use kfree()
+instead.
 
-Ok that makes sense of course, I'll add the four patches to misc-next
-and queue them for rc. Thanks.
+Reported-by: David Sterba <dsterba@suse.cz>
+Signed-off-by: Waiman Long <longman@redhat.com>
+---
+ fs/btrfs/ioctl.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+index 168deb8ef68a..e8f7c5f00894 100644
+--- a/fs/btrfs/ioctl.c
++++ b/fs/btrfs/ioctl.c
+@@ -2692,7 +2692,7 @@ static int btrfs_ioctl_get_subvol_info(struct file *file, void __user *argp)
+ 	btrfs_put_root(root);
+ out_free:
+ 	btrfs_free_path(path);
+-	kzfree(subvol_info);
++	kfree(subvol_info);
+ 	return ret;
+ }
+ 
+-- 
+2.18.1
+
