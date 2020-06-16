@@ -2,161 +2,132 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E52001FB26D
-	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Jun 2020 15:45:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17A1D1FB2E6
+	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Jun 2020 15:55:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728809AbgFPNpZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 16 Jun 2020 09:45:25 -0400
-Received: from mout.gmx.net ([212.227.17.20]:43037 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727966AbgFPNpY (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 16 Jun 2020 09:45:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1592315122;
-        bh=djzNhmBNrpgDiPMamc80mfmB5sl84SXfGUvVF8ybwyo=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=dPZAEdEg1ZAUGKkgiO5tsk+XHQn9V3eOreC9huH7eC66YFlxKCMUsbOO++AsTj+fC
-         u4GkzVlKnUwwR4He7DYtIyrTxuG3pNZofL6U2uHyS36w3RJTfynbTJKTufhq19LctQ
-         XqUAdA2jbv+H0uiF9VT7ev0GREKc+SaQi7o6lOEE=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mv2xU-1iuBft17B2-00qzqb; Tue, 16
- Jun 2020 15:45:21 +0200
-Subject: Re: Having troubles to disable inline extents
-To:     "Rebraca Dejan (BSOT/PJ-ES1-Bg)" <Dejan.Rebraca@rs.bosch.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-References: <2e956e490f6a430f9aa82fed3c8be08c@rs.bosch.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
- PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
- 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
- D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
- efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
- ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
- BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
- 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
- 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
- EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
- 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
- ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
- oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
- fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
- 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
- ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
- oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <e77dbead-308f-94f6-cd98-2abd524a863d@gmx.com>
-Date:   Tue, 16 Jun 2020 21:45:17 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        id S1728860AbgFPNzu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 16 Jun 2020 09:55:50 -0400
+Received: from mail-eopbgr690063.outbound.protection.outlook.com ([40.107.69.63]:43334
+        "EHLO NAM04-CO1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729014AbgFPNzf (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 16 Jun 2020 09:55:35 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=WEB9vjDRxCmNHlGqDe1CbtIRHjH2rlhI4yiyIJ52rWqQ4S5rffY/hJqZC1tdDpLPfQEKnG/OZLoY5jXa+b/reEGq1SRlWEWrxlQhs7++dt+67ehci75Lo49M3QZ8HQjml/3y9Awjlw1XLdZAH3A40ylzdxxqlfFkM0WZvtmVeBuObhEBpDryYPQ+cLlVmgYlqDddJN0n9/71Zxhl9X/sHR7t1RvWZ6SBJrbmPQXDQFsdQe1rANPQzlOHoL2IcW833vLblmYc32JZTQi0MSLoQpm8Gj1juOPtovLsi9m+WePbWwZfqmBygWytKrGkO4imEZNI7gJBuemEORgt7AV8yQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=FW4PS/em+CD3vnkbWwIE6Ib1W9g1vU0QSDJoxCXxyI0=;
+ b=Wl+s/lzGNfSPuBaZ4W8WTFjzzvh7TB1YFRttAk+4AhKyNQTd54sCex1JNEB6KM0zbb6giPfMipuYioOCpk0U7hhuXRfDcySl5tEa/+KogAjj7Qi/yzNilNMrN27PTB/5lrGTLn7oVcGqW1TdYphNJDKJULPO84fjHkkWaAR5fYkVg7DG3FrcIxmWlg5lz4QDSQiP21rhxQ1Sm+hUhNBzs6lzGUh8ocKh7tpMuTQDiODaf/sHWAZ/Ppm0nUhZulHtZ5JUxgDpP1N+s/vfUzTPykYs8odl6yPNBgMA7YXKUyrvrp7dIHgvJzXsLMGoFwHbIkWgn0M/TM1VpqvLgrCKJw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=panasas.com; dmarc=pass action=none header.from=panasas.com;
+ dkim=pass header.d=panasas.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=panasas.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=FW4PS/em+CD3vnkbWwIE6Ib1W9g1vU0QSDJoxCXxyI0=;
+ b=J1dXGVyvtqbOR14hPz3DqejQ+zYICJDIaHtDBpJCWmvyPC+Ieqb6j9MLlzxpqjgUIaNKvD8qLPWU6sc2CGrnD+Hw6jS3J89lMIwUR7b+77X2fN/3cQiaAtlI/ISecbsxhqzW35JfnPBJMr27dj5mQ27w8sqtG1Y3+Hy1hCShEUo=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none
+ header.from=panasas.com;
+Received: from BYAPR08MB5109.namprd08.prod.outlook.com (2603:10b6:a03:67::33)
+ by BYAPR08MB3862.namprd08.prod.outlook.com (2603:10b6:a02:86::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3088.25; Tue, 16 Jun
+ 2020 13:55:32 +0000
+Received: from BYAPR08MB5109.namprd08.prod.outlook.com
+ ([fe80::1ea:2027:6d68:1609]) by BYAPR08MB5109.namprd08.prod.outlook.com
+ ([fe80::1ea:2027:6d68:1609%5]) with mapi id 15.20.3109.021; Tue, 16 Jun 2020
+ 13:55:32 +0000
+Subject: Re: BTRFS File Delete Speed Scales With File Size?
+From:   "Ellis H. Wilson III" <ellisw@panasas.com>
+To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+References: <8ab42255-8a67-e40e-29ea-5e79de55d6f5@panasas.com>
+ <db40ba19-8160-05fd-5d25-65dea81b36fa@knorrie.org>
+ <d5379505-7dd1-d5bc-59e7-207aaa82acf6@panasas.com>
+ <b95000b6-5bda-ae0c-6cab-47b4def39f7c@panasas.com>
+ <1a88f0e4-3fd1-b0bc-308e-c12b9f64b46c@panasas.com>
+ <20200616035640.GK10769@hungrycats.org>
+ <d832607a-bfba-4f52-7c4e-05e3decacbf5@panasas.com>
+Message-ID: <159d7ee2-f6eb-ea7d-34e5-76d6e925a1cd@panasas.com>
+Date:   Tue, 16 Jun 2020 09:55:29 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
+In-Reply-To: <d832607a-bfba-4f52-7c4e-05e3decacbf5@panasas.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: MN2PR12CA0008.namprd12.prod.outlook.com
+ (2603:10b6:208:a8::21) To BYAPR08MB5109.namprd08.prod.outlook.com
+ (2603:10b6:a03:67::33)
 MIME-Version: 1.0
-In-Reply-To: <2e956e490f6a430f9aa82fed3c8be08c@rs.bosch.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="HDFLo8BVGrX2qAKbx7PCNtArue4GLaWGj"
-X-Provags-ID: V03:K1:YVMt3lsG0zIHXG+LKJBoTVLVQQpkn8u/WI4uRK7X2XMF/DdUB+D
- dU7Gn8C+Ju22Z9I7jVS1lS7RZCQoTtpryuTq+O1UGTXEUkL5LKWfjoBIt1KuARN+YKFgw8M
- ZH3t4dajqPD05m36OVANBRg0NdZ97Aqdw1UcRQ+gDRUb3tdR8rPYaoQOjJJNeYwXx/n22wW
- flq1o5DVTNTGjwD54JhIQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:yhnhxD2e/iY=:wWmwv8xwvMIEHSpbwhHyyo
- 7uqh2rgmhl0pDocA5JJ3eO+5uf5tKfG/28g/YeYfzOqiZhSD8mRJJezcnikAxMQgomJ2kXjjd
- iPA1i0f98+RBUFxlHypITrs9G2zwzJN9Lozecv/cBTkVqnMaz7TdTCq5wNMHticZNtVgTeooW
- hRpPddNr5Ay/ishrn2pGaGboIWpHDXC5KZmXhVtWeVqCB/z6UYH08IB7INU8DE5kn4Kxc7dMe
- t2dqMtjrxwqZXYMVs68ncRSr5sP7ZtugrJSAlnV7qs6JpWhQ3tJo5HkaujZXO5BHSvoRz0czY
- bNxGcYdRBUeoyg3e4seMvIdZmoyhU5e0oLNUYikjYSn3UKl/bkwE8yPGq39Zp4u+wSXN4+2gP
- souenrPKsEv650k1hrp4HjBS16unapHFBdtXAIlen7E+VpHD3XXuBU3nMappwaq7P6D8awCZD
- xyA7DwP56jWp4k3m8UOfU4JnTjSvmXcdR5Qur77lTtpeRPAG9NhPTrBWKdS/rPsTW2cpwbroL
- hVZMGBQwmXse5C1GGAM2l17rAEbHI0Ezwnjr4jDy0YgftROT+H6zl501PjftMeyN4CIgGANFU
- u7dQkxEaz2RWWDX3sR96IO3DAA4SyM5H0FOahLmS+qfrFONrDaE+S+DJRHgxTUhRr9V+sqagJ
- jsY55WPunIUpPnRnGgz6M3bRqhtfjs3A8pEk4Mh5nGkuvwuaj914ICnJf4zR71aA8SrQFsQcb
- SY+cDI2CXJ3BYAw5yz24xPvCa3JSiZgVRvgRXrK8T9vOjZ1BRNCHwPgafeePVekUGq9/9SKt+
- RO6DHTGcktMfFPtX05bg9zmSLPnasj+MPxqiT9ykbthm09YkQ6Pl58UdvlDwLeojqm8bmb0V1
- nMcjy8Zu/g9NLn4gqoukg+BXXlylH/FZwi1aDlo8JNArQNi72Au1FwlD068XVDq38DCwIt8Cx
- 1ED5ojuNK5yM/Yu8b1K8PNGooj32Lm1Dqi/0lV+6KsD/UbamKwBnq8SiE+blvQAhfWImxDqf/
- dXXssj/8skIxS+PexokAAwitWFN3FRpS52dxx8Az05lJHDkGLyUCAk4Ss8TmIpSICSx0zdEYE
- U2Dg0nRkXHNNo9uTm8NymOHFYYIPm2SG576ZS63BLQNeo94hlZ7vYk8USVSH1p346R/Lo5mSZ
- b6SERNNRHcJQnz8KMKPYACqY3OXpMNR6BPqrhHC50xzz5iuhYXq+IGOdYgwk56lgiyQt0klR4
- 6EwkNlhMMZQuRs1Rv
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.1.20] (96.236.219.216) by MN2PR12CA0008.namprd12.prod.outlook.com (2603:10b6:208:a8::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3088.19 via Frontend Transport; Tue, 16 Jun 2020 13:55:31 +0000
+X-Originating-IP: [96.236.219.216]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: c9afdbb7-4b00-43dc-38e7-08d811fcef68
+X-MS-TrafficTypeDiagnostic: BYAPR08MB3862:
+X-Microsoft-Antispam-PRVS: <BYAPR08MB38624266CBDA78D7A2A4C5B4C29D0@BYAPR08MB3862.namprd08.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-Forefront-PRVS: 04362AC73B
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: fMEMUIJu4dm2Hci1nZEnZGfiSJyjAVP7maUEGJBsG0gHPF75S9nsm5RsdHIDf6vNoYDpLd6yPD7SeBm07Xc0Q4d8eKB44pczoKKb2IKRsw4X5HesJOOMX9am3T3PvPUKkhvQss/HJdzEF7j07P12W9o9YFmWNGxs8XwSbLVhzezvypzX2ZYzo1DFF7ZtLeCW2LcC4SEtGvh9CfOf+7OdtM9E6XgDHQ1x3j0RuoCF0iFJWXA92ahg604QcUjMbnqrOQo3dfQW8DM/dqbAiy2r2Z7xY+29+7EGhM3pgSbGaN2xJg8QyQiXVIYbZWczMWN394pk3b3ocO386pXHp+8JNyGshAMKfbOikt1kjaZVqvW3fWoVb+T14aPHe7UT5Eae
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR08MB5109.namprd08.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(396003)(346002)(136003)(376002)(366004)(39840400004)(6916009)(2906002)(31686004)(478600001)(5660300002)(4326008)(16526019)(186003)(36756003)(6486002)(86362001)(8676002)(53546011)(16576012)(316002)(31696002)(83380400001)(66476007)(2616005)(8936002)(956004)(66946007)(26005)(66556008)(52116002)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: iIYc4fm88YIliqTVVmZ2zSux0DI0dY+nXNP1Q4FnXOQgL98iysq5ssUKsAQNJPQEfjbRVoeByI+QMX/wUuAHdLr+gViX8nSAjFKBpN8aiaL8iur2bYx9MlLxVLUgB/htF9X5TKv3E0Nc13pjN/D4jG+u4WKwuOc6OYPSawgJ/3GeGWZuZ1ZGRizAKND6bSOIxBO7yh+lJj/N5zIK4pcHwKwrx6yGjEAUfxrglFJPHy3QFJweIZXP8mg9xbRM+jf3eaBEReOJNjNBXwuzkTYKZFVhLJJ/+FrPcvv41CzUAubQ8DRVCxmQavzLMG8XsvyTVrUh9onsaaGm5eTKIyf/INHh9/thXifYgyqKpGHWZFbIOYtAwV6Ur3HSvCLGiT+pe0gkOTV4YDF1MjaEZAaybXIdqvGMwnHlQG0/zeU/Fak/5uVfCnlkZJDWKgjJW6Wru48hNwJyz2AeWNE0YSDYhz2xPyCkWhbH3mdbaeJi/AauiA6eXd/W6LMR/PP/kBUB
+X-OriginatorOrg: panasas.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c9afdbb7-4b00-43dc-38e7-08d811fcef68
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Jun 2020 13:55:32.0380
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: acf01c9d-c699-42af-bdbb-44bf582e60b0
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 7WTAH6AwGTVlfJbsYwJGM6JVU1KJ3RUdzGtA/3wNOZUMwGp5zX+aXPPvkfyT7NbZVHmLli814aEci95Yk6CN+w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR08MB3862
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---HDFLo8BVGrX2qAKbx7PCNtArue4GLaWGj
-Content-Type: multipart/mixed; boundary="OdB0vlZfPCWZUSD1PkZVFSZygcLlXeW7y"
+On 6/16/20 9:25 AM, Ellis H. Wilson III wrote:
+>> In both kernels there will be bursts of fast processing as unlink()
+>> borrows memory, with occasional long delays while unlink() (or some other
+>> random system call) pays off memory debt.  4.12 limited this borrowing
+>> to thousands of refs and most of the payment to the unlink() caller;
+>> in 5.7, there are no limits, and the debt to be paid by a random user
+>> thread can easily be millions of refs, each of which may require a page
+>> of IO to complete.
+> 
+> Are there any user-tunable settings for this in 4.12?  We would be 
+> extremely interested in bumping the outstanding refs in that version if 
+> doing so was as simple as a sysctl, hidden mount option, or something 
+> similar.
 
---OdB0vlZfPCWZUSD1PkZVFSZygcLlXeW7y
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+It appears in btrfs_should_throttle_delayed_refs in 4.12 the limit is 
+hard-coded to delayed refs that can be completed in 1 or 2 seconds:
 
+  2868 int btrfs_should_throttle_delayed_refs(struct btrfs_trans_handle 
+*trans,
+  2869                                        struct btrfs_fs_info *fs_info)
+  2870 {
+  2871         u64 num_entries =
+  2872 
+atomic_read(&trans->transaction->delayed_refs.num_entries);
+  2873         u64 avg_runtime;
+  2874         u64 val;
+  2875
+  2876         smp_mb();
+  2877         avg_runtime = fs_info->avg_delayed_ref_runtime;
+  2878         val = num_entries * avg_runtime;
+  2879         if (val >= NSEC_PER_SEC)
+  2880                 return 1;
+  2881         if (val >= NSEC_PER_SEC / 2)
+  2882                 return 2;
 
-
-On 2020/6/16 =E4=B8=8B=E5=8D=889:41, Rebraca Dejan (BSOT/PJ-ES1-Bg) wrote=
-:
-> Hi,
->=20
-> We are trying to add support for BTRFS in our project, so we started to=
- examine this filesystem.
-> For the moment, we don't want inline extents for our tests, but we have=
- difficulties to turn them off. I'm using 'max_inline=3D0' mount option t=
-o disable them, but I still see them for small files (< 50 Bytes) using F=
-S_IOC_FIEMAP ioctl. Kernel log when executing mount:
-
-max_inline only affects new writes.
-So existing inlined extent won't be affected.
-
-You need to defrag such small files to convert them back to regular exten=
-ts.
+Please let me know if I'm interpreting this wrongly and there is some 
+sysctl/mount/fs tunable I can play with.
 
 Thanks,
-Qu
 
-> [11051.642976] BTRFS info (device loop0): max_inline at 0
-> [11051.642978] BTRFS info (device loop0): disk space caching is enabled=
-
-> [11051.642979] BTRFS info (device loop0): has skinny extents
->=20
-> Environment:
-> - 4.15.0-96-generic #97~16.04.1-Ubuntu SMP Wed Apr 1 03:03:31 UTC 2020 =
-x86_64 x86_64 x86_64 GNU/Linux
-> - btrfs-progs v4.4
->=20
-> I would really appreciate your support on this.
-> Tnx.
->=20
-> Best regards,
->=20
-> Dejan Rebraca
-> BSOT/PJ-ES1-Bg
->=20
-
-
---OdB0vlZfPCWZUSD1PkZVFSZygcLlXeW7y--
-
---HDFLo8BVGrX2qAKbx7PCNtArue4GLaWGj
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl7ozO4ACgkQwj2R86El
-/qjeKAgAlRjGfh8YngQfTmvU4wE3G1UI2PUB+JRFTLT7eXfvmhNoKimTaAb8hMp2
-w+SKquj3j5z5faypOTP26T3h6hgmZfI3wLft49Am11QQ61yJGJ5j/nXpTph2zwRc
-eVHyZ0P8M8R1SiG1gcp3PQURAGJ42RkcUEgz9Rg9jcaDJlQstXeYjNPoa4F2Us1f
-8BxekPuH1mxpT09UB8V6TaLb0pGSKVJlSQeG72Xs6CiXsueBsDzLZFOc05wL/c+Z
-0iE3bY2FqnsjR+3PCt36Pf99/IW7tFcM08yQ4SYgPQdLOB5TIPaNcE0N4whOwUhi
-9rvuwaVIEjt3/FmDzcXhjDNrHvCZaQ==
-=3gAg
------END PGP SIGNATURE-----
-
---HDFLo8BVGrX2qAKbx7PCNtArue4GLaWGj--
+ellis
