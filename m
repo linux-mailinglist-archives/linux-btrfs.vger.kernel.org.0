@@ -2,112 +2,125 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D83F01FB47A
-	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Jun 2020 16:34:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 594171FB4E7
+	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Jun 2020 16:48:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728445AbgFPOeb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 16 Jun 2020 10:34:31 -0400
-Received: from mx2.suse.de ([195.135.220.15]:58302 "EHLO mx2.suse.de"
+        id S1728861AbgFPOsV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 16 Jun 2020 10:48:21 -0400
+Received: from mx2.suse.de ([195.135.220.15]:37776 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725775AbgFPOeb (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 16 Jun 2020 10:34:31 -0400
+        id S1728501AbgFPOsV (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 16 Jun 2020 10:48:21 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 6F6E8ABE4;
-        Tue, 16 Jun 2020 14:34:33 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 3F73AAAE8;
+        Tue, 16 Jun 2020 14:48:18 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 77C20DA7C3; Tue, 16 Jun 2020 16:34:20 +0200 (CEST)
-Date:   Tue, 16 Jun 2020 16:34:20 +0200
+        id 50CC9DA7C3; Tue, 16 Jun 2020 16:48:04 +0200 (CEST)
+Date:   Tue, 16 Jun 2020 16:48:04 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     fdmanana@kernel.org
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 1/4] Btrfs: fix hang on snapshot creation after
- RWF_NOWAIT write
-Message-ID: <20200616143420.GC27795@twin.jikos.cz>
+To:     Waiman Long <longman@redhat.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        David Howells <dhowells@redhat.com>,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Joe Perches <joe@perches.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        David Rientjes <rientjes@google.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        David Sterba <dsterba@suse.cz>,
+        "Jason A . Donenfeld" <Jason@zx2c4.com>, linux-mm@kvack.org,
+        keyrings@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-amlogic@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-ppp@vger.kernel.org, wireguard@lists.zx2c4.com,
+        linux-wireless@vger.kernel.org, devel@driverdev.osuosl.org,
+        linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-cifs@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org, ecryptfs@vger.kernel.org,
+        kasan-dev@googlegroups.com, linux-bluetooth@vger.kernel.org,
+        linux-wpan@vger.kernel.org, linux-sctp@vger.kernel.org,
+        linux-nfs@vger.kernel.org, tipc-discussion@lists.sourceforge.net,
+        linux-security-module@vger.kernel.org,
+        linux-integrity@vger.kernel.org
+Subject: Re: [PATCH v4 3/3] btrfs: Use kfree() in
+ btrfs_ioctl_get_subvol_info()
+Message-ID: <20200616144804.GD27795@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, fdmanana@kernel.org,
-        linux-btrfs@vger.kernel.org
-References: <20200615174601.14559-1-fdmanana@kernel.org>
+Mail-Followup-To: dsterba@suse.cz, Waiman Long <longman@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Howells <dhowells@redhat.com>,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Joe Perches <joe@perches.com>, Matthew Wilcox <willy@infradead.org>,
+        David Rientjes <rientjes@google.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        "Jason A . Donenfeld" <Jason@zx2c4.com>, linux-mm@kvack.org,
+        keyrings@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-amlogic@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-ppp@vger.kernel.org, wireguard@lists.zx2c4.com,
+        linux-wireless@vger.kernel.org, devel@driverdev.osuosl.org,
+        linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-cifs@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org, ecryptfs@vger.kernel.org,
+        kasan-dev@googlegroups.com, linux-bluetooth@vger.kernel.org,
+        linux-wpan@vger.kernel.org, linux-sctp@vger.kernel.org,
+        linux-nfs@vger.kernel.org, tipc-discussion@lists.sourceforge.net,
+        linux-security-module@vger.kernel.org,
+        linux-integrity@vger.kernel.org
+References: <20200616015718.7812-1-longman@redhat.com>
+ <20200616015718.7812-4-longman@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200615174601.14559-1-fdmanana@kernel.org>
+In-Reply-To: <20200616015718.7812-4-longman@redhat.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Jun 15, 2020 at 06:46:01PM +0100, fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
+On Mon, Jun 15, 2020 at 09:57:18PM -0400, Waiman Long wrote:
+> In btrfs_ioctl_get_subvol_info(), there is a classic case where kzalloc()
+> was incorrectly paired with kzfree(). According to David Sterba, there
+> isn't any sensitive information in the subvol_info that needs to be
+> cleared before freeing. So kfree_sensitive() isn't really needed,
+> use kfree() instead.
 > 
-> If we do a successful RWF_NOWAIT write we end up locking the snapshot lock
-> of the inode, through a call to check_can_nocow(), but we never unlock it.
-> 
-> This means the next attempt to create a snapshot on the subvolume will
-> hang forever.
-> 
-> Trivial reproducer:
-> 
->   $ mkfs.btrfs -f /dev/sdb
->   $ mount /dev/sdb /mnt
-> 
->   $ touch /mnt/foobar
->   $ chattr +C /mnt/foobar
->   $ xfs_io -d -c "pwrite -S 0xab 0 64K" /mnt/foobar
->   $ xfs_io -d -c "pwrite -N -V 1 -S 0xfe 0 64K" /mnt/foobar
-> 
->   $ btrfs subvolume snapshot -r /mnt /mnt/snap
->     --> hangs
-> 
-> Fix this by unlocking the snapshot lock if check_can_nocow() returned
-> success.
-> 
-> Fixes: edf064e7c6fec3 ("btrfs: nowait aio support")
-> CC: stable@vger.kernel.org # 4.13+
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+> Reported-by: David Sterba <dsterba@suse.cz>
+> Signed-off-by: Waiman Long <longman@redhat.com>
 > ---
->  fs/btrfs/file.c | 2 ++
->  1 file changed, 2 insertions(+)
+>  fs/btrfs/ioctl.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-> index 2c14312b05e8..04faa04fccd1 100644
-> --- a/fs/btrfs/file.c
-> +++ b/fs/btrfs/file.c
-> @@ -1914,6 +1914,8 @@ static ssize_t btrfs_file_write_iter(struct kiocb *iocb,
->  			inode_unlock(inode);
->  			return -EAGAIN;
->  		}
-> +		/* check_can_nocow() locks the snapshot lock on success */
-> +		btrfs_drew_write_unlock(&root->snapshot_lock);
+> diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+> index f1dd9e4271e9..e8f7c5f00894 100644
+> --- a/fs/btrfs/ioctl.c
+> +++ b/fs/btrfs/ioctl.c
+> @@ -2692,7 +2692,7 @@ static int btrfs_ioctl_get_subvol_info(struct file *file, void __user *argp)
+>  	btrfs_put_root(root);
+>  out_free:
+>  	btrfs_free_path(path);
+> -	kfree_sensitive(subvol_info);
+> +	kfree(subvol_info);
 
-That's quite ugly that the locking semantics of check_can_nocow is
-hidden, this should be cleaned up too.
-
-The whole condition
-
-1909                 if (!(BTRFS_I(inode)->flags & (BTRFS_INODE_NODATACOW |
-1910                                               BTRFS_INODE_PREALLOC)) ||
-1911                     check_can_nocow(BTRFS_I(inode), pos, &count) <= 0)
-
-has 2 parts and it's not obvious from the context when the lock actually is
-taken. The flags check could be pushed down to check_can_nocow, the
-same but negated condition can be found in btrfs_file_write_iter so this
-would make it something like:
-
-	if (check_can_nocow(inode, pos, &count) <= 0) {
-		/* fallback */
-		return ...;
-	}
-	/*
-	 * the lock is taken and needs to be unlocked at the right time
-	 */
-
-Suggestions to rename check_can_nocow welcome too.
-
-
->  	}
->  
->  	current->backing_dev_info = inode_to_bdi(inode);
-> -- 
-> 2.26.2
+I would rather merge a patch doing to kzfree -> kfree instead of doing
+the middle step to switch it to kfree_sensitive. If it would help
+integration of your patchset I can push it to the next rc so there are
+no kzfree left in the btrfs code. Treewide change like that can take
+time so it would be one less problem to care about for you.
