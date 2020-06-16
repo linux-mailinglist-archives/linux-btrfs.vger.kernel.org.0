@@ -2,106 +2,128 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20EC01FBF0F
-	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Jun 2020 21:33:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5F071FBF3C
+	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Jun 2020 21:45:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730349AbgFPTcL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 16 Jun 2020 15:32:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53272 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729989AbgFPTcL (ORCPT
+        id S1731346AbgFPTnp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 16 Jun 2020 15:43:45 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:21891 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1731249AbgFPTne (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 16 Jun 2020 15:32:11 -0400
-Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 556E7C061573
-        for <linux-btrfs@vger.kernel.org>; Tue, 16 Jun 2020 12:32:10 -0700 (PDT)
-Received: by mail-qv1-xf44.google.com with SMTP id dp10so10071396qvb.10
-        for <linux-btrfs@vger.kernel.org>; Tue, 16 Jun 2020 12:32:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=04HR8OX5a52luerMofHovt4vrv/i9p7dWtLoUbbUXDU=;
-        b=0qB3hz0ISlUo5JLgsgT8P9RSy81gvagNwr4vRtpWDurl4ingiyzPVQ3t0iaBDxm+QB
-         KdVuUqgT29+bhitAF/n0Q/AC9fZBAST1EX8DEGEnr/G/XSgVYa2aWPQHIVXkIDPHo/Dp
-         4ECKC45gp/OI61GLJ0fDJWF8tQe7HxyZhyiyq5eoONex537ynqKOUGE50oiktsXS6JpL
-         +K4bx7Ukosjjr+zl5DIugR+xay6DnCYZ1MsDjkfszIXZGn+6kh9GVFNv3+GsmhSAUHn7
-         YSTDAbil/65+Vnbgn8vnvZzeoi5airsUxeyJGBflqgMbtzNrJBihmozXouYQMVB19c3h
-         Tadw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=04HR8OX5a52luerMofHovt4vrv/i9p7dWtLoUbbUXDU=;
-        b=ajv6YNGny0cVtiKdbgm5XEhKrkumIxymymcMcYEohoiRCxBX65N6OzUNEKN9l3VjgE
-         F1FCAP0OgC27qUL4lQ8ujy6fYFviN+ltMnnb+tsg36UWpdu7acufzojCbMgbRt0/uHpQ
-         T8M02ZdB/8q9AUOAf21AHVw1JhULfvRGLj8XJ9fSW7rKT4F0IrY6HHKyEO0A0M0telvy
-         xmpVUANGuJRajrd6qe5PVqrSsZg5DGnJ2G9R4V3hASH7PQ12k2GvNK8uy9H1nD1Wc4c0
-         9BMR3Cr5kQ39qltFe4A58eWd+9QVsKcY3FspMyjYMCLK+mul1RSlV2/3Bl6CKbsKDmR6
-         zN7A==
-X-Gm-Message-State: AOAM533du6qFHJApl6f6X1T2imxkEg3chxHcy9YOGNLu+lG/ixzBSb2R
-        fGavBJ0OQGsKzRsHuidIhRaoAI7UcJHUaQ==
-X-Google-Smtp-Source: ABdhPJwWjSU1nlbQVTJzkJdC3cpcz4TlZXxuQ5/tWJOmeaEeVRdiUyJRorYM4NEwEKgS28z9aw3+Xw==
-X-Received: by 2002:a05:6214:a72:: with SMTP id ef18mr4057814qvb.239.1592335929259;
-        Tue, 16 Jun 2020 12:32:09 -0700 (PDT)
-Received: from [192.168.1.45] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id f43sm17229187qte.58.2020.06.16.12.32.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 16 Jun 2020 12:32:08 -0700 (PDT)
-Subject: Re: [PATCH 4/4] Btrfs: fix RWF_NOWAIT writes blocking on extent locks
- and waiting for IO
-To:     fdmanana@kernel.org, linux-btrfs@vger.kernel.org
-References: <20200615174939.15004-1-fdmanana@kernel.org>
-From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <17c55044-ccba-b031-9589-f996c2a69f4e@toxicpanda.com>
-Date:   Tue, 16 Jun 2020 15:32:07 -0400
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.9.0
+        Tue, 16 Jun 2020 15:43:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1592336613;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=7Z6fHUpD/YKa1+K4csbSQ8hpcds1t8FVRWhxbaMjfP4=;
+        b=XoScRIB/OUnlC6iHUifIbbqw0nMqyGT44ncKlwjVJ6EzmytEYHukuC+9GeA6NoD4Ia58ob
+        zdgyRIA/jM0/wFteh1WPXwdM2my8JrDTe/bGsTs4vlNv/sl6PkBIRr4W0nOkg7Wx8FBO6/
+        claoyJXO0QkMR++u/1025GkuGUGIKy8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-144-TJgrp6WMNr--nG8NkXkVIQ-1; Tue, 16 Jun 2020 15:43:29 -0400
+X-MC-Unique: TJgrp6WMNr--nG8NkXkVIQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0BAEEE91A;
+        Tue, 16 Jun 2020 19:43:23 +0000 (UTC)
+Received: from llong.remote.csb (ovpn-114-156.rdu2.redhat.com [10.10.114.156])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 72FAE5C1BD;
+        Tue, 16 Jun 2020 19:43:17 +0000 (UTC)
+Subject: Re: [PATCH v4 0/3] mm, treewide: Rename kzfree() to kfree_sensitive()
+To:     Joe Perches <joe@perches.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Howells <dhowells@redhat.com>,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        David Rientjes <rientjes@google.com>
+Cc:     Michal Hocko <mhocko@suse.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        David Sterba <dsterba@suse.cz>,
+        "Jason A . Donenfeld" <Jason@zx2c4.com>, linux-mm@kvack.org,
+        keyrings@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-amlogic@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-ppp@vger.kernel.org, wireguard@lists.zx2c4.com,
+        linux-wireless@vger.kernel.org, devel@driverdev.osuosl.org,
+        linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-cifs@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org, ecryptfs@vger.kernel.org,
+        kasan-dev@googlegroups.com, linux-bluetooth@vger.kernel.org,
+        linux-wpan@vger.kernel.org, linux-sctp@vger.kernel.org,
+        linux-nfs@vger.kernel.org, tipc-discussion@lists.sourceforge.net,
+        linux-security-module@vger.kernel.org,
+        linux-integrity@vger.kernel.org
+References: <20200616015718.7812-1-longman@redhat.com>
+ <fe3b9a437be4aeab3bac68f04193cb6daaa5bee4.camel@perches.com>
+From:   Waiman Long <longman@redhat.com>
+Organization: Red Hat
+Message-ID: <5c70746c-ecfc-316f-f1ff-ab432cf9f32d@redhat.com>
+Date:   Tue, 16 Jun 2020 15:43:16 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <20200615174939.15004-1-fdmanana@kernel.org>
+In-Reply-To: <fe3b9a437be4aeab3bac68f04193cb6daaa5bee4.camel@perches.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 6/15/20 1:49 PM, fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
-> 
-> A RWF_NOWAIT write is not supposed to wait on filesystem locks that can be
-> held for a long time or for ongoing IO to complete.
-> 
-> However when calling check_can_nocow(), if the inode has prealloc extents
-> or has the NOCOW flag set, we can block on extent (file range) locks
-> through the call to btrfs_lock_and_flush_ordered_range(). Such lock can
-> take a significant amount of time to be available. For example, a fiemap
-> task may be running, and iterating through the entire file range checking
-> all extents and doing backref walking to determine if they are shared,
-> or a readpage operation may be in progress.
-> 
-> Also at btrfs_lock_and_flush_ordered_range(), called by check_can_nocow(),
-> after locking the file range we wait for any existing ordered extent that
-> is in progress to complete. Another operation that can take a significant
-> amount of time and defeat the purpose of RWF_NOWAIT.
-> 
-> So fix this by trying to lock the file range and if it's currently locked
-> return -EAGAIN to user space. If we are able to lock the file range without
-> waiting and there is an ordered extent in the range, return -EAGAIN as
-> well, instead of waiting for it to complete. Finally, don't bother trying
-> to lock the snapshot lock of the root when attempting a RWF_NOWAIT write,
-> as that is only important for buffered writes.
-> 
-> Fixes: edf064e7c6fec3 ("btrfs: nowait aio support")
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+On 6/16/20 2:53 PM, Joe Perches wrote:
+> On Mon, 2020-06-15 at 21:57 -0400, Waiman Long wrote:
+>>   v4:
+>>    - Break out the memzero_explicit() change as suggested by Dan Carpenter
+>>      so that it can be backported to stable.
+>>    - Drop the "crypto: Remove unnecessary memzero_explicit()" patch for
+>>      now as there can be a bit more discussion on what is best. It will be
+>>      introduced as a separate patch later on after this one is merged.
+> To this larger audience and last week without reply:
+> https://lore.kernel.org/lkml/573b3fbd5927c643920e1364230c296b23e7584d.camel@perches.com/
+>
+> Are there _any_ fastpath uses of kfree or vfree?
 
-I'd rather the snapshot lock change be separate, because I had to go look and 
-see why that was ok.  But only do it if you have to respin or something,
+I am not sure about that, but both of them can be slow.
 
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 
-Thanks,
+>
+> Many patches have been posted recently to fix mispairings
+> of specific types of alloc and free functions.
+>
+> To eliminate these mispairings at a runtime cost of four
+> comparisons, should the kfree/vfree/kvfree/kfree_const
+> functions be consolidated into a single kfree?
+>
+> Something like the below:
+>
+>     void kfree(const void *addr)
+>     {
+>     	if (is_kernel_rodata((unsigned long)addr))
+>     		return;
+>
+>     	if (is_vmalloc_addr(addr))
+>     		_vfree(addr);
+>     	else
+>     		_kfree(addr);
+>     }
+>
+is_kernel_rodata() is inlined, but is_vmalloc_addr() isn't. So the 
+overhead can be a bit bigger.
 
-Josef
+Cheers,
+Longman
+
