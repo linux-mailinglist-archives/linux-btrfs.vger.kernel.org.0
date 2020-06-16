@@ -2,115 +2,97 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 441B01FC208
-	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Jun 2020 01:02:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD61C1FC24C
+	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Jun 2020 01:31:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726044AbgFPXBs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 16 Jun 2020 19:01:48 -0400
-Received: from mx2.suse.de ([195.135.220.15]:39104 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725849AbgFPXBs (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 16 Jun 2020 19:01:48 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 6CB7AADA8;
-        Tue, 16 Jun 2020 23:01:45 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 1AC8EDA7C3; Wed, 17 Jun 2020 01:01:30 +0200 (CEST)
-Date:   Wed, 17 Jun 2020 01:01:30 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Joe Perches <joe@perches.com>
-Cc:     Waiman Long <longman@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Howells <dhowells@redhat.com>,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        David Rientjes <rientjes@google.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        David Sterba <dsterba@suse.cz>,
-        "Jason A . Donenfeld" <Jason@zx2c4.com>, linux-mm@kvack.org,
-        keyrings@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-amlogic@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-ppp@vger.kernel.org, wireguard@lists.zx2c4.com,
-        linux-wireless@vger.kernel.org, devel@driverdev.osuosl.org,
-        linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-cifs@vger.kernel.org,
-        linux-fscrypt@vger.kernel.org, ecryptfs@vger.kernel.org,
-        kasan-dev@googlegroups.com, linux-bluetooth@vger.kernel.org,
-        linux-wpan@vger.kernel.org, linux-sctp@vger.kernel.org,
-        linux-nfs@vger.kernel.org, tipc-discussion@lists.sourceforge.net,
-        linux-security-module@vger.kernel.org,
-        linux-integrity@vger.kernel.org
-Subject: Re: [PATCH v4 0/3] mm, treewide: Rename kzfree() to kfree_sensitive()
-Message-ID: <20200616230130.GJ27795@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Joe Perches <joe@perches.com>,
-        Waiman Long <longman@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Howells <dhowells@redhat.com>,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        David Rientjes <rientjes@google.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        "Jason A . Donenfeld" <Jason@zx2c4.com>, linux-mm@kvack.org,
-        keyrings@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-amlogic@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-ppp@vger.kernel.org, wireguard@lists.zx2c4.com,
-        linux-wireless@vger.kernel.org, devel@driverdev.osuosl.org,
-        linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-cifs@vger.kernel.org,
-        linux-fscrypt@vger.kernel.org, ecryptfs@vger.kernel.org,
-        kasan-dev@googlegroups.com, linux-bluetooth@vger.kernel.org,
-        linux-wpan@vger.kernel.org, linux-sctp@vger.kernel.org,
-        linux-nfs@vger.kernel.org, tipc-discussion@lists.sourceforge.net,
-        linux-security-module@vger.kernel.org,
-        linux-integrity@vger.kernel.org
-References: <20200616015718.7812-1-longman@redhat.com>
- <fe3b9a437be4aeab3bac68f04193cb6daaa5bee4.camel@perches.com>
+        id S1726044AbgFPXbM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 16 Jun 2020 19:31:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33782 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725849AbgFPXbL (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 16 Jun 2020 19:31:11 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21CC7C061573
+        for <linux-btrfs@vger.kernel.org>; Tue, 16 Jun 2020 16:31:11 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id q8so339744qkm.12
+        for <linux-btrfs@vger.kernel.org>; Tue, 16 Jun 2020 16:31:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=5621WnD/MB4xqMMPPpabksRjTPhmVPj5Tx/AAWjU6ok=;
+        b=PE2tqX31htRbkQucNDh5s7OSUK8OitJB3cjS82yk7RZwLAttImpPc0tUz4COij1EM/
+         3RW11LN8+8ItV6ylAtIHXcq3E+uUTUqhIIKHh+ORygrMZnw62Gosnv9x3pKkBU5lBXzy
+         XAyP9Ay1xanPOSu5S2CD8skOzFAHpNCbiZs4eVq2V6aMzntEM/gmMjXZXb31mksldIV3
+         WbkZVpP6FopUAF6FU6DuVpeQxMUZrJGvntWSISvbhCv1X1Gdb1qBPJg6SPad+OfRgRJZ
+         QcY3e2IxzdH3dQ70iahSnu1JLNMtvQzCO1wyVI/LaORbGRvq/aK7LtEV+o8zSC/RY6ZD
+         Lb+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=5621WnD/MB4xqMMPPpabksRjTPhmVPj5Tx/AAWjU6ok=;
+        b=IZrxnCJ1hqF2wAVJ9H0a/vMWD/HkaNElr/MNOLXHKe5PCs6ZWZ4q/q8ZuISW4dxIAt
+         vXIFllUcnEUgfYG/DsJeoUdCkQlWZCWVgM551gy/nuLsoHk3i/maxFyj/LitHkk9wKjq
+         uA9rvBkTpOCZy4VZ1hJAN12YIpa3b67LmywlkR2x4IM6o17R1gZczkINHGwDBo9n9epf
+         la2oV7vZG/1TyMZF+tRDB1dFSCJtkNmfj7sUpGOv+nfuUQFdaYpPsDDj02FrXljUixCd
+         mw+jSmvDZtfrQFB4lXcRpS5AHEnChERfRjdkKWqrEsmt6kGfXXjGDVkhqA4MEhV5JtWU
+         oBOg==
+X-Gm-Message-State: AOAM532UfBSp4l9dcSUXLtElnYY727Xr80kjc5QIjUXoZkxq9bJqJRpA
+        PBDIjy+ZumZYh++k1vL1C0UdvAlumDNZRQ==
+X-Google-Smtp-Source: ABdhPJy00cstSrHO1Rnok1Q+ImIptVTZ1vbdUtMkoq0rubyRbcGVqIb3jtAdPF0flBp6xIJTnwnPMw==
+X-Received: by 2002:a37:448:: with SMTP id 69mr4355327qke.362.1592350269367;
+        Tue, 16 Jun 2020 16:31:09 -0700 (PDT)
+Received: from ?IPv6:2620:10d:c0a8:11e8::123e? ([2620:10d:c091:480::1:458f])
+        by smtp.gmail.com with ESMTPSA id x4sm17090096qtj.43.2020.06.16.16.31.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 16 Jun 2020 16:31:08 -0700 (PDT)
+Subject: Re: [PATCH 4/4] btrfs: free anon_dev earlier to prevent exhausting
+ anonymous block device pool
+To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org, Greed Rong <greedrong@gmail.com>
+References: <20200616021737.44617-1-wqu@suse.com>
+ <20200616021737.44617-5-wqu@suse.com>
+ <605ee3c8-0afa-5c00-9c66-fa385c20ce99@toxicpanda.com>
+ <20200616224840.GI27795@twin.jikos.cz>
+From:   Josef Bacik <josef@toxicpanda.com>
+Message-ID: <d1be2720-afa0-80a7-6472-6f7fe05feaf9@toxicpanda.com>
+Date:   Tue, 16 Jun 2020 19:31:07 -0400
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <fe3b9a437be4aeab3bac68f04193cb6daaa5bee4.camel@perches.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <20200616224840.GI27795@twin.jikos.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Jun 16, 2020 at 11:53:50AM -0700, Joe Perches wrote:
-> On Mon, 2020-06-15 at 21:57 -0400, Waiman Long wrote:
-> >  v4:
-> >   - Break out the memzero_explicit() change as suggested by Dan Carpenter
-> >     so that it can be backported to stable.
-> >   - Drop the "crypto: Remove unnecessary memzero_explicit()" patch for
-> >     now as there can be a bit more discussion on what is best. It will be
-> >     introduced as a separate patch later on after this one is merged.
+On 6/16/20 6:48 PM, David Sterba wrote:
+> On Tue, Jun 16, 2020 at 03:23:03PM -0400, Josef Bacik wrote:
+>>> By freeing it earlier we reclaim the anon_dev quicker, hopefully to
+>>> reduce the chance of exhausting the pool.
+>>
+>> Why isn't this happening as part of the root teardown once all the references to
+>> it are gone?  Thanks,
 > 
-> To this larger audience and last week without reply:
-> https://lore.kernel.org/lkml/573b3fbd5927c643920e1364230c296b23e7584d.camel@perches.com/
+> This is where it happens now and is correct. The problem is that deleted
+> subvolumes keep the id allocated until they are cleaned up, ie. all the
+> dead roots consume the id though we don't need it anymore. Creating and
+> deleting snapshots at large will produce a long list of dead subvolumes.
+> THis patch will return the ids at the earlies possible moment so they
+> can get reused.
 > 
-> Are there _any_ fastpath uses of kfree or vfree?
 
-I'd consider kfree performance critical for cases where it is called
-under locks. If possible the kfree is moved outside of the critical
-section, but we have rbtrees or lists that get deleted under locks and
-restructuring the code to do eg. splice and free it outside of the lock
-is not always possible.
+Oh ok I misread, we're doing it earlier on purpose.  Alright that's fine, you 
+can add
+
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+
+Thanks,
+
+Josef
