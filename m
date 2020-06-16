@@ -2,199 +2,213 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 489B01FA533
-	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Jun 2020 02:38:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1E431FA5DB
+	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Jun 2020 03:58:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726492AbgFPAiL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 15 Jun 2020 20:38:11 -0400
-Received: from mout.gmx.net ([212.227.15.18]:46563 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725960AbgFPAiK (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 15 Jun 2020 20:38:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1592267887;
-        bh=7S/3IDwFhlVhye0z18uhhDIPetHG4pYHLwFNCUQ5Bzo=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=U/tVKiSWTmFBxjQSC0QqvQ7VuwiAQJY5OXb8dp0xxYabISBWbJjATDKrLg7oySUAb
-         Ff7I9afAzbviTLlPawplHoOrwd4UGPwM+tczQ4QvzbZ+DfWIYqfSqwlBMg+XlbLQzm
-         WTSk4EsKJyNJmXlLTprD3isfuu1JPv/Ui/zfE9IM=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MMofW-1jUYeo2752-00IlfG; Tue, 16
- Jun 2020 02:38:07 +0200
-Subject: Re: BTRFS: Transaction aborted (error -24)
-To:     Greed Rong <greedrong@gmail.com>, dsterba@suse.cz,
-        linux-btrfs@vger.kernel.org
-References: <CA+UqX+NTrZ6boGnWHhSeZmEY5J76CTqmYjO2S+=tHJX7nb9DPw@mail.gmail.com>
- <20200611112031.GM27795@twin.jikos.cz>
- <a7802701-5c8d-5937-1a80-2bcf62a94704@gmx.com>
- <20200611135244.GP27795@twin.jikos.cz>
- <CA+UqX+OcP_S6U37BHkGgzyDVNAud5vYOucL_WpNLhfU-T=+Vnw@mail.gmail.com>
- <20200612171315.GW27795@twin.jikos.cz>
- <CA+UqX+PxF=prEHeS_u_K2ncT1MGqdmFsQeVTkDYLS6PqhJ7ddQ@mail.gmail.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
- PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
- 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
- D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
- efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
- ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
- BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
- 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
- 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
- EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
- 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
- ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
- oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
- fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
- 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
- ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
- oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <46f57bfd-8957-6d7c-b8bf-66b5bc2cb3a5@gmx.com>
-Date:   Tue, 16 Jun 2020 08:38:03 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
-MIME-Version: 1.0
-In-Reply-To: <CA+UqX+PxF=prEHeS_u_K2ncT1MGqdmFsQeVTkDYLS6PqhJ7ddQ@mail.gmail.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="lY8eGQOuHN40jdz8qlyKYTVyZSfi9pxgt"
-X-Provags-ID: V03:K1:T+Jg/c7KbANR8bKU6KAMhWDivOeMNPkG6E2AhVdOZaHKDVq9TZe
- PRCgDMEIXUe4aNJCj9B7udfmgXHKUoDeNtQ/6qkts6405Mey1kyVJGLTm2V+WmUR6E+2WRv
- JAI1LlksmU5JjnXLXdt2nZAEQiZwW+GUPIKgYaGi9Nd7UREe7g6Y2bnX6d3GBZNg+28Ulvy
- ncRwmkz+z+JQWtlx7jIVA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:4Budh0xPDFQ=:XgQ88oeq+ymGGjpPa+x8XV
- M0g8DZScVGMIiXqCrkAJK9eu7wE107tuBoUQgDbK/RAXjTMCe1RaQXoihXHpG5/h1CmmKdqzr
- U4s1S1EccKZm2raa3PB2vDoJSGel5eJPPhNI8JIDc5iADQ1KagHwiuQIrjxB0qSvMNRXXFfSK
- ztV5O9LLhEx8D4Ag5Ldkc56BaD8NotmOYrqOBbnZV1J35xMuGR0Vjh265D58xig9Vy/er9i+1
- gD14IfabFdaAj22VlyXpRdKPF7fKU3DPiwVsAsBQIIEpedVlMG8QliDtEw6hwoLYSERUcWcyf
- BP9YSSyK6O0F5g/SMtUTNG4aHGgpx1zXiGnqr4T2Opa/nd60egqBa+gSZQyG+hrNwGYpB/rFc
- OoKtj2riVGnQuEHBiw3zLuzflOrH9pVg7jPRjMMGg2UwWcRTi3xd3raEJAYumRoP8Y3iHNwzU
- zeo/CwgO1paTfrjrUdtXjxiMDYfoF6zjDH5JhUBZFGvN2IBys5OHskkCVRX7W8kNG4sLb8sVa
- RhI8tQqo8ZJfhbp1lqzhDhLI3Iuo53Qmz8CLNDT98WTsdUYwkyRqVUiDdy+B3SBNZ9TE8hYrQ
- Rlgn4KYVSpQ3zwTo5lEUDAZaeHJACLmsxQZxOXzYf3UIEOAaGdkF3+YfeLHJ9wwQM6ji+DqtB
- aD0p483dCOk5aiGYSuKNkU67u7OEE1AYDJoSxlou2iRpgiXau+Qw3JjcY1s4Ef9WousyjPsT1
- pfQl4ytieYnjwlcpI5EilHxWJI2w6xOKxhPG9zaTmlBvKwbPFdLZcp+5brykipjKdNbVpLPI3
- IVutqTpSxd6xWgQSgIagV8ZXR2bbhxu6mgP4wpb1sVy6X7fPjAuyC/VsNtSZuemy8LKlF8LcB
- 1Y3pFbCTjOd50q8yxjOGQzXgJHOb1RrMgek1eIe2LKBJXJLOB6oOQYgbjLFqNaIKbcv3R+g8s
- F3vAsRsAzIWOqN2Aar1ngTmoFK08VcA6oSTij5i9lRDqEJ978jaCJzMxCQ2XWT9B9TDQGnu+3
- YtOZhpQynOyE2oTwRU40fBVGWHjs+mSHdVx2CLj48/X0+vimmu/eQDWHVcrVdTO3kN7O7E6kb
- WcwClNQyMZiandzy5Jz1fDQxcydNOx7jMjiIWWzwfR9zQ+3s5hND1m2gqdbd/LIfEOprmgYwJ
- VTDnQHg05IoPmF79YBqHmm9Z4IFMOZzvOxtaHvLRfuJEb6x0IUdEP2TspkcrW8QOyzohoUZfq
- c/UbRYewomBGFT4Rz
+        id S1726494AbgFPB6E (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 15 Jun 2020 21:58:04 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:29344 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726497AbgFPB6D (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 15 Jun 2020 21:58:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1592272681;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=MZUCLAMZdmO5EM+jCfqRymLIPQ+NHghkczuzn6RqHtY=;
+        b=f2FwiIn7aPNG9admJ7IkmHEifRgheopIefH3fH0fw3UmHf1z3HjmPfAK7IGlR7mu1a+3Ak
+        YiFw93IXzP7LJYrm6gFOT3h5ul2DX+nPZOwZeT7CsPxK9Sx2J60gZxu1l+9BM5Voop2OUW
+        CrNJyT3vTdWkj/lthap04F1UTGX+O68=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-343-kG50-M7xPwedRKQDZzJkIQ-1; Mon, 15 Jun 2020 21:57:57 -0400
+X-MC-Unique: kG50-M7xPwedRKQDZzJkIQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 182E77BB2;
+        Tue, 16 Jun 2020 01:57:52 +0000 (UTC)
+Received: from llong.com (ovpn-117-41.rdu2.redhat.com [10.10.117.41])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 96E15768AE;
+        Tue, 16 Jun 2020 01:57:43 +0000 (UTC)
+From:   Waiman Long <longman@redhat.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        David Howells <dhowells@redhat.com>,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Joe Perches <joe@perches.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        David Rientjes <rientjes@google.com>
+Cc:     Michal Hocko <mhocko@suse.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        David Sterba <dsterba@suse.cz>,
+        "Jason A . Donenfeld" <Jason@zx2c4.com>, linux-mm@kvack.org,
+        keyrings@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-amlogic@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-ppp@vger.kernel.org, wireguard@lists.zx2c4.com,
+        linux-wireless@vger.kernel.org, devel@driverdev.osuosl.org,
+        linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-cifs@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org, ecryptfs@vger.kernel.org,
+        kasan-dev@googlegroups.com, linux-bluetooth@vger.kernel.org,
+        linux-wpan@vger.kernel.org, linux-sctp@vger.kernel.org,
+        linux-nfs@vger.kernel.org, tipc-discussion@lists.sourceforge.net,
+        linux-security-module@vger.kernel.org,
+        linux-integrity@vger.kernel.org, Waiman Long <longman@redhat.com>
+Subject: [PATCH v4 0/3] mm, treewide: Rename kzfree() to kfree_sensitive()
+Date:   Mon, 15 Jun 2020 21:57:15 -0400
+Message-Id: <20200616015718.7812-1-longman@redhat.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---lY8eGQOuHN40jdz8qlyKYTVyZSfi9pxgt
-Content-Type: multipart/mixed; boundary="q7hCZEsmDeBBnHVulqw3EfRdgtAeMOZJQ"
+ v4:
+  - Break out the memzero_explicit() change as suggested by Dan Carpenter
+    so that it can be backported to stable.
+  - Drop the "crypto: Remove unnecessary memzero_explicit()" patch for
+    now as there can be a bit more discussion on what is best. It will be
+    introduced as a separate patch later on after this one is merged.
 
---q7hCZEsmDeBBnHVulqw3EfRdgtAeMOZJQ
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+This patchset makes a global rename of the kzfree() to kfree_sensitive()
+to highlight the fact buffer clearing is only needed if the data objects
+contain sensitive information like encrpytion key. The fact that kzfree()
+uses memset() to do the clearing isn't totally safe either as compiler
+may compile out the clearing in their optimizer especially if LTO is
+used. Instead, the new kfree_sensitive() uses memzero_explicit() which
+won't get compiled out.
 
+Waiman Long (3):
+  mm/slab: Use memzero_explicit() in kzfree()
+  mm, treewide: Rename kzfree() to kfree_sensitive()
+  btrfs: Use kfree() in btrfs_ioctl_get_subvol_info()
 
+ arch/s390/crypto/prng.c                       |  4 +--
+ arch/x86/power/hibernate.c                    |  2 +-
+ crypto/adiantum.c                             |  2 +-
+ crypto/ahash.c                                |  4 +--
+ crypto/api.c                                  |  2 +-
+ crypto/asymmetric_keys/verify_pefile.c        |  4 +--
+ crypto/deflate.c                              |  2 +-
+ crypto/drbg.c                                 | 10 +++---
+ crypto/ecc.c                                  |  8 ++---
+ crypto/ecdh.c                                 |  2 +-
+ crypto/gcm.c                                  |  2 +-
+ crypto/gf128mul.c                             |  4 +--
+ crypto/jitterentropy-kcapi.c                  |  2 +-
+ crypto/rng.c                                  |  2 +-
+ crypto/rsa-pkcs1pad.c                         |  6 ++--
+ crypto/seqiv.c                                |  2 +-
+ crypto/shash.c                                |  2 +-
+ crypto/skcipher.c                             |  2 +-
+ crypto/testmgr.c                              |  6 ++--
+ crypto/zstd.c                                 |  2 +-
+ .../allwinner/sun8i-ce/sun8i-ce-cipher.c      |  2 +-
+ .../allwinner/sun8i-ss/sun8i-ss-cipher.c      |  2 +-
+ drivers/crypto/amlogic/amlogic-gxl-cipher.c   |  4 +--
+ drivers/crypto/atmel-ecc.c                    |  2 +-
+ drivers/crypto/caam/caampkc.c                 | 28 +++++++--------
+ drivers/crypto/cavium/cpt/cptvf_main.c        |  6 ++--
+ drivers/crypto/cavium/cpt/cptvf_reqmanager.c  | 12 +++----
+ drivers/crypto/cavium/nitrox/nitrox_lib.c     |  4 +--
+ drivers/crypto/cavium/zip/zip_crypto.c        |  6 ++--
+ drivers/crypto/ccp/ccp-crypto-rsa.c           |  6 ++--
+ drivers/crypto/ccree/cc_aead.c                |  4 +--
+ drivers/crypto/ccree/cc_buffer_mgr.c          |  4 +--
+ drivers/crypto/ccree/cc_cipher.c              |  6 ++--
+ drivers/crypto/ccree/cc_hash.c                |  8 ++---
+ drivers/crypto/ccree/cc_request_mgr.c         |  2 +-
+ drivers/crypto/marvell/cesa/hash.c            |  2 +-
+ .../crypto/marvell/octeontx/otx_cptvf_main.c  |  6 ++--
+ .../marvell/octeontx/otx_cptvf_reqmgr.h       |  2 +-
+ drivers/crypto/mediatek/mtk-aes.c             |  2 +-
+ drivers/crypto/nx/nx.c                        |  4 +--
+ drivers/crypto/virtio/virtio_crypto_algs.c    | 12 +++----
+ drivers/crypto/virtio/virtio_crypto_core.c    |  2 +-
+ drivers/md/dm-crypt.c                         | 32 ++++++++---------
+ drivers/md/dm-integrity.c                     |  6 ++--
+ drivers/misc/ibmvmc.c                         |  6 ++--
+ .../hisilicon/hns3/hns3pf/hclge_mbx.c         |  2 +-
+ .../net/ethernet/intel/ixgbe/ixgbe_ipsec.c    |  6 ++--
+ drivers/net/ppp/ppp_mppe.c                    |  6 ++--
+ drivers/net/wireguard/noise.c                 |  4 +--
+ drivers/net/wireguard/peer.c                  |  2 +-
+ drivers/net/wireless/intel/iwlwifi/pcie/rx.c  |  2 +-
+ .../net/wireless/intel/iwlwifi/pcie/tx-gen2.c |  6 ++--
+ drivers/net/wireless/intel/iwlwifi/pcie/tx.c  |  6 ++--
+ drivers/net/wireless/intersil/orinoco/wext.c  |  4 +--
+ drivers/s390/crypto/ap_bus.h                  |  4 +--
+ drivers/staging/ks7010/ks_hostif.c            |  2 +-
+ drivers/staging/rtl8723bs/core/rtw_security.c |  2 +-
+ drivers/staging/wlan-ng/p80211netdev.c        |  2 +-
+ drivers/target/iscsi/iscsi_target_auth.c      |  2 +-
+ fs/btrfs/ioctl.c                              |  2 +-
+ fs/cifs/cifsencrypt.c                         |  2 +-
+ fs/cifs/connect.c                             | 10 +++---
+ fs/cifs/dfs_cache.c                           |  2 +-
+ fs/cifs/misc.c                                |  8 ++---
+ fs/crypto/keyring.c                           |  6 ++--
+ fs/crypto/keysetup_v1.c                       |  4 +--
+ fs/ecryptfs/keystore.c                        |  4 +--
+ fs/ecryptfs/messaging.c                       |  2 +-
+ include/crypto/aead.h                         |  2 +-
+ include/crypto/akcipher.h                     |  2 +-
+ include/crypto/gf128mul.h                     |  2 +-
+ include/crypto/hash.h                         |  2 +-
+ include/crypto/internal/acompress.h           |  2 +-
+ include/crypto/kpp.h                          |  2 +-
+ include/crypto/skcipher.h                     |  2 +-
+ include/linux/slab.h                          |  2 +-
+ lib/mpi/mpiutil.c                             |  6 ++--
+ lib/test_kasan.c                              |  6 ++--
+ mm/slab_common.c                              | 10 +++---
+ net/atm/mpoa_caches.c                         |  4 +--
+ net/bluetooth/ecdh_helper.c                   |  6 ++--
+ net/bluetooth/smp.c                           | 24 ++++++-------
+ net/core/sock.c                               |  2 +-
+ net/ipv4/tcp_fastopen.c                       |  2 +-
+ net/mac80211/aead_api.c                       |  4 +--
+ net/mac80211/aes_gmac.c                       |  2 +-
+ net/mac80211/key.c                            |  2 +-
+ net/mac802154/llsec.c                         | 20 +++++------
+ net/sctp/auth.c                               |  2 +-
+ net/sctp/socket.c                             |  2 +-
+ net/sunrpc/auth_gss/gss_krb5_crypto.c         |  4 +--
+ net/sunrpc/auth_gss/gss_krb5_keys.c           |  6 ++--
+ net/sunrpc/auth_gss/gss_krb5_mech.c           |  2 +-
+ net/tipc/crypto.c                             | 10 +++---
+ net/wireless/core.c                           |  2 +-
+ net/wireless/ibss.c                           |  4 +--
+ net/wireless/lib80211_crypt_tkip.c            |  2 +-
+ net/wireless/lib80211_crypt_wep.c             |  2 +-
+ net/wireless/nl80211.c                        | 24 ++++++-------
+ net/wireless/sme.c                            |  6 ++--
+ net/wireless/util.c                           |  2 +-
+ net/wireless/wext-sme.c                       |  2 +-
+ scripts/coccinelle/free/devm_free.cocci       |  4 +--
+ scripts/coccinelle/free/ifnullfree.cocci      |  4 +--
+ scripts/coccinelle/free/kfree.cocci           |  6 ++--
+ scripts/coccinelle/free/kfreeaddr.cocci       |  2 +-
+ security/apparmor/domain.c                    |  4 +--
+ security/apparmor/include/file.h              |  2 +-
+ security/apparmor/policy.c                    | 24 ++++++-------
+ security/apparmor/policy_ns.c                 |  6 ++--
+ security/apparmor/policy_unpack.c             | 14 ++++----
+ security/keys/big_key.c                       |  6 ++--
+ security/keys/dh.c                            | 14 ++++----
+ security/keys/encrypted-keys/encrypted.c      | 14 ++++----
+ security/keys/trusted-keys/trusted_tpm1.c     | 34 +++++++++----------
+ security/keys/user_defined.c                  |  6 ++--
+ 116 files changed, 322 insertions(+), 322 deletions(-)
 
-On 2020/6/15 =E4=B8=8B=E5=8D=888:50, Greed Rong wrote:
-> Does that mean about 2^20 subvolumes can be created in one root btrfs?
+-- 
+2.18.1
 
-Unfortunately that 1<<20 limit is shared across a lot of filesystemts,
-like overlayfs, ceph and btrfs.
-
-Furthermore the pool is a global pool, which means it's shared by all
-btrfs filesystems.
-
-So in one btrfs, it's way smaller than 1<<20.
-
->=20
-> The snapshot delete service was stopped a few weeks ago. I think this
-> is the reason why the id pool is exhausted.
-> I will try to run it again and see if it works.
-
-At least we're working on workaround the limit, by:
-- Reduce known unnecessary users of the pool
-  Reloc tree/data reloc tree don't need to utilize the pool
-
-- Prealloc the id to prevent transaction abort
-  So the user would get error from ioctl, other than forcing the whole
-  fs to be RO later.
-
-Thanks,
-Qu
-
->=20
-> Thanks
->=20
-> On Sat, Jun 13, 2020 at 1:13 AM David Sterba <dsterba@suse.cz> wrote:
->>
->> On Fri, Jun 12, 2020 at 11:15:43AM +0800, Greed Rong wrote:
->>> This server is used for network storage. When a new client arrives, I=
-
->>> create a snapshot of the workspace subvolume for this client. And
->>> delete it when the client disconnects.
->>
->> NFS, cephfs and overlayfs use the same pool of ids, in combination wit=
-h
->> btrfs snapshots the consumption might be higher than in other setups.
->>
->>> Most workspaces are PC game programs. It contains thousands of files
->>> and Its size ranges from 1GB to 20GB.
->>
->> We can rule out regular files, they don't affect that, and the numbers=
-
->> you posted are all normal.
->>
->>> About 200 windows clients access this server through samba. About 20
->>> snapshots create/delete in one minute.
->>
->> This is contributing to the overall consumption of the ids from the
->> pool, but now it's shared among the network filesystem and btrfs.
->>
->> Possible explanation would be leak of the ids, once this state is hit
->> it's permament so no new snapshots could be created or the network
->> clients will start getting some other error.
->>
->> If there's no leak, then all objects that have the id attached would
->> need to be active, ie. snapshot part of a path, network client
->> connected to it's path. This also means some sort of caching, so the i=
-ds
->> are not returned back right away.
->>
->> For the subvolumes the ids get returned once the subvolume is deleted
->> and cleaned, which might take time and contribute to the pool
->> exhaustion. I need to do some tests to see if we could release the ids=
-
->> earlier.
-
-
---q7hCZEsmDeBBnHVulqw3EfRdgtAeMOZJQ--
-
---lY8eGQOuHN40jdz8qlyKYTVyZSfi9pxgt
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl7oFGsACgkQwj2R86El
-/qivAggAgQJtEb5IK66OviZ+/jgk6YenXTqiYgeblPiNSAsXKwVEeFm97WS26mle
-QjtzibdM4GFXKM+ikMjChM9X85kNAJ8kPPzFey3bwdMR2bnY+OwInZQgKryNxJOl
-vDmMeWvaXy2nR/HdYn0KTOvYa220iNXk9UxLk8Z4tXgLKcujtX9L/PlxUw+XG5s+
-gtU9pZnk0FdTrGl53JcetnHMItiiLkIoajHt9z19kC11lrwpzTX8C9IoS1M+KBEQ
-YuTEmAwcvGKeLpIwe88P8tCDIkA91JIVjcpFkT+w0C2Rjptig9vmfox/WJxJrEip
-Fxzp2SMvUzc1sX2qBtn+uwgT2RfH5Q==
-=UBHb
------END PGP SIGNATURE-----
-
---lY8eGQOuHN40jdz8qlyKYTVyZSfi9pxgt--
