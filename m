@@ -2,66 +2,86 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BD131FB5E0
-	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Jun 2020 17:17:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C5251FB605
+	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Jun 2020 17:23:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729279AbgFPPRb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 16 Jun 2020 11:17:31 -0400
-Received: from mx2.suse.de ([195.135.220.15]:57850 "EHLO mx2.suse.de"
+        id S1729223AbgFPPXZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 16 Jun 2020 11:23:25 -0400
+Received: from mx2.suse.de ([195.135.220.15]:60842 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727006AbgFPPRa (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 16 Jun 2020 11:17:30 -0400
+        id S1728899AbgFPPXZ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 16 Jun 2020 11:23:25 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id AEBCEB19C;
-        Tue, 16 Jun 2020 15:17:33 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id BF7C9B1C2;
+        Tue, 16 Jun 2020 15:23:27 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id B5F92DA7C3; Tue, 16 Jun 2020 17:17:20 +0200 (CEST)
-Date:   Tue, 16 Jun 2020 17:17:20 +0200
+        id C847ADA7C3; Tue, 16 Jun 2020 17:23:14 +0200 (CEST)
+Date:   Tue, 16 Jun 2020 17:23:14 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>
-Subject: Re: [PATCH v3 4/5] btrfs: change the timing for qgroup reserved
- space for ordered extents to fix reserved space leak
-Message-ID: <20200616151720.GF27795@twin.jikos.cz>
+To:     Filipe Manana <fdmanana@kernel.org>
+Cc:     dsterba@suse.cz, linux-btrfs <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH 1/4] Btrfs: fix hang on snapshot creation after
+ RWF_NOWAIT write
+Message-ID: <20200616152314.GG27795@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>
-References: <20200610010444.13583-1-wqu@suse.com>
- <20200610010444.13583-5-wqu@suse.com>
+Mail-Followup-To: dsterba@suse.cz, Filipe Manana <fdmanana@kernel.org>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>
+References: <20200615174601.14559-1-fdmanana@kernel.org>
+ <20200616143420.GC27795@twin.jikos.cz>
+ <CAL3q7H4BWscwaA4PL2wKuejHgifZ6ea4Eq+pt-cZAQenxF9s3w@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200610010444.13583-5-wqu@suse.com>
+In-Reply-To: <CAL3q7H4BWscwaA4PL2wKuejHgifZ6ea4Eq+pt-cZAQenxF9s3w@mail.gmail.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Jun 10, 2020 at 09:04:43AM +0800, Qu Wenruo wrote:
-> [BUG]
-> The following simple workload from fsstress can lead to qgroup reserved
-> data space leakage:
->   0/0: creat f0 x:0 0 0
->   0/0: creat add id=0,parent=-1
->   0/1: write f0[259 1 0 0 0 0] [600030,27288] 0
->   0/4: dwrite - xfsctl(XFS_IOC_DIOINFO) f0[259 1 0 0 64 627318] return 25, fallback to stat()
->   0/4: dwrite f0[259 1 0 0 64 627318] [610304,106496] 0
+On Tue, Jun 16, 2020 at 04:17:19PM +0100, Filipe Manana wrote:
+> On Tue, Jun 16, 2020 at 3:34 PM David Sterba <dsterba@suse.cz> wrote:
+> > On Mon, Jun 15, 2020 at 06:46:01PM +0100, fdmanana@kernel.org wrote:
+> > > From: Filipe Manana <fdmanana@suse.com>
+> > > --- a/fs/btrfs/file.c
+> > > +++ b/fs/btrfs/file.c
+> > > @@ -1914,6 +1914,8 @@ static ssize_t btrfs_file_write_iter(struct kiocb *iocb,
+> > >                       inode_unlock(inode);
+> > >                       return -EAGAIN;
+> > >               }
+> > > +             /* check_can_nocow() locks the snapshot lock on success */
+> > > +             btrfs_drew_write_unlock(&root->snapshot_lock);
+> >
+> > That's quite ugly that the locking semantics of check_can_nocow is
+> > hidden, this should be cleaned up too.
+> >
+> > The whole condition
+> >
+> > 1909                 if (!(BTRFS_I(inode)->flags & (BTRFS_INODE_NODATACOW |
+> > 1910                                               BTRFS_INODE_PREALLOC)) ||
+> > 1911                     check_can_nocow(BTRFS_I(inode), pos, &count) <= 0)
+> >
+> > has 2 parts and it's not obvious from the context when the lock actually is
+> > taken. The flags check could be pushed down to check_can_nocow, the
+> > same but negated condition can be found in btrfs_file_write_iter so this
+> > would make it something like:
+> >
+> >         if (check_can_nocow(inode, pos, &count) <= 0) {
+> >                 /* fallback */
+> >                 return ...;
+> >         }
+> >         /*
+> >          * the lock is taken and needs to be unlocked at the right time
+> >          */
+> >
+> > Suggestions to rename check_can_nocow welcome too.
 > 
-> This would cause btrfs qgroup to leak 20480 bytes for data reserved
-> space.
-> If btrfs qgroup limit is enabled, such leakage can lead to unexpected
-> early EDQUOT and unusable space.
+> Sure, I can understand it may look not obvious on first sight at least.
 > 
-> [CAUSE]
-> When doing direct IO, kernel will try to writeback existing buffered
-> page cache, then invalidate them:
->   iomap_dio_rw()
->   |- filemap_write_and_wait_range();
->   |- invalidate_inode_pages2_range();
+> Here I'm only focusing on functional problems and kept this fix as
+> small as possible to backport to stable releases,
+> as this is a bug that directly impacts user experience.
 
-As the dio-iomap got reverted, can you please update the changelog and
-review if the changes are still valid? The whole patchset is in
-misc-next so I'll update the changelog in place if needed, or replace
-the whole patchset. Thanks.
+Ok that makes sense of course, I'll add the four patches to misc-next
+and queue them for rc. Thanks.
