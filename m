@@ -2,98 +2,117 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 632081FC2E4
-	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Jun 2020 02:37:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D1D41FC314
+	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Jun 2020 02:57:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726329AbgFQAhZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 16 Jun 2020 20:37:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43878 "EHLO
+        id S1726537AbgFQA52 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 16 Jun 2020 20:57:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725894AbgFQAhZ (ORCPT
+        with ESMTP id S1725894AbgFQA52 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 16 Jun 2020 20:37:25 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CCECC061573;
-        Tue, 16 Jun 2020 17:37:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:To:From:Date:Sender:Reply-To:Cc:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=wFQoXTSBvbEH49Ty46ov9C8/Nsm6g8zmno6k8zfkw2E=; b=n3JyTVpYYWBeG3//7Dbz6/D0OV
-        GzgCh3WX+b3KjXRf4Xu6V0kdWmcuZlo2UQDkR2srryX8xaDqqXUoKDJBqLY7z9Bq/HRtzigf/uuiY
-        Sd9jJpet2hC7DsxpwLEdZSe4WrbCxE6M7EuV4BE8Ch3Qujx54e7p1KIWEuHwoa8nTUBRG0qgKm3X8
-        u7bLbT0NrHrYEwM3LMHCZKB4a00yRbRrAuqtH54MqoUTLvEdaMZTkNth3X48Dr08NSer2XbXsH4Cc
-        9E/jX0kKqgw0X02KSRbK/oP/jsZWfFKLiCNdwF4MOhsJnOh7KhHW+wqMLwNoSKm5xDEvSkWRRH8mP
-        +9pgK1yg==;
-Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jlM4l-0006AH-5o; Wed, 17 Jun 2020 00:37:11 +0000
-Date:   Tue, 16 Jun 2020 17:37:11 -0700
-From:   Matthew Wilcox <willy@infradead.org>
-To:     dsterba@suse.cz, Joe Perches <joe@perches.com>,
-        Waiman Long <longman@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Howells <dhowells@redhat.com>,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        David Rientjes <rientjes@google.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        "Jason A . Donenfeld" <Jason@zx2c4.com>, linux-mm@kvack.org,
-        keyrings@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-amlogic@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-ppp@vger.kernel.org, wireguard@lists.zx2c4.com,
-        linux-wireless@vger.kernel.org, devel@driverdev.osuosl.org,
-        linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-cifs@vger.kernel.org,
-        linux-fscrypt@vger.kernel.org, ecryptfs@vger.kernel.org,
-        kasan-dev@googlegroups.com, linux-bluetooth@vger.kernel.org,
-        linux-wpan@vger.kernel.org, linux-sctp@vger.kernel.org,
-        linux-nfs@vger.kernel.org, tipc-discussion@lists.sourceforge.net,
-        linux-security-module@vger.kernel.org,
-        linux-integrity@vger.kernel.org
-Subject: Re: [PATCH v4 0/3] mm, treewide: Rename kzfree() to kfree_sensitive()
-Message-ID: <20200617003711.GD8681@bombadil.infradead.org>
-References: <20200616015718.7812-1-longman@redhat.com>
- <fe3b9a437be4aeab3bac68f04193cb6daaa5bee4.camel@perches.com>
- <20200616230130.GJ27795@twin.jikos.cz>
+        Tue, 16 Jun 2020 20:57:28 -0400
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1CC9C061573;
+        Tue, 16 Jun 2020 17:57:26 -0700 (PDT)
+Received: by mail-io1-xd42.google.com with SMTP id r2so791000ioo.4;
+        Tue, 16 Jun 2020 17:57:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=pEQnZOnPBJbDchwbmEUUZLW0wYE5G6XsMaI0bdt7ET4=;
+        b=Tgh6zIu9SlKqTUKI4lExwCDwAAHFKxlTCElshDvOm1mn12iYD4/DlZalieO/RImp9r
+         LOfdrsTqINnmMIAwC9mdceqa/wMyw0Auk9KnlvF4RPcnGvBFJBKHV1DcaOHVsC8ZJlyj
+         EWU6xc0nQ7onqRbgGSdDKr9j6yTVOkffRg7YhoJMYTrD0VbKc2wSWqiWF1vx5t2+TlDQ
+         0H1Q/EcYDHCiJ7V1yZRhtkqBnN46jbkGbvZxmeW2dZ9q6NUSkrxTmZ4rnGe1GGysIgBd
+         ew/2hyGURcasW9W+HnGwp+PirW2QERWh+ZXINj7JdG6J0FXvqGEWoCoh1SMLGG1V6Vsg
+         vn8A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=pEQnZOnPBJbDchwbmEUUZLW0wYE5G6XsMaI0bdt7ET4=;
+        b=dr63b/chJ9Ht1/HDhgRhT+zPsC93xJ+ayWjqDxq6CgF4YvrZKO2sg/xuGgrlcLTKM9
+         0Zq/d/gRBAzwaDOq6zDZh7MWt7KPkZTacg/xVIp9S26ovBCEPp3BlCTFiHOzRcrKy8nM
+         tS+SCyX14ZVkXSVxjxUmaZD2/Ryi7nfJMF3MzWs6S0iP3nTCqfCfenP2FPDm98hBDM+t
+         uk8YG1Yj1N4GcPYBUdhz+pPQwkr7hg8R9okESFp6Ft0W5gK5kdd/oiZFD/pKI5jMWVRS
+         VR0KYiFuHGrqDMKroGyaFW8UKqvCVutTIOGxikTTU0PE5bZ8l4y9tUUgV7wBY9ZjGEXd
+         Fv7A==
+X-Gm-Message-State: AOAM531UNKSGIm7ypEQJTx/lD8pWGtFpoMm6DaO59QldEdrNwkqv7G6+
+        6mmnuFhHVniT621Fk8bBoVI+/uwOrmO/z46AoGU=
+X-Google-Smtp-Source: ABdhPJyA0Elba10YCloQoueU20W+3sFrfsTj5mkkigBe/qlBKVyzKzAbesXkHefLeqBLcqq7m6UegL8dAN6/zvs9CGg=
+X-Received: by 2002:a5d:9413:: with SMTP id v19mr5708100ion.105.1592355445894;
+ Tue, 16 Jun 2020 17:57:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200616230130.GJ27795@twin.jikos.cz>
+References: <20200414150233.24495-1-willy@infradead.org> <20200414150233.24495-17-willy@infradead.org>
+ <CAHc6FU4m1M7Tv4scX0UxSiVBqkL=Vcw_z-R7SufL8k7Bw=qPOw@mail.gmail.com> <20200617003216.GC8681@bombadil.infradead.org>
+In-Reply-To: <20200617003216.GC8681@bombadil.infradead.org>
+From:   =?UTF-8?Q?Andreas_Gr=C3=BCnbacher?= <andreas.gruenbacher@gmail.com>
+Date:   Wed, 17 Jun 2020 02:57:14 +0200
+Message-ID: <CAHpGcMK6Yu0p-FO8CciiySqh+qcWLG-t3hEaUg-rqJnS=2uhqg@mail.gmail.com>
+Subject: Re: [Cluster-devel] [PATCH v11 16/25] fs: Convert mpage_readpages to mpage_readahead
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Andreas Gruenbacher <agruenba@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-xfs <linux-xfs@vger.kernel.org>,
+        Junxiao Bi <junxiao.bi@oracle.com>,
+        William Kucharski <william.kucharski@oracle.com>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-f2fs-devel@lists.sourceforge.net,
+        cluster-devel <cluster-devel@redhat.com>,
+        Linux-MM <linux-mm@kvack.org>, ocfs2-devel@oss.oracle.com,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-ext4 <linux-ext4@vger.kernel.org>,
+        linux-erofs@lists.ozlabs.org, Christoph Hellwig <hch@lst.de>,
+        linux-btrfs@vger.kernel.org,
+        Steven Whitehouse <swhiteho@redhat.com>,
+        Bob Peterson <rpeterso@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Jun 17, 2020 at 01:01:30AM +0200, David Sterba wrote:
-> On Tue, Jun 16, 2020 at 11:53:50AM -0700, Joe Perches wrote:
-> > On Mon, 2020-06-15 at 21:57 -0400, Waiman Long wrote:
-> > >  v4:
-> > >   - Break out the memzero_explicit() change as suggested by Dan Carpenter
-> > >     so that it can be backported to stable.
-> > >   - Drop the "crypto: Remove unnecessary memzero_explicit()" patch for
-> > >     now as there can be a bit more discussion on what is best. It will be
-> > >     introduced as a separate patch later on after this one is merged.
-> > 
-> > To this larger audience and last week without reply:
-> > https://lore.kernel.org/lkml/573b3fbd5927c643920e1364230c296b23e7584d.camel@perches.com/
-> > 
-> > Are there _any_ fastpath uses of kfree or vfree?
-> 
-> I'd consider kfree performance critical for cases where it is called
-> under locks. If possible the kfree is moved outside of the critical
-> section, but we have rbtrees or lists that get deleted under locks and
-> restructuring the code to do eg. splice and free it outside of the lock
-> is not always possible.
+Am Mi., 17. Juni 2020 um 02:33 Uhr schrieb Matthew Wilcox <willy@infradead.org>:
+>
+> On Wed, Jun 17, 2020 at 12:36:13AM +0200, Andreas Gruenbacher wrote:
+> > Am Mi., 15. Apr. 2020 um 23:39 Uhr schrieb Matthew Wilcox <willy@infradead.org>:
+> > > From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+> > >
+> > > Implement the new readahead aop and convert all callers (block_dev,
+> > > exfat, ext2, fat, gfs2, hpfs, isofs, jfs, nilfs2, ocfs2, omfs, qnx6,
+> > > reiserfs & udf).  The callers are all trivial except for GFS2 & OCFS2.
+> >
+> > This patch leads to an ABBA deadlock in xfstest generic/095 on gfs2.
+> >
+> > Our lock hierarchy is such that the inode cluster lock ("inode glock")
+> > for an inode needs to be taken before any page locks in that inode's
+> > address space.
+>
+> How does that work for ...
+>
+> writepage:              yes, unlocks (see below)
+> readpage:               yes, unlocks
+> invalidatepage:         yes
+> releasepage:            yes
+> freepage:               yes
+> isolate_page:           yes
+> migratepage:            yes (both)
+> putback_page:           yes
+> launder_page:           yes
+> is_partially_uptodate:  yes
+> error_remove_page:      yes
+>
+> Is there a reason that you don't take the glock in the higher level
+> ops which are called before readhead gets called?  I'm looking at XFS,
+> and it takes the xfs_ilock SHARED in xfs_file_buffered_aio_read()
+> (called from xfs_file_read_iter).
 
-Not just performance critical, but correctness critical.  Since kvfree()
-may allocate from the vmalloc allocator, I really think that kvfree()
-should assert that it's !in_atomic().  Otherwise we can get into trouble
-if we end up calling vfree() and have to take the mutex.
+Right, the approach from the following thread might fix this:
+
+https://lore.kernel.org/linux-fsdevel/20191122235324.17245-1-agruenba@redhat.com/T/#t
+
+Andreas
