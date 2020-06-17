@@ -2,111 +2,147 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 985A01FD96D
-	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Jun 2020 01:12:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8A511FD9B1
+	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Jun 2020 01:39:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726942AbgFQXMS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 17 Jun 2020 19:12:18 -0400
-Received: from smtprelay0191.hostedemail.com ([216.40.44.191]:41454 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726761AbgFQXMS (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 17 Jun 2020 19:12:18 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay07.hostedemail.com (Postfix) with ESMTP id C6BF8181D330D;
-        Wed, 17 Jun 2020 23:12:13 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:965:966:967:968:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2194:2196:2198:2199:2200:2201:2393:2525:2561:2564:2682:2685:2693:2828:2859:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3353:3622:3865:3866:3867:3868:3870:3871:3872:3874:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4321:4385:4390:4395:5007:6248:6691:6742:6743:7875:7903:9025:9108:10004:10400:10848:11232:11658:11914:12043:12048:12050:12297:12438:12555:12740:12760:12895:13069:13095:13311:13357:13439:14096:14097:14180:14181:14659:14721:14777:14915:21080:21433:21451:21627:21788:21811:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:3,LUA_SUMMARY:none
-X-HE-Tag: anger66_3706ec726e0b
-X-Filterd-Recvd-Size: 3931
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf11.hostedemail.com (Postfix) with ESMTPA;
-        Wed, 17 Jun 2020 23:12:07 +0000 (UTC)
-Message-ID: <38c5745d14cff75fe264a3bc61d19fd837baf7ad.camel@perches.com>
-Subject: Re: [PATCH v4 0/3] mm, treewide: Rename kzfree() to
- kfree_sensitive()
-From:   Joe Perches <joe@perches.com>
-To:     Denis Efremov <efremov@ispras.ru>,
-        Waiman Long <longman@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Howells <dhowells@redhat.com>,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        David Rientjes <rientjes@google.com>
-Cc:     Michal Hocko <mhocko@suse.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        David Sterba <dsterba@suse.cz>,
-        "Jason A . Donenfeld" <Jason@zx2c4.com>, linux-mm@kvack.org,
-        keyrings@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-amlogic@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-ppp@vger.kernel.org, wireguard@lists.zx2c4.com,
-        linux-wireless@vger.kernel.org, devel@driverdev.osuosl.org,
-        linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-cifs@vger.kernel.org,
-        linux-fscrypt@vger.kernel.org, ecryptfs@vger.kernel.org,
-        kasan-dev@googlegroups.com, linux-bluetooth@vger.kernel.org,
-        linux-wpan@vger.kernel.org, linux-sctp@vger.kernel.org,
-        linux-nfs@vger.kernel.org, tipc-discussion@lists.sourceforge.net,
-        linux-security-module@vger.kernel.org,
-        linux-integrity@vger.kernel.org
-Date:   Wed, 17 Jun 2020 16:12:06 -0700
-In-Reply-To: <17e4fede-bab0-d93c-6964-69decc889d7d@ispras.ru>
-References: <20200616015718.7812-1-longman@redhat.com>
-         <fe3b9a437be4aeab3bac68f04193cb6daaa5bee4.camel@perches.com>
-         <17e4fede-bab0-d93c-6964-69decc889d7d@ispras.ru>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.2-0ubuntu1 
+        id S1726835AbgFQXji (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 17 Jun 2020 19:39:38 -0400
+Received: from mout.gmx.net ([212.227.15.15]:58167 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726763AbgFQXjh (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 17 Jun 2020 19:39:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1592437172;
+        bh=9qa7JsvfgCQj6s4iia5rNNJdW8JFoDc/NT7HJdEp5GU=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=jr8/krd8al0cr1awN5EG18YntYXDN++BXesdyuqTJ1CWuwETTmu8l6qPlXeQcGTV/
+         tucg9Hl2AziPyRld7tDgP2D9SWLQLA30rhYPOegsbDcICXSLULs6MIkwDNWPNHk8IF
+         yGaMD37HztK9HjBqcq+BFIvkj7k1wPqhsn0w8cxI=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MiacH-1jHc9s3sJz-00fh86; Thu, 18
+ Jun 2020 01:39:32 +0200
+Subject: Re: [PATCH 2/4] btrfs: detect uninitialized btrfs_root::anon_dev for
+ user visible subvolumes
+To:     Josef Bacik <josef@toxicpanda.com>, dsterba@suse.cz,
+        Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+References: <20200616021737.44617-1-wqu@suse.com>
+ <20200616021737.44617-3-wqu@suse.com>
+ <d17609b5-ac29-937c-763d-fc978e3f1bad@toxicpanda.com>
+ <f1f940ba-3f1d-302a-0d28-5620286bcdc0@gmx.com>
+ <a7417666-56a0-be6a-1691-e647802e1df7@toxicpanda.com>
+ <0e274dc7-ac05-078a-2a2c-348e72745d45@suse.com>
+ <20200617113109.GK27795@twin.jikos.cz>
+ <e665ed96-63f1-ae72-15dd-ba8d75288568@toxicpanda.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
+ mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAVQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWCnQUJCWYC
+ bgAKCRDCPZHzoSX+qAR8B/94VAsSNygx1C6dhb1u1Wp1Jr/lfO7QIOK/nf1PF0VpYjTQ2au8
+ ihf/RApTna31sVjBx3jzlmpy+lDoPdXwbI3Czx1PwDbdhAAjdRbvBmwM6cUWyqD+zjVm4RTG
+ rFTPi3E7828YJ71Vpda2qghOYdnC45xCcjmHh8FwReLzsV2A6FtXsvd87bq6Iw2axOHVUax2
+ FGSbardMsHrya1dC2jF2R6n0uxaIc1bWGweYsq0LXvLcvjWH+zDgzYCUB0cfb+6Ib/ipSCYp
+ 3i8BevMsTs62MOBmKz7til6Zdz0kkqDdSNOq8LgWGLOwUTqBh71+lqN2XBpTDu1eLZaNbxSI
+ ilaVuQENBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAGJATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAK
+ CRDCPZHzoSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gy
+ fmtBnUaifnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsS
+ oCEEynby72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAk
+ ZkA523JGap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gG
+ UO/iD/T5oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
+Message-ID: <38c70792-fb5b-f986-e4cc-087efcb3d54b@gmx.com>
+Date:   Thu, 18 Jun 2020 07:39:28 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <e665ed96-63f1-ae72-15dd-ba8d75288568@toxicpanda.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:tz8IWc7vshQ0UtDv3a0xtYjx9ANvssDnC1tkz/5i71+cNtddtXP
+ jIWqC1o0NzhoQAGk8AGyCetvKRdhnxzIJOVChBP+XRkpfy/8xXjzzVajvNgCW7SWVWCPiZK
+ KJbPXZ0WqwlK5Tz34ddScdvzzDfJ/dZx5GfFAT7mj3V/SNoC4mzYnQAliS+c9wuexlI6aKH
+ mK27dOa5tgc5ITKI1jf9Q==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:3aiZDh+I8YE=:1Xx0bbldJUrcyG+/fkDv1S
+ u5qGsBZV5VcJoQmLtE0l3bG00xM+bZMxPZjZ515vk3MMYYkF3pmVO/VPRuNfiG5ZHyKtvPFK3
+ AUieiC3fZEzplIUJb1JzZuyuit/y4oHk7LFHVAlaqO31TRTt95GxkCIWt9E4eBr3MUaxYXSw1
+ kkKaWQYXs6W9Q7SkNyJQq3oDWvQucyLXVXksjRMepJ4VbKwBqYkmx90RXOBEGiHM84AVsaEEb
+ 3uPiDhrusc3LmTUGOzh7cK4SMVrn/ws+KdoTTPbA8zSf6mc/biBsj4IF9/rmqo2j9ZvM79LnW
+ TIpUS0hCRUNiFC3RmMxBEh3C6+MQoFEgiApypDhxLydjmGzzx4yQVyUK+ILV9Xx6R6zGeYNxP
+ XJPehV5id+p5hUtQFsJLIvpzdaEbX3OTlKeq7AfDEjK17bzB88y6FQei11BnHerzTIJ8Mi2Lj
+ L+iiDqSQs2kgB+nTG/7tq8+M0FRzhcDT3ZxtpGzLdjkXqz6prlM/RpnVee1ggSWslZaOVUoEA
+ avO4KWBpXElXdf5mbfRQb9FQhysTG8BovMPfx8ypMjp/8TmZjVh/Ba3/VovS0lWhYbtYB2jmT
+ LWNhU/aUtwlHBQVXLwseKcXwHRNIj9E++2utUhIUtCDZ7Y6NfsU501R9Sb7CxIjvXQRuyQCfO
+ MmQeGyA3fpNsAC/S4xM0hkUUPQmV8CgOBTtCidUvQy20nDPy459dINlVAFoiNo5eiNdc3x5R9
+ DOcc9INDkOjMMOwXtvJDqGB1UlzYQAiIi54+qzHzHtygd8+Npvieg1xiuq+LzqcbsEmYXjVYU
+ X+1z9Iq6kjdrnxMB8dnV6mu7vyGwbfVoQPWS3hewR5ilY6o8HJjyK4kUhlIVXcbp2nCpu1seC
+ JTbp+vS6yt6hZF7q7DJ2/63ALtVc8nbGb4zJT618TnEd5goFCuJWbOmbc9nY0ONknDP3Y7kbo
+ oFlRoNsjgNV9X6UZq/xnwlaydFAunFKxRfC87q9tIKv0CVR3IJnZyx6UyLORSW6Oqu+nk0jZ8
+ MM+gBaHFPgFxATX2a9eLGrY3A08tU61MiCW/nOalIZN3aNvdNRVWpqY0sirfcI+fIglVxUfzs
+ 93TZesV6iR+urVyYqDJGTGo7u+nA4tSPTTQPH1BaCeqDq6kzWG6l34IS5DQFDCdIUaz7uGXIc
+ 5DEhMrV8Uy0UTwnFZI+MMHBUdADs5MFxtpn7Au10ZF0maCijWzTI4mPT8A8jU7z3ktCW8ARfF
+ x/JCQHF/y9qAcJ8dR
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, 2020-06-18 at 00:31 +0300, Denis Efremov wrote:
-> 
-> On 6/16/20 9:53 PM, Joe Perches wrote:
-> > On Mon, 2020-06-15 at 21:57 -0400, Waiman Long wrote:
-> > >  v4:
-> > >   - Break out the memzero_explicit() change as suggested by Dan Carpenter
-> > >     so that it can be backported to stable.
-> > >   - Drop the "crypto: Remove unnecessary memzero_explicit()" patch for
-> > >     now as there can be a bit more discussion on what is best. It will be
-> > >     introduced as a separate patch later on after this one is merged.
-> > 
-> > To this larger audience and last week without reply:
-> > https://lore.kernel.org/lkml/573b3fbd5927c643920e1364230c296b23e7584d.camel@perches.com/
-> > 
-> > Are there _any_ fastpath uses of kfree or vfree?
-> > 
-> > Many patches have been posted recently to fix mispairings
-> > of specific types of alloc and free functions.
-> 
-> I've prepared a coccinelle script to highlight these mispairings in a function
-> a couple of days ago: https://lkml.org/lkml/2020/6/5/953
-> I've listed all the fixes in the commit message. 
-> 
-> Not so many mispairings actually, and most of them are harmless like:
-> kmalloc(E) -> kvfree(E)
-> 
-> However, coccinelle script can't detect cross-functions mispairings, i.e.
-> allocation in one function, free in another funtion.
-
-Hey Denis, thanks for those patches.
-
-If possible, it's probably better to not require these pairings
-and use a single standard kfree/free function.
-
-Given the existing ifs in kfree in slab/slob/slub, it seems
-likely that adding a few more wouldn't have much impact.
 
 
+On 2020/6/17 =E4=B8=8B=E5=8D=889:37, Josef Bacik wrote:
+> On 6/17/20 7:31 AM, David Sterba wrote:
+>> On Wed, Jun 17, 2020 at 07:49:33AM +0800, Qu Wenruo wrote:
+>>>>>> Can we handle stat->dev not having a device set?=C2=A0 Or will this
+>>>>>> blow up
+>>>>>> in other ways?=C2=A0 Thanks,
+>>>>>
+>>>>> We can handle it without any problem, just users get confused.
+>>>>>
+>>>>> As a common practice, we use different bdev as a namespace for
+>>>>> different
+>>>>> subvolumes.
+>>>>> Without a valid bdev, some user space tools may not be able to
+>>>>> distinguish inodes in different subvolumes.
+>>>>>
+>>>>
+>>>> Alright that's fine then.=C2=A0 But I feel like stat is one of those =
+things
+>>>> that'll flood the console, can we put this somewhere else that's goin=
+g
+>>>> to be hit less? Thanks,
+>>>
+>>> Unfortunately, stat() is the only user of btrfs_root::anon_dev.
+>>>
+>>> While fortunately, the logical is pretty simple, even without the safe
+>>> net we can understand the lifespan pretty well.
+>>>
+>>> I'm fine to drop this patch if you're concerned about the possible
+>>> warning flood, as the benefit is really not that much.
+>>
+>> It could be a developer-only warning but if there's a root with a bad
+>> anon_dev, a simple 'ls -l' would flood the log for sure.
+>>
+>
+> We'll know in btrfs_init_fs_root() when get_anon_bdev() fails right?=C2=
+=A0
+> Can't we just complain then?=C2=A0 That seems less spammy.=C2=A0 Thanks,
+
+That's exactly where we do the allocation, that would be something like
+warning about the allocation result.
+
+That's why I'm fine to drop this patch if it's too spammy.
+
+Thanks,
+Qu
+>
+> Josef
