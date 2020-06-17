@@ -2,153 +2,83 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2878A1FCDAB
-	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Jun 2020 14:48:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8CA81FCDBD
+	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Jun 2020 14:52:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726211AbgFQMru (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 17 Jun 2020 08:47:50 -0400
-Received: from corp-mailer.zoner.com ([217.198.120.77]:59157 "EHLO
-        corp-mailer.zoner.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725860AbgFQMru (ORCPT
+        id S1726573AbgFQMvv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 17 Jun 2020 08:51:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43960 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726280AbgFQMvv (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 17 Jun 2020 08:47:50 -0400
-X-Greylist: delayed 326 seconds by postgrey-1.27 at vger.kernel.org; Wed, 17 Jun 2020 08:47:47 EDT
-Received: from [10.1.0.142] (gw-sady.zoner.com [217.198.112.101])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by corp-mailer.zoner.com (Postfix) with ESMTPSA id 9397B1E9FD
-        for <linux-btrfs@vger.kernel.org>; Wed, 17 Jun 2020 14:42:20 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zoner.cz;
-        s=zcdkim1-3eawpepsdj8o10p; t=1592397740;
-        bh=YnN8misTosbtWUJgPyq4bcBIUlRjQ/Q2SiwRYkRCV7k=;
-        h=From:Subject:To:Date:From;
-        b=EER1qNA7LWO1JscDDwt7g+HSwTpNYm3i2X/gBAG8+i7Ed1Xmhm2gqSkJijDR0+V2n
-         8l3FtDUM/HgdqCoLAXxXwkjibVi/uUrI5VfbYZD6NUEaQEteLo80cP1kFOivjT0nxW
-         P5GNtcLFxl2uOW4pVPblXxs86YgfjR8e2t1NdBZPbx+TeDAsTbpjRzCzTNWD0ZGD5k
-         WdX6z0jwnBLbCREWUmTDPmHjzbIl7DkCG+w0OIPlfftehhdO5U6XeiLT228zAMhw8u
-         8pmua0x9BOIJ1nQwaKb0SYj7z++ok9QK9d/2lGeRVCkJ6a40QX/A9DNiGw3iYxlo0b
-         LFYzG4DzN5/hA==
-From:   Martin Svec <martin.svec@zoner.cz>
-Subject: Very large btrfs_free_space_bitmap slab
-Autocrypt: addr=martin.svec@zoner.cz; prefer-encrypt=mutual; keydata=
- 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
- KvHiauE9QtI=
-To:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Message-ID: <8a0d7f63-2b4a-d2d4-e976-d9446d8cf559@zoner.cz>
-Date:   Wed, 17 Jun 2020 14:42:20 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        Wed, 17 Jun 2020 08:51:51 -0400
+Received: from mail-vs1-xe44.google.com (mail-vs1-xe44.google.com [IPv6:2607:f8b0:4864:20::e44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD5EAC06174E
+        for <linux-btrfs@vger.kernel.org>; Wed, 17 Jun 2020 05:51:50 -0700 (PDT)
+Received: by mail-vs1-xe44.google.com with SMTP id g129so1300463vsc.4
+        for <linux-btrfs@vger.kernel.org>; Wed, 17 Jun 2020 05:51:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=J0VpeRSOJK/TFNJp5yzWMw9fGCcpvggw0aTUG92BVzQ=;
+        b=ZKu+9aqdvUwtLpcD7J4C6lBsgUyWhv6hsdFiirPA8rfuyV8UFVKPYwKVJpqr4UE2pU
+         B4BBgF/5tKeNtxlSugc0jyZ8n0Vx0ufUBYt6dnMT0Drxi3+fSSFxiSJ+IwH7V+9HmHyx
+         Rzunxw0ZWu5KXdV3WniWP9uaKBqvwhm3IwDF2Os1MtKolweQYfHW62nbS/WFDRsTvLko
+         qCJlyeq1K+77p6mYxectZSzbUHPK6ZA/hIvm1lKTRB89RRf5VNMgoLDF0JcvOIKLJNLi
+         6ZVgFiaqXCUReYOAGh6bZ7jZTr1+NZfUwO7BGDkr7SdTCt49iDVzZsvDFBewoWeU8EOa
+         Uetg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=J0VpeRSOJK/TFNJp5yzWMw9fGCcpvggw0aTUG92BVzQ=;
+        b=dQfh0MgvIeAXkwtaRfHYs6l8OkdL5OhN4zYC90eaAAuRpgYMFk6CldPMBQF45LYp2f
+         S1wjAfq48gKARl2UdXMwm1B3YEmKQFHcf3DLGlrnxTWRnLvW3okPXt0mQsSmHwE2SbEO
+         0ZUQ1mjHEoXG+vHP/YeiE2Many4XVUTHrkf1E2BUHWvDQjcoLbun8dP7FOZ/t82LDbMs
+         13+Jg7V5pDRFLLLOuiRBLyYOlaGtCue8lpxxDWFzBseJHNZcPm5LafP0tCqCODRcDwf6
+         WDpWBj8X8vuF7QDmXi1sMPpONYkfV1lAcELh512kUOtm++OUrSiaXev7YE0pEEl5HaQS
+         8hdw==
+X-Gm-Message-State: AOAM5336BPd7MwYEGKf7OdkKnqNcwQSn9ibDVLDqxXQjRuWcYCaPgUVP
+        m7fMuN3HNc0518GswU38aGnwPjlfKstNcFD6VbQ=
+X-Google-Smtp-Source: ABdhPJzrmrd/rglMr9DszowcG6Y0QAXwn/An5GjuB6XamBLTeQ4zmrnw8MDcDhu2dntdER4iErQzEM4lO6pfcS/fcBc=
+X-Received: by 2002:a05:6102:215:: with SMTP id z21mr5411787vsp.172.1592398310094;
+ Wed, 17 Jun 2020 05:51:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-2
-Content-Transfer-Encoding: base64
-Content-Language: cs
+Received: by 2002:ab0:40a9:0:0:0:0:0 with HTTP; Wed, 17 Jun 2020 05:51:49
+ -0700 (PDT)
+Reply-To: sctnld11170@tlen.pl
+From:   "Mr. Scott Donald" <mes64543@gmail.com>
+Date:   Wed, 17 Jun 2020 05:51:49 -0700
+Message-ID: <CAF4hjb9HbTFrvT60_D2AxdTDO1u7dvGfuv1j=7BUKW97ffC-sw@mail.gmail.com>
+Subject: Hello, Please
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-SGVsbG8sDQoNCnJlY2VudGx5IEkgbm90aWNlZCBtZW1vcnkgcHJlc3N1cmUgaXNzdWVzIG9u
-IG9uZSBvZiBvdXIgYnRyZnMtYmFzZWQgYmFja3VwIHNlcnZlcnMsIGxlYWRpbmcgdG8gT09N
-DQphbmQgb2NjYXNpb25hbCBzZXJ2ZXIgY3Jhc2hlcy4gVGhlIG1haW4gcmVhc29uIHNlZW1z
-IHRvIGJlIHZlcnkgbGFyZ2UgYnRyZnMgc2xhYnMuIEZpbGVzeXN0ZW0NCmNvbnRhaW5zIGlt
-YWdlcyBvZiB2aXJ0dWFsIG1hY2hpbmUgZGlza3MsIGRhaWx5IGluY3JlbWVudGFsIGJhY2t1
-cHMgYXJlIGJhc2VkIG9uIGJ0cmZzIHNuYXBzaG90cyBhbmQNClZNd2FyZSBDaGFuZ2VkIEJs
-b2NrIFRyYWNraW5nIHRvIHVwZGF0ZSBvbmx5IGNoYW5nZWQgc2VjdG9ycy4gQmFja3VwIHNu
-YXBzaG90cyBhcmUgZGVsZXRlZCBhZnRlciAzMA0KZGF5cy4gVGhlIHNlcnZlciBoYXMgNSBH
-QiBvZiBSQU0gYW5kIHNsYWJ0b3AgbG9va3MgYXMgZm9sbG93czoNCg0KMTE0Nzc4IDExNDc3
-N6AgOTkloKAgMTIuMDBLoCA2NTc1MaCgoKCgoKAgMqCgIDIxMDQwMzJLIGJ0cmZzX2ZyZWVf
-c3BhY2VfYml0bWFwDQo0NDQ5NzYwIDQxMzI0MjCgIDkyJaCgoCAwLjA3S6AgNzk0NjCgoKCg
-oKAgNTagoKAgMzE3ODQwSyBidHJmc19mcmVlX3NwYWNlDQoyMDYzNjCgIDM4ODU1oCAxOCWg
-oKAgMC41N0ugoCAzNjg1oKCgoKCgIDU2oKCgIDExNzkyMEsgcmFkaXhfdHJlZV9ub2RlDQo0
-OTc3N6AgNDc5MjKgIDk2JaCgoCAwLjU5S6CgIDE5MTKgoKCgoKAgNTOgoKCgIDYxMTg0SyBp
-bm9kZV9jYWNoZQ0KMzczNjGgIDMyMjE3oCA4NiWgoKAgMS4xNEugoCAxMzM3oKCgoKCgIDI4
-oKCgoCA0Mjc4NEsgYnRyZnNfaW5vZGUNCjM2MDMyoCAzNTQzMKAgOTgloKCgIDEuMDBLoKAg
-MTEyNqCgoKCgoCAzMqCgoKAgMzYwMzJLIGttYWxsb2MtMWsNCjk5MzcyoCA5NTA5MqAgOTUl
-oKCgIDAuMTlLoKAgMjM2N6CgoKCgoCA0MqCgoKAgMTg5MzZLIGRlbnRyeQ0KNDk2NjKgIDEw
-Nzk0oCAyMSWgoKAgMC4yNkugoKAgODAxoKCgoKCgIDYyoKCgoCAxMjgxNksgYnRyZnNfZXh0
-ZW50X2J1ZmZlcg0KNDY3MzagIDQ1NDk2oCA5NyWgoKAgMC4yNUugoKAgNzMxoKCgoKCgIDY0
-oKCgoCAxMTY5NksgZmlscA0KNzQ4NzKgIDM0Nzg0oCA0NiWgoKAgMC4xNEugoCAxMzM5oKCg
-oKCgIDU2oKCgoCAxMDcxMksgYnRyZnNfZXh0ZW50X21hcA0KDQpXaGVuIEkgcnVuIGNsZWFu
-dXAgb2Ygb2xkIHNuYXBzaG90cywgdHdvIG1vcmUgbGFyZ2UgYnRyZnMgc2xhYnMgdGVtcG9y
-YXJpbHkgYXBwZWFyOg0KDQo2MjI2MjQ4oCA1MTIxNjE5oCA4MiWgoKAgMC4xNEugoCAxMTEy
-ODCgoKCgoKAgNTagoKCgIDg5MDI0MEsgYnRyZnNfZGVsYXllZF9yZWZfaGVhZA0KNjE3NTU4
-NCA1MTM5NzcyoCA4MyWgoKAgMC4xMUugoCAxNzE1NDSgoKCgoKAgMzagoKCgIDY4NjE3Nksg
-YnRyZnNfZGVsYXllZF9kYXRhX3JlZg0KDQpJcyBpdCBhbiBleHBlY3RlZCBiZWhhdmlvciB0
-aGF0IGJ0cmZzIHNsYWJzIChlc3BlY2lhbGx5IGJ0cmZzX2ZyZWVfc3BhY2VfYml0bWFwKSBn
-cm93IHRvIHRoZSBhYm92ZQ0Kc2l6ZXMgYW5kIGFyZW4ndCBhdXRvbWF0aWNhbGx5IGZyZWVk
-IHdoZW4gdGhlIHN5c3RlbSBydW5zIG91dCBvZiBmcmVlIG1lbW9yeT8gQXMgZmFyIGFzIEkg
-a25vdywgZnJlZQ0Kc3BhY2UgYml0bWFwcyBhcmUgc3RvcmVkIG9uIGRpc2sgYXMgd2VsbCwg
-c28gSUhNTyB0aGV5IHNob3VsZG4ndCBiZSBwZXJtYW5lbnRseSBwaW5uZWQgaW4gbWVtb3J5
-LiBJDQp0cmllZCAiZWNobyAzID4gZHJvcF9jYWNoZXMiIGJ1dCBpdCBvYnZpb3VzbHkgaGFz
-IG5vIGVmZmVjdCBvbiB0aGVzZSBzbGFicy4gSSdtIGFsc28gc3VycHJpc2VkIHRoYXQNCmNv
-bW1vbiBmaWxlc3lzdGVtIG9wZXJhdGlvbnMgY2FuIGNhdXNlIE9PTSBraWxsZXIgdG8gdGVy
-bWluYXRlIGFsbW9zdCBhbGwgcnVubmluZyBhcHBsaWNhdGlvbnMuIEkNCndvdWxkIGV4cGVj
-dCBtb3JlIGRpc2sgSS9PIGFuZCBzbG93ZXIgb3BlcmF0aW9ucywgYnV0IG5vIGFwcGxpY2F0
-aW9uL3NlcnZlciBjcmFzaGVzLg0KDQpLZXJuZWwgdmVyc2lvbjogdmFuaWxsYSA0LjE5Ljg3
-ICsgY3VzdG9tIHBhdGNoIHRoYXQgcGxhY2VzIG1ldGFkYXRhIGNodW5rcyBvbiBTU0QgZGV2
-aWNlDQpUb3RhbCBudW1iZXIgb2Ygc25hcHNob3RzOiAzOTQxIChhcHByb3guIDE3NSBzbmFw
-c2hvdHMgY3JlYXRlZCBhbmQgZGVsZXRlZCBldmVyeSBkYXkpDQpNb3VudCBvcHRpb25zOiBu
-b2F0aW1lLGNvbXByZXNzPXpzdGQsZW5vc3BjX2RlYnVnLHNwYWNlX2NhY2hlPXYyLGNvbW1p
-dD01DQoNCiMgYnRyZnMgZmkgdXNhZ2UgL2JhY2t1cA0KT3ZlcmFsbDoNCqCgoCBEZXZpY2Ug
-c2l6ZTqgoKCgoKCgoKCgoKCgoKCgoCAzNi4xMlRpQg0KoKCgIERldmljZSBhbGxvY2F0ZWQ6
-oKCgoKCgoKCgoKCgIDI4LjUwVGlCDQqgoKAgRGV2aWNlIHVuYWxsb2NhdGVkOqCgoKCgoKCg
-oKCgIDcuNjJUaUINCqCgoCBEZXZpY2UgbWlzc2luZzqgoKCgoKCgoKCgoKCgoKCgoCAwLjAw
-Qg0KoKCgIFVzZWQ6oKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgIDI0LjkzVGlCDQqgoKAgRnJl
-ZSAoZXN0aW1hdGVkKTqgoKCgoKCgoKCgoKAgMTEuMTRUaUKgoKCgoCAobWluOiAxMS4xNFRp
-QikNCqCgoCBEYXRhIHJhdGlvOqCgoKCgoKCgoKCgoKCgoKCgoKCgoKAgMS4wMA0KoKCgIE1l
-dGFkYXRhIHJhdGlvOqCgoKCgoKCgoKCgoKCgoKCgoCAxLjAwDQqgoKAgR2xvYmFsIHJlc2Vy
-dmU6oKCgoKCgoKCgoKCgoCA1MTIuMDBNaUKgoKCgoCAodXNlZDogMC4wMEIpDQoNCkRhdGEs
-c2luZ2xlOiBTaXplOjI4LjM5VGlCLCBVc2VkOjI0Ljg3VGlCDQqgoCAvZGV2L3NkZKCgoKCg
-oKAgMy45M1RpQg0KoKAgL2Rldi9zZGWgoKCgoKCgIDMuODlUaUINCqCgIC9kZXYvc2RmoKCg
-oKCgoCAyLjg0VGlCDQqgoCAvZGV2L3NkZ6CgoKCgoKAgMi4wMVRpQg0KoKAgL2Rldi9zZGig
-oKCgoKCgIDMuOTNUaUINCqCgIC9kZXYvc2RpoKCgoKCgoCAzLjkzVGlCDQqgoCAvZGV2L3Nk
-aqCgoKCgoKAgMy45M1RpQg0KoKAgL2Rldi9zZGugoKCgoKCgIDMuOTNUaUINCg0KTWV0YWRh
-dGEsc2luZ2xlOiBTaXplOjEwNS4wMEdpQiwgVXNlZDo2Mi42MUdpQg0KoKAgL2Rldi9zZGOg
-oKCgoCAxMDUuMDBHaUINCg0KU3lzdGVtLHNpbmdsZTogU2l6ZTozNi4wME1pQiwgVXNlZDoz
-LjE0TWlCDQqgoCAvZGV2L3NkY6CgoKCgoCAzNi4wME1pQg0KDQpVbmFsbG9jYXRlZDoNCqCg
-IC9kZXYvc2RjoKCgoKCgIDE0Ljk3R2lCDQqgoCAvZGV2L3NkZKCgoKCgoCA2OS4wMEdpQg0K
-oKAgL2Rldi9zZGWgoKCgoCAxMDkuMDBHaUINCqCgIC9kZXYvc2RmoKCgoKCgoCAxLjE2VGlC
-DQqgoCAvZGV2L3NkZ6CgoKCgoKAgNS45OVRpQg0KoKAgL2Rldi9zZGigoKCgoKAgNzUuMDBH
-aUINCqCgIC9kZXYvc2RpoKCgoKCgIDY5LjAwR2lCDQqgoCAvZGV2L3NkaqCgoKCgoCA3MS4w
-MEdpQg0KoKAgL2Rldi9zZGugoKCgoKAgNzAuMDBHaUINCg0KQmVzdCByZWdhcmRzLg0KDQpN
-YXJ0aW4NCg0KDQo=
+Dear Friend,
+I'm Mr. Scott Donald a Successful business Man. dealing with
+Exportation, I got your mail contact through search to let you know my
+Ugly Situation Am a dying Man here in Los Angeles California Hospital
+Bed in (USA), I Lost my Wife and my only Daughter for Covid-19 I'm
+dying with same symptoms. my Doctor open-up to me that I don't have
+enough time to live anymore, I have a project that I am about to hand
+over to you. I have already instructed the Barclays Bank of London to
+transfer my fund sum of =C2=A33,7M GBP to you as to enable you to give 50%
+to Charitable Home and take 50% I have given all I have here in
+America to Charitable home I ask my Doctor to help me keep you notice
+when I'm no more please, allow me to see you on my Doctor whats-app
+video call very urgent please, here is my Doctor Whats-app Number for
+urgent notice +13019692737
+
+Hope To Hear From You. I'm sending this email to you for the second
+time yet no response from you.
+
+My Regards.
+
+Mr. Scott Donald
+CEO
