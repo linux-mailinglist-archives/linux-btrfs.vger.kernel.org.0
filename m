@@ -2,91 +2,73 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D8B51FCBDA
-	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Jun 2020 13:08:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 289711FCC4C
+	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Jun 2020 13:31:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726510AbgFQLIk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 17 Jun 2020 07:08:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56104 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725554AbgFQLIj (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 17 Jun 2020 07:08:39 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E515C061573;
-        Wed, 17 Jun 2020 04:08:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=6UMFO2TmbdpnJT0c5EXP2Aydp2MaQ5RYJc+GA8ZrxVg=; b=uEnXH1vpZaG2U8FFM/pYkfHc5Y
-        SeAjiiS0wb4uxVIyAse/Mlkd6U3qaJ4r4kEh9T7lE+/o5L5t1dNjJ28G/NIqVe0DWG/fV4/lQHo1o
-        QDwGZP0qomelniIocS0ybLZQjvlRxX/INLpmjUp5+LL4fh2HQo9F6qYCqhyg1imU2AHxFgkQk0jvm
-        8nOqGDFYb7CZcfryOG0jsO4VWYAKfvslQU5aBRvXZEAb7odmsPQzoqooHS6qL3UZV2AdZFQmkWhak
-        uKTLzMfmXR1ZbqokaLQoFEtbowD5zP+hhe/qVdQ+y0/QB4rOvsOqTW0JOhm+R3UUkEQZTtPszFNR9
-        vDBLz4ZQ==;
-Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jlVvY-0007BQ-88; Wed, 17 Jun 2020 11:08:20 +0000
-Date:   Wed, 17 Jun 2020 04:08:20 -0700
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Michal Hocko <mhocko@kernel.org>
-Cc:     dsterba@suse.cz, Joe Perches <joe@perches.com>,
-        Waiman Long <longman@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Howells <dhowells@redhat.com>,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        David Rientjes <rientjes@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        "Jason A . Donenfeld" <Jason@zx2c4.com>, linux-mm@kvack.org,
-        keyrings@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-amlogic@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-ppp@vger.kernel.org, wireguard@lists.zx2c4.com,
-        linux-wireless@vger.kernel.org, devel@driverdev.osuosl.org,
-        linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-cifs@vger.kernel.org,
-        linux-fscrypt@vger.kernel.org, ecryptfs@vger.kernel.org,
-        kasan-dev@googlegroups.com, linux-bluetooth@vger.kernel.org,
-        linux-wpan@vger.kernel.org, linux-sctp@vger.kernel.org,
-        linux-nfs@vger.kernel.org, tipc-discussion@lists.sourceforge.net,
-        linux-security-module@vger.kernel.org,
-        linux-integrity@vger.kernel.org
-Subject: Re: [PATCH v4 0/3] mm, treewide: Rename kzfree() to kfree_sensitive()
-Message-ID: <20200617110820.GG8681@bombadil.infradead.org>
-References: <20200616015718.7812-1-longman@redhat.com>
- <fe3b9a437be4aeab3bac68f04193cb6daaa5bee4.camel@perches.com>
- <20200616230130.GJ27795@twin.jikos.cz>
- <20200617003711.GD8681@bombadil.infradead.org>
- <20200617071212.GJ9499@dhcp22.suse.cz>
+        id S1726523AbgFQLbV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 17 Jun 2020 07:31:21 -0400
+Received: from mx2.suse.de ([195.135.220.15]:46750 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725901AbgFQLbU (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 17 Jun 2020 07:31:20 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 04337AEC8;
+        Wed, 17 Jun 2020 11:31:22 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 8A8A9DA7C3; Wed, 17 Jun 2020 13:31:09 +0200 (CEST)
+Date:   Wed, 17 Jun 2020 13:31:09 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     Josef Bacik <josef@toxicpanda.com>,
+        Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 2/4] btrfs: detect uninitialized btrfs_root::anon_dev for
+ user visible subvolumes
+Message-ID: <20200617113109.GK27795@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
+References: <20200616021737.44617-1-wqu@suse.com>
+ <20200616021737.44617-3-wqu@suse.com>
+ <d17609b5-ac29-937c-763d-fc978e3f1bad@toxicpanda.com>
+ <f1f940ba-3f1d-302a-0d28-5620286bcdc0@gmx.com>
+ <a7417666-56a0-be6a-1691-e647802e1df7@toxicpanda.com>
+ <0e274dc7-ac05-078a-2a2c-348e72745d45@suse.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20200617071212.GJ9499@dhcp22.suse.cz>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <0e274dc7-ac05-078a-2a2c-348e72745d45@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Jun 17, 2020 at 09:12:12AM +0200, Michal Hocko wrote:
-> On Tue 16-06-20 17:37:11, Matthew Wilcox wrote:
-> > Not just performance critical, but correctness critical.  Since kvfree()
-> > may allocate from the vmalloc allocator, I really think that kvfree()
-> > should assert that it's !in_atomic().  Otherwise we can get into trouble
-> > if we end up calling vfree() and have to take the mutex.
+On Wed, Jun 17, 2020 at 07:49:33AM +0800, Qu Wenruo wrote:
+> >>> Can we handle stat->dev not having a device set?  Or will this blow up
+> >>> in other ways?  Thanks,
+> >>
+> >> We can handle it without any problem, just users get confused.
+> >>
+> >> As a common practice, we use different bdev as a namespace for different
+> >> subvolumes.
+> >> Without a valid bdev, some user space tools may not be able to
+> >> distinguish inodes in different subvolumes.
+> >>
+> > 
+> > Alright that's fine then.  But I feel like stat is one of those things
+> > that'll flood the console, can we put this somewhere else that's going
+> > to be hit less? Thanks,
 > 
-> FWIW __vfree already checks for atomic context and put the work into a
-> deferred context. So this should be safe. It should be used as a last
-> resort, though.
+> Unfortunately, stat() is the only user of btrfs_root::anon_dev.
+> 
+> While fortunately, the logical is pretty simple, even without the safe
+> net we can understand the lifespan pretty well.
+> 
+> I'm fine to drop this patch if you're concerned about the possible
+> warning flood, as the benefit is really not that much.
 
-Actually, it only checks for in_interrupt().  If you call vfree() under
-a spinlock, you're in trouble.  in_atomic() only knows if we hold a
-spinlock for CONFIG_PREEMPT, so it's not safe to check for in_atomic()
-in __vfree().  So we need the warning in order that preempt people can
-tell those without that there is a bug here.
+It could be a developer-only warning but if there's a root with a bad
+anon_dev, a simple 'ls -l' would flood the log for sure.
