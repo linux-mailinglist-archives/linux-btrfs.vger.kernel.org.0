@@ -2,75 +2,72 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AB491FCE40
-	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Jun 2020 15:18:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 167ED1FCEA6
+	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Jun 2020 15:38:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726326AbgFQNSj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 17 Jun 2020 09:18:39 -0400
-Received: from mx2.suse.de ([195.135.220.15]:55404 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726303AbgFQNSj (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 17 Jun 2020 09:18:39 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 3A3F2ADC5;
-        Wed, 17 Jun 2020 13:18:41 +0000 (UTC)
-Subject: Re: [PATCH 3/3] btrfs: Use for loop in prealloc_file_extent_cluster
-To:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-References: <20200617091044.27846-1-nborisov@suse.com>
- <20200617091044.27846-4-nborisov@suse.com>
- <SN4PR0401MB35988C7F273C9359252FAE099B9A0@SN4PR0401MB3598.namprd04.prod.outlook.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <040e42ef-7582-e5d8-5933-8bfb504c2c9a@suse.com>
-Date:   Wed, 17 Jun 2020 16:18:35 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1727781AbgFQNhS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 17 Jun 2020 09:37:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50960 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726480AbgFQNhQ (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 17 Jun 2020 09:37:16 -0400
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF8D1C06174E
+        for <linux-btrfs@vger.kernel.org>; Wed, 17 Jun 2020 06:37:16 -0700 (PDT)
+Received: by mail-qk1-x742.google.com with SMTP id f18so2015725qkh.1
+        for <linux-btrfs@vger.kernel.org>; Wed, 17 Jun 2020 06:37:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=KLmiiOwos/gpzDWQSsoZalQKxeHn/ZoJohXPoffNMw8=;
+        b=gW0sDoBPVvBnxqFJ1YITCmXy/mlhw5+LnfdrCh83VgBvNMHVmdeD34Mdp5sqklMC6C
+         x7D8VqgorR4H0FZRWM1YxLvIin1SRSEcVi0AFOHs7p/pE+JdhaPMUlr3qx6LfRR1f1IQ
+         BXAe25I4YyULokILHh1gJRmSCWFjVSg0pnRbrJX+1RHSxvPC0a5tZNRspeNQbhYgymPf
+         xR3Tz6xq4EnUvm+/GJoX/zXSp0rLbyn7WwjqKbaUAEP8Erv1zchCb+DKvGi5MJAoSFJd
+         dzXEIyDQqqimqz6dM7a1ty6YRZRXE3uLEvD86RVZD3DbR9ZuXVlXLnSJXQ4+ol1gPlg3
+         ApEQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=KLmiiOwos/gpzDWQSsoZalQKxeHn/ZoJohXPoffNMw8=;
+        b=jqlLqBc+zeorbVnReyYDZ/03k8PSJFrlsgLk8pb0uSjYBmMJPQJx4HV13xXAVbrcda
+         qs/LUoWYs0evoZ9TdvU8NiZ2t5XLLs2D4LxWOPKTlBm7AHxBSVywiBBOAqnlqf4+WNVZ
+         UwV6zDtBGbRTcFOc/dhDKK5k8Ugaov2X61y7vjMbOesZe9e5iNa8eeO5TFMh5Z6mb6KN
+         5qTztaVZpix1yqGYVifwpKlk/rwANqB566wkhU8vQ3Iy5LWwCFa4vOCV0DHLdfX1/96e
+         vZhkjHs8PjKSriPajwSs6obg4k0pqahnitcDEbJN6KH/JVvBTLpxN3NnMI3LSO11OjB8
+         pCvg==
+X-Gm-Message-State: AOAM532vC/igQGLI3mY75/9qHKs8dZciFTzaLFYc8wZxaQM8evrNnbRB
+        OupHdHaE8adC5Ec6AVOBzXE2odjQ7Z+2uw==
+X-Google-Smtp-Source: ABdhPJxkT1ZD7A1GC0vU40sBe4SQcl1u3N0tXYJ/jc/ABQ5J40fTnUYKhMBzhYdEu6GAqgdhW1bAIA==
+X-Received: by 2002:a37:64ca:: with SMTP id y193mr25990770qkb.367.1592401031383;
+        Wed, 17 Jun 2020 06:37:11 -0700 (PDT)
+Received: from [192.168.1.45] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id o6sm17782242qtd.59.2020.06.17.06.37.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 17 Jun 2020 06:37:10 -0700 (PDT)
+Subject: Re: [PATCH 2/4] btrfs: detect uninitialized btrfs_root::anon_dev for
+ user visible subvolumes
+To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
+References: <20200616021737.44617-1-wqu@suse.com>
+ <20200616021737.44617-3-wqu@suse.com>
+ <d17609b5-ac29-937c-763d-fc978e3f1bad@toxicpanda.com>
+ <f1f940ba-3f1d-302a-0d28-5620286bcdc0@gmx.com>
+ <a7417666-56a0-be6a-1691-e647802e1df7@toxicpanda.com>
+ <0e274dc7-ac05-078a-2a2c-348e72745d45@suse.com>
+ <20200617113109.GK27795@twin.jikos.cz>
+From:   Josef Bacik <josef@toxicpanda.com>
+Message-ID: <e665ed96-63f1-ae72-15dd-ba8d75288568@toxicpanda.com>
+Date:   Wed, 17 Jun 2020 09:37:09 -0400
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.9.0
 MIME-Version: 1.0
-In-Reply-To: <SN4PR0401MB35988C7F273C9359252FAE099B9A0@SN4PR0401MB3598.namprd04.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20200617113109.GK27795@twin.jikos.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
@@ -78,50 +75,36 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 17.06.20 г. 16:02 ч., Johannes Thumshirn wrote:
-> Looks good,
-> Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+On 6/17/20 7:31 AM, David Sterba wrote:
+> On Wed, Jun 17, 2020 at 07:49:33AM +0800, Qu Wenruo wrote:
+>>>>> Can we handle stat->dev not having a device set?  Or will this blow up
+>>>>> in other ways?  Thanks,
+>>>>
+>>>> We can handle it without any problem, just users get confused.
+>>>>
+>>>> As a common practice, we use different bdev as a namespace for different
+>>>> subvolumes.
+>>>> Without a valid bdev, some user space tools may not be able to
+>>>> distinguish inodes in different subvolumes.
+>>>>
+>>>
+>>> Alright that's fine then.  But I feel like stat is one of those things
+>>> that'll flood the console, can we put this somewhere else that's going
+>>> to be hit less? Thanks,
+>>
+>> Unfortunately, stat() is the only user of btrfs_root::anon_dev.
+>>
+>> While fortunately, the logical is pretty simple, even without the safe
+>> net we can understand the lifespan pretty well.
+>>
+>> I'm fine to drop this patch if you're concerned about the possible
+>> warning flood, as the benefit is really not that much.
 > 
-> I've you have to re-post another potential candidate in this 
-> function would be:
-> diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-> index 9235c671bef8..3ebf64578a32 100644
-> --- a/fs/btrfs/relocation.c
-> +++ b/fs/btrfs/relocation.c
-> @@ -2578,7 +2578,8 @@ int prealloc_file_extent_cluster(struct inode *inode,
->         u64 alloc_hint = 0;
->         u64 start;
->         u64 end;
-> -       u64 offset = BTRFS_I(inode)->index_cnt;
-> +       struct btrfs_inode *btrfs_inode = BTRFS_I(inode);
-> +       u64 offset = btrfs_inode->index_cnt;
->         u64 num_bytes;
->         int nr = 0;
->         int ret = 0;
-> @@ -2589,7 +2590,7 @@ int prealloc_file_extent_cluster(struct inode *inode,
->         BUG_ON(cluster->start != cluster->boundary[0]);
->         inode_lock(inode);
->  
-> -       ret = btrfs_alloc_data_chunk_ondemand(BTRFS_I(inode),
-> +       ret = btrfs_alloc_data_chunk_ondemand(btrfs_inode,
->                                               prealloc_end + 1 - prealloc_start);
->         if (ret)
->                 goto out;
-> @@ -2611,7 +2612,7 @@ int prealloc_file_extent_cluster(struct inode *inode,
->                                                 num_bytes, num_bytes,
->                                                 end + 1, &alloc_hint);
->                 cur_offset = end + 1;
-> -               unlock_extent(&BTRFS_I(inode)->io_tree, start, end);
-> +               unlock_extent(&btrfs_inode->io_tree, start, end);
->                 if (ret)
->                         break;
->                 nr++;
-> 
-> 
-> This would save 3 BTRFS_I() calls, but not sure how much of a difference it
-> makes in the end.
+> It could be a developer-only warning but if there's a root with a bad
+> anon_dev, a simple 'ls -l' would flood the log for sure.
 > 
 
-As a matter of fact I've already done this in my monstrous in patch 44/46.
+We'll know in btrfs_init_fs_root() when get_anon_bdev() fails right?  Can't we 
+just complain then?  That seems less spammy.  Thanks,
+
+Josef
