@@ -2,101 +2,91 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0A551FFCDA
-	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Jun 2020 22:44:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EEC61FFD00
+	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Jun 2020 22:59:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731140AbgFRUn2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 18 Jun 2020 16:43:28 -0400
-Received: from james.kirk.hungrycats.org ([174.142.39.145]:38954 "EHLO
-        james.kirk.hungrycats.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730613AbgFRUnT (ORCPT
+        id S1727982AbgFRU7P (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 18 Jun 2020 16:59:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58976 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726478AbgFRU7O (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 18 Jun 2020 16:43:19 -0400
-Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
-        id 492447207A1; Thu, 18 Jun 2020 16:43:17 -0400 (EDT)
-Date:   Thu, 18 Jun 2020 16:43:17 -0400
-From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-To:     DanglingPointer <danglingpointerexception@gmail.com>
-Cc:     linux-btrfs@vger.kernel.org
+        Thu, 18 Jun 2020 16:59:14 -0400
+Received: from smtp.domeneshop.no (smtp.domeneshop.no [IPv6:2a01:5b40:0:3005::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98FDAC06174E
+        for <linux-btrfs@vger.kernel.org>; Thu, 18 Jun 2020 13:59:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=dirtcellar.net; s=ds201912; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Reply-To:
+        Sender:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=UXZ0VQOl6vn3/glpPaeNW6lS1GF5H3Go+ZQ7Ff7myy8=; b=gxjRy3zvXQLY7giMvjoZByoKQD
+        OzMggPzqASmk31UHq1aDlRLM9poL8w6Bq5NMZ47Ggb+2Ci/Btpn71ito+ejHWw5bzcr/fGq3EB3NT
+        AnazVKnmXMWqFkgC7WSb8NDtYNvtl20Qxd5Tssre7RjtQuzNuXxY+PgSbbXrLjSQIpl3G+TJJLXt/
+        Ve+YVmXvN6S/hKGbBy0ftETnqteEXKtGQw3PSQSas1eqDfuR9d7KX1zRnQOtNTUptq8dVjMlxGYJT
+        SWM6jwX6DBhQDeB+2c5KFz6nDlbVtnepy0f/kxsJfApOoQ2IRZxzvw6Q0Eu7uFgpRURoojTlRQOEA
+        7YSGcJ+A==;
+Received: from 254.79-160-170.customer.lyse.net ([79.160.170.254]:8870 helo=[10.0.0.10])
+        by smtp.domeneshop.no with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <waxhead@dirtcellar.net>)
+        id 1jm1cs-0001D8-SM; Thu, 18 Jun 2020 22:59:10 +0200
+Reply-To: waxhead@dirtcellar.net
 Subject: Re: btrfs-dedupe broken and unsupported but in official wiki
-Message-ID: <20200618204317.GM10769@hungrycats.org>
+To:     DanglingPointer <danglingpointerexception@gmail.com>,
+        linux-btrfs@vger.kernel.org
 References: <16bc2efa-8e88-319f-e90e-cf8536460860@gmail.com>
+From:   waxhead <waxhead@dirtcellar.net>
+Message-ID: <878f01ec-eb07-e8ba-bd32-143997bce422@dirtcellar.net>
+Date:   Thu, 18 Jun 2020 22:59:10 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Firefox/60.0 SeaMonkey/2.53.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
 In-Reply-To: <16bc2efa-8e88-319f-e90e-cf8536460860@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Jun 18, 2020 at 12:28:41PM +1000, DanglingPointer wrote:
+I have pointed this out before , but I would like to use the opportunity 
+again. I, as just a regular user of btrfs would feel more comfortable if 
+the dedupe tool was part of btrfs such as for example btrfs filesystem 
+dedupe -r /somewhere
+
+Regular users that are somewhat technically able may not know that the 
+dedupe fuctions are kernel api's that should not destroy anything even 
+if the calling program went berserk.
+
+While this may be obvious to btrfs developers, it is not to regular 
+users that may be concerned that a particular tool may wreck havoc on 
+their filesystem.
+
+DanglingPointer wrote:
 > btrfs-dedupe is currently broken and no longer actively supported.
 > 
 > It no longer builds with current rustc v1.44.0 with cargo
 > 
 > It is in the official btrfs Deduplication wiki:
 > 
->     https://btrfs.wiki.kernel.org/index.php/Deduplication
+>  Â Â Â  https://btrfs.wiki.kernel.org/index.php/Deduplication
 > 
 > There's no real active community and proper QA, reviewing and vetting.
 > 
-> A poster in the issues area of the projects Github location stated that even
-> if fixed, it may not function correctly due to BTRFS having evolved since
-> the tool was designed created.
+> A poster in the issues area of the projects Github location stated that 
+> even if fixed, it may not function correctly due to BTRFS having evolved 
+> since the tool was designed created.
 > 
 > There's just too many unknowns with this BTRFS specific dedupe tool.
 > 
-> People using your official wiki and trying to use that deduplication program
-> could inadvertently destroy their data through nativity or accident. 
-> Especially if they start trying to fix the code.
-
-The point about lack of maintenance with changing Rust dependencies is
-fair, but "data loss" is a strong and unsupported statement.  Can you
-explain how data loss could occur in even a badly (assume not maliciously)
-broken version of btrfs-dedupe?
-
-As far as I can tell, the btrfs-dedupe code uses only non-data-mutating
-btrfs kernel interfaces for manipulating extents (fiemap, defrag,
-and file_extent_same/deduperange).  None of these should cause data
-loss (excluding kernel bugs).
-
-btrfs-dedupe can be trivially tricked into opening files that it did
-not intend to (it has no protection against symlink injection and other
-TOCCTOU attacks), but it doesn't seem to be able to alter the content
-of files once it opens them.
-
-File descriptors pointing to user files are opened O_RDWR, but they are
-kept in the scope of the dedupe function and their life-cycle is properly
-managed in Rust, so btrfs-dedupe won't mutate files by writing to the
-wrong fd (e.g. accidentally close stderr and reopen it to a user file)
-unless someone adds some seriously buggy code (see "assume not malicious"
-above).
-
-The unsafe C ioctl interfaces are unlikely to change in data-losing ways,
-or they'll break all existing userspace tools that use them.  They are
-also well encapsulated in the rust-btrfs module.
-
-The errors reported on github seem to be problems with incompatible
-changes in the runtime libraries btrfs-dedupe depends on, and also some
-reports of what look like pre-existing bugs in the fiemap code that are
-blamed on new kernel versions without evidence.  Data-losing breaking
-changes in any of the ioctls btrfs-dedupe uses are extremely unlikely.
-Those issues may cause btrfs-dedupe to do useless unnecessary work,
-or fail to do useful necessary work, but could not cause data loss by
-any mechanism I can find.
-
-Contrast with bedup:  bedup uses data-mutating kernel interfaces
-(clone_range) for dedupe that have no effective protection against
-concurrent data modification.  There is ineffective protection implemented
-in bedup (looking in /proc/*/fd for concurrent users of the files) which
-may or may not be broken in kernel 5.0, but it's ineffective either way.
-The case for data loss in bedup is trivial.  The branch with a patch to
-fix it is now 7 years old, so it's fair to say bedup is unmaintained too
-(github forks notwithstanding, they didn't fix these issues).
-
-> I recommend you remove it from your website or at least put large warnings
-> there that it is broken (which looks ugly, I would rather only stuff that
-> works were there since it isn't your project anyway but some 3rd party).
+> People using your official wiki and trying to use that deduplication 
+> program could inadvertently destroy their data through nativity or 
+> accident.Â  Especially if they start trying to fix the code.
+> 
+> I recommend you remove it from your website or at least put large 
+> warnings there that it is broken (which looks ugly, I would rather only 
+> stuff that works were there since it isn't your project anyway but some 
+> 3rd party).
+> 
