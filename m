@@ -2,148 +2,223 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A8D81FFDAE
-	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Jun 2020 00:05:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59B451FFE52
+	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Jun 2020 00:49:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731636AbgFRWFt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 18 Jun 2020 18:05:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40940 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731635AbgFRWFs (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 18 Jun 2020 18:05:48 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB634C06174E
-        for <linux-btrfs@vger.kernel.org>; Thu, 18 Jun 2020 15:05:47 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id s88so3364611pjb.5
-        for <linux-btrfs@vger.kernel.org>; Thu, 18 Jun 2020 15:05:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=lJNU/xxU/8zM18BzxpyeFpV6xYeeE/qLYB3sAQbxF6k=;
-        b=WGvGD5RS/xNkMniMz0s+t4B4wYnCdBqCEeLshWApJaEojLeGcRXs7XD4hpr9Blmkb9
-         pNhgjy383/YD2AA7sWtzEoB8i9d8w3aiXfpGE+hOCoDHeUeYWiTz+u2WYIzGXMjgPing
-         RbYErIzU2FbH/jG00eEwv5lnZVonZ/YKg7hyPM6vjr0YMwnwo7B7iApQUJFQNmAF4TjK
-         /lnTUgqCDqxBmdlHChzQenOQeNKDFWEajYdi8fpWoyOUhIzrOjiaLOH5LMlf4y2mN3mN
-         QjikPDgfd3u8Jq3nQLLnm3rmQsC1+AhtxHFqnu7XmA0L0Qr+JHbYCd5iMzddfCVJYKmj
-         8mMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=lJNU/xxU/8zM18BzxpyeFpV6xYeeE/qLYB3sAQbxF6k=;
-        b=icfK51M7SJJm6XZipTX78dhUWWjaT1cLRnT9+GLbi+v6WdiMX52VMFdqZeMboJJC85
-         AeI4o+TjGcUkoXEFYv84BFyeF7YCATYnW6z4c5XfiyaCGQ/+uPukDU8dfEsfqkh/JRR2
-         iugWgxspWX7hl2GShbCOie363XZr+hWKMK3mOqhR/nHlued7mRJqFHr8jgtAzqZccIPT
-         Lf6PcGhoTLkAqkN8+Q31GFGTVkqNjYYw2I6eze2/bY7hZ1cOwJDV62Tt2qGXELOStdaA
-         Dbhuk0UFlE8V0tTaMVELtvhzHOZ6zhO01AOAmeuvwHk1JsSd6vdUpbXz4yjHiySy9tx4
-         +oPQ==
-X-Gm-Message-State: AOAM532FWylZM8XX/Qalip5kXoh9/A3YUYoJgn/9Q86wykVx02EqfKWc
-        PRGhCRxtXXsJha5zgZgKYJC7pc1y
-X-Google-Smtp-Source: ABdhPJwiJ9JSQdB+nMlhUXHCXYWQQjtnCiE8m0iCPgZUm70GOV8pegcClsObpQd1+tzYhmMhUmXlhQ==
-X-Received: by 2002:a17:902:c111:: with SMTP id 17mr5001575pli.319.1592517947271;
-        Thu, 18 Jun 2020 15:05:47 -0700 (PDT)
-Received: from [192.168.178.53] ([61.68.239.179])
-        by smtp.gmail.com with ESMTPSA id q1sm3991114pfk.132.2020.06.18.15.05.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 Jun 2020 15:05:46 -0700 (PDT)
-Subject: Re: btrfs-dedupe broken and unsupported but in official wiki
-To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-Cc:     linux-btrfs@vger.kernel.org
-References: <16bc2efa-8e88-319f-e90e-cf8536460860@gmail.com>
- <20200618204317.GM10769@hungrycats.org>
-From:   DanglingPointer <danglingpointerexception@gmail.com>
-Message-ID: <65eeb90a-e983-2ae8-14ad-79bcd2960851@gmail.com>
-Date:   Fri, 19 Jun 2020 08:05:44 +1000
+        id S1731660AbgFRWtL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 18 Jun 2020 18:49:11 -0400
+Received: from mout.gmx.net ([212.227.17.21]:57837 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731370AbgFRWtH (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 18 Jun 2020 18:49:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1592520543;
+        bh=1AHL9xk/BR7/zBVtNIcasaKF+B5agMIfUMFG6RsZaZg=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=U7wBNIAgP5UWpycxM7g17ZxQ44+1yOLdVF/rkgVlzEZrnVXUIokYsklKKpSiblDVS
+         dVs/LjGrGuTvZXDCr2tFH0JZ7exwlvaZ+6nw3YRwdRzg4WI8kZBvSNPqUxQlFlUTcl
+         Bmsl2s9uRdEKiS0GhlnoD+hDdn+jkN9XzpQD4/MY=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MnakX-1j4hiM0QgH-00jdqd; Fri, 19
+ Jun 2020 00:49:03 +0200
+Subject: Re: Physical address offset of the inline extent
+To:     "Rebraca Dejan (BSOT/PJ-ES1-Bg)" <Dejan.Rebraca@rs.bosch.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+References: <31850f19929b40e4ade80a264c1af97d@rs.bosch.com>
+ <02fcfb22-6b2b-6f99-99c8-b132ee511530@gmx.com>
+ <db80cbe323fd4114962f7dee1dfc3ad5@rs.bosch.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
+ mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
+ PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
+ 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
+ D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
+ efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
+ ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
+ BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
+ 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
+ 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
+ EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
+ 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
+ ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
+ oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
+ fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
+ 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
+ ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
+ oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
+Message-ID: <d0a0d1fa-4f77-6f94-b82e-72f44a3e2a80@gmx.com>
+Date:   Fri, 19 Jun 2020 06:49:00 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-In-Reply-To: <20200618204317.GM10769@hungrycats.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-AU
+In-Reply-To: <db80cbe323fd4114962f7dee1dfc3ad5@rs.bosch.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="qHxYTcF24GUYUPsL3Y8zC4SK9BJUiJ1LG"
+X-Provags-ID: V03:K1:9AB67zsUCuUwaMnnI9ZVtNgtJePg76eg2+VCz5WbhUFHOeDUSIl
+ LBRjRMvRW9ol5kKOEvjzprFXEqBY1JMSZv7wQxkfq53cU+Pz+wxhsG73LcBUZzhC+sswbfz
+ 6u6emITaryb33A5/nuu/sZP6DQCNt0m3Uq89NEpTE6x8fvfhvUo6v01Pk3g69sbio0DmYcM
+ acPji2QRbb4hZ+H1G2zDw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:b0Zq8CY04EE=:qRyW+BV4e1GTWPEqRJbQQ4
+ FA/E9DJtqVYCziGj9Ezh00ryXRBEILK6RjUr8uPUDG8iZ632+SkiRxfyogd1uQ4U7dFHuRilv
+ PjcQWfBbAeTGnM9BMzfgkslCKjJtEG1BtBt7JiXicKrTjAtPQjA4Yor0K1vyiFIbJzaJPjceB
+ Z4/+Ilf91Pyqff5l/iqI7mcRYpxDrwZ/FWYxNaDhw3HdOpRVm8sgd9fiyLS483zNp8vAeMmeb
+ M6I/c+rQkZ3vdUJY7NqQ7RlDhiYO/6SgRbN+semkG2I/YQCCsxAPVuGOkvwOptumDxx29qJIo
+ ItOP2kAzwLBiXo3A9Ue0YgLjhR0GrR4FZr7qJ2ooHiIEWRAMjzEB69K3i3nI98Ds6iMri/5P4
+ JAarkv7sjHfBUbifhpvqU0bk7oClz88jdkl71Sobvvz5Qch20zwGXto1XLVczf6yFjIm3ifoc
+ UZdtCFtqUfYFsncXYtWzN7EtSW0KvtVsCu+habd8PaX5Hl8v8rfWsxBZMenEw6RkSJ+ujoqzk
+ 8qp/qlgfXbiS/I6ASGhkj9n3XbgMeIN8Q7fHheOGd22DvyMbfnjjhjf0+urqVI+F97VWNkLQr
+ eAFlr6kU2i+5AtNf2qrGbFrtQJkBi4Ko76HFrV146KO7u1aKw1zqXI8nrLvyIBNUNCJYT7yS6
+ Vv+3fvuqY7rdI9VsGfR4RssC906w5BCVj/jFKdkFt91nFPlCYPZ9e9vaFa65QNhkxOjuqCv/6
+ n2aCMOcu2nu+6XfblJjk1gGQ9ISrmOrAtCFTOn7nMoh3cYOnST4Bxjua9D7gqHf4OOkH5VMw2
+ +HrMJtlfpfoUek/hs+EhKTyJi5JjI902VCXKqIUUHXX0H3A4/tZc3sXFtVrSp2RS3wvedJ4VD
+ xmtF/88/3Zq07KvecE3o2cnlbM2BDb1MrAlLDqkwQif4hjgKRKHyado+Z9lybhBvKTxQtMOtv
+ TtYgkrpJct60SAjNcdEzqGJYunpPtNGjbqfWOTn4y3j4Iw4EMYpsZUUJW0fnbdwWXvmqfcpME
+ +38FaNKpn56GBVF1+jpZcFiQNQ3zMQk1iGtlIQ3PRmm+gRFL04lH9al6OS34truv6FhZHN6Fv
+ TlB96OEZet8FO0IDIgQ07pnYmDLj2iUeAbX2MWJy3DjzD5kWDOj35LO49Hozd2c19/fTSGjEi
+ FDd/gFGma6VRmLhDRcy3cAN2pnbjQj40pSTD4tyr1VSd83segMX6sEFXDx0mb6Ty8CDkZrQHK
+ q2cyr3YWfDpkTn7jZ
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-For a large portion of desktop users that are not developers and are 
-rustlang illiterate and programming illiterate; they would not now 
-whether this tool or that tool or any tool would be safe, or unsafe, or 
-have concurrent race conditions, or know the meaning of immutable or mutex.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--qHxYTcF24GUYUPsL3Y8zC4SK9BJUiJ1LG
+Content-Type: multipart/mixed; boundary="3uiNroEhMMg5jSwX2GX3oScL3sbDaMMyH"
 
-Think of this scenario; average Joe Bloggs user buys new computer 
-without MS Windows.  With the software savings, Joe purchases more 
-disks. He then chooses openSuse Leap for his first foray into Linux.
-All he cares about are his music files, photos, and videos being safe.  
-Joe runs a Cafe down the street and uses the music, photos, and videos 
-in various screens at his cafe for the atmosphere.
-Times are tough and he's running out of space so he doesn't want the 
-accumulate media files duplicated all around the place wasting space to 
-conserve storage.
+--3uiNroEhMMg5jSwX2GX3oScL3sbDaMMyH
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-If the official wikis have broken 3rd party tools, then it makes the 
-whole adoption process less easy, less friendly, very cryptic, more 
-chaotic; and give the impression that btrfs is a mess and not ready (and 
-Linux as a whole).  He would not know or have the time to go through the 
-code of each deduplication program tool option to figure out if one type 
-or the other type is better just like Zygo Blaxell did who can read 
-code.  Even if he wanted to, he doesn't know how to nor has the time to 
-do it.  He says good-bye to openSuse and buys Windows.
 
-So I do agree with waxhead.  It would be preferable if there were an 
-official btrfs deduplication command from btrfs-progs instead of relying 
-on 3rd parties.  Joe Bloggs example above can read a web-page 
-instructions saying "run this command... and then this command..."; but 
-he will not have the knowledge, nor comprehension nor time to go through 
-code.
 
-Thanks David Sterba for removing the items and updating the wiki!
+On 2020/6/18 =E4=B8=8B=E5=8D=8810:53, Rebraca Dejan (BSOT/PJ-ES1-Bg) wrot=
+e:
+> Hi Qu,
+>=20
+> I've read this:
+> https://btrfs.wiki.kernel.org/index.php/Data_Structures#btrfs_key_.2F_b=
+trfs_disk_key
+> where key.objectid of EXTENT_ITEM contains the starting byte offset of =
+the extent it describes and key.offset of EXTENT_ITEM stores the size of =
+the extent the item describes.
+>=20
+> From your dump:
+> item 6 key (257 EXTENT_DATA 0) itemoff 13794 itemsize 2069
+>=20
+> itremoff =3D 13794
+> This is the offset relative to tree block or tree leaf, right?
 
-On 19/6/20 6:43 am, Zygo Blaxell wrote:
-> The point about lack of maintenance with changing Rust dependencies is
-> fair, but "data loss" is a strong and unsupported statement.  Can you
-> explain how data loss could occur in even a badly (assume not maliciously)
-> broken version of btrfs-dedupe?
->
-> As far as I can tell, the btrfs-dedupe code uses only non-data-mutating
-> btrfs kernel interfaces for manipulating extents (fiemap, defrag,
-> and file_extent_same/deduperange).  None of these should cause data
-> loss (excluding kernel bugs).
->
-> btrfs-dedupe can be trivially tricked into opening files that it did
-> not intend to (it has no protection against symlink injection and other
-> TOCCTOU attacks), but it doesn't seem to be able to alter the content
-> of files once it opens them.
->
-> File descriptors pointing to user files are opened O_RDWR, but they are
-> kept in the scope of the dedupe function and their life-cycle is properly
-> managed in Rust, so btrfs-dedupe won't mutate files by writing to the
-> wrong fd (e.g. accidentally close stderr and reopen it to a user file)
-> unless someone adds some seriously buggy code (see "assume not malicious"
-> above).
->
-> The unsafe C ioctl interfaces are unlikely to change in data-losing ways,
-> or they'll break all existing userspace tools that use them.  They are
-> also well encapsulated in the rust-btrfs module.
->
-> The errors reported on github seem to be problems with incompatible
-> changes in the runtime libraries btrfs-dedupe depends on, and also some
-> reports of what look like pre-existing bugs in the fiemap code that are
-> blamed on new kernel versions without evidence.  Data-losing breaking
-> changes in any of the ioctls btrfs-dedupe uses are extremely unlikely.
-> Those issues may cause btrfs-dedupe to do useless unnecessary work,
-> or fail to do useful necessary work, but could not cause data loss by
-> any mechanism I can find.
->
-> Contrast with bedup:  bedup uses data-mutating kernel interfaces
-> (clone_range) for dedupe that have no effective protection against
-> concurrent data modification.  There is ineffective protection implemented
-> in bedup (looking in /proc/*/fd for concurrent users of the files) which
-> may or may not be broken in kernel 5.0, but it's ineffective either way.
-> The case for data loss in bedup is trivial.  The branch with a patch to
-> fix it is now 7 years old, so it's fair to say bedup is unmaintained too
-> (github forks notwithstanding, they didn't fix these issues).
->
+Right, but you still need to consider the offset inside
+btrfs_file_extent_item for inline data, that's why I'm using
+btrfs_file_extent_inline_start() to find out the real offset.
+
+Thanks,
+Qu
+
+>=20
+> Thanks,
+> Dejan
+>=20
+>=20
+> -----Original Message-----
+> From: Qu Wenruo <quwenruo.btrfs@gmx.com>=20
+> Sent: =C4=8Detvrtak, 18. jun 2020. 15:46
+> To: Rebraca Dejan (BSOT/PJ-ES1-Bg) <Dejan.Rebraca@rs.bosch.com>; linux-=
+btrfs@vger.kernel.org
+> Subject: Re: Physical address offset of the inline extent
+>=20
+>=20
+>=20
+> On 2020/6/18 =E4=B8=8B=E5=8D=889:21, Rebraca Dejan (BSOT/PJ-ES1-Bg) wro=
+te:
+>> Hi,
+>>
+>> Does anybody know how to get an address offset of the file data inline=
+ extent?
+>=20
+> Since it's inline, it's inlined into metadata (tree block), thus makes =
+no sense to get the "address".
+>=20
+> The address will be inside a tree block anyway.
+>=20
+> If you really want the address, you can check it with dump-tree.
+>=20
+> $ btrfs ins dump-tree -t 5 /dev/nvme/btrfs fs tree key (FS_TREE ROOT_IT=
+EM 0) leaf 5324800 items 7 free space 13619 generation 6 owner FS_TREE le=
+af 5324800 flags 0x1(WRITTEN) backref revision 1
+>      ^^^^^^^ Tree block bytenr
+> ...
+>         item 6 key (257 EXTENT_DATA 0) itemoff 13794 itemsize 2069
+>                 generation 6 type 0 (inline)
+>                 inline extent data size 2048 ram_bytes 2048 compression=
+
+> 0 (none)
+>=20
+> You need to use extent_buffer to grab the inline file extent item, and =
+use the btrfs_file_extent_inline_start() to get the inline file extent of=
+fset inside the leaf.
+>=20
+> Anyway, you need a solid understanding of btrfs on-disk format to grasp=
+ the above dump.
+>=20
+>> Kernel returns 0 trough FS_IOC_FIEMAP ioctl, but I would really like t=
+o get real physical offset if possible, most probably meaning:
+>>
+>> In FS tree - on-disk address of the extent data item for the relevant =
+file object + the offset within that item (0x15).
+>>
+>> I was hoping that the key.objectid of key.type =3D EXTENT_ITEM would g=
+ive me such an information, but apparently this is not the case.
+>=20
+> Key.objectid of EXTENT_ITEM only means the inode number.
+> Key.offset of EXTENT_ITEM means the file offset, for inline file extent=
+ it's always 0.
+>=20
+> So it looks like you're not familiar with btrfs on-disk format, thus I =
+doubt the usefulness of known the inline file extent offset inside the tr=
+ee block.
+>=20
+> Thanks,
+> Qu
+>=20
+>>
+>> Thanks very much,
+>>
+>> Dejan
+>>
+>>
+>>
+>=20
+
+
+--3uiNroEhMMg5jSwX2GX3oScL3sbDaMMyH--
+
+--qHxYTcF24GUYUPsL3Y8zC4SK9BJUiJ1LG
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl7r71wACgkQwj2R86El
+/qgH+Af/SKicfOr7pT99vMfx5BfZ6xiz/NIWP4pN22CCvk9KDauaBYai+ThrY+j+
+8y8EEX9JFyMaB1m8KuCU9hX5emaZvV9KZgs6yCyFX4Dv6Sfa+Mcd4kQn8AHNqD9g
+HtcS+PvCPf+OzsjVbBB5Gm778H619zLSEhJ2isbWqKGbd5SYQy6P8sc2aO0v+k+a
+Zf5QPmM53kuTel2HC/8H585AOamB1RfQLuBOaMVfDzvwoy4KJxODi42I3K5foHzi
++9EXGANLrdhUWhOimLfmQCaUzq3u77vdk3PW8nGMXq6dvxe3YRDYZy5w8jwsA95j
+dKr/oYMR6Bezs15XmxQYDEJ+atBCrg==
+=Z7hm
+-----END PGP SIGNATURE-----
+
+--qHxYTcF24GUYUPsL3Y8zC4SK9BJUiJ1LG--
