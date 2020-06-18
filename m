@@ -2,144 +2,147 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 213EE1FF1F5
-	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Jun 2020 14:35:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E97F1FF233
+	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Jun 2020 14:46:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729506AbgFRMff (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 18 Jun 2020 08:35:35 -0400
-Received: from mout.gmx.net ([212.227.17.20]:34261 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727091AbgFRMfd (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 18 Jun 2020 08:35:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1592483727;
-        bh=U9S3lZ8tR44/5v+LHyhXlA+agoIG6zGsxO0XdUhp/No=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=CZjVc+spsg/jQPNr60KH8K/lWTubjWdHK6MQ1JEK25FA3yZ1dSj3czwGnwvrHpWYn
-         0RC8SaNl3lcHJs7rsJ06EuevkEbcC30/n/9Ttyc/PdnPABeN2p0/AUzB5NOz8c9Rte
-         kevKLJPLqH9HEutJoglD23i4nZSdblohMu0KX2bA=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MHXFx-1jhEwZ1TJh-00DYes; Thu, 18
- Jun 2020 14:35:27 +0200
-Subject: Re: [PATCH v3 2/3] btrfs: refactor check_can_nocow() into two
- variants
-To:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        Qu Wenruo <wqu@suse.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-References: <20200618074950.136553-1-wqu@suse.com>
- <20200618074950.136553-3-wqu@suse.com>
- <SN4PR0401MB35988624F5193F3102ADB1579B9B0@SN4PR0401MB3598.namprd04.prod.outlook.com>
- <de3bdf98-0786-7c28-9ce2-1a9df889a213@gmx.com>
- <SN4PR0401MB3598A324B910017E234C31CD9B9B0@SN4PR0401MB3598.namprd04.prod.outlook.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
- PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
- 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
- D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
- efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
- ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
- BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
- 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
- 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
- EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
- 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
- ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
- oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
- fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
- 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
- ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
- oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <70cfab56-cd61-c0de-ed67-f286fca75f66@gmx.com>
-Date:   Thu, 18 Jun 2020 20:35:22 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        id S1729931AbgFRMq0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 18 Jun 2020 08:46:26 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:29107 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1729911AbgFRMqV (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 18 Jun 2020 08:46:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1592484379;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Jx2chy+DXXXPslp3yfr/ExQZEB8p36U9cp+dBBsmha4=;
+        b=MtqFryuGdibC7xV3aPD1wwqC9spIagZf/VJ2+B/KccWAghLI/FkiCHRh/ySDwZe71Fmd61
+        WPuNheq5BiY8nWh//h29sTjjbZas8FwfyIIzlqLB4fQlOqMEpXDDQrl0oB4WTRLqEYpKxc
+        ubtS8F+RH+K+1jdMF3Ap4rCMMefiz9M=
+Received: from mail-ot1-f72.google.com (mail-ot1-f72.google.com
+ [209.85.210.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-362-BDUUrQqQO3Ge20J--LcAIA-1; Thu, 18 Jun 2020 08:46:15 -0400
+X-MC-Unique: BDUUrQqQO3Ge20J--LcAIA-1
+Received: by mail-ot1-f72.google.com with SMTP id 67so2546858oto.14
+        for <linux-btrfs@vger.kernel.org>; Thu, 18 Jun 2020 05:46:15 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Jx2chy+DXXXPslp3yfr/ExQZEB8p36U9cp+dBBsmha4=;
+        b=jOtrm19qpGdQX8Kre0zuySyPYNna7vCuQkxcis4N66LP5ewLXNMIVsHKt4J5UYF7+3
+         y8cK/X7nLrRI5AZllz4cm/hdRpYnkmizCrkdjjd8D/hhLlC+HekXb2NRknKF+OFxRoYz
+         WpUAdRVD4vq7cUpwUdQ2BUnvU6fHzYe5sbRsTypTKfFSzXV0ZgfSuS9hZYYdg9R3RjOJ
+         1/PfA95HqwvJfmz029S828u8H4GkDJwkQM7oBnpqVt6lqZOdB//RZfulE2f+i/Kg14NN
+         4mNVVzHidmQICAc+SJQhtFp2mvRaJ5zEtsid7aSCazrnBBCcsfowvYPaP7jEkIWsn25P
+         RkOQ==
+X-Gm-Message-State: AOAM530DbQR1kwJstlrxhWOGuT04fCN+BXV4D7UuGBeFFXD2pChc5AyE
+        cu+uazMSU6w6kP9bIf66XSh0OnzL94YKSeZBPM1RsCdlVMN/0OrqmMga++D4TDuj8Vx8H5sviWV
+        OL0mjlmQCsTA8Epj7UwZFjBQyq2EZb/+6yH9LPGI=
+X-Received: by 2002:a05:6830:10c8:: with SMTP id z8mr3014460oto.95.1592484374649;
+        Thu, 18 Jun 2020 05:46:14 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzOwYhxZwvrmXCEEJ4lNIcITT1uhrr+sNqXkjoRh5QLgqAWYsSVfGAkiWuBNYfSRh2ekFx49DQ8VN9O2a7lFfU=
+X-Received: by 2002:a05:6830:10c8:: with SMTP id z8mr3014426oto.95.1592484374383;
+ Thu, 18 Jun 2020 05:46:14 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <SN4PR0401MB3598A324B910017E234C31CD9B9B0@SN4PR0401MB3598.namprd04.prod.outlook.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="XHn1VNX5CsM8mKcuqhKtvqgvMtmZgGZsB"
-X-Provags-ID: V03:K1:/see/ZsuX4atScUEsJ+9gx+Nhz3gD0DcpBSDIJtpFhu31FA6dzD
- XGjJPzpHYpFfLBsJWfi1bf49D6tKeHF4a/O2yMls+ahSiJxzqHlDzm+QHgpteFezuFVQThG
- jukDS1DbbUW92a8BKowoAiwryWxtmIvDxFN03pbTqO5zzhC1EAHgWLsNVUJn09Ij1WfLjy7
- Vdo+61ossQEDIxCztv2wg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:E4w2hLf++RQ=:ULNmzOXGRx94TCBXYQVhAW
- qfIShiVc9GkiQhw/GnCun5udHNjALPKjQ/3MEAAIaEfzrtjwU3Z2otVjDI/WtFTvGZsILdPH/
- J5gYvH97Tju1SSjdmwtmo0SDb3JGL/G98iiUl4vmtqzTHdxPXA3sExZda/tKKDPG7x/6rExhf
- zt37+6pTWjiZq/w+v/5n3yUgEoBdt+ku0OPjsZY28QkAHK7RoNuTOzgx8ab1lb6KFx2wKhbAW
- vtHwYY/iqAdsKmM/zPwzvG3ffISS7yAjCuq4eV2P4p2A9pEJnSFSLlHrT7vrjuVY8Gqvt1BZx
- Snw0QwH1kR7hmNf7h6y8oC6W2uvLJVPK5Sl5i3C0Y0esaUsEpKDUc4mQL3gcBMGFS2hibncYW
- z8GV4wtZWy0n/ntSvexZE1EpYo4sTKRlB8oblRPXazG0ises2SKsSpZ3RKq2H+IGiWAd6aqWs
- 8lqCixcO3Oy8wds/3woX+VIcdUPkoqTDIW7d8kjJuakHZXVxlMIwYlnVHXeuu/wpgF7ybNSrL
- L5sh49MKn4kFWku52rCxlAbQa3nw+vrRpIaZsPshQILyByLApAmBXyLSWTef3YCBBdZy7Rsuc
- XOr5YesMDlAOgE78kx0+QXiYx5/wJlqL6u3MZV38pMksbXFg5KfkPbxqWOtPCDqwKQ5ztTlmf
- rgWQaJz3p/OOlw54XY3DRnKFlzlnlOzEK7kgeQ5a3rBXt1Bb5Qf42X8QmhhhHH++avl8cofrj
- n6OIF5WZaFh+hZjoj1wMwWNef3xm+xyseLJLDCI1iihdPTDtF+DyrdUNfoVg8mKSphaTrVl7C
- QvuofO0RBbMREVGLKXkkn/z3Ch8zlECKCVfT/qO7nWQYtV60nC0cT4mOOi5TajB1x4VhNWzhr
- aMiu0eKnIWqgI+EpltQdGDF+UcfgsKHZ3spgjWYN66PQqMCA2U0++DR328x+tW5h8jeDs4QNy
- rYV8lAhs2zvmCSQK4dZ2PQVGSQSpP6QFJYE/X2a25ycFteyKVCNTzMGlAIneaLPGbZjAopIyj
- GFUMEKsBMNj7I581UnmJZF3KZgLSV21tcQenJhfNbOP9m6wby9sFhLfGruB5dvjJ8npDAbzZJ
- HNVf/fwupkeTbg86Zis3PuLWyayUXMadVE+1EllkucvpI6QT4B5+QuUX+uCAid6liscgBUYc+
- yUQtbifruz0PBqfogCtGEVguwALlFBcNcyboJXbj5Jk5RRhQ9GgtjNBvdQ7KD6EZpyyi9UP7E
- TZO14CLUGAN/hXYvK
+References: <20200414150233.24495-1-willy@infradead.org> <20200414150233.24495-17-willy@infradead.org>
+ <CAHc6FU4m1M7Tv4scX0UxSiVBqkL=Vcw_z-R7SufL8k7Bw=qPOw@mail.gmail.com>
+ <20200617003216.GC8681@bombadil.infradead.org> <CAHpGcMK6Yu0p-FO8CciiySqh+qcWLG-t3hEaUg-rqJnS=2uhqg@mail.gmail.com>
+ <20200617022157.GF8681@bombadil.infradead.org>
+In-Reply-To: <20200617022157.GF8681@bombadil.infradead.org>
+From:   Andreas Gruenbacher <agruenba@redhat.com>
+Date:   Thu, 18 Jun 2020 14:46:03 +0200
+Message-ID: <CAHc6FU7NLRHKRJJ6c2kQT0ig8ed1n+3qR-YcSCWzXOeJCUsLbA@mail.gmail.com>
+Subject: Re: [Cluster-devel] [PATCH v11 16/25] fs: Convert mpage_readpages to mpage_readahead
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     =?UTF-8?Q?Andreas_Gr=C3=BCnbacher?= <andreas.gruenbacher@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-xfs <linux-xfs@vger.kernel.org>,
+        Junxiao Bi <junxiao.bi@oracle.com>,
+        William Kucharski <william.kucharski@oracle.com>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-f2fs-devel@lists.sourceforge.net,
+        cluster-devel <cluster-devel@redhat.com>,
+        Linux-MM <linux-mm@kvack.org>, ocfs2-devel@oss.oracle.com,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-ext4 <linux-ext4@vger.kernel.org>,
+        linux-erofs@lists.ozlabs.org, Christoph Hellwig <hch@lst.de>,
+        linux-btrfs@vger.kernel.org,
+        Steven Whitehouse <swhiteho@redhat.com>,
+        Bob Peterson <rpeterso@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---XHn1VNX5CsM8mKcuqhKtvqgvMtmZgGZsB
-Content-Type: multipart/mixed; boundary="60rWg9EOcbWLCcigk5Z52hxBdSzkPLhHM"
+On Wed, Jun 17, 2020 at 4:22 AM Matthew Wilcox <willy@infradead.org> wrote:
+> On Wed, Jun 17, 2020 at 02:57:14AM +0200, Andreas Gr=C3=BCnbacher wrote:
+> > Am Mi., 17. Juni 2020 um 02:33 Uhr schrieb Matthew Wilcox <willy@infrad=
+ead.org>:
+> > >
+> > > On Wed, Jun 17, 2020 at 12:36:13AM +0200, Andreas Gruenbacher wrote:
+> > > > Am Mi., 15. Apr. 2020 um 23:39 Uhr schrieb Matthew Wilcox <willy@in=
+fradead.org>:
+> > > > > From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+> > > > >
+> > > > > Implement the new readahead aop and convert all callers (block_de=
+v,
+> > > > > exfat, ext2, fat, gfs2, hpfs, isofs, jfs, nilfs2, ocfs2, omfs, qn=
+x6,
+> > > > > reiserfs & udf).  The callers are all trivial except for GFS2 & O=
+CFS2.
+> > > >
+> > > > This patch leads to an ABBA deadlock in xfstest generic/095 on gfs2=
+.
+> > > >
+> > > > Our lock hierarchy is such that the inode cluster lock ("inode gloc=
+k")
+> > > > for an inode needs to be taken before any page locks in that inode'=
+s
+> > > > address space.
+> > >
+> > > How does that work for ...
+> > >
+> > > writepage:              yes, unlocks (see below)
+> > > readpage:               yes, unlocks
+> > > invalidatepage:         yes
+> > > releasepage:            yes
+> > > freepage:               yes
+> > > isolate_page:           yes
+> > > migratepage:            yes (both)
+> > > putback_page:           yes
+> > > launder_page:           yes
+> > > is_partially_uptodate:  yes
+> > > error_remove_page:      yes
+> > >
+> > > Is there a reason that you don't take the glock in the higher level
+> > > ops which are called before readhead gets called?  I'm looking at XFS=
+,
+> > > and it takes the xfs_ilock SHARED in xfs_file_buffered_aio_read()
+> > > (called from xfs_file_read_iter).
+> >
+> > Right, the approach from the following thread might fix this:
+> >
+> > https://lore.kernel.org/linux-fsdevel/20191122235324.17245-1-agruenba@r=
+edhat.com/T/#t
+>
+> In general, I think this is a sound approach.
+>
+> Specifically, I think FAULT_FLAG_CACHED can go away.  map_pages()
+> will bring in the pages which are in the page cache, so when we get to
+> gfs2_fault(), we know there's a reason to acquire the glock.
 
---60rWg9EOcbWLCcigk5Z52hxBdSzkPLhHM
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+We'd still be grabbing a glock while holding a dependent page lock.
+Another process could be holding the glock and could try to grab the
+same page lock (i.e., a concurrent writer), leading to the same kind
+of deadlock.
 
+Andreas
 
-
-On 2020/6/18 =E4=B8=8B=E5=8D=888:16, Johannes Thumshirn wrote:
-> On 18/06/2020 14:09, Qu Wenruo wrote:
->>> I find that try_ naming uneasy. If you take the example from locking =
-
->>> for instance, after a successful mutex_trylock() you still need to ca=
-ll
->>> mutex_unlock().
->>
->> Yep, I have the same concern, although no good alternative naming.
->=20
-> Yeah, there's only two hard things in computer science, cache coherency=
-,=20
-> naming things and off-by-one errors.
->=20
-Best meme of the day!
-
-
---60rWg9EOcbWLCcigk5Z52hxBdSzkPLhHM--
-
---XHn1VNX5CsM8mKcuqhKtvqgvMtmZgGZsB
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl7rX4sACgkQwj2R86El
-/qitrQgAqEI2wDMwypbcmq5AbZhe8qojJ2hJoND4eC/y+tcIhPSClwcOr+SO2SR1
-qCkHwwW7nd1xcxgeUH+GemLqVnbjgrYNYhSrjUWb3yJJZU4GHjRazmydgJGQEmQr
-3UFa4zKQ0UkHxn2lZagcu9YRMWTgNvu/fZdHSdTHI4nfkF4zVUyWVCTK1htX+X7C
-iXog0NaGU7zB4hoUD5DZL8PQh2Q5ztVlQJC+0E4bP9ac1c9E73ZEB3KY1cf5irDK
-GCbegukisyg4UOQsCDV36v7bvv8DZJQXmZGOlpm4SYhTqbxZizj57z9c6OqQcZOH
-EPlXQJT9DQUjdv9Vvk1Jyt5i26ctOw==
-=Nr4r
------END PGP SIGNATURE-----
-
---XHn1VNX5CsM8mKcuqhKtvqgvMtmZgGZsB--
