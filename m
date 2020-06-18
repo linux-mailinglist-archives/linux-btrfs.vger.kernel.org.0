@@ -2,310 +2,340 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC9CF1FF12B
-	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Jun 2020 14:05:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C3451FF147
+	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Jun 2020 14:09:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728062AbgFRMFN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 18 Jun 2020 08:05:13 -0400
-Received: from esa1.hgst.iphmx.com ([68.232.141.245]:56276 "EHLO
-        esa1.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726919AbgFRMFK (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 18 Jun 2020 08:05:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1592481909; x=1624017909;
-  h=from:to:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=lxRErbIjeWVN9C8WSBD/mZ6PGUusvUcFXA5YMUSLVpE=;
-  b=mB15dS3RIIgPQBBTPwQNh14URxZuMRGaz9vs+FkpOdcItRyQ4H0XmG0Y
-   /qh7oEPlBUyXKVydmwstQOlO0mC4P1qdGrdr9Fo9k2jyXg9DlGlV9ScZk
-   76EayEeXe6Z8C7Nmn5FQoFv0POZKHr9Ow3inGhaxlontCDilei6FAP1My
-   /kyqUoEJQyU5BJCEaDjFDAhAwuk8/7xpSDKZVBgwsz+X61S4Vy8VwDOco
-   n4h6nlheBpAaTSDvl+VDUlXl+e4XmXuzGcKa3IGyUQjz5StMaLm2XlU8l
-   3nrjZ7xHkvQR6K7l0h+S9J33Rl8ZQYBc0ICT7WOEa3c3rEECVvACcE9zO
-   g==;
-IronPort-SDR: a0YxTuZ021mSXGpG+PxmsLSziTD9VlLR656Tb+p1FE/WH8BKyUlbE/ED4UqAdNOKvz8CLaL2zN
- NbMX+VgjX80E2gyU1PlHTrjOYLOH9uZraeL5x2uMXFuRH83BZ3w0t3I872qaz0WdInDNa8ya1v
- IHdtYayBy+PYmgArE/+FAOlzdfLMKCjXueEuwNxb+eM4ZtdykTiZui10qG+xB7E1SafNh337ba
- XWwcBOSzePmElVx1FG3wdBsy8IZ/9zTMbHGx5/gsMskiiWcZRFTrR1FhqeLRPgqItO+eEUPN+O
- /Vs=
-X-IronPort-AV: E=Sophos;i="5.73,526,1583164800"; 
-   d="scan'208";a="249494994"
-Received: from mail-mw2nam10lp2106.outbound.protection.outlook.com (HELO NAM10-MW2-obe.outbound.protection.outlook.com) ([104.47.55.106])
-  by ob1.hgst.iphmx.com with ESMTP; 18 Jun 2020 20:05:09 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BSe3TPa5kaD3HCguQ5NHFtVFnLwbavgGl3UKrfrMdkjGilCOhfKfJ3O2Kr/F7axwyHt6CaQts3blPmmkdhknhpIP8vSZ09cAdpWeeP6Xol+XGNlbWMNHXDbm0/NeBXONqbDU6y1oNW6V/46QQVquc+xvSGhxhASP3D9oo3HKbi/Kp6NGvCxsLt4Uckbg/HGXqzr5OTXcMpi5JLcg9zIQ8TS2zryei4aeyhOyRt3XFprP+E6utX3uHpkGzmEkHu1TQmDaUpKOwL1ZglI3iW93zifwdTdeZ3faG/PYGr/hWqScsJgPOkwbFEDyVfUEsHwzd9aix5vIc6eHXSH7zkKxpg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=s+lLa+rzDtDRTAR8cGhTbKEmBm7o6XjaNhp99ny/dbo=;
- b=BvFvlu4svpf5flA0AeLHE0diEgCpCRRiEDKIEkC1wKTIzpgvhrC0PqDHvhIzXoBHmudV7jsKvnrKc0npnfVtXAwmvPXJE7Wrs28ZFp7w57SWJrHIvsRltGW4etwI0ZeL5FVp82BMFPH+EFcGazyYJVJRlRfEf/WftmFRpjdkuxPEYP2Hx4CvmirjYKCOmrlEjtNEuCubgJNHEjeQPVBnFg9n8V6Pd6QE9ymJVbgz5jnYzL7+EYPyIIvpt9uBh0lN//hK9MN2XhBPmOoKuVZcvkYiDZh2iNjGrk5xSpbpesiVIBBCyM5orahk+UvUe79negWArXQDNUIHvJEpEZdVFg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=s+lLa+rzDtDRTAR8cGhTbKEmBm7o6XjaNhp99ny/dbo=;
- b=k8OIdj2Ly4tFyKP+i3Fcrd4MhXIETSVT7JiUM1UXTK2Q945X2nFAQB0M+5r2eBIwHHLbpiXrhSCUhBYbJb/AYDP/gP4TfNgD2cNx9jv+JsLcid0m6SbG/lei1RoMSljFX8E0fI1EjtJwVrRzecdvaP1qcLilvGqdOA0zVxj/ahI=
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
- (2603:10b6:803:47::21) by SN6PR04MB4784.namprd04.prod.outlook.com
- (2603:10b6:805:ad::28) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3109.22; Thu, 18 Jun
- 2020 12:05:08 +0000
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::1447:186c:326e:30b2]) by SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::1447:186c:326e:30b2%7]) with mapi id 15.20.3088.028; Thu, 18 Jun 2020
- 12:05:08 +0000
-From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To:     Qu Wenruo <wqu@suse.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+        id S1727093AbgFRMJa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 18 Jun 2020 08:09:30 -0400
+Received: from mout.gmx.net ([212.227.17.21]:44993 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726919AbgFRMJY (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 18 Jun 2020 08:09:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1592482157;
+        bh=ujomrHPxJfTRMsQSnXw6FF36AcSjOF0fkKmYNI3RJ3I=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=fSamdbHkTNwQxzM7B9I3dOs6p3MPXxnDQU8DdHi5O0TEW/URq7wfLUIfnPo1EFTLT
+         Mk9jhHDmx+8bk5j/9kvwO7FkZppAWaodI/KsDDz6f3PEPpiNbXH0b8eLpAs2lvwDyz
+         uTvxQf3qb4w6vn6fM3jdfzcHAILKdcnvHAJu2+rE=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MTiPl-1jK4vJ0zpV-00U1cy; Thu, 18
+ Jun 2020 14:09:16 +0200
 Subject: Re: [PATCH v3 2/3] btrfs: refactor check_can_nocow() into two
  variants
-Thread-Topic: [PATCH v3 2/3] btrfs: refactor check_can_nocow() into two
- variants
-Thread-Index: AQHWRUUTafZBr9Wos02gKYnIZRraLw==
-Date:   Thu, 18 Jun 2020 12:05:08 +0000
-Message-ID: <SN4PR0401MB35988624F5193F3102ADB1579B9B0@SN4PR0401MB3598.namprd04.prod.outlook.com>
+To:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        Qu Wenruo <wqu@suse.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
 References: <20200618074950.136553-1-wqu@suse.com>
  <20200618074950.136553-3-wqu@suse.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: suse.com; dkim=none (message not signed)
- header.d=none;suse.com; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [62.216.205.133]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: b137b0cd-01e8-4168-c021-08d8137fd84f
-x-ms-traffictypediagnostic: SN6PR04MB4784:
-x-microsoft-antispam-prvs: <SN6PR04MB4784386313DD3C8CEFBD10EF9B9B0@SN6PR04MB4784.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:7691;
-x-forefront-prvs: 0438F90F17
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: A6HvFcwD+BEhPV7aDkGTPw4f7jeCBngAFsRs17P98GT96ccCnr1WDsJlcvUq2pb5JInHW3JuQaTZryI2Uzj5x3PeClrTgUkOmCfEG1+NpFCyYMb4uOWc/XF75s4kpAOXy3UFNfiCso/nR0UXYC3RBGlImVfTf4othNymzK4rKq3kyNYztmmTlYhgB7GI2IxuueqfLOb2pehFE1YAvEZ7v/ea2IRbmVNVwzSYvToz3LjNe5CaHmcHobU/OTMZhy2aEaZwZZzUpoC0wqDfQLPfdaHaeCZ8IboZyndZE5Gva9tpt4AfE0iAgco9GaktIiN2ST6wP45onDAueetWIhm8kQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR0401MB3598.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(366004)(136003)(396003)(346002)(39860400002)(376002)(71200400001)(5660300002)(316002)(83380400001)(9686003)(110136005)(8936002)(8676002)(478600001)(55016002)(186003)(66946007)(2906002)(66476007)(66556008)(86362001)(91956017)(7696005)(6506007)(53546011)(26005)(76116006)(66446008)(33656002)(52536014)(64756008);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: p8BzBzGSUXAIjfpTBo7xBOqB8ISZy7XcBsFWVRgS5RGebCiLDZ/UCk+EF32FOni5URaLQxTs9zQx6/sN7hQ0lel6oyZh7N0AvXxLmPH/SGWj/ApYdX+kDW6/QnpGXvTBfFp8LveyajI2Qkh7tYnBMEmpsZzhlBa2aCgSN6ukp+nCqZNeA2VB1X+gBOJ36a93qPOpdlLYuGbbpZT93i7nPrnPA5n3aoARAu9zHT3YPsq+nq9XXjxvPEUf1zBE+BV3LThUXpExnbF9hfLYDDwztgpr52uszJNc6/EOrXocd5ODfy5ERz/7Js+Nm8MGO1OzhVQilwW61C73kgnAEpyQHbacwOe8goOUM9X0G7XyRTozDMTE5rC1yIn+6dlCoNSY56B4ub7Ziagjw6NzJEwzg8xnWCX784fZkiujuffXjchZXDdl1oocliK1/AvPiDw4QVKyz0rimv1BCThy6dXSGJ28SzVJqZQU+pUQjo8L7t67731SF2aTwPFTwHx27b1L
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ <SN4PR0401MB35988624F5193F3102ADB1579B9B0@SN4PR0401MB3598.namprd04.prod.outlook.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
+ mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
+ PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
+ 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
+ D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
+ efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
+ ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
+ BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
+ 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
+ 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
+ EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
+ 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
+ ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
+ oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
+ fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
+ 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
+ ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
+ oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
+Message-ID: <de3bdf98-0786-7c28-9ce2-1a9df889a213@gmx.com>
+Date:   Thu, 18 Jun 2020 20:09:12 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b137b0cd-01e8-4168-c021-08d8137fd84f
-X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Jun 2020 12:05:08.2725
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 5XBEDAcloefHc7DHz3nSRntpGbKdXV7WYTMeWqt4rBEyGwCnNb8z/ECEQJnrWNMsCNLclvxRnEZE1G6wwz26S7OO1+GRfHHZ8/UlLM6py8Y=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR04MB4784
+In-Reply-To: <SN4PR0401MB35988624F5193F3102ADB1579B9B0@SN4PR0401MB3598.namprd04.prod.outlook.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="Ntq8vxrkLH0unP0X4Kay6iJOtNIaKta19"
+X-Provags-ID: V03:K1:DnB5PRJh0OZtXyUKBb/xZw8tvyeByyEg1cnVOr1wvmV76eQwxFC
+ vY+Pwko6GBCuIIlllgj1jFa7l27tmBm+OVWSyr0M/eLkYWb2upze3v4ZkdpvxVHfEEKm2RC
+ 3Ip7zFEM0q3QHR+X/S1G4UWgpEfNnd5KQ/QYe6AQ1p4Sc7Ip0iuDVZb7jCsNFYn6kzz9vUi
+ KbpEi79q6EwUIXgdSANfA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:2ZoEQSgGkhA=:zREF1HOk/kGMlP5MzRWGHs
+ Re9UKNzvxJ1imccFyoC28KFMkeg4lkAdoBIrOk/Cb1DJbWoWN6aO59dzhiJt2yM4N3pWNfmfS
+ kUsl5ADLM/sp9UAtFYf0eT6Am7Tb+xWuBqpxrLURdgb6mIjRDJqMr6fmY1r1AiGOzo3YAmoF8
+ VqP6XQxblgjIOWPXyWUciY8HEPISA3cyZ9ewuFyaP3BzT3PMAoj7PXkf57Oht73V9hhsZTF1W
+ x7Tt7CMwcruQUIWGrwP5Jx8C54R3L/Snhem1IJUBuTmPwFqt63+Z8h6gfSE2EfAbXPy1BeCsz
+ Zhki4uSO1Mlc+0Sj4ww96fS01DnQdtS6B5VzWYa6/8FbGfEdSGny2OGw1oR1CFhryRxP+xEoJ
+ lYcd0QQwB02D6NFZ9IQ5eGWfRbUL7HzqOUTCUgfBeU/JQdShj+o6epp9vskQfJznTYF9Yf7fz
+ Pvi/g9dBhgri9HUisT6K0gWVJMo9dncBndrZ3ab/cHSdoczaN9cPCVoc0jKCZSmKPAUSMQoNK
+ 0/Qc9Oz5fRHeMx3kKIHf0uTOlFk2ypJXkb2UsVv+7PMcMYj8vbjM1eFO5+iAfcJXG8ZgJ9PSG
+ ppoTOPRS+XLRUc6tnH3TORejplDpxjW5OtaGSVTkOG6qd1mclbkB8kIi1/g/LWpURGjPTJl70
+ jF8EUxUC68gT4d3nukwxXp0aiC8udx8qxio5bkeFYoChAPxL31mO+Lrw5L11xaS9nS6WQ6kMk
+ Q93ejXXpEOi5Ck9dELQAQ6IJtIVvLg4Hz6eJqKgDthKf1qy+Kux2p0vDiq7WUN+ghFgKLrvQX
+ LP/4YQ4yAc8dhtmdgtyBSjTDt1zjfoUWQGfpjoXIvkAdZPi/j4S03om7+dw2SKeTLwgIDuO0N
+ ImzJLctR9Vxw8sgK1Z3DrmFcX3ZDY75oxEH/dBZNrL7ikFDwtUviUQ2y6G4MoBueYeVOxOsMs
+ FbotuGrAHQStRL4J5UFvFlww0AbY1HChcXDIIaOcpjEWJ9MxXmbgRScUhieQTbu5mtWtgA5Ni
+ 3bt0GxXFCqenoEoQ4XwnUiI2wT9uetPZYHYf1w4JUoa3kFSjdCIFCqeiOD9yepMp3h3Y8OoJN
+ oT+nswGzv3WApU9XBccPw9LGJ7Yy/4XFOzS+u5/v6ipgRuntbmJJLhf6Aj1G9Vgtn1VNR6T5p
+ Atdeq76mWK6Theqf5TAv7UY0P4CSYkzLdZw9AmyuGhm0I7NMaIVB+o1RKVgIId4hz3FEH3HPO
+ Wu38FFfbcKCa8EkMD
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 18/06/2020 09:50, Qu Wenruo wrote:=0A=
-> The function check_can_nocow() now has two completely different call=0A=
-> patterns.=0A=
-> For nowait variant, callers don't need to do any cleanup.=0A=
-> While for wait variant, callers need to release the lock if they can do=
-=0A=
-> nocow write.=0A=
-> =0A=
-> This is somehow confusing, and will be a problem if check_can_nocow()=0A=
-> get exported.=0A=
-> =0A=
-> So this patch will separate the different patterns into different=0A=
-> functions.=0A=
-> For nowait variant, the function will be called try_nocow_check().=0A=
-> For wait variant, the function pair will be start_nocow_check() and=0A=
-> end_nocow_check().=0A=
-=0A=
-I find that try_ naming uneasy. If you take the example from locking =0A=
-for instance, after a successful mutex_trylock() you still need to call=0A=
-mutex_unlock().=0A=
-=0A=
-Maybe star_nowcow_check_unlocked() or start_nowcow_check_nowait() [though=
-=0A=
-the latter could imply it's putting things on a waitqueue] =0A=
-=0A=
-> =0A=
-> Also, adds btrfs_assert_drew_write_locked() for end_nocow_check() to=0A=
-> detected unpaired calls.=0A=
-> =0A=
-> Signed-off-by: Qu Wenruo <wqu@suse.com>=0A=
-> ---=0A=
->  fs/btrfs/file.c    | 71 ++++++++++++++++++++++++++++------------------=
-=0A=
->  fs/btrfs/locking.h | 13 +++++++++=0A=
->  2 files changed, 57 insertions(+), 27 deletions(-)=0A=
-> =0A=
-> diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c=0A=
-> index 0e4f57fb2737..7c904e41c5b6 100644=0A=
-> --- a/fs/btrfs/file.c=0A=
-> +++ b/fs/btrfs/file.c=0A=
-> @@ -1533,27 +1533,8 @@ lock_and_cleanup_extent_if_need(struct btrfs_inode=
- *inode, struct page **pages,=0A=
->  	return ret;=0A=
->  }=0A=
->  =0A=
-> -/*=0A=
-> - * Check if we can do nocow write into the range [@pos, @pos + @write_by=
-tes)=0A=
-> - *=0A=
-> - * This function will flush ordered extents in the range to ensure prope=
-r=0A=
-> - * nocow checks for (nowait =3D=3D false) case.=0A=
-> - *=0A=
-> - * Return >0 and update @write_bytes if we can do nocow write into the r=
-ange.=0A=
-> - * Return 0 if we can't do nocow write.=0A=
-> - * Return -EAGAIN if we can't get the needed lock, or for (nowait =3D=3D=
- true) case,=0A=
-> - * there are ordered extents need to be flushed.=0A=
-> - * Return <0 for if other error happened.=0A=
-> - *=0A=
-> - * NOTE: For wait (nowait=3D=3Dfalse) calls, callers need to release the=
- drew write=0A=
-> - * 	 lock of inode->root->snapshot_lock if return value > 0.=0A=
-> - *=0A=
-> - * @pos:	 File offset of the range=0A=
-> - * @write_bytes: The length of the range to check, also contains the noc=
-ow=0A=
-> - * 		 writable length if we can do nocow write=0A=
-> - */=0A=
-> -static noinline int check_can_nocow(struct btrfs_inode *inode, loff_t po=
-s,=0A=
-> -				    size_t *write_bytes, bool nowait)=0A=
-> +static noinline int __check_can_nocow(struct btrfs_inode *inode, loff_t =
-pos,=0A=
-> +				      size_t *write_bytes, bool nowait)=0A=
->  {=0A=
->  	struct btrfs_fs_info *fs_info =3D inode->root->fs_info;=0A=
->  	struct btrfs_root *root =3D inode->root;=0A=
-> @@ -1603,6 +1584,43 @@ static noinline int check_can_nocow(struct btrfs_i=
-node *inode, loff_t pos,=0A=
->  	return ret;=0A=
->  }=0A=
->  =0A=
-> +/*=0A=
-> + * Check if we can do nocow write into the range [@pos, @pos + @write_by=
-tes)=0A=
-> + *=0A=
-> + * The start_nocow_check() version will flush ordered extents before che=
-cking,=0A=
-> + * and needs end_nocow_check() calls if we can do nocow writes.=0A=
-> + *=0A=
-> + * While try_nocow_check() version won't do any sleep or hold any lock, =
-thus=0A=
-> + * no need to call end_nocow_check().=0A=
-> + *=0A=
-> + * Return >0 and update @write_bytes if we can do nocow write into the r=
-ange.=0A=
-> + * Return 0 if we can't do nocow write.=0A=
-> + * Return -EAGAIN if we can't get the needed lock, or there are ordered =
-extents=0A=
-> + * needs to be flushed.=0A=
-> + * Return <0 for if other error happened.=0A=
-> + *=0A=
-> + * @pos:	 File offset of the range=0A=
-> + * @write_bytes: The length of the range to check, also contains the noc=
-ow=0A=
-> + * 		 writable length if we can do nocow write=0A=
-> + */=0A=
-> +static int start_nocow_check(struct btrfs_inode *inode, loff_t pos,=0A=
-> +			     size_t *write_bytes)=0A=
-> +{=0A=
-> +	return __check_can_nocow(inode, pos, write_bytes, false);=0A=
-> +}=0A=
-> +=0A=
-> +static int try_nocow_check(struct btrfs_inode *inode, loff_t pos,=0A=
-> +			   size_t *write_bytes)=0A=
-> +{=0A=
-> +	return __check_can_nocow(inode, pos, write_bytes, true);=0A=
-> +}=0A=
-> +=0A=
-> +static void end_nocow_check(struct btrfs_inode *inode)=0A=
-> +{=0A=
-> +	btrfs_assert_drew_write_locked(&inode->root->snapshot_lock);=0A=
-> +	btrfs_drew_write_unlock(&inode->root->snapshot_lock);=0A=
-> +}=0A=
-> +=0A=
->  static noinline ssize_t btrfs_buffered_write(struct kiocb *iocb,=0A=
->  					       struct iov_iter *i)=0A=
->  {=0A=
-> @@ -1668,8 +1686,8 @@ static noinline ssize_t btrfs_buffered_write(struct=
- kiocb *iocb,=0A=
->  		if (ret < 0) {=0A=
->  			if ((BTRFS_I(inode)->flags & (BTRFS_INODE_NODATACOW |=0A=
->  						      BTRFS_INODE_PREALLOC)) &&=0A=
-> -			    check_can_nocow(BTRFS_I(inode), pos,=0A=
-> -					    &write_bytes, false) > 0) {=0A=
-> +			    start_nocow_check(BTRFS_I(inode), pos,=0A=
-> +				    	      &write_bytes) > 0) {=0A=
->  				/*=0A=
->  				 * For nodata cow case, no need to reserve=0A=
->  				 * data space.=0A=
-> @@ -1802,7 +1820,7 @@ static noinline ssize_t btrfs_buffered_write(struct=
- kiocb *iocb,=0A=
->  =0A=
->  		release_bytes =3D 0;=0A=
->  		if (only_release_metadata)=0A=
-> -			btrfs_drew_write_unlock(&root->snapshot_lock);=0A=
-> +			end_nocow_check(BTRFS_I(inode));=0A=
->  =0A=
->  		if (only_release_metadata && copied > 0) {=0A=
->  			lockstart =3D round_down(pos,=0A=
-> @@ -1829,7 +1847,7 @@ static noinline ssize_t btrfs_buffered_write(struct=
- kiocb *iocb,=0A=
->  =0A=
->  	if (release_bytes) {=0A=
->  		if (only_release_metadata) {=0A=
-> -			btrfs_drew_write_unlock(&root->snapshot_lock);=0A=
-> +			end_nocow_check(BTRFS_I(inode));=0A=
->  			btrfs_delalloc_release_metadata(BTRFS_I(inode),=0A=
->  					release_bytes, true);=0A=
->  		} else {=0A=
-> @@ -1946,8 +1964,7 @@ static ssize_t btrfs_file_write_iter(struct kiocb *=
-iocb,=0A=
->  		 */=0A=
->  		if (!(BTRFS_I(inode)->flags & (BTRFS_INODE_NODATACOW |=0A=
->  					      BTRFS_INODE_PREALLOC)) ||=0A=
-> -		    check_can_nocow(BTRFS_I(inode), pos, &nocow_bytes,=0A=
-> -				    true) <=3D 0) {=0A=
-> +		    try_nocow_check(BTRFS_I(inode), pos, &nocow_bytes) <=3D 0) {=0A=
->  			inode_unlock(inode);=0A=
->  			return -EAGAIN;=0A=
->  		}=0A=
-> diff --git a/fs/btrfs/locking.h b/fs/btrfs/locking.h=0A=
-> index d715846c10b8..28995fccafde 100644=0A=
-> --- a/fs/btrfs/locking.h=0A=
-> +++ b/fs/btrfs/locking.h=0A=
-> @@ -68,4 +68,17 @@ void btrfs_drew_write_unlock(struct btrfs_drew_lock *l=
-ock);=0A=
->  void btrfs_drew_read_lock(struct btrfs_drew_lock *lock);=0A=
->  void btrfs_drew_read_unlock(struct btrfs_drew_lock *lock);=0A=
->  =0A=
-> +#ifdef CONFIG_BTRFS_DEBUG=0A=
-> +static inline void btrfs_assert_drew_write_locked(struct btrfs_drew_lock=
- *lock)=0A=
-> +{=0A=
-> +	/* If there are readers, we're definitely not write locked */=0A=
-> +	BUG_ON(atomic_read(&lock->readers));=0A=
-> +	/* We should hold one percpu count, thus the value shouldn't be zero */=
-=0A=
-> +	BUG_ON(percpu_counter_sum(&lock->writers) <=3D 0);=0A=
-> +}=0A=
-> +#else=0A=
-> +static inline void btrfs_assert_drew_write_locked(struct btrfs_drew_lock=
- *lock)=0A=
-> +{=0A=
-> +}=0A=
-> +#endif=0A=
->  #endif=0A=
-> =0A=
-=0A=
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--Ntq8vxrkLH0unP0X4Kay6iJOtNIaKta19
+Content-Type: multipart/mixed; boundary="WoEud6HUE0CzozomdARiCtQgoFb7o6SLP"
+
+--WoEud6HUE0CzozomdARiCtQgoFb7o6SLP
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+
+
+
+On 2020/6/18 =E4=B8=8B=E5=8D=888:05, Johannes Thumshirn wrote:
+> On 18/06/2020 09:50, Qu Wenruo wrote:
+>> The function check_can_nocow() now has two completely different call
+>> patterns.
+>> For nowait variant, callers don't need to do any cleanup.
+>> While for wait variant, callers need to release the lock if they can d=
+o
+>> nocow write.
+>>
+>> This is somehow confusing, and will be a problem if check_can_nocow()
+>> get exported.
+>>
+>> So this patch will separate the different patterns into different
+>> functions.
+>> For nowait variant, the function will be called try_nocow_check().
+>> For wait variant, the function pair will be start_nocow_check() and
+>> end_nocow_check().
+>=20
+> I find that try_ naming uneasy. If you take the example from locking=20
+> for instance, after a successful mutex_trylock() you still need to call=
+
+> mutex_unlock().
+
+Yep, I have the same concern, although no good alternative naming.
+>=20
+> Maybe star_nowcow_check_unlocked() or start_nowcow_check_nowait() [thou=
+gh
+> the latter could imply it's putting things on a waitqueue]=20
+
+unlocked() looks better.
+
+Will wait for some other suggestions.
+
+Thanks,
+Qu
+
+>=20
+>>
+>> Also, adds btrfs_assert_drew_write_locked() for end_nocow_check() to
+>> detected unpaired calls.
+>>
+>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>> ---
+>>  fs/btrfs/file.c    | 71 ++++++++++++++++++++++++++++-----------------=
+-
+>>  fs/btrfs/locking.h | 13 +++++++++
+>>  2 files changed, 57 insertions(+), 27 deletions(-)
+>>
+>> diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+>> index 0e4f57fb2737..7c904e41c5b6 100644
+>> --- a/fs/btrfs/file.c
+>> +++ b/fs/btrfs/file.c
+>> @@ -1533,27 +1533,8 @@ lock_and_cleanup_extent_if_need(struct btrfs_in=
+ode *inode, struct page **pages,
+>>  	return ret;
+>>  }
+>> =20
+>> -/*
+>> - * Check if we can do nocow write into the range [@pos, @pos + @write=
+_bytes)
+>> - *
+>> - * This function will flush ordered extents in the range to ensure pr=
+oper
+>> - * nocow checks for (nowait =3D=3D false) case.
+>> - *
+>> - * Return >0 and update @write_bytes if we can do nocow write into th=
+e range.
+>> - * Return 0 if we can't do nocow write.
+>> - * Return -EAGAIN if we can't get the needed lock, or for (nowait =3D=
+=3D true) case,
+>> - * there are ordered extents need to be flushed.
+>> - * Return <0 for if other error happened.
+>> - *
+>> - * NOTE: For wait (nowait=3D=3Dfalse) calls, callers need to release =
+the drew write
+>> - * 	 lock of inode->root->snapshot_lock if return value > 0.
+>> - *
+>> - * @pos:	 File offset of the range
+>> - * @write_bytes: The length of the range to check, also contains the =
+nocow
+>> - * 		 writable length if we can do nocow write
+>> - */
+>> -static noinline int check_can_nocow(struct btrfs_inode *inode, loff_t=
+ pos,
+>> -				    size_t *write_bytes, bool nowait)
+>> +static noinline int __check_can_nocow(struct btrfs_inode *inode, loff=
+_t pos,
+>> +				      size_t *write_bytes, bool nowait)
+>>  {
+>>  	struct btrfs_fs_info *fs_info =3D inode->root->fs_info;
+>>  	struct btrfs_root *root =3D inode->root;
+>> @@ -1603,6 +1584,43 @@ static noinline int check_can_nocow(struct btrf=
+s_inode *inode, loff_t pos,
+>>  	return ret;
+>>  }
+>> =20
+>> +/*
+>> + * Check if we can do nocow write into the range [@pos, @pos + @write=
+_bytes)
+>> + *
+>> + * The start_nocow_check() version will flush ordered extents before =
+checking,
+>> + * and needs end_nocow_check() calls if we can do nocow writes.
+>> + *
+>> + * While try_nocow_check() version won't do any sleep or hold any loc=
+k, thus
+>> + * no need to call end_nocow_check().
+>> + *
+>> + * Return >0 and update @write_bytes if we can do nocow write into th=
+e range.
+>> + * Return 0 if we can't do nocow write.
+>> + * Return -EAGAIN if we can't get the needed lock, or there are order=
+ed extents
+>> + * needs to be flushed.
+>> + * Return <0 for if other error happened.
+>> + *
+>> + * @pos:	 File offset of the range
+>> + * @write_bytes: The length of the range to check, also contains the =
+nocow
+>> + * 		 writable length if we can do nocow write
+>> + */
+>> +static int start_nocow_check(struct btrfs_inode *inode, loff_t pos,
+>> +			     size_t *write_bytes)
+>> +{
+>> +	return __check_can_nocow(inode, pos, write_bytes, false);
+>> +}
+>> +
+>> +static int try_nocow_check(struct btrfs_inode *inode, loff_t pos,
+>> +			   size_t *write_bytes)
+>> +{
+>> +	return __check_can_nocow(inode, pos, write_bytes, true);
+>> +}
+>> +
+>> +static void end_nocow_check(struct btrfs_inode *inode)
+>> +{
+>> +	btrfs_assert_drew_write_locked(&inode->root->snapshot_lock);
+>> +	btrfs_drew_write_unlock(&inode->root->snapshot_lock);
+>> +}
+>> +
+>>  static noinline ssize_t btrfs_buffered_write(struct kiocb *iocb,
+>>  					       struct iov_iter *i)
+>>  {
+>> @@ -1668,8 +1686,8 @@ static noinline ssize_t btrfs_buffered_write(str=
+uct kiocb *iocb,
+>>  		if (ret < 0) {
+>>  			if ((BTRFS_I(inode)->flags & (BTRFS_INODE_NODATACOW |
+>>  						      BTRFS_INODE_PREALLOC)) &&
+>> -			    check_can_nocow(BTRFS_I(inode), pos,
+>> -					    &write_bytes, false) > 0) {
+>> +			    start_nocow_check(BTRFS_I(inode), pos,
+>> +				    	      &write_bytes) > 0) {
+>>  				/*
+>>  				 * For nodata cow case, no need to reserve
+>>  				 * data space.
+>> @@ -1802,7 +1820,7 @@ static noinline ssize_t btrfs_buffered_write(str=
+uct kiocb *iocb,
+>> =20
+>>  		release_bytes =3D 0;
+>>  		if (only_release_metadata)
+>> -			btrfs_drew_write_unlock(&root->snapshot_lock);
+>> +			end_nocow_check(BTRFS_I(inode));
+>> =20
+>>  		if (only_release_metadata && copied > 0) {
+>>  			lockstart =3D round_down(pos,
+>> @@ -1829,7 +1847,7 @@ static noinline ssize_t btrfs_buffered_write(str=
+uct kiocb *iocb,
+>> =20
+>>  	if (release_bytes) {
+>>  		if (only_release_metadata) {
+>> -			btrfs_drew_write_unlock(&root->snapshot_lock);
+>> +			end_nocow_check(BTRFS_I(inode));
+>>  			btrfs_delalloc_release_metadata(BTRFS_I(inode),
+>>  					release_bytes, true);
+>>  		} else {
+>> @@ -1946,8 +1964,7 @@ static ssize_t btrfs_file_write_iter(struct kioc=
+b *iocb,
+>>  		 */
+>>  		if (!(BTRFS_I(inode)->flags & (BTRFS_INODE_NODATACOW |
+>>  					      BTRFS_INODE_PREALLOC)) ||
+>> -		    check_can_nocow(BTRFS_I(inode), pos, &nocow_bytes,
+>> -				    true) <=3D 0) {
+>> +		    try_nocow_check(BTRFS_I(inode), pos, &nocow_bytes) <=3D 0) {
+>>  			inode_unlock(inode);
+>>  			return -EAGAIN;
+>>  		}
+>> diff --git a/fs/btrfs/locking.h b/fs/btrfs/locking.h
+>> index d715846c10b8..28995fccafde 100644
+>> --- a/fs/btrfs/locking.h
+>> +++ b/fs/btrfs/locking.h
+>> @@ -68,4 +68,17 @@ void btrfs_drew_write_unlock(struct btrfs_drew_lock=
+ *lock);
+>>  void btrfs_drew_read_lock(struct btrfs_drew_lock *lock);
+>>  void btrfs_drew_read_unlock(struct btrfs_drew_lock *lock);
+>> =20
+>> +#ifdef CONFIG_BTRFS_DEBUG
+>> +static inline void btrfs_assert_drew_write_locked(struct btrfs_drew_l=
+ock *lock)
+>> +{
+>> +	/* If there are readers, we're definitely not write locked */
+>> +	BUG_ON(atomic_read(&lock->readers));
+>> +	/* We should hold one percpu count, thus the value shouldn't be zero=
+ */
+>> +	BUG_ON(percpu_counter_sum(&lock->writers) <=3D 0);
+>> +}
+>> +#else
+>> +static inline void btrfs_assert_drew_write_locked(struct btrfs_drew_l=
+ock *lock)
+>> +{
+>> +}
+>> +#endif
+>>  #endif
+>>
+>=20
+
+
+--WoEud6HUE0CzozomdARiCtQgoFb7o6SLP--
+
+--Ntq8vxrkLH0unP0X4Kay6iJOtNIaKta19
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl7rWWgACgkQwj2R86El
+/qgomwf+Osqzx2rMWkqTfeqF4cbQdfsM40XsSlc4fuqUgARu4XZzjoZGE0ZhAqkw
+ECcTVEdsBzvzLALIBNSCItXHHaeuNirc/U71BqiySpubqm0JYor3GAdQ7Wc8Wb3e
+hSiu9xflUlS3Igbi82BkNGIeZ4Gx30N9sEL89AsWAUZIEtpgdhrH6ThyURcsi24u
+C07LQ02LDMlQseZTOC6XCWmL6YtjQ6GERT4cxrwXRML6564u4k1SDcET4hIXrUXH
+J/VI3WvV6rdDkI4M2V5kbCLSuy9xEtjK2yM+jHgHPt16PGvzpAz43N/Lj8c46OLh
+dtHNbdNsxsrxYxTDDfr4SMmZghcrrg==
+=U6Bw
+-----END PGP SIGNATURE-----
+
+--Ntq8vxrkLH0unP0X4Kay6iJOtNIaKta19--
