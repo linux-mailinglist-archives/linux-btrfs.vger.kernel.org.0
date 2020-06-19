@@ -2,154 +2,188 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEFA4200603
-	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Jun 2020 12:07:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA7CE20082F
+	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Jun 2020 13:56:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732276AbgFSKH2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 19 Jun 2020 06:07:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38730 "EHLO
+        id S1732348AbgFSL4D (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 19 Jun 2020 07:56:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732048AbgFSKHX (ORCPT
+        with ESMTP id S1732225AbgFSL4B (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 19 Jun 2020 06:07:23 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 914BDC06174E
-        for <linux-btrfs@vger.kernel.org>; Fri, 19 Jun 2020 03:07:23 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id dr13so9589936ejc.3
-        for <linux-btrfs@vger.kernel.org>; Fri, 19 Jun 2020 03:07:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=kJki3F3uFplINFLRVxtYkIcQdfNvKAruqVYKU7CNbpQ=;
-        b=Idj4fMCdfsXcqfQjbPL9v/Umfp/nXxWU9afoxupdKLkw64Mv0B/z+XDi1aUP2DKbob
-         CyLchA/aCRrnEjVRmP9dF2ZAaIjPaNRlLleJzDguhkXgwiXJ3Uq+eWLoCXW9xCCjCDRc
-         S8FlFD/21f9SWWUxJ2lKafwsjqCmmJ1U3AGf9aBM3zisKgybFbFH0ZtiZKhd2mRW4SO1
-         6FJ6LYA44pkuygSoS3wd+5+cVFM5kOK+mU5QVP7PanOdbuSOi1iWi/jP/VlSOU+FmJHO
-         uq/6yqtd8fUfNgUe+Cp04B1Ym7IJuztb28GXVYBe2U64CuuSwwCZqXrE3raso5gIdv1j
-         x/Og==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=kJki3F3uFplINFLRVxtYkIcQdfNvKAruqVYKU7CNbpQ=;
-        b=lrC5k6KdC41Du2gqlBgR4DhxMkInu6EELr7DDDcuzha9Sy1N4y4vMSQBcLjE5mTsxM
-         pZjtlVMHlsDmsi5Gn/gBTaiPZDLavppmkONZbJj+aThOmWRSjBF06sJsYdl5Q/b0gdjx
-         TywiBthS4IA29Vas2OLfbjfJkOeeBQ83DObQTywHZw/7936lDifLDeea0PYI1Y6+WCFM
-         RdWamMskMj2c4eZ/DvSz+H79jpATb/yyZDwfLdkdHw1xWxpWGXrveePEghCzawfLkbp1
-         vpPGSIlsisCinPcVt79TmaW6S3Q8IDlIi19G5pRaYVZNLxT/suPso3KBz/FbDAMQ+1AP
-         ORjQ==
-X-Gm-Message-State: AOAM533VP5IowcoR7CEvfXcCyWrL8vKuRCyFYZlwOqcc5rT85Bcx4JMI
-        oYaaQEbfELwOOxbvm8/IF0MYiSM6RdS3bMfARB1CQu4r
-X-Google-Smtp-Source: ABdhPJx33ioJgmsvrs8dPcGNHn9oKyR7WiRpSc0z3srGyyYZM0ho8fj1x7cXkO6E6kDm4EXp1IhXRmoDPV2ShGxx7i8=
-X-Received: by 2002:a17:906:148b:: with SMTP id x11mr3041311ejc.282.1592561242165;
- Fri, 19 Jun 2020 03:07:22 -0700 (PDT)
+        Fri, 19 Jun 2020 07:56:01 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97E19C06174E;
+        Fri, 19 Jun 2020 04:56:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=qkiSuMBHq1jJPg79H69BLQzOTNgh3NSXy1sjSUD7sso=; b=YmQH+Tq34JCOA4Fpp+Ct6KEZnt
+        8L0h3XQhFTfcl+EZx9PD/QmFfjIZnpy4HoPgNnfBqHv64Iq5KfuRrtvHpLcfBtAlvvzZLZIa6wd8f
+        WBdUMayWL2szYgJzuQAOr0qIZuM5ocftxFPIzNGVjJSWVMSlvpoZeOYI4S4AGQO8Nb0yis8YPFDTs
+        gFrJkRAnXtTDuea5wOUzzuns5noEUpSfRbZfvMS0JhmrqudLco3NaWgMJzebBPpoOvVOvwgRaFW3F
+        NclEHximP3q4U57rebPA25c4PcGKBj5TM+IBkvwcGuWphYM+ITP6Po2I7wixaC/wuvOd6BghDK1It
+        5dgYN/wg==;
+Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jmFcc-0002c8-O0; Fri, 19 Jun 2020 11:55:50 +0000
+Date:   Fri, 19 Jun 2020 04:55:50 -0700
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Andreas Gruenbacher <agruenba@redhat.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-xfs <linux-xfs@vger.kernel.org>,
+        Junxiao Bi <junxiao.bi@oracle.com>,
+        William Kucharski <william.kucharski@oracle.com>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        linux-mm@kvack.org, ocfs2-devel@oss.oracle.com,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-erofs@lists.ozlabs.org, Christoph Hellwig <hch@lst.de>,
+        linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 2/2] gfs2: Rework read and page fault locking
+Message-ID: <20200619115550.GY8681@bombadil.infradead.org>
+References: <20200619093916.1081129-1-agruenba@redhat.com>
+ <20200619093916.1081129-3-agruenba@redhat.com>
 MIME-Version: 1.0
-References: <CAHnuAezOHbwpuVM6=bJRRtORpdHy=rVPFD+jeAQVz3xUTEsUpQ@mail.gmail.com>
- <20200619124505.586f2b63@natsu> <CAHnuAez0+4LR=Z=+z-bFFj2Z=Jf24YCHZ3CjHGwgsSn8mZU1eA@mail.gmail.com>
- <20200619143148.1ec669e9@natsu>
-In-Reply-To: <20200619143148.1ec669e9@natsu>
-From:   Daniel Smedegaard Buus <danielbuus@gmail.com>
-Date:   Fri, 19 Jun 2020 12:06:45 +0200
-Message-ID: <CAHnuAexb-p=xbX5YzSCCv4faeLL-5Q=k1roUpeo6SSCRMZnhTw@mail.gmail.com>
-Subject: Re: Behavior after encountering bad block
-To:     Roman Mamedov <rm@romanrm.net>
-Cc:     linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200619093916.1081129-3-agruenba@redhat.com>
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, 19 Jun 2020 at 11:31, Roman Mamedov <rm@romanrm.net> wrote:
->
-> On Fri, 19 Jun 2020 10:08:43 +0200
-> Daniel Smedegaard Buus <danielbuus@gmail.com> wrote:
->
-> > Well, that's why I wrote having the *data* go bad, not the drive
->
-> But data going bad wouldn't pass unnoticed like that (with reads resultin=
-g in
-> bad data), since drives have end-to-end CRC checking, including on-disk a=
-nd
-> through the SATA interface. If data on-disk is somehow corrupted, that wi=
-ll be
-> a CRC failure on read, and still an I/O error for the host.
->
-> I only heard of some bad SSDs (SiliconMotion-based) returning corrupted d=
-ata
-> as if nothing happened, and only when their flash lifespan is close to
-> depletion.
->
-> > even though either scenario should still effectively end up yielding th=
-e
-> > same behavior from btrfs
->
-> I believe that's also an assumption you'd want to test, if you want to be
-> through in verifying its behavior on failures or corruptions. And anyways=
- it's
-> better to set up a scenario which is as close as possible to ones you'd g=
-et in
-> real-life.
->
+On Fri, Jun 19, 2020 at 11:39:16AM +0200, Andreas Gruenbacher wrote:
+>  static int gfs2_readpage(struct file *file, struct page *page)
+>  {
+> -	struct address_space *mapping = page->mapping;
+> -	struct gfs2_inode *ip = GFS2_I(mapping->host);
+> -	struct gfs2_holder gh;
+>  	int error;
+>  
+> -	unlock_page(page);
+> -	gfs2_holder_init(ip->i_gl, LM_ST_SHARED, 0, &gh);
+> -	error = gfs2_glock_nq(&gh);
+> -	if (unlikely(error))
+> -		goto out;
+> -	error = AOP_TRUNCATED_PAGE;
+> -	lock_page(page);
+> -	if (page->mapping == mapping && !PageUptodate(page))
+> -		error = __gfs2_readpage(file, page);
+> -	else
+> -		unlock_page(page);
+> -	gfs2_glock_dq(&gh);
+> -out:
+> -	gfs2_holder_uninit(&gh);
+> -	if (error && error != AOP_TRUNCATED_PAGE)
+> +	error = __gfs2_readpage(file, page);
+> +	if (error)
+>  		lock_page(page);
+>  	return error;
 
-All good and valid points =E2=80=94 but only presupposing that each piece i=
-s
-behaving as advertised. For instance, a few years back, I discovered
-that some sort of bug allowed my SiI PMP/SATA combo to randomly read
-or write data incorrectly at a staggering rate when running at SATA 2
-speeds under Linux, with no IO errors, and thus no warnings anywhere.
-I was running a zpool on the disks attached to it, and ZFS silently
-just kept retrying reads =E2=80=94 and writes as well, as it read back and
-verified written data as well =E2=80=94 and thus I lost no data on that
-occasion, simply because I was using a data checksumming filesystem.
-There's a record of me seeking help about it somewhere on the
-interwebs, probably in a Ubuntu forum, and I plugged a hole in the
-data destruction by forcing the controllers to run at SATA 1 speeds
-only.
+I don't think this is right.  If you return an error from ->readpage, I'm
+pretty sure you're supposed to unlock that page.  Looking at
+generic_file_buffered_read():
 
-At present, I have an old Macbook Pro that is occasionally
-experiencing rotted SSD blocks, silently as well. I've discovered it
-two or three times. Perhaps due to it having been dropped quite a few
-times, or because of what appeared to be a bit of humidity damage
-around the SSD socket (I was given it for free, because it wouldn't
-recognize its SSD any longer, and thus not boot).
+                error = mapping->a_ops->readpage(filp, page);
+                if (unlikely(error)) {
+                        if (error == AOP_TRUNCATED_PAGE) {
+                                put_page(page);
+                                error = 0;
+                                goto find_page;
+                        }
+                        goto readpage_error;
+                }
+...
+readpage_error:
+                put_page(page);
+                goto out;
+...
+out:
+        ra->prev_pos = prev_index;
+        ra->prev_pos <<= PAGE_SHIFT;
+        ra->prev_pos |= prev_offset;
 
-Also at present, I've experienced that the M2 socket in my Ryzen rig
-on a B450 board will give garbage data, at least under multiple
-kernels, but perhaps not all, for reasons I'm guessing might be a
-buggy driver implementation, because I have experienced no issues with
-it under Windows. I've just completely stopped accessing that drive
-under Linux. Which is not an issue, because the SSD on that controller
-is for my Windows gaming needs anyway.
+        *ppos = ((loff_t)index << PAGE_SHIFT) + offset;
+        file_accessed(filp);
+        return written ? written : error;
 
-And finally, again at present, I've seen silent data corruption on
-that same rig, with ZFS as the underlying FS, but my suspicion is that
-these are the result of overclocking the memory and stressing out the
-system for very long stretches, producing par2 and rar files for my
-archiving needs.
+so we don't call unlock_page() in generic code, which means the next time
+we try to get this page, we'll do ...
 
-My point is, yes, the drive and/or controller should tell me if what's
-being read back isn't what was once written, but my experience tells
-me to never actually rely on this being the case, lest I may end up
-with bad, unrecoverable data (had I been running md raid instead of
-ZFS on that bad SiI rig, my entire data archive would have been
-severely, silently, and irrevocably damaged at that point in time).
-And the fact that ZFS and btrfs both implement checksumming underlines
-the reality of that risk. Don't trust, check :)
+                page = find_get_page(mapping, index);
+...
+                if (!PageUptodate(page)) {
+                        error = wait_on_page_locked_killable(page);
+and presumably we'll wait forever because nobody is going to unlock this
+page?
 
-To be fair, I'm not trying to "fix" any of the mentioned hardware
-issues with ZFS or btrfs here. I just pick a data checksumming FS by
-default when I can, and right now I'm using ZFS on a scratch disk and
-getting fed up with the poor performance of ZFS, so I'm looking to use
-btrfs instead, as my only need right here is data checksumming, and
-AFAIR btrfs performs significantly better than ZFS. That's why I was
-verifying that it does indeed have functional data checksumming :)
+> @@ -598,16 +582,9 @@ static void gfs2_readahead(struct readahead_control *rac)
+>  {
+>  	struct inode *inode = rac->mapping->host;
+>  	struct gfs2_inode *ip = GFS2_I(inode);
+> -	struct gfs2_holder gh;
+>  
+> -	gfs2_holder_init(ip->i_gl, LM_ST_SHARED, 0, &gh);
+> -	if (gfs2_glock_nq(&gh))
+> -		goto out_uninit;
+>  	if (!gfs2_is_stuffed(ip))
+>  		mpage_readahead(rac, gfs2_block_map);
+> -	gfs2_glock_dq(&gh);
+> -out_uninit:
+> -	gfs2_holder_uninit(&gh);
+>  }
 
-Cheers for the input!
+Not for this patch, obviously, but why do you go to the effort of using
+iomap_readpage() to implement gfs2_readpage(), but don't use iomap for
+gfs2_readahead()?  Far more pages are brought in through ->readahead
+than are brought in through ->readpage.
 
-Daniel :)
+>  static ssize_t gfs2_file_read_iter(struct kiocb *iocb, struct iov_iter *to)
+>  {
+> +	struct gfs2_inode *ip;
+> +	struct gfs2_holder gh;
+> +	size_t written = 0;
+>  	ssize_t ret;
+>  
+> +	gfs2_holder_mark_uninitialized(&gh);
+>  	if (iocb->ki_flags & IOCB_DIRECT) {
+>  		ret = gfs2_file_direct_read(iocb, to);
 
-> With respect,
-> Roman
+Again, future work, but you probably want to pass in &gh here so you
+don't have to eat up another 32 bytes or so of stack space on an unused
+gfs2_holder.
+
+>  		if (likely(ret != -ENOTBLK))
+>  			return ret;
+>  		iocb->ki_flags &= ~IOCB_DIRECT;
+>  	}
+> -	return generic_file_read_iter(iocb, to);
+> +	iocb->ki_flags |= IOCB_CACHED;
+> +	ret = generic_file_read_iter(iocb, to);
+> +	iocb->ki_flags &= ~IOCB_CACHED;
+> +	if (ret >= 0) {
+> +		if (!iov_iter_count(to))
+> +			return ret;
+> +		written = ret;
+> +	} else {
+> +		switch(ret) {
+> +		case -EAGAIN:
+> +			if (iocb->ki_flags & IOCB_NOWAIT)
+> +				return ret;
+> +			break;
+> +		case -ECANCELED:
+> +			break;
+> +		default:
+> +			return ret;
+> +		}
+> +	}
+
+I'm wondering if we want to do this in common code rather than making it
+something special only a few filesystems do (either because they care
+about workloads with many threads accessing the same file, or because
+their per-file locks are very heavy-weight).
+
