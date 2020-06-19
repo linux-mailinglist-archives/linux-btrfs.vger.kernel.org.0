@@ -2,230 +2,166 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69AC9200571
-	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Jun 2020 11:40:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 562822005C4
+	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Jun 2020 11:52:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731804AbgFSJjs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 19 Jun 2020 05:39:48 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:20207 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726196AbgFSJjq (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 19 Jun 2020 05:39:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1592559584;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=lrk5imypRvlh6Xm/35IKdaRrF7e1DPYFegz850ZqocU=;
-        b=DhhBz9kPkhF0kYIlCIiOJz3ECo8s5JOVwLaykgSwNvSMe/L3QCiSlJ5eMpqZssxfYZ6/E/
-        LOP1VNR4DW44i4Q1/SZfpBzhmw89BHkpu4kKxzrYpIy81v2IcvSCBoQtawnHZXLiTWQBa6
-        emkcl5/uz7Hfs1n+oHXRMduZrNDKQ/I=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-146-jYi5da2QMoKUefxLZ_07RQ-1; Fri, 19 Jun 2020 05:39:43 -0400
-X-MC-Unique: jYi5da2QMoKUefxLZ_07RQ-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C7066107B274;
-        Fri, 19 Jun 2020 09:39:40 +0000 (UTC)
-Received: from max.home.com (unknown [10.40.195.140])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 494C05D9CA;
-        Fri, 19 Jun 2020 09:39:35 +0000 (UTC)
-From:   Andreas Gruenbacher <agruenba@redhat.com>
-To:     Matthew Wilcox <willy@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Andreas Gruenbacher <agruenba@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-xfs <linux-xfs@vger.kernel.org>,
-        Junxiao Bi <junxiao.bi@oracle.com>,
-        William Kucharski <william.kucharski@oracle.com>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        linux-mm@kvack.org, ocfs2-devel@oss.oracle.com,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-erofs@lists.ozlabs.org, Christoph Hellwig <hch@lst.de>,
+        id S1731602AbgFSJwq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 19 Jun 2020 05:52:46 -0400
+Received: from mout.gmx.net ([212.227.15.15]:46557 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731186AbgFSJwl (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 19 Jun 2020 05:52:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1592560357;
+        bh=0HpDiv2vZ4lH/vwOT+5QTqkiSFNkIknD0dfrKy7k+aI=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=Y2Y32yM/kbIZjbwWK8MdZyE6YDsY9LydazC2r71lMWmm578XQlfOpcZRSI5fN/ikd
+         kHT3+rWDSnX5SyU95sOtMtt3NZMgi58X7qB40khcScDuBIvWk9luP1em0yYIHffLit
+         /us6nBDg4S6hjwmArkaAqXptrAiTX8FSlHcLOzf4=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1M9FjR-1jqMhX0osx-006LRy; Fri, 19
+ Jun 2020 11:52:36 +0200
+Subject: Re: [PATCH] btrfs: qgroup: add sysfs interface for debug
+To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
         linux-btrfs@vger.kernel.org
-Subject: [PATCH 2/2] gfs2: Rework read and page fault locking
-Date:   Fri, 19 Jun 2020 11:39:16 +0200
-Message-Id: <20200619093916.1081129-3-agruenba@redhat.com>
-In-Reply-To: <20200619093916.1081129-1-agruenba@redhat.com>
-References: <20200619093916.1081129-1-agruenba@redhat.com>
+References: <20200619015946.65638-1-wqu@suse.com>
+ <20200619093903.GB27795@twin.jikos.cz>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
+ mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
+ PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
+ 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
+ D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
+ efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
+ ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
+ BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
+ 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
+ 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
+ EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
+ 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
+ ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
+ oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
+ fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
+ 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
+ ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
+ oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
+Message-ID: <94942230-bada-98a0-3d94-3b466752ff3e@gmx.com>
+Date:   Fri, 19 Jun 2020 17:52:32 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+In-Reply-To: <20200619093903.GB27795@twin.jikos.cz>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="kp7uq0tAIA7IKONldeE9m8ry7pSbwhMhC"
+X-Provags-ID: V03:K1:ShRRNet/HR+ej0sGWG77aJcEFkq1yMXC2TEjPOaKKDK1HWe9BoZ
+ zOW5an0RRULhAgNwSFhrta9La5vw9ah0KmY1EwcGf4VigG5boNNSWkab9Z68jQFshDVesJP
+ 1El/nWh80EWe/4ltTWnzWnuYuwPH7dqLIc/y4a9BzKib+oeVvPllQksBDjaKnA6HTl7nmAL
+ 4JX0237GTdCT6TcQUMfGQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:iJicWAGrdQ4=:VJ9mCFyhfIjaCixAes+gMV
+ /nllec/5XRzDcTtIZfzUhecmCRRAiYQUL4qGtocwLRqpBTfBKAF+7sEGmTDIbfXciixGBJ7tT
+ TTc29y9UFfzdIPDRyWG0BHw7wmSlpDU8n1v7Yqw/vKcPAbMq+FtBKf8IC3SQM2GeFxMbTBsfl
+ +8bbNPkR2/ydDYUfCnJVeb7AuE3qmYa+mJMhUNE0QHKXmBu9HG8Xu3OhBpRlQp3C50cdx8hDD
+ 44Ip03olHMxunTAkDNIHlTLzcwS4rLxg/HZSa8Q+68YqT/jISHUk2m69i43tM6XKRt85qQ7w0
+ HwNSOXkSqFMywlc2KhgcOZ7sqkbwGD2CliXqmyVbnOFSkUXLLjbpq1PP7FmaSpRGEpI2x6H7K
+ roeWmnjaWlla+DwPQLth9aX5JXoA0u8eEplWaidf4d/co1De53F8niA9b6EO83AELgp+LyM6S
+ Rer1cnaglMs9B90b99XBubMdaAc4VfycKQeUNgfS4vG5aA6O03gd9SKzfEppGtpvHn5c/N4gT
+ nBLe+LBvEI1A3nJCemvxrewtjUg1ELtHZtrjoImE1Hatfot1JsEwuPzxjRV4psqjuCsLxEFZ4
+ t/RqLCHNy8JEhdQ2zlQnvdZDmtTRViu7nS7P9pzkAen6g4XoKVVqjnNkRXvH1azP1c0m3bo95
+ eED9oYBKfWmPiasGeYMqfA5i8zoPpUltSx5UMBUdogpPHDrq91Xa+nsagEry9NmaXUp/kVHOh
+ CI2oq0LZei2QWWkmWMqxde5B7fXIEB7e5/9NsmyqD6XJ1gIZuvZ92iTIxTLi/LYKBIABVNsgW
+ /SzMOR3WMzfOVfW7LzcwMBHpcbQ4HqduuDltqCz4mOzkLSq/4p7ME+Q/mw+udE4t7P5M4UG8/
+ Cp0qJ8jcnhCVZFcxZtbWEgEl0Kf78ArHXomZmv26LQ7oK2fecbs61OkSH6tcDb0g/P0sk9ewQ
+ oxXUadlBRmrQ/2tBf45mekxzjKBDv82/oVbM5DMugA59wNSOUDVV1UJjLJC5muxyDt2RcN7gX
+ Lx07Sk0Tbp7L53qd9O/ZmFTTCdcT+Wvv9rKxHFA4beMCgMZJzWiFzU0VxzGJ5Y7IHUPIEyByR
+ BWsGh/XCMHRK84BQFmzzREO9huDO5vMD03m5ysDjrY4Z8e1ioJRGDiaRTnsFhf+ljo/clKfjU
+ DL7SmgMKRPS5tVwNKNkRW/mrs2xaJv3AywjLDxVlY8aQ4MKjk9RmPNz2HCd38R0MKK7XOUIoh
+ 3fvyjGJO9rHCCovK/
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The cache consistency model of filesystems like gfs2 is such that if
-data is found in the page cache, the data is up to date and can be used
-without taking any filesystem locks.  If a page is not cached,
-filesystem locks must be taken before populating the page cache.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--kp7uq0tAIA7IKONldeE9m8ry7pSbwhMhC
+Content-Type: multipart/mixed; boundary="r6OYPZeoVgjAhQy6x5UivbqDn94OfTHxe"
 
-Thus far,  gfs2 has taken the filesystem locks inside the ->readpage and
-->readpages address space operations.  This was already causing lock
-ordering problems, but commit d4388340ae0b ("fs: convert mpage_readpages
-to mpage_readahead") made things worse: the ->readahead operation is
-called with the pages to readahead locked, so grabbing the inode's glock
-can now deadlock with processes which are holding the inode glock while
-trying to lock the same pages.
+--r6OYPZeoVgjAhQy6x5UivbqDn94OfTHxe
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-Fix this by taking the inode glock in the ->read_iter file and ->fault
-vm operations.  To avoid taking the inode glock when the data is already
-cached, the ->read_iter file operation first tries to read the data with
-the IOCB_CACHED flag set.  If that fails, the inode glock is locked and
-the operation is repeated without the IOCB_CACHED flag.
 
-Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
----
- fs/gfs2/aops.c | 27 ++--------------------
- fs/gfs2/file.c | 61 ++++++++++++++++++++++++++++++++++++++++++++++++--
- 2 files changed, 61 insertions(+), 27 deletions(-)
 
-diff --git a/fs/gfs2/aops.c b/fs/gfs2/aops.c
-index 72c9560f4467..73c2fe768a3f 100644
---- a/fs/gfs2/aops.c
-+++ b/fs/gfs2/aops.c
-@@ -513,26 +513,10 @@ static int __gfs2_readpage(void *file, struct page *page)
- 
- static int gfs2_readpage(struct file *file, struct page *page)
- {
--	struct address_space *mapping = page->mapping;
--	struct gfs2_inode *ip = GFS2_I(mapping->host);
--	struct gfs2_holder gh;
- 	int error;
- 
--	unlock_page(page);
--	gfs2_holder_init(ip->i_gl, LM_ST_SHARED, 0, &gh);
--	error = gfs2_glock_nq(&gh);
--	if (unlikely(error))
--		goto out;
--	error = AOP_TRUNCATED_PAGE;
--	lock_page(page);
--	if (page->mapping == mapping && !PageUptodate(page))
--		error = __gfs2_readpage(file, page);
--	else
--		unlock_page(page);
--	gfs2_glock_dq(&gh);
--out:
--	gfs2_holder_uninit(&gh);
--	if (error && error != AOP_TRUNCATED_PAGE)
-+	error = __gfs2_readpage(file, page);
-+	if (error)
- 		lock_page(page);
- 	return error;
- }
-@@ -598,16 +582,9 @@ static void gfs2_readahead(struct readahead_control *rac)
- {
- 	struct inode *inode = rac->mapping->host;
- 	struct gfs2_inode *ip = GFS2_I(inode);
--	struct gfs2_holder gh;
- 
--	gfs2_holder_init(ip->i_gl, LM_ST_SHARED, 0, &gh);
--	if (gfs2_glock_nq(&gh))
--		goto out_uninit;
- 	if (!gfs2_is_stuffed(ip))
- 		mpage_readahead(rac, gfs2_block_map);
--	gfs2_glock_dq(&gh);
--out_uninit:
--	gfs2_holder_uninit(&gh);
- }
- 
- /**
-diff --git a/fs/gfs2/file.c b/fs/gfs2/file.c
-index fe305e4bfd37..f729b0ff2a3c 100644
---- a/fs/gfs2/file.c
-+++ b/fs/gfs2/file.c
-@@ -558,8 +558,29 @@ static vm_fault_t gfs2_page_mkwrite(struct vm_fault *vmf)
- 	return block_page_mkwrite_return(ret);
- }
- 
-+static vm_fault_t gfs2_fault(struct vm_fault *vmf)
-+{
-+	struct inode *inode = file_inode(vmf->vma->vm_file);
-+	struct gfs2_inode *ip = GFS2_I(inode);
-+	struct gfs2_holder gh;
-+	vm_fault_t ret;
-+	int err;
-+
-+	gfs2_holder_init(ip->i_gl, LM_ST_SHARED, 0, &gh);
-+	err = gfs2_glock_nq(&gh);
-+	if (err) {
-+		ret = block_page_mkwrite_return(err);
-+		goto out_uninit;
-+	}
-+	ret = filemap_fault(vmf);
-+	gfs2_glock_dq(&gh);
-+out_uninit:
-+	gfs2_holder_uninit(&gh);
-+	return ret;
-+}
-+
- static const struct vm_operations_struct gfs2_vm_ops = {
--	.fault = filemap_fault,
-+	.fault = gfs2_fault,
- 	.map_pages = filemap_map_pages,
- 	.page_mkwrite = gfs2_page_mkwrite,
- };
-@@ -824,15 +845,51 @@ static ssize_t gfs2_file_direct_write(struct kiocb *iocb, struct iov_iter *from)
- 
- static ssize_t gfs2_file_read_iter(struct kiocb *iocb, struct iov_iter *to)
- {
-+	struct gfs2_inode *ip;
-+	struct gfs2_holder gh;
-+	size_t written = 0;
- 	ssize_t ret;
- 
-+	gfs2_holder_mark_uninitialized(&gh);
- 	if (iocb->ki_flags & IOCB_DIRECT) {
- 		ret = gfs2_file_direct_read(iocb, to);
- 		if (likely(ret != -ENOTBLK))
- 			return ret;
- 		iocb->ki_flags &= ~IOCB_DIRECT;
- 	}
--	return generic_file_read_iter(iocb, to);
-+	iocb->ki_flags |= IOCB_CACHED;
-+	ret = generic_file_read_iter(iocb, to);
-+	iocb->ki_flags &= ~IOCB_CACHED;
-+	if (ret >= 0) {
-+		if (!iov_iter_count(to))
-+			return ret;
-+		written = ret;
-+	} else {
-+		switch(ret) {
-+		case -EAGAIN:
-+			if (iocb->ki_flags & IOCB_NOWAIT)
-+				return ret;
-+			break;
-+		case -ECANCELED:
-+			break;
-+		default:
-+			return ret;
-+		}
-+	}
-+	ip = GFS2_I(iocb->ki_filp->f_mapping->host);
-+	gfs2_holder_init(ip->i_gl, LM_ST_SHARED, 0, &gh);
-+	ret = gfs2_glock_nq(&gh);
-+	if (ret)
-+		goto out_uninit;
-+	ret = generic_file_read_iter(iocb, to);
-+	if (ret > 0)
-+		written += ret;
-+	if (gfs2_holder_initialized(&gh))
-+		gfs2_glock_dq(&gh);
-+out_uninit:
-+	if (gfs2_holder_initialized(&gh))
-+		gfs2_holder_uninit(&gh);
-+	return written ? written : ret;
- }
- 
- /**
--- 
-2.26.2
+On 2020/6/19 =E4=B8=8B=E5=8D=885:39, David Sterba wrote:
+> On Fri, Jun 19, 2020 at 09:59:46AM +0800, Qu Wenruo wrote:
+>> This patch will add the following sysfs interface:
+>> /sys/fs/btrfs/<UUID>/qgroups/<qgroup_id>/rfer
+>> /sys/fs/btrfs/<UUID>/qgroups/<qgroup_id>/excl
+>> /sys/fs/btrfs/<UUID>/qgroups/<qgroup_id>/max_rfer
+>> /sys/fs/btrfs/<UUID>/qgroups/<qgroup_id>/max_excl
+>> /sys/fs/btrfs/<UUID>/qgroups/<qgroup_id>/lim_flags
+>>  ^^^ Above are already in "btrfs qgroup show" command output ^^^
+>>
+>> /sys/fs/btrfs/<UUID>/qgroups/<qgroup_id>/rsv_data
+>> /sys/fs/btrfs/<UUID>/qgroups/<qgroup_id>/rsv_meta_pertrans
+>> /sys/fs/btrfs/<UUID>/qgroups/<qgroup_id>/rsv_meta_prealloc
+>>
+>> The last 3 rsv related members are not visible to users, but can be ve=
+ry
+>> useful to debug qgroup limit related bugs.
+>>
+>> Also, to avoid '/' used in <qgroup_id>, the seperator between qgroup
+>> level and qgroup id is changed to '_'.
+>>
+>> The interface is not hidden behind 'debug' as I want this interface to=
 
+>> be included into production build so we could have an easier life to
+>> debug qgroup rsv related bugs.
+>=20
+> But why do you want to export it to sysfs at all?
+>=20
+There is an internal report where user is not that co-operative to do
+more experiments, but insists on providing more debugging info.
+
+And since they don't want to unset qgroup limit, nor unmount their root
+fs to make sure the latest qgroup data rsv safenet catches leakage, the
+last method to debug strange early EDQUOT is to export rsv info to user
+space.
+
+And, for most users, the new interface won't bother anyone, but when
+things go wrong and the user is not cooperative, such interface can save
+us a lot of time.
+
+Thanks,
+Qu
+
+
+--r6OYPZeoVgjAhQy6x5UivbqDn94OfTHxe--
+
+--kp7uq0tAIA7IKONldeE9m8ry7pSbwhMhC
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl7siuAACgkQwj2R86El
+/qjQwAf+OtXWi8vmENhPVM0is/ehlHrEPDJy6ahzFKLRKGLI0yl6uh7wfBxFuxEl
+1nn4OdUe3CCiiOL5YhdQY014VPM7y9LEA7sGck3HPgOI6+VsflsFhZOYkMmQEtWd
+yb4t/zt4wxSL90rp+V3sIzdYJyoA2lruH9OqmPQqSGKFogHcEPqQHWOVDoYcjGfP
+sIWTiimo/5hSzCf4In3ESOVfTTPaSdm8lRxP4ycT5F42gchvvNhNIrmIzCC4Hvxg
+Lx6haXCisONLAeTPgDILvw+HVVSjQUa7ZsRzIDubYbthHoYtayZjqjFvAyiEHL49
+PyW5k/filPy/zOrlH0TVhF+EjRXzfQ==
+=PKDc
+-----END PGP SIGNATURE-----
+
+--kp7uq0tAIA7IKONldeE9m8ry7pSbwhMhC--
