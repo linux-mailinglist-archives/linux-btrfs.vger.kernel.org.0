@@ -2,182 +2,207 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69F9D200155
-	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Jun 2020 06:41:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45F61200182
+	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Jun 2020 07:04:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725820AbgFSElk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 19 Jun 2020 00:41:40 -0400
-Received: from mout.gmx.net ([212.227.17.21]:49217 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725290AbgFSElj (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 19 Jun 2020 00:41:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1592541696;
-        bh=8sY0SfJiJ/MaOHQFGv7UXWeBUU8isDZHBQ/f83ATbno=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=csA2i8QhnxdoPlH5YYhJYZtFcQ9U5wirHZlqKhj4ud9Q6og7CEjED8fWUGs9RKlWV
-         /MWv6MDF82YSD+L77KadqOb66wnrCjVd6QJpib2gS7N+RZhd6gpdR3Oc11YecWiIbj
-         nZgMl9EOTJ5ZwZXjJKAId5rz/j6b+kAmYNCywkbE=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MMGNC-1jTvjd2Ije-00JJWd; Fri, 19
- Jun 2020 06:41:36 +0200
-Subject: Re: BTRFS: Transaction aborted (error -24)
-To:     Greed Rong <greedrong@gmail.com>, dsterba@suse.cz,
-        linux-btrfs@vger.kernel.org
-References: <CA+UqX+NTrZ6boGnWHhSeZmEY5J76CTqmYjO2S+=tHJX7nb9DPw@mail.gmail.com>
- <20200611112031.GM27795@twin.jikos.cz>
- <a7802701-5c8d-5937-1a80-2bcf62a94704@gmx.com>
- <20200611135244.GP27795@twin.jikos.cz>
- <CA+UqX+OcP_S6U37BHkGgzyDVNAud5vYOucL_WpNLhfU-T=+Vnw@mail.gmail.com>
- <20200612171315.GW27795@twin.jikos.cz>
- <CA+UqX+PxF=prEHeS_u_K2ncT1MGqdmFsQeVTkDYLS6PqhJ7ddQ@mail.gmail.com>
- <20200618123418.GV27795@twin.jikos.cz>
- <CA+UqX+Ow_FnHse5yNxZ=jntzxmB0dRPYf2wWbeGX21jujUmSgw@mail.gmail.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
- PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
- 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
- D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
- efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
- ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
- BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
- 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
- 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
- EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
- 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
- ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
- oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
- fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
- 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
- ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
- oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <0a6cbb4a-9ad2-4ab0-1c18-70870fe4ae81@gmx.com>
-Date:   Fri, 19 Jun 2020 12:41:32 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        id S1726107AbgFSFEH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 19 Jun 2020 01:04:07 -0400
+Received: from james.kirk.hungrycats.org ([174.142.39.145]:33956 "EHLO
+        james.kirk.hungrycats.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725935AbgFSFEG (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 19 Jun 2020 01:04:06 -0400
+Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
+        id 0B3727211DC; Fri, 19 Jun 2020 01:04:03 -0400 (EDT)
+Date:   Fri, 19 Jun 2020 01:04:03 -0400
+From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+To:     DanglingPointer <danglingpointerexception@gmail.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: btrfs-dedupe broken and unsupported but in official wiki
+Message-ID: <20200619050402.GN10769@hungrycats.org>
+References: <16bc2efa-8e88-319f-e90e-cf8536460860@gmail.com>
+ <20200618204317.GM10769@hungrycats.org>
+ <65eeb90a-e983-2ae8-14ad-79bcd2960851@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CA+UqX+Ow_FnHse5yNxZ=jntzxmB0dRPYf2wWbeGX21jujUmSgw@mail.gmail.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="lBXGP0tQoe1hOCTOh1KEvuvQIzziBHYKc"
-X-Provags-ID: V03:K1:1C+//JMvb0VEJzGxXah7QJo7g68+vj3FKIDJVhmg14CAB4xlzgU
- fw+QJVSmaqacdSCRG1gcTI012tYtfBVhp/uYfQ5rvAV5wwA+Shx8xNi7fBo+TtE8W7FntpO
- Rmz0QlQnq91b+CoTRJzs9yDeB4JiKNRHSUhvXuWXWVszvGDLHLAACx6/pKREZYIeSle6qjg
- ExndoI+dqpA9/npjBeCqA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:i9XwsuphDa8=:cuhxJN6FpM81vR9lJLMCim
- 8SsLkP6qHgnWXxRmyvMi9nd/lBvRaG4Cz+eiAWM6YdvS5FECb1bSDZNnw4hDsM80rkbgrM6M3
- /nWCbGsA72l83pxDViVOIrROeJ8B7JvK8OXMUUYjc6j3Syxq/lzQJa+5M7xned1xgDSI8umJg
- rHSDu5rvizJ22J7yi55S154YPfQLst0gGqnQV4UAVHhDjcJ1ZPBThRI1XrbQWmhEw1qeR9mo5
- ApebRrlr/qTKX8EwIHTtD/V6ziP9a2ehxbRVQ0paX9MyTOykXoH/m6CbM+FgTw1kKD5zGkZG+
- NZ+iKdj9U1pkcuEmNlZeru7k8YptGMEg91/JSnH5p4JiPUOKfiExCesHLt88nLyIiRgV6X+Z8
- ug8FoljU0zmyyJUYYgDFXkSKgfm1kb8EV4OuoAZ2UwL4euV0ur5kq1nSSOzGnMRd2tWZcnS7a
- EzW8vhifwbP1jZlx5oj9i+opZf4Yb+6twaqtbdn6/UGR5PX39OoD7qm0jKxrOeX0jnDMtjpig
- 5T1Vt3XUaI5ZfMVNFzHz+T9CP+4etRnDonf18mTK9zBY9GgLs01MlWGKmjkTNlM2JmhuIMd06
- t165Vx4R43JT/rZ3Cmwkpf/olmmN0eyYsmUOdZLXL2+iE9WMQIUwEUnIoVDrVQmL/Qlas0Vte
- SVehMf7IiQ4ktu3DWqTlMtD1oJnw/4DQiEN/s/W1B9Qj/D3tPExgUNTnCAXrRULx57jmMvtpA
- Na2BY2QJAoN65BXewvEaADO2oTJwnDUIbngMBZThCSi2bBcimbyaW8t3iMAJfftr/6fmlBbkK
- 8fE0WSX0pnNRuG3cGVBOsW+nN1rx89EsX30HLEuFibe5vpGdGawly9mno8abrk/H8x520+L9+
- CKzFsvTqOcM1LjiO4bJnPpraOrl5SM6OkKCzR1LXVvExWGG02OWGNj5IuBIuaMBi2wb8ZsIWr
- FTyOgcfTmMFjyvGnX85jMNPoqSFwFSye+kw2HC6ZlRK4p2jgAVQik7DgX7xAxIX7N7cYfTHZQ
- fKbcQDb2ThlMhbRveqPlUUzFmmZ3z2JH2ftjgNtUI8YIA8ih/1FAlFhn10Kq90g60CmQji9oo
- ytbWmDPH+WXPc14Pdx9g4w4qv4rtk6SqH1uomZHZZNxz1zwMq5OnWm/rcjZ8B3mr75GJOuNDG
- NZ4Ua+tj0BQEFfCznHTQ0RZvsvYsKQIojKqT1JH079T1EeOxL43fsAOoFvKeu44eEMINjwfMO
- 2Td4urOzc9WanLkZM
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <65eeb90a-e983-2ae8-14ad-79bcd2960851@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---lBXGP0tQoe1hOCTOh1KEvuvQIzziBHYKc
-Content-Type: multipart/mixed; boundary="DpVaQxYatuZGTcVlkHdQKxVkHlUAJ9ieo"
+On Fri, Jun 19, 2020 at 08:05:44AM +1000, DanglingPointer wrote:
+> For a large portion of desktop users that are not developers and are
+> rustlang illiterate and programming illiterate; they would not now whether
+> this tool or that tool or any tool would be safe, or unsafe, or have
+> concurrent race conditions, or know the meaning of immutable or mutex.
+> 
+> Think of this scenario; average Joe Bloggs user buys new computer without MS
+> Windows.  With the software savings, Joe purchases more disks. He then
+> chooses openSuse Leap for his first foray into Linux.
+> All he cares about are his music files, photos, and videos being safe.  Joe
+> runs a Cafe down the street and uses the music, photos, and videos in
+> various screens at his cafe for the atmosphere.
+> Times are tough and he's running out of space so he doesn't want the
+> accumulate media files duplicated all around the place wasting space to
+> conserve storage.
+> 
+> If the official wikis have broken 3rd party tools, then it makes the whole
+> adoption process less easy, less friendly, very cryptic, more chaotic; and
+> give the impression that btrfs is a mess and not ready (and Linux as a
+> whole).  He would not know or have the time to go through the code of each
+> deduplication program tool option to figure out if one type or the other
+> type is better just like Zygo Blaxell did who can read code.  Even if he
+> wanted to, he doesn't know how to nor has the time to do it.  He says
+> good-bye to openSuse and buys Windows.
 
---DpVaQxYatuZGTcVlkHdQKxVkHlUAJ9ieo
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+My objection here is the serious accusation in the term "data loss", which
+you have made on the mailing list and github without supporting evidence.
 
+Joe Bloggs will not lose any data from btrfs-dedupe.  He'll waste his
+time and run out of disk space, and maybe switch filesystems due to
+frustration, but Joe will not lose any of his data.
 
+btrfs-dedupe has not had new commits in years and no longer builds on
+today's Rust.  Those facts alone would have been sufficient to justify
+removing it from the wiki.  We have far too many real data loss bugs in
+btrfs already.  There is no need to spread rumors about new ones just
+to push changes through.
 
-On 2020/6/19 =E4=B8=8B=E5=8D=8812:04, Greed Rong wrote:
-> I have restarted the delete service. And unfortunately it happened agai=
-n.
-> I am confuse that:
->     1. When will an anon bdev be allocated in btrfs?
+It might be nice to keep btrfs-dedupe and bedup _somewhere_ on the wiki,
+clearly marked as not supported and only of historical interest to new
+developers.  I learned a lot about what is possible on btrfs from bedup
+in particular (bees was initially a project to combine the features of
+bedup and duperemove), and python is accessible to more developers than
+C or C++.  btrfs-dedupe was the first btrfs dedupe agent to combine
+defrag and dedupe operations into a single program.
 
-When a new subvolume is created, or one existing subvolume get read for
-its first time after mount.
+> So I do agree with waxhead.  It would be preferable if there were an
+> official btrfs deduplication command from btrfs-progs instead of relying on
+> 3rd parties.  Joe Bloggs example above can read a web-page instructions
+> saying "run this command... and then this command..."; but he will not have
+> the knowledge, nor comprehension nor time to go through code.
 
->     2. When will an anon bdev return to the pool?
+Which of the available candidates for "official btrfs dedupe" would you
+put in btrfs-progs?  I see a lot of runners in the race, but no clear
+winner yet.
 
-When a subvolume is unlinked (with the latest patch), or when a
-subvolume is completely deleted (current behavior), or when the whole
-btrfs is unmounted.
+duperemove is the closest to Waxhead's proposed "-r /somewhere" syntax.
+It's the obvious choice:  written in the same language as btrfs-progs, and
+also the oldest btrfs deduper, and it has years of patient, data-driven
+optimization built in.  If there wasn't some insurmountable reason
+why duperemove can't be merged with btrfs-progs, then it would have
+happened already, so there must be a reason why this can't ever happen
+(which might be as simple as neither maintainer wants to merge).
+Maybe we put duperemove at the top of the Wiki page, as it has the
+simplest command-line for Joe Blogger's use case, and it's relatively
+easy to build for the few people who use distros where it's not packaged.
 
+The stub support for in-kernel dedupe (arguably the only "official"
+btrfs dedupe so far) has been removed due to lack of interest in its
+development.  That _was_ available in branches of btrfs-progs
+as 'btrfs dedupe'.  It's gone now.
 
->     3. Are there any tools to find out how many subvolumes have been
-> deleted but not committed?
+The other viable deduper candidates are still works in progress, and
+some have significant trade-offs and limitations resulting from their
+optimization for specific use cases.  duperemove hasn't exploited any
+btrfs-specific features to make it faster, so duperemove is already
+close to the upper performance limits of its design, but far below the
+performance that is possible in a specialist tool for btrfs.  bees scales
+better and saves more space than the other dedupers, but bees can't
+exclude any part of the filesystem from the scope of dedupe the way every
+other btrfs deduper can.  dduper is a proof of concept that is so much
+faster than the other block-oriented dedupers on btrfs that it overcomes a
+ridiculously inefficient implementation and wins benchmarks--but it also
+saves the least amount of space of any of the block-oriented dedupers on
+the wiki.  There are some other candidates out there that aren't on the
+wiki that attack the dedupe problem from interesting--and potentially
+high-performing--angles (e.g. solstice dedupes the entire filesystem
+using a sorting algorithm instead of a hash table).
 
-I'm not sure, but you can always wait for all orphan subvolumes to be
-completely deleted, by using "btrfs sub sync" command.
+The dozen or so utilities that do file-only dedupe well and support btrfs
+are faster at Joe Blogger's use case than all the block-oriented dedupers.
+Most of them are not btrfs-specific tools, so it doesn't make sense to
+integrate them into btrfs-progs.
 
-Thanks,
-Qu
+Most of the existing dedupers aren't written in C.  The rest of
+btrfs-progs is C, creating a code review and maintenance issue if they
+are to be merged. 
 
->=20
-> Thanks
->=20
-> On Thu, Jun 18, 2020 at 8:34 PM David Sterba <dsterba@suse.cz> wrote:
->>
->> On Mon, Jun 15, 2020 at 08:50:28PM +0800, Greed Rong wrote:
->>> Does that mean about 2^20 subvolumes can be created in one root btrfs=
-?
->>
->> No, subvolume ids are assigned incrementally, the amount is 2^64 so th=
-is
->> shouldn't be a problem in practice.
->>
->>> The snapshot delete service was stopped a few weeks ago. I think this=
+The write-in candidate is "write a file-only deduper in C just so it can
+be integrated with btrfs-progs."  That doesn't even exist, and it's still
+better than some of the existing candidates for merging into btrfs-progs.
 
->>> is the reason why the id pool is exhausted.
->>> I will try to run it again and see if it works.
->>
->> The patches to reclaim the anon bdevs faster is small enough to be
->> pushed to older stable kernels, so you should be able to use it
->> eventually.
->>
->> As a workaround, you can still delete the old subvolumes to get the
->> space back but perhaps at a slower rate and wait until the deleted
->> subvolumes are cleaned. That there's no way to get the number of used
->> anon bdevs makes it harder unfortunatelly.
+A deduper that is good at block-level dedupe is bad at file-level dedupe
+and vice versa.  They view the filesystem stack from different sides,
+and the hardest optimization one can do is the easiest for the other.
+Pre-write (in-kernel) and post-write dedupers have significantly
+different memory costs, which is another reason for having a diverse set
+of dedupers:  if you copy the ZFS approach to dedupe, you need ZFS-sized
+memory budgets to implement it; if you don't have ZFS-sized memory, you
+need an alternative implementation.  These are significant barriers to
+picking a single winner.
 
+For now, at least until one of the dedupers can scale well over a superset
+of the other dedupers' use cases, or the in-kernel deduper comes back from
+the dead, it would be better to provide third-party dedupers that are
+optimized for the subset of workloads that they can handle very well.
 
---DpVaQxYatuZGTcVlkHdQKxVkHlUAJ9ieo--
+Otherwise, whichever single deduper you pick, it will suck for some users,
+or we pick multiple dedupe engines and need have a zillion options after
+'btrfs fi dedupe' to help it pick which engine to use (this has already
+happened to some extent in duperemove).
 
---lBXGP0tQoe1hOCTOh1KEvuvQIzziBHYKc
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+At the current rate of development, the XFS people might leapfrog us
+on dedupe, and "official btrfs dedupe" could end up being xfs_fsr.
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl7sQfwACgkQwj2R86El
-/qgatwf/QGXNQI9tCXZYnq1LO4r0/RWxsh347znwBAg5xemnpYdiVAAd439X1CaV
-vduwxnuTXaFNLdU4DtaxWVhVmtleo7Z+pX/YyjEjSM6e7QmugBPVLJZzECt2Bcwp
-J3VWjKx2kAEoSQ2v+zZdsdAEOfjnmQ/jYPYdkY1TSEHMZJxZaVqnm/XZhLbJXPcE
-D9lwIq1YzpYJiAM4C1ZsffNmXArm7P6wYR7F+y8KOZDlggETSb4FGiSL+1odV8Zw
-M09UtwQw3LZyek66HWTSQYY+ZS5qoVo8WzvpB35kX8nSyiA20vq5YfHbf4t9SBin
-hTtTto+YzOyzMommsaaQPw/t2UQ5+g==
-=DiAS
------END PGP SIGNATURE-----
-
---lBXGP0tQoe1hOCTOh1KEvuvQIzziBHYKc--
+> Thanks David Sterba for removing the items and updating the wiki!
+> 
+> On 19/6/20 6:43 am, Zygo Blaxell wrote:
+> > The point about lack of maintenance with changing Rust dependencies is
+> > fair, but "data loss" is a strong and unsupported statement.  Can you
+> > explain how data loss could occur in even a badly (assume not maliciously)
+> > broken version of btrfs-dedupe?
+> > 
+> > As far as I can tell, the btrfs-dedupe code uses only non-data-mutating
+> > btrfs kernel interfaces for manipulating extents (fiemap, defrag,
+> > and file_extent_same/deduperange).  None of these should cause data
+> > loss (excluding kernel bugs).
+> > 
+> > btrfs-dedupe can be trivially tricked into opening files that it did
+> > not intend to (it has no protection against symlink injection and other
+> > TOCCTOU attacks), but it doesn't seem to be able to alter the content
+> > of files once it opens them.
+> > 
+> > File descriptors pointing to user files are opened O_RDWR, but they are
+> > kept in the scope of the dedupe function and their life-cycle is properly
+> > managed in Rust, so btrfs-dedupe won't mutate files by writing to the
+> > wrong fd (e.g. accidentally close stderr and reopen it to a user file)
+> > unless someone adds some seriously buggy code (see "assume not malicious"
+> > above).
+> > 
+> > The unsafe C ioctl interfaces are unlikely to change in data-losing ways,
+> > or they'll break all existing userspace tools that use them.  They are
+> > also well encapsulated in the rust-btrfs module.
+> > 
+> > The errors reported on github seem to be problems with incompatible
+> > changes in the runtime libraries btrfs-dedupe depends on, and also some
+> > reports of what look like pre-existing bugs in the fiemap code that are
+> > blamed on new kernel versions without evidence.  Data-losing breaking
+> > changes in any of the ioctls btrfs-dedupe uses are extremely unlikely.
+> > Those issues may cause btrfs-dedupe to do useless unnecessary work,
+> > or fail to do useful necessary work, but could not cause data loss by
+> > any mechanism I can find.
+> > 
+> > Contrast with bedup:  bedup uses data-mutating kernel interfaces
+> > (clone_range) for dedupe that have no effective protection against
+> > concurrent data modification.  There is ineffective protection implemented
+> > in bedup (looking in /proc/*/fd for concurrent users of the files) which
+> > may or may not be broken in kernel 5.0, but it's ineffective either way.
+> > The case for data loss in bedup is trivial.  The branch with a patch to
+> > fix it is now 7 years old, so it's fair to say bedup is unmaintained too
+> > (github forks notwithstanding, they didn't fix these issues).
+> > 
