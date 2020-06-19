@@ -2,207 +2,565 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45F61200182
-	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Jun 2020 07:04:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB9C32002AE
+	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Jun 2020 09:24:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726107AbgFSFEH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 19 Jun 2020 01:04:07 -0400
-Received: from james.kirk.hungrycats.org ([174.142.39.145]:33956 "EHLO
-        james.kirk.hungrycats.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725935AbgFSFEG (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 19 Jun 2020 01:04:06 -0400
-Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
-        id 0B3727211DC; Fri, 19 Jun 2020 01:04:03 -0400 (EDT)
-Date:   Fri, 19 Jun 2020 01:04:03 -0400
-From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-To:     DanglingPointer <danglingpointerexception@gmail.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: btrfs-dedupe broken and unsupported but in official wiki
-Message-ID: <20200619050402.GN10769@hungrycats.org>
-References: <16bc2efa-8e88-319f-e90e-cf8536460860@gmail.com>
- <20200618204317.GM10769@hungrycats.org>
- <65eeb90a-e983-2ae8-14ad-79bcd2960851@gmail.com>
+        id S1729740AbgFSHY2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 19 Jun 2020 03:24:28 -0400
+Received: from mail-eopbgr80082.outbound.protection.outlook.com ([40.107.8.82]:32835
+        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727096AbgFSHY1 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 19 Jun 2020 03:24:27 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ixQbll3G1s4dFtvdNSC3VXWMNMbfN/ZADYYbf4gRyomByOiFyUTOKHAGhWQdH8MrxM70o0Ogz5A7sUOma+rSz38kkkItURD0xufZpN5bC0K93Gys0kRCgWyHOwDl6YMf4PW2eZFegM2JFCNZzl941gCLhbCv9M4gbMMCQyNLeeyXoOfp+PSDgAHgx/pPvW8eVLMhE+k5GwRTQodvTJnH9Gx7YbboklmpHZ71NdhVsP234lvgLvyc8NMHPQGfFty9QLewpwUojam8yzjU1LIV5lSDqyb3DmVifA5ETGxqqaujcUgVUcAqgr9rzKwGpQWnb5+0BG3G1ji08NlxyVlP0w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ApBG1sJ+ZKWgKHHsFeFTPy2FCE0nKFWscP2B49FzwPo=;
+ b=C04tcdRE6pog0mk/4JMkB3JumGDYNEGMuK42PaIi0SrxhzvWfbxa2xHNgzJ1nl/vCT/iB7e85xoIQoQvLjAZR3aicO1NzTcPzVf7gapVYqzcBtYKXkSL8WFhueMQ1HddIYlR14has9vAufsxF8K2LPgMGOHP5qGEn7FZs5xQTjIoJ0z0SXbOWq4N+aHpUZxdkx95UtsUqydyiPy2I669RWMRhRosDR57RJQKep/BZJ07NYbs/nhZSRQ1oR7DubR1Ap+KUhybPMB5RAi44YFhh/8G4C0IKUc04soU4QXE8wUtKaH+dbkoEnKmoeKOBmQjkZk/l+IycMZX7FPmMOvKNA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=mysuse.onmicrosoft.com; s=selector1-mysuse-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ApBG1sJ+ZKWgKHHsFeFTPy2FCE0nKFWscP2B49FzwPo=;
+ b=mIamYsLL3m2ztrgq8BYHtgRP0r7sN3GkkVavnqOE+ko7bKNiVXWWg7hWRSN0nwrHHfeaI2Qco3cMjipoP62jN+awg4F4rVBEYh86XtExs0yc0k3fgFq48AI/RlWlyoRd8paZPsh5w3jRb/Yu9vmmQ5dVJn9yhCPOqpa8PW1vdgau+wxRKq7+D4JjGNSf3vHWgI3jwpkp198QY2C33ZVwozGTYIqdHlVXBuZMVh+wCquOBBWcqJAb4j9JIgq6psD+ooo7xMi/x5FHfjpwKUIEQ2lPUyoNjcstX9+ecUSPQe9fgSP/7r6C+bBDpFG0Y3eePKFGmTcLJORodJwz0nfKxw==
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=suse.com;
+Received: from AM0PR04MB6195.eurprd04.prod.outlook.com (2603:10a6:208:13c::13)
+ by AM0PR04MB6787.eurprd04.prod.outlook.com (2603:10a6:208:18a::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3109.21; Fri, 19 Jun
+ 2020 07:24:21 +0000
+Received: from AM0PR04MB6195.eurprd04.prod.outlook.com
+ ([fe80::3457:290d:6345:6961]) by AM0PR04MB6195.eurprd04.prod.outlook.com
+ ([fe80::3457:290d:6345:6961%7]) with mapi id 15.20.3109.021; Fri, 19 Jun 2020
+ 07:24:21 +0000
+Subject: Re: [PATCH] btrfs: qgroup: add sysfs interface for debug
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+References: <20200619015946.65638-1-wqu@suse.com>
+Autocrypt: addr=wqu@suse.com; keydata=
+ mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAG0GFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPokBTQQTAQgAOAIbAwULCQgHAgYVCAkKCwIE
+ FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJdnDWhAAoJEMI9kfOhJf6oZgoH
+ 90uqoGyUh5UWtiT9zjUcvlMTCpd/QSgwagDuY+tEdVPaKlcnTNAvZKWSit8VuocjrOFbTLwb
+ vZ43n5f/l/1QtwMgQei/RMY2XhW+totimzlHVuxVaIDwkF+zc+pUI6lDPnULZHS3mWhbVr9N
+ vZAAYVV7GesyyFpZiNm7GLvLmtEdYbc9OnIAOZb3eKfY3mWEs0eU0MxikcZSOYy3EWY3JES7
+ J9pFgBrCn4hF83tPH2sphh1GUFii+AUGBMY/dC6VgMKbCugg+u/dTZEcBXxD17m+UcbucB/k
+ F2oxqZBEQrb5SogdIq7Y9dZdlf1m3GRRJTX7eWefZw10HhFhs1mwx7kBDQRZ1YGvAQgAqlPr
+ YeBLMv3PAZ75YhQIwH6c4SNcB++hQ9TCT5gIQNw51+SQzkXIGgmzxMIS49cZcE4KXk/kHw5h
+ ieQeQZa60BWVRNXwoRI4ib8okgDuMkD5Kz1WEyO149+BZ7HD4/yK0VFJGuvDJR8T7RZwB69u
+ VSLjkuNZZmCmDcDzS0c/SJOg5nkxt1iTtgUETb1wNKV6yR9XzRkrEW/qShChyrS9fNN8e9c0
+ MQsC4fsyz9Ylx1TOY/IF/c6rqYoEEfwnpdlz0uOM1nA1vK+wdKtXluCa79MdfaeD/dt76Kp/
+ o6CAKLLcjU1Iwnkq1HSrYfY3HZWpvV9g84gPwxwxX0uXquHxLwARAQABiQE8BBgBCAAmAhsM
+ FiEELd9y5aWlW6idqkLhwj2R86El/qgFAl2cNa4FCQlqTn8ACgkQwj2R86El/qhXBAf/eXLP
+ HDNTkHRPxoDnwhscIHJDHlsszke25AFltJQ1adoaYCbsQVv4Mn5rQZ1Gon54IMdxBN3r/B08
+ rGVPatIfkycMCShr+rFHPKnExhQ7Wr555fq+sQ1GOwOhr1xLEqAhBMp28u9m8hnkqL36v+AF
+ hjTwRtS+tRMZfoG6n72xAj984l56G9NPfs/SOKl6HR0mCDXwJGZAOdtyRmqddi53SXi5N4H1
+ jWX1xFshp7nIkRm6hEpISEWr/KKLbAiKKbP0ql5tP5PinJeIBlDv4g/0+aGoGg4dELTnfEVk
+ jMC8cJ/LiIaR/OEOF9S2nSeTQoBmusTz+aqkbogvvYGam6uDYw==
+Message-ID: <ec07af82-dd74-7fb3-eb42-dc30b54f90bb@suse.com>
+Date:   Fri, 19 Jun 2020 15:24:11 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
+In-Reply-To: <20200619015946.65638-1-wqu@suse.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="4ZyWuUajz9QaWOpDoT9wWz6L3igjW2mCF"
+X-ClientProxiedBy: BYAPR06CA0065.namprd06.prod.outlook.com
+ (2603:10b6:a03:14b::42) To AM0PR04MB6195.eurprd04.prod.outlook.com
+ (2603:10a6:208:13c::13)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <65eeb90a-e983-2ae8-14ad-79bcd2960851@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [0.0.0.0] (149.28.201.231) by BYAPR06CA0065.namprd06.prod.outlook.com (2603:10b6:a03:14b::42) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3109.22 via Frontend Transport; Fri, 19 Jun 2020 07:24:20 +0000
+X-Originating-IP: [149.28.201.231]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: aef1f46a-46a2-47de-69a5-08d81421c902
+X-MS-TrafficTypeDiagnostic: AM0PR04MB6787:
+X-Microsoft-Antispam-PRVS: <AM0PR04MB67877396CF177805F04F80DAD6980@AM0PR04MB6787.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-Forefront-PRVS: 0439571D1D
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: otwWDh3I4dCP2Sm/Ddd2KZsc9c2WyywVx2kdM92s2dht64ff4e6xlyS3DIgbcO/wjcbFh+tWKoBUOQZBwXYUDm3SyOTDLO22uFSqb0jUk/VbyQC6/WZbw0Odxn+7r6F/Y25YrNfDV38ND8GGEOqoFG/YTF56Nm3yab+6Q4ZgTjva0CGxj4dkAERQws4WWIGHRwiWGt026kYdqPygRAt1qf58/0eSuyp4lb6CRUw703t2vVr/0KhAQKeXb71q4PxraNcf69efq+g3sMfVkSbKJvTmo8j7RQpJMrMX5Ajmiyn7p6nIj5lCIxPIbNIcKevjiX9NqjYiTwF0PnKmgnCi93XYftdi4k5SBN0DFtmL21THBRlvc8oNtr6wXpZRlp3BUPfiMk9MUXHVmXW+eHqSkC9Ob+/fsYKh/8ncZtI9hbJL8jeWP6i8Ov8d5oosKzeIJYUBqyEv+mq6rZsApAXntw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB6195.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(136003)(39860400002)(366004)(396003)(346002)(376002)(26005)(36756003)(235185007)(6666004)(83380400001)(86362001)(66946007)(33964004)(956004)(52116002)(186003)(16526019)(31686004)(2616005)(31696002)(30864003)(6916009)(16576012)(6706004)(8676002)(8936002)(478600001)(2906002)(66476007)(21480400003)(66556008)(5660300002)(316002)(6486002)(78286006)(21314003)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: kPJHjZB+qdqoB2kdDgHTTt0HI9i56aYdyUUN6hrmvDNEcfE83dA1PYqerMd0LUeVFhgPTvu33t19fPb2Q+NJtSFFPFrbx/MscmSzBOnizCx3+DfpouKFWbWcBbi6Dh+gsMh2eoMZyTPffygJya5SH1EFdHX+sgMvT1x7gh0zSWVbx1gybkNySTKzvXOdrM4JM4sntfL7+HnHdm6t4gt5sA9pdgFtMBUEqnjgiQSXHHs72rjsSH52ED/Att7em52Pa5eVbUOoRxDfN7lXhHO3KFvWWrFeJf6zMMe/9kqNwrFk1EESPzF172d4TExI+tZCEqWAGg01a1prl5ELs8Elram2BZ/F4YNRVbghW6w+Or7qks53yvlcxEB+yBYDpLDJt7Q3CSsQE8BYWkRHef9bvT2GTfANWHxvJmUy7l4M4xPTNrodjz3Q5umMFvAMue6UduQrzLTx4qASXw5mp1lW3MsKNBmSX6CPgX58myQeHu8=
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: aef1f46a-46a2-47de-69a5-08d81421c902
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Jun 2020 07:24:21.5787
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: rYAyKv32wdqS1LO0derip1dRxvFHpt6gZ019g64DQDF/sLtLjR4ym/vaY6BkPrlB
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR04MB6787
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Jun 19, 2020 at 08:05:44AM +1000, DanglingPointer wrote:
-> For a large portion of desktop users that are not developers and are
-> rustlang illiterate and programming illiterate; they would not now whether
-> this tool or that tool or any tool would be safe, or unsafe, or have
-> concurrent race conditions, or know the meaning of immutable or mutex.
-> 
-> Think of this scenario; average Joe Bloggs user buys new computer without MS
-> Windows.  With the software savings, Joe purchases more disks. He then
-> chooses openSuse Leap for his first foray into Linux.
-> All he cares about are his music files, photos, and videos being safe.  Joe
-> runs a Cafe down the street and uses the music, photos, and videos in
-> various screens at his cafe for the atmosphere.
-> Times are tough and he's running out of space so he doesn't want the
-> accumulate media files duplicated all around the place wasting space to
-> conserve storage.
-> 
-> If the official wikis have broken 3rd party tools, then it makes the whole
-> adoption process less easy, less friendly, very cryptic, more chaotic; and
-> give the impression that btrfs is a mess and not ready (and Linux as a
-> whole).  He would not know or have the time to go through the code of each
-> deduplication program tool option to figure out if one type or the other
-> type is better just like Zygo Blaxell did who can read code.  Even if he
-> wanted to, he doesn't know how to nor has the time to do it.  He says
-> good-bye to openSuse and buys Windows.
+--4ZyWuUajz9QaWOpDoT9wWz6L3igjW2mCF
+Content-Type: multipart/mixed; boundary="C9YmGwwzj1UvvOoXRiTFfxJHVQaIiqQYr"
 
-My objection here is the serious accusation in the term "data loss", which
-you have made on the mailing list and github without supporting evidence.
+--C9YmGwwzj1UvvOoXRiTFfxJHVQaIiqQYr
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-Joe Bloggs will not lose any data from btrfs-dedupe.  He'll waste his
-time and run out of disk space, and maybe switch filesystems due to
-frustration, but Joe will not lose any of his data.
 
-btrfs-dedupe has not had new commits in years and no longer builds on
-today's Rust.  Those facts alone would have been sufficient to justify
-removing it from the wiki.  We have far too many real data loss bugs in
-btrfs already.  There is no need to spread rumors about new ones just
-to push changes through.
 
-It might be nice to keep btrfs-dedupe and bedup _somewhere_ on the wiki,
-clearly marked as not supported and only of historical interest to new
-developers.  I learned a lot about what is possible on btrfs from bedup
-in particular (bees was initially a project to combine the features of
-bedup and duperemove), and python is accessible to more developers than
-C or C++.  btrfs-dedupe was the first btrfs dedupe agent to combine
-defrag and dedupe operations into a single program.
+On 2020/6/19 =E4=B8=8A=E5=8D=889:59, Qu Wenruo wrote:
+> This patch will add the following sysfs interface:
+> /sys/fs/btrfs/<UUID>/qgroups/<qgroup_id>/rfer
+> /sys/fs/btrfs/<UUID>/qgroups/<qgroup_id>/excl
+> /sys/fs/btrfs/<UUID>/qgroups/<qgroup_id>/max_rfer
+> /sys/fs/btrfs/<UUID>/qgroups/<qgroup_id>/max_excl
+> /sys/fs/btrfs/<UUID>/qgroups/<qgroup_id>/lim_flags
+>  ^^^ Above are already in "btrfs qgroup show" command output ^^^
+>=20
+> /sys/fs/btrfs/<UUID>/qgroups/<qgroup_id>/rsv_data
+> /sys/fs/btrfs/<UUID>/qgroups/<qgroup_id>/rsv_meta_pertrans
+> /sys/fs/btrfs/<UUID>/qgroups/<qgroup_id>/rsv_meta_prealloc
+>=20
+> The last 3 rsv related members are not visible to users, but can be ver=
+y
+> useful to debug qgroup limit related bugs.
+>=20
+> Also, to avoid '/' used in <qgroup_id>, the seperator between qgroup
+> level and qgroup id is changed to '_'.
+>=20
+> The interface is not hidden behind 'debug' as I want this interface to
+> be included into production build so we could have an easier life to
+> debug qgroup rsv related bugs.
+>=20
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+>  fs/btrfs/ctree.h  |   1 +
+>  fs/btrfs/qgroup.c |  38 ++++++++----
+>  fs/btrfs/qgroup.h |  12 ++++
+>  fs/btrfs/sysfs.c  | 149 ++++++++++++++++++++++++++++++++++++++++++++++=
 
-> So I do agree with waxhead.  It would be preferable if there were an
-> official btrfs deduplication command from btrfs-progs instead of relying on
-> 3rd parties.  Joe Bloggs example above can read a web-page instructions
-> saying "run this command... and then this command..."; but he will not have
-> the knowledge, nor comprehension nor time to go through code.
+>  fs/btrfs/sysfs.h  |   6 ++
+>  5 files changed, 194 insertions(+), 12 deletions(-)
+>=20
+> diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+> index d8301bf240e0..7576dfe39841 100644
+> --- a/fs/btrfs/ctree.h
+> +++ b/fs/btrfs/ctree.h
+> @@ -779,6 +779,7 @@ struct btrfs_fs_info {
+>  	u32 thread_pool_size;
+> =20
+>  	struct kobject *space_info_kobj;
+> +	struct kobject *qgroup_kobj;
+> =20
+>  	u64 total_pinned;
+> =20
+> diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
+> index 74eb98479109..04fdd42f0eb5 100644
+> --- a/fs/btrfs/qgroup.c
+> +++ b/fs/btrfs/qgroup.c
+> @@ -22,6 +22,7 @@
+>  #include "extent_io.h"
+>  #include "qgroup.h"
+>  #include "block-group.h"
+> +#include "sysfs.h"
+> =20
+>  /* TODO XXX FIXME
+>   *  - subvol delete -> delete when ref goes to 0? delete limits also?
+> @@ -192,38 +193,47 @@ static struct btrfs_qgroup *add_qgroup_rb(struct =
+btrfs_fs_info *fs_info,
+>  	struct rb_node **p =3D &fs_info->qgroup_tree.rb_node;
+>  	struct rb_node *parent =3D NULL;
+>  	struct btrfs_qgroup *qgroup;
+> +	int ret;
+> =20
+>  	while (*p) {
+>  		parent =3D *p;
+>  		qgroup =3D rb_entry(parent, struct btrfs_qgroup, node);
+> =20
+> -		if (qgroup->qgroupid < qgroupid)
+> +		if (qgroup->qgroupid < qgroupid) {
+>  			p =3D &(*p)->rb_left;
+> -		else if (qgroup->qgroupid > qgroupid)
+> +		} else if (qgroup->qgroupid > qgroupid) {
+>  			p =3D &(*p)->rb_right;
+> -		else
+> +		} else {
+>  			return qgroup;
+> +		}
 
-Which of the available candidates for "official btrfs dedupe" would you
-put in btrfs-progs?  I see a lot of runners in the race, but no clear
-winner yet.
+Oh, extra brackets forgot to remove during debug.
 
-duperemove is the closest to Waxhead's proposed "-r /somewhere" syntax.
-It's the obvious choice:  written in the same language as btrfs-progs, and
-also the oldest btrfs deduper, and it has years of patient, data-driven
-optimization built in.  If there wasn't some insurmountable reason
-why duperemove can't be merged with btrfs-progs, then it would have
-happened already, so there must be a reason why this can't ever happen
-(which might be as simple as neither maintainer wants to merge).
-Maybe we put duperemove at the top of the Wiki page, as it has the
-simplest command-line for Joe Blogger's use case, and it's relatively
-easy to build for the few people who use distros where it's not packaged.
+Will address them in next update.
 
-The stub support for in-kernel dedupe (arguably the only "official"
-btrfs dedupe so far) has been removed due to lack of interest in its
-development.  That _was_ available in branches of btrfs-progs
-as 'btrfs dedupe'.  It's gone now.
+Thanks,
+Qu
 
-The other viable deduper candidates are still works in progress, and
-some have significant trade-offs and limitations resulting from their
-optimization for specific use cases.  duperemove hasn't exploited any
-btrfs-specific features to make it faster, so duperemove is already
-close to the upper performance limits of its design, but far below the
-performance that is possible in a specialist tool for btrfs.  bees scales
-better and saves more space than the other dedupers, but bees can't
-exclude any part of the filesystem from the scope of dedupe the way every
-other btrfs deduper can.  dduper is a proof of concept that is so much
-faster than the other block-oriented dedupers on btrfs that it overcomes a
-ridiculously inefficient implementation and wins benchmarks--but it also
-saves the least amount of space of any of the block-oriented dedupers on
-the wiki.  There are some other candidates out there that aren't on the
-wiki that attack the dedupe problem from interesting--and potentially
-high-performing--angles (e.g. solstice dedupes the entire filesystem
-using a sorting algorithm instead of a hash table).
+>  	}
+> =20
+>  	qgroup =3D kzalloc(sizeof(*qgroup), GFP_ATOMIC);
+>  	if (!qgroup)
+>  		return ERR_PTR(-ENOMEM);
+> -
+>  	qgroup->qgroupid =3D qgroupid;
+>  	INIT_LIST_HEAD(&qgroup->groups);
+>  	INIT_LIST_HEAD(&qgroup->members);
+>  	INIT_LIST_HEAD(&qgroup->dirty);
+> =20
+> +	ret =3D btrfs_sysfs_add_one_qgroup(fs_info, qgroup);
+> +	if (ret < 0) {
+> +		kfree(qgroup);
+> +		return ERR_PTR(ret);
+> +	}
+> +
+>  	rb_link_node(&qgroup->node, parent, p);
+>  	rb_insert_color(&qgroup->node, &fs_info->qgroup_tree);
+> =20
+>  	return qgroup;
+>  }
+> =20
+> -static void __del_qgroup_rb(struct btrfs_qgroup *qgroup)
+> +static void __del_qgroup_rb(struct btrfs_fs_info *fs_info,
+> +			    struct btrfs_qgroup *qgroup)
+>  {
+>  	struct btrfs_qgroup_list *list;
+> =20
+> +	btrfs_sysfs_del_one_qgroup(fs_info, qgroup);
+>  	list_del(&qgroup->dirty);
+>  	while (!list_empty(&qgroup->groups)) {
+>  		list =3D list_first_entry(&qgroup->groups,
+> @@ -252,7 +262,7 @@ static int del_qgroup_rb(struct btrfs_fs_info *fs_i=
+nfo, u64 qgroupid)
+>  		return -ENOENT;
+> =20
+>  	rb_erase(&qgroup->node, &fs_info->qgroup_tree);
+> -	__del_qgroup_rb(qgroup);
+> +	__del_qgroup_rb(fs_info, qgroup);
+>  	return 0;
+>  }
+> =20
+> @@ -351,6 +361,9 @@ int btrfs_read_qgroup_config(struct btrfs_fs_info *=
+fs_info)
+>  		goto out;
+>  	}
+> =20
+> +	ret =3D btrfs_sysfs_add_qgroups(fs_info);
+> +	if (ret < 0)
+> +		goto out;
+>  	/* default this to quota off, in case no status key is found */
+>  	fs_info->qgroup_flags =3D 0;
+> =20
+> @@ -500,16 +513,12 @@ int btrfs_read_qgroup_config(struct btrfs_fs_info=
+ *fs_info)
+>  		ulist_free(fs_info->qgroup_ulist);
+>  		fs_info->qgroup_ulist =3D NULL;
+>  		fs_info->qgroup_flags &=3D ~BTRFS_QGROUP_STATUS_FLAG_RESCAN;
+> +		btrfs_sysfs_del_qgroups(fs_info);
+>  	}
+> =20
+>  	return ret < 0 ? ret : 0;
+>  }
+> =20
+> -static u64 btrfs_qgroup_subvolid(u64 qgroupid)
+> -{
+> -	return (qgroupid & ((1ULL << BTRFS_QGROUP_LEVEL_SHIFT) - 1));
+> -}
+> -
+>  /*
+>   * Called in close_ctree() when quota is still enabled.  This verifies=
+ we don't
+>   * leak some reserved space.
+> @@ -562,7 +571,7 @@ void btrfs_free_qgroup_config(struct btrfs_fs_info =
+*fs_info)
+>  	while ((n =3D rb_first(&fs_info->qgroup_tree))) {
+>  		qgroup =3D rb_entry(n, struct btrfs_qgroup, node);
+>  		rb_erase(n, &fs_info->qgroup_tree);
+> -		__del_qgroup_rb(qgroup);
+> +		__del_qgroup_rb(fs_info, qgroup);
+>  	}
+>  	/*
+>  	 * We call btrfs_free_qgroup_config() when unmounting
+> @@ -571,6 +580,7 @@ void btrfs_free_qgroup_config(struct btrfs_fs_info =
+*fs_info)
+>  	 */
+>  	ulist_free(fs_info->qgroup_ulist);
+>  	fs_info->qgroup_ulist =3D NULL;
+> +	btrfs_sysfs_del_qgroups(fs_info);
+>  }
+> =20
+>  static int add_qgroup_relation_item(struct btrfs_trans_handle *trans, =
+u64 src,
+> @@ -943,6 +953,9 @@ int btrfs_quota_enable(struct btrfs_fs_info *fs_inf=
+o)
+>  		goto out;
+>  	}
+> =20
+> +	ret =3D btrfs_sysfs_add_qgroups(fs_info);
+> +	if (ret < 0)
+> +		goto out;
+>  	/*
+>  	 * 1 for quota root item
+>  	 * 1 for BTRFS_QGROUP_STATUS item
+> @@ -1089,6 +1102,7 @@ int btrfs_quota_enable(struct btrfs_fs_info *fs_i=
+nfo)
+>  		fs_info->qgroup_ulist =3D NULL;
+>  		if (trans)
+>  			btrfs_end_transaction(trans);
+> +		btrfs_sysfs_del_qgroups(fs_info);
+>  	}
+>  	mutex_unlock(&fs_info->qgroup_ioctl_lock);
+>  	return ret;
+> diff --git a/fs/btrfs/qgroup.h b/fs/btrfs/qgroup.h
+> index 3be5198a3719..728ffea7de48 100644
+> --- a/fs/btrfs/qgroup.h
+> +++ b/fs/btrfs/qgroup.h
+> @@ -8,6 +8,7 @@
+> =20
+>  #include <linux/spinlock.h>
+>  #include <linux/rbtree.h>
+> +#include <linux/kobject.h>
+>  #include "ulist.h"
+>  #include "delayed-ref.h"
+> =20
+> @@ -223,8 +224,19 @@ struct btrfs_qgroup {
+>  	 */
+>  	u64 old_refcnt;
+>  	u64 new_refcnt;
+> +
+> +	/*
+> +	 * Sysfs kobjectid
+> +	 */
+> +	struct kobject kobj;
+> +	struct completion kobj_unregister;
+>  };
+> =20
+> +static inline u64 btrfs_qgroup_subvolid(u64 qgroupid)
+> +{
+> +	return (qgroupid & ((1ULL << BTRFS_QGROUP_LEVEL_SHIFT) - 1));
+> +}
+> +
+>  /*
+>   * For qgroup event trace points only
+>   */
+> diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
+> index a39bff64ff24..8468c0a22695 100644
+> --- a/fs/btrfs/sysfs.c
+> +++ b/fs/btrfs/sysfs.c
+> @@ -19,6 +19,7 @@
+>  #include "volumes.h"
+>  #include "space-info.h"
+>  #include "block-group.h"
+> +#include "qgroup.h"
+> =20
+>  struct btrfs_feature_attr {
+>  	struct kobj_attribute kobj_attr;
+> @@ -1455,6 +1456,154 @@ int btrfs_sysfs_add_mounted(struct btrfs_fs_inf=
+o *fs_info)
+>  	return error;
+>  }
+> =20
+> +#define QGROUP_ATTR(_member)						\
+> +static ssize_t btrfs_qgroup_show_##_member(struct kobject *qgroup_kobj=
+,	\
+> +				      struct kobj_attribute *a, char *buf) \
+> +{									\
+> +	struct kobject *fsid_kobj =3D qgroup_kobj->parent->parent;	\
+> +	struct btrfs_fs_info *fs_info =3D to_fs_info(fsid_kobj);		\
+> +	struct btrfs_qgroup *qgroup =3D container_of(qgroup_kobj,		\
+> +			struct btrfs_qgroup, kobj);			\
+> +	u64 val;							\
+> +									\
+> +	spin_lock(&fs_info->qgroup_lock);				\
+> +	val =3D qgroup->_member;						\
+> +	spin_unlock(&fs_info->qgroup_lock);				\
+> +	return scnprintf(buf, PAGE_SIZE, "%llu\n", val);		\
+> +}									\
+> +BTRFS_ATTR(qgroup, _member, btrfs_qgroup_show_##_member)
+> +
+> +#define QGROUP_RSV_ATTR(_name, _type)					\
+> +static ssize_t btrfs_qgroup_rsv_show_##_name(struct kobject *qgroup_ko=
+bj,\
+> +				      struct kobj_attribute *a, char *buf) \
+> +{									\
+> +	struct kobject *fsid_kobj =3D qgroup_kobj->parent->parent;	\
+> +	struct btrfs_fs_info *fs_info =3D to_fs_info(fsid_kobj);		\
+> +	struct btrfs_qgroup *qgroup =3D container_of(qgroup_kobj,		\
+> +			struct btrfs_qgroup, kobj);			\
+> +	u64 val;							\
+> +									\
+> +	spin_lock(&fs_info->qgroup_lock);				\
+> +	val =3D qgroup->rsv.values[_type];					\
+> +	spin_unlock(&fs_info->qgroup_lock);				\
+> +	return scnprintf(buf, PAGE_SIZE, "%llu\n", val);		\
+> +}									\
+> +BTRFS_ATTR(qgroup, rsv_##_name, btrfs_qgroup_rsv_show_##_name)
+> +
+> +QGROUP_ATTR(rfer);
+> +QGROUP_ATTR(excl);
+> +QGROUP_ATTR(max_rfer);
+> +QGROUP_ATTR(max_excl);
+> +QGROUP_ATTR(lim_flags);
+> +QGROUP_RSV_ATTR(data, BTRFS_QGROUP_RSV_DATA);
+> +QGROUP_RSV_ATTR(meta_pertrans, BTRFS_QGROUP_RSV_META_PERTRANS);
+> +QGROUP_RSV_ATTR(meta_prealloc, BTRFS_QGROUP_RSV_META_PREALLOC);
+> +
+> +static struct attribute *qgroup_attrs[] =3D {
+> +	BTRFS_ATTR_PTR(qgroup, rfer),
+> +	BTRFS_ATTR_PTR(qgroup, excl),
+> +	BTRFS_ATTR_PTR(qgroup, max_rfer),
+> +	BTRFS_ATTR_PTR(qgroup, max_excl),
+> +	BTRFS_ATTR_PTR(qgroup, lim_flags),
+> +	BTRFS_ATTR_PTR(qgroup, rsv_data),
+> +	BTRFS_ATTR_PTR(qgroup, rsv_meta_pertrans),
+> +	BTRFS_ATTR_PTR(qgroup, rsv_meta_prealloc),
+> +	NULL
+> +};
+> +ATTRIBUTE_GROUPS(qgroup);
+> +static void qgroup_release(struct kobject *kobj)
+> +{
+> +	struct btrfs_qgroup *qgroup =3D container_of(kobj, struct btrfs_qgrou=
+p,
+> +			kobj);
+> +	memset(&qgroup->kobj, 0, sizeof(*kobj));
+> +	complete(&qgroup->kobj_unregister);
+> +}
+> +
+> +static struct kobj_type qgroup_ktype =3D {
+> +	.sysfs_ops =3D &kobj_sysfs_ops,
+> +	.release =3D qgroup_release,
+> +	.default_groups =3D qgroup_groups,
+> +};
+> +
+> +/*
+> + * Needed string buffer size for qgroup, including tailing \0
+> + *
+> + * This includes U48_MAX + 1 + U16_MAX + 1.
+> + * U48_MAX in dec can be 15 digits at, and U16_MAX can be 6 digits.
+> + * Rounded up to 32 to provide some buffer.
+> + */
+> +#define QGROUP_STR_LEN	32
+> +int btrfs_sysfs_add_one_qgroup(struct btrfs_fs_info *fs_info,
+> +				struct btrfs_qgroup *qgroup)
+> +{
+> +	struct kobject *qgroups_kobj =3D fs_info->qgroup_kobj;
+> +	int ret;
+> +
+> +	init_completion(&qgroup->kobj_unregister);
+> +	ret =3D kobject_init_and_add(&qgroup->kobj, &qgroup_ktype, qgroups_ko=
+bj,
+> +			"%u_%llu", (u16)btrfs_qgroup_level(qgroup->qgroupid),
+> +			btrfs_qgroup_subvolid(qgroup->qgroupid));
+> +	if (ret < 0)
+> +		kobject_put(&qgroup->kobj);
+> +
+> +	return ret;
+> +}
+> +
+> +void btrfs_sysfs_del_qgroups(struct btrfs_fs_info *fs_info)
+> +{
+> +	struct btrfs_qgroup *qgroup;
+> +	struct btrfs_qgroup *next;
+> +
+> +	rbtree_postorder_for_each_entry_safe(qgroup, next,
+> +			&fs_info->qgroup_tree, node) {
+> +		if (qgroup->kobj.state_initialized) {
+> +			kobject_del(&qgroup->kobj);
+> +			kobject_put(&qgroup->kobj);
+> +			wait_for_completion(&qgroup->kobj_unregister);
+> +		}
+> +	}
+> +	kobject_del(fs_info->qgroup_kobj);
+> +	kobject_put(fs_info->qgroup_kobj);
+> +	fs_info->qgroup_kobj =3D NULL;
+> +}
+> +
+> +/* Called when qgroup get initialized, thus there is no need for extra=
+ lock. */
+> +int btrfs_sysfs_add_qgroups(struct btrfs_fs_info *fs_info)
+> +{
+> +	struct kobject *fsid_kobj =3D &fs_info->fs_devices->fsid_kobj;
+> +	struct btrfs_qgroup *qgroup;
+> +	struct btrfs_qgroup *next;
+> +	int ret =3D 0;
+> +
+> +	ASSERT(fsid_kobj);
+> +	if (fs_info->qgroup_kobj)
+> +		return 0;
+> +
+> +	fs_info->qgroup_kobj =3D kobject_create_and_add("qgroups", fsid_kobj)=
+;
+> +	if (!fs_info->qgroup_kobj) {
+> +		ret =3D -ENOMEM;
+> +		goto out;
+> +	}
+> +	rbtree_postorder_for_each_entry_safe(qgroup, next,
+> +			&fs_info->qgroup_tree, node) {
+> +		ret =3D btrfs_sysfs_add_one_qgroup(fs_info, qgroup);
+> +		if (ret < 0)
+> +			goto out;
+> +	}
+> +
+> +out:
+> +	if (ret < 0)
+> +		btrfs_sysfs_del_qgroups(fs_info);
+> +	return ret;
+> +}
+> +
+> +void btrfs_sysfs_del_one_qgroup(struct btrfs_fs_info *fs_info,
+> +				struct btrfs_qgroup *qgroup)
+> +{
+> +	kobject_del(&qgroup->kobj);
+> +	kobject_put(&qgroup->kobj);
+> +	wait_for_completion(&qgroup->kobj_unregister);
+> +}
+> =20
+>  /*
+>   * Change per-fs features in /sys/fs/btrfs/UUID/features to match curr=
+ent
+> diff --git a/fs/btrfs/sysfs.h b/fs/btrfs/sysfs.h
+> index 718a26c97833..1e27a9c94c84 100644
+> --- a/fs/btrfs/sysfs.h
+> +++ b/fs/btrfs/sysfs.h
+> @@ -36,4 +36,10 @@ int btrfs_sysfs_add_space_info_type(struct btrfs_fs_=
+info *fs_info,
+>  void btrfs_sysfs_remove_space_info(struct btrfs_space_info *space_info=
+);
+>  void btrfs_sysfs_update_devid(struct btrfs_device *device);
+> =20
+> +int btrfs_sysfs_add_one_qgroup(struct btrfs_fs_info *fs_info,
+> +				struct btrfs_qgroup *qgroup);
+> +void btrfs_sysfs_del_qgroups(struct btrfs_fs_info *fs_info);
+> +int btrfs_sysfs_add_qgroups(struct btrfs_fs_info *fs_info);
+> +void btrfs_sysfs_del_one_qgroup(struct btrfs_fs_info *fs_info,
+> +				struct btrfs_qgroup *qgroup);
+>  #endif
+>=20
 
-The dozen or so utilities that do file-only dedupe well and support btrfs
-are faster at Joe Blogger's use case than all the block-oriented dedupers.
-Most of them are not btrfs-specific tools, so it doesn't make sense to
-integrate them into btrfs-progs.
 
-Most of the existing dedupers aren't written in C.  The rest of
-btrfs-progs is C, creating a code review and maintenance issue if they
-are to be merged. 
+--C9YmGwwzj1UvvOoXRiTFfxJHVQaIiqQYr--
 
-The write-in candidate is "write a file-only deduper in C just so it can
-be integrated with btrfs-progs."  That doesn't even exist, and it's still
-better than some of the existing candidates for merging into btrfs-progs.
+--4ZyWuUajz9QaWOpDoT9wWz6L3igjW2mCF
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
-A deduper that is good at block-level dedupe is bad at file-level dedupe
-and vice versa.  They view the filesystem stack from different sides,
-and the hardest optimization one can do is the easiest for the other.
-Pre-write (in-kernel) and post-write dedupers have significantly
-different memory costs, which is another reason for having a diverse set
-of dedupers:  if you copy the ZFS approach to dedupe, you need ZFS-sized
-memory budgets to implement it; if you don't have ZFS-sized memory, you
-need an alternative implementation.  These are significant barriers to
-picking a single winner.
+-----BEGIN PGP SIGNATURE-----
 
-For now, at least until one of the dedupers can scale well over a superset
-of the other dedupers' use cases, or the in-kernel deduper comes back from
-the dead, it would be better to provide third-party dedupers that are
-optimized for the subset of workloads that they can handle very well.
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl7saBsACgkQwj2R86El
+/qgthQgAiN8HFBnWiG/zV2ze1kfjaNgMysv1gt3fkWjKTv+dFX+GrbkKF6tdgCUv
+QDRZsiIyvkWgi/DbuIz7Qc5Z4mNzzfWSU5dZgzWsa8tACudlE0pSTKIqNZWwAjsn
+pyIQFrnsRr0idp5ehgMpF6cdd3Vd07ZfjZ9rZ8bk37UMWzjB+y5qMv4YNfXhyRYC
+SqsSGsWWBDc+X3zHKTNwmO1VigbYOq38u1YKbWajKlkbxDnfA3CLwrNC7VZp0z+B
+Xjt3OVWeJY0+epZT1ES7C4S1JD/z678qQ8+SNyXsnIxzoOMk9qiKtvjdTn9MzFgH
+hu143E0qWk61TBdjN3EmStqQO9UFMQ==
+=UNOY
+-----END PGP SIGNATURE-----
 
-Otherwise, whichever single deduper you pick, it will suck for some users,
-or we pick multiple dedupe engines and need have a zillion options after
-'btrfs fi dedupe' to help it pick which engine to use (this has already
-happened to some extent in duperemove).
-
-At the current rate of development, the XFS people might leapfrog us
-on dedupe, and "official btrfs dedupe" could end up being xfs_fsr.
-
-> Thanks David Sterba for removing the items and updating the wiki!
-> 
-> On 19/6/20 6:43 am, Zygo Blaxell wrote:
-> > The point about lack of maintenance with changing Rust dependencies is
-> > fair, but "data loss" is a strong and unsupported statement.  Can you
-> > explain how data loss could occur in even a badly (assume not maliciously)
-> > broken version of btrfs-dedupe?
-> > 
-> > As far as I can tell, the btrfs-dedupe code uses only non-data-mutating
-> > btrfs kernel interfaces for manipulating extents (fiemap, defrag,
-> > and file_extent_same/deduperange).  None of these should cause data
-> > loss (excluding kernel bugs).
-> > 
-> > btrfs-dedupe can be trivially tricked into opening files that it did
-> > not intend to (it has no protection against symlink injection and other
-> > TOCCTOU attacks), but it doesn't seem to be able to alter the content
-> > of files once it opens them.
-> > 
-> > File descriptors pointing to user files are opened O_RDWR, but they are
-> > kept in the scope of the dedupe function and their life-cycle is properly
-> > managed in Rust, so btrfs-dedupe won't mutate files by writing to the
-> > wrong fd (e.g. accidentally close stderr and reopen it to a user file)
-> > unless someone adds some seriously buggy code (see "assume not malicious"
-> > above).
-> > 
-> > The unsafe C ioctl interfaces are unlikely to change in data-losing ways,
-> > or they'll break all existing userspace tools that use them.  They are
-> > also well encapsulated in the rust-btrfs module.
-> > 
-> > The errors reported on github seem to be problems with incompatible
-> > changes in the runtime libraries btrfs-dedupe depends on, and also some
-> > reports of what look like pre-existing bugs in the fiemap code that are
-> > blamed on new kernel versions without evidence.  Data-losing breaking
-> > changes in any of the ioctls btrfs-dedupe uses are extremely unlikely.
-> > Those issues may cause btrfs-dedupe to do useless unnecessary work,
-> > or fail to do useful necessary work, but could not cause data loss by
-> > any mechanism I can find.
-> > 
-> > Contrast with bedup:  bedup uses data-mutating kernel interfaces
-> > (clone_range) for dedupe that have no effective protection against
-> > concurrent data modification.  There is ineffective protection implemented
-> > in bedup (looking in /proc/*/fd for concurrent users of the files) which
-> > may or may not be broken in kernel 5.0, but it's ineffective either way.
-> > The case for data loss in bedup is trivial.  The branch with a patch to
-> > fix it is now 7 years old, so it's fair to say bedup is unmaintained too
-> > (github forks notwithstanding, they didn't fix these issues).
-> > 
+--4ZyWuUajz9QaWOpDoT9wWz6L3igjW2mCF--
