@@ -2,223 +2,426 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59B451FFE52
-	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Jun 2020 00:49:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF3651FFFFC
+	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Jun 2020 04:00:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731660AbgFRWtL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 18 Jun 2020 18:49:11 -0400
-Received: from mout.gmx.net ([212.227.17.21]:57837 "EHLO mout.gmx.net"
+        id S1730902AbgFSB7z (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 18 Jun 2020 21:59:55 -0400
+Received: from mx2.suse.de ([195.135.220.15]:36966 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731370AbgFRWtH (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 18 Jun 2020 18:49:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1592520543;
-        bh=1AHL9xk/BR7/zBVtNIcasaKF+B5agMIfUMFG6RsZaZg=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=U7wBNIAgP5UWpycxM7g17ZxQ44+1yOLdVF/rkgVlzEZrnVXUIokYsklKKpSiblDVS
-         dVs/LjGrGuTvZXDCr2tFH0JZ7exwlvaZ+6nw3YRwdRzg4WI8kZBvSNPqUxQlFlUTcl
-         Bmsl2s9uRdEKiS0GhlnoD+hDdn+jkN9XzpQD4/MY=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MnakX-1j4hiM0QgH-00jdqd; Fri, 19
- Jun 2020 00:49:03 +0200
-Subject: Re: Physical address offset of the inline extent
-To:     "Rebraca Dejan (BSOT/PJ-ES1-Bg)" <Dejan.Rebraca@rs.bosch.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-References: <31850f19929b40e4ade80a264c1af97d@rs.bosch.com>
- <02fcfb22-6b2b-6f99-99c8-b132ee511530@gmx.com>
- <db80cbe323fd4114962f7dee1dfc3ad5@rs.bosch.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
- PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
- 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
- D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
- efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
- ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
- BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
- 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
- 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
- EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
- 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
- ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
- oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
- fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
- 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
- ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
- oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <d0a0d1fa-4f77-6f94-b82e-72f44a3e2a80@gmx.com>
-Date:   Fri, 19 Jun 2020 06:49:00 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        id S1730896AbgFSB7z (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 18 Jun 2020 21:59:55 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id CB175AC7F
+        for <linux-btrfs@vger.kernel.org>; Fri, 19 Jun 2020 01:59:51 +0000 (UTC)
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs: qgroup: add sysfs interface for debug
+Date:   Fri, 19 Jun 2020 09:59:46 +0800
+Message-Id: <20200619015946.65638-1-wqu@suse.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <db80cbe323fd4114962f7dee1dfc3ad5@rs.bosch.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="qHxYTcF24GUYUPsL3Y8zC4SK9BJUiJ1LG"
-X-Provags-ID: V03:K1:9AB67zsUCuUwaMnnI9ZVtNgtJePg76eg2+VCz5WbhUFHOeDUSIl
- LBRjRMvRW9ol5kKOEvjzprFXEqBY1JMSZv7wQxkfq53cU+Pz+wxhsG73LcBUZzhC+sswbfz
- 6u6emITaryb33A5/nuu/sZP6DQCNt0m3Uq89NEpTE6x8fvfhvUo6v01Pk3g69sbio0DmYcM
- acPji2QRbb4hZ+H1G2zDw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:b0Zq8CY04EE=:qRyW+BV4e1GTWPEqRJbQQ4
- FA/E9DJtqVYCziGj9Ezh00ryXRBEILK6RjUr8uPUDG8iZ632+SkiRxfyogd1uQ4U7dFHuRilv
- PjcQWfBbAeTGnM9BMzfgkslCKjJtEG1BtBt7JiXicKrTjAtPQjA4Yor0K1vyiFIbJzaJPjceB
- Z4/+Ilf91Pyqff5l/iqI7mcRYpxDrwZ/FWYxNaDhw3HdOpRVm8sgd9fiyLS483zNp8vAeMmeb
- M6I/c+rQkZ3vdUJY7NqQ7RlDhiYO/6SgRbN+semkG2I/YQCCsxAPVuGOkvwOptumDxx29qJIo
- ItOP2kAzwLBiXo3A9Ue0YgLjhR0GrR4FZr7qJ2ooHiIEWRAMjzEB69K3i3nI98Ds6iMri/5P4
- JAarkv7sjHfBUbifhpvqU0bk7oClz88jdkl71Sobvvz5Qch20zwGXto1XLVczf6yFjIm3ifoc
- UZdtCFtqUfYFsncXYtWzN7EtSW0KvtVsCu+habd8PaX5Hl8v8rfWsxBZMenEw6RkSJ+ujoqzk
- 8qp/qlgfXbiS/I6ASGhkj9n3XbgMeIN8Q7fHheOGd22DvyMbfnjjhjf0+urqVI+F97VWNkLQr
- eAFlr6kU2i+5AtNf2qrGbFrtQJkBi4Ko76HFrV146KO7u1aKw1zqXI8nrLvyIBNUNCJYT7yS6
- Vv+3fvuqY7rdI9VsGfR4RssC906w5BCVj/jFKdkFt91nFPlCYPZ9e9vaFa65QNhkxOjuqCv/6
- n2aCMOcu2nu+6XfblJjk1gGQ9ISrmOrAtCFTOn7nMoh3cYOnST4Bxjua9D7gqHf4OOkH5VMw2
- +HrMJtlfpfoUek/hs+EhKTyJi5JjI902VCXKqIUUHXX0H3A4/tZc3sXFtVrSp2RS3wvedJ4VD
- xmtF/88/3Zq07KvecE3o2cnlbM2BDb1MrAlLDqkwQif4hjgKRKHyado+Z9lybhBvKTxQtMOtv
- TtYgkrpJct60SAjNcdEzqGJYunpPtNGjbqfWOTn4y3j4Iw4EMYpsZUUJW0fnbdwWXvmqfcpME
- +38FaNKpn56GBVF1+jpZcFiQNQ3zMQk1iGtlIQ3PRmm+gRFL04lH9al6OS34truv6FhZHN6Fv
- TlB96OEZet8FO0IDIgQ07pnYmDLj2iUeAbX2MWJy3DjzD5kWDOj35LO49Hozd2c19/fTSGjEi
- FDd/gFGma6VRmLhDRcy3cAN2pnbjQj40pSTD4tyr1VSd83segMX6sEFXDx0mb6Ty8CDkZrQHK
- q2cyr3YWfDpkTn7jZ
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---qHxYTcF24GUYUPsL3Y8zC4SK9BJUiJ1LG
-Content-Type: multipart/mixed; boundary="3uiNroEhMMg5jSwX2GX3oScL3sbDaMMyH"
+This patch will add the following sysfs interface:
+/sys/fs/btrfs/<UUID>/qgroups/<qgroup_id>/rfer
+/sys/fs/btrfs/<UUID>/qgroups/<qgroup_id>/excl
+/sys/fs/btrfs/<UUID>/qgroups/<qgroup_id>/max_rfer
+/sys/fs/btrfs/<UUID>/qgroups/<qgroup_id>/max_excl
+/sys/fs/btrfs/<UUID>/qgroups/<qgroup_id>/lim_flags
+ ^^^ Above are already in "btrfs qgroup show" command output ^^^
 
---3uiNroEhMMg5jSwX2GX3oScL3sbDaMMyH
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+/sys/fs/btrfs/<UUID>/qgroups/<qgroup_id>/rsv_data
+/sys/fs/btrfs/<UUID>/qgroups/<qgroup_id>/rsv_meta_pertrans
+/sys/fs/btrfs/<UUID>/qgroups/<qgroup_id>/rsv_meta_prealloc
 
+The last 3 rsv related members are not visible to users, but can be very
+useful to debug qgroup limit related bugs.
 
+Also, to avoid '/' used in <qgroup_id>, the seperator between qgroup
+level and qgroup id is changed to '_'.
 
-On 2020/6/18 =E4=B8=8B=E5=8D=8810:53, Rebraca Dejan (BSOT/PJ-ES1-Bg) wrot=
-e:
-> Hi Qu,
->=20
-> I've read this:
-> https://btrfs.wiki.kernel.org/index.php/Data_Structures#btrfs_key_.2F_b=
-trfs_disk_key
-> where key.objectid of EXTENT_ITEM contains the starting byte offset of =
-the extent it describes and key.offset of EXTENT_ITEM stores the size of =
-the extent the item describes.
->=20
-> From your dump:
-> item 6 key (257 EXTENT_DATA 0) itemoff 13794 itemsize 2069
->=20
-> itremoff =3D 13794
-> This is the offset relative to tree block or tree leaf, right?
+The interface is not hidden behind 'debug' as I want this interface to
+be included into production build so we could have an easier life to
+debug qgroup rsv related bugs.
 
-Right, but you still need to consider the offset inside
-btrfs_file_extent_item for inline data, that's why I'm using
-btrfs_file_extent_inline_start() to find out the real offset.
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ fs/btrfs/ctree.h  |   1 +
+ fs/btrfs/qgroup.c |  38 ++++++++----
+ fs/btrfs/qgroup.h |  12 ++++
+ fs/btrfs/sysfs.c  | 149 ++++++++++++++++++++++++++++++++++++++++++++++
+ fs/btrfs/sysfs.h  |   6 ++
+ 5 files changed, 194 insertions(+), 12 deletions(-)
 
-Thanks,
-Qu
+diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+index d8301bf240e0..7576dfe39841 100644
+--- a/fs/btrfs/ctree.h
++++ b/fs/btrfs/ctree.h
+@@ -779,6 +779,7 @@ struct btrfs_fs_info {
+ 	u32 thread_pool_size;
+ 
+ 	struct kobject *space_info_kobj;
++	struct kobject *qgroup_kobj;
+ 
+ 	u64 total_pinned;
+ 
+diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
+index 74eb98479109..04fdd42f0eb5 100644
+--- a/fs/btrfs/qgroup.c
++++ b/fs/btrfs/qgroup.c
+@@ -22,6 +22,7 @@
+ #include "extent_io.h"
+ #include "qgroup.h"
+ #include "block-group.h"
++#include "sysfs.h"
+ 
+ /* TODO XXX FIXME
+  *  - subvol delete -> delete when ref goes to 0? delete limits also?
+@@ -192,38 +193,47 @@ static struct btrfs_qgroup *add_qgroup_rb(struct btrfs_fs_info *fs_info,
+ 	struct rb_node **p = &fs_info->qgroup_tree.rb_node;
+ 	struct rb_node *parent = NULL;
+ 	struct btrfs_qgroup *qgroup;
++	int ret;
+ 
+ 	while (*p) {
+ 		parent = *p;
+ 		qgroup = rb_entry(parent, struct btrfs_qgroup, node);
+ 
+-		if (qgroup->qgroupid < qgroupid)
++		if (qgroup->qgroupid < qgroupid) {
+ 			p = &(*p)->rb_left;
+-		else if (qgroup->qgroupid > qgroupid)
++		} else if (qgroup->qgroupid > qgroupid) {
+ 			p = &(*p)->rb_right;
+-		else
++		} else {
+ 			return qgroup;
++		}
+ 	}
+ 
+ 	qgroup = kzalloc(sizeof(*qgroup), GFP_ATOMIC);
+ 	if (!qgroup)
+ 		return ERR_PTR(-ENOMEM);
+-
+ 	qgroup->qgroupid = qgroupid;
+ 	INIT_LIST_HEAD(&qgroup->groups);
+ 	INIT_LIST_HEAD(&qgroup->members);
+ 	INIT_LIST_HEAD(&qgroup->dirty);
+ 
++	ret = btrfs_sysfs_add_one_qgroup(fs_info, qgroup);
++	if (ret < 0) {
++		kfree(qgroup);
++		return ERR_PTR(ret);
++	}
++
+ 	rb_link_node(&qgroup->node, parent, p);
+ 	rb_insert_color(&qgroup->node, &fs_info->qgroup_tree);
+ 
+ 	return qgroup;
+ }
+ 
+-static void __del_qgroup_rb(struct btrfs_qgroup *qgroup)
++static void __del_qgroup_rb(struct btrfs_fs_info *fs_info,
++			    struct btrfs_qgroup *qgroup)
+ {
+ 	struct btrfs_qgroup_list *list;
+ 
++	btrfs_sysfs_del_one_qgroup(fs_info, qgroup);
+ 	list_del(&qgroup->dirty);
+ 	while (!list_empty(&qgroup->groups)) {
+ 		list = list_first_entry(&qgroup->groups,
+@@ -252,7 +262,7 @@ static int del_qgroup_rb(struct btrfs_fs_info *fs_info, u64 qgroupid)
+ 		return -ENOENT;
+ 
+ 	rb_erase(&qgroup->node, &fs_info->qgroup_tree);
+-	__del_qgroup_rb(qgroup);
++	__del_qgroup_rb(fs_info, qgroup);
+ 	return 0;
+ }
+ 
+@@ -351,6 +361,9 @@ int btrfs_read_qgroup_config(struct btrfs_fs_info *fs_info)
+ 		goto out;
+ 	}
+ 
++	ret = btrfs_sysfs_add_qgroups(fs_info);
++	if (ret < 0)
++		goto out;
+ 	/* default this to quota off, in case no status key is found */
+ 	fs_info->qgroup_flags = 0;
+ 
+@@ -500,16 +513,12 @@ int btrfs_read_qgroup_config(struct btrfs_fs_info *fs_info)
+ 		ulist_free(fs_info->qgroup_ulist);
+ 		fs_info->qgroup_ulist = NULL;
+ 		fs_info->qgroup_flags &= ~BTRFS_QGROUP_STATUS_FLAG_RESCAN;
++		btrfs_sysfs_del_qgroups(fs_info);
+ 	}
+ 
+ 	return ret < 0 ? ret : 0;
+ }
+ 
+-static u64 btrfs_qgroup_subvolid(u64 qgroupid)
+-{
+-	return (qgroupid & ((1ULL << BTRFS_QGROUP_LEVEL_SHIFT) - 1));
+-}
+-
+ /*
+  * Called in close_ctree() when quota is still enabled.  This verifies we don't
+  * leak some reserved space.
+@@ -562,7 +571,7 @@ void btrfs_free_qgroup_config(struct btrfs_fs_info *fs_info)
+ 	while ((n = rb_first(&fs_info->qgroup_tree))) {
+ 		qgroup = rb_entry(n, struct btrfs_qgroup, node);
+ 		rb_erase(n, &fs_info->qgroup_tree);
+-		__del_qgroup_rb(qgroup);
++		__del_qgroup_rb(fs_info, qgroup);
+ 	}
+ 	/*
+ 	 * We call btrfs_free_qgroup_config() when unmounting
+@@ -571,6 +580,7 @@ void btrfs_free_qgroup_config(struct btrfs_fs_info *fs_info)
+ 	 */
+ 	ulist_free(fs_info->qgroup_ulist);
+ 	fs_info->qgroup_ulist = NULL;
++	btrfs_sysfs_del_qgroups(fs_info);
+ }
+ 
+ static int add_qgroup_relation_item(struct btrfs_trans_handle *trans, u64 src,
+@@ -943,6 +953,9 @@ int btrfs_quota_enable(struct btrfs_fs_info *fs_info)
+ 		goto out;
+ 	}
+ 
++	ret = btrfs_sysfs_add_qgroups(fs_info);
++	if (ret < 0)
++		goto out;
+ 	/*
+ 	 * 1 for quota root item
+ 	 * 1 for BTRFS_QGROUP_STATUS item
+@@ -1089,6 +1102,7 @@ int btrfs_quota_enable(struct btrfs_fs_info *fs_info)
+ 		fs_info->qgroup_ulist = NULL;
+ 		if (trans)
+ 			btrfs_end_transaction(trans);
++		btrfs_sysfs_del_qgroups(fs_info);
+ 	}
+ 	mutex_unlock(&fs_info->qgroup_ioctl_lock);
+ 	return ret;
+diff --git a/fs/btrfs/qgroup.h b/fs/btrfs/qgroup.h
+index 3be5198a3719..728ffea7de48 100644
+--- a/fs/btrfs/qgroup.h
++++ b/fs/btrfs/qgroup.h
+@@ -8,6 +8,7 @@
+ 
+ #include <linux/spinlock.h>
+ #include <linux/rbtree.h>
++#include <linux/kobject.h>
+ #include "ulist.h"
+ #include "delayed-ref.h"
+ 
+@@ -223,8 +224,19 @@ struct btrfs_qgroup {
+ 	 */
+ 	u64 old_refcnt;
+ 	u64 new_refcnt;
++
++	/*
++	 * Sysfs kobjectid
++	 */
++	struct kobject kobj;
++	struct completion kobj_unregister;
+ };
+ 
++static inline u64 btrfs_qgroup_subvolid(u64 qgroupid)
++{
++	return (qgroupid & ((1ULL << BTRFS_QGROUP_LEVEL_SHIFT) - 1));
++}
++
+ /*
+  * For qgroup event trace points only
+  */
+diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
+index a39bff64ff24..8468c0a22695 100644
+--- a/fs/btrfs/sysfs.c
++++ b/fs/btrfs/sysfs.c
+@@ -19,6 +19,7 @@
+ #include "volumes.h"
+ #include "space-info.h"
+ #include "block-group.h"
++#include "qgroup.h"
+ 
+ struct btrfs_feature_attr {
+ 	struct kobj_attribute kobj_attr;
+@@ -1455,6 +1456,154 @@ int btrfs_sysfs_add_mounted(struct btrfs_fs_info *fs_info)
+ 	return error;
+ }
+ 
++#define QGROUP_ATTR(_member)						\
++static ssize_t btrfs_qgroup_show_##_member(struct kobject *qgroup_kobj,	\
++				      struct kobj_attribute *a, char *buf) \
++{									\
++	struct kobject *fsid_kobj = qgroup_kobj->parent->parent;	\
++	struct btrfs_fs_info *fs_info = to_fs_info(fsid_kobj);		\
++	struct btrfs_qgroup *qgroup = container_of(qgroup_kobj,		\
++			struct btrfs_qgroup, kobj);			\
++	u64 val;							\
++									\
++	spin_lock(&fs_info->qgroup_lock);				\
++	val = qgroup->_member;						\
++	spin_unlock(&fs_info->qgroup_lock);				\
++	return scnprintf(buf, PAGE_SIZE, "%llu\n", val);		\
++}									\
++BTRFS_ATTR(qgroup, _member, btrfs_qgroup_show_##_member)
++
++#define QGROUP_RSV_ATTR(_name, _type)					\
++static ssize_t btrfs_qgroup_rsv_show_##_name(struct kobject *qgroup_kobj,\
++				      struct kobj_attribute *a, char *buf) \
++{									\
++	struct kobject *fsid_kobj = qgroup_kobj->parent->parent;	\
++	struct btrfs_fs_info *fs_info = to_fs_info(fsid_kobj);		\
++	struct btrfs_qgroup *qgroup = container_of(qgroup_kobj,		\
++			struct btrfs_qgroup, kobj);			\
++	u64 val;							\
++									\
++	spin_lock(&fs_info->qgroup_lock);				\
++	val = qgroup->rsv.values[_type];					\
++	spin_unlock(&fs_info->qgroup_lock);				\
++	return scnprintf(buf, PAGE_SIZE, "%llu\n", val);		\
++}									\
++BTRFS_ATTR(qgroup, rsv_##_name, btrfs_qgroup_rsv_show_##_name)
++
++QGROUP_ATTR(rfer);
++QGROUP_ATTR(excl);
++QGROUP_ATTR(max_rfer);
++QGROUP_ATTR(max_excl);
++QGROUP_ATTR(lim_flags);
++QGROUP_RSV_ATTR(data, BTRFS_QGROUP_RSV_DATA);
++QGROUP_RSV_ATTR(meta_pertrans, BTRFS_QGROUP_RSV_META_PERTRANS);
++QGROUP_RSV_ATTR(meta_prealloc, BTRFS_QGROUP_RSV_META_PREALLOC);
++
++static struct attribute *qgroup_attrs[] = {
++	BTRFS_ATTR_PTR(qgroup, rfer),
++	BTRFS_ATTR_PTR(qgroup, excl),
++	BTRFS_ATTR_PTR(qgroup, max_rfer),
++	BTRFS_ATTR_PTR(qgroup, max_excl),
++	BTRFS_ATTR_PTR(qgroup, lim_flags),
++	BTRFS_ATTR_PTR(qgroup, rsv_data),
++	BTRFS_ATTR_PTR(qgroup, rsv_meta_pertrans),
++	BTRFS_ATTR_PTR(qgroup, rsv_meta_prealloc),
++	NULL
++};
++ATTRIBUTE_GROUPS(qgroup);
++static void qgroup_release(struct kobject *kobj)
++{
++	struct btrfs_qgroup *qgroup = container_of(kobj, struct btrfs_qgroup,
++			kobj);
++	memset(&qgroup->kobj, 0, sizeof(*kobj));
++	complete(&qgroup->kobj_unregister);
++}
++
++static struct kobj_type qgroup_ktype = {
++	.sysfs_ops = &kobj_sysfs_ops,
++	.release = qgroup_release,
++	.default_groups = qgroup_groups,
++};
++
++/*
++ * Needed string buffer size for qgroup, including tailing \0
++ *
++ * This includes U48_MAX + 1 + U16_MAX + 1.
++ * U48_MAX in dec can be 15 digits at, and U16_MAX can be 6 digits.
++ * Rounded up to 32 to provide some buffer.
++ */
++#define QGROUP_STR_LEN	32
++int btrfs_sysfs_add_one_qgroup(struct btrfs_fs_info *fs_info,
++				struct btrfs_qgroup *qgroup)
++{
++	struct kobject *qgroups_kobj = fs_info->qgroup_kobj;
++	int ret;
++
++	init_completion(&qgroup->kobj_unregister);
++	ret = kobject_init_and_add(&qgroup->kobj, &qgroup_ktype, qgroups_kobj,
++			"%u_%llu", (u16)btrfs_qgroup_level(qgroup->qgroupid),
++			btrfs_qgroup_subvolid(qgroup->qgroupid));
++	if (ret < 0)
++		kobject_put(&qgroup->kobj);
++
++	return ret;
++}
++
++void btrfs_sysfs_del_qgroups(struct btrfs_fs_info *fs_info)
++{
++	struct btrfs_qgroup *qgroup;
++	struct btrfs_qgroup *next;
++
++	rbtree_postorder_for_each_entry_safe(qgroup, next,
++			&fs_info->qgroup_tree, node) {
++		if (qgroup->kobj.state_initialized) {
++			kobject_del(&qgroup->kobj);
++			kobject_put(&qgroup->kobj);
++			wait_for_completion(&qgroup->kobj_unregister);
++		}
++	}
++	kobject_del(fs_info->qgroup_kobj);
++	kobject_put(fs_info->qgroup_kobj);
++	fs_info->qgroup_kobj = NULL;
++}
++
++/* Called when qgroup get initialized, thus there is no need for extra lock. */
++int btrfs_sysfs_add_qgroups(struct btrfs_fs_info *fs_info)
++{
++	struct kobject *fsid_kobj = &fs_info->fs_devices->fsid_kobj;
++	struct btrfs_qgroup *qgroup;
++	struct btrfs_qgroup *next;
++	int ret = 0;
++
++	ASSERT(fsid_kobj);
++	if (fs_info->qgroup_kobj)
++		return 0;
++
++	fs_info->qgroup_kobj = kobject_create_and_add("qgroups", fsid_kobj);
++	if (!fs_info->qgroup_kobj) {
++		ret = -ENOMEM;
++		goto out;
++	}
++	rbtree_postorder_for_each_entry_safe(qgroup, next,
++			&fs_info->qgroup_tree, node) {
++		ret = btrfs_sysfs_add_one_qgroup(fs_info, qgroup);
++		if (ret < 0)
++			goto out;
++	}
++
++out:
++	if (ret < 0)
++		btrfs_sysfs_del_qgroups(fs_info);
++	return ret;
++}
++
++void btrfs_sysfs_del_one_qgroup(struct btrfs_fs_info *fs_info,
++				struct btrfs_qgroup *qgroup)
++{
++	kobject_del(&qgroup->kobj);
++	kobject_put(&qgroup->kobj);
++	wait_for_completion(&qgroup->kobj_unregister);
++}
+ 
+ /*
+  * Change per-fs features in /sys/fs/btrfs/UUID/features to match current
+diff --git a/fs/btrfs/sysfs.h b/fs/btrfs/sysfs.h
+index 718a26c97833..1e27a9c94c84 100644
+--- a/fs/btrfs/sysfs.h
++++ b/fs/btrfs/sysfs.h
+@@ -36,4 +36,10 @@ int btrfs_sysfs_add_space_info_type(struct btrfs_fs_info *fs_info,
+ void btrfs_sysfs_remove_space_info(struct btrfs_space_info *space_info);
+ void btrfs_sysfs_update_devid(struct btrfs_device *device);
+ 
++int btrfs_sysfs_add_one_qgroup(struct btrfs_fs_info *fs_info,
++				struct btrfs_qgroup *qgroup);
++void btrfs_sysfs_del_qgroups(struct btrfs_fs_info *fs_info);
++int btrfs_sysfs_add_qgroups(struct btrfs_fs_info *fs_info);
++void btrfs_sysfs_del_one_qgroup(struct btrfs_fs_info *fs_info,
++				struct btrfs_qgroup *qgroup);
+ #endif
+-- 
+2.27.0
 
->=20
-> Thanks,
-> Dejan
->=20
->=20
-> -----Original Message-----
-> From: Qu Wenruo <quwenruo.btrfs@gmx.com>=20
-> Sent: =C4=8Detvrtak, 18. jun 2020. 15:46
-> To: Rebraca Dejan (BSOT/PJ-ES1-Bg) <Dejan.Rebraca@rs.bosch.com>; linux-=
-btrfs@vger.kernel.org
-> Subject: Re: Physical address offset of the inline extent
->=20
->=20
->=20
-> On 2020/6/18 =E4=B8=8B=E5=8D=889:21, Rebraca Dejan (BSOT/PJ-ES1-Bg) wro=
-te:
->> Hi,
->>
->> Does anybody know how to get an address offset of the file data inline=
- extent?
->=20
-> Since it's inline, it's inlined into metadata (tree block), thus makes =
-no sense to get the "address".
->=20
-> The address will be inside a tree block anyway.
->=20
-> If you really want the address, you can check it with dump-tree.
->=20
-> $ btrfs ins dump-tree -t 5 /dev/nvme/btrfs fs tree key (FS_TREE ROOT_IT=
-EM 0) leaf 5324800 items 7 free space 13619 generation 6 owner FS_TREE le=
-af 5324800 flags 0x1(WRITTEN) backref revision 1
->      ^^^^^^^ Tree block bytenr
-> ...
->         item 6 key (257 EXTENT_DATA 0) itemoff 13794 itemsize 2069
->                 generation 6 type 0 (inline)
->                 inline extent data size 2048 ram_bytes 2048 compression=
-
-> 0 (none)
->=20
-> You need to use extent_buffer to grab the inline file extent item, and =
-use the btrfs_file_extent_inline_start() to get the inline file extent of=
-fset inside the leaf.
->=20
-> Anyway, you need a solid understanding of btrfs on-disk format to grasp=
- the above dump.
->=20
->> Kernel returns 0 trough FS_IOC_FIEMAP ioctl, but I would really like t=
-o get real physical offset if possible, most probably meaning:
->>
->> In FS tree - on-disk address of the extent data item for the relevant =
-file object + the offset within that item (0x15).
->>
->> I was hoping that the key.objectid of key.type =3D EXTENT_ITEM would g=
-ive me such an information, but apparently this is not the case.
->=20
-> Key.objectid of EXTENT_ITEM only means the inode number.
-> Key.offset of EXTENT_ITEM means the file offset, for inline file extent=
- it's always 0.
->=20
-> So it looks like you're not familiar with btrfs on-disk format, thus I =
-doubt the usefulness of known the inline file extent offset inside the tr=
-ee block.
->=20
-> Thanks,
-> Qu
->=20
->>
->> Thanks very much,
->>
->> Dejan
->>
->>
->>
->=20
-
-
---3uiNroEhMMg5jSwX2GX3oScL3sbDaMMyH--
-
---qHxYTcF24GUYUPsL3Y8zC4SK9BJUiJ1LG
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl7r71wACgkQwj2R86El
-/qgH+Af/SKicfOr7pT99vMfx5BfZ6xiz/NIWP4pN22CCvk9KDauaBYai+ThrY+j+
-8y8EEX9JFyMaB1m8KuCU9hX5emaZvV9KZgs6yCyFX4Dv6Sfa+Mcd4kQn8AHNqD9g
-HtcS+PvCPf+OzsjVbBB5Gm778H619zLSEhJ2isbWqKGbd5SYQy6P8sc2aO0v+k+a
-Zf5QPmM53kuTel2HC/8H585AOamB1RfQLuBOaMVfDzvwoy4KJxODi42I3K5foHzi
-+9EXGANLrdhUWhOimLfmQCaUzq3u77vdk3PW8nGMXq6dvxe3YRDYZy5w8jwsA95j
-dKr/oYMR6Bezs15XmxQYDEJ+atBCrg==
-=Z7hm
------END PGP SIGNATURE-----
-
---qHxYTcF24GUYUPsL3Y8zC4SK9BJUiJ1LG--
