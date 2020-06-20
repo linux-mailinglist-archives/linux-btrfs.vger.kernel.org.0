@@ -2,130 +2,88 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41B24201CD4
-	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Jun 2020 23:03:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DAAE201FBF
+	for <lists+linux-btrfs@lfdr.de>; Sat, 20 Jun 2020 04:25:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391431AbgFSVDN convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-btrfs@lfdr.de>); Fri, 19 Jun 2020 17:03:13 -0400
-Received: from james.kirk.hungrycats.org ([174.142.39.145]:38062 "EHLO
-        james.kirk.hungrycats.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389872AbgFSVDM (ORCPT
+        id S1731741AbgFTCZH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 19 Jun 2020 22:25:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48160 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731814AbgFTCZF (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 19 Jun 2020 17:03:12 -0400
-Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
-        id A54B37231E9; Fri, 19 Jun 2020 17:03:04 -0400 (EDT)
-Date:   Fri, 19 Jun 2020 17:03:04 -0400
-From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-To:     Roman Mamedov <rm@romanrm.net>
-Cc:     Daniel Smedegaard Buus <danielbuus@gmail.com>,
-        linux-btrfs@vger.kernel.org
-Subject: Re: Behavior after encountering bad block
-Message-ID: <20200619210302.GO10769@hungrycats.org>
-References: <CAHnuAezOHbwpuVM6=bJRRtORpdHy=rVPFD+jeAQVz3xUTEsUpQ@mail.gmail.com>
- <20200619124505.586f2b63@natsu>
- <CAHnuAez0+4LR=Z=+z-bFFj2Z=Jf24YCHZ3CjHGwgsSn8mZU1eA@mail.gmail.com>
- <20200619143148.1ec669e9@natsu>
+        Fri, 19 Jun 2020 22:25:05 -0400
+Received: from mail-oo1-xc41.google.com (mail-oo1-xc41.google.com [IPv6:2607:f8b0:4864:20::c41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A61B8C0613F0
+        for <linux-btrfs@vger.kernel.org>; Fri, 19 Jun 2020 19:25:05 -0700 (PDT)
+Received: by mail-oo1-xc41.google.com with SMTP id v3so2282745oot.1
+        for <linux-btrfs@vger.kernel.org>; Fri, 19 Jun 2020 19:25:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=Z7qZkCC78niGrQpOK/h//rZ5fVXVPMkzzzEIQT+ASg4=;
+        b=NBahMNEoLov06X/O7/g04X4PinFr7MHfu2LdLnZnWclM4aHfyYYZhwIxdGHklOuM5j
+         LlzO2hyri34gSFPYxNuvU29UhXPJIZd6P46RQpg+2CooADh2cKEszY2hUU+sO4QxhJMS
+         DlJXI8sIw2QK4jcR+6FOPkN82KmRY0PnGcnHHxk35yYFSbk7PtO75aU8MKFEWEw9XjWT
+         N1JmkQQ12MnK6gGLC/hiDk/KhizhrBYpGcjj/AlkaSu7rVSF+tHM86TA8JvzpR9oqFSL
+         UuoHdXMpC+1MQfvHFQiAdHbgxHf/AU985I5iJAwLGkmvJhT0agE8u/kDvWHXPaSwzI91
+         4Pmg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=Z7qZkCC78niGrQpOK/h//rZ5fVXVPMkzzzEIQT+ASg4=;
+        b=qkrL+HE0/5RRnBbJAUnrOw8Ww1pnaO9VQAcIs1S1/x1hnQ2cu0Q/dagJjF8jBG9E7l
+         c5Z7xe1czIpPbpbRZF6V/vm7QYOGs48rLtHv9+qp5laSuEYJup5v/QyvKoch68yfHDkx
+         e8Ee113My38UpLmLojgpRnxirnCzgy4jaiwDwhwD3VpxbdvAN5AJ6D/7IPwQ5TRB6MEu
+         crzSXD7Et/yDawBC5rH+zYP00DugeUIQl1Ojz7lWkW+KEnzJARHmt23HY4XAEIpRTccz
+         1iOW+oZDOt+puzYii6pVEwsqlC5JKyOX9dmXzuXNc/SVpUA5t1cOuAx3XLAe++FabY0p
+         jJ9Q==
+X-Gm-Message-State: AOAM532UePuNFZt3TcBtbX97+wPFuUEV7gKDahBcz8EVdw95ZwxyCQ+1
+        t+hwuAXVgwZxBqtnBfp0gkWK3v/mlhbli0cQXeQ=
+X-Google-Smtp-Source: ABdhPJyrcCtEQOoaJMVPzrsoW9XRBgrws3eDP92vV3LCY/5KlOM0lPBpyg8yQ2GO935u1UsgGDt9qkUFbBfyHGCms/0=
+X-Received: by 2002:a4a:e658:: with SMTP id q24mr5731087oot.87.1592619904890;
+ Fri, 19 Jun 2020 19:25:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <20200619143148.1ec669e9@natsu>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Received: by 2002:a05:6830:1bc5:0:0:0:0 with HTTP; Fri, 19 Jun 2020 19:25:04
+ -0700 (PDT)
+Reply-To: tofilbaman@gmail.com
+From:   Tofil Bama <aliftomarn6@gmail.com>
+Date:   Fri, 19 Jun 2020 19:25:04 -0700
+Message-ID: <CACwWz1r4EGCuyF59ZDh2RNrQqSmNym-HVD9PP3vcZn7wN8xT=w@mail.gmail.com>
+Subject: KINDEST MESSAGE.
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Jun 19, 2020 at 02:31:48PM +0500, Roman Mamedov wrote:
-> On Fri, 19 Jun 2020 10:08:43 +0200
-> Daniel Smedegaard Buus <danielbuus@gmail.com> wrote:
-> 
-> > Well, that's why I wrote having the *data* go bad, not the drive
-> 
-> But data going bad wouldn't pass unnoticed like that (with reads resulting in
-> bad data), since drives have end-to-end CRC checking, including on-disk and
-> through the SATA interface. 
+Dear,
 
-Some bespoke SAN drives have proprietary firmware and wire protocols that
-pass the CRC data in-band from the platter to the host for verification
-(the READ and WRITE commands carry extra bytes for the CRC, so a disk
-sector is 520 or 4104 bytes long).  This is a true end-to-end CRC check,
-but this is not a complete data integrity solution because it only
-contributes protection against data corruption while the data is inside
-the disk controller.  It has no impact on any of the other silent data
-corruption failure modes.
+My name is Mr Alif Tomar, I am the Bill and Exchange (assistant)
+Manager of Bank of Africa Ouagadougou, Burkina Faso. In my department
+I discovered an abandoned sum of eighteen million three hundred
+thousand United State of American dollars (18.3MILLION USA DOLLARS) in
+an account that belongs to one of our foreign customer who died in
+airline that crashed on 4th October 2001.
 
-If your drive just passes 512 or 4096-byte sectors to the host, then
-there is no end-to-end checking.  It is only piecemeal, partial coverage
-of individual segments in the data path, with no way to detect corruption
-at points in between.
+Since I got information about his death I have been expecting his next
+of kin to come over and claim his money because we can not release it
+unless somebody applies for it as the next of kin or relation to the
+deceased as indicated in our banking guidelines, but unfortunately we
+learnt that all his supposed next of kin or relation died alongside
+with him in the plane crash leaving nobody behind for the claim. It is
+therefore upon this discovery that I decided to make this business
+proposal to you and release the money to you as next of kin or
+relation to the deceased for safety and subsequent disbursement since
+nobody is coming for it and I don't want the money to go into the bank
+treasury as unclaimed bill.
 
-> If data on-disk is somehow corrupted, that will be
-> a CRC failure on read, and still an I/O error for the host.
+You will be entitled with 40% of the total sum while 60% will be for
+me after which I will visit your Country to invest my own share when
+the fund is successfully transferred into your account, Please I would
+like you to keep this transaction confidential and as a top secret as
+you may wish to know that I am a bank official.
 
-In my data set, about 1 in 20 failing disks silently corrupt some data
-without indicating the data is bad.  No disk is immune to this kind
-of failure, from cheap consumer SSDs to enterprise HDDs with bespoke
-firmware for proprietary SAN boxes.  Failing drives do not respect the
-boundaries of expected non-failing drive behavior.
-
-About a third of silent data corruptions in spinning disks were DRAM
-failures.  SSDs and HDDs use DRAM in their embedded controller boards, and
-that DRAM fails at the same rate as any other commercially available DRAM.
-ECC RAM in disk controllers is the most expensive and least effective way
-to improve data integrity in the storage stack, so no rational vendor
-offers it.
-
-Another third of the data errors are failures related to write caching.
-In these failures the contents of the write cache will be discarded after
-the data was reported flushed, and later reads to discarded sectors will
-return old data.  This event can be triggered by several different causes,
-depending on what faults the firmware can detect and recover from and
-what bugs are present in the firmware.  These failures share a defining
-characteristic: they can be prevented by disabling write cache.
-
-The remaining third are assorted bugs (botched UNC sector remappings,
-write to wrong track, "magic" LBA bugs, firmware recalls, bad SSDs,
-bad cables, bad power, misconfigured bus timeout/SCTERC settings,
-and mishandled bus resets) or some uncategorizable mix of multiple
-simultaneous failure modes.  Some of these are coincident with other
-indicators of failure (e.g. unexpected SATA bus timeouts or resets), but
-not IO errors during read or write operations to the specific sectors
-that are corrupted.  Some of these are not drive failures per se, but
-failures in adjacent parts of the system that cause the drive to 
-operate improperly, corrupting data and suppressing error reports.
-
-The other 19 out of 20 failing drives report IO errors as expected, or
-fail to spin up at all.  Those failure cases are trivial.  Even mdadm
-handles them easily.
-
-> I only heard of some bad SSDs (SiliconMotion-based) returning corrupted data
-> as if nothing happened, and only when their flash lifespan is close to
-> depletion.
-
-Kingston and Sandisk SSDs silently corrupt data starting as early as 20%
-of rated TBW.  After some experimenting with them, I don't believe their
-firmware is capable of detecting data integrity errors at any point in
-their lifespan.
-
-You can put a btrfs on one of these SSDs with DUP data and DUP metadata,
-and watch it play whack-a-mole as it self-repairs the csum errors
-that pop up all over the filesystem, until eventually the SSD dies.
-
-> > even though either scenario should still effectively end up yielding the
-> > same behavior from btrfs
-> 
-> I believe that's also an assumption you'd want to test, if you want to be
-> through in verifying its behavior on failures or corruptions. And anyways it's
-> better to set up a scenario which is as close as possible to ones you'd get in
-> real-life.
-> 
-> > But check out my retraction reply from earlier — it was just me being stupid
-> > and forgetting to use conv=notrunc on my dd command used to damage the
-> > loopback file :)
-> 
-> Sure, I only commented on the part where it still made sense. :)
-> 
-> -- 
-> With respect,
-> Roman
+Yours sincerely,
+Mr Alif Tomar.
