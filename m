@@ -2,60 +2,67 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C24DD202B8E
-	for <lists+linux-btrfs@lfdr.de>; Sun, 21 Jun 2020 18:32:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8C91202BFB
+	for <lists+linux-btrfs@lfdr.de>; Sun, 21 Jun 2020 20:19:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730416AbgFUQcm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 21 Jun 2020 12:32:42 -0400
-Received: from www5.web-server.biz ([185.181.105.105]:33179 "EHLO
-        mail5.web-server.biz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730414AbgFUQcm (ORCPT
+        id S1729815AbgFUSTe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 21 Jun 2020 14:19:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40126 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729237AbgFUSTd (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 21 Jun 2020 12:32:42 -0400
-X-Greylist: delayed 496 seconds by postgrey-1.27 at vger.kernel.org; Sun, 21 Jun 2020 12:32:41 EDT
-Received: from mail-io1-f54.google.com (mail-io1-f54.google.com [209.85.166.54])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail5.web-server.biz (Postfix) with ESMTPSA id B159B47E4E
-        for <linux-btrfs@vger.kernel.org>; Sun, 21 Jun 2020 16:24:19 +0000 (UTC)
-Received: by mail-io1-f54.google.com with SMTP id s18so16979336ioe.2
-        for <linux-btrfs@vger.kernel.org>; Sun, 21 Jun 2020 09:24:19 -0700 (PDT)
-X-Gm-Message-State: AOAM530qGb0Y0LZOZY9A1Xnl8aqq8QBQ0oJKo0lZ0zFxryxkbaZUpPGZ
-        Ciu6CtoGyucSinBfhxjgFpOZrbo4rVS5It7s+PY=
-X-Google-Smtp-Source: ABdhPJy4DUvtyKdETRal+YQ47PbRryqyKwtxNPk8D75FhDonzAH3dLeMokQLwSfQmw5sBWUE/phyDbT0AD16/pS/xd0=
-X-Received: by 2002:a05:6602:2dca:: with SMTP id l10mr14970154iow.163.1592756658286;
- Sun, 21 Jun 2020 09:24:18 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200621054240.GA25387@tik.uni-stuttgart.de>
-In-Reply-To: <20200621054240.GA25387@tik.uni-stuttgart.de>
-From:   Lukas Tribus <lists@ltri.eu>
-Date:   Sun, 21 Jun 2020 18:24:04 +0200
-X-Gmail-Original-Message-ID: <CACC_My_ZnU5R3mByqhe8wdwXGpPubTGyoRa5GvUnR2JeBfkAkw@mail.gmail.com>
-Message-ID: <CACC_My_ZnU5R3mByqhe8wdwXGpPubTGyoRa5GvUnR2JeBfkAkw@mail.gmail.com>
-Subject: Re: weekly fstrim (still) necessary?
+        Sun, 21 Jun 2020 14:19:33 -0400
+Received: from tartarus.angband.pl (tartarus.angband.pl [IPv6:2001:41d0:602:dbe::8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8753BC061794
+        for <linux-btrfs@vger.kernel.org>; Sun, 21 Jun 2020 11:19:32 -0700 (PDT)
+Received: from kilobyte by tartarus.angband.pl with local (Exim 4.92)
+        (envelope-from <kilobyte@angband.pl>)
+        id 1jn4Yx-0004L9-NB
+        for linux-btrfs@vger.kernel.org; Sun, 21 Jun 2020 20:19:27 +0200
+Date:   Sun, 21 Jun 2020 20:19:27 +0200
+From:   Adam Borowski <kilobyte@angband.pl>
 To:     linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: weekly fstrim (still) necessary?
+Message-ID: <20200621181927.GA16529@angband.pl>
+References: <20200621054240.GA25387@tik.uni-stuttgart.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200621054240.GA25387@tik.uni-stuttgart.de>
+X-Junkbait: aaron@angband.pl, zzyx@angband.pl
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: <locally generated>
+X-SA-Exim-Mail-From: kilobyte@angband.pl
+X-SA-Exim-Scanned: No (on tartarus.angband.pl); SAEximRunCond expanded to false
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello,
-
-On Sun, 21 Jun 2020 at 07:42, Ulli Horlacher
-<framstag@rus.uni-stuttgart.de> wrote:
->
+On Sun, Jun 21, 2020 at 07:42:40AM +0200, Ulli Horlacher wrote:
 > On SLES a weekly fstrim is done via a btrfsmaintenance script, which is
 > missing on Ubuntu.
->
+> 
 > For ext4 filesystem an explicite fstrim call is no longer neccessary, what
 > about btrfs?
 > Shall I call fstrim via /etc/cron.weekly ?
 
-Unless you mount with the discard option [1], I'd say yes, the manpage
-suggests so.
+Both ext4 and btrfs may or may not auto-discard in the write path, depending
+on mount option.  A lot of disks handle such frequent small discards poorly
+-- usually with a greatly decreased performance, although data loss in not
+unknown.
+
+If you test your disk and know that it is happy with tons of small discards,
+then the discard mount option is good for you.  Otherwise, you want to do
+large discards once in a while -- be it a day or a week.
+
+Not discarding at all is a bad idea on most disks.
 
 
---lukas
-
-[1] https://btrfs.wiki.kernel.org/index.php/Manpage/btrfs(5)#MOUNT_OPTIONS
+Meow!
+-- 
+⢀⣴⠾⠻⢶⣦⠀
+⣾⠁⢠⠒⠀⣿⡁ in the beginning was the boot and root floppies and they were good.
+⢿⡄⠘⠷⠚⠋⠀                                       -- <willmore> on #linux-sunxi
+⠈⠳⣄⠀⠀⠀⠀
