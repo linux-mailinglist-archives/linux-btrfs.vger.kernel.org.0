@@ -2,72 +2,83 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B55E203F79
-	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Jun 2020 20:51:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A415C2040B5
+	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Jun 2020 21:55:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730129AbgFVSvl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 22 Jun 2020 14:51:41 -0400
-Received: from mx2.suse.de ([195.135.220.15]:41852 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730030AbgFVSvl (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 22 Jun 2020 14:51:41 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id D4077AD12;
-        Mon, 22 Jun 2020 18:51:39 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id A653DDA79B; Mon, 22 Jun 2020 20:51:28 +0200 (CEST)
-Date:   Mon, 22 Jun 2020 20:51:28 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
+        id S1728482AbgFVTyn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 22 Jun 2020 15:54:43 -0400
+Received: from smtp-34.italiaonline.it ([213.209.10.34]:43455 "EHLO libero.it"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728469AbgFVTyn (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 22 Jun 2020 15:54:43 -0400
+Received: from venice.bhome ([78.12.136.199])
+        by smtp-34.iol.local with ESMTPA
+        id nSS3jggLWtrlwnSS3jkR7n; Mon, 22 Jun 2020 21:49:56 +0200
+x-libjamoibt: 1601
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2014;
+        t=1592855396; bh=YLyS9lhvAXprh06rB0bBEmB2r/AOTVOIxskdDgaAKl4=;
+        h=From;
+        b=Sf+6BplGPbLudXfm447tC38ZyF0yBiAcQZoE8EXTfs9w8/QE5UfNNUa8l4gVNdaDs
+         aYyXLdx51XZI+FRW1c3Kt4H7TFJokPeBUJJZLx7nQi/8o4lHfteAzjMwDHNndx9lrT
+         3SHZuMsLqBHnxV52Vv9xcifPamSPNiZbchwL5DgTH25Ay4LIdZMEzTNIu55DfAtr5j
+         +0VjHEE8r3iAZyKel3B+A1K5R3KM1J83g4tzoNSekwj6V12Metcpu438bQdSR1PMwj
+         lK53F/nZN0Cllhkp+oWyg7R0rzldcfkwlolxxxW0mCI1d3sZlSgfCvOcNL3iS4ujYY
+         AoRvkIuNCXrmQ==
+X-CNFS-Analysis: v=2.3 cv=TOE7tGta c=1 sm=1 tr=0
+ a=kx39m2EDZI1V9vDwKCQCcA==:117 a=kx39m2EDZI1V9vDwKCQCcA==:17
+ a=IkcTkHD0fZMA:10 a=HvNiySBuGoZ90GWRqmAA:9 a=QEXdDO2ut3YA:10
+Reply-To: kreijack@inwind.it
+Subject: Re: btrfs-dedupe broken and unsupported but in official wiki
+To:     dsterba@suse.cz, Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
+        DanglingPointer <danglingpointerexception@gmail.com>,
         linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v2 00/46] Trivial BTRFS_I removal
-Message-ID: <20200622185128.GJ27795@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20200603055546.3889-1-nborisov@suse.com>
- <20200617113759.GL27795@twin.jikos.cz>
+References: <16bc2efa-8e88-319f-e90e-cf8536460860@gmail.com>
+ <20200618204317.GM10769@hungrycats.org>
+ <65eeb90a-e983-2ae8-14ad-79bcd2960851@gmail.com>
+ <20200619050402.GN10769@hungrycats.org>
+ <20200619131117.GD27795@twin.jikos.cz>
+From:   Goffredo Baroncelli <kreijack@libero.it>
+Message-ID: <79672577-6189-10fe-b4bc-8cf45547b192@libero.it>
+Date:   Mon, 22 Jun 2020 21:49:55 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200617113759.GL27795@twin.jikos.cz>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <20200619131117.GD27795@twin.jikos.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4wfPBoR1k/cy9Z3QzL0NDUCLOiOgwaFPDPt0W6UDXV+3oYAwsRkoBcCx6e8/8wGweO/c+gkQrjGdq8E4VSnQ05LwATa/EjbrNLZGrGPV2PKxmJhma5h06o
+ KCspHYymaGkL1US5J5/3Cgwru2pw9i4/+Jz/oMMMtt5tw3F+2oreZP68aHZDAgfdrN517xt1E09E4+Zu2K+gJWqDuchbDjdGymmQodg45QE0i4Y86ZZJQBiM
+ b9/v7mabbQ1rftzO6isH1+QzmWJNcE19NbhKjXMmQX+icArdK6kO4FV3XR+w37N5
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Jun 17, 2020 at 01:37:59PM +0200, David Sterba wrote:
-> On Wed, Jun 03, 2020 at 08:55:00AM +0300, Nikolay Borisov wrote:
-> > V2 with purely cosmetic changes in the line length of some patches' changelogs.
-> > 
-> > For the cover letter of substance for this series check v1 [0] cover letter.
-> > 
-> > [0] https://lore.kernel.org/linux-btrfs/SN4PR0401MB3598824C8AE02453F8ABD61A9B8B0@SN4PR0401MB3598.namprd04.prod.outlook.com/T/#t
-> > 
-> > Nikolay Borisov (46):
-> >   btrfs: Make __btrfs_add_ordered_extent take struct btrfs_inode
-> >   btrfs: Make get_extent_allocation_hint take btrfs_inode
-> >   btrfs: Make btrfs_lookup_ordered_extent take btrfs_inode
-> >   btrfs: Make btrfs_reloc_clone_csums take btrfs_inode
-> >   btrfs: Make create_io_em take btrfs_inode
-> >   btrfs: Make extent_clear_unlock_delalloc take btrfs_inode
-> >   btrfs: Make btrfs_csum_one_bio takae btrfs_inode
-> >   btrfs: Make __btrfs_drop_extents take btrfs_inode
+On 6/19/20 3:11 PM, David Sterba wrote:
+>> If there wasn't some insurmountable reason
+>> why duperemove can't be merged with btrfs-progs, then it would have
+>> happened already, so there must be a reason why this can't ever happen
+>> (which might be as simple as neither maintainer wants to merge).
+> I'm not against adding the functionality to btrfs-progs, but merging
+> whole duperemove feature set might not happen due to additional
+> dependencies. This would need to be evaluated, but I'm not aware of any
+> other technical reasons.
 > 
-> I've applied 1-8 to misc-next, that's what applied cleanly when I first
-> looked at the series and still applies now, with a minor conflict and
-> manual fix to recently added "btrfs: fix RWF_NOWAIT writes blocking on
-> extent locks and waiting for IO".
+> I don't remember exactly why duperemove started as a separate project
+> instead of a subcommand or progs, but we can revisit that.
 > 
-> 46 in one go seem to be too much, I'll try to apply the rest in case the
-> fixups won't get out of hand.
+Even tough I don't think that this was the reason at the time, now the ioctl FIDEDUPERANGE (aka BTRFS_IOC_FILE_EXTENT_SAME) is "filesystem agnostic". So I think that does make sense a tool more generic than btrfs(-progs).
 
-Still a lot of fixups, I'll keep it in a topic branch in for-next to
-reduce conflict surface but will push it to misc-next at rc3 time.
+What I mean is: because this is not a BTRFS specific ioctl anymore, why we should have a BTRFS specific implementation ?
 
-The transition to btrfs_inode is worth, but please let's do it in
-smaller batches next time, 20 patches should be ok. The turnaround time
-should be shorter as the expected number of post-merge window fixes is
-now going to be low. Thanks.
+ From a technical point of view: dupremover could take advantage of the btrfs csum. So the question could be : is it better to add the capability to use the BTRFS csum to duperemover or to add the code of dupremover to BTRFS ?
+
+ From an user point of view, I think that the former makes sense.
+
+BR
+G.Baroncelli
+
+-- 
+gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
+Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
