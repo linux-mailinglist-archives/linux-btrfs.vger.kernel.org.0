@@ -2,25 +2,25 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9066A203C61
-	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Jun 2020 18:20:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16A3F203C62
+	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Jun 2020 18:20:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729461AbgFVQUm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 22 Jun 2020 12:20:42 -0400
-Received: from mx2.suse.de ([195.135.220.15]:46346 "EHLO mx2.suse.de"
+        id S1729521AbgFVQUq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 22 Jun 2020 12:20:46 -0400
+Received: from mx2.suse.de ([195.135.220.15]:46370 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729521AbgFVQUl (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 22 Jun 2020 12:20:41 -0400
+        id S1729484AbgFVQUp (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 22 Jun 2020 12:20:45 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 5F23CC220;
-        Mon, 22 Jun 2020 16:20:40 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 4CB97C220;
+        Mon, 22 Jun 2020 16:20:43 +0000 (UTC)
 From:   Goldwyn Rodrigues <rgoldwyn@suse.de>
 To:     linux-btrfs@vger.kernel.org
 Cc:     Goldwyn Rodrigues <rgoldwyn@suse.com>
-Subject: [PATCH 6/8] btrfs: Use shared inode lock for direct writes within EOF
-Date:   Mon, 22 Jun 2020 11:20:15 -0500
-Message-Id: <20200622162017.21773-7-rgoldwyn@suse.de>
+Subject: [PATCH 7/8] btrfs: Remove dio_sem
+Date:   Mon, 22 Jun 2020 11:20:16 -0500
+Message-Id: <20200622162017.21773-8-rgoldwyn@suse.de>
 X-Mailer: git-send-email 2.25.0
 In-Reply-To: <20200622162017.21773-1-rgoldwyn@suse.de>
 References: <20200622162017.21773-1-rgoldwyn@suse.de>
@@ -33,70 +33,118 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Goldwyn Rodrigues <rgoldwyn@suse.com>
 
-This is to parallelize direct writes within EOF or with direct I/O
-reads. This covers the race with truncate() accidentally increasing the
-filesize.
+Since we handle all synchronization using inode_lock()/unlock(), we
+don't need dio_sem to handle the race with btrfs_sync_file()
 
 Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
 ---
- fs/btrfs/file.c | 25 +++++++------------------
- 1 file changed, 7 insertions(+), 18 deletions(-)
+ fs/btrfs/btrfs_inode.h | 10 ----------
+ fs/btrfs/file.c        | 14 --------------
+ fs/btrfs/inode.c       |  1 -
+ 3 files changed, 25 deletions(-)
 
+diff --git a/fs/btrfs/btrfs_inode.h b/fs/btrfs/btrfs_inode.h
+index aeff56a0e105..86c5482e0fdd 100644
+--- a/fs/btrfs/btrfs_inode.h
++++ b/fs/btrfs/btrfs_inode.h
+@@ -187,16 +187,6 @@ struct btrfs_inode {
+ 	/* Hook into fs_info->delayed_iputs */
+ 	struct list_head delayed_iput;
+ 
+-	/*
+-	 * To avoid races between lockless (i_mutex not held) direct IO writes
+-	 * and concurrent fsync requests. Direct IO writes must acquire read
+-	 * access on this semaphore for creating an extent map and its
+-	 * corresponding ordered extent. The fast fsync path must acquire write
+-	 * access on this semaphore before it collects ordered extents and
+-	 * extent maps.
+-	 */
+-	struct rw_semaphore dio_sem;
+-
+ 	struct inode vfs_inode;
+ };
+ 
 diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-index aa6be931620b..c446a4aeb867 100644
+index c446a4aeb867..c8127406fcc6 100644
 --- a/fs/btrfs/file.c
 +++ b/fs/btrfs/file.c
-@@ -1957,12 +1957,18 @@ static ssize_t btrfs_direct_write(struct kiocb *iocb, struct iov_iter *from)
- 	loff_t endbyte;
- 	int err;
- 	size_t count = 0;
--	bool relock = false;
- 	int flags = IOMAP_DIOF_PGINVALID_FAIL;
- 	int ilock_flags = 0;
- 
- 	if (iocb->ki_flags & IOCB_NOWAIT)
- 		ilock_flags |= BTRFS_ILOCK_TRY;
-+	/*
-+	 * If the write DIO within EOF,  use a shared lock
-+	 */
-+	if (pos + count <= i_size_read(inode))
-+		ilock_flags |= BTRFS_ILOCK_SHARED;
-+	else if (iocb->ki_flags & IOCB_NOWAIT)
-+		return -EAGAIN;
- 
- 	err = btrfs_inode_lock(inode, ilock_flags);
- 	if (err < 0)
-@@ -1975,20 +1981,6 @@ static ssize_t btrfs_direct_write(struct kiocb *iocb, struct iov_iter *from)
- 	if (check_direct_IO(fs_info, from, pos))
- 		goto buffered;
- 
--	count = iov_iter_count(from);
--	/*
--	 * If the write DIO is beyond the EOF, we need update the isize, but it
--	 * is protected by i_mutex. So we can not unlock the i_mutex at this
--	 * case.
--	 */
--	if (pos + count <= inode->i_size) {
--		inode_unlock(inode);
--		relock = true;
--	} else if (iocb->ki_flags & IOCB_NOWAIT) {
--		err = -EAGAIN;
--		goto out;
--	}
--
+@@ -1984,10 +1984,8 @@ static ssize_t btrfs_direct_write(struct kiocb *iocb, struct iov_iter *from)
  	if (is_sync_kiocb(iocb))
  		flags |= IOMAP_DIOF_WAIT_FOR_COMPLETION;
  
-@@ -1997,9 +1989,6 @@ static ssize_t btrfs_direct_write(struct kiocb *iocb, struct iov_iter *from)
+-	down_read(&BTRFS_I(inode)->dio_sem);
+ 	written = iomap_dio_rw(iocb, from, &btrfs_dio_iomap_ops, &btrfs_dops,
  			       flags);
- 	up_read(&BTRFS_I(inode)->dio_sem);
+-	up_read(&BTRFS_I(inode)->dio_sem);
  
--	if (relock)
--		inode_lock(inode);
--
  	if (written < 0 || !iov_iter_count(from)) {
  		err = written;
- 		goto error;
+@@ -2165,13 +2163,6 @@ int btrfs_sync_file(struct file *file, loff_t start, loff_t end, int datasync)
+ 
+ 	inode_lock(inode);
+ 
+-	/*
+-	 * We take the dio_sem here because the tree log stuff can race with
+-	 * lockless dio writes and get an extent map logged for an extent we
+-	 * never waited on.  We need it this high up for lockdep reasons.
+-	 */
+-	down_write(&BTRFS_I(inode)->dio_sem);
+-
+ 	atomic_inc(&root->log_batch);
+ 
+ 	/*
+@@ -2209,7 +2200,6 @@ int btrfs_sync_file(struct file *file, loff_t start, loff_t end, int datasync)
+ 	 */
+ 	ret = start_ordered_ops(inode, start, end);
+ 	if (ret) {
+-		up_write(&BTRFS_I(inode)->dio_sem);
+ 		inode_unlock(inode);
+ 		goto out;
+ 	}
+@@ -2223,7 +2213,6 @@ int btrfs_sync_file(struct file *file, loff_t start, loff_t end, int datasync)
+ 	 */
+ 	ret = btrfs_wait_ordered_range(inode, start, (u64)end - (u64)start + 1);
+ 	if (ret) {
+-		up_write(&BTRFS_I(inode)->dio_sem);
+ 		inode_unlock(inode);
+ 		goto out;
+ 	}
+@@ -2247,7 +2236,6 @@ int btrfs_sync_file(struct file *file, loff_t start, loff_t end, int datasync)
+ 		 * checked called fsync.
+ 		 */
+ 		ret = filemap_check_wb_err(inode->i_mapping, file->f_wb_err);
+-		up_write(&BTRFS_I(inode)->dio_sem);
+ 		inode_unlock(inode);
+ 		goto out;
+ 	}
+@@ -2266,7 +2254,6 @@ int btrfs_sync_file(struct file *file, loff_t start, loff_t end, int datasync)
+ 	trans = btrfs_start_transaction(root, 0);
+ 	if (IS_ERR(trans)) {
+ 		ret = PTR_ERR(trans);
+-		up_write(&BTRFS_I(inode)->dio_sem);
+ 		inode_unlock(inode);
+ 		goto out;
+ 	}
+@@ -2287,7 +2274,6 @@ int btrfs_sync_file(struct file *file, loff_t start, loff_t end, int datasync)
+ 	 * file again, but that will end up using the synchronization
+ 	 * inside btrfs_sync_log to keep things safe.
+ 	 */
+-	up_write(&BTRFS_I(inode)->dio_sem);
+ 	inode_unlock(inode);
+ 
+ 	if (ret != BTRFS_NO_LOG_SYNC) {
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index 31ac8c682f19..7e71f42e7ec0 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -8433,7 +8433,6 @@ struct inode *btrfs_alloc_inode(struct super_block *sb)
+ 	INIT_LIST_HEAD(&ei->delalloc_inodes);
+ 	INIT_LIST_HEAD(&ei->delayed_iput);
+ 	RB_CLEAR_NODE(&ei->rb_node);
+-	init_rwsem(&ei->dio_sem);
+ 
+ 	return inode;
+ }
 -- 
 2.25.0
 
