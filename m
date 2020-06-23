@@ -2,218 +2,111 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BF0D204C0F
-	for <lists+linux-btrfs@lfdr.de>; Tue, 23 Jun 2020 10:17:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15F03204C7B
+	for <lists+linux-btrfs@lfdr.de>; Tue, 23 Jun 2020 10:35:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731545AbgFWIRF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 23 Jun 2020 04:17:05 -0400
-Received: from mx2.suse.de ([195.135.220.15]:40690 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731158AbgFWIRE (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 23 Jun 2020 04:17:04 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 1D3D4ADC1;
-        Tue, 23 Jun 2020 08:17:01 +0000 (UTC)
-Subject: Re: btrfs dev sta not updating
-To:     Russell Coker <russell@coker.com.au>, linux-btrfs@vger.kernel.org
-References: <4857863.FCrPRfMyHP@liv>
- <08121825-9c05-87c4-4015-f6f508193fa8@suse.com> <5752066.y3qnG1rHMR@liv>
-From:   Nikolay Borisov <nborisov@suse.com>
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <d4c28f49-f6fc-0fc7-0c4d-4fe8b3ce32a9@suse.com>
-Date:   Tue, 23 Jun 2020 11:17:00 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
-MIME-Version: 1.0
-In-Reply-To: <5752066.y3qnG1rHMR@liv>
-Content-Type: text/plain; charset=utf-8
+        id S1731687AbgFWIeu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 23 Jun 2020 04:34:50 -0400
+Received: from esa5.hgst.iphmx.com ([216.71.153.144]:39834 "EHLO
+        esa5.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731567AbgFWIet (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 23 Jun 2020 04:34:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1592901288; x=1624437288;
+  h=from:to:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
+  b=DsRXQIQ5VzspXNkMvBeOcWoO6XekUhNCYelOjDlps6Y51VKs5VJaWvK5
+   Uu+LmMxbc4YXHlpKNkOsYMx9o1yeogBL8cSxC9gQwZrlWRJNfCPqLtir4
+   0Ood+3gFJXG2IbF+8J4I6B+doBHLXad87m2KepBviGoZPRDO7p9Dun7yn
+   /P863sYjRrlW0CctIJo4VaeIeO+mQocXsdxqbMs591GRc1r7dUG26JBHd
+   1wrURwh2DtxR41CmRVp/sxXwFUm6sPAKMzSrdBt3CD3RvZjbU2fjkWcJe
+   OgWhIau9tD55+FJmF7p2/v5IGyC7R3MQv1JSdjm3VVtSSMcuQBf+s68s4
+   Q==;
+IronPort-SDR: TPrAwSDk1GqS+P+x3vXcToZQ33Wv3KsMFu08bjJV66k38/GzaSQN06sYad53nxL3PxUs75xV6/
+ 15TLbSrZmmsRQXSSsBEfvEm4cDKpRwZvCOZVljgVN7QZdGvEtWzMFWP6DpVsgWeTZSSqrOPvrS
+ uz/KDEYSPMBC3qGgk2885UMehp0KJ//KezKLM8Y1tOsbUw5yL5sfwrEqTJZ5SB1fENaqTzfNRu
+ qhRI4JGAliHaBrrVegE34j+tQMpXCPCMtaI3Ss7h7D4RmsvboV03IV3cyGklkC15/ILKh4acny
+ /p0=
+X-IronPort-AV: E=Sophos;i="5.75,270,1589212800"; 
+   d="scan'208";a="140921854"
+Received: from mail-dm6nam11lp2171.outbound.protection.outlook.com (HELO NAM11-DM6-obe.outbound.protection.outlook.com) ([104.47.57.171])
+  by ob1.hgst.iphmx.com with ESMTP; 23 Jun 2020 16:34:48 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Raj6VoGbtq+7Gbp918ehzPhWeSzF7EkgnrXRLuq+2K380dFIcojzgLQ0kgB8nnMvKmltlces71TBhaCG7Igq+lnr8gf3W5YrSyRv51whlm1gAM4JN4wX106h4YzSV7entZ+AbsYm0WWCMnzgBOwS/4yoX7rL09nKO0jvoPFC52nn4w423X4ubEh2qSkSkGXngvRQE5KNxa9u1eLVovy7h4CUZkxGvjSxbTR5QPMe9hMBAfnTgCcEWovrgw7+72VYfVIhLtUtkAutmTPgbXmntqEFv56hSEF1bqIqEqiT2vf9bCnY8uPG+hDNP2AxmXYL6c3mYfq2l9scPKJM+KujcQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
+ b=Ykdn8MS1hwNsG5aTNMrKjEgPI8MoiM1AGRdj7Lw3+0SbplMwRQV8phbiIstpdAWN82lYfgf3uUkwHblWA1wWUX3JU5JOzgGKpuy6SN4yld68LB1pPdZWhVto3j/g+lcmrOn9GECGOzaInXIt2WGxtOmlNKHsAJNhEPkBoBhyhwcbUddTqNhB0JVKUVCERavgnB5IjxT6gLY/GLnL0aVETRmMjIQFUbo55Z4/O+PDI9RdLh1+Xjq16xd7fwwDFFLaQ/k7OtuAX3JSA+KdIKnOj/sn+9e5X0FHY2ntX+sxQRfZPZG9LP9vAoyKJsk5HIfBqWk2dHdpS3Vnt6p//rF9JA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
+ b=hQ8tj6x1eHLk6QWHDm2YCFFzVhtkEGsb/FTDhrxMaox+Bc79x9AnH5n+gv2Yz5rhLGUeFzpaguUiuM8w/drdHTqTFy/bsc86J+Rjhc3HF/E+y+tsHlGCDkSZ5CkzEV1gaDRve7dt0OP90XUqGd7PhrpmpJgvyYtai2VKCXZALPI=
+Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
+ (2603:10b6:803:47::21) by SN4PR0401MB3677.namprd04.prod.outlook.com
+ (2603:10b6:803:45::16) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3109.23; Tue, 23 Jun
+ 2020 08:34:47 +0000
+Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
+ ([fe80::1447:186c:326e:30b2]) by SN4PR0401MB3598.namprd04.prod.outlook.com
+ ([fe80::1447:186c:326e:30b2%7]) with mapi id 15.20.3109.027; Tue, 23 Jun 2020
+ 08:34:47 +0000
+From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To:     Qu Wenruo <wqu@suse.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH v4 3/3] btrfs: refactor btrfs_check_can_nocow() into two
+ variants
+Thread-Topic: [PATCH v4 3/3] btrfs: refactor btrfs_check_can_nocow() into two
+ variants
+Thread-Index: AQHWSR4lPNaufSY3WEGLlNOGkfJjrQ==
+Date:   Tue, 23 Jun 2020 08:34:47 +0000
+Message-ID: <SN4PR0401MB35989742962E952C5922F8819B940@SN4PR0401MB3598.namprd04.prod.outlook.com>
+References: <20200623052112.198682-1-wqu@suse.com>
+ <20200623052112.198682-4-wqu@suse.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: suse.com; dkim=none (message not signed)
+ header.d=none;suse.com; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [62.216.205.235]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 73a0e786-5ba4-4708-ef0b-08d8175049a5
+x-ms-traffictypediagnostic: SN4PR0401MB3677:
+x-microsoft-antispam-prvs: <SN4PR0401MB3677D663C9EB456D451A7ABB9B940@SN4PR0401MB3677.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:1728;
+x-forefront-prvs: 04433051BF
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: GiwHLSUNVDML/1d3XaIoE8BfSBFT0OpoLbBtnvnn4G0aBXXV1r6qEwTgcOIMswh4Xn7ie0wO/fa36HscvgC9NaQZKgYIPJNe6+iFGNQxgxGQ4lg/Xv5F6NPITHdtgr7o7fkyw7M4tsnxpfZ4F3EWeCNE68DAzhSZQ9IEX8MJ3VOOy/GUp4VWHSBNMdv/8bEsofeTWx+DmIlTi5yqci9TkCtCTlENfV7cxriV1DsyqKJOOcR73+fA4YJ5a5SKIvM5nCQEnzmxPVGGmQL+J96uQzOff51P9r2az/GL42h0CCk9o/W6FFdhlY8mdGn5YAlHVnGJFehskY6FbYMEfTEtcg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR0401MB3598.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(376002)(366004)(39860400002)(346002)(396003)(136003)(316002)(26005)(110136005)(19618925003)(186003)(2906002)(478600001)(52536014)(66446008)(66946007)(64756008)(66476007)(9686003)(66556008)(76116006)(91956017)(4270600006)(8936002)(5660300002)(7696005)(86362001)(55016002)(71200400001)(33656002)(6506007)(8676002)(558084003);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: C4JXx3cAID/791VzV9MNi92aHV89DdoTpjfwclmbNWRsJ9cYFdWd3kzj+FfmhId095Wog5bDLPbEmZdamAwSRzt9ARDxLk77VN4UHBybSFrTs4sIXnCCS8wbF7LRT/hxW34Qs0qwq6aK2WVGh6ztBS4yQShlyht3wkl1nM4+cWdOhCnclqr7O/wkK8BbppC28wEXbqLgotFuEBVSLclFKuVYnNMaSW5oJAw2dzEeL7RPoDiiKdnX9B1ueCZbBbFsY0rs3zWntyUChzw7hm9mPEXRbx6mi00OPfYJgnk5HXVUIPDi/fbfwcx0/BmjLO2vt8KvR0Pn5WjuOkhSLCevbB6B79C1ZrfkJrL+GRApAASngg0nIyUqFCkSVtnENNJinSpXwU1SGtEyyCT7pnvTBjSMQMQZjcIux1Aoj9wOr39GCmMMAhM/JRhxUvMsncyjgQrMK5bZItjCMuXnzdKbhbcj+9FPJzFhmmzy+7LZ/+BiUMXRgAyEtDImYD95kApA
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 73a0e786-5ba4-4708-ef0b-08d8175049a5
+X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Jun 2020 08:34:47.2705
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 5q5I8amQBs6dWzMFLs7QcB2rv4uaTlGTvz14xjp9aSFoEYZZPmD1OQzG8CVUpqbKyExi9ZysXasucfGWegBg2MZoZ3ZWTiGZL8GFWjn2I8U=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN4PR0401MB3677
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 23.06.20 г. 11:00 ч., Russell Coker wrote:
-> On Tuesday, 23 June 2020 4:03:37 PM AEST Nikolay Borisov wrote:
->>> I have a USB stick that's corrupted, I get the above kernel messages when
->>> I
->>> try to copy files from it.  But according to btrfs dev sta it has had 0
->>> read and 0 corruption errors.
->>>
->>> root@xev:/mnt/tmp# btrfs dev sta .
->>> [/dev/sdc1].write_io_errs    0
->>> [/dev/sdc1].read_io_errs     0
->>> [/dev/sdc1].flush_io_errs    0
->>> [/dev/sdc1].corruption_errs  0
->>> [/dev/sdc1].generation_errs  0
->>> root@xev:/mnt/tmp# uname -a
->>> Linux xev 5.6.0-2-amd64 #1 SMP Debian 5.6.14-1 (2020-05-23) x86_64
->>> GNU/Linux
->> The read/write io err counters are updated when even repair bio have
->> failed. So in your case you had some checksum errors, but btrfs managed
->> to repair them by reading from a different mirror. In this case those
->> aren't really counted as io errs since in the end you did get the
->> correct data.
-> 
-> In this case I'm getting application IO errors and lost data, so if the error 
-> count is designed to not count recovered errors then it's still not doing the 
-> right thing.
-
-In this case yes, however this was utterly not clear from your initial
-email. In fact it seems you have omitted quite a lot of information. So
-let's step back and start afresh. So first give information about your
-current btrfs setup by giving the output of:
-
-btrfs fi usage /path/to/btrfs
-
-From the output provided it seems the affected mirror is '1', which to
-me implies you have at least another disk containing the same data. So
-unless you have errors in mirror 0 as well those errors should be
-recovered from by simply reading from that mirror.
-
-> 
-> # md5sum *
-> md5sum: 'Rise of the Machines S1 Ep6 - Mega Digger-qcOpMtIWsrgN.mp4': Input/
-> output error
-> md5sum: 'Rise of the Machines S1 Ep7 - Ultimate Dragster-Ke9hMplfQAWF.mp4': 
-> Input/output error
-> md5sum: 'Rise of the Machines S1 Ep8 - Aircraft Carrier-Qxht6qMEwMKr.mp4': 
-> Input/output error
-> ^C
-
-You are trying to md5sum 3 distinct files....
-
-> # btrfs dev sta .
-> [/dev/sdc1].write_io_errs    0
-> [/dev/sdc1].read_io_errs     0
-> [/dev/sdc1].flush_io_errs    0
-> [/dev/sdc1].corruption_errs  0
-> [/dev/sdc1].generation_errs  0
-> # tail /var/log/kern.log
-> Jun 23 17:48:40 xev kernel: [417603.547748] BTRFS warning (device sdc1): csum 
-> failed root 5 ino 275 off 59580416 csum 0x8941f998 expected csum 0xb5b581fc 
-> mirror 1
-> Jun 23 17:48:40 xev kernel: [417603.609861] BTRFS warning (device sdc1): csum 
-> failed root 5 ino 275 off 60628992 csum 0x8941f998 expected csum 0x4b6c9883 
-> mirror 1
-> Jun 23 17:48:40 xev kernel: [417603.672251] BTRFS warning (device sdc1): csum 
-> failed root 5 ino 275 off 61677568 csum 0x8941f998 expected csum 0x89f5fb68 
-> mirror 1
-
-Yet here all the errors happen in one inode, namely 275. So the md5sum
-commands do not correspond to those errors specifically. Also provide
-the name of inode 275. And for good measure also provide the output of
-"btrfs check /dev/sdc1" - this is a read only command so if there is
-some metadata corruption it will at least not make it any worse.
-
-
-> # uname -a
-> Linux xev 5.6.0-2-amd64 #1 SMP Debian 5.6.14-1 (2020-05-23) x86_64 GNU/Linux
-> 
-> On Tuesday, 23 June 2020 4:17:55 PM AEST waxhead wrote:
->> I don't think this is what most people expect.
->> A simple way to solve this could be to put the non-fatal errors in
->> parentheses if this can be done easily.
-> 
-> I think that most people would expect a "device stats" command to just give 
-> stats of the device and not refer to what happens at the higher level.  If a 
-> device is giving corruption or read errors then "device stats" should tell 
-> that.
-
-That's a fair point.
-
-> 
-> On Tuesday, 23 June 2020 5:11:05 PM AEST Nikolay Borisov wrote:
->> read_io_errs. But this leads to a different can of worms - if a user
->> sees read_io_errs should they be worried because potentially some data
->> is stale or not (give we won't be distinguishing between unrepairable vs
->> transient ones).
-> 
-> If a user sees errors reported their degree of worry should be based on the 
-> degree to which they use RAID and have decent backups.  If you have RAID-1 and 
-> only 1 device has errors then you are OK.  If you have 2 devices with errors 
-> then you have a problem.
-> 
-> Below is an example of a zpool having errors that were corrected.  The DEVICE 
-> had an unrecoverable error, but the RAID-Z pool recovered it from other 
-> devices.  It states that "Applications are unaffected" so the user knows the 
-> degree of worry that should be involved.
-
-BTRFS' internal structure is very different from ZFS' so we don't have
-this notion of vdev, consisting of multiple child devices. And so each
-physical + vdev can be considered a separate device. So again, without
-extending the on-disk format i.e introducing new items or changing the
-format of existing ones we can't accommodate the exact same reports. And
-while the on-disk format can be changed (which of course comes with
-added complexity) there should be a very good reason to do so. Clearly
-something is amiss in your case, but I would like to first properly root
-cause it before jumping to conclusions.
-
-> 
-> # zpool status
->   pool: pet630
->  state: ONLINE
-> status: One or more devices has experienced an unrecoverable error.  An
->         attempt was made to correct the error.  Applications are unaffected.
-> action: Determine if the device needs to be replaced, and clear the errors
->         using 'zpool clear' or replace the device with 'zpool replace'.
->    see: http://zfsonlinux.org/msg/ZFS-8000-9P
->   scan: scrub repaired 380K in 156h39m with 0 errors on Sat Jun 20 13:03:26 
-> 2020
-> config:
-> 
->         NAME           STATE     READ WRITE CKSUM
->         pet630         ONLINE       0     0     0
->           raidz1-0     ONLINE       0     0     0
->             sdf        ONLINE       0     0     0
->             sdq        ONLINE       0     0     0
->             sdd        ONLINE       0     0     0
->             sdh        ONLINE       0     0     0
->             sdi        ONLINE      41     0     1
-> 
-> 
+Looks good,=0A=
+Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>=0A=
