@@ -2,131 +2,99 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C2702049AF
-	for <lists+linux-btrfs@lfdr.de>; Tue, 23 Jun 2020 08:15:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2313D2049BA
+	for <lists+linux-btrfs@lfdr.de>; Tue, 23 Jun 2020 08:18:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731009AbgFWGPa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 23 Jun 2020 02:15:30 -0400
-Received: from mail110.syd.optusnet.com.au ([211.29.132.97]:60084 "EHLO
-        mail110.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730515AbgFWGP3 (ORCPT
+        id S1730538AbgFWGSA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 23 Jun 2020 02:18:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34726 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730395AbgFWGSA (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 23 Jun 2020 02:15:29 -0400
-Received: from dread.disaster.area (pa49-180-124-177.pa.nsw.optusnet.com.au [49.180.124.177])
-        by mail110.syd.optusnet.com.au (Postfix) with ESMTPS id AEB30110169;
-        Tue, 23 Jun 2020 16:15:26 +1000 (AEST)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1jncDN-0003TN-O3; Tue, 23 Jun 2020 16:15:25 +1000
-Date:   Tue, 23 Jun 2020 16:15:25 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     "Darrick J. Wong" <darrick.wong@oracle.com>
-Cc:     Goldwyn Rodrigues <rgoldwyn@suse.de>,
-        linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        hch@lst.de, dsterba@suse.cz, jthumshirn@suse.de,
-        fdmanana@gmail.com, Goldwyn Rodrigues <rgoldwyn@suse.com>
-Subject: Re: [PATCH 2/6] iomap: IOMAP_DIOF_PGINVALID_FAIL return if page
- invalidation fails
-Message-ID: <20200623061525.GI2040@dread.disaster.area>
-References: <20200622152457.7118-1-rgoldwyn@suse.de>
- <20200622152457.7118-3-rgoldwyn@suse.de>
- <20200622173330.GA11239@magnolia>
+        Tue, 23 Jun 2020 02:18:00 -0400
+Received: from smtp.domeneshop.no (smtp.domeneshop.no [IPv6:2a01:5b40:0:3005::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16CB1C061573
+        for <linux-btrfs@vger.kernel.org>; Mon, 22 Jun 2020 23:18:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=dirtcellar.net; s=ds201912; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Reply-To:
+        Sender:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=xEEaC95sa59D5yFU/xjlHyT5ajhYNzgKyfta3c81wRI=; b=LRlExN9pOziljfPq9HS/n1bHKY
+        b78KK8pq6E6b4XAQZTjg3gd7Sp17NGZ7nUUIu0zXk0wTOxmgtKxGxzNTYmOTjA0A+sFwBhtkvnyc9
+        Yh/YQa0qwqYyUCp3762dppaIDFpE1kEsOe+2VM1ZbZJzFrcMmZ/cOdA0pBlfQ/qsC0VXyr5DBZBMD
+        0DBvAObjYbMY80ljVPHMd5+hFgYdtf4k5su3F5HMl4IFYnjnR5aIt+eMA/4qUpGfQB3FYfji65lS2
+        /irYDuKNvpSvLgsPnrWwPCdp4tY1ujZB8uQQ3xJoOp4lztlA5GktjA4AcaA75KCJdjq+b+trEaGdr
+        /YT2dLeg==;
+Received: from 254.79-160-170.customer.lyse.net ([79.160.170.254]:29235 helo=[10.0.0.10])
+        by smtp.domeneshop.no with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <waxhead@dirtcellar.net>)
+        id 1jncFn-0007C1-Uy; Tue, 23 Jun 2020 08:17:55 +0200
+Reply-To: waxhead@dirtcellar.net
+Subject: Re: btrfs dev sta not updating
+To:     Nikolay Borisov <nborisov@suse.com>,
+        Russell Coker <russell@coker.com.au>,
+        linux-btrfs@vger.kernel.org
+References: <4857863.FCrPRfMyHP@liv>
+ <08121825-9c05-87c4-4015-f6f508193fa8@suse.com>
+From:   waxhead <waxhead@dirtcellar.net>
+Message-ID: <39073b9b-360c-81d1-3c3a-22631b6c2b27@dirtcellar.net>
+Date:   Tue, 23 Jun 2020 08:17:55 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Firefox/60.0 SeaMonkey/2.53.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200622173330.GA11239@magnolia>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=QIgWuTDL c=1 sm=1 tr=0
-        a=k3aV/LVJup6ZGWgigO6cSA==:117 a=k3aV/LVJup6ZGWgigO6cSA==:17
-        a=kj9zAlcOel0A:10 a=nTHF0DUjJn0A:10 a=iox4zFpeAAAA:8 a=yPCof4ZbAAAA:8
-        a=7-415B0cAAAA:8 a=qqUFr-TMUkpXaUc-sFEA:9 a=CjuIK1q_8ugA:10
-        a=WzC6qhA0u3u7Ye7llzcV:22 a=biEYGPWJfzWAr4FL6Ov7:22
+In-Reply-To: <08121825-9c05-87c4-4015-f6f508193fa8@suse.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Jun 22, 2020 at 10:33:30AM -0700, Darrick J. Wong wrote:
-> On Mon, Jun 22, 2020 at 10:24:53AM -0500, Goldwyn Rodrigues wrote:
-> > From: Goldwyn Rodrigues <rgoldwyn@suse.com>
-> > 
-> > The flag indicates that if the page invalidation fails, it should return
-> > back control to the filesystem so it may fallback to buffered mode.
-> > 
-> > Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
+
+
+Nikolay Borisov wrote:
 > 
-> Looks reasonable enough, I suppose...
 > 
-> Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
+> On 23.06.20 г. 5:09 ч., Russell Coker wrote:
+>> [395198.926320] BTRFS warning (device sdc1): csum failed root 5 ino 276 off
+>> 19267584 csum 0x8941f998 expected csum 0xccd545e0 mirror 1
+>> [395199.147439] BTRFS warning (device sdc1): csum failed root 5 ino 276 off
+>> 20611072 csum 0x8941f998 expected csum 0xdaf657cb mirror 1
+>> [395199.183680] BTRFS warning (device sdc1): csum failed root 5 ino 276 off
+>> 24190976 csum 0x8941f998 expected csum 0xcddce0b1 mirror 1
+>> [395199.185172] BTRFS warning (device sdc1): csum failed root 5 ino 276 off
+>> 19267584 csum 0x8941f998 expected csum 0xccd545e0 mirror 1
+>> [395199.330841] BTRFS warning (device sdc1): csum failed root 5 ino 277 off 0
+>> csum 0x8941f998 expected csum 0xa54d865c mirror 1
+>>
+>> I have a USB stick that's corrupted, I get the above kernel messages when I
+>> try to copy files from it.  But according to btrfs dev sta it has had 0 read
+>> and 0 corruption errors.
+>>
+>> root@xev:/mnt/tmp# btrfs dev sta .
+>> [/dev/sdc1].write_io_errs    0
+>> [/dev/sdc1].read_io_errs     0
+>> [/dev/sdc1].flush_io_errs    0
+>> [/dev/sdc1].corruption_errs  0
+>> [/dev/sdc1].generation_errs  0
+>> root@xev:/mnt/tmp# uname -a
+>> Linux xev 5.6.0-2-amd64 #1 SMP Debian 5.6.14-1 (2020-05-23) x86_64 GNU/Linux
+>>
 > 
-> --D
+> The read/write io err counters are updated when even repair bio have
+> failed. So in your case you had some checksum errors, but btrfs managed
+> to repair them by reading from a different mirror. In this case those
+> aren't really counted as io errs since in the end you did get the
+> correct data.
 > 
-> > ---
-> >  fs/iomap/direct-io.c  | 8 +++++++-
-> >  include/linux/iomap.h | 5 +++++
-> >  2 files changed, 12 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
-> > index 7ed857196a39..20c4370e6b1b 100644
-> > --- a/fs/iomap/direct-io.c
-> > +++ b/fs/iomap/direct-io.c
-> > @@ -484,8 +484,14 @@ iomap_dio_rw(struct kiocb *iocb, struct iov_iter *iter,
-> >  	 */
-> >  	ret = invalidate_inode_pages2_range(mapping,
-> >  			pos >> PAGE_SHIFT, end >> PAGE_SHIFT);
-> > -	if (ret)
-> > +	if (ret) {
-> > +		if (dio_flags & IOMAP_DIOF_PGINVALID_FAIL) {
-> > +			if (ret == -EBUSY)
-> > +				ret = 0;
-> > +			goto out_free_dio;
-> > +		}
-> >  		dio_warn_stale_pagecache(iocb->ki_filp);
-> > +	}
-> >  	ret = 0;
-> >  
-> >  	if (iov_iter_rw(iter) == WRITE && !wait_for_completion &&
-> > diff --git a/include/linux/iomap.h b/include/linux/iomap.h
-> > index f6230446b08d..95024e28dec5 100644
-> > --- a/include/linux/iomap.h
-> > +++ b/include/linux/iomap.h
-> > @@ -261,6 +261,11 @@ struct iomap_dio_ops {
-> >  
-> >  /* Wait for completion of DIO */
-> >  #define IOMAP_DIOF_WAIT_FOR_COMPLETION 		0x1
-> > +/*
-> > + * Return zero if page invalidation fails, so caller filesystem may fallback
-> > + * to buffered I/O
-> > + */
-> > +#define IOMAP_DIOF_PGINVALID_FAIL		0x2
+I don't think this is what most people expect.
+A simple way to solve this could be to put the non-fatal errors in 
+parentheses if this can be done easily.
 
-That's a mouthful of letter salad. :(
+For example:
+[/dev/sdc1].write_io_errs    0 (5)
 
-Basically, you want the DIO to return a short IO if there is a busy
-page cache on the inode?
-
-IOWs, you don't want the page cache to become stale as a result of
-the DIO being executed? So what the caller is actually asking for is
-that the dio avoids creating stale page cache pages? Hence:
-
-/*
- * Direct IO will attempt to keep the page cache coherent by
- * invalidating the inode's page cache over the range of the DIO.
- * That can fail if something else is actively using the page cache.
- * If this happens and the DIO continues, the data in the page
- * cache will become stale.
- *
- * Set this flag if you want the DIO to abort without issuing any IO
- * or error if it fails to invalidate the page cache successfully.
- * This allows the IO submitter to resubmit the entire IO as a
- * buffered IO through the page cache.
- */
-#define IOMAP_DIO_RWF_NO_STALE_PAGECACHE	(1 << 1)
-
-Cheers,
-
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+IMHO this would be more readable and more useful.
