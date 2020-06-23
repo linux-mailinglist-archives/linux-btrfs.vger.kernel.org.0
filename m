@@ -2,70 +2,89 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EA3320472B
-	for <lists+linux-btrfs@lfdr.de>; Tue, 23 Jun 2020 04:16:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80D7720492A
+	for <lists+linux-btrfs@lfdr.de>; Tue, 23 Jun 2020 07:21:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730846AbgFWCQf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 22 Jun 2020 22:16:35 -0400
-Received: from smtp.sws.net.au ([46.4.88.250]:54230 "EHLO smtp.sws.net.au"
+        id S1728669AbgFWFVR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 23 Jun 2020 01:21:17 -0400
+Received: from mx2.suse.de ([195.135.220.15]:50102 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728447AbgFWCQe (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 22 Jun 2020 22:16:34 -0400
-X-Greylist: delayed 412 seconds by postgrey-1.27 at vger.kernel.org; Mon, 22 Jun 2020 22:16:34 EDT
-Received: from liv.localnet (unknown [103.75.204.226])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: russell@coker.com.au)
-        by smtp.sws.net.au (Postfix) with ESMTPSA id DC49611CBC
-        for <linux-btrfs@vger.kernel.org>; Tue, 23 Jun 2020 12:09:39 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=coker.com.au;
-        s=2008; t=1592878180;
-        bh=Dle+d1EcRmtfvpSuKTcp+ONGBKLIHKrxsfzMwOcEFfM=; l=1243;
-        h=From:To:Subject:Date:From;
-        b=U8C+dGDGBYhN6+rfo9Yf8/n9lzvQ+9/YmB9G8Sv8u20xFFXE59gSeugwyIn0BQn80
-         trAcG7GhVLqBo4650fhB+UlTPVgF4vkvt3cfbGgxLMRjT5wbfBEV5B3jZAUhjh4IZw
-         /35ZN+bS7Uyvar4n+m7bz5bglGxw/s4ss5gaOWwo=
-From:   Russell Coker <russell@coker.com.au>
+        id S1727087AbgFWFVR (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 23 Jun 2020 01:21:17 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 8A67DAFAE
+        for <linux-btrfs@vger.kernel.org>; Tue, 23 Jun 2020 05:21:15 +0000 (UTC)
+From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: btrfs dev sta not updating
-Date:   Tue, 23 Jun 2020 12:09:36 +1000
-Message-ID: <4857863.FCrPRfMyHP@liv>
+Subject: [PATCH v4 0/3] btrfs: allow btrfs_truncate_block() to fallback to nocow for data space reservation
+Date:   Tue, 23 Jun 2020 13:21:09 +0800
+Message-Id: <20200623052112.198682-1-wqu@suse.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-[395198.926320] BTRFS warning (device sdc1): csum failed root 5 ino 276 off 
-19267584 csum 0x8941f998 expected csum 0xccd545e0 mirror 1
-[395199.147439] BTRFS warning (device sdc1): csum failed root 5 ino 276 off 
-20611072 csum 0x8941f998 expected csum 0xdaf657cb mirror 1
-[395199.183680] BTRFS warning (device sdc1): csum failed root 5 ino 276 off 
-24190976 csum 0x8941f998 expected csum 0xcddce0b1 mirror 1
-[395199.185172] BTRFS warning (device sdc1): csum failed root 5 ino 276 off 
-19267584 csum 0x8941f998 expected csum 0xccd545e0 mirror 1
-[395199.330841] BTRFS warning (device sdc1): csum failed root 5 ino 277 off 0 
-csum 0x8941f998 expected csum 0xa54d865c mirror 1
+Before this patch, btrfs_truncate_block() never checks the NODATACOW
+bit, thus when we run out of data space, we can return ENOSPC for
+truncate for NODATACOW inode.
 
-I have a USB stick that's corrupted, I get the above kernel messages when I 
-try to copy files from it.  But according to btrfs dev sta it has had 0 read 
-and 0 corruption errors.
+This patchset will address this problem by doing the same behavior as
+buffered write to address it.
 
-root@xev:/mnt/tmp# btrfs dev sta .
-[/dev/sdc1].write_io_errs    0
-[/dev/sdc1].read_io_errs     0
-[/dev/sdc1].flush_io_errs    0
-[/dev/sdc1].corruption_errs  0
-[/dev/sdc1].generation_errs  0
-root@xev:/mnt/tmp# uname -a
-Linux xev 5.6.0-2-amd64 #1 SMP Debian 5.6.14-1 (2020-05-23) x86_64 GNU/Linux
+Changelog:
+v2:
+- Rebased to misc-next
+  Only one minor conflict in ctree.h
+
+v3:
+- Added two new patches
+- Refactor check_can_nocow()
+  Since the introduction of nowait, check_can_nocow() are in fact split
+  into two usage patterns: check_can_nocow(nowait = false) with
+  btrfs_drew_write_unlock(), and single check_can_nocow(nowait = true).
+  Refactor them into two functions: start_nocow_check() paired with
+  end_nocow_check(), and single try_nocow_check(). With comment added.
+
+- Rebased to latest misc-next
+
+- Added btrfs_assert_drew_write_locked() for btrfs_end_nocow_check()
+  This is a little concerning one, as it's in the hot path of buffered
+  write.
+  It has percpu_counter_sum() called in that hot path, causing
+  obvious performance drop for CONFIG_BTRFS_DEBUG build.
+  Not sure if the assert is worthy since there aren't any other users.
+
+v4:
+- Rebased to latest misc-next
+
+- Comment update to follow the relaxed kernel-doc format
+
+- Re-order the patches
+  So the fix comes first, then refactors.
+
+- Naming updates for the refactor patch
+  Now the exported pair is btrfs_check_nocow_lock() and
+  btrfs_check_nocow_unlock().
+
+- Remove the btrfs_assert_drew_write_lock()
+  It's extremely slow for btrfs/187, and we only have two call sites so
+  far, thus it's not really worthy.
+
+Qu Wenruo (3):
+  btrfs: allow btrfs_truncate_block() to fallback to nocow for data
+    space reservation
+  btrfs: add comments for btrfs_check_can_nocow() and can_nocow_extent()
+  btrfs: refactor btrfs_check_can_nocow() into two variants
+
+ fs/btrfs/ctree.h |  3 +++
+ fs/btrfs/file.c  | 62 ++++++++++++++++++++++++++++++++++++-----------
+ fs/btrfs/inode.c | 63 +++++++++++++++++++++++++++++++++++++++++-------
+ 3 files changed, 105 insertions(+), 23 deletions(-)
 
 -- 
-My Main Blog         http://etbe.coker.com.au/
-My Documents Blog    http://doc.coker.com.au/
-
-
+2.27.0
 
