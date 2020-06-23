@@ -2,105 +2,126 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62813205017
-	for <lists+linux-btrfs@lfdr.de>; Tue, 23 Jun 2020 13:12:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F0D2205024
+	for <lists+linux-btrfs@lfdr.de>; Tue, 23 Jun 2020 13:13:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732333AbgFWLMO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 23 Jun 2020 07:12:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51928 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732294AbgFWLMN (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 23 Jun 2020 07:12:13 -0400
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DF59C061795
-        for <linux-btrfs@vger.kernel.org>; Tue, 23 Jun 2020 04:12:13 -0700 (PDT)
-Received: by mail-io1-xd42.google.com with SMTP id h4so15429931ior.5
-        for <linux-btrfs@vger.kernel.org>; Tue, 23 Jun 2020 04:12:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=D7l/Y2nU4ivOXB3kYNarWKNDy1SUWuawPt7q4q/Bhv4=;
-        b=axGqjzaTyJ+lJT1hM8izgR8uyUgPdcCbnpe3KTa0qTvN0z/ZHDpkGapJfG3nYfB9jE
-         psgjROrfGaLof/1Uih6Py0L+Y6cg19n6lUz0mtQG5QQpp4j+V+sBDIlnIwQvAeTsu9jk
-         xhzJZLf7UEYI25sLIMauR2WxOb6jyH6ErG/shF/fbi/UwNQUtCeu3GjwvaW1O5A1M3rJ
-         NCKN4ZvIUnFFyXsZHsTwlqlSVdObiaw6wiR9TTaVgDoX2c88JiHlg8MpabYpXE5SnYnu
-         mgQvxmU+PNfR/FKYcFv2nftxzCyO78HyTcHbBwi4Cta0s7gxm/8U82VnAj9fgt06n43b
-         /6fQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=D7l/Y2nU4ivOXB3kYNarWKNDy1SUWuawPt7q4q/Bhv4=;
-        b=mX5AMPqJHdtbYJbW3mcnac6JPnL4AVj1Pd2U/6ExsUWzhPptZBtizHAUOXEBpWOHbL
-         gjh7DlkRxJ/d0AmWcM4w7pGLUOURDXtaM+iiFOEY7ghhpM6/mZjwVhiHXSOmSsZP5YQ3
-         Rmhsk1WKbzkk6+bs2EQikVhQXqn/IPo21ciu+8iZyX5CHyJRFs5j6xbDXSSI92+Ws6NS
-         P3693CMpF+4HWBXPdHIFRUZC32XEBW8Ql+8AUgbzkSKVzbKqH+4O3gRindelA7nEnGOM
-         n2n5y1M+cCvqRgC29QOvLz0R5F51BZvaKt2PaCj9AbSVPJXZV7Wc7ZThDjluOsNAQfRG
-         HtZA==
-X-Gm-Message-State: AOAM532dYkV/2FduD1IMg71Gf1PqroqoZugbDe6gp+yBa7XMMhOPKjOj
-        H6Me/mPN7FOzfiAK0jQJLY/sFR/h21zsUUllBqc=
-X-Google-Smtp-Source: ABdhPJwvUq+2Ivn87BI3Pq43GN/8Mco3VfvvPXplpo2rDoXWN8huhiB86ufLwamBZeuGmVXjsTGQ+3tFhQeW0Z1DjYw=
-X-Received: by 2002:a05:6602:2e05:: with SMTP id o5mr24846278iow.28.1592910732582;
- Tue, 23 Jun 2020 04:12:12 -0700 (PDT)
+        id S1732424AbgFWLNH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 23 Jun 2020 07:13:07 -0400
+Received: from mx2.suse.de ([195.135.220.15]:38638 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732233AbgFWLNG (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 23 Jun 2020 07:13:06 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id C5B80AEE6;
+        Tue, 23 Jun 2020 11:13:04 +0000 (UTC)
+Subject: Re: btrfs dev sta not updating
+To:     Russell Coker <russell@coker.com.au>
+Cc:     linux-btrfs@vger.kernel.org
+References: <4857863.FCrPRfMyHP@liv> <5752066.y3qnG1rHMR@liv>
+ <d4c28f49-f6fc-0fc7-0c4d-4fe8b3ce32a9@suse.com> <6248217.VoG1EAXHid@liv>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <00ce925f-e8bb-be84-40bb-25fd215891e6@suse.com>
+Date:   Tue, 23 Jun 2020 14:13:04 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Received: by 2002:a05:6638:14d3:0:0:0:0 with HTTP; Tue, 23 Jun 2020 04:12:12
- -0700 (PDT)
-Reply-To: sarahkoffi389@yahoo.co.jp
-From:   Sarah Koffi <elnana194@gmail.com>
-Date:   Tue, 23 Jun 2020 12:12:12 +0100
-Message-ID: <CA+NUCuSUkGsphZ0sk91h7L5Z-hTB10qComzbHRBbJczs=HeS5g@mail.gmail.com>
-Subject: Greetings From Mrs. Sarah Koffi
-To:     sarahkoffi389@yahoo.co.jp
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <6248217.VoG1EAXHid@liv>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Greetings From Mrs. Sarah Koffi
 
-I'm contacting you based on your good profiles I read and for a good
-reasons, I am in search of a property to buy in your country as I
-intended to come over to your
-country for investment, Though I have not meet with you before but I
-believe that one has to risk confiding in someone to succeed sometimes
-in life.
 
-My name is Mrs. Sarah Koffi. My late husband deals on Crude Oil with
-Federal Government of Sudan and he has a personal Oil firm in Bentiu
-Oil zone town and Upper
-Nile city. What I have experience physically, I don't wish to
-experience it again in my life due to the recent civil Ethnic war
-cause by our President Mr. Salva Kiir
-and the rebel leader Mr Riek Machar, I have been Under United Nation
-refuge camp in chad to save my life and that of my little daughter.
+On 23.06.20 г. 12:48 ч., Russell Coker wrote:
+> On Tuesday, 23 June 2020 6:17:00 PM AEST Nikolay Borisov wrote:
+>>> In this case I'm getting application IO errors and lost data, so if the
+>>> error count is designed to not count recovered errors then it's still not
+>>> doing the right thing.
+>>
+>> In this case yes, however this was utterly not clear from your initial
+>> email. In fact it seems you have omitted quite a lot of information. So
+>> let's step back and start afresh. So first give information about your
+>> current btrfs setup by giving the output of:
+>>
+>> btrfs fi usage /path/to/btrfs
+> 
+> # btrfs fi usa .
+> Overall:
+>     Device size:                  62.50GiB
+>     Device allocated:             19.02GiB
+>     Device unallocated:           43.48GiB
+>     Device missing:                  0.00B
+>     Used:                         16.26GiB
+>     Free (estimated):             44.25GiB      (min: 22.51GiB)
+>     Data ratio:                       1.00
+>     Metadata ratio:                   2.00
+>     Global reserve:               17.06MiB      (used: 0.00B)
+> 
+> Data,single: Size:17.01GiB, Used:16.23GiB (95.43%)
+>    /dev/sdc1      17.01GiB
+> 
+> Metadata,DUP: Size:1.00GiB, Used:17.19MiB (1.68%)
+>    /dev/sdc1       2.00GiB
+> 
+> System,DUP: Size:8.00MiB, Used:16.00KiB (0.20%)
+>    /dev/sdc1      16.00MiB
+> 
+> Unallocated:
+>    /dev/sdc1      43.48GiB
 
-Though, I do not know how you will feel to my proposal, but the truth
-is that I sneaked into Chad our neighboring country where I am living
-now as a refugee.
-I escaped with my little daughter when the rebels bust into our house
-and killed my husband as one of the big oil dealers in the country,
-ever since then, I have being on the run.
+Do you use compression on this filesystem i.e have you mounted with
+-ocompression= option ?
 
-I left my country and move to Chad our neighboring country with the
-little ceasefire we had, due to the face to face peace meeting accord
-coordinated by the US Secretary of State, Mr John Kerry and United
-Nations in Ethiopia (Addis Ababa) between our President Mr Salva Kiir
-and the rebel leader Mr Riek Machar to stop this war.
+Based on this data alone it's evident that you don't really have mirrors
+of the data, in this case having experienced the checksum errors should
+have indeed resulted in error counters being incremented. I'll look into
+this.
 
-I want to solicit for your partnership with trust to invest the $8
-million dollars deposited by my late husband in Bank because my life
-is no longer safe in our country, since the rebels are looking for the
-families of all the oil business men in the country to kill, saying
-that they are they one that is milking the country dry.
-
-I will offer you 20% of the total fund for your help while I will
-partner with you for the investment in your country.
-If I get your reply.
-
-I will wait to hear from you so as to give you details.With love from
-
- i need you to contact me here sarahkoffi389@yahoo.co.jp
-
-Mrs. Sarah Koffi
+<snip>
