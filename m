@@ -2,119 +2,93 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD6A020542E
-	for <lists+linux-btrfs@lfdr.de>; Tue, 23 Jun 2020 16:10:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 341CA20554B
+	for <lists+linux-btrfs@lfdr.de>; Tue, 23 Jun 2020 16:58:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732766AbgFWOKv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 23 Jun 2020 10:10:51 -0400
-Received: from mail-wm1-f68.google.com ([209.85.128.68]:40869 "EHLO
-        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732720AbgFWOKu (ORCPT
+        id S1732866AbgFWO6o (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 23 Jun 2020 10:58:44 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:32922 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732738AbgFWO6o (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 23 Jun 2020 10:10:50 -0400
-Received: by mail-wm1-f68.google.com with SMTP id f139so1958098wmf.5
-        for <linux-btrfs@vger.kernel.org>; Tue, 23 Jun 2020 07:10:48 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=8HQtq6/PsEMVkFh06uQcpZoI2BZq3AK+tD+s3Fzskfs=;
-        b=HMQEIYV52Jpsxu19xq+vlFy0/x62KeOS/HEfbl9wN+ytyrFf8Kna7ow79znqxjpG8B
-         q+UrPJIE+w3TUwilQW/FoSyvTFtk49Pt0AQc6WEQAi02Fm0/WPfpw5WW46tsUrBzrSwh
-         0MHf8vY47Kx1F1HgRgxgd+CYcqsIg4a5lutpmtfiOX+6od3V9lJ3m9kjS46crrqu4mRU
-         pvMMBc6PqSgMsUQ242c5khw8zptbnWfHy/8THlQ8+efcEQPCFny7Drw0SVGve5lNf1OE
-         8yw/iVkb9sV57N6bvamrEoJiv8ei8aV9O6Ctb8COPwf+WCdUQcqB3nBOVhXysGWmff1G
-         I0fw==
-X-Gm-Message-State: AOAM530NhepsA4GOsz6BI1WbuJgCg+E4kRGzysABrRMZCBQNDiAUGMYA
-        XE3DdONmFRKl2shgR9wIeIo=
-X-Google-Smtp-Source: ABdhPJy768BpjQy9p0nAhjCH1VWZX4Hts+sFMDKaJLEP6bYG974hp0SbhFot7fuDjrYdA9QkcnL8kQ==
-X-Received: by 2002:a1c:449:: with SMTP id 70mr22591932wme.149.1592921448368;
-        Tue, 23 Jun 2020 07:10:48 -0700 (PDT)
-Received: from NUC.fritz.box ([2001:a62:1515:bd01:f64d:30ff:fe6c:acb5])
-        by smtp.gmail.com with ESMTPSA id n1sm22529497wrp.10.2020.06.23.07.10.47
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 23 Jun 2020 07:10:47 -0700 (PDT)
-From:   Johannes Thumshirn <jth@kernel.org>
-To:     David Sterba <dsterba@suse.com>
-Cc:     linux-btrfs@vger.kernel.org, Qu Wenruo <wqu@suse.com>,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Subject: [PATCH 4/4] btrfs-progs: remove btrfs_raid_profile_table
-Date:   Tue, 23 Jun 2020 16:10:19 +0200
-Message-Id: <20200623141019.23991-5-jth@kernel.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200623141019.23991-1-jth@kernel.org>
-References: <20200623141019.23991-1-jth@kernel.org>
+        Tue, 23 Jun 2020 10:58:44 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05NEvkiX106438;
+        Tue, 23 Jun 2020 14:58:40 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=d0JMp+/e1uW0pgFfx/S58SZINuWbKqXIHj5Kd9+wqRI=;
+ b=gaq+f5csykf7lC9Nyhi1B1xplxHt1/ppaOlyPkBDiqG/GioeoRyncaVmYJeD+iyYgepS
+ 55V62vkz6x4EW6YHOIgiMFH0L2upgGRIoJdwqm25mOMIAgGOnMoo/8z2oDGuoVpIas9T
+ VqRmmV0OFH6sC3R+sYYs/rKAZlUmeDXYchsiytnEsL8rmTQ15S6HUOtvG1vOxMk5zB9j
+ eApyJZTvV3+n930auaYlstDsjHsMk8+SZiYlmpDjOgOxY34eXuI1vYYFlEO6BPgA8Hz/
+ cOxrPxWQPejCjWbhWibKQbXKESDIs6trkCoRVXkOmfbgIT+a3qIcsJdf8CpUi1ezfStk 4g== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2120.oracle.com with ESMTP id 31uk3c0bty-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 23 Jun 2020 14:58:40 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05NEm33e125658;
+        Tue, 23 Jun 2020 14:56:40 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3020.oracle.com with ESMTP id 31uk3gmjrc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 23 Jun 2020 14:56:39 +0000
+Received: from abhmp0020.oracle.com (abhmp0020.oracle.com [141.146.116.26])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 05NEucwT023298;
+        Tue, 23 Jun 2020 14:56:38 GMT
+Received: from [192.168.1.102] (/39.109.231.106)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 23 Jun 2020 14:56:38 +0000
+Subject: Re: [PATCH v4 3/3] btrfs: refactor btrfs_check_can_nocow() into two
+ variants
+To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+References: <20200623052112.198682-1-wqu@suse.com>
+ <20200623052112.198682-4-wqu@suse.com>
+From:   Anand Jain <anand.jain@oracle.com>
+Message-ID: <ed6eedb1-26e9-c209-900f-069322a02503@oracle.com>
+Date:   Tue, 23 Jun 2020 22:56:35 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200623052112.198682-4-wqu@suse.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9661 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 phishscore=0 bulkscore=0
+ suspectscore=0 malwarescore=0 adultscore=0 mlxlogscore=999 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006120000
+ definitions=main-2006230116
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9661 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 impostorscore=0 mlxscore=0
+ malwarescore=0 spamscore=0 lowpriorityscore=0 suspectscore=0 adultscore=0
+ phishscore=0 mlxlogscore=999 clxscore=1015 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006120000
+ definitions=main-2006230117
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 
-For SINGLE and DUP RAID profiles we can get the num_stripes values from
-btrfs_raid_attr::dev:stripes. For all other RAID profiles the value is
-calculated anyways.
 
-As this was the last remaining member of the btrfs_raid_profile_table we
-can remove it as well.
 
-Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
----
- volumes.c | 34 +---------------------------------
- 1 file changed, 1 insertion(+), 33 deletions(-)
+> +static int check_nocow_nolock(struct btrfs_inode *inode, loff_t pos,
+> +			      size_t *write_bytes)
+> +{
+> +	return check_can_nocow(inode, pos, write_bytes, false);
+> +}
 
-diff --git a/volumes.c b/volumes.c
-index 71c3735d..e8b4aad8 100644
---- a/volumes.c
-+++ b/volumes.c
-@@ -998,44 +998,12 @@ error:
- 				- 2 * sizeof(struct btrfs_chunk))	\
- 				/ sizeof(struct btrfs_stripe) + 1)
- 
--static const struct btrfs_raid_profile {
--	int	num_stripes;
--} btrfs_raid_profile_table[BTRFS_NR_RAID_TYPES] = {
--	[BTRFS_RAID_RAID10] = {
--		.num_stripes = 0,
--	},
--	[BTRFS_RAID_RAID1] = {
--		.num_stripes = 0,
--	},
--	[BTRFS_RAID_RAID1C3] = {
--		.num_stripes = 0,
--	},
--	[BTRFS_RAID_RAID1C4] = {
--		.num_stripes = 0,
--	},
--	[BTRFS_RAID_DUP] = {
--		.num_stripes = 2,
--	},
--	[BTRFS_RAID_RAID0] = {
--		.num_stripes = 0,
--	},
--	[BTRFS_RAID_SINGLE] = {
--		.num_stripes = 1,
--	},
--	[BTRFS_RAID_RAID5] = {
--		.num_stripes = 0,
--	},
--	[BTRFS_RAID_RAID6] = {
--		.num_stripes = 0,
--	},
--};
--
- static void init_alloc_chunk_ctl(struct btrfs_fs_info *info,
- 				 struct alloc_chunk_ctl *ctl)
- {
- 	int type = ctl->type;
- 
--	ctl->num_stripes = btrfs_raid_profile_table[type].num_stripes;
-+	ctl->num_stripes = btrfs_raid_array[type].dev_stripes;
- 	ctl->min_stripes = btrfs_raid_array[type].devs_min;
- 	ctl->sub_stripes = btrfs_raid_array[type].sub_stripes;
- 	ctl->stripe_len = BTRFS_STRIPE_LEN;
--- 
-2.26.2
 
+> +int btrfs_check_nocow_lock(struct btrfs_inode *inode, loff_t pos,
+> +			   size_t *write_bytes)
+> +{
+> +	return check_can_nocow(inode, pos, write_bytes, false);
+> +}
+
+
+  Both functions are same.  Something obviously not ok.
+
+Thanks, Anand
