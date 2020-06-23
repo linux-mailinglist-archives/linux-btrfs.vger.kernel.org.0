@@ -2,33 +2,32 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E0F8204969
-	for <lists+linux-btrfs@lfdr.de>; Tue, 23 Jun 2020 07:58:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D555204977
+	for <lists+linux-btrfs@lfdr.de>; Tue, 23 Jun 2020 08:03:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730544AbgFWF6O (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 23 Jun 2020 01:58:14 -0400
-Received: from mout.gmx.net ([212.227.15.19]:58751 "EHLO mout.gmx.net"
+        id S1730586AbgFWGDF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 23 Jun 2020 02:03:05 -0400
+Received: from mout.gmx.net ([212.227.15.15]:34653 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730568AbgFWF6N (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 23 Jun 2020 01:58:13 -0400
+        id S1728800AbgFWGDE (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 23 Jun 2020 02:03:04 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1592891887;
-        bh=3z113nTemgs/v57EldlzBmxRJq1TeNd6Y9xCEAwXbso=;
+        s=badeba3b8450; t=1592892178;
+        bh=xSRjehXbGHbPjTDmmQqKC99dMxnaZNCM05uY8NkrrMU=;
         h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=il7e5DJ5de0GX4DyVEJULo8s0Sp4Y05oDKj5nm3sK9f5mRyakqglPkBmuJHisZPZ1
-         DkVs53hHCyoM6lZOQz4aqBlp3eFPzdhAXjmrBY/cVD4lFdDEK+7VLUKNW0MBJA4IhN
-         aNJ/uz4T+W+KbkWOBzB6r+CCAq916w48xxdSgAPE=
+        b=eoOvfMEOhHnljT6JEqwfT2u7ZRb+e1mKXvKgb5ssWcp+GrP1ThQfPd0wnDrxgYAiK
+         WqhNELJfoZyV1PPJv0hEPwOu7gTfBwzqTjjJ7iZwFvW8WNOWNtLo9fczIjkQWKnbEi
+         OeyHccibNIshPLpUFm8QAo18sVVLs/5h2Dmbb9fc=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
 Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MvsEn-1iy7on0pvj-00svmg; Tue, 23
- Jun 2020 07:58:06 +0200
-Subject: Re: [PATCH 01/15] btrfs-progs: simplify minimal stripe number
- checking
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MJE2D-1jYXsZ3LXH-00Kg9i; Tue, 23
+ Jun 2020 08:02:57 +0200
+Subject: Re: [PATCH 13/15] btrfs-progs: introduce init_alloc_chunk_ctl
 To:     Johannes Thumshirn <johannes.thumshirn@wdc.com>,
         David Sterba <dsterba@suse.cz>
 Cc:     linux-btrfs@vger.kernel.org
 References: <20200610123258.12382-1-johannes.thumshirn@wdc.com>
- <20200610123258.12382-2-johannes.thumshirn@wdc.com>
+ <20200610123258.12382-14-johannes.thumshirn@wdc.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -54,49 +53,49 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  oCEEynby72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAk
  ZkA523JGap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gG
  UO/iD/T5oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <966bb313-20b1-37a9-f466-801b16fe8dfd@gmx.com>
-Date:   Tue, 23 Jun 2020 13:58:02 +0800
+Message-ID: <5db5e549-e400-5ab4-7f10-33e682196e80@gmx.com>
+Date:   Tue, 23 Jun 2020 14:02:51 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.9.0
 MIME-Version: 1.0
-In-Reply-To: <20200610123258.12382-2-johannes.thumshirn@wdc.com>
+In-Reply-To: <20200610123258.12382-14-johannes.thumshirn@wdc.com>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="FdVUX7cAV5wL4Hl8UceAZHBhGQus3brTe"
-X-Provags-ID: V03:K1:Acu0//iISQW6Z+HdKTeEF5G+lXQFwgJgiVzwMzg3ifUAJEUH94h
- e4asSvbZfnaKguItVG6RAS//ZGzE09tdfX+Ej6xV0Oo45pFk66wNe/1EHJUToU1d9Tk4YWY
- RixSI9u3L03YkH2GIYpOAhZ9fBRQGrRwimFmUptyL6RJmJDx07GrDv+ks8WH66Olwlg/+fP
- 1hv2Zb1sxgjBCZCuVD86A==
+ boundary="flmBV1kInnGvacvONbnuQtmV3JuOz5I2v"
+X-Provags-ID: V03:K1:PvLn5kqPl+XyxKUcOKOwcmhSiqsV02COVQIs8bVI3o7WfYko8pq
+ CdrQr4Ev6A/egAqyTLdFZBbdB58SFjRBWRaMPZP1GcZTmRCdWjTLO0+exvXPGht/eeCZcaP
+ H//5MJ31PMax/0m6dVWTWm4PF/4sbd6bAcYZyxE4hIpvGiR/mWu5B2XNnr5CsHyc0OeEKRl
+ PcjYfRnlERvLegeXpkYjQ==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:LiIeobMoZkY=:FUfMAs91Y38+r9PZYdDLTa
- k2nz0sPrKwzI2fNNUraWrrx8fC9N+PqlNoQS/GWuKzkMPUQCzsqwz4HspLH0Nq6c3i4xzg/x4
- vXgzKu+6umHcFb4O033O94XiN9Fi2aorPaUfXMY1MSA8IPIkbHnbZwD3uIOBxMC9wobDCVkRN
- TOrm0qw/dkz83urkcxvkxVhWG4WijhmEf5q+aHSm0zPaPBzF6FzH/xH7lX4pkuMaMkVZ4klb2
- R27t+kPyfrb33Blfph39eWFtl4S5XuUeBe1cHVOUfZyDhk6/j7d58YB9PCI6dV9QD9S7tGpL3
- a2QUeDZxoiX8Lz0Ko/U+N2UXyXHXMbqXmT7TLJ0Q8Xx6uNYR+h9yJ0Ctx7dIqcydtRoJnqieM
- dscUxaUvwDggnCxD1P1x0jXNE2gO9Db4wAZjqOGf+ZlEQyzF26aEIAfMQSH0p0ZT7znh3kvzC
- rF6as7X8XsXD53ThdypbHEk3Im1YpSIs6sF3DMCOibIgObYX58a/R6NyG3TlQ9lkAcvmNiAcJ
- 6Gf7DlFpJh8VFHY2MtRZbVpArTEq2SVEl4AvaqeJyKUQnFU7FlE2iytfbtS/q0APP3hg1GcJj
- P9oXUYIWRyQEr1uYBDKpJh8Qu/dT7iBEQ+JYnTzPqAWE9zIWgp9n5tWTgiGavmhni7Yb+3y+g
- hNfdSsIkvP26MInWTV+x42SjpFEXVzANWKpyeGNPRrbauDANU0VTnV+EC60icF2wSEZtQnmFW
- ZsJP8ljWZCLUTNvE36/RFedtAtZ81FddNyffYac4ckQ4MdMgQ+gS2wIL1YXmaryqfb+NYia8E
- DFtcRNUmXWFTE/piYs4bEAh/fPjx88DOg3FT5rBOHoSEGAaWC+wo/oSJ5u4tsCKzUp2dG4cGj
- 3aJxuDZlrpog8JmiybyHSbtMIa7ktxet+QwVqncXrkTGcf+8fqeWINSZ2Og6Du0+SmLZ5f58/
- kmvX0WOcdjD8L5tpHpns9hHX3xj8A4IAPyHTNt15mk9nn1SqVZWQDvCqigmdWhxmttnc9gjdp
- l6wWOQMZmu/lskicEB6iGrFPGrSl8KcYdN9h87ei6h9cQwvUIdraP21SU649KAC3rqUP5pCeF
- poTJi9DUh8Leg5aB6lw9dBSlYivuIkqiGeiuZU2r8R6o+0YS/im5/ymwivza8L9IvLJ45XwgB
- lvvDRV854v44iSteNu3VJNaxoI63yW8gaPIunJjSHZ1G7sli+H7NhOMBNtr3fiwHS28nvz4D9
- /cgRnpj60vBvMKP77
+X-UI-Out-Filterresults: notjunk:1;V03:K0:iCBclRTvSno=:gup+7flhK7kjywA00Vp59G
+ zUSjkKJTpXcI3KfJUjl+QelH6VmtqyNLBdkzdAtpDpzQuoVpc2ao7YTVOnGvFVjLGTuYBgDyS
+ G6uowSjipusV36pst3/kRqx6EyOvfB0jzOYGeRAdNa0OCQBmy9+JyDBmqoxlK0/eVk6o2N2jL
+ Z5F/vT4fcCo0hsKtgaDgJtSqqlHvAUdz3P/1nMUGI7jQtDT1YKJKVPUWTbbx4beMFlQJSR0ql
+ iKu8EsiAqcLNmH3AkXc8ggdihtj4vaCMVwOAhnfSbiyThxs7bIBaZV/Ra0D7pz3k4val6c5hI
+ dulUnOXO+79VIHT7duSYEJ+dfwvdi6uLIfzFm0WvLbXDHLkSNyGsP9XSFQx+bA2W5hEmMdhag
+ bf6j8dFVLpGU1gBFYn0zjrx6Gsj5ntuuMiW4E4B60Zgu2oyIirKqI0WRAU6l8AejYq7rVMeCn
+ PO9+Hw+nbUe40WRtogh9iz1Na6D0NWeIHiWd9uiyhodKafbDd0VJDMEKumesyOVG17hGzAkqe
+ MiQhdoWdtX1qn4LDSNzO6qp/sxLZTtPVF0zfhdbRTeAkuyskhsgRE5JBImCoGmTrDWGzacO93
+ YT7vUgq7bmUaaoPBx1Fx5NsGG6uvwKwLSEaMYE8uuYT3Vazv+fDwmS3MjqvnkJPN7qhAX4nA3
+ YZO5MdamJXilqx8qeYNVaW4jyWX9GaIay5JWi6quALGpMozNhKbAsKDqb5QpspRtSGt8XL+Bv
+ lewlKftbhEo0UAFKRNpKdKzYeYldc72/qu9PPuI5PIvB6uWtX9kOFZvN2coU7Q0pI2v1Iqwvn
+ rWfqle9buAfVZIQjcB6WDpxkHrSiyIh2nMFwAYMuvDaIyWqfqsKOd/Jm89DNMmqo3StM7H7Hz
+ oEh9O3rd27Pez1YNjDq6a1eir8QyxKO4FAtqs+8JNrHBoYQPLLGYDTub3N5yH9LkQGxc5AsoZ
+ iGT+T/MLSs6YsXFXMMqevNhRn7ukan0mIx5foenx+5+tC8lIrbWyyWE4kF+2iyh+ocMNdfKn1
+ BoFSScFXgCo0fe9IQynFZI6RuDpvEDTCBdRe7hkPdaAN32M5oTIYPNmaE2wcPqZ1waOvnvxqd
+ c8mDz/eX5dt2n/m6Ap3fZwEiv55MYgOiPU+tIYPQQ2yQkPzQKH779l44CaQNfzmx3lwdAOCI4
+ NHYmJRY7mZkQr8YazrQQyOykSCP0Csx2poWJbLIw6UA2ylpMA5D/yK9lYFaw8F9yDRCAqDWAy
+ evXP/rTT9hQEkJCR/
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---FdVUX7cAV5wL4Hl8UceAZHBhGQus3brTe
-Content-Type: multipart/mixed; boundary="5UXRySYKo1A4QGK2MOWrmBoMLNKaD17bW"
+--flmBV1kInnGvacvONbnuQtmV3JuOz5I2v
+Content-Type: multipart/mixed; boundary="v2o8sjBTHivlC8bnmTlSaDondClmMXVMD"
 
---5UXRySYKo1A4QGK2MOWrmBoMLNKaD17bW
+--v2o8sjBTHivlC8bnmTlSaDondClmMXVMD
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
@@ -104,130 +103,143 @@ Content-Transfer-Encoding: quoted-printable
 
 
 On 2020/6/10 =E4=B8=8B=E5=8D=888:32, Johannes Thumshirn wrote:
-> In btrfs_alloc_chunk_ctrl() we have a recurring pattern, first we assig=
-n
-> num stripes, then we test if num_stripes is smaller than a hardcoded
-> boundary and after that we set min_stripes to this magic value.
->=20
-> Reverse the logic by first assigning min_stripes and then testing
-> num_stripes against min_stripes.
->=20
-> This will help further refactoring.
+> Factor out setting of alloc_chuk_ctl fileds in a separate function
+> init_alloc_chunk_ctl.
 >=20
 > Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+> ---
+>  volumes.c | 70 +++++++++++++++++++++++++++++++------------------------=
 
-I'm wondering why we don't use btrfs_raid_attr::devs_min.
+>  1 file changed, 40 insertions(+), 30 deletions(-)
+>=20
+> diff --git a/volumes.c b/volumes.c
+> index 57d0db5463ef..aacff6e0656b 100644
+> --- a/volumes.c
+> +++ b/volumes.c
+> @@ -1067,6 +1067,44 @@ static const struct btrfs_raid_profile {
+>  	},
+>  };
+> =20
+> +static void init_alloc_chunk_ctl(struct btrfs_fs_info *info,
+> +				 struct alloc_chunk_ctl *ctl)
+> +{
+> +	int type =3D ctl->type;
+> +
+> +	ctl->num_stripes =3D btrfs_raid_profile_table[type].num_stripes;
+> +	ctl->min_stripes =3D btrfs_raid_profile_table[type].min_stripes;
+> +	ctl->sub_stripes =3D btrfs_raid_profile_table[type].sub_stripes;
+> +	ctl->stripe_len =3D BTRFS_STRIPE_LEN;
+> +
+> +	switch (type) {
+> +	case BTRFS_RAID_RAID1:
+> +	case BTRFS_RAID_RAID1C3:
+> +	case BTRFS_RAID_RAID1C4:
+> +		ctl->num_stripes =3D min(ctl->min_stripes, ctl->total_devs);
 
-In fact, I'm a little surprised why use so little of that structure, but
-relies on so many if branches to do the check.
+The kernel code looks more elegant to me, no switch at all and takes
+full advantage of btrfs_raid_attr.
+
+Although your work is already pretty awesome, mind to make it even better=
+?
 
 Thanks,
 Qu
 
-> ---
->  volumes.c | 30 +++++++++++++++---------------
->  1 file changed, 15 insertions(+), 15 deletions(-)
->=20
-> diff --git a/volumes.c b/volumes.c
-> index 7f84fbbaa742..089363f66473 100644
-> --- a/volumes.c
-> +++ b/volumes.c
-> @@ -1054,25 +1054,25 @@ int btrfs_alloc_chunk(struct btrfs_trans_handle=
- *trans,
+> +		break;
+> +	case BTRFS_RAID_RAID0:
+> +		ctl->num_stripes =3D min(ctl->max_stripes, ctl->total_devs);
+> +		break;
+> +	case BTRFS_RAID_RAID10:
+> +		ctl->num_stripes =3D min(ctl->max_stripes, ctl->total_devs);
+> +		ctl->num_stripes &=3D ~(u32)1;
+> +		break;
+> +	case BTRFS_RAID_RAID5:
+> +		ctl->num_stripes =3D min(ctl->max_stripes, ctl->total_devs);
+> +		ctl->stripe_len =3D find_raid56_stripe_len(ctl->num_stripes - 1,
+> +				    btrfs_super_stripesize(info->super_copy));
+> +		break;
+> +	case BTRFS_RAID_RAID6:
+> +		ctl->num_stripes =3D min(ctl->max_stripes, ctl->total_devs);
+> +		ctl->stripe_len =3D find_raid56_stripe_len(ctl->num_stripes - 2,
+> +				    btrfs_super_stripesize(info->super_copy));
+> +		break;
+> +	default:
+> +		break;
+> +	}
+> +}
+> +
+>  int btrfs_alloc_chunk(struct btrfs_trans_handle *trans,
+>  		      struct btrfs_fs_info *info, u64 *start,
+>  		      u64 *num_bytes, u64 type)
+> @@ -1100,11 +1138,7 @@ int btrfs_alloc_chunk(struct btrfs_trans_handle =
+*trans,
+>  	}
+> =20
+>  	ctl.type =3D btrfs_bg_flags_to_raid_index(type);
+> -	ctl.num_stripes =3D btrfs_raid_profile_table[ctl.type].num_stripes;
+>  	ctl.max_stripes =3D 0;
+> -	ctl.min_stripes =3D btrfs_raid_profile_table[ctl.type].min_stripes;
+> -	ctl.sub_stripes =3D btrfs_raid_profile_table[ctl.type].sub_stripes;
+> -	ctl.stripe_len =3D BTRFS_STRIPE_LEN;
+>  	ctl.total_devs =3D btrfs_super_num_devices(info->super_copy);
+> =20
+>  	if (type & BTRFS_BLOCK_GROUP_PROFILE_MASK) {
+> @@ -1129,32 +1163,8 @@ int btrfs_alloc_chunk(struct btrfs_trans_handle =
+*trans,
+>  			ctl.max_stripes =3D BTRFS_MAX_DEVS(info);
 >  		}
 >  	}
->  	if (type & BTRFS_BLOCK_GROUP_RAID1) {
-> -		num_stripes =3D min_t(u64, 2,
-> +		min_stripes =3D 2;
-> +		num_stripes =3D min_t(u64, min_stripes,
->  				  btrfs_super_num_devices(info->super_copy));
-> -		if (num_stripes < 2)
-> +		if (num_stripes < min_stripes)
->  			return -ENOSPC;
-> -		min_stripes =3D 2;
->  	}
->  	if (type & BTRFS_BLOCK_GROUP_RAID1C3) {
-> -		num_stripes =3D min_t(u64, 3,
-> +		min_stripes =3D 3;
-> +		num_stripes =3D min_t(u64, min_stripes,
->  				  btrfs_super_num_devices(info->super_copy));
-> -		if (num_stripes < 3)
-> +		if (num_stripes < min_stripes)
->  			return -ENOSPC;
-> -		min_stripes =3D 3;
->  	}
->  	if (type & BTRFS_BLOCK_GROUP_RAID1C4) {
-> -		num_stripes =3D min_t(u64, 4,
-> +		min_stripes =3D 4;
-> +		num_stripes =3D min_t(u64, min_stripes,
->  				  btrfs_super_num_devices(info->super_copy));
-> -		if (num_stripes < 4)
-> +		if (num_stripes < min_stripes)
->  			return -ENOSPC;
-> -		min_stripes =3D 4;
->  	}
->  	if (type & BTRFS_BLOCK_GROUP_DUP) {
->  		num_stripes =3D 2;
-> @@ -1085,32 +1085,32 @@ int btrfs_alloc_chunk(struct btrfs_trans_handle=
- *trans,
->  		min_stripes =3D 2;
->  	}
->  	if (type & (BTRFS_BLOCK_GROUP_RAID10)) {
-> +		min_stripes =3D 4;
->  		num_stripes =3D btrfs_super_num_devices(info->super_copy);
->  		if (num_stripes > max_stripes)
->  			num_stripes =3D max_stripes;
-> -		if (num_stripes < 4)
-> +		if (num_stripes < min_stripes)
->  			return -ENOSPC;
->  		num_stripes &=3D ~(u32)1;
->  		sub_stripes =3D 2;
-> -		min_stripes =3D 4;
->  	}
->  	if (type & (BTRFS_BLOCK_GROUP_RAID5)) {
-> +		min_stripes =3D 2;
->  		num_stripes =3D btrfs_super_num_devices(info->super_copy);
->  		if (num_stripes > max_stripes)
->  			num_stripes =3D max_stripes;
-> -		if (num_stripes < 2)
-> +		if (num_stripes < min_stripes)
->  			return -ENOSPC;
-> -		min_stripes =3D 2;
->  		stripe_len =3D find_raid56_stripe_len(num_stripes - 1,
->  				    btrfs_super_stripesize(info->super_copy));
->  	}
->  	if (type & (BTRFS_BLOCK_GROUP_RAID6)) {
-> +		min_stripes =3D 3;
->  		num_stripes =3D btrfs_super_num_devices(info->super_copy);
->  		if (num_stripes > max_stripes)
->  			num_stripes =3D max_stripes;
-> -		if (num_stripes < 3)
-> +		if (num_stripes < min_stripes)
->  			return -ENOSPC;
-> -		min_stripes =3D 3;
->  		stripe_len =3D find_raid56_stripe_len(num_stripes - 2,
->  				    btrfs_super_stripesize(info->super_copy));
->  	}
+> -	switch (ctl.type) {
+> -	case BTRFS_RAID_RAID1:
+> -	case BTRFS_RAID_RAID1C3:
+> -	case BTRFS_RAID_RAID1C4:
+> -		ctl.num_stripes =3D min(ctl.min_stripes, ctl.total_devs);
+> -		break;
+> -	case BTRFS_RAID_RAID0:
+> -		ctl.num_stripes =3D min(ctl.max_stripes, ctl.total_devs);
+> -		break;
+> -	case BTRFS_RAID_RAID10:
+> -		ctl.num_stripes =3D min(ctl.max_stripes, ctl.total_devs);
+> -		ctl.num_stripes &=3D ~(u32)1;
+> -		break;
+> -	case BTRFS_RAID_RAID5:
+> -		ctl.num_stripes =3D min(ctl.max_stripes, ctl.total_devs);
+> -		ctl.stripe_len =3D find_raid56_stripe_len(ctl.num_stripes - 1,
+> -				    btrfs_super_stripesize(info->super_copy));
+> -		break;
+> -	case BTRFS_RAID_RAID6:
+> -		ctl.num_stripes =3D min(ctl.max_stripes, ctl.total_devs);
+> -		ctl.stripe_len =3D find_raid56_stripe_len(ctl.num_stripes - 2,
+> -				    btrfs_super_stripesize(info->super_copy));
+> -		break;
+> -	default:
+> -		break;
+> -	}
+> +
+> +	init_alloc_chunk_ctl(info, &ctl);
+>  	if (ctl.num_stripes < ctl.min_stripes)
+>  		return -ENOSPC;
+> =20
 >=20
 
 
---5UXRySYKo1A4QGK2MOWrmBoMLNKaD17bW--
+--v2o8sjBTHivlC8bnmTlSaDondClmMXVMD--
 
---FdVUX7cAV5wL4Hl8UceAZHBhGQus3brTe
+--flmBV1kInnGvacvONbnuQtmV3JuOz5I2v
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl7xmeoACgkQwj2R86El
-/qhETggAsdM/gleCDDVAe7si5tx690vYP9iHlZeuGMMC24vatosSqDE8Pa02oPtP
-xr22A5m6RJEgahoag+imztBjoTBRk2IxKLZYENAbNw4eKwQAiO8Yme+t7wX7BTuB
-LD0SQiXLI7Z3SIVl605RVlY77zuXj7sK6uYpLxQQ8j/0hvY+UdwM1xyYxSNwrSNs
-RAznsWqR2ZaVW2EsSQp/8QxA9uRuSmHYUMT6z0GZqlPnFYUwr5n/LBzTiuU3xOe1
-Sy3jgyTbeznz80Cmtk34Z0uYKva3JlaNSnuaoy2WmLPJbEugIpliXoK2wn6ulPdc
-h7gBCvzMOH/drUkOSIIdWR881rWjmg==
-=u3Bo
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl7xmwsACgkQwj2R86El
+/qhU6Af/arjca1l+yb50ZstoFFu3tY+zwYN3eAww1jVgtXNXVIwL8ymiWBqZnXET
+LDK9odSCBF8DyXdzyS4vbzn6ixVUrQwm51DoAaocGkiT78585zgoIalrObHP2RJa
+lsiK9qNEB9sPbaXJ2VynC7D7U2h+iRkskwS9hHnuUx2wgJxzUCUdQcCvPIuJUidL
+o4dB7ybtbfxcn8Gv8YN4IFKNS3h0bPZwFr1vcOplnNFwMfPr4UueLdOJaEQfe9xA
+9YZY9PwuX7WafkzgFKFom0ndUDLN5C+SCd8kR6KaOPHGlO0vAB8QezEYvitpuL9P
+0AazHb+iMD2ukvB615UmlMJ/3Cxldw==
+=rrV+
 -----END PGP SIGNATURE-----
 
---FdVUX7cAV5wL4Hl8UceAZHBhGQus3brTe--
+--flmBV1kInnGvacvONbnuQtmV3JuOz5I2v--
