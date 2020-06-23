@@ -2,132 +2,250 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6410205567
-	for <lists+linux-btrfs@lfdr.de>; Tue, 23 Jun 2020 17:03:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 045FC205577
+	for <lists+linux-btrfs@lfdr.de>; Tue, 23 Jun 2020 17:05:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732881AbgFWPDP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 23 Jun 2020 11:03:15 -0400
-Received: from esa1.hgst.iphmx.com ([68.232.141.245]:34529 "EHLO
-        esa1.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732862AbgFWPDO (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 23 Jun 2020 11:03:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1592924593; x=1624460593;
-  h=from:to:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=agT0/O9undsmZFv5ndte4E6MEa8ZD9I74IeTB5TKhvU=;
-  b=F7kZ17e+PVEok+OL6YZ/juRn/ycs5cvtfJF/x0Ei02ZkrKBe55uDxlKR
-   1poKwGbuNDsgk4fFXlixPuSBilNFzLI2JMYvebd/O+huwWlCW1ZRQcV9b
-   sZfbxpK3wNrkjBAFhW/rJasJ/vxF8E2RqKTbok5rSJatcBZkPcO5ehn+f
-   qEs3DU+V0a+SzjCzxVXHDz2BOoOkR9AgROBQ8qZoK+gwbImwgGODavUy3
-   O/B+Cvhe8x1UNnVjw+/f/Wb/cGQ4DvhXvoOqRvH/ZhaOa2AyB5sZEol5Q
-   LadhRRkKG8ASQhOnUG5rJeU1RLeN1vBlGGwmsMzxuG8airGBksf7fANLY
-   w==;
-IronPort-SDR: VodNdKz/vaioq/EvQM+0AWRDDqw598KL4tkmO6EeHNZ8xQSe5B3xBtLPTJ5IS9sJtjU0oJKFxT
- fveLvqHvHqPDuWMHZV2U/TND0r7BGBTf1dFvm4nLF7smpHbRbyt8VZyrUwpHgZerfbQZprcKb3
- EMQpXNXDp1E583XdPNNXAUbLo+UH2Ay+X4cGdjySlClNTjf/bvSmzN3shM7AE0OICFb8mrtNeb
- Y28a/TcBZJ2x1/s9fn24KWuGAWQAQjWUBoOaZ93t88MyOO9idZifI42ZmTaLEtdVDiJHlCGcTi
- VhU=
-X-IronPort-AV: E=Sophos;i="5.75,271,1589212800"; 
-   d="scan'208";a="249914859"
-Received: from mail-bn8nam11lp2169.outbound.protection.outlook.com (HELO NAM11-BN8-obe.outbound.protection.outlook.com) ([104.47.58.169])
-  by ob1.hgst.iphmx.com with ESMTP; 23 Jun 2020 23:03:13 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=cM1V4er7Jg03DBBtTyBMP5/uf9LH3jFj2y3XinKEFRW3+FuznMU4oQwx79eaJKamfjW70pT0Z2Go2LiEJzUx1i7QunrNBIGkYOLLngR4KuFy6rcGjK6IiwuiFEsorK9VMIb2gd8QVuEgkV9ZGlS4z0Tzp1XW1exLseOizZQuR0pJHus0snt5AlgHh8xLziKkjqZnY9Z2he+dsE5o+fLmaeiP/nm55XI1dCEkohm/UcZDB0pE+3VxwPIsAPcKit9ASP//YheSneVVCKfDV0tJAcZ2stfKHyQ5iviBPXCebI0bt55rmKE6rjY4q4YvihTNDr1Z2a9RycGUq64s0twB+A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=oibfJepdnlRfmEdNlTkfXGivnIvlhDqpE0ojZNInPX0=;
- b=ZZP0lHbV3osYc/yqxXXbZ/lRJGmW5nh1/CREzbI91nAJ5/P8l6buL4EY5mAl/BR8VA8Pv2dY29YWNnzrw8oHHF3wcZkHR/bPnV2m4mzBsoM3eW4J9FD/U3F927d4+2wisFpxGtFa3Io5J2KwR+FS9fSm7/73oimzcEkjao3P1uq6LSSHxUSEa3fR1/671a7mDR4dViH7mZg78ECnRgDEMpP4rk26Gis7UO/EozLp3k5rEfRYy9TngsJWEvCn3c1vUSsuMhNEoGevdMBvFFRyBGd3tWsWPRR2BZS19CS/QQKTxBPKcyaW3V77czmlAI8lJR3amlflUHY0LsJ45C1UwA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=oibfJepdnlRfmEdNlTkfXGivnIvlhDqpE0ojZNInPX0=;
- b=eEEAHKxSaCpEQ0PrY9UjMY8eufyq4RwkyKLXu6WGF+pDgNRzcQ9h90hLV57aF7FUVoCfTibIp7bbmhgBGu9rdJeA9luMJXf/q+7SlZjbh8HkQyR/IP+/ylpeUfOVZq0u4OEWdURJlC5fH9o8iFu5wVChab/ywAxZ26wmb8lO4m4=
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
- (2603:10b6:803:47::21) by SN4PR0401MB3679.namprd04.prod.outlook.com
- (2603:10b6:803:46::15) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3109.22; Tue, 23 Jun
- 2020 15:03:11 +0000
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::1447:186c:326e:30b2]) by SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::1447:186c:326e:30b2%7]) with mapi id 15.20.3109.027; Tue, 23 Jun 2020
- 15:03:11 +0000
-From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To:     Anand Jain <anand.jain@oracle.com>, Qu Wenruo <wqu@suse.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH v4 3/3] btrfs: refactor btrfs_check_can_nocow() into two
- variants
-Thread-Topic: [PATCH v4 3/3] btrfs: refactor btrfs_check_can_nocow() into two
- variants
-Thread-Index: AQHWSR4lPNaufSY3WEGLlNOGkfJjrQ==
-Date:   Tue, 23 Jun 2020 15:03:11 +0000
-Message-ID: <SN4PR0401MB3598CC48A53558D70DCB3DFC9B940@SN4PR0401MB3598.namprd04.prod.outlook.com>
-References: <20200623052112.198682-1-wqu@suse.com>
- <20200623052112.198682-4-wqu@suse.com>
- <ed6eedb1-26e9-c209-900f-069322a02503@oracle.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: oracle.com; dkim=none (message not signed)
- header.d=none;oracle.com; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [129.253.240.72]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: bd8d94dd-2f55-4b37-705b-08d817868bde
-x-ms-traffictypediagnostic: SN4PR0401MB3679:
-x-microsoft-antispam-prvs: <SN4PR0401MB36799B721CC6619F0389687B9B940@SN4PR0401MB3679.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:3631;
-x-forefront-prvs: 04433051BF
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: rqzduHWaSoGq50/iFc0FRmB/9WUJA+CM/1QTU3hIX7E6ro2VF7t7WUn63prLBfHkz5/mGLyPOHg8sknQEeAFfNiIRxCymapI4taGMziXuCbvVLEaBhVp9wjXazTUNNEbyJP3Ic2/vmsz5vXFUw84c/9Y2YzSTyeFznA4TdzH6epGu23oHFZ/fzh8MSzQJA4xks6aPISNg0TUsgqWS+6LYX2x65XG5A4uAt73Qa31hpTLcg32vRlrEVDRfN5xjB7oDOZecMIQEuuj75p00FFh4u6//d6d2e6+W21Y8b0jvAOFc4ypvvNX1vhwrNqh44vOelBEUv+ajCM7X1roXiwABg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR0401MB3598.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(366004)(9686003)(52536014)(8936002)(4744005)(26005)(5660300002)(55016002)(91956017)(8676002)(2906002)(86362001)(76116006)(66946007)(66556008)(186003)(66476007)(71200400001)(66446008)(64756008)(53546011)(6506007)(83380400001)(498600001)(7696005)(110136005)(33656002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: tbnPSIE3fXxYmRKh882npZZ0i35AH7dFhZIMucWwtfi2sZ4Vv6IXC3Q4fMoPrB8m1Oo58byAY7BaH65i89/NtkhByLDA69Haa9SuR1SHaPeKyAmFF8LYGJPoEqjawuilYTv7uGnPyM+uN+sE9PEakrAIqs79l5cso0CSV3U2rANTIIoanDRXhs3AZ5wiWubrlg9WWcYuXkRdzLMoXJZu96nV4j+7XlzDgZgPYtkf2ppv81+ycPUQwO0VDlI9R5KnNNGYYY9BCurnaSlkszvMGvr9ZVsNMEWCcLlT/1KXpUViR+G+GbgKzws6sFS8XqUagjLGpyhLPVznbOSRnePFfoLyZDL768omktrR+Ucl9F82u3VwV9ePh2qc0sRJ/fHJYk043/6HFhtoesOXCAig4jdOt7Fb1OiBgReqpK6Zl/uywLnl6Ok0qrNh84gHGtEr2rR2kaoAFD4E/XMXpTSGKUoJD/RG0kZpIk+G35ItTusRcLfpmS1yJwo8c5XYCYvR
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1732906AbgFWPFg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 23 Jun 2020 11:05:36 -0400
+Received: from lists.nic.cz ([217.31.204.67]:34888 "EHLO mail.nic.cz"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732845AbgFWPFg (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 23 Jun 2020 11:05:36 -0400
+Received: from dellmb.labs.office.nic.cz (unknown [IPv6:2001:1488:fffe:6:cac7:3539:7f1f:463])
+        by mail.nic.cz (Postfix) with ESMTPSA id 6C38A14060D;
+        Tue, 23 Jun 2020 17:05:31 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=nic.cz; s=default;
+        t=1592924731; bh=fqn2/3PPtSs7qpwCrDROvxgG2n0NCcDhr5n9WitAx0A=;
+        h=Date:From:To;
+        b=bxdM/czPaik5GUcMB2y8Rvp7gCMnRB+hmmi3ey3DE4MDnXDTH/hcmvgyrkcfr+tqy
+         LpCJGMF2E5D8lzok/trNgw7PTfRv3qBQneunmVw+X/g6AXgND0+uRsKLunlsVPnDkr
+         OL20qkf6NQvsoErsI10Z1PFSHn3XNhsosz2Jy1U8=
+Date:   Tue, 23 Jun 2020 17:05:29 +0200
+From:   Marek =?ISO-8859-1?Q?Beh=FAn?= <marek.behun@nic.cz>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org, u-boot@lists.denx.de
+Subject: Re: [PATCH U-BOOT v2 00/30] fs: btrfs: Re-implement btrfs support
+ using the more widely used extent buffer base code
+Message-ID: <20200623170529.4bdc8388@dellmb.labs.office.nic.cz>
+In-Reply-To: <b53fe949-204a-1141-2da0-0f72e60a19dc@suse.com>
+References: <20200525063257.46757-1-wqu@suse.com>
+        <b53fe949-204a-1141-2da0-0f72e60a19dc@suse.com>
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: bd8d94dd-2f55-4b37-705b-08d817868bde
-X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Jun 2020 15:03:11.0980
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: mLWKFncjjf1KFr+AVvcp1/XysxKRILMDN5+ORZb5ZhzZkrtvPAVLncl/gfcrbLDM9KByetgQVJElKTMW/xc3IwXBwEcqs+OnIlo/E9eV7kA=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN4PR0401MB3679
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-100.0 required=5.9 tests=SHORTCIRCUIT,URIBL_BLOCKED,
+        USER_IN_WHITELIST shortcircuit=ham autolearn=disabled version=3.4.2
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.nic.cz
+X-Virus-Scanned: clamav-milter 0.102.2 at mail
+X-Virus-Status: Clean
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 23/06/2020 16:58, Anand Jain wrote:=0A=
-> =0A=
-> =0A=
-> =0A=
->> +static int check_nocow_nolock(struct btrfs_inode *inode, loff_t pos,=0A=
->> +			      size_t *write_bytes)=0A=
->> +{=0A=
->> +	return check_can_nocow(inode, pos, write_bytes, false);=0A=
->> +}=0A=
-> =0A=
-> =0A=
->> +int btrfs_check_nocow_lock(struct btrfs_inode *inode, loff_t pos,=0A=
->> +			   size_t *write_bytes)=0A=
->> +{=0A=
->> +	return check_can_nocow(inode, pos, write_bytes, false);=0A=
->> +}=0A=
-> =0A=
-> =0A=
->   Both functions are same.  Something obviously not ok.=0A=
-=0A=
-Oh right, how could I have missed that. The _lock will need 'true' =0A=
-for the 3rd parameter.=0A=
+Hi Qu,
+
+when applying whole series, there are several warning spewed by git:
+trailing whitespaces, new lines at EOF, spaces before tab in indent.
+It is possible that this is because the code is copypasted from
+btrfs-progs and this issues come from there.
+
+Also patches 26 and 27 have almost same subject line, and one contains
+a typo (reolve instead of resolve).
+
+Sometimes in commit messages you use the work "cross-port", sometimes
+it is "crossport", sometimes "cross port".
+
+I am going to do a bigger test on this series this week, and if the
+new code works correctly on all tests, I shall resend your patches with
+some changes to the commit messages, but I will keep you as author of
+the commits, and I shall add my Reviewed-by.
+
+Marek
+
+
+On Tue, 23 Jun 2020 08:50:57 +0800
+Qu Wenruo <wqu@suse.com> wrote:
+
+> Gentle ping?
+>=20
+> Any updates?
+> Hopes this won't block the incoming new features too long.
+>=20
+> Thanks,
+> Qu
+>=20
+> On 2020/5/25 =E4=B8=8B=E5=8D=882:32, Qu Wenruo wrote:
+> > The branch can be fetched from github:
+> > https://github.com/adam900710/u-boot/tree/btrfs_rebuild
+> >=20
+> > The current btrfs code in U-boot is using a creative way to read
+> > on-disk data.
+> > It's pretty simple, involving the least amount of code, but pretty
+> > different from btrfs-progs nor kernel, making it pretty hard to sync
+> > code between different projects.
+> >=20
+> > This big patchset will rework the btrfs support, to use code mostly
+> > from btrfs-progs, thus all existing btrfs developers will feel at
+> > home.
+> >=20
+> > During the rework, the following new features are added:
+> > - More hash algorithm support
+> >   SHA256 and XXHASH support are added.
+> >   BLAKE2 needs more backport, will happen in a separate patchset.
+> >=20
+> > - The ability to read degraded RAID1
+> >   Although we still only support one device btrfs, the new code base
+> >   can choose from different copies already.
+> >   As long as new device scan interface is provided, multi-device
+> > support is pretty simple.
+> >=20
+> > - More correct handling of compressed extents with offset
+> >   For compressed extent with offset, we should read the whole
+> > compressed extent, decompress them, then copy the referred part.
+> >=20
+> > There are some more features incoming, with the new code base it
+> > would be much easier to implement:
+> > - Data checksum support
+> >   The check would happen in read_extent_data(), btrfs-progs has the
+> >   needed facility to locate data csum.
+> >=20
+> > - BLAKE2 support
+> >   Need BLAKE2 library cross ported.
+> >   For btrfs it's just several lines of modification.
+> >=20
+> > - Multi-device support along wit degraded RAID support
+> >   We only need an interface to scan one device without opening it.
+> >   The infrastructure is already provided in this patchset.
+> >=20
+> > These new features would be submitted after the patchset get merged,
+> > since the patchset is already large, I don't want to make it more
+> > scary.
+> >=20
+> > Although this patchset look horribly large, most of them are code
+> > copy from btrfs-progs.
+> > E.g extent-cache.[ch], rbtree-utils.[ch], btrfs_btree.h.
+> > And ctree.h has over 1000 lines copied just for various accessors.
+> >=20
+> > While for disk-io.[ch] and volumes-io.[ch], they have some small
+> > modifications to adapt the interface of U-boot.
+> > E.g. btrfs_device::fd is replace with blkdev_desc and
+> > disk_partition_t.
+> >=20
+> > The new code for U-boot are related to the following functions:
+> > - btrfs_readlink()
+> > - btrfs_lookup_path()
+> > - btrfs_read_extent_inline()
+> > - btrfs_read_extent_reg()
+> > - lookup_data_extent()
+> > - btrfs_file_read()
+> > - btrfs_list_subvols()
+> >=20
+> > Thus only the following 5 patches need extra review attention:
+> > - Patch 0017
+> > - Patch 0019
+> > - Patch 0023
+> > - Patch 0024
+> > - Patch 0025~0028
+> >=20
+> > Changelog:
+> > v2:
+> > - Implement btrfs_list_subvols()
+> >   In v1 it's completely removed thus would cause problem if
+> > btrfsolume command is compiled in.
+> >=20
+> > - Rebased to latest master
+> >   Only minor conflicts due to header changes.
+> >=20
+> > - Allow next_legnth() to return value > BTRFS_NAME_LEN
+> >=20
+> > Qu Wenruo (30):
+> >   fs: btrfs: Sync btrfs_btree.h from kernel
+> >   fs: btrfs: Add More checksum algorithm support to btrfs
+> >   fs: btrfs: Cross-port btrfs_read_dev_super() from btrfs-progs
+> >   fs: btrfs: Cross-port rbtree-utils from btrfs-progs
+> >   fs: btrfs: Cross-port extent-cache.[ch] from btrfs-progs
+> >   fs: btrfs: Cross-port extent-io.[ch] from btrfs-progs
+> >   fs: btrfs: Cross port structure accessor into ctree.h
+> >   fs: btrfs: Cross port volumes.[ch] from btrfs-progs
+> >   fs: btrfs: Crossport read_tree_block() from btrfs-progs
+> >   fs: btrfs: Rename struct btrfs_path to struct __btrfs_path
+> >   fs: btrfs: Rename btrfs_root to __btrfs_root
+> >   fs: btrfs: Cross port struct btrfs_root to ctree.h
+> >   fs: btrfs: Crossport btrfs_search_slot() from btrfs-progs
+> >   fs: btrfs: Crossport btrfs_read_sys_array() and
+> >     btrfs_read_chunk_tree()
+> >   fs: btrfs: Crossport open_ctree_fs_info()
+> >   fs: btrfs: Rename path resolve related functions to avoid name
+> >     conflicts
+> >   fs: btrfs: Use btrfs_readlink() to implement __btrfs_readlink()
+> >   fs: btrfs: inode: Allow next_length() to return value >
+> > BTRFS_NAME_LEN fs: btrfs: Implement btrfs_lookup_path()
+> >   fs: btrfs: Use btrfs_iter_dir() to replace btrfs_readdir()
+> >   fs: btrfs: Use btrfs_lookup_path() to implement btrfs_exists() and
+> >     btrfs_size()
+> >   fs: btrfs: Rename btrfs_file_read() and its callees to avoid name
+> >     conflicts
+> >   fs: btrfs: Introduce btrfs_read_extent_inline() and
+> >     btrfs_read_extent_reg()
+> >   fs: btrfs: Introduce lookup_data_extent() for later use
+> >   fs: btrfs: Implement btrfs_file_read()
+> >   fs: btrfs: Introduce function to reolve path in one subvolume
+> >   fs: btrfs: Introduce function to resolve the path of one subvolume
+> >   fs: btrfs: Imeplement btrfs_list_subvols() using new
+> > infrastructure fs: btrfs: Cleanup the old implementation
+> >   MAINTAINERS: Add btrfs mail list
+> >=20
+> >  MAINTAINERS                         |    1 +
+> >  fs/btrfs/Makefile                   |    5 +-
+> >  fs/btrfs/btrfs.c                    |  319 +++---
+> >  fs/btrfs/btrfs.h                    |   67 +-
+> >  fs/btrfs/btrfs_tree.h               |  766 --------------
+> >  fs/btrfs/chunk-map.c                |  178 ----
+> >  fs/btrfs/common/rbtree-utils.c      |   83 ++
+> >  fs/btrfs/common/rbtree-utils.h      |   53 +
+> >  fs/btrfs/compat.h                   |   88 ++
+> >  fs/btrfs/compression.c              |    2 +-
+> >  fs/btrfs/crypto/hash.c              |   55 +
+> >  fs/btrfs/crypto/hash.h              |   17 +
+> >  fs/btrfs/ctree.c                    |  866 ++++++++++++----
+> >  fs/btrfs/ctree.h                    | 1453
+> > ++++++++++++++++++++++----- fs/btrfs/dir-item.c                 |
+> > 192 ++-- fs/btrfs/disk-io.c                  | 1063
+> > ++++++++++++++++++++ fs/btrfs/disk-io.h                  |   50 +
+> >  fs/btrfs/extent-cache.c             |  318 ++++++
+> >  fs/btrfs/extent-cache.h             |  104 ++
+> >  fs/btrfs/extent-io.c                |  848 ++++++++++++++--
+> >  fs/btrfs/extent-io.h                |  164 +++
+> >  fs/btrfs/hash.c                     |   38 -
+> >  fs/btrfs/inode.c                    |  892 +++++++++++-----
+> >  fs/btrfs/kernel-shared/btrfs_tree.h | 1333 ++++++++++++++++++++++++
+> >  fs/btrfs/root-tree.c                |   47 +
+> >  fs/btrfs/root.c                     |   92 --
+> >  fs/btrfs/subvolume.c                |  310 ++++--
+> >  fs/btrfs/super.c                    |  257 -----
+> >  fs/btrfs/volumes.c                  | 1173 +++++++++++++++++++++
+> >  fs/btrfs/volumes.h                  |  204 ++++
+> >  30 files changed, 8537 insertions(+), 2501 deletions(-)
+> >  delete mode 100644 fs/btrfs/btrfs_tree.h
+> >  delete mode 100644 fs/btrfs/chunk-map.c
+> >  create mode 100644 fs/btrfs/common/rbtree-utils.c
+> >  create mode 100644 fs/btrfs/common/rbtree-utils.h
+> >  create mode 100644 fs/btrfs/compat.h
+> >  create mode 100644 fs/btrfs/crypto/hash.c
+> >  create mode 100644 fs/btrfs/crypto/hash.h
+> >  create mode 100644 fs/btrfs/disk-io.c
+> >  create mode 100644 fs/btrfs/disk-io.h
+> >  create mode 100644 fs/btrfs/extent-cache.c
+> >  create mode 100644 fs/btrfs/extent-cache.h
+> >  create mode 100644 fs/btrfs/extent-io.h
+> >  delete mode 100644 fs/btrfs/hash.c
+> >  create mode 100644 fs/btrfs/kernel-shared/btrfs_tree.h
+> >  create mode 100644 fs/btrfs/root-tree.c
+> >  delete mode 100644 fs/btrfs/root.c
+> >  delete mode 100644 fs/btrfs/super.c
+> >  create mode 100644 fs/btrfs/volumes.c
+> >  create mode 100644 fs/btrfs/volumes.h
+> >  =20
+
