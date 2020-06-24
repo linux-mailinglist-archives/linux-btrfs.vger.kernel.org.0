@@ -2,124 +2,85 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C60A207332
-	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Jun 2020 14:21:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F151420739E
+	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Jun 2020 14:44:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389907AbgFXMVG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 24 Jun 2020 08:21:06 -0400
-Received: from mx2.suse.de ([195.135.220.15]:60212 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388548AbgFXMVF (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 24 Jun 2020 08:21:05 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 46CEEAFAE;
-        Wed, 24 Jun 2020 12:21:03 +0000 (UTC)
-Subject: Re: [PATCH] btrfs: pass checksum type via BTRFS_IOC_FS_INFO ioctl
-To:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        Hans van Kranenburg <hans@knorrie.org>,
-        Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        David Sterba <dsterba@suse.cz>
-Cc:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-References: <20200624102136.12495-1-johannes.thumshirn@wdc.com>
- <8add89b8-c581-26c3-31df-e5e056449dc2@gmx.com>
- <SN4PR0401MB3598F71C1984D84EA673B42D9B950@SN4PR0401MB3598.namprd04.prod.outlook.com>
- <18267791-0fb1-52be-9538-ad32940bc451@gmx.com>
- <ff3e46ef-b6c7-7dc9-0e95-9daf07ed9760@knorrie.org>
- <SN4PR0401MB3598B67E6E8DDC2AF970A2E69B950@SN4PR0401MB3598.namprd04.prod.outlook.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <b13f5a8c-cd0c-afd0-dc2c-25ef09907ce8@suse.com>
-Date:   Wed, 24 Jun 2020 15:21:02 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S2389729AbgFXMoR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 24 Jun 2020 08:44:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34196 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388942AbgFXMoQ (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 24 Jun 2020 08:44:16 -0400
+Received: from mail-vs1-xe42.google.com (mail-vs1-xe42.google.com [IPv6:2607:f8b0:4864:20::e42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D95FC061573
+        for <linux-btrfs@vger.kernel.org>; Wed, 24 Jun 2020 05:44:16 -0700 (PDT)
+Received: by mail-vs1-xe42.google.com with SMTP id s18so1296020vsi.6
+        for <linux-btrfs@vger.kernel.org>; Wed, 24 Jun 2020 05:44:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=TT/P4h185Eprg8jnQSnbGTLq+ro+h5oRl2nw2j/nK/U=;
+        b=paIr6AYvopdoWVF8trBcNQcK7FnEvAmc7ntGKiYzjH1qASJAkRjX/0zp8eWQIr9+sN
+         +jGosloA74LvHizlPRMymH0V38OOqZyQcvbEad9uDFOcEN8Dno/FpUHfkHygWyhoHHwQ
+         8QaTZ+BT5a1fnd7PerjPzm5KGM4fs5lUANkhXIIOL8xUL/3Ivir5HCPbTCis7+GtXtaG
+         ikY2IhIGm2nVupPnWTqKRtWXbrccIpATIcF+dyuc8Q+/qBDsCHoNJfAI/pFEjmLKnmZR
+         yQsknSXg4B3pY0OgCbYC1AhASQO52/EsafYfRQTMgIl8/2zZonDKrw79eqCvBxUKmHGz
+         qf5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=TT/P4h185Eprg8jnQSnbGTLq+ro+h5oRl2nw2j/nK/U=;
+        b=cSwc8RWy5brYPDsmptgOgPMmw8ZAJehkKqePQLgcgjmnREeTJB5SboZ69AceS6XGWE
+         ar0yda5uYte8CWUA+CZqJnGLI8+l9HHYYimZU9WXRW4ZxUUi1yagFHqS/HmwLf8v6BJV
+         unFXiwWEQgAEl1Vl71yiatcxblXK04hQh1HSAhorRkUbavxAKtC1tK6aGb+ZDy79g7+3
+         7vKzO6a04W/KQYkpEh1DojL54fCKbRszJkyhAuZCxoqjkZIZ6TrTLTVz38QnyUMIyoWM
+         wJm+eF4oqi1Nykk0BEt8meeOomZWkIPgHm2E7VVC60ytsgvtYaNbEy5ydGfUKCWBt5rt
+         Mm3Q==
+X-Gm-Message-State: AOAM5313Xr5AAe3XkZsV5etI96V61Sg+BTeqx0XeKlh+siPFeQu6/nBH
+        o6aE6OxJOJE0QTS8A5e21Hw6GpQ64wr6Wjpf4rc=
+X-Google-Smtp-Source: ABdhPJy7I5qrXQhutrx+MuiF9w9xYgt9jtJmeTtYIFLREUOlRBVb5tYMwHWqb1OHY14tumbrfUStb1fHLYCp1IQNCuQ=
+X-Received: by 2002:a67:7f16:: with SMTP id a22mr24001475vsd.33.1593002655873;
+ Wed, 24 Jun 2020 05:44:15 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <SN4PR0401MB3598B67E6E8DDC2AF970A2E69B950@SN4PR0401MB3598.namprd04.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Received: by 2002:ab0:4e2b:0:0:0:0:0 with HTTP; Wed, 24 Jun 2020 05:44:14
+ -0700 (PDT)
+Reply-To: bbmorga@hotmail.com
+From:   =?UTF-8?B?Qk9OTknCoE1vcmdh?= <oobb128477@gmail.com>
+Date:   Wed, 24 Jun 2020 12:44:14 +0000
+Message-ID: <CABH2X+w3yKx9x23mwht5UBmu2tuVGddEi4uGELgJnyoTFf7=AQ@mail.gmail.com>
+Subject: Dear Friend, Date:24/06/2020!
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 24.06.20 г. 15:17 ч., Johannes Thumshirn wrote:
-> On 24/06/2020 14:14, Hans van Kranenburg wrote:
-> [...]
->> Random idea... What if an imaginary me likes building kernels with
->> random features from the future (e.g. on top of 4.19LTS), and the next
->> feature added is to show the value of the new flapsie field.
->>
->> The 'version' will increase, but I decide to not pick the new csum type
->> patches because I don't need them, I only pick the new flapsie feature.
-> 
-> Then csum_type will be 0, which is crc32c. But this works by accident.
->  
->> Now, how does my userspace tooling know that the u16 flapsie field has a
->> meaning but the csum_type hasn't?
->>
->> ("You shouldn't do that" is also a possible answer...)
-> 
-> While it's a possible answer, I admit your concerns are valid. That can be
-> handled easier by a flags field.
-
-
-I agree, basically having a monotonically incrementing counter implies
-there is a dependency between previous features and currently added one.
-Whereas with a flag you just get information about what features are
-supported without any implied dependencies. The flags interface is IMO a
-better interface which gives the user less freedom to shoot themselves
-in the foot. OTOH when one starts doing out of tree backports then one
-is responsible to maintain them.
-
-So the answer could go both ways, but this doesn't mean we shouldn't
-strive to build better/more robust interfaces.
-
-> 
-> Thanks,
-> 	Johannes
-> 
-> 
+RGVhcsKgRnJpZW5kLA0KRGF0ZToyNC8wNi8yMDIwIQ0KDQpJwqBhbcKgc2VuZGluZ8KgdGhpc8Kg
+RS1tYWlswqB0b8KgeW91wqBiYXNlwqBvbsKgeW91csKgSW5mb3JtYXRpb27CoEnCoGdvdMKgZnJv
+bQ0KdGhlwqBGb3JlaWduwqBBZmZhaXJzwqBmb3LCoEZpbmFuY2lhbMKgQnVzaW5lc3PCoFRyYW5z
+YWN0aW9uwqB0aGF0wqBtYXkNCkJlbmVmaXRzwqBib3RowqBvZsKgdXMsdGhlwqBmdW5kc8Kgd29y
+dGjCoHRoZcKgc3VtwqBvZsKgJDkuN8KgTWlsbGlvbsKgVVNELsKgSQ0KYmVsaWV2ZcKgdGhhdMKg
+eW91wqB3aWxswqBiZcKgaW7CoGHCoGdvb2TCoHBvc2l0aW9uwqB0b8KgYXNzaXN0wqBtZcKgdG/C
+oHRyYW5zZmVyDQp0aGXCoEFiYW5kb25lZMKgRmxvYXRpbmfCoGZ1bmRzwqBpbnRvwqB5b3VywqBS
+ZWxpYWJsZcKgYmFua8KgYWNjb3VudMKgaW7CoHlvdXINCmNvdW50cnkuwqBUaGXCoEZ1bmRzwqBX
+b3J0aMKgJDkuN8KgTWlsbGlvbsKgVVNEwqBIYXPCoEJlZW7CoGluwqBEb3JtYW50wqBhY2NvdW50
+DQpmb3LCoHNvwqBtYW55wqBZZWFyc8KgSW7CoHRoaXPCoEJhbmvCoHRoYXTCoGnCoGFtwqB3b3Jr
+aW5nwqB3aXRob3V0wqBhbnlib2R5DQpjb21pbmfCoHRvwqBwdXTCoGNsYWltwqBvZsKgdGhlwqBG
+dW5kcy4NCg0KTW9yZW92ZXIswqB0aGXCoEJhbmvCoEV4ZWN1dGl2ZXPCoERpcmVjdG9yc8KgaG9s
+ZMKgYcKgbWVldGluZ8KgYW5kwqBDb25jbHVkZWQNCnRoYXTCoGFmdGVywqBPbmXCoFllYXLCoHdp
+dGhvdXTCoGFuecKgb2bCoHRoZcKgUmVsYXRpdmVzwqBBcHBsecKgZm9ywqB0aGUNCmNsYWltaW5n
+wqBvZsKgdGhlwqBmdW5kc8KgdmFsdWVzwqB0aGXCoHN1bcKgb2bCoCQ5LjfCoE1pbGxpb27CoFVT
+RMKgYW5kwqBpdMKgd2lsbA0KYmXCoFJlbWl0c8KgYXPCoGHCoEJhbmvCoFRyZWFzdXJlLsKgSGVu
+Y2XCoHRoaXPCoEVtYWlswqB0b8KgeW91LMKgScKgbmVlZMKgeW91cg0KTWF4aW11bcKgQ29vcGVy
+YXRpb27CoGFuZMKgVHJ1c3R3b3J0aGluZXNzLsKgVXBvbsKgWW91csKgUmVwbHksScKgc2hhbGzC
+oEdpdmUNCllvdcKgRGV0YWlsc8Kgb27CoEhvd8KgdGhlwqBCdXNpbmVzc8KgV2lsbMKgQmXCoEV4
+ZWN1dGVkLMKgYW5kwqBJwqBob3BlwqB0aGF0wqB5b3UNCndpbGzCoG5vdMKgZXhwb3NlwqBvcsKg
+QmV0cmF5wqB0aGlzwqB0cnVzdMKgYW5kwqBjb25maWRlbnTCoHRoYXTCoEnCoGFtwqBhYm91dMKg
+dG8NCnJlcG9zZcKgb27CoHlvdcKgZm9ywqBtdXR1YWzCoGJlbmVmaXRzwqBvZsKgb3VywqBmYW1p
+bGllcy4NCg0KSGF2ZcKgYcKgZ3JlYXTCoGRhecKgJsKgScKgYW3CoHdhaXRpbmfCoHRvwqBoZWFy
+wqBmcm9twqB5b3UhIQ0KTXIuQk9OTknCoE1vcmdhLg0K
