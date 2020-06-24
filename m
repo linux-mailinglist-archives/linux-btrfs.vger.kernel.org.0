@@ -2,22 +2,22 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78AF9206D4E
-	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Jun 2020 09:09:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C46C206D51
+	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Jun 2020 09:10:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388477AbgFXHJq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 24 Jun 2020 03:09:46 -0400
-Received: from mx2.suse.de ([195.135.220.15]:38362 "EHLO mx2.suse.de"
+        id S2389089AbgFXHKO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 24 Jun 2020 03:10:14 -0400
+Received: from mx2.suse.de ([195.135.220.15]:38650 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387849AbgFXHJq (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 24 Jun 2020 03:09:46 -0400
+        id S2387849AbgFXHKN (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 24 Jun 2020 03:10:13 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id DA7FFAF52;
-        Wed, 24 Jun 2020 07:09:43 +0000 (UTC)
-Subject: Re: [PATCH] btrfs: don't use UAPI types for fiemap callback
+        by mx2.suse.de (Postfix) with ESMTP id EF758AF4C;
+        Wed, 24 Jun 2020 07:10:11 +0000 (UTC)
+Subject: Re: [PATCH] btrfs: remove unused btrfs_root::defrag_trans_start
 To:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-References: <20200623185612.17112-1-dsterba@suse.com>
+References: <20200623192354.29423-1-dsterba@suse.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  xsFNBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -61,12 +61,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  KIuxEcV8wcVjr+Wr9zRl06waOCkgrQbTPp631hToxo+4rA1jiQF2M80HAet65ytBVR2pFGZF
  zGYYLqiG+mpUZ+FPjxk9kpkRYz61mTLSY7tuFljExfJWMGfgSg1OxfLV631jV1TcdUnx+h3l
  Sqs2vMhAVt14zT8mpIuu2VNxcontxgVr1kzYA/tQg32fVRbGr449j1gw57BV9i0vww==
-Message-ID: <176d0e27-6b91-b26b-094f-07bd38cd32f9@suse.com>
-Date:   Wed, 24 Jun 2020 10:09:43 +0300
+Message-ID: <bcf128c7-92ea-3099-5f4a-3cfed5361860@suse.com>
+Date:   Wed, 24 Jun 2020 10:10:11 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.8.0
 MIME-Version: 1.0
-In-Reply-To: <20200623185612.17112-1-dsterba@suse.com>
+In-Reply-To: <20200623192354.29423-1-dsterba@suse.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -77,9 +77,10 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 23.06.20 г. 21:56 ч., David Sterba wrote:
-> The fiemap callback is not part of UAPI interface and the prototypes
-> don't have the __u64 types either.
+On 23.06.20 г. 22:23 ч., David Sterba wrote:
+> Last touched in 2013 by commit de78b51a2852 ("btrfs: remove cache only
+> arguments from defrag path") that was the only code that used the value.
+> Now it's only set but never used for anything, so we can remove it.
 > 
 > Signed-off-by: David Sterba <dsterba@suse.com>
 
