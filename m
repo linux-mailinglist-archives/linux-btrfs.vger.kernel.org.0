@@ -2,31 +2,27 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43387207300
-	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Jun 2020 14:14:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A09A320731E
+	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Jun 2020 14:17:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390242AbgFXMOM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 24 Jun 2020 08:14:12 -0400
-Received: from syrinx.knorrie.org ([82.94.188.77]:53754 "EHLO
+        id S2403877AbgFXMQr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 24 Jun 2020 08:16:47 -0400
+Received: from syrinx.knorrie.org ([82.94.188.77]:53934 "EHLO
         syrinx.knorrie.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389907AbgFXMOK (ORCPT
+        with ESMTP id S2403856AbgFXMQo (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 24 Jun 2020 08:14:10 -0400
+        Wed, 24 Jun 2020 08:16:44 -0400
 Received: from [IPv6:2a02:a213:2b80:f000::12] (unknown [IPv6:2a02:a213:2b80:f000::12])
         (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by syrinx.knorrie.org (Postfix) with ESMTPSA id DABED60969719;
-        Wed, 24 Jun 2020 14:14:07 +0200 (CEST)
+        by syrinx.knorrie.org (Postfix) with ESMTPSA id 728DE6096973F;
+        Wed, 24 Jun 2020 14:16:40 +0200 (CEST)
 Subject: Re: [PATCH] btrfs: pass checksum type via BTRFS_IOC_FS_INFO ioctl
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+To:     Johannes Thumshirn <johannes.thumshirn@wdc.com>,
         David Sterba <dsterba@suse.cz>
-Cc:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Cc:     linux-btrfs@vger.kernel.org
 References: <20200624102136.12495-1-johannes.thumshirn@wdc.com>
- <8add89b8-c581-26c3-31df-e5e056449dc2@gmx.com>
- <SN4PR0401MB3598F71C1984D84EA673B42D9B950@SN4PR0401MB3598.namprd04.prod.outlook.com>
- <18267791-0fb1-52be-9538-ad32940bc451@gmx.com>
 From:   Hans van Kranenburg <hans@knorrie.org>
 Autocrypt: addr=hans@knorrie.org; keydata=
  mQINBFo2pooBEADwTBe/lrCa78zuhVkmpvuN+pXPWHkYs0LuAgJrOsOKhxLkYXn6Pn7e3xm+
@@ -102,55 +98,91 @@ Autocrypt: addr=hans@knorrie.org; keydata=
  vT3RH0/CpPJgveWV5xDOKuhD8j5l7FME+t2RWP+gyLid6dE0C7J03ir90PlTEkMEHEzyJMPt
  OhO05Phy+d51WPTo1VSKxhL4bsWddHLfQoXW8RQ388Q69JG4m+JhNH/XvWe3aQFpYP+GZuzO
  hkMez0lHCaVOOLBSKHkAHh9i0/pH+/3hfEa4NsoHCpyy
-Message-ID: <ff3e46ef-b6c7-7dc9-0e95-9daf07ed9760@knorrie.org>
-Date:   Wed, 24 Jun 2020 14:14:07 +0200
+Message-ID: <b1342f5a-5412-69fd-dc64-81f227535c51@knorrie.org>
+Date:   Wed, 24 Jun 2020 14:16:40 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <18267791-0fb1-52be-9538-ad32940bc451@gmx.com>
+In-Reply-To: <20200624102136.12495-1-johannes.thumshirn@wdc.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 6/24/20 1:55 PM, Qu Wenruo wrote:
+Hi,
+
+
+On 6/24/20 12:21 PM, Johannes Thumshirn wrote:
+> With the recent addition of filesystem checksum types other than CRC32c,
+> it is not anymore hard-coded which checksum type a btrfs filesystem uses.
 > 
+> Up to now there is no good way to read the filesystem checksum, apart from
+> reading the filesystem UUID and then query sysfs for the checksum type.
 > 
-> On 2020/6/24 下午7:41, Johannes Thumshirn wrote:
->> On 24/06/2020 13:03, Qu Wenruo wrote:
->>>> diff --git a/include/uapi/linux/btrfs.h b/include/uapi/linux/btrfs.h
->>>> index e6b6cb0f8bc6..161d9100c2a6 100644
->>>> --- a/include/uapi/linux/btrfs.h
->>>> +++ b/include/uapi/linux/btrfs.h
->>>> @@ -250,10 +250,21 @@ struct btrfs_ioctl_fs_info_args {
->>>>  	__u32 nodesize;				/* out */
->>>>  	__u32 sectorsize;			/* out */
->>>>  	__u32 clone_alignment;			/* out */
->>>> +	__u32 flags;				/* out */
->>> The flags looks a little too generic.
->>> What about extra_members or things like that?
->>>
->>> This flag really indicates what extra info the ioctl args can provide,
->>> so a better name would be easier to understand.
->>
->> Maybe version and for each new member it gets incremented?
->>
+> Add a new csum_type field to the BTRFS_IOC_FS_INFO ioctl command which
+> usually is used to query filesystem features. Also add a flags member
+> indicating that the kernel responded with a set csum_type field.
+
+Thanks! It's great to have it in here, since for machine-to-machine
+communication it feels much better to just be able to bit-test things,
+than having to parse back human readable strings from sysfs.
+
+> Fixes: 3951e7f050ac ("btrfs: add xxhash64 to checksumming algorithms")
+> Fixes: 3831bf0094ab ("btrfs: add sha256 to checksumming algorithm")
+> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+> ---
+>  fs/btrfs/ioctl.c           |  3 +++
+>  include/uapi/linux/btrfs.h | 13 ++++++++++++-
+>  2 files changed, 15 insertions(+), 1 deletion(-)
 > 
-> That looks even better!
+> diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+> index b3e4c632d80c..16062720f5f3 100644
+> --- a/fs/btrfs/ioctl.c
+> +++ b/fs/btrfs/ioctl.c
+> @@ -3217,6 +3217,9 @@ static long btrfs_ioctl_fs_info(struct btrfs_fs_info *fs_info,
+>  	fi_args->nodesize = fs_info->nodesize;
+>  	fi_args->sectorsize = fs_info->sectorsize;
+>  	fi_args->clone_alignment = fs_info->sectorsize;
+> +	fi_args->csum_type =
+> +			le16_to_cpu(btrfs_super_csum_type(fs_info->super_copy));
+> +	fi_args->flags |= BTRFS_FS_INFO_FLAG_CSUM_TYPE;
+>  
+>  	if (copy_to_user(arg, fi_args, sizeof(*fi_args)))
+>  		ret = -EFAULT;
+> diff --git a/include/uapi/linux/btrfs.h b/include/uapi/linux/btrfs.h
+> index e6b6cb0f8bc6..161d9100c2a6 100644
+> --- a/include/uapi/linux/btrfs.h
+> +++ b/include/uapi/linux/btrfs.h
+> @@ -250,10 +250,21 @@ struct btrfs_ioctl_fs_info_args {
+>  	__u32 nodesize;				/* out */
+>  	__u32 sectorsize;			/* out */
+>  	__u32 clone_alignment;			/* out */
+> +	__u32 flags;				/* out */
+> +	__u16 csum_type;
 
-Random idea... What if an imaginary me likes building kernels with
-random features from the future (e.g. on top of 4.19LTS), and the next
-feature added is to show the value of the new flapsie field.
+The /* out */ is missing in this line, if you want to keep it consistent.
 
-The 'version' will increase, but I decide to not pick the new csum type
-patches because I don't need them, I only pick the new flapsie feature.
+> +	__u16 reserved16;
+>  	__u32 reserved32;
+> -	__u64 reserved[122];			/* pad to 1k */
+> +	__u64 reserved[121];			/* pad to 1k */
+>  };
+>  
+> +/*
+> + * fs_info ioctl flags
+> + *
+> + * Used by:
+> + * struct btrfs_ioctl_fs_info_args
+> + */
+> +#define BTRFS_FS_INFO_FLAG_CSUM_TYPE			(1 << 0)
+> +
+>  /*
+>   * feature flags
+>   *
+> 
 
-Now, how does my userspace tooling know that the u16 flapsie field has a
-meaning but the csum_type hasn't?
-
-("You shouldn't do that" is also a possible answer...)
-
+Thanks,
 Hans
