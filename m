@@ -2,31 +2,32 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6399E2071B6
-	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Jun 2020 13:03:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 760E12071C5
+	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Jun 2020 13:06:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388216AbgFXLDS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 24 Jun 2020 07:03:18 -0400
-Received: from mout.gmx.net ([212.227.17.21]:43077 "EHLO mout.gmx.net"
+        id S2390554AbgFXLGo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 24 Jun 2020 07:06:44 -0400
+Received: from mout.gmx.net ([212.227.17.20]:36415 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728690AbgFXLDR (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 24 Jun 2020 07:03:17 -0400
+        id S1728734AbgFXLGn (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 24 Jun 2020 07:06:43 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1592996592;
-        bh=UyOqHjyeQjg96bm5qj2ACcsgA9xnW36P/CA/KXz3SdU=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=CFdmZ+om25g971RnqVERH+HeiDf5krWYp+gGyTKAWMJIFDVMayybRanjMFqKHIgeN
-         COK3QmqjHxeK3Ju/iRYVHbhZPUBf5jw34VRW+Fv8+GP8y61F4ql0cRgd1YlpfP8BaJ
-         JKIk2zndubFZusrPHFqKIQnsijCIugx+CKJwjnV8=
+        s=badeba3b8450; t=1592996799;
+        bh=iOjFPeLVFCyYS/kg3kfIXnkhXWqd3NZ5Z8ntXKfVkLE=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=N4aKn+L1hg8SxC0yMzkhsM247IY2rSBLjVwYE1dhErCiOlRN5EJhB18h0ExYBgNLX
+         m6l1yWMZYSESOOvwqUa6TgWCnKI//Aar3sI+VLC7XUNvyivkNTQcN3P3CTQNK7ZMKy
+         +QIruDu0THMhj2/ui5P3BT0Pc85/n7Ex9/Cr24wI=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1M89L1-1jio7o18vj-005Itv; Wed, 24
- Jun 2020 13:03:12 +0200
-Subject: Re: [PATCH] btrfs: pass checksum type via BTRFS_IOC_FS_INFO ioctl
-To:     Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        David Sterba <dsterba@suse.cz>
-Cc:     linux-btrfs@vger.kernel.org
-References: <20200624102136.12495-1-johannes.thumshirn@wdc.com>
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MfYPY-1jCmXO27dQ-00fynE; Wed, 24
+ Jun 2020 13:06:39 +0200
+Subject: Re: [PATCH] btrfs: start deprecation of mount option inode_cache
+To:     dsterba@suse.cz, David Sterba <dsterba@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <20200623185032.14983-1-dsterba@suse.com>
+ <b8fe50cc-02ed-4170-c84c-d994fd489a98@gmx.com>
+ <20200624110019.GP27795@twin.jikos.cz>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -52,157 +53,97 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
  ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
  oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <8add89b8-c581-26c3-31df-e5e056449dc2@gmx.com>
-Date:   Wed, 24 Jun 2020 19:03:08 +0800
+Message-ID: <78e85a4d-2484-3e80-0347-85f7658f3a29@gmx.com>
+Date:   Wed, 24 Jun 2020 19:06:35 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.9.0
 MIME-Version: 1.0
-In-Reply-To: <20200624102136.12495-1-johannes.thumshirn@wdc.com>
+In-Reply-To: <20200624110019.GP27795@twin.jikos.cz>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="qIN3Kggxqhc2GAimSzc2Wx3PyH1VMiOmL"
-X-Provags-ID: V03:K1:MdJpF0quNcYSzSaehwVUUFvKH2z8suahkg68vvJu1Uj0lHGSDgq
- we0yASSG8akJRsQvFtRR5yBCBI77iCM/wR9fVK3LgdpdbmGuamRqLHmmnrlIFqOKoU+rnxJ
- RVYesXiKDlH8FquXBsIBQxCa+2YpUATr2DYWjYFTDYKBcx2qbff4Kpru9rHoDbsfUKJq9jO
- zLothp5Y1pU50sve+9RyQ==
+ boundary="PyB4svim17B56OYyxE6pDU8nmMqQzLfqo"
+X-Provags-ID: V03:K1:tPpKisiozOiix2z5m83u8+Se/lnkx0cgi2qcI1wS+mbwLreP1R9
+ ldAJwxE8VeQuyP4EmBthBLIk8NEt0Lshe0ZnJNaJc2ELAP6hJKQ05gO+ki0wpkdkFa+6Vrx
+ HQXAVoP0TLHsGb9lzVcOQgZhX6gEW+2QB0hOlLigdaLiYPnyIXYFx8USmxvlMRc7YRifNtc
+ PdnRX0pcdREB6ewzdem2A==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:wqcKh08sC+0=:tpjNqe40PJ6c4Pp+8HlseK
- I4LxE3dZtvHNQOPecXpi1KHs2v6V5VVRRMhh/hpCiYjk6uy689IkDrSP1INoJvL1uhWkp8khd
- XqMzbDNBlUvOJ5KiRE4swXMdBLvzq1nFSAnk5WUUHVtKwn2XFiSiqddXO76zR4oVY4dPsgA4K
- F5G4WBDQ6uugUK5aFIsy0WnBekJNFGA2eU/nfjC9M1fZ+ZbqsRdLvbLqwowclbIHQcKYi/0n7
- /V577rLj6QyK056Q+TCj7ClDba7v3CThh2rRbwKvMAdHmQDuxECELFoKJ4NYIBVGn4Z7497Dh
- PRSCqlgfjCyh/EfPdp6fBxB9GLoMJSOBilLCsLlR+j7cYUElQxfNcV3A/OuN8wc9es++NdKKi
- 0TcKiQQ7+jdPT5q5M90jqGqHs+i8a1zWt+BQAHUcPVmibUCI+VY9e9qfn60c79lbd7Nk9KrH4
- i6M6jaC9wjkuxwl4yVXsa7QLzpFXBiN78pgNHxoxUMv2BiM28Rdhj6wCmgHkPDjoZl1tY3Lva
- 5l7lzpBGuByRSRcM/h0Sqc8STREsyK3qzd9/uT4CTZhuROUYSy9Bsc7eB1SC/E7kT1Dywt3qz
- UVfNe9XPiIWaL7ZBXQo73xWwveneiFJ5XVpc2YWamlhjU26R8BdikeDueBQSDCNA2R1qnapUP
- /3KVzPjPb1NXtIUI9to0T5PVFlIlWtulGSEk5wyCV4SPeX+H56a5Io3eeqkSmoU0K2C8GQagj
- 5WLCj0sVsXIjrpxDO1DEFSfgzl6DXQNGpdp5grOg9DB5dYQCI89oE0f1cwiIKFYXpQ/eDRLFm
- o1QNX3gtdOPx8R9V3ehry1/Rh0VaLYpgQys1hPQV84v7Vii7aeqcUljhhLatTbL9QF+xpIVDc
- Y+XwFkQ8n4oSrzUA9aB9G5BLH6YvFIWSymlA5o+++zSHhrpMYFqO8EORE4Y+jppWHkFAQeiqJ
- Y1a8+Frgr9kADy40j4ihmZtQ/3icCVG2F+zIXU1D/aEKu2SXhnUQ6NyyakYpTWSqp81UqeqGn
- FZEcDomM90IgqitbeZUElBtHYBbwiDqPKwE4ac2p3WG2uvlzGPPTxzHAzJGiFzcUed0AkWS37
- AKhACCMk83Aa3spKJ1B0ZpZssZ2eRNtqyNBYWB9WC1vNa2Xxv6ZeU9VSHX0tOFZbh75ID0twt
- zmS0IccjzRN2h7dfggnWJj7D5dskMR4nM0L9bE6i/oFMYhshI3zIs3ecHOGcZum86rz6VErMM
- C+/Otak9Nsi78MSoQAwQktUEmgawgD0VS4iNxnQ==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:HDLgR/9voFQ=:kqMcA2sG43IP0d1ZXviQ/l
+ EC0/NPg24muGo25x69NiC5Jhp5nCQfD4c1asq0Y+IwPx7I0VtWzB4c64l6gpOeagSlem5cA4f
+ nK3Xq32pIPwTUBzdbdRJaaQEdDP/GpDBq6JS9RSQCd2CccI5j6Gkd0WJVkAPeb/RbqvOTuGf5
+ 6Lqi7GijJyE7CAAQqG/g2hlxWVRIP0xg9+6yEEDvYo1OokOp/bdHY1PeqQ5PIVRCg9FinRnhK
+ ynxZ8OS2Y1UzoI3RnDJ8xzpmMIEQJIkEm4Uf2gUvbqM+EJTYBidL2jU5UboXPBMrwWlhXftYY
+ VzlT/8J0T+yhweULAPI37D7nd8z0RG+vcjTH9Jurjz1UGOxAuLXjg81tJ/OxX7S3cC6QGAKex
+ bUNG8vFA7TPNygqAXPgnmLh31EfFKqa2e87L2a2gpjQbpQhMDzvxhNYC+ABR4Pqdh0DGirS82
+ skX9y6GLvHhetFK9pd816oonB+iAEYczZLWTAGqqIehV7GyV42dpwF2ftehfsUoyPFboeVMAB
+ Ss2y+i+3Tc33UvA14cP6ENHaBipNFkSB6wjcS2XMUHM1WhLka5bG2EDOfc7l9J42hRgMBgacT
+ sKzgoQ7xt+plEgsiv3yG6fsy0/HZexnPviIVMxWSMTmGLafsTCfGgR7Pc/cT0KUqZ5uINSz7F
+ TgBxoJSVp8CC/q5Ju9S8BPsHokbmcwCOM4L9YZ+hB8NjFNa715HFOU856wnTkUB4apRy8g60/
+ hGXzbo7+XnqeJl7SLLNvlG7TZQYy7T1FMV03TQLsyjMp9y9H9d5idmQgBbZO2w4qoCRjcSD88
+ 8lN40O4PIPPg4IxGE7OyXo0WOH3c8TTVosGim4x8I62BdzHzYS9gaIdB1TFrxnmvuXSVBUjWJ
+ b3RolQcAOpyKkBJhfsjWCHE3KvpEX44T2+BgGR7SQSwOKuEifLFn6bag7W0DAFhemqvCTxviw
+ l1zbfnPfYfuCiSCVbya3UKI8z6epaEv/YNnP2+1v3UNLRn8MLgzA1w77ekSYQLy93KAsmanUE
+ 9QADIvIzIAnwM6Pyxq+kqch4vnJoDxfBqFd3YsHTm2HHbvbKwRm5ur6kSZ4jkdQHyYyxwxt88
+ bIS7Om1zwdahf10ozllOQ2je2k1I7N9Z7O0cPnjkLBB6Q3zmq0r0g6QKWYRqUWFlbSALZxDmX
+ eyqYTLY4V7S/x1OjTRWUh8WI11YLNkV0OblDFzbqMYQ0BmrI4BeHGqnXKD1VFNCuu1+Yoz995
+ vA7CDQdfqwUB7XRp4
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---qIN3Kggxqhc2GAimSzc2Wx3PyH1VMiOmL
-Content-Type: multipart/mixed; boundary="ex1MIe3MSjMWs6ulPxbQoG8Upvuu7JUfI"
+--PyB4svim17B56OYyxE6pDU8nmMqQzLfqo
+Content-Type: multipart/mixed; boundary="T9iPvF71UB5Dr91zKfeU04GKWdlOfd5q8"
 
---ex1MIe3MSjMWs6ulPxbQoG8Upvuu7JUfI
+--T9iPvF71UB5Dr91zKfeU04GKWdlOfd5q8
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
 
 
 
-On 2020/6/24 =E4=B8=8B=E5=8D=886:21, Johannes Thumshirn wrote:
-> With the recent addition of filesystem checksum types other than CRC32c=
-,
-> it is not anymore hard-coded which checksum type a btrfs filesystem use=
-s.
+On 2020/6/24 =E4=B8=8B=E5=8D=887:00, David Sterba wrote:
+> On Wed, Jun 24, 2020 at 07:27:46AM +0800, Qu Wenruo wrote:
+>>> Remaining issues:
+>>>
+>>> - if the option was enabled, new inodes created, the option disabled
+>>>   again, the cache is still stored on the devices and there's current=
+ly
+>>>   no way to remove it
+>>
+>> What about "btrfs rescue remove-deprecated-feature inode_cache"?
+>> I really don't want kernel to do the hassle.
 >=20
-> Up to now there is no good way to read the filesystem checksum, apart f=
-rom
-> reading the filesystem UUID and then query sysfs for the checksum type.=
-
+> Most likely we'll need both, the kernel part is for cases where it's no=
+t
+> so easy to access the filesystem unmounted to do the change. Like a roo=
+t
+> partition. How to do that to be least intrusive is the open.
 >=20
-> Add a new csum_type field to the BTRFS_IOC_FS_INFO ioctl command which
-> usually is used to query filesystem features. Also add a flags member
-> indicating that the kernel responded with a set csum_type field.
->=20
-> Fixes: 3951e7f050ac ("btrfs: add xxhash64 to checksumming algorithms")
-> Fixes: 3831bf0094ab ("btrfs: add sha256 to checksumming algorithm")
-
-I don't think the fixes tags are needed.
-You're just adding a new interface for IOC_FS_INFO to grab the algorithm.=
-
-
-Overall looks good.
-
-> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-> ---
->  fs/btrfs/ioctl.c           |  3 +++
->  include/uapi/linux/btrfs.h | 13 ++++++++++++-
->  2 files changed, 15 insertions(+), 1 deletion(-)
->=20
-> diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-> index b3e4c632d80c..16062720f5f3 100644
-> --- a/fs/btrfs/ioctl.c
-> +++ b/fs/btrfs/ioctl.c
-> @@ -3217,6 +3217,9 @@ static long btrfs_ioctl_fs_info(struct btrfs_fs_i=
-nfo *fs_info,
->  	fi_args->nodesize =3D fs_info->nodesize;
->  	fi_args->sectorsize =3D fs_info->sectorsize;
->  	fi_args->clone_alignment =3D fs_info->sectorsize;
-> +	fi_args->csum_type =3D
-> +			le16_to_cpu(btrfs_super_csum_type(fs_info->super_copy));
-> +	fi_args->flags |=3D BTRFS_FS_INFO_FLAG_CSUM_TYPE;
-> =20
->  	if (copy_to_user(arg, fi_args, sizeof(*fi_args)))
->  		ret =3D -EFAULT;
-> diff --git a/include/uapi/linux/btrfs.h b/include/uapi/linux/btrfs.h
-> index e6b6cb0f8bc6..161d9100c2a6 100644
-> --- a/include/uapi/linux/btrfs.h
-> +++ b/include/uapi/linux/btrfs.h
-> @@ -250,10 +250,21 @@ struct btrfs_ioctl_fs_info_args {
->  	__u32 nodesize;				/* out */
->  	__u32 sectorsize;			/* out */
->  	__u32 clone_alignment;			/* out */
-> +	__u32 flags;				/* out */
-
-The flags looks a little too generic.
-What about extra_members or things like that?
-
-This flag really indicates what extra info the ioctl args can provide,
-so a better name would be easier to understand.
+OK. Then what about do it in btrfs_orphan_cleanup()?
+It looks like a perfect match.
 
 Thanks,
 Qu
 
-> +	__u16 csum_type;
-> +	__u16 reserved16;
->  	__u32 reserved32;
-> -	__u64 reserved[122];			/* pad to 1k */
-> +	__u64 reserved[121];			/* pad to 1k */
->  };
-> =20
-> +/*
-> + * fs_info ioctl flags
-> + *
-> + * Used by:
-> + * struct btrfs_ioctl_fs_info_args
-> + */
-> +#define BTRFS_FS_INFO_FLAG_CSUM_TYPE			(1 << 0)
-> +
->  /*
->   * feature flags
->   *
->=20
 
+--T9iPvF71UB5Dr91zKfeU04GKWdlOfd5q8--
 
---ex1MIe3MSjMWs6ulPxbQoG8Upvuu7JUfI--
-
---qIN3Kggxqhc2GAimSzc2Wx3PyH1VMiOmL
+--PyB4svim17B56OYyxE6pDU8nmMqQzLfqo
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl7zMuwACgkQwj2R86El
-/qgGwwf/YimHYSu2bcoul/F901kBvYESJlsW20Gvt/7XjWzCgNwWTs2fCCgxxDap
-lgL+/NCHo5x8y0qvEL33GVbKmpvoDSg+sFvsXKD4HII9OVZo07h19aFWcvfnuSYr
-8DBze97Mg3EBNL2AvP2XN33fom4w9FU1HnoG+xbf5NebpRiA8u6CDiQdJzZmZ/XD
-7ct/B4byf9R3P/8nNej7fNiQwPr8+5G19eJokdGoUs6x6xH6Ww5i0tnMCw99atXa
-BIuvsSegpVGYsJLZPjuspehbMrfDIzN5gPfTbdseDCBT/OuDu7Fa/ER1Nn2ENzUf
-WSAcqqAhyvpNiZG7dVFOR/ZtRRgBnw==
-=CpLg
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl7zM7sACgkQwj2R86El
+/qi5/Af/VZsknBhvEK5zjB96E4FF7/PPOYnWN6Cv5JOwlmuBqh1mChPmz5w95grA
+vMwVI4WU6HKtbJz8RgcBTsNNQ1hxhtm2Zj1mOy9BZwnEs64cD/7NpzHC63xjLDoE
+iq6Z0Sre2uEJuIdMcFEsJKsgVPIZVD8JrRp+HwYSlPN0n6WpgmD4TJ8r++J/54yQ
+4DrgNpf/MhnFFovuy196NgK/1Jl8RsI0glZT6HbT4Cbce5htWLQ/9opM70fBp0LA
+v8pYBJHtPH0T9ak5sVNm9MvMI5UmiJTViUZEQrM8nMHfsYECsYUccR2HFmx7Nv07
+pEDXGEdq71RLl3eyTWvaKZy9tUgcNQ==
+=JNub
 -----END PGP SIGNATURE-----
 
---qIN3Kggxqhc2GAimSzc2Wx3PyH1VMiOmL--
+--PyB4svim17B56OYyxE6pDU8nmMqQzLfqo--
