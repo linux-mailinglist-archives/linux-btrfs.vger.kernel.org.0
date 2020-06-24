@@ -2,26 +2,28 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F386E2072A1
-	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Jun 2020 13:55:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAFC62072A2
+	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Jun 2020 13:56:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403837AbgFXLzn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 24 Jun 2020 07:55:43 -0400
-Received: from mx2.suse.de ([195.135.220.15]:46032 "EHLO mx2.suse.de"
+        id S2403839AbgFXLzu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 24 Jun 2020 07:55:50 -0400
+Received: from mx2.suse.de ([195.135.220.15]:46084 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2403802AbgFXLzn (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 24 Jun 2020 07:55:43 -0400
+        id S2403793AbgFXLzt (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 24 Jun 2020 07:55:49 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 0B536AED7;
-        Wed, 24 Jun 2020 11:55:41 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id A3F99AED7;
+        Wed, 24 Jun 2020 11:55:47 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
 Cc:     Jiachen YANG <farseerfc@gmail.com>
-Subject: [PATCH 1/2] btrfs-progs: convert: Ensure the data chunks size never exceed device size
-Date:   Wed, 24 Jun 2020 19:55:26 +0800
-Message-Id: <20200624115527.855816-1-wqu@suse.com>
+Subject: [PATCH 2/2] btrfs-progs: tests/convert: Add test case to make sure we won't allocate dev extents beyond device boundary
+Date:   Wed, 24 Jun 2020 19:55:27 +0800
+Message-Id: <20200624115527.855816-2-wqu@suse.com>
 X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20200624115527.855816-1-wqu@suse.com>
+References: <20200624115527.855816-1-wqu@suse.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
@@ -29,79 +31,100 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-[BUG]
-The following script could lead to corrupted btrfs fs after
-btrfs-convert:
-
-  fallocate -l 1G test.img
-  mkfs.ext4 test.img
-  mount test.img $mnt
-  fallocate -l 200m $mnt/file1
-  fallocate -l 200m $mnt/file2
-  fallocate -l 200m $mnt/file3
-  fallocate -l 200m $mnt/file4
-  fallocate -l 205m $mnt/file1
-  fallocate -l 205m $mnt/file2
-  fallocate -l 205m $mnt/file3
-  fallocate -l 205m $mnt/file4
-  umount $mnt
-  btrfs-convert test.img
-
-The result btrfs will have a device extent beyond its boundary:
-  pening filesystem to check...
-  Checking filesystem on test.img
-  UUID: bbcd7399-fd5b-41a7-81ae-d48bc6935e43
-  [1/7] checking root items
-  [2/7] checking extents
-  ERROR: dev extent devid 1 physical offset 993198080 len 85786624 is beyond device boundary 1073741824
-  ERROR: errors found in extent allocation tree or chunk allocation
-  [3/7] checking free space cache
-  [4/7] checking fs roots
-  [5/7] checking only csums items (without verifying data)
-  [6/7] checking root refs
-  [7/7] checking quota groups skipped (not enabled on this FS)
-  found 913960960 bytes used, error(s) found
-  total csum bytes: 891500
-  total tree bytes: 1064960
-  total fs tree bytes: 49152
-  total extent tree bytes: 16384
-  btree space waste bytes: 144885
-  file data blocks allocated: 2129063936
-   referenced 1772728320
-
-[CAUSE]
-Btrfs-convert first collect all used blocks in the original fs, then
-slightly enlarge the used blocks range as new btrfs data chunks.
-
-However the enlarge part has a problem, that it doesn't take the device
-boundary into consideration.
-
-Thus it caused device extents and data chunks to go beyond device
+Add a test case to check if the converted fs has device extent beyond
 boundary.
 
-[FIX]
-Just to extra check before inserting data chunks into
-btrfs_convert_context::data_chunk.
+The disk layout of source ext4 fs needs some extents to make them
+allocated at the very end of the fs.
+The script is from the original reporter.
+
+Also, since the existing convert tests always uses 512M as device size,
+which is not suitable for this test case, make it to grab the existing
+device size to co-operate with this test case.
 
 Reported-by: Jiachen YANG <farseerfc@gmail.com>
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- convert/main.c | 2 ++
- 1 file changed, 2 insertions(+)
+ tests/common.convert                         | 14 ++++++++-
+ tests/convert-tests/017-fs-near-full/test.sh | 30 ++++++++++++++++++++
+ 2 files changed, 43 insertions(+), 1 deletion(-)
+ create mode 100755 tests/convert-tests/017-fs-near-full/test.sh
 
-diff --git a/convert/main.c b/convert/main.c
-index c86ddd988c63..7709e9a6c085 100644
---- a/convert/main.c
-+++ b/convert/main.c
-@@ -669,6 +669,8 @@ static int calculate_available_space(struct btrfs_convert_context *cctx)
- 			cur_off = cache->start;
- 		cur_len = max(cache->start + cache->size - cur_off,
- 			      min_stripe_size);
-+		/* data chunks should never exceed device boundary */
-+		cur_len = min(cctx->total_bytes - cur_off, cur_len);
- 		ret = add_merge_cache_extent(data_chunks, cur_off, cur_len);
- 		if (ret < 0)
- 			goto out;
+diff --git a/tests/common.convert b/tests/common.convert
+index f24ceb0d6a64..0c918387758d 100644
+--- a/tests/common.convert
++++ b/tests/common.convert
+@@ -53,6 +53,16 @@ convert_test_preamble() {
+ 	echo "creating test image with: $@" >> "$RESULTS"
+ }
+ 
++get_test_file_size() {
++	local path="$1"
++	local ret
++
++	ret=$(ls -l "$path" | cut -f5 -d\ )
++	if [ -z $ret ]; then
++		ret=512M
++	fi
++	echo $ret
++}
+ #  prepare TEST_DEV before conversion, create filesystem and mount it, image
+ #  size is 512MB
+ #  $1: type of the filesystem
+@@ -61,14 +71,16 @@ convert_test_prep_fs() {
+ 	local fstype
+ 	local force
+ 	local mountopts
++	local oldsize
+ 
+ 	fstype="$1"
+ 	shift
++	oldsize=$(get_test_file_size "$TEST_DEV")
+ 	# TEST_DEV not removed as the file might have special permissions, eg.
+ 	# when test image is on NFS and would not be writable for root
+ 	run_check truncate -s 0 "$TEST_DEV"
+ 	# 256MB is the smallest acceptable btrfs image.
+-	run_check truncate -s 512M "$TEST_DEV"
++	run_check truncate -s $oldsize "$TEST_DEV"
+ 	force=
+ 	mountopts=
+ 	case "$fstype" in
+diff --git a/tests/convert-tests/017-fs-near-full/test.sh b/tests/convert-tests/017-fs-near-full/test.sh
+new file mode 100755
+index 000000000000..9459729ee87f
+--- /dev/null
++++ b/tests/convert-tests/017-fs-near-full/test.sh
+@@ -0,0 +1,30 @@
++#!/bin/bash
++# Check if btrfs-convert creates fs with dev extents boundary device boundary
++
++source "$TEST_TOP/common"
++source "$TEST_TOP/common.convert"
++
++setup_root_helper
++prepare_test_dev 1G
++check_prereq btrfs-convert
++check_global_prereq mke2fs
++check_global_prereq fallocate
++
++convert_test_prep_fs ext4 mke2fs -t ext4 -b 4096
++
++# Use up 800MiB first
++for i in $(seq 1 4); do
++	run_check $SUDO_HELPER fallocate -l 200M "$TEST_MNT/file$i"
++done
++
++# Then add 5MiB for above files. These 5 MiB will be allocated near the very
++# end of the fs, to confuse btrfs-convert
++for i in $(seq 1 4); do
++	run_check $SUDO_HELPER fallocate -l 205M "$TEST_MNT/file$i"
++done
++
++run_check_umount_test_dev
++
++# convert_test_do_convert() will call btrfs check, which should expose any
++# invalid inline extent with too large size
++convert_test_do_convert
 -- 
 2.27.0
 
