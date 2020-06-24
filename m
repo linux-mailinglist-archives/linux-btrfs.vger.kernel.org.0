@@ -2,24 +2,24 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CAD520783C
-	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Jun 2020 18:03:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE606207841
+	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Jun 2020 18:03:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404751AbgFXQDc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 24 Jun 2020 12:03:32 -0400
-Received: from lists.nic.cz ([217.31.204.67]:48136 "EHLO mail.nic.cz"
+        id S2404805AbgFXQDg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 24 Jun 2020 12:03:36 -0400
+Received: from lists.nic.cz ([217.31.204.67]:48204 "EHLO mail.nic.cz"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404755AbgFXQD2 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 24 Jun 2020 12:03:28 -0400
+        id S2404776AbgFXQDa (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 24 Jun 2020 12:03:30 -0400
 Received: from dellmb.labs.office.nic.cz (unknown [IPv6:2001:1488:fffe:6:cac7:3539:7f1f:463])
-        by mail.nic.cz (Postfix) with ESMTP id 7BD1A1409E9;
+        by mail.nic.cz (Postfix) with ESMTP id A2CC01409ED;
         Wed, 24 Jun 2020 18:03:25 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=nic.cz; s=default;
-        t=1593014605; bh=Bh4I9/tTAxn2LMU4sk0YOCbgBWavgtmZf3nSPHMYQ1A=;
+        t=1593014605; bh=crTekNtyUAaWtSyW6vKiZanzXRDVzwloE6FSU/DeQWI=;
         h=From:To:Date;
-        b=MsPs6J2EKDvLPYTmGF06rfo0BextbqhXC0N83jY+WbJZ231a+v8R/m88oIISP0abL
-         a1kZMSa+8w99ZNsU6bZVTd/cCnJcLnGU4ToXLsTuTZ+D6xXu34QUzM/d8JWC1koFs3
-         yPJqOGc8+0zEctItIkuzf107pXe9g2J7OPoG6C7A=
+        b=NgbHyJVFtnjP3yCpncAdxvzWvBa4he6hkKzFI8CHoNAQqmCz9PE2MloDgtiVv3nHZ
+         JcvXieB/EQjzTBcSNJ4tpaoa6+MGJzCof8S33fKB0ulEVMO1vyGx2LWrZX7kHWkfP7
+         fLEbiUim9EYoe77gU8S1sZvnD3wkKiUgPkm4WMq0=
 From:   =?UTF-8?q?Marek=20Beh=C3=BAn?= <marek.behun@nic.cz>
 To:     u-boot@lists.denx.de
 Cc:     =?UTF-8?q?Alberto=20S=C3=A1nchez=20Molero?= <alsamolero@gmail.com>,
@@ -29,9 +29,9 @@ Cc:     =?UTF-8?q?Alberto=20S=C3=A1nchez=20Molero?= <alsamolero@gmail.com>,
         Yevgeny Popovych <yevgenyp@pointgrab.com>,
         linux-btrfs@vger.kernel.org, Qu Wenruo <wqu@suse.com>,
         =?UTF-8?q?Marek=20Beh=C3=BAn?= <marek.behun@nic.cz>
-Subject: [PATCH U-BOOT v3 24/30] fs: btrfs: Introduce lookup_data_extent() for later use
-Date:   Wed, 24 Jun 2020 18:03:10 +0200
-Message-Id: <20200624160316.5001-25-marek.behun@nic.cz>
+Subject: [PATCH U-BOOT v3 25/30] fs: btrfs: Implement btrfs_file_read()
+Date:   Wed, 24 Jun 2020 18:03:11 +0200
+Message-Id: <20200624160316.5001-26-marek.behun@nic.cz>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200624160316.5001-1-marek.behun@nic.cz>
 References: <20200624160316.5001-1-marek.behun@nic.cz>
@@ -50,123 +50,258 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Qu Wenruo <wqu@suse.com>
 
-This implements lookup_data_extent() function for the incoming
-new implementation of btrfs_file_read().
+This version of btrfs_file_read() has the following new features:
+- Tries all mirrors
+- More handling on unaligned size
+- Better compressed extent handling
+  The old implementation doesn't handle compressed extent with offset
+  properly: we need to read out the whole compressed extent, then
+  decompress the whole extent, and only then copy the requested part.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 Reviewed-by: Marek Behún <marek.behun@nic.cz>
 ---
- fs/btrfs/inode.c | 101 +++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 101 insertions(+)
+ fs/btrfs/btrfs.c |  48 +++++++++-------
+ fs/btrfs/btrfs.h |   2 +
+ fs/btrfs/inode.c | 146 +++++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 176 insertions(+), 20 deletions(-)
 
+diff --git a/fs/btrfs/btrfs.c b/fs/btrfs/btrfs.c
+index 7eb01c4ff9..ffd96427cc 100644
+--- a/fs/btrfs/btrfs.c
++++ b/fs/btrfs/btrfs.c
+@@ -253,37 +253,45 @@ out:
+ int btrfs_read(const char *file, void *buf, loff_t offset, loff_t len,
+ 	       loff_t *actread)
+ {
+-	struct __btrfs_root root = btrfs_info.fs_root;
+-	struct btrfs_inode_item inode;
+-	u64 inr, rd;
++	struct btrfs_fs_info *fs_info = current_fs_info;
++	struct btrfs_root *root;
++	loff_t real_size;
++	u64 ino;
+ 	u8 type;
++	int ret;
+ 
+-	inr = __btrfs_lookup_path(&root, root.root_dirid, file, &type, &inode,
+-				40);
+-
+-	if (inr == -1ULL) {
+-		printf("Cannot lookup file %s\n", file);
+-		return -1;
++	ASSERT(fs_info);
++	ret = btrfs_lookup_path(fs_info->fs_root, BTRFS_FIRST_FREE_OBJECTID,
++				file, &root, &ino, &type, 40);
++	if (ret < 0) {
++		error("Cannot lookup file %s", file);
++		return ret;
+ 	}
+ 
+ 	if (type != BTRFS_FT_REG_FILE) {
+-		printf("Not a regular file: %s\n", file);
+-		return -1;
++		error("Not a regular file: %s", file);
++		return -EINVAL;
+ 	}
+ 
+-	if (!len)
+-		len = inode.size;
++	if (!len) {
++		ret = btrfs_size(file, &real_size);
++		if (ret < 0) {
++			error("Failed to get inode size: %s", file);
++			return ret;
++		}
++		len = real_size;
++	}
+ 
+-	if (len > inode.size - offset)
+-		len = inode.size - offset;
++	if (len > real_size - offset)
++		len = real_size - offset;
+ 
+-	rd = __btrfs_file_read(&root, inr, offset, len, buf);
+-	if (rd == -1ULL) {
+-		printf("An error occured while reading file %s\n", file);
+-		return -1;
++	ret = btrfs_file_read(root, ino, offset, len, buf);
++	if (ret < 0) {
++		error("An error occured while reading file %s", file);
++		return ret;
+ 	}
+ 
+-	*actread = rd;
++	*actread = len;
+ 	return 0;
+ }
+ 
+diff --git a/fs/btrfs/btrfs.h b/fs/btrfs/btrfs.h
+index 32ea2fc53a..268ca077d9 100644
+--- a/fs/btrfs/btrfs.h
++++ b/fs/btrfs/btrfs.h
+@@ -59,6 +59,8 @@ int btrfs_readlink(struct btrfs_root *root, u64 ino, char *target);
+ u64 __btrfs_lookup_path(struct __btrfs_root *, u64, const char *, u8 *,
+ 		       struct btrfs_inode_item *, int);
+ u64 __btrfs_file_read(const struct __btrfs_root *, u64, u64, u64, char *);
++int btrfs_file_read(struct btrfs_root *root, u64 ino, u64 file_offset, u64 len,
++		    char *dest);
+ 
+ /* subvolume.c */
+ u64 btrfs_get_default_subvol_objectid(void);
 diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index ab45db87a6..11eb30c27a 100644
+index 11eb30c27a..0c2b2b5705 100644
 --- a/fs/btrfs/inode.c
 +++ b/fs/btrfs/inode.c
-@@ -825,3 +825,104 @@ out:
- 	free(dbuf);
- 	return ret;
+@@ -926,3 +926,149 @@ check_next:
+ 	*next_offset = key.offset;
+ 	return 1;
  }
 +
-+/*
-+ * Get the first file extent that covers bytenr @file_offset.
-+ *
-+ * @file_offset must be aligned to sectorsize.
-+ *
-+ * return 0 for found, and path points to the file extent.
-+ * return >0 for not found, and fill @next_offset.
-+ * @next_offset can be 0 if there is no next file extent.
-+ * return <0 for error.
-+ */
-+static int lookup_data_extent(struct btrfs_root *root, struct btrfs_path *path,
-+			      u64 ino, u64 file_offset, u64 *next_offset)
++static int read_and_truncate_page(struct btrfs_path *path,
++				  struct btrfs_file_extent_item *fi,
++				  int start, int len, char *dest)
 +{
-+	struct btrfs_key key;
-+	struct btrfs_file_extent_item *fi;
++	struct extent_buffer *leaf = path->nodes[0];
++	struct btrfs_fs_info *fs_info = leaf->fs_info;
++	u64 aligned_start = round_down(start, fs_info->sectorsize);
 +	u8 extent_type;
++	char *buf;
++	int page_off = start - aligned_start;
++	int page_len = fs_info->sectorsize - page_off;
++	int ret;
++
++	ASSERT(start + len <= aligned_start + fs_info->sectorsize);
++	buf = malloc_cache_aligned(fs_info->sectorsize);
++	if (!buf)
++		return -ENOMEM;
++
++	extent_type = btrfs_file_extent_type(leaf, fi);
++	if (extent_type == BTRFS_FILE_EXTENT_INLINE) {
++		ret = btrfs_read_extent_inline(path, fi, buf);
++		memcpy(dest, buf + page_off, min(page_len, ret));
++		free(buf);
++		return len;
++	}
++
++	ret = btrfs_read_extent_reg(path, fi,
++			round_down(start, fs_info->sectorsize),
++			fs_info->sectorsize, buf);
++	if (ret < 0) {
++		free(buf);
++		return ret;
++	}
++	memcpy(dest, buf + page_off, page_len);
++	free(buf);
++	return len;
++}
++
++int btrfs_file_read(struct btrfs_root *root, u64 ino, u64 file_offset, u64 len,
++		    char *dest)
++{
++	struct btrfs_fs_info *fs_info = root->fs_info;
++	struct btrfs_file_extent_item *fi;
++	struct btrfs_path path;
++	struct btrfs_key key;
++	u64 aligned_start = round_down(file_offset, fs_info->sectorsize);
++	u64 aligned_end = round_down(file_offset + len, fs_info->sectorsize);
++	u64 next_offset;
++	u64 cur = aligned_start;
 +	int ret = 0;
 +
-+	ASSERT(IS_ALIGNED(file_offset, root->fs_info->sectorsize));
-+	key.objectid = ino;
-+	key.type = BTRFS_EXTENT_DATA_KEY;
-+	key.offset = file_offset;
++	btrfs_init_path(&path);
 +
-+	ret = btrfs_search_slot(NULL, root, &key, path, 0, 0);
-+	/* Error or we're already at the file extent */
-+	if (ret <= 0)
-+		return ret;
-+	if (ret > 0) {
-+		/* Check previous file extent */
-+		ret = btrfs_previous_item(root, path, ino,
-+					  BTRFS_EXTENT_DATA_KEY);
++	/* Set the whole dest all zero, so we won't need to bother holes */
++	memset(dest, 0, len);
++
++	/* Read out the leading unaligned part */
++	if (aligned_start != file_offset) {
++		ret = lookup_data_extent(root, &path, ino, aligned_start,
++					 &next_offset);
 +		if (ret < 0)
-+			return ret;
-+		if (ret > 0)
-+			goto check_next;
++			goto out;
++		if (ret == 0) {
++			/* Read the unaligned part out*/
++			fi = btrfs_item_ptr(path.nodes[0], path.slots[0],
++					struct btrfs_file_extent_item);
++			ret = read_and_truncate_page(&path, fi, file_offset,
++					round_up(file_offset, fs_info->sectorsize) -
++					file_offset, dest);
++			if (ret < 0)
++				goto out;
++			cur += fs_info->sectorsize;
++		} else {
++			/* The whole file is a hole */
++			if (!next_offset) {
++				memset(dest, 0, len);
++				return len;
++			}
++			cur = next_offset;
++		}
 +	}
-+	/* Now the key.offset must be smaller than @file_offset */
-+	btrfs_item_key_to_cpu(path->nodes[0], &key, path->slots[0]);
-+	if (key.objectid != ino ||
-+	    key.type != BTRFS_EXTENT_DATA_KEY)
-+		goto check_next;
 +
-+	fi = btrfs_item_ptr(path->nodes[0], path->slots[0],
-+			    struct btrfs_file_extent_item);
-+	extent_type = btrfs_file_extent_type(path->nodes[0], fi);
-+	if (extent_type == BTRFS_FILE_EXTENT_INLINE) {
-+		if (file_offset == 0)
-+			return 0;
-+		/* Inline extent should be the only extent, no next extent. */
-+		*next_offset = 0;
-+		return 1;
++	/* Read the aligned part */
++	while (cur < aligned_end) {
++		u64 extent_num_bytes;
++		u8 type;
++
++		btrfs_release_path(&path);
++		ret = lookup_data_extent(root, &path, ino, cur, &next_offset);
++		if (ret < 0)
++			goto out;
++		if (ret > 0) {
++			/* No next, direct exit */
++			if (!next_offset) {
++				ret = 0;
++				goto out;
++			}
++		}
++		fi = btrfs_item_ptr(path.nodes[0], path.slots[0],
++				    struct btrfs_file_extent_item);
++		btrfs_item_key_to_cpu(path.nodes[0], &key, path.slots[0]);
++		type = btrfs_file_extent_type(path.nodes[0], fi);
++		if (type == BTRFS_FILE_EXTENT_INLINE) {
++			ret = btrfs_read_extent_inline(&path, fi, dest);
++			goto out;
++		}
++		/* Skip holes, as we have zeroed the dest */
++		if (type == BTRFS_FILE_EXTENT_PREALLOC ||
++		    btrfs_file_extent_disk_bytenr(path.nodes[0], fi) == 0) {
++			cur = key.offset + btrfs_file_extent_num_bytes(
++					path.nodes[0], fi);
++			continue;
++		}
++
++		/* Read the remaining part of the extent */
++		extent_num_bytes = btrfs_file_extent_num_bytes(path.nodes[0],
++							       fi);
++		ret = btrfs_read_extent_reg(&path, fi, cur,
++				min(extent_num_bytes, aligned_end - cur),
++				dest + cur - file_offset);
++		if (ret < 0)
++			goto out;
++		cur += min(extent_num_bytes, aligned_end - cur);
 +	}
 +
-+	/* This file extent covers @file_offset */
-+	if (key.offset <= file_offset && key.offset +
-+	    btrfs_file_extent_num_bytes(path->nodes[0], fi) > file_offset)
-+		return 0;
-+check_next:
-+	ret = btrfs_next_item(root, path);
++	/* Read the tailing unaligned part*/
++	if (file_offset + len != aligned_end) {
++		btrfs_release_path(&path);
++		ret = lookup_data_extent(root, &path, ino, aligned_end,
++					 &next_offset);
++		/* <0 is error, >0 means no extent */
++		if (ret)
++			goto out;
++		fi = btrfs_item_ptr(path.nodes[0], path.slots[0],
++				    struct btrfs_file_extent_item);
++		ret = read_and_truncate_page(&path, fi, aligned_end,
++				file_offset + len - aligned_end,
++				dest + aligned_end - file_offset);
++	}
++out:
++	btrfs_release_path(&path);
 +	if (ret < 0)
 +		return ret;
-+	if (ret > 0) {
-+		*next_offset = 0;
-+		return 1;
-+	}
-+
-+	btrfs_item_key_to_cpu(path->nodes[0], &key, path->slots[0]);
-+	fi = btrfs_item_ptr(path->nodes[0], path->slots[0],
-+			    struct btrfs_file_extent_item);
-+	/* Next next data extent */
-+	if (key.objectid != ino ||
-+	    key.type != BTRFS_EXTENT_DATA_KEY) {
-+		*next_offset = 0;
-+		return 1;
-+	}
-+	/* Current file extent already beyond @file_offset */
-+	if (key.offset > file_offset) {
-+		*next_offset = key.offset;
-+		return 1;
-+	}
-+	/* This file extent covers @file_offset */
-+	if (key.offset <= file_offset && key.offset +
-+	    btrfs_file_extent_num_bytes(path->nodes[0], fi) > file_offset)
-+		return 0;
-+	/* This file extent ends before @file_offset, check next */
-+	ret = btrfs_next_item(root, path);
-+	if (ret < 0)
-+		return ret;
-+	if (ret > 0) {
-+		*next_offset = 0;
-+		return 1;
-+	}
-+	btrfs_item_key_to_cpu(path->nodes[0], &key, path->slots[0]);
-+	if (key.type != BTRFS_EXTENT_DATA_KEY || key.objectid != ino) {
-+		*next_offset = 0;
-+		return 1;
-+	}
-+	*next_offset = key.offset;
-+	return 1;
++	return len;
 +}
 -- 
 2.26.2
