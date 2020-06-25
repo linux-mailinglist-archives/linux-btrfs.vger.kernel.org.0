@@ -2,205 +2,465 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1DAD20A434
-	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Jun 2020 19:43:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D326520A6B7
+	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Jun 2020 22:21:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406835AbgFYRm7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 25 Jun 2020 13:42:59 -0400
-Received: from mx2.suse.de ([195.135.220.15]:37052 "EHLO mx2.suse.de"
+        id S2405800AbgFYUVi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 25 Jun 2020 16:21:38 -0400
+Received: from mx2.suse.de ([195.135.220.15]:50454 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2405282AbgFYRm7 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 25 Jun 2020 13:42:59 -0400
+        id S2405161AbgFYUVi (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 25 Jun 2020 16:21:38 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 35963AE43;
-        Thu, 25 Jun 2020 17:42:57 +0000 (UTC)
-Date:   Thu, 25 Jun 2020 12:42:55 -0500
-From:   Goldwyn Rodrigues <rgoldwyn@suse.de>
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        hch@lst.de, darrick.wong@oracle.com, dsterba@suse.cz,
-        jthumshirn@suse.de, fdmanana@gmail.com
-Subject: Re: [PATCH 1/6] iomap: Convert wait_for_completion to flags
-Message-ID: <20200625174255.j47fr3o47oxi453j@fiona>
-References: <20200622152457.7118-1-rgoldwyn@suse.de>
- <20200622152457.7118-2-rgoldwyn@suse.de>
- <20200623055748.GH2040@dread.disaster.area>
+        by mx2.suse.de (Postfix) with ESMTP id 58E72AB98;
+        Thu, 25 Jun 2020 20:21:35 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 2E59ADAFD7; Thu, 25 Jun 2020 22:21:21 +0200 (CEST)
+Date:   Thu, 25 Jun 2020 22:21:21 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs: qgroup: add sysfs interface for debug
+Message-ID: <20200625202120.GZ27795@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <20200619015946.65638-1-wqu@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200623055748.GH2040@dread.disaster.area>
+In-Reply-To: <20200619015946.65638-1-wqu@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 15:57 23/06, Dave Chinner wrote:
-> On Mon, Jun 22, 2020 at 10:24:52AM -0500, Goldwyn Rodrigues wrote:
-> > From: Goldwyn Rodrigues <rgoldwyn@suse.com>
-> > 
-> > Convert wait_for_completion boolean to flags so we can pass more flags
-> > to iomap_dio_rw()
-> > 
-> > Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
-> > ---
-> >  fs/ext4/file.c        | 11 +++++++++--
-> >  fs/gfs2/file.c        |  7 ++++---
-> >  fs/iomap/direct-io.c  |  3 ++-
-> >  fs/xfs/xfs_file.c     | 10 ++++++----
-> >  fs/zonefs/super.c     |  8 ++++++--
-> >  include/linux/iomap.h |  9 ++++++++-
-> >  6 files changed, 35 insertions(+), 13 deletions(-)
-> > 
-> > diff --git a/fs/ext4/file.c b/fs/ext4/file.c
-> > index 2a01e31a032c..d20120c4d833 100644
-> > --- a/fs/ext4/file.c
-> > +++ b/fs/ext4/file.c
-> > @@ -53,6 +53,7 @@ static ssize_t ext4_dio_read_iter(struct kiocb *iocb, struct iov_iter *to)
-> >  {
-> >  	ssize_t ret;
-> >  	struct inode *inode = file_inode(iocb->ki_filp);
-> > +	int flags = 0;
-> >  
-> >  	if (iocb->ki_flags & IOCB_NOWAIT) {
-> >  		if (!inode_trylock_shared(inode))
-> > @@ -74,8 +75,11 @@ static ssize_t ext4_dio_read_iter(struct kiocb *iocb, struct iov_iter *to)
-> >  		return generic_file_read_iter(iocb, to);
-> >  	}
-> >  
-> > +	if (is_sync_kiocb(iocb))
-> > +		flags |= IOMAP_DIOF_WAIT_FOR_COMPLETION;
+On Fri, Jun 19, 2020 at 09:59:46AM +0800, Qu Wenruo wrote:
+> This patch will add the following sysfs interface:
+> /sys/fs/btrfs/<UUID>/qgroups/<qgroup_id>/rfer
+> /sys/fs/btrfs/<UUID>/qgroups/<qgroup_id>/excl
+> /sys/fs/btrfs/<UUID>/qgroups/<qgroup_id>/max_rfer
+> /sys/fs/btrfs/<UUID>/qgroups/<qgroup_id>/max_excl
+> /sys/fs/btrfs/<UUID>/qgroups/<qgroup_id>/lim_flags
+>  ^^^ Above are already in "btrfs qgroup show" command output ^^^
 > 
-> The name of the flag conflates implementation with intent. "wait for
-> completion" is the implementation, "synchronous IO" is the intent.
+> /sys/fs/btrfs/<UUID>/qgroups/<qgroup_id>/rsv_data
+> /sys/fs/btrfs/<UUID>/qgroups/<qgroup_id>/rsv_meta_pertrans
+> /sys/fs/btrfs/<UUID>/qgroups/<qgroup_id>/rsv_meta_prealloc
 > 
-> Can you name this <namespace>_SYNCIO, please? Read further below for
-> comments on the flag namespace issues...
+> The last 3 rsv related members are not visible to users, but can be very
+> useful to debug qgroup limit related bugs.
 
-Yes, sure. I just hope it is not confused with RWF_SYNC.
+I think debugging should not be the only usecase. The qgroups
+information can be accessed via ioctls or parsing output of the 'btrfs
+qgroup' commands. For that reason I suggest to pick better names of the
+fields, rfer, excl are not self explanatory and we can't change them in
+the structures. But we can for the sysfs interface.
 
-> 
-> >  		ext4_journal_stop(handle);
-> >  	}
-> >  
-> > +	if (is_sync_kiocb(iocb) || unaligned_io || extend)
-> > +		flags |= IOMAP_DIOF_WAIT_FOR_COMPLETION;
-> 
-> Then stuff like this is self documenting:
-> 
-> 	if (any of this is true)
-> 		IO needs to be issued synchronously
-> 
-> > @@ -767,6 +767,7 @@ static ssize_t gfs2_file_direct_read(struct kiocb *iocb, struct iov_iter *to)
-> >  	size_t count = iov_iter_count(to);
-> >  	struct gfs2_holder gh;
-> >  	ssize_t ret;
-> > +	int flags = is_sync_kiocb(iocb) ? IOMAP_DIOF_WAIT_FOR_COMPLETION : 0;
-> >  
-> >  	if (!count)
-> >  		return 0; /* skip atime */
-> > @@ -777,7 +778,7 @@ static ssize_t gfs2_file_direct_read(struct kiocb *iocb, struct iov_iter *to)
-> >  		goto out_uninit;
-> >  
-> >  	ret = iomap_dio_rw(iocb, to, &gfs2_iomap_ops, NULL,
-> > -			   is_sync_kiocb(iocb));
-> > +			   flags);
-> 
-> Why do we need a new flags variable here, but not for other
-> conversions that are identical? 
-> 
-> Hmmm - you use 3 different methods of calculating flags to pass
-> to iomap_dio_rw() in this patchset. Can you pick one method and use
-> it for all the code? e.g. make all the code look like this:
-> 
-> 	int	flags = 0;
-> 
-> 
-> 	....
-> 	if (is_sync_kiocb(iocb)
-> 		flags |= IOMAP_DIOF_SYNCIO;
-> 	ret = iomap_dio_rw(....., flags);
-> 	....
-> 
-> So the setting of the flags is right next to the iomap_dio_rw()
-> call and we don't have to go searching for them?
-> 
+> Also, to avoid '/' used in <qgroup_id>, the seperator between qgroup
+> level and qgroup id is changed to '_'.
 
-I agree. Will change this.
+This seems fine.
 
+> The interface is not hidden behind 'debug' as I want this interface to
+> be included into production build so we could have an easier life to
+> debug qgroup rsv related bugs.
 > 
-> > diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
-> > index ec7b78e6feca..7ed857196a39 100644
-> > --- a/fs/iomap/direct-io.c
-> > +++ b/fs/iomap/direct-io.c
-> > @@ -405,7 +405,7 @@ iomap_dio_actor(struct inode *inode, loff_t pos, loff_t length,
-> >  ssize_t
-> >  iomap_dio_rw(struct kiocb *iocb, struct iov_iter *iter,
-> >  		const struct iomap_ops *ops, const struct iomap_dio_ops *dops,
-> > -		bool wait_for_completion)
-> > +		int dio_flags)
-> >  {
-> >  	struct address_space *mapping = iocb->ki_filp->f_mapping;
-> >  	struct inode *inode = file_inode(iocb->ki_filp);
-> > @@ -415,6 +415,7 @@ iomap_dio_rw(struct kiocb *iocb, struct iov_iter *iter,
-> >  	unsigned int flags = IOMAP_DIRECT;
-> >  	struct blk_plug plug;
-> >  	struct iomap_dio *dio;
-> > +	bool wait_for_completion = !!(dio_flags & IOMAP_DIOF_WAIT_FOR_COMPLETION);
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+>  fs/btrfs/ctree.h  |   1 +
+>  fs/btrfs/qgroup.c |  38 ++++++++----
+>  fs/btrfs/qgroup.h |  12 ++++
+>  fs/btrfs/sysfs.c  | 149 ++++++++++++++++++++++++++++++++++++++++++++++
+>  fs/btrfs/sysfs.h  |   6 ++
+>  5 files changed, 194 insertions(+), 12 deletions(-)
 > 
-> 1. the compiler will squash (x & y) down to a boolean state
-> correctly without needing to add double negatives.
-> 
+> diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+> index d8301bf240e0..7576dfe39841 100644
+> --- a/fs/btrfs/ctree.h
+> +++ b/fs/btrfs/ctree.h
+> @@ -779,6 +779,7 @@ struct btrfs_fs_info {
+>  	u32 thread_pool_size;
+>  
+>  	struct kobject *space_info_kobj;
+> +	struct kobject *qgroup_kobj;
+>  
+>  	u64 total_pinned;
+>  
+> diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
+> index 74eb98479109..04fdd42f0eb5 100644
+> --- a/fs/btrfs/qgroup.c
+> +++ b/fs/btrfs/qgroup.c
+> @@ -22,6 +22,7 @@
+>  #include "extent_io.h"
+>  #include "qgroup.h"
+>  #include "block-group.h"
+> +#include "sysfs.h"
+>  
+>  /* TODO XXX FIXME
+>   *  - subvol delete -> delete when ref goes to 0? delete limits also?
+> @@ -192,38 +193,47 @@ static struct btrfs_qgroup *add_qgroup_rb(struct btrfs_fs_info *fs_info,
+>  	struct rb_node **p = &fs_info->qgroup_tree.rb_node;
+>  	struct rb_node *parent = NULL;
+>  	struct btrfs_qgroup *qgroup;
+> +	int ret;
+>  
+>  	while (*p) {
+>  		parent = *p;
+>  		qgroup = rb_entry(parent, struct btrfs_qgroup, node);
+>  
+> -		if (qgroup->qgroupid < qgroupid)
+> +		if (qgroup->qgroupid < qgroupid) {
+>  			p = &(*p)->rb_left;
+> -		else if (qgroup->qgroupid > qgroupid)
+> +		} else if (qgroup->qgroupid > qgroupid) {
+>  			p = &(*p)->rb_right;
+> -		else
+> +		} else {
+>  			return qgroup;
+> +		}
+>  	}
+>  
+>  	qgroup = kzalloc(sizeof(*qgroup), GFP_ATOMIC);
+>  	if (!qgroup)
+>  		return ERR_PTR(-ENOMEM);
+> -
+>  	qgroup->qgroupid = qgroupid;
+>  	INIT_LIST_HEAD(&qgroup->groups);
+>  	INIT_LIST_HEAD(&qgroup->members);
+>  	INIT_LIST_HEAD(&qgroup->dirty);
+>  
+> +	ret = btrfs_sysfs_add_one_qgroup(fs_info, qgroup);
+> +	if (ret < 0) {
+> +		kfree(qgroup);
+> +		return ERR_PTR(ret);
+> +	}
+> +
+>  	rb_link_node(&qgroup->node, parent, p);
+>  	rb_insert_color(&qgroup->node, &fs_info->qgroup_tree);
+>  
+>  	return qgroup;
+>  }
+>  
+> -static void __del_qgroup_rb(struct btrfs_qgroup *qgroup)
+> +static void __del_qgroup_rb(struct btrfs_fs_info *fs_info,
+> +			    struct btrfs_qgroup *qgroup)
+>  {
+>  	struct btrfs_qgroup_list *list;
+>  
+> +	btrfs_sysfs_del_one_qgroup(fs_info, qgroup);
+>  	list_del(&qgroup->dirty);
+>  	while (!list_empty(&qgroup->groups)) {
+>  		list = list_first_entry(&qgroup->groups,
+> @@ -252,7 +262,7 @@ static int del_qgroup_rb(struct btrfs_fs_info *fs_info, u64 qgroupid)
+>  		return -ENOENT;
+>  
+>  	rb_erase(&qgroup->node, &fs_info->qgroup_tree);
+> -	__del_qgroup_rb(qgroup);
+> +	__del_qgroup_rb(fs_info, qgroup);
+>  	return 0;
+>  }
+>  
+> @@ -351,6 +361,9 @@ int btrfs_read_qgroup_config(struct btrfs_fs_info *fs_info)
+>  		goto out;
+>  	}
+>  
+> +	ret = btrfs_sysfs_add_qgroups(fs_info);
+> +	if (ret < 0)
+> +		goto out;
+>  	/* default this to quota off, in case no status key is found */
+>  	fs_info->qgroup_flags = 0;
+>  
+> @@ -500,16 +513,12 @@ int btrfs_read_qgroup_config(struct btrfs_fs_info *fs_info)
+>  		ulist_free(fs_info->qgroup_ulist);
+>  		fs_info->qgroup_ulist = NULL;
+>  		fs_info->qgroup_flags &= ~BTRFS_QGROUP_STATUS_FLAG_RESCAN;
+> +		btrfs_sysfs_del_qgroups(fs_info);
+>  	}
+>  
+>  	return ret < 0 ? ret : 0;
+>  }
+>  
+> -static u64 btrfs_qgroup_subvolid(u64 qgroupid)
+> -{
+> -	return (qgroupid & ((1ULL << BTRFS_QGROUP_LEVEL_SHIFT) - 1));
+> -}
+> -
+>  /*
+>   * Called in close_ctree() when quota is still enabled.  This verifies we don't
+>   * leak some reserved space.
+> @@ -562,7 +571,7 @@ void btrfs_free_qgroup_config(struct btrfs_fs_info *fs_info)
+>  	while ((n = rb_first(&fs_info->qgroup_tree))) {
+>  		qgroup = rb_entry(n, struct btrfs_qgroup, node);
+>  		rb_erase(n, &fs_info->qgroup_tree);
+> -		__del_qgroup_rb(qgroup);
+> +		__del_qgroup_rb(fs_info, qgroup);
+>  	}
+>  	/*
+>  	 * We call btrfs_free_qgroup_config() when unmounting
+> @@ -571,6 +580,7 @@ void btrfs_free_qgroup_config(struct btrfs_fs_info *fs_info)
+>  	 */
+>  	ulist_free(fs_info->qgroup_ulist);
+>  	fs_info->qgroup_ulist = NULL;
+> +	btrfs_sysfs_del_qgroups(fs_info);
+>  }
+>  
+>  static int add_qgroup_relation_item(struct btrfs_trans_handle *trans, u64 src,
+> @@ -943,6 +953,9 @@ int btrfs_quota_enable(struct btrfs_fs_info *fs_info)
+>  		goto out;
+>  	}
+>  
+> +	ret = btrfs_sysfs_add_qgroups(fs_info);
+> +	if (ret < 0)
+> +		goto out;
+>  	/*
+>  	 * 1 for quota root item
+>  	 * 1 for BTRFS_QGROUP_STATUS item
+> @@ -1089,6 +1102,7 @@ int btrfs_quota_enable(struct btrfs_fs_info *fs_info)
+>  		fs_info->qgroup_ulist = NULL;
+>  		if (trans)
+>  			btrfs_end_transaction(trans);
+> +		btrfs_sysfs_del_qgroups(fs_info);
+>  	}
+>  	mutex_unlock(&fs_info->qgroup_ioctl_lock);
+>  	return ret;
+> diff --git a/fs/btrfs/qgroup.h b/fs/btrfs/qgroup.h
+> index 3be5198a3719..728ffea7de48 100644
+> --- a/fs/btrfs/qgroup.h
+> +++ b/fs/btrfs/qgroup.h
+> @@ -8,6 +8,7 @@
+>  
+>  #include <linux/spinlock.h>
+>  #include <linux/rbtree.h>
+> +#include <linux/kobject.h>
+>  #include "ulist.h"
+>  #include "delayed-ref.h"
+>  
+> @@ -223,8 +224,19 @@ struct btrfs_qgroup {
+>  	 */
+>  	u64 old_refcnt;
+>  	u64 new_refcnt;
+> +
+> +	/*
+> +	 * Sysfs kobjectid
+> +	 */
+> +	struct kobject kobj;
+> +	struct completion kobj_unregister;
 
-okay, will change this.
+Why do you add the unregister completion to each qgroup? There's a
+pattern where the parent directory wait's until all its
+files/directories are released but I'm not sure if we need it here.
 
-> 2. I don't like variable names shadowing core kernel API functions
-> (i.e. wait_for_completion()). Especially as this has nothign to do
-> with the completion API...
+The size of each qgroup would increase by about 100 bytes, which is not
+much but it adds up.
 
-hmm, the change moves the wait_for_completion from function prototype to
-a derived variable in the function. This should be a separate patch and
-not combined with this change, if really required. wait_for_completion
-is also a variable in struct iomap_dio as well.
+>  };
+>  
+> +static inline u64 btrfs_qgroup_subvolid(u64 qgroupid)
+> +{
+> +	return (qgroupid & ((1ULL << BTRFS_QGROUP_LEVEL_SHIFT) - 1));
+> +}
+> +
+>  /*
+>   * For qgroup event trace points only
+>   */
+> diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
+> index a39bff64ff24..8468c0a22695 100644
+> --- a/fs/btrfs/sysfs.c
+> +++ b/fs/btrfs/sysfs.c
+> @@ -19,6 +19,7 @@
+>  #include "volumes.h"
+>  #include "space-info.h"
+>  #include "block-group.h"
+> +#include "qgroup.h"
+>  
+>  struct btrfs_feature_attr {
+>  	struct kobj_attribute kobj_attr;
+> @@ -1455,6 +1456,154 @@ int btrfs_sysfs_add_mounted(struct btrfs_fs_info *fs_info)
+>  	return error;
+>  }
+>  
+> +#define QGROUP_ATTR(_member)						\
+> +static ssize_t btrfs_qgroup_show_##_member(struct kobject *qgroup_kobj,	\
+> +				      struct kobj_attribute *a, char *buf) \
+> +{									\
+> +	struct kobject *fsid_kobj = qgroup_kobj->parent->parent;	\
+> +	struct btrfs_fs_info *fs_info = to_fs_info(fsid_kobj);		\
+> +	struct btrfs_qgroup *qgroup = container_of(qgroup_kobj,		\
+> +			struct btrfs_qgroup, kobj);			\
+> +	u64 val;							\
+> +									\
+> +	spin_lock(&fs_info->qgroup_lock);				\
+> +	val = qgroup->_member;						\
+> +	spin_unlock(&fs_info->qgroup_lock);				\
+> +	return scnprintf(buf, PAGE_SIZE, "%llu\n", val);		\
+> +}									\
+> +BTRFS_ATTR(qgroup, _member, btrfs_qgroup_show_##_member)
 
-> 
-> > diff --git a/include/linux/iomap.h b/include/linux/iomap.h
-> > index 4d1d3c3469e9..f6230446b08d 100644
-> > --- a/include/linux/iomap.h
-> > +++ b/include/linux/iomap.h
-> > @@ -255,9 +255,16 @@ struct iomap_dio_ops {
-> >  			struct bio *bio, loff_t file_offset);
-> >  };
-> >  
-> > +/*
-> > + * Flags to pass iomap_dio_rw()
-> > + */
-> > +
-> > +/* Wait for completion of DIO */
-> > +#define IOMAP_DIOF_WAIT_FOR_COMPLETION 		0x1
-> 
-> Hmmm. Namespace issues. We already have a IOMAP_DIO_* flags defined
-> for passing to ->end_io. It's going to be confusing having a set of
-> flags with almost exactly the namespace but with an "F" for flags
-> and no indication which iomap operation the flags actually belong to.
-> 
-> This is simples, though:
-> 
-> #define IOMAP_DIO_RWF_SYNCIO		(1 << 0)
+The macros need to follow the patterns we already have in sysfs.c,
+please have a look at eg. global_rsv_size_show or SPACE_INFO_ATTR. It
+reads the main pointers and calls btrfs_show_u64.
 
-Agree with this one.
+> +
+> +#define QGROUP_RSV_ATTR(_name, _type)					\
+> +static ssize_t btrfs_qgroup_rsv_show_##_name(struct kobject *qgroup_kobj,\
+> +				      struct kobj_attribute *a, char *buf) \
+> +{									\
+> +	struct kobject *fsid_kobj = qgroup_kobj->parent->parent;	\
+> +	struct btrfs_fs_info *fs_info = to_fs_info(fsid_kobj);		\
+> +	struct btrfs_qgroup *qgroup = container_of(qgroup_kobj,		\
+> +			struct btrfs_qgroup, kobj);			\
+> +	u64 val;							\
+> +									\
+> +	spin_lock(&fs_info->qgroup_lock);				\
+> +	val = qgroup->rsv.values[_type];					\
+> +	spin_unlock(&fs_info->qgroup_lock);				\
+> +	return scnprintf(buf, PAGE_SIZE, "%llu\n", val);		\
+> +}									\
+> +BTRFS_ATTR(qgroup, rsv_##_name, btrfs_qgroup_rsv_show_##_name)
+> +
+> +QGROUP_ATTR(rfer);
+> +QGROUP_ATTR(excl);
+> +QGROUP_ATTR(max_rfer);
+> +QGROUP_ATTR(max_excl);
+> +QGROUP_ATTR(lim_flags);
+> +QGROUP_RSV_ATTR(data, BTRFS_QGROUP_RSV_DATA);
+> +QGROUP_RSV_ATTR(meta_pertrans, BTRFS_QGROUP_RSV_META_PERTRANS);
+> +QGROUP_RSV_ATTR(meta_prealloc, BTRFS_QGROUP_RSV_META_PREALLOC);
+> +
+> +static struct attribute *qgroup_attrs[] = {
+> +	BTRFS_ATTR_PTR(qgroup, rfer),
+> +	BTRFS_ATTR_PTR(qgroup, excl),
+> +	BTRFS_ATTR_PTR(qgroup, max_rfer),
+> +	BTRFS_ATTR_PTR(qgroup, max_excl),
+> +	BTRFS_ATTR_PTR(qgroup, lim_flags),
+> +	BTRFS_ATTR_PTR(qgroup, rsv_data),
+> +	BTRFS_ATTR_PTR(qgroup, rsv_meta_pertrans),
+> +	BTRFS_ATTR_PTR(qgroup, rsv_meta_prealloc),
+> +	NULL
+> +};
+> +ATTRIBUTE_GROUPS(qgroup);
+> +static void qgroup_release(struct kobject *kobj)
+> +{
+> +	struct btrfs_qgroup *qgroup = container_of(kobj, struct btrfs_qgroup,
+> +			kobj);
+> +	memset(&qgroup->kobj, 0, sizeof(*kobj));
+> +	complete(&qgroup->kobj_unregister);
+> +}
+> +
+> +static struct kobj_type qgroup_ktype = {
+> +	.sysfs_ops = &kobj_sysfs_ops,
+> +	.release = qgroup_release,
+> +	.default_groups = qgroup_groups,
+> +};
+> +
+> +/*
+> + * Needed string buffer size for qgroup, including tailing \0
+> + *
+> + * This includes U48_MAX + 1 + U16_MAX + 1.
 
-> 
-> And it might also be worthwhile renaming the ->endio flags to:
-> 
-> #define IOMAP_DIO_ENDIO_UNWRITTEN	(1 << 0)
-> #define IOMAP_DIO_ENDIO_COW		(1 << 1)
-> 
-> So there's no confusion there either.
-> 
+What is U48_MAX?
 
-This again should be a separate patch.
-I will incorporate the changes relevant to this series.
+> + * U48_MAX in dec can be 15 digits at, and U16_MAX can be 6 digits.
+> + * Rounded up to 32 to provide some buffer.
+> + */
+> +#define QGROUP_STR_LEN	32
 
--- 
-Goldwyn
+Unused define
+
+> +int btrfs_sysfs_add_one_qgroup(struct btrfs_fs_info *fs_info,
+> +				struct btrfs_qgroup *qgroup)
+> +{
+> +	struct kobject *qgroups_kobj = fs_info->qgroup_kobj;
+> +	int ret;
+> +
+> +	init_completion(&qgroup->kobj_unregister);
+> +	ret = kobject_init_and_add(&qgroup->kobj, &qgroup_ktype, qgroups_kobj,
+> +			"%u_%llu", (u16)btrfs_qgroup_level(qgroup->qgroupid),
+
+%u does not match u16
+
+> +			btrfs_qgroup_subvolid(qgroup->qgroupid));
+> +	if (ret < 0)
+> +		kobject_put(&qgroup->kobj);
+> +
+> +	return ret;
+> +}
+> +
+> +void btrfs_sysfs_del_qgroups(struct btrfs_fs_info *fs_info)
+> +{
+> +	struct btrfs_qgroup *qgroup;
+> +	struct btrfs_qgroup *next;
+> +
+> +	rbtree_postorder_for_each_entry_safe(qgroup, next,
+> +			&fs_info->qgroup_tree, node) {
+> +		if (qgroup->kobj.state_initialized) {
+> +			kobject_del(&qgroup->kobj);
+> +			kobject_put(&qgroup->kobj);
+> +			wait_for_completion(&qgroup->kobj_unregister);
+> +		}
+> +	}
+> +	kobject_del(fs_info->qgroup_kobj);
+> +	kobject_put(fs_info->qgroup_kobj);
+> +	fs_info->qgroup_kobj = NULL;
+> +}
+> +
+> +/* Called when qgroup get initialized, thus there is no need for extra lock. */
+> +int btrfs_sysfs_add_qgroups(struct btrfs_fs_info *fs_info)
+> +{
+> +	struct kobject *fsid_kobj = &fs_info->fs_devices->fsid_kobj;
+> +	struct btrfs_qgroup *qgroup;
+> +	struct btrfs_qgroup *next;
+> +	int ret = 0;
+> +
+> +	ASSERT(fsid_kobj);
+> +	if (fs_info->qgroup_kobj)
+> +		return 0;
+> +
+> +	fs_info->qgroup_kobj = kobject_create_and_add("qgroups", fsid_kobj);
+> +	if (!fs_info->qgroup_kobj) {
+> +		ret = -ENOMEM;
+> +		goto out;
+> +	}
+> +	rbtree_postorder_for_each_entry_safe(qgroup, next,
+> +			&fs_info->qgroup_tree, node) {
+> +		ret = btrfs_sysfs_add_one_qgroup(fs_info, qgroup);
+> +		if (ret < 0)
+> +			goto out;
+> +	}
+> +
+> +out:
+> +	if (ret < 0)
+> +		btrfs_sysfs_del_qgroups(fs_info);
+> +	return ret;
+> +}
+> +
+> +void btrfs_sysfs_del_one_qgroup(struct btrfs_fs_info *fs_info,
+> +				struct btrfs_qgroup *qgroup)
+> +{
+> +	kobject_del(&qgroup->kobj);
+> +	kobject_put(&qgroup->kobj);
+> +	wait_for_completion(&qgroup->kobj_unregister);
+> +}
+>  
+>  /*
+>   * Change per-fs features in /sys/fs/btrfs/UUID/features to match current
+> diff --git a/fs/btrfs/sysfs.h b/fs/btrfs/sysfs.h
+> index 718a26c97833..1e27a9c94c84 100644
+> --- a/fs/btrfs/sysfs.h
+> +++ b/fs/btrfs/sysfs.h
+> @@ -36,4 +36,10 @@ int btrfs_sysfs_add_space_info_type(struct btrfs_fs_info *fs_info,
+>  void btrfs_sysfs_remove_space_info(struct btrfs_space_info *space_info);
+>  void btrfs_sysfs_update_devid(struct btrfs_device *device);
+>  
+> +int btrfs_sysfs_add_one_qgroup(struct btrfs_fs_info *fs_info,
+> +				struct btrfs_qgroup *qgroup);
+> +void btrfs_sysfs_del_qgroups(struct btrfs_fs_info *fs_info);
+> +int btrfs_sysfs_add_qgroups(struct btrfs_fs_info *fs_info);
+> +void btrfs_sysfs_del_one_qgroup(struct btrfs_fs_info *fs_info,
+> +				struct btrfs_qgroup *qgroup);
+>  #endif
+> -- 
+> 2.27.0
