@@ -2,126 +2,176 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CD2E20B9F1
-	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Jun 2020 22:06:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C074320BA1F
+	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Jun 2020 22:18:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726315AbgFZUGf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 26 Jun 2020 16:06:35 -0400
-Received: from mx2.suse.de ([195.135.220.15]:43994 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725823AbgFZUGf (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 26 Jun 2020 16:06:35 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id D36B7AD72;
-        Fri, 26 Jun 2020 20:06:32 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 87B25DA703; Fri, 26 Jun 2020 22:06:19 +0200 (CEST)
-Date:   Fri, 26 Jun 2020 22:06:19 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Cc:     David Sterba <dsterba@suse.cz>, linux-btrfs@vger.kernel.org,
-        stable@vger.kernel.org, hans@knorrie.org
-Subject: Re: [PATCH v3] btrfs: pass checksum type via BTRFS_IOC_FS_INFO ioctl
-Message-ID: <20200626200619.GI27795@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        linux-btrfs@vger.kernel.org, stable@vger.kernel.org,
-        hans@knorrie.org
-References: <20200626150107.19666-1-johannes.thumshirn@wdc.com>
+        id S1725934AbgFZUSH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 26 Jun 2020 16:18:07 -0400
+Received: from wout3-smtp.messagingengine.com ([64.147.123.19]:37429 "EHLO
+        wout3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725780AbgFZUSG (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 26 Jun 2020 16:18:06 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.west.internal (Postfix) with ESMTP id 1D71A3B2;
+        Fri, 26 Jun 2020 16:18:05 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Fri, 26 Jun 2020 16:18:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=georgianit.com;
+         h=subject:to:references:from:message-id:date:mime-version
+        :in-reply-to:content-type; s=fm3; bh=+TYSeLDp5eWj8EjGfc6burD37+2
+        9YOuXRtQG2oN+18k=; b=qIjlTjZyjOPC1n3KeBH0LRhNFfTF0kqCf1xG5TOp6B0
+        j1ALQbDqXx7n6nP6sqK3H5ckcYNp1HAZOw5UwwOjgsN1Yh0DZ+y3dTNbI7y+B7QF
+        riWl875zx4TmGMUrYktZ56iJHgoNQHtOYHH1AvPwRVR9PNDJepYpbNH5NR+l6wVa
+        7y6Wk7IVYVAiHzoE4MyFex66w+0KJ7GMRUqYw8NWZuD/CSpZ6qaawokuui1sMGth
+        TeLCBteruCrU0YgAmmw9IbGJvBeWFcF90EwxKoBeqxHSZ/OZZ1K8PrKnhhJxpuMq
+        oVedSPSbWT4dVhV4+jB2+s46HZ82VSnsVPaUeu6SQ3Q==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=+TYSeL
+        Dp5eWj8EjGfc6burD37+29YOuXRtQG2oN+18k=; b=OH/FG31pJMbPa/480qn0Tn
+        Se/2YfL41gxL2omh/joGptpAe95FU96xWGnzXnofoF5+t8H9NR+JN8NTFIBLPwoy
+        u4gnQC9LEjfqRfpw7ZT+P5G0W5C/iP2pPhLb9JGe0hsTV3vHFr3igRI2DaQ+V6Nq
+        1Vn2c/W5LJZH90TKmX/boGYfHqAGyGP2+lV3s9lC/lI0ENSWgVzfrwPHINtiA26g
+        VBqg3h/C3wVT6vjPBImBh3poTxpACAkrsVJW6Bs6KPZZPpOlBQ2mcXCvQz8RT6Ss
+        vhRjqTzsU02EFmuBlrFcTSmzQ6iDA8qd0TziPZpo55OszS/ff2IxFzd1fE+BL5Vg
+        ==
+X-ME-Sender: <xms:_Ff2XgyQ5JzlTXf3RAiSE8wG9ETU9QTRvfNXJd7kfT2FiTlRrlaT7Q>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedrudeluddgudehtdcutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecunecujfgurhepuffvfhfhkffffgggjggtsehgtd
+    erofdtfeejnecuhfhrohhmpeftvghmihcuifgruhhvihhnuceorhgvmhhisehgvghorhhg
+    ihgrnhhithdrtghomheqnecuggftrfgrthhtvghrnhepveeljeeuieevueefieejhffgud
+    efleevfeetjedtgeehueefvdejveffgeeuvedunecuffhomhgrihhnpehkvghrnhgvlhdr
+    ohhrghenucfkphepudelvddrtddrvdefledrudeftdenucevlhhushhtvghrufhiiigvpe
+    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehrvghmihesghgvohhrghhirghnihhtrdgt
+    ohhm
+X-ME-Proxy: <xmx:_Ff2XkQ5wqHq28JVpP0oc43CGAiuxjqSDqwIDnAmp5rSvtx-qOACXA>
+    <xmx:_Ff2XiXSNRnCgWUD-RPuJ8oT7NyJ1BNTwEN_khQ_URTK_UU8lK9e9Q>
+    <xmx:_Ff2Xugjtyv_gmk8blU3nOIFBRwZ_BWQqBsgchVEgSq4XLh4jGgoDg>
+    <xmx:_Ff2XlNw-gALi4MYvLC52UtD9Hc6t6jMDFEJ-mrxSKLRG7MO38EDng>
+Received: from [10.0.0.6] (192-0-239-130.cpe.teksavvy.com [192.0.239.130])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 4DDA1328005E;
+        Fri, 26 Jun 2020 16:18:04 -0400 (EDT)
+Subject: Re: weekly fstrim (still) necessary?
+To:     Chris Mason <clm@fb.com>, linux-btrfs <linux-btrfs@vger.kernel.org>
+References: <20200621054240.GA25387@tik.uni-stuttgart.de>
+ <CAJCQCtSbCid6OzvjK9fxXZosS_PAk2Lr7=VTpNijuuZXmRVVEg@mail.gmail.com>
+ <20200621235202.GA16871@tik.uni-stuttgart.de>
+ <CAJCQCtQmrc5m=H6d6xZiGvuzRrxBhf=wgf8bAMXZ_4p8F3AJFw@mail.gmail.com>
+ <20200622000611.GB16871@tik.uni-stuttgart.de>
+ <CAJCQCtQ8GFAdg2HJY_HqDgW8WAp5L1GoLbKqUN2mZ7s_kS-8XA@mail.gmail.com>
+ <20200622140234.GA4512@tik.uni-stuttgart.de>
+ <20200622142319.GG27795@twin.jikos.cz>
+ <2E6403C5-072D-4E71-8501-6D90FB539C15@fb.com>
+ <CAAKzf7=gQCMCECtnFwry8+LzuVCkkfeYX6VsAUcrnONtyaF18A@mail.gmail.com>
+ <650BA0CA-449A-48DD-9E0D-A824B5D41904@fb.com>
+From:   Remi Gauvin <remi@georgianit.com>
+Openpgp: url=http://www.georgianit.com/pgp/Remi%20Gauvin%20remi%40georgianit.com%20(0xEF539FF247456A6D)%20pub.asc
+Autocrypt: addr=remi@georgianit.com; prefer-encrypt=mutual;
+ keydata= mQENBFogjcYBCADvI0pxdYyVkEUAIzT6HwYnZ5CAy2czT87Si5mqk4wL4Ulupwfv9TLzaj3R
+ CUgHPNpFsp1n/nKKyOq1ZmE6w5YKx4I8/o9tRl+vjnJr2otfS7XizBaVV7UwziODikOimmT+
+ sGNfYGcjdJ+CC567g9aAECbvnyxNlncTyUPUdmazOKhmzB4IvG8+M2u+C4c9nVkX2ucf3OuF
+ t/qmeRaF8+nlkCMtAdIVh0F7HBYJzvYG3EPiKbGmbOody3OM55113uEzyw39k8WHRhhaKhi6
+ 8QY9nKCPVhRFzk6wUHJa2EKbKxqeFcFzZ1ok7l7vrX3/OBk2dGOAoOJ4UX+ozAtrMqCBABEB
+ AAG0IVJlbWkgR2F1dmluIDxyZW1pQGdlb3JnaWFuaXQuY29tPokBPgQTAQIAKAUCWiCNxgIb
+ IwUJCWYBgAYLCQgHAwIGFQgCCQoLBBYCAwECHgECF4AACgkQ71Of8kdFam2V1Qf9Fs6LSx1i
+ OoVgOzjWwiI06vJrZznjmtbJkcm/Of5onITZnB4h+tbqEyaMYYsEIk1r4oFMfKB7SDpQbADj
+ 9CI2EbpygwZa24Oqv4gWEzb4c7mSJuLKTnrhmwCOtdeDQXO/uu6BZPkazDAaKHUM6XqNEVvt
+ WHBaGioaV4dGxzjXALQDpLc4vDreSl9nwlTorwJR9t6u5BlDcdh3VOuYlgXjI4pCk+cihgtY
+ k3KZo/El1fWFYmtSTq7m/JPpKZyb77cbzf2AbkxJuLgg9o0iVAg81LjElznI0R5UbYrJcJeh
+ Jo4rvXKFYQ1qFwno1jlSXejsFA5F3FQzJe1JUAu2HlYqRrkBDQRaII3GAQgAo0Y6FX84QsDp
+ R8kFEqMhpkjeVQpbwYhqBgIFJT5cBMQpZsHmnOgpYU0Jo8P3owHUFu569g6j4+wSubbh2+bt
+ WL0QoFZcng0a2/j3qH98g9lAn8ZgohxavmwYINt7b+LEeDoBvq0s/0ZeXx47MOmbjROq8L/g
+ QOYbIWoJLO2emyxmVo1Fg00FKkbuCEgJPW8U/7VX4EFYaIhPQv/K3mpnyWXIq5lviiMCHzxE
+ jzBh/35DTLwymDdmtzWgcu1rzZ6j2s+4bTxE8mYXd4l2Xonn7v448gwvQmZJ8EPplO/pWe9F
+ oISyiNxZnQNCVEO9lManKPFphfVHqJ1WEtYMiLxTkQARAQABiQElBBgBAgAPBQJaII3GAhsM
+ BQkJZgGAAAoJEO9Tn/JHRWptnn0H+gOtkumwlKcad2PqLFXCt2SzVJm5rHuYZhPPq4GCdMbz
+ XwuCEPXDoECFVXeiXngJmrL8+tLxvUhxUMdXtyYSPusnmFgj/EnCjQdFMLdvgvXI/wF5qj0/
+ r6NKJWtx3/+OSLW0E9J/gLfimIc3OF49E3S1c35Wj+4Okx9Tpwor7Tw8KwBVbdZA6TyQF08N
+ phFkhgnTK6gl2XqIHaoxPKhI9pKU5oPkg2eI27OICZrpTCppaSh3SGUp0EHPkZuhVfIxg4vF
+ nato30VZr+RMHtPtx813VZ/kzj+2pC/DrwZOtqFeaqJfCi6JSik3vX9BQd9GL4mxytQBZKXz
+ SY9JJa155sI=
+Message-ID: <5bf091c5-b769-b865-c1ab-4437565961d3@georgianit.com>
+Date:   Fri, 26 Jun 2020 16:18:03 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.2.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200626150107.19666-1-johannes.thumshirn@wdc.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <650BA0CA-449A-48DD-9E0D-A824B5D41904@fb.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="UttrQnQgmRsV4SjzHwEWmY8sHTANU6ukE"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sat, Jun 27, 2020 at 12:01:07AM +0900, Johannes Thumshirn wrote:
-> With the recent addition of filesystem checksum types other than CRC32c,
-> it is not anymore hard-coded which checksum type a btrfs filesystem uses.
-> 
-> Up to now there is no good way to read the filesystem checksum, apart from
-> reading the filesystem UUID and then query sysfs for the checksum type.
-> 
-> Add a new csum_type field to the BTRFS_IOC_FS_INFO ioctl command which
-> usually is used to query filesystem features. Also add a flags member
-> indicating that the kernel responded with a set csum_type field.
-> 
-> To simplify further additions to the ioctl, also switch the padding to a
-> u8 array. Pahole was used to verify the result of this switch:
-> 
-> pahole -C btrfs_ioctl_fs_info_args fs/btrfs/btrfs.ko
-> struct btrfs_ioctl_fs_info_args {
->         __u64                      max_id;               /*     0     8 */
->         __u64                      num_devices;          /*     8     8 */
->         __u8                       fsid[16];             /*    16    16 */
-g         __u32                      nodesize;             /*    32     4 */
->         __u32                      sectorsize;           /*    36     4 */
->         __u32                      clone_alignment;      /*    40     4 */
->         __u32                      flags;                /*    44     4 */
->         __u16                      csum_type;            /*    48     2 */
->         __u16                      csum_size;            /*    50     2 */
->         __u8                       reserved[972];        /*    52   972 */
-> 
->         /* size: 1024, cachelines: 16, members: 10 */
-> };
-> 
-> Fixes: 3951e7f050ac ("btrfs: add xxhash64 to checksumming algorithms")
-> Fixes: 3831bf0094ab ("btrfs: add sha256 to checksumming algorithm")
-> Cc: stable@vger.kernel.org
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--UttrQnQgmRsV4SjzHwEWmY8sHTANU6ukE
+Content-Type: multipart/mixed; boundary="31llDVJubbZvziBfymNm7CfKpMBpNymRe";
+ protected-headers="v1"
+From: Remi Gauvin <remi@georgianit.com>
+To: Chris Mason <clm@fb.com>, linux-btrfs <linux-btrfs@vger.kernel.org>
+Message-ID: <5bf091c5-b769-b865-c1ab-4437565961d3@georgianit.com>
+Subject: Re: weekly fstrim (still) necessary?
+References: <20200621054240.GA25387@tik.uni-stuttgart.de>
+ <CAJCQCtSbCid6OzvjK9fxXZosS_PAk2Lr7=VTpNijuuZXmRVVEg@mail.gmail.com>
+ <20200621235202.GA16871@tik.uni-stuttgart.de>
+ <CAJCQCtQmrc5m=H6d6xZiGvuzRrxBhf=wgf8bAMXZ_4p8F3AJFw@mail.gmail.com>
+ <20200622000611.GB16871@tik.uni-stuttgart.de>
+ <CAJCQCtQ8GFAdg2HJY_HqDgW8WAp5L1GoLbKqUN2mZ7s_kS-8XA@mail.gmail.com>
+ <20200622140234.GA4512@tik.uni-stuttgart.de>
+ <20200622142319.GG27795@twin.jikos.cz>
+ <2E6403C5-072D-4E71-8501-6D90FB539C15@fb.com>
+ <CAAKzf7=gQCMCECtnFwry8+LzuVCkkfeYX6VsAUcrnONtyaF18A@mail.gmail.com>
+ <650BA0CA-449A-48DD-9E0D-A824B5D41904@fb.com>
+In-Reply-To: <650BA0CA-449A-48DD-9E0D-A824B5D41904@fb.com>
 
-CC: stable@vger.kernel.org # 5.5+
+--31llDVJubbZvziBfymNm7CfKpMBpNymRe
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-it'll not compile otherwise.
+On 2020-06-26 11:40 a.m., Chris Mason wrote:
 
-> +++ b/fs/btrfs/ioctl.c
-> @@ -3217,6 +3217,9 @@ static long btrfs_ioctl_fs_info(struct btrfs_fs_info *fs_info,
->  	fi_args->nodesize = fs_info->nodesize;
->  	fi_args->sectorsize = fs_info->sectorsize;
->  	fi_args->clone_alignment = fs_info->sectorsize;
-> +	fi_args->csum_type = btrfs_super_csum_type(fs_info->super_copy);
-> +	fi_args->csum_size = btrfs_super_csum_size(fs_info->super_copy);
-> +	fi_args->flags |= BTRFS_FS_INFO_FLAG_CSUM_TYPE_SIZE;
->  
->  	if (copy_to_user(arg, fi_args, sizeof(*fi_args)))
->  		ret = -EFAULT;
-> diff --git a/include/uapi/linux/btrfs.h b/include/uapi/linux/btrfs.h
-> index e6b6cb0f8bc6..2de3ef3c5c71 100644
-> --- a/include/uapi/linux/btrfs.h
-> +++ b/include/uapi/linux/btrfs.h
-> @@ -250,10 +250,20 @@ struct btrfs_ioctl_fs_info_args {
->  	__u32 nodesize;				/* out */
->  	__u32 sectorsize;			/* out */
->  	__u32 clone_alignment;			/* out */
-> -	__u32 reserved32;
-> -	__u64 reserved[122];			/* pad to 1k */
-> +	__u32 flags;				/* out */
+>=20
+> We=E2=80=99re using this on a pretty wide variety of hardware, so I=E2=80=
+=99m surprised
+> to hear this.=C2=A0 Are you able to reproduce the problem?=C2=A0 Is a p=
+eriodic
+> fstrim still happening?
+>=20
+> -chris
+>=20
 
-After the discussion under v2 with Hans, I think he has a point that
-future extension could be problematic as it was with the LOGICAL_INO.
-It's similar, once we'd want to do the input flags, there's no way to
-make the behaviour safe.
 
-If all ioctl users would zero the buffer it's all fine, but I don't know
-how to make that more than a convention and given that this is not well
-documented we can't blame users/programs when this is not honored.
+I'm probably just confusing the terminology... But could this be related
+to the queued trim problems with Samsung for which they should be
+blakclisted?
 
-So, my suggestion is to make the flags also input, where the valid value
-is 0, meaning 'return everything you have'. In this case it's a no-op,
-but allows future extensions and fine grained data retrieval.
 
-There's effectively no change in the implementation, other than
-documenting the 'in' semantics.
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit=
+/drivers/ata/libata-core.c?id=3D9a9324d3969678d44b330e1230ad2c8ae67acf81
 
-Although this is basically the same situation as in the LOGICAL_INO v1
-and v2, the number of users of FS_INFO ioctl is presumably not high and
-the buffer has been write-only so far, there's no existing logic that
-would had to be tweaked.
 
-Once the flags are there, all new implementations should take the
-semantics into account. Therefore I think this is a safe plan, but feel
-free to poke more holes to that.
+--31llDVJubbZvziBfymNm7CfKpMBpNymRe--
+
+--UttrQnQgmRsV4SjzHwEWmY8sHTANU6ukE
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJe9lf7AAoJEO9Tn/JHRWpt3/8H/jdXcFWQTRYTgTXSy+1yk1yo
+SD9G+kfjTXUD64F+2Tkua/Yxsf66+JoBU4HjdiFvG43iT9SJ0YAnrR7neWI9etjU
+rSQMt+8+NplaiF5Fftu0p06xTzyVejPoaBCIhQ8XpNWnAziJzaSRIqer9FGpMpO2
+Onr5wz34njy07TBaIhOSCUGm9WUkR7dnnEf+JyoIYXTb02a7QhuBv2nA1wjJVbkR
+T9JXgliZ9pKV8WWKyeOhugu2KwXm8XIrs3kz/hhTqlZNgyxBOclgmrJDNdb+kp7y
+jC2UkmSCn6ZTQ9O658N7Org04sWodavGasRM449bPyOxuLHCXm83YHFRZ7WKdCo=
+=VZBz
+-----END PGP SIGNATURE-----
+
+--UttrQnQgmRsV4SjzHwEWmY8sHTANU6ukE--
