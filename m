@@ -2,184 +2,153 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C0C420BDCE
-	for <lists+linux-btrfs@lfdr.de>; Sat, 27 Jun 2020 05:06:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E7DF20BDEA
+	for <lists+linux-btrfs@lfdr.de>; Sat, 27 Jun 2020 05:24:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725850AbgF0DGP convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-btrfs@lfdr.de>); Fri, 26 Jun 2020 23:06:15 -0400
-Received: from james.kirk.hungrycats.org ([174.142.39.145]:44296 "EHLO
+        id S1725831AbgF0DYQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 26 Jun 2020 23:24:16 -0400
+Received: from james.kirk.hungrycats.org ([174.142.39.145]:46280 "EHLO
         james.kirk.hungrycats.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725824AbgF0DGP (ORCPT
+        with ESMTP id S1725824AbgF0DYQ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 26 Jun 2020 23:06:15 -0400
+        Fri, 26 Jun 2020 23:24:16 -0400
 Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
-        id 5D442735951; Fri, 26 Jun 2020 23:06:14 -0400 (EDT)
-Date:   Fri, 26 Jun 2020 23:06:14 -0400
+        id 0DB527359A3; Fri, 26 Jun 2020 23:24:14 -0400 (EDT)
+Date:   Fri, 26 Jun 2020 23:24:14 -0400
 From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
 To:     linux-btrfs@vger.kernel.org
-Subject: Current bugs with operational impact on btrfs raid5
-Message-ID: <20200627030614.GW10769@hungrycats.org>
+Subject: How to use btrfs raid5 successfully(ish)
+Message-ID: <20200627032414.GX10769@hungrycats.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The following is a list of bugs that are causing repeated operational
-issues on RAID5 arrays on btrfs.  Confirmed recently on 5.4.41.
+Here are some guidelines for users running btrfs raid5 arrays to
+survive single-disk failures without losing all the data.  Tested with
+kernel 5.4.41.
 
-I've given the bugs some short labels because they are very specific and
-very similar, but distinct in critical ways, e.g. parity-update-failure
-and read-repair-failure are nearly identical except one requires writes,
-while the other occurs under lab test conditions when no writes occur.
+This list is intended for users.  The developer version of
+this list (with references to detailed bug descriptions) is
+https://lore.kernel.org/linux-btrfs/20200627030614.GW10769@hungrycats.org/
 
-These bugs occur in degraded mode:
+Most of this advice applies to raid6 as well.  btrfs raid5 is in such
+rough shape that I'm not bothering to test raid6 yet.
 
-    Name: spurious-degraded-read-failure
+	- never use raid5 for metadata.
 
-        Report: https://lore.kernel.org/linux-btrfs/20200627024246.GS10769@hungrycats.org/
-	"Spurious read errors in btrfs raid5 degraded mode"
+Use raid1 for metadata (raid1c3 for raid6).  raid5 metadata is vulnerable
+to multiple known bugs that can each prevent successful recovery from
+disk failure or cause unrecoverable filesystem damage.
 
-	Summary: file reads in degraded mode sometimes spuriously fail
-	with csum errors and EIO.  The remaining data and parity blocks
-	are correct on surviving disks, but the kernel sometimes cannot
-	reconstruct the missing data blocks while in degraded mode.
-	Read errors stop once the array exits degraded mode.  Only data
-	in non-full block groups is affected (most likely also non-full
-	raid stripes).
+	- run scrubs often.
 
-        Impact: applications do not respond well to random files having
-        EIO on read.  'btrfs device remove', 'btrfs balance', and 'btrfs
-        resize' abort frequently due to the read failures and are not
-        usable to return the array to non-degraded mode.  As far as I
-        can tell, no data is lost in raid5 data block groups, even if
-        that data is written in degraded mode.  If this bug occurs in
-        raid5 metadata block groups, it will make the filesystem unusable
-	(frequently forced read-only) until this bug is fixed.  
+Scrub can repair corrupted data before it is permanently lost.  Ordinary
+read and write operations on btrfs raid5 are not able to repair disk
+corruption in some cases.
 
-	Workaround: Use 'btrfs replace' to move array to non-degraded
-	mode before attempting balance/delete/resize operations.
-	Stop applications to avoid spurious read failures until the
-	replace is completed.  Never use raid5 for metadata.
+	- run scrubs on one disk at a time.
 
-    Name: btrfs-replace-lockup
+btrfs scrub is designed for mirrored and striped arrays.  'btrfs scrub'
+runs one kernel thread per disk, and that thread reads (and, when
+errors are detected and repair is possible, writes) to a single disk
+independently of all other disks.  When 'btrfs scrub' is used for a raid5
+array, it still runs a thread for each disk, but each thread reads data
+blocks from all disks in order to compute parity.  This is a performance
+disaster, as every disk is read and written competitively by each thread.
 
-        Report: https://lore.kernel.org/linux-btrfs/20200627024256.GT10769@hungrycats.org/
-	"btrfs raid5 hangs at the end of 'btrfs replace'"
+To avoid these problems, run 'btrfs scrub start -B /dev/xxx' for each
+disk sequentially in the btrfs array, instead of 'btrfs scrub stat
+/mountpoint/filesystem'.  This will run much faster.
 
-        Summary: 'btrfs replace' sometimes hangs just before it is
-        finished.
+        - ignore spurious IO errors on reads while the filesystem is
+        degraded.
 
-        Impact: reboot required to complete device replace.
+Due to a bug, the filesystem will report random spurious IO errors and
+csum failures on reads in raid5 degraded mode where no errors exist
+on disk.  This affects normal read operations, btrfs balance, and device
+remove, but not 'btrfs replace'.  Such errors should be ignored until
+'btrfs replace' completes.
 
-        Workaround: None known.
+This bug does not appear to affect writes, but it will make some data
+that was recently written unreadable until the array exits degraded mode.
 
-    Name: btrfs-replace-wrong-state-after-exit
+	- device remove and balance will not be usable in degraded mode.
 
-        Report: https://lore.kernel.org/linux-btrfs/20200627024256.GT10769@hungrycats.org/
-	"btrfs raid5 hangs at the end of 'btrfs replace'"
+'device remove' and balance won't harm anything in degraded mode, but
+they will abort frequently due to the random spurious IO errors.
 
-        Summary: 'btrfs replace' replace state is not fully cleared.
-        The replace kernel thread exits, 'btrfs replace status' reports
-        the replace is complete, but later resize and balance operations
-        fail with "resize/replace/balance in progress" until the
-	kernel is rebooted.
+	- when a disk fails, use 'btrfs replace' to replace it.
 
-        Impact: (another) reboot required to complete device replace.
+'btrfs replace' is currently the only reliable way to get a btrfs raid5
+out of degraded mode.
 
-        Workaround: None known.
+If you plan to use spare drives, do not add them to the filesystem before
+a disk failure.  You may not able to redistribute data from missing
+disks over existing disks with device remove.  Keep spare disks empty
+and activate them using 'btrfs replace' as active disks fail.
 
-These bugs occur when all disks are online but one is silently corrupted:
+	- plan for the filesystem to be unusable during recovery.
 
-    Name: parity-update-failure
+There is currently no solution for reliable operation of applications
+using a filesystem with raid5 data during a disk failure.  Data storage
+works to the extent I have been able to test it, but data retrieval is
+unreliable due to the spurious read error bug.
 
-        Report: https://www.spinics.net/lists/linux-btrfs/msg100178.html
-        "RAID5/6 permanent corruption of metadata and data extents"
+Shut down any applications using the filesystem at the time of disk
+failure, and keep them down until the failed disk is fully replaced.
 
-        Summary: if a non-degraded raid stripe contains a corrupted
-        data block, and a write to a different data block updates the
-        parity block in the same raid stripe, the updated parity block
-        will be computed using the corrupted data block instead of the
-        original uncorrupted data block, making later recovery of the
-        corrupted data block impossible in either non-degraded mode or
-        degraded mode.
+	- be prepared to reboot multiple times during disk replacement.
 
-        Impact: writes on a btrfs raid5 with repairable corrupt data can
-        in some cases make the corrupted data permanently unrepairable.
-        If raid5 metadata is used, this bug may destroy the filesystem.
+'btrfs replace' has some minor bugs that don't impact data, but do force
+kernel reboots due to hangs and stuck status flags.  Replace will restart
+automatically after a reboot when the filesystem is mounted again.
 
-        Workaround: Frequent scrubs.  Never use raid5 for metadata.
+        - spurious IO errors and csum failures will disappear when
+	the filesystem is no longer in degraded mode, leaving only
+	real IO errors and csum failures.
 
-    Name: read-repair-failure
+Any read errors after btrfs replace is done (and maybe after an extra
+reboot to be sure replace is really done) are real data loss.  Sorry.
 
-        Report: https://www.spinics.net/lists/linux-btrfs/msg94590.html
-        "RAID5 fails to correct correctable errors, makes them
-        uncorrectable instead"
+	- btrfs raid5 does not provide as complete protection against
+	on-disk data corruption as btrfs raid1 does.
 
-        Summary: if a non-degraded raid stripe contains a corrupted data
-        block, under unknown conditions a read can update the parity
-        block in the raid stripe using the corrupted data block instead
-        of the original uncorrupted data block, making later recovery
-        of the corrupted data block impossible in either non-degraded
-        mode or degraded mode.
+When data corruption is present on disks (e.g. when a disk is temporarily
+disconnected and then reconnected), bugs in btrfs raid5 read and write
+code may fail to repair the corruption, resulting in permanent data loss.
 
-        Impact: reads on a btrfs raid5 with repairable corrupt data
-        can in some cases make the corrupted data permanently
-        unrepairable.  If raid5 metadata is used, this bug may
-        destroy the filesystem.
+btrfs raid5 is quantitatively more robust against data corruption than
+ext4+mdadm (which cannot self-repair corruption at all), but not as
+reliable as btrfs raid1 (which can self-repair all single-disk corruptions
+detectable by csum check).
 
-        Workaround: Frequent scrubs.  Never use raid5 for metadata.
+	- scrub and dev stats report data corruption on wrong devices
+	in raid5.
 
-    Name: scrub-wrong-error-types
+When there are csum failures, error counters of a random disk will be
+incremented, not necessarily the disk that contains the corrupted blocks.
+This makes it difficult or impossible to identify which disk in a raid5
+array is corrupting data.
 
-	Report: https://lore.kernel.org/linux-btrfs/20200206234037.GD13306@hungrycats.org
-	"RAID5 fails to correct correctable errors, makes them uncorrectable instead"
+	- scrub sometimes counts a csum error as a read error instead
+	on raid5.
 
-	Summary: scrub on raid5 data sometimes reports read errors instead
-	of csum errors when the only errors present on the underlying
-	disk are csum errors.
+Read and write errors are counted against the correct disk; however,
+there is some overlap in the read counter, which is a combination
+of true csum errors and false read failures.
 
-	Impact: false positives are included in the read error count
-	after a scrub.  It can be difficult or impossible to correctly
-	identify which disk is failing.
+	- errors during readahead operations are repaired without
+	incrementing dev stats, discarding critical failure information.
 
-	Workaround: none known.
+This is not just a raid5 bug, it affects all btrfs profiles.
 
-    Name: scrub-wrong-error-devices
+	- what about write hole?
 
-	Report: https://lore.kernel.org/linux-btrfs/20200206234037.GD13306@hungrycats.org
-	"RAID5 fails to correct correctable errors, makes them uncorrectable instead"
-
-	Summary: scrub on raid5 data cannot reliably determine the
-	failing disk when there is a mismatch between computed parity
-	and the parity block on disk, and some of the data blocks in the
-	raid stripe do not have csums (e.g. free blocks or nodatacow
-	file blocks).  This cannot be fixed with the current on-disk
-	format because the necessary information (csums for free and
-	nodatasum blocks to identify parity corruption by elimination,
-	or csum on the parity block itself) is not available.
-
-	Impact: parity block corruptions on one disk are reported in
-	scrub error counts as csum errors distributed across all disks.
-	It can be difficult or impossible to correctly identify which
-	disk is failing.
-
-	Workaround: none known.
-
-No list of raid5 bugs would be complete without:
-
-    Name: parity-raid-write-hole
-
-        Report: numerous, it's probably the most famous btrfs raid5 bug,
-        and the one inexperienced users blame most often for data losses.
-
-        Impact:  negligible.  It occurs orders of magnitude less often
-        and destroys orders of magnitude less data each time it occurs
-        compared to the above bugs.
-
-        Workaround:  Don't worry about write hole yet.  The other bugs
-	will ruin your day first.
+There is a write hole issue on btrfs raid5, but it occurs much less often
+than the other known issues, and the other issues affect much more data
+per failure event.
