@@ -2,91 +2,110 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C04E920C959
-	for <lists+linux-btrfs@lfdr.de>; Sun, 28 Jun 2020 19:46:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71EB220CB28
+	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Jun 2020 02:15:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726655AbgF1RqZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 28 Jun 2020 13:46:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33246 "EHLO
+        id S1726667AbgF2APM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 28 Jun 2020 20:15:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726638AbgF1RqS (ORCPT
+        with ESMTP id S1726350AbgF2APM (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 28 Jun 2020 13:46:18 -0400
-Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8FD4C08C5DF
-        for <linux-btrfs@vger.kernel.org>; Sun, 28 Jun 2020 10:46:17 -0700 (PDT)
-Received: by mail-ot1-x342.google.com with SMTP id 95so2763781otw.10
-        for <linux-btrfs@vger.kernel.org>; Sun, 28 Jun 2020 10:46:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=/bJJuAbxLOI8ZB5kWrg6GnM3H9CKnk3zJ1in7nW69lY=;
-        b=YUBq+VgNMjlk38u14axPL08DzqARV0dHwd7VsntceEuDODm7tXtyIQiPnBEqwTqorM
-         FLgKk/WWEbN669NPAWBs5Q5Gn/Gw86s5KbgPWdKneNmtH17uT3bYx80xwgMEDbop8BVT
-         4AlOoyISrzqCwJLvSN+nVH9lFdx700mtRrJmEbhJzdpPADkw25XlX9qIwrm0L5lPQrGt
-         sHpMYC76UUuOqEIhiYHo/SrZyArNzUc5xWQzQJVjCCoL1o6dPw+1muYQhIpwYqVaKQyH
-         7il99UsBp0LEis5jgVygo+cs3PrEwvki/U9tgVDWLPcHxPjGhom7KOAMAeqfYI2Bq0H2
-         dL/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=/bJJuAbxLOI8ZB5kWrg6GnM3H9CKnk3zJ1in7nW69lY=;
-        b=H79Yx7zN1booZzPnCV8NydwvEg8KwoUdPjXiyPuKYiNMG8P0IyfXgI9dXCWQvlHlKn
-         J4WmXRnU3nfXek0fSLfrQeVm9rSe5zuJxhMArphuK6Bs12ppsLtt6wyR6oeK+Acxvda+
-         HbdGD35yMrKCtBolBYOBu2i+GKh8ZLXJvqUwAi32S9JeTTQL4FlHfryIT4D/tFOmq/KG
-         X+InlZSMso4uD7iUnOZrqzHlag8+jB9aoCcVC37Tt6kZHgIYciIIsrQNqrFBbzUPmAM7
-         hW4LO21z1XDKAJqrZa7LQoif6q9nmzB76BzW+vycgsw5ZFH63pzKADYAVjXgw8YQkuXC
-         rplg==
-X-Gm-Message-State: AOAM533gjPkFEzJ2IfXtHLR50dTzVkOahisyDu2kISofjLIcbKfDIJLD
-        JAVuz77Qx4NDFSQeiGAOutK8AvBT7yj8S4JtucA=
-X-Google-Smtp-Source: ABdhPJy3Gj0bD4+GZ16fIU6y/MzUrvVfW0UiVZl9y/IjQee69OJiPuEA8c3wMHv+p8mmb1g6c9ot9wDO/UA+LL3ZfeY=
-X-Received: by 2002:a05:6830:610:: with SMTP id w16mr10586414oti.165.1593366376804;
- Sun, 28 Jun 2020 10:46:16 -0700 (PDT)
+        Sun, 28 Jun 2020 20:15:12 -0400
+Received: from smtp.domeneshop.no (smtp.domeneshop.no [IPv6:2a01:5b40:0:3005::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4B5FC03E979
+        for <linux-btrfs@vger.kernel.org>; Sun, 28 Jun 2020 17:15:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=dirtcellar.net; s=ds201912; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Reply-To:
+        Sender:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=ltPC8NjqPyagJ6V9+O1LdYDAEcRjwhPIG9YLPtIAL58=; b=HxftmQ3bWVo2jU01ILj/M2ciIH
+        kKkEHxSOIh4ldoRwJQI12GCrfCRDOVRLvVUGZbsDOoSAy9ROeQ6VrWGCTJ0dsv1UG70N/7KlglmU3
+        gguzZZ2KXwn3oHDN2Z+Uy0ghEIeb0LnVU7eaESCl4wOVbxYWcNkrAHy5cltP2rdAsACtnU317OK2S
+        jYLRlz9iFM7KCpibuUSAi1lGpbFdIOFvDBKMs/9J+CVM5Xe3YKKH/BDVeTvXxELgme5opu7r2bGSe
+        eQzqHwjFmcfupqbvKVJw9jR6lUj+ebvtdVlocsQXR/P/64wuODGC32Sq4vreO+YoqKBucnOa9gn/E
+        OJMoBIdQ==;
+Received: from 254.79-160-170.customer.lyse.net ([79.160.170.254]:52065 helo=[10.0.0.10])
+        by smtp.domeneshop.no with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <waxhead@dirtcellar.net>)
+        id 1jphS0-0007tT-4p; Mon, 29 Jun 2020 02:15:08 +0200
+Reply-To: waxhead@dirtcellar.net
+Subject: Re: Buggy disk firmware (fsync/FUA) and power-loss btrfs survability
+To:     Hans van Kranenburg <hans@knorrie.org>,
+        Pablo Fabian Wagner Boian <pablofabian.wagnerboian@gmail.com>,
+        linux-btrfs@vger.kernel.org
+References: <CAK=moY9cRF0WKnBp5wRzFUuuL9=rJ8mD8uEA6murWEUYwvQkWw@mail.gmail.com>
+ <f0144a34-f14a-5413-9b0c-a2ccba1a1cd9@knorrie.org>
+From:   waxhead <waxhead@dirtcellar.net>
+Message-ID: <2aaab8d7-a37d-8965-bd70-9ed7b0e80b0f@dirtcellar.net>
+Date:   Mon, 29 Jun 2020 02:15:07 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Firefox/60.0 SeaMonkey/2.53.1
 MIME-Version: 1.0
-Received: by 2002:ac9:27ee:0:0:0:0:0 with HTTP; Sun, 28 Jun 2020 10:46:15
- -0700 (PDT)
-Reply-To: mrjohnscottyounger35@gmail.com
-From:   John Scott Younger <mrszahraalkami@gmail.com>
-Date:   Sun, 28 Jun 2020 18:46:15 +0100
-Message-ID: <CALQpPg30nAHHtUyi_G5mCvJ6ntraDa3A=oR7H3f5LumSg+StqA@mail.gmail.com>
-Subject: Your attention to this news update.
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <f0144a34-f14a-5413-9b0c-a2ccba1a1cd9@knorrie.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
--- 
-Your attention to this news update.
+Hans van Kranenburg wrote:
+> Hi!
+> 
+> On 6/28/20 3:33 PM, Pablo Fabian Wagner Boian wrote:
+>> Hi.
+>>
+>> Recently, it came to my knowledge that btrfs relies on disks honoring
+>> fsync. So, when a transaction is issued, all of the tree structure is
+>> updated (not in-place, bottom-up) and, lastly, the superblock is
+>> updated to point to the new tree generation. If reordering happens (or
+>> buggy firmware just drops its cache contents without updating the
+>> corresponding sectors) then a power-loss could render the filesystem
+>> unmountable.
+>>
+>> Upon more reading, ZFS seems to implement a circular buffer in which
+>> new pointers are updated one after another. That means that, if older
+>> generations (in btrfs terminology) of the tree are kept on disk you
+>> could survive such situations by just using another (older) pointer.
+> 
+> Btrfs does not keep older generations of trees on disk. *) Immediately
+> after completing a transaction, the space that was used by the previous
+> metadata can be overwritten again. IIRC when using the discard mount
+> options, it's even directly freed up on disk level by unallocating the
+> physical space by e.g. the FTL in an SSD. So, even while not overwritten
+> yet, reading it back gives you zeros.
+> 
+> *) Well, only for fs trees, and only if you explicitly ask for it, when
+> making subvolume snapshots/clones.
+> So just out of curiosity... if BTRFS internally at every successful 
+mount did a 'btrfs subvolume create /mountpoint /mountpoint/fsbackup1' 
+you would always have a good filesystem tree to fall back to?! would 
+this be correct?!
 
-The report / analysis received from our correspondence shows that you
-have NOT received your PAYMENT, due to administrative injustice from
-unpatriotic and uncivil payment officials. Following the resolution of
-the U.S Department of State, you are mandated to kindly reinstate your
-fund acquisition details for accreditation.
+And if so - this would mean that you would loose everything that 
+happened since last mount, but compared to having a catastrophic failure 
+this sound much much better.
 
-Sequel to the joint /collaborative effort by United Nations and US
-Department of State, to review, nullify and release all STOP ORDER on
-beneficiary transferred sum and consignment HELD at custom port
-authorities. At this juncture, you are advised to forward information
-of agencies that has put a HOLD on your consignment or STOP ORDER on
-your transferred sum.
+And if I as just a regular BTRFS user with my (possibly distorted) view 
+see this, if you would leave the top level subvolume (5) untouched and 
+avoid updates to this except creating child subvolues you reduce the 
+risk of catastrophic failure in case a fsync does not work out as only 
+the child subvolumes (that are regularily updated) would be at risk.
 
-This office is commission to investigate/rectify ISSUES affecting
-beneficiaries whose payment is HELD/STOP unjustly with the intent of
-demanding un-official fees/levies. Be informed that all administrative
-injustice imposed on beneficiaries by some dubious person(s) has come
-to the knowledge of oversight committee of United Nations and US
-Department of State.
+And if BTRFS internally made alternating snapshots of the root 
+subvolumes (5)'s child subvolumes you would loose at maximum 30sec x 2 
+(or whatever the commit time is set to) of data.
 
-Thus our objective is to resolve all challenges facing release of your
-payment. Therefore get back to my office with the required information
-for assessment.
+E.g. keep only child subvolumes on the top level (5).
+And if we pretend the top level has a child subvolume called rootfs, 
+then BTRFS could internally auto-snapshot (5)/rootfs every other time to 
+(5)/rootfs_autobackup1 and (5)/rootfs_autobackup2
 
-Our in service,
-
-John Scott Younger
-Human Right Activist
-Tel:- + 44 770 002 8251
+Do I understand this correctly or would there be any (significant) 
+performance drawback to this? Quite frankly I assume it is or else I 
+guess it would have been done already , but it never hurts (that much) 
+to ask...
