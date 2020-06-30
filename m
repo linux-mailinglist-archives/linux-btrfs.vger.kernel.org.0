@@ -2,122 +2,156 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB18320FC3C
-	for <lists+linux-btrfs@lfdr.de>; Tue, 30 Jun 2020 20:53:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22C0120FCBE
+	for <lists+linux-btrfs@lfdr.de>; Tue, 30 Jun 2020 21:26:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726695AbgF3SxH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 30 Jun 2020 14:53:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37804 "EHLO
+        id S1728001AbgF3T0x (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 30 Jun 2020 15:26:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725805AbgF3SxG (ORCPT
+        with ESMTP id S1726065AbgF3T0x (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 30 Jun 2020 14:53:06 -0400
-Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92976C061755
-        for <linux-btrfs@vger.kernel.org>; Tue, 30 Jun 2020 11:53:06 -0700 (PDT)
-Received: by mail-qv1-xf41.google.com with SMTP id t7so9754078qvl.8
-        for <linux-btrfs@vger.kernel.org>; Tue, 30 Jun 2020 11:53:06 -0700 (PDT)
+        Tue, 30 Jun 2020 15:26:53 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 604C6C061755
+        for <linux-btrfs@vger.kernel.org>; Tue, 30 Jun 2020 12:26:53 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id j4so8871299plk.3
+        for <linux-btrfs@vger.kernel.org>; Tue, 30 Jun 2020 12:26:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=SAkqAgaec40wQDymKAsrhJ8l3r+HaQ4LZntBhnj6trU=;
-        b=DmXNLN7VYJNa8ri+n/TGLTnXctGMCIrkfaZOtqmqwItAyV21tmCiGJo2kYBdC/b9SJ
-         Fb5Wl51N8gTakfAxgqDgPppJEtTUb2MHf25ckxIZyfU0iqQ3bqktNKxDpxHQoA/b0Jd/
-         MZ0JbvhPp0Vv/5RUiBPlve3gFJ3qRUdd3F1vKuIUyXSjdvKNn52Gzge8dBNhbzWDH+f0
-         cICXesq3AZ1sHAc6Z1E0POdZ95mvb9/mnvPjF3yLUn77l5Z7eUP9noLyW34IvQIOEC/Y
-         v0UMNA0z5YoKX30TpTNgHTAk4dEAUMrSWBHLSb3TGhMP6j6MgFKHpph5cURM4/Ix+bgN
-         INOA==
+        d=gmail.com; s=20161025;
+        h=sender:from:subject:to:message-id:date:user-agent:mime-version
+         :content-transfer-encoding:content-language;
+        bh=eYIuXNkLGDVrU0J+z+KIeHoWDw/CAVxBIRhmhxIeIx8=;
+        b=jweHdt50CF9ZGb+3WF6eU8W8E5v3p8vqXLwIEck01H0Qv9UZQ3Zr/KL8cq9LQ6pjZs
+         vrGa/2gLpgIGvPlF/huoL3/58/+6/y49iGjUqPRCBs43GUVfnuK63E1nZUHxZlozgn9i
+         idpZvu4JY560gBLIelbal31ywNxaqO8ABtHBLJYcUIZA0/cthc3hNe5ZOiD+UzX8pUup
+         VU18tUVSNWmntiumO0B8gzDM3MGS5vFtl+KQ6Rt3m9yn/3cDuCWoijIxDoGdyDrrncaV
+         SpQ5N+0uWG7LMIcIHs359rhebx0I8dL9S54tFFAN85C2eRQZ0W4sg9v6p+OsGCbdl+7s
+         3uKA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=SAkqAgaec40wQDymKAsrhJ8l3r+HaQ4LZntBhnj6trU=;
-        b=oDKIMjavLFFq6u7WQOtaRKwR5RHaIiSaLCUOBuKqa+F9/AIufthLSFKvTShBMnU6OV
-         hn/7Wc17ZAYMNuVnu3Ryl9WOBJQoyvszYiVExfZL0kRw3JwsgU2UI741I16GT7fUpBxd
-         W2x/2r7Fr0WbWNSHDnyzzkEM15c9rM7DPUc8I7Np2LiNBN6tFvxT4wlFGmM190OJlQKE
-         o7UZh8n/Iolr0mLFnDE/cvkco+dFgWiP8EyPf46ngZLniQPVD78z5NDLUhrSlFOsmQET
-         jZAPALzHDiC6r/AfdGWSs1m57H6XdwNBLa6k2hotIuby+hgxOYHwZJYSw1L74G/pmcP4
-         fDYA==
-X-Gm-Message-State: AOAM5324e7yi+51fDSOisENTZydP2+YuYnp/MD1efZqm/nl2aktDisn8
-        Ge2A/UqafyEtXceeUtvJH2eWoQOxG7W1yg==
-X-Google-Smtp-Source: ABdhPJwLQ1wk3BDAebmELUuXsScrbYWIfAK0xVnDxyGRPfB6e/gINAMLAcngfLoQTSkJP1nVyF1n0A==
-X-Received: by 2002:a05:6214:88e:: with SMTP id cz14mr21432984qvb.72.1593543185316;
-        Tue, 30 Jun 2020 11:53:05 -0700 (PDT)
-Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id w4sm4076880qtc.5.2020.06.30.11.53.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Jun 2020 11:53:04 -0700 (PDT)
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Cc:     Eric Sandeen <sandeen@redhat.com>
-Subject: [PATCH] btrfs: set tree_root->node = NULL on error
-Date:   Tue, 30 Jun 2020 14:53:02 -0400
-Message-Id: <20200630185302.3362-1-josef@toxicpanda.com>
-X-Mailer: git-send-email 2.24.1
+        h=x-gm-message-state:sender:from:subject:to:message-id:date
+         :user-agent:mime-version:content-transfer-encoding:content-language;
+        bh=eYIuXNkLGDVrU0J+z+KIeHoWDw/CAVxBIRhmhxIeIx8=;
+        b=XlOHD3v3sEgm4ezC0IrzUg3DyYowCrQ2sQpyJfXRHDGxSHUv3jGrNrUEqpVzBF/3N5
+         6zwzBo9WRNX+nHcKHn+gpkA5ofHUu6ODK9aASf/EVVoQmHbGnocfNnfMMDcaEnFIiuNr
+         ya+673EyLnLX2I4NkWiWaWEUvBNiosKvqdcMfFY2+ePGENLVzFgojKSL9RJt4dyDywpX
+         hdcG8yzLmbRHgwRptGQBxIuSbcm1HKCt8ZAAs75J4OMG6H9LrxtOUp0q8qIRcewq5uZb
+         pCit44x8U/8ApUaX5vk6+QsFzB6/fN7atOeQj3BL1JrKwQerD0o0Z/hgsinEIpNc96NG
+         4tZw==
+X-Gm-Message-State: AOAM530wX8038Ac3mx4zw5nYbKUHGG6a/12UEXtcxuno05K9W0pY7+IR
+        CpWaHVULgAPYNDq3ZZGzdFlKjgbzb5U=
+X-Google-Smtp-Source: ABdhPJy/l2rHsLjhuZFfAp0ZOP2dO8lReirnCHCk7VPdSGVIS8gwrieX/nEtec3lDaA8s8TZ5Ewm2w==
+X-Received: by 2002:a17:90a:2a4d:: with SMTP id d13mr16640583pjg.195.1593545211778;
+        Tue, 30 Jun 2020 12:26:51 -0700 (PDT)
+Received: from [192.168.0.23] (c-24-4-127-117.hsd1.ca.comcast.net. [24.4.127.117])
+        by smtp.gmail.com with ESMTPSA id a12sm2942928pjw.35.2020.06.30.12.26.51
+        for <linux-btrfs@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 30 Jun 2020 12:26:51 -0700 (PDT)
+From:   Illia Bobyr <illia.bobyr@gmail.com>
+Subject: "parent transid verify failed" and mount usebackuproot does not seem
+ to work
+To:     linux-btrfs@vger.kernel.org
+Message-ID: <c49e3370-c2b9-59a2-b578-9b5750951f25@gmail.com>
+Date:   Tue, 30 Jun 2020 12:26:50 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.0
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Eric reported an issue where mounting -o recovery with a fuzzed fs
-resulted in a kernel panic.  This is because we tried to free the tree
-node, except it was an error from the read.  Fix this by properly
-resetting the tree_root->node == NULL in this case.  The panic was the
-following
+Hi,
 
-BTRFS warning (device loop0): failed to read tree root
+I have a btrfs with bcache setup that failed during a boot yesterday.
+There is one SSD with bcache that is used as a cache for 3 btrfs HDDs.
+
+Reading through a number of discussions, I've decided to ask for advice
+here.
+Should I be running "btrfs check --recover"?
+
+The last message in the dmesg log is this one:
+
+Btrfs loaded, crc32c=crc32c-intel
+BTRFS: device label root devid 3 transid 138434 /dev/bcache2 scanned by
+btrfs (341)
+BTRFS: device label root devid 2 transid 138434 /dev/bcache1 scanned by
+btrfs (341)
+BTRFS: device label root devid 1 transid 138434 /dev/bcache0 scanned by
+btrfs (341)
+BTRFS info (device bcache0): disk space caching is enabled
+BTRFS info (device bcache0): has skinny extents
+BTRFS error (device bcache0): parent transid verify failed on
+16984159518720 wanted 138414 found 138207
+BTRFS error (device bcache0): parent transid verify failed on
+16984159518720 wanted 138414 found 138207
+BTRFS error (device bcache0): open_ctree failed
+
+Trying to mount it in the recovery mode does not seem to work:
+
+(initramfs) mount -t btrfs -o ro,usebackuproot /dev/bcache0 /mnt
+BTRFS info (device bcache1): trying to use backup root at mount time
+BTRFS info (device bcache1): disk space caching is enabled
+BTRFS info (device bcache1): has skinny extents
+BTRFS error (device bcache1): parent transid verify failed on
+16984159518720 wanted 138414 found 138207
+BTRFS error (device bcache1): parent transid verify failed on
+16984159518720 wanted 138414 found 138207
+BTRFS error (device bcache1): parent transid verify failed on
+16984173199360 wanted 138433 found 138195
+BTRFS error (device bcache1): parent transid verify failed on
+16984173199360 wanted 138433 found 138195
+BTRFS warning (device bcache1): failed to read tree root
+BTRFS error (device bcache1): parent transid verify failed on
+16984171298816 wanted 138431 found 131157
+BTRFS error (device bcache1): parent transid verify failed on
+16984171298816 wanted 138431 found 131157
+BTRFS warning (device bcache1): failed to read tree root
+BTRFS critical (device bcache1): corrupt leaf: block=16984183013376
+slot=36 extent bytenr=11447166291968 len=262144 invalid generation, have
+138434 expect (0, 138433]
+BTRFS error (device bcache1): block=16984183013376 read time tree block
+corruption detected
+BTRFS critical (device bcache1): corrupt leaf: block=16984183013376
+slot=36 extent bytenr=11447166291968 len=262144 invalid generation, have
+138434 expect (0, 138433]
+BTRFS error (device bcache1): block=16984183013376 read time tree block
+corruption detected
+BTRFS warning (device bcache1): failed to read tree root
 BUG: kernel NULL pointer dereference, address: 000000000000001f
-RIP: 0010:free_extent_buffer+0xe/0x90 [btrfs]
-Call Trace:
- free_root_extent_buffers.part.0+0x11/0x30 [btrfs]
- free_root_pointers+0x1a/0xa2 [btrfs]
- open_ctree+0x1776/0x18a5 [btrfs]
- btrfs_mount_root.cold+0x13/0xfa [btrfs]
- ? selinux_fs_context_parse_param+0x37/0x80
- legacy_get_tree+0x27/0x40
- vfs_get_tree+0x25/0xb0
- fc_mount+0xe/0x30
- vfs_kern_mount.part.0+0x71/0x90
- btrfs_mount+0x147/0x3e0 [btrfs]
- ? cred_has_capability+0x7c/0x120
- ? legacy_get_tree+0x27/0x40
- legacy_get_tree+0x27/0x40
- vfs_get_tree+0x25/0xb0
- do_mount+0x735/0xa40
- __x64_sys_mount+0x8e/0xd0
- do_syscall_64+0x4d/0x90
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x7f5302f851be
+#PF: supervisor read access in kernel mode
 
-Fixes: b8522a1e5f42 ("btrfs: Factor out tree roots initialization during mount")
-Reported-by: Eric Sandeen <sandeen@redhat.com>
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
----
- fs/btrfs/disk-io.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+<a stack trace follows>
 
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 7c07578866f3..c27022f13150 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -2592,10 +2592,12 @@ static int __cold init_tree_roots(struct btrfs_fs_info *fs_info)
- 		    !extent_buffer_uptodate(tree_root->node)) {
- 			handle_error = true;
- 
--			if (IS_ERR(tree_root->node))
-+			if (IS_ERR(tree_root->node)) {
- 				ret = PTR_ERR(tree_root->node);
--			else if (!extent_buffer_uptodate(tree_root->node))
-+				tree_root->node = NULL;
-+			} else if (!extent_buffer_uptodate(tree_root->node)) {
- 				ret = -EUCLEAN;
-+			}
- 
- 			btrfs_warn(fs_info, "failed to read tree root");
- 			continue;
--- 
-2.24.1
+(initramfs) btrfs --version
+btrfs-progs v5.4.1
+
+(initramfs) uname -a
+Linux (none) 5.6.11-050611-generic #202005061022 SMP Wed May 6 10:27:04
+UTC 2020 x86_64 GNU/Linux
+
+(initramfs) btrfs fi show
+Label: 'root' uuid: 0a3d051b-72ef-4a5d-8a48-eb0dbb960b56
+        Total devices 3 FS bytes used 6.55TiB
+        devid    1 size 3.64TiB used 1.62TiB path /dev/bcache1
+        devid    2 size 7.28TiB used 5.21TiB path /dev/bcache0
+        devid    3 size 12.73TiB used 6.80TiB path /dev/bcache2
+
+I have tried booting using a live ISO with 5.8.0 kernel and btrfs v5.6.1
+from http://defender.exton.net/.
+After booting tried mounting the bcache using the same command as above.
+The only message in the console was "Killed".
+/dev/kmsg on the other hand lists messages very similar to the ones I've
+seen in the initramfs environment: https://pastebin.com/Vhy072Mx
+
+P.S. Please CC me, as I am not subscribed.
+
+Thank you,
+Illia Bobyr
+
 
