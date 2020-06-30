@@ -2,97 +2,115 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8300320FD1F
-	for <lists+linux-btrfs@lfdr.de>; Tue, 30 Jun 2020 21:55:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 144C220FFE9
+	for <lists+linux-btrfs@lfdr.de>; Wed,  1 Jul 2020 00:10:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728733AbgF3Tzx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 30 Jun 2020 15:55:53 -0400
-Received: from mout.web.de ([212.227.17.12]:52041 "EHLO mout.web.de"
+        id S1726074AbgF3WKY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 30 Jun 2020 18:10:24 -0400
+Received: from mx2.suse.de ([195.135.220.15]:43396 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728327AbgF3Tzw (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 30 Jun 2020 15:55:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
-        s=dbaedf251592; t=1593546950;
-        bh=EwzMAkxojBFAkoI0z4m92OMprKKbUoOto5/lHq91Dd8=;
-        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:In-Reply-To;
-        b=HnXkbjJh8p2z8i+k7BdMcFh9ahbEaYikNKxGcCpJXtErvGlm7BBh7N8Y93CctUmnG
-         HxlbsjELri2hG54+wZ8vxHZsOm5Ib5fBv5ltY8q+ojq0GRe7+QOIYLracRBiFj0pUY
-         hrhtEyN75sizATCNVkI5mbGfvAN1ZBlL9jWZezD4=
-X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
-Received: from luklap ([94.134.180.143]) by smtp.web.de (mrweb101
- [213.165.67.124]) with ESMTPSA (Nemesis) id 0M3jwL-1izDfj0NE1-00rEjg; Tue, 30
- Jun 2020 21:55:50 +0200
-Date:   Tue, 30 Jun 2020 21:55:41 +0200
-From:   Lukas Straub <lukasstraub2@web.de>
-To:     illia.bobyr@gmail.com
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: "parent transid verify failed" and mount usebackuproot does not
- seem to work
-Message-ID: <20200630215541.5fc71893@luklap>
-In-Reply-To: <c49e3370-c2b9-59a2-b578-9b5750951f25@gmail.com>
+        id S1726097AbgF3WKY (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 30 Jun 2020 18:10:24 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 1A790AB89;
+        Tue, 30 Jun 2020 22:10:22 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 90148DA781; Wed,  1 Jul 2020 00:10:06 +0200 (CEST)
+From:   David Sterba <dsterba@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     wqu@suse.com
+Subject: BUG at fs/btrfs/relocation.c:794!
+Date:   Wed,  1 Jul 2020 00:10:06 +0200
+Message-Id: <20200630221006.17585-1-dsterba@suse.com>
+X-Mailer: git-send-email 2.25.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/I_a3ADLoTNLWGM=xV4US2Ua";
- protocol="application/pgp-signature"; micalg=pgp-sha512
-X-Provags-ID: V03:K1:k3UeJnCoGRjOmModYA2sxq2pLyZMIznHEWPDP8moHErVtIVX5HO
- CoySfWM/ni7+r5jm5qyBFPDmTi1S6rbWWN771HpuE+R8eC2mbqeLUhVOoGqkny1JqANU68K
- o6DcCg1uadtTM7ANP56j5zE2i8NWC7yu76028KmviTXm+Ry0/6ggGCnYVvrmxCzjtTe6fIa
- P/TIPFy4e1KbprsO4uDbQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:0Rgq+wlypXM=:NvKNaebYEeZ7eoOL19k9S2
- wSg+r/c6IXCxtepgTyp5o1YkDYSFIKDbKdEv3OXIKRN/HzoGZ/bLYX4cUawOHP+4Je6itJM3P
- o+winotxfW0J85Cw0iFw6+9IrYDHrbLiRUeSMpcVhXdsfjAlFlXY/jWwfk1FFQE7gCV6valOe
- yL4MzmQuxLlksfP34inB0qFCYlcptzskeavUUPyPcHE3w5h1Pjk0MD0KWFF3IvnJT/VdIqxm9
- SgPMPNtUc/qd/QpvMDHMx+pNdwHGPV0HInBgOW8Y4/lBCLrcy1Weyk1lUPaLSItEJKZCeIdJc
- R/LALYyoIEni0wBRIw3EDI5mREz3dGccrj1/cL7SCYR7O6zNSeTaq0tS+WLycQ+8o1JU1wFd/
- RVx5RNYbqaBRUvYMUdwZSR9THKD9wPUD4s6i6pXw7LToH6r70qlrcHr86PPHV+kNdDjZZ3vSu
- 8XWI6m6WfBZq/weqnhyP0vYOt4Q1jJCmTt4ZPZ5N2j0PkihH6eGx4sUe5/KVHEHdlNokT0QhX
- Ud/248F+PmgKQ9+HK91VCv30DWeJThHugRlAnprcUAwbn/gxDohUcOtyvUyy+IhsluIwVXqzq
- i+b9Ue1gO3B5+6vUfJa3dVuLxDSzjXIFFbCbfgCPJy2Ob7gW2HzLVJzIM/evgxla5g2D//TrB
- ic5p1H+SQoYojY52NLTBy6yq1TK8+mW5K7q4+NxoLjZqwy+dXzmwQpx6ZLH1rpuuHRlVlZHKL
- f5GOO4A0+i022hfxOM+T7OsjsnQxwrI8xBrnqu0vf5CVB359IQGFiChuTav2d1l+GkPDH06s5
- 2pzDuneHCILge9HPHuUydqg65ZT8tUt10D8CWVNmlREwd8F1/Ul9Lon9xHmcf64tJPoQzoBk5
- +LqUWobvoHzrYCChkdMycJh/D8YZZrPfqGzRAq4pwaW1xfNlrhxkojbNBMV9S4CEYJTXOkzS4
- ZoNis7/t2qGt/Ew7JDSZoD+BGsqaev7ytZzaVCtSf0srTUxDcHQ7/QR6OFl4aPs+wROJ6H8s5
- cWlLwh1SohAi9BJRoA77jq0gbOhDYpV4NjcjIowFCiNK2XCkigfSwEZ89EjW7botxplw2r6+Y
- mpgD7kIIJ/fEIdncSKMMNkkHxBz9SrwaDsAc2Iz6z6aWAPvTrhlvu3oBDyc8omHT7DhaHxYaP
- Ek2/7jkplXmy+3KU8w7ZTUc/ttZ1OZKGcMS8uIoDTeW3bqLDB64oDJMcz/hcN0hhPZQ1PUPpM
- qLxFkd3JNdvREgGUCLHE15bLQdjWxQ/Z2R0QGbw==
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
---Sig_/I_a3ADLoTNLWGM=xV4US2Ua
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
-
 Hi,
-The developers will need the output of "btrfs check <disk>" to debug the pr=
-oblem further. Also you can use "btrfs restore <disk> <target>" to rescue d=
-ata off your disks.
 
-Regards,
-Lukas Straub
+I've hit a crash in relocation I've never seen before.
 
---Sig_/I_a3ADLoTNLWGM=xV4US2Ua
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+[ 2129.210066] kernel BUG at fs/btrfs/relocation.c:794!
+[ 2129.215268] invalid opcode: 0000 [#1] PREEMPT SMP
+[ 2129.220114] CPU: 1 PID: 3303 Comm: btrfs Not tainted 5.8.0-rc3-git+ #638
+[ 2129.220116] Hardware name: empty empty/S3993, BIOS PAQEX0-3 02/24/2008
+[ 2129.220265] RIP: 0010:create_reloc_root+0x214/0x260 [btrfs]
+[ 2129.258760] RSP: 0018:ffffbe1e809b38b8 EFLAGS: 00010282
+[ 2129.258763] RAX: 00000000ffffffef RBX: ffff988d577f9000 RCX: 0000000000000000
+[ 2129.258765] RDX: 0000000000000001 RSI: ffffffff8e2a2580 RDI: ffff988d64aaa6a8
+[ 2129.258766] RBP: ffff988d5dfcdc00 R08: 0000000000000000 R09: 0000000000000000
+[ 2129.258767] R10: 0000000000000001 R11: 0000000000000000 R12: ffff988d0e02fa78
+[ 2129.258769] R13: 0000000000000005 R14: ffff988d64fe8000 R15: ffff988d0e02fa78
+[ 2129.258771] FS:  00007f82a612e8c0(0000) GS:ffff988d67000000(0000) knlGS:0000000000000000
+[ 2129.258772] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[ 2129.258774] CR2: 000000000559d028 CR3: 000000020b289000 CR4: 00000000000006e0
+[ 2129.258775] Call Trace:
+[ 2129.258825]  btrfs_init_reloc_root+0xe8/0x120 [btrfs]
+[ 2129.258862]  record_root_in_trans+0xae/0xd0 [btrfs]
+[ 2129.258901]  btrfs_record_root_in_trans+0x51/0x70 [btrfs]
+[ 2129.340388]  select_reloc_root+0x94/0x340 [btrfs]
+[ 2129.340433]  do_relocation+0xda/0x7b0 [btrfs]
+[ 2129.349854]  ? _raw_spin_unlock+0x1f/0x40
+[ 2129.349898]  relocate_tree_blocks+0x336/0x670 [btrfs]
+[ 2129.359325]  relocate_block_group+0x2f6/0x600 [btrfs]
+[ 2129.359365]  btrfs_relocate_block_group+0x15e/0x340 [btrfs]
+[ 2129.359408]  btrfs_relocate_chunk+0x38/0x110 [btrfs]
+[ 2129.375494]  __btrfs_balance+0x42c/0xce0 [btrfs]
+[ 2129.375553]  btrfs_balance+0x66a/0xbe0 [btrfs]
+[ 2129.375562]  ? kmem_cache_alloc_trace+0x19c/0x330
+[ 2129.389852]  btrfs_ioctl_balance+0x298/0x350 [btrfs]
+[ 2129.389887]  btrfs_ioctl+0x304/0x2490 [btrfs]
+[ 2129.389898]  ? do_user_addr_fault+0x221/0x49c
+[ 2129.404070]  ? sched_clock_cpu+0x15/0x140
+[ 2129.404073]  ? do_user_addr_fault+0x221/0x49c
+[ 2129.404079]  ? up_read+0x18/0x240
+[ 2129.404086]  ? ksys_ioctl+0x68/0xa0
+[ 2129.404091]  ksys_ioctl+0x68/0xa0
+[ 2129.423308]  __x64_sys_ioctl+0x16/0x20
+[ 2129.423312]  do_syscall_64+0x50/0xe0
+[ 2129.423315]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[ 2129.423318] RIP: 0033:0x7f82a51c6327
+[ 2129.423319] Code: Bad RIP value.
+[ 2129.423348] RSP: 002b:00007ffd32cf6218 EFLAGS: 00000206 ORIG_RAX: 0000000000000010
+[ 2129.423367] RAX: ffffffffffffffda RBX: 0000000000000001 RCX: 00007f82a51c6327
+[ 2129.423368] RDX: 00007ffd32cf62a0 RSI: 00000000c4009420 RDI: 0000000000000003
+[ 2129.423372] RBP: 0000000000000003 R08: 0000000000000000 R09: 0000000000000000
+[ 2129.423377] R10: 000000000fa99fa0 R11: 0000000000000206 R12: 00007ffd32cf8823
+[ 2129.423379] R13: 00007ffd32cf62a0 R14: 0000000000000001 R15: 0000000000000000
 
------BEGIN PGP SIGNATURE-----
+Relevant code called from create_reloc_root:
 
-iQIzBAEBCgAdFiEEg/qxWKDZuPtyYo+kNasLKJxdslgFAl77mL0ACgkQNasLKJxd
-slgKExAAtZlbAMQnElMYTU9vM+XIAgWovnq3f9N70NDXiw0hPDeipdeUeBkznBKu
-gEpt4opjBfEGYiBoCpUu/arucEC9JzEONEOFjD4kal/QT1It2R7TWnZ8MqVb4jxO
-/zvWrurkVsERXb+q5aCaYslzqiGIDtvj7bN1XMO/lJrzFimEwtICwAUtvNRCwZjb
-0j16pmfrxaIRYRjmafhGo3IcTma8e9d1oJIb372LjpYqsRjn4ZRfmfocaUjq5obc
-uCuLbbBAwEnSdvYps26TF72nC61bpoSjXeCA06mQxrwD3VTpaqZZUhQ0/aPb9J10
-8OGCtSIyUjR5BGzYXwwUpvk0/OYksDIEJQydh/Wa8WR531T0ZKKZ2jluCWSK/U2T
-KOAd1ddhZtnsihNjVxYv/pyyujFLzhadUxQugbUVS2mvzQuJ2grpO3PJvCYE8vk5
-b0mW9a/Yf492T+3JvTha9Swv6UtZyCEpQqgIg4rHtxnovHR+sFuO4NZVD3SWnn69
-15HhiSaHqvnhAJbZuMf3VEL+Iqr1pRfK7fKQdUPYx3eRgUqG2p2KDfFPPW+XR6lk
-E7KbdSgRHjo3Dvw8ZfQXQACQZ27EOHlrWrYHP4aDN/6WQZug/UWSt0kmq/SReMMP
-CZQcqOqzbGO78fFdm5HkosBCEcDg8F/Xfd3tjKfbnxceX+htTbM=
-=gqTN
------END PGP SIGNATURE-----
+        ret = btrfs_insert_root(trans, fs_info->tree_root,
+                                &root_key, root_item);
+        BUG_ON(ret)
 
---Sig_/I_a3ADLoTNLWGM=xV4US2Ua--
+and according to EAX, ret is -17 which is EEXIST.
+
+I don't have a reproducer, the testing image has been filled by random git
+checkouts, deduplicated by BEES, then tons of snapshots created until the
+metadata got exhausted, some file deletion and balances.
+
+This is the same image that led to the patch "btrfs: allow use of global block
+reserve for balance item deletion", so this could have left it in some
+intermediate state where the balance item was not removed and the reloc tree as
+well.
+
+There were a few unsuccessful mounts due to relocation recovery, that was
+trying to debug but then it started to work.
+
+The error happened with this 'fi df' saved after the balance start:
+
+# btrfs fi df mnt
+Data, single: total=80.01GiB, used=38.67GiB
+System, single: total=4.00MiB, used=16.00KiB
+Metadata, single: total=19.99GiB, used=19.46GiB
+GlobalReserve, single: total=512.00MiB, used=44.00KiB
+
+The error looks like a repeated relocation tree creation, which would point to
+the unsuccesful balances or inconsistent state (balance item, reloc trees).
+It's not a "typical" mix of operations but I'd appreciate any insights here.
