@@ -2,65 +2,60 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57CEE20F72E
-	for <lists+linux-btrfs@lfdr.de>; Tue, 30 Jun 2020 16:28:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E37420F755
+	for <lists+linux-btrfs@lfdr.de>; Tue, 30 Jun 2020 16:36:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388954AbgF3O2M (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 30 Jun 2020 10:28:12 -0400
-Received: from mx2.suse.de ([195.135.220.15]:50270 "EHLO mx2.suse.de"
+        id S1731094AbgF3OgP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 30 Jun 2020 10:36:15 -0400
+Received: from mx2.suse.de ([195.135.220.15]:54920 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388945AbgF3O2L (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 30 Jun 2020 10:28:11 -0400
+        id S1726672AbgF3OgP (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 30 Jun 2020 10:36:15 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id ED86CAC37;
-        Tue, 30 Jun 2020 14:28:09 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id C2A14DA790; Tue, 30 Jun 2020 16:27:54 +0200 (CEST)
-Date:   Tue, 30 Jun 2020 16:27:54 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] btrfs: qgroup: add sysfs interface for debug
-Message-ID: <20200630142754.GY27795@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20200628050715.60961-1-wqu@suse.com>
- <20200628050715.60961-3-wqu@suse.com>
- <20200629213008.GO27795@twin.jikos.cz>
- <9af22db7-42f0-00fd-1a34-33d6a8cffc2f@suse.com>
- <20200630080735.GQ27795@twin.jikos.cz>
+        by mx2.suse.de (Postfix) with ESMTP id D1E46B613;
+        Tue, 30 Jun 2020 14:36:13 +0000 (UTC)
+Date:   Tue, 30 Jun 2020 09:36:11 -0500
+From:   Goldwyn Rodrigues <rgoldwyn@suse.de>
+To:     dsterba@suse.cz, linux-btrfs@vger.kernel.org,
+        Goldwyn Rodrigues <rgoldwyn@suse.com>
+Subject: Re: [PATCH 2/8] btrfs: Move FS error state bit early during write
+Message-ID: <20200630143611.26v5chluocc2mmrk@fiona>
+References: <20200622162017.21773-1-rgoldwyn@suse.de>
+ <20200622162017.21773-3-rgoldwyn@suse.de>
+ <20200630082248.GR27795@twin.jikos.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200630080735.GQ27795@twin.jikos.cz>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <20200630082248.GR27795@twin.jikos.cz>
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Jun 30, 2020 at 10:07:35AM +0200, David Sterba wrote:
-> We need to at lest have a solid idea how to extend it, not neccessarily
-> to implement it right now. Adding the group membership to qgroup
-> directories under the qgroup directory as symlinks between the kobjects
-> sounds ok-ish to me but it's a new idea and I need to think about it.
+On 10:22 30/06, David Sterba wrote:
+> On Mon, Jun 22, 2020 at 11:20:11AM -0500, Goldwyn Rodrigues wrote:
+> > From: Goldwyn Rodrigues <rgoldwyn@suse.com>
+> > 
+> > We don't need the inode locked to check for the error bit. Move the
+> > check early.
+> 
+> This lacks explanation why it's not needed. I've checked history of the
+> code and it seems the error state flags has been after all other checks
+> since long, starting in acce952b0263825d. But it's part of a bigger
+> patch and is not specific about this call site.
+> 
+> If something checks state and changes the location, we need to make sure
+> the state is not affected by code between the old and new location.
 
-So my current winner idea for the hierarchy representation is to keep
-all child qgroups as symlinks in the parent group. This does not require
-extra kojbect to keep, and the path in sysfs would reflect the
-hierarchy, like:
+This is a filesystem state bit as opposed to a file level state bit. The
+bit states that you don't let writes proceed because of a filesystem
+error. Why would you need a inode level lock for that? It is better to
+return -EROFS early enough rather than take a lock, check for filesystem
+failure, release the lock and then return an error.
 
-/sys/fs/btrfs/UUID/qgroups/4_1/3_1/2_1/1234_0
+The other check is in start_transaction, which perhaps is for
+writes-in-flight.
 
-This tracks only the parent -> child pointers, so to see all parent
-qgroups one has to build the reverse graph or simply search which
-1st level directories contain the group as child.
-
-Implementation is one more sysfs_create_link, the leaf qgroups
-representing subvolumes will contain only the files with stats.
-
-One potential drawback is the maximum size of path that will not allow
-to show deep qgroup hierarchies, but still about 200-400 in case of
-average qgroup id 20 or 10 respectively.
+-- 
+Goldwyn
