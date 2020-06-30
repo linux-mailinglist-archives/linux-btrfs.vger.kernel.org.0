@@ -2,85 +2,51 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2AC820F0B0
-	for <lists+linux-btrfs@lfdr.de>; Tue, 30 Jun 2020 10:43:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98DC720F0D9
+	for <lists+linux-btrfs@lfdr.de>; Tue, 30 Jun 2020 10:48:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731627AbgF3InD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 30 Jun 2020 04:43:03 -0400
-Received: from mx2.suse.de ([195.135.220.15]:57326 "EHLO mx2.suse.de"
+        id S1731737AbgF3Isd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 30 Jun 2020 04:48:33 -0400
+Received: from mx2.suse.de ([195.135.220.15]:32988 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728132AbgF3InD (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 30 Jun 2020 04:43:03 -0400
+        id S1731642AbgF3Isc (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 30 Jun 2020 04:48:32 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id E3906AD5C;
-        Tue, 30 Jun 2020 08:43:01 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 95F48ADCA;
+        Tue, 30 Jun 2020 08:48:30 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 4629CDA790; Tue, 30 Jun 2020 10:42:46 +0200 (CEST)
-Date:   Tue, 30 Jun 2020 10:42:45 +0200
+        id 67B07DA790; Tue, 30 Jun 2020 10:48:15 +0200 (CEST)
+Date:   Tue, 30 Jun 2020 10:48:15 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Goldwyn Rodrigues <rgoldwyn@suse.de>
-Cc:     linux-btrfs@vger.kernel.org, Goldwyn Rodrigues <rgoldwyn@suse.com>
-Subject: Re: [PATCH 6/8] btrfs: Use shared inode lock for direct writes
- within EOF
-Message-ID: <20200630084245.GT27795@twin.jikos.cz>
+To:     Hans van Kranenburg <hans@knorrie.org>
+Cc:     dsterba@suse.cz, Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        linux-btrfs@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH v3] btrfs: pass checksum type via BTRFS_IOC_FS_INFO ioctl
+Message-ID: <20200630084815.GU27795@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Goldwyn Rodrigues <rgoldwyn@suse.de>,
-        linux-btrfs@vger.kernel.org, Goldwyn Rodrigues <rgoldwyn@suse.com>
-References: <20200622162017.21773-1-rgoldwyn@suse.de>
- <20200622162017.21773-7-rgoldwyn@suse.de>
+Mail-Followup-To: dsterba@suse.cz, Hans van Kranenburg <hans@knorrie.org>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        linux-btrfs@vger.kernel.org, stable@vger.kernel.org
+References: <20200626150107.19666-1-johannes.thumshirn@wdc.com>
+ <20200626200619.GI27795@twin.jikos.cz>
+ <e59c3b69-d10c-198d-2f69-b3936f908a73@knorrie.org>
+ <b43e807b-97f8-3b46-b29d-46318398a215@knorrie.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200622162017.21773-7-rgoldwyn@suse.de>
+In-Reply-To: <b43e807b-97f8-3b46-b29d-46318398a215@knorrie.org>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Jun 22, 2020 at 11:20:15AM -0500, Goldwyn Rodrigues wrote:
-> From: Goldwyn Rodrigues <rgoldwyn@suse.com>
-> 
-> This is to parallelize direct writes within EOF or with direct I/O
-> reads. This covers the race with truncate() accidentally increasing the
-> filesize.
+On Sun, Jun 28, 2020 at 12:35:27AM +0200, Hans van Kranenburg wrote:
+> So, the same thing as done here could be done when extending
+> GET_DEV_STATS because I see users are asking about counters for repaired
+> errors to be added, so they can be used for early warning alerts of
+> failing disks.
 
-Please describe the race condition in more detail and how the DIO/EOF
-parallelization is supposed to work.
-
-> Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
-> ---
->  fs/btrfs/file.c | 25 +++++++------------------
->  1 file changed, 7 insertions(+), 18 deletions(-)
-> 
-> diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-> index aa6be931620b..c446a4aeb867 100644
-> --- a/fs/btrfs/file.c
-> +++ b/fs/btrfs/file.c
-> @@ -1957,12 +1957,18 @@ static ssize_t btrfs_direct_write(struct kiocb *iocb, struct iov_iter *from)
->  	loff_t endbyte;
->  	int err;
->  	size_t count = 0;
-> -	bool relock = false;
->  	int flags = IOMAP_DIOF_PGINVALID_FAIL;
->  	int ilock_flags = 0;
->  
->  	if (iocb->ki_flags & IOCB_NOWAIT)
->  		ilock_flags |= BTRFS_ILOCK_TRY;
-> +	/*
-> +	 * If the write DIO within EOF,  use a shared lock
-> +	 */
-> +	if (pos + count <= i_size_read(inode))
-
-Inode size is now read outside of the inode lock, so it could change
-until the lock is taken a few lines below.
-
-> +		ilock_flags |= BTRFS_ILOCK_SHARED;
-> +	else if (iocb->ki_flags & IOCB_NOWAIT)
-> +		return -EAGAIN;
->  
->  	err = btrfs_inode_lock(inode, ilock_flags);
-
-Is it necessary to revalidate that 'pos + count < i_size' still holds
-when the lock was taken as SHARED?
+Yes the dev stats are extensible following the same scheme and we'll add
+new counters eventually.
