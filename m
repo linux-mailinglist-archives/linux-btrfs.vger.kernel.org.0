@@ -2,59 +2,58 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 776CA20F683
-	for <lists+linux-btrfs@lfdr.de>; Tue, 30 Jun 2020 15:59:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F98020F687
+	for <lists+linux-btrfs@lfdr.de>; Tue, 30 Jun 2020 15:59:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388231AbgF3N7h (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 30 Jun 2020 09:59:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49004 "EHLO
+        id S2388317AbgF3N7l (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 30 Jun 2020 09:59:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728637AbgF3N7g (ORCPT
+        with ESMTP id S2388263AbgF3N7i (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 30 Jun 2020 09:59:36 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6555FC061755
-        for <linux-btrfs@vger.kernel.org>; Tue, 30 Jun 2020 06:59:36 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id e13so18621490qkg.5
-        for <linux-btrfs@vger.kernel.org>; Tue, 30 Jun 2020 06:59:36 -0700 (PDT)
+        Tue, 30 Jun 2020 09:59:38 -0400
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 787A1C061755
+        for <linux-btrfs@vger.kernel.org>; Tue, 30 Jun 2020 06:59:38 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id 80so18620533qko.7
+        for <linux-btrfs@vger.kernel.org>; Tue, 30 Jun 2020 06:59:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=wvZIkows8auYehqDoOck2uZN7Jfa9bG4yskXCxHR+6g=;
-        b=NbLysFfJxHCSs455ruFLSiVY6PdzFmGgpzVRZSyspWLxVfIrLwQorkdcy9P97tl8/M
-         d2gOrI0+lSjMTL30+G5vtu3E0TJ8BUz6h/l9YQGzErTf0PnpCrDZI8yYdCVd0cxM1wuH
-         CTsQ5eIvOAJWUmjGQITjLKsalsXCMbdr6/ltszaOzxatGzQssHShMr56Wq7TDH7psM0M
-         eFVSw+GXYAjAe8hLmySLfSYvrXbMsvi2ki/V3uNgP41ttCkkCukq1EjZBwT4RsVFmUdM
-         BtR85a8IgTXVBUqxX32nhRTNsLkQshMa9ZCHh3OqHqV+xEumA87Qb4aa6cgVZ4Ik8NhN
-         TwsA==
+        bh=pTMh1XdIBMBbevjWIsHmClI1dbdzDP2/JU+FBcW3VOM=;
+        b=shv+V0iaGC2PXnKdKrvjgXPQt0ZWEtp0bSFG+f8nz4uq27JwIL5Ahcye+zPSdYcNet
+         RQHqu/X29xiZRwH2DblBqdzexO6OdVUmzbUmaNidvHgeUKB2RnX+10mbz5hzv4N76ncU
+         TLm32ZjeEjgFa3RVQl4ZrqrRVt5Sh3qEjJvGYpROleBmkqR35czbwdbsP5QLUbL59TpP
+         z7snoAuZK0xXiq4OlIr+JRgrz7AZ73DMDjZGxXK5oQl0CJ8AyU+LPvXAJ+EC2hEs44N0
+         B+HVdFAHz0DwaVbsbDG0V+sV7hxWQ62SQXzOTzh1hw08pEAivo7Lkh7C5nUi3H7wu2H4
+         i3qg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=wvZIkows8auYehqDoOck2uZN7Jfa9bG4yskXCxHR+6g=;
-        b=eZI0kcSevPknek4or+E9ZZ/jIzBfngoDEKWCRadsru3IJkfOZOighCH9CMVzYDhnDC
-         sU7AjsxFNUY57kANffQy/IYmZXh7FhQUzBcZZVHWdMS/OOKmrW7d3OezzXlu8c3siwnK
-         WePF2jDOjKl8Pi6fP7Q9boupXCfqV1NQmEIK6evAcyzIqOeZIERUhBQPoHRPQlFH11Co
-         92we6JmhY1zcEEALaWqbCiRUQO4l7EElfisCdE4UJvoYjo17KTYkuVbs9lCYUwqrQR7r
-         dqtX3vRRmzIXQKL4/F2d9C87TmbroSO7eTd5kGXPINg1DJctlCvZEkIsKB/M3iQwPoKX
-         LbrQ==
-X-Gm-Message-State: AOAM531LN0YZ5yod/VUgjQQ5CJdCEQ2EQuyyNWEWx24n3OJEvgoNkxBz
-        qE85kkA6HaRBCkkp/Li45r2OnNd+Ybj9MA==
-X-Google-Smtp-Source: ABdhPJwVXaEfdW0/0vzwYm5UwKEsTB3hN96tYZ8IPOKC2a6/XavYupnfbSqKBwv886xaPOzSFyeJng==
-X-Received: by 2002:a05:620a:2f4:: with SMTP id a20mr20230371qko.227.1593525575211;
-        Tue, 30 Jun 2020 06:59:35 -0700 (PDT)
+        bh=pTMh1XdIBMBbevjWIsHmClI1dbdzDP2/JU+FBcW3VOM=;
+        b=jcKx2h0JxzVC8qQ4Q8xhNR66g/544A9hkPTvyeVLZxC+4cKCrzVAnFb9+/SdA0khil
+         5Wb+pA/B+peJirHgSl7TLT2uIMbWoUsCfb53R6PlGmOR4ULy8FFADXKaJ+J/47jphJBR
+         3pJ6uciKN8nkXnM/D2ge7yTKsp+YTkyG69k5aAFzo60HK5dJGzCyavQknlFDk2aj1uYb
+         v05CnjVwIrPyi0wcPnHYlVVjQLhqod7cy2IXa2DleRD45xjM0J7DXEQTNGKKAHa3MzwI
+         A1/R7wfzXaCuCubKeA9Oxff4L8IT6SjxkNO6N2oFxZzfYEPbylKWZjTBNhdAKkiHpdtM
+         gkLw==
+X-Gm-Message-State: AOAM533Z6gLf5sK3APmMyNz65qbqtylZEpMAZT7PGJThd3bYgFlE5eAI
+        gGKSHn3cFxIPdvZ+Rc3WVBV0gPL4LV58Lg==
+X-Google-Smtp-Source: ABdhPJwN9PYrFX8S3cntJW+vZnBqvp0DXs5HxwXUQ7+XRYzQ8A72ZkxUAMYlKtM3eQi65e+gFmObNw==
+X-Received: by 2002:a37:a444:: with SMTP id n65mr19418517qke.289.1593525577338;
+        Tue, 30 Jun 2020 06:59:37 -0700 (PDT)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id j16sm2920233qtp.92.2020.06.30.06.59.34
+        by smtp.gmail.com with ESMTPSA id u22sm3274156qtb.23.2020.06.30.06.59.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Jun 2020 06:59:34 -0700 (PDT)
+        Tue, 30 Jun 2020 06:59:36 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Cc:     Nikolay Borisov <nborisov@suse.com>,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Subject: [PATCH 05/23] btrfs: make ALLOC_CHUNK use the space info flags
-Date:   Tue, 30 Jun 2020 09:59:03 -0400
-Message-Id: <20200630135921.745612-6-josef@toxicpanda.com>
+Cc:     Nikolay Borisov <nborisov@suse.com>
+Subject: [PATCH 06/23] btrfs: call btrfs_try_granting_tickets when freeing reserved bytes
+Date:   Tue, 30 Jun 2020 09:59:04 -0400
+Message-Id: <20200630135921.745612-7-josef@toxicpanda.com>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20200630135921.745612-1-josef@toxicpanda.com>
 References: <20200630135921.745612-1-josef@toxicpanda.com>
@@ -65,34 +64,30 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-We have traditionally used flush_space() to flush metadata space, so
-we've been unconditionally using btrfs_metadata_alloc_profile() for our
-profile to allocate a chunk.  However if we're going to use this for
-data we need to use btrfs_get_alloc_profile() on the space_info we pass
-in.
+We were missing a call to btrfs_try_granting_tickets in
+btrfs_free_reserved_bytes, so add it to handle the case where we're able
+to satisfy an allocation because we've freed a pending reservation.
 
 Reviewed-by: Nikolay Borisov <nborisov@suse.com>
-Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 Tested-by: Nikolay Borisov <nborisov@suse.com>
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/space-info.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ fs/btrfs/block-group.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
-index dda0e9ec68e3..3f0e6fa31937 100644
---- a/fs/btrfs/space-info.c
-+++ b/fs/btrfs/space-info.c
-@@ -777,7 +777,8 @@ static void flush_space(struct btrfs_fs_info *fs_info,
- 			break;
- 		}
- 		ret = btrfs_chunk_alloc(trans,
--				btrfs_metadata_alloc_profile(fs_info),
-+				btrfs_get_alloc_profile(fs_info,
-+							space_info->flags),
- 				(state == ALLOC_CHUNK) ? CHUNK_ALLOC_NO_FORCE :
- 					CHUNK_ALLOC_FORCE);
- 		btrfs_end_transaction(trans);
+diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+index 09b796a081dd..7b04cf4eeff3 100644
+--- a/fs/btrfs/block-group.c
++++ b/fs/btrfs/block-group.c
+@@ -3090,6 +3090,8 @@ void btrfs_free_reserved_bytes(struct btrfs_block_group *cache,
+ 	if (delalloc)
+ 		cache->delalloc_bytes -= num_bytes;
+ 	spin_unlock(&cache->lock);
++
++	btrfs_try_granting_tickets(cache->fs_info, space_info);
+ 	spin_unlock(&space_info->lock);
+ }
+ 
 -- 
 2.24.1
 
