@@ -2,115 +2,174 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 144C220FFE9
-	for <lists+linux-btrfs@lfdr.de>; Wed,  1 Jul 2020 00:10:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97F9B2100DB
+	for <lists+linux-btrfs@lfdr.de>; Wed,  1 Jul 2020 02:07:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726074AbgF3WKY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 30 Jun 2020 18:10:24 -0400
-Received: from mx2.suse.de ([195.135.220.15]:43396 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726097AbgF3WKY (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 30 Jun 2020 18:10:24 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 1A790AB89;
-        Tue, 30 Jun 2020 22:10:22 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 90148DA781; Wed,  1 Jul 2020 00:10:06 +0200 (CEST)
-From:   David Sterba <dsterba@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     wqu@suse.com
-Subject: BUG at fs/btrfs/relocation.c:794!
-Date:   Wed,  1 Jul 2020 00:10:06 +0200
-Message-Id: <20200630221006.17585-1-dsterba@suse.com>
-X-Mailer: git-send-email 2.25.0
+        id S1726276AbgGAAHF convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-btrfs@lfdr.de>); Tue, 30 Jun 2020 20:07:05 -0400
+Received: from de-smtp-delivery-102.mimecast.com ([51.163.158.102]:60316 "EHLO
+        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725930AbgGAAHD (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 30 Jun 2020 20:07:03 -0400
+Received: from EUR04-DB3-obe.outbound.protection.outlook.com
+ (mail-db3eur04lp2050.outbound.protection.outlook.com [104.47.12.50]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ de-mta-15-6OPvVBxtNaClnbn2Vw6i4w-1; Wed, 01 Jul 2020 02:06:56 +0200
+X-MC-Unique: 6OPvVBxtNaClnbn2Vw6i4w-1
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=dMhMZFBBtaj01y/p5UePpLH3HJmrki1O33b9LODIXoYNgJURwDEZphV920fdFTL7k8I0QXWiSjLqhWNeiKYMBa+v3UM6MQfK9ChHPkXTQltuRZjue/2aBFES35LlYgSe0zqxgLJ0iLcVqH17ZbYepNVDLPa8OIIqIUmPJ0YYgCHy/bzOCqXATYPxBQLM5oT13iprVz2+vvx1z2/Hl0YAQ9OyPv33Ex2/gwoBcEONUBiIFV2SWj1oMww6x1IEbtj11D708tI7F+Iu5cS6SbRpzJsC4saRNz3zI34A5S656vWXkJOiIvdfYlNPEgzojEe27gvHX6iEtp6K5TsDCmlHhg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=MOS6C1gQdALsPjUTiOcy6CxCKSyI8KW1rrpybtufEvg=;
+ b=SoDQ/RKJUXr2blVS8d7NciTVG6sOJb6k2pmN4ygV+nbYiYCv9H8AaQBct0HJ9UxtwxCFN9BfbU8Y9DmVvJqZtHhrgd9XalH1i/PS3KcKl1f3n1JLU8UQjIvd05vy9b1Q8epUjEYqDcSBb/sFwMKd2KCZr0CmllKh3yW4UwsHhELVjSwvsfmnHGzmpAqqC5FA5K+H56khzx8cfzf3SetUc1QLyidsQQgtyYdVYucIIZLPXxeDgpjMWsvjDclgkI406K3vPkgomUMWbIFW878N9Z4aNkqTasgjj9D2HpsPrba+szN2gRoPL50/LCIlKRgtcATVBQ3PlZCYvhpHCnMh9g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=suse.com;
+Received: from AM0PR04MB6195.eurprd04.prod.outlook.com (2603:10a6:208:13c::13)
+ by AM0PR04MB4644.eurprd04.prod.outlook.com (2603:10a6:208:75::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3131.20; Wed, 1 Jul
+ 2020 00:06:54 +0000
+Received: from AM0PR04MB6195.eurprd04.prod.outlook.com
+ ([fe80::688e:afdb:90d9:bdef]) by AM0PR04MB6195.eurprd04.prod.outlook.com
+ ([fe80::688e:afdb:90d9:bdef%3]) with mapi id 15.20.3131.028; Wed, 1 Jul 2020
+ 00:06:54 +0000
+Subject: Re: [PATCH v2 2/2] btrfs: qgroup: add sysfs interface for debug
+To:     dsterba@suse.cz, linux-btrfs@vger.kernel.org
+References: <20200628050715.60961-1-wqu@suse.com>
+ <20200628050715.60961-3-wqu@suse.com> <20200630165756.GB27795@twin.jikos.cz>
+From:   Qu Wenruo <wqu@suse.com>
+Autocrypt: addr=wqu@suse.com; keydata=
+ mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAG0GFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPokBTQQTAQgAOAIbAwULCQgHAgYVCAkKCwIE
+ FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJdnDWhAAoJEMI9kfOhJf6oZgoH
+ 90uqoGyUh5UWtiT9zjUcvlMTCpd/QSgwagDuY+tEdVPaKlcnTNAvZKWSit8VuocjrOFbTLwb
+ vZ43n5f/l/1QtwMgQei/RMY2XhW+totimzlHVuxVaIDwkF+zc+pUI6lDPnULZHS3mWhbVr9N
+ vZAAYVV7GesyyFpZiNm7GLvLmtEdYbc9OnIAOZb3eKfY3mWEs0eU0MxikcZSOYy3EWY3JES7
+ J9pFgBrCn4hF83tPH2sphh1GUFii+AUGBMY/dC6VgMKbCugg+u/dTZEcBXxD17m+UcbucB/k
+ F2oxqZBEQrb5SogdIq7Y9dZdlf1m3GRRJTX7eWefZw10HhFhs1mwx7kBDQRZ1YGvAQgAqlPr
+ YeBLMv3PAZ75YhQIwH6c4SNcB++hQ9TCT5gIQNw51+SQzkXIGgmzxMIS49cZcE4KXk/kHw5h
+ ieQeQZa60BWVRNXwoRI4ib8okgDuMkD5Kz1WEyO149+BZ7HD4/yK0VFJGuvDJR8T7RZwB69u
+ VSLjkuNZZmCmDcDzS0c/SJOg5nkxt1iTtgUETb1wNKV6yR9XzRkrEW/qShChyrS9fNN8e9c0
+ MQsC4fsyz9Ylx1TOY/IF/c6rqYoEEfwnpdlz0uOM1nA1vK+wdKtXluCa79MdfaeD/dt76Kp/
+ o6CAKLLcjU1Iwnkq1HSrYfY3HZWpvV9g84gPwxwxX0uXquHxLwARAQABiQE8BBgBCAAmAhsM
+ FiEELd9y5aWlW6idqkLhwj2R86El/qgFAl2cNa4FCQlqTn8ACgkQwj2R86El/qhXBAf/eXLP
+ HDNTkHRPxoDnwhscIHJDHlsszke25AFltJQ1adoaYCbsQVv4Mn5rQZ1Gon54IMdxBN3r/B08
+ rGVPatIfkycMCShr+rFHPKnExhQ7Wr555fq+sQ1GOwOhr1xLEqAhBMp28u9m8hnkqL36v+AF
+ hjTwRtS+tRMZfoG6n72xAj984l56G9NPfs/SOKl6HR0mCDXwJGZAOdtyRmqddi53SXi5N4H1
+ jWX1xFshp7nIkRm6hEpISEWr/KKLbAiKKbP0ql5tP5PinJeIBlDv4g/0+aGoGg4dELTnfEVk
+ jMC8cJ/LiIaR/OEOF9S2nSeTQoBmusTz+aqkbogvvYGam6uDYw==
+Message-ID: <a7cbc3a4-6a6c-8b43-0eb9-4da088be4e58@suse.com>
+Date:   Wed, 1 Jul 2020 08:06:46 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
+In-Reply-To: <20200630165756.GB27795@twin.jikos.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8BIT
+X-ClientProxiedBy: BYAPR08CA0009.namprd08.prod.outlook.com
+ (2603:10b6:a03:100::22) To AM0PR04MB6195.eurprd04.prod.outlook.com
+ (2603:10a6:208:13c::13)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [0.0.0.0] (149.28.201.231) by BYAPR08CA0009.namprd08.prod.outlook.com (2603:10b6:a03:100::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3153.20 via Frontend Transport; Wed, 1 Jul 2020 00:06:53 +0000
+X-Originating-IP: [149.28.201.231]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: bc8e87f7-78a6-485a-b00b-08d81d52a9bb
+X-MS-TrafficTypeDiagnostic: AM0PR04MB4644:
+X-Microsoft-Antispam-PRVS: <AM0PR04MB464426EE5A4FD55F204E8699D66C0@AM0PR04MB4644.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-Forefront-PRVS: 04519BA941
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: haXImk8BP/4Ip9CF60yu1oyGyeeheJnxypjcgT+E7XwrWDfu3FXyzz/1hNNTkeKz4+GFNJeWjzhbRJeZZQYj5THALaGZ6GJCapgmxeDtoVrh4FdUw6+kFmuEa8w071nNTG+Z+yNQQHUiiG9F8n8RusTj3SoUMbloUWcOwGv9/j/mqqz7iBvE2MYx014+GsxwVRsc7BRkQh64zatvQECqP8lN9cAglH1Q7lzWWpsGj2+6rlHWZkhHyTSh3yioVAjQqwOcrh3z9ibdBTJgakYMY6kgTBtu1Jhcuc/kQ9u1bqM+HpwswtlcrncsfgrIb061ZOTHg4UsvkDLwBewcESNWf7sOK6Oz30S5uDVILwrTv8pJJxCHd3e5fXjyhxb8OjlXuOL+wi405mlw6R2ZK+a2UCfRxw6N9S2UcjKKnnZ92IJx3OqXoE1UezZlR9q/zl0
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB6195.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(396003)(346002)(366004)(376002)(39860400002)(136003)(66946007)(16526019)(2906002)(86362001)(2616005)(956004)(16576012)(66556008)(66476007)(5660300002)(316002)(52116002)(36756003)(31696002)(6486002)(31686004)(8676002)(478600001)(6706004)(26005)(83380400001)(8936002)(6666004)(186003)(78286006)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: HZ2JxBg2WcT26lqr2ooHBV40p6gzX0v6CGiSj4QWyR2iQ3O6EBDme6/hva7BsmtizgmEK+r+FPjhEBsPZkck4x3ElKEDSN8M9Kjsr87qCio7oawhSstAnUIzJ2N7doqemE8C1zlkysriftww7+t/C5G3K/9CPfOAar+YEHU40QOQlyg3zXwZPKb7n7Z1kNgPX49fiomKoRzW8D2hqOXcEbzlfLvDVRluL9sBkw5XlbDeYb7w6zeAVjYQ7t9dx+J8Fd9vDdyS0AtZcq3yz7EET+z7+QdVo9QgifhtiKddP/G6iVpFcJbOaZigs3XZpD66BMQdBgdDx1qzNL8QNEJqgMBPk0iXHrjYtEj1OygGpIXBxwHwMS3VGT5VeNQvco4Z6fSqWppeMXVFjqn5b63jIqzOc32COoYJUx9H6aqPOmoDEShNE/1Rht6ZvdAIIqyrQwiIKi4Hr+FZ4qkPwhKKq9itIENqy7lvEWIYYXKJLHM=
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: bc8e87f7-78a6-485a-b00b-08d81d52a9bb
+X-MS-Exchange-CrossTenant-AuthSource: AM0PR04MB6195.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Jul 2020 00:06:54.6497
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: dEdXYamSJ/OPE/yRKAEbFhi66B21Rx+cKqY8ts75S82zrK6xHkEEST7o2kNX8Vvs
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR04MB4644
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi,
 
-I've hit a crash in relocation I've never seen before.
 
-[ 2129.210066] kernel BUG at fs/btrfs/relocation.c:794!
-[ 2129.215268] invalid opcode: 0000 [#1] PREEMPT SMP
-[ 2129.220114] CPU: 1 PID: 3303 Comm: btrfs Not tainted 5.8.0-rc3-git+ #638
-[ 2129.220116] Hardware name: empty empty/S3993, BIOS PAQEX0-3 02/24/2008
-[ 2129.220265] RIP: 0010:create_reloc_root+0x214/0x260 [btrfs]
-[ 2129.258760] RSP: 0018:ffffbe1e809b38b8 EFLAGS: 00010282
-[ 2129.258763] RAX: 00000000ffffffef RBX: ffff988d577f9000 RCX: 0000000000000000
-[ 2129.258765] RDX: 0000000000000001 RSI: ffffffff8e2a2580 RDI: ffff988d64aaa6a8
-[ 2129.258766] RBP: ffff988d5dfcdc00 R08: 0000000000000000 R09: 0000000000000000
-[ 2129.258767] R10: 0000000000000001 R11: 0000000000000000 R12: ffff988d0e02fa78
-[ 2129.258769] R13: 0000000000000005 R14: ffff988d64fe8000 R15: ffff988d0e02fa78
-[ 2129.258771] FS:  00007f82a612e8c0(0000) GS:ffff988d67000000(0000) knlGS:0000000000000000
-[ 2129.258772] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[ 2129.258774] CR2: 000000000559d028 CR3: 000000020b289000 CR4: 00000000000006e0
-[ 2129.258775] Call Trace:
-[ 2129.258825]  btrfs_init_reloc_root+0xe8/0x120 [btrfs]
-[ 2129.258862]  record_root_in_trans+0xae/0xd0 [btrfs]
-[ 2129.258901]  btrfs_record_root_in_trans+0x51/0x70 [btrfs]
-[ 2129.340388]  select_reloc_root+0x94/0x340 [btrfs]
-[ 2129.340433]  do_relocation+0xda/0x7b0 [btrfs]
-[ 2129.349854]  ? _raw_spin_unlock+0x1f/0x40
-[ 2129.349898]  relocate_tree_blocks+0x336/0x670 [btrfs]
-[ 2129.359325]  relocate_block_group+0x2f6/0x600 [btrfs]
-[ 2129.359365]  btrfs_relocate_block_group+0x15e/0x340 [btrfs]
-[ 2129.359408]  btrfs_relocate_chunk+0x38/0x110 [btrfs]
-[ 2129.375494]  __btrfs_balance+0x42c/0xce0 [btrfs]
-[ 2129.375553]  btrfs_balance+0x66a/0xbe0 [btrfs]
-[ 2129.375562]  ? kmem_cache_alloc_trace+0x19c/0x330
-[ 2129.389852]  btrfs_ioctl_balance+0x298/0x350 [btrfs]
-[ 2129.389887]  btrfs_ioctl+0x304/0x2490 [btrfs]
-[ 2129.389898]  ? do_user_addr_fault+0x221/0x49c
-[ 2129.404070]  ? sched_clock_cpu+0x15/0x140
-[ 2129.404073]  ? do_user_addr_fault+0x221/0x49c
-[ 2129.404079]  ? up_read+0x18/0x240
-[ 2129.404086]  ? ksys_ioctl+0x68/0xa0
-[ 2129.404091]  ksys_ioctl+0x68/0xa0
-[ 2129.423308]  __x64_sys_ioctl+0x16/0x20
-[ 2129.423312]  do_syscall_64+0x50/0xe0
-[ 2129.423315]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-[ 2129.423318] RIP: 0033:0x7f82a51c6327
-[ 2129.423319] Code: Bad RIP value.
-[ 2129.423348] RSP: 002b:00007ffd32cf6218 EFLAGS: 00000206 ORIG_RAX: 0000000000000010
-[ 2129.423367] RAX: ffffffffffffffda RBX: 0000000000000001 RCX: 00007f82a51c6327
-[ 2129.423368] RDX: 00007ffd32cf62a0 RSI: 00000000c4009420 RDI: 0000000000000003
-[ 2129.423372] RBP: 0000000000000003 R08: 0000000000000000 R09: 0000000000000000
-[ 2129.423377] R10: 000000000fa99fa0 R11: 0000000000000206 R12: 00007ffd32cf8823
-[ 2129.423379] R13: 00007ffd32cf62a0 R14: 0000000000000001 R15: 0000000000000000
+On 2020/7/1 上午12:57, David Sterba wrote:
+> On Sun, Jun 28, 2020 at 01:07:15PM +0800, Qu Wenruo wrote:
+>> @@ -1030,6 +1040,11 @@ int btrfs_quota_enable(struct btrfs_fs_info *fs_info)
+>>  				btrfs_abort_transaction(trans, ret);
+>>  				goto out_free_path;
+>>  			}
+>> +			ret = btrfs_sysfs_add_one_qgroup(fs_info, qgroup);
+>> +			if (ret < 0) {
+>> +				btrfs_abort_transaction(trans, ret);
+>> +				goto out_free_path;
+>> +			}
+>>  		}
+>>  		ret = btrfs_next_item(tree_root, path);
+>>  		if (ret < 0) {
+>> @@ -1054,6 +1069,11 @@ int btrfs_quota_enable(struct btrfs_fs_info *fs_info)
+>>  		btrfs_abort_transaction(trans, ret);
+>>  		goto out_free_path;
+>>  	}
+>> +	ret = btrfs_sysfs_add_one_qgroup(fs_info, qgroup);
+>> +	if (ret < 0) {
+>> +		btrfs_abort_transaction(trans, ret);
+>> +		goto out_free_path;
+>> +	}
+> 
+> This adds 2 new transaction abort sites altough I don't think it's
+> justified, the filesystem is fine. If system is that low on memory it's
+> gonna be very bad elsewhere too so we don't need to make things worse
+> jsut because of some missing sysfs entries.
 
-Relevant code called from create_reloc_root:
+The problem here is, we don't have good enough way to revert back to
+previous status.
 
-        ret = btrfs_insert_root(trans, fs_info->tree_root,
-                                &root_key, root_item);
-        BUG_ON(ret)
+This is common among a lot of qgroup code, and I prefer to fix them
+later, as it will be a big qgroup error patch cleanup.
 
-and according to EAX, ret is -17 which is EEXIST.
+> 
+> A warning would be better, though in that case the validity of the
+> kobjects should be double checked where it's accessed.
+> 
+It would be even worse if the qgroup relationship is also exported
+through sysfs.
 
-I don't have a reproducer, the testing image has been filled by random git
-checkouts, deduplicated by BEES, then tons of snapshots created until the
-metadata got exhausted, some file deletion and balances.
+In that case, warning is not good enough.
 
-This is the same image that led to the patch "btrfs: allow use of global block
-reserve for balance item deletion", so this could have left it in some
-intermediate state where the balance item was not removed and the reloc tree as
-well.
+So I still prefer error path cleanup as the ultimate fix.
+The objective is, if we hit any error during qgroup enabling or other
+qgroup operations, we revert to previous status if possible.
 
-There were a few unsuccessful mounts due to relocation recovery, that was
-trying to debug but then it started to work.
+For qgroup enable, if we hit any non-critical error, we don't abort
+trans at all, but remove all qgroups along with its qgroup items, remove
+the qgroup tree, then reverts back to qgroup disabled case.
+This includes -ENOMEM case.
 
-The error happened with this 'fi df' saved after the balance start:
+While for critical error like tree operations errors, we still abort
+transaction.
 
-# btrfs fi df mnt
-Data, single: total=80.01GiB, used=38.67GiB
-System, single: total=4.00MiB, used=16.00KiB
-Metadata, single: total=19.99GiB, used=19.46GiB
-GlobalReserve, single: total=512.00MiB, used=44.00KiB
+In fact, I'm already working on a similar project, but for extent_changeset.
+So I guess it won't take too long for qgroup.
 
-The error looks like a repeated relocation tree creation, which would point to
-the unsuccesful balances or inconsistent state (balance item, reloc trees).
-It's not a "typical" mix of operations but I'd appreciate any insights here.
+Thanks,
+Qu
+
