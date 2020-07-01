@@ -2,149 +2,123 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FA2D2103D8
-	for <lists+linux-btrfs@lfdr.de>; Wed,  1 Jul 2020 08:23:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08BDE21051E
+	for <lists+linux-btrfs@lfdr.de>; Wed,  1 Jul 2020 09:35:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726937AbgGAGXJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 1 Jul 2020 02:23:09 -0400
-Received: from mx2.suse.de ([195.135.220.15]:51538 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726615AbgGAGXJ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 1 Jul 2020 02:23:09 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 1EF6EAE21;
-        Wed,  1 Jul 2020 06:23:07 +0000 (UTC)
-Subject: Re: [PATCH] btrfs: set tree_root->node = NULL on error
-To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com
-Cc:     Eric Sandeen <sandeen@redhat.com>
-References: <20200630185302.3362-1-josef@toxicpanda.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <5d5c8d64-a075-2b28-c296-552a6ef4406a@suse.com>
-Date:   Wed, 1 Jul 2020 09:23:05 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
-MIME-Version: 1.0
-In-Reply-To: <20200630185302.3362-1-josef@toxicpanda.com>
-Content-Type: text/plain; charset=utf-8
+        id S1728229AbgGAHe4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 1 Jul 2020 03:34:56 -0400
+Received: from esa4.hgst.iphmx.com ([216.71.154.42]:19927 "EHLO
+        esa4.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728142AbgGAHez (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 1 Jul 2020 03:34:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1593588895; x=1625124895;
+  h=from:to:cc:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=YvIBRRoqi+k2lSCZp+sNSpEy/Mx2AG8cvht5jwLxmNs=;
+  b=AXtv7+BTHxeUEBSNYiG9fJkorYmLOoiDkyUW2fBZcYyn27G20G566Euf
+   SBnmaWextWG7+vVZYMTT2Nf2rFPrJGxCh99yuOLBgk78SYNX3A8Aexv9I
+   fmLiD21UHKFQi1bmHgkaOTOYWNVI38OkN531RCsYVYe0OimL7T75IwO1o
+   Xpfuz12CjFD8hOsmE6k4r/Kz7SxKCZsRRcbqFS9Ri07zvBJoO1liqhV/7
+   9eF4sjSYzqyyMgt7yfMkE/aUZXteEgLlWQBhuxShVG5XffncJBoO6JDqk
+   WkB8/UiChLGVhW/jScaqmzuQWQl5hUeWio3Cofiw4RsaChpISWomrFN40
+   Q==;
+IronPort-SDR: zaS9JXgBWA8kOSoJFoHO/EcrU2GPUM8zXHPC2PPiPNGbktRDyZJNQBUyQxTVk3K+BloJb7eGnR
+ /CpYrU1S6r2rbvlFHbvv5tGUY57cP8N1GD0/CvrAcNohf8KsGjFwhpgfZrw9V4YoIIITXjLnZD
+ DCdSSOsnpoDKmwttL/EKkKf0QUlpcqbYEWuYAg/25I7yEbpcUvYVBbgxpnx/NhGYleJv/PlaHm
+ F3Bieqe3eAQJNrwKutgu8q5VArsua3+bdM5i616MKB/8FGZE8fVjZBbFSkGWtF2i7cwi/TKJbC
+ i50=
+X-IronPort-AV: E=Sophos;i="5.75,299,1589212800"; 
+   d="scan'208";a="141353715"
+Received: from mail-bn7nam10lp2109.outbound.protection.outlook.com (HELO NAM10-BN7-obe.outbound.protection.outlook.com) ([104.47.70.109])
+  by ob1.hgst.iphmx.com with ESMTP; 01 Jul 2020 15:34:54 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=QAmUfG8gKnhwL8QnmHHZcyQ9YD5Fh2vvTv6jWJUb2Ocgds1BbGWEbxg3m9FbefJk9tyyWKbqlhp2RcE4QnaDGrKbCPQgwhMROWV8uzKYrmaHAQPFHzp/5Fag7DtaMgWV/OA5w1pPwYpHmaov8hN1E41G9B5mGg+Me3OZRXr77S2S/USLKkLG10stlKMSvhgK79Ii34HNvRvB8ow/nXq2kcbndG28an2Te5ZcjgZtXfDIgh+RXgJfzjNECsWCIEWfkGYm7bve891SAW9Wd67d/sjnFrY8G1DqvN+8IXwX/mwjeO+IPDzLPH6FxmUpxjwOh85srfr1H+pqdj9hNS9vcA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=TD0ZxQjBk1+BdFQJxKASo4aebYPWew7smXgsNFd5/Mg=;
+ b=FsBTwNrubjOzW6wYR4GZ+y6dxXbSHAHckXuFZWayODXOsGoN64UvwjShhWZIWn8kLt0tBcM8JJT+Vr3xkjabJ6NnPbrEvfxKlZn6hwwIrAYZWrImBpzSUvLFMuL6vYzb4yPBX/UlB5b2+Er1ZPvHlMCMFzwh140L+b8RR+Doc+cEKRYI7VFH7pEhaE57E8Bo8+V18JNYrO2upZTOLuObD8x+K3uxUtDTc233iJxErtPZU4tjrtEQvL3HJ5h/OG3/JT8PXvRxLZg+VjdXyZTqi+8njW7u1BLHvZbKAjk+MO1kMHVgepNlipHZrYClJvzw8nbddx2gm8AfdJ6+VL5uBg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=TD0ZxQjBk1+BdFQJxKASo4aebYPWew7smXgsNFd5/Mg=;
+ b=il7CJ7oLHYoHcLS5gyuOaJ2eVY8fUeSwObQtAFkmJOswM1U7zlQ1Y+PNjEQQDDVTO5wBxObPcw4WOXzPSe4ULmf/hvQoY5rC1Hl2cN0wVhf/FcJcCs0ol9g/zIHNYzey3XE1vSsLd3cLfYWiiPhaEaeRsXwsdkWd4G33teQv8xM=
+Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
+ (2603:10b6:803:47::21) by SN2PR04MB2320.namprd04.prod.outlook.com
+ (2603:10b6:804:16::18) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3131.21; Wed, 1 Jul
+ 2020 07:34:53 +0000
+Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
+ ([fe80::1447:186c:326e:30b2]) by SN4PR0401MB3598.namprd04.prod.outlook.com
+ ([fe80::1447:186c:326e:30b2%7]) with mapi id 15.20.3131.028; Wed, 1 Jul 2020
+ 07:34:53 +0000
+From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To:     "dsterba@suse.cz" <dsterba@suse.cz>,
+        Goldwyn Rodrigues <rgoldwyn@suse.de>
+CC:     "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        "fdmanana@gmail.com" <fdmanana@gmail.com>,
+        "david@fromorbit.com" <david@fromorbit.com>,
+        "darrick.wong@oracle.com" <darrick.wong@oracle.com>,
+        "hch@lst.de" <hch@lst.de>, Goldwyn Rodrigues <rgoldwyn@suse.com>
+Subject: Re: [PATCH 1/6] iomap: Convert wait_for_completion to flags
+Thread-Topic: [PATCH 1/6] iomap: Convert wait_for_completion to flags
+Thread-Index: AQHWTkr/uY9Di/yWiEGgkXu0GpZGug==
+Date:   Wed, 1 Jul 2020 07:34:53 +0000
+Message-ID: <SN4PR0401MB3598E2A7A517F94D574E59C79B6C0@SN4PR0401MB3598.namprd04.prod.outlook.com>
+References: <20200629192353.20841-1-rgoldwyn@suse.de>
+ <20200629192353.20841-2-rgoldwyn@suse.de>
+ <20200630163527.GZ27795@twin.jikos.cz>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: suse.cz; dkim=none (message not signed)
+ header.d=none;suse.cz; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [2001:a62:1515:bd01:85ad:d97d:6da7:d614]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: c88fb0e3-df0d-44f4-45e0-08d81d913ec1
+x-ms-traffictypediagnostic: SN2PR04MB2320:
+x-microsoft-antispam-prvs: <SN2PR04MB23204985E53E0ECFD503EDD79B6C0@SN2PR04MB2320.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:2803;
+x-forefront-prvs: 04519BA941
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: xzq9SWvr4hslWgMWOwFKcJDgD49Ew7FGtGgTiq27RHLzwzDd2FMuKYPVwAI4K4dUMnK2v265/rmdWweJkI8F/gjqfW7MEl08TLdtn2/orwMmU4q+00gVTUp2wNCPL03ulYoXE00okUQp8QiAZ4pqv/gsA3fNWfgHMqgJ3NTkbGxHCUcseC0Dpebg9l/Sl6ryelEbWiiNXm1dpoo6SQzTCqY2Qvj+M+ZrhCjeCvFjaz2rJ+ix3KdkUIp3TMy+ATIpltteYImWejx1bs7jvAvTz/Cs8y6g5o4tqod24iOmAvt8eWkt5oyptsxw75v9BqDFy3d6yOgVucfHHX+JBosOmg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR0401MB3598.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(346002)(376002)(396003)(366004)(39860400002)(136003)(7696005)(478600001)(33656002)(53546011)(6506007)(316002)(86362001)(4326008)(8936002)(5660300002)(52536014)(110136005)(4744005)(8676002)(9686003)(55016002)(186003)(71200400001)(54906003)(91956017)(66556008)(64756008)(66446008)(66946007)(66476007)(2906002)(76116006);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: 6+vIIayUDcNZg+3EZOJc5PQzHWqS3+KqqASYM13KNVCi94se2WchIIsta2urM03emij86FYuq1jA9UXgmBHE40cDZEtwgfrYK7v7HZoISwpQ94TVi/p7RSHTaXdS9Q+0mcLVxOnYXqOkjLpBl8fJX3z3Ioh84pCvyOFKouwN/K6Kx7eO9M7m91azipekeVu5s8HoRpD+5o3GtstymytwvKBxlHEiBrKIw1I9N8C2wcm1XUDzTraw5FGhKEUy9jq0CruISdeCc0YtJazOh6wzy5hQtZNygRpxfTr2+uKi9bF3h8vS3Bb7Sv5SNzHs5eddOi5OjR/2v3phtE+FYnPwpStalBBfxky8oVYZ1OddDUuFhWCKDg4E6UqclmpZk2ciaBwCsOlu366mPlzUlTWmj4gpzEdqQ1qVPnjmPMYIYazM25liNLAB3SfWILyekZEVGWjR9aNgFKyehkYROtkwhNmrVrvWo3DOQiCIXYpM27sfvFk6ImzwTspD2Kjhey+R+xHzi758aCTT+zSt5lmWJ1/vIsnSGByBu2MCsWygUxvUtAgbvUTMsiSfTrSVy64/
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SN4PR0401MB3598.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c88fb0e3-df0d-44f4-45e0-08d81d913ec1
+X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Jul 2020 07:34:53.1843
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: daPmYCdbm3tYxdOTmnubn8qx5yuHCCMufIRHJ9kUnLl4JnZU6UiIiK8iK/rcTVhGECeJESJWecawRiozinKE40MH81CA0enkQZ5+AStxMj0=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN2PR04MB2320
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 30.06.20 г. 21:53 ч., Josef Bacik wrote:
-> Eric reported an issue where mounting -o recovery with a fuzzed fs
-> resulted in a kernel panic.  This is because we tried to free the tree
-> node, except it was an error from the read.  Fix this by properly
-> resetting the tree_root->node == NULL in this case.  The panic was the
-> following
-> 
-> BTRFS warning (device loop0): failed to read tree root
-> BUG: kernel NULL pointer dereference, address: 000000000000001f
-> RIP: 0010:free_extent_buffer+0xe/0x90 [btrfs]
-> Call Trace:
->  free_root_extent_buffers.part.0+0x11/0x30 [btrfs]
->  free_root_pointers+0x1a/0xa2 [btrfs]
->  open_ctree+0x1776/0x18a5 [btrfs]
->  btrfs_mount_root.cold+0x13/0xfa [btrfs]
->  ? selinux_fs_context_parse_param+0x37/0x80
->  legacy_get_tree+0x27/0x40
->  vfs_get_tree+0x25/0xb0
->  fc_mount+0xe/0x30
->  vfs_kern_mount.part.0+0x71/0x90
->  btrfs_mount+0x147/0x3e0 [btrfs]
->  ? cred_has_capability+0x7c/0x120
->  ? legacy_get_tree+0x27/0x40
->  legacy_get_tree+0x27/0x40
->  vfs_get_tree+0x25/0xb0
->  do_mount+0x735/0xa40
->  __x64_sys_mount+0x8e/0xd0
->  do_syscall_64+0x4d/0x90
->  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> RIP: 0033:0x7f5302f851be
-> 
-> Fixes: b8522a1e5f42 ("btrfs: Factor out tree roots initialization during mount")
-> Reported-by: Eric Sandeen <sandeen@redhat.com>
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
-
-> ---
->  fs/btrfs/disk-io.c | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
-> 
-> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-> index 7c07578866f3..c27022f13150 100644
-> --- a/fs/btrfs/disk-io.c
-> +++ b/fs/btrfs/disk-io.c
-> @@ -2592,10 +2592,12 @@ static int __cold init_tree_roots(struct btrfs_fs_info *fs_info)
->  		    !extent_buffer_uptodate(tree_root->node)) {
->  			handle_error = true;
->  
-> -			if (IS_ERR(tree_root->node))
-> +			if (IS_ERR(tree_root->node)) {
->  				ret = PTR_ERR(tree_root->node);
-> -			else if (!extent_buffer_uptodate(tree_root->node))
-> +				tree_root->node = NULL;
-> +			} else if (!extent_buffer_uptodate(tree_root->node)) {
->  				ret = -EUCLEAN;
-> +			}
-
-So this is problematic only if we fail on the last iteration of the loop
-as this results in init_tree_roots returning err value with
-tree_root->node = -ERR. Subsequently the caller does: fail_tree_roots
-which calls free_root_pointers on the bogus value. IMO this piece of
-information should go into the changelog in some form or another.
-
-
->  
->  			btrfs_warn(fs_info, "failed to read tree root");
->  			continue;
-> 
+On 30/06/2020 18:35, David Sterba wrote:=0A=
+> Though it's an API change I think you should CC all involved subsystems'=
+=0A=
+> mailinglists too.  I don't see GFS2 or zonefs.=0A=
+=0A=
+zonefs doesn't have a list on it's own. We're using fsdevel. But both Damie=
+n =0A=
+and me are subscribed to the btrfs list as well so no biggie for zonefs.=0A=
