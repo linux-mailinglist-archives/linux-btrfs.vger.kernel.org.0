@@ -2,30 +2,32 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B3E0210192
-	for <lists+linux-btrfs@lfdr.de>; Wed,  1 Jul 2020 03:37:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80D2D21027F
+	for <lists+linux-btrfs@lfdr.de>; Wed,  1 Jul 2020 05:25:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725862AbgGABg7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 30 Jun 2020 21:36:59 -0400
-Received: from mout.gmx.net ([212.227.17.21]:54075 "EHLO mout.gmx.net"
+        id S1725988AbgGADZj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 30 Jun 2020 23:25:39 -0400
+Received: from mout.gmx.net ([212.227.17.21]:54997 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725763AbgGABg7 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 30 Jun 2020 21:36:59 -0400
+        id S1725868AbgGADZi (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 30 Jun 2020 23:25:38 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1593567415;
-        bh=8T2ne8/FoE2W4UzjJZf+nLNcwvu0jsQ8js63U0xyJ8A=;
+        s=badeba3b8450; t=1593573931;
+        bh=1i8gZD6GTP+ulRAD+DBWt0vuijccolJvNoImH7FF3OQ=;
         h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=RzG8RzMW+Nre38kjGKRycrr2cawgmYo3zJAuocU3RHJewYAHQ0vLEmpsENwHCQL8F
-         AzAcxChWPI5T+hL0QcJKFfF7RBGABlXrTG3s0E8pPqS3k0QX+8KIYFODFaq3vUnnRP
-         biDZNuuX+wyjmyt5CA8iiK9nGFOXYe0ZAbEIJluQ=
+        b=ccn32nKeCk4RJUwNBV0tAMQzZlVpcx6vl+5pBqTiebGQMRnDfs8KRXaw5dfPIsmHC
+         X69fOaMsX3YJ7Fo/6WSnuiJ+Y8onCz8HVTexpAnXK17F4DZ4NdeLnjkcX7H8FrsPhO
+         x3SOGWcWhfKKmCfgEVqlHbV2n2n08P+mBuu8L+zg=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
 Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MS3mt-1jMujN29cZ-00TSii; Wed, 01
- Jul 2020 03:36:55 +0200
-Subject: Re: "parent transid verify failed" and mount usebackuproot does not
- seem to work
-To:     Illia Bobyr <illia.bobyr@gmail.com>, linux-btrfs@vger.kernel.org
-References: <CAHzXa9XOa1bppK44pKrqbSq50Xdsm63D_698gvo2G-JDWrNeLg@mail.gmail.com>
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1N4QsY-1iqZPo24zW-011QRY; Wed, 01
+ Jul 2020 05:25:31 +0200
+Subject: Re: [PATCH 3/4] btrfs: preallocate anon_dev for subvolume and
+ snapshot creation
+To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org, Greed Rong <greedrong@gmail.com>
+References: <20200616021737.44617-1-wqu@suse.com>
+ <20200616021737.44617-4-wqu@suse.com> <20200616151004.GE27795@twin.jikos.cz>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -51,195 +53,263 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
  ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
  oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <45900280-c948-05d2-2cd8-67480baaedae@gmx.com>
-Date:   Wed, 1 Jul 2020 09:36:51 +0800
+Message-ID: <f792151a-ebd5-2ac7-c9ac-0c274ea1ab8e@gmx.com>
+Date:   Wed, 1 Jul 2020 11:25:27 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.9.0
 MIME-Version: 1.0
-In-Reply-To: <CAHzXa9XOa1bppK44pKrqbSq50Xdsm63D_698gvo2G-JDWrNeLg@mail.gmail.com>
+In-Reply-To: <20200616151004.GE27795@twin.jikos.cz>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="q4mAGj9WU7SKXUnsGz8Yh3NWN6oD0Lmod"
-X-Provags-ID: V03:K1:kcPeqKJg69z4M3usklLE4qp2nt3B1vR6TC9jWvYZh6bYm61NwdI
- kIP5Df4O9bUbqPSMls/gHtMH0u1ISavZlJ9H6ZtNM7dfXUQ4VCZT2bzPMXQOi4izzs7gD2w
- 2FI7da/pQBe2qcd1UCez9fX8OfebLXivgMtfYFQ2ZY8fsh0sAs2AyGDkVe8ybl5x4tZGL4I
- rFrgIcttFDjz0DU2alvwQ==
+ boundary="7ZlfnKkmoB8YI8PETMSAyTRaKmBM0YCDf"
+X-Provags-ID: V03:K1:d/mdD0J+UK1r4czXPazI00mUqxR9Tol+nuZ5/GhlgjC4cDBRTRL
+ 0CEs92sszRwDeR5Q8fsANN5B/0S6Ui1T5Xab6nllOST3rWFtWwoAbGp5hsbNF4l7IfUX2r4
+ kHunRZ13LQF61JqwHPBlxibm2pFj8ubm09p1wkxihPDjOWxiS7eR0zIEr2OSAOXW5IGPl9i
+ ivlEW44Uqd3aQv6N31cpg==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:DumHawyipwU=:cei8zEBIYUwWb5AMnhwJwj
- mexLUu09h2Hlal5H6pfjm8cLY0K5P+Z+arvTmxnvn656Q2HnPdWpDnx67nrTNtECkRAM4kPb8
- X/bw6sUtYyjEbNHmyTEQQnmrVUr5tw00NLvYlHgkNIXgcBNyflNK6XO9/WZ2G4U4B39A4vpXY
- DgFAdpL8+xvbEFWN6s7szhgcKGL1Xrru5dSkuup6lmdDIJp9gUWTSTFwrksFJdokmfl43OWZR
- 6ARJXIST8xyk4c6VcXrCXSquHXQ52UqJHVxftY6+u+AvTu62kPJRGMYQvZTHCYzIrIqHTCEcb
- xFiiRHLNiAJf97gXlLAURCHVWVbvHWQdw4QUeJs91etQjW1IQEKljHOf4Nl14C9RcARbcpwh4
- r7C9aXUi9/F514NmWqQHhjIYtRrTrMdlxr4pILcNey3+cZqJBlip7cFxiXfQ7U/FgJob4jhy4
- JbduddHUKH/zw0urEk94qIg3Z2XtPatq4QQYAzEYutRe6H2jY4o9U/HvAhJxrWfVWwdV3tnnS
- eiAoKZ3uu+jac7uqffW3vWGMCm0FN4QTLFjF41wW2fgBX4I6DywC/WHe1dC5epJ6N8Ghriiv4
- o5qPrDL68GXPcg/9+QlIXyzw7zXy/gDFwvFVSAu04KuWmv7NimNSgGE1ykbGSpY04zo4AMKw8
- jDQGByx14QVgdp76rLLB2GhKIv5vdwmYa0kLPU6HQGQTQXk6Fo3bI8vw6O/l4PjCjKmuB0VPC
- ZFXcqKRL1mGihW0inbS09/O9AVtxssgSxzeYsHBPiLXSQFixaCRdvER0o3Sl4o8jrb13XWAqO
- D6dVlIzUtmFTyqWExirNqOctxLMKd6B/VrL7glWne3DKcS/EHTyNDCQbfICQ/J6y0ae6YioJB
- rEFlg/MmCFgl8OFkkvck0wDKQfDd5xb4HE9F+yzEE6nQLNMpj6LlL1bnq73tQ3qpKOQpgcx9n
- YzwlwVU8S6fP7MZmcwvP3T/i4/PjzN3w3sacsOiI7u2hkF7fo8Dmo2rV9Oov0qW1cpZi5Xdrg
- DXdNTJLhEIQUyGxMYGNKrVteeRCfaDrl7eq14GC6Fjl8QfUiTxpW0wKKbRfjC3ivHX1I5RzYz
- iJ6apYM57thf0tV0UYeRKhbtUfakKTiyXkxy0TRoi8wgb9ieoERWZFToSi29ueWoOkBynW3fA
- Qbzl3vkR7as0NDBZj/mLmKMajvAGgIsEb1g0FCkCru+ngY3wk+fqPODFFUi2iMitr8keH5fHE
- OwW1WT1/uIuw6kis/1VbCUcvTUDQCNCBeB9J/bQ==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:U7+euBsm3vM=:GsQNclORG9fFYy3KuOaw9T
+ yJwO442YyLQMY5M9Dgrdowdhl007i4gfAMt3vO99xF902pUxF0iqvaJGc73rSCBW59lkRMXsp
+ oysCmpusf8gJIfQsZe2YC6MfFczf7YkoxKuC4uaI+utqdKim2Fi8Eu9z04+2q300sfDTRkwRc
+ 6agK7Dzi4YGj48RhN9Aas80iYOf6qUE5kDE6Xfes1IEXfB2UcyjzuofYV8QSPYFqHVge+bdi/
+ xh1Spuj6WLpg0Xi367awJXxykz10LICTafsLbEh0KNOgdXGh91NCepl3uu/CWB6OlafJVwwjg
+ 2rstNxMNy/d+bWrjHVCPPxvv0BBC2Fn8aS1qYbkIuw5KaURAUW2b0MPG7ndcBwmq+wno5Utcw
+ rwqXIWOGNJW+HPYQkPv5M1wb79/eE79UTitiD19jd+clDY+ksO/L1DBChYYM9qpkXVHrTQplo
+ 1mR88Nf6IlhdQBl5SLPxAz22Gn6wdJHoKKaxVDYS/eXuIdrVppl+ft58VFGcMld0HKeqCdXnP
+ uxVUp5WYCVNfs+NwKD2jEQBc4hu8IVNWHkIxKI3UK53wiczkllE9G0CPha7LlAxdX+p5vkLs3
+ RjlpaIy3fU88g24PEY59nZcaFWw9LklCONabWG0Dp6mp/Y+NVKh0dFl8BIQUpghSdf//n0y6k
+ YXxJMB9850eUJg3cC+zDV1RBXfcSaAHbDi0pfAy9kiHea+qFinCHo8XWH7oyog2FWFcPx7S9k
+ XQMQD/+C+6b2DVdFm86AVFdAFiadFnyyx2iHBL2mUIhR6xBD5SFyvD+Wqhb8T8LNElpacT9dg
+ Cm4oiIoWwRQkK1sjkVPBdPvQiJn2LWou1s/tbc/iwQ7CWgzpOlswylD2K1ijuYh0D9v0O52YR
+ yaPf1PEg9n06GPQrBzvf7fBTQOeHfvOqBRGMiU9iVnyAqr6me/e5SpCyKmGHy4VJ03UwLxCr2
+ G2d/X6uyAYgRrm8JDf9ZGQzayWuOtCVMPT6u8zIluOrugG3yP2bmiDBrBiLRNQcgEsfosYIkq
+ gETmykKA5GwieRr8mIT47Cs8z5ZZvUHDPj6CVTko6idT8SiTnLwAqjyeY0TwlY0cMZbyvlgkQ
+ LowkyVY/JeBvrMyquTFoIm1yjEoihpQ74y5e/JI6a+3ws2f7dqeum1eD4mnLsX3aAKJ4LKH0g
+ pPXaY8i1pHYQK/Sg1CvdGDC8DtJldrsyns8w6BW3qLHCw7rh2HhFbYJc7Ycfciz0iQYVR5xWY
+ jMU+x29cCcdB0cbwZWEFBfz5DK+gK1hXVt+vH3g==
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---q4mAGj9WU7SKXUnsGz8Yh3NWN6oD0Lmod
-Content-Type: multipart/mixed; boundary="1FA6ehq8XJxQoVsJE7HSgTzjOvV65M3eF"
+--7ZlfnKkmoB8YI8PETMSAyTRaKmBM0YCDf
+Content-Type: multipart/mixed; boundary="QIZYk2dhnX1ugHxGUGSNK7UoEHWbBjpka"
 
---1FA6ehq8XJxQoVsJE7HSgTzjOvV65M3eF
+--QIZYk2dhnX1ugHxGUGSNK7UoEHWbBjpka
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
 
 
 
-On 2020/7/1 =E4=B8=8A=E5=8D=883:41, Illia Bobyr wrote:
-> Hi,
->=20
-> I have a btrfs with bcache setup that failed during a boot yesterday.
-> There is one SSD with bcache that is used as a cache for 3 btrfs HDDs.
->=20
-> Reading through a number of discussions, I've decided to ask for advice=
- here.
-> Should I be running "btrfs check --recover"?
->=20
-> The last message in the dmesg log is this one:
->=20
-> Btrfs loaded, crc32c=3Dcrc32c-intel
-> BTRFS: device label root devid 3 transid 138434 /dev/bcache2 scanned
-> by btrfs (341)
-> BTRFS: device label root devid 2 transid 138434 /dev/bcache1 scanned
-> by btrfs (341)
-> BTRFS: device label root devid 1 transid 138434 /dev/bcache0 scanned
-> by btrfs (341)
-> BTRFS info (device bcache0): disk space caching is enabled
-> BTRFS info (device bcache0): has skinny extents
-> BTRFS error (device bcache0): parent transid verify failed on
-> 16984159518720 wanted 138414 found 138207
-> BTRFS error (device bcache0): parent transid verify failed on
-> 16984159518720 wanted 138414 found 138207
-> BTRFS error (device bcache0): open_ctree failed
+On 2020/6/16 =E4=B8=8B=E5=8D=8811:10, David Sterba wrote:
+> On Tue, Jun 16, 2020 at 10:17:36AM +0800, Qu Wenruo wrote:
+>> [BUG]
+>> When a lot of subvolumes are created, there is a user report about
+>> transaction aborted:
+>>
+>>   ------------[ cut here ]------------
+>>   BTRFS: Transaction aborted (error -24)
+>>   WARNING: CPU: 17 PID: 17041 at fs/btrfs/transaction.c:1576 create_pe=
+nding_snapshot+0xbc4/0xd10 [btrfs]
+>>   RIP: 0010:create_pending_snapshot+0xbc4/0xd10 [btrfs]
+>>   Call Trace:
+>>    create_pending_snapshots+0x82/0xa0 [btrfs]
+>>    btrfs_commit_transaction+0x275/0x8c0 [btrfs]
+>>    btrfs_mksubvol+0x4b9/0x500 [btrfs]
+>>    btrfs_ioctl_snap_create_transid+0x174/0x180 [btrfs]
+>>    btrfs_ioctl_snap_create_v2+0x11c/0x180 [btrfs]
+>>    btrfs_ioctl+0x11a4/0x2da0 [btrfs]
+>>    do_vfs_ioctl+0xa9/0x640
+>>    ksys_ioctl+0x67/0x90
+>>    __x64_sys_ioctl+0x1a/0x20
+>>    do_syscall_64+0x5a/0x110
+>>    entry_SYSCALL_64_after_hwframe+0x44/0xa9
+>>   ---[ end trace 33f2f83f3d5250e9 ]---
+>>   BTRFS: error (device sda1) in create_pending_snapshot:1576: errno=3D=
+-24 unknown
+>>   BTRFS info (device sda1): forced readonly
+>>   BTRFS warning (device sda1): Skipping commit of aborted transaction.=
 
-Looks like some tree blocks not written back correctly.
+>>   BTRFS: error (device sda1) in cleanup_transaction:1831: errno=3D-24 =
+unknown
+>>
+>> [CAUSE]
+>> When the global anonymous block device pool is exhausted, the followin=
+g
+>> call chain will fail, and lead to transaction abort:
+>>
+>>  btrfs_ioctl_snap_create_v2()
+>>  |- btrfs_ioctl_snap_create_transid()
+>>     |- btrfs_mksubvol()
+>>        |- btrfs_commit_transaction()
+>>           |- create_pending_snapshot()
+>>              |- btrfs_get_fs_root()
+>>                 |- btrfs_init_fs_root()
+>>                    |- get_anon_bdev()
+>>
+>> [FIX]
+>> Although we can't enlarge the anonymous block device pool, at least we=
 
-Considering we don't have known write back related bugs with 5.6, I
-guess bcache may be involved again?
-
+>> can preallocate anon_dev for subvolume/snapshot creation.
+>> So that when the pool is exhausted, user will get an error other than
+>> aborting transaction later.
+>>
+>> Reported-by: Greed Rong <greedrong@gmail.com>
+>> Link: https://lore.kernel.org/linux-btrfs/CA+UqX+NTrZ6boGnWHhSeZmEY5J7=
+6CTqmYjO2S+=3DtHJX7nb9DPw@mail.gmail.com/
+>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>> ---
+>>  fs/btrfs/disk-io.c     | 51 ++++++++++++++++++++++++++++++++++++-----=
+-
+>>  fs/btrfs/disk-io.h     |  2 ++
+>>  fs/btrfs/ioctl.c       | 21 ++++++++++++++++-
+>>  fs/btrfs/transaction.c |  3 ++-
+>>  fs/btrfs/transaction.h |  2 ++
+>>  5 files changed, 70 insertions(+), 9 deletions(-)
+>>
+>> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+>> index cfc0ff288238..14fd69b71cb8 100644
+>> --- a/fs/btrfs/disk-io.c
+>> +++ b/fs/btrfs/disk-io.c
+>> @@ -1395,7 +1395,7 @@ struct btrfs_root *btrfs_read_tree_root(struct b=
+trfs_root *tree_root,
+>>  	goto out;
+>>  }
+>> =20
+>> -static int btrfs_init_fs_root(struct btrfs_root *root)
+>> +static int btrfs_init_fs_root(struct btrfs_root *root, dev_t anon_dev=
+)
+>>  {
+>>  	int ret;
+>>  	unsigned int nofs_flag;
+>> @@ -1435,9 +1435,13 @@ static int btrfs_init_fs_root(struct btrfs_root=
+ *root)
+>>  	 */
+>>  	if (is_fstree(root->root_key.objectid) &&
+>>  	    btrfs_root_refs(&root->root_item)) {
+>> -		ret =3D get_anon_bdev(&root->anon_dev);
+>> -		if (ret)
+>> -			goto fail;
+>> +		if (!anon_dev) {
+>> +			ret =3D get_anon_bdev(&root->anon_dev);
+>> +			if (ret)
+>> +				goto fail;
+>> +		} else {
+>> +			root->anon_dev =3D anon_dev;
+>> +		}
+>>  	}
+>> =20
+>>  	mutex_lock(&root->objectid_mutex);
+>> @@ -1542,8 +1546,27 @@ void btrfs_free_fs_info(struct btrfs_fs_info *f=
+s_info)
+>>  }
+>> =20
+>> =20
+>> -struct btrfs_root *btrfs_get_fs_root(struct btrfs_fs_info *fs_info,
+>> -				     u64 objectid, bool check_ref)
+>> +/*
+>> + * Get a fs root.
+>> + *
+>> + * For essential trees like root/extent tree, we grab it from fs_info=
+ directly.
+>> + * For subvolume trees, we check the cached fs roots first. If miss t=
+hen
+>> + * read it from disk and add it to cached fs roots.
+>> + *
+>> + * Caller should release the root by calling btrfs_put_root() after t=
+he usage.
+>> + *
+>> + * NOTE: Reloc and log trees can't be read by this function as they s=
+hare the
+>> + *	 same root objectid.
+>> + *
+>> + * @objectid:	Root (subvolume) id
+>> + * @anon_dev:	Preallocated anonymous block device number for new root=
+s.
+>> + * 		Pass 0 for automatic allocation.
+>> + * @check_ref:	Whether to check root refs. If true, return -ENOENT fo=
+r orphan
+>> + * 		roots.
+>> + */
+>> +static struct btrfs_root *__get_fs_root(struct btrfs_fs_info *fs_info=
+,
+>> +					u64 objectid, dev_t anon_dev,
+>> +					bool check_ref)
 >=20
-> Trying to mount it in the recovery mode does not seem to work:
 >=20
-> (initramfs) mount -t btrfs -o ro,usebackuproot /dev/bcache0 /mnt
-> BTRFS info (device bcache1): trying to use backup root at mount time
-> BTRFS info (device bcache1): disk space caching is enabled
-> BTRFS info (device bcache1): has skinny extents
-> BTRFS error (device bcache1): parent transid verify failed on
-> 16984159518720 wanted 138414 found 138207
-> BTRFS error (device bcache1): parent transid verify failed on
-> 16984159518720 wanted 138414 found 138207
-> BTRFS error (device bcache1): parent transid verify failed on
-> 16984173199360 wanted 138433 found 138195
-> BTRFS error (device bcache1): parent transid verify failed on
-> 16984173199360 wanted 138433 found 138195
-> BTRFS warning (device bcache1): failed to read tree root
-> BTRFS error (device bcache1): parent transid verify failed on
-> 16984171298816 wanted 138431 found 131157
-> BTRFS error (device bcache1): parent transid verify failed on
-> 16984171298816 wanted 138431 found 131157
-> BTRFS warning (device bcache1): failed to read tree root
-> BTRFS critical (device bcache1): corrupt leaf: block=3D16984183013376
-> slot=3D36 extent bytenr=3D11447166291968 len=3D262144 invalid generatio=
-n,
-> have 138434 expect (0, 138433]
-> BTRFS error (device bcache1): block=3D16984183013376 read time tree
-> block corruption detected
-> BTRFS critical (device bcache1): corrupt leaf: block=3D16984183013376
-> slot=3D36 extent bytenr=3D11447166291968 len=3D262144 invalid generatio=
-n,
-> have 138434 expect (0, 138433]
-> BTRFS error (device bcache1): block=3D16984183013376 read time tree
-> block corruption detected
-> BTRFS warning (device bcache1): failed to read tree root
-> BUG: kernel NULL pointer dereference, address: 000000000000001f
-> #PF: supervisor read access in kernel mode
+>> +struct btrfs_root *btrfs_get_fs_root(struct btrfs_fs_info *fs_info,
+>> +				     u64 objectid, bool check_ref)
+>> +{
+>> +	return __get_fs_root(fs_info, objectid, 0, check_ref);
+>> +}
+>> +
+>> +struct btrfs_root *btrfs_get_new_fs_root(struct btrfs_fs_info *fs_inf=
+o,
+>> +					 u64 objectid, dev_t anon_dev)
+>> +{
+>> +	return __get_fs_root(fs_info, objectid, anon_dev, true);
+>> +}
 >=20
-> <a stack trace follows>
+> This does not look like a good API, we should keep btrfs_get_fs_root an=
+d
+> add the anon_bdev initialization to the callers, there are only a few.
 >=20
-> (initramfs) btrfs --version
-> btrfs-progs v5.4.1
->=20
-> (initramfs) uname -a
-> Linux (none) 5.6.11-050611-generic #202005061022 SMP Wed May 6 10:27:04=
 
-> UTC 2020 x86_64 GNU/Linux
->=20
-> (initramfs) btrfs fi show
-> Label: 'root' uuid: 0a3d051b-72ef-4a5d-8a48-eb0dbb960b56
->         Total devices 3 FS bytes used 6.55TiB
->         devid    1 size 3.64TiB used 1.62TiB path /dev/bcache1
->         devid    2 size 7.28TiB used 5.21TiB path /dev/bcache0
->         devid    3 size 12.73TiB used 6.80TiB path /dev/bcache2
->=20
-> I have tried booting using a live ISO with 5.8.0 kernel and btrfs v5.6.=
-1
-> from http://defender.exton.net/.
-> After booting tried mounting the bcache using the same command as above=
-=2E
-> The only message in the console was "Killed".
-> /dev/kmsg on the other hand lists messages very similar to the ones I'v=
-e
-> seen in the initramfs environment: https://pastebin.com/Vhy072Mx
+A few =3D over 25?
 
-It looks like there is a chance to recover, as there is a rootbackup
-with newer generation.
+I have switched to keep btrfs_get_fs_root(), but you won't like the summa=
+ry:
 
-While tree-checker is rejecting the newer generation one.
+Old:
+ fs/btrfs/disk-io.h     |  2 ++
+ fs/btrfs/ioctl.c       | 21 ++++++++++++++++-
+ fs/btrfs/transaction.c |  3 ++-
+ fs/btrfs/transaction.h |  2 ++
+ 5 files changed, 70 insertions(+), 9 deletions(-)
 
-The kernel panic is caused by some corner error handling with root
-backups cleanups.
-We need to fix it anyway.
+New:
+ fs/btrfs/backref.c     |  4 ++--
+ fs/btrfs/disk-io.c     | 42 ++++++++++++++++++++++++++++++++++--------
+ fs/btrfs/disk-io.h     |  3 ++-
+ fs/btrfs/export.c      |  2 +-
+ fs/btrfs/file.c        |  2 +-
+ fs/btrfs/inode.c       |  2 +-
+ fs/btrfs/ioctl.c       | 31 +++++++++++++++++++++++++------
+ fs/btrfs/relocation.c  | 11 ++++++-----
+ fs/btrfs/root-tree.c   |  2 +-
+ fs/btrfs/scrub.c       |  2 +-
+ fs/btrfs/send.c        |  4 ++--
+ fs/btrfs/super.c       |  2 +-
+ fs/btrfs/transaction.c |  3 ++-
+ fs/btrfs/transaction.h |  2 ++
+ fs/btrfs/tree-log.c    |  2 +-
+ fs/btrfs/uuid-tree.c   |  2 +-
+ 16 files changed, 83 insertions(+), 33 deletions(-)
 
-In this case, I guess "btrfs ins dump-super -fFa" output would help to
-show if it's possible to recover.
-
-Anyway, something looks strange.
-
-The backup roots have a newer generation while the super block is still
-old doesn't look correct at all.
+Do we really go that direction?
 
 Thanks,
 Qu
->=20
-> P.S. Please CC me, as I am not subscribed.
->=20
-> Thank you,
-> Illia Bobyr
->=20
 
 
---1FA6ehq8XJxQoVsJE7HSgTzjOvV65M3eF--
+--QIZYk2dhnX1ugHxGUGSNK7UoEHWbBjpka--
 
---q4mAGj9WU7SKXUnsGz8Yh3NWN6oD0Lmod
+--7ZlfnKkmoB8YI8PETMSAyTRaKmBM0YCDf
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl776LMACgkQwj2R86El
-/qizrAf9Exe3gLWDAophlpIzYprT+Ayl3EvPnSsQ/TQAtBM0/h74YMH0lHLzzhfR
-Wc7/JtnhtHIKK3Z/e5bgk0ZcID/s2rls1XZd/5BDic4srx0mKtU++VrIQxKBP5dO
-p2TPdOTLREkqcNjGEWJWmq30AeWx4qxXGWTK5OZnTNeJ/N1+5JOwbLOLugdQKWii
-9Gs7M5kXWsOHg6iC039AWKlocPIA13CfkDGJr4nuzQgxH5LMtND1s1evV7gxU7q+
-j8ppTzDDpX7a2WRtOdwFQmjJ3+gVTuNq5uNIIVwCU5rS+ETqqKWD85rrkVBxhy+L
-yzwg+dWAtm8dp22BfuZooz9Gj2qZrQ==
-=icxM
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl78AicACgkQwj2R86El
+/qiHFgf/Y+BZxE+iNcPRZwChWALoQxhnJe8i0qIpU5DTm4CyjMXqHMOrrm/oMbgb
+VAJNTNKnsIZxPbNcsSseTifD9sFLK1T9V0opc9idkHguxFSjBAIll3bZRheibb3w
+/mG0y4IfDlokJpPECLGmHyQVCf+fahxuLgTGdyhM0S+9blm+rrOUOz/1RIUuv+5s
+OpiLOjLF7+sRg2o4Nmvws/+RULdGoAmyOlHM/wTFXW1kXWrv6yF/77dUm6dVNFfD
+rOOetB/xefiCR1qOZiEnZ5lE6znmwOozzFphL3YHZt/xXJJrts5bqXY8+/Rb2aqP
+ZBbv7/IdYZ8dVM+ZkHljGLaiqrX8ew==
+=f3+o
 -----END PGP SIGNATURE-----
 
---q4mAGj9WU7SKXUnsGz8Yh3NWN6oD0Lmod--
+--7ZlfnKkmoB8YI8PETMSAyTRaKmBM0YCDf--
