@@ -2,32 +2,30 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 831E52109A6
-	for <lists+linux-btrfs@lfdr.de>; Wed,  1 Jul 2020 12:48:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85E712109D9
+	for <lists+linux-btrfs@lfdr.de>; Wed,  1 Jul 2020 12:59:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729908AbgGAKsv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 1 Jul 2020 06:48:51 -0400
-Received: from mout.gmx.net ([212.227.17.21]:39683 "EHLO mout.gmx.net"
+        id S1730171AbgGAK7P (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 1 Jul 2020 06:59:15 -0400
+Received: from mout.gmx.net ([212.227.15.18]:34379 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729791AbgGAKsu (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 1 Jul 2020 06:48:50 -0400
+        id S1729952AbgGAK7O (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 1 Jul 2020 06:59:14 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1593600528;
-        bh=LpGFXkHFnEhuZEcxO5TOG6r1pl68b0bKa+07OH47uBU=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=ifatpk6MxBp5SfYzw6S83mWUq1E9fMo3zJKpCCOGg0eyKalfcLftDXLlEXMjusqP7
-         XD8egBkGw1raV/+SMiMBSzKJvSzUrUE7fKUWr9p20/7cq5PwVz/AUQtOFfFqtXW6D+
-         NP6PGlDztiXOnIA3v/kvEvHyF7XmdLnegY/Uh6z8=
+        s=badeba3b8450; t=1593601139;
+        bh=jRoVfpEBloscyNWfPT75+xick+M5QS51VLzCTyrqAVQ=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=Dmv0g+qew2aVn38JcY/wsP9dk5BXlWut7cTOkzUET1AC79ArgS0Ml3y101YKartHy
+         doMfnipjRtHECxQNkRWQt6ZBmixlyy6ls1uJkKNRzGdlt5VMCbJq3ygdY5hMtXo1HN
+         LHnMfPI//t7pEStCtncb7c+jju/5Bdk5cZWG0Lrk=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1N0XD2-1iuNZa3a5c-00wXaA; Wed, 01
- Jul 2020 12:48:48 +0200
-Subject: Re: "parent transid verify failed" and mount usebackuproot does not
- seem to work
-To:     Illia Bobyr <illia.bobyr@gmail.com>, linux-btrfs@vger.kernel.org
-References: <CAHzXa9XOa1bppK44pKrqbSq50Xdsm63D_698gvo2G-JDWrNeLg@mail.gmail.com>
- <45900280-c948-05d2-2cd8-67480baaedae@gmx.com>
- <2f22bd0a-aa48-d0f1-04d0-cb130897249d@gmail.com>
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MMGN2-1jYMoW2PWo-00JFhS; Wed, 01
+ Jul 2020 12:58:59 +0200
+Subject: Re: [PATCH] btrfs: speedup mount time with force readahead chunk tree
+To:     robbieko <robbieko@synology.com>, fstests@vger.kernel.org
+Cc:     linux-btrfs@vger.kernel.org
+References: <20200701092449.19545-1-robbieko@synology.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -53,221 +51,165 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
  ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
  oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <39558ad7-dfb3-05f7-1583-181f76f2a93d@gmx.com>
-Date:   Wed, 1 Jul 2020 18:48:41 +0800
+Message-ID: <ddd19f85-7d55-38f2-3546-683a0229d51d@gmx.com>
+Date:   Wed, 1 Jul 2020 18:58:55 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.9.0
 MIME-Version: 1.0
-In-Reply-To: <2f22bd0a-aa48-d0f1-04d0-cb130897249d@gmail.com>
+In-Reply-To: <20200701092449.19545-1-robbieko@synology.com>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="4C5O9o7lJvRwXSBvxbytAEzFoYnuvkKM0"
-X-Provags-ID: V03:K1:1S3cNUT6q09Hbxk4fZph+PHb3PuF6caDP9xqMSEimw0eH02b3uv
- 7QDyl/i/x0cCea/ks11+2BbRJmKOj0T1Ip5YyRAk5ehFQjUJmWZAt1FZftWtPt8YIieMi3C
- wCA8iVGyKKmrS+u5JKcJl6LDXrJjfVxMk8LBAP2Ez/6kUo+rZNOLAEYMDCm5ngV3JKiQjtx
- Dcxb/kedYCeHCxRsEFYsw==
+ boundary="VuMET84Vz89JlParkwtQUenoeOW8TScbu"
+X-Provags-ID: V03:K1:y64oBjbiym5VBNbAB25snQS3awJBp4dYes51olvoBzUYIqoh5Hl
+ o7cuZuO27Ix/o2aRtSt02jhLojgVPRFk4msCLXOkG0npmjhYXk1qBDvS7r9476uo5xy0RcJ
+ GtTnGo49eFjVy2HeYC1fMAK28am/0TzB/Tl+7AqGqx/SFrUwC9ug603EDnkKrmIVCT3OPI1
+ aBJPlwyIBLZjZStg9u6Zw==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:PMqetdv2qRU=:kkq2CfB/ZLgUNyJk5zDh3N
- xpO4AwvlmwiWIoLeAf3Yf8GoW1nIsFUsUPjAq62Om3Fv1oFhx8j3r5EAsoh7AiyE1BgWWJ1Um
- S/THzTxAN04OvXsiHXgGuX7+Hs1Qk0sT66lEaU7x7B0Z3n3XMc9DvaKCPSWmWE/zaScu5SO6q
- aRo5XsfxKfFlcwQ4RwfEvRMbHIBIjfkXOTmbRm+/fXe4o7O2U5f6HN39DJc/CYsGdw14CBF4b
- 6IHS9lIiiKmTTg00/A2Z+jzl4I8QJ0/Q/6vw1l/xMe8pnL3MjETQKGmD15ITOn9jQ4DqMUKa+
- X00glZpl8Ur3cgtMKoPGTjEdSbfavH96aEJYc8E+1mgVQwHyniCtAbJP6Ou6KFak2wJe6tEpk
- QntftLGrkU4Wy14EXobjQX7X62bh2g4cO9kwbQw5E0DWTU74/SielboFFbfSZsDQxDS61v+pu
- eevORbZDU3jpgc2Ka5sn27/ENJRY3FrGeiIdsBGN6sMBK6UAMJrByKMzfETDPk3EPIoID2y8F
- DwfVGRfkjRgeuFb1RRxuGGeagAN2KGM3TGFL1Abw1Zbe3A6VzmO3Hxlk1RNCOtatHutVMNpcG
- 8x6WwSaOhGxr6z38Re2lrysZ6qnFd2JX0oUMYF2MY2YxpFB/SUxK8WsJpRNvwgmyRDxR5cxkS
- 8PC+UyLE6jKwXkxlF5IYhh0PJwm/WCmsqmPRwT7uwTuobFo6YntcLGtcvAnSnl3jBWoH5QMPn
- S+qwgeONfQ5Ao5jMVTkhzuJDiyDHN8kNTG8jBZQqDRnYXVdREPXAR+cH/rCID4gFCIjT/k0Z+
- Nt7YL473jP+TmJhlHKz6r1MCqUlBUjiuhKxQ4snPIOKkk8XZSysVENZMyEWdQcfb+rqnWge+p
- T7SKUZ2K4yi6GG0zEbfQDjLm5O1tjC7PYVtbJSkUqPZV+S3je+ZtmJPWjOoG3ea0qSr0ANCzD
- KJ2hY1qG8SKHvcfl0KAYUiPUTowjHtab9jrJS80icuxo1/2QBJw5+tjiMZ6NArZT96xS1ceGi
- 6UV9E4mLkFPWg3h7MR8NRspwgpgJ5FGVmwsCsQQjHxairYZevRqfEk7L/kUkXG+uVzwS1H3Ng
- uWF2LgFlRKzwo16UhoPq6S3BS5UhYD6hrhRuJL7V3vys3bvR+vYAjYQQ8/HK/LgviL6uZXR5P
- 571PJLonMa1Dx6OXPORXWRst7shCnRpS8RqWWPtl45m2eK4RXKlD7C60sglDSd50BiIFX7FTW
- lMjLOxx3rO3mEnQvR
+X-UI-Out-Filterresults: notjunk:1;V03:K0:AcXrP/vefaE=:XnMyc8BsoUhZNJ0gO1N0PA
+ AmmQO8IYG52QbLNRyu09apfX/xrI1h4rXRy3uLF/8LDijQkYMWHqN6v0ED53EkJXMI5EjeriZ
+ vzJzwKcJmp8JnM16B1NBYWAZFKm9iImU2Lhaw20bOkqpCd3WQhx92WtUnddrE7B11Hw9uYo1I
+ ifshScHpUdUp3ViWiE3rsoiRzuBcf/uqIztWSrBelw7I4loWS2IS/QBkM/gljMhSG4eLoSvSz
+ n64U7Cv1dkIIiYx3f3Yo0Ysz4Ga1EOsm+Nacq21Zvv6QGNomxHg+4OFtWSyuPr4pBlnixYLoQ
+ DzGK+8qiDOu2RBQUVKkeOGfYAudqK5xihoq8gk7fMEDfTX9inS6AzjRHxjcQfPccFqrxLFu+v
+ G65KHVWtFOR7hYswae70rWr+pQ/qy0wX9df0qQ8nYpbIrHE04azsrIKVgf8utSX188OTy7OyN
+ sdljNUuJJFmXYnek9FZlj2U8uHUe2WhjljJBI+Oxj/3niqPDwmj2xbNvfYXZC3zNHTqSWIqL8
+ ixr4B3o+ABRO9YnBSRKnGNO4HY4XJtqCpFPIc+/Xc1ra23JqJ4P9MOphO+jO97HEbsQnATQxY
+ 7IsyZeDA2CGhD8kg61VGWJ/Gc1T2Y6j4YDEOdC6L2H9Ly2Dgpl94itlGVfW3cmQcylf8xVFnn
+ loJcsl32v/10tQ9UmRSjFF6GH/lTM5NYA+NYxyS20y6tp3NPdE6KmBM9SV6O4qeAHU3r/pWun
+ jM8y1XM73nvwdFiBJ7dXZORII2aAhcAjIssIDNVkMMTnCTYwk1mVG2HKYvrtlQlJSOfn8/soD
+ bX6lxaOKQLqpWJA0TjDq02vnMMCEdwYoq1h5Rc9K6rsyG9xMBgdrpxeuKz7KKhE0huKD6jYvf
+ RaMJ/C2ji3AaCBXSOefJ6yFtQWEDJo1PO2GSKlVK15RG3615iWepTU0ruKTabAfE7ll+fpIP4
+ AwjXvBwlnQGu0Cexv8x5O3XOk8pm4O4aQYwn/wF/a0C0R9Dyg4Mk/JnlVLWNt9SwLQa29Waev
+ r+HpTczh7bUsVmyKmVeqqp+o2dfXNDAM4O/een60kh9j3PRvXMKmTFFmp28E9l92Sm9Iddo3t
+ LKkPyOhYWnv4OhbB3u5Ig73+msD6tWyaZZAGSNnrIS5A9xdKOiPbXQ2dgkw0xRK6hqn6aEyG1
+ esFGxu3Sl+w22mXUVts2i64ExmicKlKQK75NHWX06K2ZG4Dl50hUf1c0PsdLp7I1CmTiy8bFb
+ 9JiO92UTguF5AybOFZzJuN5LOx8ZUy3d14ZvkXA==
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---4C5O9o7lJvRwXSBvxbytAEzFoYnuvkKM0
-Content-Type: multipart/mixed; boundary="45BJWFAghDqNZyFcG58Td1Ki2QvRngO64"
+--VuMET84Vz89JlParkwtQUenoeOW8TScbu
+Content-Type: multipart/mixed; boundary="IP1noLLq6loH1UJmvV9ZZONH2Zj5AGJLy"
 
---45BJWFAghDqNZyFcG58Td1Ki2QvRngO64
+--IP1noLLq6loH1UJmvV9ZZONH2Zj5AGJLy
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
 
 
 
-On 2020/7/1 =E4=B8=8B=E5=8D=886:16, Illia Bobyr wrote:
-> On 6/30/2020 6:36 PM, Qu Wenruo wrote:
->> On 2020/7/1 =E4=B8=8A=E5=8D=883:41, Illia Bobyr wrote:
->>> Hi,
->>>
->>> I have a btrfs with bcache setup that failed during a boot yesterday.=
-
->>> There is one SSD with bcache that is used as a cache for 3 btrfs HDDs=
-=2E
->>>
->>> Reading through a number of discussions, I've decided to ask for advi=
-ce here.
->>> Should I be running "btrfs check --recover"?
->>>
->>> The last message in the dmesg log is this one:
->>>
->>> Btrfs loaded, crc32c=3Dcrc32c-intel
->>> BTRFS: device label root devid 3 transid 138434 /dev/bcache2 scanned
->>> by btrfs (341)
->>> BTRFS: device label root devid 2 transid 138434 /dev/bcache1 scanned
->>> by btrfs (341)
->>> BTRFS: device label root devid 1 transid 138434 /dev/bcache0 scanned
->>> by btrfs (341)
->>> BTRFS info (device bcache0): disk space caching is enabled
->>> BTRFS info (device bcache0): has skinny extents
->>> BTRFS error (device bcache0): parent transid verify failed on
->>> 16984159518720 wanted 138414 found 138207
->>> BTRFS error (device bcache0): parent transid verify failed on
->>> 16984159518720 wanted 138414 found 138207
->>> BTRFS error (device bcache0): open_ctree failed
->> Looks like some tree blocks not written back correctly.
->>
->> Considering we don't have known write back related bugs with 5.6, I
->> guess bcache may be involved again?
+On 2020/7/1 =E4=B8=8B=E5=8D=885:24, robbieko wrote:
+> From: Robbie Ko <robbieko@synology.com>
 >=20
-> A bit more details: the system started to misbehave.
-> Interactive session was saying that the main file system became read/on=
-ly.
+> When mounting, we always need to read the whole chunk tree,
+> when there are too many chunk items, most of the time is
+> spent on btrfs_read_chunk_tree, because we only read one
+> leaf at a time.
 
-Any dmesg of that RO event?
-That would be the most valuable info to help us to locate the bug and
-fix it.
-
-I guess there is something wrong before that, and by somehow it
-corrupted the extent tree, breaking the life keeping COW of metadata and
-screwed up everything.
-
-> And then the SSH disconnected and did not reconnect any more.
-> It did not seem to reboot correctly after I've pressed the reboot
-> button, so I did a hard rebooted.
-> And now it could not mount the root partition any more.
->>> Trying to mount it in the recovery mode does not seem to work:
->>>
->>> [...]
->>>
->>> I have tried booting using a live ISO with 5.8.0 kernel and btrfs v5.=
-6.1
->>> from http://defender.exton.net/.
->>> After booting tried mounting the bcache using the same command as abo=
-ve.
->>> The only message in the console was "Killed".
->>> /dev/kmsg on the other hand lists messages very similar to the ones I=
-'ve
->>> seen in the initramfs environment: https://pastebin.com/Vhy072Mx
->> It looks like there is a chance to recover, as there is a rootbackup
->> with newer generation.
->>
->> While tree-checker is rejecting the newer generation one.
->>
->> The kernel panic is caused by some corner error handling with root
->> backups cleanups.
->> We need to fix it anyway.
->>
->> In this case, I guess "btrfs ins dump-super -fFa" output would help to=
-
->> show if it's possible to recover.
->=20
-> Here is the output: https://pastebin.com/raw/DtJd813y
-
-OK, the backup root is fine.
-
-So this means, metadata COW is corrupted, which caused the transid mismat=
-ch.
+Well, under most case it would be btrfs_read_block_groups(), unless all
+data chunks are very compact with just several large data extents.
 
 >=20
->> Anyway, something looks strange.
->>
->> The backup roots have a newer generation while the super block is stil=
-l
->> old doesn't look correct at all.
+> We fix this by adding a new readahead mode READA_FORWARD_FORCE,
+> which reads all the leaves after the key in the node when
+> reading a level 1 node.
 >=20
-> Just in case, here is the output of "btrfs check", as suggested by "A L=
-
-> <mail@lechevalier.se>".=C2=A0 It does not seem to contain any new infor=
-mation.
+> Signed-off-by: Robbie Ko <robbieko@synology.com>
+> ---
+>  fs/btrfs/ctree.c   | 7 +++++--
+>  fs/btrfs/ctree.h   | 2 +-
+>  fs/btrfs/volumes.c | 1 +
+>  3 files changed, 7 insertions(+), 3 deletions(-)
 >=20
-> parent transid verify failed on 16984014372864 wanted 138350 found 1311=
-17
-> parent transid verify failed on 16984014405632 wanted 138350 found 1311=
-27
-> parent transid verify failed on 16984013406208 wanted 138350 found 1311=
-12
-> parent transid verify failed on 16984075436032 wanted 138384 found 1311=
-36
-> parent transid verify failed on 16984075436032 wanted 138384 found 1311=
-36
-> parent transid verify failed on 16984075436032 wanted 138384 found 1311=
-36
-> Ignoring transid failure
-> ERROR: child eb corrupted: parent bytenr=3D16984175853568 item=3D8 pare=
-nt
-> level=3D2 child level=3D0
-> ERROR: failed to read block groups: Input/output error
+> diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
+> index 3a7648bff42c..abb9108e2d7d 100644
+> --- a/fs/btrfs/ctree.c
+> +++ b/fs/btrfs/ctree.c
+> @@ -2194,7 +2194,7 @@ static void reada_for_search(struct btrfs_fs_info=
+ *fs_info,
+>  			if (nr =3D=3D 0)
+>  				break;
+>  			nr--;
+> -		} else if (path->reada =3D=3D READA_FORWARD) {
+> +		} else if (path->reada =3D=3D READA_FORWARD || path->reada =3D=3D RE=
+ADA_FORWARD_FORCE) {
+>  			nr++;
+>  			if (nr >=3D nritems)
+>  				break;
+> @@ -2205,12 +2205,15 @@ static void reada_for_search(struct btrfs_fs_in=
+fo *fs_info,
+>  				break;
+>  		}
+>  		search =3D btrfs_node_blockptr(node, nr);
+> -		if ((search <=3D target && target - search <=3D 65536) ||
+> +		if ((path->reada =3D=3D READA_FORWARD_FORCE) ||
+> +		    (search <=3D target && target - search <=3D 65536) ||
+>  		    (search > target && search - target <=3D 65536)) {
+>  			readahead_tree_block(fs_info, search);
+>  			nread +=3D blocksize;
+>  		}
+>  		nscan++;
+> +		if (path->reada =3D=3D READA_FORWARD_FORCE)
+> +			continue;
+>  		if ((nread > 65536 || nscan > 32))
+>  			break;
+>  	}
+> diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+> index d404cce8ae40..808bcbdc9530 100644
+> --- a/fs/btrfs/ctree.h
+> +++ b/fs/btrfs/ctree.h
+> @@ -353,7 +353,7 @@ struct btrfs_node {
+>   * The slots array records the index of the item or block pointer
+>   * used while walking the tree.
+>   */
+> -enum { READA_NONE, READA_BACK, READA_FORWARD };
+> +enum { READA_NONE, READA_BACK, READA_FORWARD, READA_FORWARD_FORCE };
+>  struct btrfs_path {
+>  	struct extent_buffer *nodes[BTRFS_MAX_LEVEL];
+>  	int slots[BTRFS_MAX_LEVEL];
+> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+> index 0d6e785bcb98..78fd65abff69 100644
+> --- a/fs/btrfs/volumes.c
+> +++ b/fs/btrfs/volumes.c
+> @@ -7043,6 +7043,7 @@ int btrfs_read_chunk_tree(struct btrfs_fs_info *f=
+s_info)
+>  	path =3D btrfs_alloc_path();
+>  	if (!path)
+>  		return -ENOMEM;
+> +	path->reada =3D READA_FORWARD_FORCE;
 
-Extent tree is completely screwed up, no wonder the transid error happens=
-=2E
+Why not just use regular forward readahead?
 
-I don't believe it's reasonable possible to restore the fs to RW status.
-The only remaining method left is btrfs-restore then.
-
-> ERROR: cannot open file system
-> Opening filesystem to check...
->=20
-> As I was running the commands I have accidentally run the following com=
-mand:
->=20
-> =C2=A0=C2=A0=C2=A0 btrfs inspect-internal dump-super -fFa >/dev/bcache0=
- 2>&1
->=20
-> Effectively overwriting the first 10kb of the partition :(
-
-That's not a problem at all.
-Btrfs reserves the first 0~1M space, so as long as you don't screw up
-the super block at [64K, 68K) you're completely fine.
+Mind to share the reason here? Just to force reada for all tree leaves?
 
 Thanks,
 Qu
->=20
-> Seems like the superblock starts at 64kb.=C2=A0 So, I hope, this would =
-not
-> cause any more damage.
->=20
-> P.S. Thanks a lot for your reply Qu Wenruo!
->=20
-> Thank you,
-> Illia
+
+> =20
+>  	/*
+>  	 * uuid_mutex is needed only if we are mounting a sprout FS
 >=20
 
 
---45BJWFAghDqNZyFcG58Td1Ki2QvRngO64--
+--IP1noLLq6loH1UJmvV9ZZONH2Zj5AGJLy--
 
---4C5O9o7lJvRwXSBvxbytAEzFoYnuvkKM0
+--VuMET84Vz89JlParkwtQUenoeOW8TScbu
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl78agkACgkQwj2R86El
-/qglPQgAqhfw2Ro8U1Iivsg0cS6TJnGOnGX/jDHwpHgMXEpqWvH8+m73XbBHbdqz
-Aqb8TBGa4zcqZdrzUStyJeHHdVxS4bQSUl1jGmq+hG57wM9Cl8b08d45eIPtW5Ou
-GGOH2QpW2HAveyyar7WsGXVVOQh7uNM+6Pu3Wlq6cGZkW8cUoeRbAJ2laWuAMMFP
-ABtppAlo+fg/oB2JD/CqAdLrXO9CutfDgP0j01V8yi92yeUqUjR+7VkzVLj2Ok27
-Yi7AmAVK5d4iIddwWhKwyLQkElV+Zo1xT/Wc85F/s4oAXJjR6ORo2F3HwbC1e4gW
-RleoAmDRog9acp45JodSXMavxGeUlA==
-=x5Jf
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl78bG8ACgkQwj2R86El
+/qiHdgf/ev9HZD/sxXKisxkr0vpKlEBQ07pCRnSQLINf3C/MDuaXxgSBSHxyIbDl
+R7Od77JHtVCHwtibm5OYFQCC4SueRPMLLRYVr8VifV4+ZZFOR1y4Qd7Qmu9rhB6Q
+5Wpz/1UGpzdJV0S11D6aHJXbi2NS2+mQppOMyPNrpfd8wuckZBjr5l61PE6yQaUg
+MY93ZI85GmyXDMv3vGn4tUtpknCXyz2UruIAdNRzvRrkQIeLQFtbyfUqGicVKbTP
+xBQeD3dzNqJGjRSHw1PM5AO4eo5+vNFX410tao1GVunJ+uBVMEyHnNjEWgfbzbf7
+hcpOHjeTkub06eb0PDxjnu+t37dPug==
+=3Hhr
 -----END PGP SIGNATURE-----
 
---4C5O9o7lJvRwXSBvxbytAEzFoYnuvkKM0--
+--VuMET84Vz89JlParkwtQUenoeOW8TScbu--
