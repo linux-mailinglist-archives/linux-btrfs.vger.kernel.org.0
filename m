@@ -2,109 +2,82 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0CE821057E
-	for <lists+linux-btrfs@lfdr.de>; Wed,  1 Jul 2020 09:53:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A25621077E
+	for <lists+linux-btrfs@lfdr.de>; Wed,  1 Jul 2020 11:07:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728499AbgGAHxO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 1 Jul 2020 03:53:14 -0400
-Received: from verein.lst.de ([213.95.11.211]:39050 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728485AbgGAHxN (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 1 Jul 2020 03:53:13 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 755A968B02; Wed,  1 Jul 2020 09:53:10 +0200 (CEST)
-Date:   Wed, 1 Jul 2020 09:53:10 +0200
+        id S1728982AbgGAJG3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 1 Jul 2020 05:06:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56906 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726372AbgGAJG2 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 1 Jul 2020 05:06:28 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B283C061755;
+        Wed,  1 Jul 2020 02:06:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=kVtz6vlqJaw/bVcdduLYH4iE1TfD3bHAdPcoJqUty3c=; b=fqj9Bq+LPiX5Cw82+DKENOtZGq
+        aBH2pV9JriMzRvy5+0j64xrRmqbi06FwHdCyyH3uCDubulK1NERetFJK1xFzKQY+iXQVy5XGPU+xl
+        /8+zjmJSUzyKDSohp1PbTPulp7b3LNcKbeAeTRiFa5ER5du9CjNnVFmk1/cLC4YQcwJeNFeAu/B/t
+        7LQYhpHNJ89uXgEEGIP8Kl/6Q59oBdTnE2iI0XlR6ib/eAbUM2WK68TsWfzhy2JvgP5NrxmDNwUdK
+        2kLdrPLtmrx4+deQuyG8ej+JvRoHTRyPjJ4ocq2XFWOIjBChE8rflkGjPJ8f2cJsvLg9xAC3ZO5Oq
+        zQLc42fA==;
+Received: from [2001:4bb8:184:76e3:ea38:596b:3e9e:422a] (helo=localhost)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jqYhD-0000hE-MD; Wed, 01 Jul 2020 09:06:24 +0000
 From:   Christoph Hellwig <hch@lst.de>
-To:     Goldwyn Rodrigues <rgoldwyn@suse.de>
-Cc:     linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        fdmanana@gmail.com, dsterba@suse.cz, david@fromorbit.com,
-        darrick.wong@oracle.com, hch@lst.de,
-        Goldwyn Rodrigues <rgoldwyn@suse.com>,
-        cluster-devel@redhat.com, linux-ext4@vger.kernel.org,
-        linux-xfs@vger.kernel.org
-Subject: always fall back to buffered I/O after invalidation failures, was:
- Re: [PATCH 2/6] iomap: IOMAP_DIO_RWF_NO_STALE_PAGECACHE return if
- page invalidation fails
-Message-ID: <20200701075310.GB29884@lst.de>
-References: <20200629192353.20841-1-rgoldwyn@suse.de> <20200629192353.20841-3-rgoldwyn@suse.de>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Tejun Heo <tj@kernel.org>, dm-devel@redhat.com,
+        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+        drbd-dev@lists.linbit.com, linux-bcache@vger.kernel.org,
+        linux-raid@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: remove dead bdi congestion leftovers
+Date:   Wed,  1 Jul 2020 11:06:18 +0200
+Message-Id: <20200701090622.3354860-1-hch@lst.de>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200629192353.20841-3-rgoldwyn@suse.de>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Jun 29, 2020 at 02:23:49PM -0500, Goldwyn Rodrigues wrote:
-> From: Goldwyn Rodrigues <rgoldwyn@suse.com>
-> 
-> For direct I/O, add the flag IOMAP_DIO_RWF_NO_STALE_PAGECACHE to indicate
-> that if the page invalidation fails, return back control to the
-> filesystem so it may fallback to buffered mode.
-> 
-> Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
-> Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
+Hi Jens,
 
-I'd like to start a discussion of this shouldn't really be the
-default behavior.  If we have page cache that can't be invalidated it
-actually makes a whole lot of sense to not do direct I/O, avoid the
-warnings, etc.
+we have a lot of bdi congestion related code that is left around without
+any use.  This series removes it in preparation of sorting out the bdi
+lifetime rules properly.
 
-Adding all the relevant lists.
-
-> ---
->  fs/iomap/direct-io.c  |  8 +++++++-
->  include/linux/iomap.h | 14 ++++++++++++++
->  2 files changed, 21 insertions(+), 1 deletion(-)
-> 
-> diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
-> index fd22bff61569..2459c76e41ab 100644
-> --- a/fs/iomap/direct-io.c
-> +++ b/fs/iomap/direct-io.c
-> @@ -484,8 +484,14 @@ iomap_dio_rw(struct kiocb *iocb, struct iov_iter *iter,
->  	 */
->  	ret = invalidate_inode_pages2_range(mapping,
->  			pos >> PAGE_SHIFT, end >> PAGE_SHIFT);
-> -	if (ret)
-> +	if (ret) {
-> +		if (dio_flags & IOMAP_DIO_RWF_NO_STALE_PAGECACHE) {
-> +			if (ret == -EBUSY)
-> +				ret = 0;
-> +			goto out_free_dio;
-> +		}
->  		dio_warn_stale_pagecache(iocb->ki_filp);
-> +	}
->  	ret = 0;
->  
->  	if (iov_iter_rw(iter) == WRITE && !wait_for_completion &&
-> diff --git a/include/linux/iomap.h b/include/linux/iomap.h
-> index 8a4ba1635202..2ebb8a298cd8 100644
-> --- a/include/linux/iomap.h
-> +++ b/include/linux/iomap.h
-> @@ -262,7 +262,21 @@ struct iomap_dio_ops {
->  /*
->   * Wait for completion of DIO
->   */
-> +
->  #define IOMAP_DIO_RWF_SYNCIO			(1 << 0)
-> +/*
-> + * Direct IO will attempt to keep the page cache coherent by
-> + * invalidating the inode's page cache over the range of the DIO.
-> + * That can fail if something else is actively using the page cache.
-> + * If this happens and the DIO continues, the data in the page
-> + * cache will become stale.
-> + *
-> + * Set this flag if you want the DIO to abort without issuing any IO
-> + * or error if it fails to invalidate the page cache successfully.
-> + * This allows the IO submitter to fallback to buffered IO to resubmit
-> + * IO
-> + */
-> +#define IOMAP_DIO_RWF_NO_STALE_PAGECACHE	(1 << 1)
->  
->  ssize_t iomap_dio_rw(struct kiocb *iocb, struct iov_iter *iter,
->  		const struct iomap_ops *ops, const struct iomap_dio_ops *dops,
-> -- 
-> 2.26.2
----end quoted text---
+Diffstat:
+ block/blk-cgroup.c               |   19 ----
+ drivers/block/drbd/drbd_main.c   |   59 --------------
+ drivers/block/drbd/drbd_proc.c   |    1 
+ drivers/md/bcache/request.c      |   43 ----------
+ drivers/md/bcache/super.c        |    1 
+ drivers/md/dm-cache-target.c     |   19 ----
+ drivers/md/dm-clone-target.c     |   15 ---
+ drivers/md/dm-era-target.c       |   15 ---
+ drivers/md/dm-raid.c             |   12 --
+ drivers/md/dm-table.c            |   37 ---------
+ drivers/md/dm-thin.c             |   16 ---
+ drivers/md/dm.c                  |   33 --------
+ drivers/md/dm.h                  |    1 
+ drivers/md/md-linear.c           |   24 -----
+ drivers/md/md-multipath.c        |   23 -----
+ drivers/md/md.c                  |   23 -----
+ drivers/md/md.h                  |    4 
+ drivers/md/raid0.c               |   16 ---
+ drivers/md/raid1.c               |   31 -------
+ drivers/md/raid10.c              |   26 ------
+ drivers/md/raid5.c               |   25 ------
+ fs/btrfs/disk-io.c               |   23 -----
+ include/linux/backing-dev-defs.h |   43 ----------
+ include/linux/backing-dev.h      |   22 -----
+ include/linux/blk-cgroup.h       |    6 -
+ include/linux/device-mapper.h    |   11 --
+ mm/backing-dev.c                 |  157 +++------------------------------------
+ 27 files changed, 20 insertions(+), 685 deletions(-)
