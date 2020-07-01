@@ -2,29 +2,30 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2E86210177
-	for <lists+linux-btrfs@lfdr.de>; Wed,  1 Jul 2020 03:30:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B3E0210192
+	for <lists+linux-btrfs@lfdr.de>; Wed,  1 Jul 2020 03:37:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725988AbgGABae (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 30 Jun 2020 21:30:34 -0400
-Received: from mout.gmx.net ([212.227.15.18]:54025 "EHLO mout.gmx.net"
+        id S1725862AbgGABg7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 30 Jun 2020 21:36:59 -0400
+Received: from mout.gmx.net ([212.227.17.21]:54075 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725805AbgGABad (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 30 Jun 2020 21:30:33 -0400
+        id S1725763AbgGABg7 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 30 Jun 2020 21:36:59 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1593567029;
-        bh=/qX48BsP/lfoQ9/Tqc8ctXWtWAp/htzmDMnA5X+9T/I=;
+        s=badeba3b8450; t=1593567415;
+        bh=8T2ne8/FoE2W4UzjJZf+nLNcwvu0jsQ8js63U0xyJ8A=;
         h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=JI7MbeDPIipQ+14otxvY9dKdy5PV1LJI78G4tXcGeMgfz4iBfK5vixsjDIcpW7xzu
-         oogDaDzJUNJ91bIDE2nqH2ClFnq9Pv7cA2lu8d24fnOLWXGaWVZ7YVvgq4D5krnLG+
-         T4iKq9hEspYfSJGJIErxtIjWfuG2SCv5GfdajJPg=
+        b=RzG8RzMW+Nre38kjGKRycrr2cawgmYo3zJAuocU3RHJewYAHQ0vLEmpsENwHCQL8F
+         AzAcxChWPI5T+hL0QcJKFfF7RBGABlXrTG3s0E8pPqS3k0QX+8KIYFODFaq3vUnnRP
+         biDZNuuX+wyjmyt5CA8iiK9nGFOXYe0ZAbEIJluQ=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MLR1V-1jXwrH17kB-00IQdy; Wed, 01
- Jul 2020 03:30:28 +0200
-Subject: Re: first mount(s) after unclean shutdown always fail
-To:     Marc Lehmann <schmorp@schmorp.de>, linux-btrfs@vger.kernel.org
-References: <20200701005116.GA5478@schmorp.de>
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MS3mt-1jMujN29cZ-00TSii; Wed, 01
+ Jul 2020 03:36:55 +0200
+Subject: Re: "parent transid verify failed" and mount usebackuproot does not
+ seem to work
+To:     Illia Bobyr <illia.bobyr@gmail.com>, linux-btrfs@vger.kernel.org
+References: <CAHzXa9XOa1bppK44pKrqbSq50Xdsm63D_698gvo2G-JDWrNeLg@mail.gmail.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -50,207 +51,195 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
  ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
  oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <36fcfc97-ce4c-cce8-ee96-b723a1b68ec7@gmx.com>
-Date:   Wed, 1 Jul 2020 09:30:25 +0800
+Message-ID: <45900280-c948-05d2-2cd8-67480baaedae@gmx.com>
+Date:   Wed, 1 Jul 2020 09:36:51 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.9.0
 MIME-Version: 1.0
-In-Reply-To: <20200701005116.GA5478@schmorp.de>
+In-Reply-To: <CAHzXa9XOa1bppK44pKrqbSq50Xdsm63D_698gvo2G-JDWrNeLg@mail.gmail.com>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="gKWEk8WbviGQAsWlLysUhkuywARbSJae7"
-X-Provags-ID: V03:K1:I6BvqUWEPVuR6c/TOodZVJdfEpaaIbsH6WO5XQiolYyejj9+A2T
- QPtzUguJnz0knLxeHme/PcIyJMhWneMbk7Qc1cuAdy4eFo8PN42/soh88+m3gVbTKkFwkuA
- OiBEd1HpMMokh17aB2tE2hc9qdiJp/9RbYwfQ1kXRl4xZ8TrfKTiRkae4pf467t2FwXESnh
- XMG4pHDrb9ako7tkCX2Pw==
+ boundary="q4mAGj9WU7SKXUnsGz8Yh3NWN6oD0Lmod"
+X-Provags-ID: V03:K1:kcPeqKJg69z4M3usklLE4qp2nt3B1vR6TC9jWvYZh6bYm61NwdI
+ kIP5Df4O9bUbqPSMls/gHtMH0u1ISavZlJ9H6ZtNM7dfXUQ4VCZT2bzPMXQOi4izzs7gD2w
+ 2FI7da/pQBe2qcd1UCez9fX8OfebLXivgMtfYFQ2ZY8fsh0sAs2AyGDkVe8ybl5x4tZGL4I
+ rFrgIcttFDjz0DU2alvwQ==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:ZK4VI+MvjjY=:2Nq3X+gVXCPPS7zYhRZplR
- XnXpukiTb9xEE3qYyGrKwnqBP5uoAjOEh8ixjCi9MNCWliTy0xYJpAH3Ac6qwsk2PiWw+FEg7
- 9P9mheSvXPPYs8bicvAeUbPshflJo2RbqQE+zUpYOK4LMmAVkMesc7TiBklANqigs4q4pqEWa
- 7dKAKiIIn09g6vckFkZolysOpMrL08RenDyqA5THCy/2cSfxr6FjxrTgwGSeYwdHOUuPZZ/jn
- 3HF7OG15pXn0imSdILqj1wPWdJP16LMgR+iCrs1NjyCbfj+4h2UshMg0IGa71ReV7KvyOooY3
- DW8GuM4wF76JZlSXpu+BK/UgQ40UjL4tvYQ9w4izpQGOHkhntAIJpmkfEz5rgoZrutirLNMrN
- squMaD0kRUe8+iKIOiSag8MEN3LvOpLt1SN5fqke+6ftV6/qvwDBozuxKvLci6s6avusEqIZM
- nDtbfRRSq6hTFPUz7H+9E4HceYgDRaUH3FiiKpLBfoTc57PMS4hobJai9mtb5TdJ2C4ctiLVd
- 2qrL8t+jIsi/4qBhin+WCdXUdRDQ/aQh0Eyw2in+xbfNm5LOfUIxBvhgCxrno2aSLE3IJEPkp
- VSCtgC+epvKwCsfnWyO6bifcUmn7YJkfPqaYqpr2EtIV2YHxUGLvyYVrdoNpUoFVtDU9mff6w
- NSrJG0wKg14vve+fxZsyLT46ArYuQcOQp0dIcKxrdyuCvzzez5XCLAy+HjIPRbXGA30chjW3T
- 0sE5nDe/DZvYKH1WReXIxP5yuUYgrLbcw1JF1yciLTMeCAKKbWFia2lMM/BbtN9bkt1jBWnDr
- MyecJ1o5BxLm1WU7T6N1jOwUH4cCPNtoS8FhBoroheonjZbhNmjTfNJYtahi38dQ+OQDseu/p
- eH9F8QRFU+/eMw91jMOtmthIW6kxrXy7IutRM22eak8sbXaHAekKcETcryNRO9C1BMoPy644K
- AaZ+7lxvn86T3/zL0nlnZr71JpAIYFZinsg/lqoKGDdL1wr+P4TGnOr180dFniyu46oaMpYKD
- RdcOAAAL0cZw11ow4sF9nYb441MSz8hbKNxq/UPHrbIaQYkzx5Ks5RlkTzpMuMRQgYnIGhtg5
- uOEOxfCvDDxuGb/VGLBwdlfgB4FdUECPFoSlR4jumv5e+VBEGA8w7rjtp8GbXlcTM3BkLfWr0
- B0+i/5uBbRJWVeOVPHrJXpmRPTQoxDfE2AI/5SS2GZriWx0tXp1VxxqhtyqtAmUG0w7+Rh1q8
- Chk6gwBrMoSQtW78vaar+0amaNmQl2+Hh6Ex41g==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:DumHawyipwU=:cei8zEBIYUwWb5AMnhwJwj
+ mexLUu09h2Hlal5H6pfjm8cLY0K5P+Z+arvTmxnvn656Q2HnPdWpDnx67nrTNtECkRAM4kPb8
+ X/bw6sUtYyjEbNHmyTEQQnmrVUr5tw00NLvYlHgkNIXgcBNyflNK6XO9/WZ2G4U4B39A4vpXY
+ DgFAdpL8+xvbEFWN6s7szhgcKGL1Xrru5dSkuup6lmdDIJp9gUWTSTFwrksFJdokmfl43OWZR
+ 6ARJXIST8xyk4c6VcXrCXSquHXQ52UqJHVxftY6+u+AvTu62kPJRGMYQvZTHCYzIrIqHTCEcb
+ xFiiRHLNiAJf97gXlLAURCHVWVbvHWQdw4QUeJs91etQjW1IQEKljHOf4Nl14C9RcARbcpwh4
+ r7C9aXUi9/F514NmWqQHhjIYtRrTrMdlxr4pILcNey3+cZqJBlip7cFxiXfQ7U/FgJob4jhy4
+ JbduddHUKH/zw0urEk94qIg3Z2XtPatq4QQYAzEYutRe6H2jY4o9U/HvAhJxrWfVWwdV3tnnS
+ eiAoKZ3uu+jac7uqffW3vWGMCm0FN4QTLFjF41wW2fgBX4I6DywC/WHe1dC5epJ6N8Ghriiv4
+ o5qPrDL68GXPcg/9+QlIXyzw7zXy/gDFwvFVSAu04KuWmv7NimNSgGE1ykbGSpY04zo4AMKw8
+ jDQGByx14QVgdp76rLLB2GhKIv5vdwmYa0kLPU6HQGQTQXk6Fo3bI8vw6O/l4PjCjKmuB0VPC
+ ZFXcqKRL1mGihW0inbS09/O9AVtxssgSxzeYsHBPiLXSQFixaCRdvER0o3Sl4o8jrb13XWAqO
+ D6dVlIzUtmFTyqWExirNqOctxLMKd6B/VrL7glWne3DKcS/EHTyNDCQbfICQ/J6y0ae6YioJB
+ rEFlg/MmCFgl8OFkkvck0wDKQfDd5xb4HE9F+yzEE6nQLNMpj6LlL1bnq73tQ3qpKOQpgcx9n
+ YzwlwVU8S6fP7MZmcwvP3T/i4/PjzN3w3sacsOiI7u2hkF7fo8Dmo2rV9Oov0qW1cpZi5Xdrg
+ DXdNTJLhEIQUyGxMYGNKrVteeRCfaDrl7eq14GC6Fjl8QfUiTxpW0wKKbRfjC3ivHX1I5RzYz
+ iJ6apYM57thf0tV0UYeRKhbtUfakKTiyXkxy0TRoi8wgb9ieoERWZFToSi29ueWoOkBynW3fA
+ Qbzl3vkR7as0NDBZj/mLmKMajvAGgIsEb1g0FCkCru+ngY3wk+fqPODFFUi2iMitr8keH5fHE
+ OwW1WT1/uIuw6kis/1VbCUcvTUDQCNCBeB9J/bQ==
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---gKWEk8WbviGQAsWlLysUhkuywARbSJae7
-Content-Type: multipart/mixed; boundary="08DbF6HKz9SjTLNhu8SbHDtu3guhu1QQS"
+--q4mAGj9WU7SKXUnsGz8Yh3NWN6oD0Lmod
+Content-Type: multipart/mixed; boundary="1FA6ehq8XJxQoVsJE7HSgTzjOvV65M3eF"
 
---08DbF6HKz9SjTLNhu8SbHDtu3guhu1QQS
+--1FA6ehq8XJxQoVsJE7HSgTzjOvV65M3eF
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
 
 
 
-On 2020/7/1 =E4=B8=8A=E5=8D=888:51, Marc Lehmann wrote:
-> Hi!
+On 2020/7/1 =E4=B8=8A=E5=8D=883:41, Illia Bobyr wrote:
+> Hi,
 >=20
-> I have a server with multiple btrfs filesystems and some moderate-sized=
+> I have a btrfs with bcache setup that failed during a boot yesterday.
+> There is one SSD with bcache that is used as a cache for 3 btrfs HDDs.
+>=20
+> Reading through a number of discussions, I've decided to ask for advice=
+ here.
+> Should I be running "btrfs check --recover"?
+>=20
+> The last message in the dmesg log is this one:
+>=20
+> Btrfs loaded, crc32c=3Dcrc32c-intel
+> BTRFS: device label root devid 3 transid 138434 /dev/bcache2 scanned
+> by btrfs (341)
+> BTRFS: device label root devid 2 transid 138434 /dev/bcache1 scanned
+> by btrfs (341)
+> BTRFS: device label root devid 1 transid 138434 /dev/bcache0 scanned
+> by btrfs (341)
+> BTRFS info (device bcache0): disk space caching is enabled
+> BTRFS info (device bcache0): has skinny extents
+> BTRFS error (device bcache0): parent transid verify failed on
+> 16984159518720 wanted 138414 found 138207
+> BTRFS error (device bcache0): parent transid verify failed on
+> 16984159518720 wanted 138414 found 138207
+> BTRFS error (device bcache0): open_ctree failed
 
-> dmcache caches (a few million blocks/100s of GBs).
->=20
-> When the server has an unclean shutdown, dmcache treats all cached bloc=
-ks
-> as dirty. This has the effect of extremely slow I/O, as dmcache basical=
-ly
-> caches a lot of random I/O, and writing these blocks back to the rotati=
-ng
-> disk backing store can take hours. This, I think, is related to the
-> problem.
->=20
-> When the server is in this condition, then all btrfs filesystems on slo=
-w
-> stores (regardless of whether they use dmcache or not) fail their first=
+Looks like some tree blocks not written back correctly.
 
-> mount attempt(s) like this:
->=20
->    [  173.243117] BTRFS info (device dm-7): has skinny extents
->    [  864.982108] BTRFS error (device dm-7): open_ctree failed
->=20
-> Recent kernels sometimes additionally fail like this (super_total_bytes=
-):
->=20
->    [  867.721885] BTRFS info (device dm-7): turning on sync discard
->    [  867.722341] BTRFS info (device dm-7): disk space caching is enabl=
-ed
->    [  867.722691] BTRFS info (device dm-7): has skinny extents
->    [  871.257020] BTRFS error (device dm-7): super_total_bytes 85897668=
-1984 mismatch with fs_devices total_rw_bytes 1717953363968
->    [  871.257487] BTRFS error (device dm-7): failed to read chunk tree:=
- -22
->    [  871.269989] BTRFS error (device dm-7): open_ctree failed
+Considering we don't have known write back related bugs with 5.6, I
+guess bcache may be involved again?
 
-This looks like an old fs with some bad accounting numbers.
+>=20
+> Trying to mount it in the recovery mode does not seem to work:
+>=20
+> (initramfs) mount -t btrfs -o ro,usebackuproot /dev/bcache0 /mnt
+> BTRFS info (device bcache1): trying to use backup root at mount time
+> BTRFS info (device bcache1): disk space caching is enabled
+> BTRFS info (device bcache1): has skinny extents
+> BTRFS error (device bcache1): parent transid verify failed on
+> 16984159518720 wanted 138414 found 138207
+> BTRFS error (device bcache1): parent transid verify failed on
+> 16984159518720 wanted 138414 found 138207
+> BTRFS error (device bcache1): parent transid verify failed on
+> 16984173199360 wanted 138433 found 138195
+> BTRFS error (device bcache1): parent transid verify failed on
+> 16984173199360 wanted 138433 found 138195
+> BTRFS warning (device bcache1): failed to read tree root
+> BTRFS error (device bcache1): parent transid verify failed on
+> 16984171298816 wanted 138431 found 131157
+> BTRFS error (device bcache1): parent transid verify failed on
+> 16984171298816 wanted 138431 found 131157
+> BTRFS warning (device bcache1): failed to read tree root
+> BTRFS critical (device bcache1): corrupt leaf: block=3D16984183013376
+> slot=3D36 extent bytenr=3D11447166291968 len=3D262144 invalid generatio=
+n,
+> have 138434 expect (0, 138433]
+> BTRFS error (device bcache1): block=3D16984183013376 read time tree
+> block corruption detected
+> BTRFS critical (device bcache1): corrupt leaf: block=3D16984183013376
+> slot=3D36 extent bytenr=3D11447166291968 len=3D262144 invalid generatio=
+n,
+> have 138434 expect (0, 138433]
+> BTRFS error (device bcache1): block=3D16984183013376 read time tree
+> block corruption detected
+> BTRFS warning (device bcache1): failed to read tree root
+> BUG: kernel NULL pointer dereference, address: 000000000000001f
+> #PF: supervisor read access in kernel mode
+>=20
+> <a stack trace follows>
+>=20
+> (initramfs) btrfs --version
+> btrfs-progs v5.4.1
+>=20
+> (initramfs) uname -a
+> Linux (none) 5.6.11-050611-generic #202005061022 SMP Wed May 6 10:27:04=
 
-Have you tried btrfs rescue fix-device-size?
+> UTC 2020 x86_64 GNU/Linux
+>=20
+> (initramfs) btrfs fi show
+> Label: 'root' uuid: 0a3d051b-72ef-4a5d-8a48-eb0dbb960b56
+>         Total devices 3 FS bytes used 6.55TiB
+>         devid    1 size 3.64TiB used 1.62TiB path /dev/bcache1
+>         devid    2 size 7.28TiB used 5.21TiB path /dev/bcache0
+>         devid    3 size 12.73TiB used 6.80TiB path /dev/bcache2
+>=20
+> I have tried booting using a live ISO with 5.8.0 kernel and btrfs v5.6.=
+1
+> from http://defender.exton.net/.
+> After booting tried mounting the bcache using the same command as above=
+=2E
+> The only message in the console was "Killed".
+> /dev/kmsg on the other hand lists messages very similar to the ones I'v=
+e
+> seen in the initramfs environment: https://pastebin.com/Vhy072Mx
+
+It looks like there is a chance to recover, as there is a rootbackup
+with newer generation.
+
+While tree-checker is rejecting the newer generation one.
+
+The kernel panic is caused by some corner error handling with root
+backups cleanups.
+We need to fix it anyway.
+
+In this case, I guess "btrfs ins dump-super -fFa" output would help to
+show if it's possible to recover.
+
+Anyway, something looks strange.
+
+The backup roots have a newer generation while the super block is still
+old doesn't look correct at all.
 
 Thanks,
 Qu
 >=20
-> all the filesystems in question are mounted twice during normal boots,
-> with diferent subvolumes, and systemd parallelises these mounts. This m=
-ight
-> play a role in these failures.
+> P.S. Please CC me, as I am not subscribed.
 >=20
-> Simply trying to mount the filesystems again then (usually) succeeds wi=
-th
-> seemingly no issues, so these are spurious mount failures. These repeat=
-ed
-> mount attewmpts are also much faster, presumably because a lot of the d=
-ata
-> is already in memory.
->=20
-> As far as I am concerned, this is 100% reproducible (i.e. it happens on=
- every
-> unclean shutdown). It also happens on "old" (4.19 era) filesystems as w=
-ell as
-> on filesystems that have never seen anything older than 5.4 kernels.
->=20
-> It does _not_ happen with filesystems on SSDs, regardless of whether th=
-ey
-> are mounted multiple times or not. It does happen to all filesystems th=
-at
-> are on rotating disks affected by dm-cache writes, regardless of whethe=
-r
-> the filesystem itself uses dmcache or not.
->=20
-> The system in question is currently running 5.6.17, but the same thing
-> happens with 5.4 and 5.2 kernels, and it might have happened with much
-> earlier kernels as well, but I didn't have time to report this (as I
-> secretly hoped newer kernels would fix this, and unclean shutdowns are
-> rare).
->=20
-> Example btrfs kernel messages for one such unclean boot. This involved
-> normal boot, followed by unsuccessfull "mount -va" in the emergency she=
-ll
-> (i.e. a second mount fasilure for the same filesystem), followed by a
-> successfull "mount -va" in the shell.
->=20
-> [  122.856787] BTRFS: device label LOCALVOL devid 1 transid 152865 /dev=
-/mapper/cryptlocalvol scanned by btrfs (727)
-> [  173.242545] BTRFS info (device dm-7): disk space caching is enabled
-> [  173.243117] BTRFS info (device dm-7): has skinny extents
-> [  363.573875] INFO: task mount:1103 blocked for more than 120 seconds.=
-
-> the above message repeats multiple times, backtrace &c has been removed=
- for clarity
-> [  484.405875] INFO: task mount:1103 blocked for more than 241 seconds.=
-
-> [  605.237859] INFO: task mount:1103 blocked for more than 362 seconds.=
-
-> [  605.252478] INFO: task mount:1211 blocked for more than 120 seconds.=
-
-> [  726.069900] INFO: task mount:1103 blocked for more than 483 seconds.=
-
-> [  726.084415] INFO: task mount:1211 blocked for more than 241 seconds.=
-
-> [  846.901874] INFO: task mount:1103 blocked for more than 604 seconds.=
-
-> [  846.916431] INFO: task mount:1211 blocked for more than 362 seconds.=
-
-> [  864.982108] BTRFS error (device dm-7): open_ctree failed
-> [  867.551400] BTRFS info (device dm-7): turning on sync discard
-> [  867.551875] BTRFS info (device dm-7): disk space caching is enabled
-> [  867.552242] BTRFS info (device dm-7): has skinny extents
-> [  867.565896] BTRFS error (device dm-7): open_ctree failed
-> [  867.721885] BTRFS info (device dm-7): turning on sync discard
-> [  867.722341] BTRFS info (device dm-7): disk space caching is enabled
-> [  867.722691] BTRFS info (device dm-7): has skinny extents
-> [  871.257020] BTRFS error (device dm-7): super_total_bytes 85897668198=
-4 mismatch with fs_devices total_rw_bytes 1717953363968
-> [  871.257487] BTRFS error (device dm-7): failed to read chunk tree: -2=
-2
-> [  871.269989] BTRFS error (device dm-7): open_ctree failed
-> [  872.535935] BTRFS info (device dm-7): disk space caching is enabled
-> [  872.536438] BTRFS info (device dm-7): has skinny extents
->=20
-> Example fstab entries for the mounts above:
->=20
-> /dev/mapper/cryptlocalvol       /localvol       btrfs           default=
-s,nossd,discard                  0       0
-> /dev/mapper/cryptlocalvol       /cryptlocalvol  btrfs           default=
-s,nossd,subvol=3D/                 0       0
->=20
-> I don't need assistance, I merely write this in the hope of btrfs being=
-
-> improved by this information.
+> Thank you,
+> Illia Bobyr
 >=20
 
 
---08DbF6HKz9SjTLNhu8SbHDtu3guhu1QQS--
+--1FA6ehq8XJxQoVsJE7HSgTzjOvV65M3eF--
 
---gKWEk8WbviGQAsWlLysUhkuywARbSJae7
+--q4mAGj9WU7SKXUnsGz8Yh3NWN6oD0Lmod
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl775zEACgkQwj2R86El
-/qiP/gf+P341vbZYqEUM0+uTicl9Ox/+ublKBGDqU67EuMsF6TdO09t7oS9EdhxO
-PsfoB9mWyHk/SlR4M6e8/R0HR1Qbd3WA/hj+y47NcsWIw6FEnwUPvf+EobX7k1k2
-hyPGyjqoi53Z3lVf0peXBbM/T0BDrJs+8cX1+nhSaXEbcQwE3B0If6/dYryLsNEG
-/qh7hjfGRsWVZgSUCuZmiPFMCq7flYZyNPW/RnTCSXpJ8hNpmo0Y5doxgrGM1uoy
-RS19hj3FVLQrQXh6OnIbEcvG+qjR89/Md5JNFhdjTzH3saEpwm8DaCb0IAweLOSh
-RCzHIeQbzyghKWW7MYkb3yyrcusk7A==
-=rhsv
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl776LMACgkQwj2R86El
+/qizrAf9Exe3gLWDAophlpIzYprT+Ayl3EvPnSsQ/TQAtBM0/h74YMH0lHLzzhfR
+Wc7/JtnhtHIKK3Z/e5bgk0ZcID/s2rls1XZd/5BDic4srx0mKtU++VrIQxKBP5dO
+p2TPdOTLREkqcNjGEWJWmq30AeWx4qxXGWTK5OZnTNeJ/N1+5JOwbLOLugdQKWii
+9Gs7M5kXWsOHg6iC039AWKlocPIA13CfkDGJr4nuzQgxH5LMtND1s1evV7gxU7q+
+j8ppTzDDpX7a2WRtOdwFQmjJ3+gVTuNq5uNIIVwCU5rS+ETqqKWD85rrkVBxhy+L
+yzwg+dWAtm8dp22BfuZooz9Gj2qZrQ==
+=icxM
 -----END PGP SIGNATURE-----
 
---gKWEk8WbviGQAsWlLysUhkuywARbSJae7--
+--q4mAGj9WU7SKXUnsGz8Yh3NWN6oD0Lmod--
