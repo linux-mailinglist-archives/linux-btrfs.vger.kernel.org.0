@@ -2,214 +2,386 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85E712109D9
-	for <lists+linux-btrfs@lfdr.de>; Wed,  1 Jul 2020 12:59:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD416210DF6
+	for <lists+linux-btrfs@lfdr.de>; Wed,  1 Jul 2020 16:45:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730171AbgGAK7P (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 1 Jul 2020 06:59:15 -0400
-Received: from mout.gmx.net ([212.227.15.18]:34379 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729952AbgGAK7O (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 1 Jul 2020 06:59:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1593601139;
-        bh=jRoVfpEBloscyNWfPT75+xick+M5QS51VLzCTyrqAVQ=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=Dmv0g+qew2aVn38JcY/wsP9dk5BXlWut7cTOkzUET1AC79ArgS0Ml3y101YKartHy
-         doMfnipjRtHECxQNkRWQt6ZBmixlyy6ls1uJkKNRzGdlt5VMCbJq3ygdY5hMtXo1HN
-         LHnMfPI//t7pEStCtncb7c+jju/5Bdk5cZWG0Lrk=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MMGN2-1jYMoW2PWo-00JFhS; Wed, 01
- Jul 2020 12:58:59 +0200
-Subject: Re: [PATCH] btrfs: speedup mount time with force readahead chunk tree
-To:     robbieko <robbieko@synology.com>, fstests@vger.kernel.org
-Cc:     linux-btrfs@vger.kernel.org
-References: <20200701092449.19545-1-robbieko@synology.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
- PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
- 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
- D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
- efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
- ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
- BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
- 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
- 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
- EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
- 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
- ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
- oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
- fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
- 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
- ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
- oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <ddd19f85-7d55-38f2-3546-683a0229d51d@gmx.com>
-Date:   Wed, 1 Jul 2020 18:58:55 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        id S1731538AbgGAOoo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 1 Jul 2020 10:44:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53572 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726251AbgGAOon (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 1 Jul 2020 10:44:43 -0400
+Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FC48C08C5C1
+        for <linux-btrfs@vger.kernel.org>; Wed,  1 Jul 2020 07:44:43 -0700 (PDT)
+Received: by mail-qt1-x835.google.com with SMTP id x62so18583665qtd.3
+        for <linux-btrfs@vger.kernel.org>; Wed, 01 Jul 2020 07:44:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OgWTKIJdMbC4UiRzDz0GYngts9c0b3fCmMqwTIVXMX4=;
+        b=EVHw91Yw4+PCI915E19kzJEu2jIez2TBzmEoqSremgzbfANLuBkIvyQeIFa/o6tQsJ
+         2g/gNogx8Od8k6C/43PFzBQOWyyFnVhlDyaM6QJcq3fudVpap0soZmtA7GsYREC0S/hD
+         fhoDyvpYTukuhv3NUbOPMc/OqJjFkbqKCLPuMMbuX94rg3Wsav4cCX4Bib/Tlcx1v4U8
+         jujFtP5cWN58Tk3GVSx75A9PlKmAED1NiCtzrQLlzusjmoVjbFRfVLrFUtze6qcWalpi
+         s4Pm1nMPqy7lcge+K0WJi1toaS84wgBaDPezIHYAhlsiaHFoFDcF8t7n7B/7v2p1n2Sb
+         gmnQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OgWTKIJdMbC4UiRzDz0GYngts9c0b3fCmMqwTIVXMX4=;
+        b=IRW2AYXvMM3GAd7L8dpu/0bm41qzvXzBh+bXa/iVR73uMrP9UktvGLGNGrSlk9Csde
+         k2rgEcWetMRMcDKfhTig5/7KliucijUZpISSGSEMd1si7fIZaNz9cohGY9he2QqKIRhU
+         BkRX5C6NSGvcQB1z8AVNXFUmGOXbATZlPC6fbkPTcKabVvLs2XkDOQFrvMmnUcvW4K6h
+         GYvoEcWndlRMyy9zx9nAA1vVAKbCrc9snpStPvDVsmoSxoUyw35C7a7ixEyhiUXu3WKh
+         LdDLcgT5S5PrdA/3wlOClcIpHWuorF3DnY3C4wFWZPtmLJstfQF93GTRdDGMuQLyQ0Tb
+         /Xpg==
+X-Gm-Message-State: AOAM532Xq8Ks3/XSPdfqDhw7h85ANBTbnt5+fmaQZHPSTewJ6ckh/V3j
+        InH18bAIRTdBotRTaFML2APWBC3W+WKyKA==
+X-Google-Smtp-Source: ABdhPJy2I1pGFXvTv48QQkWIgv2m8UqMidKCU785kjfnsQrM0kcMrGPNMf/V2K/YZTzzZPDE7mvzfw==
+X-Received: by 2002:ac8:1206:: with SMTP id x6mr27076313qti.145.1593614680953;
+        Wed, 01 Jul 2020 07:44:40 -0700 (PDT)
+Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id z17sm6714858qth.24.2020.07.01.07.44.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 Jul 2020 07:44:40 -0700 (PDT)
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: [PATCH][RFC] btrfs: introduce rescue=onlyfs
+Date:   Wed,  1 Jul 2020 10:44:38 -0400
+Message-Id: <20200701144438.7613-1-josef@toxicpanda.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-In-Reply-To: <20200701092449.19545-1-robbieko@synology.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="VuMET84Vz89JlParkwtQUenoeOW8TScbu"
-X-Provags-ID: V03:K1:y64oBjbiym5VBNbAB25snQS3awJBp4dYes51olvoBzUYIqoh5Hl
- o7cuZuO27Ix/o2aRtSt02jhLojgVPRFk4msCLXOkG0npmjhYXk1qBDvS7r9476uo5xy0RcJ
- GtTnGo49eFjVy2HeYC1fMAK28am/0TzB/Tl+7AqGqx/SFrUwC9ug603EDnkKrmIVCT3OPI1
- aBJPlwyIBLZjZStg9u6Zw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:AcXrP/vefaE=:XnMyc8BsoUhZNJ0gO1N0PA
- AmmQO8IYG52QbLNRyu09apfX/xrI1h4rXRy3uLF/8LDijQkYMWHqN6v0ED53EkJXMI5EjeriZ
- vzJzwKcJmp8JnM16B1NBYWAZFKm9iImU2Lhaw20bOkqpCd3WQhx92WtUnddrE7B11Hw9uYo1I
- ifshScHpUdUp3ViWiE3rsoiRzuBcf/uqIztWSrBelw7I4loWS2IS/QBkM/gljMhSG4eLoSvSz
- n64U7Cv1dkIIiYx3f3Yo0Ysz4Ga1EOsm+Nacq21Zvv6QGNomxHg+4OFtWSyuPr4pBlnixYLoQ
- DzGK+8qiDOu2RBQUVKkeOGfYAudqK5xihoq8gk7fMEDfTX9inS6AzjRHxjcQfPccFqrxLFu+v
- G65KHVWtFOR7hYswae70rWr+pQ/qy0wX9df0qQ8nYpbIrHE04azsrIKVgf8utSX188OTy7OyN
- sdljNUuJJFmXYnek9FZlj2U8uHUe2WhjljJBI+Oxj/3niqPDwmj2xbNvfYXZC3zNHTqSWIqL8
- ixr4B3o+ABRO9YnBSRKnGNO4HY4XJtqCpFPIc+/Xc1ra23JqJ4P9MOphO+jO97HEbsQnATQxY
- 7IsyZeDA2CGhD8kg61VGWJ/Gc1T2Y6j4YDEOdC6L2H9Ly2Dgpl94itlGVfW3cmQcylf8xVFnn
- loJcsl32v/10tQ9UmRSjFF6GH/lTM5NYA+NYxyS20y6tp3NPdE6KmBM9SV6O4qeAHU3r/pWun
- jM8y1XM73nvwdFiBJ7dXZORII2aAhcAjIssIDNVkMMTnCTYwk1mVG2HKYvrtlQlJSOfn8/soD
- bX6lxaOKQLqpWJA0TjDq02vnMMCEdwYoq1h5Rc9K6rsyG9xMBgdrpxeuKz7KKhE0huKD6jYvf
- RaMJ/C2ji3AaCBXSOefJ6yFtQWEDJo1PO2GSKlVK15RG3615iWepTU0ruKTabAfE7ll+fpIP4
- AwjXvBwlnQGu0Cexv8x5O3XOk8pm4O4aQYwn/wF/a0C0R9Dyg4Mk/JnlVLWNt9SwLQa29Waev
- r+HpTczh7bUsVmyKmVeqqp+o2dfXNDAM4O/een60kh9j3PRvXMKmTFFmp28E9l92Sm9Iddo3t
- LKkPyOhYWnv4OhbB3u5Ig73+msD6tWyaZZAGSNnrIS5A9xdKOiPbXQ2dgkw0xRK6hqn6aEyG1
- esFGxu3Sl+w22mXUVts2i64ExmicKlKQK75NHWX06K2ZG4Dl50hUf1c0PsdLp7I1CmTiy8bFb
- 9JiO92UTguF5AybOFZzJuN5LOx8ZUy3d14ZvkXA==
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---VuMET84Vz89JlParkwtQUenoeOW8TScbu
-Content-Type: multipart/mixed; boundary="IP1noLLq6loH1UJmvV9ZZONH2Zj5AGJLy"
+One of the things that came up consistently in talking with Fedora about
+switching to btrfs as default is that btrfs is particularly vulnerable
+to metadata corruption.  If any of the core global roots are corrupted,
+the fs is unmountable and fsck can't usually do anything for you without
+some special options.
 
---IP1noLLq6loH1UJmvV9ZZONH2Zj5AGJLy
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+Qu addressed this sort of with rescue=skipbg, but that's poorly named as
+what it really does is just allow you to operate without an extent root.
+However there are a lot of other roots, and I'd rather not have to do
 
+mount -o rescue=skipbg,rescue=nocsum,rescue=nofreespacetree,rescue=blah
 
+Instead take his original idea and modify it so it just works for
+everything.  Turn it into rescue=onlyfs, and then any major root we fail
+to read just gets left empty and we carry on.
 
-On 2020/7/1 =E4=B8=8B=E5=8D=885:24, robbieko wrote:
-> From: Robbie Ko <robbieko@synology.com>
->=20
-> When mounting, we always need to read the whole chunk tree,
-> when there are too many chunk items, most of the time is
-> spent on btrfs_read_chunk_tree, because we only read one
-> leaf at a time.
+Obviously if the fs roots are screwed then the user is in trouble, but
+otherwise this makes it much easier to pull stuff off the disk without
+needing our special rescue tools.  I tested this with my TEST_DEV that
+had a bunch of data on it by corrupting the csum tree and then reading
+files off the disk.
 
-Well, under most case it would be btrfs_read_block_groups(), unless all
-data chunks are very compact with just several large data extents.
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+---
 
->=20
-> We fix this by adding a new readahead mode READA_FORWARD_FORCE,
-> which reads all the leaves after the key in the node when
-> reading a level 1 node.
->=20
-> Signed-off-by: Robbie Ko <robbieko@synology.com>
-> ---
->  fs/btrfs/ctree.c   | 7 +++++--
->  fs/btrfs/ctree.h   | 2 +-
->  fs/btrfs/volumes.c | 1 +
->  3 files changed, 7 insertions(+), 3 deletions(-)
->=20
-> diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
-> index 3a7648bff42c..abb9108e2d7d 100644
-> --- a/fs/btrfs/ctree.c
-> +++ b/fs/btrfs/ctree.c
-> @@ -2194,7 +2194,7 @@ static void reada_for_search(struct btrfs_fs_info=
- *fs_info,
->  			if (nr =3D=3D 0)
->  				break;
->  			nr--;
-> -		} else if (path->reada =3D=3D READA_FORWARD) {
-> +		} else if (path->reada =3D=3D READA_FORWARD || path->reada =3D=3D RE=
-ADA_FORWARD_FORCE) {
->  			nr++;
->  			if (nr >=3D nritems)
->  				break;
-> @@ -2205,12 +2205,15 @@ static void reada_for_search(struct btrfs_fs_in=
-fo *fs_info,
->  				break;
->  		}
->  		search =3D btrfs_node_blockptr(node, nr);
-> -		if ((search <=3D target && target - search <=3D 65536) ||
-> +		if ((path->reada =3D=3D READA_FORWARD_FORCE) ||
-> +		    (search <=3D target && target - search <=3D 65536) ||
->  		    (search > target && search - target <=3D 65536)) {
->  			readahead_tree_block(fs_info, search);
->  			nread +=3D blocksize;
->  		}
->  		nscan++;
-> +		if (path->reada =3D=3D READA_FORWARD_FORCE)
-> +			continue;
->  		if ((nread > 65536 || nscan > 32))
->  			break;
->  	}
-> diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-> index d404cce8ae40..808bcbdc9530 100644
-> --- a/fs/btrfs/ctree.h
-> +++ b/fs/btrfs/ctree.h
-> @@ -353,7 +353,7 @@ struct btrfs_node {
->   * The slots array records the index of the item or block pointer
->   * used while walking the tree.
->   */
-> -enum { READA_NONE, READA_BACK, READA_FORWARD };
-> +enum { READA_NONE, READA_BACK, READA_FORWARD, READA_FORWARD_FORCE };
->  struct btrfs_path {
->  	struct extent_buffer *nodes[BTRFS_MAX_LEVEL];
->  	int slots[BTRFS_MAX_LEVEL];
-> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> index 0d6e785bcb98..78fd65abff69 100644
-> --- a/fs/btrfs/volumes.c
-> +++ b/fs/btrfs/volumes.c
-> @@ -7043,6 +7043,7 @@ int btrfs_read_chunk_tree(struct btrfs_fs_info *f=
-s_info)
->  	path =3D btrfs_alloc_path();
->  	if (!path)
->  		return -ENOMEM;
-> +	path->reada =3D READA_FORWARD_FORCE;
+I'm not married to the rescue=onlyfs name, if we can think of something better
+I'm good.
 
-Why not just use regular forward readahead?
+Also rescue=skipbg is currently only sitting in misc-next, which is why I'm
+killing it with this patch, we haven't sent it upstream so we're good to change
+it now before it lands.
 
-Mind to share the reason here? Just to force reada for all tree leaves?
+ fs/btrfs/block-group.c |  2 +-
+ fs/btrfs/ctree.h       |  2 +-
+ fs/btrfs/disk-io.c     | 76 ++++++++++++++++++++++--------------------
+ fs/btrfs/inode.c       |  6 +++-
+ fs/btrfs/super.c       | 27 +++++++--------
+ fs/btrfs/volumes.c     |  4 +--
+ 6 files changed, 63 insertions(+), 54 deletions(-)
 
-Thanks,
-Qu
+diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+index 09b796a081dd..cb5608b2deec 100644
+--- a/fs/btrfs/block-group.c
++++ b/fs/btrfs/block-group.c
+@@ -2052,7 +2052,7 @@ int btrfs_read_block_groups(struct btrfs_fs_info *info)
+ 	int need_clear = 0;
+ 	u64 cache_gen;
+ 
+-	if (btrfs_test_opt(info, SKIPBG))
++	if (btrfs_test_opt(info, ONLYFS))
+ 		return fill_dummy_bgs(info);
+ 
+ 	key.objectid = 0;
+diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+index e40eb210670d..d888d08f7e0d 100644
+--- a/fs/btrfs/ctree.h
++++ b/fs/btrfs/ctree.h
+@@ -1265,7 +1265,7 @@ static inline u32 BTRFS_MAX_XATTR_SIZE(const struct btrfs_fs_info *info)
+ #define BTRFS_MOUNT_NOLOGREPLAY		(1 << 27)
+ #define BTRFS_MOUNT_REF_VERIFY		(1 << 28)
+ #define BTRFS_MOUNT_DISCARD_ASYNC	(1 << 29)
+-#define BTRFS_MOUNT_SKIPBG		(1 << 30)
++#define BTRFS_MOUNT_ONLYFS		(1 << 30)
+ 
+ #define BTRFS_DEFAULT_COMMIT_INTERVAL	(30)
+ #define BTRFS_DEFAULT_MAX_INLINE	(2048)
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index c27022f13150..9cba0a66b3d5 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -2262,11 +2262,10 @@ static int btrfs_read_roots(struct btrfs_fs_info *fs_info)
+ 
+ 	root = btrfs_read_tree_root(tree_root, &location);
+ 	if (IS_ERR(root)) {
+-		if (!btrfs_test_opt(fs_info, SKIPBG)) {
++		if (!btrfs_test_opt(fs_info, ONLYFS)) {
+ 			ret = PTR_ERR(root);
+ 			goto out;
+ 		}
+-		fs_info->extent_root = NULL;
+ 	} else {
+ 		set_bit(BTRFS_ROOT_TRACK_DIRTY, &root->state);
+ 		fs_info->extent_root = root;
+@@ -2275,21 +2274,27 @@ static int btrfs_read_roots(struct btrfs_fs_info *fs_info)
+ 	location.objectid = BTRFS_DEV_TREE_OBJECTID;
+ 	root = btrfs_read_tree_root(tree_root, &location);
+ 	if (IS_ERR(root)) {
+-		ret = PTR_ERR(root);
+-		goto out;
++		if (!btrfs_test_opt(fs_info, ONLYFS)) {
++			ret = PTR_ERR(root);
++			goto out;
++		}
++	} else {
++		set_bit(BTRFS_ROOT_TRACK_DIRTY, &root->state);
++		fs_info->dev_root = root;
++		btrfs_init_devices_late(fs_info);
+ 	}
+-	set_bit(BTRFS_ROOT_TRACK_DIRTY, &root->state);
+-	fs_info->dev_root = root;
+-	btrfs_init_devices_late(fs_info);
+ 
+ 	location.objectid = BTRFS_CSUM_TREE_OBJECTID;
+ 	root = btrfs_read_tree_root(tree_root, &location);
+ 	if (IS_ERR(root)) {
+-		ret = PTR_ERR(root);
+-		goto out;
++		if (!btrfs_test_opt(fs_info, ONLYFS)) {
++			ret = PTR_ERR(root);
++			goto out;
++		}
++	} else {
++		set_bit(BTRFS_ROOT_TRACK_DIRTY, &root->state);
++		fs_info->csum_root = root;
+ 	}
+-	set_bit(BTRFS_ROOT_TRACK_DIRTY, &root->state);
+-	fs_info->csum_root = root;
+ 
+ 	/*
+ 	 * This tree can share blocks with some other fs tree during relocation
+@@ -2298,11 +2303,14 @@ static int btrfs_read_roots(struct btrfs_fs_info *fs_info)
+ 	root = btrfs_get_fs_root(tree_root->fs_info,
+ 				 BTRFS_DATA_RELOC_TREE_OBJECTID, true);
+ 	if (IS_ERR(root)) {
+-		ret = PTR_ERR(root);
+-		goto out;
++		if (!btrfs_test_opt(fs_info, ONLYFS)) {
++			ret = PTR_ERR(root);
++			goto out;
++		}
++	} else {
++		set_bit(BTRFS_ROOT_TRACK_DIRTY, &root->state);
++		fs_info->data_reloc_root = root;
+ 	}
+-	set_bit(BTRFS_ROOT_TRACK_DIRTY, &root->state);
+-	fs_info->data_reloc_root = root;
+ 
+ 	location.objectid = BTRFS_QUOTA_TREE_OBJECTID;
+ 	root = btrfs_read_tree_root(tree_root, &location);
+@@ -2315,9 +2323,11 @@ static int btrfs_read_roots(struct btrfs_fs_info *fs_info)
+ 	location.objectid = BTRFS_UUID_TREE_OBJECTID;
+ 	root = btrfs_read_tree_root(tree_root, &location);
+ 	if (IS_ERR(root)) {
+-		ret = PTR_ERR(root);
+-		if (ret != -ENOENT)
+-			goto out;
++		if (!btrfs_test_opt(fs_info, ONLYFS)) {
++			ret = PTR_ERR(root);
++			if (ret != -ENOENT)
++				goto out;
++		}
+ 	} else {
+ 		set_bit(BTRFS_ROOT_TRACK_DIRTY, &root->state);
+ 		fs_info->uuid_root = root;
+@@ -2327,11 +2337,14 @@ static int btrfs_read_roots(struct btrfs_fs_info *fs_info)
+ 		location.objectid = BTRFS_FREE_SPACE_TREE_OBJECTID;
+ 		root = btrfs_read_tree_root(tree_root, &location);
+ 		if (IS_ERR(root)) {
+-			ret = PTR_ERR(root);
+-			goto out;
++			if (!btrfs_test_opt(fs_info, ONLYFS)) {
++				ret = PTR_ERR(root);
++				goto out;
++			}
++		}  else {
++			set_bit(BTRFS_ROOT_TRACK_DIRTY, &root->state);
++			fs_info->free_space_root = root;
+ 		}
+-		set_bit(BTRFS_ROOT_TRACK_DIRTY, &root->state);
+-		fs_info->free_space_root = root;
+ 	}
+ 
+ 	return 0;
+@@ -3047,20 +3060,11 @@ int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_device
+ 	}
+ 
+ 	/* Skip bg needs RO and no tree-log to replay */
+-	if (btrfs_test_opt(fs_info, SKIPBG)) {
+-		if (!sb_rdonly(sb)) {
+-			btrfs_err(fs_info,
+-			"rescue=skipbg can only be used on read-only mount");
+-			err = -EINVAL;
+-			goto fail_alloc;
+-		}
+-		if (btrfs_super_log_root(disk_super) &&
+-		    !btrfs_test_opt(fs_info, NOLOGREPLAY)) {
+-			btrfs_err(fs_info,
+-"rescue=skipbg must be used with rescue=nologreplay when tree-log needs to replayed");
+-			err = -EINVAL;
+-			goto fail_alloc;
+-		}
++	if (btrfs_test_opt(fs_info, ONLYFS) && !sb_rdonly(sb)) {
++		btrfs_err(fs_info,
++			  "rescue=onlyfs can only be used on read-only mount");
++		err = -EINVAL;
++		goto fail_alloc;
+ 	}
+ 
+ 	ret = btrfs_init_workqueues(fs_info, fs_devices);
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index d301550b9c70..9f8ef22ac65e 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -2209,7 +2209,8 @@ static blk_status_t btrfs_submit_bio_hook(struct inode *inode, struct bio *bio,
+ 	int skip_sum;
+ 	int async = !atomic_read(&BTRFS_I(inode)->sync_writers);
+ 
+-	skip_sum = BTRFS_I(inode)->flags & BTRFS_INODE_NODATASUM;
++	skip_sum = (BTRFS_I(inode)->flags & BTRFS_INODE_NODATASUM) ||
++		btrfs_test_opt(fs_info, ONLYFS);
+ 
+ 	if (btrfs_is_free_space_inode(BTRFS_I(inode)))
+ 		metadata = BTRFS_WQ_ENDIO_FREE_SPACE;
+@@ -2866,6 +2867,9 @@ static int btrfs_readpage_end_io_hook(struct btrfs_io_bio *io_bio,
+ 	if (BTRFS_I(inode)->flags & BTRFS_INODE_NODATASUM)
+ 		return 0;
+ 
++	if (btrfs_test_opt(root->fs_info, ONLYFS))
++		return 0;
++
+ 	if (root->root_key.objectid == BTRFS_DATA_RELOC_TREE_OBJECTID &&
+ 	    test_range_bit(io_tree, start, end, EXTENT_NODATASUM, 1, NULL)) {
+ 		clear_extent_bits(io_tree, start, end, EXTENT_NODATASUM);
+diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
+index 3c9ebd4f2b61..7ea9f8f53156 100644
+--- a/fs/btrfs/super.c
++++ b/fs/btrfs/super.c
+@@ -345,7 +345,7 @@ enum {
+ 	Opt_rescue,
+ 	Opt_usebackuproot,
+ 	Opt_nologreplay,
+-	Opt_rescue_skipbg,
++	Opt_rescue_onlyfs,
+ 
+ 	/* Deprecated options */
+ 	Opt_alloc_start,
+@@ -445,7 +445,7 @@ static const match_table_t tokens = {
+ static const match_table_t rescue_tokens = {
+ 	{Opt_usebackuproot, "usebackuproot"},
+ 	{Opt_nologreplay, "nologreplay"},
+-	{Opt_rescue_skipbg, "skipbg"},
++	{Opt_rescue_onlyfs, "onlyfs"},
+ 	{Opt_err, NULL},
+ };
+ 
+@@ -478,9 +478,10 @@ static int parse_rescue_options(struct btrfs_fs_info *info, const char *options)
+ 			btrfs_set_and_info(info, NOLOGREPLAY,
+ 					   "disabling log replay at mount time");
+ 			break;
+-		case Opt_rescue_skipbg:
+-			btrfs_set_and_info(info, SKIPBG,
+-				"skip mount time block group searching");
++		case Opt_rescue_onlyfs:
++			btrfs_set_and_info(info, ONLYFS,
++					   "only reading fs roots, also setting  nologreplay");
++			btrfs_set_opt(info->mount_opt, NOLOGREPLAY);
+ 			break;
+ 		case Opt_err:
+ 			btrfs_info(info, "unrecognized rescue option '%s'", p);
+@@ -1418,8 +1419,8 @@ static int btrfs_show_options(struct seq_file *seq, struct dentry *dentry)
+ 		seq_puts(seq, ",notreelog");
+ 	if (btrfs_test_opt(info, NOLOGREPLAY))
+ 		seq_puts(seq, ",rescue=nologreplay");
+-	if (btrfs_test_opt(info, SKIPBG))
+-		seq_puts(seq, ",rescue=skipbg");
++	if (btrfs_test_opt(info, ONLYFS))
++		seq_puts(seq, ",rescue=onlyfs");
+ 	if (btrfs_test_opt(info, FLUSHONCOMMIT))
+ 		seq_puts(seq, ",flushoncommit");
+ 	if (btrfs_test_opt(info, DISCARD_SYNC))
+@@ -1859,10 +1860,10 @@ static int btrfs_remount(struct super_block *sb, int *flags, char *data)
+ 	if (ret)
+ 		goto restore;
+ 
+-	if (btrfs_test_opt(fs_info, SKIPBG) !=
+-	    (old_opts & BTRFS_MOUNT_SKIPBG)) {
++	if (btrfs_test_opt(fs_info, ONLYFS) !=
++	    (old_opts & BTRFS_MOUNT_ONLYFS)) {
+ 		btrfs_err(fs_info,
+-		"rescue=skipbg mount option can't be changed during remount");
++		"rescue=onlyfs mount option can't be changed during remount");
+ 		ret = -EINVAL;
+ 		goto restore;
+ 	}
+@@ -1932,9 +1933,9 @@ static int btrfs_remount(struct super_block *sb, int *flags, char *data)
+ 			goto restore;
+ 		}
+ 
+-		if (btrfs_test_opt(fs_info, SKIPBG)) {
++		if (btrfs_test_opt(fs_info, ONLYFS)) {
+ 			btrfs_err(fs_info,
+-		"remounting read-write with rescue=skipbg is not allowed");
++		"remounting read-write with rescue=onlyfs is not allowed");
+ 			ret = -EINVAL;
+ 			goto restore;
+ 		}
+@@ -2245,7 +2246,7 @@ static int btrfs_statfs(struct dentry *dentry, struct kstatfs *buf)
+ 	 *
+ 	 * Or if we're rescuing, set available to 0 anyway.
+ 	 */
+-	if (btrfs_test_opt(fs_info, SKIPBG) ||
++	if (btrfs_test_opt(fs_info, ONLYFS) ||
+ 	    (!mixed && block_rsv->space_info->full &&
+ 	     total_free_meta - thresh < block_rsv->size))
+ 		buf->f_bavail = 0;
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index aabc6c922e04..a5d124f95ce2 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -7595,10 +7595,10 @@ int btrfs_verify_dev_extents(struct btrfs_fs_info *fs_info)
+ 	int ret = 0;
+ 
+ 	/*
+-	 * For rescue=skipbg mount option, we're already RO and are salvaging
++	 * For rescue=onlyfs mount option, we're already RO and are salvaging
+ 	 * data, no need for such strict check.
+ 	 */
+-	if (btrfs_test_opt(fs_info, SKIPBG))
++	if (btrfs_test_opt(fs_info, ONLYFS))
+ 		return 0;
+ 
+ 	key.objectid = 1;
+-- 
+2.24.1
 
-> =20
->  	/*
->  	 * uuid_mutex is needed only if we are mounting a sprout FS
->=20
-
-
---IP1noLLq6loH1UJmvV9ZZONH2Zj5AGJLy--
-
---VuMET84Vz89JlParkwtQUenoeOW8TScbu
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl78bG8ACgkQwj2R86El
-/qiHdgf/ev9HZD/sxXKisxkr0vpKlEBQ07pCRnSQLINf3C/MDuaXxgSBSHxyIbDl
-R7Od77JHtVCHwtibm5OYFQCC4SueRPMLLRYVr8VifV4+ZZFOR1y4Qd7Qmu9rhB6Q
-5Wpz/1UGpzdJV0S11D6aHJXbi2NS2+mQppOMyPNrpfd8wuckZBjr5l61PE6yQaUg
-MY93ZI85GmyXDMv3vGn4tUtpknCXyz2UruIAdNRzvRrkQIeLQFtbyfUqGicVKbTP
-xBQeD3dzNqJGjRSHw1PM5AO4eo5+vNFX410tao1GVunJ+uBVMEyHnNjEWgfbzbf7
-hcpOHjeTkub06eb0PDxjnu+t37dPug==
-=3Hhr
------END PGP SIGNATURE-----
-
---VuMET84Vz89JlParkwtQUenoeOW8TScbu--
