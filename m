@@ -2,141 +2,138 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3F1521153D
-	for <lists+linux-btrfs@lfdr.de>; Wed,  1 Jul 2020 23:37:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA5932116BF
+	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Jul 2020 01:45:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726441AbgGAVhA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 1 Jul 2020 17:37:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60806 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726255AbgGAVg7 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 1 Jul 2020 17:36:59 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97A4DC08C5C1
-        for <linux-btrfs@vger.kernel.org>; Wed,  1 Jul 2020 14:36:59 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id o13so9395852pgf.0
-        for <linux-btrfs@vger.kernel.org>; Wed, 01 Jul 2020 14:36:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=KdzPCdEF2xqQ/MwHa7ag9m/LKgCMBzVHeQWYnxMv+vE=;
-        b=o3s9N+iF6IcDvl/u3CFd76UqThA1yIp4RFzwnBQyoFMXqQyp1FLerUm9w0eDSkXXRx
-         IQaBXPUPYoW/SR/W6Iue+0bocllazUGekDAstqsEwacX84MjrfWPudJDabfC8gM4n7pP
-         273cmG3quTRh0CoC3aya2rCDzFmogb22nnFwtCRrzUMs+zMX4GBtYUzBday9W2XiVm8V
-         YXVcTzQK2KLCMWd6N1TA4NCywzAUVzRQSxf1OIogUS96KuMNapNCsmjIWZ2NhYlpA95i
-         9EgUge87oQRaZlZqcdt+BtdrDz/n+iJ3DR0Ptetr6YFLoLMh9o3e81L7dXzVX1mRUlw6
-         RM8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:references:from:message-id
-         :date:user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=KdzPCdEF2xqQ/MwHa7ag9m/LKgCMBzVHeQWYnxMv+vE=;
-        b=GlUipJuUTf70WnbWcTH/78PADicJz6Wt19oeYmqCGP7CKHD0QZZg/6tWB6eCyd6yAu
-         he5U05e01/NMCJB2dtw4mN+thgLngsoKDUvQ3sczD2dr4eZdMwxQ7Jqh4Ojs4FoRyp4x
-         4sQIsuGBGWGcqMTM3OLpjPumBagZ2PIEXX7ynGX+dKgHzIr1PwvarEReQGwmPVJUYIyU
-         DDn4XRV3AvX0oU5qypKkIwIJc5JNthPGeTIPmazV3XmXcwPz//+lzDlr4ZXnUqg2uNPQ
-         BUvcSjvj80CUJ6PDZlNGss2FZuD6g+YewT0i7qyji10hpnqw9wPLLVmBFxxjxjC7N5nP
-         tQNw==
-X-Gm-Message-State: AOAM532/J8yW7IXRRWhf2KRenUIbznLfTpIhVXwDvxVFFfEZZq1euq5f
-        Voq0o+75hga5wC6+hAvrdHjkgwGhoQw=
-X-Google-Smtp-Source: ABdhPJwMspAzmENq6oepJLg3uOn92kETOW7YER8J0yCZOUIwM9Pmd0ZtJOYttbLi6MtQjfLfgxl2ag==
-X-Received: by 2002:a65:63c4:: with SMTP id n4mr9553900pgv.230.1593639418762;
-        Wed, 01 Jul 2020 14:36:58 -0700 (PDT)
-Received: from [192.168.0.23] (c-24-4-127-117.hsd1.ca.comcast.net. [24.4.127.117])
-        by smtp.gmail.com with ESMTPSA id m20sm7081041pfk.52.2020.07.01.14.36.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 01 Jul 2020 14:36:58 -0700 (PDT)
-Subject: Re: "parent transid verify failed" and mount usebackuproot does not
- seem to work
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
-References: <CAHzXa9XOa1bppK44pKrqbSq50Xdsm63D_698gvo2G-JDWrNeLg@mail.gmail.com>
- <45900280-c948-05d2-2cd8-67480baaedae@gmx.com>
- <2f22bd0a-aa48-d0f1-04d0-cb130897249d@gmail.com>
- <39558ad7-dfb3-05f7-1583-181f76f2a93d@gmx.com>
-From:   Illia Bobyr <illia.bobyr@gmail.com>
-Message-ID: <f6fcf7b7-37c8-8a0e-e373-03b8c828ce09@gmail.com>
-Date:   Wed, 1 Jul 2020 14:36:59 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.0
+        id S1727073AbgGAXpN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 1 Jul 2020 19:45:13 -0400
+Received: from mout.gmx.net ([212.227.15.18]:51355 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726421AbgGAXpM (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 1 Jul 2020 19:45:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1593647110;
+        bh=WOKzrZHIZYuffTZQtDMyD/khYn+6coPSQlJd8a6MsKw=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=Pl31ZW6Y9VwKt5E+KazJ4vUGrQylgs3P6w9dM6iEa3htLQDg278rOd/Y8a+IBE72b
+         xQTuV87YFISS/IbaAVIn2UNiX7R03uM8Hrx94HSXVhysQGLMVOin4F+8mVT5QLRUmp
+         0N4JBEbIDHQb0siYdv4wmqiwjURCcu+Xk/DVQr54=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MgesQ-1jA3D73PLw-00h4EN; Thu, 02
+ Jul 2020 01:45:10 +0200
+Subject: Re: first mount(s) after unclean shutdown always fail
+To:     Marc Lehmann <schmorp@schmorp.de>
+Cc:     linux-btrfs@vger.kernel.org
+References: <20200701005116.GA5478@schmorp.de>
+ <36fcfc97-ce4c-cce8-ee96-b723a1b68ec7@gmx.com>
+ <20200701201419.GB1889@schmorp.de>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
+ mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
+ PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
+ 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
+ D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
+ efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
+ ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
+ BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
+ 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
+ 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
+ EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
+ 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
+ ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
+ oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
+ fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
+ 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
+ ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
+ oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
+Message-ID: <cc42d4dc-b46f-7868-6a05-187949136eae@gmx.com>
+Date:   Thu, 2 Jul 2020 07:45:07 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-In-Reply-To: <39558ad7-dfb3-05f7-1583-181f76f2a93d@gmx.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+In-Reply-To: <20200701201419.GB1889@schmorp.de>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="UCYLxUsciswtzBKCkpV4ez3uGHPMoS18e"
+X-Provags-ID: V03:K1:p5Kckyg3+sMjvYxOgBmUMgfcMDCZva/JyJzxFXpGgf7JMUVESU8
+ Nv8hdcKIbYIkLkz6P0l/aa4IhmpSUS2N4jfPwKwCRBcZw9G4bwLg79p3N8L5Dbcwh+EyyIs
+ 0Q4pFnXS+Wq4yN5fGc+qCNXNtlkdGBw7eBfW5rUwCmTDmIpUvY2kZBO7I175KbdEY5+frim
+ Cl2XkwT2ZR7Xum48hfRTQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:Oyzd9ZOAgE0=:mgJ2Mc+RAlIIIYJjzr4aI+
+ QWqdYYJ8Fh5/nc+01PSKUraD6VhaAdNo0WQ7tFN0iwdzxoZornUiKR87NlCVzFZ/Gwpzjbluq
+ 78fXIZK/EMR1rPQrIdrJnMsvwdw1jDvVlaQdyZ9lPi6rzjGZPCFasZ2it/pg0FnthV8RBc3w4
+ 97WM1OYa1B/bmHv8inqoO1KrR3OfA9NfRfO0Dg5mZ/BxKSZHIcChv/rxXQkofk70W361Ajib5
+ L2eA3LnFVtCXDsDth4XbWQqdD1hxhezaC/8hkQcDPLb5VRRZVyKA46cGZyPmhBlsvIdxTErQD
+ 0eaY5nVx9uMtxBVbfgjh8MB4y1H79Ymx7yzVAABZzw8utPrgJsUMeyL7nCoRQbwJr3PNaeSov
+ bXTP/kZQ/CyFlrcMGDdDaftkhqfojg0gZpmxyXaXmIUnCiDj6QV8fz0hjdyoNXhoSXkwFXvw2
+ J0JOR0erK8a7ASSPoKS5q0si4XinmhLrzSH4umAjtQbbDC8pgywk7WOyiDo0QGGK4ESvyAn8i
+ hBrf9qGlmMhAH2Ndw1zJiEQzX6auSo/Ev31NbrbWhTdBcaXjeEI83yKBKpth/aNawNQs2x5dt
+ ZVt4ILtd4NOTnvnQv/hQH5mX18jIo2Q/2ztp7AJ4vaKtwiByU2F+TlFmpOWcsN1pEeQu9EpwF
+ a4HDpa/7t4TWOKDRXOrPnfn0Bo/PF+WfM4cZ/2nzxC/l1FK01ksGpWBhpFe1c9j1UJRDY5fM8
+ /OyPdN0evCy2fsfRn5rcow/awct9kpJQcGj2pf4FZCE/yhkIwUkaOTUUOAXOfmmcxaE8996OK
+ DktKlZPdcm1yIwZ7FKPUJp0XxAfuBMjrbHT0TI/ZWE/s8GDgs0FLF0Y1nqkVITx1CKEfBGdFn
+ 8CsbnVsvLoUa0qpdHVrufEYI8/pw/9JLjT45L7u6gMeyq4p3bJohe2fpnqyMtOMKASRLGWXg0
+ r/iC+x7Rvn/3/SK7FF6luyivGSE7X9EkUewGE9wq4ZuUG90SxajUgXE/ICyQKGJC29c+AUG4V
+ IpQBGAmJBQrNnxXahOtcXGe/IwEbzeRnSDJIZe0mn19ALGtLKjBDQVlJMthFmVUOdThfYdidf
+ kNyjYbvg2m5KX0qW+EmS5m2UWbjIc1IRmWLKd3j7QttvC3F10+yfUUbcYfsxE7qCILdZGcvwd
+ 2Rhrqgw7rvL3rWEGLlHldSUNpG2w8B4mjWj3s+iH6V6H4F2rTjCo6n5BdNtrNOtcP/UadB4G9
+ /M+pq4JEdiXPo0z3E
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 7/1/2020 3:48 AM, Qu Wenruo wrote:
-> On 2020/7/1 下午6:16, Illia Bobyr wrote:
->> On 6/30/2020 6:36 PM, Qu Wenruo wrote:
->>> On 2020/7/1 上午3:41, Illia Bobyr wrote:
->>>> [...]
->>> Looks like some tree blocks not written back correctly.
->>>
->>> Considering we don't have known write back related bugs with 5.6, I
->>> guess bcache may be involved again?
->> A bit more details: the system started to misbehave.
->> Interactive session was saying that the main file system became read/only.
-> Any dmesg of that RO event?
-> That would be the most valuable info to help us to locate the bug and
-> fix it.
->
-> I guess there is something wrong before that, and by somehow it
-> corrupted the extent tree, breaking the life keeping COW of metadata and
-> screwed up everything.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--UCYLxUsciswtzBKCkpV4ez3uGHPMoS18e
+Content-Type: multipart/mixed; boundary="SHOKaGoLkZ8s2gn1OSzSEgYvHEtp8Wdzf"
 
-After I will restore the data, I will check the kernel log to see if
-there are any messages in there.
-Will post here if I will find anything.
+--SHOKaGoLkZ8s2gn1OSzSEgYvHEtp8Wdzf
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
->> [...]
->>> In this case, I guess "btrfs ins dump-super -fFa" output would help to
->>> show if it's possible to recover.
->> Here is the output: https://pastebin.com/raw/DtJd813y
-> OK, the backup root is fine.
->
-> So this means, metadata COW is corrupted, which caused the transid mismatch.
->
->>> Anyway, something looks strange.
->>>
->>> The backup roots have a newer generation while the super block is still
->>> old doesn't look correct at all.
->> Just in case, here is the output of "btrfs check", as suggested by "A L
->> <mail@lechevalier.se>".  It does not seem to contain any new information.
->>
->> parent transid verify failed on 16984014372864 wanted 138350 found 131117
->> parent transid verify failed on 16984014405632 wanted 138350 found 131127
->> parent transid verify failed on 16984013406208 wanted 138350 found 131112
->> parent transid verify failed on 16984075436032 wanted 138384 found 131136
->> parent transid verify failed on 16984075436032 wanted 138384 found 131136
->> parent transid verify failed on 16984075436032 wanted 138384 found 131136
->> Ignoring transid failure
->> ERROR: child eb corrupted: parent bytenr=16984175853568 item=8 parent
->> level=2 child level=0
->> ERROR: failed to read block groups: Input/output error
-> Extent tree is completely screwed up, no wonder the transid error happens.
->
-> I don't believe it's reasonable possible to restore the fs to RW status.
-> The only remaining method left is btrfs-restore then.
 
-There are no more available SATA connections in the system and there is
-a lot of data in that FS (~7TB).
-I do not immediately have another disk that would be able to hold this much.
 
-At the same time this FS is RAID0.
-I wonder if there is a way to first check if restore will work should I
-will disconnect half of the disks, as each half contains all the data.
-And then if it does, I would be able to restore by reusing the space on
-of the mirrors.
+On 2020/7/2 =E4=B8=8A=E5=8D=884:14, Marc Lehmann wrote:
+> On Wed, Jul 01, 2020 at 09:30:25AM +0800, Qu Wenruo <quwenruo.btrfs@gmx=
+=2Ecom> wrote:
+>> This looks like an old fs with some bad accounting numbers.
+>=20
+> Yeah, but it's not.
+>=20
+>> Have you tried btrfs rescue fix-device-size?
+>=20
+> Why would I want to try this?
+>=20
 
-I see "-D: Dry run" that can be passed to "btrfs restore", but, I guess,
-it would not really do a full check of the data, making sure that the
-restore would really succeed, does it?
+Read the man page of "btrfs-rescue".
 
-Is there a way to perform this kind of check?
-Or is "btrfs restore" the only option at the moment?
 
+--SHOKaGoLkZ8s2gn1OSzSEgYvHEtp8Wdzf--
+
+--UCYLxUsciswtzBKCkpV4ez3uGHPMoS18e
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl79IAMACgkQwj2R86El
+/qg45Qf/acfrSuuwVxjxerH+6IWiCBtkWE5vE+oZGEWUwRntrTm/QApeAqu8fD5t
+6I9L2NZhjKAZVEn6pgRIMf1Xnc9u3XWc6skF3rCzEpXxcbodjiSoycdPBLLuyaGs
+vQVbwlVI/cc2ei3Ufp4H2F83tU71wfHlIYip2dWIItVHU/6xHVARDuJgjAct3U7k
++W3l7+N95Zt9IZSluZKAdk67lMzvMvUHU5MMjl+ZEBvdnH0iosKTKMUG1lWZYoPe
+z4RcPr0wL/rD6BOtFaOYNCMFocXZGcTsyVl/ZyDcAkxqZKWrkobv7LA8llhOGbGa
+Risj00xTs60hzVSOfijairAWf/yQKA==
+=eU7u
+-----END PGP SIGNATURE-----
+
+--UCYLxUsciswtzBKCkpV4ez3uGHPMoS18e--
