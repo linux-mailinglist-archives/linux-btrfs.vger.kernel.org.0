@@ -2,65 +2,97 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04C94211B97
-	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Jul 2020 07:36:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B55B9211D10
+	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Jul 2020 09:34:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726145AbgGBFg1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 2 Jul 2020 01:36:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44358 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726015AbgGBFg1 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 2 Jul 2020 01:36:27 -0400
-Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com [209.85.208.181])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5B51120724;
-        Thu,  2 Jul 2020 05:36:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593668186;
-        bh=w80HNCQd43j8lsfGDknlfMWRCtxh8+ZfOTuzLjUb+Tg=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=CiLGW4fQE83/yPSoaLNjNXxWdQztSEnfSUvobWj5SL08wFtpj7ITwNpTCpr8fXJG6
-         v6LQ82S6Iopo0IEnBC03ZMkH1MPLHvkJL0OmNAg4PDKmTLqsnglMl5I7VLK6hBNzY0
-         Hln49f0USlhkO3bp1JcuqHNbQ5T9o97V4VbFqjxw=
-Received: by mail-lj1-f181.google.com with SMTP id 9so30093459ljv.5;
-        Wed, 01 Jul 2020 22:36:26 -0700 (PDT)
-X-Gm-Message-State: AOAM5302EguksHGyx96McGzP+vV2RAVmZBDx1EaWZ+TwumcXBHDsn2h5
-        R3h7HgXRHajHkaz9f7jIRk/c+HS3t9Ql2rUoykU=
-X-Google-Smtp-Source: ABdhPJymqO+8A/ON6cgRlyAmaadzhb/A3ETkgEahkbFx3Wp1rU/jFwtY3MDkzrSEOGWene4L2hOwuUlW51s/XrqmVQI=
-X-Received: by 2002:a2e:7f06:: with SMTP id a6mr4621445ljd.446.1593668184748;
- Wed, 01 Jul 2020 22:36:24 -0700 (PDT)
+        id S1726892AbgGBHeu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 2 Jul 2020 03:34:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39512 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726630AbgGBHeu (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 2 Jul 2020 03:34:50 -0400
+Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20E12C08C5C1
+        for <linux-btrfs@vger.kernel.org>; Thu,  2 Jul 2020 00:34:50 -0700 (PDT)
+Received: by mail-qv1-xf44.google.com with SMTP id t7so12214142qvl.8
+        for <linux-btrfs@vger.kernel.org>; Thu, 02 Jul 2020 00:34:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=zdxUWMWXTEs/zs0LJh1bxLoOHpDg1k5nkLimqXptzik=;
+        b=pTyNG5o0k/sDwo8OTFOp+1mY9mp8iFiypOU+G0KGvA3C2KmQInOIenbvtc3UqW33Q/
+         ZLtgnGOVR4tP6b4vLE0LFjvZ8/gZLBwjWsR9RQa2I5hc+raPooYNyncM5oaTUBKSgPmH
+         eIhG27uICaRcagosZf3hunxYITBBV4bVknSlZYfN+CIWIuw9AIXQCRJiiZ2cLDwOLsni
+         yfIM6MsinKJ3Z5cjEaVTTdIF9h76dSDsbi+qCRhuIsqq8j6Eiweysoi3PQD2gfrLIWxC
+         IVuuPFsVAj/EFTCIuxLnLlG2T8yL3WbuPvHJNjoAHGnebia9LLvp8nYuQEfjXb6hd5ap
+         Z13w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=zdxUWMWXTEs/zs0LJh1bxLoOHpDg1k5nkLimqXptzik=;
+        b=ehWjMFdJnfH4i2bzpKxNEHp7iAcitBoJXUP0piFSg5fL5JhmYO1vK1h18U1+fy8y6/
+         lQguMS8HKpdbNWqnz3V29sovaZMtd+Xb4gQBQ1ClxUyoF+u4jj9SJQGgR+uI5FD58Hvy
+         D86lwbwTUir5eKiuTKHlokNLiC5Q756SHV42O40EPt7o4LGzPQ3Az80jgecK7xQFvkHc
+         mF9Y2FYAhQHFS+kTEgbQo5874fWwTG7JY4g1SiNYvjTM3MMOsBNuIsCq1tr4wDtmNjea
+         o2DwifbganwaVMqYiDxe3VreqxyKJ8rPhW384OqEuy7uPUFv4mqCx+TTDNIqR9rbVTDt
+         TZMg==
+X-Gm-Message-State: AOAM5309031JcQo1Ne6Bgoe3PLbnIgDFBbypTGFIqDUSPCj15rIUv3T9
+        H1nGxTvHGBRK4Z91BHSeHY1chTg8IHW9x7MZfpM=
+X-Google-Smtp-Source: ABdhPJxE/IvxhaZVYSRyD30ZS0DfYt/Op8kkca7ZSQZ+VKag/S4VWIAgfBe+LlffUlEdLhaARi22NK4id4n0eqJnObA=
+X-Received: by 2002:ad4:4b62:: with SMTP id m2mr29723335qvx.68.1593675289128;
+ Thu, 02 Jul 2020 00:34:49 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200701090622.3354860-1-hch@lst.de> <20200701090622.3354860-5-hch@lst.de>
-In-Reply-To: <20200701090622.3354860-5-hch@lst.de>
-From:   Song Liu <song@kernel.org>
-Date:   Wed, 1 Jul 2020 22:36:13 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW7QShNMnbCK-OrKkE8F5XyH45-ML-w5qKLVrO=VTt6npw@mail.gmail.com>
-Message-ID: <CAPhsuW7QShNMnbCK-OrKkE8F5XyH45-ML-w5qKLVrO=VTt6npw@mail.gmail.com>
-Subject: Re: [PATCH 4/4] writeback: remove bdi->congested_fn
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Jens Axboe <axboe@kernel.dk>, Tejun Heo <tj@kernel.org>,
-        dm-devel@redhat.com, cgroups@vger.kernel.org,
-        linux-block@vger.kernel.org, drbd-dev@lists.linbit.com,
-        linux-bcache@vger.kernel.org,
-        linux-raid <linux-raid@vger.kernel.org>,
-        linux-btrfs@vger.kernel.org, Linux-MM <linux-mm@kvack.org>,
-        open list <linux-kernel@vger.kernel.org>
+Received: by 2002:a0c:b993:0:0:0:0:0 with HTTP; Thu, 2 Jul 2020 00:34:48 -0700 (PDT)
+Reply-To: ayishagddafio@mail.ru
+From:   Aisha Gaddafi <mrzakirhossain4444@gmail.com>
+Date:   Thu, 2 Jul 2020 00:34:48 -0700
+Message-ID: <CAJGJQuZBbOM2DCmC_Ur8Le=ioXVG0tJieFeOfm16tEVVXZfSJQ@mail.gmail.com>
+Subject: Lieber Freund (Assalamu Alaikum),?
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Jul 1, 2020 at 2:06 AM Christoph Hellwig <hch@lst.de> wrote:
->
-> Except for pktdvd, the only places setting congested bits are file
-> systems that allocate their own backing_dev_info structures.  And
-> pktdvd is a deprecated driver that isn't useful in stack setup
-> either.  So remove the dead congested_fn stacking infrastructure.
->
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
+--=20
+Lieber Freund (Assalamu Alaikum),
 
-For md bits:
+Ich bin vor einer privaten Suche auf Ihren E-Mail-Kontakt gesto=C3=9Fen
+Ihre Hilfe. Mein Name ist Aisha Al-Qaddafi, eine alleinerziehende
+Mutter und eine Witwe
+mit drei Kindern. Ich bin die einzige leibliche Tochter des Sp=C3=A4tlibysc=
+hen
+Pr=C3=A4sident (verstorbener Oberst Muammar Gaddafi).
 
-Acked-by: Song Liu <song@kernel.org>
+Ich habe Investmentfonds im Wert von siebenundzwanzig Millionen
+f=C3=BCnfhunderttausend
+United State Dollar ($ 27.500.000.00) und ich brauche eine
+vertrauensw=C3=BCrdige Investition
+Manager / Partner aufgrund meines aktuellen Fl=C3=BCchtlingsstatus bin ich =
+jedoch
+M=C3=B6glicherweise interessieren Sie sich f=C3=BCr die Unterst=C3=BCtzung =
+von
+Investitionsprojekten in Ihrem Land
+Von dort aus k=C3=B6nnen wir in naher Zukunft Gesch=C3=A4ftsbeziehungen auf=
+bauen.
+
+Ich bin bereit, mit Ihnen =C3=BCber das Verh=C3=A4ltnis zwischen Investitio=
+n und
+Unternehmensgewinn zu verhandeln
+Basis f=C3=BCr die zuk=C3=BCnftige Investition Gewinne zu erzielen.
+
+Wenn Sie bereit sind, dieses Projekt in meinem Namen zu bearbeiten,
+antworten Sie bitte dringend
+Damit ich Ihnen mehr Informationen =C3=BCber die Investmentfonds geben kann=
+.
+
+Ihre dringende Antwort wird gesch=C3=A4tzt. schreibe mir an diese email adr=
+esse (
+ayishagddafio@mail.ru ) zur weiteren Diskussion.
+
+Freundliche Gr=C3=BC=C3=9Fe
+Frau Aisha Al-Qaddafi
