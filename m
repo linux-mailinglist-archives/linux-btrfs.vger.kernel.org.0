@@ -2,188 +2,160 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 200A5212E84
-	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Jul 2020 23:09:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B804212E85
+	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Jul 2020 23:10:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726030AbgGBVJ5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 2 Jul 2020 17:09:57 -0400
-Received: from mx2.suse.de ([195.135.220.15]:49972 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725954AbgGBVJ5 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 2 Jul 2020 17:09:57 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id AB5ABADD6
-        for <linux-btrfs@vger.kernel.org>; Thu,  2 Jul 2020 21:09:54 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 342ABDA732; Thu,  2 Jul 2020 23:09:38 +0200 (CEST)
-From:   David Sterba <dsterba@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: Btrfs progs release 5.7
-Date:   Thu,  2 Jul 2020 23:09:38 +0200
-Message-Id: <20200702210938.10045-1-dsterba@suse.com>
-X-Mailer: git-send-email 2.25.0
+        id S1726100AbgGBVKP convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-btrfs@lfdr.de>); Thu, 2 Jul 2020 17:10:15 -0400
+Received: from james.kirk.hungrycats.org ([174.142.39.145]:35216 "EHLO
+        james.kirk.hungrycats.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725954AbgGBVKO (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 2 Jul 2020 17:10:14 -0400
+Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
+        id AB6F57435F3; Thu,  2 Jul 2020 17:10:13 -0400 (EDT)
+Date:   Thu, 2 Jul 2020 17:10:13 -0400
+From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     waxhead@dirtcellar.net, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com
+Subject: Re: [PATCH][RFC] btrfs: introduce rescue=onlyfs
+Message-ID: <20200702211013.GC10769@hungrycats.org>
+References: <20200701144438.7613-1-josef@toxicpanda.com>
+ <4adbc15c-d8ff-6132-5044-9b6117ef4f5e@dirtcellar.net>
+ <bf383512-71fd-27b1-2e45-b8a0c8e2ba3f@toxicpanda.com>
+ <20200702033016.GA10769@hungrycats.org>
+ <de43532c-10eb-4d4b-da6c-1110666d3a08@toxicpanda.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <de43532c-10eb-4d4b-da6c-1110666d3a08@toxicpanda.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi,
+On Thu, Jul 02, 2020 at 11:35:00AM -0400, Josef Bacik wrote:
+> On 7/1/20 11:30 PM, Zygo Blaxell wrote:
+> > On Wed, Jul 01, 2020 at 03:53:40PM -0400, Josef Bacik wrote:
+> > > The one thing I _do_ want to do is make better use of the backup roots.
+> > > Right now we always free the pinned extents once the transaction commits,
+> > > which makes the backup roots useless as we're likely to re-use those blocks.
+> > > With Nikolay's patches we can now async drop pinned extents, which I've
+> > > implemented here for an unrelated issue.  We could take that work and simply
+> > > hold pinned extents for several transactions so that old backup roots and
+> > > all of their nodes don't get over-written until they cycle out.  This would
+> > > go a long way towards making us more resilient under metadata corruption
+> > > conditions.  Thanks,
+> > 
+> > I have questions about this:  That would probably increase the size
+> > required for global reserve?  RAM requirements for the pinned list?
+> > What impact does this have when space is low, e.g. deleting a snapshot
+> > on a full filesystem?  There are probably answers to these, but it
+> > might mean spending some time making sure all the ENOSPC cases are
+> > still recoverable.
+> 
+> There's RAM requirements but they're low, its just a range tree with the
+> bits set that need to be unpinned.  We wouldn't have to increase the size
+> required for global reserve.
+> 
+> Right now the way we deal with pinned extents is to commit the transaction,
+> because once the transaction is committed all pinned extents are unpinned.
+> Nikolay made it so we have a per-transaction pinned tree now instead of two
+> that we flip flop on.
+> 
+> That enables us to async off the unpinning.  I've been doing that internally
+> with WhatsApp because they see a huge amount of latency with unpinning.  My
+> version of this still works fine with the transaction part, because we wait
+> for the transaction to "complete", which only gets set once the unpin
+> mechanism is done.  So although it's asynchronous, we still get the same
+> behavior from an enospc perspective.
 
-btrfs-progs version 5.7 have been released.
+That's interesting...does it mean that we do fewer reads in the critical
+part of transaction commit too?  Like if we remove the last reference to
+an extent, can we delete the extent and the csum item for the extent in
+the background, while new transactions are running?  That would have a
+huge latency benefit (which I guess is what WhatsApp wanted), regardless
+of the effect on robustness.
 
-Changelog:
+> What I would do for this case is delay 4 transactions worth of pinned
+> extents. Once we commit the 5th transaction, we unpin the oldest guy because
+> we no longer need him.
+> 
+> But this creates ENOSPC issues, because now we have decoupled the
+> transaction commit from the pinned extent thing.  But that's ok, we know
+> where our pinned space is now.  So we just add a new flushing state that we
+> start walking through the unpin list and unpinning stuff until our
+> reservations are satisfied.
 
-  * mkfs:
-    * new option to enable features otherwise enabled at runtime, now
-      implemented for quotas, 'mkfs.btrfs -R quota'
-    * fix space accounting for small image, DUP and --rootdir
-    * option -A removed
-  * check: detect ranges with overlapping csum items
-  * fi usage: report correct numbers when plain RAID56 profiles are used
-  * convert: ensure the data chunks size never exceed device size
-  * libbtrfsutil: update documentation regarding subvolume deletion
-  * build: support libkcapi as implementation backend for cryptographic
-    primitives
-  * core: global options for verbosity (-v, -q), subcommands -v or -q are
-    aliases and will continue to work but are considered deprecated,
-    current command output is preserved to keep scripts working
-  * other:
-    * block group code cleanups
-    * build warning fixes
-    * more files moved to kernel-shared
-    * btrfs-debugfs ported to python 3
-    * documentation updates
-    * new tests
+So under ENOSPC we smoothly transition back to current behavior.  Got it.
 
-Changes since rc1:
-- btrfs-debugfs python 2->3 fixups
-- mkfs -A removed
+> Now this does mean that under a space crunch we're going to not be saving
+> our old roots as well because we'll be re-using them, but that's the same
+> situation that we have currently.  Most normal users will have plenty of
+> space and thus will get the benefit of being able to recovery from the
+> backup roots.  It's not a perfect solution, but it's muuuuch better than
+> what we have currently.
 
-Tarballs: https://www.kernel.org/pub/linux/kernel/people/kdave/btrfs-progs/
-Git: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/btrfs-progs.git
+I agree that's quantitatively better than 'btrfs gets destroyed
+by an unclean shutdown on some drives', but it would mean that firmware
+bug root corruption correlates with low disk space.  So it would be
+"btrfs gets destroyed by an unclean shutdown while low on disk space on
+some drives."  I guess it depends on where you want to draw the line on
+support for hard drives that belong in the recycle bin.
 
-Shortlog:
+> > What we really need is a usable fsck (possibly online or an interactive
+> > tool) that can put a filesystem back together quickly when only a few
+> > hundred metadata pages are broken.  The vast majority of btrfs filesystems
+> > I've seen killed were due btrfs and Linux kernel bugs, e.g. that delayed
+> > reloc_roots bug in 5.1.  Second place is RAM failure leading to memory
+> > corruption (a favorite in #btrfs IRC).  Third is disk failure beyond
+> > array limits (mostly on SD cards, nothing btrfs can do when the whole
+> > disk fails).  Firmware bugs in the disk eating the metadata is #4 (it
+> > happens, but not often).  Keeping backup trees on the disk longer will
+> > only help in the 4th case.  All of the other cases involve damage to trees
+> > that were committed long ago, where none of the backup roots will work.
+> > 
+> Yeah I think we need to be smarter about detecting these cases with btrfsck.
+> Like there's good reason to not default to --init-extent-tree or
+> --init-csum-tree.  But if you can't read those roots at all?  Why make the
+> user have to figure that stuff out?  --repair should be able to say "oh well
+> these trees are just completely fucked, --init-extent-tree is getting turned
+> on", without the user needing to know how to do it.  Thanks,
 
-Anand Jain (24):
-      btrfs-progs: split global help HELPINFO_INSERT_GLOBALS
-      btrfs-progs: add global verbose and quiet options and helper functions
-      btrfs-progs: send: add global verbose and quiet options
-      btrfs-progs: receive: add global verbose and quiet options
-      btrfs-progs: subvolume delete: add global verbose option
-      btrfs-progs: fi defrag: add global verbose option
-      btrfs-progs: balance start: add global verbose option
-      btrfs-progs: balance status: add global verbose option
-      btrfs-progs: chunk-recover: add global verbose option
-      btrfs-progs: super-recover: add global verbose option
-      btrfs-progs: restore: add global verbose option
-      btrfs-progs: inspect inode-resolve: add global verbose
-      btrfs-progs: inspect logical-resolve: add global verbose option
-      btrfs-progs: refactor btrfs_scan_devices() to accept verbose argument
-      btrfs-progs: device scan: add global verbose option
-      btrfs-progs: device scan: add global quiet option
-      btrfs-progs: quota rescan: add global quiet option
-      btrfs-progs: subvolume create: add global quiet option
-      btrfs-progs: subvolume delete: add global quiet option
-      btrfs-progs: balance start: add global quiet option
-      btrfs-progs: balance resume: add global quiet option
-      btrfs-progs: subvolume snapshot: add global quiet option
-      btrfs-progs: scrub start, resume: add global quiet option
-      btrfs-progs: scrub cancel: add global quiet option
+That...isn't the direction I was thinking of.  '--init-csum-tree' burns
+the data integrity checking in btrfs.  If you're going to do that, you
+might as well just restore from backups, at least you know then that the
+data wasn't corrupted by whatever corrupted the metadata on the same disk.
 
-David Sterba (23):
-      btrfs-progs: docs: update 'fi us' examples
-      btrfs-progs: build: add support for libkcapi as crypto backend
-      btrfs-progs: move dir-item.c to kernel-shared/
-      btrfs-progs: move file-item.c to kernel-shared/
-      btrfs-progs: move inode-item.c to kernel-shared/
-      btrfs-progs: move root-tree.c to kernel-shared/
-      btrfs-progs: move uuid-tree.c to kernel-shared/
-      btrfs-progs: move btrfs_find_free_objectid to inode.c
-      btrfs-progs: docs: update list of features exported in sysfs
-      btrfs-progs: docs: clarify file attributes and flags
-      btrfs-progs: docs: update balance
-      btrfs-progs: docs: update conventions
-      btrfs-progs: docs: add discard=async to mount options
-      btrfs-progs: docs: remove option logreplay
-      btrfs-progs: add separate verbosity level for on-by-default messages
-      btrfs-progs: docs: clarify balance regarding extent sharing
-      btrfs-progs: fi defrag: clarify recursive mode
-      btrfs-progs: docs: update bootloader section
-      btrfs-progs: deprecate subcommand specific verbose/quiet options
-      btrfs-progs: fixup spacing in help texts
-      btrfs-progs: mkfs: remove alloc start options and docs
-      btrfs-progs: update CHANGES for 5.7
-      Btrfs progs v5.7
+There have been some historical btrfs bugs where there's supposed to
+be a csum item and there isn't, or there's not supposed to be a csum
+item and there is.  Ideally, we'd have a way to tell btrfs check or the
+kernel on a mounted filesystem "yes we know there's no csums for block
+XYZ, we give permission to compute and insert (delete) those missing
+(extra) csum items in this instance" so we don't have to take the
+filesystem offline and let btrfs check spend days trying to discover
+the one missing csum item on its own.
 
-Goffredo Baroncelli (1):
-      btrfs-progs: fi usage: add support for RAID5/6
+--init-extent-tree, sure, brute force scan and rebuild of all the subvol
+metadata is the general solution to fix the extent tree.  If you keep the
+csum tree, you can check your work afterwards.  If the disk is corrupting
+one page, it's likely to corrupt several.  btrfs check should not (by
+default) prevent scrub from providing a list of corrupted data blocks
+when it's done.
 
-Johannes Thumshirn (19):
-      btrfs-progs: simplify minimal stripe number checking
-      btrfs-progs: simplify assignment of number of RAID stripes
-      btrfs-progs: introduce alloc_chunk_ctl structure
-      btrfs-progs: cache number of devices for chunk allocation
-      btrfs-progs: pass alloc_chunk_ctl to chunk_bytes_by_type
-      btrfs-progs: introduce raid profile table for chunk allocation
-      btrfs-progs: consolidate assignment of minimal stripe number
-      btrfs-progs: consolidate assignment of sub_stripes
-      btrfs-progs: consolidate setting of RAID1 stripes
-      btrfs-progs: do table lookup for simple RAID profiles' num_stripes
-      btrfs-progs: consolidate num_stripes sanity check
-      btrfs-progs: compactify num_stripe setting in btrfs_alloc_chunk
-      btrfs-progs: introduce init_alloc_chunk_ctl
-      btrfs-progs: don't pretend RAID56 has a different stripe length
-      btrfs-progs: consolidate num_stripes setting for striping RAID levels
-      btrfs-progs: use sub_stripes property from btrfs_raid_attr
-      btrfs-progs: use minimal number of stripes from btrfs_raid_attr
-      btrfs-progs: remove unused btrfs_raid_profile::max_stripes
-      btrfs-progs: remove btrfs_raid_profile_table
+I'm thinking more of the cases where there's 150GB of metadata,
+and something went wrong with an extent data item in one leaf node.
+--init-extent-tree will work, but it's massive overkill.  It currently
+takes more than 11 days to run btrfs check on such filesystems (11 days
+amount of time it takes to build a new filesystem from backups, then turn
+off and wipe the server that has been making no visible progress after
+running btrfs check for 11 days).  In some cases I can just delete the
+offending items in a hex editor and all is well again (it takes hours to
+do by hand, but still beats 11 days).  It would be nice to have the kernel
+print a message like 'please run "btrfs check --repair --broken-nodes
+1434238885120,4125924810240" and try again' so btrfs check doesn't have
+to read the whole metadata to find and fix a single-page problem.
 
-Lakshmipathi (1):
-      btrfs-progs: port btrfs-debugfs to python3
-
-Qu Wenruo (37):
-      btrfs-progs: check: don't exit if maybe_repair_root_item() can't find needed root extent
-      btrfs-progs: don't abuse READA_* for extent tree search
-      btrfs-progs: sync block group item accessors from kernel
-      btrfs-progs: kill block_group_cache::key
-      btrfs-progs: remove the unused btrfs_block_group_cache::cache
-      btrfs-progs: rename btrfs_block_group_cache to btrfs_block_group
-      btrfs-progs: check/lowmem: lookup block group item in a separate function
-      btrfs-progs: block-group: refactor how we read one block group item
-      btrfs-progs: rename btrfs_remove_block_group() and free_block_group_item()
-      btrfs-progs: block-group: refactor how we insert a block group item
-      btrfs-progs: block-group: rename write_one_cache_group()
-      btrfs-progs: check: detect checksum item overlap
-      btrfs-progs: tests: add test image for overlapping csum item
-      btrfs-progs: qgroup-verify: avoid NULL pointer dereference for later silent qgroup repair
-      btrfs-progs: qgroup-verify: also repair qgroup status version
-      btrfs-progs: qgroup-verify: use fs_info::readonly to check if we should repair qgroups
-      btrfs-progs: qgroup-verify: move qgroup classification out of report_qgroups
-      btrfs-progs: qgroup-verify: allow repair_qgroups to do silent repair
-      btrfs-progs: ctree: introduce function to create an empty tree
-      btrfs-progs: mkfs: introduce function to insert qgroup info and limit items
-      btrfs-progs: mkfs: introduce function to setup quota root and rescan
-      btrfs-progs: fsfeatures: introduce runtime features
-      btrfs-progs: mkfs: add -R|--runtime-features option
-      btrfs-progs: mkfs: introduce quota runtime feature
-      btrfs-progs: tests: add test for quotas and --rootdir
-      btrfs-progs: allow btrfs_print_leaf to be called on dummy eb
-      btrfs-progs: print-tree: export dump_superblock()
-      btrfs-progs: tests: update fsck/012-leaf-corruption image
-      btrfs-progs: tests: update fsck/035-inline-bad-ram-bytes image
-      btrfs-progs: image: Don't modify the chunk and device tree if the source dump is single device
-      btrfs-progs: image: pin down log tree blocks before fixup
-      btrfs-progs: fix wrong chunk profile for do_chunk_alloc()
-      btrfs-progs: mkfs-tests: Add test case to verify the --rootdir size limit
-      btrfs-progs: convert: fix the pointer sign warning for ext2 label
-      btrfs-progs: fix seemly wrong format overflow warning
-      btrfs-progs: convert: ensure the data chunks size never exceed device size
-      btrfs-progs: tests: check that convert does not create extents beyond device boundary
-
-cezarmathe (1):
-      libbtrfsutil: update btrfs_util_delete_subvolume docs
-
+> Josef
