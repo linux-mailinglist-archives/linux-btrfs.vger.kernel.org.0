@@ -2,157 +2,125 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 374BC2119FC
-	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Jul 2020 04:14:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09943211A16
+	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Jul 2020 04:18:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726305AbgGBCOA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 1 Jul 2020 22:14:00 -0400
-Received: from mail.nethype.de ([5.9.56.24]:41173 "EHLO mail.nethype.de"
+        id S1728260AbgGBCSS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 1 Jul 2020 22:18:18 -0400
+Received: from mail.nethype.de ([5.9.56.24]:42031 "EHLO mail.nethype.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726150AbgGBCOA (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 1 Jul 2020 22:14:00 -0400
+        id S1728213AbgGBCSS (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 1 Jul 2020 22:18:18 -0400
 Received: from [10.0.0.5] (helo=doom.schmorp.de)
         by mail.nethype.de with esmtp (Exim 4.92)
         (envelope-from <schmorp@schmorp.de>)
-        id 1jqojc-002EaY-4e; Thu, 02 Jul 2020 02:13:56 +0000
+        id 1jqonn-002Elu-Jn
+        for linux-btrfs@vger.kernel.org; Thu, 02 Jul 2020 02:18:15 +0000
 Received: from [10.0.0.1] (helo=cerebro.laendle)
         by doom.schmorp.de with esmtp (Exim 4.92)
         (envelope-from <schmorp@schmorp.de>)
-        id 1jqojc-0006lD-0b; Thu, 02 Jul 2020 02:13:56 +0000
+        id 1jqonn-0006p4-GC
+        for linux-btrfs@vger.kernel.org; Thu, 02 Jul 2020 02:18:15 +0000
 Received: from root by cerebro.laendle with local (Exim 4.92)
         (envelope-from <root@schmorp.de>)
-        id 1jqojc-0001xF-0D; Thu, 02 Jul 2020 04:13:56 +0200
-Date:   Thu, 2 Jul 2020 04:13:55 +0200
+        id 1jqonn-0001zU-Fs
+        for linux-btrfs@vger.kernel.org; Thu, 02 Jul 2020 04:18:15 +0200
+Date:   Thu, 2 Jul 2020 04:18:15 +0200
 From:   Marc Lehmann <schmorp@schmorp.de>
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: first mount(s) after unclean shutdown always fail
-Message-ID: <20200702021355.GA6648@schmorp.de>
-References: <20200701005116.GA5478@schmorp.de>
- <36fcfc97-ce4c-cce8-ee96-b723a1b68ec7@gmx.com>
- <20200701201419.GB1889@schmorp.de>
- <cc42d4dc-b46f-7868-6a05-187949136eae@gmx.com>
- <20200701235512.GA3231@schmorp.de>
- <25e94ec6-842c-310f-e105-6d8f1e6dfdce@gmx.com>
- <20200702011134.GA5037@schmorp.de>
- <b0618fd7-e45f-a73b-a618-cd65cfa042df@gmx.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: first mount(s) after unclean shutdown always fail, second attempt
+Message-ID: <20200702021815.GB6648@schmorp.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <b0618fd7-e45f-a73b-a618-cd65cfa042df@gmx.com>
-OpenPGP: id=904ad2f81fb16978e7536f726dea2ba30bc39eb6;
- url=http://pgp.schmorp.de/schmorp-pgpkey.txt; preference=signencrypt
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Jul 02, 2020 at 09:28:39AM +0800, Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
-> > explain that the mount fails, then succeeds, in the cases where the message
-> > is _not_ logged, as reported?
-> 
-> When the error is logged, this snippet get triggered and abort mount.
-> 
-> And you have reported this at least happened once.
+As requested by Qu Wenruo, I herewith "separately report" the spurious
+mount bug again. It's mostly a copy of my first bug report, because, after
+all, it's the same bug, but I tried to clarify things.
 
-I reported that it sometimes happens, sometimes not.
+I have a server with multiple btrfs filesystems and some moderate-sized
+dmcache caches (a few million blocks/100s of GBs).
 
-> Then for that case, you should go btrfs rescue fix-device-size.
+When the server has an unclean shutdown, dmcache treats all cached blocks
+as dirty. This has the effect of extremely slow I/O, as dmcache basically
+caches a lot of random I/O, and writing these blocks back to the rotating
+disk backing store can take hours. This, I think, is related to the
+problem.
 
-I have done this in the past, it doesn't fix the issue I reported.
+When the server is in this condition, then all btrfs filesystems on slow
+stores (regardless of whether they use dmcache or not) fail their first
+mount attempt(s) like this:
 
-Again, the problem is spurious mount failures, and *sometimes*,
-*occasionally*, *not always*, I also get the super_total_bytes message,
-but subsequent mount attempts succeed. Until the next crash.
+   [  173.243117] BTRFS info (device dm-7): has skinny extents
+   [  864.982108] BTRFS error (device dm-7): open_ctree failed
 
-> Nope, it get executed once and that specific problem will be gone.
+all the filesystems in question are mounted twice during normal boots,
+with diferent subvolumes, and systemd parallelises these mounts. This might
+play a role in these failures.
 
-Until one of the next unclean shutdowns, yes.
+Simply trying to mount the filesystems again then (usually) succeeds with
+seemingly no issues, so these are spurious mount failures. These repeated
+mount attewmpts are also much faster, presumably because a lot of the data
+is already in memory.
 
-That specific problem is, of course, also going away by doing nothing, as
-reported.
+As far as I am concerned, this is 100% reproducible (i.e. it happens on every
+unclean shutdown). It also happens on "old" (4.19 era) filesystems as well as
+on filesystems that have never seen anything older than 5.4 kernels.
 
-That command has no visible effect on the problem.
+It does _not_ happen with filesystems on SSDs, regardless of whether they
+are mounted multiple times or not. It does happen to all filesystems that
+are on rotating disks affected by dm-cache writes, regardless of whether
+the filesystem itself uses dmcache or not.
 
-> As said, that's caused by some older kernel, newer kernel has extra safe
-> net to ensure the accounting numbers are safe.
+The system in question is currently running 5.6.17, but the same thing
+happens with 5.4 and 5.2 kernels, and it might have happened with much
+earlier kernels as well, but I didn't have time to report this (as I
+secretly hoped newer kernels would fix this, and unclean shutdowns are
+rare).
 
-You haven't said that, but it's wrong either way: linux 5.4 and 5.6 are
-NOT older than 4.11 - the code was introduced in 4.11, according to the
-btrfs-rescue manpage, while the filesystem has never seen an older kernel
-than 5.4, and the problem most recently happened with 5.6.
+Example btrfs kernel messages for one such unclean boot. This involved
+normal boot, followed by unsuccessfull "mount -va" in the emergency shell
+(i.e. a second mount fasilure for the same filesystem), followed by a
+successfull "mount -va" in the shell.
 
-> > Spurious mount failures are a bug in the btrfs kernel driver.
-> 
-> Then report them as separate bugs.
+[  122.856787] BTRFS: device label LOCALVOL devid 1 transid 152865 /dev/mapper/cryptlocalvol scanned by btrfs (727)
+[  173.242545] BTRFS info (device dm-7): disk space caching is enabled
+[  173.243117] BTRFS info (device dm-7): has skinny extents
+[  363.573875] INFO: task mount:1103 blocked for more than 120 seconds.
+the above message repeats multiple times, backtrace &c has been removed for clarity
+[  484.405875] INFO: task mount:1103 blocked for more than 241 seconds.
+[  605.237859] INFO: task mount:1103 blocked for more than 362 seconds.
+[  605.252478] INFO: task mount:1211 blocked for more than 120 seconds.
+[  726.069900] INFO: task mount:1103 blocked for more than 483 seconds.
+[  726.084415] INFO: task mount:1211 blocked for more than 241 seconds.
+[  846.901874] INFO: task mount:1103 blocked for more than 604 seconds.
+[  846.916431] INFO: task mount:1211 blocked for more than 362 seconds.
+[  864.982108] BTRFS error (device dm-7): open_ctree failed
+[  867.551400] BTRFS info (device dm-7): turning on sync discard
+[  867.551875] BTRFS info (device dm-7): disk space caching is enabled
+[  867.552242] BTRFS info (device dm-7): has skinny extents
+[  867.565896] BTRFS error (device dm-7): open_ctree failed
+[  867.721885] BTRFS info (device dm-7): turning on sync discard
+[  867.722341] BTRFS info (device dm-7): disk space caching is enabled
+[  867.722691] BTRFS info (device dm-7): has skinny extents
 
-That's what I did in the beginning of this thread. I can re-send a copy of
-the mail, but that seems silly.
+Example fstab entries for the mounts above:
 
-> The bugs of that message is well known and we have solution for a while.
+/dev/mapper/cryptlocalvol       /localvol       btrfs           defaults,nossd,discard                  0       0
+/dev/mapper/cryptlocalvol       /cryptlocalvol  btrfs           defaults,nossd,subvol=/                 0       0
 
-And what is the solution? The problem clearly is still in linux 5.6.
+Sometimes, I also get the "super_total_bytes" message, but that one is
+also spurious (i.e., subsequent mount attempts work). Running btrfs rescue
+fix-device-size does not change anything, i.e. the filesystem still mounts
+without an error many times, until there is another unclean shutdown,
+where it has a chance to reappear.
 
-> > The code proves only that you are wrong - the code _always_ prints the
-> > message. Unless btrfs_super_total_bytes does more than just read some
-> > data, it cannot explain the bug I reported, simply because the message is
-> > not always produced, and the mount is not always aborted.
-> 
-> Solve one problem and go on to solve the next one.
-
-Yup. The problem I reported is spurious mount errors after a crash.
-
-> If you don't even bother the solution to that specific problem, you
-> won't bother any debug procedure provided by any developer.
-
-You haven't given me a solution to any problem I reported, you only made a
-lot of provably wrong claims.
-
-> > btrfs has problems, and I reported one, that's all that has happened.
-> 
-> You reported several problem
-
-No, I only reported one problem, spurious mount failures.
-
-> without proper reproducer.
-
-Define "proper reproducer"? What's missing?
-
-> You can reproduce it on your system is not a proper reproducer.
-
-That's fine - but that's all I can do - reproduce it on my syytems,
-because I don't have ay other systems to reproduce it on.
-
-So in effect, what you are saying is that I cannot possibly provide a
-"proper reproducer", while at the same time refusing to even think about a
-btrfs bug because I didn't provide one.
-
-Doesn't this strike you as farcical? Do you realise that it is impossible to
-report bugs according to your standard?
-
-> I provided one solution to one of your problems, you ignored and that's
-> your problem.
-
-No, you haven't. You provided something that you claim would fix it, but
-it doesn't fix it, as pointed out multiple times.
-
-> I don't see any point to debug any bugs reported by the one who doesn't
-> even want to try a known solution but insists on whatever he believe is
-> correct.
-
-You have never provided a solution, of course.
-
-> > I slowly get the distinct feeling that reporting bugs in btrfs us a futile
-> > exercise, though.
-
-What is wrong with this list? In the last decades I have reported dozens
-of bugs in ext2/3/4, xfs and even udf. In all cases, filesystem developers
-were open to fixing bugs and were interested in details. All except one
-(which was a known but extremely rare bug) of the bugs I reported have
-been fixed.
-
-What is so different with btrfs that each time I report an actual bug, I get
-attacked instead?
+In the example above, you can see that the super_total_bytes did not
+appear for the first two mount attempts that failed.
 
 -- 
                 The choice of a       Deliantra, the free code+content MORPG
