@@ -2,135 +2,239 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 621E82121C1
-	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Jul 2020 13:08:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CD1A212216
+	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Jul 2020 13:21:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728332AbgGBLIt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 2 Jul 2020 07:08:49 -0400
-Received: from de-out1.bosch-org.com ([139.15.230.186]:49648 "EHLO
-        de-out1.bosch-org.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726805AbgGBLIs (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 2 Jul 2020 07:08:48 -0400
-Received: from fe0vm1649.rbesz01.com (lb41g3-ha-dmz-psi-sl1-mailout.fe.ssn.bosch.com [139.15.230.188])
-        by si0vms0216.rbdmz01.com (Postfix) with ESMTPS id 49yFhY3kwTz1XLm4Z;
-        Thu,  2 Jul 2020 13:08:45 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rs.bosch.com;
-        s=key1-intmail; t=1593688125;
-        bh=5Qv8K7sjybUcFbdUKFQ6IEewjuDzLH3KZksBsrRqirg=; l=10;
-        h=From:Subject:From:Reply-To:Sender;
-        b=PWHvOvLasZJ4CJSHzoFayw5z2NrvmeyMpEH77exmYnm3lSHjz4NJtweFeCH61NBLn
-         wddjfze/Vm2m2amLMtpg+YJUC0n+h/SHzfRYrCJOyTMwy2PJBAD6LC0tPDIkwQkoE2
-         ijrWQ5gmnh+WitTPpvQJBWm6aSflcIWrN6MI78eQ=
-Received: from fe0vm7918.rbesz01.com (unknown [10.58.172.176])
-        by fe0vm1649.rbesz01.com (Postfix) with ESMTPS id 49yFhY3LCVz3Lf;
-        Thu,  2 Jul 2020 13:08:45 +0200 (CEST)
-X-AuditID: 0a3aad10-183ff70000004153-3a-5efdc03d093a
-Received: from si0vm1950.rbesz01.com ( [10.58.173.29])
-        (using TLS with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by fe0vm7918.rbesz01.com (SMG Outbound) with SMTP id A1.B1.16723.D30CDFE5; Thu,  2 Jul 2020 13:08:45 +0200 (CEST)
-Received: from FE-MBX2029.de.bosch.com (fe-mbx2029.de.bosch.com [10.3.231.39])
-        by si0vm1950.rbesz01.com (Postfix) with ESMTPS id 49yFhY2XzczW7X;
-        Thu,  2 Jul 2020 13:08:45 +0200 (CEST)
-Received: from FE-MBX2029.de.bosch.com (10.3.231.39) by
- FE-MBX2029.de.bosch.com (10.3.231.39) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.1979.3; Thu, 2 Jul 2020 13:08:45 +0200
-Received: from FE-MBX2029.de.bosch.com ([fe80::c815:e4fb:f7f:69ab]) by
- FE-MBX2029.de.bosch.com ([fe80::c815:e4fb:f7f:69ab%3]) with mapi id
- 15.01.1979.003; Thu, 2 Jul 2020 13:08:45 +0200
-From:   "Rebraca Dejan (BSOT/PJ-ES1-Bg)" <Dejan.Rebraca@rs.bosch.com>
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        id S1728493AbgGBLVt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 2 Jul 2020 07:21:49 -0400
+Received: from mout.gmx.net ([212.227.17.22]:40059 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728009AbgGBLVt (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 2 Jul 2020 07:21:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1593688906;
+        bh=b715yQY2hPAZtGQOkh07ADyXvzSLIwK+ckbh4Hi4MDU=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=hCSD9J+vBZSVuJPEDTmBIaez945BnRLMRB5WdUiArqjJ30mBXpli+hiE4gGIW1VJO
+         LfyNUDokHE/GfMLzs3ZsTf7q3kQ/2rZtzAdCiwAB4tpvoo/zISWaGPt9k5ipL8CQ6s
+         yfa6zTIb1dGvC1/xWO0eSBFxkUpS/Ul8h6Ep1Xxk=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MJVHU-1jX6132XaS-00Jrjw; Thu, 02
+ Jul 2020 13:21:46 +0200
+Subject: Re: FIEMAP ioctl gets "wrong" address for the extent
+To:     "Rebraca Dejan (BSOT/PJ-ES1-Bg)" <Dejan.Rebraca@rs.bosch.com>,
         "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: RE: FIEMAP ioctl gets "wrong" address for the extent
-Thread-Topic: FIEMAP ioctl gets "wrong" address for the extent
-Thread-Index: AdZQUL8TC28qUku1QeuTriBPGQAMhf//8VEA///XotA=
-Date:   Thu, 2 Jul 2020 11:08:45 +0000
-Message-ID: <c3b2c46ca5314285a79536cb3c233e1b@rs.bosch.com>
 References: <cfd1d2842b4840b99539f00c34dc5701@rs.bosch.com>
  <1d41a247-a4f7-124a-4842-f7d886e9aa70@gmx.com>
-In-Reply-To: <1d41a247-a4f7-124a-4842-f7d886e9aa70@gmx.com>
-Accept-Language: en-US, de-DE
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.142.30.238]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+ <c3b2c46ca5314285a79536cb3c233e1b@rs.bosch.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
+ mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
+ PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
+ 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
+ D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
+ efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
+ ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
+ BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
+ 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
+ 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
+ EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
+ 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
+ ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
+ oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
+ fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
+ 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
+ ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
+ oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
+Message-ID: <a18bcf27-4c65-6033-0ea7-45da2b521864@gmx.com>
+Date:   Thu, 2 Jul 2020 19:21:42 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrFLMWRmVeSWpSXmKPExsXCZbVWVtf2wN84g+sLpC0uPV7BbrG4+w2L
-        A5PH3fsLmTw+b5ILYIrisklJzcksSy3St0vgyphzahFbwSqlipN7d7E0MO5Q7GLk5JAQMJFY
-        9OUsexcjF4eQwAwmiZ4nL1khnN2MEu82zmGDcN4wSkxffZAJwtnLKLGzaT8jSD+bgLPE+YuL
-        mUFsEYFUiWu7d4LFhQVsJZZP+skCEbeTONK/nBHCtpJYdeMVmM0ioCLR/XIhK4jNK2Atcf3T
-        KXYQW0ggR2LbiS9gvZxA8ct/1oHNZxSQlehseMcEYjMLiEvcejKfCeIHAYkle84zQ9iiEi8f
-        /wOayQFkK0rM+a0EYjILaEqs36UP0akoMaX7ITvEVkGJkzOfsExgFJuFZOgshI5ZSDpmIelY
-        wMiyilE0LdWgLNfc0tBCrygptbjKwFAvOT93EyMkegR2MN7u/qB3iJGJg/EQowQHs5II72mD
-        X3FCvCmJlVWpRfnxRaU5qcWHGKU5WJTEeVV4NsYJCaQnlqRmp6YWpBbBZJk4OKUamNw4l2++
-        cK6D9bbFdym+B7uVdz6X+n3T+aIte3/En1xNNpup7y43JG61CAuY+aWpJuDJUuM6zrq/SxsM
-        f9uaR/4T2rtdPC1V+vGdm4cE2lmV/utc/nt486KvbdvXfuYvnPQxO1L4+o87Ed3+bX9WWloJ
-        lz9y+3V7p8SErlOHzqZbVno4LFjFVPyOWWq63daytJOS+neLviu+2dn3xfR5o/bciIPHJiXM
-        8v5yNHXH7mXFW77M4p99U3jp9r0ak5aVz+0wkri2Ts4lMIc9ZIZO5JUjmyXPnkm8UCBQJbH4
-        3Kwt3JEHyvvyk/VNlu37VSp73HdSRteWlLblFpuj9f8Un108s7vqRYruj6N22ZLvGbOVWIoz
-        Eg21mIuKEwFK0gI9DQMAAA==
+In-Reply-To: <c3b2c46ca5314285a79536cb3c233e1b@rs.bosch.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="6KYZ6aoDRAdCp3TPKfRsPQZgdwzfyTEht"
+X-Provags-ID: V03:K1:L8SFSIvP9aWd2TEkRzYVh2GwejX/Wgb0PEvybvZMgaWqnDnJQN1
+ Tu3dk1Zaos9yhxf2F1mJYVnIPYhJSyqLBSzSz0CCCAYT2d/z515865Yr+2tSQkiIGwdHE+n
+ ivsu2e5MOgQUkJ38BsS8eMgHt5888sBXmHTVczcJcDABoHHgZ6SSypaR4Uecnr+dDc78aN+
+ OcvdcenA5N35xY+stgypA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:icKkD043tnA=:J2nKCf3RWilnLpWuIdmZzt
+ SnDiDSfKdz5hQCnjePsiQH5O/nHmtCDqh16KpHoFI4vkjGrsAmmFEVe6/0WNrX1XvQ6VRQIvI
+ 4sR0sdGCJMqODC8o6HzUDmrCxf3RZWO51xflTy9jTtlS7Q+nd3uWtrE2mCMtThWg9UKZ3oEdd
+ tbjLvazLAxv/t7tSwIKg/QjMgMi7T/0diokeqVpIh/vJILwimfC1M2TjPNjKU8cFMonytQxiC
+ BpZ8ZEZcASB0ri3uDYVgUWKOHQPWkwk0LEBJDIXkhACkH7jGvy3ZiVnh1CX9qrQaHB53LwYdE
+ 1sgo7OTzU/1QG4e+NJrGLwWtTK2vnWI+pxWbjnJ/wOYBHf+idG3gb+PP2IBcbyRjZpvRNwMry
+ ACf1olvJE8hq+0VcVgE8deaW1f/s4vb0wKLCq0+xujUNLv5Grq/sHnT7GOOeKV8wK3WZzfya/
+ wwQnzJOSGEkC9LTPep3LdXVBpzl8mPzqRZmxVJ8pNp/9ubU/KrJPet88AbOsGP0CtinygPm6d
+ P4Jj3+HAGHKIf893zftHS/EesAwJzqk1VBRfCwZkfuaJImJ4NJKELZzq8r6L/6GlhNl7hLAAD
+ fDbABRLgMQlDegYiHDlTbELbu+iFxJ8z7eMOk+TmtiobDQLhakSNZ6gRuN0ffn7TynZQsWFfI
+ hx7cvkEpYFrQZuDEnXmtSGX0SMcqv0WI3gg3KREYBYwbiTaN+geeJG2xiPE2ml+1O6ZhcCppA
+ 25h3KOEqwxlCK2vTv4kyBrNQHnMo1Ma5DDuiXNdyY84jeXdgXBNZMr0jnAi1HJvZrfjv62kq3
+ KAmYTKd5cAjfEO909OR/QJrsZD3i84lH1/Y0rKmoZnfqNeGGs0PLiJSNV8BOZicxualqzxD9M
+ lLbSnq2gdHPslRiTDovw7jh1helFugdTYJI/nEyVYGvokECxG5x+B2PebrzJNBPnGNSIdDcL1
+ IMHzjhiw0VbIpaUMu9UOb5bSJymbIQFLy9+nIVWAwZfKEzsq2j+gYUxGa8ptUxXJKarnAQs7s
+ z4OjCF/9LsACwwkk7yoIncTvwQSY8M+i6mx2gfXbUeHl4gV3dYv2Do10wGXiNijVWoWIDYO4V
+ 1U7+V3LC4IhYcou30c2o49FmBiram7c74/cNGU8T7fJQWOxB0tFhkSh3he/YiM7YXlDYmR2Uh
+ gDMLFG0VIGu7e0/uvmUsUddSpgnymN1AOcuanrGF3iENp5yoJa3M1dRjg7/V5FaGC3t8JUxf+
+ 9lcrp90O8haZ2ZGNT
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-SGkgUXUsDQoNCkknbSB1c2luZyB0aGlzIHN0cnVjdHVyZSB0byBnZXQgdGhlIGFkZHJlc3Mgb2Yg
-ZmlsZSBleHRlbnQ6DQoNCnN0cnVjdCBmaWVtYXBfZXh0ZW50IHsNCglfX3U2NAlmZV9sb2dpY2Fs
-OyAgLyogbG9naWNhbCBvZmZzZXQgaW4gYnl0ZXMgZm9yIHRoZSBzdGFydCBvZg0KCQkJICAgICAg
-KiB0aGUgZXh0ZW50ICovDQoJX191NjQJZmVfcGh5c2ljYWw7IC8qIHBoeXNpY2FsIG9mZnNldCBp
-biBieXRlcyBmb3IgdGhlIHN0YXJ0DQoJCQkgICAgICAqIG9mIHRoZSBleHRlbnQgKi8NCglfX3U2
-NAlmZV9sZW5ndGg7ICAgLyogbGVuZ3RoIGluIGJ5dGVzIGZvciB0aGUgZXh0ZW50ICovDQoJX191
-NjQJZmVfcmVzZXJ2ZWQ2NFsyXTsNCglfX3UzMglmZV9mbGFnczsgICAgLyogRklFTUFQX0VYVEVO
-VF8qIGZsYWdzIGZvciB0aGlzIGV4dGVudCAqLw0KCV9fdTMyCWZlX3Jlc2VydmVkWzNdOw0KfTsN
-Cg0KQW5kIHVzaW5nIGZlX3BoeXNpY2FsIGZpZWxkIEkgdmVyaWZpZWQgdGhhdCBpdCByZWFsbHkg
-cmVmbGVjdHMgdGhlIG9mZnNldCBpbiBmaWxlc3lzdGVtIGltYWdlIC0gSSBjYW4gc2VlIHRoYXQg
-ZmlsZSBjb250ZW50IGJlZ2lucyBhdCB0aGlzIG9mZnNldC4NClRoZSBwcm9ibGVtIGlzIHRoYXQg
-SSBydW4gaW50byBzb21lIHNwZWNpZmljIGNhc2Ugd2hlcmUgZmlsZSBjb250ZW50IGRvZXNuJ3Qg
-YmVnaW4gYXQgZmVfcGh5c2ljYWwsIEkgcmF0aGVyIGhhdmUgc29tZXRoaW5nIGVsc2UgYXQgdGhp
-cyBvZmZzZXQuDQoNClRoYW5rcywNCkRlamFuDQoNCi0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0t
-DQpGcm9tOiBRdSBXZW5ydW8gPHF1d2VucnVvLmJ0cmZzQGdteC5jb20+IA0KU2VudDogxI1ldHZy
-dGFrLCAwMi4ganVsIDIwMjAuIDEyOjE5DQpUbzogUmVicmFjYSBEZWphbiAoQlNPVC9QSi1FUzEt
-QmcpIDxEZWphbi5SZWJyYWNhQHJzLmJvc2NoLmNvbT47IGxpbnV4LWJ0cmZzQHZnZXIua2VybmVs
-Lm9yZw0KU3ViamVjdDogUmU6IEZJRU1BUCBpb2N0bCBnZXRzICJ3cm9uZyIgYWRkcmVzcyBmb3Ig
-dGhlIGV4dGVudA0KDQoNCg0KT24gMjAyMC83LzIg5LiL5Y2INToxMSwgUmVicmFjYSBEZWphbiAo
-QlNPVC9QSi1FUzEtQmcpIHdyb3RlOg0KPiBIaSBhbGwsDQo+IA0KPiBJJ20gY29sbGVjdGluZyBm
-aWxlIGV4dGVudHMgZm9yIG91ciBhcHBsaWNhdGlvbiBmcm9tIEJ0ckZzIGZpbGVzeXN0ZW0gaW1h
-Z2UuDQo+IEkndmUgbm90aWNlZCB0aGF0IGZvciBzb21lIGZpbGVzIGEgZ2V0IHRoZSAid3Jvbmci
-IHBoeXNpY2FsIG9mZnNldCBmb3Igc3RhcnQgb2YgdGhlIGV4dGVudC4NCg0KRmlyc3QgdGhpbmcg
-Zmlyc3QsIGJ0cmZzIGZpZW1hcCBpb2N0bCBvbmx5IHJldHVybnMgYnRyZnMgbG9naWNhbCBhZGRy
-ZXNzLg0KVGhhdCdzIGFuIGFkZHJlc3Mgc3BhY2UgaW4gWzAsIFU2NF9NQVgpLCB0aHVzIGl0J3Mg
-bm90IGEgcGh5c2ljYWwgb2Zmc2V0IHlvdSBjYW4gZmluZCBpbiB0aGUgZGV2aWNlLg0KDQpGb3Ig
-ZXhhbXBsZSwgZm9yIGEgYnRyZnMgb24gYSAxMEcgZGlzaywgYnRyZnMgZmllbWFwIGNhbiByZXR1
-cm4gYWRkcmVzcyBhdCAxMjhHLCB3aGljaCB5b3UgY2FuIG5ldmVyIGZpbmQgb24gdGhhdCBkaXNr
-Lg0KDQpUaGlzIGlzIG5vdCB0aGF0IHN0cmFuZ2UsIGFzIGJ0cmZzIGNhbiBiZSBhIG11bHRpLWRl
-dmljZSBmcywgdGh1cyB3ZSBtdXN0IGhhdmUgYW4gaW50ZXJuYWwgYWRkcmVzcyBzcGFjZSwgYW5k
-IHRoZW4gbWFwIHBhcnQgb2YgdGhlIGxvZ2ljYWwgYWRkcmVzcyBpbnRvIHBoeXNpY2FsIGRpc2sg
-c3BhY2UuDQoNCj4gSSB2ZXJpZmllZCBpdCB1c2luZyBoZXhkdW1wIG9mIHRoZSBmaWxlc3lzdGVt
-IGltYWdlOiB3aGVuIGR1bXAgdGhlIGNvbnRlbnQgc3RhcnRpbmcgZnJvbSB0aGUgYWRkcmVzcyBy
-ZXR1cm5lZCBmcm9tIEZJRU1BUCBpb2N0bCwgSSBzZWUgdGhhdCB0aGUgY29udGVudCBpcyBhYnNv
-bHV0ZWx5IGRpZmZlcmVudCBmcm9tIHRoZSBjb250ZW50IG9mIHRoZSBmaWxlIGl0c2VsZi4gQWxz
-bywgdGhlIEZJRU1BUCBpb2N0bCByZXBvcnRzIHJlZ3VsYXIgZXh0ZW50LCBpdCBpcyBub3QgaW5s
-aW5lLg0KDQpJZiB5b3UncmUgdXNpbmcgdGhlIGxvZ2ljYWwgYWRkcmVzcyByZXR1cm5lZCBmcm9t
-IGRpc2sgZGlyZWN0bHksIHRoZW4geW91IHdvbid0IGdldCB0aGUgY29ycmVjdCBkYXRhIG9idmlv
-dXNseS4NCg0KV2hhdCB5b3UgbmVlZCBpcyB0byBtYXAgdGhlIGJ0cmZzIGxvZ2ljYWwgYWRkcmVz
-cyB0byBwaHlzaWNhbCBkZXZpY2Ugb2Zmc2V0LCB0aGF0IGlzIGRvbmUgYnkgcmVmZXJyaW5nIHRv
-IGNodW5rIHRyZWUuDQpBbmQgZXZlbiBhZnRlciB0aGUgY29udmVyc2lvbiwgaXQncyBub3QgYWx3
-YXlzIHRoZSBjYXNlIGZvciBhbGwgcHJvZmlsZXMuDQpGb3IgU0lOR0xFL0RVUC9SQUlEMC9SQUlE
-MS9SQUlEMTAvUkFJRDFDKiwgeW91IGNhbiBmaW5kIHRoZSBkYXRhIGRpcmVjdGx5LCBidXQgZm9y
-IFJBSUQ1LzYsIHlvdSBuZWVkIHRvIGJvdGhlciB0aGUgUC9RIHN0cmlwZS4NCg0KQW5kIGZ1cnRo
-ZXJtb3JlLCB0aGVyZSBhcmUgY29tcHJlc3NlZCBkYXRhIGV4dGVudHMsIHdoaWNoIG9uLWRpc2sg
-ZGF0YSBpcyBjb21wcmVzc2VkLCB3aGljaCBhbHNvIGRpZmZzIGZyb20gdGhlIHVuY29tcHJlc3Nl
-ZCBkYXRhLg0KDQoNCkZvciB0aGUgY2h1bmsgbWFwcGluZywgeW91IGNhbiB2ZXJpZnkgdGhlIG1h
-cHBpbmcgb2YgPGxvZ2ljYWwgYWRkcmVzcz4gdG8gPHBoeXNpY2FsIGFkZHJlc3M+IHVzaW5nIGJ0
-cmZzIGluc3BlY3QgZHVtcC10cmVlIC10IGNodW5rIDxkZXZpY2U+Lg0KDQpUaGUgZGV0YWlscyBv
-ZiB0aGUgYnRyZnNfY2h1bmsgb24tZGlzayBmb3JtYXQgY2FuIGJlIGZvdW5kIGhlcmU6DQpodHRw
-czovL2J0cmZzLndpa2kua2VybmVsLm9yZy9pbmRleC5waHAvT24tZGlza19Gb3JtYXQjQ0hVTktf
-SVRFTV8uMjhlNC4yOQ0KDQpUaGFua3MsDQpRdQ0KDQo+IA0KPiBFbnZpcm9ubWVudDoNCj4gLSA0
-LjE1LjAtOTYtZ2VuZXJpYyAjOTd+MTYuMDQuMS1VYnVudHUgU01QIFdlZCBBcHIgMSAwMzowMzoz
-MSBVVEMgMjAyMCANCj4geDg2XzY0IHg4Nl82NCB4ODZfNjQgR05VL0xpbnV4DQo+IC0gYnRyZnMt
-cHJvZ3MgdjQuNA0KPiANCj4gRG9lcyBhbnlvbmUgaGFzIGFueSBpZGVhPyBJIHdvdWxkIGFwcHJl
-Y2lhdGUgeW91ciBoZWxwIG9uIHRoaXMgb25lLg0KPiBUbnguDQo+IA0KPiBCZXN0IHJlZ2FyZHMs
-DQo+IERlamFuDQo+IA0KDQo=
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--6KYZ6aoDRAdCp3TPKfRsPQZgdwzfyTEht
+Content-Type: multipart/mixed; boundary="unoY3iflDqBjzhXIPnyibnPfApiEvw01s"
+
+--unoY3iflDqBjzhXIPnyibnPfApiEvw01s
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+
+
+
+On 2020/7/2 =E4=B8=8B=E5=8D=887:08, Rebraca Dejan (BSOT/PJ-ES1-Bg) wrote:=
+
+> Hi Qu,
+>=20
+> I'm using this structure to get the address of file extent:
+>=20
+> struct fiemap_extent {
+> 	__u64	fe_logical;  /* logical offset in bytes for the start of
+> 			      * the extent */
+> 	__u64	fe_physical; /* physical offset in bytes for the start
+> 			      * of the extent */
+
+fe_physical in btrfs is btrfs logical address.
+
+> 	__u64	fe_length;   /* length in bytes for the extent */
+> 	__u64	fe_reserved64[2];
+> 	__u32	fe_flags;    /* FIEMAP_EXTENT_* flags for this extent */
+> 	__u32	fe_reserved[3];
+> };
+>=20
+> And using fe_physical field I verified that it really reflects the offs=
+et in filesystem image - I can see that file content begins at this offse=
+t.
+> The problem is that I run into some specific case where file content do=
+esn't begin at fe_physical, I rather have something else at this offset.
+
+As said, there is no guarantee that btrfs logical address is mapped 1:1
+on disk.
+It's possible, but never guaranteed.
+
+You need to pass that fe_physical number to btrfs-map-logical to find
+the real on-disk offset.
+
+Thanks,
+Qu
+
+
+>=20
+> Thanks,
+> Dejan
+>=20
+> -----Original Message-----
+> From: Qu Wenruo <quwenruo.btrfs@gmx.com>=20
+> Sent: =C4=8Detvrtak, 02. jul 2020. 12:19
+> To: Rebraca Dejan (BSOT/PJ-ES1-Bg) <Dejan.Rebraca@rs.bosch.com>; linux-=
+btrfs@vger.kernel.org
+> Subject: Re: FIEMAP ioctl gets "wrong" address for the extent
+>=20
+>=20
+>=20
+> On 2020/7/2 =E4=B8=8B=E5=8D=885:11, Rebraca Dejan (BSOT/PJ-ES1-Bg) wrot=
+e:
+>> Hi all,
+>>
+>> I'm collecting file extents for our application from BtrFs filesystem =
+image.
+>> I've noticed that for some files a get the "wrong" physical offset for=
+ start of the extent.
+>=20
+> First thing first, btrfs fiemap ioctl only returns btrfs logical addres=
+s.
+> That's an address space in [0, U64_MAX), thus it's not a physical offse=
+t you can find in the device.
+>=20
+> For example, for a btrfs on a 10G disk, btrfs fiemap can return address=
+ at 128G, which you can never find on that disk.
+>=20
+> This is not that strange, as btrfs can be a multi-device fs, thus we mu=
+st have an internal address space, and then map part of the logical addre=
+ss into physical disk space.
+>=20
+>> I verified it using hexdump of the filesystem image: when dump the con=
+tent starting from the address returned from FIEMAP ioctl, I see that the=
+ content is absolutely different from the content of the file itself. Als=
+o, the FIEMAP ioctl reports regular extent, it is not inline.
+>=20
+> If you're using the logical address returned from disk directly, then y=
+ou won't get the correct data obviously.
+>=20
+> What you need is to map the btrfs logical address to physical device of=
+fset, that is done by referring to chunk tree.
+> And even after the conversion, it's not always the case for all profile=
+s.
+> For SINGLE/DUP/RAID0/RAID1/RAID10/RAID1C*, you can find the data direct=
+ly, but for RAID5/6, you need to bother the P/Q stripe.
+>=20
+> And furthermore, there are compressed data extents, which on-disk data =
+is compressed, which also diffs from the uncompressed data.
+>=20
+>=20
+> For the chunk mapping, you can verify the mapping of <logical address> =
+to <physical address> using btrfs inspect dump-tree -t chunk <device>.
+>=20
+> The details of the btrfs_chunk on-disk format can be found here:
+> https://btrfs.wiki.kernel.org/index.php/On-disk_Format#CHUNK_ITEM_.28e4=
+=2E29
+>=20
+> Thanks,
+> Qu
+>=20
+>>
+>> Environment:
+>> - 4.15.0-96-generic #97~16.04.1-Ubuntu SMP Wed Apr 1 03:03:31 UTC 2020=
+=20
+>> x86_64 x86_64 x86_64 GNU/Linux
+>> - btrfs-progs v4.4
+>>
+>> Does anyone has any idea? I would appreciate your help on this one.
+>> Tnx.
+>>
+>> Best regards,
+>> Dejan
+>>
+>=20
+
+
+--unoY3iflDqBjzhXIPnyibnPfApiEvw01s--
+
+--6KYZ6aoDRAdCp3TPKfRsPQZgdwzfyTEht
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl79w0YACgkQwj2R86El
+/qg2OAgAoZpk2+hB0Kv4h9ek+tBzskXJ5ASMIn2asBHNAMFzu/UE9cmtdFsRL1GJ
+XcYvD7qAe5PTz960ZNIz5TdjBpyoHbmTUuQVghhIEDfYtqdfK5yv8C7nQ7Zns6no
+mpLPL277GG19XRxsZglOkAM0HZ2OV+MD+2v6hNcc7t2UE1QtaLvRLXFk2+zVuJsb
+TJag13YGfdHEgz5u/MWDXcgOKmdBMWrVtD+BQ8P77+ROp2wEOEU9HRRUtNloaZpA
+vdRF7Mry2xvFqN8PF6qxMU9nEMUMTUf1ZUsSMFt897zA9jvrpX9VPWJ4Cgve4M0B
+sJ1gTj5S3mS7NWkZrfvSrmji8cHCxQ==
+=VzZq
+-----END PGP SIGNATURE-----
+
+--6KYZ6aoDRAdCp3TPKfRsPQZgdwzfyTEht--
