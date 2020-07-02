@@ -2,72 +2,82 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE9BA212447
-	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Jul 2020 15:13:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 644A421244E
+	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Jul 2020 15:13:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728931AbgGBNMv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 2 Jul 2020 09:12:51 -0400
-Received: from mx2.suse.de ([195.135.220.15]:50540 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728264AbgGBNMv (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 2 Jul 2020 09:12:51 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 776C6B16F;
-        Thu,  2 Jul 2020 13:12:50 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 99FDBDA781; Thu,  2 Jul 2020 15:11:43 +0200 (CEST)
-Date:   Thu, 2 Jul 2020 15:11:43 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 3/3] Revert "btrfs: qgroup: Commit transaction in advance
- to reduce early EDQUOT"
-Message-ID: <20200702131143.GK27795@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20200702001434.7745-1-wqu@suse.com>
- <20200702001434.7745-4-wqu@suse.com>
+        id S1729230AbgGBNNO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 2 Jul 2020 09:13:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35654 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726289AbgGBNNO (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 2 Jul 2020 09:13:14 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEEE3C08C5C1
+        for <linux-btrfs@vger.kernel.org>; Thu,  2 Jul 2020 06:13:13 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id k18so25512163qke.4
+        for <linux-btrfs@vger.kernel.org>; Thu, 02 Jul 2020 06:13:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=qsgrzQb+NO1ka28fE9F8AtI6dfqh9dG8y/DvVegXmuc=;
+        b=RBQiOxs1G1Kzp1PytRfo3hnVuKUDkrIIj4XYLBZdxm7GaYoj1miKaiL+rFJOorcWQS
+         lXWKdoYgiP2kvnE1/jCNQ6+d7mtLL+fHviIfrFxUAT0sI6MTwqAm+RNDgqgzvM1AY9no
+         kWQxMp7piAxgEggJP1k4eWsiegCzUewdvKMh7txwKYraWrMO9ggI0pxEI48eAT4I75+r
+         uqQOoSkUdi3hU9fgAzqcaDSRZ1WP2wO6/PIiTmi33o8jujn6ee2qS1KvoC67IO3EbyNJ
+         kOC269sAK75vjqlSReiM3oiivxbKmD07qBpsgTyu8vHz0qczi3uOcnFP6z+cyfVru7XR
+         vi7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=qsgrzQb+NO1ka28fE9F8AtI6dfqh9dG8y/DvVegXmuc=;
+        b=UIKGBh1TxyI8sAA/NhGV7BiXSe9Qr/sMsXkDJtPCLr20fTGrfmUguWaIWzZ6Rd3+OF
+         Jb+9Tl8rUIHQm/NFD94Gnmu/JKModyy2iAariUJ75yqIWclQ89BZ8qDEWQcb+fAO3i91
+         VNDsb5p3nAKBBkZgV6rg7Vl+mxEtW/1i+mLb7mvZML/7ObrNKrHURHVkF7oPsxqVnCFM
+         C31UuFaXH4x+3sLdWLTmnh0jnvzFaorOvyQGEagPW+/UtbjM4s+qWKRta+hA3nsBYhO/
+         ucwcPdYZyPG5/80FWN5NS0CUHVL3SuRHvnMdQR6Inz5MRL8jPInGNbwV7MhrR3AHlRxV
+         K2ag==
+X-Gm-Message-State: AOAM531zlCWWheebu1P10tPB6ToY2OcAeYzl50ADFbFOFha1Q844woWp
+        /neubV5EBh4qx37tYDRnRdVy8u1KTDhzew==
+X-Google-Smtp-Source: ABdhPJz6GzW28qV5sNX8amQ0FCRwIdHxLy5qBFjvZEyyA23eC1V4pWSdlku844sEIR601pnkj2k+RA==
+X-Received: by 2002:a37:51c6:: with SMTP id f189mr30434228qkb.339.1593695592803;
+        Thu, 02 Jul 2020 06:13:12 -0700 (PDT)
+Received: from [192.168.1.45] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id 188sm7922207qkf.50.2020.07.02.06.13.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 02 Jul 2020 06:13:11 -0700 (PDT)
+Subject: Re: [PATCH 2/8] btrfs: Streamline btrfs_get_io_failure_record logic
+To:     Nikolay Borisov <nborisov@suse.com>, linux-btrfs@vger.kernel.org
+References: <20200702122335.9117-1-nborisov@suse.com>
+ <20200702122335.9117-3-nborisov@suse.com>
+From:   Josef Bacik <josef@toxicpanda.com>
+Message-ID: <147155db-d83c-0180-0977-2ede4f0f76a4@toxicpanda.com>
+Date:   Thu, 2 Jul 2020 09:13:10 -0400
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200702001434.7745-4-wqu@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <20200702122335.9117-3-nborisov@suse.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Jul 02, 2020 at 08:14:34AM +0800, Qu Wenruo wrote:
-> This reverts commit a514d63882c3d2063b21b865447266ebcb18b04c.
+On 7/2/20 8:23 AM, Nikolay Borisov wrote:
+> Make the function directly return a pointer to a failure record and
+> adjust callers to handle it. Also refactor the logic inside so that
+> the case which allocates the failure record for the first time is not
+> handled in an 'if' arm, saving us a level of indentation. Finally make
+> the function static as it's not used outside of extent_io.c .
 > 
-> Since we have the ability to retry qgroup reservation, and do qgroup
-> space flushing, there is no need for the BTRFS_FS_NEED_ASYNC_COMMIT
-> mechanism anymore.
-> 
-> Just revert that commit to make the code a little simpler.
+> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
 
-Interestingly, the same comment from
-https://lore.kernel.org/linux-btrfs/20180629114629.GO2287@twin.jikos.cz/
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 
-applies to your patch sans the references to the other patch:
+Thanks,
 
-"
-I do not recommend to do a revert here.  Even if a patch reverts
-functionality because it's not needed anymore, then it's a "forward"
-change.  There are also other changes that may affect the behaviour and
-in this case it's 47dba17171a76ea2a2a71 that removes rcu barrier, so the
-patch has to be put into the context of current code.
-
-The commit is almost 2 years old, the idea of reverts is IMHO more to
-provide an easy way do a small step back during one devlopment cycle
-when the moving parts are still in sight.
-
-Back then the commit fixed a deadlock, a revert here would read as 'ok,
-we want the deadlock back'.
-
-So, the code is ok. The subject needs to drop the word 'revert' and
-changelg maybe mention a few more references why the logic is not needed
-anymore.
-"
+Josef
