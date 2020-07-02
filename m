@@ -2,37 +2,34 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C8FE21302B
-	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Jul 2020 01:36:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C19EC21302C
+	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Jul 2020 01:37:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726028AbgGBXg2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 2 Jul 2020 19:36:28 -0400
-Received: from mout.gmx.net ([212.227.17.21]:36433 "EHLO mout.gmx.net"
+        id S1726072AbgGBXhK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 2 Jul 2020 19:37:10 -0400
+Received: from mout.gmx.net ([212.227.17.20]:53415 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725915AbgGBXg1 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 2 Jul 2020 19:36:27 -0400
+        id S1725915AbgGBXhK (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 2 Jul 2020 19:37:10 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1593732981;
-        bh=UXE/vjRjjRcxSehl8H5I0y2c3kQ7cgOB4/37UtBbB+8=;
+        s=badeba3b8450; t=1593733019;
+        bh=D6opsDhCayU9W0VWRL/ghSa+TVS265WFuw7HXVcx7UE=;
         h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=ZuCewcVQh1FKnBxo7v2oUYzz0Ok2qAwSMjXnxHgRIu3FS4U9ijQzyd6iQ2H/HD4Hp
-         i33YxNoV10vWt7OCgrZ+YNz2yxFRmZu9FCrBMLTr0yR+OXur5K2TcGGt3PdM0ejPvq
-         A4DcrmRUIDpbGaptmLZoL/Voaar8aivECFkY9dF0=
+        b=UHnhvroE8F4f2nEb5/Oc3mNfM/c6KJIRX26btfPPLIARyCJGCgxrnzxHTEwHvJsrX
+         Z05msywvIf8d8eEFkXPx8QHdBTgsJAk/VrEPiPZ7LaQ5JYGTRjjhWPAkaMe1jJQG2r
+         W92OGK4Vnl1JSvak2H2N36eIVZB8Vx1xxRzNrk0g=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MKbg4-1jW9xR0c72-00Kziu; Fri, 03
- Jul 2020 01:36:21 +0200
-Subject: Re: [PATCH 2/3] btrfs: qgroup: Try to flush qgroup space when we get
- -EDQUOT
-To:     Josef Bacik <josef@toxicpanda.com>, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20200702001434.7745-1-wqu@suse.com>
- <20200702001434.7745-3-wqu@suse.com>
- <3ed599a3-3712-81ad-6d04-0889523cfa44@toxicpanda.com>
- <f4f0e752-0166-538d-7376-17f7fefe44f2@gmx.com>
- <5ff3b488-d82a-fbc3-97d4-8b85cacab1c9@toxicpanda.com>
- <16eb0345-6469-de3e-e091-43c75bc918bb@gmx.com>
- <a32444a5-f965-c2d5-ca4b-c2365fba106c@toxicpanda.com>
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MgvrB-1jAern30JR-00hQ1w; Fri, 03
+ Jul 2020 01:36:59 +0200
+Subject: Re: [PATCH][RFC] btrfs: introduce rescue=onlyfs
+To:     Josef Bacik <josef@toxicpanda.com>, waxhead@dirtcellar.net,
+        linux-btrfs@vger.kernel.org, kernel-team@fb.com
+References: <20200701144438.7613-1-josef@toxicpanda.com>
+ <4adbc15c-d8ff-6132-5044-9b6117ef4f5e@dirtcellar.net>
+ <bf383512-71fd-27b1-2e45-b8a0c8e2ba3f@toxicpanda.com>
+ <e0294251-606e-b08f-6df7-20a225de8630@gmx.com>
+ <2630e0b0-00a4-6258-f253-cbc6f0fb9847@toxicpanda.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -58,246 +55,172 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
  ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
  oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <daa7f868-b8a4-fd79-7140-c1f8ff1f32a4@gmx.com>
-Date:   Fri, 3 Jul 2020 07:36:17 +0800
+Message-ID: <8e14c765-dad1-1bbb-b856-afcd4ffc0731@gmx.com>
+Date:   Fri, 3 Jul 2020 07:36:55 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.9.0
 MIME-Version: 1.0
-In-Reply-To: <a32444a5-f965-c2d5-ca4b-c2365fba106c@toxicpanda.com>
+In-Reply-To: <2630e0b0-00a4-6258-f253-cbc6f0fb9847@toxicpanda.com>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="kYqGKyBqVZzDCqJcwGHqWBrnQyzp7TEHp"
-X-Provags-ID: V03:K1:tocuYoANArHIHRJT2RSSTeHNlZlP44jQnu7D/ltwMhsGKdMB5jh
- +n8NHU/jkkWlfOJ2kesT4nOXvUG/ypDr6EPsorspUYs/uPILMIz3CH2Y6wFdsjfjEWHF4ZM
- Z/ByB++nfhaT/+xMdXXrhud77R6lt7JJdeLQ/qA6QkTmY26qBtkQ4Cf2J47ST5Klo8BngSF
- xkeWJgPxJazySqXCs3xqA==
+ boundary="XGGiD7ptCOswrns0BHMQBmmnL29t36MFN"
+X-Provags-ID: V03:K1:YpPuckGbINjJvarfSMqvWhRwHZ7c0+4o1a+j8gEaXsePUCfTpVI
+ W5ZqxaWWRNcoLz5X7wjpq9LtS1+fCMSbK7U9H+T3VaWKLcZADjNDS7hRmWQT0tntyPJ6TAp
+ BWDerRuBPIBO1XWQhWO8xFfSpbMSjMuEHEtG7DTVVfuT+vP+45+MjeAgOPm9wkKZwcjVaqd
+ 2vGt7fl1EzIxakiN5E3Ug==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:s9m932GEW/A=:FaLn4pFhgVR1t/UTZ9k4rl
- uUEPIaNoZDRlAEOWCGUwTV+Nkch8okiEzr7a5qxohrRDoVRszy+CZ2iVMbq2v3RE9kSOnn5I/
- n+U3u8G1U8N1u7RZzO3ZLCxEevzw9tZFp340cI8cO6RToGkvmpEfMRoJ8PA4imKZfSqr4A786
- 0idwDqOz15tBYGC0Z5SUruOOMeg/mga+E+oaEmh/Czx8n2/PpubVshxNuS57sqom6ShV6AtT6
- nGiM0kyBK19A8t467NGPd/qmg1RrRvyuRDMLRqK0dsIYCakY5lqLz2XsuQfwdVAlNxibYwQxA
- zQBtuQduN6rc7jML9oLmc/R7KYqiqfhGt+7T1TxUDIgkAIyHNeAs2KpjGLai0gpRAkDLGJJEb
- DuNzjJNBG9VdUxfSYs0wlHxG+3pB1TAR4cpI5yCnn3hbmEhlNvsCxD9meVjeydjAZaM1xk1om
- 16ZGPeabmOJ48AoTchUL52TzY4Z4nRNrglCiZiF4Yq2LcGeJ0MgVT6Jj+j4+7VKYFiNfW1TcE
- w1H8nt3W4MtVODHnk4td5EREi5pbMUtxyHeSYCrOym/GQnCHp58aq80PCa58JjvfZhM8AIEBB
- XRkQfVaJp6kTXoLaZyGfAJteAz1/v+GPK1GzZfJW5KwX4JMtDfogq4b7tJGD841FJKZOh+Ckr
- 4vodgnobWj5e2lXoRTKTUnn+/1pRnbfZ06gkc4mzYSSCNDBwzl7YlUXk6hjSpaDxjA0JC1mTb
- V5QcdjErqKiXVt7+WFfjPwtsqzMgRALYKk7+3VkEgF/eyZ4OcC0S1EGoXZhEpYQPvgX6mngR5
- Ljq3BT1iCVcPmpJz9WrcSpbQW5Xk2seSU1BmzBtnZiKm58mh8tm4JPlkKH9/FiAnMuk6lgdP4
- eDt0jWELY9MuFoCroag4gEGbwyFQE9GUY7ti4qxqvEHAxuSAvzuhhpdRl+wGgCyCvKqJiaAYl
- k1ioEaSiDiYdf7rQpdTTL3FerjDtYbfPxr/OF1eAWM6wimfc8YGj20R9fSezfKbWoxHIEdpzr
- Tg1CzTNEITJ8qya0U1Zt7PiJrdl0NDf71jRkos4Am/NIHAKFdpECe2px4/jyN8diHxIdBb20O
- kaHGLXkoe9bxxQcfOr1VsHzthNGS0NN+yUtO5ptyzvbxbP/1D779wLGtbOXXW9M1qa49KbSl9
- m1NGYipcHws2gPgL0MberVpcVoO/9KjXj/izi2p3MAJPejnufrw3wgApoGgvuqSvONCWHlD6H
- TJp54s4mQ1cArIoqyYZcAAKxaPRjpxHKBG4GAfg==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:j5x5QF7cnW8=:s6NPEq/N9LGZj1KSOPcUlV
+ 0HPkuxVTPKBZI0YlxbnC58T2f9RNH2HYXUKMhhqge0qkjaedPGsVXZAIHNYvdsslRpgLPZEQs
+ ZPv9m9JhCXhic54M9PztDgV5ugWdf1Vc/E1rBe2DFYvucOjEhx6gwHx6WuWb2hUpWHj8kiX5P
+ Ge2PCetPchWiREzdK8qMksoMyWC88cSvuwQmWmXhb19frc/h1WEDzDBQ1nxdHkWR5ZaCmnh2H
+ qCAEF8w2SOwmGbc5kjkmMn/H37v7WwzNAEaQnS3UKJSXFRF0ExvCNpFz6dtXdk+R3whIImuOw
+ 0WOctZ1dN8zech/ZHoQFIy4duKvXX7C1P30zRiMCxHFF+AYM8bkw81ONd7LePoly0SuSCc7C9
+ 8vFAYWaFokOCSX4VqbdN9PTMFaCNp6bDxEERad5N3M1tYXqEzRBlatxRWMBksZ9UJk0Ofs6cs
+ zXdxcIG2051Jvs0F8NihWzgO66yiMmIOKZ6mMIpWbi86U+FoJuyo9jLXmOxQfKDy2NVsTHRM6
+ MfWe3y/GoNneoltB5xyjfFuukaNaSefRVNozwGS+mZ9akncMgt8utjHcHad1rzihhGPQ7gPaO
+ 9VYafCTmtHDMtGtlMCeQDDpbetSBS38ctuEtiaYVvH6Oid2RTtfrzwVbokiyD7O3P9B1d0LK7
+ zHEwJ1oB8tfvlwu+eODMhrnN5G8nqxpgel5ThBLJH+OBLOOBxL7efWj+PnbtJAY7kl96wEaQL
+ 5igC3oMIxUVJZzuYuPdAptZ1+EQqkoTwwx4EF6z68/s/zrOqAi17t74KEbMBU5lVZr64ATlzN
+ zRsLSB8RwUCYfZAdo4TfQDwBD9GhSUhaTbFzUZQcg8kPxQ41NvMzjQlQor3VdYYh06LoRixFv
+ r6unkmgqTQP3bdYFw0rZul+3Zpa3UpXISZkYxlnCX8n8NZ+03FOuPbwcUzgohyzGIV/GhxlDc
+ QMZjq1JhG0FfB2xy76w5AvgYgTIKSEL8BP4ZyQxteMdAlx0gF07duQh+PcvVONliHvqikDiVV
+ 2iuyp460u/si9rpbcIB9ceW371FvTFitkH0t0o0SzIYsfcEe9zrxyXryXFy9Hv53VOyk9/fFs
+ Kk4YZj0EqSzMLkS7MBLoxEa05ouJEVF3eK5QtMeiyaG+nQa4+7qGnMRmS7pDLI4ydBQDg98Vt
+ +Ij4li3xAlbe0h5F4394yLsO15nHwznbM/fIn1q6S4KAKYq3wwGRyjAGMFMN14iy5stX3vULb
+ y7YAN03lQMEdIzm9w
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---kYqGKyBqVZzDCqJcwGHqWBrnQyzp7TEHp
-Content-Type: multipart/mixed; boundary="KRmhumUCGlri4fG5ofZwrhgLMYbcewsKm"
+--XGGiD7ptCOswrns0BHMQBmmnL29t36MFN
+Content-Type: multipart/mixed; boundary="8xzJjMCaMEilAK5M5m9jCySLVR81fv0yo"
 
---KRmhumUCGlri4fG5ofZwrhgLMYbcewsKm
+--8xzJjMCaMEilAK5M5m9jCySLVR81fv0yo
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
 
 
 
-On 2020/7/2 =E4=B8=8B=E5=8D=8810:58, Josef Bacik wrote:
-> On 7/2/20 10:19 AM, Qu Wenruo wrote:
+On 2020/7/2 =E4=B8=8B=E5=8D=8811:28, Josef Bacik wrote:
+> On 7/1/20 11:09 PM, Qu Wenruo wrote:
 >>
 >>
->> On 2020/7/2 =E4=B8=8B=E5=8D=889:57, Josef Bacik wrote:
->>> On 7/2/20 9:54 AM, Qu Wenruo wrote:
+>> On 2020/7/2 =E4=B8=8A=E5=8D=883:53, Josef Bacik wrote:
+>>> On 7/1/20 3:43 PM, waxhead wrote:
 >>>>
 >>>>
->>>> On 2020/7/2 =E4=B8=8B=E5=8D=889:43, Josef Bacik wrote:
->>>>> On 7/1/20 8:14 PM, Qu Wenruo wrote:
->>>>>> [PROBLEM]
->>>>>> There are known problem related to how btrfs handles qgroup reserv=
-ed
->>>>>> space.
->>>>>> One of the most obvious case is the the test case btrfs/153, which=
- do
->>>>>> fallocate, then write into the preallocated range.
->>>>>>
->>>>>> =C2=A0=C2=A0=C2=A0=C2=A0 btrfs/153 1s ... - output mismatch (see
->>>>>> xfstests-dev/results//btrfs/153.out.bad)
->>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 --- tests/btrfs/1=
-53.out=C2=A0=C2=A0=C2=A0=C2=A0 2019-10-22 15:18:14.068965341
->>>>>> +0800
->>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 +++ xfstests-dev/=
-results//btrfs/153.out.bad=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 2020-07-01
->>>>>> 20:24:40.730000089 +0800
->>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 @@ -1,2 +1,5 @@
->>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 QA output c=
-reated by 153
->>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 +pwrite: Disk quo=
-ta exceeded
->>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 +/mnt/scratch/tes=
-tfile2: Disk quota exceeded
->>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 +/mnt/scratch/tes=
-tfile2: Disk quota exceeded
->>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Silence is =
-golden
->>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ...
->>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 (Run 'diff -u xfs=
-tests-dev/tests/btrfs/153.out
->>>>>> xfstests-dev/results//btrfs/153.out.bad'=C2=A0 to see the entire d=
-iff)
->>>>>>
->>>>>> [CAUSE]
->>>>>> Since commit c6887cd11149 ("Btrfs: don't do nocow check unless we
->>>>>> have
->>>>>> to"),
->>>>>> we always reserve space no matter if it's COW or not.
->>>>>>
->>>>>> Such behavior change is mostly for performance, and reverting it
->>>>>> is not
->>>>>> a good idea anyway.
->>>>>>
->>>>>> For preallcoated extent, we reserve qgroup data space for it alrea=
-dy,
->>>>>> and since we also reserve data space for qgroup at buffered write
->>>>>> time,
->>>>>> it needs twice the space for us to write into preallocated space.
->>>>>>
->>>>>> This leads to the -EDQUOT in buffered write routine.
->>>>>>
->>>>>> And we can't follow the same solution, unlike data/meta space chec=
-k,
->>>>>> qgroup reserved space is shared between data/meta.
->>>>>> The EDQUOT can happen at the metadata reservation, so doing NODATA=
-COW
->>>>>> check after qgroup reservation failure is not a solution.
+>>>> Josef Bacik wrote:
+>>>>> One of the things that came up consistently in talking with Fedora
+>>>>> about
+>>>>> switching to btrfs as default is that btrfs is particularly vulnera=
+ble
+>>>>> to metadata corruption.=C2=A0 If any of the core global roots are
+>>>>> corrupted,
+>>>>> the fs is unmountable and fsck can't usually do anything for you
+>>>>> without
+>>>>> some special options.
 >>>>>
->>>>> Why not?=C2=A0 I get that we don't know for sure how we failed, but=
- in the
->>>>> case of a write we're way more likely to have failed for data reaso=
-ns
->>>>> right?
->>>>
->>>> Nope, mostly we failed at metadata reservation, as that would return=
-
->>>> EDQUOT to user space.
->>>>
->>>> We may have some cases which get EDQUOT at data reservation part, bu=
-t
->>>> that's what we excepted.
->>>> (And already what we're doing)
->>>>
->>>> The problem is when the metadata reservation failed with EDQUOT.
->>>>
->>>>> =C2=A0=C2=A0=C2=A0 So why not just fall back to the NODATACOW check=
- and then do the
->>>>> metadata reservation. Then if it fails again you know its a real
->>>>> EDQUOT
->>>>> and your done.
+>>>>> Qu addressed this sort of with rescue=3Dskipbg, but that's poorly
+>>>>> named as
+>>>>> what it really does is just allow you to operate without an extent
+>>>>> root.
+>>>>> However there are a lot of other roots, and I'd rather not have to =
+do
 >>>>>
->>>>> Or if you want to get super fancy you could even break up the metad=
-ata
->>>>> and data reservations here so that we only fall through to the
->>>>> NODATACOW
->>>>> check if we fail the data reservation.=C2=A0 Thanks,
+>>>>> mount -o
+>>>>> rescue=3Dskipbg,rescue=3Dnocsum,rescue=3Dnofreespacetree,rescue=3Db=
+lah
+>>>>>
+>>>>> Instead take his original idea and modify it so it just works for
+>>>>> everything.=C2=A0 Turn it into rescue=3Donlyfs, and then any major =
+root we
+>>>>> fail
+>>>>> to read just gets left empty and we carry on.
+>>>>>
+>>>>> Obviously if the fs roots are screwed then the user is in trouble, =
+but
+>>>>> otherwise this makes it much easier to pull stuff off the disk with=
+out
+>>>>> needing our special rescue tools.=C2=A0 I tested this with my TEST_=
+DEV that
+>>>>> had a bunch of data on it by corrupting the csum tree and then read=
+ing
+>>>>> files off the disk.
+>>>>>
+>>>>> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+>>>>> ---
 >>>>
->>>> The problem is, qgroup doesn't split metadata and data (yet).
->>>> Currently data and meta shares the same limit.
->>>>
->>>> So when we hit EDQUOT, you have no guarantee it would happen only in=
-
->>>> qgroup data reservation.
->>>>
+>>>> Just an idea inspired from RAID1c3 and RAID1c3, how about introducin=
+g
+>>>> DUP2 and/or even DUP3 making multiple copies of the metadata to
+>>>> increase the chance to recover metadata on even a single storage
+>>>> device?
 >>>
->>> Sure, but if you are able to do the nocow thing, then presumably your=
+>>> Because this only works on HDD.=C2=A0 On SSD's concurrent writes will=
+ often
+>>> be shunted to the same erase block, and if the whole erase block goes=
+,
+>>> so do all of your copies.=C2=A0 This is why we default to 'single' fo=
+r SSD's.
+>>>
+>>> The one thing I _do_ want to do is make better use of the backup root=
+s.
+>>> Right now we always free the pinned extents once the transaction
+>>> commits, which makes the backup roots useless as we're likely to re-u=
+se
+>>> those blocks.
+>>
+>> IIRC Filipe tried this before and didn't go that direction due to ENOS=
+PC.
+>> As we need to commit multiple transactions to free the pinned extents.=
 
->>> quota reservation is less now?=C2=A0 So on failure you go do the comp=
-licated
->>> nocow check, and if it succeeds you retry your quota reservation with=
+>>
+>> But maybe the latest async pinned extent drop could solve the problem?=
 
->>> just the metadata portion, right?=C2=A0 Thanks,
->>
->> Then metadata portion can still fail, even we skipped the data reserv.=
-
->>
->> The metadata portion still needs some space, while the data rsv skip
->> only happens after we're already near the qgroup limit, which means
->> there are ready not much space left.
->>
->> Consider this case, we have 128M limit, we fallocated 120M, then we ha=
-ve
->> dirtied 7M data, plus several kilo for metadata reserved.
->>
->> Then at the next 1M, we run out of qgroup limit, at whatever position.=
-
->> Even we skip current 4K for data, the next metadata reserve may still
->> not be met, and still got EDQUOT at metadata reserve.
->>
->> Or some other open() calls to create a new file would just get EDQUOT,=
-
->> without any way to free any extra space.
->>
->>
->> Instead of try to skip just several 4K for qgroup data rsv, we should
->> flush the existing 7M, to free at least 7M data + several kilo meta
->> space.
 >>
 >=20
-> Right so I'm not against flushing in general, I just think that we can
-> greatly improve on this particular problem without flushing.=C2=A0 Chan=
-ging
-> how we do the NOCOW check with quota could be faster than doing the
-> flushing.
+> Yeah before it was tricky, but with Nikolay's work it made async pinned=
 
-Yep, but as mentioned, the uncertain timing of when we get the EDQUOT is
-really annoying and tricky to solve, thus have to go the flushing method.=
-
-
-The performance is definitely slower, but it's not acceptable, since
-we're near the limiting, slowing down is pretty common.
-
+> extent drop possible, I've been testing that patch internally.
 >=20
-> Now as for the flushing part itself, I'd rather hook into the existing
-> flushing infrastructure we have.
+> Now it's just a matter of keeping the last 4 transactions worth of
+> pinned around and only unpinning under enospc conditions.=C2=A0 I'll di=
+g out
+> the async unpinning and send that up next week since that's already
+> valuable by itself, and then we can talk about wiring up the ENOSPC par=
+t
+> of it.=C2=A0 Thanks,
 
-That's the ultimate objective.
-
->=C2=A0 Obviously the ticketing is going to be
-> different, but the flushing part is still the same, and with data
-> reservations now moved over to that infrastructure we finally have it
-> all in the same place.=C2=A0 Thanks,
-
-Before the needed infrastructure get merged, I'll keep the current small
-retry code and look into what's needed to integrate qgroup rsv into the
-ticketing system.
+That's really awesome, let make btrfs the most bullet proof fs then!
 
 Thanks,
 Qu
 
 >=20
 > Josef
+>=20
 
 
---KRmhumUCGlri4fG5ofZwrhgLMYbcewsKm--
+--8xzJjMCaMEilAK5M5m9jCySLVR81fv0yo--
 
---kYqGKyBqVZzDCqJcwGHqWBrnQyzp7TEHp
+--XGGiD7ptCOswrns0BHMQBmmnL29t36MFN
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl7+b3IACgkQwj2R86El
-/qgPVQf/df7eL4DI/avRMqW8v/fyRvOK2d39xHAYo2F5zIgvIJVdmGa5jWkkkTgQ
-TnJ8X+osdSlCId97n3q2ncQGW/rd/i+XWG0EAsiM4DWcvCC0MRwgurchPy1JWwC4
-H3a2AjOt5F/4l/qRkIPQhkIledIDIXZhoFnwiJD7iyyuYsAACv28gaSVFexyy/Om
-1fmN903wVVMFkITds0eGUKisRiG9eMDj1T8f5uQ9dblo5Sqg2L85MJxQd9+Te/ko
-tHt08UZwvmLo7qsSVYQcz1wL9YdnToo9u/ratmpe1rLEVrlP6lkPFDliKO4WTOd2
-ZLh3NrX49cgucEqcPKkv/SE4zaFk3w==
-=JUcr
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl7+b5cACgkQwj2R86El
+/qhW7gf8CrzT5MG3nhUhzr0S2EJmv/tRhwI0qEf+Ta7/rig3ZEctl9jVpZHHiWek
+d2ekp4sYAhaPO3Vx/ebqJUN9bjhHy/G/6/0y4IMrTQZ1R0E4RqmvN+ShqlGM9DHQ
+8rmjmO7O5VJ/tvGyBez/VXwoWudoxxDA83Ct1xNmnWLJtlgiYEu0eJ47OFD/Qiya
+8LB6StVL00U6/NsuxanLndghEIVA1b+V/0rS0/V7f1Ijb9mY4autn3n49P9WDEBA
+7ZRRdoemNPDwnvclRi+BlYEIeuA9JMwp2cHOGmv29Csjqwn0VD+LNSBHJcg04mPn
+jla2793C+uE2jlmgZlKTPgqtAuovuw==
+=S4uH
 -----END PGP SIGNATURE-----
 
---kYqGKyBqVZzDCqJcwGHqWBrnQyzp7TEHp--
+--XGGiD7ptCOswrns0BHMQBmmnL29t36MFN--
