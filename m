@@ -2,158 +2,105 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0913721266D
-	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Jul 2020 16:38:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46A6B212681
+	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Jul 2020 16:41:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729550AbgGBOi1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 2 Jul 2020 10:38:27 -0400
-Received: from mx2.suse.de ([195.135.220.15]:51256 "EHLO mx2.suse.de"
+        id S1729404AbgGBOl0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 2 Jul 2020 10:41:26 -0400
+Received: from mx2.suse.de ([195.135.220.15]:52844 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728179AbgGBOi0 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 2 Jul 2020 10:38:26 -0400
+        id S1728179AbgGBOl0 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 2 Jul 2020 10:41:26 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 48EB3ADD9;
-        Thu,  2 Jul 2020 14:38:25 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id C0A6CADD9;
+        Thu,  2 Jul 2020 14:41:24 +0000 (UTC)
+Subject: Re: [PATCH 8/8] btrfs: sysfs: Add bdi link to the fsid dir
+To:     dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
+        linux-btrfs@vger.kernel.org
+References: <20200702122335.9117-1-nborisov@suse.com>
+ <20200702122335.9117-9-nborisov@suse.com>
+ <8469fe54-2641-9873-c845-8355932fccef@toxicpanda.com>
+ <20200702133618.GN27795@twin.jikos.cz>
 From:   Nikolay Borisov <nborisov@suse.com>
-To:     fstests@vger.kernel.org
-Cc:     linux-btrfs@vger.kernel.org, Nikolay Borisov <nborisov@suse.com>
-Subject: [PATCH] btrfs: test that corruption counter is incremented correctly
-Date:   Thu,  2 Jul 2020 17:38:23 +0300
-Message-Id: <20200702143823.20333-1-nborisov@suse.com>
-X-Mailer: git-send-email 2.17.1
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <13a4a81b-0415-42c2-bb56-d62f5f64633d@suse.com>
+Date:   Thu, 2 Jul 2020 17:41:23 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
+MIME-Version: 1.0
+In-Reply-To: <20200702133618.GN27795@twin.jikos.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This patch ensures device corrupted counter is being modified when we try to
-read broken data.
 
-Signed-off-by: Nikolay Borisov <nborisov@suse.com>
----
- tests/btrfs/215     | 92 +++++++++++++++++++++++++++++++++++++++++++++
- tests/btrfs/215.out |  2 +
- tests/btrfs/group   |  1 +
- 3 files changed, 95 insertions(+)
- create mode 100755 tests/btrfs/215
- create mode 100644 tests/btrfs/215.out
 
-diff --git a/tests/btrfs/215 b/tests/btrfs/215
-new file mode 100755
-index 000000000000..d341144c0d97
---- /dev/null
-+++ b/tests/btrfs/215
-@@ -0,0 +1,92 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright (C) 2020 SUSE Linux Products GmbH. All Rights Reserved.
-+#
-+# FS QA Test 215
-+#
-+# Test that reading corrupted files would correctly increment device status
-+# counters. This is fixed by the following linux kernel commit:
-+# btrfs: Increment device corruption error in case of checksum error
-+#
-+seq=`basename $0`
-+seqres=$RESULT_DIR/$seq
-+echo "QA output created by $seq"
-+
-+here=`pwd`
-+tmp=/tmp/$$
-+status=1	# failure is the default!
-+trap "_cleanup; exit \$status" 0 1 2 3 15
-+
-+_cleanup()
-+{
-+	cd /
-+	rm -f $tmp.*
-+}
-+
-+# get standard environment, filters and checks
-+. ./common/rc
-+. ./common/filter
-+
-+# remove previous $seqres.full before test
-+rm -f $seqres.full
-+
-+# real QA test starts here
-+get_physical()
-+{
-+	$BTRFS_UTIL_PROG inspect-internal dump-tree -t 3 $SCRATCH_DEV | \
-+		grep $1 -A2 | \
-+		$AWK_PROG "(\$1 ~ /stripe/ && \$3 ~ /devid/ && \$2 ~ /0/) { print \$6 }"
-+}
-+
-+# Modify as appropriate.
-+_supported_fs btrfs
-+_supported_os Linux
-+
-+_scratch_mkfs > /dev/null
-+# disable freespace inode to ensure file is the first thing in the data
-+# blobk group
-+_scratch_mount -o nospace_cache
-+
-+blocksize=$(_get_block_size $SCRATCH_MNT)
-+filesize=$((8*$blocksize))
-+uuid=$(findmnt -n -o UUID "$SCRATCH_MNT")
-+
-+if [ ! -e /sys/fs/btrfs/$uuid/bdi ]; then
-+	_notrun "bdi link not found"
-+fi
-+
-+#create an 8 block file
-+$XFS_IO_PROG -d -f -c "pwrite -S 0xbb -b $filesize 0 $filesize" "$SCRATCH_MNT/foobar" > /dev/null
-+
-+logical_extent=$($FILEFRAG_PROG -v "$SCRATCH_MNT/foobar" | _filter_filefrag | cut -d '#' -f 1)
-+physical_extent=$(get_physical $logical_extent)
-+
-+echo "logical = $logical_extent physical=$physical_extent" >> $seqres.full
-+
-+# corrupt first 4 blocks of file
-+_scratch_unmount
-+$XFS_IO_PROG -d -c "pwrite -S 0xaa -b $blocksize $physical_extent $((4*$blocksize))" $SCRATCH_DEV > /dev/null
-+_scratch_mount
-+
-+# disable readahead to avoid skewing the counter
-+echo 0 > /sys/fs/btrfs/$uuid/bdi/read_ahead_kb
-+
-+# buffered reads whould result in a single error since the read is done
-+# page by page
-+$XFS_IO_PROG -c "pread -b $filesize 0 $filesize" "$SCRATCH_MNT/foobar" > /dev/null 2>&1
-+errs=$($BTRFS_UTIL_PROG device stats $SCRATCH_DEV | awk '/corruption_errs/ { print $2 }')
-+if [ $errs -ne 1 ]; then
-+	_fail "Errors: $errs expected: 1"
-+fi
-+
-+# DIO does check every sector
-+$XFS_IO_PROG -d -c "pread -b $filesize 0 $filesize" "$SCRATCH_MNT/foobar" > /dev/null 2>&1
-+errs=$($BTRFS_UTIL_PROG device stats $SCRATCH_DEV | awk '/corruption_errs/ { print $2 }')
-+if [ $errs -ne 5 ]; then
-+	_fail "Errors: $errs expected: 1"
-+fi
-+
-+# success, all done
-+echo "Silence is golden"
-+status=0
-+exit
-diff --git a/tests/btrfs/215.out b/tests/btrfs/215.out
-new file mode 100644
-index 000000000000..0a11773bbb32
---- /dev/null
-+++ b/tests/btrfs/215.out
-@@ -0,0 +1,2 @@
-+QA output created by 215
-+Silence is golden
-diff --git a/tests/btrfs/group b/tests/btrfs/group
-index 505665b54d61..dda0763e543b 100644
---- a/tests/btrfs/group
-+++ b/tests/btrfs/group
-@@ -217,3 +217,4 @@
- 212 auto balance dangerous
- 213 auto balance dangerous
- 214 auto quick send snapshot
-+215 auto quick
---
-2.17.1
+On 2.07.20 г. 16:36 ч., David Sterba wrote:
+> On Thu, Jul 02, 2020 at 09:25:30AM -0400, Josef Bacik wrote:
+>> On 7/2/20 8:23 AM, Nikolay Borisov wrote:
+>>> Since BTRFS uses a private bdi it makes sense to create a link to this
+>>> bdi under /sys/fs/btrfs/<UUID>/bdi. This allows size of read ahead to
+>>> be controlled. Without this patch it's not possible to uniquely identify
+>>> which bdi pertains to which btrfs filesystem in the fase of multiple
+>>> btrfs filesystem.
+>>>
+>>> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
+>>
+>> Was confused why we needed to make sure the link existed before removing it, 
+>> since other things sysfs is smart enough to figure out.  Apparently it has a 
+>> WARN_ON() if the parent isn't initialized, so the check is necessary, albeit 
+>> annoying.
+> 
+> There must be a better way, this is just too weird. We can check if
+> objects have been initialized by peeking to kobject::state_initialized
+> and we use that already for fsid_kobj in __btrfs_sysfs_remove_fsid or
+> btrfs_sysfs_feature_update.
+> 
 
+Awesome, will use this for v2.
