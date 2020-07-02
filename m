@@ -2,26 +2,25 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EBE921268A
-	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Jul 2020 16:44:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D3A8212701
+	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Jul 2020 16:54:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729819AbgGBOoF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 2 Jul 2020 10:44:05 -0400
-Received: from mx2.suse.de ([195.135.220.15]:53908 "EHLO mx2.suse.de"
+        id S1729934AbgGBOvd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 2 Jul 2020 10:51:33 -0400
+Received: from mx2.suse.de ([195.135.220.15]:58316 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729047AbgGBOoF (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 2 Jul 2020 10:44:05 -0400
+        id S1729867AbgGBOvd (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 2 Jul 2020 10:51:33 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 1A257AAF1;
-        Thu,  2 Jul 2020 14:44:03 +0000 (UTC)
-Subject: Re: [PATCH 5/8] btrfs: Increment device corruption error in case of
- checksum error
-To:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-References: <20200702122335.9117-1-nborisov@suse.com>
- <20200702122335.9117-6-nborisov@suse.com>
- <SN4PR0401MB3598A71152884496C7A20A289B6D0@SN4PR0401MB3598.namprd04.prod.outlook.com>
+        by mx2.suse.de (Postfix) with ESMTP id 4331DADFF
+        for <linux-btrfs@vger.kernel.org>; Thu,  2 Jul 2020 14:51:31 +0000 (UTC)
+Subject: Re: [PATCH 04/10] btrfs: raid56: Remove out label in
+ __raid56_parity_recover
+To:     dsterba@suse.cz, linux-btrfs@vger.kernel.org
+References: <20200702134650.16550-1-nborisov@suse.com>
+ <20200702134650.16550-5-nborisov@suse.com>
+ <20200702140243.GP27795@twin.jikos.cz>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  xsFNBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -65,12 +64,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  KIuxEcV8wcVjr+Wr9zRl06waOCkgrQbTPp631hToxo+4rA1jiQF2M80HAet65ytBVR2pFGZF
  zGYYLqiG+mpUZ+FPjxk9kpkRYz61mTLSY7tuFljExfJWMGfgSg1OxfLV631jV1TcdUnx+h3l
  Sqs2vMhAVt14zT8mpIuu2VNxcontxgVr1kzYA/tQg32fVRbGr449j1gw57BV9i0vww==
-Message-ID: <885366c5-9c8d-a6c9-95d2-89668ea6641a@suse.com>
-Date:   Thu, 2 Jul 2020 17:44:02 +0300
+Message-ID: <6504f06c-1a06-6e10-5aaa-9371ffcdb3bd@suse.com>
+Date:   Thu, 2 Jul 2020 17:51:30 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.8.0
 MIME-Version: 1.0
-In-Reply-To: <SN4PR0401MB3598A71152884496C7A20A289B6D0@SN4PR0401MB3598.namprd04.prod.outlook.com>
+In-Reply-To: <20200702140243.GP27795@twin.jikos.cz>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -81,40 +80,44 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2.07.20 г. 16:21 ч., Johannes Thumshirn wrote:
-> On 02/07/2020 14:41, Nikolay Borisov wrote:
->> Now that btrfs_io_bio have access to btrfs_device we can safely
->> increment the device corruption counter on error. There is one notable
->> exception - repair bios for raid. Since those don't go through the
->> normal submit_stripe_bio callpath but through raid56_parity_recover thus
->> repair bios won't have their device set.
->>
->> Link: https://lore.kernel.org/linux-btrfs/4857863.FCrPRfMyHP@liv/
+On 2.07.20 г. 17:02 ч., David Sterba wrote:
+> On Thu, Jul 02, 2020 at 04:46:44PM +0300, Nikolay Borisov wrote:
 >> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
 >> ---
->>  fs/btrfs/inode.c | 3 +++
->>  1 file changed, 3 insertions(+)
+>>  fs/btrfs/raid56.c | 4 ++--
+>>  1 file changed, 2 insertions(+), 2 deletions(-)
 >>
->> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
->> index e7600b0fd9b5..c6824d0ce59d 100644
->> --- a/fs/btrfs/inode.c
->> +++ b/fs/btrfs/inode.c
->> @@ -2822,6 +2822,9 @@ static int check_data_csum(struct inode *inode, struct btrfs_io_bio *io_bio,
->>  zeroit:
->>  	btrfs_print_data_csum_error(BTRFS_I(inode), start, csum, csum_expected,
->>  				    io_bio->mirror_num);
->> +	if (io_bio->dev)
->> +		btrfs_dev_stat_inc_and_print(io_bio->dev,
->> +					     BTRFS_DEV_STAT_CORRUPTION_ERRS);
->>  	memset(kaddr + pgoff, 1, len);
->>  	flush_dcache_page(page);
->>  	kunmap_atomic(kaddr);
+>> diff --git a/fs/btrfs/raid56.c b/fs/btrfs/raid56.c
+>> index a7ae4d8a47ce..d9415a22617b 100644
+>> --- a/fs/btrfs/raid56.c
+>> +++ b/fs/btrfs/raid56.c
+>> @@ -2093,7 +2093,7 @@ static int __raid56_parity_recover(struct btrfs_raid_bio *rbio)
+>>  		 */
+>>  		if (atomic_read(&rbio->error) <= rbio->bbio->max_errors) {
+>>  			__raid_recover_end_io(rbio);
+>> -			goto out;
+>> +			return 0;
 > 
-> Any chance you could do a follow up merging that weird zeroit label 
-> into the memset() block?
-> 
-> It kind of disturbs the reading flow of that function and in fact it 
-> doesn't even zero the data
+> No please, when there are labels that do cleanup like the one in the
+> context, 'return's make it harder to follow.
 > 
 
-Makes sense, it doesn't even look that bad at all in terms of line length.
+But I'm not touching the cleanup hand of the if, rather the one which
+simply returns 0. SO why jmp + ret when we can straight ret ?
+
+
+>>  		} else {
+>>  			goto cleanup;
+>>  		}
+>> @@ -2113,7 +2113,7 @@ static int __raid56_parity_recover(struct btrfs_raid_bio *rbio)
+>>  
+>>  		submit_bio(bio);
+>>  	}
+>> -out:
+>> +
+>>  	return 0;
+>>  
+>>  cleanup:
+>> -- 
+>> 2.17.1
+> 
