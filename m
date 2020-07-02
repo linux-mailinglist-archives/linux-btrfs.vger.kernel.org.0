@@ -2,141 +2,118 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D79821222C
-	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Jul 2020 13:25:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FB2F212255
+	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Jul 2020 13:32:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728654AbgGBLZH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 2 Jul 2020 07:25:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46854 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728009AbgGBLZH (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 2 Jul 2020 07:25:07 -0400
-Received: from mail-vs1-xe43.google.com (mail-vs1-xe43.google.com [IPv6:2607:f8b0:4864:20::e43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24EACC08C5C1
-        for <linux-btrfs@vger.kernel.org>; Thu,  2 Jul 2020 04:25:07 -0700 (PDT)
-Received: by mail-vs1-xe43.google.com with SMTP id p25so7272535vsg.4
-        for <linux-btrfs@vger.kernel.org>; Thu, 02 Jul 2020 04:25:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc:content-transfer-encoding;
-        bh=3MV+d1lYw2U0jN82QQaTvanM86yF3M+Qt59b879javY=;
-        b=MT+b0IonPuRK9IHAsFgCvgKPTl9+9rd70sXTZHc6QAHgqlB/QoL2XA+0w3Fc1R8Ss/
-         WblraA7vvTdX9NSFO3V5UfsrRJi0NOEzrEAjM2B9Bo3SjFyqw7Fz1nUumS2+MN6ZlbFa
-         N1fXZOlywqp1ArTrXA6JgQV5nDdyD+4iKvmpIBz5u5GfjtMyhRFkbJ7RFTRudaBivlrK
-         SNFMmeue6hvc/fEekv5gaDMKYgvO+Pqy8q3obRXSec0VQQ/R82ooyiICA6jFKS7t2yd0
-         XrAW/7sdbyYrORvl19FGpskdQbJy8XUyM8wrzgaSMLD5sh/Nus0WQ2oBJIwwudC/Hkq7
-         kmjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc:content-transfer-encoding;
-        bh=3MV+d1lYw2U0jN82QQaTvanM86yF3M+Qt59b879javY=;
-        b=pZyXTVuRSAdCAPBUlll0p7TBXMFrHKa0pDhV2Xehrgipv3qgniOJfjU/tKtdk4FFHZ
-         ieQsfeorTQB2EJSGu5OqjH7CBmWg8XWxHE/ivw2MNytZk555JYrPA9yx05TpEdezZ6Yv
-         sMXDKa4IKDRVEqLl9hugYSl5YqoIFuowx5EQARj7rlHUQLmV9w9HUG39AibchY3hIBLA
-         OanduTYzaTzMzw7coijIQnvDgDvFIaKjlW0tUqofsPYl4tirMF0cC0co6CAPDCThVhpz
-         MrFicIWwUMNtb4cLxV9Bv5ji8+yrHNNI0a5WJmJcDYugToNPetUG1JAwEr6Hg+ra9UNG
-         vWzg==
-X-Gm-Message-State: AOAM532a/so33s8M9mBTeBx1K2GvcE0v+d6Yf7fErY5zhBCtFVv3kfad
-        5hkEr8ScSyKiBdc2ZPqP45VQO2v/s2yvCTc87LU=
-X-Google-Smtp-Source: ABdhPJyha1k4hSN9THNaWgOF+xUzikKKpZC8e+LG7R1+zmjhkc+h2TsA78Q8UtkEmj77J+oKP6lvDzrJFTQqx/U2kOc=
-X-Received: by 2002:a67:1e45:: with SMTP id e66mr21551814vse.95.1593689106418;
- Thu, 02 Jul 2020 04:25:06 -0700 (PDT)
+        id S1728454AbgGBLcG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 2 Jul 2020 07:32:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51246 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728257AbgGBLcG (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 2 Jul 2020 07:32:06 -0400
+Received: from debian8.Home (bl8-197-74.dsl.telepac.pt [85.241.197.74])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2D64B20723
+        for <linux-btrfs@vger.kernel.org>; Thu,  2 Jul 2020 11:32:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1593689525;
+        bh=IUyUT3IPv7spO8zkWL3aA4FXLwHFPTmbmjczLE0ZG0M=;
+        h=From:To:Subject:Date:From;
+        b=EG7ZfLY1DaGMzWuqEX4yiuQ2qyxAQgFdcXapafzGgzlAxB1V8W5DWDXvQiBkZv6po
+         ZM3f6mF8pT4JMXPPgA8fcMtUCgShJqnp3gLPn3dCxP/bma1rGu3cGETMO6oTD4OVtS
+         8E3YezxP3iXaO5hugmoBUVgjZFrdO3MKYgq1qUIs=
+From:   fdmanana@kernel.org
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH 1/4] btrfs: only commit the delayed inode when doing a full fsync
+Date:   Thu,  2 Jul 2020 12:31:59 +0100
+Message-Id: <20200702113159.153135-1-fdmanana@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <20200701202219.11984-1-josef@toxicpanda.com> <20200701202219.11984-2-josef@toxicpanda.com>
-In-Reply-To: <20200701202219.11984-2-josef@toxicpanda.com>
-Reply-To: fdmanana@gmail.com
-From:   Filipe Manana <fdmanana@gmail.com>
-Date:   Thu, 2 Jul 2020 12:24:55 +0100
-Message-ID: <CAL3q7H74qa0ggk=TY+ghC31CNha9RDmx=e7qzE_bb7rAzdDhWw@mail.gmail.com>
-Subject: Re: [PATCH 2/2] btrfs: fix block group UAF bug with nocow
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>, kernel-team@fb.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Jul 1, 2020 at 9:23 PM Josef Bacik <josef@toxicpanda.com> wrote:
->
-> While debugging a patch that I wrote I was hitting UAF panics when
-> accessing block groups on unmount.  This turned out to be because in the
-> nocow case if we bail out of doing the nocow for whatever reason we need
-> to call btrfs_dec_nocow_writers() if we called the inc.  This puts our
-> block group, but a few error cases does
->
-> if (nocow) {
->     btrfs_dec_nocow_writers();
->     goto error;
-> }
->
-> unfortunately, error is
->
-> error:
->         if (nocow)
->                 btrfs_dec_nocow_writers();
->
-> so we get a double put on our block group.  Fix this by dropping the
-> error cases calling of btrfs_dec_nocow_writers(), as it's handled at the
-> error label now.
->
-> Fixes: 762bf09893b4 ("btrfs: improve error handling in run_delalloc_nocow=
-")
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+From: Filipe Manana <fdmanana@suse.com>
 
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
+Commit 2c2c452b0cafdc ("Btrfs: fix fsync when extend references are added
+to an inode") forced a commit of the delayed inode when logging an inode
+in order to ensure we would end up logging the inode item during a full
+fsync. By committing the delayed inode, we updated the inode item in the
+fs/subvolume tree and then later when copying items from leafs modified in
+the current transaction into the log tree (with copy_inode_items_to_log())
+we ended up copying the inode item from the fs/subvolume tree into the log
+tree. Logging an up to date version of the inode item is required to make
+sure at log replay time we get the link count fixup triggered among other
+things (replay xattr deletes, etc). The test case generic/040 from fstests
+exercises the bug which that commit fixed.
 
-Looks good and the patch compiles and works just fine here on the
-latest misc-next.
-Thanks.
+However for a fast fsync we don't need to commit the delayed inode because
+we always log an up to date version of the inode item based on the struct
+btrfs_inode we have in-memory. We started doing this for fast fsyncs since
+commit e4545de5b035c7 ("Btrfs: fix fsync data loss after append write").
 
-> ---
->  fs/btrfs/inode.c | 9 +--------
->  1 file changed, 1 insertion(+), 8 deletions(-)
->
-> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> index d301550b9c70..cb18b1a13dca 100644
-> --- a/fs/btrfs/inode.c
-> +++ b/fs/btrfs/inode.c
-> @@ -1694,12 +1694,8 @@ static noinline int run_delalloc_nocow(struct inod=
-e *inode,
->                         ret =3D fallback_to_cow(inode, locked_page, cow_s=
-tart,
->                                               found_key.offset - 1,
->                                               page_started, nr_written);
-> -                       if (ret) {
-> -                               if (nocow)
-> -                                       btrfs_dec_nocow_writers(fs_info,
-> -                                                               disk_byte=
-nr);
-> +                       if (ret)
->                                 goto error;
-> -                       }
->                         cow_start =3D (u64)-1;
->                 }
->
-> @@ -1715,9 +1711,6 @@ static noinline int run_delalloc_nocow(struct inode=
- *inode,
->                                           ram_bytes, BTRFS_COMPRESS_NONE,
->                                           BTRFS_ORDERED_PREALLOC);
->                         if (IS_ERR(em)) {
-> -                               if (nocow)
-> -                                       btrfs_dec_nocow_writers(fs_info,
-> -                                                               disk_byte=
-nr);
->                                 ret =3D PTR_ERR(em);
->                                 goto error;
->                         }
-> --
-> 2.24.1
->
+So just stop committing the delayed inode if we are doing a fast fsync,
+we are only wasting time and adding contention on fs/subvolume tree.
 
+This patch is part of a series that has the following patches:
 
---=20
-Filipe David Manana,
+1/4 btrfs: only commit the delayed inode when doing a full fsync
+2/4 btrfs: only commit delayed items at fsync if we are logging a directory
+3/4 btrfs: stop incremening log_batch for the log root tree when syncing log
+4/4 btrfs: remove no longer needed use of log_writers for the log root tree
 
-=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
- right.=E2=80=9D
+After the entire patchset applied I saw about 12% decrease on max latency
+reported by dbench. The test was done on a qemu vm, with 8 cores, 16Gb of
+ram, using kvm and using a raw NVMe device directly (no intermediary fs on
+the host). The test was invoked like the following:
+
+  mkfs.btrfs -f /dev/sdk
+  mount -o ssd -o nospace_cache /dev/sdk /mnt/sdk
+  dbench -D /mnt/sdk -t 300 8
+  umount /mnt/dsk
+
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+---
+ fs/btrfs/tree-log.c | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
+
+diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
+index df6d4e3e40b1..44bbf8919883 100644
+--- a/fs/btrfs/tree-log.c
++++ b/fs/btrfs/tree-log.c
+@@ -5130,7 +5130,7 @@ static int btrfs_log_inode(struct btrfs_trans_handle *trans,
+ 	struct btrfs_key max_key;
+ 	struct btrfs_root *log = root->log_root;
+ 	int err = 0;
+-	int ret;
++	int ret = 0;
+ 	bool fast_search = false;
+ 	u64 ino = btrfs_ino(inode);
+ 	struct extent_map_tree *em_tree = &inode->extent_tree;
+@@ -5167,14 +5167,16 @@ static int btrfs_log_inode(struct btrfs_trans_handle *trans,
+ 
+ 	/*
+ 	 * Only run delayed items if we are a dir or a new file.
+-	 * Otherwise commit the delayed inode only, which is needed in
+-	 * order for the log replay code to mark inodes for link count
+-	 * fixup (create temporary BTRFS_TREE_LOG_FIXUP_OBJECTID items).
++	 * Otherwise commit the delayed inode only if the full sync flag is set,
++	 * as we want to make sure an up to date version is in the subvolume
++	 * tree so copy_inode_items_to_log() / copy_items() can find it and copy
++	 * it to the log tree. For a non full sync, we always log the inode item
++	 * based on the in-memory struct btrfs_inode which is always up to date.
+ 	 */
+ 	if (S_ISDIR(inode->vfs_inode.i_mode) ||
+ 	    inode->generation > fs_info->last_trans_committed)
+ 		ret = btrfs_commit_inode_delayed_items(trans, inode);
+-	else
++	else if (test_bit(BTRFS_INODE_NEEDS_FULL_SYNC, &inode->runtime_flags))
+ 		ret = btrfs_commit_inode_delayed_inode(inode);
+ 
+ 	if (ret) {
+-- 
+2.26.2
+
