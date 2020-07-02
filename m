@@ -2,63 +2,63 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54B2C21240A
-	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Jul 2020 15:02:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EA1F212412
+	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Jul 2020 15:04:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729051AbgGBNCd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 2 Jul 2020 09:02:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33984 "EHLO
+        id S1729076AbgGBNE3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 2 Jul 2020 09:04:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726343AbgGBNCc (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 2 Jul 2020 09:02:32 -0400
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCF2DC08C5C1
-        for <linux-btrfs@vger.kernel.org>; Thu,  2 Jul 2020 06:02:32 -0700 (PDT)
-Received: by mail-qt1-x841.google.com with SMTP id w34so1045683qte.1
-        for <linux-btrfs@vger.kernel.org>; Thu, 02 Jul 2020 06:02:32 -0700 (PDT)
+        with ESMTP id S1729055AbgGBNE2 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 2 Jul 2020 09:04:28 -0400
+Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB819C08C5C1
+        for <linux-btrfs@vger.kernel.org>; Thu,  2 Jul 2020 06:04:28 -0700 (PDT)
+Received: by mail-qv1-xf42.google.com with SMTP id a14so12590220qvq.6
+        for <linux-btrfs@vger.kernel.org>; Thu, 02 Jul 2020 06:04:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=subject:to:references:from:message-id:date:user-agent:mime-version
          :in-reply-to:content-language:content-transfer-encoding;
-        bh=VCt46EqA7GjcAKAUOkH4pTF4Tj/KSzFQt8IL1cJ3qEc=;
-        b=WlRfookABPLGK6zbqHR7sDOb89k7Riyg7SbWGI3gWLjQMiTx11sNGwxSyEhNc81imB
-         hFnkWXX/1AMGYQHWgTKwcHhWxsauD/RwJhl543pWGksPYIzCXOscxdLRmDGEC2V1Nz9h
-         DQwX+sUWvcj3qguHIXnfwqurLrp74/AVifym0V+X4j/dzE/4o2m5oh8/Ak5kA25mA3vd
-         xhfCzHvxTYAra7RDABbhHld0SJWnUkIzzwGghG/2R3OpbaI1Kq1MZk6+U2Y+Nscftn88
-         +ZjvoKc1kgxy89rUCXV2qHOXyT9qwF+WIJiFT1fQvWIt6nEFghdLZ4m3uqcMQXBkJ7bY
-         TTew==
+        bh=1NTSYWg47uLSkIoOnKOkxNo4RPvGm/51T+oP2oL6xrk=;
+        b=BZpwpYZXDMj3d0ZSVCrXVbBQDoIVJsimYz24m+DU0EObpVjUC6MaZ45dKK0hcLHOkQ
+         ywZoKyY+hgPcSvy31WvDTDsG2Q96/LASkCtS79gAdKtPCZpRNd2Ho2kPDpPRPvoQTOXj
+         jaHKfMEX7qFzFiWNnTNx7N9yfqwQQUAYI2MscHD7B3zlz+HsSCbkVzVNIKfuSJeJF2P7
+         SZoOCIGmuPoWFRoi6oLnMwgQxzRhnjfC0EvYo02iUM3h65RJ9YcFiWf/IM22OdPejHC5
+         oy/5zKH84ybk+Bc+FrXYwdXZhzG1SZr0vQhz+LRY4jP/m52jDtM2wVOTfHmBVCRvGnaK
+         aETg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=VCt46EqA7GjcAKAUOkH4pTF4Tj/KSzFQt8IL1cJ3qEc=;
-        b=pva1JTSfR0ew+iwWGkqPC3d0DgZenn7lzk6NVaRwnxPIRyQDR+p0gSmzlxgRIxr1QK
-         84aqJSjXsgyevB9GP7ONy/F8QrEUKWcQQVvvs5I9LGU74JwhgEFL1b4aNAsx2O73ZaGN
-         6rof+ZVDkwjP/O4HsbA7Qb+8nHHKLbbf4DSk0G9bNU6RC36p+GYLMG+xbYFuXLzUSJuH
-         TZJlFVyROEXVbckeEDrAGYE9MQfktz9uysKXb8HnlXXrE2FfDMgRFqY3q1mjnwlXKjY+
-         7DqYopZ6UC6hjX7/gNReMKOOM2XPLpDkxmshTuvP/CSp13NvVyiCcBLl48Uj2yJWNzFp
-         qATw==
-X-Gm-Message-State: AOAM531qfjtsx/SyuFe1H+GdfaxQlH8ri1Gy6x0AkbfwRDhoRNE4cpYc
-        fILJGIybJmZwn3+wqQf6BcHvlGm3OW15Hw==
-X-Google-Smtp-Source: ABdhPJyxBC4aVizzksFZfNgixvt3JlMxNIqFM/KUv+asK9PQO9D0iklkpYHe717EQqXRiOVpa9ZBxw==
-X-Received: by 2002:aed:2aa5:: with SMTP id t34mr32390043qtd.363.1593694951475;
-        Thu, 02 Jul 2020 06:02:31 -0700 (PDT)
+        bh=1NTSYWg47uLSkIoOnKOkxNo4RPvGm/51T+oP2oL6xrk=;
+        b=WE4t2o3+/4aZRk83bSiHjWqcEyuXUw77gT54DLBnDPU/wgCLuKNqkudHK5QzjiY5zd
+         Wt1T0D0rzx7vwkSj1UOdol6uV/y65yBtiJwhfDMfWJ/oGC3kEmiPSxc8w86Z3N7T5o5W
+         r4mXEDzTkK+uqdrS9BHjgb0ko/880qkV5obqRscEKEW5um2LlbKtGyXA+dBaQVvLj+tJ
+         XBfIfgldex/HN1HufTEIUlEBCJ+ZWHQ5p8rcSBZaxS7df0IZgOt8dunPOE/aNoG0kKGK
+         2+dgrMyHRbEVjYdq+zue/Bw452WcX8DWi0V+9D277LOITLb230IFK1vgQpOMOKTTEriS
+         wmZw==
+X-Gm-Message-State: AOAM531ptEwKTcRyOi2YAz9JOd5WMmYGzVtJkX8KCRXaI42WfwVHj6oJ
+        hbvrML7bimlvxWbNTmHwjVMO93VURSJ9Eg==
+X-Google-Smtp-Source: ABdhPJwR4J+SM4xvWgNnKqFDXaSBBpnAeLScCjsfn4+xh0eHzekNDV0oziQ8UzMSVWImk6OyfJJXHw==
+X-Received: by 2002:a0c:e789:: with SMTP id x9mr28252208qvn.135.1593695067445;
+        Thu, 02 Jul 2020 06:04:27 -0700 (PDT)
 Received: from [192.168.1.45] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id t57sm8381887qtc.91.2020.07.02.06.02.30
+        by smtp.gmail.com with ESMTPSA id x34sm891557qtd.44.2020.07.02.06.04.26
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 02 Jul 2020 06:02:30 -0700 (PDT)
-Subject: Re: [PATCH 3/4] btrfs: stop incremening log_batch for the log root
- tree when syncing log
+        Thu, 02 Jul 2020 06:04:26 -0700 (PDT)
+Subject: Re: [PATCH 4/4] btrfs: remove no longer needed use of log_writers for
+ the log root tree
 To:     fdmanana@kernel.org, linux-btrfs@vger.kernel.org
-References: <20200702113231.168052-1-fdmanana@kernel.org>
+References: <20200702113240.171572-1-fdmanana@kernel.org>
 From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <b2eca20a-ed0f-b45f-b998-8076ac81162e@toxicpanda.com>
-Date:   Thu, 2 Jul 2020 09:02:29 -0400
+Message-ID: <ae10a30c-636b-65d7-5da0-f9a5d0c8fab1@toxicpanda.com>
+Date:   Thu, 2 Jul 2020 09:04:25 -0400
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
  Gecko/20100101 Thunderbird/68.9.0
 MIME-Version: 1.0
-In-Reply-To: <20200702113231.168052-1-fdmanana@kernel.org>
+In-Reply-To: <20200702113240.171572-1-fdmanana@kernel.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -70,16 +70,40 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 On 7/2/20 7:32 AM, fdmanana@kernel.org wrote:
 > From: Filipe Manana <fdmanana@suse.com>
 > 
-> We are incrementing the log_batch atomic counter of the root log tree but
-> we never use that counter, it's used only for the log trees of subvolume
-> roots. We started doing it when we moved the log_batch and log_write
-> counters from the global, per fs, btrfs_fs_info structure, into the
-> btrfs_root structure in commit 7237f1833601dc ("Btrfs: fix tree logs
-> parallel sync").
+> When syncing the log, we used to update the log root tree without holding
+> neither the log_mutex of the subvolume root nor the log_mutex of log root
+> tree.
 > 
-> So just stop doing it for the log root tree and add a comment over the
-> field declaration so inform it's used only for log trees of subvolume
-> roots.
+> We used to have two critical sections delimited by the log_mutex of the
+> log root tree, so in the first one we incremented the log_writers of the
+> log root tree and on the second one we decremented it and waited for the
+> log_writers counter to go down to zero. This was because the update of
+> the log root tree happened between the two critical sections.
+> 
+> The use of two critical sections allowed a little bit more of parallelism
+> and required the use of the log_writers counter, necessary to make sure
+> we didn't miss any log root tree update when we have multiple tasks trying
+> to sync the log in parallel.
+> 
+> However after commit 06989c799f0481 ("Btrfs: fix race updating log root
+> item during fsync") the log root tree update was moved into a critical
+> section delimited by the subvolume's log_mutex. Later another commit
+> moved the log tree update from that critical section into the second
+> critical section delimited by the log_mutex of the log root tree. Both
+> commits addressed different bugs.
+> 
+> The end result is that the first critical section delimited by the
+> log_mutex of the log root tree became pointless, since there's nothing
+> done between it and the second critical section, we just have an unlock
+> of the log_mutex followed by a lock operation. This means we can merge
+> both critical sections, as the first one does almost nothing now, and we
+> can stop using the log_writers counter of the log root tree, which was
+> incremented in the first critical section and decremented in the second
+> criticial section, used to make sure no one in the second critical section
+> started writeback of the log root tree before some other task updated it.
+> 
+> So just remove the mutex_unlock() followed by mutex_lock() of the log root
+> tree, as well as the use of the log_writers counter for the log root tree.
 > 
 > This patch is part of a series that has the following patches:
 > 
@@ -99,6 +123,8 @@ On 7/2/20 7:32 AM, fdmanana@kernel.org wrote:
 >    umount /mnt/dsk
 > 
 > Signed-off-by: Filipe Manana <fdmanana@suse.com>
+
+Lol oops, did I leave it like that?
 
 Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 
