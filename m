@@ -2,75 +2,70 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D3A8212701
-	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Jul 2020 16:54:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43A37212734
+	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Jul 2020 16:59:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729934AbgGBOvd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 2 Jul 2020 10:51:33 -0400
-Received: from mx2.suse.de ([195.135.220.15]:58316 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729867AbgGBOvd (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 2 Jul 2020 10:51:33 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 4331DADFF
-        for <linux-btrfs@vger.kernel.org>; Thu,  2 Jul 2020 14:51:31 +0000 (UTC)
-Subject: Re: [PATCH 04/10] btrfs: raid56: Remove out label in
- __raid56_parity_recover
-To:     dsterba@suse.cz, linux-btrfs@vger.kernel.org
-References: <20200702134650.16550-1-nborisov@suse.com>
- <20200702134650.16550-5-nborisov@suse.com>
- <20200702140243.GP27795@twin.jikos.cz>
-From:   Nikolay Borisov <nborisov@suse.com>
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <6504f06c-1a06-6e10-5aaa-9371ffcdb3bd@suse.com>
-Date:   Thu, 2 Jul 2020 17:51:30 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1729917AbgGBO7B (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 2 Jul 2020 10:59:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52194 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726032AbgGBO7B (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 2 Jul 2020 10:59:01 -0400
+Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5DEDC08C5C1
+        for <linux-btrfs@vger.kernel.org>; Thu,  2 Jul 2020 07:59:00 -0700 (PDT)
+Received: by mail-qv1-xf44.google.com with SMTP id h18so12787862qvl.3
+        for <linux-btrfs@vger.kernel.org>; Thu, 02 Jul 2020 07:59:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=1qcnweC8moBnJ/3UikOmyV5FUI8MVN7N/NAzeZydIBM=;
+        b=q2xhtLy0GPj+DgcBTnH+A0K8Ro65RCEI/qTi/PjOWyM895JulxCRJR89A2ln5xNMfJ
+         gjbHCTMdU1nDqXT6vIENI8pRX7rhfoQ8QuzFwk0qFIpMdRFcY2WhovN/c4oDkA2ghd4g
+         GT+p1WiOq974vxueGzFqHau1J701067Ol1gyyFWP3+JV3raJmJs9VkX8/9umojOfhKvb
+         uvhsArycryTZoyC4PXr79ISY/7vqiDm+etuyTnXKIpnmfr1E0zjClIxQQ8EbM/twvfMs
+         SN0uDG4KFTrLw3rRwoAMVQPvXvTGDHkz/mxbFDyhW4mHw89QTotGmjjUeDAq0lfNjFIT
+         C89Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=1qcnweC8moBnJ/3UikOmyV5FUI8MVN7N/NAzeZydIBM=;
+        b=bxbxWsdMyPrvk6fCTSzTg7xjhvpjuKnkSvCGKrwI8wr93gJM43r2vXJV0GZYinyq+l
+         ayFI+qEF9iWLS2VIGNDnXrR9EMO1ljOTGcsglxnn17Nk2nqyL5lU4j9gCunUGIvVVM3v
+         un5RAhd95XgqXZHP/LI7ekIIR2gP10VPnEE3NuogDwJQHXYKnJXyPUBhCcXc9vajgNxx
+         hIJorJS4kC1kLtb3AOhcQl2Jxd0ud4xF06R8R/tlsYk0ooVtHz0qGhhrw84Cctek+Vja
+         cZtr5DEBbRRnb50TaGdBqfvq6q1g23CT0LuucIrbfA+VcAmQmv/iiciT6OiuSvhF9BM7
+         hJcw==
+X-Gm-Message-State: AOAM532dL8qgJuZc//julaJKfDwhcwiM02yoow+GXDuOYuPjby7ys3c/
+        GfToiGpVbKNRwOA2yV7FTeLmiNz0tkQmHg==
+X-Google-Smtp-Source: ABdhPJzYFcGiI3di1gH5Mq4nUzZ85RvQ698ZPwFGZg3bIKMfPTMpvqTJ0325TJ0+llQ4YznpodMjOA==
+X-Received: by 2002:ad4:4b62:: with SMTP id m2mr31460185qvx.68.1593701939376;
+        Thu, 02 Jul 2020 07:58:59 -0700 (PDT)
+Received: from [192.168.1.45] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id s46sm9514275qts.85.2020.07.02.07.58.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 02 Jul 2020 07:58:58 -0700 (PDT)
+Subject: Re: [PATCH 2/3] btrfs: qgroup: Try to flush qgroup space when we get
+ -EDQUOT
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <20200702001434.7745-1-wqu@suse.com>
+ <20200702001434.7745-3-wqu@suse.com>
+ <3ed599a3-3712-81ad-6d04-0889523cfa44@toxicpanda.com>
+ <f4f0e752-0166-538d-7376-17f7fefe44f2@gmx.com>
+ <5ff3b488-d82a-fbc3-97d4-8b85cacab1c9@toxicpanda.com>
+ <16eb0345-6469-de3e-e091-43c75bc918bb@gmx.com>
+From:   Josef Bacik <josef@toxicpanda.com>
+Message-ID: <a32444a5-f965-c2d5-ca4b-c2365fba106c@toxicpanda.com>
+Date:   Thu, 2 Jul 2020 10:58:57 -0400
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.9.0
 MIME-Version: 1.0
-In-Reply-To: <20200702140243.GP27795@twin.jikos.cz>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <16eb0345-6469-de3e-e091-43c75bc918bb@gmx.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
@@ -78,46 +73,116 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 2.07.20 г. 17:02 ч., David Sterba wrote:
-> On Thu, Jul 02, 2020 at 04:46:44PM +0300, Nikolay Borisov wrote:
->> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
->> ---
->>  fs/btrfs/raid56.c | 4 ++--
->>  1 file changed, 2 insertions(+), 2 deletions(-)
+On 7/2/20 10:19 AM, Qu Wenruo wrote:
+> 
+> 
+> On 2020/7/2 下午9:57, Josef Bacik wrote:
+>> On 7/2/20 9:54 AM, Qu Wenruo wrote:
+>>>
+>>>
+>>> On 2020/7/2 下午9:43, Josef Bacik wrote:
+>>>> On 7/1/20 8:14 PM, Qu Wenruo wrote:
+>>>>> [PROBLEM]
+>>>>> There are known problem related to how btrfs handles qgroup reserved
+>>>>> space.
+>>>>> One of the most obvious case is the the test case btrfs/153, which do
+>>>>> fallocate, then write into the preallocated range.
+>>>>>
+>>>>>      btrfs/153 1s ... - output mismatch (see
+>>>>> xfstests-dev/results//btrfs/153.out.bad)
+>>>>>          --- tests/btrfs/153.out     2019-10-22 15:18:14.068965341 +0800
+>>>>>          +++ xfstests-dev/results//btrfs/153.out.bad      2020-07-01
+>>>>> 20:24:40.730000089 +0800
+>>>>>          @@ -1,2 +1,5 @@
+>>>>>           QA output created by 153
+>>>>>          +pwrite: Disk quota exceeded
+>>>>>          +/mnt/scratch/testfile2: Disk quota exceeded
+>>>>>          +/mnt/scratch/testfile2: Disk quota exceeded
+>>>>>           Silence is golden
+>>>>>          ...
+>>>>>          (Run 'diff -u xfstests-dev/tests/btrfs/153.out
+>>>>> xfstests-dev/results//btrfs/153.out.bad'  to see the entire diff)
+>>>>>
+>>>>> [CAUSE]
+>>>>> Since commit c6887cd11149 ("Btrfs: don't do nocow check unless we have
+>>>>> to"),
+>>>>> we always reserve space no matter if it's COW or not.
+>>>>>
+>>>>> Such behavior change is mostly for performance, and reverting it is not
+>>>>> a good idea anyway.
+>>>>>
+>>>>> For preallcoated extent, we reserve qgroup data space for it already,
+>>>>> and since we also reserve data space for qgroup at buffered write time,
+>>>>> it needs twice the space for us to write into preallocated space.
+>>>>>
+>>>>> This leads to the -EDQUOT in buffered write routine.
+>>>>>
+>>>>> And we can't follow the same solution, unlike data/meta space check,
+>>>>> qgroup reserved space is shared between data/meta.
+>>>>> The EDQUOT can happen at the metadata reservation, so doing NODATACOW
+>>>>> check after qgroup reservation failure is not a solution.
+>>>>
+>>>> Why not?  I get that we don't know for sure how we failed, but in the
+>>>> case of a write we're way more likely to have failed for data reasons
+>>>> right?
+>>>
+>>> Nope, mostly we failed at metadata reservation, as that would return
+>>> EDQUOT to user space.
+>>>
+>>> We may have some cases which get EDQUOT at data reservation part, but
+>>> that's what we excepted.
+>>> (And already what we're doing)
+>>>
+>>> The problem is when the metadata reservation failed with EDQUOT.
+>>>
+>>>>     So why not just fall back to the NODATACOW check and then do the
+>>>> metadata reservation. Then if it fails again you know its a real EDQUOT
+>>>> and your done.
+>>>>
+>>>> Or if you want to get super fancy you could even break up the metadata
+>>>> and data reservations here so that we only fall through to the NODATACOW
+>>>> check if we fail the data reservation.  Thanks,
+>>>
+>>> The problem is, qgroup doesn't split metadata and data (yet).
+>>> Currently data and meta shares the same limit.
+>>>
+>>> So when we hit EDQUOT, you have no guarantee it would happen only in
+>>> qgroup data reservation.
+>>>
 >>
->> diff --git a/fs/btrfs/raid56.c b/fs/btrfs/raid56.c
->> index a7ae4d8a47ce..d9415a22617b 100644
->> --- a/fs/btrfs/raid56.c
->> +++ b/fs/btrfs/raid56.c
->> @@ -2093,7 +2093,7 @@ static int __raid56_parity_recover(struct btrfs_raid_bio *rbio)
->>  		 */
->>  		if (atomic_read(&rbio->error) <= rbio->bbio->max_errors) {
->>  			__raid_recover_end_io(rbio);
->> -			goto out;
->> +			return 0;
+>> Sure, but if you are able to do the nocow thing, then presumably your
+>> quota reservation is less now?  So on failure you go do the complicated
+>> nocow check, and if it succeeds you retry your quota reservation with
+>> just the metadata portion, right?  Thanks,
 > 
-> No please, when there are labels that do cleanup like the one in the
-> context, 'return's make it harder to follow.
+> Then metadata portion can still fail, even we skipped the data reserv.
+> 
+> The metadata portion still needs some space, while the data rsv skip
+> only happens after we're already near the qgroup limit, which means
+> there are ready not much space left.
+> 
+> Consider this case, we have 128M limit, we fallocated 120M, then we have
+> dirtied 7M data, plus several kilo for metadata reserved.
+> 
+> Then at the next 1M, we run out of qgroup limit, at whatever position.
+> Even we skip current 4K for data, the next metadata reserve may still
+> not be met, and still got EDQUOT at metadata reserve.
+> 
+> Or some other open() calls to create a new file would just get EDQUOT,
+> without any way to free any extra space.
+> 
+> 
+> Instead of try to skip just several 4K for qgroup data rsv, we should
+> flush the existing 7M, to free at least 7M data + several kilo meta space.
 > 
 
-But I'm not touching the cleanup hand of the if, rather the one which
-simply returns 0. SO why jmp + ret when we can straight ret ?
+Right so I'm not against flushing in general, I just think that we can greatly 
+improve on this particular problem without flushing.  Changing how we do the 
+NOCOW check with quota could be faster than doing the flushing.
 
+Now as for the flushing part itself, I'd rather hook into the existing flushing 
+infrastructure we have.  Obviously the ticketing is going to be different, but 
+the flushing part is still the same, and with data reservations now moved over 
+to that infrastructure we finally have it all in the same place.  Thanks,
 
->>  		} else {
->>  			goto cleanup;
->>  		}
->> @@ -2113,7 +2113,7 @@ static int __raid56_parity_recover(struct btrfs_raid_bio *rbio)
->>  
->>  		submit_bio(bio);
->>  	}
->> -out:
->> +
->>  	return 0;
->>  
->>  cleanup:
->> -- 
->> 2.17.1
-> 
+Josef
