@@ -2,26 +2,26 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46A6B212681
-	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Jul 2020 16:41:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EBE921268A
+	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Jul 2020 16:44:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729404AbgGBOl0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 2 Jul 2020 10:41:26 -0400
-Received: from mx2.suse.de ([195.135.220.15]:52844 "EHLO mx2.suse.de"
+        id S1729819AbgGBOoF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 2 Jul 2020 10:44:05 -0400
+Received: from mx2.suse.de ([195.135.220.15]:53908 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728179AbgGBOl0 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 2 Jul 2020 10:41:26 -0400
+        id S1729047AbgGBOoF (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 2 Jul 2020 10:44:05 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id C0A6CADD9;
-        Thu,  2 Jul 2020 14:41:24 +0000 (UTC)
-Subject: Re: [PATCH 8/8] btrfs: sysfs: Add bdi link to the fsid dir
-To:     dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
-        linux-btrfs@vger.kernel.org
+        by mx2.suse.de (Postfix) with ESMTP id 1A257AAF1;
+        Thu,  2 Jul 2020 14:44:03 +0000 (UTC)
+Subject: Re: [PATCH 5/8] btrfs: Increment device corruption error in case of
+ checksum error
+To:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
 References: <20200702122335.9117-1-nborisov@suse.com>
- <20200702122335.9117-9-nborisov@suse.com>
- <8469fe54-2641-9873-c845-8355932fccef@toxicpanda.com>
- <20200702133618.GN27795@twin.jikos.cz>
+ <20200702122335.9117-6-nborisov@suse.com>
+ <SN4PR0401MB3598A71152884496C7A20A289B6D0@SN4PR0401MB3598.namprd04.prod.outlook.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  xsFNBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -65,12 +65,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  KIuxEcV8wcVjr+Wr9zRl06waOCkgrQbTPp631hToxo+4rA1jiQF2M80HAet65ytBVR2pFGZF
  zGYYLqiG+mpUZ+FPjxk9kpkRYz61mTLSY7tuFljExfJWMGfgSg1OxfLV631jV1TcdUnx+h3l
  Sqs2vMhAVt14zT8mpIuu2VNxcontxgVr1kzYA/tQg32fVRbGr449j1gw57BV9i0vww==
-Message-ID: <13a4a81b-0415-42c2-bb56-d62f5f64633d@suse.com>
-Date:   Thu, 2 Jul 2020 17:41:23 +0300
+Message-ID: <885366c5-9c8d-a6c9-95d2-89668ea6641a@suse.com>
+Date:   Thu, 2 Jul 2020 17:44:02 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.8.0
 MIME-Version: 1.0
-In-Reply-To: <20200702133618.GN27795@twin.jikos.cz>
+In-Reply-To: <SN4PR0401MB3598A71152884496C7A20A289B6D0@SN4PR0401MB3598.namprd04.prod.outlook.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -81,26 +81,40 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2.07.20 г. 16:36 ч., David Sterba wrote:
-> On Thu, Jul 02, 2020 at 09:25:30AM -0400, Josef Bacik wrote:
->> On 7/2/20 8:23 AM, Nikolay Borisov wrote:
->>> Since BTRFS uses a private bdi it makes sense to create a link to this
->>> bdi under /sys/fs/btrfs/<UUID>/bdi. This allows size of read ahead to
->>> be controlled. Without this patch it's not possible to uniquely identify
->>> which bdi pertains to which btrfs filesystem in the fase of multiple
->>> btrfs filesystem.
->>>
->>> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
+On 2.07.20 г. 16:21 ч., Johannes Thumshirn wrote:
+> On 02/07/2020 14:41, Nikolay Borisov wrote:
+>> Now that btrfs_io_bio have access to btrfs_device we can safely
+>> increment the device corruption counter on error. There is one notable
+>> exception - repair bios for raid. Since those don't go through the
+>> normal submit_stripe_bio callpath but through raid56_parity_recover thus
+>> repair bios won't have their device set.
 >>
->> Was confused why we needed to make sure the link existed before removing it, 
->> since other things sysfs is smart enough to figure out.  Apparently it has a 
->> WARN_ON() if the parent isn't initialized, so the check is necessary, albeit 
->> annoying.
+>> Link: https://lore.kernel.org/linux-btrfs/4857863.FCrPRfMyHP@liv/
+>> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
+>> ---
+>>  fs/btrfs/inode.c | 3 +++
+>>  1 file changed, 3 insertions(+)
+>>
+>> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+>> index e7600b0fd9b5..c6824d0ce59d 100644
+>> --- a/fs/btrfs/inode.c
+>> +++ b/fs/btrfs/inode.c
+>> @@ -2822,6 +2822,9 @@ static int check_data_csum(struct inode *inode, struct btrfs_io_bio *io_bio,
+>>  zeroit:
+>>  	btrfs_print_data_csum_error(BTRFS_I(inode), start, csum, csum_expected,
+>>  				    io_bio->mirror_num);
+>> +	if (io_bio->dev)
+>> +		btrfs_dev_stat_inc_and_print(io_bio->dev,
+>> +					     BTRFS_DEV_STAT_CORRUPTION_ERRS);
+>>  	memset(kaddr + pgoff, 1, len);
+>>  	flush_dcache_page(page);
+>>  	kunmap_atomic(kaddr);
 > 
-> There must be a better way, this is just too weird. We can check if
-> objects have been initialized by peeking to kobject::state_initialized
-> and we use that already for fsid_kobj in __btrfs_sysfs_remove_fsid or
-> btrfs_sysfs_feature_update.
+> Any chance you could do a follow up merging that weird zeroit label 
+> into the memset() block?
+> 
+> It kind of disturbs the reading flow of that function and in fact it 
+> doesn't even zero the data
 > 
 
-Awesome, will use this for v2.
+Makes sense, it doesn't even look that bad at all in terms of line length.
