@@ -2,32 +2,33 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C24CE212533
-	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Jul 2020 15:50:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A3C2212549
+	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Jul 2020 15:54:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729360AbgGBNuw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 2 Jul 2020 09:50:52 -0400
-Received: from mout.gmx.net ([212.227.17.21]:39165 "EHLO mout.gmx.net"
+        id S1729486AbgGBNy1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 2 Jul 2020 09:54:27 -0400
+Received: from mout.gmx.net ([212.227.15.19]:33637 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729254AbgGBNuv (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 2 Jul 2020 09:50:51 -0400
+        id S1726343AbgGBNy1 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 2 Jul 2020 09:54:27 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1593697846;
-        bh=EkTbmfRAIWWoiO4FNoYtL37Xk3I7PC6RzlBbeXmu85E=;
+        s=badeba3b8450; t=1593698061;
+        bh=lK9jtckM+3oa6BfgahH5NgMY9MyOIZQvYIHAAY7uZDw=;
         h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=QVwHuL5DJSq8OywcXRS76Cby1lheoqoOoFHXlJUy/NvL8qZIFT7hZDkSXQOQn7Pr6
-         eXymHmwUwoIxfsdPcyj2WmjqYMUHA5HuLlCl568i8eyISo15zaCR1nl/1l7TiNxXBr
-         R5H1N7jlhegXN/sx2fx+XZlRSkQw86tLQUea38uM=
+        b=SAqRuoyTaXBx4maDMkPAICD/OsnMZ6S+mpUVAMKiAnUUJkBwyRS4fwD53U/IS74Cg
+         Z+dikEB4Ux2tVWmPbPnP66X1l7nb7WJpJvLirwjqWZT1aPh/VMjVgoHJ38dtZMivmb
+         BSlnwdJtq8OXefeKg4YgZTItvylpbutSDIeGhjLY=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1M3UV8-1jrXZn0INe-000Zfh; Thu, 02
- Jul 2020 15:50:46 +0200
-Subject: Re: [PATCH 1/3] btrfs: Introduce extent_changeset_revert() for qgroup
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1Md6Mj-1jHvlW0VGd-00aHyd; Thu, 02
+ Jul 2020 15:54:21 +0200
+Subject: Re: [PATCH 2/3] btrfs: qgroup: Try to flush qgroup space when we get
+ -EDQUOT
 To:     Josef Bacik <josef@toxicpanda.com>, Qu Wenruo <wqu@suse.com>,
         linux-btrfs@vger.kernel.org
 References: <20200702001434.7745-1-wqu@suse.com>
- <20200702001434.7745-2-wqu@suse.com>
- <b716bb32-b5e6-54a5-ac42-ca559dfd2d3a@toxicpanda.com>
+ <20200702001434.7745-3-wqu@suse.com>
+ <3ed599a3-3712-81ad-6d04-0889523cfa44@toxicpanda.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -53,150 +54,159 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
  ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
  oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <55b63978-fab1-bb2c-bd0a-66fc29af5f26@gmx.com>
-Date:   Thu, 2 Jul 2020 21:50:40 +0800
+Message-ID: <f4f0e752-0166-538d-7376-17f7fefe44f2@gmx.com>
+Date:   Thu, 2 Jul 2020 21:54:17 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.9.0
 MIME-Version: 1.0
-In-Reply-To: <b716bb32-b5e6-54a5-ac42-ca559dfd2d3a@toxicpanda.com>
+In-Reply-To: <3ed599a3-3712-81ad-6d04-0889523cfa44@toxicpanda.com>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="fyM6ZUPVkPCcUHfDc8WRb34mQdRHZSeSq"
-X-Provags-ID: V03:K1:Hq8gb29spKJ6JT6HpmlMtqb/njX5tzvvtSkCbYLRzIMoyYXNBXb
- iY2G5GO6PKSC7tOEAgtCRFRu6bWiG60EDKSMbbx9CJyUsJSMMT2OeLrmsFPzjUTk6r0qx8S
- mIB0tUShTRgkw7T/Vb83vif/D/Rai+xzqKsAXErgQPbmLK45jATiPlYKACNEWQTpCqLpXmC
- y7keUvHdGn2/CEVGKg0xg==
+ boundary="JFyBJVxrQqjbhDemuRJpqL2lE1rMSIQCx"
+X-Provags-ID: V03:K1:qEieM8VUWEGcQoeBL1d0X2drMBM9CPUQ8d7BGCZGJ1EpybS7f4Z
+ kySS78LZwkxT9/f8n8khhVzIvf1V3gjSayEj/qdFrp2FoVoWWsrBb8vSTFhAXpGDZOjBzaG
+ qklQgsn4mW1j0ZhwUjaxvPeM9U+lobfwBfawmoX/wI0SjGrYeRIh9yHlLEbWgK1RbfVa5LY
+ ZY3UKR1Cq6vgCoKo1MIdw==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:qr9uACZ1Lhw=:VtK5XGoD/s6+iVyXhtdLSz
- kd8WRzljpTjw7POiiAopaDkJIZQg8lRc3vR+umDfGUTXB5I1cNKEv9WKP568sxL6tW7YactHu
- fIHAi/X8S++MYPglzzzo440XF7tudLOxiyg+ZmUmj1cD9c2scdz13UMEB4gZJj+XTPCgRJzk8
- jskpkFMwl1gSQfvGrZuGDUOXlZw4rGRK79Mf5hBC3UBaVL28wZJ1eOnAEDuibGRYj83jProD1
- HI5CRfHAIQwBYjqhjmI9oLU0dvd4rMh3lVA9HU/pG8DSSX1Lz2jCLawtoEilJjbmS8EwC74ON
- soFmT4XVpWSiSVR/v5jHBrpcHyXim3HGY8LJy4CYYA56kpQIEnrikKXkV2Nz04oZzvyKSRwo7
- SVP/hyK180DKzslgVQ/O41EkQMS/fyQsQ8/noeBvqYWoeHdWfMomnTCWtogP2P6Epm2dQoNTt
- 0NliWk9FMfCOtlHslXVEWXTrAQov5YhYvLUFo5FpU+mpedrDJ5E7zAQI/xYFeVPAbHfjVLVyF
- PQs5uZJVFDvzXrKCOMuGXqo0Wf0d3WaKdBZTvK/PLRFnek+J2Ob7dftilCHZYZmvPRQ9Upfbm
- zhDPK8NNfq05g6YCZpIOsXOiUYtWm1/tiYr4rHHugy84WOsNAGQhZkzwO/rs/4QZti+wEI1Ti
- xURHP/0BdJi6m6Kk/blKOj0vFVW/uWs5BkiSxRl5+qgK3KMXwr4k3JhH9JGdaBs0CAJ+gXizd
- DhaDzTSI1uQPag2ru5FlXyyGn8F405McUtQyejHRZWAdW+HTssy1wT/6xQ7hfRmFWEuzlgL27
- 3f9+yz3Lv22Fw6FHD4o+yAvMUQNCSstlOtLNeH19U/v5mwNnWQU0CGfNnJCt1tyLcljdyhnOG
- 0CYb/TSdZOK8jCzJnq87rSNlorqvi79gU+yiilD/v7IXG8W/w0zgjtDbaLkGxCWrxNW4d3kXT
- rawDXtsOyLP4gzSgFXWq9Z5x9T6AppFzM4W+wZRFx2nc7WdAb73VziffZMYWt3tG5wqeilaSU
- CeaCeDjhw0JjyliidRoGQue4z4cObicAXpNUU6Z3UFa+UxhZoZDM1+i+6KuSotVbD6RvLAapD
- 0mv1q3SjkHizbH1axd0kMPRGRvVfOU2q84W7WspkOowlBUKmGkfqD8XvzqtwzbkVfRvwYoVHD
- QyZzNhEJWN2kP7DOwJ2UNae0V0HkdNhl7iIG6VO+wqyLJ0V+X2fICRHi5pSw5iyHwJ7pDmIuW
- CtONKrYpMFMirFOSw2UVVuAOuGt4rzoZ/pAOfig==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:ENcMTB94c64=:koM7M+dzXn2ve4zxqw2FWq
+ NowgEGXq55sgxz6xLv8uGXDb0gfp0Ik5j5AJx7YqmaxNL8jSbeTLdXEsg0LChelgOkbgnhw8s
+ QvGdQlapNidqg+FacXg6l/4VAICbng9zc1aDQqwGtqdvvpGzNBYmFMGPFZP65lZgAZiw9HOmH
+ piHDJPmN85+9T9WpUHB/GQxiTIYmNS4st71tR0q4YGgiJYlxUcDjKkhMf8u/XUXVq7qJoaChj
+ GiwgYf8vhixpOblECMwaZIeoUzYkBq0l7vUYZY2G6lqMRdV/09g6jVPs/MWvkIUUjVXrhNpjE
+ AYHxY4hK9MRbBxmwdB5Q/OlgYf6sFohI3erVu6WtT9YkE0k8iYbOOeDGleveeZEurofywRGMw
+ df8wJePVvUirI9i2tLkwXCFDosQht/irIkdArp7rmS6ki3n84163D85W1PLzoiJFezJ4A8DlK
+ x+WdeMb6MDd6NG9wxG7NuaqQMmtYdWIkOslgzlkaduHnKEYK7Xg55fzp1jjNXFEUq2DwuElwK
+ fEsBBfk9aRVXOoEavVihaTFoN6PSYeSG2Io4TeTU41t7j7rlAmu07eBF1LmW+XhAHFRQtrjkj
+ boNjRM9FNHmS1B6jxl6DjJBFRflc36RB3gT0S/MFcJV5U220O6aZARDNbaXIw2XtXTp1211hM
+ mqw0oPL5ahlEgzKrno6qDvNIenACLEsyh4guBTo98QLNPH9TjK0TToJjTSpqyhemsnmRXLyWT
+ 12hh0dtP46VlN2jJ0o1WQFMvbVgpwBncf34ZKKwW0SLuoiVGmfkQS4jjl/QppwJKZzv36Lyrx
+ i/nCik8MUrT8B7dH4sru9LIe+5KFPzeyCemWJBQ1xikV88teFQZDgpy2MAoVaa4kBJvvFGCtm
+ 4qAFKiY+ETD5tGIsVTi9WQVtjQW+KtoP1/bpDPMdmBq5YwYSEgMjK3xUrBCkzscWs+d7i4Me6
+ USE7yZJTsRZIxLA9Ao0zCums3QT/09oor4VEK2bY2dq4n1I2UKYR6p2+GQlq27CPJ+6JxR0hB
+ rdNY1stkHQgb/byv71z5HQSZyZJlToPPYIabciMdTrLEnGVaGrHCI2F2s4o7l7gF3ZrZkQlM4
+ sDqJ8wV67jybhuPRiW9hn8MSpkM7JqucdVxAcihc71S9fOrntpQq4DXE/KgW32VlFe6qRgBqG
+ rNDfQOcG98n/DVn0BkDrdt+Lno5+zy2xc/UJ84wHu/BUhTjjXQNnXUs81UjucDPOrsjadGc7J
+ mm8x19kc/r8QrrHGd
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---fyM6ZUPVkPCcUHfDc8WRb34mQdRHZSeSq
-Content-Type: multipart/mixed; boundary="ulRBgwEmjvor7jugbviZX9JrkhGQlbkRI"
+--JFyBJVxrQqjbhDemuRJpqL2lE1rMSIQCx
+Content-Type: multipart/mixed; boundary="iUUndMQsNBM99Gn8G7dmkmBKsfmg6VDq3"
 
---ulRBgwEmjvor7jugbviZX9JrkhGQlbkRI
+--iUUndMQsNBM99Gn8G7dmkmBKsfmg6VDq3
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
 
 
 
-On 2020/7/2 =E4=B8=8B=E5=8D=889:40, Josef Bacik wrote:
+On 2020/7/2 =E4=B8=8B=E5=8D=889:43, Josef Bacik wrote:
 > On 7/1/20 8:14 PM, Qu Wenruo wrote:
 >> [PROBLEM]
->> Before this patch, when btrfs_qgroup_reserve_data() fails, we free all=
+>> There are known problem related to how btrfs handles qgroup reserved
+>> space.
+>> One of the most obvious case is the the test case btrfs/153, which do
+>> fallocate, then write into the preallocated range.
+>>
+>> =C2=A0=C2=A0 btrfs/153 1s ... - output mismatch (see
+>> xfstests-dev/results//btrfs/153.out.bad)
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 --- tests/btrfs/153.out=C2=A0=C2=A0=
+=C2=A0=C2=A0 2019-10-22 15:18:14.068965341 +0800
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 +++ xfstests-dev/results//btrfs/1=
+53.out.bad=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 2020-07-01
+>> 20:24:40.730000089 +0800
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 @@ -1,2 +1,5 @@
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 QA output created by 153
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 +pwrite: Disk quota exceeded
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 +/mnt/scratch/testfile2: Disk quo=
+ta exceeded
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 +/mnt/scratch/testfile2: Disk quo=
+ta exceeded
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Silence is golden
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ...
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 (Run 'diff -u xfstests-dev/tests/=
+btrfs/153.out
+>> xfstests-dev/results//btrfs/153.out.bad'=C2=A0 to see the entire diff)=
 
->> reserved space of the changeset.
->>
->> This means the following call is not possible:
->> =C2=A0=C2=A0=C2=A0=C2=A0ret =3D btrfs_qgroup_reserve_data();
->> =C2=A0=C2=A0=C2=A0=C2=A0if (ret =3D=3D -EDQUOT) {
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /* Do something to free som=
-e qgroup space */
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D btrfs_qgroup_reserv=
-e_data();
->> =C2=A0=C2=A0=C2=A0=C2=A0}
->>
->> As if the first btrfs_qgroup_reserve_data() fails, it will free all
->> reserved qgroup space, so the next btrfs_qgroup_reserve_data() will
->> always success, and can go beyond qgroup limit.
 >>
 >> [CAUSE]
->> This is mostly due to the fact that we don't have a good way to revert=
+>> Since commit c6887cd11149 ("Btrfs: don't do nocow check unless we have=
 
->> changeset modification accurately.
+>> to"),
+>> we always reserve space no matter if it's COW or not.
 >>
->> Currently the changeset infrastructure is implemented using ulist, whi=
-ch
->> can only store two u64 values, used as start and length for each chang=
-ed
->> extent range.
+>> Such behavior change is mostly for performance, and reverting it is no=
+t
+>> a good idea anyway.
 >>
->> So we can't record which changed extent is modified in last
->> modification, thus unable to revert to previous status.
+>> For preallcoated extent, we reserve qgroup data space for it already,
+>> and since we also reserve data space for qgroup at buffered write time=
+,
+>> it needs twice the space for us to write into preallocated space.
 >>
->> [FIX]
->> This patch will re-implement using pure rbtree, adding a new member,
->> changed_extent::seq, so we can remove changed extents which is
->> modified in previous modification.
+>> This leads to the -EDQUOT in buffered write routine.
 >>
->> This allows us to implement qgroup_revert(), which allow btrfs to reve=
-rt
->> its modification to the io_tree.
->>
+>> And we can't follow the same solution, unlike data/meta space check,
+>> qgroup reserved space is shared between data/meta.
+>> The EDQUOT can happen at the metadata reservation, so doing NODATACOW
+>> check after qgroup reservation failure is not a solution.
 >=20
-> I'm having a hard time groking what's going on here.=C2=A0 These change=
-sets
-> are limited to a [start, end] range correct?
+> Why not?=C2=A0 I get that we don't know for sure how we failed, but in =
+the
+> case of a write we're way more likely to have failed for data reasons
+> right?
 
-Yes, but we may be only responsible for part of the changeset.
+Nope, mostly we failed at metadata reservation, as that would return
+EDQUOT to user space.
 
-One example is we want to falloc range [0, 16K)
-And [0, 4K), [8K, 12K) has already one existing file extent.
+We may have some cases which get EDQUOT at data reservation part, but
+that's what we excepted.
+(And already what we're doing)
 
-Then we succeeded in allocating space for [4K, 8K), but failed to
-allocating space for [8K, 12K).
+The problem is when the metadata reservation failed with EDQUOT.
 
-In that case, if we just return EDQUOT and clear the range for [4K, 8k)
-and [8K, 12K), everything is completely fine.
+>=C2=A0 So why not just fall back to the NODATACOW check and then do the
+> metadata reservation. Then if it fails again you know its a real EDQUOT=
 
-But if we want to retry, then we should only clear the range for [8K,
-12K), but not to clear [4K, 8K).
+> and your done.
+>=20
+> Or if you want to get super fancy you could even break up the metadata
+> and data reservations here so that we only fall through to the NODATACO=
+W
+> check if we fail the data reservation.=C2=A0 Thanks,
 
-That's what we need for the next patch, just revert what we did in
-previous set_extent_bit(), but not touching previously set bits.
+The problem is, qgroup doesn't split metadata and data (yet).
+Currently data and meta shares the same limit.
+
+So when we hit EDQUOT, you have no guarantee it would happen only in
+qgroup data reservation.
 
 Thanks,
 Qu
-
->=C2=A0 Why can we have multiple
-> changesets for the same range?=C2=A0 Are we reserving doubly for
-> modifications in the same range?=C2=A0 Because it seems here if you fin=
-d your
-> changeset at all we'll clear the io_tree, but if you can have multiple
-> changesets for the same range then....why even bother?=C2=A0 Thanks,
 >=20
 > Josef
 
 
---ulRBgwEmjvor7jugbviZX9JrkhGQlbkRI--
+--iUUndMQsNBM99Gn8G7dmkmBKsfmg6VDq3--
 
---fyM6ZUPVkPCcUHfDc8WRb34mQdRHZSeSq
+--JFyBJVxrQqjbhDemuRJpqL2lE1rMSIQCx
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl795jAACgkQwj2R86El
-/qgMwgf7BLjQHg4z33T86kjTAJtGcxmvZLa+62H6h5CUS7b0JlUl53QPMXg0YFTN
-msK4GfEhY9Y8aAm7y7kksL4OWXS8GumfWtJbNcbI7FEthjz0pE2sxIUweScDmP2m
-HlVsoHuDVDtIV5vRLJxhCeFV3rfc4/Wg2HX2UKfchqz/GUnxD/GvgvDL6AIwK3NJ
-KZ21CKXc52tMKM8/zS4/nEYuL/1otNkK1er59S8YdQ4dbE+vpF3yb/YxqDVk0DOs
-hQV0g++Rs78yO9P6RkPhrtshxy8TW0kw6iEtqFm9z4dDordehyqMsOdXEDvETWC8
-nb7e/A3WOR9z7SR2gYCJMPdVrjMzMQ==
-=IRtR
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl795wkACgkQwj2R86El
+/qj/Pgf9FCLxZoIcr+91DfwGlwIB1LZCqYImvq/Dj6Cdp5tNiTgx3JQh7vIXBS/X
+O+edj0MZwaHoaiG7Rl5ZpAxm590/G7LPam9S7qayRFS6IfeZdC5H6o6nD+3sIsAJ
+koxfWfdLILzLdB9YvC26jy3ntWGKMmSoPaxrmKzAgq30GnGmo6VFIAvdDObl1KWb
+ZFPWJL3nUfcfyNEF3D84Y679+4cPLghwP55kkdUN4wfFOh3txElrkWeaacCdixru
+iiw7EsRaubkXm6nTCu7MLDxoIXoFDXneu1XbxBeGXP63jZpZroQNtmTFbbNZdrte
+RZv97dTrdbkki+I1PBchAkk7TgutNQ==
+=mugz
 -----END PGP SIGNATURE-----
 
---fyM6ZUPVkPCcUHfDc8WRb34mQdRHZSeSq--
+--JFyBJVxrQqjbhDemuRJpqL2lE1rMSIQCx--
