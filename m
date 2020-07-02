@@ -2,145 +2,233 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DA19212585
-	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Jul 2020 16:04:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FF87212591
+	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Jul 2020 16:07:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729319AbgGBOE2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 2 Jul 2020 10:04:28 -0400
-Received: from esa3.hgst.iphmx.com ([216.71.153.141]:33231 "EHLO
-        esa3.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729432AbgGBOE0 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 2 Jul 2020 10:04:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1593698665; x=1625234665;
-  h=from:to:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=iHBygvFwiNw+8NOhURGqOO0lTKqwCYavy5M1VWC21Lw=;
-  b=H5AixXSset/2f2QK2WFhCLbf2afrkYas+JpvWJir2QjxFDFenTah+bMo
-   k65vdy4HdFPo3lAnLwr6aNQwSmx5+rHLNyrcQUXzO0QXyr4d0FQKvHos9
-   co4/fxcbVYIdjNSExONTrj3+XWx8iSJ5WL9P9SmaabtwzAcvaew8slhyL
-   YLpUxc2tfgo7kjchdpWlKbWQquuIMzYR3YvJKYzUfLdsOrs32RCfGJZPa
-   6WQpaVcuudCU2jgyhkKXFo8f8Rvq/pmKdaO4S3fM1LiToRdlH71cDi7MD
-   UsIapnIlMQYDIgxyrFQvthCnDuv90ItQJF8jSoslSb+NVaLUpneaFdamd
-   g==;
-IronPort-SDR: OovblJrCJL1VvTiVtESspb7y5bHl0FHQePiJH5aL224I71D7YdmJuXQIJa8HRtFyiEj4M7nuMw
- 5WN0QpXY2O5Kt/D3J9YAoLixdT6g3AKiP35GaDPA7gQVoSsml5gks2KysbvVCTFxZ46pTVD6yO
- gnjerpqSEHRIqqDjtID96PQu1+JomdchkSIzgqX3suSGt6aJXfHyGkxhzVURTdSdhb6AOIJgDr
- aJrxdxV/PmN0tzrtwJTHuqyGtfz5tOd/6ASOO8vygMpJjs9FkIDhz6xD8C/hWKzf58cMYCm/uv
- dQY=
-X-IronPort-AV: E=Sophos;i="5.75,304,1589212800"; 
-   d="scan'208";a="145812484"
-Received: from mail-mw2nam10lp2103.outbound.protection.outlook.com (HELO NAM10-MW2-obe.outbound.protection.outlook.com) ([104.47.55.103])
-  by ob1.hgst.iphmx.com with ESMTP; 02 Jul 2020 22:04:25 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jHmahRclp0iK3hA+C6RHLhIA47xRd0Db/G17Ry55fyJUz9fs6LgKYHC9NdtrSACku6HJ8r0W7PXklaF8TpqTmmZOQaeBnCzuRBT14gJUf7xYJtOUx/01GsO1P0z3ZInCRuGBRRASR8N2ugt5OO2mI29o/xy7y8fdG5Lgz070QmKvPMMHAqk5jkkjN3RUJS+oN/JjPE/qzxEKm7tJSCxvwuQh7ZqIB7EA1YHiMzQr0ZAVsksl++3oWC+TzXTyaaXgXL8VhVPpoHFrDfT3YDUmWTvpnsTD2icK5pCRtmwiwd3C4gMXA7Hw0q0POj5EWiNhoDNBsIhNCX38PjyqpOPFng==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/AOfWWBAhiLxIBNVbo+2IjCWF8DiGcbkYhRwf5cRsvU=;
- b=je8OldFwbjCrs6gNtBX3c4I828WWSVVJGXmCJXM3TQQREyzBxRES6zI0sC/vgA2nF/AEp2nnRj1XZVIkkhbNv3biU3tl6XKC01YIbjGZiOt78iql861vQeQQShBwiJ4oFq4r1wNv9TrfORHDIJy8sdyXjtWjD0/6nU3Neq9U8oE3IJRdM+puNBf3p6MadQrR+sFsCjzbUsZphhfSMT6CHmlll6rmq630AALuuur0HKhEtFPfq/Ut3Ek4TgHUMAg1dNpncR7EPbG2evmwqP5vtAYAn3ypK6ntOHdpxokurHsk1Ct59Ak61KAbI7FD7djc89xfSkew0IImftKTNvf4og==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/AOfWWBAhiLxIBNVbo+2IjCWF8DiGcbkYhRwf5cRsvU=;
- b=kGXfgJkJzFtzHR4E/feXhHSOcL+Yh1uA9gxW6Fmg2pRR3fuM3Zc6hkZLXOKum8abVVAhsgsBYQR0r6OtFDzcLTfF4iO18GhsTVddn8EMy8xiO2fsnUQ0a6QxQFx2n+pKdJ+TpdfIpJiMQjEkYyry+jf90u0ILQb+M1M1LSC1KC0=
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
- (2603:10b6:803:47::21) by SN6PR04MB4687.namprd04.prod.outlook.com
- (2603:10b6:805:aa::22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3153.20; Thu, 2 Jul
- 2020 14:04:24 +0000
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::1447:186c:326e:30b2]) by SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::1447:186c:326e:30b2%7]) with mapi id 15.20.3131.036; Thu, 2 Jul 2020
- 14:04:24 +0000
-From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To:     Nikolay Borisov <nborisov@suse.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH 01/10] btrfs: Always initialize
- btrfs_bio::tgtdev_map/raid_map pointers
-Thread-Topic: [PATCH 01/10] btrfs: Always initialize
- btrfs_bio::tgtdev_map/raid_map pointers
-Thread-Index: AQHWUHdF5CzXOIbGJEiGQaCbkMHjwg==
-Date:   Thu, 2 Jul 2020 14:04:24 +0000
-Message-ID: <SN4PR0401MB359800E3D7D379E9161318379B6D0@SN4PR0401MB3598.namprd04.prod.outlook.com>
-References: <20200702134650.16550-1-nborisov@suse.com>
- <20200702134650.16550-2-nborisov@suse.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: suse.com; dkim=none (message not signed)
- header.d=none;suse.com; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [129.253.240.72]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 6013bb8c-ad50-47a4-41de-08d81e90d350
-x-ms-traffictypediagnostic: SN6PR04MB4687:
-x-microsoft-antispam-prvs: <SN6PR04MB4687EE90B7E72F55E1D0D1189B6D0@SN6PR04MB4687.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:3276;
-x-forefront-prvs: 0452022BE1
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: I6kxwrVqLOP/Z1/qpc0dpdpLrhLC3Dfz6/1F52jmXtodufsUPq+rjSEbuQJQgkczorAxAJDIz1+s8Yi6WoEoqCSeZ1E6kpheF/fz5rzr3sz7lh4feEJDEQWS+zA8hJEX8/P0gWBjdbEcQzm3YH1LMvoMqlnHCZItdicROBCyQs1+AHm9UzPUBzoN8WsQhcoisNzigO2sBV+snEsNQiW5JkYPcKW1ZmmWqiG2pfzrIJRhWlL8fbzSepTyNodioGw3rXa6/O3GIKjZasJz7gncpZq0sMrqN2kk043GgXksLMTwNd1qsTNkgVYQaoLn983EOMF0ijMtYVQIy3fglKX8BQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR0401MB3598.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(136003)(376002)(39860400002)(396003)(346002)(366004)(71200400001)(66476007)(64756008)(66446008)(66556008)(83380400001)(316002)(26005)(110136005)(478600001)(7696005)(76116006)(6506007)(86362001)(186003)(53546011)(9686003)(8676002)(52536014)(5660300002)(55016002)(2906002)(33656002)(66946007)(91956017)(8936002)(4744005);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: SAAWC2gFLzYLqmmp3LJBXrBbcQpCmisTTyT6GexcAGiy1n1MxKqXYhLNvArMxsfm1/V2DdH7ox2wGSafP0lBwzZuK0JuMBE+8pNviHArbetNhuPrS/z5MqYRqbemPVnBN63LRMRtJsCKokchHTzmuGL+4AGRvL0CQ19Vzm4WJLC3EIk1o2LXYC0qS4mWJD/mcVVxz/dXOsUJaufrQhut3zdzACduO9eLxi8GTd1+3cCiZxoN60AntUpKfZUyMQPOhGzxFDRsqNx03p/SJbZm5wQVD9WA17HwRYfixU4qfz1QTbDozPmc37eF06/UZkHBTjBB1J/p6oBrJcZdD5PzejzbqX7BbPysgEGm3NFHB7ZxU13wA7MY4QEKwRNWpA07fyTjB9WwzpVLNQLgHjWPr/ZTNfTeMxPvWQNC0eF0aNtYqM9zzErKXJiVnVy71lV7QlNLEru70Ve07oWmUTK9RNBX3OBDV5sq1gDpmZ4Tua3OCOg8vNb25FE7qdH1TJC3
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1729353AbgGBOH3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 2 Jul 2020 10:07:29 -0400
+Received: from mout.gmx.net ([212.227.17.22]:36479 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726500AbgGBOH2 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 2 Jul 2020 10:07:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1593698844;
+        bh=kRryjb0TxrZYdUL43BijoE1jU1cuWLBAPV6LV9p30YY=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=j9NytpzUxMiZd1WplaHwQIwnGFy2uFlupJ05fDN5tXIBeR8GwfseCXl65Nu9sfY+2
+         AC3sfmOPXVYymuIUHhWn4KzG+jQbqZB7qBxUDdose3gZ3PhoOgs4xoeSMMywisO1fO
+         ybmve4JiG+E2XjY0rKpYszmuSpG9Sjdz6MZaWUFs=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MTRQq-1jNBx91PXI-00Tj8I; Thu, 02
+ Jul 2020 16:07:24 +0200
+Subject: Re: [PATCH 1/3] btrfs: Introduce extent_changeset_revert() for qgroup
+To:     Josef Bacik <josef@toxicpanda.com>, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <20200702001434.7745-1-wqu@suse.com>
+ <20200702001434.7745-2-wqu@suse.com>
+ <b716bb32-b5e6-54a5-ac42-ca559dfd2d3a@toxicpanda.com>
+ <55b63978-fab1-bb2c-bd0a-66fc29af5f26@gmx.com>
+ <1f9fe912-72d4-01a5-a5a1-90e87df33037@toxicpanda.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
+ mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
+ PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
+ 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
+ D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
+ efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
+ ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
+ BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
+ 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
+ 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
+ EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
+ 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
+ ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
+ oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
+ fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
+ 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
+ ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
+ oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
+Message-ID: <5f79d6f7-1e2e-8d44-08c4-0e1d98184b64@gmx.com>
+Date:   Thu, 2 Jul 2020 22:07:17 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SN4PR0401MB3598.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6013bb8c-ad50-47a4-41de-08d81e90d350
-X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Jul 2020 14:04:24.0522
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: kI8wTOZQ0KAeofHVkW1gcfwqZQbEJQf25RjnhOV4zEFgN2ej+iVAqWwYLZRluNcqruiWX/0uRf8j0TPat5tF/KrR/5oJi2Doe+UKzGZaeyU=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR04MB4687
+In-Reply-To: <1f9fe912-72d4-01a5-a5a1-90e87df33037@toxicpanda.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="OUONmqsv03DykzKrNcxVPsMBZ5M9MZxR6"
+X-Provags-ID: V03:K1:3JWFszr/Pb0+P1yTFjr2Es2FiArCCEWDSQ3k4IKMKwNr61hHdDq
+ U6SMgMS0xrS/8ptMOOWR3tsxvvcUMziXRorqcLytxa0hehUVXi2fPX/ATJveKvTYKUBqVe+
+ KDNjVBBlMR4TeALNpv7usTssafODoj2L14lJgCzlxP0fEGAhNG60FciHFSiKyrHMbcuFQ3H
+ 5T6L0G9i0B6eOaXZD4cqQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:ccal4cL36HQ=:CVzConk8uksdjY5ofLEvHT
+ G6tuUIdiViIGdei8rG4wIAj7LGggtqvgJ2uYGrbFzfh8jywvrbiUNZ5btiebvJkcdCVoFL62f
+ Q5m4XEEn2MCl80glX36qCQ4pvNcI5jmusrxfmS/wHu5CdT5kKp8pWaqkDHTsbhQ0hCnz2knb0
+ Ib/HB4fn1pE4j2AqpQRZRsbS55n/o2NnM1dHvdNav4q2CpoGhtHtcYARy9ti+nTVbCmaq5dAd
+ jDpd4shtTLljLhJcyC5fAPIaufOV3JEcDPYmIy+v2snyQbmC67d3XxPwyDq9s3PCII7+t+sJp
+ PMA1LqDg2AtqE9uaKtGTd8Sek8eDEHncda2sSxwWbsdvInlLZAN1+QuaCFDxisXAjZhTsUiij
+ SnQj2v2M7E5aRpDF0paghbFreWeCfjrvjpvm8aXdyzZ5IFgR8b3gJahsYYyyH/mXJJL8NpQCQ
+ YGYtC36Dhp1yuynWegRVvyA6rW27rh1WWyy1P+mc1cF2NGoSpp0B8SAYNGSGSKH3ndxEc9RXM
+ wdtgAW42+/VWDFmSy0MhsiaQEFQwO6H9IAN2Y7mJ+AV9tPgMf8P4Xb1qQhVXW4ieipCgwYMl0
+ R7PvFhprpLdz5mu/W56rJ3oO1PoX/lklNKOKHibvca9bKN27DixhfLY20aOJaAO5LpuM8ese8
+ 3Ol968xrzhKkOmli8snZkihgyrzk1TprG0wyZRLTQ+b1plE0wjtvqJzEpHkEQZhDpCD6spmMm
+ BlspVOe68fr8T+Vbhh/DeEf9VRjrJV19WKHK88kPmgBnGRJwghltE4XWK1yhSTQXL5T1JA0ie
+ 5ysb1ZeOqMo/8SGjRpI/yFsMy/t30hR5ekohGE87lSMM4D4fL1tu7Ncn+c2aPuVvv97Lf127i
+ 3Fw8Q4ewTrQ6b8IR81WxTr/v6MOPvujy//OKCcjDL+XIcIPsk283oXJRYABUYaDkFWZ3gMZca
+ mq1sJfxbynh1qEQGF4oYotn56UlZ/VGFbonLeV5I8baN7R5Yx3hgJlH7f7MvNm4DUze706OnE
+ oOaN28IUGGssjaG6EAPYmwY/AIYSiVFL+iGjhnzgOXyQR7+DeVzzToujVVyAR3zKVbzdEeBnS
+ 5Nsv1a7es9xmX1lZdGLFLKCkZqDxwvJOaMsIv+tOjFllNvIIqiCFgv/032mA8MQNY66Brl1T+
+ YGWwpEx/cwj5Hy3Ht5kj1S6FHpfsDFcCdBzLAGU8UT/Gtm9x3TUFkT55wqflcRZanMp73Hrdp
+ 2WpnPKRCQcJdsKFsu
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 02/07/2020 15:47, Nikolay Borisov wrote:=0A=
-[...]=0A=
-> -		bbio->raid_map =3D (u64 *)((void *)bbio->stripes +=0A=
-> -				 sizeof(struct btrfs_bio_stripe) *=0A=
-> -				 num_alloc_stripes +=0A=
-> -				 sizeof(int) * tgtdev_indexes);=0A=
-=0A=
-That one took me a while to be convinced it is correct.=0A=
-=0A=
->  =0A=
->  		/* Work out the disk rotation on this stripe-set */=0A=
->  		div_u64_rem(stripe_nr, num_stripes, &rot);=0A=
-> @@ -6171,25 +6178,14 @@ static int __btrfs_map_block(struct btrfs_fs_info=
- *fs_info,=0A=
->  		if (map->type & BTRFS_BLOCK_GROUP_RAID6)=0A=
->  			bbio->raid_map[(i+rot+1) % num_stripes] =3D=0A=
->  				RAID6_Q_STRIPE;=0A=
-> -	}=0A=
-> -=0A=
->  =0A=
-> -	for (i =3D 0; i < num_stripes; i++) {=0A=
-> -		bbio->stripes[i].physical =3D=0A=
-> -			map->stripes[stripe_index].physical +=0A=
-> -			stripe_offset +=0A=
-> -			stripe_nr * map->stripe_len;=0A=
-> -		bbio->stripes[i].dev =3D=0A=
-> -			map->stripes[stripe_index].dev;=0A=
-> -		stripe_index++;=0A=
-> +		sort_parity_stripes(bbio, num_stripes);=0A=
->  	}=0A=
->  =0A=
-> +=0A=
-=0A=
-Stray newline.=0A=
-=0A=
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--OUONmqsv03DykzKrNcxVPsMBZ5M9MZxR6
+Content-Type: multipart/mixed; boundary="vKLk0LDEoBWK03dO7IgUowUdiNzUkQmUY"
+
+--vKLk0LDEoBWK03dO7IgUowUdiNzUkQmUY
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+
+
+
+On 2020/7/2 =E4=B8=8B=E5=8D=889:56, Josef Bacik wrote:
+> On 7/2/20 9:50 AM, Qu Wenruo wrote:
+>>
+>>
+>> On 2020/7/2 =E4=B8=8B=E5=8D=889:40, Josef Bacik wrote:
+>>> On 7/1/20 8:14 PM, Qu Wenruo wrote:
+>>>> [PROBLEM]
+>>>> Before this patch, when btrfs_qgroup_reserve_data() fails, we free a=
+ll
+>>>> reserved space of the changeset.
+>>>>
+>>>> This means the following call is not possible:
+>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0ret =3D btrfs_qgroup_reserve_data();
+>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (ret =3D=3D -EDQUOT) {
+>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /* Do something to =
+free some qgroup space */
+>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D btrfs_qgrou=
+p_reserve_data();
+>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0}
+>>>>
+>>>> As if the first btrfs_qgroup_reserve_data() fails, it will free all
+>>>> reserved qgroup space, so the next btrfs_qgroup_reserve_data() will
+>>>> always success, and can go beyond qgroup limit.
+>>>>
+>>>> [CAUSE]
+>>>> This is mostly due to the fact that we don't have a good way to reve=
+rt
+>>>> changeset modification accurately.
+>>>>
+>>>> Currently the changeset infrastructure is implemented using ulist,
+>>>> which
+>>>> can only store two u64 values, used as start and length for each
+>>>> changed
+>>>> extent range.
+>>>>
+>>>> So we can't record which changed extent is modified in last
+>>>> modification, thus unable to revert to previous status.
+>>>>
+>>>> [FIX]
+>>>> This patch will re-implement using pure rbtree, adding a new member,=
+
+>>>> changed_extent::seq, so we can remove changed extents which is
+>>>> modified in previous modification.
+>>>>
+>>>> This allows us to implement qgroup_revert(), which allow btrfs to
+>>>> revert
+>>>> its modification to the io_tree.
+>>>>
+>>>
+>>> I'm having a hard time groking what's going on here.=C2=A0 These chan=
+gesets
+>>> are limited to a [start, end] range correct?
+>>
+>> Yes, but we may be only responsible for part of the changeset.
+>>
+>> One example is we want to falloc range [0, 16K)
+>> And [0, 4K), [8K, 12K) has already one existing file extent.
+>>
+>> Then we succeeded in allocating space for [4K, 8K), but failed to
+>> allocating space for [8K, 12K).
+
+Sorry, this should be [12K, 16K).
+
+>>
+>> In that case, if we just return EDQUOT and clear the range for [4K, 8k=
+)
+>> and [8K, 12K), everything is completely fine.
+>>
+>> But if we want to retry, then we should only clear the range for [8K,
+>> 12K), but not to clear [4K, 8K).
+>>
+>> That's what we need for the next patch, just revert what we did in
+>> previous set_extent_bit(), but not touching previously set bits.
+>>
+>=20
+> Ok so how do we get to this case then?=C2=A0 The changeset already has =
+the
+> range we're responsible for correct?
+>=C2=A0 Why do we need the sequence
+> number?=C2=A0 Like we should have a changeset for [4k, 8k) and one for =
+[8k,
+> 12k) right?=C2=A0 Or are we handed back the whole thing?=C2=A0 If we fa=
+il _just_
+> for the [8k, 12k) part, do we know that?=C2=A0 Or do we just know our w=
+hole
+> [0k, 16k) thing failed, and so we need all this convoluted tracking to
+> be able to retry for the range that we fucked up, and this is what you
+> are facilitating?=C2=A0 Thanks,
+
+Oh, I got your point.
+
+Right, when the failure happens, the range passed in is not [0, 16K),
+but the last failed one.
+
+We can just check the range, free any existing entry in the failure
+range, and call it a day...
+
+And I made the case over complicated them.
+
+Thanks for the advice, I'll try to use the existing ulist mechanism to
+do the same thing.
+
+Thanks,
+Qu
+>=20
+> Josef
+
+
+--vKLk0LDEoBWK03dO7IgUowUdiNzUkQmUY--
+
+--OUONmqsv03DykzKrNcxVPsMBZ5M9MZxR6
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl796hUACgkQwj2R86El
+/qihTQf/Rlx+9ML/530ax+KnBabHlEhDwUkf+kwFMTc85PPvPpJpVHmUhuzyWTk3
+YSQ0MMTyH0+bh2qqPTkQoU/hQqaY+EJR9L6L8f1OL5t40K7qwPcMBR3zRCUIrI8j
+b/tVoePt6usjGE9BlxxBBHDA2V+s901wZEAvh2WGrQy0GCqb12/8ssFbk9H65HvM
+eYIumvrl3qXytdIISrEhpYeh2N6L440ZMpiG7wFTWXKWoB1nbvPFDjZUAORenfDj
+WRjhKszlMzV6kc3xNs7SAgpfs/Imy98Vgg6jyPU+n9dQo+1nFvg5y7p8qhEa0G+r
+q/Zq8pfoBz6+8G9EkNoQsIn/S9zqHA==
+=LYZk
+-----END PGP SIGNATURE-----
+
+--OUONmqsv03DykzKrNcxVPsMBZ5M9MZxR6--
