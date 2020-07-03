@@ -2,80 +2,102 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 623E3213C95
-	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Jul 2020 17:32:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46106213CF0
+	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Jul 2020 17:45:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726427AbgGCPcV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 3 Jul 2020 11:32:21 -0400
-Received: from mx2.suse.de ([195.135.220.15]:48622 "EHLO mx2.suse.de"
+        id S1726616AbgGCPp1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 3 Jul 2020 11:45:27 -0400
+Received: from mx2.suse.de ([195.135.220.15]:53374 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726111AbgGCPcU (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 3 Jul 2020 11:32:20 -0400
+        id S1726035AbgGCPp0 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 3 Jul 2020 11:45:26 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 0D009AC22;
-        Fri,  3 Jul 2020 15:32:20 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id B7FCDAC24;
+        Fri,  3 Jul 2020 15:45:24 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 5CEECDA87C; Fri,  3 Jul 2020 17:32:01 +0200 (CEST)
-Date:   Fri, 3 Jul 2020 17:32:01 +0200
+        id 090E3DA87C; Fri,  3 Jul 2020 17:45:06 +0200 (CEST)
+Date:   Fri, 3 Jul 2020 17:45:06 +0200
 From:   David Sterba <dsterba@suse.cz>
 To:     Nikolay Borisov <nborisov@suse.com>
 Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 0/7] Corrupt counter improvement
-Message-ID: <20200703153200.GC27795@twin.jikos.cz>
+Subject: Re: [PATCH 05/10] btrfs: raid56: Use in_range where applicable
+Message-ID: <20200703154506.GD27795@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
 Mail-Followup-To: dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
         linux-btrfs@vger.kernel.org
-References: <20200702122335.9117-1-nborisov@suse.com>
+References: <20200702134650.16550-1-nborisov@suse.com>
+ <20200702134650.16550-6-nborisov@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200702122335.9117-1-nborisov@suse.com>
+In-Reply-To: <20200702134650.16550-6-nborisov@suse.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Jul 02, 2020 at 03:23:27PM +0300, Nikolay Borisov wrote:
-> This series aims to make the device corrupt counter be incremented when we
-> encounter checksum error. This stems from an upstream report at [0] that btrfs
-> doesn't actually increment the corruption device stats counter. There's no good
-> reason why this should be the case so here's a patchset rectifying this.
+On Thu, Jul 02, 2020 at 04:46:45PM +0300, Nikolay Borisov wrote:
+> While at it use the opportunity to simplify find_logical_bio_stripe by
+> reducing the scope of 'stripe_start' variable and squash the
+> sector-to-bytes conversion on one line.
+> 
+> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
+> ---
+>  fs/btrfs/raid56.c | 16 ++++------------
+>  1 file changed, 4 insertions(+), 12 deletions(-)
+> 
+> diff --git a/fs/btrfs/raid56.c b/fs/btrfs/raid56.c
+> index d9415a22617b..d89dd3030bba 100644
+> --- a/fs/btrfs/raid56.c
+> +++ b/fs/btrfs/raid56.c
+> @@ -1349,7 +1349,6 @@ static int find_bio_stripe(struct btrfs_raid_bio *rbio,
+>  			   struct bio *bio)
+>  {
+>  	u64 physical = bio->bi_iter.bi_sector;
+> -	u64 stripe_start;
+>  	int i;
+>  	struct btrfs_bio_stripe *stripe;
+>  
+> @@ -1357,9 +1356,7 @@ static int find_bio_stripe(struct btrfs_raid_bio *rbio,
+>  
+>  	for (i = 0; i < rbio->bbio->num_stripes; i++) {
+>  		stripe = &rbio->bbio->stripes[i];
+> -		stripe_start = stripe->physical;
+> -		if (physical >= stripe_start &&
+> -		    physical < stripe_start + rbio->stripe_len &&
+> +		if (in_range(physical, stripe->physical, rbio->stripe_len) &&
+>  		    stripe->dev->bdev &&
+>  		    bio->bi_disk == stripe->dev->bdev->bd_disk &&
+>  		    bio->bi_partno == stripe->dev->bdev->bd_partno) {
+> @@ -1377,18 +1374,13 @@ static int find_bio_stripe(struct btrfs_raid_bio *rbio,
+>  static int find_logical_bio_stripe(struct btrfs_raid_bio *rbio,
+>  				   struct bio *bio)
+>  {
+> -	u64 logical = bio->bi_iter.bi_sector;
+> -	u64 stripe_start;
+> +	u64 logical = bio->bi_iter.bi_sector << 9;
 
-Yeah I think this was forgotten at the time the dev-stats were merged.
+FYI, if bi_iter::bi_sector is shifted left or right, it needs the u64
+cast because the type sector_t is not always 64bit for some reasons.
+We've had bugs with the conversion on 32bit arches, for consistency it
+needs to be there.
 
-> While looking around the code I thought the signature of the functions related
-> to creating the failrec are somewhat quirky so the first 2 patches fix this.
-> 
-> Patch 3 introduces btrfs_device into btrfs_io_bio so that functions in the
-> bio completion stack can use it.
-> 
-> Patch 4 removes a redundant check
-> 
-> Next 3 patches wire in increment of the CORRUPT counter in the respective
-> read end io routines, namely compressed and ordinary reads.
-> 
-> Last patch creates a symlink of the private bdi that btrfs creates on mount
-> which is used in an xfstest for this series.
-> 
-> [0] https://lore.kernel.org/linux-btrfs/4857863.FCrPRfMyHP@liv/
-> 
-> Nikolay Borisov (8):
->   btrfs: Make get_state_failrec return failrec directly
->   btrfs: Streamline btrfs_get_io_failure_record logic
->   btrfs: Record btrfs_device directly btrfs_io_bio
->   btrfs: Don't check for btrfs_device::bdev in btrfs_end_bio
->   btrfs: Increment device corruption error in case of checksum error
->   btrfs: Remove needless ASSERT
->   btrfs: Increment corrupt device counter during compressed read
->   btrfs: sysfs: Add bdi link to the fsid dir
-
-This is pretty straightforward, thanks. I did some smallish changes like
-renaming the btrfs_io_bio::dev to device.
-
-Updating the existing counter is in line with scrub so we don't have to
-change the on-disk stats.
-
-Patchset is now in misc-next, I don't see any reason to keep it in a
-topic branch.
+>  	int i;
+>  
+> -	logical <<= 9;
+> -
+>  	for (i = 0; i < rbio->nr_data; i++) {
+> -		stripe_start = rbio->bbio->raid_map[i];
+> -		if (logical >= stripe_start &&
+> -		    logical < stripe_start + rbio->stripe_len) {
+> +		u64 stripe_start = rbio->bbio->raid_map[i];
+> +		if (in_range(logical, stripe_start, rbio->stripe_len))
+>  			return i;
+> -		}
+>  	}
+>  	return -1;
+>  }
+> -- 
+> 2.17.1
