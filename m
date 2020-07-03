@@ -2,175 +2,201 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 068BB213212
-	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Jul 2020 05:16:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58C32213376
+	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Jul 2020 07:19:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726098AbgGCDQN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 2 Jul 2020 23:16:13 -0400
-Received: from james.kirk.hungrycats.org ([174.142.39.145]:44530 "EHLO
-        james.kirk.hungrycats.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726033AbgGCDQN (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 2 Jul 2020 23:16:13 -0400
-Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
-        id B0878743CC9; Thu,  2 Jul 2020 23:16:11 -0400 (EDT)
-Date:   Thu, 2 Jul 2020 23:16:11 -0400
-From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-To:     "Lakshmipathi.G" <lakshmipathi.g@gmail.com>
-Cc:     kreijack@inwind.it, dsterba <dsterba@suse.cz>,
-        DanglingPointer <danglingpointerexception@gmail.com>,
-        btrfs <linux-btrfs@vger.kernel.org>
-Subject: Re: btrfs-dedupe broken and unsupported but in official wiki
-Message-ID: <20200703031611.GD10769@hungrycats.org>
-References: <16bc2efa-8e88-319f-e90e-cf8536460860@gmail.com>
- <20200618204317.GM10769@hungrycats.org>
- <65eeb90a-e983-2ae8-14ad-79bcd2960851@gmail.com>
- <20200619050402.GN10769@hungrycats.org>
- <20200619131117.GD27795@twin.jikos.cz>
- <79672577-6189-10fe-b4bc-8cf45547b192@libero.it>
- <20200622224556.GP10769@hungrycats.org>
- <CAKuJGC_eDi3isqJHxn6XG8GerOthYeVTb1j5cTPYSiuV_oFgaA@mail.gmail.com>
+        id S1725891AbgGCFT2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 3 Jul 2020 01:19:28 -0400
+Received: from mout.gmx.net ([212.227.15.15]:54693 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725779AbgGCFTZ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 3 Jul 2020 01:19:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1593753561;
+        bh=30xuG8m88S0h1Du0tjndnXc7X+mqHWBPyzvFnKtxwPs=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=CIGcDb2AjrGsSDx3UbYmuEuSKjQURVQJex63th9a0V7jOwqldiaI2X92sD0D13C+c
+         BFugpL8S3cq4zU48+0OSwTF2hAaPWifRbSIiz3Wn2x7aEkpj2SRsRWirOPAbDrOuyL
+         YEsXyLHqzXOp88jG8hIgiREUVJ6JZReQq4v/Hqj4=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MY6Cl-1jJPHB0yVB-00YUfW; Fri, 03
+ Jul 2020 07:19:20 +0200
+Subject: Re: [PATCH 3/4] btrfs: preallocate anon_dev for subvolume and
+ snapshot creation
+To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org, Greed Rong <greedrong@gmail.com>
+References: <20200616021737.44617-1-wqu@suse.com>
+ <20200616021737.44617-4-wqu@suse.com> <20200616151004.GE27795@twin.jikos.cz>
+ <f792151a-ebd5-2ac7-c9ac-0c274ea1ab8e@gmx.com>
+ <20200701173928.GF27795@twin.jikos.cz>
+ <0cfc15be-3a4a-c6d2-b294-eeb0a4506df4@gmx.com>
+ <20200702160821.GT27795@twin.jikos.cz> <20200702234632.GU27795@twin.jikos.cz>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
+ mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
+ PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
+ 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
+ D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
+ efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
+ ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
+ BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
+ 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
+ 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
+ EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
+ 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
+ ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
+ oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
+ fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
+ 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
+ ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
+ oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
+Message-ID: <dce7628b-f182-783b-6f8f-da543bc5421b@gmx.com>
+Date:   Fri, 3 Jul 2020 13:19:14 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAKuJGC_eDi3isqJHxn6XG8GerOthYeVTb1j5cTPYSiuV_oFgaA@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200702234632.GU27795@twin.jikos.cz>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="oSCb1Bu6if4oHk4Bbn4JdHaaMavNWpr7k"
+X-Provags-ID: V03:K1:3bToV4u7XdRL7wPGC70vYIHhZwAVVvN+VZd8zPHGi0/QO/LMCEm
+ RwfvQp6j3VxB8IJD5nRQ6iuzdoN1O5CtVOVcXgfWokX5OMrxCmV+EPnhwOxruW2C6BnT2HN
+ kylYlyuxgIwWSj1WozzG3lMnoYQIWreEpPn7FZzMpOM609rIPL/luevJuLnqLxibmRL8MqN
+ meMXy5LYXnP3oHgNVRd3A==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:hxHZd/Qbay4=:KnCURrLYy9tDa5hKuV0xjs
+ q70WQ29tZ/y3JtRNGzypBUf8hT3PpdVALsXv7QiX0yYN4HYnQLnC2MSRJ+IFwgWMj7sqEY1xE
+ zFjPCCd+rNjyl2NZHedZKq7no/5GhmtzwpwJDc3zpGJV3US1SsLtZf79INprXRbT7djH5J1Jc
+ 83Q+276P9K7/WRqA4Dsf5tTSimHzzfxzJQNcjkOR9/80FYqxYuw8lC2H1tmA7TBPQ7MiDzrro
+ CQIpq562pig4iKPZc/Cq9c1ENQgJ9f5/lFJJYzx/hixMaGAbIrETB2Co/pJC7H/mlCa712Zcy
+ qLmgq5FskezHg/j7nQO1QrooYeDfbpoj7Dd5wiTeVDEbyqQGmrBwdNOevnBY+pPSombe8VNS2
+ MpZ4QSWXtbBB9lx0ntAmbU14FVFTRQ6H137z5ujd8fissBkTWcCS6copRzkGKvaTte6l3te5l
+ DR1gIOc674gWB7Vo3tkIvlJk/OGXl8UxvIPv/Atl6j1Uc1oxcwxYaL9pPKYuJrg04/yCP4ZiK
+ QKjjjYwPhGIp1tXNvYpLhuRrYETzgQb+Mer5ACNqIM0esYyuCnyOYQcsTyG1chBIyxXs2FlgN
+ gnodm0mlKPgnF7uW5TUcWD0gOLt3o9pdrP7vQJ2JCH7z6iGspNpj1yA25aewcoKdGJ5V5ddKq
+ mjaBct11DxIbdV/XdNOHev74mseG5rRFjg+ctGpPqUAZCgeSSDFs7HDmAyAef5JWaMHpnV3qZ
+ SKDUY2FVmU2OOJY6dWN6UOg4ADYiyh2N/Z8ztT/E9IOYtGVbhAvvmwyowQXzZDR7DiCeM2wl9
+ 2IREd9ZnU5oncUZzEUxDYgQAeHcHc1CF+hDXPgPUid0G+7Ji3SDuQOeGd3dkHR6VWPsq2ehYW
+ T2dVM/rfsUsnTVFTgNNKSrTafR2dFIfYb0bwC31IVCWAbXsfp0XiBLDcVZse2AuKLTWs30sXH
+ GqGc8278UYWPJAaeUvvuiT3vTsBfMfna9b6vw68ISOYrqJ2q1GDL2022gdw6Uv7tHyo91/ykk
+ IsMs3kYP1am83CzNbODsnDapIkvKN7IMQyhcVAlj82eTpEIUn+S4fJchS5k3gY/wWXS3elqV/
+ r8sbucJAP3Ze6EZAd4bUGaq7k0KMxCzshGlXAt2qd/pi9Te+Q/HYRo3qwrvD+fP/s59q2cQDV
+ m1MHfrgm/IZxK13LY4r6S630kVvw6trCbyerGdjvK4MzJ/OEUL7ADXExZJB3sKxLc6TinvKCs
+ EoFMVw/UthY+MghZ0cEFY5hN/MRGYkftFF6DaBw==
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Jul 02, 2020 at 01:57:57PM +0530, Lakshmipathi.G wrote:
-> Hi Zygo.
-> 
-> >dduper is a proof of concept that is so much
-> >faster than the other block-oriented dedupers on btrfs that it overcomes a
-> >ridiculously inefficient implementation and wins benchmarks--but it also
-> >saves the least amount of space of any of the block-oriented dedupers on
-> >the wiki.
-> 
-> Regarding dduper, do you have a script to re-create your dataset? I'd like to
-> investigate why dduper saves the least amount of space. thanks!
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--oSCb1Bu6if4oHk4Bbn4JdHaaMavNWpr7k
+Content-Type: multipart/mixed; boundary="iJxZlTT2rbXoNCuBD2Uo26fCvCWXGFwMB"
 
-My data set is a bunch of Windows raw disk images taken right after the
-MS installer runs.  I don't think I can share it, but it's easy enough to
-roll your own.  To avoid btrfs backref performance bugs, I split the disk
-images into 1GB files, removed those files that were entirely duplicate
-(all-zero or hard disk sector initialization pattern), and deduped the
-rest.  For repeatability, once I had set up the btrfs filesystem with
-all the 1GB raw image fragment files, I dd'ed it to a raw partition on
-a dedicated disk and ran the test in a VN, so that all tools deduped an
-identical filesystem image on the same hardware (which has since died,
-so here I will use the saved results of the last run).
+--iJxZlTT2rbXoNCuBD2Uo26fCvCWXGFwMB
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-On btrfs, extents are immutable.  To remove a duplicate extent, the
-deduper must remove every reference to every block in an extent, even
-if some of the blocks do not contain duplicate data.  If any reference
-to the extent remains anywhere in the filesystem, no space is saved.
-If anything, space is lost due to metadata growth.
 
-One way to achieve removal of a partially matched extent is to copy the
-unique data so that the entire extent contains duplicate data (which
-bees does).  Another option is to not attempt dedupe at all unless the
-entire content of one extent matches (which duperemove might do...in a
-dev branch?).  This does not gain more free space, but it avoids wasting
-time issuing dedupe ioctl calls that will cost time.
 
-duperemove will do parts of this analysis depending on command-line
-options.  dduper doesn't do any such analysis that I've seen, and
-its performance seems to be comparable to duperemove with a crippling
-set of command-line options.  The space efficiency of both dduper and
-duperemove is poor on btrfs--they are only effective when deduping files
-with small extents, or files that are entirely duplicate.  In test runs,
-both dduper and duperemove issue a lot of dedupe ioctls that have no
-effect on free space (though duperemove has command-line options that
-avoid the worst losses).
+On 2020/7/3 =E4=B8=8A=E5=8D=887:46, David Sterba wrote:
+> On Thu, Jul 02, 2020 at 06:08:21PM +0200, David Sterba wrote:
+>> On Thu, Jul 02, 2020 at 07:56:57AM +0800, Qu Wenruo wrote:
+>>> On 2020/7/2 =E4=B8=8A=E5=8D=881:39, David Sterba wrote:
+>>>> On Wed, Jul 01, 2020 at 11:25:27AM +0800, Qu Wenruo wrote:
+>>>> Adding the anon_dev argument to btrfs_get_fs_root is wrong and I hav=
+e
+>>>> never suggested that. What I meant is to put the actual id allocatio=
+n
+>>>> to the callers where the subvolume is created, ie only 2 places.
+>>>
+>>> You mean to extract btrfs_init_fs_root() out of btrfs_get_fs_root()?
+>>>
+>>> That looks a little risky and I can't find any good solution to make =
+it
+>>> more elegant than the current one.
+>>
+>> I spent more time reading through the get-fs-root functions and the ma=
+in
+>> problem is that btrfs_get_fs_root is doing several things, and it make=
+s
+>> a lot of code simple, I certainly want to keep it that way.
+>>
+>> The idea was to pre-insert the new root (similar to the root item
+>> insertion, btrfs_insert_root) and not letting btrfs_get_fs_root call t=
+o
+>> btrfs_init_fs_info where the anon_bdev allocation happens for all the
+>> other non-ioctl cases.
+>>
+>> Which could be done by factoring out btrfs_init_fs_root from
+>> btrfs_get_fs_root. This would allow to extend only btrfs_init_fs_root
+>> arguments with the anon_bdev, and keep btrfs_get_fs_root intact.
+>> So this is splitting the API from the end.
+>>
+>> What you originally proposed is a split from the begnning, ie. add a
+>> common implementation for existing and new and provide btrfs_get_fs_ro=
+ot
+>> and btrfs_get_new_fs_root that would hide the additional parameters.
+>>
+>> Both ways are IMO valid but I thought it would be easier to pass the
+>> anon bdev inside ioctl callbacks. The problem that makes my proposal
+>> less appealing is that btrfs_read_tree_root gets called earlier than
+>> I'd like so factoring everything after btrfs_init_fs_root would not be=
 
-In my uncompressed test, the extents are all large (many are at the
-maximum 128MB size), so a deduper that doesn't split extents will be able
-to recover almost no space.  The only successes dduper and duperemove
-were able to achieve were exploiting the fact that Windows disks have
-contiguous gigabytes of identical content in their recovery-tools
-partitions.
+>> so straightforward.
+>>
+>> In conclusion, your proposal is better and I'm going to merge it.
+>>
+>>> Although I would definitely remove the "__" prefix as we shouldn't ad=
+d
+>>> such prefix anymore.
+>>
+>> Yeah with the small naming fixups.
+>=20
+> It's in for-next-20200703. I've updated the changelogs to reflect what
+> we found during debugging the issue, the __ function renamed to
+> btrfs_get_root_ref and some function comments added. All patches
+> reordered and tagged for stable though the preallocation is not within
+> the size limit.
+>=20
 
-bees is able to recover more of the duplicate space it finds because it
-slices up large extents along dedupe-friendly boundaries.  This slows bees
-down on uncompressed filesystems because the incoming extents are larger.
+Thanks for the merge and dropping the unneeded check patch.
 
-My test result for 140GB of uncompressed data was:
+All the modification looks good to me.
 
-	bees saved 31% in 1h 40m (0.31%/min)
+Just a small nitpick for commit a561defc34aa ("btrfs: don't allocate
+anonymous block device for user invisible roots"), there is an
+unnecessary new line after "[CAUSE]".
 
-	duperemove -d -r saved 12% in 2h 30m (0.08%/min)
+Thanks for your daily work of maintaining btrfs,
+Qu
 
-	duperemove -d -r --dedupe-options=same saved 12% in 25 minutes
-	(0.48%/min)
 
-	dduper saved 9% in 16m (0.56%/min)
 
-	duperemove -d -r --dedupe-options=nofiemap,noblock,same -A
-	--lookup-extents=no saved 7% in 25 min (0.28%/min)
+--iJxZlTT2rbXoNCuBD2Uo26fCvCWXGFwMB--
 
-dduper is the fastest, but saves less total space than two variations
-of duperemove command-line options.
+--oSCb1Bu6if4oHk4Bbn4JdHaaMavNWpr7k
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
-dduper is even faster than the above numbers suggest--it deduped 8.5% of
-the data in 6 minutes, a rate of 1.41%/minute, 3x faster than duperemove's
-best score...then dduper wasted the following 10 minutes doing futile
-dedupe ioctl calls that didn't free any space.
+-----BEGIN PGP SIGNATURE-----
 
-All that said, scoring the highest free space %/minute rate in a race with
-other dedupers _while wasting 67% of the time and 71% of the available
-space_ is pretty impressive!
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl7+v9IACgkQwj2R86El
+/qiEEgf/RXT6MWp7rTJTP/wqWp273vXWiPNTN0HXM6qc/B6jnQphM3/c99rI2HFC
+Sj4YVdG4kviPL5B5yy062rPwL23W95RYFzfA8JjFzj6jvXTHnFyJ02hUvNx6fN0E
+hOyvENAu8pxniBl1ushgVtlcG5OYA5eRsqHulIsgoK0k6rncvT28QGxfrZ8L1Dtt
+V5DnH82vxcAZTrHRWPz1zJJVKlumfwHOY8gLaPYPTZF3s2v0iteTokxaU12aUjED
+y1XKscNBJlwoZndOqDzOfM+OguZt/5WpPUY7ioJp4/D8IRAnH6y8lmuYPg6RwOiY
+EZ0fx44veTJBfXxEguRzc6ipiQJM/g==
+=FHN8
+-----END PGP SIGNATURE-----
 
-duperemove -d -r took 2h 30m because it hits an old btrfs backref
-performance bug (now fixed in 5.7?).  It actually saved 12% in 25 minutes
-too, but it created a toxic extent and spent 2 hours burning CPU in the
-kernel to process it.  The other duperemove command-line argument sets
-mentioned here avoid this bug.
-
-The result for 100GB of compressed data (the same data, but compressed
-with compress-force=zstd) was:
-
-	bees saved 44% in 1h 15m (0.58%/min)
-
-	duperemove -d -r --dedupe-options=nofiemap,noblock,same -A
-	--lookup-extents=no saved 3% in 12 minutes (0.25%/min)
-
-	dduper saved 1% in 24 minutes (0.04%/min)
-
-On compressed filesystem tests, dduper gains almost no space.  This is
-expected, because dduper only looks at btrfs csums, and the btrfs csums
-can only match when the compressed data representation of both copies
-is exactly the same.  In btrfs-compressed files the compressed extent
-block alignment is effectively random for large files, since it depends
-on timing details at the time of the btrfs commit, so on average only 3%
-(1 in 32 blocks) of extents with duplicate data will have matching csums
-after compression.  bees and duperemove read the data after decompression,
-so they are not limited by differences in compression encoding.
-
-The only way for dduper to catch up here is to detect compressed
-extents and fall back to reading them the slow way.  This is a reasonable
-tradeoff for filesystem workloads that have low proportions of compressed
-data; otherwise, duperemove's optimized multi-threaded implementation
-might run slightly faster than dduper on a fast device, if dduper is
-forced to read all the blocks because they are compressed.
-
-I don't recall why I didn't run duperemove with other options on a
-compressed filesystem during this test--possibly to avoid a bug?
-
-I have not looked in further detail into why dduper frees slightly less
-space than duperemove under some conditions.  A simple deduper with a
-minimal awareness of btrfs's extent reference counting structure can
-easily match or slightly outperform the best deduper without one; with a
-non-minimal awareness of btrfs structure, a slow and broken deduper can
-outperform by an order of magnitude.  duperemove's command-line options do
-provide or suppress some awareness of extent structure, so I would expect
-those options to increase or decrease space saved slightly compared to
-a tool that has no such awareness, and that seems to be what happens.
-The test results of dduper, duperemove, and bees are all consistent
-with that.
-
-> ----
-> Cheers,
-> Lakshmipathi.G
-> http://www.giis.co.in https://www.webminal.org
+--oSCb1Bu6if4oHk4Bbn4JdHaaMavNWpr7k--
