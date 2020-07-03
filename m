@@ -2,251 +2,110 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCF4B213A8F
-	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Jul 2020 15:02:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A10E213A9E
+	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Jul 2020 15:06:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726437AbgGCNCE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 3 Jul 2020 09:02:04 -0400
-Received: from de-smtp-delivery-102.mimecast.com ([51.163.158.102]:35624 "EHLO
-        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726410AbgGCNCA (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 3 Jul 2020 09:02:00 -0400
-Received: from EUR04-DB3-obe.outbound.protection.outlook.com
- (mail-db3eur04lp2054.outbound.protection.outlook.com [104.47.12.54]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- de-mta-19-pMb60ET0NZ6BzhfzFh1EGQ-1; Fri, 03 Jul 2020 15:01:55 +0200
-X-MC-Unique: pMb60ET0NZ6BzhfzFh1EGQ-1
+        id S1726063AbgGCNGz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 3 Jul 2020 09:06:55 -0400
+Received: from esa3.hgst.iphmx.com ([216.71.153.141]:6588 "EHLO
+        esa3.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726035AbgGCNGy (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 3 Jul 2020 09:06:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1593781614; x=1625317614;
+  h=from:to:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
+  b=r8Wr4JaFCG2MQoFSLIiQNX5PrfqqGsHjKOvxqTCEGany2K05FClhxliS
+   nh9VS5Zs3IZ6TUvT/d3GpkaeW6mNv5rXpXHtvtPM77KKJRG1elkZM4q3s
+   zg/wf3Ib2EQeNsS59pYAOVXErgLAdpGy3jRCAumNGZr7XLqbqY+N+FMrq
+   LV6i/ZJOS7MsDq6wAJniFFuwFqmEA/MDgIf7yLPYDlm7juiBcho/ENn34
+   fwfQXT0yn1gpiEp7hz1CXtsOMu+ztg0l5Q2a+TliICn9yZ2lVOvl0Ej2v
+   8dHBIIKBTVXD0Zvj4u5iftEmefulRLWpaIdH+0yoXpwVC8q5FpAebU5wk
+   A==;
+IronPort-SDR: QG9atdXxcoN6+ViaGZk4irfhzVswe8oQx68eh83Mjsx6vThS917DzK+PE13ZB50dr1wmcYqPoD
+ ctZatUN/oI5/dvq6FvAUJzeVNPQHmnYd2u3Cxocz+dE4vBPe1X+Cqi+2oIIZc39Y8JpagjDrUK
+ 8RfrotPRYKr0iI2ZLhMh3GqXdQTZvcJp/sQUaxSPk8EOKxP7X7lo9ubjlbS/osFBi35uepBuxi
+ dlW/y61gRnu7T9hnOQI6AcPX8IzaxOfQQt5eRYbMab7eXtznsbWOXy56a0K5YDs8ayIXRI+NvF
+ uA8=
+X-IronPort-AV: E=Sophos;i="5.75,308,1589212800"; 
+   d="scan'208";a="145908950"
+Received: from mail-dm6nam10lp2101.outbound.protection.outlook.com (HELO NAM10-DM6-obe.outbound.protection.outlook.com) ([104.47.58.101])
+  by ob1.hgst.iphmx.com with ESMTP; 03 Jul 2020 21:06:54 +0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=SgpkgSI/G2f73UQZ5vwLCpxxGxV73cEKiMQ8OsmM9MtFetZYGfMYpVk1/2lW+c1VmscTtEHgylPD2B0Qhvy3zbROwj8lCrFZbMqqe+OJ5bai5gkzAjOX9qWNjpUgNTqLKvZXX6JLpjampB4UnHkVoEtZ1qAx5EOyg5SUMkBwdqQAAWG4+oP7nDjYvnjnfAxo23My5Ex3ep9EecGuCqKIimNw95r9b/WEYkqTq4R1XrN841RE2d6PKyuR/nU6XoD3JKW9ZoMJOh5YzoAN8L+SnEJQShBdv5Qp34XimN9u/EhEXFiRz5D/n8G0/GVh2+t3lEpmxjQXxJQ5qCrcsLqOSQ==
+ b=dYvxgCRFgTUZLxQGHCr3lQ5BdZ/CaCcPZTjAHq98U9QaG/jVUrnOY6gxIm9CWVhKY0wS6YqnOG3lKUWcRKzgKQ9C7anS0yjid2Gi6d8b30c8Hs5yeBxQf2SZQ3SsBKlG+4OtApnwkVXEdR1c45wQYM8k+hfamrcKoTApxMjqCP4fXelZePgzf0u863J6gGx7ll0LoJ8CdK045N/uqBL0Bw+1H6igzGW/tWgLzxvg/tsMTbvOMp7Ez54+RZ/ar8Ujfr2LK1MDJvBOoTyQvuem2sCHVszgXI6ThRGUmNfaxx/cfY2XEjXCCp/y3Efmug2/0G4i1fzLyKKOvLZdW/T8+Q==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1kPMjHof8YouxLYE5JuInX1MGdlUU3BNJY3p+oGcjKc=;
- b=QzDaxE04x5jD5RYWOaKOjelNbhPasKKNN+5RW9iG4lZvDcyYkdZAfW8rgSOdIkU4DnLA4wNNeTl23JwFK/JYaDaXFQqKtJREsQzG9L8tDNMkAzhig2Uidoxkad5QjF0S8bckojJonzgc2ZyXk+fvdr7RkD/Uwk9miLJKT3e5RfC7XEcV4eGY5xa84WqmrFLpPAXANRWEMyU+OQ7UqGh2OYXlHTwVhGnzAwloR4PJoIQOxkGp29xuqtxbBCnuhlKfYrENDd65jUgpao8+rZBvl1Dub6yKJ/Z9enZ+2y/aIWOulaGQafomTKNrtZItesPWzVDaT4vhY0Z7gJQbaZ18iQ==
+ bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
+ b=lVjjtusmGJ5YiWGpvAD9u7rVMvJSHPl91tW5vu07j6hiQfR+N2YB318enPbSotGp7vpHyEBqnbacjTPZd3MNGURw32Iz4aU/QA9Nat1qhtoppT0mlrT6+cFbFcX1fWU4SF79Ujj44jY29XE1YyfF/FBhncooWAJb2XQbAojb5S/7xekuouhARIqjr+mJVMi5asOTp5NgGW6/Rg6RV6cum5n2eAhhjHnsKESmmuzXvGw45IoC91XGRttbKPYjuFgjPJ7ijx8WWdExC2CPzaa7xcNSoyDdCxF7hT1B/S/B/xT5aWwx957r0l1+RNEWQ3rleE6Op6u8hbFDP/1/FcK1KA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-Authentication-Results: suse.cz; dkim=none (message not signed)
- header.d=none;suse.cz; dmarc=none action=none header.from=suse.com;
-Received: from AM0PR04MB6195.eurprd04.prod.outlook.com (2603:10a6:208:13c::13)
- by AM0PR04MB7044.eurprd04.prod.outlook.com (2603:10a6:208:191::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3153.20; Fri, 3 Jul
- 2020 13:01:54 +0000
-Received: from AM0PR04MB6195.eurprd04.prod.outlook.com
- ([fe80::688e:afdb:90d9:bdef]) by AM0PR04MB6195.eurprd04.prod.outlook.com
- ([fe80::688e:afdb:90d9:bdef%3]) with mapi id 15.20.3153.028; Fri, 3 Jul 2020
- 13:01:54 +0000
-Subject: Re: [PATCH] btrfs: discard: reduce the block group ref when grabbing
- from unused block group list
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     Marcos Paulo de Souza <marcos@mpdesouza.com>,
-        David Sterba <dsterba@suse.cz>
-References: <20200703070550.39299-1-wqu@suse.com>
-Autocrypt: addr=wqu@suse.com; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0GFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPokBTQQTAQgAOAIbAwULCQgHAgYVCAkKCwIE
- FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJdnDWhAAoJEMI9kfOhJf6oZgoH
- 90uqoGyUh5UWtiT9zjUcvlMTCpd/QSgwagDuY+tEdVPaKlcnTNAvZKWSit8VuocjrOFbTLwb
- vZ43n5f/l/1QtwMgQei/RMY2XhW+totimzlHVuxVaIDwkF+zc+pUI6lDPnULZHS3mWhbVr9N
- vZAAYVV7GesyyFpZiNm7GLvLmtEdYbc9OnIAOZb3eKfY3mWEs0eU0MxikcZSOYy3EWY3JES7
- J9pFgBrCn4hF83tPH2sphh1GUFii+AUGBMY/dC6VgMKbCugg+u/dTZEcBXxD17m+UcbucB/k
- F2oxqZBEQrb5SogdIq7Y9dZdlf1m3GRRJTX7eWefZw10HhFhs1mwx7kBDQRZ1YGvAQgAqlPr
- YeBLMv3PAZ75YhQIwH6c4SNcB++hQ9TCT5gIQNw51+SQzkXIGgmzxMIS49cZcE4KXk/kHw5h
- ieQeQZa60BWVRNXwoRI4ib8okgDuMkD5Kz1WEyO149+BZ7HD4/yK0VFJGuvDJR8T7RZwB69u
- VSLjkuNZZmCmDcDzS0c/SJOg5nkxt1iTtgUETb1wNKV6yR9XzRkrEW/qShChyrS9fNN8e9c0
- MQsC4fsyz9Ylx1TOY/IF/c6rqYoEEfwnpdlz0uOM1nA1vK+wdKtXluCa79MdfaeD/dt76Kp/
- o6CAKLLcjU1Iwnkq1HSrYfY3HZWpvV9g84gPwxwxX0uXquHxLwARAQABiQE8BBgBCAAmAhsM
- FiEELd9y5aWlW6idqkLhwj2R86El/qgFAl2cNa4FCQlqTn8ACgkQwj2R86El/qhXBAf/eXLP
- HDNTkHRPxoDnwhscIHJDHlsszke25AFltJQ1adoaYCbsQVv4Mn5rQZ1Gon54IMdxBN3r/B08
- rGVPatIfkycMCShr+rFHPKnExhQ7Wr555fq+sQ1GOwOhr1xLEqAhBMp28u9m8hnkqL36v+AF
- hjTwRtS+tRMZfoG6n72xAj984l56G9NPfs/SOKl6HR0mCDXwJGZAOdtyRmqddi53SXi5N4H1
- jWX1xFshp7nIkRm6hEpISEWr/KKLbAiKKbP0ql5tP5PinJeIBlDv4g/0+aGoGg4dELTnfEVk
- jMC8cJ/LiIaR/OEOF9S2nSeTQoBmusTz+aqkbogvvYGam6uDYw==
-Message-ID: <4c44286d-bdaf-3598-e3b7-9844b92617b6@suse.com>
-Date:   Fri, 3 Jul 2020 21:01:42 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
-In-Reply-To: <20200703070550.39299-1-wqu@suse.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="4kqRLThbir1yaVeQKpAT5QwgsfQQTQ7Vl"
-X-ClientProxiedBy: BY3PR04CA0020.namprd04.prod.outlook.com
- (2603:10b6:a03:217::25) To AM0PR04MB6195.eurprd04.prod.outlook.com
- (2603:10a6:208:13c::13)
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
+ b=pjf1fFwwdVBCKKapWzmJzsU/kftZgx7IB/sprqiHsLwhG68bYdCO+K5RQF5YgDaDRPz+CDkz3BqWGyW+ovdKeZrDIg2ysl7+BawOjvVgLUO0NGrXw1b249kCyHD13zh/ohRfiwsp+7Qy7wftlbp9CTJKPVHQOVmYZyoajWhqAjc=
+Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
+ (2603:10b6:803:47::21) by SN4PR0401MB3518.namprd04.prod.outlook.com
+ (2603:10b6:803:4f::10) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3131.25; Fri, 3 Jul
+ 2020 13:06:53 +0000
+Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
+ ([fe80::1447:186c:326e:30b2]) by SN4PR0401MB3598.namprd04.prod.outlook.com
+ ([fe80::1447:186c:326e:30b2%7]) with mapi id 15.20.3153.028; Fri, 3 Jul 2020
+ 13:06:53 +0000
+From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To:     Nikolay Borisov <nborisov@suse.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH v2] btrfs: Record btrfs_device directly btrfs_io_bio
+Thread-Topic: [PATCH v2] btrfs: Record btrfs_device directly btrfs_io_bio
+Thread-Index: AQHWURIFP3ZL0pxuTU2J9U6b4n1r0w==
+Date:   Fri, 3 Jul 2020 13:06:53 +0000
+Message-ID: <SN4PR0401MB35980A0EC4BA7EC5AD3DFDA89B6A0@SN4PR0401MB3598.namprd04.prod.outlook.com>
+References: <20200702122335.9117-4-nborisov@suse.com>
+ <20200703081427.11984-1-nborisov@suse.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: suse.com; dkim=none (message not signed)
+ header.d=none;suse.com; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [129.253.240.72]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 8c8e3cf5-341a-49a9-4c25-08d81f51f4c0
+x-ms-traffictypediagnostic: SN4PR0401MB3518:
+x-microsoft-antispam-prvs: <SN4PR0401MB35182F12AA9C3B88B16B23CC9B6A0@SN4PR0401MB3518.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:1728;
+x-forefront-prvs: 045315E1EE
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 2EhTdP1TFy9rNmUoxjOHuCM68fO0wMitoza1bMn+0IwWO/eGCZTd6xI9TUjE/N18eID4gtTlnIufMekdh+PIVWIlwChyPoClYkoTSnOd9vMnLdSm7MPEeqrx6kP8ZbZbrpHoq89UE+UGaCVJmfED+5akcSzrNRwmgvLOA8ZheJjNHne6YtumDWiu5qFW3kXyMcrNtIbAkliJtT3JuF+CIamaC6JaIsmDf9Cttg6hP0TlNvSBb/2Fjh6a73pGXW41xbyO7A5xvs0Yg0hxTFtIVLg8S41tjycHRy2SAjfaSRIznnDuloSG724TDF/8ADNOMtR7lXxC/oq+O/ets0CvIQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR0401MB3598.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(39860400002)(376002)(136003)(346002)(366004)(396003)(19618925003)(5660300002)(33656002)(52536014)(8936002)(86362001)(478600001)(66446008)(64756008)(66476007)(66556008)(8676002)(66946007)(91956017)(76116006)(558084003)(4270600006)(9686003)(2906002)(55016002)(186003)(6506007)(71200400001)(26005)(110136005)(316002)(7696005);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: h6rZoQ6me49kPPGCXEChKnZC4jiDa1Ei+K4LxwhEvcJHCTmY+OU6atLEQ9hPPbeYA7bbFNDkt6YzrgwFpISsi8muxTDhgUrbg/r4k7vmxrU73bIx9eHaE2KTGnJXrcVgSXGbAeI84MssFE6FndOpRcJ+xp4PShQe93uTQUmqlljlcVJEDENtLLZ7Hv/8im8gI2HdTOavqfhwcUEAWWdu8gJWNfciNnIaefoFAaswW8uVfeNbuJzxLaBFpUm0ZDuy9B2HPnFSqo4PhHjHmTBvUq808PGqdzXpKMWvgOq75lL7BI0tpyBXhax92c4dAbLB4//FlC6yJD6bw82Tk3OHVH2kL96J3W51GDBYBEEA+7b9q0GA+VphtbNod5LvtAcWQ8aINd5pfrXTG18k+orPpkS9Q2wVoywaBc+rB4MmZWkVwE3PJppfY+e0JhffIbUt6j3NgNfC1KeRpIFAiQoHnZ/mvrObjnQfnmu6SMGUYrRTM3Es+1HaPjm5OauO8crm
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [0.0.0.0] (149.28.201.231) by BY3PR04CA0020.namprd04.prod.outlook.com (2603:10b6:a03:217::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3153.23 via Frontend Transport; Fri, 3 Jul 2020 13:01:51 +0000
-X-Originating-IP: [149.28.201.231]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 1e7f9ab0-2efd-4d19-8ac4-08d81f51421e
-X-MS-TrafficTypeDiagnostic: AM0PR04MB7044:
-X-Microsoft-Antispam-PRVS: <AM0PR04MB704475B8DC75AE1A3C38D58AD66A0@AM0PR04MB7044.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
-X-Forefront-PRVS: 045315E1EE
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: y7+wSfKXy/CdV8HLuw/7/sLbzY4HkjAsfV8QTb211HAIW4Occ1So1hg/dmEchH1rP7rbTg+04C5LK6r5VsjGl0ISiGMRGty2A6f4xRix6yZTxbD/niTUu/7WcGKDuDjcps0watc45j1mes04g1leZ8wvYUxOU3ML3AOSRMD6Ld/c9I7CuSUH+ZvmT/Hlf6Mgtg8juEdLp2qTYrUDmLLaOPGfy+dqvVH3eNzE+aBr2EzK0P8c1LurK3+begL/6awqZp42u8lVWa80c5dx2Bl+rgO5IRV2XzP7gjkc7novvVDyh1mUwtCSVHTknea+70zwQnsn6lMFuTbj3M9zdjIQly08uYz3nMWHjz78hDi5O9KweoPcuzLlUgYVx1DZ76q5azjxOtxa4swbCfaB+YO4xnySS1YGJdQ8pIH5pK0fr326S/J9ABZvv6CZDnUs485S
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB6195.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(376002)(346002)(136003)(366004)(39860400002)(396003)(21480400003)(52116002)(956004)(2616005)(86362001)(66946007)(26005)(186003)(6666004)(66556008)(66476007)(83380400001)(31686004)(36756003)(33964004)(8936002)(31696002)(6916009)(6706004)(4326008)(16526019)(2906002)(8676002)(5660300002)(6486002)(235185007)(54906003)(16576012)(316002)(478600001)(78286006)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: pxnimuP9faoj65A4KHV1hO7XofzROTnSECtUF2ale34ue8WwnjETsC+gHHADDHx4JYA8cfg8w8yd597bzNUC+ZGm/ePCI8MnIlWckSb3enpFnKlcXw9uLDcn0IhvE38iWZs5Aq2yDcj/iAXyEKvwf+PAEyNlUH1Shhe7qZxo8TsaXWZo4yiI9tXzP1xXDj5mAUSXccCDOuPhvSPg4uf4cHTsE9sOjJvnlqTVwW4xq1nDU1BnBHhvmg4tFlfsrrWmze9pi/WpqJebWGPMAuPxrbx8UUXJFJ0Q8/Jbzi5HvjoNptjHc25gffDF0u2AZxAIuIwn+LOelIXEd+XVsXXavN5tjDnslFM7W7bdFRm5BQWwaIpfb0QyCZbyfOd+srjSwE3qfl0X20dJWZAVuvIFsXQbVCZ1VzEybm7hOc/vCUWoAU8Ah/OVbcqxOcXrKb+VX6wQog4vKExTZV9bup7id4mVBZtIxAqWaROYWFryiB0=
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1e7f9ab0-2efd-4d19-8ac4-08d81f51421e
-X-MS-Exchange-CrossTenant-AuthSource: AM0PR04MB6195.eurprd04.prod.outlook.com
+X-OriginatorOrg: wdc.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Jul 2020 13:01:54.0771
+X-MS-Exchange-CrossTenant-AuthSource: SN4PR0401MB3598.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8c8e3cf5-341a-49a9-4c25-08d81f51f4c0
+X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Jul 2020 13:06:53.0338
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 8snLNzwHv0qplAXEU+5kou1gwHmprl8MIVrWGVZFcznj+kVPH0yNHrS8Czlu2wJ6
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR04MB7044
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: zKeeBr5Y14GjYZBDbai30KG36+XHcderT8xvkqTSxxSdTmjrB0rpjUTkFemNTIddK01BkKwKno5zsUDweWCt/UZU9qc8GEnvRYj37nd5hJA=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN4PR0401MB3518
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
---4kqRLThbir1yaVeQKpAT5QwgsfQQTQ7Vl
-Content-Type: multipart/mixed; boundary="LJhGpr9lnpkMF45A6cbrBPKBiJKhAuR2V"
-
---LJhGpr9lnpkMF45A6cbrBPKBiJKhAuR2V
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-
-
-
-On 2020/7/3 =E4=B8=8B=E5=8D=883:05, Qu Wenruo wrote:
-> [BUG]
-> The following small test script can trigger ASSERT() at unmount time:
->=20
->   mkfs.btrfs -f $dev
->   mount $dev $mnt
->   mount -o remount,discard=3Dasync $mnt
->   umount $mnt
->=20
-> The call trace:
->   assertion failed: atomic_read(&block_group->count) =3D=3D 1, in fs/bt=
-rfs/block-group.c:3431
->   ------------[ cut here ]------------
->   kernel BUG at fs/btrfs/ctree.h:3204!
->   invalid opcode: 0000 [#1] PREEMPT SMP NOPTI
->   CPU: 4 PID: 10389 Comm: umount Tainted: G           O      5.8.0-rc3-=
-custom+ #68
->   Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 0.0.0 02/06/=
-2015
->   Call Trace:
->    btrfs_free_block_groups.cold+0x22/0x55 [btrfs]
->    close_ctree+0x2cb/0x323 [btrfs]
->    btrfs_put_super+0x15/0x17 [btrfs]
->    generic_shutdown_super+0x72/0x110
->    kill_anon_super+0x18/0x30
->    btrfs_kill_super+0x17/0x30 [btrfs]
->    deactivate_locked_super+0x3b/0xa0
->    deactivate_super+0x40/0x50
->    cleanup_mnt+0x135/0x190
->    __cleanup_mnt+0x12/0x20
->    task_work_run+0x64/0xb0
->    __prepare_exit_to_usermode+0x1bc/0x1c0
->    __syscall_return_slowpath+0x47/0x230
->    do_syscall_64+0x64/0xb0
->    entry_SYSCALL_64_after_hwframe+0x44/0xa9
->=20
-> The code:
->                 ASSERT(atomic_read(&block_group->count) =3D=3D 1);
->                 btrfs_put_block_group(block_group);
->=20
-> [CAUSE]
-> Obviously it's some btrfs_get_block_group() call doesn't get its put
-> call.
->=20
-> The offending btrfs_get_block_group() happens here:
->=20
->   void btrfs_mark_bg_unused(struct btrfs_block_group *bg)
->   {
->   	if (list_empty(&bg->bg_list)) {
->   		btrfs_get_block_group(bg);
-> 		list_add_tail(&bg->bg_list, &fs_info->unused_bgs);
->   	}
->   }
->=20
-> So every call sites removing the block group from unused_bgs list shoul=
-d
-> reduce the ref count of that block group.
->=20
-> However for async discard, it didn't follow the call convention:
->=20
->   void btrfs_discard_punt_unused_bgs_list(struct btrfs_fs_info *fs_info=
-)
->   {
->   	list_for_each_entry_safe(block_group, next, &fs_info->unused_bgs,
->   				 bg_list) {
->   		list_del_init(&block_group->bg_list);
->   		btrfs_discard_queue_work(&fs_info->discard_ctl, block_group);
->   	}
->   }
->=20
-> And in btrfs_discard_queue_work(), it doesn't call
-> btrfs_put_block_group() either.
->=20
-> [FIX]
-> Fix the problem by reducing the reference count when we grab the block
-> group from unused_bgs list.
->=20
-> Reported-by: Marcos Paulo de Souza <marcos@mpdesouza.com>
-
-My bad, the reported by tag should use his awesome suse mail address.
-
-David, would you please fix this at merge time?
-
-Thanks,
-Qu
-> Fixes: 6e80d4f8c422 ("btrfs: handle empty block_group removal for async=
- discard")
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> ---
->  fs/btrfs/discard.c | 1 +
->  1 file changed, 1 insertion(+)
->=20
-> diff --git a/fs/btrfs/discard.c b/fs/btrfs/discard.c
-> index 5615320fa659..741c7e19c32f 100644
-> --- a/fs/btrfs/discard.c
-> +++ b/fs/btrfs/discard.c
-> @@ -619,6 +619,7 @@ void btrfs_discard_punt_unused_bgs_list(struct btrf=
-s_fs_info *fs_info)
->  	list_for_each_entry_safe(block_group, next, &fs_info->unused_bgs,
->  				 bg_list) {
->  		list_del_init(&block_group->bg_list);
-> +		btrfs_put_block_group(block_group);
->  		btrfs_discard_queue_work(&fs_info->discard_ctl, block_group);
->  	}
->  	spin_unlock(&fs_info->unused_bgs_lock);
->=20
-
-
---LJhGpr9lnpkMF45A6cbrBPKBiJKhAuR2V--
-
---4kqRLThbir1yaVeQKpAT5QwgsfQQTQ7Vl
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl7/LDYACgkQwj2R86El
-/qgy4wf5Ac4GwsiucCkAQ7qpeSb/gtWY2411IPdgo8g6bRZyYJkthBu8AEiTHJ69
-RKrYNf3lF4v8Ya/jV0amWt3uP4G+SbD2mC5fWjzOHqSp4lYMKeyE/J9AiHXro5Wk
-8yFvXuhnI+rgg2f5zhoL9OmAHaSAgvp8IYzVQ1EamYDS40oq4LDkPFj+/pT2T8mf
-tR1Y6oPa+x2SSWqeVKk/HqFEa/VnRiXFloQkwkJQQPpa+MYslJ7weVK68Ypgoxyk
-CoESnTgGYFMsHMxf+6TrXltnTZTMnFJW9z8rHZP2JghClkEx0zDyFaJcut3YfDvd
-BgL6t2FEtW6shlOG7+B1R8OR3ZoMpw==
-=AOjH
------END PGP SIGNATURE-----
-
---4kqRLThbir1yaVeQKpAT5QwgsfQQTQ7Vl--
-
+Looks good,=0A=
+Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>=0A=
