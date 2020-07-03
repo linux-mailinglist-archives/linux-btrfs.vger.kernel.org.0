@@ -2,81 +2,80 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CE5D2139CC
-	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Jul 2020 14:08:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAA16213A13
+	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Jul 2020 14:29:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726147AbgGCMIe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 3 Jul 2020 08:08:34 -0400
-Received: from mx2.suse.de ([195.135.220.15]:56660 "EHLO mx2.suse.de"
+        id S1726236AbgGCM3a (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 3 Jul 2020 08:29:30 -0400
+Received: from mx2.suse.de ([195.135.220.15]:38528 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726035AbgGCMIe (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 3 Jul 2020 08:08:34 -0400
+        id S1726022AbgGCM3a (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 3 Jul 2020 08:29:30 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id E3718AC2D;
-        Fri,  3 Jul 2020 12:08:32 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 18980ACA0;
+        Fri,  3 Jul 2020 12:29:29 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 77787DA87C; Fri,  3 Jul 2020 14:08:14 +0200 (CEST)
-Date:   Fri, 3 Jul 2020 14:08:13 +0200
+        id 559E0DA87C; Fri,  3 Jul 2020 14:29:11 +0200 (CEST)
+Date:   Fri, 3 Jul 2020 14:29:10 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     fdmanana@kernel.org
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 1/4] btrfs: only commit the delayed inode when doing a
- full fsync
-Message-ID: <20200703120812.GY27795@twin.jikos.cz>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org, Greed Rong <greedrong@gmail.com>
+Subject: Re: [PATCH 3/4] btrfs: preallocate anon_dev for subvolume and
+ snapshot creation
+Message-ID: <20200703122910.GZ27795@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, fdmanana@kernel.org,
-        linux-btrfs@vger.kernel.org
-References: <20200702113159.153135-1-fdmanana@kernel.org>
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org,
+        Greed Rong <greedrong@gmail.com>
+References: <20200616021737.44617-1-wqu@suse.com>
+ <20200616021737.44617-4-wqu@suse.com>
+ <20200616151004.GE27795@twin.jikos.cz>
+ <f792151a-ebd5-2ac7-c9ac-0c274ea1ab8e@gmx.com>
+ <20200701173928.GF27795@twin.jikos.cz>
+ <0cfc15be-3a4a-c6d2-b294-eeb0a4506df4@gmx.com>
+ <20200702160821.GT27795@twin.jikos.cz>
+ <20200702234632.GU27795@twin.jikos.cz>
+ <dce7628b-f182-783b-6f8f-da543bc5421b@gmx.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200702113159.153135-1-fdmanana@kernel.org>
+In-Reply-To: <dce7628b-f182-783b-6f8f-da543bc5421b@gmx.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Jul 02, 2020 at 12:31:59PM +0100, fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
+On Fri, Jul 03, 2020 at 01:19:14PM +0800, Qu Wenruo wrote:
+> >> In conclusion, your proposal is better and I'm going to merge it.
+> >>
+> >>> Although I would definitely remove the "__" prefix as we shouldn't add
+> >>> such prefix anymore.
+> >>
+> >> Yeah with the small naming fixups.
+> > 
+> > It's in for-next-20200703. I've updated the changelogs to reflect what
+> > we found during debugging the issue, the __ function renamed to
+> > btrfs_get_root_ref and some function comments added. All patches
+> > reordered and tagged for stable though the preallocation is not within
+> > the size limit.
+> > 
 > 
-> Commit 2c2c452b0cafdc ("Btrfs: fix fsync when extend references are added
-> to an inode") forced a commit of the delayed inode when logging an inode
-> in order to ensure we would end up logging the inode item during a full
-> fsync. By committing the delayed inode, we updated the inode item in the
-> fs/subvolume tree and then later when copying items from leafs modified in
-> the current transaction into the log tree (with copy_inode_items_to_log())
-> we ended up copying the inode item from the fs/subvolume tree into the log
-> tree. Logging an up to date version of the inode item is required to make
-> sure at log replay time we get the link count fixup triggered among other
-> things (replay xattr deletes, etc). The test case generic/040 from fstests
-> exercises the bug which that commit fixed.
+> Thanks for the merge and dropping the unneeded check patch.
 > 
-> However for a fast fsync we don't need to commit the delayed inode because
-> we always log an up to date version of the inode item based on the struct
-> btrfs_inode we have in-memory. We started doing this for fast fsyncs since
-> commit e4545de5b035c7 ("Btrfs: fix fsync data loss after append write").
+> All the modification looks good to me.
 > 
-> So just stop committing the delayed inode if we are doing a fast fsync,
-> we are only wasting time and adding contention on fs/subvolume tree.
-> 
-> This patch is part of a series that has the following patches:
-> 
-> 1/4 btrfs: only commit the delayed inode when doing a full fsync
-> 2/4 btrfs: only commit delayed items at fsync if we are logging a directory
-> 3/4 btrfs: stop incremening log_batch for the log root tree when syncing log
-> 4/4 btrfs: remove no longer needed use of log_writers for the log root tree
-> 
-> After the entire patchset applied I saw about 12% decrease on max latency
-> reported by dbench.
+> Just a small nitpick for commit a561defc34aa ("btrfs: don't allocate
+> anonymous block device for user invisible roots"), there is an
+> unnecessary new line after "[CAUSE]".
 
-That's impressive. Getting reliable perf improvements in the low
-percents is hard and 10+ is beyond expectations.
-
-As the patches are short I'd like to tag them for stable. The closest
-one that applies to all is 5.4, that I determined from the commit
-references in the changelogs. However I'd appreciate if you could take a
-look if it's worth to tag the patches for older stable trees where it
-applies (since 4.4). I don't have full overview of all the logging or
-fsync updates so might miss some dependency. Thanks.
+Fixed, thanks for checking. I'm not entirely satisfied with the name of
+btrfs_get_root_ref, as it could be confused with the on-disk
+btrfs_root_ref. The get-ref functions could use some cleanup as
+btrfs_get_fs_root is sometimes used for non-filesystem roots. Adding a
+generic get_any_root that would accept any tree and btrfs_get_fs_root
+would be only for subvolume roots or perhaps related trees like data
+reloc. But this is not essential for the anon bdev fixes so that's for
+later.
