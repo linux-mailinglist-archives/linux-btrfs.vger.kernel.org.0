@@ -2,182 +2,116 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D64C214CA5
-	for <lists+linux-btrfs@lfdr.de>; Sun,  5 Jul 2020 15:16:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D45FD214CB8
+	for <lists+linux-btrfs@lfdr.de>; Sun,  5 Jul 2020 15:25:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727842AbgGENNm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 5 Jul 2020 09:13:42 -0400
-Received: from mout.gmx.net ([212.227.17.21]:47437 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727062AbgGENNm (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 5 Jul 2020 09:13:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1593954819;
-        bh=5LBT52pPuA6evP3bWw58hrw8ZVSCyPvb6UjcDWrLaKM=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=PZTbQ1AP1/IC/DQm6m4Vcei2243r87BRB+r3J408FF+C0OE1LTuHnFi2Lgrj7eAFL
-         YHO12h+EamXT/pJ/Omdunxgt58FeGZn4lqD4KJ980OT+qKWpDW2uuEt28vFGlvbt4P
-         tQuqsLR98kml1iP9CSgmskV3F1mCXmRDx6bD1xGM=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mnpnm-1kh6Xw2WHi-00pKj3; Sun, 05
- Jul 2020 15:13:39 +0200
-Subject: Re: Balance + Ctrl-C = forced readonly
-To:     Hans van Kranenburg <hans@knorrie.org>, linux-btrfs@vger.kernel.org
-References: <42c9515d-7913-e768-84b1-d5222a0ca17d@knorrie.org>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
- PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
- 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
- D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
- efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
- ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
- BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
- 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
- 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
- EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
- 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
- ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
- oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
- fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
- 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
- ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
- oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <131421c2-1c2a-4b1b-8885-a8700992a77d@gmx.com>
-Date:   Sun, 5 Jul 2020 21:13:34 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        id S1726933AbgGENZD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 5 Jul 2020 09:25:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51172 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726833AbgGENZD (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 5 Jul 2020 09:25:03 -0400
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCA66C061794
+        for <linux-btrfs@vger.kernel.org>; Sun,  5 Jul 2020 06:25:02 -0700 (PDT)
+Received: by mail-lj1-x229.google.com with SMTP id b25so38577232ljp.6
+        for <linux-btrfs@vger.kernel.org>; Sun, 05 Jul 2020 06:25:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ginkel.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YiGHOCXADgveS1+H0XNi+PrqEu382LGh9fCeZJPkVcM=;
+        b=rqJoIqJNJnKXW8BLyggxaVwNpaZNqraktzQbaPWo0DnJ8ICNql1Yc8jQqt+b0SJlAr
+         YltuRcHZEsmMkVg5CPz2v3jj6qZA06iPiy2uiSTVpVzwSfxqCZ5/SIpG0tb+8Yr+85jm
+         0nuRk6tL6OIi8JUZ3v+qdcp0rb8pC+CvFiztI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YiGHOCXADgveS1+H0XNi+PrqEu382LGh9fCeZJPkVcM=;
+        b=s9pJBznHEuwc/gDsEffnsfpObvrVd5rDxRrLO33IB46ZJofdXYnjG0135Z984otKrl
+         I5TKvL4+0cFTSjAwYZDYpjSM5WGue0vRbRo00lnbgGPniJmy8cyzcAc/LJCXLM6kE0Yv
+         DmNua0KvKoNw5vvypIewpVPw06hlnWTcRDJ7ua0dij9JB0SJ0gXP8eWAk+GJR4fv6YKa
+         EOqnPUTC/3u9LaiWFJj2iOsnk3ld8swmYyjb6fKZGdvqmYpztu6oyAcdsviaArM5QAzQ
+         Iofbh5rwgbpiIKX4wLoQWhl6vW6yZOnT9mHedyEbwf1RkR6xpu49MIlVRqWgGe2zui7V
+         7dFA==
+X-Gm-Message-State: AOAM531IwYG6zhpziSN2nDN8o5l/SAg1OUU94i5/A+WloYJ9zuw2ohPv
+        u4mLclBVdIeMmbSdDoqRVxM9APncD1CRRzl322/gCw==
+X-Google-Smtp-Source: ABdhPJw0ezM1KBqRwrTKGV4AWafeVzDTx5O6TXj+kct/kBy7A73+CVV/ODtnGJiljrnoVyMHhbLVx9XaUOpfYd2tNO4=
+X-Received: by 2002:a05:651c:156:: with SMTP id c22mr16867548ljd.453.1593955501045;
+ Sun, 05 Jul 2020 06:25:01 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <42c9515d-7913-e768-84b1-d5222a0ca17d@knorrie.org>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="2jhxaXWb6m3DejvaxqD78y5o9C9X5KjUW"
-X-Provags-ID: V03:K1:z4KXCC/0coMbWIDm3wKhXoZ/c0UUJ6vh1qII18kqCfHCLpz8MzT
- zx+oVpAUksmZF3MGPfvKDgecjN1qQkYvti9spjiPlVuPpXEpiV5ghWj8yQiSsTU+bI4XIhT
- xqffHDD+6cE5lp7zar8vwbgJMBsonS3RFOyHLFsXGxDT7M0Oto+qIPftdjX/uHk7DGI4kK5
- ia4VKbFhrzDZYTeB3nDCA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:PB2AGinU6HE=:rjBL1orpXN8Q+JhL31fpMo
- SuVSYIIeachxlfGyQexiITvJ79fmq58I1L/Il9doIiQWRtCGdJdNq1dnq8HrocPRpSub6tLao
- 4Gn2TliONIpMR/rV4xYSSe+aS68wWdBE6Mq2USPgkDEE2eviKziCpoA6BI7VEEmDJm/cAl0Po
- 9EKB1MAimR+czi3f5hwSqZO3yXNP6rmvnqDPe6N2DhenhfwWFovygc+ryQYNe/B7rOK4Q7yD/
- J552nhHlJKvzDz4DwDC2kGtM6q3p1hAtkaxUspRACe16I19xuWHkWXvWGnVF8H5J0f5Y36U7x
- CJYl/Y33DUS99lntokbyf4YrdHj/rE5oHxwTsCpoIF2aqsfCKoN444xoxXzV8kqkTVDmOvd/Y
- mbIvHC3bHUkXV+hK9GNCJF621vhyzLdJ6t7if/gZ+UtlUQKUacNa8IBUDd3LWcJFzQRTZ6+V7
- AhBF2KFB5OV1jH4aNAFBD/y9QZnWIX52J6JuSoCdvkPTnTRhKMrel1nyATfxeib4LyH2fIQ+N
- lvhTW7dE8Q/wXc7ckPsXDWhDl9pjnvV5VrPmmJ766PZoUe+GNoMn61t2WukM9gqFYMKy7VXVn
- kvYmU6auUx0ARx/zwN0CQftRawmFy9WfQLZK0Q9jcCjCrekkYUVc1F4vQNqzZmlajzqs/WWl5
- 40EyC+nON/SO1hcgiiN/cTRjytTSfx7pFYhAChXSt06Zl9hBSLz2ntF2LIUPG8ouA43JGYEsF
- W9mlIx6akoyh5ObtyPtUf9GUzpR8zIk8q1a3V7odD6HD5NCq2ylNFsSSIccBAv7maIIf8S+Tz
- en15O5oQ9RYCBJmN6h1hfEvaUlROci+UMEBxV1iDJSWVOOXTWQ+LPy1dZu1bANPccBzT2/Trz
- 82Gowy2MrmLHJJzpU4TXzGcA0W5XrWBQZtW+XpwaVhzwuwjgAwbRQVziDRuCywHnsyJh1FjpS
- A1YMask0HsVI0vdPLx0DsEIdCg6PcjG3buQ/+qFfxdzAzlP364lcmC337ItMptinxABVF0D04
- Iq8cFsK1O3OP6FdbRvj2TN9g7Zg5a+0gN/K0peCO+GB/Wy5Yv/QoHg+r5jw6GH/qHuaQOhaT5
- T9XKyHUXJp1/BWXiogmJw1KuMtiAN8xCZo8OJi3spA681vVTADXEpqiPytJ4aOkDDNgTycMmV
- luYTRViJu8NDhhV3ESdxAnfpN9mC7pPZzD1e0RY6FWKKvx+c4ZaYJTYeVZhKgd8QKn4H3jX/6
- or10Xu7yeCNyzATGmDBoxoUf223oEwDzL0vM4KA==
+References: <CANvSZQ_5p4JD4v79gFkSRBBvehCDh_Q5bBKeyNi912tr0biNLg@mail.gmail.com>
+ <90c7edc7-9b1d-294f-5996-9353698cedbe@gmx.com> <CANvSZQ_HDZ=54MW+dSAP1A_zUiaGR_PLkV7anQj5K+qNds0QsQ@mail.gmail.com>
+ <2483ed80-90ae-765d-e3d3-15042503841c@gmx.com>
+In-Reply-To: <2483ed80-90ae-765d-e3d3-15042503841c@gmx.com>
+From:   Thilo-Alexander Ginkel <thilo@ginkel.com>
+Date:   Sun, 5 Jul 2020 15:24:45 +0200
+Message-ID: <CANvSZQ_NCb_RZyd0Z5v1W8ggrDuBRs4Gw1Q_wT62DC1e+8fjTA@mail.gmail.com>
+Subject: Re: Growing number of "invalid tree nritems" errors
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---2jhxaXWb6m3DejvaxqD78y5o9C9X5KjUW
-Content-Type: multipart/mixed; boundary="zmIwmiZ9R1yv800nTQFhofIWsaevF14da"
+On Sun, Jul 5, 2020 at 2:10 PM Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
+> > I did some log analysis: The problem started showing up on two of
+> > three servers starting July 3rd, 2020. This coincides with an applied
+> > Ubuntu Linux kernel update to 4.15.0-109-generic whose changelog shows
+> > plenty of btrfs changes:
+> > https://launchpad.net/ubuntu/+source/linux/4.15.0-109.110
+>
+> So it backported all these restrict self check of recent kernels.
+>
+> That's great to expose any unexpected metadata.
+> Although sometimes backport itself may introduce new bugs (very rare),
+> especially for heavy backported kernels.
+>
+> So if it's possible, try upstream kernel can also be an alternative to
+> test if it's really something wrong.
 
---zmIwmiZ9R1yv800nTQFhofIWsaevF14da
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+I took Patrik Lundquist's advice and upgraded to the latest HWE
+kernel, which is based on 5.3.0. I'll follow your suggestions if the
+problem manifests again.
 
+> > Server #2 (still online) shows 16 error messages in its log since
+> > 2020-07-03 whereas server #3 shows 310 error messages.
+>
+> Then it shouldn't be a hardware problem unless all servers have the same
+> problem.
 
+ACK. Memory test also came back negative.
 
-On 2020/7/5 =E4=B8=8B=E5=8D=888:49, Hans van Kranenburg wrote:
-> Hi,
->=20
-> This is Linux kernel 5.7.6 (the Debian package, 5.7.6-1).
->=20
-> So, I wanted to try out this new quicker balance interrupt thing, and
-> the result was that I could crash the fs at my very first try using it,=
+> > On thing special about server #3 is that its btrfs file system has a
+> > huge metadata section (probably due to it hosting many [~ 50 Mio]
+> > small files), which doesn't seem too healthy:
+> >
+> > # btrfs filesystem usage /mnt
+> > Overall:
+> >     Device size:                 476.30GiB
+> >     Device allocated:            372.02GiB
+> >     Device unallocated:          104.28GiB
+> >     Device missing:                  0.00B
+> >     Used:                        272.16GiB
+> >     Free (estimated):            194.49GiB      (min: 194.49GiB)
+> >     Data ratio:                       1.00
+> >     Metadata ratio:                   1.00
+> >     Global reserve:              512.00MiB      (used: 0.00B)
+> >
+> > Data,single: Size:284.01GiB, Used:193.80GiB
+> >    /dev/mapper/luks      284.01GiB
+> >
+> > Metadata,single: Size:88.01GiB, Used:78.36GiB
+> >    /dev/mapper/luks       88.01GiB
+>
+> In fact, your metadata is not that unhealthy.
 
-> which was simply doing balance, and then pressing Ctrl-C.
->=20
-> Recipe to reproduce: Start balance, wait a few seconds, then press
-> Ctrl-C. For me here, ~ 5 out of 10 times, it ends up exploding:
->=20
-> -# btrfs balance start --full /btrfs/
-> ^C
->=20
-> [41190.572977] BTRFS info (device xvdb): balance: start -d -m -s
-> [41190.573035] BTRFS info (device xvdb): relocating block group
-> 73001861120 flags metadata
-> [41205.409600] BTRFS info (device xvdb): found 12236 extents, stage:
-> move data extents
-> [41205.509316] BTRFS info (device xvdb): relocating block group
-> 71928119296 flags data
-> [41205.695319] BTRFS info (device xvdb): found 3 extents, stage: move
-> data extents
-> [41205.723009] BTRFS info (device xvdb): found 3 extents, stage: update=
-
-> data pointers
-> [41205.750590] BTRFS info (device xvdb): relocating block group
-> 60922265600 flags metadata
-> [41208.183424] BTRFS: error (device xvdb) in btrfs_drop_snapshot:5505:
-> errno=3D-4 unknown
-
--4 means -EINTR.
-
-It means during btrfs balance, signal could interrupt code running in
-kernel space??!!
-
-I thought when we fall into the balance ioctl, we're unable to
-receive/handle signal, as we are in the kernel space, while signal
-handling are all handled in user space.
-
-Or is there some config or out-of-tree patches make it possible? Is this
-specific to Debian kernels?
-At least I tried several times with upstream kernel, unable to reproduce
-it yet (maybe my fs is too small?)
-
-If it's config related, then we must re-consider a lot of error handling.=
-
+Allright, thanks for pointing this out. The other servers have ~ 1.5
+GB allocated for metadata, so this seemed way off (but can probably be
+explained by the vastly different file system usage on #3).
 
 Thanks,
-Qu
-> [41208.183450] BTRFS info (device xvdb): forced readonly
-> [41208.183469] BTRFS info (device xvdb): balance: ended with status: -4=
-
->=20
-> Boom, readonly FS.
->=20
-> Hans
->=20
-
-
---zmIwmiZ9R1yv800nTQFhofIWsaevF14da--
-
---2jhxaXWb6m3DejvaxqD78y5o9C9X5KjUW
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl8B0f4ACgkQwj2R86El
-/qhAvwgAkb906pRhnK0Ob57DFleMo+jV3gvdL1xsLP2cm9ScLvDIZNJp7S7KHrf8
-GudHcN8fWMbEh+FK/i8NTiUYF0vJamlziaoEVUbCyi2S/impFU/IVZTzV6Kkmsf/
-2yZPAcfZSPrPH1VFJAQzsE37EBkJdGV8SyIRlcrb3rdZkoULRKECdnX+Tt/yoa5M
-nxEo4h2x3BYznex5jbO2EVKUktZ2l3YVdEHQp0CldqfGuBSFurO+vgsftP2+dfgL
-sY7if7gwUJPabQoIcYrLZN1y3a+p4WWYVTouyTxwp7wzW9cFjH0IapprqD2atKMP
-jU0OuEJg+NgRthGuJs86Xm3OF6ZInQ==
-=zFyF
------END PGP SIGNATURE-----
-
---2jhxaXWb6m3DejvaxqD78y5o9C9X5KjUW--
+Thilo
