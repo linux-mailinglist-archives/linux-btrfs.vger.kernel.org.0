@@ -2,180 +2,134 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E0ED2148F5
-	for <lists+linux-btrfs@lfdr.de>; Sat,  4 Jul 2020 23:45:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DAAE214B32
+	for <lists+linux-btrfs@lfdr.de>; Sun,  5 Jul 2020 10:49:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727833AbgGDVpl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 4 Jul 2020 17:45:41 -0400
-Received: from gateway21.websitewelcome.com ([192.185.45.155]:15387 "EHLO
-        gateway21.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726643AbgGDVpl (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 4 Jul 2020 17:45:41 -0400
-Received: from cm12.websitewelcome.com (cm12.websitewelcome.com [100.42.49.8])
-        by gateway21.websitewelcome.com (Postfix) with ESMTP id B828E4038C599
-        for <linux-btrfs@vger.kernel.org>; Sat,  4 Jul 2020 16:45:38 -0500 (CDT)
-Received: from br540.hostgator.com.br ([108.179.252.180])
-        by cmsmtp with SMTP
-        id rpycjyofyzOaurpycj6Rrq; Sat, 04 Jul 2020 16:45:38 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=mpdesouza.com; s=default; h=Content-Transfer-Encoding:MIME-Version:
-        Content-Type:References:In-Reply-To:Date:To:From:Subject:Message-ID:Sender:
-        Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=yGM/hFRvjYyRzcfWKpW4s6ezoC1xA5b2b3W3UCBGLx4=; b=CNBRU3A7x5AeaVgDFi8x7XAQvQ
-        GL/lNGOy6kv/goV7TgNjLuMJh7o2YX5L6jSBGSay0SfFa1r++9D4VVbK5m7d10+zOsoOmOZYqFhSv
-        4HnTJrgI/wEvANJg4Cd7Iz67wiJmY5uS21Mm2sJSpfnTZvkbqr68iObPwluSXky3YJdX3yWxfHf8v
-        rXkjXGDdU6+r0Q1XXOr00eoR8lOVxnZOisJPzFiIpGy7WGa/9v7S0AgRGsuyY2grc39NcrXqmB0PY
-        RTj9rD6sxzcYq87rPTeR3C9Dqbqm8PceoxcSQktanpHDBpqqCkIeaYiLRkOtqUJx1T7+KSZTCJsfh
-        Vv7L6x3Q==;
-Received: from 200.146.49.70.dynamic.dialup.gvt.net.br ([200.146.49.70]:56990 helo=[192.168.0.172])
-        by br540.hostgator.com.br with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <marcos@mpdesouza.com>)
-        id 1jrpyc-000uis-7z; Sat, 04 Jul 2020 18:45:38 -0300
-Message-ID: <cd672e2150871f9b495400ba2beea7d864da0265.camel@mpdesouza.com>
-Subject: Re: [PATCH] btrfs: discard: reduce the block group ref when
- grabbing from unused block group list
-From:   Marcos Paulo de Souza <marcos@mpdesouza.com>
-To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-Date:   Sat, 04 Jul 2020 18:45:34 -0300
-In-Reply-To: <20200703070550.39299-1-wqu@suse.com>
-References: <20200703070550.39299-1-wqu@suse.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.2 
+        id S1726454AbgGEIhp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 5 Jul 2020 04:37:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35324 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726355AbgGEIhp (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 5 Jul 2020 04:37:45 -0400
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C82E7C061794
+        for <linux-btrfs@vger.kernel.org>; Sun,  5 Jul 2020 01:37:44 -0700 (PDT)
+Received: by mail-lj1-x22c.google.com with SMTP id t25so37213824lji.12
+        for <linux-btrfs@vger.kernel.org>; Sun, 05 Jul 2020 01:37:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ginkel.com; s=google;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=OPpWpouD1FpzN/Nb9IHKt29OLde95VBopqBgA0FBD+o=;
+        b=TjUtovg/SpI6edE3kzjQyjUhBUJ9rTi7SHk8jp2wzP5iY8QZpbJfHWs2gGb1FnpxtA
+         7q7R7Z4qvHvmrK7uRdYjSdnKQ2lajcXlkFyTjeTEuZEGuS8zgHE6D7fa48lpc9hhm8EI
+         xnxTkFPOdxjamlU4N6hhq7gN0xwkpncz2ZWzU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=OPpWpouD1FpzN/Nb9IHKt29OLde95VBopqBgA0FBD+o=;
+        b=Kcz0/wIsxCbD4lEEIp11PiXPVVF/hXdqKJmeTY87PJUTfahjCs7z7QwDXwIs4YDgho
+         IbyeVzX/4GKW3GCZA7KGsXmhSfPFBCdI3nS1VYTAq5cFfoq5gxlr+0lv/ds55mNjrzoB
+         5044gZWGQL51iLTMs/TvhFkuV5EH/IDiOSQtMF3l+YTdHqEobalSkyuQP0XuHGaPxWkK
+         IuZp7s4rxShC3+HypKmkmHTLgrPx6LELj7OtQnM20QtLL0MkghBSEILpvP/+Us7XlrCU
+         Wa0M8nm0KH0s70iG8jNJcyvyfMdT6eQKQlZsFMEELgCWRa8XoKMyGgT/gUKxU23q0JTF
+         fs2A==
+X-Gm-Message-State: AOAM53120sYV365XQiFRsEYbAdjxMH7MtGgtx6QC6VDOMI+XZEVkqOhA
+        0ErIIwHdp5lGnKAEsW1VscV5RKbb0w8CxX+m+nWPxzRJuMcThQ==
+X-Google-Smtp-Source: ABdhPJyOvsIPTE8TanprhciyiF/OlRgoxLxZvNbX5uijEqH7zWy6ZGhRGfv9w7/FA2xsKCWyYuPNHp0bAwXcdmhwP6s=
+X-Received: by 2002:a2e:8751:: with SMTP id q17mr18911224ljj.268.1593938262806;
+ Sun, 05 Jul 2020 01:37:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - br540.hostgator.com.br
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - mpdesouza.com
-X-BWhitelist: no
-X-Source-IP: 200.146.49.70
-X-Source-L: No
-X-Exim-ID: 1jrpyc-000uis-7z
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 200.146.49.70.dynamic.dialup.gvt.net.br ([192.168.0.172]) [200.146.49.70]:56990
-X-Source-Auth: marcos@mpdesouza.com
-X-Email-Count: 1
-X-Source-Cap: bXBkZXNvNTM7bXBkZXNvNTM7YnI1NDAuaG9zdGdhdG9yLmNvbS5icg==
-X-Local-Domain: yes
+From:   Thilo-Alexander Ginkel <thilo@ginkel.com>
+Date:   Sun, 5 Jul 2020 10:37:27 +0200
+Message-ID: <CANvSZQ_5p4JD4v79gFkSRBBvehCDh_Q5bBKeyNi912tr0biNLg@mail.gmail.com>
+Subject: Growing number of "invalid tree nritems" errors
+To:     linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, 2020-07-03 at 15:05 +0800, Qu Wenruo wrote:
-> [BUG]
-> The following small test script can trigger ASSERT() at unmount time:
-> 
->   mkfs.btrfs -f $dev
->   mount $dev $mnt
->   mount -o remount,discard=async $mnt
->   umount $mnt
-> 
-> The call trace:
->   assertion failed: atomic_read(&block_group->count) == 1, in
-> fs/btrfs/block-group.c:3431
->   ------------[ cut here ]------------
->   kernel BUG at fs/btrfs/ctree.h:3204!
->   invalid opcode: 0000 [#1] PREEMPT SMP NOPTI
->   CPU: 4 PID: 10389 Comm: umount Tainted: G           O      5.8.0-
-> rc3-custom+ #68
->   Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 0.0.0
-> 02/06/2015
->   Call Trace:
->    btrfs_free_block_groups.cold+0x22/0x55 [btrfs]
->    close_ctree+0x2cb/0x323 [btrfs]
->    btrfs_put_super+0x15/0x17 [btrfs]
->    generic_shutdown_super+0x72/0x110
->    kill_anon_super+0x18/0x30
->    btrfs_kill_super+0x17/0x30 [btrfs]
->    deactivate_locked_super+0x3b/0xa0
->    deactivate_super+0x40/0x50
->    cleanup_mnt+0x135/0x190
->    __cleanup_mnt+0x12/0x20
->    task_work_run+0x64/0xb0
->    __prepare_exit_to_usermode+0x1bc/0x1c0
->    __syscall_return_slowpath+0x47/0x230
->    do_syscall_64+0x64/0xb0
->    entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> 
-> The code:
->                 ASSERT(atomic_read(&block_group->count) == 1);
->                 btrfs_put_block_group(block_group);
-> 
-> [CAUSE]
-> Obviously it's some btrfs_get_block_group() call doesn't get its put
-> call.
-> 
-> The offending btrfs_get_block_group() happens here:
-> 
->   void btrfs_mark_bg_unused(struct btrfs_block_group *bg)
->   {
->   	if (list_empty(&bg->bg_list)) {
->   		btrfs_get_block_group(bg);
-> 		list_add_tail(&bg->bg_list, &fs_info->unused_bgs);
->   	}
->   }
-> 
-> So every call sites removing the block group from unused_bgs list
-> should
-> reduce the ref count of that block group.
-> 
-> However for async discard, it didn't follow the call convention:
-> 
->   void btrfs_discard_punt_unused_bgs_list(struct btrfs_fs_info
-> *fs_info)
->   {
->   	list_for_each_entry_safe(block_group, next, &fs_info-
-> >unused_bgs,
->   				 bg_list) {
->   		list_del_init(&block_group->bg_list);
->   		btrfs_discard_queue_work(&fs_info->discard_ctl,
-> block_group);
->   	}
->   }
-> 
-> And in btrfs_discard_queue_work(), it doesn't call
-> btrfs_put_block_group() either.
-> 
-> [FIX]
-> Fix the problem by reducing the reference count when we grab the
-> block
-> group from unused_bgs list.
+Hello everyone,
 
-xfstests is happy about the change.
+one of our servers just started producing loads of "BTRFS error
+(device dm-0): invalid tree nritems" errors and eventually caught a
+hung task (not sure if those are related):
 
-Tested-by: Marcos Paulo de Souza <mpdesouza@suse.com>
+[...]
+[126990.493897] BTRFS error (device dm-0): invalid tree nritems,
+bytenr=201179545600 nritems=0 expect >0
+[127041.504620] BTRFS error (device dm-0): invalid tree nritems,
+bytenr=204159336448 nritems=0 expect >0
+[127106.733494] BTRFS error (device dm-0): invalid tree nritems,
+bytenr=233554296832 nritems=0 expect >0
+[127125.504302] BTRFS error (device dm-0): invalid tree nritems,
+bytenr=233693298688 nritems=0 expect >0
+[127254.512800] BTRFS error (device dm-0): invalid tree nritems,
+bytenr=299654774784 nritems=0 expect >0
+[127544.739078] BTRFS error (device dm-0): invalid tree nritems,
+bytenr=435922501632 nritems=0 expect >0
+[127544.739190] BTRFS error (device dm-0): invalid tree nritems,
+bytenr=435922714624 nritems=0 expect >0
+[...]
+[129532.769484] INFO: task kcompactd0:64 blocked for more than 120 seconds.
+[129532.769569]       Tainted: G            E    4.15.0-109-generic #110-Ubuntu
+[129532.769651] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs"
+disables this message.
+[129532.769749] kcompactd0      D    0    64      2 0x80000000
+[129532.769751] Call Trace:
+[129532.769756]  __schedule+0x24e/0x880
+[129532.769758]  schedule+0x2c/0x80
+[129532.769759]  io_schedule+0x16/0x40
+[129532.769761]  __lock_page+0xff/0x140
+[129532.769763]  ? page_cache_tree_insert+0xe0/0xe0
+[129532.769765]  migrate_pages+0x91f/0xb80
+[129532.769766]  ? __ClearPageMovable+0x10/0x10
+[129532.769768]  ? isolate_freepages_block+0x3b0/0x3b0
+[129532.769769]  compact_zone+0x681/0x950
+[129532.769770]  kcompactd_do_work+0xfe/0x2a0
+[129532.769772]  ? __switch_to_asm+0x35/0x70
+[129532.769773]  ? __switch_to_asm+0x41/0x70
+[129532.769774]  kcompactd+0x86/0x1c0
+[129532.769775]  ? kcompactd+0x86/0x1c0
+[129532.769778]  ? wait_woken+0x80/0x80
+[129532.769780]  kthread+0x121/0x140
+[129532.769781]  ? kcompactd_do_work+0x2a0/0x2a0
+[129532.769782]  ? kthread_create_worker_on_cpu+0x70/0x70
+[129532.769783]  ret_from_fork+0x35/0x40
 
-> 
-> Reported-by: Marcos Paulo de Souza <marcos@mpdesouza.com>
-> Fixes: 6e80d4f8c422 ("btrfs: handle empty block_group removal for
-> async discard")
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> ---
->  fs/btrfs/discard.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/fs/btrfs/discard.c b/fs/btrfs/discard.c
-> index 5615320fa659..741c7e19c32f 100644
-> --- a/fs/btrfs/discard.c
-> +++ b/fs/btrfs/discard.c
-> @@ -619,6 +619,7 @@ void btrfs_discard_punt_unused_bgs_list(struct
-> btrfs_fs_info *fs_info)
->  	list_for_each_entry_safe(block_group, next, &fs_info-
-> >unused_bgs,
->  				 bg_list) {
->  		list_del_init(&block_group->bg_list);
-> +		btrfs_put_block_group(block_group);
->  		btrfs_discard_queue_work(&fs_info->discard_ctl,
-> block_group);
->  	}
->  	spin_unlock(&fs_info->unused_bgs_lock);
+I took the server offline and ran `btrfs check`, which did not bring
+up any errors:
 
+# btrfs check -p --check-data-csum /dev/mapper/luks
+Opening filesystem to check...
+Checking filesystem on /dev/mapper/luks
+UUID: b5872f47-c87e-47ac-b036-4f2725cf6dc6
+[1/7] checking root items                      (0:00:20 elapsed,
+12381226 items checked)
+[2/7] checking extents                         (0:05:38 elapsed,
+5163753 items checked)
+[3/7] checking free space cache                (0:00:12 elapsed, 376
+items checked)
+[4/7] checking fs roots                        (0:41:33 elapsed,
+5021296 items checked)
+[5/7] checking csums against data              (0:05:35 elapsed,
+3911047 items checked)
+[6/7] checking root refs                       (0:00:00 elapsed, 28110
+items checked)
+[7/7] checking quota groups skipped (not enabled on this FS)
+found 292229652480 bytes used, no error found
+total csum bytes: 200196548
+total tree bytes: 84142292992
+total fs tree bytes: 82578096128
+total extent tree bytes: 1175896064
+btree space waste bytes: 24570610642
+file data blocks allocated: 245858725888
+ referenced 202896068608
+
+I will be running memtester to make sure the problems are not RAM-related.
+
+Any ideas?
+
+Thanks,
+Thilo
