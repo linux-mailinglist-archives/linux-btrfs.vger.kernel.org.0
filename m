@@ -2,94 +2,136 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D8D5214D0D
-	for <lists+linux-btrfs@lfdr.de>; Sun,  5 Jul 2020 16:21:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92580214D37
+	for <lists+linux-btrfs@lfdr.de>; Sun,  5 Jul 2020 16:48:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727017AbgGEOVK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 5 Jul 2020 10:21:10 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:34489 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726781AbgGEOVK (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 5 Jul 2020 10:21:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1593958868;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc; bh=x1Iud6K4rDmN/FDvTgcgeFfvkXG/zP8SYWAjvE24riE=;
-        b=SNMaDET+UdmQPgH2dUS1uuUuewyuiEcJYBunNy4j4WrBwhwgfivxKU96BJ/RZDYw+gg9yr
-        pA3a2kxKTQamQo/9beGMAk91LtQIPDbHI+80naO3CUC36O8VCX3djAdoqw/PxzbAoGqec4
-        F/OysolibrvPcfRQdCcFUUG+wQAiihU=
-Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
- [209.85.160.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-290-VUa-VzQzPCONK0uDmC8K5w-1; Sun, 05 Jul 2020 10:21:06 -0400
-X-MC-Unique: VUa-VzQzPCONK0uDmC8K5w-1
-Received: by mail-qt1-f199.google.com with SMTP id q7so7927883qtq.14
-        for <linux-btrfs@vger.kernel.org>; Sun, 05 Jul 2020 07:21:06 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=x1Iud6K4rDmN/FDvTgcgeFfvkXG/zP8SYWAjvE24riE=;
-        b=keXl37EefArzrc/VdexNthc71uerPzjXsnrC3i7MOF9LYp9jwxU1iNi8GuPth8tqlq
-         jb9SWXa0smlcOQ7ToM4tufNRw9ebRWRQy1+/t3M/Sq+esLc3e96+R6fSwiazGhADEoOE
-         VQoj8FDIof5dtKaUM5JQ8PLBEr9u47ojNIK4zA3x+6FwIi4N62se0Hr4xx+BB82iuZdB
-         /ZSc8pwWyOaPuFIZtNgpMzg5GXb9a/CGnQaqQ9FePcR5077KZifv/jTMGWggSe0Qtukg
-         +gs3bhst2o26b7UozJnqb2g6wuz3QyTmJ/GvIV2n3YVAQk2PDUpZRNUHdH/m2QYOa9dO
-         kJGQ==
-X-Gm-Message-State: AOAM530a7SVbXlj0EARZ8V2jJwBWVInJzU5ni7DrfFvzY7hj9yejUsZx
-        LsHqD+T0Ne2mX0iylP7L5Jm2jEBnUEwRv5Ul2Mc8avqpJ5wp835UyfLHw3/Zmn5qioyjucuuIwE
-        lX56dOIIaX4F/OXPdEB+9r4Y=
-X-Received: by 2002:aed:3386:: with SMTP id v6mr46763992qtd.187.1593958866371;
-        Sun, 05 Jul 2020 07:21:06 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwqLT8l+X8+IIDTGgRATWGOoMqAoWnwXKY1M0zgzdVJt+57plmmrH1oECkWQan9yUcfCkA7wQ==
-X-Received: by 2002:aed:3386:: with SMTP id v6mr46763977qtd.187.1593958866161;
-        Sun, 05 Jul 2020 07:21:06 -0700 (PDT)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id d53sm16474232qtc.47.2020.07.05.07.21.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 05 Jul 2020 07:21:05 -0700 (PDT)
-From:   trix@redhat.com
-To:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com
-Cc:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Tom Rix <trix@redhat.com>
-Subject: [PATCH] btfrs: initialize return of btrfs_extent_same
-Date:   Sun,  5 Jul 2020 07:20:58 -0700
-Message-Id: <20200705142058.28305-1-trix@redhat.com>
-X-Mailer: git-send-email 2.18.1
+        id S1726923AbgGEOsV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 5 Jul 2020 10:48:21 -0400
+Received: from mx2.suse.de ([195.135.220.15]:54460 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726826AbgGEOsV (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Sun, 5 Jul 2020 10:48:21 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 283E7AB7D;
+        Sun,  5 Jul 2020 14:48:19 +0000 (UTC)
+Subject: Re: [PATCH] btfrs: initialize return of btrfs_extent_same
+To:     trix@redhat.com, clm@fb.com, josef@toxicpanda.com, dsterba@suse.com
+Cc:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200705142058.28305-1-trix@redhat.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <885129e4-d6d6-57d3-21d3-a83bd98c3994@suse.com>
+Date:   Sun, 5 Jul 2020 17:48:17 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
+MIME-Version: 1.0
+In-Reply-To: <20200705142058.28305-1-trix@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
 
-clang static analysis flags a garbage return
 
-fs/btrfs/reflink.c:611:2: warning: Undefined or garbage value returned to caller [core.uninitialized.UndefReturn]
-        return ret;
-        ^~~~~~~~~~
-ret will not be set when olen is 0
-When olen is 0, this function does no work.
+On 5.07.20 г. 17:20 ч., trix@redhat.com wrote:
+> From: Tom Rix <trix@redhat.com>
+> 
+> clang static analysis flags a garbage return
+> 
+> fs/btrfs/reflink.c:611:2: warning: Undefined or garbage value returned to caller [core.uninitialized.UndefReturn]
+>         return ret;
+>         ^~~~~~~~~~
+> ret will not be set when olen is 0
+> When olen is 0, this function does no work.
+> 
+> So initialize ret to 0
+> 
+> Signed-off-by: Tom Rix <trix@redhat.com>
 
-So initialize ret to 0
+Patch itself is good however, the bug cannot currently be triggered, due
+to the following code in the sole caller (btrfs_remap_file_range):
 
-Signed-off-by: Tom Rix <trix@redhat.com>
----
- fs/btrfs/reflink.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/btrfs/reflink.c b/fs/btrfs/reflink.c
-index 040009d1cc31..200a80fcbecb 100644
---- a/fs/btrfs/reflink.c
-+++ b/fs/btrfs/reflink.c
-@@ -572,7 +572,7 @@ static int btrfs_extent_same_range(struct inode *src, u64 loff, u64 len,
- static int btrfs_extent_same(struct inode *src, u64 loff, u64 olen,
- 			     struct inode *dst, u64 dst_loff)
- {
--	int ret;
-+	int ret = 0;
- 	u64 i, tail_len, chunk_count;
- 	struct btrfs_root *root_dst = BTRFS_I(dst)->root;
- 
--- 
-2.18.1
 
+   15         if (ret < 0 || len == 0)
+
+   14                 goto out_unlock;
+
+   13
+
+   12         if (remap_flags & REMAP_FILE_DEDUP)
+
+   11                 ret = btrfs_extent_same(src_inode, off, len,
+dst_inode, destoff);
+   10         else
+
+    9                 ret = btrfs_clone_files(dst_file, src_file, off,
+len, destoff);
+
+
+
+i.e len is guaranteed to be non-zero
+
+> ---
+>  fs/btrfs/reflink.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/fs/btrfs/reflink.c b/fs/btrfs/reflink.c
+> index 040009d1cc31..200a80fcbecb 100644
+> --- a/fs/btrfs/reflink.c
+> +++ b/fs/btrfs/reflink.c
+> @@ -572,7 +572,7 @@ static int btrfs_extent_same_range(struct inode *src, u64 loff, u64 len,
+>  static int btrfs_extent_same(struct inode *src, u64 loff, u64 olen,
+>  			     struct inode *dst, u64 dst_loff)
+>  {
+> -	int ret;
+> +	int ret = 0;
+>  	u64 i, tail_len, chunk_count;
+>  	struct btrfs_root *root_dst = BTRFS_I(dst)->root;
+>  
+> 
