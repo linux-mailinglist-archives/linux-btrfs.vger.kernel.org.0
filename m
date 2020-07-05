@@ -2,19 +2,19 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92580214D37
-	for <lists+linux-btrfs@lfdr.de>; Sun,  5 Jul 2020 16:48:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D93B9214D38
+	for <lists+linux-btrfs@lfdr.de>; Sun,  5 Jul 2020 16:48:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726923AbgGEOsV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 5 Jul 2020 10:48:21 -0400
-Received: from mx2.suse.de ([195.135.220.15]:54460 "EHLO mx2.suse.de"
+        id S1727112AbgGEOsh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 5 Jul 2020 10:48:37 -0400
+Received: from mx2.suse.de ([195.135.220.15]:54554 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726826AbgGEOsV (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 5 Jul 2020 10:48:21 -0400
+        id S1726826AbgGEOsh (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Sun, 5 Jul 2020 10:48:37 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 283E7AB7D;
-        Sun,  5 Jul 2020 14:48:19 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 90A5FAB7D;
+        Sun,  5 Jul 2020 14:48:35 +0000 (UTC)
 Subject: Re: [PATCH] btfrs: initialize return of btrfs_extent_same
 To:     trix@redhat.com, clm@fb.com, josef@toxicpanda.com, dsterba@suse.com
 Cc:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
@@ -62,8 +62,8 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  KIuxEcV8wcVjr+Wr9zRl06waOCkgrQbTPp631hToxo+4rA1jiQF2M80HAet65ytBVR2pFGZF
  zGYYLqiG+mpUZ+FPjxk9kpkRYz61mTLSY7tuFljExfJWMGfgSg1OxfLV631jV1TcdUnx+h3l
  Sqs2vMhAVt14zT8mpIuu2VNxcontxgVr1kzYA/tQg32fVRbGr449j1gw57BV9i0vww==
-Message-ID: <885129e4-d6d6-57d3-21d3-a83bd98c3994@suse.com>
-Date:   Sun, 5 Jul 2020 17:48:17 +0300
+Message-ID: <6b1d0837-e898-c5b2-c212-4ce1f2d41cdb@suse.com>
+Date:   Sun, 5 Jul 2020 17:48:34 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.8.0
 MIME-Version: 1.0
@@ -93,29 +93,9 @@ On 5.07.20 г. 17:20 ч., trix@redhat.com wrote:
 > 
 > Signed-off-by: Tom Rix <trix@redhat.com>
 
-Patch itself is good however, the bug cannot currently be triggered, due
-to the following code in the sole caller (btrfs_remap_file_range):
+And I forgot:
 
-
-
-   15         if (ret < 0 || len == 0)
-
-   14                 goto out_unlock;
-
-   13
-
-   12         if (remap_flags & REMAP_FILE_DEDUP)
-
-   11                 ret = btrfs_extent_same(src_inode, off, len,
-dst_inode, destoff);
-   10         else
-
-    9                 ret = btrfs_clone_files(dst_file, src_file, off,
-len, destoff);
-
-
-
-i.e len is guaranteed to be non-zero
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
 
 > ---
 >  fs/btrfs/reflink.c | 2 +-
