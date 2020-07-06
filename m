@@ -2,31 +2,30 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C828D215276
-	for <lists+linux-btrfs@lfdr.de>; Mon,  6 Jul 2020 08:15:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0726215279
+	for <lists+linux-btrfs@lfdr.de>; Mon,  6 Jul 2020 08:17:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728873AbgGFGPw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 6 Jul 2020 02:15:52 -0400
-Received: from mout.gmx.net ([212.227.15.19]:44939 "EHLO mout.gmx.net"
+        id S1728847AbgGFGRR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 6 Jul 2020 02:17:17 -0400
+Received: from mout.gmx.net ([212.227.17.20]:50405 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728804AbgGFGPv (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 6 Jul 2020 02:15:51 -0400
+        id S1728804AbgGFGRR (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 6 Jul 2020 02:17:17 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1594016147;
-        bh=EY+k29I7WDDxK51bUUZB8n3pujRqfbYZIIhBssqjDY4=;
+        s=badeba3b8450; t=1594016223;
+        bh=mKodQ0Y23blwZ4y+cpLZtdo8358ICaHyf4ytArKLYuU=;
         h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=YfjJkbnADTV38nQ91IzpylvXU1eLrPXH6PROSnR+tnhDKTs/TzL0PRJesZihYQGCr
-         1//AN7DBmIEIlijMhs7QBp8ctIHS97FZtBet7wB/VFLF9r+XsoV2tPHnYLexL5YkKZ
-         mu2L8AJycXqxC1J3l9kMsb4uOl/d+LJ+vPNou2y4=
+        b=TE+vS5op6OSOVP8PF836wTL9chimcORF7ksTKKVzTuJIuH1aQc7J4OfLgC12u8xLk
+         JqUYWEXLsaOzot6d3gaPnYitWzSIoGvcOPbl84NgHJv/qgVCYCnyWhvlVwKHtu8Nxt
+         5sBP6B7vXchlk71cvsnyxXC0ovlyoKReOgKAOorY=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MTAFh-1kLjPY0EsZ-00UdDV; Mon, 06
- Jul 2020 08:15:47 +0200
-Subject: Re: Balance + Ctrl-C = forced readonly
-To:     Hans van Kranenburg <hans@knorrie.org>, linux-btrfs@vger.kernel.org
-References: <42c9515d-7913-e768-84b1-d5222a0ca17d@knorrie.org>
- <131421c2-1c2a-4b1b-8885-a8700992a77d@gmx.com>
- <93419615-8f34-efc4-f50e-eac1151f0f37@knorrie.org>
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1N1OXT-1ktgdJ1DVz-012mXL; Mon, 06
+ Jul 2020 08:17:02 +0200
+Subject: Re: [PATCH] btrfs: speedup mount time with force readahead chunk tree
+To:     Robbie Ko <robbieko@synology.com>, linux-btrfs@vger.kernel.org
+References: <20200701092957.20870-1-robbieko@synology.com>
+ <aeb651c8-0739-100b-90ad-9f36ecdc26e6@synology.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -52,266 +51,187 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
  ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
  oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <fc428d50-2853-1be7-4764-e643f59faca5@gmx.com>
-Date:   Mon, 6 Jul 2020 14:15:43 +0800
+Message-ID: <7da55a96-131c-b987-edfb-97375a940cd2@gmx.com>
+Date:   Mon, 6 Jul 2020 14:16:58 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.9.0
 MIME-Version: 1.0
-In-Reply-To: <93419615-8f34-efc4-f50e-eac1151f0f37@knorrie.org>
+In-Reply-To: <aeb651c8-0739-100b-90ad-9f36ecdc26e6@synology.com>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="3IcGTAjwhd8SxV9hNvtZzJclO88WEgFfl"
-X-Provags-ID: V03:K1:2bA0vxVsFtiZNZS1jBav8BkUCK+ONDy4WATZO0cxhneNJLI8ETZ
- 2H5KL7zlDaXd3lxqpy+aQBt9y2C/fw7mwgmOYmiWk2LnUxPHSNolKUmFQomWfV4XDiOAnt1
- yNs9XhlN7nYK+ntCxfzi5FBfLVcsMoicnZHsiLys9rSfF4uq9CeXEs7iES3FW2XXC7/AeBn
- HoR+CGpquVIt9wwkEilZg==
+ boundary="mlRMY68DA2QAMmYm2zqnAD6NEE3Vsmjkt"
+X-Provags-ID: V03:K1:+DunM0UKVFzsxHGls8tIeUvVO6Zfk/DDFH6035FbcONWi2im0Lv
+ O+fOv7X6OxVMpZZmhlRfRtOyNRi97d5PyyP6hYSn4blrcXBkMrC4KUIZ4YHb0O/zpfdkGBL
+ 9LPdS+D7XbV22wtonT5oH40aQYiV3Lg5rL9h3ieh7HlAG4drv2dIm+26TAK5qMkugeqiuz5
+ imWhBFgrrdcMR3D7zDbrw==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:7PzP+F6of3w=:0JuJxwSCt+w5jVTVLpVK6d
- DOKBla8ELsd0pbvC2ojkxk0PUmmDZAJepfuLpmPe8bzIeb+sfJiY/uYVyQIGjPNLJet91m7Qd
- TNFKbOgPahyzv+cwDfgzQUBr2JjkWCP1nlLvavyTwGtV7LjpPcqh0jjciZcBn9hTry0H42X7D
- 4VXywjnGUsVKpfCAsV176DvWDWsZmJ3NEPYNAZ+INhvw3Ug5d5+TbpNoNvhQ7tX7S5dYOsd+A
- cFrV8ux0bCMv70HrK4ASgzYyojRAcl/dly7Jrm7YScydmuVLH33BL4fSSpejD9QGjLqcIYc6K
- 3DA8wXMf0szNj10Izqmlp0Z3cG5q49IusCEH1T3Oijb2Vcj3M4ZPhbSR4wQ/10mfsbvB9RFUt
- lapHB7rN1TnL9RDowhTy5k/Jea/99fvAc7Q6S95E1QU9R3d8lNqG/lMMNRaXtKA+08OT9K8DV
- zB1OGffFIZrWBA36ZmQJHlUwhuYGsKdNHjeWIzRe/VeN3va+XhqRQ0RAiGLJYENspPpmUfdK5
- qZl4ojuk+N3Xem8uXtAjd/7ivOjx5+V6n4LYPVr1EFh5ZDtQK2s27sG1dnHIZzvt9l1BwU68w
- nEXaHW2a9k2LzUarzkjC08khWu5NAK6oxsqQ977HFSGpy9sUJOXeamVZhACNDZT4EyB+Yb6/x
- PGXB9H7mfGY8dnR1DtEXHU0k2Srx2F88JDNfn67XIn+f8GMiZm1HrVivtt2Ou7v5B6Y3xhj/0
- ochMKR7N6iCLaW8LchX/uG3aJ9LFAkIcGPnUXdkzSNve21YsTf30tNKKX8nRJXIYKyewkSJkx
- u5RzHe5ZfNB06Qbp/DvQMHgrLmOm0ljsU6CnZFtV75/N6xSlBJdykb1eLjwnsF9wYvALxqSFh
- TSNWLpUsRQ4uSkHFebr8eEV/SS4OUV/F+DXRXHNL7A96ZOQNzULngdDL/4eQD0SM9srOE5YnO
- KQCh+99mgTKyjKem+M65bny4XlL8aYZnkeTX+gcCNfLZ8oA/BT+jEMMH558x1nnBspK+RcaMO
- wqT+2uCd0uGNYYyDrkzI5XE6pBAEeRRnRbSnwKFxexIHW/PF2aEGIjlr0SuEyPAzhC69cKZ2/
- G5OuKjKd6JJ6YSUc81x/lLBUaL2NLyJdZcHKuwTLI56mM9FBBOdSutGu/8wnRVflFDY3esvWs
- Vc/9uVD1H2pT9/xAATK/3YUwTgNgLmlI2ytWKxw4P4LzGgT7h6kvmEpTEa6ktH26vfwYUnFBj
- Ut8K63ng80anAf9Nt3w1eVPOpbsvwXd1dax8Lwg==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:mEnrtRT76bg=:DifVa3xgVw1AqK/Snn3MDT
+ +X/lEsQUHQrR4lh/4LvLO4dgB3eXjgJSfXOe+RFmDZhDMToM8rnX+iy+NdvRA5QFVzb+Xu5o/
+ j0Pn0dyolBV7Pbe1slwhbpFYbYQszszHry1J8dOdKEbz8SBIOl2r8pDMfHhGxswDBVT6mxllN
+ XOSOhCxjYNRJx+GbgQeY+j2JPO1ucuk3kw7XchbCcCaiOaeBryO4ek23KxLN8+1qdAzYytFZ/
+ FvgFPKFHv+wLo9k5Evxm0F7K3d5Cu1yoLU90KG+cyDzoH4B0jtzsetJgOU9su1ITt7i3GHUGK
+ Wtr4wV5v58z/kwAFD+KWuaL+a78dfQ38C4KdPg5EeM9kqbSC8KmSShcqhRftm5iAFqNumRgbe
+ +NFBe9RtTgxWDJEcuN7TH0SCumZkFx5j7gTsp15rptJWjBHwhSOWl+lsicU8C9YUvxT07UR+v
+ iz1cSrltTGAe0kmFUkAwoCvzR+SoBAqk4aWtLfyWNxfcS0nXarr8lykDDGCHPJwkatKZYwsNs
+ HfzVnx0EdsTX2l1qxdPi7Qe9aKDioIu4dI2ofp4gOuoHClfibl33eDvDfFLRnQn9YwV02o3eU
+ FeB13BjnT0Be/dRa66oENRjoCBak8OUR8OfkaR6qrhpdMs9KMi/FjC937KEMrkrOwoKL5LQjZ
+ nUwxIyBYaQdZWtC4OUv1nGH8dxrQqXcCZyOlMRTM3E76MtwOiS0UGJjSqQfZS5rPyYaSbjVzg
+ dhqh9CvmUsma35VYsK3kl94kTq7K+XSU+d2kuxw500u/JNIQrwMcrqgp2CZl5N4WnZ7vIdDd1
+ j+UBLRPA1msIFJkLKcrUYoMSZacZpvFXX80ftsNml8YCKpSr1jbKXFduoDok5kG6IavE8Y558
+ 7pFGkGuoSYYHM8vHqXLf89GKfe0O5zND+Ti8+gIUm5YhSEApwNfvoA2TKAu3ZmkmUYUgB7Dft
+ Y1zrCsFtXdXedjhMe084jMtIvc8dilkgIMcXjlHoaB1+LnlgvZ89sooDLFVVqoNNpWJ7d5Yn2
+ YAv3G0k7kXiCKu97Kg2d/4eBmT5XYRWKgMUR9OcCPQu8b3LGcXLxV+M+whwW7mttk6avDvQ6c
+ tnEtq53X3PmYkzdOBaFiBWelmc00xmz42kWF63azRPSn2KblvvZMqCF1weQBapwVcEEzNCQgj
+ Ff7GCVxZzwKKDKTRaV2ggKW0e+Pgx/E4+blBOMs91kRfqWqQPZFEJg/m7Q0SWHSdKYfmWOAqT
+ fvx04n42/YwxIEOKY
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---3IcGTAjwhd8SxV9hNvtZzJclO88WEgFfl
-Content-Type: multipart/mixed; boundary="wwvtw5TKYkbe1ztAH6GPJUdB4uJq9cay0"
+--mlRMY68DA2QAMmYm2zqnAD6NEE3Vsmjkt
+Content-Type: multipart/mixed; boundary="PSLQ3v73p37nWbgPX258oxqYERoXR9xnL"
 
---wwvtw5TKYkbe1ztAH6GPJUdB4uJq9cay0
+--PSLQ3v73p37nWbgPX258oxqYERoXR9xnL
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
 
 
 
-On 2020/7/5 =E4=B8=8B=E5=8D=8810:53, Hans van Kranenburg wrote:
-> On 7/5/20 3:13 PM, Qu Wenruo wrote:
->>
->>
->> On 2020/7/5 =E4=B8=8B=E5=8D=888:49, Hans van Kranenburg wrote:
->>> Hi,
->>>
->>> This is Linux kernel 5.7.6 (the Debian package, 5.7.6-1).
->>>
->>> So, I wanted to try out this new quicker balance interrupt thing, and=
+On 2020/7/6 =E4=B8=8B=E5=8D=882:13, Robbie Ko wrote:
+> Does anyone have any suggestions?
 
->>> the result was that I could crash the fs at my very first try using i=
-t,
->>> which was simply doing balance, and then pressing Ctrl-C.
->>>
->>> Recipe to reproduce: Start balance, wait a few seconds, then press
->>> Ctrl-C. For me here, ~ 5 out of 10 times, it ends up exploding:
->>>
->>> -# btrfs balance start --full /btrfs/
->>> ^C
->>>
->>> [41190.572977] BTRFS info (device xvdb): balance: start -d -m -s
->>> [41190.573035] BTRFS info (device xvdb): relocating block group
->>> 73001861120 flags metadata
->>> [41205.409600] BTRFS info (device xvdb): found 12236 extents, stage:
->>> move data extents
->>> [41205.509316] BTRFS info (device xvdb): relocating block group
->>> 71928119296 flags data
->>> [41205.695319] BTRFS info (device xvdb): found 3 extents, stage: move=
+I believe David's suggestion on using regular readahead is already good
+enough for chunk tree.
 
->>> data extents
->>> [41205.723009] BTRFS info (device xvdb): found 3 extents, stage: upda=
-te
->>> data pointers
->>> [41205.750590] BTRFS info (device xvdb): relocating block group
->>> 60922265600 flags metadata
->>> [41208.183424] BTRFS: error (device xvdb) in btrfs_drop_snapshot:5505=
-:
->>> errno=3D-4 unknown
->>
->> -4 means -EINTR.
->=20
-> From extent-tree.c:
->=20
->   5495         /*
->   5496          * So if we need to stop dropping the snapshot for
-> whatever reason we
->   5497          * need to make sure to add it back to the dead root lis=
-t
-> so that we
->   5498          * keep trying to do the work later.  This also cleans u=
-p
-> roots if we
->   5499          * don't have it in the radix (like when we recover afte=
-r
-> a power fail
->   5500          * or unmount) so we don't leak memory.
->   5501          */
->   5502         if (!for_reloc && !root_dropped)
->   5503                 btrfs_add_dead_root(root);
->   5504         if (err && err !=3D -EAGAIN)
->   5505                 btrfs_handle_fs_error(fs_info, err, NULL);
->   5506         return err;
->   5507 }
->=20
->> It means during btrfs balance, signal could interrupt code running in
->> kernel space??!!
->=20
-> What a wonderful world.
->=20
-> In the cases where the fs does not crash, it displays e.g.:
->=20
-> [ 1749.607057] BTRFS info (device xvdb): balance: start -d -m -s
-> [ 1749.607154] BTRFS info (device xvdb): relocating block group
-> 69780635648 flags data
-> [ 1749.732598] BTRFS info (device xvdb): found 3 extents, stage: move
-> data extents
-> [ 1750.087368] BTRFS info (device xvdb): found 3 extents, stage: update=
-
-> data pointers
-> [ 1750.109675] BTRFS info (device xvdb): relocating block group
-> 60922265600 flags metadata
-> [ 1758.021840] BTRFS info (device xvdb): balance: ended with status: -4=
-
->=20
-> ...and it fairly quickly after pressing Ctrl-C exits 130 because SIGINT=
-=2E
-> (128+2)
-
-I could get this reproduced now, with more filled fs.
-
-Although I haven't yet reproduced the abort transaction, it should
-already be a valid bug.
-
-As at this case, next balance run can cause a kernel warning due to the
-reloc tree not yet cleaned up.
-
-This really exposed a new set of problems.
-
-Thanks for the report, now it's time to debug it.
+Especially since chunk tree is not really the main cause for slow mount.
 
 Thanks,
 Qu
 
 >=20
-> But when it goes wrong, then in between pressing Ctrl-C and the forced
-> readonly happening, the balance in kernel continues for some time (this=
-
-> can be even multiple next block groups), until it hits the code path
-> seen above (in btrfs_drop_snapshot), and it's *always* at that line.
->=20
-> So, it seems that depending on what part of the kernel code is running
-> when the signal is sent, it's queued for being processed in that
-> (different) part of the running code?
->=20
->> I thought when we fall into the balance ioctl, we're unable to
->> receive/handle signal, as we are in the kernel space, while signal
->> handling are all handled in user space.
->=20
-> System calls can be interrupted from user space, e.g. a large read that=
-
-> goes to slow.
->=20
-> Previously, ^C on the btrfs balance execution would exit when the
-> current block group in progress was ended. So, in that case the signal
-> would also be picked up somewhere in the kernel.
->=20
->> Or is there some config or out-of-tree patches make it possible? Is th=
-is
->> specific to Debian kernels?
->> At least I tried several times with upstream kernel, unable to reprodu=
-ce
->> it yet (maybe my fs is too small?)
->=20
-> So, it at least seems to depends on the moment when Ctrl-C is pressed.
->=20
-> This is a two-disk fs, where I reflinked a single file many tens of
-> thousands of time to generate quite some metadata. You might have to
-> need some more data or metadata to have enough change to hit Ctrl-C at
-> the right time, but I can only make guesses about that now.
->=20
-> -# btrfs fi show /btrfs/
-> Label: none  uuid: 4771ea11-6ec6-4c00-a5f5-58acb3233659
-> 	Total devices 2 FS bytes used 5.76GiB
-> 	devid    1 size 10.00GiB used 3.50GiB path /dev/xvdb
-> 	devid    2 size 10.00GiB used 3.53GiB path /dev/xvdc
->=20
-> -# btrfs-search-metadata block_groups /btrfs
-> block group vaddr 78370570240 length 1073741824 flags DATA used
-> 1072177152 used_pct 100
-> block group vaddr 79444312064 length 268435456 flags METADATA used
-> 219824128 used_pct 82
-> block group vaddr 79712747520 length 33554432 flags SYSTEM used 16384
-> used_pct 0
-> block group vaddr 79746301952 length 1073741824 flags DATA used
-> 1071206400 used_pct 100
-> block group vaddr 80820043776 length 268435456 flags METADATA used
-> 214712320 used_pct 80
-> block group vaddr 81088479232 length 1073741824 flags DATA used
-> 1073045504 used_pct 100
-> block group vaddr 82162221056 length 268435456 flags METADATA used
-> 262979584 used_pct 98
-> block group vaddr 85920317440 length 1073741824 flags DATA used
-> 1069948928 used_pct 100
-> block group vaddr 86994059264 length 1073741824 flags DATA used 1597849=
-6
-> used_pct 1
-> block group vaddr 90349502464 length 1073741824 flags DATA used
-> 1073246208 used_pct 100
-> block group vaddr 91423244288 length 268435456 flags METADATA used
-> 109608960 used_pct 41
->=20
->> If it's config related, then we must re-consider a lot of error handli=
-ng.
->=20
-> I don't know, but I don't think so.
->=20
+> robbieko =E6=96=BC 2020/7/1 =E4=B8=8B=E5=8D=885:29 =E5=AF=AB=E9=81=93:
+>> From: Robbie Ko <robbieko@synology.com>
 >>
->> Thanks,
->> Qu
->>> [41208.183450] BTRFS info (device xvdb): forced readonly
->>> [41208.183469] BTRFS info (device xvdb): balance: ended with status: =
--4
->>>
->>> Boom, readonly FS.
->>>
->>> Hans
->>>
+>> When mounting, we always need to read the whole chunk tree,
+>> when there are too many chunk items, most of the time is
+>> spent on btrfs_read_chunk_tree, because we only read one
+>> leaf at a time.
 >>
->=20
-> Hans
->=20
+>> We fix this by adding a new readahead mode READA_FORWARD_FORCE,
+>> which reads all the leaves after the key in the node when
+>> reading a level 1 node.
+>>
+>> Signed-off-by: Robbie Ko <robbieko@synology.com>
+>> ---
+>> =C2=A0 fs/btrfs/ctree.c=C2=A0=C2=A0 | 7 +++++--
+>> =C2=A0 fs/btrfs/ctree.h=C2=A0=C2=A0 | 2 +-
+>> =C2=A0 fs/btrfs/volumes.c | 1 +
+>> =C2=A0 3 files changed, 7 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
+>> index 3a7648bff42c..abb9108e2d7d 100644
+>> --- a/fs/btrfs/ctree.c
+>> +++ b/fs/btrfs/ctree.c
+>> @@ -2194,7 +2194,7 @@ static void reada_for_search(struct
+>> btrfs_fs_info *fs_info,
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 if (nr =3D=3D 0)
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 break;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 nr--;
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 } else if (path->reada =3D=
+=3D READA_FORWARD) {
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 } else if (path->reada =3D=
+=3D READA_FORWARD || path->reada =3D=3D
+>> READA_FORWARD_FORCE) {
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 nr++;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 if (nr >=3D nritems)
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 break;
+>> @@ -2205,12 +2205,15 @@ static void reada_for_search(struct
+>> btrfs_fs_info *fs_info,
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 break;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 search =3D btrf=
+s_node_blockptr(node, nr);
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if ((search <=3D target &&=
+ target - search <=3D 65536) ||
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if ((path->reada =3D=3D RE=
+ADA_FORWARD_FORCE) ||
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 (s=
+earch <=3D target && target - search <=3D 65536) ||
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 (search > target && search - target <=3D 65536)) {
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 readahead_tree_block(fs_info, search);
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 nread +=3D blocksize;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 nscan++;
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (path->reada =3D=3D REA=
+DA_FORWARD_FORCE)
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 co=
+ntinue;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if ((nread > 65=
+536 || nscan > 32))
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 break;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
+>> diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+>> index d404cce8ae40..808bcbdc9530 100644
+>> --- a/fs/btrfs/ctree.h
+>> +++ b/fs/btrfs/ctree.h
+>> @@ -353,7 +353,7 @@ struct btrfs_node {
+>> =C2=A0=C2=A0 * The slots array records the index of the item or block =
+pointer
+>> =C2=A0=C2=A0 * used while walking the tree.
+>> =C2=A0=C2=A0 */
+>> -enum { READA_NONE, READA_BACK, READA_FORWARD };
+>> +enum { READA_NONE, READA_BACK, READA_FORWARD, READA_FORWARD_FORCE };
+>> =C2=A0 struct btrfs_path {
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct extent_buffer *nodes[BTRFS_MAX_L=
+EVEL];
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int slots[BTRFS_MAX_LEVEL];
+>> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+>> index 0d6e785bcb98..78fd65abff69 100644
+>> --- a/fs/btrfs/volumes.c
+>> +++ b/fs/btrfs/volumes.c
+>> @@ -7043,6 +7043,7 @@ int btrfs_read_chunk_tree(struct btrfs_fs_info
+>> *fs_info)
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 path =3D btrfs_alloc_path();
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (!path)
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return -ENOMEM;=
+
+>> +=C2=A0=C2=A0=C2=A0 path->reada =3D READA_FORWARD_FORCE;
+>> =C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /*
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * uuid_mutex is needed only if we=
+ are mounting a sprout FS
 
 
---wwvtw5TKYkbe1ztAH6GPJUdB4uJq9cay0--
+--PSLQ3v73p37nWbgPX258oxqYERoXR9xnL--
 
---3IcGTAjwhd8SxV9hNvtZzJclO88WEgFfl
+--mlRMY68DA2QAMmYm2zqnAD6NEE3Vsmjkt
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl8CwY8ACgkQwj2R86El
-/qjnVwf/cYFA6wNiGjWvhYsgqLI1WV8xpncAzyL/ZX52C0pPGR6d+QgYkkWbHKK+
-PaJSTTmM2DW3FliUuZRY3RkyiJFYLHmZtQSuxKLB1oe72AUJfCTgVR4Ia/gwXzDk
-xI8AClbpZcZGHQZ2RZSzzXmVm+7PT3rWz7FkDBhIvH/i3eZJbexc3PEn3YMGGzRW
-A5kzUX58U8x8AH/9ZVtonMTNYyq652mfBWft7FNSk2UkrRYe+m5y2sby4ZpxJ4wd
-d+bZzSsqU2q7KuJfMbV9ijwyuTHRB6O6G+MkWw37MJFjAC+p2rZEMq2mYVk5b2Iu
-n7X88N7yIS8zznxpvTn4NvQuX+Jn1g==
-=GNCi
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl8CwdoACgkQwj2R86El
+/qiVngf/c+ZYEytOSN7vwsPOVpLlgnj3ETWDdCWM6L7FNYB4qVzwXEcrXCg31qr8
+xOkflYzIWNA+nB5uCBT+1bDdNmJfoHPORqO3VzN41NdMe/3nEZLdf7Akycnh0II1
+7ztHDtPDeAwa3UlbnqeJeo3/jv+c1nXcXS5Xtyp1huntmxrXRor25LgQULRqk4bx
+HH7SKbSntnf9e+8+9pIMIlVtrrR2QzVTmvbatj7cmdjWev7S36V5w+COdqUnA7G9
+gcb4V3xfj+/vMCitz7zSJWVjwW5Ihs1B3+jCJHcf09iP1qb73mto+UpK8vG8+ltf
+A2FrBAydokvNAkXZlowpJJQw/kFhpA==
+=hZsZ
 -----END PGP SIGNATURE-----
 
---3IcGTAjwhd8SxV9hNvtZzJclO88WEgFfl--
+--mlRMY68DA2QAMmYm2zqnAD6NEE3Vsmjkt--
