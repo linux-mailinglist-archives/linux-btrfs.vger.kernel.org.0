@@ -2,181 +2,133 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 080962156B4
-	for <lists+linux-btrfs@lfdr.de>; Mon,  6 Jul 2020 13:51:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DF67215819
+	for <lists+linux-btrfs@lfdr.de>; Mon,  6 Jul 2020 15:14:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728946AbgGFLve (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 6 Jul 2020 07:51:34 -0400
-Received: from mout.gmx.net ([212.227.17.21]:60067 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728414AbgGFLvd (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 6 Jul 2020 07:51:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1594036289;
-        bh=dGhx2FoOc+qzmg3bHacLYVM/+RMADKvTY+Mih9VFIXY=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=lJvDfDFHiJ2V3edW79AdnjjUAQGSgwq2kveHz33i980WoaKsDeNNfXhAwh1wBmdRa
-         H1s6sbYEqwI9fiyYlYU5LrYkAcsrfKPn3mvZAw3lF4Lv/GCEDsYcvB0OJ8ARQCuiSl
-         XxsEvj6L8A/us+95e2eaPF5+HXBouylsTIXHB0ak=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MsHru-1kl4oM0m4I-00toaq; Mon, 06
- Jul 2020 13:51:29 +0200
-Subject: Re: BTRFS-errors on a 20TB filesystem
-To:     =?UTF-8?Q?Paul-Erik_T=c3=b6rr=c3=b6nen?= <poltsi@poltsi.fi>,
-        linux-btrfs@vger.kernel.org
-References: <0bd8aea3d385aa082436775196127f1f@poltsi.fi>
- <f2d396d4-8625-1913-9b1c-2fec1452defa@gmx.com>
- <9a804cbb7406be31f55c68d592fd0bd6@poltsi.fi>
- <960db29cd8aa77fd5b8da998b8f1215b@poltsi.fi>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
- PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
- 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
- D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
- efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
- ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
- BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
- 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
- 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
- EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
- 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
- ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
- oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
- fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
- 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
- ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
- oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <e1beb547-3989-0fdd-b2e4-5491728f7dec@gmx.com>
-Date:   Mon, 6 Jul 2020 19:51:25 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        id S1729127AbgGFNOQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 6 Jul 2020 09:14:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44090 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729048AbgGFNOQ (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 6 Jul 2020 09:14:16 -0400
+Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55EE3C061794
+        for <linux-btrfs@vger.kernel.org>; Mon,  6 Jul 2020 06:14:16 -0700 (PDT)
+Received: by mail-qv1-xf41.google.com with SMTP id m8so12917423qvk.7
+        for <linux-btrfs@vger.kernel.org>; Mon, 06 Jul 2020 06:14:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=kPd+wuKdPicCSKRBKJoeXOZxadBuqbmWtE9B9TN0wGI=;
+        b=1SiYi4ML0Vp4Tgbl1pbUWwzxy7sj+9VSfd1SEw80aI+djUrrISzBZ7nX1MVnVNVlsf
+         Uo7vkdLzIVNTanTnzPNB+R6kLSSPn3ht5RTSsIJhgDYFwWwNvENp9MDX2Tzz0RORdfj8
+         4oxFnQ9aKQfwXCWHqbFiMzQ5f+3PqH3SV+cRcOgEakI+52QiiTYjEFNXudYLBa/VV0Fr
+         RdeD+Aj7fCFo+LS75EnJyBGuMKjmwXMI94rY1Bj1+U8sAjcv+0WWpetv7zkWeoJEb2ZM
+         OM7ju8fwfBr55MsywWbDCjN2Q31wqaldAQp6RTBhnv5kDL1aMOeCpUsSzxB2/wMuX7Kd
+         68bg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=kPd+wuKdPicCSKRBKJoeXOZxadBuqbmWtE9B9TN0wGI=;
+        b=uPnXMNcmV3z7D3irDFs4vio4t0vo2fV3ooOtKtii1mTRuNd/QPiKUbX8qvyOFlrkpD
+         phf/unDvFjtaCLyt6YejOkyLEPHflsrnf8CcdyTNea4W1YH7/qqCfYjTx9zRa3k37WZ+
+         7YdgcMkN3W3ocGvdUW5EYt74tGddMEogkUv5iFt1jOFVV3KjyRHwu9C+E9sxj/BF49x2
+         7ImX4oAHkDcn1jCSfWXYMO9sWAD/cWbzSstnnS1OglWsmAdj5A4dYXZRW2yKT/UOSbGG
+         kAYjSYRyNhDOC4a2Jx1vr+WD1X2jppyFdOHqgMFRUjvwjScbrUq2f7a6mYxtedLwx56C
+         C9Ig==
+X-Gm-Message-State: AOAM531CqtxLXif3hoRVsBesfoOLUapcuOBrorVq4cVTtwPaehq11XDt
+        1RvI+iJWURNHyH/pCaV+plRs6Z6biEWhFg==
+X-Google-Smtp-Source: ABdhPJz0UxwdY+VmF1KL1D/FaVidSNyjIcetgOZI4nMj7aa2PjVlvoEVCNwRXTU8i80hiyMqG3wQVg==
+X-Received: by 2002:ad4:5148:: with SMTP id g8mr8190318qvq.173.1594041254943;
+        Mon, 06 Jul 2020 06:14:14 -0700 (PDT)
+Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id n64sm19497087qke.77.2020.07.06.06.14.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 06 Jul 2020 06:14:14 -0700 (PDT)
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Cc:     Filipe Manana <fdmanana@suse.com>
+Subject: [PATCH 1/2][v2] btrfs: convert block group refcount to refcount_t
+Date:   Mon,  6 Jul 2020 09:14:11 -0400
+Message-Id: <20200706131412.28870-1-josef@toxicpanda.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-In-Reply-To: <960db29cd8aa77fd5b8da998b8f1215b@poltsi.fi>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="V6SlM7ISglGf4gmrZptyLwI8cREZkVmWC"
-X-Provags-ID: V03:K1:uIX+GO9R7s7PZoYnRp0CCubcwvuuHeQf7wyK81rCFc4CFmEwdDL
- t5zqyKj+xJn+TI04l8Nx6YAEo4wb4N9Yd4OrkcjCIMjjio3qvopzfFTGiXvPIaaeca6X2l8
- 0f13JBeBCOWCUbBTgXIt+gTmR57GS7xE4y9iDfKYOc+2ASMlDW9n7xup07V55ppL0eSUbC5
- y27scQcRcgHOFjnxobqDw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:6X3kVHpfl0s=:VkG57TYgGUckBDLofni9Rp
- oj7V9qkA1bRdWwgida/0BaInD2gg6DVxyG8hbXqqg4AnTcwcdsQkAKJilYrr35TG/dc/JnvnI
- lt6eQssLTHVc93nBOTZB6L7V95oUWg82a/BBe9+rpBOcyJaYuvJEF1UCpSzoYJbEjdsB6+6Em
- yXAcezl4WZqScDq7wzeGvn/ba3O64d5RsLlXaN7t67a7Gp4cx8/FKq6JT6dnteqz9X2MOvvjr
- x7m9eJ+oSh4QV8suwtZ4hs/Pjko7hVEpReaY1pHjsBLloNtSbHVln2IE1CF0NSgCI2FiUZKao
- jpbIrtpQwf0VfoXn0zvC2yvYTgf1sMHSOQNDUXT5uKjYhfp9UnDBByHTklK473hazQoAYabTd
- tQBzg+XbxGKxxgLz7guZts48tEfpuKTHTi27so7X9fcUkHnVKrFxikMb1p/3HNZpaVd+OhrnG
- m/paT69odPPVO+cTn74cih3oQuRAfZsGAlsModQTV1UnopeR5s6HnA6dcSC5767yWQDQE1gXW
- 0JwYxZRJYrADZOQTzS1ky8zsbrhwV8XBtJfFKpDEJMo0KrAf3I/uTg31ybfca7ftLRY4Qw455
- JkPg192HmCfHiv0nC4KMWmDRvF5Up/SCLIKDCEQONOp2YVCEtqaSXu4cDnAZhnCv7YwVatWoX
- XbU04wG5ut3k4jKGNfqMBkExeTxX9sl2Hm5wPhE+aod3BWVjE4vULwgEprnCin70ciiikrg0+
- 1EQOyN8wlN6+K3GnQ+kXot+RmAkQuYDp6YcnGMUYpen6kJ06leHkahpBE4PUqAG7y0IlHaqok
- 3nFPx1+tpIPZrgRDzDpNJFusADRfrJVx5ZB3iG0nUPDWviD1qkRFDY/S5f3T6NV6LDazlHkDw
- sCfN+qIXT6/10hvXmBC0XAth7MS4FI/WoUNDW5qAGVn2tmJRTRwR+cUtfv25ch2hAg0FZfBMv
- Ywbdz7LrOrVbrr9a07HyXqU6CGmGltp2ANqU7FkIaqY2yd06s6j3kaX/l7DDUuuhZzt7uoaaf
- s5v8WmCeCLn0vnPkVlfYn+8laHGh3T78TECF3/OMVZam07q8PLHZdCUuNd32RhiK8pu7rnmfv
- 0a37nvvInbM6cgy3U2yjMv5qXzwwaW989OOajYBl8ezFppmLU68pW8xChE5+ggFSdIYxrKPtd
- euxAf22Xee+W8COimscCh+LwsKRxSmw08SxtodUDTo30eIFyay8gB58/dS4oGWTYi22V8x5VC
- iW0kaEMB3qyx8UutIzj/E4HJPXVPv8p1nBAmZOQ==
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---V6SlM7ISglGf4gmrZptyLwI8cREZkVmWC
-Content-Type: multipart/mixed; boundary="axYh3OPeKSqznRUAUDyHJkDzm4KVlkPBh"
+We have refcount_t now with the associated library to handle refcounts,
+which gives us extra debugging around reference count mistakes that may
+be made.  For example it'll warn on any transition from 0->1 or 0->-1,
+which is handy for noticing cases where we've messed up reference
+counting.  Convert the block group ref counting from an atomic_t to
+refcount_t and use the appropriate helpers.
 
---axYh3OPeKSqznRUAUDyHJkDzm4KVlkPBh
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+---
+- rename ->count to ->refs.
+- updated commit message.
 
+ fs/btrfs/block-group.c | 8 ++++----
+ fs/btrfs/block-group.h | 3 +--
+ 2 files changed, 5 insertions(+), 6 deletions(-)
 
+diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+index 3aa78952a2b7..0a67a50f448a 100644
+--- a/fs/btrfs/block-group.c
++++ b/fs/btrfs/block-group.c
+@@ -118,12 +118,12 @@ u64 btrfs_get_alloc_profile(struct btrfs_fs_info *fs_info, u64 orig_flags)
+ 
+ void btrfs_get_block_group(struct btrfs_block_group *cache)
+ {
+-	atomic_inc(&cache->count);
++	refcount_inc(&cache->refs);
+ }
+ 
+ void btrfs_put_block_group(struct btrfs_block_group *cache)
+ {
+-	if (atomic_dec_and_test(&cache->count)) {
++	if (refcount_dec_and_test(&cache->refs)) {
+ 		WARN_ON(cache->pinned > 0);
+ 		WARN_ON(cache->reserved > 0);
+ 
+@@ -1805,7 +1805,7 @@ static struct btrfs_block_group *btrfs_create_block_group_cache(
+ 
+ 	cache->discard_index = BTRFS_DISCARD_INDEX_UNUSED;
+ 
+-	atomic_set(&cache->count, 1);
++	refcount_set(&cache->refs, 1);
+ 	spin_lock_init(&cache->lock);
+ 	init_rwsem(&cache->data_rwsem);
+ 	INIT_LIST_HEAD(&cache->list);
+@@ -3428,7 +3428,7 @@ int btrfs_free_block_groups(struct btrfs_fs_info *info)
+ 		ASSERT(list_empty(&block_group->dirty_list));
+ 		ASSERT(list_empty(&block_group->io_list));
+ 		ASSERT(list_empty(&block_group->bg_list));
+-		ASSERT(atomic_read(&block_group->count) == 1);
++		ASSERT(refcount_read(&block_group->refs) == 1);
+ 		btrfs_put_block_group(block_group);
+ 
+ 		spin_lock(&info->block_group_cache_lock);
+diff --git a/fs/btrfs/block-group.h b/fs/btrfs/block-group.h
+index b6ee70a039c7..adfd7583a17b 100644
+--- a/fs/btrfs/block-group.h
++++ b/fs/btrfs/block-group.h
+@@ -114,8 +114,7 @@ struct btrfs_block_group {
+ 	/* For block groups in the same raid type */
+ 	struct list_head list;
+ 
+-	/* Usage count */
+-	atomic_t count;
++	refcount_t refs;
+ 
+ 	/*
+ 	 * List of struct btrfs_free_clusters for this block group.
+-- 
+2.24.1
 
-On 2020/7/6 =E4=B8=8B=E5=8D=887:33, Paul-Erik T=C3=B6rr=C3=B6nen wrote:
-> Aand I messed up by sending this to the person only. Sorry for that.
->=20
-> On 2020-07-06 13:55, Qu Wenruo wrote:
->> Some older extents are affected by older kernel not handling extents
->> length correctly.
->>
->> 18446744073709481984 =3D -69632, which means there is some underflow.
->>
->> Recent upstream kernel caught it and reject the whole tree block to
->> prevent furhter problem.
->=20
-> Ok, so if I understand this correctly, the issue is essentially created=
-
-> by using a new (5.x) kernel, whereas the server was running 3.10 (CentO=
-S
-> 7.8 version with btrfs-support) -> CentOS 8.2.
-
-Oh, that explains the amount of problems...
-
->=20
->> Would you please provide the dump for this bytenr?
->> I'm a little interested in this.
->=20
-> I'll provide you the dumps you requested in the evening. Should I email=
-
-> them to the list, or directly to you?
-
-If the dump contains confidential filenames, then feel free to send it
-only to me.
-Or feel free the censor the filenames if you want to send it to the mail
-list.
-
-Thanks,
-Qu
->=20
->> Thanks for your detailed report, this would help us to enhance
->> btrfs-progs to fix them.
->=20
-> Glad to be of help.
->=20
->> For now, you can just mount them with older kernel, find the offending=
-
->> inode using the ino number in the dmesg, and delete the offending file=
-=2E
->> With all offending inodes deleted, the fs would come back to normal
->> status.
->=20
-> Ah, well. As mentioned in the previous email, I reinstalled the server
-> with CentOS8. Unfortunately RHEL/CentOS8 dropped support for btrfs (as
-> well as megaraid_sas), so I will be running this machine on the UEK
-> kernel for the forseeable future and planning on replacing/recreating
-> the FS on the partition.
->=20
-> Poltsi
-
-
---axYh3OPeKSqznRUAUDyHJkDzm4KVlkPBh--
-
---V6SlM7ISglGf4gmrZptyLwI8cREZkVmWC
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl8DED0ACgkQwj2R86El
-/qjByQgAseiVDUOmac3jx/KfEoVchV3krweOCBKnNQ3mUFy4HMK6X43UuxWjruB4
-N/F+FJFM8bFvC3p5FHHbqpO2zBvFHZN6uu1G/bzb4GyGKc9UzUicR0/IlKDOfCi4
-Xv3TLEcfKoZdmGas5cxSCrG6FGC9OKtW+pt1t4fz7jZTFv0SeffFHkxHKqW2pTLy
-ecmmADy04fvi/dG+h/OjH2cbvdp/SaulJZ3OETP2JGUAKLxlIJ5HXpSMtmVwIGm3
-CZdkS/KTVfxYrenOCRKAhz5uNYebH0hcGWRbJbWt6AB1kXUTUSv6JVB64madKUBe
-PJcM0x//fod6fI1AGyDfQ6ZxlX6pAQ==
-=3Wio
------END PGP SIGNATURE-----
-
---V6SlM7ISglGf4gmrZptyLwI8cREZkVmWC--
