@@ -2,236 +2,138 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0726215279
-	for <lists+linux-btrfs@lfdr.de>; Mon,  6 Jul 2020 08:17:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E6CA2152BF
+	for <lists+linux-btrfs@lfdr.de>; Mon,  6 Jul 2020 08:38:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728847AbgGFGRR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 6 Jul 2020 02:17:17 -0400
-Received: from mout.gmx.net ([212.227.17.20]:50405 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728804AbgGFGRR (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 6 Jul 2020 02:17:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1594016223;
-        bh=mKodQ0Y23blwZ4y+cpLZtdo8358ICaHyf4ytArKLYuU=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=TE+vS5op6OSOVP8PF836wTL9chimcORF7ksTKKVzTuJIuH1aQc7J4OfLgC12u8xLk
-         JqUYWEXLsaOzot6d3gaPnYitWzSIoGvcOPbl84NgHJv/qgVCYCnyWhvlVwKHtu8Nxt
-         5sBP6B7vXchlk71cvsnyxXC0ovlyoKReOgKAOorY=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1N1OXT-1ktgdJ1DVz-012mXL; Mon, 06
- Jul 2020 08:17:02 +0200
-Subject: Re: [PATCH] btrfs: speedup mount time with force readahead chunk tree
-To:     Robbie Ko <robbieko@synology.com>, linux-btrfs@vger.kernel.org
-References: <20200701092957.20870-1-robbieko@synology.com>
- <aeb651c8-0739-100b-90ad-9f36ecdc26e6@synology.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
- PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
- 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
- D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
- efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
- ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
- BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
- 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
- 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
- EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
- 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
- ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
- oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
- fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
- 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
- ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
- oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <7da55a96-131c-b987-edfb-97375a940cd2@gmx.com>
-Date:   Mon, 6 Jul 2020 14:16:58 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        id S1728117AbgGFGiZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 6 Jul 2020 02:38:25 -0400
+Received: from esa4.hgst.iphmx.com ([216.71.154.42]:43135 "EHLO
+        esa4.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725889AbgGFGiY (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 6 Jul 2020 02:38:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1594017502; x=1625553502;
+  h=from:to:cc:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=Oii+SYRXSIb/lCDbMJ+S1tnP9yrNlZIrYaGZF9J2yug=;
+  b=lWWUPL/ZFEyzsSjYCXI4QrN3P+I9bqkXyovnGS9X4oQ0gwPmusxvaMcg
+   qUIg0h5ekEvWOdjVDgjG7LV8EpoELBbJkkWGJ+DGHrOIqT/fB7xycSdwk
+   +33mKywi7kioyHGL0ICDlUtaNO8jJdmN3XUCRTeKIIq7YIjjJnMGEb7Vr
+   X4C8eeCDdrJUEcaPHerPcRGAsfsxQuONSp+Z7a9Uh6N8bIZGSwV47cRtQ
+   4MaARXQhn5dmiZFEXr26bGzDKqujB382d9w6tN1ea1oe836BOV7Yw9FQ3
+   BywnwgVub4ycpYLV3+SxAt5D4pIJCzqg1q5dh5iw0kLv00uWHyehbwSdY
+   Q==;
+IronPort-SDR: Jd1S5iVMKb1XiWY1xRDOznqS527ekigIw5iBWtOhqIPxIJbDD521H2y0N+wMK7WLFEl6gBJNQr
+ 10FYcqSy9rSu6I7lb55PCW+nGZBeEEOB23W8WauL3BzyrxKA3vGfkZdIjU07GTO1v3xwRC2ZHG
+ gyy3A/SvS1GOtzXWq+FfAJkzDfoC0l6R1Q3H6LYWMOqMl/AXHRxSusxiqQkk2R3Aa7zEtOAS7z
+ CD0KbuPZ9r/yplAC0+2rB08WWnck1TmoTvdcaptm2A/M0lByowTpXazhFhVSbOl8Qb5EDshAWi
+ p6s=
+X-IronPort-AV: E=Sophos;i="5.75,318,1589212800"; 
+   d="scan'208";a="141712063"
+Received: from mail-bn7nam10lp2107.outbound.protection.outlook.com (HELO NAM10-BN7-obe.outbound.protection.outlook.com) ([104.47.70.107])
+  by ob1.hgst.iphmx.com with ESMTP; 06 Jul 2020 14:38:22 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=CiAEzGVxTXYaCMbGIXzDh8pQEr18wNsZrH02djWkBnet2r+0cBNsRJZY8dszh6IrJ0n1NJt4bY+Jsxx6oNdYF8XYWS3wLQGfNpqW3lWL4e0SFhPXtmYTnSWzG70GYIfdYx/N8XpsysN79wkgOIh5ubAUjqhO8cc8n8zyjiRO/LUWHw3qNRsIqm0wHysEPpMG4ZFJltgGkqQOAVx88RMHNljTfpwnLsH0nFAgceMihXMO27+0nl+x8YsGfLNR+hAn7reUh3obcjOkZa08KVXJQmIj3+3gZtVH5jHOW8gWcQRLOnbpaSGxEwW25NZS4RaPI8ASI9ZGQrdItxsrq/u+qg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=jQAaGbLKKIXUX64DYHjoa1oxH9ax+y4u3dQFZ9Ar04U=;
+ b=KVfnuCUQoXzZSNl8GnjbSL1s6edeiU33jgJHQc+352x6t9RN2wkFJxefmZowLN6UhnccKcRimNPttVpdVcSGy2UJTvNvQVLF6r8f8PV9cMm+3HLPuybwzEtAcWAtIp8Ad2dSJfa1NQUgFeDUo7PM2i60KdB/LLBAOqj7I668T+9Nh3J+MXkATxgsxHDBq/r1zjE4RmxlPJN8lelX1RPW8r852dtCJV6s8AmdvcB4Y9HX8dCOzFVd0CvSSxtaiyIGf6S4SJntj27DJC+g7rhadIohNUg7+l9eiCsbSq8LmhcZ890bQIwKO4W7kblMbvEELecg28zmD29voXtPIK1p+g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=jQAaGbLKKIXUX64DYHjoa1oxH9ax+y4u3dQFZ9Ar04U=;
+ b=QnIa1J9R+EzLj86aK/wHRp9TTflXBb6N7SXKg5hLUKf3hraM8Ifj+XUBM6iqRM6PVLeR/aV+Y7tBzQAPMh5XiRl/t40/uLv/nmvJ4s63vIeieWjchHGHEts8/IquZIFhXQYmmmeaG/aFFVuNYtpsX3YXhPlWxDeN4zDfbZ1ffkw=
+Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
+ (2603:10b6:803:47::21) by SN6PR04MB5327.namprd04.prod.outlook.com
+ (2603:10b6:805:103::29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3153.29; Mon, 6 Jul
+ 2020 06:38:19 +0000
+Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
+ ([fe80::1447:186c:326e:30b2]) by SN4PR0401MB3598.namprd04.prod.outlook.com
+ ([fe80::1447:186c:326e:30b2%7]) with mapi id 15.20.3153.029; Mon, 6 Jul 2020
+ 06:38:19 +0000
+From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To:     "dsterba@suse.cz" <dsterba@suse.cz>,
+        Nikolay Borisov <nborisov@suse.com>
+CC:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH 01/10] btrfs: Always initialize
+ btrfs_bio::tgtdev_map/raid_map pointers
+Thread-Topic: [PATCH 01/10] btrfs: Always initialize
+ btrfs_bio::tgtdev_map/raid_map pointers
+Thread-Index: AQHWUHdF5CzXOIbGJEiGQaCbkMHjwg==
+Date:   Mon, 6 Jul 2020 06:38:19 +0000
+Message-ID: <SN4PR0401MB35987003E71CA291A89EF5079B690@SN4PR0401MB3598.namprd04.prod.outlook.com>
+References: <20200702134650.16550-1-nborisov@suse.com>
+ <20200702134650.16550-2-nborisov@suse.com>
+ <SN4PR0401MB359800E3D7D379E9161318379B6D0@SN4PR0401MB3598.namprd04.prod.outlook.com>
+ <ac973720-9d3b-1824-e7de-16e15b364c9c@suse.com>
+ <20200703155757.GE27795@twin.jikos.cz>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: suse.cz; dkim=none (message not signed)
+ header.d=none;suse.cz; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [62.216.205.235]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 07422ee5-abc0-42de-3488-08d821772c2e
+x-ms-traffictypediagnostic: SN6PR04MB5327:
+x-microsoft-antispam-prvs: <SN6PR04MB5327D10ADA895A602A64743C9B690@SN6PR04MB5327.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:5516;
+x-forefront-prvs: 04569283F9
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: qEjt1TpNs9HQlJCMEH2VJBpQJbsHB/c0Ue/6R3Rg8idO6XRLZYySKVil93cUGTq2ogpYWEF1+5u0SXien4njY1NAFCfPp0Gdm39M39iyvToT+fRKv6RnYkb9cnyD9IDmabzqLT7pCo+UHGnHLLilYTKSXPlH5/G9OENhlTiSZs8xawsMdmzm71sn6jZKXEktE9J8ZIr2d1sTrq77EruZhKxa/DHL5sDwr+GY0Ux8i8xCXSJ47Puykw8vRIcPi5lrn+s2RU2esIzpuIbUAJAS089kBHC42y9YBuaHAFlwBEAfVW11b9PRZA2MO603NuCvGLMbm8QYiC5QQfzpU/j49Q==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR0401MB3598.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(39860400002)(136003)(376002)(366004)(346002)(396003)(55016002)(26005)(9686003)(83380400001)(4326008)(110136005)(4744005)(8936002)(2906002)(316002)(86362001)(8676002)(5660300002)(66446008)(66946007)(186003)(478600001)(91956017)(33656002)(76116006)(6506007)(52536014)(64756008)(66476007)(66556008)(53546011)(71200400001)(7696005);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: 93yDUMBgPSHBRDvmCCrDjytwzdEEyb68kuehRSh1X4/iYT2CGIHM16GKmzZJwY/zkXQUi1yJoL7lpelLjXIG/ALFzOWmdwi0aGSc6JQZ9jkG4yT1/LQFIneshbpK8bjhPTdd1nILhoXaUnHebbw2JIowkNnTQ5RDzLRBSlTMasjb5+liUIvBtYiXZLZ4YFeZAC5U/M5k6YnQv6lpxk0ZidqsmDM00UKZ+hHYMRZHV2Is/36ZfdwkudA6WQyJwow3h7j+OwqrLfBEJBfTaYZgnhPiGHlEdqT0+QFb958RIQu0r8vFopHoeZ0TgXRTlYAlqwJRYKWo1IxqjhDQnDQyDQoFgATs5Q6pyn4DjX4NShe6uEUWGlOHN3qv326eXlWOy4Yn0VUPc3anzfDBPNDUIwr+u8GO7m7ugiCk5vwCIuK9395Bs4ycVLHoqEfMSdxFfZH0YXRykUdRjErbtSdzHxuxBiW2WyJWyjiBu6xWFWT2fEh4trLvpnotusUSB2mc
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="koi8-r"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-In-Reply-To: <aeb651c8-0739-100b-90ad-9f36ecdc26e6@synology.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="mlRMY68DA2QAMmYm2zqnAD6NEE3Vsmjkt"
-X-Provags-ID: V03:K1:+DunM0UKVFzsxHGls8tIeUvVO6Zfk/DDFH6035FbcONWi2im0Lv
- O+fOv7X6OxVMpZZmhlRfRtOyNRi97d5PyyP6hYSn4blrcXBkMrC4KUIZ4YHb0O/zpfdkGBL
- 9LPdS+D7XbV22wtonT5oH40aQYiV3Lg5rL9h3ieh7HlAG4drv2dIm+26TAK5qMkugeqiuz5
- imWhBFgrrdcMR3D7zDbrw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:mEnrtRT76bg=:DifVa3xgVw1AqK/Snn3MDT
- +X/lEsQUHQrR4lh/4LvLO4dgB3eXjgJSfXOe+RFmDZhDMToM8rnX+iy+NdvRA5QFVzb+Xu5o/
- j0Pn0dyolBV7Pbe1slwhbpFYbYQszszHry1J8dOdKEbz8SBIOl2r8pDMfHhGxswDBVT6mxllN
- XOSOhCxjYNRJx+GbgQeY+j2JPO1ucuk3kw7XchbCcCaiOaeBryO4ek23KxLN8+1qdAzYytFZ/
- FvgFPKFHv+wLo9k5Evxm0F7K3d5Cu1yoLU90KG+cyDzoH4B0jtzsetJgOU9su1ITt7i3GHUGK
- Wtr4wV5v58z/kwAFD+KWuaL+a78dfQ38C4KdPg5EeM9kqbSC8KmSShcqhRftm5iAFqNumRgbe
- +NFBe9RtTgxWDJEcuN7TH0SCumZkFx5j7gTsp15rptJWjBHwhSOWl+lsicU8C9YUvxT07UR+v
- iz1cSrltTGAe0kmFUkAwoCvzR+SoBAqk4aWtLfyWNxfcS0nXarr8lykDDGCHPJwkatKZYwsNs
- HfzVnx0EdsTX2l1qxdPi7Qe9aKDioIu4dI2ofp4gOuoHClfibl33eDvDfFLRnQn9YwV02o3eU
- FeB13BjnT0Be/dRa66oENRjoCBak8OUR8OfkaR6qrhpdMs9KMi/FjC937KEMrkrOwoKL5LQjZ
- nUwxIyBYaQdZWtC4OUv1nGH8dxrQqXcCZyOlMRTM3E76MtwOiS0UGJjSqQfZS5rPyYaSbjVzg
- dhqh9CvmUsma35VYsK3kl94kTq7K+XSU+d2kuxw500u/JNIQrwMcrqgp2CZl5N4WnZ7vIdDd1
- j+UBLRPA1msIFJkLKcrUYoMSZacZpvFXX80ftsNml8YCKpSr1jbKXFduoDok5kG6IavE8Y558
- 7pFGkGuoSYYHM8vHqXLf89GKfe0O5zND+Ti8+gIUm5YhSEApwNfvoA2TKAu3ZmkmUYUgB7Dft
- Y1zrCsFtXdXedjhMe084jMtIvc8dilkgIMcXjlHoaB1+LnlgvZ89sooDLFVVqoNNpWJ7d5Yn2
- YAv3G0k7kXiCKu97Kg2d/4eBmT5XYRWKgMUR9OcCPQu8b3LGcXLxV+M+whwW7mttk6avDvQ6c
- tnEtq53X3PmYkzdOBaFiBWelmc00xmz42kWF63azRPSn2KblvvZMqCF1weQBapwVcEEzNCQgj
- Ff7GCVxZzwKKDKTRaV2ggKW0e+Pgx/E4+blBOMs91kRfqWqQPZFEJg/m7Q0SWHSdKYfmWOAqT
- fvx04n42/YwxIEOKY
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SN4PR0401MB3598.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 07422ee5-abc0-42de-3488-08d821772c2e
+X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Jul 2020 06:38:19.7278
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: x3zUDz2zoVlm1Cy8gKq/oZUXEufoUOFp1zygd2lmVAGLsx+QGu1Uh8Sf8NYBSymqxhluDjym7C6mNoq4CV6r4t1SzByCrpjDmGsnPm+OeDU=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR04MB5327
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---mlRMY68DA2QAMmYm2zqnAD6NEE3Vsmjkt
-Content-Type: multipart/mixed; boundary="PSLQ3v73p37nWbgPX258oxqYERoXR9xnL"
-
---PSLQ3v73p37nWbgPX258oxqYERoXR9xnL
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-
-
-
-On 2020/7/6 =E4=B8=8B=E5=8D=882:13, Robbie Ko wrote:
-> Does anyone have any suggestions?
-
-I believe David's suggestion on using regular readahead is already good
-enough for chunk tree.
-
-Especially since chunk tree is not really the main cause for slow mount.
-
-Thanks,
-Qu
-
->=20
-> robbieko =E6=96=BC 2020/7/1 =E4=B8=8B=E5=8D=885:29 =E5=AF=AB=E9=81=93:
->> From: Robbie Ko <robbieko@synology.com>
->>
->> When mounting, we always need to read the whole chunk tree,
->> when there are too many chunk items, most of the time is
->> spent on btrfs_read_chunk_tree, because we only read one
->> leaf at a time.
->>
->> We fix this by adding a new readahead mode READA_FORWARD_FORCE,
->> which reads all the leaves after the key in the node when
->> reading a level 1 node.
->>
->> Signed-off-by: Robbie Ko <robbieko@synology.com>
->> ---
->> =C2=A0 fs/btrfs/ctree.c=C2=A0=C2=A0 | 7 +++++--
->> =C2=A0 fs/btrfs/ctree.h=C2=A0=C2=A0 | 2 +-
->> =C2=A0 fs/btrfs/volumes.c | 1 +
->> =C2=A0 3 files changed, 7 insertions(+), 3 deletions(-)
->>
->> diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
->> index 3a7648bff42c..abb9108e2d7d 100644
->> --- a/fs/btrfs/ctree.c
->> +++ b/fs/btrfs/ctree.c
->> @@ -2194,7 +2194,7 @@ static void reada_for_search(struct
->> btrfs_fs_info *fs_info,
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 if (nr =3D=3D 0)
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 break;
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 nr--;
->> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 } else if (path->reada =3D=
-=3D READA_FORWARD) {
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 } else if (path->reada =3D=
-=3D READA_FORWARD || path->reada =3D=3D
->> READA_FORWARD_FORCE) {
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 nr++;
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 if (nr >=3D nritems)
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 break;
->> @@ -2205,12 +2205,15 @@ static void reada_for_search(struct
->> btrfs_fs_info *fs_info,
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 break;
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 search =3D btrf=
-s_node_blockptr(node, nr);
->> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if ((search <=3D target &&=
- target - search <=3D 65536) ||
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if ((path->reada =3D=3D RE=
-ADA_FORWARD_FORCE) ||
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 (s=
-earch <=3D target && target - search <=3D 65536) ||
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 (search > target && search - target <=3D 65536)) {
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 readahead_tree_block(fs_info, search);
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 nread +=3D blocksize;
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 nscan++;
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (path->reada =3D=3D REA=
-DA_FORWARD_FORCE)
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 co=
-ntinue;
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if ((nread > 65=
-536 || nscan > 32))
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 break;
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
->> diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
->> index d404cce8ae40..808bcbdc9530 100644
->> --- a/fs/btrfs/ctree.h
->> +++ b/fs/btrfs/ctree.h
->> @@ -353,7 +353,7 @@ struct btrfs_node {
->> =C2=A0=C2=A0 * The slots array records the index of the item or block =
-pointer
->> =C2=A0=C2=A0 * used while walking the tree.
->> =C2=A0=C2=A0 */
->> -enum { READA_NONE, READA_BACK, READA_FORWARD };
->> +enum { READA_NONE, READA_BACK, READA_FORWARD, READA_FORWARD_FORCE };
->> =C2=A0 struct btrfs_path {
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct extent_buffer *nodes[BTRFS_MAX_L=
-EVEL];
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int slots[BTRFS_MAX_LEVEL];
->> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
->> index 0d6e785bcb98..78fd65abff69 100644
->> --- a/fs/btrfs/volumes.c
->> +++ b/fs/btrfs/volumes.c
->> @@ -7043,6 +7043,7 @@ int btrfs_read_chunk_tree(struct btrfs_fs_info
->> *fs_info)
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 path =3D btrfs_alloc_path();
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (!path)
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return -ENOMEM;=
-
->> +=C2=A0=C2=A0=C2=A0 path->reada =3D READA_FORWARD_FORCE;
->> =C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /*
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * uuid_mutex is needed only if we=
- are mounting a sprout FS
-
-
---PSLQ3v73p37nWbgPX258oxqYERoXR9xnL--
-
---mlRMY68DA2QAMmYm2zqnAD6NEE3Vsmjkt
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl8CwdoACgkQwj2R86El
-/qiVngf/c+ZYEytOSN7vwsPOVpLlgnj3ETWDdCWM6L7FNYB4qVzwXEcrXCg31qr8
-xOkflYzIWNA+nB5uCBT+1bDdNmJfoHPORqO3VzN41NdMe/3nEZLdf7Akycnh0II1
-7ztHDtPDeAwa3UlbnqeJeo3/jv+c1nXcXS5Xtyp1huntmxrXRor25LgQULRqk4bx
-HH7SKbSntnf9e+8+9pIMIlVtrrR2QzVTmvbatj7cmdjWev7S36V5w+COdqUnA7G9
-gcb4V3xfj+/vMCitz7zSJWVjwW5Ihs1B3+jCJHcf09iP1qb73mto+UpK8vG8+ltf
-A2FrBAydokvNAkXZlowpJJQw/kFhpA==
-=hZsZ
------END PGP SIGNATURE-----
-
---mlRMY68DA2QAMmYm2zqnAD6NEE3Vsmjkt--
+On 03/07/2020 17:58, David Sterba wrote:=0A=
+> On Fri, Jul 03, 2020 at 11:31:02AM +0300, Nikolay Borisov wrote:=0A=
+>>=0A=
+>>=0A=
+>> On 2.07.20 =C7. 17:04 =DE., Johannes Thumshirn wrote:=0A=
+>>> On 02/07/2020 15:47, Nikolay Borisov wrote:=0A=
+>>> [...]=0A=
+>>>> -		bbio->raid_map =3D (u64 *)((void *)bbio->stripes +=0A=
+>>>> -				 sizeof(struct btrfs_bio_stripe) *=0A=
+>>>> -				 num_alloc_stripes +=0A=
+>>>> -				 sizeof(int) * tgtdev_indexes);=0A=
+>>>=0A=
+>>> That one took me a while to be convinced it is correct.=0A=
+>>=0A=
+>> There are 2 aspects to this:=0A=
+>>=0A=
+>> 1. I think the original code is harder to grasp ...=0A=
+> =0A=
+> Agreed, the rework is much better. Though understanding that's an=0A=
+> equivalent change is tough. I'll update the changelog with the=0A=
+> explanation.=0A=
+> =0A=
+=0A=
+This was my point, I'm sorry if this didn't come along correctly.=0A=
