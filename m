@@ -2,77 +2,114 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24C6921521A
-	for <lists+linux-btrfs@lfdr.de>; Mon,  6 Jul 2020 07:19:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6709721526E
+	for <lists+linux-btrfs@lfdr.de>; Mon,  6 Jul 2020 08:13:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728805AbgGFFSz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 6 Jul 2020 01:18:55 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:51482 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726020AbgGFFSz (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 6 Jul 2020 01:18:55 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0665GQtC164895;
-        Mon, 6 Jul 2020 05:18:40 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=Vk61Blm02PAbG153UQf9wFRX7MoR/pk6fDHyr9PRFeY=;
- b=pr39tpwuhQURlwKSvxIsSZq5MGgJMkjGRLT269vzh9k87hW8jCNlkvui9ByySY7XzZc8
- TPL4G+bS27TPmjWTCgT48dAILM6TOiVKNQ2iLMHALU8g7Tt26RXfzwY+/z0jiLVqS+f0
- oJWhDetN69oiVttxbeZr0eWzKJ+1PMK4nT4TtFlFYuq9QLducCXilFRUFpiKl6r7Qsao
- ZPZuvV09/njWE6+lCzdMQDKiDkDI3UaUkCJP+nwG2HRHuXEmadZWGXWer+phpk3pWkwe
- vpjweNyCpLXD8uGlITD5vfGTXVytMnZSbg1DOFODwmn6Gacys9hNu8DwMjXuD1u20hug zQ== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2120.oracle.com with ESMTP id 323sxxggnh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 06 Jul 2020 05:18:40 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0665D5fP043050;
-        Mon, 6 Jul 2020 05:18:39 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3030.oracle.com with ESMTP id 3233bkwk6f-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 06 Jul 2020 05:18:39 +0000
-Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0665IbQ0027193;
-        Mon, 6 Jul 2020 05:18:37 GMT
-Received: from [192.168.1.102] (/39.109.231.106)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Sun, 05 Jul 2020 22:18:37 -0700
-Subject: Re: [PATCH] btrfs: discard: reduce the block group ref when grabbing
- from unused block group list
-To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-Cc:     Marcos Paulo de Souza <marcos@mpdesouza.com>
-References: <20200703070550.39299-1-wqu@suse.com>
-From:   Anand Jain <anand.jain@oracle.com>
-Message-ID: <ad5fcc69-d771-dafd-7b62-6f413bc3574b@oracle.com>
-Date:   Mon, 6 Jul 2020 13:18:20 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1728858AbgGFGNs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 6 Jul 2020 02:13:48 -0400
+Received: from mail.synology.com ([211.23.38.101]:33326 "EHLO synology.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728828AbgGFGNs (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 6 Jul 2020 02:13:48 -0400
+Subject: Re: [PATCH] btrfs: speedup mount time with force readahead chunk tree
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synology.com; s=123;
+        t=1594016025; bh=C0NEDavYnBj6fMGimUMhF+UC0dZgU1GeX3vtuGYaQa0=;
+        h=Subject:To:References:From:Date:In-Reply-To;
+        b=HQ5Gjlj+CLQAVRVNYoZn3LJ8QzjHdocXyMvu48qbFS/bRpCS9XPQk3xeS4fQcNvMt
+         Cwg91/lsYqQf0AMmCrgpVy1gBcZzMp/QS7e4uVZRjsyF9VejduU+SHliuf6/SXDBZd
+         anNdjxxB5MZ2O9xFeqeUhz/Lc8PdZbZ4Bwx0VVk8=
+To:     linux-btrfs@vger.kernel.org
+References: <20200701092957.20870-1-robbieko@synology.com>
+From:   Robbie Ko <robbieko@synology.com>
+Message-ID: <aeb651c8-0739-100b-90ad-9f36ecdc26e6@synology.com>
+Date:   Mon, 6 Jul 2020 14:13:45 +0800
 MIME-Version: 1.0
-In-Reply-To: <20200703070550.39299-1-wqu@suse.com>
+In-Reply-To: <20200701092957.20870-1-robbieko@synology.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9673 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 mlxscore=0 adultscore=0
- malwarescore=0 spamscore=0 mlxlogscore=999 bulkscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2007060041
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9673 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 mlxlogscore=999
- bulkscore=0 impostorscore=0 adultscore=0 cotscore=-2147483648 phishscore=0
- priorityscore=1501 clxscore=1011 malwarescore=0 suspectscore=0 spamscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2004280000 definitions=main-2007060041
+X-Synology-MCP-Status: no
+X-Synology-Spam-Flag: no
+X-Synology-Spam-Status: score=0, required 6, WHITELIST_FROM_ADDRESS 0
+X-Synology-Virus-Status: no
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-  We should have a set of remount test cases.
+Does anyone have any suggestions?
 
-
-Looks good.
-Reviewed-by: Anand Jain <anand.jain@oracle.com>
+robbieko 於 2020/7/1 下午5:29 寫道:
+> From: Robbie Ko <robbieko@synology.com>
+>
+> When mounting, we always need to read the whole chunk tree,
+> when there are too many chunk items, most of the time is
+> spent on btrfs_read_chunk_tree, because we only read one
+> leaf at a time.
+>
+> We fix this by adding a new readahead mode READA_FORWARD_FORCE,
+> which reads all the leaves after the key in the node when
+> reading a level 1 node.
+>
+> Signed-off-by: Robbie Ko <robbieko@synology.com>
+> ---
+>   fs/btrfs/ctree.c   | 7 +++++--
+>   fs/btrfs/ctree.h   | 2 +-
+>   fs/btrfs/volumes.c | 1 +
+>   3 files changed, 7 insertions(+), 3 deletions(-)
+>
+> diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
+> index 3a7648bff42c..abb9108e2d7d 100644
+> --- a/fs/btrfs/ctree.c
+> +++ b/fs/btrfs/ctree.c
+> @@ -2194,7 +2194,7 @@ static void reada_for_search(struct btrfs_fs_info *fs_info,
+>   			if (nr == 0)
+>   				break;
+>   			nr--;
+> -		} else if (path->reada == READA_FORWARD) {
+> +		} else if (path->reada == READA_FORWARD || path->reada == READA_FORWARD_FORCE) {
+>   			nr++;
+>   			if (nr >= nritems)
+>   				break;
+> @@ -2205,12 +2205,15 @@ static void reada_for_search(struct btrfs_fs_info *fs_info,
+>   				break;
+>   		}
+>   		search = btrfs_node_blockptr(node, nr);
+> -		if ((search <= target && target - search <= 65536) ||
+> +		if ((path->reada == READA_FORWARD_FORCE) ||
+> +		    (search <= target && target - search <= 65536) ||
+>   		    (search > target && search - target <= 65536)) {
+>   			readahead_tree_block(fs_info, search);
+>   			nread += blocksize;
+>   		}
+>   		nscan++;
+> +		if (path->reada == READA_FORWARD_FORCE)
+> +			continue;
+>   		if ((nread > 65536 || nscan > 32))
+>   			break;
+>   	}
+> diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+> index d404cce8ae40..808bcbdc9530 100644
+> --- a/fs/btrfs/ctree.h
+> +++ b/fs/btrfs/ctree.h
+> @@ -353,7 +353,7 @@ struct btrfs_node {
+>    * The slots array records the index of the item or block pointer
+>    * used while walking the tree.
+>    */
+> -enum { READA_NONE, READA_BACK, READA_FORWARD };
+> +enum { READA_NONE, READA_BACK, READA_FORWARD, READA_FORWARD_FORCE };
+>   struct btrfs_path {
+>   	struct extent_buffer *nodes[BTRFS_MAX_LEVEL];
+>   	int slots[BTRFS_MAX_LEVEL];
+> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+> index 0d6e785bcb98..78fd65abff69 100644
+> --- a/fs/btrfs/volumes.c
+> +++ b/fs/btrfs/volumes.c
+> @@ -7043,6 +7043,7 @@ int btrfs_read_chunk_tree(struct btrfs_fs_info *fs_info)
+>   	path = btrfs_alloc_path();
+>   	if (!path)
+>   		return -ENOMEM;
+> +	path->reada = READA_FORWARD_FORCE;
+>   
+>   	/*
+>   	 * uuid_mutex is needed only if we are mounting a sprout FS
