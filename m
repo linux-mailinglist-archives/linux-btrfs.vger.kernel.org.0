@@ -2,188 +2,123 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F56A215A50
-	for <lists+linux-btrfs@lfdr.de>; Mon,  6 Jul 2020 17:09:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EDD3215CB5
+	for <lists+linux-btrfs@lfdr.de>; Mon,  6 Jul 2020 19:10:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729277AbgGFPJa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 6 Jul 2020 11:09:30 -0400
-Received: from esa6.hgst.iphmx.com ([216.71.154.45]:48384 "EHLO
-        esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729235AbgGFPJa (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 6 Jul 2020 11:09:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1594048170; x=1625584170;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=2pNpRzFkcVF1COKX8mt6dXf/Ifz9X8ic6aabtkv6JxI=;
-  b=JnFLUbg9yFXekeNF78saGw3Gh+6IHgaZhl5SYDy5eYDXu9bO+JbmVAvn
-   PsLmxqHqQpPO7wuTtBdhw75u073r5QTfEZd8A3EPrHD+rr03LAtBQZDg6
-   0xvUM2nIe58VetMifNzxEuv+IlorqoTBoEpdbNQyS5fWIO9J6tcHZeLQN
-   gWyGNS2fxzWcHxwD3yYzGAwG+801P3ENe3IL3I+mh4T8mfoh9cZiky/+1
-   zyZYC7ayZ10JfTbrzFhv+QQt+WvWs2c5ShnydVRmHO0jHjL28eelzYzU2
-   SrPJkuI+yTvbpeFOJuFOgXqladvlSsNb2z9DS31FDz20d/C8wjIJ7jmML
-   g==;
-IronPort-SDR: 7m82vEiGQtl/i99NGjikCSQeInhW7Yx9N3e6zxSdAC5Ny8FLrnzOt0DF+Z+HOJIWVFHQsRzj4E
- Gbe8NWq1x0bBew7eBkMVitZHJy8nlrRWO0k9oR4fWsayvctl9Xqt0sRzduwN81K4kG9BFSRqi8
- zi79aeJ6l61ooKylVx+KvNkPchE+10RSkOuP1DCp/reaqK4QyBFEelGpaVf5Nr+QIG0J3WPNUr
- vF5OU2gWMlE79UwtleSTD80uj8Ok0/HUeyFWf/HveQg2SY9Q3dWMzaOELRlwpCg0lHYohC/ioO
- raI=
-X-IronPort-AV: E=Sophos;i="5.75,320,1589212800"; 
-   d="scan'208";a="143073969"
-Received: from uls-op-cesaip01.wdc.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 06 Jul 2020 23:09:29 +0800
-IronPort-SDR: OBWpHrNoM9jxieK9xylTz7PXSVhI4MriSLKCdM8bacdqYA+Ysxsp60VsOjYoOkOkQoopMF4FVN
- nqrZm94oFzzOKf+eYbkDs6GOTJ10MoDcw=
-Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jul 2020 07:58:10 -0700
-IronPort-SDR: gn7E3jS01VcDrRfv8aZOrhn7DaLY8J4Q3UxBYyqPhYePp9lt/AjuZL2JBmTt8dhixNZ/btFa75
- LxKmPYxWp4xw==
-WDCIronportException: Internal
-Received: from unknown (HELO redsun60.ssa.fujisawa.hgst.com) ([10.149.66.36])
-  by uls-op-cesaip01.wdc.com with ESMTP; 06 Jul 2020 08:09:28 -0700
-From:   Johannes Thumshirn <johannes.thumshirn@wdc.com>
-To:     David Sterba <dsterba@suse.cz>
-Cc:     linux-btrfs@vger.kernel.org,
-        Hans van Kranenburg <hans@knorrie.org>,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        stable@vger.kernel.org
-Subject: [PATCH v5] btrfs: pass checksum type via BTRFS_IOC_FS_INFO ioctl
-Date:   Tue,  7 Jul 2020 00:09:24 +0900
-Message-Id: <20200706150924.40218-1-johannes.thumshirn@wdc.com>
-X-Mailer: git-send-email 2.26.2
+        id S1729550AbgGFRKa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 6 Jul 2020 13:10:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52712 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729386AbgGFRKa (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 6 Jul 2020 13:10:30 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6834CC061755
+        for <linux-btrfs@vger.kernel.org>; Mon,  6 Jul 2020 10:10:30 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id a14so12645170pfi.2
+        for <linux-btrfs@vger.kernel.org>; Mon, 06 Jul 2020 10:10:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=osandov-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=JrfaYyazSb7kWxVYSMV2VYHC+l6Y2+vcmWB3sVhZagA=;
+        b=Z6oIRUIzkjqQOsnw1gu5k+643AGkAtgaZBTk9VuFKBhhHCSLr2EkzXgNFnaAGmBQ0w
+         a/CUi270UPtNhV5a8/gO4NVHrT3E7MrqacUe+r6l2al7RDn4npSfsZHEfjREn6LAcVfk
+         Hfr/rkw++fMYvkW8nnL/JD5/fKopsIp4pbrYgZ69ouvtqM7pZ4b31xmySVKkTbTKOjnq
+         AWbDsBBV1SS5bfKyVPVSM6qfOKzdG7i2ro1zpNZV7gG36F4UXAoYwOSIouZ+iRWH4MnI
+         lRv94Th4NTDzDi1DVqGGGtNyOUUM6wSsvOGt+zG6TvcqjO7NoP80Iq89Fo+/Qrqwuwlt
+         4wGA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=JrfaYyazSb7kWxVYSMV2VYHC+l6Y2+vcmWB3sVhZagA=;
+        b=aUDnp0ZSzxKo0zeRAUh3FyVOjA0Sj7bxUi3XKZzsA7bya02pNjZZ0+mqg7XuchOywl
+         rW4K1YuU8REa5K8nOtxjMwVVU9a85O4Dyjg/IF4WKvdyNooHOqMNMbW+m0KmWMhAFAKa
+         bV1cEUT+gAjvkBlHlmnZi1JCB5lim6FUXeUACQ5KgWSiT4nnIuykXTOihLwJW3GHj48V
+         DlCFDnrtBE5y0S04ZzJttsSQwUeSkBMveARS+tc+2OSX6mGX1AB3DGYco8UhNUvYq7j5
+         CB+aZlvIRG2xhMsdoqeuGbvBTu8jwhbbkvJXrxkWq4zwl1nC7ncuAyjRcLw6iLyx2ApY
+         Lajw==
+X-Gm-Message-State: AOAM531Ix+GH7a7AFVl3qr0E8sQyFNxkvvVgp9hW9R0ZQnwERa2npU+Z
+        Jv6QhLj25ADUqk3QtE8H9sFz+FZkBNI=
+X-Google-Smtp-Source: ABdhPJxJB002gzSoVMwUCFF3YgsDphKSu7WbZWcRKHgbOk3FLFybvgwRKZouRRyS3LYEwH9jaSF7gA==
+X-Received: by 2002:a63:c60f:: with SMTP id w15mr22121255pgg.113.1594055429835;
+        Mon, 06 Jul 2020 10:10:29 -0700 (PDT)
+Received: from vader ([2601:602:8b80:8e0::6fa7])
+        by smtp.gmail.com with ESMTPSA id 198sm20871797pfb.27.2020.07.06.10.10.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 06 Jul 2020 10:10:28 -0700 (PDT)
+Date:   Mon, 6 Jul 2020 10:10:28 -0700
+From:   Omar Sandoval <osandov@osandov.com>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     "Rebraca Dejan (BSOT/PJ-ES1-Bg)" <Dejan.Rebraca@rs.bosch.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Re: FIEMAP ioctl gets "wrong" address for the extent
+Message-ID: <20200706171028.GA16070@vader>
+References: <cfd1d2842b4840b99539f00c34dc5701@rs.bosch.com>
+ <1d41a247-a4f7-124a-4842-f7d886e9aa70@gmx.com>
+ <c3b2c46ca5314285a79536cb3c233e1b@rs.bosch.com>
+ <a18bcf27-4c65-6033-0ea7-45da2b521864@gmx.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <a18bcf27-4c65-6033-0ea7-45da2b521864@gmx.com>
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-With the recent addition of filesystem checksum types other than CRC32c,
-it is not anymore hard-coded which checksum type a btrfs filesystem uses.
+On Thu, Jul 02, 2020 at 07:21:42PM +0800, Qu Wenruo wrote:
+> 
+> 
+> On 2020/7/2 下午7:08, Rebraca Dejan (BSOT/PJ-ES1-Bg) wrote:
+> > Hi Qu,
+> > 
+> > I'm using this structure to get the address of file extent:
+> > 
+> > struct fiemap_extent {
+> > 	__u64	fe_logical;  /* logical offset in bytes for the start of
+> > 			      * the extent */
+> > 	__u64	fe_physical; /* physical offset in bytes for the start
+> > 			      * of the extent */
+> 
+> fe_physical in btrfs is btrfs logical address.
+> 
+> > 	__u64	fe_length;   /* length in bytes for the extent */
+> > 	__u64	fe_reserved64[2];
+> > 	__u32	fe_flags;    /* FIEMAP_EXTENT_* flags for this extent */
+> > 	__u32	fe_reserved[3];
+> > };
+> > 
+> > And using fe_physical field I verified that it really reflects the offset in filesystem image - I can see that file content begins at this offset.
+> > The problem is that I run into some specific case where file content doesn't begin at fe_physical, I rather have something else at this offset.
+> 
+> As said, there is no guarantee that btrfs logical address is mapped 1:1
+> on disk.
+> It's possible, but never guaranteed.
+> 
+> You need to pass that fe_physical number to btrfs-map-logical to find
+> the real on-disk offset.
+> 
+> Thanks,
+> Qu
 
-Up to now there is no good way to read the filesystem checksum, apart from
-reading the filesystem UUID and then query sysfs for the checksum type.
+FYI, I have a utility that does this mapping for all extents in a file:
+https://github.com/osandov/osandov-linux/blob/master/scripts/btrfs_map_physical.c
 
-Add a new csum_type and csum_size fields to the BTRFS_IOC_FS_INFO ioctl
-command which usually is used to query filesystem features. Also add a
-flags member indicating that the kernel responded with a set csum_type and
-csum_size field.
-
-For compatibility reasons, only return the csum_type and csum_size if the
-BTRFS_FS_INFO_FLAG_CSUM_TYPE_SIZE flag was passed to the kernel. Also
-clear any unknown flags so we don't pass false positives to user-space
-newer than the kernel.
-
-To simplify further additions to the ioctl, also switch the padding to a
-u8 array. Pahole was used to verify the result of this switch:
-
-pahole -C btrfs_ioctl_fs_info_args fs/btrfs/btrfs.ko
-struct btrfs_ioctl_fs_info_args {
-        __u64                      max_id;               /*     0     8 */
-        __u64                      num_devices;          /*     8     8 */
-        __u8                       fsid[16];             /*    16    16 */
-        __u32                      nodesize;             /*    32     4 */
-        __u32                      sectorsize;           /*    36     4 */
-        __u32                      clone_alignment;      /*    40     4 */
-        __u32                      flags;                /*    44     4 */
-        __u16                      csum_type;            /*    48     2 */
-        __u16                      csum_size;            /*    50     2 */
-        __u8                       reserved[972];        /*    52   972 */
-
-        /* size: 1024, cachelines: 16, members: 10 */
-};
-
-Fixes: 3951e7f050ac ("btrfs: add xxhash64 to checksumming algorithms")
-Fixes: 3831bf0094ab ("btrfs: add sha256 to checksumming algorithm")
-CC: stable@vger.kernel.org # 5.5+
-Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
----
-Changes to v4:
-* zero all data passed in from user-space
-  (I've chosen this variant as I think it is the most complete)
-
-Changes to v3:
-* make flags in/out (David)
-* make csum return opt-in (Hans)
-
-Changes to v2:
-* add additional csum_size (David)
-* rename flag value to BTRFS_FS_INFO_FLAG_CSUM_TYPE_SIZE to reflect
-  additional size
-
-Changes to v1:
-* add 'out' comment to be consistent (Hans)
-* remove le16_to_cpu() (kbuild robot)
-* switch padding to be all u8 (David)
----
- fs/btrfs/ioctl.c           | 16 +++++++++++++---
- include/uapi/linux/btrfs.h | 14 ++++++++++++--
- 2 files changed, 25 insertions(+), 5 deletions(-)
-
-diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-index ab34179d7cbc..df8a6ba91055 100644
---- a/fs/btrfs/ioctl.c
-+++ b/fs/btrfs/ioctl.c
-@@ -3217,11 +3217,15 @@ static long btrfs_ioctl_fs_info(struct btrfs_fs_info *fs_info,
- 	struct btrfs_ioctl_fs_info_args *fi_args;
- 	struct btrfs_device *device;
- 	struct btrfs_fs_devices *fs_devices = fs_info->fs_devices;
-+	u32 inflags;
- 	int ret = 0;
- 
--	fi_args = kzalloc(sizeof(*fi_args), GFP_KERNEL);
--	if (!fi_args)
--		return -ENOMEM;
-+	fi_args = memdup_user(arg, sizeof(*fi_args));
-+	if (IS_ERR(fi_args))
-+		return PTR_ERR(fi_args);
-+
-+	inflags = fi_args->flags;
-+	memset(fi_args, 0, sizeof(*fi_args));
- 
- 	rcu_read_lock();
- 	fi_args->num_devices = fs_devices->num_devices;
-@@ -3237,6 +3241,12 @@ static long btrfs_ioctl_fs_info(struct btrfs_fs_info *fs_info,
- 	fi_args->sectorsize = fs_info->sectorsize;
- 	fi_args->clone_alignment = fs_info->sectorsize;
- 
-+	if (inflags & BTRFS_FS_INFO_FLAG_CSUM_TYPE_SIZE) {
-+		fi_args->csum_type = btrfs_super_csum_type(fs_info->super_copy);
-+		fi_args->csum_size = btrfs_super_csum_size(fs_info->super_copy);
-+		fi_args->flags |= BTRFS_FS_INFO_FLAG_CSUM_TYPE_SIZE;
-+	}
-+
- 	if (copy_to_user(arg, fi_args, sizeof(*fi_args)))
- 		ret = -EFAULT;
- 
-diff --git a/include/uapi/linux/btrfs.h b/include/uapi/linux/btrfs.h
-index e6b6cb0f8bc6..c130eaea416e 100644
---- a/include/uapi/linux/btrfs.h
-+++ b/include/uapi/linux/btrfs.h
-@@ -250,10 +250,20 @@ struct btrfs_ioctl_fs_info_args {
- 	__u32 nodesize;				/* out */
- 	__u32 sectorsize;			/* out */
- 	__u32 clone_alignment;			/* out */
--	__u32 reserved32;
--	__u64 reserved[122];			/* pad to 1k */
-+	__u32 flags;				/* in/out */
-+	__u16 csum_type;			/* out */
-+	__u16 csum_size;			/* out */
-+	__u8 reserved[972];			/* pad to 1k */
- };
- 
-+/*
-+ * fs_info ioctl flags
-+ *
-+ * Used by:
-+ * struct btrfs_ioctl_fs_info_args
-+ */
-+#define BTRFS_FS_INFO_FLAG_CSUM_TYPE_SIZE		(1 << 0)
-+
- /*
-  * feature flags
-  *
--- 
-2.26.2
-
+$ sudo ./btrfs_map_physical archlinux-2020.07.01-x86_64.iso | column -ts $'\t'        
+FILE OFFSET  FILE SIZE  EXTENT OFFSET  EXTENT TYPE  LOGICAL SIZE  LOGICAL OFFSET  PHYSICAL SIZE  DEVID  PHYSICAL OFFSET
+0            6811648    0              regular      6815744       304680529920    6815744        1      89898610688
+6811648      4096       0              regular      4096          304594616320    4096           1      89812697088
+6815744      70250496   0              regular      70254592      419517255680    70254592       1      168228114432
+77066240     4096       0              regular      4096          419587510272    4096           1      168298369024
+77070336     127647744  0              regular      127647744     443648155648    127647744      1      209538883584
+204718080    552960     0              regular      557056        304605401088    557056         1      89823481856
+205271040    134217728  0              regular      134217728     491017764864    134217728      1      238654881792
+339488768    43814912   0              regular      43814912      419587514368    43814912       1      168298373120
+383303680    241664     0              regular      245760        304605958144    245760         1      89824038912
+383545344    4096       0              regular      4096          304594620416    4096           1      89812701184
+383549440    134217728  0              regular      134217728     517290700800    134217728      1      255264141312
+517767168    78376960   0              regular      78381056      451287601152    78381056       1      213957103616
+596144128    82284544   0              regular      82284544      517424918528    82284544       1      255398359040
