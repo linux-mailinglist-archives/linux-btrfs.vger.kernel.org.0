@@ -2,32 +2,35 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C33912161A7
-	for <lists+linux-btrfs@lfdr.de>; Tue,  7 Jul 2020 00:44:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E9512161AC
+	for <lists+linux-btrfs@lfdr.de>; Tue,  7 Jul 2020 00:44:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726817AbgGFWoE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 6 Jul 2020 18:44:04 -0400
-Received: from mout.gmx.net ([212.227.15.18]:51159 "EHLO mout.gmx.net"
+        id S1726918AbgGFWom (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 6 Jul 2020 18:44:42 -0400
+Received: from mout.gmx.net ([212.227.17.22]:41255 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726280AbgGFWoE (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 6 Jul 2020 18:44:04 -0400
+        id S1726708AbgGFWol (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 6 Jul 2020 18:44:41 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1594075439;
-        bh=F65myfiiDDGa/s8dr5k+uOiYR4FX3WfX7VoPv3CSCxw=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=M0K3tZ6UIZwxrm+3REJXU3VT6w7ONBysUvaFHweOwzp6ZVjsmgnr8oa72l/OWuNGa
-         47maHfXVOYgODKW2JZ7cMxbEvrtRotwASSJpR/M1Dqn6zefZMkAtfwD02nlYQoTIVR
-         iYYSKKmbFtAg8A8A/VZPtWqWHkfxA+gt1F5GnihE=
+        s=badeba3b8450; t=1594075479;
+        bh=wzjBB7ntdg0+mIiMUcaNgDLhsjxCcKtGjLPUL5xkvwA=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=hSrXC2BU6Fk2CSAzj725SKizad9Y0ALmhTKL+Z5l9owVKXduCCkJpMBPZmd8PpqDu
+         pCSEpMw42VnJTC4EDF3VNz8NE5eaH+d+wiQGqWQL5Uk/OWiFLYrQQ14skLJ6mkOEQ9
+         rY2UmGCoscymQYldBIECfLA9AI5D/Jod7bBP98Qg=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MmUHj-1ka7v52mnJ-00iTwV; Tue, 07
- Jul 2020 00:43:59 +0200
-Subject: Re: [PATCH RFC 1/2] btrfs: relocation: Allow signal to cancel balance
-To:     Hans van Kranenburg <hans@knorrie.org>, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20200706074435.52356-1-wqu@suse.com>
- <20200706074435.52356-2-wqu@suse.com>
- <14c1e755-fd6e-be72-3c2d-247ae7f57d9d@knorrie.org>
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1N4Qwg-1kscvw15OA-011Tbv; Tue, 07
+ Jul 2020 00:44:38 +0200
+Subject: Re: Growing number of "invalid tree nritems" errors
+To:     Thilo-Alexander Ginkel <thilo@ginkel.com>
+Cc:     linux-btrfs@vger.kernel.org
+References: <CANvSZQ_5p4JD4v79gFkSRBBvehCDh_Q5bBKeyNi912tr0biNLg@mail.gmail.com>
+ <90c7edc7-9b1d-294f-5996-9353698cedbe@gmx.com>
+ <CANvSZQ_HDZ=54MW+dSAP1A_zUiaGR_PLkV7anQj5K+qNds0QsQ@mail.gmail.com>
+ <2483ed80-90ae-765d-e3d3-15042503841c@gmx.com>
+ <CANvSZQ_NCb_RZyd0Z5v1W8ggrDuBRs4Gw1Q_wT62DC1e+8fjTA@mail.gmail.com>
+ <CANvSZQ8WFEQbkhuXZ7E+EYOZn-dZA=q1qoy74vMMFiUYpRX5+w@mail.gmail.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -53,164 +56,101 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
  ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
  oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <ee7d390c-f676-8aab-f3f7-9b64f018ac39@gmx.com>
-Date:   Tue, 7 Jul 2020 06:43:55 +0800
+Message-ID: <9ac1b6d7-cd89-b8da-43e5-eed37c5d0a88@gmx.com>
+Date:   Tue, 7 Jul 2020 06:44:35 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.9.0
 MIME-Version: 1.0
-In-Reply-To: <14c1e755-fd6e-be72-3c2d-247ae7f57d9d@knorrie.org>
+In-Reply-To: <CANvSZQ8WFEQbkhuXZ7E+EYOZn-dZA=q1qoy74vMMFiUYpRX5+w@mail.gmail.com>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="EDfCbe03uCyF9gQ1NiVX168Q8Iupp0fKe"
-X-Provags-ID: V03:K1:mCPUC9cNWcXPRrrZPaPWDar3BEBfVwCe5ZMtsk9ghI//tGeF/dD
- 2wJbfta7xKo1P5sB8wsHhJOxXkKpBD72434ipVG342ymLp3DrmYP3wPeOUOAZprUM6UQKgp
- oN50yPVu1w0wr/pbkMIik1/5x3lkwObY6wkwVyscg0rP5LWfHs4ALzaIFd5/3gth9uOigf6
- I5UAszr+yLvFvYn00I2bA==
+ boundary="45OEedSfUOAFYOHYfmeiDTd8CMRsvnJU9"
+X-Provags-ID: V03:K1:oajyVzqkNym0M5B3DElziau+ySlx/OZ1EDUlCE2OXpCSdAgjwmD
+ tUKM7+XlofPZdJTd5gPY4Ls/F+3ozzFppewSg/hLpqLeMOTXudCbX5qFjs+seMuK/k0MnBw
+ WViM6f2XLc7p0T3mpEAXkHZkPpt9ltoR38usYQr0Uez3GrmQi45zNMbG65Em2JKIIKq3dm9
+ tJ4UUpPpniv/pZ7GP6gJA==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:EJ2NQKnzres=:TqvnrMvQWW9/hE8ji+w/TA
- cSR/kx1RGuuIicc3rQ7jPv6ERwT7DfJ+2GrZnO0kuWNJL5JKyd3LOQbzg3kbQ+O4DXnytRMPA
- iij7xpFhoDodAKhJiYTKxBvPwnrQFbM+Z9GpBxxJeZ5+1NvORM/4LUdxH+LoOX6fKeHC2/EJ8
- WWW712mpQcaBJVBjxKPqdpbdHlV/DlwKCnDIPIwJGfd0bvGE9kNUrpk43p/cskxOrUuZtb6px
- e4n4CCLd2E6vzdKF55RcHTwyjvdojauNw75u4gTBmbKCCC5ocKZFmnlgug45lJbiyxB1MvYos
- DKmNYQTZxd/dYQBPaipAr9CVFHWEXzMsjT8Rgamnwx+l+yMEJqOXc85Wn3aKEvBjDFH0WjbOh
- X7R/zpEJYLsLfTO9LWQloesTWMYNV6SU7I6bDuot6KrZea+WkWtIyD5VIotCsyap0bEg+rHC8
- oBc5rzrBXCUuedeEgbrpLx4vTY0Tuzn4cgMYhYyTyAA7iMKSX5+R9sjtfym5wnTUfHVSDW2a0
- 7ok19tmLpB0gYeb7scPHcWzb8vZq4GIWeI0tLrDCDsxh3trwDu+ir5/blXJBmgWUaGafaDBGQ
- 2OI+4oUzViCYa5A/s6Wd3bLDNKn90AXA3etOdLQaKqGFHSdTVzZ6d8oQl6NJtIAq0QDvvHK8V
- MZZys5PpDQobk4imCBM0pqHnwXB+olOxF1pJUvMEgPgvya73Hbj1Kpx8vvjmUkIc2NNIRmZXU
- iG+ddCmg8IVC8toYUFHd6RPGPXP/urE5J2KTya+fHxgga6z9S2qtqJ4qykoP8JNOicz4dW/5q
- LuLxcwxCVbHv3iyhR0qN2SSmVjHcH9vJlJvfwA3yYVBc+sxylaXCoUt0rUTqLU/GbRpfex6mq
- RShQb1TRZlVi2ISD14pbtmieH6CPjSpBR3VnP3pPUBn1kuGf1a7C9zbMkVAI8X0ChxQPZXWjW
- 6sE8ZAA+ibP6ZuMQn+gMzBcPjMQ4CkNY1wWfxr/UlxhCCd6BZAAQxIv1RfX4NQEIib/VkvkNi
- jPXhGDfO2IpaeLn9W0XSrdBWEGacW4RowpKwKj1spyNG3wWRnlrJoTp1A7rVx9KiTuVXvU16c
- hrr7gsxKG0DCqwtbE705p8kXI6oVU/DQ5oGgEI8nFlNNjbCRkYklNbgO8xreaPOU7BDI6H443
- SL37+f9Pu6R2EBVnmae2+SHIInaXDsO3khCZpWbmxaXeUULd2c7zgBE4Wsye90c1wIpRjgG0Z
- 3La9JwiSXulXzDq6K2wlV757lEAdWOUiSL6LRDA==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:a3tfFQrk5u0=:vzOtXPfWqAsx6TXq2XTshk
+ vcLmKZ9ERn7VKovtoNwIIYhVdo+pEbbbDp+K+4sZHdSnwySyIe/C0asIeiu0WywmTsNJ7gEK6
+ LdFoXWyinFT1zujrs1CZN3DjL5k6k8bVyox1D3Dbg6S98uiK/YQoiJqQBgWFBqc25D3bGu5Lt
+ wgWgV0H3vVKK7CsP6cgVEk177trFTsmWinBlu+Q5P8ALzrRhL82JbCdaKJW9xhTTTExVqvcfL
+ 4+465UdLNMCGVmq0eHOh4fKeEYYsIcZTXaApDfzapTyCTBivAP71lIVO484UFc3W7UpF07Bka
+ jr11iISuIXp504DW5QGcv6tjPvfj6DvgXUam1yghvdq7okfsr9P9b6WiecuoKieD2dMdv5DqZ
+ llT4EH/x07VJALqLm4QkNmjHS+Asn5fMq3iZKJ3Sh8vqKeC+ayEXweKFCpd6ky8XfErMOFn4O
+ OSeiPGVZ168wtenVgjm2qrlIXVled+FtFcbK6IObQ7iyAKKMqgYmafUgRMt8KcU5l3YyZbH7S
+ sZGh8DswnWN2av6o2v55kstfqOxi1FpyJ8PdF/VYu/MHkdMlNaRVy4L+ZThixzX7WEI/ErYtM
+ YKd8e7XkXsy40GVtDNhVLW1X+SmhDs5qzMKSm+Er4IgmSoUGt6N9hpSrVD3F+r9VFgwcBgTnz
+ ZCq7OO0oWP2YuhvGYxUlY14tinxh9OaVCvhqaQg/+0erWQCwwp4Lc9YkP81JZeOtMvUPLc9TO
+ ODik2NxHqQUPCs/U1wSN+5RKmm2bsT5ZY+cSQygBRtew3QA2K/Uc14EmXAFEK8/Yr9+gCvYdS
+ OqiWtgi5Qw6sslm7GhgpsRvfcwKsQYtUfvzwDCxl/o7Wi0LitQ9Kgsq0SIR9YUtAOrW9NGso9
+ cIZPrJ0NRGA/iZfAYgm/bXhKTLTbFfsi8yyNtUU3BcI+QAjXFusu+87SKIgO+XMMPCz9B+uEW
+ wqRLEcxRwaBbJNFBz+kUhzxs52UeNT/u5GNO3OaBjpKTQQ/XZo4TLVtFW74X0Kg8PM0ll3dW0
+ IqHaGdOsTFQ27iVeLvTZdzFnGyOoOdmWBH4VJcwoR22QX5RgZHVxO/ojCO4iid6upinGnRcQc
+ qUq4w/3Ign7UTO1OrLBVXbt48kHBgrahayz6IZo+spF2XEgq6aw3TMXpv6wvykOrbesdwHCQU
+ hgbEiUbFLn87AGrIjLgfLVSAfzz7AYGhx0ghMF7NUcnu9eE49Z4XHhr+AZaps4oMx4ixzuKKl
+ 7/1uN9NtD6TzXJxzqLNGlHoDHM4g3weJm01C1lw==
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---EDfCbe03uCyF9gQ1NiVX168Q8Iupp0fKe
-Content-Type: multipart/mixed; boundary="qxoMlL6OcPuTRENeb78SflDQ78fEak0Dl"
+--45OEedSfUOAFYOHYfmeiDTd8CMRsvnJU9
+Content-Type: multipart/mixed; boundary="ZwkBawfOAS8Y1MArn94d1TT73zjn5hIOH"
 
---qxoMlL6OcPuTRENeb78SflDQ78fEak0Dl
+--ZwkBawfOAS8Y1MArn94d1TT73zjn5hIOH
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
 
 
 
-On 2020/7/7 =E4=B8=8A=E5=8D=882:19, Hans van Kranenburg wrote:
-> Hi,
+On 2020/7/7 =E4=B8=8A=E5=8D=884:19, Thilo-Alexander Ginkel wrote:
+> On Sun, Jul 5, 2020 at 3:24 PM Thilo-Alexander Ginkel <thilo@ginkel.com=
+> wrote:
+>> On Sun, Jul 5, 2020 at 2:10 PM Qu Wenruo <quwenruo.btrfs@gmx.com> wrot=
+e:
+>>> So if it's possible, try upstream kernel can also be an alternative t=
+o
+>>> test if it's really something wrong.
+>>
+>> I took Patrik Lundquist's advice and upgraded to the latest HWE
+>> kernel, which is based on 5.3.0. I'll follow your suggestions if the
+>> problem manifests again.
 >=20
-> On 7/6/20 9:44 AM, Qu Wenruo wrote:
->> Although btrfs balance can be canceled with "btrfs balance cancel"
->> command, it's still almost muscle memory to press Ctrl-C to cancel a
->> long running btrfs balance.
->=20
-> Thanks for investigating all of this.
->=20
-> Has it actually been unsafe (read: undefined behaviour) forever, or onl=
-y
-> since some recent change?
+> Good news, the problem is gone after upgrading to 5.3.0 (the most
+> recent Ubuntu 18.04 HWE kernel).
 
-Forever.
-
-That -EINTR from metadata reservation path is there for a long long time.=
-
-
->=20
-> Or did it just by accident not cause real damage earlier on in the past=
-?
->=20
-> [ 1041.810963] BTRFS info (device xvdb): relocating block group
-> 91423244288 flags metadata
->=20
-> <- ^C made it stop here
->=20
-> [ 1076.189766] BTRFS info (device xvdb): relocating block group
-> 91423244288 flags metadata
-> [ 1081.300131] BTRFS info (device xvdb): found 6689 extents
-> [ 1081.311138] BTRFS info (device xvdb): relocating block group
-> 90349502464 flags data
-> [ 1089.776066] BTRFS info (device xvdb): found 215 extents
->=20
-> The above is with 4.19.118. Now I'm trying this again and looking just =
-a
-> little better at the logging, I see that what I thought (it always
-> stopped after doing 1 block group) is not true. With ^C I can make it
-> stop halfway and then next time it again starts at 91423244288.
->=20
-> Related question: should, additionally, the btrfs balance in progs also=
-
-> be changed to catch the SIGINT while it's doing the balance ioctl, to
-> prevent the signal from leaking to the kernel space? I mean, kernels
-> with the bug are already 'out there' now...
-
-It has no way to catch signal while trapped into kernel space.
-
-My previous assumption of the whole ioctl thing is still right, when
-we're in kernel space, we can't catch any signal.
-
-It's just the metadata reservation code manually checking the pending
-signal and return -EINTR.
-
-So even if we make btrfs-progs to catch that signal, it won't work.
-And even if it seems to work, it's because in btrfs module we're
-checking signal explicitly.
+Then it will be a good idea to report this incident to Ubuntu team, to
+let them know the backport problems.
 
 Thanks,
 Qu
-
 >=20
-> Thanks
+> Thanks for your support!
 >=20
->> So allow btrfs balance to check signal to determine if it should exit.=
-
->>
->> Signed-off-by: Qu Wenruo <wqu@suse.com>
->> ---
->>  fs/btrfs/relocation.c | 3 ++-
->>  1 file changed, 2 insertions(+), 1 deletion(-)
->>
->> diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
->> index 523d2e5fab8f..2b869fb2e62c 100644
->> --- a/fs/btrfs/relocation.c
->> +++ b/fs/btrfs/relocation.c
->> @@ -2656,7 +2656,8 @@ int setup_extent_mapping(struct inode *inode, u6=
-4 start, u64 end,
->>   */
->>  int btrfs_should_cancel_balance(struct btrfs_fs_info *fs_info)
->>  {
->> -	return atomic_read(&fs_info->balance_cancel_req);
->> +	return atomic_read(&fs_info->balance_cancel_req) ||
->> +		fatal_signal_pending(current);
->>  }
->>  ALLOW_ERROR_INJECTION(btrfs_should_cancel_balance, TRUE);
->> =20
->>
+> Regards,
+> Thilo
 >=20
 
 
---qxoMlL6OcPuTRENeb78SflDQ78fEak0Dl--
+--ZwkBawfOAS8Y1MArn94d1TT73zjn5hIOH--
 
---EDfCbe03uCyF9gQ1NiVX168Q8Iupp0fKe
+--45OEedSfUOAFYOHYfmeiDTd8CMRsvnJU9
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl8DqSsACgkQwj2R86El
-/qiAHwf/fxAv2frhYe1x1KxLbOnReFksD5ocGQtbVM0dHmRNO1H+Ex4CHcq6tjcv
-khEQ/ZuYGsRKhWP91YA03LLhw2xa42k41fMV89MIiEdoZFEb26ZnsFzsYXFGvj7u
-cA0k0wd1fBSF06YqudoY/AJDCubweJkVi871VP4hLYbs7ZlrIRcYw55jjTbmJmLm
-Nqw1kz1zo/TEW+iTgOFnftl/sACLw3HsyctQBZUlsu0Q4Xkv+wqcdXWMjJG5YcdY
-ofiIPd+/1kcluHwkZgNMHqlyRW6+A9vMz4iekUnehbiw4lRO89Re4jX8BCsT2Rns
-lZQGDjeGtV90Zkwy+VVYLmx1VwcO9Q==
-=K5zH
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl8DqVMACgkQwj2R86El
+/qgRtwf8Dk8rsPQOacf3L2/Ay0w42I7UHsbhrQfOpxhMC3ub4mRifme62StiF6uy
+P4BloQj18deef/C7tSkF2+vocsoEXKBrQ22E5Ggnh0J+0Jz9jOK5Ya4iwcDsMmPq
+f9UKB5cIS5yEKVHzQq72Dlu1hY5goabKQRp6Yh2sOLiZlK5fiFjd3G5/CfJi4y1/
+Qe8iBvae3xmNeCdkPdWgvPYmh6n14RvH6AeZvJxfgxTU76VIUFu4pQFJeo7OjkEL
+sDXLDJhF7GCz5p4laTbGSMluUTm7UFI95arQ9fl2pDuZcQ2EWB0MgaLgfKLgggRO
+fb7bIYpgIpyWis82dZsneVpUPf02Mw==
+=2MGg
 -----END PGP SIGNATURE-----
 
---EDfCbe03uCyF9gQ1NiVX168Q8Iupp0fKe--
+--45OEedSfUOAFYOHYfmeiDTd8CMRsvnJU9--
