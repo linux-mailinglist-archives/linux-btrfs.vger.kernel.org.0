@@ -2,123 +2,172 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EDD3215CB5
-	for <lists+linux-btrfs@lfdr.de>; Mon,  6 Jul 2020 19:10:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A17D1215E23
+	for <lists+linux-btrfs@lfdr.de>; Mon,  6 Jul 2020 20:19:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729550AbgGFRKa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 6 Jul 2020 13:10:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52712 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729386AbgGFRKa (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 6 Jul 2020 13:10:30 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6834CC061755
-        for <linux-btrfs@vger.kernel.org>; Mon,  6 Jul 2020 10:10:30 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id a14so12645170pfi.2
-        for <linux-btrfs@vger.kernel.org>; Mon, 06 Jul 2020 10:10:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=osandov-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=JrfaYyazSb7kWxVYSMV2VYHC+l6Y2+vcmWB3sVhZagA=;
-        b=Z6oIRUIzkjqQOsnw1gu5k+643AGkAtgaZBTk9VuFKBhhHCSLr2EkzXgNFnaAGmBQ0w
-         a/CUi270UPtNhV5a8/gO4NVHrT3E7MrqacUe+r6l2al7RDn4npSfsZHEfjREn6LAcVfk
-         Hfr/rkw++fMYvkW8nnL/JD5/fKopsIp4pbrYgZ69ouvtqM7pZ4b31xmySVKkTbTKOjnq
-         AWbDsBBV1SS5bfKyVPVSM6qfOKzdG7i2ro1zpNZV7gG36F4UXAoYwOSIouZ+iRWH4MnI
-         lRv94Th4NTDzDi1DVqGGGtNyOUUM6wSsvOGt+zG6TvcqjO7NoP80Iq89Fo+/Qrqwuwlt
-         4wGA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=JrfaYyazSb7kWxVYSMV2VYHC+l6Y2+vcmWB3sVhZagA=;
-        b=aUDnp0ZSzxKo0zeRAUh3FyVOjA0Sj7bxUi3XKZzsA7bya02pNjZZ0+mqg7XuchOywl
-         rW4K1YuU8REa5K8nOtxjMwVVU9a85O4Dyjg/IF4WKvdyNooHOqMNMbW+m0KmWMhAFAKa
-         bV1cEUT+gAjvkBlHlmnZi1JCB5lim6FUXeUACQ5KgWSiT4nnIuykXTOihLwJW3GHj48V
-         DlCFDnrtBE5y0S04ZzJttsSQwUeSkBMveARS+tc+2OSX6mGX1AB3DGYco8UhNUvYq7j5
-         CB+aZlvIRG2xhMsdoqeuGbvBTu8jwhbbkvJXrxkWq4zwl1nC7ncuAyjRcLw6iLyx2ApY
-         Lajw==
-X-Gm-Message-State: AOAM531Ix+GH7a7AFVl3qr0E8sQyFNxkvvVgp9hW9R0ZQnwERa2npU+Z
-        Jv6QhLj25ADUqk3QtE8H9sFz+FZkBNI=
-X-Google-Smtp-Source: ABdhPJxJB002gzSoVMwUCFF3YgsDphKSu7WbZWcRKHgbOk3FLFybvgwRKZouRRyS3LYEwH9jaSF7gA==
-X-Received: by 2002:a63:c60f:: with SMTP id w15mr22121255pgg.113.1594055429835;
-        Mon, 06 Jul 2020 10:10:29 -0700 (PDT)
-Received: from vader ([2601:602:8b80:8e0::6fa7])
-        by smtp.gmail.com with ESMTPSA id 198sm20871797pfb.27.2020.07.06.10.10.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Jul 2020 10:10:28 -0700 (PDT)
-Date:   Mon, 6 Jul 2020 10:10:28 -0700
-From:   Omar Sandoval <osandov@osandov.com>
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     "Rebraca Dejan (BSOT/PJ-ES1-Bg)" <Dejan.Rebraca@rs.bosch.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: Re: FIEMAP ioctl gets "wrong" address for the extent
-Message-ID: <20200706171028.GA16070@vader>
-References: <cfd1d2842b4840b99539f00c34dc5701@rs.bosch.com>
- <1d41a247-a4f7-124a-4842-f7d886e9aa70@gmx.com>
- <c3b2c46ca5314285a79536cb3c233e1b@rs.bosch.com>
- <a18bcf27-4c65-6033-0ea7-45da2b521864@gmx.com>
+        id S1729711AbgGFSTS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 6 Jul 2020 14:19:18 -0400
+Received: from syrinx.knorrie.org ([82.94.188.77]:52164 "EHLO
+        syrinx.knorrie.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729550AbgGFSTS (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 6 Jul 2020 14:19:18 -0400
+Received: from [IPv6:2a02:a213:2b80:f000::12] (unknown [IPv6:2a02:a213:2b80:f000::12])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by syrinx.knorrie.org (Postfix) with ESMTPSA id F18DC6098826C;
+        Mon,  6 Jul 2020 20:19:15 +0200 (CEST)
+Subject: Re: [PATCH RFC 1/2] btrfs: relocation: Allow signal to cancel balance
+To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+References: <20200706074435.52356-1-wqu@suse.com>
+ <20200706074435.52356-2-wqu@suse.com>
+From:   Hans van Kranenburg <hans@knorrie.org>
+Autocrypt: addr=hans@knorrie.org; keydata=
+ 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
+Message-ID: <14c1e755-fd6e-be72-3c2d-247ae7f57d9d@knorrie.org>
+Date:   Mon, 6 Jul 2020 20:19:15 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
+In-Reply-To: <20200706074435.52356-2-wqu@suse.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <a18bcf27-4c65-6033-0ea7-45da2b521864@gmx.com>
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Jul 02, 2020 at 07:21:42PM +0800, Qu Wenruo wrote:
-> 
-> 
-> On 2020/7/2 下午7:08, Rebraca Dejan (BSOT/PJ-ES1-Bg) wrote:
-> > Hi Qu,
-> > 
-> > I'm using this structure to get the address of file extent:
-> > 
-> > struct fiemap_extent {
-> > 	__u64	fe_logical;  /* logical offset in bytes for the start of
-> > 			      * the extent */
-> > 	__u64	fe_physical; /* physical offset in bytes for the start
-> > 			      * of the extent */
-> 
-> fe_physical in btrfs is btrfs logical address.
-> 
-> > 	__u64	fe_length;   /* length in bytes for the extent */
-> > 	__u64	fe_reserved64[2];
-> > 	__u32	fe_flags;    /* FIEMAP_EXTENT_* flags for this extent */
-> > 	__u32	fe_reserved[3];
-> > };
-> > 
-> > And using fe_physical field I verified that it really reflects the offset in filesystem image - I can see that file content begins at this offset.
-> > The problem is that I run into some specific case where file content doesn't begin at fe_physical, I rather have something else at this offset.
-> 
-> As said, there is no guarantee that btrfs logical address is mapped 1:1
-> on disk.
-> It's possible, but never guaranteed.
-> 
-> You need to pass that fe_physical number to btrfs-map-logical to find
-> the real on-disk offset.
-> 
-> Thanks,
-> Qu
+Hi,
 
-FYI, I have a utility that does this mapping for all extents in a file:
-https://github.com/osandov/osandov-linux/blob/master/scripts/btrfs_map_physical.c
+On 7/6/20 9:44 AM, Qu Wenruo wrote:
+> Although btrfs balance can be canceled with "btrfs balance cancel"
+> command, it's still almost muscle memory to press Ctrl-C to cancel a
+> long running btrfs balance.
 
-$ sudo ./btrfs_map_physical archlinux-2020.07.01-x86_64.iso | column -ts $'\t'        
-FILE OFFSET  FILE SIZE  EXTENT OFFSET  EXTENT TYPE  LOGICAL SIZE  LOGICAL OFFSET  PHYSICAL SIZE  DEVID  PHYSICAL OFFSET
-0            6811648    0              regular      6815744       304680529920    6815744        1      89898610688
-6811648      4096       0              regular      4096          304594616320    4096           1      89812697088
-6815744      70250496   0              regular      70254592      419517255680    70254592       1      168228114432
-77066240     4096       0              regular      4096          419587510272    4096           1      168298369024
-77070336     127647744  0              regular      127647744     443648155648    127647744      1      209538883584
-204718080    552960     0              regular      557056        304605401088    557056         1      89823481856
-205271040    134217728  0              regular      134217728     491017764864    134217728      1      238654881792
-339488768    43814912   0              regular      43814912      419587514368    43814912       1      168298373120
-383303680    241664     0              regular      245760        304605958144    245760         1      89824038912
-383545344    4096       0              regular      4096          304594620416    4096           1      89812701184
-383549440    134217728  0              regular      134217728     517290700800    134217728      1      255264141312
-517767168    78376960   0              regular      78381056      451287601152    78381056       1      213957103616
-596144128    82284544   0              regular      82284544      517424918528    82284544       1      255398359040
+Thanks for investigating all of this.
+
+Has it actually been unsafe (read: undefined behaviour) forever, or only
+since some recent change?
+
+Or did it just by accident not cause real damage earlier on in the past?
+
+[ 1041.810963] BTRFS info (device xvdb): relocating block group
+91423244288 flags metadata
+
+<- ^C made it stop here
+
+[ 1076.189766] BTRFS info (device xvdb): relocating block group
+91423244288 flags metadata
+[ 1081.300131] BTRFS info (device xvdb): found 6689 extents
+[ 1081.311138] BTRFS info (device xvdb): relocating block group
+90349502464 flags data
+[ 1089.776066] BTRFS info (device xvdb): found 215 extents
+
+The above is with 4.19.118. Now I'm trying this again and looking just a
+little better at the logging, I see that what I thought (it always
+stopped after doing 1 block group) is not true. With ^C I can make it
+stop halfway and then next time it again starts at 91423244288.
+
+Related question: should, additionally, the btrfs balance in progs also
+be changed to catch the SIGINT while it's doing the balance ioctl, to
+prevent the signal from leaking to the kernel space? I mean, kernels
+with the bug are already 'out there' now...
+
+Thanks
+
+> So allow btrfs balance to check signal to determine if it should exit.
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+>  fs/btrfs/relocation.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
+> index 523d2e5fab8f..2b869fb2e62c 100644
+> --- a/fs/btrfs/relocation.c
+> +++ b/fs/btrfs/relocation.c
+> @@ -2656,7 +2656,8 @@ int setup_extent_mapping(struct inode *inode, u64 start, u64 end,
+>   */
+>  int btrfs_should_cancel_balance(struct btrfs_fs_info *fs_info)
+>  {
+> -	return atomic_read(&fs_info->balance_cancel_req);
+> +	return atomic_read(&fs_info->balance_cancel_req) ||
+> +		fatal_signal_pending(current);
+>  }
+>  ALLOW_ERROR_INJECTION(btrfs_should_cancel_balance, TRUE);
+>  
+> 
+
