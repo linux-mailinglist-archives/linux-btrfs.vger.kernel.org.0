@@ -2,75 +2,72 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 917EA216BC6
-	for <lists+linux-btrfs@lfdr.de>; Tue,  7 Jul 2020 13:39:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C0AC216D0A
+	for <lists+linux-btrfs@lfdr.de>; Tue,  7 Jul 2020 14:43:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727090AbgGGLjM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 7 Jul 2020 07:39:12 -0400
-Received: from mx2.suse.de ([195.135.220.15]:44048 "EHLO mx2.suse.de"
+        id S1727097AbgGGMnu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 7 Jul 2020 08:43:50 -0400
+Received: from mx2.suse.de ([195.135.220.15]:55188 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726900AbgGGLjM (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 7 Jul 2020 07:39:12 -0400
+        id S1726757AbgGGMnu (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 7 Jul 2020 08:43:50 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 489C8AE28;
-        Tue,  7 Jul 2020 11:39:11 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 2EFE3DA818; Tue,  7 Jul 2020 13:38:52 +0200 (CEST)
-Date:   Tue, 7 Jul 2020 13:38:52 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Anand Jain <anand.jain@oracle.com>
-Cc:     dsterba@suse.cz,
-        "Rebraca Dejan (BSOT/PJ-ES1-Bg)" <Dejan.Rebraca@rs.bosch.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: Re: FIEMAP ioctl gets "wrong" address for the extent
-Message-ID: <20200707113851.GH27795@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Anand Jain <anand.jain@oracle.com>,
-        "Rebraca Dejan (BSOT/PJ-ES1-Bg)" <Dejan.Rebraca@rs.bosch.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-References: <cfd1d2842b4840b99539f00c34dc5701@rs.bosch.com>
- <20200702114348.GJ27795@twin.jikos.cz>
- <486ad3ac-a6f4-ef94-7dfc-1a58b6a7b747@oracle.com>
+        by mx2.suse.de (Postfix) with ESMTP id 85558AAC5;
+        Tue,  7 Jul 2020 12:43:49 +0000 (UTC)
+Date:   Tue, 7 Jul 2020 07:43:46 -0500
+From:   Goldwyn Rodrigues <rgoldwyn@suse.de>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        fdmanana@gmail.com, dsterba@suse.cz, david@fromorbit.com,
+        darrick.wong@oracle.com, cluster-devel@redhat.com,
+        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org
+Subject: Re: always fall back to buffered I/O after invalidation failures,
+ was: Re: [PATCH 2/6] iomap: IOMAP_DIO_RWF_NO_STALE_PAGECACHE return if page
+ invalidation fails
+Message-ID: <20200707124346.xnr5gtcysuzehejq@fiona>
+References: <20200629192353.20841-1-rgoldwyn@suse.de>
+ <20200629192353.20841-3-rgoldwyn@suse.de>
+ <20200701075310.GB29884@lst.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <486ad3ac-a6f4-ef94-7dfc-1a58b6a7b747@oracle.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <20200701075310.GB29884@lst.de>
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Jul 07, 2020 at 05:43:09PM +0800, Anand Jain wrote:
-> On 2/7/20 7:43 pm, David Sterba wrote:
-> > On Thu, Jul 02, 2020 at 09:11:20AM +0000, Rebraca Dejan (BSOT/PJ-ES1-Bg) wrote:
-> >> Hi all,
-> >>
-> >> I'm collecting file extents for our application from BtrFs filesystem image.
-> >> I've noticed that for some files a get the "wrong" physical offset for
-> >> start of the extent. I verified it using hexdump of the filesystem
-> >> image: when dump the content starting from the address returned from
-> >> FIEMAP ioctl, I see that the content is absolutely different from the
-> >> content of the file itself. Also, the FIEMAP ioctl reports regular
-> >> extent, it is not inline.
+On  9:53 01/07, Christoph Hellwig wrote:
+> On Mon, Jun 29, 2020 at 02:23:49PM -0500, Goldwyn Rodrigues wrote:
+> > From: Goldwyn Rodrigues <rgoldwyn@suse.com>
 > > 
-> > There are 3 address spaces:
+> > For direct I/O, add the flag IOMAP_DIO_RWF_NO_STALE_PAGECACHE to indicate
+> > that if the page invalidation fails, return back control to the
+> > filesystem so it may fallback to buffered mode.
 > > 
-> > - device physical offsets
-> > - filesystem physical offsets
-> > - filesystem logical offsets
-> > 
-> > What you seem to expect is that device physical and filesystem physical
-> > and the same. This is not true in general in btrfs and fiemap will
-> > return only the filesystem offsets. To get to the device offsets you'd
-> > need to do the reverse mapping.
+> > Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
+> > Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
 > 
-> Do you think is it a good idea to rather update vfs? A quick check 
-> indicates struct fiemap_extent has reserved space to hold the devid, and 
-> should handle the backward compatibility issues.
+> I'd like to start a discussion of this shouldn't really be the
+> default behavior.  If we have page cache that can't be invalidated it
+> actually makes a whole lot of sense to not do direct I/O, avoid the
+> warnings, etc.
+> 
+> Adding all the relevant lists.
 
-This was proposed a few years back on LSF/MM, whether to extend fiemap
-with the device related information or to add a completely new ioctl
-that would not have to extend the existing interface in a way that could
-become unwieldy.
+Since no one responded so far, let me see if I can stir the cauldron :)
+
+What error should be returned in case of such an error? I think the
+userspace process must be immediately informed if it in unable to
+invalidate the page cache and complete the direct I/O. Currently, the
+iomap code treats this as a writeback error and continues with the
+direct I/O and the userspace process comes to know only during file
+closure.
+
+If such a change is incorporated, are the current userspace applications
+prepared for it?
+
+
+-- 
+Goldwyn
