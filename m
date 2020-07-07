@@ -2,25 +2,24 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75C8F216EF9
-	for <lists+linux-btrfs@lfdr.de>; Tue,  7 Jul 2020 16:40:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4616216F2E
+	for <lists+linux-btrfs@lfdr.de>; Tue,  7 Jul 2020 16:47:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728275AbgGGOjR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 7 Jul 2020 10:39:17 -0400
-Received: from mx2.suse.de ([195.135.220.15]:35260 "EHLO mx2.suse.de"
+        id S1728137AbgGGOq6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 7 Jul 2020 10:46:58 -0400
+Received: from mx2.suse.de ([195.135.220.15]:39720 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728100AbgGGOjP (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 7 Jul 2020 10:39:15 -0400
+        id S1726805AbgGGOq6 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 7 Jul 2020 10:46:58 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 217E9ACA7;
-        Tue,  7 Jul 2020 14:39:14 +0000 (UTC)
-Subject: Re: [PATCH 13/23] btrfs: add the data transaction commit logic into
- may_commit_transaction
+        by mx2.suse.de (Postfix) with ESMTP id 1C723AD4A;
+        Tue,  7 Jul 2020 14:46:56 +0000 (UTC)
+Subject: Re: [PATCH 15/23] btrfs: use ticketing for data space reservations
 To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
         kernel-team@fb.com
 References: <20200630135921.745612-1-josef@toxicpanda.com>
- <20200630135921.745612-14-josef@toxicpanda.com>
+ <20200630135921.745612-16-josef@toxicpanda.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  xsFNBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -64,12 +63,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  KIuxEcV8wcVjr+Wr9zRl06waOCkgrQbTPp631hToxo+4rA1jiQF2M80HAet65ytBVR2pFGZF
  zGYYLqiG+mpUZ+FPjxk9kpkRYz61mTLSY7tuFljExfJWMGfgSg1OxfLV631jV1TcdUnx+h3l
  Sqs2vMhAVt14zT8mpIuu2VNxcontxgVr1kzYA/tQg32fVRbGr449j1gw57BV9i0vww==
-Message-ID: <216b0050-3684-9c74-16e6-8a776a23f41e@suse.com>
-Date:   Tue, 7 Jul 2020 17:39:12 +0300
+Message-ID: <63ed5861-0728-662a-20c1-03e60a59ee25@suse.com>
+Date:   Tue, 7 Jul 2020 17:46:54 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.8.0
 MIME-Version: 1.0
-In-Reply-To: <20200630135921.745612-14-josef@toxicpanda.com>
+In-Reply-To: <20200630135921.745612-16-josef@toxicpanda.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -81,109 +80,145 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 30.06.20 г. 16:59 ч., Josef Bacik wrote:
-> Data space flushing currently unconditionally commits the transaction
-> twice in a row, and the last time it checks if there's enough pinned
-> extents to satisfy it's reservation before deciding to commit the
-> transaction for the 3rd and final time.
-> 
-> Encode this logic into may_commit_transaction().  In the next patch we
-> will pass in U64_MAX for bytes_needed the first two times, and the final
-> time we will pass in the actual bytes we need so the normal logic will
-> apply.
-> 
-> This patch exists soley to make the logical changes I will make to the
-> flushing state machine separate to make it easier to bisect any
-> performance related regressions.
+> Now that we have all the infrastructure in place, use the ticketing
+> infrastructure to make data allocations.  This still maintains the exact
+> same flushing behavior, but now we're using tickets to get our
+> reservations satisfied.
 > 
 > Reviewed-by: Nikolay Borisov <nborisov@suse.com>
 > Tested-by: Nikolay Borisov <nborisov@suse.com>
 > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-
-On a second pass through I'm now somewhat reluctant to merge this code.
-may_commit_transaction has grown more logic which pertain solely to
-metadata. As such I think we should separate that logic (i.e current
-may_commit_transaction) and any further adjustments we might want to
-make for data space info. For example all the delayed refs/trans
-reservation checks etc. make absolutely no sense for data space info.
-
 > ---
->  fs/btrfs/space-info.c | 24 +++++++++++++++++++-----
->  1 file changed, 19 insertions(+), 5 deletions(-)
+>  fs/btrfs/space-info.c | 125 ++++++++++++++++++++++--------------------
+>  1 file changed, 67 insertions(+), 58 deletions(-)
 > 
 > diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
-> index e041b1d58e28..fb63ddc31540 100644
+> index 799ee6090693..ee4747917b81 100644
 > --- a/fs/btrfs/space-info.c
 > +++ b/fs/btrfs/space-info.c
-> @@ -579,21 +579,33 @@ static void shrink_delalloc(struct btrfs_fs_info *fs_info,
->   * will return -ENOSPC.
->   */
->  static int may_commit_transaction(struct btrfs_fs_info *fs_info,
-> -				  struct btrfs_space_info *space_info)
-> +				  struct btrfs_space_info *space_info,
-> +				  u64 bytes_needed)
->  {
->  	struct reserve_ticket *ticket = NULL;
->  	struct btrfs_block_rsv *delayed_rsv = &fs_info->delayed_block_rsv;
->  	struct btrfs_block_rsv *delayed_refs_rsv = &fs_info->delayed_refs_rsv;
->  	struct btrfs_block_rsv *trans_rsv = &fs_info->trans_block_rsv;
->  	struct btrfs_trans_handle *trans;
-> -	u64 bytes_needed;
->  	u64 reclaim_bytes = 0;
->  	u64 cur_free_bytes = 0;
-> +	bool do_commit = false;
+> @@ -1068,6 +1068,54 @@ static void priority_reclaim_metadata_space(struct btrfs_fs_info *fs_info,
+>  	} while (flush_state < states_nr);
+>  }
 >  
->  	trans = (struct btrfs_trans_handle *)current->journal_info;
->  	if (trans)
->  		return -EAGAIN;
->  
-> +	/*
-> +	 * If we are data and have passed in U64_MAX we just want to
-> +	 * unconditionally commit the transaction to match the previous data
-> +	 * flushing behavior.
-> +	 */
-> +	if ((space_info->flags & BTRFS_BLOCK_GROUP_DATA) &&
-> +	   bytes_needed == U64_MAX) {
-> +		do_commit = true;
-> +		goto check_pinned;
-> +	}
+> +static void priority_reclaim_data_space(struct btrfs_fs_info *fs_info,
+> +					struct btrfs_space_info *space_info,
+> +					struct reserve_ticket *ticket,
+> +					const enum btrfs_flush_state *states,
+> +					int states_nr)
+> +{
+> +	int flush_state = 0;
+> +	int commit_cycles = 2;
 > +
->  	spin_lock(&space_info->lock);
->  	cur_free_bytes = btrfs_space_info_used(space_info, true);
->  	if (cur_free_bytes < space_info->total_bytes)
-> @@ -607,7 +619,7 @@ static int may_commit_transaction(struct btrfs_fs_info *fs_info,
->  	else if (!list_empty(&space_info->tickets))
->  		ticket = list_first_entry(&space_info->tickets,
->  					  struct reserve_ticket, list);
-> -	bytes_needed = (ticket) ? ticket->bytes : 0;
-> +	bytes_needed = (ticket) ? ticket->bytes : bytes_needed;
->  
->  	if (bytes_needed > cur_free_bytes)
->  		bytes_needed -= cur_free_bytes;
-> @@ -618,6 +630,7 @@ static int may_commit_transaction(struct btrfs_fs_info *fs_info,
->  	if (!bytes_needed)
->  		return 0;
->  
-> +check_pinned:
->  	trans = btrfs_join_transaction(fs_info->extent_root);
->  	if (IS_ERR(trans))
->  		return PTR_ERR(trans);
-> @@ -627,7 +640,8 @@ static int may_commit_transaction(struct btrfs_fs_info *fs_info,
->  	 * we have block groups that are going to be freed, allowing us to
->  	 * possibly do a chunk allocation the next loop through.
->  	 */
-> -	if (test_bit(BTRFS_TRANS_HAVE_FREE_BGS, &trans->transaction->flags) ||
-> +	if (do_commit ||
-> +	    test_bit(BTRFS_TRANS_HAVE_FREE_BGS, &trans->transaction->flags) ||
->  	    __percpu_counter_compare(&space_info->total_bytes_pinned,
->  				     bytes_needed,
->  				     BTRFS_TOTAL_BYTES_PINNED_BATCH) >= 0)
-> @@ -743,7 +757,7 @@ static void flush_space(struct btrfs_fs_info *fs_info,
->  		btrfs_wait_on_delayed_iputs(fs_info);
+> +	while (!space_info->full) {
+> +		flush_space(fs_info, space_info, U64_MAX, ALLOC_CHUNK_FORCE);
+> +		spin_lock(&space_info->lock);
+> +		if (ticket->bytes == 0) {
+> +			spin_unlock(&space_info->lock);
+> +			return;
+> +		}
+> +		spin_unlock(&space_info->lock);
+> +	}
+> +again:
+> +	while (flush_state < states_nr) {
+> +		u64 flush_bytes = U64_MAX;
+> +
+> +		if (!commit_cycles) {
+> +			if (states[flush_state] == FLUSH_DELALLOC_WAIT) {
+> +				flush_state++;
+> +				continue;
+> +			}
+> +			if (states[flush_state] == COMMIT_TRANS)
+> +				flush_bytes = ticket->bytes;
+> +		}
+> +
+> +		flush_space(fs_info, space_info, flush_bytes,
+> +			    states[flush_state]);
+> +		spin_lock(&space_info->lock);
+> +		if (ticket->bytes == 0) {
+> +			spin_unlock(&space_info->lock);
+> +			return;
+> +		}
+> +		spin_unlock(&space_info->lock);
+> +		flush_state++;
+> +	}
+> +	if (commit_cycles) {
+> +		commit_cycles--;
+> +		flush_state = 0;
+> +		goto again;
+> +	}
+> +}
+> +
+>  static void wait_reserve_ticket(struct btrfs_fs_info *fs_info,
+>  				struct btrfs_space_info *space_info,
+>  				struct reserve_ticket *ticket)
+> @@ -1134,6 +1182,15 @@ static int handle_reserve_ticket(struct btrfs_fs_info *fs_info,
+>  						evict_flush_states,
+>  						ARRAY_SIZE(evict_flush_states));
 >  		break;
->  	case COMMIT_TRANS:
-> -		ret = may_commit_transaction(fs_info, space_info);
-> +		ret = may_commit_transaction(fs_info, space_info, num_bytes);
->  		break;
+> +	case BTRFS_RESERVE_FLUSH_DATA:
+> +		priority_reclaim_data_space(fs_info, space_info, ticket,
+> +					data_flush_states,
+> +					ARRAY_SIZE(data_flush_states));
+> +		break;
+> +	case BTRFS_RESERVE_FLUSH_FREE_SPACE_INODE:
+> +		priority_reclaim_data_space(fs_info, space_info, ticket,
+> +					    NULL, 0);
+> +		break;
 >  	default:
->  		ret = -ENOSPC;
-> 
+>  		ASSERT(0);
+>  		break;
+> @@ -1341,78 +1398,30 @@ int btrfs_reserve_data_bytes(struct btrfs_fs_info *fs_info, u64 bytes,
+>  			     enum btrfs_reserve_flush_enum flush)
+>  {
+>  	struct btrfs_space_info *data_sinfo = fs_info->data_sinfo;
+> -	const enum btrfs_flush_state *states = NULL;
+>  	u64 used;
+> -	int states_nr = 0;
+> -	int commit_cycles = 2;
+>  	int ret = -ENOSPC;
+>  
+>  	ASSERT(!current->journal_info || flush != BTRFS_RESERVE_FLUSH_DATA);
+>  
+> -	if (flush == BTRFS_RESERVE_FLUSH_DATA) {
+> -		states = data_flush_states;
+> -		states_nr = ARRAY_SIZE(data_flush_states);
+> -	}
+> -
+>  	spin_lock(&data_sinfo->lock);
+> -again:
+>  	used = btrfs_space_info_used(data_sinfo, true);
+>  
+>  	if (used + bytes > data_sinfo->total_bytes) {
+> -		u64 prev_total_bytes = data_sinfo->total_bytes;
+> -		int flush_state = 0;
+> +		struct reserve_ticket ticket;
+>  
+> +		init_waitqueue_head(&ticket.wait);
+> +		ticket.bytes = bytes;
+> +		ticket.error = 0;
+> +		list_add_tail(&ticket.list, &data_sinfo->priority_tickets);
+
+nit: Shouldn't adding the ticket also be recorded in
+spac_info->reclaim_size?
+I see later that you are removing this code and relying on the existing
+logic in __reserve_metadata_bytes( renamed to reserve_bytes) which
+correctly modifies reclaim_size, but this just means this particular
+patch is slightly broken.
+
+>  		spin_unlock(&data_sinfo->lock);
+>  
+> -		/*
+> -		 * Everybody can force chunk allocation, so try this first to
+> -		 * see if we can just bail here and make our reservation.
+> -		 */
+> -		flush_space(fs_info, data_sinfo, bytes, ALLOC_CHUNK_FORCE);
+> -		spin_lock(&data_sinfo->lock);
+> -		if (prev_total_bytes < data_sinfo->total_bytes)
+> -			goto again;
+> +		ret = handle_reserve_ticket(fs_info, data_sinfo, &ticket,
+> +					    flush);
+> +	} else {
+> +		btrfs_space_info_update_bytes_may_use(fs_info, data_sinfo, bytes);
+> +		ret = 0;
+
+<snip>
