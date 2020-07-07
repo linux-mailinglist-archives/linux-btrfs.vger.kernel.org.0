@@ -2,81 +2,105 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0758C216DB0
-	for <lists+linux-btrfs@lfdr.de>; Tue,  7 Jul 2020 15:27:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A634216DB5
+	for <lists+linux-btrfs@lfdr.de>; Tue,  7 Jul 2020 15:29:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728145AbgGGN1d (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 7 Jul 2020 09:27:33 -0400
-Received: from mx2.suse.de ([195.135.220.15]:53444 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725944AbgGGN1d (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 7 Jul 2020 09:27:33 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 39F9EAC23;
-        Tue,  7 Jul 2020 13:27:32 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 3A118DA818; Tue,  7 Jul 2020 15:27:13 +0200 (CEST)
-From:   David Sterba <dsterba@suse.com>
-To:     torvalds@linux-foundation.org
-Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Btrfs fixes for 5.8-rc5
-Date:   Tue,  7 Jul 2020 15:27:12 +0200
-Message-Id: <cover.1594127892.git.dsterba@suse.com>
-X-Mailer: git-send-email 2.25.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1728073AbgGGN3T (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 7 Jul 2020 09:29:19 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:44380 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727044AbgGGN3T (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 7 Jul 2020 09:29:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1594128557;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=bpqV8ZGEfDigVwyXYOylVCt2pIZCMYHJKK1J8Iop6Ek=;
+        b=PArKUsbfZMM77nVGGT0Q2e7Nq4lZ1SqUM1uTREjxuysCOvA52V1aOIGmcEecaJAMMX+59F
+        k6cd6ZVFhclL4e3LQ4dWVP2xJiUCbj767XS/S/1pQQd3JMnsNAD4C1zZDJKlV8yyHo3LO6
+        fc91SvatzHfMECTaMYpmfp+nvR0esmI=
+Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
+ [209.85.222.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-500-OJvRzRAoO1qNyfo3gvlp4A-1; Tue, 07 Jul 2020 09:29:16 -0400
+X-MC-Unique: OJvRzRAoO1qNyfo3gvlp4A-1
+Received: by mail-qk1-f198.google.com with SMTP id a205so28497247qkc.16
+        for <linux-btrfs@vger.kernel.org>; Tue, 07 Jul 2020 06:29:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=bpqV8ZGEfDigVwyXYOylVCt2pIZCMYHJKK1J8Iop6Ek=;
+        b=PqyeEqLPEDDe1V5ARAbCdC4XWsHD5L3U+ZxEvNs9YDmpA92q1QQZiehYkKOrVQt4V7
+         WGinyp036d6ikYvqaqKLRjvEDNe/6Hu/OAdbZW0M39P/UsN6/3+6+yjKQlA8b2pQ3vlr
+         MeaqW9/suMbUUVJ1Wi1zoIgzrqwEFOMZxWp1beJn7i5eosEXZK5j8bGpcsw8gvpcQF8Y
+         rkrJlPWQeaG2mfQKTSY22hnnNesESvdBfXEhFHp3LxQFB+v12Hrg6Vs7wiWYeWRe8Z9P
+         jTqAKlIUQrtaoXfQSXo4Xvxf+12ieeE3elguOAkO+seVFL7x4E4d3QudZTGcoA0RFBOD
+         7EiA==
+X-Gm-Message-State: AOAM530PzhvSU7DCWj6+okho4EFXFckReBXCxNOTX533rY6XZoXVba10
+        nZu3ZFpqnV6/lETCZjRz2pZkCklLSPpEjM4LRXxMNWiBH8wYdukDRYuKEaDFjkmrj8p7fDD/Jub
+        c8qsT9k9m2ncc5q9uwDJdk/g=
+X-Received: by 2002:ac8:6d24:: with SMTP id r4mr30664725qtu.43.1594128555741;
+        Tue, 07 Jul 2020 06:29:15 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy2O03gNYLOwDLCkyXntBfC1UDiAP5Lv/FxSrI+aXh9M2U49IWAz9aERDIYqKOl2j/VlTt3pg==
+X-Received: by 2002:ac8:6d24:: with SMTP id r4mr30664700qtu.43.1594128555462;
+        Tue, 07 Jul 2020 06:29:15 -0700 (PDT)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id g41sm28492912qtb.37.2020.07.07.06.29.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Jul 2020 06:29:14 -0700 (PDT)
+From:   trix@redhat.com
+To:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com
+Cc:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Tom Rix <trix@redhat.com>
+Subject: [PATCH] btrfs : fix memory leak in add_block_entry
+Date:   Tue,  7 Jul 2020 06:29:08 -0700
+Message-Id: <20200707132908.10987-1-trix@redhat.com>
+X-Mailer: git-send-email 2.18.1
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi,
+From: Tom Rix <trix@redhat.com>
 
-please pull the following fixes, thanks.
+clang static analysis flags this error
 
-- regression fix of a leak in global block reserve accounting
+fs/btrfs/ref-verify.c:290:3: warning: Potential leak of memory pointed to by 're' [unix.Malloc]
+                kfree(be);
+                ^~~~~
+The problem is in this block of code
 
-- fix a (hard to hit) race of readahead vs releasepage that could lead
-  to crash
+		if (root_objectid) {
+			struct root_entry *exist_re;
 
-- convert all remaining uses of comment fall through annotations to the
-  pseudo keyword
+			exist_re = insert_root_entry(&exist->roots, re);
+			if (exist_re)
+				kfree(re);
+		}
 
-- fix crash when mounting a fuzzed image with -o recovery
+There is no 'else' block freeing when root_objectid == 0
 
-----------------------------------------------------------------
-The following changes since commit b091f7fede97cc64f7aaad3eeb37965aebee3082:
+So add an 'else'
 
-  btrfs: use kfree() in btrfs_ioctl_get_subvol_info() (2020-06-16 19:24:03 +0200)
+Fixes: fd708b81d972 ("Btrfs: add a extent ref verify tool")
 
-are available in the Git repository at:
+Signed-off-by: Tom Rix <trix@redhat.com>
+---
+ fs/btrfs/ref-verify.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.8-rc4-tag
+diff --git a/fs/btrfs/ref-verify.c b/fs/btrfs/ref-verify.c
+index af92525dbb16..7f03dbe5b609 100644
+--- a/fs/btrfs/ref-verify.c
++++ b/fs/btrfs/ref-verify.c
+@@ -286,6 +286,8 @@ static struct block_entry *add_block_entry(struct btrfs_fs_info *fs_info,
+ 			exist_re = insert_root_entry(&exist->roots, re);
+ 			if (exist_re)
+ 				kfree(re);
++		} else {
++			kfree(re);
+ 		}
+ 		kfree(be);
+ 		return exist;
+-- 
+2.18.1
 
-for you to fetch changes up to 0465337c5599bbe360cdcff452992a1a6b7ed2d4:
-
-  btrfs: reset tree root pointer after error in init_tree_roots (2020-07-02 10:27:12 +0200)
-
-----------------------------------------------------------------
-Boris Burkov (1):
-      btrfs: fix fatal extent_buffer readahead vs releasepage race
-
-Filipe Manana (1):
-      btrfs: fix reclaim_size counter leak after stealing from global reserve
-
-Josef Bacik (1):
-      btrfs: reset tree root pointer after error in init_tree_roots
-
-Marcos Paulo de Souza (1):
-      btrfs: convert comments to fallthrough annotations
-
- fs/btrfs/ctree.c      |  2 +-
- fs/btrfs/disk-io.c    |  6 ++++--
- fs/btrfs/extent_io.c  | 40 ++++++++++++++++++++++++----------------
- fs/btrfs/ref-verify.c |  2 +-
- fs/btrfs/space-info.c |  2 +-
- fs/btrfs/super.c      |  6 +++---
- fs/btrfs/volumes.h    |  2 +-
- 7 files changed, 35 insertions(+), 25 deletions(-)
