@@ -2,85 +2,85 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 036162172EF
-	for <lists+linux-btrfs@lfdr.de>; Tue,  7 Jul 2020 17:56:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8731E217386
+	for <lists+linux-btrfs@lfdr.de>; Tue,  7 Jul 2020 18:17:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728651AbgGGPsQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 7 Jul 2020 11:48:16 -0400
-Received: from mx2.suse.de ([195.135.220.15]:52846 "EHLO mx2.suse.de"
+        id S1728100AbgGGQRO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 7 Jul 2020 12:17:14 -0400
+Received: from mx2.suse.de ([195.135.220.15]:37794 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728133AbgGGPsQ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 7 Jul 2020 11:48:16 -0400
+        id S1727079AbgGGQRO (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 7 Jul 2020 12:17:14 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 13823AD19;
-        Tue,  7 Jul 2020 15:48:15 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 89101AF73;
+        Tue,  7 Jul 2020 16:17:13 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 10452DA818; Tue,  7 Jul 2020 17:47:56 +0200 (CEST)
-Date:   Tue, 7 Jul 2020 17:47:55 +0200
+        id 7E763DA818; Tue,  7 Jul 2020 18:16:54 +0200 (CEST)
+Date:   Tue, 7 Jul 2020 18:16:54 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Nikolay Borisov <nborisov@suse.com>
-Cc:     trix@redhat.com, clm@fb.com, josef@toxicpanda.com,
-        dsterba@suse.com, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] btfrs: initialize return of btrfs_extent_same
-Message-ID: <20200707154755.GB16141@twin.jikos.cz>
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     Qu Wenruo <quwenruo.btrfs@gmx.com>, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org, Hans van Kranenburg <hans@knorrie.org>
+Subject: Re: [PATCH RFC 2/2] btrfs: space-info: Don't allow signal to
+ interrupt ticket waiting
+Message-ID: <20200707161654.GC16141@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
-        trix@redhat.com, clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200705142058.28305-1-trix@redhat.com>
- <885129e4-d6d6-57d3-21d3-a83bd98c3994@suse.com>
+Mail-Followup-To: dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
+        Qu Wenruo <quwenruo.btrfs@gmx.com>, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org, Hans van Kranenburg <hans@knorrie.org>
+References: <20200706074435.52356-1-wqu@suse.com>
+ <20200706074435.52356-3-wqu@suse.com>
+ <9ca1e526-6149-c5f2-402f-6e7331ac02ea@toxicpanda.com>
+ <8f742315-6f47-771e-234e-98d7428c2f5b@suse.com>
+ <d01c2c4a-0c3e-c599-fd64-715c000ad31f@toxicpanda.com>
+ <13f7d3b6-e555-38cc-b73c-817bab70924c@gmx.com>
+ <9cc6e3ff-ef7f-0948-f55c-b940364cf67f@toxicpanda.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <885129e4-d6d6-57d3-21d3-a83bd98c3994@suse.com>
+In-Reply-To: <9cc6e3ff-ef7f-0948-f55c-b940364cf67f@toxicpanda.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sun, Jul 05, 2020 at 05:48:17PM +0300, Nikolay Borisov wrote:
-> On 5.07.20 Ð³. 17:20 Ñ‡., trix@redhat.com wrote:
-> > From: Tom Rix <trix@redhat.com>
+On Mon, Jul 06, 2020 at 10:33:56AM -0400, Josef Bacik wrote:
+> On 7/6/20 10:05 AM, Qu Wenruo wrote:
+> >> This only needs to be handled for FLUSH_ALL and FLUSH_STEAL.  Anybody
+> >> doing btrfs_start_transaction() should be able to fail with -EINTR,
+> >> because they should be close to the syscall path.  Balance needs to be
+> >> fixed to deal with it, and I assume there might be a few other places,
+> >> but by-in-large none of these places should flip read only.  Thanks,
 > > 
-> > clang static analysis flags a garbage return
+> > There are already ones existing, for btrfs_drop_snapshot().
 > > 
-> > fs/btrfs/reflink.c:611:2: warning: Undefined or garbage value returned to caller [core.uninitialized.UndefReturn]
-> >         return ret;
-> >         ^~~~~~~~~~
-> > ret will not be set when olen is 0
-> > When olen is 0, this function does no work.
+> > This is mostly caused by btrfs_delalloc_reserve_metadata(), which always
+> > use FLUSH_ALL unless there is a running trans or its space cache inode.
 > > 
-> > So initialize ret to 0
+> > But still, for a lot of relocation code, we don't really want to bother
+> > the EINTR and just want uninterruptible at least for now.
 > > 
-> > Signed-off-by: Tom Rix <trix@redhat.com>
+> > Any idea for that?
+> > Or just rework how we handle errors in a lot of places?
+> > 
+> > It doesn't look correct for such a low level mechanism to return -EINTR
+> > while most of callers doesn't really want to bother.
+> > 
 > 
-> Patch itself is good however, the bug cannot currently be triggered, due
-> to the following code in the sole caller (btrfs_remap_file_range):
-> 
-> 
-> 
->    15         if (ret < 0 || len == 0)
->    14                 goto out_unlock;
->    13
->    12         if (remap_flags & REMAP_FILE_DEDUP)
->    11                 ret = btrfs_extent_same(src_inode, off, len, dst_inode, destoff);
->    10         else
->     9                 ret = btrfs_clone_files(dst_file, src_file, off,
-> len, destoff);
-> 
-> i.e len is guaranteed to be non-zero
+> That's the point, most callers shouldn't have to, because most callers shouldn't 
+> be far enough into their operations that -EINTR causes problems.
 
-Yeah, for that reason I don't think we need to set the value inside
-btrfs_extent_same because the caller(s) do the sanity checks.
+Agreed, that's a sane pattern to follow so we should convert the
+remaining cases, perhaps also auditing all existing
+btrfs_start_transaction calls but after a quick look I haven't spotted
+anything else than the reloc and drop snapshot.
 
-There are VFS-level checks of the length wrt zero, eg. it won't even
-call to copy_file_range from vfs_copy_file_range. The user supplied
-length = 0 is interpreted as 'until the end of file' and is properly
-reclaculated in generic_remap_file_range_prep.
+> We should probably just change btrfs_drop_snapshot to use join, and then have it 
+> do any space reservation it needs outside of the trans handle.  The other option 
+> is a FLUSH_ALL_UNKILLABLE.  Thanks,
 
-This looks like clang checker is not able to follow the values accross
-function calls, even if the functions are static.
+I'd rather not push the killable semantics to the flushing state machine
+and let it up to the caller context to decide.
