@@ -2,68 +2,104 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F2F1217511
-	for <lists+linux-btrfs@lfdr.de>; Tue,  7 Jul 2020 19:25:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC93A2176F3
+	for <lists+linux-btrfs@lfdr.de>; Tue,  7 Jul 2020 20:43:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728073AbgGGRZY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 7 Jul 2020 13:25:24 -0400
-Received: from magic.merlins.org ([209.81.13.136]:42812 "EHLO
-        mail1.merlins.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727791AbgGGRZY (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 7 Jul 2020 13:25:24 -0400
-Received: from c-24-5-124-255.hsd1.ca.comcast.net ([24.5.124.255]:60956 helo=sauron.svh.merlins.org)
-        by mail1.merlins.org with esmtpsa 
-        (Cipher TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92 #3)
-        id 1jsrLP-0007Za-Oz by authid <merlins.org> with srv_auth_plain; Tue, 07 Jul 2020 10:25:23 -0700
-Received: from merlin by sauron.svh.merlins.org with local (Exim 4.92)
-        (envelope-from <marc@merlins.org>)
-        id 1jsrLP-0008Vo-FN; Tue, 07 Jul 2020 10:25:23 -0700
-Date:   Tue, 7 Jul 2020 10:25:23 -0700
-From:   Marc MERLIN <marc@merlins.org>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: Re: 5.6 pretty massive unexplained btrfs corruption: parent transid
- verify failed + open_ctree failed
-Message-ID: <20200707172523.GQ30660@merlins.org>
-References: <20200707035530.GP30660@merlins.org>
- <01af6816-b0ee-20fa-5e00-0bfeef60cd88@toxicpanda.com>
+        id S1728388AbgGGSnO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 7 Jul 2020 14:43:14 -0400
+Received: from welho-filter3b.welho.com ([83.102.41.29]:36071 "EHLO
+        welho-filter3.welho.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728191AbgGGSnN (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 7 Jul 2020 14:43:13 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by welho-filter3.welho.com (Postfix) with ESMTP id B6DAA149AF
+        for <linux-btrfs@vger.kernel.org>; Tue,  7 Jul 2020 21:43:10 +0300 (EEST)
+X-Virus-Scanned: Debian amavisd-new at pp.htv.fi
+Received: from welho-smtp3.welho.com ([IPv6:::ffff:83.102.41.86])
+        by localhost (welho-filter3.welho.com [::ffff:83.102.41.25]) (amavisd-new, port 10024)
+        with ESMTP id sENw3rcB3rBg for <linux-btrfs@vger.kernel.org>;
+        Tue,  7 Jul 2020 21:43:10 +0300 (EEST)
+Received: from lanfear.intra.poltsi.fi (212-149-206-122.bb.dnainternet.fi [212.149.206.122])
+        by welho-smtp3.welho.com (Postfix) with ESMTP id 77C2F2308
+        for <linux-btrfs@vger.kernel.org>; Tue,  7 Jul 2020 21:43:09 +0300 (EEST)
+Subject: Re: BTRFS-errors on a 20TB filesystem
+To:     linux-btrfs@vger.kernel.org
+References: <0bd8aea3d385aa082436775196127f1f@poltsi.fi>
+ <f2d396d4-8625-1913-9b1c-2fec1452defa@gmx.com>
+ <9a804cbb7406be31f55c68d592fd0bd6@poltsi.fi>
+ <960db29cd8aa77fd5b8da998b8f1215b@poltsi.fi>
+ <e1beb547-3989-0fdd-b2e4-5491728f7dec@gmx.com>
+ <7bfbcd06-f4f8-5946-c5e4-d7c7879cf122@poltsi.fi>
+ <446cbb5e-bb18-bb93-ee98-d480730e4508@gmx.com>
+From:   =?UTF-8?Q?Paul-Erik_T=c3=b6rr=c3=b6nen?= <poltsi@poltsi.fi>
+Message-ID: <974197e0-0dc3-e0c4-6c44-b5fe8b6c6f6d@poltsi.fi>
+Date:   Tue, 7 Jul 2020 21:43:09 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <01af6816-b0ee-20fa-5e00-0bfeef60cd88@toxicpanda.com>
-X-Sysadmin: BOFH
-X-URL:  http://marc.merlins.org/
-X-SA-Exim-Connect-IP: 24.5.124.255
-X-SA-Exim-Mail-From: marc@merlins.org
+In-Reply-To: <446cbb5e-bb18-bb93-ee98-d480730e4508@gmx.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Jul 07, 2020 at 10:31:32AM -0400, Josef Bacik wrote:
-> > Soon after, the copy failed:
-> > [ 2575.931316] BTRFS info (device dm-0): use zlib compression, level 3
-> > [ 2575.931329] BTRFS info (device dm-0): disk space caching is enabled
-> > [ 2575.931343] BTRFS info (device dm-0): has skinny extents
-> > [ 2577.286749] BTRFS info (device dm-0): bdev /dev/mapper/crypt_bcache0 errs: wr 0, rd 0, flush 0, corrupt 2, gen 0
-> 
-> You have a corrupt counter here at mount time, does your logs go back far
-> enough to see where those came in?  Thanks,
+Sorry for the delay :-/
 
-I copied all the logs in the original Email.
+On 7/7/20 1:58 AM, Qu Wenruo wrote:
+> Although still needs some extra dmesg context for the following bytenr:
+> - 2627928588288
+>    I see no obvious problem around slot 10
 
-Here it is all in one swoop:
-https://pastebin.com/GURufP8w
+$ dmesg | grep 2627928588288
+[  595.081488] BTRFS critical (device sdc1): corrupt leaf: root=5 
+block=2627928588288 slot=10 ino=11274213 file_offset=454656, extent end 
+overflow, have file offset 454656 extent num bytes 18446744073709457408
+[  595.081589] BTRFS error (device sdc1): block=2627928588288 read time 
+tree block corruption detected
 
-The devices going down and back up is normal, my backup script saw the
-backup was over (although in that case that's because it failed) and
-automatically unmounted the filesystem and turned off the drives.
+This is repeated several times later on. The only thing preceeding this is:
 
-I'm not sure how my FS got so corrupted, it's been a while since I've
-seen damage that bad, especially pretty unexplained like this.
+[  243.295071] BTRFS info (device sdc1): disk space caching is enabled
+[  243.295075] BTRFS info (device sdc1): has skinny extents
 
-Marc
--- 
-"A mouse is a device used to point at the xterm you want to type in" - A.S.R.
- 
-Home page: http://marc.merlins.org/                       | PGP 7F55D5F27AAF9D08
+> - 3154217795584
+
+[  602.597770] BTRFS critical (device sdc1): corrupt leaf: root=5 
+block=3154217795584 slot=102 ino=12990328 file_offset=184320, extent end 
+overflow, have file offset 184320 extent num bytes 18446744073709395968
+[  602.597869] BTRFS error (device sdc1): block=3154217795584 read time 
+tree block corruption detected
+
+> - 3154257952768
+>    Mentioned slot doesn't exist at all, not sure what happened there
+
+[  603.161394] BTRFS critical (device sdc1): corrupt leaf: root=5 
+block=3154257952768 slot=59 ino=13467676 file_offset=262144, extent end 
+overflow, have file offset 262144 extent num bytes 18446744073709527040
+[  603.168062] BTRFS error (device sdc1): block=3154257952768 read time 
+tree block corruption detected
+
+> - 3154259034112
+>    The offending slot seems fine
+
+[  603.316595] BTRFS critical (device sdc1): corrupt leaf: root=5 
+block=3154259034112 slot=27 ino=14013491 file_offset=102400, extent end 
+overflow, have file offset 102400 extent num bytes 18446744073709514752
+[  603.323174] BTRFS error (device sdc1): block=3154259034112 read time 
+tree block corruption detected
+
+> - 3154291228672
+>    I guess the problem is hash mismatch, but can't confirm.
+
+[  602.779540] BTRFS critical (device sdc1): corrupt leaf: root=5 
+block=3154291228672 slot=9 ino=13286681 file_offset=204800, extent end 
+overflow, have file offset 204800 extent num bytes 18446744073709481984
+[  602.786103] BTRFS error (device sdc1): block=3154291228672 read time 
+tree block corruption detected
+
+Does this help any?
+
+Poltsi
