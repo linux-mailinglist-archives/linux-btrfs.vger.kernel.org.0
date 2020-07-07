@@ -2,98 +2,100 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24C58216579
-	for <lists+linux-btrfs@lfdr.de>; Tue,  7 Jul 2020 06:41:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC20321673A
+	for <lists+linux-btrfs@lfdr.de>; Tue,  7 Jul 2020 09:20:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727908AbgGGElQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 7 Jul 2020 00:41:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46174 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727094AbgGGElP (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 7 Jul 2020 00:41:15 -0400
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4727C08C5DF
-        for <linux-btrfs@vger.kernel.org>; Mon,  6 Jul 2020 21:41:14 -0700 (PDT)
-Received: by mail-lf1-x142.google.com with SMTP id t9so23968372lfl.5
-        for <linux-btrfs@vger.kernel.org>; Mon, 06 Jul 2020 21:41:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=zdxUWMWXTEs/zs0LJh1bxLoOHpDg1k5nkLimqXptzik=;
-        b=tlFkNeWVqCKqCpaFN2ZhxZYlevKnjqhsVTNgrhhaZ2RDT18b6lcAhNP8hwMjglEgOJ
-         JRrhd5sCrcPXcRjb/F8i+qXRuFrdow62Kk0LCTaGNdn/R12lB4+3ZH1iNTvGb57NxEGH
-         TOK3UqUTx2iqAiVwI1pjngJhOVCUCf/4QYUA4hRIiK9JixA7VcqC90X5tPyk407RxDio
-         vu0fUwwKGYS8xL3xDrcDrycounHCvHDFFk99Fy4byqghO9j75mds1BzrnlGyeWYE3xHz
-         X4d5uwR/Qwxfv2AE3y13GpatyO6uIoMsRBr4DNeu7b9ur6lH5gHgcZA+qo1LXlYGF8kU
-         DYDA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=zdxUWMWXTEs/zs0LJh1bxLoOHpDg1k5nkLimqXptzik=;
-        b=ArM4+dq2iMeK97M7yCOR/hAYgpja5kMwmAbSPnarsTkB2tw/pBIHOmm2SjcFhSqJrG
-         FdbrBvGAcZ75oFag/0Iq9zSnCV0XQGUVA+QSTKveiWW2vKi0tWqlDP25tHi9ssWCueId
-         wItN81nVEC+9I8MCbvaxeTIappKzFBi30bJ+YEBYuORJfcKB8wJynmCKL5O5XZdnFwgq
-         V2uUkcA/e3x61QuS/XRakqz1KUL9kajsEBlQpxiWUNIlGplF0gmc+NSVJQcTroewsB3W
-         CyX62+RZI9Za6AMAAieME65GJ0g7C9sMjKnPijBmZgoILA4XL3tHM0DP0pH5coO8/V67
-         wWVw==
-X-Gm-Message-State: AOAM533pI73VySOouli/laTsNP5g2gmbGGz101FeQQHNt4O69M50Sys7
-        SfCXBpOB+l/MhaxYMNVvcqbyu/XrSWOYPiYV4oo=
-X-Google-Smtp-Source: ABdhPJzQCgXqbSQm6mkzO4D8AFK03srCLifInf41dOx33oxCgP98rIfVrXt89WENH0TQVOyrg0YKCw16FR2dUNeaI4o=
-X-Received: by 2002:a19:ccc5:: with SMTP id c188mr31863582lfg.163.1594096872897;
- Mon, 06 Jul 2020 21:41:12 -0700 (PDT)
+        id S1727874AbgGGHUz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 7 Jul 2020 03:20:55 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:38920 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725825AbgGGHUz (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 7 Jul 2020 03:20:55 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0677IRoD009856;
+        Tue, 7 Jul 2020 07:20:49 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=byjPc4hqCTlcHQfWBSUDmZOjADuGIE/3j/fv9vyId40=;
+ b=pTwLAI/QUfMmd8QlYMRv9sQpcvHIM7WGIvHpFCBILsHp6HuazqvdUTMU5uy0smFGrEGh
+ wgRCjHTK5lJ48pY/McZj+6nik8caU1BvTGVQC7dKVnOkvr1gVFeDe4IC/DaD7SOfolMT
+ 1f4mfIHCkfR0fAo1apgKSmjGGZKyPJaUCDI1cV2xhpnEyaz6eRZedUgjs8nI5I/S4Z0N
+ J4NPR3IhmSwHZzl2RIgwMmkzBEsQ6OGjAwjKsNcLbMQoFzN7NM8AfgBuFQBP98Nz82vQ
+ c5orTBk+HD/3lFa6b4GFXbBUMISsDf20IqBVMia7CZsws+eInloSlHG/7hMqdeTSgqAb 7g== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2130.oracle.com with ESMTP id 323waceemb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 07 Jul 2020 07:20:48 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0677JARc027918;
+        Tue, 7 Jul 2020 07:20:48 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3030.oracle.com with ESMTP id 3233bnp7s8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 07 Jul 2020 07:20:48 +0000
+Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0677Kgnt026844;
+        Tue, 7 Jul 2020 07:20:42 GMT
+Received: from [192.168.1.102] (/39.109.231.106)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 07 Jul 2020 00:20:42 -0700
+Subject: Re: [PATCH v5] btrfs: pass checksum type via BTRFS_IOC_FS_INFO ioctl
+To:     Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        David Sterba <dsterba@suse.cz>
+Cc:     linux-btrfs@vger.kernel.org,
+        Hans van Kranenburg <hans@knorrie.org>,
+        stable@vger.kernel.org
+References: <20200706150924.40218-1-johannes.thumshirn@wdc.com>
+From:   Anand Jain <anand.jain@oracle.com>
+Message-ID: <9ca06611-8adc-2a1b-106c-1bc983a27576@oracle.com>
+Date:   Tue, 7 Jul 2020 15:20:38 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Received: by 2002:a05:6504:518c:0:0:0:0 with HTTP; Mon, 6 Jul 2020 21:41:11
- -0700 (PDT)
-Reply-To: ayishagddafio@mail.ru
-From:   AISHA GADDAFI <mahasaliou4444@gmail.com>
-Date:   Mon, 6 Jul 2020 21:41:11 -0700
-Message-ID: <CAKHB8qdmUeJMAHc2fxMhfmZtkUUj7NqUNe3yEfprcCg3nxTzUw@mail.gmail.com>
-Subject: Lieber Freund (Assalamu Alaikum),?
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200706150924.40218-1-johannes.thumshirn@wdc.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9674 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 mlxscore=0 adultscore=0
+ malwarescore=0 spamscore=0 mlxlogscore=999 bulkscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2007070055
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9674 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 priorityscore=1501
+ phishscore=0 spamscore=0 mlxlogscore=999 adultscore=0 cotscore=-2147483648
+ suspectscore=0 impostorscore=0 bulkscore=0 mlxscore=0 clxscore=1011
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2007070055
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
---=20
-Lieber Freund (Assalamu Alaikum),
 
-Ich bin vor einer privaten Suche auf Ihren E-Mail-Kontakt gesto=C3=9Fen
-Ihre Hilfe. Mein Name ist Aisha Al-Qaddafi, eine alleinerziehende
-Mutter und eine Witwe
-mit drei Kindern. Ich bin die einzige leibliche Tochter des Sp=C3=A4tlibysc=
-hen
-Pr=C3=A4sident (verstorbener Oberst Muammar Gaddafi).
+> pahole -C btrfs_ioctl_fs_info_args fs/btrfs/btrfs.ko
+> struct btrfs_ioctl_fs_info_args {
+>          __u64                      max_id;               /*     0     8 */
+>          __u64                      num_devices;          /*     8     8 */
+>          __u8                       fsid[16];             /*    16    16 */
+>          __u32                      nodesize;             /*    32     4 */
+>          __u32                      sectorsize;           /*    36     4 */
+>          __u32                      clone_alignment;      /*    40     4 */
 
-Ich habe Investmentfonds im Wert von siebenundzwanzig Millionen
-f=C3=BCnfhunderttausend
-United State Dollar ($ 27.500.000.00) und ich brauche eine
-vertrauensw=C3=BCrdige Investition
-Manager / Partner aufgrund meines aktuellen Fl=C3=BCchtlingsstatus bin ich =
-jedoch
-M=C3=B6glicherweise interessieren Sie sich f=C3=BCr die Unterst=C3=BCtzung =
-von
-Investitionsprojekten in Ihrem Land
-Von dort aus k=C3=B6nnen wir in naher Zukunft Gesch=C3=A4ftsbeziehungen auf=
-bauen.
+>          __u32                      flags;                /*    44     4 */
+>          __u16                      csum_type;            /*    48     2 */
+>          __u16                      csum_size;            /*    50     2 */
 
-Ich bin bereit, mit Ihnen =C3=BCber das Verh=C3=A4ltnis zwischen Investitio=
-n und
-Unternehmensgewinn zu verhandeln
-Basis f=C3=BCr die zuk=C3=BCnftige Investition Gewinne zu erzielen.
+>          __u8                       reserved[972];        /*    52   972 */
+> 
+>          /* size: 1024, cachelines: 16, members: 10 */
+> };
 
-Wenn Sie bereit sind, dieses Projekt in meinem Namen zu bearbeiten,
-antworten Sie bitte dringend
-Damit ich Ihnen mehr Informationen =C3=BCber die Investmentfonds geben kann=
-.
 
-Ihre dringende Antwort wird gesch=C3=A4tzt. schreibe mir an diese email adr=
-esse (
-ayishagddafio@mail.ru ) zur weiteren Diskussion.
+Newer progs shall read the value of flags/csum_type/csum_size from the 
+updated kernel and zeros from the older kernel. Nice fix.
 
-Freundliche Gr=C3=BC=C3=9Fe
-Frau Aisha Al-Qaddafi
+Reviewed-by: Anand Jain <anand.jain@oracle.com>
+
+Thanks.
