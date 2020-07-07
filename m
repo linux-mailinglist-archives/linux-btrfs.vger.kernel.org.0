@@ -2,105 +2,124 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 742C1216EC3
-	for <lists+linux-btrfs@lfdr.de>; Tue,  7 Jul 2020 16:31:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33C9F216ECC
+	for <lists+linux-btrfs@lfdr.de>; Tue,  7 Jul 2020 16:32:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728249AbgGGObB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 7 Jul 2020 10:31:01 -0400
-Received: from mx2.suse.de ([195.135.220.15]:59190 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727995AbgGGObB (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 7 Jul 2020 10:31:01 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id D97A6AC6E;
-        Tue,  7 Jul 2020 14:30:59 +0000 (UTC)
-Date:   Tue, 7 Jul 2020 09:30:56 -0500
-From:   Goldwyn Rodrigues <rgoldwyn@suse.de>
-To:     "Darrick J. Wong" <darrick.wong@oracle.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Christoph Hellwig <hch@lst.de>, linux-fsdevel@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, fdmanana@gmail.com, dsterba@suse.cz,
-        david@fromorbit.com, cluster-devel@redhat.com,
-        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org
-Subject: Re: always fall back to buffered I/O after invalidation failures,
- was: Re: [PATCH 2/6] iomap: IOMAP_DIO_RWF_NO_STALE_PAGECACHE return if page
- invalidation fails
-Message-ID: <20200707143056.t7zf3xqvocty64td@fiona>
-References: <20200629192353.20841-1-rgoldwyn@suse.de>
- <20200629192353.20841-3-rgoldwyn@suse.de>
- <20200701075310.GB29884@lst.de>
- <20200707124346.xnr5gtcysuzehejq@fiona>
- <20200707125705.GK25523@casper.infradead.org>
- <20200707134952.3niqhxngwh3gus54@fiona>
- <20200707140120.GJ7606@magnolia>
+        id S1728296AbgGGObg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 7 Jul 2020 10:31:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52656 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727895AbgGGObf (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 7 Jul 2020 10:31:35 -0400
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D52ADC061755
+        for <linux-btrfs@vger.kernel.org>; Tue,  7 Jul 2020 07:31:35 -0700 (PDT)
+Received: by mail-qt1-x841.google.com with SMTP id w34so11815004qte.1
+        for <linux-btrfs@vger.kernel.org>; Tue, 07 Jul 2020 07:31:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=nte7Nvng/9dmXa3SYocfD7frGbO9vhAiCZXPeLioQ2M=;
+        b=09/Lpw9vJx2UPbg1hImGpdnKTbfbutKb+CBXF3BHjkNOEgpVHJqLHroCXtHF87qFDN
+         dANZJx6zlKPOzI4YrnulnpqaD4MKJN6vuMmkYxZAFIG1NngsN/pMifvgr/CR3MbwzRg6
+         x/Q/HuJApT/zFq8TBG1D/syw4/qG29JVSFcb5hoa6Dl7MLHZ7dgY9MwexvL3jB8Af4Hc
+         GhfgW9L/23Ih5Pp1jDyVe+3EwoIezpeJ3HcKkqUXqBLB9b6e+FmX3QsjkUvruOjXXO8u
+         IbECIP3i/y/KfcFv7jCd/OsPuAGUErAT7TPWMLj0/+EV/bec7NwWeh9PTv21i3Z9r66h
+         YY3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=nte7Nvng/9dmXa3SYocfD7frGbO9vhAiCZXPeLioQ2M=;
+        b=iPFuArIyaVEejfZuJYJmQoWGZ91QNWs4WJVb5s0YUjA5HP9EQl46r/yGWC+KucdwYs
+         xJI2IcdlwzVdtwII4E2SqKs4lxPihodDXQ9gnl+art+AGeijVYqBBErmn3hBN5YsS3cr
+         qn1ZNCR3B7KDQr0GUowGApiHnb80qCjMbCc2oAu9bzQbwhI5VIo1WXycjTudMX3qxB49
+         pW1F6U6qc9sS2JRo5ZhJQimNifHPwjlRMVs1O4JxY1eHEcnpTHWxXGcim/H4XhOSfJ1d
+         SDF2LlDFTpjpNwRMAAK5d0UpxAtd8JOikVwCFFNKukxVn7RA78EMbA30/LpU0fNVDsPj
+         6YZg==
+X-Gm-Message-State: AOAM533BX2vWM7j/Xr8lF2GsVarAcTijj2lJPOJ1Y9obK7Nb3VjBFlJu
+        mqKX1wcimVlYUTsAojUlp8ADSZd/0zc1Dw==
+X-Google-Smtp-Source: ABdhPJwtJd3TQgBmXEdTu61GUicu8u8gTlmwVszugw1Lmsza3xEdJp9MXQajD5uvzOzngp6BdvQLKA==
+X-Received: by 2002:ac8:197b:: with SMTP id g56mr33914459qtk.105.1594132294605;
+        Tue, 07 Jul 2020 07:31:34 -0700 (PDT)
+Received: from [192.168.1.45] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id b53sm27478377qtc.65.2020.07.07.07.31.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 07 Jul 2020 07:31:33 -0700 (PDT)
+Subject: Re: 5.6 pretty massive unexplained btrfs corruption: parent transid
+ verify failed + open_ctree failed
+To:     Marc MERLIN <marc@merlins.org>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+References: <20200707035530.GP30660@merlins.org>
+From:   Josef Bacik <josef@toxicpanda.com>
+Message-ID: <01af6816-b0ee-20fa-5e00-0bfeef60cd88@toxicpanda.com>
+Date:   Tue, 7 Jul 2020 10:31:32 -0400
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200707140120.GJ7606@magnolia>
+In-Reply-To: <20200707035530.GP30660@merlins.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On  7:01 07/07, Darrick J. Wong wrote:
-> On Tue, Jul 07, 2020 at 08:49:52AM -0500, Goldwyn Rodrigues wrote:
-> > On 13:57 07/07, Matthew Wilcox wrote:
-> > > On Tue, Jul 07, 2020 at 07:43:46AM -0500, Goldwyn Rodrigues wrote:
-> > > > On  9:53 01/07, Christoph Hellwig wrote:
-> > > > > On Mon, Jun 29, 2020 at 02:23:49PM -0500, Goldwyn Rodrigues wrote:
-> > > > > > From: Goldwyn Rodrigues <rgoldwyn@suse.com>
-> > > > > > 
-> > > > > > For direct I/O, add the flag IOMAP_DIO_RWF_NO_STALE_PAGECACHE to indicate
-> > > > > > that if the page invalidation fails, return back control to the
-> > > > > > filesystem so it may fallback to buffered mode.
-> > > > > > 
-> > > > > > Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
-> > > > > > Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
-> > > > > 
-> > > > > I'd like to start a discussion of this shouldn't really be the
-> > > > > default behavior.  If we have page cache that can't be invalidated it
-> > > > > actually makes a whole lot of sense to not do direct I/O, avoid the
-> > > > > warnings, etc.
-> > > > > 
-> > > > > Adding all the relevant lists.
-> > > > 
-> > > > Since no one responded so far, let me see if I can stir the cauldron :)
-> > > > 
-> > > > What error should be returned in case of such an error? I think the
-> > > 
-> > > Christoph's message is ambiguous.  I don't know if he means "fail the
-> > > I/O with an error" or "satisfy the I/O through the page cache".  I'm
-> > > strongly in favour of the latter.  Indeed, I'm in favour of not invalidating
-> > > the page cache at all for direct I/O.  For reads, I think the page cache
-> > > should be used to satisfy any portion of the read which is currently
-> > 
-> > That indeed would make reads faster. How about if the pages are dirty
-> > during DIO reads?
-> > Should a direct I/O read be responsible for making sure that the dirty
-> > pages are written back. Technically direct I/O reads is that we are
-> > reading from the device.
+On 7/6/20 11:55 PM, Marc MERLIN wrote:
+> I'd love to know what went wrong so that it doesn't happen again, but let me know if you'd like data off this
+> before I wipe it (which I assume is the only way out at this point)
+> myth:~# btrfs check --mode=lowmem /dev/mapper/crypt_bcache0
+> Opening filesystem to check...
+> parent transid verify failed on 7325633544192 wanted 359658 found 359661
+> parent transid verify failed on 7325633544192 wanted 359658 found 359661
+> parent transid verify failed on 7325633544192 wanted 359658 found 359661
+> Ignoring transid failure
+> leaf parent key incorrect 7325633544192
+> ERROR: failed to read block groups: Operation not permitted
+> ERROR: cannot open file system
 > 
-> The filemap_write_and_wait_range should persist that data, right?
-
-Right. filemap_write_and_wait_range() would not make sense for writes
-though.
-
 > 
-> > > cached.  For writes, I think we should write into the page cache pages
-> > > which currently exist, and then force those pages to be written back,
-> > > but left in cache.
-> > 
-> > Yes, that makes sense.
-> > If this is implemented, what would be the difference between O_DIRECT
-> > and O_DSYNC, if any?
+> I did run bees on that filesystem, but I also just did a full btrfs check on it, and it came back clean:
 > 
-> Presumably a direct write would proceed as it does today if there's no
-> pagecache at all?
+> Opening filesystem to check...
+> Checking filesystem on /dev/mapper/crypt_bcache4
+> UUID: 36f5079e-ca6c-4855-8639-ccb82695c18d
+> [1/7] checking root items
+> Fixed 0 roots.
+> [2/7] checking extents
+> No device size related problem found
+> [3/7] checking free space cache
+> cache and super generation don't match, space cache will be invalidated
+> [4/7] checking fs roots
+> [5/7] checking only csums items (without verifying data)
+> [6/7] checking root refs
+> [7/7] checking quota groups skipped (not enabled on this FS)
+> found 18089211043840 bytes used, no error found
+> total csum bytes: 17580412652
+> total tree bytes: 82326192128
+> total fs tree bytes: 56795086848
+> total extent tree bytes: 5154258944
+> btree space waste bytes: 13682108904
+> file data blocks allocated: 24050542804992
 > 
+> 
+> I then moved it to the target machine, started a btrfs send to it, and it failed quickly (due to a mistake
+> I had an old btrfs binary on that server, but I'm hoping most of the work is done in kernel space and that the user space
+> btrfs should not corrupt the disk if it's a bit old)
+> 
+> myth:/mnt# uname -r
+> 5.6.5-amd64-preempt-sysrq-20190817
+> 
+> Soon after, the copy failed:
+> [ 2575.931316] BTRFS info (device dm-0): use zlib compression, level 3
+> [ 2575.931329] BTRFS info (device dm-0): disk space caching is enabled
+> [ 2575.931343] BTRFS info (device dm-0): has skinny extents
+> [ 2577.286749] BTRFS info (device dm-0): bdev /dev/mapper/crypt_bcache0 errs: wr 0, rd 0, flush 0, corrupt 2, gen 0
 
-Yes, correct. Just that it would leave pages in the cache instead of
-invalidating it after DIO write is complete.
+You have a corrupt counter here at mount time, does your logs go back far enough 
+to see where those came in?  Thanks,
 
--- 
-Goldwyn
+Josef
