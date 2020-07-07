@@ -2,179 +2,98 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24E792164F6
-	for <lists+linux-btrfs@lfdr.de>; Tue,  7 Jul 2020 05:59:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24C58216579
+	for <lists+linux-btrfs@lfdr.de>; Tue,  7 Jul 2020 06:41:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727092AbgGGD7u (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 6 Jul 2020 23:59:50 -0400
-Received: from mail.synology.com ([211.23.38.101]:50320 "EHLO synology.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726478AbgGGD7u (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 6 Jul 2020 23:59:50 -0400
-Received: from localhost.localdomain (unknown [10.17.32.181])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by synology.com (Postfix) with ESMTPSA id 401DACE782D5;
-        Tue,  7 Jul 2020 11:59:48 +0800 (CST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synology.com; s=123;
-        t=1594094388; bh=+159Bbp0cMWw7t/PKZ8gbPP+Pvq1tDBaJGnj+W6YzQ4=;
-        h=From:To:Cc:Subject:Date;
-        b=NssxO/6/ne4DDPvm2uCFVi/zcmQy3G7CkSaHG4dyu3vXgjd9DwArWNmjhNfdDCGA3
-         VTdE7SFHG43JdWjOWAeMT7nMhSw/YJo6AZ3DVvK3Z7mbAZmfMNbLZhZm9Uz6yQfG5w
-         fRHZWY4X90w/SBIhXnAVbpoGeN4+zR+6/0+beIbU=
-From:   robbieko <robbieko@synology.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     Robbie Ko <robbieko@synology.com>
-Subject: [PATCH v2] btrfs: speedup mount time with readahead chunk tree
-Date:   Tue,  7 Jul 2020 11:59:44 +0800
-Message-Id: <20200707035944.15150-1-robbieko@synology.com>
-X-Mailer: git-send-email 2.17.1
-X-Synology-MCP-Status: no
-X-Synology-Spam-Flag: no
-X-Synology-Spam-Status: score=0, required 6, WHITELIST_FROM_ADDRESS 0
-X-Synology-Virus-Status: no
+        id S1727908AbgGGElQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 7 Jul 2020 00:41:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46174 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727094AbgGGElP (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 7 Jul 2020 00:41:15 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4727C08C5DF
+        for <linux-btrfs@vger.kernel.org>; Mon,  6 Jul 2020 21:41:14 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id t9so23968372lfl.5
+        for <linux-btrfs@vger.kernel.org>; Mon, 06 Jul 2020 21:41:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=zdxUWMWXTEs/zs0LJh1bxLoOHpDg1k5nkLimqXptzik=;
+        b=tlFkNeWVqCKqCpaFN2ZhxZYlevKnjqhsVTNgrhhaZ2RDT18b6lcAhNP8hwMjglEgOJ
+         JRrhd5sCrcPXcRjb/F8i+qXRuFrdow62Kk0LCTaGNdn/R12lB4+3ZH1iNTvGb57NxEGH
+         TOK3UqUTx2iqAiVwI1pjngJhOVCUCf/4QYUA4hRIiK9JixA7VcqC90X5tPyk407RxDio
+         vu0fUwwKGYS8xL3xDrcDrycounHCvHDFFk99Fy4byqghO9j75mds1BzrnlGyeWYE3xHz
+         X4d5uwR/Qwxfv2AE3y13GpatyO6uIoMsRBr4DNeu7b9ur6lH5gHgcZA+qo1LXlYGF8kU
+         DYDA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=zdxUWMWXTEs/zs0LJh1bxLoOHpDg1k5nkLimqXptzik=;
+        b=ArM4+dq2iMeK97M7yCOR/hAYgpja5kMwmAbSPnarsTkB2tw/pBIHOmm2SjcFhSqJrG
+         FdbrBvGAcZ75oFag/0Iq9zSnCV0XQGUVA+QSTKveiWW2vKi0tWqlDP25tHi9ssWCueId
+         wItN81nVEC+9I8MCbvaxeTIappKzFBi30bJ+YEBYuORJfcKB8wJynmCKL5O5XZdnFwgq
+         V2uUkcA/e3x61QuS/XRakqz1KUL9kajsEBlQpxiWUNIlGplF0gmc+NSVJQcTroewsB3W
+         CyX62+RZI9Za6AMAAieME65GJ0g7C9sMjKnPijBmZgoILA4XL3tHM0DP0pH5coO8/V67
+         wWVw==
+X-Gm-Message-State: AOAM533pI73VySOouli/laTsNP5g2gmbGGz101FeQQHNt4O69M50Sys7
+        SfCXBpOB+l/MhaxYMNVvcqbyu/XrSWOYPiYV4oo=
+X-Google-Smtp-Source: ABdhPJzQCgXqbSQm6mkzO4D8AFK03srCLifInf41dOx33oxCgP98rIfVrXt89WENH0TQVOyrg0YKCw16FR2dUNeaI4o=
+X-Received: by 2002:a19:ccc5:: with SMTP id c188mr31863582lfg.163.1594096872897;
+ Mon, 06 Jul 2020 21:41:12 -0700 (PDT)
+MIME-Version: 1.0
+Received: by 2002:a05:6504:518c:0:0:0:0 with HTTP; Mon, 6 Jul 2020 21:41:11
+ -0700 (PDT)
+Reply-To: ayishagddafio@mail.ru
+From:   AISHA GADDAFI <mahasaliou4444@gmail.com>
+Date:   Mon, 6 Jul 2020 21:41:11 -0700
+Message-ID: <CAKHB8qdmUeJMAHc2fxMhfmZtkUUj7NqUNe3yEfprcCg3nxTzUw@mail.gmail.com>
+Subject: Lieber Freund (Assalamu Alaikum),?
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Robbie Ko <robbieko@synology.com>
+--=20
+Lieber Freund (Assalamu Alaikum),
 
-When mounting, we always need to read the whole chunk tree,
-when there are too many chunk items, most of the time is
-spent on btrfs_read_chunk_tree, because we only read one
-leaf at a time.
+Ich bin vor einer privaten Suche auf Ihren E-Mail-Kontakt gesto=C3=9Fen
+Ihre Hilfe. Mein Name ist Aisha Al-Qaddafi, eine alleinerziehende
+Mutter und eine Witwe
+mit drei Kindern. Ich bin die einzige leibliche Tochter des Sp=C3=A4tlibysc=
+hen
+Pr=C3=A4sident (verstorbener Oberst Muammar Gaddafi).
 
-It is unreasonable to limit the readahead mechanism to a
-range of 64k, so we have removed that limit.
+Ich habe Investmentfonds im Wert von siebenundzwanzig Millionen
+f=C3=BCnfhunderttausend
+United State Dollar ($ 27.500.000.00) und ich brauche eine
+vertrauensw=C3=BCrdige Investition
+Manager / Partner aufgrund meines aktuellen Fl=C3=BCchtlingsstatus bin ich =
+jedoch
+M=C3=B6glicherweise interessieren Sie sich f=C3=BCr die Unterst=C3=BCtzung =
+von
+Investitionsprojekten in Ihrem Land
+Von dort aus k=C3=B6nnen wir in naher Zukunft Gesch=C3=A4ftsbeziehungen auf=
+bauen.
 
-In addition we added reada_maximum_size to customize the
-size of the pre-reader, The default is 64k to maintain the
-original behavior.
+Ich bin bereit, mit Ihnen =C3=BCber das Verh=C3=A4ltnis zwischen Investitio=
+n und
+Unternehmensgewinn zu verhandeln
+Basis f=C3=BCr die zuk=C3=BCnftige Investition Gewinne zu erzielen.
 
-So we fix this by used readahead mechanism, and set readahead
-max size to ULLONG_MAX which reads all the leaves after the
-key in the node when reading a level 1 node.
+Wenn Sie bereit sind, dieses Projekt in meinem Namen zu bearbeiten,
+antworten Sie bitte dringend
+Damit ich Ihnen mehr Informationen =C3=BCber die Investmentfonds geben kann=
+.
 
-I have a test environment as follows:
+Ihre dringende Antwort wird gesch=C3=A4tzt. schreibe mir an diese email adr=
+esse (
+ayishagddafio@mail.ru ) zur weiteren Diskussion.
 
-200TB btrfs volume: used 192TB
-
-Data, single: total=192.00TiB, used=192.00TiB
-System, DUP: total=40.00MiB, used=19.91MiB
-Metadata, DUP: total=63.00GiB, used=46.46GiB
-GlobalReserve, single: total=2.00GiB, used=0.00B
-
-chunk tree level : 2
-chunk tree tree:
-   nodes: 4
-   leaves: 1270
-   total: 1274
-chunk tree size: 19.9 MB
-SYSTEM chunks count : 2 (8MB, 32MB)
-
-btrfs_read_chunk_tree spends the following time:
-before: 1.89s
-patch: 0.27s
-Speed increase of about 85%.
-
-Signed-off-by: Robbie Ko <robbieko@synology.com>
----
-Changelog:
-v2:
-- add performance testing
-- remove readahead logical bytenr 64k limit
-- add reada_maximum_size for customize
----
- fs/btrfs/ctree.c   | 23 +++++++++++------------
- fs/btrfs/ctree.h   |  1 +
- fs/btrfs/volumes.c |  2 ++
- 3 files changed, 14 insertions(+), 12 deletions(-)
-
-diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
-index 3a7648bff42c..dc84f526cd93 100644
---- a/fs/btrfs/ctree.c
-+++ b/fs/btrfs/ctree.c
-@@ -75,7 +75,14 @@ size_t __const btrfs_get_num_csums(void)
- 
- struct btrfs_path *btrfs_alloc_path(void)
- {
--	return kmem_cache_zalloc(btrfs_path_cachep, GFP_NOFS);
-+	struct btrfs_path *path;
-+
-+	path = kmem_cache_zalloc(btrfs_path_cachep, GFP_NOFS);
-+
-+	if (path)
-+		path->reada_maximum_size = 65536;
-+
-+	return path;
- }
- 
- /* this also releases the path */
-@@ -2161,12 +2168,10 @@ static void reada_for_search(struct btrfs_fs_info *fs_info,
- 	struct btrfs_disk_key disk_key;
- 	u32 nritems;
- 	u64 search;
--	u64 target;
- 	u64 nread = 0;
- 	struct extent_buffer *eb;
- 	u32 nr;
- 	u32 blocksize;
--	u32 nscan = 0;
- 
- 	if (level != 1)
- 		return;
-@@ -2184,8 +2189,6 @@ static void reada_for_search(struct btrfs_fs_info *fs_info,
- 		return;
- 	}
- 
--	target = search;
--
- 	nritems = btrfs_header_nritems(node);
- 	nr = slot;
- 
-@@ -2205,13 +2208,9 @@ static void reada_for_search(struct btrfs_fs_info *fs_info,
- 				break;
- 		}
- 		search = btrfs_node_blockptr(node, nr);
--		if ((search <= target && target - search <= 65536) ||
--		    (search > target && search - target <= 65536)) {
--			readahead_tree_block(fs_info, search);
--			nread += blocksize;
--		}
--		nscan++;
--		if ((nread > 65536 || nscan > 32))
-+		readahead_tree_block(fs_info, search);
-+		nread += blocksize;
-+		if (nread > path->reada_maximum_size)
- 			break;
- 	}
- }
-diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index d404cce8ae40..ea88a6473eb8 100644
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -360,6 +360,7 @@ struct btrfs_path {
- 	/* if there is real range locking, this locks field will change */
- 	u8 locks[BTRFS_MAX_LEVEL];
- 	u8 reada;
-+	u64 reada_maximum_size;
- 	/* keep some upper locks as we walk down */
- 	u8 lowest_level;
- 
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index 0d6e785bcb98..fc87b2e9e865 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -7043,6 +7043,8 @@ int btrfs_read_chunk_tree(struct btrfs_fs_info *fs_info)
- 	path = btrfs_alloc_path();
- 	if (!path)
- 		return -ENOMEM;
-+	path->reada = READA_FORWARD;
-+	path->reada_maximum_size = ULLONG_MAX;
- 
- 	/*
- 	 * uuid_mutex is needed only if we are mounting a sprout FS
--- 
-2.17.1
-
+Freundliche Gr=C3=BC=C3=9Fe
+Frau Aisha Al-Qaddafi
