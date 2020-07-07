@@ -2,133 +2,118 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 851C9216E4C
-	for <lists+linux-btrfs@lfdr.de>; Tue,  7 Jul 2020 16:02:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 535D1216E5F
+	for <lists+linux-btrfs@lfdr.de>; Tue,  7 Jul 2020 16:07:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728370AbgGGOBs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 7 Jul 2020 10:01:48 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:37032 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728100AbgGGOBs (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 7 Jul 2020 10:01:48 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 067DucOv160138;
-        Tue, 7 Jul 2020 14:01:34 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=BMf3w9y2XYDkAXSYrmlZg/6buyynJndzKMKgvqKG3FE=;
- b=LZpIUhOF9v6c/39UpI3ntvKZQN0wiZ0wSfnxpbcL6XFK24yuqM3/E5AQG3zMe64a6F+o
- R+wnaR8CDr3AYlZe3bAXGx9clQ90yD4HBv8OGA5vw/qO1O1gPaQyfGKN7gTHDt5KRsm8
- MjKdA1kuqQtkE9AEAmAmSyokH09lg1XOD1UqWCgY+HIzOZTojY/zNcOvHhMLFprT4rQ4
- gJ6MWWzkdVcaabAtiHDKuTyb29toi8dSgQMPRNAzlaq7vCaDmSXRwpLEp5tDVdvA+P5V
- bdmg6ZQR/FQan6m0ZW8SeSJtUW7GY9v3lwVaG48OBQCQs8usivhrkXFTYtopEtvbHQ8N nA== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2120.oracle.com with ESMTP id 323sxxrx52-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 07 Jul 2020 14:01:32 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 067DwEhL040674;
-        Tue, 7 Jul 2020 14:01:32 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3030.oracle.com with ESMTP id 3233px70st-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 07 Jul 2020 14:01:30 +0000
-Received: from abhmp0002.oracle.com (abhmp0002.oracle.com [141.146.116.8])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 067E1NQe022252;
-        Tue, 7 Jul 2020 14:01:23 GMT
-Received: from localhost (/67.169.218.210)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 07 Jul 2020 07:01:23 -0700
-Date:   Tue, 7 Jul 2020 07:01:20 -0700
-From:   "Darrick J. Wong" <darrick.wong@oracle.com>
-To:     Goldwyn Rodrigues <rgoldwyn@suse.de>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Christoph Hellwig <hch@lst.de>, linux-fsdevel@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, fdmanana@gmail.com, dsterba@suse.cz,
-        david@fromorbit.com, cluster-devel@redhat.com,
-        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org
-Subject: Re: always fall back to buffered I/O after invalidation failures,
- was: Re: [PATCH 2/6] iomap: IOMAP_DIO_RWF_NO_STALE_PAGECACHE return if page
- invalidation fails
-Message-ID: <20200707140120.GJ7606@magnolia>
-References: <20200629192353.20841-1-rgoldwyn@suse.de>
- <20200629192353.20841-3-rgoldwyn@suse.de>
- <20200701075310.GB29884@lst.de>
- <20200707124346.xnr5gtcysuzehejq@fiona>
- <20200707125705.GK25523@casper.infradead.org>
- <20200707134952.3niqhxngwh3gus54@fiona>
+        id S1727090AbgGGOHD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 7 Jul 2020 10:07:03 -0400
+Received: from mx2.suse.de ([195.135.220.15]:49776 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726805AbgGGOHD (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 7 Jul 2020 10:07:03 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 68A39AF38;
+        Tue,  7 Jul 2020 14:07:02 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 707C5DA818; Tue,  7 Jul 2020 16:06:43 +0200 (CEST)
+Date:   Tue, 7 Jul 2020 16:06:43 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org,
+        Marcos Paulo de Souza <marcos@mpdesouza.com>
+Subject: Re: [PATCH] btrfs: discard: reduce the block group ref when grabbing
+ from unused block group list
+Message-ID: <20200707140643.GI27795@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org,
+        Marcos Paulo de Souza <marcos@mpdesouza.com>
+References: <20200703070550.39299-1-wqu@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200707134952.3niqhxngwh3gus54@fiona>
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9674 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 adultscore=0 spamscore=0
- mlxscore=0 mlxlogscore=999 bulkscore=0 phishscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2007070104
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9674 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 mlxlogscore=999
- bulkscore=0 impostorscore=0 adultscore=0 cotscore=-2147483648 phishscore=0
- priorityscore=1501 clxscore=1011 malwarescore=0 suspectscore=1 spamscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2004280000 definitions=main-2007070104
+In-Reply-To: <20200703070550.39299-1-wqu@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Jul 07, 2020 at 08:49:52AM -0500, Goldwyn Rodrigues wrote:
-> On 13:57 07/07, Matthew Wilcox wrote:
-> > On Tue, Jul 07, 2020 at 07:43:46AM -0500, Goldwyn Rodrigues wrote:
-> > > On  9:53 01/07, Christoph Hellwig wrote:
-> > > > On Mon, Jun 29, 2020 at 02:23:49PM -0500, Goldwyn Rodrigues wrote:
-> > > > > From: Goldwyn Rodrigues <rgoldwyn@suse.com>
-> > > > > 
-> > > > > For direct I/O, add the flag IOMAP_DIO_RWF_NO_STALE_PAGECACHE to indicate
-> > > > > that if the page invalidation fails, return back control to the
-> > > > > filesystem so it may fallback to buffered mode.
-> > > > > 
-> > > > > Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
-> > > > > Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
-> > > > 
-> > > > I'd like to start a discussion of this shouldn't really be the
-> > > > default behavior.  If we have page cache that can't be invalidated it
-> > > > actually makes a whole lot of sense to not do direct I/O, avoid the
-> > > > warnings, etc.
-> > > > 
-> > > > Adding all the relevant lists.
-> > > 
-> > > Since no one responded so far, let me see if I can stir the cauldron :)
-> > > 
-> > > What error should be returned in case of such an error? I think the
-> > 
-> > Christoph's message is ambiguous.  I don't know if he means "fail the
-> > I/O with an error" or "satisfy the I/O through the page cache".  I'm
-> > strongly in favour of the latter.  Indeed, I'm in favour of not invalidating
-> > the page cache at all for direct I/O.  For reads, I think the page cache
-> > should be used to satisfy any portion of the read which is currently
+On Fri, Jul 03, 2020 at 03:05:50PM +0800, Qu Wenruo wrote:
+> [BUG]
+> The following small test script can trigger ASSERT() at unmount time:
 > 
-> That indeed would make reads faster. How about if the pages are dirty
-> during DIO reads?
-> Should a direct I/O read be responsible for making sure that the dirty
-> pages are written back. Technically direct I/O reads is that we are
-> reading from the device.
-
-The filemap_write_and_wait_range should persist that data, right?
-
-> > cached.  For writes, I think we should write into the page cache pages
-> > which currently exist, and then force those pages to be written back,
-> > but left in cache.
+>   mkfs.btrfs -f $dev
+>   mount $dev $mnt
+>   mount -o remount,discard=async $mnt
+>   umount $mnt
 > 
-> Yes, that makes sense.
-> If this is implemented, what would be the difference between O_DIRECT
-> and O_DSYNC, if any?
+> The call trace:
+>   assertion failed: atomic_read(&block_group->count) == 1, in fs/btrfs/block-group.c:3431
+>   ------------[ cut here ]------------
+>   kernel BUG at fs/btrfs/ctree.h:3204!
+>   invalid opcode: 0000 [#1] PREEMPT SMP NOPTI
+>   CPU: 4 PID: 10389 Comm: umount Tainted: G           O      5.8.0-rc3-custom+ #68
+>   Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 0.0.0 02/06/2015
+>   Call Trace:
+>    btrfs_free_block_groups.cold+0x22/0x55 [btrfs]
+>    close_ctree+0x2cb/0x323 [btrfs]
+>    btrfs_put_super+0x15/0x17 [btrfs]
+>    generic_shutdown_super+0x72/0x110
+>    kill_anon_super+0x18/0x30
+>    btrfs_kill_super+0x17/0x30 [btrfs]
+>    deactivate_locked_super+0x3b/0xa0
+>    deactivate_super+0x40/0x50
+>    cleanup_mnt+0x135/0x190
+>    __cleanup_mnt+0x12/0x20
+>    task_work_run+0x64/0xb0
+>    __prepare_exit_to_usermode+0x1bc/0x1c0
+>    __syscall_return_slowpath+0x47/0x230
+>    do_syscall_64+0x64/0xb0
+>    entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> 
+> The code:
+>                 ASSERT(atomic_read(&block_group->count) == 1);
+>                 btrfs_put_block_group(block_group);
+> 
+> [CAUSE]
+> Obviously it's some btrfs_get_block_group() call doesn't get its put
+> call.
+> 
+> The offending btrfs_get_block_group() happens here:
+> 
+>   void btrfs_mark_bg_unused(struct btrfs_block_group *bg)
+>   {
+>   	if (list_empty(&bg->bg_list)) {
+>   		btrfs_get_block_group(bg);
+> 		list_add_tail(&bg->bg_list, &fs_info->unused_bgs);
+>   	}
+>   }
+> 
+> So every call sites removing the block group from unused_bgs list should
+> reduce the ref count of that block group.
+> 
+> However for async discard, it didn't follow the call convention:
+> 
+>   void btrfs_discard_punt_unused_bgs_list(struct btrfs_fs_info *fs_info)
+>   {
+>   	list_for_each_entry_safe(block_group, next, &fs_info->unused_bgs,
+>   				 bg_list) {
+>   		list_del_init(&block_group->bg_list);
+>   		btrfs_discard_queue_work(&fs_info->discard_ctl, block_group);
+>   	}
+>   }
+> 
+> And in btrfs_discard_queue_work(), it doesn't call
+> btrfs_put_block_group() either.
+> 
+> [FIX]
+> Fix the problem by reducing the reference count when we grab the block
+> group from unused_bgs list.
+> 
+> Reported-by: Marcos Paulo de Souza <marcos@mpdesouza.com>
+> Fixes: 6e80d4f8c422 ("btrfs: handle empty block_group removal for async discard")
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
 
-Presumably a direct write would proceed as it does today if there's no
-pagecache at all?
-
---D
-
-> -- 
-> Goldwyn
+Added it misc-next, thanks.
