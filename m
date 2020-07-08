@@ -2,24 +2,24 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32CD62181C7
-	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Jul 2020 09:51:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84826218484
+	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Jul 2020 12:00:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727831AbgGHHvN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 8 Jul 2020 03:51:13 -0400
-Received: from mx2.suse.de ([195.135.220.15]:37528 "EHLO mx2.suse.de"
+        id S1726586AbgGHKA3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 8 Jul 2020 06:00:29 -0400
+Received: from mx2.suse.de ([195.135.220.15]:44000 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725747AbgGHHvM (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 8 Jul 2020 03:51:12 -0400
+        id S1726196AbgGHKA2 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 8 Jul 2020 06:00:28 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id C3C4AAEC9
-        for <linux-btrfs@vger.kernel.org>; Wed,  8 Jul 2020 07:51:10 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id AEA96AD41
+        for <linux-btrfs@vger.kernel.org>; Wed,  8 Jul 2020 10:00:27 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
 Subject: [PATCH 1/2] btrfs: avoid possible signal interruption for btrfs_drop_snapshot() on relocation tree
-Date:   Wed,  8 Jul 2020 15:50:30 +0800
-Message-Id: <20200708075031.88204-1-wqu@suse.com>
+Date:   Wed,  8 Jul 2020 18:00:21 +0800
+Message-Id: <20200708100022.90085-1-wqu@suse.com>
 X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
