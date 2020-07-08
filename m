@@ -2,24 +2,24 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5BDE2184AB
-	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Jul 2020 12:08:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D482E218604
+	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Jul 2020 13:23:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726586AbgGHKIA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 8 Jul 2020 06:08:00 -0400
-Received: from mx2.suse.de ([195.135.220.15]:49520 "EHLO mx2.suse.de"
+        id S1728742AbgGHLXV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 8 Jul 2020 07:23:21 -0400
+Received: from mx2.suse.de ([195.135.220.15]:45880 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725810AbgGHKIA (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 8 Jul 2020 06:08:00 -0400
+        id S1728666AbgGHLXV (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 8 Jul 2020 07:23:21 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 52807AD41;
-        Wed,  8 Jul 2020 10:07:58 +0000 (UTC)
-Subject: Re: [PATCH 2/2] btrfs: relocation: review the call sites which can be
- interruped by signal
-To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-References: <20200708100022.90085-1-wqu@suse.com>
- <20200708100022.90085-2-wqu@suse.com>
+        by mx2.suse.de (Postfix) with ESMTP id 854B5AD4B;
+        Wed,  8 Jul 2020 11:23:19 +0000 (UTC)
+Subject: Re: [PATCH 00/23][v2] Change data reservations to use the ticketing
+ infra
+To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com
+References: <20200707154246.52844-1-josef@toxicpanda.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  xsFNBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -63,12 +63,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  KIuxEcV8wcVjr+Wr9zRl06waOCkgrQbTPp631hToxo+4rA1jiQF2M80HAet65ytBVR2pFGZF
  zGYYLqiG+mpUZ+FPjxk9kpkRYz61mTLSY7tuFljExfJWMGfgSg1OxfLV631jV1TcdUnx+h3l
  Sqs2vMhAVt14zT8mpIuu2VNxcontxgVr1kzYA/tQg32fVRbGr449j1gw57BV9i0vww==
-Message-ID: <f23e5b5d-a53a-568f-171e-fcdca7dc3821@suse.com>
-Date:   Wed, 8 Jul 2020 13:07:56 +0300
+Message-ID: <4e8611b6-82ca-a3ce-df27-308148a2333d@suse.com>
+Date:   Wed, 8 Jul 2020 14:23:18 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.8.0
 MIME-Version: 1.0
-In-Reply-To: <20200708100022.90085-2-wqu@suse.com>
+In-Reply-To: <20200707154246.52844-1-josef@toxicpanda.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -79,74 +79,26 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 8.07.20 г. 13:00 ч., Qu Wenruo wrote:
-> Since most metadata reservation calls can return -EINTR when get
-> interruped by fatal signal, we need to review the all the metadata
-> reservation call sites.
+On 7.07.20 г. 18:42 ч., Josef Bacik wrote:
+> v1->v2:
+> - Adjusted a comment in may_commit_transaction.
+> - Fixed one of the intermediate patches to properly update ->reclaim_size.
 > 
-> In relocation code, the metadata reservation happens in the following
-> sites:
-> - btrfs_block_rsv_refill() in merge_reloc_root()
->   merge_reloc_root() is a pretty critial section, we don't want get
->   interrupted by signal, so change the flush status to
->   BTRFS_RESERVE_FLUSH_LIMIT, so it won't get interrupted by signal.
->   Since such change can be ENPSPC-prone, also shrink the amount of
->   metadata to reserve a little to avoid deadly ENOSPC there.
+> We've had two different things in place to reserve data and metadata space,
+> because generally speaking data is much simpler.  However the data reservations
+> still suffered from the same issues that plagued metadata reservations, you
+> could get multiple tasks racing in to get reservations.  This causes problems
+> with cases like write/delete loops where we should be able to fill up the fs,
+> delete everything, and go again.  You would sometimes race with a flusher that's
+> trying to unpin the free space, take it's reservations, and then it would fail.
+> 
+> Fix this by moving the data reservations under the metadata ticketing
+> infrastructure.  This gets rid of that problem, and simplifies our enospc code
+> more by consolidating it into a single path.  Thanks,
+> 
+> Josef
+> 
+> 
 
-You need to either document why do you think this smaller reservation is
-fine in the changelog or document it it with a comment above it.
 
-> 
-> - btrfs_block_rsv_refill() in reserve_metadata_space()
->   It calls with BTRFS_RESERVE_FLUSH_LIMIT, which won't get interrupred
->   by signal.
-> 
-> - btrfs_block_rsv_refill() in prepare_to_relocate()
-> - btrfs_block_rsv_add() in prepare_to_relocate()
-> - btrfs_block_rsv_refill() in relocate_block_group()
-> - btrfs_delalloc_reserve_metadata() in relocate_file_extent_cluster()
-> - btrfs_start_transaction() in relocate_block_group()
-> - btrfs_start_transaction() in create_reloc_inode()
->   Can be interruped by fatal signal and we can handle it easily.
->   For these call sites, just catch the -EINTR value in btrfs_balance()
->   and count them as canceled.
-> 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> ---
->  fs/btrfs/relocation.c | 4 ++--
->  fs/btrfs/volumes.c    | 2 +-
->  2 files changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-> index 2b869fb2e62c..29bbead29be5 100644
-> --- a/fs/btrfs/relocation.c
-> +++ b/fs/btrfs/relocation.c
-> @@ -1686,12 +1686,12 @@ static noinline_for_stack int merge_reloc_root(struct reloc_control *rc,
->  		btrfs_unlock_up_safe(path, 0);
->  	}
->  
-> -	min_reserved = fs_info->nodesize * (BTRFS_MAX_LEVEL - 1) * 2;
-> +	min_reserved = fs_info->nodesize * level * 2;
->  	memset(&next_key, 0, sizeof(next_key));
->  
->  	while (1) {
->  		ret = btrfs_block_rsv_refill(root, rc->block_rsv, min_reserved,
-> -					     BTRFS_RESERVE_FLUSH_ALL);
-> +					     BTRFS_RESERVE_FLUSH_LIMIT);
->  		if (ret) {
->  			err = ret;
->  			goto out;
-> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> index aabc6c922e04..d60df30bdc47 100644
-> --- a/fs/btrfs/volumes.c
-> +++ b/fs/btrfs/volumes.c
-> @@ -4135,7 +4135,7 @@ int btrfs_balance(struct btrfs_fs_info *fs_info,
->  	mutex_lock(&fs_info->balance_mutex);
->  	if (ret == -ECANCELED && atomic_read(&fs_info->balance_pause_req))
->  		btrfs_info(fs_info, "balance: paused");
-> -	else if (ret == -ECANCELED && atomic_read(&fs_info->balance_cancel_req))
-> +	else if (ret == -ECANCELED  || ret == -EINTR)
->  		btrfs_info(fs_info, "balance: canceled");
->  	else
->  		btrfs_info(fs_info, "balance: ended with status: %d", ret);
-> 
+What branch is this basedd off? It's not applying on current misc-next.
