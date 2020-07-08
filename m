@@ -2,57 +2,58 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 291F32189A9
-	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Jul 2020 16:00:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E97A72189AA
+	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Jul 2020 16:00:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729642AbgGHOAg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 8 Jul 2020 10:00:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45790 "EHLO
+        id S1729652AbgGHOAj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 8 Jul 2020 10:00:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728932AbgGHOAg (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 8 Jul 2020 10:00:36 -0400
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5807DC061A0B
-        for <linux-btrfs@vger.kernel.org>; Wed,  8 Jul 2020 07:00:36 -0700 (PDT)
-Received: by mail-qt1-x841.google.com with SMTP id u12so34490509qth.12
-        for <linux-btrfs@vger.kernel.org>; Wed, 08 Jul 2020 07:00:36 -0700 (PDT)
+        with ESMTP id S1728932AbgGHOAi (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 8 Jul 2020 10:00:38 -0400
+Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61A8CC061A0B
+        for <linux-btrfs@vger.kernel.org>; Wed,  8 Jul 2020 07:00:38 -0700 (PDT)
+Received: by mail-qv1-xf41.google.com with SMTP id t11so18413666qvk.1
+        for <linux-btrfs@vger.kernel.org>; Wed, 08 Jul 2020 07:00:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=YK9+ywm77Te+pOZHuYGGFVXJb/D8KOylDb/tS2FRu/g=;
-        b=ONHtMbPXgkJLdG+/lcpjGSQPz27nHoR8UM9UtiQJf8kiWTDLs6GJdDXfYegk8+ZqN7
-         5wSj0XITBkax4DO2XB/c+ho7XjbrNNH8hS1chmx3sLYumjDc3A6Ve0mFLrGFJm3kC95+
-         PL7dZeUu6sauh6Iy/csRgePJs/aoha9KozGqsmOMZKIY3lwYiEiIR2ORAJxQYefbrJQC
-         aMkZFQTASGRThm2JoXbfULR526/cDKKmgvcZiOHN3PpsUnhKBGJ04RatwJ4NieYRU8+l
-         mFYGrW6Ws+y4zRALh5uf9ps+Ou3GZawHfm1RCYmtk14KEiHmdBKTWMQBV/Y1TsfOBQhD
-         g9fQ==
+        bh=/Ci5z3yMI3h5IFqCrR0RnubjoKZNhhjifg4W5m/gO7o=;
+        b=d+7Q+fKi9A3tdYihFobpUsUw4s2Z0brjIPWkzyxmhSDdITzAMUyyz+LGgKOGYKrWeu
+         S70M+2lHcewu0eRUJpPEzzoriokfDVCCHmeYHluFSyuWwlc/QtyIXZSzngJ0Znz0Du9h
+         Vs4YYTsxDOlsAea6KpOC8tjeyrpQ23xyheA9hQWOR22oCxaq3U3U4L1YiJgGlGI4ozKq
+         hfZmaZD5q+iJ2x3rpUe+U5R6P5wlrVCa/H7DHCiQDVrHA+5jmkm9ePtVRyw6S5J/O0HG
+         bUOebyX5dsOcyNstkgFU69qn7FQmpunug+hmD0DZMP2C3uUpzC/zAzSic/KzvXaTHPFX
+         8OTw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=YK9+ywm77Te+pOZHuYGGFVXJb/D8KOylDb/tS2FRu/g=;
-        b=Dm+pVrLrsahoOfN/3ytdTCtfejCIbwR6UGHHJfkBvekzVXnQKNWz/JlCfpax7aryml
-         fDMO9Rw1l5i2+oMo9Zf0O/ua21R1NtOyqypmufVmRA6W+/BzVNRoUWBRHOdEie0Wml16
-         +XDQBa7Iq6rlJYXejMLcgh+DCJH2TG/6nvVIt4p8youfdkP4GWqxYEv7hgxeFvRVwOJI
-         QRXDwutu5obicCGMgrpHjQx5FFzDzIH4VAknXI8xJYjKx+hm3GctQyaoceZtrTq4J+z5
-         CsiTVToMX81QRvQ4MovC/OgAUOak/VEak61c2vp6BG8ktdJ3VhM6ZwCfSz/LwADZX46s
-         PFIg==
-X-Gm-Message-State: AOAM531LJhuuZRjuX/tS3FpEIn99PiFT/+wW04AwJHELtllhffUtvzI1
-        aoZ5m5tntzZZqfpXG4pk9D2JmzaajYUOAA==
-X-Google-Smtp-Source: ABdhPJxvYNnksohRteOA4NFZVK3KHNL1KpOytIxdYxd4Nj+sOsVnYvKKxKzuiGlE/JiNeRPJBO0hCA==
-X-Received: by 2002:ac8:1305:: with SMTP id e5mr60425904qtj.78.1594216835258;
-        Wed, 08 Jul 2020 07:00:35 -0700 (PDT)
+        bh=/Ci5z3yMI3h5IFqCrR0RnubjoKZNhhjifg4W5m/gO7o=;
+        b=E1ab/4D1Up+vJpY8BOENKgbU1IzgOqhhvA8BUvvO8iK3lsh6Zf5URJZk/FjIb9e253
+         H5683cXzffulhZv5Ib2LE1j4wYBQytgOQ6d2i1U9PCYQValkcJFE9aXoWA5aNIaD1Pz7
+         NlbP/rnGW74AJaXvdUloFm7UWZ+WPWfRniq2rwL1BD+rDOl7IoXz3LzN87YMDN839Q9k
+         LBA2P9/nIXeEuCJvFQ/Vk+5WS0SH8llAq4P2rL/+Tq0pUu8nzekc7YjQ1JLuNv588GNE
+         OKDm5VmTTCV8pxNMuHtmLIIujUy/HL3EFC7fLwB+Y/qM8bxTz9FOeoZ+E0Qhw2W91Y37
+         jZRQ==
+X-Gm-Message-State: AOAM532WTA5nRBrXu21ZwB1ag79zsrzM9qQSk8xVFWk/B7Q/ESR1bTD6
+        g3KSQo6GxlV/Lg7G11mKBgrbGR2ziJ+VzA==
+X-Google-Smtp-Source: ABdhPJzp0HYy+GldPW3OdNbxFdWEd19YF9lLA8Rsxq3ABUfMeWk+2mQde+SRXIn+wiPF0NVmJ5rQOg==
+X-Received: by 2002:a0c:e903:: with SMTP id a3mr56969749qvo.144.1594216837080;
+        Wed, 08 Jul 2020 07:00:37 -0700 (PDT)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id b53sm31248752qtc.65.2020.07.08.07.00.34
+        by smtp.gmail.com with ESMTPSA id i21sm30029717qke.9.2020.07.08.07.00.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Jul 2020 07:00:34 -0700 (PDT)
+        Wed, 08 Jul 2020 07:00:36 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Cc:     Nikolay Borisov <nborisov@suse.com>
-Subject: [PATCH 08/23] btrfs: call btrfs_try_granting_tickets when reserving space
-Date:   Wed,  8 Jul 2020 09:59:58 -0400
-Message-Id: <20200708140013.56994-9-josef@toxicpanda.com>
+Cc:     Nikolay Borisov <nborisov@suse.com>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Subject: [PATCH 09/23] btrfs: use the btrfs_space_info_free_bytes_may_use helper for delalloc
+Date:   Wed,  8 Jul 2020 09:59:59 -0400
+Message-Id: <20200708140013.56994-10-josef@toxicpanda.com>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20200708140013.56994-1-josef@toxicpanda.com>
 References: <20200708140013.56994-1-josef@toxicpanda.com>
@@ -63,35 +64,34 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-If we have compression on we could free up more space than we reserved,
-and thus be able to make a space reservation.  Add the call for this
-scenario.
+We are going to use the ticket infrastructure for data, so use the
+btrfs_space_info_free_bytes_may_use() helper in
+btrfs_free_reserved_data_space_noquota() so we get the
+try_granting_tickets call when we free our reservation.
 
 Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 Tested-by: Nikolay Borisov <nborisov@suse.com>
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/block-group.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ fs/btrfs/delalloc-space.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-index daf88891a40a..c7097cb4fc7d 100644
---- a/fs/btrfs/block-group.c
-+++ b/fs/btrfs/block-group.c
-@@ -3058,6 +3058,13 @@ int btrfs_add_reserved_bytes(struct btrfs_block_group *cache,
- 						      space_info, -ram_bytes);
- 		if (delalloc)
- 			cache->delalloc_bytes += num_bytes;
-+
-+		/*
-+		 * Compression can use less space than we reserved, so wake
-+		 * tickets if that happens.
-+		 */
-+		if (num_bytes < ram_bytes)
-+			btrfs_try_granting_tickets(cache->fs_info, space_info);
- 	}
- 	spin_unlock(&cache->lock);
- 	spin_unlock(&space_info->lock);
+diff --git a/fs/btrfs/delalloc-space.c b/fs/btrfs/delalloc-space.c
+index 0e354e9e57d0..0a41bdcc14d1 100644
+--- a/fs/btrfs/delalloc-space.c
++++ b/fs/btrfs/delalloc-space.c
+@@ -277,9 +277,7 @@ void btrfs_free_reserved_data_space_noquota(struct btrfs_fs_info *fs_info,
+ 	ASSERT(IS_ALIGNED(len, fs_info->sectorsize));
+ 
+ 	data_sinfo = fs_info->data_sinfo;
+-	spin_lock(&data_sinfo->lock);
+-	btrfs_space_info_update_bytes_may_use(fs_info, data_sinfo, -len);
+-	spin_unlock(&data_sinfo->lock);
++	btrfs_space_info_free_bytes_may_use(fs_info, data_sinfo, len);
+ }
+ 
+ /*
 -- 
 2.24.1
 
