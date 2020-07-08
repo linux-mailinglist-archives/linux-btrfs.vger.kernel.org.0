@@ -2,200 +2,125 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4FE2217F87
-	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Jul 2020 08:25:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56229217FEB
+	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Jul 2020 08:51:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729289AbgGHGZu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 8 Jul 2020 02:25:50 -0400
-Received: from mx2.suse.de ([195.135.220.15]:56322 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726321AbgGHGZu (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 8 Jul 2020 02:25:50 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id D2497AC1D;
-        Wed,  8 Jul 2020 06:25:48 +0000 (UTC)
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     Josef Bacik <josef@toxicpanda.com>
-Subject: [PATCH v3 3/3] btrfs: qgroup: remove the ASYNC_COMMIT mechanism in favor of qgroup  reserve retry-after-EDQUOT
-Date:   Wed,  8 Jul 2020 14:24:47 +0800
-Message-Id: <20200708062447.81341-4-wqu@suse.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200708062447.81341-1-wqu@suse.com>
-References: <20200708062447.81341-1-wqu@suse.com>
+        id S1729992AbgGHGvg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 8 Jul 2020 02:51:36 -0400
+Received: from mail105.syd.optusnet.com.au ([211.29.132.249]:55758 "EHLO
+        mail105.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729971AbgGHGvf (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 8 Jul 2020 02:51:35 -0400
+Received: from dread.disaster.area (pa49-180-53-24.pa.nsw.optusnet.com.au [49.180.53.24])
+        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id 408423A4417;
+        Wed,  8 Jul 2020 16:51:29 +1000 (AEST)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1jt3vT-0003aV-Rn; Wed, 08 Jul 2020 16:51:27 +1000
+Date:   Wed, 8 Jul 2020 16:51:27 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Goldwyn Rodrigues <rgoldwyn@suse.de>,
+        linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        fdmanana@gmail.com, dsterba@suse.cz, darrick.wong@oracle.com,
+        cluster-devel@redhat.com, linux-ext4@vger.kernel.org,
+        linux-xfs@vger.kernel.org
+Subject: Re: always fall back to buffered I/O after invalidation failures,
+ was: Re: [PATCH 2/6] iomap: IOMAP_DIO_RWF_NO_STALE_PAGECACHE return if page
+ invalidation fails
+Message-ID: <20200708065127.GM2005@dread.disaster.area>
+References: <20200629192353.20841-1-rgoldwyn@suse.de>
+ <20200629192353.20841-3-rgoldwyn@suse.de>
+ <20200701075310.GB29884@lst.de>
+ <20200707124346.xnr5gtcysuzehejq@fiona>
+ <20200707125705.GK25523@casper.infradead.org>
+ <20200707130030.GA13870@lst.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200707130030.GA13870@lst.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=QIgWuTDL c=1 sm=1 tr=0
+        a=moVtWZxmCkf3aAMJKIb/8g==:117 a=moVtWZxmCkf3aAMJKIb/8g==:17
+        a=kj9zAlcOel0A:10 a=_RQrkK6FrEwA:10 a=iox4zFpeAAAA:8 a=yPCof4ZbAAAA:8
+        a=7-415B0cAAAA:8 a=3vpnGOzTaiQfhgfqfmAA:9 a=CjuIK1q_8ugA:10
+        a=WzC6qhA0u3u7Ye7llzcV:22 a=biEYGPWJfzWAr4FL6Ov7:22
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-commit a514d63882c3 ("btrfs: qgroup: Commit transaction in advance to
-reduce early EDQUOT") tries to reduce the early EDQUOT problems by
-checking the qgroup free against threshold and try to wake up commit
-kthread to free some space.
+On Tue, Jul 07, 2020 at 03:00:30PM +0200, Christoph Hellwig wrote:
+> On Tue, Jul 07, 2020 at 01:57:05PM +0100, Matthew Wilcox wrote:
+> > On Tue, Jul 07, 2020 at 07:43:46AM -0500, Goldwyn Rodrigues wrote:
+> > > On  9:53 01/07, Christoph Hellwig wrote:
+> > > > On Mon, Jun 29, 2020 at 02:23:49PM -0500, Goldwyn Rodrigues wrote:
+> > > > > From: Goldwyn Rodrigues <rgoldwyn@suse.com>
+> > > > > 
+> > > > > For direct I/O, add the flag IOMAP_DIO_RWF_NO_STALE_PAGECACHE to indicate
+> > > > > that if the page invalidation fails, return back control to the
+> > > > > filesystem so it may fallback to buffered mode.
+> > > > > 
+> > > > > Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
+> > > > > Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
+> > > > 
+> > > > I'd like to start a discussion of this shouldn't really be the
+> > > > default behavior.  If we have page cache that can't be invalidated it
+> > > > actually makes a whole lot of sense to not do direct I/O, avoid the
+> > > > warnings, etc.
+> > > > 
+> > > > Adding all the relevant lists.
+> > > 
+> > > Since no one responded so far, let me see if I can stir the cauldron :)
+> > > 
+> > > What error should be returned in case of such an error? I think the
+> > 
+> > Christoph's message is ambiguous.  I don't know if he means "fail the
+> > I/O with an error" or "satisfy the I/O through the page cache".  I'm
+> > strongly in favour of the latter.
+> 
+> Same here.  Sorry if my previous mail was unclear.
+> 
+> > Indeed, I'm in favour of not invalidating
+> > the page cache at all for direct I/O.  For reads, I think the page cache
+> > should be used to satisfy any portion of the read which is currently
+> > cached.  For writes, I think we should write into the page cache pages
+> > which currently exist, and then force those pages to be written back,
+> > but left in cache.
+> 
+> Something like that, yes.
 
-The problem of that mechanism is, it can only free qgroup per-trans
-metadata space, can't do anything to data, nor prealloc qgroup space.
+So are we really willing to take the performance regression that
+occurs from copying out of the page cache consuming lots more CPU
+than an actual direct IO read? Or that direct IO writes suddenly
+serialise because there are page cache pages and now we have to do
+buffered IO?
 
-Now since we have the ability to flush qgroup space, and implements
-retry-after-EDQUOT behavior, such mechanism is completely replaced.
+Direct IO should be a deterministic, zero-copy IO path to/from
+storage. Using the CPU to copy data during direct IO is the complete
+opposite of the intended functionality, not to mention the behaviour
+that many applications have been careful designed and tuned for.
 
-So this patch will cleanup such mechanism in favor of
-retry-after-EDQUOT.
+Hence I think that forcing iomap to use cached pages for DIO is a
+non-starter. I have no problems with providing infrastructure that
+allows filesystems to -opt in- to using buffered IO for the direct
+IO path. However, the change in IO behaviour caused by unpredicably
+switching between direct IO and buffered IO (e.g. suddening DIO
+writes serialise -all IO-) will cause unacceptible performance
+regressions for many applications and be -very difficult to
+diagnose- in production systems.
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
----
- fs/btrfs/ctree.h       |  5 -----
- fs/btrfs/disk-io.c     |  1 -
- fs/btrfs/qgroup.c      | 43 ++----------------------------------------
- fs/btrfs/transaction.c |  1 -
- fs/btrfs/transaction.h | 14 --------------
- 5 files changed, 2 insertions(+), 62 deletions(-)
+IOWs, we need to let the individual filesystems decide how they want
+to use the page cache for direct IO. Just because we have new direct
+IO infrastructure (i.e. iomap) it does not mean we can just make
+wholesale changes to the direct IO path behaviour...
 
-diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index 891f47c7891f..373567c168ac 100644
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -545,11 +545,6 @@ enum {
- 	 * (device replace, resize, device add/delete, balance)
- 	 */
- 	BTRFS_FS_EXCL_OP,
--	/*
--	 * To info transaction_kthread we need an immediate commit so it
--	 * doesn't need to wait for commit_interval
--	 */
--	BTRFS_FS_NEED_ASYNC_COMMIT,
- 	/*
- 	 * Indicate that balance has been set up from the ioctl and is in the
- 	 * main phase. The fs_info::balance_ctl is initialized.
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 0116e0b487c9..3b80d88e6ab2 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -1746,7 +1746,6 @@ static int transaction_kthread(void *arg)
- 
- 		now = ktime_get_seconds();
- 		if (cur->state < TRANS_STATE_COMMIT_START &&
--		    !test_bit(BTRFS_FS_NEED_ASYNC_COMMIT, &fs_info->flags) &&
- 		    (now < cur->start_time ||
- 		     now - cur->start_time < fs_info->commit_interval)) {
- 			spin_unlock(&fs_info->trans_lock);
-diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
-index 207eb52f9d80..78d89dbdeba5 100644
---- a/fs/btrfs/qgroup.c
-+++ b/fs/btrfs/qgroup.c
-@@ -11,7 +11,6 @@
- #include <linux/slab.h>
- #include <linux/workqueue.h>
- #include <linux/btrfs.h>
--#include <linux/sizes.h>
- 
- #include "ctree.h"
- #include "transaction.h"
-@@ -2895,20 +2894,8 @@ int btrfs_qgroup_inherit(struct btrfs_trans_handle *trans, u64 srcid,
- 	return ret;
- }
- 
--/*
-- * Two limits to commit transaction in advance.
-- *
-- * For RATIO, it will be 1/RATIO of the remaining limit as threshold.
-- * For SIZE, it will be in byte unit as threshold.
-- */
--#define QGROUP_FREE_RATIO		32
--#define QGROUP_FREE_SIZE		SZ_32M
--static bool qgroup_check_limits(struct btrfs_fs_info *fs_info,
--				const struct btrfs_qgroup *qg, u64 num_bytes)
-+static bool qgroup_check_limits(const struct btrfs_qgroup *qg, u64 num_bytes)
- {
--	u64 free;
--	u64 threshold;
--
- 	if ((qg->lim_flags & BTRFS_QGROUP_LIMIT_MAX_RFER) &&
- 	    qgroup_rsv_total(qg) + (s64)qg->rfer + num_bytes > qg->max_rfer)
- 		return false;
-@@ -2917,32 +2904,6 @@ static bool qgroup_check_limits(struct btrfs_fs_info *fs_info,
- 	    qgroup_rsv_total(qg) + (s64)qg->excl + num_bytes > qg->max_excl)
- 		return false;
- 
--	/*
--	 * Even if we passed the check, it's better to check if reservation
--	 * for meta_pertrans is pushing us near limit.
--	 * If there is too much pertrans reservation or it's near the limit,
--	 * let's try commit transaction to free some, using transaction_kthread
--	 */
--	if ((qg->lim_flags & (BTRFS_QGROUP_LIMIT_MAX_RFER |
--			      BTRFS_QGROUP_LIMIT_MAX_EXCL))) {
--		if (qg->lim_flags & BTRFS_QGROUP_LIMIT_MAX_EXCL) {
--			free = qg->max_excl - qgroup_rsv_total(qg) - qg->excl;
--			threshold = min_t(u64, qg->max_excl / QGROUP_FREE_RATIO,
--					  QGROUP_FREE_SIZE);
--		} else {
--			free = qg->max_rfer - qgroup_rsv_total(qg) - qg->rfer;
--			threshold = min_t(u64, qg->max_rfer / QGROUP_FREE_RATIO,
--					  QGROUP_FREE_SIZE);
--		}
--
--		/*
--		 * Use transaction_kthread to commit transaction, so we no
--		 * longer need to bother nested transaction nor lock context.
--		 */
--		if (free < threshold)
--			btrfs_commit_transaction_locksafe(fs_info);
--	}
--
- 	return true;
- }
- 
-@@ -2990,7 +2951,7 @@ static int qgroup_reserve(struct btrfs_root *root, u64 num_bytes, bool enforce,
- 
- 		qg = unode_aux_to_qgroup(unode);
- 
--		if (enforce && !qgroup_check_limits(fs_info, qg, num_bytes)) {
-+		if (enforce && !qgroup_check_limits(qg, num_bytes)) {
- 			ret = -EDQUOT;
- 			goto out;
- 		}
-diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
-index b359d4b17658..d0a6150bf82d 100644
---- a/fs/btrfs/transaction.c
-+++ b/fs/btrfs/transaction.c
-@@ -2351,7 +2351,6 @@ int btrfs_commit_transaction(struct btrfs_trans_handle *trans)
- 	 */
- 	cur_trans->state = TRANS_STATE_COMPLETED;
- 	wake_up(&cur_trans->commit_wait);
--	clear_bit(BTRFS_FS_NEED_ASYNC_COMMIT, &fs_info->flags);
- 
- 	spin_lock(&fs_info->trans_lock);
- 	list_del_init(&cur_trans->list);
-diff --git a/fs/btrfs/transaction.h b/fs/btrfs/transaction.h
-index 6f65fff6cf50..0b18d25aa9b6 100644
---- a/fs/btrfs/transaction.h
-+++ b/fs/btrfs/transaction.h
-@@ -208,20 +208,6 @@ int btrfs_clean_one_deleted_snapshot(struct btrfs_root *root);
- int btrfs_commit_transaction(struct btrfs_trans_handle *trans);
- int btrfs_commit_transaction_async(struct btrfs_trans_handle *trans,
- 				   int wait_for_unblock);
--
--/*
-- * Try to commit transaction asynchronously, so this is safe to call
-- * even holding a spinlock.
-- *
-- * It's done by informing transaction_kthread to commit transaction without
-- * waiting for commit interval.
-- */
--static inline void btrfs_commit_transaction_locksafe(
--		struct btrfs_fs_info *fs_info)
--{
--	set_bit(BTRFS_FS_NEED_ASYNC_COMMIT, &fs_info->flags);
--	wake_up_process(fs_info->transaction_kthread);
--}
- int btrfs_end_transaction_throttle(struct btrfs_trans_handle *trans);
- int btrfs_should_end_transaction(struct btrfs_trans_handle *trans);
- void btrfs_throttle(struct btrfs_fs_info *fs_info);
+Cheers,
+
+Dave.
 -- 
-2.27.0
-
+Dave Chinner
+david@fromorbit.com
