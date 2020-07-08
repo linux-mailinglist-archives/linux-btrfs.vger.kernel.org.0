@@ -2,57 +2,56 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D95852189B9
-	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Jul 2020 16:01:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 519AF2189BA
+	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Jul 2020 16:01:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729809AbgGHOBH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        id S1729812AbgGHOBH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
         Wed, 8 Jul 2020 10:01:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45894 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729732AbgGHOBE (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 8 Jul 2020 10:01:04 -0400
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A70B8C061A0B
-        for <linux-btrfs@vger.kernel.org>; Wed,  8 Jul 2020 07:01:04 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id e13so41560056qkg.5
-        for <linux-btrfs@vger.kernel.org>; Wed, 08 Jul 2020 07:01:04 -0700 (PDT)
+        with ESMTP id S1729806AbgGHOBH (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 8 Jul 2020 10:01:07 -0400
+Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1285C061A0B
+        for <linux-btrfs@vger.kernel.org>; Wed,  8 Jul 2020 07:01:06 -0700 (PDT)
+Received: by mail-qv1-xf44.google.com with SMTP id di5so15546468qvb.11
+        for <linux-btrfs@vger.kernel.org>; Wed, 08 Jul 2020 07:01:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Oe8IenWGfx01XjKFxdN5owSVLszP7xfQSpoHZWdTA2w=;
-        b=EYeQWwxvF57D9MYHSLWo/bJo8cOLBlWvi+CN6u9aev+cRIJvXiUgYHJuX+ubLeWhYh
-         Wwqa4mnFlIUGYwbSPpvi7NU23MsbiYobyjxUV+ZQkcV8+B2YnIJfWAxsd/K5qDoR9r0H
-         fHgcadPziVsRk6hlBcAKHBWQFGuwvn5EOOhKQd5j9PonugbtooKX9pehOcX4D3RlAY/h
-         U1xlxEfs7IopMckVVqnzJMFO7Fwqjv0Zz1/49LEXSBOPCcXXa5bG0BGwR1c5ptRecvKt
-         ziqS1nDekfVaKqJm10LlpDkFzXCBpsEhicMYiHir/gA/4FTLaGH6F68UT8bJSVGpAnGJ
-         nZ6w==
+        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
+         :content-transfer-encoding;
+        bh=453v9VzQmoK5i/nqibBwzH7YHdJp2eB/54xxH6Xi1B8=;
+        b=gX4fb3wXzNkwkyhXjnt/yWfDUws9AfhEVY3PvZybJ5xLBziW14TZURkzqmRae9oAdj
+         RtUc15uDvdBE+831QfrGhAhd2/F0aR24HoHqyJPOaJnDabJ2mBxGOJywSfkgtAMqRWIo
+         sp8eWl0iNmBuIv/hPEGfxg8GVJv1Y5wFXdiPr49Nw2BPg/KgSSIRCpcw+apBNpbYO1es
+         LSUhM6VykKlnve9KcnljAS5ReT5KBDLwn/FFIeQL8vKI2/BPFFfM3MWr0Bw16rM0T0Dr
+         wxmRvQoezt7n+2M94KrSD+ztsKQm4j4yWkGicHPe92OCRA5pMnrBppBDsmJD5C7z3BtY
+         Fpvw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Oe8IenWGfx01XjKFxdN5owSVLszP7xfQSpoHZWdTA2w=;
-        b=Z++3dFEQNlAjAaVAi/qi+cgHNC+GQJ5Fn7hNpsYQEmTyU0oVs+pb8mB25NLBk0BebZ
-         d6UJwuMPbe/9LjAWvAtw3AJ9lU1+uSH3pvtx6Cd+YVEmQKQjb+DhENLn082zuBZCMSZK
-         c0+u99OGiAG3lp2wLaQ92Q74U+o5UEFlKnCQyqpQ98M9HUNzhks7TKX39py/okEXZHZL
-         fVsGDtez3IW501BY0LCw3KwaLnQ6I7S4/mfiE8cHXNXZvuih4zREj04vod+4o0l0ymQ7
-         GgtEADSZVVGbbDQYZfxbS4yphfnHjXYQnGQDaajKxKzojXrLFXHmCbl7H2wXqbVqRDle
-         ofJw==
-X-Gm-Message-State: AOAM533MnagrNfgRyOo/OdpteD9poFWB1bzSohsG9CfTt0VrDyPEZwDT
-        BSrO9fztZdDZJA5IxRUNl4A14LuwSY8I7A==
-X-Google-Smtp-Source: ABdhPJy7be3uov+oRNZKRYo331c0nBa5/cTcAAXWz6DszKUE5e7vrvj2t19E2TWNUX08YuyQwC6cjw==
-X-Received: by 2002:a37:7741:: with SMTP id s62mr41233306qkc.263.1594216863334;
-        Wed, 08 Jul 2020 07:01:03 -0700 (PDT)
+        bh=453v9VzQmoK5i/nqibBwzH7YHdJp2eB/54xxH6Xi1B8=;
+        b=rjljbqG/bJSrZn0SNFR5W4uv5ac8y0F5CF7gr3upBpKs8VVQcwjGlG2RBcxj3YDr9y
+         sgYgnowIW7tsZ5jtG9CvmyHEtk9ghJsMh6L2pSHzI+XfoUoorfNL+qoiTy7s8dBXWlrQ
+         qt7mvpBRWtNi9Kd//eRH90vM97VD9LmZZnWyI41w4M2VtnOE9bgKoJtevn623Idg5Zpr
+         MmzonEVJGAXaeeVWgAVOtk2NobcLWL2yLfrVIklqHW6KtoaXPUkvz/hVbIIL2YG9ZXDb
+         OFcBZinr8bcU3ZyElhf11ipGCWICXPFu4eD3lXKwLx5R24DQ0UGvB3UE0pPaqSf46gN0
+         PWFQ==
+X-Gm-Message-State: AOAM533+NUhfs+uu14PJNhKiCAN/OP8v3SiJR4rSakKLoXOJT3QBHqeo
+        fsGsLyLpjeX/ScmCAQ5i0xWT6v05oXI7aw==
+X-Google-Smtp-Source: ABdhPJxHmIDxhirbr5MGH60Q6/Dui+B4IfTefnxShB8zpmktIp15JcxEM8t7GfB4PzL7oYX2mORzlA==
+X-Received: by 2002:ad4:504a:: with SMTP id m10mr45148897qvq.172.1594216865494;
+        Wed, 08 Jul 2020 07:01:05 -0700 (PDT)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id k197sm28251563qke.133.2020.07.08.07.01.02
+        by smtp.gmail.com with ESMTPSA id t9sm28151467qke.68.2020.07.08.07.01.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Jul 2020 07:01:02 -0700 (PDT)
+        Wed, 08 Jul 2020 07:01:04 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Cc:     Nikolay Borisov <nborisov@suse.com>
-Subject: [PATCH 22/23] btrfs: do async reclaim for data reservations
-Date:   Wed,  8 Jul 2020 10:00:12 -0400
-Message-Id: <20200708140013.56994-23-josef@toxicpanda.com>
+Subject: [PATCH 23/23] btrfs: add a comment explaining the data flush steps
+Date:   Wed,  8 Jul 2020 10:00:13 -0400
+Message-Id: <20200708140013.56994-24-josef@toxicpanda.com>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20200708140013.56994-1-josef@toxicpanda.com>
 References: <20200708140013.56994-1-josef@toxicpanda.com>
@@ -63,281 +62,73 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Now that we have the data ticketing stuff in place, move normal data
-reservations to use an async reclaim helper to satisfy tickets.  Before
-we could have multiple tasks race in and both allocate chunks, resulting
-in more data chunks than we would necessarily need.  Serializing these
-allocations and making a single thread responsible for flushing will
-only allocate chunks as needed, as well as cut down on transaction
-commits and other flush related activities.
+The data flushing steps are not obvious to people other than myself and
+Chris.  Write a giant comment explaining the reasoning behind each flush
+step for data as well as why it is in that particular order.
 
-Priority reservations will still work as they have before, simply
-trying to allocate a chunk until they can make their reservation.
-
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
-Tested-by: Nikolay Borisov <nborisov@suse.com>
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/ctree.h      |   3 +-
- fs/btrfs/disk-io.c    |   3 +-
- fs/btrfs/space-info.c | 123 ++++++++++++++++++++++++++++++------------
- fs/btrfs/super.c      |   1 +
- 4 files changed, 93 insertions(+), 37 deletions(-)
+ fs/btrfs/space-info.c | 47 +++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 47 insertions(+)
 
-diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index 4eabad429440..aa6532976404 100644
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -494,7 +494,7 @@ enum btrfs_orphan_cleanup_state {
- 	ORPHAN_CLEANUP_DONE	= 2,
- };
- 
--void btrfs_init_async_reclaim_work(struct work_struct *work);
-+void btrfs_init_async_reclaim_work(struct btrfs_fs_info *fs_info);
- 
- /* fs_info */
- struct reloc_control;
-@@ -917,6 +917,7 @@ struct btrfs_fs_info {
- 
- 	/* Used to reclaim the metadata space in the background. */
- 	struct work_struct async_reclaim_work;
-+	struct work_struct async_data_reclaim_work;
- 
- 	spinlock_t unused_bgs_lock;
- 	struct list_head unused_bgs;
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index aa97a39e4b15..08140caceb33 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -2779,7 +2779,7 @@ void btrfs_init_fs_info(struct btrfs_fs_info *fs_info)
- 	fs_info->check_integrity_print_mask = 0;
- #endif
- 	btrfs_init_balance(fs_info);
--	btrfs_init_async_reclaim_work(&fs_info->async_reclaim_work);
-+	btrfs_init_async_reclaim_work(fs_info);
- 
- 	spin_lock_init(&fs_info->block_group_cache_lock);
- 	fs_info->block_group_cache_tree = RB_ROOT;
-@@ -4099,6 +4099,7 @@ void __cold close_ctree(struct btrfs_fs_info *fs_info)
- 	btrfs_cleanup_defrag_inodes(fs_info);
- 
- 	cancel_work_sync(&fs_info->async_reclaim_work);
-+	cancel_work_sync(&fs_info->async_data_reclaim_work);
- 
- 	/* Cancel or finish ongoing discard work */
- 	btrfs_discard_cleanup(fs_info);
 diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
-index fce61f800150..680218a7b0e5 100644
+index 680218a7b0e5..ba2bb47cbb18 100644
 --- a/fs/btrfs/space-info.c
 +++ b/fs/btrfs/space-info.c
-@@ -998,9 +998,83 @@ static void btrfs_async_reclaim_metadata_space(struct work_struct *work)
+@@ -998,6 +998,53 @@ static void btrfs_async_reclaim_metadata_space(struct work_struct *work)
  	} while (flush_state <= COMMIT_TRANS);
  }
  
--void btrfs_init_async_reclaim_work(struct work_struct *work)
-+static const enum btrfs_flush_state data_flush_states[] = {
-+	FLUSH_DELALLOC_WAIT,
-+	RUN_DELAYED_IPUTS,
-+	FLUSH_DELAYED_REFS,
-+	COMMIT_TRANS,
-+};
-+
-+static void btrfs_async_reclaim_data_space(struct work_struct *work)
- {
--	INIT_WORK(work, btrfs_async_reclaim_metadata_space);
-+	struct btrfs_fs_info *fs_info;
-+	struct btrfs_space_info *space_info;
-+	u64 last_tickets_id;
-+	int flush_state = 0;
-+
-+	fs_info = container_of(work, struct btrfs_fs_info,
-+			       async_data_reclaim_work);
-+	space_info = fs_info->data_sinfo;
-+
-+	spin_lock(&space_info->lock);
-+	if (list_empty(&space_info->tickets)) {
-+		space_info->flush = 0;
-+		spin_unlock(&space_info->lock);
-+		return;
-+	}
-+	last_tickets_id = space_info->tickets_id;
-+	spin_unlock(&space_info->lock);
-+
-+	while (!space_info->full) {
-+		flush_space(fs_info, space_info, U64_MAX, ALLOC_CHUNK_FORCE);
-+		spin_lock(&space_info->lock);
-+		if (list_empty(&space_info->tickets)) {
-+			space_info->flush = 0;
-+			spin_unlock(&space_info->lock);
-+			return;
-+		}
-+		last_tickets_id = space_info->tickets_id;
-+		spin_unlock(&space_info->lock);
-+	}
-+
-+	while (flush_state < ARRAY_SIZE(data_flush_states)) {
-+		flush_space(fs_info, space_info, U64_MAX,
-+			    data_flush_states[flush_state]);
-+		spin_lock(&space_info->lock);
-+		if (list_empty(&space_info->tickets)) {
-+			space_info->flush = 0;
-+			spin_unlock(&space_info->lock);
-+			return;
-+		}
-+
-+		if (last_tickets_id == space_info->tickets_id) {
-+			flush_state++;
-+		} else {
-+			last_tickets_id = space_info->tickets_id;
-+			flush_state = 0;
-+		}
-+
-+		if (flush_state >= ARRAY_SIZE(data_flush_states)) {
-+			if (space_info->full) {
-+				if (maybe_fail_all_tickets(fs_info,
-+							   space_info))
-+					flush_state = 0;
-+				else
-+					space_info->flush = 0;
-+			} else {
-+				flush_state = 0;
-+			}
-+		}
-+		spin_unlock(&space_info->lock);
-+	}
-+}
-+
-+void btrfs_init_async_reclaim_work(struct btrfs_fs_info *fs_info)
-+{
-+	INIT_WORK(&fs_info->async_reclaim_work,
-+		  btrfs_async_reclaim_metadata_space);
-+	INIT_WORK(&fs_info->async_data_reclaim_work,
-+		  btrfs_async_reclaim_data_space);
- }
- 
- static const enum btrfs_flush_state priority_flush_states[] = {
-@@ -1020,13 +1094,6 @@ static const enum btrfs_flush_state evict_flush_states[] = {
- 	COMMIT_TRANS,
- };
- 
--static const enum btrfs_flush_state data_flush_states[] = {
--	FLUSH_DELALLOC_WAIT,
--	RUN_DELAYED_IPUTS,
--	FLUSH_DELAYED_REFS,
--	COMMIT_TRANS,
--};
--
- static void priority_reclaim_metadata_space(struct btrfs_fs_info *fs_info,
- 				struct btrfs_space_info *space_info,
- 				struct reserve_ticket *ticket,
-@@ -1059,12 +1126,8 @@ static void priority_reclaim_metadata_space(struct btrfs_fs_info *fs_info,
- 
- static void priority_reclaim_data_space(struct btrfs_fs_info *fs_info,
- 					struct btrfs_space_info *space_info,
--					struct reserve_ticket *ticket,
--					const enum btrfs_flush_state *states,
--					int states_nr)
-+					struct reserve_ticket *ticket)
- {
--	int flush_state = 0;
--
- 	while (!space_info->full) {
- 		flush_space(fs_info, space_info, U64_MAX, ALLOC_CHUNK_FORCE);
- 		spin_lock(&space_info->lock);
-@@ -1074,17 +1137,6 @@ static void priority_reclaim_data_space(struct btrfs_fs_info *fs_info,
- 		}
- 		spin_unlock(&space_info->lock);
- 	}
--
--	while (flush_state < states_nr) {
--		flush_space(fs_info, space_info, U64_MAX, states[flush_state]);
--		spin_lock(&space_info->lock);
--		if (ticket->bytes == 0) {
--			spin_unlock(&space_info->lock);
--			return;
--		}
--		spin_unlock(&space_info->lock);
--		flush_state++;
--	}
- }
- 
- static void wait_reserve_ticket(struct btrfs_fs_info *fs_info,
-@@ -1139,6 +1191,7 @@ static int handle_reserve_ticket(struct btrfs_fs_info *fs_info,
- 	int ret;
- 
- 	switch (flush) {
-+	case BTRFS_RESERVE_FLUSH_DATA:
- 	case BTRFS_RESERVE_FLUSH_ALL:
- 	case BTRFS_RESERVE_FLUSH_ALL_STEAL:
- 		wait_reserve_ticket(fs_info, space_info, ticket);
-@@ -1153,14 +1206,8 @@ static int handle_reserve_ticket(struct btrfs_fs_info *fs_info,
- 						evict_flush_states,
- 						ARRAY_SIZE(evict_flush_states));
- 		break;
--	case BTRFS_RESERVE_FLUSH_DATA:
--		priority_reclaim_data_space(fs_info, space_info, ticket,
--					data_flush_states,
--					ARRAY_SIZE(data_flush_states));
--		break;
- 	case BTRFS_RESERVE_FLUSH_FREE_SPACE_INODE:
--		priority_reclaim_data_space(fs_info, space_info, ticket,
--					    NULL, 0);
-+		priority_reclaim_data_space(fs_info, space_info, ticket);
- 		break;
- 	default:
- 		ASSERT(0);
-@@ -1225,6 +1272,7 @@ static int __reserve_bytes(struct btrfs_fs_info *fs_info,
- 			   struct btrfs_space_info *space_info, u64 orig_bytes,
- 			   enum btrfs_reserve_flush_enum flush)
- {
-+	struct work_struct *async_work;
- 	struct reserve_ticket ticket;
- 	u64 used;
- 	int ret = 0;
-@@ -1233,6 +1281,11 @@ static int __reserve_bytes(struct btrfs_fs_info *fs_info,
- 	ASSERT(orig_bytes);
- 	ASSERT(!current->journal_info || flush != BTRFS_RESERVE_FLUSH_ALL);
- 
-+	if (flush == BTRFS_RESERVE_FLUSH_DATA)
-+		async_work = &fs_info->async_data_reclaim_work;
-+	else
-+		async_work = &fs_info->async_reclaim_work;
-+
- 	spin_lock(&space_info->lock);
- 	ret = -ENOSPC;
- 	used = btrfs_space_info_used(space_info, true);
-@@ -1274,7 +1327,8 @@ static int __reserve_bytes(struct btrfs_fs_info *fs_info,
- 		init_waitqueue_head(&ticket.wait);
- 		ticket.steal = (flush == BTRFS_RESERVE_FLUSH_ALL_STEAL);
- 		if (flush == BTRFS_RESERVE_FLUSH_ALL ||
--		    flush == BTRFS_RESERVE_FLUSH_ALL_STEAL) {
-+		    flush == BTRFS_RESERVE_FLUSH_ALL_STEAL ||
-+		    flush == BTRFS_RESERVE_FLUSH_DATA) {
- 			list_add_tail(&ticket.list, &space_info->tickets);
- 			if (!space_info->flush) {
- 				space_info->flush = 1;
-@@ -1282,8 +1336,7 @@ static int __reserve_bytes(struct btrfs_fs_info *fs_info,
- 							  space_info->flags,
- 							  orig_bytes, flush,
- 							  "enospc");
--				queue_work(system_unbound_wq,
--					   &fs_info->async_reclaim_work);
-+				queue_work(system_unbound_wq, async_work);
- 			}
- 		} else {
- 			list_add_tail(&ticket.list,
-diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-index f90ee35465ab..b44e859c3d5c 100644
---- a/fs/btrfs/super.c
-+++ b/fs/btrfs/super.c
-@@ -1868,6 +1868,7 @@ static int btrfs_remount(struct super_block *sb, int *flags, char *data)
- 		 * the filesystem is busy.
- 		 */
- 		cancel_work_sync(&fs_info->async_reclaim_work);
-+		cancel_work_sync(&fs_info->async_data_reclaim_work);
- 
- 		btrfs_discard_cleanup(fs_info);
- 
++/*
++ * FLUSH_DELALLOC_WAIT:
++ *   Space is free'd from flushing delalloc in one of two ways.
++ *
++ *   1) compression is on and we allocate less space than we reserved.
++ *   2) We are overwriting existing space.
++ *
++ *   For #1 that extra space is reclaimed as soon as the delalloc pages are
++ *   cow'ed, by way of btrfs_add_reserved_bytes() which adds the actual extent
++ *   length to ->bytes_reserved, and subtracts the reserved space from
++ *   ->bytes_may_use.
++ *
++ *   For #2 this is trickier.  Once the ordered extent runs we will drop the
++ *   extent in the range we are overwriting, which creates a delayed ref for
++ *   that freed extent.  This however is not reclaimed until the transaction
++ *   commits, thus the next stages.
++ *
++ * RUN_DELAYED_IPUTS
++ *   If we are freeing inodes, we want to make sure all delayed iputs have
++ *   completed, because they could have been on an inode with i_nlink == 0, and
++ *   thus have been trunated and free'd up space.  But again this space is not
++ *   immediately re-usable, it comes in the form of a delayed ref, which must be
++ *   run and then the transaction must be committed.
++ *
++ * FLUSH_DELAYED_REFS
++ *   The above two cases generate delayed refs that will affect
++ *   ->total_bytes_pinned.  However this counter can be inconsistent with
++ *   reality if there are outstanding delayed refs.  This is because we adjust
++ *   the counter based soley on the current set of delayed refs and disregard
++ *   any on-disk state which might include more refs.  So for example, if we
++ *   have an extent with 2 references, but we only drop 1, we'll see that there
++ *   is a negative delayed ref count for the extent and assume that the space
++ *   will be free'd, and thus increase ->total_bytes_pinned.
++ *
++ *   Running the delayed refs gives us the actual real view of what will be
++ *   freed at the transaction commit time.  This stage will not actually free
++ *   space for us, it just makes sure that may_commit_transaction() has all of
++ *   the information it needs to make the right decision.
++ *
++ * COMMIT_TRANS
++ *   This is where we reclaim all of the pinned space generated by the previous
++ *   two stages.  We will not commit the transaction if we don't think we're
++ *   likely to satisfy our request, which means if our current free space +
++ *   total_bytes_pinned < reservation we will not commit.  This is why the
++ *   previous states are actually important, to make sure we know for sure
++ *   whether committing the transaction will allow us to make progress.
++ */
+ static const enum btrfs_flush_state data_flush_states[] = {
+ 	FLUSH_DELALLOC_WAIT,
+ 	RUN_DELAYED_IPUTS,
 -- 
 2.24.1
 
