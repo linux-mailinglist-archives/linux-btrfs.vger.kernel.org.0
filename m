@@ -2,95 +2,105 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63359218763
-	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Jul 2020 14:33:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC47C2189E3
+	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Jul 2020 16:15:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729097AbgGHMdR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 8 Jul 2020 08:33:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60220 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729109AbgGHMdK (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 8 Jul 2020 08:33:10 -0400
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93748C08E763
-        for <linux-btrfs@vger.kernel.org>; Wed,  8 Jul 2020 05:33:10 -0700 (PDT)
-Received: by mail-io1-xd44.google.com with SMTP id v6so33104471iob.4
-        for <linux-btrfs@vger.kernel.org>; Wed, 08 Jul 2020 05:33:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=/vBVbAxvijag95IA6OM26aTa2bKDnUtimRlc1mZm/7M=;
-        b=fRBxl+Jly3zkBGRbLPYyolv6RN+tGDu250AQgHs6wNMnBAQthZ90eOvUI9D0qLlG4W
-         v42kUn+2+5Bhw26pEmDj74BGKBtrXSLCiFAqJXVUU93wwrqcNnYOoDeh2T5ij7kcaTNU
-         vvcKIRhThwOH0A0t6UY9+McUAEh2KRZD3GjnqJSZzRCMKENBJA/2Rbl3FsOHTCJOajpC
-         LS3jwNeXQ97uwHdyAh1QxZJ+4mur60fdsDHmSVGsDvfJfv/rhvN3IA9Xg1IdoNbeETsr
-         ZvBshIQwT/207HPTgTPWcNeBBXKH0zzc3YF+Q8UUDd/gq8TtJ1D8/qpw4gRrvzFvycY2
-         qY/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=/vBVbAxvijag95IA6OM26aTa2bKDnUtimRlc1mZm/7M=;
-        b=WEp0QoQAYSnjff9WyXl+aLIyx33lzYSq7qgyo0zTb7uzSnrdflECkVelsrRiN8+0dB
-         H9i2ajws+58hkdnhE9CpAbtlHbb83QObHhK5Um3mPMu1PVQvian2+b0F6qvVoCbABfEN
-         mZDmlDo9py+HbfYDKLapg09+WRkxZs1iDzP8iZie+vRd2ZO2wffb45T/mKml+37FpBSl
-         XHin4/QoIvxFu0vIgsdA89N5eYsr/w9oDnLhjM0SncyvsCtiGbkXcD3qZ+2eqS82X4mq
-         mpjyhFyMNL7cEkqZoIT96DfG/2h22e1api6rXa7Ne5nV5PPzxmxmH+wUh6IkrwhzYrQK
-         i/xg==
-X-Gm-Message-State: AOAM531oL3l10SK0QRypTDg/UsVKTxQHqiKNbJCt9c67ZrxMBO+F6mB3
-        Klm7/fMxW1l+8cdJtqaKNSUDC0PhsS8jPBzsS2k=
-X-Google-Smtp-Source: ABdhPJz+Yw/tRR3NYggdpI3xCJxdjZQQgovxkCgb7YeCM8zekh0rEvkzj7MEhsVQw3diu4X8+/vwvpSUXvtx+pQ6vnY=
-X-Received: by 2002:a05:6602:2c0a:: with SMTP id w10mr36231222iov.46.1594211588881;
- Wed, 08 Jul 2020 05:33:08 -0700 (PDT)
+        id S1729493AbgGHOPO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 8 Jul 2020 10:15:14 -0400
+Received: from casper.infradead.org ([90.155.50.34]:35888 "EHLO
+        casper.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728148AbgGHOPN (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 8 Jul 2020 10:15:13 -0400
+X-Greylist: delayed 1186 seconds by postgrey-1.27 at vger.kernel.org; Wed, 08 Jul 2020 10:15:13 EDT
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=UB2tdF87tFQumNjUF6URWsZKnhuGKxYkdOBfeGqgmNc=; b=UeWTs1ynUHzLfr+5s7N2jufuZq
+        hVJMkoOaL51orUJ2U6d/jXiD65aMw5gc4OGO/iGGnU4H5d+7sRGEgTEwnJmjw0Wvojw1vz0K1jIhX
+        ROyUmisDAxlU1Qaw8C8IOh9jCz/mFEYKYXFV0g01q144YSfPf1SFBQs5YNmhGkhRtkHfecJm//rjj
+        z0mzg63OZ9bdyw2OW79uVfvsYz2zBTM1edW2wTP9uRo6ZkQKXz/zcFQyxn440w3YjX89PhiFI6E5G
+        fva+HWNLqN3VKzlfYtsID3IerAPVQF5Thq/MfdWQu4E8tRwiYt/HoJ/GNzJIU335YmyDNl7Fzxs0v
+        a01ZHrsA==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jtAX1-0005vm-5p; Wed, 08 Jul 2020 13:54:43 +0000
+Date:   Wed, 8 Jul 2020 14:54:37 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Goldwyn Rodrigues <rgoldwyn@suse.de>,
+        linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        fdmanana@gmail.com, dsterba@suse.cz, darrick.wong@oracle.com,
+        cluster-devel@redhat.com, linux-ext4@vger.kernel.org,
+        linux-xfs@vger.kernel.org
+Subject: Re: always fall back to buffered I/O after invalidation failures,
+ was: Re: [PATCH 2/6] iomap: IOMAP_DIO_RWF_NO_STALE_PAGECACHE return if page
+ invalidation fails
+Message-ID: <20200708135437.GP25523@casper.infradead.org>
+References: <20200629192353.20841-1-rgoldwyn@suse.de>
+ <20200629192353.20841-3-rgoldwyn@suse.de>
+ <20200701075310.GB29884@lst.de>
+ <20200707124346.xnr5gtcysuzehejq@fiona>
+ <20200707125705.GK25523@casper.infradead.org>
+ <20200707130030.GA13870@lst.de>
+ <20200708065127.GM2005@dread.disaster.area>
 MIME-Version: 1.0
-Received: by 2002:a05:6602:1582:0:0:0:0 with HTTP; Wed, 8 Jul 2020 05:33:07
- -0700 (PDT)
-Reply-To: mmsafiatou057@gmail.com
-From:   "Mrs. Safitaou Zoungrana" <richardlaurentdr@gmail.com>
-Date:   Wed, 8 Jul 2020 12:33:07 +0000
-Message-ID: <CALJAiTWJsL=xj-+mKa2Ry1622htq4_Fbxq9sWotVPkJRo5P=pQ@mail.gmail.com>
-Subject: My Dear Beloved One,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200708065127.GM2005@dread.disaster.area>
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-My Dear Beloved One,
+On Wed, Jul 08, 2020 at 04:51:27PM +1000, Dave Chinner wrote:
+> On Tue, Jul 07, 2020 at 03:00:30PM +0200, Christoph Hellwig wrote:
+> > On Tue, Jul 07, 2020 at 01:57:05PM +0100, Matthew Wilcox wrote:
+> > > Indeed, I'm in favour of not invalidating
+> > > the page cache at all for direct I/O.  For reads, I think the page cache
+> > > should be used to satisfy any portion of the read which is currently
+> > > cached.  For writes, I think we should write into the page cache pages
+> > > which currently exist, and then force those pages to be written back,
+> > > but left in cache.
+> > 
+> > Something like that, yes.
+> 
+> So are we really willing to take the performance regression that
+> occurs from copying out of the page cache consuming lots more CPU
+> than an actual direct IO read? Or that direct IO writes suddenly
+> serialise because there are page cache pages and now we have to do
+> buffered IO?
+> 
+> Direct IO should be a deterministic, zero-copy IO path to/from
+> storage. Using the CPU to copy data during direct IO is the complete
+> opposite of the intended functionality, not to mention the behaviour
+> that many applications have been careful designed and tuned for.
 
-I greet you in the name of God almighty the givers of all good things
-in life. Please kindly pardon me for any inconvenience this letter may
-cost you because I know it may come to you as a surprise as we have no
-previous correspondence.  I sent this mail praying for it to reach you
-in good health, since I myself are in a very critical health condition
-in which I sleep every night without knowing if I may be alive to see
-the next day.
+Direct I/O isn't deterministic though.  If the file isn't shared, then
+it works great, but as soon as you get mixed buffered and direct I/O,
+everything is already terrible.  Direct I/Os perform pagecache lookups
+already, but instead of using the data that we found in the cache, we
+(if it's dirty) write it back, wait for the write to complete, remove
+the page from the pagecache and then perform another I/O to get the data
+that we just wrote out!  And then the app that's using buffered I/O has
+to read it back in again.
 
-I am Mrs. Safiatou Zoungrana,  the wife of late Engineer Ralph
-Alphonso Zoungrana from Paris France but based here in Burkina Faso
-West Africa since eight years ago as a business woman dealing with
-gold exportation and Sales. We have been married for years before his
-sudden death although we were childless. I have been diagnosed with
-ovarian cancer and I have been battling with the sickness when my late
-lovely husband of a blessed memory was alive. May his soul rest in
-peace, Amen.
+Nobody's proposing changing Direct I/O to exclusively work through the
+pagecache.  The proposal is to behave less weirdly when there's already
+data in the pagecache.
 
-My late Husband left the sum of =E2=82=AC7.900.000.00 Seven Million Nine
-Hundred Thousand Euros in a fix/suspense account in one of the prime
-bank here in Burkina Faso. Recently, my Doctor told me that I have few
-days to live due to the cancer problem. The one that disturbs me most
-is my blood pressure sickness.
+I have had an objection raised off-list.  In a scenario with a block
+device shared between two systems and an application which does direct
+I/O, everything is normally fine.  If one of the systems uses tar to
+back up the contents of the block device then the application on that
+system will no longer see the writes from the other system because
+there's nothing to invalidate the pagecache on the first system.
 
-Having known my health condition I decided to seek for your kind
-assistance to transfer this fund into your account and you will use it
-to establish an orphanage home in my name. I will give you more
-details about the project as soon as I receive your reply in my
-private email (mmsafiatou057@gmail.com) to handle this project because
-I do not want to state all here until I see your reply, desire and
-commitment to handle this project.
+Unfortunately, this is in direct conflict with the performance
+problem caused by some little arsewipe deciding to do:
 
-My Regards to your family.
-Mrs. Safiatou Zoungrana.
+$ while true; do dd if=/lib/x86_64-linux-gnu/libc-2.30.so iflag=direct of=/dev/null; done
+
+... doesn't hurt me because my root filesystem is on ext4 which doesn't
+purge the cache.  But anything using iomap gets all the pages for libc
+kicked out of the cache, and that's a lot of fun.
