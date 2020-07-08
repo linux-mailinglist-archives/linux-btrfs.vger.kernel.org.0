@@ -2,288 +2,129 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC5E5218E70
-	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Jul 2020 19:40:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAB47218E72
+	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Jul 2020 19:41:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726287AbgGHRkQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 8 Jul 2020 13:40:16 -0400
-Received: from mail.robco.com ([64.119.213.201]:58510 "EHLO mail.robco.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725949AbgGHRkP (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 8 Jul 2020 13:40:15 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.robco.com (Postfix) with ESMTP id 394F9D3F
-        for <linux-btrfs@vger.kernel.org>; Wed,  8 Jul 2020 13:40:15 -0400 (EDT)
-Received: from mail.robco.com ([127.0.0.1])
-        by localhost (mail.robco.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id Q41kyV8zUfun for <linux-btrfs@vger.kernel.org>;
-        Wed,  8 Jul 2020 13:40:15 -0400 (EDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.robco.com (Postfix) with ESMTP id 10C9DD83
-        for <linux-btrfs@vger.kernel.org>; Wed,  8 Jul 2020 13:40:15 -0400 (EDT)
-X-Virus-Scanned: amavisd-new at robco.com
-Received: from mail.robco.com ([127.0.0.1])
-        by localhost (mail.robco.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id PS65Wg59Tw6j for <linux-btrfs@vger.kernel.org>;
-        Wed,  8 Jul 2020 13:40:14 -0400 (EDT)
-Received: from mail.robco.com (localhost [127.0.0.1])
-        by mail.robco.com (Postfix) with ESMTP id CE13CD3F
-        for <linux-btrfs@vger.kernel.org>; Wed,  8 Jul 2020 13:40:14 -0400 (EDT)
-Date:   Wed, 8 Jul 2020 13:40:14 -0400 (EDT)
-From:   Lai Wei-Hwa <whlai@robco.com>
-To:     linux-btrfs@vger.kernel.org
-Message-ID: <1296241258.348726.1594230014650.JavaMail.zimbra@robco.com>
-Subject: bytenr mismatch - Can I fix this?
+        id S1726215AbgGHRlM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 8 Jul 2020 13:41:12 -0400
+Received: from magic.merlins.org ([209.81.13.136]:40498 "EHLO
+        mail1.merlins.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725879AbgGHRlM (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 8 Jul 2020 13:41:12 -0400
+Received: from c-24-5-124-255.hsd1.ca.comcast.net ([24.5.124.255]:40354 helo=sauron.svh.merlins.org)
+        by mail1.merlins.org with esmtpsa 
+        (Cipher TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92 #3)
+        id 1jtE4F-0003ie-1E by authid <merlins.org> with srv_auth_plain; Wed, 08 Jul 2020 10:41:11 -0700
+Received: from merlin by sauron.svh.merlins.org with local (Exim 4.92)
+        (envelope-from <marc@merlins.org>)
+        id 1jtE4E-0004eu-Nl; Wed, 08 Jul 2020 10:41:10 -0700
+Date:   Wed, 8 Jul 2020 10:41:10 -0700
+From:   Marc MERLIN <marc@merlins.org>
+To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+Cc:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Re: 5.6 pretty massive unexplained btrfs corruption:  parent transid
+ verify failed + open_ctree failed
+Message-ID: <20200708174110.GU30660@merlins.org>
+References: <20200707035530.GP30660@merlins.org>
+ <20200708034407.GE10769@hungrycats.org>
+ <20200708041041.GN1552@merlins.org>
+ <20200708054905.GA8346@hungrycats.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.10.10.1]
-X-Mailer: Zimbra 8.8.15_GA_3955 (ZimbraWebClient - FF78 (Linux)/8.8.15_GA_3953)
-Thread-Index: 6R0QIKe8KBCo/NgmboGpVPKw6geQdQ==
-Thread-Topic: bytenr mismatch - Can I fix this?
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200708054905.GA8346@hungrycats.org>
+X-Sysadmin: BOFH
+X-URL:  http://marc.merlins.org/
+X-SA-Exim-Connect-IP: 24.5.124.255
+X-SA-Exim-Mail-From: marc@merlins.org
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Wed, Jul 08, 2020 at 01:49:05AM -0400, Zygo Blaxell wrote:
+> > Sorry, PPL?
+> 
+> Partial Parity Log.  It can be enabled by mdadm --grow.  It's a mdadm
+> consistency policy, like the journal, but uses reserved metadata space
+> instead of a separate device.
+ 
+looks like it's incompatible with --bitmap which I was already using.
+I'm not sure if --grow was possible to convert from one to another, so I
+made a new one, and now I have a 4 day wait for the initial scan
+(external array with Sata PMP, those are slow unfortunately)
 
-Hi there,
+md6 : active raid5 sdx1[5] sdw1[3] sdv1[2] sdu1[1] sdq1[0]
+      23441547264 blocks super 1.2 level 5, 512k chunk, algorithm 2 [5/4] [UUUU_]
+      [>....................]  recovery =  0.0% (2920544/5860386816) finish=4835.4min speed=20189K/sec
 
-I have an unmountable volume. Is it possible to recover my data? Can someone advise on how to proceed?
+Could you confirm that what I did here is ok?
 
-# btrfs check --repair Pool-1.img.broken
-enabling repair mode
-checksum verify failed on 90201440256 found E4E3BDB6 wanted 00000000
-checksum verify failed on 90201440256 found E4E3BDB6 wanted 00000000
-checksum verify failed on 90201440256 found E4E3BDB6 wanted 00000000
-checksum verify failed on 90201440256 found E4E3BDB6 wanted 00000000
-bytenr mismatch, want=90201440256, have=0
-ERROR: cannot open file system
+gargamel:~# mdadm --create --verbose /dev/md6 --level=5 --consistency-policy=ppl --raid-devices=5 /dev/sd[quvwx]1
+mdadm: layout defaults to left-symmetric
+mdadm: layout defaults to left-symmetric
+mdadm: chunk size defaults to 512K
+mdadm: /dev/sdq1 appears to be part of a raid array:
+       level=raid5 devices=5 ctime=Thu Jan 28 14:38:40 2016
+mdadm: /dev/sdu1 appears to be part of a raid array:
+       level=raid5 devices=5 ctime=Thu Jan 28 14:38:40 2016
+mdadm: /dev/sdv1 appears to be part of a raid array:
+       level=raid5 devices=5 ctime=Thu Jan 28 14:38:40 2016
+mdadm: /dev/sdw1 appears to be part of a raid array:
+       level=raid5 devices=5 ctime=Thu Jan 28 14:38:40 2016
+mdadm: /dev/sdx1 appears to be part of a raid array:
+       level=raid5 devices=5 ctime=Thu Jan 28 14:38:40 2016
+mdadm: size set to 5860386816K
+Continue creating array? y
+mdadm: Defaulting to version 1.2 metadata
+mdadm: array /dev/md6 started.
 
-================================================================
-================================================================
+gargamel:~# make-bcache -B /dev/md6
+UUID:                   eb898c09-debd-4e86-972f-aecdb59670e2
+Set UUID:               e14408a3-8e25-414d-ba4a-a8a7a0d7bdc9
+version:                1
+block_size:             1
+data_offset:            16
 
-# btrfs inspect-internal dump-super -Ffa /var/snap/lxd/common/lxd/disks/Pool-1.img.broken
+gargamel:~# cryptsetup luksFormat --align-payload=2048 -s 256 -c aes-xts-plain64 /dev/bcache4
 
-superblock: bytenr=65536, device=/var/snap/lxd/common/lxd/disks/Pool-1.img.broken
----------------------------------------------------------
-csum_type        0 (crc32c)
-csum_size        4
-csum            0x009450b6 [match]
-bytenr            65536
-flags            0x1
-            ( WRITTEN )
-magic            _BHRfS_M [match]
-fsid            ce7401fb-f189-4341-8464-e69dfe5ad268
-label           
-generation        1537924
-root            710590464
-sys_array_size        129
-chunk_root_generation    255534
-root_level        1
-chunk_root        22020096
-chunk_root_level    0
-log_root        0
-log_root_transid    0
-log_root_level        0
-total_bytes        132212252672
-bytes_used        127395315712
-sectorsize        4096
-nodesize        16384
-leafsize (deprecated)        16384
-stripesize        4096
-root_dir        6
-num_devices        1
-compat_flags        0x0
-compat_ro_flags        0x0
-incompat_flags        0x161
-            ( MIXED_BACKREF |
-              BIG_METADATA |
-              EXTENDED_IREF |
-              SKINNY_METADATA )
-cache_generation    1537924
-uuid_tree_generation    1537924
-dev_item.uuid        809ccac5-d38c-4294-819a-f21f1cc8fdd5
-dev_item.fsid        ce7401fb-f189-4341-8464-e69dfe5ad268 [match]
-dev_item.type        0
-dev_item.total_bytes    132212252672
-dev_item.bytes_used    132211146752
-dev_item.io_align    4096
-dev_item.io_width    4096
-dev_item.sector_size    4096
-dev_item.devid        1
-dev_item.dev_group    0
-dev_item.seek_speed    0
-dev_item.bandwidth    0
-dev_item.generation    0
-sys_chunk_array[2048]:
-    item 0 key (FIRST_CHUNK_TREE CHUNK_ITEM 22020096)
-        length 8388608 owner 2 stripe_len 65536 type SYSTEM|DUP
-        io_align 65536 io_width 65536 sector_size 4096
-        num_stripes 2 sub_stripes 0
-            stripe 0 devid 1 offset 22020096
-            dev_uuid 809ccac5-d38c-4294-819a-f21f1cc8fdd5
-            stripe 1 devid 1 offset 30408704
-            dev_uuid 809ccac5-d38c-4294-819a-f21f1cc8fdd5
-backup_roots[4]:
-    backup 0:
-        backup_tree_root:    710410240    gen: 1537922    level: 1
-        backup_chunk_root:    22020096    gen: 255534    level: 0
-        backup_extent_root:    709427200    gen: 1537922    level: 2
-        backup_fs_root:        711000064    gen: 1537922    level: 2
-        backup_dev_root:    1012645888    gen: 255534    level: 0
-        backup_csum_root:    709754880    gen: 1537922    level: 2
-        backup_total_bytes:    132212252672
-        backup_bytes_used:    127397171200
-        backup_num_devices:    1
+gargamel:~# cryptsetup luksOpen /dev/bcache4 dshelf6
+Enter passphrase for /dev/bcache4:
 
-    backup 1:
-        backup_tree_root:    713179136    gen: 1537923    level: 1
-        backup_chunk_root:    22020096    gen: 255534    level: 0
-        backup_extent_root:    709066752    gen: 1537923    level: 2
-        backup_fs_root:        708689920    gen: 1537923    level: 2
-        backup_dev_root:    1012645888    gen: 255534    level: 0
-        backup_csum_root:    708952064    gen: 1537923    level: 2
-        backup_total_bytes:    132212252672
-        backup_bytes_used:    127395315712
-        backup_num_devices:    1
-
-    backup 2:
-        backup_tree_root:    710590464    gen: 1537924    level: 1
-        backup_chunk_root:    22020096    gen: 255534    level: 0
-        backup_extent_root:    710606848    gen: 1537924    level: 2
-        backup_fs_root:        708689920    gen: 1537923    level: 2
-        backup_dev_root:    1012645888    gen: 255534    level: 0
-        backup_csum_root:    710868992    gen: 1537924    level: 2
-        backup_total_bytes:    132212252672
-        backup_bytes_used:    127395315712
-        backup_num_devices:    1
-
-    backup 3:
-        backup_tree_root:    708706304    gen: 1537921    level: 1
-        backup_chunk_root:    22020096    gen: 255534    level: 0
-        backup_extent_root:    708198400    gen: 1537921    level: 2
-        backup_fs_root:        707084288    gen: 1537921    level: 2
-        backup_dev_root:    1012645888    gen: 255534    level: 0
-        backup_csum_root:    708116480    gen: 1537921    level: 2
-        backup_total_bytes:    132212252672
-        backup_bytes_used:    127396753408
-        backup_num_devices:    1
+gargamel:~# /sbin/mkfs.btrfs -L DS6 -O extref -m dup /dev/mapper/dshelf6 
 
 
-superblock: bytenr=67108864, device=/var/snap/lxd/common/lxd/disks/Pool-1.img.broken
----------------------------------------------------------
-csum_type        0 (crc32c)
-csum_size        4
-csum            0xa0f57878 [match]
-bytenr            67108864
-flags            0x1
-            ( WRITTEN )
-magic            _BHRfS_M [match]
-fsid            ce7401fb-f189-4341-8464-e69dfe5ad268
-label           
-generation        1537924
-root            710590464
-sys_array_size        129
-chunk_root_generation    255534
-root_level        1
-chunk_root        22020096
-chunk_root_level    0
-log_root        0
-log_root_transid    0
-log_root_level        0
-total_bytes        132212252672
-bytes_used        127395315712
-sectorsize        4096
-nodesize        16384
-leafsize (deprecated)        16384
-stripesize        4096
-root_dir        6
-num_devices        1
-compat_flags        0x0
-compat_ro_flags        0x0
-incompat_flags        0x161
-            ( MIXED_BACKREF |
-              BIG_METADATA |
-              EXTENDED_IREF |
-              SKINNY_METADATA )
-cache_generation    1537924
-uuid_tree_generation    1537924
-dev_item.uuid        809ccac5-d38c-4294-819a-f21f1cc8fdd5
-dev_item.fsid        ce7401fb-f189-4341-8464-e69dfe5ad268 [match]
-dev_item.type        0
-dev_item.total_bytes    132212252672
-dev_item.bytes_used    132211146752
-dev_item.io_align    4096
-dev_item.io_width    4096
-dev_item.sector_size    4096
-dev_item.devid        1
-dev_item.dev_group    0
-dev_item.seek_speed    0
-dev_item.bandwidth    0
-dev_item.generation    0
-sys_chunk_array[2048]:
-    item 0 key (FIRST_CHUNK_TREE CHUNK_ITEM 22020096)
-        length 8388608 owner 2 stripe_len 65536 type SYSTEM|DUP
-        io_align 65536 io_width 65536 sector_size 4096
-        num_stripes 2 sub_stripes 0
-            stripe 0 devid 1 offset 22020096
-            dev_uuid 809ccac5-d38c-4294-819a-f21f1cc8fdd5
-            stripe 1 devid 1 offset 30408704
-            dev_uuid 809ccac5-d38c-4294-819a-f21f1cc8fdd5
-backup_roots[4]:
-    backup 0:
-        backup_tree_root:    710410240    gen: 1537922    level: 1
-        backup_chunk_root:    22020096    gen: 255534    level: 0
-        backup_extent_root:    709427200    gen: 1537922    level: 2
-        backup_fs_root:        711000064    gen: 1537922    level: 2
-        backup_dev_root:    1012645888    gen: 255534    level: 0
-        backup_csum_root:    709754880    gen: 1537922    level: 2
-        backup_total_bytes:    132212252672
-        backup_bytes_used:    127397171200
-        backup_num_devices:    1
+> > wait, if a disk fails, at worst I have a stripe that's half written and
+> > hopefully btrfs fails, goes read only and the transaction does not go
+> > through, so nothing happens except loss of the last written data?
+> 
+> If the array is degraded, and stripe is partially updated, then there is
+> a crash or power failure, parity will be out of sync with data blocks
+> in the stripe, so the missing disk's data cannot be generated from parity.
+ 
+I thought --bitmap would know this and know to discard the last blocks
+partiailly written. I guess not?
 
-    backup 1:
-        backup_tree_root:    713179136    gen: 1537923    level: 1
-        backup_chunk_root:    22020096    gen: 255534    level: 0
-        backup_extent_root:    709066752    gen: 1537923    level: 2
-        backup_fs_root:        708689920    gen: 1537923    level: 2
-        backup_dev_root:    1012645888    gen: 255534    level: 0
-        backup_csum_root:    708952064    gen: 1537923    level: 2
-        backup_total_bytes:    132212252672
-        backup_bytes_used:    127395315712
-        backup_num_devices:    1
+Either way, it seems that losing just a few blocks in the "wrong" place
+is enough to lose most of a btrfs FS. That's disappointing, I thought it
+was a bit more fault proof than that.
 
-    backup 2:
-        backup_tree_root:    710590464    gen: 1537924    level: 1
-        backup_chunk_root:    22020096    gen: 255534    level: 0
-        backup_extent_root:    710606848    gen: 1537924    level: 2
-        backup_fs_root:        708689920    gen: 1537923    level: 2
-        backup_dev_root:    1012645888    gen: 255534    level: 0
-        backup_csum_root:    710868992    gen: 1537924    level: 2
-        backup_total_bytes:    132212252672
-        backup_bytes_used:    127395315712
-        backup_num_devices:    1
+> > I don't have an external journal because this is an external disk array
+> > I can move between machines. Would you suggest I do something else?
+> 
+> Enable PPL on mdadm, or use btrfs raid5 data + raid1 metadata (it's
+> barely usable and some stuff doesn't work properly, but it can run
+> a backup server, replace a failed disk, and usually self-repair disk
+> corruption too).
+ 
+it's been a while since I've used btrfs raid5, it must have improved
+since I last did, but I haven't read that it's become production quality
+yet :)
 
-    backup 3:
-        backup_tree_root:    708706304    gen: 1537921    level: 1
-        backup_chunk_root:    22020096    gen: 255534    level: 0
-        backup_extent_root:    708198400    gen: 1537921    level: 2
-        backup_fs_root:        707084288    gen: 1537921    level: 2
-        backup_dev_root:    1012645888    gen: 255534    level: 0
-        backup_csum_root:    708116480    gen: 1537921    level: 2
-        backup_total_bytes:    132212252672
-        backup_bytes_used:    127396753408
-        backup_num_devices:    1
+Thanks again for your very helpful answers.
 
-# btrfs-find-root Pool-1.img.broken
-Superblock thinks the generation is 1537924
-Superblock thinks the level is 1
-Found tree root at 710590464 gen 1537924 level 1
-Well block 710410240(gen: 1537922 level: 1) seems good, but generation/level doesn't match, want gen: 1537924 level: 1
-Well block 705495040(gen: 1537920 level: 1) seems good, but generation/level doesn't match, want gen: 1537924 level: 1
-Well block 683982848(gen: 1537919 level: 1) seems good, but generation/level doesn't match, want gen: 1537924 level: 1
-...... (clipped for space - all other lines are similar - i.e. Well block n seems good but generation/level doesn't match)
-
-
-Lai
+Marc
+-- 
+"A mouse is a device used to point at the xterm you want to type in" - A.S.R.
+ 
+Home page: http://marc.merlins.org/                       | PGP 7F55D5F27AAF9D08
