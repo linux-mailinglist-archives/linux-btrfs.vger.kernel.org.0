@@ -2,133 +2,131 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 519AF2189BA
-	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Jul 2020 16:01:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 594C72189C9
+	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Jul 2020 16:05:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729812AbgGHOBH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 8 Jul 2020 10:01:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45900 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729806AbgGHOBH (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 8 Jul 2020 10:01:07 -0400
-Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1285C061A0B
-        for <linux-btrfs@vger.kernel.org>; Wed,  8 Jul 2020 07:01:06 -0700 (PDT)
-Received: by mail-qv1-xf44.google.com with SMTP id di5so15546468qvb.11
-        for <linux-btrfs@vger.kernel.org>; Wed, 08 Jul 2020 07:01:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
-         :content-transfer-encoding;
-        bh=453v9VzQmoK5i/nqibBwzH7YHdJp2eB/54xxH6Xi1B8=;
-        b=gX4fb3wXzNkwkyhXjnt/yWfDUws9AfhEVY3PvZybJ5xLBziW14TZURkzqmRae9oAdj
-         RtUc15uDvdBE+831QfrGhAhd2/F0aR24HoHqyJPOaJnDabJ2mBxGOJywSfkgtAMqRWIo
-         sp8eWl0iNmBuIv/hPEGfxg8GVJv1Y5wFXdiPr49Nw2BPg/KgSSIRCpcw+apBNpbYO1es
-         LSUhM6VykKlnve9KcnljAS5ReT5KBDLwn/FFIeQL8vKI2/BPFFfM3MWr0Bw16rM0T0Dr
-         wxmRvQoezt7n+2M94KrSD+ztsKQm4j4yWkGicHPe92OCRA5pMnrBppBDsmJD5C7z3BtY
-         Fpvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=453v9VzQmoK5i/nqibBwzH7YHdJp2eB/54xxH6Xi1B8=;
-        b=rjljbqG/bJSrZn0SNFR5W4uv5ac8y0F5CF7gr3upBpKs8VVQcwjGlG2RBcxj3YDr9y
-         sgYgnowIW7tsZ5jtG9CvmyHEtk9ghJsMh6L2pSHzI+XfoUoorfNL+qoiTy7s8dBXWlrQ
-         qt7mvpBRWtNi9Kd//eRH90vM97VD9LmZZnWyI41w4M2VtnOE9bgKoJtevn623Idg5Zpr
-         MmzonEVJGAXaeeVWgAVOtk2NobcLWL2yLfrVIklqHW6KtoaXPUkvz/hVbIIL2YG9ZXDb
-         OFcBZinr8bcU3ZyElhf11ipGCWICXPFu4eD3lXKwLx5R24DQ0UGvB3UE0pPaqSf46gN0
-         PWFQ==
-X-Gm-Message-State: AOAM533+NUhfs+uu14PJNhKiCAN/OP8v3SiJR4rSakKLoXOJT3QBHqeo
-        fsGsLyLpjeX/ScmCAQ5i0xWT6v05oXI7aw==
-X-Google-Smtp-Source: ABdhPJxHmIDxhirbr5MGH60Q6/Dui+B4IfTefnxShB8zpmktIp15JcxEM8t7GfB4PzL7oYX2mORzlA==
-X-Received: by 2002:ad4:504a:: with SMTP id m10mr45148897qvq.172.1594216865494;
-        Wed, 08 Jul 2020 07:01:05 -0700 (PDT)
-Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id t9sm28151467qke.68.2020.07.08.07.01.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Jul 2020 07:01:04 -0700 (PDT)
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 23/23] btrfs: add a comment explaining the data flush steps
-Date:   Wed,  8 Jul 2020 10:00:13 -0400
-Message-Id: <20200708140013.56994-24-josef@toxicpanda.com>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200708140013.56994-1-josef@toxicpanda.com>
-References: <20200708140013.56994-1-josef@toxicpanda.com>
+        id S1729288AbgGHOFR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 8 Jul 2020 10:05:17 -0400
+Received: from mx2.suse.de ([195.135.220.15]:60384 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728932AbgGHOFR (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 8 Jul 2020 10:05:17 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 91CF3ACF2;
+        Wed,  8 Jul 2020 14:05:15 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id E6E36DA818; Wed,  8 Jul 2020 16:04:55 +0200 (CEST)
+Date:   Wed, 8 Jul 2020 16:04:55 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Robbie Ko <robbieko@synology.com>
+Cc:     dsterba@suse.cz, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v2] btrfs: speedup mount time with readahead chunk tree
+Message-ID: <20200708140455.GA28832@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Robbie Ko <robbieko@synology.com>,
+        linux-btrfs@vger.kernel.org
+References: <20200707035944.15150-1-robbieko@synology.com>
+ <20200707192511.GE16141@twin.jikos.cz>
+ <3b3f9eb4-96ef-d039-5d86-a4c165e6d993@synology.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <3b3f9eb4-96ef-d039-5d86-a4c165e6d993@synology.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The data flushing steps are not obvious to people other than myself and
-Chris.  Write a giant comment explaining the reasoning behind each flush
-step for data as well as why it is in that particular order.
+On Wed, Jul 08, 2020 at 10:19:22AM +0800, Robbie Ko wrote:
+> David Sterba 於 2020/7/8 上午3:25 寫道:
+> > On Tue, Jul 07, 2020 at 11:59:44AM +0800, robbieko wrote:
+> >> From: Robbie Ko <robbieko@synology.com>
+> >>
+> >> When mounting, we always need to read the whole chunk tree,
+> >> when there are too many chunk items, most of the time is
+> >> spent on btrfs_read_chunk_tree, because we only read one
+> >> leaf at a time.
+> >>
+> >> It is unreasonable to limit the readahead mechanism to a
+> >> range of 64k, so we have removed that limit.
+> >>
+> >> In addition we added reada_maximum_size to customize the
+> >> size of the pre-reader, The default is 64k to maintain the
+> >> original behavior.
+> >>
+> >> So we fix this by used readahead mechanism, and set readahead
+> >> max size to ULLONG_MAX which reads all the leaves after the
+> >> key in the node when reading a level 1 node.
+> > The readahead of chunk tree is a special case as we know we will need
+> > the whole tree, in all other cases the search readahead needs is
+> > supposed to read only one leaf.
+> 
+> If, in most cases, readahead requires that only one leaf be read, then
+> reada_ maximum_size should be nodesize instead of 64k, or use
+> reada_maximum_ nr (default:1) seems better.
+> 
+> >
+> > For that reason I don't want to touch the current path readahead logic
+> > at all and do the chunk tree readahead in one go instead of the
+> > per-search.
+> 
+> I don't know why we don't make the change to readahead, because the current
+> readahead is limited to the logical address in 64k is very unreasonable,
+> and there is a good chance that the logical address of the next leaf 
+> node will
+> not appear in 64k, so the existing readahead is almost useless.
 
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
----
- fs/btrfs/space-info.c | 47 +++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 47 insertions(+)
+I see and it seems that the assumption about layout and chances
+succesfuly read blocks ahead is not valid. The logic of readahead could
+be improved but that would need more performance evaluation.
 
-diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
-index 680218a7b0e5..ba2bb47cbb18 100644
---- a/fs/btrfs/space-info.c
-+++ b/fs/btrfs/space-info.c
-@@ -998,6 +998,53 @@ static void btrfs_async_reclaim_metadata_space(struct work_struct *work)
- 	} while (flush_state <= COMMIT_TRANS);
- }
- 
-+/*
-+ * FLUSH_DELALLOC_WAIT:
-+ *   Space is free'd from flushing delalloc in one of two ways.
-+ *
-+ *   1) compression is on and we allocate less space than we reserved.
-+ *   2) We are overwriting existing space.
-+ *
-+ *   For #1 that extra space is reclaimed as soon as the delalloc pages are
-+ *   cow'ed, by way of btrfs_add_reserved_bytes() which adds the actual extent
-+ *   length to ->bytes_reserved, and subtracts the reserved space from
-+ *   ->bytes_may_use.
-+ *
-+ *   For #2 this is trickier.  Once the ordered extent runs we will drop the
-+ *   extent in the range we are overwriting, which creates a delayed ref for
-+ *   that freed extent.  This however is not reclaimed until the transaction
-+ *   commits, thus the next stages.
-+ *
-+ * RUN_DELAYED_IPUTS
-+ *   If we are freeing inodes, we want to make sure all delayed iputs have
-+ *   completed, because they could have been on an inode with i_nlink == 0, and
-+ *   thus have been trunated and free'd up space.  But again this space is not
-+ *   immediately re-usable, it comes in the form of a delayed ref, which must be
-+ *   run and then the transaction must be committed.
-+ *
-+ * FLUSH_DELAYED_REFS
-+ *   The above two cases generate delayed refs that will affect
-+ *   ->total_bytes_pinned.  However this counter can be inconsistent with
-+ *   reality if there are outstanding delayed refs.  This is because we adjust
-+ *   the counter based soley on the current set of delayed refs and disregard
-+ *   any on-disk state which might include more refs.  So for example, if we
-+ *   have an extent with 2 references, but we only drop 1, we'll see that there
-+ *   is a negative delayed ref count for the extent and assume that the space
-+ *   will be free'd, and thus increase ->total_bytes_pinned.
-+ *
-+ *   Running the delayed refs gives us the actual real view of what will be
-+ *   freed at the transaction commit time.  This stage will not actually free
-+ *   space for us, it just makes sure that may_commit_transaction() has all of
-+ *   the information it needs to make the right decision.
-+ *
-+ * COMMIT_TRANS
-+ *   This is where we reclaim all of the pinned space generated by the previous
-+ *   two stages.  We will not commit the transaction if we don't think we're
-+ *   likely to satisfy our request, which means if our current free space +
-+ *   total_bytes_pinned < reservation we will not commit.  This is why the
-+ *   previous states are actually important, to make sure we know for sure
-+ *   whether committing the transaction will allow us to make progress.
-+ */
- static const enum btrfs_flush_state data_flush_states[] = {
- 	FLUSH_DELALLOC_WAIT,
- 	RUN_DELAYED_IPUTS,
--- 
-2.24.1
+> > Also I don't like to see size increase of btrfs_path just to use the
+> > custom once.
+> 
+> This variable is the parameter that controls the speed of the readahead,
+> and I think it should be adjustable, not the hard code in the readahead 
+> function.
 
+Yes, but it takes 8 bytes and stays constant that does not even need 8
+bytes.
+
+I just don't want to touch the generic readahead logic that is started
+by b-tree search because that would affect all workloads, while your're
+interested in speeding up the chunk tree load.
+
+> In the future, more scenarios will be available.
+> For example, BGTREE. will be improved significantly faster,
+> My own tests have improved the speed by almost 500%.
+> Reference: https://lwn.net/Articles/801990 /
+
+The optimized block group items whould be a huge win even without the
+readahead but that's a different problem.
+
+> > The idea of the whole tree readahead is to do something like:
+> >
+> > - find first item
+> > - start readahead on all leaves from its level 1 node parent
+> >    (readahead_tree_block)
+> > - when the level 1 parent changes during iterating items, start the
+> >    readahead again
+> >
+> > This skips readahead of all nodes above level 1, if you find a nicer way
+> > to readahead the whole tree I won't object, but for the first
+> > implementation the level 1 seems ok to me.
+> >
+> >> I have a test environment as follows:
+> >>
+> >> 200TB btrfs volume: used 192TB
+> >>
+> >> Data, single: total=192.00TiB, used=192.00TiB
+> >> System, DUP: total=40.00MiB, used=19.91MiB
+> > Can you please check what's the chunk tree height? 'btrfs inspect
+> > tree-stats' prints that but it takes long as needs to go through the
+> > whole metadata, so extracting it from 'btrfs inspect dump-tree -c chunk'
+> > would be faster. Thanks.
+> Chunk tree height 3, level (0-2)
+
+Thanks.
