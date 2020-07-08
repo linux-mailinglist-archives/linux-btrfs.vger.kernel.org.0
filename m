@@ -2,58 +2,58 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF6652189A5
-	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Jul 2020 16:00:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6893C2189A6
+	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Jul 2020 16:00:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729599AbgGHOA0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 8 Jul 2020 10:00:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45752 "EHLO
+        id S1729617AbgGHOA2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 8 Jul 2020 10:00:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728932AbgGHOAZ (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 8 Jul 2020 10:00:25 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9437C061A0B
-        for <linux-btrfs@vger.kernel.org>; Wed,  8 Jul 2020 07:00:25 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id b185so30958435qkg.1
-        for <linux-btrfs@vger.kernel.org>; Wed, 08 Jul 2020 07:00:25 -0700 (PDT)
+        with ESMTP id S1728932AbgGHOA2 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 8 Jul 2020 10:00:28 -0400
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38314C061A0B
+        for <linux-btrfs@vger.kernel.org>; Wed,  8 Jul 2020 07:00:28 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id 145so39064693qke.9
+        for <linux-btrfs@vger.kernel.org>; Wed, 08 Jul 2020 07:00:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=rUsScBbpNuEa/GRgx27yvwOsrj7ecK3MJGcmAjuWUPo=;
-        b=ChDc4FIFV79Irl73yq7dFllQS1sAUdS6Igp+oeIFzKaAB10rShC5T3odjbs2R8SEcS
-         zJEvXuAR/EwrUfBS5tAqDQYaw6fTGWotQniwpiLvgWU/5lZbwEq8eAG/q0pAri+/0Ref
-         siZ8zWqGiZGsV+ivhx7xCBpuqXL7A8XwcAN4TcBz/DoFWACKNglr2MFmWoy+cY4flD+I
-         0Vbvp+9BnLUkNQrRbOoJdJQRD4iTS5A0tkxNlNR0QXsvQ08Y+qBpUGi8Uso6juVbyKY3
-         ++dcHdzE78TZ3+h+e17AdZgnOtnjk2ECiiShY+Gu0sEoIKRX89ZhLRJ0LKupbPgn/M+P
-         7f9Q==
+        bh=nNbN8KMVo5bDXJEMK3qzoB8OXC6pwWVBEBIb751xZOI=;
+        b=IA537qQ8wthXj8g2awpJT0dhFUL5ItvTPhENcIqnusr9jr3ROVoctOOFdzNQw3T1ve
+         UA+clttSTBhM04566doF9om4eGskRFNA/V1SMXsMp5xB/ca1lmezcdg20n+Ub1rM4Kt7
+         oJX3MG95y55cu/COYdFtYYBa27jd0gjZ1yzE73xoXD9yXZzQfZZ/dXDybsgkwoB3tQZI
+         sbjyj6u+yufG3YvE9PEdBHDQzfyWnZRum4bLtiX40mVXSZG5iMWBJKC9MeHul3WaT6lg
+         9SQMpOe48Puo5VmoFhas7l5Fy0LKiM/xyxcd0ZnfY1236TYNY5PHGj1sZpSqErCCOFug
+         rEug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=rUsScBbpNuEa/GRgx27yvwOsrj7ecK3MJGcmAjuWUPo=;
-        b=DEJEOllHXXMXgBYkD1HHy+I5DvJXXW/i52+IRrW21v0/lHcne3cqFCEOHF4Sy1A1Nu
-         8gkN5tB3HxGtNW5DQ9BiJRkBoTjgFOqCyosjva/Gqglrwp6FNG5iTgpMS/ZJRKEPo1QJ
-         SIg9oa0q1mBCWG4hp1lvR3J3KXGHWsjwRlibFrXrOqzj2v51RV92RtdsdEKckmhF4No7
-         vtBCk5Fxfgbfvfb72dalAcVoFt9Cds2SujN7FOAj+eyexgFtUt5YSBKo5jokHMprtYzo
-         DCWUNlgWDJRhG82Ydo+bE2AqAEa/JPFUlpO+IPkGjglV/lcB7FtoKGzXvJljO9y4tmFD
-         xxrw==
-X-Gm-Message-State: AOAM532lo7WD+TJ8xuilyXh1Z9t3SNRJRLSc75mFNLVChyRsX2cw16UI
-        bdq+TNGvhxf/QkXVxJ9hrL2JdPQ9dxbd6w==
-X-Google-Smtp-Source: ABdhPJwCUuR/kwgw3Y9a4ESjXstRaI/MA7w1YeV4Rq10YtQyIZbRdWGPNuivIxMoG3iwxNGxjEzU3g==
-X-Received: by 2002:a37:5bc6:: with SMTP id p189mr56119952qkb.112.1594216824601;
-        Wed, 08 Jul 2020 07:00:24 -0700 (PDT)
+        bh=nNbN8KMVo5bDXJEMK3qzoB8OXC6pwWVBEBIb751xZOI=;
+        b=jrcypScp4YB/udgoIcvXiBDkONGMyvwRHGonIoTfEa5XNfOeB1muIJFEQrVcOZx36I
+         vwhN/ZYVbwxgTShSyZHb6RqE8ZkWhU46kDg6ep28NjOZy2oKr3Pmo5y0+zo2tRtL2p/h
+         uFOadI/GFQrOynewvezoG8HZdAA9pMw/6NGTz64NwZuoPTe203Ci0U+6YSEJPdqvaIGI
+         Kih5lsYP4ByouDgC2e1S4pUiZ2Gh/GA1mQ4N/l95igl9bQWuanZ2hIWZa0s9wjONdArn
+         luofHFoKZmYN/cdXMsCPmshgLtHqGJQwv9TbYzLJqO3gPXHcgyV6I+ZXQ3MyxwKiXWFd
+         qAkQ==
+X-Gm-Message-State: AOAM533OB6aFCyWLiynMiUb2XYtg5pC2teT7g1SQUd2uXR4j2pvQpdQO
+        SRBzxJyyCdw4A6pEPx8znGm+wvwcUDSprA==
+X-Google-Smtp-Source: ABdhPJzgk1ahwuIb5F4sQVaA2Rc5antjYJpoqpRRIFnHt7XYlgB10aRjlJwhizWcv9bVN1s/DH2l2w==
+X-Received: by 2002:a05:620a:15ab:: with SMTP id f11mr46332871qkk.199.1594216827066;
+        Wed, 08 Jul 2020 07:00:27 -0700 (PDT)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id s52sm29866172qtj.52.2020.07.08.07.00.23
+        by smtp.gmail.com with ESMTPSA id m7sm29263827qti.6.2020.07.08.07.00.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Jul 2020 07:00:24 -0700 (PDT)
+        Wed, 08 Jul 2020 07:00:26 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
 Cc:     Nikolay Borisov <nborisov@suse.com>,
         Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Subject: [PATCH 04/23] btrfs: make shrink_delalloc take space_info as an arg
-Date:   Wed,  8 Jul 2020 09:59:54 -0400
-Message-Id: <20200708140013.56994-5-josef@toxicpanda.com>
+Subject: [PATCH 05/23] btrfs: make ALLOC_CHUNK use the space info flags
+Date:   Wed,  8 Jul 2020 09:59:55 -0400
+Message-Id: <20200708140013.56994-6-josef@toxicpanda.com>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20200708140013.56994-1-josef@toxicpanda.com>
 References: <20200708140013.56994-1-josef@toxicpanda.com>
@@ -64,54 +64,34 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Currently shrink_delalloc just looks up the metadata space info, but
-this won't work if we're trying to reclaim space for data chunks.  We
-get the right space_info we want passed into flush_space, so simply pass
-that along to shrink_delalloc.
+We have traditionally used flush_space() to flush metadata space, so
+we've been unconditionally using btrfs_metadata_alloc_profile() for our
+profile to allocate a chunk.  However if we're going to use this for
+data we need to use btrfs_get_alloc_profile() on the space_info we pass
+in.
 
 Reviewed-by: Nikolay Borisov <nborisov@suse.com>
 Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 Tested-by: Nikolay Borisov <nborisov@suse.com>
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/space-info.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+ fs/btrfs/space-info.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
-index 78ad8f01785c..1bf40328b0ee 100644
+index 1bf40328b0ee..8450864c5b77 100644
 --- a/fs/btrfs/space-info.c
 +++ b/fs/btrfs/space-info.c
-@@ -516,10 +516,10 @@ static inline u64 calc_reclaim_items_nr(struct btrfs_fs_info *fs_info,
- /*
-  * shrink metadata reservation for delalloc
-  */
--static void shrink_delalloc(struct btrfs_fs_info *fs_info, u64 to_reclaim,
--			    bool wait_ordered)
-+static void shrink_delalloc(struct btrfs_fs_info *fs_info,
-+			    struct btrfs_space_info *space_info,
-+			    u64 to_reclaim, bool wait_ordered)
- {
--	struct btrfs_space_info *space_info;
- 	struct btrfs_trans_handle *trans;
- 	u64 delalloc_bytes;
- 	u64 dio_bytes;
-@@ -545,7 +545,6 @@ static void shrink_delalloc(struct btrfs_fs_info *fs_info, u64 to_reclaim,
- 	}
- 
- 	trans = (struct btrfs_trans_handle *)current->journal_info;
--	space_info = btrfs_find_space_info(fs_info, BTRFS_BLOCK_GROUP_METADATA);
- 
- 	delalloc_bytes = percpu_counter_sum_positive(
- 						&fs_info->delalloc_bytes);
-@@ -753,7 +752,7 @@ static void flush_space(struct btrfs_fs_info *fs_info,
- 		break;
- 	case FLUSH_DELALLOC:
- 	case FLUSH_DELALLOC_WAIT:
--		shrink_delalloc(fs_info, num_bytes,
-+		shrink_delalloc(fs_info, space_info, num_bytes,
- 				state == FLUSH_DELALLOC_WAIT);
- 		break;
- 	case FLUSH_DELAYED_REFS_NR:
+@@ -777,7 +777,8 @@ static void flush_space(struct btrfs_fs_info *fs_info,
+ 			break;
+ 		}
+ 		ret = btrfs_chunk_alloc(trans,
+-				btrfs_metadata_alloc_profile(fs_info),
++				btrfs_get_alloc_profile(fs_info,
++							space_info->flags),
+ 				(state == ALLOC_CHUNK) ? CHUNK_ALLOC_NO_FORCE :
+ 					CHUNK_ALLOC_FORCE);
+ 		btrfs_end_transaction(trans);
 -- 
 2.24.1
 
