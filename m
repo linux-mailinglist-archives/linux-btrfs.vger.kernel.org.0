@@ -2,103 +2,99 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF887218DFA
-	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Jul 2020 19:12:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDF00218E54
+	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Jul 2020 19:35:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730176AbgGHRMS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 8 Jul 2020 13:12:18 -0400
-Received: from casper.infradead.org ([90.155.50.34]:39480 "EHLO
-        casper.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729333AbgGHRMS (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 8 Jul 2020 13:12:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=DHbykbSzvHZ+ERIXBMC0PVe/QodLlC0apKHTrr7dIjo=; b=aTEVjNxqStfGrVD1x6cdPIl3Pd
-        wMtlbtM6BVtT9N2pu9XA/heTNYZPzM6kRmZK3R27RoAYHMirElga/oCrt5hnM5Oz6O3x+LM5RZ9Vs
-        0m/ZAFyuZCHll+MyIquY+TPhalixp5WQIBS33s0Ra5J/BRuTAyvEIelIMGJ2X4kJfUwcM+fePqqLg
-        l1q0ELOr7Ob062D6nPdhjxrNwlI124nMbkIR542HcTaf3lrccClz7BQOD6Iywr+041fTauw4FwY/V
-        feJLTgV0dp5tgrU0KGlg2g/5ghH6xa9AjTEIiZuuN8oOKeZsDO+qAB15DG8b8vZB5CfGrg20RpPV3
-        JjRzRQWQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jtDbt-0007OU-3n; Wed, 08 Jul 2020 17:11:53 +0000
-Date:   Wed, 8 Jul 2020 18:11:52 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Dave Chinner <david@fromorbit.com>,
-        Goldwyn Rodrigues <rgoldwyn@suse.de>,
-        linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        fdmanana@gmail.com, dsterba@suse.cz, darrick.wong@oracle.com,
-        cluster-devel@redhat.com, linux-ext4@vger.kernel.org,
-        linux-xfs@vger.kernel.org
-Subject: Re: always fall back to buffered I/O after invalidation failures,
- was: Re: [PATCH 2/6] iomap: IOMAP_DIO_RWF_NO_STALE_PAGECACHE return if page
- invalidation fails
-Message-ID: <20200708171152.GV25523@casper.infradead.org>
-References: <20200629192353.20841-1-rgoldwyn@suse.de>
- <20200629192353.20841-3-rgoldwyn@suse.de>
- <20200701075310.GB29884@lst.de>
- <20200707124346.xnr5gtcysuzehejq@fiona>
- <20200707125705.GK25523@casper.infradead.org>
- <20200707130030.GA13870@lst.de>
- <20200708065127.GM2005@dread.disaster.area>
- <20200708135437.GP25523@casper.infradead.org>
- <20200708165412.GA637@lst.de>
+        id S1726848AbgGHRfN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 8 Jul 2020 13:35:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50788 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726806AbgGHRfM (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 8 Jul 2020 13:35:12 -0400
+Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88746C061A0B
+        for <linux-btrfs@vger.kernel.org>; Wed,  8 Jul 2020 10:35:12 -0700 (PDT)
+Received: by mail-qv1-xf2e.google.com with SMTP id h18so20846563qvl.3
+        for <linux-btrfs@vger.kernel.org>; Wed, 08 Jul 2020 10:35:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kepstin.ca; s=google;
+        h=message-id:subject:from:to:date:in-reply-to:references:user-agent
+         :mime-version:content-transfer-encoding;
+        bh=o+0RLlVuYO7fawqbFu7Xpxqe7C2HHy8O4wxlqT/fuwI=;
+        b=usG7yGQMZ0/hJ/g9ng2CnvuGjkM/vLdDYTBzXKb2xm1l/+Ul0nJOn2+gqWTR0FNwsZ
+         jd75uKghNiqS2lRJYcv713eghvMYRiBLmXF2PdyPUCL/K+7AhVxgtGN50JSP9ValXqHp
+         2owt4dN17Gd0cUYK88xJx7LVjo6sz5Ir2baBk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=o+0RLlVuYO7fawqbFu7Xpxqe7C2HHy8O4wxlqT/fuwI=;
+        b=suVJgUoIxftfXMuG1ua5OePNcwPr2j1CA3W4GbSt0RTFnEBFoo7q5SsnGgPqxq0VC4
+         imd3MTOM0BmxpVVty8LycbmeN7dgROpkdGWCNQdma6XOWBFvwsIqx2mMijBbkDC+Xge0
+         w1fGC46DrpoKMOJAs/icHnJ/yW8+Kx0xxkwNCuwqWqGrMRduip9GX7xQHaL7W6RMwvaK
+         1dJG8V+SoJlXKPibS4Zu0/gUXMx23e/nx8iiYMTH4aUjR1FcMKQKUeYCre+DXhihpj4/
+         s2LUOxPWiqfp5SMIqqgNnqq+DpTfgnsILsn+k/GWifGyOvl3huYBk3Siob7hZBlX1x+6
+         HnEw==
+X-Gm-Message-State: AOAM5339XAlLB7/J0SEOo6n/QOPVe+c2VKqYxW4DGJTnr1vfXQexjEsC
+        g+sp/FqW5Q/wHFyh6BcqhPQ83l2sJO/ZIw==
+X-Google-Smtp-Source: ABdhPJwXzrAHIGyfYkcZj6JuFQv4y0usGnB1KTNMafTlMpnUuYOJEbdNp7Ckr19Q0wnfOsDrSN0LjA==
+X-Received: by 2002:a0c:d84d:: with SMTP id i13mr12306698qvj.167.1594229711619;
+        Wed, 08 Jul 2020 10:35:11 -0700 (PDT)
+Received: from saya.kepstin.ca (dhcp-108-168-127-144.cable.user.start.ca. [108.168.127.144])
+        by smtp.gmail.com with ESMTPSA id 125sm528441qkg.88.2020.07.08.10.35.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 08 Jul 2020 10:35:10 -0700 (PDT)
+Message-ID: <96009f54f7548080513ab2100d420d82f50d4e90.camel@kepstin.ca>
+Subject: Re: first mount(s) after unclean shutdown always fail, second
+ attempt
+From:   Calvin Walton <calvin.walton@kepstin.ca>
+To:     Marc Lehmann <schmorp@schmorp.de>, linux-btrfs@vger.kernel.org
+Date:   Wed, 08 Jul 2020 13:35:08 -0400
+In-Reply-To: <20200702021815.GB6648@schmorp.de>
+References: <20200702021815.GB6648@schmorp.de>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200708165412.GA637@lst.de>
+Content-Transfer-Encoding: 7bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Jul 08, 2020 at 06:54:12PM +0200, Christoph Hellwig wrote:
-> On Wed, Jul 08, 2020 at 02:54:37PM +0100, Matthew Wilcox wrote:
-> > Direct I/O isn't deterministic though.  If the file isn't shared, then
-> > it works great, but as soon as you get mixed buffered and direct I/O,
-> > everything is already terrible.  Direct I/Os perform pagecache lookups
-> > already, but instead of using the data that we found in the cache, we
-> > (if it's dirty) write it back, wait for the write to complete, remove
-> > the page from the pagecache and then perform another I/O to get the data
-> > that we just wrote out!  And then the app that's using buffered I/O has
-> > to read it back in again.
+On Thu, 2020-07-02 at 04:18 +0200, Marc Lehmann wrote:
 > 
-> Mostly agreed.  That being said I suspect invalidating clean cache
-> might still be a good idea.  The original idea was mostly on how
-> to deal with invalidation failures of any kind, but falling back for
-> any kind of dirty cache also makes at least some sense.
-
-That's certainly the btrfs problem that needs to be solved, but I think
-it's all part of the directio misdesign.
-
-> > I have had an objection raised off-list.  In a scenario with a block
-> > device shared between two systems and an application which does direct
-> > I/O, everything is normally fine.  If one of the systems uses tar to
-> > back up the contents of the block device then the application on that
-> > system will no longer see the writes from the other system because
-> > there's nothing to invalidate the pagecache on the first system.
+> When the server is in this condition, then all btrfs filesystems on
+> slow
+> stores (regardless of whether they use dmcache or not) fail their
+> first
+> mount attempt(s) like this:
 > 
-> Err, WTF?  If someone access shared block devices with random
-> applications all bets are off anyway.
-
-That doesn't mean that customers don't do it.  It is, of course, not
-recommended, but we suspect people do it anyway.  Because it does
-work, unfortunately.  I'd be open to making this exact situation
-deterministically not work (eg disallowing mixing O_DIRECT and
-non-O_DIRECT openers of block devices), but making it suddenly
-non-deterministically give you old data is a non-starter.
-
-> > Unfortunately, this is in direct conflict with the performance
-> > problem caused by some little arsewipe deciding to do:
-> > 
-> > $ while true; do dd if=/lib/x86_64-linux-gnu/libc-2.30.so iflag=direct of=/dev/null; done
-> > 
-> > ... doesn't hurt me because my root filesystem is on ext4 which doesn't
-> > purge the cache.  But anything using iomap gets all the pages for libc
-> > kicked out of the cache, and that's a lot of fun.
+>    [  173.243117] BTRFS info (device dm-7): has skinny extents
+>    [  864.982108] BTRFS error (device dm-7): open_ctree failed
 > 
-> ext4 uses iomap..
+> all the filesystems in question are mounted twice during normal
+> boots,
+> with diferent subvolumes, and systemd parallelises these mounts. This
+> might
+> play a role in these failures.
+> 
+> Simply trying to mount the filesystems again then (usually) succeeds
+> with
+> seemingly no issues, so these are spurious mount failures. These
+> repeated
+> mount attewmpts are also much faster, presumably because a lot of the
+> data
+> is already in memory.
 
-I happen to be running an older kernel that doesn't on this laptop ;-)
+You shared kernel logs, but it would be helpful to see the systemd
+journal. One thing to note is that by default systemd has a timeout on
+mounts! It's entirely possible that as soon as the mount kernel thread
+becomes unblocked, it notices that systemd has sent a SIGTERM/SIGKILL
+and aborts the mount.
+
+See the documentation (man systemd.mount) and consider increasing or
+disabling the timeout on the affected mount units.
+
+-- 
+Calvin Walton <calvin.walton@kepstin.ca>
+
