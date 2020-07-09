@@ -2,366 +2,283 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47AA321A475
-	for <lists+linux-btrfs@lfdr.de>; Thu,  9 Jul 2020 18:12:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 786A021A4A7
+	for <lists+linux-btrfs@lfdr.de>; Thu,  9 Jul 2020 18:20:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727905AbgGIQMM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 9 Jul 2020 12:12:12 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:55014 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726357AbgGIQML (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 9 Jul 2020 12:12:11 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 069G7pMq194149;
-        Thu, 9 Jul 2020 16:11:40 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=i3stYrSZ13+uPhOhOyEQWASoeoYjXBvn1KNQ+SmH2qc=;
- b=xc2LG5P/4lNS9g2oVuoaqsMcOwRYCciJ//hjcn48iC94Xcb/ikm6NMuYSp8akPaA/Hc2
- Ukgnu/1J7fBhSZOIJ94UyF2qZlUwGvow6+zz4Z33ucdPYM3U9oQhUVx6f00UgTVXfxxz
- D9BRpfv1K1tgaHMHoyvGIjbviIZxTOWnz/77RITc2E8BpFPrYh9HqYk0V+foKllisLqm
- AyspIoYz/zeo9vlMhY43qKGHS6iqR16pPx4SJrbSFuUXtxN4GTAPTUlmJOqqEJ7LYC9T
- y7eRQKdE3HK0uOCp3gcEhL0b4bLwJahbiTOFP8Ws9eNucKxqOvsdh/8pizuNDqReIddg Ig== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2130.oracle.com with ESMTP id 325y0ajsgm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 09 Jul 2020 16:11:40 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 069G9MgZ139354;
-        Thu, 9 Jul 2020 16:09:39 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3020.oracle.com with ESMTP id 325k3hgsrh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 09 Jul 2020 16:09:39 +0000
-Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 069G9SSl007389;
-        Thu, 9 Jul 2020 16:09:28 GMT
-Received: from localhost (/67.169.218.210)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 09 Jul 2020 09:09:27 -0700
-Date:   Thu, 9 Jul 2020 09:09:26 -0700
-From:   "Darrick J. Wong" <darrick.wong@oracle.com>
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Goldwyn Rodrigues <rgoldwyn@suse.de>,
-        linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        fdmanana@gmail.com, dsterba@suse.cz, cluster-devel@redhat.com,
-        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org
-Subject: Re: always fall back to buffered I/O after invalidation failures,
- was: Re: [PATCH 2/6] iomap: IOMAP_DIO_RWF_NO_STALE_PAGECACHE return if page
- invalidation fails
-Message-ID: <20200709160926.GO7606@magnolia>
-References: <20200629192353.20841-1-rgoldwyn@suse.de>
- <20200629192353.20841-3-rgoldwyn@suse.de>
- <20200701075310.GB29884@lst.de>
- <20200707124346.xnr5gtcysuzehejq@fiona>
- <20200707125705.GK25523@casper.infradead.org>
- <20200707130030.GA13870@lst.de>
- <20200708065127.GM2005@dread.disaster.area>
- <20200708135437.GP25523@casper.infradead.org>
- <20200709022527.GQ2005@dread.disaster.area>
+        id S1726890AbgGIQUw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 9 Jul 2020 12:20:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35780 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726339AbgGIQUw (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 9 Jul 2020 12:20:52 -0400
+Received: from syrinx.knorrie.org (syrinx.knorrie.org [IPv6:2001:888:2177::4d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46155C08C5CE;
+        Thu,  9 Jul 2020 09:20:52 -0700 (PDT)
+Received: from [IPv6:2a02:a213:2b80:f000::12] (unknown [IPv6:2a02:a213:2b80:f000::12])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by syrinx.knorrie.org (Postfix) with ESMTPSA id 2965D609908DA;
+        Thu,  9 Jul 2020 18:20:48 +0200 (CEST)
+Subject: Re: [PATCH v5] btrfs: pass checksum type via BTRFS_IOC_FS_INFO ioctl
+To:     dsterba@suse.cz, Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        linux-btrfs@vger.kernel.org, stable@vger.kernel.org
+References: <20200706150924.40218-1-johannes.thumshirn@wdc.com>
+ <20200709145211.GA3533@twin.jikos.cz>
+From:   Hans van Kranenburg <hans@knorrie.org>
+Autocrypt: addr=hans@knorrie.org; keydata=
+ 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
+Message-ID: <3a9bc1b2-a780-1ba9-eba0-7fca2198e5c3@knorrie.org>
+Date:   Thu, 9 Jul 2020 18:20:47 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200709022527.GQ2005@dread.disaster.area>
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9677 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 bulkscore=0 mlxscore=0
- spamscore=0 malwarescore=0 phishscore=0 mlxlogscore=999 suspectscore=7
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2007090116
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9677 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 clxscore=1015
- lowpriorityscore=0 impostorscore=0 malwarescore=0 bulkscore=0 phishscore=0
- adultscore=0 suspectscore=7 mlxlogscore=999 priorityscore=1501 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2007090116
+In-Reply-To: <20200709145211.GA3533@twin.jikos.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Jul 09, 2020 at 12:25:27PM +1000, Dave Chinner wrote:
-> On Wed, Jul 08, 2020 at 02:54:37PM +0100, Matthew Wilcox wrote:
-> > On Wed, Jul 08, 2020 at 04:51:27PM +1000, Dave Chinner wrote:
-> > > On Tue, Jul 07, 2020 at 03:00:30PM +0200, Christoph Hellwig wrote:
-> > > > On Tue, Jul 07, 2020 at 01:57:05PM +0100, Matthew Wilcox wrote:
-> > > > > Indeed, I'm in favour of not invalidating
-> > > > > the page cache at all for direct I/O.  For reads, I think the page cache
-> > > > > should be used to satisfy any portion of the read which is currently
-> > > > > cached.  For writes, I think we should write into the page cache pages
-> > > > > which currently exist, and then force those pages to be written back,
-> > > > > but left in cache.
-> > > > 
-> > > > Something like that, yes.
-> > > 
-> > > So are we really willing to take the performance regression that
-> > > occurs from copying out of the page cache consuming lots more CPU
-> > > than an actual direct IO read? Or that direct IO writes suddenly
-> > > serialise because there are page cache pages and now we have to do
-> > > buffered IO?
-> > > 
-> > > Direct IO should be a deterministic, zero-copy IO path to/from
-> > > storage. Using the CPU to copy data during direct IO is the complete
-> > > opposite of the intended functionality, not to mention the behaviour
-> > > that many applications have been careful designed and tuned for.
-> > 
-> > Direct I/O isn't deterministic though.
-> 
-> When all the application is doing is direct IO, it is as
-> deterministic as the underlying storage behaviour. This is the best
-> we can possibly do from the perspective of the filesystem, and this
-> is largely what Direct IO requires from the filesystem.
-> 
-> Direct IO starts from delegating all responsibility for IO
-> synchronisation data coherency and integrity to userspace, and then
-> follows up by requiring the filesystem and kernel to stay out of the
-> IO path except where it is absolutely necessary to read or write
-> data to/from the underlying storage hardware. Serving Direct IO from
-> the page cache violates the second of these requirements.
-> 
-> > If the file isn't shared, then
-> > it works great, but as soon as you get mixed buffered and direct I/O,
-> > everything is already terrible.
-> 
-> Right, but that's *the rare exception* for applications using direct
-> IO, not the common fast path. It is the slow path where -shit has
-> already gone wrong on the production machine-, and it most
-> definitely does not change the DIO requirements that the filesystem
-> needs to provide userspace via the direct IO path.
-> 
-> Optimising the slow exception path is fine if it does not affect the
-> guarantees we try to provide through the common/fast path. If it is
-> does affect behaviour of the fast path, then we must be able to
-> either turn it off or provide our own alternative implementation
-> that does not have that cost.
-> 
-> > Direct I/Os perform pagecache lookups
-> > already, but instead of using the data that we found in the cache, we
-> > (if it's dirty) write it back, wait for the write to complete, remove
-> > the page from the pagecache and then perform another I/O to get the data
-> > that we just wrote out!  And then the app that's using buffered I/O has
-> > to read it back in again.
-> 
-> Yup, that's because we have a history going back 20+ years of people
-> finding performance regressions in applications using direct IO when
-> we leave incorrectly left pages in the page cache rather than
-> invalidating them and continuing to do direct IO.
-> 
-> 
-> > Nobody's proposing changing Direct I/O to exclusively work through the
-> > pagecache.  The proposal is to behave less weirdly when there's already
-> > data in the pagecache.
-> 
-> No, the proposal it to make direct IO behave *less
-> deterministically* if there is data in the page cache.
-> 
-> e.g. Instead of having a predicatable submission CPU overhead and
-> read latency of 100us for your data, this proposal makes the claim
-> that it is always better to burn 10x the IO submission CPU for a
-> single IO to copy the data and give that specific IO 10x lower
-> latency than it is to submit 10 async IOs to keep the IO pipeline
-> full.
-> 
-> What it fails to take into account is that in spending that CPU time
-> to copy the data, we haven't submitted 10 other IOs and so the
-> actual in-flight IO for the application has decreased. If
-> performance comes from keeping the IO pipeline as close to 100% full
-> as possible, then copying the data out of the page cache will cause
-> performance regressions.
-> 
-> i.e. Hit 5 page cache pages in 5 IOs in a row, and the IO queue
-> depth craters because we've only fulfilled 5 complete IOs instead of
-> submitting 50 entire IOs. This is the hidden cost of synchronous IO
-> via CPU data copying vs async IO via hardware offload, and if we
-> take that into account we must look at future hardware performance
-> trends to determine if this cost is going to increase or decrease in
-> future.
-> 
-> That is: CPUs are not getting faster anytime soon. IO subsystems are
-> still deep in the "performance doubles every 2 years" part of the
-> technology curve (pcie 3.0->4.0 just happened, 4->5 is a year away,
-> 5->6 is 3-4 years away, etc). Hence our reality is that we are deep
-> within a performance trend curve that tells us synchronous CPU
-> operations are not getting faster, but IO bandwidth and IOPS are
-> going to increase massively over the next 5-10 years. Hence putting
-> (already expensive) synchronous CPU operations in the asynchronous
-> zero-data-touch IO fast path is -exactly the wrong direction to be
-> moving-.
-> 
-> This is simple math. The gap between IO latency and bandwidth and
-> CPU addressable memory latency and bandwidth is closing all the
-> time, and the closer that gap gets the less sense it makes to use
-> CPU addressable memory for buffering syscall based read and write
-> IO. We are not quite yet at the cross-over point, but we really
-> aren't that far from it.
-> 
-> > I have had an objection raised off-list.  In a scenario with a block
-> > device shared between two systems and an application which does direct
-> > I/O, everything is normally fine.  If one of the systems uses tar to
-> > back up the contents of the block device then the application on that
-> > system will no longer see the writes from the other system because
-> > there's nothing to invalidate the pagecache on the first system.
-> 
-> I'm sorry you have to deal with that. :(
-> 
-> Back in the world of local filesystems, sharing block device across
-> systems without using a clustered filesystem to maintain storage
-> device level data coherency across those multiple machines is not
-> supported in any way, shape or form, direct IO or not.
-> 
-> > Unfortunately, this is in direct conflict with the performance
-> > problem caused by some little arsewipe deciding to do:
-> > 
-> > $ while true; do dd if=/lib/x86_64-linux-gnu/libc-2.30.so iflag=direct of=/dev/null; done
-> 
-> This has come up in the past, and I'm pretty sure I sent a patch to
-> stop iomap from invalidating the cache on DIO reads because the same
-> data is on disk as is in memory and it solves this whole problem.  I
-> cannot find that patch in the archives - I must have sent it inline
-> to the discussion as I'm about to do again.
+On 7/9/20 4:52 PM, David Sterba wrote:
+> On Tue, Jul 07, 2020 at 12:09:24AM +0900, Johannes Thumshirn wrote:
+>> With the recent addition of filesystem checksum types other than CRC32c,
+>> it is not anymore hard-coded which checksum type a btrfs filesystem uses.
+>>
+>> Up to now there is no good way to read the filesystem checksum, apart from
+>> reading the filesystem UUID and then query sysfs for the checksum type.
+>>
+>> Add a new csum_type and csum_size fields to the BTRFS_IOC_FS_INFO ioctl
+>> command which usually is used to query filesystem features. Also add a
+>> flags member indicating that the kernel responded with a set csum_type and
+>> csum_size field.
+>>
+>> For compatibility reasons, only return the csum_type and csum_size if the
+>> BTRFS_FS_INFO_FLAG_CSUM_TYPE_SIZE flag was passed to the kernel. Also
+>> clear any unknown flags so we don't pass false positives to user-space
+>> newer than the kernel.
+>>
+>> To simplify further additions to the ioctl, also switch the padding to a
+>> u8 array. Pahole was used to verify the result of this switch:
+>>
+>> pahole -C btrfs_ioctl_fs_info_args fs/btrfs/btrfs.ko
+>> struct btrfs_ioctl_fs_info_args {
+>>         __u64                      max_id;               /*     0     8 */
+>>         __u64                      num_devices;          /*     8     8 */
+>>         __u8                       fsid[16];             /*    16    16 */
+>>         __u32                      nodesize;             /*    32     4 */
+>>         __u32                      sectorsize;           /*    36     4 */
+>>         __u32                      clone_alignment;      /*    40     4 */
+>>         __u32                      flags;                /*    44     4 */
+>>         __u16                      csum_type;            /*    48     2 */
+>>         __u16                      csum_size;            /*    50     2 */
+>>         __u8                       reserved[972];        /*    52   972 */
+>>
+>>         /* size: 1024, cachelines: 16, members: 10 */
+>> };
+>>
+>> Fixes: 3951e7f050ac ("btrfs: add xxhash64 to checksumming algorithms")
+>> Fixes: 3831bf0094ab ("btrfs: add sha256 to checksumming algorithm")
+>> CC: stable@vger.kernel.org # 5.5+
+>> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+>> ---
+>> Changes to v4:
+>> * zero all data passed in from user-space
+>>   (I've chosen this variant as I think it is the most complete)
 
-And, um, it'll get buried in the archives again. :(
+Yes, I think that's a good choice.
 
-Though I guess I could just suck it in and see what happens, and maybe
-"the mists of time" won't be an issue this time around.  Particularly
-since I was the one asking you about this very hunk of code last night
-on irc. :P
+We still have to remember that the specifics of what's being done here
+is only applicable for this scenario:
 
-Oh well, onto the review...
+* ioctl did never check incoming data to be zeroed
+* we take advantage of that missing check (pfew), so that we can add a
+new flags-in field
+* setting requested flags will not lead to an error on an older running
+kernel, and the returned values will by accident cleanly signal that
+none of the new features are supported (less developer annoyance at the
+calling side)
+* kernel code resets the requested flags to what is understood and
+returned, so it does not matter if a buffer full of garbage was provided
+* the flags are *only* used to request additional buffer contents, they
+are *NOT* used to change the behavior of the functionality. this is a
+key thing that allows the whole thing to work out.
 
-> Yeah, now it comes back to me - the context was about using
-> RWF_NOWAIT to detect page cache residency for page cache timing
-> attacks and I mentioned doing exactly the above as a mechanism to
-> demand trigger invalidation of the mapped page cache. The
-> solution was to only invalidate the page cache on DIO writes, but we
-> didn't do it straight away because I needed to audit the XFS code to
-> determine if there were still real reasons it was necessary.
-> 
-> The patch is attached below. The DIO read path is unchanged except
-> for the fact it skips the invalidation.  i.e. the dio read still
-> goes to disk, but we can leave the data in memory because it is the
-> same as what was on disk. This does not perturb DIO behaviour by
-> inserting synchronous page cache copies or exclusive inode locking
-> into the async DIO path and so will not cause DIO performance
-> regressions. However, it does allow mmap() and read() to be served
-> from cache at the same time as we issue overlapping DIO reads.
-> 
-> Cheers,
-> 
-> Dave.
-> -- 
-> Dave Chinner
-> david@fromorbit.com
-> 
-> iomap: Only invalidate page cache pages on direct IO writes
-> 
-> From: Dave Chinner <dchinner@redhat.com>
-> 
-> The historic requirement for XFS to invalidate cached pages on
-> direct IO reads has been lost in the twisty pages of history - it was
-> inherited from Irix, which implemented page cache invalidation on
-> read as a method of working around problems synchronising page
-> cache state with uncached IO.
+What I tried to say in earlier messages is, that, it turns out that best
+practices might not be as simple as "for a new ioctl always check
+incoming buffer to be zeroed and refuse otherwise!"... because being
+able to do the above is actually pretty convenient. :)
 
-Urk.
+So each time a new one or an extension happens, it's good to really
+think through about what's 'at stake'.
 
-> XFS has carried this ever since. In the initial linux ports it was
-> necessary to get mmap and DIO to play "ok" together and not
-> immediately corrupt data. This was the state of play until the linux
-> kernel had infrastructure to track unwritten extents and synchronise
-> page faults with allocations and unwritten extent conversions
-> (->page_mkwrite infrastructure). IOws, the page cache invalidation
-> on DIO read was necessary to prevent trivial data corruptions. This
-> didn't solve all the problems, though.
+>> Changes to v3:
+>> * make flags in/out (David)
+>> * make csum return opt-in (Hans)
+>>
+>> Changes to v2:
+>> * add additional csum_size (David)
+>> * rename flag value to BTRFS_FS_INFO_FLAG_CSUM_TYPE_SIZE to reflect
+>>   additional size
+>>
+>> Changes to v1:
+>> * add 'out' comment to be consistent (Hans)
+>> * remove le16_to_cpu() (kbuild robot)
+>> * switch padding to be all u8 (David)
+>> ---
+>>  fs/btrfs/ioctl.c           | 16 +++++++++++++---
+>>  include/uapi/linux/btrfs.h | 14 ++++++++++++--
+>>  2 files changed, 25 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+>> index ab34179d7cbc..df8a6ba91055 100644
+>> --- a/fs/btrfs/ioctl.c
+>> +++ b/fs/btrfs/ioctl.c
+>> @@ -3217,11 +3217,15 @@ static long btrfs_ioctl_fs_info(struct btrfs_fs_info *fs_info,
+>>  	struct btrfs_ioctl_fs_info_args *fi_args;
+>>  	struct btrfs_device *device;
+>>  	struct btrfs_fs_devices *fs_devices = fs_info->fs_devices;
+>> +	u32 inflags;
+>>  	int ret = 0;
+>>  
+>> -	fi_args = kzalloc(sizeof(*fi_args), GFP_KERNEL);
+>> -	if (!fi_args)
+>> -		return -ENOMEM;
+>> +	fi_args = memdup_user(arg, sizeof(*fi_args));
+>> +	if (IS_ERR(fi_args))
+>> +		return PTR_ERR(fi_args);
+>> +
+>> +	inflags = fi_args->flags;
+>> +	memset(fi_args, 0, sizeof(*fi_args));
+>>  
+>>  	rcu_read_lock();
+>>  	fi_args->num_devices = fs_devices->num_devices;
+>> @@ -3237,6 +3241,12 @@ static long btrfs_ioctl_fs_info(struct btrfs_fs_info *fs_info,
+>>  	fi_args->sectorsize = fs_info->sectorsize;
+>>  	fi_args->clone_alignment = fs_info->sectorsize;
+>>  
+>> +	if (inflags & BTRFS_FS_INFO_FLAG_CSUM_TYPE_SIZE) {
+>> +		fi_args->csum_type = btrfs_super_csum_type(fs_info->super_copy);
+>> +		fi_args->csum_size = btrfs_super_csum_size(fs_info->super_copy);
+>> +		fi_args->flags |= BTRFS_FS_INFO_FLAG_CSUM_TYPE_SIZE;
+>> +	}
 > 
-> There were peformance problems if we didn't invalidate the entire
-> page cache over the file on read - we couldn't easily determine if
-> the cached pages were over the range of the IO, and invalidation
-> required taking a serialising lock (i_mutex) on the inode. This
-> serialising lock was an issue for XFS, as it was the only exclusive
-> lock in the direct Io read path.
-> 
-> Hence if there were any cached pages, we'd just invalidate the
-> entire file in one go so that subsequent IOs didn't need to take the
-> serialising lock. This was a problem that prevented ranged
-> invalidation from being particularly useful for avoiding the
-> remaining coherency issues. This was solved with the conversion of
-> i_mutex to i_rwsem and the conversion of the XFS inode IO lock to
-> use i_rwsem. Hence we could now just do ranged invalidation and the
-> performance problem went away.
-> 
-> However, page cache invalidation was still needed to serialise
-> sub-page/sub-block zeroing via direct IO against buffered IO because
-> bufferhead state attached to the cached page could get out of whack
-> when direct IOs were issued.  We've removed bufferheads from the
-> XFS code, and we don't carry any extent state on the cached pages
-> anymore, and so this problem has gone away, too.
-> 
-> IOWs, it would appear that we don't have any good reason to be
-> invalidating the page cache on DIO reads anymore. Hence remove the
-> invalidation on read because it is unnecessary overhead,
-> not needed to maintain coherency between mmap/buffered access and
-> direct IO anymore, and prevents anyone from using direct IO reads
-> from intentionally invalidating the page cache of a file.
-> 
-> Signed-off-by: Dave Chinner <dchinner@redhat.com>
-> ---
->  fs/iomap/direct-io.c | 33 +++++++++++++++++----------------
->  1 file changed, 17 insertions(+), 16 deletions(-)
-> 
-> diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
-> index ec7b78e6feca..ef0059eb34b5 100644
-> --- a/fs/iomap/direct-io.c
-> +++ b/fs/iomap/direct-io.c
-> @@ -475,23 +475,24 @@ iomap_dio_rw(struct kiocb *iocb, struct iov_iter *iter,
->  	if (ret)
->  		goto out_free_dio;
->  
-> -	/*
-> -	 * Try to invalidate cache pages for the range we're direct
-> -	 * writing.  If this invalidation fails, tough, the write will
-> -	 * still work, but racing two incompatible write paths is a
-> -	 * pretty crazy thing to do, so we don't support it 100%.
+> That's safe, but we'll have to add a new flag for all new members and we
+> have already 2 ready (generation, metadata_uuid) and ioctl user has to
+> set the bits. Minor inconvenience, in exchange for future extensions, so
+> let it be.
 
-I always wondered about the repeated use of 'write' in this comment
-despite the lack of any sort of WRITE check logic.  Seems fine to me,
-let's throw it on the fstests pile and see what happens.
+I think I'm just gonna send a buffer set to all ones for FS_INFO from
+now on. :) It will automatically get me all new future stuff.
 
-Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
+>> +
+>>  	if (copy_to_user(arg, fi_args, sizeof(*fi_args)))
+>>  		ret = -EFAULT;
+>>  
+>> diff --git a/include/uapi/linux/btrfs.h b/include/uapi/linux/btrfs.h
+>> index e6b6cb0f8bc6..c130eaea416e 100644
+>> --- a/include/uapi/linux/btrfs.h
+>> +++ b/include/uapi/linux/btrfs.h
+>> @@ -250,10 +250,20 @@ struct btrfs_ioctl_fs_info_args {
+>>  	__u32 nodesize;				/* out */
+>>  	__u32 sectorsize;			/* out */
+>>  	__u32 clone_alignment;			/* out */
+>> -	__u32 reserved32;
+>> -	__u64 reserved[122];			/* pad to 1k */
+>> +	__u32 flags;				/* in/out */
+>> +	__u16 csum_type;			/* out */
+>> +	__u16 csum_size;			/* out */
+>> +	__u8 reserved[972];			/* pad to 1k */
+>>  };
+>>  
+>> +/*
+>> + * fs_info ioctl flags
+>> + *
+>> + * Used by:
+>> + * struct btrfs_ioctl_fs_info_args
+>> + */
+>> +#define BTRFS_FS_INFO_FLAG_CSUM_TYPE_SIZE		(1 << 0)
+> 
+> Flags should be defined before the structure, but that I can fix up.
+> 
 
---D
+Next task is to write changes for strace:
 
-> -	 */
-> -	ret = invalidate_inode_pages2_range(mapping,
-> -			pos >> PAGE_SHIFT, end >> PAGE_SHIFT);
-> -	if (ret)
-> -		dio_warn_stale_pagecache(iocb->ki_filp);
-> -	ret = 0;
-> +	if (iov_iter_rw(iter) == WRITE) {
-> +		/*
-> +		 * Try to invalidate cache pages for the range we're direct
-> +		 * writing.  If this invalidation fails, tough, the write will
-> +		 * still work, but racing two incompatible write paths is a
-> +		 * pretty crazy thing to do, so we don't support it 100%.
-> +		 */
-> +		ret = invalidate_inode_pages2_range(mapping,
-> +				pos >> PAGE_SHIFT, end >> PAGE_SHIFT);
-> +		if (ret)
-> +			dio_warn_stale_pagecache(iocb->ki_filp);
-> +		ret = 0;
->  
-> -	if (iov_iter_rw(iter) == WRITE && !wait_for_completion &&
-> -	    !inode->i_sb->s_dio_done_wq) {
-> -		ret = sb_init_dio_done_wq(inode->i_sb);
-> -		if (ret < 0)
-> -			goto out_free_dio;
-> +		if (!wait_for_completion &&
-> +		    !inode->i_sb->s_dio_done_wq) {
-> +			ret = sb_init_dio_done_wq(inode->i_sb);
-> +			if (ret < 0)
-> +				goto out_free_dio;
->  	}
->  
->  	inode_dio_begin(inode);
+https://btrfs.wiki.kernel.org/index.php/Development_notes#Adding_a_new_ioctl.2C_extending_an_existing_one
+
+
+K
