@@ -2,318 +2,198 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9F2921963A
-	for <lists+linux-btrfs@lfdr.de>; Thu,  9 Jul 2020 04:25:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 743FC21964D
+	for <lists+linux-btrfs@lfdr.de>; Thu,  9 Jul 2020 04:38:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726162AbgGICZo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 8 Jul 2020 22:25:44 -0400
-Received: from mail109.syd.optusnet.com.au ([211.29.132.80]:41858 "EHLO
-        mail109.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726082AbgGICZo (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 8 Jul 2020 22:25:44 -0400
-Received: from dread.disaster.area (pa49-180-53-24.pa.nsw.optusnet.com.au [49.180.53.24])
-        by mail109.syd.optusnet.com.au (Postfix) with ESMTPS id 16768D7DE6C;
-        Thu,  9 Jul 2020 12:25:29 +1000 (AEST)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1jtMFb-0002D1-VP; Thu, 09 Jul 2020 12:25:27 +1000
-Date:   Thu, 9 Jul 2020 12:25:27 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Goldwyn Rodrigues <rgoldwyn@suse.de>,
-        linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        fdmanana@gmail.com, dsterba@suse.cz, darrick.wong@oracle.com,
-        cluster-devel@redhat.com, linux-ext4@vger.kernel.org,
-        linux-xfs@vger.kernel.org
-Subject: Re: always fall back to buffered I/O after invalidation failures,
- was: Re: [PATCH 2/6] iomap: IOMAP_DIO_RWF_NO_STALE_PAGECACHE return if page
- invalidation fails
-Message-ID: <20200709022527.GQ2005@dread.disaster.area>
-References: <20200629192353.20841-1-rgoldwyn@suse.de>
- <20200629192353.20841-3-rgoldwyn@suse.de>
- <20200701075310.GB29884@lst.de>
- <20200707124346.xnr5gtcysuzehejq@fiona>
- <20200707125705.GK25523@casper.infradead.org>
- <20200707130030.GA13870@lst.de>
- <20200708065127.GM2005@dread.disaster.area>
- <20200708135437.GP25523@casper.infradead.org>
+        id S1726119AbgGICip (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 8 Jul 2020 22:38:45 -0400
+Received: from mail.synology.com ([211.23.38.101]:46134 "EHLO synology.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726117AbgGICio (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 8 Jul 2020 22:38:44 -0400
+Subject: Re: [PATCH v2] btrfs: speedup mount time with readahead chunk tree
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synology.com; s=123;
+        t=1594262322; bh=wUhK/jcLXBQs2wqFjk2Nqq0qWIkJKssfJlfu8pI33ME=;
+        h=Subject:To:References:From:Date:In-Reply-To;
+        b=ePtd4BhRoXhVjVQVIw3/sizftYd8iFJCYh633wa0mI89rAAFU4mT58qcX61laRuAv
+         dTSP402v6WxHFqOMMxh3OHvgW++sNHodFiRNcoac9eU24phvXM7wOAT/jXvCBQYs1N
+         WA1HpjgHXb71rPhtru6+Ko7pW/OJS8uEe8KLwvoY=
+To:     dsterba@suse.cz, linux-btrfs@vger.kernel.org, wqu@suse.com
+References: <20200707035944.15150-1-robbieko@synology.com>
+ <20200707192511.GE16141@twin.jikos.cz> <20200708211142.GD28832@twin.jikos.cz>
+From:   Robbie Ko <robbieko@synology.com>
+Message-ID: <0358f6f6-da68-94a4-f3ed-718e5caeded4@synology.com>
+Date:   Thu, 9 Jul 2020 10:38:42 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200708135437.GP25523@casper.infradead.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=X6os11be c=1 sm=1 tr=0
-        a=moVtWZxmCkf3aAMJKIb/8g==:117 a=moVtWZxmCkf3aAMJKIb/8g==:17
-        a=kj9zAlcOel0A:10 a=_RQrkK6FrEwA:10 a=7-415B0cAAAA:8 a=20KFwNOVAAAA:8
-        a=SxJXpkryYG3jv73f6oUA:9 a=CjuIK1q_8ugA:10 a=DiKeHqHhRZ4A:10
-        a=biEYGPWJfzWAr4FL6Ov7:22
+In-Reply-To: <20200708211142.GD28832@twin.jikos.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Synology-MCP-Status: no
+X-Synology-Spam-Flag: no
+X-Synology-Spam-Status: score=0, required 6, WHITELIST_FROM_ADDRESS 0
+X-Synology-Virus-Status: no
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Jul 08, 2020 at 02:54:37PM +0100, Matthew Wilcox wrote:
-> On Wed, Jul 08, 2020 at 04:51:27PM +1000, Dave Chinner wrote:
-> > On Tue, Jul 07, 2020 at 03:00:30PM +0200, Christoph Hellwig wrote:
-> > > On Tue, Jul 07, 2020 at 01:57:05PM +0100, Matthew Wilcox wrote:
-> > > > Indeed, I'm in favour of not invalidating
-> > > > the page cache at all for direct I/O.  For reads, I think the page cache
-> > > > should be used to satisfy any portion of the read which is currently
-> > > > cached.  For writes, I think we should write into the page cache pages
-> > > > which currently exist, and then force those pages to be written back,
-> > > > but left in cache.
-> > > 
-> > > Something like that, yes.
-> > 
-> > So are we really willing to take the performance regression that
-> > occurs from copying out of the page cache consuming lots more CPU
-> > than an actual direct IO read? Or that direct IO writes suddenly
-> > serialise because there are page cache pages and now we have to do
-> > buffered IO?
-> > 
-> > Direct IO should be a deterministic, zero-copy IO path to/from
-> > storage. Using the CPU to copy data during direct IO is the complete
-> > opposite of the intended functionality, not to mention the behaviour
-> > that many applications have been careful designed and tuned for.
-> 
-> Direct I/O isn't deterministic though.
 
-When all the application is doing is direct IO, it is as
-deterministic as the underlying storage behaviour. This is the best
-we can possibly do from the perspective of the filesystem, and this
-is largely what Direct IO requires from the filesystem.
+David Sterba 於 2020/7/9 上午5:11 寫道:
+> On Tue, Jul 07, 2020 at 09:25:11PM +0200, David Sterba wrote:
+>> On Tue, Jul 07, 2020 at 11:59:44AM +0800, robbieko wrote:
+>>> From: Robbie Ko <robbieko@synology.com>
+>>>
+>>> When mounting, we always need to read the whole chunk tree,
+>>> when there are too many chunk items, most of the time is
+>>> spent on btrfs_read_chunk_tree, because we only read one
+>>> leaf at a time.
+>>>
+>>> It is unreasonable to limit the readahead mechanism to a
+>>> range of 64k, so we have removed that limit.
+>>>
+>>> In addition we added reada_maximum_size to customize the
+>>> size of the pre-reader, The default is 64k to maintain the
+>>> original behavior.
+>>>
+>>> So we fix this by used readahead mechanism, and set readahead
+>>> max size to ULLONG_MAX which reads all the leaves after the
+>>> key in the node when reading a level 1 node.
+>> The readahead of chunk tree is a special case as we know we will need
+>> the whole tree, in all other cases the search readahead needs is
+>> supposed to read only one leaf.
+>>
+>> For that reason I don't want to touch the current path readahead logic
+>> at all and do the chunk tree readahead in one go instead of the
+>> per-search.
+>>
+>> Also I don't like to see size increase of btrfs_path just to use the
+>> custom once.
+>>
+>> The idea of the whole tree readahead is to do something like:
+>>
+>> - find first item
+>> - start readahead on all leaves from its level 1 node parent
+>>    (readahead_tree_block)
+>> - when the level 1 parent changes during iterating items, start the
+>>    readahead again
+>>
+>> This skips readahead of all nodes above level 1, if you find a nicer way
+>> to readahead the whole tree I won't object, but for the first
+>> implementation the level 1 seems ok to me.
+> Patch below, I tried to create large system chunk by fallocate on a
+> sparse loop device, but got only 1 node on level 1 so the readahead
+> cannot show off.
+>
+> # btrfs fi df .
+> Data, single: total=59.83TiB, used=59.83TiB
+> System, single: total=36.00MiB, used=6.20MiB
+> Metadata, single: total=1.01GiB, used=91.78MiB
+> GlobalReserve, single: total=26.80MiB, used=0.00B
+>
+> There were 395 leaf nodes that got read ahead, time between the first
+> and last is 0.83s and the block group tree read took about 40 seconds.
+> This was in a VM with file-backed images, and the loop device was
+> constructed from these devices so it's spinning rust.
+>
+> I don't have results for non-prefetched mount to compare at the moment.
+>
+I think what you're doing is working.
 
-Direct IO starts from delegating all responsibility for IO
-synchronisation data coherency and integrity to userspace, and then
-follows up by requiring the filesystem and kernel to stay out of the
-IO path except where it is absolutely necessary to read or write
-data to/from the underlying storage hardware. Serving Direct IO from
-the page cache violates the second of these requirements.
+But there are many similar problems that need to be improved.
 
-> If the file isn't shared, then
-> it works great, but as soon as you get mixed buffered and direct I/O,
-> everything is already terrible.
+1. load_free_space_tree
+We need to read all BTRFS_FREE_SPACE_BITMAP_KEY and
+BTRFS_FREE_SPACE_EXTENT_KEY until the next FREE_SPACE_INFO_KEY.
 
-Right, but that's *the rare exception* for applications using direct
-IO, not the common fast path. It is the slow path where -shit has
-already gone wrong on the production machine-, and it most
-definitely does not change the DIO requirements that the filesystem
-needs to provide userspace via the direct IO path.
+2. populate_free_space_tree
+We need to read all BTRFS_EXTENT_ITEM_KEY and BTRFS_METADATA_ITEM_KEY 
+until the end of the block group
 
-Optimising the slow exception path is fine if it does not affect the
-guarantees we try to provide through the common/fast path. If it is
-does affect behaviour of the fast path, then we must be able to
-either turn it off or provide our own alternative implementation
-that does not have that cost.
+3. btrfs_real_readdir
+We need as many reads as possible (inode, BTRFS_DIR_INDEX_KEY).
 
-> Direct I/Os perform pagecache lookups
-> already, but instead of using the data that we found in the cache, we
-> (if it's dirty) write it back, wait for the write to complete, remove
-> the page from the pagecache and then perform another I/O to get the data
-> that we just wrote out!  And then the app that's using buffered I/O has
-> to read it back in again.
+4. btrfs_clone
+We need as many reads as possible (inode, BTRFS_EXTENT_DATA_KEY).
 
-Yup, that's because we have a history going back 20+ years of people
-finding performance regressions in applications using direct IO when
-we leave incorrectly left pages in the page cache rather than
-invalidating them and continuing to do direct IO.
+5. btrfs_verify_dev_extents
+We need to read all the BTRFS_DEV_EXTENT_KEYs.
+
+6. caching_kthread (inode-map.c)
+We need all the BTRFS_INODE_ITEM_KEY of fs_tree to build the inode map
+
+For the above cases.
+It is not possible to write a special readahead code for each case.
+We have to provide a new readaread framework
+Enable the caller to determine the scope of readaheads needed.
+The possible parameters of the readahead are as follows
+1. reada_maximum_nr : Read a maximum of several leaves at a time.
+2. reada_max_key : READA_FORWARD Early Suspension Condition
+3. reada_min_key : READA_BACK Abort condition ahead of time.
+
+We need to review all users of readahead to confirm that the The 
+behavior of readahead.
+For example, in scrub_enumerate_chunks readahead has the effect of Very 
+small,
+Because most of the time is spent on scrub_chunk,
+The processing of scrub_chunk for all DEV_EXTENT in a leaf is A long time.
+If the dev tree has been modified in the meantime, the previously 
+pre-reading leaf may be useless.
 
 
-> Nobody's proposing changing Direct I/O to exclusively work through the
-> pagecache.  The proposal is to behave less weirdly when there's already
-> data in the pagecache.
-
-No, the proposal it to make direct IO behave *less
-deterministically* if there is data in the page cache.
-
-e.g. Instead of having a predicatable submission CPU overhead and
-read latency of 100us for your data, this proposal makes the claim
-that it is always better to burn 10x the IO submission CPU for a
-single IO to copy the data and give that specific IO 10x lower
-latency than it is to submit 10 async IOs to keep the IO pipeline
-full.
-
-What it fails to take into account is that in spending that CPU time
-to copy the data, we haven't submitted 10 other IOs and so the
-actual in-flight IO for the application has decreased. If
-performance comes from keeping the IO pipeline as close to 100% full
-as possible, then copying the data out of the page cache will cause
-performance regressions.
-
-i.e. Hit 5 page cache pages in 5 IOs in a row, and the IO queue
-depth craters because we've only fulfilled 5 complete IOs instead of
-submitting 50 entire IOs. This is the hidden cost of synchronous IO
-via CPU data copying vs async IO via hardware offload, and if we
-take that into account we must look at future hardware performance
-trends to determine if this cost is going to increase or decrease in
-future.
-
-That is: CPUs are not getting faster anytime soon. IO subsystems are
-still deep in the "performance doubles every 2 years" part of the
-technology curve (pcie 3.0->4.0 just happened, 4->5 is a year away,
-5->6 is 3-4 years away, etc). Hence our reality is that we are deep
-within a performance trend curve that tells us synchronous CPU
-operations are not getting faster, but IO bandwidth and IOPS are
-going to increase massively over the next 5-10 years. Hence putting
-(already expensive) synchronous CPU operations in the asynchronous
-zero-data-touch IO fast path is -exactly the wrong direction to be
-moving-.
-
-This is simple math. The gap between IO latency and bandwidth and
-CPU addressable memory latency and bandwidth is closing all the
-time, and the closer that gap gets the less sense it makes to use
-CPU addressable memory for buffering syscall based read and write
-IO. We are not quite yet at the cross-over point, but we really
-aren't that far from it.
-
-> I have had an objection raised off-list.  In a scenario with a block
-> device shared between two systems and an application which does direct
-> I/O, everything is normally fine.  If one of the systems uses tar to
-> back up the contents of the block device then the application on that
-> system will no longer see the writes from the other system because
-> there's nothing to invalidate the pagecache on the first system.
-
-I'm sorry you have to deal with that. :(
-
-Back in the world of local filesystems, sharing block device across
-systems without using a clustered filesystem to maintain storage
-device level data coherency across those multiple machines is not
-supported in any way, shape or form, direct IO or not.
-
-> Unfortunately, this is in direct conflict with the performance
-> problem caused by some little arsewipe deciding to do:
-> 
-> $ while true; do dd if=/lib/x86_64-linux-gnu/libc-2.30.so iflag=direct of=/dev/null; done
-
-This has come up in the past, and I'm pretty sure I sent a patch to
-stop iomap from invalidating the cache on DIO reads because the same
-data is on disk as is in memory and it solves this whole problem.  I
-cannot find that patch in the archives - I must have sent it inline
-to the discussion as I'm about to do again.
-
-Yeah, now it comes back to me - the context was about using
-RWF_NOWAIT to detect page cache residency for page cache timing
-attacks and I mentioned doing exactly the above as a mechanism to
-demand trigger invalidation of the mapped page cache. The
-solution was to only invalidate the page cache on DIO writes, but we
-didn't do it straight away because I needed to audit the XFS code to
-determine if there were still real reasons it was necessary.
-
-The patch is attached below. The DIO read path is unchanged except
-for the fact it skips the invalidation.  i.e. the dio read still
-goes to disk, but we can leave the data in memory because it is the
-same as what was on disk. This does not perturb DIO behaviour by
-inserting synchronous page cache copies or exclusive inode locking
-into the async DIO path and so will not cause DIO performance
-regressions. However, it does allow mmap() and read() to be served
-from cache at the same time as we issue overlapping DIO reads.
-
-Cheers,
-
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
-
-iomap: Only invalidate page cache pages on direct IO writes
-
-From: Dave Chinner <dchinner@redhat.com>
-
-The historic requirement for XFS to invalidate cached pages on
-direct IO reads has been lost in the twisty pages of history - it was
-inherited from Irix, which implemented page cache invalidation on
-read as a method of working around problems synchronising page
-cache state with uncached IO.
-
-XFS has carried this ever since. In the initial linux ports it was
-necessary to get mmap and DIO to play "ok" together and not
-immediately corrupt data. This was the state of play until the linux
-kernel had infrastructure to track unwritten extents and synchronise
-page faults with allocations and unwritten extent conversions
-(->page_mkwrite infrastructure). IOws, the page cache invalidation
-on DIO read was necessary to prevent trivial data corruptions. This
-didn't solve all the problems, though.
-
-There were peformance problems if we didn't invalidate the entire
-page cache over the file on read - we couldn't easily determine if
-the cached pages were over the range of the IO, and invalidation
-required taking a serialising lock (i_mutex) on the inode. This
-serialising lock was an issue for XFS, as it was the only exclusive
-lock in the direct Io read path.
-
-Hence if there were any cached pages, we'd just invalidate the
-entire file in one go so that subsequent IOs didn't need to take the
-serialising lock. This was a problem that prevented ranged
-invalidation from being particularly useful for avoiding the
-remaining coherency issues. This was solved with the conversion of
-i_mutex to i_rwsem and the conversion of the XFS inode IO lock to
-use i_rwsem. Hence we could now just do ranged invalidation and the
-performance problem went away.
-
-However, page cache invalidation was still needed to serialise
-sub-page/sub-block zeroing via direct IO against buffered IO because
-bufferhead state attached to the cached page could get out of whack
-when direct IOs were issued.  We've removed bufferheads from the
-XFS code, and we don't carry any extent state on the cached pages
-anymore, and so this problem has gone away, too.
-
-IOWs, it would appear that we don't have any good reason to be
-invalidating the page cache on DIO reads anymore. Hence remove the
-invalidation on read because it is unnecessary overhead,
-not needed to maintain coherency between mmap/buffered access and
-direct IO anymore, and prevents anyone from using direct IO reads
-from intentionally invalidating the page cache of a file.
-
-Signed-off-by: Dave Chinner <dchinner@redhat.com>
----
- fs/iomap/direct-io.c | 33 +++++++++++++++++----------------
- 1 file changed, 17 insertions(+), 16 deletions(-)
-
-diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
-index ec7b78e6feca..ef0059eb34b5 100644
---- a/fs/iomap/direct-io.c
-+++ b/fs/iomap/direct-io.c
-@@ -475,23 +475,24 @@ iomap_dio_rw(struct kiocb *iocb, struct iov_iter *iter,
- 	if (ret)
- 		goto out_free_dio;
- 
--	/*
--	 * Try to invalidate cache pages for the range we're direct
--	 * writing.  If this invalidation fails, tough, the write will
--	 * still work, but racing two incompatible write paths is a
--	 * pretty crazy thing to do, so we don't support it 100%.
--	 */
--	ret = invalidate_inode_pages2_range(mapping,
--			pos >> PAGE_SHIFT, end >> PAGE_SHIFT);
--	if (ret)
--		dio_warn_stale_pagecache(iocb->ki_filp);
--	ret = 0;
-+	if (iov_iter_rw(iter) == WRITE) {
-+		/*
-+		 * Try to invalidate cache pages for the range we're direct
-+		 * writing.  If this invalidation fails, tough, the write will
-+		 * still work, but racing two incompatible write paths is a
-+		 * pretty crazy thing to do, so we don't support it 100%.
-+		 */
-+		ret = invalidate_inode_pages2_range(mapping,
-+				pos >> PAGE_SHIFT, end >> PAGE_SHIFT);
-+		if (ret)
-+			dio_warn_stale_pagecache(iocb->ki_filp);
-+		ret = 0;
- 
--	if (iov_iter_rw(iter) == WRITE && !wait_for_completion &&
--	    !inode->i_sb->s_dio_done_wq) {
--		ret = sb_init_dio_done_wq(inode->i_sb);
--		if (ret < 0)
--			goto out_free_dio;
-+		if (!wait_for_completion &&
-+		    !inode->i_sb->s_dio_done_wq) {
-+			ret = sb_init_dio_done_wq(inode->i_sb);
-+			if (ret < 0)
-+				goto out_free_dio;
- 	}
- 
- 	inode_dio_begin(inode);
+> ----
+> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+> index c7a3d4d730a3..e19891243199 100644
+> --- a/fs/btrfs/volumes.c
+> +++ b/fs/btrfs/volumes.c
+> @@ -7013,6 +7013,19 @@ bool btrfs_check_rw_degradable(struct btrfs_fs_info *fs_info,
+>   	return ret;
+>   }
+>   
+> +void readahead_tree_node_children(struct extent_buffer *node)
+> +{
+> +	int i;
+> +	const int nr_items = btrfs_header_nritems(node);
+> +
+> +	for (i = 0; i < nr_items; i++) {
+> +		u64 start;
+> +
+> +		start = btrfs_node_blockptr(node, i);
+> +		readahead_tree_block(node->fs_info, start);
+> +	}
+> +}
+> +
+>   int btrfs_read_chunk_tree(struct btrfs_fs_info *fs_info)
+>   {
+>   	struct btrfs_root *root = fs_info->chunk_root;
+> @@ -7023,6 +7036,7 @@ int btrfs_read_chunk_tree(struct btrfs_fs_info *fs_info)
+>   	int ret;
+>   	int slot;
+>   	u64 total_dev = 0;
+> +	u64 last_ra_node = 0;
+>   
+>   	path = btrfs_alloc_path();
+>   	if (!path)
+> @@ -7048,6 +7062,8 @@ int btrfs_read_chunk_tree(struct btrfs_fs_info *fs_info)
+>   	if (ret < 0)
+>   		goto error;
+>   	while (1) {
+> +		struct extent_buffer *node;
+> +
+>   		leaf = path->nodes[0];
+>   		slot = path->slots[0];
+>   		if (slot >= btrfs_header_nritems(leaf)) {
+> @@ -7058,6 +7074,13 @@ int btrfs_read_chunk_tree(struct btrfs_fs_info *fs_info)
+>   				goto error;
+>   			break;
+>   		}
+> +		node = path->nodes[1];
+> +		if (node) {
+> +			if (last_ra_node != node->start) {
+> +				readahead_tree_node_children(node);
+> +				last_ra_node = node->start;
+> +			}
+> +		}
+>   		btrfs_item_key_to_cpu(leaf, &found_key, slot);
+>   		if (found_key.type == BTRFS_DEV_ITEM_KEY) {
+>   			struct btrfs_dev_item *dev_item;
