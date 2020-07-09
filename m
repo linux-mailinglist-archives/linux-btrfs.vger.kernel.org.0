@@ -2,102 +2,102 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3314219ABF
-	for <lists+linux-btrfs@lfdr.de>; Thu,  9 Jul 2020 10:26:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF233219AE4
+	for <lists+linux-btrfs@lfdr.de>; Thu,  9 Jul 2020 10:33:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726247AbgGII0h (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 9 Jul 2020 04:26:37 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:39394 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726228AbgGII0h (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 9 Jul 2020 04:26:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1594283195;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=lZzkV3MawPwjnH2A6+i/gZ/LnvMbuWxGQy5lTADJWpQ=;
-        b=UlzpA1meZ3r7qL27YoTUdc2K9iGVysH43vYn0EtC2v50673ET8lPAj7KC9M+IE42qkn+tc
-        uCtWbMG6WHXsLpvwL15BbIZ6DGlfVeroSwXvrjoNcxEhfZHu20DMfu5hGJW48Q5vtGCU9c
-        kzxLDnXCK5cu4/FncVgxc/DHRTgT64c=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-479-VvhpeSOcMc-klcFzERo_4w-1; Thu, 09 Jul 2020 04:26:33 -0400
-X-MC-Unique: VvhpeSOcMc-klcFzERo_4w-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9C93988C922;
-        Thu,  9 Jul 2020 08:26:31 +0000 (UTC)
-Received: from fogou.chygwyn.com (unknown [10.33.36.52])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id CC38379815;
-        Thu,  9 Jul 2020 08:26:24 +0000 (UTC)
-Subject: Re: [Cluster-devel] always fall back to buffered I/O after
- invalidation failures, was: Re: [PATCH 2/6] iomap:
- IOMAP_DIO_RWF_NO_STALE_PAGECACHE return if page invalidation fails
-To:     Christoph Hellwig <hch@lst.de>,
-        Matthew Wilcox <willy@infradead.org>
-Cc:     linux-xfs@vger.kernel.org, fdmanana@gmail.com,
-        darrick.wong@oracle.com, Goldwyn Rodrigues <rgoldwyn@suse.de>,
-        Dave Chinner <david@fromorbit.com>, dsterba@suse.cz,
-        cluster-devel@redhat.com, linux-fsdevel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-btrfs@vger.kernel.org
-References: <20200629192353.20841-1-rgoldwyn@suse.de>
- <20200629192353.20841-3-rgoldwyn@suse.de> <20200701075310.GB29884@lst.de>
- <20200707124346.xnr5gtcysuzehejq@fiona>
- <20200707125705.GK25523@casper.infradead.org> <20200707130030.GA13870@lst.de>
- <20200708065127.GM2005@dread.disaster.area>
- <20200708135437.GP25523@casper.infradead.org> <20200708165412.GA637@lst.de>
-From:   Steven Whitehouse <swhiteho@redhat.com>
-Message-ID: <126c9e1b-145f-3725-fbde-92135f52a4a3@redhat.com>
-Date:   Thu, 9 Jul 2020 09:26:22 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        id S1726291AbgGIIdj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 9 Jul 2020 04:33:39 -0400
+Received: from mx2.suse.de ([195.135.220.15]:59128 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726228AbgGIIdj (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 9 Jul 2020 04:33:39 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id EEFB3AD71;
+        Thu,  9 Jul 2020 08:33:36 +0000 (UTC)
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     Josef Bacik <josef@toxicpanda.com>
+Subject: [PATCH v2 1/2] btrfs: avoid possible signal interruption for btrfs_drop_snapshot() on relocation tree
+Date:   Thu,  9 Jul 2020 16:33:32 +0800
+Message-Id: <20200709083333.137927-1-wqu@suse.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <20200708165412.GA637@lst.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi,
+[BUG]
+There is a bug report about bad signal timing could lead to read-only
+fs during balance:
 
-On 08/07/2020 17:54, Christoph Hellwig wrote:
-> On Wed, Jul 08, 2020 at 02:54:37PM +0100, Matthew Wilcox wrote:
->> Direct I/O isn't deterministic though.  If the file isn't shared, then
->> it works great, but as soon as you get mixed buffered and direct I/O,
->> everything is already terrible.  Direct I/Os perform pagecache lookups
->> already, but instead of using the data that we found in the cache, we
->> (if it's dirty) write it back, wait for the write to complete, remove
->> the page from the pagecache and then perform another I/O to get the data
->> that we just wrote out!  And then the app that's using buffered I/O has
->> to read it back in again.
-> Mostly agreed.  That being said I suspect invalidating clean cache
-> might still be a good idea.  The original idea was mostly on how
-> to deal with invalidation failures of any kind, but falling back for
-> any kind of dirty cache also makes at least some sense.
->
->> I have had an objection raised off-list.  In a scenario with a block
->> device shared between two systems and an application which does direct
->> I/O, everything is normally fine.  If one of the systems uses tar to
->> back up the contents of the block device then the application on that
->> system will no longer see the writes from the other system because
->> there's nothing to invalidate the pagecache on the first system.
-> Err, WTF?  If someone access shared block devices with random
-> applications all bets are off anyway.
+  BTRFS info (device xvdb): balance: start -d -m -s
+  BTRFS info (device xvdb): relocating block group 73001861120 flags metadata
+  BTRFS info (device xvdb): found 12236 extents, stage: move data extents
+  BTRFS info (device xvdb): relocating block group 71928119296 flags data
+  BTRFS info (device xvdb): found 3 extents, stage: move data extents
+  BTRFS info (device xvdb): found 3 extents, stage: update data pointers
+  BTRFS info (device xvdb): relocating block group 60922265600 flags metadata
+  BTRFS: error (device xvdb) in btrfs_drop_snapshot:5505: errno=-4 unknown
+  BTRFS info (device xvdb): forced readonly
+  BTRFS info (device xvdb): balance: ended with status: -4
 
-On GFS2 the locking should take care of that. Not 100% sure about OCFS2 
-without looking, but I'm fairly sure that they have a similar 
-arrangement. So this shouldn't be a problem unless there is an 
-additional cluster fs that I'm not aware of that they are using in this 
-case. It would be good to confirm which fs they are using,
+[CAUSE]
+The direct cause is the -EINTR from the following call chain when a
+fatal signal is pending:
 
-Steve.
+ relocate_block_group()
+ |- clean_dirty_subvols()
+    |- btrfs_drop_snapshot()
+       |- btrfs_start_transaction()
+          |- btrfs_delayed_refs_rsv_refill()
+             |- btrfs_reserve_metadata_bytes()
+                |- __reserve_metadata_bytes()
+                   |- wait_reserve_ticket()
+                      |- prepare_to_wait_event();
+                      |- ticket->error = -EINTR;
 
+Normally this behavior is fine for most btrfs_start_transaction()
+callers, as they need to catch the fatal signal and exit asap.
+
+However for balance, especially for the clean_dirty_subvols() case, we're
+already doing cleanup works, such -EINTR from btrfs_drop_snapshot()
+could cause a lot of unexpected problems.
+
+From the mentioned forced read-only, to later balance error due to half
+dropped reloc trees.
+
+[FIX]
+Fix this problem by using btrfs_join_transaction() if
+btrfs_drop_snapshot() is called from relocation context.
+
+As btrfs_join_transaction() won't wait full tickets, it won't get
+interrupted from signal.
+
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+---
+ fs/btrfs/extent-tree.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
+index c0bc35f932bf..d8ef48a807d1 100644
+--- a/fs/btrfs/extent-tree.c
++++ b/fs/btrfs/extent-tree.c
+@@ -5298,7 +5298,10 @@ int btrfs_drop_snapshot(struct btrfs_root *root, int update_ref, int for_reloc)
+ 		goto out;
+ 	}
+ 
+-	trans = btrfs_start_transaction(tree_root, 0);
++	if (for_reloc)
++		trans = btrfs_join_transaction(tree_root);
++	else
++		trans = btrfs_start_transaction(tree_root, 0);
+ 	if (IS_ERR(trans)) {
+ 		err = PTR_ERR(trans);
+ 		goto out_free;
+-- 
+2.27.0
 
