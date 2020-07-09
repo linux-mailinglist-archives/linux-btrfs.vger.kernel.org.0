@@ -2,135 +2,65 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20B4A21A5FF
-	for <lists+linux-btrfs@lfdr.de>; Thu,  9 Jul 2020 19:40:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2794221AA7A
+	for <lists+linux-btrfs@lfdr.de>; Fri, 10 Jul 2020 00:28:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727785AbgGIRki (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 9 Jul 2020 13:40:38 -0400
-Received: from mx2.suse.de ([195.135.220.15]:34676 "EHLO mx2.suse.de"
+        id S1726433AbgGIW2R (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 9 Jul 2020 18:28:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53414 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726722AbgGIRki (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 9 Jul 2020 13:40:38 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 2A44CAD68;
-        Thu,  9 Jul 2020 17:40:36 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id CBF03DAB7F; Thu,  9 Jul 2020 19:40:16 +0200 (CEST)
-Date:   Thu, 9 Jul 2020 19:40:16 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v3 2/3] btrfs: qgroup: try to flush qgroup space when we
- get -EDQUOT
-Message-ID: <20200709174016.GE15161@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20200708062447.81341-1-wqu@suse.com>
- <20200708062447.81341-3-wqu@suse.com>
- <20200709163246.GB15161@twin.jikos.cz>
+        id S1726213AbgGIW2R (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 9 Jul 2020 18:28:17 -0400
+Received: from localhost (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1504B2070E;
+        Thu,  9 Jul 2020 22:28:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594333697;
+        bh=vth7oOQ5CwiMgzvmWzAb0BCz7GgvktX0waV9e0XtVoc=;
+        h=Date:From:To:Subject:References:In-Reply-To:From;
+        b=DJmyEEKSnVjzen9FvYhBmCdwG6lqyHu4BDgbKQ8uVt8Lpl3sgaoHu0pMq6zjhHXFj
+         3uSN+MA8SFzj1nW1NNAgPvf1ccok2ekLcrkXjSZmyOvMT4z5G+7LSoqGydB23cwTVR
+         qEG3t/NbMbswdLntV59tSOUjQZPS6DREr/PPtqPE=
+Date:   Thu, 9 Jul 2020 18:28:15 -0400
+From:   Sasha Levin <sashal@kernel.org>
+To:     dsterba@suse.cz, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org, Waiman Long <longman@redhat.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH AUTOSEL 5.7 11/53] btrfs: use kfree() in
+ btrfs_ioctl_get_subvol_info()
+Message-ID: <20200709222815.GB2722994@sasha-vm>
+References: <20200702012202.2700645-1-sashal@kernel.org>
+ <20200702012202.2700645-11-sashal@kernel.org>
+ <20200702082558.GH27795@twin.jikos.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <20200709163246.GB15161@twin.jikos.cz>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <20200702082558.GH27795@twin.jikos.cz>
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Jul 09, 2020 at 06:32:46PM +0200, David Sterba wrote:
-> On Wed, Jul 08, 2020 at 02:24:46PM +0800, Qu Wenruo wrote:
-> > -int btrfs_qgroup_reserve_data(struct btrfs_inode *inode,
-> > +static int try_flush_qgroup(struct btrfs_root *root)
-> > +{
-> > +	struct btrfs_trans_handle *trans;
-> > +	int ret;
-> > +
-> > +	/*
-> > +	 * We don't want to run flush again and again, so if there is a running
-> > +	 * one, we won't try to start a new flush, but exit directly.
-> > +	 */
-> > +	ret = mutex_trylock(&root->qgroup_flushing_mutex);
-> > +	if (!ret) {
-> > +		mutex_lock(&root->qgroup_flushing_mutex);
-> > +		mutex_unlock(&root->qgroup_flushing_mutex);
-> 
-> This is abuse of mutex, for status tracking "is somebody flushing" and
-> for waiting until it's over.
-> 
-> We have many root::status bits (the BTRFS_ROOT_* namespace) so that
-> qgroups are flushing should another one. The bit atomically set when it
-> starts and cleared when it ends.
-> 
-> All waiting tasks should queue in a normal wait_queue_head.
+On Thu, Jul 02, 2020 at 10:25:58AM +0200, David Sterba wrote:
+>On Wed, Jul 01, 2020 at 09:21:20PM -0400, Sasha Levin wrote:
+>> From: Waiman Long <longman@redhat.com>
+>>
+>> [ Upstream commit b091f7fede97cc64f7aaad3eeb37965aebee3082 ]
+>>
+>> In btrfs_ioctl_get_subvol_info(), there is a classic case where kzalloc()
+>> was incorrectly paired with kzfree(). According to David Sterba, there
+>> isn't any sensitive information in the subvol_info that needs to be
+>> cleared before freeing. So kzfree() isn't really needed, use kfree()
+>> instead.
+>
+>I don't think this patch is necessary for any stable tree, it's meant
+>only to ease merging a tree-wide patchset to rename kzfree.  In btrfs
+>code there was no point using it so it's plain kfree.
 
-Something like that (untested):
+I've dropped it, thanks!
 
-diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index 2cc1fcaa7cfa..5dbb6b7300b7 100644
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -1007,6 +1007,12 @@ enum {
- 	BTRFS_ROOT_DEAD_TREE,
- 	/* The root has a log tree. Used only for subvolume roots. */
- 	BTRFS_ROOT_HAS_LOG_TREE,
-+
-+	/*
-+	 * Indicate that qgroup flushing is in progress to prevent multiple
-+	 * processes attempting that
-+	 */
-+	BTRFS_ROOT_QGROUP_FLUSHING,
- };
- 
- /*
-@@ -1159,7 +1165,7 @@ struct btrfs_root {
- 	spinlock_t qgroup_meta_rsv_lock;
- 	u64 qgroup_meta_rsv_pertrans;
- 	u64 qgroup_meta_rsv_prealloc;
--	struct mutex qgroup_flushing_mutex;
-+	wait_queue_head_t qgroup_flush_wait;
- 
- 	/* Number of active swapfiles */
- 	atomic_t nr_swapfiles;
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 8029127df537..e124e3376208 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -1116,7 +1116,7 @@ static void __setup_root(struct btrfs_root *root, struct btrfs_fs_info *fs_info,
- 	mutex_init(&root->log_mutex);
- 	mutex_init(&root->ordered_extent_mutex);
- 	mutex_init(&root->delalloc_mutex);
--	mutex_init(&root->qgroup_flushing_mutex);
-+	init_waitqueue_head(&root->qgroup_flush_wait);
- 	init_waitqueue_head(&root->log_writer_wait);
- 	init_waitqueue_head(&root->log_commit_wait[0]);
- 	init_waitqueue_head(&root->log_commit_wait[1]);
-diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
-index 494ab2b1bbf2..95695aca7aa9 100644
---- a/fs/btrfs/qgroup.c
-+++ b/fs/btrfs/qgroup.c
-@@ -3503,10 +3503,9 @@ static int try_flush_qgroup(struct btrfs_root *root)
- 	 * We don't want to run flush again and again, so if there is a running
- 	 * one, we won't try to start a new flush, but exit directly.
- 	 */
--	ret = mutex_trylock(&root->qgroup_flushing_mutex);
--	if (!ret) {
--		mutex_lock(&root->qgroup_flushing_mutex);
--		mutex_unlock(&root->qgroup_flushing_mutex);
-+	if (test_and_set_bit(BTRFS_ROOT_QGROUP_FLUSHING, &root->state)) {
-+		wait_event(root->qgroup_flush_wait,
-+			!test_bit(BTRFS_ROOT_QGROUP_FLUSHING, &root->state));
- 		return 0;
- 	}
- 
-@@ -3523,7 +3522,7 @@ static int try_flush_qgroup(struct btrfs_root *root)
- 
- 	ret = btrfs_commit_transaction(trans);
- unlock:
--	mutex_unlock(&root->qgroup_flushing_mutex);
-+	clear_bit(BTRFS_ROOT_QGROUP_FLUSHING, &root->state);
- 	return ret;
- }
- 
+-- 
+Thanks,
+Sasha
