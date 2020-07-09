@@ -2,71 +2,85 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D33221A4BA
-	for <lists+linux-btrfs@lfdr.de>; Thu,  9 Jul 2020 18:24:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1F9F21A4DE
+	for <lists+linux-btrfs@lfdr.de>; Thu,  9 Jul 2020 18:33:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728449AbgGIQYV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 9 Jul 2020 12:24:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36322 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726357AbgGIQYV (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 9 Jul 2020 12:24:21 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B25BC08C5CE
-        for <linux-btrfs@vger.kernel.org>; Thu,  9 Jul 2020 09:24:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=g0Q3noTq2doaY0bD+kfqjR1jrRX9VYpYWv3PM1lHLO4=; b=R7Gql92EYtu/gZhdQc5nDM4yBV
-        Xlxid/OvX9HWlaKW4AcB3w6inEeC2gkLGSpyAqktgc7iJ7KLIooh8Qxr9xg8oaQ1OCiyDshjK9m3w
-        XDSF7TfsYJehdbj2wwG9g7nNWOmJp+UBavsw9FGZY5t+slaCjt0icFnTqPMiaN4MoXeQhmRIljMte
-        Apoq4XmYw/qM9qwFVMvtHT6TP95SF6b86+1xXVL97t7YvTVLkUHVOLwdTPl/jkP2exwSdYdRjITMj
-        aWMu3S7Gm2puT6Q1oqTcAdn5VS0yuKuxjTbw7yyILKTBO40UeKiHUtzTyuRlhnuxVAnqV4QybTuSm
-        nQsjmFmQ==;
-Received: from 089144201169.atnat0010.highway.a1.net ([89.144.201.169] helo=localhost)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jtZLP-0008BD-35; Thu, 09 Jul 2020 16:24:19 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     linux-btrfs@vger.kernel.org
-Cc:     Andy Lavr <andy.lavr@gmail.com>
-Subject: [PATCH] btrfs: wire up iter_file_splice_write
-Date:   Thu,  9 Jul 2020 18:22:06 +0200
-Message-Id: <20200709162206.113927-1-hch@lst.de>
-X-Mailer: git-send-email 2.26.2
+        id S1728054AbgGIQdH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 9 Jul 2020 12:33:07 -0400
+Received: from mx2.suse.de ([195.135.220.15]:43384 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726408AbgGIQdH (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 9 Jul 2020 12:33:07 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 5D9D6AD74;
+        Thu,  9 Jul 2020 16:33:06 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id CED83DAB7F; Thu,  9 Jul 2020 18:32:46 +0200 (CEST)
+Date:   Thu, 9 Jul 2020 18:32:46 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v3 2/3] btrfs: qgroup: try to flush qgroup space when we
+ get -EDQUOT
+Message-ID: <20200709163246.GB15161@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <20200708062447.81341-1-wqu@suse.com>
+ <20200708062447.81341-3-wqu@suse.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200708062447.81341-3-wqu@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-btrfs implements the iter_write op and thus can use the more efficient
-iov_iter based splice implementation.  For now falling back to the less
-efficient default is pretty harmless, but I have a pending series that
-removes the default, and thus would cause btrfs to not support splice
-at all.
+On Wed, Jul 08, 2020 at 02:24:46PM +0800, Qu Wenruo wrote:
+> -int btrfs_qgroup_reserve_data(struct btrfs_inode *inode,
+> +static int try_flush_qgroup(struct btrfs_root *root)
+> +{
+> +	struct btrfs_trans_handle *trans;
+> +	int ret;
+> +
+> +	/*
+> +	 * We don't want to run flush again and again, so if there is a running
+> +	 * one, we won't try to start a new flush, but exit directly.
+> +	 */
+> +	ret = mutex_trylock(&root->qgroup_flushing_mutex);
+> +	if (!ret) {
+> +		mutex_lock(&root->qgroup_flushing_mutex);
+> +		mutex_unlock(&root->qgroup_flushing_mutex);
 
-Reported-by: Andy Lavr <andy.lavr@gmail.com>
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Tested-by: Andy Lavr <andy.lavr@gmail.com>
----
- fs/btrfs/file.c | 1 +
- 1 file changed, 1 insertion(+)
+This is abuse of mutex, for status tracking "is somebody flushing" and
+for waiting until it's over.
 
-diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-index 2520605afc256e..b0d2c976587e52 100644
---- a/fs/btrfs/file.c
-+++ b/fs/btrfs/file.c
-@@ -3509,6 +3509,7 @@ const struct file_operations btrfs_file_operations = {
- 	.read_iter      = generic_file_read_iter,
- 	.splice_read	= generic_file_splice_read,
- 	.write_iter	= btrfs_file_write_iter,
-+	.splice_write	= iter_file_splice_write,
- 	.mmap		= btrfs_file_mmap,
- 	.open		= btrfs_file_open,
- 	.release	= btrfs_release_file,
--- 
-2.26.2
+We have many root::status bits (the BTRFS_ROOT_* namespace) so that
+qgroups are flushing should another one. The bit atomically set when it
+starts and cleared when it ends.
 
+All waiting tasks should queue in a normal wait_queue_head.
+
+> +		return 0;
+> +	}
+> +
+> +	ret = btrfs_start_delalloc_snapshot(root);
+> +	if (ret < 0)
+> +		goto unlock;
+> +	btrfs_wait_ordered_extents(root, U64_MAX, 0, (u64)-1);
+> +
+> +	trans = btrfs_join_transaction(root);
+> +	if (IS_ERR(trans)) {
+> +		ret = PTR_ERR(trans);
+> +		goto unlock;
+> +	}
+> +
+> +	ret = btrfs_commit_transaction(trans);
+> +unlock:
+> +	mutex_unlock(&root->qgroup_flushing_mutex);
+
+And also the whole wait/join/commit combo is in one huge mutex, that's
+really an anti-pattern.
