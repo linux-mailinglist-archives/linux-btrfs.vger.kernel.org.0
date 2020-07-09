@@ -2,125 +2,102 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F9B2219998
-	for <lists+linux-btrfs@lfdr.de>; Thu,  9 Jul 2020 09:18:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3314219ABF
+	for <lists+linux-btrfs@lfdr.de>; Thu,  9 Jul 2020 10:26:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726269AbgGIHSD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 9 Jul 2020 03:18:03 -0400
-Received: from mail.itouring.de ([188.40.134.68]:59808 "EHLO mail.itouring.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726228AbgGIHSC (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 9 Jul 2020 03:18:02 -0400
-Received: from tux.applied-asynchrony.com (p5ddd79e0.dip0.t-ipconnect.de [93.221.121.224])
-        by mail.itouring.de (Postfix) with ESMTPSA id 44A81416024E;
-        Thu,  9 Jul 2020 09:18:00 +0200 (CEST)
-Received: from [192.168.100.223] (ragnarok.applied-asynchrony.com [192.168.100.223])
-        by tux.applied-asynchrony.com (Postfix) with ESMTP id 48FAEF01600;
-        Thu,  9 Jul 2020 09:17:59 +0200 (CEST)
-Subject: Re: [PATCH v2] btrfs: speedup mount time with readahead chunk tree
-To:     Robbie Ko <robbieko@synology.com>, dsterba@suse.cz,
-        linux-btrfs@vger.kernel.org
-References: <20200707035944.15150-1-robbieko@synology.com>
- <20200707192511.GE16141@twin.jikos.cz>
- <3b3f9eb4-96ef-d039-5d86-a4c165e6d993@synology.com>
- <20200708140455.GA28832@twin.jikos.cz>
- <de7bfbe5-7d83-2437-701c-700bbe5d3adc@applied-asynchrony.com>
- <f7891e0c-b084-5ecb-dde5-3f202ec42f57@synology.com>
-From:   =?UTF-8?Q?Holger_Hoffst=c3=a4tte?= <holger@applied-asynchrony.com>
-Organization: Applied Asynchrony, Inc.
-Message-ID: <66afea47-9df9-61e0-8527-0eaeb2bd227d@applied-asynchrony.com>
-Date:   Thu, 9 Jul 2020 09:17:59 +0200
+        id S1726247AbgGII0h (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 9 Jul 2020 04:26:37 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:39394 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726228AbgGII0h (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 9 Jul 2020 04:26:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1594283195;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=lZzkV3MawPwjnH2A6+i/gZ/LnvMbuWxGQy5lTADJWpQ=;
+        b=UlzpA1meZ3r7qL27YoTUdc2K9iGVysH43vYn0EtC2v50673ET8lPAj7KC9M+IE42qkn+tc
+        uCtWbMG6WHXsLpvwL15BbIZ6DGlfVeroSwXvrjoNcxEhfZHu20DMfu5hGJW48Q5vtGCU9c
+        kzxLDnXCK5cu4/FncVgxc/DHRTgT64c=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-479-VvhpeSOcMc-klcFzERo_4w-1; Thu, 09 Jul 2020 04:26:33 -0400
+X-MC-Unique: VvhpeSOcMc-klcFzERo_4w-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9C93988C922;
+        Thu,  9 Jul 2020 08:26:31 +0000 (UTC)
+Received: from fogou.chygwyn.com (unknown [10.33.36.52])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id CC38379815;
+        Thu,  9 Jul 2020 08:26:24 +0000 (UTC)
+Subject: Re: [Cluster-devel] always fall back to buffered I/O after
+ invalidation failures, was: Re: [PATCH 2/6] iomap:
+ IOMAP_DIO_RWF_NO_STALE_PAGECACHE return if page invalidation fails
+To:     Christoph Hellwig <hch@lst.de>,
+        Matthew Wilcox <willy@infradead.org>
+Cc:     linux-xfs@vger.kernel.org, fdmanana@gmail.com,
+        darrick.wong@oracle.com, Goldwyn Rodrigues <rgoldwyn@suse.de>,
+        Dave Chinner <david@fromorbit.com>, dsterba@suse.cz,
+        cluster-devel@redhat.com, linux-fsdevel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-btrfs@vger.kernel.org
+References: <20200629192353.20841-1-rgoldwyn@suse.de>
+ <20200629192353.20841-3-rgoldwyn@suse.de> <20200701075310.GB29884@lst.de>
+ <20200707124346.xnr5gtcysuzehejq@fiona>
+ <20200707125705.GK25523@casper.infradead.org> <20200707130030.GA13870@lst.de>
+ <20200708065127.GM2005@dread.disaster.area>
+ <20200708135437.GP25523@casper.infradead.org> <20200708165412.GA637@lst.de>
+From:   Steven Whitehouse <swhiteho@redhat.com>
+Message-ID: <126c9e1b-145f-3725-fbde-92135f52a4a3@redhat.com>
+Date:   Thu, 9 Jul 2020 09:26:22 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-In-Reply-To: <f7891e0c-b084-5ecb-dde5-3f202ec42f57@synology.com>
+In-Reply-To: <20200708165412.GA637@lst.de>
 Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 2020-07-09 03:46, Robbie Ko wrote:
-> 
-> Holger Hoffstätte 於 2020/7/8 下午10:57 寫道:
->> On 2020-07-08 16:04, David Sterba wrote:
->>> On Wed, Jul 08, 2020 at 10:19:22AM +0800, Robbie Ko wrote:
->>>> David Sterba 於 2020/7/8 上午3:25 寫道:
->>>>> On Tue, Jul 07, 2020 at 11:59:44AM +0800, robbieko wrote:
->>>>>> From: Robbie Ko <robbieko@synology.com>
->>>>>>
->>>>>> When mounting, we always need to read the whole chunk tree,
->>>>>> when there are too many chunk items, most of the time is
->>>>>> spent on btrfs_read_chunk_tree, because we only read one
->>>>>> leaf at a time.
->>>>>>
->>>>>> It is unreasonable to limit the readahead mechanism to a
->>>>>> range of 64k, so we have removed that limit.
->>>>>>
->>>>>> In addition we added reada_maximum_size to customize the
->>>>>> size of the pre-reader, The default is 64k to maintain the
->>>>>> original behavior.
->>>>>>
->>>>>> So we fix this by used readahead mechanism, and set readahead
->>>>>> max size to ULLONG_MAX which reads all the leaves after the
->>>>>> key in the node when reading a level 1 node.
->>>>> The readahead of chunk tree is a special case as we know we will need
->>>>> the whole tree, in all other cases the search readahead needs is
->>>>> supposed to read only one leaf.
->>>>
->>>> If, in most cases, readahead requires that only one leaf be read, then
->>>> reada_ maximum_size should be nodesize instead of 64k, or use
->>>> reada_maximum_ nr (default:1) seems better.
->>>>
->>>>>
->>>>> For that reason I don't want to touch the current path readahead logic
->>>>> at all and do the chunk tree readahead in one go instead of the
->>>>> per-search.
->>>>
->>>> I don't know why we don't make the change to readahead, because the current
->>>> readahead is limited to the logical address in 64k is very unreasonable,
->>>> and there is a good chance that the logical address of the next leaf
->>>> node will
->>>> not appear in 64k, so the existing readahead is almost useless.
->>>
->>> I see and it seems that the assumption about layout and chances
->>> succesfuly read blocks ahead is not valid. The logic of readahead could
->>> be improved but that would need more performance evaluation.
->>
->> FWIW I gave this a try and see the following numbers, averaged over multiple
->> mount/unmount cycles on spinning rust:
->>
->> without patch : ~2.7s
->> with patch    : ~4.5s
->>
->> ..ahem..
->>
-> I have the following two questions for you.
-> 1. What is the version you are using?
+Hi,
 
-5.7.8 + a few select patches from 5.8.
+On 08/07/2020 17:54, Christoph Hellwig wrote:
+> On Wed, Jul 08, 2020 at 02:54:37PM +0100, Matthew Wilcox wrote:
+>> Direct I/O isn't deterministic though.  If the file isn't shared, then
+>> it works great, but as soon as you get mixed buffered and direct I/O,
+>> everything is already terrible.  Direct I/Os perform pagecache lookups
+>> already, but instead of using the data that we found in the cache, we
+>> (if it's dirty) write it back, wait for the write to complete, remove
+>> the page from the pagecache and then perform another I/O to get the data
+>> that we just wrote out!  And then the app that's using buffered I/O has
+>> to read it back in again.
+> Mostly agreed.  That being said I suspect invalidating clean cache
+> might still be a good idea.  The original idea was mostly on how
+> to deal with invalidation failures of any kind, but falling back for
+> any kind of dirty cache also makes at least some sense.
+>
+>> I have had an objection raised off-list.  In a scenario with a block
+>> device shared between two systems and an application which does direct
+>> I/O, everything is normally fine.  If one of the systems uses tar to
+>> back up the contents of the block device then the application on that
+>> system will no longer see the writes from the other system because
+>> there's nothing to invalidate the pagecache on the first system.
+> Err, WTF?  If someone access shared block devices with random
+> applications all bets are off anyway.
 
-> 2. Can you please measure the time of btrfs_read_chunk_tree alone?
+On GFS2 the locking should take care of that. Not 100% sure about OCFS2 
+without looking, but I'm fairly sure that they have a similar 
+arrangement. So this shouldn't be a problem unless there is an 
+additional cluster fs that I'm not aware of that they are using in this 
+case. It would be good to confirm which fs they are using,
 
-No perf on this system & not enough time right now, sorry.
-But it shouldn't matter either way, see below.
+Steve.
 
-> I think the problem you are having is that btrfs_read_block_groups is
-> slowing down because it is using the wrong READA flag, which is causing
-> a lot of useless IO's when reading the block group.
-> 
-> This can be fixed with the following commit.
-> btrfs: block-group: don't set the wrong READA flag for btrfs_read_block_groups()
-> https://git.kernel.org/pub/scm/linux/kernel /git/torvalds/linux.git/commit/?h=v5.8-rc4& id=83fe9e12b0558eae519351cff00da1e06bc054d2
 
-Ah yes, that was missing. However it doesn't seem to improve things
-that much either; with 83fe9e12 but with or without your patch I now get
-~2.8..~2.9s mount time. Probably because I don't have that many
-metadata block groups (only 4GB).
-
- From a conceptual perspective it it probably much easier just to
-merge the bgtree patchset, since that does the right thing without
-upsetting the overall readahead apple cart.
-
-thanks,
-Holger
