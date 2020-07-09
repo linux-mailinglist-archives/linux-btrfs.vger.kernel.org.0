@@ -2,62 +2,125 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 264D82197F4
-	for <lists+linux-btrfs@lfdr.de>; Thu,  9 Jul 2020 07:32:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F9B2219998
+	for <lists+linux-btrfs@lfdr.de>; Thu,  9 Jul 2020 09:18:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726345AbgGIFci (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 9 Jul 2020 01:32:38 -0400
-Received: from verein.lst.de ([213.95.11.211]:38023 "EHLO verein.lst.de"
+        id S1726269AbgGIHSD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 9 Jul 2020 03:18:03 -0400
+Received: from mail.itouring.de ([188.40.134.68]:59808 "EHLO mail.itouring.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726091AbgGIFci (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 9 Jul 2020 01:32:38 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 2292B68B05; Thu,  9 Jul 2020 07:32:34 +0200 (CEST)
-Date:   Thu, 9 Jul 2020 07:32:33 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Christoph Hellwig <hch@lst.de>, Tejun Heo <tj@kernel.org>,
-        dm-devel@redhat.com, cgroups@vger.kernel.org,
-        linux-block@vger.kernel.org, drbd-dev@lists.linbit.com,
-        linux-bcache@vger.kernel.org, linux-raid@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: remove dead bdi congestion leftovers
-Message-ID: <20200709053233.GA3243@lst.de>
-References: <20200701090622.3354860-1-hch@lst.de> <b5d6df17-68af-d535-79e4-f95e16dd5632@kernel.dk>
+        id S1726228AbgGIHSC (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 9 Jul 2020 03:18:02 -0400
+Received: from tux.applied-asynchrony.com (p5ddd79e0.dip0.t-ipconnect.de [93.221.121.224])
+        by mail.itouring.de (Postfix) with ESMTPSA id 44A81416024E;
+        Thu,  9 Jul 2020 09:18:00 +0200 (CEST)
+Received: from [192.168.100.223] (ragnarok.applied-asynchrony.com [192.168.100.223])
+        by tux.applied-asynchrony.com (Postfix) with ESMTP id 48FAEF01600;
+        Thu,  9 Jul 2020 09:17:59 +0200 (CEST)
+Subject: Re: [PATCH v2] btrfs: speedup mount time with readahead chunk tree
+To:     Robbie Ko <robbieko@synology.com>, dsterba@suse.cz,
+        linux-btrfs@vger.kernel.org
+References: <20200707035944.15150-1-robbieko@synology.com>
+ <20200707192511.GE16141@twin.jikos.cz>
+ <3b3f9eb4-96ef-d039-5d86-a4c165e6d993@synology.com>
+ <20200708140455.GA28832@twin.jikos.cz>
+ <de7bfbe5-7d83-2437-701c-700bbe5d3adc@applied-asynchrony.com>
+ <f7891e0c-b084-5ecb-dde5-3f202ec42f57@synology.com>
+From:   =?UTF-8?Q?Holger_Hoffst=c3=a4tte?= <holger@applied-asynchrony.com>
+Organization: Applied Asynchrony, Inc.
+Message-ID: <66afea47-9df9-61e0-8527-0eaeb2bd227d@applied-asynchrony.com>
+Date:   Thu, 9 Jul 2020 09:17:59 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+In-Reply-To: <f7891e0c-b084-5ecb-dde5-3f202ec42f57@synology.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <b5d6df17-68af-d535-79e4-f95e16dd5632@kernel.dk>
-User-Agent: Mutt/1.5.17 (2007-11-01)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Jul 08, 2020 at 05:14:29PM -0600, Jens Axboe wrote:
-> On 7/1/20 3:06 AM, Christoph Hellwig wrote:
-> > Hi Jens,
-> > 
-> > we have a lot of bdi congestion related code that is left around without
-> > any use.  This series removes it in preparation of sorting out the bdi
-> > lifetime rules properly.
+On 2020-07-09 03:46, Robbie Ko wrote:
 > 
-> Please run series like this through a full compilation, for both this one
-> and the previous series I had to fix up issues like this:
-> 
-> drivers/md/bcache/request.c: In function ‘bch_cached_dev_request_init’:
-> drivers/md/bcache/request.c:1233:18: warning: unused variable ‘g’ [-Wunused-variable]
->  1233 |  struct gendisk *g = dc->disk.disk;
->       |                  ^
-> drivers/md/bcache/request.c: In function ‘bch_flash_dev_request_init’:
-> drivers/md/bcache/request.c:1320:18: warning: unused variable ‘g’ [-Wunused-variable]
->  1320 |  struct gendisk *g = d->disk;
->       |                  ^
-> 
-> Did the same here, applied it.
+> Holger Hoffstätte 於 2020/7/8 下午10:57 寫道:
+>> On 2020-07-08 16:04, David Sterba wrote:
+>>> On Wed, Jul 08, 2020 at 10:19:22AM +0800, Robbie Ko wrote:
+>>>> David Sterba 於 2020/7/8 上午3:25 寫道:
+>>>>> On Tue, Jul 07, 2020 at 11:59:44AM +0800, robbieko wrote:
+>>>>>> From: Robbie Ko <robbieko@synology.com>
+>>>>>>
+>>>>>> When mounting, we always need to read the whole chunk tree,
+>>>>>> when there are too many chunk items, most of the time is
+>>>>>> spent on btrfs_read_chunk_tree, because we only read one
+>>>>>> leaf at a time.
+>>>>>>
+>>>>>> It is unreasonable to limit the readahead mechanism to a
+>>>>>> range of 64k, so we have removed that limit.
+>>>>>>
+>>>>>> In addition we added reada_maximum_size to customize the
+>>>>>> size of the pre-reader, The default is 64k to maintain the
+>>>>>> original behavior.
+>>>>>>
+>>>>>> So we fix this by used readahead mechanism, and set readahead
+>>>>>> max size to ULLONG_MAX which reads all the leaves after the
+>>>>>> key in the node when reading a level 1 node.
+>>>>> The readahead of chunk tree is a special case as we know we will need
+>>>>> the whole tree, in all other cases the search readahead needs is
+>>>>> supposed to read only one leaf.
+>>>>
+>>>> If, in most cases, readahead requires that only one leaf be read, then
+>>>> reada_ maximum_size should be nodesize instead of 64k, or use
+>>>> reada_maximum_ nr (default:1) seems better.
+>>>>
+>>>>>
+>>>>> For that reason I don't want to touch the current path readahead logic
+>>>>> at all and do the chunk tree readahead in one go instead of the
+>>>>> per-search.
+>>>>
+>>>> I don't know why we don't make the change to readahead, because the current
+>>>> readahead is limited to the logical address in 64k is very unreasonable,
+>>>> and there is a good chance that the logical address of the next leaf
+>>>> node will
+>>>> not appear in 64k, so the existing readahead is almost useless.
+>>>
+>>> I see and it seems that the assumption about layout and chances
+>>> succesfuly read blocks ahead is not valid. The logic of readahead could
+>>> be improved but that would need more performance evaluation.
+>>
+>> FWIW I gave this a try and see the following numbers, averaged over multiple
+>> mount/unmount cycles on spinning rust:
+>>
+>> without patch : ~2.7s
+>> with patch    : ~4.5s
+>>
+>> ..ahem..
+>>
+> I have the following two questions for you.
+> 1. What is the version you are using?
 
-And just like the previous one I did, and the compiler did not complain.
-There must be something about certain gcc versions not warning about
-variables that are initialized but not otherwise used.
+5.7.8 + a few select patches from 5.8.
+
+> 2. Can you please measure the time of btrfs_read_chunk_tree alone?
+
+No perf on this system & not enough time right now, sorry.
+But it shouldn't matter either way, see below.
+
+> I think the problem you are having is that btrfs_read_block_groups is
+> slowing down because it is using the wrong READA flag, which is causing
+> a lot of useless IO's when reading the block group.
+> 
+> This can be fixed with the following commit.
+> btrfs: block-group: don't set the wrong READA flag for btrfs_read_block_groups()
+> https://git.kernel.org/pub/scm/linux/kernel /git/torvalds/linux.git/commit/?h=v5.8-rc4& id=83fe9e12b0558eae519351cff00da1e06bc054d2
+
+Ah yes, that was missing. However it doesn't seem to improve things
+that much either; with 83fe9e12 but with or without your patch I now get
+~2.8..~2.9s mount time. Probably because I don't have that many
+metadata block groups (only 4GB).
+
+ From a conceptual perspective it it probably much easier just to
+merge the bgtree patchset, since that does the right thing without
+upsetting the overall readahead apple cart.
+
+thanks,
+Holger
