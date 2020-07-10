@@ -2,151 +2,84 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45E7621B8A9
-	for <lists+linux-btrfs@lfdr.de>; Fri, 10 Jul 2020 16:29:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45E7421B8BC
+	for <lists+linux-btrfs@lfdr.de>; Fri, 10 Jul 2020 16:32:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727975AbgGJO35 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 10 Jul 2020 10:29:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44024 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727110AbgGJO3z (ORCPT
+        id S1727782AbgGJOcm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 10 Jul 2020 10:32:42 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:43080 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726820AbgGJOcm (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 10 Jul 2020 10:29:55 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25CD5C08C5CE
-        for <linux-btrfs@vger.kernel.org>; Fri, 10 Jul 2020 07:29:55 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id l6so5371260qkc.6
-        for <linux-btrfs@vger.kernel.org>; Fri, 10 Jul 2020 07:29:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=JvilHTQgwDhBAyrxZdzpWmNwLuzh5KKhhaNB8VK23CQ=;
-        b=iTqc6cPhPrmBM5HkF5qMO0P/1hnE1Jad9p8S/JobheNpW1HSS2B5GMgApC0o3Ocvio
-         eMPoRUbNnOajSk3CeReTqFLMyh9Bs/mVMDiJYZYBxiZDvUnyKvkkNe606LUA6xi6/rcb
-         HE6v7FLc7pd8ljwmuOtWvrKlMmCh5dcefb5v3I02rFJmNszH0OCCRjwIJJnb/v8ircyL
-         9qkP+n8MkE4blmwhNRVf4ub7JZ4ojxjpMFI5k26S+ECSPBuFb8/Ac73nXzrd164mOPYJ
-         v+601aDrsJdZWhV7PovEnwqUeM5BtcSXGOehY7HJtagSW33EczqDT15QPLILky4lA3aM
-         keUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=JvilHTQgwDhBAyrxZdzpWmNwLuzh5KKhhaNB8VK23CQ=;
-        b=jpDCKJkHuoO6kdwjm6ZRxDtYRTr8sSLB/PW2mB6AYH3KDIqxg+d1R1FsvvCMTlNh0Q
-         1gECxl4NJnNZ8A4EPx9pw/TDGv+HrfhG4xWD7iSwNpv6MowFD3Kx4XogZKNzhuJrLge9
-         cCMCSSV+XX4J2Z1/4EGVpEvbt91R9ay2C++GFlb02ILDxy5pTb+rrF4J+C9LgJEmMuXe
-         yDCWy1drXv8waBcNo5AZImpFGq4OOtMvQsBbkTFzzyaQLxFno3AxTPl4y3uZhkT2Qb05
-         OiariExTiTxbO4lywxhZujYXe6Pr8tCsyF65/XWjkaH4Wl/QRMowAxIa6147KA5bPi9m
-         ovgA==
-X-Gm-Message-State: AOAM530Pe+Wn/ct9EfsvgGkfsQnJ5dDlDTr1lBt3uDx1uKg+ea/g5slx
-        ojt8v40bc0KfwsVpZAuKEyBVKA==
-X-Google-Smtp-Source: ABdhPJxzpQvi4qAKrpin63NpAY6ZnNEHLJMKXBKnsm2DlH5RbcSGE4J986VXTQeN7+jiZxY9GAcsaQ==
-X-Received: by 2002:a37:5c7:: with SMTP id 190mr67429427qkf.479.1594391394220;
-        Fri, 10 Jul 2020 07:29:54 -0700 (PDT)
-Received: from [192.168.1.45] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id c25sm7238232qka.63.2020.07.10.07.29.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 10 Jul 2020 07:29:53 -0700 (PDT)
-Subject: Re: [PATCH] btrfs: prefetch chunk tree leaves at mount
-To:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-Cc:     Robbie Ko <robbieko@synology.com>
-References: <20200710131928.7187-1-dsterba@suse.com>
-From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <52b7c8df-9c9f-a9b4-0df7-abcb6442e7e1@toxicpanda.com>
-Date:   Fri, 10 Jul 2020 10:29:52 -0400
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.10.0
+        Fri, 10 Jul 2020 10:32:42 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06AEQjRC078048;
+        Fri, 10 Jul 2020 14:32:39 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=gD/OX5/g3bySPIrw8OV7Iu+Jw+nqvNPz5zITnc/QKUM=;
+ b=PIqPpRGl76kQA7jx9KjV3+YxvmLUz/fF6OAd+vtj0Ui0wfr3+NAxq0okNoWu62hD83Ud
+ peLsxvgpcd9vAEVQnHb7cr6XyftASmdE0pvn+r0KUrVyCoy9hnXWDnZtz5hPoqFYzjiw
+ 29Z5XygavPeoSNBqOc8LEI2fM6qo0zG0Su+vy9JDOeVzlmcOFa8pUws9EJiqgR5gAPYk
+ NW39wQIquqpqR+lhx6W/F5uqODvqHnAE2xUbTjRIxkVcBigoJRN9O4v7y0zUC6D+18pE
+ ZvLzsN/cHde6AKWLqys6zTbefWekenMgqfChGjPy6q2nNNBvzGjC0iWmQYoQ3Rj/4Vve iw== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 325y0aqsys-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 10 Jul 2020 14:32:39 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06AETKZw135608;
+        Fri, 10 Jul 2020 14:32:39 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3020.oracle.com with ESMTP id 325k3mgdmg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 10 Jul 2020 14:32:38 +0000
+Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 06AEWaRW014001;
+        Fri, 10 Jul 2020 14:32:37 GMT
+Received: from [192.168.1.102] (/39.109.231.106)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 10 Jul 2020 07:32:36 -0700
+Subject: Re: [PATCH 1/3] btrfs: add filesystem generation to fsinfo ioctl
+To:     Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        David Sterba <dsterba@suse.cz>
+Cc:     linux-btrfs@vger.kernel.org
+References: <20200710140511.30343-1-johannes.thumshirn@wdc.com>
+ <20200710140511.30343-2-johannes.thumshirn@wdc.com>
+From:   Anand Jain <anand.jain@oracle.com>
+Message-ID: <3f60141d-027a-c9e2-aa69-680668edcebc@oracle.com>
+Date:   Fri, 10 Jul 2020 22:32:32 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-In-Reply-To: <20200710131928.7187-1-dsterba@suse.com>
+In-Reply-To: <20200710140511.30343-2-johannes.thumshirn@wdc.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9677 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ phishscore=0 adultscore=0 suspectscore=0 malwarescore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2007100102
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9677 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxscore=0
+ priorityscore=1501 spamscore=0 phishscore=0 clxscore=1015 mlxlogscore=999
+ lowpriorityscore=0 malwarescore=0 bulkscore=0 suspectscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2007100102
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 7/10/20 9:19 AM, David Sterba wrote:
-> The whole chunk tree is read at mount time so we can utilize readahead
-> to get the tree blocks to memory before we read the items. The idea is
-> from Robbie, but instead of updating search slot readahead, this patch
-> implements the chunk tree readahead manually from nodes on level 1.
-> 
-> We've decided to do specific readahead optimizations and then unify them
-> under a common API so we don't break everything by changing the search
-> slot readahead logic.
-> 
+On 10/7/20 10:05 pm, Johannes Thumshirn wrote:
+> +	__u32 generation;			/* out */
 
-So this is just for now, and then will be replaced with a bigger rework of the 
-readahead logic?
+Generation is defined as u64 in fs_info.
 
-> Higher chunk trees grow on large filesystems (many terabytes), and
-> prefetching just level 1 seems to be sufficient. Provided example was
-> from a 200TiB filesystem with chunk tree level 2.
-> 
-> CC: Robbie Ko <robbieko@synology.com>
-> Signed-off-by: David Sterba <dsterba@suse.com>
-> ---
->   fs/btrfs/volumes.c | 23 +++++++++++++++++++++++
->   1 file changed, 23 insertions(+)
-> 
-> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> index c7a3d4d730a3..e19891243199 100644
-> --- a/fs/btrfs/volumes.c
-> +++ b/fs/btrfs/volumes.c
-> @@ -7013,6 +7013,19 @@ bool btrfs_check_rw_degradable(struct btrfs_fs_info *fs_info,
->   	return ret;
->   }
->   
-> +void readahead_tree_node_children(struct extent_buffer *node)
-> +{
-> +	int i;
-> +	const int nr_items = btrfs_header_nritems(node);
-> +
-> +	for (i = 0; i < nr_items; i++) {
-> +		u64 start;
-> +
-> +		start = btrfs_node_blockptr(node, i);
-> +		readahead_tree_block(node->fs_info, start);
-> +	}
-> +}
-> +
->   int btrfs_read_chunk_tree(struct btrfs_fs_info *fs_info)
->   {
->   	struct btrfs_root *root = fs_info->chunk_root;
-> @@ -7023,6 +7036,7 @@ int btrfs_read_chunk_tree(struct btrfs_fs_info *fs_info)
->   	int ret;
->   	int slot;
->   	u64 total_dev = 0;
-> +	u64 last_ra_node = 0;
->   
->   	path = btrfs_alloc_path();
->   	if (!path)
-> @@ -7048,6 +7062,8 @@ int btrfs_read_chunk_tree(struct btrfs_fs_info *fs_info)
->   	if (ret < 0)
->   		goto error;
->   	while (1) {
-> +		struct extent_buffer *node;
-> +
->   		leaf = path->nodes[0];
->   		slot = path->slots[0];
->   		if (slot >= btrfs_header_nritems(leaf)) {
-> @@ -7058,6 +7074,13 @@ int btrfs_read_chunk_tree(struct btrfs_fs_info *fs_info)
->   				goto error;
->   			break;
->   		}
-> +		node = path->nodes[1];
-> +		if (node) {
-> +			if (last_ra_node != node->start) {
-> +				readahead_tree_node_children(node);
-> +				last_ra_node = node->start;
-> +			}
-> +		}
+struct btrfs_fs_info {
 
-We're doing a read search, path->nodes[1] won't be read locked here, so this 
-isn't technically safe.  I realize that nobody else is going to be messing with 
-stuff here, so maybe just a comment.  Thanks,
+         u64 generation;
 
-Josef
+Thanks, Anand
