@@ -2,96 +2,91 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 171BF21B7CC
-	for <lists+linux-btrfs@lfdr.de>; Fri, 10 Jul 2020 16:06:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B8E221B88C
+	for <lists+linux-btrfs@lfdr.de>; Fri, 10 Jul 2020 16:24:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727110AbgGJOGX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 10 Jul 2020 10:06:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40356 "EHLO
+        id S1728133AbgGJOYl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 10 Jul 2020 10:24:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726725AbgGJOGX (ORCPT
+        with ESMTP id S1728348AbgGJOYj (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 10 Jul 2020 10:06:23 -0400
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0279DC08C5CE
-        for <linux-btrfs@vger.kernel.org>; Fri, 10 Jul 2020 07:06:23 -0700 (PDT)
-Received: by mail-qk1-x742.google.com with SMTP id r22so5247671qke.13
-        for <linux-btrfs@vger.kernel.org>; Fri, 10 Jul 2020 07:06:22 -0700 (PDT)
+        Fri, 10 Jul 2020 10:24:39 -0400
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7442BC08C5CE
+        for <linux-btrfs@vger.kernel.org>; Fri, 10 Jul 2020 07:24:39 -0700 (PDT)
+Received: by mail-qt1-x843.google.com with SMTP id o38so4516031qtf.6
+        for <linux-btrfs@vger.kernel.org>; Fri, 10 Jul 2020 07:24:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=bToUZggK6ZXQShBTkJRsiBP038e9JoOeD6QxhceCRu8=;
-        b=fd2ANepRMCCtXPeBfrdNOX6z+8GqFUVJ7rzEsKVsJrUTZJ7s0/UmV7IiVOua5WptDf
-         TJO5pEWrq8XFPUREnLEFrcj6JIaF7/8C/c95blta1YGgAgqMd4ZJr94ZUgdBN3WyxKX3
-         IouQ0W4RElhnfGHVdrJK/Nv3vmF0hcm+3T6nqJOaZWO2XnRoimRG1mSCpVLBi+cbI712
-         sNiVBfLGGWqZfCuCadNxm/+Sd0MM9Zph7/XGYI1iEk9nkw7FaS7EkYyK+JtYFb6YXW+p
-         sMs3nc6tBSPZqfsHe9u2IlruTr3oiz1jepMAl4MsyipPNboQtwNIEMIb1jIISGCTYPve
-         tWpQ==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=grYXm3jXOLNE8vyKFwG6ubC+vwyXThtnrtCZ8d4rJsU=;
+        b=a4imYuTTDOGSd8LLHjaoGfsq3daP4iqD97nkHJoG2az+79hcSiJWKJ3xqajwKwTtPz
+         OJBPRoHKcFCjnsGUU01e+iC7Lb/Ji39gb1DnTwR4XKoew6fy5UiF1JfHJ5y6stoKlaMZ
+         0TBLN22foi4Nsh3gETkfdiMTOUq4kSsfop4AyMIfm+pK8DJwBb+tZDvUb8rvbI4tHFZu
+         r6x0jYkK6mJfTmcjHKWvxzeYPJ7ps3TLVCNvXvDcMkCJymztiTZsDhKbGwNJNFgLQHjm
+         sZ0YUe24kzbMI1PfdH3bdUSBw4D6AW6mSrq+oJGuRMceeyQb0phA3vRvN6UNs9/wWd/9
+         BZ+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=bToUZggK6ZXQShBTkJRsiBP038e9JoOeD6QxhceCRu8=;
-        b=b712d7gGq9QX4gmpWRwo9T2DzljYVyNXlLAD5jmCNNfj8f+4/IY9tfkhLJ9mPAp9SG
-         XYeR6WeHDJB3fupnw28t1PMJTX7l5XIxEHY5D+aOxiqsYB8VVz6qKdtRfcBgbDdahfyJ
-         w0atpC5/RE7UNGIykOZh8AUEE+YdskSoHwjTvpHzbIx0VV9HJWwN/P+f8qxE2thW2kpe
-         bC6x/F7mtWTdVl0+GV21L5s9DncngYGWHjKh7N37bTFyCltFTRr/leLNHahVXYiutGS8
-         OCCKJIEl7zcRcdRdf/ahpAfe7v4LjW2AyR4RR8kIckAJZU+gDNQxMHZhXjUJJIMALZP4
-         RptQ==
-X-Gm-Message-State: AOAM533LElGNVozs2kM5OAx4K/CoqAktUEQwb2AcKcXdkxeRSIpxXPIc
-        6fb7wnBElJSedU0d9QPWJ1dImvP5d3aOBA==
-X-Google-Smtp-Source: ABdhPJzK4MN1JJQK+mlv6jJ12w9E+CNvUIIPZnOxrGYcXbs032wKHDNixOzep2UsS0j9OfZS1iJNbg==
-X-Received: by 2002:ae9:ea13:: with SMTP id f19mr62240488qkg.331.1594389981847;
-        Fri, 10 Jul 2020 07:06:21 -0700 (PDT)
-Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id z68sm7482475qke.113.2020.07.10.07.06.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Jul 2020 07:06:21 -0700 (PDT)
+        bh=grYXm3jXOLNE8vyKFwG6ubC+vwyXThtnrtCZ8d4rJsU=;
+        b=WeQpV3CKBN+Xmzju7FIIolAwTtzMx4fKpFwFtG7rqG0OyYcdO0Wk9i5OqiSVWJh7qt
+         TWtZ5HEDejX9uIUwB3L6vkZjE/UCKBxwP0VryfconXptL9fdCaz2IaNc2g3RuHafBKmA
+         wmrGsXVSNJv0QTgFKp7F3j7ny/KyY7VQnprH5WE4a4ORVatLszTQJvfXhHRyMY5mbWAT
+         bk7mJ6P6ZBc+4GjJ+ScfwspTeI35YqHP61JbBGst1eCYLpWFjT/2cFOVONGxMseEmedt
+         qmkbMrfhpZb2gmh3eKgMze0569k0Xp0whIXptTjnIMB+schz+P8TH0/PsVv+zDRatWO7
+         /h0Q==
+X-Gm-Message-State: AOAM533iVUB1Vf25NGe9toph06Nj4GAXz4nk03xgf2OEQoxhnAkectht
+        bhbz8qc4q8NWmsc3z/IfzV0ZWb1zmS54KQ==
+X-Google-Smtp-Source: ABdhPJwrGPNHpN9ZXFL+m/JXK1YAopsRXTLRABprm/bV2MOjICW8zfu3spIW4qShcpNWYmURdrQ9nQ==
+X-Received: by 2002:ac8:2672:: with SMTP id v47mr67176718qtv.330.1594391078369;
+        Fri, 10 Jul 2020 07:24:38 -0700 (PDT)
+Received: from [192.168.1.45] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id u71sm3920877qka.40.2020.07.10.07.24.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 10 Jul 2020 07:24:37 -0700 (PDT)
+Subject: Re: [PATCH 0/3] Two furhter additions for fsinfo ioctl
+To:     Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        David Sterba <dsterba@suse.cz>
+Cc:     linux-btrfs@vger.kernel.org
+References: <20200710140511.30343-1-johannes.thumshirn@wdc.com>
 From:   Josef Bacik <josef@toxicpanda.com>
-To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Cc:     Eric Sandeen <esandeen@redhat.com>
-Subject: [PATCH] btrfs: return -EIO on error in btree_write_cache_pages
-Date:   Fri, 10 Jul 2020 10:06:19 -0400
-Message-Id: <20200710140619.2366724-1-josef@toxicpanda.com>
-X-Mailer: git-send-email 2.24.1
+Message-ID: <c2311f5c-3c2e-16bf-dc4b-3f077530d5cf@toxicpanda.com>
+Date:   Fri, 10 Jul 2020 10:24:36 -0400
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200710140511.30343-1-johannes.thumshirn@wdc.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Eric reported seeing this message while running generic/475
+On 7/10/20 10:05 AM, Johannes Thumshirn wrote:
+> This series extents the fsinfo ioctl by adding two new often requested
+> members, the filesystem generation and the metadata UUID. Both can be
+> retrieved from the kernel by setting the appropriate flag in the ioctl
+> structure.
+> 
+> The last patch adds a compile time assertion on the structure sizes, so we're
+> not accidentally breaking size assumptions.
+> 
+> The series was tested using the following test tool, strace support will be
+> written once the kernel side is accepted.
+> 
 
-BTRFS: error (device dm-3) in btrfs_sync_log:3084: errno=-117 Filesystem corrupted
+Applies and builds on misc-next as of this morning, looks fine to me, you can 
+add the following to the whole series
 
-This ret came from btrfs_write_marked_extents().  If we get an aborted
-transaction via an -EIO somewhere, we'll see it in
-btree_write_cache_pages() and return -EUCLEAN, which we spit out as
-"Filesystem corrupted".  Except we shouldn't be returning -EUCLEAN here,
-we need to be returning -EIO.  -EUCLEAN is reserved for actual
-corruption, not IO errors.
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 
-Reported-by: Eric Sandeen <esandeen@redhat.com>
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
----
- fs/btrfs/extent_io.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thanks,
 
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index a76b7da91aa6..6f0dd15729cc 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -4122,7 +4122,7 @@ int btree_write_cache_pages(struct address_space *mapping,
- 	if (!test_bit(BTRFS_FS_STATE_ERROR, &fs_info->fs_state)) {
- 		ret = flush_write_bio(&epd);
- 	} else {
--		ret = -EUCLEAN;
-+		ret = -EIO;
- 		end_write_bio(&epd, ret);
- 	}
- 	return ret;
--- 
-2.24.1
-
+Josef
