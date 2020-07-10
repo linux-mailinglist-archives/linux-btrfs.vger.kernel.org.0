@@ -2,67 +2,71 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11C7821B68A
-	for <lists+linux-btrfs@lfdr.de>; Fri, 10 Jul 2020 15:34:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3BFB21B79D
+	for <lists+linux-btrfs@lfdr.de>; Fri, 10 Jul 2020 16:02:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727955AbgGJNeg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 10 Jul 2020 09:34:36 -0400
-Received: from mx2.suse.de ([195.135.220.15]:56214 "EHLO mx2.suse.de"
+        id S1728358AbgGJOCr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 10 Jul 2020 10:02:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49844 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727031AbgGJNef (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 10 Jul 2020 09:34:35 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 7E8E9AC9F;
-        Fri, 10 Jul 2020 13:34:33 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 46A13DA842; Fri, 10 Jul 2020 15:34:13 +0200 (CEST)
-Date:   Fri, 10 Jul 2020 15:34:13 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Nikolay Borisov <nborisov@suse.com>
-Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH] btrfs: add missing check for nocow and compression inode
- flags
-Message-ID: <20200710133413.GB3703@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        stable@vger.kernel.org
-References: <20200710100553.13567-1-dsterba@suse.com>
- <c564eb4a-c798-ccd1-2fc9-d365cf5ba3a1@suse.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c564eb4a-c798-ccd1-2fc9-d365cf5ba3a1@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+        id S1728330AbgGJOCr (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 10 Jul 2020 10:02:47 -0400
+Received: from localhost (unknown [137.135.114.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 76C7A207BB;
+        Fri, 10 Jul 2020 14:02:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594389766;
+        bh=SGM9git5cbSZWULtLea44yJGOmD2g6GhrUsQUL8FwqM=;
+        h=Date:From:To:To:To:Cc:Cc:Subject:In-Reply-To:References:From;
+        b=Lf/9cJkUmVGClpvOqVUFAI1hWJ+WRht5cOLM5i1Yx9tXjhAbZFdVINP9UNgOajchH
+         MxxlQ9fAFj3x3PvWE8voKdvVIGFanqG/yc7RuI4mthlgJKCXqu1AWudf8vG4KScRik
+         5Zrt43g1kLcZtJTu9lyK7NHiVeGC1f7ewZFp1P0s=
+Date:   Fri, 10 Jul 2020 14:02:45 +0000
+From:   Sasha Levin <sashal@kernel.org>
+To:     Sasha Levin <sashal@kernel.org>
+To:     David Sterba <dsterba@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     David Sterba <dsterba@suse.com>, stable@vger.kernel.org
+Cc:     stable@vger.kernel.org
+Subject: Re: [PATCH] btrfs: allow use of global block reserve for balance item deletion
+In-Reply-To: <20200625103528.15154-1-dsterba@suse.com>
+References: <20200625103528.15154-1-dsterba@suse.com>
+Message-Id: <20200710140246.76C7A207BB@mail.kernel.org>
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Jul 10, 2020 at 01:10:25PM +0300, Nikolay Borisov wrote:
-> > +static int check_fsflags(unsigned int old_flags, unsigned int flags)
-> >  {
-> >  	if (flags & ~(FS_IMMUTABLE_FL | FS_APPEND_FL | \
-> >  		      FS_NOATIME_FL | FS_NODUMP_FL | \
-> > @@ -174,9 +177,19 @@ static int check_fsflags(unsigned int flags)
-> >  		      FS_NOCOW_FL))
-> >  		return -EOPNOTSUPP;
-> >  
-> > +	/* COMPR and NOCOMP on new/old are valid */
-> >  	if ((flags & FS_NOCOMP_FL) && (flags & FS_COMPR_FL))
-> >  		return -EINVAL;
-> >  
-> > +	if ((flags & FS_COMPR_FL) && (flags & FS_NOCOW_FL))
-> > +		return -EINVAL;
-> > +
-> > +	/* NOCOW and compression options are mutually exclusive */
-> > +	if ((old_flags & FS_NOCOW_FL) && (flags & (FS_COMPR_FL | FS_NOCOMP_FL)))
-> 
-> Why is NOCOW and setting NOCOMP (which would really be a NOOP) an
-> invalid combination?
+Hi
 
-The options are not conflicting directly, like for the compression and
-nodatacow, but it still is related to compression so it does not feel
-right to allow that even if it's a noop.
+[This is an automated email]
+
+This commit has been processed because it contains a -stable tag.
+The stable tag indicates that it's relevant for the following trees: 4.4+
+
+The bot has tested the following trees: v5.7.6, v5.4.49, v4.19.130, v4.14.186, v4.9.228, v4.4.228.
+
+v5.7.6: Build OK!
+v5.4.49: Build OK!
+v4.19.130: Build failed! Errors:
+    fs/btrfs/volumes.c:3082:10: error: too few arguments to function ‘btrfs_start_transaction_fallback_global_rsv’
+
+v4.14.186: Build failed! Errors:
+    fs/btrfs/volumes.c:3109:10: error: too few arguments to function ‘btrfs_start_transaction_fallback_global_rsv’
+
+v4.9.228: Build failed! Errors:
+    fs/btrfs/volumes.c:3097:10: error: too few arguments to function ‘btrfs_start_transaction_fallback_global_rsv’
+
+v4.4.228: Build failed! Errors:
+    fs/btrfs/volumes.c:3012:10: error: too few arguments to function ‘btrfs_start_transaction_fallback_global_rsv’
+
+
+NOTE: The patch will not be queued to stable trees until it is upstream.
+
+How should we proceed with this patch?
+
+-- 
+Thanks
+Sasha
