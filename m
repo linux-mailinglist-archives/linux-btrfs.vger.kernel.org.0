@@ -2,194 +2,189 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 336ED21AB37
-	for <lists+linux-btrfs@lfdr.de>; Fri, 10 Jul 2020 01:06:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B24F21AC1F
+	for <lists+linux-btrfs@lfdr.de>; Fri, 10 Jul 2020 02:44:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726933AbgGIXGy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 9 Jul 2020 19:06:54 -0400
-Received: from mout.gmx.net ([212.227.15.19]:39109 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726222AbgGIXGy (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 9 Jul 2020 19:06:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1594336009;
-        bh=L+dW/m/hPhm3UbrAjjGMeZbmFw7GNaG1fZss9CnRTIQ=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=M9gg5AwnGfLvX6312+MpP1ibd2PCPaXw33IZVamZ/0pw6G2fhKI10M24zOxs7gT0D
-         DUeK2CQ7tiA4AquPuRotcD3rrYTS0rhdJyvs9tg7l77NkW0hj9q8AZ8B1mgIAGbUQo
-         qxWtjpIQBhjTdipbRsDw67kSm7PmtdgSTfm5ooHA=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1M2O6e-1juEOE3y50-003qu7; Fri, 10
- Jul 2020 01:06:49 +0200
-Subject: Re: [PATCH v3 2/3] btrfs: qgroup: try to flush qgroup space when we
- get -EDQUOT
-To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20200708062447.81341-1-wqu@suse.com>
- <20200708062447.81341-3-wqu@suse.com> <20200709163246.GB15161@twin.jikos.cz>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
- PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
- 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
- D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
- efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
- ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
- BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
- 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
- 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
- EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
- 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
- ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
- oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
- fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
- 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
- ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
- oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <85256402-642d-3f0d-d14c-5a2afb21823b@gmx.com>
-Date:   Fri, 10 Jul 2020 07:06:45 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        id S1726948AbgGJAoP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 9 Jul 2020 20:44:15 -0400
+Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:36961 "EHLO
+        wout5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726840AbgGJAoO (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 9 Jul 2020 20:44:14 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.west.internal (Postfix) with ESMTP id 7FFAF9F7;
+        Thu,  9 Jul 2020 20:44:13 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Thu, 09 Jul 2020 20:44:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=from
+        :to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm1; bh=pXP7fces+leP4k9HK7j9Ymtbyk
+        lzJn5vKIdqMO1/eiQ=; b=W9apJZYgEiyrEWYc0ES4dXgp08mky4k1uCJqclP0wJ
+        iBP1fURM70OaRh0SzdYmGLns1D0Q9nvbXhPRjvNURI4vRVJlqdM5Mgn3q971vhb4
+        wMHG2HBViygYs5Il//lOK6VQnUuf8fHuTXgKlvcb4EsVwL6z7oclhnTdPNV0C61S
+        9QVHCx823E1qPBEIzyVp2Lp0DX7SOx+aQrM0RKAcEFa3MCPJSrRUf7NjxQ9vdAgD
+        VgoCwG74/xH9Vt7aRrD7aiQrfX3G3gvr72h3t1OyH8iZv+yfzW9RZ96lLd0Vmm9u
+        RkPVoNOOTHhTGkbM1utdMRvRPUQMydFoc6Cyw3ucqKsg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=pXP7fces+leP4k9HK
+        7j9YmtbyklzJn5vKIdqMO1/eiQ=; b=uUZXZ8GAPkqqUy/BzOvViBII7Csr8qCMM
+        M3jkvvOKXCo4tNZvt/Ag/nS8AnzH6eobs54Z67VUPzfpIIVwEq0XsENwuPXx1O5i
+        Lj3z/6ICeUs7vAPzflPN51OrSrqL6esh+5gsu7B9i5ppJkLnTtp4oDHmRZyUGgrx
+        nge8M6hcXPCybdNT1memApjNHNGu+OvIypn0FykdawBL3Dlq203XXxVWr3ioyonQ
+        crg5FxyzI8XDkkXJoqHxUOjwQwv0rzHmkyeXJ0FE+xxzo1b++lAIlEs+XByyLsga
+        ivfeiYsKObHJY2knzJpeNBfFENHqHeBZknVDfpjIH4leTajRrBwZg==
+X-ME-Sender: <xms:3LkHX9rnyXxgBlKUG1xenu57UhVxtKnnGEjKHmx0XhTC5jYQSPgsUw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrvddtgdefjecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefhvffufffkofgggfestdekredtredttdenucfhrhhomhepuehorhhishcuuehu
+    rhhkohhvuceosghorhhishessghurhdrihhoqeenucggtffrrghtthgvrhhnpeduiedtle
+    euieejfeelffevleeifefgjeejieegkeduudetfeekffeftefhvdejveenucfkphepudei
+    fedruddugedrudefvddrfeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmh
+    grihhlfhhrohhmpegsohhrihhssegsuhhrrdhioh
+X-ME-Proxy: <xmx:3LkHX_qvM5mJYVS6ozsOrCt6D6xom5bmGLvbCQa_bUR2pkoKaR6FiA>
+    <xmx:3LkHX6Ph9KjYIgp5d1qgp2q5IuHPuA3hZn8G97_1hn6y5MIG6ZMxMQ>
+    <xmx:3LkHX47wI5R8KKuO9TfP1Qd0PyKwTFRP9TaCpCvCsTTQf8-47C4H6Q>
+    <xmx:3bkHX8FdfpanCyfKBNxksikEwnVdICkyqN362TBTkp7jxMr-_iH_Ug>
+Received: from localhost (unknown [163.114.132.3])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 326F730600A6;
+        Thu,  9 Jul 2020 20:44:12 -0400 (EDT)
+From:   Boris Burkov <boris@bur.io>
+To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>
+Cc:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com
+Subject: [PATCH] btrfs: fix mount failure caused by race with umount
+Date:   Thu,  9 Jul 2020 17:44:08 -0700
+Message-Id: <20200710004408.1246282-1-boris@bur.io>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-In-Reply-To: <20200709163246.GB15161@twin.jikos.cz>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="XixYtvamdB0RIH5zbREejgG1JKo4IJKiq"
-X-Provags-ID: V03:K1:yCCR5a8xSrZPphTmqUjbESn2mvalihPrWGKXFhGvGI2Yh3TuF6P
- TngTIQlrg9PLay7OYgpH4zfDwUBfreQUnRIRZj7Qjf7IyZBgkRz6kP4ApjGleXY/0hv7EVS
- K/wALlSiVzMlFXYDsTWEfYQ79w+YddwRNPeH7gu84RI1jiyl9sEURMvdUiKnnKmPf0ak9pt
- Kag/gYeKo7LXQOugK6fUg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:BSC77fusLNY=:JSXuVVGj898ZPT2K7kzj5/
- veTzWXLcT5zQE739E8JMO59jKJwms2LMxK4f0MHyiLPPiXmWZc0fdeY0QPqMr99iVfH25yDW6
- RN+wgO8zk68av2mhnqpZmof8bcY8LZj1KIFGgcWzUpwGjE5dnkdJSwEMYnpprQlgZRNEPsOHB
- YG8adT/PmUT2ftJ9rRuKp9wdXHiUvE2NQ5cMsYl2hHGKdwqwlXTk38AFGKBjf9imPbDnylf5W
- YYloKZvRs38gqocNNYSR2JTW7+ywbF4rtBn2KCpjddlDXfNKKWZJvd+g8FsKnGY8I2QdITx6b
- +uQ4Lycnovbak1oG0ZXy+Huf4ZVh7Ct5ciEJ3rWwTKGdyo6TtTkorL2iHyoMfEYtug1+rtcA/
- eL30B/PLgeMrw4AzazUlYwgGTczOSAOdivimDUwiDGE3g6rZUG/SbU4xrZtYPEld7L5RtEROY
- vawbWjUynLBJd3RAJRe8fSXsL0jbo8kJ24x9qCZ6tKqczqlJ9jvttkW3Ldg3cTfC2lNpE48ca
- mm+i9AKqhP5t/RjpkgABJl9xaAisYoGiuCNNjr7yr+KA7Nt+IgqWLH+83BbQCBsvHkgNRsraL
- BkweyLQhKbIFy2Oe1EpxTwuSdcojHKU8BrDBx0nvaL0cI4tIO/wNhPDqZXzSc05K+mKnF8JcO
- SrK+omtFYcPjwvluGxwnNm2+uguKOkh7FECh7gMRdLLqnOIyAVH8tTHs9Vd9BVB0auQZVNXCB
- 44k/+njGKLSTAEORDAm7CKoH3QKmJtRKeTucqfIop42G9Z21kEEVVRrgkx96q6Z9yfsW4EKFH
- Ubj9HlzzSP90zuZ/FQM8uaEhHYI8kzDCzei6+/s2+i0uzJXx9+6YuE8/k4rTEVU6yhPeC81vR
- /rtcC1xu4R4bQMFOTUdJJHm50KV+jYxvdH8+HeAw4oF//MW2oyl5ABPgnOfCH0UQBOF4rwWTo
- X1qDCMdob4U5TsGN2J+vWEYPVFRCH18UdO9GjA/xYFh1xK4Cc1g0Tb8sAu0ZDp0dg75wF0dVr
- RcSCIbsOWJ8IpPp534Nj86U5IhdOF+zWSUZxc8YE0b0xCnmUPZgvfs3WKJPAJuXl1mflXIskX
- wzGsBC5BErTEWXkjzIXZhEVcaUshhWEEt2I5yPS8Vo94H8iTzyvK+38qRt96cr8WZW8ki1sGx
- N6r7l4phZSfT7cMSmCYjUYf2qvivr9oxttv+CeSKHbXC3PCcoGbQk8f5gV2xxK9vFJw40N0Cc
- X2q2/uqDuYbAy0Hhk2XO88PXwA7EHzPla/AiiLA==
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---XixYtvamdB0RIH5zbREejgG1JKo4IJKiq
-Content-Type: multipart/mixed; boundary="v616DZaAUeucw5dJIODDU6oknUIpRDjfg"
+It is possible to cause a btrfs mount to fail by racing it with a slow
+umount. The crux of the sequence is generic_shutdown_super not yet
+calling sop->put_super before btrfs_mount_root calls btrfs_open_devices.
+If that occurs, btrfs_open_devices will decide the opened counter is
+non-zero, increment it, and skip resetting fs_devices->total_rw_bytes to
+0. From here, mount will call sget which will result in grab_super
+trying to take the super block umount semaphore. That semaphore will be
+held by the slow umount, so mount will block. Before up-ing the
+semaphore, umount will delete the super block, resulting in mount's sget
+reliably allocating a new one, which causes the mount path to dutifully
+fill it out, and increment total_rw_bytes a second time, which causes
+the mount to fail, as we see double the expected bytes.
 
---v616DZaAUeucw5dJIODDU6oknUIpRDjfg
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+Here is the sequence laid out in greater detail:
 
+CPU0                                                    CPU1
+down_write sb->s_umount
+btrfs_kill_super
+  kill_anon_super(sb)
+    generic_shutdown_super(sb);
+      shrink_dcache_for_umount(sb);
+      sync_filesystem(sb);
+      evict_inodes(sb); // SLOW
 
+                                              btrfs_mount_root
+                                                btrfs_scan_one_device
+                                                fs_devices = device->fs_devices
+                                                fs_info->fs_devices = fs_devices
+                                                // fs_devices-opened makes this a no-op
+                                                btrfs_open_devices(fs_devices, mode, fs_type)
+                                                s = sget(fs_type, test, set, flags, fs_info);
+                                                  find sb in s_instances
+                                                  grab_super(sb);
+                                                    down_write(&s->s_umount); // blocks
 
-On 2020/7/10 =E4=B8=8A=E5=8D=8812:32, David Sterba wrote:
-> On Wed, Jul 08, 2020 at 02:24:46PM +0800, Qu Wenruo wrote:
->> -int btrfs_qgroup_reserve_data(struct btrfs_inode *inode,
->> +static int try_flush_qgroup(struct btrfs_root *root)
->> +{
->> +	struct btrfs_trans_handle *trans;
->> +	int ret;
->> +
->> +	/*
->> +	 * We don't want to run flush again and again, so if there is a runn=
-ing
->> +	 * one, we won't try to start a new flush, but exit directly.
->> +	 */
->> +	ret =3D mutex_trylock(&root->qgroup_flushing_mutex);
->> +	if (!ret) {
->> +		mutex_lock(&root->qgroup_flushing_mutex);
->> +		mutex_unlock(&root->qgroup_flushing_mutex);
->=20
-> This is abuse of mutex, for status tracking "is somebody flushing" and
-> for waiting until it's over.
->=20
-> We have many root::status bits (the BTRFS_ROOT_* namespace) so that
-> qgroups are flushing should another one. The bit atomically set when it=
+      sop->put_super(sb)
+        // sb->fs_devices->opened == 2; no-op
+      spin_lock(&sb_lock);
+      hlist_del_init(&sb->s_instances);
+      spin_unlock(&sb_lock);
+      up_write(&sb->s_umount);
+                                                    return 0;
+                                                  retry lookup
+                                                  don't find sb in s_instances (deleted by CPU0)
+                                                  s = alloc_super
+                                                  return s;
+                                                btrfs_fill_super(s, fs_devices, data)
+                                                  open_ctree // fs_devices total_rw_bytes improperly set!
+                                                    btrfs_read_chunk_tree
+                                                      read_one_dev // increment total_rw_bytes again!!
+                                                      super_total_bytes < fs_devices->total_rw_bytes // ERROR!!!
 
-> starts and cleared when it ends.
+To fix this, we observe that if we have already filled the device, the
+state bit BTRFS_DEV_STATE_IN_FS_METADATA will be set on it, and we can
+use that to avoid filling it a second time for no reason and,
+critically, avoid double counting in total_rw_bytes. One gotcha is that
+read_one_chunk also sets this bit, which happens before read_one_dev (in
+read_sys_array), so we must remove that setting of the bit as well, for
+the state bit to truly correspond to the device struct being filled from
+disk.
 
-In fact, I want to avoid plain wait_queue usage if possible.
+To reproduce, it is sufficient to dirty a decent number of inodes, then
+quickly umount and mount.
 
-Unlike mutex, wait_queue doesn't have good enough debug mechanism like
-lockdep.
+for i in $(seq 0 500)
+do
+  dd if=/dev/zero of="/mnt/foo/$i" bs=1M count=1
+done
+umount /mnt/foo&
+mount /mnt/foo
 
-I see no reason re-implementing the existing mutex code by ourselves
-could bring any benefit here.
+does the trick for me.
 
-It may looks like an abuse of mutex, but I could wrap it into something
-like wait_or_lock_mutex(), which may slightly improve the readability.
+A final note is that this fix actually breaks the fstest btrfs/163, but
+having investigated it, I believe that is due to a subtle flaw in how
+btrfs replace works when used on a seed device. The replace target device
+never gets a correct dev_item with the sprout fsid written out. This
+causes several problems, but for the sake of btrfs/163, read_one_chunk
+marking the device with IN_FS_METADATA was wallpapering over it, which
+this patch breaks. I will be sending a subsequent fix for the seed replace
+issue which will also fix btrfs/163.
 
-Or am I missing anything?
+Signed-off-by: Boris Burkov <boris@bur.io>
+---
+ fs/btrfs/volumes.c | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
 
->=20
-> All waiting tasks should queue in a normal wait_queue_head.
->=20
->> +		return 0;
->> +	}
->> +
->> +	ret =3D btrfs_start_delalloc_snapshot(root);
->> +	if (ret < 0)
->> +		goto unlock;
->> +	btrfs_wait_ordered_extents(root, U64_MAX, 0, (u64)-1);
->> +
->> +	trans =3D btrfs_join_transaction(root);
->> +	if (IS_ERR(trans)) {
->> +		ret =3D PTR_ERR(trans);
->> +		goto unlock;
->> +	}
->> +
->> +	ret =3D btrfs_commit_transaction(trans);
->> +unlock:
->> +	mutex_unlock(&root->qgroup_flushing_mutex);
->=20
-> And also the whole wait/join/commit combo is in one huge mutex, that's
-> really an anti-pattern.
->=20
-But that mutex is per-root, and is the slow path.
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index c7a3d4d730a3..1d9bd1bbf893 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -6633,9 +6633,6 @@ static int read_one_chunk(struct btrfs_key *key, struct extent_buffer *leaf,
+ 			}
+ 			btrfs_report_missing_device(fs_info, devid, uuid, false);
+ 		}
+-		set_bit(BTRFS_DEV_STATE_IN_FS_METADATA,
+-				&(map->stripes[i].dev->dev_state));
+-
+ 	}
+ 
+ 	write_lock(&map_tree->lock);
+@@ -6815,6 +6812,15 @@ static int read_one_dev(struct extent_buffer *leaf,
+ 			return -EINVAL;
+ 	}
+ 
++	/*
++	 * It is possible for mount and umount to race in such a way that
++	 * we execute this code path, but the device is still in metadata.
++	 * If so, we don't need to call fill_device_from_item again and we
++	 * especially don't want to spuriously increment total_rw_bytes.
++	 */
++	if (test_bit(BTRFS_DEV_STATE_IN_FS_METADATA, &device->dev_state)) {
++		return 0;
++	}
+ 	fill_device_from_item(leaf, dev_item, device);
+ 	set_bit(BTRFS_DEV_STATE_IN_FS_METADATA, &device->dev_state);
+ 	if (test_bit(BTRFS_DEV_STATE_WRITEABLE, &device->dev_state) &&
+-- 
+2.24.1
 
-Converting to wait_queue won't change the pattern either.
-
-Thanks,
-Qu
-
-
---v616DZaAUeucw5dJIODDU6oknUIpRDjfg--
-
---XixYtvamdB0RIH5zbREejgG1JKo4IJKiq
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl8HowUACgkQwj2R86El
-/qg03Af/dTtg09icVSxUXnNFgOy6b9l9dgdHX1mMyf6P/4zDaKw7Siwru/gz3uyc
-yWXj+7urOfGP8PJmtVt21U11Q9llVMkfoKwKtU1HCUg9Et3IAGpBNVGx677Izqaq
-j9N6iiQtFY8P8u+FkJQdoptPS+8NIeK9LC1CrhUidrwwIyffo4/lITDe6QxS1ZQW
-rrgL34L4DYh/VfUfyh9YGLKEcXFCugUdC7vQMYQ+CJtHveRTJrcnDLgTyOa3CVSD
-Cht3h47+vidjUisr4tdG3yhdSJvyPoRK4VYv++LaCN2n6cQlGI18iCqdVflCLJsY
-cTSCQAI9nfK/a+XYQuTubFfA14ey4g==
-=itu4
------END PGP SIGNATURE-----
-
---XixYtvamdB0RIH5zbREejgG1JKo4IJKiq--
