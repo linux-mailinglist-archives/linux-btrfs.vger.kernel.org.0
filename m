@@ -2,81 +2,47 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 223A921BA07
-	for <lists+linux-btrfs@lfdr.de>; Fri, 10 Jul 2020 17:54:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4369021BA46
+	for <lists+linux-btrfs@lfdr.de>; Fri, 10 Jul 2020 18:03:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726977AbgGJPyZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 10 Jul 2020 11:54:25 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:53622 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726832AbgGJPyZ (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 10 Jul 2020 11:54:25 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06AFqhfi050860
-        for <linux-btrfs@vger.kernel.org>; Fri, 10 Jul 2020 15:54:24 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : message-id : references : date : in-reply-to : mime-version :
- content-type; s=corp-2020-01-29;
- bh=SXaD6iljuZenC1FMjyemCNTnzFp3JEZY6NlMRzL1vko=;
- b=yNFwJl1bucwcRpAs0K6SU/UposvqRJ8OjExhOz8amqmpOGMMC6z8VGRGyCwAxF1kpwX+
- 8faZHWSbJH0gWPUjVwzjbSX0CFrxvMpQla0xLNXRson4MqW23aZ3eoTdm6DftVQDrNpZ
- R0SvqJGlQnYHIw3CJ68NIP9YK7sNiU+4jC+a8wrYMS4Yn2H+iAklAQcUPwS1q9K9x59p
- 8Xpjd//sxu/qyHvbF2vFA/qo4FrwwfQj3B/HbOlt9bZJBk3uQeh4ZIaZa3j2nmncKqsl
- edx5DifFo2LivH0tzj3oHGHDTeIlN1cNpQpQQM7bVNEeQzHPoMXgbU2XwCZb/6OWlvJf lg== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2120.oracle.com with ESMTP id 325y0ar8yd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL)
-        for <linux-btrfs@vger.kernel.org>; Fri, 10 Jul 2020 15:54:24 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06AFrPN7091465
-        for <linux-btrfs@vger.kernel.org>; Fri, 10 Jul 2020 15:54:23 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3020.oracle.com with ESMTP id 325k3kj1ep-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
-        for <linux-btrfs@vger.kernel.org>; Fri, 10 Jul 2020 15:54:23 +0000
-Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 06AFsM7u007302
-        for <linux-btrfs@vger.kernel.org>; Fri, 10 Jul 2020 15:54:22 GMT
-Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 10 Jul 2020 08:54:22 -0700
-To:     Anand Jain <anand.jain@oracle.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs_show_devname don't traverse into the seed fsid
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <yq1y2nrtlhk.fsf@ca-mkp.ca.oracle.com>
-References: <20200710063738.28368-1-anand.jain@oracle.com>
-Date:   Fri, 10 Jul 2020 11:54:20 -0400
-In-Reply-To: <20200710063738.28368-1-anand.jain@oracle.com> (Anand Jain's
-        message of "Fri, 10 Jul 2020 14:37:38 +0800")
+        id S1728002AbgGJQDm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 10 Jul 2020 12:03:42 -0400
+Received: from verein.lst.de ([213.95.11.211]:43859 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727074AbgGJQDl (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 10 Jul 2020 12:03:41 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 0D7A368AEF; Fri, 10 Jul 2020 18:03:37 +0200 (CEST)
+Date:   Fri, 10 Jul 2020 18:03:37 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Goldwyn Rodrigues <rgoldwyn@suse.de>,
+        linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        fdmanana@gmail.com, dsterba@suse.cz, cluster-devel@redhat.com,
+        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org
+Subject: Re: always fall back to buffered I/O after invalidation failures,
+ was: Re: [PATCH 2/6] iomap: IOMAP_DIO_RWF_NO_STALE_PAGECACHE return
+ if page invalidation fails
+Message-ID: <20200710160337.GA21808@lst.de>
+References: <20200707124346.xnr5gtcysuzehejq@fiona> <20200707125705.GK25523@casper.infradead.org> <20200707130030.GA13870@lst.de> <20200708065127.GM2005@dread.disaster.area> <20200708135437.GP25523@casper.infradead.org> <20200709022527.GQ2005@dread.disaster.area> <20200709160926.GO7606@magnolia> <20200709170519.GH12769@casper.infradead.org> <20200709171038.GE7625@magnolia> <20200709225936.GZ2005@dread.disaster.area>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9678 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 bulkscore=0 mlxscore=0
- spamscore=0 malwarescore=0 phishscore=0 mlxlogscore=983 suspectscore=1
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2007100108
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9678 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxscore=0
- priorityscore=1501 spamscore=0 phishscore=0 clxscore=1011 mlxlogscore=985
- lowpriorityscore=0 malwarescore=0 bulkscore=0 suspectscore=1
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2007100108
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200709225936.GZ2005@dread.disaster.area>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+This looks sane - slightly updated version below to not bother with
+the ret and a few tidyups.
 
-Anand,
-
-> So instead, do not traverse through the seed devices, just show the
-> lowest devid in the sprouted fsid.
-
-Reported-by: Martin K. Petersen <martin.petersen@oracle.com>
-Tested-by: Martin K. Petersen <martin.petersen@oracle.com>
-
--- 
-Martin K. Petersen	Oracle Linux Engineering
+That being said and to get back to the discussion in this thread:
+I think it would be saner to give up on direct I/O in case of the
+invalidation failure.  I've cooked up a patch on top of this one
+(for which I had a few trivial cleanups).  It is still under testing,
+but I'll send the two out in a new thread.
