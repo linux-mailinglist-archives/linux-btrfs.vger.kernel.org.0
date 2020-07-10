@@ -2,109 +2,78 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C1B521B62D
-	for <lists+linux-btrfs@lfdr.de>; Fri, 10 Jul 2020 15:19:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2D8F21B65A
+	for <lists+linux-btrfs@lfdr.de>; Fri, 10 Jul 2020 15:28:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727771AbgGJNTv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 10 Jul 2020 09:19:51 -0400
-Received: from mx2.suse.de ([195.135.220.15]:46026 "EHLO mx2.suse.de"
+        id S1726867AbgGJN2g (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 10 Jul 2020 09:28:36 -0400
+Received: from mx2.suse.de ([195.135.220.15]:51558 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727092AbgGJNTu (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 10 Jul 2020 09:19:50 -0400
+        id S1726774AbgGJN2g (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 10 Jul 2020 09:28:36 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 3F0C4AC5E;
-        Fri, 10 Jul 2020 13:19:49 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 258A6AD65;
+        Fri, 10 Jul 2020 13:28:35 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id B9295DA842; Fri, 10 Jul 2020 15:19:28 +0200 (CEST)
-From:   David Sterba <dsterba@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     David Sterba <dsterba@suse.com>, Robbie Ko <robbieko@synology.com>
-Subject: [PATCH] btrfs: prefetch chunk tree leaves at mount
-Date:   Fri, 10 Jul 2020 15:19:28 +0200
-Message-Id: <20200710131928.7187-1-dsterba@suse.com>
-X-Mailer: git-send-email 2.25.0
+        id E5CD9DA842; Fri, 10 Jul 2020 15:28:14 +0200 (CEST)
+Date:   Fri, 10 Jul 2020 15:28:14 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+Cc:     David Sterba <dsterba@suse.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
+Subject: Re: [PATCH] btrfs: add missing check for nocow and compression inode
+ flags
+Message-ID: <20200710132814.GA3703@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz,
+        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        David Sterba <dsterba@suse.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
+References: <20200710100553.13567-1-dsterba@suse.com>
+ <SN4PR0401MB35981E3913C16CB69DA42DF29B650@SN4PR0401MB3598.namprd04.prod.outlook.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <SN4PR0401MB35981E3913C16CB69DA42DF29B650@SN4PR0401MB3598.namprd04.prod.outlook.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The whole chunk tree is read at mount time so we can utilize readahead
-to get the tree blocks to memory before we read the items. The idea is
-from Robbie, but instead of updating search slot readahead, this patch
-implements the chunk tree readahead manually from nodes on level 1.
+On Fri, Jul 10, 2020 at 10:17:55AM +0000, Johannes Thumshirn wrote:
+> On 10/07/2020 12:06, David Sterba wrote:
+> > +static int check_fsflags(unsigned int old_flags, unsigned int flags)
+> >  {
+> >  	if (flags & ~(FS_IMMUTABLE_FL | FS_APPEND_FL | \
+> >  		      FS_NOATIME_FL | FS_NODUMP_FL | \
+> > @@ -174,9 +177,19 @@ static int check_fsflags(unsigned int flags)
+> >  		      FS_NOCOW_FL))
+> >  		return -EOPNOTSUPP;
+> >  
+> > +	/* COMPR and NOCOMP on new/old are valid */
+> >  	if ((flags & FS_NOCOMP_FL) && (flags & FS_COMPR_FL))
+> >  		return -EINVAL;
+> >  
+> > +	if ((flags & FS_COMPR_FL) && (flags & FS_NOCOW_FL))
+> > +		return -EINVAL;
+> > +
+> > +	/* NOCOW and compression options are mutually exclusive */
+> > +	if ((old_flags & FS_NOCOW_FL) && (flags & (FS_COMPR_FL | FS_NOCOMP_FL)))
+> > +		return -EINVAL;
+> > +	if ((flags & FS_NOCOW_FL) && (old_flags & (FS_COMPR_FL | FS_NOCOMP_FL)))
+> > +		return -EINVAL;
+> > +
+> 
+> 
+> If we'd pass in fs_info to check_fsflags() we could also validate against mount options
+> which are incompatible with inode flags. Like -o nodatacow and FS_COMPR_FL or 
+> -o auth_key and FS_NOCOW_FL.
 
-We've decided to do specific readahead optimizations and then unify them
-under a common API so we don't break everything by changing the search
-slot readahead logic.
-
-Higher chunk trees grow on large filesystems (many terabytes), and
-prefetching just level 1 seems to be sufficient. Provided example was
-from a 200TiB filesystem with chunk tree level 2.
-
-CC: Robbie Ko <robbieko@synology.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
----
- fs/btrfs/volumes.c | 23 +++++++++++++++++++++++
- 1 file changed, 23 insertions(+)
-
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index c7a3d4d730a3..e19891243199 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -7013,6 +7013,19 @@ bool btrfs_check_rw_degradable(struct btrfs_fs_info *fs_info,
- 	return ret;
- }
- 
-+void readahead_tree_node_children(struct extent_buffer *node)
-+{
-+	int i;
-+	const int nr_items = btrfs_header_nritems(node);
-+
-+	for (i = 0; i < nr_items; i++) {
-+		u64 start;
-+
-+		start = btrfs_node_blockptr(node, i);
-+		readahead_tree_block(node->fs_info, start);
-+	}
-+}
-+
- int btrfs_read_chunk_tree(struct btrfs_fs_info *fs_info)
- {
- 	struct btrfs_root *root = fs_info->chunk_root;
-@@ -7023,6 +7036,7 @@ int btrfs_read_chunk_tree(struct btrfs_fs_info *fs_info)
- 	int ret;
- 	int slot;
- 	u64 total_dev = 0;
-+	u64 last_ra_node = 0;
- 
- 	path = btrfs_alloc_path();
- 	if (!path)
-@@ -7048,6 +7062,8 @@ int btrfs_read_chunk_tree(struct btrfs_fs_info *fs_info)
- 	if (ret < 0)
- 		goto error;
- 	while (1) {
-+		struct extent_buffer *node;
-+
- 		leaf = path->nodes[0];
- 		slot = path->slots[0];
- 		if (slot >= btrfs_header_nritems(leaf)) {
-@@ -7058,6 +7074,13 @@ int btrfs_read_chunk_tree(struct btrfs_fs_info *fs_info)
- 				goto error;
- 			break;
- 		}
-+		node = path->nodes[1];
-+		if (node) {
-+			if (last_ra_node != node->start) {
-+				readahead_tree_node_children(node);
-+				last_ra_node = node->start;
-+			}
-+		}
- 		btrfs_item_key_to_cpu(leaf, &found_key, slot);
- 		if (found_key.type == BTRFS_DEV_ITEM_KEY) {
- 			struct btrfs_dev_item *dev_item;
--- 
-2.25.0
-
+Same question was asked on IRC too, mount options are independent and
+take lower precedence than the inode attributes. A scenario where user
+wants to set a nodatacow attribute when the filesystem is mounted with
+compress= is valid and can be quite common.
