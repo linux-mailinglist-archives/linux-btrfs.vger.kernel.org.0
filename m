@@ -2,114 +2,93 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADB0D21C51E
-	for <lists+linux-btrfs@lfdr.de>; Sat, 11 Jul 2020 18:16:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7832E21C5D4
+	for <lists+linux-btrfs@lfdr.de>; Sat, 11 Jul 2020 20:44:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728609AbgGKQQl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 11 Jul 2020 12:16:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55534 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728532AbgGKQQl (ORCPT
+        id S1728555AbgGKSoV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 11 Jul 2020 14:44:21 -0400
+Received: from basidium.jots.org ([174.138.47.155]:43162 "EHLO
+        basidium.jots.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728390AbgGKSoU (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 11 Jul 2020 12:16:41 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D8CBC08C5DD
-        for <linux-btrfs@vger.kernel.org>; Sat, 11 Jul 2020 09:16:40 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id a6so10518276wmm.0
-        for <linux-btrfs@vger.kernel.org>; Sat, 11 Jul 2020 09:16:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=teHR+Mbi25ZrcwxHJN5rOBgLfpkeFI4h8KNBGtAunjE=;
-        b=BmQVm7xmGf0QDkOIA05Uxm7tCMF7zZrreilipLMXgktxqIpQWnaoQqJcuwtvFTDVaj
-         5J2zFn5TD+Y2GqbnlhZ9TKBI2IA/5iFIhJtP3OEFDJ9hMH8PTeJsBDVlif2BnI4ALemF
-         BUGuP+CZ/mRlyUMe42MbqsSUwmxCCCjWmpJHtTuMJWBT07U6qpue9qVuFh//xXrmcVcM
-         +zz8VF3YMTXR5uJX/E3NOzUXiix4i09GisoeiKWolGDW9g+ucswotX4GNAZclIRqrpxx
-         qDtMmPj2R/6VpcluWCLWbKX+d4lQzWHJlr6qN6bx/p03PGIDu0HhiUlc9Ie4NWWsaAOy
-         YeUg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=teHR+Mbi25ZrcwxHJN5rOBgLfpkeFI4h8KNBGtAunjE=;
-        b=f73PfshKWROarbRW5M52wNxUI/wb8ppM1YUg+10xSRxC0rU4E9WcQqef4cRRylG+jc
-         yGv++BMWnjZqwLRVelBAEskuTyXfpLQPAJSfyV4pT51nqoDv1vTOXwQUd03i6PVcT74r
-         00W/LbjYF99eZ0FO3x3ntw7rqUXcZra5ND8ZXdvMkBsMqlcvwzDAJfbxWP755Tmn+ek/
-         MKqG51A6e/0v93Y3zKeovaiPNKTWfFFSoLsPa6AzB2fbdfGWCdPjqULq9kssw1QXNqN+
-         BASJHb51CdnrLaP2URhkkhKd9P5insNyJO/FyE4KB3gqiDhwq2U/ir3sEbdnexd2SPC7
-         513A==
-X-Gm-Message-State: AOAM530jz7NTTONuC/W5NBdMh286k0XUf+EAEddpYZkLcaT64ZX8fuQ4
-        r64dNQcU05srCnmPaCT7qiXsVOYSh3y4U3qQsa+A5g==
-X-Google-Smtp-Source: ABdhPJzbMZ53XmK3oawUsIbemKyox3DgcG3286ZzgtdLDoH+PyqghH7V4aPz7SjWs20LlJ6c89iuVh6ByNOGjjPTJ0k=
-X-Received: by 2002:a1c:e383:: with SMTP id a125mr10732735wmh.11.1594484199303;
- Sat, 11 Jul 2020 09:16:39 -0700 (PDT)
+        Sat, 11 Jul 2020 14:44:20 -0400
+X-Greylist: delayed 318 seconds by postgrey-1.27 at vger.kernel.org; Sat, 11 Jul 2020 14:44:20 EDT
+Received: by basidium.jots.org (Postfix, from userid 1002)
+        id 205587FD56; Sat, 11 Jul 2020 14:38:30 -0400 (EDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=jots.org; s=mail;
+        t=1594492710; bh=/OdTFi2jTV9nIUdAl1Dp5wA39hUAHMfhpWqpFox4oWs=;
+        h=Date:From:To:Subject;
+        b=AYKVET/a0Yr3KRD63oxEEUTHNl7QuE1YHaykfieO8Qn6q1/+hWUkmPtSq9Sc056f+
+         oMcoIKb2f1tkBYQ3mShuh9/95CzMJhUe3o7HoZ1B5hrn44ko9XQdvnYzo8xg/exUNa
+         1vmMKF3fur1XY4xjsA5hl4HDD7KOaI3AX+YtSb+dcV9Wvpt+/xQHlJg9gsjA6h5pc6
+         Zy+Ku5ZZ+ASWvu0RiNPOV1IzPkVZ9Q5ijFZqFElZPeIxOcbUJ5tvp0lNu5N50b6hvp
+         GnK28Md17DP2ZDFbLDcCthcInxqueNBRaYzn0akjntuNk5g8D0UwGjTPWVV6XxIwdA
+         p4/wkAF8btN4g==
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on basidium.jots.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.1 required=5.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.2
+Received: from webmail.jots.org (localhost [127.0.0.1])
+        by basidium.jots.org (Postfix) with ESMTP id 73D6A7EB2A;
+        Sat, 11 Jul 2020 14:38:26 -0400 (EDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=jots.org; s=mail;
+        t=1594492706; bh=/OdTFi2jTV9nIUdAl1Dp5wA39hUAHMfhpWqpFox4oWs=;
+        h=Date:From:To:Subject;
+        b=Nfnx90iOvjuQ4MmbPkAmpr17XImFY2FGEcAQv7wJTcCao0L/pIWZjk4o/3hjPNAX+
+         S7/9e0kV/+wJGLCvdWFIRzGfSvqfdXYsdXg7QDuHVDonTP7BIlNoDEyY7ErShxRRCm
+         HoTdzEb4ha6oKNK4ptnBs1xOjQepfFOy5cFpBYqZF2dnMc39I/TU1PwpqoMh/PeK3q
+         MQTxh74NqwTzN+LbQiDZuKVmMMHlQqHlRpJjkD0XU3fuxkNrtyqpR5VuhQtYeMymSq
+         B6sIWz8JY2EbFJMaOcj1ItV5QiNnfbPAXSpjLqg8Q1OTVE8SA5v6uP6efA2Nkf+au/
+         6aOumtBs0zH6g==
 MIME-Version: 1.0
-References: <CAJCQCtRfXy9YDqZQgYz0_djd78oEMwiYY7Og2x=J=w361FENWg@mail.gmail.com>
- <7f9a8467-6b03-6699-f124-2833fffef4ab@gmail.com>
-In-Reply-To: <7f9a8467-6b03-6699-f124-2833fffef4ab@gmail.com>
-From:   Chris Murphy <lists@colorremedies.com>
-Date:   Sat, 11 Jul 2020 10:16:23 -0600
-Message-ID: <CAJCQCtS7cYVDQ9mn3BrsO=OFPt=05ZgZEer=g2=1vGjHPLCREw@mail.gmail.com>
-Subject: Re: raid0 and different sized devices
-To:     Andrei Borzenkov <arvidjaar@gmail.com>
-Cc:     Chris Murphy <lists@colorremedies.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Sat, 11 Jul 2020 14:38:26 -0400
+From:   Ken D'Ambrosio <ken@jots.org>
+To:     ken@jots.org, linux-btrfs@vger.kernel.org
+Subject: Btrfs default on Fedora?
+User-Agent: Roundcube Webmail/1.4-beta
+Message-ID: <933824829995390cef16f757cab1ddbc@jots.org>
+X-Sender: ken@jots.org
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sat, Jul 11, 2020 at 12:28 AM Andrei Borzenkov <arvidjaar@gmail.com> wro=
-te:
->
-> 11.07.2020 04:37, Chris Murphy =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
-> > Summary:
-> >
-> > df claims this volume is full, which is how it actually behaves. Rsync
-> > fails with an out of space message. But 'btrfs fi us' reports
-> > seemingly misleading/incorrect information:
-> >
-> >     Free (estimated):          12.64GiB    (min: 6.33GiB)
-> >
-> > If Btrfs can't do single device raid0, and it seems it can't, then
-> > this free space reporting seems wrong twice. (Both values.)
-> >
->
-> This space can be used with single or dup profiles so it is actually
-> correct (second number being for dup). It would of course be nice to get
-> extended output "how much space for each profile", but as "estimation of
-> theoretical free space" it is absolutely correct.
->
-> Of course I do not know whether it is correct by design or by coincidence=
- :)
+Hi!  I just saw this mentioned on a BBS I'm on:
+https://fedoraproject.org/wiki/Changes/BtrfsByDefault
 
-I also wonder about the effect of metadata raid1 in this case. For
-sure it can't allocate another raid1 chunk, even if raid0 profile were
-able to support single stripe raid0 block groups on a single device.
+I'll admit, I'm incredibly surprised, and pleased, to see that this 
+might happen.  I do have three items of concern as Joe End User.  (Do 
+note that for home use (where I use btrfs) I'm usually on Ubuntu or a 
+variant and not RH, if that matters.)
 
-And in fact we end up with a weird situation where premature out of
-space can still happen with -d single -m raid1. What should be true is
-data block groups are only created on the large device, in effect
-making the small device metadata only. But since in this extreme
-example it's only ~700M, it's just a matter of time before we're in
-metadata exhaustion because there's no fall back to single metadata.
+* Swap files.  At least last time I checked, it was a PITA to take a 
+snapshot of a volume that had a swapfile on it -- I wound up writing a 
+wrapper that goes, does a swapoff, removes the file, creates the 
+snapshot, and then re-creates the file.   Is this still "a thing"?  Or 
+is there a way to work around that that isn't kludgey?
 
-This is a peculiar case in a VM, where it's easy to create such
-(somewhat) contrived scenarios. In the real world we're not likely to
-see these kinds of problems, I think. A 2G device is rare indeed, let
-alone matched with a ~16 GiB device. We could also argue the UI/UX of
-an installer allowing multiple device selection for automatic
-partitioning. But alas it is allowed, and currently defaults to
-LVM+ext4. So it becomes a concat/linear arrangement and just works, no
-matter how possibly fragile it is to device failure. So the closest
-approximation for Btrfs would be mkfs.btrfs -d single -m single. The
-next closest is -d single -m raid1, which at least allows the
-possibility of salvaging the data on the surviving drive, and probably
-worth the risk of metadata exhaustion in the rare case of including a
-small second device in the pool.
+* When Stuff Goes Wrong(tm).  Again, my experience is not terribly 
+current, but when things hit the fan, for most FSes, you do an
+fsck -y /path/to/dev
+and hope things come together.  But with btrfs, it seems that it's 
+substantially more complicated to figure out what to do.  Have the 
+tools, perhaps, been updated to help end users figure out what choices 
+to make, etc., when dealing with an issue?
 
---=20
-Chris Murphy
+* RAID 5/6.  Last time I looked, that was in an unhappy state, so I just 
+set up a RAID with mdadm, lay btrfs on top of that, and call it good.  
+That seems to do the job, though it loses lots of smarts that would be 
+had with btrfs running the RAID.  I see discussion on the wiki 
+(https://btrfs.wiki.kernel.org/index.php/RAID56) talking about an RFC 
+submitted to address the underlying issues; is this still broken?
+
+Thanks much,
+
+-Ken
+
+P.S.  If there's a better mailing list, e.g., "end user questions" or 
+something, please feel free to point me to it.
