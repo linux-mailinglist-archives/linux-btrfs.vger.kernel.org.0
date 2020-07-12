@@ -2,66 +2,52 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BE0E21CAC5
-	for <lists+linux-btrfs@lfdr.de>; Sun, 12 Jul 2020 19:37:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 189DE21CB20
+	for <lists+linux-btrfs@lfdr.de>; Sun, 12 Jul 2020 21:30:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729315AbgGLRh1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 12 Jul 2020 13:37:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33570 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729289AbgGLRh1 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 12 Jul 2020 13:37:27 -0400
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1ABA6C061794
-        for <linux-btrfs@vger.kernel.org>; Sun, 12 Jul 2020 10:37:27 -0700 (PDT)
-Received: by mail-wm1-x330.google.com with SMTP id f18so10720439wml.3
-        for <linux-btrfs@vger.kernel.org>; Sun, 12 Jul 2020 10:37:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=et4iKepAj1EBgGoN1CYHKEBamnyMXhIcADIRK9umXzY=;
-        b=lK75fM3Lk6KS9OKCqLBJqtyIlUB145vuliy5kHtQIcac8eky+5a5BLUgbvGatXREgt
-         yE9NfphYeGGkPgHJOH4zfiMWiJkWJvtPRsA15AJnlEj0B/A8AEAMxy71LeQ/3vCQCd3w
-         lyd7XrMww+tYT7abmog1vJD/p18+3U8cNgANIR3xNlnylAISB/rGogsEAAE4H8sq5UA/
-         B1SfgqWQzO2nY1aTQpCJ2/p/eWZZ59/TzukbtLs+bF/3FMEC+iJK0kiea5bgRzqiMh/o
-         BwKHTk3UtlKMdUHrjMxh79a/pwl6VKxkjZrJGxWg+oSrn5gfweuIXwZa+tG4YsbMOyW8
-         G9tA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=et4iKepAj1EBgGoN1CYHKEBamnyMXhIcADIRK9umXzY=;
-        b=VrtOymsyeaijnAmZpmtQAjNNuJ9yxYLDaJjac7aiwXooIceKnEaW1t1MWVClZeqrY/
-         7bHzv7jyyAZf+z7BpEG//jb9X7+H5eGC12rERNZWMZSjCfT9+GMQndQDhvmGc2CM6/0F
-         egg78Ndo589jSh6reWJ3AhIMy75+lRlnW59/TtqijRsb8hd5SCIwhOODeylswXAgisZm
-         sMvdxdtHqEf66kou/TGKqakJrM7Ibsw/mf2YSCbzgpcCrh/XfDc+JOySodiDe/YBZF+D
-         QrxOqeaL6zANG4AdpavOreMoCCxWrv0m0AzX+yCsse4qknP2T0qaUNr0dt1lxefw5KMo
-         ID7g==
-X-Gm-Message-State: AOAM530xaMb9LVt/vj9+YkYv7ktty/ibcDIcQBGGq1PaoHf7yx+wCfce
-        zBEUK0oIJwO00ThMguyx92ezvMxox8LDLkqygLNT5ab/NFM=
-X-Google-Smtp-Source: ABdhPJz2Nu5E5WlUeI74mD5x/df0GFjCKC66pxgBULMq/G1dEdTy5OmnKshkNu5UgFxzlS7DrZ07jK/LGznUCEOV6JI=
-X-Received: by 2002:a05:600c:2241:: with SMTP id a1mr14861815wmm.168.1594575445719;
- Sun, 12 Jul 2020 10:37:25 -0700 (PDT)
-MIME-Version: 1.0
-From:   Chris Murphy <lists@colorremedies.com>
-Date:   Sun, 12 Jul 2020 11:37:09 -0600
-Message-ID: <CAJCQCtTFX7uECSMcACYTfVxouSKud1Qri2bu6MOBLsGjT2BL+g@mail.gmail.com>
-Subject: bogus min size estimates by 'btrfs inspect min'
-To:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S1729254AbgGLTaF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 12 Jul 2020 15:30:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51448 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729210AbgGLTaE (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Sun, 12 Jul 2020 15:30:04 -0400
+Subject: Re: [GIT PULL] Btrfs fixes for 5.8-rc5, part 2
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594582204;
+        bh=SF5iAQeq/11QhFwI1nHYlrFH2RvER9fHSR60c0I3TM0=;
+        h=From:In-Reply-To:References:Date:To:Cc:From;
+        b=GJXGeUidSuIGFqE8Q2ehiS9utzXW3w8WDaL14yEOeXrcsfenZ8AHfc884nfTmD2PU
+         eMPKsgeLeeuCDvZtc9XObNv3XM3DBmqlW9wdcIFtU4jBfXqzvNBF3IaVkdA5ryztpO
+         2/bZVn3BejBTRaD/W08tf3C6uZMUKcKdaGvw8B7g=
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <cover.1594548115.git.dsterba@suse.com>
+References: <cover.1594548115.git.dsterba@suse.com>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <cover.1594548115.git.dsterba@suse.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.8-rc4-tag
+X-PR-Tracked-Commit-Id: d77765911385b65fc82d74ab71b8983cddfe0b58
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 72c34e8d7099c329c2934c2ac9c886f638b6edaf
+Message-Id: <159458220443.16981.9962622832431601410.pr-tracker-bot@kernel.org>
+Date:   Sun, 12 Jul 2020 19:30:04 +0000
+To:     David Sterba <dsterba@suse.com>
+Cc:     torvalds@linux-foundation.org, David Sterba <dsterba@suse.com>,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-https://github.com/kdave/btrfs-progs/issues/271
+The pull request you sent on Sun, 12 Jul 2020 12:14:58 +0200:
 
-The summary is that 'btrfs inspect-internal min-dev-size' doesn't
-work. There are two values, one where it's obviously wrong: e.g. fs
-can be shrunk to 1MiB. And the more common case where it
-underestimates the amount of shrink - by a lot. So two extremes.
+> git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.8-rc4-tag
 
-Details in the bug.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/72c34e8d7099c329c2934c2ac9c886f638b6edaf
+
+Thank you!
 
 -- 
-Chris Murphy
+Deet-doot-dot, I am a bot.
+https://korg.wiki.kernel.org/userdoc/prtracker
