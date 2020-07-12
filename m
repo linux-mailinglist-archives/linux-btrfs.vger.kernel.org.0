@@ -2,113 +2,107 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC28E21C662
-	for <lists+linux-btrfs@lfdr.de>; Sat, 11 Jul 2020 23:18:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6094A21C79F
+	for <lists+linux-btrfs@lfdr.de>; Sun, 12 Jul 2020 07:12:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727793AbgGKVSp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 11 Jul 2020 17:18:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45210 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726779AbgGKVSp (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 11 Jul 2020 17:18:45 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0C15C08C5DD
-        for <linux-btrfs@vger.kernel.org>; Sat, 11 Jul 2020 14:18:44 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id k6so9294410wrn.3
-        for <linux-btrfs@vger.kernel.org>; Sat, 11 Jul 2020 14:18:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6sR+YI9uTDljOekHikoPs0Cykh4hZERul0Ibofayn3I=;
-        b=GqxnMnomPbAWOU0LebWZkQ3lv7qONL6noLKpy+9SH8hebfFAI8bs2ZVATMhgFXyuAF
-         wpCeOAyr7Qq4tokPzoVcuM9xF/aI2NWD/n+nHFABoNWa5gHdMFOJauw3i6FZRoGCCKp5
-         u4W1b0q8YDfEbUD6crMQcdTPDa0vIGwpm//5SzmKlXKzoLC5agKvaY6BwqqZ4CB/cCCY
-         45Gx9Eiy286xYjyqAWGie3c4ExNdZdFwl3KfWwwthPyV7QkS1DpYIqszGX2Ouiw2CrJf
-         lIObt7ULmEU+In3Wg8IjNcL7ll2196F3bNVcyyd8OqKavAU0TTlrZWG4bLH/f/exoT9F
-         BYBw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6sR+YI9uTDljOekHikoPs0Cykh4hZERul0Ibofayn3I=;
-        b=msn4fcwNInsTX2kZJjnCGLlKrCyaFUEdXHxSwv118Zv7VTVxx4TcEsSwJO0LKeudqi
-         BEyMvc6IM5xMoqfabN+9MkNeit3y7VxBesBeYDf8HGGzP7e97EtK8kVZFEbODNIIF2BO
-         Y9cxezd/vjNsj8RWovsZCh9wPCi3fP+bchcgxS0PlyIu2B/YHDQqJLXQlp/rmyHuP22X
-         /izhi0TLiVeDyDEs2hl06aqhYzAAo3t6oxZctUv4+juUy89TL3yhFkWjmfpploAQRjEM
-         O1Qluky03angBvJyHDBuymhIA3Fm9CeXFlxPrjMdmBUz8VVJOoJPTabez7tZ8Dbgwi56
-         YBtQ==
-X-Gm-Message-State: AOAM5301SMbTvU7Wynt+rWAqzS81SYe+LXrdV7TsBEvxxxsiGxsu/Vyc
-        uL80ZAk632WcOHNaNHFFpj2/LTXWOsD+KSdp/2rKU233eoE=
-X-Google-Smtp-Source: ABdhPJwzSJoxMZNTa90Q4KklyQe2XhQc47zYbCOx3w5qGUJqC+DlGzbHf1n+v66jjbGZIv+4XzjGBQm1zxzsAqfsVQk=
-X-Received: by 2002:adf:fc90:: with SMTP id g16mr72593911wrr.42.1594502323698;
- Sat, 11 Jul 2020 14:18:43 -0700 (PDT)
+        id S1728146AbgGLFMo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 12 Jul 2020 01:12:44 -0400
+Received: from mail.nethype.de ([5.9.56.24]:45187 "EHLO mail.nethype.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727077AbgGLFMo (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Sun, 12 Jul 2020 01:12:44 -0400
+Received: from [10.0.0.5] (helo=doom.schmorp.de)
+        by mail.nethype.de with esmtp (Exim 4.92)
+        (envelope-from <schmorp@schmorp.de>)
+        id 1juUI5-000oQn-EL; Sun, 12 Jul 2020 05:12:41 +0000
+Received: from [10.0.0.1] (helo=cerebro.laendle)
+        by doom.schmorp.de with esmtp (Exim 4.92)
+        (envelope-from <schmorp@schmorp.de>)
+        id 1juUI5-0007x9-9h; Sun, 12 Jul 2020 05:12:41 +0000
+Received: from root by cerebro.laendle with local (Exim 4.92)
+        (envelope-from <root@schmorp.de>)
+        id 1juUI5-0000w0-9L; Sun, 12 Jul 2020 07:12:41 +0200
+Date:   Sun, 12 Jul 2020 07:12:41 +0200
+From:   Marc Lehmann <schmorp@schmorp.de>
+To:     Calvin Walton <calvin.walton@kepstin.ca>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: first mount(s) after unclean shutdown always fail, second attempt
+Message-ID: <20200712051241.GC491@schmorp.de>
+References: <20200702021815.GB6648@schmorp.de>
+ <96009f54f7548080513ab2100d420d82f50d4e90.camel@kepstin.ca>
 MIME-Version: 1.0
-References: <933824829995390cef16f757cab1ddbc@jots.org>
-In-Reply-To: <933824829995390cef16f757cab1ddbc@jots.org>
-From:   Chris Murphy <lists@colorremedies.com>
-Date:   Sat, 11 Jul 2020 15:18:27 -0600
-Message-ID: <CAJCQCtSbBCJjKcwuNB9b2ZZQWjkwxvBQpC0C7UWVsAjBAN6BgA@mail.gmail.com>
-Subject: Re: Btrfs default on Fedora?
-To:     "Ken D'Ambrosio" <ken@jots.org>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <96009f54f7548080513ab2100d420d82f50d4e90.camel@kepstin.ca>
+OpenPGP: id=904ad2f81fb16978e7536f726dea2ba30bc39eb6;
+ url=http://pgp.schmorp.de/schmorp-pgpkey.txt; preference=signencrypt
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sat, Jul 11, 2020 at 12:44 PM Ken D'Ambrosio <ken@jots.org> wrote:
+On Wed, Jul 08, 2020 at 01:35:08PM -0400, Calvin Walton <calvin.walton@kepstin.ca> wrote:
+> You shared kernel logs, but it would be helpful to see the systemd
+> journal. One thing to note is that by default systemd has a timeout on
+> mounts! It's entirely possible that as soon as the mount kernel thread
+> becomes unblocked, it notices that systemd has sent a SIGTERM/SIGKILL
+> and aborts the mount.
+> 
+> See the documentation (man systemd.mount) and consider increasing or
+> disabling the timeout on the affected mount units.
 
-> * Swap files.  At least last time I checked, it was a PITA to take a
-> snapshot of a volume that had a swapfile on it -- I wound up writing a
-> wrapper that goes, does a swapoff, removes the file, creates the
-> snapshot, and then re-creates the file.   Is this still "a thing"?  Or
-> is there a way to work around that that isn't kludgey?
+Good idea, systemd indeed KILLed the mount:
 
-Put the swapfile in its own subvolume and don't snapshot it. One way
-is to create a (nested) subvolume named "swap" inside of the "root"
-subvolume created at installation time; use chattr +C on it; now
-create the swapfile per 'man 5 btrfs'.
+   Jul 01 02:02:26 cerebro systemd[1]: cryptlocalvol.mount: Mount process still around after SIGKILL. Ignoring.
+   Jul 01 02:02:26 cerebro systemd[1]: cryptlocalvol.mount: Failed with result 'timeout'.
+   Jul 01 02:02:26 cerebro systemd[1]: Failed to mount /cryptlocalvol.
 
-Since btrfs snapshots aren't recursive, making a snapshot of 'root'
-will not cause a snapshot to be taken of 'swap' or its swapfiles.
+However, are btrfs mounts really interruptible? In any case, the
+problem happens both for systemd-triggered mounts as well as for mount
+commands entered interactively (and also for volumes where there is no
+fstab/mount unit at all). For example, here is a case where the initial
+systemd-controlled mount fails, and the interactively-entered "mount
+/localvol" then fails once more and it only succeeds on the third attempt:
 
+   May 30 03:17:53 cerebro kernel: BTRFS info (device dm-7): disk space caching is enabled
+   May 30 03:17:53 cerebro kernel: BTRFS info (device dm-7): has skinny extents
+   May 30 03:19:23 cerebro systemd[1]: localvol.mount: Mounting timed out. Terminating.
+   May 30 03:20:53 cerebro systemd[1]: localvol.mount: Mount process timed out. Killing.
+   May 30 03:20:53 cerebro systemd[1]: localvol.mount: Killing process 1116 (mount) with signal SIGKILL.
+   May 30 03:22:23 cerebro systemd[1]: localvol.mount: Mount process still around after SIGKILL. Ignoring.
+   May 30 03:22:23 cerebro systemd[1]: localvol.mount: Failed with result 'timeout'.
+   May 30 03:22:23 cerebro systemd[1]: Failed to mount /localvol.
+   May 30 03:27:53 cerebro kernel: BTRFS error (device dm-7): open_ctree failed
+[systemd-initiated mount failed here]
+   May 30 03:27:54 cerebro kernel: BTRFS info (device dm-7): turning on discard
+   May 30 03:27:54 cerebro kernel: BTRFS info (device dm-7): disk space caching is enabled
+   May 30 03:27:54 cerebro kernel: BTRFS info (device dm-7): has skinny extents
+   May 30 03:27:54 cerebro kernel: BTRFS error (device dm-7): open_ctree failed
+[emergency-shell interactive mount failed here]
+   May 30 03:28:14 cerebro kernel: BTRFS info (device dm-7): turning on discard
+   May 30 03:28:14 cerebro kernel: BTRFS info (device dm-7): disk space caching is enabled
+   May 30 03:28:14 cerebro kernel: BTRFS info (device dm-7): has skinny extents
+[third attempt succeeded]
+   May 30 03:40:04 cerebro systemd[1]: localvol.mount: Succeeded.
 
-> * When Stuff Goes Wrong(tm).  Again, my experience is not terribly
-> current, but when things hit the fan, for most FSes, you do an
-> fsck -y /path/to/dev
-> and hope things come together.  But with btrfs, it seems that it's
-> substantially more complicated to figure out what to do.  Have the
-> tools, perhaps, been updated to help end users figure out what choices
-> to make, etc., when dealing with an issue?
+While looking at the case above, I notice that the second mount fails
+practically instantly, and it was initiated practically the moment the
+previous mount failed.
 
-UX of the tools needs improvement. But for various reasons, it's
-difficult to repair a Btrfs file system, so the emphasis is on taking
-advantage of more tolerant read-only mount to freshen backups. Also,
-stuff going wrong implies some sort of hardware/firmware problem, not
-just Btrfs sensitivity to critical areas being damaged as a result.
-The offline scrape tool is hard to use but really effective if you
-stick with it.
+I think the reason is that systemd dropped me into the emergency
+shell long before the (kernel) mount failed, and I likely entered the
+interactive mount command long before the previous mount finished, which
+could explain why the interactive mount appears to happen within one
+second of the previous mount failure - it was probably running for minutes
+already, waiting for some lock.
 
-
->
-> * RAID 5/6.  Last time I looked, that was in an unhappy state, so I just
-> set up a RAID with mdadm, lay btrfs on top of that, and call it good.
-
-That's fine. You don't get btrfs self healing, except for DUP
-metadata. But you still get error detection, with path to damaged
-file.
-
-> That seems to do the job, though it loses lots of smarts that would be
-> had with btrfs running the RAID.  I see discussion on the wiki
-> (https://btrfs.wiki.kernel.org/index.php/RAID56) talking about an RFC
-> submitted to address the underlying issues; is this still broken?
-
-You should read Zygo's recent write up on raid5, most of which applies to raid6.
-
-https://lore.kernel.org/linux-btrfs/20200627032414.GX10769@hungrycats.org/
+I have disabled the systemd mount timeout for the time being, to exclude
+this case.
 
 -- 
-Chris Murphy
+                The choice of a       Deliantra, the free code+content MORPG
+      -----==-     _GNU_              http://www.deliantra.net
+      ----==-- _       generation
+      ---==---(_)__  __ ____  __      Marc Lehmann
+      --==---/ / _ \/ // /\ \/ /      schmorp@schmorp.de
+      -=====/_/_//_/\_,_/ /_/\_\
