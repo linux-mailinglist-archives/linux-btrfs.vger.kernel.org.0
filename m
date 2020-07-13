@@ -2,61 +2,73 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B26DB21D55A
-	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Jul 2020 13:55:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63BE321D577
+	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Jul 2020 14:02:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729545AbgGMLzU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 13 Jul 2020 07:55:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60466 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727890AbgGMLzU (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 13 Jul 2020 07:55:20 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E50FFC061755;
-        Mon, 13 Jul 2020 04:55:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=uLFAndwWzTjXcjnnkj0cK4pUDHXUjgGWKnCg3eg4tXM=; b=Wvox2aLkDPEvhLsNc8WLk8VuxN
-        xPWa5UDz8aYe9P5zJ+iqipvSHOKSGNpfGWKJ90n3oAkFae9hwImLp2oyMFY26LUS8p7oRFmm1EOrk
-        GsdQ2rohZpQTT2JQYj7UFW2FHZWWlacHmPTPyaA7ruva9c4AdVnNm7AgjYAKYA+hYGcsZMDxjvCCT
-        XbsY4Y8m+4bbsHFX/xb/NGFM+AbEkO6+zKWaXka6j42QDYcnM07egqolsUOgew2hIhPdPuoBYH15P
-        aA07FbQRV1HzgQlT0aLwJqJjPQe0dZ+pfMhgEVlHGn08RDdlCExt4NJMVagrLr07ES52oDA9pCznS
-        GxrMiqpg==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jux38-0004gc-1T; Mon, 13 Jul 2020 11:55:10 +0000
-Date:   Mon, 13 Jul 2020 12:55:09 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Dave Chinner <david@fromorbit.com>,
-        Goldwyn Rodrigues <rgoldwyn@suse.de>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Naohiro Aota <naohiro.aota@wdc.com>,
-        Johannes Thumshirn <jth@kernel.org>,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        cluster-devel@redhat.com, linux-ext4@vger.kernel.org,
-        linux-xfs@vger.kernel.org
-Subject: Re: [PATCH 2/2] iomap: fall back to buffered writes for invalidation
- failures
-Message-ID: <20200713115509.GW12769@casper.infradead.org>
-References: <20200713074633.875946-1-hch@lst.de>
- <20200713074633.875946-3-hch@lst.de>
+        id S1729191AbgGMMCw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 13 Jul 2020 08:02:52 -0400
+Received: from mx2.suse.de ([195.135.220.15]:44388 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728950AbgGMMCv (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 13 Jul 2020 08:02:51 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id F3B03AC12;
+        Mon, 13 Jul 2020 12:02:51 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 74421DA809; Mon, 13 Jul 2020 14:02:28 +0200 (CEST)
+Date:   Mon, 13 Jul 2020 14:02:28 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+Cc:     "dsterba@suse.cz" <dsterba@suse.cz>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH 1/3] btrfs: add filesystem generation to fsinfo ioctl
+Message-ID: <20200713120228.GG3703@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz,
+        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+References: <20200710140511.30343-1-johannes.thumshirn@wdc.com>
+ <20200710140511.30343-2-johannes.thumshirn@wdc.com>
+ <20200713094251.GE3703@twin.jikos.cz>
+ <20200713095234.GF3703@twin.jikos.cz>
+ <SN4PR0401MB3598247EF50C61FB79F98A369B600@SN4PR0401MB3598.namprd04.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200713074633.875946-3-hch@lst.de>
+In-Reply-To: <SN4PR0401MB3598247EF50C61FB79F98A369B600@SN4PR0401MB3598.namprd04.prod.outlook.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Jul 13, 2020 at 09:46:33AM +0200, Christoph Hellwig wrote:
-> Failing to invalid the page cache means data in incoherent, which is
-> a very bad state for the system.  Always fall back to buffered I/O
-> through the page cache if we can't invalidate mappings.
+On Mon, Jul 13, 2020 at 09:57:15AM +0000, Johannes Thumshirn wrote:
+> On 13/07/2020 11:53, David Sterba wrote:
+> > On Mon, Jul 13, 2020 at 11:42:51AM +0200, David Sterba wrote:
+> >> On Fri, Jul 10, 2020 at 11:05:09PM +0900, Johannes Thumshirn wrote:
+> >   struct btrfs_ioctl_fs_info_args {
+> > 	  __u64                      max_id;               /*     0     8 */
+> > 	  __u64                      num_devices;          /*     8     8 */
+> > 	  __u8                       fsid[16];             /*    16    16 */
+> > 	  __u32                      nodesize;             /*    32     4 */
+> > 	  __u32                      sectorsize;           /*    36     4 */
+> > 	  __u32                      clone_alignment;      /*    40     4 */
+> > 	  __u16                      csum_type;            /*    44     2 */
+> > 	  __u16                      csum_size;            /*    46     2 */
+> > 	  __u64                      flags;                /*    48     8 */
+> > 	  __u64                      generation;           /*    56     8 */
+> > 	  /* --- cacheline 1 boundary (64 bytes) --- */
+> > 	  __u8                       reserved[960];        /*    64   960 */
+> > 
+> > 	  /* size: 1024, cachelines: 16, members: 11 */
+> >   };
+> > 
+> > does not require any padding and leaves the end member with 8 byte
+> > alignment.
+> 
+> The swapped order looks a bit odd, but I don't really see a way around it. 
+> Can you fix that up or should I re-send all 4 patches?
 
-Is that the right approach though?  I don't have a full picture in my head,
-but wouldn't we be better off marking these pages as !Uptodate and doing
-the direct I/O?
+Please resend all 4, I'll drop and replace the csum_* patch in
+misc-next. Thanks.
