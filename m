@@ -2,25 +2,24 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A1AF21CCB6
-	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Jul 2020 03:03:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 016C721CCB7
+	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Jul 2020 03:03:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727112AbgGMBDh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 12 Jul 2020 21:03:37 -0400
-Received: from mx2.suse.de ([195.135.220.15]:53948 "EHLO mx2.suse.de"
+        id S1728284AbgGMBDj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 12 Jul 2020 21:03:39 -0400
+Received: from mx2.suse.de ([195.135.220.15]:53966 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726261AbgGMBDh (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 12 Jul 2020 21:03:37 -0400
+        id S1726261AbgGMBDj (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Sun, 12 Jul 2020 21:03:39 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 0C49CAC20;
-        Mon, 13 Jul 2020 01:03:37 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id BC8DBADAB
+        for <linux-btrfs@vger.kernel.org>; Mon, 13 Jul 2020 01:03:38 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Cc:     Josef Bacik <josef@toxicpanda.com>
-Subject: [PATCH v3 2/4] btrfs: avoid possible signal interruption for btrfs_drop_snapshot() on relocation tree
-Date:   Mon, 13 Jul 2020 09:03:20 +0800
-Message-Id: <20200713010322.18507-3-wqu@suse.com>
+Subject: [PATCH v3 3/4] btrfs: relocation: review the call sites which can be interrupted by signal
+Date:   Mon, 13 Jul 2020 09:03:21 +0800
+Message-Id: <20200713010322.18507-4-wqu@suse.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200713010322.18507-1-wqu@suse.com>
 References: <20200713010322.18507-1-wqu@suse.com>
@@ -31,75 +30,92 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-[BUG]
-There is a bug report about bad signal timing could lead to read-only
-fs during balance:
+Since most metadata reservation calls can return -EINTR when get
+interrupted by fatal signal, we need to review the all the metadata
+reservation call sites.
 
-  BTRFS info (device xvdb): balance: start -d -m -s
-  BTRFS info (device xvdb): relocating block group 73001861120 flags metadata
-  BTRFS info (device xvdb): found 12236 extents, stage: move data extents
-  BTRFS info (device xvdb): relocating block group 71928119296 flags data
-  BTRFS info (device xvdb): found 3 extents, stage: move data extents
-  BTRFS info (device xvdb): found 3 extents, stage: update data pointers
-  BTRFS info (device xvdb): relocating block group 60922265600 flags metadata
-  BTRFS: error (device xvdb) in btrfs_drop_snapshot:5505: errno=-4 unknown
-  BTRFS info (device xvdb): forced readonly
-  BTRFS info (device xvdb): balance: ended with status: -4
+In relocation code, the metadata reservation happens in the following
+sites:
+- btrfs_block_rsv_refill() in merge_reloc_root()
+  merge_reloc_root() is a pretty critical section, we don't want to be
+  interrupted by signal, so change the flush status to
+  BTRFS_RESERVE_FLUSH_LIMIT, so it won't get interrupted by signal.
+  Since such change can be ENPSPC-prone, also shrink the amount of
+  metadata to reserve a little to avoid deadly ENOSPC there.
 
-[CAUSE]
-The direct cause is the -EINTR from the following call chain when a
-fatal signal is pending:
+- btrfs_block_rsv_refill() in reserve_metadata_space()
+  It calls with BTRFS_RESERVE_FLUSH_LIMIT, which won't get interrupted
+  by signal.
 
- relocate_block_group()
- |- clean_dirty_subvols()
-    |- btrfs_drop_snapshot()
-       |- btrfs_start_transaction()
-          |- btrfs_delayed_refs_rsv_refill()
-             |- btrfs_reserve_metadata_bytes()
-                |- __reserve_metadata_bytes()
-                   |- wait_reserve_ticket()
-                      |- prepare_to_wait_event();
-                      |- ticket->error = -EINTR;
-
-Normally this behavior is fine for most btrfs_start_transaction()
-callers, as they need to catch the fatal signal and exit asap.
-
-However for balance, especially for the clean_dirty_subvols() case, we're
-already doing cleanup works, such -EINTR from btrfs_drop_snapshot()
-could cause a lot of unexpected problems.
-
-From the mentioned forced read-only, to later balance error due to half
-dropped reloc trees.
-
-[FIX]
-Fix this problem by using btrfs_join_transaction() if
-btrfs_drop_snapshot() is called from relocation context.
-
-Since btrfs_join_transaction() won't get interrupted by signal, we can
-continue the cleanup.
+- btrfs_block_rsv_refill() in prepare_to_relocate()
+- btrfs_block_rsv_add() in prepare_to_relocate()
+- btrfs_block_rsv_refill() in relocate_block_group()
+- btrfs_delalloc_reserve_metadata() in relocate_file_extent_cluster()
+- btrfs_start_transaction() in relocate_block_group()
+- btrfs_start_transaction() in create_reloc_inode()
+  Can be interrupted by fatal signal and we can handle it easily.
+  For these call sites, just catch the -EINTR value in btrfs_balance()
+  and count them as canceled.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/extent-tree.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ fs/btrfs/relocation.c | 13 +++++++++++--
+ fs/btrfs/volumes.c    | 14 +++++++++++++-
+ 2 files changed, 24 insertions(+), 3 deletions(-)
 
-diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-index c0bc35f932bf..d8ef48a807d1 100644
---- a/fs/btrfs/extent-tree.c
-+++ b/fs/btrfs/extent-tree.c
-@@ -5298,7 +5298,10 @@ int btrfs_drop_snapshot(struct btrfs_root *root, int update_ref, int for_reloc)
- 		goto out;
+diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
+index 2b869fb2e62c..23914edd4710 100644
+--- a/fs/btrfs/relocation.c
++++ b/fs/btrfs/relocation.c
+@@ -1686,12 +1686,21 @@ static noinline_for_stack int merge_reloc_root(struct reloc_control *rc,
+ 		btrfs_unlock_up_safe(path, 0);
  	}
  
--	trans = btrfs_start_transaction(tree_root, 0);
-+	if (for_reloc)
-+		trans = btrfs_join_transaction(tree_root);
-+	else
-+		trans = btrfs_start_transaction(tree_root, 0);
- 	if (IS_ERR(trans)) {
- 		err = PTR_ERR(trans);
- 		goto out_free;
+-	min_reserved = fs_info->nodesize * (BTRFS_MAX_LEVEL - 1) * 2;
++	/*
++	 * In merge_reloc_root(), we modify the upper level pointer to swap
++	 * the tree blocks between reloc tree and subvolume tree.
++	 * Thus for tree block COW, we COW at most from level 1 to root level
++	 * for each tree.
++	 *
++	 * Thus the needed metadata space is at most root_level * nodesize,
++	 * and * 2 since we have two trees to COW.
++	 */
++	min_reserved = fs_info->nodesize * btrfs_root_level(root_item) * 2;
+ 	memset(&next_key, 0, sizeof(next_key));
+ 
+ 	while (1) {
+ 		ret = btrfs_block_rsv_refill(root, rc->block_rsv, min_reserved,
+-					     BTRFS_RESERVE_FLUSH_ALL);
++					     BTRFS_RESERVE_FLUSH_LIMIT);
+ 		if (ret) {
+ 			err = ret;
+ 			goto out;
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index c7a3d4d730a3..40072e10a2fc 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -4135,7 +4135,19 @@ int btrfs_balance(struct btrfs_fs_info *fs_info,
+ 	mutex_lock(&fs_info->balance_mutex);
+ 	if (ret == -ECANCELED && atomic_read(&fs_info->balance_pause_req))
+ 		btrfs_info(fs_info, "balance: paused");
+-	else if (ret == -ECANCELED && atomic_read(&fs_info->balance_cancel_req))
++	/*
++	 * Balance can be canceled by:
++	 * - Regular cancel request
++	 *   Then ret == -ECANCELED and balance_cancel_req > 0
++	 * - Fatal signal to "btrfs" process
++	 *   Either the signal caught by wait_reserve_ticket() and callers
++	 *   got -EINTR, or caught by btrfs_should_cancel_balance() and
++	 *   got -ECANCELED.
++	 *   Either way, in this case balance_cancel_req = 0, and
++	 *   ret == -EINTR or ret == -ECANCELED.
++	 * So here we only check the return value to catch canceled balance.
++	 */
++	else if (ret == -ECANCELED  || ret == -EINTR)
+ 		btrfs_info(fs_info, "balance: canceled");
+ 	else
+ 		btrfs_info(fs_info, "balance: ended with status: %d", ret);
 -- 
 2.27.0
 
