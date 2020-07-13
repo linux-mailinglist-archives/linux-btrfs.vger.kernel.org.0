@@ -2,102 +2,164 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0193E21E0F0
-	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Jul 2020 21:46:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D333721E19F
+	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Jul 2020 22:46:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726793AbgGMTqj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 13 Jul 2020 15:46:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50566 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726339AbgGMTqj (ORCPT
+        id S1726460AbgGMUqo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 13 Jul 2020 16:46:44 -0400
+Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:45055 "EHLO
+        wout5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726338AbgGMUqo (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 13 Jul 2020 15:46:39 -0400
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45CDCC061755
-        for <linux-btrfs@vger.kernel.org>; Mon, 13 Jul 2020 12:46:39 -0700 (PDT)
-Received: by mail-wm1-x329.google.com with SMTP id f18so996905wml.3
-        for <linux-btrfs@vger.kernel.org>; Mon, 13 Jul 2020 12:46:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=to:from:subject:message-id:date:user-agent:mime-version
-         :content-language:content-transfer-encoding;
-        bh=jOmu568DV3iG/AmMbO3DvgHJhR/XcjURrvUnadhB8EI=;
-        b=mJ5cZcdxnNKzG/EHwV6iiT/isruajnhBxkxBstwdcA+Xjuf7EDsoNDJ8cJp1ZEargX
-         uGTDPWhqiO5HfgBPlPVmhjiDUwYb6GEuS2YB5nDmtRgvfjgSrISHoepI2sYwSKZs8lLQ
-         TcGWf6yXhIj3rCuliVvAraFBaHFnytxa1O59Fgcj1k8YTffKzhgIAZfZ4GyXOPtH/MgA
-         slP+GDjEz74I3FRVz6wCuezgAAskxp2fbeVTVXY95V8y+QskvXWwnypg4lj+4vQecASj
-         zgJAi/EpQ0oa7njrRGsEPxQHWwo8AuBgE/uCPBpWx54rmvlSNjBaRJtLypM/Jdjog3EI
-         28FQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:from:subject:message-id:date:user-agent
-         :mime-version:content-language:content-transfer-encoding;
-        bh=jOmu568DV3iG/AmMbO3DvgHJhR/XcjURrvUnadhB8EI=;
-        b=iQJEemK3odN3M/MXoevjpQ5nFgpYdUeChjJrSME+tslJO6YxQ387YtmzICqX1miVlH
-         3BbSEgyhcjf1Idrvut4djue0bfkMfdz3swj5aJADzPP9l39MjtwMdF+kQGd/JllpGLOY
-         u8t1RrLYaDQYsq9wRtuzC/yuCyf3+eNsGhuq2vovUD93J71E9VUVG2/bejId6CFFq4Dc
-         K6LaH712HQP8rQUg7bWZfYjpH7cRAArpsd5S08Ap4bksd5IgEWZDMg4gmZ7uryc/ih/9
-         IgpgNziHXOB+7d8C15DAKmHhe34EzfHP6qsKzo97fB0RhoE0tku8Z4wjf5L6mtvW6usm
-         ccAA==
-X-Gm-Message-State: AOAM531QWcts4NMZBXqCRC60N9pzPdC2kOa5K3OJwBRSBwVnRiRf+Yh0
-        KjDdZKjUh6QNCHLsqZIu4ksWWTum
-X-Google-Smtp-Source: ABdhPJzf94kLjoUHb9ngc0XxXNgd4utrdGwBI7SartazSqsLG0cQN9eAoQ6Jj0SbQNDAp76+DlNAXw==
-X-Received: by 2002:a7b:cc85:: with SMTP id p5mr989409wma.18.1594669597605;
-        Mon, 13 Jul 2020 12:46:37 -0700 (PDT)
-Received: from [192.168.1.145] ([213.147.166.105])
-        by smtp.googlemail.com with ESMTPSA id u17sm24392443wrp.70.2020.07.13.12.46.36
-        for <linux-btrfs@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 13 Jul 2020 12:46:37 -0700 (PDT)
-To:     linux-btrfs@vger.kernel.org
-From:   Christian Zangl <coralllama@gmail.com>
-Subject: "missing data block" when converting ext4 to btrfs
-Message-ID: <90fff9c0-36c5-d45c-d19b-01294fc93b1e@gmail.com>
-Date:   Mon, 13 Jul 2020 21:46:35 +0200
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.10.0
+        Mon, 13 Jul 2020 16:46:44 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.west.internal (Postfix) with ESMTP id 461152D4;
+        Mon, 13 Jul 2020 16:46:43 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Mon, 13 Jul 2020 16:46:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=from
+        :to:cc:subject:date:message-id:in-reply-to:references
+        :mime-version:content-transfer-encoding; s=fm1; bh=EOmoiXZKCAQPL
+        seT9dr+0WPHIkyyqJ2JROTopggfEBg=; b=HjFMH0VRuFlwVClsAOjhAiIOy9zvz
+        QooSE87KeIL2T/0f6d8L6G4P1rEp9LFhDLIVyEYJXfJYOlZXehetrOX/IH+w6QJr
+        cdBX0LACspPZTEXBVFlC9I8X5HxyVR2VyZ9nNnPlmP3vbwdxD3WlnciNldufKfKJ
+        GkP+MmYej5XyFIaubL8nHCn4MPe2a/GjBzRIpnHDomQbT3MZF8LvvVYKgarlvBTO
+        ZUERgxXE/DSqGKZw4KkJc+WB+8rG8fVqhBHvMaCxbsZSr/EwNHhAQ9xYz1PZrWVe
+        KiQePtBelBqmZrFMa5lC4DX0rs0R2neK1t6bbxd14Kg/yVnfQHcrSXqlQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :in-reply-to:message-id:mime-version:references:subject:to
+        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+        fm3; bh=EOmoiXZKCAQPLseT9dr+0WPHIkyyqJ2JROTopggfEBg=; b=WMlvXkbf
+        aJwukRd2VFHgJy3hj+k/ZnCqbaLaJeW10H87wA0bnvH/iIacldsjrv65tZenhpKc
+        bw2Na8iXGt9rmQ58LKnT/S7JT07Ct+GgbD1fSSrxnoLMw/r0RINt30mvIQHXOsOe
+        gfMgMGXJ4YRRZOoLpXViFL7jAj7z1a9yo0wnUG81qW4NCaDCzoUIr4wS++g06+jj
+        evGuzL4bwxtKInzOsulWkp9V36b0Bu+Q5Z2Un0LQ9ghJnWGuCiLkPsThh4EJHszl
+        hoD2GUYlGd855PT47WmhymL1kbrQ9MlKmVzYFEGGPy7aQaCvDyhEG9OSwDdGUSuG
+        P3jYG0OLXkZUgA==
+X-ME-Sender: <xms:MsgMX-QIhzv_NMfjBq2eRAWfyFMrVm5dOS-dDfKM_ArU80PjuPGx9w>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrvdekgdduheeiucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhephffvufffkffojghfggfgsedtkeertdertddtnecuhfhrohhmpeeuohhrihhs
+    uceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhioheqnecuggftrfgrthhtvghrnhepie
+    euffeuvdeiueejhfehiefgkeevudejjeejffevvdehtddufeeihfekgeeuheelnecukfhp
+    peduieefrdduudegrddufedvrdefnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrg
+    hmpehmrghilhhfrhhomhepsghorhhishessghurhdrihho
+X-ME-Proxy: <xmx:MsgMXzy9ody7qIEN8PdB86cAfZijLLChsxd3JPBY9itLcngSO_7mrw>
+    <xmx:MsgMX73SkbMDF547o5Y36ZY42OcB3YvSwWPv2H0rCI2TnB1MMpLUtA>
+    <xmx:MsgMX6D0i-n5gtJv3qt-A9xxbbrbYhf1jaDQ0K4xTwugRAJYMdsbKw>
+    <xmx:MsgMX5fb0fIOhsqX5jukiRid030TNP1frqfhy32cxWGUFS9TnsOcwg>
+Received: from localhost (unknown [163.114.132.3])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 19D5D306005F;
+        Mon, 13 Jul 2020 16:46:42 -0400 (EDT)
+From:   Boris Burkov <boris@bur.io>
+To:     Zorro Lang <zlang@redhat.com>, fstests@vger.kernel.org
+Cc:     linux-btrfs@vger.kernel.org
+Subject: [PATCH v3] generic: add a test for umount racing mount
+Date:   Mon, 13 Jul 2020 13:46:39 -0700
+Message-Id: <20200713204639.1271794-1-boris@bur.io>
+X-Mailer: git-send-email 2.24.1
+In-Reply-To: <20200712113741.GW1938@dhcp-12-102.nay.redhat.com>
+References: <20200712113741.GW1938@dhcp-12-102.nay.redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-I am on a test VM where I am trying to convert a second disk to btrfs.
+Test if dirtying many inodes (which can delay umount) then
+unmounting and quickly mounting again causes the mount to fail.
 
-The conversion fails with the error missing data block for bytenr 
-1048576 (see below).
+A race, which breaks the test in btrfs, is fixed by the patch:
+"btrfs: fix mount failure caused by race with umount"
 
-I couldn't find any information about the error. What can I do to fix this?
+Signed-off-by: Boris Burkov <boris@bur.io>
+---
+ tests/generic/603     | 53 +++++++++++++++++++++++++++++++++++++++++++
+ tests/generic/603.out |  2 ++
+ tests/generic/group   |  1 +
+ 3 files changed, 56 insertions(+)
+ create mode 100755 tests/generic/603
+ create mode 100644 tests/generic/603.out
 
-$ fsck -f /dev/sdb1
-fsck from util-linux 2.35.2
-e2fsck 1.45.6 (20-Mar-2020)
-Pass 1: Checking inodes, blocks, and sizes
-Pass 2: Checking directory structure
-Pass 3: Checking directory connectivity
-Pass 4: Checking reference counts
-Pass 5: Checking group summary information
-/dev/sdb1: 150510/4194304 files (0.5% non-contiguous), 2726652/16777216 
-blocks
+diff --git a/tests/generic/603 b/tests/generic/603
+new file mode 100755
+index 00000000..8e9a80e6
+--- /dev/null
++++ b/tests/generic/603
+@@ -0,0 +1,53 @@
++#! /bin/bash
++# SPDX-License-Identifier: GPL-2.0
++# Copyright (c) 2020 Facebook  All Rights Reserved.
++#
++# FS QA Test 603
++#
++# Evicting dirty inodes can take a long time during umount.
++# Check that a new mount racing with such a delayed umount succeeds.
++#
++seq=`basename $0`
++seqres=$RESULT_DIR/$seq
++echo "QA output created by $seq"
++
++here=`pwd`
++tmp=/tmp/$$
++status=1	# failure is the default!
++trap "_cleanup; exit \$status" 0 1 2 3 15
++
++_cleanup()
++{
++	cd /
++	rm -f $tmp.*
++}
++
++# get standard environment, filters and checks
++. ./common/rc
++. ./common/filter
++
++# remove previous $seqres.full before test
++rm -f $seqres.full
++
++# real QA test starts here
++
++# Modify as appropriate.
++_supported_fs generic
++_supported_os Linux
++_require_scratch
++
++_scratch_mkfs > /dev/null 2>&1
++_scratch_mount
++for i in $(seq 0 500)
++do
++	dd if=/dev/zero of="$SCRATCH_MNT/$i" bs=1M count=1 > /dev/null 2>&1
++done
++_scratch_unmount &
++_scratch_mount
++wait
++
++echo "Silence is golden"
++
++# success, all done
++status=0
++exit
+diff --git a/tests/generic/603.out b/tests/generic/603.out
+new file mode 100644
+index 00000000..6810da89
+--- /dev/null
++++ b/tests/generic/603.out
+@@ -0,0 +1,2 @@
++QA output created by 603
++Silence is golden
+diff --git a/tests/generic/group b/tests/generic/group
+index d9ab9a31..c0ace35b 100644
+--- a/tests/generic/group
++++ b/tests/generic/group
+@@ -605,3 +605,4 @@
+ 600 auto quick quota
+ 601 auto quick quota
+ 602 auto quick encrypt
++603 auto quick
+-- 
+2.24.1
 
-$ btrfs-convert /dev/sdb1
-create btrfs filesystem:
-         blocksize: 4096
-         nodesize:  16384
-         features:  extref, skinny-metadata (default)
-         checksum:  crc32c
-creating ext2 image file
-ERROR: missing data block for bytenr 1048576
-ERROR: failed to create ext2_saved/image: -2
-WARNING: an error occurred during conversion, filesystem is partially 
-created but not finalized and not mountable
-
-$ uname -a
-Linux t-arch 5.7.7-arch1-1 #1 SMP PREEMPT Wed, 01 Jul 2020 14:53:16 
-+0000 x86_64 GNU/Linux
-
-$ btrfs --version
-btrfs-progs v5.7
