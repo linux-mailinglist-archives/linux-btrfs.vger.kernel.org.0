@@ -2,174 +2,352 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 842DB21D5B4
-	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Jul 2020 14:20:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B00221D5C4
+	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Jul 2020 14:22:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729671AbgGMMU4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 13 Jul 2020 08:20:56 -0400
-Received: from mx2.suse.de ([195.135.220.15]:55710 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729578AbgGMMU4 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 13 Jul 2020 08:20:56 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 45B73B1E2;
-        Mon, 13 Jul 2020 12:20:56 +0000 (UTC)
-Date:   Mon, 13 Jul 2020 07:20:50 -0500
-From:   Goldwyn Rodrigues <rgoldwyn@suse.de>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Dave Chinner <david@fromorbit.com>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Naohiro Aota <naohiro.aota@wdc.com>,
-        Johannes Thumshirn <jth@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        cluster-devel@redhat.com, linux-ext4@vger.kernel.org,
-        linux-xfs@vger.kernel.org
-Subject: Re: [PATCH 2/2] iomap: fall back to buffered writes for invalidation
- failures
-Message-ID: <20200713122050.okus7qlampk5ysyb@fiona>
-References: <20200713074633.875946-1-hch@lst.de>
- <20200713074633.875946-3-hch@lst.de>
+        id S1729594AbgGMMWl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 13 Jul 2020 08:22:41 -0400
+Received: from gateway32.websitewelcome.com ([192.185.145.115]:19529 "EHLO
+        gateway32.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726586AbgGMMWj (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 13 Jul 2020 08:22:39 -0400
+Received: from cm11.websitewelcome.com (cm11.websitewelcome.com [100.42.49.5])
+        by gateway32.websitewelcome.com (Postfix) with ESMTP id A27ED5B4126
+        for <linux-btrfs@vger.kernel.org>; Mon, 13 Jul 2020 07:22:31 -0500 (CDT)
+Received: from br540.hostgator.com.br ([108.179.252.180])
+        by cmsmtp with SMTP
+        id uxTbj0ooXhmVTuxTbjZRQM; Mon, 13 Jul 2020 07:22:31 -0500
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=mpdesouza.com; s=default; h=Content-Transfer-Encoding:MIME-Version:
+        Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=YSHxxL1sI0xOqbkHZb4SQTGHfkboMkplH3QvR/HbykU=; b=FcNKoD2fCdMDr2JImbusYz0khr
+        1OVnXklw8kSomMF+ulCybqHzRGHerEOlGc2mxrvRKKyt4uDj8yyEw3LKfwYb1YsOHtvF9x4p3lUmS
+        RiS0rOk0qIDEG+VKWs0/Knt5xZNXc/OX6riLNvPWV6PvzN+7HBPy17BeDPofMLUjZFuBUGo5NogED
+        TDbgJIcapBbeD9dfMTbFvEF1+muv6rVH8PbrYfFPbOZ6bX01o6lMy3ro74TeYdldccMY8IOSPWVyw
+        1aQThjRHScgjXAet51PTrQUnYucDTr8V/bQtKqg31wT2ScXrCuvZ/qgG90IgjxtdvsdTgpyWU0DGQ
+        3PVcNHBw==;
+Received: from 179.187.204.46.dynamic.adsl.gvt.net.br ([179.187.204.46]:60234 helo=[192.168.0.172])
+        by br540.hostgator.com.br with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <marcos@mpdesouza.com>)
+        id 1juxTb-002CRh-3P; Mon, 13 Jul 2020 09:22:31 -0300
+Message-ID: <2eea62e0d90e6948ae5210bebad80c206314656f.camel@mpdesouza.com>
+Subject: Re: [PATCH] btrfs: Ignore output of "btrfs quota rescan"
+From:   Marcos Paulo de Souza <marcos@mpdesouza.com>
+To:     fdmanana@gmail.com
+Cc:     David Sterba <dsterba@suse.com>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        fstests <fstests@vger.kernel.org>,
+        Marcos Paulo de Souza <mpdesouza@suse.com>
+Date:   Mon, 13 Jul 2020 09:22:27 -0300
+In-Reply-To: <CAL3q7H4PswiXqS_Zy+w58Oj8cv6iBHj-LYDN4-EmU-Q5PAEubA@mail.gmail.com>
+References: <20200710185519.10322-1-marcos@mpdesouza.com>
+         <CAL3q7H4PswiXqS_Zy+w58Oj8cv6iBHj-LYDN4-EmU-Q5PAEubA@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.3 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200713074633.875946-3-hch@lst.de>
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - br540.hostgator.com.br
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - mpdesouza.com
+X-BWhitelist: no
+X-Source-IP: 179.187.204.46
+X-Source-L: No
+X-Exim-ID: 1juxTb-002CRh-3P
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 179.187.204.46.dynamic.adsl.gvt.net.br ([192.168.0.172]) [179.187.204.46]:60234
+X-Source-Auth: marcos@mpdesouza.com
+X-Email-Count: 3
+X-Source-Cap: bXBkZXNvNTM7bXBkZXNvNTM7YnI1NDAuaG9zdGdhdG9yLmNvbS5icg==
+X-Local-Domain: yes
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On  9:46 13/07, Christoph Hellwig wrote:
-> Failing to invalid the page cache means data in incoherent, which is
-> a very bad state for the system.  Always fall back to buffered I/O
-> through the page cache if we can't invalidate mappings.
+On Mon, 2020-07-13 at 11:05 +0100, Filipe Manana wrote:
+> On Fri, Jul 10, 2020 at 7:57 PM Marcos Paulo de Souza
+> <marcos@mpdesouza.com> wrote:
+> >
+> > From: Marcos Paulo de Souza <mpdesouza@suse.com>
+> >
+> > Some recent test already ignore this output, while older ones do
+> not.
+> > It can sometimes make tests fail because "quota rescan" can show
+> the
+> > message "quota rescan started". Ignoring the output of the command
+> > solves this problem.
 > 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-
-Thanks. This will help btrfs. The current next tree contains the iomap
-changes I recomended and would need to be reverted in order to
-incorporate this. Once this is in the next tree I will (re)format the
-btrfs iomap dio patches.
-
-Reviewed-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
-> ---
->  fs/ext4/file.c       |  2 ++
->  fs/gfs2/file.c       |  3 ++-
->  fs/iomap/direct-io.c | 13 ++++++++-----
->  fs/iomap/trace.h     |  1 +
->  fs/xfs/xfs_file.c    |  4 ++--
->  fs/zonefs/super.c    |  7 +++++--
->  6 files changed, 20 insertions(+), 10 deletions(-)
 > 
-> diff --git a/fs/ext4/file.c b/fs/ext4/file.c
-> index 2a01e31a032c4c..0da6c2a2c32c1e 100644
-> --- a/fs/ext4/file.c
-> +++ b/fs/ext4/file.c
-> @@ -544,6 +544,8 @@ static ssize_t ext4_dio_write_iter(struct kiocb *iocb, struct iov_iter *from)
->  		iomap_ops = &ext4_iomap_overwrite_ops;
->  	ret = iomap_dio_rw(iocb, from, iomap_ops, &ext4_dio_write_ops,
->  			   is_sync_kiocb(iocb) || unaligned_io || extend);
-> +	if (ret == -EREMCHG)
-> +		ret = 0;
->  
->  	if (extend)
->  		ret = ext4_handle_inode_extension(inode, offset, ret, count);
-> diff --git a/fs/gfs2/file.c b/fs/gfs2/file.c
-> index fe305e4bfd3734..c7907d40c61d17 100644
-> --- a/fs/gfs2/file.c
-> +++ b/fs/gfs2/file.c
-> @@ -814,7 +814,8 @@ static ssize_t gfs2_file_direct_write(struct kiocb *iocb, struct iov_iter *from)
->  
->  	ret = iomap_dio_rw(iocb, from, &gfs2_iomap_ops, NULL,
->  			   is_sync_kiocb(iocb));
-> -
-> +	if (ret == -EREMCHG)
-> +		ret = 0;
->  out:
->  	gfs2_glock_dq(&gh);
->  out_uninit:
-> diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
-> index 190967e87b69e4..62626235cdbe8d 100644
-> --- a/fs/iomap/direct-io.c
-> +++ b/fs/iomap/direct-io.c
-> @@ -10,6 +10,7 @@
->  #include <linux/backing-dev.h>
->  #include <linux/uio.h>
->  #include <linux/task_io_accounting_ops.h>
-> +#include "trace.h"
->  
->  #include "../internal.h"
->  
-> @@ -478,13 +479,15 @@ iomap_dio_rw(struct kiocb *iocb, struct iov_iter *iter,
->  	if (iov_iter_rw(iter) == WRITE) {
->  		/*
->  		 * Try to invalidate cache pages for the range we are writing.
-> -		 * If this invalidation fails, tough, the write will still work,
-> -		 * but racing two incompatible write paths is a pretty crazy
-> -		 * thing to do, so we don't support it 100%.
-> +		 * If this invalidation fails, let the caller fall back to
-> +		 * buffered I/O.
->  		 */
->  		if (invalidate_inode_pages2_range(mapping, pos >> PAGE_SHIFT,
-> -				end >> PAGE_SHIFT))
-> -			dio_warn_stale_pagecache(iocb->ki_filp);
-> +				end >> PAGE_SHIFT)) {
-> +			trace_iomap_dio_invalidate_fail(inode, pos, count);
-> +			ret = -EREMCHG;
-> +			goto out_free_dio;
-> +		}
->  
->  		if (!wait_for_completion && !inode->i_sb->s_dio_done_wq) {
->  			ret = sb_init_dio_done_wq(inode->i_sb);
-> diff --git a/fs/iomap/trace.h b/fs/iomap/trace.h
-> index 5693a39d52fb63..fdc7ae388476f5 100644
-> --- a/fs/iomap/trace.h
-> +++ b/fs/iomap/trace.h
-> @@ -74,6 +74,7 @@ DEFINE_EVENT(iomap_range_class, name,	\
->  DEFINE_RANGE_EVENT(iomap_writepage);
->  DEFINE_RANGE_EVENT(iomap_releasepage);
->  DEFINE_RANGE_EVENT(iomap_invalidatepage);
-> +DEFINE_RANGE_EVENT(iomap_dio_invalidate_fail);
->  
->  #define IOMAP_TYPE_STRINGS \
->  	{ IOMAP_HOLE,		"HOLE" }, \
-> diff --git a/fs/xfs/xfs_file.c b/fs/xfs/xfs_file.c
-> index 00db81eac80d6c..551cca39fa3ba6 100644
-> --- a/fs/xfs/xfs_file.c
-> +++ b/fs/xfs/xfs_file.c
-> @@ -553,8 +553,8 @@ xfs_file_dio_aio_write(
->  	xfs_iunlock(ip, iolock);
->  
->  	/*
-> -	 * No fallback to buffered IO on errors for XFS, direct IO will either
-> -	 * complete fully or fail.
-> +	 * No partial fallback to buffered IO on errors for XFS, direct IO will
-> +	 * either complete fully or fail.
->  	 */
->  	ASSERT(ret < 0 || ret == count);
->  	return ret;
-> diff --git a/fs/zonefs/super.c b/fs/zonefs/super.c
-> index 07bc42d62673ce..793850454b752f 100644
-> --- a/fs/zonefs/super.c
-> +++ b/fs/zonefs/super.c
-> @@ -786,8 +786,11 @@ static ssize_t zonefs_file_write_iter(struct kiocb *iocb, struct iov_iter *from)
->  	if (iocb->ki_pos >= ZONEFS_I(inode)->i_max_size)
->  		return -EFBIG;
->  
-> -	if (iocb->ki_flags & IOCB_DIRECT)
-> -		return zonefs_file_dio_write(iocb, from);
-> +	if (iocb->ki_flags & IOCB_DIRECT) {
-> +		ret = zonefs_file_dio_write(iocb, from);
-> +		if (ret != -EREMCHG)
-> +			return ret;
-> +	}
->  
->  	return zonefs_file_buffered_write(iocb, from);
->  }
-> -- 
-> 2.26.2
+> Hi Marcos,
+> 
+> Can you elaborate exactly how it fails?
+
+QA output created by 210
+quota rescan started
+Silence is goldenSure, my fault to not clarifying the error I was
+facing. This only happens with btrfs/210, which fails for me:
+
+QA output created by 210
+quota rescan started
+Silence is golden
+
+I've never seen those tests fail due to an unexpected "quota rescan
+> started" message.
+> 
+> I also don't see how this change fixes anything, because:
+> 
+> 1) The quota rescans are always executed - so we should always see
+> such failure;
+
+Yes, it's interesting because running other tests touched by this
+patchset do not trigger the issue, but I thought it would be nice to
+have this pattern among all tests that start a quota rescan. Any ideas
+why this happens?
+
+With this patch, specifically with the change on btrfs/210 solves the
+issue for me as the message is dropped.
+
+Thanks,
+  Marcos
+
+> 
+> 2) More importantly _run_btrfs_util_prog is:
+> 
+> _run_btrfs_util_prog()
+> {
+>    run_check $BTRFS_UTIL_PROG $*
+> }
+> 
+> and run_check:
+> 
+> run_check()
+> {
+>    echo "# $@" >> $seqres.full 2>&1
+>    "$@" >> $seqres.full 2>&1 || _fail "failed: '$@'"
+> }
+> 
+> So any output from _run_btrfs_util_prog is redirected to the test's
+> .full file.
+> It will not cause a mismatch with the golden output.
+> 
+> 
+> >
+> > Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
+> > ---
+> >  tests/btrfs/017 | 2 +-
+> >  tests/btrfs/022 | 4 ++--
+> >  tests/btrfs/028 | 2 +-
+> >  tests/btrfs/057 | 2 +-
+> >  tests/btrfs/091 | 2 +-
+> >  tests/btrfs/104 | 2 +-
+> >  tests/btrfs/123 | 2 +-
+> >  tests/btrfs/126 | 2 +-
+> >  tests/btrfs/139 | 2 +-
+> >  tests/btrfs/153 | 2 +-
+> >  tests/btrfs/193 | 2 +-
+> >  tests/btrfs/210 | 2 +-
+> >  12 files changed, 13 insertions(+), 13 deletions(-)
+> >
+> > diff --git a/tests/btrfs/017 b/tests/btrfs/017
+> > index 1bb8295b..a888b8db 100755
+> > --- a/tests/btrfs/017
+> > +++ b/tests/btrfs/017
+> > @@ -64,7 +64,7 @@ $CLONER_PROG -s 0 -d 0 -l $EXTENT_SIZE
+> $SCRATCH_MNT/foo \
+> >              $SCRATCH_MNT/snap/foo-reflink2
+> >
+> >  _run_btrfs_util_prog quota enable $SCRATCH_MNT
+> > -_run_btrfs_util_prog quota rescan -w $SCRATCH_MNT
+> > +_run_btrfs_util_prog quota rescan -w $SCRATCH_MNT >/dev/null
+> 
+> So this is pointless, as mentioned before, any output is already
+> redirected to the test's .full file.
+> The same applies to all changes below.
+> 
+> So I fail to see what problem you are trying to solve.
+> 
+> Thanks.
+> 
+> >
+> >  rm -fr $SCRATCH_MNT/foo*
+> >  rm -fr $SCRATCH_MNT/snap/foo*
+> > diff --git a/tests/btrfs/022 b/tests/btrfs/022
+> > index aaa27aaa..442cc05c 100755
+> > --- a/tests/btrfs/022
+> > +++ b/tests/btrfs/022
+> > @@ -38,7 +38,7 @@ _basic_test()
+> >         echo "=== basic test ===" >> $seqres.full
+> >         _run_btrfs_util_prog subvolume create $SCRATCH_MNT/a
+> >         _run_btrfs_util_prog quota enable $SCRATCH_MNT/a
+> > -       _run_btrfs_util_prog quota rescan -w $SCRATCH_MNT
+> > +       _run_btrfs_util_prog quota rescan -w $SCRATCH_MNT
+> >/dev/null
+> >         subvolid=$(_btrfs_get_subvolid $SCRATCH_MNT a)
+> >         $BTRFS_UTIL_PROG qgroup show $units $SCRATCH_MNT | grep
+> $subvolid >> \
+> >                 $seqres.full 2>&1
+> > @@ -77,7 +77,7 @@ _rescan_test()
+> >         echo "qgroup values before rescan: $output" >> $seqres.full
+> >         refer=$(echo $output | awk '{ print $2 }')
+> >         excl=$(echo $output | awk '{ print $3 }')
+> > -       _run_btrfs_util_prog quota rescan -w $SCRATCH_MNT
+> > +       _run_btrfs_util_prog quota rescan -w $SCRATCH_MNT
+> >/dev/null
+> >         output=$($BTRFS_UTIL_PROG qgroup show $units $SCRATCH_MNT |
+> grep "0/$subvolid")
+> >         echo "qgroup values after rescan: $output" >> $seqres.full
+> >         [ $refer -eq $(echo $output | awk '{ print $2 }') ] || \
+> > diff --git a/tests/btrfs/028 b/tests/btrfs/028
+> > index 98b9c8b9..4a574b8b 100755
+> > --- a/tests/btrfs/028
+> > +++ b/tests/btrfs/028
+> > @@ -42,7 +42,7 @@ _scratch_mkfs >/dev/null
+> >  _scratch_mount
+> >
+> >  _run_btrfs_util_prog quota enable $SCRATCH_MNT
+> > -_run_btrfs_util_prog quota rescan -w $SCRATCH_MNT
+> > +_run_btrfs_util_prog quota rescan -w $SCRATCH_MNT >/dev/null
+> >
+> >  # Increase the probability of generating de-refer extent, and
+> decrease
+> >  # other.
+> > diff --git a/tests/btrfs/057 b/tests/btrfs/057
+> > index 82e3162e..aa1d429c 100755
+> > --- a/tests/btrfs/057
+> > +++ b/tests/btrfs/057
+> > @@ -47,7 +47,7 @@ run_check $FSSTRESS_PROG -d $SCRATCH_MNT/snap1 -w
+> -p 5 -n 1000 \
+> >         $FSSTRESS_AVOID >&/dev/null
+> >
+> >  _run_btrfs_util_prog quota enable $SCRATCH_MNT
+> > -_run_btrfs_util_prog quota rescan -w $SCRATCH_MNT
+> > +_run_btrfs_util_prog quota rescan -w $SCRATCH_MNT >/dev/null
+> >
+> >  echo "Silence is golden"
+> >  # btrfs check will detect any qgroup number mismatch.
+> > diff --git a/tests/btrfs/091 b/tests/btrfs/091
+> > index 6d2a23c8..a4aeebc3 100755
+> > --- a/tests/btrfs/091
+> > +++ b/tests/btrfs/091
+> > @@ -59,7 +59,7 @@ _run_btrfs_util_prog subvolume create
+> $SCRATCH_MNT/subv2
+> >  _run_btrfs_util_prog subvolume create $SCRATCH_MNT/subv3
+> >
+> >  _run_btrfs_util_prog quota enable $SCRATCH_MNT
+> > -_run_btrfs_util_prog quota rescan -w $SCRATCH_MNT
+> > +_run_btrfs_util_prog quota rescan -w $SCRATCH_MNT >/dev/null
+> >
+> >  # if we don't support noinode_cache mount option, then we should
+> double check
+> >  # whether inode cache is enabled before executing the real test
+> payload.
+> > diff --git a/tests/btrfs/104 b/tests/btrfs/104
+> > index f0cc67d6..d3338e35 100755
+> > --- a/tests/btrfs/104
+> > +++ b/tests/btrfs/104
+> > @@ -113,7 +113,7 @@ _explode_fs_tree 1 $SCRATCH_MNT/snap2/files-
+> snap2
+> >  # Enable qgroups now that we have our filesystem prepared. This
+> >  # will kick off a scan which we will have to wait for.
+> >  _run_btrfs_util_prog quota enable $SCRATCH_MNT
+> > -_run_btrfs_util_prog quota rescan -w $SCRATCH_MNT
+> > +_run_btrfs_util_prog quota rescan -w $SCRATCH_MNT >/dev/null
+> >
+> >  # Remount to clear cache, force everything to disk
+> >  _scratch_cycle_mount
+> > diff --git a/tests/btrfs/123 b/tests/btrfs/123
+> > index 65177159..63b6d428 100755
+> > --- a/tests/btrfs/123
+> > +++ b/tests/btrfs/123
+> > @@ -56,7 +56,7 @@ sync
+> >
+> >  # enable quota and rescan to get correct number
+> >  _run_btrfs_util_prog quota enable $SCRATCH_MNT
+> > -_run_btrfs_util_prog quota rescan -w $SCRATCH_MNT
+> > +_run_btrfs_util_prog quota rescan -w $SCRATCH_MNT >/dev/null
+> >
+> >  # now balance data block groups to corrupt qgroup
+> >  _run_btrfs_balance_start -d $SCRATCH_MNT >> $seqres.full
+> > diff --git a/tests/btrfs/126 b/tests/btrfs/126
+> > index 8635791e..eceaabb2 100755
+> > --- a/tests/btrfs/126
+> > +++ b/tests/btrfs/126
+> > @@ -41,7 +41,7 @@ _scratch_mkfs >/dev/null
+> >  _scratch_mount "-o enospc_debug"
+> >
+> >  _run_btrfs_util_prog quota enable $SCRATCH_MNT
+> > -_run_btrfs_util_prog quota rescan -w $SCRATCH_MNT
+> > +_run_btrfs_util_prog quota rescan -w $SCRATCH_MNT >/dev/null
+> >  _run_btrfs_util_prog qgroup limit 512K 0/5 $SCRATCH_MNT
+> >
+> >  # The amount of written data may change due to different nodesize
+> at mkfs time,
+> > diff --git a/tests/btrfs/139 b/tests/btrfs/139
+> > index 1b636e81..44168e2a 100755
+> > --- a/tests/btrfs/139
+> > +++ b/tests/btrfs/139
+> > @@ -43,7 +43,7 @@ SUBVOL=$SCRATCH_MNT/subvol
+> >
+> >  _run_btrfs_util_prog subvolume create $SUBVOL
+> >  _run_btrfs_util_prog quota enable $SCRATCH_MNT
+> > -_run_btrfs_util_prog quota rescan -w $SCRATCH_MNT
+> > +_run_btrfs_util_prog quota rescan -w $SCRATCH_MNT >/dev/null
+> >  _run_btrfs_util_prog qgroup limit -e 1G $SUBVOL
+> >
+> >
+> > diff --git a/tests/btrfs/153 b/tests/btrfs/153
+> > index f343da32..1f8e37e7 100755
+> > --- a/tests/btrfs/153
+> > +++ b/tests/btrfs/153
+> > @@ -41,7 +41,7 @@ _scratch_mkfs >/dev/null
+> >  _scratch_mount
+> >
+> >  _run_btrfs_util_prog quota enable $SCRATCH_MNT
+> > -_run_btrfs_util_prog quota rescan -w $SCRATCH_MNT
+> > +_run_btrfs_util_prog quota rescan -w $SCRATCH_MNT >/dev/null
+> >  _run_btrfs_util_prog qgroup limit 100M 0/5 $SCRATCH_MNT
+> >
+> >  testfile1=$SCRATCH_MNT/testfile1
+> > diff --git a/tests/btrfs/193 b/tests/btrfs/193
+> > index 16b7650c..8bdc7566 100755
+> > --- a/tests/btrfs/193
+> > +++ b/tests/btrfs/193
+> > @@ -43,7 +43,7 @@ _scratch_mkfs > /dev/null
+> >  _scratch_mount
+> >
+> >  $BTRFS_UTIL_PROG quota enable "$SCRATCH_MNT" > /dev/null
+> > -$BTRFS_UTIL_PROG quota rescan -w "$SCRATCH_MNT" > /dev/null
+> > +$BTRFS_UTIL_PROG quota rescan -w "$SCRATCH_MNT" >/dev/null
+> >  $BTRFS_UTIL_PROG qgroup limit -e 256M "$SCRATCH_MNT"
+> >
+> >  # Create a file with the following layout:
+> > diff --git a/tests/btrfs/210 b/tests/btrfs/210
+> > index daa76a87..a9a04951 100755
+> > --- a/tests/btrfs/210
+> > +++ b/tests/btrfs/210
+> > @@ -46,7 +46,7 @@ _pwrite_byte 0xcd 0 16M "$SCRATCH_MNT/src/file" >
+> /dev/null
+> >  # by qgroup
+> >  sync
+> >  $BTRFS_UTIL_PROG quota enable "$SCRATCH_MNT"
+> > -$BTRFS_UTIL_PROG quota rescan -w "$SCRATCH_MNT"
+> > +$BTRFS_UTIL_PROG quota rescan -w "$SCRATCH_MNT" >/dev/null
+> >  $BTRFS_UTIL_PROG qgroup create 1/0 "$SCRATCH_MNT"
+> >
+> >  # Create a snapshot with qgroup inherit
+> > --
+> > 2.26.2
+> >
+> 
 > 
 
--- 
-Goldwyn
