@@ -2,113 +2,159 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CEF921E71A
-	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Jul 2020 06:47:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00ADB21E750
+	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Jul 2020 07:08:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725778AbgGNErU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 14 Jul 2020 00:47:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48844 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725306AbgGNErU (ORCPT
+        id S1725853AbgGNFI0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 14 Jul 2020 01:08:26 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:25245 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725283AbgGNFI0 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 14 Jul 2020 00:47:20 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB784C061755
-        for <linux-btrfs@vger.kernel.org>; Mon, 13 Jul 2020 21:47:19 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id b25so20818837ljp.6
-        for <linux-btrfs@vger.kernel.org>; Mon, 13 Jul 2020 21:47:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc:content-transfer-encoding;
-        bh=BhYJrh5hK+telL9vfRB2sriezYcOJh2LWgbsSt6CXPA=;
-        b=YysOljyTOHMg9fAP5NT7kO8KblMoGTFpPZNKmHvHpXdXdQ9Un14zRrE6VCfH9hXzOO
-         Y4AlAEFHx/UynfzKXF0G9C7rw77I+ObbhItdkEC0EtixjCPJCDtxD86E1UDAQloId6L2
-         5eHzUTukgb74xNOE83y/DAfbcBoE13blQrJxXQAQQnSRbP+PUyDAgvQz2b06uvK2TFPo
-         LEKTRXm5vRTaTF2zbvS68hKKd/n2JVmqtV26VKIgrek21QEBM2vYkVUL/1uXC0vmYPe/
-         XQE0fYJfhaQ+cMqKgLoYPoRUnYY5TK+P8b11Nhfp9Z+O6xU5jlIiEsWLcuJ7aNmrlVk1
-         38ag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc:content-transfer-encoding;
-        bh=BhYJrh5hK+telL9vfRB2sriezYcOJh2LWgbsSt6CXPA=;
-        b=Ey/hvTfk9WLvBX+tqQzPNB7fDRjLpCnjaM7S5G4MdNLZuGj7yH9NQArKJHLyA75TBA
-         94JbHWBcdFex6TUmuQu0revAgwZ5pK8HvcFc0121bhs5q7+Kd5EI98XfvrB8P6RD4oOp
-         4nGV3+iLkjvhFQdxZsk6CohCEbSQdNeRgxDkuOKldmakO0wc/+lMEIDcH0WChonj5yQr
-         hyQsqwA4PaLalSb9kGdRtn/3L2M+IJo/sp9U+gDos4T3UMcpgkqmw0Daub/rxVazgpZy
-         uNt9mcfYO/AOzURvRQjiUqCkTjIfsZXm3SXsNsynAJl38RjC28DBeE1+R4GbkijNABJP
-         sBTg==
-X-Gm-Message-State: AOAM532RrfTQjBHzI7noytA/VfSSkENB2E0p0iuG7OF0DXKgv4EChoC2
-        UlQ+QAJJBI/a0OW9aF6/K+z9XVp8ArgImgCp+Po=
-X-Google-Smtp-Source: ABdhPJylhW/GYc521W2xze9sspr2yckCLz/TPaf/W5HjYLD86mgzNCPLixSP4QCcvdLxVy99g53ZiV/sbJ3GnH9sY0k=
-X-Received: by 2002:a2e:8992:: with SMTP id c18mr1297890lji.388.1594702038282;
- Mon, 13 Jul 2020 21:47:18 -0700 (PDT)
+        Tue, 14 Jul 2020 01:08:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1594703304;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=qgO8HTJnu+5ctZ0vQFoMf+HsrcNfNflyFagdmojxzUU=;
+        b=YRttWmdQUNNevy1mvoMq4EE461KWng+X+0X83OXLqdJKNmpZtTcWruvCAvcbpsi2EB5jt/
+        D0xPCiYxDQdq5Y7PgVZqKg9KJkWiSJ1wEane4bQBajvftLail1twkKH+YHjGDpdzk7ZxXt
+        stWwyTSuKN8xdNmohOP/4JBDwkNe6DI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-4-xQkAGs8NPuWGCMLZtnrBCw-1; Tue, 14 Jul 2020 01:08:19 -0400
+X-MC-Unique: xQkAGs8NPuWGCMLZtnrBCw-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 76A271800D42;
+        Tue, 14 Jul 2020 05:08:18 +0000 (UTC)
+Received: from localhost (dhcp-12-102.nay.redhat.com [10.66.12.102])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E4DB010013C0;
+        Tue, 14 Jul 2020 05:08:17 +0000 (UTC)
+Date:   Tue, 14 Jul 2020 13:21:06 +0800
+From:   Zorro Lang <zlang@redhat.com>
+To:     Boris Burkov <boris@bur.io>
+Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v3] generic: add a test for umount racing mount
+Message-ID: <20200714052106.GX1938@dhcp-12-102.nay.redhat.com>
+Mail-Followup-To: Boris Burkov <boris@bur.io>, fstests@vger.kernel.org,
+        linux-btrfs@vger.kernel.org
+References: <20200712113741.GW1938@dhcp-12-102.nay.redhat.com>
+ <20200713204639.1271794-1-boris@bur.io>
 MIME-Version: 1.0
-References: <CAJt7KB-c4vRYgjJ1WZJyNZuey6nH=y2BcQNVYJa6YAG9MTfKhQ@mail.gmail.com>
- <f37d1f09-e89d-b468-2de9-4dad1d98d750@gmail.com>
-In-Reply-To: <f37d1f09-e89d-b468-2de9-4dad1d98d750@gmail.com>
-Reply-To: swestrup@gmail.com
-From:   Stirling Westrup <swestrup@gmail.com>
-Date:   Tue, 14 Jul 2020 00:47:06 -0400
-Message-ID: <CAJt7KB_eJWpnmNXkBiZ=-08iuc5Ah_i8Uh0Ma4WCqgd=Qq4SuA@mail.gmail.com>
-Subject: Re: Rebalancing Question
-To:     Andrei Borzenkov <arvidjaar@gmail.com>
-Cc:     linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200713204639.1271794-1-boris@bur.io>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Thank you! That looks like it would work.
+On Mon, Jul 13, 2020 at 01:46:39PM -0700, Boris Burkov wrote:
+> Test if dirtying many inodes (which can delay umount) then
+> unmounting and quickly mounting again causes the mount to fail.
+> 
+> A race, which breaks the test in btrfs, is fixed by the patch:
+> "btrfs: fix mount failure caused by race with umount"
+> 
+> Signed-off-by: Boris Burkov <boris@bur.io>
+> ---
 
-On Sat, Jul 11, 2020 at 11:58 AM Andrei Borzenkov <arvidjaar@gmail.com> wro=
-te:
->
-> 11.07.2020 17:42, Stirling Westrup =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
-> > I have a BTRFS built with two devices md0 and md1 on a server. I wish
-> > to move as much data as will fit from md0 to md1, but I cannot figure
-> > out a balance command that will do that.
-> >
-> > My use case is a file server with a fixed number of hard drive slots
-> > and two raids. md0 is a raid using most of the slots with small
-> > drives, and md1 is a raid using the remaining slots with large drives.
-> > I'm trying to shrink md0, so I can remove some small drives and put in
-> > new large drives to add to md1.
-> >
-> > I have read the notes on the balance command several times but I can't
-> > figure out how to get it to do what I want, if it's even possible.
-> >
->
-> You should be able to shrink md0 which will relocate data beyond new
-> size to another device(s). See example in btrfs-filesystem:
->
->
->        $ btrfs filesystem resize -1G /path
->
->        $ btrfs filesystem resize 1:-1G /path
->
->        Shrink size of the filesystem=E2=80=99s device id 1 by 1GiB. The f=
-irst
-> syntax expects a
->        device with id 1 to exist, otherwise fails. The second is
-> equivalent and more
->        explicit. For a single-device filesystem it=E2=80=99s typically no=
-t
-> necessary to specify the
->        devid though.
->
->
-> This assumes you are using single or dup profiles, as other profiles
-> require at least two devices anyway and you may not be able to shrink
-> md0 too far.
+If Eryu won't tend to change dd to XFS_IO_PROG, this version is good to me:)
 
+Reviewed-by: Zorro Lang <zlang@redhat.com>
 
+Thanks,
+Zorro
 
---=20
-Stirling Westrup (he/him)
-Programmer, Entrepreneur.
-http://www.linkedin.com/in/swestrup
-(+1) 514-626-0928
+>  tests/generic/603     | 53 +++++++++++++++++++++++++++++++++++++++++++
+>  tests/generic/603.out |  2 ++
+>  tests/generic/group   |  1 +
+>  3 files changed, 56 insertions(+)
+>  create mode 100755 tests/generic/603
+>  create mode 100644 tests/generic/603.out
+> 
+> diff --git a/tests/generic/603 b/tests/generic/603
+> new file mode 100755
+> index 00000000..8e9a80e6
+> --- /dev/null
+> +++ b/tests/generic/603
+> @@ -0,0 +1,53 @@
+> +#! /bin/bash
+> +# SPDX-License-Identifier: GPL-2.0
+> +# Copyright (c) 2020 Facebook  All Rights Reserved.
+> +#
+> +# FS QA Test 603
+> +#
+> +# Evicting dirty inodes can take a long time during umount.
+> +# Check that a new mount racing with such a delayed umount succeeds.
+> +#
+> +seq=`basename $0`
+> +seqres=$RESULT_DIR/$seq
+> +echo "QA output created by $seq"
+> +
+> +here=`pwd`
+> +tmp=/tmp/$$
+> +status=1	# failure is the default!
+> +trap "_cleanup; exit \$status" 0 1 2 3 15
+> +
+> +_cleanup()
+> +{
+> +	cd /
+> +	rm -f $tmp.*
+> +}
+> +
+> +# get standard environment, filters and checks
+> +. ./common/rc
+> +. ./common/filter
+> +
+> +# remove previous $seqres.full before test
+> +rm -f $seqres.full
+> +
+> +# real QA test starts here
+> +
+> +# Modify as appropriate.
+> +_supported_fs generic
+> +_supported_os Linux
+> +_require_scratch
+> +
+> +_scratch_mkfs > /dev/null 2>&1
+> +_scratch_mount
+> +for i in $(seq 0 500)
+> +do
+> +	dd if=/dev/zero of="$SCRATCH_MNT/$i" bs=1M count=1 > /dev/null 2>&1
+> +done
+> +_scratch_unmount &
+> +_scratch_mount
+> +wait
+> +
+> +echo "Silence is golden"
+> +
+> +# success, all done
+> +status=0
+> +exit
+> diff --git a/tests/generic/603.out b/tests/generic/603.out
+> new file mode 100644
+> index 00000000..6810da89
+> --- /dev/null
+> +++ b/tests/generic/603.out
+> @@ -0,0 +1,2 @@
+> +QA output created by 603
+> +Silence is golden
+> diff --git a/tests/generic/group b/tests/generic/group
+> index d9ab9a31..c0ace35b 100644
+> --- a/tests/generic/group
+> +++ b/tests/generic/group
+> @@ -605,3 +605,4 @@
+>  600 auto quick quota
+>  601 auto quick quota
+>  602 auto quick encrypt
+> +603 auto quick
+> -- 
+> 2.24.1
+> 
+
