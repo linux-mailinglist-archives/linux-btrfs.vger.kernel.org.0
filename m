@@ -2,82 +2,125 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7D04220699
-	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Jul 2020 09:59:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFF0D2206CE
+	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Jul 2020 10:14:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729554AbgGOH5M (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 15 Jul 2020 03:57:12 -0400
-Received: from [195.135.220.15] ([195.135.220.15]:36154 "EHLO mx2.suse.de"
-        rhost-flags-FAIL-FAIL-OK-OK) by vger.kernel.org with ESMTP
-        id S1729001AbgGOH5M (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 15 Jul 2020 03:57:12 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 3779DAE51;
-        Wed, 15 Jul 2020 07:57:14 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id C0E5EDA790; Wed, 15 Jul 2020 09:56:48 +0200 (CEST)
-Date:   Wed, 15 Jul 2020 09:56:48 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-Cc:     "dsterba@suse.cz" <dsterba@suse.cz>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH v2] btrfs: assert sizes of ioctl structures
-Message-ID: <20200715075648.GV3703@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz,
-        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-References: <20200714093236.6107-1-johannes.thumshirn@wdc.com>
- <20200714123234.GP3703@twin.jikos.cz>
- <SN4PR0401MB35986997606AF4136D0218439B610@SN4PR0401MB3598.namprd04.prod.outlook.com>
- <20200714145534.GT3703@suse.cz>
- <SN4PR0401MB35989268008F43EA5CF63CA79B7E0@SN4PR0401MB3598.namprd04.prod.outlook.com>
+        id S1729637AbgGOILr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 15 Jul 2020 04:11:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49498 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729001AbgGOILq (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 15 Jul 2020 04:11:46 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5045FC061755
+        for <linux-btrfs@vger.kernel.org>; Wed, 15 Jul 2020 01:11:46 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id o4so573267lfi.7
+        for <linux-btrfs@vger.kernel.org>; Wed, 15 Jul 2020 01:11:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=r58zgr+dFUtMHO8bMdDys5iOfYMIt5NXXpWBTmydEcE=;
+        b=d2Q3jVi1joXvon+jSxrPSrpeL8n7zUBeVPObZ0usiT22dNLY7KRKXMYrMQTQaMsUqw
+         ZML3ybd2ItswlymaGlTDLlpnYxEMup0Mv+XXSz1d44DByUHbI4svxA+64rv6rYq6N3Fw
+         LZTI7q8p4mL4DpNvCzSzC5n3Sqy69xU+oIXEW66TyX6o5F0XSBzz5andR0PwL5RI8ijW
+         wnJsJc14v3tagRrqqIxAADZxbQY0q2Rn9SC9mPTAKdZAqoVr/9m3Bk5IyezrHok+O3TD
+         LZNp3Thb/18HnD9sYfuK0byDNBjmsEcSa5nU2ZFL26/aRwO7fit59T6lSILFFd1BlMVt
+         UItw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=r58zgr+dFUtMHO8bMdDys5iOfYMIt5NXXpWBTmydEcE=;
+        b=BCcQM4168UdJr0scb1a215J7HJWO4XvhfYkxjO354oINd2c6QGd+r6Wkk1PdJw1qug
+         TMet4F8/vJMvRpk9tHmsN3oDgbOynY41ZE7yFRhcDuh0PRfAgZkgQJWOfdkL0i4KuOmT
+         X6IJ8Fe/uCN0xvaNBLvaCQc7bKcOd7riBVdf9YOjNR2c+I2dgK1iQdoW3Jn6e3WQq//O
+         fy0juUnfDQohaK5YuqS3/8LTdVvWDxEVroTe6DNYzrBC3xwLdt/Z6beyQDwuyoD1AIT0
+         aEK86IztpZMIOe0dpmyjpxUJsewx6lycF55v+qompxoQHlKZL5Uzbmr3HhUtvH9V6lI8
+         REqQ==
+X-Gm-Message-State: AOAM530NT0pVcTKMW1g0ceVyV4Qy5Tt4M3g75mox0scV8dCb3XBgU96k
+        6WvEXTOigE0L2yF9gb3aXQhmqQ==
+X-Google-Smtp-Source: ABdhPJygnAIMcjY9IH7L7lww2iefyofOwl+m8Oz8PP+g5xfoCJJUzKGYICWaioD43IU4WV7dO+fw6Q==
+X-Received: by 2002:a19:e61a:: with SMTP id d26mr4180514lfh.96.1594800704746;
+        Wed, 15 Jul 2020 01:11:44 -0700 (PDT)
+Received: from box.localdomain ([86.57.175.117])
+        by smtp.gmail.com with ESMTPSA id y69sm330239lfa.86.2020.07.15.01.11.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 Jul 2020 01:11:43 -0700 (PDT)
+Received: by box.localdomain (Postfix, from userid 1000)
+        id 43B8510209F; Wed, 15 Jul 2020 11:11:48 +0300 (+03)
+Date:   Wed, 15 Jul 2020 11:11:48 +0300
+From:   "Kirill A. Shutemov" <kirill@shutemov.name>
+To:     Robbie Ko <robbieko@synology.com>
+Cc:     Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
+        LKML <linux-kernel@vger.kernel.org>, linux-btrfs@vger.kernel.org,
+        Roman Gushchin <guro@fb.com>, David Sterba <dsterba@suse.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Subject: Re: [PATCH] mm : fix pte _PAGE_DIRTY bit when fallback migrate page
+Message-ID: <20200715081148.ufmy6rlrdqn52c4v@box>
+References: <20200709024808.18466-1-robbieko@synology.com>
+ <859c810e-376e-5e8b-e8a5-0da3f83315d1@suse.cz>
+ <80b55fcf-def1-8a83-8f53-a22f2be56244@synology.com>
+ <433e26b0-5201-129a-4afe-4881e42781fa@suse.cz>
+ <20200714101951.6osakxdgbhrnfrbd@box>
+ <a7bb68ef-9b33-3ed7-8eff-91feb2223d80@synology.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <SN4PR0401MB35989268008F43EA5CF63CA79B7E0@SN4PR0401MB3598.namprd04.prod.outlook.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <a7bb68ef-9b33-3ed7-8eff-91feb2223d80@synology.com>
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Jul 15, 2020 at 07:12:09AM +0000, Johannes Thumshirn wrote:
-> On 14/07/2020 16:56, David Sterba wrote:
-> > On Tue, Jul 14, 2020 at 02:49:31PM +0000, Johannes Thumshirn wrote:
-> >> On 14/07/2020 14:33, David Sterba wrote:
-> >>> On Tue, Jul 14, 2020 at 06:32:36PM +0900, Johannes Thumshirn wrote:
-> >>>> When expanding ioctl interfaces we want to make sure we're not changing
-> >>>> the size of the structures, otherwise it can lead to incorrect transfers
-> >>>> between kernel and user-space.
-> >>>>
-> >>>> Build time assert the size of each structure so we're not running into any
-> >>>> incompatibilities.
-> >>>>
-> >>>> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-> >>>
-> >>> I've tried 32bit build and the assertion fails for many structures, but
-> >>> I was expecting only the send one because it contains the pointer.
-> >>
-> >> I wonder if we should have two different asserts for 32 and 64bit for 
-> >> these structures or remove the asserts from them.
-> >>
-> >> Having a 32 and 64bit assert will add some ifdeffery, let me see how 
-> >> ugly this will get.
-> > 
-> > Progs do the switch using sizeof(long) and ?: operator but I don't know
-> > if this works with _Static_assert as progs use the struct + bitfield
-> > way.
-> > 
+On Wed, Jul 15, 2020 at 10:45:39AM +0800, Robbie Ko wrote:
 > 
-> I can try but it's ugly as hell IMHO
+> Kirill A. Shutemov 於 2020/7/14 下午6:19 寫道:
+> > On Tue, Jul 14, 2020 at 11:46:12AM +0200, Vlastimil Babka wrote:
+> > > On 7/13/20 3:57 AM, Robbie Ko wrote:
+> > > > Vlastimil Babka 於 2020/7/10 下午11:31 寫道:
+> > > > > On 7/9/20 4:48 AM, robbieko wrote:
+> > > > > > From: Robbie Ko <robbieko@synology.com>
+> > > > > > 
+> > > > > > When a migrate page occurs, we first create a migration entry
+> > > > > > to replace the original pte, and then go to fallback_migrate_page
+> > > > > > to execute a writeout if the migratepage is not supported.
+> > > > > > 
+> > > > > > In the writeout, we will clear the dirty bit of the page and use
+> > > > > > page_mkclean to clear the dirty bit along with the corresponding pte,
+> > > > > > but page_mkclean does not support migration entry.
+> > I don't follow the scenario.
+> > 
+> > When we establish migration entries with try_to_unmap(), it transfers
+> > dirty bit from PTE to the page.
+> 
+> Sorry, I mean is _PAGE_RW with pte_write
+> 
+> When we establish migration entries with try_to_unmap(),
+> we create a migration entry, and if pte_write we set it to SWP_MIGRATION_WRITE,
+> which will replace the migration entry with the original pte.
+> 
+> When migratepage,  we go to fallback_migrate_page to execute a writeout
+> if the migratepage is not supported.
+> 
+> In the writeout, we call clear_page_dirty_for_io to  clear the dirty bit of the page
+> and use page_mkclean to clear pte _PAGE_RW with pte_wrprotect in page_mkclean_one.
+> 
+> However, page_mkclean_one does not support migration entries, so the
+> migration entry is still SWP_MIGRATION_WRITE.
+> 
+> In writeout, then we call remove_migration_ptes to remove the migration entry,
+> because it is still SWP_MIGRATION_WRITE so set _PAGE_RW to pte via pte_mkwrite.
+> 
+> Therefore, subsequent mmap wirte will not trigger page_mkwrite to cause data loss.
 
-Or we can add macros like
+Hm, okay.
 
-ASSERT_STRUCT_SIZE(struct name, 64);
+Folks, is there any good reason why try_to_unmap(TTU_MIGRATION) should not
+clear PTE (make the PTE none) for file page?
 
-ASSERT_STRUCT_SIZE_32_64(struct name, 32, 64);
-
-and then do the ifdefs at the definition time.
-
+-- 
+ Kirill A. Shutemov
