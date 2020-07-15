@@ -2,25 +2,25 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D550220A6A
-	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Jul 2020 12:48:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B463C220A6E
+	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Jul 2020 12:49:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729362AbgGOKsx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 15 Jul 2020 06:48:53 -0400
-Received: from [195.135.220.15] ([195.135.220.15]:37922 "EHLO mx2.suse.de"
+        id S1729402AbgGOKsy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 15 Jul 2020 06:48:54 -0400
+Received: from [195.135.220.15] ([195.135.220.15]:37930 "EHLO mx2.suse.de"
         rhost-flags-FAIL-FAIL-OK-OK) by vger.kernel.org with ESMTP
-        id S1729283AbgGOKsw (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 15 Jul 2020 06:48:52 -0400
+        id S1729284AbgGOKsx (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 15 Jul 2020 06:48:53 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 079A1ADC2;
+        by mx2.suse.de (Postfix) with ESMTP id 421D8B0A5;
         Wed, 15 Jul 2020 10:48:55 +0000 (UTC)
 From:   Nikolay Borisov <nborisov@suse.com>
 To:     linux-btrfs@vger.kernel.org
 Cc:     Nikolay Borisov <nborisov@suse.com>
-Subject: [PATCH 1/5] btrfs: Factor out reada loop in __reada_start_machine
-Date:   Wed, 15 Jul 2020 13:48:46 +0300
-Message-Id: <20200715104850.19071-2-nborisov@suse.com>
+Subject: [PATCH 2/5] btrfs: Factor out loop logic from btrfs_free_extra_devids
+Date:   Wed, 15 Jul 2020 13:48:47 +0300
+Message-Id: <20200715104850.19071-3-nborisov@suse.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200715104850.19071-1-nborisov@suse.com>
 References: <20200715104850.19071-1-nborisov@suse.com>
@@ -29,53 +29,71 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is in preparation for moving fs_devices to proper lists.
+This prepares the code to switching seeds devices to a proper list.
 
 Signed-off-by: Nikolay Borisov <nborisov@suse.com>
 ---
- fs/btrfs/reada.c | 21 ++++++++++++++++-----
- 1 file changed, 16 insertions(+), 5 deletions(-)
+ fs/btrfs/volumes.c | 34 +++++++++++++++++++++-------------
+ 1 file changed, 21 insertions(+), 13 deletions(-)
 
-diff --git a/fs/btrfs/reada.c b/fs/btrfs/reada.c
-index 243a2e44526e..aa9d24ed56d7 100644
---- a/fs/btrfs/reada.c
-+++ b/fs/btrfs/reada.c
-@@ -767,15 +767,14 @@ static void reada_start_machine_worker(struct btrfs_work *work)
- 	kfree(rmw);
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index ce01e44f8134..db29fc4fbe89 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -1024,28 +1024,24 @@ static struct btrfs_fs_devices *clone_fs_devices(struct btrfs_fs_devices *orig)
+ 	return ERR_PTR(ret);
  }
  
--static void __reada_start_machine(struct btrfs_fs_info *fs_info)
+-/*
+- * After we have read the system tree and know devids belonging to
+- * this filesystem, remove the device which does not belong there.
+- */
+-void btrfs_free_extra_devids(struct btrfs_fs_devices *fs_devices, int step)
 +
-+/* Try to start up to 10k READA requests for a group of devices. */
-+static int __reada_start_for_fsdevs(struct btrfs_fs_devices *fs_devices)
++
++void __btrfs_free_extra_devids(struct btrfs_fs_devices *fs_devices, int step,
++			       struct btrfs_device **latest_dev)
  {
--	struct btrfs_device *device;
--	struct btrfs_fs_devices *fs_devices = fs_info->fs_devices;
- 	u64 enqueued;
- 	u64 total = 0;
--	int i;
-+	struct btrfs_device *device;
+ 	struct btrfs_device *device, *next;
+-	struct btrfs_device *latest_dev = NULL;
  
+-	mutex_lock(&uuid_mutex);
 -again:
- 	do {
- 		enqueued = 0;
- 		mutex_lock(&fs_devices->device_list_mutex);
-@@ -787,6 +786,18 @@ static void __reada_start_machine(struct btrfs_fs_info *fs_info)
- 		mutex_unlock(&fs_devices->device_list_mutex);
- 		total += enqueued;
- 	} while (enqueued && total < 10000);
-+
-+	return total;
+ 	/* This is the initialized path, it is safe to release the devices. */
+ 	list_for_each_entry_safe(device, next, &fs_devices->devices, dev_list) {
+ 		if (test_bit(BTRFS_DEV_STATE_IN_FS_METADATA,
+-							&device->dev_state)) {
++			     &device->dev_state)) {
+ 			if (!test_bit(BTRFS_DEV_STATE_REPLACE_TGT,
+-			     &device->dev_state) &&
++				      &device->dev_state) &&
+ 			    !test_bit(BTRFS_DEV_STATE_MISSING,
+ 				      &device->dev_state) &&
+-			     (!latest_dev ||
+-			      device->generation > latest_dev->generation)) {
+-				latest_dev = device;
++			    (!*latest_dev ||
++			     device->generation > (*latest_dev)->generation)) {
++				*latest_dev = device;
+ 			}
+ 			continue;
+ 		}
+@@ -1083,6 +1079,18 @@ void btrfs_free_extra_devids(struct btrfs_fs_devices *fs_devices, int step)
+ 		btrfs_free_device(device);
+ 	}
+ 
 +}
-+
-+static void __reada_start_machine(struct btrfs_fs_info *fs_info)
++/*
++ * After we have read the system tree and know devids belonging to
++ * this filesystem, remove the device which does not belong there.
++ */
++void btrfs_free_extra_devids(struct btrfs_fs_devices *fs_devices, int step)
 +{
-+	struct btrfs_fs_devices *fs_devices = fs_info->fs_devices;
-+	int i;
-+	u64 enqueued = 0;
++	struct btrfs_device *latest_dev = NULL;
 +
++	mutex_lock(&uuid_mutex);
 +again:
-+	enqueued += __reada_start_for_fsdevs(fs_devices);
++	__btrfs_free_extra_devids(fs_devices, step, &latest_dev);
  	if (fs_devices->seed) {
  		fs_devices = fs_devices->seed;
  		goto again;
