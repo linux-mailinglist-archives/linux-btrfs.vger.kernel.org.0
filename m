@@ -2,80 +2,119 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09B152201F9
-	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Jul 2020 03:47:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B808220227
+	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Jul 2020 04:05:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727971AbgGOBrk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 14 Jul 2020 21:47:40 -0400
-Received: from mail107.syd.optusnet.com.au ([211.29.132.53]:49166 "EHLO
-        mail107.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726356AbgGOBrk (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 14 Jul 2020 21:47:40 -0400
-Received: from dread.disaster.area (pa49-180-53-24.pa.nsw.optusnet.com.au [49.180.53.24])
-        by mail107.syd.optusnet.com.au (Postfix) with ESMTPS id CDEB3D5A5FF;
-        Wed, 15 Jul 2020 11:47:35 +1000 (AEST)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1jvWWE-0001ob-2Y; Wed, 15 Jul 2020 11:47:34 +1000
-Date:   Wed, 15 Jul 2020 11:47:34 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Goldwyn Rodrigues <rgoldwyn@suse.de>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Naohiro Aota <naohiro.aota@wdc.com>,
-        Johannes Thumshirn <jth@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        cluster-devel@redhat.com, linux-ext4@vger.kernel.org,
-        linux-xfs@vger.kernel.org
-Subject: Re: RFC: iomap write invalidation
-Message-ID: <20200715014734.GE2005@dread.disaster.area>
-References: <20200713074633.875946-1-hch@lst.de>
+        id S1728172AbgGOCFa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 14 Jul 2020 22:05:30 -0400
+Received: from mail.synology.com ([211.23.38.101]:60084 "EHLO synology.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726356AbgGOCF3 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 14 Jul 2020 22:05:29 -0400
+Subject: Re: [PATCH] mm : fix pte _PAGE_DIRTY bit when fallback migrate page
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synology.com; s=123;
+        t=1594778727; bh=YDrsMEH4rB9HXHNVRExpD6LMr7xokp4y9XlpkI3qsRo=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=kHqL3YjTUkLKU+mFo39ywmRMf4qTO8txj2I5J34NwSQiOHh7HNklZCY4H6mFUzXBV
+         GeVsjmCAtIkNCO5Tbt3orFAbv3EVXejLhZTOuEmhwhypkLlUBzhS7jeKCw1GPp25tH
+         deYTKO02Sk3S3YYJTWoYOUAfLmaIUyQO2wW/66S8=
+To:     Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org
+Cc:     LKML <linux-kernel@vger.kernel.org>, linux-btrfs@vger.kernel.org,
+        Roman Gushchin <guro@fb.com>, David Sterba <dsterba@suse.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+References: <20200709024808.18466-1-robbieko@synology.com>
+ <859c810e-376e-5e8b-e8a5-0da3f83315d1@suse.cz>
+ <80b55fcf-def1-8a83-8f53-a22f2be56244@synology.com>
+ <433e26b0-5201-129a-4afe-4881e42781fa@suse.cz>
+From:   Robbie Ko <robbieko@synology.com>
+Message-ID: <13d4b937-23e8-2d6f-919c-deb2f4284951@synology.com>
+Date:   Wed, 15 Jul 2020 10:05:26 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200713074633.875946-1-hch@lst.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=X6os11be c=1 sm=1 tr=0
-        a=moVtWZxmCkf3aAMJKIb/8g==:117 a=moVtWZxmCkf3aAMJKIb/8g==:17
-        a=kj9zAlcOel0A:10 a=_RQrkK6FrEwA:10 a=20KFwNOVAAAA:8 a=7-415B0cAAAA:8
-        a=GT6RCiLZAcxHUuuf7VQA:9 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
+In-Reply-To: <433e26b0-5201-129a-4afe-4881e42781fa@suse.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Synology-MCP-Status: no
+X-Synology-Spam-Flag: no
+X-Synology-Spam-Status: score=0, required 6, WHITELIST_FROM_ADDRESS 0
+X-Synology-Virus-Status: no
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Jul 13, 2020 at 09:46:31AM +0200, Christoph Hellwig wrote:
-> Hi all,
-> 
-> this series has two parts:  the first one picks up Dave's patch to avoid
-> invalidation entierly for reads, picked up deep down from the btrfs iomap
-> thread.  The second one falls back to buffered writes if invalidation fails
-> instead of leaving a stale cache around.  Let me know what you think about
-> this approch.
 
-Either we maintain application level concurrency for direct IOs and
-ignore the stale data in the page cache, or we kill application IO
-concurrency and keep the page cache coherent.
+Vlastimil Babka 於 2020/7/14 下午5:46 寫道:
+> On 7/13/20 3:57 AM, Robbie Ko wrote:
+>> Vlastimil Babka 於 2020/7/10 下午11:31 寫道:
+>>> On 7/9/20 4:48 AM, robbieko wrote:
+>>>> From: Robbie Ko <robbieko@synology.com>
+>>>>
+>>>> When a migrate page occurs, we first create a migration entry
+>>>> to replace the original pte, and then go to fallback_migrate_page
+>>>> to execute a writeout if the migratepage is not supported.
+>>>>
+>>>> In the writeout, we will clear the dirty bit of the page and use
+>>>> page_mkclean to clear the dirty bit along with the corresponding pte,
+>>>> but page_mkclean does not support migration entry.
+>>>>
+>>>> The page ditry bit is cleared, but the dirty bit of the pte still exists,
+>>>> so if mmap continues to write, it will result in data loss.
+>>> Curious, did you observe this data loss? What filesystem? If yes, it seems
+>>> serious enough to
+>>> CC stable and determine a Fixes: tag?
+>> Yes, there is data loss.
+>> I'm using a btrfs environment, but not the following patch
+> And the kernel is otherwise upstream? Which version?
+> Anyway we better let btrfs guys know (+CC) even if the fix is in MM code.
 
-It's a lose-lose choice and I'm on the fence as to which is the
-lesser of two evils.
+Kernel verion is 4.4.
+I think this is a bug that has been around for a long time.
 
-The main factor is whether the buffered IO fallback can be
-diagnosed. There's a new tracepoint for that case, so at least we
-will be able to tell if the fallback co-incides with application
-performance cratering. Hopefully this will only be a rare event.
+I think the problem is not limited to btrfs, as long as other fs
+have not implemented the migrationpage, they will encounter
+the problem. (Eg ecryptfs, fat, nfs...)
 
-So, to hoist myself on my own petard: correctness first, performance
-second.
-
-Acked-by: Dave Chinner <dchinner@redhat.com>
-
-Cheers,
-
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+>> btrfs: implement migratepage callback for data pages
+>> https://git.kernel.org/pub/scm/linux/kernel
+>> /git/torvalds/linux.git/commit/?h=v5.8-rc5&
+>> id=f8e6608180a31cc72a23b74969da428da236dbd1
+> That's a new commit, so if this is really affecting upstream btrfs pre-5.8 we
+> should either backport that commit, or your fix (after review).
+>
+>>>> We fix the by first remove the migration entry and then clearing
+>>>> the dirty bits of the page, which also clears the pte's dirty bits.
+>>>>
+>>>> Signed-off-by: Robbie Ko <robbieko@synology.com>
+>>>> ---
+>>>>    mm/migrate.c | 8 ++++----
+>>>>    1 file changed, 4 insertions(+), 4 deletions(-)
+>>>>
+>>>> diff --git a/mm/migrate.c b/mm/migrate.c
+>>>> index f37729673558..5c407434b9ba 100644
+>>>> --- a/mm/migrate.c
+>>>> +++ b/mm/migrate.c
+>>>> @@ -875,10 +875,6 @@ static int writeout(struct address_space *mapping, struct page *page)
+>>>>    		/* No write method for the address space */
+>>>>    		return -EINVAL;
+>>>>    
+>>>> -	if (!clear_page_dirty_for_io(page))
+>>>> -		/* Someone else already triggered a write */
+>>>> -		return -EAGAIN;
+>>>> -
+>>>>    	/*
+>>>>    	 * A dirty page may imply that the underlying filesystem has
+>>>>    	 * the page on some queue. So the page must be clean for
+>>>> @@ -889,6 +885,10 @@ static int writeout(struct address_space *mapping, struct page *page)
+>>>>    	 */
+>>>>    	remove_migration_ptes(page, page, false);
+>>>>    
+>>>> +	if (!clear_page_dirty_for_io(page))
+>>>> +		/* Someone else already triggered a write */
+>>>> +		return -EAGAIN;
+>>>> +
+>>>>    	rc = mapping->a_ops->writepage(page, &wbc);
+>>>>    
+>>>>    	if (rc != AOP_WRITEPAGE_ACTIVATE)
+>>>>
+>
