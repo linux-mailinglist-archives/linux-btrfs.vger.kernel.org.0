@@ -2,144 +2,136 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EB912205EB
-	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Jul 2020 09:12:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58F1C220615
+	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Jul 2020 09:23:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729116AbgGOHMN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 15 Jul 2020 03:12:13 -0400
-Received: from esa1.hgst.iphmx.com ([68.232.141.245]:3534 "EHLO
-        esa1.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725852AbgGOHMM (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 15 Jul 2020 03:12:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1594797130; x=1626333130;
-  h=from:to:cc:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=yrwxBv64FV5zTYBkX24ZLs1JfLcfthzZv0tSgP0OgU0=;
-  b=UY0w6dhPUzNt8LbIt3sX9/4+q7WY98CI/EPyDtBW86Ax+c9JFFLYKdwG
-   TthWLYCZIFoCvmGtBlXOBf+XFpEuqYqVqrv6DgGZ+On5P/eLPT/ryrOII
-   4JOAPrYCyNiOtOxkfhg3VnBgNm6h0jELXFRJzEQ6I3MEhaU9nPCze4vPc
-   2bOc6VVqd3O4J6rb03kZCBnvshDAjrwKofYcjGOuX/qopuBLuzXWVgT80
-   ju5L25F/OugWBxA5DffAPFdoW9ZM8MA2/jo7ErSafAOGwjmUOYVtImZsd
-   pcyAt16poOMcEA+fPfj+7q/fcv+exF/+R9N03aBft2FG1d10hwhoVNVY9
-   Q==;
-IronPort-SDR: x75tOd/t4M7C/M2JGipPlNwZwlU4qIrMmm0TCvEw6AzXeBGQKJJzWXV4o1iudKJ36KpSUV9zQm
- 5zr4Vr4V7dYL4BjGeznzO/b8FszKX6P/2MhLcQsHvHmtmV5B9Ao6L3YYGx3G3ItkkBbbQB4Ki4
- GMQwBNSjz5R46I8iStrjQIdekTQkSycZovKBXBoH3cfxDT6clnPw0qLFKUccML+9SIYPLc/pFz
- Oeq22dH05dUWwh9fnrVQ2x02r4vGkQ0W+HoA4WOtRQbQJdF2lFym3+QPEcmByyPIh/OfiL2GMQ
- +oE=
-X-IronPort-AV: E=Sophos;i="5.75,354,1589212800"; 
-   d="scan'208";a="251758514"
-Received: from mail-co1nam11lp2177.outbound.protection.outlook.com (HELO NAM11-CO1-obe.outbound.protection.outlook.com) ([104.47.56.177])
-  by ob1.hgst.iphmx.com with ESMTP; 15 Jul 2020 15:12:10 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Zj/+dYg3HEZ4oY2DZZCfrJfZB+AGxBm60ThalZtMYGhccMt65+OvUI20FNMSkhEBEfJQnV3htNg17xX9dJeO5w+imljCsgNFk1lJjw5aamUv1iFAXAMW4oXN9EtnTzvudf3io2jM0OkWyUPjr/TNiTplgv4wHdWqpTRnpM5d0ZGLXAUosqpzpxQrPbW1Ze0Xg3R5qKHF3vHUf5LdNmPykGxNY6rxw2dst6i1ambtmphWpIq4YFxv6ijS3j0pss75mqE18DWz7X1O5g4y7v1kbQjwMSEBETfh177m7arK9IeS4CmqOq+Nk9b8+wtNN4VMQuTEC3w/CJ6iCDoB8wzMSw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=yrwxBv64FV5zTYBkX24ZLs1JfLcfthzZv0tSgP0OgU0=;
- b=ROoOreqw2uVG9Tu6V1/p8cIXUvXu/Bw7jHmBm4smXtVd6H1vIxvtyR6vucwWg2/kgMyIfTUiqLUC6wpZ0wJc9rAXVju1ItBDruedKCIAjiiEByiAcoiSFi/1HHX2AVtE6p5H/34dGCQ+S9ko4iEN3cwSsz0Oct0hgGzOYQTv4rIojDld9GXYly+cbmdO0xnwWHyqnhnGVlNWwJc2j/lVPp4+Ziv6vEQSAtlbHY4XnwbQP1ZnDmLjVwg+Fwk1zJVF4V3c51tgRjY/iZswU1vQQ4HBwSbW7lpf/emkcLFBoMSmeB5TyG9iS0pa3rBpZtnZY5pxHFeRVDno+fV8hwuMYQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=yrwxBv64FV5zTYBkX24ZLs1JfLcfthzZv0tSgP0OgU0=;
- b=FQ3d0nmckVo1Xkb6iDg8EAwVkIMq1nS6nolyRIdg+3UMlqPLsnZT0YQNBx0o4wtBrpwPEbS18Q5eZT4rkwlgK5ypIt/fzN5hwL3IjfIicdt07oW/LuWblzQSl/+WDA4oE8C7ozNr6SH0HU4MV29J/G1SVEsX2Xs0ZoeSG9CeiOo=
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
- (2603:10b6:803:47::21) by SN6PR04MB5117.namprd04.prod.outlook.com
- (2603:10b6:805:93::31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3174.22; Wed, 15 Jul
- 2020 07:12:09 +0000
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::1447:186c:326e:30b2]) by SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::1447:186c:326e:30b2%7]) with mapi id 15.20.3174.026; Wed, 15 Jul 2020
- 07:12:09 +0000
-From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To:     "dsterba@suse.cz" <dsterba@suse.cz>
-CC:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH v2] btrfs: assert sizes of ioctl structures
-Thread-Topic: [PATCH v2] btrfs: assert sizes of ioctl structures
-Thread-Index: AQHWWcG8Q9fN+Cg7uE6ZDELwaAfkAQ==
-Date:   Wed, 15 Jul 2020 07:12:09 +0000
-Message-ID: <SN4PR0401MB35989268008F43EA5CF63CA79B7E0@SN4PR0401MB3598.namprd04.prod.outlook.com>
-References: <20200714093236.6107-1-johannes.thumshirn@wdc.com>
- <20200714123234.GP3703@twin.jikos.cz>
- <SN4PR0401MB35986997606AF4136D0218439B610@SN4PR0401MB3598.namprd04.prod.outlook.com>
- <20200714145534.GT3703@suse.cz>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: suse.cz; dkim=none (message not signed)
- header.d=none;suse.cz; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [2001:a62:1515:bd01:853f:9b43:c773:dd89]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: b4a2c699-c16d-41f2-b884-08d8288e638d
-x-ms-traffictypediagnostic: SN6PR04MB5117:
-x-microsoft-antispam-prvs: <SN6PR04MB5117C01CD5AF5EE65A417DE69B7E0@SN6PR04MB5117.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:2803;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: HDmP6/JWsq3b0kkZHyxKii93EHrjv5s5nI2hkYuO4TbZlj4Yxg7sf5WA1eBLG10eufBQF5nVZz6jz+pHAlNSbZGFOitaDwc+uZB3hekNBD48aLHlehrvXjhiBsg0z1ozdQqgDmPHg76cea+UxTNu3DP9vl+amwV603l4DU8clJs9aJA/rkpAZ8l4NVvlC6NHKhiLb755I7/ZDpqM9rZ5DZRCOgHHW5W9E2gTf0JMlpXZCfHNyVM0VhiDO8D/Afc629V4vi/2XihPZmMGUSRcSKt2MJEmopaasZr3Xk2/+p+FGmoWOpS7roke/E3LL79oBGVPs0zS4kgr2YxyLAEGxQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR0401MB3598.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(376002)(136003)(346002)(366004)(39860400002)(396003)(76116006)(4326008)(5660300002)(53546011)(8676002)(33656002)(186003)(91956017)(66946007)(66476007)(52536014)(64756008)(66446008)(66556008)(9686003)(478600001)(8936002)(55016002)(2906002)(71200400001)(6916009)(7696005)(316002)(86362001)(6506007);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: PqlOO8XLTxd4DHSjuo2sRDlgzWyH9mYMNhlaqZL44JkiF+OBZgvEsQBnc3FW+gEJMugmbdmiUBOGCNatLcLj3tQU1T6k8JMmL5abik1cYPibaU5j8NjHwvwys8hsDjkNUJspUMaMJiWpnQzI74X8+UD4P3XGlHHT2wyfMCxONFkR0sWqDpaA8GVCm6bsG/9MtDi4Rgf+MfM2kO7+TVkCM4i5xLScJw8Q9696W8/BK+bNuAxw122mmcYtDNollOr7FnqhNfdQzJUXZ3XEaDKnkbTHHfSZ3esS05I9/5QTSFJPcGELshW0osQ8byr0O5jSwB0y11bE+Zvs3l/H7HUpmBPZ506XoM5ECBb5PmbFT3MQfIn+Nbk9ETuY5scUUmzxtbAUna7kvAyqc+pg08GP+BKpTr6uDWV0JUDqXJKl8yFJD1J6JwcqCQe1eDATgmYswy9S1AyrEijs0ckHLDm5FUjQq3n8Pze5nShq2OHcWnhY8sI7NQkr3EkBFu/ynuVFFg8aFljH8RdTdLolVGapAcvjia/GnfUzHSyY2G/vPqFbfapqoyVDDmHCWshQ/+Ch
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1729192AbgGOHWC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 15 Jul 2020 03:22:02 -0400
+Received: from [195.135.220.15] ([195.135.220.15]:45760 "EHLO mx2.suse.de"
+        rhost-flags-FAIL-FAIL-OK-OK) by vger.kernel.org with ESMTP
+        id S1729066AbgGOHWC (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 15 Jul 2020 03:22:02 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 80B5FB63B;
+        Wed, 15 Jul 2020 07:22:03 +0000 (UTC)
+Subject: Re: [PATCH v2 2/4] btrfs: add filesystem generation to fsinfo ioctl
+To:     Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        David Sterba <dsterba@suse.cz>
+Cc:     linux-btrfs@vger.kernel.org
+References: <20200713122901.1773-1-johannes.thumshirn@wdc.com>
+ <20200713122901.1773-3-johannes.thumshirn@wdc.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <c4c9192a-83dd-d9f8-7975-800464e8ceb5@suse.com>
+Date:   Wed, 15 Jul 2020 10:21:59 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SN4PR0401MB3598.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b4a2c699-c16d-41f2-b884-08d8288e638d
-X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Jul 2020 07:12:09.2694
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: CsNOwP4Y/ZBgGJa03E7TUIl/GeBv0NIhNai9dkmzVXE0GF7I/VBk1q42vFHmrYvKii1NcLpdHa7o7+dfJTX/uheavpqPie8lGB51EWOJzSk=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR04MB5117
+In-Reply-To: <20200713122901.1773-3-johannes.thumshirn@wdc.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 14/07/2020 16:56, David Sterba wrote:=0A=
-> On Tue, Jul 14, 2020 at 02:49:31PM +0000, Johannes Thumshirn wrote:=0A=
->> On 14/07/2020 14:33, David Sterba wrote:=0A=
->>> On Tue, Jul 14, 2020 at 06:32:36PM +0900, Johannes Thumshirn wrote:=0A=
->>>> When expanding ioctl interfaces we want to make sure we're not changin=
-g=0A=
->>>> the size of the structures, otherwise it can lead to incorrect transfe=
-rs=0A=
->>>> between kernel and user-space.=0A=
->>>>=0A=
->>>> Build time assert the size of each structure so we're not running into=
- any=0A=
->>>> incompatibilities.=0A=
->>>>=0A=
->>>> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>=0A=
->>>=0A=
->>> I've tried 32bit build and the assertion fails for many structures, but=
-=0A=
->>> I was expecting only the send one because it contains the pointer.=0A=
->>=0A=
->> I wonder if we should have two different asserts for 32 and 64bit for =
-=0A=
->> these structures or remove the asserts from them.=0A=
->>=0A=
->> Having a 32 and 64bit assert will add some ifdeffery, let me see how =0A=
->> ugly this will get.=0A=
-> =0A=
-> Progs do the switch using sizeof(long) and ?: operator but I don't know=
-=0A=
-> if this works with _Static_assert as progs use the struct + bitfield=0A=
-> way.=0A=
-> =0A=
-=0A=
-I can try but it's ugly as hell IMHO=0A=
+
+
+On 13.07.20 г. 15:28 ч., Johannes Thumshirn wrote:
+> Add retrieval of the filesystem's generation to the fsinfo ioctl. This is
+> driven by setting the BTRFS_FS_INFO_FLAG_GENERATION flag in
+> btrfs_ioctl_fs_info_args::flags.
+> 
+> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+
+> ---
+>  fs/btrfs/ioctl.c           | 5 +++++
+>  include/uapi/linux/btrfs.h | 6 +++++-
+>  2 files changed, 10 insertions(+), 1 deletion(-)
+> 
+> diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+> index 3a566cf71fc6..f1b433ec09e8 100644
+> --- a/fs/btrfs/ioctl.c
+> +++ b/fs/btrfs/ioctl.c
+> @@ -3247,6 +3247,11 @@ static long btrfs_ioctl_fs_info(struct btrfs_fs_info *fs_info,
+>  		fi_args->flags |= BTRFS_FS_INFO_FLAG_CSUM_INFO;
+>  	}
+>  
+> +	if (flags_in & BTRFS_FS_INFO_FLAG_GENERATION) {
+> +		fi_args->generation = fs_info->generation;
+> +		fi_args->flags |= BTRFS_FS_INFO_FLAG_GENERATION;
+> +	}
+> +
+>  	if (copy_to_user(arg, fi_args, sizeof(*fi_args)))
+>  		ret = -EFAULT;
+>  
+> diff --git a/include/uapi/linux/btrfs.h b/include/uapi/linux/btrfs.h
+> index b3e0af77642f..b8373723eb4a 100644
+> --- a/include/uapi/linux/btrfs.h
+> +++ b/include/uapi/linux/btrfs.h
+> @@ -250,6 +250,9 @@ struct btrfs_ioctl_dev_info_args {
+>  /* Request information about checksum type and size */
+>  #define BTRFS_FS_INFO_FLAG_CSUM_INFO			(1 << 0)
+>  
+> +/* Request information about filesystem generation */
+> +#define BTRFS_FS_INFO_FLAG_GENERATION			(1 << 1)
+> +
+>  struct btrfs_ioctl_fs_info_args {
+>  	__u64 max_id;				/* out */
+>  	__u64 num_devices;			/* out */
+> @@ -261,7 +264,8 @@ struct btrfs_ioctl_fs_info_args {
+>  	__u16 csum_type;			/* out */
+>  	__u16 csum_size;			/* out */
+>  	__u64 flags;				/* in/out */
+> -	__u8 reserved[968];			/* pad to 1k */
+> +	__u64 generation;			/* out */
+> +	__u8 reserved[960];			/* pad to 1k */
+>  };
+>  
+>  
+> 
