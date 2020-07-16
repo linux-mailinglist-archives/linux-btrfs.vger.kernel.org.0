@@ -2,65 +2,100 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10D082226AF
-	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Jul 2020 17:18:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E9DD222B44
+	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Jul 2020 20:51:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728580AbgGPPRW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 16 Jul 2020 11:17:22 -0400
-Received: from mx2.suse.de ([195.135.220.15]:37358 "EHLO mx2.suse.de"
+        id S1728374AbgGPSvi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 16 Jul 2020 14:51:38 -0400
+Received: from mx2.suse.de ([195.135.220.15]:40704 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728412AbgGPPRW (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 16 Jul 2020 11:17:22 -0400
+        id S1726986AbgGPSvh (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 16 Jul 2020 14:51:37 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id D2735AC90;
-        Thu, 16 Jul 2020 15:17:24 +0000 (UTC)
-From:   Nikolay Borisov <nborisov@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     Nikolay Borisov <nborisov@suse.com>
-Subject: [PATCH] btrfs: Remove done label in writepage_delalloc
-Date:   Thu, 16 Jul 2020 18:17:19 +0300
-Message-Id: <20200716151719.3967-1-nborisov@suse.com>
-X-Mailer: git-send-email 2.17.1
+        by mx2.suse.de (Postfix) with ESMTP id 446E8AB76;
+        Thu, 16 Jul 2020 18:51:39 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 468A6DA790; Thu, 16 Jul 2020 20:51:10 +0200 (CEST)
+Date:   Thu, 16 Jul 2020 20:51:10 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Boris Burkov <boris@bur.io>
+Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH v2] btrfs: fix mount failure caused by race with umount
+Message-ID: <20200716185110.GB3703@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Boris Burkov <boris@bur.io>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-team@fb.com
+References: <e2857658-230e-48e6-d6cf-587be4a8a0bc@toxicpanda.com>
+ <20200710172304.139763-1-boris@bur.io>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200710172304.139763-1-boris@bur.io>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Since there is not common cleanup run after the label it makes it somewhat
-redundant.
+On Fri, Jul 10, 2020 at 10:23:04AM -0700, Boris Burkov wrote:
+> Here is the sequence laid out in greater detail:
+> 
+> CPU0                                                    CPU1
+> down_write sb->s_umount
+> btrfs_kill_super
+>   kill_anon_super(sb)
+>     generic_shutdown_super(sb);
+>       shrink_dcache_for_umount(sb);
+>       sync_filesystem(sb);
+>       evict_inodes(sb); // SLOW
+> 
+>                                               btrfs_mount_root
+>                                                 btrfs_scan_one_device
+>                                                 fs_devices = device->fs_devices
+>                                                 fs_info->fs_devices = fs_devices
+>                                                 // fs_devices-opened makes this a no-op
+>                                                 btrfs_open_devices(fs_devices, mode, fs_type)
+>                                                 s = sget(fs_type, test, set, flags, fs_info);
+>                                                   find sb in s_instances
+>                                                   grab_super(sb);
+>                                                     down_write(&s->s_umount); // blocks
+> 
+>       sop->put_super(sb)
+>         // sb->fs_devices->opened == 2; no-op
+>       spin_lock(&sb_lock);
+>       hlist_del_init(&sb->s_instances);
+>       spin_unlock(&sb_lock);
+>       up_write(&sb->s_umount);
+>                                                     return 0;
+>                                                   retry lookup
+>                                                   don't find sb in s_instances (deleted by CPU0)
+>                                                   s = alloc_super
+>                                                   return s;
+>                                                 btrfs_fill_super(s, fs_devices, data)
+>                                                   open_ctree // fs_devices total_rw_bytes improperly set!
+>                                                     btrfs_read_chunk_tree
+>                                                       read_one_dev // increment total_rw_bytes again!!
+>                                                       super_total_bytes < fs_devices->total_rw_bytes // ERROR!!!
 
-Signed-off-by: Nikolay Borisov <nborisov@suse.com>
----
- fs/btrfs/extent_io.c | 8 ++------
- 1 file changed, 2 insertions(+), 6 deletions(-)
+It seems weird that umount and mount can be mixed in such way but with
+the VFS locks and structures it's valid, so the devices managed by btrfs
+slipped through.
 
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index a76b7da91aa6..e6d1d46ae384 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -3445,8 +3445,7 @@ static noinline_for_stack int writepage_delalloc(struct btrfs_inode *inode,
- 			 * started, so we don't want to return > 0 unless
- 			 * things are going well.
- 			 */
--			ret = ret < 0 ? ret : -EIO;
--			goto done;
-+			return ret < 0 ? ret : -EIO;
- 		}
- 		/*
- 		 * delalloc_end is already one less than the total length, so
-@@ -3478,10 +3477,7 @@ static noinline_for_stack int writepage_delalloc(struct btrfs_inode *inode,
- 		return 1;
- 	}
+With the suggested fix, the bit BTRFS_DEV_STATE_IN_FS_METADATA becomes
+quite important and the synchronization of the device related data.
+The semantics seems quite subtle and inconsistent regarding other uses
+of set_bit or clear_bit and the total_rw_bytes.
 
--	ret = 0;
--
--done:
--	return ret;
-+	return 0;
- }
-
- /*
---
-2.17.1
-
+I'm thinkig about unconditional setting of IN_FS_METADATA as it is now,
+but recalculating total_rw_size outside of read_one_dev in
+btrfs_read_chunk_tree. There it should not matter if the bit was set by
+the unmounted or the mounted filesystem, as long as the locking rules
+for updating fs_devices hold. For that we have uuid_mutex and
+fs_devices::device_list_mutex, this is used elsewhere so fixing it using
+existing mechanisms is IMHO better way than relying on subtle
+undocumented semantics of the state bit.
