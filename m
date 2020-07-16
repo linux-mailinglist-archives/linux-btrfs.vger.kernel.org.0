@@ -2,26 +2,26 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63F722219A2
-	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Jul 2020 03:52:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 551D1221C8D
+	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Jul 2020 08:23:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726908AbgGPBvp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 15 Jul 2020 21:51:45 -0400
-Received: from mout.gmx.net ([212.227.17.20]:53301 "EHLO mout.gmx.net"
+        id S1728069AbgGPGVl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 16 Jul 2020 02:21:41 -0400
+Received: from mout.gmx.net ([212.227.17.20]:34879 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726785AbgGPBvo (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 15 Jul 2020 21:51:44 -0400
+        id S1725921AbgGPGVk (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 16 Jul 2020 02:21:40 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1594864297;
-        bh=ADYCyR5Ui5vG+h//xpftGTE5c6THntiVnVb6gg21HNQ=;
+        s=badeba3b8450; t=1594880493;
+        bh=bvG4L+GRdcY5Dl4MBmV11qNmb7GDZfxfN39c22H7JR0=;
         h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=hVBr3c9cJrkJB7R2Evpbg41kZUDwquXgq1w56rMjj+2r8pyiCUTQaMhjmUz1Ha1gp
-         uyqEhWjnjd3WevNComQmta8CZ7/3vdRBe1u/FaE0qLt59JZ0RaaNXNGfIabRyxnBi3
-         JBLETcHlDbXybUtbgPTrGkdSSjww0JONy/LDNqiE=
+        b=ID6ZeBkknLEKmhg9YvqKnMZZVZJ1wUqENrhfzNNwG1arjWAaAheTuMpz/7je2hO3u
+         7IeiI3BLT8mgvV8EMoiHmecTQGbD9+zM+n/JSUDaZLOsAUN0Y8N3ewAr2pvBOEmmV9
+         SnOtfkYVe1qKk3vxr0KwXEr+8NMNaI3oL0nDt/8g=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
 Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MN5eX-1kCBYb0Tmn-00J0TH; Thu, 16
- Jul 2020 03:51:37 +0200
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MNbkp-1kEqu60XWN-00P1tB; Thu, 16
+ Jul 2020 08:21:33 +0200
 Subject: Re: [PATCH v2 2/2] btrfs: qgroup: add sysfs interface for debug
 To:     Chris Down <chris@chrisdown.name>
 Cc:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org,
@@ -55,8 +55,8 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  oCEEynby72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAk
  ZkA523JGap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gG
  UO/iD/T5oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <2340c49c-f240-b0e9-8316-339b69254196@gmx.com>
-Date:   Thu, 16 Jul 2020 09:51:31 +0800
+Message-ID: <ecb9e5b9-5026-ff4b-75e2-41b156c431b2@gmx.com>
+Date:   Thu, 16 Jul 2020 14:21:26 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
@@ -64,30 +64,30 @@ In-Reply-To: <20200716004031.GC2140@chrisdown.name>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:/delCq3K5SksTOa8a+B9OVhfZwu9k96Khyw3GDPGD1EkVMfSjgz
- vnKERk1I0DwUWrBDlMZLvsX7SvaS6eb3CG37vV2gUBwoSq62+ppJkSpD34uijCX/uxpnsnu
- 9z/bLl9D+JJZwwLPQLvkclpSBJb1ZGwuSJKbOdOB3HqHLtlZnjlNrGbmfz4p1LQdt/O8V0H
- DbA9xpMKRkGknR3yi9gBg==
+X-Provags-ID: V03:K1:y4rwahg3IQnLZL/6lXvS9kFBB3x5Qe5O+Ed6LMWDbey2RQpredh
+ f6rxNmUYwgQw3fiX7ZLJsfcpPwS6orLtqzF200rb2ta9I7DHTrjP8iysynjc3YZyslHEBqw
+ XxMT5UqveDq+nflZfgSSnq4f3LG3kx2dQlfr08X8/723R4vGeKQWRZfucFeFJBuCjsOGXZb
+ SYQrTZtE0TY+swhmXk6Eg==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:36Cu9Rb+TEY=:uCC7YZxGcYyeQoT0cQavuq
- rIgH56dupLH9sGEFSyXNagx39sd7C7gfuSGhMMG2s4ky3PruEuPRUHNyTnX5klH9ODoZL5cwK
- H3k+BMXwXe1OuvTQYRMBdvBFdbgAf+yfCkGxAmdv9OPk1mNmDL6UmIyN9XA4WGJnIaRZAAFKv
- NVwOw95jDWkoFHi1gycoGgLD24ifMuSHGnkCXQVFJ4jUpVwFIl3NioUjrSRL+T+bxqDl3927z
- fBGk4nTmJ4x/C5l2GbOxqXjKuKst8QX7dximnhCmm6KnnRz00Y3DM73Sm0NQNLsB5JqW41mNz
- tPhtYHVFOsChrkhwu5tedHY/XQTFdKIYFRwGyhvbCEJEtfV5ueS7dsEoy7oh6yasEOv5IzeDl
- 3orvwEeuwAdlLSbZlIjG5ZW3j1CVUekVJecNctvM8f/ea4lZueQI9zrinngJyW8+2nG2dyijd
- mXU9fsjqv0YT7lB6BwJD/xMZO4Muh0bLE/Lah5A88PorUbslN7oR0W1AzwZbvea9IdvJHeWrP
- A01S3vmI5PqG9qVwZ8TiA2ihM/NWEtse2uCXc6201hvJykiqZikW/UZW2sp+cnqHPDgBJ9/kL
- BYbNAmiPxczRXS1viW2TZge/F5dfvbTxztL5RhFf7oiJl7yUuJvWV55MDT4GtqrzaDfDSx72I
- f9WpG+vm+1IOa6xfJ0Q8YDKMiMHFvuGKoAeu5kHom/mUH/7vJWfsUwC1YjlN927HvMHUnX0gX
- jdRvLQZDOzl7sun6gyS+kSLpHHlRBBY2MOmZqB1Eyk0r7I2LW6Tx+5OHt+jV0+mE8xJFjtLBX
- srXAp6roGOSZpMSFv9IbwGg/qTR/b1txXfToG8pHvEpiZbXm598XRJa9NghW8V8jMke9EGl/d
- 5OlhWDEnKw+1rkUQzZJwY+Li/7cuN0RmDnyh+mYSJTGiR+izshRLgfGWsZBk0OlS7G5jbGnHb
- g2wUNbWvSZddGMPGxYG7vtkcWDl7QST7LKMpYcBZhjP/L3iqbXkYSmUenJ5sAA/MZY1ohSHcV
- r+2oBVcyCSyOVRpBlwoMqpPuQj4bg8vP/jtt1/asQRtRmUcr6wbh8Hn0eQhuVGyp7CodndCDR
- kiwfAfvRdLn/g+ZORrQmc37aFDt7s52Xh/e/s2Z/Yja+XR9pyarzGUfl9BSrBH6YYh0NastjV
- s0w/qS4S79tTspsxxffOElyyhMC8P3p4C77nF7Ud/+0mCcRpwTh1zh9t6koefvXEFdpkp/zDu
- lIuwwMgK0xzlVwCuQrlB4ZmDt2N77F+6Qh19laA==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:wII+1h+5FCI=:8F20QdUENEjPhlBohbb+R6
+ EqCznEiOsXWYIgn7N/Ij78rplN1IpOvbjD7650I+7Uup4s5jbgzlY8f6QjtZzPYjLWxJmCu9l
+ uBbhg4PwMkN7mnWQZJsyn5i85G2oC2k794KGeSG8ylaIRAJicfwlgLnIasJbYPhjc1BqDT4Wi
+ qqFprMh5zsS3PhOHV4ZWELjgZP2BcvarDefBArcCYb38hcAa/HVTgETJnUCDX/G5MZr/YagtL
+ UWIStVppRTE6jrGzPLv6B2eA/6FTG6qvjM0lKdyMrHv1DXNbyuaTccX06ZojxSq3elkiKnFb2
+ lTmZuCzALoqhYL+oFLGzD5snb/N0ATiNElhQhOwFNX3G1iaF8j5UJK6E00Sf4GLM/LyDNHPxb
+ mwEgP3foya+lZcfOpZgDrCaCwOCp73YEkdtB0esFW7GxcdKIKbz6PsvTGEcRGT6oiQDIk1qSj
+ G8TjRrs6Dwxe69AaOUHaueVPeU5k3CO3G71VpXuy3B7I5v9nnJmTFblvscQAaM/DuIVeaMVfn
+ rBPFrFoQciJCPQyn7N98xChIe2X7DdJgU2jhTP35skKGBu4X3Ov2k5stceMF7LaVg6NaDmNdH
+ OX5aS1uG27/P/Aalffu89MZ1ihGPIAqUYTJuOqKyyCvsjbzFDp1X35iyINXyPVbCu3vjIfmUv
+ DMgLiVyNvLzFyP7KTOgo5ZW/6iz6ifW1/GZhcgpGiloeeJdi5w4Sl6rLLviSK5+MTGeUNskK1
+ 1z0OjQqHlZbp20xlhm2zweEFvzIqAGnD/l7wRYXeW5zEctxI04RdmgTCa6Z1NZeYcQ12d7w6G
+ UUhVQMUuBu88mlwZiTGv0mLsuejO/2oGLZ7nhECeKp6bqCK7MKSmZlu+sVknNiVHenXNFP6Ah
+ 7JOv+PcEpZ9wIFX5hOCthc7FYRruqbrSPT5c2FFb+2KrpaQti7umIMnhT+5zrxmilncVqB+/k
+ m9RWb7HYBM3MxytBCGmbnkgNo35Ga6nsB6uteIGVFTi8qWrRCoBDy0VtAEhXh5uloS+LR9qAP
+ 1KM0sqTZtVSX0YdX+GBZcjauwsbzpWRzL0F9TQJsvZXGKF0KosCkZNdkq4Be1LuVg0llgNLJ7
+ 6Rm4MMlrklFyGfE61b30rEhugjuRb6iEpDHOTw1e47Gj3bIxbDiI8TmQ3bclU4QXIetaYu1nl
+ 9p71Nc1p5qH7nZxlZ9YuroV4t4anaddSeKVxy/0mrdJtUOsE+lxnOpmo1cgWX/gOIJwZ/Ed6u
+ 2H5r+IMg8Y/jJ61Un7hsoFYntV0hAKdu8Ht0EFQ==
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
@@ -105,9 +105,16 @@ On 2020/7/16 =E4=B8=8A=E5=8D=888:40, Chris Down wrote:
 > have this crappy photo that I rushed to take earlier before panic=3D30
 > took effect :-)
 
-No problem, the image is already good enough for me to lookinto the case.
+The linux-next is using an older version of that patch, which has a bad
+memory allocation inside atomic critical section.
 
-And the extra clue of linux-next would also help a lot.
+If you're unlucky enough, it could cause various weird bugs.
+Thankfully, David has exposed it and the latest version in btrfs tree
+should have it fixed.
 
-Thank you very much again for the report,
+If you're uncertain if that's the case, feel free to try the latest
+misc-next branch to see if it's fixed.
+https://github.com/kdave/btrfs-devel/tree/misc-next
+
+Thanks for your report,
 Qu
