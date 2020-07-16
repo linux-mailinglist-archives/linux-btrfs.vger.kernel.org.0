@@ -2,269 +2,100 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26C2522240D
-	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Jul 2020 15:37:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6E3C22249F
+	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Jul 2020 16:01:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728163AbgGPNhm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 16 Jul 2020 09:37:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39638 "EHLO
+        id S1729251AbgGPOAT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 16 Jul 2020 10:00:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727044AbgGPNhl (ORCPT
+        with ESMTP id S1729221AbgGPOAJ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 16 Jul 2020 09:37:41 -0400
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C1ABC061755
-        for <linux-btrfs@vger.kernel.org>; Thu, 16 Jul 2020 06:37:41 -0700 (PDT)
-Received: by mail-io1-xd42.google.com with SMTP id i4so5978060iov.11
-        for <linux-btrfs@vger.kernel.org>; Thu, 16 Jul 2020 06:37:41 -0700 (PDT)
+        Thu, 16 Jul 2020 10:00:09 -0400
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16575C061755
+        for <linux-btrfs@vger.kernel.org>; Thu, 16 Jul 2020 07:00:09 -0700 (PDT)
+Received: by mail-qk1-x742.google.com with SMTP id 80so5554688qko.7
+        for <linux-btrfs@vger.kernel.org>; Thu, 16 Jul 2020 07:00:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
-        bh=BTLw7sfYPG1UtP32ySYlabkh2AUEBWoUxJKl0uFFvFA=;
-        b=uqQ8LFb920Yz6O6gtFY+KBziD9zvsdlQH+eIBvpEvXdGPu0WIjJLjaJYj03zGQt11p
-         OVY3d3XK/Ok/+YIjBFEmVRwRmMGygxytWIkXuc/Q116ZgcOG7NId9SilMJyyTpmc3sZl
-         QAnTUEoDcv0nzASJDV2t8hCe1/i0aJKquSIfiV824OAJCoQheIc7wlkrmw+ZJW802RM/
-         1kxac5SDkKgG9Fo+uDhEO6D0jFaX6ojtp8o2CXwIUp9SCwNXDlcwZPBi2NZh1xbi4iTL
-         RIibkmmBmw0gUBxPW1Shcrmt6U49icYHyH44Q/LXFGdk+80Oe1mC3GinGQ8LAbwt1eN5
-         kuww==
+        d=pefoley.com; s=google;
+        h=subject:from:to:references:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=1BjilFBBLGsE5wlXU2zjwgQLmb5dO7zdty/211816aY=;
+        b=uHp7pckUW8A6VWfattLoe5kmSE5WtXRFDZ4yd++AwKhHTvM8uEQOjBdMM+4S9eBHzv
+         r2Gm8xcmMget0NDfYrjVYnt4QejGOktD7++kzOt41gvYOsgtlcPpGE75WxyNsqjV+B0f
+         Zpv5Nd3jwbOAc5NrMIZSx4c2M48Ncoq6PcOq8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to;
-        bh=BTLw7sfYPG1UtP32ySYlabkh2AUEBWoUxJKl0uFFvFA=;
-        b=oOQyn94F7/CQzteaCMWk1cAVq9qz+ppkoBnHS4JEbvBtk6ZtCawLADajrr0B90J/vE
-         ERJXodUWJrdprtDHZD2IQvOFrgq4+TVgJIIWo2khmsAepUh+u0dXo64Z/hHHUFYWOvIU
-         obRrTDt33PZLbgBCLjLRq5T/d99nF57SnkpnLhuzLPfX1nk1xu6UNxaSCr+WlvpdCLkJ
-         EwL7PB0+e1JyKRHLcoAgOVLGKRZI6hxTVNDMzMfT70Db2R4Qat+3N8/VHkPYVyxBchKq
-         AhkJ4vNxHXiseiWQvy3+dwWR1nLPiQm4M9OkBxHDQ+wMvO/NwZumBkemkBg/u/F7SmIf
-         rCRg==
-X-Gm-Message-State: AOAM531RVSFoZAcfM3V+NCYx6Ds0J6mZHUxB9/iuw9BcbH8afFkda60w
-        K7R1ludNKugz7JJPYt4CeOzRpCOxjd84hkoyWzJSMS5Azb8=
-X-Google-Smtp-Source: ABdhPJwRoUu3gwMR/Kw3aqIPZClMz+XZF9JcJ263tA1dX/YsK9Ao0FikRw5YibmmxxMvBYnKmv1wqs6ZM2nfB6qJ5MI=
-X-Received: by 2002:a6b:9354:: with SMTP id v81mr1366767iod.30.1594906660373;
- Thu, 16 Jul 2020 06:37:40 -0700 (PDT)
+        h=x-gm-message-state:subject:from:to:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=1BjilFBBLGsE5wlXU2zjwgQLmb5dO7zdty/211816aY=;
+        b=psBm4GDVGlCp4HcRNPQTYAo6JJQc1FFKLF1Q9Fvej9Zm1f9t9ohRFtRQJwOWuhnhl0
+         hvQP3tEew7PtBBorD1UnHjdCvzdz/UjvMWGuzhllj6uHGGePuAGP9+XUnHTzxP7YigFe
+         Bq6P5hzD40Eiiyr5RkPvPT0j/xTFrMIS9bgaYmLSanNhrKAzuKqEEmaopdRnldvql0T0
+         BUEYiM+FP35NXI466qY73SDkV6pmRZf0QKgXjz7ZvJNcC1p7tnLaJkLa70HSjN+jcVMP
+         n+5Kfv2zbDltST/nYeY0fNFkIK2KCyIL927+GaDhTZqF+K6iFMLraPYc0SXGsCcQQgFK
+         2WtQ==
+X-Gm-Message-State: AOAM533xZ1qih7wnszSL+4HzsELlXGGZ8kYskNWNAR7EHkBeLbro8WDk
+        wNKP/sqRUqArPGcHcDNbCZKAj0yPeS6f8A==
+X-Google-Smtp-Source: ABdhPJywgil53fIoinvjELd2JumGaQ7INvupOoXOUUQoQjZGez5FNJBiVwm8UjYSUzAWs97YRhKm5g==
+X-Received: by 2002:a37:9c81:: with SMTP id f123mr3874005qke.21.1594908007563;
+        Thu, 16 Jul 2020 07:00:07 -0700 (PDT)
+Received: from [192.168.1.9] (pool-72-83-172-153.washdc.east.verizon.net. [72.83.172.153])
+        by smtp.gmail.com with ESMTPSA id u23sm6358168qkk.53.2020.07.16.07.00.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 16 Jul 2020 07:00:06 -0700 (PDT)
+Subject: Re: balance failing with ENOENT
+From:   Peter Foley <pefoley2@pefoley.com>
+To:     A L <mail@lechevalier.se>, linux-btrfs@vger.kernel.org
+References: <5bc91ff8-1764-203d-53e1-a691b1b5abf9@pefoley.com>
+ <798d01f.397441d9.1733fb56693@lechevalier.se>
+ <6d862426-f260-0617-c529-248e941b4124@pefoley.com>
+Message-ID: <94a22bc1-8caf-f4bd-83f7-c922346cc078@pefoley.com>
+Date:   Thu, 16 Jul 2020 09:59:46 -0400
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <CADvYWxeiNynEWUYwfQxP7fQTK4k2Q+eDZsA8j7rLcaTSeND9fg@mail.gmail.com>
- <20200715011843.GH10769@hungrycats.org> <CADvYWxcq+-Fg0W9dmc-shwszF-7sX+GDVig0GncpvwKUDPfT7g@mail.gmail.com>
- <20200716042739.GB8346@hungrycats.org>
-In-Reply-To: <20200716042739.GB8346@hungrycats.org>
-From:   John Petrini <john.d.petrini@gmail.com>
-Date:   Thu, 16 Jul 2020 09:37:29 -0400
-Message-ID: <CADvYWxdvy5n3Tsa+MG9sSB2iAu-eA+W33ApzQ3q9D6sdGR9UYA@mail.gmail.com>
-Subject: Re: Filesystem Went Read Only During Raid-10 to Raid-6 Data Conversion
-To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
-        linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <6d862426-f260-0617-c529-248e941b4124@pefoley.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Jul 16, 2020 at 12:27 AM Zygo Blaxell
-<ce3g8jdj@umail.furryterror.org> wrote:
->
-> On Tue, Jul 14, 2020 at 10:49:08PM -0400, John Petrini wrote:
-> > I've done this and the filesystem mounted successfully though when
-> > attempting to cancel the balance it just tells me it's not running.
->
-> That's fine, as long as it stops one way or another.
->
-> > > Aside:  data-raid6 metadata-raid10 isn't a sane configuration.  It
-> > > has 2 redundant disks for data and 1 redundant disk for metadata, so
-> > > the second parity disk in raid6 is wasted space.
-> > >
-> > > The sane configurations for parity raid are:
-> > >
-> > >         data-raid6 metadata-raid1c3 (2 parity stripes for data, 3 copies
-> > >         for metadata, 2 disks can fail, requires 3 or more disks)
-> > >
-> > >         data-raid5 metadata-raid10 (1 parity stripe for data, 2 copies
-> > >         for metadata, 1 disk can fail, requires 4 or more disks)
-> > >
-> > >         data-raid5 metadata-raid1 (1 parity stripe for data, 2 copies
-> > >         for metadata, 1 disk can fail, requires 2 or more disks)
-> > >
-> >
-> > This is very interesting. I had no idea that raid1c3 was an option
-> > though it sounds like I may need a really recent kernel version?
->
-> 5.5 or later.
+On 7/13/2020 10:16 AM, Peter Foley wrote:
+> On 7/11/2020 5:08 PM, A L wrote:
+>>
+>>
+>> ---- From: Peter Foley <pefoley2@pefoley.com> -- Sent: 2020-07-11 - 21:39 ----
+>>
+>>> Hi,
+>>> I've got a btrfs filesystem that started out using the single profile.
+>>> I'm trying to convert it to raid1, but got a strange error when doing so.
+>>> Note that this only started happening after the initial balance got canceled part-way through.
+>>>
+>>> btrfs balance start -dconvert=raid1,profiles=single /
+>>> ERROR: error during balancing '/': No such file or directory
+>>> There may be more info in syslog - try dmesg | tail
+>>>
+>>
+>> You can try "btrfs balance start -dconvert=raid1,soft /" 
+>>
+>> 'soft' avoids balancing chunks that are already in the target profile. *
+>>
+>> * https://btrfs.wiki.kernel.org/index.php/Manpage/btrfs-balance#FILTERS 
+>>
+>>
+>>
+> 
+> No dice, exact same failure mode:
+> btrfs balance start -dconvert=raid1,soft /                                                                                                                                                                                    ERROR: error during balancing '/': No such file or directory                                                                                                                                                                            There may be more info in syslog - try dmesg | tail
+> 
+> [146628.913952] BTRFS info (device sda3): balance: start -dconvert=raid1,soft                                                                                                                                                           [146628.914403] BTRFS info (device sda3): relocating block group 968545533952 flags data                                                                                                                                                [146648.475913] BTRFS info (device sda3): found 11 extents, stage: move data extents                                                                                                                                                    [146649.198865] BTRFS info (device sda3): balance: ended with status: -2          
+> 
 
-Okay I'll look into getting on this version since that's a killer feature.
-
->
-> > btrfs fi usage /mnt/storage-array/
-> > WARNING: RAID56 detected, not implemented
-> > Overall:
-> >     Device size:          67.31TiB
-> >     Device allocated:          65.45TiB
-> >     Device unallocated:           1.86TiB
-> >     Device missing:             0.00B
-> >     Used:              65.14TiB
-> >     Free (estimated):           1.12TiB    (min: 1.09TiB)
-> >     Data ratio:                  1.94
-> >     Metadata ratio:              2.00
-> >     Global reserve:         512.00MiB    (used: 0.00B)
-> >
-> > Data,RAID10: Size:32.68TiB, Used:32.53TiB
-> >    /dev/sda       4.34TiB
-> >    /dev/sdb       4.34TiB
-> >    /dev/sdc       4.34TiB
-> >    /dev/sdd       2.21TiB
-> >    /dev/sde       2.21TiB
-> >    /dev/sdf       4.34TiB
-> >    /dev/sdi       1.82TiB
-> >    /dev/sdj       1.82TiB
-> >    /dev/sdk       1.82TiB
-> >    /dev/sdl       1.82TiB
-> >    /dev/sdm       1.82TiB
-> >    /dev/sdn       1.82TiB
-> >
-> > Data,RAID6: Size:1.04TiB, Used:1.04TiB
-> >    /dev/sda     413.92GiB
-> >    /dev/sdb     413.92GiB
-> >    /dev/sdc     413.92GiB
-> >    /dev/sdd     119.07GiB
-> >    /dev/sde     119.07GiB
-> >    /dev/sdf     413.92GiB
-> >
-> > Metadata,RAID10: Size:40.84GiB, Used:39.80GiB
-> >    /dev/sda       5.66GiB
-> >    /dev/sdb       5.66GiB
-> >    /dev/sdc       5.66GiB
-> >    /dev/sdd       2.41GiB
-> >    /dev/sde       2.41GiB
-> >    /dev/sdf       5.66GiB
-> >    /dev/sdi       2.23GiB
-> >    /dev/sdj       2.23GiB
-> >    /dev/sdk       2.23GiB
-> >    /dev/sdl       2.23GiB
-> >    /dev/sdm       2.23GiB
-> >    /dev/sdn       2.23GiB
-> >
-> > System,RAID10: Size:96.00MiB, Used:3.06MiB
-> >    /dev/sda       8.00MiB
-> >    /dev/sdb       8.00MiB
-> >    /dev/sdc       8.00MiB
-> >    /dev/sdd       8.00MiB
-> >    /dev/sde       8.00MiB
-> >    /dev/sdf       8.00MiB
-> >    /dev/sdi       8.00MiB
-> >    /dev/sdj       8.00MiB
-> >    /dev/sdk       8.00MiB
-> >    /dev/sdl       8.00MiB
-> >    /dev/sdm       8.00MiB
-> >    /dev/sdn       8.00MiB
-> >
-> > Unallocated:
-> >    /dev/sda       4.35TiB
-> >    /dev/sdb       4.35TiB
-> >    /dev/sdc       4.35TiB
-> >    /dev/sdd       2.22TiB
-> >    /dev/sde       2.22TiB
-> >    /dev/sdf       4.35TiB
-> >    /dev/sdi       1.82TiB
-> >    /dev/sdj       1.82TiB
-> >    /dev/sdk       1.82TiB
-> >    /dev/sdl       1.82TiB
-> >    /dev/sdm       1.82TiB
-> >    /dev/sdn       1.82TiB
->
-> Plenty of unallocated space.  It should be able to do the conversion.
-
-After upgrading, the unallocated space tells a different story. Maybe
-due to the newer kernel or btrfs-progs?
-
-Unallocated:
-   /dev/sdd        1.02MiB
-   /dev/sde        1.02MiB
-   /dev/sdl        1.02MiB
-   /dev/sdn        1.02MiB
-   /dev/sdm        1.02MiB
-   /dev/sdk        1.02MiB
-   /dev/sdj        1.02MiB
-   /dev/sdi        1.02MiB
-   /dev/sdb        1.00MiB
-   /dev/sdc        1.00MiB
-   /dev/sda        5.90GiB
-   /dev/sdg        5.90GiB
-
-This is after clearing up additional space on the filesytem. When I
-started the conversion there was only ~300G available. There's now
-close 1TB according to df.
-
-/dev/sdd                      68T   66T  932G  99% /mnt/storage-array
-
-So I'm not sure what to make of this and whether it's safe to start
-the conversion again. I don't feel like I can trust the unallocated
-space before or after the upgrade.
-
-
-Here's the versions I'm on now:
-sudo dpkg -l | grep btrfs-progs
-ii  btrfs-progs                            5.4.1-2
-        amd64        Checksumming Copy on Write Filesystem utilities
-
-uname -r
-5.4.0-40-generic
-
->
-> > > You didn't post the dmesg messages from when the filesystem went
-> > > read-only, but metadata 'total' is very close to 'used', you were doing
-> > > a balance, and the filesystem went read-only, so I'm guessing you hit
-> > > ENOSPC for metadata due to lack of unallocated space on at least 4 drives
-> > > (minimum for raid10).
-> > >
-> >
-> > Here's a paste of everything in dmesg: http://paste.openstack.org/show/795929/
->
-> Unfortunately the original errors are no longer in the buffer.  Maybe
-> try /var/log/kern.log?
->
-
-Found it. So this was a space issue. I knew the filesystem was very
-full but figured ~300G would be enough.
-
-kernel: [3755232.352221] BTRFS: error (device sdd) in
-__btrfs_free_extent:4860: errno=-28 No space left
-kernel: [3755232.352227] BTRFS: Transaction aborted (error -28)
-ernel: [3755232.354693] BTRFS info (device sdd): forced readonly
-kernel: [3755232.354700] BTRFS: error (device sdd) in
-btrfs_run_delayed_refs:2795: errno=-28 No space left
-
-
-> > > > uname -r
-> > > > 5.3.0-40-generic
-> > >
-> > > Please upgrade to 5.4.13 or later.  Kernels 5.1 through 5.4.12 have a
-> > > rare but nasty bug that is triggered by writing at exactly the wrong
-> > > moment during balance.  5.3 has some internal defenses against that bug
-> > > (the "write time tree checker"), but if they fail, the result is metadata
-> > > corruption that requires btrfs check to repair.
-> > >
-> >
-> > Thanks for the heads up. I'm getting it updated now and will attempt
-> > to remount once I do. Once it's remounted how should I proceed? Can I
-> > just assume the filesystem is healthy at that point? Should I perform
-> > a scrub?
->
-> If scrub reports no errors it's probably OK.
-
-I did run a scrub and it came back clean.
-
->
-> A scrub will tell you if any data or metadata is corrupted or any
-> parent-child pointers are broken.  That will cover most of the common
-> problems.  If the original issue was a spurious ENOSPC then everything
-> should be OK.  If the original issue was a write time tree corruption
-> then it should be OK.  If the original issue was something else, it
-> will present itself again during the scrub or balance.
->
-> If there are errors, scrub won't attribute them to the right disks for
-> raid6.  It might be worth reading
->
->         https://lore.kernel.org/linux-btrfs/20200627032414.GX10769@hungrycats.org/
->
-> for a list of current raid5/6 issues to be aware of.
-
-Thanks. This is good info.
+Any other ideas?
+I'm completely stumped here...
