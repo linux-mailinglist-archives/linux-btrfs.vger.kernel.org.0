@@ -2,166 +2,401 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E03F222CCD
-	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Jul 2020 22:32:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83730222EF2
+	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Jul 2020 01:24:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725999AbgGPU3v (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 16 Jul 2020 16:29:51 -0400
-Received: from wout3-smtp.messagingengine.com ([64.147.123.19]:47211 "EHLO
-        wout3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725921AbgGPU3v (ORCPT
+        id S1726691AbgGPXXO convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-btrfs@lfdr.de>); Thu, 16 Jul 2020 19:23:14 -0400
+Received: from james.kirk.hungrycats.org ([174.142.39.145]:44700 "EHLO
+        james.kirk.hungrycats.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726113AbgGPXXN (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 16 Jul 2020 16:29:51 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.west.internal (Postfix) with ESMTP id 10C5910A7;
-        Thu, 16 Jul 2020 16:29:50 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Thu, 16 Jul 2020 16:29:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=from
-        :to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm1; bh=lq5lYAwGKAKPA
-        7FTNZKl+phaQuxzXONXDGWcSGjTGhw=; b=CFcsAHtdO9WQRhUcXsehB4W94Ne7p
-        tTKSOKqWn9gZ3Lx+QH23U1e4jN09SjL++5nxJbGeTE1uB1Uk4+ldeaEpsAz/lerW
-        spkQEjq7H3qfuU07SVuMzPo2JL1m5U/6Yup9bl5wQc2/Cv++gfo8KuxgWn34xVC+
-        Bs+g8+xBnAGKqIz2KHts7herSgTNE6t6YDuJQvZKdx/5qNydky+z8Kb/THYr+Djz
-        WHu9IxxTmtKU5G58GTIdwhmk29A8CKIxtXD9LJrItmw91KlH16jZqW9evIMMTipx
-        fH50teUxSeHzSW7cCBflNeTAkxV0cHdRgWH+GnZ/V+cnomN6ZKrfJNSSw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :in-reply-to:message-id:mime-version:references:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm3; bh=lq5lYAwGKAKPA7FTNZKl+phaQuxzXONXDGWcSGjTGhw=; b=Av74mfK+
-        y6UWnal3VGT/2SUIAjJX/DX+/jqgqPLsHDy7fXcvrahb3RPUYuZIrLPT5VTVQE11
-        zOiF0RMYUiPdILQ8zEAu3CBexyBF6gNlGEP3OD6RHnKQVFBx+/klN8fAxNmPAsOe
-        PAJn2KbQHvYvxiXZ5kpZvxrUwWAqYaxLeIH1ESlhfhofXsMLcLr1XNdzJBI1ihL+
-        N/sOqr5fWDcYx8ne4EvTj4Ea3t48EMoZgHGu05XFP4yJhs/MBHMlu2TeY6nv6gqq
-        5fbb8Ca+OPMZ/JTGoigSHAxWT+cJXzxtutPtb3l9ZTYrpVJLkpMELWxyVfpy8okn
-        3rgiyvApXFoTBQ==
-X-ME-Sender: <xms:vbgQX8qDELD6Sypgsd0ozHoaGPVFnO5U5mBo9O7cDd2QMiy8cq37BQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrfeeggdduheduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhephffvufffkffojghfggfgsedtkeertdertddtnecuhfhrohhmpeeuohhrihhs
-    uceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhioheqnecuggftrfgrthhtvghrnhepie
-    euffeuvdeiueejhfehiefgkeevudejjeejffevvdehtddufeeihfekgeeuheelnecukfhp
-    peduieefrdduudegrddufedvrdefnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrg
-    hmpehmrghilhhfrhhomhepsghorhhishessghurhdrihho
-X-ME-Proxy: <xmx:vbgQXyq1nb_5EMPm-HWu-0-yhYt4dZQl_Qg1VBhgAjft7Wzcs-GVFw>
-    <xmx:vbgQXxM3Aq2CccUNJ-ATq6OD_OB8408C_Je03ZGaSePfynjHiWUuzA>
-    <xmx:vbgQXz7x0yt-7LMC848EcTiCFdP-lRtPaNTGcAUD7Y41RYYFZe_qGQ>
-    <xmx:vbgQX1SmdMQ4G2jDeSppL7BJd7gMGScbuORa_ZNBLOG3b-B_3mtxeA>
-Received: from localhost (unknown [163.114.132.3])
-        by mail.messagingengine.com (Postfix) with ESMTPA id CC9D33280059;
-        Thu, 16 Jul 2020 16:29:48 -0400 (EDT)
-From:   Boris Burkov <boris@bur.io>
-To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>
-Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH v3] btrfs: fix mount failure caused by race with umount
-Date:   Thu, 16 Jul 2020 13:29:46 -0700
-Message-Id: <20200716202946.2527706-1-boris@bur.io>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200716185110.GB3703@twin.jikos.cz>
-References: <20200716185110.GB3703@twin.jikos.cz>
+        Thu, 16 Jul 2020 19:23:13 -0400
+Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
+        id 7E6D0766D49; Thu, 16 Jul 2020 18:57:31 -0400 (EDT)
+Date:   Thu, 16 Jul 2020 18:57:31 -0400
+From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+To:     John Petrini <me@johnpetrini.com>
+Cc:     John Petrini <john.d.petrini@gmail.com>,
+        linux-btrfs@vger.kernel.org
+Subject: Re: Filesystem Went Read Only During Raid-10 to Raid-6 Data
+ Conversion
+Message-ID: <20200716225731.GI10769@hungrycats.org>
+References: <CADvYWxeiNynEWUYwfQxP7fQTK4k2Q+eDZsA8j7rLcaTSeND9fg@mail.gmail.com>
+ <20200715011843.GH10769@hungrycats.org>
+ <CADvYWxcq+-Fg0W9dmc-shwszF-7sX+GDVig0GncpvwKUDPfT7g@mail.gmail.com>
+ <20200716042739.GB8346@hungrycats.org>
+ <CADvYWxdvy5n3Tsa+MG9sSB2iAu-eA+W33ApzQ3q9D6sdGR9UYA@mail.gmail.com>
+ <CAJix6J9kmQjfFJJ1GwWXsX7WW6QKxPqpKx86g7hgA4PfbH5Rpg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <CAJix6J9kmQjfFJJ1GwWXsX7WW6QKxPqpKx86g7hgA4PfbH5Rpg@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-It is possible to cause a btrfs mount to fail by racing it with a slow
-umount. The crux of the sequence is generic_shutdown_super not yet
-calling sop->put_super before btrfs_mount_root calls btrfs_open_devices.
-If that occurs, btrfs_open_devices will decide the opened counter is
-non-zero, increment it, and skip resetting fs_devices->total_rw_bytes to
-0. From here, mount will call sget which will result in grab_super
-trying to take the super block umount semaphore. That semaphore will be
-held by the slow umount, so mount will block. Before up-ing the
-semaphore, umount will delete the super block, resulting in mount's sget
-reliably allocating a new one, which causes the mount path to dutifully
-fill it out, and increment total_rw_bytes a second time, which causes
-the mount to fail, as we see double the expected bytes.
+On Thu, Jul 16, 2020 at 10:20:43AM -0400, John Petrini wrote:
+>    I've cleaned up a bit more space and kicked off a balance. btrfs fi usage
+>    is reporting increased unallocated space so it seems to be helping.
+>    sudo btrfs balance start -dusage=50 /mnt/storage-array/
+>    During one of my attempts to clean up space the filesystem went read only
+>    again with the same out of space error. I'm curious why deleting files
+>    would cause this.
 
-Here is the sequence laid out in greater detail:
+Deleting a file requires writing a new tree with the file not present.
+That requires some extra space...
 
-CPU0                                                    CPU1
-down_write sb->s_umount
-btrfs_kill_super
-  kill_anon_super(sb)
-    generic_shutdown_super(sb);
-      shrink_dcache_for_umount(sb);
-      sync_filesystem(sb);
-      evict_inodes(sb); // SLOW
+>    On Thu, Jul 16, 2020 at 9:38 AM John Petrini <[1]john.d.petrini@gmail.com>
+>    wrote:
+> 
+>      On Thu, Jul 16, 2020 at 12:27 AM Zygo Blaxell
+>      <[2]ce3g8jdj@umail.furryterror.org> wrote:
+>      >
+>      > On Tue, Jul 14, 2020 at 10:49:08PM -0400, John Petrini wrote:
+>      > > I've done this and the filesystem mounted successfully though when
+>      > > attempting to cancel the balance it just tells me it's not running.
+>      >
+>      > That's fine, as long as it stops one way or another.
+>      >
+>      > > > Aside:  data-raid6 metadata-raid10 isn't a sane configuration.  It
+>      > > > has 2 redundant disks for data and 1 redundant disk for metadata,
+>      so
+>      > > > the second parity disk in raid6 is wasted space.
+>      > > >
+>      > > > The sane configurations for parity raid are:
+>      > > >
+>      > > >         data-raid6 metadata-raid1c3 (2 parity stripes for data, 3
+>      copies
+>      > > >         for metadata, 2 disks can fail, requires 3 or more disks)
+>      > > >
+>      > > >         data-raid5 metadata-raid10 (1 parity stripe for data, 2
+>      copies
+>      > > >         for metadata, 1 disk can fail, requires 4 or more disks)
+>      > > >
+>      > > >         data-raid5 metadata-raid1 (1 parity stripe for data, 2
+>      copies
+>      > > >         for metadata, 1 disk can fail, requires 2 or more disks)
+>      > > >
+>      > >
+>      > > This is very interesting. I had no idea that raid1c3 was an option
+>      > > though it sounds like I may need a really recent kernel version?
+>      >
+>      > 5.5 or later.
+> 
+>      Okay I'll look into getting on this version since that's a killer
+>      feature.
+> 
+>      >
+>      > > btrfs fi usage /mnt/storage-array/
+>      > > WARNING: RAID56 detected, not implemented
+>      > > Overall:
+>      > >     Device size:          67.31TiB
+>      > >     Device allocated:          65.45TiB
+>      > >     Device unallocated:           1.86TiB
+>      > >     Device missing:             0.00B
+>      > >     Used:              65.14TiB
+>      > >     Free (estimated):           1.12TiB    (min: 1.09TiB)
+>      > >     Data ratio:                  1.94
+>      > >     Metadata ratio:              2.00
+>      > >     Global reserve:         512.00MiB    (used: 0.00B)
+>      > >
+>      > > Data,RAID10: Size:32.68TiB, Used:32.53TiB
+>      > >    /dev/sda       4.34TiB
+>      > >    /dev/sdb       4.34TiB
+>      > >    /dev/sdc       4.34TiB
+>      > >    /dev/sdd       2.21TiB
+>      > >    /dev/sde       2.21TiB
+>      > >    /dev/sdf       4.34TiB
+>      > >    /dev/sdi       1.82TiB
+>      > >    /dev/sdj       1.82TiB
+>      > >    /dev/sdk       1.82TiB
+>      > >    /dev/sdl       1.82TiB
+>      > >    /dev/sdm       1.82TiB
+>      > >    /dev/sdn       1.82TiB
+>      > >
+>      > > Data,RAID6: Size:1.04TiB, Used:1.04TiB
+>      > >    /dev/sda     413.92GiB
+>      > >    /dev/sdb     413.92GiB
+>      > >    /dev/sdc     413.92GiB
+>      > >    /dev/sdd     119.07GiB
+>      > >    /dev/sde     119.07GiB
+>      > >    /dev/sdf     413.92GiB
+>      > >
+>      > > Metadata,RAID10: Size:40.84GiB, Used:39.80GiB
+>      > >    /dev/sda       5.66GiB
+>      > >    /dev/sdb       5.66GiB
+>      > >    /dev/sdc       5.66GiB
+>      > >    /dev/sdd       2.41GiB
+>      > >    /dev/sde       2.41GiB
+>      > >    /dev/sdf       5.66GiB
+>      > >    /dev/sdi       2.23GiB
+>      > >    /dev/sdj       2.23GiB
+>      > >    /dev/sdk       2.23GiB
+>      > >    /dev/sdl       2.23GiB
+>      > >    /dev/sdm       2.23GiB
+>      > >    /dev/sdn       2.23GiB
+>      > >
+>      > > System,RAID10: Size:96.00MiB, Used:3.06MiB
+>      > >    /dev/sda       8.00MiB
+>      > >    /dev/sdb       8.00MiB
+>      > >    /dev/sdc       8.00MiB
+>      > >    /dev/sdd       8.00MiB
+>      > >    /dev/sde       8.00MiB
+>      > >    /dev/sdf       8.00MiB
+>      > >    /dev/sdi       8.00MiB
+>      > >    /dev/sdj       8.00MiB
+>      > >    /dev/sdk       8.00MiB
+>      > >    /dev/sdl       8.00MiB
+>      > >    /dev/sdm       8.00MiB
+>      > >    /dev/sdn       8.00MiB
+>      > >
+>      > > Unallocated:
+>      > >    /dev/sda       4.35TiB
+>      > >    /dev/sdb       4.35TiB
+>      > >    /dev/sdc       4.35TiB
+>      > >    /dev/sdd       2.22TiB
+>      > >    /dev/sde       2.22TiB
+>      > >    /dev/sdf       4.35TiB
+>      > >    /dev/sdi       1.82TiB
+>      > >    /dev/sdj       1.82TiB
+>      > >    /dev/sdk       1.82TiB
+>      > >    /dev/sdl       1.82TiB
+>      > >    /dev/sdm       1.82TiB
+>      > >    /dev/sdn       1.82TiB
+>      >
+>      > Plenty of unallocated space.  It should be able to do the conversion.
+> 
+>      After upgrading, the unallocated space tells a different story. Maybe
+>      due to the newer kernel or btrfs-progs?
 
-                                              btrfs_mount_root
-                                                btrfs_scan_one_device
-                                                fs_devices = device->fs_devices
-                                                fs_info->fs_devices = fs_devices
-                                                // fs_devices-opened makes this a no-op
-                                                btrfs_open_devices(fs_devices, mode, fs_type)
-                                                s = sget(fs_type, test, set, flags, fs_info);
-                                                  find sb in s_instances
-                                                  grab_super(sb);
-                                                    down_write(&s->s_umount); // blocks
+That is...odd.  Try 'btrfs dev usage', maybe something weird is happening
+with device sizes.
 
-      sop->put_super(sb)
-        // sb->fs_devices->opened == 2; no-op
-      spin_lock(&sb_lock);
-      hlist_del_init(&sb->s_instances);
-      spin_unlock(&sb_lock);
-      up_write(&sb->s_umount);
-                                                    return 0;
-                                                  retry lookup
-                                                  don't find sb in s_instances (deleted by CPU0)
-                                                  s = alloc_super
-                                                  return s;
-                                                btrfs_fill_super(s, fs_devices, data)
-                                                  open_ctree // fs_devices total_rw_bytes improperly set!
-                                                    btrfs_read_chunk_tree
-                                                      read_one_dev // increment total_rw_bytes again!!
-                                                      super_total_bytes < fs_devices->total_rw_bytes // ERROR!!!
+>      Unallocated:
+>         /dev/sdd        1.02MiB
+>         /dev/sde        1.02MiB
+>         /dev/sdl        1.02MiB
+>         /dev/sdn        1.02MiB
+>         /dev/sdm        1.02MiB
+>         /dev/sdk        1.02MiB
+>         /dev/sdj        1.02MiB
+>         /dev/sdi        1.02MiB
+>         /dev/sdb        1.00MiB
+>         /dev/sdc        1.00MiB
+>         /dev/sda        5.90GiB
+>         /dev/sdg        5.90GiB
 
-To fix this, we clear total_rw_bytes from within btrfs_read_chunk_tree
-before the calls to read_one_dev, while holding the sb umount semaphore
-and the uuid mutex.
+...and here we have only 2 disks with free space, so there's zero available
+space for more metadata (raid10 requires 4 disks).
 
-To reproduce, it is sufficient to dirty a decent number of inodes, then
-quickly umount and mount.
+>      This is after clearing up additional space on the filesytem. When I
+>      started the conversion there was only ~300G available. There's now
+>      close 1TB according to df.
+> 
+>      /dev/sdd                      68T   66T  932G  99% /mnt/storage-array
+> 
+>      So I'm not sure what to make of this and whether it's safe to start
+>      the conversion again. I don't feel like I can trust the unallocated
+>      space before or after the upgrade.
+> 
+>      Here's the versions I'm on now:
+>      sudo dpkg -l | grep btrfs-progs
+>      ii  btrfs-progs                            5.4.1-2
+>              amd64        Checksumming Copy on Write Filesystem utilities
+> 
+>      uname -r
+>      5.4.0-40-generic
+> 
+>      >
+>      > > > You didn't post the dmesg messages from when the filesystem went
+>      > > > read-only, but metadata 'total' is very close to 'used', you were
+>      doing
+>      > > > a balance, and the filesystem went read-only, so I'm guessing you
+>      hit
+>      > > > ENOSPC for metadata due to lack of unallocated space on at least 4
+>      drives
+>      > > > (minimum for raid10).
+>      > > >
+>      > >
+>      > > Here's a paste of everything in dmesg:
+>      [3]http://paste.openstack.org/show/795929/
+>      >
+>      > Unfortunately the original errors are no longer in the buffer.  Maybe
+>      > try /var/log/kern.log?
+>      >
+> 
+>      Found it. So this was a space issue. I knew the filesystem was very
+>      full but figured ~300G would be enough.
+> 
+>      kernel: [3755232.352221] BTRFS: error (device sdd) in
+>      __btrfs_free_extent:4860: errno=-28 No space left
+>      kernel: [3755232.352227] BTRFS: Transaction aborted (error -28)
+>      ernel: [3755232.354693] BTRFS info (device sdd): forced readonly
+>      kernel: [3755232.354700] BTRFS: error (device sdd) in
+>      btrfs_run_delayed_refs:2795: errno=-28 No space left
 
-for i in $(seq 0 500)
-do
-  dd if=/dev/zero of="/mnt/foo/$i" bs=1M count=1
-done
-umount /mnt/foo&
-mount /mnt/foo
+The trick is that the free space has to be unallocated to change profiles.
+'df' counts both unallocated and allocated-but-unused space.
 
-does the trick for me.
+Also you have disks of different sizes, which adds an additional
+complication: raid6 data on 3 disks takes up more space for the same data
+than raid10 data on 4 disks, because the former is 1 data + 2 parity,
+while the latter is 1 data + 1 mirror.  So for 100 GB of data, it's 200
+GB of raw space in raid10 on 4 disks, or 200GB of raw space in raid6 on
+4 disks, but 300 GB of raw space in raid6 on 3 disks.
 
-Signed-off-by: Boris Burkov <boris@bur.io>
----
- fs/btrfs/volumes.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+Since your filesystem is nearly full, there are likely to be 3-disk-wide
+raid6 block groups formed when there is space available on only 3 drives.
+If that happens too often, hundreds of GB will be wasted and the filesystem
+fills up.
 
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index c7a3d4d730a3..26b9bcb00c2b 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -7035,6 +7035,14 @@ int btrfs_read_chunk_tree(struct btrfs_fs_info *fs_info)
- 	mutex_lock(&uuid_mutex);
- 	mutex_lock(&fs_info->chunk_mutex);
- 
-+	/*
-+	 * It is possible for mount and umount to race in such a way that
-+	 * we execute this code path, but open_fs_devices failed to clear
-+	 * total_rw_bytes. We certainly want it cleared before reading the
-+	 * device items, so clear it here.
-+	 */
-+	fs_info->fs_devices->total_rw_bytes = 0;
-+
- 	/*
- 	 * Read all device items, and then all the chunk items. All
- 	 * device items are found before any chunk item (their object id
--- 
-2.24.1
+To convert raid10 to raid6 on a full filesystem with unequal disk sizes
+you'll need to do a few steps:
 
+	1.  balance -dconvert=raid1,stripes=1..3,profiles=raid6
+
+This converts any 3-stripe raid6 to raid1, which will get some wasted
+space back.  Use raid1 here because it's more flexible for allocation
+on small numbers of disks than raid10.  We will get rid of it later.
+
+	2.  balance -dconvert=raid1,devid=1,limit=5
+	    balance -dconvert=raid1,devid=2,limit=5
+	    balance -dconvert=raid1,devid=3,limit=5
+	    balance -dconvert=raid1,devid=6,limit=5
+
+Use btrfs fi show to see the real devids for these, I just put sequential
+numbers in the above.
+
+These balances relocate data on the 4.34TB drives to other disks in
+the array.  The goal is to get some unallocated space on all of the
+largest disks so you can create raid6 block groups that span all of them.
+
+We convert to raid1 to get more flexible redistribution of the
+space--raid10 will keep trying to fill every available drive, and has
+a 4-disk minimum, while raid1 will try to equally distribute space on
+all drives but only 2 at a time.  'soft' is not used here because we
+want to relocate block groups on these devices whether they are already
+raid1 or not.
+
+Note that if there is 5GB free on all the largest disks we can skip
+this entire step.  If there is not 5GB free on all the largest disks
+at the end of the above commands, you may need to repeat this step,
+or try 'balance -dconvert=raid1,limit=50' to try to force free space
+on all disks in the array.
+
+	3.  balance -dconvert=raid6,soft,devid=1
+
+This converts all data block groups that have at least one chunk on devid
+1 (or any disk of the largest size in the array) from raid10 to raid6.
+This will ensure that every chunk that is added to devid 1 has at least
+one corresponding chunk that is removed from devid 1.  That way, devid
+1 doesn't fill up; instead, it will stay with a few GB unallocated.
+The other disks will get unallocated space because a raid6 block group
+that is at least 4 disks wide will store more data in the same raw space
+than raid10.
+
+At this stage it doesn't matter where the space is coming from, as long as
+it's coming from a minimum of 4 other disks, and not filling up devid 1.
+Some block groups will not be optimal.  We'll optimize later.
+
+Eventually you'll get to the point where there is unallocated space on
+all disks, and then the balance will finish converting the data to raid6
+without further attention.
+
+	4.  balance -dstripes=1..3,devid=1  # sda, 4.34TB
+	    balance -dstripes=1..3,devid=2  # sdb, 4.34TB
+	    balance -dstripes=1..3,devid=3  # sdc, 4.34TB
+	    balance -dstripes=1..5,devid=4  # sdd, 2.21TB
+	    balance -dstripes=1..5,devid=5  # sde, 2.21TB
+	    balance -dstripes=1..3,devid=6  # sdf, 4.34TB
+	    balance -dstripes=1..9,devid=7  # sdg, 1.82TB
+	    balance -dstripes=1..9,devid=8  # sdh, 1.82TB
+	    balance -dstripes=1..9,devid=9  # sdi, 1.82TB
+	    balance -dstripes=1..9,devid=10 # sdj, 1.82TB
+
+This rebalances any narrow stripes that may have formed during the
+previous balances.  For each device we calculate how many disks are
+the same or equal size, and rebalance any block group that is not
+that number of disks wide:
+
+	There are 4 4.34TB disks, so we balance any block group
+	on a 4.34TB disk that is 1 to (4-1) = 3 stripes wide.
+
+	There are 6 2.21TB-or-larger disks (2x2.21TB + 4x4.34TB), so we
+	balance any block group on a 2.21TB disk that is 1 to (6-1) =
+	5 stripes wide.
+
+	There are 10 1.82TB-or-larger disks (this is the smallest size
+	disk, so all 10 disks are equal or larger), so we balance any
+	block group on a 1.82TB disk that is 1 to (10-1) = 9 stripes wide.
+
+These balances will only relocate non-optimal block groups, so each one
+should not relocate many block groups.  If 'btrfs balance status -v' says
+it's relocating thousands of block groups, check the stripe count and
+devid--if you use the wrong stripe count it will unnecessarily relocate
+all the data on the device.
+
+	5.  balance -mconvert=raid1c3,soft
+
+The final step converts metadata from raid10 to raid1c3.  (requires
+kernel 5.5)
+
+
+
+>      > > > > uname -r
+>      > > > > 5.3.0-40-generic
+>      > > >
+>      > > > Please upgrade to 5.4.13 or later.  Kernels 5.1 through 5.4.12
+>      have a
+>      > > > rare but nasty bug that is triggered by writing at exactly the
+>      wrong
+>      > > > moment during balance.  5.3 has some internal defenses against
+>      that bug
+>      > > > (the "write time tree checker"), but if they fail, the result is
+>      metadata
+>      > > > corruption that requires btrfs check to repair.
+>      > > >
+>      > >
+>      > > Thanks for the heads up. I'm getting it updated now and will attempt
+>      > > to remount once I do. Once it's remounted how should I proceed? Can
+>      I
+>      > > just assume the filesystem is healthy at that point? Should I
+>      perform
+>      > > a scrub?
+>      >
+>      > If scrub reports no errors it's probably OK.
+> 
+>      I did run a scrub and it came back clean.
+> 
+>      >
+>      > A scrub will tell you if any data or metadata is corrupted or any
+>      > parent-child pointers are broken.  That will cover most of the common
+>      > problems.  If the original issue was a spurious ENOSPC then everything
+>      > should be OK.  If the original issue was a write time tree corruption
+>      > then it should be OK.  If the original issue was something else, it
+>      > will present itself again during the scrub or balance.
+>      >
+>      > If there are errors, scrub won't attribute them to the right disks for
+>      > raid6.  It might be worth reading
+>      >
+>      >       
+>       [4]https://lore.kernel.org/linux-btrfs/20200627032414.GX10769@hungrycats.org/
+>      >
+>      > for a list of current raid5/6 issues to be aware of.
+> 
+>      Thanks. This is good info.
+> 
+>    --
+>    John Petrini
+> 
+> References
+> 
+>    Visible links
+>    1. mailto:john.d.petrini@gmail.com
+>    2. mailto:ce3g8jdj@umail.furryterror.org
+>    3. http://paste.openstack.org/show/795929/
+>    4. https://lore.kernel.org/linux-btrfs/20200627032414.GX10769@hungrycats.org/
