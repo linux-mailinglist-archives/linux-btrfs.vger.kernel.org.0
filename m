@@ -2,370 +2,116 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FE25221D5A
-	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Jul 2020 09:26:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40330221D84
+	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Jul 2020 09:37:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727883AbgGPHZg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 16 Jul 2020 03:25:36 -0400
-Received: from mx2.suse.de ([195.135.220.15]:53728 "EHLO mx2.suse.de"
+        id S1728219AbgGPHgc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 16 Jul 2020 03:36:32 -0400
+Received: from mx2.suse.de ([195.135.220.15]:59220 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726141AbgGPHZg (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 16 Jul 2020 03:25:36 -0400
+        id S1725921AbgGPHgb (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 16 Jul 2020 03:36:31 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 36C33ACCC;
-        Thu, 16 Jul 2020 07:25:38 +0000 (UTC)
-From:   Nikolay Borisov <nborisov@suse.com>
+        by mx2.suse.de (Postfix) with ESMTP id F3B49AF43
+        for <linux-btrfs@vger.kernel.org>; Thu, 16 Jul 2020 07:36:33 +0000 (UTC)
+From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Cc:     Nikolay Borisov <nborisov@suse.com>
-Subject: [PATCH v2] btrfs: Switch seed device to list api
-Date:   Thu, 16 Jul 2020 10:25:33 +0300
-Message-Id: <20200716072533.32592-1-nborisov@suse.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200715104850.19071-6-nborisov@suse.com>
-References: <20200715104850.19071-6-nborisov@suse.com>
+Subject: [PATCH] btrfs: qgroup: Fix data leakage caused by falloc and truncate
+Date:   Thu, 16 Jul 2020 15:36:24 +0800
+Message-Id: <20200716073624.7774-1-wqu@suse.com>
+X-Mailer: git-send-email 2.27.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-While this patch touches a bunch of files the conversion is
-straighforward. Instead of using the implicit linked list anchored at
-btrfs_fs_devices::seed the code is switched to using
-list_for_each_entry. Previous patches in the series already factored out
-code that processed both main and seed devices so in those cases
-the factored out functions are called on the main fs_devices and then
-on every seed dev inside list_for_each_entry.
+[BUG]
+When running tests like generic/013 on test device with btrfs quota
+enabled, it can normally lead to data leakage, detected at unmount time:
 
-Using list api also allows to simplify deletion from the seed dev list
-performed in btrfs_rm_device and btrfs_rm_dev_replace_free_srcdev by
-substituting a while() loop with a simple list_del_init.
+  BTRFS warning (device dm-3): qgroup 0/5 has unreleased space, type 0 rsv 4096
+  ------------[ cut here ]------------
+  WARNING: CPU: 11 PID: 16386 at fs/btrfs/disk-io.c:4142 close_ctree+0x1dc/0x323 [btrfs]
+  RIP: 0010:close_ctree+0x1dc/0x323 [btrfs]
+  Call Trace:
+   btrfs_put_super+0x15/0x17 [btrfs]
+   generic_shutdown_super+0x72/0x110
+   kill_anon_super+0x18/0x30
+   btrfs_kill_super+0x17/0x30 [btrfs]
+   deactivate_locked_super+0x3b/0xa0
+   deactivate_super+0x40/0x50
+   cleanup_mnt+0x135/0x190
+   __cleanup_mnt+0x12/0x20
+   task_work_run+0x64/0xb0
+   __prepare_exit_to_usermode+0x1bc/0x1c0
+   __syscall_return_slowpath+0x47/0x230
+   do_syscall_64+0x64/0xb0
+   entry_SYSCALL_64_after_hwframe+0x44/0xa9
+  ---[ end trace caf08beafeca2392 ]---
+  BTRFS error (device dm-3): qgroup reserved space leaked
 
-Signed-off-by: Nikolay Borisov <nborisov@suse.com>
+[CAUSE]
+In the offending case, the offending operations are:
+2/6: writev f2X[269 1 0 0 0 0] [1006997,67,288] 0
+2/7: truncate f2X[269 1 0 0 48 1026293] 18388 0
+
+The first writev will cause btrfs to reserve space for range
+[980K, 980K + 24K).
+
+Then the next truncate should free all the reserved qgroup data space of
+that range.
+
+However if memory cleaning writeback happens for the first page of that
+extent, then that page can have dirty bit cleaned, thus the
+btrfs_qgroup_free_data() call in btrfs_invalidatepage() will skip it as
+it's not a dirty page.
+
+[FIX]
+Instead of checking the dirty bit of a page, call
+btrfs_qgroup_free_data() unconditionally in btrfs_invalidatepage().
+
+As qgroup rsv are completely binded to the QGROUP_RESERVED bit of
+io_tree, not binded to page status, thus we won't cause double freeing
+anyway.
+
+Fixes: 0b34c261e235 ("btrfs: qgroup: Prevent qgroup->reserved from going subzero")
+Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
+ fs/btrfs/inode.c | 12 +++---------
+ 1 file changed, 3 insertions(+), 9 deletions(-)
 
-V2:
- * Removed tmp_fs_devices from btrfs_rm_dev_replace_free_srcdev. Reported by
- kernel test robot
-
- fs/btrfs/disk-io.c |  39 ++++++++---------
- fs/btrfs/reada.c   |   9 ++--
- fs/btrfs/volumes.c | 105 +++++++++++++++++++++------------------------
- fs/btrfs/volumes.h |   2 +-
- 4 files changed, 72 insertions(+), 83 deletions(-)
-
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 2fb0b43bc1c5..8767d47f6e29 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -545,33 +545,30 @@ static int csum_dirty_buffer(struct btrfs_fs_info *fs_info, struct page *page)
- static int check_tree_block_fsid(struct extent_buffer *eb)
- {
- 	struct btrfs_fs_info *fs_info = eb->fs_info;
--	struct btrfs_fs_devices *fs_devices = fs_info->fs_devices;
-+	struct btrfs_fs_devices *fs_devices = fs_info->fs_devices, *seed_devs;
- 	u8 fsid[BTRFS_FSID_SIZE];
--	int ret = 1;
-+	u8 *metadata_uuid;
-
- 	read_extent_buffer(eb, fsid, offsetof(struct btrfs_header, fsid),
- 			   BTRFS_FSID_SIZE);
--	while (fs_devices) {
--		u8 *metadata_uuid;
-+	/*
-+	 * Checking the incompat flag is only valid for the current
-+	 * fs. For seed devices it's forbidden to have their uuid
-+	 * changed so reading ->fsid in this case is fine
-+	 */
-+	if (btrfs_fs_incompat(fs_info, METADATA_UUID))
-+		metadata_uuid = fs_devices->metadata_uuid;
-+	else
-+		metadata_uuid = fs_devices->fsid;
-
--		/*
--		 * Checking the incompat flag is only valid for the current
--		 * fs. For seed devices it's forbidden to have their uuid
--		 * changed so reading ->fsid in this case is fine
--		 */
--		if (fs_devices == fs_info->fs_devices &&
--		    btrfs_fs_incompat(fs_info, METADATA_UUID))
--			metadata_uuid = fs_devices->metadata_uuid;
--		else
--			metadata_uuid = fs_devices->fsid;
-+	if (!memcmp(fsid, metadata_uuid, BTRFS_FSID_SIZE))
-+		return 0;
-
--		if (!memcmp(fsid, metadata_uuid, BTRFS_FSID_SIZE)) {
--			ret = 0;
--			break;
--		}
--		fs_devices = fs_devices->seed;
--	}
--	return ret;
-+	list_for_each_entry(seed_devs, &fs_devices->seed_list, seed_list)
-+		if (!memcmp(fsid, seed_devs->fsid, BTRFS_FSID_SIZE))
-+			return 0;
-+
-+	return 1;
- }
-
- static int btree_readpage_end_io_hook(struct btrfs_io_bio *io_bio,
-diff --git a/fs/btrfs/reada.c b/fs/btrfs/reada.c
-index aa9d24ed56d7..ac5b07ded0fe 100644
---- a/fs/btrfs/reada.c
-+++ b/fs/btrfs/reada.c
-@@ -792,16 +792,13 @@ static int __reada_start_for_fsdevs(struct btrfs_fs_devices *fs_devices)
-
- static void __reada_start_machine(struct btrfs_fs_info *fs_info)
- {
--	struct btrfs_fs_devices *fs_devices = fs_info->fs_devices;
-+	struct btrfs_fs_devices *fs_devices = fs_info->fs_devices, *seed_devs;
- 	int i;
- 	u64 enqueued = 0;
-
--again:
- 	enqueued += __reada_start_for_fsdevs(fs_devices);
--	if (fs_devices->seed) {
--		fs_devices = fs_devices->seed;
--		goto again;
--	}
-+	list_for_each_entry(seed_devs, &fs_devices->seed_list, seed_list)
-+		enqueued += __reada_start_for_fsdevs(seed_devs);
-
- 	if (enqueued == 0)
- 		return;
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index 70e58d724384..b05dbb448ee0 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -350,6 +350,7 @@ static struct btrfs_fs_devices *alloc_fs_devices(const u8 *fsid,
- 	INIT_LIST_HEAD(&fs_devs->devices);
- 	INIT_LIST_HEAD(&fs_devs->alloc_list);
- 	INIT_LIST_HEAD(&fs_devs->fs_list);
-+	INIT_LIST_HEAD(&fs_devs->seed_list);
- 	if (fsid)
- 		memcpy(fs_devs->fsid, fsid, BTRFS_FSID_SIZE);
-
-@@ -1087,14 +1088,13 @@ static void __btrfs_free_extra_devids(struct btrfs_fs_devices *fs_devices,
- void btrfs_free_extra_devids(struct btrfs_fs_devices *fs_devices, int step)
- {
- 	struct btrfs_device *latest_dev = NULL;
-+	struct btrfs_fs_devices *seed_dev;
-
- 	mutex_lock(&uuid_mutex);
--again:
- 	__btrfs_free_extra_devids(fs_devices, step, &latest_dev);
--	if (fs_devices->seed) {
--		fs_devices = fs_devices->seed;
--		goto again;
--	}
-+
-+	list_for_each_entry(seed_dev, &fs_devices->seed_list, seed_list)
-+		__btrfs_free_extra_devids(seed_dev, step, &latest_dev);
-
- 	fs_devices->latest_bdev = latest_dev->bdev;
-
-@@ -1168,20 +1168,18 @@ static void close_fs_devices(struct btrfs_fs_devices *fs_devices)
-
- void btrfs_close_devices(struct btrfs_fs_devices *fs_devices)
- {
--	struct btrfs_fs_devices *seed_devices = NULL;
-+	LIST_HEAD(list);
-+	struct btrfs_fs_devices *tmp;
-
- 	mutex_lock(&uuid_mutex);
- 	close_fs_devices(fs_devices);
--	if (!fs_devices->opened) {
--		seed_devices = fs_devices->seed;
--		fs_devices->seed = NULL;
--	}
-+	if (!fs_devices->opened)
-+		list_splice_init(&fs_devices->seed_list, &list);
- 	mutex_unlock(&uuid_mutex);
-
--	while (seed_devices) {
--		fs_devices = seed_devices;
--		seed_devices = fs_devices->seed;
-+	list_for_each_entry_safe(fs_devices, tmp, &list, seed_list) {
- 		close_fs_devices(fs_devices);
-+		list_del(&fs_devices->seed_list);
- 		free_fs_devices(fs_devices);
- 	}
- }
-@@ -2154,14 +2152,7 @@ int btrfs_rm_device(struct btrfs_fs_info *fs_info, const char *device_path,
- 	btrfs_free_device(device);
-
- 	if (cur_devices->open_devices == 0) {
--		while (fs_devices) {
--			if (fs_devices->seed == cur_devices) {
--				fs_devices->seed = cur_devices->seed;
--				break;
--			}
--			fs_devices = fs_devices->seed;
--		}
--		cur_devices->seed = NULL;
-+		list_del_init(&cur_devices->seed_list);
- 		close_fs_devices(cur_devices);
- 		free_fs_devices(cur_devices);
- 	}
-@@ -2225,8 +2216,6 @@ void btrfs_rm_dev_replace_free_srcdev(struct btrfs_device *srcdev)
-
- 	/* if this is no devs we rather delete the fs_devices */
- 	if (!fs_devices->num_devices) {
--		struct btrfs_fs_devices *tmp_fs_devices;
--
- 		/*
- 		 * On a mounted FS, num_devices can't be zero unless it's a
- 		 * seed. In case of a seed device being replaced, the replace
-@@ -2235,15 +2224,7 @@ void btrfs_rm_dev_replace_free_srcdev(struct btrfs_device *srcdev)
- 		 */
- 		ASSERT(fs_devices->seeding);
-
--		tmp_fs_devices = fs_info->fs_devices;
--		while (tmp_fs_devices) {
--			if (tmp_fs_devices->seed == fs_devices) {
--				tmp_fs_devices->seed = fs_devices->seed;
--				break;
--			}
--			tmp_fs_devices = tmp_fs_devices->seed;
--		}
--		fs_devices->seed = NULL;
-+		list_del_init(&fs_devices->seed_list);
- 		close_fs_devices(fs_devices);
- 		free_fs_devices(fs_devices);
- 	}
-@@ -2397,7 +2378,7 @@ static int btrfs_prepare_sprout(struct btrfs_fs_info *fs_info)
- 	fs_devices->open_devices = 0;
- 	fs_devices->missing_devices = 0;
- 	fs_devices->rotating = false;
--	fs_devices->seed = seed_devices;
-+	list_add_tail(&seed_devices->seed_list, &fs_devices->seed_list);
-
- 	generate_random_uuid(fs_devices->fsid);
- 	memcpy(fs_devices->metadata_uuid, fs_devices->fsid, BTRFS_FSID_SIZE);
-@@ -6430,11 +6411,23 @@ struct btrfs_device *btrfs_find_device(struct btrfs_fs_devices *fs_devices,
- 				       bool seed)
- {
- 	struct btrfs_device *device;
-+	struct btrfs_fs_devices *seed_devs;
-+
-+	if (!fsid ||
-+	    !memcmp(fs_devices->metadata_uuid, fsid, BTRFS_FSID_SIZE)) {
-+		list_for_each_entry(device, &fs_devices->devices,
-+				    dev_list) {
-+			if (device->devid == devid &&
-+			    (!uuid || memcmp(device->uuid, uuid,
-+					     BTRFS_UUID_SIZE) == 0))
-+				return device;
-+		}
-+	}
-
--	while (fs_devices) {
-+	list_for_each_entry(seed_devs, &fs_devices->seed_list, seed_list) {
- 		if (!fsid ||
--		    !memcmp(fs_devices->metadata_uuid, fsid, BTRFS_FSID_SIZE)) {
--			list_for_each_entry(device, &fs_devices->devices,
-+		    !memcmp(seed_devs->metadata_uuid, fsid, BTRFS_FSID_SIZE)) {
-+			list_for_each_entry(device, &seed_devs->devices,
- 					    dev_list) {
- 				if (device->devid == devid &&
- 				    (!uuid || memcmp(device->uuid, uuid,
-@@ -6442,11 +6435,8 @@ struct btrfs_device *btrfs_find_device(struct btrfs_fs_devices *fs_devices,
- 					return device;
- 			}
- 		}
--		if (seed)
--			fs_devices = fs_devices->seed;
--		else
--			return NULL;
- 	}
-+
- 	return NULL;
- }
-
-@@ -6688,13 +6678,10 @@ static struct btrfs_fs_devices *open_seed_devices(struct btrfs_fs_info *fs_info,
- 	lockdep_assert_held(&uuid_mutex);
- 	ASSERT(fsid);
-
--	fs_devices = fs_info->fs_devices->seed;
--	while (fs_devices) {
-+	list_for_each_entry(fs_devices, &fs_info->fs_devices->seed_list, seed_list)
- 		if (!memcmp(fs_devices->fsid, fsid, BTRFS_FSID_SIZE))
- 			return fs_devices;
-
--		fs_devices = fs_devices->seed;
--	}
-
- 	fs_devices = find_fsid(fsid, NULL);
- 	if (!fs_devices) {
-@@ -6728,8 +6715,8 @@ static struct btrfs_fs_devices *open_seed_devices(struct btrfs_fs_info *fs_info,
- 		goto out;
- 	}
-
--	fs_devices->seed = fs_info->fs_devices->seed;
--	fs_info->fs_devices->seed = fs_devices;
-+	ASSERT(list_empty(&fs_devices->seed_list));
-+	list_add_tail(&fs_devices->seed_list, &fs_info->fs_devices->seed_list);
- out:
- 	return fs_devices;
- }
-@@ -7141,17 +7128,23 @@ int btrfs_read_chunk_tree(struct btrfs_fs_info *fs_info)
-
- void btrfs_init_devices_late(struct btrfs_fs_info *fs_info)
- {
--	struct btrfs_fs_devices *fs_devices = fs_info->fs_devices;
-+	struct btrfs_fs_devices *fs_devices = fs_info->fs_devices, *seed_devs;
- 	struct btrfs_device *device;
-
--	while (fs_devices) {
--		mutex_lock(&fs_devices->device_list_mutex);
--		list_for_each_entry(device, &fs_devices->devices, dev_list)
-+	fs_devices->fs_info = fs_info;
-+
-+	mutex_lock(&fs_devices->device_list_mutex);
-+	list_for_each_entry(device, &fs_devices->devices, dev_list)
-+		device->fs_info = fs_info;
-+	mutex_unlock(&fs_devices->device_list_mutex);
-+
-+	list_for_each_entry(seed_devs, &fs_devices->seed_list, seed_list) {
-+		mutex_lock(&seed_devs->device_list_mutex);
-+		list_for_each_entry(device, &seed_devs->devices, dev_list)
- 			device->fs_info = fs_info;
--		mutex_unlock(&fs_devices->device_list_mutex);
-+		mutex_unlock(&seed_devs->device_list_mutex);
-
--		fs_devices->fs_info = fs_info;
--		fs_devices = fs_devices->seed;
-+		seed_devs->fs_info = fs_info;
- 	}
- }
-
-@@ -7527,8 +7520,10 @@ static int verify_one_dev_extent(struct btrfs_fs_info *fs_info,
-
- 	/* It's possible this device is a dummy for seed device */
- 	if (dev->disk_total_bytes == 0) {
--		dev = btrfs_find_device(fs_info->fs_devices->seed, devid, NULL,
--					NULL, false);
-+		struct btrfs_fs_devices *devs;
-+		devs = list_first_entry(&fs_info->fs_devices->seed_list,
-+					struct btrfs_fs_devices, seed_list);
-+		dev = btrfs_find_device(devs, devid, NULL, NULL, false);
- 		if (!dev) {
- 			btrfs_err(fs_info, "failed to find seed devid %llu",
- 				  devid);
-diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
-index fc283fdbcece..709f4aacbd3f 100644
---- a/fs/btrfs/volumes.h
-+++ b/fs/btrfs/volumes.h
-@@ -246,7 +246,7 @@ struct btrfs_fs_devices {
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index 7c03b402529e..0c9251b500b6 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -8157,21 +8157,15 @@ static void btrfs_invalidatepage(struct page *page, unsigned int offset,
+ 	/*
+ 	 * Qgroup reserved space handler
+ 	 * Page here will be either
+-	 * 1) Already written to disk
++	 * 1) Already written to disk or ordered extent already submitted
+ 	 *    In this case, its reserved space is released from data rsv map
+ 	 *    and will be freed by delayed_ref handler finally.
+ 	 *    So even we call qgroup_free_data(), it won't decrease reserved
+ 	 *    space.
+ 	 * 2) Not written to disk
+-	 *    This means the reserved space should be freed here. However,
+-	 *    if a truncate invalidates the page (by clearing PageDirty)
+-	 *    and the page is accounted for while allocating extent
+-	 *    in btrfs_check_data_free_space() we let delayed_ref to
+-	 *    free the entire extent.
++	 *    This means the reserved space should be freed here.
  	 */
- 	struct list_head alloc_list;
-
--	struct btrfs_fs_devices *seed;
-+	struct list_head seed_list;
- 	bool seeding;
-
- 	int opened;
---
-2.17.1
+-	if (PageDirty(page))
+-		btrfs_qgroup_free_data(BTRFS_I(inode), NULL, page_start,
+-				       PAGE_SIZE);
++	btrfs_qgroup_free_data(BTRFS_I(inode), NULL, page_start, PAGE_SIZE);
+ 	if (!inode_evicting) {
+ 		clear_extent_bit(tree, page_start, page_end, EXTENT_LOCKED |
+ 				 EXTENT_DELALLOC | EXTENT_DELALLOC_NEW |
+-- 
+2.27.0
 
