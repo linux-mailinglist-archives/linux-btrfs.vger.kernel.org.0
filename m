@@ -2,194 +2,123 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08A562218D1
-	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Jul 2020 02:27:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E69FE2218D7
+	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Jul 2020 02:27:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727822AbgGPA1e (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 15 Jul 2020 20:27:34 -0400
-Received: from mout.gmx.net ([212.227.15.15]:54631 "EHLO mout.gmx.net"
+        id S1727850AbgGPA1h (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 15 Jul 2020 20:27:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54550 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726479AbgGPA1b (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 15 Jul 2020 20:27:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1594859244;
-        bh=gilU3343Xm11W++hYSgjUMzPGe7JLv216V554GS2iiY=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=eS8KAR0F19E9uVMeVL3ZaH4/s9aUIgOlI3KnL26UtcPhevi1WCvCmvS7OM7OE1F6N
-         +/jPOSGrWGYnIvUE5wec2yA834lvMDfLLe8BJInr4TUvEhM2R08ZjbwebO2Y8cePeB
-         JjiK4OmR+K4DDiOFeFHUoJ1qJtYP60FcM3FLAg28=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MSt8W-1kIVBl3aKU-00UHaM; Thu, 16
- Jul 2020 02:27:24 +0200
-Subject: Re: [PATCH v2 2/2] btrfs: qgroup: add sysfs interface for debug
-To:     Chris Down <chris@chrisdown.name>, Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-References: <20200715134931.GA2140@chrisdown.name>
- <e973ae45-c746-95b7-d176-180d47ecb2e2@gmx.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
- PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
- 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
- D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
- efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
- ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
- BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
- 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
- 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
- EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
- 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
- ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
- oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
- fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
- 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
- ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
- oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <e6cc556e-c830-fa28-486f-e23d520fe98e@gmx.com>
-Date:   Thu, 16 Jul 2020 08:27:20 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <e973ae45-c746-95b7-d176-180d47ecb2e2@gmx.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="3QCc7O97boHuIXZL3P30pcz0OkVKCAPg1"
-X-Provags-ID: V03:K1:LTlAfY8iBqF4BWUsL2IR+Q6/nmGmpb/ohb2GVrok5zhrsTsCWKM
- HDfiolZHd/0Dm55GFiwS0SNB1vmgXhAJ0QNgsZ4HUHRrHE//Xx0lpE3D/KcKKAtq6NVuJwT
- fnSqedKeqqFWZvxuKV4kX0EO1fwcCCJgUMalHtVE4MGGWlSNhHr6lnciKfbviyuAX8fNULi
- WEHe/aPAI5q8ZqveoAzKw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:V/Z+rgFTkU0=:EHw0q2XlvZIZd4hKg6FRzE
- aK/cTTlhsW4wAkb7rMF1S0v91DjTK8x5/D7HCSi6DRlf8JM6YZ5RS5wgQvPI6iZ0j6ieSGkPe
- tK4oDPOUIV/+ir02RejWwEVsy3eEpwuh1bF4udaLzPJygymoIEm63KlW/j95P3x2g8BtBTqVk
- w1WVQib+Q75Pa+qCrZ9Cajp9zk/7J1fcX4OVRazkX9W6JdW7S0W7Hqw9tUruB4omFy4e60BLF
- BHQ52P2SEuSZoxgJFLRsfcFJ/JxXl7+RwUhPHXxGiYq9kpCRkgS5gRXao9GMDrUJzZ9iAMtrr
- 3vllUF86dCuz6wecyvoq8YDmclKG7aVApcNWNf2D7dpIIvXeuSOKAuBwYfTamQHn+AdoFl91N
- ryaldOrtkStX/kmw+7r66XtORFwbvTXcSR0ai1J2uIPivo2d+9qHaOzVPtRbQh02SIxJ3268p
- fA5c2LZsghVhfboyjOM2UCaQj/rXAVyFFXNHCJyfOQMbUBM2crbCzyGC7+hgk6/olt9rBvGk8
- 2S4qK/Nz1XGi+kClqLYhlkd9JcWpn+1Vxek5ESjNUe//f0qG0/t6rDpnAcPoCiYSDh1tx2AuJ
- CuDVV83d9AS9U4eM18yeZP6z4tfXZf57mwdHIQYCw92ITv42v3b3MuXDyHUf5epEasO8PQyx1
- vr7sIbfjCABafzC1JA9dtLNjUtJbeP0ZyfNbMOWnSSpUV2sevT++yeGyAsyFObZaLbJ1KVsCJ
- tkKOyhu5WRBDtLg49HoeFr9xF9lnS0dMfcQ1ca/3v6BZV3YIemiXYD8GgUirTO1GZ5kLIaf6V
- awTHET/7Qk4XUGeBwivmCWC0GQKFfOOzVcsKzsoE9pqYPZfMI1DOZal7ByiqZC4yZXGrzQfEm
- dmyjMVEOdrMKcjh0cMIOhEAuLDvcr761dry3wIwp2he/9Yvr81xjRmkedizGhStWs+ErmgF8Y
- iHacFlFvvp1q3Fv0bBJOne90ZEx5cDHDz3ssv5qLdx5ua8R1KVGePoXng2PhjJwRpX26OW3vY
- mZhyfmWgvYI3tjJ6hqP6twroKlI+7UcNaUP2l50q/d/0NvwwHQzTCtp2RLfeYzWYoDC5gOC3D
- anakg14KEoraola8n3ablsKds2KOyqBpnxOE3vW91T5F+fpIkneOIunZFi9+QTxnnbMMTnK39
- bHmUjSonq7liwNqSLa9xXBYua5vUSFcTGCG+uGpUXmpU1faMcSYpef56C89ibfoYvLDHlo9gt
- C2VMijdYVgbYeBo4oLXS7YdEiIc0zYu9LyzQTLg==
+        id S1727819AbgGPA1f (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 15 Jul 2020 20:27:35 -0400
+Received: from localhost (unknown [137.135.114.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 43BD32076C;
+        Thu, 16 Jul 2020 00:27:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594859254;
+        bh=GEziDP5HiD3f/2kmMiC8OrJXv3eCmwGtVsBzNMZsU+w=;
+        h=Date:From:To:To:To:Cc:Cc:Subject:In-Reply-To:References:From;
+        b=vLPJrvMfbDzPzOHQ7J05iGi3WdscwKMquMY5LLL8luuf5pctza9rJlt6FuOdrre42
+         NHHwyzM3bv7bStEhJAjzR55nXRzTtewlQ6G4kNoPAq7gwZ3ncMUzWfg+gIjDCGoSoC
+         S+LxqrULZMHWOke+r4w5ty1mJN9gUtrVNA1qjmvk=
+Date:   Thu, 16 Jul 2020 00:27:33 +0000
+From:   Sasha Levin <sashal@kernel.org>
+To:     Sasha Levin <sashal@kernel.org>
+To:     David Sterba <dsterba@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     David Sterba <dsterba@suse.com>, stable@vger.kernel.org
+Cc:     stable@vger.kernel.org
+Subject: Re: [PATCH] btrfs: add missing check for nocow and compression inode flags
+In-Reply-To: <20200710100553.13567-1-dsterba@suse.com>
+References: <20200710100553.13567-1-dsterba@suse.com>
+Message-Id: <20200716002734.43BD32076C@mail.kernel.org>
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---3QCc7O97boHuIXZL3P30pcz0OkVKCAPg1
-Content-Type: multipart/mixed; boundary="WJYE8B9IUH7O4vlfLqueMBoAhObGauqpO"
+Hi
 
---WJYE8B9IUH7O4vlfLqueMBoAhObGauqpO
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+[This is an automated email]
 
+This commit has been processed because it contains a -stable tag.
+The stable tag indicates that it's relevant for the following trees: 4.4+
 
+The bot has tested the following trees: v5.7.8, v5.4.51, v4.19.132, v4.14.188, v4.9.230, v4.4.230.
 
-On 2020/7/16 =E4=B8=8A=E5=8D=888:15, Qu Wenruo wrote:
->=20
->=20
-> On 2020/7/15 =E4=B8=8B=E5=8D=889:49, Chris Down wrote:
->> Hi Wenruo,
->>
->> While testing my pending patches on top of linux-next, I encountered a=
+v5.7.8: Build OK!
+v5.4.51: Build OK!
+v4.19.132: Failed to apply! Possible dependencies:
+    04e6863b19c72 ("btrfs: split btrfs_setxattr calls regarding transaction")
+    262c96a3c3670 ("btrfs: refactor btrfs_set_prop and add btrfs_set_prop_trans")
+    7715da84f74d5 ("btrfs: merge _btrfs_set_prop helpers")
+    8b4d1efc9e6c3 ("btrfs: prop: open code btrfs_set_prop in inherit_prop")
+    cac237ae095f6 ("btrfs: rename btrfs_setxattr to btrfs_setxattr_trans")
+    d2b8fcfe43155 ("btrfs: modify local copy of btrfs_inode flags")
+    f22125e5d8ae1 ("btrfs: refactor btrfs_set_props to validate externally")
+    ff9fef559babe ("btrfs: start transaction in btrfs_ioctl_setflags()")
 
->> bug that seems related to this patch during btrfs unmount. Specificall=
-y,
->> a null pointer dereference in kobject_del inside btrfs_sysfs_del_qgrou=
-ps
->> from close_ctree.
->>
->> The fix may be as simple as checking if the kobject is initialised,
->> although perhaps it should always be initialised in this case, so I'll=
+v4.14.188: Failed to apply! Possible dependencies:
+    04e6863b19c72 ("btrfs: split btrfs_setxattr calls regarding transaction")
+    1905a0f7c7de3 ("btrfs: rename btrfs_mask_flags to reflect which flags it touches")
+    262c96a3c3670 ("btrfs: refactor btrfs_set_prop and add btrfs_set_prop_trans")
+    38e82de8ccd18 ("btrfs: user proper type for btrfs_mask_flags flags")
+    5ba76abfb2336 ("btrfs: rename check_flags to reflect which flags it touches")
+    5c57b8b6a4966 ("btrfs: unify naming of flags variables for SETFLAGS and XFLAGS")
+    7715da84f74d5 ("btrfs: merge _btrfs_set_prop helpers")
+    7852781d94b30 ("btrfs: drop underscores from exported xattr functions")
+    7b6a221e5b21f ("btrfs: rename btrfs_update_iflags to reflect which flags it touches")
+    8b4d1efc9e6c3 ("btrfs: prop: open code btrfs_set_prop in inherit_prop")
+    93370509c24cc ("btrfs: SETFLAGS ioctl: use helper for compression type conversion")
+    a157d4fd81dc7 ("btrfs: rename btrfs_flags_to_ioctl to reflect which flags it touches")
+    ab0d09361662b ("btrfs: drop extern from function declarations")
+    cac237ae095f6 ("btrfs: rename btrfs_setxattr to btrfs_setxattr_trans")
+    d2b8fcfe43155 ("btrfs: modify local copy of btrfs_inode flags")
+    f22125e5d8ae1 ("btrfs: refactor btrfs_set_props to validate externally")
+    ff9fef559babe ("btrfs: start transaction in btrfs_ioctl_setflags()")
 
->> leave you to work out what the real issue is :-)
->=20
-> Thank you very much for the report.
->=20
-> May I ask if the qgroup is enabled? Or qgroup is not enabled at all?
+v4.9.230: Failed to apply! Possible dependencies:
+    0b246afa62b0c ("btrfs: root->fs_info cleanup, add fs_info convenience variables")
+    1905a0f7c7de3 ("btrfs: rename btrfs_mask_flags to reflect which flags it touches")
+    38e82de8ccd18 ("btrfs: user proper type for btrfs_mask_flags flags")
+    5ba76abfb2336 ("btrfs: rename check_flags to reflect which flags it touches")
+    5c57b8b6a4966 ("btrfs: unify naming of flags variables for SETFLAGS and XFLAGS")
+    62d1f9fe97dd2 ("btrfs: remove trivial helper btrfs_find_tree_block")
+    a157d4fd81dc7 ("btrfs: rename btrfs_flags_to_ioctl to reflect which flags it touches")
+    cf8cddd38bab3 ("btrfs: don't abuse REQ_OP_* flags for btrfs_map_block")
+    da17066c40472 ("btrfs: pull node/sector/stripe sizes out of root and into fs_info")
+    de143792253e2 ("btrfs: struct btrfsic_state->root should be an fs_info")
+    fb456252d3d9c ("btrfs: root->fs_info cleanup, use fs_info->dev_root everywhere")
+    ff9fef559babe ("btrfs: start transaction in btrfs_ioctl_setflags()")
 
-BTW, after checking the code, it looks a little strange to me.
-
-Firstly, both kobject_del and kobject_put() has extra check on NULL
-pointers, thus if fs_info->qgroups_kobj is NULL, it should do nothing
-and exit.
-
-Secondly, the fs_info->qgroup_kobj is initialized to zero, by kvzalloc()
-in btrfs_mount_root().
-
-Thus unless we modified it manually, it should always be NULL.
-
-And for the locations modifying qgroups_kobj, it's either allocating it,
-in btrfs_sysfs_add_qgroups(), or removing it and set it back to NULL in
-btrfs_sysfs_del_qgroups().
-
-Thus this looks pretty weird.
-
-Would you please provide the full call trace (especially the address
-causing the NULL pointer deref) and the reproducer (if possible)?
-
-Thanks,
-Qu
->=20
-> Thanks,
-> Qu
->>
->>
->> =C2=A0=C2=A0=C2=A0 RIP: kobject_del+0x1/0x20
->>
->> =C2=A0=C2=A0=C2=A0 [...]
->>
->> =C2=A0=C2=A0=C2=A0 Call Trace:
->> =C2=A0=C2=A0=C2=A0=C2=A0 btrfs_sysfs_del_qgroups+0xa5/0xe0
->> =C2=A0=C2=A0=C2=A0=C2=A0 close_ctree+0x1cd/0x2c0
->> =C2=A0=C2=A0=C2=A0=C2=A0 generic_shutdown_super+0x6c/0x100
->> =C2=A0=C2=A0=C2=A0=C2=A0 kill_anon_super+0x14/0x30
->> =C2=A0=C2=A0=C2=A0=C2=A0 btrfs_kill_super+0x12/0x20
->> =C2=A0=C2=A0=C2=A0=C2=A0 deactivate_locked_super+0x36/0x90
->> =C2=A0=C2=A0=C2=A0=C2=A0 cleanup_mnt+0x12d/0x190
->> =C2=A0=C2=A0=C2=A0=C2=A0 task_work_run+0x5c/0x90
->> =C2=A0=C2=A0=C2=A0=C2=A0 __prepare_exit_to_usermode+0x164/0x170
->> =C2=A0=C2=A0=C2=A0=C2=A0 [...]
->>
->> Thanks,
->>
->> Chris
->=20
+v4.4.230: Failed to apply! Possible dependencies:
+    0132761017e01 ("btrfs: fix string and comment grammatical issues and typos")
+    09cbfeaf1a5a6 ("mm, fs: get rid of PAGE_CACHE_* and page_cache_{get,release} macros")
+    0b246afa62b0c ("btrfs: root->fs_info cleanup, add fs_info convenience variables")
+    0e749e54244ee ("dax: increase granularity of dax_clear_blocks() operations")
+    1905a0f7c7de3 ("btrfs: rename btrfs_mask_flags to reflect which flags it touches")
+    38e82de8ccd18 ("btrfs: user proper type for btrfs_mask_flags flags")
+    4420cfd3f51cf ("staging: lustre: format properly all comment blocks for LNet core")
+    52db400fcd502 ("pmem, dax: clean up clear_pmem()")
+    5ba76abfb2336 ("btrfs: rename check_flags to reflect which flags it touches")
+    5c57b8b6a4966 ("btrfs: unify naming of flags variables for SETFLAGS and XFLAGS")
+    5fd88337d209d ("staging: lustre: fix all conditional comparison to zero in LNet layer")
+    a157d4fd81dc7 ("btrfs: rename btrfs_flags_to_ioctl to reflect which flags it touches")
+    b2e0d1625e193 ("dax: fix lifetime of in-kernel dax mappings with dax_map_atomic()")
+    bb7ab3b92e46d ("btrfs: Fix misspellings in comments.")
+    cf8cddd38bab3 ("btrfs: don't abuse REQ_OP_* flags for btrfs_map_block")
+    d1a5f2b4d8a12 ("block: use DAX for partition table reads")
+    de143792253e2 ("btrfs: struct btrfsic_state->root should be an fs_info")
+    e10624f8c0971 ("pmem: fail io-requests to known bad blocks")
+    ff9fef559babe ("btrfs: start transaction in btrfs_ioctl_setflags()")
 
 
---WJYE8B9IUH7O4vlfLqueMBoAhObGauqpO--
+NOTE: The patch will not be queued to stable trees until it is upstream.
 
---3QCc7O97boHuIXZL3P30pcz0OkVKCAPg1
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+How should we proceed with this patch?
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl8PnugACgkQwj2R86El
-/qjV/gf9FUf+bDKb8T2VOAqUl5nexv1wpzOWkgWaJJ9AOGZxa/6OyZB1L15+1fGb
-CEwA79BWS5gsxtdqzQKblaHVkdn07vnzK1s+z/P3gK3HE+43LJHwBcDc8hJuH71S
-6qVa/6f+U3Spcc1HixcjOiydX7hJM5gt6f/9ek4uHWsFkAvmOpgXBlQbQsx20s18
-dXiYWZUnZaRzr7oLROjvbPvTmijLABvuWptyjO+HfJek+QW0WH1wNlQNi4edGBC8
-J6QbJs2c6rnq4CldqB/A3E98WD4szZZl4PfZ4bApY2Jh6LhIRRMQJIjFKpY6Do7w
-SrTHNpAl0yaPYaFm5BA/NAIJcaSGDg==
-=Ceok
------END PGP SIGNATURE-----
-
---3QCc7O97boHuIXZL3P30pcz0OkVKCAPg1--
+-- 
+Thanks
+Sasha
