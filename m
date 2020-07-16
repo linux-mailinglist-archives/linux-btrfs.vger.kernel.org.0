@@ -2,106 +2,370 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B11E221D20
-	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Jul 2020 09:18:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FE25221D5A
+	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Jul 2020 09:26:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728102AbgGPHRJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 16 Jul 2020 03:17:09 -0400
-Received: from mx2.suse.de ([195.135.220.15]:47726 "EHLO mx2.suse.de"
+        id S1727883AbgGPHZg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 16 Jul 2020 03:25:36 -0400
+Received: from mx2.suse.de ([195.135.220.15]:53728 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726547AbgGPHRI (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 16 Jul 2020 03:17:08 -0400
+        id S1726141AbgGPHZg (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 16 Jul 2020 03:25:36 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id B29A3AB55;
-        Thu, 16 Jul 2020 07:17:10 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 36C33ACCC;
+        Thu, 16 Jul 2020 07:25:38 +0000 (UTC)
 From:   Nikolay Borisov <nborisov@suse.com>
 To:     linux-btrfs@vger.kernel.org
 Cc:     Nikolay Borisov <nborisov@suse.com>
-Subject: [PATCH v2] btrfs: Factor out loop logic from btrfs_free_extra_devids
-Date:   Thu, 16 Jul 2020 10:17:04 +0300
-Message-Id: <20200716071704.29960-1-nborisov@suse.com>
+Subject: [PATCH v2] btrfs: Switch seed device to list api
+Date:   Thu, 16 Jul 2020 10:25:33 +0300
+Message-Id: <20200716072533.32592-1-nborisov@suse.com>
 X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200715104850.19071-3-nborisov@suse.com>
-References: <20200715104850.19071-3-nborisov@suse.com>
+In-Reply-To: <20200715104850.19071-6-nborisov@suse.com>
+References: <20200715104850.19071-6-nborisov@suse.com>
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This prepares the code to switching seeds devices to a proper list.
+While this patch touches a bunch of files the conversion is
+straighforward. Instead of using the implicit linked list anchored at
+btrfs_fs_devices::seed the code is switched to using
+list_for_each_entry. Previous patches in the series already factored out
+code that processed both main and seed devices so in those cases
+the factored out functions are called on the main fs_devices and then
+on every seed dev inside list_for_each_entry.
+
+Using list api also allows to simplify deletion from the seed dev list
+performed in btrfs_rm_device and btrfs_rm_dev_replace_free_srcdev by
+substituting a while() loop with a simple list_del_init.
 
 Signed-off-by: Nikolay Borisov <nborisov@suse.com>
 ---
 
 V2:
- * Added missing static modifier to the factored out function. Reported by
+ * Removed tmp_fs_devices from btrfs_rm_dev_replace_free_srcdev. Reported by
  kernel test robot
 
- fs/btrfs/volumes.c | 34 +++++++++++++++++++++-------------
- 1 file changed, 21 insertions(+), 13 deletions(-)
+ fs/btrfs/disk-io.c |  39 ++++++++---------
+ fs/btrfs/reada.c   |   9 ++--
+ fs/btrfs/volumes.c | 105 +++++++++++++++++++++------------------------
+ fs/btrfs/volumes.h |   2 +-
+ 4 files changed, 72 insertions(+), 83 deletions(-)
 
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index ce01e44f8134..76a68edb3127 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -1024,28 +1024,24 @@ static struct btrfs_fs_devices *clone_fs_devices(struct btrfs_fs_devices *orig)
- 	return ERR_PTR(ret);
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index 2fb0b43bc1c5..8767d47f6e29 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -545,33 +545,30 @@ static int csum_dirty_buffer(struct btrfs_fs_info *fs_info, struct page *page)
+ static int check_tree_block_fsid(struct extent_buffer *eb)
+ {
+ 	struct btrfs_fs_info *fs_info = eb->fs_info;
+-	struct btrfs_fs_devices *fs_devices = fs_info->fs_devices;
++	struct btrfs_fs_devices *fs_devices = fs_info->fs_devices, *seed_devs;
+ 	u8 fsid[BTRFS_FSID_SIZE];
+-	int ret = 1;
++	u8 *metadata_uuid;
+
+ 	read_extent_buffer(eb, fsid, offsetof(struct btrfs_header, fsid),
+ 			   BTRFS_FSID_SIZE);
+-	while (fs_devices) {
+-		u8 *metadata_uuid;
++	/*
++	 * Checking the incompat flag is only valid for the current
++	 * fs. For seed devices it's forbidden to have their uuid
++	 * changed so reading ->fsid in this case is fine
++	 */
++	if (btrfs_fs_incompat(fs_info, METADATA_UUID))
++		metadata_uuid = fs_devices->metadata_uuid;
++	else
++		metadata_uuid = fs_devices->fsid;
+
+-		/*
+-		 * Checking the incompat flag is only valid for the current
+-		 * fs. For seed devices it's forbidden to have their uuid
+-		 * changed so reading ->fsid in this case is fine
+-		 */
+-		if (fs_devices == fs_info->fs_devices &&
+-		    btrfs_fs_incompat(fs_info, METADATA_UUID))
+-			metadata_uuid = fs_devices->metadata_uuid;
+-		else
+-			metadata_uuid = fs_devices->fsid;
++	if (!memcmp(fsid, metadata_uuid, BTRFS_FSID_SIZE))
++		return 0;
+
+-		if (!memcmp(fsid, metadata_uuid, BTRFS_FSID_SIZE)) {
+-			ret = 0;
+-			break;
+-		}
+-		fs_devices = fs_devices->seed;
+-	}
+-	return ret;
++	list_for_each_entry(seed_devs, &fs_devices->seed_list, seed_list)
++		if (!memcmp(fsid, seed_devs->fsid, BTRFS_FSID_SIZE))
++			return 0;
++
++	return 1;
  }
 
--/*
-- * After we have read the system tree and know devids belonging to
-- * this filesystem, remove the device which does not belong there.
-- */
--void btrfs_free_extra_devids(struct btrfs_fs_devices *fs_devices, int step)
-+
-+
-+static void __btrfs_free_extra_devids(struct btrfs_fs_devices *fs_devices,
-+				      int step, struct btrfs_device **latest_dev)
- {
- 	struct btrfs_device *device, *next;
--	struct btrfs_device *latest_dev = NULL;
+ static int btree_readpage_end_io_hook(struct btrfs_io_bio *io_bio,
+diff --git a/fs/btrfs/reada.c b/fs/btrfs/reada.c
+index aa9d24ed56d7..ac5b07ded0fe 100644
+--- a/fs/btrfs/reada.c
++++ b/fs/btrfs/reada.c
+@@ -792,16 +792,13 @@ static int __reada_start_for_fsdevs(struct btrfs_fs_devices *fs_devices)
 
--	mutex_lock(&uuid_mutex);
+ static void __reada_start_machine(struct btrfs_fs_info *fs_info)
+ {
+-	struct btrfs_fs_devices *fs_devices = fs_info->fs_devices;
++	struct btrfs_fs_devices *fs_devices = fs_info->fs_devices, *seed_devs;
+ 	int i;
+ 	u64 enqueued = 0;
+
 -again:
- 	/* This is the initialized path, it is safe to release the devices. */
- 	list_for_each_entry_safe(device, next, &fs_devices->devices, dev_list) {
- 		if (test_bit(BTRFS_DEV_STATE_IN_FS_METADATA,
--							&device->dev_state)) {
-+			     &device->dev_state)) {
- 			if (!test_bit(BTRFS_DEV_STATE_REPLACE_TGT,
--			     &device->dev_state) &&
-+				      &device->dev_state) &&
- 			    !test_bit(BTRFS_DEV_STATE_MISSING,
- 				      &device->dev_state) &&
--			     (!latest_dev ||
--			      device->generation > latest_dev->generation)) {
--				latest_dev = device;
-+			    (!*latest_dev ||
-+			     device->generation > (*latest_dev)->generation)) {
-+				*latest_dev = device;
+ 	enqueued += __reada_start_for_fsdevs(fs_devices);
+-	if (fs_devices->seed) {
+-		fs_devices = fs_devices->seed;
+-		goto again;
+-	}
++	list_for_each_entry(seed_devs, &fs_devices->seed_list, seed_list)
++		enqueued += __reada_start_for_fsdevs(seed_devs);
+
+ 	if (enqueued == 0)
+ 		return;
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index 70e58d724384..b05dbb448ee0 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -350,6 +350,7 @@ static struct btrfs_fs_devices *alloc_fs_devices(const u8 *fsid,
+ 	INIT_LIST_HEAD(&fs_devs->devices);
+ 	INIT_LIST_HEAD(&fs_devs->alloc_list);
+ 	INIT_LIST_HEAD(&fs_devs->fs_list);
++	INIT_LIST_HEAD(&fs_devs->seed_list);
+ 	if (fsid)
+ 		memcpy(fs_devs->fsid, fsid, BTRFS_FSID_SIZE);
+
+@@ -1087,14 +1088,13 @@ static void __btrfs_free_extra_devids(struct btrfs_fs_devices *fs_devices,
+ void btrfs_free_extra_devids(struct btrfs_fs_devices *fs_devices, int step)
+ {
+ 	struct btrfs_device *latest_dev = NULL;
++	struct btrfs_fs_devices *seed_dev;
+
+ 	mutex_lock(&uuid_mutex);
+-again:
+ 	__btrfs_free_extra_devids(fs_devices, step, &latest_dev);
+-	if (fs_devices->seed) {
+-		fs_devices = fs_devices->seed;
+-		goto again;
+-	}
++
++	list_for_each_entry(seed_dev, &fs_devices->seed_list, seed_list)
++		__btrfs_free_extra_devids(seed_dev, step, &latest_dev);
+
+ 	fs_devices->latest_bdev = latest_dev->bdev;
+
+@@ -1168,20 +1168,18 @@ static void close_fs_devices(struct btrfs_fs_devices *fs_devices)
+
+ void btrfs_close_devices(struct btrfs_fs_devices *fs_devices)
+ {
+-	struct btrfs_fs_devices *seed_devices = NULL;
++	LIST_HEAD(list);
++	struct btrfs_fs_devices *tmp;
+
+ 	mutex_lock(&uuid_mutex);
+ 	close_fs_devices(fs_devices);
+-	if (!fs_devices->opened) {
+-		seed_devices = fs_devices->seed;
+-		fs_devices->seed = NULL;
+-	}
++	if (!fs_devices->opened)
++		list_splice_init(&fs_devices->seed_list, &list);
+ 	mutex_unlock(&uuid_mutex);
+
+-	while (seed_devices) {
+-		fs_devices = seed_devices;
+-		seed_devices = fs_devices->seed;
++	list_for_each_entry_safe(fs_devices, tmp, &list, seed_list) {
+ 		close_fs_devices(fs_devices);
++		list_del(&fs_devices->seed_list);
+ 		free_fs_devices(fs_devices);
+ 	}
+ }
+@@ -2154,14 +2152,7 @@ int btrfs_rm_device(struct btrfs_fs_info *fs_info, const char *device_path,
+ 	btrfs_free_device(device);
+
+ 	if (cur_devices->open_devices == 0) {
+-		while (fs_devices) {
+-			if (fs_devices->seed == cur_devices) {
+-				fs_devices->seed = cur_devices->seed;
+-				break;
+-			}
+-			fs_devices = fs_devices->seed;
+-		}
+-		cur_devices->seed = NULL;
++		list_del_init(&cur_devices->seed_list);
+ 		close_fs_devices(cur_devices);
+ 		free_fs_devices(cur_devices);
+ 	}
+@@ -2225,8 +2216,6 @@ void btrfs_rm_dev_replace_free_srcdev(struct btrfs_device *srcdev)
+
+ 	/* if this is no devs we rather delete the fs_devices */
+ 	if (!fs_devices->num_devices) {
+-		struct btrfs_fs_devices *tmp_fs_devices;
+-
+ 		/*
+ 		 * On a mounted FS, num_devices can't be zero unless it's a
+ 		 * seed. In case of a seed device being replaced, the replace
+@@ -2235,15 +2224,7 @@ void btrfs_rm_dev_replace_free_srcdev(struct btrfs_device *srcdev)
+ 		 */
+ 		ASSERT(fs_devices->seeding);
+
+-		tmp_fs_devices = fs_info->fs_devices;
+-		while (tmp_fs_devices) {
+-			if (tmp_fs_devices->seed == fs_devices) {
+-				tmp_fs_devices->seed = fs_devices->seed;
+-				break;
+-			}
+-			tmp_fs_devices = tmp_fs_devices->seed;
+-		}
+-		fs_devices->seed = NULL;
++		list_del_init(&fs_devices->seed_list);
+ 		close_fs_devices(fs_devices);
+ 		free_fs_devices(fs_devices);
+ 	}
+@@ -2397,7 +2378,7 @@ static int btrfs_prepare_sprout(struct btrfs_fs_info *fs_info)
+ 	fs_devices->open_devices = 0;
+ 	fs_devices->missing_devices = 0;
+ 	fs_devices->rotating = false;
+-	fs_devices->seed = seed_devices;
++	list_add_tail(&seed_devices->seed_list, &fs_devices->seed_list);
+
+ 	generate_random_uuid(fs_devices->fsid);
+ 	memcpy(fs_devices->metadata_uuid, fs_devices->fsid, BTRFS_FSID_SIZE);
+@@ -6430,11 +6411,23 @@ struct btrfs_device *btrfs_find_device(struct btrfs_fs_devices *fs_devices,
+ 				       bool seed)
+ {
+ 	struct btrfs_device *device;
++	struct btrfs_fs_devices *seed_devs;
++
++	if (!fsid ||
++	    !memcmp(fs_devices->metadata_uuid, fsid, BTRFS_FSID_SIZE)) {
++		list_for_each_entry(device, &fs_devices->devices,
++				    dev_list) {
++			if (device->devid == devid &&
++			    (!uuid || memcmp(device->uuid, uuid,
++					     BTRFS_UUID_SIZE) == 0))
++				return device;
++		}
++	}
+
+-	while (fs_devices) {
++	list_for_each_entry(seed_devs, &fs_devices->seed_list, seed_list) {
+ 		if (!fsid ||
+-		    !memcmp(fs_devices->metadata_uuid, fsid, BTRFS_FSID_SIZE)) {
+-			list_for_each_entry(device, &fs_devices->devices,
++		    !memcmp(seed_devs->metadata_uuid, fsid, BTRFS_FSID_SIZE)) {
++			list_for_each_entry(device, &seed_devs->devices,
+ 					    dev_list) {
+ 				if (device->devid == devid &&
+ 				    (!uuid || memcmp(device->uuid, uuid,
+@@ -6442,11 +6435,8 @@ struct btrfs_device *btrfs_find_device(struct btrfs_fs_devices *fs_devices,
+ 					return device;
  			}
- 			continue;
  		}
-@@ -1083,6 +1079,18 @@ void btrfs_free_extra_devids(struct btrfs_fs_devices *fs_devices, int step)
- 		btrfs_free_device(device);
+-		if (seed)
+-			fs_devices = fs_devices->seed;
+-		else
+-			return NULL;
+ 	}
++
+ 	return NULL;
+ }
+
+@@ -6688,13 +6678,10 @@ static struct btrfs_fs_devices *open_seed_devices(struct btrfs_fs_info *fs_info,
+ 	lockdep_assert_held(&uuid_mutex);
+ 	ASSERT(fsid);
+
+-	fs_devices = fs_info->fs_devices->seed;
+-	while (fs_devices) {
++	list_for_each_entry(fs_devices, &fs_info->fs_devices->seed_list, seed_list)
+ 		if (!memcmp(fs_devices->fsid, fsid, BTRFS_FSID_SIZE))
+ 			return fs_devices;
+
+-		fs_devices = fs_devices->seed;
+-	}
+
+ 	fs_devices = find_fsid(fsid, NULL);
+ 	if (!fs_devices) {
+@@ -6728,8 +6715,8 @@ static struct btrfs_fs_devices *open_seed_devices(struct btrfs_fs_info *fs_info,
+ 		goto out;
  	}
 
-+}
-+/*
-+ * After we have read the system tree and know devids belonging to
-+ * this filesystem, remove the device which does not belong there.
-+ */
-+void btrfs_free_extra_devids(struct btrfs_fs_devices *fs_devices, int step)
-+{
-+	struct btrfs_device *latest_dev = NULL;
+-	fs_devices->seed = fs_info->fs_devices->seed;
+-	fs_info->fs_devices->seed = fs_devices;
++	ASSERT(list_empty(&fs_devices->seed_list));
++	list_add_tail(&fs_devices->seed_list, &fs_info->fs_devices->seed_list);
+ out:
+ 	return fs_devices;
+ }
+@@ -7141,17 +7128,23 @@ int btrfs_read_chunk_tree(struct btrfs_fs_info *fs_info)
+
+ void btrfs_init_devices_late(struct btrfs_fs_info *fs_info)
+ {
+-	struct btrfs_fs_devices *fs_devices = fs_info->fs_devices;
++	struct btrfs_fs_devices *fs_devices = fs_info->fs_devices, *seed_devs;
+ 	struct btrfs_device *device;
+
+-	while (fs_devices) {
+-		mutex_lock(&fs_devices->device_list_mutex);
+-		list_for_each_entry(device, &fs_devices->devices, dev_list)
++	fs_devices->fs_info = fs_info;
 +
-+	mutex_lock(&uuid_mutex);
-+again:
-+	__btrfs_free_extra_devids(fs_devices, step, &latest_dev);
- 	if (fs_devices->seed) {
- 		fs_devices = fs_devices->seed;
- 		goto again;
++	mutex_lock(&fs_devices->device_list_mutex);
++	list_for_each_entry(device, &fs_devices->devices, dev_list)
++		device->fs_info = fs_info;
++	mutex_unlock(&fs_devices->device_list_mutex);
++
++	list_for_each_entry(seed_devs, &fs_devices->seed_list, seed_list) {
++		mutex_lock(&seed_devs->device_list_mutex);
++		list_for_each_entry(device, &seed_devs->devices, dev_list)
+ 			device->fs_info = fs_info;
+-		mutex_unlock(&fs_devices->device_list_mutex);
++		mutex_unlock(&seed_devs->device_list_mutex);
+
+-		fs_devices->fs_info = fs_info;
+-		fs_devices = fs_devices->seed;
++		seed_devs->fs_info = fs_info;
+ 	}
+ }
+
+@@ -7527,8 +7520,10 @@ static int verify_one_dev_extent(struct btrfs_fs_info *fs_info,
+
+ 	/* It's possible this device is a dummy for seed device */
+ 	if (dev->disk_total_bytes == 0) {
+-		dev = btrfs_find_device(fs_info->fs_devices->seed, devid, NULL,
+-					NULL, false);
++		struct btrfs_fs_devices *devs;
++		devs = list_first_entry(&fs_info->fs_devices->seed_list,
++					struct btrfs_fs_devices, seed_list);
++		dev = btrfs_find_device(devs, devid, NULL, NULL, false);
+ 		if (!dev) {
+ 			btrfs_err(fs_info, "failed to find seed devid %llu",
+ 				  devid);
+diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
+index fc283fdbcece..709f4aacbd3f 100644
+--- a/fs/btrfs/volumes.h
++++ b/fs/btrfs/volumes.h
+@@ -246,7 +246,7 @@ struct btrfs_fs_devices {
+ 	 */
+ 	struct list_head alloc_list;
+
+-	struct btrfs_fs_devices *seed;
++	struct list_head seed_list;
+ 	bool seeding;
+
+ 	int opened;
 --
 2.17.1
 
