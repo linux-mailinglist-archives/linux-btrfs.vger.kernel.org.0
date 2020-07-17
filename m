@@ -2,32 +2,30 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3604224714
-	for <lists+linux-btrfs@lfdr.de>; Sat, 18 Jul 2020 01:39:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FC2122471E
+	for <lists+linux-btrfs@lfdr.de>; Sat, 18 Jul 2020 01:46:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728121AbgGQXih (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 17 Jul 2020 19:38:37 -0400
-Received: from mout.gmx.net ([212.227.17.21]:49585 "EHLO mout.gmx.net"
+        id S1727040AbgGQXq0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 17 Jul 2020 19:46:26 -0400
+Received: from mout.gmx.net ([212.227.15.19]:39535 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726851AbgGQXig (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 17 Jul 2020 19:38:36 -0400
+        id S1726634AbgGQXqZ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 17 Jul 2020 19:46:25 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1595029111;
-        bh=aJ1HCpoe69lYzTpI4HRJ7HFliTI64quYeKWaU8m3I/M=;
+        s=badeba3b8450; t=1595029579;
+        bh=dvw/f2MdOWKhzR6kj5Ugdlama7ImJo9cFbfkb0F5DvA=;
         h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=DoBxHSKa/G7cXXxt4R7qUKCxK1b8hDHhe10vs+TkweVc3ldexEuESOr9LN93gmA+8
-         zDw8JCQhagOSeNMlzXkEMmnsTjYlmSTlqxBkb65hRiLK9oWe6B5A0yiWt45eHr/PHi
-         hRipDRYH58wnePeukNbZWJjbclLcUqInqkPC6Duo=
+        b=Vcnz3vlp+B6cUuU/mX2Rl8JWfH0Rddq4SWCK2QELmsTMc/XKG/IaEHQo7mTzPWtQp
+         Ur43r93Je0X7JyTNOzx0LtjC/hhPXAEDzZJqcyVh8UEMj1wsn5Qdt9DV6POxwFd6/T
+         OKdJD9xT/VdIwrI/UPKNgUWoTqgxiSR+Mwo9mE18=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1McpJq-1kVMWK2QsM-00ZuDJ; Sat, 18
- Jul 2020 01:38:31 +0200
-Subject: Re: [PATCH v2] btrfs: qgroup: Fix data leakage caused by race between
- writeback and truncate
-To:     Josef Bacik <josef@toxicpanda.com>, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20200717071205.26027-1-wqu@suse.com>
- <9b03ca60-e56f-442c-7558-3ca1b2b1df77@toxicpanda.com>
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MZkpR-1kJQdx2Cgh-00WrIJ; Sat, 18
+ Jul 2020 01:46:19 +0200
+Subject: Re: [RFC][PATCH] btrfs: add an autodefrag property
+To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com, chris@colorremedies.com
+References: <20200717204221.2285627-1-josef@toxicpanda.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -53,186 +51,249 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
  ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
  oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <dcc47e7f-53e0-e832-0e39-e8c1d82e318e@gmx.com>
-Date:   Sat, 18 Jul 2020 07:38:27 +0800
+Message-ID: <c9b9d2f6-8e2c-01c2-193f-8f589134d39f@gmx.com>
+Date:   Sat, 18 Jul 2020 07:46:15 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <9b03ca60-e56f-442c-7558-3ca1b2b1df77@toxicpanda.com>
+In-Reply-To: <20200717204221.2285627-1-josef@toxicpanda.com>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="msiJ0Z0O4oaAlHjb7CfsmtUP37tO2AHj7"
-X-Provags-ID: V03:K1:wvmFOJqdh1tu4gAUn/ed7aH2+bkH5JS7suXWfIpNoaWGeLhsnTp
- vFdRZ/7GVgA/QcDJmEJ9h7hEOfDZu5cNxw0JhHn8/3Ob36pgX8/m1SakZS4hdV2Z3qLOe9K
- ZvduPonIgyhXP8SsHSWz/ca2p9BbsD8CZRa6mgSqW5PtipDqfVt2O1UGz41cBNUATZmRqPg
- d3cJeleePKT6QnHeUU/9w==
+ boundary="YXg0iloXId4Q1Mp6EfbYzIvPU6zdxnD6X"
+X-Provags-ID: V03:K1:rlxmdpWWQ3y9Y2HXjPNEjVx1vDRCzw0d0kBH36NLy8BBvZfmKeP
+ ezEAL0fTMpN2qlGRUOtNdbotT0QZNtY7w2h9uYjSLmr2euFg+3CBZwOFp9XFKNkwsMgTFjG
+ j+CyVFeBv5ZscoTX2ij9LrzAwbc9w1tL2V6+ndMnrQMb0jjYdRUYmISay/RfG4IpZ8OwBGt
+ MBAYPr7sxxA2T6kjOYCgA==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:qbo7hwRO8AU=:M5cRQSYdoDPgj43Dt25CDE
- HMDVy48ACto5ZGz7/+58onjNy+sOZCfJptd9my1yEcAoBakPUZblOGf88nvvdtBZF6+m+8FYX
- oR5wS1unVDx1PXddEtFyYr8TauJodjU0z3nptNluMjhfTw4Wcu9tZGRNDTYOa3HeNCbVPTu93
- 3xISe0RKt0w47waPDHWavNmSD/6ST4J9LofWhydiFRaUGvvWBsxUVvhhgGn9gA7bAVvSb/3cQ
- 2s4fEQhQnjn2BRJ8DPnli+MquPx+fhA9q3VfP15HlzkKc+77aOFvAzVV61AvUqIwPf0TWRIkE
- L5Kx16WeaPfBcXS0vEF25I/vDGE4MWDi+YhUF+nFY89tOwbEIoMQhdp7o+lgqH/qbvFInjAQn
- g/+LFVMMm/+o077VT+Ei6I57Ph8vDTbCLK2gd0GNJSmCuv1VzwyMhVPk0jSnu0BnUiV7P4fBg
- aFPg8nQudBRVl5tG/xDWBkrehMNeryIkGM86B93F36AXlrLCKRQ6GJf0/WgJGZ4aqQenDGU3Y
- gIo744VuMXogVUroM0DzD1NqSeskHQisy7VI6zszx8+bQopovV5HjMynCrq/eR0Wmly6PBld9
- rYaLTYKcs3CU7+7whueTdhpHX0YvNb5zPF6M58bwkRrA0ome4gU/sSPRJK8c8gXF9McXvZORU
- 1gnX4koyWRAblyVuLnv3LR86bnPYdoKEHdoUDFYJeqR9onJFtMBnn9qGjM8/Y7Pyot8r7MCHo
- YP1Y6iaaFhx17IljhC639fwpLBzqM5AIPQwfXOjZjNl8I6AR+trsLnkFSYKC2E4O678VO7Oyd
- VFYjp78UAj5jzJo5PcYrTUZpD60aj4lwhwhW1alQxzzBsVtUN1acdoQBWuTEXNmoV4rraE8tj
- CDWfNwrLbz0YN//PAjLaV/OUsv0yEzZ1YPixx/9ddf1LTgdadvzl5r8OK+58jkcuGN64PhF4p
- a1WR0R5Gluz5bCT0lIaKec4VptlWKsV+wfWdm1Wr66bRknD0sZjMOnIftD+/+WbxZKSCM83iF
- 5dU+Rbct3bhKZumegoA/nnXQvfqhJhhi5EjhS7rdo3qtTXw40BigvbviEMiYt+C0VdBiTnKFj
- v1ObJ6wwEzdYLsEamvkDfL0k+TUUutPQir+ReDdBW1Pl4kCokhh8WgRbK0lDnfdNCiALPhKkd
- wQqIAA4/7v+QTlCONGnGmJNp+JImZTqws0r1pTVde4MlOuLxr9++Ty26im2QyT9v5s7kagWKE
- 5YS6lwuExhvl3GHskYiNkAO5wTv3ahJXycds4aw==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:xaNOuNLfMX4=:D759wPkZRMaB4zVb6HbNig
+ ZikW3FF3YUtQZn18ygmpdz1zzD8DhX8INjt9H4WXFxUsZJtm/8mJZ1ZYLHMR5eak2gZ7uXTH8
+ DFjtXZDWUhmdSi495xm8e4rqHmkBr8KfA45+u5yIBdubcOpwCP1q0rAD4MMNjSNW/tSQIzekl
+ 1DsIdkCK/zNl0vCSxUu6GKL6yhcrGL1h2VlImwh0uYCftLDRhDOm8c4eRfCJSTyun4Yo+kPWE
+ I8je8OcrBX/q4DkSmDEAT3AaFDw3g00CAP0TMO4MkXZWaq7/26gQ+zPxuTnh2OMcZ5fLkhV+j
+ Vw9jc/e3+YWXjqC0cMGMOcc+g7Iiz0oe6Xl2mWScPHQK+mz0zXsMKSs7NjFoGUtL0tGVcWnao
+ DJb1Z6WQEi5w7D9IwoKWCUTdql6yY1rcrnqN7w4ARKFqYQOKbOPHI9RQiYsv+UViDei7fRbn1
+ 8fjPOwdWY2eGmlra5iVBkpr3/9k8yXfT9q/AFitKB5jTqsIXGscgj0NXqMqKOTuhl/YI2xw/w
+ PBW9Ig83xmHesaNsHRHdug8okgTNcARQBFN5Kc4Ciar8Yh/8Kd6/ZbH4vZy44r3Xi3+3RQ8dG
+ p8G4g/c6akVZpAeoaZFeBzqJYFCv5UBm7B8ab3s2AjsNtTmpPG5BY2LsFhVyoG+YVNSLnrSud
+ +HjsJ3zLpPRSpXkfdGWplmMx4Du+2Qh30Pssz95yzZbC5nJw+56f1dvTFV/EKV9dEzdzIj4MQ
+ di8MG1l+xuXdi6K/YpkQ0saZt80QcMozwFA5C3HiIE6M5Ym1hPJOiQsXn9xkEPIlGFzh55ptO
+ jxd+EpBVXNw+BRV5qhFLw9yZfCkNSkdIA/0G+lAgMkefJuxvoNxF0IhG72ctHnwdkk3HCmo7A
+ jo1Dl6h53bGHzdwYJ/XUVcvlvEyc0lIbkaciu3p0wU/564ZoHmtQDfmobcfsjTpxefyntLm2C
+ UFk64tJXbWRyr970lLZekvRpBPqlT69tdQbWuZRT3Y+c7YhQd7lgvEzaXwDx2ATe5aApFJLIn
+ 5liWm9ce6JKkj9jrmNXt7I906f+3NSqLybp51huN4ZHrNdh5dmyPt85wbn4A5lTx9PpOgvns7
+ DvDbKZbrPBUha6jfaQONDJqF4n7oexCKAa5EuiDJ8YYtDuqw39FtdV0JTsuckBKFH8FncI1BH
+ v/t7bOoOSMQc8KWpNTwJW5yk2K4GgI/hKvGtnR2hpkfFe6yxfOS+2JlR6PpQ7y/FPvy0JJL3h
+ uvEfgqIbnaYuqONIRSQqmdGHfACCRFsvgt+o82A==
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---msiJ0Z0O4oaAlHjb7CfsmtUP37tO2AHj7
-Content-Type: multipart/mixed; boundary="9i33XKukeXMUwbwXBc1mXNZ4ra2Gh5OUH"
+--YXg0iloXId4Q1Mp6EfbYzIvPU6zdxnD6X
+Content-Type: multipart/mixed; boundary="NiyOYezSiGiiJY9jpKTcvv4ZPKAlch1ro"
 
---9i33XKukeXMUwbwXBc1mXNZ4ra2Gh5OUH
+--NiyOYezSiGiiJY9jpKTcvv4ZPKAlch1ro
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
 
 
 
-On 2020/7/17 =E4=B8=8B=E5=8D=8811:30, Josef Bacik wrote:
-> On 7/17/20 3:12 AM, Qu Wenruo wrote:
->> [BUG]
->> When running tests like generic/013 on test device with btrfs quota
->> enabled, it can normally lead to data leakage, detected at unmount tim=
-e:
->>
->> =C2=A0=C2=A0 BTRFS warning (device dm-3): qgroup 0/5 has unreleased sp=
-ace, type
->> 0 rsv 4096
->> =C2=A0=C2=A0 ------------[ cut here ]------------
->> =C2=A0=C2=A0 WARNING: CPU: 11 PID: 16386 at fs/btrfs/disk-io.c:4142
->> close_ctree+0x1dc/0x323 [btrfs]
->> =C2=A0=C2=A0 RIP: 0010:close_ctree+0x1dc/0x323 [btrfs]
->> =C2=A0=C2=A0 Call Trace:
->> =C2=A0=C2=A0=C2=A0 btrfs_put_super+0x15/0x17 [btrfs]
->> =C2=A0=C2=A0=C2=A0 generic_shutdown_super+0x72/0x110
->> =C2=A0=C2=A0=C2=A0 kill_anon_super+0x18/0x30
->> =C2=A0=C2=A0=C2=A0 btrfs_kill_super+0x17/0x30 [btrfs]
->> =C2=A0=C2=A0=C2=A0 deactivate_locked_super+0x3b/0xa0
->> =C2=A0=C2=A0=C2=A0 deactivate_super+0x40/0x50
->> =C2=A0=C2=A0=C2=A0 cleanup_mnt+0x135/0x190
->> =C2=A0=C2=A0=C2=A0 __cleanup_mnt+0x12/0x20
->> =C2=A0=C2=A0=C2=A0 task_work_run+0x64/0xb0
->> =C2=A0=C2=A0=C2=A0 __prepare_exit_to_usermode+0x1bc/0x1c0
->> =C2=A0=C2=A0=C2=A0 __syscall_return_slowpath+0x47/0x230
->> =C2=A0=C2=A0=C2=A0 do_syscall_64+0x64/0xb0
->> =C2=A0=C2=A0=C2=A0 entry_SYSCALL_64_after_hwframe+0x44/0xa9
->> =C2=A0=C2=A0 ---[ end trace caf08beafeca2392 ]---
->> =C2=A0=C2=A0 BTRFS error (device dm-3): qgroup reserved space leaked
->>
->> [CAUSE]
->> In the offending case, the offending operations are:
->> 2/6: writev f2X[269 1 0 0 0 0] [1006997,67,288] 0
->> 2/7: truncate f2X[269 1 0 0 48 1026293] 18388 0
->>
->> The following sequence of events could happen after the writev():
->> =C2=A0=C2=A0=C2=A0=C2=A0CPU1 (writeback)=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0 |=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 CPU2 (truncate)
->> -----------------------------------------------------------------
->> btrfs_writepages()=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0 |
->> |- extent_write_cache_pages()=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
- |
->> =C2=A0=C2=A0=C2=A0 |- Got page for 1003520=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0 |
->> =C2=A0=C2=A0=C2=A0 |=C2=A0 1003520 is Dirty, no writeback=C2=A0=C2=A0=C2=
-=A0 |
->> =C2=A0=C2=A0=C2=A0 |=C2=A0 So (!clear_page_dirty_for_io())=C2=A0=C2=A0=
- |
->> =C2=A0=C2=A0=C2=A0 |=C2=A0 gets called for it=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 |
->> =C2=A0=C2=A0=C2=A0 |- Now page 1003520 is Clean.=C2=A0=C2=A0=C2=A0 |
->> =C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | btrfs_s=
-etattr()
->> =C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | |- btrf=
-s_setsize()
->> =C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=
-=A0=C2=A0 |- truncate_setsize()
->> =C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0 New i_size is 18388
->> =C2=A0=C2=A0=C2=A0 |- __extent_writepage()=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0 |
->> =C2=A0=C2=A0=C2=A0 |=C2=A0 |- page_offset() > i_size=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0 |
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |- btrfs_invalidatepage()=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |
->> =C2=A0=C2=A0=C2=A0=C2=A0 |- Page is clean, so no qgroup |
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 callback executed
->>
->> This means, the qgroup reserved data space is not properly released in=
+On 2020/7/18 =E4=B8=8A=E5=8D=884:42, Josef Bacik wrote:
+> Autodefrag is very useful for somethings, like the 9000 sqllite files
+> that Firefox uses, but is way less useful for virt images.
+> Unfortunately this is only available currently as a whole mount option.=
 
->> btrfs_invalidatepage() as the page is Clean.
->>
->> [FIX]
->> Instead of checking the dirty bit of a page, call
->> btrfs_qgroup_free_data() unconditionally in btrfs_invalidatepage().
->>
->> As qgroup rsv are completely binded to the QGROUP_RESERVED bit of
->> io_tree, not binded to page status, thus we won't cause double freeing=
-
->> anyway.
->>
->> Fixes: 0b34c261e235 ("btrfs: qgroup: Prevent qgroup->reserved from
->> going subzero")
->> Signed-off-by: Qu Wenruo <wqu@suse.com>
->>
+> Fix this by adding an "autodefrag" property, that users can set on a pe=
+r
+> file or per directory basis.  Thus allowing them to control where
+> exactly the extra write activity is going to occur.
 >=20
-> I don't understand how this is ok.=C2=A0 We can call invalidatepage via=
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> ---
+> - This is an RFC because I want to make sure we're ok with this before =
+I go and
+>   add btrfs-progs support for this.  I'm not married to the name or the=
+ value,
+>   but I think the core goal is valuable.
 
-> memory pressure, so what if we have started the write and have an
-> ordered extent outstanding, and then we call into invalidate page and
-> now unconditionally drop the qgroup reservation, even tho we still need=
+The idea looks pretty good to me.
 
-> it for the ordered extent.=C2=A0 Am I missing something here?=C2=A0 Tha=
-nks,
+Although it would be much more convincing to bring some real-world micro
+bench to show the benefit.
 
-As long as the ordered extent as been started
-(__btrfs_add_ordered_extent()), then the QGROUP_RESERVED bit is cleared,
-either freed for NODATACOW write, or released for COW writes.
 
-IIRC this recent change is suggested by you, and that paved the road for
-this fix.
+However I still have a concern related to defrag.
+Since it's on-disk flag, thus can be inherited by snapshot, then what
+would happen if an auto-defrag inode get snapshotted.
+
+Would any write to the auto-defrag inode in new snapshot break the space
+saving?
+
+>=20
+>  fs/btrfs/btrfs_inode.h |  1 +
+>  fs/btrfs/file.c        | 16 ++++++++++------
+>  fs/btrfs/props.c       | 41 +++++++++++++++++++++++++++++++++++++++++
+>  3 files changed, 52 insertions(+), 6 deletions(-)
+>=20
+> diff --git a/fs/btrfs/btrfs_inode.h b/fs/btrfs/btrfs_inode.h
+> index e7d709505cb1..4f04f0535f90 100644
+> --- a/fs/btrfs/btrfs_inode.h
+> +++ b/fs/btrfs/btrfs_inode.h
+> @@ -31,6 +31,7 @@ enum {
+>  	BTRFS_INODE_READDIO_NEED_LOCK,
+>  	BTRFS_INODE_HAS_PROPS,
+>  	BTRFS_INODE_SNAPSHOT_FLUSH,
+> +	BTRFS_INODE_AUTODEFRAG,
+>  };
+> =20
+>  /* in memory btrfs inode */
+> diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+> index 841c516079a9..cac2092bdcdf 100644
+> --- a/fs/btrfs/file.c
+> +++ b/fs/btrfs/file.c
+> @@ -116,12 +116,16 @@ static int __btrfs_add_inode_defrag(struct btrfs_=
+inode *inode,
+>  	return 0;
+>  }
+> =20
+> -static inline int __need_auto_defrag(struct btrfs_fs_info *fs_info)
+> +static inline int __need_auto_defrag(struct btrfs_fs_info *fs_info,
+> +				     struct btrfs_inode *inode)
+
+We can grab fs_info from btrfs_inode, thus no need for the fs_info
+parameter.
 
 Thanks,
 Qu
+
+>  {
+> -	if (!btrfs_test_opt(fs_info, AUTO_DEFRAG))
+> +	if (btrfs_fs_closing(fs_info))
+>  		return 0;
+> =20
+> -	if (btrfs_fs_closing(fs_info))
+> +	if (inode && test_bit(BTRFS_INODE_AUTODEFRAG, &inode->runtime_flags))=
+
+> +		return 1;
+> +
+> +	if (!btrfs_test_opt(fs_info, AUTO_DEFRAG))
+>  		return 0;
+> =20
+>  	return 1;
+> @@ -140,7 +144,7 @@ int btrfs_add_inode_defrag(struct btrfs_trans_handl=
+e *trans,
+>  	u64 transid;
+>  	int ret;
+> =20
+> -	if (!__need_auto_defrag(fs_info))
+> +	if (!__need_auto_defrag(fs_info, inode))
+>  		return 0;
+> =20
+>  	if (test_bit(BTRFS_INODE_IN_DEFRAG, &inode->runtime_flags))
+> @@ -187,7 +191,7 @@ static void btrfs_requeue_inode_defrag(struct btrfs=
+_inode *inode,
+>  	struct btrfs_fs_info *fs_info =3D inode->root->fs_info;
+>  	int ret;
+> =20
+> -	if (!__need_auto_defrag(fs_info))
+> +	if (!__need_auto_defrag(fs_info, inode))
+>  		goto out;
+> =20
+>  	/*
+> @@ -348,7 +352,7 @@ int btrfs_run_defrag_inodes(struct btrfs_fs_info *f=
+s_info)
+>  			     &fs_info->fs_state))
+>  			break;
+> =20
+> -		if (!__need_auto_defrag(fs_info))
+> +		if (btrfs_fs_closing(fs_info))
+>  			break;
+> =20
+>  		/* find an inode to defrag */
+> diff --git a/fs/btrfs/props.c b/fs/btrfs/props.c
+> index 2dcb1cb21634..5c6411c8b19f 100644
+> --- a/fs/btrfs/props.c
+> +++ b/fs/btrfs/props.c
+> @@ -310,6 +310,40 @@ static const char *prop_compression_extract(struct=
+ inode *inode)
+>  	return NULL;
+>  }
+> =20
+> +static int prop_autodefrag_validate(const char *value, size_t len)
+> +{
+> +	if (!value)
+> +		return 0;
+> +	if (!strncmp("true", value, 4))
+> +		return 0;
+> +	return -EINVAL;
+> +}
+> +
+> +static int prop_autodefrag_apply(struct inode *inode, const char *valu=
+e,
+> +				 size_t len)
+> +{
+> +	if (len =3D=3D 0) {
+> +		clear_bit(BTRFS_INODE_AUTODEFRAG,
+> +			  &BTRFS_I(inode)->runtime_flags);
+> +		return 0;
+> +	}
+> +
+> +	if (!strncmp("true", value, 4)) {
+> +		set_bit(BTRFS_INODE_AUTODEFRAG,
+> +			&BTRFS_I(inode)->runtime_flags);
+> +		return 0;
+> +	}
+> +
+> +	return -EINVAL;
+> +}
+> +
+> +static const char *prop_autodefrag_extract(struct inode *inode)
+> +{
+> +	if (test_bit(BTRFS_INODE_AUTODEFRAG, &BTRFS_I(inode)->runtime_flags))=
+
+> +		return "true";
+> +	return NULL;
+> +}
+> +
+>  static struct prop_handler prop_handlers[] =3D {
+>  	{
+>  		.xattr_name =3D XATTR_BTRFS_PREFIX "compression",
+> @@ -318,6 +352,13 @@ static struct prop_handler prop_handlers[] =3D {
+>  		.extract =3D prop_compression_extract,
+>  		.inheritable =3D 1
+>  	},
+> +	{
+> +		.xattr_name =3D XATTR_BTRFS_PREFIX "autodefrag",
+> +		.validate =3D prop_autodefrag_validate,
+> +		.apply =3D prop_autodefrag_apply,
+> +		.extract =3D prop_autodefrag_extract,
+> +		.inheritable =3D 1
+> +	},
+>  };
+> =20
+>  static int inherit_props(struct btrfs_trans_handle *trans,
 >=20
-> Josef
 
 
---9i33XKukeXMUwbwXBc1mXNZ4ra2Gh5OUH--
+--NiyOYezSiGiiJY9jpKTcvv4ZPKAlch1ro--
 
---msiJ0Z0O4oaAlHjb7CfsmtUP37tO2AHj7
+--YXg0iloXId4Q1Mp6EfbYzIvPU6zdxnD6X
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl8SNnMACgkQwj2R86El
-/qgnFQf+OcU3UVJ0XCpPhWqh2gC5REZmcOTp+CIKFDsmlXgLaBlQSjBTK9B2WI03
-5QxWTOC+TMBl20EX0cfWGpUa4GUSeAVPKsL8frRmjHLqEntsIM3vI2VsWs9tghmg
-G8IYzkKK8aK3oEe2TF+iukxtUmf/ADgC7g3dL05C8iKj/tB5svTeruhpLX3+Ey2z
-T3yj1RlNyx+zFT6T6EbaDFzhDGaQZONwCWwLRpC01AQTkm5F9zcQDJz3vOng1g80
-TwHquWhFa6cjR2Uh9GLG5o4d/sdGMZ0HLqSIGnKSWi0CWTegozvfFqeOi1C1vojn
-YTFpJgOvQMbfFRx/1oBG3xAXGKIrDA==
-=mHdA
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl8SOEcACgkQwj2R86El
+/qgXGgf/QW/viXm2oXcFy3xUIDFv2laIU0u+09CbbWtCpdyHL6Btf7pBfhVoG2vI
+YQ2Fbj7P6g1LAy+oAAl4IWMpfKOAc16Fk2uz5XxB8gY6dkCg4cH+anHVZEtZLLb+
+VQRG0p7zxq8QI4MYKxGhYnQFjbzp4vtRuTteuxdXTbbIOeisw2YabGvuKFh5DLxT
+ghlnSc/m8wdCQGpEFs9pUDZUMJK4PcWgzvxSS9aU1c4W7fyEcFpf+GbKOqNNpFdD
+ajRxDNoKm57yOxXGWQgu4n+Lm2S83MMcxMwNhpT0C+lzFSZhpL1gDn3geJkzQgAJ
+6weMIeBU5TUhxzRIxSextcydc7fuTA==
+=Zju2
 -----END PGP SIGNATURE-----
 
---msiJ0Z0O4oaAlHjb7CfsmtUP37tO2AHj7--
+--YXg0iloXId4Q1Mp6EfbYzIvPU6zdxnD6X--
