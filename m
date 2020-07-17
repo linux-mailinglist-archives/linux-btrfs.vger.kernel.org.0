@@ -2,149 +2,214 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFFA02235EB
-	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Jul 2020 09:32:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00EE52238EB
+	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Jul 2020 12:05:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726234AbgGQHbY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 17 Jul 2020 03:31:24 -0400
-Received: from esa6.hgst.iphmx.com ([216.71.154.45]:17084 "EHLO
-        esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726166AbgGQHbY (ORCPT
+        id S1726090AbgGQKFi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 17 Jul 2020 06:05:38 -0400
+Received: from aserp2130.oracle.com ([141.146.126.79]:51792 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725912AbgGQKFi (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 17 Jul 2020 03:31:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1594971084; x=1626507084;
-  h=from:to:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=Cw9FxjM4475wEGhbTZ7YWELMZdqOZ/tXsrcsR7MnP64=;
-  b=qp8fYzGW5CJTmxMF+l4wuzWHeT1iYuZ8O3qIy1M5AdoYs98yMnXuzowh
-   j/oVN6GxSWscZ7xlWQNOnwwl54bfzRzjJam2Jni+XtUPvfTqIFVXsEB5I
-   VPH5waySwqFn3bzPAbRSOGrF9bOYt/JKRaIczDfzL7NJw0SIFzDHXipo3
-   gh31UDW6FIkwklu4x1p5hiQ/3tqzFbz5CzQ3jfTq0pLISahY3DgVaLLcV
-   Aj/iP8pXZ6EoaivCUSZgX9Hkg6bWfnkJtHj43lDnNRYKtvV8+MVgiKs22
-   eomzQ6RZ2TWaM+pUsc9eZJHX/PEnXbUuhDBbdmOU1xoSvDRGzk/E3Upr1
-   w==;
-IronPort-SDR: RQZ2edwq93UxZsvpHfLDqOohwK0/3aad5N308HXh+C6+LOEob0Nx+gQh1D7QTRYu7iRH/7yVv5
- 04fLCH7Hk+ChWEV/gJFDmIY596CD6TBifzcGx2IZUP6fSPSSd/a3Db6zcDR0SvvSyEmI4DoXDn
- jQN1oR5/VX0Vi/hAomhxDApfxhLkSZlO344D8my297R+iI8Rpewwb/UrDuWIxAuoO8k0EpOpDc
- 0VjlkjMlPrYIzAKv8ahDeeGE2GSKDFAIFtI5e+eldS7qaNY21jg7Rq9b8c7UB7sCStSaMI4vPT
- iOo=
-X-IronPort-AV: E=Sophos;i="5.75,362,1589212800"; 
-   d="scan'208";a="143984310"
-Received: from mail-dm6nam11lp2174.outbound.protection.outlook.com (HELO NAM11-DM6-obe.outbound.protection.outlook.com) ([104.47.57.174])
-  by ob1.hgst.iphmx.com with ESMTP; 17 Jul 2020 15:31:23 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=EMwhSjZUVGWbCjgSuXwj71SMc6pn0lOKMIUB6O46ZUqdLMSpFsiqxuFo21/lyGOd1WtwTrqHmFcssJXUcy7TzPTC0ZRq9ADYbok34eBSjeDfdQxIpvYjmg0VVajezJIqgCvWm/5/ICrj1JF9NxB5VdrXJbLev2Xhw3ql1c365n0/gmnrnKIS7BOb5jAkn9FmIB8vNgkxed23qyZR4YCOwUfyMTE1qVwrmPuz4wxZjTMZ/ceB0J+zngsI4MQPnZiJCvgBtEnQq3rG4MC/fqehjdXqhXsUHlJiORjt7TigB7qblC/jMpUwSDFXnpxKd2mfzxmtuCwUl/d7F6N3J2LyCQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KvIx7e3sBsTzgxC5/3CXqo4mjzD2NTHfYJvEUAggzj8=;
- b=lonxKQXDUD9bYZbRynqzwlk+XVRsyr79SBR0NcuyOqQkdKVl2G06gxM0lRiOzt6RAQJdV1aVODoMgkFcR4W9SBmeSkE97JqsZCLFqLeWFDbEaokXyuglVUI+UHDduUCWKV2tjm4vDlkeoq+Tqyp4jG4mEaNwsA9JY1pmrWNIrrQ+Nwh+NYwGJaqvjJVM+9dEBMN9SGHrnWfMZV2Gb5G+S4QouS+NIz7fA0mVTTfp45Es2DLGXywtE+RT5k639txjzamrD/kzrwaPlZvs79pWFaFb/hehr6Vz0ztFQUHlv8PJpqQYBo74P7vf/K6S1b2ymrsEnO1eRb0OIroIuT8gAA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KvIx7e3sBsTzgxC5/3CXqo4mjzD2NTHfYJvEUAggzj8=;
- b=Kt0Rs3zk9dvdcrnVO3q06ACIE+5Jhkw+1CjAgVByV6B2N1q1bFMDrj/yCnsEllx7+kQMnO16dTa6zHDeWT0NJzNid9PTGQfpbbm4t5I0EsL6i7/rk6LLkgQn3iWsBOSGa/MGnAFyXSMRIgjll6D76zl+y9fTogwVYJf+zlQB7Cs=
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
- (2603:10b6:803:47::21) by SN6PR04MB4781.namprd04.prod.outlook.com
- (2603:10b6:805:b2::23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3174.21; Fri, 17 Jul
- 2020 07:31:22 +0000
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::1447:186c:326e:30b2]) by SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::1447:186c:326e:30b2%7]) with mapi id 15.20.3174.026; Fri, 17 Jul 2020
- 07:31:22 +0000
-From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To:     Nikolay Borisov <nborisov@suse.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH] btrfs: Remove done label in writepage_delalloc
-Thread-Topic: [PATCH] btrfs: Remove done label in writepage_delalloc
-Thread-Index: AQHWW4Q7fgdJPkqFzEGl0IJ4cBQI4Q==
-Date:   Fri, 17 Jul 2020 07:31:22 +0000
-Message-ID: <SN4PR0401MB3598754B32E2FAF5092C8EB09B7C0@SN4PR0401MB3598.namprd04.prod.outlook.com>
-References: <20200716151719.3967-1-nborisov@suse.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: suse.com; dkim=none (message not signed)
- header.d=none;suse.com; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [129.253.240.72]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 666448a0-3815-48d2-30fb-08d82a23679e
-x-ms-traffictypediagnostic: SN6PR04MB4781:
-x-microsoft-antispam-prvs: <SN6PR04MB478140087F2DFC46B9BD29199B7C0@SN6PR04MB4781.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:6430;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: PM5DO3JQwM/dSvRB5FLM57DI+CsSZnL9JTQYv8K0wBh603v73JU6noSCsFPi1Hcewq33hpm3M0L1N28mr54f9k99KFG7YJXo7bvzgEfx8/Kl4DLRj/3XAwDEBfADTvfgyYJmBp2HWp+/DVkspFxfQ6epCXuH7T3Ta+GRsJCJ4V3jAiAEMtuWs9YtFHmXZslM9mvrgtDOVVZ4Ysf4UtSeyoLgVMgZuSAXItom9h0SGhFhD8h1djmj/leOI65oaV1u6uBARluTwF9Y9E5XAz7rSk5gYD0HRkRIv2NaOEyotMSlWXdhsJ8o6wnlPs7IskwugEJQkAy4ZvmFe8Ey5HYf8w==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR0401MB3598.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(376002)(366004)(39860400002)(136003)(346002)(396003)(26005)(9686003)(83380400001)(6506007)(52536014)(5660300002)(66556008)(64756008)(53546011)(66446008)(66476007)(66946007)(2906002)(55016002)(316002)(8676002)(110136005)(478600001)(71200400001)(33656002)(7696005)(91956017)(76116006)(8936002)(86362001)(186003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: JyS/KOHjNWiqjx6LmpzCxOYGhmRkmiyhVZ/vk8CzRzbPwocfxOOlBkxeSy30izCtwselbMPeiZM17vvVpI2UrqnyaBZjGQ+Mgx395ZTxJQonYERtWip8roOZ7pc9sgISyyS2THVTd/jBrT6LIisXJ+5bVXmDtHGHtDw7VmaHlXXQlWOO9FgJ3tgIaNFdBRXIfMc+LawD8HLnpX6rwz9EI34w7Nf4IoA5pm4ey09cYg3qrp1cekufSkYe21R2SHEYDVwYZGpul4f1E8rMEsqSqeO6p8l+qbM5e4T9inQEFuP4mbOEwg3q62Ca3Sfka+CWQAcyEeOZBkTYlWfKb5AT0tBinXiwwf6xiGeDx4EfvtoHrK1APR9RvoAb4E8HsZaTr2kQcgeHC4onTz7S+LqZYFoUuR+H/rLFsJ/X62qv4J3rfL2Arm+wM5vG6H61t8C7jhVdoSPQD6hZP7/v/x2rGwU0D+wGJ2/3xdCmKKFwD7+CfM9oJN7loJKnZX2RsGSZ
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Fri, 17 Jul 2020 06:05:38 -0400
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06H9w27e182895
+        for <linux-btrfs@vger.kernel.org>; Fri, 17 Jul 2020 10:05:36 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2020-01-29; bh=xH7W9KXWdHWENQCFtAFdkVWuNUnMTvFD8ar4D7s8Szs=;
+ b=ErERZVGGzRsVEE8HjNSH8YyxiP2C2gN+CvdiYU+WCcq1iwOYZBt9Jwjh7ZKy+wBxE+Qk
+ wd+HFnmQK2Rj/y8KreOb27VROkD75SPIXqRpmyAwjlXZrX0r5+4AO0rVoHVA8LoM3zq/
+ Ucgm4QjBVUfyD0O0Y13ZzC9af47AAPn7tU8geTDuC8AAygw6SmvTB/pXCHANI7FEyKZO
+ RL5HnBebMfG0CsKtpVYARVSPMYW7I0tjna7vjIMHUl7EcVyp4yNWV0BiNqXbKV5FJgKa
+ CkqWjTutNDV0wGSJcRth/NNbqSG1w+ZEA9O7FEqL5Ipd9bUgWESUvu3Puw8IFXwmfHUZ 9g== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2130.oracle.com with ESMTP id 327s65vq5u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL)
+        for <linux-btrfs@vger.kernel.org>; Fri, 17 Jul 2020 10:05:36 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06H9vin4147359
+        for <linux-btrfs@vger.kernel.org>; Fri, 17 Jul 2020 10:05:36 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3030.oracle.com with ESMTP id 32b9hfgyq0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
+        for <linux-btrfs@vger.kernel.org>; Fri, 17 Jul 2020 10:05:36 +0000
+Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 06HA5ZrL028437
+        for <linux-btrfs@vger.kernel.org>; Fri, 17 Jul 2020 10:05:35 GMT
+Received: from localhost.localdomain (/39.109.231.106)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 17 Jul 2020 03:05:34 -0700
+From:   Anand Jain <anand.jain@oracle.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     martin.petersen@oracle.com
+Subject: [PATCH] btrfs: fix lockdep warning while mounting sprout fs
+Date:   Fri, 17 Jul 2020 18:05:25 +0800
+Message-Id: <20200717100525.320697-1-anand.jain@oracle.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SN4PR0401MB3598.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 666448a0-3815-48d2-30fb-08d82a23679e
-X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Jul 2020 07:31:22.2058
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Bb0I1x2GUaxKPzShW+gaQ9wxo1CEE2XcKoOulTXgPVciBeN/LVeudnSkBOGuCQe9N3LMssfGFE8rWx4el7EgRDLtmYsvUcsrAjkj9uNBRNk=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR04MB4781
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9684 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 adultscore=0
+ phishscore=0 spamscore=0 suspectscore=3 bulkscore=0 mlxscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2007170074
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9684 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 malwarescore=0
+ phishscore=0 mlxscore=0 priorityscore=1501 lowpriorityscore=0 spamscore=0
+ clxscore=1015 bulkscore=0 mlxlogscore=999 impostorscore=0 suspectscore=3
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2007170074
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 16/07/2020 17:17, Nikolay Borisov wrote:=0A=
-> Since there is not common cleanup run after the label it makes it somewha=
-t=0A=
-> redundant.=0A=
-> =0A=
-> Signed-off-by: Nikolay Borisov <nborisov@suse.com>=0A=
-> ---=0A=
->  fs/btrfs/extent_io.c | 8 ++------=0A=
->  1 file changed, 2 insertions(+), 6 deletions(-)=0A=
-> =0A=
-> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c=0A=
-> index a76b7da91aa6..e6d1d46ae384 100644=0A=
-> --- a/fs/btrfs/extent_io.c=0A=
-> +++ b/fs/btrfs/extent_io.c=0A=
-> @@ -3445,8 +3445,7 @@ static noinline_for_stack int writepage_delalloc(st=
-ruct btrfs_inode *inode,=0A=
->  			 * started, so we don't want to return > 0 unless=0A=
->  			 * things are going well.=0A=
->  			 */=0A=
-> -			ret =3D ret < 0 ? ret : -EIO;=0A=
-> -			goto done;=0A=
-> +			return ret < 0 ? ret : -EIO;=0A=
->  		}=0A=
->  		/*=0A=
->  		 * delalloc_end is already one less than the total length, so=0A=
-> @@ -3478,10 +3477,7 @@ static noinline_for_stack int writepage_delalloc(s=
-truct btrfs_inode *inode,=0A=
->  		return 1;=0A=
->  	}=0A=
-> =0A=
-> -	ret =3D 0;=0A=
-> -=0A=
-> -done:=0A=
-> -	return ret;=0A=
-> +	return 0;=0A=
->  }=0A=
-=0A=
-I thought David doesn't like direct returns in loops?=0A=
-=0A=
-/me thinks this is easier to understand though=0A=
-=0A=
-Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com> =0A=
+Martin reported the following test case which reproduces lockdep
+warning on his machine.
+
+  modprobe scsi_debug dev_size_mb=1024 num_parts=2
+  sleep 3
+  mkfs.btrfs /dev/sda1
+  mount /dev/sda1 /mnt
+  cp -v /bin/ls /mnt
+  umount /mnt
+  btrfstune -S 1 /dev/sda1
+  mount /dev/sda1 /mnt
+  btrfs dev add /dev/sda2 /mnt
+  umount /mnt
+  mount /dev/sda2 /mnt
+  <splat>
+
+kernel: ======================================================
+kernel: WARNING: possible circular locking dependency detected
+kernel: 5.8.0-rc1+ #575 Not tainted
+kernel: ------------------------------------------------------
+kernel: mount/1024 is trying to acquire lock:
+kernel: ffff888065e0a4e0 (&fs_devs->device_list_mutex){+.+.}-{3:3}, at: clone_fs_devices+0x46/0x1f0 [btrfs]
+kernel: #012but task is already holding lock:
+kernel: ffff8880610508d0 (&fs_info->chunk_mutex){+.+.}-{3:3}, at: btrfs_read_chunk_tree+0xd1/0x390 [btrfs]
+kernel: #012which lock already depends on the new lock.
+kernel: #012the existing dependency chain (in reverse order) is:
+kernel: #012-> #1 (&fs_info->chunk_mutex){+.+.}-{3:3}:
+kernel:       __lock_acquire+0x798/0xe50
+kernel:       lock_acquire+0x15a/0x4d0
+kernel:       __mutex_lock+0x116/0xbd0
+kernel:       btrfs_remove_chunk+0x769/0xaa0 [btrfs]
+kernel:       btrfs_delete_unused_bgs+0xa2c/0xfe0 [btrfs]
+kernel:       cleaner_kthread+0x27c/0x2a0 [btrfs]
+kernel:       kthread+0x1d6/0x200
+kernel:       ret_from_fork+0x22/0x30
+kernel: #012-> #0 (&fs_devs->device_list_mutex){+.+.}-{3:3}:
+kernel:       check_prev_add+0xf5/0xf50
+kernel:       validate_chain+0xca7/0x1920
+kernel:       __lock_acquire+0x798/0xe50
+kernel:       lock_acquire+0x15a/0x4d0
+kernel:       __mutex_lock+0x116/0xbd0
+kernel:       clone_fs_devices+0x46/0x1f0 [btrfs]
+kernel:       read_one_dev+0x15f/0x930 [btrfs]
+kernel:       btrfs_read_chunk_tree+0x333/0x390 [btrfs]
+kernel:       open_ctree+0xa72/0x15a6 [btrfs]
+kernel:       btrfs_mount_root.cold+0xe/0xf1 [btrfs]
+kernel:       legacy_get_tree+0x82/0xd0
+kernel:       vfs_get_tree+0x4c/0x140
+kernel:       fc_mount+0xf/0x60
+kernel:       vfs_kern_mount.part.0+0x71/0x90
+kernel:       btrfs_mount+0x1d7/0x610 [btrfs]
+kernel:       legacy_get_tree+0x82/0xd0
+kernel:       vfs_get_tree+0x4c/0x140
+kernel:       do_mount+0xad1/0xe70
+kernel:       __x64_sys_mount+0xbe/0x100
+kernel:       do_syscall_64+0x56/0xa0
+kernel:       entry_SYSCALL_64_after_hwframe+0x44/0xa9
+kernel: #012other info that might help us debug this:
+kernel: Possible unsafe locking scenario:
+kernel:       CPU0                    CPU1
+kernel:       ----                    ----
+kernel:  lock(&fs_info->chunk_mutex);
+kernel:                               lock(&fs_devs->device_list_mutex);
+kernel:                               lock(&fs_info->chunk_mutex);
+kernel:  lock(&fs_devs->device_list_mutex);
+kernel: #012 *** DEADLOCK ***
+================================================
+
+Lockdep warning is complaining about the violation of the lock order of
+device_list_mutex and chunk_mutex[1]. And, lockdep warning isn't entirely
+correct, as it appears that it can't understand the different filesystem
+instances.  Here, chunk_mutex was held by the mounting sprout filesystem,
+and device_list_mutex was held belongs to the seed filesystem as the sprout
+does not want the seed device to be freed.
+
+[1]
+open_ctree <== mount sprout
+ btrfs_read_chunk_tree()
+  mutex_lock(&uuid_mutex) <== global fsid lock
+  mutex_lock(&fs_info->chunk_mutex) <== sprout fs
+   read_one_dev()
+    open_seed_devices()
+     clone_fs_devices()
+       mutex_lock(&orig->device_list_mutex) <== seed fs_devices
+
+There are two function stacks [1] and [2] leading to clone_fs_devices().
+
+[2]
+btrfs_init_new_device()
+ mutex_lock(&uuid_mutex);
+ btrfs_prepare_sprout()
+  lockdep_assert_held(&uuid_mutex);
+   clone_fs_devices()
+
+They both hold the uuid_mutex which is sufficient to protect from
+freeing the seed device. That's because a seed device can not be
+freed while it is mounted because it is read-only and an unmounted
+seed device (but registered) can be freed only by the command forget
+or making it stale. Which is handled by the function
+btrfs_free_stale_devices() which also needs uuid_mutex.
+
+So remove the unnecessary seed->device_list_mutex in clone_fs_devices.
+
+Reported-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Anand Jain <anand.jain@oracle.com>
+Tested-by: Martin K. Petersen <martin.petersen@oracle.com>
+---
+The above test case is similar to fstests btrfs/161 so no new
+test case will be required.
+
+ fs/btrfs/volumes.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
+
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index c35603b5595a..9dc3b826be0d 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -561,6 +561,8 @@ static int btrfs_free_stale_devices(const char *path,
+ 	struct btrfs_device *device, *tmp_device;
+ 	int ret = 0;
+ 
++	lockdep_assert_held(&uuid_mutex);
++
+ 	if (path)
+ 		ret = -ENOENT;
+ 
+@@ -985,7 +987,6 @@ static struct btrfs_fs_devices *clone_fs_devices(struct btrfs_fs_devices *orig)
+ 	if (IS_ERR(fs_devices))
+ 		return fs_devices;
+ 
+-	mutex_lock(&orig->device_list_mutex);
+ 	fs_devices->total_devices = orig->total_devices;
+ 
+ 	list_for_each_entry(orig_dev, &orig->devices, dev_list) {
+@@ -1017,10 +1018,8 @@ static struct btrfs_fs_devices *clone_fs_devices(struct btrfs_fs_devices *orig)
+ 		device->fs_devices = fs_devices;
+ 		fs_devices->num_devices++;
+ 	}
+-	mutex_unlock(&orig->device_list_mutex);
+ 	return fs_devices;
+ error:
+-	mutex_unlock(&orig->device_list_mutex);
+ 	free_fs_devices(fs_devices);
+ 	return ERR_PTR(ret);
+ }
+-- 
+2.25.1
+
