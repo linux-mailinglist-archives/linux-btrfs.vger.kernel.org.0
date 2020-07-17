@@ -2,363 +2,237 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0031224677
-	for <lists+linux-btrfs@lfdr.de>; Sat, 18 Jul 2020 00:54:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3604224714
+	for <lists+linux-btrfs@lfdr.de>; Sat, 18 Jul 2020 01:39:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726399AbgGQWyZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 17 Jul 2020 18:54:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37460 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726204AbgGQWyZ (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 17 Jul 2020 18:54:25 -0400
-Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 030C0C0619D2
-        for <linux-btrfs@vger.kernel.org>; Fri, 17 Jul 2020 15:54:24 -0700 (PDT)
-Received: by mail-il1-x136.google.com with SMTP id h16so8654433ilj.11
-        for <linux-btrfs@vger.kernel.org>; Fri, 17 Jul 2020 15:54:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6JBFqp4jPOmCUHraFwJBecmfC0jZdjxe0+fZcyqVu6I=;
-        b=LNuf1petaivUmv7ko3Ie+XXw9s8139Y8CiBgck8EMzdVas/mT4xzlA2IRNIOLbHxB5
-         kaglTBkxH/u95vO93MdCPCdqowwqiNYEtSdXBbl1DlfWS/3AyUA3dZW+W9dkjpPUnemy
-         ajoE0ulNJIDPpulmoVnV9W+H4oHHwohnM3SakxUz3GLWEYBc8jNzQOuSeUWeU9lHlBpd
-         i64A2voVWxaU9COGslXn7WtNyNZpVqLjVBMFKA46N/PvCpfcUrkqJ5qJl1yU/BXMoG1d
-         8Hv5LhkKOaL24vwBsvTIqpKgLsNpqZ96t25SXbMGQf91zJXrIpU0bY2SmASmZMRbnYxf
-         Q8rQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6JBFqp4jPOmCUHraFwJBecmfC0jZdjxe0+fZcyqVu6I=;
-        b=dObY97VRy2tiPmaEWKGRCI6qcOtkgFHYHw27vbi6vK/TLG56bLF8plpUaFhZnKMVF8
-         MLHxSTPc8ObsZkBejOOrlkjqSXGudlmZrnzsoYr7pJDCP4Hhb5BMh1m8wzN470bG4Xrq
-         RfwAXWAlhLDzurnZ3q1VPjUxMLISsrzSIly+8Mo1Lsg7+D1O5Vr9LCvLEURxgojb6sIT
-         KkAsv/7qilSzLjNV6CCzBBEAbgJQ9uDQsVY8zsy0VH69KwegNfcT53ojHBsc0ipXcYOx
-         3xpJ6Cd2dMPjTULSJIMfdWkhFEJzldwLUYoFN4GUKop6KRskoFGZLTHTwvFw0KLcDJXP
-         6tkg==
-X-Gm-Message-State: AOAM532ZpL4F9ugmx0O7535Opf8szv+roTcboGKEq4bIHwrVIkvE8oQx
-        Jag8d05p1Z9Q5MLVQkND0zjy8v88CFklWKTFQAY=
-X-Google-Smtp-Source: ABdhPJxaacvrtYDtJE2uppvpBJjXu7bIIrzJJ5M0E1dsneG/K+zfABHnW35IRqtwSH74IvA7kDLszfILiGg54FhhNv0=
-X-Received: by 2002:a92:aa92:: with SMTP id p18mr11919804ill.199.1595026463982;
- Fri, 17 Jul 2020 15:54:23 -0700 (PDT)
+        id S1728121AbgGQXih (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 17 Jul 2020 19:38:37 -0400
+Received: from mout.gmx.net ([212.227.17.21]:49585 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726851AbgGQXig (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 17 Jul 2020 19:38:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1595029111;
+        bh=aJ1HCpoe69lYzTpI4HRJ7HFliTI64quYeKWaU8m3I/M=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=DoBxHSKa/G7cXXxt4R7qUKCxK1b8hDHhe10vs+TkweVc3ldexEuESOr9LN93gmA+8
+         zDw8JCQhagOSeNMlzXkEMmnsTjYlmSTlqxBkb65hRiLK9oWe6B5A0yiWt45eHr/PHi
+         hRipDRYH58wnePeukNbZWJjbclLcUqInqkPC6Duo=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1McpJq-1kVMWK2QsM-00ZuDJ; Sat, 18
+ Jul 2020 01:38:31 +0200
+Subject: Re: [PATCH v2] btrfs: qgroup: Fix data leakage caused by race between
+ writeback and truncate
+To:     Josef Bacik <josef@toxicpanda.com>, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <20200717071205.26027-1-wqu@suse.com>
+ <9b03ca60-e56f-442c-7558-3ca1b2b1df77@toxicpanda.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
+ mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
+ PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
+ 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
+ D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
+ efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
+ ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
+ BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
+ 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
+ 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
+ EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
+ 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
+ ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
+ oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
+ fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
+ 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
+ ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
+ oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
+Message-ID: <dcc47e7f-53e0-e832-0e39-e8c1d82e318e@gmx.com>
+Date:   Sat, 18 Jul 2020 07:38:27 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <CADvYWxeiNynEWUYwfQxP7fQTK4k2Q+eDZsA8j7rLcaTSeND9fg@mail.gmail.com>
- <20200715011843.GH10769@hungrycats.org> <CADvYWxcq+-Fg0W9dmc-shwszF-7sX+GDVig0GncpvwKUDPfT7g@mail.gmail.com>
- <20200716042739.GB8346@hungrycats.org> <CADvYWxdvy5n3Tsa+MG9sSB2iAu-eA+W33ApzQ3q9D6sdGR9UYA@mail.gmail.com>
- <CAJix6J9kmQjfFJJ1GwWXsX7WW6QKxPqpKx86g7hgA4PfbH5Rpg@mail.gmail.com>
- <20200716225731.GI10769@hungrycats.org> <CADvYWxcMCEvOg8C-gbGRC1d02Z6TCypvsan7mi+8U2PVKwfRwQ@mail.gmail.com>
- <20200717055706.GJ10769@hungrycats.org>
-In-Reply-To: <20200717055706.GJ10769@hungrycats.org>
-From:   John Petrini <john.d.petrini@gmail.com>
-Date:   Fri, 17 Jul 2020 18:54:12 -0400
-Message-ID: <CADvYWxeP83uQ7VHQ6y+_3yyRKnNVGBWBRsPSqBG_wHfjkeCFog@mail.gmail.com>
-Subject: Re: Filesystem Went Read Only During Raid-10 to Raid-6 Data Conversion
-To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-Cc:     John Petrini <me@johnpetrini.com>, linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <9b03ca60-e56f-442c-7558-3ca1b2b1df77@toxicpanda.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="msiJ0Z0O4oaAlHjb7CfsmtUP37tO2AHj7"
+X-Provags-ID: V03:K1:wvmFOJqdh1tu4gAUn/ed7aH2+bkH5JS7suXWfIpNoaWGeLhsnTp
+ vFdRZ/7GVgA/QcDJmEJ9h7hEOfDZu5cNxw0JhHn8/3Ob36pgX8/m1SakZS4hdV2Z3qLOe9K
+ ZvduPonIgyhXP8SsHSWz/ca2p9BbsD8CZRa6mgSqW5PtipDqfVt2O1UGz41cBNUATZmRqPg
+ d3cJeleePKT6QnHeUU/9w==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:qbo7hwRO8AU=:M5cRQSYdoDPgj43Dt25CDE
+ HMDVy48ACto5ZGz7/+58onjNy+sOZCfJptd9my1yEcAoBakPUZblOGf88nvvdtBZF6+m+8FYX
+ oR5wS1unVDx1PXddEtFyYr8TauJodjU0z3nptNluMjhfTw4Wcu9tZGRNDTYOa3HeNCbVPTu93
+ 3xISe0RKt0w47waPDHWavNmSD/6ST4J9LofWhydiFRaUGvvWBsxUVvhhgGn9gA7bAVvSb/3cQ
+ 2s4fEQhQnjn2BRJ8DPnli+MquPx+fhA9q3VfP15HlzkKc+77aOFvAzVV61AvUqIwPf0TWRIkE
+ L5Kx16WeaPfBcXS0vEF25I/vDGE4MWDi+YhUF+nFY89tOwbEIoMQhdp7o+lgqH/qbvFInjAQn
+ g/+LFVMMm/+o077VT+Ei6I57Ph8vDTbCLK2gd0GNJSmCuv1VzwyMhVPk0jSnu0BnUiV7P4fBg
+ aFPg8nQudBRVl5tG/xDWBkrehMNeryIkGM86B93F36AXlrLCKRQ6GJf0/WgJGZ4aqQenDGU3Y
+ gIo744VuMXogVUroM0DzD1NqSeskHQisy7VI6zszx8+bQopovV5HjMynCrq/eR0Wmly6PBld9
+ rYaLTYKcs3CU7+7whueTdhpHX0YvNb5zPF6M58bwkRrA0ome4gU/sSPRJK8c8gXF9McXvZORU
+ 1gnX4koyWRAblyVuLnv3LR86bnPYdoKEHdoUDFYJeqR9onJFtMBnn9qGjM8/Y7Pyot8r7MCHo
+ YP1Y6iaaFhx17IljhC639fwpLBzqM5AIPQwfXOjZjNl8I6AR+trsLnkFSYKC2E4O678VO7Oyd
+ VFYjp78UAj5jzJo5PcYrTUZpD60aj4lwhwhW1alQxzzBsVtUN1acdoQBWuTEXNmoV4rraE8tj
+ CDWfNwrLbz0YN//PAjLaV/OUsv0yEzZ1YPixx/9ddf1LTgdadvzl5r8OK+58jkcuGN64PhF4p
+ a1WR0R5Gluz5bCT0lIaKec4VptlWKsV+wfWdm1Wr66bRknD0sZjMOnIftD+/+WbxZKSCM83iF
+ 5dU+Rbct3bhKZumegoA/nnXQvfqhJhhi5EjhS7rdo3qtTXw40BigvbviEMiYt+C0VdBiTnKFj
+ v1ObJ6wwEzdYLsEamvkDfL0k+TUUutPQir+ReDdBW1Pl4kCokhh8WgRbK0lDnfdNCiALPhKkd
+ wQqIAA4/7v+QTlCONGnGmJNp+JImZTqws0r1pTVde4MlOuLxr9++Ty26im2QyT9v5s7kagWKE
+ 5YS6lwuExhvl3GHskYiNkAO5wTv3ahJXycds4aw==
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Jul 17, 2020 at 1:57 AM Zygo Blaxell
-<ce3g8jdj@umail.furryterror.org> wrote:
->
-> On Thu, Jul 16, 2020 at 09:11:17PM -0400, John Petrini wrote:
-> > On Thu, Jul 16, 2020 at 6:57 PM Zygo Blaxell
-> > > That is...odd.  Try 'btrfs dev usage', maybe something weird is happening
-> > > with device sizes.
-> >
-> > Here it is. I'm not sure what to make of it though.
-> >
-> > sudo btrfs dev usage /mnt/storage-array/
-> > /dev/sdd, ID: 1
-> >    Device size:             4.55TiB
-> >    Device slack:              0.00B
-> >    Data,RAID10:             3.12GiB
-> >    Data,RAID10:             2.78GiB
-> >    Data,RAID10:           784.31GiB
-> >    Data,RAID10:             3.34TiB
-> >    Data,RAID6:            144.07GiB
-> >    Data,RAID6:            293.03GiB
-> >    Metadata,RAID10:         4.47GiB
-> >    Metadata,RAID10:       352.00MiB
-> >    Unallocated:             1.02MiB
-> >
-> > /dev/sde, ID: 2
-> >    Device size:             4.55TiB
-> >    Device slack:              0.00B
-> >    Data,RAID10:             3.12GiB
-> >    Data,RAID10:             2.78GiB
-> >    Data,RAID10:           784.31GiB
-> >    Data,RAID10:             3.34TiB
-> >    Data,RAID6:            144.07GiB
-> >    Data,RAID6:            293.03GiB
-> >    Metadata,RAID10:         4.47GiB
-> >    Metadata,RAID10:       352.00MiB
-> >    Unallocated:             1.02MiB
-> >
-> > /dev/sdl, ID: 3
-> >    Device size:             3.64TiB
-> >    Device slack:              0.00B
-> >    Data,RAID10:             3.12GiB
-> >    Data,RAID10:             3.34TiB
-> >    Data,RAID6:            293.03GiB
-> >    Metadata,RAID10:         4.47GiB
-> >    Unallocated:             1.02MiB
-> >
-> > /dev/sdn, ID: 4
-> >    Device size:             3.64TiB
-> >    Device slack:              0.00B
-> >    Data,RAID10:             3.12GiB
-> >    Data,RAID10:             3.34TiB
-> >    Data,RAID6:            293.03GiB
-> >    Metadata,RAID10:         4.47GiB
-> >    Unallocated:             1.02MiB
-> >
-> > /dev/sdm, ID: 5
-> >    Device size:             3.64TiB
-> >    Device slack:              0.00B
-> >    Data,RAID10:             3.12GiB
-> >    Data,RAID10:             3.34TiB
-> >    Data,RAID6:            293.03GiB
-> >    Metadata,RAID10:         4.47GiB
-> >    Unallocated:             1.02MiB
-> >
-> > /dev/sdk, ID: 6
-> >    Device size:             3.64TiB
-> >    Device slack:              0.00B
-> >    Data,RAID10:             3.12GiB
-> >    Data,RAID10:             3.34TiB
-> >    Data,RAID6:            293.03GiB
-> >    Metadata,RAID10:         4.47GiB
-> >    Unallocated:             1.02MiB
-> >
-> > /dev/sdj, ID: 7
-> >    Device size:             3.64TiB
-> >    Device slack:              0.00B
-> >    Data,RAID10:             3.12GiB
-> >    Data,RAID10:             3.34TiB
-> >    Data,RAID6:            293.03GiB
-> >    Metadata,RAID10:         4.47GiB
-> >    Unallocated:             1.02MiB
-> >
-> > /dev/sdi, ID: 8
-> >    Device size:             3.64TiB
-> >    Device slack:              0.00B
-> >    Data,RAID10:             3.12GiB
-> >    Data,RAID10:             3.34TiB
-> >    Data,RAID6:            293.03GiB
-> >    Metadata,RAID10:         4.47GiB
-> >    Unallocated:             1.02MiB
-> >
-> > /dev/sdb, ID: 9
-> >    Device size:             9.10TiB
-> >    Device slack:              0.00B
-> >    Data,RAID10:             3.12GiB
-> >    Data,RAID10:             4.01TiB
-> >    Data,RAID10:           784.31GiB
-> >    Data,RAID10:             3.34TiB
-> >    Data,RAID6:            458.56GiB
-> >    Data,RAID6:            144.07GiB
-> >    Data,RAID6:            293.03GiB
-> >    Metadata,RAID10:         4.47GiB
-> >    Metadata,RAID10:       352.00MiB
-> >    Metadata,RAID10:         6.00GiB
-> >    Metadata,RAID1C3:        2.00GiB
-> >    System,RAID1C3:         32.00MiB
-> >    Unallocated:            82.89GiB
-> >
-> > /dev/sdc, ID: 10
-> >    Device size:             9.10TiB
-> >    Device slack:              0.00B
-> >    Data,RAID10:             3.12GiB
-> >    Data,RAID10:             4.01TiB
-> >    Data,RAID10:           784.31GiB
-> >    Data,RAID10:             3.34TiB
-> >    Data,RAID6:            458.56GiB
-> >    Data,RAID6:            144.07GiB
-> >    Data,RAID6:            293.03GiB
-> >    Metadata,RAID10:         4.47GiB
-> >    Metadata,RAID10:       352.00MiB
-> >    Metadata,RAID10:         6.00GiB
-> >    Metadata,RAID1C3:        3.00GiB
-> >    Unallocated:            81.92GiB
-> >
-> > /dev/sda, ID: 11
-> >    Device size:             9.10TiB
-> >    Device slack:              0.00B
-> >    Data,RAID10:           784.31GiB
-> >    Data,RAID10:             4.01TiB
-> >    Data,RAID10:             3.34TiB
-> >    Data,RAID6:            458.56GiB
-> >    Data,RAID6:            144.07GiB
-> >    Data,RAID6:            293.03GiB
-> >    Metadata,RAID10:         4.47GiB
-> >    Metadata,RAID10:       352.00MiB
-> >    Metadata,RAID10:         6.00GiB
-> >    Metadata,RAID1C3:        5.00GiB
-> >    System,RAID1C3:         32.00MiB
-> >    Unallocated:            85.79GiB
-> >
-> > /dev/sdf, ID: 12
-> >    Device size:             9.10TiB
-> >    Device slack:              0.00B
-> >    Data,RAID10:           784.31GiB
-> >    Data,RAID10:             4.01TiB
-> >    Data,RAID10:             3.34TiB
-> >    Data,RAID6:            458.56GiB
-> >    Data,RAID6:            144.07GiB
-> >    Data,RAID6:            293.03GiB
-> >    Metadata,RAID10:         4.47GiB
-> >    Metadata,RAID10:       352.00MiB
-> >    Metadata,RAID10:         6.00GiB
-> >    Metadata,RAID1C3:        5.00GiB
-> >    System,RAID1C3:         32.00MiB
-> >    Unallocated:            85.79GiB
->
-> OK...slack is 0, so there wasn't anything weird with underlying device
-> sizes going on.
->
-> There's 3 entries for "Data,RAID6" because there are three stripe widths:
-> 12 disks, 6 disks, and 4 disks, corresponding to the number of disks of
-> each size.  Unfortunately 'dev usage' doesn't say which one is which.
->
-> > Wow looks like I've got lots of info to mull over here! I kicked off
-> > another convert already after cleaning up quite a bit more space. I
-> > had over 100G unallocated on each device after deleting some data and
-> > running another balance.
->
-> If you did balances with no unallocated space on the small drives, then
-> the block groups created by those balances are the first block groups
-> to be processed by later balances.  These block groups will be narrow
-> so they'll use space less efficiently.  We want the opposite of that.
->
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--msiJ0Z0O4oaAlHjb7CfsmtUP37tO2AHj7
+Content-Type: multipart/mixed; boundary="9i33XKukeXMUwbwXBc1mXNZ4ra2Gh5OUH"
 
-There was unallocated space on all drives before I started this recent
-balance. So far it's still chugging along at about 20% complete but I
-assume even if this does complete successfully I'll be stuck with some
-narrow strips from the first attempt.
-
-> > I'm tempted to let it run and see if it
-> > succeeds but my unallocated space has already dropped off a cliff with
-> > 95% of the rebalance remaining.
->
-> This is why the devid/stripes filters are important.  Also I noticed
-> that my logic in my previous reply was wrong for this case:  we do want
-> to process the smallest disks first, not the largest ones, because that
-> way we guarantee we always increase unallocated space.
->
-> If we convert a 10-disk-wide block group from RAID10 to 4-disk-wide
-> RAID6, we replace 2 chunks on 10 disks with 5 chunks on 4 disks:
->
->         2 RAID10 block groups:          5 RAID6 block groups:
->         sda #1 data1                    sda #1 data1
->         sdb #1 mirror1                  sdb #1 data2
->         sdc #1 data2                    sdc #1 P1
->         sdd #1 mirror2                  sdf #1 Q1
->         sde #1 data3                    sda #2 data3
->         sdf #1 mirror3                  sdb #2 data4
->         sdg #1 data4                    sdc #2 P2
->         sdh #1 mirror4                  sdf #2 Q2
->         sdi #1 data5                    sda #3 data5
->         sdj #1 mirror5                  sdb #3 data6
->         sda #2 data6                    sdc #3 P3
->         sdb #2 mirror6                  sdf #3 Q3
->         sdc #2 data7                    sda #4 data7
->         sdd #2 mirror7                  sdb #4 data8
->         sde #2 data8                    sdc #4 P4
->         sdf #2 mirror8                  sdf #4 Q4
->         sdg #2 data9                    sda #5 data9
->         sdh #2 mirror9                  sdb #5 data10
->         sdi #2 data10                   sdc #5 P5
->         sdj #2 mirror10                 sdf #5 Q5
->
-> When this happens we lose net 3GB of space on each of the 4 largest disks
-> for every 1GB we gain on the 6 smaller disks, and run out of space part
-> way through the balance.  We will have to make this tradeoff at some
-> point in the balance because of the disk sizes, but it's important that
-> it happens at the very end, after all other possible conversion is done
-> and the maximum amount of unallocated space is generated.
->
-> btrfs balance isn't smart enough to do this by itself, which is why it's
-> 20 commands with filter parameters to get complex arrays reshaped, and
-> there are sometimes multiple passes.
->
-> We want to relocate a 10-disk-wide block group from RAID10 to 10-disk-wide
-> RAID6, replacing 8 chunks on 10 disks with 5 chunks on 10 disks:
->
->         8 RAID10 block groups:          5 RAID6 block groups:
->         sda #1 data1                    sda #1 data1
->         sdb #1 mirror1                  sdb #1 data2
->         sdc #1 data2                    sdc #1 data3
->         sdd #1 mirror2                  sdd #1 data4
->         sde #1 data3                    sde #1 data5
->         sdf #1 mirror3                  sdf #1 data6
->         sdg #1 data4                    sdg #1 data7
->         sdh #1 mirror4                  sdh #1 data8
->         sdi #1 data5                    sdi #1 P1
->         sdj #1 mirror5                  sdj #1 Q1
->         sda #2 data6                    sda #2 data9
->         sdb #2 mirror6                  sdb #2 data10
->         sdc #2 data7                    sdc #2 data11
->         sdd #2 mirror7                  sdd #2 data12
->         sde #2 data8                    sde #2 data13
->         sdf #2 mirror8                  sdf #2 data14
->         sdg #2 data9                    sdg #2 data15
->         sdh #2 mirror9                  sdh #2 data16
->         sdi #2 data10                   sdi #2 P2
->         sdj #2 mirror10                 sdj #2 Q2
->         ...etc there are 40GB of data
->
-> The easiest way to do that is:
->
->         for sc in 12 11 10 9 8 7 6 5 4; do
->                 btrfs balance start -dconvert=raid6,stripes=$sc..$sc,soft -mconvert=raid1c3,soft /mnt/storage-array/
->         done
->
-> The above converts the widest block groups first, so that every block
-> group converted results in a net increase in storage efficiency, and
-> creates unallocated space on as many disks as possible.
->
-> Then the next step from my original list, edited with the device
-> IDs and sizes from dev usage, is the optimization step.  I filled
-> in the device IDs and sizes from your 'dev usage' output:
->
-> > >         4.  balance -dstripes=1..5,devid=1  # sdd, 4.55TB
-> > >             balance -dstripes=1..5,devid=2  # sde, 4.55TB
-> > >             balance -dstripes=1..11,devid=3 # sdl, 3.64TB
-> > >             balance -dstripes=1..11,devid=4 # sdn, 3.64TB
-> > >             balance -dstripes=1..11,devid=5 # sdm, 3.64TB
-> > >             balance -dstripes=1..11,devid=6 # sdk, 3.64TB
-> > >             balance -dstripes=1..11,devid=7 # sdj, 3.64TB
-> > >             balance -dstripes=1..11,devid=8 # sdi, 3.64TB
-> > >             balance -dstripes=1..3,devid=9  # sdb, 9.10TB
-> > >             balance -dstripes=1..3,devid=10 # sdc, 9.10TB
-> > >             balance -dstripes=1..3,devid=11 # sda, 9.10TB
-> > >             balance -dstripes=1..3,devid=12 # sdf, 9.10TB
->
-> This ensures that each disk is a member of an optimum width block
-> group for the disk size.
->
-> Note: I'm not sure about the 1..11.  IIRC the btrfs limit is 10 disks
-> per stripe, so you might want to use 1..9 if it seems to be trying
-> to rebalance everything with 1..11.
->
-> Running 'watch btrfs fi usage /mnt/storage-array' while balance runs
-> can be enlightening.
-
-Thanks so much for all this detail. I'll see how this run goes and if
-it gets stuck again I'll try your strategy of converting to RAID-1 to
-get back some unallocated space. Otherwise if this completes
-successfully I'll go ahead with optimizing the striping and let you
-know how it goes.
+--9i33XKukeXMUwbwXBc1mXNZ4ra2Gh5OUH
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
 
 
--- 
----------------------------------------
-John Petrini
+On 2020/7/17 =E4=B8=8B=E5=8D=8811:30, Josef Bacik wrote:
+> On 7/17/20 3:12 AM, Qu Wenruo wrote:
+>> [BUG]
+>> When running tests like generic/013 on test device with btrfs quota
+>> enabled, it can normally lead to data leakage, detected at unmount tim=
+e:
+>>
+>> =C2=A0=C2=A0 BTRFS warning (device dm-3): qgroup 0/5 has unreleased sp=
+ace, type
+>> 0 rsv 4096
+>> =C2=A0=C2=A0 ------------[ cut here ]------------
+>> =C2=A0=C2=A0 WARNING: CPU: 11 PID: 16386 at fs/btrfs/disk-io.c:4142
+>> close_ctree+0x1dc/0x323 [btrfs]
+>> =C2=A0=C2=A0 RIP: 0010:close_ctree+0x1dc/0x323 [btrfs]
+>> =C2=A0=C2=A0 Call Trace:
+>> =C2=A0=C2=A0=C2=A0 btrfs_put_super+0x15/0x17 [btrfs]
+>> =C2=A0=C2=A0=C2=A0 generic_shutdown_super+0x72/0x110
+>> =C2=A0=C2=A0=C2=A0 kill_anon_super+0x18/0x30
+>> =C2=A0=C2=A0=C2=A0 btrfs_kill_super+0x17/0x30 [btrfs]
+>> =C2=A0=C2=A0=C2=A0 deactivate_locked_super+0x3b/0xa0
+>> =C2=A0=C2=A0=C2=A0 deactivate_super+0x40/0x50
+>> =C2=A0=C2=A0=C2=A0 cleanup_mnt+0x135/0x190
+>> =C2=A0=C2=A0=C2=A0 __cleanup_mnt+0x12/0x20
+>> =C2=A0=C2=A0=C2=A0 task_work_run+0x64/0xb0
+>> =C2=A0=C2=A0=C2=A0 __prepare_exit_to_usermode+0x1bc/0x1c0
+>> =C2=A0=C2=A0=C2=A0 __syscall_return_slowpath+0x47/0x230
+>> =C2=A0=C2=A0=C2=A0 do_syscall_64+0x64/0xb0
+>> =C2=A0=C2=A0=C2=A0 entry_SYSCALL_64_after_hwframe+0x44/0xa9
+>> =C2=A0=C2=A0 ---[ end trace caf08beafeca2392 ]---
+>> =C2=A0=C2=A0 BTRFS error (device dm-3): qgroup reserved space leaked
+>>
+>> [CAUSE]
+>> In the offending case, the offending operations are:
+>> 2/6: writev f2X[269 1 0 0 0 0] [1006997,67,288] 0
+>> 2/7: truncate f2X[269 1 0 0 48 1026293] 18388 0
+>>
+>> The following sequence of events could happen after the writev():
+>> =C2=A0=C2=A0=C2=A0=C2=A0CPU1 (writeback)=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0 |=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 CPU2 (truncate)
+>> -----------------------------------------------------------------
+>> btrfs_writepages()=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0 |
+>> |- extent_write_cache_pages()=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+ |
+>> =C2=A0=C2=A0=C2=A0 |- Got page for 1003520=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0 |
+>> =C2=A0=C2=A0=C2=A0 |=C2=A0 1003520 is Dirty, no writeback=C2=A0=C2=A0=C2=
+=A0 |
+>> =C2=A0=C2=A0=C2=A0 |=C2=A0 So (!clear_page_dirty_for_io())=C2=A0=C2=A0=
+ |
+>> =C2=A0=C2=A0=C2=A0 |=C2=A0 gets called for it=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0 |
+>> =C2=A0=C2=A0=C2=A0 |- Now page 1003520 is Clean.=C2=A0=C2=A0=C2=A0 |
+>> =C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | btrfs_s=
+etattr()
+>> =C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | |- btrf=
+s_setsize()
+>> =C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=
+=A0=C2=A0 |- truncate_setsize()
+>> =C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0 New i_size is 18388
+>> =C2=A0=C2=A0=C2=A0 |- __extent_writepage()=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0 |
+>> =C2=A0=C2=A0=C2=A0 |=C2=A0 |- page_offset() > i_size=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0 |
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |- btrfs_invalidatepage()=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |
+>> =C2=A0=C2=A0=C2=A0=C2=A0 |- Page is clean, so no qgroup |
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 callback executed
+>>
+>> This means, the qgroup reserved data space is not properly released in=
+
+>> btrfs_invalidatepage() as the page is Clean.
+>>
+>> [FIX]
+>> Instead of checking the dirty bit of a page, call
+>> btrfs_qgroup_free_data() unconditionally in btrfs_invalidatepage().
+>>
+>> As qgroup rsv are completely binded to the QGROUP_RESERVED bit of
+>> io_tree, not binded to page status, thus we won't cause double freeing=
+
+>> anyway.
+>>
+>> Fixes: 0b34c261e235 ("btrfs: qgroup: Prevent qgroup->reserved from
+>> going subzero")
+>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>>
+>=20
+> I don't understand how this is ok.=C2=A0 We can call invalidatepage via=
+
+> memory pressure, so what if we have started the write and have an
+> ordered extent outstanding, and then we call into invalidate page and
+> now unconditionally drop the qgroup reservation, even tho we still need=
+
+> it for the ordered extent.=C2=A0 Am I missing something here?=C2=A0 Tha=
+nks,
+
+As long as the ordered extent as been started
+(__btrfs_add_ordered_extent()), then the QGROUP_RESERVED bit is cleared,
+either freed for NODATACOW write, or released for COW writes.
+
+IIRC this recent change is suggested by you, and that paved the road for
+this fix.
+
+Thanks,
+Qu
+>=20
+> Josef
+
+
+--9i33XKukeXMUwbwXBc1mXNZ4ra2Gh5OUH--
+
+--msiJ0Z0O4oaAlHjb7CfsmtUP37tO2AHj7
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl8SNnMACgkQwj2R86El
+/qgnFQf+OcU3UVJ0XCpPhWqh2gC5REZmcOTp+CIKFDsmlXgLaBlQSjBTK9B2WI03
+5QxWTOC+TMBl20EX0cfWGpUa4GUSeAVPKsL8frRmjHLqEntsIM3vI2VsWs9tghmg
+G8IYzkKK8aK3oEe2TF+iukxtUmf/ADgC7g3dL05C8iKj/tB5svTeruhpLX3+Ey2z
+T3yj1RlNyx+zFT6T6EbaDFzhDGaQZONwCWwLRpC01AQTkm5F9zcQDJz3vOng1g80
+TwHquWhFa6cjR2Uh9GLG5o4d/sdGMZ0HLqSIGnKSWi0CWTegozvfFqeOi1C1vojn
+YTFpJgOvQMbfFRx/1oBG3xAXGKIrDA==
+=mHdA
+-----END PGP SIGNATURE-----
+
+--msiJ0Z0O4oaAlHjb7CfsmtUP37tO2AHj7--
