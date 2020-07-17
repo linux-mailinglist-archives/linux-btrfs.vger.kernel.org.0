@@ -2,142 +2,123 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 079BD223F9D
-	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Jul 2020 17:31:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2ACEF22417F
+	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Jul 2020 19:08:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726755AbgGQPah (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 17 Jul 2020 11:30:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53566 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726205AbgGQPah (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 17 Jul 2020 11:30:37 -0400
-Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 480F9C0619D2
-        for <linux-btrfs@vger.kernel.org>; Fri, 17 Jul 2020 08:30:37 -0700 (PDT)
-Received: by mail-qv1-xf42.google.com with SMTP id h17so4403907qvr.0
-        for <linux-btrfs@vger.kernel.org>; Fri, 17 Jul 2020 08:30:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=3qRTvKUYTNge7vmE3EOwKlujh92Tlv3Z2E+G5tSvZhg=;
-        b=zInZvJwL2y3rE5YFIHWAHivaITLrH7UvRH0Tl/MBDTwR+MHEqKA6U7jEWutTe9+5PE
-         6yhTEC5m53hIrEssp7+frmPx+vEqer7BacKDicLkv7OFvBS6+IlzJhAmKKl8G8GCk1Lr
-         avdFcgr3eZIgWeHkBxPt1wCvtXc125rjVBfs0suirHo5BJuURxO/4s82RsN2nJxnvTP8
-         1kgFehRzx0VhbZnuIuwr4TJ85EwKs9J+i3Otrx4Fp2rdufH3xNIuF1daIBQopCS75bW9
-         tM1btCQqIuZG6ZaS5QnpmaQO4y6bI0quOunSvPa6VI3B0GZNeLk3JknD+BZfvhKJG17i
-         NW9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=3qRTvKUYTNge7vmE3EOwKlujh92Tlv3Z2E+G5tSvZhg=;
-        b=qFlE2BFbgVtI4zb8OJn0tv7t/Xax+KmvQJ8boJnd8wmfbuPcHRy6bIPIcVA1EnSvgg
-         uFXCAOFOFVnZ1Ikt/36cLRQpu+WzKD7I/0fISIDSu02WzeIpM80+gkCE4E8yPJNYiEOh
-         11bVwiB2i5ExZrz7t4Fo3HMq2tzuksMPzTnF3IsEjStS9hOHHwOFyLh89sFnz6qpAmhy
-         Ir89vV9USoBxTqqe2zqDzCZHH48jQmKqgNhvTytYKUqCSi5OzKwdNX07NddPSgWiPXma
-         9dKZvGT8VB7GJ0slUGiYaJXaOeOzKqXV7ztdDvWnLAj5Aipon1QnoPv6BTqggiV2ohuw
-         ovow==
-X-Gm-Message-State: AOAM5305S5Tn4f3Ztqzcq9WsMO+T3pNGvX5m39B+VVmgOGZmsBktDq5N
-        tDqKbD65O/03T5qw2vbk0lwP0KQN6TxUIA==
-X-Google-Smtp-Source: ABdhPJysl7JpD2TmU3KXm5btWx1tZ8uOwGOAFD7rZXNzmJKBHLdUJKZVNJcPn/xLFcgi0qt+df/KwA==
-X-Received: by 2002:a05:6214:13f4:: with SMTP id ch20mr9590742qvb.73.1594999835842;
-        Fri, 17 Jul 2020 08:30:35 -0700 (PDT)
-Received: from [192.168.1.45] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id 130sm10693919qkn.82.2020.07.17.08.30.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 17 Jul 2020 08:30:34 -0700 (PDT)
-Subject: Re: [PATCH v2] btrfs: qgroup: Fix data leakage caused by race between
- writeback and truncate
-To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-References: <20200717071205.26027-1-wqu@suse.com>
-From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <9b03ca60-e56f-442c-7558-3ca1b2b1df77@toxicpanda.com>
-Date:   Fri, 17 Jul 2020 11:30:33 -0400
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20200717071205.26027-1-wqu@suse.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S1727096AbgGQRIy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 17 Jul 2020 13:08:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46230 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727034AbgGQRIu (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 17 Jul 2020 13:08:50 -0400
+Received: from localhost (unknown [137.135.114.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 03B6520737;
+        Fri, 17 Jul 2020 17:08:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595005729;
+        bh=GEziDP5HiD3f/2kmMiC8OrJXv3eCmwGtVsBzNMZsU+w=;
+        h=Date:From:To:To:To:Cc:Cc:Subject:In-Reply-To:References:From;
+        b=NXBxutFpzKrVf8bCMLUQk6hFTMpS/czW4yt9hBFG+YW/5rfP35PJ7IwthcE9E7Wf0
+         oRHkRxnWcBylkMYtjfeRCosbMD2CVVeznl2ebdA3UHekyZNrlYF38SHC01C6ZZ+YdA
+         OpJzyM1OxkFai3BlESeZSDJYeFYBb4cZt4mE5QYk=
+Date:   Fri, 17 Jul 2020 17:08:48 +0000
+From:   Sasha Levin <sashal@kernel.org>
+To:     Sasha Levin <sashal@kernel.org>
+To:     David Sterba <dsterba@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     David Sterba <dsterba@suse.com>, stable@vger.kernel.org
+Cc:     stable@vger.kernel.org
+Subject: Re: [PATCH v2] btrfs: add missing check for nocow and compression inode flags
+In-Reply-To: <20200713103349.22448-1-dsterba@suse.com>
+References: <20200713103349.22448-1-dsterba@suse.com>
+Message-Id: <20200717170849.03B6520737@mail.kernel.org>
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 7/17/20 3:12 AM, Qu Wenruo wrote:
-> [BUG]
-> When running tests like generic/013 on test device with btrfs quota
-> enabled, it can normally lead to data leakage, detected at unmount time:
-> 
->    BTRFS warning (device dm-3): qgroup 0/5 has unreleased space, type 0 rsv 4096
->    ------------[ cut here ]------------
->    WARNING: CPU: 11 PID: 16386 at fs/btrfs/disk-io.c:4142 close_ctree+0x1dc/0x323 [btrfs]
->    RIP: 0010:close_ctree+0x1dc/0x323 [btrfs]
->    Call Trace:
->     btrfs_put_super+0x15/0x17 [btrfs]
->     generic_shutdown_super+0x72/0x110
->     kill_anon_super+0x18/0x30
->     btrfs_kill_super+0x17/0x30 [btrfs]
->     deactivate_locked_super+0x3b/0xa0
->     deactivate_super+0x40/0x50
->     cleanup_mnt+0x135/0x190
->     __cleanup_mnt+0x12/0x20
->     task_work_run+0x64/0xb0
->     __prepare_exit_to_usermode+0x1bc/0x1c0
->     __syscall_return_slowpath+0x47/0x230
->     do_syscall_64+0x64/0xb0
->     entry_SYSCALL_64_after_hwframe+0x44/0xa9
->    ---[ end trace caf08beafeca2392 ]---
->    BTRFS error (device dm-3): qgroup reserved space leaked
-> 
-> [CAUSE]
-> In the offending case, the offending operations are:
-> 2/6: writev f2X[269 1 0 0 0 0] [1006997,67,288] 0
-> 2/7: truncate f2X[269 1 0 0 48 1026293] 18388 0
-> 
-> The following sequence of events could happen after the writev():
-> 	CPU1 (writeback)		|		CPU2 (truncate)
-> -----------------------------------------------------------------
-> btrfs_writepages()			|
-> |- extent_write_cache_pages()		|
->     |- Got page for 1003520		|
->     |  1003520 is Dirty, no writeback	|
->     |  So (!clear_page_dirty_for_io())   |
->     |  gets called for it		|
->     |- Now page 1003520 is Clean.	|
->     |					| btrfs_setattr()
->     |					| |- btrfs_setsize()
->     |					|    |- truncate_setsize()
->     |					|       New i_size is 18388
->     |- __extent_writepage()		|
->     |  |- page_offset() > i_size		|
->        |- btrfs_invalidatepage()		|
-> 	 |- Page is clean, so no qgroup |
-> 	    callback executed
-> 
-> This means, the qgroup reserved data space is not properly released in
-> btrfs_invalidatepage() as the page is Clean.
-> 
-> [FIX]
-> Instead of checking the dirty bit of a page, call
-> btrfs_qgroup_free_data() unconditionally in btrfs_invalidatepage().
-> 
-> As qgroup rsv are completely binded to the QGROUP_RESERVED bit of
-> io_tree, not binded to page status, thus we won't cause double freeing
-> anyway.
-> 
-> Fixes: 0b34c261e235 ("btrfs: qgroup: Prevent qgroup->reserved from going subzero")
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> 
+Hi
 
-I don't understand how this is ok.  We can call invalidatepage via memory 
-pressure, so what if we have started the write and have an ordered extent 
-outstanding, and then we call into invalidate page and now unconditionally drop 
-the qgroup reservation, even tho we still need it for the ordered extent.  Am I 
-missing something here?  Thanks,
+[This is an automated email]
 
-Josef
+This commit has been processed because it contains a -stable tag.
+The stable tag indicates that it's relevant for the following trees: 4.4+
+
+The bot has tested the following trees: v5.7.8, v5.4.51, v4.19.132, v4.14.188, v4.9.230, v4.4.230.
+
+v5.7.8: Build OK!
+v5.4.51: Build OK!
+v4.19.132: Failed to apply! Possible dependencies:
+    04e6863b19c72 ("btrfs: split btrfs_setxattr calls regarding transaction")
+    262c96a3c3670 ("btrfs: refactor btrfs_set_prop and add btrfs_set_prop_trans")
+    7715da84f74d5 ("btrfs: merge _btrfs_set_prop helpers")
+    8b4d1efc9e6c3 ("btrfs: prop: open code btrfs_set_prop in inherit_prop")
+    cac237ae095f6 ("btrfs: rename btrfs_setxattr to btrfs_setxattr_trans")
+    d2b8fcfe43155 ("btrfs: modify local copy of btrfs_inode flags")
+    f22125e5d8ae1 ("btrfs: refactor btrfs_set_props to validate externally")
+    ff9fef559babe ("btrfs: start transaction in btrfs_ioctl_setflags()")
+
+v4.14.188: Failed to apply! Possible dependencies:
+    04e6863b19c72 ("btrfs: split btrfs_setxattr calls regarding transaction")
+    1905a0f7c7de3 ("btrfs: rename btrfs_mask_flags to reflect which flags it touches")
+    262c96a3c3670 ("btrfs: refactor btrfs_set_prop and add btrfs_set_prop_trans")
+    38e82de8ccd18 ("btrfs: user proper type for btrfs_mask_flags flags")
+    5ba76abfb2336 ("btrfs: rename check_flags to reflect which flags it touches")
+    5c57b8b6a4966 ("btrfs: unify naming of flags variables for SETFLAGS and XFLAGS")
+    7715da84f74d5 ("btrfs: merge _btrfs_set_prop helpers")
+    7852781d94b30 ("btrfs: drop underscores from exported xattr functions")
+    7b6a221e5b21f ("btrfs: rename btrfs_update_iflags to reflect which flags it touches")
+    8b4d1efc9e6c3 ("btrfs: prop: open code btrfs_set_prop in inherit_prop")
+    93370509c24cc ("btrfs: SETFLAGS ioctl: use helper for compression type conversion")
+    a157d4fd81dc7 ("btrfs: rename btrfs_flags_to_ioctl to reflect which flags it touches")
+    ab0d09361662b ("btrfs: drop extern from function declarations")
+    cac237ae095f6 ("btrfs: rename btrfs_setxattr to btrfs_setxattr_trans")
+    d2b8fcfe43155 ("btrfs: modify local copy of btrfs_inode flags")
+    f22125e5d8ae1 ("btrfs: refactor btrfs_set_props to validate externally")
+    ff9fef559babe ("btrfs: start transaction in btrfs_ioctl_setflags()")
+
+v4.9.230: Failed to apply! Possible dependencies:
+    0b246afa62b0c ("btrfs: root->fs_info cleanup, add fs_info convenience variables")
+    1905a0f7c7de3 ("btrfs: rename btrfs_mask_flags to reflect which flags it touches")
+    38e82de8ccd18 ("btrfs: user proper type for btrfs_mask_flags flags")
+    5ba76abfb2336 ("btrfs: rename check_flags to reflect which flags it touches")
+    5c57b8b6a4966 ("btrfs: unify naming of flags variables for SETFLAGS and XFLAGS")
+    62d1f9fe97dd2 ("btrfs: remove trivial helper btrfs_find_tree_block")
+    a157d4fd81dc7 ("btrfs: rename btrfs_flags_to_ioctl to reflect which flags it touches")
+    cf8cddd38bab3 ("btrfs: don't abuse REQ_OP_* flags for btrfs_map_block")
+    da17066c40472 ("btrfs: pull node/sector/stripe sizes out of root and into fs_info")
+    de143792253e2 ("btrfs: struct btrfsic_state->root should be an fs_info")
+    fb456252d3d9c ("btrfs: root->fs_info cleanup, use fs_info->dev_root everywhere")
+    ff9fef559babe ("btrfs: start transaction in btrfs_ioctl_setflags()")
+
+v4.4.230: Failed to apply! Possible dependencies:
+    0132761017e01 ("btrfs: fix string and comment grammatical issues and typos")
+    09cbfeaf1a5a6 ("mm, fs: get rid of PAGE_CACHE_* and page_cache_{get,release} macros")
+    0b246afa62b0c ("btrfs: root->fs_info cleanup, add fs_info convenience variables")
+    0e749e54244ee ("dax: increase granularity of dax_clear_blocks() operations")
+    1905a0f7c7de3 ("btrfs: rename btrfs_mask_flags to reflect which flags it touches")
+    38e82de8ccd18 ("btrfs: user proper type for btrfs_mask_flags flags")
+    4420cfd3f51cf ("staging: lustre: format properly all comment blocks for LNet core")
+    52db400fcd502 ("pmem, dax: clean up clear_pmem()")
+    5ba76abfb2336 ("btrfs: rename check_flags to reflect which flags it touches")
+    5c57b8b6a4966 ("btrfs: unify naming of flags variables for SETFLAGS and XFLAGS")
+    5fd88337d209d ("staging: lustre: fix all conditional comparison to zero in LNet layer")
+    a157d4fd81dc7 ("btrfs: rename btrfs_flags_to_ioctl to reflect which flags it touches")
+    b2e0d1625e193 ("dax: fix lifetime of in-kernel dax mappings with dax_map_atomic()")
+    bb7ab3b92e46d ("btrfs: Fix misspellings in comments.")
+    cf8cddd38bab3 ("btrfs: don't abuse REQ_OP_* flags for btrfs_map_block")
+    d1a5f2b4d8a12 ("block: use DAX for partition table reads")
+    de143792253e2 ("btrfs: struct btrfsic_state->root should be an fs_info")
+    e10624f8c0971 ("pmem: fail io-requests to known bad blocks")
+    ff9fef559babe ("btrfs: start transaction in btrfs_ioctl_setflags()")
+
+
+NOTE: The patch will not be queued to stable trees until it is upstream.
+
+How should we proceed with this patch?
+
+-- 
+Thanks
+Sasha
