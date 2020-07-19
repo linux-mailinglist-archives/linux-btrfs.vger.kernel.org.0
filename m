@@ -2,106 +2,76 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB5EC2252D6
-	for <lists+linux-btrfs@lfdr.de>; Sun, 19 Jul 2020 18:44:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACAA9225301
+	for <lists+linux-btrfs@lfdr.de>; Sun, 19 Jul 2020 19:15:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726049AbgGSQoZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 19 Jul 2020 12:44:25 -0400
-Received: from out20-134.mail.aliyun.com ([115.124.20.134]:53936 "EHLO
-        out20-134.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725783AbgGSQoY (ORCPT
+        id S1726446AbgGSRPD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 19 Jul 2020 13:15:03 -0400
+Received: from out20-111.mail.aliyun.com ([115.124.20.111]:40859 "EHLO
+        out20-111.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725783AbgGSRPD (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 19 Jul 2020 12:44:24 -0400
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.9243609|0.8991504;BR=01201311R131S65rulernew998_84748_2000303;CH=blue;DM=|SPAM|false|;DS=CONTINUE|ham_system_inform|0.0079184-0.000475136-0.991606;FP=0|0|0|0|0|-1|-1|-1;HT=e01a16378;MF=guan@eryu.me;NM=1;PH=DS;RN=4;RT=4;SR=0;TI=SMTPD_---.I4MNc41_1595177058;
-Received: from localhost(mailfrom:guan@eryu.me fp:SMTPD_---.I4MNc41_1595177058)
-          by smtp.aliyun-inc.com(10.147.41.158);
-          Mon, 20 Jul 2020 00:44:18 +0800
-Date:   Mon, 20 Jul 2020 00:44:17 +0800
+        Sun, 19 Jul 2020 13:15:03 -0400
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07567487|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.0172471-0.00118252-0.98157;FP=0|0|0|0|0|-1|-1|-1;HT=e02c03294;MF=guan@eryu.me;NM=1;PH=DS;RN=5;RT=5;SR=0;TI=SMTPD_---.I4NDvDj_1595178898;
+Received: from localhost(mailfrom:guan@eryu.me fp:SMTPD_---.I4NDvDj_1595178898)
+          by smtp.aliyun-inc.com(10.147.42.253);
+          Mon, 20 Jul 2020 01:14:59 +0800
+Date:   Mon, 20 Jul 2020 01:14:58 +0800
 From:   Eryu Guan <guan@eryu.me>
-To:     fdmanana@kernel.org
-Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        Filipe Manana <fdmanana@suse.com>
-Subject: Re: [PATCH] btrfs: test creating a snapshot after RWF_NOWAIT write
- works as expected
-Message-ID: <20200719164417.GC2557159@desktop>
-References: <20200615175028.15090-1-fdmanana@kernel.org>
+To:     Boris Burkov <boris@bur.io>
+Cc:     Josef Bacik <josef@toxicpanda.com>, fstests@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, Amir Goldstein <amir73il@gmail.com>
+Subject: Re: [PATCH v2] generic: add a test for umount racing mount
+Message-ID: <20200719171458.GD2557159@desktop>
+References: <c8bfc2c7-4c13-72e4-3665-c2e2dec99dd4@toxicpanda.com>
+ <20200710171836.127889-1-boris@bur.io>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200615175028.15090-1-fdmanana@kernel.org>
+In-Reply-To: <20200710171836.127889-1-boris@bur.io>
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Jun 15, 2020 at 06:50:28PM +0100, fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
+[ cc'ed Amir for failure on overlayfs ]
+
+On Fri, Jul 10, 2020 at 10:18:36AM -0700, Boris Burkov wrote:
+> Test if dirtying many inodes (which can delay umount) then
+> unmounting and quickly mounting again causes the mount to fail.
 > 
-> Test that creating a snapshot after writing to a file using a RWF_NOWAIT
-> works, does not hang the snapshot creation task, and we are able to read
-> the data after.
+> A race, which breaks the test in btrfs, is fixed by the patch:
+> "btrfs: fix mount failure caused by race with umount"
 > 
-> Currently btrfs hangs when creating the snapshot due to a missing unlock
-> of a snapshot lock, but it is fixed by a patch with the following subject:
-> 
->   "btrfs: fix hang on snapshot creation after RWF_NOWAIT write"
-> 
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
-
-So sorry for the late review.. But I hit the following failure with
-v5.8-rc5 kernel, which contains the mentioned fix
-
- QA output created by 215
- wrote 65536/65536 bytes at offset 0
- XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
--wrote 65536/65536 bytes at offset 0
--XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-+pwrite: Input/output error
- Create a readonly snapshot of 'SCRATCH_MNT' in 'SCRATCH_MNT/snap'
- File data in the subvolume:
--0000000 fe fe fe fe fe fe fe fe fe fe fe fe fe fe fe fe
-+0000000 ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab
- *
- 0065536
- File data in the snapshot:
--0000000 fe fe fe fe fe fe fe fe fe fe fe fe fe fe fe fe
-+0000000 ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab
- *
- 0065536
-
-And I did hit hang when testing without the fix. Is this something that
-should be fixed in the test?
-
-Thanks,
-Eryu
-
+> Signed-off-by: Boris Burkov <boris@bur.io>
 > ---
->  tests/btrfs/214     | 66 +++++++++++++++++++++++++++++++++++++++++++++
->  tests/btrfs/214.out | 14 ++++++++++
->  tests/btrfs/group   |  1 +
->  3 files changed, 81 insertions(+)
->  create mode 100755 tests/btrfs/214
->  create mode 100644 tests/btrfs/214.out
+>  tests/generic/604     | 52 +++++++++++++++++++++++++++++++++++++++++++
+>  tests/generic/604.out |  2 ++
+>  tests/generic/group   |  1 +
+>  3 files changed, 55 insertions(+)
+>  create mode 100755 tests/generic/604
+>  create mode 100644 tests/generic/604.out
 > 
-> diff --git a/tests/btrfs/214 b/tests/btrfs/214
+> diff --git a/tests/generic/604 b/tests/generic/604
 > new file mode 100755
-> index 00000000..c835e844
+> index 00000000..e67899cb
 > --- /dev/null
-> +++ b/tests/btrfs/214
-> @@ -0,0 +1,66 @@
+> +++ b/tests/generic/604
+> @@ -0,0 +1,52 @@
 > +#! /bin/bash
 > +# SPDX-License-Identifier: GPL-2.0
-> +# Copyright (C) 2020 SUSE Linux Products GmbH. All Rights Reserved.
+> +# Copyright (c) 2020 Facebook  All Rights Reserved.
 > +#
-> +# FSQA Test No. 214
+> +# FS QA Test 604
 > +#
-> +# Test that creating a snapshot after writing to a file using a RWF_NOWAIT
-> +# works, does not hang the snapshot creation task, and we are able to read
-> +# the data after.
+> +# Evicting dirty inodes can take a long time during umount.
+> +# Check that a new mount racing with such a delayed umount succeeds.
 > +#
 > +seq=`basename $0`
 > +seqres=$RESULT_DIR/$seq
 > +echo "QA output created by $seq"
+> +
+> +here=`pwd`
 > +tmp=/tmp/$$
 > +status=1	# failure is the default!
 > +trap "_cleanup; exit \$status" 0 1 2 3 15
@@ -115,74 +85,70 @@ Eryu
 > +# get standard environment, filters and checks
 > +. ./common/rc
 > +. ./common/filter
-> +. ./common/attr
 > +
-> +# real QA test starts here
-> +_supported_fs btrfs
-> +_supported_os Linux
-> +_require_scratch
-> +_require_odirect
-> +_require_xfs_io_command pwrite -N
-> +_require_chattr C
-> +
+> +# remove previous $seqres.full before test
 > +rm -f $seqres.full
 > +
-> +_scratch_mkfs >>$seqres.full 2>&1
+> +# real QA test starts here
+> +
+> +# Modify as appropriate.
+> +_supported_fs generic
+> +_supported_os Linux
+> +_require_test
+
+Test takes use of scratch dev, but required test dev here.
+
+> +
+> +_scratch_mkfs > /dev/null 2>&1
 > +_scratch_mount
+> +for i in $(seq 0 500)
+> +do
+> +	dd if=/dev/zero of="$SCRATCH_MNT/$i" bs=1M count=1 > /dev/null 2>&1
+> +done
+
+The kernel patch describes that it only needs to make a bunch of inodes
+dirty, so is it really necessary to write 500M data to the fs? Does
+writing less files work (e.g. 50)? Or does writing less data work (e.g.
+4k file)?
+
+Also, fstests perfers code style like
+
+for i in $(seq 0 500); do
+	$XFS_IO_PROG -c "pwrite 0 1M" $SCRATCH_MNT/$i >/dev/null 2>&1
+done
+
+> +_scratch_unmount &
+> +_scratch_mount
+
+xfs and ext4 both passed this test, but overlayfs always fails the test.
+I'm not sure if this is a valid test for overlay? Or it's just that
+overlayfs should be fixed? Amir, any comments here?
+
+Thanks,
+Eryu
+
 > +
-> +# RWF_NOWAIT writes require NOCOW
-> +touch $SCRATCH_MNT/f
-> +$CHATTR_PROG +C $SCRATCH_MNT/f
+> +echo "Silence is golden"
 > +
-> +$XFS_IO_PROG -d -c "pwrite -S 0xab 0 64K" $SCRATCH_MNT/f | _filter_xfs_io
-> +
-> +# Now do a WEF_WRITE into a range containing a NOCOWable extent.
-> +$XFS_IO_PROG -d -c "pwrite -N -V 1 -S 0xfe 0 64K" $SCRATCH_MNT/f \
-> +	| _filter_xfs_io
-> +
-> +$BTRFS_UTIL_PROG subvolume snapshot -r $SCRATCH_MNT $SCRATCH_MNT/snap \
-> +	| _filter_scratch
-> +
-> +# Unmount, mount again and verify the file in the subvolume and snapshot has
-> +# the correct data.
-> +_scratch_cycle_mount
-> +
-> +echo "File data in the subvolume:"
-> +od -A d -t x1 $SCRATCH_MNT/f
-> +
-> +echo "File data in the snapshot:"
-> +od -A d -t x1 $SCRATCH_MNT/snap/f
-> +
+> +# success, all done
 > +status=0
 > +exit
-> diff --git a/tests/btrfs/214.out b/tests/btrfs/214.out
+> diff --git a/tests/generic/604.out b/tests/generic/604.out
 > new file mode 100644
-> index 00000000..6cc66972
+> index 00000000..6810da89
 > --- /dev/null
-> +++ b/tests/btrfs/214.out
-> @@ -0,0 +1,14 @@
-> +QA output created by 214
-> +wrote 65536/65536 bytes at offset 0
-> +XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-> +wrote 65536/65536 bytes at offset 0
-> +XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-> +Create a readonly snapshot of 'SCRATCH_MNT' in 'SCRATCH_MNT/snap'
-> +File data in the subvolume:
-> +0000000 fe fe fe fe fe fe fe fe fe fe fe fe fe fe fe fe
-> +*
-> +0065536
-> +File data in the snapshot:
-> +0000000 fe fe fe fe fe fe fe fe fe fe fe fe fe fe fe fe
-> +*
-> +0065536
-> diff --git a/tests/btrfs/group b/tests/btrfs/group
-> index 9e48ecc1..a3706e7d 100644
-> --- a/tests/btrfs/group
-> +++ b/tests/btrfs/group
-> @@ -216,3 +216,4 @@
->  211 auto quick log prealloc
->  212 auto balance dangerous
->  213 auto balance dangerous
-> +214 auto quick snapshot
+> +++ b/tests/generic/604.out
+> @@ -0,0 +1,2 @@
+> +QA output created by 604
+> +Silence is golden
+> diff --git a/tests/generic/group b/tests/generic/group
+> index d9ab9a31..c0ace35b 100644
+> --- a/tests/generic/group
+> +++ b/tests/generic/group
+> @@ -605,3 +605,4 @@
+>  601 auto quick quota
+>  602 auto quick encrypt
+>  603 auto quick quota
+> +604 auto quick
 > -- 
-> 2.26.2
+> 2.24.1
