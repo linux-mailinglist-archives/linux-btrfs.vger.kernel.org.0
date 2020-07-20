@@ -2,169 +2,129 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9833F225E93
-	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Jul 2020 14:31:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 857B9225FA6
+	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Jul 2020 14:52:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728369AbgGTMbS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 20 Jul 2020 08:31:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37928 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727989AbgGTMbS (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 20 Jul 2020 08:31:18 -0400
-Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD8F0C061794
-        for <linux-btrfs@vger.kernel.org>; Mon, 20 Jul 2020 05:31:17 -0700 (PDT)
-Received: by mail-oi1-x232.google.com with SMTP id e4so14253447oib.1
-        for <linux-btrfs@vger.kernel.org>; Mon, 20 Jul 2020 05:31:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=VpSZvXKtIBjcBI5AyknBIPfuED7V3L2fP7F3wyF5Y14=;
-        b=QQryprfR7ytvzZtDXGa1sVwMkLGx+7BuOAEGcu5j6B0iR9YQGGTLcD4KdOWUMVsLKj
-         I+gv3BzgoVmjXa7oJfEMxKBlcxeeKL2QRsZFiN7X6QJHHMpMQmhI9AxVVfXAo7Ft7O+N
-         FBxoATliqTk0EMGdGQ9M0eovmziM8PbdsT2m6TA6DmW/i3Mq/c52Z9eeODkzayQgsKjz
-         s1Eg9iPzAr68/4/zY/IiYk/G8dmOdVuh7yMvGFMZQ6cvJApr/KZAKdVD6090KpAaCt2M
-         nRe1+Gm6i/Veq7BvLr6DCX6IDn97Edv3OCTNSjz40f7twMoLSMO6FM9neCASgSdmhYeg
-         dobA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=VpSZvXKtIBjcBI5AyknBIPfuED7V3L2fP7F3wyF5Y14=;
-        b=Gz8gZiSmJ4NGkvclmewSswHptS1K6qyozqcRRmvybVWLLdQFwSEE/mpHX5hlXZPfBD
-         rbrMpyPX5IZUE16poujZAzOCJTF5Xw19A/qrdxJc5AAfj82eNUT6lbcvDIf7EGBBsoJO
-         y/mj69BDGGIByZdoZUAwHFLQ7pRe5E00CUdkTQ1S6vCRAOdpvqo3j0SP45oeRER/t/1+
-         5quXrBXN0yk7ps7nr3wnB20aaW5d1fPC8SVFjZhbA3g8E2sGPoABVjGovMprm8d8/fbl
-         yOa1xDOe1WDJpprQmGcYFOcEkO626k7QTMOKyZwWSGmK0Kr70YpzLdj22C1uwjL8XPlF
-         5hDQ==
-X-Gm-Message-State: AOAM531JCsAAdMQvZcQVHd3ie0x00awEldbVkb5XcVTieDoFrywi7CQ+
-        fnXrzFlOM8yuMi1eV9Fzs4gn1MFvLLgl5/i52J5eGdCK
-X-Google-Smtp-Source: ABdhPJxkmLQAJqOAmDGcovXs//QLhurQG299yNnoZHyfiddwpzFQKCwD3A+ctDl/fUpg7KCOnpoGR0b0qm+OKC/PnYY=
-X-Received: by 2002:aca:75d1:: with SMTP id q200mr16661419oic.61.1595248276614;
- Mon, 20 Jul 2020 05:31:16 -0700 (PDT)
+        id S1729144AbgGTMvV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 20 Jul 2020 08:51:21 -0400
+Received: from mx2.suse.de ([195.135.220.15]:43974 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728779AbgGTMvS (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 20 Jul 2020 08:51:18 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id B10AFACA9;
+        Mon, 20 Jul 2020 12:51:21 +0000 (UTC)
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     Christian Zangl <coralllama@gmail.com>
+Subject: [PATCH 1/2] btrfs-progs: convert: Prevent bit overflow for cctx->total_bytes
+Date:   Mon, 20 Jul 2020 20:51:08 +0800
+Message-Id: <20200720125109.93970-1-wqu@suse.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-From:   Chiung-Ming Huang <photon3108@gmail.com>
-Date:   Mon, 20 Jul 2020 20:31:05 +0800
-Message-ID: <CAEOGEKHbFoZGuVHWCYAcKyArczmqjBAUVFvh8upe7vKTO0gVrQ@mail.gmail.com>
-Subject: How to fix scrub aborted?
-To:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi everyone
+[BUG]
+When convert is called on a 64GiB ext4 fs, it fails like this:
 
-I lost two disks and then I tried to scrub. But it's always aborted.
-These are dmesg below. Thanks.
+  $ btrfs-convert  /dev/loop0p1
+  create btrfs filesystem:
+          blocksize: 4096
+          nodesize:  16384
+          features:  extref, skinny-metadata (default)
+          checksum:  crc32c
+  creating ext2 image file
+  ERROR: missing data block for bytenr 1048576
+  ERROR: failed to create ext2_saved/image: -2
+  WARNING: an error occurred during conversion, filesystem is partially created but not finalized and not mountable
 
-[Sat Jul 18 16:08:49 2020] Btrfs loaded, crc32c=crc32c-intel
-[Sat Jul 18 16:08:49 2020] BTRFS: device fsid
-76f7c004-2684-4956-a614-43472049ea06 devid 6 transid 417627
-/dev/mapper/disk-hn
-[Sat Jul 18 16:08:49 2020] BTRFS: device fsid
-76f7c004-2684-4956-a614-43472049ea06 devid 5 transid 417627
-/dev/mapper/disk-w6
-[Sat Jul 18 16:08:49 2020] BTRFS: device fsid
-76f7c004-2684-4956-a614-43472049ea06 devid 4 transid 417627
-/dev/mapper/disk-te
-[Sat Jul 18 16:08:49 2020] BTRFS: device fsid
-4d52cb05-0e1e-47b1-9ddc-ce440eed0f56 devid 1 transid 613
-/dev/mapper/boot
-[Sat Jul 18 16:08:49 2020] BTRFS: device fsid
-25814f60-8609-48b1-8b94-8abbf616dc7a devid 1 transid 11440656
-/dev/mapper/rescue
-[Sat Jul 18 16:08:50 2020] BTRFS info (device dm-0): disk space
-caching is enabled
-[Sat Jul 18 16:08:50 2020] BTRFS info (device dm-0): has skinny extents
-[Sat Jul 18 16:08:50 2020] BTRFS info (device dm-0): enabling ssd optimizations
-[Sat Jul 18 16:08:50 2020] BTRFS info (device dm-0): disk space
-caching is enabled
-[Sat Jul 18 16:08:51 2020] BTRFS info (device dm-0): device fsid
-25814f60-8609-48b1-8b94-8abbf616dc7a devid 1 moved
-old:/dev/mapper/rescue new:/dev/dm-0
-[Sat Jul 18 16:08:51 2020] BTRFS info (device dm-0): device fsid
-25814f60-8609-48b1-8b94-8abbf616dc7a devid 1 moved old:/dev/dm-0
-new:/dev/mapper/rescue
-[Sat Jul 18 16:11:16 2020] BTRFS info (device dm-2): disk space
-caching is enabled
-[Sat Jul 18 16:11:16 2020] BTRFS info (device dm-2): has skinny extents
-[Sat Jul 18 16:11:16 2020] BTRFS error (device dm-2): devid 2 uuid
-6a42b1ec-a0fe-47d7-8cdc-9835672430ea is missing
-[Sat Jul 18 16:11:16 2020] BTRFS error (device dm-2): failed to read
-the system array: -2
-[Sat Jul 18 16:11:16 2020] BTRFS error (device dm-2): open_ctree failed
-[Sat Jul 18 16:18:02 2020] BTRFS info (device dm-2): disk space
-caching is enabled
-[Sat Jul 18 16:18:02 2020] BTRFS info (device dm-2): has skinny extents
-[Sat Jul 18 16:18:02 2020] BTRFS error (device dm-2): devid 2 uuid
-6a42b1ec-a0fe-47d7-8cdc-9835672430ea is missing
-[Sat Jul 18 16:18:02 2020] BTRFS error (device dm-2): failed to read
-the system array: -2
-[Sat Jul 18 16:18:02 2020] BTRFS error (device dm-2): open_ctree failed
-[Sat Jul 18 16:19:25 2020] BTRFS info (device dm-2): allowing degraded mounts
-[Sat Jul 18 16:19:25 2020] BTRFS info (device dm-2): disk space
-caching is enabled
-[Sat Jul 18 16:19:25 2020] BTRFS info (device dm-2): has skinny extents
-[Sat Jul 18 16:19:25 2020] BTRFS warning (device dm-2): devid 2 uuid
-6a42b1ec-a0fe-47d7-8cdc-9835672430ea is missing
-[Sat Jul 18 16:19:25 2020] BTRFS warning (device dm-2): devid 1 uuid
-b572e9b0-4ef3-4006-b300-e145b72c3945 is missing
-[Sat Jul 18 16:19:25 2020] BTRFS warning (device dm-2): devid 2 uuid
-6a42b1ec-a0fe-47d7-8cdc-9835672430ea is missing
-[Sat Jul 18 16:19:26 2020] BTRFS info (device dm-2): bdev (efault)
-errs: wr 167491685, rd 147424524, flush 182654, corrupt 0, gen 0
-[Sat Jul 18 16:19:26 2020] BTRFS info (device dm-2): bdev
-/dev/mapper/disk-te errs: wr 0, rd 0, flush 0, corrupt 0, gen 3
-[Sat Jul 18 16:20:02 2020] BTRFS info (device dm-2): enabling ssd optimizations
-[Sat Jul 18 16:20:02 2020] BTRFS info (device dm-1): disk space
-caching is enabled
-[Sat Jul 18 16:20:02 2020] BTRFS info (device dm-1): has skinny extents
-[Sat Jul 18 16:20:02 2020] BTRFS info (device dm-1): enabling ssd optimizations
-[Sat Jul 18 16:27:48 2020] BTRFS info (device dm-2): scrub: started on devid 6
-[Sat Jul 18 22:07:33 2020] BTRFS: Transaction aborted (error -17)
-[Sat Jul 18 22:07:33 2020] WARNING: CPU: 3 PID: 2970 at
-/build/linux-hwe-eg6_iE/linux-hwe-5.3.0/fs/btrfs/extent-tree.c:2795
-btrfs_run_delayed_refs+0x152/0x1a0 [btrfs]
-[Sat Jul 18 22:07:33 2020] Modules linked in: rfcomm cmac bnep
-nls_iso8859_1 snd_hda_codec_hdmi snd_hda_codec_realtek
-snd_hda_codec_generic edac_mce_amd ledtrig_audio kvm_amd btusb ccp
-btrtl kvm snd_hda_intel btbcm irqbypass snd_intel_dspcfg btintel
-joydev snd_seq_midi snd_seq_midi_event input_leds snd_hda_codec
-bluetooth mxm_wmi snd_hda_core snd_rawmidi fam15h_power k10temp
-snd_hwdep snd_pcm snd_seq ecdh_generic ecc snd_seq_device snd_timer
-snd soundcore mac_hid nvidia_uvm(OE) sch_fq_codel parport_pc ppdev lp
-parport ip_tables x_tables autofs4 btrfs xor zstd_compress raid6_pq
-libcrc32c algif_skcipher af_alg dm_crypt hid_logitech_hidpp
-hid_logitech_dj hid_generic usbhid hid nvidia_drm(POE)
-nvidia_modeset(POE) bcache crc64 crct10dif_pclmul crc32_pclmul
-ghash_clmulni_intel nvidia(POE) drm_kms_helper syscopyarea aesni_intel
-sysfillrect sysimgblt fb_sys_fops aes_x86_64 crypto_simd drm cryptd
-glue_helper r8169 ipmi_devintf nvme realtek ahci nvme_core i2c_piix4
-libahci ipmi_msghandler wmi
-[Sat Jul 18 22:07:33 2020] CPU: 3 PID: 2970 Comm: btrfs-transacti
-Tainted: P           OE     5.3.0-62-generic #56~18.04.1-Ubuntu
-[Sat Jul 18 22:07:33 2020] RIP: 0010:btrfs_run_delayed_refs+0x152/0x1a0 [btrfs]
-[Sat Jul 18 22:07:33 2020]  commit_cowonly_roots+0xe7/0x2d0 [btrfs]
-[Sat Jul 18 22:07:33 2020]  ? btrfs_qgroup_account_extents+0x11c/0x260 [btrfs]
-[Sat Jul 18 22:07:33 2020]  btrfs_commit_transaction+0x506/0x980 [btrfs]
-[Sat Jul 18 22:07:33 2020]  transaction_kthread+0x148/0x170 [btrfs]
-[Sat Jul 18 22:07:33 2020]  ? btrfs_cleanup_transaction+0x570/0x570 [btrfs]
-[Sat Jul 18 22:07:33 2020] BTRFS: error (device dm-2) in
-btrfs_run_delayed_refs:2795: errno=-17 Object already exists
-[Sat Jul 18 22:07:33 2020] BTRFS info (device dm-2): forced readonly
-[Sat Jul 18 22:07:33 2020] BTRFS warning (device dm-2): Skipping
-commit of aborted transaction.
-[Sat Jul 18 22:07:33 2020] BTRFS: error (device dm-2) in
-cleanup_transaction:1839: errno=-17 Object already exists
-[Sat Jul 18 22:07:33 2020] BTRFS warning (device dm-2): failed setting
-block group ro: -30
-[Sat Jul 18 22:07:33 2020] BTRFS info (device dm-2): scrub: not
-finished on devid 6 with status: -30
+Btrfs-convert also corrupts the source fs:
+  $ LANG=C e2fsck /dev/loop0p1 -f
+  e2fsck 1.45.6 (20-Mar-2020)
+  Resize inode not valid.  Recreate<y>? yes
+  Pass 1: Checking inodes, blocks, and sizes
+  Deleted inode 3681 has zero dtime.  Fix<y>? yes
+  Inodes that were part of a corrupted orphan linked list found.  Fix<y>? yes
+  Inode 3744 was part of the orphaned inode list.  FIXED.
+  Deleted inode 3745 has zero dtime.  Fix<y>? yes
+  Inode 3747 has INLINE_DATA_FL flag on filesystem without inline data support.
+  Clear<y>? yes
+  ...
 
-Ubuntu 18.04
-btrfs-progs v5.7
+[CAUSE]
+After some debugging, the first strange behavior is, the value of
+cctx->total_bytes is 0 in ext2_open_fs().
 
-Regards,
-Chiung-Ming Huang
+It turns out that, the value assign for cctx->total_bytes could lead to
+bit overflow for the unsigned int value.
+
+And that 0 cctx->total_bytes leads to vairous problems for later free
+space calculation.
+For example, in calculate_available_space(), we use cctx->total_bytes to
+ensure we won't create a data chunk beyond device end:
+
+		cue_len = min(cctx->total_bytes - cur_off, cur_len);
+
+If that cur_offset is also 0, we will create a cache_extent with 0 size,
+which could cause a lot of problems for cache tree search.
+
+[FIX]
+Do manual casting for the multiply operation, so we could got a real u64
+result.
+The fix will be applied to all supported fses (ext* and reiserfs).
+
+Reported-by: Christian Zangl <coralllama@gmail.com>
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ convert/main.c            | 1 +
+ convert/source-ext2.c     | 3 ++-
+ convert/source-reiserfs.c | 2 +-
+ 3 files changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/convert/main.c b/convert/main.c
+index 7709e9a6c085..df6a2ae32722 100644
+--- a/convert/main.c
++++ b/convert/main.c
+@@ -1136,6 +1136,7 @@ static int do_convert(const char *devname, u32 convert_flags, u32 nodesize,
+ 	if (ret)
+ 		goto fail;
+ 
++	ASSERT(cctx.total_bytes);
+ 	blocksize = cctx.blocksize;
+ 	total_bytes = (u64)blocksize * (u64)cctx.block_count;
+ 	if (blocksize < 4096) {
+diff --git a/convert/source-ext2.c b/convert/source-ext2.c
+index f11ef651245a..a5e3a726863f 100644
+--- a/convert/source-ext2.c
++++ b/convert/source-ext2.c
+@@ -87,7 +87,8 @@ static int ext2_open_fs(struct btrfs_convert_context *cctx, const char *name)
+ 	cctx->fs_data = ext2_fs;
+ 	cctx->blocksize = ext2_fs->blocksize;
+ 	cctx->block_count = ext2_fs->super->s_blocks_count;
+-	cctx->total_bytes = ext2_fs->blocksize * ext2_fs->super->s_blocks_count;
++	cctx->total_bytes = (u64)ext2_fs->blocksize *
++			    (u64)ext2_fs->super->s_blocks_count;
+ 	cctx->volume_name = strndup((char *)ext2_fs->super->s_volume_name, 16);
+ 	cctx->first_data_block = ext2_fs->super->s_first_data_block;
+ 	cctx->inodes_count = ext2_fs->super->s_inodes_count;
+diff --git a/convert/source-reiserfs.c b/convert/source-reiserfs.c
+index 9fd6b9abb9b4..8d9752f06ca9 100644
+--- a/convert/source-reiserfs.c
++++ b/convert/source-reiserfs.c
+@@ -82,7 +82,7 @@ static int reiserfs_open_fs(struct btrfs_convert_context *cxt, const char *name)
+ 	cxt->fs_data = fs;
+ 	cxt->blocksize = fs->fs_blocksize;
+ 	cxt->block_count = get_sb_block_count(fs->fs_ondisk_sb);
+-	cxt->total_bytes = cxt->blocksize * cxt->block_count;
++	cxt->total_bytes = (u64)cxt->blocksize * (u64)cxt->block_count;
+ 	cxt->volume_name = strndup(fs->fs_ondisk_sb->s_label, 16);
+ 	cxt->first_data_block = 0;
+ 	cxt->inodes_count = reiserfs_count_objectids(fs);
+-- 
+2.27.0
+
