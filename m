@@ -2,121 +2,142 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42A86226A5A
-	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Jul 2020 18:36:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1D67226DB6
+	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Jul 2020 19:58:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388750AbgGTQd0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 20 Jul 2020 12:33:26 -0400
-Received: from mx2.suse.de ([195.135.220.15]:53904 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732146AbgGTQdZ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 20 Jul 2020 12:33:25 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id DD525B817;
-        Mon, 20 Jul 2020 16:33:29 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 6949CDA781; Mon, 20 Jul 2020 18:32:58 +0200 (CEST)
-Date:   Mon, 20 Jul 2020 18:32:58 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Boris Burkov <boris@bur.io>
-Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com
-Subject: Re: [PATCH v3] btrfs: fix mount failure caused by race with umount
-Message-ID: <20200720163258.GI3703@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Boris Burkov <boris@bur.io>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com
-References: <20200716185110.GB3703@twin.jikos.cz>
- <20200716202946.2527706-1-boris@bur.io>
+        id S1731032AbgGTR5x (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 20 Jul 2020 13:57:53 -0400
+Received: from smtp-32.italiaonline.it ([213.209.10.32]:34235 "EHLO libero.it"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726699AbgGTR5w (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 20 Jul 2020 13:57:52 -0400
+Received: from venice.bhome ([78.12.13.37])
+        by smtp-32.iol.local with ESMTPA
+        id xa2vjeUoNzS33xa2vjGxF6; Mon, 20 Jul 2020 19:57:50 +0200
+x-libjamoibt: 1601
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2014;
+        t=1595267870; bh=pk7X31+oUMxE7tGCRumshEMZpYxAcx4FhvOGqwvThoU=;
+        h=From;
+        b=WyL+rwfM+8L4CkqvSmxwyFrBu1w97SYsAlotpfIQkFKaeXzOezsNrPVetlLtDqAY9
+         1EJo6o0y0ccg2hsYakpVblPcEgZm6XBwqPwu79AaQ5wKCEx2Q/n6QCej7x/D+d5eJB
+         7Lhm0irZtw1j5azWCl0bJepnCXtLcCtm9VXHpcAlt4ilm5CsTYGmXZT4ueT1skHFES
+         azy9c9xTBNNOyc2gvRDFw8SKxPVUzoI+3GRIZK+0AiAkthOD/BpCWY01E8F4VkcbRH
+         +RiEmAoe1XykyDXhIY4nEXl4AHvVnhPWKN0OQFo3D8duuB6qbrqSNIw+cro/twvK7B
+         m9ZuzJ2WapyJw==
+X-CNFS-Analysis: v=2.3 cv=PLVxBsiC c=1 sm=1 tr=0
+ a=XJAbuhTEZzHZh8gzL9OeLg==:117 a=XJAbuhTEZzHZh8gzL9OeLg==:17
+ a=IkcTkHD0fZMA:10 a=belFwQ2eRTcRM_bPuc8A:9 a=QEXdDO2ut3YA:10
+Reply-To: kreijack@inwind.it
+Subject: Re: Filesystem Went Read Only During Raid-10 to Raid-6 Data
+ Conversion
+To:     Steven Davies <btrfs-list@steev.me.uk>,
+        Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
+        John Petrini <john.d.petrini@gmail.com>
+Cc:     John Petrini <me@johnpetrini.com>, linux-btrfs@vger.kernel.org
+References: <CADvYWxeiNynEWUYwfQxP7fQTK4k2Q+eDZsA8j7rLcaTSeND9fg@mail.gmail.com>
+ <20200715011843.GH10769@hungrycats.org>
+ <CADvYWxcq+-Fg0W9dmc-shwszF-7sX+GDVig0GncpvwKUDPfT7g@mail.gmail.com>
+ <20200716042739.GB8346@hungrycats.org>
+ <CADvYWxdvy5n3Tsa+MG9sSB2iAu-eA+W33ApzQ3q9D6sdGR9UYA@mail.gmail.com>
+ <CAJix6J9kmQjfFJJ1GwWXsX7WW6QKxPqpKx86g7hgA4PfbH5Rpg@mail.gmail.com>
+ <20200716225731.GI10769@hungrycats.org>
+ <CADvYWxcMCEvOg8C-gbGRC1d02Z6TCypvsan7mi+8U2PVKwfRwQ@mail.gmail.com>
+ <20200717055706.GJ10769@hungrycats.org>
+ <de9a3d52-0147-255c-4c39-09bf734e1435@steev.me.uk>
+From:   Goffredo Baroncelli <kreijack@libero.it>
+Message-ID: <507b649c-ac60-0b5c-222f-192943c50f16@libero.it>
+Date:   Mon, 20 Jul 2020 19:57:49 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200716202946.2527706-1-boris@bur.io>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <de9a3d52-0147-255c-4c39-09bf734e1435@steev.me.uk>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-CMAE-Envelope: MS4wfAa5NPZs83n3PLtir/YBUne7gvsg70s2xAfCMPFhNnUPMi5LJDMqbz0wwZJYtzehbOynPI3XY+u2PD43Z/VKYMeduyjA2TEsMB/MH3j/k6K3Lx3mASf3
+ MhkA6ZO0ypePz89ClwnTas+RXqOwxP4x5YBO+3zMb/GTWUq8+0yg6OPdzH58tjLf4n++j2QqeANduxu5f0u81TrdH5a1BXNR0jdNV9a2hFD/B1yjaiDWbCkb
+ Kw5qc+aZU+OknnonMDTTD/a6H7y1XSP5cOe/tWqbdYw2gx0JdkyWqBoXELJVlqExHG3k+s30LLKLVTa/qaWwNA==
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Jul 16, 2020 at 01:29:46PM -0700, Boris Burkov wrote:
-> It is possible to cause a btrfs mount to fail by racing it with a slow
-> umount. The crux of the sequence is generic_shutdown_super not yet
-> calling sop->put_super before btrfs_mount_root calls btrfs_open_devices.
-> If that occurs, btrfs_open_devices will decide the opened counter is
-> non-zero, increment it, and skip resetting fs_devices->total_rw_bytes to
-> 0. From here, mount will call sget which will result in grab_super
-> trying to take the super block umount semaphore. That semaphore will be
-> held by the slow umount, so mount will block. Before up-ing the
-> semaphore, umount will delete the super block, resulting in mount's sget
-> reliably allocating a new one, which causes the mount path to dutifully
-> fill it out, and increment total_rw_bytes a second time, which causes
-> the mount to fail, as we see double the expected bytes.
+On 7/18/20 12:36 PM, Steven Davies wrote:
+> On 17/07/2020 06:57, Zygo Blaxell wrote:
+>> On Thu, Jul 16, 2020 at 09:11:17PM -0400, John Petrini wrote:
 > 
-> Here is the sequence laid out in greater detail:
+> --snip--
 > 
-> CPU0                                                    CPU1
-> down_write sb->s_umount
-> btrfs_kill_super
->   kill_anon_super(sb)
->     generic_shutdown_super(sb);
->       shrink_dcache_for_umount(sb);
->       sync_filesystem(sb);
->       evict_inodes(sb); // SLOW
+>>> /dev/sdf, ID: 12
+>>>     Device size:             9.10TiB
+>>>     Device slack:              0.00B
+>>>     Data,RAID10:           784.31GiB
+>>>     Data,RAID10:             4.01TiB
+>>>     Data,RAID10:             3.34TiB
+>>>     Data,RAID6:            458.56GiB
+>>>     Data,RAID6:            144.07GiB
+>>>     Data,RAID6:            293.03GiB
+>>>     Metadata,RAID10:         4.47GiB
+>>>     Metadata,RAID10:       352.00MiB
+>>>     Metadata,RAID10:         6.00GiB
+>>>     Metadata,RAID1C3:        5.00GiB
+>>>     System,RAID1C3:         32.00MiB
+>>>     Unallocated:            85.79GiB
+>>
+[...]
 > 
->                                               btrfs_mount_root
->                                                 btrfs_scan_one_device
->                                                 fs_devices = device->fs_devices
->                                                 fs_info->fs_devices = fs_devices
->                                                 // fs_devices-opened makes this a no-op
->                                                 btrfs_open_devices(fs_devices, mode, fs_type)
->                                                 s = sget(fs_type, test, set, flags, fs_info);
->                                                   find sb in s_instances
->                                                   grab_super(sb);
->                                                     down_write(&s->s_umount); // blocks
+> RFE: improve 'dev usage' to show these details.
 > 
->       sop->put_super(sb)
->         // sb->fs_devices->opened == 2; no-op
->       spin_lock(&sb_lock);
->       hlist_del_init(&sb->s_instances);
->       spin_unlock(&sb_lock);
->       up_write(&sb->s_umount);
->                                                     return 0;
->                                                   retry lookup
->                                                   don't find sb in s_instances (deleted by CPU0)
->                                                   s = alloc_super
->                                                   return s;
->                                                 btrfs_fill_super(s, fs_devices, data)
->                                                   open_ctree // fs_devices total_rw_bytes improperly set!
->                                                     btrfs_read_chunk_tree
->                                                       read_one_dev // increment total_rw_bytes again!!
->                                                       super_total_bytes < fs_devices->total_rw_bytes // ERROR!!!
-> 
-> To fix this, we clear total_rw_bytes from within btrfs_read_chunk_tree
-> before the calls to read_one_dev, while holding the sb umount semaphore
-> and the uuid mutex.
-> 
-> To reproduce, it is sufficient to dirty a decent number of inodes, then
-> quickly umount and mount.
-> 
-> for i in $(seq 0 500)
-> do
->   dd if=/dev/zero of="/mnt/foo/$i" bs=1M count=1
-> done
-> umount /mnt/foo&
-> mount /mnt/foo
-> 
-> does the trick for me.
-> 
-> Signed-off-by: Boris Burkov <boris@bur.io>
+> As a user I'd look at this output and assume a bug in btrfs-tools because of the repeated conflicting information.
 
-Added to misc-next, thanks.
+What would be the expected output ?
+What about the example below ?
 
-> ---
+  /dev/sdf, ID: 12
+      Device size:             9.10TiB
+      Device slack:              0.00B
+      Data,RAID10:           784.31GiB
+      Data,RAID10:             4.01TiB
+      Data,RAID10:             3.34TiB
+      Data,RAID6[3]:         458.56GiB
+      Data,RAID6[5]:         144.07GiB
+      Data,RAID6[7]:         293.03GiB
+      Metadata,RAID10:         4.47GiB
+      Metadata,RAID10:       352.00MiB
+      Metadata,RAID10:         6.00GiB
+      Metadata,RAID1C3:        5.00GiB
+      System,RAID1C3:         32.00MiB
+      Unallocated:            85.79GiB
 
-For patch iterations, please put a short list of changes description
-under the "---" marker. This does not get applied to the patch and is
-intended to help people reviewing the patches to see only what's new.
+
+Another possibility (but the output will change drastically, I am thinking to another command)
+
+Filesystem '/'
+	Data,RAID1:		123.45GiB
+		/dev/sda	 12.34GiB
+		/dev/sdb	 12.34GiB
+	Data,RAID1:		123.45GiB
+		/dev/sde	 12.34GiB
+		/dev/sdf	 12.34GiB
+	Data,RAID6:		123.45GiB
+		/dev/sda	 12.34GiB
+		/dev/sdb	 12.34GiB
+		/dev/sdc	 12.34GiB
+	Data,RAID6:		123.45GiB
+		/dev/sdb	 12.34GiB
+		/dev/sdc	 12.34GiB
+		/dev/sdd	 12.34GiB
+		/dev/sde	 12.34GiB
+		/dev/sdf	 12.34GiB
+
+
+The number are the chunks sizes (invented). Note: for RAID5/RAID6 a chunk will uses near all disks; however for (e.g.) RAID1  there is the possibility that CHUNKS use different disks pairs (see the two RAID1 instances).
+
+
+BR
+G.Baroncelli
+
+
+-- 
+gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
+Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
