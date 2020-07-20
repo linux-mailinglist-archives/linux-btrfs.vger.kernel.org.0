@@ -2,167 +2,96 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8067A226EAB
-	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Jul 2020 21:06:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88062226F13
+	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Jul 2020 21:34:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729039AbgGTTGB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 20 Jul 2020 15:06:01 -0400
-Received: from out5-smtp.messagingengine.com ([66.111.4.29]:45757 "EHLO
-        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728324AbgGTTGB (ORCPT
+        id S1728324AbgGTTdR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 20 Jul 2020 15:33:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46744 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726491AbgGTTdQ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 20 Jul 2020 15:06:01 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.nyi.internal (Postfix) with ESMTP id 4E5B95C01AE;
-        Mon, 20 Jul 2020 15:06:00 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Mon, 20 Jul 2020 15:06:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=from
-        :to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm1; bh=9CiNHec0Wkun/
-        FlGIJXgJ/90ww716s7zNfWl5nn+b/c=; b=pjYrifwPb8waKNon70/T+boAQPAWk
-        G7dp0ErZxRYQz2QEGsJwBnJGpJkyidz4/LhKES82jWPTF+sxULbRc4BXxou9+r4l
-        gF3f65e+MpsYcYOB1C95F1GloTUigOuYRD5wsqguP+lh0AjPfZ747tFLh4mDOmKW
-        BO4tjomDN99VlP+PuYYfxpfFJCQVVrU2WUdFxn7nN5y1Ujjr8V+93dR7ABIjdd2w
-        irwnsxD/HEDoTzw5xTwVIMnJySTuZAusBly+x/puqSfTEpRXC2mICqphUMeoUQ03
-        hN/ZtFSwueDgjvBir15Jj4gA13OrbWOphXjn/yVRcIyGHlKbRkGX1K/KA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :in-reply-to:message-id:mime-version:references:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm3; bh=9CiNHec0Wkun/FlGIJXgJ/90ww716s7zNfWl5nn+b/c=; b=SBkqaecq
-        MmkZO3txEQYeo0I8609IkBQjHNhUpW3amxafGx2vbURF1yDQJFXEqIxCEi/ziTeH
-        Fzb4iIW2LVICQ1XXofvX7l8pARH9qe0Ug/w47qUZzaI8CHhRxWmkHx0+quUTFtTc
-        TB+HlSYAPhPXeEYlPCuHuBhX1uy/0aHt29ACmC2jrfVysi0EsQhBPqTCoYsj3YEq
-        7xanTXTIM/OfJVdjHpq44HVB4TQEpWfP9K2vO5PhHSPuOdvjn9F4f64PmuLDCNYX
-        E8ZmpEJLgt0e1+fmZodZduWif15KtoRuu1dfq3XCzIJo7uRGAzaNl4qgC8DGFH79
-        H6TsLOXIYblqXQ==
-X-ME-Sender: <xms:F-sVX0N6HmpV3WI80aO90Ct9TG7mY3YcOoxOpS6o46KyYgpywyZebw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrgeeggdduuddtucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhephffvufffkffojghfggfgsedtkeertdertddtnecuhfhrohhmpeeuohhrihhs
-    uceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhioheqnecuggftrfgrthhtvghrnhepie
-    euffeuvdeiueejhfehiefgkeevudejjeejffevvdehtddufeeihfekgeeuheelnecukfhp
-    peduieefrdduudegrddufedvrdefnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrg
-    hmpehmrghilhhfrhhomhepsghorhhishessghurhdrihho
-X-ME-Proxy: <xmx:F-sVX69cjKg7V1k0gAV-ZR-1w-3VrojBlImIgCuokV0CPw7D8m2Z5Q>
-    <xmx:F-sVX7QIvQlxR0ZBrywR8v336hjegja1Lsp8vDKl_eXOZCsv8JQbzg>
-    <xmx:F-sVX8vYIV4LthXvwEmEVezAlD2Lqmx2t3gftdj5Txf8d9AAyeAI5g>
-    <xmx:GOsVX2rWt22GwIulOywUUKdMmd1ey2WfbUudQ3SKkmsLFRa4k5MbrA>
-Received: from localhost (unknown [163.114.132.3])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 7CDFC3280059;
-        Mon, 20 Jul 2020 15:05:59 -0400 (EDT)
-From:   Boris Burkov <boris@bur.io>
-To:     Eryu Guan <guan@eryu.me>, fstests@vger.kernel.org
-Cc:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v4] generic: add a test for umount racing mount
-Date:   Mon, 20 Jul 2020 12:05:56 -0700
-Message-Id: <20200720190556.3292884-1-boris@bur.io>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200719171853.GE2557159@desktop>
-References: <20200719171853.GE2557159@desktop>
+        Mon, 20 Jul 2020 15:33:16 -0400
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3E44C061794
+        for <linux-btrfs@vger.kernel.org>; Mon, 20 Jul 2020 12:33:16 -0700 (PDT)
+Received: by mail-wr1-x42b.google.com with SMTP id a14so4109266wra.5
+        for <linux-btrfs@vger.kernel.org>; Mon, 20 Jul 2020 12:33:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=R+By1IFBfRSOYyDfHniY0rKEhzamxhWDcpwHJXUVS3I=;
+        b=pxN7ISlA6nIMRRryB1tkCj295CiHm6Ls0isHpnEiiYxmJx7l2IMF5D1diGLPDgRJPV
+         2njNpMLgF9oyw0iVZCvmIV81VXCFXo0vfXDrRvWiZViN6msZ3StWaA1fiWPwAAq4EHfd
+         T+ojwxKfkAravW/Q7T+4+aJt3fENbYHkw/vF/t2X7mZKlSSbIlVF0ducYCNWlCTW5Z8P
+         Nl6oG1PApqGxVvnKNpNFfjILJLweKKlXKtqvhDYd6QMwB1ke45T2x5wgOtODaos1WH1/
+         P2VZ7uqEZ4zGEBccsOdMLwur5ApxJQ5OdHzQODrri/jcVEV5ggl0pWtQ2yl765PpMcIs
+         fGxA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=R+By1IFBfRSOYyDfHniY0rKEhzamxhWDcpwHJXUVS3I=;
+        b=G7ldCWYiEImhDg11DSSPyrPTZrRoGKCV+gPlmI7GAwrHBl/QRNL4OkAluOlQ8MKUrC
+         gdy4nOkxPuJ/6/dZdfeqeLRw7+lY2xIQnHN6G1BxuYZHQKSvB5aqOtF1A50CbELCe9Mk
+         G6MDl8DuffIGAjB+vdCV9MDRtDXjjIxR0SfwOUqiNnMjKNqbRBq8BB59h4OGUDH0pH5t
+         vX/jkfrooD1u0T/jpN3q5WyFw67PcLsXkwCf+hEXmkOB30dlEO+tAHESPtlZVh8mkMA2
+         Vdq0nRc4cGQpuZfbbiPrg1m9cbVPQ7WHBRvFBN3vJSDqnKOxiDnO7AG42ukh27JjYUVG
+         AgJA==
+X-Gm-Message-State: AOAM533V6u0qoeZIOB1dT3Kyk4nQId5vaCXSaQBSt6m9K18CB9Vx+i1X
+        Mm+9QX+8TJeIKzefBgo0nwP4LliO
+X-Google-Smtp-Source: ABdhPJxp7N/aDAsaGM18tr4M9sb2mqFQb4ujlOTPE9rLjEBbe9T0LcXghtlcUSBWXFvEjHxNHjDAow==
+X-Received: by 2002:adf:fd04:: with SMTP id e4mr6854820wrr.353.1595273595150;
+        Mon, 20 Jul 2020 12:33:15 -0700 (PDT)
+Received: from [10.0.0.9] (193-81-178-226.adsl.highway.telekom.at. [193.81.178.226])
+        by smtp.googlemail.com with ESMTPSA id 1sm605511wmf.21.2020.07.20.12.33.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 20 Jul 2020 12:33:14 -0700 (PDT)
+Subject: Re: "missing data block" when converting ext4 to btrfs
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
+References: <90fff9c0-36c5-d45c-d19b-01294fc93b1e@gmail.com>
+ <763ee221-92fa-a84c-db8e-9d05e88bab0c@gmx.com>
+ <09c51964-9762-a7a7-02c3-ac398790ff0d@gmail.com>
+ <b49c8f68-5897-7bc1-21d5-03125e798a76@gmx.com>
+ <409fb0aa-7c7f-db52-6442-d746b9944fa3@gmail.com>
+ <46ea54ea-3ed3-f1b7-7314-a69f4195c8f9@gmx.com>
+ <8678a4f9-3388-5a7b-00cc-8b9da6a0a6e8@gmail.com>
+ <acbe2fee-1462-7631-22cc-19af58da8b57@gmx.com>
+From:   Christian Zangl <coralllama@gmail.com>
+Message-ID: <37863fea-7b36-7bbe-98ce-7e4e9c0d6a0a@gmail.com>
+Date:   Mon, 20 Jul 2020 21:33:13 +0200
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <acbe2fee-1462-7631-22cc-19af58da8b57@gmx.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Test if dirtying many inodes (which can delay umount) then
-unmounting and quickly mounting again causes the mount to fail.
+Great! Thanks for finding and fixing the bug!
 
-A race, which breaks the test in btrfs, is fixed by the patch:
-"btrfs: fix mount failure caused by race with umount"
+Christian
 
-Signed-off-by: Boris Burkov <boris@bur.io>
----
-- dd to XFS_IO_PROG
-- 1M writes to 4k writes
-
- tests/generic/603     | 53 +++++++++++++++++++++++++++++++++++++++++++
- tests/generic/603.out |  2 ++
- tests/generic/group   |  1 +
- 3 files changed, 56 insertions(+)
- create mode 100755 tests/generic/603
- create mode 100644 tests/generic/603.out
-
-diff --git a/tests/generic/603 b/tests/generic/603
-new file mode 100755
-index 00000000..90f0d1d3
---- /dev/null
-+++ b/tests/generic/603
-@@ -0,0 +1,53 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright (c) 2020 Facebook  All Rights Reserved.
-+#
-+# FS QA Test 603
-+#
-+# Evicting dirty inodes can take a long time during umount.
-+# Check that a new mount racing with such a delayed umount succeeds.
-+#
-+seq=`basename $0`
-+seqres=$RESULT_DIR/$seq
-+echo "QA output created by $seq"
-+
-+here=`pwd`
-+tmp=/tmp/$$
-+status=1	# failure is the default!
-+trap "_cleanup; exit \$status" 0 1 2 3 15
-+
-+_cleanup()
-+{
-+	cd /
-+	rm -f $tmp.*
-+}
-+
-+# get standard environment, filters and checks
-+. ./common/rc
-+. ./common/filter
-+
-+# remove previous $seqres.full before test
-+rm -f $seqres.full
-+
-+# real QA test starts here
-+
-+# Modify as appropriate.
-+_supported_fs generic
-+_supported_os Linux
-+_require_scratch
-+
-+_scratch_mkfs > /dev/null 2>&1
-+_scratch_mount
-+for i in $(seq 0 500)
-+do
-+	$XFS_IO_PROG -c "pwrite 0 4K" $SCRATCH_MNT/$i >/dev/null 2>&1
-+done
-+_scratch_unmount &
-+_scratch_mount
-+wait
-+
-+echo "Silence is golden"
-+
-+# success, all done
-+status=0
-+exit
-diff --git a/tests/generic/603.out b/tests/generic/603.out
-new file mode 100644
-index 00000000..6810da89
---- /dev/null
-+++ b/tests/generic/603.out
-@@ -0,0 +1,2 @@
-+QA output created by 603
-+Silence is golden
-diff --git a/tests/generic/group b/tests/generic/group
-index d9ab9a31..c0ace35b 100644
---- a/tests/generic/group
-+++ b/tests/generic/group
-@@ -605,3 +605,4 @@
- 600 auto quick quota
- 601 auto quick quota
- 602 auto quick encrypt
-+603 auto quick
--- 
-2.24.1
+On 2020-07-20 14:56, Qu Wenruo wrote:
+> Hi Christian,
+> 
+> Thanks for your detailed report.
+> 
+> Now we have pinned down the bug, it's a bit overflow for multiplying
+> unsigned int.
+> 
+> At least not some fundamental design defeat of btrfs-convert.
+> 
+> The fix has been Cced to you, and passed my local test.
+> Test case has also been submitted.
+> 
+> Thanks again for your help!
+> Qu
+> 
 
