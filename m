@@ -2,109 +2,95 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36884228094
-	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Jul 2020 15:08:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7582228166
+	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Jul 2020 15:56:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726971AbgGUNIS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 21 Jul 2020 09:08:18 -0400
-Received: from gateway31.websitewelcome.com ([192.185.144.80]:40348 "EHLO
-        gateway31.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726673AbgGUNIR (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 21 Jul 2020 09:08:17 -0400
-X-Greylist: delayed 1282 seconds by postgrey-1.27 at vger.kernel.org; Tue, 21 Jul 2020 09:08:17 EDT
-Received: from cm14.websitewelcome.com (cm14.websitewelcome.com [100.42.49.7])
-        by gateway31.websitewelcome.com (Postfix) with ESMTP id E5EE18A67ED
-        for <linux-btrfs@vger.kernel.org>; Tue, 21 Jul 2020 07:46:53 -0500 (CDT)
-Received: from br540.hostgator.com.br ([108.179.252.180])
-        by cmsmtp with SMTP
-        id xrfZjjz3bSxZVxrfZjR2yi; Tue, 21 Jul 2020 07:46:53 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=mpdesouza.com; s=default; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=N9551mAZDZ2SF5hMfSI/uv76zeIDuAUo4b0eRZyYXN8=; b=vw/M/XlB1zi/q0IaNId2biEd2Q
-        qAz4gj30CL+DYp38pFAIju5ailPjNrInIJsZSOHvNq+X3oEtpvVuCHFgGMYcxbex/V+64f3q63pQv
-        5s2r+hc72fBqGfwQ4VX8rQL8SR013Ls8dbz39Me4YwYPvOrurmIHZsxmAlJban6F0ZK4djvE97KNd
-        nHSHtWhLXMNVEvLd7ICmhJRDxSqEMo5mjlp3a9r/95lDlmuPI30vC6+9vt5ca8itZmPoTnVcGGivI
-        HiNOIikkjmFVQRzkfTcG6rsieOAa+NbNVMYMr/8MOIi4XXsdvkfYvRax1JI2I1jOkAVsJOmYIcUWP
-        a8ocKEhQ==;
-Received: from [186.212.89.200] (port=48508 helo=hephaestus.suse.de)
-        by br540.hostgator.com.br with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <marcos@mpdesouza.com>)
-        id 1jxrfZ-001iDm-7r; Tue, 21 Jul 2020 09:46:53 -0300
-From:   Marcos Paulo de Souza <marcos@mpdesouza.com>
-To:     dsterba@suse.com, linux-btrfs@vger.kernel.org,
-        fstests@vger.kernel.org
-Cc:     Marcos Paulo de Souza <mpdesouza@suse.com>
-Subject: [PATCH v2] btrfs: 210: Ignore output from "quota rescan" after "quota enable"
-Date:   Tue, 21 Jul 2020 09:46:30 -0300
-Message-Id: <20200721124630.3112-1-marcos@mpdesouza.com>
-X-Mailer: git-send-email 2.27.0
+        id S1726506AbgGUN4A (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 21 Jul 2020 09:56:00 -0400
+Received: from mx2.suse.de ([195.135.220.15]:46706 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726120AbgGUN4A (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 21 Jul 2020 09:56:00 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 81960ACA9;
+        Tue, 21 Jul 2020 13:56:05 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 4FEA4DA70B; Tue, 21 Jul 2020 15:55:33 +0200 (CEST)
+Date:   Tue, 21 Jul 2020 15:55:33 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        linux-btrfs@vger.kernel.org, Christian Zangl <coralllama@gmail.com>
+Subject: Re: [PATCH 1/2] btrfs-progs: convert: Prevent bit overflow for
+ cctx->total_bytes
+Message-ID: <20200721135533.GL3703@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org,
+        Christian Zangl <coralllama@gmail.com>
+References: <20200720125109.93970-1-wqu@suse.com>
+ <20200720160945.GH3703@twin.jikos.cz>
+ <cf6386e1-a13b-e7cf-a365-db33a3afe2a9@gmx.com>
+ <20200721095826.GJ3703@twin.jikos.cz>
+ <0d3eb6c1-f88a-e7cd-7d12-92bce0f2025c@suse.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - br540.hostgator.com.br
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - mpdesouza.com
-X-BWhitelist: no
-X-Source-IP: 186.212.89.200
-X-Source-L: No
-X-Exim-ID: 1jxrfZ-001iDm-7r
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: (hephaestus.suse.de) [186.212.89.200]:48508
-X-Source-Auth: marcos@mpdesouza.com
-X-Email-Count: 3
-X-Source-Cap: bXBkZXNvNTM7bXBkZXNvNTM7YnI1NDAuaG9zdGdhdG9yLmNvbS5icg==
-X-Local-Domain: yes
+In-Reply-To: <0d3eb6c1-f88a-e7cd-7d12-92bce0f2025c@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Marcos Paulo de Souza <mpdesouza@suse.com>
+On Tue, Jul 21, 2020 at 06:29:31PM +0800, Qu Wenruo wrote:
+> On 2020/7/21 下午5:58, David Sterba wrote:
+> > On Tue, Jul 21, 2020 at 07:51:00AM +0800, Qu Wenruo wrote:
+> >>
+> >>
+> >> On 2020/7/21 上午12:09, David Sterba wrote:
+> >>> On Mon, Jul 20, 2020 at 08:51:08PM +0800, Qu Wenruo wrote:
+> >>>> --- a/convert/source-ext2.c
+> >>>> +++ b/convert/source-ext2.c
+> >>>> @@ -87,7 +87,8 @@ static int ext2_open_fs(struct btrfs_convert_context *cctx, const char *name)
+> >>>>  	cctx->fs_data = ext2_fs;
+> >>>>  	cctx->blocksize = ext2_fs->blocksize;
+> >>>>  	cctx->block_count = ext2_fs->super->s_blocks_count;
+> >>>> -	cctx->total_bytes = ext2_fs->blocksize * ext2_fs->super->s_blocks_count;
+> >>>> +	cctx->total_bytes = (u64)ext2_fs->blocksize *
+> >>>> +			    (u64)ext2_fs->super->s_blocks_count;
+> >>>
+> >>> Do you need to cast both? Once one of the types is wide enough for the
+> >>> result, there should be no loss.
+> >>>
+> >> I just want to be extra safe.
+> > 
+> > Typecasts in code raise questions why are they needed, 'to be extra'
+> > safe is not a good reason. One typecast in multiplication/shifts is a
+> > common pattern to widen the result but two look more like lack of
+> > understanding of the integer promotion rules.
+> 
+> My point here is, I don't want the reviewers or new contributors to
+> bother about the promotion rules at all.
 
-Command "quota enable" triggers a quota rescan, but it can finish quick
-in some machines leading to the next command "quota rescan" to be able
-to start scanning again, and then printing "quota rescan started" making
-the test fail.
+Ouch, I hope you don't mean that contributors should ignore the trickier
+parts of C language. Especially reviewers _have_ to bother about all
+sorts of subtle behaviour.
 
-In some machines this don't happen because the first rescan initiated by
-"quota enable" is still running when "quota rescan" is executed, returning
--EINPROGRESS from ioctl BTRFS_IOC_QUOTA_RESCAN_STATUS and not printing the
-message.
+> They only need to know that using blocksize and blocks_count directly to
+> do multiply would lead to overflow.
+> 
+> Other details like whether the multiply follows the highest factor or
+> the left operator or the right operator, shouldn't be the point and we
+> don't really need to bother.
 
-Ignoring any output from "quota rescan" solves the issue in both cases, and
-this is already being done by others tests as well.
+... and introduce bugs?
 
-Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
----
- Patch v1 can be found here:
- https://www.spinics.net/lists/linux-btrfs/msg103177.html
+> Thus casting both would definitely be right, without the need to refer
+> to the complex rule book, thus save the reviewer several minutes.
 
- tests/btrfs/210 | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/tests/btrfs/210 b/tests/btrfs/210
-index daa76a87..13d1a87b 100755
---- a/tests/btrfs/210
-+++ b/tests/btrfs/210
-@@ -46,7 +46,7 @@ _pwrite_byte 0xcd 0 16M "$SCRATCH_MNT/src/file" > /dev/null
- # by qgroup
- sync
- $BTRFS_UTIL_PROG quota enable "$SCRATCH_MNT"
--$BTRFS_UTIL_PROG quota rescan -w "$SCRATCH_MNT"
-+$BTRFS_UTIL_PROG quota rescan -w "$SCRATCH_MNT" > /dev/null
- $BTRFS_UTIL_PROG qgroup create 1/0 "$SCRATCH_MNT"
- 
- # Create a snapshot with qgroup inherit
--- 
-2.27.0
-
+The opposite, if you send me code that's not following known schemes or
+idiomatic schemes I'll be highly suspicious and looking for the reasons
+why it's that way and making sure it's correct costs way more time.
