@@ -2,271 +2,535 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F517228C6A
-	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Jul 2020 01:02:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 698E5228C74
+	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Jul 2020 01:05:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728927AbgGUXCE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 21 Jul 2020 19:02:04 -0400
-Received: from esa6.hgst.iphmx.com ([216.71.154.45]:16877 "EHLO
-        esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726587AbgGUXCD (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 21 Jul 2020 19:02:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1595372522; x=1626908522;
-  h=from:to:cc:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=GWSVryyAariA83dMxcg5lAiTMbwHdjLKESDz3R5d2q8=;
-  b=Kutx54fgn153RXTVwYYDDhALDYzGu3PJUdWvVw9E42RgutHunNENyzhs
-   UYBRivRTnjBWxaJ+53AgdhnIvAkCNPYw3PtPrmzmmIB5Kk8o7SBH03Myc
-   yg2WTO6TzenpyOSUdm6MkCgicAWBmPPbFVRLxJ+/5wVe5Zs3NixRRshlv
-   y8T1mmFanYXEikEIK+2dX5Ce9eJywbclHiX+RW9ZRJLX+jdNoAx3DIjY9
-   WIzvw89hZgOcixjm2yyqE3CMDPioCi24t39nvsep1CuRmCeKbqGDNEEeC
-   s+ZWDnbRPIA6zqtpoIqnXGl+QK00/2MlbEfzzyddsfv3zpanHiOMYtocy
-   g==;
-IronPort-SDR: 6zXZuTEtaDCKacFjATcPNS9nWGEVoFawZoz6bFVzvgcJOZrIpWghZIMkW+Oc6/PdIlWhEq0xWc
- dlzleMm/1/HfZ3UVtOH+Cyaa+7DIwLwrzaaT1dm1CR7WJdjRxxnvFkEiomsq5LGOPxLZ/5XBT0
- ltVxQihIb9/cpkQttY/9VjuE1VeuKg82FvrFB2/1/4ADw91WLmK0UpwbCyqL2iZj4K7hbJCkff
- oI3ZDfdTfDFGsDPRAvt3eTQfVyrsMYYNWSNetCv3Oq/K0GyOOsCJ9xAGib/CzbIZIgnF3eXNUj
- Edo=
-X-IronPort-AV: E=Sophos;i="5.75,380,1589212800"; 
-   d="scan'208";a="144323903"
-Received: from mail-dm6nam10lp2101.outbound.protection.outlook.com (HELO NAM10-DM6-obe.outbound.protection.outlook.com) ([104.47.58.101])
-  by ob1.hgst.iphmx.com with ESMTP; 22 Jul 2020 07:02:01 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hvnPFUjjfa4MQl25UkYZzxbeh2hXQLIciCwhiXEWu0iHg8YrkhYC4/a+wl6tsY2F9MRMRVvlmLNA67D2CUuj+osskKdXq4bosIVnkMa7qfV+RpUSlCM6VGY+1aisqAhOGpR15gIG+NFVRhpzdMkI0nTzmwz9vnFmFa0Ngge6RobvEqor9jLM7ubwXQzDaCsLo9Rea2wUnwpKURxymOMd5TAtmf3ytfiZo8B+o4mXGmcYCsE5t//a4WlqvkGQqACr4txeNnHPlowqZYN4ceLuwTDpzTQ5r+0IxTe3ChanxoWFZKTRtXvlf1jU/LZYsi2n/DJ6zca7pGwsu/2YFom7Jg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=AUzcgw8xRnU+IZNtIjaCV8Btm64eAgFtNhPA9n65QZY=;
- b=QNQTPKgXYCsm3SmR0+j+l2B7e2FBkQFFwf29MoSVR4QUV2CGr40cG4BZTwYOnAZOOyCQAu5a6Qc/WTx9akDKQ0HGT0G6fcqAIP/WS8vzJkEe0EZrnAwsza86JvVIQ4ScYs6zdmY3CqBnjLm5v1D9CGisJGndwwVz04sOZgtGsAmX5GYpyduIoC4gRXxmIbaUTlrxL5AeCXomx0c0BwyLcsxTJEm75mo4CMoXklmM4nEWYsIgM0WeMaYaJZcKppGMa4/wLJh6ZH+ng2lkEVMBSLx4SmQ6R2eQeXk0h5LSRjiEbMP1x3qovcqSYvk40bxzmwLAznc0hXny2yFqfmV1Cg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=AUzcgw8xRnU+IZNtIjaCV8Btm64eAgFtNhPA9n65QZY=;
- b=CpBJFy1yRjmHTb0XpBTivbN4PtNoF0hoCi3mCyGMtBQwSYzv5A6eTGksBw0lkStwV1mchaaB2oKdYKjmlzfmbibmjo1ssdwIPJq4uQLaXB72IBSuhUwVVFwrFiWjC3ON3sd5q3y4SX2pLyQ12pI6e+SxyIugbxO56wA5uPBnOQc=
-Received: from CY4PR04MB3751.namprd04.prod.outlook.com (2603:10b6:903:ec::14)
- by CY4PR04MB0344.namprd04.prod.outlook.com (2603:10b6:903:3d::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3195.25; Tue, 21 Jul
- 2020 23:02:00 +0000
-Received: from CY4PR04MB3751.namprd04.prod.outlook.com
- ([fe80::d9e5:135e:cfd9:4de0]) by CY4PR04MB3751.namprd04.prod.outlook.com
- ([fe80::d9e5:135e:cfd9:4de0%7]) with mapi id 15.20.3195.025; Tue, 21 Jul 2020
- 23:01:59 +0000
-From:   Damien Le Moal <Damien.LeMoal@wdc.com>
-To:     Christoph Hellwig <hch@lst.de>, Dave Chinner <david@fromorbit.com>,
-        Goldwyn Rodrigues <rgoldwyn@suse.de>
-CC:     Naohiro Aota <Naohiro.Aota@wdc.com>,
-        Johannes Thumshirn <jth@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "cluster-devel@redhat.com" <cluster-devel@redhat.com>,
-        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
-        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
-        Dave Chinner <dchinner@redhat.com>,
-        Goldwyn Rodrigues <rgoldwyn@suse.com>
-Subject: Re: [PATCH 3/3] iomap: fall back to buffered writes for invalidation
- failures
-Thread-Topic: [PATCH 3/3] iomap: fall back to buffered writes for invalidation
- failures
-Thread-Index: AQHWX41AZHgnsBRxxUOY+Qc2jgClZg==
-Date:   Tue, 21 Jul 2020 23:01:59 +0000
-Message-ID: <CY4PR04MB37517784D29AFC7CCBAD1A0AE7780@CY4PR04MB3751.namprd04.prod.outlook.com>
-References: <20200721183157.202276-1-hch@lst.de>
- <20200721183157.202276-4-hch@lst.de>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: lst.de; dkim=none (message not signed)
- header.d=none;lst.de; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [60.117.181.124]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: b05dc4bb-14de-47a2-0a6c-08d82dca12f6
-x-ms-traffictypediagnostic: CY4PR04MB0344:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <CY4PR04MB03449217CCEE6D26EF820502E7780@CY4PR04MB0344.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: UyK5kY3yVzzbkszaDCMzLrHJ+c36n4Teb7fx2CAPm/C1vspwRudN/9qkOQIqKYLMvKMswUUx0ZcMnfzrmSWpV05zzS/f8YEfsq8ijzBN3R+gNyJTViTyNQa5u3gwytGRKpL6YS9vjmopt278TBPGNx9GxrKt2x9rJAJWugt27QO1PBJ6Sx8EFohNLlpfnE6z3Coo/i2vIRZ8XNoD4L8PEAQHOKAoLh6oA8/pNx94lnlQ7n+pO/5ea3nFWIWMEsnTnpurMLffZoTTt64l4v420XHvCHVXloEiNXlPh1MIFpVWHnwADVsh5br7GgxTLSCM
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR04MB3751.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(136003)(39860400002)(376002)(366004)(396003)(346002)(316002)(5660300002)(64756008)(7696005)(8936002)(53546011)(8676002)(6506007)(186003)(66556008)(86362001)(66476007)(66946007)(26005)(76116006)(91956017)(66446008)(7416002)(2906002)(54906003)(110136005)(55016002)(52536014)(71200400001)(478600001)(4326008)(83380400001)(9686003)(33656002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: cYSFy/CjR18YkyZE8RC0GPQxCBpUmBcSTj6rUU4jEXkT8M3Hu7hy55t8YWAbFP4sR90mwJggBb75OmcCN1r52TlX3A8erHPS1IcjgkVfT3spXkMamwA1vJApBg9ly2pB1EuF2Wm1EL1oUctt/8UKNSA9155XhvJMKPUjVyw5diF9JruiybI7IljoJe3q32Cdqsgjdto/ZfrdV3G3MTi1tI4bInQQwNKAhKarOJTQHfg6FF6TrT/A6NdsT5Zz1yH9LLV9HphLX/MRt8shtbCGck3RQFez8Qo2DzX0YJM/VYY/S4B2EahewAdDnsMOVCMVGg3OemjsgDMIDM+0A02nNsaFNCaPdph1iTehD8EAE6zqgDzJUxxPmvzZybpXZ4MqA6k3FScNbMhfc2t+Es/rxlN9+7+sL5itkXTnV34CximVmTsQ9Lf/25tm0og8CE1WGMJIa26U74c5i5F+/f8sZ1FKFMf2mCSqGM/mPc7vlRtBzYcmje1BSMRLdPfE6Kpt
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1731334AbgGUXFU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 21 Jul 2020 19:05:20 -0400
+Received: from mout.gmx.net ([212.227.17.20]:33413 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731332AbgGUXFT (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 21 Jul 2020 19:05:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1595372711;
+        bh=tfpsuw1N8oCSbVozg8RcT9Rt79st+NlukD/wHfpO1fk=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=h6McHM6BK0I/kMpIM6ISq9pxe0NXorXW8hSq9SZqwN55NhHkZEO9x7Ibj3obYFZct
+         QsWMhWWofjaSt2ZEb83WwVZc5ro3ZZq0XaohUdRrRpSeAoD5IPeMq8X1fLeqB33pQu
+         6iQWqrcoiF7InjwQaBG7pmBQS9xTECmgrd4p/Sus=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mz9Z5-1kjeAH3x8F-00wEnl; Wed, 22
+ Jul 2020 01:05:11 +0200
+Subject: Re: [PATCH][v2] btrfs: introduce rescue=onlyfs
+To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com
+References: <20200721151057.9325-1-josef@toxicpanda.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
+ mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAVQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWCnQUJCWYC
+ bgAKCRDCPZHzoSX+qAR8B/94VAsSNygx1C6dhb1u1Wp1Jr/lfO7QIOK/nf1PF0VpYjTQ2au8
+ ihf/RApTna31sVjBx3jzlmpy+lDoPdXwbI3Czx1PwDbdhAAjdRbvBmwM6cUWyqD+zjVm4RTG
+ rFTPi3E7828YJ71Vpda2qghOYdnC45xCcjmHh8FwReLzsV2A6FtXsvd87bq6Iw2axOHVUax2
+ FGSbardMsHrya1dC2jF2R6n0uxaIc1bWGweYsq0LXvLcvjWH+zDgzYCUB0cfb+6Ib/ipSCYp
+ 3i8BevMsTs62MOBmKz7til6Zdz0kkqDdSNOq8LgWGLOwUTqBh71+lqN2XBpTDu1eLZaNbxSI
+ ilaVuQENBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAGJATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAK
+ CRDCPZHzoSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gy
+ fmtBnUaifnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsS
+ oCEEynby72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAk
+ ZkA523JGap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gG
+ UO/iD/T5oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
+Message-ID: <cd1ec35d-e9ac-6cee-e0af-d1ecdc111e1e@gmx.com>
+Date:   Wed, 22 Jul 2020 07:05:07 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CY4PR04MB3751.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b05dc4bb-14de-47a2-0a6c-08d82dca12f6
-X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Jul 2020 23:01:59.5874
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: owC04WxI1s1W7L02eeMwBeccs9mKHCJNIjDY7BiO1XGrp+rj8+i0LA3y+8OR9T39vWcz3ki9M+0FlCgM+z/aGA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR04MB0344
+In-Reply-To: <20200721151057.9325-1-josef@toxicpanda.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="aHQDsKyMftHGulKEpeKbTOcVY6r2thyjA"
+X-Provags-ID: V03:K1:kfMSmuBNZwJhSpM0G+qbsjNyBSXf5PlvEdy0YVbUiSMEWux+xOv
+ CBaHW2qM+N6fgMj+HHIW06i6NU3W1j9cVgSFPrZCbZnxTD2vjkNXZkTJUtlBwGghxHu3Eqb
+ DwFewm8rhE8qDLAB2Fjs37kiK2v7ytydhh9gAHQH+pQG09kdrwi0b9BywCGz/m/LQCEqxzr
+ dzvYxx1rWSOwc5jybv5Zg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:vTpOF02o7vI=:Eich6h40jiXUKONMV9+WpV
+ 3qB1zwaT2Zxu8ouefI+p1eUWNzWnmPOsPEhUffANO9nkWPf1yK1JDC74/htcUJ0+xWgzc0JUk
+ CnITLPHkZBCHpVuvavgiV+t9sxJPW4m1Pr5ZMPGj3atQSiRVB2hCzs16A3qaW7jBIjjAlz44y
+ agNjJFP6nO0VvTWwg8SyRTKFSH68YXEWWxCt7nOnXFaQGohfoyopexIlD6VhRM2flL6/XAWb+
+ YJDlt1Kcqgb9JBy6FJSCM2ZwUu3GQdmQI6vGbQCM4Ou8aUsfkr/ICCJFoV7PhM6WoFR16RGUk
+ dvUqbUFBwHORwCOdD3Cpre2JhiIdRSBCKkeffPcaaIdyXBG4qZcB0L5joEqeVp9UW5d9LB36A
+ HlS47fpcwRjRsNRImpzHTk2n4zKZmS8+pGA+rsYKg6j2G+1164K/MJPoVVqgeNWarWMgEoxma
+ I9H1z3I39sceOQbztyDlpwVn0610MziHK/LUKnxuS+d+zDYzkVyPGQzoEafECN6lakMkoFOT0
+ wydDN4NI5MujijT+WTBTBc/GxMmjoebAX3TKLTHXczuQchFjmTODqeleweMOGhv1xM6356uiY
+ ptfZCEqvVq5SZ80WxQ0BPck8dBJCqBnnxaFrCR9wSOj8HofeHXG1GA9Z3kV7+E4VXE2YfYcRt
+ H27e1xn/+V6JmX4HtjmMK9TaEq3bS5jKnCAgHhueZ916SnZiPM1upfGNprlODkklXcrXx6n2Z
+ JpNEp09fBLFLGUsCXM6lvf6zEvMt2Orc4iFKaz+/sr8217u3PRdFkD4bT3hXM2qOqUBQ1kPqE
+ P0iZ2LaBJjd7+mZbtfxLKWftVEOrVhECrAHt6W3f9qkbkf3P6YbNU2wydCr54hiEfZaEIrIaP
+ XWh/ji6bjXSlQWIyc6fWUfF6T+fkHnfobln5BFM7CBkIKTtnwi+2ZFKywdnzY0S8/R9nTdCKp
+ ajbwb1oj2e54ufYKefisw0TYNv6/QMPpW559sr4gxvvf0IwC4Mi/8LR9A4Lzja5Pyj378EW+G
+ K69+WhR0ypwzXHllAUp0+ecqyl88vge3Cx80pOyaf/Q7flKlkWa8Wsmro7WfjeHFmjvAVQCs2
+ L3+Liy2rrmuVPtrcEJCxTJM8eIBF1zDUqqkdsAm8VGmQf3iYW5aM/1Xf280vO2HjI8f+yCvbI
+ c2K7dhroW2jn4FvZIaPvChfBQYUgZCppRmgnx+kuHs8Qf6VzH8TWfJE38oIFb//Nxe00zXfrd
+ 0VTAySmhWH1VskTVBi1ak1MkJcbICDrYfaHz6YA==
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 2020/07/22 3:32, Christoph Hellwig wrote:=0A=
-> Failing to invalid the page cache means data in incoherent, which is=0A=
-> a very bad state for the system.  Always fall back to buffered I/O=0A=
-> through the page cache if we can't invalidate mappings.=0A=
-> =0A=
-> Signed-off-by: Christoph Hellwig <hch@lst.de>=0A=
-> Acked-by: Dave Chinner <dchinner@redhat.com>=0A=
-> Reviewed-by: Goldwyn Rodrigues <rgoldwyn@suse.com>=0A=
-> ---=0A=
->  fs/ext4/file.c       |  2 ++=0A=
->  fs/gfs2/file.c       |  3 ++-=0A=
->  fs/iomap/direct-io.c | 16 +++++++++++-----=0A=
->  fs/iomap/trace.h     |  1 +=0A=
->  fs/xfs/xfs_file.c    |  4 ++--=0A=
->  fs/zonefs/super.c    |  7 +++++--=0A=
->  6 files changed, 23 insertions(+), 10 deletions(-)=0A=
-> =0A=
-> diff --git a/fs/ext4/file.c b/fs/ext4/file.c=0A=
-> index 2a01e31a032c4c..129cc1dd6b7952 100644=0A=
-> --- a/fs/ext4/file.c=0A=
-> +++ b/fs/ext4/file.c=0A=
-> @@ -544,6 +544,8 @@ static ssize_t ext4_dio_write_iter(struct kiocb *iocb=
-, struct iov_iter *from)=0A=
->  		iomap_ops =3D &ext4_iomap_overwrite_ops;=0A=
->  	ret =3D iomap_dio_rw(iocb, from, iomap_ops, &ext4_dio_write_ops,=0A=
->  			   is_sync_kiocb(iocb) || unaligned_io || extend);=0A=
-> +	if (ret =3D=3D -ENOTBLK)=0A=
-> +		ret =3D 0;=0A=
->  =0A=
->  	if (extend)=0A=
->  		ret =3D ext4_handle_inode_extension(inode, offset, ret, count);=0A=
-> diff --git a/fs/gfs2/file.c b/fs/gfs2/file.c=0A=
-> index bebde537ac8cf2..b085a3bea4f0fd 100644=0A=
-> --- a/fs/gfs2/file.c=0A=
-> +++ b/fs/gfs2/file.c=0A=
-> @@ -835,7 +835,8 @@ static ssize_t gfs2_file_direct_write(struct kiocb *i=
-ocb, struct iov_iter *from)=0A=
->  =0A=
->  	ret =3D iomap_dio_rw(iocb, from, &gfs2_iomap_ops, NULL,=0A=
->  			   is_sync_kiocb(iocb));=0A=
-> -=0A=
-> +	if (ret =3D=3D -ENOTBLK)=0A=
-> +		ret =3D 0;=0A=
->  out:=0A=
->  	gfs2_glock_dq(&gh);=0A=
->  out_uninit:=0A=
-> diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c=0A=
-> index 190967e87b69e4..c1aafb2ab99072 100644=0A=
-> --- a/fs/iomap/direct-io.c=0A=
-> +++ b/fs/iomap/direct-io.c=0A=
-> @@ -10,6 +10,7 @@=0A=
->  #include <linux/backing-dev.h>=0A=
->  #include <linux/uio.h>=0A=
->  #include <linux/task_io_accounting_ops.h>=0A=
-> +#include "trace.h"=0A=
->  =0A=
->  #include "../internal.h"=0A=
->  =0A=
-> @@ -401,6 +402,9 @@ iomap_dio_actor(struct inode *inode, loff_t pos, loff=
-_t length,=0A=
->   * can be mapped into multiple disjoint IOs and only a subset of the IOs=
- issued=0A=
->   * may be pure data writes. In that case, we still need to do a full dat=
-a sync=0A=
->   * completion.=0A=
-> + *=0A=
-> + * Returns -ENOTBLK In case of a page invalidation invalidation failure =
-for=0A=
-> + * writes.  The callers needs to fall back to buffered I/O in this case.=
-=0A=
->   */=0A=
->  ssize_t=0A=
->  iomap_dio_rw(struct kiocb *iocb, struct iov_iter *iter,=0A=
-> @@ -478,13 +482,15 @@ iomap_dio_rw(struct kiocb *iocb, struct iov_iter *i=
-ter,=0A=
->  	if (iov_iter_rw(iter) =3D=3D WRITE) {=0A=
->  		/*=0A=
->  		 * Try to invalidate cache pages for the range we are writing.=0A=
-> -		 * If this invalidation fails, tough, the write will still work,=0A=
-> -		 * but racing two incompatible write paths is a pretty crazy=0A=
-> -		 * thing to do, so we don't support it 100%.=0A=
-> +		 * If this invalidation fails, let the caller fall back to=0A=
-> +		 * buffered I/O.=0A=
->  		 */=0A=
->  		if (invalidate_inode_pages2_range(mapping, pos >> PAGE_SHIFT,=0A=
-> -				end >> PAGE_SHIFT))=0A=
-> -			dio_warn_stale_pagecache(iocb->ki_filp);=0A=
-> +				end >> PAGE_SHIFT)) {=0A=
-> +			trace_iomap_dio_invalidate_fail(inode, pos, count);=0A=
-> +			ret =3D -ENOTBLK;=0A=
-> +			goto out_free_dio;=0A=
-> +		}=0A=
->  =0A=
->  		if (!wait_for_completion && !inode->i_sb->s_dio_done_wq) {=0A=
->  			ret =3D sb_init_dio_done_wq(inode->i_sb);=0A=
-> diff --git a/fs/iomap/trace.h b/fs/iomap/trace.h=0A=
-> index 5693a39d52fb63..fdc7ae388476f5 100644=0A=
-> --- a/fs/iomap/trace.h=0A=
-> +++ b/fs/iomap/trace.h=0A=
-> @@ -74,6 +74,7 @@ DEFINE_EVENT(iomap_range_class, name,	\=0A=
->  DEFINE_RANGE_EVENT(iomap_writepage);=0A=
->  DEFINE_RANGE_EVENT(iomap_releasepage);=0A=
->  DEFINE_RANGE_EVENT(iomap_invalidatepage);=0A=
-> +DEFINE_RANGE_EVENT(iomap_dio_invalidate_fail);=0A=
->  =0A=
->  #define IOMAP_TYPE_STRINGS \=0A=
->  	{ IOMAP_HOLE,		"HOLE" }, \=0A=
-> diff --git a/fs/xfs/xfs_file.c b/fs/xfs/xfs_file.c=0A=
-> index a6ef90457abf97..1b4517fc55f1b9 100644=0A=
-> --- a/fs/xfs/xfs_file.c=0A=
-> +++ b/fs/xfs/xfs_file.c=0A=
-> @@ -553,8 +553,8 @@ xfs_file_dio_aio_write(=0A=
->  	xfs_iunlock(ip, iolock);=0A=
->  =0A=
->  	/*=0A=
-> -	 * No fallback to buffered IO on errors for XFS, direct IO will either=
-=0A=
-> -	 * complete fully or fail.=0A=
-> +	 * No fallback to buffered IO after short writes for XFS, direct I/O=0A=
-> +	 * will either complete fully or return an error.=0A=
->  	 */=0A=
->  	ASSERT(ret < 0 || ret =3D=3D count);=0A=
->  	return ret;=0A=
-> diff --git a/fs/zonefs/super.c b/fs/zonefs/super.c=0A=
-> index 07bc42d62673ce..d0a04528a7e18e 100644=0A=
-> --- a/fs/zonefs/super.c=0A=
-> +++ b/fs/zonefs/super.c=0A=
-> @@ -786,8 +786,11 @@ static ssize_t zonefs_file_write_iter(struct kiocb *=
-iocb, struct iov_iter *from)=0A=
->  	if (iocb->ki_pos >=3D ZONEFS_I(inode)->i_max_size)=0A=
->  		return -EFBIG;=0A=
->  =0A=
-> -	if (iocb->ki_flags & IOCB_DIRECT)=0A=
-> -		return zonefs_file_dio_write(iocb, from);=0A=
-> +	if (iocb->ki_flags & IOCB_DIRECT) {=0A=
-> +		ssize_t ret =3D zonefs_file_dio_write(iocb, from);=0A=
-> +		if (ret !=3D -ENOTBLK)=0A=
-> +			return ret;=0A=
-> +	}=0A=
->  =0A=
->  	return zonefs_file_buffered_write(iocb, from);=0A=
->  }=0A=
-> =0A=
-=0A=
-Looks fine. For zonefs:=0A=
-=0A=
-Acked-by: Damien Le Moal <damien.lemoal@wdc.com>=0A=
-=0A=
--- =0A=
-Damien Le Moal=0A=
-Western Digital Research=0A=
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--aHQDsKyMftHGulKEpeKbTOcVY6r2thyjA
+Content-Type: multipart/mixed; boundary="JLsSD4mBueAzJLlx5ELoLl22p85PA6e9q"
+
+--JLsSD4mBueAzJLlx5ELoLl22p85PA6e9q
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+
+
+
+On 2020/7/21 =E4=B8=8B=E5=8D=8811:10, Josef Bacik wrote:
+> One of the things that came up consistently in talking with Fedora abou=
+t
+> switching to btrfs as default is that btrfs is particularly vulnerable
+> to metadata corruption.  If any of the core global roots are corrupted,=
+
+> the fs is unmountable and fsck can't usually do anything for you withou=
+t
+> some special options.
+>=20
+> Qu addressed this sort of with rescue=3Dskipbg, but that's poorly named=
+ as
+> what it really does is just allow you to operate without an extent root=
+=2E
+> However there are a lot of other roots, and I'd rather not have to do
+>=20
+> mount -o rescue=3Dskipbg,rescue=3Dnocsum,rescue=3Dnofreespacetree,rescu=
+e=3Dblah
+>=20
+> Instead take his original idea and modify it so it just works for
+> everything.  Turn it into rescue=3Donlyfs, and then any major root we f=
+ail
+> to read just gets left empty and we carry on.
+>=20
+> Obviously if the fs roots are screwed then the user is in trouble, but
+> otherwise this makes it much easier to pull stuff off the disk without
+> needing our special rescue tools.  I tested this with my TEST_DEV that
+> had a bunch of data on it by corrupting the csum tree and then reading
+> files off the disk.
+>=20
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> ---
+> v1->v2:
+> - Rebase onto recent misc-next.
+> - Add in the fill_dummy_bgs since skipbg is no longer in this tree.
+>=20
+>  fs/btrfs/block-group.c | 49 +++++++++++++++++++++++++++++
+>  fs/btrfs/ctree.h       |  1 +
+>  fs/btrfs/disk-io.c     | 71 +++++++++++++++++++++++++++++-------------=
+
+>  fs/btrfs/inode.c       |  6 +++-
+>  fs/btrfs/super.c       | 29 +++++++++++++++--
+>  fs/btrfs/volumes.c     |  7 +++++
+>  6 files changed, 138 insertions(+), 25 deletions(-)
+>=20
+> diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+> index 884de28a41e4..416fc419fd95 100644
+> --- a/fs/btrfs/block-group.c
+> +++ b/fs/btrfs/block-group.c
+> @@ -1997,6 +1997,52 @@ static int read_one_block_group(struct btrfs_fs_=
+info *info,
+>  	return ret;
+>  }
+> =20
+> +static int fill_dummy_bgs(struct btrfs_fs_info *fs_info)
+> +{
+> +	struct extent_map_tree *em_tree =3D &fs_info->mapping_tree;
+> +	struct extent_map *em;
+> +	struct map_lookup *map;
+> +	struct btrfs_block_group *bg;
+> +	struct btrfs_space_info *space_info;
+> +	struct rb_node *node;
+> +	int ret =3D 0;
+> +
+> +	read_lock(&em_tree->lock);
+> +	for (node =3D rb_first_cached(&em_tree->map); node;
+> +	     node =3D rb_next(node)) {
+> +		em =3D rb_entry(node, struct extent_map, rb_node);
+> +		map =3D em->map_lookup;
+> +		bg =3D btrfs_create_block_group_cache(fs_info, em->start);
+> +		if (!bg) {
+> +			ret =3D -ENOMEM;
+> +			goto out;
+> +		}
+> +
+> +		/* Fill dummy cache as FULL */
+> +		bg->length =3D em->len;
+> +		bg->flags =3D map->type;
+> +		bg->last_byte_to_unpin =3D (u64)-1;
+> +		bg->cached =3D BTRFS_CACHE_FINISHED;
+> +		bg->used =3D em->len;
+> +		bg->flags =3D map->type;
+> +		ret =3D btrfs_add_block_group_cache(fs_info, bg);
+> +		if (ret) {
+> +			btrfs_remove_free_space_cache(bg);
+> +			btrfs_put_block_group(bg);
+> +			goto out;
+> +		}
+> +		btrfs_update_space_info(fs_info, bg->flags, em->len, em->len,
+> +					0, &space_info);
+> +		bg->space_info =3D space_info;
+> +		link_block_group(bg);
+> +
+> +		set_avail_alloc_bits(fs_info, bg->flags);
+> +	}
+> +out:
+> +	read_unlock(&em_tree->lock);
+> +	return ret;
+> +}
+> +
+>  int btrfs_read_block_groups(struct btrfs_fs_info *info)
+>  {
+>  	struct btrfs_path *path;
+> @@ -2007,6 +2053,9 @@ int btrfs_read_block_groups(struct btrfs_fs_info =
+*info)
+>  	int need_clear =3D 0;
+>  	u64 cache_gen;
+> =20
+> +	if (btrfs_test_opt(info, ONLYFS))
+> +		return fill_dummy_bgs(info);
+> +
+>  	key.objectid =3D 0;
+>  	key.offset =3D 0;
+>  	key.type =3D BTRFS_BLOCK_GROUP_ITEM_KEY;
+> diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+> index b70c2024296f..0be7d9461443 100644
+> --- a/fs/btrfs/ctree.h
+> +++ b/fs/btrfs/ctree.h
+> @@ -1266,6 +1266,7 @@ static inline u32 BTRFS_MAX_XATTR_SIZE(const stru=
+ct btrfs_fs_info *info)
+>  #define BTRFS_MOUNT_NOLOGREPLAY		(1 << 27)
+>  #define BTRFS_MOUNT_REF_VERIFY		(1 << 28)
+>  #define BTRFS_MOUNT_DISCARD_ASYNC	(1 << 29)
+> +#define BTRFS_MOUNT_ONLYFS		(1 << 30)
+> =20
+>  #define BTRFS_DEFAULT_COMMIT_INTERVAL	(30)
+>  #define BTRFS_DEFAULT_MAX_INLINE	(2048)
+> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+> index c850d7f44fbe..0dffa4c12d8c 100644
+> --- a/fs/btrfs/disk-io.c
+> +++ b/fs/btrfs/disk-io.c
+> @@ -2326,8 +2326,13 @@ static int btrfs_read_roots(struct btrfs_fs_info=
+ *fs_info)
+> =20
+>  	root =3D btrfs_read_tree_root(tree_root, &location);
+>  	if (IS_ERR(root)) {
+> -		ret =3D PTR_ERR(root);
+> -		goto out;
+> +		if (!btrfs_test_opt(fs_info, ONLYFS)) {
+> +			ret =3D PTR_ERR(root);
+> +			goto out;
+> +		}
+> +	} else {
+> +		set_bit(BTRFS_ROOT_TRACK_DIRTY, &root->state);
+> +		fs_info->extent_root =3D root;
+>  	}
+>  	set_bit(BTRFS_ROOT_TRACK_DIRTY, &root->state);
+>  	fs_info->extent_root =3D root;
+> @@ -2335,21 +2340,27 @@ static int btrfs_read_roots(struct btrfs_fs_inf=
+o *fs_info)
+>  	location.objectid =3D BTRFS_DEV_TREE_OBJECTID;
+>  	root =3D btrfs_read_tree_root(tree_root, &location);
+>  	if (IS_ERR(root)) {
+> -		ret =3D PTR_ERR(root);
+> -		goto out;
+> +		if (!btrfs_test_opt(fs_info, ONLYFS)) {
+> +			ret =3D PTR_ERR(root);
+> +			goto out;
+> +		}
+> +	} else {
+> +		set_bit(BTRFS_ROOT_TRACK_DIRTY, &root->state);
+> +		fs_info->dev_root =3D root;
+> +		btrfs_init_devices_late(fs_info);
+>  	}
+> -	set_bit(BTRFS_ROOT_TRACK_DIRTY, &root->state);
+> -	fs_info->dev_root =3D root;
+> -	btrfs_init_devices_late(fs_info);
+> =20
+>  	location.objectid =3D BTRFS_CSUM_TREE_OBJECTID;
+>  	root =3D btrfs_read_tree_root(tree_root, &location);
+>  	if (IS_ERR(root)) {
+> -		ret =3D PTR_ERR(root);
+> -		goto out;
+> +		if (!btrfs_test_opt(fs_info, ONLYFS)) {
+> +			ret =3D PTR_ERR(root);
+> +			goto out;
+> +		}
+> +	} else {
+> +		set_bit(BTRFS_ROOT_TRACK_DIRTY, &root->state);
+> +		fs_info->csum_root =3D root;
+>  	}
+> -	set_bit(BTRFS_ROOT_TRACK_DIRTY, &root->state);
+> -	fs_info->csum_root =3D root;
+> =20
+>  	/*
+>  	 * This tree can share blocks with some other fs tree during relocati=
+on
+> @@ -2358,11 +2369,14 @@ static int btrfs_read_roots(struct btrfs_fs_inf=
+o *fs_info)
+>  	root =3D btrfs_get_fs_root(tree_root->fs_info,
+>  				 BTRFS_DATA_RELOC_TREE_OBJECTID, true);
+>  	if (IS_ERR(root)) {
+> -		ret =3D PTR_ERR(root);
+> -		goto out;
+> +		if (!btrfs_test_opt(fs_info, ONLYFS)) {
+> +			ret =3D PTR_ERR(root);
+> +			goto out;
+> +		}
+> +	} else {
+> +		set_bit(BTRFS_ROOT_TRACK_DIRTY, &root->state);
+> +		fs_info->data_reloc_root =3D root;
+>  	}
+> -	set_bit(BTRFS_ROOT_TRACK_DIRTY, &root->state);
+> -	fs_info->data_reloc_root =3D root;
+> =20
+>  	location.objectid =3D BTRFS_QUOTA_TREE_OBJECTID;
+>  	root =3D btrfs_read_tree_root(tree_root, &location);
+> @@ -2375,9 +2389,11 @@ static int btrfs_read_roots(struct btrfs_fs_info=
+ *fs_info)
+>  	location.objectid =3D BTRFS_UUID_TREE_OBJECTID;
+>  	root =3D btrfs_read_tree_root(tree_root, &location);
+>  	if (IS_ERR(root)) {
+> -		ret =3D PTR_ERR(root);
+> -		if (ret !=3D -ENOENT)
+> -			goto out;
+> +		if (!btrfs_test_opt(fs_info, ONLYFS)) {
+> +			ret =3D PTR_ERR(root);
+> +			if (ret !=3D -ENOENT)
+> +				goto out;
+> +		}
+>  	} else {
+>  		set_bit(BTRFS_ROOT_TRACK_DIRTY, &root->state);
+>  		fs_info->uuid_root =3D root;
+> @@ -2387,11 +2403,14 @@ static int btrfs_read_roots(struct btrfs_fs_inf=
+o *fs_info)
+>  		location.objectid =3D BTRFS_FREE_SPACE_TREE_OBJECTID;
+>  		root =3D btrfs_read_tree_root(tree_root, &location);
+>  		if (IS_ERR(root)) {
+> -			ret =3D PTR_ERR(root);
+> -			goto out;
+> +			if (!btrfs_test_opt(fs_info, ONLYFS)) {
+> +				ret =3D PTR_ERR(root);
+> +				goto out;
+> +			}
+> +		}  else {
+> +			set_bit(BTRFS_ROOT_TRACK_DIRTY, &root->state);
+> +			fs_info->free_space_root =3D root;
+>  		}
+> -		set_bit(BTRFS_ROOT_TRACK_DIRTY, &root->state);
+> -		fs_info->free_space_root =3D root;
+>  	}
+> =20
+>  	return 0;
+> @@ -3106,6 +3125,14 @@ int __cold open_ctree(struct super_block *sb, st=
+ruct btrfs_fs_devices *fs_device
+>  		goto fail_alloc;
+>  	}
+> =20
+> +	/* Skip bg needs RO and no tree-log to replay */
+
+Comment is still the skip-bg version.
+
+> +	if (btrfs_test_opt(fs_info, ONLYFS) && !sb_rdonly(sb)) {
+> +		btrfs_err(fs_info,
+> +			  "rescue=3Donlyfs can only be used on read-only mount");
+> +		err =3D -EINVAL;
+> +		goto fail_alloc;
+> +	}
+> +
+>  	ret =3D btrfs_init_workqueues(fs_info, fs_devices);
+>  	if (ret) {
+>  		err =3D ret;
+> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+> index 611b3412fbfd..49cd3eba651e 100644
+> --- a/fs/btrfs/inode.c
+> +++ b/fs/btrfs/inode.c
+> @@ -2191,7 +2191,8 @@ static blk_status_t btrfs_submit_bio_hook(struct =
+inode *inode, struct bio *bio,
+>  	int skip_sum;
+>  	int async =3D !atomic_read(&BTRFS_I(inode)->sync_writers);
+> =20
+> -	skip_sum =3D BTRFS_I(inode)->flags & BTRFS_INODE_NODATASUM;
+> +	skip_sum =3D (BTRFS_I(inode)->flags & BTRFS_INODE_NODATASUM) ||
+> +		btrfs_test_opt(fs_info, ONLYFS);
+
+This means, if onlyfs is spcified, csum is completely skipped even it
+matches.
+
+I'm not yet determined whether it's preferred.
+
+On one hand, even at recovery, user may want csum verification to detect
+bad copy if possible, but on the other hand, since user is doing data
+salvage, bothering csum could only lead to extra error.
+
+Despite that, the patch looks pretty good and indeed an enhancement to
+skipbg.
+
+Thanks,
+Qu
+> =20
+>  	if (btrfs_is_free_space_inode(BTRFS_I(inode)))
+>  		metadata =3D BTRFS_WQ_ENDIO_FREE_SPACE;
+> @@ -2846,6 +2847,9 @@ static int btrfs_readpage_end_io_hook(struct btrf=
+s_io_bio *io_bio,
+>  	if (BTRFS_I(inode)->flags & BTRFS_INODE_NODATASUM)
+>  		return 0;
+> =20
+> +	if (btrfs_test_opt(root->fs_info, ONLYFS))
+> +		return 0;
+> +
+>  	if (root->root_key.objectid =3D=3D BTRFS_DATA_RELOC_TREE_OBJECTID &&
+>  	    test_range_bit(io_tree, start, end, EXTENT_NODATASUM, 1, NULL)) {=
+
+>  		clear_extent_bits(io_tree, start, end, EXTENT_NODATASUM);
+> diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
+> index 58f890f73650..4dc3f35ca7e3 100644
+> --- a/fs/btrfs/super.c
+> +++ b/fs/btrfs/super.c
+> @@ -345,6 +345,7 @@ enum {
+>  	Opt_rescue,
+>  	Opt_usebackuproot,
+>  	Opt_nologreplay,
+> +	Opt_rescue_onlyfs,
+> =20
+>  	/* Deprecated options */
+>  	Opt_recovery,
+> @@ -440,6 +441,7 @@ static const match_table_t tokens =3D {
+>  static const match_table_t rescue_tokens =3D {
+>  	{Opt_usebackuproot, "usebackuproot"},
+>  	{Opt_nologreplay, "nologreplay"},
+> +	{Opt_rescue_onlyfs, "onlyfs"},
+>  	{Opt_err, NULL},
+>  };
+> =20
+> @@ -472,6 +474,11 @@ static int parse_rescue_options(struct btrfs_fs_in=
+fo *info, const char *options)
+>  			btrfs_set_and_info(info, NOLOGREPLAY,
+>  					   "disabling log replay at mount time");
+>  			break;
+> +		case Opt_rescue_onlyfs:
+> +			btrfs_set_and_info(info, ONLYFS,
+> +					   "only reading fs roots, also setting  nologreplay");
+> +			btrfs_set_opt(info->mount_opt, NOLOGREPLAY);
+> +			break;
+>  		case Opt_err:
+>  			btrfs_info(info, "unrecognized rescue option '%s'", p);
+>  			ret =3D -EINVAL;
+> @@ -1400,6 +1407,8 @@ static int btrfs_show_options(struct seq_file *se=
+q, struct dentry *dentry)
+>  		seq_puts(seq, ",notreelog");
+>  	if (btrfs_test_opt(info, NOLOGREPLAY))
+>  		seq_puts(seq, ",rescue=3Dnologreplay");
+> +	if (btrfs_test_opt(info, ONLYFS))
+> +		seq_puts(seq, ",rescue=3Donlyfs");
+>  	if (btrfs_test_opt(info, FLUSHONCOMMIT))
+>  		seq_puts(seq, ",flushoncommit");
+>  	if (btrfs_test_opt(info, DISCARD_SYNC))
+> @@ -1839,6 +1848,14 @@ static int btrfs_remount(struct super_block *sb,=
+ int *flags, char *data)
+>  	if (ret)
+>  		goto restore;
+> =20
+> +	if (btrfs_test_opt(fs_info, ONLYFS) !=3D
+> +	    (old_opts & BTRFS_MOUNT_ONLYFS)) {
+> +		btrfs_err(fs_info,
+> +		"rescue=3Donlyfs mount option can't be changed during remount");
+> +		ret =3D -EINVAL;
+> +		goto restore;
+> +	}
+> +
+>  	btrfs_remount_begin(fs_info, old_opts, *flags);
+>  	btrfs_resize_thread_pool(fs_info,
+>  		fs_info->thread_pool_size, old_thread_pool_size);
+> @@ -1904,6 +1921,13 @@ static int btrfs_remount(struct super_block *sb,=
+ int *flags, char *data)
+>  			goto restore;
+>  		}
+> =20
+> +		if (btrfs_test_opt(fs_info, ONLYFS)) {
+> +			btrfs_err(fs_info,
+> +		"remounting read-write with rescue=3Donlyfs is not allowed");
+> +			ret =3D -EINVAL;
+> +			goto restore;
+> +		}
+> +
+>  		ret =3D btrfs_cleanup_fs_roots(fs_info);
+>  		if (ret)
+>  			goto restore;
+> @@ -2208,8 +2232,9 @@ static int btrfs_statfs(struct dentry *dentry, st=
+ruct kstatfs *buf)
+>  	 * still can allocate chunks and thus are fine using the currently
+>  	 * calculated f_bavail.
+>  	 */
+> -	if (!mixed && block_rsv->space_info->full &&
+> -	    total_free_meta - thresh < block_rsv->size)
+> +	if (btrfs_test_opt(fs_info, ONLYFS) ||
+> +	    (!mixed && block_rsv->space_info->full &&
+> +	     total_free_meta - thresh < block_rsv->size))
+>  		buf->f_bavail =3D 0;
+> =20
+>  	buf->f_type =3D BTRFS_SUPER_MAGIC;
+> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+> index 537ccf66ee20..e86f78579884 100644
+> --- a/fs/btrfs/volumes.c
+> +++ b/fs/btrfs/volumes.c
+> @@ -7628,6 +7628,13 @@ int btrfs_verify_dev_extents(struct btrfs_fs_inf=
+o *fs_info)
+>  	u64 prev_dev_ext_end =3D 0;
+>  	int ret =3D 0;
+> =20
+> +	/*
+> +	 * For rescue=3Donlyfs mount option, we're already RO and are salvagi=
+ng
+> +	 * data, no need for such strict check.
+> +	 */
+> +	if (btrfs_test_opt(fs_info, ONLYFS))
+> +		return 0;
+> +
+>  	key.objectid =3D 1;
+>  	key.type =3D BTRFS_DEV_EXTENT_KEY;
+>  	key.offset =3D 0;
+>=20
+
+
+--JLsSD4mBueAzJLlx5ELoLl22p85PA6e9q--
+
+--aHQDsKyMftHGulKEpeKbTOcVY6r2thyjA
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl8XdKQACgkQwj2R86El
+/qhc/wf9GhixGmxPU3PTAyc154cXx5GnNmdDujjhQykWGA4D0oOke850qDkLaqQn
+8tX1XKb+CTLST/0wdikPfy/F37+vn7ZHHA2ocOhNKx34eh9ED8am+ccdC6/PtJcv
+AQ/rGII554plFIpJrNVfJFUtsjx0tUnlkt9zRYrWPP5N3kwLLW+aW5bPxmvcJzro
+kZ85AH1mV8JxQ9OPqV5CWuYo1cUFu+2CdNwSy2Z+iWUSksf1lEOhPYpKB9CjF4IX
+RwldNnwaFOwIJMI6tbMvKD5CVnShr434W+g546KVn0DoPAGzgjAF/S6z7x40Uhfn
+V8I29EVd8nPRRvvtXHRAcwseiOnv0w==
+=5fzx
+-----END PGP SIGNATURE-----
+
+--aHQDsKyMftHGulKEpeKbTOcVY6r2thyjA--
