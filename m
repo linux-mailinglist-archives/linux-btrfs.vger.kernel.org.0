@@ -2,103 +2,119 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48375228784
-	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Jul 2020 19:40:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76CA722880C
+	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Jul 2020 20:17:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730216AbgGURks (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 21 Jul 2020 13:40:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56094 "EHLO
+        id S1729049AbgGUSRB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 21 Jul 2020 14:17:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729286AbgGURks (ORCPT
+        with ESMTP id S1726602AbgGUSRA (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 21 Jul 2020 13:40:48 -0400
-Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7B3AC061794
-        for <linux-btrfs@vger.kernel.org>; Tue, 21 Jul 2020 10:40:47 -0700 (PDT)
-Received: by mail-qk1-x72e.google.com with SMTP id e13so20161811qkg.5
-        for <linux-btrfs@vger.kernel.org>; Tue, 21 Jul 2020 10:40:47 -0700 (PDT)
+        Tue, 21 Jul 2020 14:17:00 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A590C061794
+        for <linux-btrfs@vger.kernel.org>; Tue, 21 Jul 2020 11:17:00 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id b79so6551410qkg.9
+        for <linux-btrfs@vger.kernel.org>; Tue, 21 Jul 2020 11:17:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=x5gXAONGd67nYT3WRUij4BlkeNXNewv464hvQUhX8iE=;
-        b=Bs1jQng0wuI7Q13HOUl8TFyH78n4bPdpbgoJKHY/nMkGpRnRmrq6jV7+JBHy0vPV15
-         D8TMT08d+BwN00nGZdCkrJZKDz3ON4Az7c6AHQn6/4CFtUWwCK/ol5+Ei2MA+g0s5KL+
-         g3Ycr79cM1X3D/ZjQX8GVkP3Ubah8mr9ZLv/rfwAtYKtjnDhfAWrYul+mCzG/1BFEsNS
-         ZaOBfCDTRI9/vvtUUDQmdDikbvnZVheBVvBU/wRpHoQ8tR0FgZ3TyudrWvmuwJ2oLoeb
-         Sy5yDfyC40dr9fjCJJapMVByKR/JGgM3ASp355lLMH2dVw9fkiBUcpcl4z1ihM4ZlGLx
-         +mYw==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=PNm8Mlvxnk5Lm6o1v7p9YQLzwvwAjDRLx9kQO36WNkg=;
+        b=m8vd5/JLlp+XOTO3bd6mlvAQiG3AfI7tDRfn/STDdREyQm+S37EPgSvh2j/MpXO4OC
+         DsfelWFG4oP3O2NspwYtU+4DV0Pfbv/BaZSOWu9H2cGHG70V2ZsB5+sDb4lWtuSLnAmp
+         TkX3PGSAllIqfqZmDkcT7bLCVFTWRkZj5b+BgYnxixJ++MzDhC8CBm4Q3MP0QXpbRmYf
+         /APNlyw/MhGhE/kGolmdZJb5TL2a+1rLMgWUuqOtxgPg6XcarmSwMzsnC+39dQ/EN2Wi
+         9/0VkyJfARCOiS/Y8R4wIqyzmwV/nhDvriLDWb6oz89/pYET9lcbW8Ke0vWJnfd+WA8Z
+         Ae8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=x5gXAONGd67nYT3WRUij4BlkeNXNewv464hvQUhX8iE=;
-        b=Y0rhtiLIWvIuw51f/thVAnk7G38osvgqoTaqTh/A+nZZsSY4dg8ExSUPTnhUOGpcXd
-         iWCThs8QnTkraEl7y1SEhietF4TnWVfYHn0NlG7AlLK65eXjCpDzZwuHDDRowIkaBYvg
-         Ix5vJcBHBrWLWsZaYYeAKs47HZupjCTqCyS4sdhCZiNGkcYHjm8NatFi4kpEv9wv4mbs
-         EyqjsJr2nFIyFW7N0nxGMCOsXS5u719Fj9i9tIFy6KP5U0BOwOAwhv1bytqEpIihgg10
-         7DG8WbiP8164wolIvkuabvJ0lGQUn7MuYCNRjn/h2f9fW65qeFMgPCpmebvgsl3D9B7e
-         0Jqg==
-X-Gm-Message-State: AOAM5314Wv23wYljVd194p/70SxGMbX8bhCAbSx/Sg34+R7yloiITTnB
-        TLpKeGp4HjPkRimefnkv1zr/Vw==
-X-Google-Smtp-Source: ABdhPJy0aVqN3BQOrfY2NEk34QGbkjx189gdmhme+CXASw/mBScoiKc65lelW9ZFx99yAXDVDbRMXg==
-X-Received: by 2002:a37:9a13:: with SMTP id c19mr26695471qke.56.1595353246735;
-        Tue, 21 Jul 2020 10:40:46 -0700 (PDT)
-Received: from [192.168.1.45] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id o15sm3080021qko.67.2020.07.21.10.40.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 21 Jul 2020 10:40:46 -0700 (PDT)
-Subject: Re: [PATCH][v2] btrfs: introduce rescue=onlyfs
-To:     Graham Cobb <g.btrfs@cobb.uk.net>, dsterba@suse.cz,
-        linux-btrfs@vger.kernel.org, kernel-team@fb.com
-References: <20200721151057.9325-1-josef@toxicpanda.com>
- <69cf9558-5390-8d14-21b2-51f4c82eeed7@cobb.uk.net>
- <20200721171626.GP3703@twin.jikos.cz>
- <870ffc4d-00c2-53bb-578b-6dffc85f86b0@cobb.uk.net>
+        bh=PNm8Mlvxnk5Lm6o1v7p9YQLzwvwAjDRLx9kQO36WNkg=;
+        b=L10iUDAdBWWz5KPLwuPHTOROcCJMxYcsf7/07rA6ekZ1MStK6lQfTBS4zbSBfs6YA9
+         X8mVLUiSpKLQLTtvscVQHJh59hk6yU32Cb0ijk/YFhw3fBdOYG/BxysbmSTNrgpm38M7
+         UeGVlXhFXKLK4Qls9Y9bLtFqzlc0IPg1Gsf62i5S4jiPCk7c3+GRNYqeigV3XZoGuhL9
+         j0pBEcbUmjzwuapn7rCx6ygH7K3ImiIG9TrbzpinK2IlnpUtsNUHgo9TRJbVV9qeQJuv
+         BAmDyuGm5lCSgO8JgFsU8J8KqK0rrfEo2hXczYuVoBgoAsmqudApoapJF35QMODPLHY8
+         mR2g==
+X-Gm-Message-State: AOAM532DWHP6cQwfK6le0IywNfqbZOOhYliKh7XxEth9wRbjYNBq0ueK
+        uxWHwU1vlujv0g0EURr0wFLV2Mzy5kJLYg==
+X-Google-Smtp-Source: ABdhPJwsDbzm/cYrUvtL5zj6nGo1oxUerWO5P6ZmYdD4zVZ82ENczz9YVeOal41TtBiZwb9/tgShLQ==
+X-Received: by 2002:a05:620a:2158:: with SMTP id m24mr28328378qkm.494.1595355418890;
+        Tue, 21 Jul 2020 11:16:58 -0700 (PDT)
+Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id c27sm2745631qkl.125.2020.07.21.11.16.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Jul 2020 11:16:58 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <abfc1a19-5edf-6e60-f1a8-272f6637d111@toxicpanda.com>
-Date:   Tue, 21 Jul 2020 13:40:44 -0400
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.10.0
+To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Cc:     Chris Murphy <chris@colorremedies.com>
+Subject: [PATCH][RFC] btrfs: don't show full path of bind mounts in subvol=
+Date:   Tue, 21 Jul 2020 14:16:56 -0400
+Message-Id: <20200721181656.16171-1-josef@toxicpanda.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-In-Reply-To: <870ffc4d-00c2-53bb-578b-6dffc85f86b0@cobb.uk.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 7/21/20 1:34 PM, Graham Cobb wrote:
-> On 21/07/2020 18:16, David Sterba wrote:
->> On Tue, Jul 21, 2020 at 04:56:55PM +0100, Graham Cobb wrote:
->>> If it means "only filesystem" that doesn't make sense to me - the whole
->>> thing is the filesystem. I guess "only data" might be more meaningful
->>> but if the aim is to turn on as much recovery as possible to help the
->>> user to save their data then why not just say so?
->>>
->>> Something like "rescue=max", "rescue=recoverymode", "rescue=dataonly",
->>> "rescue=ignoreallerrors" or "rescue=emergency" might be more meaningful.
->>
->>  From user perspective the option should have a high level semantics,
->> like you suggest above. We should add individual options to try to work
->> around specific damage if not just for testing purposes, having more
->> flexibility is a good thing.
-> 
-> I would also prefer not to have checksum checking disabled by this "try
-> harder" option. I would imagine turning on "ignore whatever checks you
-> can to get me my data back mode", retrieving all the readable data with
-> valid checksums and getting errors for things which cannot be verified.
-> Then I would make a decision as to whether to enable another option to
-> even provide files which the filesystem cannot guarantee have not been
-> corrupted because it can't check checksums. Even if that is all the
-> files (because the checksum tree is destroyed) I should have to make an
-> explicit acknowledgement that I want that.
-> 
+Chris Murphy reported a problem where rpm ostree will bind mount a bunch
+of things for whatever voodoo it's doing.  But when it does this
+/proc/mounts shows something like
 
-If somebody wants to add finer grained stuff later I'm fine with that, right now 
-I'm addressing the case where a lot of things are dead.  Thanks,
+/dev/vda4 on /usr type btrfs (ro,relatime,seclabel,space_cache,subvolid=256,subvol=/root/ostree/deploy/fedora/deploy/610b0f9be3141c79f19a65800f89746c70183cc7f14f3cfba29d695d49128075.0/usr)
 
-Josef
+Despite subvolid=256 being subvol=/root.  This is because we're just
+spitting out the dentry of the mount point, which in the case of bind
+mounts is the source path for the mountpoint.  Instead we should spit
+out the path to the actual subvol.  Fix this by looking up the name for
+the subvolid we have mounted.
+
+Fixes: c8d3fe028f64 ("Btrfs: show subvol= and subvolid= in /proc/mounts")
+Reported-by: Chris Murphy <chris@colorremedies.com>
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+---
+
+I talked with Omar about this and his other suggestion is we simply don't spit
+out subvol=<path> if we're not the actual subvolume dentry.  I'm ok with that
+option too, and it avoids a memory alloc for show_options, however it does mean
+that we'll stop spitting out subvol= in some cases, which may cause problems?
+If we prefer that option I can code that up instead.
+
+ fs/btrfs/super.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
+
+diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
+index 58f890f73650..0e1647c08610 100644
+--- a/fs/btrfs/super.c
++++ b/fs/btrfs/super.c
+@@ -1367,6 +1367,7 @@ static int btrfs_show_options(struct seq_file *seq, struct dentry *dentry)
+ {
+ 	struct btrfs_fs_info *info = btrfs_sb(dentry->d_sb);
+ 	const char *compress_type;
++	const char *subvol_name;
+ 
+ 	if (btrfs_test_opt(info, DEGRADED))
+ 		seq_puts(seq, ",degraded");
+@@ -1453,8 +1454,12 @@ static int btrfs_show_options(struct seq_file *seq, struct dentry *dentry)
+ 		seq_puts(seq, ",ref_verify");
+ 	seq_printf(seq, ",subvolid=%llu",
+ 		  BTRFS_I(d_inode(dentry))->root->root_key.objectid);
+-	seq_puts(seq, ",subvol=");
+-	seq_dentry(seq, dentry, " \t\n\\");
++	subvol_name = btrfs_get_subvol_name_from_objectid(info,
++			BTRFS_I(d_inode(dentry))->root->root_key.objectid);
++	if (subvol_name) {
++		seq_printf(seq, ",subvol=%s", subvol_name);
++		kfree(subvol_name);
++	}
+ 	return 0;
+ }
+ 
+-- 
+2.24.1
+
