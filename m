@@ -2,64 +2,58 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 739A7228475
-	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Jul 2020 18:02:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74C86228471
+	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Jul 2020 18:01:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730071AbgGUQBu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 21 Jul 2020 12:01:50 -0400
-Received: from mx2.suse.de ([195.135.220.15]:53540 "EHLO mx2.suse.de"
+        id S1730048AbgGUQBs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 21 Jul 2020 12:01:48 -0400
+Received: from verein.lst.de ([213.95.11.211]:52832 "EHLO verein.lst.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727058AbgGUQBu (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 21 Jul 2020 12:01:50 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id E19A4AEF8;
-        Tue, 21 Jul 2020 16:01:55 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 9F060DA70B; Tue, 21 Jul 2020 18:01:23 +0200 (CEST)
-Date:   Tue, 21 Jul 2020 18:01:23 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com,
-        Eric Sandeen <esandeen@redhat.com>
-Subject: Re: [PATCH][v2] btrfs: return -EROFS for BTRFS_FS_STATE_ERROR cases
-Message-ID: <20200721160123.GN3703@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
-        linux-btrfs@vger.kernel.org, kernel-team@fb.com,
-        Eric Sandeen <esandeen@redhat.com>
-References: <20200721143837.3535-1-josef@toxicpanda.com>
+        id S1727058AbgGUQBr (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 21 Jul 2020 12:01:47 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id E5A9068AFE; Tue, 21 Jul 2020 18:01:43 +0200 (CEST)
+Date:   Tue, 21 Jul 2020 18:01:43 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     "Darrick J. Wong" <darrick.wong@oracle.com>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        Goldwyn Rodrigues <rgoldwyn@suse.de>,
+        Dave Chinner <david@fromorbit.com>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Naohiro Aota <naohiro.aota@wdc.com>,
+        Johannes Thumshirn <jth@kernel.org>,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        cluster-devel@redhat.com, linux-ext4@vger.kernel.org,
+        linux-xfs@vger.kernel.org,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        linux-man@vger.kernel.org
+Subject: Re: RFC: iomap write invalidation
+Message-ID: <20200721160143.GA12046@lst.de>
+References: <20200713074633.875946-1-hch@lst.de> <20200720215125.bfz7geaftocy4r5l@fiona> <20200721145313.GA9217@lst.de> <20200721150432.GH15516@casper.infradead.org> <20200721150615.GA10330@lst.de> <20200721151437.GI15516@casper.infradead.org> <20200721151616.GA11074@lst.de> <20200721152754.GD7597@magnolia> <20200721154132.GA11652@lst.de> <20200721155925.GB3151642@magnolia>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200721143837.3535-1-josef@toxicpanda.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <20200721155925.GB3151642@magnolia>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Jul 21, 2020 at 10:38:37AM -0400, Josef Bacik wrote:
-> Eric reported seeing this message while running generic/475
-> 
-> BTRFS: error (device dm-3) in btrfs_sync_log:3084: errno=-117 Filesystem corrupted
-> 
-> This ret came from btrfs_write_marked_extents().  If we get an aborted
-> transaction via an -EIO somewhere, we'll see it in
-> btree_write_cache_pages() and return -EUCLEAN, which we spit out as
-> "Filesystem corrupted".  Except we shouldn't be returning -EUCLEAN here,
-> we need to be returning -EROFS.  -EUCLEAN is reserved for actual
-> corruption, not IO errors.
-> 
-> We are inconsistent about our handling of BTRFS_FS_STATE_ERROR
-> elsewhere, but we want to use -EROFS for this particular case.  The
-> original transaction abort has the real error code for why we ended up
-> with an aborted transaction, all subsequent actions just need to return
-> -EROFS because they may not have a trans handle and have no idea about
-> the original cause of the abort.
-> 
-> Reported-by: Eric Sandeen <esandeen@redhat.com>
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+On Tue, Jul 21, 2020 at 08:59:25AM -0700, Darrick J. Wong wrote:
+> In the comment that precedes iomap_dio_rw() for the iomap version,
 
-I've added full stacktrace from my logs and the patch is now ordered
-after patch that filters EROFS in transaction abort. Thanks.
+maybe let's just do that..
+
+> ``direct_IO``
+> 	called by the generic read/write routines to perform direct_IO -
+> 	that is IO requests which bypass the page cache and transfer
+> 	data directly between the storage and the application's address
+> 	space.  This function can return -ENOTBLK to signal that it is
+> 	necessary to fallback to buffered IO.  Note that
+> 	blockdev_direct_IO and variants can also return -ENOTBLK.
+
+->direct_IO is not used for iomap and various other implementations.
+In fact it is a horrible hack that I've been trying to get rid of
+for a while.
