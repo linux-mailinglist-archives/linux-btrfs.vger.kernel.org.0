@@ -2,97 +2,158 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70C57228B19
-	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Jul 2020 23:25:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4392228C4C
+	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Jul 2020 00:58:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731129AbgGUVZo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 21 Jul 2020 17:25:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34846 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730214AbgGUVZo (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 21 Jul 2020 17:25:44 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CC07C061794
-        for <linux-btrfs@vger.kernel.org>; Tue, 21 Jul 2020 14:25:44 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id f7so22545428wrw.1
-        for <linux-btrfs@vger.kernel.org>; Tue, 21 Jul 2020 14:25:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=N699xl/0B5Qyzywuh9B970fIP7VAB+EupmjIliCssXU=;
-        b=I/A3OPmbR+en3iEvV10u6e+gt2vQnLRsleiRuWZaNqPHlZuHUNlN+L9/AB8qHeEvGz
-         3M4GSyMGAWRYZtQ4yW2G85OmyQEChK+B/GQzIUrOqL3vz+vJOBIYa9zY4BBiX2u5Ahdm
-         wtXOLgG0fMTP0+GIR+a5yL+LK9mG0Hb/nCKbYFam5G/UWPdJtqbqfIAgQDM3lel83cAd
-         8CNQb6DtNBzHOIMx2k1RXYQf8y+1fGCA//zBu+j1QQW08VvxAcUJP2bofIDJhLxyy/7J
-         s42rbiEV4FJvZ03qOYfkTNirRFBs0cKdJvMsR5CTRYDuxJe9p+lYxpaOYT8oE1rsFWOg
-         p0yA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=N699xl/0B5Qyzywuh9B970fIP7VAB+EupmjIliCssXU=;
-        b=PlfrtxktioC85A8GLP9YCUR3US0UJQokxNh2wyoTpdCREykIcN46Tpyb7D58hXNMsO
-         I23ix6EO2k/cKtXH8FsPEqxqsIM1fv5TypM9zTAna8qmdxGR7F8GWb1smx0hYJFhvR3H
-         sBnCcL491j7ONwvDarGW++S8mA1GlenX/88fs/OBvlrmgHfhGTl8Kq3EOi4n5h7p3B3O
-         L2IWkN46LvlQ3074T+QdHKQXGGqwGqj3fN3DnuUf8kZSwgbHPa4kVOhlitvBHoAhY+s6
-         9iKN9LrPkvtISustkP+PdzSfWKZ1k03dPbRUnjihxLFX1wVPeTKL2B6cPU1mFCugIIwL
-         h+ZQ==
-X-Gm-Message-State: AOAM533feZL4SxhVDZikuFlek8Omv8tT895NR81RHljc9MxKHkrst7qv
-        AaZlNvvXraHHhmr3qBAACrwBnK1eiHDBFhSo7OXWh4l6
-X-Google-Smtp-Source: ABdhPJyjxZoTUjIZDR1eeQQhEgOFwL+iM0OBh48hZWhluyWdO8vys4Pvh8UTr4nGlVlSu65j+HA2bUvqbDqvErUbEgE=
-X-Received: by 2002:adf:a19e:: with SMTP id u30mr14473177wru.274.1595366742746;
- Tue, 21 Jul 2020 14:25:42 -0700 (PDT)
+        id S1726938AbgGUW6s (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 21 Jul 2020 18:58:48 -0400
+Received: from mout.gmx.net ([212.227.15.18]:56065 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726555AbgGUW6r (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 21 Jul 2020 18:58:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1595372323;
+        bh=DyKo7ZHGl5liUSaw85fLhX1JG7toYiDUyfvOxs9oFcA=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=dXnaMdbwg2QcJtbm6SbafW9P/cETgNHIE7Tcw/iqx/mF1BF2ITeB7ecLYmmfr8CMp
+         y2eUbYjQ5rJBoqBN1y0PH9kSQp+rbYAonopKErRTnYKLdLZXe4vY3P74XdtqZfwIKZ
+         WJL6BTNZ92y17JZ1J91jmGcwZzUGs/o0e3hn/pyI=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1N6bk4-1ktnGm1NZm-0186jz; Wed, 22
+ Jul 2020 00:58:42 +0200
+Subject: Re: [PATCH 1/2] btrfs-progs: convert: Prevent bit overflow for
+ cctx->total_bytes
+To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org, Christian Zangl <coralllama@gmail.com>
+References: <20200720125109.93970-1-wqu@suse.com>
+ <20200720160945.GH3703@twin.jikos.cz>
+ <cf6386e1-a13b-e7cf-a365-db33a3afe2a9@gmx.com>
+ <20200721095826.GJ3703@twin.jikos.cz>
+ <0d3eb6c1-f88a-e7cd-7d12-92bce0f2025c@suse.com>
+ <20200721135533.GL3703@twin.jikos.cz>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
+ mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAVQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWCnQUJCWYC
+ bgAKCRDCPZHzoSX+qAR8B/94VAsSNygx1C6dhb1u1Wp1Jr/lfO7QIOK/nf1PF0VpYjTQ2au8
+ ihf/RApTna31sVjBx3jzlmpy+lDoPdXwbI3Czx1PwDbdhAAjdRbvBmwM6cUWyqD+zjVm4RTG
+ rFTPi3E7828YJ71Vpda2qghOYdnC45xCcjmHh8FwReLzsV2A6FtXsvd87bq6Iw2axOHVUax2
+ FGSbardMsHrya1dC2jF2R6n0uxaIc1bWGweYsq0LXvLcvjWH+zDgzYCUB0cfb+6Ib/ipSCYp
+ 3i8BevMsTs62MOBmKz7til6Zdz0kkqDdSNOq8LgWGLOwUTqBh71+lqN2XBpTDu1eLZaNbxSI
+ ilaVuQENBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAGJATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAK
+ CRDCPZHzoSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gy
+ fmtBnUaifnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsS
+ oCEEynby72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAk
+ ZkA523JGap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gG
+ UO/iD/T5oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
+Message-ID: <cccdcdc8-db5a-779d-7b99-346ef14133e5@gmx.com>
+Date:   Wed, 22 Jul 2020 06:58:39 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20200721151057.9325-1-josef@toxicpanda.com> <69cf9558-5390-8d14-21b2-51f4c82eeed7@cobb.uk.net>
- <20200721171626.GP3703@twin.jikos.cz> <870ffc4d-00c2-53bb-578b-6dffc85f86b0@cobb.uk.net>
-In-Reply-To: <870ffc4d-00c2-53bb-578b-6dffc85f86b0@cobb.uk.net>
-From:   Chris Murphy <lists@colorremedies.com>
-Date:   Tue, 21 Jul 2020 15:25:26 -0600
-Message-ID: <CAJCQCtRyxTOhWTCvwMmEtz8VjuzF+xszFiUJTkpdx1Lqtn6m2Q@mail.gmail.com>
-Subject: Re: [PATCH][v2] btrfs: introduce rescue=onlyfs
-To:     Graham Cobb <g.btrfs@cobb.uk.net>
-Cc:     David Sterba <dsterba@suse.cz>, Josef Bacik <josef@toxicpanda.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>, kernel-team@fb.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200721135533.GL3703@twin.jikos.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:xGFZMvEsT+BLImN2xvti2AOz05otyfs1v+zy9RtjVNBXVosi6Lc
+ R1C3jmEjWH3ElfVS5HtWl3LidoSEM3jC8BgVHzHhjXQ0Jnrlgu/xjewq6v7RVAjNfVVrltl
+ oYwbgtqSeAAkOYe1/oSQ/bQBtlL1Ky82hUpDkw7vOP/Zobf5/ITZSO7TLsQA9WEJb60lVq3
+ CDNv/ufFBCmh9/hjWl8ag==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:VPTgejeGmZQ=:qknFoi9WfKuxcOp4lVBhs1
+ ymnCcAB/VnY0XxyrIxfh+gcfbjl247LQ5i6aNMs2lGuFFQKGo+D7woNxbN84VGLiBf0BT0GD9
+ Za2S1MFFTh0cuCjY3hhdfSiIJrwuAgVYe8qeBHqRgwroQwMXx/AEtBH1EmY6wyT7cQ1VNwC8A
+ ZXvhMjr3Dtpy2NCdzWS9p4IzbcgCgkxYPsdd85WPZgBZ+8FemgmK3T2mm+PZ37f2rCCUZBM7Z
+ elyAdMUAI688cTkaEdoLh4/LUlNlW/hvw836yF7igeWKTFEGYjP0waO+g77vrWucUXvqJFiTf
+ o8pxW0Sm9kPX40c1Q80mbw2+poCyKahchn8CuvRfBXJZNUpvR/uxZwMk4LWv6olriTZt5rPBv
+ hF0fuCzw8/A6KWDKmYFJM+Fionxajl0TGC87imBvmf7bdghitZtSYGSvH7C2mprekIbVtFESU
+ HXfII82kNH7DL7M5seu845LAxY/uTuYWcCkUVgh8NmmpUnVljmD5QiCiGnKKsDfy19XRgMHXM
+ pfj6R3sSqZqCKcCZSyiFckEij0JENSIKeLq9BSn48dN0Ne8hivc1eO1tZ9W6im+1PQO7faMwV
+ dUd035Uh3aE97Oq3pf1k3YXgZYtvnwj+NbQWHmT3cTpYGnW7kijwK8KiUlldX/Us8qACXO4py
+ lc21Fv/H2ypHd3Vu08MUsIwpsLuFyn0L4F3a9VCve0FRMet/PBfQTrQkjgwekXAqBlTQd6lJ4
+ Ugj7O8GlJ9sJQ4o2F5MmX/TY7h29OVHYZHhiy6r7DcFfOGiX2yVNfPGfX+kpNxHHt9HlYhFe/
+ k2Qv9LNHzEFFmTO2XnJudwRNcU/XVFRgcbRYoAg2Qf0eIuapzBvTFIHTCzJpR//iv7sKCTCjE
+ 6xyh23XUQjdNNrgPXmfyhMYSrtC97CtfFQFPNhEolgD9/Rw6vadRVME9HBkmP6jEzRmnDcq/b
+ 3J4YJcDPVnHzrZrJjM9SEMvlFS6zwPupz8x9ON08hKx43jhVQVE7dqSPnEMFo9iva5RdMXZHz
+ I2gpXjDAPBU1dy/e5TjNTA+az9ItbtPvLingNrVECSRQ09LIfSzfToHF+vbyVnkwsbB8mqB2L
+ YMKGwL9knhnDcBDezvdJcZCLm8NzKP864FjrJz9OtQS79Q20rMOra6IX9A/luHjohaSkFqNnS
+ VK1Xu8PrX4cr+Zd7c2a0L0ei3Q6uZObSidDzVTdkI15LGY3FiRKjFtbmZcfOM+zTZBKlK2h6v
+ 6IL0T2cYRXjn/7K7U8XbMd7aorMx5OxpJ2N40HQ==
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Jul 21, 2020 at 11:35 AM Graham Cobb <g.btrfs@cobb.uk.net> wrote:
+
+
+On 2020/7/21 =E4=B8=8B=E5=8D=889:55, David Sterba wrote:
+> On Tue, Jul 21, 2020 at 06:29:31PM +0800, Qu Wenruo wrote:
+>> On 2020/7/21 =E4=B8=8B=E5=8D=885:58, David Sterba wrote:
+>>> On Tue, Jul 21, 2020 at 07:51:00AM +0800, Qu Wenruo wrote:
+>>>>
+>>>>
+>>>> On 2020/7/21 =E4=B8=8A=E5=8D=8812:09, David Sterba wrote:
+>>>>> On Mon, Jul 20, 2020 at 08:51:08PM +0800, Qu Wenruo wrote:
+>>>>>> --- a/convert/source-ext2.c
+>>>>>> +++ b/convert/source-ext2.c
+>>>>>> @@ -87,7 +87,8 @@ static int ext2_open_fs(struct btrfs_convert_cont=
+ext *cctx, const char *name)
+>>>>>>  	cctx->fs_data =3D ext2_fs;
+>>>>>>  	cctx->blocksize =3D ext2_fs->blocksize;
+>>>>>>  	cctx->block_count =3D ext2_fs->super->s_blocks_count;
+>>>>>> -	cctx->total_bytes =3D ext2_fs->blocksize * ext2_fs->super->s_bloc=
+ks_count;
+>>>>>> +	cctx->total_bytes =3D (u64)ext2_fs->blocksize *
+>>>>>> +			    (u64)ext2_fs->super->s_blocks_count;
+>>>>>
+>>>>> Do you need to cast both? Once one of the types is wide enough for t=
+he
+>>>>> result, there should be no loss.
+>>>>>
+>>>> I just want to be extra safe.
+>>>
+>>> Typecasts in code raise questions why are they needed, 'to be extra'
+>>> safe is not a good reason. One typecast in multiplication/shifts is a
+>>> common pattern to widen the result but two look more like lack of
+>>> understanding of the integer promotion rules.
+>>
+>> My point here is, I don't want the reviewers or new contributors to
+>> bother about the promotion rules at all.
 >
-> On 21/07/2020 18:16, David Sterba wrote:
-> > On Tue, Jul 21, 2020 at 04:56:55PM +0100, Graham Cobb wrote:
-> >> If it means "only filesystem" that doesn't make sense to me - the whole
-> >> thing is the filesystem. I guess "only data" might be more meaningful
-> >> but if the aim is to turn on as much recovery as possible to help the
-> >> user to save their data then why not just say so?
-> >>
-> >> Something like "rescue=max", "rescue=recoverymode", "rescue=dataonly",
-> >> "rescue=ignoreallerrors" or "rescue=emergency" might be more meaningful.
-> >
-> > From user perspective the option should have a high level semantics,
-> > like you suggest above. We should add individual options to try to work
-> > around specific damage if not just for testing purposes, having more
-> > flexibility is a good thing.
+> Ouch, I hope you don't mean that contributors should ignore the trickier
+> parts of C language. Especially reviewers _have_ to bother about all
+> sorts of subtle behaviour.
 >
-> I would also prefer not to have checksum checking disabled by this "try
-> harder" option. I would imagine turning on "ignore whatever checks you
-> can to get me my data back mode", retrieving all the readable data with
-> valid checksums and getting errors for things which cannot be verified.
-> Then I would make a decision as to whether to enable another option to
-> even provide files which the filesystem cannot guarantee have not been
-> corrupted because it can't check checksums. Even if that is all the
-> files (because the checksum tree is destroyed) I should have to make an
-> explicit acknowledgement that I want that.
+>> They only need to know that using blocksize and blocks_count directly t=
+o
+>> do multiply would lead to overflow.
+>>
+>> Other details like whether the multiply follows the highest factor or
+>> the left operator or the right operator, shouldn't be the point and we
+>> don't really need to bother.
+>
+> ... and introduce bugs?
+>
+>> Thus casting both would definitely be right, without the need to refer
+>> to the complex rule book, thus save the reviewer several minutes.
+>
+> The opposite, if you send me code that's not following known schemes or
+> idiomatic schemes I'll be highly suspicious and looking for the reasons
+> why it's that way and making sure it's correct costs way more time.
+>
+OK, then would you please remove one casting at merge time, or do I need
+to resend?
 
-It would be nice if this rescue=all mount option, continues to spit
-out noisy and scary warnings about the problems encountered. Including
-corrupt files with path to the corrupt file. Just avoid face planting.
-I assume rescue=all implies ro (possibly also nologreplay).
-
-
--- 
-Chris Murphy
+Thanks,
+Qu
