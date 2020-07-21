@@ -2,148 +2,169 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76C7122735B
-	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Jul 2020 01:56:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF59222743C
+	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Jul 2020 02:57:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727044AbgGTX4M (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 20 Jul 2020 19:56:12 -0400
-Received: from mout.gmx.net ([212.227.17.22]:42205 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726907AbgGTX4L (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 20 Jul 2020 19:56:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1595289369;
-        bh=GYLKSCb7m18VeEGy0fkkOgJDiil5jd5JD8iAdxM5/5Y=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=HJr9VHSK6+ivQg4YsTzXzt4kM6i4HEhOG8M/iIcXRUQyHSoDm4SITiD+ItAfxhWrv
-         38griljptgBisdJw9xsBNZ62aGBW/MeK2XuNuOC8TlyydtbAxRibg6xlSCKeeFhMBY
-         fyeFhFv9qUlHTGyCuv0J15r/oOC6IoadcGYnQwjc=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1N33Ib-1kynUY2j5J-013R65; Tue, 21
- Jul 2020 01:51:04 +0200
-Subject: Re: [PATCH 1/2] btrfs-progs: convert: Prevent bit overflow for
- cctx->total_bytes
-To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org, Christian Zangl <coralllama@gmail.com>
-References: <20200720125109.93970-1-wqu@suse.com>
- <20200720160945.GH3703@twin.jikos.cz>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
- PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
- 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
- D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
- efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
- ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
- BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
- 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
- 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
- EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
- 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
- ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
- oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
- fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
- 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
- ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
- oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <cf6386e1-a13b-e7cf-a365-db33a3afe2a9@gmx.com>
-Date:   Tue, 21 Jul 2020 07:51:00 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1728258AbgGUA51 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-btrfs@lfdr.de>); Mon, 20 Jul 2020 20:57:27 -0400
+Received: from james.kirk.hungrycats.org ([174.142.39.145]:36232 "EHLO
+        james.kirk.hungrycats.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727048AbgGUA5Z (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 20 Jul 2020 20:57:25 -0400
+Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
+        id 500A5770CD4; Mon, 20 Jul 2020 20:57:24 -0400 (EDT)
+Date:   Mon, 20 Jul 2020 20:57:24 -0400
+From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+To:     Edmund Urbani <edmund.urbani@liland.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: Troubles removing missing device from RAID 6
+Message-ID: <20200721005724.GK10769@hungrycats.org>
+References: <23712d34-1787-058d-b49a-6b3e78969920@liland.com>
 MIME-Version: 1.0
-In-Reply-To: <20200720160945.GH3703@twin.jikos.cz>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="D6lnZocBXCSiZrlKtvw59PrMopXFoar8U"
-X-Provags-ID: V03:K1:IjaWQZ6/N1rw8CGWiSmqvJ53ggNx4e752zLjlsynOMivc0Gy90z
- llTU7g6c8CTjhpz0dL/8juuIMxvkxjHnGSE80foUjzrnKjICdGn/EaX84zzoJSvTC6Ejxi0
- rAeK2mW/rQeQsk+wAlvAbQDqnOw9YyzzvD4/73NFX9hMvC7SGQK1JiZaqJfACg887FHQINu
- fIm/6mLIi5DN6iouTf98g==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:KVnB6RGHmBM=:8ZP08MWjjZPBw8gSloNjky
- xWrXGfPb+cldLm3ZMWQtp9iujT4zYvd/GOgmLe0rLGJL5YVIy7MJ0GDh4360P/cPmG5Ht5zpH
- Ddbzcxtz8+qIR5q+TdBqFTCRHEZ3AjuVQsM2gJVb+tXhAadzNZTaG4XCzIT2fxEHrrLb4sduN
- 1P+Z8HfjyteA20Jg0/7dLkWhAyUaHDrZQsC03lFc5jCeY2CIRctiX1n11WWAWqjte+ZMWcaa6
- lMjvrW5HBTid+zRLiQdtggtsmjPc/HW+490Ky54/CjwwlD0OWppeBGvomQjVSQOX5xUoH0Zdx
- LSBvSLbPDD7tYnfDlvKNrAP8NCNsTt0Gx7t+BOE0RaTG8f9t0vk7J3H4PnQGqDVhId7d/mTIK
- nGMGVJTK/ny7KmBVW1K5VQzEXGvFMOS1Pi7fLpqQXAm4JlnRzT3L/NV+lwwiF4f1bM0ICQYUq
- Zg76LlGEoO9YnWuLZYZj1iRI7cOdlcXY26xSzmSNiwqnWuvyurxwSODiK5O9mYAhGLvn/im5g
- rbNpcEN/XzgV3JMYfKLysYTeHFhX1WOTzlsWOgX786xoIN56K1evKqmJCvKsYomDJtnmQI/Kr
- HBbiafghGFmTP3TOh65/aZFadAy0mywTNUNqdpp8r2K/1iuwq/bmIOqyOm+aVLDY6ZZWQRkxc
- b4o4hcT8QR76h581oh7MhuEC2hazIThFFN0rRpixccoiZe4BwfPSDKE/j7W2lUgo2wxGcj3Gy
- vRi7L0zMNX5I1w9AeBg/XSAsYw9n8vf2JUAWYTgnd6lADYw9LxWdoFK1PjWY/iEd34WuFOhF9
- NbTVVT5JykDawJiWVjsgaHXxB7efy/KrxdLmjjMsVk+9SsjqLtDCuUKeIQwFGWZ4ZKxIXRE8Z
- kt5OCYrmuhpZw0Fn8SUxGtXGt55Qmi/2VhzuqbDFXT+AvGpU262Hqszn+e4uhTk9pbquoZAQD
- VyIw+hl2ypHokYYBdSRvDegy35K3XI19skoxzG+J+FYWbRsjDPXDSgkizpz6lISA6r/LQ8qfL
- yXIebvUL6D4OrParm50Eh9aC7ofsVIzMbJgRxsoNDYwaD8NWQPHjtimXoIt4AoIAo+6ZAu6ls
- am8Pqd4WMdaaW8xypP4WSvRTniLZ73lV4MXpgEjRosTi55Gxy+wS0ZJDG0aGelq5I9WfYDMu/
- LiOSHvH4M67XAnGOH7lLmZtWb/5mMi4j5wULaWDUEZX3Ig/OGg3Hz2v1Wo8LD24mAy23/hpT4
- 4Y13G5Wo03okY3Mzw2gB4rR2RUZ/PRFJmUCdHvg==
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <23712d34-1787-058d-b49a-6b3e78969920@liland.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---D6lnZocBXCSiZrlKtvw59PrMopXFoar8U
-Content-Type: multipart/mixed; boundary="gn5tHaFuW09Tm4yRI6LIfr5f55kzh8pGN"
+On Sun, Jul 19, 2020 at 04:13:29PM +0200, Edmund Urbani wrote:
+> Hello everyone,
+> 
+> after having RMA'd a faulty HDD from my RAID6 and having received the
+> replacement, I added the new disk to the filesystem. At that point the
+> missing device was still listed and I went ahead to remove it like so:
+> 
+> btrfs device delete missing /mnt/shared/
+> 
+> After a few hours that command aborted with an I/O error and the logs
+> revealed this problem:
+> 
+> [284564.279190] BTRFS info (device sda1): relocating block group
+> 51490279391232 flags data|raid6
+> [284572.319649] btrfs_print_data_csum_error: 75 callbacks suppressed
+> [284572.319656] BTRFS warning (device sda1): csum failed root -9 ino 433 off
+> 386727936 csum 0x791e44cc expected csum 0xbd1725d0 mirror 2
+> [284572.320165] BTRFS warning (device sda1): csum failed root -9 ino 433 off
+> 386732032 csum 0xec5f6097 expected csum 0x9114b5fa mirror 2
+> [284572.320211] BTRFS warning (device sda1): csum failed root -9 ino 433 off
+> 386736128 csum 0x4d2fa4b9 expected csum 0xf8a923f9 mirror 2
+> [284572.320225] BTRFS warning (device sda1): csum failed root -9 ino 433 off
+> 386740224 csum 0xcad08362 expected csum 0xa9361ed3 mirror 2
+> [284572.320266] BTRFS warning (device sda1): csum failed root -9 ino 433 off
+> 386744320 csum 0x469ac192 expected csum 0xb1e94692 mirror 2
+> [284572.320279] BTRFS warning (device sda1): csum failed root -9 ino 433 off
+> 386748416 csum 0x69759c1f expected csum 0xb3b9aa86 mirror 2
+> [284572.320290] BTRFS warning (device sda1): csum failed root -9 ino 433 off
+> 386752512 csum 0xd3a7c5d5 expected csum 0xd351862f mirror 2
+> [284572.320465] BTRFS warning (device sda1): csum failed root -9 ino 433 off
+> 386756608 csum 0x1264af83 expected csum 0x3a2c0ed5 mirror 2
+> [284572.320480] BTRFS warning (device sda1): csum failed root -9 ino 433 off
+> 386760704 csum 0x260a13ef expected csum 0xb3b4aec0 mirror 2
+> [284572.320492] BTRFS warning (device sda1): csum failed root -9 ino 433 off
+> 386764800 csum 0x6b615cd9 expected csum 0x99eaf560 mirror 2
+> 
+> I ran a long SMART self-test on the drives in the array which found no
+> problem. 
 
---gn5tHaFuW09Tm4yRI6LIfr5f55kzh8pGN
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+You are hitting a few of the known bugs in btrfs raid5/6.  See
 
+	https://lore.kernel.org/linux-btrfs/20200627032414.GX10769@hungrycats.org/
 
+TL;DR don't expect anything to work right until 'btrfs replace' is done.
 
-On 2020/7/21 =E4=B8=8A=E5=8D=8812:09, David Sterba wrote:
-> On Mon, Jul 20, 2020 at 08:51:08PM +0800, Qu Wenruo wrote:
->> --- a/convert/source-ext2.c
->> +++ b/convert/source-ext2.c
->> @@ -87,7 +87,8 @@ static int ext2_open_fs(struct btrfs_convert_context=
- *cctx, const char *name)
->>  	cctx->fs_data =3D ext2_fs;
->>  	cctx->blocksize =3D ext2_fs->blocksize;
->>  	cctx->block_count =3D ext2_fs->super->s_blocks_count;
->> -	cctx->total_bytes =3D ext2_fs->blocksize * ext2_fs->super->s_blocks_=
-count;
->> +	cctx->total_bytes =3D (u64)ext2_fs->blocksize *
->> +			    (u64)ext2_fs->super->s_blocks_count;
->=20
-> Do you need to cast both? Once one of the types is wide enough for the
-> result, there should be no loss.
->=20
-I just want to be extra safe.
+> Currently I am running scrub to attempt and fix the block group.
 
-Feel free to reduce one.
+Scrub can only correct errors that exist on the disk, so scrub has no
+effect here.  Wait until 'btrfs replace' is done, then scrub the other
+disks in the array.
 
-Thanks,
-Qu
+btrfs raid6 has broken read code for degraded mode.  The errors above
+all originate from trees inside the kernel (root -9 isn't a normal
+on-disk root).  Those errors don't exist on disk.  The errors are
+triggered repeatably by on-disk structures, so the errors will _appear_
+to be persistent (i.e.  if you try to balance the same block group twice
+it will usually fail at the same spot); however, the on-disk structures
+are valid, and should not produce an error if the kernel code was correct,
+or if the missing disk is replaced.
 
+> scrub status:
+> 
+> UUID:             9c3c3f8d-a601-4bd3-8871-d068dd500a15
+> 
+> Scrub started:    Fri Jul 17 07:52:06 2020
+> Status:           running
+> Duration:         14:47:07
+> Time left:        202:05:46
+> ETA:              Tue Jul 28 00:07:36 2020
+> Total to scrub:   16.80TiB
+> Bytes scrubbed:   1.14TiB
+> Rate:             22.56MiB/s
+> Error summary:    read=295132162
+>   Corrected:      0
+>   Uncorrectable:  295132162
+>   Unverified:     0
+> 
+> device stats:
+> 
+> Label: none  uuid: 9c3c3f8d-a601-4bd3-8871-d068dd500a15
+>         Total devices 5 FS bytes used 16.80TiB
+>         devid    3 size 9.09TiB used 8.76TiB path /dev/sda1
+>         devid    4 size 9.09TiB used 8.76TiB path /dev/sdb1
+>         devid    5 size 9.09TiB used 8.74TiB path /dev/sdd1
+>         devid    6 size 9.09TiB used 498.53GiB path /dev/sdc1
+>         *** Some devices missing
+> 
+> Is there anything else I can do to try and specifically fix that one block
+> group rather than scrubbing the entire filesytem? Also, is it "normal" that
+> scrub stats would show a huge number of "uncorrectable" errors when a device
+> is missing or should I be worried about that?
 
---gn5tHaFuW09Tm4yRI6LIfr5f55kzh8pGN--
+There might be a few dozen KB of uncorrectable data after the 'btrfs
+replace' is done, depending on how messy the original disk failure was.
 
---D6lnZocBXCSiZrlKtvw59PrMopXFoar8U
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+You may want to zero the dev stats once the btrfs replace is done,
+as the stats collected during degraded mode will be mostly garbage.
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl8WLeQACgkQwj2R86El
-/qj4DQgAnBvxH/+qxQYGJvxRBHoEZynf2xW2+ChpLd6c+yoRn12WYMHSGWn6CRwl
-0N74+OiLRvM9Y+747UUlIYxozf3dv1kfDPOoE1e13FsZUg97NC04of/6bDKx3mtH
-UK5Dc4PYyX2gE0nw6+a6meB6M4+x5r9qFiiCM3W3uhgAAJHS+/IVNQuU+lwfYQBk
-wIeldSTY3rodK/ATs1odunUupvd/guMVxoZyv5c41YNJpfp3RfmDR/y0R9qdVZPx
-6/vxQHXKDTHhP0kAz1xxL93WXynkrFc9e3sMKxc6Q+gSpeaJHZF458hqZMlG17ZY
-/Ew25odbRSUb8xe39ISpLLJJtgMY/A==
-=zPYN
------END PGP SIGNATURE-----
-
---D6lnZocBXCSiZrlKtvw59PrMopXFoar8U--
+> Kind regards,
+>  Edmund
+> 
+> 
+> -- 
+> Auch Liland ist in der Krise für Sie da! #WirBleibenZuhause und liefern
+> Ihnen trotzdem weiterhin hohe Qualität und besten Service. 
+> Unser Support <mailto:support@liland.com> steht weiterhin wie gewohnt zur
+> Verfügung.
+> Ihr Team LILAND
+> *
+> *
+> *Liland IT GmbH*
+> 
+> 
+> Ferlach ● Wien ● München
+> Tel: +43 463 220111
+> Tel: +49 89 458 15 940
+> office@Liland.com
+> https://Liland.com <https://Liland.com> 
+> <https://twitter.com/lilandit>  <https://www.instagram.com/liland_com/> 
+> <https://www.facebook.com/LilandIT/>
+> 
+> Copyright © 2020 Liland IT GmbH 
+> 
+> 
+> Diese Mail enthaelt vertrauliche und/oder rechtlich geschuetzte 
+> Informationen. 
+> Wenn Sie nicht der richtige Adressat sind oder diese Email
+> irrtuemlich erhalten haben, informieren Sie bitte sofort den Absender und
+> vernichten Sie diese Mail. Das unerlaubte Kopieren sowie die unbefugte
+> Weitergabe dieser Mail ist nicht gestattet. 
+> 
+> This email may contain confidential and/or privileged information. 
+> If you are not the intended recipient (or have received this email in error)
+> please notify the sender immediately and destroy this email.
+> Any unauthorised copying, disclosure or distribution of the material in
+> this email is strictly forbidden.
