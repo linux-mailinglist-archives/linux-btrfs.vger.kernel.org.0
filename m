@@ -2,58 +2,60 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F80A2283AC
+	by mail.lfdr.de (Postfix) with ESMTP id ECBA12283AD
 	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Jul 2020 17:24:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729685AbgGUPYc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 21 Jul 2020 11:24:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34704 "EHLO
+        id S1728683AbgGUPYe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 21 Jul 2020 11:24:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728320AbgGUPYc (ORCPT
+        with ESMTP id S1728127AbgGUPYd (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 21 Jul 2020 11:24:32 -0400
-Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDE09C061794
-        for <linux-btrfs@vger.kernel.org>; Tue, 21 Jul 2020 08:24:31 -0700 (PDT)
-Received: by mail-qv1-xf41.google.com with SMTP id dm12so9494714qvb.9
-        for <linux-btrfs@vger.kernel.org>; Tue, 21 Jul 2020 08:24:31 -0700 (PDT)
+        Tue, 21 Jul 2020 11:24:33 -0400
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCAC8C061794
+        for <linux-btrfs@vger.kernel.org>; Tue, 21 Jul 2020 08:24:33 -0700 (PDT)
+Received: by mail-qk1-x742.google.com with SMTP id z15so12911251qki.10
+        for <linux-btrfs@vger.kernel.org>; Tue, 21 Jul 2020 08:24:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:subject:date:message-id:mime-version
+        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=68a6P7MrdkpPnrwZyjGP4+3gFIMnEa68LKti40qJids=;
-        b=rdHo9OBbNPXtzqqsGpnRRpPcKcEJbzq38pFaMftGwRQz808RCXL9qQ+uGTg6r2A/7N
-         ssbGY1b/gPJctNcliV9MekiQPHsUBgkbHM/G9Eto/13cOll8iaVjhins3/LZhWnC0Rt4
-         Kzag74xj66JxrhNRlkCTKBmWcBK49xd3ja0mCfcAZahBdQrUouriw+/4+uXq2bangt0w
-         j40NkBZT64e6cWAeGVGF010l4V09BF6DR3W/aR8bYuL1u8kpcrg9dqzHPlOmWd/217lP
-         8yHmk9Dc0g+sHcavZIWPkOYRpZBOSKAc2fkB2dLvbBR4JB79l3F/1kk8d0QuBFwJledM
-         FkCQ==
+        bh=ZTm8Mzss8ow3QPIAmd46nneSN+UHFHRrFFkZStM3pQs=;
+        b=Rm4K9LbPM6aTjDQ8qLXmc1E39qrfxAuZRIIyKNr3YgC6ndZFPyccfhBL+FnFO2WdW4
+         65/eNp7T4i3Y9pl59PJsoEgZLPDN9QYVSSTHJyiQdtZlCDP+yTJOWPGUhNqX84YuITG3
+         MhXQO5lkl3p8/MbYigGQeqakBMbofhS0eWjgccgi1yTa6+esFF2CoO1cXmxq/gskfYfW
+         pvnXcJ7aKlcuonPVbfwn+2S4nN0VxP373riGG5PoFkZ7DMuZi8aNr2VX/1FD7sQM+30l
+         IY78FTBc1jwahg1kwF5R3g+CaUJhWvSaddJq/i8J7nasONJWeor1SpTi8sF3UFheUss4
+         zt+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=68a6P7MrdkpPnrwZyjGP4+3gFIMnEa68LKti40qJids=;
-        b=XsRcwEBIvQUAptxbPiOUIgb13JNAU7x7tMsLza5IZ32FKeuLzhWmiXl2xAcqV6Dfnc
-         HdIBaEX7/w2ki3fPEPd4oauC8cEqKOc5QrMkrZfaxiGyXxiyP4l5LqUhmqGanACZ5x+4
-         eEnvxboeltP96vn+dVQdybh410n7rm59qrCijc1Z+dSJ8iQZlDKP2nqxmuSKE9welrhu
-         2pJOTgYTELc91WiGGv8hPW1eI9xr1BJYsOaj4Wf+xDh+dopH96Mzx5Cp3F2wEg3bzdj+
-         vz8DSIAIL7NneGK1kmqNQ5cV0Z0niPyjhmMTVBcCjwtsNf3wl9SMh/X2Ytc034bPTri0
-         PK+g==
-X-Gm-Message-State: AOAM533hEWz33tRVejIbei+fYVCsTxt6N6wuESprkDvkjSKzNEwxvCwV
-        bpDO2UFtNCtdwxL9JIfH+VRdOu/HNwByqw==
-X-Google-Smtp-Source: ABdhPJwNck35N0G4mxkTCXFVBqT1/sIhHawnyERQmSsGO12zhScituSfY7+ThMRQIqZk5aq8V0BcoQ==
-X-Received: by 2002:a0c:c703:: with SMTP id w3mr27554085qvi.102.1595345070893;
-        Tue, 21 Jul 2020 08:24:30 -0700 (PDT)
+        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=ZTm8Mzss8ow3QPIAmd46nneSN+UHFHRrFFkZStM3pQs=;
+        b=TCml322y8z7jRQfU0aFS/1ENwZWZeDe5kYqAskHLTLM9TbFQd8qzUZxmsDPbnZCS4f
+         hNIIzFnvp/KOJDRA1Dm5eb4rJDCFF+Ros35/AxvGKWvynkYKjlDCb0VPkUTRAXWZ4Di7
+         pgN3C0+zJgdqihuNZ3LrYnsArVXtPTvdbPS/Tbrl2rGboq841Qkiop565twpOoKpQ/Hy
+         J0gkbxhu4DY5N8sSn+5q+KHoqqYDKIzWDPu1N+NHDgdx8i/h6MmAh34xRzvjV1P0y8Xa
+         AeQ0w//E6ihTsh9ZAz9oQVIrKlmSrCCeVlKYHy6yU1ZKXRL+IDmOzqdYBnVAv9vu7aZr
+         tFgw==
+X-Gm-Message-State: AOAM533aBzCknDLaSMxLAeCGUTv2BoHRuFdNEosBsWaPmSZz3+DhjzSU
+        T/JzyyPIqDCz0G8Z6X1Zpwv+DzG00rrxGQ==
+X-Google-Smtp-Source: ABdhPJx40/cq43xs9JiyFjaJQdpGnmG2wC2EsCSe5L7fSn6TGCX8OBeaSKXIA8CtXVEVzx+yjlVIRw==
+X-Received: by 2002:a37:b342:: with SMTP id c63mr28083801qkf.436.1595345072641;
+        Tue, 21 Jul 2020 08:24:32 -0700 (PDT)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id u21sm2613892qkk.1.2020.07.21.08.24.29
+        by smtp.gmail.com with ESMTPSA id y143sm2657587qka.22.2020.07.21.08.24.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Jul 2020 08:24:30 -0700 (PDT)
+        Tue, 21 Jul 2020 08:24:32 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 1/2] btrfs: don't WARN_ON() if we abort a transaction with -EROFS
-Date:   Tue, 21 Jul 2020 11:24:27 -0400
-Message-Id: <20200721152428.9934-1-josef@toxicpanda.com>
+Subject: [PATCH 2/2] btrfs: document special case error codes for fs errors
+Date:   Tue, 21 Jul 2020 11:24:28 -0400
+Message-Id: <20200721152428.9934-2-josef@toxicpanda.com>
 X-Mailer: git-send-email 2.24.1
+In-Reply-To: <20200721152428.9934-1-josef@toxicpanda.com>
+References: <20200721152428.9934-1-josef@toxicpanda.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
@@ -61,31 +63,41 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-If we got some sort of corruption via a read and call
-btrfs_handle_fs_error() we'll set BTRFS_FS_STATE_ERROR on the fs and
-complain.  If a subsequent trans handle trips over this it'll get -EROFS
-and then abort.  However at that point we're not aborting for the
-original reason, we're aborting because we've been flipped read only.
-We do not need to WARN_ON() here.
+We've had some discussions about what to do in certain scenarios for
+error codes, specifically -EUCLEAN and -EROFS.  Document these near the
+error handling code so its clear what their intentions are.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/ctree.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/btrfs/super.c | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
-diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index b70c2024296f..f8ae4849f235 100644
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -3279,7 +3279,7 @@ do {								\
- 	/* Report first abort since mount */			\
- 	if (!test_and_set_bit(BTRFS_FS_STATE_TRANS_ABORTED,	\
- 			&((trans)->fs_info->fs_state))) {	\
--		if ((errno) != -EIO) {				\
-+		if ((errno) != -EIO && (errno) != -EROFS) {	\
- 			WARN(1, KERN_DEBUG				\
- 			"BTRFS: Transaction aborted (error %d)\n",	\
- 			(errno));					\
+diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
+index 58f890f73650..688d1ab95b2b 100644
+--- a/fs/btrfs/super.c
++++ b/fs/btrfs/super.c
+@@ -67,6 +67,21 @@ static struct file_system_type btrfs_root_fs_type;
+ 
+ static int btrfs_remount(struct super_block *sb, int *flags, char *data);
+ 
++/*
++ * Generally the error codes correspond to their respective errors, but there's
++ * a few special cases.
++ *
++ * -EUCLEAN: Any sort of corruption that we encounter.  The tree-checker for
++ *  instance will return -EUCLEAN if any of the blocks are corrupted in a way
++ *  that is problematic.  We want to reserve -EUCLEAN for these sort of
++ *  corruptions.
++ *
++ * -EROFS: If we check BTRFS_FS_STATE_ERROR and fail out with a return error, we
++ *  need to use -EROFS for this case.  We will have no idea of the original
++ *  failure, that will have been reported at the time we tripped over the error.
++ *  Each subsequent error that doesn't have any context of the original error
++ *  should use -EROFS when handling BTRFS_FS_STATE_ERROR.
++ */
+ const char * __attribute_const__ btrfs_decode_error(int errno)
+ {
+ 	char *errstr = "unknown";
 -- 
 2.24.1
 
