@@ -2,102 +2,104 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECBA12283AD
-	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Jul 2020 17:24:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2168E2283CE
+	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Jul 2020 17:30:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728683AbgGUPYe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 21 Jul 2020 11:24:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34712 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728127AbgGUPYd (ORCPT
+        id S1728527AbgGUPaM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 21 Jul 2020 11:30:12 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:40168 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726830AbgGUPaM (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 21 Jul 2020 11:24:33 -0400
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCAC8C061794
-        for <linux-btrfs@vger.kernel.org>; Tue, 21 Jul 2020 08:24:33 -0700 (PDT)
-Received: by mail-qk1-x742.google.com with SMTP id z15so12911251qki.10
-        for <linux-btrfs@vger.kernel.org>; Tue, 21 Jul 2020 08:24:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
-         :content-transfer-encoding;
-        bh=ZTm8Mzss8ow3QPIAmd46nneSN+UHFHRrFFkZStM3pQs=;
-        b=Rm4K9LbPM6aTjDQ8qLXmc1E39qrfxAuZRIIyKNr3YgC6ndZFPyccfhBL+FnFO2WdW4
-         65/eNp7T4i3Y9pl59PJsoEgZLPDN9QYVSSTHJyiQdtZlCDP+yTJOWPGUhNqX84YuITG3
-         MhXQO5lkl3p8/MbYigGQeqakBMbofhS0eWjgccgi1yTa6+esFF2CoO1cXmxq/gskfYfW
-         pvnXcJ7aKlcuonPVbfwn+2S4nN0VxP373riGG5PoFkZ7DMuZi8aNr2VX/1FD7sQM+30l
-         IY78FTBc1jwahg1kwF5R3g+CaUJhWvSaddJq/i8J7nasONJWeor1SpTi8sF3UFheUss4
-         zt+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ZTm8Mzss8ow3QPIAmd46nneSN+UHFHRrFFkZStM3pQs=;
-        b=TCml322y8z7jRQfU0aFS/1ENwZWZeDe5kYqAskHLTLM9TbFQd8qzUZxmsDPbnZCS4f
-         hNIIzFnvp/KOJDRA1Dm5eb4rJDCFF+Ros35/AxvGKWvynkYKjlDCb0VPkUTRAXWZ4Di7
-         pgN3C0+zJgdqihuNZ3LrYnsArVXtPTvdbPS/Tbrl2rGboq841Qkiop565twpOoKpQ/Hy
-         J0gkbxhu4DY5N8sSn+5q+KHoqqYDKIzWDPu1N+NHDgdx8i/h6MmAh34xRzvjV1P0y8Xa
-         AeQ0w//E6ihTsh9ZAz9oQVIrKlmSrCCeVlKYHy6yU1ZKXRL+IDmOzqdYBnVAv9vu7aZr
-         tFgw==
-X-Gm-Message-State: AOAM533aBzCknDLaSMxLAeCGUTv2BoHRuFdNEosBsWaPmSZz3+DhjzSU
-        T/JzyyPIqDCz0G8Z6X1Zpwv+DzG00rrxGQ==
-X-Google-Smtp-Source: ABdhPJx40/cq43xs9JiyFjaJQdpGnmG2wC2EsCSe5L7fSn6TGCX8OBeaSKXIA8CtXVEVzx+yjlVIRw==
-X-Received: by 2002:a37:b342:: with SMTP id c63mr28083801qkf.436.1595345072641;
-        Tue, 21 Jul 2020 08:24:32 -0700 (PDT)
-Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id y143sm2657587qka.22.2020.07.21.08.24.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Jul 2020 08:24:32 -0700 (PDT)
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 2/2] btrfs: document special case error codes for fs errors
-Date:   Tue, 21 Jul 2020 11:24:28 -0400
-Message-Id: <20200721152428.9934-2-josef@toxicpanda.com>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200721152428.9934-1-josef@toxicpanda.com>
-References: <20200721152428.9934-1-josef@toxicpanda.com>
+        Tue, 21 Jul 2020 11:30:12 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06LFHUKa161225;
+        Tue, 21 Jul 2020 15:29:59 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=0Di/+LBNYrIXXMbvu11QntF17nf+IJYoGWc+LBb2pmg=;
+ b=iPSG9+Umz/nYx5BTW0gSzz+8mMxfsHpGKGhyVNlQbirZ2Gg91F/+/yN9dorrb5yh4A2g
+ FmIklwjq2cklliAWhg30YUoun8Nn9PSp+Ph/jMojQML7T17XWB74ao14KiXyExCDpFGU
+ M+u+uc8e+c+26KhG2kaG1bwtxr7PfbZMSD3P3RTZoKpisxyoTEpaqFZg8VybrK0fuJHK
+ VXExccYpeAA6f06W8iSHmKN9YlmqV5cWtDq4LR5U9VseAsoC5zhplcJyFIujM3Sd7hdy
+ ZogK5xGO6PYcqsB86jqEIDXS8GQ018CRsRJ8Y3UjcATfZI6UKHSojn9GFiWRj17EH2hp 4Q== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2120.oracle.com with ESMTP id 32bs1mdxg9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 21 Jul 2020 15:29:59 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06LFN2oV044772;
+        Tue, 21 Jul 2020 15:27:59 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3020.oracle.com with ESMTP id 32dyj646hs-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 21 Jul 2020 15:27:58 +0000
+Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 06LFRuxF032038;
+        Tue, 21 Jul 2020 15:27:56 GMT
+Received: from localhost (/67.169.218.210)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 21 Jul 2020 08:27:56 -0700
+Date:   Tue, 21 Jul 2020 08:27:54 -0700
+From:   "Darrick J. Wong" <darrick.wong@oracle.com>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Goldwyn Rodrigues <rgoldwyn@suse.de>,
+        Dave Chinner <david@fromorbit.com>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Naohiro Aota <naohiro.aota@wdc.com>,
+        Johannes Thumshirn <jth@kernel.org>,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        cluster-devel@redhat.com, linux-ext4@vger.kernel.org,
+        linux-xfs@vger.kernel.org,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        linux-man@vger.kernel.org
+Subject: Re: RFC: iomap write invalidation
+Message-ID: <20200721152754.GD7597@magnolia>
+References: <20200713074633.875946-1-hch@lst.de>
+ <20200720215125.bfz7geaftocy4r5l@fiona>
+ <20200721145313.GA9217@lst.de>
+ <20200721150432.GH15516@casper.infradead.org>
+ <20200721150615.GA10330@lst.de>
+ <20200721151437.GI15516@casper.infradead.org>
+ <20200721151616.GA11074@lst.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200721151616.GA11074@lst.de>
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9689 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 adultscore=0 suspectscore=1
+ mlxscore=0 mlxlogscore=999 phishscore=0 bulkscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2007210111
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9689 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 bulkscore=0 adultscore=0
+ lowpriorityscore=0 mlxlogscore=999 malwarescore=0 clxscore=1011
+ spamscore=0 mlxscore=0 impostorscore=0 phishscore=0 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2007210111
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-We've had some discussions about what to do in certain scenarios for
-error codes, specifically -EUCLEAN and -EROFS.  Document these near the
-error handling code so its clear what their intentions are.
+On Tue, Jul 21, 2020 at 05:16:16PM +0200, Christoph Hellwig wrote:
+> On Tue, Jul 21, 2020 at 04:14:37PM +0100, Matthew Wilcox wrote:
+> > On Tue, Jul 21, 2020 at 05:06:15PM +0200, Christoph Hellwig wrote:
+> > > On Tue, Jul 21, 2020 at 04:04:32PM +0100, Matthew Wilcox wrote:
+> > > > I thought you were going to respin this with EREMCHG changed to ENOTBLK?
+> > > 
+> > > Oh, true.  I'll do that ASAP.
+> > 
+> > Michael, could we add this to manpages?
+> 
+> Umm, no.  -ENOTBLK is internal - the file systems will retry using
+> buffered I/O and the error shall never escape to userspace (or even the
+> VFS for that matter).
 
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
----
- fs/btrfs/super.c | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+It's worth dropping a comment somewhere that ENOTBLK is the desired
+"fall back to buffered" errcode, seeing as Dave and I missed that in
+XFS...
 
-diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-index 58f890f73650..688d1ab95b2b 100644
---- a/fs/btrfs/super.c
-+++ b/fs/btrfs/super.c
-@@ -67,6 +67,21 @@ static struct file_system_type btrfs_root_fs_type;
- 
- static int btrfs_remount(struct super_block *sb, int *flags, char *data);
- 
-+/*
-+ * Generally the error codes correspond to their respective errors, but there's
-+ * a few special cases.
-+ *
-+ * -EUCLEAN: Any sort of corruption that we encounter.  The tree-checker for
-+ *  instance will return -EUCLEAN if any of the blocks are corrupted in a way
-+ *  that is problematic.  We want to reserve -EUCLEAN for these sort of
-+ *  corruptions.
-+ *
-+ * -EROFS: If we check BTRFS_FS_STATE_ERROR and fail out with a return error, we
-+ *  need to use -EROFS for this case.  We will have no idea of the original
-+ *  failure, that will have been reported at the time we tripped over the error.
-+ *  Each subsequent error that doesn't have any context of the original error
-+ *  should use -EROFS when handling BTRFS_FS_STATE_ERROR.
-+ */
- const char * __attribute_const__ btrfs_decode_error(int errno)
- {
- 	char *errstr = "unknown";
--- 
-2.24.1
-
+--D
