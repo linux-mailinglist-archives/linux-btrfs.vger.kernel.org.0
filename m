@@ -2,188 +2,113 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0FB522884B
-	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Jul 2020 20:32:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 616852289F2
+	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Jul 2020 22:33:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730091AbgGUScP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 21 Jul 2020 14:32:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35784 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728577AbgGUScJ (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 21 Jul 2020 14:32:09 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D6E2C0619DC;
-        Tue, 21 Jul 2020 11:32:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=g1iU+g80X5NheLUj70Usw4wskv5FEEX9gbzjsPxiIG4=; b=YCrFq48BOZ+ZpLcUDlo3t/YS22
-        VhEtv/+6o60MkrpDfnDvCDmuIgcTTmA3psW4K9+lrJx8V7zgFmwewa5YW7a5s5uHA1ClLqUQiAi7D
-        4de1hqXxmVp6bDFwPv41ymH535PNS/2X7qMjalJyNwk8tZsHgdRY/btyGm/82XKa/7fj73Rr/SKwd
-        4mdb7PBCiAPtzyLbtQiwXwcHixdWI+/XaWgshBP/Yw3OaNe/3W6dx2etX7gQWy9OABLtTvqnwpOx9
-        fyjZUFBtLmEx6f9NNMRipziu+ngzNFBtpeAY+ULvC1stSgszyjhvqo+jsP9jCkktH04Wordcp6JvY
-        E3hctjfw==;
-Received: from [2001:4bb8:18c:2acc:5b1c:6483:bd6d:e406] (helo=localhost)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jxx3c-00062e-DZ; Tue, 21 Jul 2020 18:32:05 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     Dave Chinner <david@fromorbit.com>,
-        Goldwyn Rodrigues <rgoldwyn@suse.de>
-Cc:     Damien Le Moal <damien.lemoal@wdc.com>,
-        Naohiro Aota <naohiro.aota@wdc.com>,
-        Johannes Thumshirn <jth@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        cluster-devel@redhat.com, linux-ext4@vger.kernel.org,
-        linux-xfs@vger.kernel.org, Dave Chinner <dchinner@redhat.com>,
-        Goldwyn Rodrigues <rgoldwyn@suse.com>
-Subject: [PATCH 3/3] iomap: fall back to buffered writes for invalidation failures
-Date:   Tue, 21 Jul 2020 20:31:57 +0200
-Message-Id: <20200721183157.202276-4-hch@lst.de>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200721183157.202276-1-hch@lst.de>
-References: <20200721183157.202276-1-hch@lst.de>
+        id S1729171AbgGUUdp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 21 Jul 2020 16:33:45 -0400
+Received: from smtp-31.italiaonline.it ([213.209.10.31]:48998 "EHLO libero.it"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726658AbgGUUdp (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 21 Jul 2020 16:33:45 -0400
+Received: from venice.bhome ([78.12.13.37])
+        by smtp-31.iol.local with ESMTPA
+        id xyxKjpuK2GrpJxyxKjhpqG; Tue, 21 Jul 2020 22:33:42 +0200
+x-libjamoibt: 1601
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2014;
+        t=1595363622; bh=Pw8bp6fG8a3fG2wUCdALMcb9cY/KsSkSfVV799030l8=;
+        h=From;
+        b=UkY5eDA0ZRNHnoFA/FwMUPGK96+PrgdveDrPzp0ipGLO9B1B1YE15t6P40gnoXg09
+         XkDWTWnaJJA4gJScTWx4c4vpy5e6vObIPodnD6rZ8vx/MnF94Jrw4KJL0UbGoZsbau
+         NBPjNdgLRA5VTnnmVHQEQwDen//n6EWyi28Y8hu77Jv/55oe7rZ175xk/iA9LrFt/z
+         PXz1blVZOOVSc6rCKhxFCexyDbr4sZpj8nmkRYXsSAjDXALPmgvaLL2hMmKx93h6JY
+         wNZnWQb19riocqct5gEtN6gySfWW1TQIwWAgi1DbCwcoIcZCmb4rQbaSWXbyvsiZpR
+         Ptw3GRRn/Q5kA==
+X-CNFS-Analysis: v=2.3 cv=Ief5plia c=1 sm=1 tr=0
+ a=XJAbuhTEZzHZh8gzL9OeLg==:117 a=XJAbuhTEZzHZh8gzL9OeLg==:17 a=VwQbUJbxAAAA:8
+ a=NLn4WoTWf1AU9Q_8NQgA:9 a=AjGcO6oz07-iQ99wixmX:22
+From:   Goffredo Baroncelli <kreijack@libero.it>
+To:     linux-btrfs@vger.kernel.org
+Subject: [RFC] btrfs: strategy to perform a rollback at boot time
+Date:   Tue, 21 Jul 2020 22:33:39 +0200
+Message-Id: <20200721203340.275921-1-kreijack@libero.it>
+X-Mailer: git-send-email 2.28.0.rc1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+X-CMAE-Envelope: MS4wfFnyMiGBkS12e7x70Wbv3tP59gwjBrDi/2JrUb+BY3d3th1wJW5gLaDN6NCZlT7M0Bvaia+uXmvQHPVdBtYtQT8ecglcuqVZz4v9m5tNoWvhvyU0reiA
+ SInoA9BCRr5XLkQKosCeD1TKUnmyq/MEFPwACFRpQnA/ZY3s7v+jH0XW
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Failing to invalid the page cache means data in incoherent, which is
-a very bad state for the system.  Always fall back to buffered I/O
-through the page cache if we can't invalidate mappings.
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Acked-by: Dave Chinner <dchinner@redhat.com>
-Reviewed-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
----
- fs/ext4/file.c       |  2 ++
- fs/gfs2/file.c       |  3 ++-
- fs/iomap/direct-io.c | 16 +++++++++++-----
- fs/iomap/trace.h     |  1 +
- fs/xfs/xfs_file.c    |  4 ++--
- fs/zonefs/super.c    |  7 +++++--
- 6 files changed, 23 insertions(+), 10 deletions(-)
+Hi all,
 
-diff --git a/fs/ext4/file.c b/fs/ext4/file.c
-index 2a01e31a032c4c..129cc1dd6b7952 100644
---- a/fs/ext4/file.c
-+++ b/fs/ext4/file.c
-@@ -544,6 +544,8 @@ static ssize_t ext4_dio_write_iter(struct kiocb *iocb, struct iov_iter *from)
- 		iomap_ops = &ext4_iomap_overwrite_ops;
- 	ret = iomap_dio_rw(iocb, from, iomap_ops, &ext4_dio_write_ops,
- 			   is_sync_kiocb(iocb) || unaligned_io || extend);
-+	if (ret == -ENOTBLK)
-+		ret = 0;
- 
- 	if (extend)
- 		ret = ext4_handle_inode_extension(inode, offset, ret, count);
-diff --git a/fs/gfs2/file.c b/fs/gfs2/file.c
-index bebde537ac8cf2..b085a3bea4f0fd 100644
---- a/fs/gfs2/file.c
-+++ b/fs/gfs2/file.c
-@@ -835,7 +835,8 @@ static ssize_t gfs2_file_direct_write(struct kiocb *iocb, struct iov_iter *from)
- 
- 	ret = iomap_dio_rw(iocb, from, &gfs2_iomap_ops, NULL,
- 			   is_sync_kiocb(iocb));
--
-+	if (ret == -ENOTBLK)
-+		ret = 0;
- out:
- 	gfs2_glock_dq(&gh);
- out_uninit:
-diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
-index 190967e87b69e4..c1aafb2ab99072 100644
---- a/fs/iomap/direct-io.c
-+++ b/fs/iomap/direct-io.c
-@@ -10,6 +10,7 @@
- #include <linux/backing-dev.h>
- #include <linux/uio.h>
- #include <linux/task_io_accounting_ops.h>
-+#include "trace.h"
- 
- #include "../internal.h"
- 
-@@ -401,6 +402,9 @@ iomap_dio_actor(struct inode *inode, loff_t pos, loff_t length,
-  * can be mapped into multiple disjoint IOs and only a subset of the IOs issued
-  * may be pure data writes. In that case, we still need to do a full data sync
-  * completion.
-+ *
-+ * Returns -ENOTBLK In case of a page invalidation invalidation failure for
-+ * writes.  The callers needs to fall back to buffered I/O in this case.
-  */
- ssize_t
- iomap_dio_rw(struct kiocb *iocb, struct iov_iter *iter,
-@@ -478,13 +482,15 @@ iomap_dio_rw(struct kiocb *iocb, struct iov_iter *iter,
- 	if (iov_iter_rw(iter) == WRITE) {
- 		/*
- 		 * Try to invalidate cache pages for the range we are writing.
--		 * If this invalidation fails, tough, the write will still work,
--		 * but racing two incompatible write paths is a pretty crazy
--		 * thing to do, so we don't support it 100%.
-+		 * If this invalidation fails, let the caller fall back to
-+		 * buffered I/O.
- 		 */
- 		if (invalidate_inode_pages2_range(mapping, pos >> PAGE_SHIFT,
--				end >> PAGE_SHIFT))
--			dio_warn_stale_pagecache(iocb->ki_filp);
-+				end >> PAGE_SHIFT)) {
-+			trace_iomap_dio_invalidate_fail(inode, pos, count);
-+			ret = -ENOTBLK;
-+			goto out_free_dio;
-+		}
- 
- 		if (!wait_for_completion && !inode->i_sb->s_dio_done_wq) {
- 			ret = sb_init_dio_done_wq(inode->i_sb);
-diff --git a/fs/iomap/trace.h b/fs/iomap/trace.h
-index 5693a39d52fb63..fdc7ae388476f5 100644
---- a/fs/iomap/trace.h
-+++ b/fs/iomap/trace.h
-@@ -74,6 +74,7 @@ DEFINE_EVENT(iomap_range_class, name,	\
- DEFINE_RANGE_EVENT(iomap_writepage);
- DEFINE_RANGE_EVENT(iomap_releasepage);
- DEFINE_RANGE_EVENT(iomap_invalidatepage);
-+DEFINE_RANGE_EVENT(iomap_dio_invalidate_fail);
- 
- #define IOMAP_TYPE_STRINGS \
- 	{ IOMAP_HOLE,		"HOLE" }, \
-diff --git a/fs/xfs/xfs_file.c b/fs/xfs/xfs_file.c
-index a6ef90457abf97..1b4517fc55f1b9 100644
---- a/fs/xfs/xfs_file.c
-+++ b/fs/xfs/xfs_file.c
-@@ -553,8 +553,8 @@ xfs_file_dio_aio_write(
- 	xfs_iunlock(ip, iolock);
- 
- 	/*
--	 * No fallback to buffered IO on errors for XFS, direct IO will either
--	 * complete fully or fail.
-+	 * No fallback to buffered IO after short writes for XFS, direct I/O
-+	 * will either complete fully or return an error.
- 	 */
- 	ASSERT(ret < 0 || ret == count);
- 	return ret;
-diff --git a/fs/zonefs/super.c b/fs/zonefs/super.c
-index 07bc42d62673ce..d0a04528a7e18e 100644
---- a/fs/zonefs/super.c
-+++ b/fs/zonefs/super.c
-@@ -786,8 +786,11 @@ static ssize_t zonefs_file_write_iter(struct kiocb *iocb, struct iov_iter *from)
- 	if (iocb->ki_pos >= ZONEFS_I(inode)->i_max_size)
- 		return -EFBIG;
- 
--	if (iocb->ki_flags & IOCB_DIRECT)
--		return zonefs_file_dio_write(iocb, from);
-+	if (iocb->ki_flags & IOCB_DIRECT) {
-+		ssize_t ret = zonefs_file_dio_write(iocb, from);
-+		if (ret != -ENOTBLK)
-+			return ret;
-+	}
- 
- 	return zonefs_file_buffered_write(iocb, from);
- }
--- 
-2.27.0
+this is an RFC to discuss a my idea to allow a simple rollback of the
+root filesystem at boot time.
+
+The problem that I want to solve is the following: DPKG is very slow on
+a BTRFS filesystem. The reason is that DPKG massively uses
+sync()/fsync() to guarantee that the filesystem is always coherent even
+in case of sudden shutdown.
+
+The same can be useful even to the RPM Linux based distribution (which however
+suffer less than DPKG).
+
+A way to avoid the sync()/fsync() calls without loosing the DPKG
+guarantees, is:
+1) perform a snapshot of the root filesystem (the rollback one)
+2) upgrade the filesystem without using sync/fsync
+3) final (global) sync
+4) destroy the rollback snapshot
+
+If an unclean shutdown happens between 1) and 4), two subvolume exists:
+the 'main' one and the 'rollback' one (which is the snapshot before the
+update). In this case the system at boot time should mount the "rollback"
+subvolume instead of the "main" one. Otherwise in case of a "clean" boot, the
+"rollback" subvolume doesn't exist and only the "main" one can be
+mounted.
+
+In [1] I discussed a way to implement the steps 1 to 4. (ok, I missed
+the point 3) ).
+
+The part that was missed until now, is an automatic way to mount the rollback
+subvolume at boot time when it is present.
+
+My idea is to allow more 'subvol=' option. In this case BTRFS tries all the
+passed subvolumes until the first succeed. So invoking the kernel as:
+
+  linux root=UUID=xxxx rootflags=subvol=rollback,subvol=main ro 
+
+First, the kernel tries to mount the 'rollback' subvolume. If the rollback
+subvolume doesn't exist then it mounts the 'main' subvolume.
+
+Of course after the mount, the system should perform a cleanup of the
+subvolumes: i.e. if a rollback subvolume exists, the system should destroy
+the "main" one (which contains garbage) and rename "rollback" to "main".
+To be more precise:
+
+	if test -d "rollback"; then
+		if test -d "old"; then
+			btrfs sub del "old"
+		fi
+		if test -d "main"; then
+			mv "main" "old"
+		fi
+		mv "rollback" "main"
+		btrfs sub del "old"
+	fi
+
+Comments are welcome
+BR
+G.Baroncelli
+
+[1] http://lore.kernel.org/linux-btrfs/69396573-b5b3-b349-06f5-f5b74eb9720d@libero.it/
+
+P.S.
+I am guessing if an idea like this can be applied to a file. E.g. a sqlite
+database that instead of reling to sync/fsync, creates a reflink file as
+"rollback" if something goes wrong.... The ordering is preserved. Not the
+duration.
 
