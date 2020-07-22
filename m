@@ -2,249 +2,59 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12B1C22976B
-	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Jul 2020 13:29:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5262229778
+	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Jul 2020 13:33:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728605AbgGVL3E (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 22 Jul 2020 07:29:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40936 "EHLO mail.kernel.org"
+        id S1726711AbgGVLcs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 22 Jul 2020 07:32:48 -0400
+Received: from mx2.suse.de ([195.135.220.15]:49212 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726146AbgGVL3E (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 22 Jul 2020 07:29:04 -0400
-Received: from debian8.Home (bl8-197-74.dsl.telepac.pt [85.241.197.74])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 465B620771
-        for <linux-btrfs@vger.kernel.org>; Wed, 22 Jul 2020 11:29:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595417343;
-        bh=kcyvsQ8bi7pUaE4WfEOw834VpRa6nU3jibd/tIGalsw=;
-        h=From:To:Subject:Date:From;
-        b=SjYlEDFayY91e+nCX+8fi/ccZkXJ6UOgcGGPMe5oXLb8QX+8drFT+gTVNu1N2CEpf
-         Z0jBfZ/UnLHBNjVxq41O+ppg63YHpHa7OW/Zw2R+6idJuKcV7xC1nEp4P9lN00LWOO
-         ta7t7j3h8lz3QZjP4JlgY7mSQALQBll1RkkwZOIs=
-From:   fdmanana@kernel.org
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 3/3] btrfs: do not set the full sync flag on the inode during page release
-Date:   Wed, 22 Jul 2020 12:29:01 +0100
-Message-Id: <20200722112901.15626-1-fdmanana@kernel.org>
-X-Mailer: git-send-email 2.26.2
+        id S1726161AbgGVLcr (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 22 Jul 2020 07:32:47 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 37017AC2D;
+        Wed, 22 Jul 2020 11:32:54 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 0B7FDDA70B; Wed, 22 Jul 2020 13:32:20 +0200 (CEST)
+Date:   Wed, 22 Jul 2020 13:32:20 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org, Christian Zangl <coralllama@gmail.com>
+Subject: Re: [PATCH 1/2] btrfs-progs: convert: Prevent bit overflow for
+ cctx->total_bytes
+Message-ID: <20200722113220.GR3703@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org,
+        Christian Zangl <coralllama@gmail.com>
+References: <20200720125109.93970-1-wqu@suse.com>
+ <20200720160945.GH3703@twin.jikos.cz>
+ <cf6386e1-a13b-e7cf-a365-db33a3afe2a9@gmx.com>
+ <20200721095826.GJ3703@twin.jikos.cz>
+ <0d3eb6c1-f88a-e7cd-7d12-92bce0f2025c@suse.com>
+ <20200721135533.GL3703@twin.jikos.cz>
+ <cccdcdc8-db5a-779d-7b99-346ef14133e5@gmx.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cccdcdc8-db5a-779d-7b99-346ef14133e5@gmx.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
+On Wed, Jul 22, 2020 at 06:58:39AM +0800, Qu Wenruo wrote:
+> >> Thus casting both would definitely be right, without the need to refer
+> >> to the complex rule book, thus save the reviewer several minutes.
+> >
+> > The opposite, if you send me code that's not following known schemes or
+> > idiomatic schemes I'll be highly suspicious and looking for the reasons
+> > why it's that way and making sure it's correct costs way more time.
+> >
+> OK, then would you please remove one casting at merge time, or do I need
+> to resend?
 
-When removing an extent map at try_release_extent_mapping(), called through
-the page release callback (btrfs_releasepage()), we always set the full
-sync flag on the inode, which forces the next fsync to use a slower code
-path.
-
-This hurts performance for workloads that dirty an amount of data that
-exceeds or is very close to the system's RAM memory and do frequent fsync
-operations (like database servers can for example). In particular if there
-are concurrent fsyncs against different files, by falling back to a full
-fsync we do a lot more checksum lookups in the checksums btree, as we do
-it for all the extents created in the current transaction, instead of only
-the new ones since the last fsync. These checksums lookups not only take
-some time but, more importantly, they also cause contention on the
-checksums btree locks due to the concurrency with checksum insertions in
-the btree by ordered extents from other inodes.
-
-We actually don't need to set the full sync flag on the inode, because we
-only remove extent maps that are in the list of modified extents if they
-were created in a past transaction, in which case an fsync skips them as
-it's pointless to log them. So stop setting the full fsync flag on the
-inode whenever we remove an extent map.
-
-This patch is part of a patchset that consists of 3 patches, which have
-the following subjects:
-
-1/3 btrfs: fix race between page release and a fast fsync
-2/3 btrfs: release old extent maps during page release
-3/3 btrfs: do not set the full sync flag on the inode during page release
-
-Performance tests were ran against a branch (misc-next) containing the
-whole patchset. The test exercises a workload where there are multiple
-processes writing to files and fsyncing them (each writing and fsyncing
-its own file), and in total the amount of data dirtied ranges from 2x to
-4x the system's RAM memory (16Gb), so that the page release callback is
-invoked frequently.
-
-The following script, using fio, was used to perform the tests:
-
-  $ cat test-fsync.sh
-  #!/bin/bash
-
-  DEV=/dev/sdk
-  MNT=/mnt/sdk
-  MOUNT_OPTIONS="-o ssd"
-  MKFS_OPTIONS="-d single -m single"
-
-  if [ $# -ne 3 ]; then
-      echo "Use $0 NUM_JOBS FILE_SIZE FSYNC_FREQ"
-      exit 1
-  fi
-
-  NUM_JOBS=$1
-  FILE_SIZE=$2
-  FSYNC_FREQ=$3
-
-  cat <<EOF > /tmp/fio-job.ini
-  [writers]
-  rw=write
-  fsync=$FSYNC_FREQ
-  fallocate=none
-  group_reporting=1
-  direct=0
-  bs=64k
-  ioengine=sync
-  size=$FILE_SIZE
-  directory=$MNT
-  numjobs=$NUM_JOBS
-  thread
-  EOF
-
-  echo "Using config:"
-  echo
-  cat /tmp/fio-job.ini
-  echo
-
-  mkfs.btrfs -f $MKFS_OPTIONS $DEV &> /dev/null
-  mount $MOUNT_OPTIONS $DEV $MNT
-  fio /tmp/fio-job.ini
-  umount $MNT
-
-The tests were performed for different numbers of jobs, file sizes and
-fsync frequency. A qemu VM using kvm was used, with 8 cores (the host has
-12 cores, with cpu governance set to performance mode on all cores), 16Gb
-of ram (the host has 64Gb) and using a NVMe device directly (without an
-intermediary filesystem in the host). While running the tests, the host
-was not used for anything else, to avoid disturbing the tests.
-
-The obtained results were the following, and the last line printed by
-fio is pasted (includes aggregated throughput and test run time).
-
-    *****************************************************
-    ****     1 job, 32Gb file, fsync frequency 1     ****
-    *****************************************************
-
-Before patchset:
-
-WRITE: bw=29.1MiB/s (30.5MB/s), 29.1MiB/s-29.1MiB/s (30.5MB/s-30.5MB/s), io=32.0GiB (34.4GB), run=1127557-1127557msec
-
-After patchset:
-
-WRITE: bw=29.3MiB/s (30.7MB/s), 29.3MiB/s-29.3MiB/s (30.7MB/s-30.7MB/s), io=32.0GiB (34.4GB), run=1119042-1119042msec
-(+0.7% throughput, -0.8% run time)
-
-    *****************************************************
-    ****     2 jobs, 16Gb files, fsync frequency 1   ****
-    *****************************************************
-
-Before patchset:
-
-WRITE: bw=33.5MiB/s (35.1MB/s), 33.5MiB/s-33.5MiB/s (35.1MB/s-35.1MB/s), io=32.0GiB (34.4GB), run=979000-979000msec
-
-After patchset:
-
-WRITE: bw=39.9MiB/s (41.8MB/s), 39.9MiB/s-39.9MiB/s (41.8MB/s-41.8MB/s), io=32.0GiB (34.4GB), run=821283-821283msec
-(+19.1% throughput, -16.1% runtime)
-
-    *****************************************************
-    ****     4 jobs, 8Gb files, fsync frequency 1    ****
-    *****************************************************
-
-Before patchset:
-
-WRITE: bw=52.1MiB/s (54.6MB/s), 52.1MiB/s-52.1MiB/s (54.6MB/s-54.6MB/s), io=32.0GiB (34.4GB), run=629130-629130msec
-
-After patchset:
-
-WRITE: bw=71.8MiB/s (75.3MB/s), 71.8MiB/s-71.8MiB/s (75.3MB/s-75.3MB/s), io=32.0GiB (34.4GB), run=456357-456357msec
-(+37.8% throughput, -27.5% runtime)
-
-    *****************************************************
-    ****     8 jobs, 4Gb files, fsync frequency 1    ****
-    *****************************************************
-
-Before patchset:
-
-WRITE: bw=76.1MiB/s (79.8MB/s), 76.1MiB/s-76.1MiB/s (79.8MB/s-79.8MB/s), io=32.0GiB (34.4GB), run=430708-430708msec
-
-After patchset:
-
-WRITE: bw=133MiB/s (140MB/s), 133MiB/s-133MiB/s (140MB/s-140MB/s), io=32.0GiB (34.4GB), run=245458-245458msec
-(+74.7% throughput, -43.0% run time)
-
-    *****************************************************
-    ****    16 jobs, 2Gb files, fsync frequency 1    ****
-    *****************************************************
-
-Before patchset:
-
-WRITE: bw=74.7MiB/s (78.3MB/s), 74.7MiB/s-74.7MiB/s (78.3MB/s-78.3MB/s), io=32.0GiB (34.4GB), run=438625-438625msec
-
-After patchset:
-
-WRITE: bw=184MiB/s (193MB/s), 184MiB/s-184MiB/s (193MB/s-193MB/s), io=32.0GiB (34.4GB), run=177864-177864msec
-(+146.3% throughput, -59.5% run time)
-
-    *****************************************************
-    ****    32 jobs, 2Gb files, fsync frequency 1    ****
-    *****************************************************
-
-Before patchset:
-
-WRITE: bw=72.6MiB/s (76.1MB/s), 72.6MiB/s-72.6MiB/s (76.1MB/s-76.1MB/s), io=64.0GiB (68.7GB), run=902615-902615msec
-
-After patchset:
-
-WRITE: bw=227MiB/s (238MB/s), 227MiB/s-227MiB/s (238MB/s-238MB/s), io=64.0GiB (68.7GB), run=288936-288936msec
-(+212.7% throughput, -68.0% run time)
-
-    *****************************************************
-    ****    64 jobs, 1Gb files, fsync frequency 1    ****
-    *****************************************************
-
-Before patchset:
-
-WRITE: bw=98.8MiB/s (104MB/s), 98.8MiB/s-98.8MiB/s (104MB/s-104MB/s), io=64.0GiB (68.7GB), run=663126-663126msec
-
-After patchset:
-
-WRITE: bw=294MiB/s (308MB/s), 294MiB/s-294MiB/s (308MB/s-308MB/s), io=64.0GiB (68.7GB), run=222940-222940msec
-(+197.6% throughput, -66.4% run time)
-
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- fs/btrfs/extent_io.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
-
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 5eab129e6eb0..f6837a6fe464 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -4530,8 +4530,14 @@ int try_release_extent_mapping(struct page *page, gfp_t mask)
- 			if (em->generation >= cur_gen)
- 				goto next;
- remove_em:
--			set_bit(BTRFS_INODE_NEEDS_FULL_SYNC,
--				&btrfs_inode->runtime_flags);
-+			/*
-+			 * We only remove extent maps that are not in the list of
-+			 * modified extents or that are in the list but with a
-+			 * generation lower then the current generation, so there
-+			 * is no need to set the full fsync flag on the inode (it
-+			 * hurts the fsync performance for workloads with a data
-+			 * size that exceeds or is close to the system's memory).
-+			 */
- 			remove_extent_mapping(map, em);
- 			/* once for the rb tree */
- 			free_extent_map(em);
--- 
-2.26.2
-
+Yeah, I fix such things routinely no need to resend.
