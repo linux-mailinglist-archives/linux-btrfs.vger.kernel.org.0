@@ -2,59 +2,55 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DD29229B18
-	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Jul 2020 17:14:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E336229B24
+	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Jul 2020 17:18:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732675AbgGVPMt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 22 Jul 2020 11:12:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58528 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732568AbgGVPMt (ORCPT
+        id S1732666AbgGVPSL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 22 Jul 2020 11:18:11 -0400
+Received: from esa5.hgst.iphmx.com ([216.71.153.144]:26302 "EHLO
+        esa5.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728046AbgGVPSL (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 22 Jul 2020 11:12:49 -0400
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DDA0C0619DC
-        for <linux-btrfs@vger.kernel.org>; Wed, 22 Jul 2020 08:12:49 -0700 (PDT)
-Received: by mail-qk1-x742.google.com with SMTP id q2so2266764qkc.8
-        for <linux-btrfs@vger.kernel.org>; Wed, 22 Jul 2020 08:12:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=oqykr6pB0W4qi+KVxqWgdECqU+5jEZAU98WQmmf1aFw=;
-        b=b97fPUgpw1f3jOEfagiFDUsxeQLIKZ5ZcTaW/M5e+Ov0xqzSbdZ06WxWywwmoSTEU7
-         nbjERBijO2i9m22Bfwl3KMJjYEp8yj08EJ18Y9zhFdBv/tfOYxPBSlCGBNwIMLwssSSc
-         ffYfdh1JLQh3YETQ6MMJax9fxKkUco4sy8Uz9GGzJ/2+fkrxAwAjz8ZmjzDrHwx3GANY
-         lUOrdGZ+BQ2DavhUfwrPRVe6Yg6Pvr1co1mFZ3bNvF5B5jQh56p3rEIzii0puxtStEdr
-         9V9J7D/862Z4P+TpyCR7/ApoH14pFD7AdiHtroJG/YETfxJYzfwCzoehD+EJtHZ2km+B
-         KDig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=oqykr6pB0W4qi+KVxqWgdECqU+5jEZAU98WQmmf1aFw=;
-        b=QgkQc6FS9/7N17B6LCh033hlsWNJhiY1+9Nd/C51JsAlI3llOzcOuR1pf1vF+7ydMR
-         5eYxw5vkyvMJhbPqpl0LHO/4ub5/wzhNBbCbLZMPae8i1VrsNCPFAiVPGqd49oRx/Y/W
-         MQAU2nRik+E2zoXu2h6kGkeIby3z2i7DT8uLxmgwmqkSbBFoAl06Vh9frKUglBD95obs
-         OFhRAipnT9GN0cn7RxdvJMxUWbgO2tMnTJdwJAYj+9MVQk6/vRgYYLJW3VEO/CPqfoA+
-         5UVWUPuLoZFQUQIb2flrwbMVYapdbX+gu2H7SUBGpv9V8tqEhtFFqz+dsc0cPwzr6/s2
-         fH1A==
-X-Gm-Message-State: AOAM530q4tu6Wx01pwADpg882RSHa+HvLeBGSbcz8uKf5eWeIloXE/Xm
-        U60KZnX+VFreOhPQWzVMwB0I0m5wEqvLrg==
-X-Google-Smtp-Source: ABdhPJzl4IX3KB1FTsLtzw4MLQ33ioI4+C90IjzXpG8MUrXK1LkdxuabUd9Q1gKUvYjzKCTuVApywA==
-X-Received: by 2002:ae9:f409:: with SMTP id y9mr359031qkl.383.1595430768090;
-        Wed, 22 Jul 2020 08:12:48 -0700 (PDT)
-Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id z68sm110596qke.113.2020.07.22.08.12.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Jul 2020 08:12:47 -0700 (PDT)
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Cc:     Chris Murphy <chris@colorremedies.com>
-Subject: [PATCH][v2] btrfs: don't show full path of bind mounts in subvol=
-Date:   Wed, 22 Jul 2020 11:12:46 -0400
-Message-Id: <20200722151246.3789-1-josef@toxicpanda.com>
-X-Mailer: git-send-email 2.24.1
+        Wed, 22 Jul 2020 11:18:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1595431091; x=1626967091;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=4ti7NNkD/qKZs8Lw4siE1lKQ2DzfPYxF+fc7HNLD5OI=;
+  b=TOplPoRNMREWIeaLxu8EgoqC0UW+wWOg2/946mOlNr3l9pq/ytVJWdvg
+   rgdmIRIlyJVE7ha5zprQxMSq7eqVvo8xqMoPVOpMOueMA5mQlSckV9LRn
+   0Ompz9mYibx2ec6CzioN4XOmPvBXtbD1/B2oHX5WLJuLl7aOeZR3L+kiU
+   nu3J9nnP71Le6GtBW5/DuAcfo9ErDmXe6HC39zhvyP5zBLB4MI3x3sS2i
+   adwiJnDBOMWXe/s9e1E+CTyOoDfDS6WvSTbZOCdCtEk7JHIZ4Pijoubuh
+   76RzKQ8kUP5Cqc1zzg0OSkkWrWsNnL4i4sG4TyI3hQFrpLuisoEVM4i5d
+   g==;
+IronPort-SDR: eGJc3hvmvQJumH1EPPBoB0QtwI1W1KYuAZi6SqtWNCcxB97flrE6JBSoaNAL/j+m+IMfHwQ4AC
+ YB0Osxd/9aVG1sPIRxRAr2JVPSv/KSPPWK2yMKfRNJKpPJJlGymER0xUtfEHZHYbLHpvGZcOIS
+ ObXn+IxgZnkjQ8vzZYDdqWlgFWsYbn0ibqSgoxrSXRSUo9VLfG+A4F9uWibUQPFLkQGIul6M9w
+ uQCUYFlsvlmiUaStmLUHzBpWo3Q/NSgGBpX7HtBj+Aj4gWo8z7mTu03HI0xnybil6A7eteeh/U
+ lk0=
+X-IronPort-AV: E=Sophos;i="5.75,383,1589212800"; 
+   d="scan'208";a="143215272"
+Received: from uls-op-cesaip02.wdc.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
+  by ob1.hgst.iphmx.com with ESMTP; 22 Jul 2020 23:18:11 +0800
+IronPort-SDR: Bn/FB4bF135GchUbZAUAKd1F9d/EMhJNOzh8oB5LEgoUDofbshnaflygPK3HBeZgFHRJFSqYaS
+ KWPmqBX9xCwqa2TDl4MHRuoua5THDBrew=
+Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
+  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jul 2020 08:05:51 -0700
+IronPort-SDR: EnW665RWFvU6j13DJVPhJwpArRMYAjNR0CPrc3TkeqkaOyXfrOczfnMyjSZVKJZFNFKGyp4c8v
+ Q0wWDg3OJDkg==
+WDCIronportException: Internal
+Received: from unknown (HELO redsun60.ssa.fujisawa.hgst.com) ([10.149.66.36])
+  by uls-op-cesaip01.wdc.com with ESMTP; 22 Jul 2020 08:18:10 -0700
+From:   Johannes Thumshirn <johannes.thumshirn@wdc.com>
+To:     David Sterba <dsterba@suse.cz>
+Cc:     linux-btrfs@vger.kernel.org,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Subject: [PATCH v2] btrfs: open-code remount flag setting in btrfs_remount
+Date:   Thu, 23 Jul 2020 00:18:04 +0900
+Message-Id: <20200722151804.33590-1-johannes.thumshirn@wdc.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
@@ -62,60 +58,78 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Chris Murphy reported a problem where rpm ostree will bind mount a bunch
-of things for whatever voodoo it's doing.  But when it does this
-/proc/mounts shows something like
+When we're (re)mounting a btrfs filesystem we set the
+BTRFS_FS_STATE_REMOUNTING state in fs_info to serialize against async
+reclaim or defrags.
 
-/dev/mapper/vg0-lv0 /mnt/test btrfs rw,seclabel,relatime,ssd,space_cache,subvolid=256,subvol=/foo 0 0
-/dev/mapper/vg0-lv0 /mnt/test/baz btrfs rw,seclabel,relatime,ssd,space_cache,subvolid=256,subvol=/foo/bar 0 0
+This flag is set in btrfs_remount_prepare() called by btrfs_remount(). As
+btrfs_remount_prepare() does nothing but setting this flag and doesn't
+have a second caller, we can just open-code the flag setting in
+btrfs_remount().
 
-Despite subvolid=256 being subvol=/roo.  This is because we're just
-spitting out the dentry of the mount point, which in the case of bind
-mounts is the source path for the mountpoint.  Instead we should spit
-out the path to the actual subvol.  Fix this by looking up the name for
-the subvolid we have mounted.  With this fix the same test looks like
-this
+Similarly do for so clearing of the flag by moving it out of
+btrfs_remount_cleanup() into btrfs_remount() to be symmetrical.
 
-/dev/mapper/vg0-lv0 /mnt/test btrfs rw,seclabel,relatime,ssd,space_cache,subvolid=256,subvol=/foo 0 0
-/dev/mapper/vg0-lv0 /mnt/test/baz btrfs rw,seclabel,relatime,ssd,space_cache,subvolid=256,subvol=/foo 0 0
-
-Reported-by: Chris Murphy <chris@colorremedies.com>
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 ---
-v1->v2:
-- Dropped the RFC.
-- Added examples of before and after.
-
- fs/btrfs/super.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+Changes to v1:
+- Move clearing of the flag as well (David)
+---
+ fs/btrfs/super.c | 13 +++++--------
+ 1 file changed, 5 insertions(+), 8 deletions(-)
 
 diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-index 58f890f73650..0e1647c08610 100644
+index a4f0bb29b8d6..5a9dc31d95c9 100644
 --- a/fs/btrfs/super.c
 +++ b/fs/btrfs/super.c
-@@ -1367,6 +1367,7 @@ static int btrfs_show_options(struct seq_file *seq, struct dentry *dentry)
- {
- 	struct btrfs_fs_info *info = btrfs_sb(dentry->d_sb);
- 	const char *compress_type;
-+	const char *subvol_name;
+@@ -1782,11 +1782,6 @@ static void btrfs_resize_thread_pool(struct btrfs_fs_info *fs_info,
+ 				new_pool_size);
+ }
  
- 	if (btrfs_test_opt(info, DEGRADED))
- 		seq_puts(seq, ",degraded");
-@@ -1453,8 +1454,12 @@ static int btrfs_show_options(struct seq_file *seq, struct dentry *dentry)
- 		seq_puts(seq, ",ref_verify");
- 	seq_printf(seq, ",subvolid=%llu",
- 		  BTRFS_I(d_inode(dentry))->root->root_key.objectid);
--	seq_puts(seq, ",subvol=");
--	seq_dentry(seq, dentry, " \t\n\\");
-+	subvol_name = btrfs_get_subvol_name_from_objectid(info,
-+			BTRFS_I(d_inode(dentry))->root->root_key.objectid);
-+	if (subvol_name) {
-+		seq_printf(seq, ",subvol=%s", subvol_name);
-+		kfree(subvol_name);
-+	}
+-static inline void btrfs_remount_prepare(struct btrfs_fs_info *fs_info)
+-{
+-	set_bit(BTRFS_FS_STATE_REMOUNTING, &fs_info->fs_state);
+-}
+-
+ static inline void btrfs_remount_begin(struct btrfs_fs_info *fs_info,
+ 				       unsigned long old_opts, int flags)
+ {
+@@ -1820,8 +1815,6 @@ static inline void btrfs_remount_cleanup(struct btrfs_fs_info *fs_info,
+ 	else if (btrfs_raw_test_opt(old_opts, DISCARD_ASYNC) &&
+ 		 !btrfs_test_opt(fs_info, DISCARD_ASYNC))
+ 		btrfs_discard_cleanup(fs_info);
+-
+-	clear_bit(BTRFS_FS_STATE_REMOUNTING, &fs_info->fs_state);
+ }
+ 
+ static int btrfs_remount(struct super_block *sb, int *flags, char *data)
+@@ -1837,7 +1830,7 @@ static int btrfs_remount(struct super_block *sb, int *flags, char *data)
+ 	int ret;
+ 
+ 	sync_filesystem(sb);
+-	btrfs_remount_prepare(fs_info);
++	set_bit(BTRFS_FS_STATE_REMOUNTING, &fs_info->fs_state);
+ 
+ 	if (data) {
+ 		void *new_sec_opts = NULL;
+@@ -1959,6 +1952,8 @@ static int btrfs_remount(struct super_block *sb, int *flags, char *data)
+ out:
+ 	wake_up_process(fs_info->transaction_kthread);
+ 	btrfs_remount_cleanup(fs_info, old_opts);
++	clear_bit(BTRFS_FS_STATE_REMOUNTING, &fs_info->fs_state);
++
  	return 0;
+ 
+ restore:
+@@ -1973,6 +1968,8 @@ static int btrfs_remount(struct super_block *sb, int *flags, char *data)
+ 		old_thread_pool_size, fs_info->thread_pool_size);
+ 	fs_info->metadata_ratio = old_metadata_ratio;
+ 	btrfs_remount_cleanup(fs_info, old_opts);
++	clear_bit(BTRFS_FS_STATE_REMOUNTING, &fs_info->fs_state);
++
+ 	return ret;
  }
  
 -- 
-2.24.1
+2.26.2
 
