@@ -2,103 +2,118 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6BE2229F77
-	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Jul 2020 20:45:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 842CB229FD3
+	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Jul 2020 21:07:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732062AbgGVSpk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 22 Jul 2020 14:45:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35342 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726642AbgGVSpk (ORCPT
+        id S1726539AbgGVTHF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 22 Jul 2020 15:07:05 -0400
+Received: from mailrelay4-3.pub.mailoutpod1-cph3.one.com ([46.30.212.13]:58767
+        "EHLO mailrelay4-3.pub.mailoutpod1-cph3.one.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726157AbgGVTHF (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 22 Jul 2020 14:45:40 -0400
-Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C141C0619DC
-        for <linux-btrfs@vger.kernel.org>; Wed, 22 Jul 2020 11:45:40 -0700 (PDT)
-Received: by mail-qt1-x82c.google.com with SMTP id x62so2611790qtd.3
-        for <linux-btrfs@vger.kernel.org>; Wed, 22 Jul 2020 11:45:40 -0700 (PDT)
+        Wed, 22 Jul 2020 15:07:05 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
-         :content-transfer-encoding;
-        bh=rYRexB32BNsJiDXEKKguRJIxSKZMrIgkLA0B4NRkUWo=;
-        b=VTA6AuNTPhbLH9Wdtwq4+ytX9ILdGGSDPVKWDAybDulTRThTZDRzoi+iOUuArDmD0r
-         J4jtdPYj9G9xveCwCm/e7ITq1wWQPNqwDNoYw4B0SYQu3DuhfKMg+ggn03ipyQ0I9Oyu
-         m4DItqaIqSMhU8aw9hv1Q0TjsQj0iHtbay9k9PHW8FSekt94BY8Ob2pq/qLs0DJAENj2
-         mt25d3uU+3BOpDFRQ2C0xpANWG031dCv3QxlKyrLdyAqvEPOaEdkDP0TqvIopE81WhGQ
-         5wmkqyW7iFM5ICMNnLKVqP6hylo3r4gi9zKSNKW+fuRCnCVfz0o0KIpHfX9WzQ3Uve8A
-         /BxQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=rYRexB32BNsJiDXEKKguRJIxSKZMrIgkLA0B4NRkUWo=;
-        b=Y9xsk5V7+QDnv/4zyRQx1R3tedRPLzDuSRG7m8wOOtrTuSyqMONFTOHFzwQKu8uRi+
-         FsIwaKojG3a/SUyCLw3ZIQ4ZWTzBue8t1yEXu+6Lu8J1PPjVif7YXK6m2FT/20uz3j1/
-         cA2BOsMvW6IPhf3uv3eo3Y/O49T9PIQPb/+COGEDi+jTXGp4qxnJMScWDPF6caxU6Feq
-         zbOabkURSKXHh6DdzoEOXOrvsfDmygZ71dTiQQwNQ4OhyFLjHXxc93jKeC86UqvIxt2O
-         UbtTQTCgYTx8p363Pu9ONayXvETd2e78EwG0c8EgyHWX2YxqHMFUf9hkZGLtSc93Z2q9
-         gvnQ==
-X-Gm-Message-State: AOAM532Nuj3IE/1Mz3vMsrQ8PZKSTkQks1rTNPoVJjpg5+GLMxe2yEef
-        5BiQNEn9nlQF9Iv4gTAviwE5FMxmoAE6Dg==
-X-Google-Smtp-Source: ABdhPJwAGN+aA/k/Z1zsdZwzItfIP1rqp6bErG2bMKnCWxUuFwOKmdCwmpUErRrVQaWv+RIj0SilxA==
-X-Received: by 2002:ac8:6f73:: with SMTP id u19mr810456qtv.36.1595443539281;
-        Wed, 22 Jul 2020 11:45:39 -0700 (PDT)
-Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id h55sm449561qtc.28.2020.07.22.11.45.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Jul 2020 11:45:38 -0700 (PDT)
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH][v2] btrfs: only search for left_info if there is no right_info
-Date:   Wed, 22 Jul 2020 14:45:37 -0400
-Message-Id: <20200722184537.19896-1-josef@toxicpanda.com>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200722184245.19699-1-josef@toxicpanda.com>
-References: <20200722184245.19699-1-josef@toxicpanda.com>
+        d=lechevalier.se; s=20191106;
+        h=content-transfer-encoding:content-type:in-reply-to:mime-version:date:
+         message-id:from:references:to:subject:from;
+        bh=c+88PcL6pQ2r7Jv38nfoSeqx8K4m2gA2kxO9zWsTc9Y=;
+        b=LyQK9FRpeMaB1Vm43hd104QI9R9mee1dwUuOBYe2NGuykT++MtHQALv2clKfKZ3K+9LmH0O5UGQCJ
+         Uo2uDKnimUfpgCnS+GXRFuQRTLnSxjNqwGXb8SCrclVTz8ooXPnaK3f4aUEvC4PV01Bd2Dw0E86U6b
+         u8mK8oc6iYegqQ56WRFXmnqwhXnditaUT5mBs0XReKHNlcPhoFYNPVO4HAXbSzu18N0p08EBPk14lv
+         Q3zG2D+KFKkzoWQi8Llx7+lj4n6FF/d6EE61pxYCyXUsTJKO1PtkufuTiPmcEWUbeonm64hNwBmgZO
+         Qd6Lcj06pm/qee0l9e7WQS4lMCbUsaw==
+X-HalOne-Cookie: 2dfdcfdb2b668f0b0a7fe70975429c4290f40682
+X-HalOne-ID: 85eb8d90-cc4e-11ea-9b1d-d0431ea8bb10
+Received: from [10.0.88.22] (unknown [98.128.186.72])
+        by mailrelay4.pub.mailoutpod1-cph3.one.com (Halon) with ESMTPSA
+        id 85eb8d90-cc4e-11ea-9b1d-d0431ea8bb10;
+        Wed, 22 Jul 2020 19:07:01 +0000 (UTC)
+Subject: Re: Understanding "Used" in df
+To:     Martin Steigerwald <martin@lichtvoll.de>,
+        linux-btrfs@vger.kernel.org
+References: <3225288.0drLW0cIUP@merkaba>
+From:   A L <mail@lechevalier.se>
+Message-ID: <f60f14e1-1650-66f3-8e65-4c5166f16193@lechevalier.se>
+Date:   Wed, 22 Jul 2020 21:07:01 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <3225288.0drLW0cIUP@merkaba>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The CVE referenced doesn't actually trigger the problem anymore because
-of the tree-checker improvements, however the underlying issue can still
-happen.
 
-If we find a right_info, but rb_prev() is NULL, then we're the furthest
-most item in the tree currently, and there will be no left_info.
-However we'll still search from offset-1, which would return right_info
-again which we store in left_info.  If we then free right_info we'll
-have free'd left_info as well, and boom, UAF.  Instead fix this check so
-that if we don't have a right_info we do the search for the left_info,
-otherwise left_info comes from rb_prev or is simply NULL as it should
-be.
+On 2020-07-22 17:10, Martin Steigerwald wrote:
+> I have:
+>
+> % LANG=en df -hT /home
+> Filesystem            Type   Size  Used Avail Use% Mounted on
+> /dev/mapper/sata-home btrfs  300G  175G  123G  59% /home
+>
+> And:
+>
+> merkaba:~> btrfs fi sh /home
+> Label: 'home'  uuid: […]
+>          Total devices 2 FS bytes used 173.91GiB
+>          devid    1 size 300.00GiB used 223.03GiB path /dev/mapper/sata-home
+>          devid    2 size 300.00GiB used 223.03GiB path /dev/mapper/msata-home
+>
+> merkaba:~> btrfs fi df /home
+> Data, RAID1: total=218.00GiB, used=171.98GiB
+> System, RAID1: total=32.00MiB, used=64.00KiB
+> Metadata, RAID1: total=5.00GiB, used=1.94GiB
+> GlobalReserve, single: total=490.48MiB, used=0.00B
+>
+> As well as:
+>
+> merkaba:~> btrfs fi usage -T /home
+> Overall:
+>      Device size:                 600.00GiB
+>      Device allocated:            446.06GiB
+>      Device unallocated:          153.94GiB
+>      Device missing:                  0.00B
+>      Used:                        347.82GiB
+>      Free (estimated):            123.00GiB      (min: 123.00GiB)
+>      Data ratio:                       2.00
+>      Metadata ratio:                   2.00
+>      Global reserve:              490.45MiB      (used: 0.00B)
+>      Multiple profiles:                  no
+>
+>                            Data      Metadata System
+> Id Path                   RAID1     RAID1    RAID1    Unallocated
+> -- ---------------------- --------- -------- -------- -----------
+>   1 /dev/mapper/sata-home  218.00GiB  5.00GiB 32.00MiB    76.97GiB
+>   2 /dev/mapper/msata-home 218.00GiB  5.00GiB 32.00MiB    76.97GiB
+> -- ---------------------- --------- -------- -------- -----------
+>     Total                  218.00GiB  5.00GiB 32.00MiB   153.94GiB
+>     Used                   171.97GiB  1.94GiB 64.00KiB
+>
+>
+> I think I understand all of it, including just 123G instead of
+> 300 - 175 = 125 GiB "Avail" in df -hT.
+>
+> But why 175 GiB "Used" in 'df -hT' when just 173.91GiB (see 'btrfs fi sh')
+> is allocated *within* the block group / chunks?
+>
+> Does this have something to do with that global reserve thing?
+>
+> Thank you,
+Hi,
 
-Reference: CVE-2019-19448
-Fixes: 963030817060 ("Btrfs: use hybrid extents+bitmap rb tree for free space")
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
----
-v1->v2:
-- Fixed the title, I had changed the fix but forgot to change the title in v1
+I do not think global reserve should be counted in 'df' output, but it 
+does count all unallocated space, even if some of that space will be 
+used up by metadata chunks. Isn't the discrepancy the metadata allocated 
+vs used?
 
- fs/btrfs/free-space-cache.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I made a post a little while ago on this subject, on how to improve the 
+space calculations if any one if interested in picking this up? I 
+believe the space calculation is wrong in all of the df/btrfs df/btrfs 
+us tools.
 
-diff --git a/fs/btrfs/free-space-cache.c b/fs/btrfs/free-space-cache.c
-index 6d961e11639e..37fd2fa1ac1f 100644
---- a/fs/btrfs/free-space-cache.c
-+++ b/fs/btrfs/free-space-cache.c
-@@ -2298,7 +2298,7 @@ static bool try_merge_free_space(struct btrfs_free_space_ctl *ctl,
- 	if (right_info && rb_prev(&right_info->offset_index))
- 		left_info = rb_entry(rb_prev(&right_info->offset_index),
- 				     struct btrfs_free_space, offset_index);
--	else
-+	else if (!right_info)
- 		left_info = tree_search_offset(ctl, offset - 1, 0, 0);
- 
- 	/* See try_merge_free_space() comment. */
--- 
-2.24.1
+https://lore.kernel.org/linux-btrfs/ddb33661-2d71-5046-7b6a-4a601dc2df44@lechevalier.se/ 
 
