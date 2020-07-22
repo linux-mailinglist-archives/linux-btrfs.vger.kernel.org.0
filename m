@@ -2,108 +2,117 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A282C229823
-	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Jul 2020 14:20:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB6C62298C4
+	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Jul 2020 14:58:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732139AbgGVMUI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 22 Jul 2020 08:20:08 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:32185 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726462AbgGVMUH (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 22 Jul 2020 08:20:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1595420406;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=vCtk9GnBiOAqU3k+W1SQe7KIu+zVdj7N1c33spXO6As=;
-        b=GSIOv4mFqNOMAatlnpsop1cNsm5T/ADjMWiTa8uyGAkkcdRg4BABi7+/G/oNZQ/8XA8YY3
-        b0bHEIpBKVB/TqKgvUwSZvK7kSjwlrgHNP9o7+rxTmxCcpFJAVJkzExncZHGHixkpdVJpK
-        6+vLXX4k+Yqh7tywLCUTBI95E0BSBMI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-258-EWS-2KU8MuGqDl5cYcroPw-1; Wed, 22 Jul 2020 08:20:01 -0400
-X-MC-Unique: EWS-2KU8MuGqDl5cYcroPw-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9A09980BCAF;
-        Wed, 22 Jul 2020 12:19:59 +0000 (UTC)
-Received: from colo-mx.corp.redhat.com (colo-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.21])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 804715D9D3;
-        Wed, 22 Jul 2020 12:19:59 +0000 (UTC)
-Received: from zmail21.collab.prod.int.phx2.redhat.com (zmail21.collab.prod.int.phx2.redhat.com [10.5.83.24])
-        by colo-mx.corp.redhat.com (Postfix) with ESMTP id 5D27E730D3;
-        Wed, 22 Jul 2020 12:19:59 +0000 (UTC)
-Date:   Wed, 22 Jul 2020 08:19:58 -0400 (EDT)
-From:   Bob Peterson <rpeterso@redhat.com>
-To:     "Darrick J. Wong" <darrick.wong@oracle.com>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Naohiro Aota <naohiro.aota@wdc.com>, linux-xfs@vger.kernel.org,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        linux-ext4@vger.kernel.org, Goldwyn Rodrigues <rgoldwyn@suse.de>,
-        Dave Chinner <david@fromorbit.com>,
-        Matthew Wilcox <willy@infradead.org>, cluster-devel@redhat.com,
-        Goldwyn Rodrigues <rgoldwyn@suse.com>,
-        linux-fsdevel@vger.kernel.org, Johannes Thumshirn <jth@kernel.org>,
-        linux-btrfs@vger.kernel.org
-Message-ID: <595939815.7378944.1595420398243.JavaMail.zimbra@redhat.com>
-In-Reply-To: <20200721203749.GF3151642@magnolia>
-References: <20200721183157.202276-1-hch@lst.de> <20200721183157.202276-4-hch@lst.de> <20200721203749.GF3151642@magnolia>
-Subject: Re: [Cluster-devel] [PATCH 3/3] iomap: fall back to buffered writes
- for invalidation failures
+        id S1730661AbgGVM6O (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 22 Jul 2020 08:58:14 -0400
+Received: from mx2.suse.de ([195.135.220.15]:60940 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726161AbgGVM6N (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 22 Jul 2020 08:58:13 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 6FF58AC24;
+        Wed, 22 Jul 2020 12:58:19 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 37947DA70B; Wed, 22 Jul 2020 14:57:46 +0200 (CEST)
+Date:   Wed, 22 Jul 2020 14:57:46 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH 1/3] btrfs: fix lockdep splat in open_fs_devices
+Message-ID: <20200722125745.GS3703@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
+        linux-btrfs@vger.kernel.org, kernel-team@fb.com
+References: <20200717191229.2283043-1-josef@toxicpanda.com>
+ <20200717191229.2283043-2-josef@toxicpanda.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.3.112.145, 10.4.195.20]
-Thread-Topic: iomap: fall back to buffered writes for invalidation failures
-Thread-Index: PLuOF8kQrR0wpZuOBcUe+YqC5MOZSw==
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200717191229.2283043-2-josef@toxicpanda.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
------ Original Message -----
-> On Tue, Jul 21, 2020 at 08:31:57PM +0200, Christoph Hellwig wrote:
-> > Failing to invalid the page cache means data in incoherent, which is
-> > a very bad state for the system.  Always fall back to buffered I/O
-> > through the page cache if we can't invalidate mappings.
-> > 
-> > Signed-off-by: Christoph Hellwig <hch@lst.de>
-> > Acked-by: Dave Chinner <dchinner@redhat.com>
-> > Reviewed-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
+On Fri, Jul 17, 2020 at 03:12:27PM -0400, Josef Bacik wrote:
+> Fix this by not holding the ->device_list_mutex at this point.  The
+> device_list_mutex exists to protect us from modifying the device list
+> while the file system is running.
 > 
-> For the iomap and xfs parts,
-> Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
+> However it can also be modified by doing a scan on a device.  But this
+> action is specifically protected by the uuid_mutex, which we are holding
+> here.  We cannot race with opening at this point because we have the
+> ->s_mount lock held during the mount.  Not having the
+> ->device_list_mutex here is perfectly safe as we're not going to change
+> the devices at this point.
+
+Agreed, the uuid_mutex is sufficient here, since 81ffd56b574 ("btrfs:
+fix mount and ioctl device scan ioctl race") that excludes the critical
+parts of mount and scan.
+
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> ---
+>  fs/btrfs/volumes.c | 10 ++++++++--
+>  1 file changed, 8 insertions(+), 2 deletions(-)
 > 
-> But I'd still like acks from Ted, Andreas, and Damien for ext4, gfs2,
-> and zonefs, respectively.
-> 
-> (Particularly if anyone was harboring ideas about trying to get this in
-> before 5.10, though I've not yet heard anyone say that explicitly...)
-> 
-> --D
-> 
-> > ---
-> >  fs/ext4/file.c       |  2 ++
-> >  fs/gfs2/file.c       |  3 ++-
-> >  fs/iomap/direct-io.c | 16 +++++++++++-----
-> >  fs/iomap/trace.h     |  1 +
-> >  fs/xfs/xfs_file.c    |  4 ++--
-> >  fs/zonefs/super.c    |  7 +++++--
-> >  6 files changed, 23 insertions(+), 10 deletions(-)
+> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+> index ce01e44f8134..20295441251a 100644
+> --- a/fs/btrfs/volumes.c
+> +++ b/fs/btrfs/volumes.c
+> @@ -258,6 +258,9 @@ static int __btrfs_map_block(struct btrfs_fs_info *fs_info,
+>   * may be used to exclude some operations from running concurrently without any
+>   * modifications to the list (see write_all_supers)
+>   *
+> + * Is not required at mount and close times, because our device list is
+> + * protected by the uuid_mutex at that point.
 
-Hi,
+This is correct, however there's one comment a few lines above about
+unid_mutex
 
-I think Andreas is on holiday this week, but the gfs2 portion looks good to me:
+  "does not protect: manipulation of the fs_devices::devices list!"
 
-For the gfs2 portion:
-Acked-by: Bob Peterson <rpeterso@redhat.com>
+so I'll update it means 'not in general but there are exceptions like
+mount context'.
 
-Regards,
+> + *
+>   * balance_mutex
+>   * -------------
+>   * protects balance structures (status, state) and context accessed from
+> @@ -602,6 +605,11 @@ static int btrfs_free_stale_devices(const char *path,
+>  	return ret;
+>  }
+>  
+> +/*
+> + * This is only used on mount, and we are protected from competing things
+> + * messing with our fs_devices by the uuid_mutex, thus we do not need the
+> + * fs_devices->device_list_mutex here.
+> + */
+>  static int btrfs_open_one_device(struct btrfs_fs_devices *fs_devices,
+>  			struct btrfs_device *device, fmode_t flags,
+>  			void *holder)
+> @@ -1230,7 +1238,6 @@ int btrfs_open_devices(struct btrfs_fs_devices *fs_devices,
+>  
+>  	lockdep_assert_held(&uuid_mutex);
+>  
+> -	mutex_lock(&fs_devices->device_list_mutex);
 
-Bob Peterson
+I'll leave a comment here as the device list is clearly modified
+(list_sort).
 
+>  	if (fs_devices->opened) {
+>  		fs_devices->opened++;
+>  		ret = 0;
+> @@ -1238,7 +1245,6 @@ int btrfs_open_devices(struct btrfs_fs_devices *fs_devices,
+>  		list_sort(NULL, &fs_devices->devices, devid_cmp);
+>  		ret = open_fs_devices(fs_devices, flags, holder);
+>  	}
+> -	mutex_unlock(&fs_devices->device_list_mutex);
+>  
+>  	return ret;
+>  }
+> -- 
+> 2.24.1
