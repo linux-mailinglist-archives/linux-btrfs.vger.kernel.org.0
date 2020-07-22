@@ -2,32 +2,32 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 911EB22976A
-	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Jul 2020 13:29:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12B1C22976B
+	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Jul 2020 13:29:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728229AbgGVL24 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 22 Jul 2020 07:28:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40918 "EHLO mail.kernel.org"
+        id S1728605AbgGVL3E (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 22 Jul 2020 07:29:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40936 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726146AbgGVL2y (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 22 Jul 2020 07:28:54 -0400
+        id S1726146AbgGVL3E (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 22 Jul 2020 07:29:04 -0400
 Received: from debian8.Home (bl8-197-74.dsl.telepac.pt [85.241.197.74])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D137120771
-        for <linux-btrfs@vger.kernel.org>; Wed, 22 Jul 2020 11:28:53 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 465B620771
+        for <linux-btrfs@vger.kernel.org>; Wed, 22 Jul 2020 11:29:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595417334;
-        bh=w+/XP08RA+J67clxberE4KIPBxSyU83pjlUZ0uxAJpE=;
+        s=default; t=1595417343;
+        bh=kcyvsQ8bi7pUaE4WfEOw834VpRa6nU3jibd/tIGalsw=;
         h=From:To:Subject:Date:From;
-        b=tEhmTEBbokbwHDMoT8Iq9b3bqAfg0lBQKpgP5fo5t0JqEwyW4mm7S5yVyb0eFZEQH
-         v7XGnhg77escsmJcY2GouL564xNZe9TgBUfpbGNixDfo+fTzoiUdFnb6HxfPqUsYXr
-         lowMHQ983fx3CKoc3r/0Tn0L2/8EqZOO7z0Hf2mE=
+        b=SjYlEDFayY91e+nCX+8fi/ccZkXJ6UOgcGGPMe5oXLb8QX+8drFT+gTVNu1N2CEpf
+         Z0jBfZ/UnLHBNjVxq41O+ppg63YHpHa7OW/Zw2R+6idJuKcV7xC1nEp4P9lN00LWOO
+         ta7t7j3h8lz3QZjP4JlgY7mSQALQBll1RkkwZOIs=
 From:   fdmanana@kernel.org
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 2/3] btrfs: release old extent maps during page release
-Date:   Wed, 22 Jul 2020 12:28:52 +0100
-Message-Id: <20200722112852.15571-1-fdmanana@kernel.org>
+Subject: [PATCH 3/3] btrfs: do not set the full sync flag on the inode during page release
+Date:   Wed, 22 Jul 2020 12:29:01 +0100
+Message-Id: <20200722112901.15626-1-fdmanana@kernel.org>
 X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -39,71 +39,212 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 From: Filipe Manana <fdmanana@suse.com>
 
 When removing an extent map at try_release_extent_mapping(), called through
-the page release callback (btrfs_releasepage()), we never release an extent
-map that is in the list of modified extents. This is to prevent races with
-a concurrent fsync using the fast path, which could lead to not logging an
-extent created in the current transaction.
+the page release callback (btrfs_releasepage()), we always set the full
+sync flag on the inode, which forces the next fsync to use a slower code
+path.
 
-However we can safely remove an extent map created in a past transaction
-that is still in the list of modified extents (because no one fsynced yet
-the inode after that transaction got commited), because such extents are
-skipped during an fsync as it is pointless to log them. This change does
-that.
+This hurts performance for workloads that dirty an amount of data that
+exceeds or is very close to the system's RAM memory and do frequent fsync
+operations (like database servers can for example). In particular if there
+are concurrent fsyncs against different files, by falling back to a full
+fsync we do a lot more checksum lookups in the checksums btree, as we do
+it for all the extents created in the current transaction, instead of only
+the new ones since the last fsync. These checksums lookups not only take
+some time but, more importantly, they also cause contention on the
+checksums btree locks due to the concurrency with checksum insertions in
+the btree by ordered extents from other inodes.
+
+We actually don't need to set the full sync flag on the inode, because we
+only remove extent maps that are in the list of modified extents if they
+were created in a past transaction, in which case an fsync skips them as
+it's pointless to log them. So stop setting the full fsync flag on the
+inode whenever we remove an extent map.
+
+This patch is part of a patchset that consists of 3 patches, which have
+the following subjects:
+
+1/3 btrfs: fix race between page release and a fast fsync
+2/3 btrfs: release old extent maps during page release
+3/3 btrfs: do not set the full sync flag on the inode during page release
+
+Performance tests were ran against a branch (misc-next) containing the
+whole patchset. The test exercises a workload where there are multiple
+processes writing to files and fsyncing them (each writing and fsyncing
+its own file), and in total the amount of data dirtied ranges from 2x to
+4x the system's RAM memory (16Gb), so that the page release callback is
+invoked frequently.
+
+The following script, using fio, was used to perform the tests:
+
+  $ cat test-fsync.sh
+  #!/bin/bash
+
+  DEV=/dev/sdk
+  MNT=/mnt/sdk
+  MOUNT_OPTIONS="-o ssd"
+  MKFS_OPTIONS="-d single -m single"
+
+  if [ $# -ne 3 ]; then
+      echo "Use $0 NUM_JOBS FILE_SIZE FSYNC_FREQ"
+      exit 1
+  fi
+
+  NUM_JOBS=$1
+  FILE_SIZE=$2
+  FSYNC_FREQ=$3
+
+  cat <<EOF > /tmp/fio-job.ini
+  [writers]
+  rw=write
+  fsync=$FSYNC_FREQ
+  fallocate=none
+  group_reporting=1
+  direct=0
+  bs=64k
+  ioengine=sync
+  size=$FILE_SIZE
+  directory=$MNT
+  numjobs=$NUM_JOBS
+  thread
+  EOF
+
+  echo "Using config:"
+  echo
+  cat /tmp/fio-job.ini
+  echo
+
+  mkfs.btrfs -f $MKFS_OPTIONS $DEV &> /dev/null
+  mount $MOUNT_OPTIONS $DEV $MNT
+  fio /tmp/fio-job.ini
+  umount $MNT
+
+The tests were performed for different numbers of jobs, file sizes and
+fsync frequency. A qemu VM using kvm was used, with 8 cores (the host has
+12 cores, with cpu governance set to performance mode on all cores), 16Gb
+of ram (the host has 64Gb) and using a NVMe device directly (without an
+intermediary filesystem in the host). While running the tests, the host
+was not used for anything else, to avoid disturbing the tests.
+
+The obtained results were the following, and the last line printed by
+fio is pasted (includes aggregated throughput and test run time).
+
+    *****************************************************
+    ****     1 job, 32Gb file, fsync frequency 1     ****
+    *****************************************************
+
+Before patchset:
+
+WRITE: bw=29.1MiB/s (30.5MB/s), 29.1MiB/s-29.1MiB/s (30.5MB/s-30.5MB/s), io=32.0GiB (34.4GB), run=1127557-1127557msec
+
+After patchset:
+
+WRITE: bw=29.3MiB/s (30.7MB/s), 29.3MiB/s-29.3MiB/s (30.7MB/s-30.7MB/s), io=32.0GiB (34.4GB), run=1119042-1119042msec
+(+0.7% throughput, -0.8% run time)
+
+    *****************************************************
+    ****     2 jobs, 16Gb files, fsync frequency 1   ****
+    *****************************************************
+
+Before patchset:
+
+WRITE: bw=33.5MiB/s (35.1MB/s), 33.5MiB/s-33.5MiB/s (35.1MB/s-35.1MB/s), io=32.0GiB (34.4GB), run=979000-979000msec
+
+After patchset:
+
+WRITE: bw=39.9MiB/s (41.8MB/s), 39.9MiB/s-39.9MiB/s (41.8MB/s-41.8MB/s), io=32.0GiB (34.4GB), run=821283-821283msec
+(+19.1% throughput, -16.1% runtime)
+
+    *****************************************************
+    ****     4 jobs, 8Gb files, fsync frequency 1    ****
+    *****************************************************
+
+Before patchset:
+
+WRITE: bw=52.1MiB/s (54.6MB/s), 52.1MiB/s-52.1MiB/s (54.6MB/s-54.6MB/s), io=32.0GiB (34.4GB), run=629130-629130msec
+
+After patchset:
+
+WRITE: bw=71.8MiB/s (75.3MB/s), 71.8MiB/s-71.8MiB/s (75.3MB/s-75.3MB/s), io=32.0GiB (34.4GB), run=456357-456357msec
+(+37.8% throughput, -27.5% runtime)
+
+    *****************************************************
+    ****     8 jobs, 4Gb files, fsync frequency 1    ****
+    *****************************************************
+
+Before patchset:
+
+WRITE: bw=76.1MiB/s (79.8MB/s), 76.1MiB/s-76.1MiB/s (79.8MB/s-79.8MB/s), io=32.0GiB (34.4GB), run=430708-430708msec
+
+After patchset:
+
+WRITE: bw=133MiB/s (140MB/s), 133MiB/s-133MiB/s (140MB/s-140MB/s), io=32.0GiB (34.4GB), run=245458-245458msec
+(+74.7% throughput, -43.0% run time)
+
+    *****************************************************
+    ****    16 jobs, 2Gb files, fsync frequency 1    ****
+    *****************************************************
+
+Before patchset:
+
+WRITE: bw=74.7MiB/s (78.3MB/s), 74.7MiB/s-74.7MiB/s (78.3MB/s-78.3MB/s), io=32.0GiB (34.4GB), run=438625-438625msec
+
+After patchset:
+
+WRITE: bw=184MiB/s (193MB/s), 184MiB/s-184MiB/s (193MB/s-193MB/s), io=32.0GiB (34.4GB), run=177864-177864msec
+(+146.3% throughput, -59.5% run time)
+
+    *****************************************************
+    ****    32 jobs, 2Gb files, fsync frequency 1    ****
+    *****************************************************
+
+Before patchset:
+
+WRITE: bw=72.6MiB/s (76.1MB/s), 72.6MiB/s-72.6MiB/s (76.1MB/s-76.1MB/s), io=64.0GiB (68.7GB), run=902615-902615msec
+
+After patchset:
+
+WRITE: bw=227MiB/s (238MB/s), 227MiB/s-227MiB/s (238MB/s-238MB/s), io=64.0GiB (68.7GB), run=288936-288936msec
+(+212.7% throughput, -68.0% run time)
+
+    *****************************************************
+    ****    64 jobs, 1Gb files, fsync frequency 1    ****
+    *****************************************************
+
+Before patchset:
+
+WRITE: bw=98.8MiB/s (104MB/s), 98.8MiB/s-98.8MiB/s (104MB/s-104MB/s), io=64.0GiB (68.7GB), run=663126-663126msec
+
+After patchset:
+
+WRITE: bw=294MiB/s (308MB/s), 294MiB/s-294MiB/s (308MB/s-308MB/s), io=64.0GiB (68.7GB), run=222940-222940msec
+(+197.6% throughput, -66.4% run time)
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/extent_io.c | 31 ++++++++++++++++++++++++-------
- 1 file changed, 24 insertions(+), 7 deletions(-)
+ fs/btrfs/extent_io.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
 diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 57f85d451695..5eab129e6eb0 100644
+index 5eab129e6eb0..f6837a6fe464 100644
 --- a/fs/btrfs/extent_io.c
 +++ b/fs/btrfs/extent_io.c
-@@ -4487,6 +4487,9 @@ int try_release_extent_mapping(struct page *page, gfp_t mask)
- 	    page->mapping->host->i_size > SZ_16M) {
- 		u64 len;
- 		while (start <= end) {
-+			struct btrfs_fs_info *fs_info;
-+			u64 cur_gen;
-+
- 			len = end - start + 1;
- 			write_lock(&map->lock);
- 			em = lookup_extent_mapping(map, start, len);
-@@ -4511,13 +4514,27 @@ int try_release_extent_mapping(struct page *page, gfp_t mask)
- 			 * extra reference on the em.
- 			 */
- 			if (list_empty(&em->list) ||
--			    test_bit(EXTENT_FLAG_LOGGING, &em->flags)) {
--				set_bit(BTRFS_INODE_NEEDS_FULL_SYNC,
--					&btrfs_inode->runtime_flags);
--				remove_extent_mapping(map, em);
--				/* once for the rb tree */
--				free_extent_map(em);
--			}
-+			    test_bit(EXTENT_FLAG_LOGGING, &em->flags))
-+				goto remove_em;
+@@ -4530,8 +4530,14 @@ int try_release_extent_mapping(struct page *page, gfp_t mask)
+ 			if (em->generation >= cur_gen)
+ 				goto next;
+ remove_em:
+-			set_bit(BTRFS_INODE_NEEDS_FULL_SYNC,
+-				&btrfs_inode->runtime_flags);
 +			/*
-+			 * If it's in the list of modified extents, remove it
-+			 * only if its generation is older then the current one,
-+			 * in which case we don't need it for a fast fsync.
-+			 * Otherwise don't remove it, we could be racing with an
-+			 * ongoing fast fsync that could miss the new extent.
++			 * We only remove extent maps that are not in the list of
++			 * modified extents or that are in the list but with a
++			 * generation lower then the current generation, so there
++			 * is no need to set the full fsync flag on the inode (it
++			 * hurts the fsync performance for workloads with a data
++			 * size that exceeds or is close to the system's memory).
 +			 */
-+			fs_info = btrfs_inode->root->fs_info;
-+			spin_lock(&fs_info->trans_lock);
-+			cur_gen = fs_info->generation;
-+			spin_unlock(&fs_info->trans_lock);
-+			if (em->generation >= cur_gen)
-+				goto next;
-+remove_em:
-+			set_bit(BTRFS_INODE_NEEDS_FULL_SYNC,
-+				&btrfs_inode->runtime_flags);
-+			remove_extent_mapping(map, em);
-+			/* once for the rb tree */
-+			free_extent_map(em);
- next:
- 			start = extent_map_end(em);
- 			write_unlock(&map->lock);
+ 			remove_extent_mapping(map, em);
+ 			/* once for the rb tree */
+ 			free_extent_map(em);
 -- 
 2.26.2
 
