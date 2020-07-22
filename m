@@ -2,77 +2,103 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F842229CBF
-	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Jul 2020 18:04:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 934BA229CC6
+	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Jul 2020 18:07:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730702AbgGVQDz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 22 Jul 2020 12:03:55 -0400
-Received: from mx2.suse.de ([195.135.220.15]:34556 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728092AbgGVQDy (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 22 Jul 2020 12:03:54 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 62105ADAD;
-        Wed, 22 Jul 2020 16:04:01 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 05466DA70B; Wed, 22 Jul 2020 18:03:27 +0200 (CEST)
-Date:   Wed, 22 Jul 2020 18:03:27 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com,
-        holger@applied-asynchrony.com
-Subject: Re: [PATCH 1/2] btrfs: kill update_block_group_flags
-Message-ID: <20200722160327.GA3703@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
-        linux-btrfs@vger.kernel.org, kernel-team@fb.com,
-        holger@applied-asynchrony.com
-References: <20200630181719.3190860-1-josef@toxicpanda.com>
+        id S1728236AbgGVQH1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 22 Jul 2020 12:07:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38888 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726406AbgGVQH0 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 22 Jul 2020 12:07:26 -0400
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 032DEC0619DC
+        for <linux-btrfs@vger.kernel.org>; Wed, 22 Jul 2020 09:07:26 -0700 (PDT)
+Received: by mail-qk1-x742.google.com with SMTP id u64so2445709qka.12
+        for <linux-btrfs@vger.kernel.org>; Wed, 22 Jul 2020 09:07:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=4LIIadGfjf5vap5O8GtVjZ/UJ287tTItNUfk15DlxM0=;
+        b=V0U6K5sMainp1Nwb24wooUqLarXzpz0JfDi4vWCkVBikj21ezOimCZnjxzqqIfgNgr
+         2de+supwE9fPM8D9Ugn2LB06HSBdxBii39zmbiakclz2zEoDrZhpVOVUq+2080EGwUoz
+         TCWqF+FrIPXuMZIX/jvBdcgv5YhApPAH45i4lhMwhEIO0D3/tU5eF0yH4ry8pWDmBiI3
+         AWQ7P4LBCXtASFAKU5E1hwjnTKmKRBhj+sDO/yAxHJiCyAfDIaL9WCsVxP7GoMD0D09L
+         hegWhM4ZudHq4ALs3hacA8UUo+/tefaNBxvOu1bDWP/vX5XI1bYB62hNhjhZym4CyN8n
+         qgbg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=4LIIadGfjf5vap5O8GtVjZ/UJ287tTItNUfk15DlxM0=;
+        b=T8Z7zyKLjalbhEz1rm0X95NW7B70kVfmQ5W/myebREpRCFt+oJXcBGUjl4xZWC3tFo
+         rooq0KS5aUE2dXtbytqpIfz5E2kLLJZzTW+tt/YGyaxQRntUA2LaasOn+YZBnSbfHAZG
+         jNyFF6NBqOaBdzXliBIHBjiIPcgy9eyWNSVWXQAUgxMwzNACRzIXReZClSnLEXtTFm/Q
+         LwbrIF5JHln3tMl+xbDbiANuJpK4vbbWHx17Ue0fMcCpczexS8vqH7MBksOWXg3Nnkw8
+         PSZOvs/Rj79Dq5Ixc8C6rP1W4poEz05gMqBR09RqB5+zKmppOhZu8wPLscC84QXXaOoe
+         VLpA==
+X-Gm-Message-State: AOAM530soG62zKOLZE1JUHG4paFyizsugpoakWeOmIQyakELJnhCwbf9
+        plJvKdbPhhA8ztIr16aWB0FXhAsxWV3jxQ==
+X-Google-Smtp-Source: ABdhPJwoC6WE3NzxDJ+oCy5h43Uo3ZYhkjPg20aiR8kwhXsnmwktx1w6b5z8jrxJnPI0gQNpjploaw==
+X-Received: by 2002:a37:b987:: with SMTP id j129mr737887qkf.120.1595434044804;
+        Wed, 22 Jul 2020 09:07:24 -0700 (PDT)
+Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id t35sm69235qth.79.2020.07.22.09.07.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Jul 2020 09:07:24 -0700 (PDT)
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: [PATCH 1/2] btrfs: free fs roots on failed mount
+Date:   Wed, 22 Jul 2020 12:07:21 -0400
+Message-Id: <20200722160722.8641-1-josef@toxicpanda.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200630181719.3190860-1-josef@toxicpanda.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Jun 30, 2020 at 02:17:18PM -0400, Josef Bacik wrote:
-> btrfs/061 has been failing consistently for me recently with a
-> transaction abort.  We run out of space in the system chunk array, which
-> means we've allocated way too many system chunks than we need.
-> 
-> Chris added this a long time ago for balance as a poor mans restriping.
-> If you had a single disk and then added another disk and then did a
-> balance, update_block_group_flags would then figure out which RAID level
-> you needed.
-> 
-> Fast forward to today and we have restriping behavior, so we can
-> explicitly tell the fs that we're trying to change the raid level.  This
-> is accomplished through the normal get_alloc_profile path.
-> 
-> Furthermore this code actually causes btrfs/061 to fail, because we do
-> things like mkfs -m dup -d single with multiple devices.  This trips
-> this check
-> 
-> alloc_flags = update_block_group_flags(fs_info, cache->flags);
-> if (alloc_flags != cache->flags) {
-> 	ret = btrfs_chunk_alloc(trans, alloc_flags, CHUNK_ALLOC_FORCE);
-> 
-> in btrfs_inc_block_group_ro.  Because we're balancing and scrubbing, but
-> not actually restriping, we keep forcing chunk allocation of RAID1
-> chunks.  This eventually causes us to run out of system space and the
-> file system aborts and flips read only.
-> 
-> We don't need this poor mans restriping any more, simply use the normal
-> get_alloc_profile helper, which will get the correct alloc_flags and
-> thus make the right decision for chunk allocation.  This keeps us from
-> allocating a billion system chunks and falling over.
-> 
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+While testing a weird problem with -o degraded, I noticed I was getting
+leaked root errors
 
-1 and 2 added to misc-next. I haven't found time to verify the raid1c34
-case, but Holger reported it had fixed some problems for him I take
-that as testing.
+BTRFS warning (device loop0): writable mount is not allowed due to too many missing devices
+BTRFS error (device loop0): open_ctree failed
+BTRFS error (device loop0): leaked root -9-0 refcount 1
+
+This is the DATA_RELOC root, which gets read before the other fs roots,
+but is included in the fs roots radix tree, and thus gets freed by
+btrfs_free_fs_roots.  Fix this by moving the call into fail_tree_roots:
+in open_ctree.  With this fix we no longer leak that root on mount
+failure.
+
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+---
+ fs/btrfs/disk-io.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index c850d7f44fbe..f1fdbdd44c02 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -3421,7 +3421,6 @@ int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_device
+ fail_trans_kthread:
+ 	kthread_stop(fs_info->transaction_kthread);
+ 	btrfs_cleanup_transaction(fs_info);
+-	btrfs_free_fs_roots(fs_info);
+ fail_cleaner:
+ 	kthread_stop(fs_info->cleaner_kthread);
+ 
+@@ -3441,6 +3440,7 @@ int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_device
+ 	btrfs_put_block_group_cache(fs_info);
+ 
+ fail_tree_roots:
++	btrfs_free_fs_roots(fs_info);
+ 	free_root_pointers(fs_info, true);
+ 	invalidate_inode_pages2(fs_info->btree_inode->i_mapping);
+ 
+-- 
+2.24.1
+
