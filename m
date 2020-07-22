@@ -2,58 +2,110 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B669B229CD4
-	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Jul 2020 18:11:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 873FF229CDD
+	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Jul 2020 18:15:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728198AbgGVQLy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 22 Jul 2020 12:11:54 -0400
-Received: from mx2.suse.de ([195.135.220.15]:40998 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728059AbgGVQLy (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 22 Jul 2020 12:11:54 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 480A6B018;
-        Wed, 22 Jul 2020 16:12:00 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id AEE95DA70B; Wed, 22 Jul 2020 18:11:26 +0200 (CEST)
-Date:   Wed, 22 Jul 2020 18:11:26 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Cc:     David Sterba <dsterba@suse.cz>, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v2] btrfs: open-code remount flag setting in btrfs_remount
-Message-ID: <20200722161126.GC3703@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        linux-btrfs@vger.kernel.org
-References: <20200722151804.33590-1-johannes.thumshirn@wdc.com>
+        id S1728400AbgGVQPv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 22 Jul 2020 12:15:51 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:34916 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726784AbgGVQPu (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 22 Jul 2020 12:15:50 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06MFuUmc190158;
+        Wed, 22 Jul 2020 16:15:31 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=wngYaeffss/ZqmZUl6rKo1fTpBJT6kVj81mnBoaEJkk=;
+ b=tNfNeGvz1SSwZxRu9fuL4U85ibGGMw0IqTN16mViR+zPmIZ3snSn0UNYIExeUSQz7sWN
+ c+Qw0iNhG1sFwBRadVu4Q1KZ1CRgsm/v7GoBgaWc0wwKzzlqbWYsFSFz0NLRYLkTHiKb
+ DD9khdBj83kLpNL0l6UEqVxRBUhaGRRUWkk24RDeyDs58cIrEXrvLwO5yIvrXaE1ZZHU
+ oOP5F/gDbOj7hlL0sCaUr5KbZqj3ve/JUgyRFFjFRVcC+4yzNMl0lgMA0cp9oQYZho/w
+ wLIz8sBM0T9apd4/7RFzs+cnR/YJpWFYXzWVnn1kckJ+VgB3Rtdf5rMmJIe1ebDCDPJQ CA== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2130.oracle.com with ESMTP id 32brgrmaqr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 22 Jul 2020 16:15:31 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06MFwB5L096647;
+        Wed, 22 Jul 2020 16:15:30 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3030.oracle.com with ESMTP id 32erheh0mf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 22 Jul 2020 16:15:30 +0000
+Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 06MGFQFN011293;
+        Wed, 22 Jul 2020 16:15:26 GMT
+Received: from localhost (/67.169.218.210)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 22 Jul 2020 09:15:25 -0700
+Date:   Wed, 22 Jul 2020 09:15:23 -0700
+From:   "Darrick J. Wong" <darrick.wong@oracle.com>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Dave Chinner <david@fromorbit.com>,
+        Goldwyn Rodrigues <rgoldwyn@suse.de>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Naohiro Aota <naohiro.aota@wdc.com>,
+        Johannes Thumshirn <jth@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        cluster-devel@redhat.com, linux-ext4@vger.kernel.org,
+        linux-xfs@vger.kernel.org, Dave Chinner <dchinner@redhat.com>,
+        Goldwyn Rodrigues <rgoldwyn@suse.com>
+Subject: Re: [PATCH 3/3] iomap: fall back to buffered writes for invalidation
+ failures
+Message-ID: <20200722153744.GN3151642@magnolia>
+References: <20200721183157.202276-1-hch@lst.de>
+ <20200721183157.202276-4-hch@lst.de>
+ <20200721203749.GF3151642@magnolia>
+ <20200722061850.GA24799@lst.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200722151804.33590-1-johannes.thumshirn@wdc.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <20200722061850.GA24799@lst.de>
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9690 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 spamscore=0 suspectscore=1
+ mlxlogscore=999 adultscore=0 mlxscore=0 bulkscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2007220108
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9690 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 bulkscore=0 spamscore=0
+ impostorscore=0 suspectscore=1 adultscore=0 clxscore=1015 mlxlogscore=999
+ priorityscore=1501 phishscore=0 lowpriorityscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2007220108
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Jul 23, 2020 at 12:18:04AM +0900, Johannes Thumshirn wrote:
-> When we're (re)mounting a btrfs filesystem we set the
-> BTRFS_FS_STATE_REMOUNTING state in fs_info to serialize against async
-> reclaim or defrags.
+On Wed, Jul 22, 2020 at 08:18:50AM +0200, Christoph Hellwig wrote:
+> On Tue, Jul 21, 2020 at 01:37:49PM -0700, Darrick J. Wong wrote:
+> > On Tue, Jul 21, 2020 at 08:31:57PM +0200, Christoph Hellwig wrote:
+> > > Failing to invalid the page cache means data in incoherent, which is
+> > > a very bad state for the system.  Always fall back to buffered I/O
+> > > through the page cache if we can't invalidate mappings.
+> > > 
+> > > Signed-off-by: Christoph Hellwig <hch@lst.de>
+> > > Acked-by: Dave Chinner <dchinner@redhat.com>
+> > > Reviewed-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
+> > 
+> > For the iomap and xfs parts,
+> > Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
+> > 
+> > But I'd still like acks from Ted, Andreas, and Damien for ext4, gfs2,
+> > and zonefs, respectively.
+> > 
+> > (Particularly if anyone was harboring ideas about trying to get this in
+> > before 5.10, though I've not yet heard anyone say that explicitly...)
 > 
-> This flag is set in btrfs_remount_prepare() called by btrfs_remount(). As
-> btrfs_remount_prepare() does nothing but setting this flag and doesn't
-> have a second caller, we can just open-code the flag setting in
-> btrfs_remount().
-> 
-> Similarly do for so clearing of the flag by moving it out of
-> btrfs_remount_cleanup() into btrfs_remount() to be symmetrical.
-> 
-> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-> ---
-> Changes to v1:
-> - Move clearing of the flag as well (David)
+> Why would we want to wait another whole merge window?
 
-Added to misc-next, thanks.
+Well it /is/ past -rc6, which is a tad late...
+
+OTOH we've been talking about this for 2 months now and most of the
+actual behavior change is in xfs land so maybe it's fine. :)
+
+--D
