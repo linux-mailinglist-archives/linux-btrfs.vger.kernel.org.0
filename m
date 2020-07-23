@@ -2,56 +2,66 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67B3722A6C0
-	for <lists+linux-btrfs@lfdr.de>; Thu, 23 Jul 2020 06:57:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8354F22A8C3
+	for <lists+linux-btrfs@lfdr.de>; Thu, 23 Jul 2020 08:16:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725846AbgGWE5I (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 23 Jul 2020 00:57:08 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:42341 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725822AbgGWE5H (ORCPT
+        id S1726652AbgGWGQP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 23 Jul 2020 02:16:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57562 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726522AbgGWGQO (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 23 Jul 2020 00:57:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1595480226;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=/4MD7qsWN1B0yrMgLKUYI1ow/qdtbtLAlSs3+Jsg6Ps=;
-        b=CxUOXCDMCUntAf3KRNQm6hIKVwlU+RfY3TULWpSYtzB0m8w+OuiTpahUhdVDdvJXnDLOQR
-        bdwj2CI9KqqHE8fC6lTxhfKV3pAvLXvsXhmEgJS9TMVAaSuTpczizYhUzZ2XuipqXHcE14
-        8Rb6X4p9OvqEoJL9QnhlHM1opE+At6w=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-278-0ayObmDiPvm1xWNhVZwY2w-1; Thu, 23 Jul 2020 00:57:02 -0400
-X-MC-Unique: 0ayObmDiPvm1xWNhVZwY2w-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DBF0B800688;
-        Thu, 23 Jul 2020 04:57:00 +0000 (UTC)
-Received: from localhost (dhcp-12-102.nay.redhat.com [10.66.12.102])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 471055D9D5;
-        Thu, 23 Jul 2020 04:57:00 +0000 (UTC)
-Date:   Thu, 23 Jul 2020 13:09:10 +0800
-From:   Zorro Lang <zlang@redhat.com>
+        Thu, 23 Jul 2020 02:16:14 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68C14C0619DC;
+        Wed, 22 Jul 2020 23:16:14 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id x9so2095558plr.2;
+        Wed, 22 Jul 2020 23:16:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=IkIFm2++IUwpx/m4LS5QkaX4zvzFK2fvJNHUZdP8i80=;
+        b=upjAZZPs4tRBKlGS5VMFjj+3y6i1F+1afh7W95t80+Wcv8YjRCHpQC+zz8AK3kuj66
+         LQk/Hg06bXfOcOr0aU4x+Fl68hIZ6rx9s5seH82wxoORixI5gGGIVQvc55+NYGjqX/uH
+         4J/8yxKX+ckvurv1ILgyKnjpmC78WJeJZxAUW4CWjf46l3bE0W/oTn9uJ1lGfVB05AB2
+         vEaAzNHjv92HPYZyrwIvlcDAfC+96W+oJdfp5HzhYH451iMzyD0T70sQb919WxuowZpt
+         Zx4MvABVcOT+2o1SAPCFbmN4oqUTkmOe55qdqacIA7bd41E/Uc3jQ7TrrrP4vBJKJWCh
+         HPUQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=IkIFm2++IUwpx/m4LS5QkaX4zvzFK2fvJNHUZdP8i80=;
+        b=eIZnip1KZLfOHlZrV2uJxkjV0t1Exzg1YXYsCRNYeuIHlBopuF9B7AFPgmqCTMc6a7
+         UpZeGJLNtRA2jQYGlFrUVLM7TCb/nC3fVscPGD6Nj/0+6bmQ84Z3LoFxNehOKeSG1a2I
+         SqluOF/Ze1q8nq6/4GiP0BZw/dpsH+Le7GGS52hIpB04lAzl/jItoZ2w7ftIxxAY1LNa
+         psrkIufhysgf8/KB1iHJ30YtrmSD/NKSx4/MdeenYSzzR/dIbLLjiwXf0oSMyGvW2ihk
+         LJbzW2M8ic7za5jHgv8qPiDuwhitAxQFh3+ooGpCHizZDarwILfVdteIMCx8d0b4FfTc
+         dHAw==
+X-Gm-Message-State: AOAM531KpZg3oGkonUso5N0GU9Pky2Y5TSTz1edIRSoU5b2OdeQxGhPq
+        T2rxqg9LP+enbVwRxDJ1RwM=
+X-Google-Smtp-Source: ABdhPJwEnh1JHrh2+XiM4ZjbrMAGsUHtQDvMDaKPtpVC2qBiE4d2gr2VcjDotQmcmN5wylOHEYCmxw==
+X-Received: by 2002:a17:902:c209:: with SMTP id 9mr2582164pll.133.1595484973892;
+        Wed, 22 Jul 2020 23:16:13 -0700 (PDT)
+Received: from localhost ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id gm3sm1519746pjb.44.2020.07.22.23.16.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Jul 2020 23:16:13 -0700 (PDT)
+Date:   Thu, 23 Jul 2020 14:16:05 +0800
+From:   Murphy Zhou <jencce.kernel@gmail.com>
 To:     fdmanana@kernel.org
 Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org,
         Filipe Manana <fdmanana@suse.com>,
         Murphy Zhou <jencce.kernel@gmail.com>
 Subject: Re: [PATCH] generic/501: make the test work on machines with a non
  4K page size
-Message-ID: <20200723050909.GD2937@dhcp-12-102.nay.redhat.com>
-Mail-Followup-To: fdmanana@kernel.org, fstests@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>,
-        Murphy Zhou <jencce.kernel@gmail.com>
+Message-ID: <20200723061605.ggltcoikywaphe74@xzhoux.usersys.redhat.com>
 References: <20200722141254.19511-1-fdmanana@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 In-Reply-To: <20200722141254.19511-1-fdmanana@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
@@ -64,6 +74,10 @@ On Wed, Jul 22, 2020 at 03:12:54PM +0100, fdmanana@kernel.org wrote:
 > (like ppc64le), because the clone operation fails with -EINVAL due to the
 > fact we pass it an offset that is 4K aligned but not aligned to the page
 > size of the machine.
+
+Tested OK. Take much longer time though.
+
+Ack. Thanks!
 > 
 > The test doesn't actually need offsets and lengths to be 4K aligned, so
 > just update the test to use offsets and lenghts that work for page size.
@@ -104,12 +118,6 @@ On Wed, Jul 22, 2020 at 03:12:54PM +0100, fdmanana@kernel.org wrote:
 > Reported-by: Murphy Zhou <jencce.kernel@gmail.com>
 > Signed-off-by: Filipe Manana <fdmanana@suse.com>
 > ---
-
-Looks good to me, although I think you don't need to list the whole test
-process in the commit log. Anyway, that's fine for me.
-
-Reviewed-by: Zorro Lang <zlang@redhat.com>
-
 >  tests/generic/501     | 14 ++++++++------
 >  tests/generic/501.out |  4 ++--
 >  2 files changed, 10 insertions(+), 8 deletions(-)
@@ -157,3 +165,5 @@ Reviewed-by: Zorro Lang <zlang@redhat.com>
 > 2.26.2
 > 
 
+-- 
+Murphy
