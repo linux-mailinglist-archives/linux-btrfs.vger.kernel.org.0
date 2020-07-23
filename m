@@ -2,28 +2,23 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63BA122A9F5
-	for <lists+linux-btrfs@lfdr.de>; Thu, 23 Jul 2020 09:45:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD44A22AA48
+	for <lists+linux-btrfs@lfdr.de>; Thu, 23 Jul 2020 10:02:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727073AbgGWHpb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 23 Jul 2020 03:45:31 -0400
-Received: from mx2.suse.de ([195.135.220.15]:55950 "EHLO mx2.suse.de"
+        id S1726178AbgGWICR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 23 Jul 2020 04:02:17 -0400
+Received: from mx2.suse.de ([195.135.220.15]:39050 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726178AbgGWHpb (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 23 Jul 2020 03:45:31 -0400
+        id S1725873AbgGWICR (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 23 Jul 2020 04:02:17 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 552BBABCE;
-        Thu, 23 Jul 2020 07:45:37 +0000 (UTC)
-Subject: Re: [PATCH 1/4] btrfs: Use rcu when iterating devices in
- btrfs_init_new_device
-To:     dsterba@suse.cz, Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-References: <20200722080925.6802-1-nborisov@suse.com>
- <20200722080925.6802-2-nborisov@suse.com>
- <SN4PR0401MB3598E3FEB988273A2709414B9B790@SN4PR0401MB3598.namprd04.prod.outlook.com>
- <f8a7bab8-98dc-55c6-5adf-7d0ee95bb3a6@suse.com>
- <20200722144750.GY3703@twin.jikos.cz>
+        by mx2.suse.de (Postfix) with ESMTP id 06758B06A
+        for <linux-btrfs@vger.kernel.org>; Thu, 23 Jul 2020 08:02:23 +0000 (UTC)
+Subject: Re: [PATCH 0/5] Convert seed devices to proper list API
+To:     dsterba@suse.cz, linux-btrfs@vger.kernel.org
+References: <20200715104850.19071-1-nborisov@suse.com>
+ <20200722142607.GX3703@twin.jikos.cz>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  xsFNBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -67,12 +62,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  KIuxEcV8wcVjr+Wr9zRl06waOCkgrQbTPp631hToxo+4rA1jiQF2M80HAet65ytBVR2pFGZF
  zGYYLqiG+mpUZ+FPjxk9kpkRYz61mTLSY7tuFljExfJWMGfgSg1OxfLV631jV1TcdUnx+h3l
  Sqs2vMhAVt14zT8mpIuu2VNxcontxgVr1kzYA/tQg32fVRbGr449j1gw57BV9i0vww==
-Message-ID: <ee74711c-10dd-4030-0af2-03399951e299@suse.com>
-Date:   Thu, 23 Jul 2020 10:45:28 +0300
+Message-ID: <dc2379cf-9e8f-031e-4214-d68f6e4d41b1@suse.com>
+Date:   Thu, 23 Jul 2020 11:02:14 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20200722144750.GY3703@twin.jikos.cz>
+In-Reply-To: <20200722142607.GX3703@twin.jikos.cz>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -83,70 +78,91 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 22.07.20 г. 17:47 ч., David Sterba wrote:
-> On Wed, Jul 22, 2020 at 01:36:15PM +0300, Nikolay Borisov wrote:
->>
->>
->> On 22.07.20 г. 12:17 ч., Johannes Thumshirn wrote:
->>> On 22/07/2020 10:09, Nikolay Borisov wrote:
->>>> When adding a new device there's a mandatory check to see if a device is
->>>> being duplicated to the filesystem it's added to. Since this is a
->>>> read-only operations not necessary to take device_list_mutex and can simply
->>>> make do with an rcu-readlock. No semantics changes.
->>>
->>> Hmm what are the actual locking rules for the device list? For instance looking
->>> at add_missing_dev() in volumes.c addition to the list is unprotected (both from
->>> read_one_chunk() and read_one_dev()). Others (i.e. btrfs_init_new_device()) do
->>> a list_add_rcu(). clone_fs_devices() takes the device_list_mutex and so on.
->>
->> Bummer, the locking rules are supposed to be those documented atop
->> volume.c, namely:
->>
->>  * fs_devices::device_list_mutex (per-fs, with RCU)
->>
->>     18  * ------------------------------------------------
->>
->>     17  * protects updates to fs_devices::devices, ie. adding and
->> deleting
->>     16  *
->>
->>     15  * simple list traversal with read-only actions can be done with
->> RCU protection
->>     14  *
->>
->>     13  * may be used to exclude some operations from running
->> concurrently without any
->>     12  * modifications to the list (see write_all_supers)
->>
->>
->>
->> However, your observations seem correct and rather annoying. Let me go
->> and try and figure this out...
+On 22.07.20 г. 17:26 ч., David Sterba wrote:
+> On Wed, Jul 15, 2020 at 01:48:45PM +0300, Nikolay Borisov wrote:
+>> This series converts the existing seed devices pointer in btrfs_fs_devices to
+>> proper list api. First 4 patches are cleanups preparing the code for the switch.
 > 
-> For device list it's important to know from which context is the list
-> used.
+>> Patch 5 has more information about the required transformations, it might seem
+>> lengthy but he logic everywhere is pretty much the same so shouldn't be that
+>> cumbersome to review.
 > 
-> On unmoutned filesystems, the devices can be added by scanning ioctl.
+> The first 3 patches are clear, I start to have doubts in 4 and 5 was a
+> stop for me, but I'm not saying it's wrong. Just that I always thought
+> the seed devices + the sprout are close to a tree structure but you're
+> switching that to a linear list.
 > 
-> On mounted filesystem, before the mount is finished, the devices cannot
-> be concurrently used (single-threaded context) and uuid_mutex is
-> temporarily protecting the devices agains scan ioctl.
-> 
-> On finished mount device list must be protected by device_list_mutex
-> from the same filesystem changes (ioctls, superblock write). Device
-> scanning is a no-op here, but still needs to use the uuid_mutex.
-> 
-> Enter RCU. For performance reasons we don't want to take
-> device_list_mutex for read-only operations like show_devname or lookups
-> of device id, where it's not critical that the returned information is
-> stale.
-> 
-> The mentioned helpers are used by various functions and the context is
-> not obvious or documented, but it should be clear once the caller chain
-> is known.
-> 
-> I can turn that into comments but please let me know if this is
-> sufficient as explanation or if you need more.
+> I'll add the first three patches now, but would appreciate some help
+> with 4 and 5.
 > 
 
-Yes having those different contexts spelled out is really beneficial.
+Ok, let's take it one at a time, patch 4:
+
+Originally fs_info for fs_devices is set by btrfs_set_fs_info_ptr called
+by btrfs_sysfs_add_mounted. THe latter is called in open_ctree before
+block_groups are read i.e on before the fs is exposed. My patch instead
+changes this so that fs_info is set in btrfs_init_devices_late, called
+from btrfs_read_roots, called by init_tree_roots. The last function is
+called before btrfs_sysfs_add_mounted. This means as far as setting
+fs_devices is concerned its fs_info is being set earlier. And this is
+correct.
+
+Now, let's think about clearing it, the old code cleared it in :
+
+btrfs_sysfs_remove_mounted which is called from:
+
+1. fail_sysfs label in open_ctree
+2. close_ctree
+3. failure in btrfs_sysfs_add_mounted which does goto fail_fsdev_sysfs
+
+So how are those 3 situation handled by the new code :
+
+1 and 3 - the last function called in open_ctree is btrfs_close_devices
+in case of errors and both failure labels are before it, so we are
+guaranteed that on failure in open_ctree fs_devices will have it's
+fs_info being NULL.
+
+2. Again, last function called in close_ctree is btrfs_close_devices so
+we are guaranteed on unmount fs_devices will have fs_info being NULL.
+
+Thus the patch doesn't introduce any functional changes but IMO makes
+the code more coherent.
+
+
+Regarding patch 5 - I don't know what made you think there is a
+tree-like structure involved. Simply looking at the old way seeds are
+iterated:
+
+	while (seed_devices) {
+		fs_devices = seed_devices;
+		seed_devices = fs_devices->seed;
+ 		close_fs_devices(fs_devices);
+ 		free_fs_devices(fs_devices);
+ 	}
+
+
+There's no conditional deciding if we should go left/right of the tree.
+Or let's take for example deleting from a list of seed devices:
+
+		tmp_fs_devices = fs_info->fs_devices;
+		while (tmp_fs_devices) {
+			if (tmp_fs_devices->seed == fs_devices) {
+				tmp_fs_devices->seed = fs_devices->seed;
+				break;
+			}
+			tmp_fs_devices = tmp_fs_devices->seed;
+		}
+
+Here a simple linear search is performed and when a member of the seed
+list matches our fs_devices it simply pointed 1 past our fs_devices
+
+When the if inside the loop matches we get the following situation:
+
+[tmp_fs_devices]->[fs_devices]->[fs_devices->seeds]
+
+Then we perform [tmp_fs_devices] -> [fs_devices->seed]
+
+So a simple deletion, just the fact you were confused shows the old code
+is rather wonky.
+
+
