@@ -2,168 +2,151 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8354F22A8C3
-	for <lists+linux-btrfs@lfdr.de>; Thu, 23 Jul 2020 08:16:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63BA122A9F5
+	for <lists+linux-btrfs@lfdr.de>; Thu, 23 Jul 2020 09:45:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726652AbgGWGQP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 23 Jul 2020 02:16:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57562 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726522AbgGWGQO (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 23 Jul 2020 02:16:14 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68C14C0619DC;
-        Wed, 22 Jul 2020 23:16:14 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id x9so2095558plr.2;
-        Wed, 22 Jul 2020 23:16:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=IkIFm2++IUwpx/m4LS5QkaX4zvzFK2fvJNHUZdP8i80=;
-        b=upjAZZPs4tRBKlGS5VMFjj+3y6i1F+1afh7W95t80+Wcv8YjRCHpQC+zz8AK3kuj66
-         LQk/Hg06bXfOcOr0aU4x+Fl68hIZ6rx9s5seH82wxoORixI5gGGIVQvc55+NYGjqX/uH
-         4J/8yxKX+ckvurv1ILgyKnjpmC78WJeJZxAUW4CWjf46l3bE0W/oTn9uJ1lGfVB05AB2
-         vEaAzNHjv92HPYZyrwIvlcDAfC+96W+oJdfp5HzhYH451iMzyD0T70sQb919WxuowZpt
-         Zx4MvABVcOT+2o1SAPCFbmN4oqUTkmOe55qdqacIA7bd41E/Uc3jQ7TrrrP4vBJKJWCh
-         HPUQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=IkIFm2++IUwpx/m4LS5QkaX4zvzFK2fvJNHUZdP8i80=;
-        b=eIZnip1KZLfOHlZrV2uJxkjV0t1Exzg1YXYsCRNYeuIHlBopuF9B7AFPgmqCTMc6a7
-         UpZeGJLNtRA2jQYGlFrUVLM7TCb/nC3fVscPGD6Nj/0+6bmQ84Z3LoFxNehOKeSG1a2I
-         SqluOF/Ze1q8nq6/4GiP0BZw/dpsH+Le7GGS52hIpB04lAzl/jItoZ2w7ftIxxAY1LNa
-         psrkIufhysgf8/KB1iHJ30YtrmSD/NKSx4/MdeenYSzzR/dIbLLjiwXf0oSMyGvW2ihk
-         LJbzW2M8ic7za5jHgv8qPiDuwhitAxQFh3+ooGpCHizZDarwILfVdteIMCx8d0b4FfTc
-         dHAw==
-X-Gm-Message-State: AOAM531KpZg3oGkonUso5N0GU9Pky2Y5TSTz1edIRSoU5b2OdeQxGhPq
-        T2rxqg9LP+enbVwRxDJ1RwM=
-X-Google-Smtp-Source: ABdhPJwEnh1JHrh2+XiM4ZjbrMAGsUHtQDvMDaKPtpVC2qBiE4d2gr2VcjDotQmcmN5wylOHEYCmxw==
-X-Received: by 2002:a17:902:c209:: with SMTP id 9mr2582164pll.133.1595484973892;
-        Wed, 22 Jul 2020 23:16:13 -0700 (PDT)
-Received: from localhost ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id gm3sm1519746pjb.44.2020.07.22.23.16.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Jul 2020 23:16:13 -0700 (PDT)
-Date:   Thu, 23 Jul 2020 14:16:05 +0800
-From:   Murphy Zhou <jencce.kernel@gmail.com>
-To:     fdmanana@kernel.org
-Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        Filipe Manana <fdmanana@suse.com>,
-        Murphy Zhou <jencce.kernel@gmail.com>
-Subject: Re: [PATCH] generic/501: make the test work on machines with a non
- 4K page size
-Message-ID: <20200723061605.ggltcoikywaphe74@xzhoux.usersys.redhat.com>
-References: <20200722141254.19511-1-fdmanana@kernel.org>
+        id S1727073AbgGWHpb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 23 Jul 2020 03:45:31 -0400
+Received: from mx2.suse.de ([195.135.220.15]:55950 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726178AbgGWHpb (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 23 Jul 2020 03:45:31 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 552BBABCE;
+        Thu, 23 Jul 2020 07:45:37 +0000 (UTC)
+Subject: Re: [PATCH 1/4] btrfs: Use rcu when iterating devices in
+ btrfs_init_new_device
+To:     dsterba@suse.cz, Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+References: <20200722080925.6802-1-nborisov@suse.com>
+ <20200722080925.6802-2-nborisov@suse.com>
+ <SN4PR0401MB3598E3FEB988273A2709414B9B790@SN4PR0401MB3598.namprd04.prod.outlook.com>
+ <f8a7bab8-98dc-55c6-5adf-7d0ee95bb3a6@suse.com>
+ <20200722144750.GY3703@twin.jikos.cz>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <ee74711c-10dd-4030-0af2-03399951e299@suse.com>
+Date:   Thu, 23 Jul 2020 10:45:28 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200722141254.19511-1-fdmanana@kernel.org>
+In-Reply-To: <20200722144750.GY3703@twin.jikos.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Jul 22, 2020 at 03:12:54PM +0100, fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
-> 
-> Currently generic/501 fails on machines with a page size different from 4K
-> (like ppc64le), because the clone operation fails with -EINVAL due to the
-> fact we pass it an offset that is 4K aligned but not aligned to the page
-> size of the machine.
 
-Tested OK. Take much longer time though.
 
-Ack. Thanks!
+On 22.07.20 г. 17:47 ч., David Sterba wrote:
+> On Wed, Jul 22, 2020 at 01:36:15PM +0300, Nikolay Borisov wrote:
+>>
+>>
+>> On 22.07.20 г. 12:17 ч., Johannes Thumshirn wrote:
+>>> On 22/07/2020 10:09, Nikolay Borisov wrote:
+>>>> When adding a new device there's a mandatory check to see if a device is
+>>>> being duplicated to the filesystem it's added to. Since this is a
+>>>> read-only operations not necessary to take device_list_mutex and can simply
+>>>> make do with an rcu-readlock. No semantics changes.
+>>>
+>>> Hmm what are the actual locking rules for the device list? For instance looking
+>>> at add_missing_dev() in volumes.c addition to the list is unprotected (both from
+>>> read_one_chunk() and read_one_dev()). Others (i.e. btrfs_init_new_device()) do
+>>> a list_add_rcu(). clone_fs_devices() takes the device_list_mutex and so on.
+>>
+>> Bummer, the locking rules are supposed to be those documented atop
+>> volume.c, namely:
+>>
+>>  * fs_devices::device_list_mutex (per-fs, with RCU)
+>>
+>>     18  * ------------------------------------------------
+>>
+>>     17  * protects updates to fs_devices::devices, ie. adding and
+>> deleting
+>>     16  *
+>>
+>>     15  * simple list traversal with read-only actions can be done with
+>> RCU protection
+>>     14  *
+>>
+>>     13  * may be used to exclude some operations from running
+>> concurrently without any
+>>     12  * modifications to the list (see write_all_supers)
+>>
+>>
+>>
+>> However, your observations seem correct and rather annoying. Let me go
+>> and try and figure this out...
 > 
-> The test doesn't actually need offsets and lengths to be 4K aligned, so
-> just update the test to use offsets and lenghts that work for page size.
-> Also add a comment mentioning that a file size of at least 16Mb was a
-> necessary condition to trigger the btrfs bug.
+> For device list it's important to know from which context is the list
+> used.
 > 
-> The test is a regression test for a btrfs issue fixed by kernel commit
-> bd3599a0e142cd ("Btrfs: fix file data corruption after cloning a range
-> and fsync"), which landed in kernel 4.18.
+> On unmoutned filesystems, the devices can be added by scanning ioctl.
 > 
-> Since I couldn't compile a 4.17 kernel on debian testing, I tried this
-> with a 4.18 kernel with that commit reverted, and it fails as expected
-> on a x86_64 box:
+> On mounted filesystem, before the mount is finished, the devices cannot
+> be concurrently used (single-threaded context) and uuid_mutex is
+> temporarily protecting the devices agains scan ioctl.
 > 
-> $ ./check generic/501
-> FSTYP         -- btrfs
-> PLATFORM      -- Linux/x86_64 debian9 4.18.0-btrfs-next-64 #1 SMP (...)
-> MKFS_OPTIONS  -- /dev/sdc
-> MOUNT_OPTIONS -- /dev/sdc /home/fdmanana/btrfs-tests/scratch_1
+> On finished mount device list must be protected by device_list_mutex
+> from the same filesystem changes (ioctls, superblock write). Device
+> scanning is a no-op here, but still needs to use the uuid_mutex.
 > 
-> generic/501 1s ... - output mismatch (see .../xfstests/results//generic/501.out.bad)
->     --- tests/generic/501.out	2020-07-22 14:50:12.585674202 +0100
->     +++ /home/fdmanana/git/hub/xfstests/results//generic/501.out.bad ...
->     @@ -2,4 +2,4 @@
->      File bar digest before power failure:
->      69319d0343ab8f5ea564167da445addc  SCRATCH_MNT/bar
->      File bar digest after power failure:
->     -69319d0343ab8f5ea564167da445addc  SCRATCH_MNT/bar
->     +21de7d7325fe4dae1f3311d5a76f819f  SCRATCH_MNT/bar
->     ...
->     (Run 'diff -u /home/fdmanana/git/hub/xfstests/tests/generic/501.out ...
-> Ran: generic/501
-> Failures: generic/501
-> Failed 1 of 1 tests
+> Enter RCU. For performance reasons we don't want to take
+> device_list_mutex for read-only operations like show_devname or lookups
+> of device id, where it's not critical that the returned information is
+> stale.
 > 
-> Without the commit reverted it passes as expected.
+> The mentioned helpers are used by various functions and the context is
+> not obvious or documented, but it should be clear once the caller chain
+> is known.
 > 
-> Reported-by: Murphy Zhou <jencce.kernel@gmail.com>
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
-> ---
->  tests/generic/501     | 14 ++++++++------
->  tests/generic/501.out |  4 ++--
->  2 files changed, 10 insertions(+), 8 deletions(-)
-> 
-> diff --git a/tests/generic/501 b/tests/generic/501
-> index 0d1f6ffe..bf020095 100755
-> --- a/tests/generic/501
-> +++ b/tests/generic/501
-> @@ -42,14 +42,16 @@ _require_metadata_journaling $SCRATCH_DEV
->  _init_flakey
->  _mount_flakey
->  
-> -$XFS_IO_PROG -f -c "pwrite -S 0x18 9000K 6908K" $SCRATCH_MNT/foo >>$seqres.full
-> -$XFS_IO_PROG -f -c "pwrite -S 0x20 2572K 156K" $SCRATCH_MNT/bar >>$seqres.full
-> +# Use file sizes and offsets/lengths for the clone operation that are multiples
-> +# of 64Kb, so that the test works on machine with any page size.
-> +$XFS_IO_PROG -f -s -c "pwrite -S 0x18 0 2M" $SCRATCH_MNT/foo >>$seqres.full
-> +$XFS_IO_PROG -f -s -c "pwrite -S 0x20 0 20M" $SCRATCH_MNT/bar >>$seqres.full
->  
->  # We clone from file foo into a range of file bar that overlaps the existing
-> -# extent at file bar. The destination offset of the reflink operation matches
-> -# the eof position of file bar minus 4Kb.
-> -$XFS_IO_PROG -c "fsync" \
-> -	     -c "reflink ${SCRATCH_MNT}/foo 0 2724K 15908K" \
-> +# extent at file bar. The clone operation must also extend the size of file bar.
-> +# Note: in order to trigger the original bug on btrfs, the destination file size
-> +# must be at least 16Mb and the destination file must have been fsynced before.
-> +$XFS_IO_PROG -c "reflink ${SCRATCH_MNT}/foo 0 19M 2M" \
->  	     -c "fsync" \
->  	     $SCRATCH_MNT/bar >>$seqres.full
->  
-> diff --git a/tests/generic/501.out b/tests/generic/501.out
-> index 5d7da017..778aba4b 100644
-> --- a/tests/generic/501.out
-> +++ b/tests/generic/501.out
-> @@ -1,5 +1,5 @@
->  QA output created by 501
->  File bar digest before power failure:
-> -95a95813a8c2abc9aa75a6c2914a077e  SCRATCH_MNT/bar
-> +69319d0343ab8f5ea564167da445addc  SCRATCH_MNT/bar
->  File bar digest after power failure:
-> -95a95813a8c2abc9aa75a6c2914a077e  SCRATCH_MNT/bar
-> +69319d0343ab8f5ea564167da445addc  SCRATCH_MNT/bar
-> -- 
-> 2.26.2
+> I can turn that into comments but please let me know if this is
+> sufficient as explanation or if you need more.
 > 
 
--- 
-Murphy
+Yes having those different contexts spelled out is really beneficial.
