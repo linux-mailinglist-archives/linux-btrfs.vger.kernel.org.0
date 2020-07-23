@@ -2,224 +2,240 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B86A122A2E9
-	for <lists+linux-btrfs@lfdr.de>; Thu, 23 Jul 2020 01:15:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 324B022A510
+	for <lists+linux-btrfs@lfdr.de>; Thu, 23 Jul 2020 04:08:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729659AbgGVXPk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 22 Jul 2020 19:15:40 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:58080 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726447AbgGVXPj (ORCPT
+        id S2387725AbgGWCIt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 22 Jul 2020 22:08:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47622 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387627AbgGWCIt (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 22 Jul 2020 19:15:39 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06MNDUQH082692;
-        Wed, 22 Jul 2020 23:15:23 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=Ej2Z3iqb72vYrKOI56crtrKrycfAd2g8PohO5r2hpWE=;
- b=gAA0iU80GjMZtg7oA3ob3hVdJqiwr03Mib0C57VzuPevCbnBD/dQ5NHucR3VJUbiTMbO
- WV3zFj5FJOKZG+bqxzDaG1D+PT4StbVSHIIdnzsfxmygMMvdaDH7la8XQ1a0BaIdpn4/
- E/sPZ9LQdUL6y33t5Av50VTN5GqjnQeplcjZcxZj6oMWQ/PAYg1jMJykTgl7rr7ghhlb
- hVUQohXdGrmjqPi8XNoQlDD8fCvMNk1nZ38v0+H24rk1ekXDNenL5Ox1J6m/O9+XqVyy
- M3Yw7cjs2/TIogTlQWl7BhR7LP2TOyT5+H4BHYzWltPnRkEGl+lLiQIUibHKoA5AYCq8 bg== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2120.oracle.com with ESMTP id 32d6kstdue-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 22 Jul 2020 23:15:23 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06MNFE5P183481;
-        Wed, 22 Jul 2020 23:15:23 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3030.oracle.com with ESMTP id 32exs4rcbu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 22 Jul 2020 23:15:22 +0000
-Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 06MNDuJY019168;
-        Wed, 22 Jul 2020 23:13:56 GMT
-Received: from localhost (/10.159.241.198)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 22 Jul 2020 16:13:55 -0700
-Date:   Wed, 22 Jul 2020 16:13:52 -0700
-From:   "Darrick J. Wong" <darrick.wong@oracle.com>
-To:     "Theodore Ts'o" <tytso@mit.edu>
-Cc:     Dave Chinner <david@fromorbit.com>,
-        Goldwyn Rodrigues <rgoldwyn@suse.de>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Naohiro Aota <naohiro.aota@wdc.com>,
-        Johannes Thumshirn <jth@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        cluster-devel@redhat.com, linux-ext4@vger.kernel.org,
-        linux-xfs@vger.kernel.org, Dave Chinner <dchinner@redhat.com>,
-        Goldwyn Rodrigues <rgoldwyn@suse.com>,
-        Christoph Hellwig <hch@infradead.org>
-Subject: Re: [PATCH 3/3] iomap: fall back to buffered writes for invalidation
- failures
-Message-ID: <20200722231352.GE848607@magnolia>
-References: <20200721183157.202276-1-hch@lst.de>
- <20200721183157.202276-4-hch@lst.de>
+        Wed, 22 Jul 2020 22:08:49 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25811C0619DC
+        for <linux-btrfs@vger.kernel.org>; Wed, 22 Jul 2020 19:08:48 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id r12so3615130wrj.13
+        for <linux-btrfs@vger.kernel.org>; Wed, 22 Jul 2020 19:08:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=P5mEb0Xr26AhRwbugtmyAZXR82WSR0owTqUPBtuhdwQ=;
+        b=zmwLZyxfmpX8Fm1F1uXnx7x9UmblezpX6/dqLBlqc0wlCul8cazxML5bScI4v1CnEm
+         8l0PDL3e2rOLxfZJN1GNVLGmio2RvvK7b5hv5fLw/NoRZLx0m2Prj/1UP71DxBh7VOAx
+         iNNjiG6VtVbETuW20XkBXf9hlSfDDYqQ/vZ/QytjtymZZvs3Tpm2lwoNrelUVG8nAIAv
+         ntAEGCxxVqcL72RgUPfM38OwTygRiG4kcWOTooOHiXjkwJ8l5dNVysbmUyvMtT0dOkmI
+         4h80op8cjj/RZLTGnz+Q9AEayZPFxhQhgHq3SpO95SgPU0ftBQEvus3VDOpqX2F3R1ei
+         wKvQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=P5mEb0Xr26AhRwbugtmyAZXR82WSR0owTqUPBtuhdwQ=;
+        b=kjSOog+7i68veNvI9tSRC7np1bnsnpsA1Xmh1fiP0ElzoPuN47ISWKx3KabFQviCtB
+         hkYuaH5pzBp4yyf7M6gzKWguDFdosC5VQnLGEL9YTRAaVm0NBo/9nWccnXb4YByOtkb1
+         qf4tYEe/z9DC5ThRjsoM7EKKhcD8+eJ61BE3ytlR0RNWc80opySNFVwgHCM8Ev5PPu19
+         71YSvqL7euMmVijLwPBplzAC0MqGdcYLJwggHef1jujDFWK+YliMQrqPIWMM4v+q/LmS
+         jHamqQd1IOk8j11VboG4lsVIwJV2PYl10J3iMeUjMJvZ51pC1yJyccr/WHH9jaiwptpp
+         jlSg==
+X-Gm-Message-State: AOAM531jUH7Eq9xieyqbaZB3dcgxnZax0LDmQDVzrow06yc1NUKXZynz
+        Eto4Gjc4o8cH9d/CMV2M12SabQVdhxoSjv43Hls7hA==
+X-Google-Smtp-Source: ABdhPJxrbGVQj3XAqE0PInRyPTN9SRDP2y1bvW4M9K0WR6SB2DqcozpPYV8OBMwCFF4ZQEao22aGjEPl2GtEIptB9gI=
+X-Received: by 2002:adf:a19e:: with SMTP id u30mr1896539wru.274.1595470126680;
+ Wed, 22 Jul 2020 19:08:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200721183157.202276-4-hch@lst.de>
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9690 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=5 mlxlogscore=999
- phishscore=0 malwarescore=0 adultscore=0 mlxscore=0 spamscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2007220143
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9690 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 suspectscore=5
- bulkscore=0 mlxscore=0 mlxlogscore=999 impostorscore=0 priorityscore=1501
- lowpriorityscore=0 phishscore=0 spamscore=0 adultscore=0 clxscore=1015
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2007220143
+References: <d3fced3f-6c2b-5ffa-fd24-b24ec6e7d4be@xmyslivec.cz>
+In-Reply-To: <d3fced3f-6c2b-5ffa-fd24-b24ec6e7d4be@xmyslivec.cz>
+From:   Chris Murphy <lists@colorremedies.com>
+Date:   Wed, 22 Jul 2020 20:08:30 -0600
+Message-ID: <CAJCQCtSfz+b38fW3zdcHwMMtO1LfXSq+0xgg_DaKShmAumuCWQ@mail.gmail.com>
+Subject: Re: Linux RAID with btrfs stuck and consume 100 % CPU
+To:     Vojtech Myslivec <vojtech@xmyslivec.cz>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
+        Linux-RAID <linux-raid@vger.kernel.org>,
+        Michal Moravec <michal.moravec@logicworks.cz>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hey Ted,
+On Wed, Jul 22, 2020 at 2:55 PM Vojtech Myslivec <vojtech@xmyslivec.cz> wrote:
+>
+> This host serves as a backup server and it runs regular backup tasks.
+> When a backup is performed, one (read only) snapshot of one of my
+> subvolumes on the btrfs filesystem is created and one snapshot is
+> deleted afterwards.
 
-Could you please review the fs/ext4/ part of this patch (it's the
-follow-on to the directio discussion I had with you last week) so that I
-can get this moving for 5.9? Thx,
+This is likely to be a decently metadata centric workflow, lots of
+small file changes, and metadata (file system) changes. Parity raid
+performance in such workloads is often not great. It's just the way it
+goes. But what does iostat tell you about drive utilization during
+these backups? And during the problem? Are they balanced? Are they
+nearly fully utilized?
 
---D
 
-On Tue, Jul 21, 2020 at 08:31:57PM +0200, Christoph Hellwig wrote:
-> Failing to invalid the page cache means data in incoherent, which is
-> a very bad state for the system.  Always fall back to buffered I/O
-> through the page cache if we can't invalidate mappings.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> Acked-by: Dave Chinner <dchinner@redhat.com>
-> Reviewed-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
-> ---
->  fs/ext4/file.c       |  2 ++
->  fs/gfs2/file.c       |  3 ++-
->  fs/iomap/direct-io.c | 16 +++++++++++-----
->  fs/iomap/trace.h     |  1 +
->  fs/xfs/xfs_file.c    |  4 ++--
->  fs/zonefs/super.c    |  7 +++++--
->  6 files changed, 23 insertions(+), 10 deletions(-)
-> 
-> diff --git a/fs/ext4/file.c b/fs/ext4/file.c
-> index 2a01e31a032c4c..129cc1dd6b7952 100644
-> --- a/fs/ext4/file.c
-> +++ b/fs/ext4/file.c
-> @@ -544,6 +544,8 @@ static ssize_t ext4_dio_write_iter(struct kiocb *iocb, struct iov_iter *from)
->  		iomap_ops = &ext4_iomap_overwrite_ops;
->  	ret = iomap_dio_rw(iocb, from, iomap_ops, &ext4_dio_write_ops,
->  			   is_sync_kiocb(iocb) || unaligned_io || extend);
-> +	if (ret == -ENOTBLK)
-> +		ret = 0;
->  
->  	if (extend)
->  		ret = ext4_handle_inode_extension(inode, offset, ret, count);
-> diff --git a/fs/gfs2/file.c b/fs/gfs2/file.c
-> index bebde537ac8cf2..b085a3bea4f0fd 100644
-> --- a/fs/gfs2/file.c
-> +++ b/fs/gfs2/file.c
-> @@ -835,7 +835,8 @@ static ssize_t gfs2_file_direct_write(struct kiocb *iocb, struct iov_iter *from)
->  
->  	ret = iomap_dio_rw(iocb, from, &gfs2_iomap_ops, NULL,
->  			   is_sync_kiocb(iocb));
-> -
-> +	if (ret == -ENOTBLK)
-> +		ret = 0;
->  out:
->  	gfs2_glock_dq(&gh);
->  out_uninit:
-> diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
-> index 190967e87b69e4..c1aafb2ab99072 100644
-> --- a/fs/iomap/direct-io.c
-> +++ b/fs/iomap/direct-io.c
-> @@ -10,6 +10,7 @@
->  #include <linux/backing-dev.h>
->  #include <linux/uio.h>
->  #include <linux/task_io_accounting_ops.h>
-> +#include "trace.h"
->  
->  #include "../internal.h"
->  
-> @@ -401,6 +402,9 @@ iomap_dio_actor(struct inode *inode, loff_t pos, loff_t length,
->   * can be mapped into multiple disjoint IOs and only a subset of the IOs issued
->   * may be pure data writes. In that case, we still need to do a full data sync
->   * completion.
-> + *
-> + * Returns -ENOTBLK In case of a page invalidation invalidation failure for
-> + * writes.  The callers needs to fall back to buffered I/O in this case.
->   */
->  ssize_t
->  iomap_dio_rw(struct kiocb *iocb, struct iov_iter *iter,
-> @@ -478,13 +482,15 @@ iomap_dio_rw(struct kiocb *iocb, struct iov_iter *iter,
->  	if (iov_iter_rw(iter) == WRITE) {
->  		/*
->  		 * Try to invalidate cache pages for the range we are writing.
-> -		 * If this invalidation fails, tough, the write will still work,
-> -		 * but racing two incompatible write paths is a pretty crazy
-> -		 * thing to do, so we don't support it 100%.
-> +		 * If this invalidation fails, let the caller fall back to
-> +		 * buffered I/O.
->  		 */
->  		if (invalidate_inode_pages2_range(mapping, pos >> PAGE_SHIFT,
-> -				end >> PAGE_SHIFT))
-> -			dio_warn_stale_pagecache(iocb->ki_filp);
-> +				end >> PAGE_SHIFT)) {
-> +			trace_iomap_dio_invalidate_fail(inode, pos, count);
-> +			ret = -ENOTBLK;
-> +			goto out_free_dio;
-> +		}
->  
->  		if (!wait_for_completion && !inode->i_sb->s_dio_done_wq) {
->  			ret = sb_init_dio_done_wq(inode->i_sb);
-> diff --git a/fs/iomap/trace.h b/fs/iomap/trace.h
-> index 5693a39d52fb63..fdc7ae388476f5 100644
-> --- a/fs/iomap/trace.h
-> +++ b/fs/iomap/trace.h
-> @@ -74,6 +74,7 @@ DEFINE_EVENT(iomap_range_class, name,	\
->  DEFINE_RANGE_EVENT(iomap_writepage);
->  DEFINE_RANGE_EVENT(iomap_releasepage);
->  DEFINE_RANGE_EVENT(iomap_invalidatepage);
-> +DEFINE_RANGE_EVENT(iomap_dio_invalidate_fail);
->  
->  #define IOMAP_TYPE_STRINGS \
->  	{ IOMAP_HOLE,		"HOLE" }, \
-> diff --git a/fs/xfs/xfs_file.c b/fs/xfs/xfs_file.c
-> index a6ef90457abf97..1b4517fc55f1b9 100644
-> --- a/fs/xfs/xfs_file.c
-> +++ b/fs/xfs/xfs_file.c
-> @@ -553,8 +553,8 @@ xfs_file_dio_aio_write(
->  	xfs_iunlock(ip, iolock);
->  
->  	/*
-> -	 * No fallback to buffered IO on errors for XFS, direct IO will either
-> -	 * complete fully or fail.
-> +	 * No fallback to buffered IO after short writes for XFS, direct I/O
-> +	 * will either complete fully or return an error.
->  	 */
->  	ASSERT(ret < 0 || ret == count);
->  	return ret;
-> diff --git a/fs/zonefs/super.c b/fs/zonefs/super.c
-> index 07bc42d62673ce..d0a04528a7e18e 100644
-> --- a/fs/zonefs/super.c
-> +++ b/fs/zonefs/super.c
-> @@ -786,8 +786,11 @@ static ssize_t zonefs_file_write_iter(struct kiocb *iocb, struct iov_iter *from)
->  	if (iocb->ki_pos >= ZONEFS_I(inode)->i_max_size)
->  		return -EFBIG;
->  
-> -	if (iocb->ki_flags & IOCB_DIRECT)
-> -		return zonefs_file_dio_write(iocb, from);
-> +	if (iocb->ki_flags & IOCB_DIRECT) {
-> +		ssize_t ret = zonefs_file_dio_write(iocb, from);
-> +		if (ret != -ENOTBLK)
-> +			return ret;
-> +	}
->  
->  	return zonefs_file_buffered_write(iocb, from);
->  }
-> -- 
-> 2.27.0
-> 
+
+>
+> Once in several days (irregularly, as I noticed), the `md1_raid6`
+> process starts to consume 100 % of one CPU core and during that time,
+> creating a snapshot (during the regular backup process) of a btrfs
+> subvolume get stucked. User space processes accessing this particular
+> subvolume then start to hang in *disk sleep* state. Access to other
+> subvolumes seems to be unaffected until another backup process tries to
+> create another snapshot (of different subvolume).
+
+Snapshot results in flush. And snapshot delete result in btrfs-cleaner
+process, which involves a lot of reas and writes to track down the
+extents to be freed. But your call traces seem stuck in snapshot
+creation.
+
+Can you provide mdadm -E and -D output respectively? I wonder if the
+setup is just not well suited for the workload. Default mdadm 512KiB
+chunk may not align well with this workload.
+
+Also, a complete dmesg might be useful.
+
+
+
+>
+> In most cases, after several "IO" actions like listing files (ls),
+> accessing btrfs information (`btrfs filesystem`, `btrfs subvolume`), or
+> accessing the device (with `dd` or whatever), the filesystem gets
+> magically unstucked and `md1_raid6` process released from its "live
+> lock" (or whatever it is cycled in). Snapshots are then created as
+> expected and all processes finish their job.
+>
+> Once in a week approximately, it takes tens of minutes to unstuck these
+> processes. During that period, I try to access affected btrfs subvolumes
+> in several shell sessions to wake it up.
+
+Could be lock contention on the subvolume.
+
+
+> However, there are some more "blocked" tasks, like `btrfs` and
+> `btrfs-transaction` with call trace also included.
+>
+>
+> Questions
+> =========
+>
+> 1. What should be the cause of this problem?
+> 2. What should I do to mitigate this issue?
+> 3. Could it be a hardware problem? How can I track this?
+
+Not sure  yet. Need more info.
+
+dmesg
+mdadm -E
+mdadm -D
+btrfs filesystem usage /mountpoint
+btrfs device stats /mountpoint
+
+> What I have done so far
+> =======================
+>
+> - I keep the system up-to-date, with latest stable kernel provided by
+>   Debian packages
+
+5.5 is fairly recent and OK. It should be fine, except you're having a
+problem, so...it could be a bug that's fixed already or a new bug. Or
+it could be suboptimal configuration for the workload - which can be
+difficult to figure out.
+
+>
+> - I run both `btrfs scrub` and `fsck.btrfs` to exclude btrfs filesystem
+>   issue.
+>
+> - I have read all the physical disks (with dd command) and perform SMART
+>   self tests to exclude disks issue (though read/write badblocks were
+>   not checked yet).
+
+I wouldn't worry too much about badblocks. More important is
+https://raid.wiki.kernel.org/index.php/Timeout_Mismatch
+
+But you report using enterprise drives. They will invariably have an
+SCT ERC time of ~70 deciseconds, which is well below that of the
+kernel's SCSI command timer, ergo not a problem. But it's fine to
+double check that.
+
+
+> - I have also moved all the files out of the affected filesystem, create
+>   a new btrfs filesystem (with recent btrfs-progs) and moved files
+>   back. This issue, none the less, appeared again.
+
+Exactly the same configuration? Anything different at all?
+
+
+>
+> - I have tried to attach strace to cycled md1 process, but
+>   unsuccessfully (is it even possible to strace running kernel thread?)
+
+You want to do 'cat /proc/<pid>/stack'
+
+
+> Some detailed facts
+> ===================
+>
+> OS
+> --
+>
+> - Debian 10 buster (stable release)
+> - Linux kernel 5.5 (from Debian backports)
+> - btrfs-progs 5.2.1 (from Debian backports)
+
+btrfs-progs 5.2.1 is ok, but I suggest something newer before using
+'btrfs check --repair'. Just to be clear --repair is NOT indicated
+right now.
+
+
+> Hardware
+> --------
+>
+> - 8 core/16 threads amd64 processor (AMD EPYC 7251)
+> - 6 SATA HDD disks (Seagate Enterprise Capacity)
+> - 2 SSD disks (Intel D3-S4610)
+
+It's not related, but your workload might benefit from
+'compress=zstd:1' mount option. Compress everything across the board.
+Chances are these backups contain a lot of compressible data. This
+isn't important to do right now. Fix the problem first. Optimize
+later. But you have significant CPU capacity relative to the hardware.
+
+
+> btrfs
+> -----
+> - Several subvolumes, tens of snapshots
+> - Default mount options: rw,noatime,space_cache,subvolid=5,subvol=/
+> - No compression, autodefrag or so
+> - I have tried to use quotas in the past but they are disabled for
+>   a long time
+
+I don't think this is the only thing going on, but consider
+space_cache=v2. You can mount with '-o clear_cache'  then umount and
+then mount again with 'o space_cache=v2' to convert. And it will be
+persistent (unless invalidated by a repair and then default v1 version
+is used again). v2 will soon be the default.
+
+
+
+
+>
+> Usage
+> -----
+>
+> - Affected RAID6 block device is directly formatted to btrfs
+> - This filesystem is used to store backups
+> - Backups are performed via rsnapshot
+> - rsnapshot is configured to use btrfs snapshots for hourly and daily
+>   backups and rsync to copy new backups
+
+How many rsnapshot and rsync tasks are happening concurrently for a
+subvolume at the time the  subvolume becomes unresponsive?
+
+
+
+
+-- 
+Chris Murphy
