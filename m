@@ -2,52 +2,74 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E277622C27A
-	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Jul 2020 11:42:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2A2322C28F
+	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Jul 2020 11:47:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727057AbgGXJmO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 24 Jul 2020 05:42:14 -0400
-Received: from mx2.suse.de ([195.135.220.15]:54798 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726114AbgGXJmO (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 24 Jul 2020 05:42:14 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id DDF4FAD46;
-        Fri, 24 Jul 2020 09:42:20 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 9D4FADA791; Fri, 24 Jul 2020 11:41:45 +0200 (CEST)
-Date:   Fri, 24 Jul 2020 11:41:45 +0200
-From:   David Sterba <dsterba@suse.cz>
+        id S1726945AbgGXJrS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 24 Jul 2020 05:47:18 -0400
+Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:58199 "EHLO
+        wout2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726114AbgGXJrS (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 24 Jul 2020 05:47:18 -0400
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.west.internal (Postfix) with ESMTP id 13583CC1;
+        Fri, 24 Jul 2020 05:47:17 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute1.internal (MEProxy); Fri, 24 Jul 2020 05:47:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=vDWGH6eWsUd/YnN0zWWBM27Irbj
+        5lY4lQRZBYu5So58=; b=KVf9e4GzPYptdUxAfUFJye71eR1j1Aag/GzDFDvrWsp
+        hqHgxcP0bauxUB1eE8Ypm9sii35Xt+3rgmlRw1jCnVy3wdsinIoIuH7MuLJeBFpt
+        pr0tNiqr3n85r7dICrWzqc3JAozAk4MoyStuYAfGFjlmaOp4tlmUSAEPoik6gs1m
+        7IUn4mNH/3gVhFuyYvYyAVz2EqIefi7oh4q/Hqt5uvLWGNYRyBJYXrkv0Agn+Lyq
+        LZ+g2SB306wze8JuhxxJPEIgGX/5tRUKAxWZ9WlONED4w7Uxwfg8/XGG7ba05IYP
+        34pUGmWsHRmNAmvmEpcGzziK6wcTdk3tP6XK+/rK/pw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=vDWGH6
+        eWsUd/YnN0zWWBM27Irbj5lY4lQRZBYu5So58=; b=XeCEfwtgA/rPX6ZPNHcyTW
+        8VrC4X3oDfOb7VQHuCrlJysTISv+YKuxtjqP3DY3Z6/ruyyaZrFRnZ1/Clx5g1F8
+        Dvw5ZH5FQ9NA92wZbPHUxojbb+7LCNKtxTwdFOMUovH9Y2XP+5AKTUy5dbyyXklY
+        L4hvwXDDk6uMHNmCpGqJeJ2sYQxKohBg6Gwm56nJ7gVe+atIFBywduoOHfjNrlf/
+        gj6VRgK89hUQszpGjc7jzYL2p81W3KV0Pj1k/eeMjCq/63vgzDmF05WWKUIQasRv
+        e9TifN0sLuz6YwUSoLGaSmvPcgVYST6Ig0k3P0ECHaRrV7gmbYLF3rVqiGN2hpkw
+        ==
+X-ME-Sender: <xms:JK4aXxG76OJGOTuonIOJ8YegYjiqzqOm5qdH0hY32IDDh84Av0g9Hg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrheefgddvtdcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghgucfm
+    jfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepveeuheejgf
+    ffgfeivddukedvkedtleelleeghfeljeeiueeggeevueduudekvdetnecukfhppeekfedr
+    keeirdekledruddtjeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
+    hlfhhrohhmpehgrhgvgheskhhrohgrhhdrtghomh
+X-ME-Proxy: <xmx:JK4aX2UIyy4JGfYR_1dJ-ptjBs1rWm2hMSyjt8H2NujPxnVdfa3ksA>
+    <xmx:JK4aXzKpeaDm3qPGHk6Cy9hqn1GvL6t15s1NhoIXN-hXroex6KpSqg>
+    <xmx:JK4aX3FiyzxiUbdnqNj_lRZP-4tvqDJai9opbddjmIdr8Gxe88lHMA>
+    <xmx:JK4aX4f6S-rfagp-vfCvIBSkBp41OWgppQuDZjyTmrDzOXgTRjh8uA>
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 444483060067;
+        Fri, 24 Jul 2020 05:47:16 -0400 (EDT)
+Date:   Fri, 24 Jul 2020 11:47:19 +0200
+From:   Greg KH <greg@kroah.com>
 To:     Qu Wenruo <wqu@suse.com>
 Cc:     linux-btrfs@vger.kernel.org, stable@vger.kernel.org,
         David Sterba <dsterba@suse.com>
 Subject: Re: [PATCH] btrfs: reloc: clear DEAD_RELOC_TREE bit for orphan roots
- -- for 5.7 to prevent runaway balance
-Message-ID: <20200724094145.GG3703@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org, stable@vger.kernel.org,
-        David Sterba <dsterba@suse.com>
+ to prevent runaway balance
+Message-ID: <20200724094719.GC4176508@kroah.com>
 References: <20200724014640.20784-1-wqu@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 In-Reply-To: <20200724014640.20784-1-wqu@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
-
-Qu,
-
-you need to make the target version visible in the subject. The manual
-submissions to stable are processed by humans, while the CC: tag is for
-semi-automatic collection of patches that get merged to master.
-
-If you send 3 patches with same subjects it could be ignored as resends
-or it's required to read all the changelogs.
 
 On Fri, Jul 24, 2020 at 09:46:40AM +0800, Qu Wenruo wrote:
 > commit 1dae7e0e58b484eaa43d530f211098fdeeb0f404 upstream.
@@ -85,31 +107,7 @@ On Fri, Jul 24, 2020 at 09:46:40AM +0800, Qu Wenruo wrote:
 >  fs/btrfs/disk-io.c    | 1 +
 >  fs/btrfs/relocation.c | 2 ++
 >  2 files changed, 3 insertions(+)
-> 
-> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-> index f71e4dbe1d8a..f00e64fee5dd 100644
-> --- a/fs/btrfs/disk-io.c
-> +++ b/fs/btrfs/disk-io.c
-> @@ -1998,6 +1998,7 @@ void btrfs_put_root(struct btrfs_root *root)
->  
->  	if (refcount_dec_and_test(&root->refs)) {
->  		WARN_ON(!RB_EMPTY_ROOT(&root->inode_tree));
-> +		WARN_ON(test_bit(BTRFS_ROOT_DEAD_RELOC_TREE, &root->state));
->  		if (root->anon_dev)
->  			free_anon_bdev(root->anon_dev);
->  		btrfs_drew_lock_destroy(&root->snapshot_lock);
-> diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-> index 157452a5e110..f67d736c27a1 100644
-> --- a/fs/btrfs/relocation.c
-> +++ b/fs/btrfs/relocation.c
-> @@ -2642,6 +2642,8 @@ void merge_reloc_roots(struct reloc_control *rc)
->  					root->reloc_root = NULL;
->  					btrfs_put_root(reloc_root);
->  				}
-> +				clear_bit(BTRFS_ROOT_DEAD_RELOC_TREE,
-> +					  &root->state);
->  				btrfs_put_root(root);
->  			}
->  
-> -- 
-> 2.27.0
+
+Thanks for the backports, all now queued up.
+
+greg k-h
