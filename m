@@ -2,110 +2,72 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A63422C2BA
-	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Jul 2020 12:05:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFBB222C44F
+	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Jul 2020 13:22:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726753AbgGXKFC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 24 Jul 2020 06:05:02 -0400
-Received: from [195.174.65.42] ([195.174.65.42]:23711 "EHLO
-        hosting1.nurettinalp.info" rhost-flags-FAIL-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726114AbgGXKFC (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 24 Jul 2020 06:05:02 -0400
-X-Greylist: delayed 366 seconds by postgrey-1.27 at vger.kernel.org; Fri, 24 Jul 2020 06:05:01 EDT
-Received: from localhost (localhost [127.0.0.1])
-        by hosting1.nurettinalp.info (Postfix) with ESMTP id E64ADA1E8C
-        for <linux-btrfs@vger.kernel.org>; Fri, 24 Jul 2020 12:58:41 +0300 (+03)
-X-Virus-Scanned: Debian amavisd-new at server1.nurettinalp.info
-Received: from hosting1.nurettinalp.info ([127.0.0.1])
-        by localhost (hosting1.nurettinalp.info [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id fz4l6pJ5d3mU for <linux-btrfs@vger.kernel.org>;
-        Fri, 24 Jul 2020 12:58:37 +0300 (+03)
-Received: from www.nurettinalp.com (localhost [IPv6:::1])
-        by hosting1.nurettinalp.info (Postfix) with ESMTP id E4C35A1E6A
-        for <linux-btrfs@vger.kernel.org>; Fri, 24 Jul 2020 12:58:36 +0300 (+03)
+        id S1727975AbgGXLWD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 24 Jul 2020 07:22:03 -0400
+Received: from mx2.suse.de ([195.135.220.15]:57990 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726488AbgGXLWC (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 24 Jul 2020 07:22:02 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 3B7F6AC52;
+        Fri, 24 Jul 2020 11:22:08 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 5D4BEDA791; Fri, 24 Jul 2020 13:21:33 +0200 (CEST)
+From:   David Sterba <dsterba@suse.com>
+To:     torvalds@linux-foundation.org
+Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Btrfs fixes for 5.8-rc7
+Date:   Fri, 24 Jul 2020 13:21:32 +0200
+Message-Id: <cover.1595587350.git.dsterba@suse.com>
+X-Mailer: git-send-email 2.25.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Fri, 24 Jul 2020 09:58:36 +0000
-From:   nurettin@nurettinalp.com
-To:     linux-btrfs@vger.kernel.org
-Subject: btrfs repair
-Message-ID: <9ae782644c2b9b24485411a512a2ec08@nurettinalp.com>
-X-Sender: nurettin@nurettinalp.com
-User-Agent: Roundcube Webmail/1.1.3
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-which commands repair my btrfs filesystem. thank you.
+Hi,
 
+I've selected a few resouce leak fixes from recent patches, all are
+stable material. The problems have been observed during testing or have
+a reproducer.
 
-mdadm -D /dev/md2
-/dev/md2:
-            Version : 1.2
-      Creation Time : Tue Mar 10 18:53:32 2020
-         Raid Level : linear
-         Array Size : 21455548416 (20461.61 GiB 21970.48 GB)
-       Raid Devices : 4
-      Total Devices : 4
-        Persistence : Superblock is persistent
+Please pull, thanks.
 
-        Update Time : Wed Jul 22 13:20:52 2020
-              State : clean
-     Active Devices : 4
-    Working Devices : 4
-     Failed Devices : 0
-      Spare Devices : 0
+----------------------------------------------------------------
+The following changes since commit d77765911385b65fc82d74ab71b8983cddfe0b58:
 
-           Rounding : 64K
+  btrfs: wire up iter_file_splice_write (2020-07-09 19:57:58 +0200)
 
-Consistency Policy : none
+are available in the Git repository at:
 
-               Name : n0:2
-               UUID : fb2b1053:b63f9733:6a34de1b:8a5b6fcd
-             Events : 54
+  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.8-rc6-tag
 
-     Number   Major   Minor   RaidDevice State
-        0       8       19        0      active sync   /dev/sdb3
-        1       8       35        1      active sync   /dev/sdc3
-        2       8       51        2      active sync   /dev/sdd3
-        3       8       67        3      active sync   /dev/sde3
+for you to fetch changes up to 48cfa61b58a1fee0bc49eef04f8ccf31493b7cdd:
 
+  btrfs: fix mount failure caused by race with umount (2020-07-21 22:08:54 +0200)
 
-root@ubuntu:~# btrfs fi show
-Label: '2020.03.10-18:55:12 v23739'  uuid: 
-79471a21-005a-4b82-bc30-42357b9f4105
-	Total devices 1 FS bytes used 13.85TiB
-	devid    1 size 19.98TiB used 14.28TiB path /dev/mapper/vg1-volume_1
+----------------------------------------------------------------
+Boris Burkov (1):
+      btrfs: fix mount failure caused by race with umount
 
+Filipe Manana (1):
+      btrfs: fix double free on ulist after backref resolution failure
 
-root@ubuntu:~# mount /dev/vg1/volume_1 ./btrfs/
-mount: /root/btrfs: wrong fs type, bad option, bad superblock on 
-/dev/mapper/vg1-volume_1, missing codepage or helper program, or other 
-error.
+Qu Wenruo (1):
+      btrfs: qgroup: fix data leak caused by race between writeback and truncate
 
-btrfs-find-root /dev/vg1/volume_1
+Robbie Ko (1):
+      btrfs: fix page leaks after failure to lock page for delalloc
 
-Couldn't setup extent tree
-Couldn't setup device tree
-Superblock thinks the generation is 239232
-Superblock thinks the level is 1
-...........................
-Well block 4139877171200(gen: 20533 level: 1) seems good, but 
-generation/level doesn't match, want gen: 239232 level: 1
-Well block 4139850039296(gen: 20532 level: 1) seems good, but 
-generation/level doesn't match, want gen: 239232 level: 1
-Well block 4085098168320(gen: 20407 level: 1) seems good, but 
-generation/level doesn't match, want gen: 239232 level: 1
-Well block 4085102346240(gen: 20388 level: 0) seems good, but 
-generation/level doesn't match, want gen: 239232 level: 1
-Well block 4030345101312(gen: 20292 level: 1) seems good, but 
-generation/level doesn't match, want gen: 239232 level: 1
-Well block 4030324768768(gen: 20291 level: 1) seems good, but 
-generation/level doesn't match, want gen: 239232 level: 1
-Well block 4030343970816(gen: 20272 level: 0) seems good, but 
-generation/level doesn't match, want gen: 239232 level: 1
-
+ fs/btrfs/backref.c   |  1 +
+ fs/btrfs/extent_io.c |  3 ++-
+ fs/btrfs/inode.c     | 23 ++++++++++-------------
+ fs/btrfs/volumes.c   |  8 ++++++++
+ 4 files changed, 21 insertions(+), 14 deletions(-)
