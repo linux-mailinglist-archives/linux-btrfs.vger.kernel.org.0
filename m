@@ -2,112 +2,110 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2A2322C28F
-	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Jul 2020 11:47:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A63422C2BA
+	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Jul 2020 12:05:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726945AbgGXJrS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 24 Jul 2020 05:47:18 -0400
-Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:58199 "EHLO
-        wout2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726114AbgGXJrS (ORCPT
+        id S1726753AbgGXKFC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 24 Jul 2020 06:05:02 -0400
+Received: from [195.174.65.42] ([195.174.65.42]:23711 "EHLO
+        hosting1.nurettinalp.info" rhost-flags-FAIL-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726114AbgGXKFC (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 24 Jul 2020 05:47:18 -0400
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.west.internal (Postfix) with ESMTP id 13583CC1;
-        Fri, 24 Jul 2020 05:47:17 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute1.internal (MEProxy); Fri, 24 Jul 2020 05:47:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=vDWGH6eWsUd/YnN0zWWBM27Irbj
-        5lY4lQRZBYu5So58=; b=KVf9e4GzPYptdUxAfUFJye71eR1j1Aag/GzDFDvrWsp
-        hqHgxcP0bauxUB1eE8Ypm9sii35Xt+3rgmlRw1jCnVy3wdsinIoIuH7MuLJeBFpt
-        pr0tNiqr3n85r7dICrWzqc3JAozAk4MoyStuYAfGFjlmaOp4tlmUSAEPoik6gs1m
-        7IUn4mNH/3gVhFuyYvYyAVz2EqIefi7oh4q/Hqt5uvLWGNYRyBJYXrkv0Agn+Lyq
-        LZ+g2SB306wze8JuhxxJPEIgGX/5tRUKAxWZ9WlONED4w7Uxwfg8/XGG7ba05IYP
-        34pUGmWsHRmNAmvmEpcGzziK6wcTdk3tP6XK+/rK/pw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=vDWGH6
-        eWsUd/YnN0zWWBM27Irbj5lY4lQRZBYu5So58=; b=XeCEfwtgA/rPX6ZPNHcyTW
-        8VrC4X3oDfOb7VQHuCrlJysTISv+YKuxtjqP3DY3Z6/ruyyaZrFRnZ1/Clx5g1F8
-        Dvw5ZH5FQ9NA92wZbPHUxojbb+7LCNKtxTwdFOMUovH9Y2XP+5AKTUy5dbyyXklY
-        L4hvwXDDk6uMHNmCpGqJeJ2sYQxKohBg6Gwm56nJ7gVe+atIFBywduoOHfjNrlf/
-        gj6VRgK89hUQszpGjc7jzYL2p81W3KV0Pj1k/eeMjCq/63vgzDmF05WWKUIQasRv
-        e9TifN0sLuz6YwUSoLGaSmvPcgVYST6Ig0k3P0ECHaRrV7gmbYLF3rVqiGN2hpkw
-        ==
-X-ME-Sender: <xms:JK4aXxG76OJGOTuonIOJ8YegYjiqzqOm5qdH0hY32IDDh84Av0g9Hg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrheefgddvtdcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghgucfm
-    jfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepveeuheejgf
-    ffgfeivddukedvkedtleelleeghfeljeeiueeggeevueduudekvdetnecukfhppeekfedr
-    keeirdekledruddtjeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
-    hlfhhrohhmpehgrhgvgheskhhrohgrhhdrtghomh
-X-ME-Proxy: <xmx:JK4aX2UIyy4JGfYR_1dJ-ptjBs1rWm2hMSyjt8H2NujPxnVdfa3ksA>
-    <xmx:JK4aXzKpeaDm3qPGHk6Cy9hqn1GvL6t15s1NhoIXN-hXroex6KpSqg>
-    <xmx:JK4aX3FiyzxiUbdnqNj_lRZP-4tvqDJai9opbddjmIdr8Gxe88lHMA>
-    <xmx:JK4aX4f6S-rfagp-vfCvIBSkBp41OWgppQuDZjyTmrDzOXgTRjh8uA>
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 444483060067;
-        Fri, 24 Jul 2020 05:47:16 -0400 (EDT)
-Date:   Fri, 24 Jul 2020 11:47:19 +0200
-From:   Greg KH <greg@kroah.com>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org, stable@vger.kernel.org,
-        David Sterba <dsterba@suse.com>
-Subject: Re: [PATCH] btrfs: reloc: clear DEAD_RELOC_TREE bit for orphan roots
- to prevent runaway balance
-Message-ID: <20200724094719.GC4176508@kroah.com>
-References: <20200724014640.20784-1-wqu@suse.com>
+        Fri, 24 Jul 2020 06:05:02 -0400
+X-Greylist: delayed 366 seconds by postgrey-1.27 at vger.kernel.org; Fri, 24 Jul 2020 06:05:01 EDT
+Received: from localhost (localhost [127.0.0.1])
+        by hosting1.nurettinalp.info (Postfix) with ESMTP id E64ADA1E8C
+        for <linux-btrfs@vger.kernel.org>; Fri, 24 Jul 2020 12:58:41 +0300 (+03)
+X-Virus-Scanned: Debian amavisd-new at server1.nurettinalp.info
+Received: from hosting1.nurettinalp.info ([127.0.0.1])
+        by localhost (hosting1.nurettinalp.info [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id fz4l6pJ5d3mU for <linux-btrfs@vger.kernel.org>;
+        Fri, 24 Jul 2020 12:58:37 +0300 (+03)
+Received: from www.nurettinalp.com (localhost [IPv6:::1])
+        by hosting1.nurettinalp.info (Postfix) with ESMTP id E4C35A1E6A
+        for <linux-btrfs@vger.kernel.org>; Fri, 24 Jul 2020 12:58:36 +0300 (+03)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200724014640.20784-1-wqu@suse.com>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Fri, 24 Jul 2020 09:58:36 +0000
+From:   nurettin@nurettinalp.com
+To:     linux-btrfs@vger.kernel.org
+Subject: btrfs repair
+Message-ID: <9ae782644c2b9b24485411a512a2ec08@nurettinalp.com>
+X-Sender: nurettin@nurettinalp.com
+User-Agent: Roundcube Webmail/1.1.3
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Jul 24, 2020 at 09:46:40AM +0800, Qu Wenruo wrote:
-> commit 1dae7e0e58b484eaa43d530f211098fdeeb0f404 upstream.
-> 
-> [BUG]
-> There are several reported runaway balance, that balance is flooding the
-> log with "found X extents" where the X never changes.
-> 
-> [CAUSE]
-> Commit d2311e698578 ("btrfs: relocation: Delay reloc tree deletion after
-> merge_reloc_roots") introduced BTRFS_ROOT_DEAD_RELOC_TREE bit to
-> indicate that one subvolume has finished its tree blocks swap with its
-> reloc tree.
-> 
-> However if balance is canceled or hits ENOSPC halfway, we didn't clear
-> the BTRFS_ROOT_DEAD_RELOC_TREE bit, leaving that bit hanging forever
-> until unmount.
-> 
-> Any subvolume root with that bit, would cause backref cache to skip this
-> tree block, as it has finished its tree block swap.  This would cause
-> all tree blocks of that root be ignored by balance, leading to runaway
-> balance.
-> 
-> [FIX]
-> Fix the problem by also clearing the BTRFS_ROOT_DEAD_RELOC_TREE bit for
-> the original subvolume of orphan reloc root.
-> 
-> Add an umount check for the stale bit still set.
-> 
-> Fixes: d2311e698578 ("btrfs: relocation: Delay reloc tree deletion after merge_reloc_roots")
-> Cc: <stable@vger.kernel.org> # 5.7.x
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> Signed-off-by: David Sterba <dsterba@suse.com>
-> ---
->  fs/btrfs/disk-io.c    | 1 +
->  fs/btrfs/relocation.c | 2 ++
->  2 files changed, 3 insertions(+)
+which commands repair my btrfs filesystem. thank you.
 
-Thanks for the backports, all now queued up.
 
-greg k-h
+mdadm -D /dev/md2
+/dev/md2:
+            Version : 1.2
+      Creation Time : Tue Mar 10 18:53:32 2020
+         Raid Level : linear
+         Array Size : 21455548416 (20461.61 GiB 21970.48 GB)
+       Raid Devices : 4
+      Total Devices : 4
+        Persistence : Superblock is persistent
+
+        Update Time : Wed Jul 22 13:20:52 2020
+              State : clean
+     Active Devices : 4
+    Working Devices : 4
+     Failed Devices : 0
+      Spare Devices : 0
+
+           Rounding : 64K
+
+Consistency Policy : none
+
+               Name : n0:2
+               UUID : fb2b1053:b63f9733:6a34de1b:8a5b6fcd
+             Events : 54
+
+     Number   Major   Minor   RaidDevice State
+        0       8       19        0      active sync   /dev/sdb3
+        1       8       35        1      active sync   /dev/sdc3
+        2       8       51        2      active sync   /dev/sdd3
+        3       8       67        3      active sync   /dev/sde3
+
+
+root@ubuntu:~# btrfs fi show
+Label: '2020.03.10-18:55:12 v23739'  uuid: 
+79471a21-005a-4b82-bc30-42357b9f4105
+	Total devices 1 FS bytes used 13.85TiB
+	devid    1 size 19.98TiB used 14.28TiB path /dev/mapper/vg1-volume_1
+
+
+root@ubuntu:~# mount /dev/vg1/volume_1 ./btrfs/
+mount: /root/btrfs: wrong fs type, bad option, bad superblock on 
+/dev/mapper/vg1-volume_1, missing codepage or helper program, or other 
+error.
+
+btrfs-find-root /dev/vg1/volume_1
+
+Couldn't setup extent tree
+Couldn't setup device tree
+Superblock thinks the generation is 239232
+Superblock thinks the level is 1
+...........................
+Well block 4139877171200(gen: 20533 level: 1) seems good, but 
+generation/level doesn't match, want gen: 239232 level: 1
+Well block 4139850039296(gen: 20532 level: 1) seems good, but 
+generation/level doesn't match, want gen: 239232 level: 1
+Well block 4085098168320(gen: 20407 level: 1) seems good, but 
+generation/level doesn't match, want gen: 239232 level: 1
+Well block 4085102346240(gen: 20388 level: 0) seems good, but 
+generation/level doesn't match, want gen: 239232 level: 1
+Well block 4030345101312(gen: 20292 level: 1) seems good, but 
+generation/level doesn't match, want gen: 239232 level: 1
+Well block 4030324768768(gen: 20291 level: 1) seems good, but 
+generation/level doesn't match, want gen: 239232 level: 1
+Well block 4030343970816(gen: 20272 level: 0) seems good, but 
+generation/level doesn't match, want gen: 239232 level: 1
+
