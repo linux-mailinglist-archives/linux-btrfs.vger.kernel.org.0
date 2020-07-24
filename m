@@ -2,31 +2,32 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF13722BABF
-	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Jul 2020 02:05:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A3EB22BAEB
+	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Jul 2020 02:19:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728237AbgGXAF2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 23 Jul 2020 20:05:28 -0400
-Received: from mout.gmx.net ([212.227.15.18]:57725 "EHLO mout.gmx.net"
+        id S1728320AbgGXATv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 23 Jul 2020 20:19:51 -0400
+Received: from mout.gmx.net ([212.227.15.18]:59783 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727778AbgGXAF1 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 23 Jul 2020 20:05:27 -0400
+        id S1728187AbgGXATu (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 23 Jul 2020 20:19:50 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1595549120;
-        bh=wsEM1xg8gac+eee4CQPji0dBEovXsTTiaMMgRiIr53o=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=kIP8V9gjRD1kLthPcADuQFEOuH4AKd8B0h7Hszlp/lOftr65G1mACJYteUBawEf+5
-         Fs8y7iRGf3APhja+6MUU/B2F6F0es+wzy+ZTIfByeKioBgQPVEV9q12kdGkBMRqN8N
-         BaeK9v2XDHeAZl1XDfDVA5IpLwbcjR9m2iknFEdU=
+        s=badeba3b8450; t=1595549981;
+        bh=j5yh6jqJ9MX15p+mbiPhTk0267Vgtm8C6E6cQzUuH+s=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=W4ZugFR6gzdcTRdC9zIVW4SjOjMr5IakcL7F1SLd+EtqqncxdTrQDr4RJoi8lhrd8
+         NOUNLc5J+RLv5SFKpsjFlnd6KNEe0WBUrwa41hSoHgv6efKUN+uHpgLDJMLFWVb6ri
+         LW789I1F9s4xYtGZOBTV6fviwIXHDBp/BdsVlY2Y=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
 Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MJVDW-1kEEjQ0Vuy-00JpDT; Fri, 24
- Jul 2020 02:05:20 +0200
-Subject: Re: [PATCH 0/2] btrfs: balance root leak and runaway balance fix
-To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>, dsterba@suse.cz,
-        Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-References: <20200520065851.12689-1-wqu@suse.com>
- <20200522111347.GJ18421@twin.jikos.cz> <20200723215430.GC5890@hungrycats.org>
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1N6bfw-1ksUxG17vS-0181zV; Fri, 24
+ Jul 2020 02:19:41 +0200
+Subject: Re: BUG at fs/btrfs/relocation.c:794!
+To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
+        David Sterba <dsterba@suse.com>
+Cc:     linux-btrfs@vger.kernel.org, wqu@suse.com
+References: <20200630221006.17585-1-dsterba@suse.com>
+ <20200723215641.GE5890@hungrycats.org>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -52,114 +53,535 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
  ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
  oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <faeff4c1-c675-a956-6ae9-c3e742df013c@gmx.com>
-Date:   Fri, 24 Jul 2020 08:05:16 +0800
+Message-ID: <bfecfacd-2d9d-386d-dfb7-951a5c5c6f6e@gmx.com>
+Date:   Fri, 24 Jul 2020 08:19:36 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20200723215430.GC5890@hungrycats.org>
+In-Reply-To: <20200723215641.GE5890@hungrycats.org>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="Do3Hn4olimj4oYxttSD4CRx9jcmCOrWhp"
-X-Provags-ID: V03:K1:g98Bw4WK3E2KAgziQBVKmpqnCuFx9zxKlog6MtBkvNlhaRuOi3a
- Gnmbx32qk0jAOkFXf3rCQ5J3ZeYxZ6Ir0Y9eLhnBtGYITIsDXo3ZW6LE4sUadG0/OV1v8Qs
- CoRUHN7RmgSy+w1FMn+FlVj/+EdhBnOleOjUnZrGptBHYxhOrXznyHUMqzYXSVd6oYTuPWo
- kUUwPZgbyWzY0IDfV4gNA==
+ boundary="iLdad85n6mS2ow5Kjr8P0F8lYS2vRxmPT"
+X-Provags-ID: V03:K1:ws+Wk98CvpgJnWosMJpIUxn841X58DUvP4zxFADu/RhKp206H4+
+ OVKwB5c+I+qlsUXDGeTrZSaSd64Dzf9Gba7tBZ9XbotE1njVeeDaOzPpo/PeSqj3nrAzfpt
+ Dbt/qoR/JBchCqvgm6L6s1wvVnqJBhyR31Dn8dWvBkTHFjn4gMx8evKBhTrNfQhGeTKdd1e
+ W9pRufq6dA+aF4Oi2twzw==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:944pLo2YaaE=:b2UoTouUwt4WBnmRnhuwaC
- 5HfJfE2JQW1dC4G4A13r6JeHCl+UrzIzZjjqTQeJ3lr5mVoxW7EyHLEJf4ly2EXYN/oYmBffs
- nIif6ETdQ1yA8Xa9AtvAHP9br+whnPq/pCzg05e++sYugZfzZe/lp5eu+0f2nWF+pZhjB11BZ
- lPhl8AnxlJe86VKV1s607Wv3fI3oAeDUdguEcRR1w1S9BB3srrEOVy/7WV5/LSO/s2tuFoKz/
- qTadkby/W/waMvFgqC0Pti6vdU2xJ9lyvHqBcAbAptnR52CBSfkLbHTjjZ7TFS6uBb38pbuwK
- u8Hlp1/PtBh61XKPzZrWZBeuO23JQVHTMQ1bVSROmvZqNcktsnttpntaFPl5AslGRRH2XIbUt
- X5CZ7i8UO6WNDTIwJZfOyyR/72Cx+WKYN7jIs1NS7iMegPCeQMBHlcmgj3FM/CulKhkIKgHbg
- vekMYNqrVPRo3i5ih0i5XEGbuDuFZLinLzgsZWH/esXrEgHpp6Wx7YxUuo6DYJU+GJ+w2oTSR
- zdt4VbNLKjbvQMYNsiwZN4cqQ8lbQu+Ba8PC3yh8F9Lh1NzPGPb9pyDP+2oEImmtn5vCRFfye
- 6yWocWu7E7tLN9jkECSgsVr0Fbn19GPkXjcI8Du79ddaLBy12hVwbAe/atqfMVtcrFZCwez6t
- qCevteOuUpblVPcuBUvg1Zfkr2Q13QDae8Fu+Orq9WoIWOguXJFzdjPGDS3J4WFl/D8/0cjcu
- PtCMAqf9B6jcr/FiGExPkDsx3NHu1rNxE4qM23FK5NOeyw5Th+aenOFo8UgULqE8I0WGO0c/5
- Ty5Gola0APArnCiUljgPAf2LTAVi+Qsgjrv2qznHKX9xlTNoc4Ho/Gisem1IVzhMeGSn0F0Sn
- uo2yfESijh8TUivpuVhuBVl38pyDUR4hdXDCFfS2sUAhTtEYuqUEsb/nPjw2IHyNB9hatqNK+
- 1bwjBkq6X/q9cqx9SywYYkdHcsQ+2oJ7PPGdf0x17WTyJqWQ9qw1tDObm9QE+JwzA8ns7m4GA
- yELlFLgXQeRPZtPVppWTkGXoa9LmAt/jgx7iZubYmk73R0ubECHPq1qJ2GjJ2SAR9BBRcAz2c
- brEgc1X/XgtryAM56JPLWewb+UtHJfxsyrLADYzzNFP6kP43gEmLlFUZuLic1AhzFr8nlh+Al
- 6mpzjoCiikTITF8qzonc2SiTxMxWeFsJkTDGGJtGVBVhPKIb5G0ZuVV3WhD1bOgisP2yvFLz4
- +KNSfXLvE5xosNkfhwI0ldpbDfVgaqhCDjszmHw==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:qyJRg0icdnA=:aWgO1UTd5OTyNV8UzUCpet
+ lcCCrl3yB5k8fUXUkq1/e/hLG+SZGCcvVzz5WeeyTP13+y68bCCtSKFk5FpkWms8AyPSCoNyp
+ bwLHX6yS9SaFRXvSKRLyBp2R/zCd9UgGF1IbrJST/Q+nSFJv4hyC6wj03Bdqk/pQRNqDf+k63
+ 5VV00/XMnGQ8a1P+iYWk8iN5y3V2qfIWp4uPnF2egpbery1JW1AlcatBY2lUQ0J2Dw4Crig9f
+ JNkPVtqWPszqobgqfPpgQChpA7SZrkpYCb6cvLWw5Uy21J/8vuV0A9Eq3QMWqOQMZPzFeqjtw
+ sorb4I4HhTHZhxzlKqUFClp1grkjo27LE/8eoun2Z68lDVnnrMXE6/HSz0GtmgYelrrt+SY0g
+ zuXk1CIylHvXeHHoWHQ1zTZUIfcSI4cbfQ5FieDdXALv4VXzF6bAkVS4YIaXyi6ygkNgsKePW
+ cESZL547PqqdyQIndzF1yhEiqpQjctYVuR6CXRKJI4a6kIbf2Hi8IKhpMfzCKS0rI+sl4xpJc
+ AO10Cpx4pbNU51j/6vyzVkrc0E9scvE2yTwgs4i/bNfhkj045D6n8Xnl7FKCCcaiw3+HrmlcZ
+ q8DPfkG+tSkXvydXbL+gOgLFZzbfCafDirc9eg1sSKRpsJ4nTXzFc8J9ed2EMi7Z/Z9ge098k
+ VQzWdrrIPJz3UZY/Yshahv3Dul0keRMmKTDh3PtjucXhKYNF8bw1wID8cc7pfjH4E3Rumz18N
+ nghQeH+8qPRv8i4KdtiLBZwdPgEjMPjPAXhq6RkXl7iJYtvnysFgku5VmEYszbtAUINfIGEJ3
+ 8qIQ3BinTWl6o2Iun1m1SNgwLzMo9xvJ4KN74AxNOJuU7vqnwGpPmV/48FhTrUeczQHRKtzoh
+ KOGUoEZnEbkXvUwTPU6i2qJ+Ox8rtkxEbchlvmLt30K6jWmiQCyAfcaDtwoFrhPEpY7AEvb3L
+ 3VtXySiFjCcM5ZCnESjE+M/doKkXP0gwgzr539pouaq2NWf+dUnihyqc2UFGOYcaq0St+52ww
+ fcsuv88AAiN8yfMePxuWKTdW+MVeYcAc+1e6BSlBkIVubdCpghBk41owno1iqB3GARq1K8yxL
+ PjJUeWp9TPOAsnzUwXNXjOGnOT/l3wmwqdj4oKbtoRz+2OF6jto3k4qiDKgz3aULiXDyaQ7LF
+ VI/NiNLoEe92zNzyMM09FqYdfDd8s0SCDJNfTu80jmpFOTyEq3DNb8wmSPvf2YtpQJUqpji4x
+ myrAm0jb0gjOxGhofux+m0kZXEGnQ4Du+lbZYSw==
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---Do3Hn4olimj4oYxttSD4CRx9jcmCOrWhp
-Content-Type: multipart/mixed; boundary="dL9CbuSJSqZaRPBKpFLtSSJOgQj3r841R"
+--iLdad85n6mS2ow5Kjr8P0F8lYS2vRxmPT
+Content-Type: multipart/mixed; boundary="vjCZIKYQpbKFJffqOCiNHFgAThdC10dlK"
 
---dL9CbuSJSqZaRPBKpFLtSSJOgQj3r841R
+--vjCZIKYQpbKFJffqOCiNHFgAThdC10dlK
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
 
 
 
-On 2020/7/24 =E4=B8=8A=E5=8D=885:54, Zygo Blaxell wrote:
-> On Fri, May 22, 2020 at 01:13:47PM +0200, David Sterba wrote:
->> On Wed, May 20, 2020 at 02:58:49PM +0800, Qu Wenruo wrote:
->>> This patchset will fix the most wanted balance bug, runaway balance.
->>> All my fault, and all small fixes.
+On 2020/7/24 =E4=B8=8A=E5=8D=885:56, Zygo Blaxell wrote:
+> On Wed, Jul 01, 2020 at 12:10:06AM +0200, David Sterba wrote:
+>> Hi,
 >>
->> Well, that happens.
+>> I've hit a crash in relocation I've never seen before.
 >>
->> d2311e698578 ("btrfs: relocation: Delay reloc tree deletion after merg=
-e_reloc_roots")
->>
->> is the most broken patch in recent history (5.1+), there were so many
->> fixups but hopefully this is the last one. I've tagged the patches for=
-
->> 5.1+ stable but we'll need manual backports due to the root refcount
->> changes in 5.7.
+>> [ 2129.210066] kernel BUG at fs/btrfs/relocation.c:794!
 >=20
-> The patch 1dae7e0e58b4 "btrfs: reloc: clear DEAD_RELOC_TREE bit for
-> orphan roots to prevent runaway balance" does apply to 5.7 itself, but
-> it is not present in 5.7.10.  I've been running it in test (and even a
-> few pre-prod) systems since May.
+> I hit an issue yesterday that reminded me of this.
+>=20
+>> [ 2129.215268] invalid opcode: 0000 [#1] PREEMPT SMP
+>> [ 2129.220114] CPU: 1 PID: 3303 Comm: btrfs Not tainted 5.8.0-rc3-git+=
+ #638
+>> [ 2129.220116] Hardware name: empty empty/S3993, BIOS PAQEX0-3 02/24/2=
+008
+>> [ 2129.220265] RIP: 0010:create_reloc_root+0x214/0x260 [btrfs]
+>> [ 2129.258760] RSP: 0018:ffffbe1e809b38b8 EFLAGS: 00010282
+>> [ 2129.258763] RAX: 00000000ffffffef RBX: ffff988d577f9000 RCX: 000000=
+0000000000
+>> [ 2129.258765] RDX: 0000000000000001 RSI: ffffffff8e2a2580 RDI: ffff98=
+8d64aaa6a8
+>> [ 2129.258766] RBP: ffff988d5dfcdc00 R08: 0000000000000000 R09: 000000=
+0000000000
+>> [ 2129.258767] R10: 0000000000000001 R11: 0000000000000000 R12: ffff98=
+8d0e02fa78
+>> [ 2129.258769] R13: 0000000000000005 R14: ffff988d64fe8000 R15: ffff98=
+8d0e02fa78
+>> [ 2129.258771] FS:  00007f82a612e8c0(0000) GS:ffff988d67000000(0000) k=
+nlGS:0000000000000000
+>> [ 2129.258772] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>> [ 2129.258774] CR2: 000000000559d028 CR3: 000000020b289000 CR4: 000000=
+00000006e0
+>> [ 2129.258775] Call Trace:
+>> [ 2129.258825]  btrfs_init_reloc_root+0xe8/0x120 [btrfs]
+>> [ 2129.258862]  record_root_in_trans+0xae/0xd0 [btrfs]
+>> [ 2129.258901]  btrfs_record_root_in_trans+0x51/0x70 [btrfs]
+>> [ 2129.340388]  select_reloc_root+0x94/0x340 [btrfs]
+>> [ 2129.340433]  do_relocation+0xda/0x7b0 [btrfs]
+>> [ 2129.349854]  ? _raw_spin_unlock+0x1f/0x40
+>> [ 2129.349898]  relocate_tree_blocks+0x336/0x670 [btrfs]
+>> [ 2129.359325]  relocate_block_group+0x2f6/0x600 [btrfs]
+>> [ 2129.359365]  btrfs_relocate_block_group+0x15e/0x340 [btrfs]
+>> [ 2129.359408]  btrfs_relocate_chunk+0x38/0x110 [btrfs]
+>> [ 2129.375494]  __btrfs_balance+0x42c/0xce0 [btrfs]
+>> [ 2129.375553]  btrfs_balance+0x66a/0xbe0 [btrfs]
+>> [ 2129.375562]  ? kmem_cache_alloc_trace+0x19c/0x330
+>> [ 2129.389852]  btrfs_ioctl_balance+0x298/0x350 [btrfs]
+>> [ 2129.389887]  btrfs_ioctl+0x304/0x2490 [btrfs]
+>> [ 2129.389898]  ? do_user_addr_fault+0x221/0x49c
+>> [ 2129.404070]  ? sched_clock_cpu+0x15/0x140
+>> [ 2129.404073]  ? do_user_addr_fault+0x221/0x49c
+>> [ 2129.404079]  ? up_read+0x18/0x240
+>> [ 2129.404086]  ? ksys_ioctl+0x68/0xa0
+>> [ 2129.404091]  ksys_ioctl+0x68/0xa0
+>> [ 2129.423308]  __x64_sys_ioctl+0x16/0x20
+>> [ 2129.423312]  do_syscall_64+0x50/0xe0
+>> [ 2129.423315]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+>> [ 2129.423318] RIP: 0033:0x7f82a51c6327
+>> [ 2129.423319] Code: Bad RIP value.
+>> [ 2129.423348] RSP: 002b:00007ffd32cf6218 EFLAGS: 00000206 ORIG_RAX: 0=
+000000000000010
+>> [ 2129.423367] RAX: ffffffffffffffda RBX: 0000000000000001 RCX: 00007f=
+82a51c6327
+>> [ 2129.423368] RDX: 00007ffd32cf62a0 RSI: 00000000c4009420 RDI: 000000=
+0000000003
+>> [ 2129.423372] RBP: 0000000000000003 R08: 0000000000000000 R09: 000000=
+0000000000
+>> [ 2129.423377] R10: 000000000fa99fa0 R11: 0000000000000206 R12: 00007f=
+fd32cf8823
+>> [ 2129.423379] R13: 00007ffd32cf62a0 R14: 0000000000000001 R15: 000000=
+0000000000
+>>
+>> Relevant code called from create_reloc_root:
+>>
+>>         ret =3D btrfs_insert_root(trans, fs_info->tree_root,
+>>                                 &root_key, root_item);
+>>         BUG_ON(ret)
+>>
+>> and according to EAX, ret is -17 which is EEXIST.
+>>
+>> I don't have a reproducer, the testing image has been filled by random=
+ git
+>> checkouts, deduplicated by BEES, then tons of snapshots created until =
+the
+>> metadata got exhausted, some file deletion and balances.
+>=20
+> Mine is rsync, bees, lots of snapshots, balances, scrubs.  I recently a=
+lso
+> added random 'killall -INT btrfs' to send balance some fatal signals.
+>=20
+>> This is the same image that led to the patch "btrfs: allow use of glob=
+al block
+>> reserve for balance item deletion", so this could have left it in some=
 
-Strange, I see no mail about merge failure nor merge success.
+>> intermediate state where the balance item was not removed and the relo=
+c tree as
+>> well.
+>>
+>> There were a few unsuccessful mounts due to relocation recovery, that =
+was
+>> trying to debug but then it started to work.
+>>
+>> The error happened with this 'fi df' saved after the balance start:
+>>
+>> # btrfs fi df mnt
+>> Data, single: total=3D80.01GiB, used=3D38.67GiB
+>> System, single: total=3D4.00MiB, used=3D16.00KiB
+>> Metadata, single: total=3D19.99GiB, used=3D19.46GiB
+>> GlobalReserve, single: total=3D512.00MiB, used=3D44.00KiB
+>=20
+> Mine is:
+>=20
+> 	Data, single: total=3D1.75TiB, used=3D1.74TiB
+> 	System, RAID1: total=3D32.00MiB, used=3D208.00KiB
+> 	Metadata, RAID1: total=3D25.00GiB, used=3D22.89GiB
+> 	GlobalReserve, single: total=3D512.00MiB, used=3D0.00B
+>=20
+> though this is some time after the failure (and a reboot).  I do notice=
 
-I'll send the backport manually to all older branches.
+> that there's lots of unallocated space, but metadata usage is close
+> to allocated, and I have been experiencing a lot of EROFS events when
+> that happens, even if there's gigabytes unallocated.
+>=20
+> btrfs fi us:
+>=20
+> 	Overall:
+> 	    Device size:                   2.00TiB
+> 	    Device allocated:              1.80TiB
+> 	    Device unallocated:          208.94GiB
+> 	    Device missing:                  0.00B
+> 	    Used:                          1.79TiB
+> 	    Free (estimated):            211.30GiB      (min: 106.83GiB)
+> 	    Data ratio:                       1.00
+> 	    Metadata ratio:                   2.00
+> 	    Global reserve:              512.00MiB      (used: 0.00B)
+>=20
+> 	Data,single: Size:1.75TiB, Used:1.74TiB (99.87%)
+> 	   /dev/mapper/vgtest-tvdb        894.00GiB
+> 	   /dev/mapper/vgtest-tvdc        895.00GiB
+>=20
+> 	Metadata,RAID1: Size:25.00GiB, Used:22.87GiB (91.47%)
+> 	   /dev/mapper/vgtest-tvdb         25.00GiB
+> 	   /dev/mapper/vgtest-tvdc         25.00GiB
+>=20
+> 	System,RAID1: Size:32.00MiB, Used:208.00KiB (0.63%)
+> 	   /dev/mapper/vgtest-tvdb         32.00MiB
+> 	   /dev/mapper/vgtest-tvdc         32.00MiB
+>=20
+> 	Unallocated:
+> 	   /dev/mapper/vgtest-tvdb        104.97GiB
+> 	   /dev/mapper/vgtest-tvdc        103.97GiB
+>=20
+>> The error looks like a repeated relocation tree creation, which would =
+point to
+>> the unsuccesful balances or inconsistent state (balance item, reloc tr=
+ees).
+>> It's not a "typical" mix of operations but I'd appreciate any insights=
+ here.
+>=20
+> I have the same line but different call stack, with misc-next
+> e3027d10af42d24940be74dabaf1550cd770bd48:
+>=20
+> 	[ 9717.746937][T13609] BTRFS info (device dm-0): balance: start -mlimi=
+t=3D1 -slimit=3D1
+> 	[ 9717.765086][T13609] BTRFS info (device dm-0): relocating block grou=
+p 10991411658752 flags metadata|raid1
+> 	[ 9718.511137][T13609] ------------[ cut here ]------------
+> 	[ 9718.512293][T13609] kernel BUG at fs/btrfs/relocation.c:794!
+> 	[ 9718.513421][T13609] invalid opcode: 0000 [#1] SMP KASAN PTI
+> 	[ 9718.514590][T13609] CPU: 1 PID: 13609 Comm: btrfs Tainted: G       =
+ W         5.8.0-6582a95aabfe+ #44
+> 	[ 9718.516178][T13609] Hardware name: QEMU Standard PC (i440FX + PIIX,=
+ 1996), BIOS 1.12.0-1 04/01/2014
+> 	[ 9718.517750][T13609] RIP: 0010:create_reloc_root+0x468/0x480
+> 	[ 9718.518717][T13609] Code: e8 bd 5b bd ff 4d 8b 76 50 be 08 00 00 00=
+ 49 8d bc 24 f0 00 00 00 e8 c7 5b bd ff 4d 89 b4 24 f0 00 00 00 e9 ee fc =
+ff ff 0f 0b <0f> 0b 0f 0b 0f 0b 0f 0b=20
+> 	e8 9b df 07 01 66 66 2e 0f 1f 84 00 00 00
+> 	[ 9718.521995][T13609] RSP: 0018:ffffc900018e7018 EFLAGS: 00010282
+> 	[ 9718.522991][T13609] RAX: 00000000ffffffef RBX: ffff8881e103a400 RCX=
+: 0000000000000000
+> 	[ 9718.524300][T13609] RDX: dffffc0000000000 RSI: 0000000000000000 RDI=
+: 0000000000000246
+> 	[ 9718.525612][T13609] RBP: ffffc900018e7108 R08: 0000000000000000 R09=
+: 0000000000000001
+> 	[ 9718.527056][T13609] R10: 0000000000000001 R11: fffffbfff3dfb081 R12=
+: ffff8881f37c8020
+> 	[ 9718.528386][T13609] R13: ffff88801fbc5b28 R14: ffff8881f37c8000 R15=
+: ffffc900018e70a0
+> 	[ 9718.529756][T13609] FS:  00007f9577d928c0(0000) GS:ffff8881f5800000=
+(0000) knlGS:0000000000000000
+> 	[ 9718.531211][T13609] CS:  0010 DS: 0000 ES: 0000 CR0: 00000000800500=
+33
+> 	[ 9718.532295][T13609] CR2: 00007f9823e35500 CR3: 00000000a52e0002 CR4=
+: 00000000001606e0
+> 	[ 9718.533608][T13609] Call Trace:
+> 	[ 9718.534151][T13609]  ? update_backref_node+0xf0/0xf0
+> 	[ 9718.535137][T13609]  ? check_chain_key+0x1e6/0x2e0
+> 	[ 9718.536057][T13609]  btrfs_init_reloc_root+0x2d7/0x310
 
-BTW, what's the proper tag for stable branch ranges?
+That's the same problem.
+
+Btrfs_init_reloc_root() got -EEXIST and triggering BUG_ON().
+
+In that case, that means there are some reloc trees not cleaned up.
+
+Would you mind to provide the "btrfs ins dump-tree -t root" dump for
+that fs if the problem still happens?
 
 Thanks,
 Qu
+> 	[ 9718.537016][T13609]  ? find_reloc_root+0x200/0x200
+> 	[ 9718.537992][T13609]  ? do_raw_spin_unlock+0xa8/0x140
+> 	[ 9718.538899][T13609]  record_root_in_trans+0x18c/0x1d0
+> 	[ 9718.539848][T13609]  btrfs_record_root_in_trans+0x8b/0xc0
+> 	[ 9718.540843][T13609]  select_reloc_root+0x15f/0x6a0
+> 	[ 9718.541943][T13609]  ? create_reloc_inode.isra.28+0x410/0x410
+> 	[ 9718.543066][T13609]  ? rcu_read_lock_sched_held+0xa1/0xd0
+> 	[ 9718.544333][T13609]  ? check_flags.part.44+0x86/0x220
+> 	[ 9718.545186][T13609]  ? check_flags+0x26/0x30
+> 	[ 9718.545870][T13609]  ? lock_is_held_type+0xc9/0x100
+> 	[ 9718.546651][T13609]  do_relocation+0x242/0xc90
+> 	[ 9718.547372][T13609]  ? select_reloc_root+0x6a0/0x6a0
+> 	[ 9718.548160][T13609]  ? check_flags.part.44+0x86/0x220
+> 	[ 9718.548969][T13609]  ? __kasan_check_read+0x11/0x20
+> 	[ 9718.549745][T13609]  ? mark_lock+0xa8/0x440
+> 	[ 9718.550426][T13609]  ? mark_held_locks+0x8d/0xb0
+> 	[ 9718.551165][T13609]  ? btrfs_backref_cleanup_node+0x5c1/0x600
+> 	[ 9718.552079][T13609]  ? memcpy+0x4d/0x60
+> 	[ 9718.552694][T13609]  ? read_extent_buffer+0xcc/0x120
+> 	[ 9718.553478][T13609]  relocate_tree_blocks+0xa29/0xb00
+> 	[ 9718.554255][T13609]  ? do_relocation+0xc90/0xc90
+> 	[ 9718.554978][T13609]  ? kmem_cache_alloc_trace+0x5af/0x740
+> 	[ 9718.555855][T13609]  ? free_extent_buffer.part.46+0x90/0x140
+> 	[ 9718.556756][T13609]  ? rb_insert_color+0x342/0x360
+> 	[ 9718.557581][T13609]  ? free_extent_buffer+0x13/0x20
+> 	[ 9718.558445][T13609]  ? add_tree_block.isra.34+0x236/0x2b0
+> 	[ 9718.559387][T13609]  relocate_block_group+0x52e/0x830
+> 	[ 9718.560275][T13609]  ? merge_reloc_roots+0x4b0/0x4b0
+> 	[ 9718.561137][T13609]  btrfs_relocate_block_group+0x26e/0x4c0
+> 	[ 9718.562137][T13609]  btrfs_relocate_chunk+0x52/0x120
+> 	[ 9718.562918][T13609]  btrfs_balance+0xe22/0x1910
+> 	[ 9718.563605][T13609]  ? check_chain_key+0x1e6/0x2e0
+> 	[ 9718.564331][T13609]  ? btrfs_relocate_chunk+0x120/0x120
+> 	[ 9718.565126][T13609]  ? kmem_cache_alloc_trace+0x5af/0x740
+> 	[ 9718.565943][T13609]  ? _copy_from_user+0x95/0xd0
+> 	[ 9718.566649][T13609]  btrfs_ioctl_balance+0x3de/0x4c0
+> 	[ 9718.567414][T13609]  btrfs_ioctl+0x2385/0x4250
+> 	[ 9718.568090][T13609]  ? __kasan_check_read+0x11/0x20
+> 	[ 9718.568830][T13609]  ? check_chain_key+0x1e6/0x2e0
+> 	[ 9718.569619][T13609]  ? btrfs_ioctl_get_supported_features+0x30/0x30=
+
+> 	[ 9718.570658][T13609]  ? kvm_sched_clock_read+0x18/0x30
+> 	[ 9718.571526][T13609]  ? check_chain_key+0x1e6/0x2e0
+> 	[ 9718.572348][T13609]  ? lock_downgrade+0x3e0/0x3e0
+> 	[ 9718.573121][T13609]  ? do_vfs_ioctl+0xfc/0x9d0
+> 	[ 9718.573835][T13609]  ? ioctl_file_clone+0xe0/0xe0
+> 	[ 9718.574637][T13609]  ? check_flags.part.44+0x86/0x220
+> 	[ 9718.575472][T13609]  ? check_flags+0x26/0x30
+> 	[ 9718.576190][T13609]  ? lock_is_held_type+0xc9/0x100
+> 	[ 9718.576990][T13609]  ? check_flags.part.44+0x86/0x220
+> 	[ 9718.577836][T13609]  ? check_flags+0x26/0x30
+> 	[ 9718.578542][T13609]  ? lock_is_held_type+0xc9/0x100
+> 	[ 9718.579403][T13609]  ? __kasan_check_read+0x11/0x20
+> 	[ 9718.580225][T13609]  ? __fget_light+0xae/0x110
+> 	[ 9718.580983][T13609]  ksys_ioctl+0xa1/0xe0
+> 	[ 9718.581628][T13609]  __x64_sys_ioctl+0x43/0x50
+> 	[ 9718.582334][T13609]  do_syscall_64+0x60/0xf0
+> 	[ 9718.583285][T13609]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> 	[ 9718.584378][T13609] RIP: 0033:0x7f9577e85427
+> 	[ 9718.585289][T13609] Code: Bad RIP value.
+> 	[ 9718.586076][T13609] RSP: 002b:00007ffdc7b82548 EFLAGS: 00000206 ORI=
+G_RAX: 0000000000000010
+> 	[ 9718.587896][T13609] RAX: ffffffffffffffda RBX: 00007ffdc7b825e8 RCX=
+: 00007f9577e85427
+> 	[ 9718.589391][T13609] RDX: 00007ffdc7b825e8 RSI: 00000000c4009420 RDI=
+: 0000000000000003
+> 	[ 9718.590817][T13609] RBP: 0000000000000003 R08: 0000000000000003 R09=
+: 0000000000000078
+> 	[ 9718.592631][T13609] R10: fffffffffffff31c R11: 0000000000000206 R12=
+: 0000000000000001
+> 	[ 9718.594405][T13609] R13: 0000000000000000 R14: 00007ffdc7b84a48 R15=
+: 0000000000000001
+> 	[ 9718.596109][T13609] Modules linked in:
+> 	[ 9718.597056][T13609] ---[ end trace 2cf173f8217fc093 ]---
+> 	[ 9718.598018][T13609] RIP: 0010:create_reloc_root+0x468/0x480
+> 	[ 9718.602850][T13609] Code: e8 bd 5b bd ff 4d 8b 76 50 be 08 00 00 00=
+ 49 8d bc 24 f0 00 00 00 e8 c7 5b bd ff 4d 89 b4 24 f0 00 00 00 e9 ee fc =
+ff ff 0f 0b <0f> 0b 0f 0b 0f 0b 0f 0b e8 9b df 07 01 66 66 2e 0f 1f 84 00=
+ 00 00
+> 	[ 9718.613371][T13609] RSP: 0018:ffffc900018e7018 EFLAGS: 00010282
+> 	[ 9718.621286][T13609] RAX: 00000000ffffffef RBX: ffff8881e103a400 RCX=
+: 0000000000000000
+> 	[ 9718.631255][T13609] RDX: dffffc0000000000 RSI: 0000000000000000 RDI=
+: 0000000000000246
+> 	[ 9718.639764][T13609] RBP: ffffc900018e7108 R08: 0000000000000000 R09=
+: 0000000000000001
+> 	[ 9718.641533][T13609] R10: 0000000000000001 R11: fffffbfff3dfb081 R12=
+: ffff8881f37c8020
+> 	[ 9718.643173][T13609] R13: ffff88801fbc5b28 R14: ffff8881f37c8000 R15=
+: ffffc900018e70a0
+> 	[ 9718.644840][T13609] FS:  00007f9577d928c0(0000) GS:ffff8881f5800000=
+(0000) knlGS:0000000000000000
+> 	[ 9718.646728][T13609] CS:  0010 DS: 0000 ES: 0000 CR0: 00000000800500=
+33
+> 	[ 9718.648607][T13609] CR2: 00007f9823e35500 CR3: 00000000a52e0002 CR4=
+: 00000000001606e0
+> 	[ 9718.869689][ T4545] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 
 >=20
-> We still get someone in IRC with a runaway balance every week or so.
-> Currently we can only tell them to wait for 5.8, or roll all the way
-> back to 4.19.
+> same line, different call stack:
 >=20
->> I reproduced the umount crash and verified the fix, the runaway balanc=
-e
->> does not happen anymore in the test so I guess we have all the needed
->> fixes in place to allow the fast balance cancel. Thanks.
+> 	0xffffffff81933dd8 is in create_reloc_root (fs/btrfs/relocation.c:794)=
+=2E
+> 	789             btrfs_tree_unlock(eb);
+> 	790             free_extent_buffer(eb);
+> 	791
+> 	792             ret =3D btrfs_insert_root(trans, fs_info->tree_root,
+> 	793                                     &root_key, root_item);
+> 	794             BUG_ON(ret);
+> 	795             kfree(root_item);
+> 	796
+> 	797             reloc_root =3D btrfs_read_tree_root(fs_info->tree_root=
+, &root_key);
+> 	798             BUG_ON(IS_ERR(reloc_root));
+>=20
+> followed by
+>=20
+> 	[ 9718.869689][ T4545] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+
+> 	[ 9718.871333][ T4545] BUG: KASAN: use-after-free in __mutex_lock+0x20=
+2/0xce0
+> 	[ 9718.872483][ T4545] Read of size 4 at addr ffff888014e9402c by task=
+ crawl_28443/4545
+> 	[ 9718.873746][ T4545]=20
+> 	[ 9718.874106][ T4545] CPU: 1 PID: 4545 Comm: crawl_28443 Tainted: G  =
+    D W         5.8.0-6582a95aabfe+ #44
+> 	[ 9718.875684][ T4545] Hardware name: QEMU Standard PC (i440FX + PIIX,=
+ 1996), BIOS 1.12.0-1 04/01/2014
+> 	[ 9718.877149][ T4545] Call Trace:
+> 	[ 9718.877655][ T4545]  dump_stack+0xc8/0x11a
+> 	[ 9718.878317][ T4545]  ? __mutex_lock+0x202/0xce0
+> 	[ 9718.879065][ T4545]  print_address_description.constprop.8+0x1f/0x2=
+00
+> 	[ 9718.880167][ T4545]  ? __mutex_lock+0x202/0xce0
+> 	[ 9718.880916][ T4545]  ? __mutex_lock+0x202/0xce0
+> 	[ 9718.881666][ T4545]  kasan_report.cold.11+0x20/0x3e
+> 	[ 9718.882483][ T4545]  ? __mutex_lock+0x202/0xce0
+> 	[ 9718.883229][ T4545]  __asan_load4+0x69/0x90
+> 	[ 9718.883920][ T4545]  __mutex_lock+0x202/0xce0
+> 	[ 9718.884651][ T4545]  ? wait_current_trans+0xb7/0x230
+> 	[ 9718.885465][ T4545]  ? btrfs_record_root_in_trans+0x7e/0xc0
+> 	[ 9718.886388][ T4545]  ? mutex_lock_io_nested+0xc20/0xc20
+> 	[ 9718.887246][ T4545]  ? __kasan_check_read+0x11/0x20
+> 	[ 9718.888035][ T4545]  ? join_transaction+0x32/0x6f0
+> 	[ 9718.888854][ T4545]  ? join_transaction+0x1a6/0x6f0
+> 	[ 9718.889679][ T4545]  ? lock_downgrade+0x3e0/0x3e0
+> 	[ 9718.890496][ T4545]  ? __kasan_check_write+0x14/0x20
+> 	[ 9718.891308][ T4545]  ? lock_contended+0x720/0x720
+> 	[ 9718.892093][ T4545]  ? do_raw_spin_lock+0x1e0/0x1e0
+> 	[ 9718.892912][ T4545]  ? wait_current_trans+0xb7/0x230
+> 	[ 9718.893705][ T4545]  mutex_lock_nested+0x1b/0x20
+> 	[ 9718.894494][ T4545]  ? mutex_lock_nested+0x1b/0x20
+> 	[ 9718.895317][ T4545]  btrfs_record_root_in_trans+0x7e/0xc0
+> 	[ 9718.896245][ T4545]  start_transaction+0x189/0x8f0
+> 	[ 9718.897081][ T4545]  btrfs_start_transaction+0x1e/0x20
+> 	[ 9718.897941][ T4545]  btrfs_cont_expand+0x549/0x7a0
+> 	[ 9718.898805][ T4545]  ? btrfs_truncate_block+0x930/0x930
+> 	[ 9718.899665][ T4545]  ? inode_newsize_ok+0x75/0xc0
+> 	[ 9718.900438][ T4545]  ? setattr_prepare+0x9c/0x310
+> 	[ 9718.901242][ T4545]  btrfs_setattr+0x514/0x850
+> 	[ 9718.902035][ T4545]  ? current_time+0x8c/0xe0
+> 	[ 9718.902799][ T4545]  notify_change+0x4ec/0x700
+> 	[ 9718.903584][ T4545]  ? do_sys_ftruncate+0x108/0x220
+> 	[ 9718.904459][ T4545]  do_truncate+0xe4/0x160
+> 	[ 9718.905200][ T4545]  ? __x64_sys_openat2+0x170/0x170
+> 	[ 9718.906116][ T4545]  ? __sb_start_write+0x1a1/0x270
+> 	[ 9718.906954][ T4545]  do_sys_ftruncate+0x1b8/0x220
+> 	[ 9718.907759][ T4545]  __x64_sys_ftruncate+0x36/0x40
+> 	[ 9718.908577][ T4545]  do_syscall_64+0x60/0xf0
+> 	[ 9718.909292][ T4545]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> 	[ 9718.910521][ T4545] RIP: 0033:0x7f201fcab947
+> 	[ 9718.911247][ T4545] Code: Bad RIP value.
+> 	[ 9718.911915][ T4545] RSP: 002b:00007f201d3abeb8 EFLAGS: 00000202 ORI=
+G_RAX: 000000000000004d
+> 	[ 9718.913285][ T4545] RAX: ffffffffffffffda RBX: 00007f201d3abfa0 RCX=
+: 00007f201fcab947
+> 	[ 9718.914613][ T4545] RDX: 000000005f18a6d2 RSI: 0000000000286000 RDI=
+: 0000000000000ec1
+> 	[ 9718.915921][ T4545] RBP: 00007f1fb01c2f00 R08: 00007ffe1e345080 R09=
+: 00000000011b1f78
+> 	[ 9718.917236][ T4545] R10: 00000000011b1f78 R11: 0000000000000202 R12=
+: 00007f201d3abf20
+> 	[ 9718.918556][ T4545] R13: 00007f201d3abef0 R14: 00007f201d3abf50 R15=
+: 00007f201d3abed0
+> 	[ 9718.919882][ T4545]=20
+> 	[ 9718.920268][ T4545] Allocated by task 6732:
+> 	[ 9718.920973][ T4545]  save_stack+0x21/0x50
+> 	[ 9718.921648][ T4545]  __kasan_kmalloc.constprop.17+0xc1/0xd0
+> 	[ 9718.922580][ T4545]  kasan_slab_alloc+0x12/0x20
+> 	[ 9718.923345][ T4545]  kmem_cache_alloc_node+0x113/0x720
+> 	[ 9718.924203][ T4545]  copy_process+0x357/0x3680
+> 	[ 9718.924955][ T4545]  _do_fork+0xed/0x880
+> 	[ 9718.925622][ T4545]  __do_sys_clone+0xee/0x130
+> 	[ 9718.926369][ T4545]  __x64_sys_clone+0x67/0x80
+> 	[ 9718.927119][ T4545]  do_syscall_64+0x60/0xf0
+> 	[ 9718.927848][ T4545]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> 	[ 9718.928812][ T4545]=20
+> 	[ 9718.929173][ T4545] Freed by task 24:
+> 	[ 9718.929787][ T4545]  save_stack+0x21/0x50
+> 	[ 9718.930453][ T4545]  __kasan_slab_free+0x118/0x170
+> 	[ 9718.931242][ T4545]  kasan_slab_free+0xe/0x10
+> 	[ 9718.931970][ T4545]  kmem_cache_free+0x5f/0x280
+> 	[ 9718.932730][ T4545]  free_task+0x73/0x90
+> 	[ 9718.933391][ T4545]  __put_task_struct+0x199/0x1d0
+> 	[ 9718.934187][ T4545]  delayed_put_task_struct+0x124/0x1b0
+> 	[ 9718.935071][ T4545]  rcu_core+0x3b0/0xeb0
+> 	[ 9718.935758][ T4545]  rcu_core_si+0xe/0x10
+> 	[ 9718.936433][ T4545]  __do_softirq+0x120/0x5e3
+> 	[ 9718.937165][ T4545]=20
+> 	[ 9718.937545][ T4545] The buggy address belongs to the object at ffff=
+888014e94000
+> 	[ 9718.937545][ T4545]  which belongs to the cache task_struct(168:scr=
+een-wrapper.service) of size 11072
+> 	[ 9718.940391][ T4545] The buggy address is located 44 bytes inside of=
+
+> 	[ 9718.940391][ T4545]  11072-byte region [ffff888014e94000, ffff88801=
+4e96b40)
+> 	[ 9718.942559][ T4545] The buggy address belongs to the page:
+> 	[ 9718.943454][ T4545] page:ffffea000053a500 refcount:1 mapcount:0 map=
+ping:0000000000000000 index:0xffff888014e97fff head:ffffea000053a500 orde=
+r:2 compound_mapcount:0 compound_pincount:0
+> 	[ 9718.946072][ T4545] flags: 0xfffe0000010200(slab|head)
+> 	[ 9718.946958][ T4545] raw: 00fffe0000010200 ffffea00011ab108 ffffea00=
+01d6f108 ffff8881eabd9700
+> 	[ 9718.948406][ T4545] raw: ffff888014e97fff ffff888014e94000 00000001=
+00000001 0000000000000000
+> 	[ 9718.949889][ T4545] page dumped because: kasan: bad access detected=
+
+> 	[ 9718.950977][ T4545]=20
+> 	[ 9718.951354][ T4545] Memory state around the buggy address:
+> 	[ 9718.952296][ T4545]  ffff888014e93f00: 00 00 00 00 00 00 00 00 00 0=
+0 00 00 00 00 00 00
+> 	[ 9718.953641][ T4545]  ffff888014e93f80: 00 00 00 00 00 00 00 00 00 0=
+0 00 00 00 00 00 00
+> 	[ 9718.955004][ T4545] >ffff888014e94000: fb fb fb fb fb fb fb fb fb f=
+b fb fb fb fb fb fb
+> 	[ 9718.956366][ T4545]                                   ^
+> 	[ 9718.957258][ T4545]  ffff888014e94080: fb fb fb fb fb fb fb fb fb f=
+b fb fb fb fb fb fb
+> 	[ 9718.958653][ T4545]  ffff888014e94100: fb fb fb fb fb fb fb fb fb f=
+b fb fb fb fb fb fb
+> 	[ 9718.960034][ T4545] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+
+>=20
 
 
---dL9CbuSJSqZaRPBKpFLtSSJOgQj3r841R--
+--vjCZIKYQpbKFJffqOCiNHFgAThdC10dlK--
 
---Do3Hn4olimj4oYxttSD4CRx9jcmCOrWhp
+--iLdad85n6mS2ow5Kjr8P0F8lYS2vRxmPT
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl8aJbwACgkQwj2R86El
-/qgX3wf8DdMCvsWsWfRWx3zCtpyu7jeXvaWKX7oEK33x7hPRfcxzG0yMjb0hCN46
-7UhI/yIiAEcI2JaDl9dT+vACYgbFDDXXrT+teCSMxXV4//fOdVHTewAgeup4zHYC
-txO6yTby3HpUInlFGDmw7FmhWoxWtYICCz7XGNVTAsTMRJzJKT4l2Ufiji9qGfgq
-Ba3uRCl+tpvT33r2VdFqyHslKIfH2LmrqS92W8XDlhSBjtiM6kkyJmizM5KeFh8k
-A/yj6U+OXaO66Zttcr4p5qZrklYoocEgkrpnbKde1VQHaXMpjCIN3lYCaLXbx995
-RGTPTaL9FwnRPPcrBSA9PA8Yl9vSfQ==
-=iFQU
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl8aKRkACgkQwj2R86El
+/qj/UAf/dTixo8YqXbHNfC/J30C021HbXWUKN0T4BiUlluhXobXVnBuoFbj29oay
+9GVAbhhgFIYMXXwl3a7Ch/9nKMfYLpi5rcqwhazaP8LeYawB4vlapsG0/qhl8Ta/
+kBnGf9ixNKHXsRJXR3vJ9ZDaaeVdTXVIdC3K2slOwbF4TUKKqAqx02V8qMTp6op9
+A3OLULZfRHrcF7escYX8weC+D645NGxeDC11rvPeeg/dAb6zvwZGYuVGvvoRFYVM
+3idex8eIcaoAyHj6i5abCMAGZWH4Me2rBeWX43WN0PNfYaQcgKfbv2L5oyofFFbq
+JnH1b3tnG+KYCuNqHoLq7qxZLIQt4g==
+=BsQ9
 -----END PGP SIGNATURE-----
 
---Do3Hn4olimj4oYxttSD4CRx9jcmCOrWhp--
+--iLdad85n6mS2ow5Kjr8P0F8lYS2vRxmPT--
