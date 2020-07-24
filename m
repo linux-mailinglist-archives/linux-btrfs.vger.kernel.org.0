@@ -2,117 +2,132 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8A5822CB3E
-	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Jul 2020 18:41:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FEC322CB90
+	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Jul 2020 18:59:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726488AbgGXQlv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 24 Jul 2020 12:41:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39742 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726326AbgGXQlv (ORCPT
+        id S1726689AbgGXQ7W (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 24 Jul 2020 12:59:22 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:47872 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726512AbgGXQ7W (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 24 Jul 2020 12:41:51 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E87D0C0619D3
-        for <linux-btrfs@vger.kernel.org>; Fri, 24 Jul 2020 09:41:50 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id 2so5077820qkf.10
-        for <linux-btrfs@vger.kernel.org>; Fri, 24 Jul 2020 09:41:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=HBFSRvFWH+Ir8eIbCnL528l4TLi5HMxmJ08ACA7wj3o=;
-        b=AngzZWcUqDrBltF+KWRPh3BGpcPA+Q0DoXIuaoZQIhFaYRO7vMN5Zg2qJzLtnAhxgP
-         iMO2K9F4juJRYysB4ZnRgzYGyK6X/3Yrrwk5lyJUepDbPnN+LPfwEye6ChXRckhxMx5U
-         2dRuVJmTjypw8/77SnftgS5WgjyWEEEVbsPTUuoGKGsz3Uwb/kTTXVw/dSdtEqXcEf4M
-         ehxU5jvOfP1wjRRDF9X+5KBbi5eIWqzMuuO4LOr5tcrSW1HJggXe8MDZe+QZ1JvCKCQj
-         kCgtqgyagQlsGoKnOU7WcRMT8koPGpBtWcQ/m9wCPEl6ccx/RiWCL9aP5dNQY8Key4/V
-         53ig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=HBFSRvFWH+Ir8eIbCnL528l4TLi5HMxmJ08ACA7wj3o=;
-        b=CuiwGtIx2AXV56Y04D1yIpLBEgD39kfyvOWvSw91fuTdy1KchMXU7ZB1ZCO7Phk4T1
-         ThcVZI5o4ZgFR784q6jqPwF/+foXOwWcH3/GZldIOU9Aj5mHzqC34WY6LtlL6erfS8BH
-         PbCVw567JRbD3PYTptAGhjAHg/STDw+HImMyTU8Q0AXj90eDpRem0dST501ukYCSnF0M
-         vwZWUrAZRnfhPGg01R58gazABB7TAenRiHxm9g1giIToPB1RJ2eWb2vYNBth6QeAU59R
-         zusjeTLyN4YFEKeqI09tXFZaHKa4iXCVer2xlJdtBLLHY1HAUjEeGeFA3uI8w32J/tIY
-         Xseg==
-X-Gm-Message-State: AOAM530lI40W9p5BKhJ1T+zRbluQluf8j6xQVpUGNpnNvJxTWCgPGecD
-        ZvDFUBw8hUZeFQgDllF8xp4Oe/qlkd8w0w==
-X-Google-Smtp-Source: ABdhPJx1iX2K5rUihlKS/E1JimQA8iYUrPHvUQ6xWh1n83murNOum4WNIEg+qIOujVt/AgONM0E8Sg==
-X-Received: by 2002:a05:620a:346:: with SMTP id t6mr11164532qkm.29.1595608909588;
-        Fri, 24 Jul 2020 09:41:49 -0700 (PDT)
-Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id a5sm1919582qtc.44.2020.07.24.09.41.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Jul 2020 09:41:48 -0700 (PDT)
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH] btrfs: do not evaluate the expression with !CONFIG_BTRFS_ASSERT
-Date:   Fri, 24 Jul 2020 12:41:47 -0400
-Message-Id: <20200724164147.39925-1-josef@toxicpanda.com>
-X-Mailer: git-send-email 2.24.1
+        Fri, 24 Jul 2020 12:59:22 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06OGqbxS170377;
+        Fri, 24 Jul 2020 16:59:19 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=58J/7eQb9zaXGGG8o6ESUFvKscUvTCN3dP9VqogPcUQ=;
+ b=ZSKtHiZnww0WnlWwNoXC+3543XHeT0V0kfoST/0RArbbH3UnxSmnz/OW+mJ02m0GYjEg
+ QSEcx1i7HvmPJKmDCS7ixjw8TAgDWX0QG1qCWCiI6QJAV7XDofWVQccDjsjEHuWQYR/T
+ +nobMtGMrt8nFnbfSvHyrJW5a91SAmFSea2Om5PQskhPC2I1qmVqkS+Ho3DSUG+OAZR1
+ Bqhxt1/1m6ygBveyT1B+gh1O3MorxaBy8uv/xVA1zqirefmN5ILx1AdIsX9E1b+1Y8vG
+ Xku3CGT4rqdVTVTHfVfqD1ZOkuZG02xRBu+laDyHdY2OJ9ookEFVecTmSf1ZYWbP52vb ow== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2130.oracle.com with ESMTP id 32brgs07hc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 24 Jul 2020 16:59:19 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06OGqSWB033202;
+        Fri, 24 Jul 2020 16:57:18 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3030.oracle.com with ESMTP id 32g3hug4ae-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 24 Jul 2020 16:57:18 +0000
+Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 06OGvG4w016810;
+        Fri, 24 Jul 2020 16:57:16 GMT
+Received: from localhost (/67.169.218.210)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 24 Jul 2020 09:57:16 -0700
+Date:   Fri, 24 Jul 2020 09:57:15 -0700
+From:   "Darrick J. Wong" <darrick.wong@oracle.com>
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH] btrfs: do not evaluate the expression with
+ !CONFIG_BTRFS_ASSERT
+Message-ID: <20200724165715.GA7591@magnolia>
+References: <20200724164147.39925-1-josef@toxicpanda.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200724164147.39925-1-josef@toxicpanda.com>
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9692 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 spamscore=0 mlxscore=0
+ adultscore=0 malwarescore=0 bulkscore=0 mlxlogscore=999 suspectscore=1
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2007240129
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9692 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 bulkscore=0 spamscore=0
+ impostorscore=0 suspectscore=1 adultscore=0 clxscore=1011 mlxlogscore=999
+ priorityscore=1501 phishscore=0 lowpriorityscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2007240129
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-While investigating a performance issue I noticed that turning off
-CONFIG_BTRFS_ASSERT had no effect in what I was seeing in perf,
-specifically check_setget_bounds() was around 5% for this workload.
-Upon investigation I realized that I made a mistake when I added
-ASSERT(), I would still evaluate the expression, but simply ignore the
-result.
+On Fri, Jul 24, 2020 at 12:41:47PM -0400, Josef Bacik wrote:
+> While investigating a performance issue I noticed that turning off
+> CONFIG_BTRFS_ASSERT had no effect in what I was seeing in perf,
+> specifically check_setget_bounds() was around 5% for this workload.
+> Upon investigation I realized that I made a mistake when I added
+> ASSERT(), I would still evaluate the expression, but simply ignore the
+> result.
+> 
+> This is useless, and has a marked impact on performance.  This
+> microbenchmark is the watered down version of an application that is
+> experiencing performance issues, and does renames and creates over and
+> over again.  Doing these operations 200k times without this patch takes
+> 13 seconds on my machine.  With this patch it takes 7 seconds.
+> 
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 
-This is useless, and has a marked impact on performance.  This
-microbenchmark is the watered down version of an application that is
-experiencing performance issues, and does renames and creates over and
-over again.  Doing these operations 200k times without this patch takes
-13 seconds on my machine.  With this patch it takes 7 seconds.
+lolz,
+Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
 
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
----
- fs/btrfs/ctree.h        | 2 +-
- fs/btrfs/struct-funcs.c | 2 ++
- 2 files changed, 3 insertions(+), 1 deletion(-)
+--D
 
-diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index 9c7e466f27a9..b0fe8cca7e86 100644
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -3238,7 +3238,7 @@ static inline void assertfail(const char *expr, const char *file, int line)
- 
- #else
- static inline void assertfail(const char *expr, const char* file, int line) { }
--#define ASSERT(expr)	(void)(expr)
-+#define ASSERT(expr)	((void)0)
- #endif
- 
- /*
-diff --git a/fs/btrfs/struct-funcs.c b/fs/btrfs/struct-funcs.c
-index 079b059818e9..f44dc1207792 100644
---- a/fs/btrfs/struct-funcs.c
-+++ b/fs/btrfs/struct-funcs.c
-@@ -17,6 +17,7 @@ static inline void put_unaligned_le8(u8 val, void *p)
-        *(u8 *)p = val;
- }
- 
-+#ifdef CONFIG_BTRFS_ASSERT
- static bool check_setget_bounds(const struct extent_buffer *eb,
- 				const void *ptr, unsigned off, int size)
- {
-@@ -37,6 +38,7 @@ static bool check_setget_bounds(const struct extent_buffer *eb,
- 
- 	return true;
- }
-+#endif
- 
- /*
-  * Macro templates that define helpers to read/write extent buffer data of a
--- 
-2.24.1
-
+> ---
+>  fs/btrfs/ctree.h        | 2 +-
+>  fs/btrfs/struct-funcs.c | 2 ++
+>  2 files changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+> index 9c7e466f27a9..b0fe8cca7e86 100644
+> --- a/fs/btrfs/ctree.h
+> +++ b/fs/btrfs/ctree.h
+> @@ -3238,7 +3238,7 @@ static inline void assertfail(const char *expr, const char *file, int line)
+>  
+>  #else
+>  static inline void assertfail(const char *expr, const char* file, int line) { }
+> -#define ASSERT(expr)	(void)(expr)
+> +#define ASSERT(expr)	((void)0)
+>  #endif
+>  
+>  /*
+> diff --git a/fs/btrfs/struct-funcs.c b/fs/btrfs/struct-funcs.c
+> index 079b059818e9..f44dc1207792 100644
+> --- a/fs/btrfs/struct-funcs.c
+> +++ b/fs/btrfs/struct-funcs.c
+> @@ -17,6 +17,7 @@ static inline void put_unaligned_le8(u8 val, void *p)
+>         *(u8 *)p = val;
+>  }
+>  
+> +#ifdef CONFIG_BTRFS_ASSERT
+>  static bool check_setget_bounds(const struct extent_buffer *eb,
+>  				const void *ptr, unsigned off, int size)
+>  {
+> @@ -37,6 +38,7 @@ static bool check_setget_bounds(const struct extent_buffer *eb,
+>  
+>  	return true;
+>  }
+> +#endif
+>  
+>  /*
+>   * Macro templates that define helpers to read/write extent buffer data of a
+> -- 
+> 2.24.1
+> 
