@@ -2,55 +2,56 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEE6522D5CC
-	for <lists+linux-btrfs@lfdr.de>; Sat, 25 Jul 2020 09:30:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6894B22D5DE
+	for <lists+linux-btrfs@lfdr.de>; Sat, 25 Jul 2020 09:43:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726681AbgGYHav (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 25 Jul 2020 03:30:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36534 "EHLO
+        id S1726711AbgGYHnv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 25 Jul 2020 03:43:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38554 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726017AbgGYHav (ORCPT
+        with ESMTP id S1726434AbgGYHnu (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 25 Jul 2020 03:30:51 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C747AC0619D3
-        for <linux-btrfs@vger.kernel.org>; Sat, 25 Jul 2020 00:30:50 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id h8so6374180lfp.9
-        for <linux-btrfs@vger.kernel.org>; Sat, 25 Jul 2020 00:30:50 -0700 (PDT)
+        Sat, 25 Jul 2020 03:43:50 -0400
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F008C0619D3
+        for <linux-btrfs@vger.kernel.org>; Sat, 25 Jul 2020 00:43:50 -0700 (PDT)
+Received: by mail-lj1-x22b.google.com with SMTP id 185so1989632ljj.7
+        for <linux-btrfs@vger.kernel.org>; Sat, 25 Jul 2020 00:43:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:autocrypt:message-id:date:user-agent
+        h=subject:from:to:cc:references:autocrypt:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Z7UJUFN6LjOG/7dEzTccUvcaJdQhVQJY2rtA8HYN0A4=;
-        b=Ouybu2hVlVchLgPlBGtdd6lGS0eZXL9ojgutDORWFK55/KbohxbeHoN8sZJT7uJPei
-         wzFSzhvfJW494PErzIqMCKsRGEccPy9YozI/x2WplUxBzdlMJgZhciolEkyRit114vhU
-         s8GAvh1ssnvoW5ml9uBgB7LMgCt+mcuhTxcDW4ffmxtDBqxUTRtto8AjHZsRygsZTTE2
-         yXHnlDbF4s/+L4RWTH7tU33Pwu11ury4OkTWPwgMgDUGVJGopJS3x/QqxG4m6zxq9nJl
-         AIrc4+/mfcXAy4Q0toGIiW+IZKqyxmsl27altOVljrIp2+pRESvgvfSNobxPmD2ey62y
-         bhiw==
+        bh=JRvloOLUA0IXgoLXWUnI/tmYD8FNMJ2Ck/8zZMKdCc4=;
+        b=H6h3l1syPUsqixLHgibHthpOHAbYKfH/YkqD3MPgcEzVpdNbJK8msjt76envf060v4
+         hTbtnKrNjIoebRcMJqWTy4kpKQ4m4gjGpXpapmPzjj+QH3/tjeflXvS7ZQvTHn7l24Ig
+         D9PjvJviLdCEbD+d+a9xRKywqALheDd64PTyq7pnopwF+CJP/I9rHUJglJE8jqMLFZUC
+         mt0UjbZQ54QXLrKBQqQ4sKLWhVmlB+MIHVctlO/EFu0XnzcuvjXeXKx4R2VtlCtjO6Ci
+         0jmhjr2er/J5zq78hy/CpVqV9+QQJA96RUUWjYEq6AXaOq8w6/j2rZ0qtGWNS40SnrEN
+         ko8w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
+        h=x-gm-message-state:subject:from:to:cc:references:autocrypt
          :message-id:date:user-agent:mime-version:in-reply-to
          :content-language:content-transfer-encoding;
-        bh=Z7UJUFN6LjOG/7dEzTccUvcaJdQhVQJY2rtA8HYN0A4=;
-        b=l50Q1wE1N9aytUKFJ34yQpMX248zngTQvxgrbl1ZBl1Is+CEEGVy9wRmSfURq2cKmR
-         FsCOasLh7IekNfzA/2idbQFxUKV47EB31R69AU+6H9W/tXt5LHzHQz2X6yETMz5aU1CK
-         u9azV0KO5CYrMj9bmQEon9WQBDq/DMo0tCadUQUcMOK3vg57hQl+Tc8KOO5esLk4lG1Y
-         wrrtMbTlqD2sAUytTs3V7g9ZiozkLWCbIOevo/6XrF/QCpwWN0oE5CiQUkuaXEvO8jxp
-         FlglfDvznNzk5vm3cajBNMONqU7KlqUD+MNhTA8QFv2tTBsGeCHyytCcZlTadsMP+RHD
-         Wfww==
-X-Gm-Message-State: AOAM532B3jft+d/XMDDZ7MEoRCWnW4eLGDrfytluA5P52Y9NGnZueUOR
-        Qi9/mC8HiKFiW7LtPWCzM6C6iSqs
-X-Google-Smtp-Source: ABdhPJylYJ9xpdv6SmGjRs3Bb+Y1e44Zy+rsmwNlmvCRjOYIxa5uGZJiDAw1YXXcRpUYIS8MBJ305Q==
-X-Received: by 2002:ac2:4adb:: with SMTP id m27mr7001137lfp.90.1595662248817;
-        Sat, 25 Jul 2020 00:30:48 -0700 (PDT)
+        bh=JRvloOLUA0IXgoLXWUnI/tmYD8FNMJ2Ck/8zZMKdCc4=;
+        b=JRcJwnQzQIEsn7Eask6fEv13X+byuVmESlLCBWvesoZfBtKA37k/agmUrCFDqIWO7I
+         nza8PiwB1MNi6V556qWNCr2olX3u2CfEldg12M3+88QhG1z94/VA6AeIkSd4evmMkc3V
+         iC21BalqDrCoU+pv1S57XZseA7xW9SD34bK8lR4UxyXGcaan+Ryv0JskFTchluQKuzWh
+         TI8fukfQTMVgciq0i3oiJ/q+zvcZhO+Z15gSG53gwmSrQYkUj8hcNI8E7Aoo3gw0kFCG
+         4RGuPd2YhoxxCuGcdeegoqBW2YiHgWuDItEryz5PlSt2PuSDqGfBIBA3GE14YGMjfkqw
+         +Crg==
+X-Gm-Message-State: AOAM531zUlqz5igfvE1s3qIrkw1j4LmiAiE+FJYLTTHc4q48FG4l5u0T
+        7wNUSlHShjgD/SeRc+l5xaEgH+PK
+X-Google-Smtp-Source: ABdhPJxR8YMQynwOv0hcYNQm6Z4mltt/zJIjy4qABopZPIv8S2las9xAymlAq54ayDv7ZyThkZnI5g==
+X-Received: by 2002:a2e:9d4a:: with SMTP id y10mr1321753ljj.104.1595663027148;
+        Sat, 25 Jul 2020 00:43:47 -0700 (PDT)
 Received: from ?IPv6:2a00:1370:812d:c763:71ff:8633:9e4a:bf5b? ([2a00:1370:812d:c763:71ff:8633:9e4a:bf5b])
-        by smtp.gmail.com with ESMTPSA id s1sm809698ljj.96.2020.07.25.00.30.47
+        by smtp.gmail.com with ESMTPSA id n29sm1170646lfi.9.2020.07.25.00.43.46
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 25 Jul 2020 00:30:47 -0700 (PDT)
+        Sat, 25 Jul 2020 00:43:46 -0700 (PDT)
 Subject: Re: df free space not correct with raid1 pools with an odd number of
  devices
+From:   Andrei Borzenkov <arvidjaar@gmail.com>
 To:     Chris Murphy <lists@colorremedies.com>,
         Jorge Bastos <jorge.mrbastos@gmail.com>
 Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
@@ -58,7 +59,7 @@ References: <CAHzMYBTU=JuEsRX7YXzMJMELy63TXrm3J6onKnhGSOOzTnnMBg@mail.gmail.com>
  <CAJCQCtS6eS7a+wHR__A_aDujANWNJEmUMApjChVMk1WNuZ0BKg@mail.gmail.com>
  <CAHzMYBT8a9D817i2TRqdRiJFdmF-c3WVyo6HNgbv8bJqqOyr5g@mail.gmail.com>
  <CAJCQCtSeAKD_bVk7GUVyLdzdSZqR8O9zEX40kCmyR--DyWtSRw@mail.gmail.com>
-From:   Andrei Borzenkov <arvidjaar@gmail.com>
+ <dd11313f-3b9c-c743-257c-71ba1da4dde0@gmail.com>
 Autocrypt: addr=arvidjaar@gmail.com; prefer-encrypt=mutual; keydata=
  LS0tLS1CRUdJTiBQR1AgUFVCTElDIEtFWSBCTE9DSy0tLS0tCgptUUdpQkR4aVJ3d1JCQUMz
  Q045d2R3cFZFcVVHbVNvcUY4dFdWSVQ0UC9iTENTWkxraW5TWjJkcnNibEtwZEc3CngrZ3V4
@@ -98,12 +99,12 @@ Autocrypt: addr=arvidjaar@gmail.com; prefer-encrypt=mutual; keydata=
  Wkc2SVJnUVlFUUlBQmdVQ1BHSkhKQUFLQ1JCSG9zeTYKMmwzM2pNaGRBSjQ4UDdXRHZLTFFR
  NU1Lbm4yRC9USTMzN3VBL2dDZ241bW52bTRTQmN0YmhhU0JnY2tSbWdTeApmd1E9Cj1nWDEr
  Ci0tLS0tRU5EIFBHUCBQVUJMSUMgS0VZIEJMT0NLLS0tLS0K
-Message-ID: <dd11313f-3b9c-c743-257c-71ba1da4dde0@gmail.com>
-Date:   Sat, 25 Jul 2020 10:30:46 +0300
+Message-ID: <446adc05-b03b-488a-c8a3-6c31cabdb3d0@gmail.com>
+Date:   Sat, 25 Jul 2020 10:43:45 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <CAJCQCtSeAKD_bVk7GUVyLdzdSZqR8O9zEX40kCmyR--DyWtSRw@mail.gmail.com>
+In-Reply-To: <dd11313f-3b9c-c743-257c-71ba1da4dde0@gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -112,68 +113,77 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-24.07.2020 23:46, Chris Murphy пишет:
-> On Fri, Jul 24, 2020 at 2:16 AM Jorge Bastos <jorge.mrbastos@gmail.com> wrote:
+25.07.2020 10:30, Andrei Borzenkov пишет:
+> 24.07.2020 23:46, Chris Murphy пишет:
+>> On Fri, Jul 24, 2020 at 2:16 AM Jorge Bastos <jorge.mrbastos@gmail.com> wrote:
+>>>
+>>>>> Filesystem      Size  Used Avail Use% Mounted on
+>>>>> /dev/sdd1       1.2T  3.4M  931G   1% /mnt/cache
 >>
->>>> Filesystem      Size  Used Avail Use% Mounted on
->>>> /dev/sdd1       1.2T  3.4M  931G   1% /mnt/cache
+>> Oh yeah Avail is clearly goofy.
+>>
+>>
+>>> Filesystem      Size  Used Avail Use% Mounted on
+>>> /dev/sdd1       699G  3.4M  466G   1% /mnt/cache
+>>
+>>
+>> Anybody know what's up?
+>>
+>>
 > 
-> Oh yeah Avail is clearly goofy.
+> df "Used" and "Avail" are totally independent values.
+> 
+> "Used" is computed as (total - free), both of which are reported by
+> statfs. By default df does not show "Free", you need to use --output=
+> option (at least using coreutils df).
+> 
+> "Avail" is computed by filesystem. Originally the difference comes from
+> "available to root" and "available to user" .
+> 
+> btrfs computes "Avail" by simulating chunk allocations on devices. See
+> super.c:btrfs_calc_avail_data_space(), the final chunk:
+> 
+>         btrfs_descending_sort_devices(devices_info, nr_devices);
+> 
+>         i = nr_devices - 1;
+>         avail_space = 0;
+>         while (nr_devices >= rattr->devs_min) {
+>                 num_stripes = min(num_stripes, nr_devices);
+> 
+>                 if (devices_info[i].max_avail >= min_stripe_size) {
+>                         int j;
+>                         u64 alloc_size;
+> 
+>                         avail_space += devices_info[i].max_avail *
+> num_stripes;
+>                         alloc_size = devices_info[i].max_avail;
+>                         for (j = i + 1 - num_stripes; j <= i; j++)
+>                                 devices_info[j].max_avail -= alloc_size;
+>                 }
+>                 i--;
+>                 nr_devices--;
+>         }
+> 
+>         kfree(devices_info);
+>         *free_bytes = avail_space;
+> 
+> devices_info holds device list sorted by unallocated space. We start
+> with device with smallest available space and add its full available
+> space (adjusted by allocation profile), then move to the previous device
+> with more free space.
+> 
+> The problem is that if we have three equal sized devices and RAID1
+> profile, the first iteration consumes two full devices, thus third
+> device cannot be used anymore (we need two of them for raid1). Real
+> allocator will evaluate free space every time and so alternate between
+> all three devices.
 > 
 > 
->> Filesystem      Size  Used Avail Use% Mounted on
->> /dev/sdd1       699G  3.4M  466G   1% /mnt/cache
-> 
-> 
-> Anybody know what's up?
-> 
-> 
 
-df "Used" and "Avail" are totally independent values.
-
-"Used" is computed as (total - free), both of which are reported by
-statfs. By default df does not show "Free", you need to use --output=
-option (at least using coreutils df).
-
-"Avail" is computed by filesystem. Originally the difference comes from
-"available to root" and "available to user" .
-
-btrfs computes "Avail" by simulating chunk allocations on devices. See
-super.c:btrfs_calc_avail_data_space(), the final chunk:
-
-        btrfs_descending_sort_devices(devices_info, nr_devices);
-
-        i = nr_devices - 1;
-        avail_space = 0;
-        while (nr_devices >= rattr->devs_min) {
-                num_stripes = min(num_stripes, nr_devices);
-
-                if (devices_info[i].max_avail >= min_stripe_size) {
-                        int j;
-                        u64 alloc_size;
-
-                        avail_space += devices_info[i].max_avail *
-num_stripes;
-                        alloc_size = devices_info[i].max_avail;
-                        for (j = i + 1 - num_stripes; j <= i; j++)
-                                devices_info[j].max_avail -= alloc_size;
-                }
-                i--;
-                nr_devices--;
-        }
-
-        kfree(devices_info);
-        *free_bytes = avail_space;
-
-devices_info holds device list sorted by unallocated space. We start
-with device with smallest available space and add its full available
-space (adjusted by allocation profile), then move to the previous device
-with more free space.
-
-The problem is that if we have three equal sized devices and RAID1
-profile, the first iteration consumes two full devices, thus third
-device cannot be used anymore (we need two of them for raid1). Real
-allocator will evaluate free space every time and so alternate between
-all three devices.
+OTOH, this is the correct if the most pessimistic estimation either. If
+you have three 250G RAID1 devices and you allocate 250G data in one file
+you consume two full devices and won't be able to allocate new data at
+all (or for that matter no new metadata either).
 
 
+So whatever value btrfs returns will be wrong for some allocation pattern.
