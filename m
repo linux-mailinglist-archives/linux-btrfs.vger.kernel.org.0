@@ -2,483 +2,99 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A38DB22D819
-	for <lists+linux-btrfs@lfdr.de>; Sat, 25 Jul 2020 16:25:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 115CB22D879
+	for <lists+linux-btrfs@lfdr.de>; Sat, 25 Jul 2020 17:38:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727898AbgGYOZE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 25 Jul 2020 10:25:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43878 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727896AbgGYOZD (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 25 Jul 2020 10:25:03 -0400
-Received: from syrinx.knorrie.org (syrinx.knorrie.org [IPv6:2001:888:2177::4d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CE0BC08C5C0
-        for <linux-btrfs@vger.kernel.org>; Sat, 25 Jul 2020 07:25:03 -0700 (PDT)
-Received: from [IPv6:2a02:a213:2b80:f000::12] (unknown [IPv6:2a02:a213:2b80:f000::12])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by syrinx.knorrie.org (Postfix) with ESMTPSA id 73D5E609B6307
-        for <linux-btrfs@vger.kernel.org>; Sat, 25 Jul 2020 16:24:58 +0200 (CEST)
-To:     linux-btrfs@vger.kernel.org
-From:   Hans van Kranenburg <hans@knorrie.org>
-Subject: Debugging abysmal write performance with 100% cpu
+        id S1726969AbgGYPhy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 25 Jul 2020 11:37:54 -0400
+Received: from mail.itouring.de ([188.40.134.68]:35398 "EHLO mail.itouring.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726567AbgGYPhy (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Sat, 25 Jul 2020 11:37:54 -0400
+Received: from tux.applied-asynchrony.com (p5ddd79e0.dip0.t-ipconnect.de [93.221.121.224])
+        by mail.itouring.de (Postfix) with ESMTPSA id 4F1524160251;
+        Sat, 25 Jul 2020 17:37:53 +0200 (CEST)
+Received: from [192.168.100.223] (ragnarok.applied-asynchrony.com [192.168.100.223])
+        by tux.applied-asynchrony.com (Postfix) with ESMTP id E667CF01600;
+        Sat, 25 Jul 2020 17:37:52 +0200 (CEST)
+Subject: Re: Debugging abysmal write performance with 100% cpu
  kworker/u16:X+flush-btrfs-2
-Autocrypt: addr=hans@knorrie.org; keydata=
- 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
-Message-ID: <2523ce77-31a3-ecec-f36d-8d74132eae02@knorrie.org>
-Date:   Sat, 25 Jul 2020 16:24:57 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+To:     Hans van Kranenburg <hans@knorrie.org>, linux-btrfs@vger.kernel.org
+References: <2523ce77-31a3-ecec-f36d-8d74132eae02@knorrie.org>
+From:   =?UTF-8?Q?Holger_Hoffst=c3=a4tte?= <holger@applied-asynchrony.com>
+Organization: Applied Asynchrony, Inc.
+Message-ID: <6b4041a7-cbf7-07b6-0f30-8141d60a7d51@applied-asynchrony.com>
+Date:   Sat, 25 Jul 2020 17:37:52 +0200
 MIME-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------A4C06E781018F0F79BCA20A8"
+In-Reply-To: <2523ce77-31a3-ecec-f36d-8d74132eae02@knorrie.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is a multi-part message in MIME format.
---------------A4C06E781018F0F79BCA20A8
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+On 2020-07-25 16:24, Hans van Kranenburg wrote:
+> Hi,
+> 
+> I have a filesystem here that I'm filling up with data from elsewhere.
+> Most of it is done by rsync, and part by send/receive. So, receiving
+> data over the network, and then writing the files to disk. There can be
+> a dozen of these processes running in parallel.
+> 
+> Now, when doing so, the kworker/u16:X+flush-btrfs-2 process (with
+> varying X) often is using nearly 100% cpu, while enormously slowing down
+> disk writes. This shows as disk IO wait for the rsync and btrfs receive
+> processes.
 
-Hi,
+<snip>
 
-I have a filesystem here that I'm filling up with data from elsewhere.
-Most of it is done by rsync, and part by send/receive. So, receiving
-data over the network, and then writing the files to disk. There can be
-a dozen of these processes running in parallel.
+I cannot speak to anything btrfs-specific (other than the usual write
+storms), however..
 
-Now, when doing so, the kworker/u16:X+flush-btrfs-2 process (with
-varying X) often is using nearly 100% cpu, while enormously slowing down
-disk writes. This shows as disk IO wait for the rsync and btrfs receive
-processes.
+> [<0>] rq_qos_wait+0xfa/0x170
+> [<0>] wbt_wait+0x98/0xe0
+> [<0>] __rq_qos_throttle+0x23/0x30
 
-The underlying storage (iSCSI connected over 10Gb/s network) can easily
-eat a few hundred MiB/s. When looking at actual disk business on the
-storage device, percentages <5% utilization are reported for the actual
-disks.
+..this means that you have CONFIG_BLK_WBT{_MQ} enabled and are using
+an IO scheduler that observes writeback throttling. AFAIK all MQ-capable
+schedulers (also SQ ones in 4.19 IIRC!) do so except for BFQ, which has
+its own mechanism to regulate fairness vs. latency and explicitly turns
+WBT off.
 
-It's clearly kworker/u16:X+flush-btrfs-2 which is the bottleneck here.
+WBT aka 'writeback throttling' throttles background writes acording to
+latency/throughput of the underlying block device in favor of readers.
+It is meant to protect interactive/low-latency/desktop apps from heavy
+bursts of background writeback activity. I tested early versions and
+provided feedback to Jens Axboe; it really is helpful when it works,
+but obviously cannot cater to every situation. There have been reports
+that it is unhelpful for write-only/heavy workloads and may lead to
+queueing pileup.
 
-I just did a 'perf record -g -a sleep 60' while disk writes were down to
-under 1MiB (!) per second and then 'perf report'. Attached some 'screen
-shot' of it. Also attached an example of what nmon shows to give an idea
-about the situation.
+You can tune the expected latency of device writes via:
+/sys/block/sda/queue/wbt_lat_usec.
 
-If the kworker/u16:X+flush-btrfs-2 cpu usage decreases, I immediately
-see network and disk write speed ramping up, easily over 200 MiB/s,
-until it soon plummets again.
+You might also check whether your vm.dirty_{background}_bytes and
+vm.dirty_expire_centisecs are too high; distro defaults almost always
+are. This leads to more evenly spaced out write traffic.
 
-I see the same behavior with a recent 4.19 kernel and with 5.7.6 (which
-is booted now).
+Without knowing more it's difficult to say exactly what is going on,
+but if your underlying storage has latency spikes it might be that
+you are very likely looking at queueing pileup caused by multiple WBTs
+choking each other. Having other unrelated queueing & throttling
+mechanisms (in your case the network) in the mix is unlikely to help.
+I'm not going to comment on iSCSI in general.. :^)
 
-So, what I'm looking for is:
-* Does anyone else see this happen when doing a lot of concurrent writes?
-* What does this flush thing do?
-* Why is it using 100% cpu all the time?
-* How can I debug this more?
-* Ultimately, of course... how can we improve this?
+OTOH I also have 10G networking here and no such problems, even when
+pushing large amounts of data over NFS at ~750 MB/s - and I have WBT
+enabled everywhere.
 
-I can recompile the kernel image to e.g. put more trace points in, in
-different places.
+So maybe start small and either ramp up the wbt latency sysctl or
+decrease dirty_background bytes to start flushing sooner, depending
+on how it's set. As last resort you can rebuild your kernels with
+CONFIG_BLK_WBT/CONFIG_BLK_WBT_MQ disabled.
 
-I just have no idea where to start.
+Hope this helps!
 
-Thanks,
-Hans
-
-P.S. /proc/<pid>/stack for the kworker/u16:X+flush-btrfs-2 mostly shows
-nothing at all, and sometimes when it does show some output, it mostly
-looks like this:
-
-----
-[<0>] rq_qos_wait+0xfa/0x170
-[<0>] wbt_wait+0x98/0xe0
-[<0>] __rq_qos_throttle+0x23/0x30
-[<0>] blk_mq_make_request+0x12a/0x5d0
-[<0>] generic_make_request+0xcf/0x310
-[<0>] submit_bio+0x42/0x1c0
-[<0>] btrfs_map_bio+0x1c0/0x380 [btrfs]
-[<0>] btrfs_submit_bio_hook+0x8c/0x180 [btrfs]
-[<0>] submit_one_bio+0x31/0x50 [btrfs]
-[<0>] submit_extent_page+0x102/0x210 [btrfs]
-[<0>] __extent_writepage_io+0x1cf/0x380 [btrfs]
-[<0>] __extent_writepage+0x101/0x300 [btrfs]
-[<0>] extent_write_cache_pages+0x2bb/0x440 [btrfs]
-[<0>] extent_writepages+0x44/0x90 [btrfs]
-[<0>] do_writepages+0x41/0xd0
-[<0>] __writeback_single_inode+0x3d/0x340
-[<0>] writeback_sb_inodes+0x1e5/0x480
-[<0>] __writeback_inodes_wb+0x5d/0xb0
-[<0>] wb_writeback+0x25f/0x2f0
-[<0>] wb_workfn+0x2fe/0x3f0
-[<0>] process_one_work+0x1ad/0x370
-[<0>] worker_thread+0x30/0x390
-[<0>] kthread+0x112/0x130
-[<0>] ret_from_fork+0x1f/0x40
-
-----
-[<0>] rq_qos_wait+0xfa/0x170
-[<0>] wbt_wait+0x98/0xe0
-[<0>] __rq_qos_throttle+0x23/0x30
-[<0>] blk_mq_make_request+0x12a/0x5d0
-[<0>] generic_make_request+0xcf/0x310
-[<0>] submit_bio+0x42/0x1c0
-[<0>] btrfs_map_bio+0x1c0/0x380 [btrfs]
-[<0>] btrfs_submit_bio_hook+0x8c/0x180 [btrfs]
-[<0>] submit_one_bio+0x31/0x50 [btrfs]
-[<0>] extent_writepages+0x5d/0x90 [btrfs]
-[<0>] do_writepages+0x41/0xd0
-[<0>] __writeback_single_inode+0x3d/0x340
-[<0>] writeback_sb_inodes+0x1e5/0x480
-[<0>] __writeback_inodes_wb+0x5d/0xb0
-[<0>] wb_writeback+0x25f/0x2f0
-[<0>] wb_workfn+0x2fe/0x3f0
-[<0>] process_one_work+0x1ad/0x370
-[<0>] worker_thread+0x30/0x390
-[<0>] kthread+0x112/0x130
-[<0>] ret_from_fork+0x1f/0x40
-
-----
-[<0>] rq_qos_wait+0xfa/0x170
-[<0>] wbt_wait+0x98/0xe0
-[<0>] __rq_qos_throttle+0x23/0x30
-[<0>] blk_mq_make_request+0x12a/0x5d0
-[<0>] generic_make_request+0xcf/0x310
-[<0>] submit_bio+0x42/0x1c0
-[<0>] btrfs_map_bio+0x1c0/0x380 [btrfs]
-[<0>] btrfs_submit_bio_hook+0x8c/0x180 [btrfs]
-[<0>] submit_one_bio+0x31/0x50 [btrfs]
-[<0>] submit_extent_page+0x102/0x210 [btrfs]
-[<0>] __extent_writepage_io+0x1cf/0x380 [btrfs]
-[<0>] __extent_writepage+0x101/0x300 [btrfs]
-[<0>] extent_write_cache_pages+0x2bb/0x440 [btrfs]
-[<0>] extent_writepages+0x44/0x90 [btrfs]
-[<0>] do_writepages+0x41/0xd0
-[<0>] __writeback_single_inode+0x3d/0x340
-[<0>] writeback_sb_inodes+0x1e5/0x480
-[<0>] __writeback_inodes_wb+0x5d/0xb0
-[<0>] wb_writeback+0x25f/0x2f0
-[<0>] wb_workfn+0x2fe/0x3f0
-[<0>] process_one_work+0x1ad/0x370
-[<0>] worker_thread+0x30/0x390
-[<0>] kthread+0x112/0x130
-[<0>] ret_from_fork+0x1f/0x40
-
---------------A4C06E781018F0F79BCA20A8
-Content-Type: text/plain; charset=UTF-8;
- name="2020-07-25-perf-report.txt"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
- filename="2020-07-25-perf-report.txt"
-
-U2FtcGxlczogMU0gb2YgZXZlbnQgJ2NwdS1jbG9jazpwcHBIJywgRXZlbnQgY291bnQgKGFw
-cHJveC4pOiAzMTE5OTE1MDAwMDAKICBDaGlsZHJlbiAgICAgIFNlbGYgIENvbW1hbmQgICAg
-ICAgICAgU2hhcmVkIE9iamVjdCAgICAgICAgIFN5bWJvbAorICAgODAuNTMlICAgICAwLjAw
-JSAgc3dhcHBlciAgICAgICAgICBba2VybmVsLmthbGxzeW1zXSAgICAgW2tdIHNlY29uZGFy
-eV9zdGFydHVwXzY0CisgICA4MC41MyUgICAgIDAuMDAlICBzd2FwcGVyICAgICAgICAgIFtr
-ZXJuZWwua2FsbHN5bXNdICAgICBba10gY3B1X3N0YXJ0dXBfZW50cnkKKyAgIDgwLjUzJSAg
-ICAgMC4wMCUgIHN3YXBwZXIgICAgICAgICAgW2tlcm5lbC5rYWxsc3ltc10gICAgIFtrXSBk
-b19pZGxlCisgICA4MC41MiUgICAgIDAuMDAlICBzd2FwcGVyICAgICAgICAgIFtrZXJuZWwu
-a2FsbHN5bXNdICAgICBba10gZGVmYXVsdF9pZGxlCisgICA4MC41MiUgICAgODAuNTElICBz
-d2FwcGVyICAgICAgICAgIFtrZXJuZWwua2FsbHN5bXNdICAgICBba10gbmF0aXZlX3NhZmVf
-aGFsdAorICAgNjMuNDIlICAgICAwLjAwJSAgc3dhcHBlciAgICAgICAgICBba2VybmVsLmth
-bGxzeW1zXSAgICAgW2tdIHN0YXJ0X3NlY29uZGFyeQorICAgMTkuMTAlICAgICAwLjAwJSAg
-a3dvcmtlci91MTY6MTErICBba2VybmVsLmthbGxzeW1zXSAgICAgW2tdIHJldF9mcm9tX2Zv
-cmsKKyAgIDE5LjEwJSAgICAgMC4wMCUgIGt3b3JrZXIvdTE2OjExKyAgW2tlcm5lbC5rYWxs
-c3ltc10gICAgIFtrXSBrdGhyZWFkCisgICAxOS4xMCUgICAgIDAuMDAlICBrd29ya2VyL3Ux
-NjoxMSsgIFtrZXJuZWwua2FsbHN5bXNdICAgICBba10gd29ya2VyX3RocmVhZAorICAgMTku
-MTAlICAgICAwLjAwJSAga3dvcmtlci91MTY6MTErICBba2VybmVsLmthbGxzeW1zXSAgICAg
-W2tdIHByb2Nlc3Nfb25lX3dvcmsKKyAgIDE5LjEwJSAgICAgMC4wMCUgIGt3b3JrZXIvdTE2
-OjExKyAgW2tlcm5lbC5rYWxsc3ltc10gICAgIFtrXSB3Yl93b3JrZm4KKyAgIDE5LjEwJSAg
-ICAgMC4wMCUgIGt3b3JrZXIvdTE2OjExKyAgW2tlcm5lbC5rYWxsc3ltc10gICAgIFtrXSB3
-Yl93cml0ZWJhY2sKKyAgIDE5LjEwJSAgICAgMC4wMCUgIGt3b3JrZXIvdTE2OjExKyAgW2tl
-cm5lbC5rYWxsc3ltc10gICAgIFtrXSBfX3dyaXRlYmFja19pbm9kZXNfd2IKKyAgIDE5LjEw
-JSAgICAgMC4wMCUgIGt3b3JrZXIvdTE2OjExKyAgW2tlcm5lbC5rYWxsc3ltc10gICAgIFtr
-XSB3cml0ZWJhY2tfc2JfaW5vZGVzCisgICAxOS4xMCUgICAgIDAuMDAlICBrd29ya2VyL3Ux
-NjoxMSsgIFtrZXJuZWwua2FsbHN5bXNdICAgICBba10gX193cml0ZWJhY2tfc2luZ2xlX2lu
-b2RlCisgICAxOS4xMCUgICAgIDAuMDAlICBrd29ya2VyL3UxNjoxMSsgIFtrZXJuZWwua2Fs
-bHN5bXNdICAgICBba10gZG9fd3JpdGVwYWdlcworICAgMTkuMTAlICAgICAwLjAwJSAga3dv
-cmtlci91MTY6MTErICBba2VybmVsLmthbGxzeW1zXSAgICAgW2tdIGV4dGVudF93cml0ZXBh
-Z2VzCisgICAxOS4wOCUgICAgIDAuMDAlICBrd29ya2VyL3UxNjoxMSsgIFtrZXJuZWwua2Fs
-bHN5bXNdICAgICBba10gZXh0ZW50X3dyaXRlX2NhY2hlX3BhZ2VzCisgICAxOS4wNyUgICAg
-IDAuMDAlICBrd29ya2VyL3UxNjoxMSsgIFtrZXJuZWwua2FsbHN5bXNdICAgICBba10gX19l
-eHRlbnRfd3JpdGVwYWdlCisgICAxOS4wNCUgICAgIDAuMDAlICBrd29ya2VyL3UxNjoxMSsg
-IFtrZXJuZWwua2FsbHN5bXNdICAgICBba10gd3JpdGVwYWdlX2RlbGFsbG9jCisgICAxOS4w
-MyUgICAgIDAuMDAlICBrd29ya2VyL3UxNjoxMSsgIFtrZXJuZWwua2FsbHN5bXNdICAgICBb
-a10gYnRyZnNfcnVuX2RlbGFsbG9jX3JhbmdlCisgICAxOS4wMyUgICAgIDAuMDAlICBrd29y
-a2VyL3UxNjoxMSsgIFtrZXJuZWwua2FsbHN5bXNdICAgICBba10gY293X2ZpbGVfcmFuZ2UK
-KyAgIDE5LjAxJSAgICAgMC4wMCUgIGt3b3JrZXIvdTE2OjExKyAgW2tlcm5lbC5rYWxsc3lt
-c10gICAgIFtrXSBidHJmc19yZXNlcnZlX2V4dGVudAorICAgMTkuMDElICAgICA0LjI2JSAg
-a3dvcmtlci91MTY6MTErICBba2VybmVsLmthbGxzeW1zXSAgICAgW2tdIGZpbmRfZnJlZV9l
-eHRlbnQKKyAgIDE3LjExJSAgICAgMC4wMCUgIHN3YXBwZXIgICAgICAgICAgW2tlcm5lbC5r
-YWxsc3ltc10gICAgIFtrXSBzdGFydF9rZXJuZWwKKyAgICA3LjE4JSAgICAgNy4xOCUgIGt3
-b3JrZXIvdTE2OjExKyAgW2tlcm5lbC5rYWxsc3ltc10gICAgIFtrXSBfcmF3X3NwaW5fbG9j
-aworICAgIDQuNDUlICAgICA0LjQ1JSAga3dvcmtlci91MTY6MTErICBba2VybmVsLmthbGxz
-eW1zXSAgICAgW2tdIGJ0cmZzX2dldF9ibG9ja19ncm91cAorICAgIDEuNDklICAgICAxLjM0
-JSAga3dvcmtlci91MTY6MTErICBba2VybmVsLmthbGxzeW1zXSAgICAgW2tdIGRvd25fcmVh
-ZAorICAgIDAuNTYlICAgICAwLjU2JSAga3dvcmtlci91MTY6MTErICBba2VybmVsLmthbGxz
-eW1zXSAgICAgW2tdIGJ0cmZzX3B1dF9ibG9ja19ncm91cAogICAgIDAuNTAlICAgICAwLjUw
-JSAga3dvcmtlci91MTY6MTErICBba2VybmVsLmthbGxzeW1zXSAgICAgW2tdIF9fcmF3X2Nh
-bGxlZV9zYXZlX19fcHZfcXVldWVkX3NwaW5fdW5sb2NrCiAgICAgMC40NCUgICAgIDAuNDQl
-ICBrd29ya2VyL3UxNjoxMSsgIFtrZXJuZWwua2FsbHN5bXNdICAgICBba10gdXBfcmVhZAog
-ICAgIDAuMjglICAgICAwLjEzJSAga3dvcmtlci91MTY6MTErICBba2VybmVsLmthbGxzeW1z
-XSAgICAgW2tdIF9jb25kX3Jlc2NoZWQKICAgICAwLjE1JSAgICAgMC4xNSUgIGt3b3JrZXIv
-dTE2OjExKyAgW2tlcm5lbC5rYWxsc3ltc10gICAgIFtrXSByY3VfYWxsX3FzCiAgICAgMC4w
-NSUgICAgIDAuMDAlICBubW9uICAgICAgICAgICAgIFtrZXJuZWwua2FsbHN5bXNdICAgICBb
-a10gZW50cnlfU1lTQ0FMTF82NF9hZnRlcl9od2ZyYW1lCiAgICAgMC4wNSUgICAgIDAuMDAl
-ICBubW9uICAgICAgICAgICAgIFtrZXJuZWwua2FsbHN5bXNdICAgICBba10gZG9fc3lzY2Fs
-bF82NAogICAgIDAuMDQlICAgICAwLjAwJSAgcGVyZl81LjcgICAgICAgICBba2VybmVsLmth
-bGxzeW1zXSAgICAgW2tdIGVudHJ5X1NZU0NBTExfNjRfYWZ0ZXJfaHdmcmFtZQogICAgIDAu
-MDQlICAgICAwLjAwJSAgcGVyZl81LjcgICAgICAgICBba2VybmVsLmthbGxzeW1zXSAgICAg
-W2tdIGRvX3N5c2NhbGxfNjQKICAgICAwLjA0JSAgICAgMC4wMCUgIGJ0cmZzLXRyYW5zYWN0
-aSAgW2tlcm5lbC5rYWxsc3ltc10gICAgIFtrXSByZXRfZnJvbV9mb3JrCiAgICAgMC4wNCUg
-ICAgIDAuMDAlICBidHJmcy10cmFuc2FjdGkgIFtrZXJuZWwua2FsbHN5bXNdICAgICBba10g
-a3RocmVhZAogICAgIDAuMDQlICAgICAwLjAwJSAgYnRyZnMtdHJhbnNhY3RpICBba2VybmVs
-LmthbGxzeW1zXSAgICAgW2tdIHRyYW5zYWN0aW9uX2t0aHJlYWQKICAgICAwLjA0JSAgICAg
-MC4wMCUgIGJ0cmZzLXRyYW5zYWN0aSAgW2tlcm5lbC5rYWxsc3ltc10gICAgIFtrXSBidHJm
-c19jb21taXRfdHJhbnNhY3Rpb24KICAgICAwLjA0JSAgICAgMC4wMCUgIHBlcmZfNS43ICAg
-ICAgICAgbGlicHRocmVhZC0yLjI4LnNvICAgIFsuXSBfX2xpYmNfd3JpdGUKICAgICAwLjA0
-JSAgICAgMC4wMCUgIHBlcmZfNS43ICAgICAgICAgW2tlcm5lbC5rYWxsc3ltc10gICAgIFtr
-XSBrc3lzX3dyaXRlCiAgICAgMC4wNCUgICAgIDAuMDAlICBwZXJmXzUuNyAgICAgICAgIFtr
-ZXJuZWwua2FsbHN5bXNdICAgICBba10gdmZzX3dyaXRlCiAgICAgMC4wNCUgICAgIDAuMDAl
-ICBwZXJmXzUuNyAgICAgICAgIFtrZXJuZWwua2FsbHN5bXNdICAgICBba10gbmV3X3N5bmNf
-d3JpdGUKICAgICAwLjA0JSAgICAgMC4wMCUgIHBlcmZfNS43ICAgICAgICAgW2tlcm5lbC5r
-YWxsc3ltc10gICAgIFtrXSBidHJmc19maWxlX3dyaXRlX2l0ZXIKICAgICAwLjA0JSAgICAg
-MC4wMCUgIHBlcmZfNS43ICAgICAgICAgW2tlcm5lbC5rYWxsc3ltc10gICAgIFtrXSBidHJm
-c19idWZmZXJlZF93cml0ZS5pc3JhLjI4CiAgICAgMC4wMyUgICAgIDAuMDAlICBrc3dhcGQw
-ICAgICAgICAgIFtrZXJuZWwua2FsbHN5bXNdICAgICBba10gcmV0X2Zyb21fZm9yawogICAg
-IDAuMDMlICAgICAwLjAwJSAga3N3YXBkMCAgICAgICAgICBba2VybmVsLmthbGxzeW1zXSAg
-ICAgW2tdIGt0aHJlYWQKICAgICAwLjAzJSAgICAgMC4wMCUgIGtzd2FwZDAgICAgICAgICAg
-W2tlcm5lbC5rYWxsc3ltc10gICAgIFtrXSBrc3dhcGQKICAgICAwLjAzJSAgICAgMC4wMCUg
-IGtzd2FwZDAgICAgICAgICAgW2tlcm5lbC5rYWxsc3ltc10gICAgIFtrXSBiYWxhbmNlX3Bn
-ZGF0CiAgICAgMC4wMyUgICAgIDAuMDAlICBrc3dhcGQwICAgICAgICAgIFtrZXJuZWwua2Fs
-bHN5bXNdICAgICBba10gc2hyaW5rX25vZGUKICAgICAwLjAzJSAgICAgMC4wMCUgIGJ0cmZz
-LXRyYW5zYWN0aSAgW2tlcm5lbC5rYWxsc3ltc10gICAgIFtrXSBidHJmc19ydW5fZGVsYXll
-ZF9yZWZzCiAgICAgMC4wMyUgICAgIDAuMDAlICBidHJmcy10cmFuc2FjdGkgIFtrZXJuZWwu
-a2FsbHN5bXNdICAgICBba10gX19idHJmc19ydW5fZGVsYXllZF9yZWZzCiAgICAgMC4wMyUg
-ICAgIDAuMDAlICBrd29ya2VyL3UxNjoxMSsgIFtrZXJuZWwua2FsbHN5bXNdICAgICBba10g
-X19leHRlbnRfd3JpdGVwYWdlX2lvCiAgICAgMC4wMyUgICAgIDAuMDAlICBrd29ya2VyL3Ux
-NjoxMSsgIFtrZXJuZWwua2FsbHN5bXNdICAgICBba10gc3VibWl0X29uZV9iaW8KICAgICAw
-LjAzJSAgICAgMC4wMCUgIGt3b3JrZXIvdTE2OjExKyAgW2tlcm5lbC5rYWxsc3ltc10gICAg
-IFtrXSBidHJmc19zdWJtaXRfYmlvX2hvb2sKICAgICAwLjAzJSAgICAgMC4wMCUgIGt3b3Jr
-ZXIvdTE2OjExKyAgW2tlcm5lbC5rYWxsc3ltc10gICAgIFtrXSBidHJmc19tYXBfYmlvCiAg
-ICAgMC4wMiUgICAgIDAuMDAlICBrc3dhcGQwICAgICAgICAgIFtrZXJuZWwua2FsbHN5bXNd
-ICAgICBba10gc2hyaW5rX3NsYWIKICAgICAwLjAyJSAgICAgMC4wMCUgIGtzd2FwZDAgICAg
-ICAgICAgW2tlcm5lbC5rYWxsc3ltc10gICAgIFtrXSBkb19zaHJpbmtfc2xhYgogICAgIDAu
-MDIlICAgICAwLjAwJSAga3dvcmtlci91MTY6NC1iICBba2VybmVsLmthbGxzeW1zXSAgICAg
-W2tdIHJldF9mcm9tX2ZvcmsKICAgICAwLjAyJSAgICAgMC4wMCUgIGt3b3JrZXIvdTE2OjQt
-YiAgW2tlcm5lbC5rYWxsc3ltc10gICAgIFtrXSBrdGhyZWFkCiAgICAgMC4wMiUgICAgIDAu
-MDAlICBrd29ya2VyL3UxNjo0LWIgIFtrZXJuZWwua2FsbHN5bXNdICAgICBba10gd29ya2Vy
-X3RocmVhZAogICAgIDAuMDIlICAgICAwLjAwJSAga3dvcmtlci91MTY6NC1iICBba2VybmVs
-LmthbGxzeW1zXSAgICAgW2tdIHByb2Nlc3Nfb25lX3dvcmsKICAgICAwLjAyJSAgICAgMC4w
-MCUgIGtzd2FwZDAgICAgICAgICAgW2tlcm5lbC5rYWxsc3ltc10gICAgIFtrXSBzdXBlcl9j
-YWNoZV9zY2FuCiAgICAgMC4wMiUgICAgIDAuMDAlICBrd29ya2VyL3UxNjo0LWIgIFtrZXJu
-ZWwua2FsbHN5bXNdICAgICBba10gYnRyZnNfd29ya19oZWxwZXIKICAgICAwLjAyJSAgICAg
-MC4wMCUgIGt3b3JrZXIvdTE2OjMtYiAgW2tlcm5lbC5rYWxsc3ltc10gICAgIFtrXSByZXRf
-ZnJvbV9mb3JrCiAgICAgMC4wMiUgICAgIDAuMDAlICBrd29ya2VyL3UxNjozLWIgIFtrZXJu
-ZWwua2FsbHN5bXNdICAgICBba10ga3RocmVhZAogICAgIDAuMDIlICAgICAwLjAwJSAga3dv
-cmtlci91MTY6My1iICBba2VybmVsLmthbGxzeW1zXSAgICAgW2tdIHdvcmtlcl90aHJlYWQK
-ICAgICAwLjAyJSAgICAgMC4wMCUgIGt3b3JrZXIvdTE2OjMtYiAgW2tlcm5lbC5rYWxsc3lt
-c10gICAgIFtrXSBwcm9jZXNzX29uZV93b3JrCiAgICAgMC4wMiUgICAgIDAuMDAlICBwZXJm
-XzUuNyAgICAgICAgIFt1bmtub3duXSAgICAgICAgICAgICBba10gMHhmZmZmZmZmZjlkOWJj
-NDJlCiAgICAgMC4wMiUgICAgIDAuMDAlICBrd29ya2VyL3UxNjozLWIgIFtrZXJuZWwua2Fs
-bHN5bXNdICAgICBba10gYnRyZnNfd29ya19oZWxwZXIKICAgICAwLjAyJSAgICAgMC4wMCUg
-IGJ0cmZzLXRyYW5zYWN0aSAgW2tlcm5lbC5rYWxsc3ltc10gICAgIFtrXSBhbGxvY19yZXNl
-cnZlZF9maWxlX2V4dGVudAogICAgIDAuMDIlICAgICAwLjAwJSAgbm1vbiAgICAgICAgICAg
-ICBsaWJjLTIuMjguc28gICAgICAgICAgWy5dIG9wZW42NAogICAgIDAuMDIlICAgICAwLjAw
-JSAgbm1vbiAgICAgICAgICAgICBba2VybmVsLmthbGxzeW1zXSAgICAgW2tdIGRvX3N5c19v
-cGVuCg==
---------------A4C06E781018F0F79BCA20A8
-Content-Type: text/plain; charset=UTF-8;
- name="2020-07-25-nmon.txt"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
- filename="2020-07-25-nmon.txt"
-
-LS0tLSA+OCAtLS0tIENQVSBVdGlsaXNhdGlvbiAtLS0tID44IC0tLS0KCi0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLSstLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tKwpDUFUgVXNlciUgIFN5cyUgV2FpdCUgU3RlYWx8MCAgICAgICAgICB8
-MjUgICAgICAgICB8NTAgICAgICAgICAgfDc1ICAgICAgIDEwMHwKICAxICAgNS4yICAgMy4x
-ICA5MC4yICAgMS42fFVVc1dXV1dXV1dXV1dXV1dXV1dXV1dXV1dXV1dXV1dXV1dXV1dXV1dX
-V1dXV1dXVyA+CiAgMiAgIDAuMCAgIDAuMCAgOTkuNSAgIDAuNXxXV1dXV1dXV1dXV1dXV1dX
-V1dXV1dXV1dXV1dXV1dXV1dXV1dXV1dXV1dXV1dXV1dXPgogIDMgICAwLjUgICAwLjAgIDk5
-LjUgICAwLjB8V1dXV1dXV1dXV1dXV1dXV1dXV1dXV1dXV1dXV1dXV1dXV1dXV1dXV1dXV1dX
-V1dXVz4KICA0ICAgMC4wICAgMC4wIDEwMC4wICAgMC4wfFdXV1dXV1dXV1dXV1dXV1dXV1dX
-V1dXV1dXV1dXV1dXV1dXV1dXV1dXV1dXV1dXV1c+CiAgNSAgIDAuMCAxMDAuMCAgIDAuMCAg
-IDAuMHxzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nz
-PgogIDYgICAwLjAgICAwLjAgMTAwLjAgICAwLjB8V1dXV1dXV1dXV1dXV1dXV1dXV1dXV1dX
-V1dXV1dXV1dXV1dXV1dXV1dXV1dXV1dXVz4KICA3ICAgMS4wICAgMC41ICA5OC4wICAgMC41
-fFdXV1dXV1dXV1dXV1dXV1dXV1dXV1dXV1dXV1dXV1dXV1dXV1dXV1dXV1dXV1dXVyA+CiAg
-OCAgIDEuMCAgIDAuMCAgOTguNSAgIDAuNXxXV1dXV1dXV1dXV1dXV1dXV1dXV1dXV1dXV1dX
-V1dXV1dXV1dXV1dXV1dXV1dXV1dXPgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0rLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLSsKQXZnICAg
-MC45ICAxMy4wICA4NS43ICAgMC4zfHNzc3Nzc1dXV1dXV1dXV1dXV1dXV1dXV1dXV1dXV1dX
-V1dXV1dXV1dXV1dXV1dXVz58Ci0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLSstLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tKwoKLS0tLSA+OCAt
-LS0tIE1lbW9yeSBhbmQgU3dhcCAtLS0tID44IC0tLS0KCiBQYWdlU2l6ZTo0S0IgICBSQU0t
-TWVtb3J5ICBTd2FwLVNwYWNlICAgICAgIEhpZ2gtTWVtb3J5ICAgICBMb3ctTWVtb3J5CiBU
-b3RhbCAoTUIpICAgICAgICAxNjAxNS4zICAgICAgICAgMC4wICAgICAgIC0gbm90IGluIHVz
-ZSAgIC0gbm90IGluIHVzZQogRnJlZSAgKE1CKSAgICAgICAgIDE0NzEuMSAgICAgICAgIDAu
-MAogRnJlZSBQZXJjZW50ICAgICAgICAgIDkuMiUgICAgICAgIDAuMCUKIExpbnV4IEtlcm5l
-bCBJbnRlcm5hbCBNZW1vcnkgKE1CKQogICAgICAgICAgICAgICAgICAgICAgICBDYWNoZWQ9
-ICAgMTI1ODIuNiAgICAgQWN0aXZlPSAgICAzNzU2LjEKIEJ1ZmZlcnM9ICAgICAgIDAuMiBT
-d2FwY2FjaGVkPSAgICAgICAwLjAgIEluYWN0aXZlID0gICAgODk5NC45CiBEaXJ0eSAgPSAg
-ICAyMzg3LjAgV3JpdGViYWNrID0gICAgICAgMC41ICBNYXBwZWQgICA9ICAgICAgMjcuMwog
-U2xhYiAgID0gICAgMTY1My4wIENvbW1pdF9BUyA9ICAgICAzMjEuMiBQYWdlVGFibGVzPSAg
-ICAgICA0LjQKCi0tLS0gPjggLS0tLSBLZXJuZWwgYW5kIExvYWQgQXZlcmFnZSAtLS0tID44
-IC0tLS0KCkdsb2JhbC1DUFUtU3RhdHMtLS0tPiAgICAgNy41JSB1c2VyICAgICAgTG9hZCBB
-dmVyYWdlICBDUFUgdXNlIHNpbmNlIGJvb3R0aW1lCiAvcHJvYy9zdGF0IGxpbmUgMSAgICAg
-ICAgMC4wJSB1c2VyX25pY2UgIDEgbWlucyAxNC4wMiBVcHRpbWUgRGF5cyBIb3VycyBNaW5z
-CjEwMCB0aWNrcyBwZXIgc2Vjb25kICAgIDEwMS4xJSBzeXN0ZW0gICAgIDUgbWlucyAxNC4w
-NSBVcHRpbWUgICAyMCAgICAxNSAgIDE5CjEwMCU9MSBDUFVjb3JlVGhyZWFkICAgICAgMC4w
-JSBpZGxlICAgICAgMTUgbWlucyAxMy4zMyBJZGxlICAgICAxNSAgIDMzNSAxNzYzMwogICAg
-ICAgMyAgIFJ1blF1ZXVlICAgICA2NzcuOCUgaW93YWl0ICAgICAgICAgICAgICAgICAgVXB0
-aW1lIGhhcyBvdmVyZmxvd2VkCiAgICAgIDEzICAgQmxvY2tlZCAgICAgICAgMC4wJSBpcnEK
-ICAgIDIzMzguMSBDb250ZXh0ICAgICAgICAyLjAlIHNvZnRpcnEgICAgICAgICAgICAgICAg
-IDggQ1BVIGNvcmUgdGhyZWFkcwogICAgICAgICAgIFN3aXRjaCAgICAgICAgIDIuNSUgc3Rl
-YWwKICAgICAgIDAuMCBGb3JrcyAgICAgICAgICAwLjAlIGd1ZXN0ICAgICAgICAgICAgICAg
-ICAgIEJvb3QgdGltZSAxNTkzOTAzMTE5CiAgICAzMTc0LjcgSW50ZXJydXB0cyAgICAgMC4w
-JSBndWVzdF9uaWNlICAgICAgICAgICAgICAxMjo1MSBBTSAwNS1KdWwtMjAyMAoKLS0tLSA+
-OCAtLS0tIE5ldHdvcmsgSS9PIC0tLS0gPjggLS0tLQoKSS9GIE5hbWUgUmVjdj1LQi9zIFRy
-YW5zPUtCL3MgcGFja2luIHBhY2tvdXQgaW5zaXplIG91dHNpemUgUGVhay0+UmVjdiBUcmFu
-cwogICAgICBsbyAgICAgIDAuMCAgICAgICAwLjAgICAgICAgMC4wICAgIDAuMCAgICAgMC4w
-ICAgIDAuMCAgICAgICAgMC4wICAgICAgMC4wCiAgICBldGgwICAxMjI1MC4xICAgICAgODgu
-NiAgICAgOTY4LjYgIDk5OS4wIDEyOTUwLjcgICA5MC44ICAgMzg4NzQwLjggICAyNDEzLjUK
-Ci0tLS0gPjggLS0tLSBEaXNrIEkvTyAtLSAvcHJvYy9kaXNrc3RhdHMgLS0gbW9zdGx5IGlu
-IEtCL3MgLS0tLSA+OCAtLS0tCgpEaXNrTmFtZSBCdXN5ICBSZWFkIFdyaXRlS0J8MCAgICAg
-ICAgICB8MjUgICAgICAgICB8NTAgICAgICAgICAgfDc1ICAgICAgIDEwMHwKeHZkYSAgICAg
-ICAwJSAgICAwLjAgICAgMC4wfCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICA+Cnh2ZGIgICAgICAgMCUgICAzMS45ICAgIDAuMHxSICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgPgp4dmRjICAgICAgMjMl
-ICAgIDAuMCAxMTcxLjN8V1dXV1dXV1dXV1dXICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgID4KeHZkZCAgICAgICAwJSAgICAwLjAgICAgMC4wfCAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA+Cnh2ZGUgICAgICAzOSUgICAg
-MC4wICA5NzAuMXxXV1dXV1dXV1dXV1dXV1dXV1dXVyAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgPgpUb3RhbHMgUmVhZC1NQi9zPTAuMCAgICAgIFdyaXRlcy1NQi9zPTIuMSAgICAg
-IFRyYW5zZmVycy9zZWM9MjEuOQoKLS0tLSA+OCAtLS0tIFRvcCBQcm9jZXNzZXMgUHJvY3M9
-MjYwLW1vZGU9My0xPUJhc2UgMz1QZXJmIDQ9U2l6ZSA1PUkvT1tSb290T25seV0gdT1Bcmdz
-IC0tLS0gPjggLS0tLQoKUElEICAgICAgICAlQ1BVICAgICAgU2l6ZSAgICAgICBSZXMgICAg
-ICBSZXMgICAgICAgUmVzICAgICAgIFJlcyAgICAgIFNoYXJlZCAgIEZhdWx0cyAgIEZhdWx0
-cyBDb21tYW5kCiAgICAgICAgICAgICAgVXNlZCAgICAgICAgS0IgICAgICAgU2V0ICAgICAg
-VGV4dCAgICAgIERhdGEgICAgICAgTGliICAgICAgICBLQiAgICAgIE1pbiAgICAgIE1hagog
-ICAgIDc5MDkgICAgIDk5LjYgICAgICAgICAwICAgICAgICAgMCAgICAgICAgIDAgICAgICAg
-ICAwICAgICAgICAgMCAgICAgICAgIDAgICAgICAgIDAgICAgICAgIDAga3dvcmtlci91MTY6
-MitmbHVzaC1idHJmcy0yCiAgICAyMjc4MCAgICAgIDEuNSAgICAgMTk3ODAgICAgIDEwNTQ4
-ICAgICAgIDQwMCAgICAgIDQ1ODggICAgICAgICAwICAgICAgNTc2OCAgICAgICAgMCAgICAg
-ICAgMCBzc2gKICAgIDIxODQwICAgICAgMS4wICAgICAxOTc3MiAgICAgMTA2MDggICAgICAg
-NDAwICAgICAgNDU4MCAgICAgICAgIDAgICAgICA1ODM2ICAgICAgICAwICAgICAgICAwIHNz
-aAogICAgMjI2MzggICAgICAxLjAgICAgIDE5Nzc2ICAgICAxMDYxNiAgICAgICA0MDAgICAg
-ICA0NTg0ICAgICAgICAgMCAgICAgIDU4NDQgICAgICAgIDAgICAgICAgIDAgc3NoCiAgICAy
-MzExNSAgICAgIDEuMCAgICAgMTk3NzIgICAgIDEwNTkyICAgICAgIDQwMCAgICAgIDQ1ODAg
-ICAgICAgICAwICAgICAgNTgyNCAgICAgICAgMCAgICAgICAgMCBzc2gKICAgIDIzNDYwICAg
-ICAgMS4wICAgICAxOTgxNiAgICAgMTA2NDQgICAgICAgNDAwICAgICAgNDYyNCAgICAgICAg
-IDAgICAgICA1ODI4ICAgICAgICAwICAgICAgICAwIHNzaAogICAgMjM1NzEgICAgICAxLjAg
-ICAgIDE5NzgwICAgICAxMDU2NCAgICAgICA0MDAgICAgICA0NTg4ICAgICAgICAgMCAgICAg
-IDU3ODQgICAgICAgIDAgICAgICAgIDAgc3NoCiAgICAyMzc1OSAgICAgIDEuMCAgICAgMTk3
-NjggICAgIDEwNDcyICAgICAgIDQwMCAgICAgIDQ1NzYgICAgICAgICAwICAgICAgNTcwOCAg
-ICAgICAgMCAgICAgICAgMCBzc2gKICAgIDIzNzcwICAgICAgMS4wICAgICAxOTc0MCAgICAg
-MTA1ODggICAgICAgNDAwICAgICAgNDU0OCAgICAgICAgIDAgICAgICA1ODQ4ICAgICAgICAw
-ICAgICAgICAwIHNzaAogICAgMzA3MDggICAgICAxLjAgICAgIDE5OTk2ICAgICAxMDc1MiAg
-ICAgICA0MDAgICAgICA0ODA0ICAgICAgICAgMCAgICAgIDU3NTYgICAgICAgIDAgICAgICAg
-IDAgc3NoCiAgICAzMDcxMCAgICAgIDEuMCAgICAgIDg1NDQgICAgICAxMTI0ICAgICAgIDM5
-NiAgICAgICAzOTIgICAgICAgICAwICAgICAgIDk2MCAgICAgICAgMCAgICAgICAgMCBidHJm
-cwogICAgICA5OTMgICAgICAwLjUgICAgICA4NjcyICAgICAgMzE2MCAgICAgICAxMDQgICAg
-ICA0NjUyICAgICAgICAgMCAgICAgICA0NDAgICAgICAgIDAgICAgICAgIDAgbm1vbgogICAg
-MTAyOTAgICAgICAwLjUgICAgIDE5ODQ0ICAgICAxMDY4OCAgICAgICA0MDAgICAgICA0NjUy
-ICAgICAgICAgMCAgICAgIDU4NDggICAgICAgIDAgICAgICAgIDAgc3NoCiAgICAxODE4NiAg
-ICAgIDAuNSAgICAgICAgIDAgICAgICAgICAwICAgICAgICAgMCAgICAgICAgIDAgICAgICAg
-ICAwICAgICAgICAgMCAgICAgICAgMCAgICAgICAgMCBrd29ya2VyL3UxNjo2LWJ0cmZzLWVu
-ZGlvLXdyaXRlCiAgICAxODYxNiAgICAgIDAuNSAgICAgIDg1NDQgICAgICAxMjA0ICAgICAg
-IDM5NiAgICAgICAzOTIgICAgICAgICAwICAgICAgMTAzNiAgICAgICAgMCAgICAgICAgMCBi
-dHJmcwogICAgMTg2NTkgICAgICAwLjUgICAgICA1NDIwICAgICAgIDc4OCAgICAgICAgNTYg
-ICAgICAgNDQwICAgICAgICAgMCAgICAgICA3MjQgICAgICAgIDAgICAgICAgIDAgcHYKICAg
-IDE4NjYwICAgICAgMC41ICAgICAgODU0NCAgICAgIDExOTYgICAgICAgMzk2ICAgICAgIDM5
-MiAgICAgICAgIDAgICAgICAxMDMyICAgICAgICAwICAgICAgICAwIGJ0cmZzCiAgICAyMTg0
-MiAgICAgIDAuNSAgICAgIDc4OTYgICAgICAxOTQwICAgICAgIDMyOCAgICAgIDIzMDAgICAg
-ICAgICAwICAgICAgMTM0NCAgICAgICAgMCAgICAgICAgMCByc3luYwogICAgMjI4MDcgICAg
-ICAwLjUgICAgICA3ODk2ICAgICAgMTk4NCAgICAgICAzMjggICAgICAyMzAwICAgICAgICAg
-MCAgICAgIDEzODQgICAgICAgIDAgICAgICAgIDAgcnN5bmMKICAgIDIzNDYxICAgICAgMC41
-ICAgICAgNzg5NiAgICAgIDE5MjggICAgICAgMzI4ICAgICAgMjMwMCAgICAgICAgIDAgICAg
-ICAxMzMyICAgICAgICAwICAgICAgICAwIHJzeW5jCiAgICAyMzQ2NyAgICAgIDAuNSAgICAg
-MTk3MjQgICAgIDEwNTgwICAgICAgIDQwMCAgICAgIDQ1MzIgICAgICAgICAwICAgICAgNTg1
-NiAgICAgICAgMCAgICAgICAgMCBzc2gKICAgIDIzNDY4ICAgICAgMC41ICAgICAgODQ3NiAg
-ICAgIDMwODQgICAgICAgMzI4ICAgICAgMjg4MCAgICAgICAgIDAgICAgICAxMjcyICAgICAg
-ICAwICAgICAgICAwIHJzeW5jCg==
---------------A4C06E781018F0F79BCA20A8--
+-h
