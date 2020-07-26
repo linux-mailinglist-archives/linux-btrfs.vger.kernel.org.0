@@ -2,80 +2,63 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDBAF22DB08
-	for <lists+linux-btrfs@lfdr.de>; Sun, 26 Jul 2020 03:00:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC3A922DD26
+	for <lists+linux-btrfs@lfdr.de>; Sun, 26 Jul 2020 10:10:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727101AbgGZBAf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 25 Jul 2020 21:00:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56988 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726969AbgGZBAf (ORCPT
+        id S1726981AbgGZIKe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 26 Jul 2020 04:10:34 -0400
+Received: from mailrelay3-3.pub.mailoutpod1-cph3.one.com ([46.30.212.12]:19047
+        "EHLO mailrelay3-3.pub.mailoutpod1-cph3.one.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725810AbgGZIKe (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 25 Jul 2020 21:00:35 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F147DC08C5C0
-        for <linux-btrfs@vger.kernel.org>; Sat, 25 Jul 2020 18:00:34 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id f7so11529806wrw.1
-        for <linux-btrfs@vger.kernel.org>; Sat, 25 Jul 2020 18:00:34 -0700 (PDT)
+        Sun, 26 Jul 2020 04:10:34 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GZMuxXdCeFXUnvlKH0h/HXrE9RE6o1eoBS3X4iFgQIw=;
-        b=oeTp8Is+5hNIYiHGXXG1Qmj09eAL58sp6arDW5vPh6g9K6uVfjX9sH7k4wffZ5Bbyy
-         /P12FuEoqHtuXESIe6PcLIwExjvShZSVMuMS490VAhGQFL0OCGnRprkC7/kL2CqeWTcE
-         bC48cf5E6YzQbDIX8ybYItvpaepTujCGvn9/nfQewQvfiM5AbKNzrZZr5WmqqR4oamX+
-         C+Vu0FsaBAgapdCGJV3LuVW3i1UhHlceGw80Vjhd/M3yCZyp8Z+BFdT0U+j1J9zEThpc
-         Oh3yQL3MXatSUITskh07rMVBNdKu+3illzTQkg6TtVGtez1tZYS1h+ACK2qH7WNgFXUF
-         etVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GZMuxXdCeFXUnvlKH0h/HXrE9RE6o1eoBS3X4iFgQIw=;
-        b=lqet0GQbZvbS3e6IufHpEnwU+bpSwjWB6F7XCyHst1Bu5E4bZhVING1PZ8T82jZHd8
-         UY88tb0uOWQ8Durs8LM+DB+DqziQe+UaLO2BiNQ4RIPVXbKZ/Wj3c4qsMRzYJTadT/JV
-         ta6p6a/mSPqVO7AaF6wc9nxHM8M/n6Z2MD2xvRG+mHK8Ucy/F8aS3DIBnnjCsg7Whm2+
-         d2x7R4exc4kWz8Rcc4QjstJcon6NJfjNma79757KRvQsQcMQWiINyersQ6FwhwiuItN6
-         N/tz4V9L0tt4r13cHXyvRtPBP7tAe6wKMB2YiaBbjsoXRl2ux4eLI1mTi1L3oi/i0yA4
-         zlbQ==
-X-Gm-Message-State: AOAM533ImsxreohpQObXB4Z0KH07jAWhLY/y1DvvB9kkYrdGvYYnD2bV
-        daBm5zfRAfr1Lef9cnMqCZGtepptVRBpAINZpb3Vl0Br
-X-Google-Smtp-Source: ABdhPJws+jWtHaDnLr50b8XsLnmn/Xs44jSMGInZsW/JcNLLJKSnkH5isDDojRkcpNYD0SX95evBU0ttj97fwEAojMg=
-X-Received: by 2002:adf:aace:: with SMTP id i14mr14034396wrc.236.1595725233723;
- Sat, 25 Jul 2020 18:00:33 -0700 (PDT)
-MIME-Version: 1.0
+        d=lechevalier.se; s=20191106;
+        h=content-transfer-encoding:content-type:in-reply-to:mime-version:date:
+         message-id:from:references:to:subject:from;
+        bh=lbd0rZqk7P+8HSt1174dkNSOrhqj9aAdmLbZKgRsbtQ=;
+        b=IbKcIvTNPvFrMsy4Y8OwaYnlHdoAetLNdj2R3IT1LRw6sRrMel5Y1PH6unrXAAa/kcjbQsn7X5S8G
+         fcpU8Zm3Bj2Tgv8hvoHVRJaiDU1oZFtaAp1MvIRCLnvUDjm5az1fA7NIskjg0X5+dXUCWqOf/NvzQZ
+         xIJTC9HXmDwELYI2AAv6GRE6KyjDxAh4W6SCOBoqgsvnDgFwkCIKjqBL4h47Flyw6bp6NRYfW4E/ck
+         l07zrJ18kSVDdEHxSBgw84fj/PH+lSaDS1HjlDOrbbiiVrsIgbHInQLbyYhw6bjnuP1H4CYJm57FQq
+         gvgLW+nqmO168rrgvxNLl8RPJSueFKg==
+X-HalOne-Cookie: 81d47d02a79641112febf67a41fac0e5638b66a8
+X-HalOne-ID: 796013bf-cf17-11ea-86ea-d0431ea8bb03
+Received: from [10.0.88.22] (unknown [98.128.186.72])
+        by mailrelay3.pub.mailoutpod1-cph3.one.com (Halon) with ESMTPSA
+        id 796013bf-cf17-11ea-86ea-d0431ea8bb03;
+        Sun, 26 Jul 2020 08:10:31 +0000 (UTC)
+Subject: Re: Debugging abysmal write performance with 100% cpu
+ kworker/u16:X+flush-btrfs-2
+To:     Hans van Kranenburg <hans@knorrie.org>, linux-btrfs@vger.kernel.org
 References: <2523ce77-31a3-ecec-f36d-8d74132eae02@knorrie.org>
- <6b4041a7-cbf7-07b6-0f30-8141d60a7d51@applied-asynchrony.com>
- <4771c445-dcb4-77c4-7cb6-07a52f8025f6@knorrie.org> <d3be20df-2f97-6fa8-7050-7315f7ab27a5@applied-asynchrony.com>
- <b7c807f5-3741-d7ff-be4f-acb7dbbc7bb1@knorrie.org>
-In-Reply-To: <b7c807f5-3741-d7ff-be4f-acb7dbbc7bb1@knorrie.org>
-From:   Chris Murphy <lists@colorremedies.com>
-Date:   Sat, 25 Jul 2020 19:00:17 -0600
-Message-ID: <CAJCQCtQ4wQbEQuGF_JDGqdB+UL+yFDMQdzt7jt1YWHQcU5hMbA@mail.gmail.com>
-Subject: Re: Debugging abysmal write performance with 100% cpu kworker/u16:X+flush-btrfs-2
-To:     Hans van Kranenburg <hans@knorrie.org>
-Cc:     =?UTF-8?Q?Holger_Hoffst=C3=A4tte?= <holger@applied-asynchrony.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+ <a370a2bf-25b5-eaa0-a5e5-595c967e82a6@knorrie.org>
+From:   A L <mail@lechevalier.se>
+Message-ID: <6662c137-862e-0fa8-b147-317c26db99ac@lechevalier.se>
+Date:   Sun, 26 Jul 2020 10:10:31 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <a370a2bf-25b5-eaa0-a5e5-595c967e82a6@knorrie.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sat, Jul 25, 2020 at 3:03 PM Hans van Kranenburg <hans@knorrie.org> wrote:
+
+> Now I have a btrfs receive running for >1.5T of customer garbage...
+> Receive cannot stop and resume. So am I going to abort and redo it while
+> it's at 75.2GiB 5:57:46 [1.44MiB/s]? Or just sit it out?
 >
-> And yes, all rsync is already running with --whole-file since 2014 to
-> reduce the total amount of reflink garbage in this now ~100T pile of
-> stuff with >200k subvols.
+> Stay tuned for the next episode of Knorrie's btrfs adventures! :)
+Always interesting stories :)
 
-OK. So I was thinking maybe lock contention on subvols. But that many
-subvolumes I'm willing to bet every task has its own.
-
-And you're already ahead of where I'm at anyway. A search for free
-extent sounds like free space tree contention. Does this suck any less
-if there's no space cache?
+Anyways, can you throttle your send|receive by putting mbuffer in 
+between? I have myself had quite good success with mbuffer in reducing 
+overall I/O, not to mention the ability to limit overall speed.
 
 
--- 
-Chris Murphy
+A
