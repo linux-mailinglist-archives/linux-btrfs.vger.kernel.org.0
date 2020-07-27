@@ -2,58 +2,59 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99B4522F8F6
-	for <lists+linux-btrfs@lfdr.de>; Mon, 27 Jul 2020 21:23:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B509422F912
+	for <lists+linux-btrfs@lfdr.de>; Mon, 27 Jul 2020 21:30:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727878AbgG0TXn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 27 Jul 2020 15:23:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56132 "EHLO
+        id S1726268AbgG0Ta2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 27 Jul 2020 15:30:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727053AbgG0TXm (ORCPT
+        with ESMTP id S1726222AbgG0Ta1 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 27 Jul 2020 15:23:42 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FACBC061794
-        for <linux-btrfs@vger.kernel.org>; Mon, 27 Jul 2020 12:23:42 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id r12so15946443wrj.13
-        for <linux-btrfs@vger.kernel.org>; Mon, 27 Jul 2020 12:23:42 -0700 (PDT)
+        Mon, 27 Jul 2020 15:30:27 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 497C4C061794
+        for <linux-btrfs@vger.kernel.org>; Mon, 27 Jul 2020 12:30:27 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id a5so6028693wrm.6
+        for <linux-btrfs@vger.kernel.org>; Mon, 27 Jul 2020 12:30:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=CoNoIh+Li7/x2v71DYkUEzPq/qWW36nmWw/PEfKbGig=;
-        b=FuiLTHMf/CS5Vtv4pIU1xPjgkU9g5VGnm8A0kGdJj/4uPuklF9GMAEgB8BqiWV/oFo
-         vz107gqvO56y3kiCuwb+/elbfdz3PxN1+AEeIOmeDbR4sJ4I4b0kiut0iwN2u64xfOzl
-         njjdtqtp2N1Eu9XWgMGrScN1BRb+feSyVxMCzs4uOdH/MdDxyX+ytpxXTBZXwUnpJPRE
-         XDppLxL0O4ZYnGlETfmHdC80miJcMlIApWy9AwvKkWMahyVbWCqeg56D8D+iYw2iHnhI
-         7Ca5aE+uKBNYqQPJpuVKclDGu6yxq74Oa6q3fur+XKU5bTi2+cuQN4QzAiHxVcRA5770
-         Eyjw==
+        bh=mu1rr05/8jM8/H8z0uzXdyaJbIhmkF6xYHWKzS/CA0Y=;
+        b=YfUOEggqJwf3rCMvfCADIqQTrC2VZSu69ecLONlujj7Az8v0UbZ4vPxLYRFrUgyIsc
+         D9Rnvj19mBBx/TDHe9y1MNNDMjU6hIo/drwibdwtwv8GLUCxk353gu7Gz4EK9qxCl+ph
+         7cYnCWHz58WePgWLd9ahwYbK3WHq5VXl6LLKA/iwoNksBNaVpckCzOlqoS1mame+YN7t
+         SuUFdKnO4kxS3z0zDYmmWu/J7hgsw6K7FHH5HSN1viDIO4gRe5jBmc1cM7WYo9weuwFt
+         LW+Ec7MJPpHlKd2PHuMr1BKL6zh5lODwHTULEjZxqDh3cQ+XpcK4nBDuilVC5gmZRx5J
+         L3+g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=CoNoIh+Li7/x2v71DYkUEzPq/qWW36nmWw/PEfKbGig=;
-        b=glmJirBf1qG6nQwBOIH52ul2jPAV8GWEJFh5Un6rxEwPBiN4qz2aBwQWBJ0rhKwR5X
-         8xAtBHGB5MivoIcy4JxWIqAry4roN4DStx0udvKQnIPCazCTXKgULevPvxRCp+NXF3XY
-         b5Ij6V2bPnwYUjFbYIPorB9iwwHPCBxDJsLHnfD/xQ193vu/VG2G4DmXtciuBkhFJoUE
-         U99pfrJ8VxZq186VKoKmYNk48XlJnZGe4MYhpCRBlXSM7rkRpDbbvl9zZwdYAYLGknxx
-         qjvlk7FklJWMQ9MQY5E+tt6m8xeUD00bmRcC+ONIzTo4RF0YYRswp37ypm1Rv45h0aWf
-         svtw==
-X-Gm-Message-State: AOAM5318kMPKD7RXduyfp34Exm9pUpKT6aJeV3I26cFNUQu78OLcDfRw
-        b/ZpQ4n2BoidbLPqok+r3FvM3xTWzGgPDorIF+ppKA==
-X-Google-Smtp-Source: ABdhPJwaVUeXoWvlKq9ED1Pd4ywPPG4/zFxSnPT33Oaq3dakpiGnoS3AhUBrLBc/npOfPDIc2AVnzw8bHU0mZqSruWg=
-X-Received: by 2002:adf:a19e:: with SMTP id u30mr21252304wru.274.1595877821220;
- Mon, 27 Jul 2020 12:23:41 -0700 (PDT)
+        bh=mu1rr05/8jM8/H8z0uzXdyaJbIhmkF6xYHWKzS/CA0Y=;
+        b=e4qxXCyTNUMcMkKCD+BYzNXtnAAzujgXQRQtsKUrhFG3rV1B1VL1g8fZFDUDBFJSN9
+         PSw3L7FzMTKDoQU9WLjJ3nLNoSIzlA3i+XEB+eLU0+GDrEql/fBQmDceWTN4x7K7URXf
+         NLSZkzqo6lJE5pYEGH9vd0PJg4NfXQW8G8M/rcOOCP09jq33YhvMx9u9fqCg8+4qDNVX
+         hThv4xBJKUhBftxu/9/6h9V5Y6Jz9m4OBom2THTJ79Njrc749ilsRA/jwu4U8fkL8AnF
+         dedWCQZVO25ZR/P3C35FqKsYBeCNDSezE+tb0vVgwiHUMbK9PLxEUY4kcTluE6S71MZD
+         KoSg==
+X-Gm-Message-State: AOAM531mfFkJrkbSm6L30U/eZ5OSKx2bwYciihVaLhexcxbnEtBhHVJv
+        Y1kO0ZL9h95JT00XlpxCYMx8XU8D04/8ZAr4PAps3A==
+X-Google-Smtp-Source: ABdhPJybcSiM2+7PhGC260pOlB9heyb+Hm52m+OlzNBb0Z9R0o6fIRk2jksaWaKqUMPmpGsQw2QlkbVvV3a3yLGNvhI=
+X-Received: by 2002:adf:aace:: with SMTP id i14mr21137633wrc.236.1595878226052;
+ Mon, 27 Jul 2020 12:30:26 -0700 (PDT)
 MIME-Version: 1.0
-References: <2523ce77-31a3-ecec-f36d-8d74132eae02@knorrie.org>
- <f3cba5f0-8cc4-a521-3bba-2c02ff6c93a2@gmx.com> <ae50b6a5-0f1e-282e-61d0-4ff37372a3ca@knorrie.org>
-In-Reply-To: <ae50b6a5-0f1e-282e-61d0-4ff37372a3ca@knorrie.org>
+References: <3225288.0drLW0cIUP@merkaba> <20200723045106.GL10769@hungrycats.org>
+ <1622535.kDMmNaIAU4@merkaba> <558ef4c5-ee61-8a0d-5ca5-43a07d6e64ac@gmail.com>
+In-Reply-To: <558ef4c5-ee61-8a0d-5ca5-43a07d6e64ac@gmail.com>
 From:   Chris Murphy <lists@colorremedies.com>
-Date:   Mon, 27 Jul 2020 13:23:24 -0600
-Message-ID: <CAJCQCtTMVSzm6KrPamaw6dnLO2amcHMrQNJ5z8GWD9Wcn+XYuA@mail.gmail.com>
-Subject: Re: Debugging abysmal write performance with 100% cpu kworker/u16:X+flush-btrfs-2
-To:     Hans van Kranenburg <hans@knorrie.org>
-Cc:     Qu Wenruo <quwenruo.btrfs@gmx.com>,
+Date:   Mon, 27 Jul 2020 13:30:10 -0600
+Message-ID: <CAJCQCtRgug3uTLBuraWmCiCoAY9VV94nQ0TBXz9jkUyuRhLnzQ@mail.gmail.com>
+Subject: Re: Understanding "Used" in df
+To:     Andrei Borzenkov <arvidjaar@gmail.com>
+Cc:     Martin Steigerwald <martin@lichtvoll.de>,
+        Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
         Btrfs BTRFS <linux-btrfs@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
@@ -61,41 +62,38 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Jul 27, 2020 at 11:17 AM Hans van Kranenburg <hans@knorrie.org> wrote:
+On Mon, Jul 27, 2020 at 10:43 AM Andrei Borzenkov <arvidjaar@gmail.com> wrote:
 >
-> https://syrinx.knorrie.org/~knorrie/btrfs/keep/2020-07-25-find_free_extent.txt
+> Unfortunately, "df" does not display "free" (I was wrong in other post).
+> But using stat ...
 >
-> From the timestamps you can see how long this takes. It's not much that
-> gets done per second.
 >
-> The spin lock part must be spin_lock(&space_info->lock) because that's
-> the only one in find_free_extent.
+> $ LANGUAGE=en stat -f .
+> ...
+> Block size: 4096       Fundamental block size: 4096
+> Blocks: Total: 115164174  Free: 49153062   Available: 43297293
 >
-> So, what I think is that, like I mentioned on saturday already,
-> find_free_extent is probably doing things in a really inefficient way,
-> scanning around for a small single free space gap all the time in a
-> really expensive way, and doing that over again for each tiny metadata
-> block or file that needs to be placed somewhere (also notice the
-> empty_size=0), instead of just throwing all of it on disk after each
-> other, when it's otherwise slowing down everyone.
+> $ LANGUAGE=en df -B 4K .
+> Filesystem     4K-blocks     Used Available Use% Mounted on
+> /dev/sda4      115164174 66011112  43297293  61% /
+>
+> 115164174 - 49153062 == 66011112
+>
+> But there is no way you can compute Available from other values - it is
+> whatever filesystem returns.
+>
 
-What are the latencies for the iscsi device while this is happening?
-Does your trace have the ability to distinguish between inefficiency
-in find_free_extent versus waiting on IO latency?
+It's definitely goofy in the odd device raid1 case. If I fallocate a
+file equal to Avail, Avail is not zero. The fallocated file + new
+Avail != old Avail, which is just not at all correct behavior. So I
+keep fallocating files to get to 0 Avail, and instead I'm only chasing
+zero Avail condition. Once I'm close enough, and delete all six
+fallocated files, I end up for a short period of time, an Avail that
+seems reasonable but is way bigger than it was at the start. And then
+a minute later, without any additional action on my part, returns to
+reporting nonsense.
 
-However, this hypothesis could be tested by completely balancing all
-metadata block groups, then trying to reproduce this workload. If it's
-really this expensive to do metadata insertions, eliminating the need
-for insertions should show up as a remarkable performance improvement
-that degrades as metadata block groups become fragmented again.
-
-
-> What I *can* try is switch to the ssd_spread option, to force it to do
-> much more yolo allocation, but I'm afraid this will result in a sudden
-> blast of metadata block groups getting allocated. Or, maybe try it for a
-> minute or so and compare the trace pipe output...
-
-OK or this.
+It's pretty confusing.
 
 
 -- 
