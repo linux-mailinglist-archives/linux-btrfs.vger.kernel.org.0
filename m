@@ -2,126 +2,294 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F41B22E7C4
-	for <lists+linux-btrfs@lfdr.de>; Mon, 27 Jul 2020 10:32:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D58BF22EAE4
+	for <lists+linux-btrfs@lfdr.de>; Mon, 27 Jul 2020 13:09:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726538AbgG0Ich (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 27 Jul 2020 04:32:37 -0400
-Received: from esa6.hgst.iphmx.com ([216.71.154.45]:5914 "EHLO
-        esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726139AbgG0Icg (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 27 Jul 2020 04:32:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1595838756; x=1627374756;
-  h=from:to:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=R9vzeYKE1dllldq8805tGR5E3yzsKcdQZgzZADtoRhY=;
-  b=M56TDAb2OajtVa6L+2wxlEbVucZsZeRjFHcBSWfNPvxRvJ28APXk9yga
-   mN6UelOY7OXdZ1CeHRjomGOE+kqCMTWiZp7Suv66F7d3/8vtlve1PXXL6
-   Fyz/lSOObj76LElCdpIFmTqOI86IOkwillZDNHZsJz5aNFhOr0+3W8RlV
-   fhKdFbPxEfuJG0xsFpSuPJSDNExpZFbkf9AHrl9K0IsiIWn1UdLWXbkKy
-   MyEIPOxaty9kZxeve6aRFhWQ/39Xq6R/3O0xr0drQ/CVqwde4jDrXo7Cx
-   D1KL72M8BF0q7IJB/4Qv8oBAJs+r+NOUIcEHl7xS1PiGfblxgRPu1SZb5
-   Q==;
-IronPort-SDR: a49H5D1NchDmpNoR7rpTYd2lvliwX5R5tp1C29ZZEa+JmtCERqsklTwR6wjVld7e7N93JqmyKB
- HLGgV6yyStWRDas07skhMGCgXWcW0Z50SksjgorljwrBYTe/A2YS26D7PXZ2fWgdOxbmkpbrZQ
- 7+J1V5pkEOVa81Wj97UZJfDQJwlyIf/G5/fwX7bopGXvBM+ouUKOaPNOkHHxvnYyz6sk74gDIU
- e6/+Ru6JikCoowg8Rq6iFthZyG7o9ovJhccchaCFrW5m5+uu+RSg+CRiWdtY5+SfypmgNDaTQd
- WaY=
-X-IronPort-AV: E=Sophos;i="5.75,401,1589212800"; 
-   d="scan'208";a="144710840"
-Received: from mail-dm6nam10lp2106.outbound.protection.outlook.com (HELO NAM10-DM6-obe.outbound.protection.outlook.com) ([104.47.58.106])
-  by ob1.hgst.iphmx.com with ESMTP; 27 Jul 2020 16:32:36 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=EtgrpJO7DW51MstfAbyJxIXwn2nGCy328GB0R6iKhohb8gYRSxTiKqVjiCyTk3SP/aRS6Y0loBrhBcFEV69mnBp596IL9R+c+mHj7yu5omB7vz2pA9ZYz7LxwDUWNXcsIBTvYovWHnzYi+rOHDyFkJZmL9OgzstUQnhiMFVTqdpUCVUX5gNDwkt9ADf1X7cgEjcJo/Mpw8BIz0cbLKmmrRcTIRzV26FiAl7rTt1+3m4MmaJMfnI5X9l4346mo7FqaZ/fIRSAs4iBzb1ockkCdEwAxFapWQ7i8dHKR6qN4qRng6gTrKwkNcS9wNZMCHaKIyI8Ud6cK/QNmy9oj2cTkQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ppcvDe39UX2evVHn3BIMm5uRKml1UzcBcFnviaUiYZc=;
- b=KX4q0B7VJHqyGuQFf1pgdjHLD7vfdfmX0Koufm4b2MiJy1bKhWFwNBhXRpqTHGYFOoqxygk8DjGLqeKXTlFduhWmJsjsQN4Xnt97so7s7KG3t0fi4Jry+Vj4PCyY21/vkiCSVs6I0oCLRXmL+hp24nVrAMB9HJLj2RYedcpuv0tVe63AyfQIawxjmz3mtfEWcmSgcEMKCtoZ46VHBx/PT2cYWNPtIqmXDuNgc5w016fRW77t7I+102D66v4oh56Hta+YcdBK9cpwpDoJJwTtZWPrdHVMUr9Da0yFnICXAeEZZy/BgfLUyZqtgtN1rew8uaWE0JSqv6hfFgYaHEvOIA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ppcvDe39UX2evVHn3BIMm5uRKml1UzcBcFnviaUiYZc=;
- b=f5ll2Nxu8636k/f9innKNR3RVAIy7ragHmQyvdF9tK6Z8E8/zEhB3qeLhqRj5SNB9brjZ9lwtkBVuehWqEWOuN7YhnrTEF45Irx7Y9zTNPMiPbiZxIlHGq1w4rAHKMCJK+TAAdbpo6GTzNPOEv9n68mgcvdpXPFgHMlbHkLt/Tk=
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
- (2603:10b6:803:47::21) by SN4PR0401MB3680.namprd04.prod.outlook.com
- (2603:10b6:803:4e::12) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3216.23; Mon, 27 Jul
- 2020 08:32:34 +0000
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::2880:af03:9964:fa17]) by SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::2880:af03:9964:fa17%6]) with mapi id 15.20.3216.031; Mon, 27 Jul 2020
- 08:32:34 +0000
-From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To:     Josef Bacik <josef@toxicpanda.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "kernel-team@fb.com" <kernel-team@fb.com>
-Subject: Re: [PATCH] btrfs: do not evaluate the expression with
- !CONFIG_BTRFS_ASSERT
-Thread-Topic: [PATCH] btrfs: do not evaluate the expression with
- !CONFIG_BTRFS_ASSERT
-Thread-Index: AQHWYdlWIgU4V39oDkGcadYkfiF0AQ==
-Date:   Mon, 27 Jul 2020 08:32:34 +0000
-Message-ID: <SN4PR0401MB3598B7F1B3FC35DD384383699B720@SN4PR0401MB3598.namprd04.prod.outlook.com>
-References: <20200724164147.39925-1-josef@toxicpanda.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: toxicpanda.com; dkim=none (message not signed)
- header.d=none;toxicpanda.com; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [129.253.240.72]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 63120a9f-8334-4e3d-6bc8-08d832079c9b
-x-ms-traffictypediagnostic: SN4PR0401MB3680:
-x-microsoft-antispam-prvs: <SN4PR0401MB3680114D91F1052B5314D68D9B720@SN4PR0401MB3680.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:7691;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: AWW3PZH/9XV1wRQVyqVemReZqhpwJqOTT2EcAi1uj1wmJrktRcTq32J71Bg8JIiO1fXjBd/cHhssYLZJip/JJuRP395GZKQbobd29rdY2w2kEmyQM6oOKdahHauBelxrlMaMFpzDw208/9YFaZGPUg5Y/rRgFtVY63GxUnixVYX0MT2DZPRyO16eqSZ5D9qUXPEQr8tYT1XLhLbM1rMn32OquJLRYH5jOO3Z6/hFb3quPG8p4ogxoBD7Z1KLsfdoaZzSmGgKYE9iw2LXl07aMX7lFdjIs1My7yukuyOG85+Gp/uu2sf+OQ/ksFk4t9qvaHhCclqLC0hzNFhuye097g==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR0401MB3598.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(346002)(39860400002)(366004)(396003)(376002)(136003)(91956017)(4744005)(52536014)(76116006)(66946007)(110136005)(86362001)(478600001)(316002)(71200400001)(8676002)(26005)(8936002)(186003)(9686003)(55016002)(2906002)(33656002)(83380400001)(66476007)(5660300002)(64756008)(66556008)(53546011)(6506007)(66446008)(7696005);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: tyuQdO7fTQE7x+2c4xZmhfJZOnSYlvMvGeSH5MhoyGJmsC3Ey8bKqfRvGLVSf51jQ2mdaNc6on0y2c+Y4JO4jmjwxyxVxtrneH0Kx9Wo7nHUHk8dXeR7nufmLZqaUgpUwYaaA9iPQxr1mlvQ6y2b04SwNFHNpZp6eVvMlI8yC7c/+b1X43UrT8IbTzvum3IJktYJTL2hHs2MJOaI9wX/eP3UdcX/vpBqznV2Z5YXnmBMu8Oldbex8gA2jr0dJQONV+PRfcdTy2X7s8Otidh/zvEQwy9Dvba47nOhSpJKK2Ub2MQLkqJg8TuoDxLzajVcSIvQzAnSm1HVeQ00E2avE3MmiER9MPY0wNby+pem7S9VtZujWFhL9KqLkgP8l+/AYUORXv8p+8e5bVZk+O5KHo+q5z0yLB1RjwojAwBjf+ctyXiFbgx02OYDPxgKWKIK4X6097R4OyayVLUDPuB8SQSZwjqpYPRJ9RSvPSD1KtucM0uslRXqPsNonTnuDXu6
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1726953AbgG0LJw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 27 Jul 2020 07:09:52 -0400
+Received: from mout.gmx.net ([212.227.15.15]:33645 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726817AbgG0LJw (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 27 Jul 2020 07:09:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1595848188;
+        bh=gTLvS1yoXoxreYhZ1VVEMpvxtJirRRKc8K6zo/XsNnY=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=IGdhb0pZrJlUBaxJjOowo3ixFeZUXO0b4fgjfjbU7JJH8yMtYxlyenUvlJdADYjeL
+         AVoixPJACKoUHXYCIJtLu5e8csCYcLi96De6Ah9TJFy74ojpIy4EjJW9PBF/dPMQcT
+         KYH5GwtNOY5q1xZNCP8dcHk6sB1Pt2gRGG0utzsY=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MirjS-1kTYP12RXw-00euJ8; Mon, 27
+ Jul 2020 13:09:48 +0200
+Subject: Re: Debugging abysmal write performance with 100% cpu
+ kworker/u16:X+flush-btrfs-2
+To:     Hans van Kranenburg <hans@knorrie.org>, linux-btrfs@vger.kernel.org
+References: <2523ce77-31a3-ecec-f36d-8d74132eae02@knorrie.org>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
+ mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAVQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWCnQUJCWYC
+ bgAKCRDCPZHzoSX+qAR8B/94VAsSNygx1C6dhb1u1Wp1Jr/lfO7QIOK/nf1PF0VpYjTQ2au8
+ ihf/RApTna31sVjBx3jzlmpy+lDoPdXwbI3Czx1PwDbdhAAjdRbvBmwM6cUWyqD+zjVm4RTG
+ rFTPi3E7828YJ71Vpda2qghOYdnC45xCcjmHh8FwReLzsV2A6FtXsvd87bq6Iw2axOHVUax2
+ FGSbardMsHrya1dC2jF2R6n0uxaIc1bWGweYsq0LXvLcvjWH+zDgzYCUB0cfb+6Ib/ipSCYp
+ 3i8BevMsTs62MOBmKz7til6Zdz0kkqDdSNOq8LgWGLOwUTqBh71+lqN2XBpTDu1eLZaNbxSI
+ ilaVuQENBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAGJATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAK
+ CRDCPZHzoSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gy
+ fmtBnUaifnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsS
+ oCEEynby72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAk
+ ZkA523JGap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gG
+ UO/iD/T5oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
+Message-ID: <f3cba5f0-8cc4-a521-3bba-2c02ff6c93a2@gmx.com>
+Date:   Mon, 27 Jul 2020 19:09:44 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SN4PR0401MB3598.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 63120a9f-8334-4e3d-6bc8-08d832079c9b
-X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Jul 2020 08:32:34.5746
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: cbyIPYumpP0ye3SY6Uiq2IWwJTXXjBP+EZa1nSqeHhyjO50KKowAHWCTvHRWs7gvbtgAE123bEGV7mCPtY/9Ih8TF4wkr94m81aNKc7/Bcg=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN4PR0401MB3680
+In-Reply-To: <2523ce77-31a3-ecec-f36d-8d74132eae02@knorrie.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:RsNXU1ax0LMBbi4AnYki50Bjndjwh+p6WGuG2sizAzgG2RW6PQU
+ +hRmqsJbS1wi4LlBpjXyQ3/UsGtCcu/bdxfbC6Wef/AkPuCauHFpXd19DWddVgeFCRujlfO
+ pbtYCfmvfAZ3HFB6uvcxX5dA6Fx4ti9YBKpl46t1FF2dAjNonFZLgSv86v3rmOmMXb922k5
+ xg9Ecp+JQxjnopsFEvJIg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:nOfoHepskrA=:0oNhWdIsIhRJhYEdaQr9gF
+ YKo/pNxZ8Sn4MMiB4M/DFDXXYllPuWkOQqLBYaAQr2vsbOD96/fX8j7x8nNegt8Z6X274C4Jv
+ /k32qYLKrQoBeoZKs0dv1CLZUjB4mJy7O1oyQAjkVVkRutjvPoDWO3Vv4oN36PuDwrUU96Fw7
+ ns6PCRbwDDarDVeuQz2qfd2TMQSESMq29H5hLy7mEIGC3IztaHOmkz5oK/LEu7sgvgz5t+crx
+ ZUahU9ak32o2X4TIifQIeZrYEl/M4gu800v1ftTtCXr0QXwQ/9L61FqVzOuSD+hjm5p94ptEK
+ NSr2yb1T2GIK9+gG1Pn6qUgJakVr8o+bUe4vfsTDSp9b5G3Ix7VF9LNFZ+gZqsNR+VbkUWZyR
+ AEOjVCu2KmOBlrzIuUROYtzk5rjAfX+jkzAADxH83NdsHNnyLbYpB2bIPACacB7xe82bFTDqU
+ gSKPPRjTSu36Ksy2+awFZgEJxsSTSouXp1SxfOaANKfo6cMciK7HM2rupQhi8HUq3Y0+sqcN2
+ xrqPH7YOayHT28w7GWskIGdKVgKIe34CwA+d0272513qgn6CW5Tu/l94axm4nyL6gBOpocAYc
+ 41Cdu3TBvzxAOF+ZHJYRd0zg3qFNd7+wpK+68I825+Jye+7ZVoNqwxo/PTJ0af+Ga1vVVgv0X
+ MeC0GE3LuJDz4WqmPbMIXnKt5gme7Ij55/yDjIqV2y7+6JKfmKV60QMiuoS8urb6TRmbZXFA+
+ rcCun0ljhLOfoF5fZsrYt5eD33j+nPI7rfpk+Hz59dudLjXyb5GdVa8PTgBWyis37MaFE82TS
+ QmCIbytm9smg6epYtGQlhzL1c7qO1UXbeFcYmd/kiYBzMZ0cSM802NLzDwAsAPBp2yptb9oDI
+ XERR9WNbFwhK2D9pOuf+wQN+teYUL6cgX9Kc89awKgDgCWNbe455gWe6FMlTQdB3DOsiLBtIh
+ XPm/M1yTdIG8YV8oa5Jc+/Qe7IK8upwcJl4mDLDAVdjln/MQvxnVFYmnUdsUKIgwflz2kUdxr
+ ZeM0vTKn7Wx1deO96Agvew9spmF6aPpXasxG2ZeGbz5xbXVa2o+jLVHpSBTnHD7557VDd/cq9
+ c8Ov2iPew+mb8PkaevPL40hxAIK4OUkt3+paK7WaLHzOWeIMoGHFVA5jWP7GU/GCVTVgCoct4
+ KH+pDFZFw8uNoYMYGuJ0o8QBuCxUzsHSWsyiJ21e1mUzjksmylT2rTnGR+JzJwUulbHvX97o5
+ mS3O1uzxrtU3MAclCd7UwDhWv1K3BjGMgoa0fBw==
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 24/07/2020 18:41, Josef Bacik wrote:=0A=
-> While investigating a performance issue I noticed that turning off=0A=
-> CONFIG_BTRFS_ASSERT had no effect in what I was seeing in perf,=0A=
-> specifically check_setget_bounds() was around 5% for this workload.=0A=
-> Upon investigation I realized that I made a mistake when I added=0A=
-> ASSERT(), I would still evaluate the expression, but simply ignore the=0A=
-> result.=0A=
-> =0A=
-> This is useless, and has a marked impact on performance.  This=0A=
-> microbenchmark is the watered down version of an application that is=0A=
-> experiencing performance issues, and does renames and creates over and=0A=
-> over again.  Doing these operations 200k times without this patch takes=
-=0A=
-> 13 seconds on my machine.  With this patch it takes 7 seconds.=0A=
-=0A=
-Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>=0A=
+
+
+On 2020/7/25 =E4=B8=8B=E5=8D=8810:24, Hans van Kranenburg wrote:
+> Hi,
+>
+> I have a filesystem here that I'm filling up with data from elsewhere.
+> Most of it is done by rsync, and part by send/receive. So, receiving
+> data over the network, and then writing the files to disk. There can be
+> a dozen of these processes running in parallel.
+>
+> Now, when doing so, the kworker/u16:X+flush-btrfs-2 process (with
+> varying X) often is using nearly 100% cpu, while enormously slowing down
+> disk writes. This shows as disk IO wait for the rsync and btrfs receive
+> processes.
+
+The name is in fact pretty strange.
+It doesn't follow the btrfs workqueue names.
+
+There are two type of kernel threads used by btrfs:
+- kthread
+  This includes:
+  * btrfs-uuid
+  * btrfs-cleaner
+  * btrfs-transaction
+  * btrfs-devrepl
+  * btrfs-ino-cache-*llu (deprecated)
+  * btrfs-balance
+
+- btrfs_workqueue (a wrapper around kernel workqueue)
+  This mostly includes the following one, some of them may have another
+workqueue with
+  "-high" suffix:
+  * btrfs-worker
+  * btrfs-delalloc
+  * btrfs-flush_delalloc
+  * btrfs-cache
+  * btrfs-fixup
+  * btrfs-endio
+  * btrfs-endio-meta
+  * btrfs-endio-meta-write
+  * btrfs-endio-raid56
+  * btrfs-rmw
+  * btrfs-endio-write
+  * btrfs-freespace-write
+  * btrfs-delayed-meta
+  * btrfs-readahead
+  * btrfs-qgroup-rescan
+  * btrfs-scrub
+  * btrfs-scrubwrc
+  * btrfs-scrubparity
+
+  (No wonder Linus is not happy with so many work queues)
+
+As you can see, there is no one named like "flush-btrfs".
+
+Thus I guess it's from other part of the stack.
+
+Also, the calltrace also shows that, that kernel thread is only doing
+page writeback, which calls back to the page write hooks of btrfs.
+
+So I guess it may not be btrfs, but something else trying to do all the
+writeback.
+
+But still, the CPU usage is still a problem, it shouldn't cost so much
+CPU time just writing back pages from btrfs.
+
+
+>
+> The underlying storage (iSCSI connected over 10Gb/s network) can easily
+> eat a few hundred MiB/s. When looking at actual disk business on the
+> storage device, percentages <5% utilization are reported for the actual
+> disks.
+>
+> It's clearly kworker/u16:X+flush-btrfs-2 which is the bottleneck here.
+>
+> I just did a 'perf record -g -a sleep 60' while disk writes were down to
+> under 1MiB (!) per second and then 'perf report'. Attached some 'screen
+> shot' of it. Also attached an example of what nmon shows to give an idea
+> about the situation.
+>
+> If the kworker/u16:X+flush-btrfs-2 cpu usage decreases, I immediately
+> see network and disk write speed ramping up, easily over 200 MiB/s,
+> until it soon plummets again.
+>
+> I see the same behavior with a recent 4.19 kernel and with 5.7.6 (which
+> is booted now).
+>
+> So, what I'm looking for is:
+> * Does anyone else see this happen when doing a lot of concurrent writes=
+?
+> * What does this flush thing do?
+> * Why is it using 100% cpu all the time?
+> * How can I debug this more?
+
+bcc based runtime probes I guess?
+
+Since it's almost a dead CPU burner loop, regular sleep based lockup
+detector won't help much.
+
+You can try trace events first to see which trace event get executed the
+most frequently, then try to add probe points to pin down the real cause.
+
+But personally speaking, it's better to shrink the workload, to find a
+minimal workload to reproduce the 100% CPU burn, so that you need less
+probes/time to pindown the problem.
+
+> * Ultimately, of course... how can we improve this?
+>
+> I can recompile the kernel image to e.g. put more trace points in, in
+> different places.>
+> I just have no idea where to start.
+>
+> Thanks,
+> Hans
+>
+> P.S. /proc/<pid>/stack for the kworker/u16:X+flush-btrfs-2 mostly shows
+> nothing at all, and sometimes when it does show some output, it mostly
+> looks like this:
+>
+> ----
+> [<0>] rq_qos_wait+0xfa/0x170
+> [<0>] wbt_wait+0x98/0xe0
+> [<0>] __rq_qos_throttle+0x23/0x30
+> [<0>] blk_mq_make_request+0x12a/0x5d0
+> [<0>] generic_make_request+0xcf/0x310
+> [<0>] submit_bio+0x42/0x1c0
+> [<0>] btrfs_map_bio+0x1c0/0x380 [btrfs]
+> [<0>] btrfs_submit_bio_hook+0x8c/0x180 [btrfs]
+> [<0>] submit_one_bio+0x31/0x50 [btrfs]
+> [<0>] submit_extent_page+0x102/0x210 [btrfs]
+> [<0>] __extent_writepage_io+0x1cf/0x380 [btrfs]
+> [<0>] __extent_writepage+0x101/0x300 [btrfs]
+> [<0>] extent_write_cache_pages+0x2bb/0x440 [btrfs]
+> [<0>] extent_writepages+0x44/0x90 [btrfs]
+> [<0>] do_writepages+0x41/0xd0
+
+Yeah, it's just trying to write dirty pages for btrfs.
+
+I don't really believe it's btrfs causing the 100% CPU burn.
+
+Maybe you could just try run btrfs on bare storage, without iSCSI, just
+to verify it's btrfs to blame?
+
+Thanks,
+Qu
+
+> [<0>] __writeback_single_inode+0x3d/0x340
+> [<0>] writeback_sb_inodes+0x1e5/0x480
+> [<0>] __writeback_inodes_wb+0x5d/0xb0
+> [<0>] wb_writeback+0x25f/0x2f0
+> [<0>] wb_workfn+0x2fe/0x3f0
+> [<0>] process_one_work+0x1ad/0x370
+> [<0>] worker_thread+0x30/0x390
+> [<0>] kthread+0x112/0x130
+> [<0>] ret_from_fork+0x1f/0x40
+>
+> ----
+> [<0>] rq_qos_wait+0xfa/0x170
+> [<0>] wbt_wait+0x98/0xe0
+> [<0>] __rq_qos_throttle+0x23/0x30
+> [<0>] blk_mq_make_request+0x12a/0x5d0
+> [<0>] generic_make_request+0xcf/0x310
+> [<0>] submit_bio+0x42/0x1c0
+> [<0>] btrfs_map_bio+0x1c0/0x380 [btrfs]
+> [<0>] btrfs_submit_bio_hook+0x8c/0x180 [btrfs]
+> [<0>] submit_one_bio+0x31/0x50 [btrfs]
+> [<0>] extent_writepages+0x5d/0x90 [btrfs]
+> [<0>] do_writepages+0x41/0xd0
+> [<0>] __writeback_single_inode+0x3d/0x340
+> [<0>] writeback_sb_inodes+0x1e5/0x480
+> [<0>] __writeback_inodes_wb+0x5d/0xb0
+> [<0>] wb_writeback+0x25f/0x2f0
+> [<0>] wb_workfn+0x2fe/0x3f0
+> [<0>] process_one_work+0x1ad/0x370
+> [<0>] worker_thread+0x30/0x390
+> [<0>] kthread+0x112/0x130
+> [<0>] ret_from_fork+0x1f/0x40
+>
+> ----
+> [<0>] rq_qos_wait+0xfa/0x170
+> [<0>] wbt_wait+0x98/0xe0
+> [<0>] __rq_qos_throttle+0x23/0x30
+> [<0>] blk_mq_make_request+0x12a/0x5d0
+> [<0>] generic_make_request+0xcf/0x310
+> [<0>] submit_bio+0x42/0x1c0
+> [<0>] btrfs_map_bio+0x1c0/0x380 [btrfs]
+> [<0>] btrfs_submit_bio_hook+0x8c/0x180 [btrfs]
+> [<0>] submit_one_bio+0x31/0x50 [btrfs]
+> [<0>] submit_extent_page+0x102/0x210 [btrfs]
+> [<0>] __extent_writepage_io+0x1cf/0x380 [btrfs]
+> [<0>] __extent_writepage+0x101/0x300 [btrfs]
+> [<0>] extent_write_cache_pages+0x2bb/0x440 [btrfs]
+> [<0>] extent_writepages+0x44/0x90 [btrfs]
+> [<0>] do_writepages+0x41/0xd0
+> [<0>] __writeback_single_inode+0x3d/0x340
+> [<0>] writeback_sb_inodes+0x1e5/0x480
+> [<0>] __writeback_inodes_wb+0x5d/0xb0
+> [<0>] wb_writeback+0x25f/0x2f0
+> [<0>] wb_workfn+0x2fe/0x3f0
+> [<0>] process_one_work+0x1ad/0x370
+> [<0>] worker_thread+0x30/0x390
+> [<0>] kthread+0x112/0x130
+> [<0>] ret_from_fork+0x1f/0x40
+>
