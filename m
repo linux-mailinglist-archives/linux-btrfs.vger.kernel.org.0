@@ -2,83 +2,97 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07E4722DF70
-	for <lists+linux-btrfs@lfdr.de>; Sun, 26 Jul 2020 15:10:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52E9322E3CF
+	for <lists+linux-btrfs@lfdr.de>; Mon, 27 Jul 2020 04:05:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727798AbgGZNKi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 26 Jul 2020 09:10:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50732 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726455AbgGZNKi (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 26 Jul 2020 09:10:38 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 483B820714;
-        Sun, 26 Jul 2020 13:10:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595769037;
-        bh=ayUpVQk8ZsLsvjZoIjUZ6yNGeOkt4pSfgYTny10ZxuY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=F5VLAukEUGp+GQxx+sOVQ6fdeMs6gxJsgyBFljZ6yIAyVky3ctSGDAIWkyjke6Csu
-         lB17QejylBaP4FkslEo0arvYKg5aNa9F84GWytaqOWKbP48BbifcgA9XfRDdwBcXsh
-         YPh27PBJniDsdCjQE5wDC59O4Quv9nyxtpw+2rV0=
-Date:   Sun, 26 Jul 2020 15:10:35 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     stable-commits@vger.kernel.org, stable <stable@vger.kernel.org>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: Re: Patch "btrfs: qgroup: fix data leak caused by race between
- writeback and truncate" has been added to the 4.14-stable tree
-Message-ID: <20200726131035.GA1640701@kroah.com>
-References: <15957672628285@kroah.com>
- <3b1eaf71-0b54-ae4d-0fd5-26103ee8ff3d@suse.com>
- <64ba52d0-04e6-63a8-28f8-36345a708b20@suse.com>
-MIME-Version: 1.0
+        id S1726689AbgG0CFF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 26 Jul 2020 22:05:05 -0400
+Received: from static.214.254.202.116.clients.your-server.de ([116.202.254.214]:50342
+        "EHLO ciao.gmane.io" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726072AbgG0CFF (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Sun, 26 Jul 2020 22:05:05 -0400
+Received: from list by ciao.gmane.io with local (Exim 4.92)
+        (envelope-from <gcfb-btrfs-devel-moved1-3@m.gmane-mx.org>)
+        id 1jzsVi-0002ko-1O
+        for linux-btrfs@vger.kernel.org; Mon, 27 Jul 2020 04:05:02 +0200
+X-Injected-Via-Gmane: http://gmane.org/
+To:     linux-btrfs@vger.kernel.org
+From:   Andrew Skretvedt <andrew.skretvedt@gmail.com>
+Subject: defrag/compression: will it break reflinks on kernel 4.15.0?
+Date:   Sun, 26 Jul 2020 20:59:11 -0500
+Message-ID: <rflcdf$bc5$3@ciao.gmane.io>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <64ba52d0-04e6-63a8-28f8-36345a708b20@suse.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+X-Mozilla-News-Host: news://news.gmane.org
+Content-Language: en-US
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sun, Jul 26, 2020 at 08:54:29PM +0800, Qu Wenruo wrote:
-> 
-> 
-> On 2020/7/26 下午8:51, Qu Wenruo wrote:
-> > 
-> > 
-> > On 2020/7/26 下午8:41, gregkh@linuxfoundation.org wrote:
-> >>
-> >> This is a note to let you know that I've just added the patch titled
-> >>
-> >>     btrfs: qgroup: fix data leak caused by race between writeback and truncate
-> >>
-> >> to the 4.14-stable tree which can be found at:
-> >>     http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
-> >>
-> >> The filename of the patch is:
-> >>      btrfs-qgroup-fix-data-leak-caused-by-race-between-writeback-and-truncate.patch
-> >> and it can be found in the queue-4.14 subdirectory.
-> >>
-> >> If you, or anyone else, feels it should not be added to the stable tree,
-> >> please let <stable@vger.kernel.org> know about it.
-> > 
-> > Please don't merge this patch for any of the stable branches.
-> > 
-> > This patch needs one unmerged patch ("btrfs: change timing for qgroup
-> > reserved space for ordered extents to fix reserved space leak", already
-> > in maintainer's tree) as prerequisite.
-> 
-> Also add btrfs mail list to the discssusion.
-> 
-> > 
-> > The behavior without that patch could be problematic.
-> > 
-> > I should have noticed this earlier.
+I've started experimenting with compression on a btrfs filesystem. I'd
+like to use 'zstd'.
 
-No problem, now dropped from all stable queues.
+I'm on linux kernel 4.15.0.
 
-greg k-h
+I have a handful of snapshots and I know that if all the reflinks will
+be broken, I won't have enough space to keep them all. So the choice I'm
+facing is that breaks will happen; I should delete enough snapshots to
+ensure space is sufficient, or breaks won't happen and I can leave my
+snapshots alone.
+
+Background detail and deeper questions:
+
+I *was* on v4.4 of the userspace tools (ubuntu btrfs-tools package).
+I'm *now* on v5.4.1 of these tools (ubuntu btrfs-progs package) via some
+careful cherry-picking from a newer release to keep all dependencies
+satisfied.
+
+I began by adjusting mount options to include "compress=zstd"; this was
+fine. I understand that new writes are getting compressed (if passed by
+the compressibility heuristic). But, I understand that to compress
+what's already present, I have to issue defrag command(s) with -c. I was
+set to go forward and tripped over requesting -czstd, as v4.4 of the
+tools didn't support zstd, and I didn't notice. This is what prompted me
+to make the tools upgrade.
+
+The manpage "btrfs-filesystem" includes:
+
+> Warning
+> Defragmenting with Linux kernel versions < 3.9 or ≥ 3.14-rc2 as well
+> as with Linux stable kernel versions ≥ 3.10.31, ≥ 3.12.12 or ≥ 3.13.4
+> will break up the reflinks of COW data
+
+I thought I was prepared for this, but now I want to try to be more
+certain about what will happen if I start issuing 'defrag -czstd'
+commands. Because version 3.x kernels are mentioned several times at
+specific subversions, the warnings only apply to newer sub-subversions
+of them. I *think* that my 4.15.0 kernel will *not break* reflinks.
+
+Is that correct?
+
+Extra questions:
+
+I see that the userspace tools' version tracks along with the kernel
+version. Is it a mistake to use a newer version of the tools than the
+running kernel, i.e. should I drop back to v4.15 of the tools?
+
+>From the wiki, I understand that while zstd support was added in kernel
+4.14, user-selection of compression level in zstd was not added until
+kernel 5.1. So I cannot use mount options like "compress=zstd:3" on
+kernel 4.15. BUT, can I yet do "defrag -czstd:3" since I'm running
+v5.4.1 tools? Or, must I (should I) just stick to -czstd and accept the
+default level it would use. What is that for zstd?
+
+Thanks.
+
+-- 
+OpenPGP 0xC6901B2A6C976BB3 (https://keys.openpgp.org)
+
+-- 
+OpenPGP 0xC6901B2A6C976BB3 (https://keys.openpgp.org)
+
