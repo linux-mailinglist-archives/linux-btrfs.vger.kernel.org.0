@@ -2,135 +2,101 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A352922F6BB
-	for <lists+linux-btrfs@lfdr.de>; Mon, 27 Jul 2020 19:34:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99B4522F8F6
+	for <lists+linux-btrfs@lfdr.de>; Mon, 27 Jul 2020 21:23:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730141AbgG0ReV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 27 Jul 2020 13:34:21 -0400
-Received: from smtp-32.italiaonline.it ([213.209.10.32]:36148 "EHLO libero.it"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726617AbgG0ReV (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 27 Jul 2020 13:34:21 -0400
-Received: from venice.bhome ([78.12.13.37])
-        by smtp-32.iol.local with ESMTPA
-        id 0710kkrbfzS330710kSrQg; Mon, 27 Jul 2020 19:34:18 +0200
-x-libjamoibt: 1601
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=inwind.it; s=s2014;
-        t=1595871258; bh=MnQBo5AP7FhrWUr48KhOmM4RPEKUIcFUmArVN1my8VE=;
-        h=From;
-        b=Um5TUDpGMOjysdDxfABasL3r/pqjeRkaIYjVs74SiO4iI94MNeF7SJdEhtIOYPKXn
-         TzIj+uVHInXkX2OUgAmLNlk2lMhuSpSu/kS/AdUWnwvtFOu8gmepN5IzSh6kLJ/uVf
-         Oi3KXLNg47RRhCs9Vw7bV0OWxVfx7xCKNw2PGTqpDFuwZ4NVE/tgl7ONsspw86KEjE
-         K5i70mPWLIyqsw9ft8WnLoaMyyuZJkw3sHW+F3P8LHV3Da3GRQgdJMHEe8qie+vZCA
-         dcjWepbDzj/CVbgLG15yM4R4VaZl7An6aI41RK/P6/lnEXhB/RJZvPODTPOo2qiZ43
-         zFCg0b3mz+dZg==
-X-CNFS-Analysis: v=2.3 cv=PLVxBsiC c=1 sm=1 tr=0
- a=XJAbuhTEZzHZh8gzL9OeLg==:117 a=XJAbuhTEZzHZh8gzL9OeLg==:17
- a=IkcTkHD0fZMA:10 a=lfK5j9ZFtb8aFLwTU6MA:9 a=QEXdDO2ut3YA:10
-Reply-To: kreijack@inwind.it
-Subject: Re: [RFC] btrfs: strategy to perform a rollback at boot time
-From:   Goffredo Baroncelli <kreijack@inwind.it>
-To:     dsterba@suse.cz, Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
-        linux-btrfs@vger.kernel.org, Chris Murphy <lists@colorremedies.com>
-References: <20200721203340.275921-1-kreijack@libero.it>
- <20200723215325.GB5890@hungrycats.org>
- <a4074100-b006-7d64-e22d-779ad15191c0@libero.it>
- <20200727122647.GK3703@twin.jikos.cz>
- <80c668ae-d4c7-7cac-01bb-1c742797f06c@inwind.it>
-Message-ID: <94f82478-a63a-c82c-31ff-3fe84243fbcc@inwind.it>
-Date:   Mon, 27 Jul 2020 19:34:18 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1727878AbgG0TXn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 27 Jul 2020 15:23:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56132 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727053AbgG0TXm (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 27 Jul 2020 15:23:42 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FACBC061794
+        for <linux-btrfs@vger.kernel.org>; Mon, 27 Jul 2020 12:23:42 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id r12so15946443wrj.13
+        for <linux-btrfs@vger.kernel.org>; Mon, 27 Jul 2020 12:23:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CoNoIh+Li7/x2v71DYkUEzPq/qWW36nmWw/PEfKbGig=;
+        b=FuiLTHMf/CS5Vtv4pIU1xPjgkU9g5VGnm8A0kGdJj/4uPuklF9GMAEgB8BqiWV/oFo
+         vz107gqvO56y3kiCuwb+/elbfdz3PxN1+AEeIOmeDbR4sJ4I4b0kiut0iwN2u64xfOzl
+         njjdtqtp2N1Eu9XWgMGrScN1BRb+feSyVxMCzs4uOdH/MdDxyX+ytpxXTBZXwUnpJPRE
+         XDppLxL0O4ZYnGlETfmHdC80miJcMlIApWy9AwvKkWMahyVbWCqeg56D8D+iYw2iHnhI
+         7Ca5aE+uKBNYqQPJpuVKclDGu6yxq74Oa6q3fur+XKU5bTi2+cuQN4QzAiHxVcRA5770
+         Eyjw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CoNoIh+Li7/x2v71DYkUEzPq/qWW36nmWw/PEfKbGig=;
+        b=glmJirBf1qG6nQwBOIH52ul2jPAV8GWEJFh5Un6rxEwPBiN4qz2aBwQWBJ0rhKwR5X
+         8xAtBHGB5MivoIcy4JxWIqAry4roN4DStx0udvKQnIPCazCTXKgULevPvxRCp+NXF3XY
+         b5Ij6V2bPnwYUjFbYIPorB9iwwHPCBxDJsLHnfD/xQ193vu/VG2G4DmXtciuBkhFJoUE
+         U99pfrJ8VxZq186VKoKmYNk48XlJnZGe4MYhpCRBlXSM7rkRpDbbvl9zZwdYAYLGknxx
+         qjvlk7FklJWMQ9MQY5E+tt6m8xeUD00bmRcC+ONIzTo4RF0YYRswp37ypm1Rv45h0aWf
+         svtw==
+X-Gm-Message-State: AOAM5318kMPKD7RXduyfp34Exm9pUpKT6aJeV3I26cFNUQu78OLcDfRw
+        b/ZpQ4n2BoidbLPqok+r3FvM3xTWzGgPDorIF+ppKA==
+X-Google-Smtp-Source: ABdhPJwaVUeXoWvlKq9ED1Pd4ywPPG4/zFxSnPT33Oaq3dakpiGnoS3AhUBrLBc/npOfPDIc2AVnzw8bHU0mZqSruWg=
+X-Received: by 2002:adf:a19e:: with SMTP id u30mr21252304wru.274.1595877821220;
+ Mon, 27 Jul 2020 12:23:41 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <80c668ae-d4c7-7cac-01bb-1c742797f06c@inwind.it>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-CMAE-Envelope: MS4wfEvmuH/ZkXgYraoBYVWt+YvYv01cZ0ILdaSrSi19JJca0OlNYnVbCy0dKnNnsG3aTdtpBYodCPDbS6KDEeaJyvcvOJGf44pFEJlXsNOKsbkm0I49E8NJ
- NmiePk4CnvTg4ufSvhFzl3/pehKRmbEsnWJjHEhxwUFtjLkri0r6nomhz0rarVT7YBODZiup+okQIFhhcdxxHbRLSHDObksh/CxwRaV2miXSl/wrUOe+z7Zw
- l/bFdhX4Ceat3yFv4HwYOIWtEYUFUglkAWvvTZCV3/I=
+References: <2523ce77-31a3-ecec-f36d-8d74132eae02@knorrie.org>
+ <f3cba5f0-8cc4-a521-3bba-2c02ff6c93a2@gmx.com> <ae50b6a5-0f1e-282e-61d0-4ff37372a3ca@knorrie.org>
+In-Reply-To: <ae50b6a5-0f1e-282e-61d0-4ff37372a3ca@knorrie.org>
+From:   Chris Murphy <lists@colorremedies.com>
+Date:   Mon, 27 Jul 2020 13:23:24 -0600
+Message-ID: <CAJCQCtTMVSzm6KrPamaw6dnLO2amcHMrQNJ5z8GWD9Wcn+XYuA@mail.gmail.com>
+Subject: Re: Debugging abysmal write performance with 100% cpu kworker/u16:X+flush-btrfs-2
+To:     Hans van Kranenburg <hans@knorrie.org>
+Cc:     Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 7/27/20 7:25 PM, Goffredo Baroncelli wrote:
-> On 7/27/20 2:26 PM, David Sterba wrote:
->> On Fri, Jul 24, 2020 at 01:56:58PM +0200, Goffredo Baroncelli wrote:
->>>> This could be done already from the initramfs.
->>>
->>> Ok, this means that we have three possibility:
->>> 1) do this at bootloder level (eg grub)
->>> 2) do this at initramfs
->>> 3) do this at kernel level (see my patch)
->>>
->>> All these possibilities are a viable solution. However I find 1) and
->>> 2) the more "intrusive", and distro specific. My fear is that each
->>> distro will take a different choice, leading to a more fragmentation.
->>> I hoped that the solution nr 3, could help to find a unique solution....
->>
->> IMO bootloader or initrd are the right places to do the mount test and
->> eventual rollback. What kernel provides is to mount the subvolume, it's
->> up the the user to supply the right one. When I read the proposal the
->> option 2 was the the first thought that can be implemented with the
->> existing kernel support already.
->>
->> Distros take different approach to various problems, and this is fine.
->> Here the list of fallback subvolumes, naming, where it's stored or
->> whatever may differ and the kernel provides the base functionality.
->>
->> It would make sense to push that down one level in case all distros have
->> to repeat the same code and there would be an established way to do the
->> main/rollback switch.
-> 
-> I am looking for another solution, which is based on some suggestions taken
-> from Zygo and Chris. This solution requires no change to initrd, kernel and bootloader.
-> 
-> More or less the sequence is the following:
-> 
-> During the upgrade
-> ==================
-> 1 cleanup previous unclean subvolume and snapshot pairs (due to an unattended abort)
-> 2 take a snapshot of the main subvolume
-> 3 swap (atomically via renameat2) the original subvolume and its snapshot
->      this means that in case of an unattended reboot, the system starts
->      from the snapshot
-> 4 update the filesystem
-> 5 re-swap original subvolume and its snapshot
-> 6 delete the snapshot (or collect it to provide a way to return to previous configuration)
+On Mon, Jul 27, 2020 at 11:17 AM Hans van Kranenburg <hans@knorrie.org> wrote:
+>
+> https://syrinx.knorrie.org/~knorrie/btrfs/keep/2020-07-25-find_free_extent.txt
+>
+> From the timestamps you can see how long this takes. It's not much that
+> gets done per second.
+>
+> The spin lock part must be spin_lock(&space_info->lock) because that's
+> the only one in find_free_extent.
+>
+> So, what I think is that, like I mentioned on saturday already,
+> find_free_extent is probably doing things in a really inefficient way,
+> scanning around for a small single free space gap all the time in a
+> really expensive way, and doing that over again for each tiny metadata
+> block or file that needs to be placed somewhere (also notice the
+> empty_size=0), instead of just throwing all of it on disk after each
+> other, when it's otherwise slowing down everyone.
 
-Of course the devil is in the detail: with the process described above, during "grub" upgrade
-the grub.cfg will be generated on the current root subvolume, which is the name of the snapshot
+What are the latencies for the iscsi device while this is happening?
+Does your trace have the ability to distinguish between inefficiency
+in find_free_extent versus waiting on IO latency?
 
-:-(
+However, this hypothesis could be tested by completely balancing all
+metadata block groups, then trying to reproduce this workload. If it's
+really this expensive to do metadata insertions, eliminating the need
+for insertions should show up as a remarkable performance improvement
+that degrades as metadata block groups become fragmented again.
 
 
-> 
-> This procedure has three possible endings:
-> 1) all ok, nothing to do
-> 2) unattended reboot happened; at startup a cleanup of the subvolume is required
-> 3) unattended abort happened without a reboot; we still have the two subvolumes, at least
-> during the shutdown the subvolume and its snapshot have to be swapped (if required)
-> 
-> During the startup
-> ==================
-> A script checks if the system started from the snapshot, and if so
-> delete the original subvolume (or collect it to provide an history)
-> 
-> 
-> During the shutdown
-> ===================
-> a script checks if both the subvolume and its snapshot are present.
-> This happens if the upgrade procedure abort for some reasons (but the system doesn't reboot).
-> In this case I think that it is safe to swap snapshot and original subvolume and
-> drop the snapshot (or collect it to provide....)
-> 
-> 
->>
-> 
-> 
+> What I *can* try is switch to the ssd_spread option, to force it to do
+> much more yolo allocation, but I'm afraid this will result in a sudden
+> blast of metadata block groups getting allocated. Or, maybe try it for a
+> minute or so and compare the trace pipe output...
+
+OK or this.
 
 
 -- 
-gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
-Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
+Chris Murphy
