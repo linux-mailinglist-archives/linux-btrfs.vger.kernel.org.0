@@ -2,75 +2,111 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B30B3230FE8
-	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Jul 2020 18:38:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8347E2310CF
+	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Jul 2020 19:25:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731413AbgG1QhY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 28 Jul 2020 12:37:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55478 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731330AbgG1QhY (ORCPT
+        id S1731929AbgG1RZF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 28 Jul 2020 13:25:05 -0400
+Received: from out3-smtp.messagingengine.com ([66.111.4.27]:37267 "EHLO
+        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731684AbgG1RZF (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 28 Jul 2020 12:37:24 -0400
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2851C061794
-        for <linux-btrfs@vger.kernel.org>; Tue, 28 Jul 2020 09:37:23 -0700 (PDT)
-Received: by mail-il1-x143.google.com with SMTP id t4so16741681iln.1
-        for <linux-btrfs@vger.kernel.org>; Tue, 28 Jul 2020 09:37:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
-        bh=q2dNS2ReXVHJA5mslWKrZAVheBWqMOpamPOBseT6eH8=;
-        b=EhCWWICxrAFYxaqwBDq/yuWFkM6W3xQS1u58D3nCSdONDt0gw3qlcj7GyLxbzYZACJ
-         ylTnYoKwTFU1OjzjZsbc4k/nU4FAp/dBo7jKMgt/+74TOLxobceoP5G+1abKnEwYhSNF
-         Zv+B87Gd0m8OyjUnCR+40gFZfYB+9rApZAK1QJvcsbBFaUN4VIvewvEsCwzPYJeJHSkW
-         nz2hmIeE9lVH/MSlQjCPhuX5t7no6Vwj4a0MJaKgNdut4H31J36jN9Vde5qKdJiZbazr
-         DErs0ZQ6w2H5QU/x1KHklb5A8BUlQKOi9d3L9iw8Wjifc6nPmm+VpuSFzjqpO1E9bi6O
-         fHWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:sender:from:date
-         :message-id:subject:to;
-        bh=q2dNS2ReXVHJA5mslWKrZAVheBWqMOpamPOBseT6eH8=;
-        b=H6hGbpsAxa9ebyNcn8ENrS0ujOEJOFzqX1gPAu7BcLKustiXsUdtSWHrVEQSPzNoZM
-         d7FMOmqlrtCJPh49tjuqOp2PEC6/ZyxENtoonMUBkjJ6RDH7Zbn/bRaortSSAu5b/ENa
-         v11cEMwhoxJYAyIc1TJ36ZIrS+4Akmwh/MCNMU9ORwaCiby9Paq1w7wtg6kasWAPGN1b
-         bROeD+8vwr9JQr5KshDZKjYI73VkvlCfyHVrPvlvKbNfPX56Jo7pqKCHt7GNDWS8p4AQ
-         oynBl5Z7q+nQQVR+XDJH5+A27QlLQDdyXzUlqmjA1/NParYs4NmPIfnIG1FFaq/mwmA5
-         R36g==
-X-Gm-Message-State: AOAM530jEeGrdHGQXcIXPaDOnpAVOlt3A+piHsvTdJ9qoOGQlH01yx1a
-        VbXpO4lKFFfEW90+qI77IfThEuFw16B67QoAXxI=
-X-Google-Smtp-Source: ABdhPJzbRL9eAid0KavqiAtbUDlUh0Csm2DyMY1zAosCG8I0IBiY7DFHzdr9dbJsAk2AuGWMEA0iH6pu3XoA1iv+Q7c=
-X-Received: by 2002:a92:c7c2:: with SMTP id g2mr2045906ilk.191.1595954243177;
- Tue, 28 Jul 2020 09:37:23 -0700 (PDT)
-MIME-Version: 1.0
-Reply-To: denniiskosi01@gmail.com
-Received: by 2002:a05:6e02:1311:0:0:0:0 with HTTP; Tue, 28 Jul 2020 09:37:22
- -0700 (PDT)
-From:   Dennis Kosi <denniiskosi01@gmail.com>
-Date:   Tue, 28 Jul 2020 16:37:22 +0000
-X-Google-Sender-Auth: d2vdmMcIDUWXooezTtS_Az5s6N4
-Message-ID: <CANGne9Mz_0h9Vn1bhmfZ3xNSEhgvfmvaCBz1JtKtsNfuTXhDoQ@mail.gmail.com>
-Subject: Greetings
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+        Tue, 28 Jul 2020 13:25:05 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.nyi.internal (Postfix) with ESMTP id 49A9F5C00EE;
+        Tue, 28 Jul 2020 13:25:04 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Tue, 28 Jul 2020 13:25:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=
+        mime-version:content-transfer-encoding:content-type:cc:subject
+        :from:to:date:message-id:in-reply-to; s=fm1; bh=TVHW4Yzu5y8ZEU3/
+        zWhzLSsjif6OERBdpdBOXAJIVJ0=; b=HqAA/xkqsV5dC/Wz/rloyj9lV6/LpD/a
+        aWAem4BQ2lSVG1PMCMgb9nCwwoRfYoq9ppddmEMHnD9GdFfSyFKkGeuh/a3eQdXK
+        ADFK7oIN89zKir7NzkVtCxWKtRPV7a+NYAguVIcWJDTtugMYWVFHcf2yePjnYe9t
+        Be9s88Y555EFtFxdc7ggX4brydoXsdzuVZTStn8LpsyxhEh1jTXGO6wljMAJr2sT
+        x0yUQUtKscj2R0HqtSkkFRrtn/ah7shsJMBtyze1MtS/L9666ze38NFryMO/09qn
+        j/4v3+FMQKZgd0O4dfZZv7Qfc8Ej4FTVZW62vHD2QaYedVq69k69FQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:subject:to
+        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+        fm3; bh=TVHW4Yzu5y8ZEU3/zWhzLSsjif6OERBdpdBOXAJIVJ0=; b=hRwdwqpD
+        W3vn3E/SV9K9A9Y44e45ukaommYns8UqlHX5zqD+MwW6AQY3MrRs2HxiUg2brv2j
+        qNnNtscWv9fuHHYGrIkfsrN41bug0z3BD686GLkDpu/JRWE3Rv2jdrL4FeDmd7yB
+        JI1bU1QLbtJ+sS6Mt1hU80ViW2iP0Lw0ijvpPn0PXsGJUCrXJCr0CKAMiO6YlqK7
+        6oN7o9DfSweyKlEnEa9f79dQkAjF+f4CPjxgJNPyLN50lXzJQlZpIQjOaD9vkgVI
+        cGV/ZzJuCBV3FkDLOX/rmBYNS8iLCTAlcavYfBI22+3URpZKB7nqC17IBmStnw4E
+        DaB2DHmvRcuWxQ==
+X-ME-Sender: <xms:b18gXyzqp6x5UgEz6IuK0MQK7IeWIlyHooj0kVpMWmWwD6JCRkTYVQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedriedvgdduudduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucgfrhhlucfvnfffucdlfeehmdenucfjughrpegggf
+    gtuffhvfffkfgjsehtqhertddttdejnecuhfhrohhmpedfffgrnhhivghlucgiuhdfuceo
+    ugiguhesugiguhhuuhdrgiihiieqnecuggftrfgrthhtvghrnhepgfffleeuveeghfdvve
+    dvvdelieetgeehgeeuffffgeeuleekueektddtkeeivedtnecuffhomhgrihhnpehgihht
+    hhhusgdrtghomhenucfkphepjeefrdelfedrvdegjedrudefgeenucevlhhushhtvghruf
+    hiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegugihusegugihuuhhurdighiii
+X-ME-Proxy: <xmx:b18gX-RYaLDWzxRYGnG97UG12Q4i3C8r9lnb4hlHhQPD7AirubGW0g>
+    <xmx:b18gX0UJ233kTpQnfkakCr_wF2QMWL_y-2sUtJuF4_eDEb4sqKGeIg>
+    <xmx:b18gX4hcFgdUAim0O__vMBLFMn9mzjlUs0d2IBeJDAzyO9AQlLpf9A>
+    <xmx:cF8gX95wWcDJ6B6BOlGW_5GxdMI2FLjC9PI5d6aDHRmz-YYD7li-IA>
+Received: from localhost (c-73-93-247-134.hsd1.ca.comcast.net [73.93.247.134])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 6A18430600A9;
+        Tue, 28 Jul 2020 13:25:02 -0400 (EDT)
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Cc:     "Daniel Xu" <dxu@dxuuu.xyz>, <linux-btrfs@vger.kernel.org>,
+        <kernel-team@fb.com>
+Subject: Re: [PATCH v2] btrfs-progs: Add basic .editorconfig
+From:   "Daniel Xu" <dxu@dxuuu.xyz>
+To:     <dsterba@suse.cz>, "Qu Wenruo" <quwenruo.btrfs@gmx.com>
+Date:   Tue, 28 Jul 2020 10:24:31 -0700
+Message-Id: <C4IFKD9DTBS7.15BFX5LGQB0O5@maharaja>
+In-Reply-To: <20200728125732.GS3703@twin.jikos.cz>
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-I am Mr.Dennis ,i work as an accountant in a bank.I am contacting you
-independently of my investigation in my bank,i need your urgent
-assistance in transferring the sum of $11.6million dollars to your
-private bank account,the fund belongs to one of our foreign customer
-who died a longtime with his supposed next of kin since July 22,
-2003.The money has been here in our Bank lying dormant for years now
-without anybody coming for the claim of it.
+On Tue Jul 28, 2020 at 5:57 AM PDT, David Sterba wrote:
+> On Tue, Jul 28, 2020 at 08:12:40PM +0800, Qu Wenruo wrote:
+> > >>> +trim_trailing_whitespace =3D true
+> > >>
+> > >> Does this setting apply on lines that get changed or does it affect =
+the
+> > >> whole file? If it's just for the lines, then it's what we want.
+> > >>
+> > > At least from the vim plugin code, it's just for the new lines:
+> > >=20
+> > > https://github.com/editorconfig/editorconfig-vim/blob/0a3c1d8082e38a5=
+ebadcba7bb3a608d88a9ff044/plugin/editorconfig.vim#L494
+> > >=20
+> > > It just call the replace on the current line.
+> >=20
+> > My bad, %s, it replaces all existing lines...
+>
+> So this would introduce unrelated changes, but it seems that we don't
+> have much trailing whitespaces in progs codebase:
+>
+> $ git grep '\s\+$'
+> btrfs-fragments.c:
+> btrfs-fragments.c: black =3D gdImageColorAllocate(im, 0, 0, 0);
+> crypto/crc32c.c:/*
+> crypto/crc32c.c: *
+> crypto/crc32c.c: * Software Foundation; either version 2 of the License,
+> or (at your option)
+> crypto/crc32c.c: * Steps through buffer one byte at at time, calculates
+> reflected
+> crypto/crc32c.c: * Steps through buffer one byte at at time, calculates
+> reflected
+> kernel-lib/radix-tree.h: *
+> kernel-lib/radix-tree.h: *
+> kernel-lib/rbtree.c: node =3D node->rb_right;
+> kernel-lib/rbtree.c: node =3D node->rb_left;
+> kernel-lib/rbtree.h:
+>
+> filtering only the sources. So let's keep it in the config.
 
-I want the bank to release the money to you as the relative and the
-next of kin to our deceased customer,the Banking laws here does not
-allow such money to stay more than 19years,because the money will be
-recalled to the Bank treasury account as unclaimed fund.I am ready to
-share with you 40% for you and 60% will be kept for me, by indicating
-your interest i will send you the full details on how the business
-will be executed.
+Sounds good. Should I send a followup patch to delete the existing
+trailing lines?
