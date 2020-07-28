@@ -2,32 +2,33 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E84CF230985
-	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Jul 2020 14:03:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4404D2309B1
+	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Jul 2020 14:13:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728654AbgG1MD1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 28 Jul 2020 08:03:27 -0400
-Received: from mout.gmx.net ([212.227.15.18]:51759 "EHLO mout.gmx.net"
+        id S1729496AbgG1MM6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 28 Jul 2020 08:12:58 -0400
+Received: from mout.gmx.net ([212.227.15.15]:44783 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728560AbgG1MDZ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 28 Jul 2020 08:03:25 -0400
+        id S1729072AbgG1MM4 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 28 Jul 2020 08:12:56 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1595937796;
-        bh=T+7w8SArpXT7gqQiEQqqqPNVWr/Re8BcwoGQ0DwdtGY=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=L2CNclTYGPG8tbgcFhIXyBNj23eKlY0WeCL/aw2uWF4uyrXoxcp3rAkQ54d4YJ6SE
-         EgBZGD4QchIjFqEKp9lVBNjlv6jaSOmKyzGbTfqdthtwpkw8kYmDYLMkGCtKb0Jb4r
-         d4pT6m+2glSnvfqKoy/fdtxbFAb49ImcisN5qxvs=
+        s=badeba3b8450; t=1595938366;
+        bh=XbXOWjugcr+40QzGoD21V5IRyGsdVi+7b/agbYj2ZZk=;
+        h=X-UI-Sender-Class:Subject:From:To:References:Date:In-Reply-To;
+        b=M93zaKkbd+igZugRjU6TLD0VlMI0jXzzrYXfMI0eLSll8Hy1ebNwKKdrLDtmg9YKx
+         OFglNZ/CjzieYW+gxE7Xx1k6mO1Waf/P5lNyRzERaJH492zhj/Kz8YYPkUrtM6XwJ3
+         G401JGq5yKh9JwcAsjEm4CtpM5eX0SM6fj5iusUA=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MlNtP-1kUXgl1T5B-00lq4H; Tue, 28
- Jul 2020 14:03:16 +0200
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1N5mGH-1kq2yN2hMB-017HP1; Tue, 28
+ Jul 2020 14:12:46 +0200
 Subject: Re: [PATCH v2] btrfs-progs: Add basic .editorconfig
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 To:     dsterba@suse.cz, Daniel Xu <dxu@dxuuu.xyz>,
         linux-btrfs@vger.kernel.org, kernel-team@fb.com
 References: <20200728015715.142747-1-dxu@dxuuu.xyz>
  <20200728113837.GR3703@twin.jikos.cz>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+ <0ccb18f3-d4eb-9978-b4b6-157cd7c922f0@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
  8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
@@ -52,117 +53,124 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
  ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
  oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <0ccb18f3-d4eb-9978-b4b6-157cd7c922f0@gmx.com>
-Date:   Tue, 28 Jul 2020 20:03:09 +0800
+Message-ID: <0f91c4fa-e9b4-c170-78d8-0e8fe932ccd0@gmx.com>
+Date:   Tue, 28 Jul 2020 20:12:40 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20200728113837.GR3703@twin.jikos.cz>
+In-Reply-To: <0ccb18f3-d4eb-9978-b4b6-157cd7c922f0@gmx.com>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="pm8avbt6TopGAiLyZdDcIUKWffdRVecOw"
-X-Provags-ID: V03:K1:gL8kEz7Nbi/sVfoWbyFmyB9t9xHGKEV/HBPTrpq33lu4qGn6Uvk
- VK4gQG1GMqAnVjMJ6xcGljkTGAK3ncKKJJN9n0jhyp8aj96DBjDBMjsUBdIV2xQrpOrpOKT
- iEM1xMxwonhcxwwGKiQr3GGYUUH4D5E3gBlV8crlS0Rq8sVUxcWR7bNjNbCfBVbLNnTlzKk
- LmamghshlRN9ajii2o1hA==
+ boundary="NwMXmNbzlZUN2IOQ66CSBw14BdKcoAv4c"
+X-Provags-ID: V03:K1:/MpkFR0wPhYvZtOdaxqhzYPHu2d7iO4kbuTtUfqGRQtLqkGgXNo
+ fOpwFqAcVXn7REFxxNVZuvUVXBZh+oIeosTOdHJm+DMftDkd2LN8fFdpjfcXKHho+KMjyJa
+ jYl+zWu8RInWE7kW5z9dlSEdScGMNd404/GzBH57av2HmZgfQU75lU+fnLaza7xBg9DZZHM
+ aHzHpCfcPwrGGZYKDWDoA==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:QsasHnd8ZbY=:WGlKmTX5pwcX1VPSi9XfAK
- Ntzt3ZMrIdjPjQ0wvJSsVY1KjUJ46we4jjEztp4EMxDOvrNXnKJ1o6SdShFQyoypQeW5/8bIR
- hxI4axUivUeQkFl3D4AynKrUKkUZaJCcXCVSrzS3HOgp5iaiuCcmeRiX6g2Aml0sdmrHywVdZ
- /pGt6qnZ71Esef74JYf28R5nhPUgz833/26gREoqUBs25U3v4EqroW2FJ3qdAt/uvPQSAKWXG
- 39UvuM9a2ft9x+JmN9fz6owj+sQ/NInHT1x4ELyHDZzhYS5QXACiBv7NQSuCoF4N1JTWmcgF2
- INeewW1Q1El7/v+2Sl18fnYgvFg3iDEPYaNsaylVO/1gVifxO6rUKXGo0i7mhjSVYOSS0O88I
- WmGG01i25L+dWvRNXek6C8uWgwo4Aw+MTH+8Jyunw97BWw7L0qiNtFb1YyQpzkA8HY346v8pW
- ty7ZA7S9wN3PuxuCJtc3G/53Ys+KmIWWzKlVY0NS9s2ar4T6ZZivW7z5WgYhF2izXOMrShgag
- yNMO0BbdDdFZmuR/AKNIMVde7qNjyhQgYmdDqN9ji+klMyG9CAzawLULI5Pit40ipVfvPXMrF
- 8imbRRfbD+ui+LhqQXCMuCHKS7uCs3UZoYmQzNHajFZOwMjB76Nr7UAEC8gkDzH0OQFMx12df
- TDPCHy3Nl+Bk2MZ4cooGFMkqKZN6vcBEwpixZBPpHnV3bDnmhM02hmOyYKnanQDs2vWdiyKwq
- 4fA0/HOqNnB34WWQaZzUUZxCJFxhZmzlPipJvemMTC0c3nihjZ+/my8+4ynjw2Rkmj5B+WOs9
- aMpmElIBdktGQyVXMVl7+NMMqwC9Gw81dir4bFa3AzueQ72ehVBV07h2CeLt5sqVxXKoHeh8H
- +BKdQEn7sI5eqhtCANfsgnx9XOxq0DmPW0fmlt5jX5GOJUT3fYYHZ3N1cgByvlQ4Z3S5UGUvy
- QQDY2vmlBU/dP0LeysaYWgh1sDkclXG29+bUrfQTlpddJ1ZNeNQgFjWYgtnqwBRIRN63YIpBO
- pVkxJRj2qNLcPxcumQjcsNeJ3KJEtNaSw5C7Y/dNR7iKTS8WJDCu2ivcKn5gLbrgxBDwVUGw6
- VADEf25pH52kb7rq1zWmijRTQZ73E8OgjsKkaUHWPtVAem2aBvzr2XFYVP+kgN4ZAlSLBq7Oz
- PUP5/QLXh0Z38BxKe/DIg5hd7FK9YvHxVSuZYq/JMgUhEtViC05OvWgZaDeM65N8BJJhlwS44
- mUKmbSkwfvH7fvFwbVbUtpkw1GCg7XsyJrALnEw==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:4no9mDzOGyY=:zDmGOOfKz5cnFZpzrR9DcY
+ ZRWbIOvE3uWKTfc5qnXNNTp/LUuGX3xxAIVQp2pI/TaXUnbZ7HGaCZbLRdGsxOqtpJIltWD0G
+ JUWPo+gEuQtAbcBi/9egi5X+PkDZybPcFWA65h0l0nIH55GRqa4XnroJTU6VK4bnwP6XJxXvQ
+ eK2EQ/ak9CSuAjxD8tjIsVmxgAEdgD2X6hFZFzLEdLkYyZGzqgTF0DdTrbkZIy0SEvbdj+Bcu
+ 5hXOL0WNXJ8kVCoEYovkW1R2JNnM3g2OFjt+n/TwvNJnlmEMWGp02eoHsD+B+T6E5WHAhv2iu
+ hPrJoKwBxPBLDOzftrM2sm1Hny9UmYkM9duXYAf0j6JicMztEkNZgkIQ1wCPuPzYxB3rwsV9n
+ 99nbAEnDaxCzjYgI4JX8aH11FcgEFek4D3gG3akYnUuofywYy0Ww300V0XeXB4V/pzF4nHDUt
+ gEahTciOZEkgoQqMhKEQRBobYL3jLvIzo56H4HaW2v3p6ifz7W5UsRPpALJJA2QjQ2MRVMHkx
+ 4aekLFTKLCyTye7DcxuTC1b4dWdiFJGaGEiafwkaTukI7W9NmH2NaprHDSIwPuQhiikJQ5g+A
+ /857REN/r3DQL/Un4Mk2TRW7I9CcPrfSXVPuXWDCvBuhxT6e+VrU4joYpblowsslw25YXAUN1
+ OLFwWSSt9xNzpaqh1HZlTMP1JBixAbt2XWjIShay2Bq4pQIVClqGEGZPVZbfUohDr6HyN7ByV
+ xR0+9LV8B1rz2M/U1TJkqxnzhpvnDHB+ObndGuz2iWD+7PcrSyjolf0KqmqD186N98cYprDD0
+ ZF2QrXEX1FLQrIHJxZehQ/cVMZkryw6nkusCTSGojetNzDOPXvf5opHvxRIrfoVQhokJnUha4
+ r2N//PSw8pPmpH4U8HlK1WmTZeeVROiQTc2KoWm6DXn4vfwpj0je98PFBPBz+Q1V+xacBVMqp
+ m2WbHO5h2Hd9X1Hvz6ImyRipQM0VoM71Uj/1H2/BeIZiZ/O8DQHt6pvzfLFmqpCZbjFoXYYJA
+ HQbBgF1DEYRanaiCBIaR68wfqgkpfmd4WnL6kuQlrvTKxqe+NiqsFN7f4vJA8F+m5uHcg0pqV
+ UoiJ9hQjeWN3fEPoKeLWnR63FwoX7Zr3cAVGHdXiJEqV23VnE7zrMSOKlUt5m9i/83qwZstsa
+ e1kecK6WoRddnBuUynSUhTNj+ODfh8/DmWULCvXBXpDe3ynom85hCeMwizOB4XCcY1lBMCGdc
+ Do9DZ05UnoC8CeICcdgsGihspCY2lvb8T28aWAw==
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---pm8avbt6TopGAiLyZdDcIUKWffdRVecOw
-Content-Type: multipart/mixed; boundary="SEYkphycO1ka2N34yORIDgOKd6IzZhhMP"
+--NwMXmNbzlZUN2IOQ66CSBw14BdKcoAv4c
+Content-Type: multipart/mixed; boundary="x3CSmE6VnoW2r18PCUyjxtiP2mxWlimu9"
 
---SEYkphycO1ka2N34yORIDgOKd6IzZhhMP
+--x3CSmE6VnoW2r18PCUyjxtiP2mxWlimu9
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
 
 
 
-On 2020/7/28 =E4=B8=8B=E5=8D=887:38, David Sterba wrote:
-> On Mon, Jul 27, 2020 at 06:57:15PM -0700, Daniel Xu wrote:
->> Not all contributors work on projects that use linux kernel coding
->> style. This commit adds a basic editorconfig [0] to assist contributor=
-s
->> with managing configuration.
->>
->> [0]: https://editorconfig.org/
->>
->> Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
->> ---
->> Changes from V1:
->> * use tabs instead of spaces
->>
->>  .editorconfig | 10 ++++++++++
->>  .gitignore    |  1 +
->>  2 files changed, 11 insertions(+)
->>  create mode 100644 .editorconfig
->>
->> diff --git a/.editorconfig b/.editorconfig
->> new file mode 100644
->> index 00000000..7e15c503
->> --- /dev/null
->> +++ b/.editorconfig
->> @@ -0,0 +1,10 @@
->> +[*]
->> +end_of_line =3D lf
->> +insert_final_newline =3D true
->> +trim_trailing_whitespace =3D true
+On 2020/7/28 =E4=B8=8B=E5=8D=888:03, Qu Wenruo wrote:
 >=20
-> Does this setting apply on lines that get changed or does it affect the=
-
-> whole file? If it's just for the lines, then it's what we want.
 >=20
-At least from the vim plugin code, it's just for the new lines:
+> On 2020/7/28 =E4=B8=8B=E5=8D=887:38, David Sterba wrote:
+>> On Mon, Jul 27, 2020 at 06:57:15PM -0700, Daniel Xu wrote:
+>>> Not all contributors work on projects that use linux kernel coding
+>>> style. This commit adds a basic editorconfig [0] to assist contributo=
+rs
+>>> with managing configuration.
+>>>
+>>> [0]: https://editorconfig.org/
+>>>
+>>> Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
+>>> ---
+>>> Changes from V1:
+>>> * use tabs instead of spaces
+>>>
+>>>  .editorconfig | 10 ++++++++++
+>>>  .gitignore    |  1 +
+>>>  2 files changed, 11 insertions(+)
+>>>  create mode 100644 .editorconfig
+>>>
+>>> diff --git a/.editorconfig b/.editorconfig
+>>> new file mode 100644
+>>> index 00000000..7e15c503
+>>> --- /dev/null
+>>> +++ b/.editorconfig
+>>> @@ -0,0 +1,10 @@
+>>> +[*]
+>>> +end_of_line =3D lf
+>>> +insert_final_newline =3D true
+>>> +trim_trailing_whitespace =3D true
+>>
+>> Does this setting apply on lines that get changed or does it affect th=
+e
+>> whole file? If it's just for the lines, then it's what we want.
+>>
+> At least from the vim plugin code, it's just for the new lines:
+>=20
+> https://github.com/editorconfig/editorconfig-vim/blob/0a3c1d8082e38a5eb=
+adcba7bb3a608d88a9ff044/plugin/editorconfig.vim#L494
+>=20
+> It just call the replace on the current line.
 
-https://github.com/editorconfig/editorconfig-vim/blob/0a3c1d8082e38a5ebad=
-cba7bb3a608d88a9ff044/plugin/editorconfig.vim#L494
+My bad, %s, it replaces all existing lines...
 
-It just call the replace on the current line.
+>=20
+> Thanks,
+> Qu
+>=20
 
-Thanks,
-Qu
 
+--x3CSmE6VnoW2r18PCUyjxtiP2mxWlimu9--
 
---SEYkphycO1ka2N34yORIDgOKd6IzZhhMP--
-
---pm8avbt6TopGAiLyZdDcIUKWffdRVecOw
+--NwMXmNbzlZUN2IOQ66CSBw14BdKcoAv4c
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl8gE/0ACgkQwj2R86El
-/qjiiwgAgoiYC2iK6k5vdaaxaK0r6RuKmodUsmpyVVGCQKiB9IeLB1IciIir7c9c
-B/XglN2YY6P8PdLKRzt1ukYKg9nAW4Adt5DZl/uGE9gSmfdpnwxHapPL7fAd03v8
-2SNRrcpS1bNSfemtU+PqqcdE+5a8HPKacNavtHWlULOeA23Y2qePCpibKMEj7d+U
-/aGHnJr1XMX3Mf5vnMMu4wo0+5rTDOaHEDVcfJ6VmAf9SjVVL0UOcV8LfWY+IlV4
-6b+SVNprsZWWg1UftbiqSAmIE7RS3a6uVkmU1eoHvF0eS7gLPET9vetVkMj+UQne
-Po9UWrixTdiD2I3qpjmjJKIW7pbDkw==
-=TgeW
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl8gFjgACgkQwj2R86El
+/qhkjgf/eDeBQqDjHInQsYxePsnAUdiOG6aYbjPkVIaGMikNQ/Ab9t+QlEdNQpZG
+f2ji3u8HoABVTgwcsH04pohgJHcL8Wjv8Zlr3NyFVN8HpFhLbSQJouK2oB2bFoDT
+qpnbUZgqKNgbtxutS9SkVkE1p6hYJHukK7bn5xr1vOhyMHW1geiQW4E1D2M2xJOE
+Er39upenCZJIRStYGcqmZTLg/ZoQKA+KmTRy4LkZemf3r5eGMpp8DzjovfFQA//j
+ua+8XR49lsNhHJKORHQ8Il1gTgqkyzoPxcLiujBwz9Wu7kBz1kVmxs/gFQCjx+AR
+zQTzDxlNut90zD8XW2nn/neA7dJB5A==
+=zST/
 -----END PGP SIGNATURE-----
 
---pm8avbt6TopGAiLyZdDcIUKWffdRVecOw--
+--NwMXmNbzlZUN2IOQ66CSBw14BdKcoAv4c--
