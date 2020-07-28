@@ -2,72 +2,72 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46249230B9D
-	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Jul 2020 15:41:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C14E230CA2
+	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Jul 2020 16:44:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730135AbgG1Nlv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 28 Jul 2020 09:41:51 -0400
-Received: from mx2.suse.de ([195.135.220.15]:43456 "EHLO mx2.suse.de"
+        id S1730494AbgG1OoS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 28 Jul 2020 10:44:18 -0400
+Received: from mx2.suse.de ([195.135.220.15]:49308 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730069AbgG1Nlv (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 28 Jul 2020 09:41:51 -0400
+        id S1730489AbgG1OoR (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 28 Jul 2020 10:44:17 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 40EA4AEF6;
-        Tue, 28 Jul 2020 13:42:01 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 69362B165;
+        Tue, 28 Jul 2020 14:44:27 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 8493EDA701; Tue, 28 Jul 2020 15:41:21 +0200 (CEST)
-Date:   Tue, 28 Jul 2020 15:41:21 +0200
+        id 58928DA6FD; Tue, 28 Jul 2020 16:43:47 +0200 (CEST)
+Date:   Tue, 28 Jul 2020 16:43:46 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org, Luciano Chavez <chavez@us.ibm.com>
-Subject: Re: [PATCH] btrfs: inode: Fix NULL pointer dereference if inode
- doesn't need compression
-Message-ID: <20200728134121.GV3703@twin.jikos.cz>
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH][v3] btrfs: only search for left_info if there is no
+ right_info
+Message-ID: <20200728144346.GW3703@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org,
-        Luciano Chavez <chavez@us.ibm.com>
-References: <20200728083926.19518-1-wqu@suse.com>
- <20200728131920.GU3703@twin.jikos.cz>
- <c0e68f16-a55b-bf4c-47fe-289f83210847@gmx.com>
+Mail-Followup-To: dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
+        linux-btrfs@vger.kernel.org, kernel-team@fb.com
+References: <20200727142805.4896-1-josef@toxicpanda.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <c0e68f16-a55b-bf4c-47fe-289f83210847@gmx.com>
+In-Reply-To: <20200727142805.4896-1-josef@toxicpanda.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Jul 28, 2020 at 09:26:43PM +0800, Qu Wenruo wrote:
-> >> Fixes: 4d3a800ebb12 ("btrfs: merge nr_pages input and output parameter in compress_pages")
-> > 
-> > How does this patch cause the bug?
-> > 
-> Sorry, I should explain more on that.
+On Mon, Jul 27, 2020 at 10:28:05AM -0400, Josef Bacik wrote:
+> In try_to_merge_free_space we attempt to find entries to the left and
+> right of the entry we are adding to see if they can be merged.  We
+> search for an entry past our current info (saved into right_info), and
+> then if right_info exists and it has a rb_prev() we save the rb_prev()
+> into left_info.
 > 
-> In fact it takes me quite some time to find the proper culprit.
+> However there's a slight problem in the case that we have a right_info,
+> but no entry previous to that entry.  At that point we will search for
+> an entry just before the info we're attempting to insert.  This will
+> simply find right_info again, and assign it to left_info, making them
+> both the same pointer.
 > 
-> Before that commit, we have @nr_pages_ret initialized to 0 in
-> compress_file_extent().
+> Now if right_info _can_ be merged with the range we're inserting, we'll
+> add it to the info and free right_info.  However further down we'll
+> access left_info, which was right_info, and thus get a UAF.
 > 
-> If inode_need_compress() returned false in that function, we continue to
-> the same inline file extent insert,.
+> Fix this by only searching for the left entry if we don't find a right
+> entry at all.
 > 
-> But in free_pages_out: tag, we use @nr_pages_nr to free pages, which is
-> still 0, as it only get initialized to proper values after
-> btrfs_compress_pages() call, which we skipped due to
-> inode_need_compress() returned false.
+> The CVE referenced had a specially crafted file system that could
+> trigger this UAF.  However with the tree checker improvements we no
+> longer trigger the conditions for the UAF.  But the original conditions
+> still apply, hence this fix.
 > 
-> Then free_pages_out: tag will not execute the WARN_ON() and put_pages()
-> calls, just skip to kfree(pages). And kfree() can handle NULL pointers
-> without any problem.
-> 
-> Thus a completely sane looking cleanup in fact caused the NULL pointer
-> dereference regression for race cases.
+> Reference: CVE-2019-19448
+> Fixes: 963030817060 ("Btrfs: use hybrid extents+bitmap rb tree for free space")
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> ---
+> v2->v3:
+> - Updated the changelog.
 
-Thanks. It was not obvious so I was expecting a bit more convoluted way
-to hit the bug.
+Added to misc-next, thanks.
