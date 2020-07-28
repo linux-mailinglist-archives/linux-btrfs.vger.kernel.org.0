@@ -2,31 +2,34 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65C4B22FF1D
-	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Jul 2020 03:50:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96F3422FF25
+	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Jul 2020 03:52:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726272AbgG1Buc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 27 Jul 2020 21:50:32 -0400
-Received: from mout.gmx.net ([212.227.17.22]:33299 "EHLO mout.gmx.net"
+        id S1726278AbgG1Bws (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 27 Jul 2020 21:52:48 -0400
+Received: from mout.gmx.net ([212.227.17.21]:37025 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726196AbgG1Bub (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 27 Jul 2020 21:50:31 -0400
+        id S1726196AbgG1Bws (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 27 Jul 2020 21:52:48 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1595901023;
-        bh=eo1w9ER5Ny0bYPRWKMRdY1SdpqvSKHwZdIq1efPB8Ew=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=NPVF4hUSN0YoSddoSM+qpav0fnRO95wHSRTdWMsK+ywsE7DWXtemayryaYu2o1oXv
-         f0XtHo13qRlm//4xkKHdqlPleFY04S9Z5AB831V8Xe4bRWaCAJ/WeAwuYH8Tkh/qR4
-         sTL2frp/K/393B6iwhXNd83a4jwDG6q0ZWxLagsI=
+        s=badeba3b8450; t=1595901163;
+        bh=e0NuanHlXutXdsiphl/onL0S1JFOhVTKpBQqmkDSO2A=;
+        h=X-UI-Sender-Class:Subject:From:To:References:Date:In-Reply-To;
+        b=DohfZ4sWASzqhBVd6cy1V9h+vw/N1/7j5RVnWC84XnQv9pYNN6O1vXRkkq2yU7y4y
+         riBA1Cg3Wvqa4GmPTY/t1QmrbsTxf8wZUu215pR0Wvi8IgI0Y8d1HZYx1Bl9QAs1vC
+         rQ23VbBv8cwZR3tU8s4GhauX3pjK+NRQu1/bL2LI=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1N5VHG-1ksg3o2lcQ-016v7G; Tue, 28
- Jul 2020 03:50:23 +0200
-Subject: Re: [PATCH] btrfs-progs: Add basic .editorconfig
-To:     Daniel Xu <dxu@dxuuu.xyz>, linux-btrfs@vger.kernel.org
-Cc:     kernel-team@fb.com
-References: <20200728012409.130252-1-dxu@dxuuu.xyz>
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1N5mKJ-1ksP2X1i1L-017HAB; Tue, 28
+ Jul 2020 03:52:43 +0200
+Subject: Re: Debugging abysmal write performance with 100% cpu
+ kworker/u16:X+flush-btrfs-2
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+To:     Hans van Kranenburg <hans@knorrie.org>, linux-btrfs@vger.kernel.org
+References: <2523ce77-31a3-ecec-f36d-8d74132eae02@knorrie.org>
+ <f3cba5f0-8cc4-a521-3bba-2c02ff6c93a2@gmx.com>
+ <ae50b6a5-0f1e-282e-61d0-4ff37372a3ca@knorrie.org>
+ <b4d0c916-71d5-753a-1c10-cd28f1c3ebec@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
  8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
@@ -51,140 +54,263 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  oCEEynby72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAk
  ZkA523JGap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gG
  UO/iD/T5oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <85567980-5c9f-99a9-80e3-89e6418ed86f@gmx.com>
-Date:   Tue, 28 Jul 2020 09:50:19 +0800
+Message-ID: <5155a008-d534-18d3-5416-1c879031b45d@gmx.com>
+Date:   Tue, 28 Jul 2020 09:52:39 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20200728012409.130252-1-dxu@dxuuu.xyz>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="SlXh3KfiEcxUgM9ZbiFssnHzaoooL3IpE"
-X-Provags-ID: V03:K1:yXAWU3dJ3Dr0yNY6AoReTBGaxqw7AIjs1V4rleI6sduHc+QIp/1
- qpIUw2buE6vNT94SFpppvpFeYqHUbQkUPNNKc0oq5rFMdAZb63IYWEKCOekKADNNL3nDZcM
- F4o5dR33Y6hkabcKXtfxB+t84evb4y/boVHFLHYhL90Nl5WMwzULC+HLnyNlLqW3pwPab8i
- 7u87jTfTCTNrEIDqVwreQ==
+In-Reply-To: <b4d0c916-71d5-753a-1c10-cd28f1c3ebec@gmx.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:6U6DYkl2PQJt1Zt1TjiVWaWHQaxAzI+IA6UdT8IleUFNiWHaXi6
+ MkbxPEub0uS5EI2Omr92opA4cgFJeXThwc/cRrsOIe+hh3a6orug8Y0HAckT+EZYg3wkUOr
+ GV0NC2scXxjfer61LMsTru2FFVS2vDxrmBcvJ88st1+I0393dDS8XYDorGgi//wr31r4zwQ
+ HMwC0iqBD6RmYtpuKjN3A==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:I9hKN8u+cz8=:qexYvwScSraHVEkpMmmMAu
- dtzjE9l5sBNx786+rE4vhXgpAeNvrQ8PlgLkf6OU9TdVs9h4c4GVqnf79BeDvj9pdQF6UTzsz
- 7woPhq/TvxOCIvekPAzZHkEF1nnpJrWxKeiuMQrSTKWs4lSnyFAKQLpK8IVYRlddC/uWkcyBj
- 5RBg1lB7C9INLfq2NnGDEWoJvkE1AM13wx3xYzmIqIzaT+2yPaoEUZWt6ty60zuzwB+TYGkTc
- Bqq7sRGea2Mxycg1txPSd0DUZjNVfQfGD566AyDrlhoitfky6LRppDT5eH1OlbbPYGcF84qq2
- kvvGToVeq/MmOE9NQBdVcrxXCNxkhpDSQo8Z94q1OJHsvYJHjdWA7pEC9OCLW1rnih/NsojfP
- Uav8PqhZy5SG9gqcx3NvEVZNhm7swMmJ8VCGOaT57w9RyDcj56pY1uuNXnZj+9xLvHJEhHBeI
- 1PFPqqzEZ6ip9E407/fKtz+4/yvX9S+HoDTDQhOFGvtdy9CY3ZzDwX4iTm/o2Uty1rRlyniTX
- 4FlfHCu6iZI5bYnq5Yb7Y4Gbm03WWiIHzoKyQofrmB0XBkr9MFcp6zc7VSkxvyN0D60UDrcD/
- mo3cVp4wXgcyHFMlPRtMx/tHlf697D+bDJ6BwTSGXyTTrf0a8KRXSIitnTSxT4QGc5mOCMZix
- TCPwr0IiF/94vJ+HXVxv5+2fFXmbjd4jHU1MraQ9N4b+00w0HmzkprboHWanvk4n6mI3aWj9+
- 9fjiwPgVcBYwnBftRcV+e1ZjMEP65Q7vzivwtsqQ/gOEfpD0LauuPjHttxqnlhUurtOzMgbud
- MvkhJg6dfFW1sR1xPnooSuYijb39Mf75QRu9R11CruJzdAJu3JRhABzcfupco7ns5EgYgU2S1
- jcmKYACYZRp3IqhEucY/F2o+vET2Je0UJDH0mfdEqhzuubUJiMbqVbn/tYRmBpTZYQnt1cU2l
- TOq5UWB3n1C5Xol3Kkg+Npknt/xXbI36mbJS5FwBo7AebfIcknFmuWmhw9lIVBv0yHgvYpqfh
- 7l1ua/3HviIMPlwvSBtlqYsIpPzM/exRWM6PksIYaMlOZXpLoNk0PSFmh145WkiqVp+ROW0Ll
- +gwjM0ZljDTaJaz6I+Q7/i0ZFAu1qrHx9mnA3AUWz7tcYN+0gzfCyhceuHwsjBeGIDq7lAVUv
- WD5X+pL5p8zj9gVCrfUYI8yer3DnnepPW4uinPH/OWBA7NEO0/EZbIXXG4CccPsQ85Sr4uvWe
- zIkF91pPVfSRgsVxin1QTb9qQPxcotz2sQqjZiw==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:nvBuEp9QG8w=:3xBLDs7sYjKDmiW33TyOSh
+ 4jld9Tvv1r2BD/6EMQXDMzSBnfmDl0roi4pWkfVsb035Y5hfV2vU0rxxU9GK4t/nP9Rrh88rY
+ 6P/jv/5ufXHE0F+jD9BkA5/H9OpbY4GDaP1sdzWGvEhAakbvY51A1M3G0mQncKn0xlTUqhXm9
+ WZv4M50NaDdCXsQYS83G4B65dFocngGzVtaWpLXAOOnZUFKfVVABqF27+py1+xfgEtvV9fLSk
+ FzrFidEkvziGt6/XyivA8+XLnethNRD8CdehPo/cDwEQwFMleY8M+3sXAHHlTJqZWVJsXvbWz
+ Sdwa8lHjyoV70tHDGwTKly/MfSivdo4k7VlTZV2Wa3cWy5r0rfmO0OweS0JQGS5QTIKyMkE3e
+ xQa1AQPJYMlUr49o/57C/cbXCAoKsUSszWGKF4Irp0YgKBI/Ch/W7hMmben/Tq9gQj7hRuCh5
+ HEcN3795hRFmdCaHooVMIXJMRSwh3eydTcJFlgrD9Atmi6vPaT4T/C7YZ2GmQI4MdrjPjOEiI
+ Xaq2wxw/emB2ztAo99h/yORgRglCIQoqcOQaGUfpcX82IiXOkSguKwBOLq0rlOMhMAzeJuZbS
+ DYZHVkiBRiwvf9dYIYYOH2Rgu0cEZPGaHB2W2nZdEBa7x5PPDwrookEkdwoydq79mANvWxggG
+ CLS8m8YsW4RwKRtihINr9bWf7TlZVmeKZnmR04/dMD2mwzgrcGRWm5ePRSiu0C3Y2fvwyS9aC
+ i/wHSH1zw4vuZjnnLbjYmt22iUuxg9QJRWJUk1kRKyVLuHm2vdEsF9xFLS99ATxzUgaXHu3he
+ YzyBFsMr7Nwe7vFNs9/l6PK5gjWwUw7s4lsSvpWKO+GGSzIrrWoK/XJ0v5umiOuMxYN+EyIwn
+ OH5abZGodIcUDznSDJ274D58TsvCVybqoXRzOmPd3PBXhVT7bOULsUXUwoxKpWfXxjbcJ7VRn
+ v7Pek0Wb2jDuCMudmQ9OZ5L7rgTnwQb3UIx5TVIgVWeYPFdvz8D6dgXeV4jHxOqVix0SbWYFJ
+ jbbJYv94HF/FGpWuvxU4ojW0FxQ0zJuhGpE8fgcVOCxbGeFBlO6IGDbhUGK+Ph9RVXgWZD+tF
+ dhBBqGPDughvDJbVxai4tpUSX55EB6yKg2tQX/tstURpWkLS1UUCsLEiMfE3PAJ/SfmbHvnOg
+ nTkDTG7mSIXTx3XBFnPkK8t7r/g09JaFSDPwnwTX59JjM0IPtQ/IOc6VNvqEbcw9y9RjJGBvH
+ gmCc6fZ/Ci16Fg/eEr0ktx3gho/Tpm9D5XDBapw==
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---SlXh3KfiEcxUgM9ZbiFssnHzaoooL3IpE
-Content-Type: multipart/mixed; boundary="xbBS3hj1fUNPEDA7qbJpeQRWYWE0tyfk5"
-
---xbBS3hj1fUNPEDA7qbJpeQRWYWE0tyfk5
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
 
 
+On 2020/7/28 =E4=B8=8A=E5=8D=888:51, Qu Wenruo wrote:
+>
+>
+> On 2020/7/28 =E4=B8=8A=E5=8D=881:17, Hans van Kranenburg wrote:
+>> Hi!
+>>
+>> On 7/27/20 1:09 PM, Qu Wenruo wrote:
+>>>
+>>>
+>>> On 2020/7/25 =E4=B8=8B=E5=8D=8810:24, Hans van Kranenburg wrote:
+>>>> Hi,
+>>>>
+>>>> I have a filesystem here that I'm filling up with data from elsewhere=
+.
+>>>> Most of it is done by rsync, and part by send/receive. So, receiving
+>>>> data over the network, and then writing the files to disk. There can =
+be
+>>>> a dozen of these processes running in parallel.
+>>>>
+>>>> Now, when doing so, the kworker/u16:X+flush-btrfs-2 process (with
+>>>> varying X) often is using nearly 100% cpu, while enormously slowing d=
+own
+>>>> disk writes. This shows as disk IO wait for the rsync and btrfs recei=
+ve
+>>>> processes.
+>>>
+>>> The name is in fact pretty strange.
+>>> It doesn't follow the btrfs workqueue names.
+>>>
+>>> There are two type of kernel threads used by btrfs:
+>>>   [...]
+>>>
+>>> As you can see, there is no one named like "flush-btrfs".
+>>
+>> Well, I do have a kernel thread named kworker/u16:7-flush-btrfs-2 here,
+>> currently. ;]
+>>
+>>> Thus I guess it's from other part of the stack.
+>>>
+>>> Also, the calltrace also shows that, that kernel thread is only doing
+>>> page writeback, which calls back to the page write hooks of btrfs.
+>>>
+>>> So I guess it may not be btrfs, but something else trying to do all th=
+e
+>>> writeback.
+>>
+>> Yes, so, from the writeback path it re-enters btrfs code, right?
+>
+> Yep. Btrfs is still responsible for the problem.
+>
+>>
+>>> But still, the CPU usage is still a problem, it shouldn't cost so much
+>>> CPU time just writing back pages from btrfs.
+>>
+>> It's find_free_extent which is the culprit.
+>>
+>>>> [...]
+>>>>
+>>>> It's clearly kworker/u16:X+flush-btrfs-2 which is the bottleneck here=
+.
+>>>>
+>>>> I just did a 'perf record -g -a sleep 60' while disk writes were down=
+ to
+>>>> under 1MiB (!) per second and then 'perf report'. Attached some 'scre=
+en
+>>>> shot' of it. Also attached an example of what nmon shows to give an i=
+dea
+>>>> about the situation.
+>>>>
+>>>> If the kworker/u16:X+flush-btrfs-2 cpu usage decreases, I immediately
+>>>> see network and disk write speed ramping up, easily over 200 MiB/s,
+>>>> until it soon plummets again.
+>>>>
+>>>> I see the same behavior with a recent 4.19 kernel and with 5.7.6 (whi=
+ch
+>>>> is booted now).
+>>>>
+>>>> So, what I'm looking for is:
+>>>> * Does anyone else see this happen when doing a lot of concurrent wri=
+tes?
+>>>> * What does this flush thing do?
+>>>> * Why is it using 100% cpu all the time?
+>>>> * How can I debug this more?
+>>>
+>>> bcc based runtime probes I guess?
+>>>
+>>> Since it's almost a dead CPU burner loop, regular sleep based lockup
+>>> detector won't help much.
+>>
+>> Here's a flame graph of 180 seconds, taken from the kernel thread pid:
+>>
+>> https://syrinx.knorrie.org/~knorrie/btrfs/keep/2020-07-27-perf-kworker-=
+flush-btrfs.svg
+>
+> That's really awesome!
+>
+>>
+>>> You can try trace events first to see which trace event get executed t=
+he
+>>> most frequently, then try to add probe points to pin down the real cau=
+se.
+>>
+>> From the default collection, I already got the following, a few days
+>> ago, by enabling find_free_extent and btrfs_cow_block:
+>>
+>> https://syrinx.knorrie.org/~knorrie/btrfs/keep/2020-07-25-find_free_ext=
+ent.txt
 
-On 2020/7/28 =E4=B8=8A=E5=8D=889:24, Daniel Xu wrote:
-> Not all contributors work on projects that use linux kernel coding
-> style. This commit adds a basic editorconfig [0] to assist contributors=
+This output is in fact pretty confusing, and maybe give you a false view
+on the callers of find_free_extent().
 
-> with managing configuration.
->=20
-> [0]: https://editorconfig.org/
+It always shows "EXTENT_TREE" as the owner, but that's due to a bad
+decision on the trace event.
 
-I like the idea of the generic style file.
-It's just one single file for all editors.
+I have submitted a patch addressing it, and added you to the CC.
 
-Although most btrfs developers I know use vim, and it's not supported
-natively, it shouldn't be a big problem, a plugin would handle it
-without problem.
-
->=20
-> Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
-
-Reviewed-by: Qu Wenruo <wqu@suse.com>
-
-But a small nitpick inlined below.
-
-> ---
->  .editorconfig | 10 ++++++++++
->  .gitignore    |  1 +
->  2 files changed, 11 insertions(+)
->  create mode 100644 .editorconfig
->=20
-> diff --git a/.editorconfig b/.editorconfig
-> new file mode 100644
-> index 00000000..2829cfbe
-> --- /dev/null
-> +++ b/.editorconfig
-> @@ -0,0 +1,10 @@
-> +[*]
-> +end_of_line =3D lf
-> +insert_final_newline =3D true
-> +trim_trailing_whitespace =3D true
-> +charset =3D utf-8
-> +indent_style =3D space
-> +indent_size =3D 8
-> +
-> +[*.py]
-> +indent_size =3D 4
-> diff --git a/.gitignore b/.gitignore
-> index aadf9ae7..1c70ec94 100644
-> --- a/.gitignore
-> +++ b/.gitignore
-> @@ -65,6 +65,7 @@
->  /cscope.in.out
->  /cscope.po.out
->  .*
-> +!.editorconfig
-
-You can force add that file and git should handle it without problem,
-and later modification would also be traced by git.
+Would you mind to re-capture the events with that patch?
+So that we could have a clearer idea on which tree is having the most
+amount of concurrency?
 
 Thanks,
 Qu
 
->=20
->  /Documentation/Makefile
->  /Documentation/*.html
-> --
-> 2.27.0
->=20
-
-
---xbBS3hj1fUNPEDA7qbJpeQRWYWE0tyfk5--
-
---SlXh3KfiEcxUgM9ZbiFssnHzaoooL3IpE
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl8fhFsACgkQwj2R86El
-/qiMkQf/UC2mxV7PNqXbx8l48KYW8Q7WBO0qRFOoO/xPrUZ2vTMYxy5EmSyIfoaf
-9vXn7l9kXouty0WnxdbhKk5iyfAdmkjsi3jyMXtcwH9M1CPR89pEWejAVYmkSBXz
-sj9Y+O88SGsiaclvjd0pTt41hiAHltybUCfpZxezXx4zqmlb4+zYhZ1zVCPt3zok
-DRaPXSeUnDZ3ox0DTum9yOMHlq/7/Um4o4hm3Fna3JxkhLrq92LZJBPUWkxZZjDu
-Ku7LoQ37kH+zsWGVVeiLgRxfs4qO0N6B7mtGC2SlpJbv8dywcKfoMATTwkSsGPxj
-MVjjSNUass3SzMPk62zAOfhm/Gjb1w==
-=TrgI
------END PGP SIGNATURE-----
-
---SlXh3KfiEcxUgM9ZbiFssnHzaoooL3IpE--
+>>
+>> From the timestamps you can see how long this takes. It's not much that
+>> gets done per second.
+>>
+>> The spin lock part must be spin_lock(&space_info->lock) because that's
+>> the only one in find_free_extent.
+>>
+>> So, what I think is that, like I mentioned on saturday already,
+>> find_free_extent is probably doing things in a really inefficient way,
+>> scanning around for a small single free space gap all the time in a
+>> really expensive way, and doing that over again for each tiny metadata
+>> block or file that needs to be placed somewhere (also notice the
+>> empty_size=3D0), instead of just throwing all of it on disk after each
+>> other, when it's otherwise slowing down everyone.
+>
+> I think you're mostly right, find_free_extent() is not that efficient.
+>
+> But that only happens when there are a lot of parallel requests for it.
+>
+> One example is btrfs_get_block_group().
+> That function is only calling one function, refcount_inc(), which
+> normally shouldn't be that slow, unless there are tons of other callers
+> here.
+>
+>>
+>> And then we have the spin lock part and btrfs_get_block_group, which ar=
+e
+>> also a significant part of the time spent. All together is the
+>> continuous 100% cpu.
+>
+> So is the spinlock part. That spinlock itself should be pretty fast
+> (that's why we use spinlock), but when it's not, it's mostly caused by
+> high concurrency.
+>
+>>
+>> What I *can* try is switch to the ssd_spread option, to force it to do
+>> much more yolo allocation, but I'm afraid this will result in a sudden
+>> blast of metadata block groups getting allocated. Or, maybe try it for =
+a
+>> minute or so and compare the trace pipe output...
+>
+> Another thing can't be explained is, that slow down you're experiencing
+> is from data write back.
+> It should never conflicts with metadata space reservation, as data and
+> metadata are separated by space_info first, thus they shouldn't affect
+> each other.
+> Either I'm missing something, or there are other problems.
+>
+>>
+>>> But personally speaking, it's better to shrink the workload, to find a
+>>> minimal workload to reproduce the 100% CPU burn, so that you need less
+>>> probes/time to pindown the problem.
+>>
+>> I think I can reproduce it with a single btrfs receive operation, as
+>> long as it has a large amount of small files in it.
+>
+> IMHO, if the culprit is really find_free_extent() itself, then single
+> receive won't reach the concurrency we need to expose the slowdown.
+>
+> Since receive is just doing serial writes, that shouldn't cause enough
+> race for find_free_extents().
+>
+> But that's worthy trying to see if it proofs my assumption of concurrenc=
+y.
+>
+> Thanks,
+> Qu
+>
+>>
+>> Currently I'm almost only copying data onto the filesystem, only data
+>> removals are some targeted dedupe script for known big files that are
+>> identical, but which could not easily be handled by rsync.
+>>
+>> So, when find_free_extent wants to write extent tree blocks, it might b=
+e
+>> playing outside in the woods all the time, searching around for little
+>> holes that were caused by previous cow operations.
+>>
+>> Large files are not a problem, like postgresql database dumps. Copying
+>> them over just runs >200-300M/s without problem, where the read speed o=
+f
+>> the old storage I'm moving things off is the bottleneck, actually.
+>>
+>>>> * Ultimately, of course... how can we improve this?
+>>>>
+>>>> [...]
+>>
+>> I will see if I can experiment a bit with putting more trace points in.
+>>
+>> I remember reading around in the extent allocator code, until I got
+>> dizzy from it. Deja vu...
+>>
+>> https://www.spinics.net/lists/linux-btrfs/msg70624.html
+>>
+>> Thanks
+>> Hans
+>>
