@@ -2,94 +2,119 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ECED22FF5B
-	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Jul 2020 04:12:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7896522FF8C
+	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Jul 2020 04:24:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726340AbgG1CMj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 27 Jul 2020 22:12:39 -0400
-Received: from out3-smtp.messagingengine.com ([66.111.4.27]:38981 "EHLO
-        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726263AbgG1CMi (ORCPT
+        id S1726801AbgG1CYL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 27 Jul 2020 22:24:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36490 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726269AbgG1CYK (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 27 Jul 2020 22:12:38 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.nyi.internal (Postfix) with ESMTP id ECC375C010A;
-        Mon, 27 Jul 2020 22:12:37 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Mon, 27 Jul 2020 22:12:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=
-        from:to:cc:subject:date:message-id:mime-version
-        :content-transfer-encoding; s=fm1; bh=aUT9Y6biGb5ejRtXCEHlJ3ZV4p
-        wZdisa7/Z3AnVtPsE=; b=FvVzuPKK2cPSJZ8j27PbfAQBGsVjX+cAgfHJPoCXpo
-        2ftdqxljlADVCQna3hCCxA2vzGuA4N7qDrZaInAMW0D+8L70vSwcINrXWKvELh0x
-        rXd1lvpySdGJyYJwSRvwdDmKbalEBw8K11HZXezRBQm2jXOjuatLa8DD6Vf9Zrzk
-        QCWpyk+mYmrzPTHfloT94abmKWXaVKQycmzAoGKAb/GYJBGT32n+KWtJclL0niiQ
-        o/AiP28Q5/g0+TSPXdUp6Lfb3mhgVpaCCZZk5wQafk0qwPyu76USye0gU6e3JNkt
-        gv6PxbNkJKn2i1qWbiy9k0ZPh3/NCqkZZz+LHGTrfUPA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=aUT9Y6biGb5ejRtXC
-        EHlJ3ZV4pwZdisa7/Z3AnVtPsE=; b=uwPHS0n7cjUgu7HqHARYjWpXUUMFidrj+
-        7vA8vXegdd7hHJf0bGEqs/KXWUm2c/n03xuFWwrE66MxjcTu8uEK7JP1JihT6RAZ
-        SMwGuJ/G2kIbihhxvEWtuQlu/ifWg+sFlLc+AmNjwvkgnagpqs5VPC7rvo4iddlP
-        9gyODG+Ib24hw0tKGyzRWK9RWS7uN1eBJf3Y5tcXG5PAX2d9DdydMuNZ+e82NAxa
-        eEHYFjYHdQmY2BXvuhXUn7cN7OsITd7RD2n9iQIdyS/4dP6NJNDKH38ZSkdlHOsf
-        Pe200HfUD4pu5qOirxcrkSoPuH0zZFmY+o5dG7VXWSUFo6E/flmvw==
-X-ME-Sender: <xms:lIkfXwR5zv5Hj0I_pshFHp9Gpy1vhCVmWWVqxfcnjAbQqcesx1s7cQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedriedugdehhecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecufghrlhcuvffnffculdejtddmnecujfgurhephffvuf
-    ffkffoggfgsedtkeertdertddtnecuhfhrohhmpeffrghnihgvlhcuighuuceougiguhes
-    ugiguhhuuhdrgiihiieqnecuggftrfgrthhtvghrnhepieffgfelvdffiedtleejvdetfe
-    efiedvfeehieevveejudeiiefgteeiveeiffffnecukfhppeejfedrleefrddvgeejrddu
-    feegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepug
-    iguhesugiguhhuuhdrgiihii
-X-ME-Proxy: <xmx:lIkfX9w6SU4YnlvWr7NTssq0uaK7GB8Sbnu3-8HkDvRWDk-jnkL1IQ>
-    <xmx:lIkfX90PQCLxb-r9GFj4VA0km3kKKe2b7Sx3oH_Uyq-OVeetFmzR0w>
-    <xmx:lIkfX0C7Jq4_4swKe1lgr2-zVGHLIM2Xja4S6H-DxoG0yMbFmOUcTA>
-    <xmx:lYkfXzdtjyjb6yuLe14e9G5pHpgMIGyrqTyLrvRwQbIqNiUaPGz5_g>
-Received: from localhost.localdomain (c-73-93-247-134.hsd1.ca.comcast.net [73.93.247.134])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 4D6DA328005A;
-        Mon, 27 Jul 2020 22:12:36 -0400 (EDT)
-From:   Daniel Xu <dxu@dxuuu.xyz>
-To:     linux-btrfs@vger.kernel.org
-Cc:     Daniel Xu <dxu@dxuuu.xyz>, kernel-team@fb.com
-Subject: [PATCH] btrfs-progs: --init-extent-tree if extent tree is unreadable
-Date:   Mon, 27 Jul 2020 19:12:24 -0700
-Message-Id: <20200728021224.148671-1-dxu@dxuuu.xyz>
-X-Mailer: git-send-email 2.27.0
+        Mon, 27 Jul 2020 22:24:10 -0400
+Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5985BC061794
+        for <linux-btrfs@vger.kernel.org>; Mon, 27 Jul 2020 19:24:10 -0700 (PDT)
+Received: by mail-il1-x142.google.com with SMTP id t18so14934430ilh.2
+        for <linux-btrfs@vger.kernel.org>; Mon, 27 Jul 2020 19:24:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=EFdgxwo/1dEiSfQPf0Bi/mEzNKYud8RYHPe7hzqYsO8=;
+        b=pE6AXsmbIH2uyI0Mxdv5tdejaE3nM5j3ryH+Gri74+q/HU4Ypg4PNo8vzgtOlNrzYd
+         aAsQMVXcw8nzyMSia3Saivft54mj5qeX4oKG5kPhfwAfk945FuXrTFX2uKg6MJXmQ660
+         3TouVRvoPYoN9l0/n3peHUwT8b90DbQXqaPJgeNrnvSXK+NfWq9a5xvBoMeVTSCcROhc
+         5Qp3hQFIxik3oVoyho3vWHRR8L/IyH0oedCg5Ih36e7R75lm6YI0+wnex6KaDU3iIVfW
+         278sLoxQwY0CqVLyBR/HniyR62vLw4e0g8sLAoF5sU2UAUwjDOgKsOV4DnMp4F5xnrDn
+         I80A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=EFdgxwo/1dEiSfQPf0Bi/mEzNKYud8RYHPe7hzqYsO8=;
+        b=XgiecaVKjiGQg+wqUsREBUBrotIOsW5ZL5mdsWJd6SS3gz4FViEYBoyqjRRaNcO/yh
+         S+IqDjBORqmSZMn6JdXX+mjqL/8HxRHf2l3N4mknLKuy81mIZ++PWwC3C8J/TeonnyUW
+         5+BZB9TaZI0uBlBqvtfoSzftcyici2OiUR7a+cHMmXVhv+iVsKYKner3SNs9vvqVCO8O
+         0e7rrN4syzStzEf+ps2A8wfnwK5o6WUE//gDrG1FZhcLNROZNZu18iN6DyLTsGRN9RtS
+         TvtdszmHejGI4F4HQtbC4drBdrKo4fQ/xSuNsj4j1nbRdfgVYZ9hk1sBd3qKPfVOUZId
+         qvkQ==
+X-Gm-Message-State: AOAM531SPyr+N6+7k4VWIbP2R/JSc3cbn2RAHRO2Vu8cMD2VDa0mfLVm
+        0y7Un3c9RbeXk9BZKRWIGv0M2xDqhzJMep6fE0g2LTjf
+X-Google-Smtp-Source: ABdhPJxHISzvc15DbtKqvLv8jTWwzWcUsyAykORc/n7ws+0LANgDfR+r545OmH6mpp1N2BbS28Axhq0CnqgbDlso9KI=
+X-Received: by 2002:a92:5a92:: with SMTP id b18mr21954203ilg.9.1595903049623;
+ Mon, 27 Jul 2020 19:24:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200728015715.142747-1-dxu@dxuuu.xyz>
+In-Reply-To: <20200728015715.142747-1-dxu@dxuuu.xyz>
+From:   Neal Gompa <ngompa13@gmail.com>
+Date:   Mon, 27 Jul 2020 22:23:33 -0400
+Message-ID: <CAEg-Je8AAYNShdKH1H46nQ-T69O3YyUn9vJUTTFmV1BQmEJM2w@mail.gmail.com>
+Subject: Re: [PATCH v2] btrfs-progs: Add basic .editorconfig
+To:     Daniel Xu <dxu@dxuuu.xyz>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>, kernel-team@fb.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This change can save the user an extra step of running `btrfs check
---init-extent-tree ...` if the user was already trying to repair the
-filesystem.
+On Mon, Jul 27, 2020 at 9:58 PM Daniel Xu <dxu@dxuuu.xyz> wrote:
+>
+> Not all contributors work on projects that use linux kernel coding
+> style. This commit adds a basic editorconfig [0] to assist contributors
+> with managing configuration.
+>
+> [0]: https://editorconfig.org/
+>
+> Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
+> ---
+> Changes from V1:
+> * use tabs instead of spaces
+>
+>  .editorconfig | 10 ++++++++++
+>  .gitignore    |  1 +
+>  2 files changed, 11 insertions(+)
+>  create mode 100644 .editorconfig
+>
+> diff --git a/.editorconfig b/.editorconfig
+> new file mode 100644
+> index 00000000..7e15c503
+> --- /dev/null
+> +++ b/.editorconfig
+> @@ -0,0 +1,10 @@
+> +[*]
+> +end_of_line =3D lf
+> +insert_final_newline =3D true
+> +trim_trailing_whitespace =3D true
+> +charset =3D utf-8
+> +indent_style =3D tab
+> +indent_size =3D 8
+> +
+> +[*.py]
+> +indent_size =3D 4
+> diff --git a/.gitignore b/.gitignore
+> index aadf9ae7..1c70ec94 100644
+> --- a/.gitignore
+> +++ b/.gitignore
+> @@ -65,6 +65,7 @@
+>  /cscope.in.out
+>  /cscope.po.out
+>  .*
+> +!.editorconfig
+>
+>  /Documentation/Makefile
+>  /Documentation/*.html
+> --
+> 2.27.0
+>
 
-Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
----
- check/main.c | 4 ++++
- 1 file changed, 4 insertions(+)
+LGTM.
 
-diff --git a/check/main.c b/check/main.c
-index f93bd7d4..4da17253 100644
---- a/check/main.c
-+++ b/check/main.c
-@@ -10243,6 +10243,10 @@ static int cmd_check(const struct cmd_struct *cmd, int argc, char **argv)
- 		goto close_out;
- 	}
- 
-+        /* Fallback to --init-extent-tree if extent tree is unreadable */
-+        if (!extent_buffer_uptodate(info->extent_root->node) && repair)
-+		init_extent_tree = true;
-+
- 	if (init_extent_tree || init_csum_tree) {
- 		struct btrfs_trans_handle *trans;
- 
--- 
-2.27.0
+Reviewed-by: Neal Gompa <ngompa13@gmail.com>
 
+
+--=20
+=E7=9C=9F=E5=AE=9F=E3=81=AF=E3=81=84=E3=81=A4=E3=82=82=E4=B8=80=E3=81=A4=EF=
+=BC=81/ Always, there's only one truth!
