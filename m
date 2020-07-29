@@ -2,94 +2,103 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CAF6231FC1
-	for <lists+linux-btrfs@lfdr.de>; Wed, 29 Jul 2020 16:01:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B527E2321BE
+	for <lists+linux-btrfs@lfdr.de>; Wed, 29 Jul 2020 17:42:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726832AbgG2OBg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 29 Jul 2020 10:01:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55320 "EHLO
+        id S1726476AbgG2PmY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 29 Jul 2020 11:42:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726353AbgG2OBf (ORCPT
+        with ESMTP id S1726385AbgG2PmX (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 29 Jul 2020 10:01:35 -0400
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65029C061794
-        for <linux-btrfs@vger.kernel.org>; Wed, 29 Jul 2020 07:01:35 -0700 (PDT)
-Received: by mail-qk1-x742.google.com with SMTP id d14so22214046qke.13
-        for <linux-btrfs@vger.kernel.org>; Wed, 29 Jul 2020 07:01:35 -0700 (PDT)
+        Wed, 29 Jul 2020 11:42:23 -0400
+Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80BA4C061794
+        for <linux-btrfs@vger.kernel.org>; Wed, 29 Jul 2020 08:42:23 -0700 (PDT)
+Received: by mail-io1-xd2a.google.com with SMTP id k23so24952652iom.10
+        for <linux-btrfs@vger.kernel.org>; Wed, 29 Jul 2020 08:42:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=NWcwgv77k2gFBpOtme/OnNMUvTvI8oG+LwLSikUeOts=;
-        b=2RgkRiWu7f6+KgNnjK3UMPpuxdEQTdfBMm5HH72ndwaO3M3JFItfJx3QKe3JZJiJXT
-         ojouDAsiGb97fejmrVNQobFpYjRjWr2Zh2Qdl3WDNAVpnmCzhE1FyKmFvDOjjwEfUhaV
-         qyWeHVN2kkL6v2EZWwFpP166kK0ALrhabIp5xEi18EJSct9ALlWp229g5H0d/pE2p7Hc
-         wCTh0qxNIi6+aUbO/k1qCNZfeYS6SyQnUJp1wgLDj9EzwhSxAyJQN24G5CWmmbvjr3jy
-         7N+ezExJBVLG3gLPq5CI+/+vsi4NCf9XQ3jKmbWTH6JIL7qgFwZQrEqChuYes5q9GgVf
-         nnVw==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=GHvdgebLyXeg+KLuP5DHDSyuglRC0frGOwM/QPxOQIU=;
+        b=eTSTSfq3Zx+cXKiu0qeEAUk3rW8BLNaAvYdBvfGNpDHJK0daSyjql2pa866r8AOG0a
+         +EYhAgPpC6+ODSVhx5XsPyCiylt06yc8PKmUlNgDJd6i9IJngAGyF7Vj4wuO8fgJab07
+         dCl7FANliuAJMeEjBkfqmqjWTpAVg7ciHrPywdcOP4P4pRMxw6nq9sRvtV4GBmTgJpLR
+         O8GJ2wEa0066s53cQlgq/OgmIFolGjfw06eEKblJrsQpzOUgDME2eplkeXOuCPYqIvwb
+         /Nou7I2RUvOkzPPpL3z8fmrzcaOjZvE79kms3TCgABJzRsYRref553iKoLCeH+DLPn/7
+         2JLQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=NWcwgv77k2gFBpOtme/OnNMUvTvI8oG+LwLSikUeOts=;
-        b=Vj03OMd5lRpTCE0z6P4k5N7K2bxyUeTSYDFUSgrjc1wE53PrvSQVdItwB8ozt0zUci
-         cZQPJp3X7eJ5KGBRRxVP5TJICvNquoytx1ghFVb0Xzwmv0IMjvb7D5JGNtdTyPimASwb
-         nuE4331fqFTzyTfBquM2/7d0mobAgLSMdogiBDZtqvgWPym4hIJoJeYMPpK5TvGYb7cg
-         j4I4GAgcqTG1VWN+2HUvEZB+hUE2XZ1MAZ8xsNBTfNz4TM3FIoZ0aDG9lcK5GyRMaHQk
-         rK3uLc0zKnsA59D0hmsbnZlsNx97AvSJYkxoszCZQXBlgLnN1+Jdz59GuKk23oCb5TJA
-         fhjg==
-X-Gm-Message-State: AOAM5309NKMgeTxPxotWvItbHI3q7fjXg1LnnJDgtejG0On7m89l+dVi
-        VYPReaNwa4arZCs9bC73JsZPm0mmMFpG8g==
-X-Google-Smtp-Source: ABdhPJywOM1DWiXiWEruTaHJISmgDQQ4o1r/Ap5D5GgfzCWKZiDcJz+ssnnZGwYMWL6y6uJ3mjSYVQ==
-X-Received: by 2002:a37:a4c2:: with SMTP id n185mr34846592qke.373.1596031293957;
-        Wed, 29 Jul 2020 07:01:33 -0700 (PDT)
-Received: from ?IPv6:2620:10d:c0a8:11e1::10a7? ([2620:10d:c091:480::1:5750])
-        by smtp.gmail.com with ESMTPSA id f7sm1504648qkj.32.2020.07.29.07.01.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 29 Jul 2020 07:01:32 -0700 (PDT)
-Subject: Re: [PATCH] btrfs: handle errors from async submission
-To:     Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        David Sterba <dsterba@suse.cz>
-Cc:     linux-btrfs@vger.kernel.org
-References: <20200728112541.3401-1-johannes.thumshirn@wdc.com>
-From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <e3a95f23-b87f-c7ca-6a63-bc6db9c34ba9@toxicpanda.com>
-Date:   Wed, 29 Jul 2020 10:01:31 -0400
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to;
+        bh=GHvdgebLyXeg+KLuP5DHDSyuglRC0frGOwM/QPxOQIU=;
+        b=p7GTMimORazU9Tssa4+WBeT2xNGDX+gjAKf8H//S27521zz0/nO37bhUk2etFiZPz2
+         7eWI46odRH8hhWp+BvYUjl3rwq/Lq667GuIl5nhQQfiJIblYkWPfptWA4m9IfcAOQdhw
+         BMKKZQPNqHJD28r0sDAInXoAvY30f+Vy6qzSqSJ5Jk8bCcqrDRbeFCtEHdFdL1P41RuB
+         YiB1w4UHMov1FlNeFcqOxYV+a5uOd3WPSNWFd1bIyKGbI6epXY2MdKWcYbgxhRX9Y8TI
+         rcwsWtfMN4ZvTx+jcAucCc4iqydu06c7SXMhdKs4yul7QhQ8vHTlOvG+Gjw/0jIiFWxP
+         /R5w==
+X-Gm-Message-State: AOAM531DkkH/n3g3x/T+IRRBS03RqyY3hOsNh9wWxWa6qi47xggqPwMI
+        H1wOudIXY3ce91xU9M1UTsJagAq1Bcf6QsinJ7c=
+X-Google-Smtp-Source: ABdhPJyWFAJnSEqANs6F5nAc/UlZlyRESXqyhneRCuYKBIqgG9d1q/wzPsKN9Xbv4VrSYVmWd+JEBeg/9W+ZGlZ1lfI=
+X-Received: by 2002:a5d:8b4f:: with SMTP id c15mr34326506iot.197.1596037341390;
+ Wed, 29 Jul 2020 08:42:21 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200728112541.3401-1-johannes.thumshirn@wdc.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200727142805.4896-1-josef@toxicpanda.com> <20200728144346.GW3703@twin.jikos.cz>
+In-Reply-To: <20200728144346.GW3703@twin.jikos.cz>
+From:   =?UTF-8?Q?Sebastian_D=C3=B6ring?= <moralapostel@gmail.com>
+Date:   Wed, 29 Jul 2020 17:42:09 +0200
+Message-ID: <CADkZQam9aJgNYy6bUXREYtS_fv1TLqyHbmkvs+aX9087AM62+g@mail.gmail.com>
+Subject: Re: [PATCH][v3] btrfs: only search for left_info if there is no right_info
+To:     dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
+        linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 7/28/20 7:25 AM, Johannes Thumshirn wrote:
-> Btrfs' async submit mechanism is able to handle errors in the submission
-> path and the meta-data async submit function correctly passes the error
-> code to the caller.
-> 
-> In btrfs_submit_bio_start() and btrfs_submit_bio_start_direct_io() we're
-> not handling the errors returned by btrfs_csum_one_bio() correctly though
-> and simply call BUG_ON(). This is unnecessary as the caller of these two
-> functions - run_one_async_start - correctly checks for the return values
-> and sets the status of the async_submit_bio. The actual bio submission
-> will be handled later on by run_one_async_done only if
-> async_submit_bio::status is 0, so the data won't be written if we
-> encountered an error in the checksum process.
-> 
-> Simply return the error from btrfs_csum_one_bio() to the async submitters,
-> like it's done in btree_submit_bio_start().
-> 
-> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+For reasons unrelated to btrfs I've been trying linux-next-20200728 today.
 
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+This patch causes Kernel Oops and call trace (with
+try_merge_free_space on top of stack) on my system. Because of
+immediate system lock-up I can't provide a dmesg log and there's
+nothing in /var/log (probably because it immediately goes read-only),
+but removing this patch and rebuilding the kernel fixed my issues. I'm
+happy to help if you need more info in order to reproduce.
 
-Thanks,
-
-Josef
+Am Di., 28. Juli 2020 um 16:47 Uhr schrieb David Sterba <dsterba@suse.cz>:
+>
+> On Mon, Jul 27, 2020 at 10:28:05AM -0400, Josef Bacik wrote:
+> > In try_to_merge_free_space we attempt to find entries to the left and
+> > right of the entry we are adding to see if they can be merged.  We
+> > search for an entry past our current info (saved into right_info), and
+> > then if right_info exists and it has a rb_prev() we save the rb_prev()
+> > into left_info.
+> >
+> > However there's a slight problem in the case that we have a right_info,
+> > but no entry previous to that entry.  At that point we will search for
+> > an entry just before the info we're attempting to insert.  This will
+> > simply find right_info again, and assign it to left_info, making them
+> > both the same pointer.
+> >
+> > Now if right_info _can_ be merged with the range we're inserting, we'll
+> > add it to the info and free right_info.  However further down we'll
+> > access left_info, which was right_info, and thus get a UAF.
+> >
+> > Fix this by only searching for the left entry if we don't find a right
+> > entry at all.
+> >
+> > The CVE referenced had a specially crafted file system that could
+> > trigger this UAF.  However with the tree checker improvements we no
+> > longer trigger the conditions for the UAF.  But the original conditions
+> > still apply, hence this fix.
+> >
+> > Reference: CVE-2019-19448
+> > Fixes: 963030817060 ("Btrfs: use hybrid extents+bitmap rb tree for free space")
+> > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> > ---
+> > v2->v3:
+> > - Updated the changelog.
+>
+> Added to misc-next, thanks.
