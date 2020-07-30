@@ -2,212 +2,176 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 619B9233C3B
-	for <lists+linux-btrfs@lfdr.de>; Fri, 31 Jul 2020 01:44:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22946233C58
+	for <lists+linux-btrfs@lfdr.de>; Fri, 31 Jul 2020 01:59:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730641AbgG3XoW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 30 Jul 2020 19:44:22 -0400
-Received: from mout.gmx.net ([212.227.17.20]:47241 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728047AbgG3XoV (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 30 Jul 2020 19:44:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1596152657;
-        bh=uj8iFVI6PsFI+2I2spCAmV6Vlr0sNnEZHwh/DbGoTgg=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=LCCR2UAYGGdmaTmeOIUxFZOfjRey2s2LywtAemoYu99ILTHoBfzflmDm0up74S/3C
-         jqA2plcintSiBr430uc6w6T8G4XTx/lQkIaM9zKXX+RfTyGuqRzA4Ibsvr96PJ4uKA
-         xGUKm1kNo8W09pjk4NtGJeq7Go7PKzM26TaoP6WU=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1M4s51-1k1ZKx3YZT-0020Hx; Fri, 31
- Jul 2020 01:44:17 +0200
-Subject: Re: [PATCH] btrfs: trim: fix underflow in trim length to prevent
- access beyond device boundary
-To:     fdmanana@gmail.com, Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
-References: <20200730111921.60051-1-wqu@suse.com>
- <CAL3q7H6LofjW9GozPR6_ds8YHZpLKOCF790XiSQ1aqWqsam+WA@mail.gmail.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAVQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWCnQUJCWYC
- bgAKCRDCPZHzoSX+qAR8B/94VAsSNygx1C6dhb1u1Wp1Jr/lfO7QIOK/nf1PF0VpYjTQ2au8
- ihf/RApTna31sVjBx3jzlmpy+lDoPdXwbI3Czx1PwDbdhAAjdRbvBmwM6cUWyqD+zjVm4RTG
- rFTPi3E7828YJ71Vpda2qghOYdnC45xCcjmHh8FwReLzsV2A6FtXsvd87bq6Iw2axOHVUax2
- FGSbardMsHrya1dC2jF2R6n0uxaIc1bWGweYsq0LXvLcvjWH+zDgzYCUB0cfb+6Ib/ipSCYp
- 3i8BevMsTs62MOBmKz7til6Zdz0kkqDdSNOq8LgWGLOwUTqBh71+lqN2XBpTDu1eLZaNbxSI
- ilaVuQENBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAGJATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAK
- CRDCPZHzoSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gy
- fmtBnUaifnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsS
- oCEEynby72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAk
- ZkA523JGap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gG
- UO/iD/T5oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <98c65b1a-2eef-fd99-b5d2-ab7231f5effc@gmx.com>
-Date:   Fri, 31 Jul 2020 07:44:14 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1730766AbgG3X7P (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 30 Jul 2020 19:59:15 -0400
+Received: from james.kirk.hungrycats.org ([174.142.39.145]:45428 "EHLO
+        james.kirk.hungrycats.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728047AbgG3X7P (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 30 Jul 2020 19:59:15 -0400
+Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
+        id 91D0478BE4A; Thu, 30 Jul 2020 19:59:13 -0400 (EDT)
+Date:   Thu, 30 Jul 2020 19:59:13 -0400
+From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+To:     Thommandra Gowtham <trgowtham123@gmail.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: RAID1 disk missing
+Message-ID: <20200730235913.GJ5890@hungrycats.org>
+References: <CA+XNQ=i9dbr924u+dOT3=s_HLx3kOnOo=ajjQEOnOdWzNbG+kA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CAL3q7H6LofjW9GozPR6_ds8YHZpLKOCF790XiSQ1aqWqsam+WA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:5i7OVPJu+tdG6LpdY8lYiDZSosTNHH+wFeSa9SPBQSILd4mDXvH
- dzTC5kcKDeMpJ2qckKvOHsPw5Ekj9JFSeXK1wT/f+GvqaSMrkx1uqcZ4YZ/v+Cg32M4mxPz
- fhzR54p+Svi0sohQNvsAaQNsUTJ02sSQxf1joX2P0lCgmooCA7WiETqec2g4n97koB35e1i
- yRep55FsV6hWSX9KRDsPw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:4hWf/MzNHIE=:nZm3XI61damBP4vnYH+StR
- BC2fqryMu18pWNlpOVdoetwiy6YCwpK3+XS7DaxQ7IHKF+WLyCF8M4XaWoJ3C3uhVmTnz7U7X
- Ut/0GZjz6ifdQxi3+acBSksgsTWQnbQnIS3b/Gdze3df/u9pw9xf6ycUThKvfOl7U2ntI4XVD
- N+Ej6uw8Z7K1R2+BWja2NaZeuDg+D4Zszzoe6wng/z/gLu8OGvm/3qhpZWHl3q73+3VoDvbfR
- hmzZWgg5kjal5xFS0JvH7Gg6b9a7SgzjVBFsoaISFakMMDly06pd5G6OjXiAu5FhU1B26gctl
- 7kgcITjS8rz1SJ65vY/yU6AfBZ6pWtx/H8n690kR7IGphy0+1+RaMeImTaOR1q3g+0N5UpVeh
- R5J48hrO5S7J6U7WX5we3ATMKuddpJStIj/pm2rbmyfhHUolL1Tz2fIeuFmczcuLP8D9jCobi
- WDhXrTpijMfmKMKUl6fdj1iEvuEwVPHMI5KiUPhusvu+QF5lLEez/z4IWSDyYa4QgtyUCL20B
- 0HyYIyGjbRT+ap9kfCNMqct/+JuMhbfQggqqWFuNAHsni3H41mE3IZE/KKRWnN9c5cW2Rkv07
- j2D15f8E9FeKFBRZT+K+8cM6rrgTBvqYSLNAVszWZ32gpeJFdT8/W7jgLziLoisvagnKIWl6q
- cHlCjWzCD5STliqvc0/KKNVIi4IrLXDv2hoFgTo/K+Tq91LWR8qztEERu6S9naJv/zCTYPH5U
- 1JDledxwNXDmEHXYIf98e/VvtefaJAi2Xwn2FXfHECMZw2B+CmMfGbi9Pe45CwLbsgbaVWAob
- sWGQt0PZhy6GdlaIq3zN2ghmdsVbg5t12GrNJ5T5OjGUqoMT//k8NRyqtya/yyBpJtgZQpq0i
- ia+MZAk2MQD9nr6u6HZVW3HjTF2kkFhWs03Mkc1Q6IqQ2Tdk8UWJVMEq1gLw7TPDbolkODYXF
- eiaerLRXum0p/g38vL7nf+1EOgmjan5/xT1VP4ofS/bkzLrrmejc0A4aJVO/i4BplSjtYUSRk
- JNDSMe1ml9jfZHYcMKj3GK7yez3X5MCS5UoNLKPxeqk87cIvcxojt/NkmdySO8zh5z/UpwJ9U
- kIkorWhlwneUb7TJeKtEvPEyHHuNUfFMtMQ3JcFQWrvnPOfSIxlEp3jeOW5cjyFwq/7Mwfqs9
- Xvcgn8t812pF3L7PfFFUT+PD+BmF+dynph76Dug58GFVs8HFEYPNrUgEGkTE9byIwgq6GmLuE
- xPi9GoXPZLN+KM6K93EG+lU8649rYwXnQnFh7Qw==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+XNQ=i9dbr924u+dOT3=s_HLx3kOnOo=ajjQEOnOdWzNbG+kA@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Thu, Jul 30, 2020 at 05:08:53PM +0530, Thommandra Gowtham wrote:
+> Hi,
+> 
+> I have root as BTRFS and are moving from 'single' to a RAID1
+> configuration with 2 disks. If one of the disk goes bad i.e completely
+> inaccessible to kernel(might be due a hardware issue), we are seeing
+> errors like below
+> 
+> [24710.550168] BTRFS error (device sdb3): bdev /dev/sda3 errs: wr
+> 96618, rd 16870, flush 105, corrupt 0, gen 0
+> [24710.561121] BTRFS error (device sdb3): bdev /dev/sda3 errs: wr
+> 96619, rd 16870, flush 105, corrupt 0, gen 0
+> [24710.572056] BTRFS error (device sdb3): bdev /dev/sda3 errs: wr
+> 96620, rd 16870, flush 105, corrupt 0, gen 0
+> [24710.582983] BTRFS error (device sdb3): bdev /dev/sda3 errs: wr
+> 96621, rd 16870, flush 105, corrupt 0, gen 0
+> [24710.593993] BTRFS error (device sdb3): bdev /dev/sda3 errs: wr
+> 96622, rd 16870, flush 105, corrupt 0, gen 0
+> [24710.605112] BTRFS error (device sdb3): bdev /dev/sda3 errs: wr
+> 96623, rd 16870, flush 105, corrupt 0, gen 0
+> 
+> The above are expected because one of the disks is missing. How do I
+> make sure that the system works fine until a replacement disk is
+> added? That can take a few days or a week?
 
+btrfs doesn't have a good way to eject a disk from the array if it
+fails while mounted.  It should, but it doesn't.
 
-On 2020/7/31 =E4=B8=8A=E5=8D=8812:54, Filipe Manana wrote:
-> On Thu, Jul 30, 2020 at 12:20 PM Qu Wenruo <wqu@suse.com> wrote:
->>
->> [BUG]
->> The following script can lead to tons of beyond device boundary access:
->>
->>   mkfs.btrfs -f $dev -b 10G
->>   mount $dev $mnt
->>   trimfs $mnt
->>   btrfs filesystem resize 1:-1G $mnt
->>   trimfs $mnt
->>
->> [CAUSE]
->> Since commit 929be17a9b49 ("btrfs: Switch btrfs_trim_free_extents to
->> find_first_clear_extent_bit"), we try to avoid trimming ranges that's
->> already trimmed.
->>
->> So we check device->alloc_state by finding the first range which doesn'=
-t
->> have CHUNK_TRIMMED and CHUNK_ALLOCATED not set.
->>
->> But if we shrunk the device, that bits are not cleared, thus we could
->> easily got a range starts beyond the shrunk device size.
->>
->> This results the returned @start and @end are all beyond device size,
->> then we call "end =3D min(end, device->total_bytes -1);" making @end
->> smaller than device size.
->>
->> Then finally we goes "len =3D end - start + 1", totally underflow the
->> result, and lead to the beyond-device-boundary access.
->>
->> [FIX]
->> This patch will fix the problem in two ways:
->> - Clear CHUNK_TRIMMED | CHUNK_ALLOCATED bits when shrinking device
->>   This is the root fix
->>
->> - Add extra safe net when trimming free device extents
->>   We check if the returned range is already beyond current device
->>   boundary.
->>
->> Link: https://github.com/kdave/btrfs-progs/issues/282
->> Signed-off-by: Qu Wenruo <wqu@suse.com>
->> ---
->>  fs/btrfs/extent-tree.c |  5 +++++
->>  fs/btrfs/volumes.c     | 12 ++++++++++++
->>  2 files changed, 17 insertions(+)
->>
->> diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
->> index 61ede335f6c3..758f963feb96 100644
->> --- a/fs/btrfs/extent-tree.c
->> +++ b/fs/btrfs/extent-tree.c
->> @@ -5667,6 +5667,11 @@ static int btrfs_trim_free_extents(struct btrfs_=
-device *device, u64 *trimmed)
->>                 find_first_clear_extent_bit(&device->alloc_state, start=
-,
->>                                             &start, &end,
->>                                             CHUNK_TRIMMED | CHUNK_ALLOC=
-ATED);
->> +               if (start >=3D device->total_bytes) {
->> +                       mutex_unlock(&fs_info->chunk_mutex);
->> +                       ret =3D 0;
->> +                       break;
->> +               }
->
-> It's good to ensure we never trim beyond the end of the fs, to avoid
-> corruption of whatever lies beyond it.
-> However we should have at least a WARN_ON / WARN_ON_ONCE here to help
-> more easily detect other current or future bugs that lead to the same
-> type of issue.
+You might be able to drop the SCSI device with:
 
-Since you're also on the idea of extra warning, it's definitely worthy the=
-n.
+	echo 1 > /sys/block/sdb/device/delete
 
-Thanks for the advice,
-Qu
+which will at least stop the flood of kernel errors.
 
->
-> Other than that it looks good to me.
-> After that you can have,
->
-> Reviewed-by: Filipe Manana <fdmanana@suse.com>
->
-> Thanks.
->
->>
->>                 /* Ensure we skip the reserved area in the first 1M */
->>                 start =3D max_t(u64, start, SZ_1M);
->> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
->> index 537ccf66ee20..906704c61a51 100644
->> --- a/fs/btrfs/volumes.c
->> +++ b/fs/btrfs/volumes.c
->> @@ -4705,6 +4705,18 @@ int btrfs_shrink_device(struct btrfs_device *dev=
-ice, u64 new_size)
->>         }
->>
->>         mutex_lock(&fs_info->chunk_mutex);
->> +       /*
->> +        * Also clear any CHUNK_TRIMMED and CHUNK_ALLOCATED bits beyond=
- the
->> +        * current device boundary.
->> +        */
->> +       ret =3D clear_extent_bits(&device->alloc_state, new_size, (u64)=
--1,
->> +                               CHUNK_TRIMMED | CHUNK_ALLOCATED);
->> +       if (ret < 0) {
->> +               mutex_unlock(&fs_info->chunk_mutex);
->> +               btrfs_abort_transaction(trans, ret);
->> +               btrfs_end_transaction(trans);
->> +               goto done;
->> +       }
->>         btrfs_device_set_disk_total_bytes(device, new_size);
->>         if (list_empty(&device->post_commit_list))
->>                 list_add_tail(&device->post_commit_list,
->> --
->> 2.28.0
->>
->
->
+> # btrfs fi show
+> Label: 'rpool'  uuid: 2e9cf1a2-6688-4f7d-b371-a3a878e4bdf3
+> Total devices 2 FS bytes used 10.86GiB
+> devid    1 size 206.47GiB used 28.03GiB path /dev/sdb3
+> *** Some devices missing
+> 
+> Sometimes, the bad disk works fine after a power-cycle. When the disk
+> is seen again by the kernel after power-cycle, we see errors like
+> below
+> 
+> [  222.410779] BTRFS error (device sdb3): parent transid verify failed
+> on 1042750283776 wanted 422935 found 422735
+> [  222.429451] BTRFS error (device sdb3): parent transid verify failed
+> on 1042750353408 wanted 422939 found 422899
+> [  222.442354] BTRFS error (device sdb3): parent transid verify failed
+> on 1042750357504 wanted 422915 found 422779
+
+btrfs has data integrity checks on references between nodes in the
+filesystem tree.  These integrity checks can detect silent data
+corruptions (except nodatasum files and short csum collisions) by any
+cause, including a disconnected raid1 array member.  btrfs doesn't handle
+device disconnects or IO errors specially since the data integrity checks
+are sufficient.
+
+When a disk is disconnected in raid1, blocks are not updated on the
+disconnected disk.  If the disk is reconnected later, every update
+that occurred while the disk was disconnected is detected by btrfs as
+silent data corruption errors, and can be repaired the same way as any
+other silent data corruption.  Scrub or device replace will fix such
+corruptions after the disk is replaced, and any bad data detected during
+normal reads will be repaired as well.
+
+Generally it's not a good idea to continue to use a disk that
+intermittently disconnects.  Each time it happens, you must run a
+scrub to verify all data is present on both disks and repair any lost
+writes on the disconnected disk.  You don't necessarily need to do this
+immediately--if the other disk is healthy, btrfs will just repair the
+out-of-sync disk when normal reads trip over errors.  You can schedule
+the scrub for a maintenance window.
+
+In some cases intermittent disconnects can happen due to bad power supply
+or bad cabling, rather than a broken disk, but in any case if there are
+intermittent disconnects then _some_ hardware is broken and needs to
+be replaced.
+
+If you have two disks that intermittently disconnect, it will break
+the array.  raid1 tolerates one and only one disk failure.  If a second
+disk fails before scrub/replace is finished on the first failing disk,
+the filesystem will be severely damaged.  btrfs check --repair, or mkfs
+and start over.
+
+> And the BTRFS is unable to mount the filesystem in several cases due
+> to the errors. How do I proactively take action when a disk goes
+> missing(and can take a few days to get replaced)?
+
+Normally no action is required for raid1[1].  If the disk is causing a
+performance or power issue (i.e. it's still responding to IO requests
+but very slowly, or it's failing so badly that it's damaging the power
+supply, then we'll disconnect it, but normally we don't touch the array
+[2] at all until the replacement disk arrives.
+
+> Is moving back from RAID1 to 'single' the only solution?
+
+In a 2-disk array there is little difference between degraded mode and
+single.  Almost any failure event that will kill a raid1 degraded array
+will also kill a single-disk filesystem.
+
+If it's a small array, you could balance metadata to raid1 (if you still
+have 2 or more disks left) or dup (if you are down to just one disk).
+This will provide slightly more robustness against a second partial disk
+failure while the array is degraded (i.e. a bad sector on the disk that
+is still online).  For large arrays the metadata balance will take far
+longer than the disk replacement time, so there's no point.
+
+> Please let me know your inputs.
+
+Also note that some disks have firmware bugs that break write caching
+when there are UNC errors on the disk.  Unfortunately it's hard to tell
+if your drive firmware has such a bug until it has bad sectors.  If you
+have a drive with this type of bug in a raid1 array, btrfs will simply
+repair all the write cache corruption from copies of the data stored on
+the healthy array members.  In degraded mode, such repair is no longer
+possible, so you may want to use hdparm -W0 on all disks in the array
+while it is degraded.
+
+> I am using#   btrfs --version
+> btrfs-progs v4.4
+> 
+> Ubuntu 16.04: 4.15.0-36-generic #1 SMP Mon Oct 22 21:20:30 PDT 2018
+> x86_64 x86_64 x86_64 GNU/Linux
+> 
+> BTRFS in RAID1 configuration
+> # btrfs fi show
+> Label: 'rpool'  uuid: 2e9cf1a2-6688-4f7d-b371-a3a878e4bdf3
+> Total devices 2 FS bytes used 11.14GiB
+> devid    1 size 206.47GiB used 28.03GiB path /dev/sdb3
+> devid    2 size 206.47GiB used 28.03GiB path /dev/sda3
+> 
+> Regards,
+> Gowtham
+
+[1] This doesn't work for btrfs raid5 and raid6--the array is more or
+less useless while disks are missing, and the only way to fix it is to
+replace (not delete) the missing devices or fix the kernel bugs.
+
+[2] Literally, we do not touch the array.  There is a small but non-zero
+risk of damaging an array every time a person holds a disk in their hands.
+Humans sometimes drop things, and disks get more physically fragile and
+sensitive to handling as they age.  We don't take those risks more than
+we have to.
