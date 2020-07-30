@@ -2,101 +2,93 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2325E232724
-	for <lists+linux-btrfs@lfdr.de>; Wed, 29 Jul 2020 23:49:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D0EA232A33
+	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Jul 2020 04:57:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726710AbgG2VtA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 29 Jul 2020 17:49:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42928 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726365AbgG2Vs7 (ORCPT
+        id S1728455AbgG3C5m (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 29 Jul 2020 22:57:42 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:53392 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726319AbgG3C5l (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 29 Jul 2020 17:48:59 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81E14C061794
-        for <linux-btrfs@vger.kernel.org>; Wed, 29 Jul 2020 14:48:59 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id z18so19434154wrm.12
-        for <linux-btrfs@vger.kernel.org>; Wed, 29 Jul 2020 14:48:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TUGcdYT7jELeBh5hFTATFO2S/q2U4Y1N3LaONePlylU=;
-        b=jAHvluvPasMAv3yEAcO/ag6pDhwmANJTp0Vj3rApJzVQc9FW0dZk18QAPWJAd5JjyY
-         mwLCFbDNf4vgOTarO7j0wfGMvJFp9mntxrnfANRGNYixB+JHuVUzY8TnOGSH2D4Lv+Pm
-         UNXLlmVt/UEppIERN0gLksa/PJe6n6q71dDNIlROW+nuLevnn0roRnXzNUXA2z14QQ+K
-         UD5h0O7wHAHQpQao3Bi/nM17hPBTteHJENuvQLWRb/TOHWaVBltd0ZLNs0IO2IXWAIdh
-         zcLRsQQnpY3WjAjlyfEUrisUIoTzvm1Fr+yjInb0WfSpu/v+RVWc9nQ6bkYYGAXz7ZKg
-         leUQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TUGcdYT7jELeBh5hFTATFO2S/q2U4Y1N3LaONePlylU=;
-        b=AOavJ9nWMzw1SEMb1n8GmSw6OdevFtAQyV8jk3NuBJyZhgVotPjE/qKJonRmdstZmN
-         Cn/0FwnyA0FURr99gZkujw/E7+wV+O5Qz7zRZypQRJSRwNYl3igHV8P4w79YYZB4NpoF
-         xdG/3Z7b8FuEntoiRhIzLdZ/ozo8zRnWeonV0Gd+Pa5JfjeKHcTPfJ0BACgE9TgouQ8m
-         i67PG2KGyw03AuPkZ2bXLDkLGwuJqw/Bl3wl2g5jeYWOcNR67mX/BgVnITA+Nq9KKtPb
-         z1xLds3gcsKkW87LyGZNVhR9JDkQp44lDNHx18YQFDlEk9j7hQkdmsxYZPvK0wZHvt3W
-         bm6A==
-X-Gm-Message-State: AOAM5328OaphbI91o1bNzn3BohT7XVyXwqyFeTHqKCZ86gJ4ermuOGYX
-        bq9E8Kt/aARYfjoAe+DBs3athN9oNaVZQ7VXLEtItg==
-X-Google-Smtp-Source: ABdhPJyD5eHjIC07UQ3vncKTUKnlJa9bv3fNZhyLLtJa+e1BEh6f0IPK2xVWOgiTL3VfEc+AQHPQK8rv7dDnpvYo7WM=
-X-Received: by 2002:adf:eb89:: with SMTP id t9mr406375wrn.65.1596059338069;
- Wed, 29 Jul 2020 14:48:58 -0700 (PDT)
+        Wed, 29 Jul 2020 22:57:41 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06U2vZ8H124536;
+        Thu, 30 Jul 2020 02:57:35 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=d+5ZOm3eeUeivpKlzKbUf9D2uuYsDZHDL8y7P7jveR8=;
+ b=oyBqnNGCM8J5j6p11vrVhlzXGNmjqIWV1gqaZ1A32nMiYg5dUamiuVVXTmD8mUzmLC4U
+ Zt1bW/8SZ6EKrNuwTezzwDMjZWulOdnpcBYE15jd4yznaCN2bMSj/sso3EQ2ktvI85wi
+ MgQv0i/1SjA6rfElZ09X1THWozO8VqkQuutsJx1zj7eISvi1Q15uEIvNGPUXXqcSB6uB
+ WvNgJkUWXrbJN3Y+hxpXHYEtHrwJHNd1bkQIHCwPj65Sft6Ol79ubUT415navGHroCXD
+ xz6gI8safO2egrPMogJ7h6DmooovXdtu5wiaX8FE7hAhV/+EFlHy8wLP1ARGfOiTYUS+ oA== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2130.oracle.com with ESMTP id 32hu1jh61k-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 30 Jul 2020 02:57:35 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06U2qeuo092332;
+        Thu, 30 Jul 2020 02:57:35 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3020.oracle.com with ESMTP id 32hu5vysrw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 30 Jul 2020 02:57:35 +0000
+Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 06U2vVa9030279;
+        Thu, 30 Jul 2020 02:57:31 GMT
+Received: from [192.168.1.102] (/39.109.231.106)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 29 Jul 2020 19:57:31 -0700
+Subject: Re: [PATCH] btrfs/162: Stop using device mount option
+To:     Nikolay Borisov <nborisov@suse.com>, guan@eryu.me
+Cc:     linux-btrfs@vger.kernel.org, fstests@vger.kernel.org
+References: <20200724131250.3377-1-nborisov@suse.com>
+From:   Anand Jain <anand.jain@oracle.com>
+Message-ID: <437821d1-5fc4-77e2-d66d-ab63e935c15b@oracle.com>
+Date:   Thu, 30 Jul 2020 10:57:27 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.0.1
 MIME-Version: 1.0
-References: <d3fced3f-6c2b-5ffa-fd24-b24ec6e7d4be@xmyslivec.cz> <a070c45a-0509-e900-e3f3-98d20267c8c9@cloud.ionos.com>
-In-Reply-To: <a070c45a-0509-e900-e3f3-98d20267c8c9@cloud.ionos.com>
-From:   Chris Murphy <lists@colorremedies.com>
-Date:   Wed, 29 Jul 2020 15:48:41 -0600
-Message-ID: <CAJCQCtQAHr91wEwvFmh_-UB3Cd3UecSjjy6w7nOeqUktrn4UzQ@mail.gmail.com>
-Subject: Re: Linux RAID with btrfs stuck and consume 100 % CPU
-To:     Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
-Cc:     Vojtech Myslivec <vojtech@xmyslivec.cz>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
-        Linux-RAID <linux-raid@vger.kernel.org>,
-        Michal Moravec <michal.moravec@logicworks.cz>,
-        Song Liu <songliubraving@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200724131250.3377-1-nborisov@suse.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9697 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 phishscore=0 bulkscore=0
+ malwarescore=0 suspectscore=0 spamscore=0 mlxlogscore=999 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2007300020
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9697 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 clxscore=1015
+ malwarescore=0 spamscore=0 suspectscore=0 bulkscore=0 priorityscore=1501
+ phishscore=0 mlxlogscore=999 lowpriorityscore=0 impostorscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2007300020
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Jul 29, 2020 at 3:06 PM Guoqing Jiang
-<guoqing.jiang@cloud.ionos.com> wrote:
->
-> Hi,
->
-> On 7/22/20 10:47 PM, Vojtech Myslivec wrote:
-> > 1. What should be the cause of this problem?
->
-> Just a quick glance based on the stacks which you attached, I guess it
-> could be
-> a deadlock issue of raid5 cache super write.
->
-> Maybe the commit 8e018c21da3f ("raid5-cache: fix a deadlock in superblock
-> write") didn't fix the problem completely.  Cc Song.
+On 24/7/20 9:12 pm, Nikolay Borisov wrote:
+> btrfs is clever enough to figure out which devices constitute the sprout
+> fs even without specifying them explicitly with -o device.
 
-That references discards, and it make me relook at mdadm -D which
-shows a journal device:
+   holds good only in this test case.
 
-       0     253        2        -      journal   /dev/dm-2
+> Additionally,
+> explicitly settings the devices via -o device reduces coverage of the
+> test since it didn't detect breakage a local change introduced.
 
-Vojtech, can you confirm this device is an SSD? There are a couple
-SSDs that show up in the dmesg if I recall correctly.
+  We relay on unmount not freeing up the btrfs_device.
 
-What is the default discard hinting for this SSD when it's used as a
-journal device for mdadm? And what is the write behavior of the
-journal? I'm not familiar with this feature at all, whether it's
-treated as a raw block device for the journal or if the journal
-resides on a file system. So I get kinda curious what might happen
-long term if this is a very busy file system, very busy raid5/6
-journal on this SSD, without any discard hints? Is it possible the SSD
-runs out of ready-to-write erase blocks, and the firmware has become
-super slow doing erasure/garbage collection on demand? And the journal
-is now having a hard time flushing?
+> Without
+> -o device instead this breakage was detected.
 
+  That's like testing two things in one test case. I am ok.
 
--- 
-Chris Murphy
+> 
+> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
+
+  Reviewed-by: Anand.Jain@oracle.com
