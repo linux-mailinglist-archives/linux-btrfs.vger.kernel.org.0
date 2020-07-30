@@ -2,118 +2,164 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6C38233110
-	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Jul 2020 13:39:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C564233117
+	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Jul 2020 13:42:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726799AbgG3LjH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 30 Jul 2020 07:39:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57160 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726615AbgG3LjG (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 30 Jul 2020 07:39:06 -0400
-Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64E71C061794
-        for <linux-btrfs@vger.kernel.org>; Thu, 30 Jul 2020 04:39:06 -0700 (PDT)
-Received: by mail-qk1-x736.google.com with SMTP id x69so25257888qkb.1
-        for <linux-btrfs@vger.kernel.org>; Thu, 30 Jul 2020 04:39:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=J+Tntfq2mQ/R6TTkvbk4nUdXpPAo0/zIa1q0vcxtN+g=;
-        b=toJ2AKSmMEjJTVOfmGoicWjrKnSJhhZfcw2fFTWaDmmCvQM+U6XN+olSBm76+Os6xE
-         HS25pivGvPVeN7n/jboGcu4bjqiXEv8obrODVp/jcMORwelyBBrfDEI48Nj9pK8mMA9s
-         6YRmTeg85frIVpZAyxgMwa3SQkGuguNYHfPqYzYFFeT2AhLfN6C0t+spo+kiSASwtPhV
-         z94/MbMtW4+Z7uJGJrA8l2ohAFOo+fva6YhEVQmbeOD773OluP4We03QqRJBFH+cVwME
-         ujpzikWiDnarBuEZ6mZAWwckZ3XSPmTbGLt9zaROUU5Qjq7YXuQXMgsq0C8Gi7idK3pw
-         5CnQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=J+Tntfq2mQ/R6TTkvbk4nUdXpPAo0/zIa1q0vcxtN+g=;
-        b=pOR9HgPnBg2+DKSIJ+B7PZgeVJzy5sC0G6ObmnRFj8jHWzhU5ZQLT4ce5CwNej07Zl
-         cg+JCsOnu5qRUMu5QhBb5iBe41YXBbaHMHoWaS9K2KmLeWVFpfHl0JG7DrHUYcXH6Lnz
-         0mcbNBR4hQ57YaBWPRK3VnrAit1W+22DiPYX16SpKlNzE8BshX4mpE2KmM5o4j1D0qKz
-         JdXdadgQavvMcYJMTV1bGIo5wEALOCymXQbNxMb6WZThgh4Zs00FopPDzBdTRdXCXkDp
-         YprbT7MGXKoFc/k7LupTVf2SqZ5UJbz4TUy5YZ08B8GIs+vCF0bjxqqb0hhYJR8O56y8
-         isZA==
-X-Gm-Message-State: AOAM532813pZeEFeWkE09He+7zAe0AGYLqbRz9tc5K5eEKwAI61piSpj
-        aEiaQ0m0Tq9QPzcQEsN5tde012WZbYWU6JF1ASX/piRQLM4=
-X-Google-Smtp-Source: ABdhPJw34AScrbj5QTQiSabKeA8YPWFnmge0E3KfCbUVNS/Kf/UKZwc6XDFEjFGSKH6E6H3roitD0B44a8fw47zCDDc=
-X-Received: by 2002:a05:620a:c88:: with SMTP id q8mr9143200qki.49.1596109144873;
- Thu, 30 Jul 2020 04:39:04 -0700 (PDT)
+        id S1727811AbgG3Lmv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 30 Jul 2020 07:42:51 -0400
+Received: from mout.gmx.net ([212.227.15.15]:37335 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726799AbgG3Lmu (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 30 Jul 2020 07:42:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1596109349;
+        bh=DRTlO509DJ63kWEyWdJPOdUHZAXsw1EuTigFLGM91ik=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=a3VnQvOusAJ9b+BsHsWNrZg5gXl9/741zezI+LMUa8Gz+FICP7lPrYhH2Hgzw0non
+         1pl+xeDbwv3hwcI3g+Hze32hzdHffosUQOAiCbcrNo2nBmqlzqKCMD1oLAEwDRfUwa
+         /iu1HpZmCHrV3qGw/0zakGpXKKfNohN6U/OVmaXI=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MDysg-1jtNi43a2m-009wrR; Thu, 30
+ Jul 2020 13:42:29 +0200
+Subject: Re: [PATCH][v3] btrfs: only search for left_info if there is no
+ right_info
+To:     dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
+        =?UTF-8?Q?Sebastian_D=c3=b6ring?= <moralapostel@gmail.com>,
+        linux-btrfs@vger.kernel.org, kernel-team@fb.com
+References: <20200727142805.4896-1-josef@toxicpanda.com>
+ <20200728144346.GW3703@twin.jikos.cz>
+ <CADkZQam9aJgNYy6bUXREYtS_fv1TLqyHbmkvs+aX9087AM62+g@mail.gmail.com>
+ <e7370ce1-a799-3307-cfa3-f1a660d308c2@toxicpanda.com>
+ <20200729161344.GB3703@twin.jikos.cz>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
+ mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAVQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWCnQUJCWYC
+ bgAKCRDCPZHzoSX+qAR8B/94VAsSNygx1C6dhb1u1Wp1Jr/lfO7QIOK/nf1PF0VpYjTQ2au8
+ ihf/RApTna31sVjBx3jzlmpy+lDoPdXwbI3Czx1PwDbdhAAjdRbvBmwM6cUWyqD+zjVm4RTG
+ rFTPi3E7828YJ71Vpda2qghOYdnC45xCcjmHh8FwReLzsV2A6FtXsvd87bq6Iw2axOHVUax2
+ FGSbardMsHrya1dC2jF2R6n0uxaIc1bWGweYsq0LXvLcvjWH+zDgzYCUB0cfb+6Ib/ipSCYp
+ 3i8BevMsTs62MOBmKz7til6Zdz0kkqDdSNOq8LgWGLOwUTqBh71+lqN2XBpTDu1eLZaNbxSI
+ ilaVuQENBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAGJATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAK
+ CRDCPZHzoSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gy
+ fmtBnUaifnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsS
+ oCEEynby72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAk
+ ZkA523JGap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gG
+ UO/iD/T5oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
+Message-ID: <0c64dfd6-7846-babe-b7d2-12decddce4cc@gmx.com>
+Date:   Thu, 30 Jul 2020 19:42:24 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-From:   Thommandra Gowtham <trgowtham123@gmail.com>
-Date:   Thu, 30 Jul 2020 17:08:53 +0530
-Message-ID: <CA+XNQ=i9dbr924u+dOT3=s_HLx3kOnOo=ajjQEOnOdWzNbG+kA@mail.gmail.com>
-Subject: RAID1 disk missing
-To:     linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200729161344.GB3703@twin.jikos.cz>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="JVL8l5HwpnXgI20CS2gyj2P1LJy73TxDq"
+X-Provags-ID: V03:K1:xig3AkDinDSv3pdyqUXxWx+ODFaWCDvO9L73RFEhDFfUQRch+11
+ CgZ0OqIFJesLO100cVrmEEv3Ymvsv4pBJR5WMN7xF6+xb67tQXRY4xyIKUHydafH+SvXGge
+ o6BeMq/Nq1SuPgqyHVkSV3eW2CDCsdACXwHhDb3YgxMK2vWnil/YqYtHZt/IakA2CyQJ6R2
+ y3/lPbD8GknpF87AYxyjg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:V6iVysA0OTM=:7R2RyxzM8tEPpOS9Ma3Qzt
+ MXEeOOHxweFX8D+U2RBCDPcg+TejSCQamh+H56tDSRx6UdTpJ7ePV615kgxbhqSCpy/IupoQh
+ dOPSo9WymdUopUigw+ZJQ4oj5hGKW+5f6R4PuFaA7ZceXvtygcZPBU5r0L4qDB6/crK4c65Qu
+ wB3Fzl7pV1kcdvCofrcEe1gIOgzVAKVhF2p5leT4dPPRj4pRR+lOwSTrzSOIVsuPydAymLfDH
+ jrHVpP/4pu2b8WMWjdLhHbKn+UY+fFUfU+7ram2OW9pGWnN28VDaPAtXJ6XL8Eh+6bnunfLmp
+ dfquoeIqJRqlvewYX60DhsdWa9FtMoMdZlL5UiAGp9j1UbXphL8WdiSDr1KWaZQxrVh6Mrla8
+ OBgqcnp8z1RAgboo5MRbHxc+3mZuYFOlfvFnHOx8UcScSGn4Cg5o0xG+lou5slUGltDkn6Grz
+ VBkamLf2F7gRemyvfAKac/5GZ9720680iTX74TM+9wWaVEHTKeinOYPAmoQSyn0V18nDyHzQ0
+ yBHXewdfQMpTaZxm847wEYJCJH6CeYJFbLMqhJTRc+zykSQOLNP+TsMPIBOxzSAhzbtCoTRR/
+ UJk3f1OyaZADDR0TfgG7Fne20aGJaxTizoDHJqCGJHEhLbwSRFJNCAori/saRj9mOo3dTXGaS
+ sgq6rBXS1Mf8zEvznOOGyEcR7MT5sL0GCFUPRWlQT1AVN0tcnGBZ3GSw/s77THhZD2Af/NxkH
+ EL0LdtnF7vCNI3uxGdm28uUI8hZNDeWudXuYLhM/S7aZwuF3DRUfONsCfi8BI9SnttIc9Yd9F
+ ITsoVZLpL5mdxPay9WI91mMSKqYr6LD4adBjbWWzQ5KqJH+NgM/DQxEI5K/umk2oqetCTAt/3
+ gWVz76VHAoOPtcfPnKpGoahXsetqb/N8cy5/+tB/soxU+3XYH3uuiNGtOqpznryFNR3wsO36V
+ Z1bVTx6Q2EzSb7ynfrquuIyg6LnTPgBMIyLeQHXaQA5tQc8VdnE8rm5nBsq+tRJdaHcd2inSj
+ 8Sn5ok+UrWRVJ7b8RDX5NxmWRNXTuDpZ1B4AAMZlp1+pwBvekSWJSG2a1mpU3g5iIMauGQKt4
+ m+oANR3zOUPVqncxH4GFkT8xpmSG+F1fB9ZeUg0vL0edsxh257UJPOYttBwbXFkxCK8RnoTgD
+ Bi12IqJxiT8W75OJ/0gYon+/fSdCxPHD+kW55wq6fhDbCv/Q5iG9hbipEonTlhYMavXb2Sf2H
+ O+lH32NQWj6UVMLnFmzOMOL4IStgTnlpUOg4sSQ==
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi,
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--JVL8l5HwpnXgI20CS2gyj2P1LJy73TxDq
+Content-Type: multipart/mixed; boundary="y5eV9iZEfeqRevahLuqRkbvF44G5mzJ8D"
 
-I have root as BTRFS and are moving from 'single' to a RAID1
-configuration with 2 disks. If one of the disk goes bad i.e completely
-inaccessible to kernel(might be due a hardware issue), we are seeing
-errors like below
+--y5eV9iZEfeqRevahLuqRkbvF44G5mzJ8D
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-[24710.550168] BTRFS error (device sdb3): bdev /dev/sda3 errs: wr
-96618, rd 16870, flush 105, corrupt 0, gen 0
-[24710.561121] BTRFS error (device sdb3): bdev /dev/sda3 errs: wr
-96619, rd 16870, flush 105, corrupt 0, gen 0
-[24710.572056] BTRFS error (device sdb3): bdev /dev/sda3 errs: wr
-96620, rd 16870, flush 105, corrupt 0, gen 0
-[24710.582983] BTRFS error (device sdb3): bdev /dev/sda3 errs: wr
-96621, rd 16870, flush 105, corrupt 0, gen 0
-[24710.593993] BTRFS error (device sdb3): bdev /dev/sda3 errs: wr
-96622, rd 16870, flush 105, corrupt 0, gen 0
-[24710.605112] BTRFS error (device sdb3): bdev /dev/sda3 errs: wr
-96623, rd 16870, flush 105, corrupt 0, gen 0
 
-The above are expected because one of the disks is missing. How do I
-make sure that the system works fine until a replacement disk is
-added? That can take a few days or a week?
 
-# btrfs fi show
-Label: 'rpool'  uuid: 2e9cf1a2-6688-4f7d-b371-a3a878e4bdf3
-Total devices 2 FS bytes used 10.86GiB
-devid    1 size 206.47GiB used 28.03GiB path /dev/sdb3
-*** Some devices missing
+On 2020/7/30 =E4=B8=8A=E5=8D=8812:13, David Sterba wrote:
+> On Wed, Jul 29, 2020 at 11:43:40AM -0400, Josef Bacik wrote:
+>> On 7/29/20 11:42 AM, Sebastian D=C3=B6ring wrote:
+>>> For reasons unrelated to btrfs I've been trying linux-next-20200728 t=
+oday.
+>>>
+>>> This patch causes Kernel Oops and call trace (with
+>>> try_merge_free_space on top of stack) on my system. Because of
+>>> immediate system lock-up I can't provide a dmesg log and there's
+>>> nothing in /var/log (probably because it immediately goes read-only),=
 
-Sometimes, the bad disk works fine after a power-cycle. When the disk
-is seen again by the kernel after power-cycle, we see errors like
-below
+>>> but removing this patch and rebuilding the kernel fixed my issues. I'=
+m
+>>> happy to help if you need more info in order to reproduce.
+>>>
+>>
+>> Lol I literally just hit this and sent the fixup to Dave when you post=
+ed this.=20
+>> My bad, somehow it didn't hit either of us until just now.  Thanks,
+>=20
+> Updated misc-next pushed, for-next will follow.
+>=20
+I guess it's still not working...
 
-[  222.410779] BTRFS error (device sdb3): parent transid verify failed
-on 1042750283776 wanted 422935 found 422735
-[  222.429451] BTRFS error (device sdb3): parent transid verify failed
-on 1042750353408 wanted 422939 found 422899
-[  222.442354] BTRFS error (device sdb3): parent transid verify failed
-on 1042750357504 wanted 422915 found 422779
+The latest commit 2f0cb6b46a28 ("btrfs: only search for left_info if
+there is no right_info in try_merge_free_space"), shows it's now the
+updated one.
 
-And the BTRFS is unable to mount the filesystem in several cases due
-to the errors. How do I proactively take action when a disk goes
-missing(and can take a few days to get replaced)?
-Is moving back from RAID1 to 'single' the only solution?
+But still fails at selftest:
+https://paste.opensuse.org/41470779
 
-Please let me know your inputs.
+Have to revert that commit to do my test...
 
-I am using#   btrfs --version
-btrfs-progs v4.4
+Thanks,
+Qu
 
-Ubuntu 16.04: 4.15.0-36-generic #1 SMP Mon Oct 22 21:20:30 PDT 2018
-x86_64 x86_64 x86_64 GNU/Linux
 
-BTRFS in RAID1 configuration
-# btrfs fi show
-Label: 'rpool'  uuid: 2e9cf1a2-6688-4f7d-b371-a3a878e4bdf3
-Total devices 2 FS bytes used 11.14GiB
-devid    1 size 206.47GiB used 28.03GiB path /dev/sdb3
-devid    2 size 206.47GiB used 28.03GiB path /dev/sda3
+--y5eV9iZEfeqRevahLuqRkbvF44G5mzJ8D--
 
-Regards,
-Gowtham
+--JVL8l5HwpnXgI20CS2gyj2P1LJy73TxDq
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl8isiAACgkQwj2R86El
+/qhdYQf9Es9eHFNqtIdDsfTicbi33+MW+6HrTPqdiwpZK3CJCt3uNMIxg3aegDr/
+N5PZaAcsHYC9Q3GOKdEjjzKWJxePLPMs2nYCqJFO8t9wiiAjRFh5ko0q4DovOZSJ
+WlABfPBxnpG0Xsckr7GXmhAiIrGxhy/YBCI0Kd3fAtS+ILZR4fds8Pvdl8g9L/uv
++aDsz6mmKXVWg/3Zy5FaTO2I2mtu4zEiwunvtkODZvTKbJaPzAIkWzzo/FV5bXcp
+f8SbcaYJkbFjSa/14yKd43ewZPeThk/V9W4dNGWF/3NJRYt1GNMuw9vzHqA66lJ6
+XsECiPraYkmnmtldzkpKQd2SNAzUUg==
+=d/bJ
+-----END PGP SIGNATURE-----
+
+--JVL8l5HwpnXgI20CS2gyj2P1LJy73TxDq--
