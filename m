@@ -2,144 +2,47 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC03C23448A
-	for <lists+linux-btrfs@lfdr.de>; Fri, 31 Jul 2020 13:29:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A697123472D
+	for <lists+linux-btrfs@lfdr.de>; Fri, 31 Jul 2020 15:50:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732724AbgGaL3V (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 31 Jul 2020 07:29:21 -0400
-Received: from mx2.suse.de ([195.135.220.15]:57990 "EHLO mx2.suse.de"
+        id S1732397AbgGaNsa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 31 Jul 2020 09:48:30 -0400
+Received: from mx2.suse.de ([195.135.220.15]:45906 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732104AbgGaL3U (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 31 Jul 2020 07:29:20 -0400
+        id S1727851AbgGaNsa (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 31 Jul 2020 09:48:30 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id A2AA2AB55;
-        Fri, 31 Jul 2020 11:29:31 +0000 (UTC)
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     Filipe Manana <fdmanana@suse.com>
-Subject: [PATCH v4] btrfs: trim: fix underflow in trim length to prevent access beyond device boundary
-Date:   Fri, 31 Jul 2020 19:29:11 +0800
-Message-Id: <20200731112911.115665-1-wqu@suse.com>
-X-Mailer: git-send-email 2.28.0
+        by mx2.suse.de (Postfix) with ESMTP id A32BBB01F;
+        Fri, 31 Jul 2020 13:48:42 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 3742DDA82B; Fri, 31 Jul 2020 15:47:59 +0200 (CEST)
+Date:   Fri, 31 Jul 2020 15:47:58 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Daniel Xu <dxu@dxuuu.xyz>
+Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH] btrfs-progs: Update README.md with editorconfig hint
+Message-ID: <20200731134758.GL3703@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Daniel Xu <dxu@dxuuu.xyz>,
+        linux-btrfs@vger.kernel.org, kernel-team@fb.com
+References: <20200731010334.47406-1-dxu@dxuuu.xyz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200731010334.47406-1-dxu@dxuuu.xyz>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-[BUG]
-The following script can lead to tons of beyond device boundary access:
+On Thu, Jul 30, 2020 at 06:03:34PM -0700, Daniel Xu wrote:
+> Add a helpful hint in the README to encourage contributors to install an
+> editorconfig plugin. This should help maintain source file consistency
+> in the long term (eg tabs instead of spaces).
+> 
+> Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
 
-  mkfs.btrfs -f $dev -b 10G
-  mount $dev $mnt
-  trimfs $mnt
-  btrfs filesystem resize 1:-1G $mnt
-  trimfs $mnt
-
-[CAUSE]
-Since commit 929be17a9b49 ("btrfs: Switch btrfs_trim_free_extents to
-find_first_clear_extent_bit"), we try to avoid trimming ranges that's
-already trimmed.
-
-So we check device->alloc_state by finding the first range which doesn't
-have CHUNK_TRIMMED and CHUNK_ALLOCATED not set.
-
-But if we shrunk the device, that bits are not cleared, thus we could
-easily got a range starts beyond the shrunk device size.
-
-This results the returned @start and @end are all beyond device size,
-then we call "end = min(end, device->total_bytes -1);" making @end
-smaller than device size.
-
-Then finally we goes "len = end - start + 1", totally underflow the
-result, and lead to the beyond-device-boundary access.
-
-[FIX]
-This patch will fix the problem in two ways:
-- Clear CHUNK_TRIMMED | CHUNK_ALLOCATED bits when shrinking device
-  This is the root fix
-
-- Add extra safe net when trimming free device extents
-  We check and warn if the returned range is already beyond current
-  device.
-
-Link: https://github.com/kdave/btrfs-progs/issues/282
-Fixes: 929be17a9b49 ("btrfs: Switch btrfs_trim_free_extents to find_first_clear_extent_bit")
-Signed-off-by: Qu Wenruo <wqu@suse.com>
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
----
-Changelog:
-v2:
-- Add proper fixes tag
-- Add extra warning for beyond device end case
-- Add graceful exit for already trimmed case
-v3:
-- Don't return EUCLEAN for beyond boundary access
-- Rephrase the warning message for beyond boundary access
-v4:
-- Remove one duplicated check on exiting the trim loop
----
- fs/btrfs/extent-tree.c | 14 ++++++++++++++
- fs/btrfs/volumes.c     | 12 ++++++++++++
- 2 files changed, 26 insertions(+)
-
-diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-index fa7d83051587..6b1b5dfba4b3 100644
---- a/fs/btrfs/extent-tree.c
-+++ b/fs/btrfs/extent-tree.c
-@@ -33,6 +33,7 @@
- #include "delalloc-space.h"
- #include "block-group.h"
- #include "discard.h"
-+#include "rcu-string.h"
- 
- #undef SCRAMBLE_DELAYED_REFS
- 
-@@ -5669,6 +5670,19 @@ static int btrfs_trim_free_extents(struct btrfs_device *device, u64 *trimmed)
- 					    &start, &end,
- 					    CHUNK_TRIMMED | CHUNK_ALLOCATED);
- 
-+		/* CHUNK_* bits not cleared properly */
-+		if (start > device->total_bytes) {
-+			WARN_ON(IS_ENABLED(CONFIG_BTRFS_DEBUG));
-+			btrfs_warn_in_rcu(fs_info,
-+"ignoring attempt to trim beyond device size: offset %llu length %llu device %s device size %llu",
-+					  start, end - start + 1,
-+					  rcu_str_deref(device->name),
-+					  device->total_bytes);
-+			mutex_unlock(&fs_info->chunk_mutex);
-+			ret = 0;
-+			break;
-+		}
-+
- 		/* Ensure we skip the reserved area in the first 1M */
- 		start = max_t(u64, start, SZ_1M);
- 
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index d7670e2a9f39..4e51ef68ea72 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -4720,6 +4720,18 @@ int btrfs_shrink_device(struct btrfs_device *device, u64 new_size)
- 	}
- 
- 	mutex_lock(&fs_info->chunk_mutex);
-+	/*
-+	 * Also clear any CHUNK_TRIMMED and CHUNK_ALLOCATED bits beyond the
-+	 * current device boundary.
-+	 * This shouldn't fail, as alloc_state should only utilize those two
-+	 * bits, thus we shouldn't alloc new memory for clearing the status.
-+	 *
-+	 * So here we just do an ASSERT() to catch future behavior change.
-+	 */
-+	ret = clear_extent_bits(&device->alloc_state, new_size, (u64)-1,
-+				CHUNK_TRIMMED | CHUNK_ALLOCATED);
-+	ASSERT(!ret);
-+
- 	btrfs_device_set_disk_total_bytes(device, new_size);
- 	if (list_empty(&device->post_commit_list))
- 		list_add_tail(&device->post_commit_list,
--- 
-2.28.0
-
+Thanks, I've added references to the coding style and reworded the
+paragraph a bit.
