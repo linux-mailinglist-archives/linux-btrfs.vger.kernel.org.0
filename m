@@ -2,86 +2,102 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17CFB233DB9
-	for <lists+linux-btrfs@lfdr.de>; Fri, 31 Jul 2020 05:36:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 612A8233DC8
+	for <lists+linux-btrfs@lfdr.de>; Fri, 31 Jul 2020 05:41:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731292AbgGaDgT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 30 Jul 2020 23:36:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35176 "EHLO
+        id S1731199AbgGaDlB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 30 Jul 2020 23:41:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730820AbgGaDgT (ORCPT
+        with ESMTP id S1730820AbgGaDlB (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 30 Jul 2020 23:36:19 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9131DC061574
-        for <linux-btrfs@vger.kernel.org>; Thu, 30 Jul 2020 20:36:18 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id k8so7993313wma.2
-        for <linux-btrfs@vger.kernel.org>; Thu, 30 Jul 2020 20:36:18 -0700 (PDT)
+        Thu, 30 Jul 2020 23:41:01 -0400
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C748C061574
+        for <linux-btrfs@vger.kernel.org>; Thu, 30 Jul 2020 20:41:01 -0700 (PDT)
+Received: by mail-io1-xd41.google.com with SMTP id t15so21499570iob.3
+        for <linux-btrfs@vger.kernel.org>; Thu, 30 Jul 2020 20:41:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=AdQJyJqpFN2fR/l7hckq15lT8jtEq5VWWhRVFYg0P/Q=;
-        b=uyKY8BtQdlmEneE0oQsNDF4E/t+y1wSvB2KqCV9g0bDVt+jeoylYPutoHkfJf82ars
-         rnXLnVvF9aMqhiOUvJ2N9gvo9f6sFg3rJJ8cIZscdRvt5DhsILRWM1KZJq0Bgvlz2OfF
-         s1+a+MgXOF9Qq6an90YhmpxBmVco1z2j4aFYU7bJb966sT1X/pAgI+IiiVBsaLdgn+OB
-         kViajbiUci5va/JggfAyBpMMzLEdhQewMi9t4VOIjsXQ9MGR5ogjHON+mG1XulkDpH/c
-         sLxlFWfSN/AVgxFmrdQ8PGd1fI2Twr5ZkM2TUGRoOCxPQcco8c0ACRkNrY6QJ3g/PWCL
-         7IYg==
+         :cc:content-transfer-encoding;
+        bh=L7wI4BTBtbyT11LS7cJ29rQLTo0gUtR79YRgbxjfJuk=;
+        b=iovPxdu8tUGySGpBbIk4I1aAbNdtg6eLiwkhn+IZUjOu+vA11xeDPCNh8tkfmm3FHK
+         4L+f/QBZaR7b26uFsKS8Hc8NUvfRTQGec4zinPN8Mx2S3qvucJbTaBJdW0U9KSDkLwax
+         CIb8JRUOuxjngiLms1UVI7EQ4cpk5v3H22N1KolhmPvypCXAyfEhiYYkOX0KojOUhDKq
+         fbldfGSnsPT8IZlU+yLTHSswKuYrsy2Dniy2Dv0zXllLLcZcEt9vFHrIi3f/aN0PBHHb
+         Lr1LzC4cyb/w7CBPpxG49nhYlLP04dSu7frYw2UrRnUDk/orSOYYUUQEFE0LKtOdtaad
+         CR/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=AdQJyJqpFN2fR/l7hckq15lT8jtEq5VWWhRVFYg0P/Q=;
-        b=TJFmmBOOFciJOphfjhXi1En47VOnVYUs7AnAfBBW4Ib7rovlz4NmKPhHTWujs0xQpJ
-         Je3ZwmqzAMFV5nZGgk3Y2WuUCEp/uhTG5azBtrWRSO7sY7vzUBKGVQ7s1qrUghNZmRUh
-         5h7/4uI7+EA42ED0Oc7fCu0wEtMB4VxT+ntjklQgPonMPyHaXPaFCUa8KOQ1q1iLPAr1
-         qGYnoNyGD8BjzhnKdyK29dgbTzyTLxHgkYn0SOwiQFgI/U3SyIRby2ifFW1fU+S5jybJ
-         6QzS62DyB8bjqK+jZQbPIlH/ZMfO134Nqq26g4qt0KrBuCJHo3sg3X+auw7Mw21/M3Cg
-         /Jng==
-X-Gm-Message-State: AOAM531ZDFRN0KqddJNTG932r+Hnma+e16XdL03WaIZnH8yl6lt7/Xwa
-        qV5ifu81s6fkM17yHKnfIQHQsXWIu00hWlQboF7XbrDv
-X-Google-Smtp-Source: ABdhPJz9Qw7qNFKxCvVtDz2hMO36sMOnbDhn+m+5AzmrLYBLQIQtvvuzuzGeyVtp1DcClegCfqY6cIAzjAiynxbwMws=
-X-Received: by 2002:a1c:a756:: with SMTP id q83mr1840353wme.168.1596166575610;
- Thu, 30 Jul 2020 20:36:15 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=L7wI4BTBtbyT11LS7cJ29rQLTo0gUtR79YRgbxjfJuk=;
+        b=jnbmm+DAA47AOTcyKXJDH6a8n1bjwNp10IYvefc4D1lv2mQmseYPJyvR7BXc1WWE3v
+         6XYW8b3/qOv9+jMkJ0Fmh2wiKTCYGElUUhSi3SURbJ2cZCjp/ML2X21wdmB0Q0K9MXQa
+         qwQLV+bK/2Pp4DdzH/7XtUhtjSv1ardVouDC4wT2xzGqwARnZR1S8H+opETvIUkQr6j8
+         CpRmAKWvNISVIrL7Ew87gRNhJ2rIBWtX7bS8paX7qOws7L/TouCZ2UM0OlhfhiLVRlO2
+         EG0lxDluHkWb4++rirLxTWtbAEepjBWq4tt69OqzYrS6/+wo0Qmpggx2YXcGVbNK2Ep0
+         8d1A==
+X-Gm-Message-State: AOAM530p36vUHktuxj/WliXbTGzKYPUL8Jzi4Owf0nedo0ceO7zSpttD
+        JNIYec3+urBeENI7NVqsVrsnxpaooFdkPeNBaE8=
+X-Google-Smtp-Source: ABdhPJwdiYb0cXma/fbEBNMyf8N271eACmQK2NkRv1qoO7CsA80ip6Ygb1BzaCTn6sJM/wKaL/Wc+CCk8ck/2m6LUqA=
+X-Received: by 2002:a05:6638:2692:: with SMTP id o18mr2731266jat.2.1596166860656;
+ Thu, 30 Jul 2020 20:41:00 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200731001652.GA28434@dcvr> <CAJCQCtS6fHYGBiHpqAJPu+-EoSzEKZ5YEaj4QjNxqPvO+JTACw@mail.gmail.com>
- <20200731032212.GA21797@dcvr>
-In-Reply-To: <20200731032212.GA21797@dcvr>
-From:   Chris Murphy <lists@colorremedies.com>
-Date:   Thu, 30 Jul 2020 21:35:58 -0600
-Message-ID: <CAJCQCtR36ojCgmdUQbyLn_oNQKZn2cnN8FFV7iUWz+pKJaYTfg@mail.gmail.com>
-Subject: Re: raid1 with several old drives and a big new one
-To:     Eric Wong <e@80x24.org>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+References: <20200731010334.47406-1-dxu@dxuuu.xyz>
+In-Reply-To: <20200731010334.47406-1-dxu@dxuuu.xyz>
+From:   Neal Gompa <ngompa13@gmail.com>
+Date:   Thu, 30 Jul 2020 23:40:24 -0400
+Message-ID: <CAEg-Je84RLtJCnjt7e_tVqeW4DJZ0rk=vj-QT+x-b2mxT9yVOQ@mail.gmail.com>
+Subject: Re: [PATCH] btrfs-progs: Update README.md with editorconfig hint
+To:     Daniel Xu <dxu@dxuuu.xyz>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>, kernel-team@fb.com
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Jul 30, 2020 at 9:22 PM Eric Wong <e@80x24.org> wrote:
+On Thu, Jul 30, 2020 at 9:05 PM Daniel Xu <dxu@dxuuu.xyz> wrote:
 >
-> Chris Murphy <lists@colorremedies.com> wrote:
-
-> > When one of the 2TB fails, there's some likelihood that it'll behave
-> > like a partially failing device. Some reads and writes will succeed,
-> > others won't. So you'll need to be prepared strategy wise what to do.
-> > Ideal scenario is a new 4+TB drive, and use 'btrfs replace' to replace
-> > the md concat device. Due to the large number of errors possible with
-> > the 'btrfs replace' you might want to use -r option.
+> Add a helpful hint in the README to encourage contributors to install an
+> editorconfig plugin. This should help maintain source file consistency
+> in the long term (eg tabs instead of spaces).
 >
-> If I went ahead with btrfs alone and am prepared to lose some
-> (not "all") files; could part of the FS remain usable (and the
-> rest restorable from slow backups) w/o involving LVM?
+> Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
+> ---
+>  README.md | 4 ++++
+>  1 file changed, 4 insertions(+)
 >
-> I could make metadata (and maybe system chunks?) raid1c3 or even
-> raid1c4 since they seem small and important enough with ancient
-> HW in play.
+> diff --git a/README.md b/README.md
+> index 537c77c5..2d5f360f 100644
+> --- a/README.md
+> +++ b/README.md
+> @@ -82,6 +82,10 @@ the patches meet some criteria (often lacking in githu=
+b contributions):
+>      substitute in order to allow contributions without much bothering wi=
+th
+>      formalities
+>
+> +btrfs-progs is configured with an `.editorconfig`. Please consider insta=
+lling an
+> +[EditorConfig](https://editorconfig.org/) plugin for your text editor to=
+ help
+> +maintain source file format consistency.
+> +
+>  Documentation updates
+>  ---------------------
+>
+> --
+> 2.27.0
+>
 
-Yes. I'm not sure whether it will mount rw,degraded if 2 devices are
-missing though, it might insist on read-only.
+LGTM.
 
+Reviewed-by: Neal Gompa <ngompa13@gmail.com>
 
--- 
-Chris Murphy
+--=20
+=E7=9C=9F=E5=AE=9F=E3=81=AF=E3=81=84=E3=81=A4=E3=82=82=E4=B8=80=E3=81=A4=EF=
+=BC=81/ Always, there's only one truth!
