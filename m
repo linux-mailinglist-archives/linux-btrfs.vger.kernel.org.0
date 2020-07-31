@@ -2,32 +2,31 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A61A234E9F
-	for <lists+linux-btrfs@lfdr.de>; Sat,  1 Aug 2020 01:35:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB93F234EA5
+	for <lists+linux-btrfs@lfdr.de>; Sat,  1 Aug 2020 01:37:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726347AbgGaXfh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 31 Jul 2020 19:35:37 -0400
-Received: from mout.gmx.net ([212.227.17.22]:46721 "EHLO mout.gmx.net"
+        id S1727067AbgGaXhW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 31 Jul 2020 19:37:22 -0400
+Received: from mout.gmx.net ([212.227.17.22]:48093 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726099AbgGaXfg (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 31 Jul 2020 19:35:36 -0400
+        id S1726099AbgGaXhV (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 31 Jul 2020 19:37:21 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1596238531;
-        bh=N2y/3y3LSjFvxRzB+uVoZik3NnO8JVjH/ttFMp1JbBs=;
+        s=badeba3b8450; t=1596238638;
+        bh=gwvFFwASnkFKlVMp94dfXvpH5+YF5p6Gj5WAz875PP0=;
         h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=iyUIeMw6CjXWskOZLtZDvLH4HXW1TOhS9OicbUKnowhy8DNEBVJQW7WT6sVKNEoAf
-         w+v+vnsJ7WTw8Y+5xYBpqPBNkA9ljScvnY+ZN0ZUHnBz42mtoWeuon9oXVN/riWOw0
-         lgUslwpAGJ98oEvCcqfce0OeSQWzmGELjEdnHzoY=
+        b=T6pAln5xlvw1wRU1ZmJmUASa/AtjDQ5G6LLd/rTXY5mbvD2S6BIBI2HXrCw+rzg8f
+         HfvrLp/+R3mm370zOpO3Sbylinjh3szMfwEqHieTfzlDt8KCfn80nOITw3+OnXqB2K
+         SLKPvUcY3SDfSHz+dIJagNNmjD52RZa6rC9oKcMA=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
 Received: from [0.0.0.0] ([45.77.180.217]) by mail.gmx.com (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mt79F-1kuqc71CNF-00tR1f; Sat, 01
- Aug 2020 01:35:30 +0200
-Subject: Re: [PATCH v4] btrfs: trim: fix underflow in trim length to prevent
- access beyond device boundary
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mz9Z5-1kxcZ40wrL-00wBkK; Sat, 01
+ Aug 2020 01:37:17 +0200
+Subject: Re: [PATCH 0/3] btrfs-progs: convert: better ENOSPC handling
 To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
-References: <20200731112911.115665-1-wqu@suse.com>
- <20200731140807.GM3703@twin.jikos.cz>
+        linux-btrfs@vger.kernel.org
+References: <20200729084038.78151-1-wqu@suse.com>
+ <20200731161634.GP3703@twin.jikos.cz>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -53,137 +52,117 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
  ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
  oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <9ec86d30-96b5-2e80-969e-158342c273ab@gmx.com>
-Date:   Sat, 1 Aug 2020 07:35:26 +0800
+Message-ID: <15958814-4956-12bd-3297-0ce3bc495a87@gmx.com>
+Date:   Sat, 1 Aug 2020 07:37:13 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20200731140807.GM3703@twin.jikos.cz>
+In-Reply-To: <20200731161634.GP3703@twin.jikos.cz>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="AHF7IB0SiSccyFX545YRWYZ3SwzB6kL4y"
-X-Provags-ID: V03:K1:li+noiZspvbzmSKBFODJslxaf+bGl3d2hKfD1UYzx91I7nCRNKI
- /iOIguH20dH8WA7TdHuSgSqdYdBlNrW7YLBZaEhxU0abITLchpx7vLVyfNWZB23aJ8TW5n3
- Dc5wfcneZKY+JNcAlgYc2pgons3ptTOGHMBUGADpHHhaRtIH4xRwAsW5PH1lKxKUD6OquPX
- DLlBTK7KdNuYVtjrYpkIw==
+ boundary="XR8fCFWXpxMlL8LURJLDIruTRIGubgByO"
+X-Provags-ID: V03:K1:PwWvJRSCQAVem5RqpBmp0exRN9uup2TCEMQ1T5Ct5seYFtdhvqi
+ l83qm2GTvscnONeXWR+GsWroPdjtkvAdyreTca6i7usXKAppfxnk/VIT+2Nnhm//QjloYXF
+ v48jkbaj9bwa+Zfco78awSbltmpqtJBgSob+cFZoVRbtU9BgNDo4lCOh2o60SUZETrMBZT4
+ bXrL/zGuu5eW15J2Bo5dw==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:BXDpE5Jmrbs=:k7cc7cYfbwCN7zohL2BH/N
- iXzr786iEzrU8OQmrkMDKU3cA52R5+g78LoIb7Jl9Gf4aFFBgKSy2xvA2yGEmytvSEh7atAA3
- hO1R7fuSyyEfykEz57R5xUeZ057cIGU2tWxqgKrPUQIKYT7sVvVrlCLlorE9Z8gylEm7xkBrD
- q14xQSsghmhvfjhPxPLXV2W8C1y+gci6gt8CgaNRxRZ+c5NTXyCuhGKjq/8AWQhdWMOF/rMkZ
- doS2wOMzLd0rQpArMsl7Y5fbRPN/aHZbcAib2x0/wOwtoSh1BZHrinEh9u28dEiVuYHpP/FCm
- n/YQ5fOUpzJKGGpy++pj6WZ/E3shFJHhYcTz3Pk25zOs30KJ3AcEIvML7TOv0TGu1Ftut/VmG
- X7Q6IjjfBc9KXbT5Dd07nHC24fE5ZGLYw1qXZm8TBZ7a9BiCEzgJ/UVxmXT1tWCE9sQZthTRI
- Tvk9p0+YX2x2QwKMkzyftz9GEcpyqdeovcPcdKpgXudjoOK2Iw9lVr3g+++OemZA4fgIZH2gM
- RMkhlUlD5yCyh+27zRdA5nx47ngLsCLAMGwAQfzHpY+RBWuDza37MRvojvnfQVWq9xzh850qa
- E97XJN+CfMNrxpIV3kFd73L4z0NYwQcEsCBht0aIerYTPLYL7yFeZxKW7aHHXmIro2DvlfwTK
- oFzwEr9kVXMeZKEWFTkhUza4qdarR7P8XVFYkNTCnO9pEfVzwRRwQB8wU/mi3085SrR64Xtzv
- HqOqHp9em33p3E609nnPUbdwkhK7NXbREKArSZy4TCEX9A6e9BChXdpX2LxT6yBORdKyKxFsz
- aguywoKY071o4VUa9cHQ9jIHZEoNuhKC7aS01uoMczr9fjaAvBI/JRjH3pH3nN19zy8x/KAQE
- BkfLsFxRNQ0uk3WL7Xxug3sDHnchBuAs4YZkMQpR0Pk7n7tA8DbPdZs0rF4PvG4DBx6T4cIF3
- JPfULpgDDEYAWTMowTUZdQZAt6kKDW4cOxSih9KFz1MOpPuTY8x8xMdgcKmvAw6YE2Q/mSh0H
- v00v4j/ChlD65sX5QRlagQKrO+XI9+B4YWFk5jLfTwPND0+3EaurNSxHKAwIDqwsNLYcjvbxr
- aG6itK190HwKaGi84sRBDEVqroEjUzUdnY+buWpQAm760d+OwWDAJPCRYrAkb6zvzUA45fnX3
- 6+XB4sKGIx7r8AhYTC6v8ICqQueF0amOnTpYKkFzp/zrAbMSkk7KZWVAMDn3C4XrRBIT5hU0V
- kPbSz/TpR/dlPdhDAaLL9ogp2Lbz5Xbbp/4cwag==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:ETPGO+hDXpo=:lGSUilBAbulsc/LG6Pl/Yg
+ Z/AUEyAqGtJ8g9DAGxGKjZDuWT4de8ZgS3GflsVuEQ3mLqBSWJtSbzdqrCGlu3zx4Ol8yQDwt
+ S2hFixy9gA2ZFsnfC3h2JSK3QBye4yTg7BcGiiR+OewhWGKmmBu7iUHaj23RSQg2RvDoHdiHY
+ Gf5d0QM0JzK/dPCeCVbZWINqwRhJ3LBtCgDiQRziaQrH00E5QoCFxx46W42yhfonjEPMGhNnh
+ LYCDEcOo9Pw159+DPcFZdU7fvn0P1WvjZLdvmVT1vAChRIpTFXYk2tUcTm+hgJVbTZ9OEv3nE
+ yGCDAEiC1slppL457nq//ZbaKEeeVYHfpMh7IvE8kQaT1u0Sa0M9C0hyEZk/Oy1ND7RITQECK
+ G0bD8l66eHOlQQokYmlTQGHwW+MFjtMVODaW839KudgrlzNIGNlVTPwm0naKuub5lixwAZifB
+ 38F/Ohl4VjsQPciwqrypAzW3qPI3qpakA0RGpff/hRA6jN/4CxY2//sTA/OJ0jF/9ONjl2fbO
+ znMQYVmuqxTSbz6BkaMGlw5sLkebnq6O41f/4k7LNtaWiMC/f7ITpI2UevzYR8+XnKk60FvhO
+ 1/ztdAoQ998FvGgl6wGBoaEjegxlPIjC+0SzU/GmEr/E2KH8mgOafNFT6pBl0LKb41zkLFbv5
+ IVk7tjUrGc7NtCzC3SXi3LSlAIJfJhc5CZpzhvWhQZZZQgVlqrAB0HhPd0DFoFIxAsf1N6B7E
+ eF2mqa9LDXGECar/WTkbP7vxzCGUpXtcYmKbc3SGDSO8DzdR1zr8IsCrizl1i0yT9fCKfCFqt
+ kYTsLmpz4Ry5wR3thS/dlYbQoA/lCeX+d2aZC5rAei9IxkkXthiLV0b/UA27/NLLdZ5Gj5VXP
+ 457P7kJ5HYmbgoKKlRJ0k4SUiPEmC5raRl7dtyhR2nS4Im7LnUAScf25XfIGZOgWcx61hhd9m
+ eFyGWEFwBXZDU6hQUM/yG9z/uJzzCOpv562dzxYpb4jszlluhGV3SB+kvPg5MZ0+9jIr0fnCm
+ adVVUjek9+cW7wJsT7UnrVqA8GWPkNtlQ4IHOLxCkPi1vQUrfdM3zO1BfZel+IiINR97dLjBE
+ F9Y5FaCCwT8Y71lHL7MEWwV/Spj7uau9YvujpI8rVca6pSe57L+GVsMAox+DXfbGaS4IUIEfT
+ hO+lBewTlIn90Vla8BWuCwO6KARuU1NBy7ymFxA22kjlThFPnamAklie7lTwB6WCeDBVwsIm/
+ Qma2+5F5QUfaK1ZgQESvQ43yPMaKLCF8I0+1CeQ==
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---AHF7IB0SiSccyFX545YRWYZ3SwzB6kL4y
-Content-Type: multipart/mixed; boundary="Dazns3j9JbH49cuMN2q4Jkpz4uJVGjPD9"
+--XR8fCFWXpxMlL8LURJLDIruTRIGubgByO
+Content-Type: multipart/mixed; boundary="UPj7xv3QjF7bFIHhEPhlLRxcfNqOEiyKz"
 
---Dazns3j9JbH49cuMN2q4Jkpz4uJVGjPD9
+--UPj7xv3QjF7bFIHhEPhlLRxcfNqOEiyKz
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
 
 
 
-On 2020/7/31 =E4=B8=8B=E5=8D=8810:08, David Sterba wrote:
-> On Fri, Jul 31, 2020 at 07:29:11PM +0800, Qu Wenruo wrote:
->> --- a/fs/btrfs/volumes.c
->> +++ b/fs/btrfs/volumes.c
->> @@ -4720,6 +4720,18 @@ int btrfs_shrink_device(struct btrfs_device *de=
-vice, u64 new_size)
->>  	}
->> =20
->>  	mutex_lock(&fs_info->chunk_mutex);
->> +	/*
->> +	 * Also clear any CHUNK_TRIMMED and CHUNK_ALLOCATED bits beyond the
->> +	 * current device boundary.
->> +	 * This shouldn't fail, as alloc_state should only utilize those two=
-
->> +	 * bits, thus we shouldn't alloc new memory for clearing the status.=
-
+On 2020/8/1 =E4=B8=8A=E5=8D=8812:16, David Sterba wrote:
+> On Wed, Jul 29, 2020 at 04:40:35PM +0800, Qu Wenruo wrote:
+>> This patchset is to address a bug report [1], where even with the bit
+>> overflow bug fixed, the user is still unable to convert an ext4 fs to
+>> btrfs.
+>>
+>> The error is -ENOSPC, which triggers BUG_ON() and brings the end to th=
+e
+>> convertion.
+>>
+>> We're still waiting for the image dump to determine what's the real
+>> cause is, but considering the user is still reporting around 40% free
+>> space, I guess it's something wrong with the extent allocator.
+>>
+>> But still, we can enhance btrfs-convert to make it handle errors more
+>> gracefully, with better error message, and even some debugging info li=
+ke
+>> the available space / total space ratio.
+>>
+>> Qu Wenruo (3):
+>>   btrfs-progs: convert: handle errors better in ext2_copy_inodes()
+>>   btrfs-progs: convert: update error message to reflect original fs
+>>     unmodified cases
+>>   btrfs-progs: convert: report available space before convertion happe=
+ns
 >=20
-> If this fails or not depends on implementation details of
-> clear_extent_bits and this comment will get out of sync eventually, so =
-I
-> don't think it should be that specific.
+> Added to devel, thanks. With the fixup and I've updated the space repor=
+t
+> to look like this:
 >=20
-> If the new_size is somewhere in the middle of an existing state, it'll
-> need to be split anyway, no?
-
-Nope. Because in alloc_state we only have two bits utilized,
-CHUNK_TRIMMED and CHUNK_ALLOCATED.
-
-Thus what we're doing is to clear all utilized bits.
-
+> create btrfs filesystem:
+>         blocksize: 4096
+>         nodesize:  16384
+>         features:  extref, skinny-metadata (default)
+>         checksum:  crc32c
+> free space report:
+>         total:     2147483648
+>         free:      1610547200 (75.00%)
 >=20
-> alloc_state |-----+++++|
-> clear             |------------------------- ... (u64)-1|
->=20
-> So we'd need to keep the state "-" and unset bits only from "+", and
-> this will require a split.
+Wow, that looks even better!
 
-In this case, we would only reduce the the size of the existing status,
-or just remove it completely.
-
->=20
-> But I still have doubts about just clearing the range, why are there an=
-y
-> device->alloc_state entries at all after device is shrunk?
-
-Because the alloc_state is mostly only utilized by trim facility, thus
-existing functions won't bother clearing/setting it.
-
-In this particular case, previous fstrim run would set the CHUNK_TRIMMED
-bit for all unallocated range (except the super reserve).
-Then shrink doesn't clear the exceed range, and cause problem.
-
-Thus clearing the bit in btrfs_shrink_device() makes sense.
-
-> Using
-> clear_extent_bits here is not wrong if we look at the end result of
-> clearing the range, but otherwise it leaves some state information
-> and allocated memory behind.
->=20
-Not that complex case, just plain not fully considered corner case.
-
-Thanks,
+Thanks for the hot fix and enhanced UI!
 Qu
 
 
---Dazns3j9JbH49cuMN2q4Jkpz4uJVGjPD9--
+--UPj7xv3QjF7bFIHhEPhlLRxcfNqOEiyKz--
 
---AHF7IB0SiSccyFX545YRWYZ3SwzB6kL4y
+--XR8fCFWXpxMlL8LURJLDIruTRIGubgByO
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl8kqr4ACgkQwj2R86El
-/qjf0Qf/bKIWTzRIMbAPU4twJsHd4HRXEZSlasxNMW/e4hnYlN4RuvRVZayDRx/Z
-6Yvyp7paJL1c65sVAxKyP9aHCR+xzx0Cb9Uqr6zh63r1EUKTc+aahQysSN2WZDAb
-Ei6kan/7SOlJYk1sCdiPza73ZrY2m+iCLuGiiXbAEtcq3STCtaDtawqevNmyZGTy
-qXJSDEY8L7nth3ehdyhMyl/OwSOFGHKGwYzmI9Tk217xjhBkTEZcvHP+7UausYnv
-fGYZMgWBV55YV8TM8fIofylloKRjNxnnMJXnF8xiFemTS59lZ6dhYiMcu/qgv8yV
-uwYeDs8TJoJ5ta+rKeJf3+Iiwj27tw==
-=X8es
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl8kqykACgkQwj2R86El
+/qj3ZAf+LDX7Ks2ohXmjNUFbqvHQw5nowGrqah1hUsBquGnQG9nkDvxgN7e4yzTM
+q/M24M53dLpZSfzN5Q6j98fNheM8BmT9k1shcZejQHzjoo6SlxCzvTgGmH0LBsZY
+6iGfB21lX5WsBulW0jriCM2hfYIzOqz6y3j+pg+8+W0V73IyscGZKOAFu3ATNTew
+5U2h+JiSQbzVsI4eYLx9qZReeJbX6pC3+6i2USBJ5LNakxBC0UI97kls54aaxryq
+qAB1Rq40ycoVL0kuiYl21RHbJ/XN4h64ezFH+XQ9uVx3J+Gxkgw37Cgoms1AMKe/
+oVoJvK/c/+G6f7iV0FliQ5iUidWuYQ==
+=qcyH
 -----END PGP SIGNATURE-----
 
---AHF7IB0SiSccyFX545YRWYZ3SwzB6kL4y--
+--XR8fCFWXpxMlL8LURJLDIruTRIGubgByO--
