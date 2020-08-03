@@ -2,75 +2,116 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BCDC23A011
-	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Aug 2020 09:09:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C1C323A020
+	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Aug 2020 09:14:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725996AbgHCHJE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 3 Aug 2020 03:09:04 -0400
-Received: from mx2.suse.de ([195.135.220.15]:49434 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725992AbgHCHJE (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 3 Aug 2020 03:09:04 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id B6E5BADE1;
-        Mon,  3 Aug 2020 07:09:17 +0000 (UTC)
-Subject: Re: [PATCH] btrfs: sysfs: fix NULL pointer dereference at
- btrfs_sysfs_del_qgroups()
-To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-References: <20200803062011.17291-1-wqu@suse.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <91008ccd-943f-d6ce-16c2-3cc201c9aa48@suse.com>
-Date:   Mon, 3 Aug 2020 10:09:02 +0300
+        id S1725806AbgHCHOT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 3 Aug 2020 03:14:19 -0400
+Received: from de-smtp-delivery-102.mimecast.com ([51.163.158.102]:20566 "EHLO
+        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725958AbgHCHOS (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 3 Aug 2020 03:14:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
+        t=1596438853;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=jhTHvHNhSPFdCL7E4M+gijXetfoN2Jr5+RVv9K/4B1w=;
+        b=dF1l63KY50jKdIMkcVz3VEzeJ4FeAnFyp0eQXVn6hO0QLKo6aORsrmqcK3JB57o5lEc6xA
+        O12RCWZxAsxJTWFcZTML5OlEycCWKFJtD2QJAxsw3UbtuP06Wfeej8B4/md5ZwBpa1MXWp
+        tS37bjG6uV8KGVN9iZIlv+mTH9Y3VMI=
+Received: from EUR04-DB3-obe.outbound.protection.outlook.com
+ (mail-db3eur04lp2058.outbound.protection.outlook.com [104.47.12.58]) (Using
+ TLS) by relay.mimecast.com with ESMTP id de-mta-5-NgPb4grqOomCmJ4C-SCM4g-1;
+ Mon, 03 Aug 2020 09:14:12 +0200
+X-MC-Unique: NgPb4grqOomCmJ4C-SCM4g-1
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=mxySrz3963tU/7Cg1U0LqrM3PMF8O5ZmK2ZWtY7kNCjmzUln7NuNonPWZjQXAJpNL0A7NMOXAoyt5NRJL8pWVGBcGG+Vr7oXtp47cMz+rNLn5EOn01lJKO3PARrjfdW0QG/OzvJI/vUJLoi+0L0rtiT7FqGDYI3mD2qIb9GDgKGMrP0U8o6C/a9mC0YkTciQpzuyr+0BaG5GI/HG6ZHfVOB78thfG2vqgL77hSIMQMFt+zNbrXw/cnlCKkZLjLb/DXyDQMNVUvS49Fry4v9vLw7j6x4hvkus2eXp4gpEA1pwwMLk6udNK0ALDid8dLokUmKtoePTiaAB7jlhSrWGzQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=CVfkM5Hfk5gOh2IO7AN4x6unxplaN2yIkVOVr1eTyd0=;
+ b=kp35QLpixQgzkCOTZ2fMiOAWoJhCs+7YIubFbaQ0N0OkYrmdZ8cGk7kVzI9A4VN4L1eBeSqHKperMT1LYvuIe+Lx3v2+SNiaOmArC/kMpgVzRQtgjsA9+iE/oCwdLftN/VY57RNHooqcooydBDYLesrtM1AcjZA73xpBcuGjN0kL/sui654DJ84fOFrXjv0HjajJT9ROCgEl+9iTnSIc8QERi50SGX5iiS2qlDkFA8EA7+O8S6tKJRi6n1CJx9ZwPOad+8a9rElP7Rv0O9i6alFS7SBIbXydE11HHsyjgJEBObuGb7bn1hB2ZO7r9UIbixWMYwLmDaxcc3AMku46Xg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=suse.com;
+Received: from AM0PR04MB6195.eurprd04.prod.outlook.com (2603:10a6:208:13c::13)
+ by AM0PR0402MB3346.eurprd04.prod.outlook.com (2603:10a6:208:23::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3239.21; Mon, 3 Aug
+ 2020 07:14:11 +0000
+Received: from AM0PR04MB6195.eurprd04.prod.outlook.com
+ ([fe80::e49c:64ce:47e0:16]) by AM0PR04MB6195.eurprd04.prod.outlook.com
+ ([fe80::e49c:64ce:47e0:16%3]) with mapi id 15.20.3239.021; Mon, 3 Aug 2020
+ 07:14:11 +0000
+Subject: Re: [PATCH] btrfs-progs: volumes: check stripe end against device
+ boundary
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+References: <20200803070630.33234-1-wqu@suse.com>
+Autocrypt: addr=wqu@suse.com; keydata=
+ mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAG0GFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPokBTQQTAQgAOAIbAwULCQgHAgYVCAkKCwIE
+ FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJdnDWhAAoJEMI9kfOhJf6oZgoH
+ 90uqoGyUh5UWtiT9zjUcvlMTCpd/QSgwagDuY+tEdVPaKlcnTNAvZKWSit8VuocjrOFbTLwb
+ vZ43n5f/l/1QtwMgQei/RMY2XhW+totimzlHVuxVaIDwkF+zc+pUI6lDPnULZHS3mWhbVr9N
+ vZAAYVV7GesyyFpZiNm7GLvLmtEdYbc9OnIAOZb3eKfY3mWEs0eU0MxikcZSOYy3EWY3JES7
+ J9pFgBrCn4hF83tPH2sphh1GUFii+AUGBMY/dC6VgMKbCugg+u/dTZEcBXxD17m+UcbucB/k
+ F2oxqZBEQrb5SogdIq7Y9dZdlf1m3GRRJTX7eWefZw10HhFhs1mwx7kBDQRZ1YGvAQgAqlPr
+ YeBLMv3PAZ75YhQIwH6c4SNcB++hQ9TCT5gIQNw51+SQzkXIGgmzxMIS49cZcE4KXk/kHw5h
+ ieQeQZa60BWVRNXwoRI4ib8okgDuMkD5Kz1WEyO149+BZ7HD4/yK0VFJGuvDJR8T7RZwB69u
+ VSLjkuNZZmCmDcDzS0c/SJOg5nkxt1iTtgUETb1wNKV6yR9XzRkrEW/qShChyrS9fNN8e9c0
+ MQsC4fsyz9Ylx1TOY/IF/c6rqYoEEfwnpdlz0uOM1nA1vK+wdKtXluCa79MdfaeD/dt76Kp/
+ o6CAKLLcjU1Iwnkq1HSrYfY3HZWpvV9g84gPwxwxX0uXquHxLwARAQABiQE8BBgBCAAmAhsM
+ FiEELd9y5aWlW6idqkLhwj2R86El/qgFAl2cNa4FCQlqTn8ACgkQwj2R86El/qhXBAf/eXLP
+ HDNTkHRPxoDnwhscIHJDHlsszke25AFltJQ1adoaYCbsQVv4Mn5rQZ1Gon54IMdxBN3r/B08
+ rGVPatIfkycMCShr+rFHPKnExhQ7Wr555fq+sQ1GOwOhr1xLEqAhBMp28u9m8hnkqL36v+AF
+ hjTwRtS+tRMZfoG6n72xAj984l56G9NPfs/SOKl6HR0mCDXwJGZAOdtyRmqddi53SXi5N4H1
+ jWX1xFshp7nIkRm6hEpISEWr/KKLbAiKKbP0ql5tP5PinJeIBlDv4g/0+aGoGg4dELTnfEVk
+ jMC8cJ/LiIaR/OEOF9S2nSeTQoBmusTz+aqkbogvvYGam6uDYw==
+Message-ID: <6b0bc908-b048-1b7c-576f-fb951ab0c7c4@suse.com>
+Date:   Mon, 3 Aug 2020 15:13:58 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20200803062011.17291-1-wqu@suse.com>
+ Thunderbird/68.11.0
+In-Reply-To: <20200803070630.33234-1-wqu@suse.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+X-ClientProxiedBy: TYAPR01CA0010.jpnprd01.prod.outlook.com (2603:1096:404::22)
+ To AM0PR04MB6195.eurprd04.prod.outlook.com (2603:10a6:208:13c::13)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [0.0.0.0] (45.77.180.217) by TYAPR01CA0010.jpnprd01.prod.outlook.com (2603:1096:404::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3239.17 via Frontend Transport; Mon, 3 Aug 2020 07:14:09 +0000
+X-Originating-IP: [45.77.180.217]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 7f1d645b-2482-4ff0-c271-08d8377cd1ef
+X-MS-TrafficTypeDiagnostic: AM0PR0402MB3346:
+X-Microsoft-Antispam-PRVS: <AM0PR0402MB3346BCC681EA4A7F44F7B44FD64D0@AM0PR0402MB3346.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: fl2RmLbgwvbEWbDEfnSVwiBSKev8s4T5ZnV71mwQZEWPEt11NGETU73aPmzKNk8Ddxv4Smtz4iqd5ZDx6901wrpkzwnwVn+CSJuHC9zeB65OInzDeZPkxcMXHb1uv8obycHvdiOl46YNKsut7vvmtlwwJ9Dy/j4AtEO5yVq67xV9D27XkMShfdBPzvNIpcMjI7KcJ5mrIoRRoLSnDt+o3SHbePmO4ceV8IB5DvGMk/Cn1QP/K43oYHuuneIzIQrxDtESgzNq1+B8amqDY9shbzsLKkzeqiGsO5LvF3qy8Kf9IQQJpVD9z9yWXNe9PAxUyaaFJ4aw3yVQ3ckI9KOSl5x7j5GXcr7Rgt/kG8XvRrgDfR1VaTMjqO+07RCJJHDLoABRBOfpwXTLdY/kAlmEAy690atoWAJBmT0ipauABVU=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB6195.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(39850400004)(136003)(366004)(346002)(396003)(376002)(478600001)(31686004)(16576012)(6666004)(316002)(36756003)(6916009)(6706004)(66556008)(66476007)(956004)(66946007)(186003)(55236004)(6486002)(2616005)(8936002)(52116002)(83380400001)(26005)(2906002)(5660300002)(86362001)(31696002)(8676002)(16526019)(78286006)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: zL+JMbIeIeb9wo0fLRfoBIyg0Vm+plNXATPuON0E31plVUlROla0MoKd9jQ9v4Qrh65pJs685SEtMF7VdSpFbovrJ5bA7J091/tPAJJVnksmMIl3w890g3w7tUM9OXv0wfj9RTjv177zaG7heWWKpf4FlqTtfsCHVkmmHHkmC5yTgpSdn4L21tTve05CdEBKKV2v2jdoHe+NKSQYZ+KoFNX4ZPD1oHxCSfyLakI4Y5j/q3tW22pkGxvIj6GC2V8hoiN8CbtYfaQW3AHeNrY64PcLdRmZxkMYPISJL18S3ihYSw+QLDASHviAWqzqa3A38BsgqB1fs5tpNGMQ8n0gTzpiStir0RlpOP+xbS4e2xCHsVIbpudAAqcKfDyXIhXObZWTwsJjVo9/vUVdsjYRSl3sEbrWVUoFk+uH+hUvGIlGduOBlSkoOqoNneeKul8vuKzk2Kex7gUdWvRrZR3njuO1RbrM/JJqQNrjAfg0ui2cAe+3ym8yhg4YmZ4ZRcnWnxyH9lNJHP6FZLhBKl5+U0ciXzhiXsrRePG4tEL3zUrrkRTxuzjQ7uuDApQ1hYz6+IuwasBeGmXB/1TlLoFu3sTia+SQnGJfOdwDCB/zgFmGpjPyzRmQyddGpLYZ5nU10q0+9eBOF/QLlXKVgrLFZA==
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7f1d645b-2482-4ff0-c271-08d8377cd1ef
+X-MS-Exchange-CrossTenant-AuthSource: AM0PR04MB6195.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Aug 2020 07:14:11.1857
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: dv45PDHhOdrVnR1G1TRPqHGM/k/6NvCeJGM+WDgjzcJwn9YjoPHYEMK+PjBH5idH
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR0402MB3346
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
@@ -78,80 +119,78 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 3.08.20 г. 9:20 ч., Qu Wenruo wrote:
-> [BUG]
-> With next-20200731 tag (079ad2fb4bf9eba8a0aaab014b49705cd7f07c66),
-> unmounting a btrfs with quota disabled will cause the following NULL
-> pointer dereference:
-> 
->   BTRFS info (device dm-5): has skinny extents
->   BUG: kernel NULL pointer dereference, address: 0000000000000018
->   #PF: supervisor read access in kernel mode
->   #PF: error_code(0x0000) - not-present page
->   CPU: 7 PID: 637 Comm: umount Not tainted 5.8.0-rc7-next-20200731-custom #76
->   RIP: 0010:kobject_del+0x6/0x20
->   Call Trace:
->    btrfs_sysfs_del_qgroups+0xac/0xf0 [btrfs]
->    btrfs_free_qgroup_config+0x63/0x70 [btrfs]
->    close_ctree+0x1f5/0x323 [btrfs]
->    btrfs_put_super+0x15/0x17 [btrfs]
->    generic_shutdown_super+0x72/0x110
->    kill_anon_super+0x18/0x30
->    btrfs_kill_super+0x17/0x30 [btrfs]
->    deactivate_locked_super+0x3b/0xa0
->    deactivate_super+0x40/0x50
->    cleanup_mnt+0x135/0x190
->    __cleanup_mnt+0x12/0x20
->    task_work_run+0x64/0xb0
->    exit_to_user_mode_prepare+0x18a/0x190
->    syscall_exit_to_user_mode+0x4f/0x270
->    do_syscall_64+0x45/0x50
->    entry_SYSCALL_64_after_hwframe+0x44/0xa9
->   ---[ end trace 37b7adca5c1d5c5d ]---
-> 
-> [CAUSE]
-> Commit 079ad2fb4bf9 ("kobject: Avoid premature parent object freeing in
-> kobject_cleanup()") changed kobject_del() that it no longer accepts NULL
-> pointer.
-> 
-> Before that commit, kobject_del() and kobject_put() all accept NULL
-> pointers and just ignore such NULL pointers.
-> 
-> But that mentioned commit needs to access the parent node, killing the
-> old NULL pointer behavior.
-> 
-> Unfortunately btrfs is relying on that hidden feature thus we will
-> trigger such NULL pointer dereference.
-> 
-> [FIX]
-> Instead of just saving several lines, do proper fs_info->qgroups_kobj
-> check before calling kobject_del() and kobject_put().
-> 
+On 2020/8/3 =E4=B8=8B=E5=8D=883:06, Qu Wenruo wrote:
+> There is a report of kernel generationg READ bio access beyond device
+> boundary.
+>=20
+> To make sure it's not caused by on-disk chunk items, add extra stripe
+> check against device total_bytes so that btrfs check can detect such
+> problem early on.
+
+To add more info on this, kernel can already detects such problem at
+mount time, by verify_one_dev_extent() on each dev extent read and
+compare it against existing chunks.
+
+Thus there is no need to enhance kernel already.
+
+Thanks,
+Qu
+
+>=20
 > Signed-off-by: Qu Wenruo <wqu@suse.com>
-
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
-
 > ---
->  fs/btrfs/sysfs.c | 8 +++++---
->  1 file changed, 5 insertions(+), 3 deletions(-)
-> 
-> diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
-> index 104c80caaa74..c8df2edafd85 100644
-> --- a/fs/btrfs/sysfs.c
-> +++ b/fs/btrfs/sysfs.c
-> @@ -1565,9 +1565,11 @@ void btrfs_sysfs_del_qgroups(struct btrfs_fs_info *fs_info)
->  	rbtree_postorder_for_each_entry_safe(qgroup, next,
->  					     &fs_info->qgroup_tree, node)
->  		btrfs_sysfs_del_one_qgroup(fs_info, qgroup);
-> -	kobject_del(fs_info->qgroups_kobj);
-> -	kobject_put(fs_info->qgroups_kobj);
-> -	fs_info->qgroups_kobj = NULL;
-> +	if (fs_info->qgroups_kobj) {
-> +		kobject_del(fs_info->qgroups_kobj);
-> +		kobject_put(fs_info->qgroups_kobj);
-> +		fs_info->qgroups_kobj = NULL;
+>  volumes.c | 29 +++++++++++++++++++++++++++++
+>  1 file changed, 29 insertions(+)
+>=20
+> diff --git a/volumes.c b/volumes.c
+> index 538f799e7211..0467dd63d5cb 100644
+> --- a/volumes.c
+> +++ b/volumes.c
+> @@ -1843,6 +1843,7 @@ int btrfs_check_chunk_valid(struct btrfs_fs_info *f=
+s_info,
+>  	u64 type;
+>  	u32 chunk_ondisk_size;
+>  	u32 sectorsize =3D fs_info->sectorsize;
+> +	int i;
+> =20
+>  	/*
+>  	 * Basic chunk item size check.  Note that btrfs_chunk already contains
+> @@ -1953,6 +1954,34 @@ int btrfs_check_chunk_valid(struct btrfs_fs_info *=
+fs_info,
+>  		return -EIO;
+>  	}
+> =20
+> +	/*
+> +	 * Stripe check against device boundary
+> +	 */
+> +	for (i =3D 0; i < num_stripes; i++) {
+> +		struct btrfs_device *dev;
+> +		u64 physical;
+> +		u64 devid;
+> +		u64 stripe_len;
+> +
+> +		devid =3D btrfs_stripe_devid_nr(leaf, chunk, i);
+> +		physical =3D btrfs_stripe_offset_nr(leaf, chunk, i);
+> +		stripe_len =3D calc_stripe_length(type, length, num_stripes);
+> +		dev =3D btrfs_find_device(fs_info, devid, NULL, NULL);
+> +		/*
+> +		 * Device not found? Then we may be in the bootstrap process for
+> +		 * system chunks. Skip.
+> +		 */
+> +		if (!dev)
+> +			continue;
+> +		if (physical + stripe_len > dev->total_bytes) {
+> +			error(
+> +"chunk %llu stripe %d is beyond device boundary: devid %llu total_bytes =
+%llu stripe start %llu len %llu",
+> +				logical, i, devid, dev->total_bytes, physical,
+> +				stripe_len);
+> +			return -EUCLEAN;
+> +		}
 > +	}
+> +
+>  	return 0;
 >  }
->  
->  /* Called when qgroups get initialized, thus there is no need for locking */
-> 
+> =20
+>=20
+
