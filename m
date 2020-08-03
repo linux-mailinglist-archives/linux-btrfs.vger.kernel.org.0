@@ -2,108 +2,157 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D56AB23A077
-	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Aug 2020 09:47:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4965523A0B1
+	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Aug 2020 10:12:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725945AbgHCHrt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 3 Aug 2020 03:47:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55760 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725933AbgHCHrs (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 3 Aug 2020 03:47:48 -0400
-Received: from hz.preining.info (hz.preining.info [IPv6:2a01:4f9:2a:1a08::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA144C06174A
-        for <linux-btrfs@vger.kernel.org>; Mon,  3 Aug 2020 00:47:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=preining.info; s=201909; h=In-Reply-To:Content-Type:MIME-Version:References
-        :Message-ID:Subject:To:From:Date:Sender:Reply-To:Cc:Content-Transfer-Encoding
-        :Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=4g5nMoWh5s0VXRfXHELzAL8yum2edVO/swpF7fIEIrQ=; b=mrC/5FiZF8Lz2nsbK4gLadHcz1
-        oVDzs/kCDtgVne98Vrf8r6LZtkqGGEpKQk/zxMx4HsRvtp8uj72EJbuoo89E40M2b6VHoisSWkA+A
-        /9RxiY1KijUPhHJoswTjxgQvm+cDrd9UgME7A3C08r6IivhzO8q9ph0dnvTdcKHUka/WA/4iaMOrq
-        C+QN67w6Ei2t4/MOHOaH6rux70cUWKXdxn4pPds46w61vgAnhZhcPJgBy64zgURHA1z+frSpj7SOc
-        Ivc/9mfTwO8SGa3ljscYTHU53cwCZLWNc07lGRMgQeWUo/9/3W67SOF3SRHKllQwb6rXI/zfK4XfI
-        k+zgayGQ==;
-Received: from tvk213002.tvk.ne.jp ([180.94.213.2] helo=burischnitzel.preining.info)
-        by hz.preining.info with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <norbert@preining.info>)
-        id 1k2VCC-0006lg-Em
-        for linux-btrfs@vger.kernel.org; Mon, 03 Aug 2020 07:47:44 +0000
-Received: by burischnitzel.preining.info (Postfix, from userid 1000)
-        id A00AB983AF4E; Mon,  3 Aug 2020 16:47:41 +0900 (JST)
-Date:   Mon, 3 Aug 2020 16:47:41 +0900
-From:   Norbert Preining <norbert@preining.info>
-To:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Subject: Re: replacing a disk in a btrfs multi disk array with raid10
-Message-ID: <20200803074741.GB24782@burischnitzel.preining.info>
-References: <20200803052651.GA685777@bulldog.preining.info>
- <CAJCQCtSeZCVpnxeip6D1nRb-nuvTYyJdY2SFWeDUQMV0BnAbyw@mail.gmail.com>
+        id S1725884AbgHCIM0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 3 Aug 2020 04:12:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58434 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725806AbgHCIM0 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 3 Aug 2020 04:12:26 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 24B7D2065E;
+        Mon,  3 Aug 2020 08:12:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1596442344;
+        bh=RKalgdiYlR+G0pvUtSEnO+u1nBVfhaI4/jDMjgGDEWc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=azvxcqEaIVIboo52XNzP9zs6V6Pcoh9pK5mQ/fTB2/sef6cbFsLw3tuOS6+9Cmm8G
+         S6thU+2qlTL6nwSDlHCSOVKjA5S1FSkbzwwmtUreuKz1MF4EeyNxqrw7fPOhAS/F2H
+         v9WBGz+V92wJl30PSn/+3HLbC5vzptiRHq2JJyGc=
+Date:   Mon, 3 Aug 2020 10:12:05 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Guenter Roeck <guenter@roeck-us.net>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH] kobject: Avoid premature parent object freeing in
+ kobject_cleanup()
+Message-ID: <20200803081205.GA493272@kroah.com>
+References: <1908555.IiAGLGrh1Z@kreacher>
+ <d1e90fa3-d978-90ae-a015-288139be3450@gmx.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAJCQCtSeZCVpnxeip6D1nRb-nuvTYyJdY2SFWeDUQMV0BnAbyw@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <d1e90fa3-d978-90ae-a015-288139be3450@gmx.com>
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi Chris,
-
-thanks for your answer, that is very much appreciated.
-
-On Mon, 03 Aug 2020, Chris Murphy wrote:
-> Some of these are considered normal. I suggest making sure each
-> https://raid.wiki.kernel.org/index.php/Timeout_Mismatch
-
-Thanks, will read up on that.
-
-> Once you've done that, do a btrfs scrub.
-
-Happening regularly, but I will kick one off anyway.
-
-> btrfs replace will work whether the drive is present or not. It's just
-> safer to do it with the drive present because you don't have to mount
-> degraded.
-
-Ok.
-
-I wasn't sure about whether I can mount without -o degraded because all
-the metadata and data is on raid1. And then, I don't know what the
-Debian initramfs is doing - that is probably the more interesting
-surprise.
-
-> > - add the new device
+On Mon, Aug 03, 2020 at 02:31:23PM +0800, Qu Wenruo wrote:
 > 
-> Use 'btrfs replace'
-
-Thanks, noted.
-
-> Currently 'btrfs replace' does require a separate resize step. 'device
-> add' doesn't, resize is implied by the command.
-
-This is somehow a logic approach, I agree.
-
-> > - start a new rebalancing
-> >         (for the rebalance, do I need to give the
-> >         same -dconvert=raid1 -mconvert=raid1 arguments?)
 > 
-> Not necessary. But it's worth checking 'btrfs fi us -T' and making
-> sure everything is raid1 as you expect.
+> On 2020/6/5 上午1:46, Rafael J. Wysocki wrote:
+> > From: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+> > 
+> > If kobject_del() is invoked by kobject_cleanup() to delete the
+> > target kobject, it may cause its parent kobject to be freed
+> > before invoking the target kobject's ->release() method, which
+> > effectively means freeing the parent before dealing with the
+> > child entirely.
+> > 
+> > That is confusing at best and it may also lead to functional
+> > issues if the callers of kobject_cleanup() are not careful enough
+> > about the order in which these calls are made, so avoid the
+> > problem by making kobject_cleanup() drop the last reference to
+> > the target kobject's parent at the end, after invoking the target
+> > kobject's ->release() method.
+> > 
+> > [ rjw: Rewrite the subject and changelog, make kobject_cleanup()
+> >   drop the parent reference only when __kobject_del() has been
+> >   called. ]
+> > 
+> > Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+> > Reported-by: kernel test robot <rong.a.chen@intel.com>
+> > Fixes: 7589238a8cf3 ("Revert "software node: Simplify software_node_release() function"")
+> > Suggested-by: Rafael J. Wysocki <rafael@kernel.org>
+> > Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+> > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> > ---
+> > 
+> > Hi Greg,
+> > 
+> > This is a replacement for commit 4ef12f719802 ("kobject: Make sure the parent
+> > does not get released before its children"), that you reverted, because it
+> > broke things and the reason why was that it was incorrect.
+> > 
+> > Namely, it called kobject_put() on the target kobject's parent in
+> > kobject_cleanup() unconditionally, but it should only call it after
+> > invoking __kobject_del() on the target kobject.
+> > 
+> > That problem is fixed in this patch and a functionally equivalent patch has
+> > been tested by Guenter without issues.
+> > 
+> > The underlying issue addressed by the reverted commit is still there and
+> > it may show up again even though the test that triggered it originally was
+> > fixed in the meantime.  IMO it is worth fixing even though it may not be
+> > readily visible in the current kernel, so please consider this one for
+> > applying.
+> > 
+> > Cheers!
+> > 
+> > ---
+> >  lib/kobject.c |   33 +++++++++++++++++++++++----------
+> >  1 file changed, 23 insertions(+), 10 deletions(-)
+> > 
+> > Index: linux-pm/lib/kobject.c
+> > ===================================================================
+> > --- linux-pm.orig/lib/kobject.c
+> > +++ linux-pm/lib/kobject.c
+> > @@ -599,14 +599,7 @@ out:
+> >  }
+> >  EXPORT_SYMBOL_GPL(kobject_move);
+> >  
+> > -/**
+> > - * kobject_del() - Unlink kobject from hierarchy.
+> > - * @kobj: object.
+> > - *
+> > - * This is the function that should be called to delete an object
+> > - * successfully added via kobject_add().
+> > - */
+> > -void kobject_del(struct kobject *kobj)
+> > +static void __kobject_del(struct kobject *kobj)
+> >  {
+> >  	struct kernfs_node *sd;
+> >  	const struct kobj_type *ktype;
+> > @@ -625,9 +618,23 @@ void kobject_del(struct kobject *kobj)
+> >  
+> >  	kobj->state_in_sysfs = 0;
+> >  	kobj_kset_leave(kobj);
+> > -	kobject_put(kobj->parent);
+> >  	kobj->parent = NULL;
+> >  }
+> > +
+> > +/**
+> > + * kobject_del() - Unlink kobject from hierarchy.
+> > + * @kobj: object.
+> > + *
+> > + * This is the function that should be called to delete an object
+> > + * successfully added via kobject_add().
+> > + */
+> > +void kobject_del(struct kobject *kobj)
+> > +{
+> > +	struct kobject *parent = kobj->parent;
+> > +
+> > +	__kobject_del(kobj);
+> > +	kobject_put(parent);
+> 
+> Could you please add an extra check on kobj before accessing kobj->parent?
 
-Thanks, good to know.
+Sure, please just send a patch for this.
 
+thanks,
 
-Again, thanks a lot for all the details - I couldn't deduce most of them
-from the wiki page on multiple devices. Your email is extremely helpful!
-
-All the best
-
-Norbert
-
---
-PREINING Norbert                              https://www.preining.info
-Accelia Inc. + IFMGA ProGuide + TU Wien + JAIST + TeX Live + Debian Dev
-GPG: 0x860CDC13   fp: F7D8 A928 26E3 16A1 9FA0 ACF0 6CAC A448 860C DC13
+greg k-h
