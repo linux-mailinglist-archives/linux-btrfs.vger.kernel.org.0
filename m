@@ -2,120 +2,104 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B80B239F6F
-	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Aug 2020 08:16:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00F1E239F95
+	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Aug 2020 08:20:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725867AbgHCGPy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 3 Aug 2020 02:15:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41546 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725831AbgHCGPy (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 3 Aug 2020 02:15:54 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41816C06174A
-        for <linux-btrfs@vger.kernel.org>; Sun,  2 Aug 2020 23:15:54 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id f1so32473302wro.2
-        for <linux-btrfs@vger.kernel.org>; Sun, 02 Aug 2020 23:15:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2DT5l/kWeEvd9AyzpCvAquGCHZ/tHN3vZxtKI6VeA+0=;
-        b=Gw/7oUC+0p5lZrgn7pSNJbQZYSZl7YRjcXXHBQqd/nS+wsrIuf2VDGT+hznDft1Ayt
-         yyVkFM8UtWUU/9jPANrKOKyurLhv/eOyjeC9UixLbyf6cn+UpriPXqTOsXCV7hbmRTkN
-         UNoGpQaMWR8WOajkOBMefSD/KVHws/1+mr7CWIQxcEs2HEwQaV9R8LKyyc2TEG4f2gYe
-         56+ERx5afCHRthqMwRPOJ93GksQwVj3qwB0KELAEKqHdaCeqS9p10/puCbxFe2x/Yk5s
-         5yrqHLb+RYHBB7Nn+zCmZRuAphqwelO631bEu3oLYt7rmo9nPkhwj5L5xiJzBxjYCsRn
-         KSxA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2DT5l/kWeEvd9AyzpCvAquGCHZ/tHN3vZxtKI6VeA+0=;
-        b=ZOpAv/oe45I+/+xKVmBOGzcB904wLpmFv07BO9zkpopPd8artOw2a+OzLcnsKobcM3
-         3mKfyp5c7vwY2tAL+2eoiPTjO8/opHy1aGyB9y5qfLJnwLgI9V1+o7n5WqxsgX3o1vJI
-         Ixa6TxpEBCDf/F0C/ucmXdthV98IJrdJ3+ATdV35XtdHEWiFxd8lIo62v+tdkvn7fgAf
-         OySqk7uPSrszMb+PWVAN3jZGhOCgl+L580fjYzqVNBtJCqTpUMRB3sWA9hnFZtqjdte5
-         /M/+ONlbnq+yfF0urvBjU22lFDPz03Yl0E0QQlJsgwuH0WAHkGU11toUl7nN6awuHS99
-         cBPw==
-X-Gm-Message-State: AOAM5319AbhOPovQK32hYOmKzjQNMKFNe0OdPr8kLCWcN2mpwLxwBzyn
-        /NRIy0hUeFajFnwwEPmMphxdl/PHgHsb4KlWda/IqUThh5k=
-X-Google-Smtp-Source: ABdhPJyFq9sIqzUzwZnrB1HFl2GjjRhpX2Dg3y4a2g9ZbBKud1xoby9o4k3k6FnX1VMKiGo9+YiON7yxwJwV2e3yiGY=
-X-Received: by 2002:adf:eb89:: with SMTP id t9mr13376089wrn.65.1596435353016;
- Sun, 02 Aug 2020 23:15:53 -0700 (PDT)
+        id S1727850AbgHCGUZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 3 Aug 2020 02:20:25 -0400
+Received: from mx2.suse.de ([195.135.220.15]:33048 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726279AbgHCGUY (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 3 Aug 2020 02:20:24 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 27CAEAF38
+        for <linux-btrfs@vger.kernel.org>; Mon,  3 Aug 2020 06:20:38 +0000 (UTC)
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs: sysfs: fix NULL pointer dereference at btrfs_sysfs_del_qgroups()
+Date:   Mon,  3 Aug 2020 14:20:11 +0800
+Message-Id: <20200803062011.17291-1-wqu@suse.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-References: <20200803052651.GA685777@bulldog.preining.info>
-In-Reply-To: <20200803052651.GA685777@bulldog.preining.info>
-From:   Chris Murphy <lists@colorremedies.com>
-Date:   Mon, 3 Aug 2020 00:15:32 -0600
-Message-ID: <CAJCQCtSeZCVpnxeip6D1nRb-nuvTYyJdY2SFWeDUQMV0BnAbyw@mail.gmail.com>
-Subject: Re: replacing a disk in a btrfs multi disk array with raid10
-To:     Norbert Preining <norbert@preining.info>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sun, Aug 2, 2020 at 11:51 PM Norbert Preining <norbert@preining.info> wrote:
->
-> Hi all
->
-> (please Cc)
->
-> I am running Linux 5.7 or 5.8 on a btrfs array of 7 disks, with metadata
-> and data both on raid1, which contains the complete system.
-> (btrfs balance start -dconvert=raid1 -mconvert=raid1 /)
->
-> Although btrfs device stats / doesn't show any errors, SMART warns about
-> one disk (reallocated sector count property) and I was pondering
-> replacing the device.
+[BUG]
+With next-20200731 tag (079ad2fb4bf9eba8a0aaab014b49705cd7f07c66),
+unmounting a btrfs with quota disabled will cause the following NULL
+pointer dereference:
 
-Some of these are considered normal. I suggest making sure each
-drive's SCT ERC value is less than the SCSI command timer. You want
-the drive to give up on reading a sector before the kernel considers
-the command "overdue" and does a link reset - losing the contents of
-the command queue. Upon read error, the drive reports the sector LBA
-so that Btrfs can automatically do a fixup.
+  BTRFS info (device dm-5): has skinny extents
+  BUG: kernel NULL pointer dereference, address: 0000000000000018
+  #PF: supervisor read access in kernel mode
+  #PF: error_code(0x0000) - not-present page
+  CPU: 7 PID: 637 Comm: umount Not tainted 5.8.0-rc7-next-20200731-custom #76
+  RIP: 0010:kobject_del+0x6/0x20
+  Call Trace:
+   btrfs_sysfs_del_qgroups+0xac/0xf0 [btrfs]
+   btrfs_free_qgroup_config+0x63/0x70 [btrfs]
+   close_ctree+0x1f5/0x323 [btrfs]
+   btrfs_put_super+0x15/0x17 [btrfs]
+   generic_shutdown_super+0x72/0x110
+   kill_anon_super+0x18/0x30
+   btrfs_kill_super+0x17/0x30 [btrfs]
+   deactivate_locked_super+0x3b/0xa0
+   deactivate_super+0x40/0x50
+   cleanup_mnt+0x135/0x190
+   __cleanup_mnt+0x12/0x20
+   task_work_run+0x64/0xb0
+   exit_to_user_mode_prepare+0x18a/0x190
+   syscall_exit_to_user_mode+0x4f/0x270
+   do_syscall_64+0x45/0x50
+   entry_SYSCALL_64_after_hwframe+0x44/0xa9
+  ---[ end trace 37b7adca5c1d5c5d ]---
 
-More info here. It applies to mdadm, lvm, and Btrfs raid.
-https://raid.wiki.kernel.org/index.php/Timeout_Mismatch
+[CAUSE]
+Commit 079ad2fb4bf9 ("kobject: Avoid premature parent object freeing in
+kobject_cleanup()") changed kobject_del() that it no longer accepts NULL
+pointer.
 
-Once you've done that, do a btrfs scrub.
+Before that commit, kobject_del() and kobject_put() all accept NULL
+pointers and just ignore such NULL pointers.
 
->
-> What is the currently suggested method given that I cannot plug in
-> another disk into the computer, all slots are used up (thus a btrfs
-> replace will not work as far as I understand).
+But that mentioned commit needs to access the parent node, killing the
+old NULL pointer behavior.
 
-btrfs replace will work whether the drive is present or not. It's just
-safer to do it with the drive present because you don't have to mount
-degraded.
+Unfortunately btrfs is relying on that hidden feature thus we will
+trigger such NULL pointer dereference.
 
+[FIX]
+Instead of just saving several lines, do proper fs_info->qgroups_kobj
+check before calling kobject_del() and kobject_put().
 
-> Do I need to:
-> - shutdown
-> - pysically replace disk
-> - reboot into rescue system
-> - mount in degraded mode
-> - add the new device
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ fs/btrfs/sysfs.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-Use 'btrfs replace'
-
-> - resize the file system (new disk would be bigger)
-
-Currently 'btrfs replace' does require a separate resize step. 'device
-add' doesn't, resize is implied by the command.
-
-
-> - start a new rebalancing
->         (for the rebalance, do I need to give the
->         same -dconvert=raid1 -mconvert=raid1 arguments?)
-
-Not necessary. But it's worth checking 'btrfs fi us -T' and making
-sure everything is raid1 as you expect.
-
-
+diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
+index 104c80caaa74..c8df2edafd85 100644
+--- a/fs/btrfs/sysfs.c
++++ b/fs/btrfs/sysfs.c
+@@ -1565,9 +1565,11 @@ void btrfs_sysfs_del_qgroups(struct btrfs_fs_info *fs_info)
+ 	rbtree_postorder_for_each_entry_safe(qgroup, next,
+ 					     &fs_info->qgroup_tree, node)
+ 		btrfs_sysfs_del_one_qgroup(fs_info, qgroup);
+-	kobject_del(fs_info->qgroups_kobj);
+-	kobject_put(fs_info->qgroups_kobj);
+-	fs_info->qgroups_kobj = NULL;
++	if (fs_info->qgroups_kobj) {
++		kobject_del(fs_info->qgroups_kobj);
++		kobject_put(fs_info->qgroups_kobj);
++		fs_info->qgroups_kobj = NULL;
++	}
+ }
+ 
+ /* Called when qgroups get initialized, thus there is no need for locking */
 -- 
-Chris Murphy
+2.28.0
+
