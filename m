@@ -2,127 +2,160 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E29E23A251
-	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Aug 2020 11:50:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A595A23A260
+	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Aug 2020 11:58:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726169AbgHCJuf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 3 Aug 2020 05:50:35 -0400
-Received: from mx2.suse.de ([195.135.220.15]:39314 "EHLO mx2.suse.de"
+        id S1726041AbgHCJ6u (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 3 Aug 2020 05:58:50 -0400
+Received: from mx2.suse.de ([195.135.220.15]:43928 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725965AbgHCJue (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 3 Aug 2020 05:50:34 -0400
+        id S1725968AbgHCJ6u (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 3 Aug 2020 05:58:50 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id B4280AC6E;
-        Mon,  3 Aug 2020 09:50:47 +0000 (UTC)
-Subject: Re: [PATCH] btrfs: fix error value in btrfs_get_extent
+        by mx2.suse.de (Postfix) with ESMTP id 5E99AABE9;
+        Mon,  3 Aug 2020 09:59:03 +0000 (UTC)
 From:   Nikolay Borisov <nborisov@suse.com>
-To:     Pavel Machek <pavel@denx.de>, clm@fb.com, jbacik@fb.com,
-        dsterba@suse.com, sashal@kernel.org, wqu@suse.com,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jungyeon@gatech.edu, stable@kernel.org
-References: <20200803093506.GA19472@amd>
- <4e88eb32-ac7d-f0cb-d089-ec197595bce9@suse.com>
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <c30a0a5e-dfd5-8bee-63f6-c93af9dc7eb6@suse.com>
-Date:   Mon, 3 Aug 2020 12:50:31 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <4e88eb32-ac7d-f0cb-d089-ec197595bce9@suse.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+To:     linux-btrfs@vger.kernel.org
+Cc:     dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>
+Subject: [PATCH] btrfs: Remove err variable from btrfs_get_extent
+Date:   Mon,  3 Aug 2020 12:58:46 +0300
+Message-Id: <20200803095846.3623-1-nborisov@suse.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+There's no practical reason too use 'err' as a variable to convey
+errors. In fact it's value is either set explicitly in the beginning of
+the function or it simply takes the value of 'ret'. Not conforming to
+the usual pattern of having ret be the only variable used to convey
+errors makes the code more error prone to bugs. In fact one such bug
+was introduced by 6bf9e4bd6a27 ("btrfs: inode: Verify inode mode toi
+avoid NULL pointer dereference") by assigning the error value to 'ret'
+and not 'err'.
+
+Let's fix that issue and make the function less tricky by leaving only
+ret to convey error values.
+
+Signed-off-by: Nikolay Borisov <nborisov@suse.com>
+---
+David, I'm not sure what's the best way forward - merge Pavel's patch and CC it
+for stable and then apply this one just to upstream or use this one for both
+upstream + stable ?
 
 
-On 3.08.20 г. 12:39 ч., Nikolay Borisov wrote:
-> 
-> 
-> On 3.08.20 г. 12:35 ч., Pavel Machek wrote:
->> btrfs_get_extent() sets variable ret, but out: error path expect error
->> to be in variable err. Fix that.
->>
->> Signed-off-by: Pavel Machek (CIP) <pavel@denx.de>
-> 
-> Good catch, this also needs:
-> 
-> Fixes: 6bf9e4bd6a27 ("btrfs: inode: Verify inode mode to avoid NULL
-> pointer dereference")
-> 
-> Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+ fs/btrfs/inode.c | 30 +++++++++++++-----------------
+ 1 file changed, 13 insertions(+), 17 deletions(-)
 
-Actually the reason this error got introduced in the first place and I
-missed it during the review is that the function is doing something
-rather counter-intuitive - it's using 'err' variable as a synonym for
-'ret'. A better approach would be to simply remove 'err' from that
-function. I'm now authoring such a patch, nevertheless the issue still
-stands.
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index 0df881e39f57..670acf4115a0 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -6528,8 +6528,7 @@ struct extent_map *btrfs_get_extent(struct btrfs_inode *inode,
+ 				    u64 start, u64 len)
+ {
+ 	struct btrfs_fs_info *fs_info = inode->root->fs_info;
+-	int ret;
+-	int err = 0;
++	int ret = 0;
+ 	u64 extent_start = 0;
+ 	u64 extent_end = 0;
+ 	u64 objectid = btrfs_ino(inode);
+@@ -6557,7 +6556,7 @@ struct extent_map *btrfs_get_extent(struct btrfs_inode *inode,
+ 	}
+ 	em = alloc_extent_map();
+ 	if (!em) {
+-		err = -ENOMEM;
++		ret = -ENOMEM;
+ 		goto out;
+ 	}
+ 	em->start = EXTENT_MAP_HOLE;
+@@ -6567,7 +6566,7 @@ struct extent_map *btrfs_get_extent(struct btrfs_inode *inode,
 
-> 
-> 
->>
->> ---
->>
->> Notice that patch introducing this problem is on its way to 4.19.137-stable.
->>
->> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
->> index 7befb7c12bd3..4aaa01540f89 100644
->> --- a/fs/btrfs/inode.c
->> +++ b/fs/btrfs/inode.c
->> @@ -7012,7 +7012,7 @@ struct extent_map *btrfs_get_extent(struct btrfs_inode *inode,
->>  	    found_type == BTRFS_FILE_EXTENT_PREALLOC) {
->>  		/* Only regular file could have regular/prealloc extent */
->>  		if (!S_ISREG(inode->vfs_inode.i_mode)) {
->> -			ret = -EUCLEAN;
->> +			err = -EUCLEAN;
->>  			btrfs_crit(fs_info,
->>  		"regular/prealloc extent found for non-regular inode %llu",
->>  				   btrfs_ino(inode));
->>
-> 
+ 	path = btrfs_alloc_path();
+ 	if (!path) {
+-		err = -ENOMEM;
++		ret = -ENOMEM;
+ 		goto out;
+ 	}
+
+@@ -6582,7 +6581,6 @@ struct extent_map *btrfs_get_extent(struct btrfs_inode *inode,
+
+ 	ret = btrfs_lookup_file_extent(NULL, root, path, objectid, start, 0);
+ 	if (ret < 0) {
+-		err = ret;
+ 		goto out;
+ 	} else if (ret > 0) {
+ 		if (path->slots[0] == 0)
+@@ -6635,12 +6633,11 @@ struct extent_map *btrfs_get_extent(struct btrfs_inode *inode,
+ 		path->slots[0]++;
+ 		if (path->slots[0] >= btrfs_header_nritems(leaf)) {
+ 			ret = btrfs_next_leaf(root, path);
+-			if (ret < 0) {
+-				err = ret;
++			if (ret < 0)
+ 				goto out;
+-			} else if (ret > 0) {
++			else if (ret > 0)
+ 				goto not_found;
+-			}
++
+ 			leaf = path->nodes[0];
+ 		}
+ 		btrfs_item_key_to_cpu(leaf, &found_key, path->slots[0]);
+@@ -6691,10 +6688,8 @@ struct extent_map *btrfs_get_extent(struct btrfs_inode *inode,
+ 			    BTRFS_COMPRESS_NONE) {
+ 				ret = uncompress_inline(path, page, pg_offset,
+ 							extent_offset, item);
+-				if (ret) {
+-					err = ret;
++				if (ret)
+ 					goto out;
+-				}
+ 			} else {
+ 				map = kmap(page);
+ 				read_extent_buffer(leaf, map + pg_offset, ptr,
+@@ -6713,32 +6708,33 @@ struct extent_map *btrfs_get_extent(struct btrfs_inode *inode,
+ 		goto insert;
+ 	}
+ not_found:
++	ret = 0;
+ 	em->start = start;
+ 	em->orig_start = start;
+ 	em->len = len;
+ 	em->block_start = EXTENT_MAP_HOLE;
+ insert:
++	ret = 0;
+ 	btrfs_release_path(path);
+ 	if (em->start > start || extent_map_end(em) <= start) {
+ 		btrfs_err(fs_info,
+ 			  "bad extent! em: [%llu %llu] passed [%llu %llu]",
+ 			  em->start, em->len, start, len);
+-		err = -EIO;
++		ret = -EIO;
+ 		goto out;
+ 	}
+
+-	err = 0;
+ 	write_lock(&em_tree->lock);
+-	err = btrfs_add_extent_mapping(fs_info, em_tree, &em, start, len);
++	ret = btrfs_add_extent_mapping(fs_info, em_tree, &em, start, len);
+ 	write_unlock(&em_tree->lock);
+ out:
+ 	btrfs_free_path(path);
+
+ 	trace_btrfs_get_extent(root, inode, em);
+
+-	if (err) {
++	if (ret) {
+ 		free_extent_map(em);
+-		return ERR_PTR(err);
++		return ERR_PTR(ret);
+ 	}
+ 	return em;
+ }
+--
+2.17.1
+
