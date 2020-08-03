@@ -2,79 +2,114 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FD7323A1CE
-	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Aug 2020 11:36:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E53ED23A1D4
+	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Aug 2020 11:39:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726125AbgHCJfL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 3 Aug 2020 05:35:11 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:54180 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725933AbgHCJfL (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 3 Aug 2020 05:35:11 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 5D4331C0BD4; Mon,  3 Aug 2020 11:35:08 +0200 (CEST)
-Date:   Mon, 3 Aug 2020 11:35:06 +0200
-From:   Pavel Machek <pavel@denx.de>
-To:     clm@fb.com, jbacik@fb.com, dsterba@suse.com, sashal@kernel.org,
-        wqu@suse.com, nborisov@suse.com, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, jungyeon@gatech.edu,
-        stable@kernel.org
-Subject: [PATCH] btrfs: fix error value in btrfs_get_extent
-Message-ID: <20200803093506.GA19472@amd>
+        id S1726169AbgHCJjo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 3 Aug 2020 05:39:44 -0400
+Received: from mx2.suse.de ([195.135.220.15]:34578 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725948AbgHCJjn (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 3 Aug 2020 05:39:43 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 06D79AB7A;
+        Mon,  3 Aug 2020 09:39:57 +0000 (UTC)
+Subject: Re: [PATCH] btrfs: fix error value in btrfs_get_extent
+To:     Pavel Machek <pavel@denx.de>, clm@fb.com, jbacik@fb.com,
+        dsterba@suse.com, sashal@kernel.org, wqu@suse.com,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jungyeon@gatech.edu, stable@kernel.org
+References: <20200803093506.GA19472@amd>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ xsFNBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
+ T7g+RbfPFlmQp+EwFWOtABXlKC54zgSf+uulGwx5JAUFVUIRBmnHOYi/lUiE0yhpnb1KCA7f
+ u/W+DkwGerXqhhe9TvQoGwgCKNfzFPZoM+gZrm+kWv03QLUCr210n4cwaCPJ0Nr9Z3c582xc
+ bCUVbsjt7BN0CFa2BByulrx5xD9sDAYIqfLCcZetAqsTRGxM7LD0kh5WlKzOeAXj5r8DOrU2
+ GdZS33uKZI/kZJZVytSmZpswDsKhnGzRN1BANGP8sC+WD4eRXajOmNh2HL4P+meO1TlM3GLl
+ EQd2shHFY0qjEo7wxKZI1RyZZ5AgJnSmehrPCyuIyVY210CbMaIKHUIsTqRgY5GaNME24w7h
+ TyyVCy2qAM8fLJ4Vw5bycM/u5xfWm7gyTb9V1TkZ3o1MTrEsrcqFiRrBY94Rs0oQkZvunqia
+ c+NprYSaOG1Cta14o94eMH271Kka/reEwSZkC7T+o9hZ4zi2CcLcY0DXj0qdId7vUKSJjEep
+ c++s8ncFekh1MPhkOgNj8pk17OAESanmDwksmzh1j12lgA5lTFPrJeRNu6/isC2zyZhTwMWs
+ k3LkcTa8ZXxh0RfWAqgx/ogKPk4ZxOXQEZetkEyTFghbRH2BIwARAQABzSJOaWtvbGF5IEJv
+ cmlzb3YgPG5ib3Jpc292QHN1c2UuZGU+wsF4BBMBAgAiBQJYijkSAhsDBgsJCAcDAgYVCAIJ
+ CgsEFgIDAQIeAQIXgAAKCRBxvoJG5T8oV/B6D/9a8EcRPdHg8uLEPywuJR8URwXzkofT5bZE
+ IfGF0Z+Lt2ADe+nLOXrwKsamhweUFAvwEUxxnndovRLPOpWerTOAl47lxad08080jXnGfYFS
+ Dc+ew7C3SFI4tFFHln8Y22Q9075saZ2yQS1ywJy+TFPADIprAZXnPbbbNbGtJLoq0LTiESnD
+ w/SUC6sfikYwGRS94Dc9qO4nWyEvBK3Ql8NkoY0Sjky3B0vL572Gq0ytILDDGYuZVo4alUs8
+ LeXS5ukoZIw1QYXVstDJQnYjFxYgoQ5uGVi4t7FsFM/6ykYDzbIPNOx49Rbh9W4uKsLVhTzG
+ BDTzdvX4ARl9La2kCQIjjWRg+XGuBM5rxT/NaTS78PXjhqWNYlGc5OhO0l8e5DIS2tXwYMDY
+ LuHYNkkpMFksBslldvNttSNei7xr5VwjVqW4vASk2Aak5AleXZS+xIq2FADPS/XSgIaepyTV
+ tkfnyreep1pk09cjfXY4A7qpEFwazCRZg9LLvYVc2M2eFQHDMtXsH59nOMstXx2OtNMcx5p8
+ 0a5FHXE/HoXz3p9bD0uIUq6p04VYOHsMasHqHPbsMAq9V2OCytJQPWwe46bBjYZCOwG0+x58
+ fBFreP/NiJNeTQPOa6FoxLOLXMuVtpbcXIqKQDoEte9aMpoj9L24f60G4q+pL/54ql2VRscK
+ d87BTQRYigc+ARAAyJSq9EFk28++SLfg791xOh28tLI6Yr8wwEOvM3wKeTfTZd+caVb9gBBy
+ wxYhIopKlK1zq2YP7ZjTP1aPJGoWvcQZ8fVFdK/1nW+Z8/NTjaOx1mfrrtTGtFxVBdSCgqBB
+ jHTnlDYV1R5plJqK+ggEP1a0mr/rpQ9dFGvgf/5jkVpRnH6BY0aYFPprRL8ZCcdv2DeeicOO
+ YMobD5g7g/poQzHLLeT0+y1qiLIFefNABLN06Lf0GBZC5l8hCM3Rpb4ObyQ4B9PmL/KTn2FV
+ Xq/c0scGMdXD2QeWLePC+yLMhf1fZby1vVJ59pXGq+o7XXfYA7xX0JsTUNxVPx/MgK8aLjYW
+ hX+TRA4bCr4uYt/S3ThDRywSX6Hr1lyp4FJBwgyb8iv42it8KvoeOsHqVbuCIGRCXqGGiaeX
+ Wa0M/oxN1vJjMSIEVzBAPi16tztL/wQtFHJtZAdCnuzFAz8ue6GzvsyBj97pzkBVacwp3/Mw
+ qbiu7sDz7yB0d7J2tFBJYNpVt/Lce6nQhrvon0VqiWeMHxgtQ4k92Eja9u80JDaKnHDdjdwq
+ FUikZirB28UiLPQV6PvCckgIiukmz/5ctAfKpyYRGfez+JbAGl6iCvHYt/wAZ7Oqe/3Cirs5
+ KhaXBcMmJR1qo8QH8eYZ+qhFE3bSPH446+5oEw8A9v5oonKV7zMAEQEAAcLBXwQYAQIACQUC
+ WIoHPgIbDAAKCRBxvoJG5T8oV1pyD/4zdXdOL0lhkSIjJWGqz7Idvo0wjVHSSQCbOwZDWNTN
+ JBTP0BUxHpPu/Z8gRNNP9/k6i63T4eL1xjy4umTwJaej1X15H8Hsh+zakADyWHadbjcUXCkg
+ OJK4NsfqhMuaIYIHbToi9K5pAKnV953xTrK6oYVyd/Rmkmb+wgsbYQJ0Ur1Ficwhp6qU1CaJ
+ mJwFjaWaVgUERoxcejL4ruds66LM9Z1Qqgoer62ZneID6ovmzpCWbi2sfbz98+kW46aA/w8r
+ 7sulgs1KXWhBSv5aWqKU8C4twKjlV2XsztUUsyrjHFj91j31pnHRklBgXHTD/pSRsN0UvM26
+ lPs0g3ryVlG5wiZ9+JbI3sKMfbdfdOeLxtL25ujs443rw1s/PVghphoeadVAKMPINeRCgoJH
+ zZV/2Z/myWPRWWl/79amy/9MfxffZqO9rfugRBORY0ywPHLDdo9Kmzoxoxp9w3uTrTLZaT9M
+ KIuxEcV8wcVjr+Wr9zRl06waOCkgrQbTPp631hToxo+4rA1jiQF2M80HAet65ytBVR2pFGZF
+ zGYYLqiG+mpUZ+FPjxk9kpkRYz61mTLSY7tuFljExfJWMGfgSg1OxfLV631jV1TcdUnx+h3l
+ Sqs2vMhAVt14zT8mpIuu2VNxcontxgVr1kzYA/tQg32fVRbGr449j1gw57BV9i0vww==
+Message-ID: <4e88eb32-ac7d-f0cb-d089-ec197595bce9@suse.com>
+Date:   Mon, 3 Aug 2020 12:39:38 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="HcAYCG3uE/tztfnV"
-Content-Disposition: inline
-User-Agent: Mutt/1.5.23 (2014-03-12)
+In-Reply-To: <20200803093506.GA19472@amd>
+Content-Type: text/plain; charset=UTF-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
---HcAYCG3uE/tztfnV
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-btrfs_get_extent() sets variable ret, but out: error path expect error
-to be in variable err. Fix that.
+On 3.08.20 г. 12:35 ч., Pavel Machek wrote:
+> btrfs_get_extent() sets variable ret, but out: error path expect error
+> to be in variable err. Fix that.
+> 
+> Signed-off-by: Pavel Machek (CIP) <pavel@denx.de>
 
-Signed-off-by: Pavel Machek (CIP) <pavel@denx.de>
+Good catch, this also needs:
 
----
+Fixes: 6bf9e4bd6a27 ("btrfs: inode: Verify inode mode to avoid NULL
+pointer dereference")
 
-Notice that patch introducing this problem is on its way to 4.19.137-stable.
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
 
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 7befb7c12bd3..4aaa01540f89 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -7012,7 +7012,7 @@ struct extent_map *btrfs_get_extent(struct btrfs_inod=
-e *inode,
- 	    found_type =3D=3D BTRFS_FILE_EXTENT_PREALLOC) {
- 		/* Only regular file could have regular/prealloc extent */
- 		if (!S_ISREG(inode->vfs_inode.i_mode)) {
--			ret =3D -EUCLEAN;
-+			err =3D -EUCLEAN;
- 			btrfs_crit(fs_info,
- 		"regular/prealloc extent found for non-regular inode %llu",
- 				   btrfs_ino(inode));
 
---=20
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-
---HcAYCG3uE/tztfnV
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAl8n2koACgkQMOfwapXb+vL5pACgh6F0buh2LZN4PQ6G1CTLMVga
-FFcAoJZ6SUZZopdgsJehwPuHA2MO3TIi
-=+F+S
------END PGP SIGNATURE-----
-
---HcAYCG3uE/tztfnV--
+> 
+> ---
+> 
+> Notice that patch introducing this problem is on its way to 4.19.137-stable.
+> 
+> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+> index 7befb7c12bd3..4aaa01540f89 100644
+> --- a/fs/btrfs/inode.c
+> +++ b/fs/btrfs/inode.c
+> @@ -7012,7 +7012,7 @@ struct extent_map *btrfs_get_extent(struct btrfs_inode *inode,
+>  	    found_type == BTRFS_FILE_EXTENT_PREALLOC) {
+>  		/* Only regular file could have regular/prealloc extent */
+>  		if (!S_ISREG(inode->vfs_inode.i_mode)) {
+> -			ret = -EUCLEAN;
+> +			err = -EUCLEAN;
+>  			btrfs_crit(fs_info,
+>  		"regular/prealloc extent found for non-regular inode %llu",
+>  				   btrfs_ino(inode));
+> 
