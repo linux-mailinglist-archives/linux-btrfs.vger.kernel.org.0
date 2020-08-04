@@ -2,417 +2,199 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C593523C1AC
-	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Aug 2020 23:43:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66E9E23C1F7
+	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Aug 2020 00:49:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727972AbgHDVm7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 4 Aug 2020 17:42:59 -0400
-Received: from gateway24.websitewelcome.com ([192.185.51.56]:26419 "EHLO
-        gateway24.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727773AbgHDVm6 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 4 Aug 2020 17:42:58 -0400
-X-Greylist: delayed 1506 seconds by postgrey-1.27 at vger.kernel.org; Tue, 04 Aug 2020 17:42:56 EDT
-Received: from cm13.websitewelcome.com (cm13.websitewelcome.com [100.42.49.6])
-        by gateway24.websitewelcome.com (Postfix) with ESMTP id 78103CAC07
-        for <linux-btrfs@vger.kernel.org>; Tue,  4 Aug 2020 15:57:00 -0500 (CDT)
-Received: from br540.hostgator.com.br ([108.179.252.180])
-        by cmsmtp with SMTP
-        id 33zYkaitUXp2A33zYk3DC2; Tue, 04 Aug 2020 15:57:00 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=mpdesouza.com; s=default; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=NhlfOywyN/S3Qv3mQ4bMvqcjyB+oR3XWtHkFcYpW2pU=; b=iOOZ/iRfjmfUxH0FG6jdmEuGUS
-        TOyAlmkgQDghg7ujQgD8PGUy8l4irfWJL5yGW5DUNuukHUmTBvL8O/vmNvu10bKfl3L3QRIMMvtMN
-        uSiJsKGw1bGH9HuuDOZtPZunROOVt28y8kkmmsP8Jlc1viU2Rnep/H7GJMIvqESDJUoQw8LBsYBKp
-        x4e68yd5EuIcQmzex2ZUU/lG0PMwz9cHTfGLzRlvUOAFMchJzTFjp+chjXVkRgbOgOgJQz/8DXzyC
-        jbwBBfubZhuPmxF2Bg8asX6egfS+QtubwjoR5UhMwj3pmUsvF6QyUkvhvQSrlPQemue0ZoFubZLBc
-        iuZ2OuHg==;
-Received: from 189.26.189.212.dynamic.adsl.gvt.net.br ([189.26.189.212]:35484 helo=hephaestus.suse.de)
-        by br540.hostgator.com.br with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <marcos@mpdesouza.com>)
-        id 1k33zX-001EG1-T9; Tue, 04 Aug 2020 17:57:00 -0300
-From:   Marcos Paulo de Souza <marcos@mpdesouza.com>
-To:     dsterba@suse.com, linux-btrfs@vger.kernel.org,
-        fstests@vger.kernel.org
-Cc:     Marcos Paulo de Souza <mpdesouza@suse.com>
-Subject: [PATCH] fstests: btrfs/218 check if mount opts are applied
-Date:   Tue,  4 Aug 2020 17:56:48 -0300
-Message-Id: <20200804205648.11284-1-marcos@mpdesouza.com>
-X-Mailer: git-send-email 2.27.0
+        id S1726396AbgHDWtP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 4 Aug 2020 18:49:15 -0400
+Received: from mout.gmx.net ([212.227.15.19]:55917 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726222AbgHDWtP (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 4 Aug 2020 18:49:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1596581343;
+        bh=/ovMs63+qOyE4GQ3AClGgkE5wpFoZFrVQzOLpgSqZTk=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=EKpvHREt7YJP+cNl9I/t2PaXlyyAvtRJz77j/7w7nGqD2UfrD6UrPmjl5q7+Nxrlj
+         Rpkb3r2h8ytYyuoFzS15Z//bs5zRU6q8+M9Rag9IV3C0hueBAi5WTIZeVeghCxlx7k
+         AF9Kx9NJnsxdl1BK2yqp36FTHZznwG4YNlBEYESI=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([45.77.180.217]) by mail.gmx.com (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MgNcz-1kfkTB1oBr-00hsol; Wed, 05
+ Aug 2020 00:49:03 +0200
+Subject: Re: [PATCH RFC] btrfs: change commit txn to end txn in
+ subvol_setflags ioctl
+To:     Boris Burkov <boris@bur.io>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>
+Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+References: <20200804175516.2511704-1-boris@bur.io>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
+ mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAVQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWCnQUJCWYC
+ bgAKCRDCPZHzoSX+qAR8B/94VAsSNygx1C6dhb1u1Wp1Jr/lfO7QIOK/nf1PF0VpYjTQ2au8
+ ihf/RApTna31sVjBx3jzlmpy+lDoPdXwbI3Czx1PwDbdhAAjdRbvBmwM6cUWyqD+zjVm4RTG
+ rFTPi3E7828YJ71Vpda2qghOYdnC45xCcjmHh8FwReLzsV2A6FtXsvd87bq6Iw2axOHVUax2
+ FGSbardMsHrya1dC2jF2R6n0uxaIc1bWGweYsq0LXvLcvjWH+zDgzYCUB0cfb+6Ib/ipSCYp
+ 3i8BevMsTs62MOBmKz7til6Zdz0kkqDdSNOq8LgWGLOwUTqBh71+lqN2XBpTDu1eLZaNbxSI
+ ilaVuQENBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAGJATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAK
+ CRDCPZHzoSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gy
+ fmtBnUaifnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsS
+ oCEEynby72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAk
+ ZkA523JGap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gG
+ UO/iD/T5oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
+Message-ID: <86c25213-e961-790e-dc27-8c2a9aa118c1@gmx.com>
+Date:   Wed, 5 Aug 2020 06:48:57 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - br540.hostgator.com.br
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - mpdesouza.com
-X-BWhitelist: no
-X-Source-IP: 189.26.189.212
-X-Source-L: No
-X-Exim-ID: 1k33zX-001EG1-T9
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 189.26.189.212.dynamic.adsl.gvt.net.br (hephaestus.suse.de) [189.26.189.212]:35484
-X-Source-Auth: marcos@mpdesouza.com
-X-Email-Count: 3
-X-Source-Cap: bXBkZXNvNTM7bXBkZXNvNTM7YnI1NDAuaG9zdGdhdG9yLmNvbS5icg==
-X-Local-Domain: yes
+In-Reply-To: <20200804175516.2511704-1-boris@bur.io>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="3xMaZ1wQqPS1cRqThGzGmJ7rPZLgRf8X4"
+X-Provags-ID: V03:K1:DPZ39V6Fj3TdI+oTVeOSwp07AhrjSsow9L3DT/lELK9b2IqYEbQ
+ pL42x/BBP0orMQpxZs42qpeIdCDRGGlVxqkNn9xAo+MXjo869JhrYZO+gfCey0oyaOxh5dq
+ JBh0f3aIilKkMLtTGTcx25EFxhdCscLXb3ggz1JrGxPmTh5MitRhGteCvYasLhO6WY0JDPT
+ bacbW6tIml3zE9y/WP2mA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:DxN3Xow9t1c=:vzUvWW7icAaRIP7YGANB+Z
+ xfNKxmESiwT6tA1BrwpFGoTJvHfpSOumdYZsX4i3IZpBaqGESQbY/rA3NcVT2CsjrtL4YCxZ5
+ o0JrSsCJje9mRuG1P7bKgrs/O5DA41mHDyHA5vcPrPfSgxgE1MFYLsycQcTe1gbcyjxWpss+s
+ UM7T3ts8oBsvogmLB5ZmvNOKbleLPpzxlpQsuV/+CdvJN4XuVsJ1RH7IbTg3RcV3v40/4ma0p
+ c8hbxWo4BGSg5AOduLAB3y04ChejRvyfVZ7D0cqFXciaFExVfA5ZHXaYkPKNCSo9wXvWCICub
+ IIN7jJapMXuvrjHZwDUR7bNrC260DwhMM3ozvE5uVVU23KzY+hIYsPyPy464HiVM9Q3rVNlAJ
+ OeExICF8cAsG79JO4Ljao7CRVIzgK2VOf8ud8c0jAJvUstm8uTa6xha8ZDE8KTUmUkopclazy
+ l+D5HottmxT/axSype8JVpkjCincwmRdtb92dT+gyEOBrQGSSgqugBlCWgORky1V+36OZ8He+
+ orIyZVxpHaFN/A0og6saVCj0qxDsbpJzIEUn2WIpi5TD9zJdXi63DDmS/OFlUD1Ua1S6ZaCGW
+ p8P8QH9p8iEQU5mIqtvSnKhLvi+glTKjidDXWj0djtRNtYZoqgbIYJDhFmKPsaJgqjlkLo0vp
+ Aj/9uiGz+Q067Kdv5l+swwfKMRtICRxi63Sklx3BQRSzK7qWKZrQXUdWE7ojXOgWV7AU4jWun
+ /QLhKwg5zOrBIt4rQIVhdubHnyvu8iYlfkwQZwp1SBSlESIiEyKozzh7sL1TsC4kpcPv0MRfF
+ GiaguDX0XES238nLHGUKkM94k2RmMURZCfKJ9vccS/fsi7mqQgaVAbaxQy7ON+aPhZZ2KlhMx
+ 47rHvHfUSbSR9WLavpAdxAH3rC0kIvKNs2BLj0Z9TnMD70AosWaV9jpECIbcyHANcI8H4gmUO
+ vNsoVvkojNehsHXPcVvpGN99CCwObVq9lrpHx9sdcZCv0ZF936X+2jeVuDO4pDBLteYqy7H/u
+ 0XpqEXQ4xXYhNXac5ssNcQmA8Mx49rVwlFxUduD6zXP3W30mIoA4TYD/yx1ofMIhfKsInJf/l
+ vdgb4Kzs3BWUuyMElGueQvKdqRDxsaws+4ngMeWiFBvoQPrYr9dLoNh2LGpkor7PGbQUR4y1M
+ a5X+JTqhUFSQhTGkIzrRM52odxNRraYV+FCx+KPtrfXHAPqvGAcysMbXhMQ70UWUhOCPXj0vV
+ xDcVWqQFNABacWOFTZ7JSHXbiJWOd9D+f4lfWbg==
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Marcos Paulo de Souza <mpdesouza@suse.com>
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--3xMaZ1wQqPS1cRqThGzGmJ7rPZLgRf8X4
+Content-Type: multipart/mixed; boundary="0ugru8qLSjZqIe6w9yYW93KblfJNcPj6h"
 
-This new test will apply different mount points and check if they were applied
-by reading /proc/self/mounts. Almost all available btrfs options are tested
-here, leaving only device=, which is tested in btrfs/125 and space_cache, tested
-in btrfs/131.
+--0ugru8qLSjZqIe6w9yYW93KblfJNcPj6h
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-This test does not apply any workload after the fs is mounted, just checks is
-the option was set/unset correctly.
 
-Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
----
- tests/btrfs/218     | 302 ++++++++++++++++++++++++++++++++++++++++++++
- tests/btrfs/218.out |   2 +
- tests/btrfs/group   |   1 +
- 3 files changed, 305 insertions(+)
- create mode 100755 tests/btrfs/218
- create mode 100644 tests/btrfs/218.out
 
-diff --git a/tests/btrfs/218 b/tests/btrfs/218
-new file mode 100755
-index 00000000..f6ec1ada
---- /dev/null
-+++ b/tests/btrfs/218
-@@ -0,0 +1,302 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright (C) 2020 SUSE Linux Products GmbH. All Rights Reserved.
-+#
-+# FS QA Test 218
-+#
-+# Test all existent mount options of btrfs
-+# * device= argument is already being test by btrfs/125
-+# * space cache test already covered by test btrfs/131
-+seq=`basename $0`
-+seqres=$RESULT_DIR/$seq
-+echo "QA output created by $seq"
-+
-+here=`pwd`
-+tmp=/tmp/$$
-+status=1	# failure is the default!
-+trap "cleanup; exit \$status" 0 1 2 3 15
-+
-+# get standard environment, filters and checks
-+. ./common/rc
-+. ./common/filter
-+
-+# remove previous $seqres.full before test
-+rm -f $seqres.full
-+
-+_supported_fs btrfs
-+_supported_os Linux
-+_require_scratch
-+
-+cleanup()
-+{
-+	cd /
-+	rm -f $tmp.*
-+}
-+
-+# Compare the mounted flags with $opt_check. When the comparison fails, $opt is
-+# echoed to help to track which option was used to trigger the unexpected
-+# results.
-+test_mount_flags()
-+{
-+	local opt
-+	local opt_check
-+	opt="$1"
-+	opt_check="$2"
-+
-+	active_opt=$(cat /proc/self/mounts | grep $SCRATCH_MNT | \
-+					$AWK_PROG '{ print $4 }')
-+	if [[ "$active_opt" != *$opt_check* ]]; then
-+		echo "Could not find '$opt_check' in '$active_opt', using '$opt'"
-+	fi
-+}
-+
-+# Mounts using opt ($1), remounts using remount_opt ($2), and remounts again
-+# using opt again (1), checking if the mount opts are being enabled/disabled by
-+# using _check arguments ($3 and $4)
-+test_enable_disable_mount_opt()
-+{
-+	local opt
-+	local opt_check
-+	local remount_opt
-+	local remount_opt_check
-+	opt="$1"
-+	opt_check="$2"
-+	remount_opt="$3"
-+	remount_opt_check="$4"
-+
-+	_scratch_mount "-o $opt"
-+
-+	test_mount_flags $opt $opt_check
-+
-+	_scratch_remount $remount_opt
-+
-+	test_mount_flags $remount_opt $remount_opt_check
-+
-+	_scratch_remount $opt
-+
-+	test_mount_flags $opt $opt_check
-+
-+	_scratch_unmount
-+}
-+
-+# Checks if mount options are applied and reverted correctly.
-+# By using options to mount ($1) and remount ($2), this function will mount,
-+# remount, and the mount with the original args, checking if the mount options
-+# match the _check args ($3 and $4).
-+
-+# Later, opt and remount_opt are swapped, testing the counterpart option if used
-+# to first mount the fs.
-+test_roundtrip_mount()
-+{
-+	local opt
-+	local opt_check
-+	local remount_opt
-+	local remount_opt_check
-+	opt="$1"
-+	opt_check="$2"
-+	remount_opt="$3"
-+	remount_opt_check="$4"
-+
-+	# invert the args to make sure that both options work at mount and
-+	# remount time
-+	test_enable_disable_mount_opt $opt $opt_check $remount_opt $remount_opt_check
-+	test_enable_disable_mount_opt $remount_opt $remount_opt_check $opt $opt_check
-+}
-+
-+# Just mount and check if the options were mounted correctly by comparing the
-+# results with $opt_check
-+test_mount_opt()
-+{
-+	local opt
-+	local opt_check
-+	local active_opt
-+	opt="$1"
-+	opt_check="$2"
-+
-+	_scratch_mount "-o $opt"
-+
-+	test_mount_flags $opt $opt_check
-+
-+	_scratch_unmount
-+}
-+
-+# Test mount options that should fail, usually by wrong arguments to options
-+test_should_fail()
-+{
-+	local opt
-+	opt="$1"
-+
-+	# wrong $opt on purpose, should fail
-+	_try_scratch_mount "-o $opt" >/dev/null 2>&1
-+	if [ $? -ne 0 ]; then
-+		return
-+	fi
-+	echo "Option $opt should fail to mount"
-+	_scratch_unmount
-+}
-+
-+# Try to mount using $opt, and bail our if the mount fails without errors. If
-+# the mount succeeds, then compare the mount options with $opt_check
-+test_optional_mount_opts()
-+{
-+	local opt
-+	local opt_check
-+	opt="$1"
-+	opt_check="$2"
-+
-+	# $opt not enabled, return without running any tests
-+	_try_scratch_mount "-o $opt" >/dev/null 2>&1 || return
-+	_scratch_unmount
-+
-+	# option enabled, run the test
-+	test_mount_opt $opt $opt_check
-+}
-+
-+# Testes related to subvolumes, from subvol and subvolid options.
-+test_subvol()
-+{
-+	test_should_fail "subvol=vol2"
-+
-+	_scratch_mount "-o subvol=vol1"
-+	if [ ! -f "$SCRATCH_MNT/file.txt" ]; then
-+		echo "file.txt not found inside vol1 using subvol=vol1 mount option"
-+	fi
-+	_scratch_unmount
-+
-+	test_should_fail "subvolid=222"
-+
-+	_scratch_mount "-o subvolid=256"
-+	if [ ! -f "$SCRATCH_MNT/file.txt" ]; then
-+		echo "file.txt not found inside vol1 using subvolid=256 mount option"
-+	fi
-+	_scratch_unmount
-+
-+	# subvol and subvolid should point to the same subvolume
-+	test_should_fail "-o subvol=vol1,subvolid=1234132"
-+
-+	test_mount_opt "subvol=vol1,subvolid=256" "space_cache,subvolid=256,subvol=/vol1"
-+	test_roundtrip_mount "subvol=vol1" "space_cache,subvolid=256,subvol=/vol1" "subvolid=256" "space_cache,subvolid=256,subvol=/vol1"
-+}
-+
-+# These options are enable at kernel compile time, so no bother if they fail
-+test_optional_kernel_features()
-+{
-+	# Test options that are enabled by kernel config, and so can fail safely
-+	test_optional_mount_opts "check_int" "space_cache,check_int,subvolid"
-+	test_optional_mount_opts "check_int_data" "space_cache,check_int_data,subvolid"
-+	test_optional_mount_opts "check_int_print_mask=123" "space_cache,check_int_print_mask=123,subvolid"
-+
-+	test_should_fail "fragment=invalid"
-+	test_optional_mount_opts "fragment=all" "space_cache,fragment=data,fragment=metadata,subvolid"
-+	test_optional_mount_opts "fragment=data" "space_cache,fragment=data,subvolid"
-+	test_optional_mount_opts "fragment=metadata" "space_cache,fragment=metadata,subvolid"
-+}
-+
-+test_non_revertible_options()
-+{
-+	test_mount_opt "clear_cache" "relatime,space_cache,clear_cache,subvolid"
-+	test_mount_opt "degraded" "relatime,degraded,space_cache,subvolid"
-+
-+	test_mount_opt "inode_cache" "space_cache,inode_cache,subvolid"
-+
-+	# nologreplay should be used only with
-+	test_should_fail "nologreplay"
-+	test_mount_opt "nologreplay,ro" "ro,relatime,rescue=nologreplay,space_cache"
-+
-+	# norecovery should be used only with. This options is an alias to nologreplay
-+	test_should_fail "norecovery"
-+	test_mount_opt "norecovery,ro" "ro,relatime,rescue=nologreplay,space_cache"
-+	test_mount_opt "rescan_uuid_tree" "relatime,space_cache,rescan_uuid_tree,subvolid"
-+	test_mount_opt "skip_balance" "relatime,space_cache,skip_balance,subvolid"
-+	test_mount_opt "user_subvol_rm_allowed" "space_cache,user_subvol_rm_allowed,subvolid"
-+
-+	test_should_fail "rescue=invalid"
-+
-+	# nologreplay requires readonly
-+	test_should_fail "rescue=nologreplay"
-+	test_mount_opt "rescue=nologreplay,ro" "relatime,rescue=nologreplay,space_cache"
-+
-+	test_mount_opt "rescue=usebackuproot,ro" "relatime,space_cache,subvolid"
-+}
-+
-+# All these options can be reverted (with their "no" counterpart), or can have
-+# their values set to default on remount
-+test_revertible_options()
-+{
-+	test_roundtrip_mount "acl" "relatime,space_cache,subvolid" "noacl" "relatime,noacl,space_cache,subvolid"
-+	test_roundtrip_mount "autodefrag" "relatime,space_cache,autodefrag" "noautodefrag" "relatime,space_cache,subvolid"
-+	test_roundtrip_mount "barrier" "relatime,space_cache,subvolid" "nobarrier" "relatime,nobarrier,space_cache,subvolid"
-+
-+	test_should_fail "commit=-10"
-+	# commit=0 sets the default, so btrfs hides this mount opt
-+	test_roundtrip_mount "commit=35" "relatime,space_cache,commit=35,subvolid" "commit=0" "relatime,space_cache,subvolid"
-+
-+	test_should_fail "compress=invalid"
-+	test_should_fail "compress-force=invalid"
-+	test_roundtrip_mount "compress" "relatime,compress=zlib:3,space_cache,subvolid" "compress=lzo" "relatime,compress=lzo,space_cache,subvolid"
-+	test_roundtrip_mount "compress=zstd" "relatime,compress=zstd:3,space_cache,subvolid" "compress=no" "relatime,space_cache,subvolid"
-+	test_roundtrip_mount "compress-force=no" "relatime,space_cache,subvolid" "compress-force=zstd" "relatime,compress-force=zstd:3,space_cache,subvolid"
-+	# zlib's max level is 9 and zstd's max level is 15
-+	test_roundtrip_mount "compress=zlib:20" "relatime,compress=zlib:9,space_cache,subvolid" "compress=zstd:16" "relatime,compress=zstd:15,space_cache,subvolid"
-+	test_roundtrip_mount "compress-force=lzo" "relatime,compress-force=lzo,space_cache,subvolid" "compress-force=zlib:4" "relatime,compress-force=zlib:4,space_cache,subvolid"
-+
-+	# on remount, if we only pass datacow after nodatacow was used it will remain with nodatasum
-+	test_roundtrip_mount "nodatacow" "relatime,nodatasum,nodatacow,space_cache,subvolid" "datacow,datasum" "relatime,space_cache,subvolid"
-+	# nodatacow disabled compression
-+	test_roundtrip_mount "compress-force" "relatime,compress-force=zlib:3,space_cache,subvolid" "nodatacow" "relatime,nodatasum,nodatacow,space_cache,subvolid"
-+
-+	# nodatacow disabled both datacow and datasum, and datasum enabled datacow and datasum
-+	test_roundtrip_mount "nodatacow" "relatime,nodatasum,nodatacow,space_cache,subvolid" "datasum" "relatime,space_cache,subvolid"
-+	test_roundtrip_mount "nodatasum" "relatime,nodatasum,space_cache,subvolid" "datasum" "relatime,space_cache,subvolid"
-+
-+	test_should_fail "discard=invalid"
-+	test_roundtrip_mount "discard" "relatime,discard,space_cache,subvolid" "discard=sync" "relatime,discard,space_cache,subvolid"
-+	test_roundtrip_mount "discard=async" "relatime,discard=async,space_cache,subvolid" "discard=sync" "relatime,discard,space_cache,subvolid"
-+	test_roundtrip_mount "discard=sync" "relatime,discard,space_cache,subvolid" "nodiscard" "relatime,space_cache,subvolid"
-+
-+	test_roundtrip_mount "enospc_debug" "relatime,space_cache,enospc_debug,subvolid" "noenospc_debug" "relatime,space_cache,subvolid"
-+
-+	test_should_fail "fatal_errors=pani"
-+	# fatal_errors=bug is the default
-+	test_roundtrip_mount "fatal_errors=panic" "relatime,space_cache,fatal_errors=panic,subvolid" "fatal_errors=bug" "relatime,space_cache,subvolid"
-+
-+	test_roundtrip_mount "flushoncommit" "relatime,flushoncommit,space_cache,subvolid" "noflushoncommit" "relatime,space_cache,subvolid"
-+
-+	# 2048 is the max_inline default value
-+	test_roundtrip_mount "max_inline=1024" "relatime,max_inline=1024,space_cache" "max_inline=2048" "relatime,space_cache,subvolid"
-+
-+	test_roundtrip_mount "metadata_ratio=0" "relatime,space_cache,subvolid" "metadata_ratio=10" "space_cache,metadata_ratio=10,subvolid"
-+
-+	# ssd_spread implies ssd, while nossd_spread only disables ssd_spread
-+	test_roundtrip_mount "ssd_spread" "relatime,ssd_spread,space_cache" "nossd" "relatime,nossd,space_cache,subvolid"
-+	test_roundtrip_mount "ssd" "relatime,ssd,space_cache" "nossd" "relatime,nossd,space_cache,subvolid"
-+	test_mount_opt "ssd" "relatime,ssd,space_cache"
-+
-+	test_should_fail "thread_pool=-10"
-+	test_should_fail "thread_pool=0"
-+	test_roundtrip_mount "thread_pool=10" "relatime,thread_pool=10,space_cache" "thread_pool=50" "relatime,thread_pool=50,space_cache"
-+
-+	test_roundtrip_mount "notreelog" "relatime,notreelog,space_cache" "treelog" "relatime,space_cache,subvolid"
-+}
-+
-+# real QA test starts here
-+_scratch_mkfs >/dev/null
-+
-+# create a subvolume that will be used later
-+_scratch_mount
-+$BTRFS_UTIL_PROG subvolume create "$SCRATCH_MNT/vol1" > /dev/null
-+touch "$SCRATCH_MNT/vol1/file.txt"
-+_scratch_unmount
-+
-+test_optional_kernel_features
-+
-+test_non_revertible_options
-+
-+test_revertible_options
-+
-+test_subvol
-+
-+echo "Silence is golden"
-+
-+status=0
-+exit
-diff --git a/tests/btrfs/218.out b/tests/btrfs/218.out
-new file mode 100644
-index 00000000..1ef372a2
---- /dev/null
-+++ b/tests/btrfs/218.out
-@@ -0,0 +1,2 @@
-+QA output created by 218
-+Silence is golden
-diff --git a/tests/btrfs/group b/tests/btrfs/group
-index 32604e25..04e171ac 100644
---- a/tests/btrfs/group
-+++ b/tests/btrfs/group
-@@ -220,3 +220,4 @@
- 215 auto quick
- 216 auto quick seed
- 217 auto quick volume
-+218 auto quick
--- 
-2.27.0
+On 2020/8/5 =E4=B8=8A=E5=8D=881:55, Boris Burkov wrote:
+> Currently, btrfs_ioctl_subvol_setflags forces a btrfs_commit_transactio=
+n
+> while holding subvol_sem. As a result, we have seen workloads where
+> calling `btrfs property set -ts <subvol> ro false` hangs waiting for a
+> legitimately slow commit. This gets even worse if the workload tries to=
 
+> set flags on multiple subvolumes and the ioctls pile up on subvol_sem.
+>=20
+> Change the commit to a btrfs_end_transaction so that the ioctl can
+> return in a timely fashion and piggy back on a later commit.
+>=20
+> Signed-off-by: Boris Burkov <boris@bur.io>
+> ---
+>  fs/btrfs/ioctl.c       | 2 +-
+>  fs/btrfs/transaction.c | 4 ++--
+>  2 files changed, 3 insertions(+), 3 deletions(-)
+>=20
+> diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+> index bd3511c5ca81..3ae484768ce7 100644
+> --- a/fs/btrfs/ioctl.c
+> +++ b/fs/btrfs/ioctl.c
+> @@ -1985,7 +1985,7 @@ static noinline int btrfs_ioctl_subvol_setflags(s=
+truct file *file,
+>  		goto out_reset;
+>  	}
+> =20
+> -	ret =3D btrfs_commit_transaction(trans);
+> +	ret =3D btrfs_end_transaction(trans);
+
+This means the setflag is not committed to disk, and if a powerloss
+happens before a transaction commit, then the setflag operation just get
+lost.
+
+This means, previously if this ioctl returns, users can expect that the
+flag is always set no matter what, but now there is no guarantee.
+
+Personally I'm not sure if we really want that operation to be committed
+to disk.
+Maybe that transaction commit can be initialized in user space, so for
+multiple setflags, we only commit once, thus saves a lot of time.
+
+Thanks,
+Qu
+
+> =20
+>  out_reset:
+>  	if (ret)
+> diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
+> index 20c6ac1a5de7..1dc44209c2ae 100644
+> --- a/fs/btrfs/transaction.c
+> +++ b/fs/btrfs/transaction.c
+> @@ -47,7 +47,7 @@
+>   * | Will wait for previous running transaction to completely finish i=
+f there
+>   * | is one
+>   * |
+> - * | Then one of the following happes:
+> + * | Then one of the following happens:
+>   * | - Wait for all other trans handle holders to release.
+>   * |   The btrfs_commit_transaction() caller will do the commit work.
+>   * | - Wait for current transaction to be committed by others.
+> @@ -60,7 +60,7 @@
+>   * |
+>   * | To next stage:
+>   * |  Caller is chosen to commit transaction N, and all other trans ha=
+ndle
+> - * |  haven been released.
+> + * |  have been released.
+>   * V
+>   * Transaction N [[TRANS_STATE_COMMIT_DOING]]
+>   * |
+>=20
+
+
+--0ugru8qLSjZqIe6w9yYW93KblfJNcPj6h--
+
+--3xMaZ1wQqPS1cRqThGzGmJ7rPZLgRf8X4
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl8p5dkACgkQwj2R86El
+/qhuWwgAjyDMYYBaB3XyodIls9C5bmFlMTsv9jGKljrNL1QdYDIo8gpH6VcWc0+B
+lrxMdf7gbnTW3UG+bLisjMvkLUwRsAgHqIewkT5ymSOv8fG8eC7AjoEKMeG7eBTu
+pXDp4DRIFP7h8nMNd+x3RdJ4dOjUlaklirWeSW8MxyzlT2u5ybmvKfNDxhnFZCIC
+eSsHkxrCzE/ktFIgqWGEdwQkpnO++U8SKMReVIbd4dIqN19i6pYKujwJMYMtcXMD
+iuNnx9sGDTdOZnzLCiJxsj1OkuGAXLgburu4m8+t/VmF5OELcoyVNRExwa7HWYOY
+o0o7R1LAh7ahz3qLB0vSIfR23t3lHA==
+=htYs
+-----END PGP SIGNATURE-----
+
+--3xMaZ1wQqPS1cRqThGzGmJ7rPZLgRf8X4--
