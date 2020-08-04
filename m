@@ -2,24 +2,25 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E81E823B573
-	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Aug 2020 09:16:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 604FF23B574
+	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Aug 2020 09:16:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726806AbgHDHPz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 4 Aug 2020 03:15:55 -0400
-Received: from mx2.suse.de ([195.135.220.15]:33636 "EHLO mx2.suse.de"
+        id S1727016AbgHDHQC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 4 Aug 2020 03:16:02 -0400
+Received: from mx2.suse.de ([195.135.220.15]:33646 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725300AbgHDHPz (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 4 Aug 2020 03:15:55 -0400
+        id S1725300AbgHDHQB (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 4 Aug 2020 03:16:01 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 75F1EAC85
-        for <linux-btrfs@vger.kernel.org>; Tue,  4 Aug 2020 07:16:09 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 983EAAC85;
+        Tue,  4 Aug 2020 07:16:15 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 1/2] btrfs: sysfs: fix NULL pointer dereference at btrfs_sysfs_del_qgroups()
-Date:   Tue,  4 Aug 2020 15:15:42 +0800
-Message-Id: <20200804071543.33411-2-wqu@suse.com>
+Cc:     Nikolay Borisov <nborisov@suse.com>
+Subject: [PATCH 2/2] btrfs: inode: don't re-evaluate inode_need_compress() in compress_file_extent()
+Date:   Tue,  4 Aug 2020 15:15:43 +0800
+Message-Id: <20200804071543.33411-3-wqu@suse.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200804071543.33411-1-wqu@suse.com>
 References: <20200804071543.33411-1-wqu@suse.com>
@@ -30,81 +31,167 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-[BUG]
-With next-20200731 tag (079ad2fb4bf9eba8a0aaab014b49705cd7f07c66),
-unmounting a btrfs with quota disabled will cause the following NULL
-pointer dereference:
+The extra inode_need_compress() has already caused problems for pages
+releasing.
+We had hot fix to solve that problem, now it's time to fix it from the
+root.
 
-  BTRFS info (device dm-5): has skinny extents
-  BUG: kernel NULL pointer dereference, address: 0000000000000018
-  #PF: supervisor read access in kernel mode
-  #PF: error_code(0x0000) - not-present page
-  CPU: 7 PID: 637 Comm: umount Not tainted 5.8.0-rc7-next-20200731-custom #76
-  RIP: 0010:kobject_del+0x6/0x20
-  Call Trace:
-   btrfs_sysfs_del_qgroups+0xac/0xf0 [btrfs]
-   btrfs_free_qgroup_config+0x63/0x70 [btrfs]
-   close_ctree+0x1f5/0x323 [btrfs]
-   btrfs_put_super+0x15/0x17 [btrfs]
-   generic_shutdown_super+0x72/0x110
-   kill_anon_super+0x18/0x30
-   btrfs_kill_super+0x17/0x30 [btrfs]
-   deactivate_locked_super+0x3b/0xa0
-   deactivate_super+0x40/0x50
-   cleanup_mnt+0x135/0x190
-   __cleanup_mnt+0x12/0x20
-   task_work_run+0x64/0xb0
-   exit_to_user_mode_prepare+0x18a/0x190
-   syscall_exit_to_user_mode+0x4f/0x270
-   do_syscall_64+0x45/0x50
-   entry_SYSCALL_64_after_hwframe+0x44/0xa9
-  ---[ end trace 37b7adca5c1d5c5d ]---
+This patch will remove the extra inode_need_compress() to address the
+problem.
 
-[CAUSE]
-Commit 079ad2fb4bf9 ("kobject: Avoid premature parent object freeing in
-kobject_cleanup()") changed kobject_del() that it no longer accepts NULL
-pointer.
+This would lead to the following behavior change:
+- Worse bad compression ratio detection
+  Now if we had one async_chunk hitting bad compression ratio, other
+  async_chunk will still try to compress.
 
-Before that commit, kobject_del() and kobject_put() all accept NULL
-pointers and just ignore such NULL pointers.
+  Only newer delalloc range will follow the new INODE_NO_COMPRESS flag
+  then.
+  Although one could argue that, if only part of the file content has
+  bad compression, we should still try on other ranges.
 
-But that mentioned commit needs to access the parent node, killing the
-old NULL pointer behavior.
+Despite the behavior change, the code cleanup isn't that elegant either,
+as kcalloc() can still fail for @pages, thus from cont: tag, we still
+need to check @pages manually, thus the cleanup doesn't bring much
+benefit, just one indent removal and comments reformatting.
 
-Unfortunately btrfs is relying on that hidden feature thus we will
-trigger such NULL pointer dereference.
-
-[FIX]
-Instead of just saving several lines, do proper fs_info->qgroups_kobj
-check before calling kobject_del() and kobject_put().
-
+Suggested-by: Nikolay Borisov <nborisov@suse.com>
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/compression.c | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+ fs/btrfs/inode.c | 106 +++++++++++++++++++++++------------------------
+ 1 file changed, 52 insertions(+), 54 deletions(-)
 
-diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
-index 1ab56a734e70..17c27edd804b 100644
---- a/fs/btrfs/compression.c
-+++ b/fs/btrfs/compression.c
-@@ -115,10 +115,14 @@ static int compression_compress_pages(int type, struct list_head *ws,
- 	case BTRFS_COMPRESS_NONE:
- 	default:
- 		/*
--		 * This can't happen, the type is validated several times
--		 * before we get here. As a sane fallback, return what the
--		 * callers will understand as 'no compression happened'.
-+		 * This happens when compression races with remount to no
-+		 * compress, while caller doesn't call inode_need_compress()
-+		 * to check if we really need to compress.
-+		 *
-+		 * Not a big deal, just need to inform caller that we
-+		 * haven't allocated any pages yet.
- 		 */
-+		*out_pages = 0;
- 		return -E2BIG;
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index 96064eb41d55..37d9cff0b1b8 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -549,67 +549,65 @@ static noinline int compress_file_range(struct async_chunk *async_chunk)
+ 	ret = 0;
+ 
+ 	/*
+-	 * we do compression for mount -o compress and when the
+-	 * inode has not been flagged as nocompress.  This flag can
+-	 * change at any time if we discover bad compression ratios.
++	 * We're in compress_file_range() because run_delalloc_range() has
++	 * already evaluated inode_need_compress().
++	 * So don't re-check it again to avoid race between ioctl.
++	 * This behavior would make bad compression ratio detection less
++	 * effective, as we will only skip compression until next
++	 * run_delalloc_range().
+ 	 */
+-	if (inode_need_compress(BTRFS_I(inode), start, end)) {
+-		WARN_ON(pages);
+-		pages = kcalloc(nr_pages, sizeof(struct page *), GFP_NOFS);
+-		if (!pages) {
+-			/* just bail out to the uncompressed code */
+-			nr_pages = 0;
+-			goto cont;
+-		}
++	WARN_ON(pages);
++	pages = kcalloc(nr_pages, sizeof(struct page *), GFP_NOFS);
++	if (!pages) {
++		/* just bail out to the uncompressed code */
++		nr_pages = 0;
++		goto cont;
++	}
+ 
+-		if (BTRFS_I(inode)->defrag_compress)
+-			compress_type = BTRFS_I(inode)->defrag_compress;
+-		else if (BTRFS_I(inode)->prop_compress)
+-			compress_type = BTRFS_I(inode)->prop_compress;
++	if (BTRFS_I(inode)->defrag_compress)
++		compress_type = BTRFS_I(inode)->defrag_compress;
++	else if (BTRFS_I(inode)->prop_compress)
++		compress_type = BTRFS_I(inode)->prop_compress;
+ 
+-		/*
+-		 * we need to call clear_page_dirty_for_io on each
+-		 * page in the range.  Otherwise applications with the file
+-		 * mmap'd can wander in and change the page contents while
+-		 * we are compressing them.
+-		 *
+-		 * If the compression fails for any reason, we set the pages
+-		 * dirty again later on.
+-		 *
+-		 * Note that the remaining part is redirtied, the start pointer
+-		 * has moved, the end is the original one.
+-		 */
+-		if (!redirty) {
+-			extent_range_clear_dirty_for_io(inode, start, end);
+-			redirty = 1;
+-		}
++	/*
++	 * We need to call clear_page_dirty_for_io on each page in the range.
++	 * Otherwise applications with the file mmap'd can wander in and
++	 * change the page contents while we are compressing them.
++	 *
++	 * If the compression fails for any reason, we set the pages dirty
++	 * again later on.
++	 *
++	 * Note that the remaining part is redirtied, the start pointer has
++	 * moved, the end is the original one.
++	 */
++	if (!redirty) {
++		extent_range_clear_dirty_for_io(inode, start, end);
++		redirty = 1;
++	}
+ 
+-		/* Compression level is applied here and only here */
+-		ret = btrfs_compress_pages(
+-			compress_type | (fs_info->compress_level << 4),
+-					   inode->i_mapping, start,
+-					   pages,
+-					   &nr_pages,
+-					   &total_in,
+-					   &total_compressed);
++	/* Compression level is applied here and only here */
++	ret = btrfs_compress_pages(
++		compress_type | (fs_info->compress_level << 4),
++				   inode->i_mapping, start, pages, &nr_pages,
++				   &total_in, &total_compressed);
+ 
+-		if (!ret) {
+-			unsigned long offset = offset_in_page(total_compressed);
+-			struct page *page = pages[nr_pages - 1];
+-			char *kaddr;
++	if (!ret) {
++		unsigned long offset = offset_in_page(total_compressed);
++		struct page *page = pages[nr_pages - 1];
++		char *kaddr;
+ 
+-			/* zero the tail end of the last page, we might be
+-			 * sending it down to disk
+-			 */
+-			if (offset) {
+-				kaddr = kmap_atomic(page);
+-				memset(kaddr + offset, 0,
+-				       PAGE_SIZE - offset);
+-				kunmap_atomic(kaddr);
+-			}
+-			will_compress = 1;
++		/* zero the tail end of the last page, we might be
++		 * sending it down to disk
++		 */
++		if (offset) {
++			kaddr = kmap_atomic(page);
++			memset(kaddr + offset, 0,
++			       PAGE_SIZE - offset);
++			kunmap_atomic(kaddr);
+ 		}
++		will_compress = 1;
  	}
- }
++
+ cont:
+ 	if (start == 0) {
+ 		/* lets try to make an inline extent */
+@@ -656,7 +654,7 @@ static noinline int compress_file_range(struct async_chunk *async_chunk)
+ 			/*
+ 			 * Ensure we only free the compressed pages if we have
+ 			 * them allocated, as we can still reach here with
+-			 * inode_need_compress() == false.
++			 * previous kcalloc() failure.
+ 			 */
+ 			if (pages) {
+ 				for (i = 0; i < nr_pages; i++) {
 -- 
 2.28.0
 
