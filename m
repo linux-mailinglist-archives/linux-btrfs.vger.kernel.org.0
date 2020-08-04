@@ -2,78 +2,65 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42FE223B612
-	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Aug 2020 09:51:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29E1423B68C
+	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Aug 2020 10:13:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727887AbgHDHvJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 4 Aug 2020 03:51:09 -0400
-Received: from mx2.suse.de ([195.135.220.15]:46068 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726198AbgHDHvI (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 4 Aug 2020 03:51:08 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 79638AB7D;
-        Tue,  4 Aug 2020 07:51:22 +0000 (UTC)
+        id S1726643AbgHDIMy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 4 Aug 2020 04:12:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55914 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725932AbgHDIMy (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 4 Aug 2020 04:12:54 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AAC1C06174A
+        for <linux-btrfs@vger.kernel.org>; Tue,  4 Aug 2020 01:12:54 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id d190so1807920wmd.4
+        for <linux-btrfs@vger.kernel.org>; Tue, 04 Aug 2020 01:12:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=/RftEstYtGmqN8Rwq458YLed/CyWhxuCvo4h4GpCJ6U=;
+        b=p+4fmgRn6X2z+1Rk2gJQ0yHqapKeIdeixElYaZSiKuJ3Dt9/yzh3XMPu1Lz75+AUba
+         pyhAYrqEiMJbRaWC46agxzsyW4KfspTfJSQAFQYi//gQ+lPOQBeRNxc+506Jb2vYfg2A
+         1nNdqkoQBtU+NJsFVmeFzvE3JXeMoDgcB5Y80yIM0QKCv9bGSq82WKzYAXPWhOpHaubu
+         7EnnCtT5qGSv0PevGZ45EsUoBFQ4vZP9VoTLR7XCmpAl5z1VL3/QDB0qnr5+EemrSUuq
+         hgORX2G1pRXmoWYP3pQ5SNDfl5I0OrOQASlOeG9l7Rj+i+gEkdgnHt6SGdphRuJy+fMw
+         15Bw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=/RftEstYtGmqN8Rwq458YLed/CyWhxuCvo4h4GpCJ6U=;
+        b=fWm5YDJuQSUNS+re9N1NvkiW1rs6NImVn6ioGqnUyvvZMkACMpux/4yER/+U96r1bz
+         /ruEiwYY177hV6GSOwANLgBW32/AUD8GijmgZStrtpJrtAusJcGHqkPTX8ZlJwCdl6NE
+         gJSKXkuzUzXQX5LPmMn5c++bEr83Bst+vxIsKfTK4KiPzEQlUeP5P1/m19zSXmP+vLlv
+         EFXLWc6V0oWYi/dJY6BltM3ShXh7fWje4uFWM9iq5fRnaiBCwTOa4vGmWtWBYrvlTg9t
+         MKVq8asreZwFXiqeDKa8YxZCTHXeVa3mlHzM7KeiLhQpmpDh5M8c6+oBdy/HT7lGGZe1
+         X3LQ==
+X-Gm-Message-State: AOAM530l6MQ7N0OdrGi+MNozQJooZYbB9XgbDM5RY0wzsxPGudnIexyl
+        moGQlTbCVPVx+Qhm3UjdWshzubOI
+X-Google-Smtp-Source: ABdhPJwza0JUdZn9MAr9mH0t3KP/i8rENAgdiKucGb+ln3oL8f9f92VfVU9gxsemuAor51s8kF97kw==
+X-Received: by 2002:a1c:a446:: with SMTP id n67mr2831953wme.174.1596528772865;
+        Tue, 04 Aug 2020 01:12:52 -0700 (PDT)
+Received: from [10.20.1.172] (ivokamhome.ddns.nbis.net. [87.120.136.31])
+        by smtp.gmail.com with ESMTPSA id 33sm31240873wri.16.2020.08.04.01.12.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 04 Aug 2020 01:12:52 -0700 (PDT)
 Subject: Re: [PATCH btrfs-progs] Documentation: btrfs-man5: Remove nonexistent
  nousebackuproot option
-To:     Marcos Paulo de Souza <marcos@mpdesouza.com>,
-        Neal Gompa <ngompa13@gmail.com>
-Cc:     David Sterba <dsterba@suse.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
-        Marcos Paulo de Souza <mpdesouza@suse.com>
+To:     Marcos Paulo de Souza <marcos@mpdesouza.com>, dsterba@suse.com,
+        linux-btrfs@vger.kernel.org
+Cc:     Marcos Paulo de Souza <mpdesouza@suse.com>
 References: <20200803042944.26465-1-marcos@mpdesouza.com>
- <CAEg-Je8VCXVC=9z-cCtszKxKeVbRMUojEQzHAuYkgdv4jXm-oQ@mail.gmail.com>
- <5470b51ec2da3bda36c6390f5de939dc6c43dc89.camel@mpdesouza.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <680d21b8-a33a-92df-63ae-2fdcc2e2b3e7@suse.com>
-Date:   Tue, 4 Aug 2020 10:51:05 +0300
+From:   Nikolay Borisov <n.borisov.lkml@gmail.com>
+Message-ID: <35384dfa-02c3-5f91-2753-2788ebc5b4bc@gmail.com>
+Date:   Tue, 4 Aug 2020 11:12:49 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <5470b51ec2da3bda36c6390f5de939dc6c43dc89.camel@mpdesouza.com>
+In-Reply-To: <20200803042944.26465-1-marcos@mpdesouza.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -84,51 +71,13 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 4.08.20 г. 5:57 ч., Marcos Paulo de Souza wrote:
-> On Mon, 2020-08-03 at 21:24 -0400, Neal Gompa wrote:
->> On Mon, Aug 3, 2020 at 1:05 AM Marcos Paulo de Souza
->> <marcos@mpdesouza.com> wrote:
->>>
->>> From: Marcos Paulo de Souza <mpdesouza@suse.com>
->>>
->>> Since it's inclusion in b3751c131 ("btrfs-progs: docs: update
->>> btrfs-man5"), this option was never available in kernel, we can
->> only
->>> enable this option using usebackuproot.
->>>
->>> Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
->>> ---
->>>  Documentation/btrfs-man5.asciidoc | 1 -
->>>  1 file changed, 1 deletion(-)
->>>
->>> diff --git a/Documentation/btrfs-man5.asciidoc
->> b/Documentation/btrfs-man5.asciidoc
->>> index 064312ed..2edf721c 100644
->>> --- a/Documentation/btrfs-man5.asciidoc
->>> +++ b/Documentation/btrfs-man5.asciidoc
->>> @@ -471,7 +471,6 @@ The tree log could contain new
->> files/directories, these would not exist on
->>>  a mounted filesystem if the log is not replayed.
->>>
->>>  *usebackuproot*::
->>> -*nousebackuproot*::
->>>  (since: 4.6, default: off)
->>>  +
->>>  Enable autorecovery attempts if a bad tree root is found at mount
->> time.
->>> --
->>> 2.27.0
->>>
->>
->> Shouldn't this option be plumbed through instead?
+On 3.08.20 г. 7:29 ч., Marcos Paulo de Souza wrote:
+> From: Marcos Paulo de Souza <mpdesouza@suse.com>
 > 
-> As this option is only used at mount time, I don't see why we should be
-> able to disable using remount for example. Am I missing something?
+> Since it's inclusion in b3751c131 ("btrfs-progs: docs: update
+> btrfs-man5"), this option was never available in kernel, we can only
+> enable this option using usebackuproot.
 > 
+> Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
 
-The default is to not use backup roots, so there's no point in having it
-as an explicit option.
-
-> Thanks,
->   Marcos
-> 
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
