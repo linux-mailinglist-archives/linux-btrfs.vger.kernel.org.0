@@ -2,258 +2,100 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91C1623AE2C
-	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Aug 2020 22:33:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 990F723B241
+	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Aug 2020 03:25:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728282AbgHCUag (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 3 Aug 2020 16:30:36 -0400
-Received: from mx2.suse.de ([195.135.220.15]:51970 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726725AbgHCUaf (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 3 Aug 2020 16:30:35 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 79686AE2C;
-        Mon,  3 Aug 2020 20:30:49 +0000 (UTC)
-From:   Goldwyn Rodrigues <rgoldwyn@suse.de>
-To:     linux-btrfs@vger.kernel.org
-Cc:     Goldwyn Rodrigues <rgoldwyn@suse.com>
-Subject: [PATCH 4/4] btrfs-progs: Enqueue command if it can't be performed immediately
-Date:   Mon,  3 Aug 2020 15:30:15 -0500
-Message-Id: <20200803203015.24562-4-rgoldwyn@suse.de>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200803203015.24562-1-rgoldwyn@suse.de>
-References: <20200803202913.15913-1-rgoldwyn@suse.de>
- <20200803203015.24562-1-rgoldwyn@suse.de>
+        id S1729052AbgHDBZE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 3 Aug 2020 21:25:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49634 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726276AbgHDBZE (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 3 Aug 2020 21:25:04 -0400
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D20EC06174A
+        for <linux-btrfs@vger.kernel.org>; Mon,  3 Aug 2020 18:25:04 -0700 (PDT)
+Received: by mail-io1-xd42.google.com with SMTP id l17so40555039iok.7
+        for <linux-btrfs@vger.kernel.org>; Mon, 03 Aug 2020 18:25:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=LXUEzGLYAYZJ8IPXVCfqiMwBDrgk/5aXGnx8jITLgBE=;
+        b=FMn9lmvLOU8sdWDS5encnE9l4vJin8sCFhnlSid2bEWaXA5rvH4tatDFujqvXSvx0N
+         0YOXPW5cyEpyjtj340D49uLTnRUJCB3oy1pbZelfITwYy1DhGSMkIPsJ8zSCrW1hsnJg
+         GUdYmIkap52BvT2VdfqfcO6wIBTMKURCaZ2smkcWuQ+ong3CXDQWqvxz9b0ElOGxVwK8
+         tehGPiIv7mdAiiDMhsQuQaFGBy6Pr/WBcbRxVVjRmZyJ7ZOJG41kspK5r4guIOukIRe5
+         XrCjbfVUWOs/bmEbKlLmKQqR3wl2yonsXoSt2rJGr1swRM6dywTcuHzm+zRcqj4Dodwf
+         5FIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=LXUEzGLYAYZJ8IPXVCfqiMwBDrgk/5aXGnx8jITLgBE=;
+        b=fk501Xj9CBbeXvQbyg/6PsaG2Uk+acXgmzYNz0G91S8N9hZBEDf2bdnO84dd8NkAcm
+         96Idl5kOrIAABvIQ/xznO9teseRYrVRVLiM2FjrSWkCc4k9GV+LPQ3KvMWHU9DJqvZ3I
+         goVyNTzpOHsNdsTIJwGU/i6+r9zQ6/DRCDh01rDjA0szABy3tZAKxk1Vvjk8u7MLUtuJ
+         LhCowZaLuYDPyuy3e9lQBfluY53Wf2nrm4aaZSNu4NcdDWBuVUSe/7iugN+YG7SKLiuz
+         qKUn4XVNRjlMlovEtOJ0C7b4l3RLLygRyDa4ytbNyP2cq8tuD0NzJqif7H7aETyyhU7Z
+         9uIg==
+X-Gm-Message-State: AOAM532bhxvfG/zGoUp7AqrrTmH79USSc2eQ/IKrpU6eummzaiROlKFu
+        GtPS1dvjiMs5g0giP3yQLtJ+/CxwsU5jgnJfiRtZnRbZ
+X-Google-Smtp-Source: ABdhPJyRXspY5MMRt5kiNwnn78rHkzxyzc6DYC/81vxyc14LGydBgDwIreX3wPbF/TUGHaA/tG0aNtXNBdaMwGllUH4=
+X-Received: by 2002:a05:6638:2692:: with SMTP id o18mr2891728jat.2.1596504303330;
+ Mon, 03 Aug 2020 18:25:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200803042944.26465-1-marcos@mpdesouza.com>
+In-Reply-To: <20200803042944.26465-1-marcos@mpdesouza.com>
+From:   Neal Gompa <ngompa13@gmail.com>
+Date:   Mon, 3 Aug 2020 21:24:27 -0400
+Message-ID: <CAEg-Je8VCXVC=9z-cCtszKxKeVbRMUojEQzHAuYkgdv4jXm-oQ@mail.gmail.com>
+Subject: Re: [PATCH btrfs-progs] Documentation: btrfs-man5: Remove nonexistent
+ nousebackuproot option
+To:     Marcos Paulo de Souza <marcos@mpdesouza.com>
+Cc:     David Sterba <dsterba@suse.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
+        Marcos Paulo de Souza <mpdesouza@suse.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Goldwyn Rodrigues <rgoldwyn@suse.com>
+On Mon, Aug 3, 2020 at 1:05 AM Marcos Paulo de Souza
+<marcos@mpdesouza.com> wrote:
+>
+> From: Marcos Paulo de Souza <mpdesouza@suse.com>
+>
+> Since it's inclusion in b3751c131 ("btrfs-progs: docs: update
+> btrfs-man5"), this option was never available in kernel, we can only
+> enable this option using usebackuproot.
+>
+> Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
+> ---
+>  Documentation/btrfs-man5.asciidoc | 1 -
+>  1 file changed, 1 deletion(-)
+>
+> diff --git a/Documentation/btrfs-man5.asciidoc b/Documentation/btrfs-man5=
+.asciidoc
+> index 064312ed..2edf721c 100644
+> --- a/Documentation/btrfs-man5.asciidoc
+> +++ b/Documentation/btrfs-man5.asciidoc
+> @@ -471,7 +471,6 @@ The tree log could contain new files/directories, the=
+se would not exist on
+>  a mounted filesystem if the log is not replayed.
+>
+>  *usebackuproot*::
+> -*nousebackuproot*::
+>  (since: 4.6, default: off)
+>  +
+>  Enable autorecovery attempts if a bad tree root is found at mount time.
+> --
+> 2.27.0
+>
 
-Wait for the current exclusive operation to finish before issuing the
-command ioctl, so we have a better chance of success.
+Shouldn't this option be plumbed through instead?
 
-Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
----
- cmds/device.c     | 56 +++++++++++++++++++++++++++++++++++++++--------
- cmds/filesystem.c | 25 +++++++++++++++++----
- common/sysfs.c    | 26 ++++++++++++++++++++++
- common/utils.h    |  1 +
- 4 files changed, 95 insertions(+), 13 deletions(-)
-
-diff --git a/cmds/device.c b/cmds/device.c
-index 6acd4ae6..12d92dac 100644
---- a/cmds/device.c
-+++ b/cmds/device.c
-@@ -49,6 +49,7 @@ static const char * const cmd_device_add_usage[] = {
- 	"",
- 	"-K|--nodiscard    do not perform whole device TRIM on devices that report such capability",
- 	"-f|--force        force overwrite existing filesystem on the disk",
-+	"-q|--enqueue	   enqueue if an exclusive operation is running",
- 	NULL
- };
- 
-@@ -62,6 +63,7 @@ static int cmd_device_add(const struct cmd_struct *cmd,
- 	int force = 0;
- 	int last_dev;
- 	char exop[BTRFS_SYSFS_EXOP_SIZE];
-+	bool enqueue = false;
- 
- 	optind = 0;
- 	while (1) {
-@@ -69,10 +71,11 @@ static int cmd_device_add(const struct cmd_struct *cmd,
- 		static const struct option long_options[] = {
- 			{ "nodiscard", optional_argument, NULL, 'K'},
- 			{ "force", no_argument, NULL, 'f'},
-+			{ "enqueue", no_argument, NULL, 'q'},
- 			{ NULL, 0, NULL, 0}
- 		};
- 
--		c = getopt_long(argc, argv, "Kf", long_options, NULL);
-+		c = getopt_long(argc, argv, "Kfq", long_options, NULL);
- 		if (c < 0)
- 			break;
- 		switch (c) {
-@@ -82,6 +85,9 @@ static int cmd_device_add(const struct cmd_struct *cmd,
- 		case 'f':
- 			force = 1;
- 			break;
-+		case 'q':
-+			enqueue = true;
-+			break;
- 		default:
- 			usage_unknown_option(cmd, argv);
- 		}
-@@ -98,9 +104,15 @@ static int cmd_device_add(const struct cmd_struct *cmd,
- 		return 1;
- 
- 	if (get_exclusive_operation(fdmnt, exop) > 0 && strcmp(exop, "none")) {
--		error("unable to add device: %s in progress", exop);
--		close_file_or_dir(fdmnt, dirstream);
--		return 1;
-+		if (enqueue) {
-+			printf("%s in progress. Waiting for %s to finish.\n",
-+					exop, exop);
-+			wait_for_exclusive_operation(fdmnt);
-+		} else {
-+			error("unable to add: %s in progress", exop);
-+			close_file_or_dir(fdmnt, dirstream);
-+			return 1;
-+		}
- 	}
- 
- 	for (i = optind; i < last_dev; i++){
-@@ -163,8 +175,27 @@ static int _cmd_device_remove(const struct cmd_struct *cmd,
- 	int i, fdmnt, ret = 0;
- 	DIR	*dirstream = NULL;
- 	char exop[BTRFS_SYSFS_EXOP_SIZE];
-+	bool enqueue = false;
- 
--	clean_args_no_options(cmd, argc, argv);
-+
-+	while (1) {
-+		int c;
-+		static const struct option long_options[] = {
-+			{ "enqueue", no_argument, NULL, 'q'},
-+			{ NULL, 0, NULL, 0}
-+		};
-+
-+		c = getopt_long(argc, argv, "q", long_options, NULL);
-+		if (c < 0)
-+			break;
-+		switch (c) {
-+		case 'q':
-+			enqueue = true;
-+			break;
-+		default:
-+			usage_unknown_option(cmd, argv);
-+		}
-+	}
- 
- 	if (check_argc_min(argc - optind, 2))
- 		return 1;
-@@ -176,9 +207,15 @@ static int _cmd_device_remove(const struct cmd_struct *cmd,
- 		return 1;
- 
- 	if (get_exclusive_operation(fdmnt, exop) > 0 && strcmp(exop, "none")) {
--		error("unable to remove device: %s in progress", exop);
--		close_file_or_dir(fdmnt, dirstream);
--		return 1;
-+		if (enqueue) {
-+			printf("%s in progress. Waiting for %s to finish.\n",
-+					exop, exop);
-+			wait_for_exclusive_operation(fdmnt);
-+		} else {
-+			error("unable to remove device: %s in progress", exop);
-+			close_file_or_dir(fdmnt, dirstream);
-+			return 1;
-+		}
- 	}
- 
- 	for(i = optind; i < argc - 1; i++) {
-@@ -251,7 +288,8 @@ static int _cmd_device_remove(const struct cmd_struct *cmd,
- 	"the device.",								\
- 	"If 'missing' is specified for <device>, the first device that is",	\
- 	"described by the filesystem metadata, but not present at the mount",	\
--	"time will be removed. (only in degraded mode)"
-+	"time will be removed. (only in degraded mode)", \
-+	"-q|--enqueue	   enqueue if an exclusive operation is running"
- 
- static const char * const cmd_device_remove_usage[] = {
- 	"btrfs device remove <device>|<devid> [<device>|<devid>...] <path>",
-diff --git a/cmds/filesystem.c b/cmds/filesystem.c
-index c3efb405..a584b1d3 100644
---- a/cmds/filesystem.c
-+++ b/cmds/filesystem.c
-@@ -1080,8 +1080,19 @@ static int cmd_filesystem_resize(const struct cmd_struct *cmd,
- 	DIR	*dirstream = NULL;
- 	struct stat st;
- 	char exop[BTRFS_SYSFS_EXOP_SIZE];
-+	bool enqueue = false;
- 
--	clean_args_no_options_relaxed(cmd, argc, argv);
-+	while(1) {
-+		int c = getopt(argc - 2, argv, "q");
-+		if (c < 0)
-+			break;
-+
-+		switch(c) {
-+		case 'q':
-+			enqueue = true;
-+			break;
-+		}
-+	}
- 
- 	if (check_argc_exact(argc - optind, 2))
- 		return 1;
-@@ -1112,9 +1123,15 @@ static int cmd_filesystem_resize(const struct cmd_struct *cmd,
- 		return 1;
- 
- 	if (get_exclusive_operation(fd, exop) > 0 && strcmp(exop, "none")) {
--		error("unable to resize: %s in progress", exop);
--		close_file_or_dir(fd, dirstream);
--		return 1;
-+		if (enqueue) {
-+			printf("%s in progress. Waiting for %s to finish.\n",
-+					exop, exop);
-+			wait_for_exclusive_operation(fd);
-+		} else {
-+			error("unable to resize: %s in progress", exop);
-+			close_file_or_dir(fd, dirstream);
-+			return 1;
-+		}
- 	}
- 
- 	printf("Resize '%s' of '%s'\n", path, amount);
-diff --git a/common/sysfs.c b/common/sysfs.c
-index 9a18c753..123da97a 100644
---- a/common/sysfs.c
-+++ b/common/sysfs.c
-@@ -58,3 +58,29 @@ int get_exclusive_operation(int mp_fd, char *val)
- 	*s = '\0';
- 	return strlen(val);
- }
-+
-+int sysfs_wait(int fd, int seconds)
-+{
-+	fd_set fds;
-+	struct timeval tv;
-+
-+	FD_ZERO(&fds);
-+	FD_SET(fd, &fds);
-+
-+	tv.tv_sec = seconds;
-+	tv.tv_usec = 0;
-+
-+	return select(fd+1, NULL, NULL, &fds, &tv);
-+}
-+
-+void wait_for_exclusive_operation(int dirfd)
-+{
-+        char exop[BTRFS_SYSFS_EXOP_SIZE];
-+	int fd;
-+
-+        fd = sysfs_open(dirfd, "exclusive_operation");
-+        while ((sysfs_get_str_fd(fd, exop, BTRFS_SYSFS_EXOP_SIZE) > 0) &&
-+		strncmp(exop, "none", 4))
-+			sysfs_wait(fd, 1);
-+	close(fd);
-+}
-diff --git a/common/utils.h b/common/utils.h
-index be8aab58..f141edb6 100644
---- a/common/utils.h
-+++ b/common/utils.h
-@@ -155,5 +155,6 @@ int btrfs_warn_multiple_profiles(int fd);
- 
- #define BTRFS_SYSFS_EXOP_SIZE		16
- int get_exclusive_operation(int fd, char *val);
-+void wait_for_exclusive_operation(int fd);
- 
- #endif
--- 
-2.26.2
-
+--=20
+=E7=9C=9F=E5=AE=9F=E3=81=AF=E3=81=84=E3=81=A4=E3=82=82=E4=B8=80=E3=81=A4=EF=
+=BC=81/ Always, there's only one truth!
