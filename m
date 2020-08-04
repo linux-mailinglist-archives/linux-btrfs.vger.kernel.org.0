@@ -2,113 +2,147 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77E0B23BCDE
-	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Aug 2020 17:03:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2888B23BD57
+	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Aug 2020 17:41:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729581AbgHDPDD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 4 Aug 2020 11:03:03 -0400
-Received: from mx2.suse.de ([195.135.220.15]:40292 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729571AbgHDPDB (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 4 Aug 2020 11:03:01 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 9515FB644;
-        Tue,  4 Aug 2020 15:03:15 +0000 (UTC)
-Subject: Re: [PATCH] btrfs: Rework error detection in init_tree_roots
-To:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-References: <20200804073236.6677-1-nborisov@suse.com>
- <SN4PR0401MB35982C96F01F6CD1AFB31C679B4A0@SN4PR0401MB3598.namprd04.prod.outlook.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <327aaaeb-affd-e762-921d-f2f823eec3bc@suse.com>
-Date:   Tue, 4 Aug 2020 18:02:58 +0300
+        id S1727982AbgHDPlA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 4 Aug 2020 11:41:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40158 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728295AbgHDPk5 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 4 Aug 2020 11:40:57 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07D6AC06174A
+        for <linux-btrfs@vger.kernel.org>; Tue,  4 Aug 2020 08:40:57 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id a26so17151623ejc.2
+        for <linux-btrfs@vger.kernel.org>; Tue, 04 Aug 2020 08:40:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=liland-com.20150623.gappssmtp.com; s=20150623;
+        h=to:from:subject:message-id:date:user-agent:mime-version
+         :content-transfer-encoding:content-language;
+        bh=WzZBomgXnLT2k2JLbw0uuVNqwfAPvzfKZ/CESV282NI=;
+        b=gvKjG42qiUQaVVxM7nfWbqgTWJyK/WVKFuF1BpxavB5ENHQtoOKaKze0Zs62Q1nlN6
+         MW6T+LbgtYhOk2WCfvDurcCmL/MMrs4o+KlaB70fhCTHh4wecZu4N4vEv4/GyMn9VLcA
+         W25XvNRU1wjG34hSja6DlFdiBNglMTOvZXGZ42FFu+tIxQSXY6LlujdkbM2+vPmpwX+p
+         TauTFLlCXv4TQAyqEdVDPjnzgbMjb+Xjh3lZjTLDfHOvQ7od2qdnKDJoL9rvN6hegjj2
+         61i2/H7mZpMXvL33WnF6YZNnFfVp6sydIBwQDVw3+g25k1Hx+SLtG6bmj0mDja6cO8P4
+         vL9g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:from:subject:message-id:date:user-agent
+         :mime-version:content-transfer-encoding:content-language;
+        bh=WzZBomgXnLT2k2JLbw0uuVNqwfAPvzfKZ/CESV282NI=;
+        b=LdBwvykJyiArmjrgP7yMHqUGuP2jjTkdWIrfMjqqG4DxEXFvqo2uwK6WAF0IeGd62N
+         nWHdPQza8JollrbI1NeT3fqHx7R/Uq7CwhtlvEY+7zYWa0BNeiVSVt7IophP7qu00X8X
+         fWKWbTrk0YZHaP7R1jYHBqq3Rj7+LdNE5V/pZ7BsUNrpOWLUzS0JCcX5BB0SdXKoLHid
+         eMNxLptbAsJbe/gVcVRYbwJEkNznXObIyLmMVnkHqZJjEsVm2VqIyX9/9Qam9f+LC7A8
+         NZ2G85M/AWGy2kpwQpmdbFhocgupuk01jf1cYB2fc4UJk+YP8tKG8zaTJpCSU6qp2/K/
+         FjeA==
+X-Gm-Message-State: AOAM531daNPa8sV52ofUPFibd34lxFe1AyA5BkoGlDxPN2eVWqTbB/n+
+        MDrOyrHhqWKil5MkUV368fxstFFYYxf/gN42uiB1RIIQdNn56Kcfk+viUTuTo857zfEHyFdj2EG
+        0NnLGHFLdkNTzn4gYWLUHdzBxPoA=
+X-Google-Smtp-Source: ABdhPJzbcp3FITuPakHbGTlb/2I+Dv+pjXe52qy+UDv/rDnFdbmNwz/kPAMsaNqYK+705CCkPERqvA==
+X-Received: by 2002:a17:906:ca8c:: with SMTP id js12mr8811737ejb.195.1596555654351;
+        Tue, 04 Aug 2020 08:40:54 -0700 (PDT)
+Received: from [192.168.0.142] ([62.218.42.35])
+        by smtp.gmail.com with ESMTPSA id q17sm18646061ejd.20.2020.08.04.08.40.52
+        for <linux-btrfs@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 04 Aug 2020 08:40:53 -0700 (PDT)
+To:     linux-btrfs@vger.kernel.org
+From:   Edmund Urbani <edmund.urbani@liland.com>
+Subject: Unable to remove missing device from RAID-6 due to csum error
+Message-ID: <febe56b5-6674-9706-1a04-ee49fb00aae5@liland.com>
+Date:   Tue, 4 Aug 2020 17:40:01 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <SN4PR0401MB35982C96F01F6CD1AFB31C679B4A0@SN4PR0401MB3598.namprd04.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: quoted-printable
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Hi all,
+
+so I have removed one of four disks from the filesystem, operated it in deg=
+raded=20
+mode for a while, and then added the replacement to the array. However when=
+ I=20
+attempted to remove the missing device, after several hours the operation w=
+as=20
+aborted with an IO error. dmesg showed a csum error. I ran scrub (took a fe=
+w=20
+days), which eventually aborted as well. So now I am stuck with a filesyste=
+m in=20
+degraded mode with a missing device:
+
+Label: none=C2=A0 uuid: 9c3c3f8d-a601-4bd3-8871-d068dd500a15
+ =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Total devices 5 FS bytes used 1=
+5.00TiB
+ =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 devid=C2=A0=C2=A0=C2=A0 3 size =
+9.09TiB used 8.81TiB path /dev/sda1
+ =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 devid=C2=A0=C2=A0=C2=A0 4 size =
+9.09TiB used 8.81TiB path /dev/sdb1
+ =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 devid=C2=A0=C2=A0=C2=A0 5 size =
+9.09TiB used 8.78TiB path /dev/sdd1
+ =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 devid=C2=A0=C2=A0=C2=A0 6 size =
+9.09TiB used 558.53GiB path /dev/sdc1
+ =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 *** Some devices missing
+
+sdc1 is the new device as you can probably guess from the fact that it stil=
+l has=20
+a lot more unused space
+
+Help?
+
+Kind regards,
+ =C2=A0Edmund
 
 
-On 4.08.20 г. 15:58 ч., Johannes Thumshirn wrote:
-> On 04/08/2020 09:32, Nikolay Borisov wrote:
->> @@ -2645,17 +2645,16 @@ static int __cold init_tree_roots(struct btrfs_fs_info *fs_info)
->>  		level = btrfs_super_root_level(sb);
->>  		tree_root->node = read_tree_block(fs_info, btrfs_super_root(sb),
->>  						  generation, level, NULL);
->> -		if (IS_ERR(tree_root->node) ||
->> -		    !extent_buffer_uptodate(tree_root->node)) {
->> +		if (IS_ERR(tree_root->node)) {
->>  			handle_error = true;
->> +			ret = PTR_ERR(tree_root->node);
->> +			tree_root->node = NULL;
->> +			btrfs_warn(fs_info, "failed to read tree root");
->> +			continue;
-> 
-> [...]
-> 
->>  			btrfs_warn(fs_info, "failed to read tree root");
->>  			continue;
->>  		}
-> 
-> Now we're duplicating the warning message. I think it's better to have two 
-> distinct messages so we can differentiate which of the two failure cases happened.
-> 
-> The 2nd one could be something like "tree root eb not uptodate".
+--=20
+Auch Liland ist in der Krise f=C3=BCr Sie da! #WirBleibenZuhause und liefer=
+n=20
+Ihnen trotzdem weiterhin hohe Qualit=C3=A4t und besten Service.=C2=A0
+Unser Support=20
+<mailto:support@liland.com> steht weiterhin wie gewohnt zur Verf=C3=BCgung.
+Ihr=20
+Team LILAND
+*
+*
+*Liland IT GmbH*
 
-Sure, I'm happy too replace it with whatever is more informative. Will
-take another look at the code and see what I can derive.
 
-> 
-> Otherwise looks good,
-> Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com> 
-> 
+Ferlach =E2=97=8F Wien =E2=97=8F M=C3=BCnchen
+Tel: +43 463=20
+220111
+Tel: +49 89 458 15 940
+office@Liland.com
+https://Liland.com=20
+<https://Liland.com>=C2=A0
+ <https://twitter.com/lilandit>=C2=A0=20
+<https://www.instagram.com/liland_com/>=C2=A0=20
+<https://www.facebook.com/LilandIT/>
+
+Copyright =C2=A9 2020 Liland IT GmbH=C2=A0
+
+
+Diese Mail enthaelt vertrauliche und/oder rechtlich geschuetzte=C2=A0
+Informationen.=C2=A0
+Wenn Sie nicht der richtige Adressat sind oder diese Email=20
+irrtuemlich=C2=A0erhalten haben, informieren Sie bitte sofort den Absender =
+und=20
+vernichten=C2=A0Sie diese Mail. Das unerlaubte Kopieren sowie die unbefugte=
+=20
+Weitergabe=C2=A0dieser Mail ist nicht gestattet.=C2=A0
+
+This email may contain=20
+confidential and/or privileged information.=C2=A0
+If you are not the intended=20
+recipient (or have received this email in=C2=A0error) please notify the sen=
+der=20
+immediately and destroy this email. Any=C2=A0unauthorised copying, disclosu=
+re or=20
+distribution of the material in this=C2=A0email is strictly forbidden.
