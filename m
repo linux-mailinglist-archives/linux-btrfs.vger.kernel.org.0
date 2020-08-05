@@ -2,25 +2,25 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 497F423C7DB
-	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Aug 2020 10:36:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 646FA23C897
+	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Aug 2020 11:05:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726294AbgHEIf5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 5 Aug 2020 04:35:57 -0400
-Received: from mx2.suse.de ([195.135.220.15]:47632 "EHLO mx2.suse.de"
+        id S1728062AbgHEJEe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 5 Aug 2020 05:04:34 -0400
+Received: from mx2.suse.de ([195.135.220.15]:37766 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726175AbgHEIfy (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 5 Aug 2020 04:35:54 -0400
+        id S1725963AbgHEJEd (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 5 Aug 2020 05:04:33 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 18264AC7F;
-        Wed,  5 Aug 2020 08:36:09 +0000 (UTC)
-Subject: Re: [PATCH 1/3] btrfs: enumerate the type of exclusive operation in
- progress
+        by mx2.suse.de (Postfix) with ESMTP id CE5F2AC7D;
+        Wed,  5 Aug 2020 09:04:47 +0000 (UTC)
+Subject: Re: [PATCH 2/3] btrfs: export currently executing exclusive operation
+ via sysfs
 To:     Goldwyn Rodrigues <rgoldwyn@suse.de>, linux-btrfs@vger.kernel.org
 Cc:     Goldwyn Rodrigues <rgoldwyn@suse.com>
 References: <20200803202913.15913-1-rgoldwyn@suse.de>
- <20200803202913.15913-2-rgoldwyn@suse.de>
+ <20200803202913.15913-3-rgoldwyn@suse.de>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  xsFNBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -64,12 +64,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  KIuxEcV8wcVjr+Wr9zRl06waOCkgrQbTPp631hToxo+4rA1jiQF2M80HAet65ytBVR2pFGZF
  zGYYLqiG+mpUZ+FPjxk9kpkRYz61mTLSY7tuFljExfJWMGfgSg1OxfLV631jV1TcdUnx+h3l
  Sqs2vMhAVt14zT8mpIuu2VNxcontxgVr1kzYA/tQg32fVRbGr449j1gw57BV9i0vww==
-Message-ID: <bfeaf6cc-62f3-5bb0-9d7c-f89db23999e3@suse.com>
-Date:   Wed, 5 Aug 2020 11:35:50 +0300
+Message-ID: <032ce33e-7249-d08f-1ffe-4ac5a4e20efe@suse.com>
+Date:   Wed, 5 Aug 2020 12:04:30 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20200803202913.15913-2-rgoldwyn@suse.de>
+In-Reply-To: <20200803202913.15913-3-rgoldwyn@suse.de>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -83,15 +83,73 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 On 3.08.20 г. 23:29 ч., Goldwyn Rodrigues wrote:
 > From: Goldwyn Rodrigues <rgoldwyn@suse.com>
 > 
-> Instead of using a flag bit for exclusive operation, use an atomic_t
-> variable to store if the exclusive operation is being performed.
-> Introduce an API to start and finish an exclusive operation.
+> /sys/fs/<fsid>/exclusive_operation contains the currently executing
+> exclusive operation. Add a sysfs_notify() when operation end, so
+> userspace can be notified of exclusive operation is finished.
 > 
 > Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
 
-That's a simple replace, I worried that there might be differences in
-the ordering constraints that atomic_cmpxchg offers since atomic_ops.rst
-wasn't clear about it. But atomic_t.txt confirms that ordering semantics
-are the same, so:
-
 Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+
+> ---
+>  fs/btrfs/ioctl.c |  2 ++
+>  fs/btrfs/sysfs.c | 25 +++++++++++++++++++++++++
+>  2 files changed, 27 insertions(+)
+> 
+> diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+> index 3352b4ffa5c6..664c02a5baf9 100644
+> --- a/fs/btrfs/ioctl.c
+> +++ b/fs/btrfs/ioctl.c
+> @@ -373,6 +373,8 @@ bool btrfs_exclop_start(struct btrfs_fs_info *fs_info, int type)
+>  void btrfs_exclop_finish(struct btrfs_fs_info *fs_info)
+>  {
+>  	atomic_set(&fs_info->exclusive_operation, BTRFS_EXCLOP_NONE);
+> +	sysfs_notify(&fs_info->fs_devices->fsid_kobj, NULL,
+> +			"exclusive_operation");
+>  }
+>  
+>  /*
+> diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
+> index a39bff64ff24..71950c121588 100644
+> --- a/fs/btrfs/sysfs.c
+> +++ b/fs/btrfs/sysfs.c
+> @@ -808,6 +808,30 @@ static ssize_t btrfs_checksum_show(struct kobject *kobj,
+>  
+>  BTRFS_ATTR(, checksum, btrfs_checksum_show);
+>  
+> +static ssize_t btrfs_exclusive_operation_show(struct kobject *kobj,
+> +		struct kobj_attribute *a, char *buf)
+> +{
+> +	struct btrfs_fs_info *fs_info = to_fs_info(kobj);
+> +	switch (atomic_read(&fs_info->exclusive_operation)) {
+> +		case  BTRFS_EXCLOP_NONE:
+> +			return scnprintf(buf, PAGE_SIZE, "none\n");
+> +		case BTRFS_EXCLOP_BALANCE:
+> +			return scnprintf(buf, PAGE_SIZE, "balance\n");
+> +		case BTRFS_EXCLOP_DEV_ADD:
+> +			return scnprintf(buf, PAGE_SIZE, "device add\n");
+> +		case BTRFS_EXCLOP_DEV_REPLACE:
+> +			return scnprintf(buf, PAGE_SIZE, "device replace\n");
+> +		case BTRFS_EXCLOP_DEV_REMOVE:
+> +			return scnprintf(buf, PAGE_SIZE, "device remove\n");
+> +		case BTRFS_EXCLOP_SWAP_ACTIVATE:
+> +			return scnprintf(buf, PAGE_SIZE, "swap activate\n");
+> +		case BTRFS_EXCLOP_RESIZE:
+> +			return scnprintf(buf, PAGE_SIZE, "resize\n");
+> +	}
+> +	return 0;
+> +}
+> +BTRFS_ATTR(, exclusive_operation, btrfs_exclusive_operation_show);
+> +
+>  static const struct attribute *btrfs_attrs[] = {
+>  	BTRFS_ATTR_PTR(, label),
+>  	BTRFS_ATTR_PTR(, nodesize),
+> @@ -816,6 +840,7 @@ static const struct attribute *btrfs_attrs[] = {
+>  	BTRFS_ATTR_PTR(, quota_override),
+>  	BTRFS_ATTR_PTR(, metadata_uuid),
+>  	BTRFS_ATTR_PTR(, checksum),
+> +	BTRFS_ATTR_PTR(, exclusive_operation),
+>  	NULL,
+>  };
+>  
+> 
