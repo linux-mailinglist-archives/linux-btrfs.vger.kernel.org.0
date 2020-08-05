@@ -2,23 +2,25 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94A8923C720
-	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Aug 2020 09:45:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 497F423C7DB
+	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Aug 2020 10:36:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726465AbgHEHpt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 5 Aug 2020 03:45:49 -0400
-Received: from mx2.suse.de ([195.135.220.15]:45446 "EHLO mx2.suse.de"
+        id S1726294AbgHEIf5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 5 Aug 2020 04:35:57 -0400
+Received: from mx2.suse.de ([195.135.220.15]:47632 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725963AbgHEHpt (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 5 Aug 2020 03:45:49 -0400
+        id S1726175AbgHEIfy (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 5 Aug 2020 04:35:54 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id EB7ADABE2;
-        Wed,  5 Aug 2020 07:46:00 +0000 (UTC)
-Subject: Re: [PATCH] btrfs: init device stats for seed devices
-To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com
-References: <20200803192308.17977-1-josef@toxicpanda.com>
+        by mx2.suse.de (Postfix) with ESMTP id 18264AC7F;
+        Wed,  5 Aug 2020 08:36:09 +0000 (UTC)
+Subject: Re: [PATCH 1/3] btrfs: enumerate the type of exclusive operation in
+ progress
+To:     Goldwyn Rodrigues <rgoldwyn@suse.de>, linux-btrfs@vger.kernel.org
+Cc:     Goldwyn Rodrigues <rgoldwyn@suse.com>
+References: <20200803202913.15913-1-rgoldwyn@suse.de>
+ <20200803202913.15913-2-rgoldwyn@suse.de>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  xsFNBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -62,12 +64,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  KIuxEcV8wcVjr+Wr9zRl06waOCkgrQbTPp631hToxo+4rA1jiQF2M80HAet65ytBVR2pFGZF
  zGYYLqiG+mpUZ+FPjxk9kpkRYz61mTLSY7tuFljExfJWMGfgSg1OxfLV631jV1TcdUnx+h3l
  Sqs2vMhAVt14zT8mpIuu2VNxcontxgVr1kzYA/tQg32fVRbGr449j1gw57BV9i0vww==
-Message-ID: <e7f70f9a-f38e-7ee8-a7e3-23a6885d5119@suse.com>
-Date:   Wed, 5 Aug 2020 10:45:42 +0300
+Message-ID: <bfeaf6cc-62f3-5bb0-9d7c-f89db23999e3@suse.com>
+Date:   Wed, 5 Aug 2020 11:35:50 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20200803192308.17977-1-josef@toxicpanda.com>
+In-Reply-To: <20200803202913.15913-2-rgoldwyn@suse.de>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -78,75 +80,18 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 3.08.20 г. 22:23 ч., Josef Bacik wrote:
-> We recently started recording device stats across the fleet, and noticed
-> a large increase in messages such as this
+On 3.08.20 г. 23:29 ч., Goldwyn Rodrigues wrote:
+> From: Goldwyn Rodrigues <rgoldwyn@suse.com>
 > 
-> BTRFS warning (device dm-0): get dev_stats failed, not yet valid
+> Instead of using a flag bit for exclusive operation, use an atomic_t
+> variable to store if the exclusive operation is being performed.
+> Introduce an API to start and finish an exclusive operation.
 > 
-> on our tiers that use seed devices for their root devices.  This is
-> because we do not initialize the device stats for any seed devices if we
-> have a sprout device and mount using that sprout device.  The basic
-> steps for reproducing are
-> 
-> mkfs seed device
-> mount seed device
-> fill seed device
-> umount seed device
-> btrfstune -S 1 seed device
-> mount seed device
-> btrfs device add -f sprout device /mnt/wherever
-> umount /mnt/wherever
-> mount sprout device /mnt/wherever
-> btrfs device stats /mnt/wherever
-> 
-> This will fail with the above message in dmesg.
-> 
-> Fix this by iterating over the fs_devices->seed if they exist in
-> btrfs_init_dev_stats.  This fixed the problem and properly reports the
-> stats for both devices.
+> Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
 
-All devices which are anchored at fs_devices->seed are really private to
-that fs_info->fs_devices created during chunk tree read which happens
-before init_dev_stats. So that's correct, however I'd like this to be
-based on the new pattern of dealing with seed devices  - using the
-list() apis. And likely the init function would need to be refactored
-into 2 functions:
+That's a simple replace, I worried that there might be differences in
+the ordering constraints that atomic_cmpxchg offers since atomic_ops.rst
+wasn't clear about it. But atomic_t.txt confirms that ordering semantics
+are the same, so:
 
-1. Iterating over all fs_devices->seed and the main fs_devices
-2. Doing the init work on every passed fs_devices.
-
-
-
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-> ---
->  fs/btrfs/volumes.c | 8 +++++++-
->  1 file changed, 7 insertions(+), 1 deletion(-)
-> 
-> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> index d7670e2a9f39..dab295880117 100644
-> --- a/fs/btrfs/volumes.c
-> +++ b/fs/btrfs/volumes.c
-> @@ -7225,7 +7225,7 @@ int btrfs_init_dev_stats(struct btrfs_fs_info *fs_info)
->  	path = btrfs_alloc_path();
->  	if (!path)
->  		return -ENOMEM;
-> -
-> +again:
->  	mutex_lock(&fs_devices->device_list_mutex);
->  	list_for_each_entry(device, &fs_devices->devices, dev_list) {
->  		int item_size;
-> @@ -7263,6 +7263,12 @@ int btrfs_init_dev_stats(struct btrfs_fs_info *fs_info)
->  	}
->  	mutex_unlock(&fs_devices->device_list_mutex);
->  
-> +	/* If we have seed devices we need to init those stats as well. */
-> +	if (fs_devices->seed) {
-> +		fs_devices = fs_devices->seed;
-> +		goto again;
-> +	}
-> +
->  	btrfs_free_path(path);
->  	return ret < 0 ? ret : 0;
->  }
-> 
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
