@@ -2,150 +2,95 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2143C23C3A7
-	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Aug 2020 04:48:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75FF223C6A1
+	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Aug 2020 09:09:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726571AbgHECsp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 4 Aug 2020 22:48:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57960 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725950AbgHECsp (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 4 Aug 2020 22:48:45 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAA80C06174A;
-        Tue,  4 Aug 2020 19:48:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=WAQQ1Eowx4V82r2Qp2tbmfcB9Cjqkc3KDQfMdhLLOUY=; b=DenYh5E88vIxUC/ceFOInNllBG
-        I0FgkdTEDW+o+d/7atIENwXR9Eqvyp48arimamyOwLwFw36HpF0bcwOUlGJi3HXefJHo5UNcwbaht
-        jEm+axkYQE8NPhU7QehI08f9nEKo9scKk+YPhcz1lbxyipoABXrHdmy5ywpQrP5BVyyUJvfl+ojan
-        354CCLZKtebMKggRfNAuDqC4ff98zngR8RY9EKg1uwbBJneUvtutz17X0RoxpbFLap1uchbOzPQNj
-        s7IpzSdGaXJ7bHqrl/3h6N/cBDPHW9OT3pFV2BjAoVPh4FpZrRqXUn2BBj6Bo8gL5NujEl4g2ek59
-        aBYQNhtA==;
-Received: from [2601:1c0:6280:3f0::19c2] (helo=smtpauth.infradead.org)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1k39Ts-0007Sd-GT; Wed, 05 Aug 2020 02:48:41 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-fsdevel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
+        id S1728030AbgHEHJe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 5 Aug 2020 03:09:34 -0400
+Received: from mx2.suse.de ([195.135.220.15]:59416 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727986AbgHEHJa (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 5 Aug 2020 03:09:30 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id CB0B3AC22;
+        Wed,  5 Aug 2020 07:09:44 +0000 (UTC)
+Subject: Re: [PATCH] btrfs: delete duplicated words + other fixes
+To:     Randy Dunlap <rdunlap@infradead.org>, linux-fsdevel@vger.kernel.org
+Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: delete duplicated words + other fixes
-Date:   Tue,  4 Aug 2020 19:48:34 -0700
-Message-Id: <20200805024834.12078-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.26.2
+References: <20200805024834.12078-1-rdunlap@infradead.org>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <9dc0fd21-5cca-b291-aa34-8f508b500f68@suse.com>
+Date:   Wed, 5 Aug 2020 10:09:27 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <20200805024834.12078-1-rdunlap@infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Delete repeated words in fs/btrfs/.
-{to, the, a, and old}
-and change "into 2 part" to "into 2 parts".
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-To: linux-fsdevel@vger.kernel.org
-Cc: Chris Mason <clm@fb.com>
-Cc: Josef Bacik <josef@toxicpanda.com>
-Cc: David Sterba <dsterba@suse.com>
-Cc: linux-btrfs@vger.kernel.org
----
- fs/btrfs/block-group.c      |    2 +-
- fs/btrfs/ctree.c            |    2 +-
- fs/btrfs/disk-io.c          |    2 +-
- fs/btrfs/extent_io.c        |    2 +-
- fs/btrfs/free-space-cache.c |    2 +-
- fs/btrfs/qgroup.c           |    2 +-
- fs/btrfs/tree-log.c         |    4 ++--
- 7 files changed, 8 insertions(+), 8 deletions(-)
 
---- linux-next-20200804.orig/fs/btrfs/block-group.c
-+++ linux-next-20200804/fs/btrfs/block-group.c
-@@ -2783,7 +2783,7 @@ int btrfs_write_dirty_block_groups(struc
- 			 * finished yet (no block group item in the extent tree
- 			 * yet, etc). If this is the case, wait for all free
- 			 * space endio workers to finish and retry. This is a
--			 * a very rare case so no need for a more efficient and
-+			 * very rare case so no need for a more efficient and
- 			 * complex approach.
- 			 */
- 			if (ret == -ENOENT) {
---- linux-next-20200804.orig/fs/btrfs/ctree.c
-+++ linux-next-20200804/fs/btrfs/ctree.c
-@@ -5111,7 +5111,7 @@ again:
- 			slot--;
- 		/*
- 		 * check this node pointer against the min_trans parameters.
--		 * If it is too old, old, skip to the next one.
-+		 * If it is too old, skip to the next one.
- 		 */
- 		while (slot < nritems) {
- 			u64 gen;
---- linux-next-20200804.orig/fs/btrfs/disk-io.c
-+++ linux-next-20200804/fs/btrfs/disk-io.c
-@@ -2929,7 +2929,7 @@ int __cold open_ctree(struct super_block
- 	}
- 
- 	/*
--	 * Verify the type first, if that or the the checksum value are
-+	 * Verify the type first, if that or the checksum value are
- 	 * corrupted, we'll find out
- 	 */
- 	csum_type = btrfs_super_csum_type(disk_super);
---- linux-next-20200804.orig/fs/btrfs/extent_io.c
-+++ linux-next-20200804/fs/btrfs/extent_io.c
-@@ -3241,7 +3241,7 @@ static int __do_readpage(struct page *pa
- 
- 		/*
- 		 * If we have a file range that points to a compressed extent
--		 * and it's followed by a consecutive file range that points to
-+		 * and it's followed by a consecutive file range that points
- 		 * to the same compressed extent (possibly with a different
- 		 * offset and/or length, so it either points to the whole extent
- 		 * or only part of it), we must make sure we do not submit a
---- linux-next-20200804.orig/fs/btrfs/free-space-cache.c
-+++ linux-next-20200804/fs/btrfs/free-space-cache.c
-@@ -1353,7 +1353,7 @@ static int __btrfs_write_out_cache(struc
- 
- 	/*
- 	 * at this point the pages are under IO and we're happy,
--	 * The caller is responsible for waiting on them and updating the
-+	 * The caller is responsible for waiting on them and updating
- 	 * the cache and the inode
- 	 */
- 	io_ctl->entries = entries;
---- linux-next-20200804.orig/fs/btrfs/qgroup.c
-+++ linux-next-20200804/fs/btrfs/qgroup.c
-@@ -2315,7 +2315,7 @@ static int qgroup_update_refcnt(struct b
-  * Update qgroup rfer/excl counters.
-  * Rfer update is easy, codes can explain themselves.
-  *
-- * Excl update is tricky, the update is split into 2 part.
-+ * Excl update is tricky, the update is split into 2 parts.
-  * Part 1: Possible exclusive <-> sharing detect:
-  *	|	A	|	!A	|
-  *  -------------------------------------
---- linux-next-20200804.orig/fs/btrfs/tree-log.c
-+++ linux-next-20200804/fs/btrfs/tree-log.c
-@@ -4881,7 +4881,7 @@ static int log_conflicting_inodes(struct
- 		 * Check the inode's logged_trans only instead of
- 		 * btrfs_inode_in_log(). This is because the last_log_commit of
- 		 * the inode is not updated when we only log that it exists and
--		 * and it has the full sync bit set (see btrfs_log_inode()).
-+		 * it has the full sync bit set (see btrfs_log_inode()).
- 		 */
- 		if (BTRFS_I(inode)->logged_trans == trans->transid) {
- 			spin_unlock(&BTRFS_I(inode)->lock);
-@@ -6378,7 +6378,7 @@ void btrfs_record_snapshot_destroy(struc
-  *            committed by the caller, and BTRFS_DONT_NEED_TRANS_COMMIT
-  *            otherwise.
-  * When false: returns BTRFS_DONT_NEED_LOG_SYNC if the caller does not need to
-- *             to sync the log, BTRFS_NEED_LOG_SYNC if it needs to sync the log,
-+ *             sync the log, BTRFS_NEED_LOG_SYNC if it needs to sync the log,
-  *             or BTRFS_NEED_TRANS_COMMIT if the transaction needs to be
-  *             committed (without attempting to sync the log).
-  */
+On 5.08.20 г. 5:48 ч., Randy Dunlap wrote:
+> Delete repeated words in fs/btrfs/.
+> {to, the, a, and old}
+> and change "into 2 part" to "into 2 parts".
+> 
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> To: linux-fsdevel@vger.kernel.org
+> Cc: Chris Mason <clm@fb.com>
+> Cc: Josef Bacik <josef@toxicpanda.com>
+> Cc: David Sterba <dsterba@suse.com>
+> Cc: linux-btrfs@vger.kernel.org
+
+Easy enough.
+
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
