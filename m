@@ -2,127 +2,89 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BB7A23D1E2
-	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Aug 2020 22:07:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C7FC23D6D9
+	for <lists+linux-btrfs@lfdr.de>; Thu,  6 Aug 2020 08:31:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729658AbgHEUHG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 5 Aug 2020 16:07:06 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:60878 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726925AbgHEQeG (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 5 Aug 2020 12:34:06 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 075GM4BD038971;
-        Wed, 5 Aug 2020 16:33:33 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=IQLdx5abes21j8K7iHnVnBLrSGwXYmzNR4vIr2rCepI=;
- b=q25j3yFCZq1ZH0dHoKbPHv8VCIDBkrVg3ESlEMQDIO313ZVAJL3bbCVbkb87xqQrRUCm
- DfEqdeLSynhXTeQqUjffQd7tCybsxI5V6XItsOVGvoV1y/+WTHJtLq0knW7tro0lSVOv
- ERcCwS+/uwfmQsffNQvLBPBN5QgyUMIKp368IpUQlFtCrTqLx15i/WuTy6OY49J/UwbY
- w5CSyW0Sz14pqW8luVJCotpnL5HKonN2RZYUSgpi98TmDG6IeXp7/LlW6BLkbOZjVKxf
- 84uZpBM8DSraJiNmdLk98yq/t5ykat3kqPuv/ENLvgYkV7yy2uqmZTxy6lNN7rCVXC3C WA== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2120.oracle.com with ESMTP id 32n11nb3fk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 05 Aug 2020 16:33:33 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 075GJBpZ061181;
-        Wed, 5 Aug 2020 16:31:32 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3030.oracle.com with ESMTP id 32p5gu12aq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 05 Aug 2020 16:31:30 +0000
-Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 075GVTHY020512;
-        Wed, 5 Aug 2020 16:31:29 GMT
-Received: from localhost (/67.169.218.210)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 05 Aug 2020 09:31:29 -0700
-Date:   Wed, 5 Aug 2020 09:31:26 -0700
-From:   "Darrick J. Wong" <darrick.wong@oracle.com>
-To:     Andreas Gruenbacher <agruenba@redhat.com>
-Cc:     "Darrick J. Wong" <djwong@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-xfs@vger.kernel.org, Dave Chinner <david@fromorbit.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Eric Sandeen <sandeen@sandeen.net>,
-        Christoph Hellwig <hch@lst.de>,
-        linux-ext4 <linux-ext4@vger.kernel.org>,
-        "Theodore Ts'o" <tytso@mit.edu>, riteshh@linux.ibm.com,
-        Goldwyn Rodrigues <rgoldwyn@suse.de>,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [GIT PULL] iomap: new code for 5.9-rc1
-Message-ID: <20200805163126.GC6107@magnolia>
-References: <20200805153214.GA6090@magnolia>
- <CAHc6FU6yMnuKdVsAXkWgwr2ViMSXJdBXksrQDvHwaaw4p8u0rQ@mail.gmail.com>
- <20200805162349.GB6107@magnolia>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200805162349.GB6107@magnolia>
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9704 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0 bulkscore=0
- phishscore=0 spamscore=0 adultscore=0 suspectscore=1 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2008050132
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9704 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1015 priorityscore=1501
- impostorscore=0 lowpriorityscore=0 malwarescore=0 spamscore=0 mlxscore=0
- suspectscore=1 mlxlogscore=999 phishscore=0 adultscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2008050132
+        id S1728050AbgHFGbx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 6 Aug 2020 02:31:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32822 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726051AbgHFGbw (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 6 Aug 2020 02:31:52 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB82CC061574
+        for <linux-btrfs@vger.kernel.org>; Wed,  5 Aug 2020 23:31:51 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id v11so52359638ybm.22
+        for <linux-btrfs@vger.kernel.org>; Wed, 05 Aug 2020 23:31:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:cc;
+        bh=sdm2DSoAV0iNGUec+K0quGalkY3uq/+dJP/WtuwvHz4=;
+        b=Dz/HdjvkoUUWo9ktp4AN+8Eu5BBpr4a/EmllrflWKwjXwXrg0SKoSpKcs7yMxnjyR/
+         Bp9zaS6g+08y+ewsZRlkswMfKKAL5U6qzUmTYGJr3SOliPJc6IQ/1zHQKiV48LRvN/pW
+         wLk9sqv4AaiMrLojE+9TACqI/qtdP8ASRtNjwWnRpimbaSgBQKqMf/jkXy4gDEcJze1U
+         wrR1YmFdv+uefZYS01Ux3xC3I+0bvqali35qN+VjCsh6C+4yjxTKm9mNlTMDbSgbnao6
+         rDQ9QM/aiDmKiJJDGRfO3K2IRhPXJ444un4PAvWq8rZ0IHtpGNud6cOs8miDAsCL/YLB
+         6hnw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:cc;
+        bh=sdm2DSoAV0iNGUec+K0quGalkY3uq/+dJP/WtuwvHz4=;
+        b=tthfGB/xfDYxbULKbzOgErT5xlv1qe96x1DE2wMRFnIEPoukg7Gt71298KmajILIA3
+         Pr+dR03TcllXwq5Velb6UIadMpejczQvoySO2ykxn3tu3wOlrD2sMjG8tAninAExXuKb
+         a1Q5gyzMIzAnVr7vZKz5glVchql033jexERUx3EfuHpakEkDJMcKNVP9mfZd2l3q/Tnf
+         UH67+KbBLtnT+Luz163GgaPPy3NZK6tvMsgCN5J5E6K3983RNdEYHKBv7Jq9uVfBTBVx
+         gVgD8pS4mlKF/ilyGlLWJ5FftgKJbMRKGDPXKq0hchtanKBBLSq2vxjN4EceK0oxcdQN
+         BwTA==
+X-Gm-Message-State: AOAM530kXiqOR60+t3l0cMeUBJcG+ckrL1Ie7PD/J6MQMw1+I3GMjaEI
+        gKWT3QBxWnMcQIKQcaE9p/02u+YfwNpokQ==
+X-Google-Smtp-Source: ABdhPJxGaII+/qbjF7Uvyf5gZlZqH56A+HG7xenfRX9BwK2d3d5JfoTv/2mkn5I/qz1+imvJ4rnrUOxEi0womg==
+X-Received: by 2002:a25:aa14:: with SMTP id s20mr10163258ybi.292.1596695510923;
+ Wed, 05 Aug 2020 23:31:50 -0700 (PDT)
+Date:   Thu,  6 Aug 2020 15:31:44 +0900
+Message-Id: <20200806063144.2119712-1-boleynsu@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.28.0.163.g6104cc2f0b6-goog
+Subject: [PATCH] btrfs: backref: this patch fixes a null pointer dereference bug.
+From:   Boleyn Su <boleynsu@google.com>
+Cc:     Boleyn Su <boleynsu@google.com>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Boleyn Su <boleyn.su@gmail.com>, linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Aug 05, 2020 at 09:23:49AM -0700, Darrick J. Wong wrote:
-> On Wed, Aug 05, 2020 at 05:54:31PM +0200, Andreas Gruenbacher wrote:
-> > Hi Darrick,
-> > 
-> > On Wed, Aug 5, 2020 at 5:40 PM Darrick J. Wong <djwong@kernel.org> wrote:
-> > > ----------------------------------------------------------------
-> > > Andreas Gruenbacher (1):
-> > >       iomap: Make sure iomap_end is called after iomap_begin
-> > 
-> > that commit (d1b4f507d71de) contains the following garbage in the
-> > commit message:
-> > 
-> >     The message from this sender included one or more files
-> >     which could not be scanned for virus detection; do not
-> >     open these files unless you are certain of the sender's intent.
-> > 
-> >     ----------------------------------------------------------------------
-> > 
-> > How did it come to that?
-> 
-> I have no idea.  It's not in the email that I turned into a patch, but
-> golly roundtripping git patches through email and back to git sucks.
+The `if (!ret)` check will always be false and it may result in ret->path
+being dereferenced while it is a null pointer.
 
-Aha-- the effing Oracle email virus scanner doesn't run on mails coming
-in via mailing lists (which is the copy that I keep in my archive) but
-the copy that you sent direct to me /did/ get a virus scan, which failed
-because it's too stupid to recognize plain text, so the virus scanner
-injected its stupid warning *into the message body*, and then I git-am'd
-that without noticing.
+Fixes: a37f232b7b65 ("btrfs: backref: introduce the skeleton of btrfs_backref_iter")
+Cc: Chris Mason <clm@fb.com>
+Cc: Josef Bacik <josef@toxicpanda.com>
+Cc: David Sterba <dsterba@suse.com>
+Cc: Boleyn Su <boleyn.su@gmail.com>
+Cc: linux-btrfs@vger.kernel.org
+Signed-off-by: Boleyn Su <boleynsu@google.com>
+---
+ fs/btrfs/backref.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-S'ok, they're moving us to Exchange soon, so I expect never to hear from
-any of you ever again.
+diff --git a/fs/btrfs/backref.c b/fs/btrfs/backref.c
+index ea10f7bc9..ea1c28ccb 100644
+--- a/fs/btrfs/backref.c
++++ b/fs/btrfs/backref.c
+@@ -2303,7 +2303,7 @@ struct btrfs_backref_iter *btrfs_backref_iter_alloc(
+ 		return NULL;
+ 
+ 	ret->path = btrfs_alloc_path();
+-	if (!ret) {
++	if (!ret->path) {
+ 		kfree(ret);
+ 		return NULL;
+ 	}
+-- 
+2.28.0.163.g6104cc2f0b6-goog
 
---D
-
-> 
-> Oh well, I guess I have to rebase the whole branch now.
-> 
-> Linus: please ignore this pull request.
-> 
-> --D
-> 
-> > 
-> > Thanks,
-> > Andreas
-> > 
-> 
