@@ -2,111 +2,130 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82D7A23DEF4
-	for <lists+linux-btrfs@lfdr.de>; Thu,  6 Aug 2020 19:36:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA3A123DF75
+	for <lists+linux-btrfs@lfdr.de>; Thu,  6 Aug 2020 19:48:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730561AbgHFRf3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 6 Aug 2020 13:35:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57748 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729339AbgHFRfX (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 6 Aug 2020 13:35:23 -0400
-Received: from localhost (c-67-169-218-210.hsd1.or.comcast.net [67.169.218.210])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D180823131;
-        Thu,  6 Aug 2020 15:07:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596726464;
-        bh=iNFLlgEhiYwp8ZRVI4J6gnGFP+JhjSTOqd0S/pIkyto=;
-        h=Date:From:To:Cc:Subject:From;
-        b=Y05pH6hS7jyZT5I8hGUXIH6dhp6PsUwz5DjbgHn90eVss5blosSYAtqvXLAZi0cru
-         f/6d9Z2uXGUfy8Dt/nLbxnBREXGcOJF2eIAY58tqgMl8+/8KY3/bfqo+hawGgia2CQ
-         XCtAqh4Tnn0mF+9oROVTrcDvkJ111VpXtBDsG5RA=
-Date:   Thu, 6 Aug 2020 08:07:43 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     "Darrick J. Wong" <djwong@kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        david@fromorbit.com, linux-kernel@vger.kernel.org,
-        sandeen@sandeen.net, hch@lst.de,
-        linux-ext4 <linux-ext4@vger.kernel.org>,
-        Theodore Ts'o <tytso@mit.edu>, riteshh@linux.ibm.com,
-        rgoldwyn@suse.de, agruenba@redhat.com, linux-btrfs@vger.kernel.org
-Subject: [GIT PULL v2] iomap: new code for 5.9-rc1
-Message-ID: <20200806150743.GC6090@magnolia>
+        id S1729802AbgHFRr6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 6 Aug 2020 13:47:58 -0400
+Received: from smtp-32.italiaonline.it ([213.209.10.32]:55729 "EHLO libero.it"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1730153AbgHFRrr (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 6 Aug 2020 13:47:47 -0400
+Received: from venice.bhome ([78.12.13.37])
+        by smtp-32.iol.local with ESMTPA
+        id 3jzTkxGGKDvSy3jzTkMGpz; Thu, 06 Aug 2020 19:47:44 +0200
+x-libjamoibt: 1601
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2014;
+        t=1596736064; bh=exgdnzkZkbZheknSipBy5iLgMkOVBrirCEItJqPHE9k=;
+        h=From;
+        b=BfBWpNXEJeNIjMoWkxzjMw/KuQ8iOb6XQ3QgiwiIZsjCRWn/U7djY3ZROYj55WlJr
+         VPlAKMRK8lmw6iwIMksrzMIgzdnTvQmr7Jdx8meY9Irc4pV//PFaj5sHtE5/PH51CX
+         SBpjYffw/KqClgZEyurHRq4jqpK5dn2hU8wMOWCja8dAC/Gv/3xCD2aHy19og91jRa
+         GKz8iYg99oVGIkqXhuhK1aSheiF/kBv15FYxqEAxsoYPK6Z1uJwhrcyH3iz/GugJIR
+         i6t+NfB2jHK/pga08d5qypHFb2L0GJ5qucuTeyR6ZCHblCAh8U5E4jYPb9coY1sPwG
+         62D34ueQFKyPQ==
+X-CNFS-Analysis: v=2.3 cv=b9DMHeOx c=1 sm=1 tr=0
+ a=XJAbuhTEZzHZh8gzL9OeLg==:117 a=XJAbuhTEZzHZh8gzL9OeLg==:17
+ a=IkcTkHD0fZMA:10 a=iox4zFpeAAAA:8 a=a2Cch_sRRIrYQifjjCcA:9 a=QEXdDO2ut3YA:10
+ a=WzC6qhA0u3u7Ye7llzcV:22
+Reply-To: kreijack@inwind.it
+Subject: Re: [PATCH] btrfs-progs: docs: update the stability and performance
+ status of quota
+To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+References: <20200806072906.358641-1-wqu@suse.com>
+From:   Goffredo Baroncelli <kreijack@libero.it>
+Message-ID: <7c72a892-da46-6ad6-446b-5ac7b10dc47d@libero.it>
+Date:   Thu, 6 Aug 2020 19:47:43 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+In-Reply-To: <20200806072906.358641-1-wqu@suse.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4wfKDpKFNTAuUlYnmiTrPXuR+4PujcPL1rfLVI1wphxgrQO9W/RRd+AT14/iYZdAMh91L4yQ97A0ltMBZmwRYK8ZM/89KQFBWDO8EbIuvSUxxDtcykhM0O
+ 7YC59PDUPrrbL5pM9gMPP9TEsXn6GZtCrM/Rr+bTZY5E9h/krJHUHB4wCFVTHFQx1DHdlaG+iIuOkw==
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi Linus,
+On 8/6/20 9:29 AM, Qu Wenruo wrote:
+> There are a lot of enhancement to btrfs quota through v5.x releases.
+> 
+> Now btrfs quota is more stable than it used to be.
+> 
+> So update the man page to relect this.
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+>   Documentation/btrfs-quota.asciidoc | 43 +++++++++++++++++++++++++-----
+>   1 file changed, 37 insertions(+), 6 deletions(-)
+> 
+> diff --git a/Documentation/btrfs-quota.asciidoc b/Documentation/btrfs-quota.asciidoc
+> index 85ebf729c2fa..1c032f11d001 100644
+> --- a/Documentation/btrfs-quota.asciidoc
+> +++ b/Documentation/btrfs-quota.asciidoc
+> @@ -23,16 +23,47 @@ PERFORMANCE IMPLICATIONS
+>   ~~~~~~~~~~~~~~~~~~~~~~~~
+>   
+>   When quotas are activated, they affect all extent processing, which takes a
+> -performance hit. Activation of qgroups is not recommended unless the user
+> -intends to actually use them.
+> +performance hit.
+> +
+> +Under most cases, the performance hit should be more or less acceptable for
+> +root fs usage.
+> +
+> +There used to be a huge performance hit for balance with quota enabled.
+> +That problem is solved since v5.4 kernel.
+>   
+>   STABILITY STATUS
+>   ~~~~~~~~~~~~~~~~
+>   
+> -The qgroup implementation has turned out to be quite difficult as it affects
+> -the core of the filesystem operation. Qgroup users have hit various corner cases
+> -over time, such as incorrect accounting or system instability. The situation is
+> -gradually improving and issues found and fixed.
+> +Btrfs quota has different stablity for different functionality:
+> +
+> +Extent accounting
+> +^^^^^^^^^^^^^^^^^
+> +
+> +Pretty stable, there aren't many bugs (if any) affecting the extent accounting
+> +through v5.x release cycles.
+> +
+> +Thus if users just want referenced/exclusive usage of each subvolume, it
+> +should be safe to use.
+> +
+> +Limit
+> +^^^^^
+> +
+> +Should be near stable since v5.9.
 
-Please pull these new changes to the iomap code for 5.9.  The most
-notable changes are:
+Is it correct v5.9 ? We are at v5.8....
 
-1) iomap no longer invalidate the page cache when performing a direct
-read, since doing so is unnecessary and the old directio code doesn't do
-that either.
+> +
+> +There used to be some bugs causing early EDQUOT errors before v5.9.
+> +But v5.9 should solve them quite well, along with extra safe nets catching any
+> +reserved space leakage.
+> +
+> +Corner cases and small fixes may pop up time by time, but the core limit
+> +functionality should be in good shape since v5.9.
+> +
+> +Multi-level qgroups
+> +^^^^^^^^^^^^^^^^^^^
+> +
+> +Needs more testing. Although the core extent accounting should also work well
+> +for higher level qgroups, we don't have good enough test coverage yet.
+> +
+> +Thus extra testing and bug reports are welcomed.
+>   
+>   HIERARCHICAL QUOTA GROUP CONCEPTS
+>   ---------------------------------
+> 
 
-2) iomap embraced the use of returning ENOTBLK from a direct write to
-trigger falling back to a buffered write since ext4 already did this and
-btrfs wants it for their port.
 
-3) iomap falls back to buffered writes if we're doing a direct write and
-the page cache invalidation after the flush fails; this was necessary to
-handle a corner case in the btrfs port.
-
-4) Remove email virus scanner detritus that was accidentally included in
-yesterday's pull request.  Clearly I need(ed) to update my git branch
-checker scripts. :(
-
-The branch merges cleanly with your HEAD branch as of a few minutes ago.
-Please let me know if there are any strange problems.
-
---D
-
-The following changes since commit dcb7fd82c75ee2d6e6f9d8cc71c52519ed52e258:
-
-  Linux 5.8-rc4 (2020-07-05 16:20:22 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/fs/xfs/xfs-linux.git tags/iomap-5.9-merge-5
-
-for you to fetch changes up to 60263d5889e6dc5987dc51b801be4955ff2e4aa7:
-
-  iomap: fall back to buffered writes for invalidation failures (2020-08-05 09:24:16 -0700)
-
-----------------------------------------------------------------
-New code for 5.9:
-- Make sure we call ->iomap_end with a failure code if ->iomap_begin
-  failed in any way; some filesystems need to try to undo things.
-- Don't invalidate the page cache during direct reads since we already
-  sync'd the cache with disk.
-- Make direct writes fall back to the page cache if the pre-write
-  cache invalidation fails.  This avoids a cache coherency problem.
-- Fix some idiotic virus scanner warning bs in the previous tag.
-
-----------------------------------------------------------------
-Andreas Gruenbacher (1):
-      iomap: Make sure iomap_end is called after iomap_begin
-
-Christoph Hellwig (2):
-      xfs: use ENOTBLK for direct I/O to buffered I/O fallback
-      iomap: fall back to buffered writes for invalidation failures
-
-Dave Chinner (1):
-      iomap: Only invalidate page cache pages on direct IO writes
-
- fs/ext4/file.c       |  2 ++
- fs/gfs2/file.c       |  3 ++-
- fs/iomap/apply.c     | 13 +++++++++----
- fs/iomap/direct-io.c | 37 +++++++++++++++++++++----------------
- fs/iomap/trace.h     |  1 +
- fs/xfs/xfs_file.c    |  8 ++++----
- fs/zonefs/super.c    |  7 +++++--
- 7 files changed, 44 insertions(+), 27 deletions(-)
+-- 
+gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
+Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
