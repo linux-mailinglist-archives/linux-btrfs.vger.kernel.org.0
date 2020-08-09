@@ -2,86 +2,126 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D853123FC8D
-	for <lists+linux-btrfs@lfdr.de>; Sun,  9 Aug 2020 06:30:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A30F23FE21
+	for <lists+linux-btrfs@lfdr.de>; Sun,  9 Aug 2020 14:09:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725790AbgHIEMy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 9 Aug 2020 00:12:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52484 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725385AbgHIEMy (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 9 Aug 2020 00:12:54 -0400
-Received: from mail-vs1-xe43.google.com (mail-vs1-xe43.google.com [IPv6:2607:f8b0:4864:20::e43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A315C061756
-        for <linux-btrfs@vger.kernel.org>; Sat,  8 Aug 2020 21:12:54 -0700 (PDT)
-Received: by mail-vs1-xe43.google.com with SMTP id a1so2679514vsp.4
-        for <linux-btrfs@vger.kernel.org>; Sat, 08 Aug 2020 21:12:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=deDxJ/oH2LHCktGl2yUouxd5IB0GjLs9SGDvoG3F+J8=;
-        b=pq1tDRKVqEPyoFwdYpJF5UhwpKsI3WTJB+VSHv3igDBq6s2DsomQi1+8Mc45hzdchU
-         3LJpkYBCAzXnFCV5Mxw/bBaUPS600HYN2UtQPSQrvmfsNHT7uTQgh8kkvg0OygpPr41F
-         ju68bz752PBn1XvkdpVMlPsLw0wQCvaVbN6cGg6jGk9Cpst7GGKIj2crTwk6w8qE2S2T
-         etvhYlKVK7OwYkruotEtqnJyGHwCz9NvV+162tZB4IMUK4y8Gc5Vugjq2/U1DlVsCAzF
-         A9gqGuGSajh0gs5evCJbOAREuIjG7a1Hop3jSEn4QZ1v3lv6qorgLiaC8JMbdGO/z+gs
-         DIPQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=deDxJ/oH2LHCktGl2yUouxd5IB0GjLs9SGDvoG3F+J8=;
-        b=ttvZMKu19VYXeMWxIkAncR+YSLDBaKX6PyCrRiDx1UWuYemWtUgVXlpOMuca2AT5Yu
-         1O1wR2FVkcYW95o9frRqo8/ThncsriDrFlVugXp20DsaYOhRuqMsyisWTOPiVb/ZepfI
-         C2stkpoBpW53o7LNK5KXmDnGQujjephF2wdUUesFCOo2Gn84XJozSH4le87YL01EN1l0
-         p+jlA6L/9TEd/D9kMkGB4669F/VimL2k7QUJ/LDtKhKuoHIDr1srdTYQJm4thGCDxPrB
-         WfRipB5U8vmXN3WRk96EVkGz5kVE2/BW8NXHPwcygTpP1hp6guf7+APelHXEJZZMC7nT
-         55UQ==
-X-Gm-Message-State: AOAM5326qE5ezShrdaWgY3KMyEcovvVCRrq22Xzs5Ef7NO4mdCW32+bb
-        cxYT/11W9VEkimlqbxqtpwvV/OpPeaXEM0QONsI=
-X-Google-Smtp-Source: ABdhPJwE3UXvNRNn4I17ufDDjDMR39u9aze3evBJPoGEvbJnZOEYUB64fJ1r5tOxzdvNDBFtFQgj65l0cvcLmJeWtM8=
-X-Received: by 2002:a67:302:: with SMTP id 2mr14857466vsd.228.1596946373403;
- Sat, 08 Aug 2020 21:12:53 -0700 (PDT)
+        id S1726200AbgHIMJc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 9 Aug 2020 08:09:32 -0400
+Received: from mx2.suse.de ([195.135.220.15]:56124 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726009AbgHIMJb (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Sun, 9 Aug 2020 08:09:31 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id DAEF7AD0B;
+        Sun,  9 Aug 2020 12:09:48 +0000 (UTC)
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     Jungyeon Yoon <jungyeon.yoon@gmail.com>
+Subject: [PATCH v3 0/5] btrfs: Enhanced runtime defence against fuzzed images
+Date:   Sun,  9 Aug 2020 20:09:14 +0800
+Message-Id: <20200809120919.85271-1-wqu@suse.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Received: by 2002:ab0:45ee:0:0:0:0:0 with HTTP; Sat, 8 Aug 2020 21:12:53 -0700 (PDT)
-Reply-To: tofilbaman@gmail.com
-From:   Tofil Bama <aliftomarn3@gmail.com>
-Date:   Sat, 8 Aug 2020 21:12:53 -0700
-Message-ID: <CAE0e4EE7wWN7FhkvuF5Krx5jzTZhAV6h4+oMLLJzebonAHaZ4A@mail.gmail.com>
-Subject: KINDEST MESSAGE.
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Dear,
+This patch is revived after one year, as one internal report has hit one
+BUG_ON() with real world fs, so I believe this patchset still makes sense.
 
-My name is Mr Tofil Bama, I am the Bill and Exchange (assistant)
-Manager of Bank of Africa Ouagadougou, Burkina Faso. In my department
-I discovered an abandoned sum of eighteen million three hundred
-thousand United State of American dollars (18.3MILLION USA DOLLARS) in
-an account that belongs to one of our foreign customer who died in
-airline that crashed on 4th October 2001.
+- Enhanced eb accessors
+  Not really needed for the fuzzed images, as 448de471cd4c
+  ("btrfs: Check the first key and level for cached extent buffer")
+  already fixed half of the reported images.
+  Just add a final layer of safe net.
 
-Since I got information about his death I have been expecting his next
-of kin to come over and claim his money because we can not release it
-unless somebody applies for it as the next of kin or relation to the
-deceased as indicated in our banking guidelines, but unfortunately we
-learnt that all his supposed next of kin or relation died alongside
-with him in the plane crash leaving nobody behind for the claim. It is
-therefore upon this discovery that I decided to make this business
-proposal to you and release the money to you as next of kin or
-relation to the deceased for safety and subsequent disbursement since
-nobody is coming for it and I don't want the money to go into the bank
-treasury as unclaimed bill.
+  Just to complain here, two experienced btrfs developer have got
+  confused by @start, @len in functions like read_extent_buffer() with
+  logical address.
+  The best example to solve the confusion is to check the
+  read_extent_buffer() call in btree_read_extent_buffer_pages().
 
-You will be entitled with 40% of the total sum while 60% will be for
-me after which I will visit your Country to invest my own share when
-the fund is successfully transferred into your account, Please I would
-like you to keep this transaction confidential and as a top secret as
-you may wish to know that I am a bank official.
+  I'm not sure why this confusion happens or even get spread.
+  My guess is the extent_buffer::start naming causing the problem.
 
-Yours sincerely,
-Mr Tofil Bama.
+  If so, I would definitely rename extent_buffer::start to
+  extent_buffer::bytenr at any cost.
+  Hopes the new commend will address the problem for now.
+
+- BUG_ON() hunt in __btrfs_free_extent()
+  Kill BUG_ON()s in __btrfs_free_extent(), replace with error reporting
+  and why it shouldn't happen.
+
+  Also add comment on what __btrfs_free_extent() is designed to do, with
+  two dump-tree examples for newcomers.
+
+- BUG_ON() hunt in __btrfs_inc_extent_ref()
+  Just like __btrfs_free_extent(), but less comment as
+  comment for __btrfs_free_extent() should also work for
+  __btrfs_inc_extent_ref(), and __btrfs_inc_extent_ref() has a better
+  structure than __btrfs_free_extent().
+
+- Defence against unbalanced empty leaf
+
+- Defence against bad key order across two tree blocks
+
+The last two cases can't be rejected by tree-checker and they are all
+cross-eb cases.
+Thankfully we can reuse existing first_key check against unbalanced
+empty leaf, but needs extra check deep into ctree.c for tree block
+merging time check.
+
+Reported-by: Jungyeon Yoon <jungyeon.yoon@gmail.com>
+[ Not to mail bombarding the report, thus only RB tag in cover letter ]
+
+Changelog:
+v2:
+- Remove duplicated error message in WARN() call.
+  Changed to WARN_ON(IS_ENABLED(CONFIG_BTRFS_DEBUG))
+  Also move WARN() after btrfs error message.
+
+- Fix a comment error in __btrfs_free_extent()
+  It's not adding refs to a tree block, but adding the same refs
+  to an existing tree block ref.
+  It's impossible a btrfs tree owning the same tree block directly twice.
+
+- Add comment for eb accessors about @start and @len
+  If anyone could tell me why such confusion between @start @len and
+  logical address is here, I will definitely solve the root cause no
+  matter how many codes need to be modified.
+
+- Use bool to replace int where only two values are returned
+  Also rename to follow the bool type.
+
+- Remove one unrelated change for the error handler in
+  btrfs_inc_extent_ref()
+
+- Add Reviewed-by tag
+
+v3:
+- Rebased to latest misc-next branch
+  All conflicts can be auto-merged.
+
+Qu Wenruo (5):
+  btrfs: extent_io: Do extra check for extent buffer read write
+    functions
+  btrfs: extent-tree: Kill BUG_ON() in __btrfs_free_extent() and do
+    better comment
+  btrfs: Detect unbalanced tree with empty leaf before crashing btree
+    operations
+  btrfs: extent-tree: Kill the BUG_ON() in
+    insert_inline_extent_backref()
+  btrfs: ctree: Checking key orders before merged tree blocks
+
+ fs/btrfs/ctree.c       |  68 +++++++++++++++++
+ fs/btrfs/disk-io.c     |   8 ++
+ fs/btrfs/extent-tree.c | 164 +++++++++++++++++++++++++++++++++++++----
+ fs/btrfs/extent_io.c   |  76 +++++++++----------
+ 4 files changed, 265 insertions(+), 51 deletions(-)
+
+-- 
+2.28.0
+
