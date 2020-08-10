@@ -2,34 +2,35 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C99062410F7
-	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Aug 2020 21:33:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9CB12410CF
+	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Aug 2020 21:32:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728348AbgHJTJM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 10 Aug 2020 15:09:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35284 "EHLO mail.kernel.org"
+        id S1729856AbgHJTcu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 10 Aug 2020 15:32:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35932 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728337AbgHJTJL (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 10 Aug 2020 15:09:11 -0400
+        id S1728557AbgHJTJe (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 10 Aug 2020 15:09:34 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F19DE221E2;
-        Mon, 10 Aug 2020 19:09:09 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0C21621775;
+        Mon, 10 Aug 2020 19:09:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597086550;
-        bh=Ow+9PwNG87iLEwAnTdNC8Xqq/qG+EKxUsU9QqhTf+bw=;
+        s=default; t=1597086573;
+        bh=ZO9fULd83yDA0xysy4KCLusJehWcIcCNwGelstt64Ao=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yfe1i/brlcNsWaHjq0fzqqPHpAVziNLoLceUzUKSSekwP5RvWXactiKwLOpOkfrSI
-         /PbZ8cHuvmgFjE0yW/oaY1hRX+BJ5yq1dZZSW6x6K7g1Ct5mk0egN1afvrqEzZ9ds8
-         gtr4bZnBSQEKyojkVmBO75fuok1gopIvgjsztKpo=
+        b=FV+hM5ziQciCuPJLdl1YH6BZ4zGx2KyNkyKCoZGPw3Aikx9TXUWipQaAutQtBCYqz
+         YQzBMxp8rgoogt2HlK6L9/r0e8k+aQ8h3z2GWUne5pu/J+umQhIH8rd0kCoFkWnL1m
+         5Y5aEj3ykFaLVKDIVsvcBtb0QDQu+eEc55FoYzpg=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+Cc:     Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
         Sasha Levin <sashal@kernel.org>, linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.8 08/64] fs/btrfs: Add cond_resched() for try_release_extent_mapping() stalls
-Date:   Mon, 10 Aug 2020 15:08:03 -0400
-Message-Id: <20200810190859.3793319-8-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.8 25/64] btrfs: fix lockdep splat from btrfs_dump_space_info
+Date:   Mon, 10 Aug 2020 15:08:20 -0400
+Message-Id: <20200810190859.3793319-25-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200810190859.3793319-1-sashal@kernel.org>
 References: <20200810190859.3793319-1-sashal@kernel.org>
@@ -42,60 +43,196 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: "Paul E. McKenney" <paulmck@kernel.org>
+From: Josef Bacik <josef@toxicpanda.com>
 
-[ Upstream commit 9f47eb5461aaeb6cb8696f9d11503ae90e4d5cb0 ]
+[ Upstream commit ab0db043c35da3477e57d4d516492b2d51a5ca0f ]
 
-Very large I/Os can cause the following RCU CPU stall warning:
+When running with -o enospc_debug you can get the following splat if one
+of the dump_space_info's trip
 
-RIP: 0010:rb_prev+0x8/0x50
-Code: 49 89 c0 49 89 d1 48 89 c2 48 89 f8 e9 e5 fd ff ff 4c 89 48 10 c3 4c =
-89 06 c3 4c 89 40 10 c3 0f 1f 00 48 8b 0f 48 39 cf 74 38 <48> 8b 47 10 48 85 c0 74 22 48 8b 50 08 48 85 d2 74 0c 48 89 d0 48
-RSP: 0018:ffffc9002212bab0 EFLAGS: 00000287 ORIG_RAX: ffffffffffffff13
-RAX: ffff888821f93630 RBX: ffff888821f93630 RCX: ffff888821f937e0
-RDX: 0000000000000000 RSI: 0000000000102000 RDI: ffff888821f93630
-RBP: 0000000000103000 R08: 000000000006c000 R09: 0000000000000238
-R10: 0000000000102fff R11: ffffc9002212bac8 R12: 0000000000000001
-R13: ffffffffffffffff R14: 0000000000102000 R15: ffff888821f937e0
- __lookup_extent_mapping+0xa0/0x110
- try_release_extent_mapping+0xdc/0x220
- btrfs_releasepage+0x45/0x70
- shrink_page_list+0xa39/0xb30
- shrink_inactive_list+0x18f/0x3b0
- shrink_lruvec+0x38e/0x6b0
- shrink_node+0x14d/0x690
- do_try_to_free_pages+0xc6/0x3e0
- try_to_free_mem_cgroup_pages+0xe6/0x1e0
- reclaim_high.constprop.73+0x87/0xc0
- mem_cgroup_handle_over_high+0x66/0x150
- exit_to_usermode_loop+0x82/0xd0
- do_syscall_64+0xd4/0x100
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
+  ======================================================
+  WARNING: possible circular locking dependency detected
+  5.8.0-rc5+ #20 Tainted: G           OE
+  ------------------------------------------------------
+  dd/563090 is trying to acquire lock:
+  ffff9e7dbf4f1e18 (&ctl->tree_lock){+.+.}-{2:2}, at: btrfs_dump_free_space+0x2b/0xa0 [btrfs]
 
-On a PREEMPT=n kernel, the try_release_extent_mapping() function's
-"while" loop might run for a very long time on a large I/O.  This commit
-therefore adds a cond_resched() to this loop, providing RCU any needed
-quiescent states.
+  but task is already holding lock:
+  ffff9e7e2284d428 (&cache->lock){+.+.}-{2:2}, at: btrfs_dump_space_info+0xaa/0x120 [btrfs]
 
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+  which lock already depends on the new lock.
+
+  the existing dependency chain (in reverse order) is:
+
+  -> #3 (&cache->lock){+.+.}-{2:2}:
+	 _raw_spin_lock+0x25/0x30
+	 btrfs_add_reserved_bytes+0x3c/0x3c0 [btrfs]
+	 find_free_extent+0x7ef/0x13b0 [btrfs]
+	 btrfs_reserve_extent+0x9b/0x180 [btrfs]
+	 btrfs_alloc_tree_block+0xc1/0x340 [btrfs]
+	 alloc_tree_block_no_bg_flush+0x4a/0x60 [btrfs]
+	 __btrfs_cow_block+0x122/0x530 [btrfs]
+	 btrfs_cow_block+0x106/0x210 [btrfs]
+	 commit_cowonly_roots+0x55/0x300 [btrfs]
+	 btrfs_commit_transaction+0x4ed/0xac0 [btrfs]
+	 sync_filesystem+0x74/0x90
+	 generic_shutdown_super+0x22/0x100
+	 kill_anon_super+0x14/0x30
+	 btrfs_kill_super+0x12/0x20 [btrfs]
+	 deactivate_locked_super+0x36/0x70
+	 cleanup_mnt+0x104/0x160
+	 task_work_run+0x5f/0x90
+	 __prepare_exit_to_usermode+0x1bd/0x1c0
+	 do_syscall_64+0x5e/0xb0
+	 entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+  -> #2 (&space_info->lock){+.+.}-{2:2}:
+	 _raw_spin_lock+0x25/0x30
+	 btrfs_block_rsv_release+0x1a6/0x3f0 [btrfs]
+	 btrfs_inode_rsv_release+0x4f/0x170 [btrfs]
+	 btrfs_clear_delalloc_extent+0x155/0x480 [btrfs]
+	 clear_state_bit+0x81/0x1a0 [btrfs]
+	 __clear_extent_bit+0x25c/0x5d0 [btrfs]
+	 clear_extent_bit+0x15/0x20 [btrfs]
+	 btrfs_invalidatepage+0x2b7/0x3c0 [btrfs]
+	 truncate_cleanup_page+0x47/0xe0
+	 truncate_inode_pages_range+0x238/0x840
+	 truncate_pagecache+0x44/0x60
+	 btrfs_setattr+0x202/0x5e0 [btrfs]
+	 notify_change+0x33b/0x490
+	 do_truncate+0x76/0xd0
+	 path_openat+0x687/0xa10
+	 do_filp_open+0x91/0x100
+	 do_sys_openat2+0x215/0x2d0
+	 do_sys_open+0x44/0x80
+	 do_syscall_64+0x52/0xb0
+	 entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+  -> #1 (&tree->lock#2){+.+.}-{2:2}:
+	 _raw_spin_lock+0x25/0x30
+	 find_first_extent_bit+0x32/0x150 [btrfs]
+	 write_pinned_extent_entries.isra.0+0xc5/0x100 [btrfs]
+	 __btrfs_write_out_cache+0x172/0x480 [btrfs]
+	 btrfs_write_out_cache+0x7a/0xf0 [btrfs]
+	 btrfs_write_dirty_block_groups+0x286/0x3b0 [btrfs]
+	 commit_cowonly_roots+0x245/0x300 [btrfs]
+	 btrfs_commit_transaction+0x4ed/0xac0 [btrfs]
+	 close_ctree+0xf9/0x2f5 [btrfs]
+	 generic_shutdown_super+0x6c/0x100
+	 kill_anon_super+0x14/0x30
+	 btrfs_kill_super+0x12/0x20 [btrfs]
+	 deactivate_locked_super+0x36/0x70
+	 cleanup_mnt+0x104/0x160
+	 task_work_run+0x5f/0x90
+	 __prepare_exit_to_usermode+0x1bd/0x1c0
+	 do_syscall_64+0x5e/0xb0
+	 entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+  -> #0 (&ctl->tree_lock){+.+.}-{2:2}:
+	 __lock_acquire+0x1240/0x2460
+	 lock_acquire+0xab/0x360
+	 _raw_spin_lock+0x25/0x30
+	 btrfs_dump_free_space+0x2b/0xa0 [btrfs]
+	 btrfs_dump_space_info+0xf4/0x120 [btrfs]
+	 btrfs_reserve_extent+0x176/0x180 [btrfs]
+	 __btrfs_prealloc_file_range+0x145/0x550 [btrfs]
+	 cache_save_setup+0x28d/0x3b0 [btrfs]
+	 btrfs_start_dirty_block_groups+0x1fc/0x4f0 [btrfs]
+	 btrfs_commit_transaction+0xcc/0xac0 [btrfs]
+	 btrfs_alloc_data_chunk_ondemand+0x162/0x4c0 [btrfs]
+	 btrfs_check_data_free_space+0x4c/0xa0 [btrfs]
+	 btrfs_buffered_write.isra.0+0x19b/0x740 [btrfs]
+	 btrfs_file_write_iter+0x3cf/0x610 [btrfs]
+	 new_sync_write+0x11e/0x1b0
+	 vfs_write+0x1c9/0x200
+	 ksys_write+0x68/0xe0
+	 do_syscall_64+0x52/0xb0
+	 entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+  other info that might help us debug this:
+
+  Chain exists of:
+    &ctl->tree_lock --> &space_info->lock --> &cache->lock
+
+   Possible unsafe locking scenario:
+
+	 CPU0                    CPU1
+	 ----                    ----
+    lock(&cache->lock);
+				 lock(&space_info->lock);
+				 lock(&cache->lock);
+    lock(&ctl->tree_lock);
+
+   *** DEADLOCK ***
+
+  6 locks held by dd/563090:
+   #0: ffff9e7e21d18448 (sb_writers#14){.+.+}-{0:0}, at: vfs_write+0x195/0x200
+   #1: ffff9e7dd0410ed8 (&sb->s_type->i_mutex_key#19){++++}-{3:3}, at: btrfs_file_write_iter+0x86/0x610 [btrfs]
+   #2: ffff9e7e21d18638 (sb_internal#2){.+.+}-{0:0}, at: start_transaction+0x40b/0x5b0 [btrfs]
+   #3: ffff9e7e1f05d688 (&cur_trans->cache_write_mutex){+.+.}-{3:3}, at: btrfs_start_dirty_block_groups+0x158/0x4f0 [btrfs]
+   #4: ffff9e7e2284ddb8 (&space_info->groups_sem){++++}-{3:3}, at: btrfs_dump_space_info+0x69/0x120 [btrfs]
+   #5: ffff9e7e2284d428 (&cache->lock){+.+.}-{2:2}, at: btrfs_dump_space_info+0xaa/0x120 [btrfs]
+
+  stack backtrace:
+  CPU: 3 PID: 563090 Comm: dd Tainted: G           OE     5.8.0-rc5+ #20
+  Hardware name: To Be Filled By O.E.M. To Be Filled By O.E.M./890FX Deluxe5, BIOS P1.40 05/03/2011
+  Call Trace:
+   dump_stack+0x96/0xd0
+   check_noncircular+0x162/0x180
+   __lock_acquire+0x1240/0x2460
+   ? wake_up_klogd.part.0+0x30/0x40
+   lock_acquire+0xab/0x360
+   ? btrfs_dump_free_space+0x2b/0xa0 [btrfs]
+   _raw_spin_lock+0x25/0x30
+   ? btrfs_dump_free_space+0x2b/0xa0 [btrfs]
+   btrfs_dump_free_space+0x2b/0xa0 [btrfs]
+   btrfs_dump_space_info+0xf4/0x120 [btrfs]
+   btrfs_reserve_extent+0x176/0x180 [btrfs]
+   __btrfs_prealloc_file_range+0x145/0x550 [btrfs]
+   ? btrfs_qgroup_reserve_data+0x1d/0x60 [btrfs]
+   cache_save_setup+0x28d/0x3b0 [btrfs]
+   btrfs_start_dirty_block_groups+0x1fc/0x4f0 [btrfs]
+   btrfs_commit_transaction+0xcc/0xac0 [btrfs]
+   ? start_transaction+0xe0/0x5b0 [btrfs]
+   btrfs_alloc_data_chunk_ondemand+0x162/0x4c0 [btrfs]
+   btrfs_check_data_free_space+0x4c/0xa0 [btrfs]
+   btrfs_buffered_write.isra.0+0x19b/0x740 [btrfs]
+   ? ktime_get_coarse_real_ts64+0xa8/0xd0
+   ? trace_hardirqs_on+0x1c/0xe0
+   btrfs_file_write_iter+0x3cf/0x610 [btrfs]
+   new_sync_write+0x11e/0x1b0
+   vfs_write+0x1c9/0x200
+   ksys_write+0x68/0xe0
+   do_syscall_64+0x52/0xb0
+   entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+This is because we're holding the block_group->lock while trying to dump
+the free space cache.  However we don't need this lock, we just need it
+to read the values for the printk, so move the free space cache dumping
+outside of the block group lock.
+
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+Reviewed-by: David Sterba <dsterba@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/btrfs/extent_io.c | 2 ++
- 1 file changed, 2 insertions(+)
+ fs/btrfs/space-info.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 60278e52c37ab..eeaee346f5a95 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -4516,6 +4516,8 @@ int try_release_extent_mapping(struct page *page, gfp_t mask)
- 
- 			/* once for us */
- 			free_extent_map(em);
-+
-+			cond_resched(); /* Allow large-extent preemption. */
- 		}
+diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
+index c7bd3fdd77928..475968ccbd1d1 100644
+--- a/fs/btrfs/space-info.c
++++ b/fs/btrfs/space-info.c
+@@ -468,8 +468,8 @@ void btrfs_dump_space_info(struct btrfs_fs_info *fs_info,
+ 			"block group %llu has %llu bytes, %llu used %llu pinned %llu reserved %s",
+ 			cache->start, cache->length, cache->used, cache->pinned,
+ 			cache->reserved, cache->ro ? "[readonly]" : "");
+-		btrfs_dump_free_space(cache, bytes);
+ 		spin_unlock(&cache->lock);
++		btrfs_dump_free_space(cache, bytes);
  	}
- 	return try_release_extent_state(tree, page, mask);
+ 	if (++index < BTRFS_NR_RAID_TYPES)
+ 		goto again;
 -- 
 2.25.1
 
