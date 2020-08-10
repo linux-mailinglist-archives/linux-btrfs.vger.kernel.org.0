@@ -2,81 +2,75 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79086240AD7
-	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Aug 2020 17:54:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF514240AEC
+	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Aug 2020 18:02:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726406AbgHJPyE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 10 Aug 2020 11:54:04 -0400
-Received: from mx2.suse.de ([195.135.220.15]:39390 "EHLO mx2.suse.de"
+        id S1726720AbgHJQCk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 10 Aug 2020 12:02:40 -0400
+Received: from smtp5-g21.free.fr ([212.27.42.5]:62944 "EHLO smtp5-g21.free.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725862AbgHJPyD (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 10 Aug 2020 11:54:03 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 0C73EAB55;
-        Mon, 10 Aug 2020 15:54:23 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id D3B63DA7D5; Mon, 10 Aug 2020 17:53:01 +0200 (CEST)
-Date:   Mon, 10 Aug 2020 17:53:01 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Nikolay Borisov <nborisov@suse.com>
-Cc:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH] btrfs: Rework error detection in init_tree_roots
-Message-ID: <20200810155301.GE2026@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
-        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-References: <20200804073236.6677-1-nborisov@suse.com>
- <SN4PR0401MB35982C96F01F6CD1AFB31C679B4A0@SN4PR0401MB3598.namprd04.prod.outlook.com>
- <327aaaeb-affd-e762-921d-f2f823eec3bc@suse.com>
+        id S1726338AbgHJQCj (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 10 Aug 2020 12:02:39 -0400
+Received: from mail.tol.fr (unknown [IPv6:2a01:e34:eeaf:c5f0:21e:62ff:fe00:36])
+        by smtp5-g21.free.fr (Postfix) with ESMTPS id 2F7875FFB1;
+        Mon, 10 Aug 2020 18:02:06 +0200 (CEST)
+Subject: Re: Is there some doc or some example of libbtrfs ?
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=couderc.eu; s=2017;
+        t=1597075325; h=from:from:sender:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=QYEf3skRz48RdfjQfrfKQnCwtnpMiPNuih8m3xwjgm4=;
+        b=QHBKg7yKc2Fj2yRIrVSvCHdboWfoSLs3cwZ+/iTfXRGIRNEZlK6vmbX089O6DFb2V1JLJt
+        AHs7Ia1nZC+K26qCK/fDRY+sMMbK/XBTfVsizzkzXY8uaHx5J2osPGSQfuaahVCMiMbZ1s
+        ESBCI2s3BAvc4gtUf6u737d/Y3DA9piUYvBp5/qLApq22cxizWA0UV1ZXysG5VX84qc+fY
+        Vw4F+dFdxcIc6M3fPI7hefOifTLsp6k3t9ywvZt2VNgQRrXM0dPIwzKeL+ruOxt0RYDLlN
+        MqzJyFmH/4ZITiaKTq64xW3hEeGH33qIkFQRunz5pmFjhxSvmDaKRrjkPzIDpA==
+To:     dsterba@suse.cz, linux-btrfs@vger.kernel.org
+References: <4bf44e81-0b4f-9c99-3010-410e110aec2d@couderc.eu>
+ <20200810151327.GC2026@twin.jikos.cz>
+From:   Pierre Couderc <pierre@couderc.eu>
+Message-ID: <dc5641a3-1baa-6676-fa88-6176a3c5cadf@couderc.eu>
+Date:   Mon, 10 Aug 2020 18:02:04 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <327aaaeb-affd-e762-921d-f2f823eec3bc@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <20200810151327.GC2026@twin.jikos.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: fr
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=couderc.eu;
+        s=2017; t=1597075325; h=from:from:sender:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=QYEf3skRz48RdfjQfrfKQnCwtnpMiPNuih8m3xwjgm4=;
+        b=JGUI2VNc9gBauxSNM9Paw/QdiJRBlzPfStPEVKlBLUE4EWbPEIGIU/BfDiNbib4Na9sAIW
+        P+x1gsrP1e05byL3bvayMS2tPC52Tgg/KneEwS2dsgfQGAE0Wpy62aW9ZYiM5jTYEYlcI5
+        75zbcfjSA0L+9gFaEkBSHBEqh3BSSyeboq8wVYzuFnjv7XHdvV2qBjK3etKmYHJy563816
+        BoIQ4hJG+4V1bJZ3GoRiHqwKFIOmpoVvO/fj3rf0lHWbHALV8y1FT/ChBMntG5BZAb4Scg
+        vNMt7LN3tAj1PZwex/aMXbw8+jt6T7llhY8jXA5Jhwb7rCQIQFhgQfD4auqNlA==
+ARC-Seal: i=1; s=2017; d=couderc.eu; t=1597075325; a=rsa-sha256; cv=none;
+        b=LkUlu4p1Gl6VlVEDw9H5czAEX7Az2j5d4X0QuynAlTLCu+1WcYl1InLF302KRbtIkTbIewQRkQKeFKMIvUtU1rX/IdLjQtOMbQ/E471Vs1Z8Qp/UB0Ge0ApJLka8iQGnoHthGM5y9jmWF1bsXl3sXww2rRa/76xCLxn3silzuY7Nn6jCddlOknkvnDocuj0ydEERSqnm2lOTXKy8DGqXq4Kgf7Oi0N/mBrAY+c6rIgqSX4UghoWuj0gocoZk5bugMXsECzQPqGuA0fBArX0KzQ8JhWLkktfl9a4hJaFqXPmYQ6B1q2WxvgD4FPH3A5/tQZYEg2FQ4DjrJJVNjTA4aQ==
+ARC-Authentication-Results: i=1;
+        ORIGINATING;
+        auth=pass smtp.auth=tol smtp.mailfrom=pierre@couderc.eu
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Aug 04, 2020 at 06:02:58PM +0300, Nikolay Borisov wrote:
-> 
-> 
-> On 4.08.20 г. 15:58 ч., Johannes Thumshirn wrote:
-> > On 04/08/2020 09:32, Nikolay Borisov wrote:
-> >> @@ -2645,17 +2645,16 @@ static int __cold init_tree_roots(struct btrfs_fs_info *fs_info)
-> >>  		level = btrfs_super_root_level(sb);
-> >>  		tree_root->node = read_tree_block(fs_info, btrfs_super_root(sb),
-> >>  						  generation, level, NULL);
-> >> -		if (IS_ERR(tree_root->node) ||
-> >> -		    !extent_buffer_uptodate(tree_root->node)) {
-> >> +		if (IS_ERR(tree_root->node)) {
-> >>  			handle_error = true;
-> >> +			ret = PTR_ERR(tree_root->node);
-> >> +			tree_root->node = NULL;
-> >> +			btrfs_warn(fs_info, "failed to read tree root");
-> >> +			continue;
-> > 
-> > [...]
-> > 
-> >>  			btrfs_warn(fs_info, "failed to read tree root");
-> >>  			continue;
-> >>  		}
-> > 
-> > Now we're duplicating the warning message. I think it's better to have two 
-> > distinct messages so we can differentiate which of the two failure cases happened.
-> > 
-> > The 2nd one could be something like "tree root eb not uptodate".
-> 
-> Sure, I'm happy too replace it with whatever is more informative. Will
-> take another look at the code and see what I can derive.
+On 8/10/20 5:13 PM, David Sterba wrote:
+> On Fri, Aug 07, 2020 at 11:36:10AM +0200, Pierre Couderc wrote:
+>> Ho do I get programmatically the list of the snapshots of a volume in C/C++?
+>>
+>> I can analyse the output of "btrfs li sh", but is there an easier way ?
+>>
+>> I have found no doc or example...
+> Please don't use libbtrfs, that's going to be removed in the future.
+> There's a proper library libbtrfsutil. See
+> btrfs_util_create_subvolume_iterator.
 
-The errors are different, IS_ERR is because the block was not read at
-all for some reason, extent_buffer_uptodate is EIO in all other places
-that do this kind of check.
+ok I note that. Thnak you.
 
-Here it's EUCLEAN and it's been like that since the beginning but I
-think it should be EIO.
+
