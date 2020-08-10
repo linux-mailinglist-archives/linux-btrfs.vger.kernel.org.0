@@ -2,57 +2,57 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDFD1240AA2
-	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Aug 2020 17:43:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 673F9240AA3
+	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Aug 2020 17:43:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728718AbgHJPm7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 10 Aug 2020 11:42:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38482 "EHLO
+        id S1728846AbgHJPnD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 10 Aug 2020 11:43:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728496AbgHJPm6 (ORCPT
+        with ESMTP id S1728496AbgHJPnB (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 10 Aug 2020 11:42:58 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38097C061756
-        for <linux-btrfs@vger.kernel.org>; Mon, 10 Aug 2020 08:42:58 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id n129so3059044qkd.6
-        for <linux-btrfs@vger.kernel.org>; Mon, 10 Aug 2020 08:42:58 -0700 (PDT)
+        Mon, 10 Aug 2020 11:43:01 -0400
+Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38325C061756
+        for <linux-btrfs@vger.kernel.org>; Mon, 10 Aug 2020 08:43:01 -0700 (PDT)
+Received: by mail-qv1-xf44.google.com with SMTP id w2so4405695qvh.12
+        for <linux-btrfs@vger.kernel.org>; Mon, 10 Aug 2020 08:43:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=k29rfO9jImGMkQYEDetd52uDVjlEqbnDITP48bTNKus=;
-        b=bY6GU4hJZ5Tj8duY47Q8wrjaeEPdEaRnV8pP14M7IrutABnoWVTzlosJIA2GUfEpqp
-         q35KF8ZEBBGzW/UyIuN9uhzRnYMGsGlt7srkY+W4HCC/WapLQYboCeN61pqWD2unuJD4
-         okIJi693dY65Cvi8+UL6+haqQYZXPFGaezSYqw76GzhePWZm8GEPoswPD0/bYXUubUdO
-         ZVj+DwuyAY8DSEK2agd7+bi6ddw6NFOHigXEa6ZuV6tl8Rel8PhZtcGTx0VFVJBSZ3Kt
-         J+V6O0OYVAgL6NNzQh9l4ze4r6YO8/nEeVMJTkvF+oNLmk2s1FBZpnZbFAal1mWTpS+v
-         mCaA==
+        bh=bUNTmAgM6HC1cxl+HfSnJ9+16s2LLx4bdGju/rW5d40=;
+        b=bSD441Tn2q5vTITt8Mwfl8M2Sp0qxp8Om76T0Ny+CfSbo8N2+BCT2hRAGCFbyo9usV
+         40VYrpU9znLZBF10L6m8vEK7II3KTWQ2sSTyPjC95FVkFlULufL4UXf3HLb6tr8WRrl+
+         CRSVoUYRTzAwx6B0k9RWiiSTlXTPet3gGxQ8jZcyqng9KsJBdP3VxkzNSEAscbdB35XL
+         VrQYfYAGuFpZDEECdvn1oqD53/6rMDNHj25HbOLyF/dxL/KwT5ET7DO8LLSzITSHXp95
+         DF3oGl51LFxT5eJTt5+hfxCy6qOtXe/73jY4nEqBgFtQ1UFCV4nI3Ukk+jM8FMryBPOO
+         ZNGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=k29rfO9jImGMkQYEDetd52uDVjlEqbnDITP48bTNKus=;
-        b=LYlASo7oUobl99df9nEdULOleB6EJfQ/4N/viLX9nVNLJVszBeKregyV62QiI80xSg
-         6Kph6dewpcUyB7pYwMz3wTmUy2E9k3GRpCC/2NFYJbCjOKlP4JDQokxn17ypXrgLS/rQ
-         9GCH321Ztf+lexZoXi1jsxNqEEiDYtHm5/EFR8fL+jq89gfBOn3nje2IUi2tUWbyUC73
-         Z1j3ESJRiiA9udlzKmmLD4WXnI5cQ/nfK+rW2wD44id59nQ27B9roj9eiAB6dSADgMS9
-         NLX8x2CJ3dQ4a0vE6oM70adT4bHKhnGkoN27UWSqMuEXI2Qn9eBuRn/N1jcJz27aYXCQ
-         4xhA==
-X-Gm-Message-State: AOAM533AyH1CwYipTweGa6iUPs1YMDqbLghmt27ZWM8I4W6wJjoF1235
-        yHGG6lWr1ESSUNENSZqALiC1c+uQAvJp6w==
-X-Google-Smtp-Source: ABdhPJyTbS5uf/YRwViRUgcOg5gl8XsnO9MlJoz9sdYi7J+leqFP6y9+OQCuMJ5IzgSx01Tqtyy1tw==
-X-Received: by 2002:a05:620a:1285:: with SMTP id w5mr25590676qki.21.1597074177147;
-        Mon, 10 Aug 2020 08:42:57 -0700 (PDT)
+        bh=bUNTmAgM6HC1cxl+HfSnJ9+16s2LLx4bdGju/rW5d40=;
+        b=aLXVZE8hJMcryCLJoyKKXT4ZRT06eLAy2IfdmI/cYqfs2TIPE6fNNegRUIGySjHfeB
+         KM8t6x/eY9PNxbeyFUHfswOQu9lmmZF3R/nxnwRVGlfjJHFvFVWEqzN/qTx9F1/x0Oaz
+         FBd9DhyUO+cyQH13VrAmF1d/4NOZZjCUN0Q5x5osLvSYcyfWPzLzORka71WWkDQeA9Es
+         YOtJ79sWgBhP9g7v8q78WLgTAr+Y6Jg4IVVyCcpwq+7TJcLW64/v7Sp5cx+xDuJJITso
+         24ZBoXrUsl7gUyfretNrsWOtu1AHHTc3OG2lrXq0q+8bzmT/h5584lEWLH4KYbHYsEJn
+         Xe3w==
+X-Gm-Message-State: AOAM531o82Cb/enCoyz/65HWAA2MJRNhF41pHU+a5wkEZmhb6FmMZRbG
+        iaI7XD1WMBPrM65sM6tO+1vUfwH9yS4PNA==
+X-Google-Smtp-Source: ABdhPJyFVN+E3DMkPx9L6Or7+NL8lFcgHqcm+TRnuWvI0s9q4E0D5uY1bPR+BD8JOqIfnUEQfnULlg==
+X-Received: by 2002:a0c:bd8d:: with SMTP id n13mr28656020qvg.199.1597074179379;
+        Mon, 10 Aug 2020 08:42:59 -0700 (PDT)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id 20sm15848317qtp.53.2020.08.10.08.42.56
+        by smtp.gmail.com with ESMTPSA id m30sm17340147qtm.46.2020.08.10.08.42.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 Aug 2020 08:42:56 -0700 (PDT)
+        Mon, 10 Aug 2020 08:42:58 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 06/17] btrfs: set the lockdep class for log tree extent buffers
-Date:   Mon, 10 Aug 2020 11:42:31 -0400
-Message-Id: <20200810154242.782802-7-josef@toxicpanda.com>
+Subject: [PATCH 07/17] btrfs: rename eb->lock_nested to eb->lock_recursed
+Date:   Mon, 10 Aug 2020 11:42:32 -0400
+Message-Id: <20200810154242.782802-8-josef@toxicpanda.com>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20200810154242.782802-1-josef@toxicpanda.com>
 References: <20200810154242.782802-1-josef@toxicpanda.com>
@@ -63,48 +63,123 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-These are special extent buffers that get rewound in order to lookup
-the state of the tree at a specific point in time.  As such they do not
-go through the normal initialization paths that set their lockdep class,
-so handle them appropriately when they are created and before they are
-locked.
+Nested locking with lockdep and everything else refers to lock hierarchy
+within the same lock map.  This is how we indicate the same locks for
+different objects are ok to take in a specific order, for our use case
+that would be to take the lock on a leaf and then take a lock on an
+adjacent leaf.
+
+What ->lock_nested _actually_ refers to is if we happen to already be
+holding the write lock on the extent buffer and we're allowing a read
+lock to be taken on that extent buffer, which is recursion.  Rename this
+so we don't get confused when we switch to a rwsem and have to start
+using the _nested helpers.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/ctree.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ fs/btrfs/extent_io.c |  2 +-
+ fs/btrfs/extent_io.h |  2 +-
+ fs/btrfs/locking.c   | 22 +++++++++++-----------
+ 3 files changed, 13 insertions(+), 13 deletions(-)
 
-diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
-index 70e49d8d4f6c..cbacf700b68b 100644
---- a/fs/btrfs/ctree.c
-+++ b/fs/btrfs/ctree.c
-@@ -1297,6 +1297,8 @@ tree_mod_log_rewind(struct btrfs_fs_info *fs_info, struct btrfs_path *path,
- 	btrfs_tree_read_unlock_blocking(eb);
- 	free_extent_buffer(eb);
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index c15ab6c1897f..16b4e7655a96 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -4988,7 +4988,7 @@ __alloc_extent_buffer(struct btrfs_fs_info *fs_info, u64 start,
+ 	rwlock_init(&eb->lock);
+ 	atomic_set(&eb->blocking_readers, 0);
+ 	eb->blocking_writers = 0;
+-	eb->lock_nested = false;
++	eb->lock_recursed = false;
+ 	init_waitqueue_head(&eb->write_lock_wq);
+ 	init_waitqueue_head(&eb->read_lock_wq);
  
-+	btrfs_set_buffer_lockdep_class(btrfs_header_owner(eb_rewin),
-+				       eb_rewin, btrfs_header_level(eb_rewin));
- 	btrfs_tree_read_lock(eb_rewin);
- 	__tree_mod_log_rewind(fs_info, eb_rewin, time_seq, tm);
- 	WARN_ON(btrfs_header_nritems(eb_rewin) >
-@@ -1370,7 +1372,6 @@ get_old_root(struct btrfs_root *root, u64 time_seq)
+diff --git a/fs/btrfs/extent_io.h b/fs/btrfs/extent_io.h
+index 30794ae58498..9e1e22f1586a 100644
+--- a/fs/btrfs/extent_io.h
++++ b/fs/btrfs/extent_io.h
+@@ -102,7 +102,7 @@ struct extent_buffer {
  
- 	if (!eb)
- 		return NULL;
--	btrfs_tree_read_lock(eb);
- 	if (old_root) {
- 		btrfs_set_header_bytenr(eb, eb->start);
- 		btrfs_set_header_backref_rev(eb, BTRFS_MIXED_BACKREF_REV);
-@@ -1378,6 +1379,9 @@ get_old_root(struct btrfs_root *root, u64 time_seq)
- 		btrfs_set_header_level(eb, old_root->level);
- 		btrfs_set_header_generation(eb, old_generation);
+ 	int blocking_writers;
+ 	atomic_t blocking_readers;
+-	bool lock_nested;
++	bool lock_recursed;
+ 	/* >= 0 if eb belongs to a log tree, -1 otherwise */
+ 	short log_index;
+ 
+diff --git a/fs/btrfs/locking.c b/fs/btrfs/locking.c
+index f75612e18a82..8e3d107a6192 100644
+--- a/fs/btrfs/locking.c
++++ b/fs/btrfs/locking.c
+@@ -57,7 +57,7 @@
+  * performance reasons.
+  *
+  *
+- * Lock nesting
++ * Lock recursion
+  * ------------
+  *
+  * A write operation on a tree might indirectly start a look up on the same
+@@ -201,7 +201,7 @@ void btrfs_set_lock_blocking_read(struct extent_buffer *eb)
+ 	 * lock, but it won't change to or away from us.  If we have the write
+ 	 * lock, we are the owner and it'll never change.
+ 	 */
+-	if (eb->lock_nested && current->pid == eb->lock_owner)
++	if (eb->lock_recursed && current->pid == eb->lock_owner)
+ 		return;
+ 	btrfs_assert_tree_read_locked(eb);
+ 	atomic_inc(&eb->blocking_readers);
+@@ -225,7 +225,7 @@ void btrfs_set_lock_blocking_write(struct extent_buffer *eb)
+ 	 * lock, but it won't change to or away from us.  If we have the write
+ 	 * lock, we are the owner and it'll never change.
+ 	 */
+-	if (eb->lock_nested && current->pid == eb->lock_owner)
++	if (eb->lock_recursed && current->pid == eb->lock_owner)
+ 		return;
+ 	if (eb->blocking_writers == 0) {
+ 		btrfs_assert_spinning_writers_put(eb);
+@@ -263,8 +263,8 @@ void btrfs_tree_read_lock(struct extent_buffer *eb)
+ 			 * depends on this as it may be called on a partly
+ 			 * (write-)locked tree.
+ 			 */
+-			BUG_ON(eb->lock_nested);
+-			eb->lock_nested = true;
++			BUG_ON(eb->lock_recursed);
++			eb->lock_recursed = true;
+ 			read_unlock(&eb->lock);
+ 			trace_btrfs_tree_read_lock(eb, start_ns);
+ 			return;
+@@ -362,11 +362,11 @@ void btrfs_tree_read_unlock(struct extent_buffer *eb)
+ 	/*
+ 	 * if we're nested, we have the write lock.  No new locking
+ 	 * is needed as long as we are the lock owner.
+-	 * The write unlock will do a barrier for us, and the lock_nested
++	 * The write unlock will do a barrier for us, and the lock_recursed
+ 	 * field only matters to the lock owner.
+ 	 */
+-	if (eb->lock_nested && current->pid == eb->lock_owner) {
+-		eb->lock_nested = false;
++	if (eb->lock_recursed && current->pid == eb->lock_owner) {
++		eb->lock_recursed = false;
+ 		return;
  	}
-+	btrfs_set_buffer_lockdep_class(btrfs_header_owner(eb), eb,
-+				       btrfs_header_level(eb));
-+	btrfs_tree_read_lock(eb);
- 	if (tm)
- 		__tree_mod_log_rewind(fs_info, eb, time_seq, tm);
- 	else
+ 	btrfs_assert_tree_read_locked(eb);
+@@ -388,11 +388,11 @@ void btrfs_tree_read_unlock_blocking(struct extent_buffer *eb)
+ 	/*
+ 	 * if we're nested, we have the write lock.  No new locking
+ 	 * is needed as long as we are the lock owner.
+-	 * The write unlock will do a barrier for us, and the lock_nested
++	 * The write unlock will do a barrier for us, and the lock_recursed
+ 	 * field only matters to the lock owner.
+ 	 */
+-	if (eb->lock_nested && current->pid == eb->lock_owner) {
+-		eb->lock_nested = false;
++	if (eb->lock_recursed && current->pid == eb->lock_owner) {
++		eb->lock_recursed = false;
+ 		return;
+ 	}
+ 	btrfs_assert_tree_read_locked(eb);
 -- 
 2.24.1
 
