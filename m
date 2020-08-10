@@ -2,58 +2,60 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 335A6240A9C
+	by mail.lfdr.de (Postfix) with ESMTP id A88BC240A9D
 	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Aug 2020 17:43:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728137AbgHJPms (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 10 Aug 2020 11:42:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38440 "EHLO
+        id S1728428AbgHJPmu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 10 Aug 2020 11:42:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726910AbgHJPmr (ORCPT
+        with ESMTP id S1727079AbgHJPmt (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 10 Aug 2020 11:42:47 -0400
-Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E5F9C061756
-        for <linux-btrfs@vger.kernel.org>; Mon, 10 Aug 2020 08:42:47 -0700 (PDT)
-Received: by mail-qv1-xf41.google.com with SMTP id t6so4435108qvw.1
-        for <linux-btrfs@vger.kernel.org>; Mon, 10 Aug 2020 08:42:47 -0700 (PDT)
+        Mon, 10 Aug 2020 11:42:49 -0400
+Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A604C061756
+        for <linux-btrfs@vger.kernel.org>; Mon, 10 Aug 2020 08:42:49 -0700 (PDT)
+Received: by mail-qt1-x82c.google.com with SMTP id t23so7073091qto.3
+        for <linux-btrfs@vger.kernel.org>; Mon, 10 Aug 2020 08:42:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:subject:date:message-id:mime-version
+        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=hDniItYYkXQYgsiBsBS0xnv17LN0VPB+k0fVpmgZhg0=;
-        b=UDCaoOvFNIlbt5vTOJqZSOa9Yg+NDumu2lXMoArX+MksXPOsKXcI39Ni2R36X3HWjE
-         RRRoYHAupOQSEbyjEstPSGff3feV2iyMmzuo46YJwqueG2KoDcMRAEAT+7nBanSfaU1X
-         64lsEjRiglny9/Cz++6Vw/NVl81E8Nc/5KU04gcfzSz3JBWoyLmXziS3ANXcKifBi7so
-         lPaAtoLHktVRGLb6zrWv52vVbsYcCD3UKJT1EWYQUXlHzFkcR0lfr84+A4hrS/k7aRv7
-         98PaGmIeIYKbJzX4uaoncOmhAgB570xSJGioihbS/ufdaujfO7yuzdScSn+eCL4w3vNh
-         Tr0w==
+        bh=9i0w/OL8ftrwwGjXcoUOztXBgZoX1FVr+ry1vV7ysec=;
+        b=yp0PkFw7zR9+U44q6andgys8/vITv58EiA52Vsk0+4O84fup4bdpNZAYwki74RMQLV
+         j7XYnykLbQPiIaSm+S7PfYVPhNU08D3GGZgc3UJx2LQ6atXLGaGdRrnM0eepXbXKnYcX
+         6dwRafOwOBolxLVH2lA3l0Bn2jsR5e7EMXZjaSfDtPCRc/1ryqJBYFNW4tzjplhnrfJd
+         jBeJZP1yNkX72Z6MNJSHigvmkdClDPQ54hGVZyV0UaTSk/zI0/gqMQ8bKVBUzQZdyOqf
+         AblOaB76GYQ5Kjg7/7r9FPFzvciH/NeumAlIutI/2X2RLRYMHX0TifNWEPMzPXxvjw7G
+         tkeA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=hDniItYYkXQYgsiBsBS0xnv17LN0VPB+k0fVpmgZhg0=;
-        b=EyfQFIQIK6C9OG4Wy/MfIqcJ58/uBen6QTO6sqZtlK4YHFTkh+UCU1GMTFQpfdPvc/
-         RCvjLcCpepN1NDpQzvNe67CiVCwFTGwS2jla4FUuY1Ue1sH3IB/tDwJS7idgK4GmDy1P
-         P8yjLjddEDgU0tA5kWX+sTwtVrdPUtTOebzIT762J+rYXnLmXNa8072GxA8oJuomttV1
-         8EG2pe0X/nq4jxmNDLmW0W+qHSySDrcVh0eMf1ODqswQhgp8JXMQnBglvppa7yKckqjD
-         qjUfUw+ySkf8WCY441lzAr8EgmJOltCEKYBT0hMgTOF277u6BoG7ztJxJyHd87xDWjtl
-         7CLA==
-X-Gm-Message-State: AOAM531L1kHgm2rLYua1QNO+4d9xfeZ1UFX2Hyzg3h6tpJnQgti6A1sC
-        xLAbPEe0OrEiemuiK94KZt43LOzUqbfF9A==
-X-Google-Smtp-Source: ABdhPJyv4F28tepQwxfEi80iReow2t0r6c6WX5iACdIDtDYEgyp8nWUIcSaGSxVZvY3/hmpP+vRwGA==
-X-Received: by 2002:ad4:44e5:: with SMTP id p5mr28599443qvt.197.1597074165319;
-        Mon, 10 Aug 2020 08:42:45 -0700 (PDT)
+        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=9i0w/OL8ftrwwGjXcoUOztXBgZoX1FVr+ry1vV7ysec=;
+        b=r+8KQ9Xw5jD08+QwMKCjPXLP/GCnAl2nT/UaDZk17jF3nPekf+rq4jbY3up1PcjnOv
+         Lf4LqDaT7Ti5YiSbBpoRnHELoQV90c7K/UmBkRB8pBlMVDVWWDABEZilx69UBVKETsdZ
+         zE+qz20osFZuT/L3MnqA1RaQxzJ37y3j+jUtCecHfOGYemniwxiJooFuofvRPjKyp4Si
+         gH9uYYQg/5KtOxqNl9Th5XFr0R4Tkb/S0sUbxm0zkOxvZrlpZWkVHBxYeIK7D36VNwM6
+         Tasis/CB08d0cNKV+PDpXvZe65+afLLaXVTnFOvkVLqD/+U8RXTKjx0vrbo8ft6lKmQc
+         RnPg==
+X-Gm-Message-State: AOAM533WBb/IBn/+WDvZ1KjJu5G+EQlBGf5QvrQW98A5aXMg97xUNd2z
+        GMR71Jixex310Osviq+DyfoKNTJNTVd/Uw==
+X-Google-Smtp-Source: ABdhPJxyDiINt4puvgt+/um7/vQeVSie/NHTP6yfwijrAMYTOictMhanH/Z3OZ47G+xn/W7H3Ajt7Q==
+X-Received: by 2002:ac8:43ce:: with SMTP id w14mr29124502qtn.0.1597074167145;
+        Mon, 10 Aug 2020 08:42:47 -0700 (PDT)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id c5sm15992973qtp.62.2020.08.10.08.42.44
+        by smtp.gmail.com with ESMTPSA id n127sm15273612qke.29.2020.08.10.08.42.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 Aug 2020 08:42:44 -0700 (PDT)
+        Mon, 10 Aug 2020 08:42:46 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 00/17] Convert to an rwsem for our tree locking
-Date:   Mon, 10 Aug 2020 11:42:25 -0400
-Message-Id: <20200810154242.782802-1-josef@toxicpanda.com>
+Subject: [PATCH 01/17] btrfs: drop path before adding new uuid tree entry
+Date:   Mon, 10 Aug 2020 11:42:26 -0400
+Message-Id: <20200810154242.782802-2-josef@toxicpanda.com>
 X-Mailer: git-send-email 2.24.1
+In-Reply-To: <20200810154242.782802-1-josef@toxicpanda.com>
+References: <20200810154242.782802-1-josef@toxicpanda.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
@@ -61,109 +63,137 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-tl;dr:
-- Cleaner code.
-- dbench 200 3x as fast.
-- fio with < nr_cpus is 10% slower.
-- fio with 2 * nr_cpus is 10% faster.
-- fs_mark is the same ish (results have a 10% variance between runs).
+With the conversion to the rwsemaphore I got the following lockdep splat
 
-When Chris originally wrote the locking code for Btrfs the performance of rwsem
-was atroctios compared to his locking scheme.  In btrfs we can usually spin on
-most accesses, because generally we won't need to block.  If we do need to block
-we can simply flip over to a blocking lock.  This flexibility has meant that our
-locking scheme generally outperforms any of the standard locking.  We also have
-a unique usecase where in a specific case (the space cache) we need to be able
-to recurse a tree lock.  It is safe to do this because we're just reading, and
-we would currently be holding a write lock, but this is not something that the
-generic locking infrastructure provides.
+======================================================
+WARNING: possible circular locking dependency detected
+5.8.0-rc7-00167-g0d7ba0c5b375-dirty #925 Not tainted
+------------------------------------------------------
+btrfs-uuid/7955 is trying to acquire lock:
+ffff88bfbafec0f8 (btrfs-root-00){++++}-{3:3}, at: __btrfs_tree_read_lock+0x39/0x180
 
-There are a few downsides
+but task is already holding lock:
+ffff88bfbafef2a8 (btrfs-uuid-00){++++}-{3:3}, at: __btrfs_tree_read_lock+0x39/0x180
 
-1) The code is complicated.  This generally isn't an issue because we don't
-really have to touch the code that often.
+which lock already depends on the new lock.
 
-2) We lose lockdep help.  As you can see the first 4 patches in this series are
-fixing deadlocks that exist that were caught by having lockdep properly working
-with our tree locking.
+the existing dependency chain (in reverse order) is:
 
-3) We actually perform really poorly in the highly contended case.  Because we
-don't really do anything proper locks do like dealing with writer/read
-starvation, we have a series of waitqueues that mass get woken up when we unlock
-blocking.  This means our context switch counts can be stupid high, as we'll
-wake everybody up, and whoever wins the race gets the lock.  Implementing proper
-exclusive waitqueues is a possiblity, but would further complicate the code, and
-likely introduce problems we'd spend the next 6 months figuring out.
+-> #1 (btrfs-uuid-00){++++}-{3:3}:
+       down_read_nested+0x3e/0x140
+       __btrfs_tree_read_lock+0x39/0x180
+       __btrfs_read_lock_root_node+0x3a/0x50
+       btrfs_search_slot+0x4bd/0x990
+       btrfs_uuid_tree_add+0x89/0x2d0
+       btrfs_uuid_scan_kthread+0x330/0x390
+       kthread+0x133/0x150
+       ret_from_fork+0x1f/0x30
 
-It's #3 that actually brought me to this patch series, as changing to an rwsem
-significantly improved a usecase I was investigating.  However the rwsem isn't
-without drawbacks.  Namely that in less highly contended cases we can be slower
-than baseline, around 9-10% on my test box.  However in the very highly
-contended cases (> nr_cpus) we are the same, if not better.
+-> #0 (btrfs-root-00){++++}-{3:3}:
+       __lock_acquire+0x1272/0x2310
+       lock_acquire+0x9e/0x360
+       down_read_nested+0x3e/0x140
+       __btrfs_tree_read_lock+0x39/0x180
+       __btrfs_read_lock_root_node+0x3a/0x50
+       btrfs_search_slot+0x4bd/0x990
+       btrfs_find_root+0x45/0x1b0
+       btrfs_read_tree_root+0x61/0x100
+       btrfs_get_root_ref.part.50+0x143/0x630
+       btrfs_uuid_tree_iterate+0x207/0x314
+       btrfs_uuid_rescan_kthread+0x12/0x50
+       kthread+0x133/0x150
+       ret_from_fork+0x1f/0x30
 
-Filipe and I have discussed this a bit over the last few days, we're both on the
-fence about it currently.  On one hand we could likely make up the lost
-performance in other areas, and there's certainly things that could be
-investigated to see why exactly we're slower with the rwsem and maybe figure out
-a way to fix those.  We also gain a lot with this new code.  But 9-10% isn't
-nothing, so it needs to be taken into consideration.
+other info that might help us debug this:
 
-The following is the set of benchmarks that I've run on my 80 CPU, 256 GIB of
-ram, 2 TIB NVME drive machine.  If there's anything else people would like to
-see I can easily do A/B testing to see.
+ Possible unsafe locking scenario:
 
-fio was N threads with 1gib files, 64kib blocksize with a fsync after every
-write.  The fs_mark was just create empty files with 16 threads.
+       CPU0                    CPU1
+       ----                    ----
+  lock(btrfs-uuid-00);
+                               lock(btrfs-root-00);
+                               lock(btrfs-uuid-00);
+  lock(btrfs-root-00);
 
-			PATCHED		UNPATCHED	% DIFF
-dbench 200		699.011 Mb/s	213.568 Mb/s	+227%
-fs_mark			223 seconds	197 seconds	-11.65%
-fio 64 threads		562 Mb/s	624 Mb/s	-9.9%
-fio 100 threads		566 Mb/s	566 Mb/s	0.0%
-fio 160 threads		593 Mb/s	576 Mb/s	+2.95%
+ *** DEADLOCK ***
 
-Another thing not shown by the raw numbers is the number of context switches.
-Because of the nature of our locking we wake up everything constantly, so our
-context switch counts for the fio jobs are consistently 2-3x with the old scheme
-vs the rwsem.  This is why my particular workload performed so poorly, the
-context switching was actually quite painful for that workload.
+1 lock held by btrfs-uuid/7955:
+ #0: ffff88bfbafef2a8 (btrfs-uuid-00){++++}-{3:3}, at: __btrfs_tree_read_lock+0x39/0x180
 
-The diffstat is as follows
+stack backtrace:
+CPU: 73 PID: 7955 Comm: btrfs-uuid Kdump: loaded Not tainted 5.8.0-rc7-00167-g0d7ba0c5b375-dirty #925
+Hardware name: Quanta Tioga Pass Single Side 01-0030993006/Tioga Pass Single Side, BIOS F08_3A18 12/20/2018
+Call Trace:
+ dump_stack+0x78/0xa0
+ check_noncircular+0x165/0x180
+ __lock_acquire+0x1272/0x2310
+ lock_acquire+0x9e/0x360
+ ? __btrfs_tree_read_lock+0x39/0x180
+ ? btrfs_root_node+0x1c/0x1d0
+ down_read_nested+0x3e/0x140
+ ? __btrfs_tree_read_lock+0x39/0x180
+ __btrfs_tree_read_lock+0x39/0x180
+ __btrfs_read_lock_root_node+0x3a/0x50
+ btrfs_search_slot+0x4bd/0x990
+ btrfs_find_root+0x45/0x1b0
+ btrfs_read_tree_root+0x61/0x100
+ btrfs_get_root_ref.part.50+0x143/0x630
+ btrfs_uuid_tree_iterate+0x207/0x314
+ ? btree_readpage+0x20/0x20
+ btrfs_uuid_rescan_kthread+0x12/0x50
+ kthread+0x133/0x150
+ ? kthread_create_on_node+0x60/0x60
+ ret_from_fork+0x1f/0x30
 
- fs/btrfs/backref.c            |  13 +-
- fs/btrfs/ctree.c              | 168 ++++++---------
- fs/btrfs/ctree.h              |  10 +-
- fs/btrfs/delayed-inode.c      |  11 -
- fs/btrfs/dir-item.c           |   1 -
- fs/btrfs/disk-io.c            |  13 +-
- fs/btrfs/export.c             |   1 -
- fs/btrfs/extent-tree.c        |  41 ++--
- fs/btrfs/extent_io.c          |  24 +--
- fs/btrfs/extent_io.h          |  27 +--
- fs/btrfs/file-item.c          |   4 -
- fs/btrfs/file.c               |   3 +-
- fs/btrfs/free-space-tree.c    |   2 -
- fs/btrfs/inode-item.c         |   6 -
- fs/btrfs/inode.c              |  13 +-
- fs/btrfs/ioctl.c              |  31 ++-
- fs/btrfs/locking.c            | 469 +++++++-----------------------------------
- fs/btrfs/locking.h            |  80 ++++++-
- fs/btrfs/print-tree.c         |  11 +-
- fs/btrfs/qgroup.c             |  11 +-
- fs/btrfs/ref-verify.c         |   6 +-
- fs/btrfs/reflink.c            |   3 -
- fs/btrfs/relocation.c         |  15 +-
- fs/btrfs/scrub.c              | 122 ++++++-----
- fs/btrfs/super.c              |   2 -
- fs/btrfs/tests/qgroup-tests.c |   4 -
- fs/btrfs/transaction.c        |   7 +-
- fs/btrfs/tree-defrag.c        |   1 -
- fs/btrfs/tree-log.c           |   3 -
- fs/btrfs/volumes.c            |   8 +-
- 30 files changed, 357 insertions(+), 753 deletions(-)
+This problem exists because we have two different rescan threads,
+btrfs_uuid_scan_kthread which creates the uuid tree, and
+btrfs_uuid_tree_iterate that goes through and updates or deletes any out
+of date roots.  The problem is they both do things in different order.
+btrfs_uuid_scan_kthread() reads the tree_root, and then inserts entries
+into the uuid_root.  btrfs_uuid_tree_iterate() scans the uuid_root, but
+then does a btrfs_get_fs_root() which can read from the tree_root.
 
-Thanks,
+It's actually easy enough to not be holding the path in
+btrfs_uuid_scan_kthread() when we add a uuid entry, as we already drop
+it further down and re-start the search when we loop.  So simply move
+the path release before we add our entry to the uuid tree.
 
-Josef
+This also fixes a problem where we're holding a path open after we do
+btrfs_end_transaction(), which has it's own problems.
 
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+---
+ fs/btrfs/volumes.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index d7670e2a9f39..3ac44dad58bb 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -4462,6 +4462,7 @@ int btrfs_uuid_scan_kthread(void *data)
+ 			goto skip;
+ 		}
+ update_tree:
++		btrfs_release_path(path);
+ 		if (!btrfs_is_empty_uuid(root_item.uuid)) {
+ 			ret = btrfs_uuid_tree_add(trans, root_item.uuid,
+ 						  BTRFS_UUID_KEY_SUBVOL,
+@@ -4486,6 +4487,7 @@ int btrfs_uuid_scan_kthread(void *data)
+ 		}
+ 
+ skip:
++		btrfs_release_path(path);
+ 		if (trans) {
+ 			ret = btrfs_end_transaction(trans);
+ 			trans = NULL;
+@@ -4493,7 +4495,6 @@ int btrfs_uuid_scan_kthread(void *data)
+ 				break;
+ 		}
+ 
+-		btrfs_release_path(path);
+ 		if (key.offset < (u64)-1) {
+ 			key.offset++;
+ 		} else if (key.type < BTRFS_ROOT_ITEM_KEY) {
+-- 
+2.24.1
 
