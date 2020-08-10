@@ -2,57 +2,57 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A14A1240AA8
-	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Aug 2020 17:43:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A424240AA9
+	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Aug 2020 17:43:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728337AbgHJPnM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 10 Aug 2020 11:43:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38528 "EHLO
+        id S1728894AbgHJPnO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 10 Aug 2020 11:43:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728324AbgHJPnL (ORCPT
+        with ESMTP id S1728324AbgHJPnM (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 10 Aug 2020 11:43:11 -0400
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2266CC061756
-        for <linux-btrfs@vger.kernel.org>; Mon, 10 Aug 2020 08:43:11 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id l64so8714609qkb.8
-        for <linux-btrfs@vger.kernel.org>; Mon, 10 Aug 2020 08:43:11 -0700 (PDT)
+        Mon, 10 Aug 2020 11:43:12 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E30A4C061756
+        for <linux-btrfs@vger.kernel.org>; Mon, 10 Aug 2020 08:43:12 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id h21so7046546qtp.11
+        for <linux-btrfs@vger.kernel.org>; Mon, 10 Aug 2020 08:43:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=zFmQ5ifW3GmwSlj9rU7NJYZUbXsc2cV3XVoy5vWcPwM=;
-        b=IAO3V2C/TV57hCWWUMqrsgM4Yj7tWpIR1Uo8xU3Br/r5YXTBUFR3VmhfGcv3Rx/gsH
-         dUp3mscQlfGn6Kb5+JMOBoSOBSQYpYT/fQ6Gb6aLh3xlNaJNJs3v+NeYRVMPXR7AvrOj
-         CEedUgfi3kPMBjZ5mSDqhi9qD3bqGwL9yw3EhcsdSN6MashTtPfBLJ5bn/KWveQMANVx
-         vKaW2b/t8swSU3p0DZiv+JV2cTE0Mn7HlLEagK2KWGhFRboCRKfsyjXkfPo9ugXXQRGx
-         M8QnTV8KkSafuOcl81z6OCHxmfF85KUQdWPLm38HttFVNc0oSbKxAUiZ+ENF90p8Ue1u
-         YNdg==
+        bh=915Pcf2m0NeZH1EUM9S9ojGS95EQ1CPFI6c3SyybXEE=;
+        b=UM+JWiAL1a0navYr6f45H9eqCKtcweVymlF8bQZ+yIc5CWWaxXb4+WwPvsCgn/k8dE
+         DumxVuGJZVzaDoGj6a+lvQdRf8mjVNSxQcOnkfamNwP86jxAUhd3oMdvWElgfWWqbIWS
+         LX3N8aAJiE8YolBr8/9TEhRuWjvJDVLalDemdZma46C+KTjyGPOpNsU+DlqE9Oq5n3+1
+         5ygeTYkJg0H/BUx5JGyFZIxdOZDHWkLIWm1ehlE2ZWchZt3syczFXCsiM2eIQzJMfV94
+         NnWZbbHiF4ZlbouBcLyrgutD3ynaYvmZf8m0a6Vdow2DUp1XHkqYTQ+FMgwkowU973Hf
+         9XNw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=zFmQ5ifW3GmwSlj9rU7NJYZUbXsc2cV3XVoy5vWcPwM=;
-        b=pUPs1WQQATxzx5LauY5JY5Sf8LRheAwH2zAa0BBPDfEfhEhQciAL8TjNk7ZMySM8Sr
-         pbCviwcJSC+2jkRPMV9xZaTdu3kPllDudVQ4rjyrVmAGFblGtBN9RonFHtMIlOcv7lXi
-         ztwNn24t3b7fPGAfaFtlivJeOLNsOulc6ip8ZmPIekJtUD7dqCBy9v/cCtcjRNabwVeH
-         fvFsfBzTYG/V0CUIDf9OY/6M8c5jCrOc7syeczOoE0ikST80HYCIljr9qKCrcdAF9SuL
-         Mw/vJMqAht7vJ8hZLDYoQhKuy0izEgDhDcDnb5uvf3G/avfAP8NgCJpBnrh5Bpi8H62b
-         bawQ==
-X-Gm-Message-State: AOAM533J60xoE4IRdS5xuM+lPKEH1rrxFTMaow7Ifw41q4dx8bXrb8Q9
-        7SsB398UHWOvMeHchJzjp31G9BpAz559kA==
-X-Google-Smtp-Source: ABdhPJzTaCA8ERd2usg9d/UhVR4koHAu8FY0QnoY2p1cVaidYmD7SMPLU/ZdX/jqKMKUl3mF7OTzpQ==
-X-Received: by 2002:a05:620a:b8d:: with SMTP id k13mr27285937qkh.450.1597074189930;
-        Mon, 10 Aug 2020 08:43:09 -0700 (PDT)
+        bh=915Pcf2m0NeZH1EUM9S9ojGS95EQ1CPFI6c3SyybXEE=;
+        b=rcjTTA6/56yGgTrhIyz4HH5Q4oL6f7l6eWOmHDC2nd3ib7YiyCqIjGy51ILD8v3G2J
+         M4LIdDZM28xnYwhvGoc3QJguYuJ4BH13Q17lhDUERwHpzyqZI4+aFRPX4PJzqF7VvhNs
+         mBMmhn+qEZMTfUeq6sBA00kp9Fx5sK1ZK++sBmNOIzK0bk2OQXmVyRUn8JT/8MkAmG/2
+         JdQF7a9rHZE/jQ4P3UfQm9Oqu6d1twmvWk/wNgwDuz4xrDSa4ZPNnJ6FTG+If/Chj5Ku
+         gngNmXSOPI3lSVF7PtV50n6XWb0NIncezdzRj53LjE4iR7Zke5L0lnHx7PdpGqxdOhZz
+         ej7g==
+X-Gm-Message-State: AOAM533ehfL3kq5RAhynGSm3BICO4aV01zp1PM6x4GDuGpqNCINYNYLL
+        2e2T4ySE2lRh2PaIq68BzV7wj14nlnF8Lg==
+X-Google-Smtp-Source: ABdhPJyc+h2ixc52etkbHcbFfg/2JlLj0FC8ta48y7J5Z/huT9dKFz9Ae/FyPzLD2ExtnDEFjTn53Q==
+X-Received: by 2002:ac8:67c9:: with SMTP id r9mr28057906qtp.301.1597074191776;
+        Mon, 10 Aug 2020 08:43:11 -0700 (PDT)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id m17sm16292612qkn.45.2020.08.10.08.43.08
+        by smtp.gmail.com with ESMTPSA id i7sm16024294qtb.27.2020.08.10.08.43.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 Aug 2020 08:43:08 -0700 (PDT)
+        Mon, 10 Aug 2020 08:43:11 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 12/17] btrfs: introduce BTRFS_NESTING_LEFT/RIGHT_COW
-Date:   Mon, 10 Aug 2020 11:42:37 -0400
-Message-Id: <20200810154242.782802-13-josef@toxicpanda.com>
+Subject: [PATCH 13/17] btrfs: introduce BTRFS_NESTING_SPLIT for split blocks
+Date:   Mon, 10 Aug 2020 11:42:38 -0400
+Message-Id: <20200810154242.782802-14-josef@toxicpanda.com>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20200810154242.782802-1-josef@toxicpanda.com>
 References: <20200810154242.782802-1-josef@toxicpanda.com>
@@ -63,98 +63,66 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-For similar reasons as BTRFS_NESTING_COW, we need
-BTRFS_NESTING_LEFT/RIGHT_COW.  The pattern is this
+If we are splitting a leaf/node, we could do something like the
+following
 
-lock leaf -> BTRFS_NESTING_NORMAL
-  cow leaf -> BTRFS_NESTING_COW
-    split leaf
-      lock left -> BTRFS_NESTING_LEFT
-        cow left -> BTRFS_NESTING_LEFT_COW
+lock(leaf)  BTRFS_NESTING_NORMAL
+  lock(left) BTRFS_NESTING_LEFT + BTRFS_NESTING_COW
+    push from leaf -> left
+      reset path to point to left
+        split left
+          allocate new block, lock block BTRFS_NESTING_SPLIT
 
-We need this in order to indicate to lockdep that these locks are
-discrete and are being taken in a safe order.
+at the new block point we need to have a different nesting level,
+because we have already used either BTRFS_NESTING_LEFT or
+BTRFS_NESTING_RIGHT when pushing items from the original leaf into the
+adjacent leaves.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/ctree.c   | 12 ++++++------
- fs/btrfs/locking.h |  8 ++++++++
- 2 files changed, 14 insertions(+), 6 deletions(-)
+ fs/btrfs/ctree.c   | 4 ++--
+ fs/btrfs/locking.h | 9 +++++++++
+ 2 files changed, 11 insertions(+), 2 deletions(-)
 
 diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
-index ea5412cd0f62..6b63b3bcacd4 100644
+index 6b63b3bcacd4..82dac6510a86 100644
 --- a/fs/btrfs/ctree.c
 +++ b/fs/btrfs/ctree.c
-@@ -1900,7 +1900,7 @@ static noinline int balance_level(struct btrfs_trans_handle *trans,
- 		btrfs_set_lock_blocking_write(left);
- 		wret = btrfs_cow_block(trans, root, left,
- 				       parent, pslot - 1, &left,
--				       BTRFS_NESTING_COW);
-+				       BTRFS_NESTING_LEFT_COW);
- 		if (wret) {
- 			ret = wret;
- 			goto enospc;
-@@ -1916,7 +1916,7 @@ static noinline int balance_level(struct btrfs_trans_handle *trans,
- 		btrfs_set_lock_blocking_write(right);
- 		wret = btrfs_cow_block(trans, root, right,
- 				       parent, pslot + 1, &right,
--				       BTRFS_NESTING_COW);
-+				       BTRFS_NESTING_RIGHT_COW);
- 		if (wret) {
- 			ret = wret;
- 			goto enospc;
-@@ -2085,7 +2085,7 @@ static noinline int push_nodes_for_insert(struct btrfs_trans_handle *trans,
- 		} else {
- 			ret = btrfs_cow_block(trans, root, left, parent,
- 					      pslot - 1, &left,
--					      BTRFS_NESTING_COW);
-+					      BTRFS_NESTING_LEFT_COW);
- 			if (ret)
- 				wret = 1;
- 			else {
-@@ -2140,7 +2140,7 @@ static noinline int push_nodes_for_insert(struct btrfs_trans_handle *trans,
- 		} else {
- 			ret = btrfs_cow_block(trans, root, right,
- 					      parent, pslot + 1,
--					      &right, BTRFS_NESTING_COW);
-+					      &right, BTRFS_NESTING_RIGHT_COW);
- 			if (ret)
- 				wret = 1;
- 			else {
-@@ -3751,7 +3751,7 @@ static int push_leaf_right(struct btrfs_trans_handle *trans, struct btrfs_root
+@@ -3473,7 +3473,7 @@ static noinline int split_node(struct btrfs_trans_handle *trans,
+ 	btrfs_node_key(c, &disk_key, mid);
  
- 	/* cow and double check */
- 	ret = btrfs_cow_block(trans, root, right, upper,
--			      slot + 1, &right, BTRFS_NESTING_COW);
-+			      slot + 1, &right, BTRFS_NESTING_RIGHT_COW);
- 	if (ret)
- 		goto out_unlock;
+ 	split = alloc_tree_block_no_bg_flush(trans, root, 0, &disk_key, level,
+-					     c->start, 0, BTRFS_NESTING_NORMAL);
++					     c->start, 0, BTRFS_NESTING_SPLIT);
+ 	if (IS_ERR(split))
+ 		return PTR_ERR(split);
  
-@@ -3987,7 +3987,7 @@ static int push_leaf_left(struct btrfs_trans_handle *trans, struct btrfs_root
- 	/* cow and double check */
- 	ret = btrfs_cow_block(trans, root, left,
- 			      path->nodes[1], slot - 1, &left,
--			      BTRFS_NESTING_COW);
-+			      BTRFS_NESTING_LEFT_COW);
- 	if (ret) {
- 		/* we hit -ENOSPC, but it isn't fatal here */
- 		if (ret == -ENOSPC)
+@@ -4250,7 +4250,7 @@ static noinline int split_leaf(struct btrfs_trans_handle *trans,
+ 		btrfs_item_key(l, &disk_key, mid);
+ 
+ 	right = alloc_tree_block_no_bg_flush(trans, root, 0, &disk_key, 0,
+-					     l->start, 0, BTRFS_NESTING_NORMAL);
++					     l->start, 0, BTRFS_NESTING_SPLIT);
+ 	if (IS_ERR(right))
+ 		return PTR_ERR(right);
+ 
 diff --git a/fs/btrfs/locking.h b/fs/btrfs/locking.h
-index f93e3e10ddbd..31a87477b889 100644
+index 31a87477b889..4f5586fed25a 100644
 --- a/fs/btrfs/locking.h
 +++ b/fs/btrfs/locking.h
-@@ -38,6 +38,14 @@ enum btrfs_lock_nesting {
+@@ -46,6 +46,15 @@ enum btrfs_lock_nesting {
  	 */
- 	BTRFS_NESTING_LEFT,
- 	BTRFS_NESTING_RIGHT,
+ 	BTRFS_NESTING_LEFT_COW,
+ 	BTRFS_NESTING_RIGHT_COW,
 +
 +	/*
-+	 * When splitting we will be holding a lock on the left/right node when
-+	 * we need to cow that node, thus we need a new set of subclasses for
-+	 * these two operations.
++	 * When splitting we may push nodes to the left or right, but still use
++	 * the subsequent nodes in our path, keeping our locks on those adjacent
++	 * blocks.  Thus when we go to allocate a new split block we've already
++	 * used up all of our available subclasses, so this subclass exists to
++	 * handle this case where we need to allocate a new split block.
 +	 */
-+	BTRFS_NESTING_LEFT_COW,
-+	BTRFS_NESTING_RIGHT_COW,
++	BTRFS_NESTING_SPLIT,
  };
  
  struct btrfs_path;
