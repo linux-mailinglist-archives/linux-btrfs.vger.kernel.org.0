@@ -2,211 +2,184 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 367322403F0
-	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Aug 2020 11:23:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6670C240466
+	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Aug 2020 11:59:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726361AbgHJJW5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 10 Aug 2020 05:22:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36714 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726259AbgHJJW5 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 10 Aug 2020 05:22:57 -0400
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA407C061756
-        for <linux-btrfs@vger.kernel.org>; Mon, 10 Aug 2020 02:22:56 -0700 (PDT)
-Received: by mail-ed1-x544.google.com with SMTP id q4so5834512edv.13
-        for <linux-btrfs@vger.kernel.org>; Mon, 10 Aug 2020 02:22:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:subject:to:autocrypt:message-id:date:user-agent:mime-version
-         :content-transfer-encoding:content-language;
-        bh=aigCFYnSgCAZrf7KZHlm8zkCUBGsUZ2LkQhntM3g3pQ=;
-        b=bpDUKXn5djEdcUKe4SJviwCXpRPzcmVJUfd6T0mqYO9k0Rk7d/IGCunGCl5AjZmUg/
-         rNIgTn33IVCjkMoEBuhbTYuUK4d8zH8siX/nHtk4ZyrT4MGajAWZA55+BRLyvO6Vr+s+
-         MibmRrWfj++pcdOvJamGgb5NTuPOUQDeYC+H63AkHANO6lGoxxe1LxmHC/b+xtkPUJir
-         pAMPC+aPGMKOWpJud9QooLqLP1ArSDhNHSUYp7WWpX2emi73bkE3Z7jJVOEgzXHoJJ4m
-         1h2/LKLF1L/Y54Hf0GYl2xCx7oHjwTqNbHmAoTHPP/wRKi3ithV156xN2yW31pQ2YU7D
-         q+cA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:autocrypt:message-id:date
-         :user-agent:mime-version:content-transfer-encoding:content-language;
-        bh=aigCFYnSgCAZrf7KZHlm8zkCUBGsUZ2LkQhntM3g3pQ=;
-        b=P0m2V08oIJBGfAEMVEEvZDsUkYm9C2yHYPWo4KYcDR+GSqp9OMV/i7O0JyyeLAgbR1
-         txeAKWcLWzYAAPVsXK0CZacn9og/+3uYJtSizGjw1oPO3uzyohDeIOJmicrnS+ngFCrY
-         yaYWhAA4knJEWYWym6gjeunepUn4zI5L4jQ56oygG7FnC6u50M+Oind7xm3cYujnG3Md
-         gGqrPPy6Zv33LPVlKZEwctGub559QslXkqtaIaxHA9FhYdlwcsk7/D78xKLWzQp7a+sA
-         fl0RCpSah77hvFJYs7g3VVVaOl6/80Iy7c3HG5agcm29xLKKvlXk/jMkUcQQP1P38VIH
-         mYwQ==
-X-Gm-Message-State: AOAM530icrCyOm3DildhHHuBhcVo16DAA970OK9tkesz5kbvGXUj86CM
-        yAFO9Xm3sR5Dq7x9ha3NUqvyEMQX
-X-Google-Smtp-Source: ABdhPJxofpZkIic429C8/rXTQ6obiLQvUeuARkszoGowaeWF887iaDvOep3VXq8SIy02rdf3xTISGQ==
-X-Received: by 2002:a50:e70e:: with SMTP id a14mr5063203edn.93.1597051374904;
-        Mon, 10 Aug 2020 02:22:54 -0700 (PDT)
-Received: from [10.20.30.23] (p5de03ce6.dip0.t-ipconnect.de. [93.224.60.230])
-        by smtp.gmail.com with ESMTPSA id zg6sm3518636ejb.106.2020.08.10.02.22.54
-        for <linux-btrfs@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 10 Aug 2020 02:22:54 -0700 (PDT)
-From:   Johannes Rohr <jorohr@gmail.com>
-Subject: system hangs when running btrfs balance
-To:     linux-btrfs@vger.kernel.org
-Autocrypt: addr=jorohr@gmail.com; prefer-encrypt=mutual; keydata=
- mQENBFT1gLABCADcwcj45ysOenaLb8+pkjeb+6oC5IZQ5rgf42l8tCfU6mwwTyaHI/OE9f1f
- pClmX+dkEFp9HjFK6e33St+HgcXsmarEpVkGVB1oLwhnECuBngqJLbopXL8QfgVkjaNq2aF9
- QfR0W2F8BlNDllnJ8q3MToY3RQ2BSkYvsekCS9zJ+8cFrZohpTa9hvtD2tDdHk48A8GaxA7Q
- CZm3FSbzXEFuGH4TZ4P407b6prXfU8LidTCrkluuM44LhqTGRXmtuVg6jU9vOrkcz8fflGtq
- Orziu8O32iiL9HU1Oo2wX/vXq9wANj9PAp+cOknXVAH/MeYSIPqo+0pc6ObZxufYyUehABEB
- AAG0IEpvaGFubmVzIFJvaHIgPGpvcm9ockBnbWFpbC5jb20+iQFOBBMBCAA4FiEEQGpo2KXp
- zZlAiCX9BQuNsh71kW8FAliYN80CGwMFCwkIBwIGFQgJCgsCBBYCAwECHgECF4AACgkQBQuN
- sh71kW8GRgf9GKnsiEasxb/0/ngspsDBFCT2GROrA+Qqz7cp14hZVtOkm6nJ7wshAYy+UGfl
- ovPRi3D3JG/RJvBQHi+rYIBrROOOVbj704AC5oFCUwsFs6pKcnwlRaodIo9u4ZgiYOkNln12
- UJxuPL1v7J1ccgypP3ufFZaH9gJGssZtajyQkeCRCKNbBPIbXMSnsTWBqyB4AulnyAwVFJAc
- 4yga8FaJtiDV334tt2TBNw80yqtDczjbjq/tJkcR5VlzVLpPXpbJ8FCL7K945MmN2fpWgWvj
- WtqEfnsSW/y1x7OfDWQ8CG1szKc6HVsqkRNQwksJapIdresC2dNe7oT+m9bn0+RWIrkBDQRU
- 9YCwAQgAu86uORuwnEMOhc1poBRsvWns7G0eMd0vdSaiSAPaP8pQrgTC16wBXJXPxPIhIzfs
- PnGvHgv21BhGcBRcQ7Ybh56dXnWBuKMNnIz2PcMEdHfjd/NG0SDRZdEl/Eztk143kXxsjMTo
- 10sGHPVJOFIVG1L9K2XcZ/M4SvvR5rSYW2obRbCtT3EkNAcyynA/xKtOhsAFkCVjO4twytQv
- Og9rpn02bBrjZqaTCHPzVl7ZpjVD6oykY8uJrgKc4EGMouH3WitZppkWSqaB1hgJp78CjwkB
- 12mT+YcIoM6xzAIklBzKK4qaV1elHhd5clhbDuSpGor/KJcyolx5hbMFwrT+jQARAQABiQEf
- BBgBAgAJBQJU9YCwAhsMAAoJEAULjbIe9ZFvhS8H/3hMmBhanQeDumAndrJI14228G9QUSW2
- SO92Uzlek/mQwRbIg/+nkLn2aC4RkEYqox+AuQA7TqX+OS7JjFVS9vtsn2ZM+kgvMpzUaKO5
- aCjqiyXB4Q3pvg2t46SeuiV1Y3cbyhAH6gzCOei/IMguhYIqNAsf7bf2drN5e1uMHpzJHrBK
- KugcR5bTfAVQzwnOMPQtPH4mRe7cALp04t4rxSZUiC9Xw9s38oK+Ewk/TtjBEFg4VTDMHdcE
- B65jlCq15bGxaOSwZbDzx/exLNq41HM3xygY7XFgAdyE6FJLvUc5ehqTjiwsIx3BioRMOTzd
- 5n0x4xeJ5v4w63j4mSxbZu4=
-Message-ID: <c684e9ac-f28b-7056-0a46-6c6450ac4c1f@gmail.com>
-Date:   Mon, 10 Aug 2020 11:22:53 +0200
+        id S1726334AbgHJJ72 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 10 Aug 2020 05:59:28 -0400
+Received: from mout.gmx.net ([212.227.15.19]:50343 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725846AbgHJJ72 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 10 Aug 2020 05:59:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1597053565;
+        bh=xE4PVdzaTW2EZ+LOzKhoFtI5E7NBFjkyZ/p47MC/X9U=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=VR6LczBjiaoNog/LoBixiRt3WjYwWqe/ZAyXScFFDo+FfK125R2RmJEwLenLppT2Y
+         cozJn+Ed3T6ZeCUFaTz6UzdY06tBmGmksdq57l26DZH/pJJQnPoDRa9CMYETxz0JV1
+         NxnsEHUYVN7qUo55c/wSZCQpfZJGdyTzymlF3pB8=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([45.77.180.217]) by mail.gmx.com (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1N8XTv-1kicVI05mz-014XBP; Mon, 10
+ Aug 2020 11:59:25 +0200
+Subject: Re: system hangs when running btrfs balance
+To:     Johannes Rohr <jorohr@gmail.com>, linux-btrfs@vger.kernel.org
+References: <c684e9ac-f28b-7056-0a46-6c6450ac4c1f@gmail.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
+ mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
+ PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
+ 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
+ D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
+ efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
+ ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
+ BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
+ 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
+ 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
+ EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
+ 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
+ ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
+ oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
+ fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
+ 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
+ ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
+ oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
+Message-ID: <8a3370fd-7cda-78d2-b036-8350c5a3e964@gmx.com>
+Date:   Mon, 10 Aug 2020 17:59:22 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+In-Reply-To: <c684e9ac-f28b-7056-0a46-6c6450ac4c1f@gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="XIs4Zaj7aO3Do8cvDdEBPvDMvxq5CtXWQ"
+X-Provags-ID: V03:K1:7w7XtOySVcsyhBT96mt/3pbFrT0SX/jfILmAeEVr8A3CBSGo+YH
+ 5Cl2mvIiAoaV/lTXm1oG15MrXhixGmQ4C8Zr0+/MDPgtwTHn+w7RlNAWzFwAaYADYY7/Sto
+ MUY8q1ztKcCGMNn4gIHLElJpcdL9CARHqvvwSm/6OhazQkQVAZul3U0/oZT+pAnOLRoWl+O
+ My+KgjH0RiQu5LIaKbpxw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:QV9Ov4J+Bmo=:Mv3rAaLMhk2wLfOdU8bbO2
+ B6RPxykuE7lTSlHaHya0n0jg4s7w7pVwZCXndOz/8ewnig83XwnkqAwol4W4QiSP/RTRhWHvW
+ qfSGmelyQO65MMVMUUBkOZ6lVoWGtQNGDfGvvmWRWnZtp7leXSv2i5k+mRxcs+9RpQYMckPYw
+ XQsDYNVC47AURiHz2PaIqdeE2AoxQ35yZyqFuu/XP9a/ID17Fkuvr8i6T/4BzvPyufdbM141l
+ vaQhGbE89s/Sk6hjyxAqqdCC3fSGFwYTmcRjKZuL/P76FPyi1YR9VCpTxc3Wbn2w1yg0mU4hz
+ f+7X5szBw+m0XrtHquY9yIfmRXK+x1Vfji4GkWOb9e9oHuJaSNiJXq+Jeap64prcLPE8Lun1B
+ Bjs1nR3cH6CL/YASYJqF8jObLdKEFDKIMKzIlm6S5hop33lA3C5Nb7Ffh7KcbLlPDidnjfeXP
+ CieyErSvZIlx8/bHSl56YMyUntRd2+7JMeMNI1mF19B7+U4fS9c7Pmak5a2QzkTNcNeUsHKNl
+ 1rlP6HhV92Jp5eNMP+LrusTIUTuCWvupR7tMNJ+yp2ob5xvsQLPsVUXW3ZyA18//Yw2ZtRMZa
+ Q6Ncy/zjj4gCgcmClj2dMvle24zB0Fb4WA+kZNu/jZQiDQbXQ+8ggCrEFUM6MYKBuIoj9vNim
+ Jf4EHKIBY/2Ch3YGa4e9wX4yganRv7w1I6N9D5/EEzGI8aVsHdQ4EM/7rRhEV1aEfOUYA7+R4
+ 0YODAlgDfYX/QLQU2ur9F4h0VwcCyfd5dw+TTAh8BVJxB5tTGRUeFW1u8YNvaMgqgmfFDdM9V
+ 4984KTg0vBwsGZn7rWWi3RCnZoW8zY0N2FaUVmkz4q5+39Y77/FX9Jbk7rv3eEEmVpoNFiewZ
+ M6QId/thsEpG+clodvTezMTYdFXD4vljRJj7rwVDk5EAOTQC3KkEPUtQni9xgEFGenTmUfv4m
+ KTdY8o0J5fkqPd3JKvIBwEpRqbmsy/CalChXYbLXFGFnGuNqg5nLtgBVDRJDw+/cHEvAT1kIW
+ FnX2lXGKolosk7jX933LGO9NHddlz0hR4r8FcgGbdn216e/domzzfJllV/AwJqWpMOKarETTg
+ EzdY1FTd5Msg8U+ovmlmBvPWuhQ8rTG7FGFwBZT+6MNKlIeAkNGQIxCNaIqrG4baO0buKRoD5
+ eEsCjeraViq9iyJK5iK0V331GT2Oscc+8xoj93Zqh4Ebbbuu08BxVeOzss1FWpfZRsB6hk7rF
+ MhVATCoeOjJraVQvy3s4pJMNNLxkME+sA8w/02w==
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Dear devs,
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--XIs4Zaj7aO3Do8cvDdEBPvDMvxq5CtXWQ
+Content-Type: multipart/mixed; boundary="xz8vKb9c12TnD9Vr27lc9FqYfLhICRmIN"
 
-since I upgraded our system from Ubuntu 18.04 LTS to 20.04 LTS, the file
-system completely freezes when I run a btrfs balance on it. The only way
-to get a usable system for the time being is with the mount option
-"skip_balance".
+--xz8vKb9c12TnD9Vr27lc9FqYfLhICRmIN
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-The server has a raid1 with 4 SSDs with 500 GB each.
 
-Here is a backtrace of what I am seeing:
 
-[Sun Aug  9 12:21:35 2020] ------------[ cut here ]------------
+On 2020/8/10 =E4=B8=8B=E5=8D=885:22, Johannes Rohr wrote:
+> Dear devs,
+>=20
+> since I upgraded our system from Ubuntu 18.04 LTS to 20.04 LTS, the fil=
+e
+> system completely freezes when I run a btrfs balance on it. The only wa=
+y
+> to get a usable system for the time being is with the mount option
+> "skip_balance".
+>=20
+> The server has a raid1 with 4 SSDs with 500 GB each.=20
+> [Sun Aug  9 12:21:35 2020] CPU: 1 PID: 4537 Comm: btrfs-balance Tainted=
+: G           O      5.4.47 #1
 
-[Sun Aug  9 12:21:35 2020] kernel BUG at fs/btrfs/
+A quick git log glance shows that, some reloc tree related fixes haven't
+landed in v5.4.47.
 
-relocation.c:2626!
+E.g. (commits are upstream commits, not stable tree commits)\
 
-[Sun Aug  9 12:21:35 2020] invalid opcode: 0000 [#1] SMP PTI
+1dae7e0e58b484eaa43d530f211098fdeeb0f404 btrfs: reloc: clear
+DEAD_RELOC_TREE bit for orphan roots to prevent runaway balance
+51415b6c1b117e223bc083e30af675cb5c5498f3 btrfs: reloc: fix reloc root
+leak and NULL pointer dereference.
 
-[Sun Aug  9 12:21:35 2020] CPU: 1 PID: 4537 Comm: btrfs-balance Tainted: G           O      5.4.47 #1
+And above fixes only landed in v5.4.54, so I guess you have to update
+your kernel anyway.
 
-[Sun Aug  9 12:21:35 2020] Hardware name: FUJITSU D3401-H1/D3401-H1, 
-BIOS V5.0.0.11 R1.14.0 for D3401-H1x                    06/09/2016
+> There has been a related bug report at kernel.org for a year,
+> https://bugzilla.kernel.org/show_bug.cgi?id=3D203405 and I have found
+> similar reports here and there, some pertaining to quite old kernel
+> versions, but we have only been hit with kernel 5.4. After this first
+> occurred, I had no better luck though, with older kernels (4 something
+> from Debian buster, also 4 something from Ubuntu 18.04).
 
-[Sun Aug  9 12:21:35 2020] RIP: 0010:select_reloc_root+0x5b/0x19f [btrfs]
+Nope, the mentioned one is another bug, we had some clue on this, but
+need some time to solve it.
+(It's mostly related to some special timing in canceling, leading to
+parted dropped trees).
 
-[Sun Aug  9 12:21:35 2020] Code: c0 c7 44 24 04 00 00 00 00 e8 8b 9d 17 
-e1 48 89 df 4c 89 f6 48 8d 54 24 04 e8 9c e6 ff ff 48 8b 58 60 48 89 c5 
-48 85 db 75 02 <0f> 0b 48 8b 43 20 a8 02 75 02 0f 0b 48 83 bb df 
-01 00 00 f8 75 45
+>=20
+> Apart from fixing the underlying issue, would there be any wordaround
+> for it?
 
-[Sun Aug  9 12:21:35 2020] RSP: 0018:ffff8887e0b0bb20 EFLAGS: 00010246
+Update your kernel to at least v5.4.54, then mount with skip_balance and
+finally  "btrfs balance cancel <mnt>".
+After that, doing whatever you like should be fine.
 
-[Sun Aug  9 12:21:35 2020] RAX: ffff8887dfab5280 RBX: 0000000000000000 RCX: 0000000000000000
+I prefer to do a btrfs check on the unmounted or at least ro mounted fs
+to ensure your fs is sane in the first place.
 
-[Sun Aug  9 12:21:35 2020] RDX: ffff8887e0b0bb24 RSI: ffff8887e0b0bc10 RDI: ffff8887dfab52c0
+Thanks,
+Qu
 
-[Sun Aug  9 12:21:35 2020] RBP: ffff8887dfab5280 R08: ffff8887dfab52c0 R09: ffffffffa0491e7e
+> Currently the balance for the fs is in suspended status. Since
+> there is quite a few people who depend on this server, I can't just pla=
+y
+> around with it at random. That's why I am asking for advice here...
+>=20
+> Thanks so much for any suggestions you might have!
+>=20
+> Johannes
+>=20
 
-[Sun Aug  9 12:21:35 2020] R10: ffff8887f4ba7e70 R11: ffff8888090ed158 R12: ffff8887dfab5280
 
-[Sun Aug  9 12:21:35 2020] R13: ffff8887fd330800 R14: ffff8887e0b0bc10 R15: ffff8887e7fa66e8
+--xz8vKb9c12TnD9Vr27lc9FqYfLhICRmIN--
 
-[Sun Aug  9 12:21:35 2020] FS:  0000000000000000(0000) GS:ffff88880e240000(0000) knlGS:0000000000000000
+--XIs4Zaj7aO3Do8cvDdEBPvDMvxq5CtXWQ
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
-[Sun Aug  9 12:21:35 2020] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+-----BEGIN PGP SIGNATURE-----
 
-[Sun Aug  9 12:21:35 2020] CR2: 000055b4d5b7cfe0 CR3: 000000000200a004 CR4: 00000000003606e0
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl8xGnoACgkQwj2R86El
+/qjyYggAq66Cm2jw6cJXk7PNT9tG4rmMM8zfOExHzNqqSy8pUc668qjgfXyH+UFH
+O9YreQ4biYLywW6ZO8/yIeVq+UxQJUJO2d3RgJBaXNLr7PS2hXRpH2hHjZy6z1yy
+JhEqhgJtm81yn9oTTRci0mWXhe3BRHOqjzra8+gzMVjYk6+uos90ApbqjgyaYbF8
+dbeYbaq95GMm5YxInc/8YB1DAR/DWwdAW9u7304DZFb4ikmcN+dIOdvttlpBQIpL
+ElTSgXKfGsLHCL/zP/QtBM+AMoJlofps8Bm8mr6Vjv3QwYw7PyYr+TpDg6na4QRU
+OajYwBG2bGWXyL2uXauWFX0lPLabxg==
+=mH0O
+-----END PGP SIGNATURE-----
 
-[Sun Aug  9 12:21:35 2020] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-
-[Sun Aug  9 12:21:35 2020] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-
-[Sun Aug  9 12:21:35 2020] Call Trace:
-
-[Sun Aug  9 12:21:35 2020]  do_relocation+0xb6/0x4c2 [btrfs]
-
-[Sun Aug  9 12:21:35 2020]  ? calcu_metadata_size.isra.36.constprop.42+0x9e/0xc4 [btrfs]
-
-[Sun Aug  9 12:21:35 2020]  ? do_raw_spin_lock+0x2f/0x5a
-
-[Sun Aug  9 12:21:35 2020]  ? btrfs_block_rsv_refill+0x4b/0x8b [btrfs]
-
-[Sun Aug  9 12:21:35 2020]  relocate_tree_blocks+0x301/0x427 [btrfs]
-
-[Sun Aug  9 12:21:35 2020]  ? tree_insert+0x49/0x4e [btrfs]
-
-[Sun Aug  9 12:21:35 2020]  ? add_tree_block.isra.38+0x11e/0x144 [btrfs]
-
-[Sun Aug  9 12:21:35 2020]  relocate_block_group+0x279/0x49e [btrfs]
-
-[Sun Aug  9 12:21:35 2020]  btrfs_relocate_block_group+0x15e/0x23d [btrfs]
-
-[Sun Aug  9 12:21:35 2020]  btrfs_relocate_chunk+0x25/0x8c [btrfs]
-
-[Sun Aug  9 12:21:35 2020]  btrfs_balance+0xaf0/0xd45 [btrfs]
-
-[Sun Aug  9 12:21:35 2020]  ? btrfs_balance+0xd45/0xd45 [btrfs]
-
-[Sun Aug  9 12:21:35 2020]  balance_kthread+0x32/0x46 [btrfs]
-
-[Sun Aug  9 12:21:35 2020]  kthread+0xf5/0xfa
-
-[Sun Aug  9 12:21:35 2020]  ? kthread_associate_blkcg+0x86/0x86
-
-[Sun Aug  9 12:21:35 2020]  ret_from_fork+0x3a/0x50
-
-[Sun Aug  9 12:21:35 2020] Modules linked in: btrfs xor zstd_decompress 
-zstd_compress lzo_compress lzo_decompress zlib_deflate raid6_pq 
-libcrc32c sd_mod ipmi_devintf ipmi_msghandler sg x86_pkg_temp_thermal
- intel_powerclamp kvm_intel kvm irqbypass crc32_pclmul crc32c_intel 
-iTCO_wdt ghash_clmulni_intel aesni_intel crypto_simd psmouse ahci cryptd
- libahci i2c_i801 serio_raw glue_helper intel_pch_thermal evdev video 
-thermal acpi_pad button fan jc42 ftsteutates nct6775 hwmon_vid coretemp 
-ip_tables x_tables autofs4 e1000e
-
-[Sun Aug  9 12:21:36 2020] ---[ end trace 442b443de6cecc6e ]---
-
-[Sun Aug  9 12:21:36 2020] RIP: 0010:select_reloc_root+0x5b/0x19f [btrfs]
-
-[Sun Aug  9 12:21:36 2020] Code: c0 c7 44 24 04 00 00 00 00 e8 8b 9d 17 
-e1 48 89 df 4c 89 f6 48 8d 54 24 04 e8 9c e6 ff ff 48 8b 58 60 48 89 c5 
-48 85 db 75 02 <0f> 0b 48 8b 43 20 a8 02 75 02 0f 0b 48 83 bb df 
-01 00 00 f8 75 45
-
-There has been a related bug report at kernel.org for a year,
-https://bugzilla.kernel.org/show_bug.cgi?id=203405 and I have found
-similar reports here and there, some pertaining to quite old kernel
-versions, but we have only been hit with kernel 5.4. After this first
-occurred, I had no better luck though, with older kernels (4 something
-from Debian buster, also 4 something from Ubuntu 18.04).
-
-Apart from fixing the underlying issue, would there be any wordaround
-for it? Currently the balance for the fs is in suspended status. Since
-there is quite a few people who depend on this server, I can't just play
-around with it at random. That's why I am asking for advice here...
-
-Thanks so much for any suggestions you might have!
-
-Johannes
-
+--XIs4Zaj7aO3Do8cvDdEBPvDMvxq5CtXWQ--
