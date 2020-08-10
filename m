@@ -2,186 +2,147 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FB7A240354
-	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Aug 2020 10:21:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FF6F2403AE
+	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Aug 2020 10:57:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726115AbgHJIVc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 10 Aug 2020 04:21:32 -0400
-Received: from mx2.suse.de ([195.135.220.15]:33600 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725983AbgHJIVc (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 10 Aug 2020 04:21:32 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 47355AC82;
-        Mon, 10 Aug 2020 08:21:50 +0000 (UTC)
+        id S1726598AbgHJI5S convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-btrfs@lfdr.de>); Mon, 10 Aug 2020 04:57:18 -0400
+Received: from luna.lichtvoll.de ([194.150.191.11]:50771 "EHLO
+        mail.lichtvoll.de" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726597AbgHJI5S (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 10 Aug 2020 04:57:18 -0400
+X-Greylist: delayed 4747 seconds by postgrey-1.27 at vger.kernel.org; Mon, 10 Aug 2020 04:57:16 EDT
+Received: from 127.0.0.1 (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.lichtvoll.de (Postfix) with ESMTPSA id 2545E13338A;
+        Mon, 10 Aug 2020 10:57:15 +0200 (CEST)
+From:   Martin Steigerwald <martin@lichtvoll.de>
+To:     =?utf-8?B?QWd1c3TDrW4gRGFsbMq8QWxiYQ==?= <agustin@dallalba.com.ar>,
+        linux-btrfs@vger.kernel.org, Nikolay Borisov <nborisov@suse.com>
 Subject: Re: raid10 corruption while removing failing disk
-To:     =?UTF-8?Q?Agust=c3=adn_Dall=ca=bcAlba?= <agustin@dallalba.com.ar>,
-        linux-btrfs@vger.kernel.org
-References: <3dc4d28e81b3336311c979bda35ceb87b9645606.camel@dallalba.com.ar>
-From:   Nikolay Borisov <nborisov@suse.com>
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <4c967884-2252-a21d-a994-80df64a7e6ef@suse.com>
-Date:   Mon, 10 Aug 2020 11:21:29 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+Date:   Mon, 10 Aug 2020 10:57:14 +0200
+Message-ID: <2125350.iAHHoZBEP4@merkaba>
+In-Reply-To: <376677b3-0e2f-3c53-c706-4362738e6d3f@suse.com>
+References: <3dc4d28e81b3336311c979bda35ceb87b9645606.camel@dallalba.com.ar> <16328609.DpnNoz7ane@merkaba> <376677b3-0e2f-3c53-c706-4362738e6d3f@suse.com>
 MIME-Version: 1.0
-In-Reply-To: <3dc4d28e81b3336311c979bda35ceb87b9645606.camel@dallalba.com.ar>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset="UTF-8"
+Authentication-Results: mail.lichtvoll.de;
+        auth=pass smtp.auth=martin smtp.mailfrom=martin@lichtvoll.de
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Nikolay Borisov - 10.08.20, 09:51:47 CEST:
+> On 10.08.20 г. 10:38 ч., Martin Steigerwald wrote:
+> > Hi Nikolay.
+> > 
+> > Nikolay Borisov - 10.08.20, 09:22:14 CEST:
+> >> On 10.08.20 г. 10:03 ч., Agustín DallʼAlba wrote:
+> > […]
+> > 
+> >>> # uname -a
+> >>> Linux susanita 4.15.0-111-generic #112-Ubuntu SMP Thu Jul 9
+> >>> 20:32:34
+> >>> UTC 2020 x86_64 x86_64 x86_64 GNU/Linux
+> >> 
+> >> This is a vendor kernel so you should ideally seek support through
+> >> the vendor. This kernel is not even an LTS so it's not entirely
+> >> clear which patches have/have not been backported. With btrfs it's
+> >> advisable too use the latest stable kernel as each release brings
+> >> bug fixes or at the very least (because always using the latest is
+> >> not feasible) at least stick to a supported long-term stable
+> >> kernel  - i.e 4.14, 4.19 or 5.4 (preferably 5.4)
+> > 
+> > The interesting thing with this recommendation is that it to some
+> > part equals:
+> > 
+> > Do not use distro / vendor kernels.
+> 
+> On the contrary - it means to use kernels which have support for
+> btrfs. Namely - Suse distributes kernels with btrfs + have developers
+> who are familiar with the state of btrfs on their kernel. So if
+> someone hits a problem on a Suse kernel  - they should report this to
+> Suse and not the upstream mailing list. Suse's (or any other vendor
+> for that matter) needn't look anything like the upstream kernel. Same
+> thing with Fedora or Ubuntu. Since time is limited I (as an upstream
+> developer) would prefer to spend my time where it would have the most
+> impact - upstream and not spend possibly hours looking at some custom
+> kernel.
+
+While I get your argument and I bet SUSE support for BTRFS has improved 
+a lot, I also still remember that SUSE supported BTRFS in SLES while it 
+was still being unstable. With SLES 11 SP 2/3, not sure from memory 
+which one it was, I had 2 GiB free in a BTRFS file system, yet got "no 
+space left on device" with no ability to delete a file, remove a snapshot 
+or do anything else about this, except to add a new virtual disk to 
+BTRFS, delete something then. All of this happened cause the standard 
+settings for Snapper created a huge lot of snapshots. I do not know how 
+much for sure, but I made sure I had quite some free space as I 
+installed SLES, knowing of free space related issues back then. All I 
+did to trigger the failure condition was to install some OpenLDAP to do 
+some example solutions for a training of mine and letting it sit over 
+night. Next morning no remove desktop login anymore due to the out of 
+space issue.
+
+So my firm statement here is: SUSE used an instable version of BTRFS on 
+this older SLES release. In my trainings I recommend at least SLES 12, 
+preferably SLES 15 for BTRFS usage, preferable with latest service pack. 
+I cannot prove it anymore, without installing such a VM again, cause I 
+do not have that VM image anymore. But I remember what I have seen. With 
+SLES 11 SP2/3 BTRFS was not really ready for production use – that was 
+at least my experience.
+
+So I still wonder: When is BTRFS in upstream to be considered stable 
+enough to be used in distro kernels, at least when they are based on LTS 
+kernels and updated to their latest releases regularly? I believe it 
+would or should be by now. Or otherwise asked: Since which upstream LTS 
+kernel can BTRFS be considered stable enough for *production use*?
+
+My last issues had been around Linux 4.4 or 4.5. Since 4.6 I personally 
+have no issues anymore… but what is upstream developers idea on this?
+
+[…]
+> > What would need to happen for it to be okay to use vendor kernels?
+> > Is
+> > there a minimum LTS version where you would say it would be okay?
+> > 
+> > I am challenging this standard recommendation here, cause I am not
+> > sure whether for recent distribution releases it would still be
+> > accurate or helpful. At some point BTRFS got to be as stable as XFS
+> > or Ext4 I would think. Again, for me it is.
+> > 
+> > I have no idea why Ubuntu opted to use a non LTS kernel – especially
+> > as 4.15 is pretty old and so does not sound to come from a
+> > supported Ubuntu release unless it is some Ubuntu LTS release, but
+> > then I'd expect a LTS kernel to be used –, but "-111" indicates
+> > they added a lot of patches by now. So maybe they provide some kind
+> > of LTS support themselves.
+> All those are valid assumptions - however without direct experience
+> with the Ubuntu kernel it's not entirely clear how accurate they are.
+> Hence my recommendation to address Ubuntu kernel people because they
+> should know best.
+
+Fair enough. I get the recommendation to test against upstream kernel.
+
+At the same you helped Agustín already with an idea that the Ubuntu 
+kernel team may not have been aware of.
+
+So I am still challenging any notion that people should not write to 
+this list when they have trouble, even when they use some recent enough 
+distribution kernel. My question though still is: What would be recent 
+enough? 4.19, 5.4, 4.6, 5.7? When would upstream consider it to be 
+recent enough to ask here?
+
+At the same time of course you are free not to respond to a mail, in 
+case you consider it too much trouble or time needed…
+
+Ciao,
+-- 
+Martin
 
 
-On 10.08.20 г. 10:03 ч., Agustín DallʼAlba wrote:
-> Hello!
-> 
-> The last quarterly scrub on our btrfs filesystem found a few bad
-> sectors in one of its devices (/dev/sdd), and because there's nobody on
-> site to replace the failing disk I decided to remove it from the array
-> with `btrfs device remove` before the problem could get worse.
-> 
-> The removal was going relatively well (although slowly and I had to
-> reboot a few times due to the bad sectors) until it had about 200 GB
-> left to move. Now the filesystem turns read only when I try to finish
-> the removal and `btrfs check` complains about wrong metadata checksums.
-> However as far as I can tell none of the copies of the corrupt data are
-> in the failing disk.
-> 
-> How could this happen? Is it possible to fix this filesystem?
-> 
-> I have refrained from trying anything so far, like upgrading to a newer
-> kernel or disconnecting the failing drive, before confirming with you
-> that it's safe.
-> 
-> Kind regards.
-> 
-> 
-> # uname -a
-> Linux susanita 4.15.0-111-generic #112-Ubuntu SMP Thu Jul 9 20:32:34
-> UTC 2020 x86_64 x86_64 x86_64 GNU/Linux
-> 
-> 
-> # btrfs --version
-> btrfs-progs v4.15.1
-> 
-> 
-> # btrfs fi show
-> Label: 'Susanita'  uuid: 4d3acf20-d408-49ab-b0a6-182396a9f27c
-> 	Total devices 5 FS bytes used 4.90TiB
-> 	devid    1 size 3.64TiB used 3.42TiB path /dev/sda
-> 	devid    2 size 3.64TiB used 3.42TiB path /dev/sde
-> 	devid    3 size 1.82TiB used 1.59TiB path /dev/sdb
-> 	devid    5 size 0.00B used 185.50GiB path /dev/sdd
-> 	devid    6 size 1.82TiB used 1.22TiB path /dev/sdc
-> 
-> 
-> # btrfs fi df /
-> Data, RAID1: total=4.90TiB, used=4.90TiB
-> System, RAID10: total=64.00MiB, used=880.00KiB
-> Metadata, RAID10: total=9.00GiB, used=7.57GiB
-> GlobalReserve, single: total=512.00MiB, used=0.00B
-> 
-> 
-> # btrfs check --force --readonly /dev/sda
-> WARNING: filesystem mounted, continuing because of --force
-> Checking filesystem on /dev/sda
-> UUID: 4d3acf20-d408-49ab-b0a6-182396a9f27c
-> checksum verify failed on 10919566688256 found BAB1746E wanted A8A48266
-> checksum verify failed on 10919566688256 found BAB1746E wanted A8A48266
-> bytenr mismatch, want=10919566688256, have=17196831625821864417
-> ERROR: failed to repair root items: Input/output error
-> 
-> # btrfs-map-logical -l 10919566688256 /dev/sda
-> mirror 1 logical 10919566688256 physical 394473357312 device /dev/sdc
-> mirror 2 logical 10919566688256 physical 477218586624 device /dev/sda
-> 
-> 
-> Relevant dmesg output:
-> [    4.963420] Btrfs loaded, crc32c=crc32c-generic
-> [    5.072878] BTRFS: device label Susanita devid 6 transid 4241535 /dev/sdc
-> [    5.073165] BTRFS: device label Susanita devid 3 transid 4241535 /dev/sdb
-> [    5.073713] BTRFS: device label Susanita devid 2 transid 4241535 /dev/sde
-> [    5.073916] BTRFS: device label Susanita devid 5 transid 4241535 /dev/sdd
-> [    5.074398] BTRFS: device label Susanita devid 1 transid 4241535 /dev/sda
-> [    5.152479] BTRFS info (device sda): disk space caching is enabled
-> [    5.152551] BTRFS info (device sda): has skinny extents
-> [    5.332538] BTRFS info (device sda): bdev /dev/sdd errs: wr 0, rd 24, flush 0, corrupt 0, gen 0
-> [   38.869423] BTRFS info (device sda): enabling auto defrag
-> [   38.869490] BTRFS info (device sda): use lzo compression, level 0
-> [   38.869547] BTRFS info (device sda): disk space caching is enabled
-> 
-> 
-> After running btrfs device remove /dev/sdd /:
-> [  193.684703] BTRFS info (device sda): relocating block group 10593404846080 flags metadata|raid10
-> [  312.921934] BTRFS error (device sda): bad tree block start 10597444141056 10919566688256
-> [  313.034339] BTRFS error (device sda): bad tree block start 17196831625821864417 10919566688256
-> [  313.034595] BTRFS error (device sda): bad tree block start 10597444141056 10919566688256
-> [  313.034621] BTRFS: error (device sda) in btrfs_run_delayed_refs:3083: errno=-5 IO failure
-> [  313.034627] BTRFS info (device sda): forced readonly
-> [  313.036328] BUG: unable to handle kernel NULL pointer dereference at 0000000000000000
-> [  313.036596] IP: merge_reloc_roots+0x19f/0x2c0 [btrfs]
-
-This suggests you are hitting a known problem with reloc roots which
-have been fixed in the latest upstream and lts (5.4) kernels:
-
-044ca910276b btrfs: reloc: fix reloc root leak and NULL pointer
-dereference (3 months ago) <Qu Wenruo>
-707de9c0806d btrfs: relocation: fix reloc_root lifespan and access (7
-months ago) <Qu Wenruo>
-1fac4a54374f btrfs: relocation: fix use-after-free on dead relocation
-roots (11 months ago) <Qu Wenruo>
-
-
-So yes, try to update to latest stable kernel and re-run the device
-remove. Also update your btrfs progs to latest 5.6 version and rerun
-check again (by default it's a read only operations so it shouldn't
-cause any more damage).
-
-
-<snip>
