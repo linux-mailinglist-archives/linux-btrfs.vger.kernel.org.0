@@ -2,328 +2,236 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BAB82419F7
-	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Aug 2020 12:53:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5635D241A45
+	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Aug 2020 13:20:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728506AbgHKKxe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 11 Aug 2020 06:53:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45816 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728326AbgHKKxd (ORCPT
+        id S1728735AbgHKLTv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 11 Aug 2020 07:19:51 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:17314 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728724AbgHKLTu (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 11 Aug 2020 06:53:33 -0400
-Received: from mail-vs1-xe42.google.com (mail-vs1-xe42.google.com [IPv6:2607:f8b0:4864:20::e42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F116C06174A
-        for <linux-btrfs@vger.kernel.org>; Tue, 11 Aug 2020 03:53:33 -0700 (PDT)
-Received: by mail-vs1-xe42.google.com with SMTP id q13so5742531vsn.9
-        for <linux-btrfs@vger.kernel.org>; Tue, 11 Aug 2020 03:53:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc:content-transfer-encoding;
-        bh=rnUjTRLErLPJVf+S+7z/7mxRKJ2PEa/ov37PNRUSqIM=;
-        b=npeiStJkFaWyJcHUFiqvfO9QsjLuqBdh7L+gFW3mFQ78oXnUoGNMP2flRQBYDFXKc1
-         IiqY1fL0SRsk5UlLfT8Mu00rSCnMcggokkf6r9nQn19a2zXJU4xXnuQEExb+v5iImAy0
-         SL1beOqAl8eIfYfjcpyH0VWrFGC1PeWp9uAyg0bWpmiA8qFZEsSCWfh2b2GP6InuwgWL
-         pU8PRvi1Y8GVez/dsvwuTcwp1YOySyVfPb65N1iWP8huIOb+76lUzqgcJMzMQNlKWeWP
-         tqzUlFogEUdou3Xi1YQZ5+9GAihJj1icw1sPbezMuOIeemNUBinZNq1WUldWzqcKc2gb
-         ZMvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc:content-transfer-encoding;
-        bh=rnUjTRLErLPJVf+S+7z/7mxRKJ2PEa/ov37PNRUSqIM=;
-        b=rh2izhBSBy0oWa1oW6k5IuOB/i86UhLPvzPkb5BcC2idMKdcgSODnMp9DFJ5X16SqE
-         cmRrZgy5Ud5kQDLOEgKAlwDW5ERIumVsZE9f2YKr9MzvWuEsWNotxFoJvvhUM8CmyTVx
-         9u83FCtW8h01gQB0gtBeCfhNYflaJ2x3KU/HL5MBKciWLtU8xVf4Wz+1r0VdJwR4eAja
-         0UX9a5i0NNla9AzheQ9NYySNfinTIshcOw+Dx02VqfJdnUIDR8nJKDHVBoZOg5NF9io/
-         xZj2AB60eLH6i4OonPN5f1xIWdtfGkFWlgSejX1TwW+cfIChL8kHkcGWe/ub0uuFAqgQ
-         PC5A==
-X-Gm-Message-State: AOAM531jvw3uhVTdpUe30fjLTFbESl/z6WxyUIQhmLgkqnp3ujD2YgZ2
-        OIg32Vp1HuRtWq3LlJHTfWXQ3JESa5/ERYD6ONI=
-X-Google-Smtp-Source: ABdhPJwlmqLdwI1Oq86zLgJb+of4E2SA8S2xLzaui0wrvAmxnAic0LFN66/oPJOQ7+MW/AwxYWZ6awivGn3OFcEoJdM=
-X-Received: by 2002:a05:6102:1ca:: with SMTP id s10mr21440318vsq.14.1597143212314;
- Tue, 11 Aug 2020 03:53:32 -0700 (PDT)
+        Tue, 11 Aug 2020 07:19:50 -0400
+Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5f327e6c0000>; Tue, 11 Aug 2020 04:18:04 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate102.nvidia.com (PGP Universal service);
+  Tue, 11 Aug 2020 04:19:49 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate102.nvidia.com on Tue, 11 Aug 2020 04:19:49 -0700
+Received: from [10.2.56.80] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 11 Aug
+ 2020 11:19:48 +0000
+Subject: Re: btrfs crash in kobject_del while running xfstest
+From:   John Hubbard <jhubbard@nvidia.com>
+To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, <linux-btrfs@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+CC:     linux-fsdevel <linux-fsdevel@vger.kernel.org>
+References: <200e5b49-5c51-bbe5-de93-c6bd6339bb7f@nvidia.com>
+Message-ID: <2a3eb48d-6ca1-61c6-20cf-ba2fbda21f45@nvidia.com>
+Date:   Tue, 11 Aug 2020 04:19:47 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-References: <20200810154242.782802-1-josef@toxicpanda.com> <20200810154242.782802-4-josef@toxicpanda.com>
-In-Reply-To: <20200810154242.782802-4-josef@toxicpanda.com>
-Reply-To: fdmanana@gmail.com
-From:   Filipe Manana <fdmanana@gmail.com>
-Date:   Tue, 11 Aug 2020 11:53:21 +0100
-Message-ID: <CAL3q7H7K71=yv88Y9YHEu4ie6FEJRcV8TgUOkQ4HnAPCMRoAbA@mail.gmail.com>
-Subject: Re: [PATCH 03/17] btrfs: do not hold device_list_mutex when closing devices
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>, kernel-team@fb.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <200e5b49-5c51-bbe5-de93-c6bd6339bb7f@nvidia.com>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1597144684; bh=zFtAbPZdWaO97kUqdFPAa8G34TZ9heuYOs9focgzlik=;
+        h=X-PGP-Universal:Subject:From:To:CC:References:Message-ID:Date:
+         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
+         X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=C1+8hZ/9mJMSMaDjXyL7oLnM5ZF5aMV+xA0AXi8rsoA/pQBR8fmu095PK0f9X+1qt
+         8BNaHoSwExaDSr9/ugJYkkHWqzTYnSPcCECHe99fccgw4X8viSJvirGJQjq83l0A9m
+         Cb0X21oyiartmN61vkAoAkTOMG3Ey6oAgowsCKC2X//l58w25Aac1ZdJCh+WMX0EwX
+         7s5X2eseN6qBQkygvGSs25sfcu9NHnz7lAsRgmcwKw6HBao+E4TpSNdn/nV4u+oeB9
+         BknalryQ5Wle4l1F/aNspmakisWCqu3klNssknlznGMtrUjSz3fSrFUr2i88cFub+0
+         t0GiLhj0da2Lw==
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Aug 10, 2020 at 4:44 PM Josef Bacik <josef@toxicpanda.com> wrote:
->
-> The following lockdep splat
->
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D
-> WARNING: possible circular locking dependency detected
-> 5.8.0-rc7-00169-g87212851a027-dirty #929 Not tainted
-> ------------------------------------------------------
-> fsstress/8739 is trying to acquire lock:
-> ffff88bfd0eb0c90 (&fs_info->reloc_mutex){+.+.}-{3:3}, at: btrfs_record_ro=
-ot_in_trans+0x43/0x70
->
-> but task is already holding lock:
-> ffff88bfbd16e538 (sb_pagefaults){.+.+}-{0:0}, at: btrfs_page_mkwrite+0x6a=
-/0x4a0
->
-> which lock already depends on the new lock.
->
-> the existing dependency chain (in reverse order) is:
->
-> -> #10 (sb_pagefaults){.+.+}-{0:0}:
->        __sb_start_write+0x129/0x210
->        btrfs_page_mkwrite+0x6a/0x4a0
->        do_page_mkwrite+0x4d/0xc0
->        handle_mm_fault+0x103c/0x1730
->        exc_page_fault+0x340/0x660
->        asm_exc_page_fault+0x1e/0x30
->
-> -> #9 (&mm->mmap_lock#2){++++}-{3:3}:
->        __might_fault+0x68/0x90
->        _copy_to_user+0x1e/0x80
->        perf_read+0x141/0x2c0
->        vfs_read+0xad/0x1b0
->        ksys_read+0x5f/0xe0
->        do_syscall_64+0x50/0x90
->        entry_SYSCALL_64_after_hwframe+0x44/0xa9
->
-> -> #8 (&cpuctx_mutex){+.+.}-{3:3}:
->        __mutex_lock+0x9f/0x930
->        perf_event_init_cpu+0x88/0x150
->        perf_event_init+0x1db/0x20b
->        start_kernel+0x3ae/0x53c
->        secondary_startup_64+0xa4/0xb0
->
-> -> #7 (pmus_lock){+.+.}-{3:3}:
->        __mutex_lock+0x9f/0x930
->        perf_event_init_cpu+0x4f/0x150
->        cpuhp_invoke_callback+0xb1/0x900
->        _cpu_up.constprop.26+0x9f/0x130
->        cpu_up+0x7b/0xc0
->        bringup_nonboot_cpus+0x4f/0x60
->        smp_init+0x26/0x71
->        kernel_init_freeable+0x110/0x258
->        kernel_init+0xa/0x103
->        ret_from_fork+0x1f/0x30
->
-> -> #6 (cpu_hotplug_lock){++++}-{0:0}:
->        cpus_read_lock+0x39/0xb0
->        kmem_cache_create_usercopy+0x28/0x230
->        kmem_cache_create+0x12/0x20
->        bioset_init+0x15e/0x2b0
->        init_bio+0xa3/0xaa
->        do_one_initcall+0x5a/0x2e0
->        kernel_init_freeable+0x1f4/0x258
->        kernel_init+0xa/0x103
->        ret_from_fork+0x1f/0x30
->
-> -> #5 (bio_slab_lock){+.+.}-{3:3}:
->        __mutex_lock+0x9f/0x930
->        bioset_init+0xbc/0x2b0
->        __blk_alloc_queue+0x6f/0x2d0
->        blk_mq_init_queue_data+0x1b/0x70
->        loop_add+0x110/0x290 [loop]
->        fq_codel_tcf_block+0x12/0x20 [sch_fq_codel]
->        do_one_initcall+0x5a/0x2e0
->        do_init_module+0x5a/0x220
->        load_module+0x2459/0x26e0
->        __do_sys_finit_module+0xba/0xe0
->        do_syscall_64+0x50/0x90
->        entry_SYSCALL_64_after_hwframe+0x44/0xa9
->
-> -> #4 (loop_ctl_mutex){+.+.}-{3:3}:
->        __mutex_lock+0x9f/0x930
->        lo_open+0x18/0x50 [loop]
->        __blkdev_get+0xec/0x570
->        blkdev_get+0xe8/0x150
->        do_dentry_open+0x167/0x410
->        path_openat+0x7c9/0xa80
->        do_filp_open+0x93/0x100
->        do_sys_openat2+0x22a/0x2e0
->        do_sys_open+0x4b/0x80
->        do_syscall_64+0x50/0x90
->        entry_SYSCALL_64_after_hwframe+0x44/0xa9
->
-> -> #3 (&bdev->bd_mutex){+.+.}-{3:3}:
->        __mutex_lock+0x9f/0x930
->        blkdev_put+0x1d/0x120
->        close_fs_devices.part.31+0x84/0x130
->        btrfs_close_devices+0x44/0xb0
->        close_ctree+0x296/0x2b2
->        generic_shutdown_super+0x69/0x100
->        kill_anon_super+0xe/0x30
->        btrfs_kill_super+0x12/0x20
->        deactivate_locked_super+0x29/0x60
->        cleanup_mnt+0xb8/0x140
->        task_work_run+0x6d/0xb0
->        __prepare_exit_to_usermode+0x1cc/0x1e0
->        do_syscall_64+0x5c/0x90
->        entry_SYSCALL_64_after_hwframe+0x44/0xa9
->
-> -> #2 (&fs_devs->device_list_mutex){+.+.}-{3:3}:
->        __mutex_lock+0x9f/0x930
->        btrfs_run_dev_stats+0x49/0x480
->        commit_cowonly_roots+0xb5/0x2a0
->        btrfs_commit_transaction+0x516/0xa60
->        sync_filesystem+0x6b/0x90
->        generic_shutdown_super+0x22/0x100
->        kill_anon_super+0xe/0x30
->        btrfs_kill_super+0x12/0x20
->        deactivate_locked_super+0x29/0x60
->        cleanup_mnt+0xb8/0x140
->        task_work_run+0x6d/0xb0
->        __prepare_exit_to_usermode+0x1cc/0x1e0
->        do_syscall_64+0x5c/0x90
->        entry_SYSCALL_64_after_hwframe+0x44/0xa9
->
-> -> #1 (&fs_info->tree_log_mutex){+.+.}-{3:3}:
->        __mutex_lock+0x9f/0x930
->        btrfs_commit_transaction+0x4bb/0xa60
->        sync_filesystem+0x6b/0x90
->        generic_shutdown_super+0x22/0x100
->        kill_anon_super+0xe/0x30
->        btrfs_kill_super+0x12/0x20
->        deactivate_locked_super+0x29/0x60
->        cleanup_mnt+0xb8/0x140
->        task_work_run+0x6d/0xb0
->        __prepare_exit_to_usermode+0x1cc/0x1e0
->        do_syscall_64+0x5c/0x90
->        entry_SYSCALL_64_after_hwframe+0x44/0xa9
->
-> -> #0 (&fs_info->reloc_mutex){+.+.}-{3:3}:
->        __lock_acquire+0x1272/0x2310
->        lock_acquire+0x9e/0x360
->        __mutex_lock+0x9f/0x930
->        btrfs_record_root_in_trans+0x43/0x70
->        start_transaction+0xd1/0x5d0
->        btrfs_dirty_inode+0x42/0xd0
->        file_update_time+0xc8/0x110
->        btrfs_page_mkwrite+0x10c/0x4a0
->        do_page_mkwrite+0x4d/0xc0
->        handle_mm_fault+0x103c/0x1730
->        exc_page_fault+0x340/0x660
->        asm_exc_page_fault+0x1e/0x30
->
-> other info that might help us debug this:
->
-> Chain exists of:
->   &fs_info->reloc_mutex --> &mm->mmap_lock#2 --> sb_pagefaults
->
->  Possible unsafe locking scenario:
->
->        CPU0                    CPU1
->        ----                    ----
->   lock(sb_pagefaults);
->                                lock(&mm->mmap_lock#2);
->                                lock(sb_pagefaults);
->   lock(&fs_info->reloc_mutex);
->
->  *** DEADLOCK ***
->
-> 3 locks held by fsstress/8739:
->  #0: ffff88bee66eeb68 (&mm->mmap_lock#2){++++}-{3:3}, at: exc_page_fault+=
-0x173/0x660
->  #1: ffff88bfbd16e538 (sb_pagefaults){.+.+}-{0:0}, at: btrfs_page_mkwrite=
-+0x6a/0x4a0
->  #2: ffff88bfbd16e630 (sb_internal){.+.+}-{0:0}, at: start_transaction+0x=
-3da/0x5d0
->
-> stack backtrace:
-> CPU: 17 PID: 8739 Comm: fsstress Kdump: loaded Not tainted 5.8.0-rc7-0016=
-9-g87212851a027-dirty #929
-> Hardware name: Quanta Tioga Pass Single Side 01-0030993006/Tioga Pass Sin=
-gle Side, BIOS F08_3A18 12/20/2018
-> Call Trace:
->  dump_stack+0x78/0xa0
->  check_noncircular+0x165/0x180
->  __lock_acquire+0x1272/0x2310
->  ? btrfs_get_alloc_profile+0x150/0x210
->  lock_acquire+0x9e/0x360
->  ? btrfs_record_root_in_trans+0x43/0x70
->  __mutex_lock+0x9f/0x930
->  ? btrfs_record_root_in_trans+0x43/0x70
->  ? lock_acquire+0x9e/0x360
->  ? join_transaction+0x5d/0x450
->  ? find_held_lock+0x2d/0x90
->  ? btrfs_record_root_in_trans+0x43/0x70
->  ? join_transaction+0x3d5/0x450
->  ? btrfs_record_root_in_trans+0x43/0x70
->  btrfs_record_root_in_trans+0x43/0x70
->  start_transaction+0xd1/0x5d0
->  btrfs_dirty_inode+0x42/0xd0
->  file_update_time+0xc8/0x110
->  btrfs_page_mkwrite+0x10c/0x4a0
->  ? handle_mm_fault+0x5e/0x1730
->  do_page_mkwrite+0x4d/0xc0
->  ? __do_fault+0x32/0x150
->  handle_mm_fault+0x103c/0x1730
->  exc_page_fault+0x340/0x660
->  ? asm_exc_page_fault+0x8/0x30
->  asm_exc_page_fault+0x1e/0x30
-> RIP: 0033:0x7faa6c9969c4
->
-> Was seen in testing.  The fix is similar to that of
->
->   btrfs: open device without device_list_mutex
->
-> where we're holding the device_list_mutex and then grab the bd_mutex,
-> which pulls in a bunch of dependencies under the bd_mutex.  We only ever
-> call btrfs_close_devices() on mount failure or unmount, so we're save to
-> not have the device_list_mutex here.  We're already holding the
-> uuid_mutex which keeps us safe from any external modification of the
-> fs_devices.
+Somehow the copy-paste of Chris Mason's name failed (user error
+on my end), sorry about that Chris!
 
-We aren't holding the uuid_mutex at btrfs_rm_dev_replace_free_srcdev().
-Will it not be a problem?
+On 8/11/20 4:17 AM, John Hubbard wrote:
+> Hi,
+>=20
+> Here's an early warning of a possible problem.
+>=20
+> I'm seeing a new btrfs crash when running xfstests, as of
+> 00e4db51259a5f936fec1424b884f029479d3981 ("Merge tag
+> 'perf-tools-2020-08-10' of
+> git://git.kernel.org/pub/scm/linux/kernel/git/acme/linux") in linux.git.
+>=20
+> This doesn't crash in v5.8, so I attempted to bisect, but ended up with
+> the net-next merge commit as the offending one: commit
+> 47ec5303d73ea344e84f46660fff693c57641386 ("Merge
+> git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next"), which
+> doesn't really help because it's 2088 files changed, of course.
+>=20
+> I'm attaching the .config that I used.
+>=20
+> This is easily reproducible via something like (change to match your setu=
+p,
+> of course):
+>=20
+>  =C2=A0=C2=A0=C2=A0 sudo TEST_DEV=3D/dev/nvme0n1p8 TEST_DIR=3D/xfstest_bt=
+rfs \
+>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 SCRATCH_DEV=3D/dev/nvme0n1p9 SCRATCH_MNT=
+=3D/xfstest_scratch=C2=A0 ./check \
+>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 btrfs/002
+>=20
+> which leads to:
+>=20
+> [=C2=A0 586.097360] BTRFS info (device nvme0n1p8): disk space caching is =
+enabled
+> [=C2=A0 586.103232] BTRFS info (device nvme0n1p8): has skinny extents
+> [=C2=A0 586.115169] BTRFS info (device nvme0n1p8): enabling ssd optimizat=
+ions
+> [=C2=A0 586.308264] BTRFS: device fsid 5dfff89d-8f8d-42ac-8538-acb95164d0=
+be devid 1 transid 5=20
+> /dev/nvme0n1p9 scanned by mkfs.btrfs (6374)
+> [=C2=A0 586.342776] BTRFS info (device nvme0n1p9): disk space caching is =
+enabled
+> [=C2=A0 586.348585] BTRFS info (device nvme0n1p9): has skinny extents
+> [=C2=A0 586.353413] BTRFS info (device nvme0n1p9): flagging fs with big m=
+etadata feature
+> [=C2=A0 586.368129] BTRFS info (device nvme0n1p9): enabling ssd optimizat=
+ions
+> [=C2=A0 586.373996] BTRFS info (device nvme0n1p9): checking UUID tree
+> [=C2=A0 586.387449] BUG: kernel NULL pointer dereference, address: 000000=
+0000000018
+> [=C2=A0 586.393485] #PF: supervisor read access in kernel mode
+> [=C2=A0 586.397623] #PF: error_code(0x0000) - not-present page
+> [=C2=A0 586.401763] PGD 0 P4D 0
+> [=C2=A0 586.403219] Oops: 0000 [#1] SMP PTI
+> [=C2=A0 586.405650] CPU: 1 PID: 6405 Comm: umount Not tainted 5.8.0-hubba=
+rd-github+ #171
+> [=C2=A0 586.412118] Hardware name: Gigabyte Technology Co., Ltd. To be fi=
+lled by O.E.M./X99-UD3P-CF, BIOS=20
+> F1 02/10/2015
+> [=C2=A0 586.421360] RIP: 0010:kobject_del+0x1/0x20
+> [=C2=A0 586.424427] Code: 48 c7 43 18 00 00 00 00 5b 5d c3 c3 be 01 00 00=
+ 00 48 89 df e8 60 1b 00 00 eb=20
+> c9 66 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 55 <48> 8b 6f 18 e8 86 ff ff=
+ ff 48 89 ef 5d e9 cd fe ff=20
+> ff 66 66 2e 0f
+> [=C2=A0 586.442644] RSP: 0018:ffffc90009ef7e08 EFLAGS: 00010246
+> [=C2=A0 586.446914] RAX: 0000000000000000 RBX: ffff888896080000 RCX: 0000=
+000000000006
+> [=C2=A0 586.453149] RDX: ffff88888ee4b000 RSI: ffffffff82669a00 RDI: 0000=
+000000000000
+> [=C2=A0 586.459390] RBP: 0000000000000000 R08: 0000000000000000 R09: 0000=
+000000000001
+> [=C2=A0 586.465631] R10: 0000000000000001 R11: 0000000000000000 R12: ffff=
+888896080000
+> [=C2=A0 586.471866] R13: 0000000000000000 R14: 0000000000000000 R15: 0000=
+000000000000
+> [=C2=A0 586.478106] FS:=C2=A0 00007f5595739c80(0000) GS:ffff88889fc40000(=
+0000) knlGS:0000000000000000
+> [=C2=A0 586.485325] CS:=C2=A0 0010 DS: 0000 ES: 0000 CR0: 000000008005003=
+3
+> [=C2=A0 586.490129] CR2: 0000000000000018 CR3: 0000000896d5a006 CR4: 0000=
+0000001706e0
+> [=C2=A0 586.496372] Call Trace:
+> [=C2=A0 586.497807]=C2=A0 btrfs_sysfs_del_qgroups+0xa5/0xe0 [btrfs]
+> [=C2=A0 586.502017]=C2=A0 close_ctree+0x1c5/0x2b6 [btrfs]
+> [=C2=A0 586.505307]=C2=A0 ? fsnotify_destroy_marks+0x24/0x124
+> [=C2=A0 586.508948]=C2=A0 generic_shutdown_super+0x67/0x100
+> [=C2=A0 586.512408]=C2=A0 kill_anon_super+0x14/0x30
+> [=C2=A0 586.515159]=C2=A0 btrfs_kill_super+0x12/0x20 [btrfs]
+> [=C2=A0 586.518704]=C2=A0 deactivate_locked_super+0x36/0x90
+> [=C2=A0 586.522159]=C2=A0 cleanup_mnt+0x12d/0x190
+> [=C2=A0 586.524720]=C2=A0 task_work_run+0x5c/0xa0
+> [=C2=A0 586.527285]=C2=A0 exit_to_user_mode_loop+0xb9/0xc0
+> [=C2=A0 586.530648]=C2=A0 exit_to_user_mode_prepare+0xab/0xe0
+> [=C2=A0 586.534276]=C2=A0 syscall_exit_to_user_mode+0x17/0x50
+> [=C2=A0 586.537908]=C2=A0 entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> [=C2=A0 586.541984] RIP: 0033:0x7f55959896fb
+> [=C2=A0 586.544531] Code: 07 0c 00 f7 d8 64 89 01 48 83 c8 ff c3 66 90 f3=
+ 0f 1e fa 31 f6 e9 05 00 00 00=20
+> 0f 1f 44 00 00 f3 0f 1e fa b8 a6 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01=
+ c3 48 8b 0d 5d 07 0c 00 f7=20
+> d8 64 89 01 48
+> [=C2=A0 586.562775] RSP: 002b:00007fffcc431228 EFLAGS: 00000246 ORIG_RAX:=
+ 00000000000000a6
+> [=C2=A0 586.569485] RAX: 0000000000000000 RBX: 00007f5595ab31e4 RCX: 0000=
+7f55959896fb
+> [=C2=A0 586.575753] RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000=
+5601fb16bb80
+> [=C2=A0 586.582020] RBP: 00005601fb16b970 R08: 0000000000000000 R09: 0000=
+7fffcc42ffa0
+> [=C2=A0 586.588278] R10: 00005601fb16c930 R11: 0000000000000246 R12: 0000=
+5601fb16bb80
+> [=C2=A0 586.594534] R13: 0000000000000000 R14: 00005601fb16ba68 R15: 0000=
+000000000000
+> [=C2=A0 586.600805] Modules linked in: xfs rpcsec_gss_krb5 auth_rpcgss nf=
+sv4 dns_resolver nfs lockd grace=20
+> fscache bpfilter dm_mirror dm_region_hash dm_log dm_mod iTCO_wdt iTCO_ven=
+dor_support=20
+> x86_pkg_temp_thermal coretemp crct10dif_pclmul crc32_pclmul btrfs ghash_c=
+lmulni_intel aesni_intel=20
+> blake2b_generic crypto_simd xor cryptd zstd_compress glue_helper input_le=
+ds raid6_pq libcrc32c=20
+> lpc_ich i2c_i801 mfd_core mei_me i2c_smbus mei rpcrdma sunrpc ib_isert is=
+csi_target_mod ib_iser=20
+> libiscsi ib_srpt target_core_mod ib_srp ib_ipoib rdma_ucm ib_uverbs ib_um=
+ad sr_mod cdrom sd_mod=20
+> nouveau ahci libahci nvme crc32c_intel video e1000e led_class nvme_core l=
+ibata t10_pi ttm mxm_wmi=20
+> wmi fuse
+> [=C2=A0 586.661098] CR2: 0000000000000018
+> [=C2=A0 586.663455] ---[ end trace 158f42d646f4715d ]---
+>=20
+> A quick peek shows that this is crashing here:
+>=20
+> void kobject_del(struct kobject *kobj)
+> {
+>  =C2=A0=C2=A0=C2=A0=C2=A0struct kobject *parent =3D kobj->parent; <---- C=
+RASHES HERE with NULL kobj
+>=20
+>  =C2=A0=C2=A0=C2=A0=C2=A0__kobject_del(kobj);
+>  =C2=A0=C2=A0=C2=A0=C2=A0kobject_put(parent);
+> }
+> EXPORT_SYMBOL(kobject_del);
+>=20
+> The crash at 0x18 matches passes in a null, because that's the right offs=
+et for
+> ->parent, and the disassembly confirms that 0x18 gets offset right at kob=
+ject_del+0x1:
+>=20
+> Dump of assembler code for function kobject_del:
+>  =C2=A0=C2=A0 0xffffffff81534ec0 <+0>:=C2=A0=C2=A0=C2=A0=C2=A0 push=C2=A0=
+=C2=A0 %rbp
+>  =C2=A0=C2=A0 0xffffffff81534ec1 <+1>:=C2=A0=C2=A0=C2=A0=C2=A0 mov=C2=A0=
+=C2=A0=C2=A0 0x18(%rdi),%rbp
+>  =C2=A0=C2=A0 0xffffffff81534ec5 <+5>:=C2=A0=C2=A0=C2=A0=C2=A0 callq=C2=
+=A0 0xffffffff81534e50 <__kobject_del>
+>  =C2=A0=C2=A0 0xffffffff81534eca <+10>:=C2=A0=C2=A0=C2=A0 mov=C2=A0=C2=A0=
+=C2=A0 %rbp,%rdi
+>  =C2=A0=C2=A0 0xffffffff81534ecd <+13>:=C2=A0=C2=A0=C2=A0 pop=C2=A0=C2=A0=
+=C2=A0 %rbp
+>  =C2=A0=C2=A0 0xffffffff81534ece <+14>:=C2=A0=C2=A0=C2=A0 jmpq=C2=A0=C2=
+=A0 0xffffffff81534da0 <kobject_put>
+> End of assembler dump.
+>=20
+> But as for how we ended up with a null kobj here, that's actually hard to=
+ see, at least
+> for a non-btrfs person, which is why I hoped git bisect would help more t=
+han it did here.
+>=20
+>=20
+> thanks,
 
-Thanks.
-
->
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-> ---
->  fs/btrfs/volumes.c | 5 +----
->  1 file changed, 1 insertion(+), 4 deletions(-)
->
-> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> index 3ac44dad58bb..97ec9c0a91aa 100644
-> --- a/fs/btrfs/volumes.c
-> +++ b/fs/btrfs/volumes.c
-> @@ -1155,11 +1155,8 @@ static int close_fs_devices(struct btrfs_fs_device=
-s *fs_devices)
->         if (--fs_devices->opened > 0)
->                 return 0;
->
-> -       mutex_lock(&fs_devices->device_list_mutex);
-> -       list_for_each_entry_safe(device, tmp, &fs_devices->devices, dev_l=
-ist) {
-> +       list_for_each_entry_safe(device, tmp, &fs_devices->devices, dev_l=
-ist)
->                 btrfs_close_one_device(device);
-> -       }
-> -       mutex_unlock(&fs_devices->device_list_mutex);
->
->         WARN_ON(fs_devices->open_devices);
->         WARN_ON(fs_devices->rw_devices);
-> --
-> 2.24.1
->
-
-
+thanks,
 --=20
-Filipe David Manana,
-
-=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
- right.=E2=80=9D
+John Hubbard
+NVIDIA
