@@ -2,143 +2,171 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33AF1241C8B
-	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Aug 2020 16:38:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33CA8241CAA
+	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Aug 2020 16:46:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728815AbgHKOif (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 11 Aug 2020 10:38:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52210 "EHLO
+        id S1728821AbgHKOqv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 11 Aug 2020 10:46:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728786AbgHKOif (ORCPT
+        with ESMTP id S1728788AbgHKOqv (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 11 Aug 2020 10:38:35 -0400
-Received: from mail-vk1-xa43.google.com (mail-vk1-xa43.google.com [IPv6:2607:f8b0:4864:20::a43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A0EDC06174A
-        for <linux-btrfs@vger.kernel.org>; Tue, 11 Aug 2020 07:38:35 -0700 (PDT)
-Received: by mail-vk1-xa43.google.com with SMTP id x142so2684170vke.0
-        for <linux-btrfs@vger.kernel.org>; Tue, 11 Aug 2020 07:38:35 -0700 (PDT)
+        Tue, 11 Aug 2020 10:46:51 -0400
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51985C06174A
+        for <linux-btrfs@vger.kernel.org>; Tue, 11 Aug 2020 07:46:51 -0700 (PDT)
+Received: by mail-qt1-x841.google.com with SMTP id e5so9578316qth.5
+        for <linux-btrfs@vger.kernel.org>; Tue, 11 Aug 2020 07:46:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc:content-transfer-encoding;
-        bh=VKK2vcjbNsKA6deS2EKMvdfcl2jDQZDbBY8oVn0JJm0=;
-        b=BFPxfyhxthxRXON4GTkhB8/ZLULkxxuRhATE1kp9EUKNunVIM3QeV3vNgeflxc1S8d
-         dutO0UKMghv75dvJM+tTDj96HGgKlIMnzA7hy23BtpeY/WFt64iob2Hog4xouxDnA4rZ
-         l9zhLW/EpYhjQ0vn9W1y8yzu9j/3n7Wms3Q8PJEYhUSToOzZ1XsN1b0swgKUzSOAwxWz
-         /Aumj03Cw0+O7QZb7oQ4opxIjGCL5Tvq2+e9bEMVb+8y0BrHMD2yzuqQgIrw01taNv7c
-         talKa5BIlb3A6e04YhqmC7MUb1hReSfBVtosvIyApyJRV8ZynEZjtlnDAlb5qc+k9YEU
-         DONQ==
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=cWx5iP3jD/PqKjy9oIP8HK3KfR1sVCfHvbsl5h5/Su8=;
+        b=c9iFVm6IuG+p4lK4U5fG6vBjdKI9zW2J95LDyQ83e+B+D59wmCouNodolj3JnkTJOO
+         LnsuE2Y2g11QUnj58wfk2fdbKAYBqif+tlNdkj/PXQeGiti0pfy7HxM1xYP1sPmSSeNM
+         sxPfJskarQjnv/JjFoyvafYcj6XfREs029+CiwZKM1lLKK2OR9JNRRq/qaSut+iSoV9F
+         eJbPaxZ/G9K5/UNrfseTwk91/6u5zg6GBCDmBdEbMKKy+59tUz8y6PL9dr2HJm8W7qmf
+         UIorqd9O6rHxSGfi+qMifWDS5Hb+LurvPvJm1l75IcGsP2uymJKT1GQQ2+M+hsUd21Xw
+         30eA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc:content-transfer-encoding;
-        bh=VKK2vcjbNsKA6deS2EKMvdfcl2jDQZDbBY8oVn0JJm0=;
-        b=uoTt1B9Rz+R4xyYV1ymq2e9kzNYCVVfyjhVoAVAz8fFug1JygJajQlMD7v29IHonZB
-         5q+Rf4DkC9FWLhMeiGADPhv9jzFLry5/efykzRG+d4esP1nX2KTDIoHwsanXchXywCn6
-         5xmtNKG/KtHsJZgEZw3piqnrLxy2XKx7Y3T+voS/l/5qWK4QQAqGV8YUn8Iw5z3N8P2I
-         7PyqCz+cOBF/wq2i50YGGjwOhAIWr43rE+ACxJF0bxujF0sNOKEidjhOq+iH7PgMM4pN
-         lw3OgRlGmtoUyAkeUxE6yEjbAexMwBT8PKFzLoR422adAvGGvU4Brsatpae2XXI5yAWf
-         6CcQ==
-X-Gm-Message-State: AOAM5327Db5g/ohgFuAGwws7RMOzDB60ha9gBm3A8eBp7vmmAZEYLJKi
-        0AFgozTDsXttPdLXy9ZbrBS9K6qC9FgHqcRKZAZ4dj1l
-X-Google-Smtp-Source: ABdhPJzZ9ZZ8fBfW7WSI8yrOMBKl7Rs1qSTzqWXHYgumkGKKiaZqrllyiWY6B9aNWLG1Uu8VLdH8Olgp4vrXO/FEN3g=
-X-Received: by 2002:a1f:2dd7:: with SMTP id t206mr24500760vkt.13.1597156714026;
- Tue, 11 Aug 2020 07:38:34 -0700 (PDT)
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=cWx5iP3jD/PqKjy9oIP8HK3KfR1sVCfHvbsl5h5/Su8=;
+        b=hv9FRjzkmRq6SzvawuYWd6chEbfyxV7WtNMzzHH3XCACf/dmXgIz2BNJIkMWzxKTsu
+         a8erttro1TSD6mYSrXSGMjF9YWJaNfCiW5TnImG+DYvTsqpyAuz6xGQasElM8Cz2mILD
+         AnByqLkyUw/YILnBXbm48optTxeTsp7ghcnod7ZThtNQV9IcWo1uJbcW6N20fHqZeLCK
+         51/6aIejUlJScWubiMge+h+OnBRBP5110aHEPaTN8lNlZ+KGxdvaNW18Nvc8hDJg7kEK
+         jZ+OccNbLJU5zfg3OiZlbfawyrhkdd/bYfKQldX9nkZ8TPKsmQSBDp9jbdMX9LGpSdn4
+         ozzQ==
+X-Gm-Message-State: AOAM531GWD1yvab9ytVtpZwdmZd+aQpRTBUDSG/4NuADrOB5VNieqcBa
+        zTcT9cXPINifnwR7fnEo7cSoXRSKdm7vJg==
+X-Google-Smtp-Source: ABdhPJxHEiycPx2BfNcn2LaftBCqsmN3P6CotwVro5HtycNKxHnsv6Iz4QOz0k1EtIw8rMjNRxriWw==
+X-Received: by 2002:ac8:45c7:: with SMTP id e7mr1424314qto.187.1597157208701;
+        Tue, 11 Aug 2020 07:46:48 -0700 (PDT)
+Received: from [192.168.1.45] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id y3sm13574514qkd.132.2020.08.11.07.46.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 11 Aug 2020 07:46:48 -0700 (PDT)
+Subject: Re: [PATCH 1/3] btrfs: do not take the log_mutex of the subvolume
+ when pinning the log
+To:     fdmanana@kernel.org, linux-btrfs@vger.kernel.org
+References: <20200811114337.689881-1-fdmanana@kernel.org>
+From:   Josef Bacik <josef@toxicpanda.com>
+Message-ID: <f06846d9-7d89-560a-5ea6-bb78619086bf@toxicpanda.com>
+Date:   Tue, 11 Aug 2020 10:46:47 -0400
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.11.0
 MIME-Version: 1.0
-References: <20200810213116.795789-1-josef@toxicpanda.com> <CAL3q7H4T-orhnnJrNxNqTXOXHm8c0jnqRf3GX3LuOV+9ZXjD4w@mail.gmail.com>
- <dad7d1e7-0e1a-412f-9ec1-7ab188ea38aa@toxicpanda.com>
-In-Reply-To: <dad7d1e7-0e1a-412f-9ec1-7ab188ea38aa@toxicpanda.com>
-Reply-To: fdmanana@gmail.com
-From:   Filipe Manana <fdmanana@gmail.com>
-Date:   Tue, 11 Aug 2020 15:38:22 +0100
-Message-ID: <CAL3q7H6BGhA1XjodNKZdVZ_dtZt0g91eB3dVEdxdkzsUxG2LMw@mail.gmail.com>
-Subject: Re: [PATCH] btrfs: check the right variable in btrfs_del_dir_entries_in_log
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>, kernel-team@fb.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200811114337.689881-1-fdmanana@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Aug 11, 2020 at 3:27 PM Josef Bacik <josef@toxicpanda.com> wrote:
->
-> On 8/11/20 6:14 AM, Filipe Manana wrote:
-> > On Mon, Aug 10, 2020 at 10:32 PM Josef Bacik <josef@toxicpanda.com> wro=
-te:
-> >>
-> >> With my new locking code dbench is so much faster that I tripped over =
-a
-> >> transaction abort from ENOSPC.  This turned out to be because
-> >> btrfs_del_dir_entries_in_log was checking for ret =3D=3D -ENOSPC, but =
-this
-> >> function sets err on error, and returns err.  So instead of properly
-> >> marking the inode as needing a full commit, we were returning -ENOSPC
-> >> and aborting in __btrfs_unlink_inode.  Fix this by checking the proper
-> >> variable so that we return the correct thing in the case of ENOSPC.
-> >>
-> >> Fixes: 4a500fd178c8 ("Btrfs: Metadata ENOSPC handling for tree log")
-> >> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-> >> ---
-> >>   fs/btrfs/tree-log.c | 8 ++++----
-> >>   1 file changed, 4 insertions(+), 4 deletions(-)
-> >>
-> >> diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-> >> index e0ab3c906119..bc9ed31502ec 100644
-> >> --- a/fs/btrfs/tree-log.c
-> >> +++ b/fs/btrfs/tree-log.c
-> >> @@ -3449,11 +3449,11 @@ int btrfs_del_dir_entries_in_log(struct btrfs_=
-trans_handle *trans,
-> >>          btrfs_free_path(path);
-> >>   out_unlock:
-> >>          mutex_unlock(&dir->log_mutex);
-> >> -       if (ret =3D=3D -ENOSPC) {
-> >> +       if (err =3D=3D -ENOSPC) {
-> >>                  btrfs_set_log_full_commit(trans);
-> >> -               ret =3D 0;
-> >> -       } else if (ret < 0)
-> >> -               btrfs_abort_transaction(trans, ret);
-> >> +               err =3D 0;
-> >> +       } else if (err < 0 && err !=3D -ENOENT)
-> >
-> > Why the check for ENOENT?
-> > If any of the directory index items doesn't exist, the respective
-> > functions return a NULL btrfs_dir_item pointer and we do nothing and
-> > return 0.
-> > I'm not seeing anything else that could return ENOENT either.
-> >
-> > Other than that it looks good.
->
-> I missed this too until I tested it and things went wrong.  It's because
-> btrfs_lookup_dir_item() can return -ENOENT if the dir item isn't in the t=
-ree log
-> (which would happen if we hadn't fsync'ed this guy).
+On 8/11/20 7:43 AM, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
+> 
+> During a rename we pin the log to make sure no one commits a log that
+> reflects an ongoing rename operation, as it might result in a committed
+> log where it recorded the unlink of the old name without having recorded
+> the new name. However we are taking the subvolume's log_mutex before
+> incrementing the log_writers counter, which is not necessary since that
+> counter is atomic and we only remove the old name from the log and add
+> the new name to the log after we have incremented log_writers, ensuring
+> that no one can commit the log after we have removed the old name from
+> the log and before we added the new name to the log.
+> 
+> By taking the log_mutex lock we are just adding unnecessary contention on
+> the lock, which can become visible for workloads that mix renames with
+> fsyncs, writes for files opened with O_SYNC and unlink operations (if the
+> inode or its parent were fsynced before in the current transaction).
+> 
+> So just remove the lock and unlock of the subvolume's log_mutex at
+> btrfs_pin_log_trans().
+> 
+> Using dbench, which mixes different types of operations that end up taking
+> that mutex (fsyncs, renames, unlinks and writes into files opened with
+> O_SYNC) revealed some small gains. The following script that calls dbench
+> was used:
+> 
+>    #!/bin/bash
+> 
+>    DEV=/dev/nvme0n1
+>    MNT=/mnt/btrfs
+>    MOUNT_OPTIONS="-o ssd -o space_cache=v2"
+>    MKFS_OPTIONS="-m single -d single"
+>    THREADS=32
+> 
+>    echo "performance" | tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor
+>    mkfs.btrfs -f $MKFS_OPTIONS $DEV
+>    mount $MOUNT_OPTIONS $DEV $MNT
+> 
+>    dbench -s -t 600 -D $MNT $THREADS
+> 
+>    umount $MNT
+> 
+> The test was run on bare metal, no virtualization, on a box with 12 cores
+> (Intel i7-8700), 64Gb of RAM and using a NVMe device, with a kernel
+> configuration that is the default of typical distributions (debian in this
+> case), without debug options enabled (kasan, kmemleak, slub debug, debug
+> of page allocations, lock debugging, etc).
+> 
+> Results before this patch:
+> 
+>   Operation      Count    AvgLat    MaxLat
+>   ----------------------------------------
+>   NTCreateX    4410848     0.017   738.640
+>   Close        3240222     0.001     0.834
+>   Rename        186850     7.478  1272.476
+>   Unlink        890875     0.128   785.018
+>   Deltree          128     2.846    12.081
+>   Mkdir             64     0.002     0.003
+>   Qpathinfo    3997659     0.009    11.171
+>   Qfileinfo     701307     0.001     0.478
+>   Qfsinfo       733494     0.002     1.103
+>   Sfileinfo     359362     0.004     3.266
+>   Find         1546226     0.041     4.128
+>   WriteX       2202803     7.905  1376.989
+>   ReadX        6917775     0.003     3.887
+>   LockX          14392     0.002     0.043
+>   UnlockX        14392     0.001     0.085
+>   Flush         309225     0.128  1033.936
+> 
+> Throughput 231.555 MB/sec (sync open)  32 clients  32 procs  max_latency=1376.993 ms
+> 
+> Results after this patch:
+> 
+> Operation      Count    AvgLat    MaxLat
+>   ----------------------------------------
+>   NTCreateX    4603244     0.017   232.776
+>   Close        3381299     0.001     1.041
+>   Rename        194871     7.251  1073.165
+>   Unlink        929730     0.133   119.233
+>   Deltree          128     2.871    10.199
+>   Mkdir             64     0.002     0.004
+>   Qpathinfo    4171343     0.009    11.317
+>   Qfileinfo     731227     0.001     1.635
+>   Qfsinfo       765079     0.002     3.568
+>   Sfileinfo     374881     0.004     1.220
+>   Find         1612964     0.041     4.675
+>   WriteX       2296720     7.569  1178.204
+>   ReadX        7213633     0.003     3.075
+>   LockX          14976     0.002     0.076
+>   UnlockX        14976     0.001     0.061
+>   Flush         322635     0.102   579.505
+> 
+> Throughput 241.4 MB/sec (sync open)  32 clients  32 procs  max_latency=1178.207 ms
+> (+4.3% throughput, -14.4% max latency)
+> 
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
-Hum, looking again I think you meant btrfs_lookup_dir_index_item() and
-not btrfs_lookup_dir_item().
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 
-The log could have mentioned why we started to check ENOENT, since it
-only mentions the bug where we check the wrong variable.
+Thanks,
 
-Now it makes sense.
-
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
-
-Thanks.
-
-
-
-> We actually handle that
-> case in __btrfs_unlink_inode, so it's an expected error to get back.  Tha=
-nks,
->
-> Josef
-
-
-
---=20
-Filipe David Manana,
-
-=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
- right.=E2=80=9D
+Josef
