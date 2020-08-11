@@ -2,72 +2,122 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92E2F241556
-	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Aug 2020 05:35:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B5372415E1
+	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Aug 2020 07:06:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728246AbgHKDfO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 10 Aug 2020 23:35:14 -0400
-Received: from mail-io1-f71.google.com ([209.85.166.71]:40229 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727821AbgHKDfJ (ORCPT
+        id S1726134AbgHKFGJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 11 Aug 2020 01:06:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48722 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726001AbgHKFGJ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 10 Aug 2020 23:35:09 -0400
-Received: by mail-io1-f71.google.com with SMTP id t22so8745118iob.7
-        for <linux-btrfs@vger.kernel.org>; Mon, 10 Aug 2020 20:35:08 -0700 (PDT)
+        Tue, 11 Aug 2020 01:06:09 -0400
+Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7585CC06174A
+        for <linux-btrfs@vger.kernel.org>; Mon, 10 Aug 2020 22:06:07 -0700 (PDT)
+Received: by mail-qk1-x72b.google.com with SMTP id p4so10673412qkf.0
+        for <linux-btrfs@vger.kernel.org>; Mon, 10 Aug 2020 22:06:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dallalba.com.ar; s=google;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=Ss6NUbYB0ne37lm/R9hXTF//HSdDlNFXaOV8dHNsUCU=;
+        b=cnmlLDMysFb4wKiZbIEtRs4AA1vG3wzKivcCt9R2nLnCdEG8RTPGODbN6/q+Ja3WKF
+         MRB3hWdvt30kKpb/biR9PK8YldLjZjO+xQZzgR7bQjtOnzkVpNK84YOhYv1EUb/31jN3
+         WfaORcEMsK+mD0mSp5LO7qXKXdnGyB11TFyyY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=0XXF4gP00AKnsVQiDFXbJzMYIOYWHxHdd4RVsRPAbhc=;
-        b=NiQkIOlO3CrI5lU1iXLn6BpW1rbvWiIb3HLaz7ypw3+WVElLAm+s6hlMb7389rtaZk
-         ++GcGnR6Qvg/xArvt/dvLdaDgzsV7kPYWpm+o9vDrncPY9ozTBh9SsL90XPxMhcxiKcs
-         5/dIBxN437v/I1vr62hdhLg7W/uK2pIUqaBUgnULpLqYmKemWU++leXE9aAbzb8s7kus
-         TeeowxIK2DVjkpFUAUkLMoNLXDNKVlOQMrqZ8eQZkc0slfcTHdW/84qNlVCSacQU20wx
-         x9dsfgw+nyU4M2sEtWCmIZcQLPyi6IGj7pr/9BUI9uVmOC1hLHkpOVRC3eMZ2iH7Dsaw
-         LFYA==
-X-Gm-Message-State: AOAM530+7qxXA5xuAIT/Gl8EkSSOVo2monhc/wqB0N2PMQN01hhPUcvv
-        gWLxqAqytm+0WpxNOrKe1HGROtrKbVFjoKgmCrW2vQufHDUx
-X-Google-Smtp-Source: ABdhPJxgP7ejVjnfsazNH0Tqy82Cxwho0b25shTclrrEX2JEZZQVzsMpsyfvz791kmnbkiw1QrmUlfEf4tjZSNi1+1P0jsQ/cPE1
-MIME-Version: 1.0
-X-Received: by 2002:a6b:5502:: with SMTP id j2mr20825119iob.204.1597116908036;
- Mon, 10 Aug 2020 20:35:08 -0700 (PDT)
-Date:   Mon, 10 Aug 2020 20:35:08 -0700
-In-Reply-To: <000000000000734f2505ac0f2426@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000f7ec6f05ac91c11d@google.com>
-Subject: Re: KASAN: use-after-free Write in hci_conn_del
-From:   syzbot <syzbot+7b1677fecb5976b0a099@syzkaller.appspotmail.com>
-To:     clm@fb.com, davem@davemloft.net, dsterba@suse.com,
-        johan.hedberg@gmail.com, josef@toxicpanda.com, kuba@kernel.org,
-        linux-bluetooth@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, marcel@holtmann.org,
-        nborisov@suse.com, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=Ss6NUbYB0ne37lm/R9hXTF//HSdDlNFXaOV8dHNsUCU=;
+        b=Tr0zN+x89wmkRsIfg4G5m6GKn4ZDfHG6Qhk7+CkbkPIkfExMNLPeK6iow96B1Oyed8
+         GHLA8Nf0xmN0EZvFPekICepRrVBeVGgF7uyjV5y/Ube3j8okvADZ8f97wZ+WqWyqh7Jb
+         zuRE4GUUtTzlhMDuS/IIg2VqrGx1pR1mRkCUlYchPi4Nuq9SYY7S4HKZnptBSv79+tcX
+         bYglRXtmeIYLvHSbxy5L0f1UZYsp7PSMPl6AtowTs3n+6SZpp84kr+G36hla/PlbW9kN
+         G60DSwmXQOzxzyVMDHZp3GlBdcO3uHCNC7oiY09R8wgkVq6OUqcTS0RAFU2Qmn0K59Rr
+         x0AA==
+X-Gm-Message-State: AOAM530ClmLIpEXZx3TLezFEsSZLIPS+p8RB2bZ9yCJ8SaefpSOotEx6
+        Y6lEyX2GLrCC4eECHiDH5M5688mbdA==
+X-Google-Smtp-Source: ABdhPJy90DSPsBztLC8JDlUhNvHY1OR+iE1MhFXnkoKpOnHkvBQFWEPmqZuHoH8LudHkeSfJdKR6Hw==
+X-Received: by 2002:a05:620a:1122:: with SMTP id p2mr30930498qkk.45.1597122366097;
+        Mon, 10 Aug 2020 22:06:06 -0700 (PDT)
+Received: from atomica ([2803:9800:a011:8d29:1c34:b9ea:ffe4:fab6])
+        by smtp.gmail.com with ESMTPSA id i18sm17436817qtv.39.2020.08.10.22.06.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 10 Aug 2020 22:06:05 -0700 (PDT)
+Message-ID: <dc0bea2ee916ce4d1a53fe59869b7b7d8868f617.camel@dallalba.com.ar>
+Subject: Re: raid10 corruption while removing failing disk
+From:   =?UTF-8?Q?Agust=C3=ADn_Dall=CA=BCAlba?= <agustin@dallalba.com.ar>
+To:     Chris Murphy <lists@colorremedies.com>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Date:   Tue, 11 Aug 2020 02:06:02 -0300
+In-Reply-To: <CAJCQCtReHKtyjHL2SXZXeZ4TwdXf-Ag2KysSS0Oan5ZDMzm8OQ@mail.gmail.com>
+References: <3dc4d28e81b3336311c979bda35ceb87b9645606.camel@dallalba.com.ar>
+         <CAJCQCtReHKtyjHL2SXZXeZ4TwdXf-Ag2KysSS0Oan5ZDMzm8OQ@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-syzbot has bisected this issue to:
+On Mon, 2020-08-10 at 20:34 -0600, Chris Murphy wrote:
+> On Mon, Aug 10, 2020 at 1:03 AM Agustín DallʼAlba
+> <agustin@dallalba.com.ar> wrote:
+> > Hello!
+> > 
+> > The last quarterly scrub on our btrfs filesystem found a few bad
+> > sectors in one of its devices (/dev/sdd), and because there's nobody on
+> > site to replace the failing disk I decided to remove it from the array
+> > with `btrfs device remove` before the problem could get worse.
+> 
+> It doesn't much matter if it gets worse, because you still have
+> redundancy on that dying drive until the moment it's completely toast.
+> And btrfs doesn't care if it's spewing read errors. 
 
-commit 6a3c7f5c87854e948c3c234e5f5e745c7c553722
-Author: Nikolay Borisov <nborisov@suse.com>
-Date:   Thu May 28 08:05:13 2020 +0000
+By 'get worse', I mean another drive failing, and then we'd definitely
+lose data. Because of the pandemic there was (and still is) nobody on
+site to replace the drive, and I won't be able to go there for who
+knows how many months.
 
-    btrfs: don't balance btree inode pages from buffered write path
+> Do you have a complete dmesg for this time period? Because (a) bad
+> sectors should not exist on a recently scrubbed system (b) even if
+> they do exist, during device removal it's a read error like any other
+> time, and btrfs grabs the copy instead. Slowness suggests to me there
+> is a timing mismatch between SCT ERC and the default SCSI command
+> timer. It leads to lengthy delays and prevents bad sectors from being
+> properly fixed.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=14f973c2900000
-start commit:   5631c5e0 Merge tag 'xfs-5.9-merge-7' of git://git.kernel.o..
-git tree:       upstream
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=16f973c2900000
-console output: https://syzkaller.appspot.com/x/log.txt?x=12f973c2900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=afba7c06f91e56eb
-dashboard link: https://syzkaller.appspot.com/bug?extid=7b1677fecb5976b0a099
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=155d73fa900000
+I have a _partial_ dmesg of this time period. It's got a lot of gaps in
+between reboots. I'll send it to you without ccing the list. The
+failing drive is an atrocious WD green for which I forgot to set the
+idle3 timer, that doesn't support SCT ERC and lately just hangs forever
+and requires a power cycle. So there's no way around the slowness. It
+was added on a pinch a year ago because we needed more space. I
+probably should have ask someone to disconnect it and used 'remove
+missing'.
 
-Reported-by: syzbot+7b1677fecb5976b0a099@syzkaller.appspotmail.com
-Fixes: 6a3c7f5c8785 ("btrfs: don't balance btree inode pages from buffered write path")
+> > # btrfs check --force --readonly /dev/sda
+> > WARNING: filesystem mounted, continuing because of --force
+> > Checking filesystem on /dev/sda
+> > UUID: 4d3acf20-d408-49ab-b0a6-182396a9f27c
+> > checksum verify failed on 10919566688256 found BAB1746E wanted A8A48266
+> > checksum verify failed on 10919566688256 found BAB1746E wanted A8A48266
+> 
+> So they aren't at all the same, that's unexpected.
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+What do you mean by this?
+
+> My advice is to mount ro, backup (or two copies for important info),
+> and start with a new Btrfs file system and restore. It's not worth
+> repairing.
+
+Sigh, I was expecting I'd have to do this. At least no data was lost,
+and the system still functions even though it's read-only. Do you think
+check --repair is not worth trying? Everything of value is already
+backed up, but restoring it would take many hours of work.
+
+Thanks for all the information, I hope you have a good day.
+
