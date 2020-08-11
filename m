@@ -2,171 +2,226 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33CA8241CAA
-	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Aug 2020 16:46:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B520C241CF7
+	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Aug 2020 17:12:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728821AbgHKOqv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 11 Aug 2020 10:46:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53516 "EHLO
+        id S1728835AbgHKPMp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 11 Aug 2020 11:12:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728788AbgHKOqv (ORCPT
+        with ESMTP id S1728721AbgHKPMo (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 11 Aug 2020 10:46:51 -0400
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51985C06174A
-        for <linux-btrfs@vger.kernel.org>; Tue, 11 Aug 2020 07:46:51 -0700 (PDT)
-Received: by mail-qt1-x841.google.com with SMTP id e5so9578316qth.5
-        for <linux-btrfs@vger.kernel.org>; Tue, 11 Aug 2020 07:46:51 -0700 (PDT)
+        Tue, 11 Aug 2020 11:12:44 -0400
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 461C5C06174A
+        for <linux-btrfs@vger.kernel.org>; Tue, 11 Aug 2020 08:12:44 -0700 (PDT)
+Received: by mail-ed1-x544.google.com with SMTP id i6so9352651edy.5
+        for <linux-btrfs@vger.kernel.org>; Tue, 11 Aug 2020 08:12:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=cWx5iP3jD/PqKjy9oIP8HK3KfR1sVCfHvbsl5h5/Su8=;
-        b=c9iFVm6IuG+p4lK4U5fG6vBjdKI9zW2J95LDyQ83e+B+D59wmCouNodolj3JnkTJOO
-         LnsuE2Y2g11QUnj58wfk2fdbKAYBqif+tlNdkj/PXQeGiti0pfy7HxM1xYP1sPmSSeNM
-         sxPfJskarQjnv/JjFoyvafYcj6XfREs029+CiwZKM1lLKK2OR9JNRRq/qaSut+iSoV9F
-         eJbPaxZ/G9K5/UNrfseTwk91/6u5zg6GBCDmBdEbMKKy+59tUz8y6PL9dr2HJm8W7qmf
-         UIorqd9O6rHxSGfi+qMifWDS5Hb+LurvPvJm1l75IcGsP2uymJKT1GQQ2+M+hsUd21Xw
-         30eA==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=X81N6o8k7SKqq0x/ut80WfMoB5QrgFI/Qik0ZoP1jCs=;
+        b=BLdK+XNIkaOcYToRUGXi8ahfCtZW6YGKAW7FkB6fEZQxykydePRqvZBhSI6rQ3oInV
+         HMOFe67iG/Z1zJ+XEHQ2zq4zxdj4KVnbCqgu6Jlz/eVUtPG5rGOwfwveBCer2DSUX9PW
+         qrz/4vdx5dXpsC25x2Uf3T0SJdoZWEV7n8oSfHGsuzDJP368If4p+AB74BXB4EE7JoFJ
+         CMKyue+eaI/lZf9UkgIsWW9XT61Oh2/yoSAabsZ7hqBIUIV6qv1qtqc0WhbYe4EDIDiU
+         U9trIr+MvdPbYSxiIqZvi4ula07nnD7PTcZlLwK4FBhQGIC/UOjy4Bys4LFgh9vkTcH/
+         5JZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=cWx5iP3jD/PqKjy9oIP8HK3KfR1sVCfHvbsl5h5/Su8=;
-        b=hv9FRjzkmRq6SzvawuYWd6chEbfyxV7WtNMzzHH3XCACf/dmXgIz2BNJIkMWzxKTsu
-         a8erttro1TSD6mYSrXSGMjF9YWJaNfCiW5TnImG+DYvTsqpyAuz6xGQasElM8Cz2mILD
-         AnByqLkyUw/YILnBXbm48optTxeTsp7ghcnod7ZThtNQV9IcWo1uJbcW6N20fHqZeLCK
-         51/6aIejUlJScWubiMge+h+OnBRBP5110aHEPaTN8lNlZ+KGxdvaNW18Nvc8hDJg7kEK
-         jZ+OccNbLJU5zfg3OiZlbfawyrhkdd/bYfKQldX9nkZ8TPKsmQSBDp9jbdMX9LGpSdn4
-         ozzQ==
-X-Gm-Message-State: AOAM531GWD1yvab9ytVtpZwdmZd+aQpRTBUDSG/4NuADrOB5VNieqcBa
-        zTcT9cXPINifnwR7fnEo7cSoXRSKdm7vJg==
-X-Google-Smtp-Source: ABdhPJxHEiycPx2BfNcn2LaftBCqsmN3P6CotwVro5HtycNKxHnsv6Iz4QOz0k1EtIw8rMjNRxriWw==
-X-Received: by 2002:ac8:45c7:: with SMTP id e7mr1424314qto.187.1597157208701;
-        Tue, 11 Aug 2020 07:46:48 -0700 (PDT)
-Received: from [192.168.1.45] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id y3sm13574514qkd.132.2020.08.11.07.46.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 11 Aug 2020 07:46:48 -0700 (PDT)
-Subject: Re: [PATCH 1/3] btrfs: do not take the log_mutex of the subvolume
- when pinning the log
-To:     fdmanana@kernel.org, linux-btrfs@vger.kernel.org
-References: <20200811114337.689881-1-fdmanana@kernel.org>
-From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <f06846d9-7d89-560a-5ea6-bb78619086bf@toxicpanda.com>
-Date:   Tue, 11 Aug 2020 10:46:47 -0400
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.11.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=X81N6o8k7SKqq0x/ut80WfMoB5QrgFI/Qik0ZoP1jCs=;
+        b=gAkftA4oyoSBlxS1/ayUgBOi2i/kOSvAObtMqp5BYmvWo/xpMi+y63O4rsrtQibq3C
+         VutR6ot1r5qkeqU2AjIvhnJj4FwgUxycbRA3XAgMxx0H61zASN6m4TD3Ioh6wBp71XLp
+         23TLxooNjAGOTFlUKuRbrtU2nCZBNLJ/6P14QDGZ3w3hmuWPx35FypmgcG3Pp+crVFmO
+         SAqTaD7COdtMVC+TF4/B9TXp2TRVT5kZMF+yaA79Q4J4QvDeF9OSWe1d3BQuLhPHjkX7
+         lZrA/NvBaaKSpk8eaLiYWbVSMTrmdyXsycvL5QtIHpo7SAXcEnKEiuIE0wOrGiP7aX8P
+         7aMA==
+X-Gm-Message-State: AOAM533oTgkhJqq/FRksQR9e+14UiLaUiJQJb+yIeRcsmYxcb7x2DsRi
+        Wu6Ei+7R/eXA3T9kZzNlMjhkIYDX+rUQbuRrZtg=
+X-Google-Smtp-Source: ABdhPJwJa+oc/1H6PjAq6jYVouKwAu1yXuLi5XXJEx7iLlE5Bxzahe5NGqb+upeJoGurdQIf0BOk85uj795OwkGZrEg=
+X-Received: by 2002:a05:6402:33a:: with SMTP id q26mr27940511edw.8.1597158762653;
+ Tue, 11 Aug 2020 08:12:42 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200811114337.689881-1-fdmanana@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <CA+XNQ=iupWN6ck5M0hUQ-+470F9PKdoKKUUt+tmQOWoC=zterg@mail.gmail.com>
+ <f8742974-69b2-a0e9-ff99-4c61dc4f9ff0@gmx.com>
+In-Reply-To: <f8742974-69b2-a0e9-ff99-4c61dc4f9ff0@gmx.com>
+From:   Thommandra Gowtham <trgowtham123@gmail.com>
+Date:   Tue, 11 Aug 2020 20:42:31 +0530
+Message-ID: <CA+XNQ=g1WzZ6h+MGETbK34iUyHno_vUcufXiaJ3dKfVva+b=cQ@mail.gmail.com>
+Subject: Re: BTRFS suddenly moving to read-only
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 8/11/20 7:43 AM, fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
-> 
-> During a rename we pin the log to make sure no one commits a log that
-> reflects an ongoing rename operation, as it might result in a committed
-> log where it recorded the unlink of the old name without having recorded
-> the new name. However we are taking the subvolume's log_mutex before
-> incrementing the log_writers counter, which is not necessary since that
-> counter is atomic and we only remove the old name from the log and add
-> the new name to the log after we have incremented log_writers, ensuring
-> that no one can commit the log after we have removed the old name from
-> the log and before we added the new name to the log.
-> 
-> By taking the log_mutex lock we are just adding unnecessary contention on
-> the lock, which can become visible for workloads that mix renames with
-> fsyncs, writes for files opened with O_SYNC and unlink operations (if the
-> inode or its parent were fsynced before in the current transaction).
-> 
-> So just remove the lock and unlock of the subvolume's log_mutex at
-> btrfs_pin_log_trans().
-> 
-> Using dbench, which mixes different types of operations that end up taking
-> that mutex (fsyncs, renames, unlinks and writes into files opened with
-> O_SYNC) revealed some small gains. The following script that calls dbench
-> was used:
-> 
->    #!/bin/bash
-> 
->    DEV=/dev/nvme0n1
->    MNT=/mnt/btrfs
->    MOUNT_OPTIONS="-o ssd -o space_cache=v2"
->    MKFS_OPTIONS="-m single -d single"
->    THREADS=32
-> 
->    echo "performance" | tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor
->    mkfs.btrfs -f $MKFS_OPTIONS $DEV
->    mount $MOUNT_OPTIONS $DEV $MNT
-> 
->    dbench -s -t 600 -D $MNT $THREADS
-> 
->    umount $MNT
-> 
-> The test was run on bare metal, no virtualization, on a box with 12 cores
-> (Intel i7-8700), 64Gb of RAM and using a NVMe device, with a kernel
-> configuration that is the default of typical distributions (debian in this
-> case), without debug options enabled (kasan, kmemleak, slub debug, debug
-> of page allocations, lock debugging, etc).
-> 
-> Results before this patch:
-> 
->   Operation      Count    AvgLat    MaxLat
->   ----------------------------------------
->   NTCreateX    4410848     0.017   738.640
->   Close        3240222     0.001     0.834
->   Rename        186850     7.478  1272.476
->   Unlink        890875     0.128   785.018
->   Deltree          128     2.846    12.081
->   Mkdir             64     0.002     0.003
->   Qpathinfo    3997659     0.009    11.171
->   Qfileinfo     701307     0.001     0.478
->   Qfsinfo       733494     0.002     1.103
->   Sfileinfo     359362     0.004     3.266
->   Find         1546226     0.041     4.128
->   WriteX       2202803     7.905  1376.989
->   ReadX        6917775     0.003     3.887
->   LockX          14392     0.002     0.043
->   UnlockX        14392     0.001     0.085
->   Flush         309225     0.128  1033.936
-> 
-> Throughput 231.555 MB/sec (sync open)  32 clients  32 procs  max_latency=1376.993 ms
-> 
-> Results after this patch:
-> 
-> Operation      Count    AvgLat    MaxLat
->   ----------------------------------------
->   NTCreateX    4603244     0.017   232.776
->   Close        3381299     0.001     1.041
->   Rename        194871     7.251  1073.165
->   Unlink        929730     0.133   119.233
->   Deltree          128     2.871    10.199
->   Mkdir             64     0.002     0.004
->   Qpathinfo    4171343     0.009    11.317
->   Qfileinfo     731227     0.001     1.635
->   Qfsinfo       765079     0.002     3.568
->   Sfileinfo     374881     0.004     1.220
->   Find         1612964     0.041     4.675
->   WriteX       2296720     7.569  1178.204
->   ReadX        7213633     0.003     3.075
->   LockX          14976     0.002     0.076
->   UnlockX        14976     0.001     0.061
->   Flush         322635     0.102   579.505
-> 
-> Throughput 241.4 MB/sec (sync open)  32 clients  32 procs  max_latency=1178.207 ms
-> (+4.3% throughput, -14.4% max latency)
-> 
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+Thank you for the response.
 
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+>
+> > - How do we determine the Disk health apart from SMART attributes? Can
+> > we do a Disk write/read test to figure it out?
+>
+> AFAIK SMART is the only thing we can rely on now.
 
-Thanks,
+Thank you. The reason I asked the question is sometimes, though SMART
+reports the Percent Life remaining as > 80, we see issues with the
+disk.
+So I was looking if we can use dd or other tools to determine disk
+write speed and compare with the new SSD's. Like below.
 
-Josef
+# dd if=/dev/zero of=/var/tmp/test1.img bs=1G count=1 oflag=dsync
+1+0 records in
+1+0 records out
+1073741824 bytes (1.1 GB, 1.0 GiB) copied, 1.90537 s, 564 MB/s
+
+>
+> >
+> > mount options used:
+> > rw,noatime,compress=lzo,ssd,space_cache,commit=60,subvolid=263
+> >
+> > #   btrfs --version
+> > btrfs-progs v4.4
+> >
+> > Ubuntu 16.04: 4.15.0-36-generic #1 SMP Mon Oct 22 21:20:30 PDT 2018
+> > x86_64 x86_64 x86_64 GNU/Linux
+> >
+> > mkstemp: Read-only file system
+> > [35816007.175210] print_req_error: I/O error, dev sda, sector 4472632
+> > [35816007.182192] BTRFS error (device sda4): bdev /dev/sda4 errs: wr
+> > 66, rd 725, flush 0, corrupt 0, gen 0
+>
+> This means some read error happened.
+
+Yes. The errors started to occur when we were upgrading the packages.
+Eventually the upgrade failed with read-only filesystem errors.
+
+>
+> Do you have extra log context?
+
+Not much on this system as we couldn't get anything from syslog after
+power-cycle.
+
+But on other instances, we see errors like below
+
+# cat syslog | grep error
+Jun 25 13:12:13   kernel: [154559.788764]          res
+41/04:00:80:08:00/00:00:00:00:00/60 Emask 0x1 (device error)
+Jun 25 13:12:13   kernel: [154559.821041]          res
+41/04:00:80:08:00/00:00:00:00:00/60 Emask 0x1 (device error)
+Jun 25 13:12:13   kernel: [154559.900810]          res
+41/04:00:00:08:02/00:00:00:00:00/60 Emask 0x1 (device error)
+Jun 25 13:12:13   kernel: [154559.933070]          res
+41/04:00:00:08:02/00:00:00:00:00/60 Emask 0x1 (device error)
+Jun 25 13:12:13   kernel: [154560.016591]          res
+41/04:00:80:08:00/00:00:00:00:00/60 Emask 0x1 (device error)
+Jun 25 13:12:13   kernel: [154560.048882]          res
+41/04:00:80:08:00/00:00:00:00:00/60 Emask 0x1 (device error)
+Jun 25 13:12:13   kernel: [154560.114361] ata2.00: NCQ disabled due to
+excessive errors
+Jun 25 13:12:13   kernel: [154560.132361]          res
+41/04:00:00:08:02/00:00:00:00:00/60 Emask 0x1 (device error)
+Jun 25 13:12:13   kernel: [154560.154507] ata2.00: error: { ABRT }
+Jun 25 13:12:13   kernel: [154560.164580]          res
+41/04:00:00:08:02/00:00:00:00:00/60 Emask 0x1 (device error)
+Jun 25 13:12:14   kernel: [154560.339129] ata2.00: error: { ABRT }
+Jun 25 13:12:14   kernel: [154560.346548] print_req_error: I/O error,
+dev sdb, sector 67111040
+Jun 25 13:12:14   kernel: [154560.360192] BTRFS error (device sdb3):
+bdev /dev/sdb3 errs: wr 1, rd 0, flush 0, corrupt 0, gen 0
+Jun 25 13:12:14   kernel: [154560.417322]          res
+51/04:00:00:08:02/00:00:04:00:00/60 Emask 0x1 (device error)
+Jun 25 13:12:14   kernel: [154560.511036] ata2.00: error: { ABRT }
+Jun 25 13:12:14   kernel: [154560.518434] print_req_error: I/O error,
+dev sdb, sector 67241984
+Jun 25 13:12:14   kernel: [154560.525291] BTRFS error (device sdb3):
+bdev /dev/sdb3 errs: wr 2, rd 0, flush 0, corrupt 0, gen 0
+
+>
+> > [35816007.192913] print_req_error: I/O error, dev sda, sector 4472632
+> > [35816007.199855] BTRFS error (device sda4): bdev /dev/sda4 errs: wr
+> > 66, rd 726, flush 0, corrupt 0, gen 0
+> > [35816007.210675] print_req_error: I/O error, dev sda, sector 10180680
+> > [35816007.217748] BTRFS error (device sda4): bdev /dev/sda4 errs: wr
+> > 66, rd 727, flush 0, corrupt 0, gen 0
+> > [35816007.461941] print_req_error: I/O error, dev sda, sector 4472048
+> > [35816007.468903] BTRFS error (device sda4): bdev /dev/sda4 errs: wr
+> > 66, rd 728, flush 0, corrupt 0, gen 0
+> > [35816007.479611] systemd[7035]: serial-getty@ttyS0.service: Failed at
+> > step EXEC spawning /sbin/agetty: Input/output error
+> > [35816007.712006] print_req_error: I/O error, dev sda, sector 4472048
+>
+> This means, we failed to read some data from sda.
+>
+> It's not the error from btrfs checksum verification, but directly read
+> error from the device driver.
+>
+> So the command, agetty can't be executed due to we failed to read the
+> content of that executable file.
+>
+> >
+> > # dmesg | tail
+> > bash: /bin/dmesg: Input/output error
+> >
+> > Doesn't Input/output error mean the disk is inaccessible?
+>
+> This means, we can't even access /bin/dmesg the file itself.
+
+Yes. That would technically mean that the Disk is not accessible
+though it is being reported as read-only by 'mount -t btrfs'.
+
+If a disk is missing or offline, is it done by kernel (bug) or
+something related to hardware. This is being seen on multiple systems.
+So there has to be some commonality among them and as the disk moves
+to sudden read-only, we are unable to get much logs on all cases.
+
+How can we debug these instances? Can you please give some pointers?
+
+>
+> >
+> > # btrfs fi show
+> > Label: 'rpool'  uuid: 42d39990-e4eb-414b-8b17-0c4a2f76cc76
+> >     Total devices 1 FS bytes used 11.80GiB
+> >     devid    1 size 27.20GiB used 19.01GiB path /dev/sda4
+> >
+> > # smartctl -a /dev/sda
+> > smartctl 6.5 2016-01-24 r4214 [x86_64-linux-4.15.0-36-generic] (local build)
+> > Copyright (C) 2002-16, Bruce Allen, Christian Franke, www.smartmontools.org
+> >
+> > Short INQUIRY response, skip product id
+> > A mandatory SMART command failed: exiting. To continue, add one or
+> > more '-T permissive' options.
+> >
+> >
+> > We were able to get smartctl o/p after a power-cycle
+>
+> Did you get dmesg/agetty run after a power-cycle?
+>
+> Or it still triggers the same -EIO error?
+
+No. After power-cycle everything is back to normal(rw mounted) with
+logs not showing any abnormalities.
+Subsequent IO activity(upgrading the packages) was successful as well.
+
+>
+> BTW, if the smartctl doesn't record above read error as error, maybe
+> it's some unstable cables causing temporary errors?
+
+> > 169 Unknown_Attribute       0x0000   100   100   000    Old_age
+> > Offline      -       66
+
+The Disk Percent life remaining is at '66' for this system which is
+low in my opinion. Can a disk go offline suddenly when the health
+drops low?
+
+Regards,
+Gowtham
+
+>
+> Thanks,
+> Qu
+>
