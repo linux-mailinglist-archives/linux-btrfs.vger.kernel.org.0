@@ -2,25 +2,33 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3F99241A87
-	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Aug 2020 13:42:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28E0C241A88
+	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Aug 2020 13:43:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728753AbgHKLmm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 11 Aug 2020 07:42:42 -0400
-Received: from mx2.suse.de ([195.135.220.15]:59954 "EHLO mx2.suse.de"
+        id S1728727AbgHKLnc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 11 Aug 2020 07:43:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56862 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728727AbgHKLmm (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 11 Aug 2020 07:42:42 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id CDC32ACF3
-        for <linux-btrfs@vger.kernel.org>; Tue, 11 Aug 2020 11:43:01 +0000 (UTC)
-From:   Qu Wenruo <wqu@suse.com>
+        id S1728454AbgHKLnc (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 11 Aug 2020 07:43:32 -0400
+Received: from debian8.Home (bl8-197-74.dsl.telepac.pt [85.241.197.74])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5EF6A20578
+        for <linux-btrfs@vger.kernel.org>; Tue, 11 Aug 2020 11:43:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1597146211;
+        bh=LC6IHD7tiH6gR3r8+GVjEZcjnfgUzHHaPwMVrPoJL6k=;
+        h=From:To:Subject:Date:From;
+        b=EMGtrilcByKTzYyc6755QkKEX8Qvx9q94nQ02sfzFcJOO+Yfh2kRJBLYe6jyfnFtg
+         VyZrJ1DfaZnRUAebxnZi1HAjooulkyTjC4+595BTg6sbBgXdvkKVHRitnLt4kTuYtR
+         7epFRgWqnSvlYs0Lbnwm5EVTyiz6HO+FFg6VSfFw=
+From:   fdmanana@kernel.org
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 0/4] btrfs-progs: check: add the ability to repair extent item generation corruption
-Date:   Tue, 11 Aug 2020 19:41:40 +0800
-Message-Id: <20200811114144.28749-1-wqu@suse.com>
-X-Mailer: git-send-email 2.28.0
+Subject: [PATCH 0/3] btrfs: a few performance improvements for fsync and rename/link
+Date:   Tue, 11 Aug 2020 12:43:28 +0100
+Message-Id: <20200811114328.688282-1-fdmanana@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
@@ -28,47 +36,30 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Although we have introduced the check ability to detect bad extent item
-generation, there is no repair ability.
+From: Filipe Manana <fdmanana@suse.com>
 
-I thought it would be rare to hit, but real world cases prove I'm a
-total idiot.
+A small group of changes to improve performance of fsync, rename and link operations.
+They are farily independent, but patch 3 needs to be applied before patch 2, the
+order can be changed if needed.
+Details and performance tests are mentioned in the change log of each patch.
 
-So this patchset will add the ability to repair, for both lowmem mode
-and original mode, along with enhanced test images.
+Filipe Manana (3):
+  btrfs: do not take the log_mutex of the subvolume when pinning the log
+  btrfs: do not commit logs and transactions during link and rename
+    operations
+  btrfs: make fast fsyncs wait only for writeback
 
-There is also a bug fix for original mode, which fails to detect such
-problem if it's a tree block.
-
-Changelog:
-v2:
-- Fix a type in the subject of the 4th patch
-- Fix a bracket for for a logical and and bit and
-  The old code is fine and bit and has higher priority, but
-  the bracket is intended to make that higher priority more obvious.
-
-Qu Wenruo (4):
-  btrfs-progs: check/lowmem: add the ability to repair extent item
-    generation
-  btrfs-progs: check/original: don't reset extent generation for
-    check_block()
-  btrfs-progs: check/original: add the ability to repair extent item
-    generation
-  btrfs-progs: tests/fsck: enhance invalid extent item generation test
-    cases
-
- check/main.c                                  |  77 ++++++++++++++-
- check/mode-common.c                           |  59 ++++++++++++
- check/mode-common.h                           |   3 +
- check/mode-lowmem.c                           |  89 ++++++++++++++++--
- ...xz => bad_extent_item_gen_for_data.img.xz} | Bin
- .../bad_extent_item_gen_for_tree_block.img.xz | Bin 0 -> 1804 bytes
- .../test.sh                                   |  19 ----
- 7 files changed, 216 insertions(+), 31 deletions(-)
- rename tests/fsck-tests/044-invalid-extent-item-generation/{bad_extent_item_gen.img.xz => bad_extent_item_gen_for_data.img.xz} (100%)
- create mode 100644 tests/fsck-tests/044-invalid-extent-item-generation/bad_extent_item_gen_for_tree_block.img.xz
- delete mode 100755 tests/fsck-tests/044-invalid-extent-item-generation/test.sh
+ fs/btrfs/btrfs_inode.h  |   5 +
+ fs/btrfs/file.c         |  97 +++++++++-----
+ fs/btrfs/inode.c        | 115 ++---------------
+ fs/btrfs/ordered-data.c |  59 +++++++++
+ fs/btrfs/ordered-data.h |  11 ++
+ fs/btrfs/transaction.c  |  10 ++
+ fs/btrfs/transaction.h  |   7 ++
+ fs/btrfs/tree-log.c     | 272 +++++++++++++++++++++-------------------
+ fs/btrfs/tree-log.h     |  32 +++--
+ 9 files changed, 334 insertions(+), 274 deletions(-)
 
 -- 
-2.28.0
+2.26.2
 
