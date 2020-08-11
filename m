@@ -2,32 +2,32 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CC6A241A89
-	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Aug 2020 13:43:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1259F241A8A
+	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Aug 2020 13:43:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728767AbgHKLnk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 11 Aug 2020 07:43:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56916 "EHLO mail.kernel.org"
+        id S1728738AbgHKLny (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 11 Aug 2020 07:43:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56966 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728454AbgHKLnk (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 11 Aug 2020 07:43:40 -0400
+        id S1728454AbgHKLnw (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 11 Aug 2020 07:43:52 -0400
 Received: from debian8.Home (bl8-197-74.dsl.telepac.pt [85.241.197.74])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 07D7720578
-        for <linux-btrfs@vger.kernel.org>; Tue, 11 Aug 2020 11:43:38 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7554B20578
+        for <linux-btrfs@vger.kernel.org>; Tue, 11 Aug 2020 11:43:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597146219;
-        bh=0KTs081TAgP+0iBrIMTPbYN40uGeigtGYN1Iw8JWqZg=;
+        s=default; t=1597146230;
+        bh=32x5UsPJpTEHOhm4JFT1WTjAaod4KA3rI3MNuSyeF48=;
         h=From:To:Subject:Date:From;
-        b=PPu+yCyDku+bDFZ/BVyLvpKnx8o4VdT2WC67nojNywNnjF46yR7qBrQjpcQmBdc6d
-         TuYl0ZVDkSoHBCZ5JDei6vPf5MjRyfrfHI+ZbqHwNwop0yZnMcEJ9gbLgFQadapo0v
-         Rck7//w4ikVlg0vAlLcZBgeeCprrwqNpS5FHJN+U=
+        b=dFnhsZDjVDUWbCHkRz3CtFzXzGeoqqKHFQfdxaruOH/5HM52q2NiXOgtxFWKz6Qtd
+         Vv+s1IbMk/sqXUaCR+Spewn9ZI/ZKyc86Vpw2Hnz7Vhb0o0VzwMsLpDbIwkFujGdWn
+         FPhXOosvU0syby3yJVGr/8DS091zXSB703gO1vKE=
 From:   fdmanana@kernel.org
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 1/3] btrfs: do not take the log_mutex of the subvolume when pinning the log
-Date:   Tue, 11 Aug 2020 12:43:37 +0100
-Message-Id: <20200811114337.689881-1-fdmanana@kernel.org>
+Subject: [PATCH 2/3] btrfs: do not commit logs and transactions during link and rename operations
+Date:   Tue, 11 Aug 2020 12:43:48 +0100
+Message-Id: <20200811114348.692115-1-fdmanana@kernel.org>
 X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -38,28 +38,27 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-During a rename we pin the log to make sure no one commits a log that
-reflects an ongoing rename operation, as it might result in a committed
-log where it recorded the unlink of the old name without having recorded
-the new name. However we are taking the subvolume's log_mutex before
-incrementing the log_writers counter, which is not necessary since that
-counter is atomic and we only remove the old name from the log and add
-the new name to the log after we have incremented log_writers, ensuring
-that no one can commit the log after we have removed the old name from
-the log and before we added the new name to the log.
+Since commit d4682ba03ef618 ("Btrfs: sync log after logging new name") we
+started to commit logs, and fallback to transaction commits when we failed
+to log the new names or commit the logs, after link and rename operations
+when the target inodes (or their parents) were previously logged in the
+current transaction. This was to avoid losing directories despite an
+explicit fsync on them when they are ancestors of some inode that got a
+new named logged, due to a link or rename operation. However that adds the
+cost of starting IO and waiting for it to complete, which can cause higher
+latencies for applications.
 
-By taking the log_mutex lock we are just adding unnecessary contention on
-the lock, which can become visible for workloads that mix renames with
-fsyncs, writes for files opened with O_SYNC and unlink operations (if the
-inode or its parent were fsynced before in the current transaction).
+Instead of doing that, just make sure that when we log a new name for an
+inode we don't mark any of its ancestors as logged, so that if any one
+does an fsync against any of them, without doing any other change on them,
+the fsync commits the log. This way we only pay the cost of a log commit
+(or a transaction commit if something goes wrong or a new block group was
+created) if the application explicitly asks to fsync any of the parent
+directories.
 
-So just remove the lock and unlock of the subvolume's log_mutex at
-btrfs_pin_log_trans().
-
-Using dbench, which mixes different types of operations that end up taking
-that mutex (fsyncs, renames, unlinks and writes into files opened with
-O_SYNC) revealed some small gains. The following script that calls dbench
-was used:
+Using dbench, which mixes several filesystems operations including renames,
+revealed some significant latency gains. The following script that uses
+dbench was used to test this:
 
   #!/bin/bash
 
@@ -67,13 +66,13 @@ was used:
   MNT=/mnt/btrfs
   MOUNT_OPTIONS="-o ssd -o space_cache=v2"
   MKFS_OPTIONS="-m single -d single"
-  THREADS=32
+  THREADS=16
 
   echo "performance" | tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor
   mkfs.btrfs -f $MKFS_OPTIONS $DEV
   mount $MOUNT_OPTIONS $DEV $MNT
 
-  dbench -s -t 600 -D $MNT $THREADS
+  dbench -t 300 -D $MNT $THREADS
 
   umount $MNT
 
@@ -87,68 +86,435 @@ Results before this patch:
 
  Operation      Count    AvgLat    MaxLat
  ----------------------------------------
- NTCreateX    4410848     0.017   738.640
- Close        3240222     0.001     0.834
- Rename        186850     7.478  1272.476
- Unlink        890875     0.128   785.018
- Deltree          128     2.846    12.081
- Mkdir             64     0.002     0.003
- Qpathinfo    3997659     0.009    11.171
- Qfileinfo     701307     0.001     0.478
- Qfsinfo       733494     0.002     1.103
- Sfileinfo     359362     0.004     3.266
- Find         1546226     0.041     4.128
- WriteX       2202803     7.905  1376.989
- ReadX        6917775     0.003     3.887
- LockX          14392     0.002     0.043
- UnlockX        14392     0.001     0.085
- Flush         309225     0.128  1033.936
+ NTCreateX    10750455     0.011   155.088
+ Close        7896674     0.001     0.243
+ Rename        455222     2.158  1101.947
+ Unlink       2171189     0.067   121.638
+ Deltree          256     2.425     7.816
+ Mkdir            128     0.002     0.003
+ Qpathinfo    9744323     0.006    21.370
+ Qfileinfo    1707092     0.001     0.146
+ Qfsinfo      1786756     0.001    11.228
+ Sfileinfo     875612     0.003    21.263
+ Find         3767281     0.025     9.617
+ WriteX       5356924     0.011   211.390
+ ReadX        16852694     0.003    9.442
+ LockX          35008     0.002     0.119
+ UnlockX        35008     0.001     0.138
+ Flush         753458     4.252  1102.249
 
-Throughput 231.555 MB/sec (sync open)  32 clients  32 procs  max_latency=1376.993 ms
+Throughput 1128.35 MB/sec  16 clients  16 procs  max_latency=1102.255 ms
 
 Results after this patch:
 
-Operation      Count    AvgLat    MaxLat
- ----------------------------------------
- NTCreateX    4603244     0.017   232.776
- Close        3381299     0.001     1.041
- Rename        194871     7.251  1073.165
- Unlink        929730     0.133   119.233
- Deltree          128     2.871    10.199
- Mkdir             64     0.002     0.004
- Qpathinfo    4171343     0.009    11.317
- Qfileinfo     731227     0.001     1.635
- Qfsinfo       765079     0.002     3.568
- Sfileinfo     374881     0.004     1.220
- Find         1612964     0.041     4.675
- WriteX       2296720     7.569  1178.204
- ReadX        7213633     0.003     3.075
- LockX          14976     0.002     0.076
- UnlockX        14976     0.001     0.061
- Flush         322635     0.102   579.505
+16 clients, after
 
-Throughput 241.4 MB/sec (sync open)  32 clients  32 procs  max_latency=1178.207 ms
-(+4.3% throughput, -14.4% max latency)
+ Operation      Count    AvgLat    MaxLat
+ ----------------------------------------
+ NTCreateX    11471098     0.012   448.281
+ Close        8426396     0.001     0.925
+ Rename        485746     0.123   267.183
+ Unlink       2316477     0.080    63.433
+ Deltree          288     2.830    11.144
+ Mkdir            144     0.003     0.010
+ Qpathinfo    10397420     0.006    10.288
+ Qfileinfo    1822039     0.001     0.169
+ Qfsinfo      1906497     0.002    14.039
+ Sfileinfo     934433     0.004     2.438
+ Find         4019879     0.026    10.200
+ WriteX       5718932     0.011   200.985
+ ReadX        17981671     0.003    10.036
+ LockX          37352     0.002     0.076
+ UnlockX        37352     0.001     0.109
+ Flush         804018     5.015   778.033
+
+Throughput 1201.98 MB/sec  16 clients  16 procs  max_latency=778.036 ms
+(+6.5% throughput, -29.4% max latency, -75.8% rename latency)
+
+Test case generic/498 from fstests tests the scenario that the previously
+mentioned commit fixed.
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/tree-log.c | 2 --
- 1 file changed, 2 deletions(-)
+ fs/btrfs/inode.c    | 115 +++++---------------------------------------
+ fs/btrfs/tree-log.c | 100 +++++++++++++++++---------------------
+ fs/btrfs/tree-log.h |  14 ++----
+ 3 files changed, 60 insertions(+), 169 deletions(-)
 
-diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-index 696dd861cc3c..4e7ef3fd5288 100644
---- a/fs/btrfs/tree-log.c
-+++ b/fs/btrfs/tree-log.c
-@@ -215,9 +215,7 @@ static int join_running_log_trans(struct btrfs_root *root)
-  */
- void btrfs_pin_log_trans(struct btrfs_root *root)
- {
--	mutex_lock(&root->log_mutex);
- 	atomic_inc(&root->log_writers);
--	mutex_unlock(&root->log_mutex);
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index 96064eb41d55..a6eaaa039447 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -6373,7 +6373,6 @@ static int btrfs_link(struct dentry *old_dentry, struct inode *dir,
+ 		drop_inode = 1;
+ 	} else {
+ 		struct dentry *parent = dentry->d_parent;
+-		int ret;
+ 
+ 		err = btrfs_update_inode(trans, root, inode);
+ 		if (err)
+@@ -6388,12 +6387,7 @@ static int btrfs_link(struct dentry *old_dentry, struct inode *dir,
+ 				goto fail;
+ 		}
+ 		d_instantiate(dentry, inode);
+-		ret = btrfs_log_new_name(trans, BTRFS_I(inode), NULL, parent,
+-					 true, NULL);
+-		if (ret == BTRFS_NEED_TRANS_COMMIT) {
+-			err = btrfs_commit_transaction(trans);
+-			trans = NULL;
+-		}
++		btrfs_log_new_name(trans, BTRFS_I(inode), NULL, parent);
+ 	}
+ 
+ fail:
+@@ -8775,27 +8769,19 @@ static int btrfs_rename_exchange(struct inode *old_dir,
+ 	struct inode *new_inode = new_dentry->d_inode;
+ 	struct inode *old_inode = old_dentry->d_inode;
+ 	struct timespec64 ctime = current_time(old_inode);
+-	struct dentry *parent;
+ 	u64 old_ino = btrfs_ino(BTRFS_I(old_inode));
+ 	u64 new_ino = btrfs_ino(BTRFS_I(new_inode));
+ 	u64 old_idx = 0;
+ 	u64 new_idx = 0;
+ 	int ret;
++	int ret2;
+ 	bool root_log_pinned = false;
+ 	bool dest_log_pinned = false;
+-	struct btrfs_log_ctx ctx_root;
+-	struct btrfs_log_ctx ctx_dest;
+-	bool sync_log_root = false;
+-	bool sync_log_dest = false;
+-	bool commit_transaction = false;
+ 
+ 	/* we only allow rename subvolume link between subvolumes */
+ 	if (old_ino != BTRFS_FIRST_FREE_OBJECTID && root != dest)
+ 		return -EXDEV;
+ 
+-	btrfs_init_log_ctx(&ctx_root, old_inode);
+-	btrfs_init_log_ctx(&ctx_dest, new_inode);
+-
+ 	/* close the race window with snapshot create/destroy ioctl */
+ 	if (old_ino == BTRFS_FIRST_FREE_OBJECTID ||
+ 	    new_ino == BTRFS_FIRST_FREE_OBJECTID)
+@@ -8937,30 +8923,14 @@ static int btrfs_rename_exchange(struct inode *old_dir,
+ 		BTRFS_I(new_inode)->dir_index = new_idx;
+ 
+ 	if (root_log_pinned) {
+-		parent = new_dentry->d_parent;
+-		ret = btrfs_log_new_name(trans, BTRFS_I(old_inode),
+-					 BTRFS_I(old_dir), parent,
+-					 false, &ctx_root);
+-		if (ret == BTRFS_NEED_LOG_SYNC)
+-			sync_log_root = true;
+-		else if (ret == BTRFS_NEED_TRANS_COMMIT)
+-			commit_transaction = true;
+-		ret = 0;
++		btrfs_log_new_name(trans, BTRFS_I(old_inode), BTRFS_I(old_dir),
++				   new_dentry->d_parent);
+ 		btrfs_end_log_trans(root);
+ 		root_log_pinned = false;
+ 	}
+ 	if (dest_log_pinned) {
+-		if (!commit_transaction) {
+-			parent = old_dentry->d_parent;
+-			ret = btrfs_log_new_name(trans, BTRFS_I(new_inode),
+-						 BTRFS_I(new_dir), parent,
+-						 false, &ctx_dest);
+-			if (ret == BTRFS_NEED_LOG_SYNC)
+-				sync_log_dest = true;
+-			else if (ret == BTRFS_NEED_TRANS_COMMIT)
+-				commit_transaction = true;
+-			ret = 0;
+-		}
++		btrfs_log_new_name(trans, BTRFS_I(new_inode), BTRFS_I(new_dir),
++				   old_dentry->d_parent);
+ 		btrfs_end_log_trans(dest);
+ 		dest_log_pinned = false;
+ 	}
+@@ -8993,46 +8963,13 @@ static int btrfs_rename_exchange(struct inode *old_dir,
+ 			dest_log_pinned = false;
+ 		}
+ 	}
+-	if (!ret && sync_log_root && !commit_transaction) {
+-		ret = btrfs_sync_log(trans, BTRFS_I(old_inode)->root,
+-				     &ctx_root);
+-		if (ret)
+-			commit_transaction = true;
+-	}
+-	if (!ret && sync_log_dest && !commit_transaction) {
+-		ret = btrfs_sync_log(trans, BTRFS_I(new_inode)->root,
+-				     &ctx_dest);
+-		if (ret)
+-			commit_transaction = true;
+-	}
+-	if (commit_transaction) {
+-		/*
+-		 * We may have set commit_transaction when logging the new name
+-		 * in the destination root, in which case we left the source
+-		 * root context in the list of log contextes. So make sure we
+-		 * remove it to avoid invalid memory accesses, since the context
+-		 * was allocated in our stack frame.
+-		 */
+-		if (sync_log_root) {
+-			mutex_lock(&root->log_mutex);
+-			list_del_init(&ctx_root.list);
+-			mutex_unlock(&root->log_mutex);
+-		}
+-		ret = btrfs_commit_transaction(trans);
+-	} else {
+-		int ret2;
+-
+-		ret2 = btrfs_end_transaction(trans);
+-		ret = ret ? ret : ret2;
+-	}
++	ret2 = btrfs_end_transaction(trans);
++	ret = ret ? ret : ret2;
+ out_notrans:
+ 	if (new_ino == BTRFS_FIRST_FREE_OBJECTID ||
+ 	    old_ino == BTRFS_FIRST_FREE_OBJECTID)
+ 		up_read(&fs_info->subvol_sem);
+ 
+-	ASSERT(list_empty(&ctx_root.list));
+-	ASSERT(list_empty(&ctx_dest.list));
+-
+ 	return ret;
  }
  
+@@ -9100,11 +9037,9 @@ static int btrfs_rename(struct inode *old_dir, struct dentry *old_dentry,
+ 	struct inode *old_inode = d_inode(old_dentry);
+ 	u64 index = 0;
+ 	int ret;
++	int ret2;
+ 	u64 old_ino = btrfs_ino(BTRFS_I(old_inode));
+ 	bool log_pinned = false;
+-	struct btrfs_log_ctx ctx;
+-	bool sync_log = false;
+-	bool commit_transaction = false;
+ 
+ 	if (btrfs_ino(BTRFS_I(new_dir)) == BTRFS_EMPTY_SUBVOL_DIR_OBJECTID)
+ 		return -EPERM;
+@@ -9254,17 +9189,8 @@ static int btrfs_rename(struct inode *old_dir, struct dentry *old_dentry,
+ 		BTRFS_I(old_inode)->dir_index = index;
+ 
+ 	if (log_pinned) {
+-		struct dentry *parent = new_dentry->d_parent;
+-
+-		btrfs_init_log_ctx(&ctx, old_inode);
+-		ret = btrfs_log_new_name(trans, BTRFS_I(old_inode),
+-					 BTRFS_I(old_dir), parent,
+-					 false, &ctx);
+-		if (ret == BTRFS_NEED_LOG_SYNC)
+-			sync_log = true;
+-		else if (ret == BTRFS_NEED_TRANS_COMMIT)
+-			commit_transaction = true;
+-		ret = 0;
++		btrfs_log_new_name(trans, BTRFS_I(old_inode), BTRFS_I(old_dir),
++				   new_dentry->d_parent);
+ 		btrfs_end_log_trans(root);
+ 		log_pinned = false;
+ 	}
+@@ -9301,23 +9227,8 @@ static int btrfs_rename(struct inode *old_dir, struct dentry *old_dentry,
+ 		btrfs_end_log_trans(root);
+ 		log_pinned = false;
+ 	}
+-	if (!ret && sync_log) {
+-		ret = btrfs_sync_log(trans, BTRFS_I(old_inode)->root, &ctx);
+-		if (ret)
+-			commit_transaction = true;
+-	} else if (sync_log) {
+-		mutex_lock(&root->log_mutex);
+-		list_del(&ctx.list);
+-		mutex_unlock(&root->log_mutex);
+-	}
+-	if (commit_transaction) {
+-		ret = btrfs_commit_transaction(trans);
+-	} else {
+-		int ret2;
+-
+-		ret2 = btrfs_end_transaction(trans);
+-		ret = ret ? ret : ret2;
+-	}
++	ret2 = btrfs_end_transaction(trans);
++	ret = ret ? ret : ret2;
+ out_notrans:
+ 	if (old_ino == BTRFS_FIRST_FREE_OBJECTID)
+ 		up_read(&fs_info->subvol_sem);
+diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
+index 4e7ef3fd5288..1cc7ab169993 100644
+--- a/fs/btrfs/tree-log.c
++++ b/fs/btrfs/tree-log.c
+@@ -176,7 +176,7 @@ static int start_log_trans(struct btrfs_trans_handle *trans,
+ 
+ 	atomic_inc(&root->log_batch);
+ 	atomic_inc(&root->log_writers);
+-	if (ctx) {
++	if (ctx && !ctx->logging_new_name) {
+ 		int index = root->log_transid % 2;
+ 		list_add_tail(&ctx->list, &root->log_ctxs[index]);
+ 		ctx->log_transid = root->log_transid;
+@@ -5335,19 +5335,34 @@ static int btrfs_log_inode(struct btrfs_trans_handle *trans,
+ 	}
+ 
+ 	/*
+-	 * Don't update last_log_commit if we logged that an inode exists after
+-	 * it was loaded to memory (full_sync bit set).
+-	 * This is to prevent data loss when we do a write to the inode, then
+-	 * the inode gets evicted after all delalloc was flushed, then we log
+-	 * it exists (due to a rename for example) and then fsync it. This last
+-	 * fsync would do nothing (not logging the extents previously written).
++	 * If we are logging that an ancestor inode exists as part of logging a
++	 * new name from a link or rename operation, don't mark the inode as
++	 * logged - otherwise if an explicit fsync is made against an ancestor,
++	 * the fsync considers the inode in the log and doesn't sync the log,
++	 * resulting in the ancestor missing after a power failure unless the
++	 * log was synced as part of an fsync against any other unrelated inode.
++	 * So keep it simple for this case and just don't flag the ancestors as
++	 * logged.
+ 	 */
+-	spin_lock(&inode->lock);
+-	inode->logged_trans = trans->transid;
+-	if (inode_only != LOG_INODE_EXISTS ||
+-	    !test_bit(BTRFS_INODE_NEEDS_FULL_SYNC, &inode->runtime_flags))
+-		inode->last_log_commit = inode->last_sub_trans;
+-	spin_unlock(&inode->lock);
++	if (!ctx ||
++	    !(S_ISDIR(inode->vfs_inode.i_mode) && ctx->logging_new_name &&
++	      &inode->vfs_inode != ctx->inode)) {
++		spin_lock(&inode->lock);
++		inode->logged_trans = trans->transid;
++		/*
++		 * Don't update last_log_commit if we logged that an inode exists
++		 * after it was loaded to memory (full_sync bit set).
++		 * This is to prevent data loss when we do a write to the inode,
++		 * then the inode gets evicted after all delalloc was flushed,
++		 * then we log it exists (due to a rename for example) and then
++		 * fsync it. This last fsync would do nothing (not logging the
++		 * extents previously written).
++		 */
++		if (inode_only != LOG_INODE_EXISTS ||
++		    !test_bit(BTRFS_INODE_NEEDS_FULL_SYNC, &inode->runtime_flags))
++			inode->last_log_commit = inode->last_sub_trans;
++		spin_unlock(&inode->lock);
++	}
+ out_unlock:
+ 	mutex_unlock(&inode->log_mutex);
+ 
+@@ -6367,26 +6382,13 @@ void btrfs_record_snapshot_destroy(struct btrfs_trans_handle *trans,
  /*
+  * Call this after adding a new name for a file and it will properly
+  * update the log to reflect the new name.
+- *
+- * @ctx can not be NULL when @sync_log is false, and should be NULL when it's
+- * true (because it's not used).
+- *
+- * Return value depends on whether @sync_log is true or false.
+- * When true: returns BTRFS_NEED_TRANS_COMMIT if the transaction needs to be
+- *            committed by the caller, and BTRFS_DONT_NEED_TRANS_COMMIT
+- *            otherwise.
+- * When false: returns BTRFS_DONT_NEED_LOG_SYNC if the caller does not need to
+- *             to sync the log, BTRFS_NEED_LOG_SYNC if it needs to sync the log,
+- *             or BTRFS_NEED_TRANS_COMMIT if the transaction needs to be
+- *             committed (without attempting to sync the log).
+  */
+-int btrfs_log_new_name(struct btrfs_trans_handle *trans,
++void btrfs_log_new_name(struct btrfs_trans_handle *trans,
+ 			struct btrfs_inode *inode, struct btrfs_inode *old_dir,
+-			struct dentry *parent,
+-			bool sync_log, struct btrfs_log_ctx *ctx)
++			struct dentry *parent)
+ {
+ 	struct btrfs_fs_info *fs_info = trans->fs_info;
+-	int ret;
++	struct btrfs_log_ctx ctx;
+ 
+ 	/*
+ 	 * this will force the logging code to walk the dentry chain
+@@ -6401,34 +6403,18 @@ int btrfs_log_new_name(struct btrfs_trans_handle *trans,
+ 	 */
+ 	if (inode->logged_trans <= fs_info->last_trans_committed &&
+ 	    (!old_dir || old_dir->logged_trans <= fs_info->last_trans_committed))
+-		return sync_log ? BTRFS_DONT_NEED_TRANS_COMMIT :
+-			BTRFS_DONT_NEED_LOG_SYNC;
+-
+-	if (sync_log) {
+-		struct btrfs_log_ctx ctx2;
+-
+-		btrfs_init_log_ctx(&ctx2, &inode->vfs_inode);
+-		ret = btrfs_log_inode_parent(trans, inode, parent, 0, LLONG_MAX,
+-					     LOG_INODE_EXISTS, &ctx2);
+-		if (ret == BTRFS_NO_LOG_SYNC)
+-			return BTRFS_DONT_NEED_TRANS_COMMIT;
+-		else if (ret)
+-			return BTRFS_NEED_TRANS_COMMIT;
+-
+-		ret = btrfs_sync_log(trans, inode->root, &ctx2);
+-		if (ret)
+-			return BTRFS_NEED_TRANS_COMMIT;
+-		return BTRFS_DONT_NEED_TRANS_COMMIT;
+-	}
+-
+-	ASSERT(ctx);
+-	ret = btrfs_log_inode_parent(trans, inode, parent, 0, LLONG_MAX,
+-				     LOG_INODE_EXISTS, ctx);
+-	if (ret == BTRFS_NO_LOG_SYNC)
+-		return BTRFS_DONT_NEED_LOG_SYNC;
+-	else if (ret)
+-		return BTRFS_NEED_TRANS_COMMIT;
++		return;
+ 
+-	return BTRFS_NEED_LOG_SYNC;
++	btrfs_init_log_ctx(&ctx, &inode->vfs_inode);
++	ctx.logging_new_name = true;
++	/*
++	 * We don't care about the return value. If we fail to log the new name
++	 * then we know the next attempt to sync the log will fallback to a full
++	 * transaction commit (due to a call to btrfs_set_log_full_commit()), so
++	 * we don't need to worry about getting a log committed that has an
++	 * inconsistent state after a rename operation.
++	 */
++	btrfs_log_inode_parent(trans, inode, parent, 0, LLONG_MAX,
++			       LOG_INODE_EXISTS, &ctx);
+ }
+ 
+diff --git a/fs/btrfs/tree-log.h b/fs/btrfs/tree-log.h
+index 132e43d29034..ddfc6789d9bf 100644
+--- a/fs/btrfs/tree-log.h
++++ b/fs/btrfs/tree-log.h
+@@ -16,6 +16,7 @@ struct btrfs_log_ctx {
+ 	int log_ret;
+ 	int log_transid;
+ 	bool log_new_dentries;
++	bool logging_new_name;
+ 	struct inode *inode;
+ 	struct list_head list;
+ };
+@@ -26,6 +27,7 @@ static inline void btrfs_init_log_ctx(struct btrfs_log_ctx *ctx,
+ 	ctx->log_ret = 0;
+ 	ctx->log_transid = 0;
+ 	ctx->log_new_dentries = false;
++	ctx->logging_new_name = false;
+ 	ctx->inode = inode;
+ 	INIT_LIST_HEAD(&ctx->list);
+ }
+@@ -67,16 +69,8 @@ void btrfs_record_unlink_dir(struct btrfs_trans_handle *trans,
+ 			     int for_rename);
+ void btrfs_record_snapshot_destroy(struct btrfs_trans_handle *trans,
+ 				   struct btrfs_inode *dir);
+-/* Return values for btrfs_log_new_name() */
+-enum {
+-	BTRFS_DONT_NEED_TRANS_COMMIT,
+-	BTRFS_NEED_TRANS_COMMIT,
+-	BTRFS_DONT_NEED_LOG_SYNC,
+-	BTRFS_NEED_LOG_SYNC,
+-};
+-int btrfs_log_new_name(struct btrfs_trans_handle *trans,
++void btrfs_log_new_name(struct btrfs_trans_handle *trans,
+ 			struct btrfs_inode *inode, struct btrfs_inode *old_dir,
+-			struct dentry *parent,
+-			bool sync_log, struct btrfs_log_ctx *ctx);
++			struct dentry *parent);
+ 
+ #endif
 -- 
 2.26.2
 
