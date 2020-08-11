@@ -2,312 +2,328 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49C372419D8
-	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Aug 2020 12:38:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BAB82419F7
+	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Aug 2020 12:53:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728628AbgHKKil (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 11 Aug 2020 06:38:41 -0400
-Received: from mout.gmx.net ([212.227.17.21]:33335 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728280AbgHKKih (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 11 Aug 2020 06:38:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1597142312;
-        bh=END/xOABefdS2wxVXiDsO8KVvCfC1IrZDQZq9YzOXJU=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=ABvPuQZyHzsfA+ZqlWnohFM3I7TqVj+amVbePfnT6KewBzAg8CPAGwzx9GH8fpfF8
-         JgYHYdcp2WCuCr6TdXiOXqt9BUjWGXnNJbZ25e+jvD9OvZF/Yg0dORNhkDGBghxhbP
-         p1sxnh8769vtKTWwTfq7R4x22WvC0Y/h1BxrFgGQ=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([45.77.180.217]) by mail.gmx.com (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MXGr8-1kCTtp1T8Y-00Yh7e; Tue, 11
- Aug 2020 12:38:31 +0200
-Subject: Re: BTRFS suddenly moving to read-only
-To:     Thommandra Gowtham <trgowtham123@gmail.com>,
-        linux-btrfs@vger.kernel.org
-References: <CA+XNQ=iupWN6ck5M0hUQ-+470F9PKdoKKUUt+tmQOWoC=zterg@mail.gmail.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAVQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWCnQUJCWYC
- bgAKCRDCPZHzoSX+qAR8B/94VAsSNygx1C6dhb1u1Wp1Jr/lfO7QIOK/nf1PF0VpYjTQ2au8
- ihf/RApTna31sVjBx3jzlmpy+lDoPdXwbI3Czx1PwDbdhAAjdRbvBmwM6cUWyqD+zjVm4RTG
- rFTPi3E7828YJ71Vpda2qghOYdnC45xCcjmHh8FwReLzsV2A6FtXsvd87bq6Iw2axOHVUax2
- FGSbardMsHrya1dC2jF2R6n0uxaIc1bWGweYsq0LXvLcvjWH+zDgzYCUB0cfb+6Ib/ipSCYp
- 3i8BevMsTs62MOBmKz7til6Zdz0kkqDdSNOq8LgWGLOwUTqBh71+lqN2XBpTDu1eLZaNbxSI
- ilaVuQENBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAGJATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAK
- CRDCPZHzoSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gy
- fmtBnUaifnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsS
- oCEEynby72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAk
- ZkA523JGap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gG
- UO/iD/T5oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <f8742974-69b2-a0e9-ff99-4c61dc4f9ff0@gmx.com>
-Date:   Tue, 11 Aug 2020 18:38:28 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        id S1728506AbgHKKxe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 11 Aug 2020 06:53:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45816 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728326AbgHKKxd (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 11 Aug 2020 06:53:33 -0400
+Received: from mail-vs1-xe42.google.com (mail-vs1-xe42.google.com [IPv6:2607:f8b0:4864:20::e42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F116C06174A
+        for <linux-btrfs@vger.kernel.org>; Tue, 11 Aug 2020 03:53:33 -0700 (PDT)
+Received: by mail-vs1-xe42.google.com with SMTP id q13so5742531vsn.9
+        for <linux-btrfs@vger.kernel.org>; Tue, 11 Aug 2020 03:53:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc:content-transfer-encoding;
+        bh=rnUjTRLErLPJVf+S+7z/7mxRKJ2PEa/ov37PNRUSqIM=;
+        b=npeiStJkFaWyJcHUFiqvfO9QsjLuqBdh7L+gFW3mFQ78oXnUoGNMP2flRQBYDFXKc1
+         IiqY1fL0SRsk5UlLfT8Mu00rSCnMcggokkf6r9nQn19a2zXJU4xXnuQEExb+v5iImAy0
+         SL1beOqAl8eIfYfjcpyH0VWrFGC1PeWp9uAyg0bWpmiA8qFZEsSCWfh2b2GP6InuwgWL
+         pU8PRvi1Y8GVez/dsvwuTcwp1YOySyVfPb65N1iWP8huIOb+76lUzqgcJMzMQNlKWeWP
+         tqzUlFogEUdou3Xi1YQZ5+9GAihJj1icw1sPbezMuOIeemNUBinZNq1WUldWzqcKc2gb
+         ZMvw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc:content-transfer-encoding;
+        bh=rnUjTRLErLPJVf+S+7z/7mxRKJ2PEa/ov37PNRUSqIM=;
+        b=rh2izhBSBy0oWa1oW6k5IuOB/i86UhLPvzPkb5BcC2idMKdcgSODnMp9DFJ5X16SqE
+         cmRrZgy5Ud5kQDLOEgKAlwDW5ERIumVsZE9f2YKr9MzvWuEsWNotxFoJvvhUM8CmyTVx
+         9u83FCtW8h01gQB0gtBeCfhNYflaJ2x3KU/HL5MBKciWLtU8xVf4Wz+1r0VdJwR4eAja
+         0UX9a5i0NNla9AzheQ9NYySNfinTIshcOw+Dx02VqfJdnUIDR8nJKDHVBoZOg5NF9io/
+         xZj2AB60eLH6i4OonPN5f1xIWdtfGkFWlgSejX1TwW+cfIChL8kHkcGWe/ub0uuFAqgQ
+         PC5A==
+X-Gm-Message-State: AOAM531jvw3uhVTdpUe30fjLTFbESl/z6WxyUIQhmLgkqnp3ujD2YgZ2
+        OIg32Vp1HuRtWq3LlJHTfWXQ3JESa5/ERYD6ONI=
+X-Google-Smtp-Source: ABdhPJwlmqLdwI1Oq86zLgJb+of4E2SA8S2xLzaui0wrvAmxnAic0LFN66/oPJOQ7+MW/AwxYWZ6awivGn3OFcEoJdM=
+X-Received: by 2002:a05:6102:1ca:: with SMTP id s10mr21440318vsq.14.1597143212314;
+ Tue, 11 Aug 2020 03:53:32 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CA+XNQ=iupWN6ck5M0hUQ-+470F9PKdoKKUUt+tmQOWoC=zterg@mail.gmail.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="Yt5C4gewvBZ4vl0heQCtQAq5Gkmqz7ljs"
-X-Provags-ID: V03:K1:HQnXJI5JB4bRO+9ANmXeE9evSiho1eit5EAhPh+iI+fe58oFLok
- bzt6a0Y+/x1a6aWaAwf0MwvK9O+VyC5m+4w6aLU9WHHlE6LYqivMh2P6Wux9Pov25O92Iqk
- kwXbzuX94PXrdkOI7Aoo6BQ3D/N3tuFkxrzzYnQWZ6hXHpEF4vVCkRwTSyxETX/CGsRa3n+
- cwtOteTkzuoeK24xEmTJw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:H6UpUVNmHYg=:evkZfxvP9DfbdVxKHLa2rC
- k8213Jtr641lUTaYzUkHalCxJzdy+FIna4IanpPCKifg24l69BsSSOw5ApMVVEHGZsAvJykuP
- w99XazL9xrK/5rYrN9Wvt2pOEEfKGeoHHniTIl0aowQQMrBi/PYYp7IllW6SpoT/YasREdwne
- YujQzviozY/Dtq/uWIMTtQMcz1GQdybxsw8O17jxBrcvLpGo8TVnWsg03BWISqxaRx0/1GN9k
- SkjKlsu/Yu28JT7/fZvzfVSTHigcBHf/xfdAlFqnsiSmEkzvvEZ1xgRCCEUXSBBQzgQTl6PLr
- C2R3nHF6iO+qCD3tHr+0osD0e/oh+0lkfu/7wBsq4pr96vFdc1NhjeoHlzp5hQRat2hwi8+7G
- R7DAqUz84PZcVYxMkzZaI9EgEE/l/GvW2Cb6lAGzX1FmyawhCYKd8QJQOMaD9kHuyYwMh3JEO
- TwvuuQ2j4AIWnINNtsrgG2JigT43J1CDVxoGDJYxe8sRxlcs4NxSqqS7dXw4DSVeoEkHR/e82
- DvqZJo7neW96Hw4NYrhkJ0VKvslR50wq0vFmZXif9wFKAs9vp/zc3wm63yLvxpdX3OT2t7bhV
- nQxxMijWR0pbOn2Y7dZofjln24VUAONxy7QvTNGvwfbZZYyA3/jHzZ26JMQ1XYhahVvDXUrNk
- WT+XigIwjr6scuO0pPtzRoN91Us1CSHJLeRCz9eMFD94xdQo55hnZlW8zzJJz9eaJKrykKGBO
- X2Am/Lm1GmybHI/X/hwwTz/nVPFPx/0zCj1xiJOj48KiX72VB95JzRmf31gFCN+qgT6X7unPb
- Ax3M/sY45KV9WZimmuS5LPaDFMhOJTYYwZBh2AqnCuFVEtSZHt5iZ0j1cDyItMtwTZ6e4qn95
- T1M6BZFle9qNtWJhtf1O9C6YsrM+NbclAuWlOLelHin6oQX2QhKNhsDXWMch7hjVbR/xn64wp
- xGearZslXMEfm7jfl/mIGDLwkuT9zvrQH8oABHw6iDAU8OKPFjE82+JbURUGdk3vzVBnjwsLk
- Fau3ifKKXbphRj87HfXuUDFU0Qy7VdNG7uHXP28fUZfRMuJBVUwaJnARdeREgRBVdsM6cSmPV
- jLWgxvfjOggQIGD21W9yBMSI0HZmBvooAlzzQ/Pg7Wc6BgSzUYQV9MMrp+CivzWVtEZ5grPI9
- Rkg2fuCS0V9rpSw0zSZjv1qsmPNKvg8K39dd0ZjFdOy50DJ9XwjY+t5fjg3pVRd3gLlSBWWHx
- U9bx413LSGbkY0GF0MLvHy6nWI+5u5FeQ4S6XEQ==
+References: <20200810154242.782802-1-josef@toxicpanda.com> <20200810154242.782802-4-josef@toxicpanda.com>
+In-Reply-To: <20200810154242.782802-4-josef@toxicpanda.com>
+Reply-To: fdmanana@gmail.com
+From:   Filipe Manana <fdmanana@gmail.com>
+Date:   Tue, 11 Aug 2020 11:53:21 +0100
+Message-ID: <CAL3q7H7K71=yv88Y9YHEu4ie6FEJRcV8TgUOkQ4HnAPCMRoAbA@mail.gmail.com>
+Subject: Re: [PATCH 03/17] btrfs: do not hold device_list_mutex when closing devices
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>, kernel-team@fb.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---Yt5C4gewvBZ4vl0heQCtQAq5Gkmqz7ljs
-Content-Type: multipart/mixed; boundary="qs4pxg1veXf9hnnxma5uW3qU54tY1HFcY"
+On Mon, Aug 10, 2020 at 4:44 PM Josef Bacik <josef@toxicpanda.com> wrote:
+>
+> The following lockdep splat
+>
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D
+> WARNING: possible circular locking dependency detected
+> 5.8.0-rc7-00169-g87212851a027-dirty #929 Not tainted
+> ------------------------------------------------------
+> fsstress/8739 is trying to acquire lock:
+> ffff88bfd0eb0c90 (&fs_info->reloc_mutex){+.+.}-{3:3}, at: btrfs_record_ro=
+ot_in_trans+0x43/0x70
+>
+> but task is already holding lock:
+> ffff88bfbd16e538 (sb_pagefaults){.+.+}-{0:0}, at: btrfs_page_mkwrite+0x6a=
+/0x4a0
+>
+> which lock already depends on the new lock.
+>
+> the existing dependency chain (in reverse order) is:
+>
+> -> #10 (sb_pagefaults){.+.+}-{0:0}:
+>        __sb_start_write+0x129/0x210
+>        btrfs_page_mkwrite+0x6a/0x4a0
+>        do_page_mkwrite+0x4d/0xc0
+>        handle_mm_fault+0x103c/0x1730
+>        exc_page_fault+0x340/0x660
+>        asm_exc_page_fault+0x1e/0x30
+>
+> -> #9 (&mm->mmap_lock#2){++++}-{3:3}:
+>        __might_fault+0x68/0x90
+>        _copy_to_user+0x1e/0x80
+>        perf_read+0x141/0x2c0
+>        vfs_read+0xad/0x1b0
+>        ksys_read+0x5f/0xe0
+>        do_syscall_64+0x50/0x90
+>        entry_SYSCALL_64_after_hwframe+0x44/0xa9
+>
+> -> #8 (&cpuctx_mutex){+.+.}-{3:3}:
+>        __mutex_lock+0x9f/0x930
+>        perf_event_init_cpu+0x88/0x150
+>        perf_event_init+0x1db/0x20b
+>        start_kernel+0x3ae/0x53c
+>        secondary_startup_64+0xa4/0xb0
+>
+> -> #7 (pmus_lock){+.+.}-{3:3}:
+>        __mutex_lock+0x9f/0x930
+>        perf_event_init_cpu+0x4f/0x150
+>        cpuhp_invoke_callback+0xb1/0x900
+>        _cpu_up.constprop.26+0x9f/0x130
+>        cpu_up+0x7b/0xc0
+>        bringup_nonboot_cpus+0x4f/0x60
+>        smp_init+0x26/0x71
+>        kernel_init_freeable+0x110/0x258
+>        kernel_init+0xa/0x103
+>        ret_from_fork+0x1f/0x30
+>
+> -> #6 (cpu_hotplug_lock){++++}-{0:0}:
+>        cpus_read_lock+0x39/0xb0
+>        kmem_cache_create_usercopy+0x28/0x230
+>        kmem_cache_create+0x12/0x20
+>        bioset_init+0x15e/0x2b0
+>        init_bio+0xa3/0xaa
+>        do_one_initcall+0x5a/0x2e0
+>        kernel_init_freeable+0x1f4/0x258
+>        kernel_init+0xa/0x103
+>        ret_from_fork+0x1f/0x30
+>
+> -> #5 (bio_slab_lock){+.+.}-{3:3}:
+>        __mutex_lock+0x9f/0x930
+>        bioset_init+0xbc/0x2b0
+>        __blk_alloc_queue+0x6f/0x2d0
+>        blk_mq_init_queue_data+0x1b/0x70
+>        loop_add+0x110/0x290 [loop]
+>        fq_codel_tcf_block+0x12/0x20 [sch_fq_codel]
+>        do_one_initcall+0x5a/0x2e0
+>        do_init_module+0x5a/0x220
+>        load_module+0x2459/0x26e0
+>        __do_sys_finit_module+0xba/0xe0
+>        do_syscall_64+0x50/0x90
+>        entry_SYSCALL_64_after_hwframe+0x44/0xa9
+>
+> -> #4 (loop_ctl_mutex){+.+.}-{3:3}:
+>        __mutex_lock+0x9f/0x930
+>        lo_open+0x18/0x50 [loop]
+>        __blkdev_get+0xec/0x570
+>        blkdev_get+0xe8/0x150
+>        do_dentry_open+0x167/0x410
+>        path_openat+0x7c9/0xa80
+>        do_filp_open+0x93/0x100
+>        do_sys_openat2+0x22a/0x2e0
+>        do_sys_open+0x4b/0x80
+>        do_syscall_64+0x50/0x90
+>        entry_SYSCALL_64_after_hwframe+0x44/0xa9
+>
+> -> #3 (&bdev->bd_mutex){+.+.}-{3:3}:
+>        __mutex_lock+0x9f/0x930
+>        blkdev_put+0x1d/0x120
+>        close_fs_devices.part.31+0x84/0x130
+>        btrfs_close_devices+0x44/0xb0
+>        close_ctree+0x296/0x2b2
+>        generic_shutdown_super+0x69/0x100
+>        kill_anon_super+0xe/0x30
+>        btrfs_kill_super+0x12/0x20
+>        deactivate_locked_super+0x29/0x60
+>        cleanup_mnt+0xb8/0x140
+>        task_work_run+0x6d/0xb0
+>        __prepare_exit_to_usermode+0x1cc/0x1e0
+>        do_syscall_64+0x5c/0x90
+>        entry_SYSCALL_64_after_hwframe+0x44/0xa9
+>
+> -> #2 (&fs_devs->device_list_mutex){+.+.}-{3:3}:
+>        __mutex_lock+0x9f/0x930
+>        btrfs_run_dev_stats+0x49/0x480
+>        commit_cowonly_roots+0xb5/0x2a0
+>        btrfs_commit_transaction+0x516/0xa60
+>        sync_filesystem+0x6b/0x90
+>        generic_shutdown_super+0x22/0x100
+>        kill_anon_super+0xe/0x30
+>        btrfs_kill_super+0x12/0x20
+>        deactivate_locked_super+0x29/0x60
+>        cleanup_mnt+0xb8/0x140
+>        task_work_run+0x6d/0xb0
+>        __prepare_exit_to_usermode+0x1cc/0x1e0
+>        do_syscall_64+0x5c/0x90
+>        entry_SYSCALL_64_after_hwframe+0x44/0xa9
+>
+> -> #1 (&fs_info->tree_log_mutex){+.+.}-{3:3}:
+>        __mutex_lock+0x9f/0x930
+>        btrfs_commit_transaction+0x4bb/0xa60
+>        sync_filesystem+0x6b/0x90
+>        generic_shutdown_super+0x22/0x100
+>        kill_anon_super+0xe/0x30
+>        btrfs_kill_super+0x12/0x20
+>        deactivate_locked_super+0x29/0x60
+>        cleanup_mnt+0xb8/0x140
+>        task_work_run+0x6d/0xb0
+>        __prepare_exit_to_usermode+0x1cc/0x1e0
+>        do_syscall_64+0x5c/0x90
+>        entry_SYSCALL_64_after_hwframe+0x44/0xa9
+>
+> -> #0 (&fs_info->reloc_mutex){+.+.}-{3:3}:
+>        __lock_acquire+0x1272/0x2310
+>        lock_acquire+0x9e/0x360
+>        __mutex_lock+0x9f/0x930
+>        btrfs_record_root_in_trans+0x43/0x70
+>        start_transaction+0xd1/0x5d0
+>        btrfs_dirty_inode+0x42/0xd0
+>        file_update_time+0xc8/0x110
+>        btrfs_page_mkwrite+0x10c/0x4a0
+>        do_page_mkwrite+0x4d/0xc0
+>        handle_mm_fault+0x103c/0x1730
+>        exc_page_fault+0x340/0x660
+>        asm_exc_page_fault+0x1e/0x30
+>
+> other info that might help us debug this:
+>
+> Chain exists of:
+>   &fs_info->reloc_mutex --> &mm->mmap_lock#2 --> sb_pagefaults
+>
+>  Possible unsafe locking scenario:
+>
+>        CPU0                    CPU1
+>        ----                    ----
+>   lock(sb_pagefaults);
+>                                lock(&mm->mmap_lock#2);
+>                                lock(sb_pagefaults);
+>   lock(&fs_info->reloc_mutex);
+>
+>  *** DEADLOCK ***
+>
+> 3 locks held by fsstress/8739:
+>  #0: ffff88bee66eeb68 (&mm->mmap_lock#2){++++}-{3:3}, at: exc_page_fault+=
+0x173/0x660
+>  #1: ffff88bfbd16e538 (sb_pagefaults){.+.+}-{0:0}, at: btrfs_page_mkwrite=
++0x6a/0x4a0
+>  #2: ffff88bfbd16e630 (sb_internal){.+.+}-{0:0}, at: start_transaction+0x=
+3da/0x5d0
+>
+> stack backtrace:
+> CPU: 17 PID: 8739 Comm: fsstress Kdump: loaded Not tainted 5.8.0-rc7-0016=
+9-g87212851a027-dirty #929
+> Hardware name: Quanta Tioga Pass Single Side 01-0030993006/Tioga Pass Sin=
+gle Side, BIOS F08_3A18 12/20/2018
+> Call Trace:
+>  dump_stack+0x78/0xa0
+>  check_noncircular+0x165/0x180
+>  __lock_acquire+0x1272/0x2310
+>  ? btrfs_get_alloc_profile+0x150/0x210
+>  lock_acquire+0x9e/0x360
+>  ? btrfs_record_root_in_trans+0x43/0x70
+>  __mutex_lock+0x9f/0x930
+>  ? btrfs_record_root_in_trans+0x43/0x70
+>  ? lock_acquire+0x9e/0x360
+>  ? join_transaction+0x5d/0x450
+>  ? find_held_lock+0x2d/0x90
+>  ? btrfs_record_root_in_trans+0x43/0x70
+>  ? join_transaction+0x3d5/0x450
+>  ? btrfs_record_root_in_trans+0x43/0x70
+>  btrfs_record_root_in_trans+0x43/0x70
+>  start_transaction+0xd1/0x5d0
+>  btrfs_dirty_inode+0x42/0xd0
+>  file_update_time+0xc8/0x110
+>  btrfs_page_mkwrite+0x10c/0x4a0
+>  ? handle_mm_fault+0x5e/0x1730
+>  do_page_mkwrite+0x4d/0xc0
+>  ? __do_fault+0x32/0x150
+>  handle_mm_fault+0x103c/0x1730
+>  exc_page_fault+0x340/0x660
+>  ? asm_exc_page_fault+0x8/0x30
+>  asm_exc_page_fault+0x1e/0x30
+> RIP: 0033:0x7faa6c9969c4
+>
+> Was seen in testing.  The fix is similar to that of
+>
+>   btrfs: open device without device_list_mutex
+>
+> where we're holding the device_list_mutex and then grab the bd_mutex,
+> which pulls in a bunch of dependencies under the bd_mutex.  We only ever
+> call btrfs_close_devices() on mount failure or unmount, so we're save to
+> not have the device_list_mutex here.  We're already holding the
+> uuid_mutex which keeps us safe from any external modification of the
+> fs_devices.
 
---qs4pxg1veXf9hnnxma5uW3qU54tY1HFcY
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+We aren't holding the uuid_mutex at btrfs_rm_dev_replace_free_srcdev().
+Will it not be a problem?
+
+Thanks.
+
+>
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> ---
+>  fs/btrfs/volumes.c | 5 +----
+>  1 file changed, 1 insertion(+), 4 deletions(-)
+>
+> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+> index 3ac44dad58bb..97ec9c0a91aa 100644
+> --- a/fs/btrfs/volumes.c
+> +++ b/fs/btrfs/volumes.c
+> @@ -1155,11 +1155,8 @@ static int close_fs_devices(struct btrfs_fs_device=
+s *fs_devices)
+>         if (--fs_devices->opened > 0)
+>                 return 0;
+>
+> -       mutex_lock(&fs_devices->device_list_mutex);
+> -       list_for_each_entry_safe(device, tmp, &fs_devices->devices, dev_l=
+ist) {
+> +       list_for_each_entry_safe(device, tmp, &fs_devices->devices, dev_l=
+ist)
+>                 btrfs_close_one_device(device);
+> -       }
+> -       mutex_unlock(&fs_devices->device_list_mutex);
+>
+>         WARN_ON(fs_devices->open_devices);
+>         WARN_ON(fs_devices->rw_devices);
+> --
+> 2.24.1
+>
 
 
+--=20
+Filipe David Manana,
 
-On 2020/8/11 =E4=B8=8B=E5=8D=885:39, Thommandra Gowtham wrote:
-> Hi,
->=20
-> Need some help to understand if there are any issues in BTRFS/Linux Ker=
-nel.
->=20
-> Running BTRFS as root filesystem and we see that suddenly the entire
-> disk is moved to read-only due to errors.
->=20
-> Did the SSD run out of life? If yes, then
-> - What are the best BTRFS options for frequent small amount of
-> writes(log files) on low quality SSD? If we want to increase the life
-> of the Disk.
-
-If using systemd, you can config systemd to go memory only journal, so
-that the life of the ssd can be expanded.
-
-> - How do we determine the Disk health apart from SMART attributes? Can
-> we do a Disk write/read test to figure it out?
-
-AFAIK SMART is the only thing we can rely on now.
-
->=20
-> mount options used:
-> rw,noatime,compress=3Dlzo,ssd,space_cache,commit=3D60,subvolid=3D263
->=20
-> #   btrfs --version
-> btrfs-progs v4.4
->=20
-> Ubuntu 16.04: 4.15.0-36-generic #1 SMP Mon Oct 22 21:20:30 PDT 2018
-> x86_64 x86_64 x86_64 GNU/Linux
->=20
-> mkstemp: Read-only file system
-> [35816007.175210] print_req_error: I/O error, dev sda, sector 4472632
-> [35816007.182192] BTRFS error (device sda4): bdev /dev/sda4 errs: wr
-> 66, rd 725, flush 0, corrupt 0, gen 0
-
-This means some read error happened.
-
-Do you have extra log context?
-
-> [35816007.192913] print_req_error: I/O error, dev sda, sector 4472632
-> [35816007.199855] BTRFS error (device sda4): bdev /dev/sda4 errs: wr
-> 66, rd 726, flush 0, corrupt 0, gen 0
-> [35816007.210675] print_req_error: I/O error, dev sda, sector 10180680
-> [35816007.217748] BTRFS error (device sda4): bdev /dev/sda4 errs: wr
-> 66, rd 727, flush 0, corrupt 0, gen 0
-> [35816007.461941] print_req_error: I/O error, dev sda, sector 4472048
-> [35816007.468903] BTRFS error (device sda4): bdev /dev/sda4 errs: wr
-> 66, rd 728, flush 0, corrupt 0, gen 0
-> [35816007.479611] systemd[7035]: serial-getty@ttyS0.service: Failed at
-> step EXEC spawning /sbin/agetty: Input/output error
-> [35816007.712006] print_req_error: I/O error, dev sda, sector 4472048
-
-This means, we failed to read some data from sda.
-
-It's not the error from btrfs checksum verification, but directly read
-error from the device driver.
-
-So the command, agetty can't be executed due to we failed to read the
-content of that executable file.
-
->=20
-> # dmesg | tail
-> bash: /bin/dmesg: Input/output error
->=20
-> Doesn't Input/output error mean the disk is inaccessible?
-
-This means, we can't even access /bin/dmesg the file itself.
-
->=20
-> # btrfs fi show
-> Label: 'rpool'  uuid: 42d39990-e4eb-414b-8b17-0c4a2f76cc76
->     Total devices 1 FS bytes used 11.80GiB
->     devid    1 size 27.20GiB used 19.01GiB path /dev/sda4
->=20
-> # smartctl -a /dev/sda
-> smartctl 6.5 2016-01-24 r4214 [x86_64-linux-4.15.0-36-generic] (local b=
-uild)
-> Copyright (C) 2002-16, Bruce Allen, Christian Franke, www.smartmontools=
-=2Eorg
->=20
-> Short INQUIRY response, skip product id
-> A mandatory SMART command failed: exiting. To continue, add one or
-> more '-T permissive' options.
->=20
->=20
-> We were able to get smartctl o/p after a power-cycle
-
-Did you get dmesg/agetty run after a power-cycle?
-
-Or it still triggers the same -EIO error?
-
-BTW, if the smartctl doesn't record above read error as error, maybe
-it's some unstable cables causing temporary errors?
-
-Thanks,
-Qu
-
->=20
-> # smartctl -a /dev/sda
-> smartctl 6.5 2016-01-24 r4214 [x86_64-linux-4.15.0-36-generic] (local b=
-uild)
-> Copyright (C) 2002-16, Bruce Allen, Christian Franke, www.smartmontools=
-=2Eorg
->=20
-> =3D=3D=3D START OF INFORMATION SECTION =3D=3D=3D
-> Device Model:     FS032GM242I-AC
-> Serial Number:    AA010520170000000489
-> Firmware Version: O1026A
-> User Capacity:    31,488,000,000 bytes [31.4 GB]
-> Sector Size:      512 bytes logical/physical
-> Rotation Rate:    Solid State Device
-> Device is:        Not in smartctl database [for details use: -P showall=
-]
-> ATA Version is:   ACS-2 (minor revision not indicated)
-> SATA Version is:  SATA 3.1, 6.0 Gb/s (current: 6.0 Gb/s)
-> Local Time is:    Sun Aug  9 04:26:10 2020 EDT
-> SMART support is: Available - device has SMART capability.
-> SMART support is: Enabled
-> ...
-> SMART Attributes Data Structure revision number: 1
-> Vendor Specific SMART Attributes with Thresholds:
-> ID# ATTRIBUTE_NAME          FLAG     VALUE WORST THRESH TYPE
-> UPDATED  WHEN_FAILED RAW_VALUE
->   1 Raw_Read_Error_Rate     0x0000   100   100   000    Old_age
-> Offline      -       0
->   5 Reallocated_Sector_Ct   0x0000   100   100   000    Old_age
-> Offline      -       0
->   9 Power_On_Hours          0x0000   100   100   000    Old_age
-> Offline      -       735
->  12 Power_Cycle_Count       0x0000   100   100   000    Old_age
-> Offline      -       20
-> 160 Unknown_Attribute       0x0000   100   100   000    Old_age
-> Offline      -       0
-> 161 Unknown_Attribute       0x0000   100   100   000    Old_age
-> Offline      -       58
-> 163 Unknown_Attribute       0x0000   100   100   000    Old_age
-> Offline      -       2
-> 164 Unknown_Attribute       0x0000   100   100   000    Old_age
-> Offline      -       1045371
-> 165 Unknown_Attribute       0x0000   100   100   000    Old_age
-> Offline      -       1075
-> 166 Unknown_Attribute       0x0000   100   100   000    Old_age
-> Offline      -       972
-> 167 Unknown_Attribute       0x0000   100   100   000    Old_age
-> Offline      -       1030
-> 168 Unknown_Attribute       0x0000   100   100   000    Old_age
-> Offline      -       3000
-> 169 Unknown_Attribute       0x0000   100   100   000    Old_age
-> Offline      -       66
-> 175 Program_Fail_Count_Chip 0x0000   100   100   000    Old_age
-> Offline      -       0
-> 176 Erase_Fail_Count_Chip   0x0000   100   100   000    Old_age
-> Offline      -       0
-> 177 Wear_Leveling_Count     0x0000   100   100   050    Old_age
-> Offline      -       3733
-> 178 Used_Rsvd_Blk_Cnt_Chip  0x0000   100   100   000    Old_age
-> Offline      -       0
-> 181 Program_Fail_Cnt_Total  0x0000   100   100   000    Old_age
-> Offline      -       0
-> 182 Erase_Fail_Count_Total  0x0000   100   100   000    Old_age
-> Offline      -       0
-> 192 Power-Off_Retract_Count 0x0000   100   100   000    Old_age
-> Offline      -       5
-> 194 Temperature_Celsius     0x0000   100   100   000    Old_age
-> Offline      -       40
-> 195 Hardware_ECC_Recovered  0x0000   100   100   000    Old_age
-> Offline      -       0
-> 196 Reallocated_Event_Count 0x0000   100   100   016    Old_age
-> Offline      -       0
-> 197 Current_Pending_Sector  0x0000   100   100   000    Old_age
-> Offline      -       0
-> 198 Offline_Uncorrectable   0x0000   100   100   000    Old_age
-> Offline      -       0
-> 199 UDMA_CRC_Error_Count    0x0000   100   100   050    Old_age
-> Offline      -       0
-> 232 Available_Reservd_Space 0x0000   100   100   000    Old_age
-> Offline      -       100
-> 241 Total_LBAs_Written      0x0000   100   100   000    Old_age
-> Offline      -       766189
-> 242 Total_LBAs_Read         0x0000   100   100   000    Old_age
-> Offline      -       11847
-> 245 Unknown_Attribute       0x0000   100   100   000    Old_age
-> Offline      -       1045371
->=20
-> Regards,
-> Gowtham
->=20
-
-
---qs4pxg1veXf9hnnxma5uW3qU54tY1HFcY--
-
---Yt5C4gewvBZ4vl0heQCtQAq5Gkmqz7ljs
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl8ydSQACgkQwj2R86El
-/qhiPgf+Lfg9JLCncIRlCxGp2pZPiuRxHEUIocGgfwCpwwYxG60zHpdqlkf0Br0X
-ycnaukTlraU2JO1JmkFIyAZ9CrWcj2wNKqNr6inTdXo/SXePBkIvQroD61xkFvv+
-Xk4nZzh2QC0vgIN1uQ0ic8wc5KaV9FGQaGzekZL49cUgJZS06tTaKB7Q2oF7MsTi
-pRdvO3Nq0SibMy9EUmMqk/trjMaiYcqTA8Vy1pw0x+Hp3R/rqAuhtk7x2h5fcL8P
-AbQL5Oi8z5TfpBbyvTlQpCEqCJW0FZ3gHIIFSIyFuXu/lnn7tEquxnmQPFyld3I/
-09TRwRk5nBb3gHIpTET5rTgtMBcaCg==
-=MC5w
------END PGP SIGNATURE-----
-
---Yt5C4gewvBZ4vl0heQCtQAq5Gkmqz7ljs--
+=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
+ right.=E2=80=9D
