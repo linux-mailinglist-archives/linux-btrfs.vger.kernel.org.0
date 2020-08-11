@@ -2,236 +2,503 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5635D241A45
-	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Aug 2020 13:20:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86BB7241A49
+	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Aug 2020 13:23:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728735AbgHKLTv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 11 Aug 2020 07:19:51 -0400
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:17314 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728724AbgHKLTu (ORCPT
+        id S1728523AbgHKLXL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 11 Aug 2020 07:23:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50340 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728423AbgHKLXJ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 11 Aug 2020 07:19:50 -0400
-Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5f327e6c0000>; Tue, 11 Aug 2020 04:18:04 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate102.nvidia.com (PGP Universal service);
-  Tue, 11 Aug 2020 04:19:49 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate102.nvidia.com on Tue, 11 Aug 2020 04:19:49 -0700
-Received: from [10.2.56.80] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 11 Aug
- 2020 11:19:48 +0000
-Subject: Re: btrfs crash in kobject_del while running xfstest
-From:   John Hubbard <jhubbard@nvidia.com>
-To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, <linux-btrfs@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-CC:     linux-fsdevel <linux-fsdevel@vger.kernel.org>
-References: <200e5b49-5c51-bbe5-de93-c6bd6339bb7f@nvidia.com>
-Message-ID: <2a3eb48d-6ca1-61c6-20cf-ba2fbda21f45@nvidia.com>
-Date:   Tue, 11 Aug 2020 04:19:47 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        Tue, 11 Aug 2020 07:23:09 -0400
+Received: from mail-vs1-xe42.google.com (mail-vs1-xe42.google.com [IPv6:2607:f8b0:4864:20::e42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 332ACC06174A
+        for <linux-btrfs@vger.kernel.org>; Tue, 11 Aug 2020 04:23:09 -0700 (PDT)
+Received: by mail-vs1-xe42.google.com with SMTP id a1so5798657vsp.4
+        for <linux-btrfs@vger.kernel.org>; Tue, 11 Aug 2020 04:23:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc:content-transfer-encoding;
+        bh=Ywh8aUkYs1jtUziW43X6dECAKDSBGMmrk2iO7cjZVYg=;
+        b=jG6wYfajFFWiCs5IzJgKOwRtBjSkJxIioU5jh66p9zRLECop+qRxfR181/ghKuh+9F
+         JP4V0tOBfghPG5vUyFqja+lQH5kLwclBQykzYOvYJVKxKQQH8wF27mbC9Wr4Sg2qvr7H
+         METKE9iwsOGnCTMvgb71i7rj+zubff0JXt0ZDT8usN2P+Cf3hVEH+ZpN1/7WVvDlqVxf
+         7+H808ZZK/Zd6TFuSCTSZOCX8T8ci9fVu0FDTC9N/EzzeULV8B0IHpfYLzknxRY9vz4k
+         XnWcaQWXNlfi/nyvXEW8IiqDddXvHfL/oYv9KdlNs5Iea1y7Mol+W8RSjC+JPKgSDK6V
+         C6Hw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc:content-transfer-encoding;
+        bh=Ywh8aUkYs1jtUziW43X6dECAKDSBGMmrk2iO7cjZVYg=;
+        b=Md5vzK51eyXCb3lzIPnA2qMLvOwM1R1M08FD9AMPkZKM5g3xaRW+ow4SjyymDyVih6
+         fEIixDjLnYtdVLuhzXsdCmjzX9JjXvkKXOBLD04RuIycjeYjT1lDciwQneHd6eER39Jn
+         MqFvBZ93CxJmT0cBgtm2YbwS8SkpEslZQBlYRxKnAvuBt2Ni0GqGL0X/VX8zEmCd85pf
+         SoUqG4m6wYd5eS5EakLtN/y6XMKXYmbo81+fQXud/WOXyxcWDgiZ/jWHxxIGq1s6J2c2
+         zGJOt3BhoNgKTjuVXm2BUqjSLrwerOhjKAQ6yv1Qhfjf3yp7yeIc9wU/BIjOHUbBaZ58
+         +ouA==
+X-Gm-Message-State: AOAM530CltNz4I0BHOa4IwkyhLMsyVG7cfEVa5q5NgBFwY+wTteX5LaX
+        pN8mbd939ylgP0KiiE+rLKRUk5XYY2vk78E6XBI=
+X-Google-Smtp-Source: ABdhPJyzHmRKlpF37Tg2gx9m2HchU+LuCFsrYg0DDFinPGejOxd/utNy+dEwYg0X6i/WnAlNfNR/G7fcnVPB88HV0oY=
+X-Received: by 2002:a67:20c7:: with SMTP id g190mr7145560vsg.90.1597144988207;
+ Tue, 11 Aug 2020 04:23:08 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <200e5b49-5c51-bbe5-de93-c6bd6339bb7f@nvidia.com>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
+References: <20200810154242.782802-1-josef@toxicpanda.com> <20200810154242.782802-5-josef@toxicpanda.com>
+In-Reply-To: <20200810154242.782802-5-josef@toxicpanda.com>
+Reply-To: fdmanana@gmail.com
+From:   Filipe Manana <fdmanana@gmail.com>
+Date:   Tue, 11 Aug 2020 12:22:57 +0100
+Message-ID: <CAL3q7H6Hjx7==oKWHSFac-9mfyjMh3wakRajvQwYXj_vtZEuUw@mail.gmail.com>
+Subject: Re: [PATCH 04/17] btrfs: allocate scrub workqueues outside of locks
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>, kernel-team@fb.com
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1597144684; bh=zFtAbPZdWaO97kUqdFPAa8G34TZ9heuYOs9focgzlik=;
-        h=X-PGP-Universal:Subject:From:To:CC:References:Message-ID:Date:
-         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
-         X-ClientProxiedBy:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=C1+8hZ/9mJMSMaDjXyL7oLnM5ZF5aMV+xA0AXi8rsoA/pQBR8fmu095PK0f9X+1qt
-         8BNaHoSwExaDSr9/ugJYkkHWqzTYnSPcCECHe99fccgw4X8viSJvirGJQjq83l0A9m
-         Cb0X21oyiartmN61vkAoAkTOMG3Ey6oAgowsCKC2X//l58w25Aac1ZdJCh+WMX0EwX
-         7s5X2eseN6qBQkygvGSs25sfcu9NHnz7lAsRgmcwKw6HBao+E4TpSNdn/nV4u+oeB9
-         BknalryQ5Wle4l1F/aNspmakisWCqu3klNssknlznGMtrUjSz3fSrFUr2i88cFub+0
-         t0GiLhj0da2Lw==
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Somehow the copy-paste of Chris Mason's name failed (user error
-on my end), sorry about that Chris!
+On Mon, Aug 10, 2020 at 4:44 PM Josef Bacik <josef@toxicpanda.com> wrote:
+>
+> I got the following lockdep splat while testing
+>
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D
+> WARNING: possible circular locking dependency detected
+> 5.8.0-rc7-00172-g021118712e59 #932 Not tainted
+> ------------------------------------------------------
+> btrfs/229626 is trying to acquire lock:
+> ffffffff828513f0 (cpu_hotplug_lock){++++}-{0:0}, at: alloc_workqueue+0x37=
+8/0x450
+>
+> but task is already holding lock:
+> ffff889dd3889518 (&fs_info->scrub_lock){+.+.}-{3:3}, at: btrfs_scrub_dev+=
+0x11c/0x630
+>
+> which lock already depends on the new lock.
+>
+> the existing dependency chain (in reverse order) is:
+>
+> -> #7 (&fs_info->scrub_lock){+.+.}-{3:3}:
+>        __mutex_lock+0x9f/0x930
+>        btrfs_scrub_dev+0x11c/0x630
+>        btrfs_dev_replace_by_ioctl.cold.21+0x10a/0x1d4
+>        btrfs_ioctl+0x2799/0x30a0
+>        ksys_ioctl+0x83/0xc0
+>        __x64_sys_ioctl+0x16/0x20
+>        do_syscall_64+0x50/0x90
+>        entry_SYSCALL_64_after_hwframe+0x44/0xa9
+>
+> -> #6 (&fs_devs->device_list_mutex){+.+.}-{3:3}:
+>        __mutex_lock+0x9f/0x930
+>        btrfs_run_dev_stats+0x49/0x480
+>        commit_cowonly_roots+0xb5/0x2a0
+>        btrfs_commit_transaction+0x516/0xa60
+>        sync_filesystem+0x6b/0x90
+>        generic_shutdown_super+0x22/0x100
+>        kill_anon_super+0xe/0x30
+>        btrfs_kill_super+0x12/0x20
+>        deactivate_locked_super+0x29/0x60
+>        cleanup_mnt+0xb8/0x140
+>        task_work_run+0x6d/0xb0
+>        __prepare_exit_to_usermode+0x1cc/0x1e0
+>        do_syscall_64+0x5c/0x90
+>        entry_SYSCALL_64_after_hwframe+0x44/0xa9
+>
+> -> #5 (&fs_info->tree_log_mutex){+.+.}-{3:3}:
+>        __mutex_lock+0x9f/0x930
+>        btrfs_commit_transaction+0x4bb/0xa60
+>        sync_filesystem+0x6b/0x90
+>        generic_shutdown_super+0x22/0x100
+>        kill_anon_super+0xe/0x30
+>        btrfs_kill_super+0x12/0x20
+>        deactivate_locked_super+0x29/0x60
+>        cleanup_mnt+0xb8/0x140
+>        task_work_run+0x6d/0xb0
+>        __prepare_exit_to_usermode+0x1cc/0x1e0
+>        do_syscall_64+0x5c/0x90
+>        entry_SYSCALL_64_after_hwframe+0x44/0xa9
+>
+> -> #4 (&fs_info->reloc_mutex){+.+.}-{3:3}:
+>        __mutex_lock+0x9f/0x930
+>        btrfs_record_root_in_trans+0x43/0x70
+>        start_transaction+0xd1/0x5d0
+>        btrfs_dirty_inode+0x42/0xd0
+>        touch_atime+0xa1/0xd0
+>        btrfs_file_mmap+0x3f/0x60
+>        mmap_region+0x3a4/0x640
+>        do_mmap+0x376/0x580
+>        vm_mmap_pgoff+0xd5/0x120
+>        ksys_mmap_pgoff+0x193/0x230
+>        do_syscall_64+0x50/0x90
+>        entry_SYSCALL_64_after_hwframe+0x44/0xa9
+>
+> -> #3 (&mm->mmap_lock#2){++++}-{3:3}:
+>        __might_fault+0x68/0x90
+>        _copy_to_user+0x1e/0x80
+>        perf_read+0x141/0x2c0
+>        vfs_read+0xad/0x1b0
+>        ksys_read+0x5f/0xe0
+>        do_syscall_64+0x50/0x90
+>        entry_SYSCALL_64_after_hwframe+0x44/0xa9
+>
+> -> #2 (&cpuctx_mutex){+.+.}-{3:3}:
+>        __mutex_lock+0x9f/0x930
+>        perf_event_init_cpu+0x88/0x150
+>        perf_event_init+0x1db/0x20b
+>        start_kernel+0x3ae/0x53c
+>        secondary_startup_64+0xa4/0xb0
+>
+> -> #1 (pmus_lock){+.+.}-{3:3}:
+>        __mutex_lock+0x9f/0x930
+>        perf_event_init_cpu+0x4f/0x150
+>        cpuhp_invoke_callback+0xb1/0x900
+>        _cpu_up.constprop.26+0x9f/0x130
+>        cpu_up+0x7b/0xc0
+>        bringup_nonboot_cpus+0x4f/0x60
+>        smp_init+0x26/0x71
+>        kernel_init_freeable+0x110/0x258
+>        kernel_init+0xa/0x103
+>        ret_from_fork+0x1f/0x30
+>
+> -> #0 (cpu_hotplug_lock){++++}-{0:0}:
+>        __lock_acquire+0x1272/0x2310
+>        lock_acquire+0x9e/0x360
+>        cpus_read_lock+0x39/0xb0
+>        alloc_workqueue+0x378/0x450
+>        __btrfs_alloc_workqueue+0x15d/0x200
+>        btrfs_alloc_workqueue+0x51/0x160
+>        scrub_workers_get+0x5a/0x170
+>        btrfs_scrub_dev+0x18c/0x630
+>        btrfs_dev_replace_by_ioctl.cold.21+0x10a/0x1d4
+>        btrfs_ioctl+0x2799/0x30a0
+>        ksys_ioctl+0x83/0xc0
+>        __x64_sys_ioctl+0x16/0x20
+>        do_syscall_64+0x50/0x90
+>        entry_SYSCALL_64_after_hwframe+0x44/0xa9
+>
+> other info that might help us debug this:
+>
+> Chain exists of:
+>   cpu_hotplug_lock --> &fs_devs->device_list_mutex --> &fs_info->scrub_lo=
+ck
+>
+>  Possible unsafe locking scenario:
+>
+>        CPU0                    CPU1
+>        ----                    ----
+>   lock(&fs_info->scrub_lock);
+>                                lock(&fs_devs->device_list_mutex);
+>                                lock(&fs_info->scrub_lock);
+>   lock(cpu_hotplug_lock);
+>
+>  *** DEADLOCK ***
+>
+> 2 locks held by btrfs/229626:
+>  #0: ffff88bfe8bb86e0 (&fs_devs->device_list_mutex){+.+.}-{3:3}, at: btrf=
+s_scrub_dev+0xbd/0x630
+>  #1: ffff889dd3889518 (&fs_info->scrub_lock){+.+.}-{3:3}, at: btrfs_scrub=
+_dev+0x11c/0x630
+>
+> stack backtrace:
+> CPU: 15 PID: 229626 Comm: btrfs Kdump: loaded Not tainted 5.8.0-rc7-00172=
+-g021118712e59 #932
+> Hardware name: Quanta Tioga Pass Single Side 01-0030993006/Tioga Pass Sin=
+gle Side, BIOS F08_3A18 12/20/2018
+> Call Trace:
+>  dump_stack+0x78/0xa0
+>  check_noncircular+0x165/0x180
+>  __lock_acquire+0x1272/0x2310
+>  lock_acquire+0x9e/0x360
+>  ? alloc_workqueue+0x378/0x450
+>  cpus_read_lock+0x39/0xb0
+>  ? alloc_workqueue+0x378/0x450
+>  alloc_workqueue+0x378/0x450
+>  ? rcu_read_lock_sched_held+0x52/0x80
+>  __btrfs_alloc_workqueue+0x15d/0x200
+>  btrfs_alloc_workqueue+0x51/0x160
+>  scrub_workers_get+0x5a/0x170
+>  btrfs_scrub_dev+0x18c/0x630
+>  ? start_transaction+0xd1/0x5d0
+>  btrfs_dev_replace_by_ioctl.cold.21+0x10a/0x1d4
+>  btrfs_ioctl+0x2799/0x30a0
+>  ? do_sigaction+0x102/0x250
+>  ? lockdep_hardirqs_on_prepare+0xca/0x160
+>  ? _raw_spin_unlock_irq+0x24/0x30
+>  ? trace_hardirqs_on+0x1c/0xe0
+>  ? _raw_spin_unlock_irq+0x24/0x30
+>  ? do_sigaction+0x102/0x250
+>  ? ksys_ioctl+0x83/0xc0
+>  ksys_ioctl+0x83/0xc0
+>  __x64_sys_ioctl+0x16/0x20
+>  do_syscall_64+0x50/0x90
+>  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+>
+> This happens because we're allocating the scrub workqueues under the
+> scrub and device list mutex, which brings in a whole host of other
+> dependencies.
 
-On 8/11/20 4:17 AM, John Hubbard wrote:
-> Hi,
->=20
-> Here's an early warning of a possible problem.
->=20
-> I'm seeing a new btrfs crash when running xfstests, as of
-> 00e4db51259a5f936fec1424b884f029479d3981 ("Merge tag
-> 'perf-tools-2020-08-10' of
-> git://git.kernel.org/pub/scm/linux/kernel/git/acme/linux") in linux.git.
->=20
-> This doesn't crash in v5.8, so I attempted to bisect, but ended up with
-> the net-next merge commit as the offending one: commit
-> 47ec5303d73ea344e84f46660fff693c57641386 ("Merge
-> git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next"), which
-> doesn't really help because it's 2088 files changed, of course.
->=20
-> I'm attaching the .config that I used.
->=20
-> This is easily reproducible via something like (change to match your setu=
-p,
-> of course):
->=20
->  =C2=A0=C2=A0=C2=A0 sudo TEST_DEV=3D/dev/nvme0n1p8 TEST_DIR=3D/xfstest_bt=
-rfs \
->  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 SCRATCH_DEV=3D/dev/nvme0n1p9 SCRATCH_MNT=
-=3D/xfstest_scratch=C2=A0 ./check \
->  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 btrfs/002
->=20
-> which leads to:
->=20
-> [=C2=A0 586.097360] BTRFS info (device nvme0n1p8): disk space caching is =
-enabled
-> [=C2=A0 586.103232] BTRFS info (device nvme0n1p8): has skinny extents
-> [=C2=A0 586.115169] BTRFS info (device nvme0n1p8): enabling ssd optimizat=
-ions
-> [=C2=A0 586.308264] BTRFS: device fsid 5dfff89d-8f8d-42ac-8538-acb95164d0=
-be devid 1 transid 5=20
-> /dev/nvme0n1p9 scanned by mkfs.btrfs (6374)
-> [=C2=A0 586.342776] BTRFS info (device nvme0n1p9): disk space caching is =
-enabled
-> [=C2=A0 586.348585] BTRFS info (device nvme0n1p9): has skinny extents
-> [=C2=A0 586.353413] BTRFS info (device nvme0n1p9): flagging fs with big m=
-etadata feature
-> [=C2=A0 586.368129] BTRFS info (device nvme0n1p9): enabling ssd optimizat=
-ions
-> [=C2=A0 586.373996] BTRFS info (device nvme0n1p9): checking UUID tree
-> [=C2=A0 586.387449] BUG: kernel NULL pointer dereference, address: 000000=
-0000000018
-> [=C2=A0 586.393485] #PF: supervisor read access in kernel mode
-> [=C2=A0 586.397623] #PF: error_code(0x0000) - not-present page
-> [=C2=A0 586.401763] PGD 0 P4D 0
-> [=C2=A0 586.403219] Oops: 0000 [#1] SMP PTI
-> [=C2=A0 586.405650] CPU: 1 PID: 6405 Comm: umount Not tainted 5.8.0-hubba=
-rd-github+ #171
-> [=C2=A0 586.412118] Hardware name: Gigabyte Technology Co., Ltd. To be fi=
-lled by O.E.M./X99-UD3P-CF, BIOS=20
-> F1 02/10/2015
-> [=C2=A0 586.421360] RIP: 0010:kobject_del+0x1/0x20
-> [=C2=A0 586.424427] Code: 48 c7 43 18 00 00 00 00 5b 5d c3 c3 be 01 00 00=
- 00 48 89 df e8 60 1b 00 00 eb=20
-> c9 66 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 55 <48> 8b 6f 18 e8 86 ff ff=
- ff 48 89 ef 5d e9 cd fe ff=20
-> ff 66 66 2e 0f
-> [=C2=A0 586.442644] RSP: 0018:ffffc90009ef7e08 EFLAGS: 00010246
-> [=C2=A0 586.446914] RAX: 0000000000000000 RBX: ffff888896080000 RCX: 0000=
-000000000006
-> [=C2=A0 586.453149] RDX: ffff88888ee4b000 RSI: ffffffff82669a00 RDI: 0000=
-000000000000
-> [=C2=A0 586.459390] RBP: 0000000000000000 R08: 0000000000000000 R09: 0000=
-000000000001
-> [=C2=A0 586.465631] R10: 0000000000000001 R11: 0000000000000000 R12: ffff=
-888896080000
-> [=C2=A0 586.471866] R13: 0000000000000000 R14: 0000000000000000 R15: 0000=
-000000000000
-> [=C2=A0 586.478106] FS:=C2=A0 00007f5595739c80(0000) GS:ffff88889fc40000(=
-0000) knlGS:0000000000000000
-> [=C2=A0 586.485325] CS:=C2=A0 0010 DS: 0000 ES: 0000 CR0: 000000008005003=
-3
-> [=C2=A0 586.490129] CR2: 0000000000000018 CR3: 0000000896d5a006 CR4: 0000=
-0000001706e0
-> [=C2=A0 586.496372] Call Trace:
-> [=C2=A0 586.497807]=C2=A0 btrfs_sysfs_del_qgroups+0xa5/0xe0 [btrfs]
-> [=C2=A0 586.502017]=C2=A0 close_ctree+0x1c5/0x2b6 [btrfs]
-> [=C2=A0 586.505307]=C2=A0 ? fsnotify_destroy_marks+0x24/0x124
-> [=C2=A0 586.508948]=C2=A0 generic_shutdown_super+0x67/0x100
-> [=C2=A0 586.512408]=C2=A0 kill_anon_super+0x14/0x30
-> [=C2=A0 586.515159]=C2=A0 btrfs_kill_super+0x12/0x20 [btrfs]
-> [=C2=A0 586.518704]=C2=A0 deactivate_locked_super+0x36/0x90
-> [=C2=A0 586.522159]=C2=A0 cleanup_mnt+0x12d/0x190
-> [=C2=A0 586.524720]=C2=A0 task_work_run+0x5c/0xa0
-> [=C2=A0 586.527285]=C2=A0 exit_to_user_mode_loop+0xb9/0xc0
-> [=C2=A0 586.530648]=C2=A0 exit_to_user_mode_prepare+0xab/0xe0
-> [=C2=A0 586.534276]=C2=A0 syscall_exit_to_user_mode+0x17/0x50
-> [=C2=A0 586.537908]=C2=A0 entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> [=C2=A0 586.541984] RIP: 0033:0x7f55959896fb
-> [=C2=A0 586.544531] Code: 07 0c 00 f7 d8 64 89 01 48 83 c8 ff c3 66 90 f3=
- 0f 1e fa 31 f6 e9 05 00 00 00=20
-> 0f 1f 44 00 00 f3 0f 1e fa b8 a6 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01=
- c3 48 8b 0d 5d 07 0c 00 f7=20
-> d8 64 89 01 48
-> [=C2=A0 586.562775] RSP: 002b:00007fffcc431228 EFLAGS: 00000246 ORIG_RAX:=
- 00000000000000a6
-> [=C2=A0 586.569485] RAX: 0000000000000000 RBX: 00007f5595ab31e4 RCX: 0000=
-7f55959896fb
-> [=C2=A0 586.575753] RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000=
-5601fb16bb80
-> [=C2=A0 586.582020] RBP: 00005601fb16b970 R08: 0000000000000000 R09: 0000=
-7fffcc42ffa0
-> [=C2=A0 586.588278] R10: 00005601fb16c930 R11: 0000000000000246 R12: 0000=
-5601fb16bb80
-> [=C2=A0 586.594534] R13: 0000000000000000 R14: 00005601fb16ba68 R15: 0000=
-000000000000
-> [=C2=A0 586.600805] Modules linked in: xfs rpcsec_gss_krb5 auth_rpcgss nf=
-sv4 dns_resolver nfs lockd grace=20
-> fscache bpfilter dm_mirror dm_region_hash dm_log dm_mod iTCO_wdt iTCO_ven=
-dor_support=20
-> x86_pkg_temp_thermal coretemp crct10dif_pclmul crc32_pclmul btrfs ghash_c=
-lmulni_intel aesni_intel=20
-> blake2b_generic crypto_simd xor cryptd zstd_compress glue_helper input_le=
-ds raid6_pq libcrc32c=20
-> lpc_ich i2c_i801 mfd_core mei_me i2c_smbus mei rpcrdma sunrpc ib_isert is=
-csi_target_mod ib_iser=20
-> libiscsi ib_srpt target_core_mod ib_srp ib_ipoib rdma_ucm ib_uverbs ib_um=
-ad sr_mod cdrom sd_mod=20
-> nouveau ahci libahci nvme crc32c_intel video e1000e led_class nvme_core l=
-ibata t10_pi ttm mxm_wmi=20
-> wmi fuse
-> [=C2=A0 586.661098] CR2: 0000000000000018
-> [=C2=A0 586.663455] ---[ end trace 158f42d646f4715d ]---
->=20
-> A quick peek shows that this is crashing here:
->=20
-> void kobject_del(struct kobject *kobj)
-> {
->  =C2=A0=C2=A0=C2=A0=C2=A0struct kobject *parent =3D kobj->parent; <---- C=
-RASHES HERE with NULL kobj
->=20
->  =C2=A0=C2=A0=C2=A0=C2=A0__kobject_del(kobj);
->  =C2=A0=C2=A0=C2=A0=C2=A0kobject_put(parent);
-> }
-> EXPORT_SYMBOL(kobject_del);
->=20
-> The crash at 0x18 matches passes in a null, because that's the right offs=
-et for
-> ->parent, and the disassembly confirms that 0x18 gets offset right at kob=
-ject_del+0x1:
->=20
-> Dump of assembler code for function kobject_del:
->  =C2=A0=C2=A0 0xffffffff81534ec0 <+0>:=C2=A0=C2=A0=C2=A0=C2=A0 push=C2=A0=
-=C2=A0 %rbp
->  =C2=A0=C2=A0 0xffffffff81534ec1 <+1>:=C2=A0=C2=A0=C2=A0=C2=A0 mov=C2=A0=
-=C2=A0=C2=A0 0x18(%rdi),%rbp
->  =C2=A0=C2=A0 0xffffffff81534ec5 <+5>:=C2=A0=C2=A0=C2=A0=C2=A0 callq=C2=
-=A0 0xffffffff81534e50 <__kobject_del>
->  =C2=A0=C2=A0 0xffffffff81534eca <+10>:=C2=A0=C2=A0=C2=A0 mov=C2=A0=C2=A0=
-=C2=A0 %rbp,%rdi
->  =C2=A0=C2=A0 0xffffffff81534ecd <+13>:=C2=A0=C2=A0=C2=A0 pop=C2=A0=C2=A0=
-=C2=A0 %rbp
->  =C2=A0=C2=A0 0xffffffff81534ece <+14>:=C2=A0=C2=A0=C2=A0 jmpq=C2=A0=C2=
-=A0 0xffffffff81534da0 <kobject_put>
-> End of assembler dump.
->=20
-> But as for how we ended up with a null kobj here, that's actually hard to=
- see, at least
-> for a non-btrfs person, which is why I hoped git bisect would help more t=
-han it did here.
->=20
->=20
-> thanks,
+Because the work queue allocation is done with GFP_KERNEL, it can
+trigger reclaim, which can lead to a transaction commit, which in
+turns needs the device_list_mutex,
+it can lead to a deadlock. A different problem for which this fix is a
+solution. Maybe worth mentioning as well.
 
-thanks,
+
+> Fix this by moving the actual allocation outside of the
+> scrub lock, and then only take the lock once we're ready to actually
+> assign them to the fs_info.  We'll now have to cleanup the workqueues in
+> a few more places, so I've added a helper to do the refcount dance to
+> safely free the workqueues.
+>
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
+
+Looks good, thanks.
+
+> ---
+>  fs/btrfs/scrub.c | 122 +++++++++++++++++++++++++++--------------------
+>  1 file changed, 70 insertions(+), 52 deletions(-)
+>
+> diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
+> index 5a6cb9db512e..7f7098e3110e 100644
+> --- a/fs/btrfs/scrub.c
+> +++ b/fs/btrfs/scrub.c
+> @@ -3716,50 +3716,84 @@ static noinline_for_stack int scrub_supers(struct=
+ scrub_ctx *sctx,
+>         return 0;
+>  }
+>
+> +static void scrub_workers_put(struct btrfs_fs_info *fs_info)
+> +{
+> +       if (refcount_dec_and_mutex_lock(&fs_info->scrub_workers_refcnt,
+> +                                       &fs_info->scrub_lock)) {
+> +               struct btrfs_workqueue *scrub_workers =3D NULL;
+> +               struct btrfs_workqueue *scrub_wr_comp =3D NULL;
+> +               struct btrfs_workqueue *scrub_parity =3D NULL;
+> +
+> +               scrub_workers =3D fs_info->scrub_workers;
+> +               scrub_wr_comp =3D fs_info->scrub_wr_completion_workers;
+> +               scrub_parity =3D fs_info->scrub_parity_workers;
+> +
+> +               fs_info->scrub_workers =3D NULL;
+> +               fs_info->scrub_wr_completion_workers =3D NULL;
+> +               fs_info->scrub_parity_workers =3D NULL;
+> +               mutex_unlock(&fs_info->scrub_lock);
+> +
+> +               btrfs_destroy_workqueue(scrub_workers);
+> +               btrfs_destroy_workqueue(scrub_wr_comp);
+> +               btrfs_destroy_workqueue(scrub_parity);
+> +       }
+> +}
+> +
+>  /*
+>   * get a reference count on fs_info->scrub_workers. start worker if nece=
+ssary
+>   */
+>  static noinline_for_stack int scrub_workers_get(struct btrfs_fs_info *fs=
+_info,
+>                                                 int is_dev_replace)
+>  {
+> +       struct btrfs_workqueue *scrub_workers =3D NULL;
+> +       struct btrfs_workqueue *scrub_wr_comp =3D NULL;
+> +       struct btrfs_workqueue *scrub_parity =3D NULL;
+>         unsigned int flags =3D WQ_FREEZABLE | WQ_UNBOUND;
+>         int max_active =3D fs_info->thread_pool_size;
+> +       int ret =3D -ENOMEM;
+>
+> -       lockdep_assert_held(&fs_info->scrub_lock);
+> +       if (refcount_inc_not_zero(&fs_info->scrub_workers_refcnt))
+> +               return 0;
+>
+> -       if (refcount_read(&fs_info->scrub_workers_refcnt) =3D=3D 0) {
+> -               ASSERT(fs_info->scrub_workers =3D=3D NULL);
+> -               fs_info->scrub_workers =3D btrfs_alloc_workqueue(fs_info,=
+ "scrub",
+> -                               flags, is_dev_replace ? 1 : max_active, 4=
+);
+> -               if (!fs_info->scrub_workers)
+> -                       goto fail_scrub_workers;
+> -
+> -               ASSERT(fs_info->scrub_wr_completion_workers =3D=3D NULL);
+> -               fs_info->scrub_wr_completion_workers =3D
+> -                       btrfs_alloc_workqueue(fs_info, "scrubwrc", flags,
+> -                                             max_active, 2);
+> -               if (!fs_info->scrub_wr_completion_workers)
+> -                       goto fail_scrub_wr_completion_workers;
+> +       scrub_workers =3D btrfs_alloc_workqueue(fs_info, "scrub", flags,
+> +                                             is_dev_replace ? 1 : max_ac=
+tive,
+> +                                             4);
+> +       if (!scrub_workers)
+> +               goto fail_scrub_workers;
+>
+> -               ASSERT(fs_info->scrub_parity_workers =3D=3D NULL);
+> -               fs_info->scrub_parity_workers =3D
+> -                       btrfs_alloc_workqueue(fs_info, "scrubparity", fla=
+gs,
+> +       scrub_wr_comp =3D btrfs_alloc_workqueue(fs_info, "scrubwrc", flag=
+s,
+>                                               max_active, 2);
+> -               if (!fs_info->scrub_parity_workers)
+> -                       goto fail_scrub_parity_workers;
+> +       if (!scrub_wr_comp)
+> +               goto fail_scrub_wr_completion_workers;
+>
+> +       scrub_parity =3D btrfs_alloc_workqueue(fs_info, "scrubparity", fl=
+ags,
+> +                                            max_active, 2);
+> +       if (!scrub_parity)
+> +               goto fail_scrub_parity_workers;
+> +
+> +       mutex_lock(&fs_info->scrub_lock);
+> +       if (refcount_read(&fs_info->scrub_workers_refcnt) =3D=3D 0) {
+> +               ASSERT(fs_info->scrub_workers =3D=3D NULL &&
+> +                      fs_info->scrub_wr_completion_workers =3D=3D NULL &=
+&
+> +                      fs_info->scrub_parity_workers =3D=3D NULL);
+> +               fs_info->scrub_workers =3D scrub_workers;
+> +               fs_info->scrub_wr_completion_workers =3D scrub_wr_comp;
+> +               fs_info->scrub_parity_workers =3D scrub_parity;
+>                 refcount_set(&fs_info->scrub_workers_refcnt, 1);
+> -       } else {
+> -               refcount_inc(&fs_info->scrub_workers_refcnt);
+> +               mutex_unlock(&fs_info->scrub_lock);
+> +               return 0;
+>         }
+> -       return 0;
+> +       refcount_inc(&fs_info->scrub_workers_refcnt);
+> +       mutex_unlock(&fs_info->scrub_lock);
+>
+> +       ret =3D 0;
+> +       btrfs_destroy_workqueue(scrub_parity);
+>  fail_scrub_parity_workers:
+> -       btrfs_destroy_workqueue(fs_info->scrub_wr_completion_workers);
+> +       btrfs_destroy_workqueue(scrub_wr_comp);
+>  fail_scrub_wr_completion_workers:
+> -       btrfs_destroy_workqueue(fs_info->scrub_workers);
+> +       btrfs_destroy_workqueue(scrub_workers);
+>  fail_scrub_workers:
+> -       return -ENOMEM;
+> +       return ret;
+>  }
+>
+>  int btrfs_scrub_dev(struct btrfs_fs_info *fs_info, u64 devid, u64 start,
+> @@ -3770,9 +3804,6 @@ int btrfs_scrub_dev(struct btrfs_fs_info *fs_info, =
+u64 devid, u64 start,
+>         int ret;
+>         struct btrfs_device *dev;
+>         unsigned int nofs_flag;
+> -       struct btrfs_workqueue *scrub_workers =3D NULL;
+> -       struct btrfs_workqueue *scrub_wr_comp =3D NULL;
+> -       struct btrfs_workqueue *scrub_parity =3D NULL;
+>
+>         if (btrfs_fs_closing(fs_info))
+>                 return -EAGAIN;
+> @@ -3819,13 +3850,17 @@ int btrfs_scrub_dev(struct btrfs_fs_info *fs_info=
+, u64 devid, u64 start,
+>         if (IS_ERR(sctx))
+>                 return PTR_ERR(sctx);
+>
+> +       ret =3D scrub_workers_get(fs_info, is_dev_replace);
+> +       if (ret)
+> +               goto out_free_ctx;
+> +
+>         mutex_lock(&fs_info->fs_devices->device_list_mutex);
+>         dev =3D btrfs_find_device(fs_info->fs_devices, devid, NULL, NULL,=
+ true);
+>         if (!dev || (test_bit(BTRFS_DEV_STATE_MISSING, &dev->dev_state) &=
+&
+>                      !is_dev_replace)) {
+>                 mutex_unlock(&fs_info->fs_devices->device_list_mutex);
+>                 ret =3D -ENODEV;
+> -               goto out_free_ctx;
+> +               goto out;
+>         }
+>
+>         if (!is_dev_replace && !readonly &&
+> @@ -3834,7 +3869,7 @@ int btrfs_scrub_dev(struct btrfs_fs_info *fs_info, =
+u64 devid, u64 start,
+>                 btrfs_err_in_rcu(fs_info, "scrub: device %s is not writab=
+le",
+>                                 rcu_str_deref(dev->name));
+>                 ret =3D -EROFS;
+> -               goto out_free_ctx;
+> +               goto out;
+>         }
+>
+>         mutex_lock(&fs_info->scrub_lock);
+> @@ -3843,7 +3878,7 @@ int btrfs_scrub_dev(struct btrfs_fs_info *fs_info, =
+u64 devid, u64 start,
+>                 mutex_unlock(&fs_info->scrub_lock);
+>                 mutex_unlock(&fs_info->fs_devices->device_list_mutex);
+>                 ret =3D -EIO;
+> -               goto out_free_ctx;
+> +               goto out;
+>         }
+>
+>         down_read(&fs_info->dev_replace.rwsem);
+> @@ -3854,17 +3889,10 @@ int btrfs_scrub_dev(struct btrfs_fs_info *fs_info=
+, u64 devid, u64 start,
+>                 mutex_unlock(&fs_info->scrub_lock);
+>                 mutex_unlock(&fs_info->fs_devices->device_list_mutex);
+>                 ret =3D -EINPROGRESS;
+> -               goto out_free_ctx;
+> +               goto out;
+>         }
+>         up_read(&fs_info->dev_replace.rwsem);
+>
+> -       ret =3D scrub_workers_get(fs_info, is_dev_replace);
+> -       if (ret) {
+> -               mutex_unlock(&fs_info->scrub_lock);
+> -               mutex_unlock(&fs_info->fs_devices->device_list_mutex);
+> -               goto out_free_ctx;
+> -       }
+> -
+>         sctx->readonly =3D readonly;
+>         dev->scrub_ctx =3D sctx;
+>         mutex_unlock(&fs_info->fs_devices->device_list_mutex);
+> @@ -3917,24 +3945,14 @@ int btrfs_scrub_dev(struct btrfs_fs_info *fs_info=
+, u64 devid, u64 start,
+>
+>         mutex_lock(&fs_info->scrub_lock);
+>         dev->scrub_ctx =3D NULL;
+> -       if (refcount_dec_and_test(&fs_info->scrub_workers_refcnt)) {
+> -               scrub_workers =3D fs_info->scrub_workers;
+> -               scrub_wr_comp =3D fs_info->scrub_wr_completion_workers;
+> -               scrub_parity =3D fs_info->scrub_parity_workers;
+> -
+> -               fs_info->scrub_workers =3D NULL;
+> -               fs_info->scrub_wr_completion_workers =3D NULL;
+> -               fs_info->scrub_parity_workers =3D NULL;
+> -       }
+>         mutex_unlock(&fs_info->scrub_lock);
+>
+> -       btrfs_destroy_workqueue(scrub_workers);
+> -       btrfs_destroy_workqueue(scrub_wr_comp);
+> -       btrfs_destroy_workqueue(scrub_parity);
+> +       scrub_workers_put(fs_info);
+>         scrub_put_ctx(sctx);
+>
+>         return ret;
+> -
+> +out:
+> +       scrub_workers_put(fs_info);
+>  out_free_ctx:
+>         scrub_free_ctx(sctx);
+>
+> --
+> 2.24.1
+>
+
+
 --=20
-John Hubbard
-NVIDIA
+Filipe David Manana,
+
+=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
+ right.=E2=80=9D
