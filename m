@@ -2,131 +2,104 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19094241A98
-	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Aug 2020 13:46:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B6EE241BB9
+	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Aug 2020 15:49:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728817AbgHKLqh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 11 Aug 2020 07:46:37 -0400
-Received: from mx2.suse.de ([195.135.220.15]:33508 "EHLO mx2.suse.de"
+        id S1728668AbgHKNr4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 11 Aug 2020 09:47:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37572 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728326AbgHKLqg (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 11 Aug 2020 07:46:36 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 9A20AAEC7
-        for <linux-btrfs@vger.kernel.org>; Tue, 11 Aug 2020 11:46:55 +0000 (UTC)
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 4/4] btrfs-progs: tests/fsck: enhance invalid extent item generation test cases
-Date:   Tue, 11 Aug 2020 19:44:51 +0800
-Message-Id: <20200811114451.28862-5-wqu@suse.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200811114451.28862-1-wqu@suse.com>
-References: <20200811114451.28862-1-wqu@suse.com>
+        id S1728532AbgHKNrr (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 11 Aug 2020 09:47:47 -0400
+Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5B3462076B;
+        Tue, 11 Aug 2020 13:47:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1597153666;
+        bh=5yMEp9SyDxPuo/xXOdliP4xpnslVqaycciG2uRFajHk=;
+        h=Date:From:To:Subject:Reply-To:References:In-Reply-To:From;
+        b=wtdh1lcpu2MOuXVkpZaTW+KsbfecM8PsgIi8ucIUwmgrSVpyJ0qQ/hHCVK6hApvLK
+         ONu2szekPDI4KmUgBtuvKcjhuSfczaU0kttSOsEJlJCmNwRxsB0w3uVCCeFBXw6PMd
+         e+d6+mU2CB1qjb0mSvl3OwsEYJ4FUiBqYNm8z+yI=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 26D473522FF7; Tue, 11 Aug 2020 06:47:46 -0700 (PDT)
+Date:   Tue, 11 Aug 2020 06:47:46 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     dsterba@suse.cz, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org, Sasha Levin <sashal@kernel.org>,
+        linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH AUTOSEL 4.4 03/16] fs/btrfs: Add cond_resched() for
+ try_release_extent_mapping() stalls
+Message-ID: <20200811134746.GV4295@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20200810191443.3795581-1-sashal@kernel.org>
+ <20200810191443.3795581-3-sashal@kernel.org>
+ <20200811075720.GL2026@twin.jikos.cz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200811075720.GL2026@twin.jikos.cz>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This patch will:
-- Add a new test image for fsck/044
-  This new image has a corrupted extent item generation for tree block.
-  This image can expose a bug in original mode, which can't detect the
-  problem.
-  This image also utilize the tree block generation detection code,
-  which the existing image doesn't.
+On Tue, Aug 11, 2020 at 09:57:20AM +0200, David Sterba wrote:
+> On Mon, Aug 10, 2020 at 03:14:30PM -0400, Sasha Levin wrote:
+> > From: "Paul E. McKenney" <paulmck@kernel.org>
+> > 
+> > [ Upstream commit 9f47eb5461aaeb6cb8696f9d11503ae90e4d5cb0 ]
+> > 
+> > Very large I/Os can cause the following RCU CPU stall warning:
+> > 
+> > RIP: 0010:rb_prev+0x8/0x50
+> > Code: 49 89 c0 49 89 d1 48 89 c2 48 89 f8 e9 e5 fd ff ff 4c 89 48 10 c3 4c =
+> > 89 06 c3 4c 89 40 10 c3 0f 1f 00 48 8b 0f 48 39 cf 74 38 <48> 8b 47 10 48 85 c0 74 22 48 8b 50 08 48 85 d2 74 0c 48 89 d0 48
+> > RSP: 0018:ffffc9002212bab0 EFLAGS: 00000287 ORIG_RAX: ffffffffffffff13
+> > RAX: ffff888821f93630 RBX: ffff888821f93630 RCX: ffff888821f937e0
+> > RDX: 0000000000000000 RSI: 0000000000102000 RDI: ffff888821f93630
+> > RBP: 0000000000103000 R08: 000000000006c000 R09: 0000000000000238
+> > R10: 0000000000102fff R11: ffffc9002212bac8 R12: 0000000000000001
+> > R13: ffffffffffffffff R14: 0000000000102000 R15: ffff888821f937e0
+> >  __lookup_extent_mapping+0xa0/0x110
+> >  try_release_extent_mapping+0xdc/0x220
+> >  btrfs_releasepage+0x45/0x70
+> >  shrink_page_list+0xa39/0xb30
+> >  shrink_inactive_list+0x18f/0x3b0
+> >  shrink_lruvec+0x38e/0x6b0
+> >  shrink_node+0x14d/0x690
+> >  do_try_to_free_pages+0xc6/0x3e0
+> >  try_to_free_mem_cgroup_pages+0xe6/0x1e0
+> >  reclaim_high.constprop.73+0x87/0xc0
+> >  mem_cgroup_handle_over_high+0x66/0x150
+> >  exit_to_usermode_loop+0x82/0xd0
+> >  do_syscall_64+0xd4/0x100
+> >  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> > 
+> > On a PREEMPT=n kernel, the try_release_extent_mapping() function's
+> > "while" loop might run for a very long time on a large I/O.  This commit
+> > therefore adds a cond_resched() to this loop, providing RCU any needed
+> > quiescent states.
+> > 
+> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> 
+> Paul,
+> 
+> this patch was well hidden in some huge RCU pile
+> (https://lore.kernel.org/lkml/20200623002147.25750-11-paulmck@kernel.org/)
+> 
+> I wonder why you haven't CCed linux-btrfs, I spotted the patch queued
+> for stable by incidentally. The timestamp is from June, that's quite
+> some time ago. We can deal with one more patch and I tend to reply with
+> acks quickly for easy patches like this to not block other peoples work
+> but I'm a bit disappointed by sidestepping maintained subsystems. It's
+> not just this patch, it happens from time time only to increase the
+> disapointement.
 
-- Rename the existing image
-  To reflect the fact that the existing one is only for data extent.
+My bad, and please accept my apologies.  I clearly left out the
+step of adding proper Cc: lines.  :-/
 
-- Remove the test.sh
-  So that the generic path will test both detection and repair.
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- ...xz => bad_extent_item_gen_for_data.img.xz} | Bin
- .../bad_extent_item_gen_for_tree_block.img.xz | Bin 0 -> 1804 bytes
- .../test.sh                                   |  19 ------------------
- 3 files changed, 19 deletions(-)
- rename tests/fsck-tests/044-invalid-extent-item-generation/{bad_extent_item_gen.img.xz => bad_extent_item_gen_for_data.img.xz} (100%)
- create mode 100644 tests/fsck-tests/044-invalid-extent-item-generation/bad_extent_item_gen_for_tree_block.img.xz
- delete mode 100755 tests/fsck-tests/044-invalid-extent-item-generation/test.sh
-
-diff --git a/tests/fsck-tests/044-invalid-extent-item-generation/bad_extent_item_gen.img.xz b/tests/fsck-tests/044-invalid-extent-item-generation/bad_extent_item_gen_for_data.img.xz
-similarity index 100%
-rename from tests/fsck-tests/044-invalid-extent-item-generation/bad_extent_item_gen.img.xz
-rename to tests/fsck-tests/044-invalid-extent-item-generation/bad_extent_item_gen_for_data.img.xz
-diff --git a/tests/fsck-tests/044-invalid-extent-item-generation/bad_extent_item_gen_for_tree_block.img.xz b/tests/fsck-tests/044-invalid-extent-item-generation/bad_extent_item_gen_for_tree_block.img.xz
-new file mode 100644
-index 0000000000000000000000000000000000000000..8bc4688dea9c952282b7124fc53175fe1ebd9c4f
-GIT binary patch
-literal 1804
-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
-
-literal 0
-HcmV?d00001
-
-diff --git a/tests/fsck-tests/044-invalid-extent-item-generation/test.sh b/tests/fsck-tests/044-invalid-extent-item-generation/test.sh
-deleted file mode 100755
-index 2b88a3c7b3bb..000000000000
---- a/tests/fsck-tests/044-invalid-extent-item-generation/test.sh
-+++ /dev/null
-@@ -1,19 +0,0 @@
--#!/bin/bash
--#
--# Due to a bug in --init-extent-tree option, we may create bad generation
--# number for data extents.
--#
--# This test case will ensure btrfs check can at least detect such problem,
--# just like kernel tree-checker.
--
--source "$TEST_TOP/common"
--
--check_prereq btrfs
--
--check_image() {
--	run_mustfail \
--		"btrfs check failed to detect invalid extent item generation" \
--		"$TOP/btrfs" check "$1"
--}
--
--check_all_images
--- 
-2.28.0
-
+							Thanx, Paul
