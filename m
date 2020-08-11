@@ -2,226 +2,152 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B520C241CF7
-	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Aug 2020 17:12:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DA62241E86
+	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Aug 2020 18:44:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728835AbgHKPMp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 11 Aug 2020 11:12:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57496 "EHLO
+        id S1729011AbgHKQn4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 11 Aug 2020 12:43:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728721AbgHKPMo (ORCPT
+        with ESMTP id S1728876AbgHKQn4 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 11 Aug 2020 11:12:44 -0400
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 461C5C06174A
-        for <linux-btrfs@vger.kernel.org>; Tue, 11 Aug 2020 08:12:44 -0700 (PDT)
-Received: by mail-ed1-x544.google.com with SMTP id i6so9352651edy.5
-        for <linux-btrfs@vger.kernel.org>; Tue, 11 Aug 2020 08:12:44 -0700 (PDT)
+        Tue, 11 Aug 2020 12:43:56 -0400
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 152BFC06174A
+        for <linux-btrfs@vger.kernel.org>; Tue, 11 Aug 2020 09:43:56 -0700 (PDT)
+Received: by mail-ed1-x541.google.com with SMTP id l23so9555950edv.11
+        for <linux-btrfs@vger.kernel.org>; Tue, 11 Aug 2020 09:43:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=X81N6o8k7SKqq0x/ut80WfMoB5QrgFI/Qik0ZoP1jCs=;
-        b=BLdK+XNIkaOcYToRUGXi8ahfCtZW6YGKAW7FkB6fEZQxykydePRqvZBhSI6rQ3oInV
-         HMOFe67iG/Z1zJ+XEHQ2zq4zxdj4KVnbCqgu6Jlz/eVUtPG5rGOwfwveBCer2DSUX9PW
-         qrz/4vdx5dXpsC25x2Uf3T0SJdoZWEV7n8oSfHGsuzDJP368If4p+AB74BXB4EE7JoFJ
-         CMKyue+eaI/lZf9UkgIsWW9XT61Oh2/yoSAabsZ7hqBIUIV6qv1qtqc0WhbYe4EDIDiU
-         U9trIr+MvdPbYSxiIqZvi4ula07nnD7PTcZlLwK4FBhQGIC/UOjy4Bys4LFgh9vkTcH/
-         5JZA==
+        h=subject:from:to:references:message-id:date:user-agent:mime-version
+         :in-reply-to:content-transfer-encoding:content-language;
+        bh=qMG8R6QeTEnMe+goMIY1bXKQ6ewGmOAYHZBFQT/chAM=;
+        b=QQKE5LEhPi5Y2TJwcKK+7vsar8c8Sh/RlNGtfmlM1Knd7896h7YPZNBJGcEIspea3p
+         /bExeVFtsUvg2UO/cbouNuvoNwpmB+DsomZcog9F3bbkFOHrb6HGoobLa78RxidDODuG
+         z0AH5oFaq08iN/rpBb/pL0RRIznftK1Nafs3LYlGjogMApgA22bYPQKzYf6ioIQcr0YQ
+         KCb3WFoJ4RKjWJZdLbc88W8ch56CtHoKjJTpHNqA8mVh8yzDt92ZNt3zzKsHoduInD8K
+         cTZkCYqB9J8kKGNH0hXeM/bONNQnfB8+xN7GPt8J8h+dMWZ9BAQaaG2U1r/FZ4RY32q5
+         0MxA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=X81N6o8k7SKqq0x/ut80WfMoB5QrgFI/Qik0ZoP1jCs=;
-        b=gAkftA4oyoSBlxS1/ayUgBOi2i/kOSvAObtMqp5BYmvWo/xpMi+y63O4rsrtQibq3C
-         VutR6ot1r5qkeqU2AjIvhnJj4FwgUxycbRA3XAgMxx0H61zASN6m4TD3Ioh6wBp71XLp
-         23TLxooNjAGOTFlUKuRbrtU2nCZBNLJ/6P14QDGZ3w3hmuWPx35FypmgcG3Pp+crVFmO
-         SAqTaD7COdtMVC+TF4/B9TXp2TRVT5kZMF+yaA79Q4J4QvDeF9OSWe1d3BQuLhPHjkX7
-         lZrA/NvBaaKSpk8eaLiYWbVSMTrmdyXsycvL5QtIHpo7SAXcEnKEiuIE0wOrGiP7aX8P
-         7aMA==
-X-Gm-Message-State: AOAM533oTgkhJqq/FRksQR9e+14UiLaUiJQJb+yIeRcsmYxcb7x2DsRi
-        Wu6Ei+7R/eXA3T9kZzNlMjhkIYDX+rUQbuRrZtg=
-X-Google-Smtp-Source: ABdhPJwJa+oc/1H6PjAq6jYVouKwAu1yXuLi5XXJEx7iLlE5Bxzahe5NGqb+upeJoGurdQIf0BOk85uj795OwkGZrEg=
-X-Received: by 2002:a05:6402:33a:: with SMTP id q26mr27940511edw.8.1597158762653;
- Tue, 11 Aug 2020 08:12:42 -0700 (PDT)
+        h=x-gm-message-state:subject:from:to:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=qMG8R6QeTEnMe+goMIY1bXKQ6ewGmOAYHZBFQT/chAM=;
+        b=rOpQO9pHerRWhQQtTv1bECtcIZbCovYzbjPZgV1FkHHJs0m7RdozJVPVe2Le7cnBaS
+         P4Sy/dDb7xu7zuWuBvU7Whvxj88SQCZbij5mCY/h8Q21ReH2VkW10QCvYFFro+EFt9eb
+         B00a+J9eO5APlx2d1JX0nvIj3sBLu4u/YMFq/6m0iTnyqcwJoXPU8Dv7wJJjcqQEEEOb
+         r9HGu1Y6DSMb/ebg84Nx0CviHQHHSabpYsxT9Uw9NxPh/oT+kliDItE8xFM+XNpJbvqS
+         JHpeAmbJNaoi4RlMmpL5klhk2cV02ULcQIfxhnfOIFYa7XRGVwhvkJ1hZs91oVSkkZFd
+         Rrvg==
+X-Gm-Message-State: AOAM533ZWu6x7BExpcWGdi9eoR8fkb7uOf1rZXyUW5e3zMZeH+Cl+ZaO
+        cZae/oNGwU1wXr0dMcfnBtTb2k38hck=
+X-Google-Smtp-Source: ABdhPJzzO1XuqT4cdQnMURJ66suOUBHeFzOYqr67YyW5HoX16st/VTKP76BM48KJBXazNgq7Z9u4gw==
+X-Received: by 2002:aa7:d6c2:: with SMTP id x2mr26518580edr.332.1597164234301;
+        Tue, 11 Aug 2020 09:43:54 -0700 (PDT)
+Received: from ?IPv6:2003:d3:c718:e200:2039:39d8:7055:e09? (p200300d3c718e200203939d870550e09.dip0.t-ipconnect.de. [2003:d3:c718:e200:2039:39d8:7055:e09])
+        by smtp.gmail.com with ESMTPSA id r25sm14944704edy.93.2020.08.11.09.43.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 11 Aug 2020 09:43:53 -0700 (PDT)
+Subject: Re: system hangs when running btrfs balance
+From:   Johannes Rohr <jorohr@gmail.com>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
+References: <c684e9ac-f28b-7056-0a46-6c6450ac4c1f@gmail.com>
+ <8a3370fd-7cda-78d2-b036-8350c5a3e964@gmx.com>
+ <feffe90f-de6b-0f53-c54d-0df135c49868@gmail.com>
+Message-ID: <10ac3036-52cc-3963-d55e-b8352388e1f6@gmail.com>
+Date:   Tue, 11 Aug 2020 18:43:53 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-References: <CA+XNQ=iupWN6ck5M0hUQ-+470F9PKdoKKUUt+tmQOWoC=zterg@mail.gmail.com>
- <f8742974-69b2-a0e9-ff99-4c61dc4f9ff0@gmx.com>
-In-Reply-To: <f8742974-69b2-a0e9-ff99-4c61dc4f9ff0@gmx.com>
-From:   Thommandra Gowtham <trgowtham123@gmail.com>
-Date:   Tue, 11 Aug 2020 20:42:31 +0530
-Message-ID: <CA+XNQ=g1WzZ6h+MGETbK34iUyHno_vUcufXiaJ3dKfVva+b=cQ@mail.gmail.com>
-Subject: Re: BTRFS suddenly moving to read-only
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <feffe90f-de6b-0f53-c54d-0df135c49868@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Thank you for the response.
+Dear Qu, dear all,
 
+hat the fix also been backported to the 5.6 kernel series? If so, from
+which version on?
+
+Cheers,
+
+Johannes
+
+
+Am 10.08.20 um 22:23 schrieb Johannes Rohr:
+> Thanks so much, Qu, for your advice and the background
 >
-> > - How do we determine the Disk health apart from SMART attributes? Can
-> > we do a Disk write/read test to figure it out?
+> We had some issues with btrfs, but I definitely want to continue using
+> it. So the incredible responsiveness of btrfs devs like you is
+> definitely on the plus side..
 >
-> AFAIK SMART is the only thing we can rely on now.
-
-Thank you. The reason I asked the question is sometimes, though SMART
-reports the Percent Life remaining as > 80, we see issues with the
-disk.
-So I was looking if we can use dd or other tools to determine disk
-write speed and compare with the new SSD's. Like below.
-
-# dd if=/dev/zero of=/var/tmp/test1.img bs=1G count=1 oflag=dsync
-1+0 records in
-1+0 records out
-1073741824 bytes (1.1 GB, 1.0 GiB) copied, 1.90537 s, 564 MB/s
-
+> Apparently, Ubuntu is preparing a kernel update to v 5.4.54
+> https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1889669 so our
+> problem should be solved soon!
 >
-> >
-> > mount options used:
-> > rw,noatime,compress=lzo,ssd,space_cache,commit=60,subvolid=263
-> >
-> > #   btrfs --version
-> > btrfs-progs v4.4
-> >
-> > Ubuntu 16.04: 4.15.0-36-generic #1 SMP Mon Oct 22 21:20:30 PDT 2018
-> > x86_64 x86_64 x86_64 GNU/Linux
-> >
-> > mkstemp: Read-only file system
-> > [35816007.175210] print_req_error: I/O error, dev sda, sector 4472632
-> > [35816007.182192] BTRFS error (device sda4): bdev /dev/sda4 errs: wr
-> > 66, rd 725, flush 0, corrupt 0, gen 0
+> Cheers,
 >
-> This means some read error happened.
-
-Yes. The errors started to occur when we were upgrading the packages.
-Eventually the upgrade failed with read-only filesystem errors.
-
+> Johannes
 >
-> Do you have extra log context?
-
-Not much on this system as we couldn't get anything from syslog after
-power-cycle.
-
-But on other instances, we see errors like below
-
-# cat syslog | grep error
-Jun 25 13:12:13   kernel: [154559.788764]          res
-41/04:00:80:08:00/00:00:00:00:00/60 Emask 0x1 (device error)
-Jun 25 13:12:13   kernel: [154559.821041]          res
-41/04:00:80:08:00/00:00:00:00:00/60 Emask 0x1 (device error)
-Jun 25 13:12:13   kernel: [154559.900810]          res
-41/04:00:00:08:02/00:00:00:00:00/60 Emask 0x1 (device error)
-Jun 25 13:12:13   kernel: [154559.933070]          res
-41/04:00:00:08:02/00:00:00:00:00/60 Emask 0x1 (device error)
-Jun 25 13:12:13   kernel: [154560.016591]          res
-41/04:00:80:08:00/00:00:00:00:00/60 Emask 0x1 (device error)
-Jun 25 13:12:13   kernel: [154560.048882]          res
-41/04:00:80:08:00/00:00:00:00:00/60 Emask 0x1 (device error)
-Jun 25 13:12:13   kernel: [154560.114361] ata2.00: NCQ disabled due to
-excessive errors
-Jun 25 13:12:13   kernel: [154560.132361]          res
-41/04:00:00:08:02/00:00:00:00:00/60 Emask 0x1 (device error)
-Jun 25 13:12:13   kernel: [154560.154507] ata2.00: error: { ABRT }
-Jun 25 13:12:13   kernel: [154560.164580]          res
-41/04:00:00:08:02/00:00:00:00:00/60 Emask 0x1 (device error)
-Jun 25 13:12:14   kernel: [154560.339129] ata2.00: error: { ABRT }
-Jun 25 13:12:14   kernel: [154560.346548] print_req_error: I/O error,
-dev sdb, sector 67111040
-Jun 25 13:12:14   kernel: [154560.360192] BTRFS error (device sdb3):
-bdev /dev/sdb3 errs: wr 1, rd 0, flush 0, corrupt 0, gen 0
-Jun 25 13:12:14   kernel: [154560.417322]          res
-51/04:00:00:08:02/00:00:04:00:00/60 Emask 0x1 (device error)
-Jun 25 13:12:14   kernel: [154560.511036] ata2.00: error: { ABRT }
-Jun 25 13:12:14   kernel: [154560.518434] print_req_error: I/O error,
-dev sdb, sector 67241984
-Jun 25 13:12:14   kernel: [154560.525291] BTRFS error (device sdb3):
-bdev /dev/sdb3 errs: wr 2, rd 0, flush 0, corrupt 0, gen 0
-
 >
-> > [35816007.192913] print_req_error: I/O error, dev sda, sector 4472632
-> > [35816007.199855] BTRFS error (device sda4): bdev /dev/sda4 errs: wr
-> > 66, rd 726, flush 0, corrupt 0, gen 0
-> > [35816007.210675] print_req_error: I/O error, dev sda, sector 10180680
-> > [35816007.217748] BTRFS error (device sda4): bdev /dev/sda4 errs: wr
-> > 66, rd 727, flush 0, corrupt 0, gen 0
-> > [35816007.461941] print_req_error: I/O error, dev sda, sector 4472048
-> > [35816007.468903] BTRFS error (device sda4): bdev /dev/sda4 errs: wr
-> > 66, rd 728, flush 0, corrupt 0, gen 0
-> > [35816007.479611] systemd[7035]: serial-getty@ttyS0.service: Failed at
-> > step EXEC spawning /sbin/agetty: Input/output error
-> > [35816007.712006] print_req_error: I/O error, dev sda, sector 4472048
->
-> This means, we failed to read some data from sda.
->
-> It's not the error from btrfs checksum verification, but directly read
-> error from the device driver.
->
-> So the command, agetty can't be executed due to we failed to read the
-> content of that executable file.
->
-> >
-> > # dmesg | tail
-> > bash: /bin/dmesg: Input/output error
-> >
-> > Doesn't Input/output error mean the disk is inaccessible?
->
-> This means, we can't even access /bin/dmesg the file itself.
-
-Yes. That would technically mean that the Disk is not accessible
-though it is being reported as read-only by 'mount -t btrfs'.
-
-If a disk is missing or offline, is it done by kernel (bug) or
-something related to hardware. This is being seen on multiple systems.
-So there has to be some commonality among them and as the disk moves
-to sudden read-only, we are unable to get much logs on all cases.
-
-How can we debug these instances? Can you please give some pointers?
-
->
-> >
-> > # btrfs fi show
-> > Label: 'rpool'  uuid: 42d39990-e4eb-414b-8b17-0c4a2f76cc76
-> >     Total devices 1 FS bytes used 11.80GiB
-> >     devid    1 size 27.20GiB used 19.01GiB path /dev/sda4
-> >
-> > # smartctl -a /dev/sda
-> > smartctl 6.5 2016-01-24 r4214 [x86_64-linux-4.15.0-36-generic] (local build)
-> > Copyright (C) 2002-16, Bruce Allen, Christian Franke, www.smartmontools.org
-> >
-> > Short INQUIRY response, skip product id
-> > A mandatory SMART command failed: exiting. To continue, add one or
-> > more '-T permissive' options.
-> >
-> >
-> > We were able to get smartctl o/p after a power-cycle
->
-> Did you get dmesg/agetty run after a power-cycle?
->
-> Or it still triggers the same -EIO error?
-
-No. After power-cycle everything is back to normal(rw mounted) with
-logs not showing any abnormalities.
-Subsequent IO activity(upgrading the packages) was successful as well.
-
->
-> BTW, if the smartctl doesn't record above read error as error, maybe
-> it's some unstable cables causing temporary errors?
-
-> > 169 Unknown_Attribute       0x0000   100   100   000    Old_age
-> > Offline      -       66
-
-The Disk Percent life remaining is at '66' for this system which is
-low in my opinion. Can a disk go offline suddenly when the health
-drops low?
-
-Regards,
-Gowtham
-
->
-> Thanks,
-> Qu
+> Am 10.08.20 um 11:59 schrieb Qu Wenruo:
+>> On 2020/8/10 下午5:22, Johannes Rohr wrote:
+>>> Dear devs,
+>>>
+>>> since I upgraded our system from Ubuntu 18.04 LTS to 20.04 LTS, the file
+>>> system completely freezes when I run a btrfs balance on it. The only way
+>>> to get a usable system for the time being is with the mount option
+>>> "skip_balance".
+>>>
+>>> The server has a raid1 with 4 SSDs with 500 GB each. 
+>>> [Sun Aug  9 12:21:35 2020] CPU: 1 PID: 4537 Comm: btrfs-balance Tainted: G           O      5.4.47 #1
+>> A quick git log glance shows that, some reloc tree related fixes haven't
+>> landed in v5.4.47.
+>>
+>> E.g. (commits are upstream commits, not stable tree commits)\
+>>
+>> 1dae7e0e58b484eaa43d530f211098fdeeb0f404 btrfs: reloc: clear
+>> DEAD_RELOC_TREE bit for orphan roots to prevent runaway balance
+>> 51415b6c1b117e223bc083e30af675cb5c5498f3 btrfs: reloc: fix reloc root
+>> leak and NULL pointer dereference.
+>>
+>> And above fixes only landed in v5.4.54, so I guess you have to update
+>> your kernel anyway.
+>>
+>>> There has been a related bug report at kernel.org for a year,
+>>> https://bugzilla.kernel.org/show_bug.cgi?id=203405 and I have found
+>>> similar reports here and there, some pertaining to quite old kernel
+>>> versions, but we have only been hit with kernel 5.4. After this first
+>>> occurred, I had no better luck though, with older kernels (4 something
+>>> from Debian buster, also 4 something from Ubuntu 18.04).
+>> Nope, the mentioned one is another bug, we had some clue on this, but
+>> need some time to solve it.
+>> (It's mostly related to some special timing in canceling, leading to
+>> parted dropped trees).
+>>
+>>> Apart from fixing the underlying issue, would there be any wordaround
+>>> for it?
+>> Update your kernel to at least v5.4.54, then mount with skip_balance and
+>> finally  "btrfs balance cancel <mnt>".
+>> After that, doing whatever you like should be fine.
+>>
+>> I prefer to do a btrfs check on the unmounted or at least ro mounted fs
+>> to ensure your fs is sane in the first place.
+>>
+>> Thanks,
+>> Qu
+>>
+>>> Currently the balance for the fs is in suspended status. Since
+>>> there is quite a few people who depend on this server, I can't just play
+>>> around with it at random. That's why I am asking for advice here...
+>>>
+>>> Thanks so much for any suggestions you might have!
+>>>
+>>> Johannes
+>>>
 >
