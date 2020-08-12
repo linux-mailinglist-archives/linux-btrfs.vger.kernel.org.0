@@ -2,172 +2,145 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 438D32423B0
-	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Aug 2020 03:29:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AE5A2423DA
+	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Aug 2020 03:50:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726472AbgHLB3b (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 11 Aug 2020 21:29:31 -0400
-Received: from mout.gmx.net ([212.227.17.20]:54369 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726457AbgHLB3a (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 11 Aug 2020 21:29:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1597195763;
-        bh=9+ok6Z1SHfAWNyxdXqtxxTj9gxA8meFy5dabhpiAiwU=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=UiOT1HbAaUXlisSJmvT5yoyaL8lzI07ubbqxEtEUf0pKfixnZZmium8YupKTCLIVV
-         cC7PRnwIzgOVu+ICyVlr41jtKLzrD3D6j+rx/9+4tLuP88914ipo4lywagmb43JoEo
-         5Oul+MTu++Y+92Vi7w/x3NPv9M11JZ/u0b4oJ0n4=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([45.77.180.217]) by mail.gmx.com (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MXp9Y-1kDM7i25tc-00Y8H7; Wed, 12
- Aug 2020 03:29:23 +0200
-Subject: Re: [PATCH] btrfs-progs: --init-extent-tree if extent tree is
- unreadable
-To:     Daniel Xu <dxu@dxuuu.xyz>, linux-btrfs@vger.kernel.org
-Cc:     kernel-team@fb.com
-References: <20200728021224.148671-1-dxu@dxuuu.xyz>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAVQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWCnQUJCWYC
- bgAKCRDCPZHzoSX+qAR8B/94VAsSNygx1C6dhb1u1Wp1Jr/lfO7QIOK/nf1PF0VpYjTQ2au8
- ihf/RApTna31sVjBx3jzlmpy+lDoPdXwbI3Czx1PwDbdhAAjdRbvBmwM6cUWyqD+zjVm4RTG
- rFTPi3E7828YJ71Vpda2qghOYdnC45xCcjmHh8FwReLzsV2A6FtXsvd87bq6Iw2axOHVUax2
- FGSbardMsHrya1dC2jF2R6n0uxaIc1bWGweYsq0LXvLcvjWH+zDgzYCUB0cfb+6Ib/ipSCYp
- 3i8BevMsTs62MOBmKz7til6Zdz0kkqDdSNOq8LgWGLOwUTqBh71+lqN2XBpTDu1eLZaNbxSI
- ilaVuQENBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAGJATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAK
- CRDCPZHzoSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gy
- fmtBnUaifnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsS
- oCEEynby72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAk
- ZkA523JGap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gG
- UO/iD/T5oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <bb0881e6-0301-2e03-8ad2-ad24055c4351@gmx.com>
-Date:   Wed, 12 Aug 2020 09:29:18 +0800
+        id S1726501AbgHLBua (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 11 Aug 2020 21:50:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42892 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726143AbgHLBu3 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 11 Aug 2020 21:50:29 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 372B1C06174A
+        for <linux-btrfs@vger.kernel.org>; Tue, 11 Aug 2020 18:50:29 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id x12so455411qtp.1
+        for <linux-btrfs@vger.kernel.org>; Tue, 11 Aug 2020 18:50:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=FPCvydUbp+J2bKB51YGuSesSNLqyIdtKUyqyMwYZEys=;
+        b=qUq+D5AleSm1QDMCsNkKsddnMsjC2bYL0uKPK9V2Q9oHcZt8zKk/IHz3oUWMAeAOre
+         Kf7H8OZzeVuznkQX6UE4XAs1bOLomdkfBKiX/CO6CzN9Zu0XxUT12l8173U9iXndHruv
+         VH+mqOVLOQRmceaM0rIKn9ONYHx4U2NLgKTYGHAQsjIWcCM5gxZbrkFNcl+nJxshkzE0
+         TNd71NCdQvknJDJmbig+VbTTlMPLjMRj/CHaaKxvVLIENweSp3bIyG1dEab3k/NHGDCi
+         2yXbxCknEgWRbiD9P35Oy7Pqc7kqX4QcRXLHAf4Uosl8/uBWC74albAAlQLTXNCQ6Udn
+         pUdA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=FPCvydUbp+J2bKB51YGuSesSNLqyIdtKUyqyMwYZEys=;
+        b=PnAFIKufuGfGTpCB+q2wCHKhf9DQl+oNCkzPy3lImZr6hqf+Xgbhom+pfucUeE6wyj
+         4Wt+6UDhXYcrt6pdC3i4BU/ZDu1VBFF6eMXAxinLXQ6t5pjVSBeCJVklkJBxrDZHHi2b
+         60cci+1S+bF1BNvsCwW/dD2b4j3CxI+WloAsyFDLresWP3DKr40aMbVzEI7STRBx2FgE
+         Hzk7KrdivhOOTTw4+bQPIbgh9SXHFTxDc/efnDf1BBkm6wW29sPHHUUAiZp0uZiqiqIp
+         gnLlxhww6XxgGk3tH/5WYHzQiJNAysdPgRQk1HXRJCS/Aa9dzAbe3eMt8dBqWUgo97Jo
+         IvgQ==
+X-Gm-Message-State: AOAM531wIlU3dfGCFyP7d3zBoBO0gSmZcbKGCQm7SDorhJlu3uPa6H4Z
+        iDrforif649ya5GyVUh6IQGfeQsFDXsz9g==
+X-Google-Smtp-Source: ABdhPJyMIJImBDpI0P3iSaCJF2c42vfMc7jqo+JlgWsSGU/BxbF3K1I1sTIg4jRbUzl7PNCqOhhJSw==
+X-Received: by 2002:ac8:568a:: with SMTP id h10mr4202740qta.239.1597197028019;
+        Tue, 11 Aug 2020 18:50:28 -0700 (PDT)
+Received: from localhost.localdomain (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id g136sm656981qke.82.2020.08.11.18.50.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 11 Aug 2020 18:50:27 -0700 (PDT)
+Subject: Re: [PATCH v3 3/5] btrfs: Detect unbalanced tree with empty leaf
+ before crashing btree operations
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <20200809120919.85271-1-wqu@suse.com>
+ <20200809120919.85271-4-wqu@suse.com>
+ <8d21ba85-52a5-5419-dc16-ceece8b0c3a8@toxicpanda.com>
+ <dbe1176e-db46-7ff7-1231-ee69d7c3c5d1@gmx.com>
+ <ee1203ab-444d-cc9d-0e00-2102bd02ecd2@toxicpanda.com>
+ <fb4aea50-0e81-6444-ae9f-3e6c2df88c67@gmx.com>
+From:   Josef Bacik <josef@toxicpanda.com>
+Message-ID: <727019b8-254f-d2eb-f886-3f46e7b522c7@toxicpanda.com>
+Date:   Tue, 11 Aug 2020 21:50:26 -0400
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20200728021224.148671-1-dxu@dxuuu.xyz>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="BmbH171MibAxc0NwEMHvr4wUopvPe6gqw"
-X-Provags-ID: V03:K1:5XTldIcfeOHsXlkboTYMnEanGTUBtGOT4BpoW37jGsL/hNNfEfV
- OmKMgxBpwykNtQizO7R5+Dbvh1WyxjkKClyysZsuwsn7HXAr4N26vb5MxartqWzxT6EGFpg
- maYn+gMH+a05mRpByu0Ymjt5C6749+7h3gTZLm1N8t7Bqgolnd8pZvCCjTPeAcUbhQjbGhj
- 9RTRZX20UCVm9cvCWnXQQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:kv2qi6qgnbo=:bh+l4aHdHz7KVpooINlkOe
- HBP2cz1ytUfkv2IdjcDoeNGZPAy3iYriW9j/ZVwhuDWn9QTIzbrRFa98HN0R0x+VJYpcF/D9M
- dnmOJ1ILWGw7kQNr3dFdgyJVJ5yJLPGXaIgvXsmIUzVCO4fVoQsCFYvaOPuM6SRrLOnZ7Zrf1
- wOgVYK2yqKJc6TF0afxR5UaAK8Rt85X9LO9JGm+1M9TlI/WNl4w7T18bLjqX9cl3x3F5v6Wn9
- IJpkN3yAEUvGX7jxqh2yyU8GbXAmVt71Mc8cc9TvxZLtU2cnw55vOrmpJ0oasDpEDSDwTBavX
- 1bIdqNW6nXmZX1A7uv0fJHINB78e0/IRI3bUUgsUYQ9isalbiS4rMiiy2KYb6yFnTo/U0H09C
- PXl5tewlhzuv0+BR9EPC8fizUgpp925h63og/VxjmjdMJbR5SSZNSqeTPYbbq68UYUTHaDtVQ
- jirO2xcQoppEBC3TNArEeHylqWjDeKgvZaQ1TaG5qjadun6svvl2kpXuSvB9KrqR8n4cdD71c
- tzBrNV4NlXog7HdWHgK5/PgyIOypvOMqjNy03jXS/jOtjgO9YHRu1mXLT1Jcw7VU83vY0sOi6
- v79cZhXPzVHqHp/QKOKPqPj2jG1Nq/cdRb6C1JlaF+/8OfweV2OIJb9c67tnHXyryTl+n5ccS
- lyynMP4TPErQu+9GB3np5MbG33ZGcYAOvMBUzIU+41xWAm4FF1sy6pSjApntAgM/bE/nlJvRE
- aUCF6SOVeoGqfvR4rVtZjEjOytx/b/xiclmFp9RYPBD3XKsmQ+uO2Cxu2CHTWgnATzdlqJYxK
- SNjiI9cMcgOWJnHxu8Lq+xPAzUUrtJbkVLrfBvannvsh/32D3sQEyJOOXD+u3iLSIxWxKJ3L9
- 2h12JizXXFWzD7T5huiTEzjYwiAz0moTPVBfPdfG53+ltqbmVz6ZUWw5xdnSkeUPu+38re4S4
- 2UczlF1q8TkAjfQYyRsViJisQpHN+HlZTHijJicrQzsSpbVvmff0vVYEAcBQHNh0L5Lij4fWs
- 3PuDxyb71er67WbNnzIz1wHgSAno6krSoHd5BBrnZyrL8p0FEInVDCXI7nJsG4pLps+tM+0S7
- b5RF0bxW4OUB1KvMaAMNQZkQ5lyyV8U8K7r9TViarMuWAlsTSy30uYOUfUVHW6rSfXhqRmgZ4
- Ub7v6wSotS99HS6HGsT7ijtxEL+BvQt9qOtMRHbCuW3Ihjd/8cMs/3fibqf8KE1PCJY4nTQnt
- b/ndnjoo+sB98OKVu1oPPVfexr93BUa50dFc+nQ==
+In-Reply-To: <fb4aea50-0e81-6444-ae9f-3e6c2df88c67@gmx.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---BmbH171MibAxc0NwEMHvr4wUopvPe6gqw
-Content-Type: multipart/mixed; boundary="nnb1vNgciq0RGPfiH8aB94XjGM3Q3Pmx6"
-
---nnb1vNgciq0RGPfiH8aB94XjGM3Q3Pmx6
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-
-
-
-On 2020/7/28 =E4=B8=8A=E5=8D=8810:12, Daniel Xu wrote:
-> This change can save the user an extra step of running `btrfs check
-> --init-extent-tree ...` if the user was already trying to repair the
-> filesystem.
-
-This looks too aggressive to me.
-
-Extent tree repair, not only --init-extent-tree, is not considered safe
-overall.
-
-In fact, we could hit cases with things like completely sane fs trees,
-but corrupted extent and csum trees.
-
-In that case, I'm not sure --init-extent-tree would solve or just worse
-the situation.
-
-Thus --init-extent-tree should only be triggered by users who know what
-they are doing.
-(In that case, I would call them developers other than users)
-
-Thanks,
-Qu
-
->=20
-> Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
-> ---
->  check/main.c | 4 ++++
->  1 file changed, 4 insertions(+)
->=20
-> diff --git a/check/main.c b/check/main.c
-> index f93bd7d4..4da17253 100644
-> --- a/check/main.c
-> +++ b/check/main.c
-> @@ -10243,6 +10243,10 @@ static int cmd_check(const struct cmd_struct *=
-cmd, int argc, char **argv)
->  		goto close_out;
->  	}
-> =20
-> +        /* Fallback to --init-extent-tree if extent tree is unreadable=
- */
-> +        if (!extent_buffer_uptodate(info->extent_root->node) && repair=
-)
-> +		init_extent_tree =3D true;
-> +
->  	if (init_extent_tree || init_csum_tree) {
->  		struct btrfs_trans_handle *trans;
-> =20
->=20
+On 8/11/20 8:29 PM, Qu Wenruo wrote:
+> 
+> 
+> On 2020/8/12 上午8:23, Josef Bacik wrote:
+>> On 8/11/20 7:04 PM, Qu Wenruo wrote:
+>>>
+>>>
+> [...]
+>>>> Which I assume is the problem?  The generation is 19, is that >
+>>>> last_trans_committed?  Seems like this check just needs to be moved
+>>>> lower, right?  Thanks,
+>>>
+>>> Nope, that generation 19 is valid. That fs has a higher generation, so
+>>> that's completely valid.
+>>>
+>>> The generation 19 is there because there is another csum leaf whose
+>>> generation is 19.
+>>>
+>>
+>> Then this patch does nothing, because we already have this check lower,
+>> so how exactly did it make the panic go away?  Thanks,
+>>
+>> Josef
+> 
+> Sorry, I don't get your point.
+> 
+> The generation 19 isn't larger than last_trans_committed, so that check
+> has nothing to do with this case.
+> 
+> And then it goes to the header_nritems() check, which is 0, and with
+> first_key present, which is invalid and we error out, rejecting the
+> corrupted leaf.
+> 
+> What's the problem then?
 
 
---nnb1vNgciq0RGPfiH8aB94XjGM3Q3Pmx6--
+         /* We have @first_key, so this @eb must have at least one item */
+         if (btrfs_header_nritems(eb) == 0) {
+                 btrfs_err(fs_info,
+                 "invalid tree nritems, bytenr=%llu nritems=0 expect >0",
+                           eb->start);
+                 WARN_ON(IS_ENABLED(CONFIG_BTRFS_DEBUG));
+                 return -EUCLEAN;
+         }
 
---BmbH171MibAxc0NwEMHvr4wUopvPe6gqw
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+         /*
+          * For live tree block (new tree blocks in current transaction),
+          * we need proper lock context to avoid race, which is 
+impossible here.
+          * So we only checks tree blocks which is read from disk, whose
+          * generation <= fs_info->last_trans_committed.
+          */
+         if (btrfs_header_generation(eb) > fs_info->last_trans_committed)
+                 return 0;
 
------BEGIN PGP SIGNATURE-----
+         /* We have @first_key, so this @eb must have at least one item */
+         if (btrfs_header_nritems(eb) == 0) {
+                 btrfs_err(fs_info,
+                 "invalid tree nritems, bytenr=%llu nritems=0 expect >0",
+                           eb->start);
+                 WARN_ON(IS_ENABLED(CONFIG_BTRFS_DEBUG));
+                 return -EUCLEAN;
+         }
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl8zRe8ACgkQwj2R86El
-/qjljwgAhgfN4DlLA47GXBqVr5u1ORS+yByW39tn25XF8tU6BMd6oRuVXoENV1Dp
-BamWC6I9j1ZnzwpuO5g2VGXN2TvTUpOdhYuOfEg9W0RIYK/26+Yg1SgIoh7URDxs
-Y8M0h/tu1xeFPxmLnLngQCngSypArll8R0sIPSY91zfoLR8Up5rCPctQPwzFkjlW
-98QnTry3e2kfVLkxN+YMFfZM1+1oX/eJn/xw7igUFnND2fm2s1U+HN0hxExswA2c
-gh8wpxPx7SP/xaIY2OaGoYDTKsFihxlKrEZaj8nFLFtTsALY0rQg9xAJ6bEl/CTg
-Sd+kCMAYJ/fsS20qiKI8HKBra7OvfA==
-=M6uF
------END PGP SIGNATURE-----
 
---BmbH171MibAxc0NwEMHvr4wUopvPe6gqw--
+This is the code, you have the exact same check above the header 
+generation thing, and that's not the problem, so I don't understand why 
+you have added this check.
+
+Josef
