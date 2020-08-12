@@ -2,209 +2,162 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC4B42423DE
-	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Aug 2020 03:53:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A9EE24242D
+	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Aug 2020 05:03:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726333AbgHLBxl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 11 Aug 2020 21:53:41 -0400
-Received: from de-smtp-delivery-102.mimecast.com ([51.163.158.102]:37612 "EHLO
-        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726235AbgHLBxl (ORCPT
+        id S1726457AbgHLDDx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 11 Aug 2020 23:03:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54180 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726405AbgHLDDw (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 11 Aug 2020 21:53:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
-        t=1597197217;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=NoRy4EEiyPnt2q7+KNad34USRxkhpyd5VOjEfc6MLjk=;
-        b=LKGSlCm4kzAJmKR1MeaUI1TM8DaLKtIeMFgchSoXCbEYShq5d6HWyKIQUgXldH7eET5X0M
-        g8bQTgIh9i22clee9nSymNggl2FFgJqSAqv16dWKL4QilUlZv0sRBjquoWNVZ09Vs1SG9Q
-        LMD87qLn1/NYTJdP3RRJY1N8AMaOiiU=
-Received: from EUR02-HE1-obe.outbound.protection.outlook.com
- (mail-he1eur02lp2051.outbound.protection.outlook.com [104.47.5.51]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- de-mta-27-EFucMKiaP2C4q4XWh4GezA-1; Wed, 12 Aug 2020 03:53:36 +0200
-X-MC-Unique: EFucMKiaP2C4q4XWh4GezA-1
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=aR5lsciLyIaxbDPucoJ+NSCDozXrzIll3b0imNAqSvNN7bmRdFCiZrf7SsT4+pKKrEDnBJBIiU6OBmJXd62BKx1HnRy++8AHjcqMmDXpeIpMMOZKKHTLNNxAOiLdAYBlrw6UGPbGgzfSNjHee44KiBZ0A6oYFoYxwqokigbdREh7EBvG1dBeW7vaijVuERIHeKRB2nt9jgalof5mhNHldWTFyb76lqFZrZGqO7iJx3KXEPfPN/j6NZxRMoKoC43vFdgeu3ogTg5YSSLvFMiLM3F7Etgo9yV3gSQWPjFYI26iCzXLbEiqGm7mCYxMDgY9AFfv6F2+Yinv4KqRTorE8w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+5CW9088KjdOu1k2qwQdqFuv8FC5t3qgtlmJNlNoZ4M=;
- b=fxX7TukwaeJqT4muE7nOsN6pWHeD0mzRVwK/ChpeQJFe9it74WTNfyfRlfIsy468lVXQwpgVCmIfg8KMjLD1Kv8P5KfCQ1GWlne5LL3mNZ0zL0kqtc7bym+m5jLNupSJiu1i9SjnNc7YcZmOwAM1spspLNdFDqa4tQvQkC0SUhhYpxInX2Ucnwe47MH6hK1SSzFiIDXuZgvI2hyhzW0KMN5eE/EmbHchBMq6It4q+gWDnxZ0JDmfNvwykB3qZuGA+kD98EafvTeIYqqHzyg4BjEpGZnjvFJEnkHJKt9hk2qZ6WO7vQzgNiqW8vQha8T3sa1VXS3evWqfpDe5Rg6K/A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=suse.com;
-Received: from AM0PR04MB6195.eurprd04.prod.outlook.com (2603:10a6:208:13c::13)
- by AM0PR04MB6451.eurprd04.prod.outlook.com (2603:10a6:208:16c::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3261.16; Wed, 12 Aug
- 2020 01:53:34 +0000
-Received: from AM0PR04MB6195.eurprd04.prod.outlook.com
- ([fe80::e49c:64ce:47e0:16]) by AM0PR04MB6195.eurprd04.prod.outlook.com
- ([fe80::e49c:64ce:47e0:16%3]) with mapi id 15.20.3261.024; Wed, 12 Aug 2020
- 01:53:34 +0000
-Subject: Re: [PATCH v3 3/5] btrfs: Detect unbalanced tree with empty leaf
- before crashing btree operations
-To:     Josef Bacik <josef@toxicpanda.com>,
-        Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
-References: <20200809120919.85271-1-wqu@suse.com>
- <20200809120919.85271-4-wqu@suse.com>
- <8d21ba85-52a5-5419-dc16-ceece8b0c3a8@toxicpanda.com>
- <dbe1176e-db46-7ff7-1231-ee69d7c3c5d1@gmx.com>
- <ee1203ab-444d-cc9d-0e00-2102bd02ecd2@toxicpanda.com>
- <fb4aea50-0e81-6444-ae9f-3e6c2df88c67@gmx.com>
- <727019b8-254f-d2eb-f886-3f46e7b522c7@toxicpanda.com>
-From:   Qu Wenruo <wqu@suse.com>
-Message-ID: <442f2087-d0e0-ebb9-06f1-7a97d7557204@suse.com>
-Date:   Wed, 12 Aug 2020 09:53:18 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
-In-Reply-To: <727019b8-254f-d2eb-f886-3f46e7b522c7@toxicpanda.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-ClientProxiedBy: TYAPR01CA0100.jpnprd01.prod.outlook.com
- (2603:1096:404:2a::16) To AM0PR04MB6195.eurprd04.prod.outlook.com
- (2603:10a6:208:13c::13)
+        Tue, 11 Aug 2020 23:03:52 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E12C6C06174A
+        for <linux-btrfs@vger.kernel.org>; Tue, 11 Aug 2020 20:03:51 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id l2so621213wrc.7
+        for <linux-btrfs@vger.kernel.org>; Tue, 11 Aug 2020 20:03:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=yF5fZ71aLiLpINtE0BWHYTVgSvt03t5lj94Vf1hBqtM=;
+        b=NWIuAM0gbEMcHwtSPPdLlJrwq5Bld8DCg4k56DABlzthz4JSrFZR6YvyW9G5eYwrRi
+         8cJBdkk7xUWBIz5fjzUXt/rrRFf/ZTpiC4Yl5CiKOJfi/4/BwSf3fXggVqRj0OcmlEIB
+         pjf1nODNN90MY83XdAWf1D1W/GvbZ+aFUh87GbrsbhZLe/OtQayu99bqD+0V7/hushpa
+         sHWvQEp9R8GgktZp2LboNZH5Htg0J7EYWcfNwa0ce78G3Z9yLLJuvd2T8un6oRRff2IQ
+         KJxMWLcamwHn6tVPmnrGslH6AuvtOuNaH7l2IS8Ihvr7crsdoVNkth5ChHAQ/GePy+CI
+         nt5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=yF5fZ71aLiLpINtE0BWHYTVgSvt03t5lj94Vf1hBqtM=;
+        b=kmT2qOBf6MIksEctnviyq4MIvqltBcFcs0p8eGzvm0MqZ5JZ2LQKYsx7CEDJrineCp
+         0mzasnQ8hIMIAjKmW1HUfqMsDD3i54kn7zxZ5b8idIMgzPJDiY0Gv3v22lLigAVA6xgY
+         0DKTNbOVt6oCQwt/JWMgQpkD+PjqrnP+Fbw8hb7/P8ht/Yfn2jDVNZAHrRa6wyWN3Y4V
+         VkJs3FO9QHeXfkNMc7hEXpgAI1oNZkYtkwEmDoROkPDV14IJ93krAk3NIlwZyzaGnC20
+         2jLAv+/F9R9WJDnk7xC+BmOUDWyGdw6qcQ7auAZvTa+TRdXv4luaHo4M+aW6xD9SqZnD
+         x+yA==
+X-Gm-Message-State: AOAM5326YeG39PdLY+A9l8k291Itx1Iq/3SRsCgXcRKaMj1bpdjstKO0
+        L3n/GmROwy6w0AOzN1hrcAWkTuolqmypa+SdWGNt5TUy
+X-Google-Smtp-Source: ABdhPJwc51wPqpWiklem9hNlo9cCK9QaKl7TfWkElRRFt64hdb/Y0kjvWuM/xIrJXzZUuoqX/1wDfVfwLroQ8S7rznE=
+X-Received: by 2002:adf:f806:: with SMTP id s6mr8638003wrp.252.1597201430139;
+ Tue, 11 Aug 2020 20:03:50 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [0.0.0.0] (45.77.180.217) by TYAPR01CA0100.jpnprd01.prod.outlook.com (2603:1096:404:2a::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3283.15 via Frontend Transport; Wed, 12 Aug 2020 01:53:32 +0000
-X-Originating-IP: [45.77.180.217]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: c0a32e69-5eb6-45a6-d947-08d83e6285cb
-X-MS-TrafficTypeDiagnostic: AM0PR04MB6451:
-X-Microsoft-Antispam-PRVS: <AM0PR04MB64518E9545EA9BE0E1D648F9D6420@AM0PR04MB6451.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: gCKmNvVa6QgjVeYzZ7bxIfv01DNWAdFPJ8Q4DIVWQvonUvqv8r4nUAa41KX9sSDs47cRjp5Y2uWLC0SG4Js80+SO5ofiZVdbLXAGjAFBIWZt/4sdGsrWhTpP7kLGIdmIY/5NqNbrx+ZaGF4fokl3AH7nDtpqJh00RuZz+4vWbm40hx0NhoOypT4Cm0C0LKLnosjridf180AAYm0UqmkOugWc3Oes4yxk5gkQf0f5C/mXBQBCo9qXmlgnrwBM7Z2hQUF+QbH/CHNzeHpdtLK954iPGR8mCIV340jUwlVEU+vEfDlA8b9XpqHrg3Rsu7ZSG2E5TbfjtRuOsdUSvIqWSYb09mCZz8ZxO1QXVQlqJhjRVXoos3NeBCD7bMBK8QeFG2/iZDWEyzqw2sSyEYhju73XlEup6PX7JII4FeTN1ps=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB6195.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(346002)(376002)(136003)(366004)(39850400004)(396003)(478600001)(26005)(956004)(16526019)(110136005)(66946007)(2616005)(66476007)(2906002)(16576012)(52116002)(31696002)(5660300002)(186003)(86362001)(31686004)(8936002)(8676002)(53546011)(316002)(66556008)(55236004)(6706004)(36756003)(83380400001)(6666004)(6486002)(78286006)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: 6qCRizgppSOtR3/9bBjNbTwWJaT0CUerjgWhbZ0wY/SSlFRNC86XEVGl4T7WKwiJ1SkUmooUado41POmXOCW+2o5ZkJCc3p5hqweZdug5fYUqZfV6s6UEW3rKLVQnk0T1sDX1GLHeIEvrOICLfKRnMX13oakC+vktcaeYeR6E2jw+7DLWyaqdnQjoSV6YDuIJqP5v8k0AviEFxC2xSetfEirAr6iGttEExHKQGEuqjT66QMzC9dxvv+lnqciGXfjPYOllN35uL4oPgoOAbps/qqThw8RNcy8cZG4+6W+c4ZhgCpXCwkxfsCHiKKVUW8G4ZD/lnpvtqidf5DMVmz9O2/Kw6+8fIcvg5Bcs3NwTaDgJWBmf/jTWE7FCfDYnS0xEA/y1Z4ztLtD1Vm7uXbv+FqtHb8Jhfvy/Cp7aer00mUNsBzdeR0WJwYfl1SDxI0boFn/mlIiYy4c72GtGlrgL7TBi4ECan0aydNtqqlakNhnceTRmQ1tSSBVpCwQ68y8fXFDhP8b7KpLBOhVZ1dVgrmev0sL8Vg7wB0svMaq50V/m8iXhEnbLwhbYO4+CAtpe4mH4COf6t/6mRkBk3znAscYAQKef+hYjwlMkWBXKivEojxPX7kQi/HKXa1TLeDTugKQOjB0E1HcO6kVaQyElA==
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c0a32e69-5eb6-45a6-d947-08d83e6285cb
-X-MS-Exchange-CrossTenant-AuthSource: AM0PR04MB6195.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Aug 2020 01:53:34.7430
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: mrgXSNUzBpSrUrkVfdJ3h18G+EDThX7NGo1zUoK2QpIL72m/4zI10VV2AnN0mA8X
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR04MB6451
+References: <3dc4d28e81b3336311c979bda35ceb87b9645606.camel@dallalba.com.ar>
+ <CAJCQCtReHKtyjHL2SXZXeZ4TwdXf-Ag2KysSS0Oan5ZDMzm8OQ@mail.gmail.com>
+ <dc0bea2ee916ce4d1a53fe59869b7b7d8868f617.camel@dallalba.com.ar>
+ <CAJCQCtSdJVw5o2hJ3OyE6-nvM2xpx=nRHLVNSgf9ydD2O--vMQ@mail.gmail.com> <d46401cf4af5c6ebc7cc7ce584570bc901978151.camel@dallalba.com.ar>
+In-Reply-To: <d46401cf4af5c6ebc7cc7ce584570bc901978151.camel@dallalba.com.ar>
+From:   Chris Murphy <lists@colorremedies.com>
+Date:   Tue, 11 Aug 2020 21:03:21 -0600
+Message-ID: <CAJCQCtQ0_iNjW-VL6d5Mqc50pEBR+vDC3Z=W+xyD2xTXY_akXg@mail.gmail.com>
+Subject: Re: raid10 corruption while removing failing disk
+To:     =?UTF-8?Q?Agust=C3=ADn_Dall=CA=BCAlba?= <agustin@dallalba.com.ar>
+Cc:     Chris Murphy <lists@colorremedies.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Tue, Aug 11, 2020 at 2:40 PM Agust=C3=ADn Dall=CA=BCAlba
+<agustin@dallalba.com.ar> wrote:
+>
+> On Tue, 2020-08-11 at 13:17 -0600, Chris Murphy wrote:
+> > That drive should have '/sys/block/sda/device/timeout' at least 120.
+> > Although I've seen folks on linux-raid@ suggest 180. I don't know what
+> > the actual maximum time for "deep recovery" these drives could have.
+>
+> I'll do this. Is there any reason not to set _every_ drive to 180s?
+
+Arguably the drive should figure out WTF it wants to do with a command
+within a second. Giving it 7 seconds to fail is quite a while. The
+very idea a drive could seriously need 180 seconds to read one g.d.
+sector and keep iterating on it to recover? It seems curious. The
+rationale for 30s is that a drive taking that long to decide is
+probably a drive that needs a link reset, which is what the SCSI
+driver does when the timeout is reached. And yet that's obviously
+wrong for a large number of consumer HDDs that have these lengthy
+recoveries, by design.
+
+The ideal timeout would be the one recommended by the manufacturer for
+each make/model, i.e. our drive worse case, will either return data or
+an error in X seconds. And you'd set the command timer to that number
++ 1. And it'd be fine to make it different per drive, because any
+delay longer than that just means unnecessary waiting.
 
 
-On 2020/8/12 =E4=B8=8A=E5=8D=889:50, Josef Bacik wrote:
-> On 8/11/20 8:29 PM, Qu Wenruo wrote:
->>
->>
->> On 2020/8/12 =E4=B8=8A=E5=8D=888:23, Josef Bacik wrote:
->>> On 8/11/20 7:04 PM, Qu Wenruo wrote:
->>>>
->>>>
->> [...]
->>>>> Which I assume is the problem?=C2=A0 The generation is 19, is that >
->>>>> last_trans_committed?=C2=A0 Seems like this check just needs to be mo=
-ved
->>>>> lower, right?=C2=A0 Thanks,
->>>>
->>>> Nope, that generation 19 is valid. That fs has a higher generation, so
->>>> that's completely valid.
->>>>
->>>> The generation 19 is there because there is another csum leaf whose
->>>> generation is 19.
->>>>
->>>
->>> Then this patch does nothing, because we already have this check lower,
->>> so how exactly did it make the panic go away?=C2=A0 Thanks,
->>>
->>> Josef
->>
->> Sorry, I don't get your point.
->>
->> The generation 19 isn't larger than last_trans_committed, so that check
->> has nothing to do with this case.
->>
->> And then it goes to the header_nritems() check, which is 0, and with
->> first_key present, which is invalid and we error out, rejecting the
->> corrupted leaf.
->>
->> What's the problem then?
->=20
->=20
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /* We have @first_key, so this=
- @eb must have at least one item */
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (btrfs_header_nritems(eb) =
-=3D=3D 0) {
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 btrfs_err(fs_info,
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 "invalid tree nritems, bytenr=3D%llu nritems=3D0 expect =
->0",
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0 eb->start);
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 WARN_ON(IS_ENABLED(CONFIG_BTRFS_DEBUG));
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 return -EUCLEAN;
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
->=20
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /*
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * For live tree block (n=
-ew tree blocks in current transaction),
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * we need proper lock co=
-ntext to avoid race, which is
-> impossible here.
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * So we only checks tree=
- blocks which is read from disk, whose
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * generation <=3D fs_inf=
-o->last_trans_committed.
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 */
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (btrfs_header_generation(eb=
-) > fs_info->last_trans_committed)
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 return 0;
->=20
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /* We have @first_key, so this=
- @eb must have at least one item */
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (btrfs_header_nritems(eb) =
-=3D=3D 0) {
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 btrfs_err(fs_info,
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 "invalid tree nritems, bytenr=3D%llu nritems=3D0 expect =
->0",
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0 eb->start);
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 WARN_ON(IS_ENABLED(CONFIG_BTRFS_DEBUG));
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 return -EUCLEAN;
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
->=20
->=20
-> This is the code, you have the exact same check above the header
-> generation thing, and that's not the problem, so I don't understand why
-> you have added this check.
+>As
+> far as I can tell it doesn't really hurt to have the timeout be very
+> long when the drives do support SCT ERC and if I simply write an udev
+> rule that matches all disks I won't have to remember to do this again
+> in the future.
 
-Oh, you're right.
+If the drive supports configurable SCT ERC, you want to use that. Set
+it to 7-10 seconds (the units for SCT ERC are deciseconds), and leave
+the SCSI command timer set to a 30s default. It may not be great for
+your workload to have an transient delay up to 3 minutes, but that
+shouldn't happen in the first place if the sector data signal is good,
+the reads should not be slow, they shouldn't need deep recovery.
 
-A bad auto merge, which we have merged the same patch before...
+As I think about it, you might instead of using a filtered balance,
+put a spare in this system. And use 'btrfs replace' to replace drives,
+round robin style. That'll perform better than balance, and gets you
+back to a "normal" state much faster. Plus if you ever have a drive
+failure, you've got a drive ready as a persistent replacement.
 
-Thanks for spotting this!
-Qu
->=20
-> Josef
->=20
 
+
+> > As the signal in a sector weakens, the reads get slower. You can
+> > freshen the signal simply by rewriting data. Btrfs doesn't ever do
+> > overwrites, but you can use 'btrfs balance' for this task. Once a year
+> > seems reasonable, or as you notice reads becoming slower. And use a
+> > filtered balance to avoid doing it all at once.
+>
+> I suspect it's the head that's damaged, not the sectors. I forgot to
+> set the idle3 timer on this drive, which is a power saving "feature" of
+> WD greens, to something reasonable for years and in the meantime the
+> head has parked 1.7 million times. Keeping this in mind it sounds to me
+> like a bad idea to write to it.
+
+I see. If you think it's bad for reads, you could optionally do
+
+# echo 1 > /sys/block/sda/device/delete
+
+That'll just make it vanish. And then you could do a 'btrfs device
+remove missing'. This is ordinarily riskier because it effectively
+makes the array degraded. The effect of 'device remove missing' is to
+reconstruct the missing data from the remaining drives. If all the
+other drives are healthy, this would be a faster way to shrink the
+file system by device removal.
+
+
+> It's 16 hours I can run overnight vs 1 - 2 weeks of copying 4 TB of
+> non-essential data over the Internet at 100 Mbps. I think I'll make
+> sure there's two copies of the important stuff somewhere and take the
+> risk.
+
+Yeah.
+
+How many changes are happening with this file system? IF it's a ton
+you probably want a locally writable file system. If it's not a ton,
+you could leave this Btrfs read-only, and overlayfs some other file
+system on top of it to accept the small number of changes.
+
+> Is it worse to do the --repair while degraded?
+
+Not sure about degraded repairs. In particular I don't know how much
+testing it gets.
+
+>I'm sure the failing
+> drive will manage to ruin the day if leave it connected, as I said it
+> sometimes decides to hang forever.
+
+Yeah that's not a great sign.
+
+--
+Chris Murphy
