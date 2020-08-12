@@ -2,108 +2,129 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF9D62424F8
-	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Aug 2020 07:25:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84F00242526
+	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Aug 2020 08:02:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726483AbgHLFXn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 12 Aug 2020 01:23:43 -0400
-Received: from p-impout010aa.msg.pkvw.co.charter.net ([47.43.26.141]:49606
-        "EHLO p-impout001.msg.pkvw.co.charter.net" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725944AbgHLFXm (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 12 Aug 2020 01:23:42 -0400
-X-Greylist: delayed 427 seconds by postgrey-1.27 at vger.kernel.org; Wed, 12 Aug 2020 01:23:42 EDT
-Received: from static.bllue.org ([66.108.6.151])
-        by cmsmtp with ESMTP
-        id 5j7okuMZvOQ8h5j7okf2wG; Wed, 12 Aug 2020 05:16:33 +0000
-X-Authority-Analysis: v=2.3 cv=SrXuF8G0 c=1 sm=1 tr=0
- a=M990Q3uoC/f4+l9HizUSNg==:117 a=M990Q3uoC/f4+l9HizUSNg==:17
- a=kj9zAlcOel0A:10 a=y4yBn9ojGxQA:10 a=nn-7OC4BeTXFrQUPhbAA:9 a=CjuIK1q_8ugA:10
-Received: from bllue.org (localhost.localdomain [127.0.0.1])
-        by static.bllue.org (Postfix) with ESMTP id AF792C14F1
-        for <linux-btrfs@vger.kernel.org>; Wed, 12 Aug 2020 01:16:30 -0400 (EDT)
-MIME-Version: 1.0
-Date:   Wed, 12 Aug 2020 01:16:30 -0400
-From:   kenneth topp <ken@bllue.org>
+        id S1726601AbgHLGCV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 12 Aug 2020 02:02:21 -0400
+Received: from mx2.suse.de ([195.135.220.15]:46392 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726483AbgHLGCV (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 12 Aug 2020 02:02:21 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 8DF8AB128;
+        Wed, 12 Aug 2020 06:02:40 +0000 (UTC)
+From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: filesystem issues after abrupt powerloss.
-User-Agent: Roundcube Webmail/1.4.8
-Message-ID: <87e7782c5b1a8e6a46e500b2382be421@bllue.org>
-X-Sender: ken@bllue.org
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.9 required=5.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=ham autolearn_force=no version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on static.bllue.org
-X-CMAE-Envelope: MS4wfB7s3JVKCKsNLMbvPbhD7mbnBtFrxBL2o5zVBFepqaW/oKWHwGBdMhxuITtB0a9HL5oR/okpBaHsY7d0iMehJBWbEjvjXZbnv3wfLHIQ7TdkAYJbIRMy
- p4F77lD6U3ZZQj3/WGs3ivfHtBUy18LE0DoRPEAi4D2758LeT39dpPre
+Cc:     Jungyeon Yoon <jungyeon.yoon@gmail.com>
+Subject: [PATCH v4 0/4] btrfs: Enhanced runtime defence against fuzzed images
+Date:   Wed, 12 Aug 2020 14:02:09 +0800
+Message-Id: <20200812060213.46495-1-wqu@suse.com>
+X-Mailer: git-send-email 2.28.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-greetings,
+This patch is revived after one year, as one internal report has hit one
+BUG_ON() with real world fs, so I believe this patchset still makes sense.
 
-my btrfs on luks device is having troubles again.  I believe the system 
-abruptly powerdown due to heat.
+- Enhanced eb accessors
+  Not really needed for the fuzzed images, as 448de471cd4c
+  ("btrfs: Check the first key and level for cached extent buffer")
+  already fixed half of the reported images.
+  Just add a final layer of safe net.
 
-I believe my backups are in good order.  Does anyone have any 
-suggestions how to recover this filesystem by running a check  --repair 
-or scrub?    Should I trust such a recovery or just recreate the 
-filesystem from backups.
+  Just to complain here, two experienced btrfs developer have got
+  confused by @start, @len in functions like read_extent_buffer() with
+  logical address.
+  The best example to solve the confusion is to check the
+  read_extent_buffer() call in btree_read_extent_buffer_pages().
 
-Are there any other debugging commands I can run to provide more 
-information?
+  I'm not sure why this confusion happens or even get spread.
+  My guess is the extent_buffer::start naming causing the problem.
 
-Are there any known defects in the filesystem that would explain how 
-this filesystem got so corrupt?
+  If so, I would definitely rename extent_buffer::start to
+  extent_buffer::bytenr at any cost.
+  Hopes the new commend will address the problem for now.
 
-relevent part of dmesg:
+- BUG_ON() hunt in __btrfs_free_extent()
+  Kill BUG_ON()s in __btrfs_free_extent(), replace with error reporting
+  and why it shouldn't happen.
 
-[ 1381.291103] BTRFS warning (device dm-22): 'recovery' is deprecated, 
-use 'usebackuproot' instead
-[ 1381.291104] BTRFS info (device dm-22): trying to use backup root at 
-mount time
-[ 1381.291105] BTRFS info (device dm-22): using free space tree
-[ 1381.291106] BTRFS info (device dm-22): has skinny extents
-[ 1488.716374] BTRFS info (device dm-22): checking UUID tree
-[ 1520.983660] BTRFS error (device dm-22): parent transid verify failed 
-on 19934974361600 wanted 675675 found 675394
-[ 1520.984138] BTRFS error (device dm-22): parent transid verify failed 
-on 19934974361600 wanted 675675 found 675394
-[ 1520.984151] BTRFS: error (device dm-22) in __btrfs_free_extent:3080: 
-errno=-5 IO failure
-[ 1520.984157] BTRFS info (device dm-22): forced readonly
-[ 1520.984163] BTRFS: error (device dm-22) in 
-btrfs_run_delayed_refs:2188: errno=-5 IO failure
+  Also add comment on what __btrfs_free_extent() is designed to do, with
+  two dump-tree examples for newcomers.
 
-rest of diagnostics
+- BUG_ON() hunt in __btrfs_inc_extent_ref()
+  Just like __btrfs_free_extent(), but less comment as
+  comment for __btrfs_free_extent() should also work for
+  __btrfs_inc_extent_ref(), and __btrfs_inc_extent_ref() has a better
+  structure than __btrfs_free_extent().
 
-#   uname -a
-Linux static.myhost 5.4.52-100.fc32.x86_64 #1 SMP Thu Jul 16 12:00:22 
-EDT 2020 x86_64 x86_64 x86_64 GNU/Linux
-#   btrfs --version
-btrfs-progs v5.7
-#   btrfs fi show
-Label: 't2'  uuid: ce50d21c-7727-4a53-b804-d02480643dfa
-         Total devices 2 FS bytes used 640.00KiB
-         devid    1 size 447.13GiB used 2.01GiB path /dev/mapper/cprt-30
-         devid    2 size 447.13GiB used 2.01GiB path /dev/mapper/cprt-31
+- Defence against unbalanced empty leaf
 
-Label: 'btm'  uuid: 0a5b42a7-0e39-48fa-be1f-4aa29bc323f2
-         Total devices 2 FS bytes used 27.34TiB
-         devid    1 size 14.55TiB used 13.70TiB path /dev/mapper/cprt-50
-         devid    2 size 14.55TiB used 13.70TiB path /dev/mapper/cprt-53
-# btrfs fi df /mnt
-Data, single: total=27.31TiB, used=27.30TiB
-System, RAID1: total=32.00MiB, used=2.88MiB
-Metadata, RAID1: total=47.00GiB, used=46.72GiB
-GlobalReserve, single: total=512.00MiB, used=0.00B
+- Defence against bad key order across two tree blocks
 
+The last two cases can't be rejected by tree-checker and they are all
+cross-eb cases.
+Thankfully we can reuse existing first_key check against unbalanced
+empty leaf, but needs extra check deep into ctree.c for tree block
+merging time check.
 
+Reported-by: Jungyeon Yoon <jungyeon.yoon@gmail.com>
+[ Not to mail bombarding the report, thus only RB tag in cover letter ]
 
+Changelog:
+v2:
+- Remove duplicated error message in WARN() call.
+  Changed to WARN_ON(IS_ENABLED(CONFIG_BTRFS_DEBUG))
+  Also move WARN() after btrfs error message.
 
-thanks,
+- Fix a comment error in __btrfs_free_extent()
+  It's not adding refs to a tree block, but adding the same refs
+  to an existing tree block ref.
+  It's impossible a btrfs tree owning the same tree block directly twice.
 
-ken
+- Add comment for eb accessors about @start and @len
+  If anyone could tell me why such confusion between @start @len and
+  logical address is here, I will definitely solve the root cause no
+  matter how many codes need to be modified.
+
+- Use bool to replace int where only two values are returned
+  Also rename to follow the bool type.
+
+- Remove one unrelated change for the error handler in
+  btrfs_inc_extent_ref()
+
+- Add Reviewed-by tag
+
+v3:
+- Rebased to latest misc-next branch
+  All conflicts can be auto-merged.
+
+v4:
+- Remove one patch which is already merged
+  A little surprised by the fact that git can't detecth such case.
+
+- Add new reviewed-by tags from Josef
+
+Qu Wenruo (4):
+  btrfs: extent_io: Do extra check for extent buffer read write
+    functions
+  btrfs: extent-tree: Kill BUG_ON() in __btrfs_free_extent() and do
+    better comment
+  btrfs: extent-tree: Kill the BUG_ON() in
+    insert_inline_extent_backref()
+  btrfs: ctree: Checking key orders before merged tree blocks
+
+ fs/btrfs/ctree.c       |  68 +++++++++++++++++
+ fs/btrfs/extent-tree.c | 164 +++++++++++++++++++++++++++++++++++++----
+ fs/btrfs/extent_io.c   |  76 +++++++++----------
+ 3 files changed, 257 insertions(+), 51 deletions(-)
+
+-- 
+2.28.0
+
