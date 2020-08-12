@@ -2,162 +2,108 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A9EE24242D
-	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Aug 2020 05:03:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF9D62424F8
+	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Aug 2020 07:25:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726457AbgHLDDx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 11 Aug 2020 23:03:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54180 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726405AbgHLDDw (ORCPT
+        id S1726483AbgHLFXn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 12 Aug 2020 01:23:43 -0400
+Received: from p-impout010aa.msg.pkvw.co.charter.net ([47.43.26.141]:49606
+        "EHLO p-impout001.msg.pkvw.co.charter.net" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725944AbgHLFXm (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 11 Aug 2020 23:03:52 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E12C6C06174A
-        for <linux-btrfs@vger.kernel.org>; Tue, 11 Aug 2020 20:03:51 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id l2so621213wrc.7
-        for <linux-btrfs@vger.kernel.org>; Tue, 11 Aug 2020 20:03:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=yF5fZ71aLiLpINtE0BWHYTVgSvt03t5lj94Vf1hBqtM=;
-        b=NWIuAM0gbEMcHwtSPPdLlJrwq5Bld8DCg4k56DABlzthz4JSrFZR6YvyW9G5eYwrRi
-         8cJBdkk7xUWBIz5fjzUXt/rrRFf/ZTpiC4Yl5CiKOJfi/4/BwSf3fXggVqRj0OcmlEIB
-         pjf1nODNN90MY83XdAWf1D1W/GvbZ+aFUh87GbrsbhZLe/OtQayu99bqD+0V7/hushpa
-         sHWvQEp9R8GgktZp2LboNZH5Htg0J7EYWcfNwa0ce78G3Z9yLLJuvd2T8un6oRRff2IQ
-         KJxMWLcamwHn6tVPmnrGslH6AuvtOuNaH7l2IS8Ihvr7crsdoVNkth5ChHAQ/GePy+CI
-         nt5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=yF5fZ71aLiLpINtE0BWHYTVgSvt03t5lj94Vf1hBqtM=;
-        b=kmT2qOBf6MIksEctnviyq4MIvqltBcFcs0p8eGzvm0MqZ5JZ2LQKYsx7CEDJrineCp
-         0mzasnQ8hIMIAjKmW1HUfqMsDD3i54kn7zxZ5b8idIMgzPJDiY0Gv3v22lLigAVA6xgY
-         0DKTNbOVt6oCQwt/JWMgQpkD+PjqrnP+Fbw8hb7/P8ht/Yfn2jDVNZAHrRa6wyWN3Y4V
-         VkJs3FO9QHeXfkNMc7hEXpgAI1oNZkYtkwEmDoROkPDV14IJ93krAk3NIlwZyzaGnC20
-         2jLAv+/F9R9WJDnk7xC+BmOUDWyGdw6qcQ7auAZvTa+TRdXv4luaHo4M+aW6xD9SqZnD
-         x+yA==
-X-Gm-Message-State: AOAM5326YeG39PdLY+A9l8k291Itx1Iq/3SRsCgXcRKaMj1bpdjstKO0
-        L3n/GmROwy6w0AOzN1hrcAWkTuolqmypa+SdWGNt5TUy
-X-Google-Smtp-Source: ABdhPJwc51wPqpWiklem9hNlo9cCK9QaKl7TfWkElRRFt64hdb/Y0kjvWuM/xIrJXzZUuoqX/1wDfVfwLroQ8S7rznE=
-X-Received: by 2002:adf:f806:: with SMTP id s6mr8638003wrp.252.1597201430139;
- Tue, 11 Aug 2020 20:03:50 -0700 (PDT)
+        Wed, 12 Aug 2020 01:23:42 -0400
+X-Greylist: delayed 427 seconds by postgrey-1.27 at vger.kernel.org; Wed, 12 Aug 2020 01:23:42 EDT
+Received: from static.bllue.org ([66.108.6.151])
+        by cmsmtp with ESMTP
+        id 5j7okuMZvOQ8h5j7okf2wG; Wed, 12 Aug 2020 05:16:33 +0000
+X-Authority-Analysis: v=2.3 cv=SrXuF8G0 c=1 sm=1 tr=0
+ a=M990Q3uoC/f4+l9HizUSNg==:117 a=M990Q3uoC/f4+l9HizUSNg==:17
+ a=kj9zAlcOel0A:10 a=y4yBn9ojGxQA:10 a=nn-7OC4BeTXFrQUPhbAA:9 a=CjuIK1q_8ugA:10
+Received: from bllue.org (localhost.localdomain [127.0.0.1])
+        by static.bllue.org (Postfix) with ESMTP id AF792C14F1
+        for <linux-btrfs@vger.kernel.org>; Wed, 12 Aug 2020 01:16:30 -0400 (EDT)
 MIME-Version: 1.0
-References: <3dc4d28e81b3336311c979bda35ceb87b9645606.camel@dallalba.com.ar>
- <CAJCQCtReHKtyjHL2SXZXeZ4TwdXf-Ag2KysSS0Oan5ZDMzm8OQ@mail.gmail.com>
- <dc0bea2ee916ce4d1a53fe59869b7b7d8868f617.camel@dallalba.com.ar>
- <CAJCQCtSdJVw5o2hJ3OyE6-nvM2xpx=nRHLVNSgf9ydD2O--vMQ@mail.gmail.com> <d46401cf4af5c6ebc7cc7ce584570bc901978151.camel@dallalba.com.ar>
-In-Reply-To: <d46401cf4af5c6ebc7cc7ce584570bc901978151.camel@dallalba.com.ar>
-From:   Chris Murphy <lists@colorremedies.com>
-Date:   Tue, 11 Aug 2020 21:03:21 -0600
-Message-ID: <CAJCQCtQ0_iNjW-VL6d5Mqc50pEBR+vDC3Z=W+xyD2xTXY_akXg@mail.gmail.com>
-Subject: Re: raid10 corruption while removing failing disk
-To:     =?UTF-8?Q?Agust=C3=ADn_Dall=CA=BCAlba?= <agustin@dallalba.com.ar>
-Cc:     Chris Murphy <lists@colorremedies.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Date:   Wed, 12 Aug 2020 01:16:30 -0400
+From:   kenneth topp <ken@bllue.org>
+To:     linux-btrfs@vger.kernel.org
+Subject: filesystem issues after abrupt powerloss.
+User-Agent: Roundcube Webmail/1.4.8
+Message-ID: <87e7782c5b1a8e6a46e500b2382be421@bllue.org>
+X-Sender: ken@bllue.org
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.9 required=5.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=ham autolearn_force=no version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on static.bllue.org
+X-CMAE-Envelope: MS4wfB7s3JVKCKsNLMbvPbhD7mbnBtFrxBL2o5zVBFepqaW/oKWHwGBdMhxuITtB0a9HL5oR/okpBaHsY7d0iMehJBWbEjvjXZbnv3wfLHIQ7TdkAYJbIRMy
+ p4F77lD6U3ZZQj3/WGs3ivfHtBUy18LE0DoRPEAi4D2758LeT39dpPre
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Aug 11, 2020 at 2:40 PM Agust=C3=ADn Dall=CA=BCAlba
-<agustin@dallalba.com.ar> wrote:
->
-> On Tue, 2020-08-11 at 13:17 -0600, Chris Murphy wrote:
-> > That drive should have '/sys/block/sda/device/timeout' at least 120.
-> > Although I've seen folks on linux-raid@ suggest 180. I don't know what
-> > the actual maximum time for "deep recovery" these drives could have.
->
-> I'll do this. Is there any reason not to set _every_ drive to 180s?
+greetings,
 
-Arguably the drive should figure out WTF it wants to do with a command
-within a second. Giving it 7 seconds to fail is quite a while. The
-very idea a drive could seriously need 180 seconds to read one g.d.
-sector and keep iterating on it to recover? It seems curious. The
-rationale for 30s is that a drive taking that long to decide is
-probably a drive that needs a link reset, which is what the SCSI
-driver does when the timeout is reached. And yet that's obviously
-wrong for a large number of consumer HDDs that have these lengthy
-recoveries, by design.
+my btrfs on luks device is having troubles again.  I believe the system 
+abruptly powerdown due to heat.
 
-The ideal timeout would be the one recommended by the manufacturer for
-each make/model, i.e. our drive worse case, will either return data or
-an error in X seconds. And you'd set the command timer to that number
-+ 1. And it'd be fine to make it different per drive, because any
-delay longer than that just means unnecessary waiting.
+I believe my backups are in good order.  Does anyone have any 
+suggestions how to recover this filesystem by running a check  --repair 
+or scrub?    Should I trust such a recovery or just recreate the 
+filesystem from backups.
 
+Are there any other debugging commands I can run to provide more 
+information?
 
->As
-> far as I can tell it doesn't really hurt to have the timeout be very
-> long when the drives do support SCT ERC and if I simply write an udev
-> rule that matches all disks I won't have to remember to do this again
-> in the future.
+Are there any known defects in the filesystem that would explain how 
+this filesystem got so corrupt?
 
-If the drive supports configurable SCT ERC, you want to use that. Set
-it to 7-10 seconds (the units for SCT ERC are deciseconds), and leave
-the SCSI command timer set to a 30s default. It may not be great for
-your workload to have an transient delay up to 3 minutes, but that
-shouldn't happen in the first place if the sector data signal is good,
-the reads should not be slow, they shouldn't need deep recovery.
+relevent part of dmesg:
 
-As I think about it, you might instead of using a filtered balance,
-put a spare in this system. And use 'btrfs replace' to replace drives,
-round robin style. That'll perform better than balance, and gets you
-back to a "normal" state much faster. Plus if you ever have a drive
-failure, you've got a drive ready as a persistent replacement.
+[ 1381.291103] BTRFS warning (device dm-22): 'recovery' is deprecated, 
+use 'usebackuproot' instead
+[ 1381.291104] BTRFS info (device dm-22): trying to use backup root at 
+mount time
+[ 1381.291105] BTRFS info (device dm-22): using free space tree
+[ 1381.291106] BTRFS info (device dm-22): has skinny extents
+[ 1488.716374] BTRFS info (device dm-22): checking UUID tree
+[ 1520.983660] BTRFS error (device dm-22): parent transid verify failed 
+on 19934974361600 wanted 675675 found 675394
+[ 1520.984138] BTRFS error (device dm-22): parent transid verify failed 
+on 19934974361600 wanted 675675 found 675394
+[ 1520.984151] BTRFS: error (device dm-22) in __btrfs_free_extent:3080: 
+errno=-5 IO failure
+[ 1520.984157] BTRFS info (device dm-22): forced readonly
+[ 1520.984163] BTRFS: error (device dm-22) in 
+btrfs_run_delayed_refs:2188: errno=-5 IO failure
 
+rest of diagnostics
 
+#   uname -a
+Linux static.myhost 5.4.52-100.fc32.x86_64 #1 SMP Thu Jul 16 12:00:22 
+EDT 2020 x86_64 x86_64 x86_64 GNU/Linux
+#   btrfs --version
+btrfs-progs v5.7
+#   btrfs fi show
+Label: 't2'  uuid: ce50d21c-7727-4a53-b804-d02480643dfa
+         Total devices 2 FS bytes used 640.00KiB
+         devid    1 size 447.13GiB used 2.01GiB path /dev/mapper/cprt-30
+         devid    2 size 447.13GiB used 2.01GiB path /dev/mapper/cprt-31
 
-> > As the signal in a sector weakens, the reads get slower. You can
-> > freshen the signal simply by rewriting data. Btrfs doesn't ever do
-> > overwrites, but you can use 'btrfs balance' for this task. Once a year
-> > seems reasonable, or as you notice reads becoming slower. And use a
-> > filtered balance to avoid doing it all at once.
->
-> I suspect it's the head that's damaged, not the sectors. I forgot to
-> set the idle3 timer on this drive, which is a power saving "feature" of
-> WD greens, to something reasonable for years and in the meantime the
-> head has parked 1.7 million times. Keeping this in mind it sounds to me
-> like a bad idea to write to it.
-
-I see. If you think it's bad for reads, you could optionally do
-
-# echo 1 > /sys/block/sda/device/delete
-
-That'll just make it vanish. And then you could do a 'btrfs device
-remove missing'. This is ordinarily riskier because it effectively
-makes the array degraded. The effect of 'device remove missing' is to
-reconstruct the missing data from the remaining drives. If all the
-other drives are healthy, this would be a faster way to shrink the
-file system by device removal.
+Label: 'btm'  uuid: 0a5b42a7-0e39-48fa-be1f-4aa29bc323f2
+         Total devices 2 FS bytes used 27.34TiB
+         devid    1 size 14.55TiB used 13.70TiB path /dev/mapper/cprt-50
+         devid    2 size 14.55TiB used 13.70TiB path /dev/mapper/cprt-53
+# btrfs fi df /mnt
+Data, single: total=27.31TiB, used=27.30TiB
+System, RAID1: total=32.00MiB, used=2.88MiB
+Metadata, RAID1: total=47.00GiB, used=46.72GiB
+GlobalReserve, single: total=512.00MiB, used=0.00B
 
 
-> It's 16 hours I can run overnight vs 1 - 2 weeks of copying 4 TB of
-> non-essential data over the Internet at 100 Mbps. I think I'll make
-> sure there's two copies of the important stuff somewhere and take the
-> risk.
 
-Yeah.
 
-How many changes are happening with this file system? IF it's a ton
-you probably want a locally writable file system. If it's not a ton,
-you could leave this Btrfs read-only, and overlayfs some other file
-system on top of it to accept the small number of changes.
+thanks,
 
-> Is it worse to do the --repair while degraded?
-
-Not sure about degraded repairs. In particular I don't know how much
-testing it gets.
-
->I'm sure the failing
-> drive will manage to ruin the day if leave it connected, as I said it
-> sometimes decides to hang forever.
-
-Yeah that's not a great sign.
-
---
-Chris Murphy
+ken
