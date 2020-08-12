@@ -2,166 +2,250 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 486DA2426B8
-	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Aug 2020 10:29:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80A5E242890
+	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Aug 2020 13:14:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726695AbgHLI3d (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 12 Aug 2020 04:29:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57268 "EHLO mail.kernel.org"
+        id S1726871AbgHLLOx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 12 Aug 2020 07:14:53 -0400
+Received: from mout.gmx.net ([212.227.17.20]:51013 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726182AbgHLI3d (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 12 Aug 2020 04:29:33 -0400
-Received: from mail-vs1-f48.google.com (mail-vs1-f48.google.com [209.85.217.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AC93420774
-        for <linux-btrfs@vger.kernel.org>; Wed, 12 Aug 2020 08:29:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597220972;
-        bh=IpAXmIPfPJ3J3Wm57hPPAOWFXT4kWDE8l5/Cu9uKkRY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=dtw0HTfYcc83AAw5HgClJ7Fsg0JMhylitqD7l700pMtX5hP4q6Ex43Df4y9UMs5LL
-         4q8x+fvPx5wUYDqLhx1IUc05fxCMxnp0zw2FcqOK/mhQEX4WNPMWnq5rYbHltXiL5P
-         s7guPAXiKUZufvCwn3EDEgd0s99xutCpBHqZVRZY=
-Received: by mail-vs1-f48.google.com with SMTP id q13so671951vsn.9
-        for <linux-btrfs@vger.kernel.org>; Wed, 12 Aug 2020 01:29:32 -0700 (PDT)
-X-Gm-Message-State: AOAM530aM2Gc42bvN7ixIqT9VQ3tQmVJdIpqxOl1Tv/v8SO9Vh6on0dd
-        EUHWsQg34Hsm0gr7oZFNQGnOztMQczfYG+ZaLH8=
-X-Google-Smtp-Source: ABdhPJxRdJ7TyxAMvFNfsRoY3j7hu2l15xSoT9PhkoOC/xNWSrGOIUA12/l5W1FyMwRhA4/w3t4m6utqS5Vk3tzMoBY=
-X-Received: by 2002:a05:6102:22ed:: with SMTP id b13mr24473515vsh.206.1597220971822;
- Wed, 12 Aug 2020 01:29:31 -0700 (PDT)
+        id S1726804AbgHLLOw (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 12 Aug 2020 07:14:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1597230888;
+        bh=avMZ3hwQpN4VSvmWHVNeIxikg5NQ/nP/qVMNASwhEns=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=hZ+jlQJd6NRb+xfFE5PEz3NnsXPcLn7X0IsUqwA/7ZyJ9N1kAjB16sXanood3H71k
+         UZuBO+B6aJFfb0Xhdr/yYfclGnyY7o5jguXDVXFw1w/cbKiuyIUXmtljYZaJgVGRGw
+         WeO/WNypLvGWnhicvp8JeHbtRYFo2S/APuW7+T6s=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([45.77.180.217]) by mail.gmx.com (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1N49hB-1knMoQ0i0n-0104KQ; Wed, 12
+ Aug 2020 13:14:47 +0200
+Subject: Re: [PATCH v5] btrfs: trim: fix underflow in trim length to prevent
+ access beyond device boundary
+To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>,
+        nborisov@suse.com
+References: <20200731112911.115665-1-wqu@suse.com>
+ <20200812064312.GW2026@twin.jikos.cz>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
+ mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAVQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWCnQUJCWYC
+ bgAKCRDCPZHzoSX+qAR8B/94VAsSNygx1C6dhb1u1Wp1Jr/lfO7QIOK/nf1PF0VpYjTQ2au8
+ ihf/RApTna31sVjBx3jzlmpy+lDoPdXwbI3Czx1PwDbdhAAjdRbvBmwM6cUWyqD+zjVm4RTG
+ rFTPi3E7828YJ71Vpda2qghOYdnC45xCcjmHh8FwReLzsV2A6FtXsvd87bq6Iw2axOHVUax2
+ FGSbardMsHrya1dC2jF2R6n0uxaIc1bWGweYsq0LXvLcvjWH+zDgzYCUB0cfb+6Ib/ipSCYp
+ 3i8BevMsTs62MOBmKz7til6Zdz0kkqDdSNOq8LgWGLOwUTqBh71+lqN2XBpTDu1eLZaNbxSI
+ ilaVuQENBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAGJATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAK
+ CRDCPZHzoSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gy
+ fmtBnUaifnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsS
+ oCEEynby72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAk
+ ZkA523JGap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gG
+ UO/iD/T5oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
+Message-ID: <fcf7972e-6579-01ee-add1-6bab2903cdf0@gmx.com>
+Date:   Wed, 12 Aug 2020 19:14:42 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-References: <20200811114348.692115-1-fdmanana@kernel.org> <32fd7959-4ea4-6930-74e5-e57c30a51733@toxicpanda.com>
-In-Reply-To: <32fd7959-4ea4-6930-74e5-e57c30a51733@toxicpanda.com>
-From:   Filipe Manana <fdmanana@kernel.org>
-Date:   Wed, 12 Aug 2020 09:29:20 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H6afZ0DX9o+V=gMZNQEr4ztDOzTstuRbHaT1V1trw8_dw@mail.gmail.com>
-Message-ID: <CAL3q7H6afZ0DX9o+V=gMZNQEr4ztDOzTstuRbHaT1V1trw8_dw@mail.gmail.com>
-Subject: Re: [PATCH 2/3] btrfs: do not commit logs and transactions during
- link and rename operations
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200812064312.GW2026@twin.jikos.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:d6u9My0ax4pCXkH0v6/BHPY34d4pUldOfL0NAE0AfoydzOhYzpv
+ dlLM3gZbGT2S/E+XDClWbbP7RQsUlfeLzDp6WdL6EgkNHLa3Mme+0Y68XI8JTwpycRYInBo
+ z4jhAWBs5ofksybDoFW/Gq+yJlXKe4e8HuVLKg8q94nbuOKE0JxRf1XqLfBaB34tkF8+nt8
+ fk1eAxHzpPy34vCh09oVw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:71CTBnYvd98=:YiVbYSgeI+EUOBlI5jpR0h
+ PldwLZ4cn1BU6Wg3HLn3ovRAZA0VxfKNgBy2rFaQRlcCEpd4avBWMVV3/r1YLNhgaP9AtXzCg
+ Mw53pjGtSWE+8vMykm1fp9FAq/NgT+PZTRqvJmCySKCI18DczUI38bPAD1ihYfGLK5lrB896W
+ 59zmLDE5uVIS3bXNcYfIp47iQfGHlXcGe/2TR33XcGhzXjjy8XloczqYBhhCk4nL0Heg4fqIX
+ DVmxIYyyki9AVLeS86iDjzfLgqArg6oghBiaWxMWr8B91FlBJqMZLwqH3Uw0bqIcm67tyhGUj
+ GQgYIjzoA2nMIkSQ56DCn1SOqUOH7JRz+nfuSDiWgRPOB9+kXq9468lqpvQpmyzWYc66z42IR
+ XCDcm5ACo6pTUKzbUT6UGuM5VXoBIfbbV1tlPCHiUh8cFy28qF9b8Jky2dYwdSARfCZCcoTRF
+ gaUXg4khGPt0bRfjowWHfD6hXle4QnVYLPIIiLVOVnRSBzoEGIcF4CkyWIDz2PRqDi6B5Kdth
+ 1EHAbuWGsWNjOUpVU8baJ/NQEwq4RI5noeW+a1tGyCucfoMc9qb9Fb+rXLXo1AVZTt5dlxzQ7
+ KjtivuRc/DfTFo606WXVjmu/3ms1AJJp+fvXd/+yWS4vr0EMN9tLzNXAdJdacqXWjixPVk6cd
+ eDjaeugxk5cOLjo6FOnValv3ObEFJKcpLqjBHC/x0nAAoOY+6CVsrhxEgEYgFoI67V9QbD+yN
+ v8o5t09JgCd/cBW86T+3lNWjG4PftvcrfbvY9RAB8H3XxRT5z9Q4bKYD8IhpDfwful6P1HCns
+ m6SiXKehcNrns5jQ+w08PMe8HEtRa6BY1JfWDMXzIqi7fvC/rdEAUd8ww8WYIzIVRZWxN6tZo
+ lR6pJXh4jW7R4sW2UKIGJ73Fc08IxjeAdjRPk5r+1RP0Grr0ll2N4CPQZY7GnNCWwH7n2AD7K
+ n3vgtNPlSsDEGkOlUws4tovR6p8w/IyoutOD8Kgk8qz5Uw4wOOoSk/KNc3vpSfWwQ9LlVpLYs
+ 59R/tcOlGmGpOr+p0j7dqOIxoiYV7OyMz9C5btiuh+hg4fx6nwT6/28NrXUSvVkCyP8L9KSxT
+ noknkL8f6T3KrvWdyL25ovslNZPZvZIzCrL1iMnSyhQFUZ5+affqpm/7BlnBHmFCVqmeFGSsR
+ ksRrcAFeQil818fLNHfiV868a9oN0gwnkh4LHP/UkHqpSynLVTqN9NIh7Ok/k5fyXEHbgnN+D
+ FahV8QSQdkXQ5n0ZVqsdZaVKiiqdkx7MtcAJL4Q==
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Aug 11, 2020 at 7:33 PM Josef Bacik <josef@toxicpanda.com> wrote:
+
+
+On 2020/8/12 =E4=B8=8B=E5=8D=882:43, David Sterba wrote:
+> The v5 changes were discussed but were not all trivial to be just
+> committed. I need to add the patch to pull request branch soon so am
+> not waiting for your v5
 >
-> On 8/11/20 7:43 AM, fdmanana@kernel.org wrote:
-> > From: Filipe Manana <fdmanana@suse.com>
-> >
-> > Since commit d4682ba03ef618 ("Btrfs: sync log after logging new name") we
-> > started to commit logs, and fallback to transaction commits when we failed
-> > to log the new names or commit the logs, after link and rename operations
-> > when the target inodes (or their parents) were previously logged in the
-> > current transaction. This was to avoid losing directories despite an
-> > explicit fsync on them when they are ancestors of some inode that got a
-> > new named logged, due to a link or rename operation. However that adds the
-> > cost of starting IO and waiting for it to complete, which can cause higher
-> > latencies for applications.
-> >
-> > Instead of doing that, just make sure that when we log a new name for an
-> > inode we don't mark any of its ancestors as logged, so that if any one
-> > does an fsync against any of them, without doing any other change on them,
-> > the fsync commits the log. This way we only pay the cost of a log commit
-> > (or a transaction commit if something goes wrong or a new block group was
-> > created) if the application explicitly asks to fsync any of the parent
-> > directories.
-> >
-> > Using dbench, which mixes several filesystems operations including renames,
-> > revealed some significant latency gains. The following script that uses
-> > dbench was used to test this:
-> >
-> >    #!/bin/bash
-> >
-> >    DEV=/dev/nvme0n1
-> >    MNT=/mnt/btrfs
-> >    MOUNT_OPTIONS="-o ssd -o space_cache=v2"
-> >    MKFS_OPTIONS="-m single -d single"
-> >    THREADS=16
-> >
-> >    echo "performance" | tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor
-> >    mkfs.btrfs -f $MKFS_OPTIONS $DEV
-> >    mount $MOUNT_OPTIONS $DEV $MNT
-> >
-> >    dbench -t 300 -D $MNT $THREADS
-> >
-> >    umount $MNT
-> >
-> > The test was run on bare metal, no virtualization, on a box with 12 cores
-> > (Intel i7-8700), 64Gb of RAM and using a NVMe device, with a kernel
-> > configuration that is the default of typical distributions (debian in this
-> > case), without debug options enabled (kasan, kmemleak, slub debug, debug
-> > of page allocations, lock debugging, etc).
-> >
-> > Results before this patch:
-> >
-> >   Operation      Count    AvgLat    MaxLat
-> >   ----------------------------------------
-> >   NTCreateX    10750455     0.011   155.088
-> >   Close        7896674     0.001     0.243
-> >   Rename        455222     2.158  1101.947
-> >   Unlink       2171189     0.067   121.638
-> >   Deltree          256     2.425     7.816
-> >   Mkdir            128     0.002     0.003
-> >   Qpathinfo    9744323     0.006    21.370
-> >   Qfileinfo    1707092     0.001     0.146
-> >   Qfsinfo      1786756     0.001    11.228
-> >   Sfileinfo     875612     0.003    21.263
-> >   Find         3767281     0.025     9.617
-> >   WriteX       5356924     0.011   211.390
-> >   ReadX        16852694     0.003    9.442
-> >   LockX          35008     0.002     0.119
-> >   UnlockX        35008     0.001     0.138
-> >   Flush         753458     4.252  1102.249
-> >
-> > Throughput 1128.35 MB/sec  16 clients  16 procs  max_latency=1102.255 ms
-> >
-> > Results after this patch:
-> >
-> > 16 clients, after
-> >
-> >   Operation      Count    AvgLat    MaxLat
-> >   ----------------------------------------
-> >   NTCreateX    11471098     0.012   448.281
-> >   Close        8426396     0.001     0.925
-> >   Rename        485746     0.123   267.183
-> >   Unlink       2316477     0.080    63.433
-> >   Deltree          288     2.830    11.144
-> >   Mkdir            144     0.003     0.010
-> >   Qpathinfo    10397420     0.006    10.288
-> >   Qfileinfo    1822039     0.001     0.169
-> >   Qfsinfo      1906497     0.002    14.039
-> >   Sfileinfo     934433     0.004     2.438
-> >   Find         4019879     0.026    10.200
-> >   WriteX       5718932     0.011   200.985
-> >   ReadX        17981671     0.003    10.036
-> >   LockX          37352     0.002     0.076
-> >   UnlockX        37352     0.001     0.109
-> >   Flush         804018     5.015   778.033
-> >
-> > Throughput 1201.98 MB/sec  16 clients  16 procs  max_latency=778.036 ms
-> > (+6.5% throughput, -29.4% max latency, -75.8% rename latency)
-> >
-> > Test case generic/498 from fstests tests the scenario that the previously
-> > mentioned commit fixed.
-> >
-> > Signed-off-by: Filipe Manana <fdmanana@suse.com>
+> v5:
 >
-> Man this took me a while to grok, but I think I've got it.  The only thing is
-> this patch doesn't apply to current (as of today) misc-next.  Thanks,
+> - add mask for chunk state bits and use that to clear the range a after
+>   device shrink; on a second thought doing all ones did not look clean
+>   to me
 
-It was based on misc-next from last week.
-It conflicts with current misc-next due to a trivial patch that fixes
-typos and grammar on comments:
+Extra idea inspired by this patch.
 
-https://github.com/kdave/btrfs-devel/commit/f993ba65484d364e30d7aee0293afafadf565f25
+We can do extra extent_io_tree bits sanity check for DEBUG build.
 
-I can resend if needed.
+In the past, extent_io_tree got its owner member, which each
+extent_io_tree should have one. (Unfortunately, when alloc_state is
+added, we didn't add a new entry for it)
 
-Thanks.
+With that, we can easily verify the set/clear bits against its owner to
+ensure we don't set wrong bits for wrong extent_io_tree.
+E.g. CHUNK_* bits are only for alloc_state, while
+DELALLOC/QGROUP_RESERVED are only for inode io tree.
 
+Of course, this would be in a new patch.
+
+Thanks,
+Qu
 >
-> Josef
+> - removed assert after clear_extent_bits - make it consistent with all
+>   other calls where we don't check the return value for now
+>
+> - reworded comments
+>
+> ---
+>
+> From: Qu Wenruo <wqu@suse.com>
+> Subject: [PATCH] btrfs: trim: fix underflow in trim length to prevent ac=
+cess
+>  beyond device boundary
+>
+> [BUG]
+> The following script can lead to tons of beyond device boundary access:
+>
+>   mkfs.btrfs -f $dev -b 10G
+>   mount $dev $mnt
+>   trimfs $mnt
+>   btrfs filesystem resize 1:-1G $mnt
+>   trimfs $mnt
+>
+> [CAUSE]
+> Since commit 929be17a9b49 ("btrfs: Switch btrfs_trim_free_extents to
+> find_first_clear_extent_bit"), we try to avoid trimming ranges that's
+> already trimmed.
+>
+> So we check device->alloc_state by finding the first range which doesn't
+> have CHUNK_TRIMMED and CHUNK_ALLOCATED not set.
+>
+> But if we shrunk the device, that bits are not cleared, thus we could
+> easily got a range starts beyond the shrunk device size.
+>
+> This results the returned @start and @end are all beyond device size,
+> then we call "end =3D min(end, device->total_bytes -1);" making @end
+> smaller than device size.
+>
+> Then finally we goes "len =3D end - start + 1", totally underflow the
+> result, and lead to the beyond-device-boundary access.
+>
+> [FIX]
+> This patch will fix the problem in two ways:
+>
+> - Clear CHUNK_TRIMMED | CHUNK_ALLOCATED bits when shrinking device
+>   This is the root fix
+>
+> - Add extra safety check when trimming free device extents
+>   We check and warn if the returned range is already beyond current
+>   device.
+>
+> Link: https://github.com/kdave/btrfs-progs/issues/282
+> Fixes: 929be17a9b49 ("btrfs: Switch btrfs_trim_free_extents to find_firs=
+t_clear_extent_bit")
+> CC: stable@vger.kernel.org # 5.4+
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> Reviewed-by: Filipe Manana <fdmanana@suse.com>
+> Signed-off-by: David Sterba <dsterba@suse.com>
+> ---
+>  fs/btrfs/extent-io-tree.h |  2 ++
+>  fs/btrfs/extent-tree.c    | 14 ++++++++++++++
+>  fs/btrfs/volumes.c        |  4 ++++
+>  3 files changed, 20 insertions(+)
+>
+> diff --git a/fs/btrfs/extent-io-tree.h b/fs/btrfs/extent-io-tree.h
+> index f39d47a2d01a..219a09a2b734 100644
+> --- a/fs/btrfs/extent-io-tree.h
+> +++ b/fs/btrfs/extent-io-tree.h
+> @@ -34,6 +34,8 @@ struct io_failure_record;
+>   */
+>  #define CHUNK_ALLOCATED				EXTENT_DIRTY
+>  #define CHUNK_TRIMMED				EXTENT_DEFRAG
+> +#define CHUNK_STATE_MASK			(CHUNK_ALLOCATED |		\
+> +						 CHUNK_TRIMMED)
+>
+>  enum {
+>  	IO_TREE_FS_PINNED_EXTENTS,
+> diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
+> index fa7d83051587..597505df90b4 100644
+> --- a/fs/btrfs/extent-tree.c
+> +++ b/fs/btrfs/extent-tree.c
+> @@ -33,6 +33,7 @@
+>  #include "delalloc-space.h"
+>  #include "block-group.h"
+>  #include "discard.h"
+> +#include "rcu-string.h"
+>
+>  #undef SCRAMBLE_DELAYED_REFS
+>
+> @@ -5669,6 +5670,19 @@ static int btrfs_trim_free_extents(struct btrfs_d=
+evice *device, u64 *trimmed)
+>  					    &start, &end,
+>  					    CHUNK_TRIMMED | CHUNK_ALLOCATED);
+>
+> +		/* Check if there are any CHUNK_* bits left */
+> +		if (start > device->total_bytes) {
+> +			WARN_ON(IS_ENABLED(CONFIG_BTRFS_DEBUG));
+> +			btrfs_warn_in_rcu(fs_info,
+> +"ignoring attempt to trim beyond device size: offset %llu length %llu d=
+evice %s device size %llu",
+> +					  start, end - start + 1,
+> +					  rcu_str_deref(device->name),
+> +					  device->total_bytes);
+> +			mutex_unlock(&fs_info->chunk_mutex);
+> +			ret =3D 0;
+> +			break;
+> +		}
+> +
+>  		/* Ensure we skip the reserved area in the first 1M */
+>  		start =3D max_t(u64, start, SZ_1M);
+>
+> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+> index d7670e2a9f39..ee96c5869f57 100644
+> --- a/fs/btrfs/volumes.c
+> +++ b/fs/btrfs/volumes.c
+> @@ -4720,6 +4720,10 @@ int btrfs_shrink_device(struct btrfs_device *devi=
+ce, u64 new_size)
+>  	}
+>
+>  	mutex_lock(&fs_info->chunk_mutex);
+> +	/* Clear all state bits beyond the shrunk device size */
+> +	clear_extent_bits(&device->alloc_state, new_size, (u64)-1,
+> +			  CHUNK_STATE_MASK);
+> +
+>  	btrfs_device_set_disk_total_bytes(device, new_size);
+>  	if (list_empty(&device->post_commit_list))
+>  		list_add_tail(&device->post_commit_list,
+>
