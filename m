@@ -2,93 +2,99 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90709242A22
-	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Aug 2020 15:16:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EECC6242A29
+	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Aug 2020 15:18:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727788AbgHLNQi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 12 Aug 2020 09:16:38 -0400
-Received: from mx2.suse.de ([195.135.220.15]:53826 "EHLO mx2.suse.de"
+        id S1728002AbgHLNSz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 12 Aug 2020 09:18:55 -0400
+Received: from mx2.suse.de ([195.135.220.15]:54706 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726946AbgHLNQi (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 12 Aug 2020 09:16:38 -0400
+        id S1726404AbgHLNSy (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 12 Aug 2020 09:18:54 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 4E7ADB763;
-        Wed, 12 Aug 2020 13:16:59 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 4BD83B767;
+        Wed, 12 Aug 2020 13:19:14 +0000 (UTC)
 From:   Nikolay Borisov <nborisov@suse.com>
 To:     linux-btrfs@vger.kernel.org
 Cc:     Nikolay Borisov <nborisov@suse.com>
-Subject: [PATCH v2] btrfs: Rework error detection in init_tree_roots
-Date:   Wed, 12 Aug 2020 16:16:35 +0300
-Message-Id: <20200812131635.8432-1-nborisov@suse.com>
+Subject: [PATCH] btrfs: remove fsid argument from btrfs_sysfs_update_sprout_fsid
+Date:   Wed, 12 Aug 2020 16:18:51 +0300
+Message-Id: <20200812131851.9129-1-nborisov@suse.com>
 X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200804073236.6677-1-nborisov@suse.com>
-References: <20200804073236.6677-1-nborisov@suse.com>
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-To avoid duplicating 3 lines of code the error detection logic in
-init_tree_roots is somewhat quirky. It first checks for the presence of
-any error condition, then checks for the specific condition to perform
-any specific actions. That's spurious because directly checking for
-each respective error condition and doing the necessary steps is more
-obvious. While at it change the -EUCLEAN to -EIO in case the extent
-buffer is not read correctly, this is in line with other sites which
-return -EIO when the eb couldn't be read.
-
-Additionally it results in smaller code and the code reads
-more linearly:
-
-add/remove: 0/0 grow/shrink: 0/1 up/down: 0/-95 (-95)
-Function                                     old     new   delta
-open_ctree                                 17243   17148     -95
-Total: Before=113104, After=113009, chg -0.08%
+It can be accessed from 'fs_devices' as it's identical to
+fs_info->fs_devices. Also add a comment about why we are calling the
+function. No semantic changes.
 
 Signed-off-by: Nikolay Borisov <nborisov@suse.com>
 ---
+ fs/btrfs/sysfs.c   | 6 +++---
+ fs/btrfs/sysfs.h   | 3 +--
+ fs/btrfs/volumes.c | 8 ++++++--
+ 3 files changed, 10 insertions(+), 7 deletions(-)
 
-Changes in v2:
-* Return -EIO in case of !extent_buffer_uptodate
-* Change the error messages to distinguish both cases albeit they are still
-rather similar.
-
- fs/btrfs/disk-io.c | 19 +++++++++----------
- 1 file changed, 9 insertions(+), 10 deletions(-)
-
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 2f4169231992..2483648f2915 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -2624,18 +2624,17 @@ static int __cold init_tree_roots(struct btrfs_fs_info *fs_info)
- 		level = btrfs_super_root_level(sb);
- 		tree_root->node = read_tree_block(fs_info, btrfs_super_root(sb),
- 						  generation, level, NULL);
--		if (IS_ERR(tree_root->node) ||
--		    !extent_buffer_uptodate(tree_root->node)) {
-+		if (IS_ERR(tree_root->node)) {
- 			handle_error = true;
-+			ret = PTR_ERR(tree_root->node);
-+			tree_root->node = NULL;
-+			btrfs_warn(fs_info, "Couldn't read tree root");
-+			continue;
-
--			if (IS_ERR(tree_root->node)) {
--				ret = PTR_ERR(tree_root->node);
--				tree_root->node = NULL;
--			} else if (!extent_buffer_uptodate(tree_root->node)) {
--				ret = -EUCLEAN;
--			}
--
--			btrfs_warn(fs_info, "failed to read tree root");
-+		} else if (!extent_buffer_uptodate(tree_root->node)) {
-+			handle_error = true;
-+			ret = -EIO;
-+			btrfs_warn(fs_info, "Error while reading tree root");
- 			continue;
+diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
+index 784a0f8a4cab..2d987b770a20 100644
+--- a/fs/btrfs/sysfs.c
++++ b/fs/btrfs/sysfs.c
+@@ -1322,8 +1322,8 @@ void btrfs_kobject_uevent(struct block_device *bdev, enum kobject_action action)
+ 			&disk_to_dev(bdev->bd_disk)->kobj);
+ }
+ 
+-void btrfs_sysfs_update_sprout_fsid(struct btrfs_fs_devices *fs_devices,
+-				    const u8 *fsid)
++void btrfs_sysfs_update_sprout_fsid(struct btrfs_fs_devices *fs_devices)
++
+ {
+ 	char fsid_buf[BTRFS_UUID_UNPARSED_SIZE];
+ 
+@@ -1331,7 +1331,7 @@ void btrfs_sysfs_update_sprout_fsid(struct btrfs_fs_devices *fs_devices,
+ 	 * Sprouting changes fsid of the mounted filesystem, rename the fsid
+ 	 * directory
+ 	 */
+-	snprintf(fsid_buf, BTRFS_UUID_UNPARSED_SIZE, "%pU", fsid);
++	snprintf(fsid_buf, BTRFS_UUID_UNPARSED_SIZE, "%pU", fs_devices->fsid);
+ 	if (kobject_rename(&fs_devices->fsid_kobj, fsid_buf))
+ 		btrfs_warn(fs_devices->fs_info,
+ 				"sysfs: failed to create fsid for sprout");
+diff --git a/fs/btrfs/sysfs.h b/fs/btrfs/sysfs.h
+index cf839c46a131..c9efa15f96e0 100644
+--- a/fs/btrfs/sysfs.h
++++ b/fs/btrfs/sysfs.h
+@@ -20,8 +20,7 @@ int btrfs_sysfs_remove_devices_dir(struct btrfs_fs_devices *fs_devices,
+                 struct btrfs_device *one_device);
+ int btrfs_sysfs_add_fsid(struct btrfs_fs_devices *fs_devs);
+ void btrfs_sysfs_remove_fsid(struct btrfs_fs_devices *fs_devs);
+-void btrfs_sysfs_update_sprout_fsid(struct btrfs_fs_devices *fs_devices,
+-				    const u8 *fsid);
++void btrfs_sysfs_update_sprout_fsid(struct btrfs_fs_devices *fs_devices);
+ void btrfs_sysfs_feature_update(struct btrfs_fs_info *fs_info,
+ 		u64 bit, enum btrfs_feature_set set);
+ void btrfs_kobject_uevent(struct block_device *bdev, enum kobject_action action);
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index 4bae30b9c944..631cb03b3513 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -2630,8 +2630,12 @@ int btrfs_init_new_device(struct btrfs_fs_info *fs_info, const char *device_path
+ 			goto error_sysfs;
  		}
-
---
+ 
+-		btrfs_sysfs_update_sprout_fsid(fs_devices,
+-				fs_info->fs_devices->fsid);
++		/*
++		 * fs_devices now represents the newly sprouted filesystem and
++		 * its fsid has been changed by btrfs_prepare_sprout
++		 */
++		btrfs_sysfs_update_sprout_fsid(fs_devices);
++
+ 	}
+ 
+ 	ret = btrfs_commit_transaction(trans);
+-- 
 2.17.1
 
