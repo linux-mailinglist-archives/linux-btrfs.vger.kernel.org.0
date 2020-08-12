@@ -2,35 +2,31 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C140242364
-	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Aug 2020 02:29:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 438D32423B0
+	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Aug 2020 03:29:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726542AbgHLA33 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 11 Aug 2020 20:29:29 -0400
-Received: from mout.gmx.net ([212.227.17.22]:47761 "EHLO mout.gmx.net"
+        id S1726472AbgHLB3b (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 11 Aug 2020 21:29:31 -0400
+Received: from mout.gmx.net ([212.227.17.20]:54369 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726221AbgHLA33 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 11 Aug 2020 20:29:29 -0400
+        id S1726457AbgHLB3a (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 11 Aug 2020 21:29:30 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1597192164;
-        bh=oLS/QegZwUQ4oEJg5jfVm/qSDXpRpu0Ooev46+vt13o=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=T+9XrQ+sOqRT2UX+7LiqEM1NEwKCBzi0P4f4mn7ggsSgr+XeRE71/FG7LkBhe8A9Y
-         xeEVURr9s0lgyuQqXMEf3xnlBcyfchHYc7of2ElMzPuc4/15k2ePiAYBXh6UBpmKFV
-         rppT4PSrOEprclaeXElH+vi3aftWhYdQ/ijjK6Fk=
+        s=badeba3b8450; t=1597195763;
+        bh=9+ok6Z1SHfAWNyxdXqtxxTj9gxA8meFy5dabhpiAiwU=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=UiOT1HbAaUXlisSJmvT5yoyaL8lzI07ubbqxEtEUf0pKfixnZZmium8YupKTCLIVV
+         cC7PRnwIzgOVu+ICyVlr41jtKLzrD3D6j+rx/9+4tLuP88914ipo4lywagmb43JoEo
+         5Oul+MTu++Y+92Vi7w/x3NPv9M11JZ/u0b4oJ0n4=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
 Received: from [0.0.0.0] ([45.77.180.217]) by mail.gmx.com (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MMGRK-1kNriX1rd8-00JHQM; Wed, 12
- Aug 2020 02:29:24 +0200
-Subject: Re: [PATCH v3 3/5] btrfs: Detect unbalanced tree with empty leaf
- before crashing btree operations
-To:     Josef Bacik <josef@toxicpanda.com>, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20200809120919.85271-1-wqu@suse.com>
- <20200809120919.85271-4-wqu@suse.com>
- <8d21ba85-52a5-5419-dc16-ceece8b0c3a8@toxicpanda.com>
- <dbe1176e-db46-7ff7-1231-ee69d7c3c5d1@gmx.com>
- <ee1203ab-444d-cc9d-0e00-2102bd02ecd2@toxicpanda.com>
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MXp9Y-1kDM7i25tc-00Y8H7; Wed, 12
+ Aug 2020 03:29:23 +0200
+Subject: Re: [PATCH] btrfs-progs: --init-extent-tree if extent tree is
+ unreadable
+To:     Daniel Xu <dxu@dxuuu.xyz>, linux-btrfs@vger.kernel.org
+Cc:     kernel-team@fb.com
+References: <20200728021224.148671-1-dxu@dxuuu.xyz>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -56,78 +52,122 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  oCEEynby72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAk
  ZkA523JGap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gG
  UO/iD/T5oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <fb4aea50-0e81-6444-ae9f-3e6c2df88c67@gmx.com>
-Date:   Wed, 12 Aug 2020 08:29:18 +0800
+Message-ID: <bb0881e6-0301-2e03-8ad2-ad24055c4351@gmx.com>
+Date:   Wed, 12 Aug 2020 09:29:18 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.11.0
 MIME-Version: 1.0
-In-Reply-To: <ee1203ab-444d-cc9d-0e00-2102bd02ecd2@toxicpanda.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:iQbqi3hHaSPUsr7ektEmsdPZ9cdz6WhRpUYQJ48IPaVWlP9+W+9
- W84tie+U3r5bK+A/dtj4dnHEf4euaDwxn8EAXlnOShQ8xNlHYmmXIe+7/236jxzwb4qa71A
- coq024R1jOYXE/yXtunyNMO57f5/rNkKoX6icKRIZ7tTcUDjGnuou0WKz9Hn948KD0MTw1Z
- niwx9lu3NoB7Lx7Cd6/bw==
+In-Reply-To: <20200728021224.148671-1-dxu@dxuuu.xyz>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="BmbH171MibAxc0NwEMHvr4wUopvPe6gqw"
+X-Provags-ID: V03:K1:5XTldIcfeOHsXlkboTYMnEanGTUBtGOT4BpoW37jGsL/hNNfEfV
+ OmKMgxBpwykNtQizO7R5+Dbvh1WyxjkKClyysZsuwsn7HXAr4N26vb5MxartqWzxT6EGFpg
+ maYn+gMH+a05mRpByu0Ymjt5C6749+7h3gTZLm1N8t7Bqgolnd8pZvCCjTPeAcUbhQjbGhj
+ 9RTRZX20UCVm9cvCWnXQQ==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:viLeO/rbc3s=:yoewnjD+Y6CQi43ddrdV8H
- 8ET6bMaBuD87uoZ+7ZMJQIiJhIJlGSjUqFn3DavxrBwh4j95xtsqAejQS6HpoDHFQi5arjOVN
- 8dBvHtXV3+Rf/0uN/DBEw5Juseqxob4R/EiwY6klIDstq4D0n/CSDJ6N9Nul0TxA9tG1m53zB
- LuM+ggdUFU2lMiRGlr3cg94n2Jrny9PXCc5zIuc0HeI/QKZvo3o+RePwbO3lTtCaC8MR7LtR4
- T1CdpKW5wSy2dhj+3uuDIQ2MGYBUmtDlhvfgqZNvMRzDKBMu1AGiL93ad4KUSDF96wnq5JGOt
- frWwkX7sTOBQeH6zmRybNeeGyA00JZaJHlY36fTBQiiyZYonhp/VHUgZNOh0sPoDI86Z2ly0g
- p4uwfgNtxdRtXGgKJoUb2LqbDgQVHSQyT5vjTJwT6c1PuLlUhsn0DZK3wohgqecBoZ62TxgBR
- bwbhRWFqgBtJr7pgazu3MNAPoLjLhWUlPPaO2Kh+WHDiRwa3W6cRc+QzmcbYwp1F10lmejA1L
- LYS4np+1cU7sSdsihmsHNW5cEgcI1+ops0NqkJnV2EikX0/dIkye/92dj3XkFaZEw5YqmznOa
- b4JxWv70y/xygv1WWJSaVhAkyKyXuTjZ9IKl7fQKHGcDQHwyydsc/W8L8eMnCugw77oxYCkGP
- 5wyGaunrRAGRMIwKsoyOL2cAtGWGFW+SeuzYNPJKFuQnUUFSYnygAfQwHTQk0JvoCeIHmhtMI
- df5iWQHdx5glvXBwPOCchny1txiTgwZFq1gbny/pw1a3C5YAJ6wAgKtog1VkXP/Kw+x48l6u8
- oxc5NhQCQt8JOi5hEd5W2aY3DlHXA1S22xFm8l6rw+Q6734uoE+tqFq7k9YGeTgf6wYK2PsqE
- EK4ahAzYTY+VwkWeyzoh+kmJqse+hJRyhRPx5tAHsEc51+tTKuNQfsI/HGKFv6ORFcxd7kRLn
- 3UayWWDiYGd7MTJtTc6ZO2Ou+J+PduviVT8UoW8FOZYgoaAF2aXoWCid7nvv44jYdC/TPyZGA
- 7KSgiNRRGu+Pj0x+PI03mwlThfPSQPhjjcJUL0xwlPq911swuaDjcNuQZTM8hHXaJbGQ3Anh7
- AaJINviVmS/iU+ImJ07q4r+zout2TzqOko2ao7nrES30WsPaA81mNKCudnc5vqp9FMm8RBULj
- KhoHCnuoIIGo4GKL9mKUoZNAZfTv8iGZ8KKo3BHF5CH8B214JjFv74uYFM8T4LZRCPlwagyqe
- pS+OjArPN8n3skppEcnd0W6s75PhaTgC+g2k2hA==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:kv2qi6qgnbo=:bh+l4aHdHz7KVpooINlkOe
+ HBP2cz1ytUfkv2IdjcDoeNGZPAy3iYriW9j/ZVwhuDWn9QTIzbrRFa98HN0R0x+VJYpcF/D9M
+ dnmOJ1ILWGw7kQNr3dFdgyJVJ5yJLPGXaIgvXsmIUzVCO4fVoQsCFYvaOPuM6SRrLOnZ7Zrf1
+ wOgVYK2yqKJc6TF0afxR5UaAK8Rt85X9LO9JGm+1M9TlI/WNl4w7T18bLjqX9cl3x3F5v6Wn9
+ IJpkN3yAEUvGX7jxqh2yyU8GbXAmVt71Mc8cc9TvxZLtU2cnw55vOrmpJ0oasDpEDSDwTBavX
+ 1bIdqNW6nXmZX1A7uv0fJHINB78e0/IRI3bUUgsUYQ9isalbiS4rMiiy2KYb6yFnTo/U0H09C
+ PXl5tewlhzuv0+BR9EPC8fizUgpp925h63og/VxjmjdMJbR5SSZNSqeTPYbbq68UYUTHaDtVQ
+ jirO2xcQoppEBC3TNArEeHylqWjDeKgvZaQ1TaG5qjadun6svvl2kpXuSvB9KrqR8n4cdD71c
+ tzBrNV4NlXog7HdWHgK5/PgyIOypvOMqjNy03jXS/jOtjgO9YHRu1mXLT1Jcw7VU83vY0sOi6
+ v79cZhXPzVHqHp/QKOKPqPj2jG1Nq/cdRb6C1JlaF+/8OfweV2OIJb9c67tnHXyryTl+n5ccS
+ lyynMP4TPErQu+9GB3np5MbG33ZGcYAOvMBUzIU+41xWAm4FF1sy6pSjApntAgM/bE/nlJvRE
+ aUCF6SOVeoGqfvR4rVtZjEjOytx/b/xiclmFp9RYPBD3XKsmQ+uO2Cxu2CHTWgnATzdlqJYxK
+ SNjiI9cMcgOWJnHxu8Lq+xPAzUUrtJbkVLrfBvannvsh/32D3sQEyJOOXD+u3iLSIxWxKJ3L9
+ 2h12JizXXFWzD7T5huiTEzjYwiAz0moTPVBfPdfG53+ltqbmVz6ZUWw5xdnSkeUPu+38re4S4
+ 2UczlF1q8TkAjfQYyRsViJisQpHN+HlZTHijJicrQzsSpbVvmff0vVYEAcBQHNh0L5Lij4fWs
+ 3PuDxyb71er67WbNnzIz1wHgSAno6krSoHd5BBrnZyrL8p0FEInVDCXI7nJsG4pLps+tM+0S7
+ b5RF0bxW4OUB1KvMaAMNQZkQ5lyyV8U8K7r9TViarMuWAlsTSy30uYOUfUVHW6rSfXhqRmgZ4
+ Ub7v6wSotS99HS6HGsT7ijtxEL+BvQt9qOtMRHbCuW3Ihjd/8cMs/3fibqf8KE1PCJY4nTQnt
+ b/ndnjoo+sB98OKVu1oPPVfexr93BUa50dFc+nQ==
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--BmbH171MibAxc0NwEMHvr4wUopvPe6gqw
+Content-Type: multipart/mixed; boundary="nnb1vNgciq0RGPfiH8aB94XjGM3Q3Pmx6"
+
+--nnb1vNgciq0RGPfiH8aB94XjGM3Q3Pmx6
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
 
-On 2020/8/12 =E4=B8=8A=E5=8D=888:23, Josef Bacik wrote:
-> On 8/11/20 7:04 PM, Qu Wenruo wrote:
->>
->>
-[...]
->>> Which I assume is the problem?=C2=A0 The generation is 19, is that >
->>> last_trans_committed?=C2=A0 Seems like this check just needs to be mov=
-ed
->>> lower, right?=C2=A0 Thanks,
->>
->> Nope, that generation 19 is valid. That fs has a higher generation, so
->> that's completely valid.
->>
->> The generation 19 is there because there is another csum leaf whose
->> generation is 19.
->>
->
-> Then this patch does nothing, because we already have this check lower,
-> so how exactly did it make the panic go away?=C2=A0 Thanks,
->
-> Josef
 
-Sorry, I don't get your point.
+On 2020/7/28 =E4=B8=8A=E5=8D=8810:12, Daniel Xu wrote:
+> This change can save the user an extra step of running `btrfs check
+> --init-extent-tree ...` if the user was already trying to repair the
+> filesystem.
 
-The generation 19 isn't larger than last_trans_committed, so that check
-has nothing to do with this case.
+This looks too aggressive to me.
 
-And then it goes to the header_nritems() check, which is 0, and with
-first_key present, which is invalid and we error out, rejecting the
-corrupted leaf.
+Extent tree repair, not only --init-extent-tree, is not considered safe
+overall.
 
-What's the problem then?
+In fact, we could hit cases with things like completely sane fs trees,
+but corrupted extent and csum trees.
+
+In that case, I'm not sure --init-extent-tree would solve or just worse
+the situation.
+
+Thus --init-extent-tree should only be triggered by users who know what
+they are doing.
+(In that case, I would call them developers other than users)
 
 Thanks,
 Qu
+
+>=20
+> Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
+> ---
+>  check/main.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+>=20
+> diff --git a/check/main.c b/check/main.c
+> index f93bd7d4..4da17253 100644
+> --- a/check/main.c
+> +++ b/check/main.c
+> @@ -10243,6 +10243,10 @@ static int cmd_check(const struct cmd_struct *=
+cmd, int argc, char **argv)
+>  		goto close_out;
+>  	}
+> =20
+> +        /* Fallback to --init-extent-tree if extent tree is unreadable=
+ */
+> +        if (!extent_buffer_uptodate(info->extent_root->node) && repair=
+)
+> +		init_extent_tree =3D true;
+> +
+>  	if (init_extent_tree || init_csum_tree) {
+>  		struct btrfs_trans_handle *trans;
+> =20
+>=20
+
+
+--nnb1vNgciq0RGPfiH8aB94XjGM3Q3Pmx6--
+
+--BmbH171MibAxc0NwEMHvr4wUopvPe6gqw
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl8zRe8ACgkQwj2R86El
+/qjljwgAhgfN4DlLA47GXBqVr5u1ORS+yByW39tn25XF8tU6BMd6oRuVXoENV1Dp
+BamWC6I9j1ZnzwpuO5g2VGXN2TvTUpOdhYuOfEg9W0RIYK/26+Yg1SgIoh7URDxs
+Y8M0h/tu1xeFPxmLnLngQCngSypArll8R0sIPSY91zfoLR8Up5rCPctQPwzFkjlW
+98QnTry3e2kfVLkxN+YMFfZM1+1oX/eJn/xw7igUFnND2fm2s1U+HN0hxExswA2c
+gh8wpxPx7SP/xaIY2OaGoYDTKsFihxlKrEZaj8nFLFtTsALY0rQg9xAJ6bEl/CTg
+Sd+kCMAYJ/fsS20qiKI8HKBra7OvfA==
+=M6uF
+-----END PGP SIGNATURE-----
+
+--BmbH171MibAxc0NwEMHvr4wUopvPe6gqw--
