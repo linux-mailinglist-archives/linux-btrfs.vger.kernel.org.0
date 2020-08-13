@@ -2,65 +2,72 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2DB324350E
-	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Aug 2020 09:39:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06C0E2438EB
+	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Aug 2020 12:49:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726072AbgHMHjs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 13 Aug 2020 03:39:48 -0400
-Received: from rin.romanrm.net ([51.158.148.128]:47522 "EHLO rin.romanrm.net"
+        id S1726100AbgHMKtc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 13 Aug 2020 06:49:32 -0400
+Received: from mx2.suse.de ([195.135.220.15]:48524 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726044AbgHMHjs (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 13 Aug 2020 03:39:48 -0400
-Received: from natsu (unknown [IPv6:fd39::e99e:8f1b:cfc9:ccb8])
-        by rin.romanrm.net (Postfix) with SMTP id 582C3426;
-        Thu, 13 Aug 2020 07:39:46 +0000 (UTC)
-Date:   Thu, 13 Aug 2020 12:39:46 +0500
-From:   Roman Mamedov <rm@romanrm.net>
-To:     Marc MERLIN <marc@merlins.org>
-Cc:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: Re: 5.6 pretty massive unexplained btrfs corruption:  parent
- transid verify failed + open_ctree failed
-Message-ID: <20200813123946.5841d146@natsu>
-In-Reply-To: <20200812223433.GA533@merlins.org>
-References: <20200707035530.GP30660@merlins.org>
-        <20200708034407.GE10769@hungrycats.org>
-        <20200812223433.GA533@merlins.org>
+        id S1726635AbgHMKtS (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 13 Aug 2020 06:49:18 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id F352FB67A;
+        Thu, 13 Aug 2020 10:49:39 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 9B846DA7D6; Thu, 13 Aug 2020 12:48:15 +0200 (CEST)
+Date:   Thu, 13 Aug 2020 12:48:15 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs: remove the dead copied check in
+ btrfs_copy_from_user()
+Message-ID: <20200813104815.GE2026@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <20200813061533.85671-1-wqu@suse.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200813061533.85671-1-wqu@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, 12 Aug 2020 15:34:33 -0700
-Marc MERLIN <marc@merlins.org> wrote:
-
-> Because it's an external array, I do stop it to save power and do this:
-> umount /dev/mapper/crypt_bcache0
-> sync
-> dmsetup remove crypt_bcache0
-> echo 1 > /sys/block/md6/bcache/stop
-> mdadm --stop /dev/md6
-> /etc/init.d/smartmontools stop
-> sleep 5
-> pdu disk3 off  <= cuts power
+On Thu, Aug 13, 2020 at 02:15:33PM +0800, Qu Wenruo wrote:
+> There is btrfs specific check in btrfs_copy_from_user(), after
+> iov_iter_copy_from_user_atomic() call, we check if the page is uptodate
+> and if the copied bytes is smaller than what we expect.
 > 
-> Note that I umount, then sync just in case, then a bunch of stuff to
-> free up block devices, but by then the btrfs FS has been unmounted and
-> synced.
+> However that check will never be triggered due to the following reasons:
+> - PageUptodate() check conflicts with current behavior
+>   Currently we ensure all pages that will go through a partial write
+>   (some bytes are not covered by the write range) will be forced
+>   uptodate.
+> 
+>   This is the common behavior to ensure we get the correct content.
+>   This behavior is always true, no matter if my previous patch "btrfs:
+>   refactor how we prepare pages for btrfs_buffered_write()" is applied.
 
-Or should have been. If it's a copy-paste from a shell script (unless you do
-the whole process manually every time), it doesn't appear like you check the
-success status of each line before continuing to the next. Either add
-"|| exit 1" to each of these that can fail, or just use "#!/bin/bash -e" in
-the script's first line.
+Would it make sense to add an assert here? Checking for the page
+up-to-date status.
 
-As is, imagine umount fails ("target busy"), then dmsetup fails ("device in
-use"), then mdadm fails to stop the array, but then you cut power to the
-entire thing anyways.
+> - iov_iter_copy_from_user_atomic() only returns 0 or @bytes
+>   It won't return a short write.
 
--- 
-With respect,
-Roman
+And maybe for that one too, I'm not able to navigate through the maze of
+the iov_iter_* macros.
+
+> So we're completely fine to remove the (PageUptodate() && copied <
+> count) check, as we either get copied == 0, and break the loop anyway,
+> or do a proper copy.
+> 
+> This will revert commit 31339acd07b4 ("Btrfs: deal with short returns from
+> copy_from_user").
+
+As this is a very old patch, the changes outside of btrfs are likely to
+make the piece of code redundant.
