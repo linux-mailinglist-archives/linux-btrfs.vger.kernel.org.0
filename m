@@ -2,91 +2,52 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10BB2243E15
-	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Aug 2020 19:13:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD681243F73
+	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Aug 2020 21:47:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726486AbgHMRNS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 13 Aug 2020 13:13:18 -0400
-Received: from mx2.suse.de ([195.135.220.15]:32956 "EHLO mx2.suse.de"
+        id S1726564AbgHMTrG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 13 Aug 2020 15:47:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36724 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726248AbgHMRNS (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 13 Aug 2020 13:13:18 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 37F30AFBB;
-        Thu, 13 Aug 2020 17:13:39 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 47EC7DA6EF; Thu, 13 Aug 2020 19:12:14 +0200 (CEST)
-Date:   Thu, 13 Aug 2020 19:12:14 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
-        linux-btrfs@vger.kernel.org, kernel-team@fb.com,
-        Nikolay Borisov <nborisov@suse.com>
-Subject: Re: [PATCH 15/23] btrfs: use ticketing for data space reservations
-Message-ID: <20200813171214.GR2026@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
-        linux-btrfs@vger.kernel.org, kernel-team@fb.com,
-        Nikolay Borisov <nborisov@suse.com>
-References: <20200721142234.2680-1-josef@toxicpanda.com>
- <20200721142234.2680-16-josef@toxicpanda.com>
- <20200813165144.GQ2026@twin.jikos.cz>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200813165144.GQ2026@twin.jikos.cz>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+        id S1726305AbgHMTrG (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 13 Aug 2020 15:47:06 -0400
+Subject: Re: [GIT PULL] Btrfs updates for 5.9, part 2
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1597348025;
+        bh=MqGI7BVaytxO8TFlnO4oNLiLpBRGWrzNeO+UdRVW2rY=;
+        h=From:In-Reply-To:References:Date:To:Cc:From;
+        b=1kiCxWgznFypqWGW7OXOEdu+VvybEIexlnfnD5RwkAsOJSQXa7ls4+g6nPMWQDgG/
+         5m1fXfkupkJpnVrstE9YhGOTNpNXmaGCsPGXpV6k3Rf1LNAf3JQfgQDfwL4AGwNEYR
+         3Msbd65ximX3V5sd4UWcGVdsupiYCyAidKzBCTTU=
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <cover.1597326304.git.dsterba@suse.com>
+References: <cover.1597326304.git.dsterba@suse.com>
+X-PR-Tracked-List-Id: <linux-btrfs.vger.kernel.org>
+X-PR-Tracked-Message-Id: <cover.1597326304.git.dsterba@suse.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.9-tag
+X-PR-Tracked-Commit-Id: c57dd1f2f6a7cd1bb61802344f59ccdc5278c983
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 23c2c8c6fa325939f95d840f54bfdec3cb76906c
+Message-Id: <159734802572.27850.2787554778682149297.pr-tracker-bot@kernel.org>
+Date:   Thu, 13 Aug 2020 19:47:05 +0000
+To:     David Sterba <dsterba@suse.com>
+Cc:     torvalds@linux-foundation.org, David Sterba <dsterba@suse.com>,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Aug 13, 2020 at 06:51:44PM +0200, David Sterba wrote:
-> On Tue, Jul 21, 2020 at 10:22:26AM -0400, Josef Bacik wrote:
-> > +static void priority_reclaim_data_space(struct btrfs_fs_info *fs_info,
-> > +					struct btrfs_space_info *space_info,
-> > +					struct reserve_ticket *ticket,
-> > +					const enum btrfs_flush_state *states,
-> > +					int states_nr)
-> > +{
-> > +	int flush_state = 0;
-> > +	int commit_cycles = 2;
-> > +
-> > +	while (!space_info->full) {
-> > +		flush_space(fs_info, space_info, U64_MAX, ALLOC_CHUNK_FORCE);
-> > +		spin_lock(&space_info->lock);
-> > +		if (ticket->bytes == 0) {
-> > +			spin_unlock(&space_info->lock);
-> > +			return;
-> > +		}
-> > +		spin_unlock(&space_info->lock);
-> > +	}
-> > +again:
-> > +	while (flush_state < states_nr) {
-> > +		u64 flush_bytes = U64_MAX;
-> > +
-> > +		if (!commit_cycles) {
-> > +			if (states[flush_state] == FLUSH_DELALLOC_WAIT) {
-> > +				flush_state++;
-> > +				continue;
-> > +			}
-> > +			if (states[flush_state] == COMMIT_TRANS)
-> > +				flush_bytes = ticket->bytes;
-> > +		}
-> > +
-> > +		flush_space(fs_info, space_info, flush_bytes,
-> > +			    states[flush_state]);
-> > +		spin_lock(&space_info->lock);
-> > +		if (ticket->bytes == 0) {
-> > +			spin_unlock(&space_info->lock);
-> > +			return;
-> > +		}
-> > +		spin_unlock(&space_info->lock);
-> > +		flush_state++;
-> > +	}
-> 
-> Actually, the whole logic in this loop could use some human readable
-> description. There are 2 overlapping loops, one is over the states and
-> the other are commit cycles, with some state-conditional changes.
+The pull request you sent on Thu, 13 Aug 2020 15:52:05 +0200:
 
-Never mind, the code gets removed in a later patch.
+> git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.9-tag
+
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/23c2c8c6fa325939f95d840f54bfdec3cb76906c
+
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
