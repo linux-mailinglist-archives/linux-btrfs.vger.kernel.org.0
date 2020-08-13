@@ -2,76 +2,81 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43260243C30
-	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Aug 2020 17:07:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D647243C43
+	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Aug 2020 17:11:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726792AbgHMPH5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 13 Aug 2020 11:07:57 -0400
-Received: from magic.merlins.org ([209.81.13.136]:45374 "EHLO
-        mail1.merlins.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726778AbgHMPH4 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 13 Aug 2020 11:07:56 -0400
-Received: from merlin by mail1.merlins.org with local (Exim 4.92 #3)
-        id 1k6Epb-0008AM-5p by authid <merlin>; Thu, 13 Aug 2020 08:07:51 -0700
-Date:   Thu, 13 Aug 2020 08:07:51 -0700
-From:   Marc MERLIN <marc@merlins.org>
-To:     Roman Mamedov <rm@romanrm.net>
-Cc:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: Re: 5.6 pretty massive unexplained btrfs corruption:  parent transid
- verify failed + open_ctree failed
-Message-ID: <20200813150747.GF8863@merlins.org>
-References: <20200707035530.GP30660@merlins.org>
- <20200708034407.GE10769@hungrycats.org>
- <20200812223433.GA533@merlins.org>
- <20200813123946.5841d146@natsu>
+        id S1726637AbgHMPL2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 13 Aug 2020 11:11:28 -0400
+Received: from mx2.suse.de ([195.135.220.15]:58266 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726131AbgHMPL2 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 13 Aug 2020 11:11:28 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 44713ACF9;
+        Thu, 13 Aug 2020 15:11:49 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 6EAF0DA6EF; Thu, 13 Aug 2020 17:10:24 +0200 (CEST)
+Date:   Thu, 13 Aug 2020 17:10:24 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Nikolay Borisov <nborisov@suse.com>
+Cc:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com
+Subject: Re: [PATCH 00/23][v4] Change data reservations to use the ticketing
+ infra
+Message-ID: <20200813151024.GL2026@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
+        Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com
+References: <20200721142234.2680-1-josef@toxicpanda.com>
+ <121b9dab-888b-4be3-30bf-5719b9017014@suse.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200813123946.5841d146@natsu>
-X-Sysadmin: BOFH
-X-URL:  http://marc.merlins.org/
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-SA-Exim-Connect-IP: <locally generated>
-X-SA-Exim-Mail-From: marc@merlins.org
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <121b9dab-888b-4be3-30bf-5719b9017014@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Aug 13, 2020 at 12:39:46PM +0500, Roman Mamedov wrote:
-> Or should have been. If it's a copy-paste from a shell script (unless you do
-> the whole process manually every time), it doesn't appear like you check the
-> success status of each line before continuing to the next. Either add
-> "|| exit 1" to each of these that can fail, or just use "#!/bin/bash -e" in
-> the script's first line.
- 
-Sorry, yeah, it's a partial copy paste of a script, but the script has 
-set -e
-so if any command fails, the script stops.
+On Wed, Jul 22, 2020 at 11:35:15AM +0300, Nikolay Borisov wrote:
+> 
+> 
+> On 21.07.20 г. 17:22 ч., Josef Bacik wrote:
+> > v3->v4:
+> > - Rebased onto a recent misc-next, slight fixup because of commenting around the
+> >   flush states.
+> > 
+> > v2->v3:
+> > - Rebased onto a recent misc-next
+> > 
+> > v1->v2:
+> > - Adjusted a comment in may_commit_transaction.
+> > - Fixed one of the intermediate patches to properly update ->reclaim_size.
+> > 
+> > We've had two different things in place to reserve data and metadata space,
+> > because generally speaking data is much simpler.  However the data reservations
+> > still suffered from the same issues that plagued metadata reservations, you
+> > could get multiple tasks racing in to get reservations.  This causes problems
+> > with cases like write/delete loops where we should be able to fill up the fs,
+> > delete everything, and go again.  You would sometimes race with a flusher that's
+> > trying to unpin the free space, take it's reservations, and then it would fail.
+> > 
+> > Fix this by moving the data reservations under the metadata ticketing
+> > infrastructure.  This gets rid of that problem, and simplifies our enospc code
+> > more by consolidating it into a single path.  Thanks,
+> > 
+> > Josef
+> > 
+> 
+> I've gone through the series again and it looks good. However,
+> btrfs_alloc_data_chunk_ondemand no longer allocates a data chunk but
+> simply tries to reserve the requested data space. This means this series
+> needs another patch giving it a more becoming name, something like
+> btrfs_(alloc|reserve)_data_space or some such ?
 
-> As is, imagine umount fails ("target busy"), then dmsetup fails ("device in
-> use"), then mdadm fails to stop the array, but then you cut power to the
-> entire thing anyways.
-
-Correct, and set -e makes sure that does not happen.
-
-I have been using this script for years, and it's been fine, but if the
-drives have broken write caching and can fail to write data for more
-than 5 seconds, then my script will have cut the power on them before
-data was committed.
-It feels far reaching a conclusion, but given that we already know that
-I did get said corruption and I'm pretty darn confident that it happened
-after the last time I shut down the array that way, it means that Zygo
-is very likely right on the write caching problem.
-
-Which also also why I'd like to check if I need to turn it off on any on
-my other drives, since indeed I often bought cheaper versions of drives,
-which maybe had firmware bugs.
-
-Marc
--- 
-"A mouse is a device used to point at the xterm you want to type in" - A.S.R.
- 
-Home page: http://marc.merlins.org/  
+Yes please, this could be confunsing as allocation and reservation are
+different things.
