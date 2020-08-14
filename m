@@ -2,201 +2,157 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A94C52446A0
-	for <lists+linux-btrfs@lfdr.de>; Fri, 14 Aug 2020 10:53:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 858A02447A5
+	for <lists+linux-btrfs@lfdr.de>; Fri, 14 Aug 2020 12:04:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726568AbgHNIxZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 14 Aug 2020 04:53:25 -0400
-Received: from mx2.suse.de ([195.135.220.15]:33800 "EHLO mx2.suse.de"
+        id S1727785AbgHNKEN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 14 Aug 2020 06:04:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58210 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726050AbgHNIxY (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 14 Aug 2020 04:53:24 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id E6FABB64B;
-        Fri, 14 Aug 2020 08:53:45 +0000 (UTC)
-Subject: Re: [PATCH 4/7] btrfs: cleanup unused return in btrfs_close_devices
-To:     Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org
-References: <20200814000352.124179-1-anand.jain@oracle.com>
- <20200814000352.124179-5-anand.jain@oracle.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <31859c3a-f3b2-2628-f003-6fb243f71ff4@suse.com>
-Date:   Fri, 14 Aug 2020 11:53:22 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726012AbgHNKEN (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 14 Aug 2020 06:04:13 -0400
+Received: from debian8.Home (bl8-197-74.dsl.telepac.pt [85.241.197.74])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3F5DD2074D
+        for <linux-btrfs@vger.kernel.org>; Fri, 14 Aug 2020 10:04:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1597399452;
+        bh=iLYT5aQ8V1yhept1lXWSP3LWH33GKiF4ffJLf4q7bw8=;
+        h=From:To:Subject:Date:From;
+        b=gqAGhIJ8n/OxeByfKtHgS6xwnWgilCek3JqnRnlX5B+GnQfQN4nOYJ8gkFITH4ZQq
+         UhydBI5w0p7RdGJ1pw892oK6PAIwb82I4Ys7Ab2mfqgYGFH9fjC22BN1skz5vyPDWO
+         9uZH07a1TiLGn4zXVBgIMSAicQVWfcde15F4ZBFk=
+From:   fdmanana@kernel.org
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs: fix space cache memory leak after transaction abort
+Date:   Fri, 14 Aug 2020 11:04:09 +0100
+Message-Id: <20200814100409.633527-1-fdmanana@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <20200814000352.124179-5-anand.jain@oracle.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+From: Filipe Manana <fdmanana@suse.com>
 
+If a transaction aborts it can cause a memory leak of the pages array of
+a block group's io_ctl structure. The following steps explain how that can
+happen:
 
-On 14.08.20 г. 3:03 ч., Anand Jain wrote:
-> In the function btrfs_close_devices() and its helper function
-> close_fs_devices(), the return value aren't used as there isn't error
-> return from these functions. So clean up the return argument.
-> 
-> Also in the function btrfs_remove_chunk() remove the local variable
-> %fs_devices, instead use the assigned pointer directly.
-> 
-> Signed-off-by: Anand Jain <anand.jain@oracle.com>
-> ---
->  fs/btrfs/volumes.c | 21 ++++++++-------------
->  fs/btrfs/volumes.h |  2 +-
->  2 files changed, 9 insertions(+), 14 deletions(-)
-> 
-> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> index 66691416ca8f..dd867375478b 100644
-> --- a/fs/btrfs/volumes.c
-> +++ b/fs/btrfs/volumes.c
-> @@ -1148,12 +1148,12 @@ static void btrfs_close_one_device(struct btrfs_device *device)
->  	ASSERT(atomic_read(&device->reada_in_flight) == 0);
->  }
->  
-> -static int close_fs_devices(struct btrfs_fs_devices *fs_devices)
-> +static void close_fs_devices(struct btrfs_fs_devices *fs_devices)
->  {
->  	struct btrfs_device *device, *tmp;
->  
->  	if (--fs_devices->opened > 0)
-> -		return 0;
-> +		return;
->  
->  	mutex_lock(&fs_devices->device_list_mutex);
->  	list_for_each_entry_safe(device, tmp, &fs_devices->devices, dev_list) {
-> @@ -1165,17 +1165,14 @@ static int close_fs_devices(struct btrfs_fs_devices *fs_devices)
->  	WARN_ON(fs_devices->rw_devices);
->  	fs_devices->opened = 0;
->  	fs_devices->seeding = false;
-> -
-> -	return 0;
->  }
->  
-> -int btrfs_close_devices(struct btrfs_fs_devices *fs_devices)
-> +void btrfs_close_devices(struct btrfs_fs_devices *fs_devices)
->  {
->  	struct btrfs_fs_devices *seed_devices = NULL;
-> -	int ret;
->  
->  	mutex_lock(&uuid_mutex);
-> -	ret = close_fs_devices(fs_devices);
-> +	close_fs_devices(fs_devices);
->  	if (!fs_devices->opened) {
->  		seed_devices = fs_devices->seed;
->  		fs_devices->seed = NULL;
-> @@ -1188,7 +1185,6 @@ int btrfs_close_devices(struct btrfs_fs_devices *fs_devices)
->  		close_fs_devices(fs_devices);
->  		free_fs_devices(fs_devices);
->  	}
-> -	return ret;
->  }
->  
+1) Transaction N is committing, currently in state TRANS_STATE_UNBLOCKED
+   and it's about to start writing out dirty extent buffers;
 
-This is the relevant portions which implement what's documented. Also I
-have already sent similar cleanup on 15.07.
+2) Transaction N + 1 already started and another task, task A, just called
+   btrfs_commit_transaction() on it;
 
->  static int open_fs_devices(struct btrfs_fs_devices *fs_devices,
-> @@ -2933,7 +2929,6 @@ int btrfs_remove_chunk(struct btrfs_trans_handle *trans, u64 chunk_offset)
->  	struct map_lookup *map;
->  	u64 dev_extent_len = 0;
->  	int i, ret = 0;
-> -	struct btrfs_fs_devices *fs_devices = fs_info->fs_devices;
->  
->  	em = btrfs_get_chunk_map(fs_info, chunk_offset, 1);
->  	if (IS_ERR(em)) {
-> @@ -2955,14 +2950,14 @@ int btrfs_remove_chunk(struct btrfs_trans_handle *trans, u64 chunk_offset)
->  	 * a device replace operation that replaces the device object associated
->  	 * with map stripes (dev-replace.c:btrfs_dev_replace_finishing()).
->  	 */
-> -	mutex_lock(&fs_devices->device_list_mutex);
-> +	mutex_lock(&fs_info->fs_devices->device_list_mutex);
->  	for (i = 0; i < map->num_stripes; i++) {
->  		struct btrfs_device *device = map->stripes[i].dev;
->  		ret = btrfs_free_dev_extent(trans, device,
->  					    map->stripes[i].physical,
->  					    &dev_extent_len);
->  		if (ret) {
-> -			mutex_unlock(&fs_devices->device_list_mutex);
-> +			mutex_unlock(&fs_info->fs_devices->device_list_mutex);
->  			btrfs_abort_transaction(trans, ret);
->  			goto out;
->  		}
-> @@ -2978,12 +2973,12 @@ int btrfs_remove_chunk(struct btrfs_trans_handle *trans, u64 chunk_offset)
->  
->  		ret = btrfs_update_device(trans, device);
->  		if (ret) {
-> -			mutex_unlock(&fs_devices->device_list_mutex);
-> +			mutex_unlock(&fs_info->fs_devices->device_list_mutex);
->  			btrfs_abort_transaction(trans, ret);
->  			goto out;
->  		}
->  	}
-> -	mutex_unlock(&fs_devices->device_list_mutex);
-> +	mutex_unlock(&fs_info->fs_devices->device_list_mutex);
->  
->  	ret = btrfs_free_chunk(trans, chunk_offset);
->  	if (ret) {
+3) Block group B was dirtied (extents allocated from it) by transaction
+   N + 1, so when task A calls btrfs_start_dirty_block_groups(), at the
+   very beginning of the transaction commit, it starts writeback for the
+   block group's space cache by calling btrfs_write_out_cache(), which
+   allocates the pages array for the block group's io_ctl with a call to
+   io_ctl_init(). Block group A is added to the io_list of transaction
+   N + 1 by btrfs_start_dirty_block_groups();
 
-This is unrelated cleanup...
+4) While transaction N's commit is writing out the extent buffers, it gets
+   an IO error and aborts transaction N, also setting the file system to
+   RO mode;
 
-> diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
-> index 5eea93916fbf..76e5470e19a8 100644
-> --- a/fs/btrfs/volumes.h
-> +++ b/fs/btrfs/volumes.h
-> @@ -435,7 +435,7 @@ int btrfs_open_devices(struct btrfs_fs_devices *fs_devices,
->  struct btrfs_device *btrfs_scan_one_device(const char *path,
->  					   fmode_t flags, void *holder);
->  int btrfs_forget_devices(const char *path);
-> -int btrfs_close_devices(struct btrfs_fs_devices *fs_devices);
-> +void btrfs_close_devices(struct btrfs_fs_devices *fs_devices);
->  void btrfs_free_extra_devids(struct btrfs_fs_devices *fs_devices, int step);
->  void btrfs_assign_next_active_device(struct btrfs_device *device,
->  				     struct btrfs_device *this_dev);
-> 
+5) Task A has already returned from btrfs_start_dirty_block_groups(), is at
+   btrfs_commit_transaction() and has set transaction N + 1 state to
+   TRANS_STATE_COMMIT_START. Immediately after that it checks that the
+   filesystem was turned to RO mode, due to transaction N's abort, and
+   jumps to the "cleanup_transaction" label. After that we end up at
+   btrfs_cleanup_one_transaction() which calls btrfs_cleanup_dirty_bgs().
+   That helper finds block group B in the transaction's io_list but it
+   never releases the pages array of the block group's io_ctl, resulting in
+   a memory leak.
+
+In fact at the point when we are at btrfs_cleanup_dirty_bgs(), the pages
+array points to pages that were already released by us at
+__btrfs_write_out_cache() through the call to io_ctl_drop_pages(). We end
+up freeing the pages array only after waiting for the ordered extent to
+complete through btrfs_wait_cache_io(), which calls io_ctl_free() to do
+that. But in the transaction abort case we don't wait for the space cache's
+ordered extent to complete through a call to btrfs_wait_cache_io(), so
+that's why we end up with a memory leak - we wait for the ordered extent
+to complete indirectly by shutting down the work queues and waiting for
+any jobs in them to complete before returning from close_ctree().
+
+We can solve the leak simply by freeing the pages array right after
+releasing the pages (with the call to io_ctl_drop_pages()) at
+__btrfs_write_out_cache(), since we will never use it anymore after that
+and the pages array points to already released pages at that point, which
+is currently not a problem since no one will use it after that, but not a
+good practice anyway since it can easily lead to use-after-free issues.
+
+So fix this by freeing the pages array right after releasing the pages at
+__btrfs_write_out_cache().
+
+This issue can often be reproduced with test case generic/475 from fstests
+and kmemleak can detect it and reports it with the following trace:
+
+unreferenced object 0xffff9bbf009fa600 (size 512):
+  comm "fsstress", pid 38807, jiffies 4298504428 (age 22.028s)
+  hex dump (first 32 bytes):
+    00 a0 7c 4d 3d ed ff ff 40 a0 7c 4d 3d ed ff ff  ..|M=...@.|M=...
+    80 a0 7c 4d 3d ed ff ff c0 a0 7c 4d 3d ed ff ff  ..|M=.....|M=...
+  backtrace:
+    [<00000000f4b5cfe2>] __kmalloc+0x1a8/0x3e0
+    [<0000000028665e7f>] io_ctl_init+0xa7/0x120 [btrfs]
+    [<00000000a1f95b2d>] __btrfs_write_out_cache+0x86/0x4a0 [btrfs]
+    [<00000000207ea1b0>] btrfs_write_out_cache+0x7f/0xf0 [btrfs]
+    [<00000000af21f534>] btrfs_start_dirty_block_groups+0x27b/0x580 [btrfs]
+    [<00000000c3c23d44>] btrfs_commit_transaction+0xa6f/0xe70 [btrfs]
+    [<000000009588930c>] create_subvol+0x581/0x9a0 [btrfs]
+    [<000000009ef2fd7f>] btrfs_mksubvol+0x3fb/0x4a0 [btrfs]
+    [<00000000474e5187>] __btrfs_ioctl_snap_create+0x119/0x1a0 [btrfs]
+    [<00000000708ee349>] btrfs_ioctl_snap_create_v2+0xb0/0xf0 [btrfs]
+    [<00000000ea60106f>] btrfs_ioctl+0x12c/0x3130 [btrfs]
+    [<000000005c923d6d>] __x64_sys_ioctl+0x83/0xb0
+    [<0000000043ace2c9>] do_syscall_64+0x33/0x80
+    [<00000000904efbce>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+---
+ fs/btrfs/disk-io.c          | 1 +
+ fs/btrfs/free-space-cache.c | 2 +-
+ 2 files changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index 2ccf582a7085..cb03177ecd27 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -4551,6 +4551,7 @@ static void btrfs_cleanup_bg_io(struct btrfs_block_group *cache)
+ 		cache->io_ctl.inode = NULL;
+ 		iput(inode);
+ 	}
++	ASSERT(cache->io_ctl.pages == NULL);
+ 	btrfs_put_block_group(cache);
+ }
+ 
+diff --git a/fs/btrfs/free-space-cache.c b/fs/btrfs/free-space-cache.c
+index 4f3d6476a6db..8759f5a1d6a0 100644
+--- a/fs/btrfs/free-space-cache.c
++++ b/fs/btrfs/free-space-cache.c
+@@ -1186,7 +1186,6 @@ static int __btrfs_wait_cache_io(struct btrfs_root *root,
+ 	ret = update_cache_item(trans, root, inode, path, offset,
+ 				io_ctl->entries, io_ctl->bitmaps);
+ out:
+-	io_ctl_free(io_ctl);
+ 	if (ret) {
+ 		invalidate_inode_pages2(inode->i_mapping);
+ 		BTRFS_I(inode)->generation = 0;
+@@ -1347,6 +1346,7 @@ static int __btrfs_write_out_cache(struct btrfs_root *root, struct inode *inode,
+ 	 * them out later
+ 	 */
+ 	io_ctl_drop_pages(io_ctl);
++	io_ctl_free(io_ctl);
+ 
+ 	unlock_extent_cached(&BTRFS_I(inode)->io_tree, 0,
+ 			     i_size_read(inode) - 1, &cached_state);
+-- 
+2.26.2
+
