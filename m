@@ -2,157 +2,103 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 858A02447A5
-	for <lists+linux-btrfs@lfdr.de>; Fri, 14 Aug 2020 12:04:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 096EB244805
+	for <lists+linux-btrfs@lfdr.de>; Fri, 14 Aug 2020 12:30:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727785AbgHNKEN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 14 Aug 2020 06:04:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58210 "EHLO mail.kernel.org"
+        id S1727028AbgHNKaW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 14 Aug 2020 06:30:22 -0400
+Received: from mx2.suse.de ([195.135.220.15]:56030 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726012AbgHNKEN (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 14 Aug 2020 06:04:13 -0400
-Received: from debian8.Home (bl8-197-74.dsl.telepac.pt [85.241.197.74])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3F5DD2074D
-        for <linux-btrfs@vger.kernel.org>; Fri, 14 Aug 2020 10:04:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597399452;
-        bh=iLYT5aQ8V1yhept1lXWSP3LWH33GKiF4ffJLf4q7bw8=;
-        h=From:To:Subject:Date:From;
-        b=gqAGhIJ8n/OxeByfKtHgS6xwnWgilCek3JqnRnlX5B+GnQfQN4nOYJ8gkFITH4ZQq
-         UhydBI5w0p7RdGJ1pw892oK6PAIwb82I4Ys7Ab2mfqgYGFH9fjC22BN1skz5vyPDWO
-         9uZH07a1TiLGn4zXVBgIMSAicQVWfcde15F4ZBFk=
-From:   fdmanana@kernel.org
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: fix space cache memory leak after transaction abort
-Date:   Fri, 14 Aug 2020 11:04:09 +0100
-Message-Id: <20200814100409.633527-1-fdmanana@kernel.org>
-X-Mailer: git-send-email 2.26.2
+        id S1726812AbgHNKaU (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 14 Aug 2020 06:30:20 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 7CBACAD1A;
+        Fri, 14 Aug 2020 10:30:39 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id EE1FBDA6EF; Fri, 14 Aug 2020 12:29:13 +0200 (CEST)
+Date:   Fri, 14 Aug 2020 12:29:13 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>
+Subject: Re: [PATCH v4 1/4] btrfs: extent_io: Do extra check for extent
+ buffer read write functions
+Message-ID: <20200814102913.GU2026@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org,
+        Josef Bacik <josef@toxicpanda.com>
+References: <20200812060509.71590-1-wqu@suse.com>
+ <20200812060509.71590-2-wqu@suse.com>
+ <20200813140503.GH2026@twin.jikos.cz>
+ <6f6a76e7-57b5-5e73-af6c-855cc5256a34@gmx.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <6f6a76e7-57b5-5e73-af6c-855cc5256a34@gmx.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
+On Fri, Aug 14, 2020 at 08:47:17AM +0800, Qu Wenruo wrote:
+> 
+> 
+> On 2020/8/13 下午10:05, David Sterba wrote:
+> > On Wed, Aug 12, 2020 at 02:05:06PM +0800, Qu Wenruo wrote:
+> >> +/*
+> >> + * Check if the [start, start + len) range is valid before reading/writing
+> >> + * the eb.
+> >> + * NOTE: @start and @len are offset *INSIDE* the eb, *NOT* logical address.
+> >> + *
+> >> + * Caller should not touch the dst/src memory if this function returns error.
+> >> + */
+> >> +static int check_eb_range(const struct extent_buffer *eb, unsigned long start,
+> >> +			  unsigned long len)
+> >> +{
+> >> +	/* start, start + len should not go beyond eb->len nor overflow */
+> >> +	if (unlikely(start > eb->len || start + len > eb->len ||
+> >> +		     len > eb->len)) {
+> >> +		btrfs_warn(eb->fs_info,
+> >> +"btrfs: bad eb rw request, eb bytenr=%llu len=%lu rw start=%lu len=%lu\n",
+> >> +			   eb->start, eb->len, start, len);
+> >> +		WARN_ON(IS_ENABLED(CONFIG_BTRFS_DEBUG));
+> >> +		return -EINVAL;
+> >> +	}
+> >> +	return 0;
+> >> +}
+> > 
+> > This helper is similar to the check_setget_bounds that have some
+> > performance impact,
+> > https://lore.kernel.org/linux-btrfs/20200730110943.GE3703@twin.jikos.cz/
+> > .
+> > 
+> > The extent buffer helpers are not called that often as the setget
+> > helpers but still it could be improved to avoid the function call
+> > penalty on the hot path.
+> > 
+> > static inline in check_eb_range(...) {
+> > 	if (unlikely(out of range))
+> > 		return report_eb_range(...)
+> > 	return 0;
+> > }
+> 
+> I thought we should avoid manual inline, but let the compiler to
+> determine if it's needed.
+> 
+> Or in this particular case, we're better than the compiler?
 
-If a transaction aborts it can cause a memory leak of the pages array of
-a block group's io_ctl structure. The following steps explain how that can
-happen:
+In general it shouldn't be necessary to inline or partition the
+functions. In the check_setget case it had a noticeable impact on
+performance, so crafting the hot path manually produces a better
+assembly and does not depend on the compiler optimizations. The
+important part here is that this has been analyzed and measured that it
+really makes a difference.
 
-1) Transaction N is committing, currently in state TRANS_STATE_UNBLOCKED
-   and it's about to start writing out dirty extent buffers;
-
-2) Transaction N + 1 already started and another task, task A, just called
-   btrfs_commit_transaction() on it;
-
-3) Block group B was dirtied (extents allocated from it) by transaction
-   N + 1, so when task A calls btrfs_start_dirty_block_groups(), at the
-   very beginning of the transaction commit, it starts writeback for the
-   block group's space cache by calling btrfs_write_out_cache(), which
-   allocates the pages array for the block group's io_ctl with a call to
-   io_ctl_init(). Block group A is added to the io_list of transaction
-   N + 1 by btrfs_start_dirty_block_groups();
-
-4) While transaction N's commit is writing out the extent buffers, it gets
-   an IO error and aborts transaction N, also setting the file system to
-   RO mode;
-
-5) Task A has already returned from btrfs_start_dirty_block_groups(), is at
-   btrfs_commit_transaction() and has set transaction N + 1 state to
-   TRANS_STATE_COMMIT_START. Immediately after that it checks that the
-   filesystem was turned to RO mode, due to transaction N's abort, and
-   jumps to the "cleanup_transaction" label. After that we end up at
-   btrfs_cleanup_one_transaction() which calls btrfs_cleanup_dirty_bgs().
-   That helper finds block group B in the transaction's io_list but it
-   never releases the pages array of the block group's io_ctl, resulting in
-   a memory leak.
-
-In fact at the point when we are at btrfs_cleanup_dirty_bgs(), the pages
-array points to pages that were already released by us at
-__btrfs_write_out_cache() through the call to io_ctl_drop_pages(). We end
-up freeing the pages array only after waiting for the ordered extent to
-complete through btrfs_wait_cache_io(), which calls io_ctl_free() to do
-that. But in the transaction abort case we don't wait for the space cache's
-ordered extent to complete through a call to btrfs_wait_cache_io(), so
-that's why we end up with a memory leak - we wait for the ordered extent
-to complete indirectly by shutting down the work queues and waiting for
-any jobs in them to complete before returning from close_ctree().
-
-We can solve the leak simply by freeing the pages array right after
-releasing the pages (with the call to io_ctl_drop_pages()) at
-__btrfs_write_out_cache(), since we will never use it anymore after that
-and the pages array points to already released pages at that point, which
-is currently not a problem since no one will use it after that, but not a
-good practice anyway since it can easily lead to use-after-free issues.
-
-So fix this by freeing the pages array right after releasing the pages at
-__btrfs_write_out_cache().
-
-This issue can often be reproduced with test case generic/475 from fstests
-and kmemleak can detect it and reports it with the following trace:
-
-unreferenced object 0xffff9bbf009fa600 (size 512):
-  comm "fsstress", pid 38807, jiffies 4298504428 (age 22.028s)
-  hex dump (first 32 bytes):
-    00 a0 7c 4d 3d ed ff ff 40 a0 7c 4d 3d ed ff ff  ..|M=...@.|M=...
-    80 a0 7c 4d 3d ed ff ff c0 a0 7c 4d 3d ed ff ff  ..|M=.....|M=...
-  backtrace:
-    [<00000000f4b5cfe2>] __kmalloc+0x1a8/0x3e0
-    [<0000000028665e7f>] io_ctl_init+0xa7/0x120 [btrfs]
-    [<00000000a1f95b2d>] __btrfs_write_out_cache+0x86/0x4a0 [btrfs]
-    [<00000000207ea1b0>] btrfs_write_out_cache+0x7f/0xf0 [btrfs]
-    [<00000000af21f534>] btrfs_start_dirty_block_groups+0x27b/0x580 [btrfs]
-    [<00000000c3c23d44>] btrfs_commit_transaction+0xa6f/0xe70 [btrfs]
-    [<000000009588930c>] create_subvol+0x581/0x9a0 [btrfs]
-    [<000000009ef2fd7f>] btrfs_mksubvol+0x3fb/0x4a0 [btrfs]
-    [<00000000474e5187>] __btrfs_ioctl_snap_create+0x119/0x1a0 [btrfs]
-    [<00000000708ee349>] btrfs_ioctl_snap_create_v2+0xb0/0xf0 [btrfs]
-    [<00000000ea60106f>] btrfs_ioctl+0x12c/0x3130 [btrfs]
-    [<000000005c923d6d>] __x64_sys_ioctl+0x83/0xb0
-    [<0000000043ace2c9>] do_syscall_64+0x33/0x80
-    [<00000000904efbce>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- fs/btrfs/disk-io.c          | 1 +
- fs/btrfs/free-space-cache.c | 2 +-
- 2 files changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 2ccf582a7085..cb03177ecd27 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -4551,6 +4551,7 @@ static void btrfs_cleanup_bg_io(struct btrfs_block_group *cache)
- 		cache->io_ctl.inode = NULL;
- 		iput(inode);
- 	}
-+	ASSERT(cache->io_ctl.pages == NULL);
- 	btrfs_put_block_group(cache);
- }
- 
-diff --git a/fs/btrfs/free-space-cache.c b/fs/btrfs/free-space-cache.c
-index 4f3d6476a6db..8759f5a1d6a0 100644
---- a/fs/btrfs/free-space-cache.c
-+++ b/fs/btrfs/free-space-cache.c
-@@ -1186,7 +1186,6 @@ static int __btrfs_wait_cache_io(struct btrfs_root *root,
- 	ret = update_cache_item(trans, root, inode, path, offset,
- 				io_ctl->entries, io_ctl->bitmaps);
- out:
--	io_ctl_free(io_ctl);
- 	if (ret) {
- 		invalidate_inode_pages2(inode->i_mapping);
- 		BTRFS_I(inode)->generation = 0;
-@@ -1347,6 +1346,7 @@ static int __btrfs_write_out_cache(struct btrfs_root *root, struct inode *inode,
- 	 * them out later
- 	 */
- 	io_ctl_drop_pages(io_ctl);
-+	io_ctl_free(io_ctl);
- 
- 	unlock_extent_cached(&BTRFS_I(inode)->io_tree, 0,
- 			     i_size_read(inode) - 1, &cached_state);
--- 
-2.26.2
-
+For sanity checks I think we should try to make it as fast as possible,
+it's better to have them then not but we also don't want to sacrifice
+performance. I haven't analyzed the asm code impact in this patch but
+the pattern and flow of check_eb_range is the same.
