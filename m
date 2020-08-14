@@ -2,32 +2,33 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DE7F24428F
-	for <lists+linux-btrfs@lfdr.de>; Fri, 14 Aug 2020 02:48:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 637E1244294
+	for <lists+linux-btrfs@lfdr.de>; Fri, 14 Aug 2020 02:52:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726621AbgHNAr0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 13 Aug 2020 20:47:26 -0400
-Received: from mout.gmx.net ([212.227.15.18]:58629 "EHLO mout.gmx.net"
+        id S1726576AbgHNAw2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 13 Aug 2020 20:52:28 -0400
+Received: from mout.gmx.net ([212.227.15.18]:39997 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726567AbgHNArZ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 13 Aug 2020 20:47:25 -0400
+        id S1726205AbgHNAw1 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 13 Aug 2020 20:52:27 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1597366042;
-        bh=2NH264VYkdDdXmVRkw+viNhPuFsfJNlBRLd1nj+tgTc=;
+        s=badeba3b8450; t=1597366344;
+        bh=b10x7P55PGFzHXQJ9KH7cpbI1piLR6Dk1SMuVf1/ZeQ=;
         h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=k1OXUbZL4ypXAjPCwIVvkHjmN61SJA0hV0tWhsjdx2TTe4vJMrW/t/u1FKlhxRxj6
-         DSFxvZmSR/bpyWpHXfDVdb5NL3P39klNwfN/6gbVUpYt9BQYeyDICHuKCTl8LLPLjT
-         fxkjGxfN2QdWe5BpN9KnIn6Eq+eCeHD3qeQTU3Ro=
+        b=BeaKjZL2jS5iEcOiMFkv3bml+s9jDzD5MQL3SmK6YCTtWOzK8TdaxMI5tSZd7eo6w
+         FT41O8JE9iMsPoteKjRg8Bx0CW2V6z7D+0Q8ZPPQyDA2AuBSfMl7rXtah+5qGdWEuP
+         ggDtK9C8m8yEg8YQwsw+FCxmZAQyhV9ZSgPRKxuI=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1N4QwW-1knebn1BNm-011Tht; Fri, 14
- Aug 2020 02:47:21 +0200
-Subject: Re: [PATCH v4 1/4] btrfs: extent_io: Do extra check for extent buffer
- read write functions
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MMobO-1kMosN1DCm-00IpPs; Fri, 14
+ Aug 2020 02:52:23 +0200
+Subject: Re: [PATCH v4 2/4] btrfs: extent-tree: Kill BUG_ON() in
+ __btrfs_free_extent() and do better comment
 To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>
+        linux-btrfs@vger.kernel.org, Nikolay Borisov <nborisov@suse.com>,
+        Josef Bacik <josef@toxicpanda.com>
 References: <20200812060509.71590-1-wqu@suse.com>
- <20200812060509.71590-2-wqu@suse.com> <20200813140503.GH2026@twin.jikos.cz>
+ <20200812060509.71590-3-wqu@suse.com> <20200813141019.GI2026@twin.jikos.cz>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -53,131 +54,113 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
  ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
  oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <6f6a76e7-57b5-5e73-af6c-855cc5256a34@gmx.com>
-Date:   Fri, 14 Aug 2020 08:47:17 +0800
+Message-ID: <bf3d96a8-f19c-1b0d-9171-c82f7a4d3d0f@gmx.com>
+Date:   Fri, 14 Aug 2020 08:52:19 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.11.0
 MIME-Version: 1.0
-In-Reply-To: <20200813140503.GH2026@twin.jikos.cz>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="GIn1RzZiBQi7UBfs1TV4UwJS4Fyk8fxKX"
-X-Provags-ID: V03:K1:0OasViSDXjTMmF19RrRrrHKeRkN/8SWesyIYjgtaIz8o0D74BN1
- nMpBt2SYs17XYKj02gT+fhgnuvgeK4nsdE/Ot6FM5GqfUZO2sk2g6RMzn2wn/6dZF80PHxV
- rAeBHOl6n6TKKU/UVGcBMURbrghd4SPE2p3wlWLhxcQtMxvHz9/QfrwpkzRbEU/Ru6KGbqy
- p0o3hcbE7NpIJOh9G4BoQ==
+In-Reply-To: <20200813141019.GI2026@twin.jikos.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:o+dYScEEPeEgYfrxIy3Ro4bcrjeJ5K7SuOEOv0RDBXE3utC43Z+
+ pX5ldSmqWq5F+VsvfvbeFKRCoIKY3EL/VX1iXVGaKbVXn1Au+biQT01Q5T6zKNXkm5EhDh4
+ +WMnA4u9/pqIAnRt2CbJyGZs8nH3fMJe0Yvbuz16sK23dg/ZN9wSM2QKUqAGlYsWW9OAMWh
+ /rqcYIjV7v4VIfqvFtAAA==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:hdVmmy81cWk=:qSHmwCSq5BbvXGnReHyRAa
- xi609ZH+I98dL1sFDFTkrWRrFxdJ6gd/DsoLA1GMpYx51QkL4lKrdvKEJSkz3Uch2t27mtHw4
- NRi0JEJFoMsqFl96p3AEXbj7HdkxyuJ7JXK8YUhCN0+ftZgUVnJel1mFK85u+rPGT2Ik8fmiZ
- vFHj21+Qk3tOkwWPQlHEDPPvQrVIwe+lY2FbRUvbFrayM7YWKOD0EnZAWCDLfkaWTeXv+ymPK
- F2xjONu8w1SnSjf9DF1SbvTSJEomtT7aWgIGFyxI1qebsuEsWdQ5ig7s9FD/ax4a410xWfeYe
- kNgO3f55ngpJIKrOYaqBBzeAHCABT/VADxEHgHm7CbjhbCbIxlA5zP6tNzvyMEHWHBzcaemRX
- qwxS0WFjkJf2ON/jh7pIwhzpTshuJsEjSl/kV/EHoXBgjCKfadZP4nF43jo4mTPxEqfTmZVMc
- uh044dOyOAr2LDoLN8K/uzwhG8/KZRxjmkLQYtv9mYWUYa2WxdXTbrBvkdZk91sqdigtedJUQ
- TdQNN5F6h7nv3gt4YLyfXK11dSQ4VXHTYew/hMnMt7Xta9zirCWX5VpVj/R/jMFN9CzWMNxhH
- 1h8AyIc4S+Z9gvMrJmAYxbnqeacaAcFv7UBl9Zx+g70Yc4Sy567SRCxB6Nuh95jsbplst8IuV
- v8gG87BUR3XA0HEzyvfVi3Wcu+y+Do2bceSSnCALGWTDb9DmRP9w9Ncy+uCWcnPZTlllEjAUW
- rosKfPViHMeJRY7g6+g27Ldb6EeHxLJ1Yk+YTZWR48zIpJ2arn6BEKnbfD1u7liPZ0mQrPpk+
- MyYm4nBKif0Mruj7uKb5l1B6IcFo/Xk+mdBHdKO4R9xb37Jje0uDOiMcAuRxxwJLPBwhnoVV6
- ptk1xAvDP/C4PxKSuPV8lB9n7mTPoy/LAVQ54CW5JUou7N9lvnoscwgUV8Szk++fqKzjkZZwW
- /Px+C3rBj6fOzC/7wF2S3eMApiHPXS7bL/qoQAMmCNcqLqas4d8NpctSG9eOVmMGQp3dm1Utz
- dAhHFTfJjhC6goKb/FXgB07IHFEtkjnjV5Frr8eHahq5blCCrJEUMXo7UjPI38LfBaEhQiSmP
- BlvN9eLsBvBlOm2eu+8PUzjeJkNd5quv5xILiVzVWBLl1Eib3GnKiMjG8OA5pv+y3T/yI1Ir8
- Yvq8Ts5JUgEEd6IcYnKtk8FbznvfD3UVE1jxfqtqDxenAQfMQYsG/ewzHaP8L75wdyc7eUFOz
- jJ1RQ4+R1vJQuNXFKgCi+r9lMh3F17q/kTyYQSQ==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:E2gle4s71XY=:okEw+poON8IZORLE61mlnJ
+ JVJfuNdvS2mx8gmGlxLPHM13HOLzM7odzJedP0jEuKemOGQ5wt6uesza6LNN1wN0NP8IpyBrG
+ AHL6zjbrhEBq/zT2IBDmJcGVqzajBq8jMG4zSgpM/ILDk9h2WA8GjQNaid2l0KHSzTtlQBurW
+ N4QLYx4FoObtyFKdL2bkdEDprPDcG3RM6k0m1ZwVEWE5LuhrNhzMnTFO6tziz+eQZmwLP0S/E
+ ZZ22TjUJz1cN6b4EP5tMU6zpub3wlMwEuQ70Ftnld+bmveCfY/4QxbigrLYEWpab/3GJkOqaJ
+ T3aXwVmlilhxyjFOR8+o35+ptxD3TWMJYnrYneCgp9AAsoozlML769STCI9pgaZmRNvM86oIX
+ lGYWGduEBiLZYNO5hmjoMhHyJPtZVmb/1k4muIUNoBsL36bkjY9Rl2sPh9V1mJp0ufnBQtWnA
+ TdgsaLrmhfV6Eah1gxCPzvqegnMw1aFUmBphXvmgRekc3J/c1jVsH6brtDZIRc6koh86hlrkQ
+ hIN39bKrL80SuM+373GF4xvebID1ZuWtjv7qT2oPjg73BKWKEMrz/kz42BzDn17UPG2n+Q5bd
+ M6O1bEKXg9zMWHbfzayQ9BYUiZNYH3S4TVO5G2+A1Z4zj8Ri+eteL17mzbvFCLgKcLd1ci9vp
+ WEbyJ4fmwWvP41SPdPx5bl11Uu9rQpCHgS5pX9ihoux6mKE09PJkqjOKa7pY3Zy2S/tPzXUmn
+ LDLkYoXjhDOWbPDYMnUAtv3z4ES2LyMd8jnLqX1o3M10pcPrY4v5FEPKcic2pmUI92j2UMEmx
+ mNIznSF17tmC54Uz0Veh7PnQHPvnb38p2c8Pf58ATSaqn4+xk/TJEu20MboRCq+4X9ULRYXhG
+ ca2u5wyf4ec2nuJJj033GODykpsiF6JWPDU53W3e10eihO6kF3DMjqHG3I4qycYqZYUzb8ax+
+ Pkmlsj3HY1Jj6Lio9sbcYP3J7abR+PNbjmwl0g+VZUuzQUgwZKfx2WTH3A76M0nOhNmwAIIQm
+ SERc6hVVbb1h6sYM6ll/080x3bNwwSBG+THr2BI4D7rwZZsc8eC5Ly1SqT4oFsJXSXCpfcGub
+ wjl9+PK/nE49bRjViaIpAc3tDdkBpqpBVwvBktHcqMo2OcoAeHa7K5lectZ0lxvEhyD3JxrRf
+ t8GlMPc+yIvn83aIlGggLxRBO+YAJKA6yBLz779R6bPEBKBPn5rN87Fqp8Hzi3tLfP2Q2ic/+
+ 6+7Y3Q1HygutySzr/qFXI1nAjDnQ/OKzlKGsLzA==
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---GIn1RzZiBQi7UBfs1TV4UwJS4Fyk8fxKX
-Content-Type: multipart/mixed; boundary="oaPP7hcZXtyPqg3VVsEwk8iYFbR2xVwJ7"
-
---oaPP7hcZXtyPqg3VVsEwk8iYFbR2xVwJ7
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
 
 
+On 2020/8/13 =E4=B8=8B=E5=8D=8810:10, David Sterba wrote:
+> On Wed, Aug 12, 2020 at 02:05:07PM +0800, Qu Wenruo wrote:
+>> @@ -2987,13 +3049,20 @@ static int __btrfs_free_extent(struct btrfs_tra=
+ns_handle *trans,
+>>  				found_extent =3D 1;
+>>  				break;
+>>  			}
+>> +
+>> +			/* Quick path didn't find the EXTEMT/METADATA_ITEM */
+>>  			if (path->slots[0] - extent_slot > 5)
+>>  				break;
+>>  			extent_slot--;
+>>  		}
+>>
+>>  		if (!found_extent) {
+>> -			BUG_ON(iref);
+>> +			if (unlikely(iref)) {
+>> +				btrfs_crit(info,
+>> +"invalid iref, no EXTENT/METADATA_ITEM found but has inline extent ref=
+");
+>> +				goto err_dump_abort;
+>
+> This is not calling transaction abort at the place where it happens,
+> here and several other places too.
 
-On 2020/8/13 =E4=B8=8B=E5=8D=8810:05, David Sterba wrote:
-> On Wed, Aug 12, 2020 at 02:05:06PM +0800, Qu Wenruo wrote:
->> +/*
->> + * Check if the [start, start + len) range is valid before reading/wr=
-iting
->> + * the eb.
->> + * NOTE: @start and @len are offset *INSIDE* the eb, *NOT* logical ad=
-dress.
->> + *
->> + * Caller should not touch the dst/src memory if this function return=
-s error.
->> + */
->> +static int check_eb_range(const struct extent_buffer *eb, unsigned lo=
-ng start,
->> +			  unsigned long len)
->> +{
->> +	/* start, start + len should not go beyond eb->len nor overflow */
->> +	if (unlikely(start > eb->len || start + len > eb->len ||
->> +		     len > eb->len)) {
->> +		btrfs_warn(eb->fs_info,
->> +"btrfs: bad eb rw request, eb bytenr=3D%llu len=3D%lu rw start=3D%lu =
-len=3D%lu\n",
->> +			   eb->start, eb->len, start, len);
->> +		WARN_ON(IS_ENABLED(CONFIG_BTRFS_DEBUG));
->> +		return -EINVAL;
->> +	}
->> +	return 0;
->> +}
->=20
-> This helper is similar to the check_setget_bounds that have some
-> performance impact,
-> https://lore.kernel.org/linux-btrfs/20200730110943.GE3703@twin.jikos.cz=
-/
-> .
->=20
-> The extent buffer helpers are not called that often as the setget
-> helpers but still it could be improved to avoid the function call
-> penalty on the hot path.
->=20
-> static inline in check_eb_range(...) {
-> 	if (unlikely(out of range))
-> 		return report_eb_range(...)
-> 	return 0;
-> }
+Did you mean, we want the btrfs_abort_transaction() call not merged
+under one tag, so that we can get the kernel warning with the line number?
 
-I thought we should avoid manual inline, but let the compiler to
-determine if it's needed.
+If so, that's indeed the case, we lose the exact line number.
 
-Or in this particular case, we're better than the compiler?
+But we still have the unique error message to locate the problem without
+much hassle (it's less obvious than the line number thought).
+
+Thus to me, we don't lose much debug info anyway.
+
+>
+>> @@ -3164,6 +3267,21 @@ static int __btrfs_free_extent(struct btrfs_tran=
+s_handle *trans,
+>>  out:
+>>  	btrfs_free_path(path);
+>>  	return ret;
+>> +err_dump_abort:
+>> +	/*
+>> +	 * Leaf dump can take up a lot of dmesg buffer since default nodesize
+>> +	 * is already 16K.
+>> +	 * So we only do full leaf dump for debug build.
+>> +	 */
+>> +	if (IS_ENABLED(CONFIG_BTRFS_DEBUG)) {
+>> +		btrfs_crit(info, "path->slots[0]=3D%d extent_slot=3D%d",
+>> +			   path->slots[0], extent_slot);
+>> +		btrfs_print_leaf(path->nodes[0]);
+>
+> Preceded by a potentially long-running action, so this will delay the
+> acutal abort.
+
+That's why it's only for CONFIG_BTRFS_DEBUG.
+
+And for debug kernel, that info would definitely be more helpful for us
+to locate the problem, right?
 
 Thanks,
 Qu
 
->=20
-> In the original code the range check was open coded and the above will
-> lead to the same asm output, while keeping the C code readable.
->=20
-
-
---oaPP7hcZXtyPqg3VVsEwk8iYFbR2xVwJ7--
-
---GIn1RzZiBQi7UBfs1TV4UwJS4Fyk8fxKX
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl813xYACgkQwj2R86El
-/qhUMAf/ftNLzeOSif1EMH2gwBgjf2HuXOTKtFKolEEdAN+SSN92DMZ4FW19xQ2s
-d1WqHK43oR9HEeP7xmcBJ/1WiBtuXBG6f8+SI0oEJFgh4R+J0AbeUkkS4zK07qPr
-uOYPM8eXjisAyBnauTAKxX7UOwyW7oFeo//2xGp0XnqGhCN4p5SU7xNC6EJrwvzH
-mPUGynvbbHnuv6FySC18KIQupOD6OBdx/J7wdSw7ntu4gazJ8VhXv1n66cRJtB+R
-6syxTDOVaZzOgTxHOTbEWfIvddT/wt2hcSYAaw2EXdhWPPwiman+p1ksjQBnAkmu
-wbfb1FuAW/x8nAqY0mJvTmZygqUg0A==
-=XeOL
------END PGP SIGNATURE-----
-
---GIn1RzZiBQi7UBfs1TV4UwJS4Fyk8fxKX--
+>
+>> +	}
+>> +
+>> +	btrfs_abort_transaction(trans, -EUCLEAN);
+>> +	btrfs_free_path(path);
+>> +	return -EUCLEAN;
+>>  }
