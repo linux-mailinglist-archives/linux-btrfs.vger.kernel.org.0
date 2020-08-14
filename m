@@ -2,60 +2,72 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7468D244A11
-	for <lists+linux-btrfs@lfdr.de>; Fri, 14 Aug 2020 15:03:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4548F244B16
+	for <lists+linux-btrfs@lfdr.de>; Fri, 14 Aug 2020 16:12:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726717AbgHNNDS convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-btrfs@lfdr.de>); Fri, 14 Aug 2020 09:03:18 -0400
-Received: from mail.munisurquillo.gob.pe ([190.187.155.157]:49826 "EHLO
-        mail.munisurquillo.gob.pe" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726362AbgHNNDR (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 14 Aug 2020 09:03:17 -0400
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.munisurquillo.gob.pe (Postfix) with ESMTP id 42229404F2FB7;
-        Fri, 14 Aug 2020 03:20:30 -0500 (-05)
-Received: from mail.munisurquillo.gob.pe ([127.0.0.1])
-        by localhost (mail.munisurquillo.gob.pe [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id dCCs9I4DFacd; Fri, 14 Aug 2020 03:20:30 -0500 (-05)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.munisurquillo.gob.pe (Postfix) with ESMTP id C4BD1405346A5;
-        Fri, 14 Aug 2020 03:00:06 -0500 (-05)
-X-Virus-Scanned: amavisd-new at munisurquillo.gob.pe
-Received: from mail.munisurquillo.gob.pe ([127.0.0.1])
-        by localhost (mail.munisurquillo.gob.pe [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id rtTXmdWKjKJj; Fri, 14 Aug 2020 03:00:05 -0500 (-05)
-Received: from [10.54.17.114] (unknown [105.4.7.153])
-        by mail.munisurquillo.gob.pe (Postfix) with ESMTPSA id 27BAD40420C37;
-        Fri, 14 Aug 2020 02:49:17 -0500 (-05)
-Content-Type: text/plain; charset="iso-8859-1"
+        id S1728443AbgHNOMq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 14 Aug 2020 10:12:46 -0400
+Received: from mx2.suse.de ([195.135.220.15]:56766 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726268AbgHNOMp (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 14 Aug 2020 10:12:45 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id BBBE4B1BA;
+        Fri, 14 Aug 2020 14:13:07 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id DFB5DDA6EF; Fri, 14 Aug 2020 16:11:41 +0200 (CEST)
+Date:   Fri, 14 Aug 2020 16:11:41 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH 03/17] btrfs: do not hold device_list_mutex when closing
+ devices
+Message-ID: <20200814141141.GW2026@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
+        linux-btrfs@vger.kernel.org, kernel-team@fb.com
+References: <20200810154242.782802-1-josef@toxicpanda.com>
+ <20200810154242.782802-4-josef@toxicpanda.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: =?utf-8?q?Covid_19_Wohlt=C3=A4tigkeitsfonds?=
-To:     Recipients <lu.marin@munisurquillo.gob.pe>
-From:   ''charles jackson'' <lu.marin@munisurquillo.gob.pe>
-Date:   Fri, 14 Aug 2020 09:49:08 +0200
-Reply-To: charlesjacksonjr001@gmail.com
-Message-Id: <20200814074918.27BAD40420C37@mail.munisurquillo.gob.pe>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200810154242.782802-4-josef@toxicpanda.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hallo
+On Mon, Aug 10, 2020 at 11:42:28AM -0400, Josef Bacik wrote:
+> not have the device_list_mutex here.  We're already holding the
+> uuid_mutex which keeps us safe from any external modification of the
+> fs_devices.
+> 
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> ---
+>  fs/btrfs/volumes.c | 5 +----
+>  1 file changed, 1 insertion(+), 4 deletions(-)
+> 
+> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+> index 3ac44dad58bb..97ec9c0a91aa 100644
+> --- a/fs/btrfs/volumes.c
+> +++ b/fs/btrfs/volumes.c
+> @@ -1155,11 +1155,8 @@ static int close_fs_devices(struct btrfs_fs_devices *fs_devices)
+>  	if (--fs_devices->opened > 0)
+>  		return 0;
+>  
+> -	mutex_lock(&fs_devices->device_list_mutex);
+> -	list_for_each_entry_safe(device, tmp, &fs_devices->devices, dev_list) {
+> +	list_for_each_entry_safe(device, tmp, &fs_devices->devices, dev_list)
+>  		btrfs_close_one_device(device);
+> -	}
+> -	mutex_unlock(&fs_devices->device_list_mutex);
 
-Ich bin Charles W. Jackson aus North Carolina, Vereinigte Staaten von Amerika, und ich bin der Gewinner des Mega-Millionen-Jackpots von 344 Millionen US-Dollar. Ich spende die Summe von 2.000.000 Millionen Euro als Teil der Hilfsgelder für das Corona-Virus.
+As Filipe pointed out, uuid mutex is not held in the dev replace
+function, I suggest to add
 
-Dies ist Ihr Spendencode: [CJ530342019]
+	lockdep_assert_held(&uuid_mutex);
 
-www.youtube.com/watch?v=BSr8myiLPMQ
-
-Bitte antworten Sie auf diese E-Mail mit dem SPENDERCODE:
-
-charlesjacksonjr001@gmail.com
-
-Ich hoffe, dass Sie und Ihre Familie dies durchkommen
-
-
-Herr Charles Jackson
+when locks are removed and we rely on callers to make sure the right
+locks are taken.
