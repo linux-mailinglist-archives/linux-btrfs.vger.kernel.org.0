@@ -2,34 +2,32 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B238324428E
-	for <lists+linux-btrfs@lfdr.de>; Fri, 14 Aug 2020 02:48:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DE7F24428F
+	for <lists+linux-btrfs@lfdr.de>; Fri, 14 Aug 2020 02:48:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726609AbgHNAqt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 13 Aug 2020 20:46:49 -0400
-Received: from mout.gmx.net ([212.227.15.15]:35345 "EHLO mout.gmx.net"
+        id S1726621AbgHNAr0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 13 Aug 2020 20:47:26 -0400
+Received: from mout.gmx.net ([212.227.15.18]:58629 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726567AbgHNAqs (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 13 Aug 2020 20:46:48 -0400
+        id S1726567AbgHNArZ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 13 Aug 2020 20:47:25 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1597366006;
-        bh=4ZOU9uT4U1nH2U6c4K+Km+vqqaU6Gw/5q8U4GaKZUqE=;
+        s=badeba3b8450; t=1597366042;
+        bh=2NH264VYkdDdXmVRkw+viNhPuFsfJNlBRLd1nj+tgTc=;
         h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=c69vL6RadCWz9AqOgJPy7I4Chckk4vE2ACiu+vWNDV3g+8+gR2CUvPOEWbZFFPbsQ
-         kTK1vCeVh8+Z9vZUqoW8emQ/q1SnvBtjMHYa5eZSiW5jR5N4nhlqqgGx/brgNlju5N
-         2axVKAO3UOuSlrEZBleckVLZkTXAYvGupFpgVMk4=
+        b=k1OXUbZL4ypXAjPCwIVvkHjmN61SJA0hV0tWhsjdx2TTe4vJMrW/t/u1FKlhxRxj6
+         DSFxvZmSR/bpyWpHXfDVdb5NL3P39klNwfN/6gbVUpYt9BQYeyDICHuKCTl8LLPLjT
+         fxkjGxfN2QdWe5BpN9KnIn6Eq+eCeHD3qeQTU3Ro=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
 Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MZTqW-1kAAvT2sB4-00WVL7; Fri, 14
- Aug 2020 02:46:46 +0200
-Subject: Re: AW: AW: Tree-checker Issue / Corrupt FS after upgrade ?
-To:     benjamin.haendel@gmx.net,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-References: <004201d670c9$c69b9230$53d2b690$@gmx.net>
- <facaa4ae-5001-13e7-3ea1-26d514f73848@gmx.com>
- <000801d670fd$bb2f62d0$318e2870$@gmx.net>
- <940c43d7-b7e0-82fa-d5a5-b81e672b85a9@gmx.com>
- <003301d671a8$b93b8b60$2bb2a220$@gmx.net>
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1N4QwW-1knebn1BNm-011Tht; Fri, 14
+ Aug 2020 02:47:21 +0200
+Subject: Re: [PATCH v4 1/4] btrfs: extent_io: Do extra check for extent buffer
+ read write functions
+To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>
+References: <20200812060509.71590-1-wqu@suse.com>
+ <20200812060509.71590-2-wqu@suse.com> <20200813140503.GH2026@twin.jikos.cz>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -55,144 +53,131 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
  ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
  oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <21a68d42-b5b2-fd74-d0ac-f59a288231e8@gmx.com>
-Date:   Fri, 14 Aug 2020 08:46:43 +0800
+Message-ID: <6f6a76e7-57b5-5e73-af6c-855cc5256a34@gmx.com>
+Date:   Fri, 14 Aug 2020 08:47:17 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.11.0
 MIME-Version: 1.0
-In-Reply-To: <003301d671a8$b93b8b60$2bb2a220$@gmx.net>
+In-Reply-To: <20200813140503.GH2026@twin.jikos.cz>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="wVPggP5Cy4iFC6QdV0xSJn4uexhn8wt90"
-X-Provags-ID: V03:K1:6j0dqnmWAaEIugN+s8Fxs8qJ6t45zA/yl0I07VMdDNHGt9vWd03
- JnNqLBZeT6IIRGlbixpwVItFRZ++8vtfC9u1xXpkY/+vD6JVWXi3JfZIApvF6mmZq3m1P/x
- mXKj0cnLFc5tVY6vvrP7TX+X9acsQcQPqspuoEnSU7EYj7ICg1GvWq38iH8Urn91Zz+GtLu
- jalJC5yT+aixoyP0MVpug==
+ boundary="GIn1RzZiBQi7UBfs1TV4UwJS4Fyk8fxKX"
+X-Provags-ID: V03:K1:0OasViSDXjTMmF19RrRrrHKeRkN/8SWesyIYjgtaIz8o0D74BN1
+ nMpBt2SYs17XYKj02gT+fhgnuvgeK4nsdE/Ot6FM5GqfUZO2sk2g6RMzn2wn/6dZF80PHxV
+ rAeBHOl6n6TKKU/UVGcBMURbrghd4SPE2p3wlWLhxcQtMxvHz9/QfrwpkzRbEU/Ru6KGbqy
+ p0o3hcbE7NpIJOh9G4BoQ==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:ZXrmqEwQA1E=:w+a6O1jTtgMUBtbX50VSeE
- qsr8Z65VBgOOn4YUGn6JtiPu/i30AXvx84yfuaXv1bc/WMy6eT33xbsgGEXMTXoOoTVG1LMVP
- LFwq1qhyJg2pTCHRbM+avbE8+ulhct5WABRGjXwh3aqlWdKLc+lW53TxAuSw43joJWVEkhUF+
- cLMApF1HyPwSBrD/H798F5bVZQz/treyBbUEGTIonCwK3/eCWicBIpopzKEwTGLB4BargbGev
- OzMnmk+6ytpxgGs1PV93M3sAswmQrKv1Zo0B6rH3k2Qa8CILoIToHRJTQrzSHQVS7Z9m7EN7+
- UVNvGUwH+D81o+7Q5/q8i/0D+ggjoxqW2edY0D0doJIjzGGyXvwEXcaCYGHXoaF94gZInlbtQ
- 5EOCcMRSM8HitLnSxr0qF08VO4hF40HQHX2Oz7uol+kELS7dDByAtjhsyVrGHWzQH04lIy8nt
- Mh7x4MOGERHuCRqZ50lmprd9o9B+5ygDLD7fxFL4oFel1wD3T6OC9D+4qeuGHCte4S+M3kzXG
- 0vXv4GXU2VBo+xPTYgOjeooHODHTbxX6D5N0f898fTFqWwtRhDu/dL7au0G7awy1c0HUqwEye
- xn0deX+fEuatacM/2pEK6yOyn+5EJ6b/lwK7nfOsHBG2tju14tX6XugAXGqWqtzrzoqkGnkmj
- y7NntdZ4+StSey3eQqnTzJUyqflBCBlwwmgDtr1sBzxIMyxZRYsJkvVo9Vmb7V/cWrc8VQYKI
- ldp2EhhNBwHf1zxib/LDK0t8K37ZxPxRRDA3d/w1NmGEAozrtdDPxQp5Y4zL6u9rEV++zDHTK
- fP3mm5YdBAIT6XA6nUfqgoRch037p/ZyujFX920KthBevApA2lqk6E7z9CTpRHttP8UhaWeDy
- KBZWzbmAWcMAWRNmEJD9hWrEHfSI36ZA0PsKCDBpB1umdRiUpFB8E4J4YVicLPxI1jIP45Po6
- whPauaQgG8vuwV0jmkG/QCrGFadQA3flInyfjKxOmA+QdJLmZhs+UahV5s16yuUpMa+u2hSzE
- eIAU53Vtg9JGQBy1RJMae+IEOIaLnIcfM2Ji2UoA17yCoQ9cWOlW+XAxivshFTy8rN8j2thTg
- zjxsLy49ClRGv3hqUZTV4nC1RyOTTAp7b5lSf25mEExK2JrDEAHTLhZkYdiTqLn1mI2Y/wj1F
- 92Rcf2FA6f+NoZQVrrH31z5LS3y3nD+N8NUqmC7FYHTNFeA1455zsfogFM98JWlc9l7oMTrfF
- cx/3fFd04NdLcyUT1K7weVRT98SUGAjpA8TEVNg==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:hdVmmy81cWk=:qSHmwCSq5BbvXGnReHyRAa
+ xi609ZH+I98dL1sFDFTkrWRrFxdJ6gd/DsoLA1GMpYx51QkL4lKrdvKEJSkz3Uch2t27mtHw4
+ NRi0JEJFoMsqFl96p3AEXbj7HdkxyuJ7JXK8YUhCN0+ftZgUVnJel1mFK85u+rPGT2Ik8fmiZ
+ vFHj21+Qk3tOkwWPQlHEDPPvQrVIwe+lY2FbRUvbFrayM7YWKOD0EnZAWCDLfkaWTeXv+ymPK
+ F2xjONu8w1SnSjf9DF1SbvTSJEomtT7aWgIGFyxI1qebsuEsWdQ5ig7s9FD/ax4a410xWfeYe
+ kNgO3f55ngpJIKrOYaqBBzeAHCABT/VADxEHgHm7CbjhbCbIxlA5zP6tNzvyMEHWHBzcaemRX
+ qwxS0WFjkJf2ON/jh7pIwhzpTshuJsEjSl/kV/EHoXBgjCKfadZP4nF43jo4mTPxEqfTmZVMc
+ uh044dOyOAr2LDoLN8K/uzwhG8/KZRxjmkLQYtv9mYWUYa2WxdXTbrBvkdZk91sqdigtedJUQ
+ TdQNN5F6h7nv3gt4YLyfXK11dSQ4VXHTYew/hMnMt7Xta9zirCWX5VpVj/R/jMFN9CzWMNxhH
+ 1h8AyIc4S+Z9gvMrJmAYxbnqeacaAcFv7UBl9Zx+g70Yc4Sy567SRCxB6Nuh95jsbplst8IuV
+ v8gG87BUR3XA0HEzyvfVi3Wcu+y+Do2bceSSnCALGWTDb9DmRP9w9Ncy+uCWcnPZTlllEjAUW
+ rosKfPViHMeJRY7g6+g27Ldb6EeHxLJ1Yk+YTZWR48zIpJ2arn6BEKnbfD1u7liPZ0mQrPpk+
+ MyYm4nBKif0Mruj7uKb5l1B6IcFo/Xk+mdBHdKO4R9xb37Jje0uDOiMcAuRxxwJLPBwhnoVV6
+ ptk1xAvDP/C4PxKSuPV8lB9n7mTPoy/LAVQ54CW5JUou7N9lvnoscwgUV8Szk++fqKzjkZZwW
+ /Px+C3rBj6fOzC/7wF2S3eMApiHPXS7bL/qoQAMmCNcqLqas4d8NpctSG9eOVmMGQp3dm1Utz
+ dAhHFTfJjhC6goKb/FXgB07IHFEtkjnjV5Frr8eHahq5blCCrJEUMXo7UjPI38LfBaEhQiSmP
+ BlvN9eLsBvBlOm2eu+8PUzjeJkNd5quv5xILiVzVWBLl1Eib3GnKiMjG8OA5pv+y3T/yI1Ir8
+ Yvq8Ts5JUgEEd6IcYnKtk8FbznvfD3UVE1jxfqtqDxenAQfMQYsG/ewzHaP8L75wdyc7eUFOz
+ jJ1RQ4+R1vJQuNXFKgCi+r9lMh3F17q/kTyYQSQ==
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---wVPggP5Cy4iFC6QdV0xSJn4uexhn8wt90
-Content-Type: multipart/mixed; boundary="Gc5GNIhKgaYm3XcJA2Z0EkKkKZ93Zrb7t"
+--GIn1RzZiBQi7UBfs1TV4UwJS4Fyk8fxKX
+Content-Type: multipart/mixed; boundary="oaPP7hcZXtyPqg3VVsEwk8iYFbR2xVwJ7"
 
---Gc5GNIhKgaYm3XcJA2Z0EkKkKZ93Zrb7t
+--oaPP7hcZXtyPqg3VVsEwk8iYFbR2xVwJ7
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
 
 
 
-On 2020/8/14 =E4=B8=8A=E5=8D=883:34, benjamin.haendel@gmx.net wrote:
-> Hi Qu,
+On 2020/8/13 =E4=B8=8B=E5=8D=8810:05, David Sterba wrote:
+> On Wed, Aug 12, 2020 at 02:05:06PM +0800, Qu Wenruo wrote:
+>> +/*
+>> + * Check if the [start, start + len) range is valid before reading/wr=
+iting
+>> + * the eb.
+>> + * NOTE: @start and @len are offset *INSIDE* the eb, *NOT* logical ad=
+dress.
+>> + *
+>> + * Caller should not touch the dst/src memory if this function return=
+s error.
+>> + */
+>> +static int check_eb_range(const struct extent_buffer *eb, unsigned lo=
+ng start,
+>> +			  unsigned long len)
+>> +{
+>> +	/* start, start + len should not go beyond eb->len nor overflow */
+>> +	if (unlikely(start > eb->len || start + len > eb->len ||
+>> +		     len > eb->len)) {
+>> +		btrfs_warn(eb->fs_info,
+>> +"btrfs: bad eb rw request, eb bytenr=3D%llu len=3D%lu rw start=3D%lu =
+len=3D%lu\n",
+>> +			   eb->start, eb->len, start, len);
+>> +		WARN_ON(IS_ENABLED(CONFIG_BTRFS_DEBUG));
+>> +		return -EINVAL;
+>> +	}
+>> +	return 0;
+>> +}
 >=20
-> thanks for your help and support, but it is still not clear to me how t=
-o download and compile that branch.
-> The newest Version that i can find under releases is from "10 Dec 2014 =
-v3.18-rc1 =E2=80=A6 1519ee3  zip  tar.gz"
-
-You need to grab it using git, and grab that specific branch, not
-downing the zip.
-
+> This helper is similar to the check_setget_bounds that have some
+> performance impact,
+> https://lore.kernel.org/linux-btrfs/20200730110943.GE3703@twin.jikos.cz=
+/
+> .
 >=20
-> Also if i finally do understand how to download it am i correct to assu=
-me, that i will need to remove current btrfs-progs 5.7
-> And install the branch here instead ?
+> The extent buffer helpers are not called that often as the setget
+> helpers but still it could be improved to avoid the function call
+> penalty on the hot path.
+>=20
+> static inline in check_eb_range(...) {
+> 	if (unlikely(out of range))
+> 		return report_eb_range(...)
+> 	return 0;
+> }
 
-You can compile the branch, and just run that built btrfs without
-installing.
+I thought we should avoid manual inline, but let the compiler to
+determine if it's needed.
 
-But considering the skills needed, I recommend you go the send method.
-
-Just boot using the last working kernel, send out the stream.
-Then re-make the fs using latest kernel, and receive the stream.
-
-Or, you can wait your distro to ship v5.9 btrfs-progs (maybe months
-away), meanwhile you can still use your older kernel without any problem.=
-
+Or in this particular case, we're better than the compiler?
 
 Thanks,
 Qu
 
 >=20
-> Best Regards,
-> Ben
->=20
-> -----Urspr=C3=BCngliche Nachricht-----
-> Von: Qu Wenruo <quwenruo.btrfs@gmx.com>=20
-> Gesendet: Donnerstag, 13. August 2020 01:30
-> An: benjamin.haendel@gmx.net; linux-btrfs@vger.kernel.org
-> Betreff: Re: AW: Tree-checker Issue / Corrupt FS after upgrade ?
->=20
->=20
->=20
-> On 2020/8/13 =E4=B8=8A=E5=8D=887:10, benjamin.haendel@gmx.net wrote:
->> Hi Qu,
->>
->> thanks for your reply, i am not sure what to do from here on.
->> What do i have to download from here or compile/make/install etc. ?
->=20
-> You need to compile that branch.
->=20
-> For how to compile, please check the README.md.
->=20
->=20
->>
->> I'm no total idiot but i still don't understand what i have to get And=
-=20
->> how to apply it...sorry :(
->=20
-> Or you can use btrfs-send to send out the content of your fs with older=
- kernel, and create a new fs using newer kernel, then receive the stream.=
-
->=20
-> The uninitialized data is only in extent tree, which won't be sent with=
- the stream, by receiving it with newer kernel, you won't lose anything.
->=20
-> Thanks,
-> Qu=20
->=20
+> In the original code the range check was open coded and the above will
+> lead to the same asm output, while keeping the C code readable.
 >=20
 
 
---Gc5GNIhKgaYm3XcJA2Z0EkKkKZ93Zrb7t--
+--oaPP7hcZXtyPqg3VVsEwk8iYFbR2xVwJ7--
 
---wVPggP5Cy4iFC6QdV0xSJn4uexhn8wt90
+--GIn1RzZiBQi7UBfs1TV4UwJS4Fyk8fxKX
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl813vMACgkQwj2R86El
-/qh1/wf7B5Ta0jHt/qZhbchDMvqlEgHmmEeDdqoFA9GOG/MCDikN1IN/DVNw+WId
-WjCUk77eBe/IrqI9cP8fSpcJOAHfyI4SIG33Wky36pISY1E+iqgYyRi2SSFuFPyW
-sla3M6R+j6SpUMcijxUS1/F0m+w7lFIT0pX8sarpATCVnd55ocA9Y+M2JRNiWU8Z
-mqav7BtFyWG9yQR0h4CFDz3a4jh9sRg66A0yUZDT/XWWo8MJXJ2ol4TOLXnejdhx
-hFHc0ZQKT+CMIbCq9f/cFAPvRPnU1e8jQEID3a0JSiBNob5N0qBQZzW1phszkS/9
-HVRYHbwrHbNJityE0KDwRbKIBaYoHA==
-=1O/j
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl813xYACgkQwj2R86El
+/qhUMAf/ftNLzeOSif1EMH2gwBgjf2HuXOTKtFKolEEdAN+SSN92DMZ4FW19xQ2s
+d1WqHK43oR9HEeP7xmcBJ/1WiBtuXBG6f8+SI0oEJFgh4R+J0AbeUkkS4zK07qPr
+uOYPM8eXjisAyBnauTAKxX7UOwyW7oFeo//2xGp0XnqGhCN4p5SU7xNC6EJrwvzH
+mPUGynvbbHnuv6FySC18KIQupOD6OBdx/J7wdSw7ntu4gazJ8VhXv1n66cRJtB+R
+6syxTDOVaZzOgTxHOTbEWfIvddT/wt2hcSYAaw2EXdhWPPwiman+p1ksjQBnAkmu
+wbfb1FuAW/x8nAqY0mJvTmZygqUg0A==
+=XeOL
 -----END PGP SIGNATURE-----
 
---wVPggP5Cy4iFC6QdV0xSJn4uexhn8wt90--
+--GIn1RzZiBQi7UBfs1TV4UwJS4Fyk8fxKX--
