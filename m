@@ -2,97 +2,75 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDEF4244623
-	for <lists+linux-btrfs@lfdr.de>; Fri, 14 Aug 2020 10:07:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A94C52446A0
+	for <lists+linux-btrfs@lfdr.de>; Fri, 14 Aug 2020 10:53:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726269AbgHNIH2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 14 Aug 2020 04:07:28 -0400
-Received: from de-smtp-delivery-102.mimecast.com ([51.163.158.102]:48748 "EHLO
-        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726124AbgHNIH1 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 14 Aug 2020 04:07:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
-        t=1597392444;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=QUHOSgD1SSPgIIY7jMHT1rhSvCPbm9oxfYyNr/iyWvU=;
-        b=YcY8R9xoT0WC499G5rs2jg4w2TZ5zq3rFwQ+YgouWJO/9/pU+oMhMyOPorsVlxAjpjTifm
-        j1Zanq63C4eHu3Id+rERo2fiydeltlLBTGFU5NyMNHBr8RQSE1K0NYbgVj2epy4M0swx0V
-        rw0ZdchY4qSivwURfdw/TiMiYK0aUQo=
-Received: from EUR05-AM6-obe.outbound.protection.outlook.com
- (mail-am6eur05lp2110.outbound.protection.outlook.com [104.47.18.110])
- (Using TLS) by relay.mimecast.com with ESMTP id
- de-mta-7-lU368DWzPCypDMMnbXgAlw-2; Fri, 14 Aug 2020 10:07:23 +0200
-X-MC-Unique: lU368DWzPCypDMMnbXgAlw-2
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Pt0UgrboQUji/RE1qisQ2ESaFFr3QDOF1upNn6tMyW1f22xwuViiHq5HMUfRBZpWMWF78rV08xA26+A1tlgjPZ4DNDomtujxErkej897ynKlOyKhgNVA2jSMpn8ypWgRAAvXYKpKQQGRrcwK0B/ijOwphNI5G9yscBGdLIe+t8JaBaZbiCvozRQhLcooRZFLbZDr3BKM+KOey1o3+IgubOtRKeh5FmfALRrBirThXPLVqrA5/csD+20u9fdlUq0xgW1M4ZKeb5L0I5YwVJBVk3jHiZDqQnFmb0AN0HU8GvFqBdxqlIgKVIORchYyeZi0V1Nv2yamWIYBios/COPwRQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gfAWxAfxz635uoaxiI6/OyM3WmfE7VyIBUeRDn7vyaw=;
- b=dWb/fu74U73oJqkfqyjK9g2WGdaa6KvGQ4ND1r0QLsPqF4jUjUWGfc2Ky+JfBFCSW1hFtHkWTT/tlC1kieW0YVmj0amcV01gJy66UIKGBJvW+kRUzgq0nphqU5wocoasvUkHdAlFIabeUljzITXoQh/i2V/2WhbdMt5YZvbXDYwAV9I1um5ayHc1ETra428s7XodTSiNtKaVK10PYVeN4FojZZZRzncwGUS9lswN+ZUu4yWztWm78bKtnN1VhNRkd/nCzVGc6hnyZrzxKqDdKSfdyHClSMurhnF+DpMfkv0agZNdeu/R4MLmYAODtfOJhu35T9zs0SdGp8Nc2EHOyQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-Authentication-Results: toxicpanda.com; dkim=none (message not signed)
- header.d=none;toxicpanda.com; dmarc=none action=none header.from=suse.com;
-Received: from AM0PR04MB6195.eurprd04.prod.outlook.com (2603:10a6:208:13c::13)
- by AM4PR0401MB2273.eurprd04.prod.outlook.com (2603:10a6:200:4f::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3283.15; Fri, 14 Aug
- 2020 08:07:21 +0000
-Received: from AM0PR04MB6195.eurprd04.prod.outlook.com
- ([fe80::e49c:64ce:47e0:16]) by AM0PR04MB6195.eurprd04.prod.outlook.com
- ([fe80::e49c:64ce:47e0:16%3]) with mapi id 15.20.3261.026; Fri, 14 Aug 2020
- 08:07:21 +0000
-Subject: Re: [PATCH v4 2/4] btrfs: extent-tree: Kill BUG_ON() in
- __btrfs_free_extent() and do better comment
-To:     dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        linux-btrfs@vger.kernel.org, Nikolay Borisov <nborisov@suse.com>,
-        Josef Bacik <josef@toxicpanda.com>
-References: <20200812060509.71590-1-wqu@suse.com>
- <20200812060509.71590-3-wqu@suse.com> <20200813141019.GI2026@twin.jikos.cz>
- <bf3d96a8-f19c-1b0d-9171-c82f7a4d3d0f@gmx.com>
- <20200814080124.GT2026@twin.jikos.cz>
-From:   Qu Wenruo <wqu@suse.com>
-Message-ID: <4d1a93dd-b90b-82cc-3e0c-39e658bfbf2e@suse.com>
-Date:   Fri, 14 Aug 2020 16:07:10 +0800
+        id S1726568AbgHNIxZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 14 Aug 2020 04:53:25 -0400
+Received: from mx2.suse.de ([195.135.220.15]:33800 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726050AbgHNIxY (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 14 Aug 2020 04:53:24 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id E6FABB64B;
+        Fri, 14 Aug 2020 08:53:45 +0000 (UTC)
+Subject: Re: [PATCH 4/7] btrfs: cleanup unused return in btrfs_close_devices
+To:     Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org
+References: <20200814000352.124179-1-anand.jain@oracle.com>
+ <20200814000352.124179-5-anand.jain@oracle.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <31859c3a-f3b2-2628-f003-6fb243f71ff4@suse.com>
+Date:   Fri, 14 Aug 2020 11:53:22 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
-In-Reply-To: <20200814080124.GT2026@twin.jikos.cz>
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20200814000352.124179-5-anand.jain@oracle.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-ClientProxiedBy: BYAPR01CA0048.prod.exchangelabs.com (2603:10b6:a03:94::25)
- To AM0PR04MB6195.eurprd04.prod.outlook.com (2603:10a6:208:13c::13)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [0.0.0.0] (149.28.201.231) by BYAPR01CA0048.prod.exchangelabs.com (2603:10b6:a03:94::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3283.15 via Frontend Transport; Fri, 14 Aug 2020 08:07:18 +0000
-X-Originating-IP: [149.28.201.231]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: fe2206e8-1d9e-47b5-f15d-08d840291212
-X-MS-TrafficTypeDiagnostic: AM4PR0401MB2273:
-X-LD-Processed: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba,ExtFwd
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <AM4PR0401MB2273359C83392D0C57446282D6400@AM4PR0401MB2273.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB6195.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(136003)(376002)(346002)(366004)(39860400002)(31686004)(956004)(2616005)(6486002)(66476007)(66556008)(36756003)(966005)(478600001)(5660300002)(66946007)(16576012)(316002)(110136005)(16526019)(2906002)(26005)(186003)(86362001)(52116002)(31696002)(6706004)(8936002)(6666004)(16799955002)(8676002)(83380400001)(78286006)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: fe2206e8-1d9e-47b5-f15d-08d840291212
-X-MS-Exchange-CrossTenant-AuthSource: AM0PR04MB6195.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Aug 2020 08:07:21.5712
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: EXlLQqvrQTiWI1OYDKq3rTKfym0gRZylPE66PUE22gdUNbgeQOgMnNUWJTC/QCmS
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM4PR0401MB2273
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
@@ -100,62 +78,125 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2020/8/14 =E4=B8=8B=E5=8D=884:01, David Sterba wrote:
-> On Fri, Aug 14, 2020 at 08:52:19AM +0800, Qu Wenruo wrote:
->>
->>
->> On 2020/8/13 =E4=B8=8B=E5=8D=8810:10, David Sterba wrote:
->>> On Wed, Aug 12, 2020 at 02:05:07PM +0800, Qu Wenruo wrote:
->>>> @@ -2987,13 +3049,20 @@ static int __btrfs_free_extent(struct btrfs_tr=
-ans_handle *trans,
->>>>  				found_extent =3D 1;
->>>>  				break;
->>>>  			}
->>>> +
->>>> +			/* Quick path didn't find the EXTEMT/METADATA_ITEM */
->>>>  			if (path->slots[0] - extent_slot > 5)
->>>>  				break;
->>>>  			extent_slot--;
->>>>  		}
->>>>
->>>>  		if (!found_extent) {
->>>> -			BUG_ON(iref);
->>>> +			if (unlikely(iref)) {
->>>> +				btrfs_crit(info,
->>>> +"invalid iref, no EXTENT/METADATA_ITEM found but has inline extent re=
-f");
->>>> +				goto err_dump_abort;
->>>
->>> This is not calling transaction abort at the place where it happens,
->>> here and several other places too.
->>
->> Did you mean, we want the btrfs_abort_transaction() call not merged
->> under one tag, so that we can get the kernel warning with the line numbe=
-r?
->>
->> If so, that's indeed the case, we lose the exact line number.
->>
->> But we still have the unique error message to locate the problem without
->> much hassle (it's less obvious than the line number thought).
->>
->> Thus to me, we don't lose much debug info anyway.
->=20
-> https://btrfs.wiki.kernel.org/index.php/Development_notes#Error_handling_=
-and_transaction_abort
->=20
-> "Please keep all transaction abort exactly at the place where they happen
-> and do not merge them to one. This pattern should be used everwhere and
-> is important when debugging because we can pinpoint the line in the code
-> from the syslog message and do not have to guess which way it got to the
-> merged call."
->=20
-> It's very convenient to paste the file:line number from a stacktrace
-> report and land exactly in the spot where it failed.
->=20
-OK, makse sense.
+On 14.08.20 г. 3:03 ч., Anand Jain wrote:
+> In the function btrfs_close_devices() and its helper function
+> close_fs_devices(), the return value aren't used as there isn't error
+> return from these functions. So clean up the return argument.
+> 
+> Also in the function btrfs_remove_chunk() remove the local variable
+> %fs_devices, instead use the assigned pointer directly.
+> 
+> Signed-off-by: Anand Jain <anand.jain@oracle.com>
+> ---
+>  fs/btrfs/volumes.c | 21 ++++++++-------------
+>  fs/btrfs/volumes.h |  2 +-
+>  2 files changed, 9 insertions(+), 14 deletions(-)
+> 
+> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+> index 66691416ca8f..dd867375478b 100644
+> --- a/fs/btrfs/volumes.c
+> +++ b/fs/btrfs/volumes.c
+> @@ -1148,12 +1148,12 @@ static void btrfs_close_one_device(struct btrfs_device *device)
+>  	ASSERT(atomic_read(&device->reada_in_flight) == 0);
+>  }
+>  
+> -static int close_fs_devices(struct btrfs_fs_devices *fs_devices)
+> +static void close_fs_devices(struct btrfs_fs_devices *fs_devices)
+>  {
+>  	struct btrfs_device *device, *tmp;
+>  
+>  	if (--fs_devices->opened > 0)
+> -		return 0;
+> +		return;
+>  
+>  	mutex_lock(&fs_devices->device_list_mutex);
+>  	list_for_each_entry_safe(device, tmp, &fs_devices->devices, dev_list) {
+> @@ -1165,17 +1165,14 @@ static int close_fs_devices(struct btrfs_fs_devices *fs_devices)
+>  	WARN_ON(fs_devices->rw_devices);
+>  	fs_devices->opened = 0;
+>  	fs_devices->seeding = false;
+> -
+> -	return 0;
+>  }
+>  
+> -int btrfs_close_devices(struct btrfs_fs_devices *fs_devices)
+> +void btrfs_close_devices(struct btrfs_fs_devices *fs_devices)
+>  {
+>  	struct btrfs_fs_devices *seed_devices = NULL;
+> -	int ret;
+>  
+>  	mutex_lock(&uuid_mutex);
+> -	ret = close_fs_devices(fs_devices);
+> +	close_fs_devices(fs_devices);
+>  	if (!fs_devices->opened) {
+>  		seed_devices = fs_devices->seed;
+>  		fs_devices->seed = NULL;
+> @@ -1188,7 +1185,6 @@ int btrfs_close_devices(struct btrfs_fs_devices *fs_devices)
+>  		close_fs_devices(fs_devices);
+>  		free_fs_devices(fs_devices);
+>  	}
+> -	return ret;
+>  }
+>  
 
-Will go that direction in next update.
+This is the relevant portions which implement what's documented. Also I
+have already sent similar cleanup on 15.07.
 
-Thanks,
-Qu
+>  static int open_fs_devices(struct btrfs_fs_devices *fs_devices,
+> @@ -2933,7 +2929,6 @@ int btrfs_remove_chunk(struct btrfs_trans_handle *trans, u64 chunk_offset)
+>  	struct map_lookup *map;
+>  	u64 dev_extent_len = 0;
+>  	int i, ret = 0;
+> -	struct btrfs_fs_devices *fs_devices = fs_info->fs_devices;
+>  
+>  	em = btrfs_get_chunk_map(fs_info, chunk_offset, 1);
+>  	if (IS_ERR(em)) {
+> @@ -2955,14 +2950,14 @@ int btrfs_remove_chunk(struct btrfs_trans_handle *trans, u64 chunk_offset)
+>  	 * a device replace operation that replaces the device object associated
+>  	 * with map stripes (dev-replace.c:btrfs_dev_replace_finishing()).
+>  	 */
+> -	mutex_lock(&fs_devices->device_list_mutex);
+> +	mutex_lock(&fs_info->fs_devices->device_list_mutex);
+>  	for (i = 0; i < map->num_stripes; i++) {
+>  		struct btrfs_device *device = map->stripes[i].dev;
+>  		ret = btrfs_free_dev_extent(trans, device,
+>  					    map->stripes[i].physical,
+>  					    &dev_extent_len);
+>  		if (ret) {
+> -			mutex_unlock(&fs_devices->device_list_mutex);
+> +			mutex_unlock(&fs_info->fs_devices->device_list_mutex);
+>  			btrfs_abort_transaction(trans, ret);
+>  			goto out;
+>  		}
+> @@ -2978,12 +2973,12 @@ int btrfs_remove_chunk(struct btrfs_trans_handle *trans, u64 chunk_offset)
+>  
+>  		ret = btrfs_update_device(trans, device);
+>  		if (ret) {
+> -			mutex_unlock(&fs_devices->device_list_mutex);
+> +			mutex_unlock(&fs_info->fs_devices->device_list_mutex);
+>  			btrfs_abort_transaction(trans, ret);
+>  			goto out;
+>  		}
+>  	}
+> -	mutex_unlock(&fs_devices->device_list_mutex);
+> +	mutex_unlock(&fs_info->fs_devices->device_list_mutex);
+>  
+>  	ret = btrfs_free_chunk(trans, chunk_offset);
+>  	if (ret) {
 
+This is unrelated cleanup...
+
+> diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
+> index 5eea93916fbf..76e5470e19a8 100644
+> --- a/fs/btrfs/volumes.h
+> +++ b/fs/btrfs/volumes.h
+> @@ -435,7 +435,7 @@ int btrfs_open_devices(struct btrfs_fs_devices *fs_devices,
+>  struct btrfs_device *btrfs_scan_one_device(const char *path,
+>  					   fmode_t flags, void *holder);
+>  int btrfs_forget_devices(const char *path);
+> -int btrfs_close_devices(struct btrfs_fs_devices *fs_devices);
+> +void btrfs_close_devices(struct btrfs_fs_devices *fs_devices);
+>  void btrfs_free_extra_devids(struct btrfs_fs_devices *fs_devices, int step);
+>  void btrfs_assign_next_active_device(struct btrfs_device *device,
+>  				     struct btrfs_device *this_dev);
+> 
