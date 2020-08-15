@@ -2,172 +2,137 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45E36245422
-	for <lists+linux-btrfs@lfdr.de>; Sun, 16 Aug 2020 00:12:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 757B52454BF
+	for <lists+linux-btrfs@lfdr.de>; Sun, 16 Aug 2020 00:44:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730118AbgHOWMw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 15 Aug 2020 18:12:52 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:43258 "EHLO
+        id S1728151AbgHOWoQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 15 Aug 2020 18:44:16 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:58838 "EHLO
         userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729455AbgHOWMu (ORCPT
+        with ESMTP id S1726855AbgHOWoQ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 15 Aug 2020 18:12:50 -0400
+        Sat, 15 Aug 2020 18:44:16 -0400
 Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07FDZLkq152132;
-        Sat, 15 Aug 2020 13:38:07 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=OYdBQfkRbSCEshi2I/1r4XvVgzalqZN/nTTUNiWT6iI=;
- b=o7RJgOUMlLxKvkG1NnNvt1NN9QOS4x8AS2pnfhlgqtd130W8Xmf1+9ws9/qLELSGSvQk
- 0xCTysvQ3MojtDbbRfUjplTbtTidC5HmJC5Ci0s/BNSQml9tJoBoCpAFQ3m7vK4rBJQf
- AjxcjKhcgOOqcbf8jcmK/K8TEZmbpcb/R6jrmD/LYo4/+YszamGlJyzgZecPaeLQawFx
- 6F7TW+sWFdZZ2NXJYt0VaTaZghHflcsdco2T2BJ8dJQimgbSj0Nmccv5434nYyNDTIxd
- vCfc9U3H51yu34q+geqMxCO3nOQ0uA374FmII0YJogOdlvL3RX7VBJtSMz5sICveFmF3 bg== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2120.oracle.com with ESMTP id 32x8bmrwa8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Sat, 15 Aug 2020 13:38:06 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07FDbnn8168729;
-        Sat, 15 Aug 2020 13:38:06 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3030.oracle.com with ESMTP id 32x5r8b9bm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 15 Aug 2020 13:38:06 +0000
-Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 07FDc4Aa030470;
-        Sat, 15 Aug 2020 13:38:04 GMT
-Received: from [192.168.1.145] (/39.109.231.106)
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07FHClGU092307
+        for <linux-btrfs@vger.kernel.org>; Sat, 15 Aug 2020 17:15:24 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : subject :
+ date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2020-01-29; bh=ZkU87zAK2HOKvpFs0mdx4eA5Y6blUgh7bG0c+U68/4M=;
+ b=RRD+DwnjrQP0jTpu7IpY4esChL7iZ2tq1E2wGRJIb/Tm5luAj+9lX6seFcFtNLbYuVux
+ qeVW1LTgAqecrmC2YRDwdPRxAcW2QyTM7qtcu9nuYuymUvGBasBXYcp63RreeqWdPGA4
+ 8BUZErxk7r4ijJprCHUJ2wxkJyF6KRwui0TN02kQPIVVcx7E9/XXG2G/smW9GoyQh1KF
+ e+xU0Xj8+v0n97pCrrgWjYutVLg/JWKaNkU1KvLP22NXsUL7CSCHUxNeCFEdNBJh9sF6
+ hMrgCMEJ7n6tI+P3Uw6lvOVv+gU5ZCOSixSSdMnb30MUKHBySllD0YOa3C1cyouLnVjp EA== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2120.oracle.com with ESMTP id 32x8bms92e-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL)
+        for <linux-btrfs@vger.kernel.org>; Sat, 15 Aug 2020 17:15:24 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07FH8lqD150801
+        for <linux-btrfs@vger.kernel.org>; Sat, 15 Aug 2020 17:15:24 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3030.oracle.com with ESMTP id 32x4tsussu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
+        for <linux-btrfs@vger.kernel.org>; Sat, 15 Aug 2020 17:15:24 +0000
+Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 07FHFNZj019507
+        for <linux-btrfs@vger.kernel.org>; Sat, 15 Aug 2020 17:15:24 GMT
+Received: from localhost.localdomain (/39.109.231.106)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Sat, 15 Aug 2020 13:38:04 +0000
-Subject: Re: [PATCH 1/2] btrfs-progs: convert: Ensure the data chunks size
- never exceed device size
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org, Jiachen YANG <farseerfc@gmail.com>
-References: <20200624115527.855816-1-wqu@suse.com>
+        with ESMTP ; Sat, 15 Aug 2020 10:15:23 -0700
 From:   Anand Jain <anand.jain@oracle.com>
-Message-ID: <60a0f996-fcd0-4188-3e58-1f0acaae5192@oracle.com>
-Date:   Sat, 15 Aug 2020 21:38:00 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs: fix put of uninitialized kobject after seed device delete
+Date:   Sun, 16 Aug 2020 01:15:14 +0800
+Message-Id: <20200815171514.14105-1-anand.jain@oracle.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20200624115527.855816-1-wqu@suse.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9713 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=2 mlxlogscore=999
- bulkscore=0 spamscore=0 malwarescore=0 phishscore=0 mlxscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2008150107
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9713 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 lowpriorityscore=0
- impostorscore=0 suspectscore=2 adultscore=0 spamscore=0 malwarescore=0
- mlxlogscore=999 priorityscore=1501 bulkscore=0 clxscore=1011 phishscore=0
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9714 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 phishscore=0 adultscore=0
+ suspectscore=1 malwarescore=0 mlxlogscore=999 spamscore=0 bulkscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2008150106
+ definitions=main-2008150136
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9714 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 lowpriorityscore=0
+ impostorscore=0 suspectscore=1 adultscore=0 spamscore=0 malwarescore=0
+ mlxlogscore=999 priorityscore=1501 bulkscore=0 clxscore=1015 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2008150136
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+The following test case leads to null kobject-being-freed error.
 
-Before this patch the converted ext4 was failing to mount due to 'beyond
-device boundary' error.
+ mount seed /mnt
+ add sprout to /mnt
+ umount /mnt
+ mount sprout to /mnt
+ delete seed
 
-After this patch
+ kobject: '(null)' (00000000dd2b87e4): is not initialized, yet kobject_put() is being called.
+ WARNING: CPU: 1 PID: 15784 at lib/kobject.c:736 kobject_put+0x80/0x350
+ RIP: 0010:kobject_put+0x80/0x350
+ ::
+ Call Trace:
+ btrfs_sysfs_remove_devices_dir+0x6e/0x160 [btrfs]
+ btrfs_rm_device.cold+0xa8/0x298 [btrfs]
+ btrfs_ioctl+0x206c/0x22a0 [btrfs]
+ ksys_ioctl+0xe2/0x140
+ __x64_sys_ioctl+0x1e/0x29
+ do_syscall_64+0x96/0x150
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+ RIP: 0033:0x7f4047c6288b
+ ::
 
-# ./btrfs-convert /dev/sda7
-create btrfs filesystem:
-	blocksize: 4096
-	nodesize:  16384
-	features:  extref, skinny-metadata (default)
-	checksum:  crc32c
-creating ext2 image file
-ERROR: data bytenr 1644167168 is covered by non-data block group 
-1644167168 flags 0x4
-ERROR: failed to create ext2_saved/image: -22
-WARNING: an error occurred during conversion, filesystem is partially 
-created but not finalized and not mountable
+This is because, at the end of the seed device-delete, we try to remove
+the seed's devid sysfs entry. But for the seed devices under the sprout
+fs, we don't initialize the devid kobject yet. So add a kobject state
+check, which takes care of the Warning.
 
+Signed-off-by: Anand Jain <anand.jain@oracle.com>
+---
+ fs/btrfs/sysfs.c | 16 ++++++++++------
+ 1 file changed, 10 insertions(+), 6 deletions(-)
 
-Any idea?
-
-
-On 24/6/20 7:55 pm, Qu Wenruo wrote:
-> [BUG]
-> The following script could lead to corrupted btrfs fs after
-> btrfs-convert:
-> 
->    fallocate -l 1G test.img
->    mkfs.ext4 test.img
->    mount test.img $mnt
->    fallocate -l 200m $mnt/file1
->    fallocate -l 200m $mnt/file2
->    fallocate -l 200m $mnt/file3
->    fallocate -l 200m $mnt/file4
->    fallocate -l 205m $mnt/file1
->    fallocate -l 205m $mnt/file2
->    fallocate -l 205m $mnt/file3
->    fallocate -l 205m $mnt/file4
->    umount $mnt
->    btrfs-convert test.img
-> 
-> The result btrfs will have a device extent beyond its boundary:
->    pening filesystem to check...
->    Checking filesystem on test.img
->    UUID: bbcd7399-fd5b-41a7-81ae-d48bc6935e43
->    [1/7] checking root items
->    [2/7] checking extents
->    ERROR: dev extent devid 1 physical offset 993198080 len 85786624 is beyond device boundary 1073741824
->    ERROR: errors found in extent allocation tree or chunk allocation
->    [3/7] checking free space cache
->    [4/7] checking fs roots
->    [5/7] checking only csums items (without verifying data)
->    [6/7] checking root refs
->    [7/7] checking quota groups skipped (not enabled on this FS)
->    found 913960960 bytes used, error(s) found
->    total csum bytes: 891500
->    total tree bytes: 1064960
->    total fs tree bytes: 49152
->    total extent tree bytes: 16384
->    btree space waste bytes: 144885
->    file data blocks allocated: 2129063936
->     referenced 1772728320
-> 
-> [CAUSE]
-> Btrfs-convert first collect all used blocks in the original fs, then
-> slightly enlarge the used blocks range as new btrfs data chunks.
-> 
-> However the enlarge part has a problem, that it doesn't take the device
-> boundary into consideration.
-> 
-> Thus it caused device extents and data chunks to go beyond device
-> boundary.
-> 
-> [FIX]
-> Just to extra check before inserting data chunks into
-> btrfs_convert_context::data_chunk.
-> 
-> Reported-by: Jiachen YANG <farseerfc@gmail.com>
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> ---
->   convert/main.c | 2 ++
->   1 file changed, 2 insertions(+)
-> 
-> diff --git a/convert/main.c b/convert/main.c
-> index c86ddd988c63..7709e9a6c085 100644
-> --- a/convert/main.c
-> +++ b/convert/main.c
-> @@ -669,6 +669,8 @@ static int calculate_available_space(struct btrfs_convert_context *cctx)
->   			cur_off = cache->start;
->   		cur_len = max(cache->start + cache->size - cur_off,
->   			      min_stripe_size);
-> +		/* data chunks should never exceed device boundary */
-> +		cur_len = min(cctx->total_bytes - cur_off, cur_len);
->   		ret = add_merge_cache_extent(data_chunks, cur_off, cur_len);
->   		if (ret < 0)
->   			goto out;
-> 
+diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
+index 104c80caaa74..9111b3b7caaf 100644
+--- a/fs/btrfs/sysfs.c
++++ b/fs/btrfs/sysfs.c
+@@ -1170,10 +1170,12 @@ int btrfs_sysfs_remove_devices_dir(struct btrfs_fs_devices *fs_devices,
+ 					  disk_kobj->name);
+ 		}
+ 
+-		kobject_del(&one_device->devid_kobj);
+-		kobject_put(&one_device->devid_kobj);
++		if (one_device->devid_kobj.state_initialized) {
++			kobject_del(&one_device->devid_kobj);
++			kobject_put(&one_device->devid_kobj);
+ 
+-		wait_for_completion(&one_device->kobj_unregister);
++			wait_for_completion(&one_device->kobj_unregister);
++		}
+ 
+ 		return 0;
+ 	}
+@@ -1186,10 +1188,12 @@ int btrfs_sysfs_remove_devices_dir(struct btrfs_fs_devices *fs_devices,
+ 			sysfs_remove_link(fs_devices->devices_kobj,
+ 					  disk_kobj->name);
+ 		}
+-		kobject_del(&one_device->devid_kobj);
+-		kobject_put(&one_device->devid_kobj);
++		if (one_device->devid_kobj.state_initialized) {
++			kobject_del(&one_device->devid_kobj);
++			kobject_put(&one_device->devid_kobj);
+ 
+-		wait_for_completion(&one_device->kobj_unregister);
++			wait_for_completion(&one_device->kobj_unregister);
++		}
+ 	}
+ 
+ 	return 0;
+-- 
+2.25.1
 
