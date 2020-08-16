@@ -2,115 +2,97 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA78724557F
-	for <lists+linux-btrfs@lfdr.de>; Sun, 16 Aug 2020 04:51:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 066B12457F1
+	for <lists+linux-btrfs@lfdr.de>; Sun, 16 Aug 2020 16:29:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729917AbgHPCvv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 15 Aug 2020 22:51:51 -0400
-Received: from magic.merlins.org ([209.81.13.136]:54366 "EHLO
-        mail1.merlins.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729895AbgHPCvv (ORCPT
+        id S1729449AbgHPO3N (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 16 Aug 2020 10:29:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57092 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728747AbgHPO2g (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 15 Aug 2020 22:51:51 -0400
-Received: from merlin by mail1.merlins.org with local (Exim 4.92 #3)
-        id 1k6o0N-0006Uo-8f by authid <merlin>; Fri, 14 Aug 2020 21:41:19 -0700
-Date:   Fri, 14 Aug 2020 21:41:19 -0700
-From:   Marc MERLIN <marc@merlins.org>
-To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-Cc:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        Roman Mamedov <rm@romanrm.net>
-Subject: Re: 5.6 pretty massive unexplained btrfs corruption:  parent transid
- verify failed + open_ctree failed
-Message-ID: <20200815044119.GR8863@merlins.org>
+        Sun, 16 Aug 2020 10:28:36 -0400
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7187EC061346
+        for <linux-btrfs@vger.kernel.org>; Sun, 16 Aug 2020 07:28:34 -0700 (PDT)
+Received: by mail-wm1-x32c.google.com with SMTP id g75so11860031wme.4
+        for <linux-btrfs@vger.kernel.org>; Sun, 16 Aug 2020 07:28:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=Duxa+mmNF3T3C2WDKsmzowR2OzvdY892XFjTPp0RWRI=;
+        b=NAKDDu3zYGlp6/1rTFA3zLXzfLNUWElMFpld1DGXTqZ3f2C1G5vMMGgQBtzYdv61gR
+         j0gW2VjYzcAEQEK9JcrA+yGSHFEXNhE9RNkaz3uxkanP37gacJrIVytgT7/c7zGkA2Dy
+         XJB3L8ToVDoWAD9Rvm7U849RIrxncLk9xI9S/Uu5ZGT/cXsim2IUQmYeZsKFSBsv6kJT
+         3kDR9KLYjND6JPpx0YTAndrQaTelzP3558OkivI4ykhj79/nak1F6z80uX1/EQIXmTKV
+         I+kUa6Zt2XAbNuMItIuLndMdaWWyo32PYvWKoOywYCMLUV2UDlYdbpJ66arhF+MiPCa0
+         yMKA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=Duxa+mmNF3T3C2WDKsmzowR2OzvdY892XFjTPp0RWRI=;
+        b=U0RjhxoLyRBbCp++Ai+0HHJBwOyqm+nSRMWQfuZGDQjj8H0YeISdS+DFa2Z3X1b75l
+         yfoVbLUS6x78sfr+A7cFioH6I49FiNz3lwnept/9ensAZ14R18tVQTaqj4Nebpn82/eH
+         aOrK9iScxFsHlszzTwUcPR5Vlr1zS1ybdDZfHskr+1BZfZMWiG+NWtEsctBDSwX9oZhe
+         /6GLrttGFjTOYnbIUakebIfkD2jwu5PSD0A2JnSXImM5oGbLijdz58u9h8iiN91+7tP5
+         7psWnzW0ofhn/ztDAm4z1pHLewwmSlp5zvptmBBsjrYv8V4BpYuDUE/tc0FarIWkA9C+
+         Ur7w==
+X-Gm-Message-State: AOAM533Bk/QjyOb/XAe4oy+sNkp2aja6K8lXy1u/gBcfuUciuo7HeMxX
+        iruHPB8BYzHHU6jVkkYDQNn/2QivknjBU2qf75k=
+X-Google-Smtp-Source: ABdhPJydZZ8FQlFGmrB/EDLy0Z8gH5X03F6EFXypW4K1vf8iv94WhLhI3iwPKgeJEaRZZocHWED4lUmYPOBkTFPeX+4=
+X-Received: by 2002:a1c:a1c7:: with SMTP id k190mr10461870wme.1.1597588111746;
+ Sun, 16 Aug 2020 07:28:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200814021912.GR5890@hungrycats.org>
- <20200814014359.GQ5890@hungrycats.org>
-X-Sysadmin: BOFH
-X-URL:  http://marc.merlins.org/
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-SA-Exim-Connect-IP: <locally generated>
-X-SA-Exim-Mail-From: marc@merlins.org
+Received: by 2002:a5d:6cd3:0:0:0:0:0 with HTTP; Sun, 16 Aug 2020 07:28:30
+ -0700 (PDT)
+Reply-To: sctnld11170@tlen.pl
+From:   "Mr. Scott Donald" <confianzayrentabilidad@gmail.com>
+Date:   Sun, 16 Aug 2020 07:28:30 -0700
+Message-ID: <CANrrfX7wwL97G=jb--8nb9jH8oRO8T90L6NGSfg1HfnzMyyHcw@mail.gmail.com>
+Subject: Hello, Please
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Aug 13, 2020 at 09:43:59PM -0400, Zygo Blaxell wrote:
-> That "0A80" is the last 4 bytes of "80.00A80" which I mentioned above.
-> They all need write cache turned off.
- 
-Cool. Those were different drives, not sure if they had the same bug.
+--=20
+Dear Friend,
 
-> I'm told that SC61 firmware has a bug fix for SC60's write cache issues;
-> however, I have some SC60 drives and haven't had write-cache problems
-> with them.  They're probably fine.  Same for WD 01.01A01--some WD Green
-> drives are OK.  I have no data for Samsung firmware.
- 
-So, as incredibly thankful as I am for you having this information, is
-that stuff you just google?
-Is there a DB of bad firmwares, and does linux maybe have a partial one
-to turn off write caching on known bad drives, or am I talking crazy and
-in happy happy land? :)
+I'm Mr. Scott Donald a Successful businessMan dealing with
+Exportation, I got your mail contact through search to let you know my
+intension and my Ugly Situation Am a dying Man here in Los Angeles
+California Hospital Bed in (USA), I Lost my Wife and my only Daughter
+for Covid-19 and I also have a problem in my Health and I can die
+anytime I Know,
 
-> bees typically only spends a single-digit percentage of its time
-> manipulating metadata.  Most of the bees IO time is waiting for btrfs
-> to do slow metadata reads while holding a transaction lock.
- 
-Gotcha.
+I have a project that I am about to hand over to you. and I already
+instructed the Bankia S.A. Madrid, Spain(BSA) to transfer my fund sum
+of =C2=A33,7M GBP. Equivalent to =E2=82=AC4,077,033.91 EUR, to you as to en=
+able you
+to give 50% of this fund to Charitable Home in your State and take 50%
+don't think otherwise and why would anybody send someone you barely
+know to help you deliver a message, help me do this for the happiness
+of my soul and for God to mercy me and my Family and give Us a good
+place.
 
-> Anything after bcache stop is write cache flush theatre.  If the drive's
-> write cache firmware is broken, then you can put all the flushes you
-> want, but the flushes don't do anything that wouldn't also be achieved
-> by just waiting for the disks to be idle for a while.
-> 
-> 5 seconds seems short to me.  I'd keep the drive powered for a minute or
-> two before turning it off.  Ideally I'd set an idle timeout on the drive
-> (hdparm -S) and wait until the disk spins itself down (hdparm -C).
- 
-I see. I didn't realize it could take that long for things to flush if
-the firmware isn't doing the job of flushing when it said it did.
+please, do as I said there was someone from your State that I deeply
+love so very very much and I miss her so badly I have no means to
+reach any Charitable Home there. that is why I go for a personal
+search of the Country and State and I got your mail contact through
+search to let you know my Bitterness and please, help me is getting
+Dark I ask my Doctor to help me keep you notice failure for me to
+reach you in person Your urgent Response, here is my Doctor Whats-app
+Number for urgent notice +13019692737
 
-> Note that after a bus reset while the disks are online, the write caching
-> flag might revert to default.
- 
-oh boy, thanks for the warning.
+Hope To Hear From You. I'm sending this email to you for the second
+time yet no response from you.
 
-> Write cache corruption doesn't always occur at shutdown.  It can also
-> happen if there is a UNC sector or even noise on the SATA cables that
-> triggers a bus reset.  This wouldn't be detected by the host or btrfs--as
-> far as the storage stack is concerned, the drive ACKed the flush, so
-> the data's on the disk, and any losses after that point are equivalent
-> to disk-level corruption.
+My Regards.
 
-I see, that makes sense.
-
-> It would be nice if price correlated to firmware quality, but that's
-> not how disk vendors make drives.  There's a firmware team that produces
-> firmware for a disk controller SoC family.  It's a lot of expensive work,
-> so it only happens once unless a major defect is found.  That firmware
-> ends up in all the drive models built around that SoC family.  So you
-> end up with White Label, WD Green, and WD Red drive models that all
-> run the same handful of firmware builds even though there are dozens of
-> distinct model numbers sold to different market segments (i.e. prices)
-> over a period of many years.
- 
-I see, so I guess I don't feel as bad buying the cheaper white label
-versions :)
-
-> WD didn't think it was important to avoid SMR in NAS drives--a
-> requirement that was so obvious that customers ultimately sued them
-> over it.  WD certainly wouldn't think it was important for their NAS
-> drives to have more correct firmware than the low-end discount model,
-> and nobody sued them over it, so they all got shipped with the same bugs.
-
-Yeah, I saw that, most BS move ever. They definitely deserve the
-backlash coming with it.
-
-Thanks for your answers.
-Marc
--- 
-"A mouse is a device used to point at the xterm you want to type in" - A.S.R.
- 
-Home page: http://marc.merlins.org/  
+Mr. Scott Donald
+CEO
