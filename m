@@ -2,83 +2,48 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C608246617
-	for <lists+linux-btrfs@lfdr.de>; Mon, 17 Aug 2020 14:12:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDDAD246630
+	for <lists+linux-btrfs@lfdr.de>; Mon, 17 Aug 2020 14:19:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728197AbgHQMMv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 17 Aug 2020 08:12:51 -0400
-Received: from mx2.suse.de ([195.135.220.15]:57132 "EHLO mx2.suse.de"
+        id S1726727AbgHQMTH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 17 Aug 2020 08:19:07 -0400
+Received: from mx2.suse.de ([195.135.220.15]:33722 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728163AbgHQMMo (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 17 Aug 2020 08:12:44 -0400
+        id S1726151AbgHQMTG (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 17 Aug 2020 08:19:06 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id B5C89AEDA;
-        Mon, 17 Aug 2020 12:13:08 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 5799BAC97;
+        Mon, 17 Aug 2020 12:19:30 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 7F98ADA6EF; Mon, 17 Aug 2020 14:11:39 +0200 (CEST)
-From:   David Sterba <dsterba@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     David Sterba <dsterba@suse.com>
-Subject: [PATCH 5/5] btrfs: send: remove indirect callback parameter for changed_cb
-Date:   Mon, 17 Aug 2020 14:11:39 +0200
-Message-Id: <3b69b646fdc01f9ad04be59178efcd535ed34da4.1597666167.git.dsterba@suse.com>
-X-Mailer: git-send-email 2.25.0
-In-Reply-To: <cover.1597666167.git.dsterba@suse.com>
-References: <cover.1597666167.git.dsterba@suse.com>
+        id 15734DA6EF; Mon, 17 Aug 2020 14:18:01 +0200 (CEST)
+Date:   Mon, 17 Aug 2020 14:18:00 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs: cleanup how we calculate lockend in
+ lock_and_cleanup_extent_if_need()
+Message-ID: <20200817121800.GC2026@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <20200813063352.94447-1-wqu@suse.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200813063352.94447-1-wqu@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-There's a custom callback passed to btrfs_compare_trees which happens to
-be named exactly same as the existing function implementing it. This is
-confusing and the indirection is not necessary for our needs. Compiler
-is clever enough to call it directly so there's effectively no change.
+On Thu, Aug 13, 2020 at 02:33:52PM +0800, Qu Wenruo wrote:
+> We're just doing rounding up to sectorsize to calculate the lockend.
+> 
+> There is no need to do the unnecessary length calculation, just direct
+> round_up() is enough.
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
 
-Signed-off-by: David Sterba <dsterba@suse.com>
----
- fs/btrfs/send.c | 11 ++---------
- 1 file changed, 2 insertions(+), 9 deletions(-)
-
-diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
-index d9813a5b075a..7c7c09fc65e8 100644
---- a/fs/btrfs/send.c
-+++ b/fs/btrfs/send.c
-@@ -278,11 +278,6 @@ enum btrfs_compare_tree_result {
- 	BTRFS_COMPARE_TREE_CHANGED,
- 	BTRFS_COMPARE_TREE_SAME,
- };
--typedef int (*btrfs_changed_cb_t)(struct btrfs_path *left_path,
--				  struct btrfs_path *right_path,
--				  struct btrfs_key *key,
--				  enum btrfs_compare_tree_result result,
--				  void *ctx);
- 
- __cold
- static void inconsistent_snapshot_error(struct send_ctx *sctx,
-@@ -6692,8 +6687,7 @@ static int tree_compare_item(struct btrfs_path *left_path,
-  * If it detects a change, it aborts immediately.
-  */
- static int btrfs_compare_trees(struct btrfs_root *left_root,
--			struct btrfs_root *right_root,
--			btrfs_changed_cb_t changed_cb, void *ctx)
-+			struct btrfs_root *right_root, void *ctx)
- {
- 	struct btrfs_fs_info *fs_info = left_root->fs_info;
- 	int ret;
-@@ -6960,8 +6954,7 @@ static int send_subvol(struct send_ctx *sctx)
- 		goto out;
- 
- 	if (sctx->parent_root) {
--		ret = btrfs_compare_trees(sctx->send_root, sctx->parent_root,
--				changed_cb, sctx);
-+		ret = btrfs_compare_trees(sctx->send_root, sctx->parent_root, sctx);
- 		if (ret < 0)
- 			goto out;
- 		ret = finish_inode_if_needed(sctx, 1);
--- 
-2.25.0
-
+Added to misc-next, thanks.
