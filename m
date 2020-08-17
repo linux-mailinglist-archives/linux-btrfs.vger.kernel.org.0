@@ -2,76 +2,58 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B79AD245C9C
-	for <lists+linux-btrfs@lfdr.de>; Mon, 17 Aug 2020 08:40:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A43E24649C
+	for <lists+linux-btrfs@lfdr.de>; Mon, 17 Aug 2020 12:37:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726682AbgHQGkr convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-btrfs@lfdr.de>); Mon, 17 Aug 2020 02:40:47 -0400
-Received: from rin.romanrm.net ([51.158.148.128]:48592 "EHLO rin.romanrm.net"
+        id S1726876AbgHQKhW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 17 Aug 2020 06:37:22 -0400
+Received: from mx2.suse.de ([195.135.220.15]:39392 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726385AbgHQGkr (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 17 Aug 2020 02:40:47 -0400
-Received: from natsu (unknown [IPv6:fd39::e99e:8f1b:cfc9:ccb8])
-        by rin.romanrm.net (Postfix) with SMTP id 04C50256;
-        Mon, 17 Aug 2020 06:40:38 +0000 (UTC)
-Date:   Mon, 17 Aug 2020 11:40:38 +0500
-From:   Roman Mamedov <rm@romanrm.net>
-To:     Chris Murphy <lists@colorremedies.com>
-Cc:     Qu Wenruo <quwenruo.btrfs@gmx.com>, benjamin.haendel@gmx.net,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: Re: Tree-checker Issue / Corrupt FS after upgrade ?
-Message-ID: <20200817114038.11b37d2f@natsu>
-In-Reply-To: <CAJCQCtQo4yj=DSbH4JQZ0EiN5huXQwf1b7g0Bo826r53gSrWEg@mail.gmail.com>
-References: <004201d670c9$c69b9230$53d2b690$@gmx.net>
-        <facaa4ae-5001-13e7-3ea1-26d514f73848@gmx.com>
-        <000801d670fd$bb2f62d0$318e2870$@gmx.net>
-        <940c43d7-b7e0-82fa-d5a5-b81e672b85a9@gmx.com>
-        <000301d671b4$fc4a0650$f4de12f0$@gmx.net>
-        <0839617b-8d4b-c252-1c74-4a3ff941ba6f@gmx.com>
-        <003301d6726d$de5cbe30$9b163a90$@gmx.net>
-        <13619e31-627f-92a7-6d11-1f8bbd6d7d6a@gmx.com>
-        <CAJCQCtQo4yj=DSbH4JQZ0EiN5huXQwf1b7g0Bo826r53gSrWEg@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+        id S1726151AbgHQKhV (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 17 Aug 2020 06:37:21 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 6B0FDADD5;
+        Mon, 17 Aug 2020 10:37:45 +0000 (UTC)
+From:   Nikolay Borisov <nborisov@suse.com>
+To:     fstests@vger.kernel.org
+Cc:     linux-btrfs@vger.kernel.org, Nikolay Borisov <nborisov@suse.com>
+Subject: [PATCH 1/3] btrfs/024: Remove no longer valid test
+Date:   Mon, 17 Aug 2020 13:37:16 +0300
+Message-Id: <20200817103718.10239-1-nborisov@suse.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sun, 16 Aug 2020 20:25:20 -0600
-Chris Murphy <lists@colorremedies.com> wrote:
+Kernel commit "btrfs: add missing check for nocow and compression inode
+flags" invalidates the "file compressed, fs mounted with nodatacow"
+mode due to doing more rigorous flags validation, just remove the test.
 
-> On Fri, Aug 14, 2020 at 5:06 PM Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
-> >
-> > On 2020/8/15 上午3:05, benjamin.haendel@gmx.net wrote:
-> 
-> > > 1. I am missing some folders and files
-> > > 2. Some folders are there but no files in them
-> > > 3. i can only access the drive via the samba share - not on the server directly
-> > > 4. In Windows it shows "28TB of usage" but when i mark all data and hit alt+enter it counts to 21.1 TB only
-> >
-> > Windows? Why it's related to Windows then?
-> > We're talking about btrfs, right?
-> >
-> 
-> Suggests the file system is being used with WinBtrfs.
-> 
-> https://github.com/maharmstone/btrfs
+Signed-off-by: Nikolay Borisov <nborisov@suse.com>
+---
+ tests/btrfs/024 | 7 -------
+ 1 file changed, 7 deletions(-)
 
-Or just accessed via network from a Windows client, as hinted in point #3
-about a Samba share.
-
-But as for why behavior described in point #3 would be the case, no idea, that
-sounds like something that's not really possible.
-
-One possibility though is that a file manager that the user runs on the server
-itself bails on showing a directory listing entirely, if it has some incorrect
-entries in it (those that show up as ???????????? in 'ls'), but the Windows
-one doesn't, or Samba doesn't export those in the first place. I'd suggest
-examining the drive content from console with "ls" and not via any graphical
-or even text-based file manager.
-
+diff --git a/tests/btrfs/024 b/tests/btrfs/024
+index 0c2ffd7389ab..bcb9048da636 100755
+--- a/tests/btrfs/024
++++ b/tests/btrfs/024
+@@ -42,13 +42,6 @@ __workout()
+ 	$XFS_IO_PROG -f -c "pwrite 0 1M" -c "fsync" $work_file | _filter_xfs_io
+ }
+ 
+-echo "*** test nodatacow"
+-_scratch_mkfs > /dev/null 2>&1
+-_scratch_mount "-o nodatacow"
+-__workout
+-_scratch_unmount
+-_check_scratch_fs
+-
+ echo "*** test compress=no"
+ _scratch_mkfs > /dev/null 2>&1
+ _scratch_mount "-o compress=no"
 -- 
-With respect,
-Roman
+2.17.1
+
