@@ -2,24 +2,25 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1985247E7C
-	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Aug 2020 08:34:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C3EE247E8B
+	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Aug 2020 08:39:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726421AbgHRGeg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 18 Aug 2020 02:34:36 -0400
-Received: from mx2.suse.de ([195.135.220.15]:36804 "EHLO mx2.suse.de"
+        id S1726545AbgHRGjc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 18 Aug 2020 02:39:32 -0400
+Received: from mx2.suse.de ([195.135.220.15]:41058 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726381AbgHRGef (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 18 Aug 2020 02:34:35 -0400
+        id S1726435AbgHRGjb (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 18 Aug 2020 02:39:31 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 814BBAD12;
-        Tue, 18 Aug 2020 06:34:59 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 5A409AD12;
+        Tue, 18 Aug 2020 06:39:55 +0000 (UTC)
 Subject: Re: compress-force mount option documentation is ambiguous
-From:   Nikolay Borisov <nborisov@suse.com>
-To:     Peter Kese <peter.kese@gmail.com>, linux-btrfs@vger.kernel.org
+To:     Andrew Skretvedt <andrew.skretvedt@gmail.com>,
+        linux-btrfs@vger.kernel.org
 References: <CAGP+SyZctwxGV=O4vw6pLY-R9LmirNgk=s8Zq9x5juV+3EjMEw@mail.gmail.com>
- <e82fe98f-c76d-02df-ee28-d1c77ab91139@suse.com>
+ <rhf68u$f5l$1@ciao.gmane.io>
+From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  xsFNBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
  T7g+RbfPFlmQp+EwFWOtABXlKC54zgSf+uulGwx5JAUFVUIRBmnHOYi/lUiE0yhpnb1KCA7f
@@ -62,12 +63,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  KIuxEcV8wcVjr+Wr9zRl06waOCkgrQbTPp631hToxo+4rA1jiQF2M80HAet65ytBVR2pFGZF
  zGYYLqiG+mpUZ+FPjxk9kpkRYz61mTLSY7tuFljExfJWMGfgSg1OxfLV631jV1TcdUnx+h3l
  Sqs2vMhAVt14zT8mpIuu2VNxcontxgVr1kzYA/tQg32fVRbGr449j1gw57BV9i0vww==
-Message-ID: <ffa40b36-596d-ce39-fe99-3a194b313718@suse.com>
-Date:   Tue, 18 Aug 2020 09:34:32 +0300
+Message-ID: <92fcf2b4-3d15-9639-c335-0bfcd03d65bc@suse.com>
+Date:   Tue, 18 Aug 2020 09:39:28 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <e82fe98f-c76d-02df-ee28-d1c77ab91139@suse.com>
+In-Reply-To: <rhf68u$f5l$1@ciao.gmane.io>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -78,41 +79,10 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 18.08.20 г. 9:18 ч., Nikolay Borisov wrote:
-> 
-> 
-> On 17.08.20 г. 23:18 ч., Peter Kese wrote:
->> The `compress-force` mount  option which states:
->>
->> "If compress-force is specified, then compression will always be
->> attempted, but the data may end up uncompressed if the compression
->> would make them larger."
-> 
-> So which part is ambiguous - it clearly states that so long as
-> compress-force is specified compression is _always_ attempted but it
-> might not always be performed because of heuristics present that check if
-> compressed size < original size. That heuristics is independent of
-> whether compression is enabled or not. I.e it is always performed if
-> compression is enabled. In this regard I think the text is clear, how
-> would you recommend changing the docs?
+On 18.08.20 г. 3:10 ч., Andrew Skretvedt wrote:
+> If  compress-force  is specified,  all  files  will  be compressed,
+> whether or not they compress well.  If compression is enabled,
+> nodatacow and nodata‐ sum are disabled.
 
-Huhz I was wrong, indeed if force compress is enabled then even if the
-file is made larger then btrfs will still "compress" it.
-
-> 
->>
->> It is unclear  whether that means that compress-force will really
->> ALWAYS attempt compression, or it will respect the +c / -c file
->> attributes?
-
-FORCE_COMPRESS disregards +/- c in this case.
-
-
->>
->> Which one is it? Can we fix the documentation?
-> 
-> 
-> 
->> Thanks
->>
-> 
+And this indeed has been the status quo for quite some time, judging by
+the respective code in compress_file_range.
