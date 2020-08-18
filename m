@@ -2,76 +2,87 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C3EE247E8B
-	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Aug 2020 08:39:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54B4D247FD8
+	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Aug 2020 09:51:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726545AbgHRGjc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 18 Aug 2020 02:39:32 -0400
-Received: from mx2.suse.de ([195.135.220.15]:41058 "EHLO mx2.suse.de"
+        id S1726370AbgHRHvI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 18 Aug 2020 03:51:08 -0400
+Received: from mout.gmx.net ([212.227.15.15]:48885 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726435AbgHRGjb (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 18 Aug 2020 02:39:31 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 5A409AD12;
-        Tue, 18 Aug 2020 06:39:55 +0000 (UTC)
-Subject: Re: compress-force mount option documentation is ambiguous
-To:     Andrew Skretvedt <andrew.skretvedt@gmail.com>,
-        linux-btrfs@vger.kernel.org
-References: <CAGP+SyZctwxGV=O4vw6pLY-R9LmirNgk=s8Zq9x5juV+3EjMEw@mail.gmail.com>
- <rhf68u$f5l$1@ciao.gmane.io>
-From:   Nikolay Borisov <nborisov@suse.com>
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <92fcf2b4-3d15-9639-c335-0bfcd03d65bc@suse.com>
-Date:   Tue, 18 Aug 2020 09:39:28 +0300
+        id S1726624AbgHRHvG (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 18 Aug 2020 03:51:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1597737062;
+        bh=B8id+7Egb4ZOp8EtNovEMW+RPwp+gM+rGm4jB66H3dc=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=k+lApNOnIaOYJ9ORw5meZjpKi4VVLvsMZFRiUydJk9z246nil/Cfhy6+ujGUYjNfW
+         gx2ndndrOFEmw4lolR6M/IWpG04hnRUqKUuBKjqh1rq1a7s2lQ4aJWzvyEjuJijhbg
+         p2cZ+4RxMonCq4DuFQhzqMvKGylOo8eeZiHMc5jE=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MOA3P-1kIk9c28U5-00OaAq; Tue, 18
+ Aug 2020 09:51:02 +0200
+Subject: Re: [PATCH] btrfs: Merge inode_can_compress in inode_need_compress
+To:     Nikolay Borisov <nborisov@suse.com>, linux-btrfs@vger.kernel.org
+References: <20200818063056.9094-1-nborisov@suse.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
+ mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
+ PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
+ 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
+ D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
+ efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
+ ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
+ BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
+ 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
+ 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
+ EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
+ 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
+ ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
+ oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
+ fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
+ 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
+ ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
+ oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
+Message-ID: <662ce31b-7996-0a96-85d1-3872afa452e8@gmx.com>
+Date:   Tue, 18 Aug 2020 15:50:58 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-In-Reply-To: <rhf68u$f5l$1@ciao.gmane.io>
+In-Reply-To: <20200818063056.9094-1-nborisov@suse.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:7Dftp5E+aOEtUHYtBqXTuk4fQryj1zIqw44Km3t5Ihx2s1GDia6
+ D29ufxDMiyBF1EAYZoghc5jstFI3q4aK4lDZXeLrEcVhS9qmRuPWuLU+KJ2FaNBMs5QpxoO
+ rAeO3Qj/w0OcYvuo4Tl1uhp1Tz4MY1pzwB6/+HQG2UMF0xcVQ4DBq+dUaMH7Wio5jlIUkY6
+ KIW2Pmy4v8jJyL0Lc1pNA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:uSngnqOCN5A=:w3BYoE7+boGZri7YhOeJOs
+ 6oG37rlLr6WEb2E3xmS3SHadoMposBQT8L5N/6oCAtGUVgM+b4b7NJUbuHvYiSgt96EDI+N3w
+ wXQsSnntAR7hSJIIvt/BYwfjinUUjczYtwhRa9Fmq233Nd4WDP6RojKHgv5XHCVsB2/GYl4rv
+ 43wenXTLHows3Ec5DKQi8Fpe8AQZdZJaKyFpXhBTYFmM8J4Y00cu7rAaONrBALgIMMA3r+JwE
+ sao/o3jo7M9ZGHHUIiBSa3cUPLiNaw/u0dVFaVrm8648k8tN3CZuDNyCc1gRlSExJ9WcqISDD
+ ZzIr3+VM93G08Z/bs7cG/357ryhEmlz6TCUTgND1uAYrurofwU50hJ0ZpX57f0qDfU1IWNXqC
+ X0Zrxq2F1roUtYpyjIZVOTZArocMO4IZBN1+BgKG9J46YZXDVb5hvarnnzTsNwriTKxUNDcxF
+ YmA9TCR1kC5VBXciaYVrNdfqjSnfcB84sVonb7bteyPP2nAexQFQDoTZp5A2p2//MEvFyKgw1
+ LInAwlD+2SvPB8j5z2CwEsDri3bXzMUTaUXfQQlaPZiDn/6jrnsPXpg57sByejxmjAso507ja
+ z73ZWfAg+1OFq/QjfwgCo2tKs79TsKmsoFipPa+IBb2SEcQWFasj+sJfqPdj3UIPNMMc3VRes
+ 0KPSOg76yp8bPJP4hf6EPQlCAQGCZaMBpR12yoOtmeaRHXPgSlBmH7DtF+1eN+ErR+/vX/NR1
+ N7tdiLOrXOn9A88ufNoRSob+8bFj3B4F7bqPmE1PAeJOC9II8U9SI1KICZbx1G1Adjv+zUW6b
+ Qd6t2pXTd5s0HN+YWm+kbnTzqk1+XjEFja1/ARDkKMOW+TU7sK9/4RGDE2Zr9tZP/Yayc5ux7
+ EMXOQ55k+BhmytBeuW92EpcrxhA0jIIDP799NGFHlg2hiHB6uvgztz42UBFOynHjEV+x5zl9x
+ svn7XGAZm7Ql69tfecPUtKMCUZXv8eywRCCSf8rFTwSTovXb9yQGG0lHBMMQD4Vv0sPMWrPzo
+ p1PwymXXfehzjhRnPfYIU6mTXWQqbNyystyOVKs7pxY3OYtAkmjDgj4bVqWIfo36DT3VpGwkM
+ F1bW/UtlVD32irFJWsAVIVPimzXwXxMZ/UVhORxibDlM9uKc+W/sYy2ojM08RACgiLdn0pb2c
+ sTtftFyhZc0egRb2gnLaSdG32M0lAAEbOWO/OE44sucjWsE4rVyIJW/DdXy0rKsGyWW51+kM2
+ S4AF8XpZ06ZWV6xRfvESp1FlaBEJLlcwY3xMwLA==
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
@@ -79,10 +90,72 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 18.08.20 г. 3:10 ч., Andrew Skretvedt wrote:
-> If  compress-force  is specified,  all  files  will  be compressed,
-> whether or not they compress well.  If compression is enabled,
-> nodatacow and nodata‐ sum are disabled.
+On 2020/8/18 =E4=B8=8B=E5=8D=882:30, Nikolay Borisov wrote:
+> The latter is the only caller of the former. Just open code can_compress
+> into need_compress and also remove the warning since it's made redundant
+> by this change.
+>
+> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
 
-And this indeed has been the status quo for quite some time, judging by
-the respective code in compress_file_range.
+Reviewed-by: Qu Wenruo <wqu@suse.com>
+
+Thanks,
+Qu
+
+
+> ---
+>  fs/btrfs/inode.c | 21 +++------------------
+>  1 file changed, 3 insertions(+), 18 deletions(-)
+>
+> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+> index 15dc8b6871ac..19e1918bad5c 100644
+> --- a/fs/btrfs/inode.c
+> +++ b/fs/btrfs/inode.c
+> @@ -410,17 +410,6 @@ static noinline int add_async_extent(struct async_c=
+hunk *cow,
+>  	return 0;
+>  }
+>
+> -/*
+> - * Check if the inode has flags compatible with compression
+> - */
+> -static inline bool inode_can_compress(struct btrfs_inode *inode)
+> -{
+> -	if (inode->flags & BTRFS_INODE_NODATACOW ||
+> -	    inode->flags & BTRFS_INODE_NODATASUM)
+> -		return false;
+> -	return true;
+> -}
+> -
+>  /*
+>   * Check if the inode needs to be submitted to compression, based on mo=
+unt
+>   * options, defragmentation, properties or heuristics.
+> @@ -430,12 +419,9 @@ static inline int inode_need_compress(struct btrfs_=
+inode *inode, u64 start,
+>  {
+>  	struct btrfs_fs_info *fs_info =3D inode->root->fs_info;
+>
+> -	if (!inode_can_compress(inode)) {
+> -		WARN(IS_ENABLED(CONFIG_BTRFS_DEBUG),
+> -			KERN_ERR "BTRFS: unexpected compression for ino %llu\n",
+> -			btrfs_ino(inode));
+> +	if (inode->flags & BTRFS_INODE_NODATACOW ||
+> +	    inode->flags & BTRFS_INODE_NODATASUM)
+>  		return 0;
+> -	}
+>  	/* force compress */
+>  	if (btrfs_test_opt(fs_info, FORCE_COMPRESS))
+>  		return 1;
+> @@ -1833,8 +1819,7 @@ int btrfs_run_delalloc_range(struct btrfs_inode *i=
+node, struct page *locked_page
+>  	} else if (inode->flags & BTRFS_INODE_PREALLOC && !force_cow) {
+>  		ret =3D run_delalloc_nocow(inode, locked_page, start, end,
+>  					 page_started, 0, nr_written);
+> -	} else if (!inode_can_compress(inode) ||
+> -		   !inode_need_compress(inode, start, end)) {
+> +	} else if (!inode_need_compress(inode, start, end)) {
+>  		ret =3D cow_file_range(inode, locked_page, start, end,
+>  				     page_started, nr_written, 1);
+>  	} else {
+>
