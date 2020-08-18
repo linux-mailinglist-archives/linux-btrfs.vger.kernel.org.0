@@ -2,97 +2,194 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C8FB2487C2
-	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Aug 2020 16:37:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8283C248806
+	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Aug 2020 16:43:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727885AbgHROhU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 18 Aug 2020 10:37:20 -0400
-Received: from mail-io1-f48.google.com ([209.85.166.48]:33634 "EHLO
-        mail-io1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726145AbgHROhT (ORCPT
+        id S1727020AbgHROnh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 18 Aug 2020 10:43:37 -0400
+Received: from gateway21.websitewelcome.com ([192.185.45.89]:20412 "EHLO
+        gateway21.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726145AbgHROng (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 18 Aug 2020 10:37:19 -0400
-Received: by mail-io1-f48.google.com with SMTP id g14so21468317iom.0;
-        Tue, 18 Aug 2020 07:37:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=KvDiFSHCMP00JRwPpFIepjmdNNs7NQxVpXYCSaohcWE=;
-        b=mFPreDZKV4vHYBF0Yi9lRSvvKBWSlaWYIXQeN6p7mHAZkoKTZwTQNbxhBwUs1ur3G3
-         m5IFCVGubhjDKDl6j1tT1aXsTigDGZevp3iJsxj60Bki8CozHYEHYGsE3nSWZZCoucuo
-         lu5wUL7lDTOrW+zBpRYpO+KcTEi+lE61uPdl75xYbIiHkKwao2fNzCqBdXsy8GL97Rvi
-         16AFS0gHhMMmn4Qqm3ZBsuIGEqYD5sJerj77rE+4CgfjcaIo2IeH4kkhnosyOW7wHSAE
-         kl5VJ5IQDgRaV/1onoeiHfYcHBB5wQCeOBQKMbz+AaoWVABqx4Gr6QcH8dUxTycvJeRw
-         pULA==
-X-Gm-Message-State: AOAM532P/LEI58ErhYaoO5zdTt4bdK47FtXe7FSe+gTIDx4IEGc+NwRD
-        iIdjodZNwhC08FiJDQfDDCk=
-X-Google-Smtp-Source: ABdhPJxnn2B0WzR309SekP4oYLzfek0uIR9zSY77kfpMtT2egbp4JP9sX7OBycX0RREH5J0lgPswRA==
-X-Received: by 2002:a5d:9943:: with SMTP id v3mr16086981ios.51.1597761438176;
-        Tue, 18 Aug 2020 07:37:18 -0700 (PDT)
-Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
-        by smtp.gmail.com with ESMTPSA id y11sm10913813iot.23.2020.08.18.07.37.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Aug 2020 07:37:16 -0700 (PDT)
-Received: by 42.do-not-panic.com (Postfix, from userid 1000)
-        id A04904046C; Tue, 18 Aug 2020 14:37:15 +0000 (UTC)
-Date:   Tue, 18 Aug 2020 14:37:15 +0000
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Lukas Middendorf <kernel@tuxforce.de>
-Cc:     Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org,
-        Antti Palosaari <crope@iki.fi>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org
-Subject: Re: Is request_firmware() really safe to call in resume callback
- when /usr/lib/firmware is on btrfs?
-Message-ID: <20200818143715.GF4332@42.do-not-panic.com>
-References: <c79e24a5-f808-d1f0-1f09-ee6f135d9679@tuxforce.de>
- <20200813163749.GV4332@42.do-not-panic.com>
- <0b1621bf-fc82-1a56-c11f-c5c46677e59e@tuxforce.de>
- <20200813221348.GB4332@42.do-not-panic.com>
- <fc887e06-874c-79d8-0607-4e27ae788446@tuxforce.de>
- <20200814163723.GC4332@42.do-not-panic.com>
- <a79f1a0c-012d-bebe-c9c7-b505f59079c2@tuxforce.de>
- <20200817152056.GD4332@42.do-not-panic.com>
- <9e5c716e-1736-9890-54be-75739ea5462f@tuxforce.de>
+        Tue, 18 Aug 2020 10:43:36 -0400
+Received: from cm16.websitewelcome.com (cm16.websitewelcome.com [100.42.49.19])
+        by gateway21.websitewelcome.com (Postfix) with ESMTP id 30E57400C9C38
+        for <linux-btrfs@vger.kernel.org>; Tue, 18 Aug 2020 09:43:33 -0500 (CDT)
+Received: from br540.hostgator.com.br ([108.179.252.180])
+        by cmsmtp with SMTP
+        id 82ppkfWdnCjCV82ppkVvG6; Tue, 18 Aug 2020 09:43:33 -0500
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=mpdesouza.com; s=default; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=FiENVS20hcNKwZD+8Um695qjZUX9sRr2WWaPUGT4niA=; b=VbhbMECYDRAP3WUJc4TDRVy+yq
+        y3q7J1go9R+2PZAwrHGDXKAtlZeenTgeVZTgTzIbmia4D5PASWc1rhlHAaYUvtL+LiPN/FRCZUajh
+        9XkmilW8SYpWRJ+IbhBQR1RkEBI9O39Hb/stAqtQc6Y3cxlh0W0MAWxrLnXc95HWnwNJ0I2F8dUiA
+        VLxtBMFsBmfaxtsWJEpVPJ2AZx6xuVzbSZRjveVRgxGDyc1Yc+ErBKvZdPyFSl92gv6K5ezl1J2wo
+        s/jkhkRlu04WF3lxV2HKPFzifiJhpWqMMvnWueUwGxLzw88O2kzpJkulUIdtV7lSZw1v9TMXQ7Ek1
+        SE7vlVdQ==;
+Received: from [179.185.223.25] (port=42408 helo=hephaestus.suse.de)
+        by br540.hostgator.com.br with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <marcos@mpdesouza.com>)
+        id 1k82po-00223d-Hd; Tue, 18 Aug 2020 11:43:32 -0300
+From:   Marcos Paulo de Souza <marcos@mpdesouza.com>
+To:     dsterba@suse.com, linux-btrfs@vger.kernel.org
+Cc:     Marcos Paulo de Souza <mpdesouza@suse.com>
+Subject: [PATCH] btrfs-progs: Make btrfs_lookup_dir_index in parity with kernel code
+Date:   Tue, 18 Aug 2020 11:43:24 -0300
+Message-Id: <20200818144324.25917-1-marcos@mpdesouza.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9e5c716e-1736-9890-54be-75739ea5462f@tuxforce.de>
+Content-Transfer-Encoding: 8bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - br540.hostgator.com.br
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - mpdesouza.com
+X-BWhitelist: no
+X-Source-IP: 179.185.223.25
+X-Source-L: No
+X-Exim-ID: 1k82po-00223d-Hd
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: (hephaestus.suse.de) [179.185.223.25]:42408
+X-Source-Auth: marcos@mpdesouza.com
+X-Email-Count: 2
+X-Source-Cap: bXBkZXNvNTM7bXBkZXNvNTM7YnI1NDAuaG9zdGdhdG9yLmNvbS5icg==
+X-Local-Domain: yes
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Aug 18, 2020 at 12:04:51AM +0200, Lukas Middendorf wrote:
-> On 17/08/2020 17:20, Luis Chamberlain wrote:
-> A freeze can happen on resume with and without the si2168 firmware files
-> installed. It however is easier to hit the freeze with the firmware files
-> installed. Without the firmware files present the freeze happens only if no
-> other driver uses the firmware loader.
-> 
-> > 
-> > This helps, thanks so much, now we'll have to write a reproducer, thanks
-> > for the report!!
-> 
-> Will you do it yourself or do you expect me to do anything for this?
+From: Marcos Paulo de Souza <mpdesouza@suse.com>
 
-I meant to imply that we'd do this, now that we understand the problem. Thanks
-for your report!
+This function exists in kernel side but using the _item suffix, and
+objectid argument is placed before the name argument. Change the
+function to reflect the kernel version.
 
-> > > The nouveau driver in use seems to be equivalent to running "ls -R
-> > > /usr/lib/firmware" before suspend.
-> > > 
-> > > All the cases seem to boil down to:
-> > > It freezes if the file system has to be accessed to list the content of
-> > > /usr/lib/firmware or to read the si2168 firmware file
-> > 
-> > Let's confirm first whether or not your system is using other firmware
-> > files too or not.
-> 
-> I confirmed that above. Why is this so important, anyway?
+Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
+---
+ check/main.c             |  6 +++---
+ ctree.h                  | 11 ++++++-----
+ inode.c                  | 14 +++++++-------
+ kernel-shared/dir-item.c | 13 +++++++------
+ 4 files changed, 23 insertions(+), 21 deletions(-)
 
-A reproducer is easier to write if the actual file neeed is not needed.
-That's all.
+diff --git a/check/main.c b/check/main.c
+index f93bd7d4..176bc508 100644
+--- a/check/main.c
++++ b/check/main.c
+@@ -2072,9 +2072,9 @@ static int delete_dir_index(struct btrfs_root *root,
+ 		(unsigned long long)root->objectid);
+ 
+ 	btrfs_init_path(&path);
+-	di = btrfs_lookup_dir_index(trans, root, &path, backref->dir,
+-				    backref->name, backref->namelen,
+-				    backref->index, -1);
++	di = btrfs_lookup_dir_index_item(trans, root, &path, backref->dir,
++					 backref->index, backref->name,
++					 backref->namelen, -1);
+ 	if (IS_ERR(di)) {
+ 		ret = PTR_ERR(di);
+ 		btrfs_release_path(&path);
+diff --git a/ctree.h b/ctree.h
+index 39e03640..a4f70847 100644
+--- a/ctree.h
++++ b/ctree.h
+@@ -2760,11 +2760,12 @@ struct btrfs_dir_item *btrfs_lookup_dir_item(struct btrfs_trans_handle *trans,
+ 					     struct btrfs_path *path, u64 dir,
+ 					     const char *name, int name_len,
+ 					     int mod);
+-struct btrfs_dir_item *btrfs_lookup_dir_index(struct btrfs_trans_handle *trans,
+-					      struct btrfs_root *root,
+-					      struct btrfs_path *path, u64 dir,
+-					      const char *name, int name_len,
+-					      u64 index, int mod);
++struct btrfs_dir_item *
++btrfs_lookup_dir_index_item(struct btrfs_trans_handle *trans,
++			    struct btrfs_root *root,
++			    struct btrfs_path *path, u64 dir,
++			    u64 objectid, const char *name, int name_len,
++			    int mod);
+ int btrfs_delete_one_dir_name(struct btrfs_trans_handle *trans,
+ 			      struct btrfs_root *root,
+ 			      struct btrfs_path *path,
+diff --git a/inode.c b/inode.c
+index c2d77aa6..67ba9596 100644
+--- a/inode.c
++++ b/inode.c
+@@ -136,8 +136,8 @@ int check_dir_conflict(struct btrfs_root *root, char *name, int namelen,
+ 	btrfs_release_path(path);
+ 
+ 	/* Index conflicting? */
+-	dir_item = btrfs_lookup_dir_index(NULL, root, path, dir, name,
+-					  namelen, index, 0);
++	dir_item = btrfs_lookup_dir_index_item(NULL, root, path, dir, index,
++					  name, namelen, 0);
+ 	if (IS_ERR(dir_item) && PTR_ERR(dir_item) == -ENOENT)
+ 		dir_item = NULL;
+ 	if (IS_ERR(dir_item)) {
+@@ -311,8 +311,8 @@ int btrfs_unlink(struct btrfs_trans_handle *trans, struct btrfs_root *root,
+ 		del_dir_item = 1;
+ 	btrfs_release_path(path);
+ 
+-	dir_item = btrfs_lookup_dir_index(NULL, root, path, parent_ino,
+-					  name, namelen, index, 0);
++	dir_item = btrfs_lookup_dir_index_item(NULL, root, path, parent_ino,
++					       index, name, namelen, 0);
+ 	/*
+ 	 * Since lookup_dir_index() will return -ENOENT when not found,
+ 	 * we need to do extra check.
+@@ -369,9 +369,9 @@ int btrfs_unlink(struct btrfs_trans_handle *trans, struct btrfs_root *root,
+ 	}
+ 
+ 	if (del_dir_index) {
+-		dir_item = btrfs_lookup_dir_index(trans, root, path,
+-						  parent_ino, name, namelen,
+-						  index, -1);
++		dir_item = btrfs_lookup_dir_index_item(trans, root, path,
++						       parent_ino, index, name,
++						       namelen, -1);
+ 		if (IS_ERR(dir_item)) {
+ 			ret = PTR_ERR(dir_item);
+ 			goto out;
+diff --git a/kernel-shared/dir-item.c b/kernel-shared/dir-item.c
+index c8a5a354..d99ace4f 100644
+--- a/kernel-shared/dir-item.c
++++ b/kernel-shared/dir-item.c
+@@ -225,11 +225,12 @@ struct btrfs_dir_item *btrfs_lookup_dir_item(struct btrfs_trans_handle *trans,
+ 	return btrfs_match_dir_item_name(root, path, name, name_len);
+ }
+ 
+-struct btrfs_dir_item *btrfs_lookup_dir_index(struct btrfs_trans_handle *trans,
+-					      struct btrfs_root *root,
+-					      struct btrfs_path *path, u64 dir,
+-					      const char *name, int name_len,
+-					      u64 index, int mod)
++struct btrfs_dir_item *
++btrfs_lookup_dir_index_item(struct btrfs_trans_handle *trans,
++			    struct btrfs_root *root,
++			    struct btrfs_path *path, u64 dir,
++			    u64 objectid, const char *name, int name_len,
++			    int mod)
+ {
+ 	int ret;
+ 	struct btrfs_key key;
+@@ -238,7 +239,7 @@ struct btrfs_dir_item *btrfs_lookup_dir_index(struct btrfs_trans_handle *trans,
+ 
+ 	key.objectid = dir;
+ 	key.type = BTRFS_DIR_INDEX_KEY;
+-	key.offset = index;
++	key.offset = objectid;
+ 
+ 	ret = btrfs_search_slot(trans, root, &key, path, ins_len, cow);
+ 	if (ret < 0)
+-- 
+2.28.0
 
-  Luis
