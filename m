@@ -2,25 +2,26 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A014A24950B
-	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Aug 2020 08:36:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BD1624950C
+	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Aug 2020 08:36:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726723AbgHSGgA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 19 Aug 2020 02:36:00 -0400
-Received: from mx2.suse.de ([195.135.220.15]:59194 "EHLO mx2.suse.de"
+        id S1726817AbgHSGgD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 19 Aug 2020 02:36:03 -0400
+Received: from mx2.suse.de ([195.135.220.15]:59254 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726750AbgHSGf6 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 19 Aug 2020 02:35:58 -0400
+        id S1726750AbgHSGgD (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 19 Aug 2020 02:36:03 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 59EAEAEB1;
-        Wed, 19 Aug 2020 06:36:23 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id B6F72AEB1;
+        Wed, 19 Aug 2020 06:36:27 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Cc:     Josef Bacik <josef@toxicpanda.com>
-Subject: [PATCH v5 1/4] btrfs: extent_io: do extra check for extent buffer read write functions
-Date:   Wed, 19 Aug 2020 14:35:47 +0800
-Message-Id: <20200819063550.62832-2-wqu@suse.com>
+Cc:     Nikolay Borisov <nborisov@suse.com>,
+        Josef Bacik <josef@toxicpanda.com>
+Subject: [PATCH v5 2/4] btrfs: extent-tree: kill BUG_ON() in __btrfs_free_extent() and do better comment
+Date:   Wed, 19 Aug 2020 14:35:48 +0800
+Message-Id: <20200819063550.62832-3-wqu@suse.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200819063550.62832-1-wqu@suse.com>
 References: <20200819063550.62832-1-wqu@suse.com>
@@ -31,211 +32,293 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Although we have start, len check for extent buffer reader/write (e.g.
-read_extent_buffer()), those checks has its limitations:
-- No overflow check
-  Values like start = 1024 len = -1024 can still pass the basic
-   (start + len) > eb->len check.
+__btrfs_free_extent() is one of the best cases to show how optimization
+could make a function hard to read.
 
-- Checks are not consistent
-  For read_extent_buffer() we only check (start + len) against eb->len.
-  While for memcmp_extent_buffer() we also check start against eb->len.
+In fact __btrfs_free_extent() is only doing two major works:
+1. Reduce the refs number of an extent backref
+   Either it's an inlined extent backref (inside EXTENT/METADATA item) or
+   a keyed extent backref (SHARED_* item).
+   We only need to locate that backref line, either reduce the number or
+   remove the backref line completely.
 
-- Different error reporting mechanism
-  We use WARN() in read_extent_buffer() but BUG() in
-  memcpy_extent_buffer().
+2. Update the refs count in EXTENT/METADATA_ITEM
 
-- Still modify memory if the request is obviously wrong
-  In read_extent_buffer() even we find (start + len) > eb->len, we still
-  call memset(dst, 0, len), which can eaisly cause memory access error
-  if start + len overflows.
+But in real world, we do it in a complex but somewhat efficient way.
+During step 1), we will try to locate the EXTENT/METADATA_ITEM without
+triggering another btrfs_search_slot() as fast path.
 
-To address above problems, this patch creates a new common function to
-check such access, check_eb_range().
-- Add overflow check
-  This function checks start, start + len against eb->len and overflow
-  check.
+Only when we failed to locate that item, we will trigger another
+btrfs_search_slot() to get that EXTENT/METADATA_ITEM after we
+updated/deleted the backref line.
 
-- Unified checks
+And we have a lot of restrict check on things like refs_to_drop against
+extent refs and special case check for single ref extent.
 
-- Unified error reports
-  Will call WARN() if CONFIG_BTRFS_DEBUG is configured.
-  And also do btrfs_warn() message for non-debug build.
+All of these results:
+- 7 BUG_ON()s in a single function
+  Although all these BUG_ON() are doing correct check, they're super
+  easy to get triggered for fuzzed images.
+  It's never a good idea to piss the end user.
 
-- Exit ASAP if check fails
-  No more possible memory corruption.
+- Near 300 lines without much useful comments but a lot of hidden
+  conditions
+  I believe even the author needs several minutes to recall what the
+  code is doing
+  Not to mention a lot of BUG_ON() conditions needs to go back tens of
+  lines to find out why.
 
-- Add extra comment for @start @len used in those functions
-  Even experienced developers sometimes get confused with the @start
-  @len with logical address in those functions.
-  I'm not sure what's the cause, maybe it's the extent_buffer::start
-  naming.
-  For now, just add some comment.
+This patch address all these problems by:
+- Introduce two examples to show what __btrfs_free_extent() is doing
+  One inlined backref case and one keyed case.
+  Should cover most cases.
 
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=202817
-[ Inspired by above report, the report itself is already addressed ]
+- Kill all BUG_ON()s with proper error message and optional leaf dump
+
+- Add comment to show the overall workflow
+
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=202819
+[ The report triggers one BUG_ON() in __btrfs_free_extent() ]
 Signed-off-by: Qu Wenruo <wqu@suse.com>
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
 Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/extent_io.c | 82 ++++++++++++++++++++++++--------------------
- 1 file changed, 45 insertions(+), 37 deletions(-)
+ fs/btrfs/extent-tree.c | 150 +++++++++++++++++++++++++++++++++++++----
+ 1 file changed, 137 insertions(+), 13 deletions(-)
 
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 617ea38e6fd7..4eb35a1338c1 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -5620,6 +5620,34 @@ int read_extent_buffer_pages(struct extent_buffer *eb, int wait, int mirror_num)
- 	return ret;
+diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
+index fa7d83051587..94803e51e9d0 100644
+--- a/fs/btrfs/extent-tree.c
++++ b/fs/btrfs/extent-tree.c
+@@ -2930,6 +2930,53 @@ int btrfs_finish_extent_commit(struct btrfs_trans_handle *trans)
+ 	return 0;
  }
  
-+static void report_eb_range(const struct extent_buffer *eb, unsigned long start,
-+			    unsigned long len)
-+{
-+	btrfs_warn(eb->fs_info,
-+"btrfs: bad eb rw request, eb bytenr=%llu len=%lu rw start=%lu len=%lu\n",
-+		   eb->start, eb->len, start, len);
-+	WARN_ON(IS_ENABLED(CONFIG_BTRFS_DEBUG));
-+}
-+
 +/*
-+ * Check if the [start, start + len) range is valid before reading/writing
-+ * the eb.
-+ * NOTE: @start and @len are offset *INSIDE* the eb, *NOT* logical address.
++ * Real work happens here to drop one or more refs of @node.
 + *
-+ * Caller should not touch the dst/src memory if this function returns error.
++ * The work is mostly done in two parts:
++ * 1. Locate the extent refs.
++ *    It's either inlined in EXTENT/METADATA_ITEM or in keyed SHARED_* item.
++ *    Locate it then reduces the refs number or remove the ref line completely.
++ *
++ * 2. Update the refs count in EXTENT/METADATA_ITEM
++ *
++ * Due to the above two operations and possible optimizations, the function
++ * is a little hard to read, but with the following examples, the result
++ * of this function should be pretty easy to get.
++ *
++ * Example:
++ * *** Inlined backref case ***
++ * In extent tree we have:
++ * 	item 0 key (13631488 EXTENT_ITEM 1048576) itemoff 16201 itemsize 82
++ *		refs 2 gen 6 flags DATA
++ *		extent data backref root FS_TREE objectid 258 offset 0 count 1
++ *		extent data backref root FS_TREE objectid 257 offset 0 count 1
++ *
++ * This function get called with
++ *  node->bytenr = 13631488, node->num_bytes = 1048576
++ *  root_objectid = FS_TREE, owner_objectid = 257, owner_offset = 0,
++ *  refs_to_drop = 1
++ * Then we should get some like:
++ * 	item 0 key (13631488 EXTENT_ITEM 1048576) itemoff 16201 itemsize 82
++ *		refs 1 gen 6 flags DATA
++ *		extent data backref root FS_TREE objectid 258 offset 0 count 1
++ *
++ * *** Keyed backref case ***
++ * In extent tree we have:
++ *	item 0 key (13631488 EXTENT_ITEM 1048576) itemoff 3971 itemsize 24
++ *		refs 754 gen 6 flags DATA
++ *	[...]
++ *	item 2 key (13631488 EXTENT_DATA_REF <HASH>) itemoff 3915 itemsize 28
++ *		extent data backref root FS_TREE objectid 866 offset 0 count 1
++ * This function get called with
++ *  node->bytenr = 13631488, node->num_bytes = 1048576
++ *  root_objectid = FS_TREE, owner_objectid = 866, owner_offset = 0,
++ *  refs_to_drop = 1
++ * Then we should get some like:
++ *	item 0 key (13631488 EXTENT_ITEM 1048576) itemoff 3971 itemsize 24
++ *		refs 753 gen 6 flags DATA
++ * And that (13631488 EXTENT_DATA_REF <HASH>) get removed.
 + */
-+static inline int check_eb_range(const struct extent_buffer *eb,
-+				 unsigned long start, unsigned long len)
-+{
-+	/* start, start + len should not go beyond eb->len nor overflow */
-+	if (unlikely(start > eb->len || start + len > eb->len ||
-+		     len > eb->len)) {
-+		report_eb_range(eb, start, len);
-+		return -EINVAL;
+ static int __btrfs_free_extent(struct btrfs_trans_handle *trans,
+ 			       struct btrfs_delayed_ref_node *node, u64 parent,
+ 			       u64 root_objectid, u64 owner_objectid,
+@@ -2962,7 +3009,15 @@ static int __btrfs_free_extent(struct btrfs_trans_handle *trans,
+ 	path->leave_spinning = 1;
+ 
+ 	is_data = owner_objectid >= BTRFS_FIRST_FREE_OBJECTID;
+-	BUG_ON(!is_data && refs_to_drop != 1);
++
++	if (unlikely(!is_data && refs_to_drop != 1)) {
++		btrfs_crit(info,
++"invalid refs_to_drop, dropping more than 1 refs for tree block %llu refs_to_drop %u",
++			   node->bytenr, refs_to_drop);
++		ret = -EINVAL;
++		btrfs_abort_transaction(trans, ret);
++		goto out;
 +	}
-+	return 0;
-+}
+ 
+ 	if (is_data)
+ 		skinny_metadata = false;
+@@ -2971,6 +3026,13 @@ static int __btrfs_free_extent(struct btrfs_trans_handle *trans,
+ 				    parent, root_objectid, owner_objectid,
+ 				    owner_offset);
+ 	if (ret == 0) {
++		/*
++		 * Either the inline backref or the SHARED_DATA_REF/
++		 * SHARED_BLOCK_REF is found
++		 *
++		 * Here is a quick path to locate EXTENT/METADATA_ITEM.
++		 * It's possible the EXTENT/METADATA_ITEM is near current slot.
++		 */
+ 		extent_slot = path->slots[0];
+ 		while (extent_slot >= 0) {
+ 			btrfs_item_key_to_cpu(path->nodes[0], &key,
+@@ -2987,13 +3049,21 @@ static int __btrfs_free_extent(struct btrfs_trans_handle *trans,
+ 				found_extent = 1;
+ 				break;
+ 			}
 +
- void read_extent_buffer(const struct extent_buffer *eb, void *dstv,
- 			unsigned long start, unsigned long len)
- {
-@@ -5630,12 +5658,8 @@ void read_extent_buffer(const struct extent_buffer *eb, void *dstv,
- 	char *dst = (char *)dstv;
- 	unsigned long i = start >> PAGE_SHIFT;
++			/* Quick path didn't find the EXTEMT/METADATA_ITEM */
+ 			if (path->slots[0] - extent_slot > 5)
+ 				break;
+ 			extent_slot--;
+ 		}
  
--	if (start + len > eb->len) {
--		WARN(1, KERN_ERR "btrfs bad mapping eb start %llu len %lu, wanted %lu %lu\n",
--		     eb->start, eb->len, start, len);
--		memset(dst, 0, len);
-+	if (check_eb_range(eb, start, len))
- 		return;
--	}
+ 		if (!found_extent) {
+-			BUG_ON(iref);
++			if (unlikely(iref)) {
++				btrfs_crit(info,
++"invalid iref, no EXTENT/METADATA_ITEM found but has inline extent ref");
++				btrfs_abort_transaction(trans, -EUCLEAN);
++				goto err_dump;
++			}
++			/* Must be SHARED_* item, remove the backref first */
+ 			ret = remove_extent_backref(trans, path, NULL,
+ 						    refs_to_drop,
+ 						    is_data, &last_ref);
+@@ -3004,6 +3074,8 @@ static int __btrfs_free_extent(struct btrfs_trans_handle *trans,
+ 			btrfs_release_path(path);
+ 			path->leave_spinning = 1;
  
- 	offset = offset_in_page(start);
- 
-@@ -5700,8 +5724,8 @@ int memcmp_extent_buffer(const struct extent_buffer *eb, const void *ptrv,
- 	unsigned long i = start >> PAGE_SHIFT;
- 	int ret = 0;
- 
--	WARN_ON(start > eb->len);
--	WARN_ON(start + len > eb->start + eb->len);
-+	if (check_eb_range(eb, start, len))
-+		return -EINVAL;
- 
- 	offset = offset_in_page(start);
- 
-@@ -5754,8 +5778,8 @@ void write_extent_buffer(const struct extent_buffer *eb, const void *srcv,
- 	char *src = (char *)srcv;
- 	unsigned long i = start >> PAGE_SHIFT;
- 
--	WARN_ON(start > eb->len);
--	WARN_ON(start + len > eb->start + eb->len);
-+	if (check_eb_range(eb, start, len))
-+		return;
- 
- 	offset = offset_in_page(start);
- 
-@@ -5783,8 +5807,8 @@ void memzero_extent_buffer(const struct extent_buffer *eb, unsigned long start,
- 	char *kaddr;
- 	unsigned long i = start >> PAGE_SHIFT;
- 
--	WARN_ON(start > eb->len);
--	WARN_ON(start + len > eb->start + eb->len);
-+	if (check_eb_range(eb, start, len))
-+		return;
- 
- 	offset = offset_in_page(start);
- 
-@@ -5828,6 +5852,10 @@ void copy_extent_buffer(const struct extent_buffer *dst,
- 	char *kaddr;
- 	unsigned long i = dst_offset >> PAGE_SHIFT;
- 
-+	if (check_eb_range(dst, dst_offset, len) ||
-+	    check_eb_range(src, src_offset, len))
-+		return;
 +
- 	WARN_ON(src->len != dst_len);
++			/* Slow path to locate EXTENT/METADATA_ITEM */
+ 			key.objectid = bytenr;
+ 			key.type = BTRFS_EXTENT_ITEM_KEY;
+ 			key.offset = num_bytes;
+@@ -3078,19 +3150,26 @@ static int __btrfs_free_extent(struct btrfs_trans_handle *trans,
+ 	if (owner_objectid < BTRFS_FIRST_FREE_OBJECTID &&
+ 	    key.type == BTRFS_EXTENT_ITEM_KEY) {
+ 		struct btrfs_tree_block_info *bi;
+-		BUG_ON(item_size < sizeof(*ei) + sizeof(*bi));
++		if (unlikely(item_size < sizeof(*ei) + sizeof(*bi))) {
++			btrfs_crit(info,
++"invalid extent item size for key (%llu, %u, %llu) owner %llu, has %u expect >= %lu",
++				   key.objectid, key.type, key.offset,
++				   owner_objectid, item_size,
++				   sizeof(*ei) + sizeof(*bi));
++			btrfs_abort_transaction(trans, -EUCLEAN);
++			goto err_dump;
++		}
+ 		bi = (struct btrfs_tree_block_info *)(ei + 1);
+ 		WARN_ON(owner_objectid != btrfs_tree_block_level(leaf, bi));
+ 	}
  
- 	offset = offset_in_page(dst_offset);
-@@ -6017,25 +6045,15 @@ void memcpy_extent_buffer(const struct extent_buffer *dst,
- 			  unsigned long dst_offset, unsigned long src_offset,
- 			  unsigned long len)
- {
--	struct btrfs_fs_info *fs_info = dst->fs_info;
- 	size_t cur;
- 	size_t dst_off_in_page;
- 	size_t src_off_in_page;
- 	unsigned long dst_i;
- 	unsigned long src_i;
+ 	refs = btrfs_extent_refs(leaf, ei);
+ 	if (refs < refs_to_drop) {
+-		btrfs_err(info,
+-			  "trying to drop %d refs but we only have %Lu for bytenr %Lu",
++		btrfs_crit(info,
++		"trying to drop %d refs but we only have %Lu for bytenr %Lu",
+ 			  refs_to_drop, refs, bytenr);
+-		ret = -EINVAL;
+-		btrfs_abort_transaction(trans, ret);
+-		goto out;
++		btrfs_abort_transaction(trans, -EUCLEAN);
++		goto err_dump;
+ 	}
+ 	refs -= refs_to_drop;
  
--	if (src_offset + len > dst->len) {
--		btrfs_err(fs_info,
--			"memmove bogus src_offset %lu move len %lu dst len %lu",
--			 src_offset, len, dst->len);
--		BUG();
--	}
--	if (dst_offset + len > dst->len) {
--		btrfs_err(fs_info,
--			"memmove bogus dst_offset %lu move len %lu dst len %lu",
--			 dst_offset, len, dst->len);
--		BUG();
--	}
-+	if (check_eb_range(dst, dst_offset, len) ||
-+	    check_eb_range(dst, src_offset, len))
-+		return;
+@@ -3102,7 +3181,12 @@ static int __btrfs_free_extent(struct btrfs_trans_handle *trans,
+ 		 * be updated by remove_extent_backref
+ 		 */
+ 		if (iref) {
+-			BUG_ON(!found_extent);
++			if (unlikely(!found_extent)) {
++				btrfs_crit(info,
++"invalid iref, got inlined extent ref but no EXTENT/METADATA_ITEM found");
++				btrfs_abort_transaction(trans, -EUCLEAN);
++				goto err_dump;
++			}
+ 		} else {
+ 			btrfs_set_extent_refs(leaf, ei, refs);
+ 			btrfs_mark_buffer_dirty(leaf);
+@@ -3117,13 +3201,39 @@ static int __btrfs_free_extent(struct btrfs_trans_handle *trans,
+ 			}
+ 		}
+ 	} else {
++		/* In this branch refs == 1 */
+ 		if (found_extent) {
+-			BUG_ON(is_data && refs_to_drop !=
+-			       extent_data_ref_count(path, iref));
++			if (is_data && refs_to_drop !=
++			    extent_data_ref_count(path, iref)) {
++				btrfs_crit(info,
++		"invalid refs_to_drop, current refs %u refs_to_drop %u",
++					   extent_data_ref_count(path, iref),
++					   refs_to_drop);
++				btrfs_abort_transaction(trans, -EUCLEAN);
++				goto err_dump;
++			}
+ 			if (iref) {
+-				BUG_ON(path->slots[0] != extent_slot);
++				if (path->slots[0] != extent_slot) {
++					btrfs_crit(info,
++"invalid iref, extent item key (%llu %u %llu) doesn't has wanted iref",
++						   key.objectid, key.type,
++						   key.offset);
++					btrfs_abort_transaction(trans, -EUCLEAN);
++					goto err_dump;
++				}
+ 			} else {
+-				BUG_ON(path->slots[0] != extent_slot + 1);
++				/*
++				 * No inline ref, we must at SHARED_* item,
++				 * And it's single ref, it must be:
++				 * |	extent_slot	  ||extent_slot + 1|
++				 * [ EXTENT/METADATA_ITEM ][ SHARED_* ITEM ]
++				 */
++				if (path->slots[0] != extent_slot + 1) {
++					btrfs_crit(info,
++	"invalid SHARED_* item, previous item is not EXTENT/METADATA_ITEM");
++					btrfs_abort_transaction(trans, -EUCLEAN);
++					goto err_dump;
++				}
+ 				path->slots[0] = extent_slot;
+ 				num_to_del = 2;
+ 			}
+@@ -3164,6 +3274,20 @@ static int __btrfs_free_extent(struct btrfs_trans_handle *trans,
+ out:
+ 	btrfs_free_path(path);
+ 	return ret;
++err_dump:
++	/*
++	 * Leaf dump can take up a lot of dmesg buffer since default nodesize
++	 * is already 16K.
++	 * So we only do full leaf dump for debug build.
++	 */
++	if (IS_ENABLED(CONFIG_BTRFS_DEBUG)) {
++		btrfs_crit(info, "path->slots[0]=%d extent_slot=%d",
++			   path->slots[0], extent_slot);
++		btrfs_print_leaf(path->nodes[0]);
++	}
++
++	btrfs_free_path(path);
++	return -EUCLEAN;
+ }
  
- 	while (len > 0) {
- 		dst_off_in_page = offset_in_page(dst_offset);
-@@ -6062,7 +6080,6 @@ void memmove_extent_buffer(const struct extent_buffer *dst,
- 			   unsigned long dst_offset, unsigned long src_offset,
- 			   unsigned long len)
- {
--	struct btrfs_fs_info *fs_info = dst->fs_info;
- 	size_t cur;
- 	size_t dst_off_in_page;
- 	size_t src_off_in_page;
-@@ -6071,18 +6088,9 @@ void memmove_extent_buffer(const struct extent_buffer *dst,
- 	unsigned long dst_i;
- 	unsigned long src_i;
- 
--	if (src_offset + len > dst->len) {
--		btrfs_err(fs_info,
--			  "memmove bogus src_offset %lu move len %lu len %lu",
--			  src_offset, len, dst->len);
--		BUG();
--	}
--	if (dst_offset + len > dst->len) {
--		btrfs_err(fs_info,
--			  "memmove bogus dst_offset %lu move len %lu len %lu",
--			  dst_offset, len, dst->len);
--		BUG();
--	}
-+	if (check_eb_range(dst, dst_offset, len) ||
-+	    check_eb_range(dst, src_offset, len))
-+		return;
- 	if (dst_offset < src_offset) {
- 		memcpy_extent_buffer(dst, dst_offset, src_offset, len);
- 		return;
+ /*
 -- 
 2.28.0
 
