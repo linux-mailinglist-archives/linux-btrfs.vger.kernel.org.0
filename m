@@ -2,151 +2,68 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1075224A17D
-	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Aug 2020 16:17:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 684D124A197
+	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Aug 2020 16:21:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728431AbgHSOQr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 19 Aug 2020 10:16:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36712 "EHLO mail.kernel.org"
+        id S1727087AbgHSOVd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 19 Aug 2020 10:21:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42256 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726766AbgHSOQo (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 19 Aug 2020 10:16:44 -0400
+        id S1726560AbgHSOVd (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 19 Aug 2020 10:21:33 -0400
 Received: from localhost (unknown [213.57.247.131])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A24EE2078D;
-        Wed, 19 Aug 2020 14:16:42 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 29D7D20639;
+        Wed, 19 Aug 2020 14:21:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597846603;
-        bh=0CwqqpI/doCNdLbaPsaZaTuQDib4tuZ/A83w7/3MMDo=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=o2eskXGibcBkg54wYhLtn6iK6N3yjHMgqcWmYdY5HTeTZWOy/hQpA0iA99BGxN7E1
-         aF0gsXiyBaPO9Svm8/EwjWV0hOwO0BxH05pJQBpcLZb6mxlKeUCJIYC2cTOimkRENn
-         oPMo0JD2UtQn6i9nPrgqRAVh2rkzGVec1Qa6eejM=
+        s=default; t=1597846892;
+        bh=jpRfui17lA3nFG0e1CxOk2FPwyfMV1V22Ev0GKkWB5E=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=X7zfblykkgvANcP9POyOnUxHDXg9cDz4FFVBE/kIQ3PAKcFHmFmfQn0VQaZiMxBbE
+         /MPHy0sqMsKnVuvCGfgtlRiSkpegn72o6mWRIeAjl7RV7341ZeaysZkrefaDaLln6w
+         H8zIbQGGMZe81k9Et5xXtpWLWxewHx8qV6THQgtg=
+Date:   Wed, 19 Aug 2020 17:21:29 +0300
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>,
         Josef Bacik <josef@toxicpanda.com>
-Cc:     Leon Romanovsky <leonro@nvidia.com>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 3/3] fs/btrfs: Fix -Wmissing-prototypes warnings
-Date:   Wed, 19 Aug 2020 17:16:30 +0300
-Message-Id: <20200819141630.1338693-4-leon@kernel.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200819141630.1338693-1-leon@kernel.org>
+Cc:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/3] Fixes to GCC warnings while compiling with W=1 level
+Message-ID: <20200819142129.GW7555@unreal>
 References: <20200819141630.1338693-1-leon@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200819141630.1338693-1-leon@kernel.org>
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Leon Romanovsky <leonro@nvidia.com>
+On Wed, Aug 19, 2020 at 05:16:27PM +0300, Leon Romanovsky wrote:
+> From: Leon Romanovsky <leonro@nvidia.com>
+>
+> Hi,
+>
+> The series of trivial fixes for GCC warnings seen while compiling with W=1.
+>
+> Thanks
+>
+> Leon Romanovsky (3):
+>   fs/btfrs: Fix -Wunused-but-set-variable warnings
+      ^^^ this is typo - btrfs
 
-Move function declaration to shared header file to fix multiple -Wmissing-prototypes
-warnings like below:
-
-fs/btrfs/zstd.c:369:5: warning: no previous prototype for ‘zstd_compress_pages’ [-Wmissing-prototypes]
-  369 | int zstd_compress_pages(struct list_head *ws, struct address_space *mapping,
-      |     ^~~~~~~~~~~~~~~~~~~
-
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
----
- fs/btrfs/compression.c | 35 -----------------------------------
- fs/btrfs/compression.h | 35 +++++++++++++++++++++++++++++++++++
- 2 files changed, 35 insertions(+), 35 deletions(-)
-
-diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
-index 1ab56a734e70..eeface30facd 100644
---- a/fs/btrfs/compression.c
-+++ b/fs/btrfs/compression.c
-@@ -29,41 +29,6 @@
- #include "extent_io.h"
- #include "extent_map.h"
-
--int zlib_compress_pages(struct list_head *ws, struct address_space *mapping,
--		u64 start, struct page **pages, unsigned long *out_pages,
--		unsigned long *total_in, unsigned long *total_out);
--int zlib_decompress_bio(struct list_head *ws, struct compressed_bio *cb);
--int zlib_decompress(struct list_head *ws, unsigned char *data_in,
--		struct page *dest_page, unsigned long start_byte, size_t srclen,
--		size_t destlen);
--struct list_head *zlib_alloc_workspace(unsigned int level);
--void zlib_free_workspace(struct list_head *ws);
--struct list_head *zlib_get_workspace(unsigned int level);
--
--int lzo_compress_pages(struct list_head *ws, struct address_space *mapping,
--		u64 start, struct page **pages, unsigned long *out_pages,
--		unsigned long *total_in, unsigned long *total_out);
--int lzo_decompress_bio(struct list_head *ws, struct compressed_bio *cb);
--int lzo_decompress(struct list_head *ws, unsigned char *data_in,
--		struct page *dest_page, unsigned long start_byte, size_t srclen,
--		size_t destlen);
--struct list_head *lzo_alloc_workspace(unsigned int level);
--void lzo_free_workspace(struct list_head *ws);
--
--int zstd_compress_pages(struct list_head *ws, struct address_space *mapping,
--		u64 start, struct page **pages, unsigned long *out_pages,
--		unsigned long *total_in, unsigned long *total_out);
--int zstd_decompress_bio(struct list_head *ws, struct compressed_bio *cb);
--int zstd_decompress(struct list_head *ws, unsigned char *data_in,
--		struct page *dest_page, unsigned long start_byte, size_t srclen,
--		size_t destlen);
--void zstd_init_workspace_manager(void);
--void zstd_cleanup_workspace_manager(void);
--struct list_head *zstd_alloc_workspace(unsigned int level);
--void zstd_free_workspace(struct list_head *ws);
--struct list_head *zstd_get_workspace(unsigned int level);
--void zstd_put_workspace(struct list_head *ws);
--
- static const char* const btrfs_compress_types[] = { "", "zlib", "lzo", "zstd" };
-
- const char* btrfs_compress_type2str(enum btrfs_compression_type type)
-diff --git a/fs/btrfs/compression.h b/fs/btrfs/compression.h
-index 9f3dbe372631..8001b700ea3a 100644
---- a/fs/btrfs/compression.h
-+++ b/fs/btrfs/compression.h
-@@ -144,4 +144,39 @@ bool btrfs_compress_is_valid_type(const char *str, size_t len);
-
- int btrfs_compress_heuristic(struct inode *inode, u64 start, u64 end);
-
-+int zlib_compress_pages(struct list_head *ws, struct address_space *mapping,
-+		u64 start, struct page **pages, unsigned long *out_pages,
-+		unsigned long *total_in, unsigned long *total_out);
-+int zlib_decompress_bio(struct list_head *ws, struct compressed_bio *cb);
-+int zlib_decompress(struct list_head *ws, unsigned char *data_in,
-+		struct page *dest_page, unsigned long start_byte, size_t srclen,
-+		size_t destlen);
-+struct list_head *zlib_alloc_workspace(unsigned int level);
-+void zlib_free_workspace(struct list_head *ws);
-+struct list_head *zlib_get_workspace(unsigned int level);
-+
-+int lzo_compress_pages(struct list_head *ws, struct address_space *mapping,
-+		u64 start, struct page **pages, unsigned long *out_pages,
-+		unsigned long *total_in, unsigned long *total_out);
-+int lzo_decompress_bio(struct list_head *ws, struct compressed_bio *cb);
-+int lzo_decompress(struct list_head *ws, unsigned char *data_in,
-+		struct page *dest_page, unsigned long start_byte, size_t srclen,
-+		size_t destlen);
-+struct list_head *lzo_alloc_workspace(unsigned int level);
-+void lzo_free_workspace(struct list_head *ws);
-+
-+int zstd_compress_pages(struct list_head *ws, struct address_space *mapping,
-+		u64 start, struct page **pages, unsigned long *out_pages,
-+		unsigned long *total_in, unsigned long *total_out);
-+int zstd_decompress_bio(struct list_head *ws, struct compressed_bio *cb);
-+int zstd_decompress(struct list_head *ws, unsigned char *data_in,
-+		struct page *dest_page, unsigned long start_byte, size_t srclen,
-+		size_t destlen);
-+void zstd_init_workspace_manager(void);
-+void zstd_cleanup_workspace_manager(void);
-+struct list_head *zstd_alloc_workspace(unsigned int level);
-+void zstd_free_workspace(struct list_head *ws);
-+struct list_head *zstd_get_workspace(unsigned int level);
-+void zstd_put_workspace(struct list_head *ws);
-+
- #endif
---
-2.26.2
-
+>   fs/btrfs: Fix -Wignored-qualifiers warnings
+>   fs/btrfs: Fix -Wmissing-prototypes warnings
+>
+>  fs/btrfs/compression.c | 35 -----------------------------------
+>  fs/btrfs/compression.h | 35 +++++++++++++++++++++++++++++++++++
+>  fs/btrfs/ctree.c       |  2 +-
+>  fs/btrfs/ctree.h       |  2 +-
+>  fs/btrfs/sysfs.c       |  7 +++----
+>  fs/btrfs/sysfs.h       |  2 +-
+>  6 files changed, 41 insertions(+), 42 deletions(-)
+>
+> --
+> 2.26.2
+>
