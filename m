@@ -2,68 +2,74 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 684D124A197
-	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Aug 2020 16:21:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE2A524A1A9
+	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Aug 2020 16:23:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727087AbgHSOVd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 19 Aug 2020 10:21:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42256 "EHLO mail.kernel.org"
+        id S1728060AbgHSOXk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 19 Aug 2020 10:23:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45324 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726560AbgHSOVd (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 19 Aug 2020 10:21:33 -0400
-Received: from localhost (unknown [213.57.247.131])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1726560AbgHSOXk (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 19 Aug 2020 10:23:40 -0400
+Received: from mail-vs1-f41.google.com (mail-vs1-f41.google.com [209.85.217.41])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 29D7D20639;
-        Wed, 19 Aug 2020 14:21:31 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 91B9D2076E
+        for <linux-btrfs@vger.kernel.org>; Wed, 19 Aug 2020 14:23:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597846892;
-        bh=jpRfui17lA3nFG0e1CxOk2FPwyfMV1V22Ev0GKkWB5E=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=X7zfblykkgvANcP9POyOnUxHDXg9cDz4FFVBE/kIQ3PAKcFHmFmfQn0VQaZiMxBbE
-         /MPHy0sqMsKnVuvCGfgtlRiSkpegn72o6mWRIeAjl7RV7341ZeaysZkrefaDaLln6w
-         H8zIbQGGMZe81k9Et5xXtpWLWxewHx8qV6THQgtg=
-Date:   Wed, 19 Aug 2020 17:21:29 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>,
-        Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/3] Fixes to GCC warnings while compiling with W=1 level
-Message-ID: <20200819142129.GW7555@unreal>
-References: <20200819141630.1338693-1-leon@kernel.org>
+        s=default; t=1597847019;
+        bh=5jGyDVhR6Uy3jz1A1Vjqr0pVOnKW9xg/tnhp/uEGWkE=;
+        h=References:In-Reply-To:From:Date:Subject:To:From;
+        b=SNdMxqsh65uhuCV6SmjSuv7v1ayDNmXCLkN3stWfV1gN9mtjy66NSGM5PCeW9DPS/
+         nsosHL1wIUknwOfncIqRGQhO///MKgA1iTqh1FciYlxB8XeNInbAIfTgLwS9mpmwJX
+         e1ZDP86hvNS53JTkHEcE6gdeTHas2Z1mWSK3XXzM=
+Received: by mail-vs1-f41.google.com with SMTP id o184so12021467vsc.0
+        for <linux-btrfs@vger.kernel.org>; Wed, 19 Aug 2020 07:23:39 -0700 (PDT)
+X-Gm-Message-State: AOAM5314WrC06ACVu5HJYimgJQU3VDdfYpZIV+iQs02l9EtYON7FwrS0
+        c4AH4pddTpdXBZT0zRX1Ngy6dhNFjjLAtsuyD1g=
+X-Google-Smtp-Source: ABdhPJxyZOalaGwcdJb5if50LZEtRRONxrAWVaUWNAm69ZkMjjcU1pe2KfFHsAuFZen+C8alRAc7C9ZhUFq1CmR4R1g=
+X-Received: by 2002:a05:6102:22f9:: with SMTP id b25mr9420543vsh.90.1597847018738;
+ Wed, 19 Aug 2020 07:23:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200819141630.1338693-1-leon@kernel.org>
+References: <20200811114328.688282-1-fdmanana@kernel.org> <20200819140803.GM2026@twin.jikos.cz>
+In-Reply-To: <20200819140803.GM2026@twin.jikos.cz>
+From:   Filipe Manana <fdmanana@kernel.org>
+Date:   Wed, 19 Aug 2020 15:23:27 +0100
+X-Gmail-Original-Message-ID: <CAL3q7H7RHp095a7Fsw_Nn-8r_joWOAsqPp=EUObun5dv0mA6Aw@mail.gmail.com>
+Message-ID: <CAL3q7H7RHp095a7Fsw_Nn-8r_joWOAsqPp=EUObun5dv0mA6Aw@mail.gmail.com>
+Subject: Re: [PATCH 0/3] btrfs: a few performance improvements for fsync and rename/link
+To:     dsterba@suse.cz, Filipe Manana <fdmanana@kernel.org>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Aug 19, 2020 at 05:16:27PM +0300, Leon Romanovsky wrote:
-> From: Leon Romanovsky <leonro@nvidia.com>
+On Wed, Aug 19, 2020 at 3:09 PM David Sterba <dsterba@suse.cz> wrote:
 >
-> Hi,
+> On Tue, Aug 11, 2020 at 12:43:28PM +0100, fdmanana@kernel.org wrote:
+> > From: Filipe Manana <fdmanana@suse.com>
+> >
+> > A small group of changes to improve performance of fsync, rename and link operations.
 >
-> The series of trivial fixes for GCC warnings seen while compiling with W=1.
+> Thank you very much!
 >
-> Thanks
+> > They are farily independent, but patch 3 needs to be applied before patch 2, the
+> > order can be changed if needed.
+> > Details and performance tests are mentioned in the change log of each patch.
 >
-> Leon Romanovsky (3):
->   fs/btfrs: Fix -Wunused-but-set-variable warnings
-      ^^^ this is typo - btrfs
+> A lot of two-digit improvements in throughput and runtime, that's great.
 
->   fs/btrfs: Fix -Wignored-qualifiers warnings
->   fs/btrfs: Fix -Wmissing-prototypes warnings
->
->  fs/btrfs/compression.c | 35 -----------------------------------
->  fs/btrfs/compression.h | 35 +++++++++++++++++++++++++++++++++++
->  fs/btrfs/ctree.c       |  2 +-
->  fs/btrfs/ctree.h       |  2 +-
->  fs/btrfs/sysfs.c       |  7 +++----
->  fs/btrfs/sysfs.h       |  2 +-
->  6 files changed, 41 insertions(+), 42 deletions(-)
->
-> --
-> 2.26.2
->
+Btw, could you fold the following into patch 3?
+
+https://pastebin.com/raw/hmmmnzJY
+
+It just silences a warning that one of the kernel test robots reported
+last sunday:
+
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org/thread/CRTG5J2M2D7Q7M5GPHXKHOKGKN3GSVWJ/
+
+It doesn't change anything in terms of behaviour.
+
+Thanks.
