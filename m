@@ -2,74 +2,73 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE2A524A1A9
-	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Aug 2020 16:23:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3725E24A1B7
+	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Aug 2020 16:26:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728060AbgHSOXk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 19 Aug 2020 10:23:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45324 "EHLO mail.kernel.org"
+        id S1726971AbgHSO04 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 19 Aug 2020 10:26:56 -0400
+Received: from mx2.suse.de ([195.135.220.15]:39984 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726560AbgHSOXk (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 19 Aug 2020 10:23:40 -0400
-Received: from mail-vs1-f41.google.com (mail-vs1-f41.google.com [209.85.217.41])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 91B9D2076E
-        for <linux-btrfs@vger.kernel.org>; Wed, 19 Aug 2020 14:23:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597847019;
-        bh=5jGyDVhR6Uy3jz1A1Vjqr0pVOnKW9xg/tnhp/uEGWkE=;
-        h=References:In-Reply-To:From:Date:Subject:To:From;
-        b=SNdMxqsh65uhuCV6SmjSuv7v1ayDNmXCLkN3stWfV1gN9mtjy66NSGM5PCeW9DPS/
-         nsosHL1wIUknwOfncIqRGQhO///MKgA1iTqh1FciYlxB8XeNInbAIfTgLwS9mpmwJX
-         e1ZDP86hvNS53JTkHEcE6gdeTHas2Z1mWSK3XXzM=
-Received: by mail-vs1-f41.google.com with SMTP id o184so12021467vsc.0
-        for <linux-btrfs@vger.kernel.org>; Wed, 19 Aug 2020 07:23:39 -0700 (PDT)
-X-Gm-Message-State: AOAM5314WrC06ACVu5HJYimgJQU3VDdfYpZIV+iQs02l9EtYON7FwrS0
-        c4AH4pddTpdXBZT0zRX1Ngy6dhNFjjLAtsuyD1g=
-X-Google-Smtp-Source: ABdhPJxyZOalaGwcdJb5if50LZEtRRONxrAWVaUWNAm69ZkMjjcU1pe2KfFHsAuFZen+C8alRAc7C9ZhUFq1CmR4R1g=
-X-Received: by 2002:a05:6102:22f9:: with SMTP id b25mr9420543vsh.90.1597847018738;
- Wed, 19 Aug 2020 07:23:38 -0700 (PDT)
+        id S1726560AbgHSO0z (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 19 Aug 2020 10:26:55 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 75D1DACAF;
+        Wed, 19 Aug 2020 14:27:20 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id A3DCCDA703; Wed, 19 Aug 2020 16:25:48 +0200 (CEST)
+Date:   Wed, 19 Aug 2020 16:25:48 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Graham Cobb <g.btrfs@cobb.uk.net>
+Cc:     dsterba@suse.cz, Boris Burkov <boris@bur.io>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Omar Sandoval <osandov@osandov.com>,
+        linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH] btrfs: detect nocow for swap after snapshot delete
+Message-ID: <20200819142548.GN2026@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Graham Cobb <g.btrfs@cobb.uk.net>,
+        Boris Burkov <boris@bur.io>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
+        Omar Sandoval <osandov@osandov.com>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com
+References: <20200818180005.933061-1-boris@bur.io>
+ <20200819112941.GK2026@twin.jikos.cz>
+ <563ca3a3-d07c-cf1f-cb0f-f41f50f8d516@cobb.uk.net>
 MIME-Version: 1.0
-References: <20200811114328.688282-1-fdmanana@kernel.org> <20200819140803.GM2026@twin.jikos.cz>
-In-Reply-To: <20200819140803.GM2026@twin.jikos.cz>
-From:   Filipe Manana <fdmanana@kernel.org>
-Date:   Wed, 19 Aug 2020 15:23:27 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H7RHp095a7Fsw_Nn-8r_joWOAsqPp=EUObun5dv0mA6Aw@mail.gmail.com>
-Message-ID: <CAL3q7H7RHp095a7Fsw_Nn-8r_joWOAsqPp=EUObun5dv0mA6Aw@mail.gmail.com>
-Subject: Re: [PATCH 0/3] btrfs: a few performance improvements for fsync and rename/link
-To:     dsterba@suse.cz, Filipe Manana <fdmanana@kernel.org>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <563ca3a3-d07c-cf1f-cb0f-f41f50f8d516@cobb.uk.net>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Aug 19, 2020 at 3:09 PM David Sterba <dsterba@suse.cz> wrote:
->
-> On Tue, Aug 11, 2020 at 12:43:28PM +0100, fdmanana@kernel.org wrote:
-> > From: Filipe Manana <fdmanana@suse.com>
-> >
-> > A small group of changes to improve performance of fsync, rename and link operations.
->
-> Thank you very much!
->
-> > They are farily independent, but patch 3 needs to be applied before patch 2, the
-> > order can be changed if needed.
-> > Details and performance tests are mentioned in the change log of each patch.
->
-> A lot of two-digit improvements in throughput and runtime, that's great.
+On Wed, Aug 19, 2020 at 12:59:28PM +0100, Graham Cobb wrote:
+> On 19/08/2020 12:29, David Sterba wrote:
+> > How often could the snapshot deletion and swapfile activation happen at
+> > the same time? Snapshotting subvolume with the swapfile requires
+> > deactivation, snapshot/send/whatever and then activation. This sounds
+> > like a realistic usecase.
+> 
+> It is very likely when the swapfile is one that is only used
+> occasionally (for example, when running a particular program which needs
+> a massive amount of virtual memory, or having to stop using a different
+> swapfile because a disk looks like it is starting to fail).
+> 
+> If the swapfile is not normally used, it is not unlikely it got
+> snapshotted (as part of a larger operation, presumably) while
+> deactivated. When the user tries to use it, they realise it isn't
+> working because it is snapshotted, so they delete the snapshot and then
+> immediately try to activate it again -- causing confusion when it still
+> fails.
 
-Btw, could you fold the following into patch 3?
+That makes sense from user POV. I still don't uderstand if it's
+sufficient to commit the transaction deleting the snapshot or if it's
+necessary to wait until the subvolume is completely cleaned.
 
-https://pastebin.com/raw/hmmmnzJY
-
-It just silences a warning that one of the kernel test robots reported
-last sunday:
-
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org/thread/CRTG5J2M2D7Q7M5GPHXKHOKGKN3GSVWJ/
-
-It doesn't change anything in terms of behaviour.
-
-Thanks.
+The former would require 'btrfs subvol delte -c /snapshot' while the
+latter needs the id of the subvolume and then
+'btrfs subvol sync /path id'.
