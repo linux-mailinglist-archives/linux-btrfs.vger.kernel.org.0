@@ -2,57 +2,57 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0EFC24C273
-	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Aug 2020 17:46:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C6A224C274
+	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Aug 2020 17:47:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729341AbgHTPqx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 20 Aug 2020 11:46:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58836 "EHLO
+        id S1729408AbgHTPq5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 20 Aug 2020 11:46:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729357AbgHTPqf (ORCPT
+        with ESMTP id S1729368AbgHTPqg (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 20 Aug 2020 11:46:35 -0400
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47AFFC061343
-        for <linux-btrfs@vger.kernel.org>; Thu, 20 Aug 2020 08:46:32 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id p4so1927129qkf.0
-        for <linux-btrfs@vger.kernel.org>; Thu, 20 Aug 2020 08:46:32 -0700 (PDT)
+        Thu, 20 Aug 2020 11:46:36 -0400
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33C9FC061344
+        for <linux-btrfs@vger.kernel.org>; Thu, 20 Aug 2020 08:46:34 -0700 (PDT)
+Received: by mail-qt1-x842.google.com with SMTP id k18so1491463qtm.10
+        for <linux-btrfs@vger.kernel.org>; Thu, 20 Aug 2020 08:46:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=1glSk4pqUsuJHT+0yty918l6NsgFw+/BC0hXl0whkuk=;
-        b=VwkuJ03bp7igbCov7D2kvyp3uCa+1iucSZNktPQzA7RXx1q6zfMwhz4QypglRuTcOa
-         WlDhAgyyO3tlzSX0FZDKCLcRs3VvrwqPs16WI5jFThDAFG0L1VpBVmGKm5YWkEJSwZ5F
-         eQPlOqE9vUnJnaktVG839LyyrOpHfpm9xrADrJLPZt1lnhaDJ7qP+Ze4ThNfH1mrjAA7
-         sHznHjKAw5GdpypgBnM6BhuD6V9ueYojRgoCTMP/W25hMgSy4TE4yTVFvrUEvT9CMFLn
-         Bp8cesJdIObURRULseRJ/t4DHMkFjbVOI7MkgRrfyPoOUTPYkgSms1egFJlDGMP5Ni88
-         n8Ag==
+        bh=KGOmKX0jhKrrG/3zP8uN34zDcs2xeB+MvKEuyLLQ3/c=;
+        b=uMcUHlJlyVcGXt5usMUPbM0J2oT02gLdOXRD0eg2zFqsXsmNtkzm/9cZW4XwHvtWor
+         u8mI5Xf8IMRLwMpDs7oSEPRd7As37pWLlpfAZ6ZyyPycPl7GKNefcZ+tsVY0Z+heAVbE
+         2MzcJ8bM8/4OVVeZ5njKKb+mCDCZXimpyBm7u4Y5Ihvh7CwoSVF1JgwvW5Z/zu9mV6PI
+         MJ368BPcjDucYWG1zYA/unHI/ARInY1RGCio9B+4fHTdb5iuK/ZIJ1ZIv7eqzSMK2klL
+         9YKXfWPVkXiWh2aXWb43HP5G0Q62qdjERWlBOldpEF+LbX+vZMwckLlbzx8s7eXOthoG
+         vKaA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=1glSk4pqUsuJHT+0yty918l6NsgFw+/BC0hXl0whkuk=;
-        b=ghV4TGF6FwZRcfA72x3UUGwCTAlmwyFufStyiiNO31/xkNc8xfzoqFQrKXkRY2XHAB
-         2WH3LPzW9YUn69DPY2AzN7HyWDkVo6iekOmw1KbZPNsyGRXgZJPdlT1MDG83dVNUA2GB
-         UUtrU1CyisvYVcJsFTO2f6b6Vsk9/bKjaEDqFhpU5ljTbOA3NbGwLtdwpu/Q/eIQj0w0
-         0a8Ght0hN57GAkJ3tlGHMpWP4ecmFYJ4yuCO1s+asmDevFiBBTj4vQdPa09aJhLAXS5N
-         y1xNbEZe2H/UyOo1EZL6URSsvinSCLECGXfBQLzgcYo0XLKkaR58UyyqHZDt0ATSCgw/
-         dEjQ==
-X-Gm-Message-State: AOAM531AUiuEqaSym2FmC0jhbK0aeBeqaN9HGZn8LUyrJakqhr3HVC9b
-        lnW3G7fDErLJzhVFQsc55DOTJor9DusjmO05
-X-Google-Smtp-Source: ABdhPJxYl1bANDaqPucU89vD9dTO2fRZVOXtJHsebyBaS9y+au38dXUhR8bvoCGoIJkH6FlFxKcm0Q==
-X-Received: by 2002:a05:620a:52f:: with SMTP id h15mr3015698qkh.156.1597938391077;
-        Thu, 20 Aug 2020 08:46:31 -0700 (PDT)
+        bh=KGOmKX0jhKrrG/3zP8uN34zDcs2xeB+MvKEuyLLQ3/c=;
+        b=AigzawOPq0ZnKdVr3g+jqXx3HyZkQj3Mcj0DIVHYTHm7EhNb0C4SuHJOH6TjSTYkxk
+         uVf3HcC9/M4P+RdHePfaECIjhV91zRDeCrK9Nvo6cVVhyepU6Pnl8EmDn69E5XyFR9pW
+         gHIqmz6PZeIV17nGbOxJRVo24b5nY2qMiIzPUyY/TKIQ99WOzzCFLAHxunYbLZDgd1N4
+         ozkf+8oPew4LuZiPgliwJv4Jk5A8Uf7ZcNOoItSZrKJcF4vtiOqOMlxU/q7AkNcgWYlu
+         oBADNtgy3zjwpwID+iQMz9qPwC0vy6ji1pDvGAjgUfiUUMD4mz4au85w1waiDHciW5xi
+         VRBQ==
+X-Gm-Message-State: AOAM531CtKSSoW1DfsRcR4yJuIKp9SIZvGLX9XlrIptuWwGesu6Qoll3
+        Us+bZ2Gp//EuBfqERwWTNj9faVgQ1ARMoKxo
+X-Google-Smtp-Source: ABdhPJyETEwsYXcJEyo2FNkxtfY2jOg36Yg9REAse2bxz2norqUI4Zs97T7zNSMy6fYjCRrKNO0zTA==
+X-Received: by 2002:ac8:6901:: with SMTP id e1mr3266772qtr.352.1597938392919;
+        Thu, 20 Aug 2020 08:46:32 -0700 (PDT)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id g61sm3304634qtd.65.2020.08.20.08.46.29
+        by smtp.gmail.com with ESMTPSA id q34sm3512481qtk.32.2020.08.20.08.46.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Aug 2020 08:46:29 -0700 (PDT)
+        Thu, 20 Aug 2020 08:46:32 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 08/12] btrfs: introduce BTRFS_NESTING_NEW_ROOT for adding new roots
-Date:   Thu, 20 Aug 2020 11:46:07 -0400
-Message-Id: <d5e2eb50d01b4d7047fe38c4b0a5b266e9257100.1597938191.git.josef@toxicpanda.com>
+Subject: [PATCH 09/12] btrfs: use BTRFS_NESTED_NEW_ROOT for double splits
+Date:   Thu, 20 Aug 2020 11:46:08 -0400
+Message-Id: <656ac6c2b7c5b82ad13c1ce9a6a2f9719b7ed077.1597938191.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <cover.1597938190.git.josef@toxicpanda.com>
 References: <cover.1597938190.git.josef@toxicpanda.com>
@@ -63,76 +63,45 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The way we add new roots is confusing from a locking perspective for
-lockdep.  We generally have the rule that we lock things in order from
-highest level to lowest, but in the case of adding a new level to the
-tree we actually allocate a new block for the root, which makes the
-locking go in reverse.  A similar issue exists for snapshotting, we cow
-the original root for the root of a new tree, however they're at the
-same level.  Address this by using BTRFS_NESTING_NEW_ROOT for these
-operations.
+I've made this change separate since it requires both of the newly added
+NESTED flags and I didn't want to slip it into one of those changes.
+
+If we do a double split of a node we can end up doing a
+BTRFS_NESTED_SPLIT on level 0, which throws lockdep off because it
+appears as a double lock.  Since we're maxed out on subclasses, use
+BTRFS_NESTED_NEW_ROOT if we had to do a double split.  This is OK
+because we won't have to do a double split if we had to insert a new
+root, and the new root would be at a higher level anyway.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/ctree.c   |  5 +++--
- fs/btrfs/locking.h | 14 ++++++++++++++
- 2 files changed, 17 insertions(+), 2 deletions(-)
+ fs/btrfs/ctree.c | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
 
 diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
-index 4b62acac31b6..a67d3e28e0fc 100644
+index a67d3e28e0fc..e4574ff3ba15 100644
 --- a/fs/btrfs/ctree.c
 +++ b/fs/btrfs/ctree.c
-@@ -198,7 +198,8 @@ int btrfs_copy_root(struct btrfs_trans_handle *trans,
- 		btrfs_node_key(buf, &disk_key, 0);
- 
- 	cow = btrfs_alloc_tree_block(trans, root, 0, new_root_objectid,
--			&disk_key, level, buf->start, 0, BTRFS_NESTING_NORMAL);
-+				     &disk_key, level, buf->start, 0,
-+				     BTRFS_NESTING_NEW_ROOT);
- 	if (IS_ERR(cow))
- 		return PTR_ERR(cow);
- 
-@@ -3343,7 +3344,7 @@ static noinline int insert_new_root(struct btrfs_trans_handle *trans,
- 
- 	c = alloc_tree_block_no_bg_flush(trans, root, 0, &lower_key, level,
- 					 root->node->start, 0,
--					 BTRFS_NESTING_NORMAL);
-+					 BTRFS_NESTING_NEW_ROOT);
- 	if (IS_ERR(c))
- 		return PTR_ERR(c);
- 
-diff --git a/fs/btrfs/locking.h b/fs/btrfs/locking.h
-index 3b5a948bf74f..e74ae478b778 100644
---- a/fs/btrfs/locking.h
-+++ b/fs/btrfs/locking.h
-@@ -16,6 +16,11 @@
- #define BTRFS_WRITE_LOCK_BLOCKING 3
- #define BTRFS_READ_LOCK_BLOCKING 4
- 
-+/*
-+ * We are limited in number of subclasses by MAX_LOCKDEP_SUBCLASSES, which at
-+ * the time of this patch is 8, which is how many we're using here.  Keep this
-+ * in mind if you decide you want to add another subclass.
-+ */
- enum btrfs_lock_nesting {
- 	BTRFS_NESTING_NORMAL,
- 
-@@ -56,6 +61,15 @@ enum btrfs_lock_nesting {
- 	 */
- 	BTRFS_NESTING_SPLIT,
+@@ -4250,8 +4250,18 @@ static noinline int split_leaf(struct btrfs_trans_handle *trans,
+ 	else
+ 		btrfs_item_key(l, &disk_key, mid);
  
 +	/*
-+	 * When promoting a new block to a root we need to have a special
-+	 * subclass so we don't confuse lockdep, as it will appear that we are
-+	 * locking a higher level node before a lower level one.  Copying also
-+	 * has this problem as it appears we're locking the same block again
-+	 * when we make a snapshot of an existing root.
++	 * We have to about BTRFS_NESTING_NEW_ROOT here if we've done a double
++	 * split, because we're only allowed to have MAX_LOCKDEP_SUBCLASSES
++	 * subclasses, which is 8 at the time of this patch, and we've maxed it
++	 * out.  In the future we could add a
++	 * BTRFS_NESTING_SPLIT_THE_SPLITTENING if we need to, but for now just
++	 * use BTRFS_NESTING_NEW_ROOT.
 +	 */
-+	BTRFS_NESTING_NEW_ROOT,
-+
- 	/*
- 	 * We are limited to MAX_LOCKDEP_SUBLCLASSES number of subclasses, so
- 	 * add this in here and add a static_assert to keep us from going over
+ 	right = alloc_tree_block_no_bg_flush(trans, root, 0, &disk_key, 0,
+-					     l->start, 0, BTRFS_NESTING_SPLIT);
++					     l->start, 0, num_doubles ?
++					     BTRFS_NESTING_NEW_ROOT :
++					     BTRFS_NESTING_SPLIT);
+ 	if (IS_ERR(right))
+ 		return PTR_ERR(right);
+ 
 -- 
 2.24.1
 
