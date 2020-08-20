@@ -2,243 +2,254 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 580FA24AD0B
-	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Aug 2020 04:37:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89C0C24ADE6
+	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Aug 2020 06:36:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726701AbgHTChB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 19 Aug 2020 22:37:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49996 "EHLO
+        id S1725798AbgHTEgz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 20 Aug 2020 00:36:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726803AbgHTCg7 (ORCPT
+        with ESMTP id S1725772AbgHTEgy (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 19 Aug 2020 22:36:59 -0400
-Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 987ABC061757
-        for <linux-btrfs@vger.kernel.org>; Wed, 19 Aug 2020 19:36:59 -0700 (PDT)
-Received: by mail-io1-xd31.google.com with SMTP id g13so815084ioo.9
-        for <linux-btrfs@vger.kernel.org>; Wed, 19 Aug 2020 19:36:59 -0700 (PDT)
+        Thu, 20 Aug 2020 00:36:54 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 502F7C061757
+        for <linux-btrfs@vger.kernel.org>; Wed, 19 Aug 2020 21:36:54 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id s14so474080plp.4
+        for <linux-btrfs@vger.kernel.org>; Wed, 19 Aug 2020 21:36:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=VWqPYNZgUbKv+janP5IdejbCBgWhXY6EAGyX2Oje8J0=;
-        b=jfkF+jRDojNsuhEg5T0oklp1sy9Xm6PiPrU/6HSOMUdai167RJREn0wvXGmTzRJ5Ol
-         ERwMvzAx9Y7Wou/A95dBAPTwzlmdq6JdLFhHXvL75tlWg/R8cTtS4ixAgjCj8DdNHrYq
-         So2U4SyVKscxCUTRe59rrft/VKbP02sX2UWB7bu0TveVTwLC81BpJ2RGvxbf1lLWsJLV
-         CwDIGvy0bpSIh4fQRjcyHu88G7UR74W1Kb0e3pihYItjvMnFt3F9jltltIw94XeSyX28
-         Y884RpYWqb0LEHzVwCb3NmVClgYWekwKn/q9wGAcQhxIurSBD8OvR1z3KS8pWjhhphvO
-         NY1Q==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=Wd5qcM6+L0aSnAi+Xitztn7H7GpviG91Hwx1DQjoglE=;
+        b=BCNkQD6elB1pgI58+PKTOgGwQ/Ikkc7x6mxEzzJ+EUduWThVWzyXU0f+sJUaBB2iOk
+         HD1M8DSEyqWxBOotf6l5O7QjpaljnXFSpWhhdZk74XuJ279uLrVyRyZSB7yVtV/ZG+4q
+         ZJGmhsoLCzOJCF+CfvSPrB602WCY0LwpCVbhJTf9KOxsbQxpVrHNj3M194ymhs/MyyDG
+         LppUHRb5cCzoTUyJICI2xoHZ5XpAVfO5LgBgKy4smRvd/X4CoE2fE5deEQTPHZBSnTpM
+         9Yd2aRlqqI0pFB0YmFcHKOCFiKyjWOLqHcvZYeDcN9IShQ3JRs+CtXG51ZakZ94RMsQU
+         EyPg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=VWqPYNZgUbKv+janP5IdejbCBgWhXY6EAGyX2Oje8J0=;
-        b=hjXxqIS0n/9BdbyftLTU3KH95mxX4ZFmAbPjIOPSnQcR15ISObgSG2JFdsqGT8BEs7
-         E/bFLA3e7AudB9fq2MLB6ZESb6ZrtcxWBUIon2zRfgJDigRP6plE8tiOd+Aly02uFGeC
-         cMdMEE3kxL3hfrWMNCFpHQd54xHgJ7QSWltSHeE0i3UvXXoDFkvOgFOBq8KPmayWlI/A
-         6HvIsalQkbsTbGhth2PMxaKc5sSfwXNvz4K4e58CcxefkTnwUivqgit09hGibqpTPCLu
-         cothVeo/feePnFWXy5IL/1a6I+QUdwCDwN37DxkQREN2pXdVcc74POCBlMxs688DbxKc
-         YWjQ==
-X-Gm-Message-State: AOAM53189cHuCDw7b2/xxsycYBndkhM45dWKmivVaTEgTaw1cXzPYPNP
-        gwM3uPzxseoI0RvCsNjjMGtgXvVbSebqSzNDAlEWaV/qwNZlgg==
-X-Google-Smtp-Source: ABdhPJxNG3XylkYzf8PiQ9vGfSbjfNE1/w5mITxxwujkXqhacUOb89wv2xT3dO+GLBF576A9E8J4vhWeX/G9UFczGyk=
-X-Received: by 2002:a05:6638:2692:: with SMTP id o18mr1272994jat.2.1597891018395;
- Wed, 19 Aug 2020 19:36:58 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=Wd5qcM6+L0aSnAi+Xitztn7H7GpviG91Hwx1DQjoglE=;
+        b=G4Ly9g2Eg0ZbIAucwjpb6s0MTOTYbihJ41A+aWOKe1N3ti/8VnL7lHc8+FEkZNaWeX
+         HXQvJS1znRVfYB1A2gH2koOkJP236/pEQldXkYA4x4y/0n8RPjFTYK2PtnbC5nJ/4AD+
+         OeunddYmWDkL41/2r5XJXa+PhA9V0/zLNrK6gvpu6PGbO8hmqT4tgP9UUH0Gk8hzd5q6
+         cWl042HRDu1whMHQhJ6DuMmDrdY8TLdvDuDrSlZ9pfE71EkHMmdz4v0fhMH6epHGSZ1Z
+         lM7IZYJ/qdnRrMKnyfZciZa3NFWlt8hPi3jNU3v5tc/ZgDnb3Pa5b6HgG+5TJjvtry5g
+         1MPg==
+X-Gm-Message-State: AOAM531WgKgcZBBsU64ovizyWAxGsaZNebUogd6AjHi1jWoXTNPIY8GY
+        MPewfGTwIaxXWgU+qK6vXUZ8u/WuAB8=
+X-Google-Smtp-Source: ABdhPJySWuBxCzM0mOI0pVSXL18wJzAwnEJAgNbYrm0tMIcD+BEDWlNI3ZqhdkZZI/tgptV82fpcbQ==
+X-Received: by 2002:a17:902:ea8c:: with SMTP id x12mr1292548plb.60.1597898213208;
+        Wed, 19 Aug 2020 21:36:53 -0700 (PDT)
+Received: from dell.circlecvi.com (S010664777d4a88b3.cg.shawcable.net. [70.77.224.58])
+        by smtp.gmail.com with ESMTPSA id k29sm913180pfp.142.2020.08.19.21.36.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 Aug 2020 21:36:52 -0700 (PDT)
+From:   Sheng Mao <shngmao@gmail.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     Neal Gompa <ngompa13@gmail.com>, Sheng Mao <shngmao@gmail.com>
+Subject: [PATCH v2] btrfs-progs: btrfsutil: add pkg-config files for btrfsutil
+Date:   Wed, 19 Aug 2020 22:36:18 -0600
+Message-Id: <20200820043618.51575-1-shngmao@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <CAEg-Je8L+KUx93im15DPGvczpvw8TfvhN752itm88w9Qwkg+sg@mail.gmail.com>
+References: <CAEg-Je8L+KUx93im15DPGvczpvw8TfvhN752itm88w9Qwkg+sg@mail.gmail.com>
 MIME-Version: 1.0
-References: <33c25613-1cd4-ffdb-0b79-5058cf5e2ced@toxicpanda.com> <CAEg-Je87or5MNL0Ttea+Hh5Bp=oMFEtt01JVJooyXQycscsMAg@mail.gmail.com>
-In-Reply-To: <CAEg-Je87or5MNL0Ttea+Hh5Bp=oMFEtt01JVJooyXQycscsMAg@mail.gmail.com>
-From:   Neal Gompa <ngompa13@gmail.com>
-Date:   Wed, 19 Aug 2020 22:36:22 -0400
-Message-ID: <CAEg-Je9g3FUzjUYvonDmEhOCaY3tVOgTTRLXGb58uYtjdrdj+A@mail.gmail.com>
-Subject: Re: [RFC] Tying in github issues into our workflow
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
-        "kernel-team@fb.com" <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Aug 19, 2020 at 8:42 PM Neal Gompa <ngompa13@gmail.com> wrote:
->
-> On Wed, Aug 19, 2020 at 4:37 PM Josef Bacik <josef@toxicpanda.com> wrote:
-> >
-> > Hello,
-> >
-> > As we discussed last week, we'd really like to have a way to better tra=
-ck the
-> > status of outstanding patches.  One of the suggestions Dave made was to=
- use the
-> > "Projects" feature inside github, because we're not going to be able to=
- get away
-> > from having patches on the mailinglist any time soon.
-> >
-> > I've mocked up a couple of helper scripts and some documentation on how=
- this
-> > would work.  I've tested the workflow (not with real patches yet becaus=
-e my
-> > develbox is down for maintenance ATM) and it seems reasonable and prett=
-y
-> > straightforward.  There are two scripts
-> >
-> > https://github.com/josefbacik/debug-scripts/blob/master/btrfs-send-patc=
-hes
-> > https://github.com/josefbacik/debug-scripts/blob/master/btrfs-create-is=
-sue
-> >
-> > I'll explain my thought process and such here, but if you don't care an=
-d just
-> > want to look at the workflow then skip to the PREREQUISITES section at =
-the bottom.
-> >
-> > The project exists here
-> >
-> > https://github.com/orgs/btrfs/projects/1
-> >
-> > and has a few columns.  When we submit patches we'll create an issue an=
-d it'll
-> > go into "Needs review".  This is straightforward, we're waiting on revi=
-ews for
-> > these patches.  From here it's a little manual unfortunately, but once =
-the
-> > patches are reviewed you can move the issue to "Ready to be merged", an=
-d from
-> > there Dave can decide if he's actually going to merge it.  If he does t=
-hen he
-> > can close the issue and it moves to the "Merged" state.  If he has comm=
-ents he
-> > can make those and move it to "Needs work".  Likewise if any reviewer h=
-as
-> > comments then the issue can be moved to "Needs work" by the reviewer.
-> >
-> > To reiterate we're not getting away from mailinglist interactions (yet)=
-, so we
-> > should keep all patch related discussion on the list for now, we simply=
- use
-> > these issues so patch series don't get lost.  This will also help revie=
-wers know
-> > what is left to be reviewed.
-> >
-> > Let me know what everybody (preferably just those of us who actually wr=
-ite
-> > kernel patches) thinks about this.  None of this is set in stone, tryin=
-g to work
-> > out the easiest way to help track patch review status.  Thanks,
-> >
-> > Josef
-> >
-> > PREREQUISITES
-> >
-> > You need to have the github cli tools installed, you can find packages =
-for them here
-> >
-> > https://github.com/cli/cli/releases
-> >
-> > YOU MUST INSTALL THIS ON A BOX THAT CAN OPEN A WEB BROWSER.  This is im=
-portant
-> > because the first time you run the gh command it sets up the 0auth stuf=
-f, so it
-> > must be able to open a browser.  The steps are
-> >
-> > 1) Install the gh package
-> > 2) run `gh repo view`.  This will launch the browser to do the 0auth st=
-uff,
-> >     follow the prompts.
-> > 3) [OPTIONAL] If you are like me and submit from a headless machine, yo=
-u need to
-> >     copy the ~/.config/gh/hosts.yaml file to the machine you are going =
-to use,
-> >     and everything will work fine.
-> >
-> > WORKFLOW
-> >
-> > DEVELOPER
-> >
-> > 1) The --thread option with git format-patch is is required for this to=
- work
-> >     with the tools I've written
-> >
-> >     For a patch series: mkdir patches; git format-patch --thread -o pat=
-ches -#
-> >     For a single patch: git format-patch --thread -1
-> >
-> > 2) ./btrfs-send-patches <patches|0001-<whatever.patch>
-> >
-> >     This does the git-send-email (which will ask you questions) and the=
-n creates
-> >     the issue with the Message-Id that was generated with the appropria=
-te links.
-> >
-> > 3) If you get feedback and your reviewer doesn't move the task to "Need=
-s work"
-> >     please do that, and then address any feedback.  Once the feedback i=
-s
-> >     addressed you can change the issue to "Needs review" and update the
-> >     description with the new Message-id information.
-> >
-> > REVIEWER
-> >
-> > 1) Check the project page
-> >
-> >     https://github.com/orgs/btrfs/projects/1
-> >
-> >     for anything in the "Needs review column".  Review those patches on=
- the list.
-> >
-> > 2a) If you are satisfied, change the status of the issue to "Ready to b=
-e merged"
-> >      by dragging it into that column.  Alternatively, if you are in the=
- issue
-> >      itself, you can click the drop-down menu under the "Projects" sect=
-ion on the
-> >      right and assign it to "Ready to be merged".
-> >
-> > 2b) If you have feedback, move the issue to the "Needs work" column in =
-the same
-> >      way as described above.
-> >
-> > DAVE/MAINTAINER
-> >
-> > 1) Anything in the "Ready to be merged" is what you care about, do what=
- you
-> >     want.  If you merge it, close the task and it'll be automatically m=
-oved to
-> >     "Merged", otherwise kick it back to whichever stage is appropriate.
->
-> I know you said that you principally wanted feedback from the btrfs
-> kernel hackers, but from someone who does the oddball thing here and
-> there and is trying to become increasingly active in btrfs upstream, I
-> have some thoughts here.
->
-> In general, I like the idea of moving to more contemporary workflows
-> for some parts of this stuff. I had actually been contemplating
-> setting up such a thing on pagure.io for tracking my own work on this
-> front (since I generally prefer to use FOSS platforms if I can).
-> Regardless of using GitHub.com or something else, I think it's a good
-> idea to have some generally usable way for tracking development and
-> allowing people to report issues to the project.
->
-> (It's a shame that kernel.org doesn't have a pagure instance. That
-> could be potentially more usable for a lot more people than the
-> oft-ignored and unloved bugzilla system, projects don't have to enable
-> pull requests with pagure projects, and all project metadata is stored
-> as git repositories, which I think would appeal to a lot of folks
-> here...)
->
+Add pc file for btrfsutil libraries. Users can use
+pkg-config to set up compilation and linking flags.
 
-By the way, in case anyone is interested in seeing my setup as I
-populate it, here it is: https://pagure.io/fedora-btrfs/project
+The paths in pc file depend on prefix variable but
+ignore DESTDIR. DESTDIR is used for packaging and
+it should not affect the paths in pc file.
 
-The project board is here:
-https://pagure.io/fedora-btrfs/project/boards/Development
+Signed-off-by: Sheng Mao <shngmao@gmail.com>
+---
+ .gitignore                      |  1 +
+ Makefile                        |  9 +++++++-
+ Makefile.inc.in                 |  1 +
+ configure.ac                    | 12 ++++++++++
+ libbtrfsutil/libbtrfsutil.pc.in | 11 +++++++++
+ tests/pkg-config-tests.sh       | 41 +++++++++++++++++++++++++++++++++
+ 6 files changed, 74 insertions(+), 1 deletion(-)
+ create mode 100644 libbtrfsutil/libbtrfsutil.pc.in
+ create mode 100644 tests/pkg-config-tests.sh
 
-It maps to issues tagged with "Dev":
-https://pagure.io/fedora-btrfs/project/issues?tags=3DDev
+diff --git a/.gitignore b/.gitignore
+index 1c70ec94..67404361 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -97,3 +97,4 @@
+ /Documentation/mkfs.btrfs.8
+ 
+ *.patch
++*.pc
+diff --git a/Makefile b/Makefile
+index c788b91b..42ba9d7f 100644
+--- a/Makefile
++++ b/Makefile
+@@ -436,13 +436,18 @@ test-clean:
+ 	@echo "Cleaning tests"
+ 	$(Q)bash tests/clean-tests.sh
+ 
++test-pkg-config:
++	@echo "Test pkg-config settings"
++	export libdir incdir
++	$(Q)bash tests/pkg-config-tests.sh
++
+ test-inst: all
+ 	@tmpdest=`mktemp --tmpdir -d btrfs-inst.XXXXXX` && \
+ 		echo "Test installation to $$tmpdest" && \
+ 		$(MAKE) $(MAKEOPTS) DESTDIR=$$tmpdest install && \
+ 		$(RM) -rf -- $$tmpdest
+ 
+-test: test-check test-check-lowmem test-mkfs test-misc test-cli test-convert test-fuzz
++test: test-check test-check-lowmem test-mkfs test-misc test-cli test-convert test-fuzz test-pkg-config
+ 
+ testsuite: btrfs-corrupt-block btrfs-find-root btrfs-select-super fssum
+ 	@echo "Export tests as a package"
+@@ -779,6 +784,8 @@ endif
+ 	$(INSTALL) -m755 -d $(DESTDIR)$(incdir)/btrfs
+ 	$(INSTALL) -m644 $(libbtrfs_headers) $(DESTDIR)$(incdir)/btrfs
+ 	$(INSTALL) -m644 libbtrfsutil/btrfsutil.h $(DESTDIR)$(incdir)
++	$(INSTALL) -m755 -d $(DESTDIR)$(pkgconfigdir)
++	$(INSTALL) -m644 libbtrfsutil/libbtrfsutil.pc $(DESTDIR)$(pkgconfigdir)
+ endif
+ 
+ ifeq ($(PYTHON_BINDINGS),1)
+diff --git a/Makefile.inc.in b/Makefile.inc.in
+index f3cd2733..9f493371 100644
+--- a/Makefile.inc.in
++++ b/Makefile.inc.in
+@@ -41,6 +41,7 @@ libdir ?= @libdir@
+ incdir = @includedir@
+ udevdir = @UDEVDIR@
+ udevruledir = ${udevdir}/rules.d
++pkgconfigdir = @pkgconfigdir@
+ 
+ # external libs required by various binaries; for btrfs-foo,
+ # specify btrfs_foo_libs = <list of libs>; see $($(subst...)) rules in Makefile
+diff --git a/configure.ac b/configure.ac
+index 7c2c9b8d..a693ad4e 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -12,6 +12,10 @@ LIBBTRFS_MAJOR=0
+ LIBBTRFS_MINOR=1
+ LIBBTRFS_PATCHLEVEL=2
+ 
++BTRFS_UTIL_VERSION_MAJOR=1
++BTRFS_UTIL_VERSION_MINOR=2
++BTRFS_UTIL_VERSION_PATCH=0
++
+ CFLAGS=${CFLAGS:-"-g -O1 -Wall -D_FORTIFY_SOURCE=2"}
+ AC_SUBST([CFLAGS])
+ 
+@@ -300,18 +304,25 @@ AC_SUBST([LZO2_LIBS])
+ AC_SUBST([LZO2_LIBS_STATIC])
+ AC_SUBST([LZO2_CFLAGS])
+ 
++dnl call PKG_INSTALLDIR from pkg.m4 to set pkgconfigdir
++m4_ifdef([PKG_INSTALLDIR], [PKG_INSTALLDIR], [AC_MSG_ERROR([please install pkgconf])])
+ 
+ dnl library stuff
+ AC_SUBST([LIBBTRFS_MAJOR])
+ AC_SUBST([LIBBTRFS_MINOR])
+ AC_SUBST([LIBBTRFS_PATCHLEVEL])
+ 
++AC_SUBST([BTRFS_UTIL_VERSION_MAJOR])
++AC_SUBST([BTRFS_UTIL_VERSION_MINOR])
++AC_SUBST([BTRFS_UTIL_VERSION_PATCH])
++
+ AC_CONFIG_HEADERS([config.h])
+ 
+ AC_CONFIG_FILES([
+ Makefile.inc
+ Documentation/Makefile
+ version.h
++libbtrfsutil/libbtrfsutil.pc
+ ])
+ 
+ AC_OUTPUT
+@@ -325,6 +336,7 @@ AC_MSG_RESULT([
+ 	bindir:             ${bindir}
+ 	libdir:             ${libdir}
+ 	includedir:         ${includedir}
++	pkgconfigdir:       ${pkgconfigdir}
+ 
+ 	compiler:           ${CC}
+ 	cflags:             ${CFLAGS}
+diff --git a/libbtrfsutil/libbtrfsutil.pc.in b/libbtrfsutil/libbtrfsutil.pc.in
+new file mode 100644
+index 00000000..81e66622
+--- /dev/null
++++ b/libbtrfsutil/libbtrfsutil.pc.in
+@@ -0,0 +1,11 @@
++prefix=@prefix@
++exec_prefix=@exec_prefix@
++libdir=@libdir@
++includedir=@includedir@
++
++Name: libbtrfsutil
++Description: libbtrfsutil library
++Version: @BTRFS_UTIL_VERSION_MAJOR@.@BTRFS_UTIL_VERSION_MINOR@.@BTRFS_UTIL_VERSION_PATCH@
++URL: http://btrfs.wiki.kernel.org
++Cflags: -I${includedir}
++Libs: -L${libdir} -lbtrfsutil
+diff --git a/tests/pkg-config-tests.sh b/tests/pkg-config-tests.sh
+new file mode 100644
+index 00000000..faf15956
+--- /dev/null
++++ b/tests/pkg-config-tests.sh
+@@ -0,0 +1,41 @@
++#!/bin/sh
++#
++# test pkg-config can find libbtrfsutil
++
++SCRIPT_DIR=$(dirname $(readlink -f "$0"))
++TOP=$(readlink -f "$SCRIPT_DIR/../")
++if [ ! -f "$TOP/configure.ac" ]; then
++    exit 0
++fi
++
++export PKG_CONFIG_PATH="$TOP/libbtrfsutil"
++PKG_CONFIG=pkg-config
++LIBNAME=libbtrfsutil
++
++die() {
++	echo "ERROR: $@"
++	exit 1
++}
++
++test-exists() {
++    ${PKG_CONFIG} --exists $1 || die "$1 doesn't exist"
++}
++
++test-pkg-config() {
++    if [ "$#" != "3" ]; then
++        echo "$0 needs 3 arguments"
++        exit 1
++    fi
++    libname="$1"
++    flags="$2"
++    actual="$(${PKG_CONFIG} $flags $libname | awk '{gsub(/^\s+|\s+$/,"")}1')"
++    expected="$3"
++
++    if [ "$actual" != "$expected" ]; then
++        die "pkg-config $flags failed on $libname: '$actual' != '$expected'"
++    fi
++}
++
++test-exists "$LIBNAME"
++test-pkg-config "$LIBNAME" "--cflags" "-I${incdir}"
++test-pkg-config "$LIBNAME" "--libs"  "-L${libdir} -lbtrfsutil"
+-- 
+2.25.1
 
-
-
---=20
-=E7=9C=9F=E5=AE=9F=E3=81=AF=E3=81=84=E3=81=A4=E3=82=82=E4=B8=80=E3=81=A4=EF=
-=BC=81/ Always, there's only one truth!
