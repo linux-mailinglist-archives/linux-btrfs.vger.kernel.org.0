@@ -2,90 +2,85 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BEF924AC04
-	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Aug 2020 02:19:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B24ED24AC19
+	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Aug 2020 02:24:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726854AbgHTAST (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 19 Aug 2020 20:18:19 -0400
-Received: from azure.uno.uk.net ([95.172.254.11]:47066 "EHLO azure.uno.uk.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726578AbgHTASQ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 19 Aug 2020 20:18:16 -0400
-X-Greylist: delayed 3685 seconds by postgrey-1.27 at vger.kernel.org; Wed, 19 Aug 2020 20:18:15 EDT
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=sabi.unospace.net; s=default; h=From:References:In-Reply-To:Subject:To:Date
-        :Message-ID:Content-Transfer-Encoding:Content-Type:MIME-Version:Sender:
-        Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=s6g6cIvV71faqCDyNALOfjpx8UPS+VaWpdzgXZNwGxU=; b=cwVUwnR732C77DTBU/fFSgDUNz
-        lG+KxgGvF2GDExY5dyjsBTzQFAwSdS6/y/OOgdSzvqlKbFp5TjnKevxJ9eBuXKv3N//xoV4YjbWQ8
-        S2TYz+Xxm0dZb1kFnDRLmcolpNbDZZq/LoCbUPAU8eLK2htnOzI7UyFhbFcg7ORQ5lV6bptzv9aVe
-        F4tGoPKkyfXGhV+8c/FOY9DWyRWvdffBC0SVE7rKTO6qfFBhvQZIHIlD7peatD0nGRv9DdRFug0eN
-        3w2WPPX+T9oU68c2xb65aI66VhdLrp00H7cNw2mKSAE64vU+tFjKoGP4cJDmBnnEEF5EcwZVWiEuD
-        m6zXbJDA==;
-Received: from [95.172.224.50] (port=38846 helo=ty.sabi.co.UK)
-        by azure.uno.uk.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <postmaster@root.t00.sabi.co.uk>)
-        id 1k8XK5-0006pP-9Y
-        for linux-btrfs@vger.kernel.org; Thu, 20 Aug 2020 00:16:49 +0100
-Received: from from [127.0.0.1] (helo=cyme.ty.sabi.co.uk)
-        by ty.sabi.co.UK with esmtps(Cipher TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)(Exim 4.93 5)
-        id 1k8XFH-00BlEo-Eo
-        for <linux-btrfs@vger.kernel.org>; Thu, 20 Aug 2020 00:11:51 +0100
+        id S1726691AbgHTAY2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 19 Aug 2020 20:24:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57910 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726482AbgHTAY1 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 19 Aug 2020 20:24:27 -0400
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26F98C061757
+        for <linux-btrfs@vger.kernel.org>; Wed, 19 Aug 2020 17:24:27 -0700 (PDT)
+Received: by mail-io1-xd43.google.com with SMTP id s2so626269ioo.2
+        for <linux-btrfs@vger.kernel.org>; Wed, 19 Aug 2020 17:24:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=VTHFfJRuh8efurzdpumddOiJw7yWRewOL/JeqiAes0Y=;
+        b=MRP/QFh97EIjNPN4QtlbwDqijyeEXvFp9XqiHL7gvQi9gWr+NLZCgcnPNv5NVzVVoz
+         wcnxKdQxqhoUFSob31l240+iDeSXO5FhkvNOvkhQOVHO/5R/k+4KUENAuNNAyJj8zrTV
+         x9LjhCggQqgPIjmnOQgHjDMujfNlETWIBTU8xMIjdgJhGIy5twsODzOGoWg2l8D+Fk08
+         ZbXrgNRVDSBYOg+g5xdbrKLUPD/E/0xHsOUe3RceKHy31ux1Ou3dHhaMHeNlQnHokq3C
+         lwJMx/hqfI0uP3MfL/UYnTERYtaGBo3MjDsUt1okdfFHVF+TXDW+FamzjOy8WkXzDbQK
+         weNQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=VTHFfJRuh8efurzdpumddOiJw7yWRewOL/JeqiAes0Y=;
+        b=m7iM4NCjkJlyUUQoCEKWL2lgsrdSBrv1N2ec6qxE7E2Ocu2ywRkcGN86wwS66ebiuv
+         HZZSrh6hYfeO3qQaydPpj5qH+fcvLXkGeeQaroSopJSQDfMxk+lQQkvf2CdeSq3nxMM2
+         cfUrxaTNzNuLhfstX0dnMwjvFnZj/NMqF9P+bycB9w9ZFyO5I0FlPzWRjbaFXNCYFthu
+         zkV2xQWMGZ9IpR7q4i5UeWCJFINgbQ2lKPsFmbUDcB5H/7Arr7zvveipbfLWO+YKmkKC
+         pkLoxJFN0MGqpUCu8qg7OMlOA+DUvg0WPxuNHkbuY7uCffeI/ASOinTvMsR45/8HTyZj
+         rDQg==
+X-Gm-Message-State: AOAM533qJrJ1cvGipNbVBwxpv3nnL3JRasMM3eZhbxw7wWumXYL+ozuY
+        KYxSS7BBRMtYJzNVd4Dk3mxsrK2lbi9Cgk33h38=
+X-Google-Smtp-Source: ABdhPJxYJY3BnjayDTZ4TogLRI+EQEeUfZRb1mgma6IGO3LKTbzJzhmc2KDe9EUEEnFaGgiUCj2bp6d6nz3sVYQub5U=
+X-Received: by 2002:a6b:b4c8:: with SMTP id d191mr439108iof.174.1597883066265;
+ Wed, 19 Aug 2020 17:24:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-Message-ID: <24381.45493.238720.540436@cyme.ty.sabi.co.uk>
-Date:   Thu, 20 Aug 2020 00:11:49 +0100
-To:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Subject: Re: Linux RAID with btrfs stuck and consume 100 % CPU
-In-Reply-To: <CAJCQCtTQN60V=DEkNvDedq+usfmFB+SQP2SBezUaSeUjjY46nA@mail.gmail.com>
-References: <d3fced3f-6c2b-5ffa-fd24-b24ec6e7d4be@xmyslivec.cz>
-        <CAJCQCtSfz+b38fW3zdcHwMMtO1LfXSq+0xgg_DaKShmAumuCWQ@mail.gmail.com>
-        <29509e08-e373-b352-d696-fcb9f507a545@xmyslivec.cz>
-        <CAJCQCtRx7NJP=-rX5g_n5ZL7ypX-5z_L6d6sk120+4Avs6rJUw@mail.gmail.com>
-        <695936b4-67a2-c862-9cb6-5545b4ab3c42@xmyslivec.cz>
-        <CAJCQCtQWNSd123OJ_Rp8NO0=upY2Mn+SE7pdMqmyizJP028Yow@mail.gmail.com>
-        <2f2f1c21-c81b-55aa-6f77-e2d3f32d32cb@xmyslivec.cz>
-        <CAJCQCtTQN60V=DEkNvDedq+usfmFB+SQP2SBezUaSeUjjY46nA@mail.gmail.com>
-X-Mailer: VM 8.2.0b under 26.3 (x86_64-pc-linux-gnu)
-From:   pg@mdraid.list.sabi.co.UK (Peter Grandi)
-X-Disclaimer: This message contains only personal opinions
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - azure.uno.uk.net
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - root.t00.sabi.co.uk
-X-Get-Message-Sender-Via: azure.uno.uk.net: authenticated_id: sabity@sabi.unospace.net
-X-Authenticated-Sender: azure.uno.uk.net: sabity@sabi.unospace.net
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+References: <20200819214558.531259-1-shngmao@gmail.com>
+In-Reply-To: <20200819214558.531259-1-shngmao@gmail.com>
+From:   Neal Gompa <ngompa13@gmail.com>
+Date:   Wed, 19 Aug 2020 20:23:50 -0400
+Message-ID: <CAEg-Je8L+KUx93im15DPGvczpvw8TfvhN752itm88w9Qwkg+sg@mail.gmail.com>
+Subject: Re: [PATCH] btrfs-progs: btrfsutil: add pkg-config files for btrfsutil
+To:     Sheng Mao <shngmao@gmail.com>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-[...]
+On Wed, Aug 19, 2020 at 5:47 PM Sheng Mao <shngmao@gmail.com> wrote:
+>
+> Add pc files for dynamic and static btrfsutil
+> libraries. Users can use pkg-config to set up
+> compilation and linking flags.
+>
+> The paths in pc files depend on prefix variable but
+> ignore DESTDIR. DESTDIR is used for packaging and
+> it should not affect the paths in pc files.
+>
 
-> But I do see in the sysrq+w evidence of a Btrfs snapshot
-> happening,
+There should be no separate pkgconfig file for static libraries, since
+you can tell a compiler to prefer the static library over the dynamic
+library when using -lbtrfsutil with -Bstatic flag.
 
-There is a known "limitation" with Btrfs and subvolumes and high
-CPU usage, especially when there are many (more than a few
-dozen) snapshots:
+This also reminds me that I need to submit that patch set to fix the
+versioning for the btrfs libraries, because they're completely out of
+whack and make life difficult...
 
-https://btrfs.wiki.kernel.org/index.php/Gotchas#Having_many_subvolumes_can_be_very_slow
 
-> which will result in a flush of the file system. Since the
-> mdadm raid journal is on two SSDs which should be fast enough
 
-Are those SSDs expensive "enterprise" class models with
-supercapacitor power backup?
-
-> to accept the metadata changes before actually doing the
-> flush.
-
-Each metadata change is am "sync" point too.
+--
+=E7=9C=9F=E5=AE=9F=E3=81=AF=E3=81=84=E3=81=A4=E3=82=82=E4=B8=80=E3=81=A4=EF=
+=BC=81/ Always, there's only one truth!
