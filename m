@@ -2,65 +2,61 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60DB124BB6F
-	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Aug 2020 14:29:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B09B724BCCA
+	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Aug 2020 14:53:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729808AbgHTJvh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 20 Aug 2020 05:51:37 -0400
-Received: from mx2.suse.de ([195.135.220.15]:48406 "EHLO mx2.suse.de"
+        id S1730501AbgHTMwm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 20 Aug 2020 08:52:42 -0400
+Received: from mx2.suse.de ([195.135.220.15]:39800 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729604AbgHTJvc (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 20 Aug 2020 05:51:32 -0400
+        id S1729151AbgHTJnS (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 20 Aug 2020 05:43:18 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 7E4C6AD19;
-        Thu, 20 Aug 2020 09:51:57 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 41B32AE96;
+        Thu, 20 Aug 2020 09:43:44 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id B5329DA87C; Thu, 20 Aug 2020 11:50:24 +0200 (CEST)
-Date:   Thu, 20 Aug 2020 11:50:24 +0200
+        id 74235DA87C; Thu, 20 Aug 2020 11:42:11 +0200 (CEST)
+Date:   Thu, 20 Aug 2020 11:42:11 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     dsterba@suse.cz, linux-btrfs@vger.kernel.org,
-        Josef Bacik <josef@toxicpanda.com>
-Subject: Re: [PATCH v5 1/4] btrfs: extent_io: do extra check for extent
- buffer read write functions
-Message-ID: <20200820095024.GX2026@twin.jikos.cz>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     Daniel Martinez <danielsmartinez@gmail.com>,
+        linux-btrfs@vger.kernel.org
+Subject: Re: BUG: kernel NULL pointer dereference when using zstd
+Message-ID: <20200820094211.GW2026@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>
-References: <20200819063550.62832-1-wqu@suse.com>
- <20200819063550.62832-2-wqu@suse.com>
- <20200819171159.GT2026@twin.jikos.cz>
- <66f629fa-e636-6ab5-eda8-5299d996b2f4@suse.com>
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        Daniel Martinez <danielsmartinez@gmail.com>,
+        linux-btrfs@vger.kernel.org
+References: <CAMmfObZhCNGDW6Z4jGHNA+ZCVP=tWvt=DLm1isuwRS4NEebp4Q@mail.gmail.com>
+ <4988ccc8-8c18-ecde-c6d4-bc2aa0360482@gmx.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <66f629fa-e636-6ab5-eda8-5299d996b2f4@suse.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <4988ccc8-8c18-ecde-c6d4-bc2aa0360482@gmx.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Aug 20, 2020 at 07:14:13AM +0800, Qu Wenruo wrote:
-> >> +static inline int check_eb_range(const struct extent_buffer *eb,
-> >> +				 unsigned long start, unsigned long len)
-> >> +{
-> >> +	/* start, start + len should not go beyond eb->len nor overflow */
-> >> +	if (unlikely(start > eb->len || start + len > eb->len ||
-> >> +		     len > eb->len)) {
+On Thu, Aug 20, 2020 at 07:31:15AM +0800, Qu Wenruo wrote:
+> 
+> 
+> On 2020/8/20 上午7:14, Daniel Martinez wrote:
+> > Hello,
 > > 
-> > Can the number of condition be reduced? If 'start + len' overflows, then
-> > we don't need to check 'start > eb->len', and for the case where
-> > start = 1024 and len = -1024 the 'len > eb-len' would be enough.
+> > I have encountered a bug when using zstd compression (I assume that's
+> > what caused it, but I could be wrong) on the Debian kernel 5.7.10-1.
 > 
-> I'm afraid not.
-> Although 'start > eb->len || len > eb->len' is enough to detect overflow
-> case, it no longer detects cases like 'start = 2k, len = 3k' while
-> eb->len == 4K case.
+> It's not zstd I guess, but a generic compression bug.
 > 
-> So we still need all 3 checks.
+> It's fixed by the upstream commit 1e6e238c3002 ("btrfs: inode: fix NULL
+> pointer dereference if inode doesn't need compression").
+> 
+> It's not yet merged into v5.7.y stable branch, I guess I need to
+> backport it manually then.
 
-I was suggesting 'start + len > eb->len', not 'start > eb-len'.
-
-"start > eb->len" is implied by "start + len > eb->len".
+The commit is in 5.4, 5.7 and 5.8 queue, so the next stable release will
+have it.
