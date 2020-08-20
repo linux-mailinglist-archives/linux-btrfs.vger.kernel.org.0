@@ -2,160 +2,193 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE96D24C679
-	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Aug 2020 22:00:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA10624C8B6
+	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Aug 2020 01:40:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727116AbgHTUAZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 20 Aug 2020 16:00:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41554 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727086AbgHTUAX (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 20 Aug 2020 16:00:23 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11C9FC061385
-        for <linux-btrfs@vger.kernel.org>; Thu, 20 Aug 2020 13:00:23 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id n129so2631630qkd.6
-        for <linux-btrfs@vger.kernel.org>; Thu, 20 Aug 2020 13:00:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
-         :content-transfer-encoding;
-        bh=bPl0gDbJ0AuaTH4ZtOzzR4bzr7UMecHSM2/vwsTZl7g=;
-        b=UAWreJYc9GTCXSpMYm2+eFK6DbVGU9FC8kE64Bn+w0h+KFowJeYb46EZOD8CO6pRyw
-         c5xl+Jsp8k5gCsn/ZI3XLv58Pf2vGzoRtVK3iJyV3Xono0yvjUzJzafVVmtoTvcMFRKv
-         ZoDNL4CCnYIOOJDgvOJDCE6G7n3dYXOAjY9aZ9utbCXWZ9HRI/WzfO/ixAwuPFLqqAZB
-         oIq/NTicWGnunxj2qB7IUivXwQydmyupzIuvhSGOMgNxt0JhZkcobUyZ+XswvTNigUv4
-         5qP9x3jNpCAWs2+2QrNLXpJMNBimvlkUio/5MOaT5nvU48Recwm/JlnYflV3hwziGdG5
-         Ix4w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=bPl0gDbJ0AuaTH4ZtOzzR4bzr7UMecHSM2/vwsTZl7g=;
-        b=hjbQNnuP8Uy1d6nEk/uCOVrsv7Jaz4lcvG2ugdwRRzgoedhCjYvU1N/aNmFaxpURWD
-         TjpwyoOGA0KxhM9IBbWcNgMZxueihz2WwydMlqKV6ZhSRqsQythk4ckRpaabClJLrsZm
-         2rcY3YbXeyV8XoYHSA2uEtFkQGazbfdWzC365kjKalVLDxlheryHUZFKqAHHFGoxzqZ1
-         uSB/BEqf9dWWQCmBq27GYAK9K2imLGKCbEmp4kdJrEKdJk+ImCAExC9egBqZwc4sXuki
-         fgGwS7XhvRyrvhw10BfCJEz8csXCQgoJM2BnvzqIbwH0nnvpIQ3weOC0lq72SqqOk18j
-         OrXw==
-X-Gm-Message-State: AOAM533wnpaq/oQzUsT29a7ZPF5PedZqgmXHjHfAKAdjfUmLwLd2xuCQ
-        csLgPoChGDmmP4vPJ9PxSqRyytsf5YDtb8kS
-X-Google-Smtp-Source: ABdhPJzKhlCXlG5Eo6hQnnjvjs764/uf+zLDT0frO8VWBo6GeAYO0MxxtkGHenpvUQ5YcoE+Op71Ow==
-X-Received: by 2002:a37:8484:: with SMTP id g126mr115834qkd.230.1597953620658;
-        Thu, 20 Aug 2020 13:00:20 -0700 (PDT)
-Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id z197sm2962775qkb.66.2020.08.20.13.00.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Aug 2020 13:00:20 -0700 (PDT)
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 2/2] btrfs: pretty print leaked root name
-Date:   Thu, 20 Aug 2020 16:00:15 -0400
-Message-Id: <461693e5c015857e684878e99e5e65075bb97c13.1597953516.git.josef@toxicpanda.com>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <cover.1597953516.git.josef@toxicpanda.com>
-References: <cover.1597953516.git.josef@toxicpanda.com>
+        id S1728812AbgHTXkF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 20 Aug 2020 19:40:05 -0400
+Received: from mout.gmx.net ([212.227.17.20]:57915 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728818AbgHTXkB (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 20 Aug 2020 19:40:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1597966796;
+        bh=TPK9VcLeanwwfqBwjZoWxQ7PAP2vrn1tTzwHKuzMmoc=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=bsh7M+0bNNu/OAbbever3EfUmo7wiMGwThThwWDTPloDeOp4WkUzDuFMiafO3dVAa
+         GVFMw9L58CtG6AO8QnDBetIiDV2AVnlUChip1jIP8DSgRBsO6F3jM47xCdzxQbk9gd
+         hZ9N4nUAlDNUCdF80I480lSiny5qSaTq7kpZRbAo=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MK3Vu-1kMiiT2Tew-00LYTq; Fri, 21
+ Aug 2020 01:39:56 +0200
+Subject: Re: [PATCH v5 1/4] btrfs: extent_io: do extra check for extent buffer
+ read write functions
+To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>
+References: <20200819063550.62832-1-wqu@suse.com>
+ <20200819063550.62832-2-wqu@suse.com> <20200819171159.GT2026@twin.jikos.cz>
+ <66f629fa-e636-6ab5-eda8-5299d996b2f4@suse.com>
+ <20200820095024.GX2026@twin.jikos.cz>
+ <1507884d-ad39-8edf-03fd-42e1d10f50e1@suse.com>
+ <20200820144647.GY2026@twin.jikos.cz>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
+ mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
+ PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
+ 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
+ D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
+ efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
+ ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
+ BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
+ 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
+ 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
+ EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
+ 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
+ ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
+ oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
+ fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
+ 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
+ ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
+ oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
+Message-ID: <97893a6e-f14f-b425-cd64-b8282f416a0a@gmx.com>
+Date:   Fri, 21 Aug 2020 07:39:52 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200820144647.GY2026@twin.jikos.cz>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="ijMwKKf0ItvOY5lUgX4Hm8AKRThR3oEkW"
+X-Provags-ID: V03:K1:cnkq79wAk4iyx+4qu5pB6FFLjrJMnUWnIXGLR7qhzDQx8GLPV6P
+ VwFEZqMMZn+Tp45t3pVi5oGQXdq1KpTYYYsriH3kIcZwwr7BD6CrlX7mMbwLqHVC1S+nza0
+ RCV+3nUKLc6WcEe+9Mln+FKmkgilX6f1yVtZbbdj+q3n+fBjt61oPO256zDwGuBGHiTzrKz
+ 8eULLoHQwqlo6omWV6ulA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:4nGragIUd1k=:w7lKKQgZqLHt0iNg73hyV8
+ yiyWq3K1nVTW3M7jQO42wA1zjllw/WKYAhIpYv9FPCPrIONySbBNUyWOIvNg4Qri4f5Oj3ycT
+ 3XKAVC1Z5VwLboz7o1LT1ea7X452h42WKVfCLn5b6bOLgfl4/QvgEWPdLAMEoJHXWg0Gt2W4p
+ /HwBT358zyLkCpi/HD/MhcgfRVtmZRUzDGD/3qqtTTUUTgSAGdfNADpwvzoh81ZJ8C2wMEwq8
+ s9+lkGGkB5YGTmaQRsycZIBHxGNxN7/1XU6T7sTROFND4AaOl8Vmuat1m9LXnUJmxZJP0cpfO
+ WZLX/JhFAqnPvr8AgskBRmX3OAfBa0MDHLEFMd1KDWAE0Cm4XrlHLdW/SFfkpgZx0cAdeKr3w
+ LLjEYY/cTI/29cssGbPIu1ZMCeNHp2/6fX49YZUYOSB9fN0cggE1OcZsLzbenpuBerX9Scw5/
+ lcu+QjIYT65cWURgJA3nTmQzS+ACKbjy6GEv/V94KsSd5XH22e3g+4OxxEuPASr/MAtGhbc3B
+ waBq7Z6U+aBtrfCXumZyzBPIBXKyebVXFplfad2AQ2DYxlK+6Jehct1VcnUrMtlR3jiyWrTH0
+ CyPrkdJabCoRpaAk15RQZB0Z1bTZuEQb80cSftPAXHHxxOyQ6nHR3Ht3sAwpKGk1XmixrUfod
+ LxsSQVo36k3eYIdL6LqblpMqju/tvdeuiaX8XgxH2rmzbhiS9xVEbDOYWkPaaFhui/Bv9CUb0
+ IP9DknuoFQlPQkfDSxesWmfvm5mRxEsB7lqDC2SGmkih3lFQYJcPEmHopoV39AgAVJSUqNo8c
+ L/Cgv2gutuAXJtOq5P5GWWUzxUOjA6eUReN/OfFqCoBqvYa/NrSGTPVln9ErMY0nulQ1H/1h6
+ DLM5k2dmQqeS/+VlTj3NYqdFKO3sProLiB2MmvRq1m5b2Eur1Wm5qkCQA/C6LmiLUydteOnke
+ gfBWb6ulbVYkkDVea6G7NnBIsMiRteE8cf30bz+hGmUTkcaJrc5o6yph5scSDw5cmxX+p+/jW
+ CvS9OuRcUL5Cz/vvxPQcaq/t2LWrr6r0mpSuhKpcfr3jBLYsQsgRrc5KrujYo9G2BlG0aDm/5
+ cADVwvxbEbKTOVKHXs/OVkx3VxuE+I9VEa5mFzMeVOmk0oP7xae33FJIdBPrCrzlcMrx9TIGw
+ ZRxRHbZ7RjuHAcJwRbzoBJ4C2S6JsvXqBP0RTPzbKvyBaO01LrsiGrNShDuBdlIE6Vc2+D/In
+ yIkF3wwcI9jXuBxMF3DoGVA072Zbq7bg15YKHZA==
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-I'm a actual human being so am incapable of converting u64 to s64 in my
-head, so add a helper to get the pretty name of a root objectid and use
-that helper to spit out the name for any special roots for leaked roots,
-so I don't have to scratch my head and figure out which root I messed up
-the refs for.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--ijMwKKf0ItvOY5lUgX4Hm8AKRThR3oEkW
+Content-Type: multipart/mixed; boundary="2Pu6ek4vfpBFOSRZjXICyWCTnPwbax41E"
 
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
----
- fs/btrfs/disk-io.c    |  8 +++++---
- fs/btrfs/print-tree.c | 37 +++++++++++++++++++++++++++++++++++++
- fs/btrfs/print-tree.h |  1 +
- 3 files changed, 43 insertions(+), 3 deletions(-)
+--2Pu6ek4vfpBFOSRZjXICyWCTnPwbax41E
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index ac6d6fddd5f4..a7358e0f59de 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -1506,11 +1506,13 @@ void btrfs_check_leaked_roots(struct btrfs_fs_info *fs_info)
- 	struct btrfs_root *root;
- 
- 	while (!list_empty(&fs_info->allocated_roots)) {
-+		const char *name = btrfs_root_name(root->root_key.objectid);
-+
- 		root = list_first_entry(&fs_info->allocated_roots,
- 					struct btrfs_root, leak_list);
--		btrfs_err(fs_info, "leaked root %llu-%llu refcount %d",
--			  root->root_key.objectid, root->root_key.offset,
--			  refcount_read(&root->refs));
-+		btrfs_err(fs_info, "leaked root %s%lld-%llu refcount %d",
-+			  name ? name : "", root->root_key.objectid,
-+			  root->root_key.offset, refcount_read(&root->refs));
- 		while (refcount_read(&root->refs) > 1)
- 			btrfs_put_root(root);
- 		btrfs_put_root(root);
-diff --git a/fs/btrfs/print-tree.c b/fs/btrfs/print-tree.c
-index 61f44e78e3c9..c633aec8973d 100644
---- a/fs/btrfs/print-tree.c
-+++ b/fs/btrfs/print-tree.c
-@@ -7,6 +7,43 @@
- #include "disk-io.h"
- #include "print-tree.h"
- 
-+struct name_map {
-+	u64 id;
-+	const char *name;
-+};
-+
-+static const struct name_map root_map[] = {
-+	{ BTRFS_ROOT_TREE_OBJECTID,		"ROOT_TREE"		},
-+	{ BTRFS_EXTENT_TREE_OBJECTID,		"EXTENT_TREE"		},
-+	{ BTRFS_CHUNK_TREE_OBJECTID,		"CHUNK_TREE"		},
-+	{ BTRFS_DEV_TREE_OBJECTID,		"DEV_TREE"		},
-+	{ BTRFS_FS_TREE_OBJECTID,		"FS_TREE"		},
-+	{ BTRFS_ROOT_TREE_DIR_OBJECTID,		"ROOT_TREE_DIR"		},
-+	{ BTRFS_CSUM_TREE_OBJECTID,		"CSUM_TREE"		},
-+	{ BTRFS_TREE_LOG_OBJECTID,		"TREE_LOG"		},
-+	{ BTRFS_QUOTA_TREE_OBJECTID,		"QUOTA_TREE"		},
-+	{ BTRFS_TREE_RELOC_OBJECTID,		"TREE_RELOC"		},
-+	{ BTRFS_UUID_TREE_OBJECTID,		"UUID_TREE"		},
-+	{ BTRFS_FREE_SPACE_TREE_OBJECTID,	"FREE_SPACE_TREE"	},
-+	{ BTRFS_DATA_RELOC_TREE_OBJECTID,	"DATA_RELOC_TREE"	},
-+};
-+
-+const char *btrfs_root_name(u64 objectid)
-+{
-+	int i;
-+
-+	if (objectid >= BTRFS_FIRST_FREE_OBJECTID &&
-+	    objectid <= BTRFS_LAST_FREE_OBJECTID)
-+		return NULL;
-+
-+	for (i = 0; i < ARRAY_SIZE(root_map); i++) {
-+		if (root_map[i].id == objectid)
-+			return root_map[i].name;
-+	}
-+
-+	return NULL;
-+}
-+
- static void print_chunk(struct extent_buffer *eb, struct btrfs_chunk *chunk)
- {
- 	int num_stripes = btrfs_chunk_num_stripes(eb, chunk);
-diff --git a/fs/btrfs/print-tree.h b/fs/btrfs/print-tree.h
-index e6bb38fd75ad..dffdfa495297 100644
---- a/fs/btrfs/print-tree.h
-+++ b/fs/btrfs/print-tree.h
-@@ -8,5 +8,6 @@
- 
- void btrfs_print_leaf(struct extent_buffer *l);
- void btrfs_print_tree(struct extent_buffer *c, bool follow);
-+const char *btrfs_root_name(u64 objectid);
- 
- #endif
--- 
-2.24.1
 
+
+On 2020/8/20 =E4=B8=8B=E5=8D=8810:46, David Sterba wrote:
+> On Thu, Aug 20, 2020 at 05:58:53PM +0800, Qu Wenruo wrote:
+>>
+>>
+>> On 2020/8/20 =E4=B8=8B=E5=8D=885:50, David Sterba wrote:
+>>> On Thu, Aug 20, 2020 at 07:14:13AM +0800, Qu Wenruo wrote:
+>>>>>> +static inline int check_eb_range(const struct extent_buffer *eb,
+>>>>>> +				 unsigned long start, unsigned long len)
+>>>>>> +{
+>>>>>> +	/* start, start + len should not go beyond eb->len nor overflow =
+*/
+>>>>>> +	if (unlikely(start > eb->len || start + len > eb->len ||
+>>>>>> +		     len > eb->len)) {
+>>>>>
+>>>>> Can the number of condition be reduced? If 'start + len' overflows,=
+ then
+>>>>> we don't need to check 'start > eb->len', and for the case where
+>>>>> start =3D 1024 and len =3D -1024 the 'len > eb-len' would be enough=
+=2E
+>>>>
+>>>> I'm afraid not.
+>>>> Although 'start > eb->len || len > eb->len' is enough to detect over=
+flow
+>>>> case, it no longer detects cases like 'start =3D 2k, len =3D 3k' whi=
+le
+>>>> eb->len =3D=3D 4K case.
+>>>>
+>>>> So we still need all 3 checks.
+>>>
+>>> I was suggesting 'start + len > eb->len', not 'start > eb-len'.
+>>>
+>>> "start > eb->len" is implied by "start + len > eb->len".
+>>
+>> start > eb->len is not implied if (start + len) over flows.
+>>
+>> E.g. start =3D -2K, len =3D 2k, eb->len =3D 4K. We can still pass !(st=
+art +
+>> len > eb->len || len > eb->len).
+>>
+>> In short, if we want overflow check along with each one checked, we
+>> really need 3 checks.
+>=20
+> So what if we add overflow check, that would catch negative start or
+> negative length, and then do start + len > eb->len?
+>=20
+> The check_setget_bounds is different becasue the len is known at compil=
+e
+> time so the overflows can't happen in the same way as for the eb range,=
+
+> so this this confused me first.
+>=20
+> 	check_add_overflow(start, len) || start + len > eb->len
+>=20
+Then it should be more or less the same as the existing 3 checks.
+
+In fact, the 3 checks are just the overflow safe check for (start + len
+> eb->len).
+
+The difference between check_setget_bounds() and check_eb_range() is,
+the size for check_setget_bounds() are fixed size, thus it will never be
+negative, thus it can skip the (size > eb->len) check.
+
+Thanks,
+Qu
+
+
+--2Pu6ek4vfpBFOSRZjXICyWCTnPwbax41E--
+
+--ijMwKKf0ItvOY5lUgX4Hm8AKRThR3oEkW
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl8/CcgACgkQwj2R86El
+/qh4Owf/e22qJmrIadNTg6H5+arbj5TI3pHBlxle9smx99WfJlyLnuR6KRJ45kW7
+EUmQxkA54HK43m3z3RbqW8O9WwGOVF/DJwqdaGCFxmA5O71e1GanOc2eNeLR16wR
+X+EYmT0Kw+7vyKu42Sb21ETzX2Hw+dIHBEEHX/L7dUX68sxZVEhnTYdNuAzrIInb
++M44w/Vf8hhTRhYa4vIfZ0zt26+SNDO+5YN7ON3vIC0PvFlMkEkmvNL/UXU5xyw1
+hh7qdVlXY1egAVVGWizBsEv8iYpF42QD5ZVNumiuOq+WJmBnjpthMG1uR1fpj3jp
+87QTlzmW8aEmckkPbIMTa6lwy9974g==
+=D477
+-----END PGP SIGNATURE-----
+
+--ijMwKKf0ItvOY5lUgX4Hm8AKRThR3oEkW--
