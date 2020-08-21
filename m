@@ -2,130 +2,97 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CE4324DCB4
-	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Aug 2020 19:07:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB69224DD29
+	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Aug 2020 19:13:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728854AbgHURHJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 21 Aug 2020 13:07:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48870 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727866AbgHUQSG (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 21 Aug 2020 12:18:06 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E303A22CE3;
-        Fri, 21 Aug 2020 16:17:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598026676;
-        bh=4Ip8e6mznvrSokDlCMttTqplUxZxiTzeDRZ75dPnUb4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RhIrbj+kbLQ8r96qDGs9tuzNvwSv4gBRQft2VvvPD5aL7WFuotQnfU6xZXxdCq3I6
-         q0UP5HywKwbEO6fUF4Z3xMX37IEB+nEirWXLPmf/+3z7LjKMdp+xQMZ8UyKkPGtuSA
-         DlfHayfw25tXXtQcCNv8gLynsC8z7SP6N+2ToiYU=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Nikolay Borisov <nborisov@suse.com>,
-        David Sterba <dsterba@suse.com>,
-        Sasha Levin <sashal@kernel.org>, linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 41/48] btrfs: make btrfs_qgroup_check_reserved_leak take btrfs_inode
-Date:   Fri, 21 Aug 2020 12:16:57 -0400
-Message-Id: <20200821161704.348164-41-sashal@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200821161704.348164-1-sashal@kernel.org>
-References: <20200821161704.348164-1-sashal@kernel.org>
+        id S1728223AbgHURNR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 21 Aug 2020 13:13:17 -0400
+Received: from sonic312-21.consmr.mail.bf2.yahoo.com ([74.6.128.83]:38739 "EHLO
+        sonic312-21.consmr.mail.bf2.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728182AbgHURNF (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 21 Aug 2020 13:13:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1598029984; bh=+NKq2YP/4c3bLm2HmGhxa/KCZOXr0NIUKHs/ECuC0yk=; h=Date:From:Reply-To:Subject:References:From:Subject; b=U1SjeBOzCYIJRtx7y/FBaCP228fucmN/EodwmeP9rqe1Uae2UNpu/G2B+8W29yrhCAkhFpZvwXrXAxB6/sj2Xns6V/flUdtbgtAgUGL+5KciKc8i5Sv3kkADRxmX9TBPhir4R5/+SIgNyADQs3+1sIBDBmNGXuvs6o5/RS6NeKEcODdw6JoRLSTdTn9pZDIbs06BtYKlDyAP7G4ZT7gO8bGZT6OBOk53v3Kli1XeK9RzNoZAuDGIdp2eiN2occxrr+gYg14FDHVxVMuu8Z9BLVVngWfpigOQ0tUucJYYkFgDxj1kxO8aN91yhL3epoTrZaYdWs665NpPCPERkD30qw==
+X-YMail-OSG: ixmF2NkVM1lgr7eqtMfLam91TJHBRLG6nNEQcZzUFIRQ4shFsJdFYXS6vMDkOcN
+ JSNhiyy6V_bWOMgNbR7rhFN_.kf.RgAy7_7qi9vrduz9K55OQUK7T3dfdlRhE6CrLELS2GteJ7cU
+ bxmCovmTq5.l_y8HvnGl0L68tAMqFbL2qrIa.m1mY280hTLbsvMWyWopKAnH54CiOklUhaLBGtPM
+ kmPIKsf5LrdufikeYk4fG3A_cG9eF9kY.ugfjC1mpuEQxPrHLdhh_Hhq1YxaE2ioNqIL654aiRdg
+ WYHLZj1IiLXZOn8d8BlnN4ULsSJj7qORX_cw1t1_oB21Q2jp2XZffc53lsczxYVSMhCMOM66H_Se
+ zwnT.8aPzqnbtltq85gOWL8DbM0m9I024MEe09rG5bjLjmhYxoQJOMG6SeDou3Yo_FlRSJsXa4Co
+ gLXlVMnBUGr.PVDCmH5o9Pk7EDtGUw1xcFoNX_HcK.ZrvZpSCFdfOUJ01Kp6Xg_PMIIXPJRkdU.X
+ Q.vGykpWM27pcHkrzIyNUKtrXkAalhkqZhzKd5lThR5YSNhrWx10TRDQpYscz.DeKDNnyvWK33cB
+ wb2zTJK3cvGTGcYBjUoV_LqWi2zBnN0ADr2OtEhcAWIN6jJjX8XhG5GhgkkxTVbIqV1tjzFYM2Mo
+ 8HJ8EqSo70SPWxp6r99oYJTcCdLuwOfceVyk6PP7B2gZSya0NWAoQSJM0lErZJbFz2yZ8eXRp.fr
+ vKV4O7i9nKsSkLtCPYNTrSdhIPb0E49Kzkdr2ZV5nGT0lCB58A9PGsTJ1ojPbSzuvYhZZ6y26qka
+ vzE8ZKHG7XSINTnJpYXfDfp6OShH9EXqJ2psWiGRDWpuAiwrCOAsvRmu1pk1RHoe3_0kD5J9CgtK
+ YGu1UFZUSNbw1L9232ngmUPgycdRC78.nl8lGfY02qe7tUjR_GiwHV8SfX2xYr4p.8JdPU63w1lQ
+ vf4rglQAP2r0s5Z.lrAcxuGcbO94h1P0tvfWretqK2Yk.z4wnDQg9r22DF0A7zUNhky8op62Lnn9
+ 7NeIAiTNsPnKEDuvd4zPe9Qj6tICoS_NxJ.6D2MEIp1ed.qktaOGQRl3OwW9ZXPr7s3g31r3d_q2
+ OxhAioXnwd3J0p4gKZUwQkoInOBGhjM7RrJgfb_gBnkaQbAe0cr0fwvflo50ZSE1GveguyP.PbUx
+ Rl1ty5QDnIdiK0P7uTl9UYsv0YYTdxZ0uO47jdzUD3rDQsQeCAg1KkNDKFEgma1o3Su47p29F2Q0
+ LgDjfSroXzA2RkssGG4oJXtw1MEAWIReXke4XAOgYSQe83aYUo2rsV9.iGtg4rynTMfTPwVzF.Pg
+ mRr4tuqdOwYlNdYjHs2lnfNjY_p.dUc7U5sbW3CK45ia8kYdgJ6QOWVuHukiol3DrVYF354HUD5a
+ 0dRLPhcs7Smu7GewWmk8GmU6XsUx0ly5ZBWN6xBGPSbNctxkAVF3wNvA-
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic312.consmr.mail.bf2.yahoo.com with HTTP; Fri, 21 Aug 2020 17:13:04 +0000
+Date:   Fri, 21 Aug 2020 17:13:02 +0000 (UTC)
+From:   "Mrs. Mina A. Brunel" <mrs.minaaaliyahbrunel0001@gmail.com>
+Reply-To: mrsminaabrunel@myself.com
+Message-ID: <1501158460.4198168.1598029982258@mail.yahoo.com>
+Subject: My Dear in the lord
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+References: <1501158460.4198168.1598029982258.ref@mail.yahoo.com>
+X-Mailer: WebService/1.1.16455 YMailNodin Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:79.0) Gecko/20100101 Firefox/79.0
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Nikolay Borisov <nborisov@suse.com>
 
-[ Upstream commit cfdd45921571eb24073e0737fa0bd44b4218f914 ]
 
-vfs_inode is used only for the inode number everything else requires
-btrfs_inode.
+My Dear in the lord
 
-Signed-off-by: Nikolay Borisov <nborisov@suse.com>
-Reviewed-by: David Sterba <dsterba@suse.com>
-[ use btrfs_ino ]
-Signed-off-by: David Sterba <dsterba@suse.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- fs/btrfs/inode.c  |  2 +-
- fs/btrfs/qgroup.c | 14 +++++++-------
- fs/btrfs/qgroup.h |  2 +-
- 3 files changed, 9 insertions(+), 9 deletions(-)
 
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index e408181a5eba3..39cc1971d5f97 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -9560,7 +9560,7 @@ void btrfs_destroy_inode(struct inode *inode)
- 			btrfs_put_ordered_extent(ordered);
- 		}
- 	}
--	btrfs_qgroup_check_reserved_leak(inode);
-+	btrfs_qgroup_check_reserved_leak(BTRFS_I(inode));
- 	inode_tree_del(inode);
- 	btrfs_drop_extent_cache(BTRFS_I(inode), 0, (u64)-1, 0);
- }
-diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
-index b94f6f99e90d0..04fd02e6124dd 100644
---- a/fs/btrfs/qgroup.c
-+++ b/fs/btrfs/qgroup.c
-@@ -3769,7 +3769,7 @@ void btrfs_qgroup_convert_reserved_meta(struct btrfs_root *root, int num_bytes)
-  * Check qgroup reserved space leaking, normally at destroy inode
-  * time
-  */
--void btrfs_qgroup_check_reserved_leak(struct inode *inode)
-+void btrfs_qgroup_check_reserved_leak(struct btrfs_inode *inode)
- {
- 	struct extent_changeset changeset;
- 	struct ulist_node *unode;
-@@ -3777,19 +3777,19 @@ void btrfs_qgroup_check_reserved_leak(struct inode *inode)
- 	int ret;
- 
- 	extent_changeset_init(&changeset);
--	ret = clear_record_extent_bits(&BTRFS_I(inode)->io_tree, 0, (u64)-1,
-+	ret = clear_record_extent_bits(&inode->io_tree, 0, (u64)-1,
- 			EXTENT_QGROUP_RESERVED, &changeset);
- 
- 	WARN_ON(ret < 0);
- 	if (WARN_ON(changeset.bytes_changed)) {
- 		ULIST_ITER_INIT(&iter);
- 		while ((unode = ulist_next(&changeset.range_changed, &iter))) {
--			btrfs_warn(BTRFS_I(inode)->root->fs_info,
--				"leaking qgroup reserved space, ino: %lu, start: %llu, end: %llu",
--				inode->i_ino, unode->val, unode->aux);
-+			btrfs_warn(inode->root->fs_info,
-+		"leaking qgroup reserved space, ino: %llu, start: %llu, end: %llu",
-+				btrfs_ino(inode), unode->val, unode->aux);
- 		}
--		btrfs_qgroup_free_refroot(BTRFS_I(inode)->root->fs_info,
--				BTRFS_I(inode)->root->root_key.objectid,
-+		btrfs_qgroup_free_refroot(inode->root->fs_info,
-+				inode->root->root_key.objectid,
- 				changeset.bytes_changed, BTRFS_QGROUP_RSV_DATA);
- 
- 	}
-diff --git a/fs/btrfs/qgroup.h b/fs/btrfs/qgroup.h
-index 17e8ac992c502..b0420c4f5d0ef 100644
---- a/fs/btrfs/qgroup.h
-+++ b/fs/btrfs/qgroup.h
-@@ -399,7 +399,7 @@ void btrfs_qgroup_free_meta_all_pertrans(struct btrfs_root *root);
-  */
- void btrfs_qgroup_convert_reserved_meta(struct btrfs_root *root, int num_bytes);
- 
--void btrfs_qgroup_check_reserved_leak(struct inode *inode);
-+void btrfs_qgroup_check_reserved_leak(struct btrfs_inode *inode);
- 
- /* btrfs_qgroup_swapped_blocks related functions */
- void btrfs_qgroup_init_swapped_blocks(
--- 
-2.25.1
+My name is Mrs. Mina A. Brunel I am a Norway Citizen who is living in Burki=
+na Faso, I am married to Mr. Brunel Patrice, a politician who owns a small =
+gold company in Burkina Faso; He died of Leprosy and Radesyge, in the year =
+February 2010, During his lifetime he deposited the sum of =E2=82=AC 8.5 Mi=
+llion Euro) Eight million, Five hundred thousand Euros in a bank in Ouagado=
+ugou the capital city of Burkina Faso in West Africa. The money was from th=
+e sale of his company and death benefits payment and entitlements of my dec=
+eased husband by his company.
 
+I am sending you this message with heavy tears in my eyes and great sorrow =
+in my heart, and also praying that it will reach you in good health because=
+ I am not in good health, I sleep every night without knowing if I may be a=
+live to see the next day. I am suffering from long time cancer and presentl=
+y I am partially suffering from Leprosy, which has become difficult for me =
+to move around. I was married to my late husband for more than 6 years with=
+out having a child and my doctor confided that I have less chance to live, =
+having to know when the cup of death will come, I decided to contact you to=
+ claim the fund since I don't have any relation I grew up from an orphanage=
+ home.
+
+I have decided to donate this money for the support of helping Motherless b=
+abies/Less privileged/Widows and churches also to build the house of God be=
+cause I am dying and diagnosed with cancer for about 3 years ago. I have de=
+cided to donate from what I have inherited from my late husband to you for =
+the good work of Almighty God; I will be going in for an operation surgery =
+soon.
+
+Now I want you to stand as my next of kin to claim the funds for charity pu=
+rposes. Because of this money remains unclaimed after my death, the bank ex=
+ecutives or the government will take the money as unclaimed fund and maybe =
+use it for selfishness and worthless ventures, I need a very honest person =
+who can claim this money and use it for Charity works, for orphanages, wido=
+ws and also build schools and churches for less privilege that will be name=
+d after my late husband and my name.
+
+I need your urgent answer to know if you will be able to execute this proje=
+ct, and I will give you more information on how the fund will be transferre=
+d to your bank account or online banking.
+
+Thanks
+Mrs. Mina A. Brunel
