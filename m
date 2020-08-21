@@ -2,97 +2,92 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A656724D538
-	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Aug 2020 14:42:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 035B424D581
+	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Aug 2020 14:56:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728693AbgHUMmL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 21 Aug 2020 08:42:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55788 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728375AbgHUMmJ (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 21 Aug 2020 08:42:09 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E705DC061385;
-        Fri, 21 Aug 2020 05:42:08 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id p14so1714073wmg.1;
-        Fri, 21 Aug 2020 05:42:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=PMgjS6TbvnNFuUvjyUB4t/vSCOuQYAmjXBRUb4TOC1U=;
-        b=Il5o4Pv/5wUAqtykgtuqOPhZvYUTLTDr5f/IuxehsDDsDA3NCWQl1HtGKfEMz4ly5u
-         mo+9Gb5Td0C8WSasVhTEfNrFanWAjSrxUV+U5tfFTDM+fupjJoGyBFK9J/1Iu756pb1t
-         5xBKGN6TwyWzG7s2i5wzWzuCyv1j/zCeXtmp7gkGI0WbxOBDI0ycFZ/mcpSPuMZzMDg/
-         NlJQpavRJ0BbzGHY19HXFFKPaoWxTdGlFczSAsi7p1Tpu/a/Pb5Mk1KVIXqFdKnE/Hef
-         vvfnZ0EX6KaPsTYpVfyr+MGLM3VRZK/WixmvElxmLIlVq4wTqIm1a00jsZiBXc8ho3ID
-         aigQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=PMgjS6TbvnNFuUvjyUB4t/vSCOuQYAmjXBRUb4TOC1U=;
-        b=c4nzlpxnKIkY+xleCdOZ70feTg75lyB/B5hoJWE65IRxxy5DngG5Saimi15Wuyg5hn
-         MbgXGWINxYzmcGEE6Hu1zgaI2qZCT5fdiIEzN2rlf39mo37rdcgW9Z3ECxlR4crD7U91
-         SMRrLMnnA6Jyd25pG438h66JHu52KHyfIAQ/jywFiI4oFNIlwDT8QPVR/+KCLxmJ2+x6
-         dvm1TNX2nJ3iQTXX9PfnR0dGWTnacVY/0iNKs9JqWDGSWCDIKEDmd8h2KlE7Jyr8C40M
-         r217kt/js/PrExWS6Bt7pFolXAuoxdUxMq2T+SXxOYk6fODzPHfJ7hx+pC3QJYLNdljb
-         RZ7A==
-X-Gm-Message-State: AOAM533ODOvwDiE9ikSaaMeK6XbyEyyw8Nri+2V9YZiUQ78JPA8Yw+Tg
-        yKadYn7BpXZuRRLyDU6U0UM=
-X-Google-Smtp-Source: ABdhPJyzwlZDHumT3taKe8Dm0S+5C+Ko4Xf+iQ/rbwPsHIL2sUHpS1rN0OkC6cSAr89k6NvSTzut3Q==
-X-Received: by 2002:a1c:48c2:: with SMTP id v185mr2961666wma.5.1598013725134;
-        Fri, 21 Aug 2020 05:42:05 -0700 (PDT)
-Received: from localhost.localdomain ([2a00:23c4:4b87:b300:cc3a:c411:9a4b:dba6])
-        by smtp.gmail.com with ESMTPSA id l21sm4664448wmj.25.2020.08.21.05.42.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Aug 2020 05:42:04 -0700 (PDT)
-From:   Alex Dewar <alex.dewar90@gmail.com>
-To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Goldwyn Rodrigues <rgoldwyn@suse.com>,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Alex Dewar <alex.dewar90@gmail.com>
-Subject: [PATCH] btrfs: check return value of filemap_fdatawrite_range()
-Date:   Fri, 21 Aug 2020 13:41:54 +0100
-Message-Id: <20200821124154.10218-1-alex.dewar90@gmail.com>
-X-Mailer: git-send-email 2.28.0
+        id S1727837AbgHUM4c (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 21 Aug 2020 08:56:32 -0400
+Received: from mx2.suse.de ([195.135.220.15]:49372 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725935AbgHUM4c (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 21 Aug 2020 08:56:32 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 3D8F1AB7D;
+        Fri, 21 Aug 2020 12:56:58 +0000 (UTC)
+Subject: Re: [PATCH 3/8] btrfs: move btrfs_scratch_superblocks into
+ btrfs_dev_replace_finishing
+To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com
+References: <cover.1597936173.git.josef@toxicpanda.com>
+ <f057e5076450f399e87cf54c3951bb2033febe36.1597936173.git.josef@toxicpanda.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <5e1d0081-df24-2af1-3a16-232c8c83481f@suse.com>
+Date:   Fri, 21 Aug 2020 15:56:29 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <f057e5076450f399e87cf54c3951bb2033febe36.1597936173.git.josef@toxicpanda.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-In btrfs_dio_imap_begin(), filemap_fdatawrite_range() is called without
-checking the return value. Add a check to catch errors.
 
-Fixes: c0aaf9b7a114f ("btrfs: switch to iomap_dio_rw() for dio")
-Addresses-Coverity: ("Unused value")
-Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
----
- fs/btrfs/inode.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 7b57aaa1f9acc..38fde20b4a81b 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -7347,9 +7347,12 @@ static int btrfs_dio_iomap_begin(struct inode *inode, loff_t start,
- 	 * outstanding dirty pages are on disk.
- 	 */
- 	if (test_bit(BTRFS_INODE_HAS_ASYNC_EXTENT,
--		     &BTRFS_I(inode)->runtime_flags))
-+		     &BTRFS_I(inode)->runtime_flags)) {
- 		ret = filemap_fdatawrite_range(inode->i_mapping, start,
- 					       start + length - 1);
-+		if (ret)
-+			return ret;
-+	}
- 
- 	dio_data = kzalloc(sizeof(*dio_data), GFP_NOFS);
- 	if (!dio_data)
--- 
-2.28.0
+On 20.08.20 г. 18:18 ч., Josef Bacik wrote:
+> We need to move the closing of the src_device out of all the device
+> replace locking, but we definitely want to zero out the superblock
+> before we commit the last time to make sure the device is properly
+> removed.  Handle this by pushing btrfs_scratch_superblocks into
+> btrfs_dev_replace_finishing, and then later on we'll move the src_device
+> closing and freeing stuff where we need it to be.
+> 
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
