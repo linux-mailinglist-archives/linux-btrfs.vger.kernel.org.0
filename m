@@ -2,140 +2,110 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10A0324D6F3
-	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Aug 2020 16:07:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63C0B24D710
+	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Aug 2020 16:11:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727116AbgHUOHk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 21 Aug 2020 10:07:40 -0400
-Received: from mx2.suse.de ([195.135.220.15]:35190 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725897AbgHUOHj (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 21 Aug 2020 10:07:39 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 9E08BAC7D;
-        Fri, 21 Aug 2020 14:08:05 +0000 (UTC)
-Subject: Re: [PATCH 1/2] btrfs: free fs roots on failed mount
-To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com
-References: <cover.1597953516.git.josef@toxicpanda.com>
- <9c6e581e607954968d08179961bb20a62491a655.1597953516.git.josef@toxicpanda.com>
- <7bb2214b-5b1f-4e96-f2fd-4715ea5a6de6@suse.com>
- <410d3d2b-0b79-68ca-c3c1-a9ebd2ee1933@toxicpanda.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <743efacd-a3fc-fb05-e758-e34e94b8568f@suse.com>
-Date:   Fri, 21 Aug 2020 17:07:36 +0300
+        id S1727074AbgHUOLu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 21 Aug 2020 10:11:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41624 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726118AbgHUOLr (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 21 Aug 2020 10:11:47 -0400
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19F8CC061573
+        for <linux-btrfs@vger.kernel.org>; Fri, 21 Aug 2020 07:11:47 -0700 (PDT)
+Received: by mail-qt1-x841.google.com with SMTP id d27so1270324qtg.4
+        for <linux-btrfs@vger.kernel.org>; Fri, 21 Aug 2020 07:11:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=/O7GsQlyOvKMn4vyIwYIr3C3iH5spCXWnHT7lFFAbyY=;
+        b=azMuqrPNOdNg2w70CvNRuUyt5rnFriNwiKakFhXOpvnFpexz7yruIqjma3h0vFsJ29
+         1Qy0FCVqaVtCmh+9q0zyYjIBhcOXxgTRKGSxLUkCIeRf4CLq+NcBGNGQHRaHsLRM67cj
+         mO8wJHaXCIGKyaDZBpS5StuxO/+6sdVbK+Bftmmbx2FeI8hJcTGrXqpVUlD+96TC+idA
+         rweeIzIkcDeFBMkBNVHufmb7P9Eyd2+Ttbf2rZ6nSnk7eWFWInSZiifqIYYoCLOceKKA
+         gzz+kpZG1PXyqTCHH1VqnSrKjJU6DzN9aAx7bmd+f7xzRETL0xhfOacaPITRtNkDhr5U
+         Ur6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=/O7GsQlyOvKMn4vyIwYIr3C3iH5spCXWnHT7lFFAbyY=;
+        b=iltAHH9s9kFgZ7CBkvPIqRv4W3/QwbYH/v1lzOW2BvC+yLCRjvWbx16vmWBkc1/uKu
+         SX0jL4QTFWuhutx+A9Dn4kbOjL5FMuG7e9Bh1RddpOoSJDG5NBT6rURD3eYQ61tf+zZw
+         UZndrDRGW+DepkHUE3rlfhTK920VplsNW+97rADzJr8aR/tzNVT/TjKd9CFyIWCn0zAs
+         uDR8am3+MqrCs9eMo8e24vT7GwE4zR4hxTjT9MJ1ShIvnLDmVSoScyHtTSvB08BAfVU0
+         e/ZSIu/L7lA/oEI3XhNIAeW7EMhobf2PTpafXWaTn+MH2szLA0b8/KgkIAmQOrFLA2bx
+         gVsA==
+X-Gm-Message-State: AOAM532nU162TqNLPzxt46voBsKiA4GR0/htMvMFF8/s1wuSNm1ad/7z
+        niH+7xO+q0cuIiUyC1fzevaD0A==
+X-Google-Smtp-Source: ABdhPJzfnGpcJKcS4ULozLzoVaIH2pkxr/lK8lZcQc6x9wmaPcOQ6uDtYUIhhN4cj4uKEdsMM0D9Mw==
+X-Received: by 2002:aed:2dc1:: with SMTP id i59mr2956362qtd.340.1598019106177;
+        Fri, 21 Aug 2020 07:11:46 -0700 (PDT)
+Received: from localhost.localdomain (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id x28sm1798067qki.55.2020.08.21.07.11.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 21 Aug 2020 07:11:45 -0700 (PDT)
+Subject: Re: [PATCH] btrfs: check return value of filemap_fdatawrite_range()
+To:     Alex Dewar <alex.dewar90@gmail.com>, Chris Mason <clm@fb.com>,
+        David Sterba <dsterba@suse.com>,
+        Goldwyn Rodrigues <rgoldwyn@suse.com>,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200821124154.10218-1-alex.dewar90@gmail.com>
+From:   Josef Bacik <josef@toxicpanda.com>
+Message-ID: <c3c0ddbe-e225-22a4-c9bf-9317a50c211b@toxicpanda.com>
+Date:   Fri, 21 Aug 2020 10:11:44 -0400
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <410d3d2b-0b79-68ca-c3c1-a9ebd2ee1933@toxicpanda.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20200821124154.10218-1-alex.dewar90@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 21.08.20 г. 16:59 ч., Josef Bacik wrote:
-> On 8/21/20 3:31 AM, Nikolay Borisov wrote:
->>
->>
->> On 20.08.20 г. 23:00 ч., Josef Bacik wrote:
->>> While testing a weird problem with -o degraded, I noticed I was getting
->>> leaked root errors
->>>
->>> BTRFS warning (device loop0): writable mount is not allowed due to
->>> too many missing devices
->>> BTRFS error (device loop0): open_ctree failed
->>> BTRFS error (device loop0): leaked root -9-0 refcount 1
->>>
->>> This is the DATA_RELOC root, which gets read before the other fs roots,
->>> but is included in the fs roots radix tree.  Handle this by adding a
->>> btrfs_drop_and_free_fs_root() on the data reloc root if it exists.  This
->>> is ok to do here if we fail further up because we will only drop the ref
->>> if we delete the root from the radix tree, and all other cleanup won't
->>> be duplicated.
->>>
->>> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
->>> ---
->>>   fs/btrfs/disk-io.c | 2 ++
->>>   1 file changed, 2 insertions(+)
->>>
->>> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
->>> index 814f8de395fe..ac6d6fddd5f4 100644
->>> --- a/fs/btrfs/disk-io.c
->>> +++ b/fs/btrfs/disk-io.c
->>> @@ -3418,6 +3418,8 @@ int __cold open_ctree(struct super_block *sb,
->>> struct btrfs_fs_devices *fs_device
->>>       btrfs_put_block_group_cache(fs_info);
->>>     fail_tree_roots:
->>> +    if (fs_info->data_reloc_root)
->>> +        btrfs_drop_and_free_fs_root(fs_info, fs_info->data_reloc_root);
->>
->> But will this really free the root? So the newly allocated
->> data_reloc_root has it's ref set to 1 from
->> btrfs_get_root_ref->btrfs_read_tree_root->btrfs_alloc_root and to 2 from
->> being added to the radix tree in btrfs_insert_fs_root().
->>
->> But btrfs_drop_and_free_fs_root makes a single call to btrfs_put_root.
->> So won't the reloc tree be left with a refcount of 1 ?
+On 8/21/20 8:41 AM, Alex Dewar wrote:
+> In btrfs_dio_imap_begin(), filemap_fdatawrite_range() is called without
+> checking the return value. Add a check to catch errors.
 > 
-> It's a global root, so it's final put happens in btrfs_free_fs_info(),
-> we just need to drop the radix tree ref here.  Thanks,
-
-
-Fair enough, but this really shows that btrfs_drop_and_free_fs_root has
-a horrible name which doesn't reflect what it does fully...
-
-Any case the patch itself is good, so :
-
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
-
+> Fixes: c0aaf9b7a114f ("btrfs: switch to iomap_dio_rw() for dio")
+> Addresses-Coverity: ("Unused value")
+> Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
+> ---
+>   fs/btrfs/inode.c | 5 ++++-
+>   1 file changed, 4 insertions(+), 1 deletion(-)
 > 
-> Josef
+> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+> index 7b57aaa1f9acc..38fde20b4a81b 100644
+> --- a/fs/btrfs/inode.c
+> +++ b/fs/btrfs/inode.c
+> @@ -7347,9 +7347,12 @@ static int btrfs_dio_iomap_begin(struct inode *inode, loff_t start,
+>   	 * outstanding dirty pages are on disk.
+>   	 */
+>   	if (test_bit(BTRFS_INODE_HAS_ASYNC_EXTENT,
+> -		     &BTRFS_I(inode)->runtime_flags))
+> +		     &BTRFS_I(inode)->runtime_flags)) {
+>   		ret = filemap_fdatawrite_range(inode->i_mapping, start,
+>   					       start + length - 1);
+> +		if (ret)
+> +			return ret;
+> +	}
+>   
+>   	dio_data = kzalloc(sizeof(*dio_data), GFP_NOFS);
+>   	if (!dio_data)
 > 
+
+Had to check to make sure there's no cleanup that's needed, there isn't, 
+you can add
+
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+
+Thanks,
+
+Josef
