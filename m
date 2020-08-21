@@ -2,98 +2,152 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BC8124D610
-	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Aug 2020 15:28:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2274324D645
+	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Aug 2020 15:41:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727793AbgHUN1f (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 21 Aug 2020 09:27:35 -0400
-Received: from mx2.suse.de ([195.135.220.15]:39300 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727123AbgHUN1e (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 21 Aug 2020 09:27:34 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id CEC4CAC23;
-        Fri, 21 Aug 2020 13:28:00 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id B4460DA730; Fri, 21 Aug 2020 15:26:26 +0200 (CEST)
-Date:   Fri, 21 Aug 2020 15:26:26 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Marcos Paulo de Souza <marcos@mpdesouza.com>
-Cc:     dsterba@suse.com, linux-btrfs@vger.kernel.org,
-        Marcos Paulo de Souza <mpdesouza@suse.com>
-Subject: Re: [PATCH] btrfs-progs: Make btrfs_lookup_dir_index in parity with
- kernel code
-Message-ID: <20200821132626.GE2026@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz,
-        Marcos Paulo de Souza <marcos@mpdesouza.com>, dsterba@suse.com,
-        linux-btrfs@vger.kernel.org,
-        Marcos Paulo de Souza <mpdesouza@suse.com>
-References: <20200818144324.25917-1-marcos@mpdesouza.com>
+        id S1728678AbgHUNlj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 21 Aug 2020 09:41:39 -0400
+Received: from gateway34.websitewelcome.com ([192.185.148.104]:42567 "EHLO
+        gateway34.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727929AbgHUNli (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 21 Aug 2020 09:41:38 -0400
+X-Greylist: delayed 1439 seconds by postgrey-1.27 at vger.kernel.org; Fri, 21 Aug 2020 09:41:37 EDT
+Received: from cm10.websitewelcome.com (cm10.websitewelcome.com [100.42.49.4])
+        by gateway34.websitewelcome.com (Postfix) with ESMTP id 6245ECD3F
+        for <linux-btrfs@vger.kernel.org>; Fri, 21 Aug 2020 08:17:36 -0500 (CDT)
+Received: from br540.hostgator.com.br ([108.179.252.180])
+        by cmsmtp with SMTP
+        id 96vIkt529LFNk96vIkQ0CR; Fri, 21 Aug 2020 08:17:36 -0500
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=mpdesouza.com; s=default; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=Xtc+G1DaWGkKbXWnUOWf167W2t+UmfSpww3W6XZ4cyc=; b=HragkfxhBd0z+dqJI5+YRh33ZA
+        kivKYJyl1tgaSVr8mlekUBb3p4HffZx8hqOvByoQtqhk4qGcxPSZelLyjs/H5LykD8FJcZm7rC1I5
+        zEYa2QpBb2DlvFzBunnHXpuYt69NTPNKitWfXcdyAnuPfRXE5m6GW/TEZ8QsE6dS3ct8VHEDomDFz
+        n2wUW1BrE9sXSpqQXj8QrnPee3WN/mV236C5kYe/jt3Qwky/3X7s3gnKTsI7l9ysZaE34dI/L9DCQ
+        V0HaGh8ZDep4VJp/f2ZCxVAtpECX3EW+IuwKkeL7rathVVhw/NFI3LdP051w8LTf2JdEcrBWwp1zi
+        2ZO6VLnw==;
+Received: from [191.248.104.145] (port=50474 helo=hephaestus.suse.de)
+        by br540.hostgator.com.br with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <marcos@mpdesouza.com>)
+        id 1k96vH-000ceu-ID; Fri, 21 Aug 2020 10:17:35 -0300
+From:   Marcos Paulo de Souza <marcos@mpdesouza.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     dsterba@suse.com, wqu@suse.com, linux-btrfs@vger.kernel.org,
+        Marcos Paulo de Souza <mpdesouza@suse.com>,
+        stable@vger.kernel.org
+Subject: [PATCH v2] btrfs: block-group: Fix free-space bitmap threshould
+Date:   Fri, 21 Aug 2020 10:17:27 -0300
+Message-Id: <20200821131727.6883-1-marcos@mpdesouza.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200818144324.25917-1-marcos@mpdesouza.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Content-Transfer-Encoding: 8bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - br540.hostgator.com.br
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - mpdesouza.com
+X-BWhitelist: no
+X-Source-IP: 191.248.104.145
+X-Source-L: No
+X-Exim-ID: 1k96vH-000ceu-ID
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: (hephaestus.suse.de) [191.248.104.145]:50474
+X-Source-Auth: marcos@mpdesouza.com
+X-Email-Count: 3
+X-Source-Cap: bXBkZXNvNTM7bXBkZXNvNTM7YnI1NDAuaG9zdGdhdG9yLmNvbS5icg==
+X-Local-Domain: yes
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Aug 18, 2020 at 11:43:24AM -0300, Marcos Paulo de Souza wrote:
-> From: Marcos Paulo de Souza <mpdesouza@suse.com>
-> 
-> This function exists in kernel side but using the _item suffix, and
-> objectid argument is placed before the name argument. Change the
-> function to reflect the kernel version.
-> 
-> Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
-> ---
->  check/main.c             |  6 +++---
->  ctree.h                  | 11 ++++++-----
->  inode.c                  | 14 +++++++-------
->  kernel-shared/dir-item.c | 13 +++++++------
->  4 files changed, 23 insertions(+), 21 deletions(-)
-> 
-> diff --git a/check/main.c b/check/main.c
-> index f93bd7d4..176bc508 100644
-> --- a/check/main.c
-> +++ b/check/main.c
-> @@ -2072,9 +2072,9 @@ static int delete_dir_index(struct btrfs_root *root,
->  		(unsigned long long)root->objectid);
->  
->  	btrfs_init_path(&path);
-> -	di = btrfs_lookup_dir_index(trans, root, &path, backref->dir,
-> -				    backref->name, backref->namelen,
-> -				    backref->index, -1);
-> +	di = btrfs_lookup_dir_index_item(trans, root, &path, backref->dir,
-> +					 backref->index, backref->name,
-> +					 backref->namelen, -1);
->  	if (IS_ERR(di)) {
->  		ret = PTR_ERR(di);
->  		btrfs_release_path(&path);
-> diff --git a/ctree.h b/ctree.h
-> index 39e03640..a4f70847 100644
-> --- a/ctree.h
-> +++ b/ctree.h
-> @@ -2760,11 +2760,12 @@ struct btrfs_dir_item *btrfs_lookup_dir_item(struct btrfs_trans_handle *trans,
->  					     struct btrfs_path *path, u64 dir,
->  					     const char *name, int name_len,
->  					     int mod);
-> -struct btrfs_dir_item *btrfs_lookup_dir_index(struct btrfs_trans_handle *trans,
-> -					      struct btrfs_root *root,
-> -					      struct btrfs_path *path, u64 dir,
-> -					      const char *name, int name_len,
-> -					      u64 index, int mod);
-> +struct btrfs_dir_item *
-> +btrfs_lookup_dir_index_item(struct btrfs_trans_handle *trans,
-> +			    struct btrfs_root *root,
-> +			    struct btrfs_path *path, u64 dir,
-> +			    u64 objectid, const char *name, int name_len,
-> +			    int mod);
+From: Marcos Paulo de Souza <mpdesouza@suse.com>
 
-Please keep the function return type and name on the same line, this is
-the preferred style. There are still a lot of wrongly formatted
-functions in kernel like btrfs_lookup_dir_index_item but it should not
-be in the new code.
+[BUG]
+After commit 9afc66498a0b ("btrfs: block-group: refactor how we read one
+block group item"), cache->length is being assigned after calling
+btrfs_create_block_group_cache. This causes a problem since
+set_free_space_tree_thresholds is calculate the free-space threshould to
+decide is the free-space tree should convert from extents to bitmaps.
+
+The current code calls set_free_space_tree_thresholds with cache->length
+being 0, which then makes cache->bitmap_high_thresh being zero. This
+implies the system will always use bitmap instead of extents, which is
+not desired if the block group is not fragmented.
+
+This behavior can be seen by a test that expects to repair systems
+with FREE_SPACE_EXTENT and FREE_SPACE_BITMAP, but the current code only
+created FREE_SPACE_BITMAP.
+
+[FIX]
+Call set_free_space_tree_thresholds after setting cache->length.
+
+Link: https://github.com/kdave/btrfs-progs/issues/251
+Fixes: 9afc66498a0b ("btrfs: block-group: refactor how we read one block group item")
+CC: stable@vger.kernel.org # 5.8+
+Reviewed-by: Qu Wenruo <wqu@suse.com>
+Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
+---
+
+ Changes from v1:
+ * Add a warning in set_free_space_tree_thresholds when bg->length is zero (Qu)
+
+ fs/btrfs/block-group.c     | 4 +++-
+ fs/btrfs/free-space-tree.c | 3 +++
+ 2 files changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+index 44fdfa2eeb2e..01e8ba1da1d3 100644
+--- a/fs/btrfs/block-group.c
++++ b/fs/btrfs/block-group.c
+@@ -1798,7 +1798,6 @@ static struct btrfs_block_group *btrfs_create_block_group_cache(
+ 
+ 	cache->fs_info = fs_info;
+ 	cache->full_stripe_len = btrfs_full_stripe_len(fs_info, start);
+-	set_free_space_tree_thresholds(cache);
+ 
+ 	cache->discard_index = BTRFS_DISCARD_INDEX_UNUSED;
+ 
+@@ -1908,6 +1907,8 @@ static int read_one_block_group(struct btrfs_fs_info *info,
+ 
+ 	read_block_group_item(cache, path, key);
+ 
++	set_free_space_tree_thresholds(cache);
++
+ 	if (need_clear) {
+ 		/*
+ 		 * When we mount with old space cache, we need to
+@@ -2128,6 +2129,7 @@ int btrfs_make_block_group(struct btrfs_trans_handle *trans, u64 bytes_used,
+ 		return -ENOMEM;
+ 
+ 	cache->length = size;
++	set_free_space_tree_thresholds(cache);
+ 	cache->used = bytes_used;
+ 	cache->flags = type;
+ 	cache->last_byte_to_unpin = (u64)-1;
+diff --git a/fs/btrfs/free-space-tree.c b/fs/btrfs/free-space-tree.c
+index 8b1f5c8897b7..1d191fbc754b 100644
+--- a/fs/btrfs/free-space-tree.c
++++ b/fs/btrfs/free-space-tree.c
+@@ -22,6 +22,9 @@ void set_free_space_tree_thresholds(struct btrfs_block_group *cache)
+ 	size_t bitmap_size;
+ 	u64 num_bitmaps, total_bitmap_size;
+ 
++	if (cache->length == 0)
++		btrfs_warn(cache->fs_info, "block group length is zero");
++
+ 	/*
+ 	 * We convert to bitmaps when the disk space required for using extents
+ 	 * exceeds that required for using bitmaps.
+-- 
+2.28.0
+
