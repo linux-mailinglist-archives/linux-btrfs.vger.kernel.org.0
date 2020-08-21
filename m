@@ -2,165 +2,160 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACDAC24D76A
-	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Aug 2020 16:38:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88FF124D86B
+	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Aug 2020 17:19:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727006AbgHUOir (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 21 Aug 2020 10:38:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45770 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726118AbgHUOin (ORCPT
+        id S1728365AbgHUPTn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 21 Aug 2020 11:19:43 -0400
+Received: from gateway32.websitewelcome.com ([192.185.145.122]:25726 "EHLO
+        gateway32.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727074AbgHUPTg (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 21 Aug 2020 10:38:43 -0400
-Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0C3BC061573
-        for <linux-btrfs@vger.kernel.org>; Fri, 21 Aug 2020 07:38:42 -0700 (PDT)
-Received: by mail-qv1-xf43.google.com with SMTP id w2so706246qvh.12
-        for <linux-btrfs@vger.kernel.org>; Fri, 21 Aug 2020 07:38:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:references:cc:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=/RQzpqsT5Ya1eHoUv7vIIPMl1zW+oE/2pDRHNVBHgqQ=;
-        b=JEbrld5qjvkltMTKZyNL96OwPH1dBcX5JPraolYq2DkGw6at2idy9eBO1wuSeCjf0K
-         vfIW8VT9wLz8fIhEujbIlkwVUNuDOQLGJC31P9BqD/aH/DiaPpxD+TIDF5Z18RAiXXj9
-         shjx5rqkh3SGpDKonMNgV8SDvYVPUT3Sa4i5Vk9hntRmF6VM8ZX8U1MaRLENI1tDqF0L
-         A+r3pobY84YWcnW4nDRfZMJnAh+M+GMaQqOc8YzSogSHrgv7ZSmQvYpvgP0TtDDv3tu/
-         sESVt/9H40P3z3w8lwYbsWwDArkwJ1OxhaTrbHSsYta4t7Tp93MiYau1NgZftHrYJbXn
-         Ag0w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:cc:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=/RQzpqsT5Ya1eHoUv7vIIPMl1zW+oE/2pDRHNVBHgqQ=;
-        b=jZPlk6oVGPCFle79c39fU2gOCbVQw5xNUQCW9Hnjz9b7v935P21GLDiRnJUldepglb
-         mK7sZGDym70B92IxOfiYuLp2kZGbnqg82NDmyn51Flzv5ppjs3tixkzfFwHKZvRFtxSO
-         3ErdJLXH9cNIWScEVYAWfP2W52GeiSa3aMOoaK5EssuXKJs8mppP+NbtB5COFgomCeCV
-         uux6f4CEMA/iLNDT+mCSsrIkjaBrc7PfWxkUAlN9PGsi1yUkwzxReiEn5o/yN+Ck0XdE
-         OLQN5WpkSHPKwORn3ucUFQphATE0gIaKFnrck1TacbwTGR3jAGueCzoPCzAksBTRLYL2
-         rkwQ==
-X-Gm-Message-State: AOAM5312FNZEi8MMa4dBReF/Q9wLX6M/VoygHssmExz6BOnvxav1rE0D
-        xZV5KhE7MOZitzu+Z0Cq2do9ii4yJUqQBQ==
-X-Google-Smtp-Source: ABdhPJy492hSt3yFkvG2+dj6Avz8t8PZ17svi7lEEFIz4chce5wOnLxGMwUzh22Gcf+DqZSnzpexQA==
-X-Received: by 2002:ad4:4c0a:: with SMTP id bz10mr2574075qvb.78.1598020721052;
-        Fri, 21 Aug 2020 07:38:41 -0700 (PDT)
-Received: from localhost.localdomain ([2600:380:a347:d293:267e:e50:f799:d6f0])
-        by smtp.gmail.com with ESMTPSA id b131sm1855841qkc.121.2020.08.21.07.38.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 21 Aug 2020 07:38:40 -0700 (PDT)
-Subject: Re: [PATCH RFC 2/2] btrfs: fix replace of seed device
-To:     Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org
-References: <2c7ca821f53d71d6c1a4e1f1c969c1d8e686021a.1598012410.git.anand.jain@oracle.com>
- <eb6040708e4f351ae668726862e3f112f64d8ab9.1598012410.git.anand.jain@oracle.com>
-Cc:     boris@bur.io
-From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <56431875-619d-fb49-efb2-9fcd265a8a69@toxicpanda.com>
-Date:   Fri, 21 Aug 2020 10:38:39 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 21 Aug 2020 11:19:36 -0400
+X-Greylist: delayed 1479 seconds by postgrey-1.27 at vger.kernel.org; Fri, 21 Aug 2020 11:19:35 EDT
+Received: from cm14.websitewelcome.com (cm14.websitewelcome.com [100.42.49.7])
+        by gateway32.websitewelcome.com (Postfix) with ESMTP id 4215D12A6C39
+        for <linux-btrfs@vger.kernel.org>; Fri, 21 Aug 2020 09:54:53 -0500 (CDT)
+Received: from br540.hostgator.com.br ([108.179.252.180])
+        by cmsmtp with SMTP
+        id 98RRkvK0IBD8b98RRkOCNy; Fri, 21 Aug 2020 09:54:53 -0500
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=mpdesouza.com; s=default; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=7RQ2hKgl1ruA2bCIsl6ftQlYVMZxZwpcaDvYoUrDx50=; b=eZRxoRgkbHLqOMgEZ42qkSDvDX
+        Q84Xi+NFCE1L8GeeK86Yi/YI8tAASiJ5znZICE9p+nR6IYHv/dQwh3YOu7olXZeBygrMewlguCjlZ
+        hw3wLo0iyqTDXw8N4l7PyDHyR7bLRP0x710MbDnJQy4jliHJB6aXlgZwcNGWdwIGYf5gWUSwFgwM2
+        NibsmONu0HJRUZCkhE95l3f2OelMjJb0wf90suj/uBDoUEp3B08mzWIu7ZyGW0nOZPzBoJtzoAiRN
+        bCz0/x5pAIw7bXUI0EhIsv+ks/yN/w/v4L6nRff4HkZr4Tqkf4j6IzeslWDdkmNbmRW89mm86SKd9
+        bxb4ZmKA==;
+Received: from [191.248.104.145] (port=54152 helo=hephaestus.suse.de)
+        by br540.hostgator.com.br with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <marcos@mpdesouza.com>)
+        id 1k98RQ-001hcI-MA; Fri, 21 Aug 2020 11:54:53 -0300
+From:   Marcos Paulo de Souza <marcos@mpdesouza.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     dsterba@suse.com, linux-btrfs@vger.kernel.org,
+        Marcos Paulo de Souza <mpdesouza@suse.com>,
+        stable@vger.kernel.org, Qu Wenruo <wqu@suse.com>,
+        Filipe Manana <fdmanana@suse.com>
+Subject: [PATCH v3] btrfs: block-group: Fix free-space bitmap threshould
+Date:   Fri, 21 Aug 2020 11:54:44 -0300
+Message-Id: <20200821145444.25791-1-marcos@mpdesouza.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-In-Reply-To: <eb6040708e4f351ae668726862e3f112f64d8ab9.1598012410.git.anand.jain@oracle.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - br540.hostgator.com.br
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - mpdesouza.com
+X-BWhitelist: no
+X-Source-IP: 191.248.104.145
+X-Source-L: No
+X-Exim-ID: 1k98RQ-001hcI-MA
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: (hephaestus.suse.de) [191.248.104.145]:54152
+X-Source-Auth: marcos@mpdesouza.com
+X-Email-Count: 5
+X-Source-Cap: bXBkZXNvNTM7bXBkZXNvNTM7YnI1NDAuaG9zdGdhdG9yLmNvbS5icg==
+X-Local-Domain: yes
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 8/21/20 9:15 AM, Anand Jain wrote:
-> If you replace a seed device in a sprouted fs, it appears to have
-> successfully replaced the seed device, but if you look closely, it didn't.
-> 
-> Here is an example.
-> 
-> mkfs.btrfs -fq /dev/sda
-> btrfstune -S1 /dev/sda
-> mount /dev/sda /btrfs
-> btrfs dev add /dev/sdb /btrfs
-> umount /btrfs; btrfs dev scan --forget
-> mount -o device=/dev/sda /dev/sdb /btrfs
-> btrfs rep start -f /dev/sda /dev/sdc /btrfs; echo $?
-> 0
-> 
->    BTRFS info (device sdb): dev_replace from /dev/sda (devid 1) to /dev/sdc started
->    BTRFS info (device sdb): dev_replace from /dev/sda (devid 1) to /dev/sdc finished
-> 
-> btrfs fi show
-> Label: none  uuid: ab2c88b7-be81-4a7e-9849-c3666e7f9f4f
-> 	Total devices 2 FS bytes used 256.00KiB
-> 	devid    1 size 3.00GiB used 520.00MiB path /dev/sdc
-> 	devid    2 size 3.00GiB used 896.00MiB path /dev/sdb
-> 
-> Label: none  uuid: 10bd3202-0415-43af-96a8-d5409f310a7e
-> 	Total devices 1 FS bytes used 128.00KiB
-> 	devid    1 size 3.00GiB used 536.00MiB path /dev/sda
-> 
-> So as per the replace start command and kernel log replace was successful.
-> 
-> Now let's try to clean mount.
-> 
-> umount /btrfs;  btrfs dev scan --forget
-> 
-> mount -o device=/dev/sdc /dev/sdb /btrfs
-> mount: /btrfs: wrong fs type, bad option, bad superblock on /dev/sdb, missing codepage or helper program, or other error.
-> 
-> [  636.157517] BTRFS error (device sdc): failed to read chunk tree: -2
-> [  636.180177] BTRFS error (device sdc): open_ctree failed
-> 
-> That's because per dev items it is still looking for the original seed
-> device.
-> 
-> btrfs in dump-tree -d /dev/sdb
-> 
-> 	item 0 key (DEV_ITEMS DEV_ITEM 1) itemoff 16185 itemsize 98
-> 		devid 1 total_bytes 3221225472 bytes_used 545259520
-> 		io_align 4096 io_width 4096 sector_size 4096 type 0
-> 		generation 6 start_offset 0 dev_group 0
-> 		seek_speed 0 bandwidth 0
-> 		uuid 59368f50-9af2-4b17-91da-8a783cc418d4  <--- seed uuid
-> 		fsid 10bd3202-0415-43af-96a8-d5409f310a7e  <--- seed fsid
-> 	item 1 key (DEV_ITEMS DEV_ITEM 2) itemoff 16087 itemsize 98
-> 		devid 2 total_bytes 3221225472 bytes_used 939524096
-> 		io_align 4096 io_width 4096 sector_size 4096 type 0
-> 		generation 0 start_offset 0 dev_group 0
-> 		seek_speed 0 bandwidth 0
-> 		uuid 56a0a6bc-4630-4998-8daf-3c3030c4256a  <- sprout uuid
-> 		fsid ab2c88b7-be81-4a7e-9849-c3666e7f9f4f <- sprout fsid
-> 
-> But the replaced target has the following uuid+fsid in its superblock
-> which doesn't match with the expected uuid+fsid in its devitem.
-> 
-> btrfs in dump-super /dev/sdc | egrep '^generation|dev_item.uuid|dev_item.fsid|devid'
-> generation	20
-> dev_item.uuid	59368f50-9af2-4b17-91da-8a783cc418d4
-> dev_item.fsid	ab2c88b7-be81-4a7e-9849-c3666e7f9f4f [match]
-> dev_item.devid	1
-> 
-> So if you provide the original seed device the mount shall be successful.
-> Which so long happening in the test case btrfs/163.
-> 
-> btrfs dev scan --forget
-> mount -o device=/dev/sda /dev/sdb /btrfs
-> 
-> Fix in this patch:
-> Make it as you can't replace a seed device, you can only add a new device
-> and then delete the seed device. If replace is attempted then returns -EINVAL.
-> As in the below changes.
-> 
-> Another possible fix:
-> If we want to keep the ability to replace for seed-device, then we could
-> update the fsid of the replace-target blocks. And after replacement, you
-> have seed device but with sprout fsid. But then I don't know what is the
-> point and if there is any such use case.
-> 
-> Signed-off-by: Anand Jain <anand.jain@oracle.com>
-> ---
+From: Marcos Paulo de Souza <mpdesouza@suse.com>
 
-This is something Boris dug into until I told him to drop it.  I _think_ 
-I'm ok with this, but really what I'd rather do is restripe the whole fs 
-with the new UUID for this case.  Where did that redo the UUID work go? 
-Thanks,
+[BUG]
+After commit 9afc66498a0b ("btrfs: block-group: refactor how we read one
+block group item"), cache->length is being assigned after calling
+btrfs_create_block_group_cache. This causes a problem since
+set_free_space_tree_thresholds is calculate the free-space threshould to
+decide is the free-space tree should convert from extents to bitmaps.
 
-Josef
+The current code calls set_free_space_tree_thresholds with cache->length
+being 0, which then makes cache->bitmap_high_thresh being zero. This
+implies the system will always use bitmap instead of extents, which is
+not desired if the block group is not fragmented.
+
+This behavior can be seen by a test that expects to repair systems
+with FREE_SPACE_EXTENT and FREE_SPACE_BITMAP, but the current code only
+created FREE_SPACE_BITMAP.
+
+[FIX]
+Call set_free_space_tree_thresholds after setting cache->length. There
+is now a WARN_ON in set_free_space_tree_thresholds to help preventing
+the same mistake to happen again in the future.
+
+Link: https://github.com/kdave/btrfs-progs/issues/251
+Fixes: 9afc66498a0b ("btrfs: block-group: refactor how we read one block group item")
+CC: stable@vger.kernel.org # 5.8+
+Reviewed-by: Qu Wenruo <wqu@suse.com>
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
+Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
+---
+ Changes from v2:
+ * Add a WARN_ON and changed the warn message (Filipe)
+ * Add a Reviewed-by tag from Filipe
+ Changes from v1:
+ * Add warn message (Qu)
+ * Add a Reviewed-by tag from Qu
+
+ fs/btrfs/block-group.c     | 4 +++-
+ fs/btrfs/free-space-tree.c | 4 ++++
+ 2 files changed, 7 insertions(+), 1 deletion(-)
+
+diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+index 44fdfa2eeb2e..01e8ba1da1d3 100644
+--- a/fs/btrfs/block-group.c
++++ b/fs/btrfs/block-group.c
+@@ -1798,7 +1798,6 @@ static struct btrfs_block_group *btrfs_create_block_group_cache(
+ 
+ 	cache->fs_info = fs_info;
+ 	cache->full_stripe_len = btrfs_full_stripe_len(fs_info, start);
+-	set_free_space_tree_thresholds(cache);
+ 
+ 	cache->discard_index = BTRFS_DISCARD_INDEX_UNUSED;
+ 
+@@ -1908,6 +1907,8 @@ static int read_one_block_group(struct btrfs_fs_info *info,
+ 
+ 	read_block_group_item(cache, path, key);
+ 
++	set_free_space_tree_thresholds(cache);
++
+ 	if (need_clear) {
+ 		/*
+ 		 * When we mount with old space cache, we need to
+@@ -2128,6 +2129,7 @@ int btrfs_make_block_group(struct btrfs_trans_handle *trans, u64 bytes_used,
+ 		return -ENOMEM;
+ 
+ 	cache->length = size;
++	set_free_space_tree_thresholds(cache);
+ 	cache->used = bytes_used;
+ 	cache->flags = type;
+ 	cache->last_byte_to_unpin = (u64)-1;
+diff --git a/fs/btrfs/free-space-tree.c b/fs/btrfs/free-space-tree.c
+index 8b1f5c8897b7..f072c106b82b 100644
+--- a/fs/btrfs/free-space-tree.c
++++ b/fs/btrfs/free-space-tree.c
+@@ -22,6 +22,10 @@ void set_free_space_tree_thresholds(struct btrfs_block_group *cache)
+ 	size_t bitmap_size;
+ 	u64 num_bitmaps, total_bitmap_size;
+ 
++	if (WARN_ON(cache->length == 0))
++		btrfs_warn(cache->fs_info, "block group %llu length is zero",
++						cache->start);
++
+ 	/*
+ 	 * We convert to bitmaps when the disk space required for using extents
+ 	 * exceeds that required for using bitmaps.
+-- 
+2.28.0
+
