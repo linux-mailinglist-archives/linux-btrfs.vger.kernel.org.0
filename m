@@ -2,167 +2,64 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14F3624DE6F
-	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Aug 2020 19:30:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78D8324DEAF
+	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Aug 2020 19:40:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726057AbgHURad (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 21 Aug 2020 13:30:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44142 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729129AbgHURaO (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 21 Aug 2020 13:30:14 -0400
-Received: from mail-ua1-x941.google.com (mail-ua1-x941.google.com [IPv6:2607:f8b0:4864:20::941])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F040CC061574;
-        Fri, 21 Aug 2020 10:30:13 -0700 (PDT)
-Received: by mail-ua1-x941.google.com with SMTP id u15so752695uau.10;
-        Fri, 21 Aug 2020 10:30:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc:content-transfer-encoding;
-        bh=Rh7xLCAFfleIa8pPqcTaoRaDlX4V25hxmH4Sbeg/vds=;
-        b=t5pOFv5QTlbBpaqJAdCYgdyeeMd6awPZ11FxQMjz2/GVQprLEq0KpSuttjNzkaqfUv
-         xRV4ieSVkGyM5WCfY+N3000Ri4/UK558FeCr0yD2usQrwrbC6lZn2XaMbf+iRMrWCC37
-         mcl8DUal4PMgGoEuuuf81ZnW8eyG4aFFYhMAifPcKhtx6rgQqHeesT7i//vx6tSI6qOV
-         Sn72Zp4o/qwmsisMb0Neg+kTb46aNE0adC4DUzTSGiOLuWRB9uhTSLAH9OEQQ6smUeN9
-         z0Z+jCVGn5qyQ14ZCUP49t5KZAdtz8l23ySb0QPgLHZLEbSCrcIgL3Sq4gP5POjgAbK1
-         d/+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc:content-transfer-encoding;
-        bh=Rh7xLCAFfleIa8pPqcTaoRaDlX4V25hxmH4Sbeg/vds=;
-        b=KpOAK5omOc+xwenwTDMgLseV6FMSN4yjj80+EwGlehP8SK1VFJxTvh7qOJZSE+DzMP
-         E8LZlcUzATT5NYINUb5wbzybjS7V2IUsnCIE3FT1Eb/8vS7sxcI8Jyx8A229gwTRoNgA
-         KPHHmotZI6H1W5ShAqr2Bdah82INGhbAbXlGlUgoo4WDNf2m7HHJ0GyNxnTQzzZRDm9z
-         78JI5Fx/P1Lint74/74SAZPNJTZqOuLhpt1J4FzOsCMUd7bwpBqsS730XY3PPeQ/peuq
-         WNTtderkoLOXoeJ7xHgkPvWCw9uz3uZ4Hx6aM9jml++exEZEdmao+lXodYQGgCpP9zsn
-         +DNg==
-X-Gm-Message-State: AOAM530FL/GM/tGvdbM8FJxnDaItKUiOTbw3YN3y6LzZ0iP0VncDEkiC
-        Zi4EzGeWtKo1VgPTxrUBtg+iudKon4TeD4YTecQsPruyaV4=
-X-Google-Smtp-Source: ABdhPJymVYcLv/QhaWTxFmfKBxIdrcuj5Op31Mm0FUcB2HmBTDCM6Qdd3zOjHyK26hbydMIP0/7Jsym9UPl2ePbY7Ec=
-X-Received: by 2002:ab0:650a:: with SMTP id w10mr2340769uam.123.1598031013191;
- Fri, 21 Aug 2020 10:30:13 -0700 (PDT)
+        id S1727076AbgHURkX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 21 Aug 2020 13:40:23 -0400
+Received: from mout.gmx.net ([212.227.17.22]:43645 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726864AbgHURkU (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 21 Aug 2020 13:40:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1598031619;
+        bh=189kxbu3XzcNu3ekt4A/SDhBBtAu7oa5OqRCusG7prM=;
+        h=X-UI-Sender-Class:From:To:Subject:Date;
+        b=asHCi8hs51IGoRUaNW5As0lOvE1IB3sl2+KFtss5lKj3N5C0XUGB+J3nktZFMg+Wp
+         lWv/DLsTdc4BE48JVkCRh/xdt9JCvtDUmI6MexGOkT/DYhVjb6UAndrbbPpR6H2JJ8
+         LhGCm1gFT3vbYtj8X8Eu7dE1MLFuAQwg6JsnPurM=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [89.245.123.82] ([89.245.123.82]) by web-mail.gmx.net
+ (3c-app-gmx-bap35.server.lan [172.19.172.105]) (via HTTP); Fri, 21 Aug 2020
+ 19:40:19 +0200
 MIME-Version: 1.0
-References: <cover.1597994106.git.osandov@osandov.com> <af4ae9204aa3d36a2703dc1aaeb365b7340ed238.1597994106.git.osandov@osandov.com>
-In-Reply-To: <af4ae9204aa3d36a2703dc1aaeb365b7340ed238.1597994106.git.osandov@osandov.com>
-Reply-To: fdmanana@gmail.com
-From:   Filipe Manana <fdmanana@gmail.com>
-Date:   Fri, 21 Aug 2020 18:30:02 +0100
-Message-ID: <CAL3q7H49XQb-UaKmO0QR8V5F7onyCvVB4nYbMgoUfWJE8gJcug@mail.gmail.com>
-Subject: Re: [PATCH 3/9] btrfs: send: use btrfs_file_extent_end() in send_write_or_clone()
-To:     Omar Sandoval <osandov@osandov.com>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Message-ID: <trinity-57be0daf-2aa0-4480-a962-7a62e302cfde-1598031619031@3c-app-gmx-bap35>
+From:   Steve Keller <keller.steve@gmx.de>
+To:     linux-btrfs@vger.kernel.org
+Subject: Link count for directories
+Content-Type: text/plain; charset=UTF-8
+Date:   Fri, 21 Aug 2020 19:40:19 +0200
+Importance: normal
+Sensitivity: Normal
+X-Priority: 3
+X-Provags-ID: V03:K1:vIrrw0dPu3cgTxFn2x9NyttR5z520fX9CvkAS0tD/24IcoQdHNpNht2O8ACjOT8ClNilt
+ 5FWdGmwL78hkXg33CFFxllQkLRe7Crxyag5m1Ur5LnMkU17OlnyY9d3QzdYwsbcZ0hSJseNLOST5
+ KGXpKbmUg3Tn+GYVV9CjQiu81Lr95WqhWcC29GnbZ8WhbPhwUGQ6qAx5tQbE0ndFeCtVv9rv0s1P
+ l6mPyivRGX/KaEpb5AiIMX3hXc94mtw1HU6fA1YAKT7YEwwFxnKPjyZMh8F1YRzUykosqi45kyNT
+ jg=
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:8frIhO1jMDk=:K/xjrjQmNLs01Ex2mzUfGq
+ kO8NYk4JWsHnjV1LrTc5lC3AlgMkZfCp/ZleHWI0lu+dxv6jsiuKpolyKd3lEJU952GIcfzeg
+ /BTQkd/VpA9JEmfKnP7Z7jysCqpPoCgHjBVLgF98piYgBfEBU/zYA62nbmePqXtBuh2MSnYf3
+ gfJOtX7DHFQscNuf1eha8lJTkyBBbAJpZXH5PcW6r/d+xCgEC+JG70WBEYQNf1QnNe9P9J8ek
+ cGvSK8T4yOUiAQhMFcBRViPYmZ7bi6TWeN1ptkipQVz3pHNOqkFziYJne0ilytEiZn6goKonQ
+ h9c9Uq9QX3m+KI8TOrcYM2ArG+NDo85C/7Jf/uSBONVk3GViz/sS2PsnjtojG1FB1LJzeOmeN
+ G4KHYei5oKAJp+FbEtePDe4aFc9W5JYINa0JO/x1dZbQi8kkxDsVtyD1Uhih8VcuhQLNvGPHS
+ tLmgIiC+KAc6/Ptty2MHJlFR4NzJ5q02Y/FMj2GCqGY9ALPWgGvsmISaFIWkkL8MVXXavi10r
+ lNDf6AJFdFb9Nn29nsKUtw7zLSt6fhJDh1KJT1wVeEbMGjVypcK/0RlLLmcAD8wuRT0T465bK
+ +mcHwzBgCXAfd6rs4E94OnF5h/G8UA7ak2pVMd78Dz2EL/XKufkl9rLw0tLcl+/3662cYTsl1
+ t5Ix7zSVQl01m5qOVdOF8DYU23LWN7axXjGN77VSGWmJQl2aKfxgwZYMPLBgWBq3ASSc=
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Aug 21, 2020 at 8:42 AM Omar Sandoval <osandov@osandov.com> wrote:
->
-> From: Omar Sandoval <osandov@fb.com>
->
-> send_write_or_clone() basically has an open-coded copy of
-> btrfs_file_extent_end() except that it (incorrectly) aligns to PAGE_SIZE
-> instead of sectorsize. Fix and simplify the code by using
-> btrfs_file_extent_end().
->
-> Signed-off-by: Omar Sandoval <osandov@fb.com>
+Are there any plans to implement the traditional link count behavior in btrfs,
+as described in the following URL?
 
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
+https://btrfs.wiki.kernel.org/index.php/Project_ideas#Track_link_count_for_directories
 
-Looks good, and it passed some long duration tests with both full and
-incremental sends here (with and without compression, no-holes, etc).
+Would it be a major effort to do so?  I'd really like that feature.
 
-Thanks.
+Steve
 
-> ---
->  fs/btrfs/send.c | 44 +++++++++++---------------------------------
->  1 file changed, 11 insertions(+), 33 deletions(-)
->
-> diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
-> index e70f5ceb3261..37ce21361782 100644
-> --- a/fs/btrfs/send.c
-> +++ b/fs/btrfs/send.c
-> @@ -5400,51 +5400,29 @@ static int send_write_or_clone(struct send_ctx *s=
-ctx,
->                                struct clone_root *clone_root)
->  {
->         int ret =3D 0;
-> -       struct btrfs_file_extent_item *ei;
->         u64 offset =3D key->offset;
-> -       u64 len;
-> -       u8 type;
-> +       u64 end;
->         u64 bs =3D sctx->send_root->fs_info->sb->s_blocksize;
->
-> -       ei =3D btrfs_item_ptr(path->nodes[0], path->slots[0],
-> -                       struct btrfs_file_extent_item);
-> -       type =3D btrfs_file_extent_type(path->nodes[0], ei);
-> -       if (type =3D=3D BTRFS_FILE_EXTENT_INLINE) {
-> -               len =3D btrfs_file_extent_ram_bytes(path->nodes[0], ei);
-> -               /*
-> -                * it is possible the inline item won't cover the whole p=
-age,
-> -                * but there may be items after this page.  Make
-> -                * sure to send the whole thing
-> -                */
-> -               len =3D PAGE_ALIGN(len);
-> -       } else {
-> -               len =3D btrfs_file_extent_num_bytes(path->nodes[0], ei);
-> -       }
-> -
-> -       if (offset >=3D sctx->cur_inode_size) {
-> -               ret =3D 0;
-> -               goto out;
-> -       }
-> -       if (offset + len > sctx->cur_inode_size)
-> -               len =3D sctx->cur_inode_size - offset;
-> -       if (len =3D=3D 0) {
-> -               ret =3D 0;
-> -               goto out;
-> -       }
-> +       end =3D min(btrfs_file_extent_end(path), sctx->cur_inode_size);
-> +       if (offset >=3D end)
-> +               return 0;
->
-> -       if (clone_root && IS_ALIGNED(offset + len, bs)) {
-> +       if (clone_root && IS_ALIGNED(end, bs)) {
-> +               struct btrfs_file_extent_item *ei;
->                 u64 disk_byte;
->                 u64 data_offset;
->
-> +               ei =3D btrfs_item_ptr(path->nodes[0], path->slots[0],
-> +                                   struct btrfs_file_extent_item);
->                 disk_byte =3D btrfs_file_extent_disk_bytenr(path->nodes[0=
-], ei);
->                 data_offset =3D btrfs_file_extent_offset(path->nodes[0], =
-ei);
->                 ret =3D clone_range(sctx, clone_root, disk_byte, data_off=
-set,
-> -                                 offset, len);
-> +                                 offset, end - offset);
->         } else {
-> -               ret =3D send_extent_data(sctx, offset, len);
-> +               ret =3D send_extent_data(sctx, offset, end - offset);
->         }
-> -       sctx->cur_inode_next_write_offset =3D offset + len;
-> -out:
-> +       sctx->cur_inode_next_write_offset =3D end;
->         return ret;
->  }
->
-> --
-> 2.28.0
->
-
-
---=20
-Filipe David Manana,
-
-=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
- right.=E2=80=9D
