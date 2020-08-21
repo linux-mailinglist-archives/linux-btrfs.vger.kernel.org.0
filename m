@@ -2,202 +2,123 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0022D24CB75
-	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Aug 2020 05:35:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6B4324CF4E
+	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Aug 2020 09:32:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727787AbgHUDe7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 20 Aug 2020 23:34:59 -0400
-Received: from mout.gmx.net ([212.227.17.22]:38707 "EHLO mout.gmx.net"
+        id S1728060AbgHUHcE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 21 Aug 2020 03:32:04 -0400
+Received: from mx2.suse.de ([195.135.220.15]:43448 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726983AbgHUDez (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 20 Aug 2020 23:34:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1597980879;
-        bh=lc0mdqveFr60wFUPrbFPqClesxYv9vVRyB+2BO44duw=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=VfmjB9Rkmhu7RAUcDOd3c6M2A/Ux2sEnqLNXqZQvN3WxTaT7Q8iUe+3ZczV3SnUSX
-         A4AYvQTNuAMhoqY+dq6Xmh7Vmvb+hBzNRt1YsmMAKHZv9slneWxRSNiCjdsqAAu+j6
-         LorOO7g7QVFB8hSBJ7wyENy07ke7rntmKhnguNmU=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1N0oBx-1ku4nj13if-00wq7h; Fri, 21
- Aug 2020 05:34:38 +0200
-Subject: Re: [PATCH] btrfs: block-group: Fix free-space bitmap threshould
-To:     Marcos Paulo de Souza <marcos@mpdesouza.com>,
-        linux-kernel@vger.kernel.org
-Cc:     dsterba@suse.com, wqu@suse.com, linux-btrfs@vger.kernel.org,
-        Marcos Paulo de Souza <mpdesouza@suse.com>,
-        stable@vger.kernel.org
-References: <20200821024231.16256-1-marcos@mpdesouza.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
- PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
- 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
- D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
- efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
- ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
- BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
- 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
- 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
- EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
- 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
- ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
- oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
- fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
- 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
- ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
- oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <9953a211-5068-c31d-3cf7-fe8441f3c38c@gmx.com>
-Date:   Fri, 21 Aug 2020 11:34:30 +0800
+        id S1727868AbgHUHcC (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 21 Aug 2020 03:32:02 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 45809B023;
+        Fri, 21 Aug 2020 07:32:28 +0000 (UTC)
+Subject: Re: [PATCH 1/2] btrfs: free fs roots on failed mount
+To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com
+References: <cover.1597953516.git.josef@toxicpanda.com>
+ <9c6e581e607954968d08179961bb20a62491a655.1597953516.git.josef@toxicpanda.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <7bb2214b-5b1f-4e96-f2fd-4715ea5a6de6@suse.com>
+Date:   Fri, 21 Aug 2020 10:31:58 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20200821024231.16256-1-marcos@mpdesouza.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="HrZcJayGj3sStp9uLWJOvIUMaUl3bnKQT"
-X-Provags-ID: V03:K1:0/UbLUJd4XPwUqnVbjPdKxeOASGg4qAF9pMqAW3uzVXsBbdYdXG
- Oa6WPpfnKodmX8me4I5xGnM+oHuNdvGWbxzwNH2XbTV3na62XXPijqpEQrPXcbRLkJONMHX
- izPTJf/QD/OtupF2wClQl886pj/2oHzTxj/UupCuuM6Celo4p7WPP8aDw2SXc6aWsRj9ISA
- Z27sYsnL1XXKuNoMScFnQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:EmBD6lFznxQ=:WDxcwc54pXtV0YYMUaKoam
- 8m2Mlxwjuh5oAsh8/nH34EtyrPQc2qTQzmmPRE0kcfabG8BthJJtP/mE11rEhz7xMHa84cGKC
- go9Q9Wd7Gw9DO5PMSO7OddsrYuhgE2roHPfBuL+PBvyWQoydHQM754J5LLdR1+kOkrJx9adRF
- ByCFLQFuf11Yv2ul1IH/iSbfwahLY5FP5IEeN2Nyw3rIKQgGqYDyv2feN4sLpstbN1plqo8rj
- TEqUA9RI+3ZimZBkYeqOsad0qiQciR4xlTdAzvTM10mb6J6szkzVALpLZB8ztEnQaWbrPW1vR
- /18NxvqCoHdJ4rskAhgl6Hocqo8g9+2V1UsxRteEbCxYSpl1zC8IXWa2NX6qQKV5Lz/aKP50r
- v8DfrgQMqIcDb8TJiW/4cq/UAP1zz3inMU/ClNaD+JXw9zytpBi+WytXCDn+0s9WeE6iwDsEK
- 9rhQ9F5e3FLJuisY4aD7eZfyL/gruS/tq+vvzvdyaJdB7USK8KYQjwB6PQKde706mM58bLpDF
- FgARV3ZQD0+Q88gXkI2vq/lclLKAS+cg63NC/faBnCwKWPuvtoG1AD6gn9Kr9Kc9wjokOCRdr
- kMnYrord+bPichOpxsNuZJck8ZJQK+cPKp1pCPbDlS/6KUtnqjBKm2oJ3HgJD0O9KXzBKZAX0
- Bo0iV06jhebWPTku+OxC4miw9/obR8uQvZOtKVWEyNaCez6r+mzubu7CGsnvTYUUZyfKEPnyt
- Qxe3Aa8U3z0QJszPZwU64GOvyAQABVaBjkY5q1f+7lMnZt9XoTaytE1H/wvDvyr7MhmLB8zzl
- WFSbnOniBNL+zeBeFEKucoBhp1b+RxvZc/zgKIDEr6br1rm++9tUxB4ragVkdV8zHcjqhGSzo
- H6tAwglvB9Ri6pp0QpTu6SqcGP4RY3OE+K0214pMlm/I4gE7IVuApMAgAysGtnpfiHpnB9puj
- JHrTUVeNCq3j1X2DSv0Xfq4L0pjfGQCDaIgJw3xJDKaBhaxzSa+xQnpfKM22atUUgs+FStO/H
- +rtNig9EKaFVkObqw4TIKR/10I8ZyNmD5vwM+QLX4sG04dmkBsF0FttWHTmNe/rJbsnD2K7Y8
- A0oL/rNdTLHMROyyyzHbmu2q7Jq2ZJUpnMPa9/7kIQHBLlCjUmeLw48iIy06zYAvlDfef1gME
- Cr4H4NL1yRt+Mj2nGtUHX2W6u3ngpoIoV9TRiSEHNzmF1yKIPGwrNehy3ccux1lIMefrhz1gs
- NjEgFkZVaVEo4ZSpHlCrH/BZFcXvaBCumeY+22w==
+In-Reply-To: <9c6e581e607954968d08179961bb20a62491a655.1597953516.git.josef@toxicpanda.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---HrZcJayGj3sStp9uLWJOvIUMaUl3bnKQT
-Content-Type: multipart/mixed; boundary="NOenamEG6rrykhIMvMIb4Z4zs328jK2E0"
-
---NOenamEG6rrykhIMvMIb4Z4zs328jK2E0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
 
 
-
-On 2020/8/21 =E4=B8=8A=E5=8D=8810:42, Marcos Paulo de Souza wrote:
-> From: Marcos Paulo de Souza <mpdesouza@suse.com>
->=20
-> [BUG]
-> After commit 9afc66498a0b ("btrfs: block-group: refactor how we read on=
-e
-> block group item"), cache->length is being assigned after calling
-> btrfs_create_block_group_cache. This causes a problem since
-> set_free_space_tree_thresholds is calculate the free-space threshould t=
-o
-> decide is the free-space tree should convert from extents to bitmaps.
->=20
-> The current code calls set_free_space_tree_thresholds with cache->lengt=
-h
-> being 0, which then makes cache->bitmap_high_thresh being zero. This
-> implies the system will always use bitmap instead of extents, which is
-> not desired if the block group is not fragmented.
->=20
-> This behavior can be seen by a test that expects to repair systems
-> with FREE_SPACE_EXTENT and FREE_SPACE_BITMAP, but the current code only=
-
-> created FREE_SPACE_BITMAP.
->=20
-> [FIX]
-> Call set_free_space_tree_thresholds after setting cache->length.
->=20
-> Link: https://github.com/kdave/btrfs-progs/issues/251
-> Fixes: 9afc66498a0b ("btrfs: block-group: refactor how we read one bloc=
-k group item")
-> CC: stable@vger.kernel.org # 5.8+
-> Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
-
-Reviewed-by: Qu Wenruo <wqu@suse.com>
-
-It would be even nicer if you could add some warning or self-test on
-cache->length to prevent such problem from happening again.
-
-Thanks,
-Qu
+On 20.08.20 г. 23:00 ч., Josef Bacik wrote:
+> While testing a weird problem with -o degraded, I noticed I was getting
+> leaked root errors
+> 
+> BTRFS warning (device loop0): writable mount is not allowed due to too many missing devices
+> BTRFS error (device loop0): open_ctree failed
+> BTRFS error (device loop0): leaked root -9-0 refcount 1
+> 
+> This is the DATA_RELOC root, which gets read before the other fs roots,
+> but is included in the fs roots radix tree.  Handle this by adding a
+> btrfs_drop_and_free_fs_root() on the data reloc root if it exists.  This
+> is ok to do here if we fail further up because we will only drop the ref
+> if we delete the root from the radix tree, and all other cleanup won't
+> be duplicated.
+> 
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 > ---
->  fs/btrfs/block-group.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
->=20
-> diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-> index 44fdfa2eeb2e..01e8ba1da1d3 100644
-> --- a/fs/btrfs/block-group.c
-> +++ b/fs/btrfs/block-group.c
-> @@ -1798,7 +1798,6 @@ static struct btrfs_block_group *btrfs_create_blo=
-ck_group_cache(
-> =20
->  	cache->fs_info =3D fs_info;
->  	cache->full_stripe_len =3D btrfs_full_stripe_len(fs_info, start);
-> -	set_free_space_tree_thresholds(cache);
-> =20
->  	cache->discard_index =3D BTRFS_DISCARD_INDEX_UNUSED;
-> =20
-> @@ -1908,6 +1907,8 @@ static int read_one_block_group(struct btrfs_fs_i=
-nfo *info,
-> =20
->  	read_block_group_item(cache, path, key);
-> =20
-> +	set_free_space_tree_thresholds(cache);
-> +
->  	if (need_clear) {
->  		/*
->  		 * When we mount with old space cache, we need to
-> @@ -2128,6 +2129,7 @@ int btrfs_make_block_group(struct btrfs_trans_han=
-dle *trans, u64 bytes_used,
->  		return -ENOMEM;
-> =20
->  	cache->length =3D size;
-> +	set_free_space_tree_thresholds(cache);
->  	cache->used =3D bytes_used;
->  	cache->flags =3D type;
->  	cache->last_byte_to_unpin =3D (u64)-1;
->=20
+>  fs/btrfs/disk-io.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+> index 814f8de395fe..ac6d6fddd5f4 100644
+> --- a/fs/btrfs/disk-io.c
+> +++ b/fs/btrfs/disk-io.c
+> @@ -3418,6 +3418,8 @@ int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_device
+>  	btrfs_put_block_group_cache(fs_info);
+>  
+>  fail_tree_roots:
+> +	if (fs_info->data_reloc_root)
+> +		btrfs_drop_and_free_fs_root(fs_info, fs_info->data_reloc_root);
 
+But will this really free the root? So the newly allocated
+data_reloc_root has it's ref set to 1 from
+btrfs_get_root_ref->btrfs_read_tree_root->btrfs_alloc_root and to 2 from
+being added to the radix tree in btrfs_insert_fs_root().
 
---NOenamEG6rrykhIMvMIb4Z4zs328jK2E0--
+But btrfs_drop_and_free_fs_root makes a single call to btrfs_put_root.
+So won't the reloc tree be left with a refcount of 1 ?
 
---HrZcJayGj3sStp9uLWJOvIUMaUl3bnKQT
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl8/QMYACgkQwj2R86El
-/qj5jggAmLxVcKj1aXb2Lvibd53N1wzI+XHZ4tiioomUxQC3tzZxBIjIcU8rUP87
-fwSr4WpvN1nJCoxTcugQPMSwyEB+NFSzrslmS3TUuH37TtUOUh9kzKtaNPrZrAo6
-qpXTRc2RCkTeFU8u8zhZFjCu2hjCjtJPqdT0XZLoqmbds4joJgukEwXwOaxRiYKY
-4cx2iA4u4Q2Lxqu3bKBvxSCAxUbeVNHBjP4obbtxcb0ndQ4HFkDIBWwWYVtupGPP
-m5T/A9svMJrpc5yB94w9Nx9n55F7mro8bPEim2GagfAi8B5DuOv72IWvLTH9bVwU
-RDU37zvYNY9VkzIGQCX9RzHnbYCekw==
-=hh8V
------END PGP SIGNATURE-----
-
---HrZcJayGj3sStp9uLWJOvIUMaUl3bnKQT--
+>  	free_root_pointers(fs_info, true);
+>  	invalidate_inode_pages2(fs_info->btree_inode->i_mapping);
+>  
+> 
