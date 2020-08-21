@@ -2,86 +2,78 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2773A24D20B
-	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Aug 2020 12:14:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3AD424D234
+	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Aug 2020 12:23:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728182AbgHUKOJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 21 Aug 2020 06:14:09 -0400
-Received: from mx2.suse.de ([195.135.220.15]:48320 "EHLO mx2.suse.de"
+        id S1728692AbgHUKXG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 21 Aug 2020 06:23:06 -0400
+Received: from mx2.suse.de ([195.135.220.15]:55536 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727791AbgHUKOI (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 21 Aug 2020 06:14:08 -0400
+        id S1727791AbgHUKXG (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 21 Aug 2020 06:23:06 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 89EE3AF69;
-        Fri, 21 Aug 2020 10:14:35 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 3FA2BB5E2;
+        Fri, 21 Aug 2020 10:23:32 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 8EA31DA730; Fri, 21 Aug 2020 12:13:01 +0200 (CEST)
-Date:   Fri, 21 Aug 2020 12:13:01 +0200
+        id 48C9FDA730; Fri, 21 Aug 2020 12:21:58 +0200 (CEST)
+Date:   Fri, 21 Aug 2020 12:21:58 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Nikolay Borisov <nborisov@suse.com>
-Cc:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com
-Subject: Re: [PATCH 2/2] btrfs: pretty print leaked root name
-Message-ID: <20200821101301.GC2026@twin.jikos.cz>
+To:     Filipe Manana <fdmanana@gmail.com>
+Cc:     dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>, kernel-team@fb.com
+Subject: Re: [PATCH] btrfs: check the right variable in
+ btrfs_del_dir_entries_in_log
+Message-ID: <20200821102158.GD2026@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
-        Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com
-References: <cover.1597953516.git.josef@toxicpanda.com>
- <461693e5c015857e684878e99e5e65075bb97c13.1597953516.git.josef@toxicpanda.com>
- <d98bb04e-1bcf-80c7-26ae-e91f3ecfd818@suse.com>
+Mail-Followup-To: dsterba@suse.cz, Filipe Manana <fdmanana@gmail.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>, kernel-team@fb.com
+References: <20200810213116.795789-1-josef@toxicpanda.com>
+ <20200819162236.GS2026@twin.jikos.cz>
+ <CAL3q7H4Rge7qSVgPokXHPVw6q246wKVn8aWixp8NzXitLPekhw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <d98bb04e-1bcf-80c7-26ae-e91f3ecfd818@suse.com>
+In-Reply-To: <CAL3q7H4Rge7qSVgPokXHPVw6q246wKVn8aWixp8NzXitLPekhw@mail.gmail.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Aug 21, 2020 at 10:35:38AM +0300, Nikolay Borisov wrote:
+On Thu, Aug 20, 2020 at 11:29:11AM +0100, Filipe Manana wrote:
+> On Wed, Aug 19, 2020 at 5:25 PM David Sterba <dsterba@suse.cz> wrote:
+> >
+> > On Mon, Aug 10, 2020 at 05:31:16PM -0400, Josef Bacik wrote:
+> > > With my new locking code dbench is so much faster that I tripped over a
+> > > transaction abort from ENOSPC.  This turned out to be because
+> > > btrfs_del_dir_entries_in_log was checking for ret == -ENOSPC, but this
+> > > function sets err on error, and returns err.  So instead of properly
+> > > marking the inode as needing a full commit, we were returning -ENOSPC
+> > > and aborting in __btrfs_unlink_inode.  Fix this by checking the proper
+> > > variable so that we return the correct thing in the case of ENOSPC.
+> > >
+> > > Fixes: 4a500fd178c8 ("Btrfs: Metadata ENOSPC handling for tree log")
+> > > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> >
+> > Added to misc-next, with updated changelog and comment explaining the
+> > ENOENT.
 > 
+> Looking at the part added to the changelog:
 > 
-> On 20.08.20 г. 23:00 ч., Josef Bacik wrote:
-> > I'm a actual human being so am incapable of converting u64 to s64 in my
-> > head, so add a helper to get the pretty name of a root objectid and use
-> > that helper to spit out the name for any special roots for leaked roots,
-> > so I don't have to scratch my head and figure out which root I messed up
-> > the refs for.
-> > 
-> > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-> > ---
-> >  fs/btrfs/disk-io.c    |  8 +++++---
-> >  fs/btrfs/print-tree.c | 37 +++++++++++++++++++++++++++++++++++++
-> >  fs/btrfs/print-tree.h |  1 +
-> >  3 files changed, 43 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-> > index ac6d6fddd5f4..a7358e0f59de 100644
-> > --- a/fs/btrfs/disk-io.c
-> > +++ b/fs/btrfs/disk-io.c
-> > @@ -1506,11 +1506,13 @@ void btrfs_check_leaked_roots(struct btrfs_fs_info *fs_info)
-> >  	struct btrfs_root *root;
-> >  
-> >  	while (!list_empty(&fs_info->allocated_roots)) {
-> > +		const char *name = btrfs_root_name(root->root_key.objectid);
-> > +
-> >  		root = list_first_entry(&fs_info->allocated_roots,
-> >  					struct btrfs_root, leak_list);
-> > -		btrfs_err(fs_info, "leaked root %llu-%llu refcount %d",
-> > -			  root->root_key.objectid, root->root_key.offset,
-> > -			  refcount_read(&root->refs));
-> > +		btrfs_err(fs_info, "leaked root %s%lld-%llu refcount %d",
+> "The ENOENT needs to be checked, because btrfs_lookup_dir_item() can
+> return -ENOENT if the dir item isn't in the tree log (which would happen
+> if we hadn't fsync'ed this guy).  We actually handle that case in
+> __btrfs_unlink_inode, so it's an expected error to get back."
 > 
-> nit: Won't this string result in some rather awkward looking strings,
-> such as:
+> btrfs_lookup_dir_item() returns NULL when the dir item does not exist
+> in the log.
+> What can return -ENOENT is btrfs_lookup_dir_index_item(), which we
+> call right after calling btrfs_lookup_dir_item().
+> The fact that one returns NULL and the other returns -ENOENT is what
+> made me question why the special handling for -ENOENT.
 > 
-> "leaked root ROOT_TREE<objectid>-<offset>..." i.e shouldn't the
-> (objectid,offset) pair be marked with parentheses?
+> Other than the wrong function name, it looks good to me.
 
-I don't understand why need/want to print the offset here. It is from
-the key.offset but for a message we should print it in an understandable
-way.
+Function name updated in the patch, thanks.
