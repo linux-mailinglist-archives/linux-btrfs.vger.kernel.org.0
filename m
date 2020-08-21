@@ -2,24 +2,25 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8302324D628
-	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Aug 2020 15:36:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9709C24D64C
+	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Aug 2020 15:43:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727897AbgHUNgS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 21 Aug 2020 09:36:18 -0400
-Received: from mx2.suse.de ([195.135.220.15]:43356 "EHLO mx2.suse.de"
+        id S1728130AbgHUNni (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 21 Aug 2020 09:43:38 -0400
+Received: from mx2.suse.de ([195.135.220.15]:47320 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726345AbgHUNgS (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 21 Aug 2020 09:36:18 -0400
+        id S1728736AbgHUNnh (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 21 Aug 2020 09:43:37 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 196D7ACB8;
-        Fri, 21 Aug 2020 13:36:44 +0000 (UTC)
-Subject: Re: [PATCH 7/8] btrfs: set the correct lockdep class for new nodes
+        by mx2.suse.de (Postfix) with ESMTP id 6206FB669;
+        Fri, 21 Aug 2020 13:44:03 +0000 (UTC)
+Subject: Re: [PATCH 8/8] btrfs: set the lockdep class for log tree extent
+ buffers
 To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
         kernel-team@fb.com
 References: <cover.1597936173.git.josef@toxicpanda.com>
- <928df7dd502b27fd2358bb3936b4bdbb30a0cd14.1597936173.git.josef@toxicpanda.com>
+ <968c98eabd41974b5df245fb20234a49491df037.1597936173.git.josef@toxicpanda.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  xsFNBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -63,12 +64,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  KIuxEcV8wcVjr+Wr9zRl06waOCkgrQbTPp631hToxo+4rA1jiQF2M80HAet65ytBVR2pFGZF
  zGYYLqiG+mpUZ+FPjxk9kpkRYz61mTLSY7tuFljExfJWMGfgSg1OxfLV631jV1TcdUnx+h3l
  Sqs2vMhAVt14zT8mpIuu2VNxcontxgVr1kzYA/tQg32fVRbGr449j1gw57BV9i0vww==
-Message-ID: <db39e3ef-fc6e-6b64-5562-5080b036d3d9@suse.com>
-Date:   Fri, 21 Aug 2020 16:36:14 +0300
+Message-ID: <64d27518-37f5-70cc-068d-6c893d3f65b2@suse.com>
+Date:   Fri, 21 Aug 2020 16:43:33 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <928df7dd502b27fd2358bb3936b4bdbb30a0cd14.1597936173.git.josef@toxicpanda.com>
+In-Reply-To: <968c98eabd41974b5df245fb20234a49491df037.1597936173.git.josef@toxicpanda.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -80,39 +81,54 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 20.08.20 г. 18:18 ч., Josef Bacik wrote:
-> When flipping over to the rw_semaphore I noticed I'd get a lockdep splat
-> in replace_path(), which is weird because we're swapping the reloc root
-> with the actual target root.  Turns out this is because we're using the
-> root->root_key.objectid as the root id for the newly allocated tree
-> block when setting the lockdep class, however we need to be using the
-> actual owner of this new block, which is saved in owner.
+> These are special extent buffers that get rewound in order to lookup
+> the state of the tree at a specific point in time.  As such they do not
+> go through the normal initialization paths that set their lockdep class,
+> so handle them appropriately when they are created and before they are
+> locked.
 > 
 > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 
-You can be slightly more specific by mentioning that the affected path
-is through btrfs_copy_root as all other callers of
-btrfs_alloc_tree_block (which calls init_new_buffer) have root_objectid
-== root->root_key.objectid
-
-Otherwise the change is good.
+Setting the lockdep class is fine, however in get_old_root your also
+reduce the scope of the eb's read lock. That's fine since in the if
+(old_root) branch we only set some values to the eb, which is guaranteed
+to be a clone/private copy i.e no other references.
 
 Reviewed-by: Nikolay Borisov <nborisov@suse.com>
 
 > ---
->  fs/btrfs/extent-tree.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  fs/btrfs/ctree.c | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
 > 
-> diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-> index 73973e6e8ba6..6c2373f65be2 100644
-> --- a/fs/btrfs/extent-tree.c
-> +++ b/fs/btrfs/extent-tree.c
-> @@ -4522,7 +4522,7 @@ btrfs_init_new_buffer(struct btrfs_trans_handle *trans, struct btrfs_root *root,
->  		return ERR_PTR(-EUCLEAN);
->  	}
+> diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
+> index 09a0dc690a17..e0fd8a34efcc 100644
+> --- a/fs/btrfs/ctree.c
+> +++ b/fs/btrfs/ctree.c
+> @@ -1297,6 +1297,8 @@ tree_mod_log_rewind(struct btrfs_fs_info *fs_info, struct btrfs_path *path,
+>  	btrfs_tree_read_unlock_blocking(eb);
+>  	free_extent_buffer(eb);
 >  
-> -	btrfs_set_buffer_lockdep_class(root->root_key.objectid, buf, level);
-> +	btrfs_set_buffer_lockdep_class(owner, buf, level);
->  	btrfs_tree_lock(buf);
->  	btrfs_clean_tree_block(buf);
->  	clear_bit(EXTENT_BUFFER_STALE, &buf->bflags);
+> +	btrfs_set_buffer_lockdep_class(btrfs_header_owner(eb_rewin),
+> +				       eb_rewin, btrfs_header_level(eb_rewin));
+>  	btrfs_tree_read_lock(eb_rewin);
+>  	__tree_mod_log_rewind(fs_info, eb_rewin, time_seq, tm);
+>  	WARN_ON(btrfs_header_nritems(eb_rewin) >
+> @@ -1370,7 +1372,6 @@ get_old_root(struct btrfs_root *root, u64 time_seq)
+>  
+>  	if (!eb)
+>  		return NULL;
+> -	btrfs_tree_read_lock(eb);
+>  	if (old_root) {
+>  		btrfs_set_header_bytenr(eb, eb->start);
+>  		btrfs_set_header_backref_rev(eb, BTRFS_MIXED_BACKREF_REV);
+> @@ -1378,6 +1379,9 @@ get_old_root(struct btrfs_root *root, u64 time_seq)
+>  		btrfs_set_header_level(eb, old_root->level);
+>  		btrfs_set_header_generation(eb, old_generation);
+>  	}
+> +	btrfs_set_buffer_lockdep_class(btrfs_header_owner(eb), eb,
+> +				       btrfs_header_level(eb));
+> +	btrfs_tree_read_lock(eb);
+>  	if (tm)
+>  		__tree_mod_log_rewind(fs_info, eb, time_seq, tm);
+>  	else
 > 
