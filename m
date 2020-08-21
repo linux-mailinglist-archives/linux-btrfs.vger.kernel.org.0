@@ -2,152 +2,117 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2274324D645
-	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Aug 2020 15:41:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8302324D628
+	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Aug 2020 15:36:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728678AbgHUNlj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 21 Aug 2020 09:41:39 -0400
-Received: from gateway34.websitewelcome.com ([192.185.148.104]:42567 "EHLO
-        gateway34.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727929AbgHUNli (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 21 Aug 2020 09:41:38 -0400
-X-Greylist: delayed 1439 seconds by postgrey-1.27 at vger.kernel.org; Fri, 21 Aug 2020 09:41:37 EDT
-Received: from cm10.websitewelcome.com (cm10.websitewelcome.com [100.42.49.4])
-        by gateway34.websitewelcome.com (Postfix) with ESMTP id 6245ECD3F
-        for <linux-btrfs@vger.kernel.org>; Fri, 21 Aug 2020 08:17:36 -0500 (CDT)
-Received: from br540.hostgator.com.br ([108.179.252.180])
-        by cmsmtp with SMTP
-        id 96vIkt529LFNk96vIkQ0CR; Fri, 21 Aug 2020 08:17:36 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=mpdesouza.com; s=default; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=Xtc+G1DaWGkKbXWnUOWf167W2t+UmfSpww3W6XZ4cyc=; b=HragkfxhBd0z+dqJI5+YRh33ZA
-        kivKYJyl1tgaSVr8mlekUBb3p4HffZx8hqOvByoQtqhk4qGcxPSZelLyjs/H5LykD8FJcZm7rC1I5
-        zEYa2QpBb2DlvFzBunnHXpuYt69NTPNKitWfXcdyAnuPfRXE5m6GW/TEZ8QsE6dS3ct8VHEDomDFz
-        n2wUW1BrE9sXSpqQXj8QrnPee3WN/mV236C5kYe/jt3Qwky/3X7s3gnKTsI7l9ysZaE34dI/L9DCQ
-        V0HaGh8ZDep4VJp/f2ZCxVAtpECX3EW+IuwKkeL7rathVVhw/NFI3LdP051w8LTf2JdEcrBWwp1zi
-        2ZO6VLnw==;
-Received: from [191.248.104.145] (port=50474 helo=hephaestus.suse.de)
-        by br540.hostgator.com.br with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <marcos@mpdesouza.com>)
-        id 1k96vH-000ceu-ID; Fri, 21 Aug 2020 10:17:35 -0300
-From:   Marcos Paulo de Souza <marcos@mpdesouza.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     dsterba@suse.com, wqu@suse.com, linux-btrfs@vger.kernel.org,
-        Marcos Paulo de Souza <mpdesouza@suse.com>,
-        stable@vger.kernel.org
-Subject: [PATCH v2] btrfs: block-group: Fix free-space bitmap threshould
-Date:   Fri, 21 Aug 2020 10:17:27 -0300
-Message-Id: <20200821131727.6883-1-marcos@mpdesouza.com>
-X-Mailer: git-send-email 2.28.0
+        id S1727897AbgHUNgS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 21 Aug 2020 09:36:18 -0400
+Received: from mx2.suse.de ([195.135.220.15]:43356 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726345AbgHUNgS (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 21 Aug 2020 09:36:18 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 196D7ACB8;
+        Fri, 21 Aug 2020 13:36:44 +0000 (UTC)
+Subject: Re: [PATCH 7/8] btrfs: set the correct lockdep class for new nodes
+To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com
+References: <cover.1597936173.git.josef@toxicpanda.com>
+ <928df7dd502b27fd2358bb3936b4bdbb30a0cd14.1597936173.git.josef@toxicpanda.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <db39e3ef-fc6e-6b64-5562-5080b036d3d9@suse.com>
+Date:   Fri, 21 Aug 2020 16:36:14 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <928df7dd502b27fd2358bb3936b4bdbb30a0cd14.1597936173.git.josef@toxicpanda.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - br540.hostgator.com.br
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - mpdesouza.com
-X-BWhitelist: no
-X-Source-IP: 191.248.104.145
-X-Source-L: No
-X-Exim-ID: 1k96vH-000ceu-ID
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: (hephaestus.suse.de) [191.248.104.145]:50474
-X-Source-Auth: marcos@mpdesouza.com
-X-Email-Count: 3
-X-Source-Cap: bXBkZXNvNTM7bXBkZXNvNTM7YnI1NDAuaG9zdGdhdG9yLmNvbS5icg==
-X-Local-Domain: yes
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Marcos Paulo de Souza <mpdesouza@suse.com>
 
-[BUG]
-After commit 9afc66498a0b ("btrfs: block-group: refactor how we read one
-block group item"), cache->length is being assigned after calling
-btrfs_create_block_group_cache. This causes a problem since
-set_free_space_tree_thresholds is calculate the free-space threshould to
-decide is the free-space tree should convert from extents to bitmaps.
 
-The current code calls set_free_space_tree_thresholds with cache->length
-being 0, which then makes cache->bitmap_high_thresh being zero. This
-implies the system will always use bitmap instead of extents, which is
-not desired if the block group is not fragmented.
+On 20.08.20 г. 18:18 ч., Josef Bacik wrote:
+> When flipping over to the rw_semaphore I noticed I'd get a lockdep splat
+> in replace_path(), which is weird because we're swapping the reloc root
+> with the actual target root.  Turns out this is because we're using the
+> root->root_key.objectid as the root id for the newly allocated tree
+> block when setting the lockdep class, however we need to be using the
+> actual owner of this new block, which is saved in owner.
+> 
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 
-This behavior can be seen by a test that expects to repair systems
-with FREE_SPACE_EXTENT and FREE_SPACE_BITMAP, but the current code only
-created FREE_SPACE_BITMAP.
+You can be slightly more specific by mentioning that the affected path
+is through btrfs_copy_root as all other callers of
+btrfs_alloc_tree_block (which calls init_new_buffer) have root_objectid
+== root->root_key.objectid
 
-[FIX]
-Call set_free_space_tree_thresholds after setting cache->length.
+Otherwise the change is good.
 
-Link: https://github.com/kdave/btrfs-progs/issues/251
-Fixes: 9afc66498a0b ("btrfs: block-group: refactor how we read one block group item")
-CC: stable@vger.kernel.org # 5.8+
-Reviewed-by: Qu Wenruo <wqu@suse.com>
-Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
----
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
 
- Changes from v1:
- * Add a warning in set_free_space_tree_thresholds when bg->length is zero (Qu)
-
- fs/btrfs/block-group.c     | 4 +++-
- fs/btrfs/free-space-tree.c | 3 +++
- 2 files changed, 6 insertions(+), 1 deletion(-)
-
-diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-index 44fdfa2eeb2e..01e8ba1da1d3 100644
---- a/fs/btrfs/block-group.c
-+++ b/fs/btrfs/block-group.c
-@@ -1798,7 +1798,6 @@ static struct btrfs_block_group *btrfs_create_block_group_cache(
- 
- 	cache->fs_info = fs_info;
- 	cache->full_stripe_len = btrfs_full_stripe_len(fs_info, start);
--	set_free_space_tree_thresholds(cache);
- 
- 	cache->discard_index = BTRFS_DISCARD_INDEX_UNUSED;
- 
-@@ -1908,6 +1907,8 @@ static int read_one_block_group(struct btrfs_fs_info *info,
- 
- 	read_block_group_item(cache, path, key);
- 
-+	set_free_space_tree_thresholds(cache);
-+
- 	if (need_clear) {
- 		/*
- 		 * When we mount with old space cache, we need to
-@@ -2128,6 +2129,7 @@ int btrfs_make_block_group(struct btrfs_trans_handle *trans, u64 bytes_used,
- 		return -ENOMEM;
- 
- 	cache->length = size;
-+	set_free_space_tree_thresholds(cache);
- 	cache->used = bytes_used;
- 	cache->flags = type;
- 	cache->last_byte_to_unpin = (u64)-1;
-diff --git a/fs/btrfs/free-space-tree.c b/fs/btrfs/free-space-tree.c
-index 8b1f5c8897b7..1d191fbc754b 100644
---- a/fs/btrfs/free-space-tree.c
-+++ b/fs/btrfs/free-space-tree.c
-@@ -22,6 +22,9 @@ void set_free_space_tree_thresholds(struct btrfs_block_group *cache)
- 	size_t bitmap_size;
- 	u64 num_bitmaps, total_bitmap_size;
- 
-+	if (cache->length == 0)
-+		btrfs_warn(cache->fs_info, "block group length is zero");
-+
- 	/*
- 	 * We convert to bitmaps when the disk space required for using extents
- 	 * exceeds that required for using bitmaps.
--- 
-2.28.0
-
+> ---
+>  fs/btrfs/extent-tree.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
+> index 73973e6e8ba6..6c2373f65be2 100644
+> --- a/fs/btrfs/extent-tree.c
+> +++ b/fs/btrfs/extent-tree.c
+> @@ -4522,7 +4522,7 @@ btrfs_init_new_buffer(struct btrfs_trans_handle *trans, struct btrfs_root *root,
+>  		return ERR_PTR(-EUCLEAN);
+>  	}
+>  
+> -	btrfs_set_buffer_lockdep_class(root->root_key.objectid, buf, level);
+> +	btrfs_set_buffer_lockdep_class(owner, buf, level);
+>  	btrfs_tree_lock(buf);
+>  	btrfs_clean_tree_block(buf);
+>  	clear_bit(EXTENT_BUFFER_STALE, &buf->bflags);
+> 
