@@ -2,126 +2,172 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7FC224D5EA
-	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Aug 2020 15:15:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A607824D604
+	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Aug 2020 15:17:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728680AbgHUNPy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 21 Aug 2020 09:15:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32864 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728739AbgHUNPv (ORCPT
+        id S1728786AbgHUNRI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 21 Aug 2020 09:17:08 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:42976 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728550AbgHUNQ6 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 21 Aug 2020 09:15:51 -0400
-X-Greylist: delayed 142 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 21 Aug 2020 06:15:50 PDT
-Received: from smtp.mfedv.net (smtp.mfedv.net [IPv6:2a04:6c0:2::19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E2E5C061385;
-        Fri, 21 Aug 2020 06:15:49 -0700 (PDT)
-Received: from suse92host.mfedv.net (suse92host.mfedv.net [IPv6:2a04:6c0:2:3:0:0:0:ffff])
-        by smtp.mfedv.net (8.15.2/8.15.2/Debian-10) with ESMTP id 07LDDCQq003015;
-        Fri, 21 Aug 2020 13:13:13 GMT
-Received: from xoff (klappe2.mfedv.net [192.168.71.72])
-        by suse92host.mfedv.net (Postfix) with ESMTP id 010EAC89BA;
-        Fri, 21 Aug 2020 15:13:11 +0200 (CEST)
-        (envelope-from bcache@mfedv.net)
-Date:   Fri, 21 Aug 2020 15:13:11 +0200
-From:   Matthias Ferdinand <bcache@mfedv.net>
-To:     =?utf-8?B?U3fDom1p?= Petaramesh <swami@petaramesh.org>
-Cc:     linux-bcache@vger.kernel.org, BTRFS <linux-btrfs@vger.kernel.org>,
-        kent.overstreet@gmail.com
-Subject: Re: Complete disparition of BTRFS FS on bcache, kernel 5.8
-Message-ID: <20200821131311.GG8012@xoff>
-References: <98e963a4-dbd0-7d7b-e8e5-cd846cd6c418@petaramesh.org>
+        Fri, 21 Aug 2020 09:16:58 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07LDGNJ0061421;
+        Fri, 21 Aug 2020 13:16:56 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2020-01-29; bh=4QXkjcJdnH9zBfaMkOaTDGgo3xa5Mby1y/s0iNMgy0A=;
+ b=ACIqSzfySnq87pp4gnT5d/QKVO4kPR2OWphQcUVsSVPq7nEP42n9j0mOWRwi2mwefCPZ
+ 97Jk1r6dTyj9RPa9Yha8nAUFRHvY5nAkiSnJsR0IHe3VqgUYfYDQ4rS0/gMtk0HZgK/w
+ DB2+wJ7S4g3ND0yWjdPD0hzwSz0bs57jTj49k2DsVG1xo9qZdu7wutsPAtcOgsHmFlKF
+ c9luZ649zv54Ntfdhne6HvMJodzrz4IuOZxlxVJFJ/Al1WgAl0Sr8Hb8vpPBWoZExLDk
+ zEfgL2ffUvck+YHRmLbPkKUKSyowzOsci1lb9P2XMsT3juBJACsRyc02IvkwM/E/wax6 XA== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2130.oracle.com with ESMTP id 32x74rp06p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 21 Aug 2020 13:16:56 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07LD95RF116502;
+        Fri, 21 Aug 2020 13:16:56 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3030.oracle.com with ESMTP id 32xsn2jchm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 21 Aug 2020 13:16:56 +0000
+Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 07LDGt5a031010;
+        Fri, 21 Aug 2020 13:16:55 GMT
+Received: from localhost.localdomain (/39.109.231.106)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 21 Aug 2020 13:16:54 +0000
+From:   Anand Jain <anand.jain@oracle.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     josef@toxicpanda.com
+Subject: [PATCH RFC] btrfs/163: replace sprout instead of seed
+Date:   Fri, 21 Aug 2020 21:15:20 +0800
+Message-Id: <d82dc7d38ac43d88381eaa5260cee3dc9907e810.1598011271.git.anand.jain@oracle.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <98e963a4-dbd0-7d7b-e8e5-cd846cd6c418@petaramesh.org>
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9719 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 spamscore=0 bulkscore=0
+ mlxlogscore=999 phishscore=0 mlxscore=0 suspectscore=1 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2008210121
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9719 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 mlxlogscore=999
+ priorityscore=1501 phishscore=0 spamscore=0 mlxscore=0 adultscore=0
+ suspectscore=1 lowpriorityscore=0 bulkscore=0 malwarescore=0 clxscore=1015
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2008210122
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Sorry I probably can't bring you back the fs, I just have a possibly
-relevant datapoint to share:
+Make this test case inline with the kernel patch [1] changes
+[1]
+   btrfs: fail replace of seed device
 
-with recent Ubuntu 20.04 and a rather convoluted storage stack (i.e. LVM
-volumes consumed not by fs directly but insted by e.g. luks and/or
-bcache), on shutdown systemd service blk-availability.service would lead
-to 1m30s of frantic disk activity without ever finishing.
+So use the sprout device as the replace target instead of the seed device.
+As because the replace seed is not supported any more.
 
-I did not have much time to investigate (and I don't right now), but I
-remember coming to the conclusion that blk-availability or the invoked
-scripts do not honor the case where an LVM volume is consumed by
-anything else than a plain filesystem, and so they loop endlessly until
-finally being killed by systemd.
+Signed-off-by: Anand Jain <anand.jain@oracle.com>
+---
+I will send this to fstests ML once RFC is cleared.
 
-I haven't lost data AFAICT, but it's a nuisance, and I disable
-blk-availability whenever I see it, and I don't even fully understand
-what it intends to achieve.
+ tests/btrfs/163     | 21 ++++++++++++++++-----
+ tests/btrfs/163.out |  5 ++++-
+ 2 files changed, 20 insertions(+), 6 deletions(-)
 
-It is possible that in your case the same type of frantic disk activity
-kept some vital fs information from actually reaching the disk.
+diff --git a/tests/btrfs/163 b/tests/btrfs/163
+index 24c725afb6b9..354d88502d47 100755
+--- a/tests/btrfs/163
++++ b/tests/btrfs/163
+@@ -4,11 +4,15 @@
+ #
+ # FS QA Test 163
+ #
+-# Test case to verify that a seed device can be replaced
++# Test case to verify that a sprouted device can be replaced
+ #  Create a seed device
+ #  Create a sprout device
+ #  Remount RW
+-#  Run device replace on the seed device
++#  Run device replace on the sprout device
++#
++# Depends on the kernel patch
++#   btrfs: fail replace of seed device
++
+ seq=`basename $0`
+ seqres=$RESULT_DIR/$seq
+ echo "QA output created by $seq"
+@@ -39,6 +43,7 @@ _supported_fs btrfs
+ _supported_os Linux
+ _require_command "$BTRFS_TUNE_PROG" btrfstune
+ _require_scratch_dev_pool 3
++_require_btrfs_forget_or_module_loadable
+ 
+ _scratch_dev_pool_get 3
+ 
+@@ -52,7 +57,7 @@ create_seed()
+ 	run_check _mount $dev_seed $SCRATCH_MNT
+ 	$XFS_IO_PROG -f -d -c "pwrite -S 0xab 0 4M" $SCRATCH_MNT/foobar >\
+ 		/dev/null
+-	echo -- gloden --
++	echo -- golden --
+ 	od -x $SCRATCH_MNT/foobar
+ 	_run_btrfs_util_prog filesystem show -m $SCRATCH_MNT
+ 	_scratch_unmount
+@@ -64,22 +69,28 @@ add_sprout()
+ {
+ 	_run_btrfs_util_prog device add -f $dev_sprout $SCRATCH_MNT
+ 	_run_btrfs_util_prog filesystem show -m $SCRATCH_MNT
++	_mount -o remount,rw $dev_sprout $SCRATCH_MNT
++	$XFS_IO_PROG -f -d -c "pwrite -S 0xcd 0 4M" $SCRATCH_MNT/foobar2 >\
++		/dev/null
+ }
+ 
+ replace_seed()
+ {
+-	_run_btrfs_util_prog replace start -fB $dev_seed $dev_replace_tgt $SCRATCH_MNT
++	_run_btrfs_util_prog replace start -fB $dev_sprout $dev_replace_tgt $SCRATCH_MNT
+ 	_run_btrfs_util_prog filesystem show -m $SCRATCH_MNT
+ 	_scratch_unmount
+-	run_check _mount $dev_replace_tgt $SCRATCH_MNT
++	_btrfs_forget_or_module_reload
++	run_check _mount -o device=$dev_seed $dev_replace_tgt $SCRATCH_MNT
+ 	echo -- sprout --
+ 	od -x $SCRATCH_MNT/foobar
++	od -x $SCRATCH_MNT/foobar2
+ 	_scratch_unmount
+ 
+ }
+ 
+ seed_is_mountable()
+ {
++	_btrfs_forget_or_module_reload
+ 	run_check _mount $dev_seed $SCRATCH_MNT
+ 	_run_btrfs_util_prog filesystem show -m $SCRATCH_MNT
+ 	_scratch_unmount
+diff --git a/tests/btrfs/163.out b/tests/btrfs/163.out
+index 91f6f5b6f48a..351ef7b040b2 100644
+--- a/tests/btrfs/163.out
++++ b/tests/btrfs/163.out
+@@ -1,5 +1,5 @@
+ QA output created by 163
+--- gloden --
++-- golden --
+ 0000000 abab abab abab abab abab abab abab abab
+ *
+ 20000000
+@@ -7,3 +7,6 @@ QA output created by 163
+ 0000000 abab abab abab abab abab abab abab abab
+ *
+ 20000000
++0000000 cdcd cdcd cdcd cdcd cdcd cdcd cdcd cdcd
++*
++20000000
+-- 
+2.25.1
 
-Regards
-Matthias
-
-On Fri, Aug 21, 2020 at 11:58:08AM +0200, Swâmi Petaramesh wrote:
-> Hello,
-> 
-> I have a Manjaro system on which the disks setup is as follows :
-> 
-> sda : mechanical HD
-> 
-> - sda1 -> LUKS encryption -> bcache backing dev bcache0 -> BTRFS FS -> /home
-> 
-> sdb : SSD
-> 
-> - sdb1 -> System EFI partition
-> 
-> - sdb2 -> LUKS encryption -> BTRFS FS -> / (system root FS)
-> 
-> - sdb3 -> LUKS encryption -> bcache cache dev bcache0 (for /home)
-> 
-> - sdb4 -> LUKS encryption -> SWAP
-> 
-> bcache working in writeback mode.
-> 
-> This setup had worked perfectly flawlessly for more than a year with
-> different kernel versions.
-> 
-> Then I upgraded to Manjaro kernel 5.8
-> 
-> I was immediately under the impression that the overall disks access
-> performance had much worsened.
-> 
-> Then, after I had worked on a couple VMs hosted on the bcache'd FS, I tried
-> to power the system down normally from the GUI menu.
-> 
-> At that time there was high disk activity going on and systemd waited for
-> more than 1'30" trying to unmount the FSes, to no avail. Looks like
-> everything didn't make it to disk before it eventually timed out.
-> 
-> Afterwards systemd killed the processes and powered down the system.
-> 
-> At next powerup, the bcache would activate as usual, but the BTRFS
-> filesystem on it was completely *GONE*. The “file” utility would identify
-> the device as “data” (not an FS), mount would complain that this wasn't any
-> recognizable FS anymore, and “btrfs-find-root” wouldn't find anything.
-> 
-> AFAIK the FS is completely gone.
-> 
-> I've been using BTRFS over bcache over LUKS (on 2 machines) for years, and
-> it was usually very stable until today.
-> 
-> Both the HD and SSD looks healthy and their SMART do not record any error,
-> remapped sectors, or other issue.
-> 
-> So this was just to let you know... There might be some new kernel issue in
-> bcache or BTRFS or their relation to one another.
-> 
-> Best regards.
-> 
-> ॐ
-> 
-> -- 
-> Swâmi Petaramesh <swami@petaramesh.org> PGP 9076E32E
