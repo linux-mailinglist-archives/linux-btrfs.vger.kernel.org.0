@@ -2,24 +2,24 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6B4324CF4E
-	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Aug 2020 09:32:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B50124CF5A
+	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Aug 2020 09:35:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728060AbgHUHcE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 21 Aug 2020 03:32:04 -0400
-Received: from mx2.suse.de ([195.135.220.15]:43448 "EHLO mx2.suse.de"
+        id S1728070AbgHUHfl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 21 Aug 2020 03:35:41 -0400
+Received: from mx2.suse.de ([195.135.220.15]:45988 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727868AbgHUHcC (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 21 Aug 2020 03:32:02 -0400
+        id S1727846AbgHUHfk (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 21 Aug 2020 03:35:40 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 45809B023;
-        Fri, 21 Aug 2020 07:32:28 +0000 (UTC)
-Subject: Re: [PATCH 1/2] btrfs: free fs roots on failed mount
+        by mx2.suse.de (Postfix) with ESMTP id 7B8CAABED;
+        Fri, 21 Aug 2020 07:36:06 +0000 (UTC)
+Subject: Re: [PATCH 2/2] btrfs: pretty print leaked root name
 To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
         kernel-team@fb.com
 References: <cover.1597953516.git.josef@toxicpanda.com>
- <9c6e581e607954968d08179961bb20a62491a655.1597953516.git.josef@toxicpanda.com>
+ <461693e5c015857e684878e99e5e65075bb97c13.1597953516.git.josef@toxicpanda.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  xsFNBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -63,12 +63,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  KIuxEcV8wcVjr+Wr9zRl06waOCkgrQbTPp631hToxo+4rA1jiQF2M80HAet65ytBVR2pFGZF
  zGYYLqiG+mpUZ+FPjxk9kpkRYz61mTLSY7tuFljExfJWMGfgSg1OxfLV631jV1TcdUnx+h3l
  Sqs2vMhAVt14zT8mpIuu2VNxcontxgVr1kzYA/tQg32fVRbGr449j1gw57BV9i0vww==
-Message-ID: <7bb2214b-5b1f-4e96-f2fd-4715ea5a6de6@suse.com>
-Date:   Fri, 21 Aug 2020 10:31:58 +0300
+Message-ID: <d98bb04e-1bcf-80c7-26ae-e91f3ecfd818@suse.com>
+Date:   Fri, 21 Aug 2020 10:35:38 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <9c6e581e607954968d08179961bb20a62491a655.1597953516.git.josef@toxicpanda.com>
+In-Reply-To: <461693e5c015857e684878e99e5e65075bb97c13.1597953516.git.josef@toxicpanda.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -80,45 +80,104 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 20.08.20 г. 23:00 ч., Josef Bacik wrote:
-> While testing a weird problem with -o degraded, I noticed I was getting
-> leaked root errors
-> 
-> BTRFS warning (device loop0): writable mount is not allowed due to too many missing devices
-> BTRFS error (device loop0): open_ctree failed
-> BTRFS error (device loop0): leaked root -9-0 refcount 1
-> 
-> This is the DATA_RELOC root, which gets read before the other fs roots,
-> but is included in the fs roots radix tree.  Handle this by adding a
-> btrfs_drop_and_free_fs_root() on the data reloc root if it exists.  This
-> is ok to do here if we fail further up because we will only drop the ref
-> if we delete the root from the radix tree, and all other cleanup won't
-> be duplicated.
+> I'm a actual human being so am incapable of converting u64 to s64 in my
+> head, so add a helper to get the pretty name of a root objectid and use
+> that helper to spit out the name for any special roots for leaked roots,
+> so I don't have to scratch my head and figure out which root I messed up
+> the refs for.
 > 
 > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 > ---
->  fs/btrfs/disk-io.c | 2 ++
->  1 file changed, 2 insertions(+)
+>  fs/btrfs/disk-io.c    |  8 +++++---
+>  fs/btrfs/print-tree.c | 37 +++++++++++++++++++++++++++++++++++++
+>  fs/btrfs/print-tree.h |  1 +
+>  3 files changed, 43 insertions(+), 3 deletions(-)
 > 
 > diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-> index 814f8de395fe..ac6d6fddd5f4 100644
+> index ac6d6fddd5f4..a7358e0f59de 100644
 > --- a/fs/btrfs/disk-io.c
 > +++ b/fs/btrfs/disk-io.c
-> @@ -3418,6 +3418,8 @@ int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_device
->  	btrfs_put_block_group_cache(fs_info);
+> @@ -1506,11 +1506,13 @@ void btrfs_check_leaked_roots(struct btrfs_fs_info *fs_info)
+>  	struct btrfs_root *root;
 >  
->  fail_tree_roots:
-> +	if (fs_info->data_reloc_root)
-> +		btrfs_drop_and_free_fs_root(fs_info, fs_info->data_reloc_root);
+>  	while (!list_empty(&fs_info->allocated_roots)) {
+> +		const char *name = btrfs_root_name(root->root_key.objectid);
+> +
+>  		root = list_first_entry(&fs_info->allocated_roots,
+>  					struct btrfs_root, leak_list);
+> -		btrfs_err(fs_info, "leaked root %llu-%llu refcount %d",
+> -			  root->root_key.objectid, root->root_key.offset,
+> -			  refcount_read(&root->refs));
+> +		btrfs_err(fs_info, "leaked root %s%lld-%llu refcount %d",
 
-But will this really free the root? So the newly allocated
-data_reloc_root has it's ref set to 1 from
-btrfs_get_root_ref->btrfs_read_tree_root->btrfs_alloc_root and to 2 from
-being added to the radix tree in btrfs_insert_fs_root().
+nit: Won't this string result in some rather awkward looking strings,
+such as:
 
-But btrfs_drop_and_free_fs_root makes a single call to btrfs_put_root.
-So won't the reloc tree be left with a refcount of 1 ?
+"leaked root ROOT_TREE<objectid>-<offset>..." i.e shouldn't the
+(objectid,offset) pair be marked with parentheses?
 
->  	free_root_pointers(fs_info, true);
->  	invalidate_inode_pages2(fs_info->btree_inode->i_mapping);
+> +			  name ? name : "", root->root_key.objectid,
+> +			  root->root_key.offset, refcount_read(&root->refs));
+>  		while (refcount_read(&root->refs) > 1)
+>  			btrfs_put_root(root);
+>  		btrfs_put_root(root);
+> diff --git a/fs/btrfs/print-tree.c b/fs/btrfs/print-tree.c
+> index 61f44e78e3c9..c633aec8973d 100644
+> --- a/fs/btrfs/print-tree.c
+> +++ b/fs/btrfs/print-tree.c
+> @@ -7,6 +7,43 @@
+>  #include "disk-io.h"
+>  #include "print-tree.h"
 >  
+> +struct name_map {
+> +	u64 id;
+> +	const char *name;
+> +};
+> +
+> +static const struct name_map root_map[] = {
+> +	{ BTRFS_ROOT_TREE_OBJECTID,		"ROOT_TREE"		},
+> +	{ BTRFS_EXTENT_TREE_OBJECTID,		"EXTENT_TREE"		},
+> +	{ BTRFS_CHUNK_TREE_OBJECTID,		"CHUNK_TREE"		},
+> +	{ BTRFS_DEV_TREE_OBJECTID,		"DEV_TREE"		},
+> +	{ BTRFS_FS_TREE_OBJECTID,		"FS_TREE"		},
+> +	{ BTRFS_ROOT_TREE_DIR_OBJECTID,		"ROOT_TREE_DIR"		},
+> +	{ BTRFS_CSUM_TREE_OBJECTID,		"CSUM_TREE"		},
+> +	{ BTRFS_TREE_LOG_OBJECTID,		"TREE_LOG"		},
+> +	{ BTRFS_QUOTA_TREE_OBJECTID,		"QUOTA_TREE"		},
+> +	{ BTRFS_TREE_RELOC_OBJECTID,		"TREE_RELOC"		},
+> +	{ BTRFS_UUID_TREE_OBJECTID,		"UUID_TREE"		},
+> +	{ BTRFS_FREE_SPACE_TREE_OBJECTID,	"FREE_SPACE_TREE"	},
+> +	{ BTRFS_DATA_RELOC_TREE_OBJECTID,	"DATA_RELOC_TREE"	},
+> +};
+> +
+> +const char *btrfs_root_name(u64 objectid)
+> +{
+> +	int i;
+> +
+> +	if (objectid >= BTRFS_FIRST_FREE_OBJECTID &&
+> +	    objectid <= BTRFS_LAST_FREE_OBJECTID)
+> +		return NULL;
+> +
+> +	for (i = 0; i < ARRAY_SIZE(root_map); i++) {
+> +		if (root_map[i].id == objectid)
+> +			return root_map[i].name;
+> +	}
+> +
+> +	return NULL;
+> +}
+> +
+>  static void print_chunk(struct extent_buffer *eb, struct btrfs_chunk *chunk)
+>  {
+>  	int num_stripes = btrfs_chunk_num_stripes(eb, chunk);
+> diff --git a/fs/btrfs/print-tree.h b/fs/btrfs/print-tree.h
+> index e6bb38fd75ad..dffdfa495297 100644
+> --- a/fs/btrfs/print-tree.h
+> +++ b/fs/btrfs/print-tree.h
+> @@ -8,5 +8,6 @@
+>  
+>  void btrfs_print_leaf(struct extent_buffer *l);
+>  void btrfs_print_tree(struct extent_buffer *c, bool follow);
+> +const char *btrfs_root_name(u64 objectid);
+>  
+>  #endif
 > 
