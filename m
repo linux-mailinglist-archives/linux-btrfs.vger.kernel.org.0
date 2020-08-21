@@ -2,193 +2,131 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA10624C8B6
-	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Aug 2020 01:40:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D70FC24CAEE
+	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Aug 2020 04:43:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728812AbgHTXkF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 20 Aug 2020 19:40:05 -0400
-Received: from mout.gmx.net ([212.227.17.20]:57915 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728818AbgHTXkB (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 20 Aug 2020 19:40:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1597966796;
-        bh=TPK9VcLeanwwfqBwjZoWxQ7PAP2vrn1tTzwHKuzMmoc=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=bsh7M+0bNNu/OAbbever3EfUmo7wiMGwThThwWDTPloDeOp4WkUzDuFMiafO3dVAa
-         GVFMw9L58CtG6AO8QnDBetIiDV2AVnlUChip1jIP8DSgRBsO6F3jM47xCdzxQbk9gd
-         hZ9N4nUAlDNUCdF80I480lSiny5qSaTq7kpZRbAo=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MK3Vu-1kMiiT2Tew-00LYTq; Fri, 21
- Aug 2020 01:39:56 +0200
-Subject: Re: [PATCH v5 1/4] btrfs: extent_io: do extra check for extent buffer
- read write functions
-To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>
-References: <20200819063550.62832-1-wqu@suse.com>
- <20200819063550.62832-2-wqu@suse.com> <20200819171159.GT2026@twin.jikos.cz>
- <66f629fa-e636-6ab5-eda8-5299d996b2f4@suse.com>
- <20200820095024.GX2026@twin.jikos.cz>
- <1507884d-ad39-8edf-03fd-42e1d10f50e1@suse.com>
- <20200820144647.GY2026@twin.jikos.cz>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
- PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
- 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
- D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
- efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
- ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
- BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
- 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
- 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
- EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
- 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
- ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
- oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
- fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
- 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
- ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
- oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <97893a6e-f14f-b425-cd64-b8282f416a0a@gmx.com>
-Date:   Fri, 21 Aug 2020 07:39:52 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        id S1727053AbgHUCnO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 20 Aug 2020 22:43:14 -0400
+Received: from gateway33.websitewelcome.com ([192.185.146.87]:34855 "EHLO
+        gateway33.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726741AbgHUCnM (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 20 Aug 2020 22:43:12 -0400
+Received: from cm13.websitewelcome.com (cm13.websitewelcome.com [100.42.49.6])
+        by gateway33.websitewelcome.com (Postfix) with ESMTP id F309A49AC7
+        for <linux-btrfs@vger.kernel.org>; Thu, 20 Aug 2020 21:43:05 -0500 (CDT)
+Received: from br540.hostgator.com.br ([108.179.252.180])
+        by cmsmtp with SMTP
+        id 8x1FklOEDXp2A8x1Fk3bLG; Thu, 20 Aug 2020 21:43:05 -0500
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=mpdesouza.com; s=default; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=mqMipfFxAhFP9IXccuiRfTgI9EhL9JTdB+RkoJtnolI=; b=pRlD8xLCWlfRtNoWKbKm+7SWzN
+        iJdeAd1OKKgY4WWHVAqK4rmS9SUIDjWkp6Uaes41S3M20eXWgL+Pqr1jYtaYzJPo+LUNOLYNSBMVK
+        bBnKQqdrjT1Bld3fFZgKz4yiiJpwAkpYwKfy8f430GKSJNeeqop5USxIjIv8UAQXjeBCajHwtby2b
+        STPO7ClblZIYHrhv5U06XYRVu1xcVe2wTEqlpm+EkuzPd0AztPXa4FdpJBoLRJ77jbmZe+jQrIKs5
+        jt/RcsFHAbAmd8Oao/RFRtZ5IAgW6PXH/+YqrTpcCeKueukU0REzAeOhFbhwgm6EhuEpIg132AWHG
+        SpGwJnxw==;
+Received: from [191.248.104.145] (port=44546 helo=hephaestus.suse.de)
+        by br540.hostgator.com.br with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <marcos@mpdesouza.com>)
+        id 1k8x1E-000UJv-Uo; Thu, 20 Aug 2020 23:43:05 -0300
+From:   Marcos Paulo de Souza <marcos@mpdesouza.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     dsterba@suse.com, wqu@suse.com, linux-btrfs@vger.kernel.org,
+        Marcos Paulo de Souza <mpdesouza@suse.com>,
+        stable@vger.kernel.org
+Subject: [PATCH] btrfs: block-group: Fix free-space bitmap threshould
+Date:   Thu, 20 Aug 2020 23:42:31 -0300
+Message-Id: <20200821024231.16256-1-marcos@mpdesouza.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-In-Reply-To: <20200820144647.GY2026@twin.jikos.cz>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="ijMwKKf0ItvOY5lUgX4Hm8AKRThR3oEkW"
-X-Provags-ID: V03:K1:cnkq79wAk4iyx+4qu5pB6FFLjrJMnUWnIXGLR7qhzDQx8GLPV6P
- VwFEZqMMZn+Tp45t3pVi5oGQXdq1KpTYYYsriH3kIcZwwr7BD6CrlX7mMbwLqHVC1S+nza0
- RCV+3nUKLc6WcEe+9Mln+FKmkgilX6f1yVtZbbdj+q3n+fBjt61oPO256zDwGuBGHiTzrKz
- 8eULLoHQwqlo6omWV6ulA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:4nGragIUd1k=:w7lKKQgZqLHt0iNg73hyV8
- yiyWq3K1nVTW3M7jQO42wA1zjllw/WKYAhIpYv9FPCPrIONySbBNUyWOIvNg4Qri4f5Oj3ycT
- 3XKAVC1Z5VwLboz7o1LT1ea7X452h42WKVfCLn5b6bOLgfl4/QvgEWPdLAMEoJHXWg0Gt2W4p
- /HwBT358zyLkCpi/HD/MhcgfRVtmZRUzDGD/3qqtTTUUTgSAGdfNADpwvzoh81ZJ8C2wMEwq8
- s9+lkGGkB5YGTmaQRsycZIBHxGNxN7/1XU6T7sTROFND4AaOl8Vmuat1m9LXnUJmxZJP0cpfO
- WZLX/JhFAqnPvr8AgskBRmX3OAfBa0MDHLEFMd1KDWAE0Cm4XrlHLdW/SFfkpgZx0cAdeKr3w
- LLjEYY/cTI/29cssGbPIu1ZMCeNHp2/6fX49YZUYOSB9fN0cggE1OcZsLzbenpuBerX9Scw5/
- lcu+QjIYT65cWURgJA3nTmQzS+ACKbjy6GEv/V94KsSd5XH22e3g+4OxxEuPASr/MAtGhbc3B
- waBq7Z6U+aBtrfCXumZyzBPIBXKyebVXFplfad2AQ2DYxlK+6Jehct1VcnUrMtlR3jiyWrTH0
- CyPrkdJabCoRpaAk15RQZB0Z1bTZuEQb80cSftPAXHHxxOyQ6nHR3Ht3sAwpKGk1XmixrUfod
- LxsSQVo36k3eYIdL6LqblpMqju/tvdeuiaX8XgxH2rmzbhiS9xVEbDOYWkPaaFhui/Bv9CUb0
- IP9DknuoFQlPQkfDSxesWmfvm5mRxEsB7lqDC2SGmkih3lFQYJcPEmHopoV39AgAVJSUqNo8c
- L/Cgv2gutuAXJtOq5P5GWWUzxUOjA6eUReN/OfFqCoBqvYa/NrSGTPVln9ErMY0nulQ1H/1h6
- DLM5k2dmQqeS/+VlTj3NYqdFKO3sProLiB2MmvRq1m5b2Eur1Wm5qkCQA/C6LmiLUydteOnke
- gfBWb6ulbVYkkDVea6G7NnBIsMiRteE8cf30bz+hGmUTkcaJrc5o6yph5scSDw5cmxX+p+/jW
- CvS9OuRcUL5Cz/vvxPQcaq/t2LWrr6r0mpSuhKpcfr3jBLYsQsgRrc5KrujYo9G2BlG0aDm/5
- cADVwvxbEbKTOVKHXs/OVkx3VxuE+I9VEa5mFzMeVOmk0oP7xae33FJIdBPrCrzlcMrx9TIGw
- ZRxRHbZ7RjuHAcJwRbzoBJ4C2S6JsvXqBP0RTPzbKvyBaO01LrsiGrNShDuBdlIE6Vc2+D/In
- yIkF3wwcI9jXuBxMF3DoGVA072Zbq7bg15YKHZA==
+Content-Transfer-Encoding: 8bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - br540.hostgator.com.br
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - mpdesouza.com
+X-BWhitelist: no
+X-Source-IP: 191.248.104.145
+X-Source-L: No
+X-Exim-ID: 1k8x1E-000UJv-Uo
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: (hephaestus.suse.de) [191.248.104.145]:44546
+X-Source-Auth: marcos@mpdesouza.com
+X-Email-Count: 3
+X-Source-Cap: bXBkZXNvNTM7bXBkZXNvNTM7YnI1NDAuaG9zdGdhdG9yLmNvbS5icg==
+X-Local-Domain: yes
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---ijMwKKf0ItvOY5lUgX4Hm8AKRThR3oEkW
-Content-Type: multipart/mixed; boundary="2Pu6ek4vfpBFOSRZjXICyWCTnPwbax41E"
+From: Marcos Paulo de Souza <mpdesouza@suse.com>
 
---2Pu6ek4vfpBFOSRZjXICyWCTnPwbax41E
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+[BUG]
+After commit 9afc66498a0b ("btrfs: block-group: refactor how we read one
+block group item"), cache->length is being assigned after calling
+btrfs_create_block_group_cache. This causes a problem since
+set_free_space_tree_thresholds is calculate the free-space threshould to
+decide is the free-space tree should convert from extents to bitmaps.
 
+The current code calls set_free_space_tree_thresholds with cache->length
+being 0, which then makes cache->bitmap_high_thresh being zero. This
+implies the system will always use bitmap instead of extents, which is
+not desired if the block group is not fragmented.
 
+This behavior can be seen by a test that expects to repair systems
+with FREE_SPACE_EXTENT and FREE_SPACE_BITMAP, but the current code only
+created FREE_SPACE_BITMAP.
 
-On 2020/8/20 =E4=B8=8B=E5=8D=8810:46, David Sterba wrote:
-> On Thu, Aug 20, 2020 at 05:58:53PM +0800, Qu Wenruo wrote:
->>
->>
->> On 2020/8/20 =E4=B8=8B=E5=8D=885:50, David Sterba wrote:
->>> On Thu, Aug 20, 2020 at 07:14:13AM +0800, Qu Wenruo wrote:
->>>>>> +static inline int check_eb_range(const struct extent_buffer *eb,
->>>>>> +				 unsigned long start, unsigned long len)
->>>>>> +{
->>>>>> +	/* start, start + len should not go beyond eb->len nor overflow =
-*/
->>>>>> +	if (unlikely(start > eb->len || start + len > eb->len ||
->>>>>> +		     len > eb->len)) {
->>>>>
->>>>> Can the number of condition be reduced? If 'start + len' overflows,=
- then
->>>>> we don't need to check 'start > eb->len', and for the case where
->>>>> start =3D 1024 and len =3D -1024 the 'len > eb-len' would be enough=
-=2E
->>>>
->>>> I'm afraid not.
->>>> Although 'start > eb->len || len > eb->len' is enough to detect over=
-flow
->>>> case, it no longer detects cases like 'start =3D 2k, len =3D 3k' whi=
-le
->>>> eb->len =3D=3D 4K case.
->>>>
->>>> So we still need all 3 checks.
->>>
->>> I was suggesting 'start + len > eb->len', not 'start > eb-len'.
->>>
->>> "start > eb->len" is implied by "start + len > eb->len".
->>
->> start > eb->len is not implied if (start + len) over flows.
->>
->> E.g. start =3D -2K, len =3D 2k, eb->len =3D 4K. We can still pass !(st=
-art +
->> len > eb->len || len > eb->len).
->>
->> In short, if we want overflow check along with each one checked, we
->> really need 3 checks.
->=20
-> So what if we add overflow check, that would catch negative start or
-> negative length, and then do start + len > eb->len?
->=20
-> The check_setget_bounds is different becasue the len is known at compil=
-e
-> time so the overflows can't happen in the same way as for the eb range,=
+[FIX]
+Call set_free_space_tree_thresholds after setting cache->length.
 
-> so this this confused me first.
->=20
-> 	check_add_overflow(start, len) || start + len > eb->len
->=20
-Then it should be more or less the same as the existing 3 checks.
+Link: https://github.com/kdave/btrfs-progs/issues/251
+Fixes: 9afc66498a0b ("btrfs: block-group: refactor how we read one block group item")
+CC: stable@vger.kernel.org # 5.8+
+Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
+---
+ fs/btrfs/block-group.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-In fact, the 3 checks are just the overflow safe check for (start + len
-> eb->len).
+diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+index 44fdfa2eeb2e..01e8ba1da1d3 100644
+--- a/fs/btrfs/block-group.c
++++ b/fs/btrfs/block-group.c
+@@ -1798,7 +1798,6 @@ static struct btrfs_block_group *btrfs_create_block_group_cache(
+ 
+ 	cache->fs_info = fs_info;
+ 	cache->full_stripe_len = btrfs_full_stripe_len(fs_info, start);
+-	set_free_space_tree_thresholds(cache);
+ 
+ 	cache->discard_index = BTRFS_DISCARD_INDEX_UNUSED;
+ 
+@@ -1908,6 +1907,8 @@ static int read_one_block_group(struct btrfs_fs_info *info,
+ 
+ 	read_block_group_item(cache, path, key);
+ 
++	set_free_space_tree_thresholds(cache);
++
+ 	if (need_clear) {
+ 		/*
+ 		 * When we mount with old space cache, we need to
+@@ -2128,6 +2129,7 @@ int btrfs_make_block_group(struct btrfs_trans_handle *trans, u64 bytes_used,
+ 		return -ENOMEM;
+ 
+ 	cache->length = size;
++	set_free_space_tree_thresholds(cache);
+ 	cache->used = bytes_used;
+ 	cache->flags = type;
+ 	cache->last_byte_to_unpin = (u64)-1;
+-- 
+2.28.0
 
-The difference between check_setget_bounds() and check_eb_range() is,
-the size for check_setget_bounds() are fixed size, thus it will never be
-negative, thus it can skip the (size > eb->len) check.
-
-Thanks,
-Qu
-
-
---2Pu6ek4vfpBFOSRZjXICyWCTnPwbax41E--
-
---ijMwKKf0ItvOY5lUgX4Hm8AKRThR3oEkW
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl8/CcgACgkQwj2R86El
-/qh4Owf/e22qJmrIadNTg6H5+arbj5TI3pHBlxle9smx99WfJlyLnuR6KRJ45kW7
-EUmQxkA54HK43m3z3RbqW8O9WwGOVF/DJwqdaGCFxmA5O71e1GanOc2eNeLR16wR
-X+EYmT0Kw+7vyKu42Sb21ETzX2Hw+dIHBEEHX/L7dUX68sxZVEhnTYdNuAzrIInb
-+M44w/Vf8hhTRhYa4vIfZ0zt26+SNDO+5YN7ON3vIC0PvFlMkEkmvNL/UXU5xyw1
-hh7qdVlXY1egAVVGWizBsEv8iYpF42QD5ZVNumiuOq+WJmBnjpthMG1uR1fpj3jp
-87QTlzmW8aEmckkPbIMTa6lwy9974g==
-=D477
------END PGP SIGNATURE-----
-
---ijMwKKf0ItvOY5lUgX4Hm8AKRThR3oEkW--
