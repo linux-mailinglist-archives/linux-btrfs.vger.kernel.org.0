@@ -2,186 +2,140 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A091124D6ED
-	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Aug 2020 16:06:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10A0324D6F3
+	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Aug 2020 16:07:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726974AbgHUOGX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 21 Aug 2020 10:06:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40766 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727845AbgHUOGS (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 21 Aug 2020 10:06:18 -0400
-Received: from mail-vs1-xe43.google.com (mail-vs1-xe43.google.com [IPv6:2607:f8b0:4864:20::e43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62668C061573;
-        Fri, 21 Aug 2020 07:06:17 -0700 (PDT)
-Received: by mail-vs1-xe43.google.com with SMTP id i129so874965vsi.3;
-        Fri, 21 Aug 2020 07:06:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc:content-transfer-encoding;
-        bh=tzsAX6Gcfon7AdapRu244uwbgo4S+HdYR+eziW7H+ws=;
-        b=XuJitGHqRnjedHT2nmxGm4CZQDUnUjoFmGGrc3U+11Bafes+c4sdIOojRmOBxc6qqZ
-         cdq4vg2bjiZ/ozgZV1O/OhQvl+mQGwWX8fWw/ku+Y5GTVJEcVNmw77NBpoh6OhDENVLY
-         TOH3m/EzHKnSIEhP+n20Fof6UyGCnkhqNQxTqnLd2QWJbOj5h0zNUzy8MoXP3wblQmS3
-         d+bvDxaAiMFVYYhAWQ0zvKeME4i7xWDIyO5JDyBuKPwJuRwrnEAPjlrsz3TAYrZHKPn/
-         MXalnF/WCeMVYGWZjEn0fzfyFxrDMuDG8OsE/4kB/7+JQxVjv2k8cqTDrMJpmtp0qYMY
-         Mycw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc:content-transfer-encoding;
-        bh=tzsAX6Gcfon7AdapRu244uwbgo4S+HdYR+eziW7H+ws=;
-        b=H8U8s8D3jj8aUi4KLLyiRufQsnx6zxaOK9szqkDlkp3O+c3JISJrmIw2DTMOfu8Sun
-         6IaUAfn0IIpV4ryFZkNIr/sforgNyzoMm5vdIT+KWptYyBockyoidcdcLUswGOlbrYQT
-         2KH4Z2XKAG3LEx6lUwZThvo82rXrHV27jtK0iibltUBWtBqc7GWdJmtOAGRe5hNGqwap
-         Cjo2BNgDVvUIVeZPd6STTW8nBFT1fVWSAani945u/rBugE+NZMqlKF9CO2MbEasRdfr0
-         vTRpx6v4+yPw1IyYkq36YB+/GePOCPDdBucjTTaFB7vdYF/N8WuK40sMFZgSBNM+OPRH
-         n/7g==
-X-Gm-Message-State: AOAM532WOjSlRsLlWRL5GOmNjlcXncCOhICaB600Wskps9WMAYGSvubp
-        TKUtbtQt+JnKas4J6G/PVz2rKJblsNdGbWhDUbr+ofWe
-X-Google-Smtp-Source: ABdhPJzebiWJIOZoRKdMlKFMtU/bWwVzAPl6F1o01V42EtcC1JxeFyisWsTg48slbfGzrthLzptQzyi3L7cMx7dmB5g=
-X-Received: by 2002:a67:89ca:: with SMTP id l193mr1906642vsd.206.1598018775379;
- Fri, 21 Aug 2020 07:06:15 -0700 (PDT)
+        id S1727116AbgHUOHk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 21 Aug 2020 10:07:40 -0400
+Received: from mx2.suse.de ([195.135.220.15]:35190 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725897AbgHUOHj (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 21 Aug 2020 10:07:39 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 9E08BAC7D;
+        Fri, 21 Aug 2020 14:08:05 +0000 (UTC)
+Subject: Re: [PATCH 1/2] btrfs: free fs roots on failed mount
+To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com
+References: <cover.1597953516.git.josef@toxicpanda.com>
+ <9c6e581e607954968d08179961bb20a62491a655.1597953516.git.josef@toxicpanda.com>
+ <7bb2214b-5b1f-4e96-f2fd-4715ea5a6de6@suse.com>
+ <410d3d2b-0b79-68ca-c3c1-a9ebd2ee1933@toxicpanda.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <743efacd-a3fc-fb05-e758-e34e94b8568f@suse.com>
+Date:   Fri, 21 Aug 2020 17:07:36 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20200821131727.6883-1-marcos@mpdesouza.com>
-In-Reply-To: <20200821131727.6883-1-marcos@mpdesouza.com>
-Reply-To: fdmanana@gmail.com
-From:   Filipe Manana <fdmanana@gmail.com>
-Date:   Fri, 21 Aug 2020 15:06:04 +0100
-Message-ID: <CAL3q7H5CYsRZLT+JAf9pGsrTyXVfyO_KAC6Xhc5X=t4VVtkRog@mail.gmail.com>
-Subject: Re: [PATCH v2] btrfs: block-group: Fix free-space bitmap threshould
-To:     Marcos Paulo de Souza <marcos@mpdesouza.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        David Sterba <dsterba@suse.com>, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>,
-        Marcos Paulo de Souza <mpdesouza@suse.com>,
-        stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <410d3d2b-0b79-68ca-c3c1-a9ebd2ee1933@toxicpanda.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Aug 21, 2020 at 2:43 PM Marcos Paulo de Souza
-<marcos@mpdesouza.com> wrote:
->
-> From: Marcos Paulo de Souza <mpdesouza@suse.com>
->
-> [BUG]
-> After commit 9afc66498a0b ("btrfs: block-group: refactor how we read one
-> block group item"), cache->length is being assigned after calling
-> btrfs_create_block_group_cache. This causes a problem since
-> set_free_space_tree_thresholds is calculate the free-space threshould to
-> decide is the free-space tree should convert from extents to bitmaps.
->
-> The current code calls set_free_space_tree_thresholds with cache->length
-> being 0, which then makes cache->bitmap_high_thresh being zero. This
-> implies the system will always use bitmap instead of extents, which is
-> not desired if the block group is not fragmented.
->
-> This behavior can be seen by a test that expects to repair systems
-> with FREE_SPACE_EXTENT and FREE_SPACE_BITMAP, but the current code only
-> created FREE_SPACE_BITMAP.
->
-> [FIX]
-> Call set_free_space_tree_thresholds after setting cache->length.
->
-> Link: https://github.com/kdave/btrfs-progs/issues/251
-> Fixes: 9afc66498a0b ("btrfs: block-group: refactor how we read one block =
-group item")
-> CC: stable@vger.kernel.org # 5.8+
-> Reviewed-by: Qu Wenruo <wqu@suse.com>
-> Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
-> ---
->
->  Changes from v1:
->  * Add a warning in set_free_space_tree_thresholds when bg->length is zer=
-o (Qu)
->
->  fs/btrfs/block-group.c     | 4 +++-
->  fs/btrfs/free-space-tree.c | 3 +++
->  2 files changed, 6 insertions(+), 1 deletion(-)
->
-> diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-> index 44fdfa2eeb2e..01e8ba1da1d3 100644
-> --- a/fs/btrfs/block-group.c
-> +++ b/fs/btrfs/block-group.c
-> @@ -1798,7 +1798,6 @@ static struct btrfs_block_group *btrfs_create_block=
-_group_cache(
->
->         cache->fs_info =3D fs_info;
->         cache->full_stripe_len =3D btrfs_full_stripe_len(fs_info, start);
-> -       set_free_space_tree_thresholds(cache);
->
->         cache->discard_index =3D BTRFS_DISCARD_INDEX_UNUSED;
->
-> @@ -1908,6 +1907,8 @@ static int read_one_block_group(struct btrfs_fs_inf=
-o *info,
->
->         read_block_group_item(cache, path, key);
->
-> +       set_free_space_tree_thresholds(cache);
-> +
->         if (need_clear) {
->                 /*
->                  * When we mount with old space cache, we need to
-> @@ -2128,6 +2129,7 @@ int btrfs_make_block_group(struct btrfs_trans_handl=
-e *trans, u64 bytes_used,
->                 return -ENOMEM;
->
->         cache->length =3D size;
-> +       set_free_space_tree_thresholds(cache);
->         cache->used =3D bytes_used;
->         cache->flags =3D type;
->         cache->last_byte_to_unpin =3D (u64)-1;
-> diff --git a/fs/btrfs/free-space-tree.c b/fs/btrfs/free-space-tree.c
-> index 8b1f5c8897b7..1d191fbc754b 100644
-> --- a/fs/btrfs/free-space-tree.c
-> +++ b/fs/btrfs/free-space-tree.c
-> @@ -22,6 +22,9 @@ void set_free_space_tree_thresholds(struct btrfs_block_=
-group *cache)
->         size_t bitmap_size;
->         u64 num_bitmaps, total_bitmap_size;
->
-> +       if (cache->length =3D=3D 0)
-> +               btrfs_warn(cache->fs_info, "block group length is zero");
-
-This alone is not very useful.
-With something like:
-
-if (WARN_ON(cache->length) =3D=3D 0)
-  .... (and the message including the block group's logical address
-too, the ->start field)
-
-Such a bug is much easier to spot. If a test case from fstests
-triggers it, it will be reported as a test failure.
-
-Why not an ASSERT() instead? Though I don't have a strong preference
-between the two for this case.
-Either option will make it easy to spot with fstests.
-
-As for the rest, the fix itself looks good to me.
-You can later add,
-
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
-
-Thanks.
-
-> +
->         /*
->          * We convert to bitmaps when the disk space required for using e=
-xtents
->          * exceeds that required for using bitmaps.
-> --
-> 2.28.0
->
 
 
---=20
-Filipe David Manana,
+On 21.08.20 г. 16:59 ч., Josef Bacik wrote:
+> On 8/21/20 3:31 AM, Nikolay Borisov wrote:
+>>
+>>
+>> On 20.08.20 г. 23:00 ч., Josef Bacik wrote:
+>>> While testing a weird problem with -o degraded, I noticed I was getting
+>>> leaked root errors
+>>>
+>>> BTRFS warning (device loop0): writable mount is not allowed due to
+>>> too many missing devices
+>>> BTRFS error (device loop0): open_ctree failed
+>>> BTRFS error (device loop0): leaked root -9-0 refcount 1
+>>>
+>>> This is the DATA_RELOC root, which gets read before the other fs roots,
+>>> but is included in the fs roots radix tree.  Handle this by adding a
+>>> btrfs_drop_and_free_fs_root() on the data reloc root if it exists.  This
+>>> is ok to do here if we fail further up because we will only drop the ref
+>>> if we delete the root from the radix tree, and all other cleanup won't
+>>> be duplicated.
+>>>
+>>> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+>>> ---
+>>>   fs/btrfs/disk-io.c | 2 ++
+>>>   1 file changed, 2 insertions(+)
+>>>
+>>> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+>>> index 814f8de395fe..ac6d6fddd5f4 100644
+>>> --- a/fs/btrfs/disk-io.c
+>>> +++ b/fs/btrfs/disk-io.c
+>>> @@ -3418,6 +3418,8 @@ int __cold open_ctree(struct super_block *sb,
+>>> struct btrfs_fs_devices *fs_device
+>>>       btrfs_put_block_group_cache(fs_info);
+>>>     fail_tree_roots:
+>>> +    if (fs_info->data_reloc_root)
+>>> +        btrfs_drop_and_free_fs_root(fs_info, fs_info->data_reloc_root);
+>>
+>> But will this really free the root? So the newly allocated
+>> data_reloc_root has it's ref set to 1 from
+>> btrfs_get_root_ref->btrfs_read_tree_root->btrfs_alloc_root and to 2 from
+>> being added to the radix tree in btrfs_insert_fs_root().
+>>
+>> But btrfs_drop_and_free_fs_root makes a single call to btrfs_put_root.
+>> So won't the reloc tree be left with a refcount of 1 ?
+> 
+> It's a global root, so it's final put happens in btrfs_free_fs_info(),
+> we just need to drop the radix tree ref here.  Thanks,
 
-=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
- right.=E2=80=9D
+
+Fair enough, but this really shows that btrfs_drop_and_free_fs_root has
+a horrible name which doesn't reflect what it does fully...
+
+Any case the patch itself is good, so :
+
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+
+> 
+> Josef
+> 
