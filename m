@@ -2,100 +2,213 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CF2924D764
-	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Aug 2020 16:34:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 290CD24D767
+	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Aug 2020 16:36:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727770AbgHUOe1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 21 Aug 2020 10:34:27 -0400
-Received: from mx2.suse.de ([195.135.220.15]:51466 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726118AbgHUOe0 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 21 Aug 2020 10:34:26 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id E8B9EAC82;
-        Fri, 21 Aug 2020 14:34:52 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id C3379DA730; Fri, 21 Aug 2020 16:33:18 +0200 (CEST)
-Date:   Fri, 21 Aug 2020 16:33:18 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Nikolay Borisov <nborisov@suse.com>
-Cc:     dsterba@suse.cz, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 0/5] Convert seed devices to proper list API
-Message-ID: <20200821143318.GF2026@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20200715104850.19071-1-nborisov@suse.com>
- <20200722142607.GX3703@twin.jikos.cz>
- <dc2379cf-9e8f-031e-4214-d68f6e4d41b1@suse.com>
+        id S1727074AbgHUOgN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 21 Aug 2020 10:36:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45380 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726118AbgHUOgJ (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 21 Aug 2020 10:36:09 -0400
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AF53C061573
+        for <linux-btrfs@vger.kernel.org>; Fri, 21 Aug 2020 07:36:08 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id b14so1536422qkn.4
+        for <linux-btrfs@vger.kernel.org>; Fri, 21 Aug 2020 07:36:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=l9KyUeszAkrBD/HqerCZTSys0KKGRRGTxFfySTjiuTI=;
+        b=g5Xz8c3/HsL+N9/ipSWOumTFP19VRmNTG33kmcOTuk2VdLv953T6VAvWSKLe/eHYpH
+         quIVEsZbvOMXZhNW6H/IuaFeZBz3vN3GP2aNiUVLhGQps/gtuOeB3lOM6gnh3zDnRjSs
+         3ujHRXUcSbXi+vIc0NNIHPpzjdIY0RUc2GCXlbP7/oweWwmejUaWzYapMbj6CEvYmGhZ
+         eYYkdSuHKJ6zXHqQkPDRyvuPO0rHXVnWUuV0I7aQU47d4bMEjArrNG0MorKt3/sX7gyp
+         czz7q9YlBhPWH6XaL3u/6Cgo1MGftKKNPELE2GArQs/OLytYvLfjyiBQGQz3NpEGpHVD
+         TPrQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=l9KyUeszAkrBD/HqerCZTSys0KKGRRGTxFfySTjiuTI=;
+        b=Z2uys6g3/mZvRfIxmg/Zsjq+4p/+nRUzgDffxByS/yBVT/AlFbo2R1ryHsvPDu/PPC
+         B4/1XhvmWFjw0wROKDCytQdG4sgsjzD+m56a0kaQa4YLMxccFvspOfyXp5+fzpdaSEgI
+         TzoQrTccjm9vQBCFyL8GpIcobMdeOnPl/2/HQumYd6cqnLX2Q5+gw2jwY1Wf15LnWdM1
+         7qlfndbGjY+YWqEl1UMGy9boJ/KJujRbFf0z6gJsi18DgxTedTf4032v0pR69kRLj06i
+         cUJ7zBr+d8L2jOEyTTxguZRSsmtsVE+qJa4nKTfPWGZ0+SL8GPCs5ChOWASKXT4iUK94
+         4gfQ==
+X-Gm-Message-State: AOAM532PI80K3jUVCjycyXcqjhZxgP4HocIugFV3ZbX3cUrI5Pt5s76v
+        BSVQ2FmJAdl3AfbbS6y2FbDFvJzbGs832Q==
+X-Google-Smtp-Source: ABdhPJwIT7fze9ykJjAC79AuEHrkVcKCtHEX1g21mfOJ1wMAldrFDxB4MRzvuRtgE/AJ0LvN3Y5WPw==
+X-Received: by 2002:ae9:e882:: with SMTP id a124mr2968806qkg.24.1598020566849;
+        Fri, 21 Aug 2020 07:36:06 -0700 (PDT)
+Received: from localhost.localdomain ([2600:380:a347:d293:267e:e50:f799:d6f0])
+        by smtp.gmail.com with ESMTPSA id t83sm1687495qke.133.2020.08.21.07.36.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 21 Aug 2020 07:36:06 -0700 (PDT)
+Subject: Re: [PATCH 1/2] btrfs: initialize sysfs devid and device link for
+ seed device
+To:     Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org
+References: <d82dc7d38ac43d88381eaa5260cee3dc9907e810.1598011271.git.anand.jain@oracle.com>
+ <2c7ca821f53d71d6c1a4e1f1c969c1d8e686021a.1598012410.git.anand.jain@oracle.com>
+From:   Josef Bacik <josef@toxicpanda.com>
+Message-ID: <779bd819-d320-39e3-0a0b-80c0c8455243@toxicpanda.com>
+Date:   Fri, 21 Aug 2020 10:36:04 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <dc2379cf-9e8f-031e-4214-d68f6e4d41b1@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <2c7ca821f53d71d6c1a4e1f1c969c1d8e686021a.1598012410.git.anand.jain@oracle.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Jul 23, 2020 at 11:02:14AM +0300, Nikolay Borisov wrote:
-> Regarding patch 5 - I don't know what made you think there is a
-> tree-like structure involved. Simply looking at the old way seeds are
-> iterated:
+On 8/21/20 9:15 AM, Anand Jain wrote:
+> The following test case leads to null kobject-being-freed error.
 > 
-> 	while (seed_devices) {
-> 		fs_devices = seed_devices;
-> 		seed_devices = fs_devices->seed;
->  		close_fs_devices(fs_devices);
->  		free_fs_devices(fs_devices);
->  	}
+>   mount seed /mnt
+>   add sprout to /mnt
+>   umount /mnt
+>   mount sprout to /mnt
+>   delete seed
 > 
-> There's no conditional deciding if we should go left/right of the tree.
+>   kobject: '(null)' (00000000dd2b87e4): is not initialized, yet kobject_put() is being called.
+>   WARNING: CPU: 1 PID: 15784 at lib/kobject.c:736 kobject_put+0x80/0x350
+>   RIP: 0010:kobject_put+0x80/0x350
+>   ::
+>   Call Trace:
+>   btrfs_sysfs_remove_devices_dir+0x6e/0x160 [btrfs]
+>   btrfs_rm_device.cold+0xa8/0x298 [btrfs]
+>   btrfs_ioctl+0x206c/0x22a0 [btrfs]
+>   ksys_ioctl+0xe2/0x140
+>   __x64_sys_ioctl+0x1e/0x29
+>   do_syscall_64+0x96/0x150
+>   entry_SYSCALL_64_after_hwframe+0x44/0xa9
+>   RIP: 0033:0x7f4047c6288b
+>   ::
+> 
+> This is because, at the end of the seed device-delete, we try to remove
+> the seed's devid sysfs entry. But for the seed devices under the sprout
+> fs, we don't initialize the devid kobject yet. So this patch initializes
+> the seed device devid kobject and the device link in the sysfs. This takes
+> care of the Warning.
+> 
+> Signed-off-by: Anand Jain <anand.jain@oracle.com>
+> ---
+>   fs/btrfs/sysfs.c | 30 ++++++++++++++++++++----------
+>   1 file changed, 20 insertions(+), 10 deletions(-)
+> 
+> diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
+> index 88fd4ce937b8..85403fc3d5c7 100644
+> --- a/fs/btrfs/sysfs.c
+> +++ b/fs/btrfs/sysfs.c
+> @@ -1154,20 +1154,20 @@ int btrfs_sysfs_add_space_info_type(struct btrfs_fs_info *fs_info,
+>   /* when one_device is NULL, it removes all device links */
+>   
+>   int btrfs_sysfs_remove_devices_dir(struct btrfs_fs_devices *fs_devices,
+> -		struct btrfs_device *one_device)
+> +				   struct btrfs_device *one_device)
+>   {
+>   	struct hd_struct *disk;
+>   	struct kobject *disk_kobj;
+> +	struct kobject *devices_kobj = fs_devices->devices_kobj;
+>   
+> -	if (!fs_devices->devices_kobj)
+> +	if (!devices_kobj)
+>   		return -EINVAL;
+>   
+>   	if (one_device) {
+>   		if (one_device->bdev) {
+>   			disk = one_device->bdev->bd_part;
+>   			disk_kobj = &part_to_dev(disk)->kobj;
+> -			sysfs_remove_link(fs_devices->devices_kobj,
+> -					  disk_kobj->name);
+> +			sysfs_remove_link(devices_kobj, disk_kobj->name);
+>   		}
+>   
+>   		kobject_del(&one_device->devid_kobj);
+> @@ -1178,19 +1178,23 @@ int btrfs_sysfs_remove_devices_dir(struct btrfs_fs_devices *fs_devices,
+>   		return 0;
+>   	}
+>   
+> +again:
+>   	list_for_each_entry(one_device, &fs_devices->devices, dev_list) {
+>   
+>   		if (one_device->bdev) {
+>   			disk = one_device->bdev->bd_part;
+>   			disk_kobj = &part_to_dev(disk)->kobj;
+> -			sysfs_remove_link(fs_devices->devices_kobj,
+> -					  disk_kobj->name);
+> +			sysfs_remove_link(devices_kobj, disk_kobj->name);
+>   		}
+>   		kobject_del(&one_device->devid_kobj);
+>   		kobject_put(&one_device->devid_kobj);
+>   
+>   		wait_for_completion(&one_device->kobj_unregister);
+>   	}
+> +	while (fs_devices->seed) {
+> +		fs_devices = fs_devices->seed;
+> +		goto again;
+> +	}
+>   
+>   	return 0;
+>   }
+> @@ -1279,8 +1283,11 @@ int btrfs_sysfs_add_devices_dir(struct btrfs_fs_devices *fs_devices,
+>   	int error = 0;
+>   	struct btrfs_device *dev;
+>   	unsigned int nofs_flag;
+> +	struct kobject *devices_kobj = fs_devices->devices_kobj;
+> +	struct kobject *devinfo_kobj = fs_devices->devinfo_kobj;
+>   
+>   	nofs_flag = memalloc_nofs_save();
+> +again:
+>   	list_for_each_entry(dev, &fs_devices->devices, dev_list) {
+>   
+>   		if (one_device && one_device != dev)
+> @@ -1293,21 +1300,24 @@ int btrfs_sysfs_add_devices_dir(struct btrfs_fs_devices *fs_devices,
+>   			disk = dev->bdev->bd_part;
+>   			disk_kobj = &part_to_dev(disk)->kobj;
+>   
+> -			error = sysfs_create_link(fs_devices->devices_kobj,
+> -						  disk_kobj, disk_kobj->name);
+> +			error = sysfs_create_link(devices_kobj, disk_kobj,
+> +						  disk_kobj->name);
+>   			if (error)
+>   				break;
+>   		}
+>   
+>   		init_completion(&dev->kobj_unregister);
+>   		error = kobject_init_and_add(&dev->devid_kobj, &devid_ktype,
+> -					     fs_devices->devinfo_kobj, "%llu",
+> -					     dev->devid);
+> +					     devinfo_kobj, "%llu", dev->devid);
+>   		if (error) {
+>   			kobject_put(&dev->devid_kobj);
+>   			break;
+>   		}
+>   	}
+> +	while(fs_devices->seed) {
+> +		fs_devices = fs_devices->seed;
+> +		goto again;
+> +	}
+>   	memalloc_nofs_restore(nofs_flag);
+>   
+>   	return error;
+> 
 
-A tree structure that has only one direction arrows, from leaves to the
-root. Where the root is the seed fs and the leaves are the sprouts.
+So now we're using the main fs_devices->devices_kobj, which is the main 
+fs_devices with fs_devices->seed being the seed fs_devices.  This is 
+fine, except when we actually mount a seed device, and in that case we 
+have fs_devices as the seed devices being used, and then if we add a 
+device we'll actually swap in the new fs_devices for the main 
+fs_devices, and we have the seed devices with the actual devices_kobj 
+that we used set in fs_devices->seed, and thus we'll leak the sysfs 
+objects for the seed devices.  Thanks,
 
-	 fs1 ---> seed
-		  ^ ^
-	 fs2 -----| |
-                    |
-	 fs3 -------|
-
-The while loop in each fs goes by the pointers up to the seeding device
-and always removes it's references.
-
-I'm not sure about a deeper tree structure here, so the fs3 -> fs2 would
-be possible.
-
-> Or let's take for example deleting from a list of seed devices:
-> 
-> 		tmp_fs_devices = fs_info->fs_devices;
-> 		while (tmp_fs_devices) {
-> 			if (tmp_fs_devices->seed == fs_devices) {
-> 				tmp_fs_devices->seed = fs_devices->seed;
-> 				break;
-> 			}
-> 			tmp_fs_devices = tmp_fs_devices->seed;
-> 		}
-> 
-> Here a simple linear search is performed and when a member of the seed
-> list matches our fs_devices it simply pointed 1 past our fs_devices
-> 
-> When the if inside the loop matches we get the following situation:
-> 
-> [tmp_fs_devices]->[fs_devices]->[fs_devices->seeds]
-> 
-> Then we perform [tmp_fs_devices] -> [fs_devices->seed]
-> 
-> So a simple deletion, just the fact you were confused shows the old code
-> is rather wonky.
-
-Well, I still am after reading the above, the missing part is about the
-device cloning and that each fs has it's own copy. The tree structure
-implies sharing and would need reference counting, but this does not
-seem to be so.
-
-I'll add the series to for-next so we have a base for the other seeding
-patches but I haven't reviewed it to the point where I'm convinced it's
-correct.
+Josef
