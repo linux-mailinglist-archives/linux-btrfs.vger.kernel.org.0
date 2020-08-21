@@ -2,160 +2,99 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88FF124D86B
-	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Aug 2020 17:19:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF94D24DC11
+	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Aug 2020 18:54:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728365AbgHUPTn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 21 Aug 2020 11:19:43 -0400
-Received: from gateway32.websitewelcome.com ([192.185.145.122]:25726 "EHLO
-        gateway32.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727074AbgHUPTg (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 21 Aug 2020 11:19:36 -0400
-X-Greylist: delayed 1479 seconds by postgrey-1.27 at vger.kernel.org; Fri, 21 Aug 2020 11:19:35 EDT
-Received: from cm14.websitewelcome.com (cm14.websitewelcome.com [100.42.49.7])
-        by gateway32.websitewelcome.com (Postfix) with ESMTP id 4215D12A6C39
-        for <linux-btrfs@vger.kernel.org>; Fri, 21 Aug 2020 09:54:53 -0500 (CDT)
-Received: from br540.hostgator.com.br ([108.179.252.180])
-        by cmsmtp with SMTP
-        id 98RRkvK0IBD8b98RRkOCNy; Fri, 21 Aug 2020 09:54:53 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=mpdesouza.com; s=default; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=7RQ2hKgl1ruA2bCIsl6ftQlYVMZxZwpcaDvYoUrDx50=; b=eZRxoRgkbHLqOMgEZ42qkSDvDX
-        Q84Xi+NFCE1L8GeeK86Yi/YI8tAASiJ5znZICE9p+nR6IYHv/dQwh3YOu7olXZeBygrMewlguCjlZ
-        hw3wLo0iyqTDXw8N4l7PyDHyR7bLRP0x710MbDnJQy4jliHJB6aXlgZwcNGWdwIGYf5gWUSwFgwM2
-        NibsmONu0HJRUZCkhE95l3f2OelMjJb0wf90suj/uBDoUEp3B08mzWIu7ZyGW0nOZPzBoJtzoAiRN
-        bCz0/x5pAIw7bXUI0EhIsv+ks/yN/w/v4L6nRff4HkZr4Tqkf4j6IzeslWDdkmNbmRW89mm86SKd9
-        bxb4ZmKA==;
-Received: from [191.248.104.145] (port=54152 helo=hephaestus.suse.de)
-        by br540.hostgator.com.br with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <marcos@mpdesouza.com>)
-        id 1k98RQ-001hcI-MA; Fri, 21 Aug 2020 11:54:53 -0300
-From:   Marcos Paulo de Souza <marcos@mpdesouza.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     dsterba@suse.com, linux-btrfs@vger.kernel.org,
-        Marcos Paulo de Souza <mpdesouza@suse.com>,
-        stable@vger.kernel.org, Qu Wenruo <wqu@suse.com>,
-        Filipe Manana <fdmanana@suse.com>
-Subject: [PATCH v3] btrfs: block-group: Fix free-space bitmap threshould
-Date:   Fri, 21 Aug 2020 11:54:44 -0300
-Message-Id: <20200821145444.25791-1-marcos@mpdesouza.com>
-X-Mailer: git-send-email 2.28.0
+        id S1728784AbgHUQwk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 21 Aug 2020 12:52:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48780 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728086AbgHUQTk (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 21 Aug 2020 12:19:40 -0400
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4FFBB22D73;
+        Fri, 21 Aug 2020 16:18:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598026731;
+        bh=4J0ke0z5SwEf9dn4W6pp3Y0K6EyOomQoYS1vctrkJ7M=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=gXLS2HT9Fdu7Xl/YPOyNxv3StO5WZs3aqqDvWdClABYy1aOZGUpvnwPk76pvhIceR
+         nTwBiSOhhWgQyJyR35EVaZJ+9rAHOzQlWdRv8PHQrpOTkWcynulzPe87n0OFhXdJfy
+         7/7OYPBU6ZffXcmSpDTLG7UgLU/9GDIq+IBveEZs=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Qu Wenruo <wqu@suse.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Sasha Levin <sashal@kernel.org>, linux-btrfs@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.19 34/38] btrfs: file: reserve qgroup space after the hole punch range is locked
+Date:   Fri, 21 Aug 2020 12:18:03 -0400
+Message-Id: <20200821161807.348600-34-sashal@kernel.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200821161807.348600-1-sashal@kernel.org>
+References: <20200821161807.348600-1-sashal@kernel.org>
 MIME-Version: 1.0
+X-stable: review
+X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - br540.hostgator.com.br
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - mpdesouza.com
-X-BWhitelist: no
-X-Source-IP: 191.248.104.145
-X-Source-L: No
-X-Exim-ID: 1k98RQ-001hcI-MA
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: (hephaestus.suse.de) [191.248.104.145]:54152
-X-Source-Auth: marcos@mpdesouza.com
-X-Email-Count: 5
-X-Source-Cap: bXBkZXNvNTM7bXBkZXNvNTM7YnI1NDAuaG9zdGdhdG9yLmNvbS5icg==
-X-Local-Domain: yes
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Marcos Paulo de Souza <mpdesouza@suse.com>
+From: Qu Wenruo <wqu@suse.com>
 
-[BUG]
-After commit 9afc66498a0b ("btrfs: block-group: refactor how we read one
-block group item"), cache->length is being assigned after calling
-btrfs_create_block_group_cache. This causes a problem since
-set_free_space_tree_thresholds is calculate the free-space threshould to
-decide is the free-space tree should convert from extents to bitmaps.
+[ Upstream commit a7f8b1c2ac21bf081b41264c9cfd6260dffa6246 ]
 
-The current code calls set_free_space_tree_thresholds with cache->length
-being 0, which then makes cache->bitmap_high_thresh being zero. This
-implies the system will always use bitmap instead of extents, which is
-not desired if the block group is not fragmented.
+The incoming qgroup reserved space timing will move the data reservation
+to ordered extent completely.
 
-This behavior can be seen by a test that expects to repair systems
-with FREE_SPACE_EXTENT and FREE_SPACE_BITMAP, but the current code only
-created FREE_SPACE_BITMAP.
+However in btrfs_punch_hole_lock_range() will call
+btrfs_invalidate_page(), which will clear QGROUP_RESERVED bit for the
+range.
 
-[FIX]
-Call set_free_space_tree_thresholds after setting cache->length. There
-is now a WARN_ON in set_free_space_tree_thresholds to help preventing
-the same mistake to happen again in the future.
+In current stage it's OK, but if we're making ordered extents handle the
+reserved space, then btrfs_punch_hole_lock_range() can clear the
+QGROUP_RESERVED bit before we submit ordered extent, leading to qgroup
+reserved space leakage.
 
-Link: https://github.com/kdave/btrfs-progs/issues/251
-Fixes: 9afc66498a0b ("btrfs: block-group: refactor how we read one block group item")
-CC: stable@vger.kernel.org # 5.8+
-Reviewed-by: Qu Wenruo <wqu@suse.com>
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
-Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
+So here change the timing to make reserve data space after
+btrfs_punch_hole_lock_range().
+The new timing is fine for either current code or the new code.
+
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+Reviewed-by: David Sterba <dsterba@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- Changes from v2:
- * Add a WARN_ON and changed the warn message (Filipe)
- * Add a Reviewed-by tag from Filipe
- Changes from v1:
- * Add warn message (Qu)
- * Add a Reviewed-by tag from Qu
+ fs/btrfs/file.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
- fs/btrfs/block-group.c     | 4 +++-
- fs/btrfs/free-space-tree.c | 4 ++++
- 2 files changed, 7 insertions(+), 1 deletion(-)
-
-diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-index 44fdfa2eeb2e..01e8ba1da1d3 100644
---- a/fs/btrfs/block-group.c
-+++ b/fs/btrfs/block-group.c
-@@ -1798,7 +1798,6 @@ static struct btrfs_block_group *btrfs_create_block_group_cache(
- 
- 	cache->fs_info = fs_info;
- 	cache->full_stripe_len = btrfs_full_stripe_len(fs_info, start);
--	set_free_space_tree_thresholds(cache);
- 
- 	cache->discard_index = BTRFS_DISCARD_INDEX_UNUSED;
- 
-@@ -1908,6 +1907,8 @@ static int read_one_block_group(struct btrfs_fs_info *info,
- 
- 	read_block_group_item(cache, path, key);
- 
-+	set_free_space_tree_thresholds(cache);
-+
- 	if (need_clear) {
- 		/*
- 		 * When we mount with old space cache, we need to
-@@ -2128,6 +2129,7 @@ int btrfs_make_block_group(struct btrfs_trans_handle *trans, u64 bytes_used,
- 		return -ENOMEM;
- 
- 	cache->length = size;
-+	set_free_space_tree_thresholds(cache);
- 	cache->used = bytes_used;
- 	cache->flags = type;
- 	cache->last_byte_to_unpin = (u64)-1;
-diff --git a/fs/btrfs/free-space-tree.c b/fs/btrfs/free-space-tree.c
-index 8b1f5c8897b7..f072c106b82b 100644
---- a/fs/btrfs/free-space-tree.c
-+++ b/fs/btrfs/free-space-tree.c
-@@ -22,6 +22,10 @@ void set_free_space_tree_thresholds(struct btrfs_block_group *cache)
- 	size_t bitmap_size;
- 	u64 num_bitmaps, total_bitmap_size;
- 
-+	if (WARN_ON(cache->length == 0))
-+		btrfs_warn(cache->fs_info, "block group %llu length is zero",
-+						cache->start);
-+
- 	/*
- 	 * We convert to bitmaps when the disk space required for using extents
- 	 * exceeds that required for using bitmaps.
+diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+index dc1841855a69a..646152f305843 100644
+--- a/fs/btrfs/file.c
++++ b/fs/btrfs/file.c
+@@ -3010,14 +3010,14 @@ static int btrfs_zero_range(struct inode *inode,
+ 		if (ret < 0)
+ 			goto out;
+ 		space_reserved = true;
+-		ret = btrfs_qgroup_reserve_data(inode, &data_reserved,
+-						alloc_start, bytes_to_reserve);
+-		if (ret)
+-			goto out;
+ 		ret = btrfs_punch_hole_lock_range(inode, lockstart, lockend,
+ 						  &cached_state);
+ 		if (ret)
+ 			goto out;
++		ret = btrfs_qgroup_reserve_data(inode, &data_reserved,
++						alloc_start, bytes_to_reserve);
++		if (ret)
++			goto out;
+ 		ret = btrfs_prealloc_file_range(inode, mode, alloc_start,
+ 						alloc_end - alloc_start,
+ 						i_blocksize(inode),
 -- 
-2.28.0
+2.25.1
 
