@@ -2,92 +2,126 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 035B424D581
-	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Aug 2020 14:56:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7FC224D5EA
+	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Aug 2020 15:15:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727837AbgHUM4c (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 21 Aug 2020 08:56:32 -0400
-Received: from mx2.suse.de ([195.135.220.15]:49372 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725935AbgHUM4c (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 21 Aug 2020 08:56:32 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 3D8F1AB7D;
-        Fri, 21 Aug 2020 12:56:58 +0000 (UTC)
-Subject: Re: [PATCH 3/8] btrfs: move btrfs_scratch_superblocks into
- btrfs_dev_replace_finishing
-To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com
-References: <cover.1597936173.git.josef@toxicpanda.com>
- <f057e5076450f399e87cf54c3951bb2033febe36.1597936173.git.josef@toxicpanda.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- xsFNBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
- T7g+RbfPFlmQp+EwFWOtABXlKC54zgSf+uulGwx5JAUFVUIRBmnHOYi/lUiE0yhpnb1KCA7f
- u/W+DkwGerXqhhe9TvQoGwgCKNfzFPZoM+gZrm+kWv03QLUCr210n4cwaCPJ0Nr9Z3c582xc
- bCUVbsjt7BN0CFa2BByulrx5xD9sDAYIqfLCcZetAqsTRGxM7LD0kh5WlKzOeAXj5r8DOrU2
- GdZS33uKZI/kZJZVytSmZpswDsKhnGzRN1BANGP8sC+WD4eRXajOmNh2HL4P+meO1TlM3GLl
- EQd2shHFY0qjEo7wxKZI1RyZZ5AgJnSmehrPCyuIyVY210CbMaIKHUIsTqRgY5GaNME24w7h
- TyyVCy2qAM8fLJ4Vw5bycM/u5xfWm7gyTb9V1TkZ3o1MTrEsrcqFiRrBY94Rs0oQkZvunqia
- c+NprYSaOG1Cta14o94eMH271Kka/reEwSZkC7T+o9hZ4zi2CcLcY0DXj0qdId7vUKSJjEep
- c++s8ncFekh1MPhkOgNj8pk17OAESanmDwksmzh1j12lgA5lTFPrJeRNu6/isC2zyZhTwMWs
- k3LkcTa8ZXxh0RfWAqgx/ogKPk4ZxOXQEZetkEyTFghbRH2BIwARAQABzSJOaWtvbGF5IEJv
- cmlzb3YgPG5ib3Jpc292QHN1c2UuZGU+wsF4BBMBAgAiBQJYijkSAhsDBgsJCAcDAgYVCAIJ
- CgsEFgIDAQIeAQIXgAAKCRBxvoJG5T8oV/B6D/9a8EcRPdHg8uLEPywuJR8URwXzkofT5bZE
- IfGF0Z+Lt2ADe+nLOXrwKsamhweUFAvwEUxxnndovRLPOpWerTOAl47lxad08080jXnGfYFS
- Dc+ew7C3SFI4tFFHln8Y22Q9075saZ2yQS1ywJy+TFPADIprAZXnPbbbNbGtJLoq0LTiESnD
- w/SUC6sfikYwGRS94Dc9qO4nWyEvBK3Ql8NkoY0Sjky3B0vL572Gq0ytILDDGYuZVo4alUs8
- LeXS5ukoZIw1QYXVstDJQnYjFxYgoQ5uGVi4t7FsFM/6ykYDzbIPNOx49Rbh9W4uKsLVhTzG
- BDTzdvX4ARl9La2kCQIjjWRg+XGuBM5rxT/NaTS78PXjhqWNYlGc5OhO0l8e5DIS2tXwYMDY
- LuHYNkkpMFksBslldvNttSNei7xr5VwjVqW4vASk2Aak5AleXZS+xIq2FADPS/XSgIaepyTV
- tkfnyreep1pk09cjfXY4A7qpEFwazCRZg9LLvYVc2M2eFQHDMtXsH59nOMstXx2OtNMcx5p8
- 0a5FHXE/HoXz3p9bD0uIUq6p04VYOHsMasHqHPbsMAq9V2OCytJQPWwe46bBjYZCOwG0+x58
- fBFreP/NiJNeTQPOa6FoxLOLXMuVtpbcXIqKQDoEte9aMpoj9L24f60G4q+pL/54ql2VRscK
- d87BTQRYigc+ARAAyJSq9EFk28++SLfg791xOh28tLI6Yr8wwEOvM3wKeTfTZd+caVb9gBBy
- wxYhIopKlK1zq2YP7ZjTP1aPJGoWvcQZ8fVFdK/1nW+Z8/NTjaOx1mfrrtTGtFxVBdSCgqBB
- jHTnlDYV1R5plJqK+ggEP1a0mr/rpQ9dFGvgf/5jkVpRnH6BY0aYFPprRL8ZCcdv2DeeicOO
- YMobD5g7g/poQzHLLeT0+y1qiLIFefNABLN06Lf0GBZC5l8hCM3Rpb4ObyQ4B9PmL/KTn2FV
- Xq/c0scGMdXD2QeWLePC+yLMhf1fZby1vVJ59pXGq+o7XXfYA7xX0JsTUNxVPx/MgK8aLjYW
- hX+TRA4bCr4uYt/S3ThDRywSX6Hr1lyp4FJBwgyb8iv42it8KvoeOsHqVbuCIGRCXqGGiaeX
- Wa0M/oxN1vJjMSIEVzBAPi16tztL/wQtFHJtZAdCnuzFAz8ue6GzvsyBj97pzkBVacwp3/Mw
- qbiu7sDz7yB0d7J2tFBJYNpVt/Lce6nQhrvon0VqiWeMHxgtQ4k92Eja9u80JDaKnHDdjdwq
- FUikZirB28UiLPQV6PvCckgIiukmz/5ctAfKpyYRGfez+JbAGl6iCvHYt/wAZ7Oqe/3Cirs5
- KhaXBcMmJR1qo8QH8eYZ+qhFE3bSPH446+5oEw8A9v5oonKV7zMAEQEAAcLBXwQYAQIACQUC
- WIoHPgIbDAAKCRBxvoJG5T8oV1pyD/4zdXdOL0lhkSIjJWGqz7Idvo0wjVHSSQCbOwZDWNTN
- JBTP0BUxHpPu/Z8gRNNP9/k6i63T4eL1xjy4umTwJaej1X15H8Hsh+zakADyWHadbjcUXCkg
- OJK4NsfqhMuaIYIHbToi9K5pAKnV953xTrK6oYVyd/Rmkmb+wgsbYQJ0Ur1Ficwhp6qU1CaJ
- mJwFjaWaVgUERoxcejL4ruds66LM9Z1Qqgoer62ZneID6ovmzpCWbi2sfbz98+kW46aA/w8r
- 7sulgs1KXWhBSv5aWqKU8C4twKjlV2XsztUUsyrjHFj91j31pnHRklBgXHTD/pSRsN0UvM26
- lPs0g3ryVlG5wiZ9+JbI3sKMfbdfdOeLxtL25ujs443rw1s/PVghphoeadVAKMPINeRCgoJH
- zZV/2Z/myWPRWWl/79amy/9MfxffZqO9rfugRBORY0ywPHLDdo9Kmzoxoxp9w3uTrTLZaT9M
- KIuxEcV8wcVjr+Wr9zRl06waOCkgrQbTPp631hToxo+4rA1jiQF2M80HAet65ytBVR2pFGZF
- zGYYLqiG+mpUZ+FPjxk9kpkRYz61mTLSY7tuFljExfJWMGfgSg1OxfLV631jV1TcdUnx+h3l
- Sqs2vMhAVt14zT8mpIuu2VNxcontxgVr1kzYA/tQg32fVRbGr449j1gw57BV9i0vww==
-Message-ID: <5e1d0081-df24-2af1-3a16-232c8c83481f@suse.com>
-Date:   Fri, 21 Aug 2020 15:56:29 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1728680AbgHUNPy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 21 Aug 2020 09:15:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32864 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728739AbgHUNPv (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 21 Aug 2020 09:15:51 -0400
+X-Greylist: delayed 142 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 21 Aug 2020 06:15:50 PDT
+Received: from smtp.mfedv.net (smtp.mfedv.net [IPv6:2a04:6c0:2::19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E2E5C061385;
+        Fri, 21 Aug 2020 06:15:49 -0700 (PDT)
+Received: from suse92host.mfedv.net (suse92host.mfedv.net [IPv6:2a04:6c0:2:3:0:0:0:ffff])
+        by smtp.mfedv.net (8.15.2/8.15.2/Debian-10) with ESMTP id 07LDDCQq003015;
+        Fri, 21 Aug 2020 13:13:13 GMT
+Received: from xoff (klappe2.mfedv.net [192.168.71.72])
+        by suse92host.mfedv.net (Postfix) with ESMTP id 010EAC89BA;
+        Fri, 21 Aug 2020 15:13:11 +0200 (CEST)
+        (envelope-from bcache@mfedv.net)
+Date:   Fri, 21 Aug 2020 15:13:11 +0200
+From:   Matthias Ferdinand <bcache@mfedv.net>
+To:     =?utf-8?B?U3fDom1p?= Petaramesh <swami@petaramesh.org>
+Cc:     linux-bcache@vger.kernel.org, BTRFS <linux-btrfs@vger.kernel.org>,
+        kent.overstreet@gmail.com
+Subject: Re: Complete disparition of BTRFS FS on bcache, kernel 5.8
+Message-ID: <20200821131311.GG8012@xoff>
+References: <98e963a4-dbd0-7d7b-e8e5-cd846cd6c418@petaramesh.org>
 MIME-Version: 1.0
-In-Reply-To: <f057e5076450f399e87cf54c3951bb2033febe36.1597936173.git.josef@toxicpanda.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <98e963a4-dbd0-7d7b-e8e5-cd846cd6c418@petaramesh.org>
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Sorry I probably can't bring you back the fs, I just have a possibly
+relevant datapoint to share:
 
+with recent Ubuntu 20.04 and a rather convoluted storage stack (i.e. LVM
+volumes consumed not by fs directly but insted by e.g. luks and/or
+bcache), on shutdown systemd service blk-availability.service would lead
+to 1m30s of frantic disk activity without ever finishing.
 
-On 20.08.20 г. 18:18 ч., Josef Bacik wrote:
-> We need to move the closing of the src_device out of all the device
-> replace locking, but we definitely want to zero out the superblock
-> before we commit the last time to make sure the device is properly
-> removed.  Handle this by pushing btrfs_scratch_superblocks into
-> btrfs_dev_replace_finishing, and then later on we'll move the src_device
-> closing and freeing stuff where we need it to be.
+I did not have much time to investigate (and I don't right now), but I
+remember coming to the conclusion that blk-availability or the invoked
+scripts do not honor the case where an LVM volume is consumed by
+anything else than a plain filesystem, and so they loop endlessly until
+finally being killed by systemd.
+
+I haven't lost data AFAICT, but it's a nuisance, and I disable
+blk-availability whenever I see it, and I don't even fully understand
+what it intends to achieve.
+
+It is possible that in your case the same type of frantic disk activity
+kept some vital fs information from actually reaching the disk.
+
+Regards
+Matthias
+
+On Fri, Aug 21, 2020 at 11:58:08AM +0200, Swâmi Petaramesh wrote:
+> Hello,
 > 
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+> I have a Manjaro system on which the disks setup is as follows :
+> 
+> sda : mechanical HD
+> 
+> - sda1 -> LUKS encryption -> bcache backing dev bcache0 -> BTRFS FS -> /home
+> 
+> sdb : SSD
+> 
+> - sdb1 -> System EFI partition
+> 
+> - sdb2 -> LUKS encryption -> BTRFS FS -> / (system root FS)
+> 
+> - sdb3 -> LUKS encryption -> bcache cache dev bcache0 (for /home)
+> 
+> - sdb4 -> LUKS encryption -> SWAP
+> 
+> bcache working in writeback mode.
+> 
+> This setup had worked perfectly flawlessly for more than a year with
+> different kernel versions.
+> 
+> Then I upgraded to Manjaro kernel 5.8
+> 
+> I was immediately under the impression that the overall disks access
+> performance had much worsened.
+> 
+> Then, after I had worked on a couple VMs hosted on the bcache'd FS, I tried
+> to power the system down normally from the GUI menu.
+> 
+> At that time there was high disk activity going on and systemd waited for
+> more than 1'30" trying to unmount the FSes, to no avail. Looks like
+> everything didn't make it to disk before it eventually timed out.
+> 
+> Afterwards systemd killed the processes and powered down the system.
+> 
+> At next powerup, the bcache would activate as usual, but the BTRFS
+> filesystem on it was completely *GONE*. The “file” utility would identify
+> the device as “data” (not an FS), mount would complain that this wasn't any
+> recognizable FS anymore, and “btrfs-find-root” wouldn't find anything.
+> 
+> AFAIK the FS is completely gone.
+> 
+> I've been using BTRFS over bcache over LUKS (on 2 machines) for years, and
+> it was usually very stable until today.
+> 
+> Both the HD and SSD looks healthy and their SMART do not record any error,
+> remapped sectors, or other issue.
+> 
+> So this was just to let you know... There might be some new kernel issue in
+> bcache or BTRFS or their relation to one another.
+> 
+> Best regards.
+> 
+> ॐ
+> 
+> -- 
+> Swâmi Petaramesh <swami@petaramesh.org> PGP 9076E32E
