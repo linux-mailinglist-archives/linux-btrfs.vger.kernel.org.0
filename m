@@ -2,75 +2,66 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8164024E73D
-	for <lists+linux-btrfs@lfdr.de>; Sat, 22 Aug 2020 13:48:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69BA024E759
+	for <lists+linux-btrfs@lfdr.de>; Sat, 22 Aug 2020 14:19:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727905AbgHVLs1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 22 Aug 2020 07:48:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43926 "EHLO
+        id S1727979AbgHVMTC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 22 Aug 2020 08:19:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727113AbgHVLsZ (ORCPT
+        with ESMTP id S1726704AbgHVMTB (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 22 Aug 2020 07:48:25 -0400
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55A32C061573
-        for <linux-btrfs@vger.kernel.org>; Sat, 22 Aug 2020 04:48:24 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id u18so4135922wmc.3
-        for <linux-btrfs@vger.kernel.org>; Sat, 22 Aug 2020 04:48:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=to:from:subject:message-id:date:user-agent:mime-version
-         :content-transfer-encoding:content-language;
-        bh=4yJHaYpjE/wU21AzHFhuCS+5+CAMg7UJu+9ysNFIZag=;
-        b=rYqPweQkMHJc2sFy3J3xfQcuCLIDyM2/orTaTPLEQujE0+sjHXwUjCPM79LOa7cM3q
-         MYstzlsj/rJNqormwm/+b0IMG/gQkMUovyTllhFShiH9NA8arjyemS+v/g1MAJYpQ9dx
-         VrokLOnNKU4N6g1Eg65Yktwnoe/nJOHlBYFxD2G/JgXjP5YXc3lFHm0rpTVbsGFBR6ZU
-         c1h560LNIjqfTm0pMXBGjtkyA0hC+nhk/a4g49wYbEJWrqWqxLqqHs2f/Pmmt0DUUApM
-         sSEGkAz5yiMdjrquhVrXR8KUA3/k2C0oVZIVvgk8mjnu6mP3q8ZJcsdfUlzIQjRfY5ul
-         3LwQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:from:subject:message-id:date:user-agent
-         :mime-version:content-transfer-encoding:content-language;
-        bh=4yJHaYpjE/wU21AzHFhuCS+5+CAMg7UJu+9ysNFIZag=;
-        b=XMmOlam2VgVa6FMbnnjad0TGP2j7Hy0LSl4J+137cYvLaL/moflobKQl2UbsV60emo
-         3TlTP8qaTTWCHFPqFap1+g1Wt8tgFbaKRggf2sYvDWkQrLc+ElBTQ0nHgoHHlCohU1yk
-         T9oDaYPF1maqLOT7BTv39I0BnDf1PR7deAEyDrKfAOerXTOr6+Ks2zjZckSpXQnqLyPn
-         KixpE1tlQj0TDwAtnHKizn8o0deAK/H+8x6mpORmS1cIdEjo31YdO8tYbQZUmEO3FiTc
-         cUHyAWlGt81vChoEXI8V6fqlgXQRiIbu69j5NfHKx0IgCayhQ91XEiWPZUtnwdObA1FW
-         wySQ==
-X-Gm-Message-State: AOAM533XxcT2XTtKEEV1V52fXX0KYtL3tvp2hIl2D3v9p+L+8Leg51I+
-        2CtTl0MdNISLTuzo5zmOoCE6rVDhDbnRPw==
-X-Google-Smtp-Source: ABdhPJycCoH7lqCQd0+OtYSgCuSy6FiWWN8Fu4AMMbcKaRWhbIzrNyZsJ3Tg6N14TUo+XhaKc8Jsng==
-X-Received: by 2002:a1c:3c87:: with SMTP id j129mr7893295wma.176.1598096900281;
-        Sat, 22 Aug 2020 04:48:20 -0700 (PDT)
-Received: from [192.168.0.42] ([65.18.223.249])
-        by smtp.googlemail.com with ESMTPSA id r11sm10391639wrw.78.2020.08.22.04.48.19
-        for <linux-btrfs@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 22 Aug 2020 04:48:19 -0700 (PDT)
-To:     linux-btrfs@vger.kernel.org
-From:   George Shuklin <george.shuklin@gmail.com>
-Subject: Replacing or merging last snapshot
-Message-ID: <878539b1-b8eb-f547-fb4a-9026f1d51cf7@gmail.com>
-Date:   Sat, 22 Aug 2020 14:48:18 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        Sat, 22 Aug 2020 08:19:01 -0400
+Received: from savella.carfax.org.uk (2001-ba8-1f1-f0e6-0-0-0-2.autov6rev.bitfolk.space [IPv6:2001:ba8:1f1:f0e6::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09526C061573
+        for <linux-btrfs@vger.kernel.org>; Sat, 22 Aug 2020 05:18:58 -0700 (PDT)
+Received: from hrm by savella.carfax.org.uk with local (Exim 4.92)
+        (envelope-from <hrm@savella.carfax.org.uk>)
+        id 1k9SU5-0006fZ-NU; Sat, 22 Aug 2020 13:18:57 +0100
+Date:   Sat, 22 Aug 2020 13:18:57 +0100
+From:   Hugo Mills <hugo@carfax.org.uk>
+To:     George Shuklin <george.shuklin@gmail.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: Replacing or merging last snapshot
+Message-ID: <20200822121857.GA1093@savella.carfax.org.uk>
+Mail-Followup-To: Hugo Mills <hugo@carfax.org.uk>,
+        George Shuklin <george.shuklin@gmail.com>,
+        linux-btrfs@vger.kernel.org
+References: <878539b1-b8eb-f547-fb4a-9026f1d51cf7@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <878539b1-b8eb-f547-fb4a-9026f1d51cf7@gmail.com>
+X-GPG-Fingerprint: DD84 D558 9D81 DDEE 930D  2054 585E 1475 E2AB 1DE4
+X-GPG-Key: E2AB1DE4
+X-Parrot: It is no more. It has joined the choir invisible.
+X-IRC-Nicks: darksatanic darkersatanic darkling darkthing
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-I wonder if there is a way to free space if there is only one snapshot 
-available. The problem is that there is a hidden top-level (id=5) 
-subvolume, and there was ever switch from top-level to another subvolume 
-as 'default'. If top-level subvolume have some data (not present in 
-'default' snapshot), this space is wasted.
+On Sat, Aug 22, 2020 at 02:48:18PM +0300, George Shuklin wrote:
+> I wonder if there is a way to free space if there is only one snapshot
+> available. The problem is that there is a hidden top-level (id=5) subvolume,
+> and there was ever switch from top-level to another subvolume as 'default'.
+> If top-level subvolume have some data (not present in 'default' snapshot),
+> this space is wasted.
+> 
+> Are there way to 'merge' snapshot into top-level subvolume, or a way to
+> completely remove subvolume 5 (without breaking fs)?
 
-Are there way to 'merge' snapshot into top-level subvolume, or a way to 
-completely remove subvolume 5 (without breaking fs)?
+   You can't remove the top-level subvolume (id 5). All you can do is
+mount it (with -o subvolid=5 or =0) and (carefully) delete the parts
+that you don't need. Remember that all the other subvolumes are
+visible in this view, so don't just rm -rf *, because you'll delete
+everything in the FS including your currently active subvols.
 
+   Hugo.
+
+-- 
+Hugo Mills             | emacs: Emacs Makes A Computer Slow.
+hugo@... carfax.org.uk |
+http://carfax.org.uk/  |
+PGP: E2AB1DE4          |
