@@ -2,204 +2,187 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C6C724ED53
-	for <lists+linux-btrfs@lfdr.de>; Sun, 23 Aug 2020 15:26:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68CA624EDD4
+	for <lists+linux-btrfs@lfdr.de>; Sun, 23 Aug 2020 17:06:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726598AbgHWN00 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 23 Aug 2020 09:26:26 -0400
-Received: from out1.migadu.com ([91.121.223.63]:3734 "EHLO out1.migadu.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725884AbgHWN0Z (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 23 Aug 2020 09:26:25 -0400
-To:     linux-btrfs@vger.kernel.org
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=billdietrich.me;
-        s=default; t=1598189179;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-        to:to:cc:mime-version:mime-version:content-type:content-type:autocrypt:autocrypt;
-        bh=EXYbplRBozx3VPI4WAViOpDI/RWKGtI4j3Zt4Ctv8OY=;
-        b=BV5GW1wBRL1th0QupFqoMjvprWp4RmAWCQB7fvvD0W9AgHkHg1KeNLBExZymcefDbTWH9v
-        2tJZrxL5ESyU149s0oNhjXR9nvqU6irWMiZjP7t7i/FFHsQqkPrf3VK45SpUo0nnjQbxrM
-        /8Xff6xNwq4cX2g7OoUsYgEqtkn10tM=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Bill Dietrich <bill@billdietrich.me>
-Subject: Minimum size of Btrfs volume ?
-Autocrypt: addr=bill@billdietrich.me; keydata=
- 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
- YzSgk+ywHGgZ8Ns=
-Message-ID: <1de8d385-4f63-cf84-2a60-9519e55035bc@billdietrich.me>
-Date:   Sun, 23 Aug 2020 15:26:18 +0200
+        id S1726839AbgHWPFx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 23 Aug 2020 11:05:53 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:46514 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726303AbgHWPFr (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Sun, 23 Aug 2020 11:05:47 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07NF5ZOb110681;
+        Sun, 23 Aug 2020 15:05:35 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=3GmE08Xdswk+yiT7OzFi03mX7mBD9zHLFLGFLVcTMnU=;
+ b=BGxnJu0HB0sx/pPIfYMxPZNgcwKB9A0Tki31bm8YWMfG4ENYhUJkhWfxKXn8p6A+2doO
+ fzIu2JSvYNRU1tUdfx9haL45Ooj/g+MURN0j97gjg5RYuFzuEbj69CJ8NinDeQmhO/GJ
+ rFC1socbJ4ZPkrRV+ekjjwD8ljUR+4XyRBMPSR6jihThd7WYtNHlAynoS7jFbPY17FS4
+ 2HsdOyb3BH8NwewexY+2iZHStG4ye55JlS+DRbJB+53ZiUlz8SDJfboQYjQhTo8P2G7+
+ sX/uPs7VKppl4M1jTURBfsEhXDHyl4hzR8T1rlVYfOPsqU+mjI8lFasf5jG+81lY0AWu Eg== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2120.oracle.com with ESMTP id 333cse18s9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Sun, 23 Aug 2020 15:05:35 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07NF00v5088638;
+        Sun, 23 Aug 2020 15:05:34 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3020.oracle.com with ESMTP id 333ru2exng-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sun, 23 Aug 2020 15:05:34 +0000
+Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 07NF5XOe028064;
+        Sun, 23 Aug 2020 15:05:33 GMT
+Received: from [192.168.1.102] (/39.109.231.106)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Sun, 23 Aug 2020 08:05:33 -0700
+Subject: Re: [PATCH RFC 2/2] btrfs: fix replace of seed device
+To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org
+Cc:     boris@bur.io
+References: <2c7ca821f53d71d6c1a4e1f1c969c1d8e686021a.1598012410.git.anand.jain@oracle.com>
+ <eb6040708e4f351ae668726862e3f112f64d8ab9.1598012410.git.anand.jain@oracle.com>
+ <56431875-619d-fb49-efb2-9fcd265a8a69@toxicpanda.com>
+From:   Anand Jain <anand.jain@oracle.com>
+Message-ID: <0f7add45-911f-825a-965e-7cd76bb3ee22@oracle.com>
+Date:   Sun, 23 Aug 2020 23:05:30 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.1.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="IvG0wEBZGbtNKO4IcMpQVs4t2Z0MiNzEc"
-X-Spam-Score: -1.20
+In-Reply-To: <56431875-619d-fb49-efb2-9fcd265a8a69@toxicpanda.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9722 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 phishscore=0
+ bulkscore=0 suspectscore=0 spamscore=0 mlxscore=0 adultscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008230168
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9722 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 phishscore=0 impostorscore=0
+ bulkscore=0 adultscore=0 spamscore=0 suspectscore=0 lowpriorityscore=0
+ mlxlogscore=999 clxscore=1011 priorityscore=1501 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2008230169
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
---IvG0wEBZGbtNKO4IcMpQVs4t2Z0MiNzEc
-Content-Type: multipart/mixed; boundary="VelYeNcALrT7Ecbh3KIuAilB7AddQAFlI";
- protected-headers="v1"
-From: Bill Dietrich <bill@billdietrich.me>
-To: linux-btrfs@vger.kernel.org
-Message-ID: <1de8d385-4f63-cf84-2a60-9519e55035bc@billdietrich.me>
-Subject: Minimum size of Btrfs volume ?
-
---VelYeNcALrT7Ecbh3KIuAilB7AddQAFlI
-Content-Type: multipart/mixed;
- boundary="------------3680D9592C4CC5A9011A0ECC"
-Content-Language: en-US
-
---------------3680D9592C4CC5A9011A0ECC
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-
-[Noob here, sorry if I'm doing anything wrong.]
-
-What is the minimum size of a simple single-disk Btrfs volume,
-and where is it documented ?=C2=A0 I can't find that info.
-
-I'm told the minimum size is about 109 MB (114294784 bytes).
-True ?=C2=A0 Is there any way to get around that, at mkfs-time ?
-I'd like to use Btrfs inside a VeraCrypt container, and that's
-a fairly big minimum size for that use.
-
-I'm using Btrfs on Ubuntu GNOME 20.04 desktop.
-
-Thanks,
-
-Bill Dietrich
-bill@billdietrich.me
 
 
+On 21/8/20 10:38 pm, Josef Bacik wrote:
+> On 8/21/20 9:15 AM, Anand Jain wrote:
+>> If you replace a seed device in a sprouted fs, it appears to have
+>> successfully replaced the seed device, but if you look closely, it 
+>> didn't.
+>>
+>> Here is an example.
+>>
+>> mkfs.btrfs -fq /dev/sda
+>> btrfstune -S1 /dev/sda
+>> mount /dev/sda /btrfs
+>> btrfs dev add /dev/sdb /btrfs
+>> umount /btrfs; btrfs dev scan --forget
+>> mount -o device=/dev/sda /dev/sdb /btrfs
+>> btrfs rep start -f /dev/sda /dev/sdc /btrfs; echo $?
+>> 0
+>>
+>>    BTRFS info (device sdb): dev_replace from /dev/sda (devid 1) to 
+>> /dev/sdc started
+>>    BTRFS info (device sdb): dev_replace from /dev/sda (devid 1) to 
+>> /dev/sdc finished
+>>
+>> btrfs fi show
+>> Label: none  uuid: ab2c88b7-be81-4a7e-9849-c3666e7f9f4f
+>>     Total devices 2 FS bytes used 256.00KiB
+>>     devid    1 size 3.00GiB used 520.00MiB path /dev/sdc
+>>     devid    2 size 3.00GiB used 896.00MiB path /dev/sdb
+>>
+>> Label: none  uuid: 10bd3202-0415-43af-96a8-d5409f310a7e
+>>     Total devices 1 FS bytes used 128.00KiB
+>>     devid    1 size 3.00GiB used 536.00MiB path /dev/sda
+>>
+>> So as per the replace start command and kernel log replace was 
+>> successful.
+>>
+>> Now let's try to clean mount.
+>>
+>> umount /btrfs;  btrfs dev scan --forget
+>>
+>> mount -o device=/dev/sdc /dev/sdb /btrfs
+>> mount: /btrfs: wrong fs type, bad option, bad superblock on /dev/sdb, 
+>> missing codepage or helper program, or other error.
+>>
+>> [  636.157517] BTRFS error (device sdc): failed to read chunk tree: -2
+>> [  636.180177] BTRFS error (device sdc): open_ctree failed
+>>
+>> That's because per dev items it is still looking for the original seed
+>> device.
+>>
+>> btrfs in dump-tree -d /dev/sdb
+>>
+>>     item 0 key (DEV_ITEMS DEV_ITEM 1) itemoff 16185 itemsize 98
+>>         devid 1 total_bytes 3221225472 bytes_used 545259520
+>>         io_align 4096 io_width 4096 sector_size 4096 type 0
+>>         generation 6 start_offset 0 dev_group 0
+>>         seek_speed 0 bandwidth 0
+>>         uuid 59368f50-9af2-4b17-91da-8a783cc418d4  <--- seed uuid
+>>         fsid 10bd3202-0415-43af-96a8-d5409f310a7e  <--- seed fsid
+>>     item 1 key (DEV_ITEMS DEV_ITEM 2) itemoff 16087 itemsize 98
+>>         devid 2 total_bytes 3221225472 bytes_used 939524096
+>>         io_align 4096 io_width 4096 sector_size 4096 type 0
+>>         generation 0 start_offset 0 dev_group 0
+>>         seek_speed 0 bandwidth 0
+>>         uuid 56a0a6bc-4630-4998-8daf-3c3030c4256a  <- sprout uuid
+>>         fsid ab2c88b7-be81-4a7e-9849-c3666e7f9f4f <- sprout fsid
+>>
+>> But the replaced target has the following uuid+fsid in its superblock
+>> which doesn't match with the expected uuid+fsid in its devitem.
+>>
+>> btrfs in dump-super /dev/sdc | egrep 
+>> '^generation|dev_item.uuid|dev_item.fsid|devid'
+>> generation    20
+>> dev_item.uuid    59368f50-9af2-4b17-91da-8a783cc418d4
+>> dev_item.fsid    ab2c88b7-be81-4a7e-9849-c3666e7f9f4f [match]
+>> dev_item.devid    1
+>>
+>> So if you provide the original seed device the mount shall be successful.
+>> Which so long happening in the test case btrfs/163.
+>>
+>> btrfs dev scan --forget
+>> mount -o device=/dev/sda /dev/sdb /btrfs
+>>
+>> Fix in this patch:
+>> Make it as you can't replace a seed device, you can only add a new device
+>> and then delete the seed device. If replace is attempted then returns 
+>> -EINVAL.
+>> As in the below changes.
+>>
+>> Another possible fix:
+>> If we want to keep the ability to replace for seed-device, then we could
+>> update the fsid of the replace-target blocks. And after replacement, you
+>> have seed device but with sprout fsid. But then I don't know what is the
+>> point and if there is any such use case.
+>>
+>> Signed-off-by: Anand Jain <anand.jain@oracle.com>
+>> ---
+> 
+> This is something Boris dug into until I told him to drop it.  I _think_ 
+> I'm ok with this, but really what I'd rather do is restripe the whole fs 
+> with the new UUID for this case.  Where did that redo the UUID work go? 
 
--- Email domain proudly hosted at https://migadu.com
+Redo the UUID part is not yet implemented. Perhaps restripe the whole
+fs- is another approach, both of these approaches have the same question
+unanswered what use case does the replace of seed device solve and would
+it be a redundant operation to device add and delete ops.
 
---------------3680D9592C4CC5A9011A0ECC
-Content-Type: application/pgp-keys;
- name="OpenPGP_0xF790D4D71624804B.asc"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: attachment;
- filename="OpenPGP_0xF790D4D71624804B.asc"
+Thanks, Anand
 
------BEGIN PGP PUBLIC KEY BLOCK-----
-
-xsDNBF8Yii8BDAC639t0VMAHf2YSJbOlWI37iE3T/AtYX7iyaxrPPRJ7Q4LU6j8DhNfStUJul=
-Zx5
-kqBFaqUPJVvFArWywpm6aM9/vuT64yZde1s0hJoODRSillj3bpd47HwyF0syR1sl+nmm74FR3=
-K1x
-MV6qFbv1M0yjMvLZHQbKfUtjFUOuSnBYWW4MLqhhV1Vj5goOM0Et9nHgrG+wSlnXcDFop2yKb=
-LvR
-ZJvJUGvIdWdU190PfLYTurxH3r6pAHRinKzZHaJBiipwcB/AEii70OHPXDNqrido9m1dLxHi0=
-aW7
-UnI7rAyfuTI4PbRbBuk9OE7ZDFqm/yXsnXCkfHkzBvYKUqiMWqaDVN6Qxc7AB7oPEzxkPWaUK=
-W/d
-Z5m0sSBp64LZJTHZ8fPxpkIwrjx8TOUHI5JTqPouIpBAzP2kB2GsSzcvTPpyGTwiPVuHZptY3=
-mFS
-gmNSqNBRg39norhT8aFyec8L2lvNb/PbA0X7MbQP2m+GgkkS0zcUl/gi8gZC/uvXKtJgqOcAE=
-QEA
-Ac0kQmlsbCBEaWV0cmljaCA8YmlsbEBiaWxsZGlldHJpY2gubWU+wsEJBBMBCAAzFiEEJaTUr=
-pB9
-dqxv81B595DU1xYkgEsFAl8YijACGwMFCwkIBwIGFQgJCgsCBRYCAwEAAAoJEPeQ1NcWJIBL+=
-7IM
-AKsnMlC1sp7wg0WVcVFcMjhJyYzbkN3y6fFlnANsIHpUROXWXMIfslMSYeXMRieT7EJhh/r9Y=
-Nwv
-+T52E/92DnmPdzHdsALZ+4GFwvX14Ai72/bZRJOYegHDcXsAXAXOp2cCProQmUnGi+i4UJT25=
-vsu
-0K5T/sQhh6KwsxF+bKW4abjl74qacq194o3Gx1eqUb98Xbkfma14R8OLxV5gxdhCYKpQsIgBO=
-VNz
-sGHk5JtAwXWAPb/bwgS0OgGSvDOELOOm84bsFrHBI4XNmZ7V93CqSvXzCxUyfihdeWOuI2NcZ=
-DOE
-q2C9YnFk0966puMT6yqo4JPcgn608McvaGV36r5vPspF+u1cEEcvikMbKd+6DwUKZGCsLxvK3=
-PJj
-JHsByt8mGlib+7sn64Nue4gKWGf70g7IIKGRWQhdeWjLXHfaPFUF5TxWKgRAWM2tmSjyaC0EV=
-UFM
-q5Jpp7vH0zql80YpIogHj2ihNp7h6urs5y8I9yfOmml2UCmYGbUg6HmDpc7AzQRfGIoxAQwAn=
-9Ek
-w/rbE2qz1rsYPDRJ6+gycKYe8kDRI02UI/boh9SA+A9W0YJr38/n7dPDtYs4H1SYQPWUm2MOV=
-mIt
-koE75bYqxCBTSa2iE1fbBFqT1vKChK5xzD+Fs4Zhmi+ZlpPD0aDOrv9JnllQNRIJUNtBM3jsC=
-KS+
-LaguTahsn1HGjbOE0WA/vSywCtiQwaP/mq6g7tBVxn4IOdbxKHDuXSIyongSXT00z3NHqlgS1=
-yPz
-LPwRVX3V9O6lI6DA88pZG+yv1sONpxS/c7iHQDoQ+19s1WImp/J/wfiuvyLaeq+hAyktBaKEI=
-c9F
-gF+elD3QEYmEJHXCbMg6OdPrUZWFGZY8ZidI92U1D7xs5fSNb23N6NdDL5ayy+Pl9ho+eljBF=
-fAd
-bh5uLnWXcvzJQS2ftI6vVOIrHjteLc2VLF+BvXVBjGazH5vc+vu5W2cloihyUGKl9z3KRehtv=
-4NQ
-u2+/jTZFDNsN0F5R6PyS2yPBYlWuuFb6GZRxKSn30Jw7jQkTfiwRABEBAAHCwPYEGAEIACAWI=
-QQl
-pNSukH12rG/zUHn3kNTXFiSASwUCXxiKMwIbDAAKCRD3kNTXFiSAS36FC/4yparVyGwyW8Gji=
-B+z
-FrZ1mQY/LRn8m5+EH03WCp4Ajy4Pde2qgEiWus1/beQcLi/SD7Ro2tQyJYv4mJfuhroxCYSZc=
-VBx
-t12rIKdJLLd47ZQnyJdemQI+Dnk0NIM/6xT7OYpJ3X6nLTT9VHrcqdlnSVt6Nsy/F9ehk4PNq=
-u7e
-5Exe9F1Q176eUT/mrC/Y4m6qnV0X8y8m+QavFA7qnrdByhbLmyuExPbtV2B46h4qZsLucHQu3=
-L14
-24KSC7UVJA2Xo0CF/a7z6ggyyAns7tMk8/1e5ambr/uYz09uU/7u9W8OwQP22bHJqd3Cytb4T=
-1Ev
-FN3S2AnfIslAJ/KGInLpyKMKaLWd5x4HgOZ0SiCwl86X41QEisAbp5yY7gOsxSXKiuh24LxXG=
-gXO
-/k7hH7eEE8dvj9QvSLEDN35/Ju6+j8PjSajgaNJOiDcql6ByrBiUUiKPATQdaLQjYwxxt4WXs=
-tt/
-B/fXmhXUFNo0gfwVQYJAAIf0YzSgk+ywHGgZ8Ns=3D
-=3DQ3fd
------END PGP PUBLIC KEY BLOCK-----
-
---------------3680D9592C4CC5A9011A0ECC--
-
---IvG0wEBZGbtNKO4IcMpQVs4t2Z0MiNzEc
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsD5BAABCAAjFqEEJaTUrpB9dqxv81B595DU1xYkgEsFAl9CbnoFAwAAAAAACgkQ95DU1xYkgEsL
-Hwv/T78yXHLqUH499OIXmg3L95+cKMtyXUM4uHIEAcCAv6etOn0Kkz2b+BdzqAmHMUdlZ6kKTMGl
-H1JnCzS0Ks0Lu/nd9+ETQPksJFtAEGNCRpFPKm5rL7BTP/0QKFjKSu3HiSiiHR+w7JuO9qHNWHUW
-9my0xx2fRPSC31hjmyOGVYeM08GgCeMWloLDbf2xsEwHkezTyDXPmaJ1WTRAKvXqiSF5d1s+/gAT
-noX1mSc7Z9LOn1fBkMvvgRoccV5zu0gPoJJI8xB8v0KTOHX+lHCsoLoCDGTJOuxShD7p9djcdQme
-gogRbSgQP7ql6AEF+jcqybKrqt6x2s3+W5o6D2tEN6l6/I5EggNsGBtwezQmqlWR4uR1LFwYDyrr
-BD9hl2juU/vq8ORiteGhaL74v+KXyfpwC7G0ZmmOaXSszMN8lUW6+rq6pMsO6j40VgR0aW0Z893A
-r2eV38M5twX6XJguhwmGjnM4EXL87CUy0xIxsEyvXzMDolQeHLAe8nRT5jh/
-=D5GB
------END PGP SIGNATURE-----
-
---VelYeNcALrT7Ecbh3KIuAilB7AddQAFlI--
-
---IvG0wEBZGbtNKO4IcMpQVs4t2Z0MiNzEc--
+> Thanks,
+> 
+> Josef
