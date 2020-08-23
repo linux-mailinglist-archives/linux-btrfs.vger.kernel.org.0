@@ -2,133 +2,121 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AFFF24EDEE
-	for <lists+linux-btrfs@lfdr.de>; Sun, 23 Aug 2020 17:37:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 936C824EEC8
+	for <lists+linux-btrfs@lfdr.de>; Sun, 23 Aug 2020 18:21:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726935AbgHWPhp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 23 Aug 2020 11:37:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47068 "EHLO
+        id S1726391AbgHWQVo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 23 Aug 2020 12:21:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726581AbgHWPhp (ORCPT
+        with ESMTP id S1726057AbgHWQVl (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 23 Aug 2020 11:37:45 -0400
-Received: from savella.carfax.org.uk (2001-ba8-1f1-f0e6-0-0-0-2.autov6rev.bitfolk.space [IPv6:2001:ba8:1f1:f0e6::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE16FC061573
-        for <linux-btrfs@vger.kernel.org>; Sun, 23 Aug 2020 08:37:44 -0700 (PDT)
-Received: from hrm by savella.carfax.org.uk with local (Exim 4.92)
-        (envelope-from <hrm@savella.carfax.org.uk>)
-        id 1k9s42-0004yg-8W; Sun, 23 Aug 2020 16:37:46 +0100
-Date:   Sun, 23 Aug 2020 16:37:46 +0100
-From:   Hugo Mills <hugo@carfax.org.uk>
-To:     Andrii Zymohliad <azymohliad@protonmail.com>
-Cc:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+        Sun, 23 Aug 2020 12:21:41 -0400
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55F65C061573
+        for <linux-btrfs@vger.kernel.org>; Sun, 23 Aug 2020 09:21:41 -0700 (PDT)
+Received: by mail-lj1-x22b.google.com with SMTP id h19so6929783ljg.13
+        for <linux-btrfs@vger.kernel.org>; Sun, 23 Aug 2020 09:21:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:references:from:autocrypt:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=d6HPwK+kdP2huEO68UEngAut/4eZMZux8noMldUaDLo=;
+        b=I6HdatdpYprN5EPBjLT37k2YgcFWqhyEOnR4qnHU7y8rnienvxsaUdBtNGSEKRl+xk
+         j4HYVzKrNaxh2E1Ea/Wie+pCaKTl9j/uUkUxdo177kABaJYac5o16Q1CV/o0Ito08MY5
+         L5PzMMyMO+3thnVSpwHXwHeFL7mcWpwZsQbf1XBHNF8yAnb22EDd8U0Fy4nu2+XcGky0
+         yTZeETOkc7dgbYP6C4qkVTSRDsoE2pfy6TCxx3pSB5zgsoxrRiEMsz0PKAzNYRQLSnDj
+         JvhSuL3j3Cts/K51NX+VRYknRWIXiF1dIvo2eDRebhlFUdX142mvdxYN8to/32FAWw7R
+         q3Hg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:autocrypt:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=d6HPwK+kdP2huEO68UEngAut/4eZMZux8noMldUaDLo=;
+        b=bQ33Yze2WMw6DMiiqtXBg2OXp83D+QvBi/fQ5SGP+S5KA6tR5PGnw2R8mBbLEQVBVN
+         r1H1KO9Dyo6G5BqSMvMZK38FF9gys7789J11sUOq6EpRSr3XyePh9fjO7vCSR7yuNqss
+         6NWCB+XLt5MNNA+a6gAMrM/4ktXMmoMWb6qCunqevH3mBcTcd2bAnK2XMAjisd5XekhT
+         S7j5zyrJ9TJCIcZe/qXERkbCOyVHGJkMez1jKwnypK+28jgXtWv4ox7WMifyHHzVUU6S
+         VTOD5HC3pjUhzCu/NKrL+XplsBHrRYwjvwoTImxp8j93GpR48svyejyNLUg2ORnkxDy7
+         F23w==
+X-Gm-Message-State: AOAM532t9HLeuPrDbCjMdVtUk76FRUIhwfJNT5oBKP6ymUXO0rSu0x2X
+        zkVecoOMMmmpmLNqVjMALdsFmRwfoOU=
+X-Google-Smtp-Source: ABdhPJyu1elMdEa2jGB1Jq/ombt/RCeLAEBLDmJFCkDVuJbsmGU/nIzy6MkuwlRpO9o7oT3L2TduAA==
+X-Received: by 2002:a2e:a49c:: with SMTP id h28mr883203lji.234.1598199699234;
+        Sun, 23 Aug 2020 09:21:39 -0700 (PDT)
+Received: from ?IPv6:2a00:1370:812d:93a3:28ae:5b31:d89a:107? ([2a00:1370:812d:93a3:28ae:5b31:d89a:107])
+        by smtp.gmail.com with ESMTPSA id x14sm1682069ljd.1.2020.08.23.09.21.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 23 Aug 2020 09:21:38 -0700 (PDT)
 Subject: Re: [Help] Can't login to my systemd-homed user account due to
  fallocate failure
-Message-ID: <20200823153746.GB1093@savella.carfax.org.uk>
-Mail-Followup-To: Hugo Mills <hugo@carfax.org.uk>,
+To:     Hugo Mills <hugo@carfax.org.uk>,
         Andrii Zymohliad <azymohliad@protonmail.com>,
         "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
 References: <bdJVxLiFr_PyQSXRUbZJfFW_jAjsGgoMetqPHJMbg-hdy54Xt_ZHhRetmnJ6cJ99eBlcX76wy-AvWwV715c3YndkxneSlod11P1hlaADx0s=@protonmail.com>
+ <20200823153746.GB1093@savella.carfax.org.uk>
+From:   Andrei Borzenkov <arvidjaar@gmail.com>
+Autocrypt: addr=arvidjaar@gmail.com; prefer-encrypt=mutual; keydata=
+ LS0tLS1CRUdJTiBQR1AgUFVCTElDIEtFWSBCTE9DSy0tLS0tCgptUUdpQkR4aVJ3d1JCQUMz
+ Q045d2R3cFZFcVVHbVNvcUY4dFdWSVQ0UC9iTENTWkxraW5TWjJkcnNibEtwZEc3CngrZ3V4
+ d3RzK0xnSThxamYvcTVMYWgxVHdPcXpEdmpIWUoxd2JCYXV4WjAzbkR6U0xVaEQ0TXMxSXNx
+ bEl3eVQKTHVtUXM0dmNRZHZMeGpGc0c3MGFEZ2xnVVNCb2d0YUlFc2lZWlhsNFgwajNMOWZW
+ c3R1ejQvd1h0d0NnMWNOLwp5di9lQkMwdGtjTTFuc0pYUXJDNUF5OEQvMWFBNXFQdGljTEJw
+ bUVCeHFrZjBFTUh1enlyRmxxVncxdFVqWitFCnAyTE1sZW04bWFsUHZmZFpLRVo3MVcxYS9Y
+ YlJuOEZFU09wMHRVYTVHd2RvRFhnRXAxQ0pVbitXTHVyUjBLUEQKZjAxRTRqL1BISEFvQUJn
+ cnFjT1RjSVZvTnB2MmdOaUJ5U1ZzTkd6RlhUZVkvWWQ2dlFjbGtxakJZT05HTjNyOQpSOGJX
+ QS8wWTFqNFhLNjFxam93UmszSXk4c0JnZ00zUG1tTlJVSllncm9lcnBjQXIyYnl6NndUc2Iz
+ VTdPelVaCjFMbGdpc2s1UXVtMFJONzdtM0kzN0ZYbEloQ21TRVk3S1pWekdOVzNibHVnTEhj
+ ZncvSHVDQjdSMXc1cWlMV0sKSzZlQ1FITCtCWndpVThoWDNkdFRxOWQ3V2hSVzVuc1ZQRWFQ
+ cXVkUWZNU2kvVXgxa2JRbVFXNWtjbVY1SUVKdgpjbnBsYm10dmRpQThZWEoyYVdScVlXRnlR
+ R2R0WVdsc0xtTnZiVDZJWUFRVEVRSUFJQVVDU1hzNk5RSWJBd1lMCkNRZ0hBd0lFRlFJSUF3
+ UVdBZ01CQWg0QkFoZUFBQW9KRUVlaXpMcmFYZmVNTE9ZQW5qNG92cGthK21YTnpJbWUKWUNk
+ NUxxVzV0bzhGQUo0dlA0SVcrSWM3ZVlYeENMTTcvem05WU1VVmJyUW5RVzVrY21WNUlFSnZj
+ bnBsYm10dgpkaUE4WVhKMmFXUnFZV0Z5UUc1bGQyMWhhV3d1Y25VK2lGNEVFeEVDQUI0RkFr
+ SXR5WkFDR3dNR0N3a0lCd01DCkF4VUNBd01XQWdFQ0hnRUNGNEFBQ2drUVI2TE11dHBkOTR4
+ ajhnQ2VJbThlK2U0cXhETWpRRXhGYlVMNXdNaWkKWUQwQW9LbUlCUzVIRW9wL1R5UUpkTmc2
+ U3Z6VmlQRGR0Q1JCYm1SeVpYa2dRbTl5ZW1WdWEyOTJJRHhoY25acApaR3BoWVhKQWJXRnBi
+ QzV5ZFQ2SVhBUVRFUUlBSEFVQ1Bxems4QUliQXdRTEJ3TUNBeFVDQXdNV0FnRUNIZ0VDCkY0
+ QUFDZ2tRUjZMTXV0cGQ5NHlEdFFDZ2k5NHJoQXdTMXFqK2ZhampiRE02QmlTN0Irc0FvSi9S
+ RG1hN0tyQTEKbkllc2JuS29MY1FMYkpZbHRDUkJibVJ5WldvZ1FtOXljMlZ1YTI5M0lEeGhj
+ blpwWkdwaFlYSkFiV0ZwYkM1eQpkVDZJVndRVEVRSUFGd1VDUEdKSERRVUxCd29EQkFNVkF3
+ SURGZ0lCQWhlQUFBb0pFRWVpekxyYVhmZU1pcFlBCm9MblllRUJmOGNvV2lud3hUZThEVjBS
+ T2J4N1NBS0RFamwzdFFxZEY3MGFQd0lPMmgvM0ZqczJjZnJRbVFXNWsKY21WcElFSnZjbnBs
+ Ym10dmRpQThZWEoyYVdScVlXRnlRR2R0WVdsc0xtTnZiVDZJWlFRVEVRSUFKUUliQXdZTApD
+ UWdIQXdJR0ZRZ0NDUW9MQkJZQ0F3RUNIZ0VDRjRBRkFsaVdBaVFDR1FFQUNna1FSNkxNdXRw
+ ZDk0d0ZHd0NlCk51UW5NRHh2ZS9GbzNFdllJa0FPbit6RTIxY0FuUkNRVFhkMWhUZ2NSSGZw
+ QXJFZC9SY2I1K1NjdVFFTkJEeGkKUnlRUUJBQ1F0TUUzM1VIZkZPQ0FwTGtpNGtMRnJJdzE1
+ QTVhc3VhMTBqbTVJdCtoeHpJOWpEUjkvYk5FS0RUSwpTY2lIbk03YVJVZ2dMd1R0KzZDWGtN
+ eThhbit0VnFHTC9NdkRjNC9SS0tsWnhqMzl4UDd3VlhkdDh5MWNpWTRaCnFxWmYzdG1tU045
+ RGxMY1pKSU9UODJEYUpadXZyN1VKN3JMekJGYkFVaDR5UkthTm53QURCd1FBak52TXIvS0IK
+ Y0dzVi9VdnhaU20vbWRwdlVQdGN3OXFtYnhDcnFGUW9CNlRtb1o3RjZ3cC9yTDNUa1E1VUVs
+ UFJnc0cxMitEawo5R2dSaG5ueFRIQ0ZnTjFxVGlaTlg0WUlGcE5yZDBhdTNXL1hrbzc5TDBj
+ NC80OXRlbjVPckZJL3BzeDUzZmhZCnZMWWZrSm5jNjJoOGhpTmVNNmtxWWEveDBCRWRkdTky
+ Wkc2SVJnUVlFUUlBQmdVQ1BHSkhKQUFLQ1JCSG9zeTYKMmwzM2pNaGRBSjQ4UDdXRHZLTFFR
+ NU1Lbm4yRC9USTMzN3VBL2dDZ241bW52bTRTQmN0YmhhU0JnY2tSbWdTeApmd1E9Cj1nWDEr
+ Ci0tLS0tRU5EIFBHUCBQVUJMSUMgS0VZIEJMT0NLLS0tLS0K
+Message-ID: <251eb1e3-0fcd-eb22-72b9-8ab2f2a5e962@gmail.com>
+Date:   Sun, 23 Aug 2020 19:21:36 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <bdJVxLiFr_PyQSXRUbZJfFW_jAjsGgoMetqPHJMbg-hdy54Xt_ZHhRetmnJ6cJ99eBlcX76wy-AvWwV715c3YndkxneSlod11P1hlaADx0s=@protonmail.com>
-X-GPG-Fingerprint: DD84 D558 9D81 DDEE 930D  2054 585E 1475 E2AB 1DE4
-X-GPG-Key: E2AB1DE4
-X-Parrot: It is no more. It has joined the choir invisible.
-X-IRC-Nicks: darksatanic darkersatanic darkling darkthing
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200823153746.GB1093@savella.carfax.org.uk>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sun, Aug 23, 2020 at 03:31:47PM +0000, Andrii Zymohliad wrote:
-> Hello! I've lost the ability to log in to my systemd-homed user account, and after some investigation on Systemd mailing list I was directed here. I would be very grateful for any help!
+23.08.2020 18:37, Hugo Mills пишет:
+>    The /mnt filesystem (LABEL=azymohliad) looks OK. Are you seeing
+> problems with that one at all?
 > 
-> My root partition is ~475GiB with BTRFS, my home partition is a ~400GiB LUKS-encrypted partition on a loopback file (also BTRFS) created by systemd-homed (residing at /home/azymohliad.home). Which leaves ~75GiB for the rest of the root FS.
-> 
-> Recently I've lost the ability to log in to that user account, because during authentication systemd does fallocate call for the image. CLI alternative for my case (suggested on systemd mailing list, I don't really know what is it) is:
-> 
->     fallocate -l 403G -n /home/azymohliad.home
-> 
-> Which fails:
-> 
->     fallocate: fallocate failed: No space left on device
-> 
-> My first idea was that I occupied all those ~75GiB on a root partition, but cleaning didn't help (I definitely released more space than I could occupy during the last working session).
-> 
-> Here are some details about my system:
-> 
-> uname -a
-> 
->     Linux az-wolf-pc 5.8.3-arch1-1 #1 SMP PREEMPT Fri, 21 Aug 2020 16:54:16 +0000 x86_64 GNU/Linux
-> 
-> btrfs --version
-> 
->     btrfs-progs v5.7
-> 
-> 
-> I can mount my home manually like this:
-> 
->     losetup -fP /home/azymohliad.home
->     cryptsetup open /dev/loop0p1
->     mount /dev/mapper/home /mnt
-> 
-> and then,
-> 
-> btrfs fi show
-> 
->     Label: none  uuid: b68411ce-702a-4259-9121-ac21c9119ddf
->     	Total devices 1 FS bytes used 299.71GiB
->     	devid    1 size 476.44GiB used 476.44GiB path /dev/nvme0n1p2
-> 
->     Label: 'azymohliad'  uuid: 4ffae38b-42c9-4e53-89a1-3d21cd862938
->     	Total devices 1 FS bytes used 221.92GiB
->     	devid    1 size 402.72GiB used 258.02GiB path /dev/mapper/home
-> 
-> 
-> btrfs fi df /
-> 
->     Data, single: total=475.43GiB, used=299.28GiB
->     System, single: total=4.00MiB, used=80.00KiB
->     Metadata, single: total=1.01GiB, used=437.05MiB
->     GlobalReserve, single: total=61.03MiB, used=0.00B
-> 
-> 
-> btrfs fi df /mnt
-> 
->     Data, single: total=256.01GiB, used=221.18GiB
->     System, single: total=4.00MiB, used=48.00KiB
->     Metadata, single: total=2.01GiB, used=749.92MiB
->     GlobalReserve, single: total=297.11MiB, used=0.00B
-> 
-> dmesg.log: https://gitlab.com/-/snippets/2007155
 
-   The / filesystem is a clear case of needing a data balance. See
-this link for what to do:
 
-https://btrfs.wiki.kernel.org/index.php/FAQ#if_your_device_is_large_.28.3E16GiB.29
+It's not about LUKS container. systemd tool attempts to reserve full
+size of image with LUKS inside using fallocate which fails. It never
+gets as far as actually unlocking it or mounting filesystem inside.
 
-and see also this link for how to read the data you've pasted here:
-
-https://btrfs.wiki.kernel.org/index.php/FAQ#or_My_filesystem_is_full.2C_and_I.27ve_put_almost_nothing_into_it.21
-
-> What's interesting to me from above, the partition size on /home/azymohliad.home is 402.72GiB, but the file system size is 256.01GiB, and the image file size is 256.64GiB (from btrfs fi du /home, although ls -lh reports 403GiB). I'm not really sure, but iirc the fs and image sizes were around 403GiB too earlier. Could it be that it somehow got automatically reduced?
-> 
-> Could I do anything to make that fallocate call (with -l 403G) working? It will allow me to authenticate to homectl and resize the home partition from there.
-> 
-> If not, what is the safe way to shrink that LUKS-partition size? Maybe then systemd-homed would do fallocate for less space and it would work.
-> 
-> If from my assumptions you could tell that I'm looking in the wrong direction, please give me a hint. Thanks for taking time to read it!
-
-   The /mnt filesystem (LABEL=azymohliad) looks OK. Are you seeing
-problems with that one at all?
-
-   Hugo.
-
--- 
-Hugo Mills             | Sometimes, when I'm alone, I Google myself.
-hugo@... carfax.org.uk |
-http://carfax.org.uk/  |
-PGP: E2AB1DE4          |
