@@ -2,55 +2,55 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E774250933
-	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Aug 2020 21:23:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAAF2250937
+	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Aug 2020 21:26:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726635AbgHXTXl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 24 Aug 2020 15:23:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51670 "EHLO
+        id S1726413AbgHXT0L (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 24 Aug 2020 15:26:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726617AbgHXTXd (ORCPT
+        with ESMTP id S1725976AbgHXT0J (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 24 Aug 2020 15:23:33 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09B2AC061575
-        for <linux-btrfs@vger.kernel.org>; Mon, 24 Aug 2020 12:23:32 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id 144so8578548qkl.5
-        for <linux-btrfs@vger.kernel.org>; Mon, 24 Aug 2020 12:23:32 -0700 (PDT)
+        Mon, 24 Aug 2020 15:26:09 -0400
+Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3AF7C061573
+        for <linux-btrfs@vger.kernel.org>; Mon, 24 Aug 2020 12:26:08 -0700 (PDT)
+Received: by mail-qv1-xf43.google.com with SMTP id x6so4339351qvr.8
+        for <linux-btrfs@vger.kernel.org>; Mon, 24 Aug 2020 12:26:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=VY8icQ/PEHeeVHFUx8sscyHaZUX7ephlQwZof8ngJKI=;
-        b=rI9ZjW/b7AGEc5bqkJ9ZmPOdmUnyxtTG9TJ9EJDL0aoE8MU3nnygkHNkIzRqgncbEV
-         LzjcHCAHh9KPLTfpk1YPKtdnE2gYK/iSw5qAtcUBNtn+NrQ3RJ8GjJRxtrrgN4zcVXeJ
-         2gz3sw3xTxlMbDmu57JSRkLAukLRXhT9+sGyTvNRZK9+oAldM5ThLMZ8RZXNltIZytdh
-         bNW0guDDEqrpMVCr0j1xie78aXH7QkKqSg78M0I+bRx5zy3B6IcaBkVLZVHre87DC6bR
-         WW9TKtpY1kxR87wxV8XnUo7iVmaswEmdVf+ItBzzLXt3lBcbnzRgHJvnY+6gwYR0EL2j
-         frRg==
+        bh=FGxrUP/46z6gtCVukhkzhLpnc2XBY9sWwEBOg2M+TJo=;
+        b=WB7Av64z+q/mkhbCDInXJU1JL2a34/ThOai0eJwSncYCW+Ls8MfJQsEDXGT0F0xtM8
+         bSMntBSXTWdESBuqEXqQx8aBJVlc2wWJoZMSM7nvR1nzgWeOGj8Y9M0A7Dz4QHcXnTSr
+         MKByeAM7ELOf+ljy2sRZJvp7nA2ltfFuJ6mNo07gNdeY4O9rx8O5MzZA565vTnCQEIwu
+         0HJvLS+k5PudOdGHGxUH7b8K/MG1xbXsUM803oT4hGP+SLWuw/N8xE8WHWKTI4WLSEWR
+         NQjDS0YfhEp/hKs6WCiziRXUlJqSpT0FJi8YmNo2a3gHE4xlfAruVYBCcjCtzmM9Skqk
+         kA3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=VY8icQ/PEHeeVHFUx8sscyHaZUX7ephlQwZof8ngJKI=;
-        b=IUScsZQOF0TzLI1VTrFhfgnEDyIfFplXNBUdReVHtr33/9LiJJJ9Au9xoF2LlNWhXy
-         Fb0oSmVpqlXK3GyNonDIDHWWnY1Dy7m4eS6LsKo90irSQ3w7DEuKIgtj3WfgqrVtdU78
-         za2JtkA8RTyuMUjnLosbQDgRczeU8LIJMWNkxfziaoDxfLKVzyfgHyKT4uNxOkO8aDjm
-         rIbd0BihS7KER2xNDNxvbV+Z4x7LC/lDWZEk+k8N2wAobTVI6b8T5D6O1WKc28Yv8DXh
-         zx4jQu4auX0kBvpvui5Bk50uRyKdbcQ/9sHMqVaO7FLwhTJL66iSYH16YsW8IcSIR3BA
-         x2Rw==
-X-Gm-Message-State: AOAM5304HwTlygs2ilVE1ebvf4O9HibkjW3ENigGp7e9R3BS9A6IshBJ
-        kexT3aJRinZvNW9vIJZJDKan4g==
-X-Google-Smtp-Source: ABdhPJw2tcITtQVNYTlOFW+NJfGITi55RnDhTWDgOriQTyXSpBz+Gg+QSmQaYNgBvlS7heoQz9wzcQ==
-X-Received: by 2002:a37:4e4d:: with SMTP id c74mr6012905qkb.311.1598297011691;
-        Mon, 24 Aug 2020 12:23:31 -0700 (PDT)
+        bh=FGxrUP/46z6gtCVukhkzhLpnc2XBY9sWwEBOg2M+TJo=;
+        b=NmySAVZuZho3EG1LyyVkiSrU3bPJ/3p8aReRfrbhASH2zfy++JysAArwvMNhF5L6O8
+         4IYyqn8oG4P2fCwBaki468XN0k+J6QsRRdiC3Yb+6UZO5ajrK8EZc+af96aKFEJrYBKl
+         0bGmrzOGsxZ+3xwBpqt9Wem+OdGkTzCaBjeMEeR8xEkkxY4SEtdehq8KDR1y9QUthjgw
+         4k2mMMWQiu5fx2NDlCZelQGrVNRxTyqkO3DYOsEt5L4ofgCn49R5FxTeAe+S1032VApJ
+         5RCSXb6Y7ez3spJWM79Mjz6IzyIPn3H9qWX9ISJbfXYsd93a1eLzYkKPINZIzXaOz5vJ
+         qJLg==
+X-Gm-Message-State: AOAM531H8djKZvCHWp7Ms/faEekq7eNe0aUr4wUEU4tVHhRW6xpYlF9m
+        MttOyktcUU1lp6DISkhWTfc+ZQ==
+X-Google-Smtp-Source: ABdhPJy7zuuIAszMep8G+1EjFAi81oKO2fcArHlpwjxgxVXH9GJZmXJRBzi1/OdCQHp/NwOyYgDPUA==
+X-Received: by 2002:ad4:470f:: with SMTP id k15mr6315491qvz.216.1598297168190;
+        Mon, 24 Aug 2020 12:26:08 -0700 (PDT)
 Received: from [192.168.1.45] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id w17sm7206175qki.65.2020.08.24.12.23.29
+        by smtp.gmail.com with ESMTPSA id q9sm3417596qkq.82.2020.08.24.12.26.06
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 24 Aug 2020 12:23:31 -0700 (PDT)
-Subject: Re: [PATCH v5 5/9] btrfs: add ram_bytes and offset to
- btrfs_ordered_extent
+        Mon, 24 Aug 2020 12:26:07 -0700 (PDT)
+Subject: Re: [PATCH v5 6/9] btrfs: support different disk extent size for
+ delalloc
 To:     Omar Sandoval <osandov@osandov.com>, linux-fsdevel@vger.kernel.org,
         linux-btrfs@vger.kernel.org, Al Viro <viro@zeniv.linux.org.uk>,
         Christoph Hellwig <hch@infradead.org>
@@ -59,14 +59,14 @@ Cc:     Dave Chinner <david@fromorbit.com>, Jann Horn <jannh@google.com>,
         Aleksa Sarai <cyphar@cyphar.com>, linux-api@vger.kernel.org,
         kernel-team@fb.com
 References: <cover.1597993855.git.osandov@osandov.com>
- <0a38de964b7f623b3cf25c334373cb10cab95b2d.1597993855.git.osandov@osandov.com>
+ <61dd1001b124fc1b09e43e27b804c5f8d597640a.1597993855.git.osandov@osandov.com>
 From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <1b757e84-f700-e112-bb8c-d6e61bae1f6e@toxicpanda.com>
-Date:   Mon, 24 Aug 2020 15:23:28 -0400
+Message-ID: <e863983c-bc5d-0546-8efc-10404cc48432@toxicpanda.com>
+Date:   Mon, 24 Aug 2020 15:26:06 -0400
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
  Gecko/20100101 Thunderbird/68.11.0
 MIME-Version: 1.0
-In-Reply-To: <0a38de964b7f623b3cf25c334373cb10cab95b2d.1597993855.git.osandov@osandov.com>
+In-Reply-To: <61dd1001b124fc1b09e43e27b804c5f8d597640a.1597993855.git.osandov@osandov.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -78,14 +78,13 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 On 8/21/20 3:38 AM, Omar Sandoval wrote:
 > From: Omar Sandoval <osandov@fb.com>
 > 
-> Currently, we only create ordered extents when ram_bytes == num_bytes
-> and offset == 0. However, RWF_ENCODED writes may create extents which
-> only refer to a subset of the full unencoded extent, so we need to plumb
-> these fields through the ordered extent infrastructure and pass them
-> down to insert_reserved_file_extent().
-> 
-> Since we're changing the btrfs_add_ordered_extent* signature, let's get
-> rid of the trivial wrappers and add a kernel-doc.
+> Currently, we always reserve the same extent size in the file and extent
+> size on disk for delalloc because the former is the worst case for the
+> latter. For RWF_ENCODED writes, we know the exact size of the extent on
+> disk, which may be less than or greater than (for bookends) the size in
+> the file. Add a disk_num_bytes parameter to
+> btrfs_delalloc_reserve_metadata() so that we can reserve the correct
+> amount of csum bytes. No functional change.
 > 
 > Reviewed-by: Nikolay Borisov <nborisov@suse.com>
 > Signed-off-by: Omar Sandoval <osandov@fb.com>
