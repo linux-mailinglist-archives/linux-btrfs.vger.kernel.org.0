@@ -2,130 +2,71 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF377250B80
-	for <lists+linux-btrfs@lfdr.de>; Tue, 25 Aug 2020 00:16:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EBF9250B95
+	for <lists+linux-btrfs@lfdr.de>; Tue, 25 Aug 2020 00:23:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727913AbgHXWQy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 24 Aug 2020 18:16:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50418 "EHLO
+        id S1726541AbgHXWXM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 24 Aug 2020 18:23:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726519AbgHXWQy (ORCPT
+        with ESMTP id S1726303AbgHXWXM (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 24 Aug 2020 18:16:54 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16BF5C061755
-        for <linux-btrfs@vger.kernel.org>; Mon, 24 Aug 2020 15:16:53 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id o5so5356545pgb.2
-        for <linux-btrfs@vger.kernel.org>; Mon, 24 Aug 2020 15:16:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=osandov-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=UcuFvZ0Lz8UDFsHCkGBrM5jwXzhDur86Ee/aJP8Lva4=;
-        b=cS+B437Ph86aIYmF7XbSd14xQha2uzLvVlcQk3IeammTOY2NfZTkwMv9v9IvAE2+m4
-         Ao4ItpoPFsT6ls1uSXt4Iwbl81QWxqdJcrs62vFZgZX6aj1xFkTUOqmP5VgKTpY9myen
-         CcaC2vrKTNs0KbIyGiDVhH7YvFqM6ThIq/rIPS7AuI1jnbYJJBU1CmF6lLf4hh7oL9Ge
-         tZut4ZSMLHnCRwWFWbBfeH2oc5R0BDQKWPC9hFMMKo8e5kdhOKvTxOTKNVNmVAhhuj8U
-         fSJcC5DDsjZQ5RZcLjXubDhRDZhombRCbLGVKZqYXb6ROQCdBz00G4pEbkN0AZqtZlhY
-         kF7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=UcuFvZ0Lz8UDFsHCkGBrM5jwXzhDur86Ee/aJP8Lva4=;
-        b=b5QD32R+dzM7JM9aTN1AwswFM/72Ja8ZKhx4siolR3ZNBcRRGWOVokkH1r+mUATWUC
-         XxRy8FycRfRrnlxzl1A+dtyLjVgHE3cSdnBWYWkU7pmtocLnOUrVd4fl28BNgoSzCZJN
-         5aP/3mMt0e0dQAepWGR1Qk0xsf9u3aw6tJ/tw74RCxfdX6UcYe7YYlznash6sgJtT1HM
-         Uyn9jpIUhFAwOswvGqnLthuKnGcqItUF8S0fOpk42bTHy4rOLn+o/7wHaFc2Nc8JgViD
-         m6rH0D9KSYYioR5KcHxP2zZf/65HGLD/6tMqQan7GbaYlDo/Z6TyBwc60U58lMJFuYuX
-         URGw==
-X-Gm-Message-State: AOAM531DmjEyTaXJ5zB2O4wmaHQl/OmOKkH6Qe+ISgNC5AxqMxm19GwS
-        jffkl6ZqE1Sjo0a2XrxDj6gHGg==
-X-Google-Smtp-Source: ABdhPJx8lyy+LfK/2cr7uek+H12/kTNo1mzKjDV+D8SvUdwnoMs5fkNL5UTr2BwV0eHfXpCJwzNkgw==
-X-Received: by 2002:a63:c04c:: with SMTP id z12mr4907014pgi.220.1598307410438;
-        Mon, 24 Aug 2020 15:16:50 -0700 (PDT)
-Received: from exodia.localdomain ([2601:602:8b80:8e0::c6ee])
-        by smtp.gmail.com with ESMTPSA id t10sm965893pfq.52.2020.08.24.15.16.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 Aug 2020 15:16:48 -0700 (PDT)
-Date:   Mon, 24 Aug 2020 15:16:39 -0700
-From:   Omar Sandoval <osandov@osandov.com>
-To:     dsterba@suse.cz, linux-btrfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH 0/9] btrfs: implement send/receive of compressed extents
- without decompressing
-Message-ID: <20200824221639.GF197795@exodia.localdomain>
-References: <cover.1597994106.git.osandov@osandov.com>
- <20200824195754.GQ2026@twin.jikos.cz>
+        Mon, 24 Aug 2020 18:23:12 -0400
+Received: from tartarus.angband.pl (tartarus.angband.pl [IPv6:2001:41d0:602:dbe::8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11310C061574
+        for <linux-btrfs@vger.kernel.org>; Mon, 24 Aug 2020 15:23:11 -0700 (PDT)
+Received: from kilobyte by tartarus.angband.pl with local (Exim 4.92)
+        (envelope-from <kilobyte@angband.pl>)
+        id 1kAKrq-0007Hd-Ra
+        for linux-btrfs@vger.kernel.org; Tue, 25 Aug 2020 00:23:06 +0200
+Date:   Tue, 25 Aug 2020 00:23:06 +0200
+From:   Adam Borowski <kilobyte@angband.pl>
+To:     linux-btrfs@vger.kernel.org
+Subject: Re: Link count for directories
+Message-ID: <20200824222306.GA26736@angband.pl>
+References: <trinity-57be0daf-2aa0-4480-a962-7a62e302cfde-1598031619031@3c-app-gmx-bap35>
+ <e592fd12-1662-49f3-75bd-94609e660517@suse.com>
+ <trinity-963db523-ba60-48b5-997f-59b55ee6b92b-1598305830919@3c-app-gmx-bap63>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200824195754.GQ2026@twin.jikos.cz>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <trinity-963db523-ba60-48b5-997f-59b55ee6b92b-1598305830919@3c-app-gmx-bap63>
+X-Junkbait: aaron@angband.pl, zzyx@angband.pl
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: <locally generated>
+X-SA-Exim-Mail-From: kilobyte@angband.pl
+X-SA-Exim-Scanned: No (on tartarus.angband.pl); SAEximRunCond expanded to false
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Aug 24, 2020 at 09:57:55PM +0200, David Sterba wrote:
-> On Fri, Aug 21, 2020 at 12:39:50AM -0700, Omar Sandoval wrote:
-> > Protocol Updates
-> > ================
-> > 
-> > This series makes some changes to the send stream protocol beyond adding
-> > the encoded write command/attributes and bumping the version. Namely, v1
-> > has a 64k limit on the size of a write due to the 16-bit attribute
-> > length. This is not enough for encoded writes, as compressed extents may
-> > be up to 128k and cannot be split up. To address this, the
-> > BTRFS_SEND_A_DATA is treated specially in v2: its length is implicitly
-> > the remaining length of the command (which has a 32-bit length). This
-> > was the last bad of the options I considered.
-> > 
-> > There are other commands that we've been wanting to add to the protocol:
-> > fallocate and FS_IOC_SETFLAGS. This series reserves their command and
-> > attribute numbers but does not implement kernel support for emitting
-> > them. However, it does implement support in receive for them, so the
-> > kernel can start emitting those whenever we get around to implementing
-> > them.
+On Mon, Aug 24, 2020 at 11:50:30PM +0200, Steve Keller wrote:
+> Nikolay Borisov <nborisov@suse.com> wrote:
+> > I have implemented it so it's not that big of a deal. However turns out
+> > it has pretty steep requirements for backport because so far btrfs
+> > always kept the link count of dirs to 1.
+
+> > So how effective is such an optimisation to the software using it ?
 > 
-> Can you please outline the protocol changes (as a bullet list) and
-> eventually cross-ref with items
-> https://btrfs.wiki.kernel.org/index.php/Design_notes_on_Send/Receive#Send_stream_v2_draft
-> 
-> I'd like to know which and why you did not implement. The decision here
-> is between get v2 out with most desired options and rev v3 later with
-> the rest, or do v2 as complete as possible.
+> It's not only optimization like in find(1).  As an old and long-time Unix
+> user I'd also like that traditional behavior.  It just feels more correct
+> since if you do mkdir ./a ./b ./c ./d, you will actually see the 4 links
+> to the current dir if you do ls -ai a b c d and the two links from . itself
+> and from ..
 
-The short version is that I didn't implement the kernel side of any of
-those :) the RWF_ENCODED series + this series is already big, and I
-didn't want to make it even bigger. I figured updating the
-protocol/receive now and doing the kernel side later was a good
-compromise (rather than doing a huge code dump or constantly bumping the
-protocol version). Is there some reason you don't like this approach?
-I'm of course happy to go about this in whatever way you think is best.
+It's just an implementation detail of sysvfs, and a case of
+bug-compatibility.  The link count of a directory is always 1 as btrfs,
+ext4, xfs, etc -- none of them support directory hardlinks, unlike sysvfs.
 
-Here's a breakdown of the list from the wiki:
+So the proper value, as documented, is 1.  Copying sysvfs behaviour is also
+costly as you need to know the count of contents while statting parent.
 
-* Send extent holes, send preallocated extents: both require fallocate.
-  Boris implemented the receive side. I have some old patches
-  implementing the send side [1], but they're a largish rework of extent
-  tracking in send.
-* Extent clones within one file: as far as I can tell, this is already
-  possible with v1, it just sends redundant file paths.
-* Send otime for inodes: the consensus when I posted patches to enable
-  this [2] was that we don't want this after all.
-* Send file flags (FS_IOC_GETFLAGS/FS_IOC_SETFLAGS): again, Boris
-  implemented the receive side. I previously took a stab at the send
-  side, but it's really annoying because of all of the interactions
-  between directory inheritance, writes vs. NOCOW/append-only/immutable,
-  etc. It's do-able, it would just take a lot of care.
-* Optionally send owner/group as strings: this one I wasn't aware of.
-* "block device is not sent over the stream": I don't know what this is
-  referring to. It looks like we send block device nodes with mknod.
 
-In my opinion, fallocate support is the most important, SETFLAGS would
-be good but is a lot of effort, and the rest are nice-to-have.
-
-Let me know how you'd like me to go about this.
-
-1: https://github.com/osandov/linux/commits/btrfs-send-v2
-2: https://lore.kernel.org/linux-btrfs/cover.1550136164.git.osandov@fb.com/
+Meow!
+-- 
+⢀⣴⠾⠻⢶⣦⠀
+⣾⠁⢠⠒⠀⣿⡁
+⢿⡄⠘⠷⠚⠋⠀ It's time to migrate your Imaginary Protocol from version 4i to 6i.
+⠈⠳⣄⠀⠀⠀⠀
