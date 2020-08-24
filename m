@@ -2,117 +2,78 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4257B2500E0
-	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Aug 2020 17:23:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23921250126
+	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Aug 2020 17:31:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727913AbgHXPXe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 24 Aug 2020 11:23:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42302 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727097AbgHXPX0 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 24 Aug 2020 11:23:26 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBD28C061573
-        for <linux-btrfs@vger.kernel.org>; Mon, 24 Aug 2020 08:23:25 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id o64so1589552qkb.10
-        for <linux-btrfs@vger.kernel.org>; Mon, 24 Aug 2020 08:23:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=LBi0uJZ5vfgtPsij29TTrjQQZTRVGwTN+VztmFqYI4s=;
-        b=dBWHdfZ1i4v4AB6nz+us8DEuOVvnKxL3ucJGCKNaNm5Am3NrdFYRN4b34ppJur3PSH
-         WDH/Sk7xaC4BSTIfiPn5z8enKXBdZ/FWz9J/IYDyazfyIw7AtLvcmhKc77w5oJxfL+Ed
-         tz4vchRjVFBGfeKLxmvZM4Ig0hYv8otduDgOtNRCXEzlmlWYRFepmmVLEy7fXsG8GFWZ
-         IteCNoSB/BCYI4OrO6m65Y+cIUZ/o92NWZ56LNf5VCCSTVApQoxlo7ZoaYzQVYuxscfX
-         aZGRQQ+cN1R8l/NRW/6c+f+6NWg8WYyblJ2f27BXBYXWSFaZq8Ggbg/LBOs0u2qltxRj
-         C4FQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=LBi0uJZ5vfgtPsij29TTrjQQZTRVGwTN+VztmFqYI4s=;
-        b=FlizkfDc1cci6Md+Js2tNHm4dUNT01C3pQvgQ7oTt+TRu1gPrUoOkFeZInbBmYHzNP
-         9slKSxklt6QVxo0uoAXA8WpXR0gp5yQYtEZpROGwbLlDwT60t0H4JdtylPuldlZqBOus
-         wlUekf/AwXg3aRZiwQ+wQj5W2AJCqsfYnNQyOmpMZTcIp31ZfHf0RdpjmV80kviIU1iA
-         jiSY6riNrCQISSR9pRHu87KlZmb7gQUpMw+oMu4u0xuj0pnRke3VmUzYSD3qG5mZgnep
-         AJhPxB7uzPgFH9NNLp4X5ScOGj0cBqOhfstiokax97S22jBBrpmBbCYRbmQiC6TyBmYR
-         WTSg==
-X-Gm-Message-State: AOAM533o09P+01jTlBT7TpJeTIeEnPczWDC9muVVFQPBK7XLyxcJaIWm
-        uNL/7JCib7nYPlePIJMMZ2k0MkexksRtN3ct
-X-Google-Smtp-Source: ABdhPJw3u6ZOFjigTHKBa0hkc4BjFn8+gbhWoaqr1L6ubw78NLSqvlU0mFIdNaC+7t21YyQKuD81MA==
-X-Received: by 2002:a05:620a:7e9:: with SMTP id k9mr5315027qkk.415.1598282604625;
-        Mon, 24 Aug 2020 08:23:24 -0700 (PDT)
-Received: from [192.168.1.45] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id n15sm9476304qkk.28.2020.08.24.08.23.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 24 Aug 2020 08:23:23 -0700 (PDT)
-Subject: Re: [PATCH] btrfs-progs: check: Fix error reporting on root inode
-To:     Nikolay Borisov <nborisov@suse.com>, linux-btrfs@vger.kernel.org
-References: <20200824140049.28633-1-nborisov@suse.com>
-From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <21a70505-74c8-8153-4652-fc07cd4aa69d@toxicpanda.com>
-Date:   Mon, 24 Aug 2020 11:23:22 -0400
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.11.0
+        id S1727114AbgHXP3z (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 24 Aug 2020 11:29:55 -0400
+Received: from mx2.suse.de ([195.135.220.15]:56250 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726878AbgHXP3i (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 24 Aug 2020 11:29:38 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 95AD4AC92;
+        Mon, 24 Aug 2020 15:30:07 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 9CB1BDA730; Mon, 24 Aug 2020 17:28:29 +0200 (CEST)
+Date:   Mon, 24 Aug 2020 17:28:29 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Marcos Paulo de Souza <marcos@mpdesouza.com>
+Cc:     linux-kernel@vger.kernel.org, dsterba@suse.com,
+        linux-btrfs@vger.kernel.org,
+        Marcos Paulo de Souza <mpdesouza@suse.com>,
+        stable@vger.kernel.org, Qu Wenruo <wqu@suse.com>,
+        Filipe Manana <fdmanana@suse.com>
+Subject: Re: [PATCH v3] btrfs: block-group: Fix free-space bitmap threshould
+Message-ID: <20200824152829.GK2026@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz,
+        Marcos Paulo de Souza <marcos@mpdesouza.com>,
+        linux-kernel@vger.kernel.org, dsterba@suse.com,
+        linux-btrfs@vger.kernel.org,
+        Marcos Paulo de Souza <mpdesouza@suse.com>, stable@vger.kernel.org,
+        Qu Wenruo <wqu@suse.com>, Filipe Manana <fdmanana@suse.com>
+References: <20200821145444.25791-1-marcos@mpdesouza.com>
 MIME-Version: 1.0
-In-Reply-To: <20200824140049.28633-1-nborisov@suse.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200821145444.25791-1-marcos@mpdesouza.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 8/24/20 10:00 AM, Nikolay Borisov wrote:
-> If btrfs check detects an error on the root inode of a subvolume it
-> prints:
+On Fri, Aug 21, 2020 at 11:54:44AM -0300, Marcos Paulo de Souza wrote:
+> From: Marcos Paulo de Souza <mpdesouza@suse.com>
 > 
->      Opening filesystem to check...
->      Checking filesystem on /dev/vdc
->      UUID: 4ac7a216-bf97-4c5f-9899-0f203c20d8af
->      [1/7] checking root items
->      [2/7] checking extents
->      [3/7] checking free space cache
->      [4/7] checking fs roots
->      root 5 root dir 256 error
->      ERROR: errors found in fs roots
->      found 196608 bytes used, error(s) found
->      total csum bytes: 0
->      total tree bytes: 131072
->      total fs tree bytes: 32768
->      total extent tree bytes: 16384
->      btree space waste bytes: 124376
->      file data blocks allocated: 65536
->       referenced 65536
+> [BUG]
+> After commit 9afc66498a0b ("btrfs: block-group: refactor how we read one
+> block group item"), cache->length is being assigned after calling
+> btrfs_create_block_group_cache. This causes a problem since
+> set_free_space_tree_thresholds is calculate the free-space threshould to
+> decide is the free-space tree should convert from extents to bitmaps.
 > 
-> This is not very helpful since there is no specific information about
-> the exact error. This is due to the fact that check_root_dir doesn't
-> set inode_record::errors accordingly. This patch rectifies this and now
-> the output would look like:
+> The current code calls set_free_space_tree_thresholds with cache->length
+> being 0, which then makes cache->bitmap_high_thresh being zero. This
+> implies the system will always use bitmap instead of extents, which is
+> not desired if the block group is not fragmented.
 > 
-> 	[1/7] checking root items
-> 	[2/7] checking extents
-> 	[3/7] checking free space cache
-> 	[4/7] checking fs roots
-> 	root 5 inode 256 errors 2000, link count wrong
-> 	ERROR: errors found in fs roots
-> 	found 196608 bytes used, error(s) found
-> 	total csum bytes: 0
-> 	total tree bytes: 131072
-> 	total fs tree bytes: 32768
-> 	total extent tree bytes: 16384
-> 	btree space waste bytes: 124376
-> 	file data blocks allocated: 65536
-> 	 referenced 65536
+> This behavior can be seen by a test that expects to repair systems
+> with FREE_SPACE_EXTENT and FREE_SPACE_BITMAP, but the current code only
+> created FREE_SPACE_BITMAP.
 > 
-> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
+> [FIX]
+> Call set_free_space_tree_thresholds after setting cache->length. There
+> is now a WARN_ON in set_free_space_tree_thresholds to help preventing
+> the same mistake to happen again in the future.
+> 
+> Link: https://github.com/kdave/btrfs-progs/issues/251
+> Fixes: 9afc66498a0b ("btrfs: block-group: refactor how we read one block group item")
+> CC: stable@vger.kernel.org # 5.8+
+> Reviewed-by: Qu Wenruo <wqu@suse.com>
+> Reviewed-by: Filipe Manana <fdmanana@suse.com>
+> Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
 
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
-
-Thanks,
-
-Josef
+Added to misc-next, thanks.
