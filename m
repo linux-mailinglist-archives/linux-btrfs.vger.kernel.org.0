@@ -2,257 +2,114 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3552D24F28F
-	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Aug 2020 08:32:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EE5924F2F1
+	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Aug 2020 09:14:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726306AbgHXGb5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 24 Aug 2020 02:31:57 -0400
-Received: from mx2.suse.de ([195.135.220.15]:36810 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726257AbgHXGb4 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 24 Aug 2020 02:31:56 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id B2F86AE56
-        for <linux-btrfs@vger.kernel.org>; Mon, 24 Aug 2020 06:32:24 +0000 (UTC)
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 3/3] btrfs: remove the again: tag in process_one_batch()
-Date:   Mon, 24 Aug 2020 14:31:39 +0800
-Message-Id: <20200824063139.70880-4-wqu@suse.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200824063139.70880-1-wqu@suse.com>
-References: <20200824063139.70880-1-wqu@suse.com>
+        id S1725921AbgHXHOc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 24 Aug 2020 03:14:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49354 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725730AbgHXHOa (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 24 Aug 2020 03:14:30 -0400
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A876C061573
+        for <linux-btrfs@vger.kernel.org>; Mon, 24 Aug 2020 00:14:30 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id c19so5504323wmd.1
+        for <linux-btrfs@vger.kernel.org>; Mon, 24 Aug 2020 00:14:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=RdfWzFt0bUrONSBmvtOrelgFLUbfEUl2sWpsj2e5mY4=;
+        b=n3Rc3VqkhW+fQp3S9J8TNBuwIKRuC9/hfgmZI0AG8+iARIv9iqQ+7c8pFUCrOtRPnJ
+         boIJkB5qHJovCQz2yWv6PaAon/T2fuaqbbmrJ3LVRFNnoFBoiUK5VuO2GepeestYPaZM
+         F1GrQsz3Oyydstgp5gPLmY1LTdNJo4TXPhXKCaJVQR4+xy81qQQidL97wvM2qZ8sOUF9
+         R7HNRLwXu2qCVXrG01P5nd/9wuqfDi+uzn1xewBWpks2VEHXV1VvfNs2RtxzY97evv7L
+         ivm0er8h/O3IeTMNcUrAJl4bSckSxF7gHFH7l8JWbic1/PT4edDBviR2dZdpB3DBV6a2
+         dRpw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=RdfWzFt0bUrONSBmvtOrelgFLUbfEUl2sWpsj2e5mY4=;
+        b=LCDyl+TccGmCdOFFRVOsDvGTs3rociznWOryR5IwyDzm4bNBskGl30Feqb+zwgWh5j
+         B78dydcwxzRMNtF7+OwrJ69witMxPUL7JQwcBJajazExWM+FniEJN5XPNVTcN+SOoT7l
+         jjrhrq7Har0qZ8j07j5WB/Gjw2IwGt9tYmiiFtH6HlL7CYV55x+87aButerQDYIq3BOh
+         LFbZFEvWyGXihJ40u96/fYux7YvQcRgnUmCSgw4cZ2LFyTGwifowfmvDHLejyoOJUDjq
+         k0plw/iW3q2w3Gbuwtnti3i+vjCeMb2vIcxtVcgGRRvcsiSg8LBPlX0gP2xrBrrkZOS5
+         KMVw==
+X-Gm-Message-State: AOAM531PM3wAKMrZRSCeyYlxEwndtQA2gAv8YLJpvFmSwQsO2FgQniPy
+        exWIBn7Fs+2QPCzp05Hl9RFjDHSLQITz5+ZMhMsfGA==
+X-Google-Smtp-Source: ABdhPJzi+AgigA6eLlmEhNEqOoGX7Pf1euzx13PDnakojxjdZRMumjjCA0zCjb1XO+SgtEjZcTghchC8cyXnbVFI8H8=
+X-Received: by 2002:a7b:cf0b:: with SMTP id l11mr4201909wmg.128.1598253269120;
+ Mon, 24 Aug 2020 00:14:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <bdJVxLiFr_PyQSXRUbZJfFW_jAjsGgoMetqPHJMbg-hdy54Xt_ZHhRetmnJ6cJ99eBlcX76wy-AvWwV715c3YndkxneSlod11P1hlaADx0s=@protonmail.com>
+ <CAJCQCtTC2yi4HRqg6fkMrxw33TVSBh_yAKtnX-Z1-nXSVjBW7w@mail.gmail.com> <Yy8-04dbNru1LWPcNZ9UxsagH1b0KNsGn7tDEnxVOqS812IqGiwl37dj4rxAh05gEP8QoNJ5F_Ea6CZ8iZgvnupuq5Qzc38gl69MceWMc9s=@protonmail.com>
+In-Reply-To: <Yy8-04dbNru1LWPcNZ9UxsagH1b0KNsGn7tDEnxVOqS812IqGiwl37dj4rxAh05gEP8QoNJ5F_Ea6CZ8iZgvnupuq5Qzc38gl69MceWMc9s=@protonmail.com>
+From:   Chris Murphy <lists@colorremedies.com>
+Date:   Mon, 24 Aug 2020 01:13:47 -0600
+Message-ID: <CAJCQCtSqe_oqRZWYP7iLJcGQnzZkC4vmoYVTm_9RPb8eb0-E6Q@mail.gmail.com>
+Subject: Re: [Help] Can't login to my systemd-homed user account due to
+ fallocate failure
+To:     Andrii Zymohliad <azymohliad@protonmail.com>
+Cc:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        Andrei Borzenkov <arvidjaar@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The again: tag here is for us to retry when we failed to lock extent
-range, which is only used once.
+On Mon, Aug 24, 2020 at 12:12 AM Andrii Zymohliad
+<azymohliad@protonmail.com> wrote:
+>
+> Hello Chris! Thanks a lot for so many ideas, I updated this snippet with =
+most of the commands you asked the output for: https://gitlab.com/-/snippet=
+s/2007189, more details inline.
 
-Instead of the open tag, integrate prepare_pages() and
-lock_and_cleanup_extent_if_need() into lock_pages_and_extent(), and do
-the retry inside the function.
+>> # ls -lhs /home/azymohliad.home
+>>    257G -rw------- 1 root root 403G =D1=81=D0=B5=D1=80 23 18:20 /home/az=
+ymohliad.home
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/file.c | 183 +++++++++++++++++++++++-------------------------
- 1 file changed, 86 insertions(+), 97 deletions(-)
+OK so it's a sparse file..
 
-diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-index c9516c079cc6..6d6c04d28dec 100644
---- a/fs/btrfs/file.c
-+++ b/fs/btrfs/file.c
-@@ -1456,83 +1456,6 @@ static noinline int prepare_pages(struct inode *inode, struct page **pages,
- 
- }
- 
--/*
-- * This function locks the extent and properly waits for data=ordered extents
-- * to finish before allowing the pages to be modified if need.
-- *
-- * The return value:
-- * 1 - the extent is locked
-- * 0 - the extent is not locked, and everything is OK
-- * -EAGAIN - need re-prepare the pages
-- * the other < 0 number - Something wrong happens
-- */
--static noinline int
--lock_and_cleanup_extent_if_need(struct btrfs_inode *inode, struct page **pages,
--				size_t num_pages, loff_t pos,
--				size_t write_bytes,
--				u64 *lockstart, u64 *lockend,
--				struct extent_state **cached_state)
--{
--	struct btrfs_fs_info *fs_info = inode->root->fs_info;
--	u64 start_pos;
--	u64 last_pos;
--	int i;
--	int ret = 0;
--
--	start_pos = round_down(pos, fs_info->sectorsize);
--	last_pos = round_up(pos + write_bytes, fs_info->sectorsize) - 1;
--
--	if (start_pos < inode->vfs_inode.i_size) {
--		struct btrfs_ordered_extent *ordered;
--
--		lock_extent_bits(&inode->io_tree, start_pos, last_pos,
--				cached_state);
--		ordered = btrfs_lookup_ordered_range(inode, start_pos,
--						     last_pos - start_pos + 1);
--		if (ordered &&
--		    ordered->file_offset + ordered->num_bytes > start_pos &&
--		    ordered->file_offset <= last_pos) {
--			unlock_extent_cached(&inode->io_tree, start_pos,
--					last_pos, cached_state);
--			for (i = 0; i < num_pages; i++) {
--				unlock_page(pages[i]);
--				put_page(pages[i]);
--			}
--			btrfs_start_ordered_extent(&inode->vfs_inode,
--					ordered, 1);
--			btrfs_put_ordered_extent(ordered);
--			return -EAGAIN;
--		}
--		if (ordered)
--			btrfs_put_ordered_extent(ordered);
--
--		*lockstart = start_pos;
--		*lockend = last_pos;
--		ret = 1;
--	}
--
--	/*
--	 * It's possible the pages are dirty right now, but we don't want
--	 * to clean them yet because copy_from_user may catch a page fault
--	 * and we might have to fall back to one page at a time.  If that
--	 * happens, we'll unlock these pages and we'd have a window where
--	 * reclaim could sneak in and drop the once-dirty page on the floor
--	 * without writing it.
--	 *
--	 * We have the pages locked and the extent range locked, so there's
--	 * no way someone can start IO on any dirty pages in this range.
--	 *
--	 * We'll call btrfs_dirty_pages() later on, and that will flip around
--	 * delalloc bits and dirty the pages as required.
--	 */
--	for (i = 0; i < num_pages; i++) {
--		set_page_extent_mapped(pages[i]);
--		WARN_ON(!PageLocked(pages[i]));
--	}
--
--	return ret;
--}
--
- static int check_can_nocow(struct btrfs_inode *inode, loff_t pos,
- 			   size_t *write_bytes, bool nowait)
- {
-@@ -1646,6 +1569,87 @@ static int get_nr_pages(struct btrfs_fs_info *fs_info, loff_t pos,
- 	return nr_pages;
- }
- 
-+/*
-+ * The helper to lock both pages and extent bits
-+ *
-+ * Return 0 if the extent is not locked and everything is OK.
-+ * Return 1 if the extent is locked and everything is OK.
-+ * Return <0 for error.
-+ */
-+static int lock_pages_and_extent(struct btrfs_inode *inode, struct page **pages,
-+				 int num_pages, loff_t pos, size_t write_bytes,
-+				 u64 *lockstart, u64 *lockend,
-+				 struct extent_state **cached_state,
-+				 bool force_uptodate)
-+{
-+	struct btrfs_fs_info *fs_info = inode->root->fs_info;
-+	u64 start_pos;
-+	u64 last_pos;
-+	int ret;
-+	int i;
-+
-+again:
-+	/* Lock the pages */
-+	ret = prepare_pages(&inode->vfs_inode, pages, num_pages, pos,
-+			    write_bytes, force_uptodate);
-+	if (ret < 0)
-+		return ret;
-+
-+	start_pos = round_down(pos, fs_info->sectorsize);
-+	last_pos = round_up(pos + write_bytes, fs_info->sectorsize) - 1;
-+
-+	if (start_pos < inode->vfs_inode.i_size) {
-+		struct btrfs_ordered_extent *ordered;
-+
-+		/* Lock the extent range */
-+		lock_extent_bits(&inode->io_tree, start_pos, last_pos,
-+				cached_state);
-+		ordered = btrfs_lookup_ordered_range(inode, start_pos,
-+						     last_pos - start_pos + 1);
-+		if (ordered &&
-+		    ordered->file_offset + ordered->num_bytes > start_pos &&
-+		    ordered->file_offset <= last_pos) {
-+			unlock_extent_cached(&inode->io_tree, start_pos,
-+					last_pos, cached_state);
-+			for (i = 0; i < num_pages; i++) {
-+				unlock_page(pages[i]);
-+				put_page(pages[i]);
-+			}
-+			btrfs_start_ordered_extent(&inode->vfs_inode,
-+					ordered, 1);
-+			btrfs_put_ordered_extent(ordered);
-+			goto again;
-+		}
-+		if (ordered)
-+			btrfs_put_ordered_extent(ordered);
-+
-+		*lockstart = start_pos;
-+		*lockend = last_pos;
-+		ret = 1;
-+	}
-+
-+	/*
-+	 * It's possible the pages are dirty right now, but we don't want
-+	 * to clean them yet because copy_from_user may catch a page fault
-+	 * and we might have to fall back to one page at a time.  If that
-+	 * happens, we'll unlock these pages and we'd have a window where
-+	 * reclaim could sneak in and drop the once-dirty page on the floor
-+	 * without writing it.
-+	 *
-+	 * We have the pages locked and the extent range locked, so there's
-+	 * no way someone can start IO on any dirty pages in this range.
-+	 *
-+	 * We'll call btrfs_dirty_pages() later on, and that will flip around
-+	 * delalloc bits and dirty the pages as required.
-+	 */
-+	for (i = 0; i < num_pages; i++) {
-+		set_page_extent_mapped(pages[i]);
-+		WARN_ON(!PageLocked(pages[i]));
-+	}
-+
-+	return ret;
-+}
-+
- /*
-  * The helper to copy one batch of data from iov to pages.
-  *
-@@ -1735,29 +1739,14 @@ static ssize_t process_one_batch(struct inode *inode, struct page **pages,
- 	release_bytes = reserve_bytes;
- 
- 	/* Lock the pages and extent range */
--again:
--	/*
--	 * This is going to setup the pages array with the number of pages we
--	 * want, so we don't really need to worry about the contents of pages
--	 * from loop to loop.
--	 */
--	ret = prepare_pages(inode, pages, num_pages, pos, write_bytes,
--			    force_uptodate);
--	if (ret) {
--		btrfs_delalloc_release_extents(BTRFS_I(inode), reserve_bytes);
--		goto out;
--	}
--
--	extents_locked = lock_and_cleanup_extent_if_need(BTRFS_I(inode), pages,
--			num_pages, pos, write_bytes, &lockstart,
--			&lockend, &cached_state);
--	if (extents_locked < 0) {
--		if (extents_locked == -EAGAIN)
--			goto again;
-+	ret = lock_pages_and_extent(BTRFS_I(inode), pages, num_pages, pos,
-+			write_bytes, &lockstart, &lockend, &cached_state,
-+			force_uptodate);
-+	if (ret < 0) {
- 		btrfs_delalloc_release_extents(BTRFS_I(inode), reserve_bytes);
--		ret = extents_locked;
- 		goto out;
- 	}
-+	extents_locked = ret;
- 
- 	/* Copy the data from iov to pages */
- 	copied = btrfs_copy_from_user(pos, write_bytes, pages, iov);
--- 
-2.28.0
 
+> This one is 18k lines, uploaded here: https://gitlab.com/-/snippets/20073=
+01
+
+There are many shared extents, so it has been subject to snapshot,
+reflink copy, or dedup.
+
+To my knowledge, sd-homed doesn't do any of these things. Something
+else did it. Are you using snapper or timeshift? Have you used 'cp' to
+duplicate the home backing file?
+
+What do you get for
+
+lsattr /home/azymohliad.home
+
+> Idk, I guess it's better to go back to Systemd mailing list for that, but=
+ just in case I've added "homectl inspect azymohliad" output to the gitlab =
+snippet. Here's what it says about discard:
+>
+>     LUKS Discard: online=3Dno offline=3Dyes
+
+I'm not sure what it means, but I'll ask on systemd list.
+
+> Here is the btrfs-debugfs output: https://gitlab.com/-/snippets/2007302
+
+OK too late, it's already been balanced.
+
+I think we've got a pretty good idea what's going on. The current work
+around in your case will be to use the --luks-discard=3Dtrue option when
+activating. This will avoid the fallocate step. But the question
+remains why the fallocate fails. I suspect it has something to do with
+shared extents. Somewhere you have one or more snapshots containing
+this home file. And that's causing some confusion.
+
+
+--=20
+Chris Murphy
