@@ -2,87 +2,84 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FD3024F100
-	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Aug 2020 04:10:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE0F224F112
+	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Aug 2020 04:24:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727957AbgHXCKq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 23 Aug 2020 22:10:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59388 "EHLO
+        id S1728024AbgHXCY0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 23 Aug 2020 22:24:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726794AbgHXCKo (ORCPT
+        with ESMTP id S1727863AbgHXCYZ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 23 Aug 2020 22:10:44 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 244A4C061573
-        for <linux-btrfs@vger.kernel.org>; Sun, 23 Aug 2020 19:10:44 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id a15so7085891wrh.10
-        for <linux-btrfs@vger.kernel.org>; Sun, 23 Aug 2020 19:10:44 -0700 (PDT)
+        Sun, 23 Aug 2020 22:24:25 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A8AEC061573
+        for <linux-btrfs@vger.kernel.org>; Sun, 23 Aug 2020 19:24:23 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id l2so7112708wrc.7
+        for <linux-btrfs@vger.kernel.org>; Sun, 23 Aug 2020 19:24:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kj3FwcfCwKWRURAO70qPnGh/wpJlYX5krvB12gFxsZM=;
-        b=BQa+FCGf74P+rejFcgEVGWlLzePmTPvJ8rqhF9061+9m6wnk9+YW2QHEwjNzZTPkwA
-         QRV4KLVb9euskYWgALM7GLbj/uK1d7fyFTLQbrKk1yhT/lcin5CuaOUkbQ1CEIX7+7Ad
-         lfKf92jVfZ0Yc2sbJdPi0lX229eIefzbRw6jZldWJaawIaeZGuiXxBESWF8bz1ugn6Vq
-         6k8ljskcamzQ+5FHdQoOb701UqfOV84x2oyIpB4uowR/PAQCqF/qs5rrPUNfQrnC6k0G
-         jXhRA7lDn2OqmeJaXpEA/HVMBImo+eRh7VWLtrvzZPRFivQoYwLhfhnfg6+8nJ8JBQDZ
-         Z/ow==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=sope9m/9zgwwT3uOu7Yc6A2puavzLP5I5WDesnhrxtw=;
+        b=iTyDSHblHGnAhfZx4ES4ygYj/+jSDe1vrWTUlUm8vwOHbipaX2gkPYJgseoK401l02
+         Bl2u/24uOsnvYlu+FocK64EiZ0zrU4Vn/ufAakslwQnRdNI4cqemGjaZoPsHAYrf9cms
+         P/3OPUdXUmyzrVJbHZAa2YJl32Ml+pMkGyIKRHyhjXWZ22F1K3QfZtKlsTlpmoUCtz89
+         J52syElXmeNS5em7ahBgzqLvZYh0+Ub+tki5bNe2iSq6TPJBeTxKH+ezYS9yVpsbe5zR
+         to6cXPL2fRK3BxaqO4jaUf6KzaZur59+xzjjVcJaOtflaJfOuj9uyT8JPgTHYzWLUzFm
+         h7Pw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kj3FwcfCwKWRURAO70qPnGh/wpJlYX5krvB12gFxsZM=;
-        b=CNGmnvYqswgE3O+aoXK06/UsvCWnfxUefGcOLU/DLN+B8GHWCze6Gwugd9Qkv0huxT
-         akKcrOo/gFPcZEH1Cp5viUU5JgWKnjHaMYRjKkyAP/eIU9rL/0j0q4mFX02EXZsEhmVk
-         6cm3a0womt78iB6SuR0CnwFSe8p65NPVunRgXpyoidwFd9ReGCTKr38eCFOSP2CnCJ92
-         5OJ59WCMJkBHXPIMY9LTN/PnuG63SSXoa3swb/zHrmOlZFQfBjIBNJyzN8UPuxcR7F3N
-         N8ZSWSSrZZ1WdO7yW83m4GfNU4XjGMqX0jjtDIx4TBoL4CvwGh/MSWwosA6Fy6+xzga1
-         50iQ==
-X-Gm-Message-State: AOAM532St04sBnv1GBQGNpdwXovRIpBfBFLMbTwGn4LsFhiFf3PC26vo
-        CCsUSEnLXa9+tKsVhnFfSowzkpoE3ADSdo48jKwJfQE+o0t7Kcp0
-X-Google-Smtp-Source: ABdhPJxf6WWNffvmN3Ucbdx8Zt+V/YZRJ2nVAjfR7NX8RBjt4p5OUvBAdYGNJm5TQhJ2YkPn5/MOP2u3VjMtS6IKz8A=
-X-Received: by 2002:a5d:5383:: with SMTP id d3mr3580913wrv.42.1598235042773;
- Sun, 23 Aug 2020 19:10:42 -0700 (PDT)
+         :message-id:subject:to;
+        bh=sope9m/9zgwwT3uOu7Yc6A2puavzLP5I5WDesnhrxtw=;
+        b=h3FeM8fiHoAm+/pz9Zn/wpY/daLjuqkYPlW+VUHFuMbEYbHomlQDtkLCG5BMojYjkU
+         xo8JmHDpu/vDstl37YVspVOf2xGUyGIlkWL3N1ch9CJ7B9bQxFQ8Vbltfg+HDk6YkM6O
+         XKk/TNT9rN7xARzRdRJB0390clecHXxkPantVLvGTTs0H680530G7HnSbh8ZdFBVcJGq
+         BT4pjd3z2alvKjk0208O6H20pA6KY2OcBuEf5WA4Q79a4PobGNKbZv9j6B5qbzYi7xiT
+         zwlEEEVhCcfeHCHBnqHA8uKDRKkXnQsQbaASieGe8x+x7TDvrwZnOZNM60ZzhIpqRuSR
+         s6FQ==
+X-Gm-Message-State: AOAM533hguC5mH+2tpOMHgV5PrsyP2MPyDgEkWYUhw8r3c64ZumTebh+
+        DXMvV5UAa+udK6D2e9lU399OQUcKMX3uWDcIRlnBHQ==
+X-Google-Smtp-Source: ABdhPJzUNCbB/B7GnwBblW2x6gpF5cC9XnwFBj6fqWFmY1UeSxPEhN+q/7Ig5YI0L8CrhUTVuWrv/71yXvSMxFKDquA=
+X-Received: by 2002:adf:8401:: with SMTP id 1mr3585295wrf.274.1598235862100;
+ Sun, 23 Aug 2020 19:24:22 -0700 (PDT)
 MIME-Version: 1.0
-References: <1de8d385-4f63-cf84-2a60-9519e55035bc@billdietrich.me>
-In-Reply-To: <1de8d385-4f63-cf84-2a60-9519e55035bc@billdietrich.me>
+References: <bdJVxLiFr_PyQSXRUbZJfFW_jAjsGgoMetqPHJMbg-hdy54Xt_ZHhRetmnJ6cJ99eBlcX76wy-AvWwV715c3YndkxneSlod11P1hlaADx0s=@protonmail.com>
+ <20200823153746.GB1093@savella.carfax.org.uk>
+In-Reply-To: <20200823153746.GB1093@savella.carfax.org.uk>
 From:   Chris Murphy <lists@colorremedies.com>
-Date:   Sun, 23 Aug 2020 20:10:01 -0600
-Message-ID: <CAJCQCtTt9-1TiA34huWM7pQJ62EdRT5iDLBTWFcLy1zCNFFOQg@mail.gmail.com>
-Subject: Re: Minimum size of Btrfs volume ?
-To:     Bill Dietrich <bill@billdietrich.me>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Date:   Sun, 23 Aug 2020 20:23:40 -0600
+Message-ID: <CAJCQCtRFQhTLsNBu5iO=Fhd7YHdMm643J8KRPUnC0aBjGH9Yrg@mail.gmail.com>
+Subject: Re: [Help] Can't login to my systemd-homed user account due to
+ fallocate failure
+To:     Hugo Mills <hugo@carfax.org.uk>,
+        Andrii Zymohliad <azymohliad@protonmail.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sun, Aug 23, 2020 at 7:26 AM Bill Dietrich <bill@billdietrich.me> wrote:
+On Sun, Aug 23, 2020 at 9:37 AM Hugo Mills <hugo@carfax.org.uk> wrote:
 >
-> [Noob here, sorry if I'm doing anything wrong.]
->
-> What is the minimum size of a simple single-disk Btrfs volume,
-> and where is it documented ?  I can't find that info.
->
-> I'm told the minimum size is about 109 MB (114294784 bytes).
-> True ?  Is there any way to get around that, at mkfs-time ?
-> I'd like to use Btrfs inside a VeraCrypt container, and that's
-> a fairly big minimum size for that use.
->
+> On Sun, Aug 23, 2020 at 03:31:47PM +0000, Andrii Zymohliad wrote:
 
-If this is backed by a loop mounted file on a file system supporting
-sparse files:
+> > btrfs fi df /
+> >
+> >     Data, single: total=475.43GiB, used=299.28GiB
+> >     System, single: total=4.00MiB, used=80.00KiB
+> >     Metadata, single: total=1.01GiB, used=437.05MiB
+> >     GlobalReserve, single: total=61.03MiB, used=0.00B
+> >
+> >
+>    The / filesystem is a clear case of needing a data balance. See
+> this link for what to do:
 
-1. make the backing file a bit bigger than you need, e.g. truncate -s
-1g filename
-2. cryptsetup open --allow-discards so that trim commands passthrough
-dm-crypt to the backing file
-3. fstrim /mountpoint - this "shrinks" the backing file by making it a
-sparse file, file system size is unchanged
-4. If the backing file needs to go on a file system that doesn't
-support sparse files, use 'tar --sparse'
+If it really needs to be balanced, it's a bug. It's 2020, this is a
+5.8.3 kernel, we can't keep telling people they should baby sit Btrfs
+in such cases. And also it's not clear it needs a data balance.
+
 
 -- 
 Chris Murphy
