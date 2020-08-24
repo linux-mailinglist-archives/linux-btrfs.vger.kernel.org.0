@@ -2,106 +2,92 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9F04250875
-	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Aug 2020 20:51:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17B3F250878
+	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Aug 2020 20:52:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726413AbgHXSvy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 24 Aug 2020 14:51:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46648 "EHLO
+        id S1726466AbgHXSw3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 24 Aug 2020 14:52:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725904AbgHXSvx (ORCPT
+        with ESMTP id S1726336AbgHXSw1 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 24 Aug 2020 14:51:53 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2AE9C061573
-        for <linux-btrfs@vger.kernel.org>; Mon, 24 Aug 2020 11:51:52 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id p17so4317686wrj.8
-        for <linux-btrfs@vger.kernel.org>; Mon, 24 Aug 2020 11:51:52 -0700 (PDT)
+        Mon, 24 Aug 2020 14:52:27 -0400
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 883ABC061574
+        for <linux-btrfs@vger.kernel.org>; Mon, 24 Aug 2020 11:52:27 -0700 (PDT)
+Received: by mail-qt1-x842.google.com with SMTP id t23so7033819qto.3
+        for <linux-btrfs@vger.kernel.org>; Mon, 24 Aug 2020 11:52:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Tw69/iCtvurYS0X+D6HztWyEMimPk9fd9afeESfHsXU=;
-        b=HAzaGxeR0eG3AWzEpzbtsGbVhcxOj57xoWPCm868f2Ka7/nhDSFbyRE0Xdn+OrcSx9
-         gfkw/BedF0Jj36eXG0yRHu7EyzG7UAITzymLRlgrp775TA+s8HDFdGNoYpQ7z8XmLK5d
-         6/y/gkBwW2KKhOfcR1Toz8W5EJuZfR0c8aLkIJ840D2++vSoVXoNIo6H9nGjqFADYTBb
-         5N23BvHxqczk+xy45/Gfx+UknBg5FcSMGBaVNprLjXzgV4MdG60WU74GoBMqh5P4T8Dh
-         FjTJ39FN8r/O8xwNrLcG/hG1mLTQW1n9xF+FbuSI4+ktiYlOMaNDlYmxUUDvDktJ9uqP
-         TpcQ==
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=/a87U3xOIsepXqYxdXZyC67pPTYVYefQcfmWIfEUAdQ=;
+        b=IZzd4ap3bSsv82zPm8HZR1QrAFc4aPstasMKpdH9fAGqnOZeRREXW1ml9vm3M+zH1j
+         Iid0qCkyoDnQ7Gp+rQFgWZDOONNbCUWqxTYW38+4ITFteD2Mf+8aLc44+ecIGM9+mUXp
+         exTRVlmDtmlciJidQjLyEugzTYdPVkRzv9rnK2oHgzQHMRnCxOP3XTrtH/o29RlCy5zn
+         ui62uTIgeLIMW2xlL+o6+M0Av7VFVGbakljYqAreFJ/i5kFHoNSwINmo1EyxNxwDyjc4
+         CrlwjTwTdzhulvt71JAhRWNnZ6nGoYdjmHK1IIzvGZNLkorMx6+xvi3SrtEpeFsfNGVO
+         hzqw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Tw69/iCtvurYS0X+D6HztWyEMimPk9fd9afeESfHsXU=;
-        b=p+Qtw6fRSYRo8YLMFAmMQRIborEC0gFPKgVySAz98Hf3PAvsfbFfFZLG8N/Mk6X116
-         6j9TLng3UE7WBpgdAKNv7VUOsKz8qjFybodhc8y0DTYxI3P0ejK0ubdLcm5ChvNAu50H
-         lH/RDqfIWRF2knAWWg0jk1oR66/sauBh3JaONoPnZARU3LfGLwHMczEXfxEadUji1zUM
-         EnC4ezV+78R6iYBtQs4c1iM4oCiQJT9tuh17M8zAA3ul1tqM812YI+A7fN7x9UQqnLfC
-         uT5AZ1P6//qk4Tfjiw9TnNqMefbB87Pz1AXiSoylQlQxe7Tsr/6Qzq4FnJS5kcwNu8Wl
-         UDqw==
-X-Gm-Message-State: AOAM531roqbQpzt/TOR1v2Sjgw4M3Av3Z1tR3cfUZuD1vJN7IKVJ36lw
-        5IXO3GG9vSTEVomD8tK8QtLTRdjueFibeQBrYJ1RBQ==
-X-Google-Smtp-Source: ABdhPJxcoaE+CazYlgDRTo5+SJYrRoX5rEYXVlMILlqZd55qEfi6+2RFMrlanKGhRF0RmQN2QVDFhL1ubmo30BPgRBw=
-X-Received: by 2002:a05:6000:11ca:: with SMTP id i10mr6244830wrx.252.1598295111309;
- Mon, 24 Aug 2020 11:51:51 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=/a87U3xOIsepXqYxdXZyC67pPTYVYefQcfmWIfEUAdQ=;
+        b=uljGw3kMSyFdYtySSPgq5n5HlNB0M7l2SP40ysheulDRjwcWDa7MZEgB4BHTrwmpdP
+         ktFIkbe7qShZiN6kM4dvrjpEy6nR/eDtSSbgXz07O3P4A0+egojoxYVh89n5CdpI9JNN
+         Lvjtd79fjIA8SIrdSZm1BYefCNbG/VrMUFiefIQGBkhmMI26SZqdBexHFrBCKNVYbBw4
+         aP/uWwTKKeeWYWsltgfGA9J9gAraMVtXQETCD4iOQjuqVmc7eLd5WKsi78wAuvQD+Gfl
+         vB9yOQDnA4AL8TItr7TxoYiC+IYSiSn/3sleXGbG1lJmheRA9M5EFk4Q6MvwvYPMqep6
+         f4mg==
+X-Gm-Message-State: AOAM531GWZm+o/VHApbJueDwtfsXApcZrPoPmagDNpwMTZHxYPBXUr0r
+        Q2ipX+usf+g/GsEBJFNiapOxYQ==
+X-Google-Smtp-Source: ABdhPJygV/nBVHEX/50hfW861ZSzyEdIO8Q5zPGw2DgDUDPPFLhBT4KyvO3z+Zq840xPgfWOgaJNYA==
+X-Received: by 2002:aed:3ac7:: with SMTP id o65mr6169171qte.11.1598295146628;
+        Mon, 24 Aug 2020 11:52:26 -0700 (PDT)
+Received: from [192.168.1.45] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id 22sm10205679qkd.64.2020.08.24.11.52.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 24 Aug 2020 11:52:26 -0700 (PDT)
+Subject: Re: [PATCH v5 1/9] iov_iter: add copy_struct_from_iter()
+To:     Omar Sandoval <osandov@osandov.com>, linux-fsdevel@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, Al Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@infradead.org>
+Cc:     Dave Chinner <david@fromorbit.com>, Jann Horn <jannh@google.com>,
+        Amir Goldstein <amir73il@gmail.com>,
+        Aleksa Sarai <cyphar@cyphar.com>, linux-api@vger.kernel.org,
+        kernel-team@fb.com
+References: <cover.1597993855.git.osandov@osandov.com>
+ <8010f8862ec494c631b1d7681a6c5886d12f60df.1597993855.git.osandov@osandov.com>
+From:   Josef Bacik <josef@toxicpanda.com>
+Message-ID: <93eca2d1-f72c-2181-b6a4-7015886f2418@toxicpanda.com>
+Date:   Mon, 24 Aug 2020 14:52:24 -0400
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.11.0
 MIME-Version: 1.0
-References: <bdJVxLiFr_PyQSXRUbZJfFW_jAjsGgoMetqPHJMbg-hdy54Xt_ZHhRetmnJ6cJ99eBlcX76wy-AvWwV715c3YndkxneSlod11P1hlaADx0s=@protonmail.com>
- <CAJCQCtTC2yi4HRqg6fkMrxw33TVSBh_yAKtnX-Z1-nXSVjBW7w@mail.gmail.com>
- <Yy8-04dbNru1LWPcNZ9UxsagH1b0KNsGn7tDEnxVOqS812IqGiwl37dj4rxAh05gEP8QoNJ5F_Ea6CZ8iZgvnupuq5Qzc38gl69MceWMc9s=@protonmail.com>
- <CAJCQCtSqe_oqRZWYP7iLJcGQnzZkC4vmoYVTm_9RPb8eb0-E6Q@mail.gmail.com>
- <BfU9s11rmWxGNQdKqifkB1JKOJcgqAN49OZdV4LAOgo1W2AguRebwCPVosOiMVjMTzuSmsk_Efbkl02s31niRqtCS67WJ9S7_s4jiK9afeA=@protonmail.com>
- <E212ihR5U8HVCyaalepkxQUX3wOj6IXd1yUFHj-PFFtyU7ma-A49vmB8QwfQG5gUVo2nCMbVpPo7C2ccooRO0ExVrIbdLP9sBpnjMOcefHo=@protonmail.com>
- <lyGE8gPEf9cUEMJceWoJWD_ibk4viZXU0yG5VzbNe9yueGbkcnl1FkJrFZZufhWd5y2vNOgAwfYSpJ4Gia5Tow4wdmQXiGuETdyuNmnemJY=@protonmail.com>
-In-Reply-To: <lyGE8gPEf9cUEMJceWoJWD_ibk4viZXU0yG5VzbNe9yueGbkcnl1FkJrFZZufhWd5y2vNOgAwfYSpJ4Gia5Tow4wdmQXiGuETdyuNmnemJY=@protonmail.com>
-From:   Chris Murphy <lists@colorremedies.com>
-Date:   Mon, 24 Aug 2020 12:51:09 -0600
-Message-ID: <CAJCQCtR3gbJxJn24qyDfHWh9kQG7BSC=NnoGHmRKPnaQ+P7yyg@mail.gmail.com>
-Subject: Re: [Help] Can't login to my systemd-homed user account due to
- fallocate failure
-To:     Andrii Zymohliad <azymohliad@protonmail.com>
-Cc:     Chris Murphy <lists@colorremedies.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        Andrei Borzenkov <arvidjaar@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <8010f8862ec494c631b1d7681a6c5886d12f60df.1597993855.git.osandov@osandov.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Aug 24, 2020 at 2:33 AM Andrii Zymohliad
-<azymohliad@protonmail.com> wrote:
->
-> Sorry, my bad.
->
->     # homectl update --luks-discard=on azymohliad
->
-> Does the job. I can log in again now. Thank you very very much!!!
+On 8/21/20 3:38 AM, Omar Sandoval wrote:
+> From: Omar Sandoval <osandov@fb.com>
+> 
+> This is essentially copy_struct_from_user() but for an iov_iter.
+> 
+> Suggested-by: Aleksa Sarai <cyphar@cyphar.com>
+> Signed-off-by: Omar Sandoval <osandov@fb.com>
 
-Seems like bool should take either yes, true, on, or 1. But I'm an odd
-duck. Anyway! Glad it works.
+This took me a lot longer to grok than I'm proud of, but the idea is you'll have 
+a single segment that represents the incoming encoded data, and then subsequent 
+segments will be the read/write buffer, correct?  The code looks fine to me,
 
-Next question is to find out why you have shared extents.
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 
-filefrag -v /home/azymohliad.home | grep -m 10 shared
+Thanks,
 
-Any of those shared lines that doesn't also include unwritten (ok
-maybe unwritten is fine but I only tested shared without unwritten),
-use the value in the fourth column which is the physical_offset start
-(filefrag calls it physical but on btrfs it's actually a logical
-extent).
-
-The value for my case is 1001165..  so I can do the math in the command:
-
-# btrfs inspect-internal logical-resolve $[1001165*4096] /mnt
-/mnt/libvimages/fedora.raw
-/mnt/libvimages/fedora.raw.bak
-
-That found the two files that share that extent. From that we can find
-out why you have shared extents for your home backing file.
-
-Note: I think this command wants to be pointed at the top-level of the
-file system. It failed otherwise.
-
-
--- 
-Chris Murphy
+Josef
