@@ -2,157 +2,210 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 229D8250C7A
-	for <lists+linux-btrfs@lfdr.de>; Tue, 25 Aug 2020 01:41:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D6EF250C85
+	for <lists+linux-btrfs@lfdr.de>; Tue, 25 Aug 2020 01:49:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726090AbgHXXls (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 24 Aug 2020 19:41:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35342 "EHLO
+        id S1726782AbgHXXtP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 24 Aug 2020 19:49:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726041AbgHXXlr (ORCPT
+        with ESMTP id S1726767AbgHXXtN (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 24 Aug 2020 19:41:47 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 836C0C061574
-        for <linux-btrfs@vger.kernel.org>; Mon, 24 Aug 2020 16:41:47 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id b18so170495wrs.7
-        for <linux-btrfs@vger.kernel.org>; Mon, 24 Aug 2020 16:41:47 -0700 (PDT)
+        Mon, 24 Aug 2020 19:49:13 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52E0EC0613ED
+        for <linux-btrfs@vger.kernel.org>; Mon, 24 Aug 2020 16:49:13 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id l191so3385223pgd.5
+        for <linux-btrfs@vger.kernel.org>; Mon, 24 Aug 2020 16:49:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ypFE0w8c0wXfxCXv6zMenuxFm68aTcapKrvpP27zTGk=;
-        b=WkGARumpLYyq2OdH2JRRR52nAxVKFEXW9PCq6GwA/5XRTf6ibc3W1nG1lTouoKnIqf
-         yA/mlal/rJSR0x44iqivJpOp4qtLVYAAhXrBFItw9YHO5MCJ8F1EHApQYMDAjN+4Eygf
-         AJfFtnFU7nB3UvFyWxc7i1hf/r0mKht4Ms9x1J6gM7+dSH0xQ+ZQsvbogJHbibvm81Gd
-         FSN0B7pOsjUTLcfcUX7Hl5Q8U3Mr2DZYpw5HF3NwjuShJ47whmoia8B5nuYq8gIV31NB
-         BcBw2EsdVrZyrOajjTQRDV/ovLrDXuzeEfron5VnVTmBipDT0yYqYLDeIDkIwDsbMxkC
-         nLRA==
+        d=osandov-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=AmkrCLujxDI1c4Ep3Oyzt+yWmvm0w6UdnGpLz40Q0IE=;
+        b=pB7eTlEquwCPl/L4eg6LBf0zmAb5JgNjHUs0LVnJm0aJnVOc/P4B5gW3et04lXgdzu
+         0VpbP+wNS6z28ZGxIvwlnJ/cbjD982nNuBobOTaQEDJuMsvhse/2trI34TaOneKQaAS6
+         9u45PO5Pa1Xv0LA1bQmYrKhiSx6rhASaKv1sfnu+OXLkHJV4tI7rrrHy3EmrZBPyXHLK
+         bbZ8J65Of4oYy0LhsEO63CLmQ8Svwg8gTFBx1GnLXDtIisGlQzxjFNAuX1eCjGlP2XRo
+         2egkyq9k0u9HYy0+okLq4cbPX5f9RaE2/jfR+lUWt5ALyRCdiBNVQAU+e4zxqH7Zo89+
+         ioKA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ypFE0w8c0wXfxCXv6zMenuxFm68aTcapKrvpP27zTGk=;
-        b=XJKganZ4nGgKJh9G0LFcEe4gQ7XYxhto7eXo8cmFAUKwAQiS4IZL64votbXsOJDXsU
-         ny5UsVd6soJspFVMYDsZGmvGifxbNNQygpNMos0ivNcVUeQ5pmYuYQRHPOJIkcSROyOL
-         5tGEsqXFyv7heGXzBPjRvTfgaDKze9WNaZVozDwC36CTc7g7OfK8sbvltFHyLciYd2X5
-         D8bcIvZg/kQjrxoaC5zBIG5Ir9kpHbZZYMujrvoda2Cu455woYkfBzxgGULx6Rboqt8U
-         InieW0OSHQAoS2FEYFFlk5GVICo3N0oMAP3apiunkPl0XgVMnHJdal0J+vKVwrBU8ThI
-         3UWQ==
-X-Gm-Message-State: AOAM533AA2rDBz5zPJSSNQ7tQ3l+x/7aqceEEom2AcqKrDlF0Bmex9ya
-        7vWHtoI2kna/xLJrSOgWBMio09duhPmp7J3wBmbHemG0zpKYwA==
-X-Google-Smtp-Source: ABdhPJz7Z1qTmvqQ/NvKChZwKvW/MfTb0gO7Zr/6MlItslGR1CHTN3pmexbwEk5WHW04OAZS9GKBVZ0H5wCUVgVhmAU=
-X-Received: by 2002:adf:8401:: with SMTP id 1mr7803875wrf.274.1598312505667;
- Mon, 24 Aug 2020 16:41:45 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=AmkrCLujxDI1c4Ep3Oyzt+yWmvm0w6UdnGpLz40Q0IE=;
+        b=B++irhU1sm9S+yx4DEHFivctisWYjOPvxkmIP4OVaRUqrCAZH8X2cYFlliIWnwevT6
+         8AQ9ubCFOVjjvA35A6pq9h6GGN3DnMkVUij4x4el00fvw9F0mvGefbjgq+t+z7omhd8w
+         6x6NMnvCw3s4tW6lMmyjZPhoT8bI069Gm0F3U65muNJ9JUi0vaKRYTy5H2qrZ49IO9C3
+         eq2nrvr2+ytHYMZ0bA74qOEst2n6W2rx/QZCd9gmeQCWWpsS17j/6espNtS6trM5jM8Z
+         EgMj6bexOM6fNzVc6C5tmWKHtcLwVYnklZIwEebnmIgqkeOg5e8L8NsmD2kzxDMrYhWJ
+         Kcdg==
+X-Gm-Message-State: AOAM533BpapWTez6H3lm4QF2DB8/m5y641I61c0U3Oyi02EcxchqJo4Y
+        CdJD2SeWkkEkza0OM9quVjRNzg==
+X-Google-Smtp-Source: ABdhPJwgLA+j1+Ua7OdYOkEAkCKln/R1NdyUayWhnhl7SoZ71Atg6NxFgN0HKR/SlUx0XpFhNs6wfg==
+X-Received: by 2002:a63:4451:: with SMTP id t17mr4264443pgk.92.1598312952588;
+        Mon, 24 Aug 2020 16:49:12 -0700 (PDT)
+Received: from exodia.localdomain ([2601:602:8b80:8e0::c6ee])
+        by smtp.gmail.com with ESMTPSA id g129sm12764674pfb.33.2020.08.24.16.49.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 24 Aug 2020 16:49:11 -0700 (PDT)
+Date:   Mon, 24 Aug 2020 16:49:03 -0700
+From:   Omar Sandoval <osandov@osandov.com>
+To:     Amir Goldstein <amir73il@gmail.com>
+Cc:     linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Btrfs <linux-btrfs@vger.kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dave Chinner <david@fromorbit.com>,
+        Jann Horn <jannh@google.com>, Aleksa Sarai <cyphar@cyphar.com>,
+        Linux API <linux-api@vger.kernel.org>, kernel-team@fb.com
+Subject: Re: [PATCH v5 3/9] fs: add RWF_ENCODED for reading/writing
+ compressed data
+Message-ID: <20200824234903.GA202819@exodia.localdomain>
+References: <cover.1597993855.git.osandov@osandov.com>
+ <9020a583581b644ae86b7c05de6a39fd5204f06d.1597993855.git.osandov@osandov.com>
+ <CAOQ4uxi=QcV-Rg=bSpYGid24Qp4zOgjKuOH2E5QA+OMrA-EsLQ@mail.gmail.com>
 MIME-Version: 1.0
-References: <CAE8gLhn15dLELmeRy3TadcVg6UszxkhiB4tVL7NpEA_Q3m5sdg@mail.gmail.com>
-In-Reply-To: <CAE8gLhn15dLELmeRy3TadcVg6UszxkhiB4tVL7NpEA_Q3m5sdg@mail.gmail.com>
-From:   Chris Murphy <lists@colorremedies.com>
-Date:   Mon, 24 Aug 2020 17:41:03 -0600
-Message-ID: <CAJCQCtQHnyuhq-so15vZAKW7ih3GT++gUFj5s+AGTYfh=r143Q@mail.gmail.com>
-Subject: Re: Yet another guy with a "parent transid verify failed" problem
-To:     MegaBrutal <megabrutal@gmail.com>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAOQ4uxi=QcV-Rg=bSpYGid24Qp4zOgjKuOH2E5QA+OMrA-EsLQ@mail.gmail.com>
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Aug 24, 2020 at 5:01 PM MegaBrutal <megabrutal@gmail.com> wrote:
->
-> Hi all,
->
-> My home server computer with BTRFS root file system suffered a power
-> supply failure recently which caused a sudden power loss.
->
-> Now the OS (Ubuntu 18.04) boots properly and it starts a bunch of LXC
-> containers with the applications the server is supposed to host. After
-> a certain time of running normally, the root filesystem gets remounted
-> read-only and the following messages appear in dmesg. Fortunately, the
-> file systems of the containers are not affected (they are mounted from
-> separate LVs).
->
-> [57038.544637] BTRFS error (device dm-160): parent transid verify
-> failed on 169222144 wanted 9897860 found 9895362
+On Fri, Aug 21, 2020 at 11:47:54AM +0300, Amir Goldstein wrote:
+> On Fri, Aug 21, 2020 at 10:38 AM Omar Sandoval <osandov@osandov.com> wrote:
+> >
+> > From: Omar Sandoval <osandov@fb.com>
+> >
+> > Btrfs supports transparent compression: data written by the user can be
+> > compressed when written to disk and decompressed when read back.
+> > However, we'd like to add an interface to write pre-compressed data
+> > directly to the filesystem, and the matching interface to read
+> > compressed data without decompressing it. This adds support for
+> > so-called "encoded I/O" via preadv2() and pwritev2().
+> >
+> > A new RWF_ENCODED flags indicates that a read or write is "encoded". If
+> > this flag is set, iov[0].iov_base points to a struct encoded_iov which
+> > is used for metadata: namely, the compression algorithm, unencoded
+> > (i.e., decompressed) length, and what subrange of the unencoded data
+> > should be used (needed for truncated or hole-punched extents and when
+> > reading in the middle of an extent). For reads, the filesystem returns
+> > this information; for writes, the caller provides it to the filesystem.
+> > iov[0].iov_len must be set to sizeof(struct encoded_iov), which can be
+> > used to extend the interface in the future a la copy_struct_from_user().
+> > The remaining iovecs contain the encoded extent.
+> >
+> > This adds the VFS helpers for supporting encoded I/O and documentation
+> > for filesystem support.
+> >
+> > Signed-off-by: Omar Sandoval <osandov@fb.com>
+> > ---
+> >  Documentation/filesystems/encoded_io.rst |  74 ++++++++++
+> >  Documentation/filesystems/index.rst      |   1 +
+> >  include/linux/fs.h                       |  16 +++
+> >  include/uapi/linux/fs.h                  |  33 ++++-
+> >  mm/filemap.c                             | 166 +++++++++++++++++++++--
+> >  5 files changed, 276 insertions(+), 14 deletions(-)
+> >  create mode 100644 Documentation/filesystems/encoded_io.rst
+> >
+> > diff --git a/Documentation/filesystems/encoded_io.rst b/Documentation/filesystems/encoded_io.rst
+> > new file mode 100644
+> > index 000000000000..50405276d866
+> > --- /dev/null
+> > +++ b/Documentation/filesystems/encoded_io.rst
+> > @@ -0,0 +1,74 @@
+> > +===========
+> > +Encoded I/O
+> > +===========
+> > +
+> > +Encoded I/O is a mechanism for reading and writing encoded (e.g., compressed
+> > +and/or encrypted) data directly from/to the filesystem. The userspace interface
+> > +is thoroughly described in the :manpage:`encoded_io(7)` man page; this document
+> > +describes the requirements for filesystem support.
+> > +
+> > +First of all, a filesystem supporting encoded I/O must indicate this by setting
+> > +the ``FMODE_ENCODED_IO`` flag in its ``file_open`` file operation::
+> > +
+> > +    static int foo_file_open(struct inode *inode, struct file *filp)
+> > +    {
+> > +            ...
+> > +            filep->f_mode |= FMODE_ENCODED_IO;
+> > +            ...
+> > +    }
+> > +
+> > +Encoded I/O goes through ``read_iter`` and ``write_iter``, designated by the
+> > +``IOCB_ENCODED`` flag in ``kiocb->ki_flags``.
+> > +
+> > +Reads
+> > +=====
+> > +
+> > +Encoded ``read_iter`` should:
+> > +
+> > +1. Call ``generic_encoded_read_checks()`` to validate the file and buffers
+> > +   provided by userspace.
+> > +2. Initialize the ``encoded_iov`` appropriately.
+> > +3. Copy it to the user with ``copy_encoded_iov_to_iter()``.
+> > +4. Copy the encoded data to the user.
+> > +5. Advance ``kiocb->ki_pos`` by ``encoded_iov->len``.
+> > +6. Return the size of the encoded data read, not including the ``encoded_iov``.
+> > +
+> > +There are a few details to be aware of:
+> > +
+> > +* Encoded ``read_iter`` should support reading unencoded data if the extent is
+> > +  not encoded.
+> > +* If the buffers provided by the user are not large enough to contain an entire
+> > +  encoded extent, then ``read_iter`` should return ``-ENOBUFS``. This is to
+> > +  avoid confusing userspace with truncated data that cannot be properly
+> > +  decoded.
+> > +* Reads in the middle of an encoded extent can be returned by setting
+> > +  ``encoded_iov->unencoded_offset`` to non-zero.
+> > +* Truncated unencoded data (e.g., because the file does not end on a block
+> > +  boundary) may be returned by setting ``encoded_iov->len`` to a value smaller
+> > +  value than ``encoded_iov->unencoded_len - encoded_iov->unencoded_offset``.
+> > +
+> > +Writes
+> > +======
+> > +
+> > +Encoded ``write_iter`` should (in addition to the usual accounting/checks done
+> > +by ``write_iter``):
+> > +
+> > +1. Call ``copy_encoded_iov_from_iter()`` to get and validate the
+> > +   ``encoded_iov``.
+> > +2. Call ``generic_encoded_write_checks()`` instead of
+> > +   ``generic_write_checks()``.
+> > +3. Check that the provided encoding in ``encoded_iov`` is supported.
+> > +4. Advance ``kiocb->ki_pos`` by ``encoded_iov->len``.
+> > +5. Return the size of the encoded data written.
+> > +
+> > +Again, there are a few details:
+> > +
+> > +* Encoded ``write_iter`` doesn't need to support writing unencoded data.
+> > +* ``write_iter`` should either write all of the encoded data or none of it; it
+> > +  must not do partial writes.
+> > +* ``write_iter`` doesn't need to validate the encoded data; a subsequent read
+> > +  may return, e.g., ``-EIO`` if the data is not valid.
+> > +* The user may lie about the unencoded size of the data; a subsequent read
+> > +  should truncate or zero-extend the unencoded data rather than returning an
+> > +  error.
+> > +* Be careful of page cache coherency.
+> 
+> Haha that rings in my head like the "Smoking kills!" warnings...
+> 
+> I find it a bit odd that you mix page cache at all when reading
+> unencoded extents.
+> Feels like a file with FMODE_ENCODED_IO should stick to direct IO in all cases.
+> I don't know how btrfs deals with mixing direct IO and page cache IO normally,
+> but surely the rules could be made even stricter for an inode accessed with this
+> new API?
+> 
+> Is there something I am misunderstanding?
+> 
+> Thanks,
+> Amir.
 
-On the surface that looks like 1500 transaction IDs have been dropped.
-But it's more likely that this location has long since been
-deallocated and the recent commit should have been written there
-before the super block, but for some reason (firmware bug?) the
-current superblock was written before the metadata writes had been
-committed to stable media.
-
-That is, lost writes. It could be write order failure, and then you
-just got unlucky and had a crash so it turned into a lost write. Had
-there been no crash, eventually the write would have happened. It
-being out of order wouldn't matter.
-
-It's possible that the drive does this all the time. It's also
-possible it's 1 in 100 fsync/fua commands.
-
-
-> The usebackuproot mount was successful, but I'm not sure how it's
-> supposed to work... does it correct the file system after one mount
-> and then I'm supposed to mount the file system normally?
-
-That usebackuproot succeeded does further suggest a write order
-failure. The super block made it, but the tree root didn't or whatever
-exactly it's failing on that it expects but isn't there.
-
-The way it works it it'll try to use backup roots for mounting, these
-backup roots are in the super block. It's sorta like a "rollback"
-which means you are probably missing up to 1 minute's worth of data
-loss between the time of the crash and the last properly completed
-commit in which everything made it on stable media.
-
-At this point it's probably fixed. But it's possible this would have
-gone slightly better if the setup were using Btrfs raid1, because in
-that case there's a chance one drive didn't drop that write, and Btrfs
-would find what it wants on that drive, automatically.
-
-But you should do a `btrfs scrub` to see if there are other issues.
-And when you get a chance it's ideal to `btrfs check` because scrub
-only checks the checksums.
-
-Disabling the write caches in both drives might reduce the chance of
-this happening, but without testing it may only end up reducing write
-performance though probably not by much.
-
-
->Or should I
-> always use the file system with usebackuproot from now on?
-
-No need. But even if you use it, btrfs will figure out the current
-root is OK and use it.
-
-
->(It doesn't
-> feel right.) Anyway, after one mount with usebackuproot, now I started
-> the system regularly. But I'm not sure if it solved the problem,
-> whether usebackuproot did anything, especially that now I rebooted
-> with regular mount options. Since the problem presents itself after
-> hours of normal operation, I'm afraid that it might come back anytime.
->
-> What to do if the problem reemerges?
-
-If either drive is dropping writes, there's a chance it'll really
-confuse the file system. And md raid1 scrub check just detects
-differences, it doesn't know which is correct. And if you do an md
-raid1 scrub repair then it just picks one as correct and stomps on the
-other one.
-
-What do you get for 'btrfs fi us /' ?
-
-Hopefully metadata is at least dup profile.
-
-In the short term I'd probably disable write caching on both drives
-because even if it's slower, it's incrementally safer. And also stop
-having power failures :D
-
-And in the longer term you want to redo this setup to use Btrfs raid1.
-That way it will explicitly rat out which of the two drives is
-dropping writes on power failures.
-
--- 
-Chris Murphy
+I'm not completely following here, are you suggesting that if a file is
+open with O_ALLOW_ENCODED, buffered I/O to that file should return an
+error? Btrfs at least does the necessary range locking and page cache
+invalidation to ensure that direct I/O gets along with buffered I/O (and
+now encoded I/O).
