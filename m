@@ -2,65 +2,64 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3659E25070A
-	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Aug 2020 19:57:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00887250719
+	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Aug 2020 20:02:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726752AbgHXR51 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 24 Aug 2020 13:57:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38100 "EHLO
+        id S1726303AbgHXSCK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 24 Aug 2020 14:02:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725905AbgHXR5Z (ORCPT
+        with ESMTP id S1726008AbgHXSCF (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 24 Aug 2020 13:57:25 -0400
-Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13193C061573
-        for <linux-btrfs@vger.kernel.org>; Mon, 24 Aug 2020 10:57:25 -0700 (PDT)
-Received: by mail-qt1-x843.google.com with SMTP id k18so6832837qtm.10
-        for <linux-btrfs@vger.kernel.org>; Mon, 24 Aug 2020 10:57:25 -0700 (PDT)
+        Mon, 24 Aug 2020 14:02:05 -0400
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C695C061573
+        for <linux-btrfs@vger.kernel.org>; Mon, 24 Aug 2020 11:02:05 -0700 (PDT)
+Received: by mail-qk1-x742.google.com with SMTP id g26so8297648qka.3
+        for <linux-btrfs@vger.kernel.org>; Mon, 24 Aug 2020 11:02:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=pfHqfcJoh7NwydFXCDDvp+Qm8dM//7KjuHgjqMAgk24=;
-        b=Bxwh1OkqrkG9vqKdqDgMzpEudLHzjgsU4laz6Ku6V/wf9soGv7L3YPfydnottjJt4K
-         FRdUTrK2WxHUa7+xvQhonTo5VXZP1CrUv2ndiZ/0E2+Po5AK808PNheVslseT1z6xm0b
-         qK9ILN24Ptjkz2irK/NNL0d3MBkghj2cEJg925RVd22/FniLu1LB6gKQy3cRilkCJ+A9
-         q266mEGTuTCRMbxYzirDDVD44AOV1/caR5b+LHs/6qCBFI+X+yKyk1HVr6ptuus4Ln9D
-         DZWkg/q7mW9CMwTSuaUYG3Za/2sDZv5gtRD7313sIDKo4xesMB9gTUotk2rvt3zXcrfh
-         B0yA==
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=GWeZRispZT9vQbQktYeXxjTBhlOoelcaA714J4CCZsM=;
+        b=1JaVzW8cnmh7Gp57P+q8aOh29zjCvAlC60C5YXU5mRkzdsnOUkv4b0bO3wJmDUFUIa
+         NifXsKRB9te6m4r6uHSsd1QPSZFmUYChpXMndw+/43BIgWi13ZyqUs3xgp6x2RpgtGs6
+         ZSTt1sivfj3R5gn0hOzsmJzf29mUS/XDqB+wgfIOaHjrgvJnzALpJmlMjPJU+9WkTiB0
+         BB3aSDFc86nyEyEQgW6azy9MfPRsXfPealNBqY7IN5Q9aTY7TQZ0MTqy1gUZtr/HOi2G
+         /HymJFVJRlLhpdzaZ8UlgKRtjtwIU6y7Xve0apJzHfskME+MzMfBJr1ZiBg07X4phwNW
+         U7Yw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+        h=x-gm-message-state:subject:to:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=pfHqfcJoh7NwydFXCDDvp+Qm8dM//7KjuHgjqMAgk24=;
-        b=qtNYc/JIq6W9apHLY86/4KZjVd4h9tki7AFjmcH4sPHde5FHey8W004yyf9IcDsXsR
-         C7iO+ApaGEUQ/0+05gnGUjR3G8ZmuEGlJBUop/IAhZsjLiMdXbuttlsrc/ZtX3aBXzSS
-         r4Vo46xAjKQxXECF+e3QrhClaLu8KPDDm7jVyLGAlMQfNMXgt43EqPDiIqQ0fFXD2cq+
-         /x0wUl5Ya7552EV0svS4dYGJKhtI1G+wFhQSBZJeWOC81LNks18jQ+83asXgeXxv30va
-         iMFVWiD0mwbPOudxrmqRz33Wc64VsdF/7K6VFwbYRriSBqJzvZF/vYdp09j1AWY325zs
-         Ucpw==
-X-Gm-Message-State: AOAM532I6GDLNrIi2SY0BhclTyijwqr8oFHeCB29BJR+mzbGaGp2loya
-        uTxz096RiV/M0vQbZ9IWVmhXsnQ9wYpVhEHW
-X-Google-Smtp-Source: ABdhPJwo8GZO/xch6KTtdlxty7JGIocvkmjC3c5w4Ipx+tcSIaK+BRxo7VEcugoj8Xvy47ievMuz5g==
-X-Received: by 2002:ac8:2f2c:: with SMTP id j41mr6082112qta.258.1598291844103;
-        Mon, 24 Aug 2020 10:57:24 -0700 (PDT)
+        bh=GWeZRispZT9vQbQktYeXxjTBhlOoelcaA714J4CCZsM=;
+        b=mhowY2nP2K824mPutFM0+tAEUIAcr+o8+PCOUbzUkKj270zo5VyHOGtX9rndrKEkpi
+         oe8sNjYD3gKoHqsHZTZ+L4PTAoFbIlw7L3K3obdcONLl6ybE411yC2X+/oi3sGXY7EBc
+         uugR9fmCuQ+IsZ8XrwBmxB5C7yPwUP533X/IizzRahdrnr0UdiN8CPCny3ki9XtVVNI6
+         rszXSnrwjY18u4bZN1TlR5wGvTSCoOkFrkkJX16BeY2t4Ql/rZdWzam+XJtNC4FTiYkz
+         1UdZREM0Fimamcr3Qn9S3YD1MU0i6RfSvDqnlvcnNjOXJtLYesN5jhVGIJB+HUEnczzb
+         hLVw==
+X-Gm-Message-State: AOAM5324omWFJ9nNid5qvu7tThCZFMt0kReQ6Cz9UHyQ9Oid/T/kkNlm
+        wcf9fxHskwDHpuM9+saaAncUq1quxWbfjsWJ
+X-Google-Smtp-Source: ABdhPJwVweuhFMzibqW81WRxxgZwkXKbCewxBfVm9qrUqwLe0zavrr9I7dfToqwXpui98DuRbeSiVg==
+X-Received: by 2002:a37:89c2:: with SMTP id l185mr5748523qkd.41.1598292124517;
+        Mon, 24 Aug 2020 11:02:04 -0700 (PDT)
 Received: from [192.168.1.45] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id t1sm10020793qkt.119.2020.08.24.10.57.23
+        by smtp.gmail.com with ESMTPSA id y194sm2041241qkb.116.2020.08.24.11.02.03
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 24 Aug 2020 10:57:23 -0700 (PDT)
-Subject: Re: [PATCH 6/9] btrfs: send: write larger chunks when using stream v2
-To:     Omar Sandoval <osandov@osandov.com>, linux-btrfs@vger.kernel.org
-Cc:     linux-fsdevel@vger.kernel.org
-References: <cover.1597994106.git.osandov@osandov.com>
- <eebf24d3b42ef50a19ba9bc38ed5210d0cc87157.1597994106.git.osandov@osandov.com>
+        Mon, 24 Aug 2020 11:02:03 -0700 (PDT)
+Subject: Re: [PATCH 1/2] btrfs: qgroup: fix wrong qgroup metadata reserve for
+ delayed inode
+To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+References: <20200724064610.69442-1-wqu@suse.com>
 From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <a5cafc52-a278-d51c-92fc-6b52b88147e7@toxicpanda.com>
-Date:   Mon, 24 Aug 2020 13:57:22 -0400
+Message-ID: <0024edba-5cbd-2da9-8ed1-42cc46414c90@toxicpanda.com>
+Date:   Mon, 24 Aug 2020 14:02:02 -0400
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
  Gecko/20100101 Thunderbird/68.11.0
 MIME-Version: 1.0
-In-Reply-To: <eebf24d3b42ef50a19ba9bc38ed5210d0cc87157.1597994106.git.osandov@osandov.com>
+In-Reply-To: <20200724064610.69442-1-wqu@suse.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -69,50 +68,46 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 8/21/20 3:39 AM, Omar Sandoval wrote:
-> From: Omar Sandoval <osandov@fb.com>
+On 7/24/20 2:46 AM, Qu Wenruo wrote:
+> For delayed inode facility, qgroup metadata is reserved for it, and
+> later freed.
 > 
-> The length field of the send stream TLV header is 16 bits. This means
-> that the maximum amount of data that can be sent for one write is 64k
-> minus one. However, encoded writes must be able to send the maximum
-> compressed extent (128k) in one command. To support this, send stream
-> version 2 encodes the DATA attribute differently: it has no length
-> field, and the length is implicitly up to the end of containing command
-> (which has a 32-bit length field). Although this is necessary for
-> encoded writes, normal writes can benefit from it, too.
+> However we're freeing more bytes than we reserved.
+> In btrfs_delayed_inode_reserve_metadata():
 > 
-> For v2, let's bump up the send buffer to the maximum compressed extent
-> size plus 16k for the other metadata (144k total). Since this will most
-> likely be vmalloc'd (and always will be after the next commit), we round
-> it up to the next page since we might as well use the rest of the page
-> on systems with >16k pages.
+> 	num_bytes = btrfs_calc_metadata_size(fs_info, 1);
+> 	...
+> 		ret = btrfs_qgroup_reserve_meta_prealloc(root,
+> 				fs_info->nodesize, true);
+> 		...
+> 		if (!ret) {
+> 			node->bytes_reserved = num_bytes;
 > 
-> Signed-off-by: Omar Sandoval <osandov@fb.com>
-> ---
->   fs/btrfs/send.c | 34 ++++++++++++++++++++++++++--------
->   1 file changed, 26 insertions(+), 8 deletions(-)
+> But in btrfs_delayed_inode_release_metadata():
 > 
-> diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
-> index e25c3391fc02..c0f81d302f49 100644
-> --- a/fs/btrfs/send.c
-> +++ b/fs/btrfs/send.c
-> @@ -4799,14 +4799,27 @@ static u64 max_send_read_size(struct send_ctx *sctx)
->   
->   static int put_data_header(struct send_ctx *sctx, u32 len)
->   {
-> -	struct btrfs_tlv_header *hdr;
-> +	if (sctx->flags & BTRFS_SEND_FLAG_STREAM_V2) {
-> +		__le16 tlv_type;
-> +
-> +		if (sctx->send_max_size - sctx->send_size <
-> +		    sizeof(tlv_type) + len)
-> +			return -EOVERFLOW;
-> +		tlv_type = cpu_to_le16(BTRFS_SEND_A_DATA);
-> +		memcpy(sctx->send_buf + sctx->send_size, &tlv_type,
-> +		       sizeof(tlv_type));
-> +		sctx->send_size += sizeof(tlv_type);
+> 	if (qgroup_free)
+> 		btrfs_qgroup_free_meta_prealloc(node->root,
+> 				node->bytes_reserved);
+> 	else
+> 		btrfs_qgroup_convert_reserved_meta(node->root,
+> 				node->bytes_reserved);
+> 
+> This means, we're always releasing more qgroup metadata rsv than we have
+> reserved.
+> 
+> This won't trigger selftest warning, as btrfs qgroup metadata rsv has
+> extra protection against cases like quota enabled half-way.
+> 
+> But we still need to fix this problem any way.
+> 
+> This patch will use the same num_bytes for qgroup metadata rsv so we
+> could handle it correctly.
+> 
+> Fixes: f218ea6c4792 ("btrfs: delayed-inode: Remove wrong qgroup meta reservation calls")
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
 
-Can we add a comment for implied length thing here?  I was reviewing this in 
-vimdiff without the commit message so missed the implied length detail.  Thanks,
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+
+Thanks,
 
 Josef
