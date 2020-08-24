@@ -2,91 +2,78 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9E6C250371
-	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Aug 2020 18:45:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A3B42503BD
+	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Aug 2020 18:50:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727878AbgHXQpA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 24 Aug 2020 12:45:00 -0400
-Received: from mx2.suse.de ([195.135.220.15]:58018 "EHLO mx2.suse.de"
+        id S1728809AbgHXQuQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 24 Aug 2020 12:50:16 -0400
+Received: from mx2.suse.de ([195.135.220.15]:32830 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728803AbgHXQox (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 24 Aug 2020 12:44:53 -0400
+        id S1728061AbgHXQuE (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 24 Aug 2020 12:50:04 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 3C9E7AC46;
-        Mon, 24 Aug 2020 16:45:22 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 1A3A4AD4B;
+        Mon, 24 Aug 2020 16:50:33 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 52A8BDA730; Mon, 24 Aug 2020 18:43:44 +0200 (CEST)
-From:   David Sterba <dsterba@suse.com>
-To:     torvalds@linux-foundation.org
-Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Btrfs fixes for 5.9-rc3
-Date:   Mon, 24 Aug 2020 18:43:43 +0200
-Message-Id: <cover.1598283719.git.dsterba@suse.com>
-X-Mailer: git-send-email 2.25.0
+        id 374E0DA730; Mon, 24 Aug 2020 18:48:55 +0200 (CEST)
+Date:   Mon, 24 Aug 2020 18:48:55 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Anand Jain <anand.jain@oracle.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 0/7] btrfs: consolidate seed mutex to sprout mutex
+Message-ID: <20200824164854.GN2026@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Anand Jain <anand.jain@oracle.com>,
+        linux-btrfs@vger.kernel.org
+References: <20200814000352.124179-1-anand.jain@oracle.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200814000352.124179-1-anand.jain@oracle.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi,
+On Fri, Aug 14, 2020 at 08:03:45AM +0800, Anand Jain wrote:
+> In a sprouted btrfs, the seed's fs_devices are cloned and link-
+> listed under the sprout's fs_devices. The fs_info::fs_devices
+> points to the sprout::fs_devices and various critical operations
+> like device-delete holds the top-level device_list_mutex
+> sprout::fs_devices::device_list_mutex and _not_ the seed level
+> mutex such as sprout::fs_devices::seed::fs_devices::device_list_mutex.
+> 
+> Also all related readers (except for two threads- reada and init_devices_late)
+> hold the sprout::fs_devices::device_list_mutex too. And those two threads
+> which are missing to hold the correct lock are being fixed here.
+> 
+> I take the approach to fix the read end instead of fixing the writer end
+> which are not holding the seed level mutex because to keep things
+> simple and there isn't much benefit burning extra CPU cycles in going 
+> through the lock/unlock process as we traverse through the
+> fs_devices::seed fs_devices (for example as in reada and init_devices_late
+> threads).
+> 
+> The first two patches (1/7, 2/7) fixes the threads using the
+> seed::device_list_mutex.
+> 
+> And rest of the patches ([3-7]/7) are cleanups and these patches
+> are independent by themself.
+> 
+> These patchset has been tested with full xfstests btrfs test cases and
+> found to have no new regressions.
+> 
+> Anand Jain (7):
+>   btrfs: reada: use sprout device_list_mutex
+>   btrfs: btrfs_init_devices_late: use sprout device_list_mutex
+>   btrfs: open code list_head pointer in btrfs_init_dev_replace_tgtdev
+>   btrfs: cleanup unused return in btrfs_close_devices
+>   btrfs: cleanup btrfs_assign_next_active_device()
+>   btrfs: cleanup unnecessary goto in open_seed_device
+>   btrfs: btrfs_dev_replace_update_device_in_mapping_tree drop file
+>     global declare
 
-a few more fixes. Please pull, Thanks.
-
-- fix swapfile activation on subvolumes with deleted snapshots
-
-- error value mixup when removing directory entries from tree log
-
-- fix lzo compression level reset after previous level setting
-
-- fix space cache memory leak after transaction abort
-
-- fix const function attribute
-
-- more error handling improvements
-
-----------------------------------------------------------------
-The following changes since commit c57dd1f2f6a7cd1bb61802344f59ccdc5278c983:
-
-  btrfs: trim: fix underflow in trim length to prevent access beyond device boundary (2020-08-12 10:15:58 +0200)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.9-rc2-tag
-
-for you to fetch changes up to a84d5d429f9eb56f81b388609841ed993f0ddfca:
-
-  btrfs: detect nocow for swap after snapshot delete (2020-08-21 12:21:23 +0200)
-
-----------------------------------------------------------------
-Boris Burkov (1):
-      btrfs: detect nocow for swap after snapshot delete
-
-David Sterba (1):
-      btrfs: use the correct const function attribute for btrfs_get_num_csums
-
-Filipe Manana (1):
-      btrfs: fix space cache memory leak after transaction abort
-
-Johannes Thumshirn (1):
-      btrfs: handle errors from async submission
-
-Josef Bacik (1):
-      btrfs: check the right error variable in btrfs_del_dir_entries_in_log
-
-Marcos Paulo de Souza (1):
-      btrfs: reset compression level for lzo on remount
-
- fs/btrfs/ctree.c            |  2 +-
- fs/btrfs/ctree.h            |  6 +++---
- fs/btrfs/disk-io.c          |  1 +
- fs/btrfs/extent-tree.c      | 17 +++++++++++------
- fs/btrfs/file.c             |  2 +-
- fs/btrfs/free-space-cache.c |  2 +-
- fs/btrfs/inode.c            | 29 ++++++++++++++---------------
- fs/btrfs/super.c            |  1 +
- fs/btrfs/tree-log.c         | 10 ++++++----
- 9 files changed, 39 insertions(+), 31 deletions(-)
+The series conflicts from patch 1 with the seed updates from Nik. The
+branch is now in for-next and will be in misc-next soon.
