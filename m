@@ -2,78 +2,91 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23921250126
-	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Aug 2020 17:31:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9E6C250371
+	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Aug 2020 18:45:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727114AbgHXP3z (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 24 Aug 2020 11:29:55 -0400
-Received: from mx2.suse.de ([195.135.220.15]:56250 "EHLO mx2.suse.de"
+        id S1727878AbgHXQpA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 24 Aug 2020 12:45:00 -0400
+Received: from mx2.suse.de ([195.135.220.15]:58018 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726878AbgHXP3i (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 24 Aug 2020 11:29:38 -0400
+        id S1728803AbgHXQox (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 24 Aug 2020 12:44:53 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 95AD4AC92;
-        Mon, 24 Aug 2020 15:30:07 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 3C9E7AC46;
+        Mon, 24 Aug 2020 16:45:22 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 9CB1BDA730; Mon, 24 Aug 2020 17:28:29 +0200 (CEST)
-Date:   Mon, 24 Aug 2020 17:28:29 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Marcos Paulo de Souza <marcos@mpdesouza.com>
-Cc:     linux-kernel@vger.kernel.org, dsterba@suse.com,
-        linux-btrfs@vger.kernel.org,
-        Marcos Paulo de Souza <mpdesouza@suse.com>,
-        stable@vger.kernel.org, Qu Wenruo <wqu@suse.com>,
-        Filipe Manana <fdmanana@suse.com>
-Subject: Re: [PATCH v3] btrfs: block-group: Fix free-space bitmap threshould
-Message-ID: <20200824152829.GK2026@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz,
-        Marcos Paulo de Souza <marcos@mpdesouza.com>,
-        linux-kernel@vger.kernel.org, dsterba@suse.com,
-        linux-btrfs@vger.kernel.org,
-        Marcos Paulo de Souza <mpdesouza@suse.com>, stable@vger.kernel.org,
-        Qu Wenruo <wqu@suse.com>, Filipe Manana <fdmanana@suse.com>
-References: <20200821145444.25791-1-marcos@mpdesouza.com>
+        id 52A8BDA730; Mon, 24 Aug 2020 18:43:44 +0200 (CEST)
+From:   David Sterba <dsterba@suse.com>
+To:     torvalds@linux-foundation.org
+Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Btrfs fixes for 5.9-rc3
+Date:   Mon, 24 Aug 2020 18:43:43 +0200
+Message-Id: <cover.1598283719.git.dsterba@suse.com>
+X-Mailer: git-send-email 2.25.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200821145444.25791-1-marcos@mpdesouza.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Aug 21, 2020 at 11:54:44AM -0300, Marcos Paulo de Souza wrote:
-> From: Marcos Paulo de Souza <mpdesouza@suse.com>
-> 
-> [BUG]
-> After commit 9afc66498a0b ("btrfs: block-group: refactor how we read one
-> block group item"), cache->length is being assigned after calling
-> btrfs_create_block_group_cache. This causes a problem since
-> set_free_space_tree_thresholds is calculate the free-space threshould to
-> decide is the free-space tree should convert from extents to bitmaps.
-> 
-> The current code calls set_free_space_tree_thresholds with cache->length
-> being 0, which then makes cache->bitmap_high_thresh being zero. This
-> implies the system will always use bitmap instead of extents, which is
-> not desired if the block group is not fragmented.
-> 
-> This behavior can be seen by a test that expects to repair systems
-> with FREE_SPACE_EXTENT and FREE_SPACE_BITMAP, but the current code only
-> created FREE_SPACE_BITMAP.
-> 
-> [FIX]
-> Call set_free_space_tree_thresholds after setting cache->length. There
-> is now a WARN_ON in set_free_space_tree_thresholds to help preventing
-> the same mistake to happen again in the future.
-> 
-> Link: https://github.com/kdave/btrfs-progs/issues/251
-> Fixes: 9afc66498a0b ("btrfs: block-group: refactor how we read one block group item")
-> CC: stable@vger.kernel.org # 5.8+
-> Reviewed-by: Qu Wenruo <wqu@suse.com>
-> Reviewed-by: Filipe Manana <fdmanana@suse.com>
-> Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
+Hi,
 
-Added to misc-next, thanks.
+a few more fixes. Please pull, Thanks.
+
+- fix swapfile activation on subvolumes with deleted snapshots
+
+- error value mixup when removing directory entries from tree log
+
+- fix lzo compression level reset after previous level setting
+
+- fix space cache memory leak after transaction abort
+
+- fix const function attribute
+
+- more error handling improvements
+
+----------------------------------------------------------------
+The following changes since commit c57dd1f2f6a7cd1bb61802344f59ccdc5278c983:
+
+  btrfs: trim: fix underflow in trim length to prevent access beyond device boundary (2020-08-12 10:15:58 +0200)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.9-rc2-tag
+
+for you to fetch changes up to a84d5d429f9eb56f81b388609841ed993f0ddfca:
+
+  btrfs: detect nocow for swap after snapshot delete (2020-08-21 12:21:23 +0200)
+
+----------------------------------------------------------------
+Boris Burkov (1):
+      btrfs: detect nocow for swap after snapshot delete
+
+David Sterba (1):
+      btrfs: use the correct const function attribute for btrfs_get_num_csums
+
+Filipe Manana (1):
+      btrfs: fix space cache memory leak after transaction abort
+
+Johannes Thumshirn (1):
+      btrfs: handle errors from async submission
+
+Josef Bacik (1):
+      btrfs: check the right error variable in btrfs_del_dir_entries_in_log
+
+Marcos Paulo de Souza (1):
+      btrfs: reset compression level for lzo on remount
+
+ fs/btrfs/ctree.c            |  2 +-
+ fs/btrfs/ctree.h            |  6 +++---
+ fs/btrfs/disk-io.c          |  1 +
+ fs/btrfs/extent-tree.c      | 17 +++++++++++------
+ fs/btrfs/file.c             |  2 +-
+ fs/btrfs/free-space-cache.c |  2 +-
+ fs/btrfs/inode.c            | 29 ++++++++++++++---------------
+ fs/btrfs/super.c            |  1 +
+ fs/btrfs/tree-log.c         | 10 ++++++----
+ 9 files changed, 39 insertions(+), 31 deletions(-)
