@@ -2,123 +2,237 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEC89251DFD
-	for <lists+linux-btrfs@lfdr.de>; Tue, 25 Aug 2020 19:15:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 841A0251E25
+	for <lists+linux-btrfs@lfdr.de>; Tue, 25 Aug 2020 19:20:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726770AbgHYRPY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 25 Aug 2020 13:15:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59108 "EHLO
+        id S1726772AbgHYRUk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 25 Aug 2020 13:20:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726610AbgHYRNk (ORCPT
+        with ESMTP id S1726413AbgHYRUa (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 25 Aug 2020 13:13:40 -0400
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F2B5C061574
-        for <linux-btrfs@vger.kernel.org>; Tue, 25 Aug 2020 10:13:32 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id m7so11637727qki.12
-        for <linux-btrfs@vger.kernel.org>; Tue, 25 Aug 2020 10:13:32 -0700 (PDT)
+        Tue, 25 Aug 2020 13:20:30 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61F47C061756
+        for <linux-btrfs@vger.kernel.org>; Tue, 25 Aug 2020 10:20:29 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id nv17so1595506pjb.3
+        for <linux-btrfs@vger.kernel.org>; Tue, 25 Aug 2020 10:20:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=bHGEPwazCvPtI5yjC/GyqN80yncMFDB6sJ09rENHbXs=;
-        b=V1Q99F3bHd/1xPCV7A4bV8fpl2japrVlD4w6AZlBvO2UWvbDQcg1YAM5/YVvEe7kk0
-         LWxhuGAWAeGb4Tb74ghkez/tBHzHwvs6xHQlHHkVEbmlaTLLTJKKPq9LgSuh15eeDpxR
-         2bIILPQv/0RmbVjofDkNXF5l1tNUuMITbhG/xyvhlyXmd1JRJgxtaa4JLwc3U18XcVzB
-         /Zwfe7Ms23BK+reuMcgeqtE1IJp9TC/h5Z6RnSS8361U/lXM/WHx9zxgkTKpdzTq6UzX
-         raGNsjq+mm89b+6+DkDA7iit7cueSk+qWLjHDZv/Rn9NBjlkW4UwTu5DKR4XnonctAD0
-         Sx7A==
+        d=osandov-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=nyT729ODf8DWQ/R5OBbqDSpXmbF4wBuQSe70PLQ1lcg=;
+        b=DIj0h1lFBw4g5ROo/bDFXCWWLq2HT4qbOTLAYVwkgWPktZledE3e4lc9TQcSg/GTdy
+         xSsE/NVATf0/shqZd6UvHqpzbjo3XzclszlXvkQYvtpUhnXNdJ2n+URcSyJp+N6cYQ53
+         +qqp8higNSJCEc5zi+fY2fCj6sOcXFBpRCv/WOCqlVVbWEC9IL/o+hv6zXC4MS43RryJ
+         f3b3eZ67KO33/p3GSxAQvsfwPrO8YtIYXPK8zlKFytx+KW4A8SiyOLhCenim6OgLYM8L
+         aGwoQNqXLJO1bG5BvSOBuerqkv/85cP6m7LkvIx4kot1Vf14vD/a0yZpmXpEoB/hUZDj
+         HZGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=bHGEPwazCvPtI5yjC/GyqN80yncMFDB6sJ09rENHbXs=;
-        b=PILPU9rUyIRrc8gECzugc8wlLMZ7jEwIhS6Xq6xYHNEKyXBq1MBkSIdss4P4v6ws6/
-         lgGqYvC1xF3aE7T4FOz28hk7UFurgXagKf0J3BOSexPfqn4IceNi73Es8S/DlHrAg5AA
-         LCQ/EC2lAAgzm2GLmyIVWYLn0UGa1vlYy1U8QmiArR40RaER7mjHxuSJs1ndg1Y3r14F
-         uM5ynHxuiKozL5RNDOP56SmBqca+y4Myy9YbN1eGW362M9LQDQCXHQ5HYagn2ceyyzz9
-         abz7mG040NCQJ02cuCIJymumhkNVaiHvNfPRDV85uzXNRaR+SQp+r7lPzpzSnXONNmDD
-         73gg==
-X-Gm-Message-State: AOAM532xzoHfxEE2lJ85OVVyAxqPv3o3az8Wntbw9FNNfHCXapAYCSWl
-        NV2JBf7gJbb9wPDAwthxyEhAy7K9pyV5SYtv
-X-Google-Smtp-Source: ABdhPJywL3OiNEujdeTxcQ+9ZG3di3PYI3mQLf35h9ylUwOjBv+MWHNn0eWwtARWidwV20lmkFcg2w==
-X-Received: by 2002:a37:8ec2:: with SMTP id q185mr9779475qkd.295.1598375611274;
-        Tue, 25 Aug 2020 10:13:31 -0700 (PDT)
-Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id v24sm2284253qtb.13.2020.08.25.10.13.30
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=nyT729ODf8DWQ/R5OBbqDSpXmbF4wBuQSe70PLQ1lcg=;
+        b=qFPuM1FEF05/ZUb8KbO9kZ2OzCmyPeMjjykpPEbtKHiUF2C/SE4L7eFgRxbaHA2u+M
+         yyp9uA/bi+pYHTxT1K6wLSu9hu52qr2epkgJsPpLjy+hFqvcvSHONsCrrmEgPQgA2jk6
+         9wnQryUCOaI3fEc3oskvYBwRp8jOpxFz7u7ocLyAeSqmf7ozP9IhMWQlDAjoxid5zcdW
+         zKmnfNwqdnV5magLuVjczkrzx3l5vNwaZZFKXoRHRI53dX6yyjD+EbSEvK3EXKFJAQKZ
+         On6xD8Cam+nTS/SaCIakw+M3pqG1qgKUuUcsKavWQ1RXaGXRuCFqqlRBRWkM5XVfTCTL
+         y/ng==
+X-Gm-Message-State: AOAM530/VUn57tBoV8d12nIvjInxZM8r56yg58IrMD6VxxAqUnOG4JaH
+        tlvfwVnMXGoVeA1ZcE6yeKYlmA==
+X-Google-Smtp-Source: ABdhPJxwwyHTLoVmyfZsoo0csISs9vINZZ6y0OFmmRRIshStMQz51XXdpaAF8IsarjtDzqqhQYFX6Q==
+X-Received: by 2002:a17:90b:3509:: with SMTP id ls9mr2409035pjb.230.1598376028599;
+        Tue, 25 Aug 2020 10:20:28 -0700 (PDT)
+Received: from exodia.localdomain ([2601:602:8b80:8e0::edd])
+        by smtp.gmail.com with ESMTPSA id i1sm15906928pfo.212.2020.08.25.10.20.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Aug 2020 10:13:30 -0700 (PDT)
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH] btrfs-progs: add a warning and countdown for RAID5/6 conversion
-Date:   Tue, 25 Aug 2020 13:13:29 -0400
-Message-Id: <164e102b2a6179f9af35ded962c11d780ccf8400.1598375602.git.josef@toxicpanda.com>
-X-Mailer: git-send-email 2.24.1
+        Tue, 25 Aug 2020 10:20:27 -0700 (PDT)
+Date:   Tue, 25 Aug 2020 10:20:26 -0700
+From:   Omar Sandoval <osandov@osandov.com>
+To:     Amir Goldstein <amir73il@gmail.com>
+Cc:     linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Btrfs <linux-btrfs@vger.kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dave Chinner <david@fromorbit.com>,
+        Jann Horn <jannh@google.com>, Aleksa Sarai <cyphar@cyphar.com>,
+        Linux API <linux-api@vger.kernel.org>, kernel-team@fb.com
+Subject: Re: [PATCH v5 3/9] fs: add RWF_ENCODED for reading/writing
+ compressed data
+Message-ID: <20200825172026.GA253200@exodia.localdomain>
+References: <cover.1597993855.git.osandov@osandov.com>
+ <9020a583581b644ae86b7c05de6a39fd5204f06d.1597993855.git.osandov@osandov.com>
+ <CAOQ4uxi=QcV-Rg=bSpYGid24Qp4zOgjKuOH2E5QA+OMrA-EsLQ@mail.gmail.com>
+ <20200824234903.GA202819@exodia.localdomain>
+ <CAOQ4uxgXUvDSV_4V8R6ivbbSOdh8J4GhvrHqys77E_PgHtAoWg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAOQ4uxgXUvDSV_4V8R6ivbbSOdh8J4GhvrHqys77E_PgHtAoWg@mail.gmail.com>
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Similar to the mkfs warning, add a warning to btrfs balance -*convert
-options, with a countdown to allow the user to have time to cancel the
-operation.
+On Tue, Aug 25, 2020 at 11:25:05AM +0300, Amir Goldstein wrote:
+> On Tue, Aug 25, 2020 at 2:49 AM Omar Sandoval <osandov@osandov.com> wrote:
+> >
+> > On Fri, Aug 21, 2020 at 11:47:54AM +0300, Amir Goldstein wrote:
+> > > On Fri, Aug 21, 2020 at 10:38 AM Omar Sandoval <osandov@osandov.com> wrote:
+> > > >
+> > > > From: Omar Sandoval <osandov@fb.com>
+> > > >
+> > > > Btrfs supports transparent compression: data written by the user can be
+> > > > compressed when written to disk and decompressed when read back.
+> > > > However, we'd like to add an interface to write pre-compressed data
+> > > > directly to the filesystem, and the matching interface to read
+> > > > compressed data without decompressing it. This adds support for
+> > > > so-called "encoded I/O" via preadv2() and pwritev2().
+> > > >
+> > > > A new RWF_ENCODED flags indicates that a read or write is "encoded". If
+> > > > this flag is set, iov[0].iov_base points to a struct encoded_iov which
+> > > > is used for metadata: namely, the compression algorithm, unencoded
+> > > > (i.e., decompressed) length, and what subrange of the unencoded data
+> > > > should be used (needed for truncated or hole-punched extents and when
+> > > > reading in the middle of an extent). For reads, the filesystem returns
+> > > > this information; for writes, the caller provides it to the filesystem.
+> > > > iov[0].iov_len must be set to sizeof(struct encoded_iov), which can be
+> > > > used to extend the interface in the future a la copy_struct_from_user().
+> > > > The remaining iovecs contain the encoded extent.
+> > > >
+> > > > This adds the VFS helpers for supporting encoded I/O and documentation
+> > > > for filesystem support.
+> > > >
+> > > > Signed-off-by: Omar Sandoval <osandov@fb.com>
+> > > > ---
+> > > >  Documentation/filesystems/encoded_io.rst |  74 ++++++++++
+> > > >  Documentation/filesystems/index.rst      |   1 +
+> > > >  include/linux/fs.h                       |  16 +++
+> > > >  include/uapi/linux/fs.h                  |  33 ++++-
+> > > >  mm/filemap.c                             | 166 +++++++++++++++++++++--
+> > > >  5 files changed, 276 insertions(+), 14 deletions(-)
+> > > >  create mode 100644 Documentation/filesystems/encoded_io.rst
+> > > >
+> > > > diff --git a/Documentation/filesystems/encoded_io.rst b/Documentation/filesystems/encoded_io.rst
+> > > > new file mode 100644
+> > > > index 000000000000..50405276d866
+> > > > --- /dev/null
+> > > > +++ b/Documentation/filesystems/encoded_io.rst
+> > > > @@ -0,0 +1,74 @@
+> > > > +===========
+> > > > +Encoded I/O
+> > > > +===========
+> > > > +
+> > > > +Encoded I/O is a mechanism for reading and writing encoded (e.g., compressed
+> > > > +and/or encrypted) data directly from/to the filesystem. The userspace interface
+> > > > +is thoroughly described in the :manpage:`encoded_io(7)` man page; this document
+> > > > +describes the requirements for filesystem support.
+> > > > +
+> > > > +First of all, a filesystem supporting encoded I/O must indicate this by setting
+> > > > +the ``FMODE_ENCODED_IO`` flag in its ``file_open`` file operation::
+> > > > +
+> > > > +    static int foo_file_open(struct inode *inode, struct file *filp)
+> > > > +    {
+> > > > +            ...
+> > > > +            filep->f_mode |= FMODE_ENCODED_IO;
+> > > > +            ...
+> > > > +    }
+> > > > +
+> > > > +Encoded I/O goes through ``read_iter`` and ``write_iter``, designated by the
+> > > > +``IOCB_ENCODED`` flag in ``kiocb->ki_flags``.
+> > > > +
+> > > > +Reads
+> > > > +=====
+> > > > +
+> > > > +Encoded ``read_iter`` should:
+> > > > +
+> > > > +1. Call ``generic_encoded_read_checks()`` to validate the file and buffers
+> > > > +   provided by userspace.
+> > > > +2. Initialize the ``encoded_iov`` appropriately.
+> > > > +3. Copy it to the user with ``copy_encoded_iov_to_iter()``.
+> > > > +4. Copy the encoded data to the user.
+> > > > +5. Advance ``kiocb->ki_pos`` by ``encoded_iov->len``.
+> > > > +6. Return the size of the encoded data read, not including the ``encoded_iov``.
+> > > > +
+> > > > +There are a few details to be aware of:
+> > > > +
+> > > > +* Encoded ``read_iter`` should support reading unencoded data if the extent is
+> > > > +  not encoded.
+> > > > +* If the buffers provided by the user are not large enough to contain an entire
+> > > > +  encoded extent, then ``read_iter`` should return ``-ENOBUFS``. This is to
+> > > > +  avoid confusing userspace with truncated data that cannot be properly
+> > > > +  decoded.
+> > > > +* Reads in the middle of an encoded extent can be returned by setting
+> > > > +  ``encoded_iov->unencoded_offset`` to non-zero.
+> > > > +* Truncated unencoded data (e.g., because the file does not end on a block
+> > > > +  boundary) may be returned by setting ``encoded_iov->len`` to a value smaller
+> > > > +  value than ``encoded_iov->unencoded_len - encoded_iov->unencoded_offset``.
+> > > > +
+> > > > +Writes
+> > > > +======
+> > > > +
+> > > > +Encoded ``write_iter`` should (in addition to the usual accounting/checks done
+> > > > +by ``write_iter``):
+> > > > +
+> > > > +1. Call ``copy_encoded_iov_from_iter()`` to get and validate the
+> > > > +   ``encoded_iov``.
+> > > > +2. Call ``generic_encoded_write_checks()`` instead of
+> > > > +   ``generic_write_checks()``.
+> > > > +3. Check that the provided encoding in ``encoded_iov`` is supported.
+> > > > +4. Advance ``kiocb->ki_pos`` by ``encoded_iov->len``.
+> > > > +5. Return the size of the encoded data written.
+> > > > +
+> > > > +Again, there are a few details:
+> > > > +
+> > > > +* Encoded ``write_iter`` doesn't need to support writing unencoded data.
+> > > > +* ``write_iter`` should either write all of the encoded data or none of it; it
+> > > > +  must not do partial writes.
+> > > > +* ``write_iter`` doesn't need to validate the encoded data; a subsequent read
+> > > > +  may return, e.g., ``-EIO`` if the data is not valid.
+> > > > +* The user may lie about the unencoded size of the data; a subsequent read
+> > > > +  should truncate or zero-extend the unencoded data rather than returning an
+> > > > +  error.
+> > > > +* Be careful of page cache coherency.
+> > >
+> > > Haha that rings in my head like the "Smoking kills!" warnings...
+> > >
+> > > I find it a bit odd that you mix page cache at all when reading
+> > > unencoded extents.
+> > > Feels like a file with FMODE_ENCODED_IO should stick to direct IO in all cases.
+> > > I don't know how btrfs deals with mixing direct IO and page cache IO normally,
+> > > but surely the rules could be made even stricter for an inode accessed with this
+> > > new API?
+> > >
+> > > Is there something I am misunderstanding?
+> > >
+> > > Thanks,
+> > > Amir.
+> >
+> > I'm not completely following here, are you suggesting that if a file is
+> > open with O_ALLOW_ENCODED, buffered I/O to that file should return an
+> > error?
+> 
+> No. I don't.
+> 
+> > Btrfs at least does the necessary range locking and page cache
+> > invalidation to ensure that direct I/O gets along with buffered I/O (and
+> > now encoded I/O).
+> 
+> That's a good start :-)
+> 
+> I saw btrfs_encoded_read_regular_fill_pages() and concluded that even
+> in FMODE_ENCODED_IO, when reading an unencoded extent, you fill
+> page cache with the unencoded data.
+> 
+> Is that correct? or did I miss read the code?
+> If correct, does it serve any purpose?
+> Seems more sensible to me to read/write FMODE_ENCODED_IO only in direct io
+> regardless if the extent is encoded or not (for simpler code if nothing else).
+> 
+> Thanks,
+> Amir.
 
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
----
- cmds/balance.c | 26 ++++++++++++++++++++++++++
- 1 file changed, 26 insertions(+)
-
-diff --git a/cmds/balance.c b/cmds/balance.c
-index b0535d40..d7b2b3d6 100644
---- a/cmds/balance.c
-+++ b/cmds/balance.c
-@@ -515,6 +515,7 @@ static int cmd_balance_start(const struct cmd_struct *cmd,
- 	int force = 0;
- 	int background = 0;
- 	unsigned start_flags = 0;
-+	bool warned = false;
- 	int i;
- 
- 	memset(&args, 0, sizeof(args));
-@@ -616,11 +617,36 @@ static int cmd_balance_start(const struct cmd_struct *cmd,
- 
- 	/* soft makes sense only when convert for corresponding type is set */
- 	for (i = 0; ptrs[i]; i++) {
-+		int delay = 10;
-+
- 		if ((ptrs[i]->flags & BTRFS_BALANCE_ARGS_SOFT) &&
- 		    !(ptrs[i]->flags & BTRFS_BALANCE_ARGS_CONVERT)) {
- 			error("'soft' option can be used only when converting profiles");
- 			return 1;
- 		}
-+
-+		if (!(ptrs[i]->flags & BTRFS_BALANCE_ARGS_CONVERT))
-+			continue;
-+
-+		if (!(ptrs[i]->flags & (BTRFS_BLOCK_GROUP_RAID6 |
-+					BTRFS_BLOCK_GROUP_RAID5)))
-+			continue;
-+
-+		if (warned)
-+			continue;
-+
-+		warned = true;
-+		printf("WARNING:\n\n");
-+		printf("\tRAID5/6 support is still experimental and has known issues.\n");
-+		printf("\tIt is recommended that you use one of the other RAID profiles.\n");
-+		printf("\tThe operation will continue in %d seconds.\n", delay);
-+		printf("\tUse Ctrl-C to stop.\n");
-+		while (delay) {
-+			printf("%2d", delay--);
-+			fflush(stdout);
-+			sleep(1);
-+		}
-+		printf("\nStarting conversion to RAID5/6.\n");
- 	}
- 
- 	if (!(start_flags & BALANCE_START_FILTERS) && !(start_flags & BALANCE_START_NOWARN)) {
--- 
-2.24.1
-
+Oh, I see. btrfs_encoded_read_regular_fill_pages() fills temporary pages
+allocated for the read, not page cache pages. RWF_ENCODED always
+bypasses the page cache, which I agree is the most sensible option.
