@@ -2,26 +2,24 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B02D42518AE
-	for <lists+linux-btrfs@lfdr.de>; Tue, 25 Aug 2020 14:38:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E2472518B2
+	for <lists+linux-btrfs@lfdr.de>; Tue, 25 Aug 2020 14:39:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726514AbgHYMiJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 25 Aug 2020 08:38:09 -0400
-Received: from mx2.suse.de ([195.135.220.15]:55860 "EHLO mx2.suse.de"
+        id S1726656AbgHYMj5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 25 Aug 2020 08:39:57 -0400
+Received: from mx2.suse.de ([195.135.220.15]:56414 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726225AbgHYMiH (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 25 Aug 2020 08:38:07 -0400
+        id S1726611AbgHYMjz (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 25 Aug 2020 08:39:55 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 22A13AF8A;
-        Tue, 25 Aug 2020 12:38:37 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 1F3A4AF8A;
+        Tue, 25 Aug 2020 12:40:24 +0000 (UTC)
 Subject: Re: Link count for directories
-To:     Urs Thuermann <urs@isnogud.escape.de>, linux-btrfs@vger.kernel.org
+To:     Steve Keller <keller.steve@gmx.de>, linux-btrfs@vger.kernel.org
 References: <trinity-57be0daf-2aa0-4480-a962-7a62e302cfde-1598031619031@3c-app-gmx-bap35>
  <e592fd12-1662-49f3-75bd-94609e660517@suse.com>
  <trinity-963db523-ba60-48b5-997f-59b55ee6b92b-1598305830919@3c-app-gmx-bap63>
- <20200824222306.GA26736@angband.pl>
- <ygfwo1mq5fm.fsf@tehran.isnogud.escape.de>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  xsFNBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -65,12 +63,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  KIuxEcV8wcVjr+Wr9zRl06waOCkgrQbTPp631hToxo+4rA1jiQF2M80HAet65ytBVR2pFGZF
  zGYYLqiG+mpUZ+FPjxk9kpkRYz61mTLSY7tuFljExfJWMGfgSg1OxfLV631jV1TcdUnx+h3l
  Sqs2vMhAVt14zT8mpIuu2VNxcontxgVr1kzYA/tQg32fVRbGr449j1gw57BV9i0vww==
-Message-ID: <32ebebd1-a84a-60bd-a156-a84a8f4377b9@suse.com>
-Date:   Tue, 25 Aug 2020 15:38:05 +0300
+Message-ID: <24ce29cd-514a-871e-7500-d541fa35f42f@suse.com>
+Date:   Tue, 25 Aug 2020 15:39:52 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <ygfwo1mq5fm.fsf@tehran.isnogud.escape.de>
+In-Reply-To: <trinity-963db523-ba60-48b5-997f-59b55ee6b92b-1598305830919@3c-app-gmx-bap63>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -81,32 +79,40 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 25.08.20 г. 15:24 ч., Urs Thuermann wrote:
-> Adam Borowski <kilobyte@angband.pl> writes:
+On 25.08.20 г. 0:50 ч., Steve Keller wrote:
+> Nikolay Borisov <nborisov@suse.com> wrote:
 > 
->> It's just an implementation detail of sysvfs, and a case of
->> bug-compatibility.  The link count of a directory is always 1 as btrfs,
->> ext4, xfs, etc -- none of them support directory hardlinks, unlike sysvfs.
+>> I have implemented it so it's not that big of a deal. However turns out
+>> it has pretty steep requirements for backport because so far btrfs
+>> always kept the link count of dirs to 1. So such a change should be
+>> justifiable because it's not only the kernel code that is affected but:
+>>
+>> 1. Backporting relevant patch to older, stable kernels
 > 
-> No, allmost all other file systems handle the directory link count in
-> the traditional way, at least minix, ext2, ext3, ext4, xfs, tmpfs,
-> devtmpfs, devpts, sysfs, cgroup on Linux do so.  And also FreeBSD ufs
-> and devfs, NetBSD ffs, tmpfs, and kernfs, and OpenBSD ffs and mfs do
-> that also.
-> 
-> I'd like to check how zfs handles this (on Linux, FreeBSD or Solaris),
-> but currently have no access to a system using it.
-> 
->> So the proper value, as documented, is 1.  Copying sysvfs behaviour is also
->> costly as you need to know the count of contents while statting parent.
-> 
-> No, it's not that costly.  Directories start with nlink = 2 and nlinks
-> is incremented or decremented with each mkdir or rmdir system call.
+> Why would that be needed?
 
-It's slightly more complicated on btrfs because subvolumes and snapshots
-are also directories from the POV of the user but are created in
-different code paths. But that's the general idea.
+So what happens when a new filesystem (i.e one created with a kernel
+with this features) gets mounted on an older kernel (one that doesn't
+support it)? (It's a rhetorical question, it will refuse to mount
+because of the tree checker).
 
 > 
-> urs
+>> 2. Changing btrfs-progs so that it doesn't erroneously think a kernel
+>> with link count larger than 1 is broken.
+> 
+> OK, should be doable, right?
+
+I never said it wasn't, however the question is if it's worth it doing
+that work.
+
+> 
+>> So how effective is such an optimisation to the software using it ?
+> 
+> It's not only optimization like in find(1).  As an old and long-time Unix
+> user I'd also like that traditional behavior.  It just feels more correct
+> since if you do mkdir ./a ./b ./c ./d, you will actually see the 4 links
+> to the current dir if you do ls -ai a b c d and the two links from . itself
+> and from ..
+> 
+> Steve
 > 
