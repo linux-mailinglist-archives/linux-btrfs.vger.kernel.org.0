@@ -2,117 +2,776 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E2472518B2
-	for <lists+linux-btrfs@lfdr.de>; Tue, 25 Aug 2020 14:39:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 497922519A6
+	for <lists+linux-btrfs@lfdr.de>; Tue, 25 Aug 2020 15:30:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726656AbgHYMj5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 25 Aug 2020 08:39:57 -0400
-Received: from mx2.suse.de ([195.135.220.15]:56414 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726611AbgHYMjz (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 25 Aug 2020 08:39:55 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 1F3A4AF8A;
-        Tue, 25 Aug 2020 12:40:24 +0000 (UTC)
-Subject: Re: Link count for directories
-To:     Steve Keller <keller.steve@gmx.de>, linux-btrfs@vger.kernel.org
-References: <trinity-57be0daf-2aa0-4480-a962-7a62e302cfde-1598031619031@3c-app-gmx-bap35>
- <e592fd12-1662-49f3-75bd-94609e660517@suse.com>
- <trinity-963db523-ba60-48b5-997f-59b55ee6b92b-1598305830919@3c-app-gmx-bap63>
-From:   Nikolay Borisov <nborisov@suse.com>
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <24ce29cd-514a-871e-7500-d541fa35f42f@suse.com>
-Date:   Tue, 25 Aug 2020 15:39:52 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726740AbgHYNaU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 25 Aug 2020 09:30:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52300 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726095AbgHYNaS (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 25 Aug 2020 09:30:18 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D55AC061755
+        for <linux-btrfs@vger.kernel.org>; Tue, 25 Aug 2020 06:30:17 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id h19so13799251ljg.13
+        for <linux-btrfs@vger.kernel.org>; Tue, 25 Aug 2020 06:30:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=On0asK4vZ+qHphsHgAVNrxvZzCGfU06FL8dn/IjaQJY=;
+        b=dGgHHfZaxF6QjG97o6Ya1G8elLGvI/J+unFF1uXhspyBOulc4rJ7qfH9Fa6Ltou+I+
+         C6kLCY1XozFsrJCRwV6+qxZFq/5kboEBVZAzvWb5Bmcvk4+1CUOipkWBrxfleazBunPy
+         9V5pRuKVrth3D3pwlDHuBgeG3eXXD5PIPbWa0gFq67Un7l74sUD6VGHE6DScQiF8Shgh
+         OCcMgnMHhSP4b/yvVFAD9ArSCyNxFAwQ9qyMJ5ibMVk+KQ4oJgtZOoOSis2QeBQoQbIn
+         E9+HQ7vgzie+GGK9+I6aty9slJ0M2QvhoP90C08RGM3l9ybe0CKVtu8JfYxGJrGMzhEv
+         hBHQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=On0asK4vZ+qHphsHgAVNrxvZzCGfU06FL8dn/IjaQJY=;
+        b=ptsX7KkJEVQ4jHeKjYMvzAxMRKBSb1rKCcyOqb52jtJB6YYK4iiNbVFFnFK9/ajlw8
+         tSmuwEx6lxPc/B2kX/kMq8ofATpKGb3BZ/tq77wZaae8cueDfb/gjQhYcZy+yy2EXXU0
+         8oFzoziJgzpUCZoVZtZ3cy2Q2UWXgUMIh5Hy2XaWAoP3akLFTUkECx23EvlkpmMzbTlm
+         UI2M++ANIIa3IMhjKnQ1cNe21KD9KoI6x81w45jGMOXGMQpjk3PkNkZ10DKVqf430qTR
+         wNxZQhluQ7ZQjT7/Gy6kubBWhmyTsl9mZLP+9U3JhTOcOHB/gKhWM3FR9rO4eiQ3Puel
+         0tCQ==
+X-Gm-Message-State: AOAM532jn5b8KUKbJy/nBzx0D4eJ1c9LBtV57MoOgFBwvxqKrvswwVtV
+        n3w7sNJEuVJ6zz8fdKq6tpxcgvdpPE3MmO2jYM8=
+X-Google-Smtp-Source: ABdhPJxCfpuKkdHm0y/GcyJL2zK/y1JfT3ZHm0uM5uFlZ7LCApsBUqP5T6ElXOdIRzUCLKwuBDWHMuB9F5kZvNaPfnY=
+X-Received: by 2002:a2e:800e:: with SMTP id j14mr5009575ljg.56.1598362215679;
+ Tue, 25 Aug 2020 06:30:15 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <trinity-963db523-ba60-48b5-997f-59b55ee6b92b-1598305830919@3c-app-gmx-bap63>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <CAJheHN0FUe-ijMco1ZOc6iKF2zbPocOw+iiVNeTT1r-JuXOJww@mail.gmail.com>
+ <63677627-ca0a-663e-5443-9bd1b12ff5a9@gmx.com> <CAJheHN2mQX7VZxMZo+-GBhxeOWFu1tYAUfJ9Ut7hokMh-+ua-Q@mail.gmail.com>
+ <5a9a2592-063a-5dfc-c157-47771d8bfb2b@gmx.com> <CAJheHN2-PbGC8S3f74CAFipsjxwXgip5N0zKG_xs-m8ky=WD2A@mail.gmail.com>
+ <CAJheHN3qwDAGY=z14zfO4LBrxNJZZ_rvAMsWLwe-k+4+t3zLog@mail.gmail.com>
+ <11fe4ad3-928c-5b6b-4424-26fc05baa28d@gmx.com> <CAJheHN2kY7kVyfo+kv0=DymXfnjiacX_a=rg7oXkeNV4x_XvHw@mail.gmail.com>
+ <CAJheHN0qqOn2u4Rks6u+Epsr+L+ijs0E=G=AUCV3F-yLvsLasA@mail.gmail.com>
+ <98c633bc-658c-d8d9-a2cd-4c9b9e477552@gmx.com> <6bc0816e-b58c-1d74-7c0e-e07a38a5a027@gmx.com>
+ <CAJheHN25gNo-jgykeQ6=ZQAm1ZHG9+-rWhBp3S-x2c1xi5j-og@mail.gmail.com>
+ <4d1bb444-921c-9773-ff68-b6ea074ff35d@gmx.com> <CAJheHN1+AQR-irSbaH8f7HGj=rDN4+uUCyqjvtezGewQkQoDpg@mail.gmail.com>
+ <5346c4af-c73e-84b3-ec4f-8f169c0a732a@gmx.com> <CAJheHN0NmgVoGF+AsnUNQkQnEJ46JCmpg4o5nwAkqi+VoGMjfw@mail.gmail.com>
+ <e04680b4-f4c0-254f-24ba-f2053e4ad8b3@gmx.com>
+In-Reply-To: <e04680b4-f4c0-254f-24ba-f2053e4ad8b3@gmx.com>
+From:   Tyler Richmond <t.d.richmond@gmail.com>
+Date:   Tue, 25 Aug 2020 09:30:05 -0400
+Message-ID: <CAJheHN0THhKcqKY3cGtJqUGaub=E0tuCmi6wuNeCGBxyAHmecQ@mail.gmail.com>
+Subject: Re: Fwd: Read time tree block corruption detected
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Qu,
+
+The dump of the block is:
+
+https://pastebin.com/ran85JJv
+
+I've also completed the btrfs-image, but it's almost 50gb. What's the
+best way to get it to you? Also, does it work with -ss or are the
+original filenames important?
+
+Thanks again!
 
 
-On 25.08.20 г. 0:50 ч., Steve Keller wrote:
-> Nikolay Borisov <nborisov@suse.com> wrote:
-> 
->> I have implemented it so it's not that big of a deal. However turns out
->> it has pretty steep requirements for backport because so far btrfs
->> always kept the link count of dirs to 1. So such a change should be
->> justifiable because it's not only the kernel code that is affected but:
->>
->> 1. Backporting relevant patch to older, stable kernels
-> 
-> Why would that be needed?
-
-So what happens when a new filesystem (i.e one created with a kernel
-with this features) gets mounted on an older kernel (one that doesn't
-support it)? (It's a rhetorical question, it will refuse to mount
-because of the tree checker).
-
-> 
->> 2. Changing btrfs-progs so that it doesn't erroneously think a kernel
->> with link count larger than 1 is broken.
-> 
-> OK, should be doable, right?
-
-I never said it wasn't, however the question is if it's worth it doing
-that work.
-
-> 
->> So how effective is such an optimisation to the software using it ?
-> 
-> It's not only optimization like in find(1).  As an old and long-time Unix
-> user I'd also like that traditional behavior.  It just feels more correct
-> since if you do mkdir ./a ./b ./c ./d, you will actually see the 4 links
-> to the current dir if you do ls -ai a b c d and the two links from . itself
-> and from ..
-> 
-> Steve
-> 
+On Tue, Aug 25, 2020 at 2:37 AM Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
+>
+>
+>
+> On 2020/8/25 =E4=B8=8B=E5=8D=881:25, Tyler Richmond wrote:
+> > Qu,
+> >
+> > Yes, it's btrfs-progs 5.7. Here is the result of the lowmem check:
+> >
+> > https://pastebin.com/8Tzx23EX
+>
+> That doesn't detect any inode generation problem at all, which is not a
+> good sign.
+>
+> Would you also pvode the dump for the offending block?
+>
+> > block=3D203510940835840 slot=3D4 ino=3D1311670, invalid inode generatio=
+n:
+> has 18446744073709551492 expect [0, 6875827]
+>
+> For this case, would you please provide the tree dump of "203510940835840=
+" ?
+>
+> # btrfs ins dump-tree -b 203510940835840 <device>
+>
+> And, since btrfs-image can't dump with regular extent tree, the "-w"
+> dump would also help.
+>
+> Thanks,
+> Qu
+>
+>
+> > Thanks!
+> >
+> > On Mon, Aug 24, 2020 at 4:26 AM Qu Wenruo <quwenruo.btrfs@gmx.com> wrot=
+e:
+> >>
+> >>
+> >>
+> >> On 2020/8/24 =E4=B8=8A=E5=8D=8810:47, Tyler Richmond wrote:
+> >>> Qu,
+> >>>
+> >>> Finally finished another repair and captured the output.
+> >>>
+> >>> https://pastebin.com/ffcbwvd8
+> >>>
+> >>> Does that show you what you need? Or should I still do one in lowmem =
+mode?
+> >>
+> >> Lowmem mode (no need for --repair) is recommended since original mode
+> >> doesn't detect the inode generation problem.
+> >>
+> >> And it's already btrfs-progs v5.7 right?
+> >>
+> >> THanks,
+> >> Qu
+> >>>
+> >>> Thanks for your help!
+> >>>
+> >>> On Sun, Aug 23, 2020 at 12:28 AM Qu Wenruo <quwenruo.btrfs@gmx.com> w=
+rote:
+> >>>>
+> >>>>
+> >>>>
+> >>>> On 2020/8/23 =E4=B8=8A=E5=8D=8810:49, Tyler Richmond wrote:
+> >>>>> Well, I can guarantee that I didn't create this fs before 2015 (jus=
+t
+> >>>>> checked the order confirmation from when I bought the server), but =
+I
+> >>>>> may have just used whatever was in the Ubuntu package manager at th=
+e
+> >>>>> time. So maybe I don't have a v0 ref?
+> >>>>
+> >>>> Then btrfs-image shouldn't report that.
+> >>>>
+> >>>> There is an item smaller than any valid btrfs item, normally it mean=
+s
+> >>>> it's a v0 ref.
+> >>>> If not, then it could be a bigger problem.
+> >>>>
+> >>>> Could you please provide the full btrfs-check output?
+> >>>> Also, if possible result from "btrfs check --mode=3Dlowmem" would al=
+so help.
+> >>>>
+> >>>> Also, if you really go "--repair", then the full output would also b=
+e
+> >>>> needed to determine what's going wrong.
+> >>>> There is a report about "btrfs check --repair" didn't repair the ino=
+de
+> >>>> generation, if that's the case we must have a bug then.
+> >>>>
+> >>>> Thanks,
+> >>>> Qu
+> >>>>>
+> >>>>> On Sat, Aug 22, 2020 at 10:31 PM Qu Wenruo <quwenruo.btrfs@gmx.com>=
+ wrote:
+> >>>>>>
+> >>>>>>
+> >>>>>>
+> >>>>>> On 2020/8/23 =E4=B8=8A=E5=8D=889:51, Qu Wenruo wrote:
+> >>>>>>>
+> >>>>>>>
+> >>>>>>> On 2020/8/23 =E4=B8=8A=E5=8D=889:15, Tyler Richmond wrote:
+> >>>>>>>> Is my best bet just to downgrade the kernel and then try to dele=
+te the
+> >>>>>>>> broken files? Or should I rebuild from scratch? Just don't know
+> >>>>>>>> whether it's worth the time to try and figure this out or if the
+> >>>>>>>> problems stem from the FS being too old and it's beyond trying t=
+o
+> >>>>>>>> repair.
+> >>>>>>>
+> >>>>>>> All invalid inode generations, should be able to be repaired by l=
+atest
+> >>>>>>> btrfs-check.
+> >>>>>>>
+> >>>>>>> If not, please provide the btrfs-image dump for us to determine w=
+hat's
+> >>>>>>> going wrong.
+> >>>>>>>
+> >>>>>>> Thanks,
+> >>>>>>> Qu
+> >>>>>>>>
+> >>>>>>>> On Tue, Aug 18, 2020 at 8:18 AM Tyler Richmond <t.d.richmond@gma=
+il.com> wrote:
+> >>>>>>>>>
+> >>>>>>>>> I didn't check dmesg during the btrfs check, but that was the o=
+nly
+> >>>>>>>>> output during the rm -f before it was forced readonly. I just c=
+hecked
+> >>>>>>>>> dmesg for inode generation values, and there are a lot of them.
+> >>>>>>>>>
+> >>>>>>>>> https://pastebin.com/stZdN0ta
+> >>>>>>>>> The dmesg output had 990 lines containing inode generation.
+> >>>>>>>>>
+> >>>>>>>>> However, these were at least later. I tried to do a btrfs balan=
+ce
+> >>>>>>>>> -mconvert raid1 and it failed with an I/O error. That is probab=
+ly what
+> >>>>>>>>> generated these specific errors, but maybe they were also happe=
+ning
+> >>>>>>>>> during the btrfs repair.
+> >>>>>>>>>
+> >>>>>>>>> The FS is ~45TB, but the btrfs-image -c9 failed anway with:
+> >>>>>>>>> ERROR: either extent tree is corrupted or deprecated extent ref=
+ format
+> >>>>>>>>> ERROR: create failed: -5
+> >>>>>>
+> >>>>>> Oh, forgot this part.
+> >>>>>>
+> >>>>>> This means you have v0 ref?!
+> >>>>>>
+> >>>>>> Then the fs is too old, no progs/kernel support after all.
+> >>>>>>
+> >>>>>> In that case, please rollback to the last working kernel and copy =
+your data.
+> >>>>>>
+> >>>>>> In fact, that v0 ref should only be in the code base for several w=
+eeks
+> >>>>>> before 2010, thus it's really too old.
+> >>>>>>
+> >>>>>> The good news is, with tree-checker, we should never experience su=
+ch
+> >>>>>> too-old-to-be-usable problem (at least I hope so)
+> >>>>>>
+> >>>>>> Thanks,
+> >>>>>> Qu
+> >>>>>>
+> >>>>>>>>>
+> >>>>>>>>>
+> >>>>>>>>> On Tue, Aug 18, 2020 at 2:07 AM Qu Wenruo <quwenruo.btrfs@gmx.c=
+om> wrote:
+> >>>>>>>>>>
+> >>>>>>>>>>
+> >>>>>>>>>>
+> >>>>>>>>>> On 2020/8/18 =E4=B8=8A=E5=8D=8811:35, Tyler Richmond wrote:
+> >>>>>>>>>>> Qu,
+> >>>>>>>>>>>
+> >>>>>>>>>>> Sorry to resurrect this thread, but I just ran into something=
+ that I
+> >>>>>>>>>>> can't really just ignore. I've found a folder that is full of=
+ files
+> >>>>>>>>>>> which I guess have been broken somehow. I found a backup and =
+restored
+> >>>>>>>>>>> them, but I want to delete this folder of broken files. But w=
+henever I
+> >>>>>>>>>>> try, the fs is forced into readonly mode again. I just finish=
+ed another
+> >>>>>>>>>>> btrfs check --repair but it didn't fix the problem.
+> >>>>>>>>>>>
+> >>>>>>>>>>> https://pastebin.com/eTV3s3fr
+> >>>>>>>>>>
+> >>>>>>>>>> Is that the full output?
+> >>>>>>>>>>
+> >>>>>>>>>> No inode generation bugs?
+> >>>>>>>>>>>
+> >>>>>>>>>>>  I'm already on btrfs-progs v5.7. Any new suggestions?
+> >>>>>>>>>>
+> >>>>>>>>>> Strange.
+> >>>>>>>>>>
+> >>>>>>>>>> The detection and repair should have been merged into v5.5.
+> >>>>>>>>>>
+> >>>>>>>>>> If your fs is small enough, would you please provide the "btrf=
+s-image
+> >>>>>>>>>> -c9" dump?
+> >>>>>>>>>>
+> >>>>>>>>>> It would contain the filenames and directories names, but does=
+n't
+> >>>>>>>>>> contain file contents.
+> >>>>>>>>>>
+> >>>>>>>>>> Thanks,
+> >>>>>>>>>> Qu
+> >>>>>>>>>>>
+> >>>>>>>>>>> On Fri, May 8, 2020 at 9:52 AM Tyler Richmond <t.d.richmond@g=
+mail.com
+> >>>>>>>>>>> <mailto:t.d.richmond@gmail.com>> wrote:
+> >>>>>>>>>>>
+> >>>>>>>>>>>     5.6.1 also failed the same way. Here's the usage output. =
+This is the
+> >>>>>>>>>>>     part where you see I've been using RAID5 haha
+> >>>>>>>>>>>
+> >>>>>>>>>>>     WARNING: RAID56 detected, not implemented
+> >>>>>>>>>>>     Overall:
+> >>>>>>>>>>>         Device size:                  60.03TiB
+> >>>>>>>>>>>         Device allocated:             98.06GiB
+> >>>>>>>>>>>         Device unallocated:           59.93TiB
+> >>>>>>>>>>>         Device missing:                  0.00B
+> >>>>>>>>>>>         Used:                         92.56GiB
+> >>>>>>>>>>>         Free (estimated):                0.00B      (min: 8.0=
+0EiB)
+> >>>>>>>>>>>         Data ratio:                       0.00
+> >>>>>>>>>>>         Metadata ratio:                   2.00
+> >>>>>>>>>>>         Global reserve:              512.00MiB      (used: 0.=
+00B)
+> >>>>>>>>>>>         Multiple profiles:                  no
+> >>>>>>>>>>>
+> >>>>>>>>>>>     Data,RAID5: Size:40.35TiB, Used:40.12TiB (99.42%)
+> >>>>>>>>>>>        /dev/sdh        8.07TiB
+> >>>>>>>>>>>        /dev/sdf        8.07TiB
+> >>>>>>>>>>>        /dev/sdg        8.07TiB
+> >>>>>>>>>>>        /dev/sdd        8.07TiB
+> >>>>>>>>>>>        /dev/sdc        8.07TiB
+> >>>>>>>>>>>        /dev/sde        8.07TiB
+> >>>>>>>>>>>
+> >>>>>>>>>>>     Metadata,RAID1: Size:49.00GiB, Used:46.28GiB (94.44%)
+> >>>>>>>>>>>        /dev/sdh       34.00GiB
+> >>>>>>>>>>>        /dev/sdf       32.00GiB
+> >>>>>>>>>>>        /dev/sdg       32.00GiB
+> >>>>>>>>>>>
+> >>>>>>>>>>>     System,RAID1: Size:32.00MiB, Used:2.20MiB (6.87%)
+> >>>>>>>>>>>        /dev/sdf       32.00MiB
+> >>>>>>>>>>>        /dev/sdg       32.00MiB
+> >>>>>>>>>>>
+> >>>>>>>>>>>     Unallocated:
+> >>>>>>>>>>>        /dev/sdh        2.81TiB
+> >>>>>>>>>>>        /dev/sdf        2.81TiB
+> >>>>>>>>>>>        /dev/sdg        2.81TiB
+> >>>>>>>>>>>        /dev/sdd        1.03TiB
+> >>>>>>>>>>>        /dev/sdc        1.03TiB
+> >>>>>>>>>>>        /dev/sde        1.03TiB
+> >>>>>>>>>>>
+> >>>>>>>>>>>     On Fri, May 8, 2020 at 1:47 AM Qu Wenruo <quwenruo.btrfs@=
+gmx.com
+> >>>>>>>>>>>     <mailto:quwenruo.btrfs@gmx.com>> wrote:
+> >>>>>>>>>>>     >
+> >>>>>>>>>>>     >
+> >>>>>>>>>>>     >
+> >>>>>>>>>>>     > On 2020/5/8 =E4=B8=8B=E5=8D=881:12, Tyler Richmond wrot=
+e:
+> >>>>>>>>>>>     > > If this is saying there's no extra space for metadata=
+, is that why
+> >>>>>>>>>>>     > > adding more files often makes the system hang for 30-=
+90s? Is there
+> >>>>>>>>>>>     > > anything I should do about that?
+> >>>>>>>>>>>     >
+> >>>>>>>>>>>     > I'm not sure about the hang though.
+> >>>>>>>>>>>     >
+> >>>>>>>>>>>     > It would be nice to give more info to diagnosis.
+> >>>>>>>>>>>     > The output of 'btrfs fi usage' is useful for space usag=
+e problem.
+> >>>>>>>>>>>     >
+> >>>>>>>>>>>     > But the common idea is, to keep at 1~2 Gi unallocated (=
+not avaiable
+> >>>>>>>>>>>     > space in vanilla df command) space for btrfs.
+> >>>>>>>>>>>     >
+> >>>>>>>>>>>     > Thanks,
+> >>>>>>>>>>>     > Qu
+> >>>>>>>>>>>     >
+> >>>>>>>>>>>     > >
+> >>>>>>>>>>>     > > Thank you so much for all of your help. I love how fl=
+exible BTRFS is
+> >>>>>>>>>>>     > > but when things go wrong it's very hard for me to tro=
+ubleshoot.
+> >>>>>>>>>>>     > >
+> >>>>>>>>>>>     > > On Fri, May 8, 2020 at 1:07 AM Qu Wenruo <quwenruo.bt=
+rfs@gmx.com
+> >>>>>>>>>>>     <mailto:quwenruo.btrfs@gmx.com>> wrote:
+> >>>>>>>>>>>     > >>
+> >>>>>>>>>>>     > >>
+> >>>>>>>>>>>     > >>
+> >>>>>>>>>>>     > >> On 2020/5/8 =E4=B8=8B=E5=8D=8812:23, Tyler Richmond =
+wrote:
+> >>>>>>>>>>>     > >>> Something went wrong:
+> >>>>>>>>>>>     > >>>
+> >>>>>>>>>>>     > >>> Reinitialize checksum tree
+> >>>>>>>>>>>     > >>> Unable to find block group for 0
+> >>>>>>>>>>>     > >>> Unable to find block group for 0
+> >>>>>>>>>>>     > >>> Unable to find block group for 0
+> >>>>>>>>>>>     > >>> ctree.c:2272: split_leaf: BUG_ON `1` triggered, val=
+ue 1
+> >>>>>>>>>>>     > >>> btrfs(+0x6dd94)[0x55a933af7d94]
+> >>>>>>>>>>>     > >>> btrfs(+0x71b94)[0x55a933afbb94]
+> >>>>>>>>>>>     > >>> btrfs(btrfs_search_slot+0x11f0)[0x55a933afd6c8]
+> >>>>>>>>>>>     > >>> btrfs(btrfs_csum_file_block+0x432)[0x55a933b19d09]
+> >>>>>>>>>>>     > >>> btrfs(+0x360b2)[0x55a933ac00b2]
+> >>>>>>>>>>>     > >>> btrfs(+0x46a3e)[0x55a933ad0a3e]
+> >>>>>>>>>>>     > >>> btrfs(main+0x98)[0x55a933a9fe88]
+> >>>>>>>>>>>     > >>>
+> >>>>>>>>>>>     /lib/x86_64-linux-gnu/libc.so.6(__libc_start_main+0xf3)[0=
+x7f263ed550b3]
+> >>>>>>>>>>>     > >>> btrfs(_start+0x2e)[0x55a933a9fa0e]
+> >>>>>>>>>>>     > >>> Aborted
+> >>>>>>>>>>>     > >>
+> >>>>>>>>>>>     > >> This means no space for extra metadata...
+> >>>>>>>>>>>     > >>
+> >>>>>>>>>>>     > >> Anyway the csum tree problem shouldn't be a big thin=
+g, you
+> >>>>>>>>>>>     could leave
+> >>>>>>>>>>>     > >> it and call it a day.
+> >>>>>>>>>>>     > >>
+> >>>>>>>>>>>     > >> BTW, as long as btrfs check reports no extra problem=
+ for the inode
+> >>>>>>>>>>>     > >> generation, it should be pretty safe to use the fs.
+> >>>>>>>>>>>     > >>
+> >>>>>>>>>>>     > >> Thanks,
+> >>>>>>>>>>>     > >> Qu
+> >>>>>>>>>>>     > >>>
+> >>>>>>>>>>>     > >>> I just noticed I have btrfs-progs 5.6 installed and=
+ 5.6.1 is
+> >>>>>>>>>>>     > >>> available. I'll let that try overnight?
+> >>>>>>>>>>>     > >>>
+> >>>>>>>>>>>     > >>> On Thu, May 7, 2020 at 8:11 PM Qu Wenruo
+> >>>>>>>>>>>     <quwenruo.btrfs@gmx.com <mailto:quwenruo.btrfs@gmx.com>> =
+wrote:
+> >>>>>>>>>>>     > >>>>
+> >>>>>>>>>>>     > >>>>
+> >>>>>>>>>>>     > >>>>
+> >>>>>>>>>>>     > >>>> On 2020/5/7 =E4=B8=8B=E5=8D=8811:52, Tyler Richmon=
+d wrote:
+> >>>>>>>>>>>     > >>>>> Thank you for helping. The end result of the scan=
+ was:
+> >>>>>>>>>>>     > >>>>>
+> >>>>>>>>>>>     > >>>>>
+> >>>>>>>>>>>     > >>>>> [1/7] checking root items
+> >>>>>>>>>>>     > >>>>> [2/7] checking extents
+> >>>>>>>>>>>     > >>>>> [3/7] checking free space cache
+> >>>>>>>>>>>     > >>>>> [4/7] checking fs roots
+> >>>>>>>>>>>     > >>>>
+> >>>>>>>>>>>     > >>>> Good news is, your fs is still mostly fine.
+> >>>>>>>>>>>     > >>>>
+> >>>>>>>>>>>     > >>>>> [5/7] checking only csums items (without verifyin=
+g data)
+> >>>>>>>>>>>     > >>>>> there are no extents for csum range 0-69632
+> >>>>>>>>>>>     > >>>>> csum exists for 0-69632 but there is no extent re=
+cord
+> >>>>>>>>>>>     > >>>>> ...
+> >>>>>>>>>>>     > >>>>> ...
+> >>>>>>>>>>>     > >>>>> there are no extents for csum range 946692096-946=
+827264
+> >>>>>>>>>>>     > >>>>> csum exists for 946692096-946827264 but there is =
+no extent
+> >>>>>>>>>>>     record
+> >>>>>>>>>>>     > >>>>> there are no extents for csum range 946831360-947=
+912704
+> >>>>>>>>>>>     > >>>>> csum exists for 946831360-947912704 but there is =
+no extent
+> >>>>>>>>>>>     record
+> >>>>>>>>>>>     > >>>>> ERROR: errors found in csum tree
+> >>>>>>>>>>>     > >>>>
+> >>>>>>>>>>>     > >>>> Only extent tree is corrupted.
+> >>>>>>>>>>>     > >>>>
+> >>>>>>>>>>>     > >>>> Normally btrfs check --init-csum-tree should be ab=
+le to
+> >>>>>>>>>>>     handle it.
+> >>>>>>>>>>>     > >>>>
+> >>>>>>>>>>>     > >>>> But still, please be sure you're using the latest =
+btrfs-progs
+> >>>>>>>>>>>     to fix it.
+> >>>>>>>>>>>     > >>>>
+> >>>>>>>>>>>     > >>>> Thanks,
+> >>>>>>>>>>>     > >>>> Qu
+> >>>>>>>>>>>     > >>>>
+> >>>>>>>>>>>     > >>>>> [6/7] checking root refs
+> >>>>>>>>>>>     > >>>>> [7/7] checking quota groups skipped (not enabled =
+on this FS)
+> >>>>>>>>>>>     > >>>>> found 44157956026368 bytes used, error(s) found
+> >>>>>>>>>>>     > >>>>> total csum bytes: 42038602716
+> >>>>>>>>>>>     > >>>>> total tree bytes: 49688616960
+> >>>>>>>>>>>     > >>>>> total fs tree bytes: 1256427520
+> >>>>>>>>>>>     > >>>>> total extent tree bytes: 1709105152
+> >>>>>>>>>>>     > >>>>> btree space waste bytes: 3172727316
+> >>>>>>>>>>>     > >>>>> file data blocks allocated: 261625653436416
+> >>>>>>>>>>>     > >>>>>  referenced 47477768499200
+> >>>>>>>>>>>     > >>>>>
+> >>>>>>>>>>>     > >>>>> What do I need to do to fix all of this?
+> >>>>>>>>>>>     > >>>>>
+> >>>>>>>>>>>     > >>>>> On Thu, May 7, 2020 at 1:52 AM Qu Wenruo
+> >>>>>>>>>>>     <quwenruo.btrfs@gmx.com <mailto:quwenruo.btrfs@gmx.com>> =
+wrote:
+> >>>>>>>>>>>     > >>>>>>
+> >>>>>>>>>>>     > >>>>>>
+> >>>>>>>>>>>     > >>>>>>
+> >>>>>>>>>>>     > >>>>>> On 2020/5/7 =E4=B8=8B=E5=8D=881:43, Tyler Richmo=
+nd wrote:
+> >>>>>>>>>>>     > >>>>>>> Well, the repair doesn't look terribly successf=
+ul.
+> >>>>>>>>>>>     > >>>>>>>
+> >>>>>>>>>>>     > >>>>>>> parent transid verify failed on 218620880703488=
+ wanted
+> >>>>>>>>>>>     6875841 found 6876224
+> >>>>>>>>>>>     > >>>>>>> parent transid verify failed on 218620880703488=
+ wanted
+> >>>>>>>>>>>     6875841 found 6876224
+> >>>>>>>>>>>     > >>>>>>> parent transid verify failed on 218620880703488=
+ wanted
+> >>>>>>>>>>>     6875841 found 6876224
+> >>>>>>>>>>>     > >>>>>>> Ignoring transid failure
+> >>>>>>>>>>>     > >>>>>>> ERROR: child eb corrupted: parent bytenr=3D2250=
+49956061184
+> >>>>>>>>>>>     item=3D84
+> >>>>>>>>>>>     > >>>>>>> parent level=3D1
+> >>>>>>>>>>>     > >>>>>>>                                             chi=
+ld level=3D4
+> >>>>>>>>>>>     > >>>>>>
+> >>>>>>>>>>>     > >>>>>> This means there are more problems, not only the=
+ hash name
+> >>>>>>>>>>>     mismatch.
+> >>>>>>>>>>>     > >>>>>>
+> >>>>>>>>>>>     > >>>>>> This means the fs is already corrupted, the name=
+ hash is
+> >>>>>>>>>>>     just one
+> >>>>>>>>>>>     > >>>>>> unrelated symptom.
+> >>>>>>>>>>>     > >>>>>>
+> >>>>>>>>>>>     > >>>>>> The only good news is, btrfs-progs abort the tra=
+nsaction,
+> >>>>>>>>>>>     thus no
+> >>>>>>>>>>>     > >>>>>> further damage to the fs.
+> >>>>>>>>>>>     > >>>>>>
+> >>>>>>>>>>>     > >>>>>> Please run a plain btrfs-check to show what's th=
+e problem
+> >>>>>>>>>>>     first.
+> >>>>>>>>>>>     > >>>>>>
+> >>>>>>>>>>>     > >>>>>> Thanks,
+> >>>>>>>>>>>     > >>>>>> Qu
+> >>>>>>>>>>>     > >>>>>>
+> >>>>>>>>>>>     > >>>>>>> parent transid verify failed on 218620880703488=
+ wanted
+> >>>>>>>>>>>     6875841 found 6876224
+> >>>>>>>>>>>     > >>>>>>> Ignoring transid failure
+> >>>>>>>>>>>     > >>>>>>> ERROR: child eb corrupted: parent bytenr=3D2250=
+49956061184
+> >>>>>>>>>>>     item=3D84
+> >>>>>>>>>>>     > >>>>>>> parent level=3D1
+> >>>>>>>>>>>     > >>>>>>>                                             chi=
+ld level=3D4
+> >>>>>>>>>>>     > >>>>>>> parent transid verify failed on 218620880703488=
+ wanted
+> >>>>>>>>>>>     6875841 found 6876224
+> >>>>>>>>>>>     > >>>>>>> Ignoring transid failure
+> >>>>>>>>>>>     > >>>>>>> ERROR: child eb corrupted: parent bytenr=3D2250=
+49956061184
+> >>>>>>>>>>>     item=3D84
+> >>>>>>>>>>>     > >>>>>>> parent level=3D1
+> >>>>>>>>>>>     > >>>>>>>                                             chi=
+ld level=3D4
+> >>>>>>>>>>>     > >>>>>>> parent transid verify failed on 218620880703488=
+ wanted
+> >>>>>>>>>>>     6875841 found 6876224
+> >>>>>>>>>>>     > >>>>>>> Ignoring transid failure
+> >>>>>>>>>>>     > >>>>>>> ERROR: child eb corrupted: parent bytenr=3D2250=
+49956061184
+> >>>>>>>>>>>     item=3D84
+> >>>>>>>>>>>     > >>>>>>> parent level=3D1
+> >>>>>>>>>>>     > >>>>>>>                                             chi=
+ld level=3D4
+> >>>>>>>>>>>     > >>>>>>> parent transid verify failed on 218620880703488=
+ wanted
+> >>>>>>>>>>>     6875841 found 6876224
+> >>>>>>>>>>>     > >>>>>>> Ignoring transid failure
+> >>>>>>>>>>>     > >>>>>>> ERROR: child eb corrupted: parent bytenr=3D2250=
+49956061184
+> >>>>>>>>>>>     item=3D84
+> >>>>>>>>>>>     > >>>>>>> parent level=3D1
+> >>>>>>>>>>>     > >>>>>>>                                             chi=
+ld level=3D4
+> >>>>>>>>>>>     > >>>>>>> parent transid verify failed on 218620880703488=
+ wanted
+> >>>>>>>>>>>     6875841 found 6876224
+> >>>>>>>>>>>     > >>>>>>> Ignoring transid failure
+> >>>>>>>>>>>     > >>>>>>> ERROR: child eb corrupted: parent bytenr=3D2250=
+49956061184
+> >>>>>>>>>>>     item=3D84
+> >>>>>>>>>>>     > >>>>>>> parent level=3D1
+> >>>>>>>>>>>     > >>>>>>>                                             chi=
+ld level=3D4
+> >>>>>>>>>>>     > >>>>>>> parent transid verify failed on 218620880703488=
+ wanted
+> >>>>>>>>>>>     6875841 found 6876224
+> >>>>>>>>>>>     > >>>>>>> Ignoring transid failure
+> >>>>>>>>>>>     > >>>>>>> ERROR: child eb corrupted: parent bytenr=3D2250=
+49956061184
+> >>>>>>>>>>>     item=3D84
+> >>>>>>>>>>>     > >>>>>>> parent level=3D1
+> >>>>>>>>>>>     > >>>>>>>                                             chi=
+ld level=3D4
+> >>>>>>>>>>>     > >>>>>>> parent transid verify failed on 218620880703488=
+ wanted
+> >>>>>>>>>>>     6875841 found 6876224
+> >>>>>>>>>>>     > >>>>>>> Ignoring transid failure
+> >>>>>>>>>>>     > >>>>>>> ERROR: child eb corrupted: parent bytenr=3D2250=
+49956061184
+> >>>>>>>>>>>     item=3D84
+> >>>>>>>>>>>     > >>>>>>> parent level=3D1
+> >>>>>>>>>>>     > >>>>>>>                                             chi=
+ld level=3D4
+> >>>>>>>>>>>     > >>>>>>> parent transid verify failed on 218620880703488=
+ wanted
+> >>>>>>>>>>>     6875841 found 6876224
+> >>>>>>>>>>>     > >>>>>>> Ignoring transid failure
+> >>>>>>>>>>>     > >>>>>>> ERROR: child eb corrupted: parent bytenr=3D2250=
+49956061184
+> >>>>>>>>>>>     item=3D84
+> >>>>>>>>>>>     > >>>>>>> parent level=3D1
+> >>>>>>>>>>>     > >>>>>>>                                             chi=
+ld level=3D4
+> >>>>>>>>>>>     > >>>>>>> parent transid verify failed on 218620880703488=
+ wanted
+> >>>>>>>>>>>     6875841 found 6876224
+> >>>>>>>>>>>     > >>>>>>> Ignoring transid failure
+> >>>>>>>>>>>     > >>>>>>> ERROR: child eb corrupted: parent bytenr=3D2250=
+49956061184
+> >>>>>>>>>>>     item=3D84
+> >>>>>>>>>>>     > >>>>>>> parent level=3D1
+> >>>>>>>>>>>     > >>>>>>>                                             chi=
+ld level=3D4
+> >>>>>>>>>>>     > >>>>>>> parent transid verify failed on 218620880703488=
+ wanted
+> >>>>>>>>>>>     6875841 found 6876224
+> >>>>>>>>>>>     > >>>>>>> Ignoring transid failure
+> >>>>>>>>>>>     > >>>>>>> ERROR: child eb corrupted: parent bytenr=3D2250=
+49956061184
+> >>>>>>>>>>>     item=3D84
+> >>>>>>>>>>>     > >>>>>>> parent level=3D1
+> >>>>>>>>>>>     > >>>>>>>                                             chi=
+ld level=3D4
+> >>>>>>>>>>>     > >>>>>>> ERROR: failed to zero log tree: -17
+> >>>>>>>>>>>     > >>>>>>> ERROR: attempt to start transaction over alread=
+y running one
+> >>>>>>>>>>>     > >>>>>>> WARNING: reserved space leaked, flag=3D0x4 byte=
+s_reserved=3D4096
+> >>>>>>>>>>>     > >>>>>>> extent buffer leak: start 225049066086400 len 4=
+096
+> >>>>>>>>>>>     > >>>>>>> extent buffer leak: start 225049066086400 len 4=
+096
+> >>>>>>>>>>>     > >>>>>>> WARNING: dirty eb leak (aborted trans): start
+> >>>>>>>>>>>     225049066086400 len 4096
+> >>>>>>>>>>>     > >>>>>>> extent buffer leak: start 225049066094592 len 4=
+096
+> >>>>>>>>>>>     > >>>>>>> extent buffer leak: start 225049066094592 len 4=
+096
+> >>>>>>>>>>>     > >>>>>>> WARNING: dirty eb leak (aborted trans): start
+> >>>>>>>>>>>     225049066094592 len 4096
+> >>>>>>>>>>>     > >>>>>>> extent buffer leak: start 225049066102784 len 4=
+096
+> >>>>>>>>>>>     > >>>>>>> extent buffer leak: start 225049066102784 len 4=
+096
+> >>>>>>>>>>>     > >>>>>>> WARNING: dirty eb leak (aborted trans): start
+> >>>>>>>>>>>     225049066102784 len 4096
+> >>>>>>>>>>>     > >>>>>>> extent buffer leak: start 225049066131456 len 4=
+096
+> >>>>>>>>>>>     > >>>>>>> extent buffer leak: start 225049066131456 len 4=
+096
+> >>>>>>>>>>>     > >>>>>>> WARNING: dirty eb leak (aborted trans): start
+> >>>>>>>>>>>     225049066131456 len 4096
+> >>>>>>>>>>>     > >>>>>>>
+> >>>>>>>>>>>     > >>>>>>> What is going on?
+> >>>>>>>>>>>     > >>>>>>>
+> >>>>>>>>>>>     > >>>>>>> On Wed, May 6, 2020 at 9:30 PM Tyler Richmond
+> >>>>>>>>>>>     <t.d.richmond@gmail.com <mailto:t.d.richmond@gmail.com>> =
+wrote:
+> >>>>>>>>>>>     > >>>>>>>>
+> >>>>>>>>>>>     > >>>>>>>> Chris, I had used the correct mountpoint in th=
+e command.
+> >>>>>>>>>>>     I just edited
+> >>>>>>>>>>>     > >>>>>>>> it in the email to be /mountpoint for consiste=
+ncy.
+> >>>>>>>>>>>     > >>>>>>>>
+> >>>>>>>>>>>     > >>>>>>>> Qu, I'll try the repair. Fingers crossed!
+> >>>>>>>>>>>     > >>>>>>>>
+> >>>>>>>>>>>     > >>>>>>>> On Wed, May 6, 2020 at 9:13 PM Qu Wenruo
+> >>>>>>>>>>>     <quwenruo.btrfs@gmx.com <mailto:quwenruo.btrfs@gmx.com>> =
+wrote:
+> >>>>>>>>>>>     > >>>>>>>>>
+> >>>>>>>>>>>     > >>>>>>>>>
+> >>>>>>>>>>>     > >>>>>>>>>
+> >>>>>>>>>>>     > >>>>>>>>> On 2020/5/7 =E4=B8=8A=E5=8D=885:54, Tyler Ric=
+hmond wrote:
+> >>>>>>>>>>>     > >>>>>>>>>> Hello,
+> >>>>>>>>>>>     > >>>>>>>>>>
+> >>>>>>>>>>>     > >>>>>>>>>> I looked up this error and it basically says=
+ ask a
+> >>>>>>>>>>>     developer to
+> >>>>>>>>>>>     > >>>>>>>>>> determine if it's a false error or not. I ju=
+st started
+> >>>>>>>>>>>     getting some
+> >>>>>>>>>>>     > >>>>>>>>>> slow response times, and looked at the dmesg=
+ log to
+> >>>>>>>>>>>     find a ton of
+> >>>>>>>>>>>     > >>>>>>>>>> these errors.
+> >>>>>>>>>>>     > >>>>>>>>>>
+> >>>>>>>>>>>     > >>>>>>>>>> [192088.446299] BTRFS critical (device sdh):=
+ corrupt
+> >>>>>>>>>>>     leaf: root=3D5
+> >>>>>>>>>>>     > >>>>>>>>>> block=3D203510940835840 slot=3D4 ino=3D13116=
+70, invalid inode
+> >>>>>>>>>>>     generation:
+> >>>>>>>>>>>     > >>>>>>>>>> has 18446744073709551492 expect [0, 6875827]
+> >>>>>>>>>>>     > >>>>>>>>>> [192088.449823] BTRFS error (device sdh):
+> >>>>>>>>>>>     block=3D203510940835840 read
+> >>>>>>>>>>>     > >>>>>>>>>> time tree block corruption detected
+> >>>>>>>>>>>     > >>>>>>>>>> [192088.459238] BTRFS critical (device sdh):=
+ corrupt
+> >>>>>>>>>>>     leaf: root=3D5
+> >>>>>>>>>>>     > >>>>>>>>>> block=3D203510940835840 slot=3D4 ino=3D13116=
+70, invalid inode
+> >>>>>>>>>>>     generation:
+> >>>>>>>>>>>     > >>>>>>>>>> has 18446744073709551492 expect [0, 6875827]
+> >>>>>>>>>>>     > >>>>>>>>>> [192088.462773] BTRFS error (device sdh):
+> >>>>>>>>>>>     block=3D203510940835840 read
+> >>>>>>>>>>>     > >>>>>>>>>> time tree block corruption detected
+> >>>>>>>>>>>     > >>>>>>>>>> [192088.464711] BTRFS critical (device sdh):=
+ corrupt
+> >>>>>>>>>>>     leaf: root=3D5
+> >>>>>>>>>>>     > >>>>>>>>>> block=3D203510940835840 slot=3D4 ino=3D13116=
+70, invalid inode
+> >>>>>>>>>>>     generation:
+> >>>>>>>>>>>     > >>>>>>>>>> has 18446744073709551492 expect [0, 6875827]
+> >>>>>>>>>>>     > >>>>>>>>>> [192088.468457] BTRFS error (device sdh):
+> >>>>>>>>>>>     block=3D203510940835840 read
+> >>>>>>>>>>>     > >>>>>>>>>> time tree block corruption detected
+> >>>>>>>>>>>     > >>>>>>>>>>
+> >>>>>>>>>>>     > >>>>>>>>>> btrfs device stats, however, doesn't show an=
+y errors.
+> >>>>>>>>>>>     > >>>>>>>>>>
+> >>>>>>>>>>>     > >>>>>>>>>> Is there anything I should do about this, or=
+ should I
+> >>>>>>>>>>>     just continue
+> >>>>>>>>>>>     > >>>>>>>>>> using my array as normal?
+> >>>>>>>>>>>     > >>>>>>>>>
+> >>>>>>>>>>>     > >>>>>>>>> This is caused by older kernel underflow inod=
+e generation.
+> >>>>>>>>>>>     > >>>>>>>>>
+> >>>>>>>>>>>     > >>>>>>>>> Latest btrfs-progs can fix it, using btrfs ch=
+eck --repair.
+> >>>>>>>>>>>     > >>>>>>>>>
+> >>>>>>>>>>>     > >>>>>>>>> Or you can go safer, by manually locating the=
+ inode
+> >>>>>>>>>>>     using its inode
+> >>>>>>>>>>>     > >>>>>>>>> number (1311670), and copy it to some new loc=
+ation using
+> >>>>>>>>>>>     previous
+> >>>>>>>>>>>     > >>>>>>>>> working kernel, then delete the old file, cop=
+y the new
+> >>>>>>>>>>>     one back to fix it.
+> >>>>>>>>>>>     > >>>>>>>>>
+> >>>>>>>>>>>     > >>>>>>>>> Thanks,
+> >>>>>>>>>>>     > >>>>>>>>> Qu
+> >>>>>>>>>>>     > >>>>>>>>>
+> >>>>>>>>>>>     > >>>>>>>>>>
+> >>>>>>>>>>>     > >>>>>>>>>> Thank you!
+> >>>>>>>>>>>     > >>>>>>>>>>
+> >>>>>>>>>>>     > >>>>>>>>>
+> >>>>>>>>>>>     > >>>>>>
+> >>>>>>>>>>>     > >>>>
+> >>>>>>>>>>>     > >>
+> >>>>>>>>>>>     >
+> >>>>>>>>>>>
+> >>>>>>>>>>
+> >>>>>>>
+> >>>>>>
+> >>>>
+> >>
+>
