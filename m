@@ -2,25 +2,27 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34E782511AF
-	for <lists+linux-btrfs@lfdr.de>; Tue, 25 Aug 2020 07:48:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D4F02511B0
+	for <lists+linux-btrfs@lfdr.de>; Tue, 25 Aug 2020 07:48:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728876AbgHYFsU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 25 Aug 2020 01:48:20 -0400
-Received: from mx2.suse.de ([195.135.220.15]:50480 "EHLO mx2.suse.de"
+        id S1728881AbgHYFs0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 25 Aug 2020 01:48:26 -0400
+Received: from mx2.suse.de ([195.135.220.15]:50540 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728145AbgHYFsU (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 25 Aug 2020 01:48:20 -0400
+        id S1728145AbgHYFs0 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 25 Aug 2020 01:48:26 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id A1C39ACCF
-        for <linux-btrfs@vger.kernel.org>; Tue, 25 Aug 2020 05:48:49 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id B42BFACCF
+        for <linux-btrfs@vger.kernel.org>; Tue, 25 Aug 2020 05:48:55 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v3 0/4] btrfs: basic refactor of btrfs_buffered_write()
-Date:   Tue, 25 Aug 2020 13:48:04 +0800
-Message-Id: <20200825054808.16241-1-wqu@suse.com>
+Subject: [PATCH v3 1/4] btrfs: refactor @nrptrs calculation of btrfs_buffered_write()
+Date:   Tue, 25 Aug 2020 13:48:05 +0800
+Message-Id: <20200825054808.16241-2-wqu@suse.com>
 X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20200825054808.16241-1-wqu@suse.com>
+References: <20200825054808.16241-1-wqu@suse.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
@@ -28,47 +30,61 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This patchset will refactor btrfs_buffered_write() by:
-- Extra the nrptrs calculation into one function
-  The main concern here is the batch number of pages.
-  Originally there is a max(nrptrs, 8), which looks so incorrect that my
-  eyes change it to min(nrptrs, 8) automatically.
+@nrptrs of btrfs_bufferd_write() determines the up limit of pages we can
+process in one batch.
 
-  This time we kill that max(nrptrs, 8), and replace it to a fixed size
-  up limit (64K), which should bring the same performance for different
-  page sized.
+Refactor that calculation into its own function, and fix a small page
+alignment bug where the result can be one page less than ideal.
 
-  The limit can be changed if the 64K is not large enough for certain
-  buffered write.
+Despite that, no functionality change.
 
-- Refactor the main loop into process_one_batch()
-  No functional change, just plain refactor.
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ fs/btrfs/file.c | 24 ++++++++++++++++++++----
+ 1 file changed, 20 insertions(+), 4 deletions(-)
 
-- Remove the again: tag by integrating page and extent locking
-  The new function lock_pages_and_extent() will handle the retry so we
-  don't need the tag any more in the main loop.
-
-Changelog:
-v2:
-- Fix a bug that ENOSPC error is not returned to user space
-  It's caused by a missing assignment for (copied < 0) branch in the 2nd
-  patch.
-
-v3:
-- Rename get_nr_pages() to calc_nr_pages()
-- Remove unnecessary parameter for calc_nr_pages()
-- Change the upper limit of calc_nr_pages() in a separate patch
-
-
-Qu Wenruo (4):
-  btrfs: refactor @nrptrs calculation of btrfs_buffered_write()
-  btrfs: refactor btrfs_buffered_write() into process_one_batch()
-  btrfs: remove the again: tag in process_one_batch()
-  btrfs: avoid allocating unnecessary page pointers
-
- fs/btrfs/file.c | 572 ++++++++++++++++++++++++++----------------------
- 1 file changed, 305 insertions(+), 267 deletions(-)
-
+diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+index 5a818ebcb01f..64f744989697 100644
+--- a/fs/btrfs/file.c
++++ b/fs/btrfs/file.c
+@@ -1620,6 +1620,25 @@ void btrfs_check_nocow_unlock(struct btrfs_inode *inode)
+ 	btrfs_drew_write_unlock(&inode->root->snapshot_lock);
+ }
+ 
++/* Helper to get how many pages we should alloc for the batch */
++static int calc_nr_pages(loff_t pos, struct iov_iter *iov)
++{
++	int nr_pages;
++
++	/*
++	 * Try to cover the full iov range, as btrfs metadata/data reserve
++	 * and release can be pretty slow, thus the more pages we process in
++	 * one batch the better.
++	 */
++	nr_pages = (round_up(pos + iov_iter_count(iov), PAGE_SIZE) -
++		    round_down(pos, PAGE_SIZE)) / PAGE_SIZE;
++
++	nr_pages = min(nr_pages, current->nr_dirtied_pause -
++				 current->nr_dirtied);
++	nr_pages = max(nr_pages, 8);
++	return nr_pages;
++}
++
+ static noinline ssize_t btrfs_buffered_write(struct kiocb *iocb,
+ 					       struct iov_iter *i)
+ {
+@@ -1638,10 +1657,7 @@ static noinline ssize_t btrfs_buffered_write(struct kiocb *iocb,
+ 	bool only_release_metadata = false;
+ 	bool force_page_uptodate = false;
+ 
+-	nrptrs = min(DIV_ROUND_UP(iov_iter_count(i), PAGE_SIZE),
+-			PAGE_SIZE / (sizeof(struct page *)));
+-	nrptrs = min(nrptrs, current->nr_dirtied_pause - current->nr_dirtied);
+-	nrptrs = max(nrptrs, 8);
++	nrptrs = calc_nr_pages(pos, i);
+ 	pages = kmalloc_array(nrptrs, sizeof(struct page *), GFP_KERNEL);
+ 	if (!pages)
+ 		return -ENOMEM;
 -- 
 2.28.0
 
