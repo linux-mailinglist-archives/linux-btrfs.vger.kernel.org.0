@@ -2,126 +2,110 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C6BA251EC8
-	for <lists+linux-btrfs@lfdr.de>; Tue, 25 Aug 2020 20:03:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 135F3251F7C
+	for <lists+linux-btrfs@lfdr.de>; Tue, 25 Aug 2020 21:05:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726180AbgHYSDN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 25 Aug 2020 14:03:13 -0400
-Received: from smtp-33.italiaonline.it ([213.209.10.33]:57802 "EHLO libero.it"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726119AbgHYSDM (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 25 Aug 2020 14:03:12 -0400
-Received: from venice.bhome ([94.37.192.142])
-        by smtp-33.iol.local with ESMTPA
-        id AdHpkjAKb8e2WAdHpkJYud; Tue, 25 Aug 2020 20:03:09 +0200
-x-libjamoibt: 1601
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2014;
-        t=1598378589; bh=CU3zuMCoQTK7/uDJCgLgoBMF9Fz0asilvY/k3TbbXYw=;
-        h=From;
-        b=QGoa2/We4NF1C5D7VIlO472UlP92rhoVtmGpxN3OiRgabJgihMmZoo09PUlXEyDUo
-         g1HGTW5+OQ/6h0HBMCrmKoB1/9qew1/SY2wAxi11ZKaucsqAHKDuQyccKnCMwPjNR3
-         xwnLxkysq7sc87aqxOPAExPL9ewjRugIHKre5UkZOKKC7bZs+cbQAAnqXEp7SDtRe4
-         i0a+VWgf4fuKojqtW3USHojFadK26yIM26Sw0YC2R0SexiS/TFEWUbZQFHTz6XIRBp
-         ucJW20LLLrvpTuIbsIVvtrXDmJT62nr/PxsSfgATGgtSYf04r3r0OGZjBUR95mp8qS
-         pkk+O4gBq89Xg==
-X-CNFS-Analysis: v=2.4 cv=ZYejiuZA c=1 sm=1 tr=0 ts=5f45525d
- a=ppQ2YIgYQAGACouVZCsPPQ==:117 a=ppQ2YIgYQAGACouVZCsPPQ==:17
- a=IkcTkHD0fZMA:10 a=lViJMyulAAAA:8 a=d1H2eEJXnWd64cUTc3cA:9
- a=0bXxn9q0MV6snEgNplNhOjQmxlI=:19 a=QEXdDO2ut3YA:10 a=x0L2op2tv_IA:10
- a=gb9IC-u5QvZuJU0a8fSk:22
-From:   Goffredo Baroncelli <kreijack@libero.it>
-Subject: cp --reflix between subvolume
-Reply-To: kreijack@inwind.it
-To:     David Sterba <dsterba@suse.cz>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>,
-        Neal Gompa <ngompa13@gmail.com>
-Message-ID: <7e39d6e5-f203-27fe-a357-f5c42e6f23ef@libero.it>
-Date:   Tue, 25 Aug 2020 20:03:09 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        id S1726149AbgHYTFv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 25 Aug 2020 15:05:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48388 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726066AbgHYTFu (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 25 Aug 2020 15:05:50 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81F26C061574
+        for <linux-btrfs@vger.kernel.org>; Tue, 25 Aug 2020 12:05:50 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id f7so13992837wrw.1
+        for <linux-btrfs@vger.kernel.org>; Tue, 25 Aug 2020 12:05:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=h9XrsqpgLl8oJaUnaIM5MG8ZuDgqqK8DNwj9gqvZusk=;
+        b=tI1tfKvgaFHF0PLwH8HlixR489d/bhP0vFDBMKK+jnIpaJppwDJbfAyGYN5RDXgjno
+         Zves3KiVH8SpJjku5BNwHqXTn+I+Y7U3hHrtXrxVsRi4lLEZccCUMqBvsEd/Sx98OVBH
+         kHZFC2GSwSviPbW1k8kjfxWKd/V1kH+r+2hRUgLhnWYywG7boPKbb+bIQm0GXhdV+D+b
+         eWwkVO9I/zc7DdCbiXj224s57hCwfzkHSCn+AU1rW2uZkUDWpSugHV/hueVmc3DvWzqk
+         KJZK52jv5LgoiPX2+ec6/ewoJiqru5yG8p1Ubo6/qPOoHmEi95Nto/isCEFavQ+zlCOA
+         HV4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=h9XrsqpgLl8oJaUnaIM5MG8ZuDgqqK8DNwj9gqvZusk=;
+        b=sxJ8xiMBhnfJT3VXKg8YzMlume3BFWBEjVyom4bhX9EcASgIBTWw9GOC3XbyHi3MOe
+         FNRI/A7PPnoKVCKOGIENxsBBj5Mf8Wk9YWtaUSdcCPrzmtNitQOj6PwRAhTbcuHKI9OQ
+         Zo96Bhn8QOg3bz2tPxiN78RE8gPsFnXoI25PbAp8gLY++pb/tlcXSzIZOec11qRjlXTp
+         hEd4Lj/cE5Js4hyZxyG4lhABWBCEykuEyBsMvL7CfES39YTmhAjP+ot9E0I7iipnQNJr
+         IgklExMkM/K8citMdGz1nNLUnTdeGBNsPsfYZhDlv0ZCTYCJAvSG9nJ5+hBl8cRLTHeT
+         CRLg==
+X-Gm-Message-State: AOAM532DhODMvHJxDuJXmID+PbU78jSR2qm2+MDSoAICS0kGlQNC2BZz
+        d+Sjb1VWv5alic0IIXJlW7u9Ur0AfjSMR0qpO7w2Rw==
+X-Google-Smtp-Source: ABdhPJwWQF+09U44Ufi/KK+EEkSTdayr1q1x5EshGka/prgVRRSDsa1rpvHpfaM9A7iFHIzx+S5vta3B1fjOlzVMVPI=
+X-Received: by 2002:adf:aace:: with SMTP id i14mr11677841wrc.236.1598382349200;
+ Tue, 25 Aug 2020 12:05:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfDc6I9GR2Z8fmHRAJSO331ULdOuxRoVfyKUJiVnzo9H8xINGEuJM0T0HqC50MznfgfmVa0ykq95NQH1eHi7715IC3CtPFDGQg9j7k1MwpfeT9KQt5VXG
- z9wWoxG03pVfne4N1UGNLzXWGWngb/Zx7vbTfffhmOpfr0dMSVRUFPGY8ZCk5bfhz30uBBor30WRQBQ0YKri6O18wLoqKdjL2BWEgwyzLms2bwGJop4tZ/Ek
- KUKBoeqKgV2yvimLKksjrw==
+References: <bdJVxLiFr_PyQSXRUbZJfFW_jAjsGgoMetqPHJMbg-hdy54Xt_ZHhRetmnJ6cJ99eBlcX76wy-AvWwV715c3YndkxneSlod11P1hlaADx0s=@protonmail.com>
+ <CAJCQCtTC2yi4HRqg6fkMrxw33TVSBh_yAKtnX-Z1-nXSVjBW7w@mail.gmail.com>
+ <Yy8-04dbNru1LWPcNZ9UxsagH1b0KNsGn7tDEnxVOqS812IqGiwl37dj4rxAh05gEP8QoNJ5F_Ea6CZ8iZgvnupuq5Qzc38gl69MceWMc9s=@protonmail.com>
+ <CAJCQCtSqe_oqRZWYP7iLJcGQnzZkC4vmoYVTm_9RPb8eb0-E6Q@mail.gmail.com>
+ <BfU9s11rmWxGNQdKqifkB1JKOJcgqAN49OZdV4LAOgo1W2AguRebwCPVosOiMVjMTzuSmsk_Efbkl02s31niRqtCS67WJ9S7_s4jiK9afeA=@protonmail.com>
+ <E212ihR5U8HVCyaalepkxQUX3wOj6IXd1yUFHj-PFFtyU7ma-A49vmB8QwfQG5gUVo2nCMbVpPo7C2ccooRO0ExVrIbdLP9sBpnjMOcefHo=@protonmail.com>
+ <lyGE8gPEf9cUEMJceWoJWD_ibk4viZXU0yG5VzbNe9yueGbkcnl1FkJrFZZufhWd5y2vNOgAwfYSpJ4Gia5Tow4wdmQXiGuETdyuNmnemJY=@protonmail.com>
+ <CAJCQCtR3gbJxJn24qyDfHWh9kQG7BSC=NnoGHmRKPnaQ+P7yyg@mail.gmail.com> <8oT9s0Jlzpgp2ctPAXOixSR03oOiPXaitR0AiOkNdBsYHwjPMfjK7CoVAPXuvj71hiUTH-fKoSevAM-To8iSPPBvGRvZeBkU0Nd1_NPonyU=@protonmail.com>
+In-Reply-To: <8oT9s0Jlzpgp2ctPAXOixSR03oOiPXaitR0AiOkNdBsYHwjPMfjK7CoVAPXuvj71hiUTH-fKoSevAM-To8iSPPBvGRvZeBkU0Nd1_NPonyU=@protonmail.com>
+From:   Chris Murphy <lists@colorremedies.com>
+Date:   Tue, 25 Aug 2020 13:05:06 -0600
+Message-ID: <CAJCQCtQH3h=NNr6PX3HZp7SbkgqZtNNdihi4aBMFvx+DN79XeA@mail.gmail.com>
+Subject: Re: [Help] Can't login to my systemd-homed user account due to
+ fallocate failure
+To:     Andrii Zymohliad <azymohliad@protonmail.com>
+Cc:     Chris Murphy <lists@colorremedies.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        Andrei Borzenkov <arvidjaar@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Looking at this page [1] I discovered that in BTRFS it is possible to do a cp --reflink between different subvolume *only* if these are from the same mountpoint. If the subvolumes are mounted with "subvol=" this is not possible even if these are from the same filesystem.
+On Tue, Aug 25, 2020 at 1:22 AM Andrii Zymohliad
+<azymohliad@protonmail.com> wrote:
+>
+> > Seems like bool should take either yes, true, on, or 1. But I'm an odd
+> > duck. Anyway! Glad it works.
+>
+> Ah, sorry, I didn't notice I changed true to on. It doesn't matter. The thing is, it should be "homectl update", and not during activation/authorization itself.
+>
+> > Next question is to find out why you have shared extents.
+>
+>     # filefrag -v /home/azymohliad.home | grep -m 10 shared
+>
+>     55082: 52756487..52756516:  291198215.. 291198244:     30:  291722503: shared
+>     55083: 52756518..52756522:  291198246.. 291198250:      5:             shared
+>     55084: 52756524..52756528:  291198252.. 291198256:      5:             shared
+>     55085: 52756530..52756530:  291198258.. 291198258:      1:             shared
+>     55086: 52756532..52756534:  291198260.. 291198262:      3:             shared
+>     55087: 52756536..52756546:  291198264.. 291198274:     11:             shared
+>     55088: 52756548..52756553:  291198276.. 291198281:      6:             shared
+>     55089: 52756555..52756557:  291198283.. 291198285:      3:             shared
+>     55090: 52756559..52756578:  291198287.. 291198306:     20:             shared
+>     55091: 52756582..52756595:  291198310.. 291198323:     14:             shared
+>
+> And for all of these extents the output of "btrfs inspect-internal" is:
+>
+>     //home/azymohliad.home
+>
+> I call it on root / filesystem, e.g.:
+>
+>     # btrfs inspect-internal logical-resolve $[291198246 * 4096] /
 
-$ cd /var/btrfs/
-$ sudo btrfs sub crea a
-Create subvolume './a'
-$ sudo btrfs sub crea b
-Create subvolume './b'
-$ sudo dd if=/dev/zero of=a/zero bs=1M count=1
-1+0 records in
-1+0 records out
-1048576 bytes (1.0 MB, 1.0 MiB) copied, 0.0017188 s, 610 MB/s
-$ sudo cp --reflink a/zero b/zero-1
-$ ls b/
-zero-1
+Yeah but is / the top-level?
 
-$ # /dev/sde3 is the btrfs filesystem /var/btrfs
-$ sudo mount -o subvol=b /dev/sde3 /mnt/other
-$ ls /mnt/other
-zero-1
-$ sudo cp --reflink a/zero /mnt/other/zero-2
-cp: failed to clone '/mnt/other/zero-2' from 'a/zero': Invalid cross-device link
-
-@David,
-it seems that the check that prevent 'cp --reflink' to work was inserted by you in the commit 362a20c5e27614739c46707d1c5f55c214d164ce:
-
-
-$ git show 362a20c5e27614739c46707d1c5f55c214d164ce
-commit 362a20c5e27614739c46707d1c5f55c214d164ce
-Author: David Sterba <dsterba@suse.cz>
-Date:   Mon Aug 1 18:11:57 2011 +0200
-
-     btrfs: allow cross-subvolume file clone
-     
-     Lift the EXDEV condition and allow different root trees for files being
-     cloned, then pass source inode's root when searching for extents.
-     Cloning is not allowed to cross vfsmounts, ie. when two subvolumes from
-     one filesystem are mounted separately.
-     
-     Signed-off-by: David Sterba <dsterba@suse.cz>
-
-diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-index 0e92e5763005..7011871c45b8 100644
---- a/fs/btrfs/ioctl.c
-+++ b/fs/btrfs/ioctl.c
-@@ -2340,6 +2340,10 @@ static noinline long btrfs_ioctl_clone(struct file *file, unsigned long srcfd,
-  		goto out_drop_write;
-  	}
-  
-+	ret = -EXDEV;
-+	if (src_file->f_path.mnt != file->f_path.mnt)
-+		goto out_fput;
-+
-[...]
-
-Now the code is changed from the one above. But there is the same check (only in a different position)
-
-What is the rationale behind this check ? I checked that also nfs4 does the same check.
-But I don't understand what is the reason (for sure there is one reason :-) ). My understanding is that
-a cp --reflink should be allowed with the only condition that the filesystem are the same; and this check (== the superblock are the same)  are in place.
-
-As also described in [1], the use case that I am looking an easy way to replace the root filesystem
-with an its snapshot. So every sub-subvolume (under root) have to be moved between the different
-root subvolumes and the easy way is to mount it via fstab. However doing so it prevents cp --reflink
-to work.
+btrfs sub list -t /
+mount | grep btrfs
 
 
-[1] https://pagure.io/fedora-btrfs/project/issue/8
-
-BR
-G.Baroncelli
 
 -- 
-gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
-Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
+Chris Murphy
