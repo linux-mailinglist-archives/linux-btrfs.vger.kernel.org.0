@@ -2,84 +2,126 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 905B4251E50
-	for <lists+linux-btrfs@lfdr.de>; Tue, 25 Aug 2020 19:31:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C6BA251EC8
+	for <lists+linux-btrfs@lfdr.de>; Tue, 25 Aug 2020 20:03:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726429AbgHYRbT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 25 Aug 2020 13:31:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33656 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726356AbgHYRbR (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 25 Aug 2020 13:31:17 -0400
-Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEEFDC061574
-        for <linux-btrfs@vger.kernel.org>; Tue, 25 Aug 2020 10:31:16 -0700 (PDT)
-Received: by mail-qv1-xf41.google.com with SMTP id cs12so5883872qvb.2
-        for <linux-btrfs@vger.kernel.org>; Tue, 25 Aug 2020 10:31:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=am3xhiU0tY8+u6EJoa+V36GkJ31WEx/kwEjSvfFxVRc=;
-        b=FhLYESQxXuuh14wxs3g8qm1wEaIQqyb4fAXJPJnEtNmKMJ29MiqPtsCop+aOVuEbAk
-         gVlt/pSqJKFGXxWde7rtKgf0qoi2GVo3Tw0PuCAFuY+XuA4lWn/NJvJjnx64fyRJb31N
-         SyClHtvTQGg11rjcGc9RmtI4xq7PHoIUrtlk4KeCdvF79d4y7+5+F5jvpqTbapK3jVtn
-         NrUboaONZBmYVSp8dNcw7kfkrUJ17rAY+xJUd/uYDZrUhWzmr2ACITB9Evtik95dNGfq
-         k7SG/qNxPghGEFuD/c9BZq4NBLpkl8Cc/3d4BZ29SP6GdjADyMjy53BneQmWbxVOc+oM
-         fhxQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=am3xhiU0tY8+u6EJoa+V36GkJ31WEx/kwEjSvfFxVRc=;
-        b=NtiSTVMOXnQkA6EeZfCjjhmVoM3C7L5WQW4G7tz8Z8FM2e+NzP3tH/9gRNF5w4qbVL
-         SGg0OzP5Dv6V1cVlIX+fnojSwlHMk9ftLny1BBmeVq7qV0y2K7BkSIvDp+wrRbpZtWNS
-         ud3ylvjaEEgsHEV+vElEkrKLP2ePHK9jGbFFkVIPyyZL9NLXkJkJR1R1/a4FUwnvFwva
-         amaytJ6NU28N2rNP5UpOHI2qUiZymRIn7cEcs3m9422hqa5q5z8cXqvgBvk1QNbDBpzR
-         mlDHWTbJY66LSifK2HxiQ6r1qKDb3R9RJcvqQRqrPZEwVwzZ3JJ57ppFDjT5wkp8aQUZ
-         9j6A==
-X-Gm-Message-State: AOAM533T72oQ9Scd+RPkKzfgXKegZdWiiT4cK7SAT6nUFNUyXyWtPrYG
-        NoJhcH8qqg33DXGCNPBg3ngvvA==
-X-Google-Smtp-Source: ABdhPJxXsUHeUMmQ7cgIM4ESiPGn2yC6F5Fe1fuaipcLjuAfFVDy4vsQL5MlMFyuRLnGtRIjznBLsQ==
-X-Received: by 2002:a0c:ffc6:: with SMTP id h6mr10602345qvv.251.1598376674703;
-        Tue, 25 Aug 2020 10:31:14 -0700 (PDT)
-Received: from ?IPv6:2620:10d:c0a8:11e8::1120? ([2620:10d:c091:480::1:4729])
-        by smtp.gmail.com with ESMTPSA id t12sm12113077qkt.56.2020.08.25.10.31.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 25 Aug 2020 10:31:14 -0700 (PDT)
-Subject: Re: [PATCH] btrfs-progs: add a warning and countdown for RAID5/6
- conversion
-To:     kreijack@inwind.it, linux-btrfs@vger.kernel.org, kernel-team@fb.com
-References: <164e102b2a6179f9af35ded962c11d780ccf8400.1598375602.git.josef@toxicpanda.com>
- <969bf9a2-6635-d7a4-a4b2-ae1fa28c73ed@libero.it>
-From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <fa964001-f247-4176-ffd3-d31acc6efede@toxicpanda.com>
-Date:   Tue, 25 Aug 2020 13:31:13 -0400
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.11.0
+        id S1726180AbgHYSDN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 25 Aug 2020 14:03:13 -0400
+Received: from smtp-33.italiaonline.it ([213.209.10.33]:57802 "EHLO libero.it"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726119AbgHYSDM (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 25 Aug 2020 14:03:12 -0400
+Received: from venice.bhome ([94.37.192.142])
+        by smtp-33.iol.local with ESMTPA
+        id AdHpkjAKb8e2WAdHpkJYud; Tue, 25 Aug 2020 20:03:09 +0200
+x-libjamoibt: 1601
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2014;
+        t=1598378589; bh=CU3zuMCoQTK7/uDJCgLgoBMF9Fz0asilvY/k3TbbXYw=;
+        h=From;
+        b=QGoa2/We4NF1C5D7VIlO472UlP92rhoVtmGpxN3OiRgabJgihMmZoo09PUlXEyDUo
+         g1HGTW5+OQ/6h0HBMCrmKoB1/9qew1/SY2wAxi11ZKaucsqAHKDuQyccKnCMwPjNR3
+         xwnLxkysq7sc87aqxOPAExPL9ewjRugIHKre5UkZOKKC7bZs+cbQAAnqXEp7SDtRe4
+         i0a+VWgf4fuKojqtW3USHojFadK26yIM26Sw0YC2R0SexiS/TFEWUbZQFHTz6XIRBp
+         ucJW20LLLrvpTuIbsIVvtrXDmJT62nr/PxsSfgATGgtSYf04r3r0OGZjBUR95mp8qS
+         pkk+O4gBq89Xg==
+X-CNFS-Analysis: v=2.4 cv=ZYejiuZA c=1 sm=1 tr=0 ts=5f45525d
+ a=ppQ2YIgYQAGACouVZCsPPQ==:117 a=ppQ2YIgYQAGACouVZCsPPQ==:17
+ a=IkcTkHD0fZMA:10 a=lViJMyulAAAA:8 a=d1H2eEJXnWd64cUTc3cA:9
+ a=0bXxn9q0MV6snEgNplNhOjQmxlI=:19 a=QEXdDO2ut3YA:10 a=x0L2op2tv_IA:10
+ a=gb9IC-u5QvZuJU0a8fSk:22
+From:   Goffredo Baroncelli <kreijack@libero.it>
+Subject: cp --reflix between subvolume
+Reply-To: kreijack@inwind.it
+To:     David Sterba <dsterba@suse.cz>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>,
+        Neal Gompa <ngompa13@gmail.com>
+Message-ID: <7e39d6e5-f203-27fe-a357-f5c42e6f23ef@libero.it>
+Date:   Tue, 25 Aug 2020 20:03:09 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-In-Reply-To: <969bf9a2-6635-d7a4-a4b2-ae1fa28c73ed@libero.it>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfDc6I9GR2Z8fmHRAJSO331ULdOuxRoVfyKUJiVnzo9H8xINGEuJM0T0HqC50MznfgfmVa0ykq95NQH1eHi7715IC3CtPFDGQg9j7k1MwpfeT9KQt5VXG
+ z9wWoxG03pVfne4N1UGNLzXWGWngb/Zx7vbTfffhmOpfr0dMSVRUFPGY8ZCk5bfhz30uBBor30WRQBQ0YKri6O18wLoqKdjL2BWEgwyzLms2bwGJop4tZ/Ek
+ KUKBoeqKgV2yvimLKksjrw==
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 8/25/20 1:28 PM, Goffredo Baroncelli wrote:
-> On 8/25/20 7:13 PM, Josef Bacik wrote:
->> Similar to the mkfs warning, add a warning to btrfs balance -*convert
->> options, with a countdown to allow the user to have time to cancel the
->> operation.
-> 
-> It is possible to add a switch to skip the countdown ? Something like 
-> "--balance-raid56-i-know-what-i-am-doing". I am thinking to the developers which 
-> are doing some tests
+Looking at this page [1] I discovered that in BTRFS it is possible to do a cp --reflink between different subvolume *only* if these are from the same mountpoint. If the subvolumes are mounted with "subvol=" this is not possible even if these are from the same filesystem.
 
-Yeah I can do that, I checked xfstests and there's only one test where we do the 
-convert to raid5/6, so we're just going to eat the timeout there.  Thanks,
+$ cd /var/btrfs/
+$ sudo btrfs sub crea a
+Create subvolume './a'
+$ sudo btrfs sub crea b
+Create subvolume './b'
+$ sudo dd if=/dev/zero of=a/zero bs=1M count=1
+1+0 records in
+1+0 records out
+1048576 bytes (1.0 MB, 1.0 MiB) copied, 0.0017188 s, 610 MB/s
+$ sudo cp --reflink a/zero b/zero-1
+$ ls b/
+zero-1
 
-Josef
+$ # /dev/sde3 is the btrfs filesystem /var/btrfs
+$ sudo mount -o subvol=b /dev/sde3 /mnt/other
+$ ls /mnt/other
+zero-1
+$ sudo cp --reflink a/zero /mnt/other/zero-2
+cp: failed to clone '/mnt/other/zero-2' from 'a/zero': Invalid cross-device link
+
+@David,
+it seems that the check that prevent 'cp --reflink' to work was inserted by you in the commit 362a20c5e27614739c46707d1c5f55c214d164ce:
+
+
+$ git show 362a20c5e27614739c46707d1c5f55c214d164ce
+commit 362a20c5e27614739c46707d1c5f55c214d164ce
+Author: David Sterba <dsterba@suse.cz>
+Date:   Mon Aug 1 18:11:57 2011 +0200
+
+     btrfs: allow cross-subvolume file clone
+     
+     Lift the EXDEV condition and allow different root trees for files being
+     cloned, then pass source inode's root when searching for extents.
+     Cloning is not allowed to cross vfsmounts, ie. when two subvolumes from
+     one filesystem are mounted separately.
+     
+     Signed-off-by: David Sterba <dsterba@suse.cz>
+
+diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+index 0e92e5763005..7011871c45b8 100644
+--- a/fs/btrfs/ioctl.c
++++ b/fs/btrfs/ioctl.c
+@@ -2340,6 +2340,10 @@ static noinline long btrfs_ioctl_clone(struct file *file, unsigned long srcfd,
+  		goto out_drop_write;
+  	}
+  
++	ret = -EXDEV;
++	if (src_file->f_path.mnt != file->f_path.mnt)
++		goto out_fput;
++
+[...]
+
+Now the code is changed from the one above. But there is the same check (only in a different position)
+
+What is the rationale behind this check ? I checked that also nfs4 does the same check.
+But I don't understand what is the reason (for sure there is one reason :-) ). My understanding is that
+a cp --reflink should be allowed with the only condition that the filesystem are the same; and this check (== the superblock are the same)  are in place.
+
+As also described in [1], the use case that I am looking an easy way to replace the root filesystem
+with an its snapshot. So every sub-subvolume (under root) have to be moved between the different
+root subvolumes and the easy way is to mount it via fstab. However doing so it prevents cp --reflink
+to work.
+
+
+[1] https://pagure.io/fedora-btrfs/project/issue/8
+
+BR
+G.Baroncelli
+
+-- 
+gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
+Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
