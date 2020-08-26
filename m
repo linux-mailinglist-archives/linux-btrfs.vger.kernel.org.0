@@ -2,51 +2,114 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A081253013
-	for <lists+linux-btrfs@lfdr.de>; Wed, 26 Aug 2020 15:40:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62B8C253111
+	for <lists+linux-btrfs@lfdr.de>; Wed, 26 Aug 2020 16:18:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730174AbgHZNkd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 26 Aug 2020 09:40:33 -0400
-Received: from mail4.protonmail.ch ([185.70.40.27]:22203 "EHLO
-        mail4.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730134AbgHZNkb (ORCPT
+        id S1728264AbgHZOSq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 26 Aug 2020 10:18:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56810 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728098AbgHZOSj (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 26 Aug 2020 09:40:31 -0400
-Date:   Wed, 26 Aug 2020 13:40:22 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail; t=1598449228;
-        bh=wq+PDZm0o6w9+pJZTKM/1FVmIh7Ku3xSz/IpyeQUwFk=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=pGcvpD2OfpUvNVp0ponHsoj7zEx1znNMhXH72dtSLum3jY1Cg9ZxhZXkLcQm7Tt7U
-         oWWyjT/6eD8aRv3A5XmS4X+vG7lF2kn6SqeKnmAMloaaLvWLESfAUGVG838RyfjXrt
-         CxE0jVIpOWasjljAP6k1Oknp7Iar8bBVn917OgdQ=
-To:     Chris Murphy <lists@colorremedies.com>
-From:   Andrii Zymohliad <azymohliad@protonmail.com>
-Cc:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        Andrei Borzenkov <arvidjaar@gmail.com>
-Reply-To: Andrii Zymohliad <azymohliad@protonmail.com>
-Subject: Re: [Help] Can't login to my systemd-homed user account due to fallocate failure
-Message-ID: <VTDsoZlxoD7U7UxD61VnBts_awxM0n5PgKgeH-fCQOy4VeCCCj27DmdMt_oP490t0cKWbsY9qlK1hci8o-1uD7vtBcVQLub1Gl3JjIGU-o0=@protonmail.com>
-In-Reply-To: <emBWetDIaC_TYsBRNRlPcz-yLjIOxlhIBny_K9bTqHxLO_kdKRZlGjMoHrVj4CwZ8aZAnMcXEyCj95vBFBxxOvJ1AANQr1sbeQ_CfZOrTH0=@protonmail.com>
-References: =?us-ascii?Q?<bdJVxLiFr=5FPyQSXRUbZJfFW=5FjAjsGgoMetqPHJMbg-hdy54Xt=5FZHhRetmnJ6cJ99eBlcX76wy-AvWwV715c3YndkxneSlod11P1hlaADx0s=3D@protonmail.com>_<BfU9s11rmWxGNQdKqifkB1JKOJcgqAN49OZdV4LAOgo1W2AguRebwCPVosOiMVjMTzuSmsk=5FEfbkl02s31niRqtCS67WJ9S7=5Fs4jiK9afeA=3D@protonmail.com>_<E212ihR5U8HVCyaalepkxQUX3wOj6IXd1yUFHj-PFFtyU7ma-A49vmB8QwfQG5gUVo2nCMbVpPo7C2ccooRO0ExVrIbdLP9sBpnjMOcefHo=3D@protonmail.com>_<lyGE8gPEf9cUEMJceWoJWD=5Fibk4viZXU0yG5VzbNe9yueGbkcnl1FkJrFZZufhWd5y2vNOgAwfYSpJ4Gia5Tow4wdmQXiGuETdyuNmnemJY=3D@protonmail.com>_<CAJCQCtR3gbJxJn24qyDfHWh9kQG7BSC=3DNnoGHmRKPnaQ+P7yyg@mail.gmail.com>_<8oT9s0Jlzpgp2ctPAXOixSR03oOiPXaitR0AiOkNdBsYHwjPMfjK7CoVAPXuvj71hiUTH-fKoSevAM-To8iSPPBvGRvZeBkU0Nd1=5FNPonyU=3D@protonmail.com>_<CAJCQCtQH3h=3DNNr6PX3HZp7SbkgqZtNNdihi4aBMFvx+DN79XeA@mail.gmail.com>_<6LDov933WqF3kLH8jtkEh-pfK6pRe0o6-Y9l3NcO2mVhswDL7rhbHyda71OnztoJKfgqqQT9jj1Ba52lz=5FugNFmmRtzN33BlSa5pCvds0F8=3D@protonmail.com>_<CAJCQCtQDt=3Dx7WCX7KhWz=5FpPn4yB1YdZm9jN29jRuQDFy=3DZTO?=
- =?us-ascii?Q?jA@mail.gmail.com>_<emBWetDIaC=5FTYsBRNRlPcz-yLjIOxlhIBny=5FK9bTqHxLO=5FkdKRZlGjMoHrVj4CwZ8aZAnMcXEyCj95vBFBxxOvJ1AANQr1sbeQ=5FCfZOrTH0=3D@protonmail.com>?=
+        Wed, 26 Aug 2020 10:18:39 -0400
+Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30530C061574
+        for <linux-btrfs@vger.kernel.org>; Wed, 26 Aug 2020 07:18:39 -0700 (PDT)
+Received: by mail-qv1-xf41.google.com with SMTP id dd12so770209qvb.0
+        for <linux-btrfs@vger.kernel.org>; Wed, 26 Aug 2020 07:18:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=SSQO6QPMe7KjkOSa9kGz1ge9QdYFrUAbw2hzD00JaCQ=;
+        b=KPHnYchgGI2GSu65K9Av16y7wjFYoZZLozyTeBkQ4GwPP+m/xweRP55w6Ddom9PLm1
+         FUTqfoSHH6KD0TxlQmY0v3qsNv6Xt0W27kPe6Fd7tf3AFmvAJhgvjBaw875p7QZ/YCUo
+         X1s+dgvjWxJdmRFi8Z65JOePjikMs4zXs6pakH6kxVgb6RyWZjrFXcAW3XTBwY1akKTH
+         fNACw7TdRG4hYTEAP/KYP3G8U/qb2H+96+UORyGRsWfCMrse59AW4kIMf7Kj/LLJPNch
+         2l52D0Tj5SP0xnXQBvxXghxvnhVhoskOvoDIg4qPk4QqyF25vSFsXhR4FeJhlMgxrTmY
+         MKfg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=SSQO6QPMe7KjkOSa9kGz1ge9QdYFrUAbw2hzD00JaCQ=;
+        b=h3X4Cb8UeaDzCPBhPeXQJCtJaOWhpp9Lmxt++p1U9QrM/JiQ1KFtfONosSiBIsd1L0
+         137EMp/MkfaQJuwffbHtTf3HnpGJJ4zUzU6BvmxLM0vP7qUI1jadeUHdOxKQ61LfU3jV
+         6NHloWelmzYtSaXEu+gIGQFosX1EtY4A8vBtsGS/BvryfpLScCoEnHTxZuaxpOfMkkqx
+         5fY31JZUYtJxAD13QDfbIWMvuevu3w+17k5sgemCKQ+gV4742EQRaGAFWkdytcxI2NA1
+         pryaGbMGSZKrD5hoTnP1fGh3HEpaHgDD0twI9jF3MAHg3BIR86JCVO2VIofxZ8eYoSla
+         OBSg==
+X-Gm-Message-State: AOAM531K7nETo6wOC9PA3idKfIqDVRTxhvKhgr9usHWYNu9ZwHtHLSg5
+        wOnah/7eRIPeT1P9sRURs6+Z1Fdpa7U+4dsd
+X-Google-Smtp-Source: ABdhPJwI3+q+UVh2f6n9Vfl3KFehjweQTqlF7MmEi0pxMZwfL8wRzLMp5vUwZZE80Mc+tJc1vUN00w==
+X-Received: by 2002:a0c:bd8d:: with SMTP id n13mr14212662qvg.199.1598451517945;
+        Wed, 26 Aug 2020 07:18:37 -0700 (PDT)
+Received: from ?IPv6:2620:10d:c0a8:11d9::10f3? ([2620:10d:c091:480::1:efc3])
+        by smtp.gmail.com with ESMTPSA id t1sm1751482qkt.119.2020.08.26.07.18.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 26 Aug 2020 07:18:37 -0700 (PDT)
+Subject: Re: [PATCH v2] btrfs: Only require sector size alignment for parent
+ eb bytenr
+To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+References: <20200826092643.113881-1-wqu@suse.com>
+From:   Josef Bacik <josef@toxicpanda.com>
+Message-ID: <f047e64f-4397-2173-148c-f2fc9d70ef52@toxicpanda.com>
+Date:   Wed, 26 Aug 2020 10:18:36 -0400
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+In-Reply-To: <20200826092643.113881-1-wqu@suse.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Interestingly, I have much less shared extents now:
+On 8/26/20 5:26 AM, Qu Wenruo wrote:
+> [BUG]
+> A completely sane converted fs will cause kernel warning at balance
+> time:
+> 
+> [ 1557.188633] BTRFS info (device sda7): relocating block group 8162107392 flags data
+> [ 1563.358078] BTRFS info (device sda7): found 11722 extents
+> [ 1563.358277] BTRFS info (device sda7): leaf 7989321728 gen 95 total ptrs 213 free space 3458 owner 2
+> [ 1563.358280] 	item 0 key (7984947200 169 0) itemoff 16250 itemsize 33
+> [ 1563.358281] 		extent refs 1 gen 90 flags 2
+> [ 1563.358282] 		ref#0: tree block backref root 4
+> [ 1563.358285] 	item 1 key (7985602560 169 0) itemoff 16217 itemsize 33
+> [ 1563.358286] 		extent refs 1 gen 93 flags 258
+> [ 1563.358287] 		ref#0: shared block backref parent 7985602560
+> [ 1563.358288] 			(parent 7985602560 is NOT ALIGNED to nodesize 16384)
+> [ 1563.358290] 	item 2 key (7985635328 169 0) itemoff 16184 itemsize 33
+> ...
+> [ 1563.358995] BTRFS error (device sda7): eb 7989321728 invalid extent inline ref type 182
+> [ 1563.358996] ------------[ cut here ]------------
+> [ 1563.359005] WARNING: CPU: 14 PID: 2930 at 0xffffffff9f231766
+> 
+> Then with transaction abort, and obviously failed to balance the fs.
+> 
+> [CAUSE]
+> That mentioned inline ref type 182 is completely sane, it's
+> BTRFS_SHARED_BLOCK_REF_KEY, it's some extra check making kernel to
+> believe it's invalid.
+> 
+> Commit 64ecdb647ddb ("Btrfs: add one more sanity check for shared ref
+> type") introduced extra checks for backref type.
+> 
+> One of the requirement is, parent bytenr must be aligned to node size,
+> which is not correct.
+> 
+> One example is like this:
+> 
+> 0	1G  1G+4K		2G 2G+4K
+> 	|   |///////////////////|//|  <- A chunk starts at 1G+4K
+>              |   |	<- A tree block get reserved at bytenr 1G+4K
+> 
 
-    # filefrag -v /home/azymohliad.home | grep shared | wc -l
-    1679
+This only happens with convert right?  Can we just fix convert to not do this? 
+Thanks,
 
-It was over 18k the first time you asked me to check it (even before I enab=
-led discard in homectl).
+Josef
