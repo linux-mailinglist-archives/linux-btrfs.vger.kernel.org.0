@@ -2,48 +2,48 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E01C9253988
-	for <lists+linux-btrfs@lfdr.de>; Wed, 26 Aug 2020 23:09:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B36DE253996
+	for <lists+linux-btrfs@lfdr.de>; Wed, 26 Aug 2020 23:15:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726765AbgHZVJS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 26 Aug 2020 17:09:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36616 "EHLO
+        id S1726809AbgHZVP3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 26 Aug 2020 17:15:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726740AbgHZVJR (ORCPT
+        with ESMTP id S1726765AbgHZVP2 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 26 Aug 2020 17:09:17 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03DACC061574
-        for <linux-btrfs@vger.kernel.org>; Wed, 26 Aug 2020 14:09:16 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id f7so3302575wrw.1
-        for <linux-btrfs@vger.kernel.org>; Wed, 26 Aug 2020 14:09:16 -0700 (PDT)
+        Wed, 26 Aug 2020 17:15:28 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 245E1C061574
+        for <linux-btrfs@vger.kernel.org>; Wed, 26 Aug 2020 14:15:28 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id k20so3236820wmi.5
+        for <linux-btrfs@vger.kernel.org>; Wed, 26 Aug 2020 14:15:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=3u1rCE7gafjMRsudujyf5pzmfpNncQWB0VHwUkFMGHw=;
-        b=pGRPS6U0pa9KVzMT3mAIVne7JcY5vWyNFhAAK5Cnn6f+4j7yIiK6wb4fo9hny48F02
-         qgXqmbHb4gLqvw5kWXSfKqGuXCaDytdT/xpk6pC3tkA+L+P1+aMgznSAhvCyynzwfEog
-         xZpc2KMUohItF8ZRRZ612PssTpX4CaiyQTDRvfGUrEvUvkSucw2DQnAnRSgP/eIfQx/I
-         OC1if4fuJEoT6tJGMyUPBhVYTsT4c2aIv72gCyYKQXo+sQXkZLGHQlM5r5SnSArGXRP7
-         G2Wv9tf2eaH2WyqZvOuyGHVnvxNdpib145KI07wkH6tZBLC8BG/0+xfC7Seyy1lNzvz5
-         eEdA==
+        bh=CnJiUe6UEPuimoi4zUCtLDtJMXsUXBCU/TVQshlMsEk=;
+        b=k+cCTd+9CHmhFY/m7bs8TOLGkm7J69ZNs4sHVNhkIhR8n2jKh1BXTLoGyIUGJ6Al5s
+         MJS9BIpoeukI0gMXCvGikY2JPSQK9WQDiPxo6O8CgJExr5wDWSoAaGlDIjI+uTzZx68P
+         GUMK4DKe5LFzEIZAQG4jIWMNG6xwqpWH/y6ImzFofFS2kKXkK182/uzi4x5nVuBkGOHJ
+         M9IpTptyWfR9A7ivNT4sio+nS2GPKy3MDWpVfOw61Lkv0QiC2sHKyJXEGDcjD2VltDk/
+         XCFFMbByZE61xcD4mjSL9lvUzufpi4e0ZBEHp2wsPHUppg4BwbEQ6j6JvHUBwiytu3Ug
+         Dkbw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=3u1rCE7gafjMRsudujyf5pzmfpNncQWB0VHwUkFMGHw=;
-        b=eI41poTWWwraIVBy6yWiCyIGx1EoZH/9rEJw6+XCOy2LDqNmsX8gJSYGStVLgHHwOS
-         TX4PnesTJlBPyWFRQMkeOzOAdneNSlBoFG8GuJssWtbwdnIB/O2JMlZlM0Aj5t/dN8EV
-         cvwUTbf5nP/3KGRS36KVM7F3//sJpiQgfZtIUlwqFwFyhOToJmUsbhF07Wr1PkqKW1Zm
-         yJMaeYWr8d6n2vvt3Yc2kbj7b8Ix5QzAxYLWK8gw0wfucZ99cr4wKemcC968kromQ62L
-         vc6XO5kqjHpMdUH7nzj4R4ul7BHKWdWKvlqrt2EPDCO27CqXSCu/V8GIv+eZRW3ASOOZ
-         RPRA==
-X-Gm-Message-State: AOAM531EZ7N8j8iWxZDnTYnIAWR6H+Tar2t1iN9QqWlWXGzK4S7le/SF
-        WImS2MYbI5P921wK0fJZrGEVy3FWzI++L7H500URGg==
-X-Google-Smtp-Source: ABdhPJwRHu26ASiTmNIy2ocgnQQ8CK6OM15gr3++ZJjy98TVneUKdkpAzJPqfWDR9WHZU2SypoJT5FhyrT3H2Pz55qw=
-X-Received: by 2002:adf:eb89:: with SMTP id t9mr16794442wrn.65.1598476154647;
- Wed, 26 Aug 2020 14:09:14 -0700 (PDT)
+        bh=CnJiUe6UEPuimoi4zUCtLDtJMXsUXBCU/TVQshlMsEk=;
+        b=UviexHiPgwZSlTXP+yj5kqIQFbiC4R8LOiMB6qvZK0uXgv9XVjQOJis7b9BGThnpkD
+         ywzD5vkoio1qf/Te3h46d+SBDw9KzdjlKmfXP+4foPEKDsfC+rsYlY/xWEEW7zwTar9y
+         3wOTuPovmwXpd8V/EcMLp6Xcl0/FezRhOYIOxTQltwA5z6oChji0GYinPDYugPFkAOCU
+         +eMWqC3sGl19m85ffBB8Hh6rx5Ycp2uVWpreEOUngG5bvshU4nEID7XYSXmImAi24/kU
+         mRQBrOcn8TiNKZm5kL5xUDbjYrHR5plYal2g3L4PRpANKvoHsYoT7nbyQCZQuajk/IAD
+         Hbbw==
+X-Gm-Message-State: AOAM531rhfZc++Sk4EHytXJvxTXfbJFHYELI8t+Hwbtm6c0PB3ZGq13k
+        ueRBGm/ArMgff13r31EgIc1vVMDgf9RCBkFYP3ilYvozXoPoPA==
+X-Google-Smtp-Source: ABdhPJzH72O+h6BQYg0oRfyKqALg0OVtCYS1DN1+6MFd0guYLG/PConUXyp/MMyEygUhrhKSZBXR9inp9kuXLa+xvGQ=
+X-Received: by 2002:a1c:750f:: with SMTP id o15mr9088311wmc.182.1598476526818;
+ Wed, 26 Aug 2020 14:15:26 -0700 (PDT)
 MIME-Version: 1.0
 References: <bdJVxLiFr_PyQSXRUbZJfFW_jAjsGgoMetqPHJMbg-hdy54Xt_ZHhRetmnJ6cJ99eBlcX76wy-AvWwV715c3YndkxneSlod11P1hlaADx0s=@protonmail.com>
  <CAJCQCtQH3h=NNr6PX3HZp7SbkgqZtNNdihi4aBMFvx+DN79XeA@mail.gmail.com>
@@ -55,11 +55,11 @@ References: <bdJVxLiFr_PyQSXRUbZJfFW_jAjsGgoMetqPHJMbg-hdy54Xt_ZHhRetmnJ6cJ99eBl
  <dHPyoaNUuxoqxJjpSUjcxZvk21ew2ObKWFFhX0efJKBqjG8m27px3mPupviQuM3HYQDEcYQGFQ9jOprBuAX4x1Em3oVOyDl6EhKwEJSiuXs=@protonmail.com>
  <CAJCQCtSVMAEZP5OT77yCEBw9Z3C=oyVKcicWbRV9p_+pKcRwoQ@mail.gmail.com>
  <gp99KJ83xX5hsbU2_hXblYTSDI6Rmkk2fbRYAcKNoQik1CH8siYdTw11qFuFdAqo-iC48cJcB_vbMJgY8HuSySoWoBW3hcYHewIgB87Kzzw=@protonmail.com>
- <CAJCQCtQZW2ps1i4b6kGBd_d8icYZWyz5Ha+Ozo0VjsbvVNf03w@mail.gmail.com>
-In-Reply-To: <CAJCQCtQZW2ps1i4b6kGBd_d8icYZWyz5Ha+Ozo0VjsbvVNf03w@mail.gmail.com>
+ <CAJCQCtQZW2ps1i4b6kGBd_d8icYZWyz5Ha+Ozo0VjsbvVNf03w@mail.gmail.com> <CAJCQCtR4y180_96BGu08ePGLxo8dq7mAV7H248d8X85FcS0MOw@mail.gmail.com>
+In-Reply-To: <CAJCQCtR4y180_96BGu08ePGLxo8dq7mAV7H248d8X85FcS0MOw@mail.gmail.com>
 From:   Chris Murphy <lists@colorremedies.com>
-Date:   Wed, 26 Aug 2020 15:08:30 -0600
-Message-ID: <CAJCQCtR4y180_96BGu08ePGLxo8dq7mAV7H248d8X85FcS0MOw@mail.gmail.com>
+Date:   Wed, 26 Aug 2020 15:14:42 -0600
+Message-ID: <CAJCQCtStgn4WjisTf6628UEcB8_eP0_9WETDSB6YtGa4VDPgPw@mail.gmail.com>
 Subject: Re: [Help] Can't login to my systemd-homed user account due to
  fallocate failure
 To:     Chris Murphy <lists@colorremedies.com>
@@ -72,13 +72,17 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Aug 26, 2020 at 3:06 PM Chris Murphy <lists@colorremedies.com> wrote:
+On Wed, Aug 26, 2020 at 3:08 PM Chris Murphy <lists@colorremedies.com> wrote:
 >
-> OK is the sysfs output from before or after the homectl resize? And it
-> matches with the second strace fallocate -l 300g ?
+> On Wed, Aug 26, 2020 at 3:06 PM Chris Murphy <lists@colorremedies.com> wrote:
+> >
+> > OK is the sysfs output from before or after the homectl resize? And it
+> > matches with the second strace fallocate -l 300g ?
+>
+> Figured it out. The sysfs is the first strace before the resize.
 
-Figured it out. The sysfs is the first strace before the resize.
-
+Shoot. I confused myself and am not sure, so I need you to tell me
+which strace that sysfs goes with, the 403g or 300g.
 
 
 -- 
