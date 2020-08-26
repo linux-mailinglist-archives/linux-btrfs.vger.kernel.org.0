@@ -2,24 +2,24 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B6FF2524D1
-	for <lists+linux-btrfs@lfdr.de>; Wed, 26 Aug 2020 02:47:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D71E2524D2
+	for <lists+linux-btrfs@lfdr.de>; Wed, 26 Aug 2020 02:47:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726772AbgHZArm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 25 Aug 2020 20:47:42 -0400
-Received: from mx2.suse.de ([195.135.220.15]:45252 "EHLO mx2.suse.de"
+        id S1726783AbgHZAro (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 25 Aug 2020 20:47:44 -0400
+Received: from mx2.suse.de ([195.135.220.15]:45258 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726570AbgHZArm (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 25 Aug 2020 20:47:42 -0400
+        id S1726570AbgHZArn (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 25 Aug 2020 20:47:43 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 4CF24B024
-        for <linux-btrfs@vger.kernel.org>; Wed, 26 Aug 2020 00:48:11 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 29BCCAFFD
+        for <linux-btrfs@vger.kernel.org>; Wed, 26 Aug 2020 00:48:13 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 1/2] btrfs-progs: fix compile warning due to global fs_info cleanup
-Date:   Wed, 26 Aug 2020 08:47:33 +0800
-Message-Id: <20200826004734.89905-2-wqu@suse.com>
+Subject: [PATCH 2/2] btrfs-progs: remove the unused variable in check_chunks_and_extents_lowmem()
+Date:   Wed, 26 Aug 2020 08:47:34 +0800
+Message-Id: <20200826004734.89905-3-wqu@suse.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200826004734.89905-1-wqu@suse.com>
 References: <20200826004734.89905-1-wqu@suse.com>
@@ -30,57 +30,63 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-[BUG]
-Compiler gives the following warning:
+The variable @root is only set but not utilized, while we only utilize
+@root1.
 
-  check/main.c: In function 'check_chunks_and_extents':
-  check/main.c:8712:30: warning: assignment to 'int (*)(struct btrfs_fs_info *, u64,  u64,  u64,  u64,  u64,  u64,  int)' {aka 'int (*)(struct btrfs_fs_info *, long long unsigned int,  long long unsigned int,  long long unsigned int,  long long unsigned int,  long long unsigned int,  long long unsigned int,  int)'} from incompatible pointer type 'int (*)(u64,  u64,  u64,  u64,  u64,  u64,  int)' {aka 'int (*)(long long unsigned int,  long long unsigned int,  long long unsigned int,  long long unsigned int,  long long unsigned int,  long long unsigned int,  int)'} [-Wincompatible-pointer-types]
-   8712 |   gfs_info->free_extent_hook = free_extent_hook;
+Replace @root1 with @root, then remove the @root1.
 
-And obviously, this would screwup original mode repair.
-
-[CAUSE]
-Commit b91222b3 ("btrfs-progs: check: drop unused fs_info") removes the
-fs_info parameter for free_extent_hook(), but didn't remove the
-parameter for the definition.
-
-[FIX]
-Also remove the fs_info parameter for the hook definition.
-
-Fixes: b91222b3 ("btrfs-progs: check: drop unused fs_info")
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- kernel-shared/ctree.h       | 3 +--
- kernel-shared/extent-tree.c | 2 +-
- 2 files changed, 2 insertions(+), 3 deletions(-)
+ check/mode-lowmem.c | 15 ++++++---------
+ 1 file changed, 6 insertions(+), 9 deletions(-)
 
-diff --git a/kernel-shared/ctree.h b/kernel-shared/ctree.h
-index 78d268e226fd..7683b8bbf0b4 100644
---- a/kernel-shared/ctree.h
-+++ b/kernel-shared/ctree.h
-@@ -1201,8 +1201,7 @@ struct btrfs_fs_info {
+diff --git a/check/mode-lowmem.c b/check/mode-lowmem.c
+index 3ce119fa0f61..837bacf920ac 100644
+--- a/check/mode-lowmem.c
++++ b/check/mode-lowmem.c
+@@ -5399,20 +5399,17 @@ int check_chunks_and_extents_lowmem(void)
+ 	struct btrfs_path path;
+ 	struct btrfs_key old_key;
+ 	struct btrfs_key key;
+-	struct btrfs_root *root1;
+ 	struct btrfs_root *root;
+ 	struct btrfs_root *cur_root;
+ 	int err = 0;
+ 	int ret;
  
- 	int transaction_aborted;
+-	root = gfs_info->fs_root;
+-
+-	root1 = gfs_info->chunk_root;
+-	ret = check_btrfs_root(root1, 1);
++	root = gfs_info->chunk_root;
++	ret = check_btrfs_root(root, 1);
+ 	err |= ret;
  
--	int (*free_extent_hook)(struct btrfs_fs_info *fs_info,
--				u64 bytenr, u64 num_bytes, u64 parent,
-+	int (*free_extent_hook)(u64 bytenr, u64 num_bytes, u64 parent,
- 				u64 root_objectid, u64 owner, u64 offset,
- 				int refs_to_drop);
- 	struct cache_tree *fsck_extent_cache;
-diff --git a/kernel-shared/extent-tree.c b/kernel-shared/extent-tree.c
-index e29ff433196f..5b1fbe10283a 100644
---- a/kernel-shared/extent-tree.c
-+++ b/kernel-shared/extent-tree.c
-@@ -1921,7 +1921,7 @@ static int __free_extent(struct btrfs_trans_handle *trans,
- 		btrfs_fs_incompat(extent_root->fs_info, SKINNY_METADATA);
+-	root1 = gfs_info->tree_root;
+-	ret = check_btrfs_root(root1, 1);
++	root = gfs_info->tree_root;
++	ret = check_btrfs_root(root, 1);
+ 	err |= ret;
  
- 	if (trans->fs_info->free_extent_hook) {
--		trans->fs_info->free_extent_hook(trans->fs_info, bytenr, num_bytes,
-+		trans->fs_info->free_extent_hook(bytenr, num_bytes,
- 						parent, root_objectid, owner_objectid,
- 						owner_offset, refs_to_drop);
+ 	btrfs_init_path(&path);
+@@ -5420,7 +5417,7 @@ int check_chunks_and_extents_lowmem(void)
+ 	key.offset = 0;
+ 	key.type = BTRFS_ROOT_ITEM_KEY;
  
+-	ret = btrfs_search_slot(NULL, root1, &key, &path, 0, 0);
++	ret = btrfs_search_slot(NULL, root, &key, &path, 0, 0);
+ 	if (ret) {
+ 		error("cannot find extent tree in tree_root");
+ 		goto out;
+@@ -5455,7 +5452,7 @@ int check_chunks_and_extents_lowmem(void)
+ 		if (ret)
+ 			goto out;
+ next:
+-		ret = btrfs_next_item(root1, &path);
++		ret = btrfs_next_item(root, &path);
+ 		if (ret)
+ 			goto out;
+ 	}
 -- 
 2.28.0
 
