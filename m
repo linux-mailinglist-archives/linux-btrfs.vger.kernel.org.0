@@ -2,64 +2,66 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62B8C253111
-	for <lists+linux-btrfs@lfdr.de>; Wed, 26 Aug 2020 16:18:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5FA125312C
+	for <lists+linux-btrfs@lfdr.de>; Wed, 26 Aug 2020 16:24:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728264AbgHZOSq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 26 Aug 2020 10:18:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56810 "EHLO
+        id S1728365AbgHZOYX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 26 Aug 2020 10:24:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728098AbgHZOSj (ORCPT
+        with ESMTP id S1727047AbgHZOXb (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 26 Aug 2020 10:18:39 -0400
-Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30530C061574
-        for <linux-btrfs@vger.kernel.org>; Wed, 26 Aug 2020 07:18:39 -0700 (PDT)
-Received: by mail-qv1-xf41.google.com with SMTP id dd12so770209qvb.0
-        for <linux-btrfs@vger.kernel.org>; Wed, 26 Aug 2020 07:18:39 -0700 (PDT)
+        Wed, 26 Aug 2020 10:23:31 -0400
+Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA38BC061574
+        for <linux-btrfs@vger.kernel.org>; Wed, 26 Aug 2020 07:23:30 -0700 (PDT)
+Received: by mail-qv1-xf42.google.com with SMTP id j10so751205qvo.13
+        for <linux-btrfs@vger.kernel.org>; Wed, 26 Aug 2020 07:23:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=SSQO6QPMe7KjkOSa9kGz1ge9QdYFrUAbw2hzD00JaCQ=;
-        b=KPHnYchgGI2GSu65K9Av16y7wjFYoZZLozyTeBkQ4GwPP+m/xweRP55w6Ddom9PLm1
-         FUTqfoSHH6KD0TxlQmY0v3qsNv6Xt0W27kPe6Fd7tf3AFmvAJhgvjBaw875p7QZ/YCUo
-         X1s+dgvjWxJdmRFi8Z65JOePjikMs4zXs6pakH6kxVgb6RyWZjrFXcAW3XTBwY1akKTH
-         fNACw7TdRG4hYTEAP/KYP3G8U/qb2H+96+UORyGRsWfCMrse59AW4kIMf7Kj/LLJPNch
-         2l52D0Tj5SP0xnXQBvxXghxvnhVhoskOvoDIg4qPk4QqyF25vSFsXhR4FeJhlMgxrTmY
-         MKfg==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Jgd/R4yKozWgWXDxAK2kPIWdPu+bUBLOkYug4q9pCkc=;
+        b=tGCofcEdM5ccMO762iY2hJ6dg8hm8ZvUzWLthmHwXZGG1Dz2j1DJ3bjCbZxm/w87fs
+         TByFrfhC6WQkj1U5j5ZI9YJ0DlEkLnK2g+iPzeBb70tFB1zWWwL+fSYvxZ26Mc83TF47
+         CQbYH1YizZl3DsVSPraSebYfO0irnPff89pBKwsYoJfAn8vhjWzuRRuCwm/WCBL7SERV
+         p42RrLLhYcvMtUoR8jXz/MKNPMcHy7/On1ybouRxVeePAsSwLW6HbtyLgqDnFup4kzRQ
+         ZBmqi8YSOTNgykCSi9twDpEgGaW6BihRtnXv6Z9uEZu9BQyv3Weq82whCCBxlO5ShWNI
+         fzNQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=SSQO6QPMe7KjkOSa9kGz1ge9QdYFrUAbw2hzD00JaCQ=;
-        b=h3X4Cb8UeaDzCPBhPeXQJCtJaOWhpp9Lmxt++p1U9QrM/JiQ1KFtfONosSiBIsd1L0
-         137EMp/MkfaQJuwffbHtTf3HnpGJJ4zUzU6BvmxLM0vP7qUI1jadeUHdOxKQ61LfU3jV
-         6NHloWelmzYtSaXEu+gIGQFosX1EtY4A8vBtsGS/BvryfpLScCoEnHTxZuaxpOfMkkqx
-         5fY31JZUYtJxAD13QDfbIWMvuevu3w+17k5sgemCKQ+gV4742EQRaGAFWkdytcxI2NA1
-         pryaGbMGSZKrD5hoTnP1fGh3HEpaHgDD0twI9jF3MAHg3BIR86JCVO2VIofxZ8eYoSla
-         OBSg==
-X-Gm-Message-State: AOAM531K7nETo6wOC9PA3idKfIqDVRTxhvKhgr9usHWYNu9ZwHtHLSg5
-        wOnah/7eRIPeT1P9sRURs6+Z1Fdpa7U+4dsd
-X-Google-Smtp-Source: ABdhPJwI3+q+UVh2f6n9Vfl3KFehjweQTqlF7MmEi0pxMZwfL8wRzLMp5vUwZZE80Mc+tJc1vUN00w==
-X-Received: by 2002:a0c:bd8d:: with SMTP id n13mr14212662qvg.199.1598451517945;
-        Wed, 26 Aug 2020 07:18:37 -0700 (PDT)
+        bh=Jgd/R4yKozWgWXDxAK2kPIWdPu+bUBLOkYug4q9pCkc=;
+        b=h/YNqvvwW92UCAuyGQ66ge2nsYbury10ZN/tASmq/0TU6xxsgklEztnKX4c/TawvsA
+         aT9+dYGETbSOPOeGtt9MJvripjuN5EzcTxksr2LePNqpjURYeBLywMKlwlkfcFq6HARt
+         MFdK1y5LoGlqCV2jmdqzfdbKFbcYONK8OULtrg99FCqFHYJeEqlCQwolUjQey9C+7rcZ
+         2AozGtYMCiF/gWTY2BdkSCF1/jpw0wjtJR9gdGtOWexVD9DgW7lZYkDwjPxVhEoPN2DJ
+         2uF0CFjFD8356ShLcyQbifwi9WaUTjlGNL/d6GcoZbaZiqUcG6hAMeHEWx8WWBzN//+C
+         FYKA==
+X-Gm-Message-State: AOAM530YqJ5Z2yto8fniJL1HcF8dj9nNkxXR8RqCxPOLc4J58kdvsO3Y
+        srddNCOE5GM2scZRCgFRdSlq2Q==
+X-Google-Smtp-Source: ABdhPJxM6fm3nZKsemv6eNa2Iic7G0FtwwJ4mjxAiJMTS/N8fTgttHBOHkK4kW9SSAscmnvVUCfFIg==
+X-Received: by 2002:a05:6214:13b0:: with SMTP id h16mr14028984qvz.207.1598451809932;
+        Wed, 26 Aug 2020 07:23:29 -0700 (PDT)
 Received: from ?IPv6:2620:10d:c0a8:11d9::10f3? ([2620:10d:c091:480::1:efc3])
-        by smtp.gmail.com with ESMTPSA id t1sm1751482qkt.119.2020.08.26.07.18.36
+        by smtp.gmail.com with ESMTPSA id q126sm1709780qkb.75.2020.08.26.07.23.28
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 26 Aug 2020 07:18:37 -0700 (PDT)
-Subject: Re: [PATCH v2] btrfs: Only require sector size alignment for parent
- eb bytenr
-To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-References: <20200826092643.113881-1-wqu@suse.com>
+        Wed, 26 Aug 2020 07:23:29 -0700 (PDT)
+Subject: Re: [PATCH RFC] btrfs: change commit txn to end txn in
+ subvol_setflags ioctl
+To:     Boris Burkov <boris@bur.io>, Chris Mason <clm@fb.com>,
+        David Sterba <dsterba@suse.com>
+Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+References: <20200804175516.2511704-1-boris@bur.io>
 From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <f047e64f-4397-2173-148c-f2fc9d70ef52@toxicpanda.com>
-Date:   Wed, 26 Aug 2020 10:18:36 -0400
+Message-ID: <c2c5399a-dd71-4285-2f09-adea1e1e6fa7@toxicpanda.com>
+Date:   Wed, 26 Aug 2020 10:23:27 -0400
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
  Gecko/20100101 Thunderbird/68.11.0
 MIME-Version: 1.0
-In-Reply-To: <20200826092643.113881-1-wqu@suse.com>
+In-Reply-To: <20200804175516.2511704-1-boris@bur.io>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -68,48 +70,22 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 8/26/20 5:26 AM, Qu Wenruo wrote:
-> [BUG]
-> A completely sane converted fs will cause kernel warning at balance
-> time:
+On 8/4/20 1:55 PM, Boris Burkov wrote:
+> Currently, btrfs_ioctl_subvol_setflags forces a btrfs_commit_transaction
+> while holding subvol_sem. As a result, we have seen workloads where
+> calling `btrfs property set -ts <subvol> ro false` hangs waiting for a
+> legitimately slow commit. This gets even worse if the workload tries to
+> set flags on multiple subvolumes and the ioctls pile up on subvol_sem.
 > 
-> [ 1557.188633] BTRFS info (device sda7): relocating block group 8162107392 flags data
-> [ 1563.358078] BTRFS info (device sda7): found 11722 extents
-> [ 1563.358277] BTRFS info (device sda7): leaf 7989321728 gen 95 total ptrs 213 free space 3458 owner 2
-> [ 1563.358280] 	item 0 key (7984947200 169 0) itemoff 16250 itemsize 33
-> [ 1563.358281] 		extent refs 1 gen 90 flags 2
-> [ 1563.358282] 		ref#0: tree block backref root 4
-> [ 1563.358285] 	item 1 key (7985602560 169 0) itemoff 16217 itemsize 33
-> [ 1563.358286] 		extent refs 1 gen 93 flags 258
-> [ 1563.358287] 		ref#0: shared block backref parent 7985602560
-> [ 1563.358288] 			(parent 7985602560 is NOT ALIGNED to nodesize 16384)
-> [ 1563.358290] 	item 2 key (7985635328 169 0) itemoff 16184 itemsize 33
-> ...
-> [ 1563.358995] BTRFS error (device sda7): eb 7989321728 invalid extent inline ref type 182
-> [ 1563.358996] ------------[ cut here ]------------
-> [ 1563.359005] WARNING: CPU: 14 PID: 2930 at 0xffffffff9f231766
+> Change the commit to a btrfs_end_transaction so that the ioctl can
+> return in a timely fashion and piggy back on a later commit.
 > 
-> Then with transaction abort, and obviously failed to balance the fs.
-> 
-> [CAUSE]
-> That mentioned inline ref type 182 is completely sane, it's
-> BTRFS_SHARED_BLOCK_REF_KEY, it's some extra check making kernel to
-> believe it's invalid.
-> 
-> Commit 64ecdb647ddb ("Btrfs: add one more sanity check for shared ref
-> type") introduced extra checks for backref type.
-> 
-> One of the requirement is, parent bytenr must be aligned to node size,
-> which is not correct.
-> 
-> One example is like this:
-> 
-> 0	1G  1G+4K		2G 2G+4K
-> 	|   |///////////////////|//|  <- A chunk starts at 1G+4K
->              |   |	<- A tree block get reserved at bytenr 1G+4K
-> 
+> Signed-off-by: Boris Burkov <boris@bur.io>
 
-This only happens with convert right?  Can we just fix convert to not do this? 
-Thanks,
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+
+I think we follow up with a btrfs-progs patch to make syncing an option with 
+setflags (or hell do it by default and make the option to not sync).  Having the 
+commit here was arbitrary and not needed.  Thanks,
 
 Josef
