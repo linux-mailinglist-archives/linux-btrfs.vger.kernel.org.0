@@ -2,97 +2,102 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB9F425364A
-	for <lists+linux-btrfs@lfdr.de>; Wed, 26 Aug 2020 20:08:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3822125364D
+	for <lists+linux-btrfs@lfdr.de>; Wed, 26 Aug 2020 20:08:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726834AbgHZSH6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 26 Aug 2020 14:07:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36706 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726442AbgHZSH4 (ORCPT
+        id S1726767AbgHZSIl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 26 Aug 2020 14:08:41 -0400
+Received: from gateway33.websitewelcome.com ([192.185.145.221]:44566 "EHLO
+        gateway33.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726442AbgHZSIk (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 26 Aug 2020 14:07:56 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80808C061756
-        for <linux-btrfs@vger.kernel.org>; Wed, 26 Aug 2020 11:07:54 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id 2so2751390wrj.10
-        for <linux-btrfs@vger.kernel.org>; Wed, 26 Aug 2020 11:07:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=LvL1cBvsu7eOptlkTDuIxEaAxqB74Ubc6D2niJ6Bdmo=;
-        b=aS5vEatZ+xTwHE1jD2b28ZAfzpPF0cja49mzl6PKiAmIPA/ejL1lDdV+oWIKKDfPHj
-         L6K1xe0W9H0U+EA7d1TMhJSKt4E+1jHjL/tUNdqHSt1NwE3DME0F7L8VsMHGJ4w9Dq0D
-         Se6ZrtSbrccf/StGKczewvQAeCh3sfyk470YP4GX4kvY5CwRnmt6e7CEUryXaS9gPKi4
-         zNr81OHJ+nkymUlZZXyVJsnmb6hci6APRKlhM/7YOPb548hJkfDCHctX62cSeAJyk83u
-         lNMS42Fl7RP2Y5JZaqkTXZZH8sJxuHB5g4W4Pd70z+wd0kClrAtbvpLzimwDhCPW08VM
-         yVgw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LvL1cBvsu7eOptlkTDuIxEaAxqB74Ubc6D2niJ6Bdmo=;
-        b=Jp7jLCvpjju5SW/oN2IElz1CjQBqySZo1y4mivo4sMwADXAwTKagI1fUlG4EOJjveQ
-         680winHFoQwBc1KuP81SNdbn3deFMQLeggvqeDibFVTtseqAwSJC7Yid7Md/ZQEtC3G6
-         EitGHTUWwXtKR42qvbwwhQbEXLRDwkZFL/KUCEYr0HodhfI69WYMICQwBMqaZGBMjNnJ
-         QAU0gOFAkrNMJvD8CIxURPg+ikLCTJz8xIGze8g1mmTs0oPAhzs4YH5Mv55wLlPZW+kh
-         jXMA7UGB5uU70vFOrKeei1MndEFY3L8LYi0EF1rmc/T8PNtDaEjUgw0Nt98OJYjflp1n
-         ZA7A==
-X-Gm-Message-State: AOAM533biobtB23jGKkWW0CFhV8YMKoWCQgBJJ3stZdIqD04DPbQdfhu
-        +pmk8dQkSA1p0hsVE3ZuxVOftW17cJPeGE4bs0iqCw==
-X-Google-Smtp-Source: ABdhPJz3qoS9iwFMFvt+DUYB9nrXX6ARmqo5yU1ReziTNjisoNNWuhmKGDRB62j1pX1oq0d0BD982QxekXA9TiY4JlE=
-X-Received: by 2002:adf:8401:: with SMTP id 1mr16385913wrf.274.1598465266460;
- Wed, 26 Aug 2020 11:07:46 -0700 (PDT)
+        Wed, 26 Aug 2020 14:08:40 -0400
+Received: from cm11.websitewelcome.com (cm11.websitewelcome.com [100.42.49.5])
+        by gateway33.websitewelcome.com (Postfix) with ESMTP id 4E48A2BBD
+        for <linux-btrfs@vger.kernel.org>; Wed, 26 Aug 2020 13:08:34 -0500 (CDT)
+Received: from br540.hostgator.com.br ([108.179.252.180])
+        by cmsmtp with SMTP
+        id AzqckDatUOIGpAzqcknAOZ; Wed, 26 Aug 2020 13:08:34 -0500
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=mpdesouza.com; s=default; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=EP63rDs5IWtLnwLKyzqW7iBUrKu6Fv884EdarrFpkPI=; b=ip2XtYbMsZzk9oRmgz0ZdS2pSi
+        2A2qvzGr0IMPKUu+I8YzWczP7KI40yNv1YgCyLH00OFapceacg9mJnLc1XZQo2E7jZt+w7k3F8XN6
+        0xi2qXpomo7NtemIid0fbzp4fIIu3PqNiUAy4iklOfJWAEtpbHMPPOCRHZy0LoljLaQ8DpVOkC31W
+        J9lXoiutwumoXV15PMffoAhHxqyJLhbDyBn6Pt3npR1BjGDxOPxkdbWOiXI6Ur3iI+Mpcg8p8/DqX
+        526B3EuAKKZSepIfeKb9hn1jQagA+f8eoeQIn4huwk7g8L6ETWFt9sH1MgIUmMeyhbKcLPy/EBBV+
+        ALvqsx8A==;
+Received: from 189.26.177.226.dynamic.adsl.gvt.net.br ([189.26.177.226]:60752 helo=hephaestus.suse.de)
+        by br540.hostgator.com.br with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <marcos@mpdesouza.com>)
+        id 1kAzqb-000OeN-Q9; Wed, 26 Aug 2020 15:08:34 -0300
+From:   Marcos Paulo de Souza <marcos@mpdesouza.com>
+To:     dsterba@suse.com, wqu@suse.com, linux-btrfs@vger.kernel.org
+Cc:     Marcos Paulo de Souza <mpdesouza@suse.com>
+Subject: [PATCH] btrfs-progs: convert: Make ASSERT not truncate cctx.total_bytes value
+Date:   Wed, 26 Aug 2020 15:08:20 -0300
+Message-Id: <20200826180820.31695-1-marcos@mpdesouza.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-References: <d3fced3f-6c2b-5ffa-fd24-b24ec6e7d4be@xmyslivec.cz>
- <CAJCQCtSfz+b38fW3zdcHwMMtO1LfXSq+0xgg_DaKShmAumuCWQ@mail.gmail.com>
- <29509e08-e373-b352-d696-fcb9f507a545@xmyslivec.cz> <CAJCQCtRx7NJP=-rX5g_n5ZL7ypX-5z_L6d6sk120+4Avs6rJUw@mail.gmail.com>
- <695936b4-67a2-c862-9cb6-5545b4ab3c42@xmyslivec.cz> <CAJCQCtQWNSd123OJ_Rp8NO0=upY2Mn+SE7pdMqmyizJP028Yow@mail.gmail.com>
- <2f2f1c21-c81b-55aa-6f77-e2d3f32d32cb@xmyslivec.cz> <CAJCQCtTQN60V=DEkNvDedq+usfmFB+SQP2SBezUaSeUjjY46nA@mail.gmail.com>
- <4b0dd0aa-f77b-16c8-107b-0182378f34e6@xmyslivec.cz>
-In-Reply-To: <4b0dd0aa-f77b-16c8-107b-0182378f34e6@xmyslivec.cz>
-From:   Chris Murphy <lists@colorremedies.com>
-Date:   Wed, 26 Aug 2020 12:07:02 -0600
-Message-ID: <CAJCQCtQWh2JBAL_SDRG-gMd9Z1TXad7aKjZVUGdY1Akj7fn5Qg@mail.gmail.com>
-Subject: Re: Linux RAID with btrfs stuck and consume 100 % CPU
-To:     Vojtech Myslivec <vojtech@xmyslivec.cz>
-Cc:     Chris Murphy <lists@colorremedies.com>,
-        Song Liu <songliubraving@fb.com>,
-        Michal Moravec <michal.moravec@logicworks.cz>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
-        Linux-RAID <linux-raid@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - br540.hostgator.com.br
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - mpdesouza.com
+X-BWhitelist: no
+X-Source-IP: 189.26.177.226
+X-Source-L: No
+X-Exim-ID: 1kAzqb-000OeN-Q9
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 189.26.177.226.dynamic.adsl.gvt.net.br (hephaestus.suse.de) [189.26.177.226]:60752
+X-Source-Auth: marcos@mpdesouza.com
+X-Email-Count: 2
+X-Source-Cap: bXBkZXNvNTM7bXBkZXNvNTM7YnI1NDAuaG9zdGdhdG9yLmNvbS5icg==
+X-Local-Domain: yes
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-OK so from the attachments..
+From: Marcos Paulo de Souza <mpdesouza@suse.com>
 
-cat /proc/<pid>/stack for md1_raid6
+Commit 670a19828ad ("btrfs-progs: convert: prevent 32bit overflow for
+cctx->total_bytes") added an assert to ensure that cctxx.total_bytes did
+not overflow, but this ASSERT calls assert_trace, which expects a long
+value.
 
-[<0>] rq_qos_wait+0xfa/0x170
-[<0>] wbt_wait+0x98/0xe0
-[<0>] __rq_qos_throttle+0x23/0x30
-[<0>] blk_mq_make_request+0x12a/0x5d0
-[<0>] generic_make_request+0xcf/0x310
-[<0>] submit_bio+0x42/0x1c0
-[<0>] md_update_sb.part.71+0x3c0/0x8f0 [md_mod]
-[<0>] r5l_do_reclaim+0x32a/0x3b0 [raid456]
-[<0>] md_thread+0x94/0x150 [md_mod]
-[<0>] kthread+0x112/0x130
-[<0>] ret_from_fork+0x22/0x40
+By converting the u64 to long overflows in a 32bit machine, leading the
+assert_trace to be triggered since cctx.total_bytes turns to zero.
 
+Fix this problem by comparing the cctx.total_bytes with zero when
+calling ASSERT.
 
-Btrfs snapshot flushing might instigate the problem but it seems to me
-there's some kind of contention or blocking happening within md, and
-that's why everything stalls. But I can't tell why.
+Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
+---
+ convert/main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Do you have any iostat output at the time of this problem? I'm
-wondering if md is waiting on disks. If not, try `iostat -dxm 5` and
-share a few minutes before and after the freeze/hang.
+diff --git a/convert/main.c b/convert/main.c
+index 5f8f64c5..378fd61a 100644
+--- a/convert/main.c
++++ b/convert/main.c
+@@ -1158,7 +1158,7 @@ static int do_convert(const char *devname, u32 convert_flags, u32 nodesize,
+ 	if (ret)
+ 		goto fail;
+ 
+-	ASSERT(cctx.total_bytes);
++	ASSERT(cctx.total_bytes != 0);
+ 	blocksize = cctx.blocksize;
+ 	total_bytes = (u64)blocksize * (u64)cctx.block_count;
+ 	if (blocksize < 4096) {
+-- 
+2.28.0
 
-
---
-Chris Murphy
