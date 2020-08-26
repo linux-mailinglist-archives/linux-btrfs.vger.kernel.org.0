@@ -2,102 +2,94 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3822125364D
-	for <lists+linux-btrfs@lfdr.de>; Wed, 26 Aug 2020 20:08:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4D552537D9
+	for <lists+linux-btrfs@lfdr.de>; Wed, 26 Aug 2020 21:07:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726767AbgHZSIl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 26 Aug 2020 14:08:41 -0400
-Received: from gateway33.websitewelcome.com ([192.185.145.221]:44566 "EHLO
-        gateway33.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726442AbgHZSIk (ORCPT
+        id S1726929AbgHZTHO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 26 Aug 2020 15:07:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45958 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726753AbgHZTHN (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 26 Aug 2020 14:08:40 -0400
-Received: from cm11.websitewelcome.com (cm11.websitewelcome.com [100.42.49.5])
-        by gateway33.websitewelcome.com (Postfix) with ESMTP id 4E48A2BBD
-        for <linux-btrfs@vger.kernel.org>; Wed, 26 Aug 2020 13:08:34 -0500 (CDT)
-Received: from br540.hostgator.com.br ([108.179.252.180])
-        by cmsmtp with SMTP
-        id AzqckDatUOIGpAzqcknAOZ; Wed, 26 Aug 2020 13:08:34 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=mpdesouza.com; s=default; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=EP63rDs5IWtLnwLKyzqW7iBUrKu6Fv884EdarrFpkPI=; b=ip2XtYbMsZzk9oRmgz0ZdS2pSi
-        2A2qvzGr0IMPKUu+I8YzWczP7KI40yNv1YgCyLH00OFapceacg9mJnLc1XZQo2E7jZt+w7k3F8XN6
-        0xi2qXpomo7NtemIid0fbzp4fIIu3PqNiUAy4iklOfJWAEtpbHMPPOCRHZy0LoljLaQ8DpVOkC31W
-        J9lXoiutwumoXV15PMffoAhHxqyJLhbDyBn6Pt3npR1BjGDxOPxkdbWOiXI6Ur3iI+Mpcg8p8/DqX
-        526B3EuAKKZSepIfeKb9hn1jQagA+f8eoeQIn4huwk7g8L6ETWFt9sH1MgIUmMeyhbKcLPy/EBBV+
-        ALvqsx8A==;
-Received: from 189.26.177.226.dynamic.adsl.gvt.net.br ([189.26.177.226]:60752 helo=hephaestus.suse.de)
-        by br540.hostgator.com.br with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <marcos@mpdesouza.com>)
-        id 1kAzqb-000OeN-Q9; Wed, 26 Aug 2020 15:08:34 -0300
-From:   Marcos Paulo de Souza <marcos@mpdesouza.com>
-To:     dsterba@suse.com, wqu@suse.com, linux-btrfs@vger.kernel.org
-Cc:     Marcos Paulo de Souza <mpdesouza@suse.com>
-Subject: [PATCH] btrfs-progs: convert: Make ASSERT not truncate cctx.total_bytes value
-Date:   Wed, 26 Aug 2020 15:08:20 -0300
-Message-Id: <20200826180820.31695-1-marcos@mpdesouza.com>
-X-Mailer: git-send-email 2.28.0
+        Wed, 26 Aug 2020 15:07:13 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82914C061574
+        for <linux-btrfs@vger.kernel.org>; Wed, 26 Aug 2020 12:07:12 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id x7so2939429wro.3
+        for <linux-btrfs@vger.kernel.org>; Wed, 26 Aug 2020 12:07:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jSFi06gUWtXD5qBJuvwr//h8l99fbmilz0UjnHoArsw=;
+        b=jVjTAbE4wwPPWiesbYD5dThpXAc+0BgFwe/tODAQ2oKKSbCwuDb+iE0jAleUb1couZ
+         9+EUWOiyvFFXm4sy0OHHxRkBxfclzQClZ8TW3Y3D39gQJYF69mecgYLIO+HZiqcjahkT
+         xZfLYx30/EZThQJj+lY5V/hm7my1vcgpO4E5G22WbscjUG0PR81R+TjWcsvyyOSPHWdN
+         VkiT+ieqEsIibldaVhamdTtC+hkAaF4UpZLsehVRu4exJgWMCRTCZ0KF5/jA3Ey+4Pdj
+         vSE2Uhk3+hWVH2EvheU49hsXRm/awW1Vlgc0dg1x1DYYG/PynzorsIF1gmh0ZbA2ST5T
+         RLLQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jSFi06gUWtXD5qBJuvwr//h8l99fbmilz0UjnHoArsw=;
+        b=hq6mY0TD+oCztLF+Jip1K1tuVe5l0K9yjYw/qx0wpE8VncCCFHCv2+z/hANAUrwXol
+         sJGb97Eb7PrxvCQKZ4VqhKzyTm9MyJiJmCmI8iGyZZl7QZBzzrQw7dUy85g619bwCZni
+         emQhYCtKluyV22M+RVz/DmP5cKMf+G5MifTYmkWblmGSzY42YPlKo/AZhLiCuIaTgsyx
+         JXytXfZuFWNz7AJZDthOvNp6QKP5ytY/Eiw5GHCzN7GwPjXEj1KFNK2pr2n8t1JM9vqN
+         6XEBTyP1/WZSPwVVDP01mgOyZNTerKAKcns94UzjL9QUMLn/Nuoo6Zhyn4JmOgBJJ4TY
+         89UQ==
+X-Gm-Message-State: AOAM533S0R9tOrAxFqR7u+fkviPmef7KdALSNEhdFAG3t/vc6Hp0rWZN
+        c/kz8487Ew1ZwK8BhmYk3vhcbUqT19kBT2sT//u64w==
+X-Google-Smtp-Source: ABdhPJw8LZrnVSxp6426qCIlPhkbLEgDYqMFGr47M+Ci18HlyMPw4CohNHcqJFkZU3XobkOuB2/0ywzrTn2Fp75vqpM=
+X-Received: by 2002:adf:8401:: with SMTP id 1mr16567035wrf.274.1598468830262;
+ Wed, 26 Aug 2020 12:07:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - br540.hostgator.com.br
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - mpdesouza.com
-X-BWhitelist: no
-X-Source-IP: 189.26.177.226
-X-Source-L: No
-X-Exim-ID: 1kAzqb-000OeN-Q9
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 189.26.177.226.dynamic.adsl.gvt.net.br (hephaestus.suse.de) [189.26.177.226]:60752
-X-Source-Auth: marcos@mpdesouza.com
-X-Email-Count: 2
-X-Source-Cap: bXBkZXNvNTM7bXBkZXNvNTM7YnI1NDAuaG9zdGdhdG9yLmNvbS5icg==
-X-Local-Domain: yes
+References: <bdJVxLiFr_PyQSXRUbZJfFW_jAjsGgoMetqPHJMbg-hdy54Xt_ZHhRetmnJ6cJ99eBlcX76wy-AvWwV715c3YndkxneSlod11P1hlaADx0s=@protonmail.com>
+ <BfU9s11rmWxGNQdKqifkB1JKOJcgqAN49OZdV4LAOgo1W2AguRebwCPVosOiMVjMTzuSmsk_Efbkl02s31niRqtCS67WJ9S7_s4jiK9afeA=@protonmail.com>
+ <E212ihR5U8HVCyaalepkxQUX3wOj6IXd1yUFHj-PFFtyU7ma-A49vmB8QwfQG5gUVo2nCMbVpPo7C2ccooRO0ExVrIbdLP9sBpnjMOcefHo=@protonmail.com>
+ <lyGE8gPEf9cUEMJceWoJWD_ibk4viZXU0yG5VzbNe9yueGbkcnl1FkJrFZZufhWd5y2vNOgAwfYSpJ4Gia5Tow4wdmQXiGuETdyuNmnemJY=@protonmail.com>
+ <CAJCQCtR3gbJxJn24qyDfHWh9kQG7BSC=NnoGHmRKPnaQ+P7yyg@mail.gmail.com>
+ <8oT9s0Jlzpgp2ctPAXOixSR03oOiPXaitR0AiOkNdBsYHwjPMfjK7CoVAPXuvj71hiUTH-fKoSevAM-To8iSPPBvGRvZeBkU0Nd1_NPonyU=@protonmail.com>
+ <CAJCQCtQH3h=NNr6PX3HZp7SbkgqZtNNdihi4aBMFvx+DN79XeA@mail.gmail.com>
+ <6LDov933WqF3kLH8jtkEh-pfK6pRe0o6-Y9l3NcO2mVhswDL7rhbHyda71OnztoJKfgqqQT9jj1Ba52lz_ugNFmmRtzN33BlSa5pCvds0F8=@protonmail.com>
+ <CAJCQCtQDt=x7WCX7KhWz_pPn4yB1YdZm9jN29jRuQDFy=ZTOjA@mail.gmail.com>
+ <emBWetDIaC_TYsBRNRlPcz-yLjIOxlhIBny_K9bTqHxLO_kdKRZlGjMoHrVj4CwZ8aZAnMcXEyCj95vBFBxxOvJ1AANQr1sbeQ_CfZOrTH0=@protonmail.com>
+ <VTDsoZlxoD7U7UxD61VnBts_awxM0n5PgKgeH-fCQOy4VeCCCj27DmdMt_oP490t0cKWbsY9qlK1hci8o-1uD7vtBcVQLub1Gl3JjIGU-o0=@protonmail.com>
+In-Reply-To: <VTDsoZlxoD7U7UxD61VnBts_awxM0n5PgKgeH-fCQOy4VeCCCj27DmdMt_oP490t0cKWbsY9qlK1hci8o-1uD7vtBcVQLub1Gl3JjIGU-o0=@protonmail.com>
+From:   Chris Murphy <lists@colorremedies.com>
+Date:   Wed, 26 Aug 2020 13:06:25 -0600
+Message-ID: <CAJCQCtT8gLGNU6E+f=eM9SBPa4+tG+K7AbiCd=KjD2o8QrpxpA@mail.gmail.com>
+Subject: Re: [Help] Can't login to my systemd-homed user account due to
+ fallocate failure
+To:     Andrii Zymohliad <azymohliad@protonmail.com>
+Cc:     Chris Murphy <lists@colorremedies.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        Andrei Borzenkov <arvidjaar@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Marcos Paulo de Souza <mpdesouza@suse.com>
+On Wed, Aug 26, 2020 at 7:40 AM Andrii Zymohliad
+<azymohliad@protonmail.com> wrote:
+>
+> Interestingly, I have much less shared extents now:
+>
+>     # filefrag -v /home/azymohliad.home | grep shared | wc -l
+>     1679
+>
+> It was over 18k the first time you asked me to check it (even before I enabled discard in homectl).
 
-Commit 670a19828ad ("btrfs-progs: convert: prevent 32bit overflow for
-cctx->total_bytes") added an assert to ensure that cctxx.total_bytes did
-not overflow, but this ASSERT calls assert_trace, which expects a long
-value.
+OK so Josef found a bug. Filefrag is showing shared extents in certain
+cases when there are none. So you can stop worrying there's some copy
+of the file somewhere. And stop looking for it.
+https://github.com/btrfs/btrfs-todo/issues/6
 
-By converting the u64 to long overflows in a 32bit machine, leading the
-assert_trace to be triggered since cctx.total_bytes turns to zero.
+The fallocate problem is still real, and that might take some time for
+Andrei or someone else to figure out why.
 
-Fix this problem by comparing the cctx.total_bytes with zero when
-calling ASSERT.
 
-Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
----
- convert/main.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/convert/main.c b/convert/main.c
-index 5f8f64c5..378fd61a 100644
---- a/convert/main.c
-+++ b/convert/main.c
-@@ -1158,7 +1158,7 @@ static int do_convert(const char *devname, u32 convert_flags, u32 nodesize,
- 	if (ret)
- 		goto fail;
- 
--	ASSERT(cctx.total_bytes);
-+	ASSERT(cctx.total_bytes != 0);
- 	blocksize = cctx.blocksize;
- 	total_bytes = (u64)blocksize * (u64)cctx.block_count;
- 	if (blocksize < 4096) {
 -- 
-2.28.0
-
+Chris Murphy
