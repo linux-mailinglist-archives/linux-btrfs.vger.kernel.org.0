@@ -2,183 +2,129 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8792253BD5
-	for <lists+linux-btrfs@lfdr.de>; Thu, 27 Aug 2020 04:29:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA1DA253D43
+	for <lists+linux-btrfs@lfdr.de>; Thu, 27 Aug 2020 07:39:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726826AbgH0CTo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 26 Aug 2020 22:19:44 -0400
-Received: from mout.gmx.net ([212.227.15.15]:36817 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726790AbgH0CTm (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 26 Aug 2020 22:19:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1598494778;
-        bh=dQrYifHOeA9DcHdpvbFx+23JwGHCe8nKeR/YKKWPSq8=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=ljzC33abiOp5gCwHtZJmm+/uVtH6g3Md/s1tEOIQ5lpT5u7g7fuge4g3fwwTM4W83
-         aoCCPUpUjR+NkocmFEaQeaS99fXP+CHLj0F12elP8VmU3mWD9qyYmF3gatwLeEEcR+
-         nbNWSfUs8ZmI7ys+zYw4leTssj6zzZY0sp6l4ELI=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1M2f5Z-1kBOUg31wN-004EdX; Thu, 27
- Aug 2020 04:19:38 +0200
-Subject: Re: Log corruption/failure to mount during powerfail+deletes
-To:     "Ellis H. Wilson III" <ellisw@panasas.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
-        Filipe Manana <fdmanana@gmail.com>
-References: <33a0b9bc-8cd7-803a-2322-54014703d263@panasas.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
- PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
- 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
- D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
- efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
- ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
- BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
- 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
- 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
- EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
- 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
- ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
- oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
- fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
- 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
- ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
- oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <7715d58d-4a89-8c0b-c6ac-b7f6c52f6335@gmx.com>
-Date:   Thu, 27 Aug 2020 10:19:33 +0800
+        id S1726123AbgH0Fjn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 27 Aug 2020 01:39:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59684 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726058AbgH0Fjn (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 27 Aug 2020 01:39:43 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD95BC061240
+        for <linux-btrfs@vger.kernel.org>; Wed, 26 Aug 2020 22:39:42 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id u25so2245118lfm.10
+        for <linux-btrfs@vger.kernel.org>; Wed, 26 Aug 2020 22:39:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:autocrypt:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=cOU2706hY51/Xu6bTO/KOK7XtmUS+VuHNT3mVS4dx7o=;
+        b=bjQs1IbvnnWEej131c9nWBK2HFQTS/V75SoY77Z6MNQJxnizK8OEaGGDmQDpw9xJf/
+         /F1XyTFtoCVlEFrAMCc90we3Np1vshO4OEFeENK7JiIY3UHdch0mFc7ckaqsJ9LooC1j
+         9trEBzRQZEVMlH/KU75gULn3iAVPK0HlSSx9Eg187jMFBwvvyX5bB+e0VcXg/EyA8JwN
+         IiX90+VZ2Dk5GOZ0AbtTX+vtG1J0ysk3RIgl6YKsMRWCFRJaF++gc7OT2c86wfCdTcTl
+         eyb3JtNhOfmFqdeBEwoGaos+rxAbrmGiK3pAds9QuOaGOF4qurLBJYpPERVEpeUzREi0
+         ybGw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=cOU2706hY51/Xu6bTO/KOK7XtmUS+VuHNT3mVS4dx7o=;
+        b=aicTQLl74thTcs6dibqt9jlvKlMGuFZ9Z8LQMAFLtY8li1+vgS+LtOFAjhfyPBPn5h
+         aqajRkOeFzbkykmhPi46/bItylAB8ciLJPntqTEUQjKOvJiN2FUAKpv7v0gkJsf2Ne4F
+         MYQIhWlpHRKZZg/W+/0tGC2yTodbYEx2ceGnRsFI8wZBY3pWA3EC9L0l+2ohbFWiben8
+         2JyCBWslodKZSjzp4x2Xg5UHuBwaWdCBjuECJKy7QIRn5FaBDQ35BENmtLx+g1qHjE2q
+         QSmH/zL8rUIA+z6PWHrT8EbF6O8YHb51Rs07ux1vm2BhJ9FjP5+8RyEer/lAZE9ig1AS
+         f8lA==
+X-Gm-Message-State: AOAM530//87JOQ5Se91RBBkp/tNVPe+IBkdbFGTp5g054nRE79n4OG4L
+        7IpEB5Ws2SoFJ+aMffEuP7N0vWJ2m8Y=
+X-Google-Smtp-Source: ABdhPJyX+bSarHPJfNvr3gsSLcvciz+AHBmYS665UeU5WkmLgM0zFRS2cI0ynSNccWniR5I35Jo8qQ==
+X-Received: by 2002:a19:7d04:: with SMTP id y4mr9069731lfc.51.1598506780462;
+        Wed, 26 Aug 2020 22:39:40 -0700 (PDT)
+Received: from ?IPv6:2a00:1370:812d:93a3:28ae:5b31:d89a:107? ([2a00:1370:812d:93a3:28ae:5b31:d89a:107])
+        by smtp.gmail.com with ESMTPSA id m8sm237753lfj.88.2020.08.26.22.39.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 26 Aug 2020 22:39:39 -0700 (PDT)
+Subject: Re: [Help] Can't login to my systemd-homed user account due to
+ fallocate failure
+To:     Chris Murphy <lists@colorremedies.com>,
+        Andrii Zymohliad <azymohliad@protonmail.com>
+Cc:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+References: <bdJVxLiFr_PyQSXRUbZJfFW_jAjsGgoMetqPHJMbg-hdy54Xt_ZHhRetmnJ6cJ99eBlcX76wy-AvWwV715c3YndkxneSlod11P1hlaADx0s=@protonmail.com>
+ <CAJCQCtR3gbJxJn24qyDfHWh9kQG7BSC=NnoGHmRKPnaQ+P7yyg@mail.gmail.com>
+ <8oT9s0Jlzpgp2ctPAXOixSR03oOiPXaitR0AiOkNdBsYHwjPMfjK7CoVAPXuvj71hiUTH-fKoSevAM-To8iSPPBvGRvZeBkU0Nd1_NPonyU=@protonmail.com>
+ <CAJCQCtQH3h=NNr6PX3HZp7SbkgqZtNNdihi4aBMFvx+DN79XeA@mail.gmail.com>
+ <6LDov933WqF3kLH8jtkEh-pfK6pRe0o6-Y9l3NcO2mVhswDL7rhbHyda71OnztoJKfgqqQT9jj1Ba52lz_ugNFmmRtzN33BlSa5pCvds0F8=@protonmail.com>
+ <CAJCQCtQDt=x7WCX7KhWz_pPn4yB1YdZm9jN29jRuQDFy=ZTOjA@mail.gmail.com>
+ <emBWetDIaC_TYsBRNRlPcz-yLjIOxlhIBny_K9bTqHxLO_kdKRZlGjMoHrVj4CwZ8aZAnMcXEyCj95vBFBxxOvJ1AANQr1sbeQ_CfZOrTH0=@protonmail.com>
+ <VTDsoZlxoD7U7UxD61VnBts_awxM0n5PgKgeH-fCQOy4VeCCCj27DmdMt_oP490t0cKWbsY9qlK1hci8o-1uD7vtBcVQLub1Gl3JjIGU-o0=@protonmail.com>
+ <CAJCQCtT8gLGNU6E+f=eM9SBPa4+tG+K7AbiCd=KjD2o8QrpxpA@mail.gmail.com>
+From:   Andrei Borzenkov <arvidjaar@gmail.com>
+Autocrypt: addr=arvidjaar@gmail.com; prefer-encrypt=mutual; keydata=
+ LS0tLS1CRUdJTiBQR1AgUFVCTElDIEtFWSBCTE9DSy0tLS0tCgptUUdpQkR4aVJ3d1JCQUMz
+ Q045d2R3cFZFcVVHbVNvcUY4dFdWSVQ0UC9iTENTWkxraW5TWjJkcnNibEtwZEc3CngrZ3V4
+ d3RzK0xnSThxamYvcTVMYWgxVHdPcXpEdmpIWUoxd2JCYXV4WjAzbkR6U0xVaEQ0TXMxSXNx
+ bEl3eVQKTHVtUXM0dmNRZHZMeGpGc0c3MGFEZ2xnVVNCb2d0YUlFc2lZWlhsNFgwajNMOWZW
+ c3R1ejQvd1h0d0NnMWNOLwp5di9lQkMwdGtjTTFuc0pYUXJDNUF5OEQvMWFBNXFQdGljTEJw
+ bUVCeHFrZjBFTUh1enlyRmxxVncxdFVqWitFCnAyTE1sZW04bWFsUHZmZFpLRVo3MVcxYS9Y
+ YlJuOEZFU09wMHRVYTVHd2RvRFhnRXAxQ0pVbitXTHVyUjBLUEQKZjAxRTRqL1BISEFvQUJn
+ cnFjT1RjSVZvTnB2MmdOaUJ5U1ZzTkd6RlhUZVkvWWQ2dlFjbGtxakJZT05HTjNyOQpSOGJX
+ QS8wWTFqNFhLNjFxam93UmszSXk4c0JnZ00zUG1tTlJVSllncm9lcnBjQXIyYnl6NndUc2Iz
+ VTdPelVaCjFMbGdpc2s1UXVtMFJONzdtM0kzN0ZYbEloQ21TRVk3S1pWekdOVzNibHVnTEhj
+ ZncvSHVDQjdSMXc1cWlMV0sKSzZlQ1FITCtCWndpVThoWDNkdFRxOWQ3V2hSVzVuc1ZQRWFQ
+ cXVkUWZNU2kvVXgxa2JRbVFXNWtjbVY1SUVKdgpjbnBsYm10dmRpQThZWEoyYVdScVlXRnlR
+ R2R0WVdsc0xtTnZiVDZJWUFRVEVRSUFJQVVDU1hzNk5RSWJBd1lMCkNRZ0hBd0lFRlFJSUF3
+ UVdBZ01CQWg0QkFoZUFBQW9KRUVlaXpMcmFYZmVNTE9ZQW5qNG92cGthK21YTnpJbWUKWUNk
+ NUxxVzV0bzhGQUo0dlA0SVcrSWM3ZVlYeENMTTcvem05WU1VVmJyUW5RVzVrY21WNUlFSnZj
+ bnBsYm10dgpkaUE4WVhKMmFXUnFZV0Z5UUc1bGQyMWhhV3d1Y25VK2lGNEVFeEVDQUI0RkFr
+ SXR5WkFDR3dNR0N3a0lCd01DCkF4VUNBd01XQWdFQ0hnRUNGNEFBQ2drUVI2TE11dHBkOTR4
+ ajhnQ2VJbThlK2U0cXhETWpRRXhGYlVMNXdNaWkKWUQwQW9LbUlCUzVIRW9wL1R5UUpkTmc2
+ U3Z6VmlQRGR0Q1JCYm1SeVpYa2dRbTl5ZW1WdWEyOTJJRHhoY25acApaR3BoWVhKQWJXRnBi
+ QzV5ZFQ2SVhBUVRFUUlBSEFVQ1Bxems4QUliQXdRTEJ3TUNBeFVDQXdNV0FnRUNIZ0VDCkY0
+ QUFDZ2tRUjZMTXV0cGQ5NHlEdFFDZ2k5NHJoQXdTMXFqK2ZhampiRE02QmlTN0Irc0FvSi9S
+ RG1hN0tyQTEKbkllc2JuS29MY1FMYkpZbHRDUkJibVJ5WldvZ1FtOXljMlZ1YTI5M0lEeGhj
+ blpwWkdwaFlYSkFiV0ZwYkM1eQpkVDZJVndRVEVRSUFGd1VDUEdKSERRVUxCd29EQkFNVkF3
+ SURGZ0lCQWhlQUFBb0pFRWVpekxyYVhmZU1pcFlBCm9MblllRUJmOGNvV2lud3hUZThEVjBS
+ T2J4N1NBS0RFamwzdFFxZEY3MGFQd0lPMmgvM0ZqczJjZnJRbVFXNWsKY21WcElFSnZjbnBs
+ Ym10dmRpQThZWEoyYVdScVlXRnlRR2R0WVdsc0xtTnZiVDZJWlFRVEVRSUFKUUliQXdZTApD
+ UWdIQXdJR0ZRZ0NDUW9MQkJZQ0F3RUNIZ0VDRjRBRkFsaVdBaVFDR1FFQUNna1FSNkxNdXRw
+ ZDk0d0ZHd0NlCk51UW5NRHh2ZS9GbzNFdllJa0FPbit6RTIxY0FuUkNRVFhkMWhUZ2NSSGZw
+ QXJFZC9SY2I1K1NjdVFFTkJEeGkKUnlRUUJBQ1F0TUUzM1VIZkZPQ0FwTGtpNGtMRnJJdzE1
+ QTVhc3VhMTBqbTVJdCtoeHpJOWpEUjkvYk5FS0RUSwpTY2lIbk03YVJVZ2dMd1R0KzZDWGtN
+ eThhbit0VnFHTC9NdkRjNC9SS0tsWnhqMzl4UDd3VlhkdDh5MWNpWTRaCnFxWmYzdG1tU045
+ RGxMY1pKSU9UODJEYUpadXZyN1VKN3JMekJGYkFVaDR5UkthTm53QURCd1FBak52TXIvS0IK
+ Y0dzVi9VdnhaU20vbWRwdlVQdGN3OXFtYnhDcnFGUW9CNlRtb1o3RjZ3cC9yTDNUa1E1VUVs
+ UFJnc0cxMitEawo5R2dSaG5ueFRIQ0ZnTjFxVGlaTlg0WUlGcE5yZDBhdTNXL1hrbzc5TDBj
+ NC80OXRlbjVPckZJL3BzeDUzZmhZCnZMWWZrSm5jNjJoOGhpTmVNNmtxWWEveDBCRWRkdTky
+ Wkc2SVJnUVlFUUlBQmdVQ1BHSkhKQUFLQ1JCSG9zeTYKMmwzM2pNaGRBSjQ4UDdXRHZLTFFR
+ NU1Lbm4yRC9USTMzN3VBL2dDZ241bW52bTRTQmN0YmhhU0JnY2tSbWdTeApmd1E9Cj1nWDEr
+ Ci0tLS0tRU5EIFBHUCBQVUJMSUMgS0VZIEJMT0NLLS0tLS0K
+Message-ID: <1df11374-9218-fd56-2d3b-c87968aaefa9@gmail.com>
+Date:   Thu, 27 Aug 2020 08:39:38 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <33a0b9bc-8cd7-803a-2322-54014703d263@panasas.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="H55KFAbtAc75zJCnj14NtmNkstxokUXNJ"
-X-Provags-ID: V03:K1:OtuVaZA5m1jyB5RDo5hiUhOaqLiqgaaGymh/gbsJxMQeUWQaguK
- FbSK5OGy71tZ56YUda48vuipfakJoxjfShlCLDQBkBGqODE5XYab15B+YPiW+1Aj3rhbra7
- EtGuUWmrsIsZPV5MkLg6iDaMIuuVTl+xnbs2Bk1Lv1Hd0PYM/a9oIsKXIqbPWqmjZn3RVOx
- rO+oAi52QF7OFjW1rvUHw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:um8ulQGHJVY=:I86j2MA/2A4Fl65i/jehcT
- 6lQSBDMeEK3u701b5yKDb/2lVvP7nfQeca6sHWS6dvsc01mXR/QCtLJUpBGWMMeucUoQPnQuR
- tDAqCfPnOu/yymVxeo/fQYBGB9IWoYT7vxYJXtyc2o1APMAZiGFikpq5/MGv3H3LhzwYxplAw
- 1u6nD8Agq+NsVebOeqtdhZWfMyW8aWQkW5V1i3kf5k/+IYntCQL+xw/GuS8+qJkxzeM+1BUVP
- 6fZnRXYJtTwS9eVsDVAQFRZV6Smtw+yerw+C1lymO+HCvZnMYCD9WtL6Key+zImY9xvdDSu7x
- j1VhcgCPKP6CZxDk27YqtXWUL+9qku7qCMySsNu7YWPHICSTX4G47YOhC/p7Tz4FwLkB3rN1H
- k5aG65xlE7oqq0yLLV26zwIpz2Bmf6m43CSIr5hPoJQI4mkNjdbRGfbx5mls/Ou5RHBJRdoVh
- aF7FU5vSaMDi/E8hAv4odpQizU8WVFzbCIMMU6rdgi3d1m3PGfk0437Rjm4OjjXbyHqdsFisA
- gS2S/CIbdxLOKHF5JgVwnHn/G5vamcohIRZck6Zx+kaUqTDnQJ/CKZOIQuJ8atQKeMqU/LLee
- iBrIKJNaa37HcwWkVXHR2xd3LP60AKpMzrri1baIOGc5457LkMZ5fHRXtnaUecUi8hdf009h1
- aQ8qV2CX5VSWtWd1/KZ5Zd3StDpPSRKPRfpuxNyLN83O5NKE6QPT4ySLPbyrbINMe5SAvyXfw
- mG6KJ9R+W7fjfWk3ugiDXoldqfVwB3JhO7FmI0/vbrZ5W60Dn0V/Axh77i3z8BbEkwwqNP+AZ
- 2whGjaoQKVNJxgwwulc1uoFIq6Dj+3hSEwPW0xQY2XMVkUUhSCjCYw/e5G3iH3doqKW2u9OXm
- 88aigSPXswfrtLpxDsjGq4tbrltLSMWtcDndIug5rGWaFKyWOYij7ZS9wU2GxiT+1FTKJZQ0b
- ojunqNcXFnZqMBtWgDp2NZPWWO4jTOTXIgsjUYi64VYK9SxavJP+4bPO9wT/REytj10gTxwUO
- 6Uu9seMLPamXNcRKBeEjevo33CFmKVWjTlHnVa4NQO2nYJVNLw7XyQIDittUDrL7ZOP11jJK8
- VnweL95ygUlxAYbGAu0vZA8bMso0kHwLATRz6liBhpom2w1ick7DK+EPPuqzY5PmaD5w17hGh
- cyg+x5HhmxUCnUl/WSo67oXJ86q1H0NGoQSEHrJVpVSO8QBymHm0RbiwwtthvVbwdF6E/N6rF
- A9tF0BvQTyWnncDFCJFHRwaXo2v7SIkR9BljJyQ==
+In-Reply-To: <CAJCQCtT8gLGNU6E+f=eM9SBPa4+tG+K7AbiCd=KjD2o8QrpxpA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---H55KFAbtAc75zJCnj14NtmNkstxokUXNJ
-Content-Type: multipart/mixed; boundary="xWetwDMiCke9Cr4JEa8Wm87BYRfR7zaKv"
+26.08.2020 22:06, Chris Murphy пишет:
+> 
+> The fallocate problem is still real, and that might take some time for
+> Andrei or someone else to figure out why.
+> 
+> 
 
---xWetwDMiCke9Cr4JEa8Wm87BYRfR7zaKv
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+Sorry? It was already answered that btrfs by design fallocates full file
+size no matter what.
 
-
-
-On 2020/8/27 =E4=B8=8A=E5=8D=889:49, Ellis H. Wilson III wrote:
-> Hi all,
->=20
-> We're experiencing some issues with power-fail testing of BTRFS as
-> provided via openSuSE 15.1.=C2=A0 In short, under heavy delete workload=
-s and
-> injected warm-resets (via ipmitool power reset from remote hosts) we ru=
-n
-> into a subsequently unmountable filesystem.
->=20
-> Logs messages in journald are consistent and show up like this:
->=20
-> Aug 27 01:33:34 4d017e3d41ea37 kernel: BTRFS info (device sdg2): using
-> free space tree
-> Aug 27 01:33:34 4d017e3d41ea37 kernel: BTRFS info (device sdg2): has
-> skinny extents
-> Aug 27 01:33:34 4d017e3d41ea37 kernel: BTRFS info (device sdg2):
-> detected SSD devices, enabling SSD mode
-> Aug 27 01:33:34 4d017e3d41ea37 kernel: BTRFS error (device sdg2): paren=
-t
-> transid verify failed on 15216132096 wanted 273 found 271
-> Aug 27 01:33:34 4d017e3d41ea37 kernel: BTRFS warning (device sdg2):
-> failed to read log tree
-
-Log tree can be skipped/zeroed out to continue mount as usual.
-You just lost a very small amount of data in log tree.
-
-If it's not the controller doing something wrong, I guess Filipe would
-be interested in investigating the root cause.
-
-My wild guess is commit 4203e9689470 ("btrfs: fix incorrect updating of
-log root tree") didn't get backported?
-
-Thanks,
-Qu
-> Aug 27 01:33:34 4d017e3d41ea37 kernel: BTRFS error (device sdg2):
-> open_ctree failed
->=20
-> The SuSE-patched kernel for 15.1 is: 4.12.14-lp151.28.59-default
->=20
-> The only non-standard option we're using is space_cache=3Dv2.=C2=A0 We =
-cannot
-> reproduce this behavior on openSuSe 15.0 (4.12.14-lp150.11-default)
-> under the same conditions and testing.=C2=A0 btrfs rescue zero-logs doe=
-s get
-> the filesystem mountable again, but tosses a non-trivial amount of
-> recently-written data in the process.
->=20
-> I am hopeful this is a known issue and has been fixed in a patch not
-> absorbed via the patches applied to 4.12.14 by openSuSE devs, but it's
-> been hard trawling through changelists to determine that myself.
->=20
-> If anybody recognizes this issue or has suggestions on if or when such =
-a
-> fix would have come in, I'm all ears.
->=20
-> Thanks,
->=20
-> ellis
-
-
---xWetwDMiCke9Cr4JEa8Wm87BYRfR7zaKv--
-
---H55KFAbtAc75zJCnj14NtmNkstxokUXNJ
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl9HGDUACgkQwj2R86El
-/qixeAgAk4nUETa3az1khUzbVVGRBHB7li8vQ4QNcaBkiyuetwebYCr5BfjaEGkB
-sd2v83o6P8pynfNVqlNSeY6yHLD9LoHwyZExiYTuxvQmIgHSj92anES8EwontWvv
-2mw7CdAoltnDOu/LYO8HxENXfRtLfXgVrXashSAicZkZSly8cjxxN3/5J+BpjZVB
-4a85A72CzUiqsBPw8a3BvFquCjeoSv1jrxKD97kf/NCt/PRR6K9Nno1VXUx2r0w3
-oelUFx3tA9rSwXTFUMrw80rzpvYJIbzICgoFIIs3tFmgjqa85nPZMcGhZMHxIrgU
-r5YSp6zabz1eHrbQLIt7lHtZHNeteg==
-=KkUQ
------END PGP SIGNATURE-----
-
---H55KFAbtAc75zJCnj14NtmNkstxokUXNJ--
+https://lore.kernel.org/linux-btrfs/b0d0784a-03b5-c212-f4a1-f09ff487e355@libero.it/T/#meb706f2264e80029835b1d31d82c3a468b53dcda
