@@ -2,107 +2,114 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00D4D254532
-	for <lists+linux-btrfs@lfdr.de>; Thu, 27 Aug 2020 14:44:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97F24254650
+	for <lists+linux-btrfs@lfdr.de>; Thu, 27 Aug 2020 15:57:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729079AbgH0Mns (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 27 Aug 2020 08:43:48 -0400
-Received: from mx2.suse.de ([195.135.220.15]:56236 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728995AbgH0MnC (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 27 Aug 2020 08:43:02 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 1D543AECB;
-        Thu, 27 Aug 2020 12:43:33 +0000 (UTC)
-Subject: Re: [PATCH v3] btrfs-progs: Remove support for
- BTRFS_SUBVOL_CREATE_ASYNC
-To:     linux-btrfs@vger.kernel.org
-Cc:     osandov@osandov.com
-References: <20200402123147.18894-1-nborisov@suse.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <1c018498-2742-2ab1-0bf6-62a81e62f42a@suse.com>
-Date:   Thu, 27 Aug 2020 15:43:00 +0300
+        id S1727995AbgH0N4X (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 27 Aug 2020 09:56:23 -0400
+Received: from mail-co1nam11on2082.outbound.protection.outlook.com ([40.107.220.82]:20224
+        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727924AbgH0NsX (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 27 Aug 2020 09:48:23 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=GjxqYFkcicvP+KCsjy9TCosOYSAphtQ3aYKnWjoMccycAKHH5fNkHMFAtB9w9DViVKmcy2Kjiuy0GjduA8bYzFKoNalH90MQK4mAEat+Sn7QvgEP/BR+kY4nNa8igEhU/6KwlGaxxeYaSEf56v+ssHWHuOr4WRmK9P/JXXoEx3CJPD0psLqaBHeGM3FNt+OXO9A0clDFK2plnXGd3g8FQm2u/3TLR/pvqW0X2QGSUFUB8Eusgb8VEgmkcbZoQAiDKCbwSE4fIVMMNyYaShXrKu8jZIO7S2udhwo8ElbD136D1ye2eVPKq/rsJ7tNjY6BTwU1ccb3v0BOKDxftr+83A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=W1mdq8luYD3JDamGHIeR31L2WAt/mif1LGsnEUmHOtY=;
+ b=msY9e2OcMAHUaWowpYl6LwNH6iXl9lXNj4YL+EZDzxx1TdKOmb0VHn6jBJYEReCOxTntF9TlWLojNujasNT0Rs4JqG1ncDOE6FVPktZhh8AWpYMc7sBCt9leBMe+pXG670lXvlF/1T98areR8ubsFmCtkBNEmQkStL+ekyKr2vTYhsOcya7iPJk2PWWiucNss5LMeV6Z2WM093dAFUCpG0HlolNASYZitaAL11+BYpoxesvfNcuu3/LwEVwDdUMHUvx3GekCvOnkLlHLhJDolj+zoq6Ily/9eLpHIX/ihssfGk+g3x+4Cd4B/hYRv1zRh6gK91SPBaHnmC1xazMtHw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=panasas.com; dmarc=pass action=none header.from=panasas.com;
+ dkim=pass header.d=panasas.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=panasas.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=W1mdq8luYD3JDamGHIeR31L2WAt/mif1LGsnEUmHOtY=;
+ b=SCPhdCxadarcqyLHk/UhrZSCEMogj8IFE+D8+00kk/xtc1dDFWZyYPhMaiRHk+9NqVYgPTygNVjwchcgIIg+rEUwNPFtihCcn3BbKd4ScfCyCPMAZJHBIVl92h6YVoF2GvxnyGGV51xueJJXcNzAeRIaNaIPAAMAHXTZKVQwBvk=
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=panasas.com;
+Received: from BYAPR08MB5109.namprd08.prod.outlook.com (2603:10b6:a03:67::33)
+ by BY5PR08MB6197.namprd08.prod.outlook.com (2603:10b6:a03:1e9::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3326.19; Thu, 27 Aug
+ 2020 13:48:05 +0000
+Received: from BYAPR08MB5109.namprd08.prod.outlook.com
+ ([fe80::3819:8560:afcd:bc6c]) by BYAPR08MB5109.namprd08.prod.outlook.com
+ ([fe80::3819:8560:afcd:bc6c%6]) with mapi id 15.20.3305.032; Thu, 27 Aug 2020
+ 13:48:05 +0000
+Subject: Re: Log corruption/failure to mount during powerfail+deletes
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
+        Filipe Manana <fdmanana@gmail.com>
+References: <33a0b9bc-8cd7-803a-2322-54014703d263@panasas.com>
+ <7715d58d-4a89-8c0b-c6ac-b7f6c52f6335@gmx.com>
+From:   "Ellis H. Wilson III" <ellisw@panasas.com>
+Message-ID: <4a77f79f-5561-a64b-bbd1-37da0f6d278e@panasas.com>
+Date:   Thu, 27 Aug 2020 09:48:02 -0400
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20200402123147.18894-1-nborisov@suse.com>
-Content-Type: text/plain; charset=utf-8
+ Thunderbird/68.11.0
+In-Reply-To: <7715d58d-4a89-8c0b-c6ac-b7f6c52f6335@gmx.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MN2PR16CA0039.namprd16.prod.outlook.com
+ (2603:10b6:208:234::8) To BYAPR08MB5109.namprd08.prod.outlook.com
+ (2603:10b6:a03:67::33)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from 255.255.255.255 (255.255.255.255) by MN2PR16CA0039.namprd16.prod.outlook.com (2603:10b6:208:234::8) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3326.19 via Frontend Transport; Thu, 27 Aug 2020 13:48:04 +0000
+X-Originating-IP: [96.236.219.216]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 6ea782e5-98e6-4993-c062-08d84a8fd2db
+X-MS-TrafficTypeDiagnostic: BY5PR08MB6197:
+X-Microsoft-Antispam-PRVS: <BY5PR08MB61978F8878426B6996EDDD9CC2550@BY5PR08MB6197.namprd08.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: nPLxJ1IxW0AaG8uc7A96loQqVjXNlRrPwbl8ktFUVVMduDnUFRrdfL+nS6ZXbqjT0JK1UjP+V9kOnw+BwMSx8xoEC0oqcn+r9AnzUg2R9/Mn+lsy/lPUvxFSHzdaz/W6In8yVDl0/GNKAHQdzz6XexZSWVH7IpDZ0MFz88YQ9tL+q49kO5jCH9aaalzt2xAEIv12Tr6KpOx6R5k6ndhQtQYvTgUGO9FlqaXoAYekYX3Bym7EwkET0wIXyiiz95XO/ujUTur58lRl3xIwp45TxwLaXj4N5tpaMc/V5vtqqS9wEzxLNO024wIwWW3xF2BFlvXBR9OhfgpUrU1vdoRuIMhPcu8OdQE7OOmpZQ2lcj3PaDx1Wsggv2T0E8HZnzbI
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR08MB5109.namprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(39840400004)(346002)(366004)(396003)(376002)(66476007)(5660300002)(66556008)(186003)(53546011)(86362001)(31686004)(66946007)(52116002)(2906002)(316002)(478600001)(8676002)(16576012)(36756003)(2616005)(26005)(956004)(110136005)(6486002)(31696002)(8936002)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: +mWQ2dh9hC/DyShdEnt8LmSjpLQMsMBsP58nPVJjbN1Gsp0n8ze/PlmXymzOr2iwZj659lJ5VO1SEjOYolMMd2lEEWwXYfBHBWrbCmNtRRr6Y64H3IzUSShjorP6envWxAt17wtPt5WK+njQ1yyMF89MTfaELl+x8lNUXrvRhOgH1+jJa7dihJ8YFUFFH/KqvTsBvDI9oQSFS/rJ3KNn2jaheA220/1pWZz8WlglTVFDxYcoQlNWjvSi/9GQnGEZ6xXIEswHdCBoetGpBZ6hFlsJeZRYraKnb7IHti0MMu00xjjHpUP9QB17M2RHSLW0HZ5/qNK/oNFwWp6nEJIuONGRar5UgGOLSyAdlR4BE7B0ncfDNz82031TUavz3/Ed48FDD4lPeI4VKXvsSiNqg+0H0J3VC49+9TRTDG+GloTXGXNRWcRvKgkOUUi8+Jr6HyyZLgD1vmSdReMf/Lq02ei/cP5DUk0QP7iWVPNTyex9clFtrv7TcqJkq9Q/fEJZi7Z+lKvpXkFvNiS8T2fo8/k+sE83mgnk93XMMCVan0VLCjqKB71Kw2JF/gB/jh6l6Wt55/QNzk04ryI2+C5k2CXuN6j+S+RWXqlUE3piqMRrQORqA3OGM8L+83I/sO5e0EcgQLhtO659P/Bn7JVT5Q==
+X-OriginatorOrg: panasas.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6ea782e5-98e6-4993-c062-08d84a8fd2db
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR08MB5109.namprd08.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Aug 2020 13:48:05.6268
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: acf01c9d-c699-42af-bdbb-44bf582e60b0
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 30YL+tYw7JOsnoxNew8BUmfmwizigSbGbdklB57uE7DAB75+SGDyhYZk+RqhU/S1gH19NfsDXyPiQUIjuEDsSA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR08MB6197
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On 8/26/20 10:19 PM, Qu Wenruo wrote:
+> Log tree can be skipped/zeroed out to continue mount as usual.
+> You just lost a very small amount of data in log tree.
 
+While this is true, without knowing exactly what was discarded by the 
+log we don't know if a file on this BTRFS breaks parity with one on 
+another storage device, which is relevant in parallel file systems such 
+as ours to assure parity of the entire file remains sane.  We maintain 
+per-storage-device write-back logs to cope with power-fail ourselves, 
+but once we fsync these to BTRFS we expect those changes to be fully 
+stable.  The only safe recourse in the face of lost logs for BTRFS on 
+one or more nodes is full parallel file system recovery, which can take 
+many hours to complete as you're potentially walking over billions of 
+objects and petabytes of data.
 
-On 2.04.20 г. 15:31 ч., Nikolay Borisov wrote:
-> Kernel has removed support for this feature in 5.7 so let's remove
-> support from progs as well.
+> If it's not the controller doing something wrong, I guess Filipe would
+> be interested in investigating the root cause.
 > 
-> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
-> Reviewed-by: Omar Sandoval <osandov@fb.com>
-> ---
-> Changelog V3:
->  * Deleted unnecessary function documentation (Omar)
->  * Decapitalize some words (Omar)
-> 
-> Changelog v2:
->  * Removed async mentions in README.md
->  * Changed docs in libbtrfsutil/btrfsutil.h to mention async is unused.
->  * Removed tests using async_
->  * Changed python module's doc to mention the async_ parameter is unused.
->  ioctl.h                                     |  4 +--
->  libbtrfsutil/README.md                      | 14 ++------
->  libbtrfsutil/btrfs.h                        |  4 +--
->  libbtrfsutil/btrfsutil.h                    | 23 +++++--------
->  libbtrfsutil/python/module.c                |  6 ++--
->  libbtrfsutil/python/tests/test_subvolume.py | 12 ++-----
->  libbtrfsutil/subvolume.c                    | 38 ++++++---------------
->  7 files changed, 29 insertions(+), 72 deletions(-)
-> 
+> My wild guess is commit 4203e9689470 ("btrfs: fix incorrect updating of
+> log root tree") didn't get backported?
 
-Ping.
+Having checked the set of patches in 15.1, I can find no record of this 
+having been backported.  Thank you!  I will apply it and try to reproduce.
+
+Thanks again Qu!
+
+ellis
