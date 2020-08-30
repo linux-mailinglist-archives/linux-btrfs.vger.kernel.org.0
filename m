@@ -2,174 +2,97 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38324256D37
-	for <lists+linux-btrfs@lfdr.de>; Sun, 30 Aug 2020 12:02:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6095256E9C
+	for <lists+linux-btrfs@lfdr.de>; Sun, 30 Aug 2020 16:39:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728791AbgH3KCU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 30 Aug 2020 06:02:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35382 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725869AbgH3KCQ (ORCPT
+        id S1726800AbgH3OjS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 30 Aug 2020 10:39:18 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:58092 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726439AbgH3OjP (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 30 Aug 2020 06:02:16 -0400
-X-Greylist: delayed 1565 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 30 Aug 2020 03:02:06 PDT
-Received: from jemma.woof94.com (jemma.woof94.com [IPv6:2404:9400:3:0:216:3eff:fee0:fa86])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12287C061573
-        for <linux-btrfs@vger.kernel.org>; Sun, 30 Aug 2020 03:02:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=moffatt.email; s=woof2014; h=Content-Transfer-Encoding:Content-Type:
-        MIME-Version:Date:Message-ID:Subject:From:To:Sender:Reply-To:Cc:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=aCUrYaBBh01b44jpiIlcsV7qyfxyDwSvP1wssHsoh/E=; b=YsiY0eRcUefwXgjxw0Q226EUog
-        xZzhSyQEX6R2t85KLw471ZT5IeNQC7vxAMg47vDS91xPkH/rlWi78c3LdS6/ai23JPDlESd+NFjKd
-        64ZY+4LzbfEvfeOLz1VgN3Az4w9/3f+JOsbbK9biXN+vQ7Lg7crK4JjKfWaLnt47XYwo=;
-Received: from 2403-5800-3100-142-69a8-ba22-a240-3140.ip6.aussiebb.net ([2403:5800:3100:142:69a8:ba22:a240:3140])
-        by jemma.woof94.com with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <hamish-btrfs@moffatt.email>)
-        id 1kCJkm-0005J6-2f
-        for linux-btrfs@vger.kernel.org; Sun, 30 Aug 2020 19:36:00 +1000
-To:     linux-btrfs@vger.kernel.org
-From:   Hamish Moffatt <hamish-btrfs@moffatt.email>
-Subject: new database files not compressed
-Message-ID: <6992fae3-ce87-8ae1-8dfe-1cb65578a16a@moffatt.email>
-Date:   Sun, 30 Aug 2020 19:35:59 +1000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        Sun, 30 Aug 2020 10:39:15 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07UEXnNK130577;
+        Sun, 30 Aug 2020 14:39:11 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=FouRbD0Jo/zOG1sY0gMjb64I3xKtNLZsXT4bG5gznDs=;
+ b=zmqLOcU3MTw8cFJSuT+9KDrRl4Y9bJBr+YrYmSGUWZhes+M2UIqdT4l3mHKBxDHaE6Ps
+ IwNtD7ivDT9F7TBt+GhBZ81ta8+i5UJB8+nEFhCYlS7KktVgA0bNxlQHgPg2YE7gxPTJ
+ 0bUqbkW5ReASLXoo7OYn3GQQz0OHS47ccfcJBQrhXSBElSer8UocvB8miABuLc06Ymr2
+ UnPxM+P6ZmFbQaHQvOiuWK9lnlLZVi3UHxJqr8j6e1bs+HiQmczL//KZg61+rYh5ff1q
+ 6uuv1n1Z08YIz7q5LzhUDiQLkVk+gM0ijMxBEzLGSg7MtFTmmRf2ECzxstuqLxo0xuV0 Jw== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2120.oracle.com with ESMTP id 337qrha2a3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Sun, 30 Aug 2020 14:39:11 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07UEaqho138830;
+        Sun, 30 Aug 2020 14:39:11 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3020.oracle.com with ESMTP id 3380sp0t38-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sun, 30 Aug 2020 14:39:10 +0000
+Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 07UEd9xC024090;
+        Sun, 30 Aug 2020 14:39:09 GMT
+Received: from [192.168.1.102] (/39.109.231.106)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Sun, 30 Aug 2020 07:39:09 -0700
+Subject: Re: [PATCH v2] btrfs: Switch seed device to list api
+To:     Nikolay Borisov <nborisov@suse.com>, linux-btrfs@vger.kernel.org
+References: <20200715104850.19071-6-nborisov@suse.com>
+ <20200716072533.32592-1-nborisov@suse.com>
+From:   Anand Jain <anand.jain@oracle.com>
+Message-ID: <c636ed17-e920-f042-39b2-98b7b2f87821@oracle.com>
+Date:   Sun, 30 Aug 2020 22:39:05 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.1.1
 MIME-Version: 1.0
+In-Reply-To: <20200716072533.32592-1-nborisov@suse.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9728 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 adultscore=0
+ phishscore=0 malwarescore=0 mlxscore=0 spamscore=0 bulkscore=0
+ suspectscore=2 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008300118
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9729 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 bulkscore=0
+ adultscore=0 mlxscore=0 lowpriorityscore=0 phishscore=0 clxscore=1015
+ suspectscore=2 priorityscore=1501 spamscore=0 malwarescore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008300118
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-I am trying to store Firebird database files compressed on btrfs. 
-Although I have mounted the file system with -o compress-force, new 
-files created by Firebird are not being compressed according to 
-compsize. If I copy them, or use btrfs filesystem defrag, they compress 
-well.
+On 16/7/20 3:25 pm, Nikolay Borisov wrote:
+> While this patch touches a bunch of files the conversion is
+> straighforward. Instead of using the implicit linked list anchored at
+> btrfs_fs_devices::seed the code is switched to using
+> list_for_each_entry. Previous patches in the series already factored out
+> code that processed both main and seed devices so in those cases
+> the factored out functions are called on the main fs_devices and then
+> on every seed dev inside list_for_each_entry.
+> 
+> Using list api also allows to simplify deletion from the seed dev list
+> performed in btrfs_rm_device and btrfs_rm_dev_replace_free_srcdev by
+> substituting a while() loop with a simple list_del_init.
+> 
+> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
+> ---
+> 
+> V2:
+>   * Removed tmp_fs_devices from btrfs_rm_dev_replace_free_srcdev. Reported by
+>   kernel test robot
+> 
 
-Other files seem to be compressed automatically OK. Why are the Firebird 
-files different?
+Reviewed-by: Anand Jain <anand.jain@oracle.com>
 
-
-$ uname -a
-Linux packer-debian-10-amd64 5.7.0-3-amd64 #1 SMP Debian 5.7.17-1 
-(2020-08-23) x86_64 GNU/Linux
-
-$ sudo mkfs.btrfs -m single -f /dev/sdb
-btrfs-progs v4.20.1
-See http://btrfs.wiki.kernel.org for more information.
-
-Label:              (null)
-UUID:               949f7f3f-681b-40fb-97b9-522756d5d619
-Node size:          16384
-Sector size:        4096
-Filesystem size:    29.98GiB
-Block group profiles:
-   Data:             single            8.00MiB
-   Metadata:         single            8.00MiB
-   System:           single            4.00MiB
-SSD detected:       no
-Incompat features:  extref, skinny-metadata
-Number of devices:  1
-Devices:
-    ID        SIZE  PATH
-     1    29.98GiB  /dev/sdb
-
-$ sudo mount -o compress-force /dev/sdb /mnt/test
-$ sudo mkdir /mnt/test/db
-$ cd /mnt/test/db
-
-Now I restore a backup to create a database:
-
-$ zcat ~/*.zip | gbak -REP stdin test.fdb
-$ sudo compsize test.fdb
-Type       Perc     Disk Usage   Uncompressed Referenced
-TOTAL      100%      182M         182M         175M
-none       100%      182M         182M         175M
-$ cat test.fdb > test2.fdb
-$ sudo compsize test2.fdb
-Type       Perc     Disk Usage   Uncompressed Referenced
-TOTAL       10%       18M         175M         175M
-zlib        10%       18M         175M         175M
-
-
-The same thing occurs if I create a brand new database:
-
-$ isql-fb
-Use CONNECT or CREATE DATABASE to specify a database
-SQL> create database 'test3.fdb';
-SQL> ^D$
-$ sync
-$ sudo compsize test3.fdb
-Type       Perc     Disk Usage   Uncompressed Referenced
-TOTAL      100%      784K         784K         784K
-none       100%      784K         784K         784K
-$ cp test3.fdb test4.fdb
-$ sync
-$ sudo compsize test4.fdb
-Type       Perc     Disk Usage   Uncompressed Referenced
-TOTAL        7%       60K         784K         784K
-zlib         7%       60K         784K         784K
-
-
-If I create a database with SQLite it is compressed:
-
-
-$ cat test.sql
-create table test ( id integer primary key asc autoincrement, timestamp 
-text default (datetime()), data text);
-$ sqlite3 foo.db < test.sql
-$ sudo compsize foo.db
-Type       Perc     Disk Usage   Uncompressed Referenced
-TOTAL       33%      4.0K          12K          12K
-zlib        33%      4.0K          12K          12K
-
-
-I ran isql-fb in strace to see if there is something special in the 
-open(2) flags;
-
-
-$ strace -o trace isql-fb
-Use CONNECT or CREATE DATABASE to specify a database
-SQL> create database 'new.fdb';
-SQL> ^D$
-$ grep new.fdb trace
-readlink("/mnt/test/db/new.fdb", 0x7ffd9cf70810, 4096) = -1 ENOENT (No 
-such file or directory)
-stat("/mnt/test/db/new.fdb", 0x7ffd9cf705b0) = -1 ENOENT (No such file 
-or directory)
-stat("/mnt/test/db/new.fdb", 0x7ffd9cf71480) = -1 ENOENT (No such file 
-or directory)
-stat("/mnt/test/db/new.fdb", 0x7ffd9cf70e40) = -1 ENOENT (No such file 
-or directory)
-openat(AT_FDCWD, "/mnt/test/db/new.fdb", O_RDWR) = -1 ENOENT (No such 
-file or directory)
-openat(AT_FDCWD, "/mnt/test/db/new.fdb", O_RDONLY) = -1 ENOENT (No such 
-file or directory)
-readlink("/mnt/test/db/new.fdb", 0x7ffd9cf70800, 4096) = -1 ENOENT (No 
-such file or directory)
-stat("/mnt/test/db/new.fdb", 0x7ffd9cf705a0) = -1 ENOENT (No such file 
-or directory)
-stat("/mnt/test/db/new.fdb", 0x7ffd9cf71470) = -1 ENOENT (No such file 
-or directory)
-stat("/mnt/test/db/new.fdb", 0x7ffd9cf70dc0) = -1 ENOENT (No such file 
-or directory)
-stat("/mnt/test/db/new.fdb", 0x7ffd9cf70eb0) = -1 ENOENT (No such file 
-or directory)
-openat(AT_FDCWD, "/mnt/test/db/new.fdb", O_RDWR|O_CREAT|O_EXCL, 0666) = 6
-readlink("/mnt/test/db/new.fdb", 0x7ffd9cf6ff00, 4096) = -1 EINVAL 
-(Invalid argument)
-
-
-
-
-thanks
-
-Hamish
+Thanks, Anand
 
