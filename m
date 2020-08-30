@@ -2,175 +2,181 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E848C256EB8
-	for <lists+linux-btrfs@lfdr.de>; Sun, 30 Aug 2020 16:42:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB02F256EBB
+	for <lists+linux-btrfs@lfdr.de>; Sun, 30 Aug 2020 16:42:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727919AbgH3Omr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 30 Aug 2020 10:42:47 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:59260 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727031AbgH3Olt (ORCPT
+        id S1727810AbgH3Omy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 30 Aug 2020 10:42:54 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:58780 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727046AbgH3Olv (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 30 Aug 2020 10:41:49 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07UEXTup130503;
-        Sun, 30 Aug 2020 14:41:43 GMT
+        Sun, 30 Aug 2020 10:41:51 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07UEYmWF032353;
+        Sun, 30 Aug 2020 14:41:45 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding; s=corp-2020-01-29;
- bh=d6xvwbbwFUIhyKqCryBUp8S2eSdVOnERyU3Mb8S9Vzo=;
- b=wLSH7qhK330rguUNTX8R2tDPCa5hAFomLmlOloasDn6MR257NE7Lk1YPr70EpQaeE9YB
- JSEqhL8+p5X5r0+H3QkDVa35/D/rRIr6GMWwRgZQwgzRyw1BSIho7WxYVvOetArQMlZI
- uLDeKXmxefkMz659PmSQJX+P00P69Y49EJK5Rc0Ykq+cfURVWvz+GiP/KM5uSvn4KV8b
- VD1NlH3TqgdvNNCavKPHRP2tybzR4WDnsRfr6Pje+sl/Yr04aXdgshY76VLHYQkz4zZR
- gxOa9c/B0CcB3WsmPqx6Ssi4B0xPl7q7/FomiaJJdhZbqwefY30egOW57bMVM427KlyI XQ== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2120.oracle.com with ESMTP id 337qrha2d9-1
+ bh=mmGBdWbp84BR4VyFdD3Xjbyuo5UwN16Ot0X5Nupq3lo=;
+ b=t2dMN8M6f3WS2zSt+Xh+GQgTXCOW0VEaG9NhePmkKkPwFm7OWNh/eiyjq40IxcYS8XWK
+ JFuTujtTebbxKI43hOnUOC9hJS/yYI9+y34FZHm9GV8Ycva/NC2iMu0V5Q6onDIsHOKC
+ nH7invZS31T+uYrjjdLxTJdlgV/dmVSfxmhN3eufRnNRkS+UjpcLlGoI3JudtCXm3MLa
+ V0HUVk1o1WXKo/Xs4V5538C0zCdx3Z+3whDZyrocwarh5o+OIlkFfMuQTRRbR6VMsOds
+ 4g54llkzDLSxVRtn9xdbQZvkwYSGbdHDp5uC3hVvVwhHWXDzZLsT1KEXCdH8Fg96SFdx hQ== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2130.oracle.com with ESMTP id 337eeqk0re-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Sun, 30 Aug 2020 14:41:43 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07UEZYmK153287;
-        Sun, 30 Aug 2020 14:41:43 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3030.oracle.com with ESMTP id 3380xtr40t-1
+        Sun, 30 Aug 2020 14:41:45 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07UEaqEs138894;
+        Sun, 30 Aug 2020 14:41:45 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3020.oracle.com with ESMTP id 3380sp0urj-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sun, 30 Aug 2020 14:41:43 +0000
+        Sun, 30 Aug 2020 14:41:45 +0000
 Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 07UEfgoC015607;
-        Sun, 30 Aug 2020 14:41:42 GMT
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 07UEfiFq024971;
+        Sun, 30 Aug 2020 14:41:44 GMT
 Received: from localhost.localdomain (/39.109.231.106)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Sun, 30 Aug 2020 07:41:41 -0700
+        with ESMTP ; Sun, 30 Aug 2020 07:41:43 -0700
 From:   Anand Jain <anand.jain@oracle.com>
 To:     linux-btrfs@vger.kernel.org
 Cc:     dsterba@suse.com, josef@toxicpanda.com
-Subject: [PATCH 11/11] btrfs: fix replace of seed device
-Date:   Sun, 30 Aug 2020 22:41:06 +0800
-Message-Id: <660ee9f002a792a5d4b682779d72803de4767f4a.1598792561.git.anand.jain@oracle.com>
+Subject: [PATCH] fstests: btrfs/163: replace sprout instead of seed
+Date:   Sun, 30 Aug 2020 22:41:07 +0800
+Message-Id: <d82dc7d38ac43d88381eaa5260cee3dc9907e810.1598011271.git.anand.jain@oracle.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1598792561.git.anand.jain@oracle.com>
 References: <cover.1598792561.git.anand.jain@oracle.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9728 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 adultscore=0
+ phishscore=0 malwarescore=0 mlxscore=0 spamscore=0 bulkscore=0
+ suspectscore=1 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008300118
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9729 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 adultscore=0 phishscore=0
- malwarescore=0 bulkscore=0 mlxscore=0 mlxlogscore=999 suspectscore=1
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1015 priorityscore=1501
+ lowpriorityscore=0 malwarescore=0 adultscore=0 spamscore=0 mlxscore=0
+ phishscore=0 impostorscore=0 mlxlogscore=999 bulkscore=0 suspectscore=1
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
  definitions=main-2008300118
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9729 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 bulkscore=0
- adultscore=0 mlxscore=0 lowpriorityscore=0 phishscore=0 clxscore=1015
- suspectscore=1 priorityscore=1501 spamscore=0 malwarescore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2008300118
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-If you replace a seed device in a sprouted fs, it appears to have
-successfully replaced the seed device, but if you look closely, it didn't.
+As of now, this test case replaced the seed device in a sprouted seed
+filesystem. However, the kernel doesn't support the replacement of the seed
+device yet. And the following kernel patch shall enforce the [1]
+unsupportability and returns -EINVAL (error code is the same as in seed
+device in a non sprouted filesystem replacement).
 
-Here is an example.
+[1]
+   btrfs: fix replace of seed device
 
-mkfs.btrfs -fq /dev/sda
-btrfstune -S1 /dev/sda
-mount /dev/sda /btrfs
-btrfs dev add /dev/sdb /btrfs
-umount /btrfs; btrfs dev scan --forget
-mount -o device=/dev/sda /dev/sdb /btrfs
-btrfs rep start -f /dev/sda /dev/sdc /btrfs; echo $?
-0
-
-  BTRFS info (device sdb): dev_replace from /dev/sda (devid 1) to /dev/sdc started
-  BTRFS info (device sdb): dev_replace from /dev/sda (devid 1) to /dev/sdc finished
-
-btrfs fi show
-Label: none  uuid: ab2c88b7-be81-4a7e-9849-c3666e7f9f4f
-	Total devices 2 FS bytes used 256.00KiB
-	devid    1 size 3.00GiB used 520.00MiB path /dev/sdc
-	devid    2 size 3.00GiB used 896.00MiB path /dev/sdb
-
-Label: none  uuid: 10bd3202-0415-43af-96a8-d5409f310a7e
-	Total devices 1 FS bytes used 128.00KiB
-	devid    1 size 3.00GiB used 536.00MiB path /dev/sda
-
-So as per the replace start command and kernel log replace was successful.
-
-Now let's try to clean mount.
-
-umount /btrfs;  btrfs dev scan --forget
-
-mount -o device=/dev/sdc /dev/sdb /btrfs
-mount: /btrfs: wrong fs type, bad option, bad superblock on /dev/sdb, missing codepage or helper program, or other error.
-
-[  636.157517] BTRFS error (device sdc): failed to read chunk tree: -2
-[  636.180177] BTRFS error (device sdc): open_ctree failed
-
-That's because per dev items it is still looking for the original seed
-device.
-
-btrfs in dump-tree -d /dev/sdb
-
-	item 0 key (DEV_ITEMS DEV_ITEM 1) itemoff 16185 itemsize 98
-		devid 1 total_bytes 3221225472 bytes_used 545259520
-		io_align 4096 io_width 4096 sector_size 4096 type 0
-		generation 6 start_offset 0 dev_group 0
-		seek_speed 0 bandwidth 0
-		uuid 59368f50-9af2-4b17-91da-8a783cc418d4  <--- seed uuid
-		fsid 10bd3202-0415-43af-96a8-d5409f310a7e  <--- seed fsid
-	item 1 key (DEV_ITEMS DEV_ITEM 2) itemoff 16087 itemsize 98
-		devid 2 total_bytes 3221225472 bytes_used 939524096
-		io_align 4096 io_width 4096 sector_size 4096 type 0
-		generation 0 start_offset 0 dev_group 0
-		seek_speed 0 bandwidth 0
-		uuid 56a0a6bc-4630-4998-8daf-3c3030c4256a  <- sprout uuid
-		fsid ab2c88b7-be81-4a7e-9849-c3666e7f9f4f <- sprout fsid
-
-But the replaced target has the following uuid+fsid in its superblock
-which doesn't match with the expected uuid+fsid in its devitem.
-
-btrfs in dump-super /dev/sdc | egrep '^generation|dev_item.uuid|dev_item.fsid|devid'
-generation	20
-dev_item.uuid	59368f50-9af2-4b17-91da-8a783cc418d4
-dev_item.fsid	ab2c88b7-be81-4a7e-9849-c3666e7f9f4f [match]
-dev_item.devid	1
-
-So if you provide the original seed device the mount shall be successful.
-Which so long happening in the test case btrfs/163.
-
-btrfs dev scan --forget
-mount -o device=/dev/sda /dev/sdb /btrfs
-
-Fix in this patch:
-Make it as you can't replace a seed device, you can only add a new device
-and then delete the seed device. If replace is attempted then returns -EINVAL.
-As in the below changes.
-
-Another possible fix:
-If we want to keep the ability to replace for seed-device, then we could
-update the fsid of the replace-target blocks. And after replacement, you
-have seed device but with sprout fsid. But then I don't know what is the
-point and if there is any such use case.
+So in this test case instead of seed as replacing target use the sprout
+device. As we didn't have any test case which shall test the replacement of
+sprout device. So now this case fills the gap.
 
 Signed-off-by: Anand Jain <anand.jain@oracle.com>
 ---
- fs/btrfs/dev-replace.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I will send this to fstests ML once kernel patch is integrated.
 
-diff --git a/fs/btrfs/dev-replace.c b/fs/btrfs/dev-replace.c
-index 656d8ba642af..02b7b3edf9a3 100644
---- a/fs/btrfs/dev-replace.c
-+++ b/fs/btrfs/dev-replace.c
-@@ -225,7 +225,7 @@ static int btrfs_init_dev_replace_tgtdev(struct btrfs_fs_info *fs_info,
- 	int ret = 0;
+ tests/btrfs/163     | 21 ++++++++++++++++-----
+ tests/btrfs/163.out |  5 ++++-
+ 2 files changed, 20 insertions(+), 6 deletions(-)
+
+diff --git a/tests/btrfs/163 b/tests/btrfs/163
+index 24c725afb6b9..354d88502d47 100755
+--- a/tests/btrfs/163
++++ b/tests/btrfs/163
+@@ -4,11 +4,15 @@
+ #
+ # FS QA Test 163
+ #
+-# Test case to verify that a seed device can be replaced
++# Test case to verify that a sprouted device can be replaced
+ #  Create a seed device
+ #  Create a sprout device
+ #  Remount RW
+-#  Run device replace on the seed device
++#  Run device replace on the sprout device
++#
++# Depends on the kernel patch
++#   btrfs: fail replace of seed device
++
+ seq=`basename $0`
+ seqres=$RESULT_DIR/$seq
+ echo "QA output created by $seq"
+@@ -39,6 +43,7 @@ _supported_fs btrfs
+ _supported_os Linux
+ _require_command "$BTRFS_TUNE_PROG" btrfstune
+ _require_scratch_dev_pool 3
++_require_btrfs_forget_or_module_loadable
  
- 	*device_out = NULL;
--	if (fs_info->fs_devices->seeding) {
-+	if (srcdev->fs_devices->seeding) {
- 		btrfs_err(fs_info, "the filesystem is a seed filesystem!");
- 		return -EINVAL;
- 	}
+ _scratch_dev_pool_get 3
+ 
+@@ -52,7 +57,7 @@ create_seed()
+ 	run_check _mount $dev_seed $SCRATCH_MNT
+ 	$XFS_IO_PROG -f -d -c "pwrite -S 0xab 0 4M" $SCRATCH_MNT/foobar >\
+ 		/dev/null
+-	echo -- gloden --
++	echo -- golden --
+ 	od -x $SCRATCH_MNT/foobar
+ 	_run_btrfs_util_prog filesystem show -m $SCRATCH_MNT
+ 	_scratch_unmount
+@@ -64,22 +69,28 @@ add_sprout()
+ {
+ 	_run_btrfs_util_prog device add -f $dev_sprout $SCRATCH_MNT
+ 	_run_btrfs_util_prog filesystem show -m $SCRATCH_MNT
++	_mount -o remount,rw $dev_sprout $SCRATCH_MNT
++	$XFS_IO_PROG -f -d -c "pwrite -S 0xcd 0 4M" $SCRATCH_MNT/foobar2 >\
++		/dev/null
+ }
+ 
+ replace_seed()
+ {
+-	_run_btrfs_util_prog replace start -fB $dev_seed $dev_replace_tgt $SCRATCH_MNT
++	_run_btrfs_util_prog replace start -fB $dev_sprout $dev_replace_tgt $SCRATCH_MNT
+ 	_run_btrfs_util_prog filesystem show -m $SCRATCH_MNT
+ 	_scratch_unmount
+-	run_check _mount $dev_replace_tgt $SCRATCH_MNT
++	_btrfs_forget_or_module_reload
++	run_check _mount -o device=$dev_seed $dev_replace_tgt $SCRATCH_MNT
+ 	echo -- sprout --
+ 	od -x $SCRATCH_MNT/foobar
++	od -x $SCRATCH_MNT/foobar2
+ 	_scratch_unmount
+ 
+ }
+ 
+ seed_is_mountable()
+ {
++	_btrfs_forget_or_module_reload
+ 	run_check _mount $dev_seed $SCRATCH_MNT
+ 	_run_btrfs_util_prog filesystem show -m $SCRATCH_MNT
+ 	_scratch_unmount
+diff --git a/tests/btrfs/163.out b/tests/btrfs/163.out
+index 91f6f5b6f48a..351ef7b040b2 100644
+--- a/tests/btrfs/163.out
++++ b/tests/btrfs/163.out
+@@ -1,5 +1,5 @@
+ QA output created by 163
+--- gloden --
++-- golden --
+ 0000000 abab abab abab abab abab abab abab abab
+ *
+ 20000000
+@@ -7,3 +7,6 @@ QA output created by 163
+ 0000000 abab abab abab abab abab abab abab abab
+ *
+ 20000000
++0000000 cdcd cdcd cdcd cdcd cdcd cdcd cdcd cdcd
++*
++20000000
 -- 
 2.25.1
 
