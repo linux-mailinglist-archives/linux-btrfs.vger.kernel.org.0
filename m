@@ -2,57 +2,83 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F326A257BD9
-	for <lists+linux-btrfs@lfdr.de>; Mon, 31 Aug 2020 17:11:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1501257C29
+	for <lists+linux-btrfs@lfdr.de>; Mon, 31 Aug 2020 17:18:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728413AbgHaPLg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 31 Aug 2020 11:11:36 -0400
-Received: from mx2.suse.de ([195.135.220.15]:41096 "EHLO mx2.suse.de"
+        id S1728249AbgHaPSh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 31 Aug 2020 11:18:37 -0400
+Received: from mx2.suse.de ([195.135.220.15]:46028 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728358AbgHaPKv (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 31 Aug 2020 11:10:51 -0400
+        id S1727902AbgHaPSd (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 31 Aug 2020 11:18:33 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 2247AB686;
-        Mon, 31 Aug 2020 15:10:50 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 651EAABD2;
+        Mon, 31 Aug 2020 15:18:32 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id ED6D7DA840; Mon, 31 Aug 2020 17:09:38 +0200 (CEST)
-Date:   Mon, 31 Aug 2020 17:09:38 +0200
+        id 875C2DA840; Mon, 31 Aug 2020 17:17:21 +0200 (CEST)
+Date:   Mon, 31 Aug 2020 17:17:21 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org,
-        Tyler Richmond <t.d.richmond@gmail.com>
-Subject: Re: [PATCH 0/3] btrfs-progs: check: add inode invalid transid detect
- and repair support
-Message-ID: <20200831150938.GA28318@twin.jikos.cz>
+To:     Nikolay Borisov <nborisov@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs-progs: check: Fix error reporting on root inode
+Message-ID: <20200831151721.GB28318@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org,
-        Tyler Richmond <t.d.richmond@gmail.com>
-References: <20200826005233.90063-1-wqu@suse.com>
+Mail-Followup-To: dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <20200824140049.28633-1-nborisov@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200826005233.90063-1-wqu@suse.com>
+In-Reply-To: <20200824140049.28633-1-nborisov@suse.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Aug 26, 2020 at 08:52:30AM +0800, Qu Wenruo wrote:
-> Really nothing interesting here for btrfs-progs, just reusing existing
-> inode generation detect and repair code.
+On Mon, Aug 24, 2020 at 05:00:49PM +0300, Nikolay Borisov wrote:
+> If btrfs check detects an error on the root inode of a subvolume it
+> prints:
 > 
-> The interesting part is, how a wrongly copied error message delayed us
-> so long to locate a bug.
+>     Opening filesystem to check...
+>     Checking filesystem on /dev/vdc
+>     UUID: 4ac7a216-bf97-4c5f-9899-0f203c20d8af
+>     [1/7] checking root items
+>     [2/7] checking extents
+>     [3/7] checking free space cache
+>     [4/7] checking fs roots
+>     root 5 root dir 256 error
+>     ERROR: errors found in fs roots
+>     found 196608 bytes used, error(s) found
+>     total csum bytes: 0
+>     total tree bytes: 131072
+>     total fs tree bytes: 32768
+>     total extent tree bytes: 16384
+>     btree space waste bytes: 124376
+>     file data blocks allocated: 65536
+>      referenced 65536
 > 
-> Reported-by: Tyler Richmond <t.d.richmond@gmail.com>
+> This is not very helpful since there is no specific information about
+> the exact error. This is due to the fact that check_root_dir doesn't
+> set inode_record::errors accordingly. This patch rectifies this and now
+> the output would look like:
 > 
-> Qu Wenruo (3):
->   btrfs-progs: check/lowmem: add inode transid detect and repair support
->   btrfs-progs: check/original: add inode transid detect and repair
->     support
->   btrfs-progs: tests/fsck: add test image for inode transid repair
+> 	[1/7] checking root items
+> 	[2/7] checking extents
+> 	[3/7] checking free space cache
+> 	[4/7] checking fs roots
+> 	root 5 inode 256 errors 2000, link count wrong
+> 	ERROR: errors found in fs roots
+> 	found 196608 bytes used, error(s) found
+> 	total csum bytes: 0
+> 	total tree bytes: 131072
+> 	total fs tree bytes: 32768
+> 	total extent tree bytes: 16384
+> 	btree space waste bytes: 124376
+> 	file data blocks allocated: 65536
+> 	 referenced 65536
+> 
+> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
 
 Added to devel, thanks.
