@@ -2,139 +2,144 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25BEC257029
-	for <lists+linux-btrfs@lfdr.de>; Sun, 30 Aug 2020 21:30:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E4F1257195
+	for <lists+linux-btrfs@lfdr.de>; Mon, 31 Aug 2020 03:38:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726326AbgH3Tao (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 30 Aug 2020 15:30:44 -0400
-Received: from mx2.suse.de ([195.135.220.15]:48478 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726150AbgH3Tan (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 30 Aug 2020 15:30:43 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 748D8AD63;
-        Sun, 30 Aug 2020 19:31:15 +0000 (UTC)
-Subject: Re: [PATCH v2] btrfs/024: Remove no longer valid test
-To:     Eryu Guan <guan@eryu.me>
-Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
-References: <20200817103718.10239-1-nborisov@suse.com>
- <20200817134026.15453-1-nborisov@suse.com> <20200830160825.GB3853@desktop>
-From:   Nikolay Borisov <nborisov@suse.com>
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <35e0d5a5-3bc1-9e59-e01e-0645f7c08a84@suse.com>
-Date:   Sun, 30 Aug 2020 22:30:39 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726584AbgHaBil (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 30 Aug 2020 21:38:41 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:41252 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726452AbgHaBij (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Sun, 30 Aug 2020 21:38:39 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07V1ZBNB145764;
+        Mon, 31 Aug 2020 01:38:33 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding; s=corp-2020-01-29;
+ bh=KtTmkeAxArW4Ahxf5tYlNEBfiZCvxdcYEP2tagTxXzA=;
+ b=pOLzHqrmXGX8935zoyxilwzkvf6fE11FcNNWrfd4nmpLEKVSyJRWcl1l/B/pypLIZGNb
+ 2vt11ovpP6kt0HG8Ursp4WBfNbQ1MDVZClGU8lvzkUc5O4qQ8G8y0iIYIvKSooIHHJl9
+ HDz5cCfTGwZCtYat25CqwvJ+lB0s6AAiXUqXbZxtFsTdicRH9gXje1Hl4QmfOcO5oDEu
+ PShZmyfgsh/52eUwGqp9vBVOdpJduhFniyKHAqeS/k7sHXYc84Fs6XO+96MvIago3R3h
+ umIbLN0a78E7AbwMvXvt7ZiJV5hsYLRh0iE92by844JDUAnwL6KzMo18zXQLgFI/tWpw NA== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2130.oracle.com with ESMTP id 337eeqkrq3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 31 Aug 2020 01:38:32 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07V1Zbh7145803;
+        Mon, 31 Aug 2020 01:38:32 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3030.oracle.com with ESMTP id 3380xu3dm5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 31 Aug 2020 01:38:32 +0000
+Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 07V1cVNr023583;
+        Mon, 31 Aug 2020 01:38:31 GMT
+Received: from localhost.localdomain (/39.109.231.106)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Sun, 30 Aug 2020 18:38:30 -0700
+From:   Anand Jain <anand.jain@oracle.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     dsterba@suse.com, josef@toxicpanda.com
+Subject: [PATCH 0/11] btrfs: seed fix null ptr, use only main device_list_mutex, and cleanups
+Date:   Mon, 31 Aug 2020 09:38:20 +0800
+Message-Id: <cover.1598792561.git.anand.jain@oracle.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <cover.1598792561.git.anand.jain@oracle.com>
+References: <cover.1598792561.git.anand.jain@oracle.com>
 MIME-Version: 1.0
-In-Reply-To: <20200830160825.GB3853@desktop>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9729 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 adultscore=0 phishscore=0
+ malwarescore=0 bulkscore=0 mlxscore=0 mlxlogscore=999 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2008310010
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9729 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1015 priorityscore=1501
+ lowpriorityscore=0 malwarescore=0 adultscore=0 spamscore=0 mlxscore=0
+ phishscore=0 impostorscore=0 mlxlogscore=999 bulkscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2008310010
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+The cover letter for the patchset below [1] doesn't seem to have reached the ML.
+So here I am sending it again.
+
+[1]
+ https://patchwork.kernel.org/project/linux-btrfs/list/?series=340699
+
+In this patch set:
+Rebased on latest misc-next which contains the seed_list from Nicolas.
+This patchset has been sent before as two sets, here it is been merged.
+
+Patches 1/11 fix the null kobject being put, which is observed with kernel
+compiled with memory poisoning.
+Patches 2/11 and 3/11 are cleanups to maintain better flow in the
+functions btrfs_sysfs_add_devices_dir() and btrfs_sysfs_remove_devices_dir().
+Patches 4/11 and 5/11 drops the last two users of seed device_list_mutex,
+so now they hold main filesystem device_list_mutex. 
+Patches [6-10]/11 are cleanups.
+Patches 11/11 block the replacement of seed device in a sprouted FS, we already
+block replacing a seed device on a non-sprouted device.
+
+This set has passed through fstests/volume.
+
+---- original cover-letter ---------
+In a sprouted file system, the seed's fs_devices are cloned and 
+listed under the sprout's fs_devices. The fs_info::fs_devices
+points to the sprout::fs_devices and various critical operations
+like device-delete holds the top-level main device_list_mutex
+which is sprout::fs_devices::device_list_mutex and _not_ the seed level
+mutex such as sprout::fs_devices::seed::fs_devices::device_list_mutex.
+
+Also all related readers (except for two threads- reada and init_devices_late)
+hold the sprout::fs_devices::device_list_mutex too. And those two threads
+which are missing to hold the correct lock are being fixed here.
+
+I take the approach to fix the read end instead of fixing the writer end
+which are not holding the seed level mutex because to keep things
+simple and there isn't much benefit burning extra CPU cycles in going
+through the lock/unlock process as we traverse through the
+fs_devices::seed fs_devices (for example as in reada and init_devices_late
+threads).
+
+The first two patches (1/7, 2/7) fixes the threads using the
+seed::device_list_mutex.
+
+And rest of the patches ([3-7]/7) are cleanups and these patches
+are independent by themself.
+
+These patchset has been tested with full xfstests btrfs test cases and
+found to have no new regressions.
 
 
-On 30.08.20 г. 19:08 ч., Eryu Guan wrote:
-> Hi Nikolay,
-> 
-> On Mon, Aug 17, 2020 at 04:40:26PM +0300, Nikolay Borisov wrote:
->> Kernel commit "btrfs: add missing check for nocow and compression inode
->> flags" invalidates the "file compressed, fs mounted with nodatacow"
->> mode due to doing more rigorous flags validation, just remove the test.
->>
->> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
-> 
-> I applied this patch, but left patch 2 and 3, as Anand suggested minor
-> updates, and I assume you'll send new version of patch 2 and 3 :)
+Anand Jain (11):
+  btrfs: initialize sysfs devid and device link for seed device
+  btrfs: refactor btrfs_sysfs_add_devices_dir
+  btrfs: refactor btrfs_sysfs_remove_devices_dir
+  btrfs: reada: use sprout device_list_mutex
+  btrfs: btrfs_init_devices_late: use sprout device_list_mutex
+  btrfs: open code list_head pointer in btrfs_init_dev_replace_tgtdev
+  btrfs: cleanup btrfs_remove_chunk
+  btrfs: cleanup btrfs_assign_next_active_device()
+  btrfs: cleanup unnecessary goto in open_seed_device
+  btrfs: btrfs_dev_replace_update_device_in_mapping_tree drop file
+    global declare
+  btrfs: fix replace of seed device
 
-Please merge the patches as is, I don't intend on sending v2.
-> 
-> Thanks,
-> Eryu
-> 
->> ---
->> V2:
->>  * Also remove the output
->>
->>  tests/btrfs/024     | 7 -------
->>  tests/btrfs/024.out | 3 ---
->>  2 files changed, 10 deletions(-)
->>
->> diff --git a/tests/btrfs/024 b/tests/btrfs/024
->> index 0c2ffd7389ab..bcb9048da636 100755
->> --- a/tests/btrfs/024
->> +++ b/tests/btrfs/024
->> @@ -42,13 +42,6 @@ __workout()
->>  	$XFS_IO_PROG -f -c "pwrite 0 1M" -c "fsync" $work_file | _filter_xfs_io
->>  }
->>
->> -echo "*** test nodatacow"
->> -_scratch_mkfs > /dev/null 2>&1
->> -_scratch_mount "-o nodatacow"
->> -__workout
->> -_scratch_unmount
->> -_check_scratch_fs
->> -
->>  echo "*** test compress=no"
->>  _scratch_mkfs > /dev/null 2>&1
->>  _scratch_mount "-o compress=no"
->> diff --git a/tests/btrfs/024.out b/tests/btrfs/024.out
->> index 7eacb0aca674..33c4f49366fd 100644
->> --- a/tests/btrfs/024.out
->> +++ b/tests/btrfs/024.out
->> @@ -1,7 +1,4 @@
->>  QA output created by 024
->> -*** test nodatacow
->> -wrote 1048576/1048576 bytes at offset 0
->> -XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
->>  *** test compress=no
->>  wrote 1048576/1048576 bytes at offset 0
->>  XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
->> --
->> 2.17.1
-> 
+ fs/btrfs/dev-replace.c |  66 ++++++++----------
+ fs/btrfs/reada.c       |   5 +-
+ fs/btrfs/sysfs.c       | 151 ++++++++++++++++++++++++-----------------
+ fs/btrfs/sysfs.h       |   8 +--
+ fs/btrfs/volumes.c     |  40 +++++------
+ 5 files changed, 143 insertions(+), 127 deletions(-)
+
+-- 
+2.25.1
+
