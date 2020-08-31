@@ -2,68 +2,323 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D05BB25789F
-	for <lists+linux-btrfs@lfdr.de>; Mon, 31 Aug 2020 13:46:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17BCD2578D9
+	for <lists+linux-btrfs@lfdr.de>; Mon, 31 Aug 2020 14:00:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726292AbgHaLqR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 31 Aug 2020 07:46:17 -0400
-Received: from mx2.suse.de ([195.135.220.15]:57504 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726106AbgHaLqQ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 31 Aug 2020 07:46:16 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id AFD9EAC4A;
-        Mon, 31 Aug 2020 11:46:14 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id E1C0BDA840; Mon, 31 Aug 2020 13:45:03 +0200 (CEST)
-Date:   Mon, 31 Aug 2020 13:45:03 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Eryu Guan <guan@eryu.me>
-Cc:     Marcos Paulo de Souza <marcos@mpdesouza.com>, dsterba@suse.com,
-        linux-btrfs@vger.kernel.org, fstests@vger.kernel.org,
-        Marcos Paulo de Souza <mpdesouza@suse.com>
-Subject: Re: [PATCH] fstests: btrfs/218 check if mount opts are applied
-Message-ID: <20200831114503.GU28318@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Eryu Guan <guan@eryu.me>,
-        Marcos Paulo de Souza <marcos@mpdesouza.com>, dsterba@suse.com,
-        linux-btrfs@vger.kernel.org, fstests@vger.kernel.org,
-        Marcos Paulo de Souza <mpdesouza@suse.com>
-References: <20200804205648.11284-1-marcos@mpdesouza.com>
- <20200830161519.GC3853@desktop>
+        id S1726526AbgHaMAv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 31 Aug 2020 08:00:51 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:35002 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726167AbgHaMAm (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 31 Aug 2020 08:00:42 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07VBtgFn005899;
+        Mon, 31 Aug 2020 12:00:35 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=nnARdiOMPMbazXovj/TapLWevbNi8E5C+baDG+nOSp8=;
+ b=jk6ZgM3EXo4BlFEp4OwRB1s2HD9EurzVN8yD1E6CICy1E46+VKZNxhZ5+sRdLI9diJ8L
+ vt5B8mKIJ2bIX3+SG86CciluV6Xl1M+ktTY7NwMBBiXwlHlqq8115/kIt0wakLQuzQfH
+ KmrdIHVZMDv+c41D1eQ63HsraUrmfFtuuaoHTYE8Wq+6iyxgcsEQlgY5+yelTTDBg5cm
+ +Nj2NEABacDS+Q2+qSpYIV7z4aJaygAg+1tqYuPkslgXl1f2WWoPTEie1bdAV7imhDEO
+ PYm5JzerSQ8GbATznBNOb70ZOnt3IayHIGOd1PqhGyU/+Pi5FtShNbRPHhv7kG8Whar5 6A== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2120.oracle.com with ESMTP id 337qrhcw8b-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 31 Aug 2020 12:00:35 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07VBuYYU088562;
+        Mon, 31 Aug 2020 12:00:34 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3020.oracle.com with ESMTP id 3380x02xfw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 31 Aug 2020 12:00:34 +0000
+Received: from abhmp0020.oracle.com (abhmp0020.oracle.com [141.146.116.26])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 07VC0V4W011203;
+        Mon, 31 Aug 2020 12:00:33 GMT
+Received: from [192.168.1.102] (/39.109.231.106)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 31 Aug 2020 05:00:31 -0700
+Subject: Re: [PATCH 01/11] btrfs: initialize sysfs devid and device link for
+ seed device
+To:     Nikolay Borisov <nborisov@suse.com>, linux-btrfs@vger.kernel.org
+Cc:     dsterba@suse.com, josef@toxicpanda.com
+References: <cover.1598792561.git.anand.jain@oracle.com>
+ <2db650ec206db1cb3e68590951b59e222fb10116.1598792561.git.anand.jain@oracle.com>
+ <e6175fbf-3439-f290-d3d6-7fb1320f91e6@suse.com>
+From:   Anand Jain <anand.jain@oracle.com>
+Message-ID: <2c60ae0b-8bff-2611-f737-be731b185b93@oracle.com>
+Date:   Mon, 31 Aug 2020 20:00:22 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.2.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200830161519.GC3853@desktop>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <e6175fbf-3439-f290-d3d6-7fb1320f91e6@suse.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9729 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 phishscore=0
+ mlxlogscore=999 adultscore=0 suspectscore=0 bulkscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2008310069
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9729 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 bulkscore=0
+ adultscore=0 mlxscore=0 lowpriorityscore=0 phishscore=0 clxscore=1015
+ suspectscore=0 priorityscore=1501 spamscore=0 malwarescore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008310069
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Aug 31, 2020 at 12:15:19AM +0800, Eryu Guan wrote:
-> On Tue, Aug 04, 2020 at 05:56:48PM -0300, Marcos Paulo de Souza wrote:
-> > From: Marcos Paulo de Souza <mpdesouza@suse.com>
-> > 
-> > This new test will apply different mount points and check if they were applied
-> > by reading /proc/self/mounts. Almost all available btrfs options are tested
-> > here, leaving only device=, which is tested in btrfs/125 and space_cache, tested
-> > in btrfs/131.
-> > 
-> > This test does not apply any workload after the fs is mounted, just checks is
-> > the option was set/unset correctly.
-> > 
-> > Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
-> 
-> I'm seeing this diff when testing with v5.9-rc2 kernel and v5.4
-> btrfs-progs, is that expected?
-> 
->     +Could not find 'relatime,compress=lzo,space_cache,subvolid' in 'rw,relatime,compress=lzo:3,space_cache,subvolid=5,subvol=/', using 'compress=lzo'
->     +Could not find 'relatime,compress=lzo,space_cache,subvolid' in 'rw,relatime,compress=lzo:3,space_cache,subvolid=5,subvol=/', using 'compress=lzo'
->     +Could not find 'relatime,compress-force=lzo,space_cache,subvolid' in 'rw,relatime,compress-force=lzo:4,space_cache,subvolid=5,subvol=/', using 'compress-force=lzo'
->     +Could not find 'relatime,compress-force=lzo,space_cache,subvolid' in 'rw,relatime,compress-force=lzo:4,space_cache,subvolid=5,subvol=/', using 'compress-force=lzo'
->      Silence is golden
 
-This should be fixed by 282dd7d77184 ("btrfs: reset compression level
-for lzo on remount") that is in v5.9-rc3.
+
+On 31/8/20 5:07 pm, Nikolay Borisov wrote:
+> 
+> 
+> On 30.08.20 г. 17:40 ч., Anand Jain wrote:
+>> The following test case leads to null kobject-being-freed error.
+>>
+>>   mount seed /mnt
+>>   add sprout to /mnt
+>>   umount /mnt
+>>   mount sprout to /mnt
+>>   delete seed
+>>
+>>   kobject: '(null)' (00000000dd2b87e4): is not initialized, yet kobject_put() is being called.
+>>   WARNING: CPU: 1 PID: 15784 at lib/kobject.c:736 kobject_put+0x80/0x350
+>>   RIP: 0010:kobject_put+0x80/0x350
+>>   ::
+>>   Call Trace:
+>>   btrfs_sysfs_remove_devices_dir+0x6e/0x160 [btrfs]
+>>   btrfs_rm_device.cold+0xa8/0x298 [btrfs]
+>>   btrfs_ioctl+0x206c/0x22a0 [btrfs]
+>>   ksys_ioctl+0xe2/0x140
+>>   __x64_sys_ioctl+0x1e/0x29
+>>   do_syscall_64+0x96/0x150
+>>   entry_SYSCALL_64_after_hwframe+0x44/0xa9
+>>   RIP: 0033:0x7f4047c6288b
+>>   ::
+>>
+>> This is because, at the end of the seed device-delete, we try to remove
+>> the seed's devid sysfs entry. But for the seed devices under the sprout
+>> fs, we don't initialize the devid kobject yet. So this patch initializes
+>> the seed device devid kobject and the device link in the sysfs. This takes
+>> care of the Warning.
+>>
+>> Signed-off-by: Anand Jain <anand.jain@oracle.com>
+> 
+
+
+
+> This patch is doing too many things at once. Split it so that:
+> 1. You first add the new functions add_device/remove_device in 2
+> separate patches.
+> 2. Switch btrfs_sysfs_add_devices_dir/btrfs_sysfs_remove_devices_dir to
+> ousing the newly added helpers, again in 2 separate patches
+
+yeah and
+
+  3. Initialize seed devices devid kobject to fix the bug.
+
+fixing.
+
+-Anand
+
+> 
+>> ---
+>>   fs/btrfs/sysfs.c | 146 ++++++++++++++++++++++++++++++-----------------
+>>   1 file changed, 93 insertions(+), 53 deletions(-)
+>>
+>> diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
+>> index 190e59152be5..9b5e58091fae 100644
+>> --- a/fs/btrfs/sysfs.c
+>> +++ b/fs/btrfs/sysfs.c
+>> @@ -1149,45 +1149,48 @@ int btrfs_sysfs_add_space_info_type(struct btrfs_fs_info *fs_info,
+>>   	return 0;
+>>   }
+>>   
+>> -/* when one_device is NULL, it removes all device links */
+>> -
+>> -int btrfs_sysfs_remove_devices_dir(struct btrfs_fs_devices *fs_devices,
+>> -		struct btrfs_device *one_device)
+>> +static void btrfs_sysfs_remove_device(struct btrfs_device *device)
+>>   {
+>>   	struct hd_struct *disk;
+>>   	struct kobject *disk_kobj;
+>> +	struct kobject *devices_kobj;
+>>   
+>> -	if (!fs_devices->devices_kobj)
+>> -		return -EINVAL;
+>> +	/*
+>> +	 * Seed fs_devices devices_kobj aren't used, fetch kobject from the
+>> +	 * fs_info::fs_devices.
+>> +	 */
+>> +	devices_kobj = device->fs_info->fs_devices->devices_kobj;
+>> +	ASSERT(devices_kobj);
+>>   
+>> -	if (one_device) {
+>> -		if (one_device->bdev) {
+>> -			disk = one_device->bdev->bd_part;
+>> -			disk_kobj = &part_to_dev(disk)->kobj;
+>> -			sysfs_remove_link(fs_devices->devices_kobj,
+>> -					  disk_kobj->name);
+>> -		}
+>> +	if (device->bdev) {
+>> +		disk = device->bdev->bd_part;
+>> +		disk_kobj = &part_to_dev(disk)->kobj;
+>> +		sysfs_remove_link(devices_kobj, disk_kobj->name);
+>> +	}
+>>   
+>> -		kobject_del(&one_device->devid_kobj);
+>> -		kobject_put(&one_device->devid_kobj);
+>> +	kobject_del(&device->devid_kobj);
+>> +	kobject_put(&device->devid_kobj);
+>>   
+>> -		wait_for_completion(&one_device->kobj_unregister);
+>> +	wait_for_completion(&device->kobj_unregister);
+>> +}
+>>   
+>> +/* when 2nd argument device is NULL, it removes all devices link */
+>> +int btrfs_sysfs_remove_devices_dir(struct btrfs_fs_devices *fs_devices,
+>> +				   struct btrfs_device *device)
+>> +{
+>> +	struct btrfs_fs_devices *seed_fs_devices;
+>> +
+>> +	if (device) {
+>> +		btrfs_sysfs_remove_device(device);
+>>   		return 0;
+>>   	}
+>>   
+>> -	list_for_each_entry(one_device, &fs_devices->devices, dev_list) {
+>> -
+>> -		if (one_device->bdev) {
+>> -			disk = one_device->bdev->bd_part;
+>> -			disk_kobj = &part_to_dev(disk)->kobj;
+>> -			sysfs_remove_link(fs_devices->devices_kobj,
+>> -					  disk_kobj->name);
+>> -		}
+>> -		kobject_del(&one_device->devid_kobj);
+>> -		kobject_put(&one_device->devid_kobj);
+>> +	list_for_each_entry(device, &fs_devices->devices, dev_list)
+>> +		btrfs_sysfs_remove_device(device);
+>>   
+>> -		wait_for_completion(&one_device->kobj_unregister);
+>> +	list_for_each_entry(seed_fs_devices, &fs_devices->seed_list, seed_list) {
+>> +		list_for_each_entry(device, &seed_fs_devices->devices, dev_list)
+>> +			btrfs_sysfs_remove_device(device);
+>>   	}
+>>   
+>>   	return 0;
+>> @@ -1271,44 +1274,81 @@ static struct kobj_type devid_ktype = {
+>>   	.release	= btrfs_release_devid_kobj,
+>>   };
+>>   
+>> +static int btrfs_sysfs_add_device(struct btrfs_device *device)
+>> +{
+>> +	int ret;
+>> +	struct kobject *devices_kobj;
+>> +        struct kobject *devinfo_kobj;
+>> +
+>> +	/*
+>> +	 * make sure we use the fs_info::fs_devices to fetch the kobjects
+>> +	 * even for the seed fs_devices
+>> +	 */
+>> +	devices_kobj = device->fs_devices->fs_info->fs_devices->devices_kobj;
+>> +	devinfo_kobj = device->fs_devices->fs_info->fs_devices->devinfo_kobj;
+>> +	ASSERT(devices_kobj);
+>> +	ASSERT(devinfo_kobj);
+>> +
+>> +	if (device->bdev) {
+>> +		struct hd_struct *disk;
+>> +		struct kobject *disk_kobj;
+>> +
+>> +		disk = device->bdev->bd_part;
+>> +		disk_kobj = &part_to_dev(disk)->kobj;
+>> +
+>> +		ret = sysfs_create_link(devices_kobj, disk_kobj,
+>> +					disk_kobj->name);
+>> +		if (ret) {
+>> +			btrfs_warn(device->fs_info,
+>> +			   "sysfs create device link failed %d devid %llu",
+>> +				   ret, device->devid);
+>> +			return ret;
+>> +		}
+>> +	}
+>> +
+>> +	init_completion(&device->kobj_unregister);
+>> +	ret = kobject_init_and_add(&device->devid_kobj, &devid_ktype,
+>> +				   devinfo_kobj, "%llu", device->devid);
+>> +	if (ret) {
+>> +		kobject_put(&device->devid_kobj);
+>> +		btrfs_warn(device->fs_info,
+>> +			   "sysfs devinfo init failed %d devid %llu",
+>> +			   ret, device->devid);
+>> +	}
+>> +
+>> +	return ret;
+>> +}
+>> +
+>>   int btrfs_sysfs_add_devices_dir(struct btrfs_fs_devices *fs_devices,
+>> -				struct btrfs_device *one_device)
+>> +				struct btrfs_device *device)
+>>   {
+>> -	int error = 0;
+>> -	struct btrfs_device *dev;
+>> +	int ret = 0;
+>>   	unsigned int nofs_flag;
+>> +	struct btrfs_fs_devices *seed_fs_devices;
+>>   
+>>   	nofs_flag = memalloc_nofs_save();
+>> -	list_for_each_entry(dev, &fs_devices->devices, dev_list) {
+>>   
+>> -		if (one_device && one_device != dev)
+>> -			continue;
+>> +	if (device)
+>> +		return btrfs_sysfs_add_device(device);
+>>   
+>> -		if (dev->bdev) {
+>> -			struct hd_struct *disk;
+>> -			struct kobject *disk_kobj;
+>> -
+>> -			disk = dev->bdev->bd_part;
+>> -			disk_kobj = &part_to_dev(disk)->kobj;
+>> -
+>> -			error = sysfs_create_link(fs_devices->devices_kobj,
+>> -						  disk_kobj, disk_kobj->name);
+>> -			if (error)
+>> -				break;
+>> -		}
+>> +	list_for_each_entry(device, &fs_devices->devices, dev_list) {
+>> +		ret = btrfs_sysfs_add_device(device);
+>> +		if (ret)
+>> +			goto out;
+>> +	}
+>>   
+>> -		init_completion(&dev->kobj_unregister);
+>> -		error = kobject_init_and_add(&dev->devid_kobj, &devid_ktype,
+>> -					     fs_devices->devinfo_kobj, "%llu",
+>> -					     dev->devid);
+>> -		if (error) {
+>> -			kobject_put(&dev->devid_kobj);
+>> -			break;
+>> +	list_for_each_entry(seed_fs_devices, &fs_devices->seed_list, seed_list) {
+>> +		list_for_each_entry(device, &seed_fs_devices->devices, dev_list) {
+>> +			ret = btrfs_sysfs_add_device(device);
+>> +			if (ret)
+>> +				goto out;
+>>   		}
+>>   	}
+>> +
+>> +out:
+>>   	memalloc_nofs_restore(nofs_flag);
+>>   
+>> -	return error;
+>> +	return ret;
+>>   }
+>>   
+>>   void btrfs_kobject_uevent(struct block_device *bdev, enum kobject_action action)
+>>
