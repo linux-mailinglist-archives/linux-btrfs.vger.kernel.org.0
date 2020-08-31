@@ -2,65 +2,66 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48803257E3C
-	for <lists+linux-btrfs@lfdr.de>; Mon, 31 Aug 2020 18:08:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A279C257E97
+	for <lists+linux-btrfs@lfdr.de>; Mon, 31 Aug 2020 18:22:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728491AbgHaQIy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 31 Aug 2020 12:08:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33028 "EHLO
+        id S1728274AbgHaQWW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 31 Aug 2020 12:22:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728486AbgHaQIw (ORCPT
+        with ESMTP id S1727939AbgHaQWU (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 31 Aug 2020 12:08:52 -0400
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CF8CC061573
-        for <linux-btrfs@vger.kernel.org>; Mon, 31 Aug 2020 09:08:52 -0700 (PDT)
-Received: by mail-qt1-x844.google.com with SMTP id k18so5087462qtm.10
-        for <linux-btrfs@vger.kernel.org>; Mon, 31 Aug 2020 09:08:52 -0700 (PDT)
+        Mon, 31 Aug 2020 12:22:20 -0400
+Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EE17C061575
+        for <linux-btrfs@vger.kernel.org>; Mon, 31 Aug 2020 09:21:55 -0700 (PDT)
+Received: by mail-qv1-xf44.google.com with SMTP id cr8so705959qvb.10
+        for <linux-btrfs@vger.kernel.org>; Mon, 31 Aug 2020 09:21:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=CpzB9FkPdU1V+VkZVHuEtGjiOjXnhv0AXUTpY7kie94=;
-        b=Ev0OzXLgZ9cEInLo9vph+hENnLtBxgBoh/QSOvO7Bv61wMmfoIp/qZH3TGKbg41/9+
-         /yJ887NaoCmXI3xn4pwGpivnKp18la3fgRKUJXi5Uwt0Zade8ZAMWy7Fn6gR5zcOBdX8
-         TNGBcAMpBkngaSvb67op+k+cu3VY68L/hos1ZkYT+YLdI5YZVmk46trVk3Imp1zv/GkG
-         QbHCQqwTaezBTyeQHkxiYVo9hvOl6QBkhtaD97qR9ZM4l592rPeQ+hwQLeQrK4bC39HF
-         MYPPxWXCHsI5zqALTYSb7G/bkJVrA+/2FAu+6nPQhOgyIYFStUATRmo7CwdEfd2+/rXS
-         p1fQ==
+        bh=0pY+3zfQNWN8pIw7CFLbJAjpXN9WcdISxf2xKO2zObQ=;
+        b=JxARXq/MLpA0K7gAFeT9KcSVBO3RVkk8pJGA3WXy1AJ4LiZPvCTi9eoHLK8+MAzx6U
+         vumHpI412vhq3c/szFlAVtmoUCnMg+5T3HL4O5umImmZ6Mo9lPeKEHaUKI2gSWELM5O5
+         UAuuZmJv5KV2f4buzYQg/CEyEnpGy/9UJn05othw+W3kx721NhZsUB+sDEi9rzXjWEX/
+         WP5lHGi5Db/ZCZuTk6oNXB8yR4AR70ASXBPNLOF2HyWQPiG4VMsoxqsAq/lsURmoCMUk
+         IKcnNN2IfISYcdICGw2YxuV0S7amF9n8xrrnz9gVJf+A0tuEuTwaWgsJ24PvbCq7G3Wc
+         W40g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=CpzB9FkPdU1V+VkZVHuEtGjiOjXnhv0AXUTpY7kie94=;
-        b=skjUhV1yvKBFDZoN/nvSeHUQ9m0kJwCxzJ5s67zrGV35tQuDMvrjtWHQgzee+zlBYX
-         9N2688OrH4bx9hFChCEJNel4zD/5q0JvWeKtTX9Por7PAam6vTkXaImsAtcv5nMr9xAO
-         hwQGjdAiuX8TLhGScqllHqSn/f/q2jh85fqDGzivXER31nZW19DExXlkwXzIBDHjreOO
-         Ku/KlntPXBHtARTg8LRgiBv2c4oUDcXnhlO0NvUc4I+IqSZjv9Mucd0tEfLtcGq3N9yc
-         OWMGeB/Wpkx+Iz3KS1tsbcGiL1oFsxNUF4KtV0fwe2S6eCAd/J2abIzpK2nbMF8mcjwT
-         QH+Q==
-X-Gm-Message-State: AOAM5332CSC7ndz28DcDVSKoBmk7IgFvS1c6QulQXLPu/TZTp4OmDR0H
-        vm4OxPkGh/4gZpNbuKRwR4qETg==
-X-Google-Smtp-Source: ABdhPJwoNc+kEAeBIUaw0C4uVKMmBaT0F+U4GurLO7tipARgMWwiHhzKPijfj8/OEbbvjI2xQPadCw==
-X-Received: by 2002:aed:2742:: with SMTP id n60mr1952658qtd.74.1598890130593;
-        Mon, 31 Aug 2020 09:08:50 -0700 (PDT)
+        bh=0pY+3zfQNWN8pIw7CFLbJAjpXN9WcdISxf2xKO2zObQ=;
+        b=TRe9KktTJNzjpjHFqJU8B+oO5thrliuJSunC9fYiKLJctxxEgAAGrDaXoRT+4k9Z0v
+         BNIFjBC+X26y3om7MgBjBQgcHccfe/Mp+V2ykPH80Q1hd2HhH5EUo2kVCF9ClLiiKjTD
+         KYkHnGaUqieWk6I2ergNJfZTyOLE9I50JBSZrZ0V/DHKVJ8WthMjiM6d3lXzsl/UYMff
+         CGqo7tMyaKZFHRr66u01jsr+ol+m7mfoMo5na4VGU0duV/r/dddVNjrXaFj45zl6KCJe
+         C0VpUPO/V5CUoROAvVz/DcFls+MLs8A2PQHfsUkvcV8PcnXfClZ2hdoFtOgqi/+i2m6G
+         KoXg==
+X-Gm-Message-State: AOAM530PrZ8+c0mU1Gjjd9FkTPLZbrWB4rfvCHu1UrYoYHXG12Sy1+FV
+        wVeBmVMCo+BMjsanp3rZik1MTT01SRwWHYjW
+X-Google-Smtp-Source: ABdhPJx5GA2NXc2kZ0OTPRyYAhLSBn/WI9iTz/XqclUE9CmgmqaPcUyMdT1xNGXn1qsSXR+7OHc0pA==
+X-Received: by 2002:a0c:cb83:: with SMTP id p3mr1790441qvk.121.1598890914260;
+        Mon, 31 Aug 2020 09:21:54 -0700 (PDT)
 Received: from [192.168.1.45] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id 95sm10683077qtc.29.2020.08.31.09.08.49
+        by smtp.gmail.com with ESMTPSA id q126sm9971806qkb.75.2020.08.31.09.21.53
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 31 Aug 2020 09:08:49 -0700 (PDT)
-Subject: Re: [PATCH 04/11] btrfs: reada: use sprout device_list_mutex
+        Mon, 31 Aug 2020 09:21:53 -0700 (PDT)
+Subject: Re: [PATCH 01/11] btrfs: initialize sysfs devid and device link for
+ seed device
 To:     Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org
 Cc:     dsterba@suse.com
 References: <cover.1598792561.git.anand.jain@oracle.com>
- <b5ad15e6583f4e61cfd44344ef17ea7a93f6bb57.1598792561.git.anand.jain@oracle.com>
+ <2db650ec206db1cb3e68590951b59e222fb10116.1598792561.git.anand.jain@oracle.com>
 From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <aad607a0-89e4-27da-9d01-ab7ac95761c0@toxicpanda.com>
-Date:   Mon, 31 Aug 2020 12:08:48 -0400
+Message-ID: <1df53e43-2ec8-8e67-8a79-ec90782e9e3a@toxicpanda.com>
+Date:   Mon, 31 Aug 2020 12:21:52 -0400
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
  Gecko/20100101 Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <b5ad15e6583f4e61cfd44344ef17ea7a93f6bb57.1598792561.git.anand.jain@oracle.com>
+In-Reply-To: <2db650ec206db1cb3e68590951b59e222fb10116.1598792561.git.anand.jain@oracle.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -70,20 +71,56 @@ List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 On 8/30/20 10:40 AM, Anand Jain wrote:
-> On an fs mounted using a sprout-device, the seed fs_devices are maintained
-> in a linked list under fs_info->fs_devices. Each seed's fs_devices also
-> have device_list_mutex initialized to protect against the potential race
-> with delete threads. But the delete thread (at btrfs_rm_device()) is holding
-> the fs_info::fs_devices::device_list_mutex mutex which is sprout's
-> device_list_mutex instead of seed's device_list_mutex. Moreover, there
-> aren't any significient benefits in using the seed::device_list_mutex
-> instead of sprout::device_list_mutex.
+> The following test case leads to null kobject-being-freed error.
 > 
-> So this patch converts them of using the seed::device_list_mutex to
-> sprout::device_list_mutex.
+>   mount seed /mnt
+>   add sprout to /mnt
+>   umount /mnt
+>   mount sprout to /mnt
+>   delete seed
+> 
+>   kobject: '(null)' (00000000dd2b87e4): is not initialized, yet kobject_put() is being called.
+>   WARNING: CPU: 1 PID: 15784 at lib/kobject.c:736 kobject_put+0x80/0x350
+>   RIP: 0010:kobject_put+0x80/0x350
+>   ::
+>   Call Trace:
+>   btrfs_sysfs_remove_devices_dir+0x6e/0x160 [btrfs]
+>   btrfs_rm_device.cold+0xa8/0x298 [btrfs]
+>   btrfs_ioctl+0x206c/0x22a0 [btrfs]
+>   ksys_ioctl+0xe2/0x140
+>   __x64_sys_ioctl+0x1e/0x29
+>   do_syscall_64+0x96/0x150
+>   entry_SYSCALL_64_after_hwframe+0x44/0xa9
+>   RIP: 0033:0x7f4047c6288b
+>   ::
+> 
+> This is because, at the end of the seed device-delete, we try to remove
+> the seed's devid sysfs entry. But for the seed devices under the sprout
+> fs, we don't initialize the devid kobject yet. So this patch initializes
+> the seed device devid kobject and the device link in the sysfs. This takes
+> care of the Warning.
 > 
 > Signed-off-by: Anand Jain <anand.jain@oracle.com>
+> ---
 
-This doesn't apply cleanly to misc-next as of this morning.  Thanks,
+Ok again, this will not work.
+
+Mount a seed fs, you get fs_info->fs_devices pointed at the seed device, and 
+fs_info->fs_devices->devices_kobj is what is initialized.
+
+Now you sprout.
+
+This does clone_fs_devices(fs_info->fs_devices), which doesn't copy over 
+fs_fdevices->devices_kobj.  Now we take this clone device, and set 
+fs_info->fsdevices to the cloned fs_devices, and we add the original fs_devices, 
+which had the sysfs objects init'ed already, to fs_devices->seed_list.
+
+It appears to me you are completely ignoring this aspect of sprout.  Maybe I'm 
+missing something, but I've gone through this code twice now to see if what I 
+think is happening is actually happening, and I'm convinced this is wrong.
+
+If it's _not_ wrong, and I _am_ missing something, then you need to explain why 
+I'm wrong, and then go back and fix what needs to be fixed to make this whole 
+process more clear, and _then_ you can do this patch series.  Thanks,
 
 Josef
