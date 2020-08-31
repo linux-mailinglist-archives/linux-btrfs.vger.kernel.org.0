@@ -2,196 +2,128 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF50B257264
-	for <lists+linux-btrfs@lfdr.de>; Mon, 31 Aug 2020 05:48:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55C8425758D
+	for <lists+linux-btrfs@lfdr.de>; Mon, 31 Aug 2020 10:38:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726858AbgHaDre convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-btrfs@lfdr.de>); Sun, 30 Aug 2020 23:47:34 -0400
-Received: from james.kirk.hungrycats.org ([174.142.39.145]:46194 "EHLO
-        james.kirk.hungrycats.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726126AbgHaDrd (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 30 Aug 2020 23:47:33 -0400
-Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
-        id 3046D7DC50C; Sun, 30 Aug 2020 23:47:31 -0400 (EDT)
-Date:   Sun, 30 Aug 2020 23:47:31 -0400
-From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-To:     Hamish Moffatt <hamish-btrfs@moffatt.email>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: new database files not compressed
-Message-ID: <20200831034731.GX5890@hungrycats.org>
-References: <6992fae3-ce87-8ae1-8dfe-1cb65578a16a@moffatt.email>
+        id S1728070AbgHaIhn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 31 Aug 2020 04:37:43 -0400
+Received: from mx2.suse.de ([195.135.220.15]:40686 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726102AbgHaIhm (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 31 Aug 2020 04:37:42 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 82CF1B5B1;
+        Mon, 31 Aug 2020 08:38:15 +0000 (UTC)
+Subject: Re: [PATCH 05/11] btrfs: btrfs_init_devices_late: use sprout
+ device_list_mutex
+To:     Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org
+Cc:     dsterba@suse.com, josef@toxicpanda.com
+References: <cover.1598792561.git.anand.jain@oracle.com>
+ <f9d69d94feeab53df416837d5e8bcc85da4df394.1598792561.git.anand.jain@oracle.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <4fe0e0fe-37a8-1d36-dd97-1197b50fff4a@suse.com>
+Date:   Mon, 31 Aug 2020 11:37:39 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <6992fae3-ce87-8ae1-8dfe-1cb65578a16a@moffatt.email>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <f9d69d94feeab53df416837d5e8bcc85da4df394.1598792561.git.anand.jain@oracle.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sun, Aug 30, 2020 at 07:35:59PM +1000, Hamish Moffatt wrote:
-> I am trying to store Firebird database files compressed on btrfs. Although I
-> have mounted the file system with -o compress-force, new files created by
-> Firebird are not being compressed according to compsize. If I copy them, or
-> use btrfs filesystem defrag, they compress well.
-> 
-> Other files seem to be compressed automatically OK. Why are the Firebird
-> files different?
 
-If it is writing single 4K blocks with fsync() between writes, or writing
-4K blocks to discontiguous file offsets, then the extents will be 4K
-and there can be no compression.
 
-Allocation is in 4K blocks (with default mkfs options on popular CPUs).
-To save any space, compression must reduce the size of an extent by at
-least 4K.  A 4K extent can't be compressed because even a single bit of
-compressed output would round the extent size back up to 4K, resulting
-in no size reduction on disk.
+On 30.08.20 Ð³. 17:41 Ñ‡., Anand Jain wrote:
+> In a mounted sprout FS, all threads now are using the
+> sprout::device_list_mutex, and this is the only piece of code using
+> the seed::device_list_mutex. This patch converts to use the sprouts
+> fs_info->fs_devices->device_list_mutex.
+> 
+> The same reasoning holds true here, that device delete is holding
+> the sprout::device_list_mutex.
+> 
+> Signed-off-by: Anand Jain <anand.jain@oracle.com>
+> ---
+>  fs/btrfs/volumes.c | 4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
+> 
+> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+> index 9921b43ef839..7639a048c6cf 100644
+> --- a/fs/btrfs/volumes.c
+> +++ b/fs/btrfs/volumes.c
+> @@ -7184,16 +7184,14 @@ void btrfs_init_devices_late(struct btrfs_fs_info *fs_info)
+>  	mutex_lock(&fs_devices->device_list_mutex);
+>  	list_for_each_entry(device, &fs_devices->devices, dev_list)
+>  		device->fs_info = fs_info;
+> -	mutex_unlock(&fs_devices->device_list_mutex);
+>  
+>  	list_for_each_entry(seed_devs, &fs_devices->seed_list, seed_list) {
+> -		mutex_lock(&seed_devs->device_list_mutex);
+>  		list_for_each_entry(device, &seed_devs->devices, dev_list)
+>  			device->fs_info = fs_info;
+> -		mutex_unlock(&seed_devs->device_list_mutex);
+>  
+>  		seed_devs->fs_info = fs_info;
+>  	}
+> +	mutex_unlock(&fs_devices->device_list_mutex);
 
-8K extents can be compressed if the compression ratio is 50% or higher,
-12K extents can be compressed if the ratio is at least 33%, 16K extents
-can be compressed if the ratio is at least 25%, and so on.  Larger writes
-are better for compression.
+Instead of doing the looping here to set fs_info I think it makes more
+sense to move the initialization of fs_info for the seed fs_info/seed
+devices to open_seed_devices.
 
-Defrag and copies are able to compress because they write contiguously up
-to the maximum compressed extent size of 128K; however, after defrag,
-small random writes will not release the large contiguous extents
-and total space usage reported by compsize can reach over 100% of the
-original uncompressed file size.  With nodatacow (and no compression)
-the disk usage of the database remains stable at 100% of the file size.
+As a matter of fact at the point where btrfs_init_devices_late is called
+btrfs_read_chunk_tree would have already been called which would have
+resulted in all present seed devices be added to fs_info::seed_list. So
+acquiring the lock here serves no purpose really.
 
-With defrag and compression the disk usage varies from the best compressed
-size to (size_of_compressed_database + uncompressed_file_size) over time.
-e.g. if you have a 50% compression ratio on a 1MB database then the disk
-usage varies from 512K immediately after defrag to a maximum of 1502K
-in the worst case (out of every 32 blocks, 31 are written in separate
-transactions, which leaves references in the file to all of the compressed
-extents, and adds 31 uncompressed 4K extents for each compressed extent).
-This means that if you want to keep a database compressed with a 4K
-database page size, you have to run defrag frequently.
-
-Another way to get compression is to increase the database page size.
-Sizes up to 128K are useful--128K is the maximum btrfs compressed extent
-size, and increasing the database page size higher will have no further
-compression benefit.  Most databases I've encountered max out at 64K
-pages, but even 64K gives some compression.
-
-> $ uname -a
-> Linux packer-debian-10-amd64 5.7.0-3-amd64 #1 SMP Debian 5.7.17-1
-> (2020-08-23) x86_64 GNU/Linux
-> 
-> $ sudo mkfs.btrfs -m single -f /dev/sdb
-> btrfs-progs v4.20.1
-> See http://btrfs.wiki.kernel.org for more information.
-> 
-> Label:              (null)
-> UUID:               949f7f3f-681b-40fb-97b9-522756d5d619
-> Node size:          16384
-> Sector size:        4096
-> Filesystem size:    29.98GiB
-> Block group profiles:
->   Data:             single            8.00MiB
->   Metadata:         single            8.00MiB
->   System:           single            4.00MiB
-> SSD detected:       no
-> Incompat features:  extref, skinny-metadata
-> Number of devices:  1
-> Devices:
->    ID        SIZE  PATH
->     1    29.98GiB  /dev/sdb
-> 
-> $ sudo mount -o compress-force /dev/sdb /mnt/test
-> $ sudo mkdir /mnt/test/db
-> $ cd /mnt/test/db
-> 
-> Now I restore a backup to create a database:
-> 
-> $ zcat ~/*.zip | gbak -REP stdin test.fdb
-> $ sudo compsize test.fdb
-> Type       Perc     Disk Usage   Uncompressed Referenced
-> TOTAL      100%      182M         182M         175M
-> none       100%      182M         182M         175M
-> $ cat test.fdb > test2.fdb
-> $ sudo compsize test2.fdb
-> Type       Perc     Disk Usage   Uncompressed Referenced
-> TOTAL       10%       18M         175M         175M
-> zlib        10%       18M         175M         175M
-> 
-> 
-> The same thing occurs if I create a brand new database:
-> 
-> $ isql-fb
-> Use CONNECT or CREATE DATABASE to specify a database
-> SQL> create database 'test3.fdb';
-> SQL> ^D$
-> $ sync
-> $ sudo compsize test3.fdb
-> Type       Perc     Disk Usage   Uncompressed Referenced
-> TOTAL      100%      784K         784K         784K
-> none       100%      784K         784K         784K
-> $ cp test3.fdb test4.fdb
-> $ sync
-> $ sudo compsize test4.fdb
-> Type       Perc     Disk Usage   Uncompressed Referenced
-> TOTAL        7%       60K         784K         784K
-> zlib         7%       60K         784K         784K
-> 
-> 
-> If I create a database with SQLite it is compressed:
-> 
-> 
-> $ cat test.sql
-> create table test ( id integer primary key asc autoincrement, timestamp text
-> default (datetime()), data text);
-> $ sqlite3 foo.db < test.sql
-> $ sudo compsize foo.db
-> Type       Perc     Disk Usage   Uncompressed Referenced
-> TOTAL       33%      4.0K          12K          12K
-> zlib        33%      4.0K          12K          12K
-> 
-> 
-> I ran isql-fb in strace to see if there is something special in the open(2)
-> flags;
-> 
-> 
-> $ strace -o trace isql-fb
-> Use CONNECT or CREATE DATABASE to specify a database
-> SQL> create database 'new.fdb';
-> SQL> ^D$
-> $ grep new.fdb trace
-> readlink("/mnt/test/db/new.fdb", 0x7ffd9cf70810, 4096) = -1 ENOENT (No such
-> file or directory)
-> stat("/mnt/test/db/new.fdb", 0x7ffd9cf705b0) = -1 ENOENT (No such file or
-> directory)
-> stat("/mnt/test/db/new.fdb", 0x7ffd9cf71480) = -1 ENOENT (No such file or
-> directory)
-> stat("/mnt/test/db/new.fdb", 0x7ffd9cf70e40) = -1 ENOENT (No such file or
-> directory)
-> openat(AT_FDCWD, "/mnt/test/db/new.fdb", O_RDWR) = -1 ENOENT (No such file
-> or directory)
-> openat(AT_FDCWD, "/mnt/test/db/new.fdb", O_RDONLY) = -1 ENOENT (No such file
-> or directory)
-> readlink("/mnt/test/db/new.fdb", 0x7ffd9cf70800, 4096) = -1 ENOENT (No such
-> file or directory)
-> stat("/mnt/test/db/new.fdb", 0x7ffd9cf705a0) = -1 ENOENT (No such file or
-> directory)
-> stat("/mnt/test/db/new.fdb", 0x7ffd9cf71470) = -1 ENOENT (No such file or
-> directory)
-> stat("/mnt/test/db/new.fdb", 0x7ffd9cf70dc0) = -1 ENOENT (No such file or
-> directory)
-> stat("/mnt/test/db/new.fdb", 0x7ffd9cf70eb0) = -1 ENOENT (No such file or
-> directory)
-> openat(AT_FDCWD, "/mnt/test/db/new.fdb", O_RDWR|O_CREAT|O_EXCL, 0666) = 6
-> readlink("/mnt/test/db/new.fdb", 0x7ffd9cf6ff00, 4096) = -1 EINVAL (Invalid
-> argument)
-> 
-> 
-> 
-> 
-> thanks
-> 
-> Hamish
+>  }
+>  
+>  static u64 btrfs_dev_stats_value(const struct extent_buffer *eb,
 > 
