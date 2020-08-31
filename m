@@ -2,25 +2,25 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55C8425758D
-	for <lists+linux-btrfs@lfdr.de>; Mon, 31 Aug 2020 10:38:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 502E7257591
+	for <lists+linux-btrfs@lfdr.de>; Mon, 31 Aug 2020 10:38:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728070AbgHaIhn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 31 Aug 2020 04:37:43 -0400
-Received: from mx2.suse.de ([195.135.220.15]:40686 "EHLO mx2.suse.de"
+        id S1728092AbgHaIiX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 31 Aug 2020 04:38:23 -0400
+Received: from mx2.suse.de ([195.135.220.15]:40856 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726102AbgHaIhm (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 31 Aug 2020 04:37:42 -0400
+        id S1725978AbgHaIiX (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 31 Aug 2020 04:38:23 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 82CF1B5B1;
-        Mon, 31 Aug 2020 08:38:15 +0000 (UTC)
-Subject: Re: [PATCH 05/11] btrfs: btrfs_init_devices_late: use sprout
- device_list_mutex
+        by mx2.suse.de (Postfix) with ESMTP id 525D8B5B7;
+        Mon, 31 Aug 2020 08:38:56 +0000 (UTC)
+Subject: Re: [PATCH 06/11] btrfs: open code list_head pointer in
+ btrfs_init_dev_replace_tgtdev
 To:     Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org
 Cc:     dsterba@suse.com, josef@toxicpanda.com
 References: <cover.1598792561.git.anand.jain@oracle.com>
- <f9d69d94feeab53df416837d5e8bcc85da4df394.1598792561.git.anand.jain@oracle.com>
+ <65578c066d97a83bb220713966b0a2f5f9a8080b.1598792561.git.anand.jain@oracle.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  xsFNBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -64,12 +64,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  KIuxEcV8wcVjr+Wr9zRl06waOCkgrQbTPp631hToxo+4rA1jiQF2M80HAet65ytBVR2pFGZF
  zGYYLqiG+mpUZ+FPjxk9kpkRYz61mTLSY7tuFljExfJWMGfgSg1OxfLV631jV1TcdUnx+h3l
  Sqs2vMhAVt14zT8mpIuu2VNxcontxgVr1kzYA/tQg32fVRbGr449j1gw57BV9i0vww==
-Message-ID: <4fe0e0fe-37a8-1d36-dd97-1197b50fff4a@suse.com>
-Date:   Mon, 31 Aug 2020 11:37:39 +0300
+Message-ID: <cc422a66-40e4-1a08-2806-b16f82011242@suse.com>
+Date:   Mon, 31 Aug 2020 11:38:20 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <f9d69d94feeab53df416837d5e8bcc85da4df394.1598792561.git.anand.jain@oracle.com>
+In-Reply-To: <65578c066d97a83bb220713966b0a2f5f9a8080b.1598792561.git.anand.jain@oracle.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -81,49 +81,11 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 30.08.20 г. 17:41 ч., Anand Jain wrote:
-> In a mounted sprout FS, all threads now are using the
-> sprout::device_list_mutex, and this is the only piece of code using
-> the seed::device_list_mutex. This patch converts to use the sprouts
-> fs_info->fs_devices->device_list_mutex.
-> 
-> The same reasoning holds true here, that device delete is holding
-> the sprout::device_list_mutex.
+> In the function btrfs_init_dev_replace_tgtdev(), the local
+> variable struct list_head *devices is used only once, instead
+> just open code the same.
 > 
 > Signed-off-by: Anand Jain <anand.jain@oracle.com>
-> ---
->  fs/btrfs/volumes.c | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
-> 
-> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> index 9921b43ef839..7639a048c6cf 100644
-> --- a/fs/btrfs/volumes.c
-> +++ b/fs/btrfs/volumes.c
-> @@ -7184,16 +7184,14 @@ void btrfs_init_devices_late(struct btrfs_fs_info *fs_info)
->  	mutex_lock(&fs_devices->device_list_mutex);
->  	list_for_each_entry(device, &fs_devices->devices, dev_list)
->  		device->fs_info = fs_info;
-> -	mutex_unlock(&fs_devices->device_list_mutex);
->  
->  	list_for_each_entry(seed_devs, &fs_devices->seed_list, seed_list) {
-> -		mutex_lock(&seed_devs->device_list_mutex);
->  		list_for_each_entry(device, &seed_devs->devices, dev_list)
->  			device->fs_info = fs_info;
-> -		mutex_unlock(&seed_devs->device_list_mutex);
->  
->  		seed_devs->fs_info = fs_info;
->  	}
-> +	mutex_unlock(&fs_devices->device_list_mutex);
 
-Instead of doing the looping here to set fs_info I think it makes more
-sense to move the initialization of fs_info for the seed fs_info/seed
-devices to open_seed_devices.
-
-As a matter of fact at the point where btrfs_init_devices_late is called
-btrfs_read_chunk_tree would have already been called which would have
-resulted in all present seed devices be added to fs_info::seed_list. So
-acquiring the lock here serves no purpose really.
-
->  }
->  
->  static u64 btrfs_dev_stats_value(const struct extent_buffer *eb,
-> 
+Fair enough,
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
