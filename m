@@ -2,24 +2,24 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B6D22575B3
-	for <lists+linux-btrfs@lfdr.de>; Mon, 31 Aug 2020 10:44:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FF3F2575B9
+	for <lists+linux-btrfs@lfdr.de>; Mon, 31 Aug 2020 10:45:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726244AbgHaIoT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 31 Aug 2020 04:44:19 -0400
-Received: from mx2.suse.de ([195.135.220.15]:42640 "EHLO mx2.suse.de"
+        id S1726102AbgHaIpB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 31 Aug 2020 04:45:01 -0400
+Received: from mx2.suse.de ([195.135.220.15]:42870 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728135AbgHaIoQ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 31 Aug 2020 04:44:16 -0400
+        id S1728240AbgHaIpA (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 31 Aug 2020 04:45:00 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 57FFDB5A8;
-        Mon, 31 Aug 2020 08:44:49 +0000 (UTC)
-Subject: Re: [PATCH 08/11] btrfs: cleanup btrfs_assign_next_active_device()
+        by mx2.suse.de (Postfix) with ESMTP id D665CB5A8;
+        Mon, 31 Aug 2020 08:45:33 +0000 (UTC)
+Subject: Re: [PATCH 09/11] btrfs: cleanup unnecessary goto in open_seed_device
 To:     Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org
 Cc:     dsterba@suse.com, josef@toxicpanda.com
 References: <cover.1598792561.git.anand.jain@oracle.com>
- <61f2ef2654e87658d69024d34c2415a24448f67e.1598792561.git.anand.jain@oracle.com>
+ <01f5b4aff8196b929bf00a81f5b8c27001d7f056.1598792561.git.anand.jain@oracle.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  xsFNBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -63,12 +63,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  KIuxEcV8wcVjr+Wr9zRl06waOCkgrQbTPp631hToxo+4rA1jiQF2M80HAet65ytBVR2pFGZF
  zGYYLqiG+mpUZ+FPjxk9kpkRYz61mTLSY7tuFljExfJWMGfgSg1OxfLV631jV1TcdUnx+h3l
  Sqs2vMhAVt14zT8mpIuu2VNxcontxgVr1kzYA/tQg32fVRbGr449j1gw57BV9i0vww==
-Message-ID: <5799d40a-427b-5659-a9cf-ce81048e9410@suse.com>
-Date:   Mon, 31 Aug 2020 11:44:13 +0300
+Message-ID: <31e1318a-9aed-d727-e9ef-266f20416b80@suse.com>
+Date:   Mon, 31 Aug 2020 11:44:58 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <61f2ef2654e87658d69024d34c2415a24448f67e.1598792561.git.anand.jain@oracle.com>
+In-Reply-To: <01f5b4aff8196b929bf00a81f5b8c27001d7f056.1598792561.git.anand.jain@oracle.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -80,7 +80,8 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 30.08.20 г. 17:41 ч., Anand Jain wrote:
-> Cleanup btrfs_assign_next_active_device(), drop %this_dev.
+> open_seed_devices() does goto to just return. So drop goto and just return
+> instead.
 > 
 > Signed-off-by: Anand Jain <anand.jain@oracle.com>
 
