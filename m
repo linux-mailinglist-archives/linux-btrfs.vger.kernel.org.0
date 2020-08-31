@@ -2,25 +2,24 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 502E7257591
-	for <lists+linux-btrfs@lfdr.de>; Mon, 31 Aug 2020 10:38:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DA0C2575AC
+	for <lists+linux-btrfs@lfdr.de>; Mon, 31 Aug 2020 10:43:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728092AbgHaIiX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 31 Aug 2020 04:38:23 -0400
-Received: from mx2.suse.de ([195.135.220.15]:40856 "EHLO mx2.suse.de"
+        id S1726573AbgHaInH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 31 Aug 2020 04:43:07 -0400
+Received: from mx2.suse.de ([195.135.220.15]:42262 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725978AbgHaIiX (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 31 Aug 2020 04:38:23 -0400
+        id S1725829AbgHaInH (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 31 Aug 2020 04:43:07 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 525D8B5B7;
-        Mon, 31 Aug 2020 08:38:56 +0000 (UTC)
-Subject: Re: [PATCH 06/11] btrfs: open code list_head pointer in
- btrfs_init_dev_replace_tgtdev
+        by mx2.suse.de (Postfix) with ESMTP id 85E9BB5A8;
+        Mon, 31 Aug 2020 08:43:40 +0000 (UTC)
+Subject: Re: [PATCH 07/11] btrfs: cleanup btrfs_remove_chunk
 To:     Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org
 Cc:     dsterba@suse.com, josef@toxicpanda.com
 References: <cover.1598792561.git.anand.jain@oracle.com>
- <65578c066d97a83bb220713966b0a2f5f9a8080b.1598792561.git.anand.jain@oracle.com>
+ <e8480a482baedb6dd044fae1aba78be8ac3992f4.1598792561.git.anand.jain@oracle.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  xsFNBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -64,12 +63,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  KIuxEcV8wcVjr+Wr9zRl06waOCkgrQbTPp631hToxo+4rA1jiQF2M80HAet65ytBVR2pFGZF
  zGYYLqiG+mpUZ+FPjxk9kpkRYz61mTLSY7tuFljExfJWMGfgSg1OxfLV631jV1TcdUnx+h3l
  Sqs2vMhAVt14zT8mpIuu2VNxcontxgVr1kzYA/tQg32fVRbGr449j1gw57BV9i0vww==
-Message-ID: <cc422a66-40e4-1a08-2806-b16f82011242@suse.com>
-Date:   Mon, 31 Aug 2020 11:38:20 +0300
+Message-ID: <dbfca9e5-ee13-0d3e-57f0-6ba1bbe2a190@suse.com>
+Date:   Mon, 31 Aug 2020 11:43:04 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <65578c066d97a83bb220713966b0a2f5f9a8080b.1598792561.git.anand.jain@oracle.com>
+In-Reply-To: <e8480a482baedb6dd044fae1aba78be8ac3992f4.1598792561.git.anand.jain@oracle.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -81,11 +80,66 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 30.08.20 г. 17:41 ч., Anand Jain wrote:
-> In the function btrfs_init_dev_replace_tgtdev(), the local
-> variable struct list_head *devices is used only once, instead
-> just open code the same.
+> In the function btrfs_remove_chunk() remove the local variable
+> %fs_devices, instead use the assigned pointer directly.
 > 
 > Signed-off-by: Anand Jain <anand.jain@oracle.com>
 
-Fair enough,
+So this is minor enough and correct, however, have measured whether
+having multiple fs_info::fs_devices:device_list_Mutex derefs results in
+slightly (perhaps negligible) increase in code size.
+
+In any case the code is correct, so:
+
 Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+
+
+> ---
+>  fs/btrfs/volumes.c | 9 ++++-----
+>  1 file changed, 4 insertions(+), 5 deletions(-)
+> 
+> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+> index 7639a048c6cf..3e7a7d94a211 100644
+> --- a/fs/btrfs/volumes.c
+> +++ b/fs/btrfs/volumes.c
+> @@ -2922,7 +2922,6 @@ int btrfs_remove_chunk(struct btrfs_trans_handle *trans, u64 chunk_offset)
+>  	struct map_lookup *map;
+>  	u64 dev_extent_len = 0;
+>  	int i, ret = 0;
+> -	struct btrfs_fs_devices *fs_devices = fs_info->fs_devices;
+>  
+>  	em = btrfs_get_chunk_map(fs_info, chunk_offset, 1);
+>  	if (IS_ERR(em)) {
+> @@ -2944,14 +2943,14 @@ int btrfs_remove_chunk(struct btrfs_trans_handle *trans, u64 chunk_offset)
+>  	 * a device replace operation that replaces the device object associated
+>  	 * with map stripes (dev-replace.c:btrfs_dev_replace_finishing()).
+>  	 */
+> -	mutex_lock(&fs_devices->device_list_mutex);
+> +	mutex_lock(&fs_info->fs_devices->device_list_mutex);
+>  	for (i = 0; i < map->num_stripes; i++) {
+>  		struct btrfs_device *device = map->stripes[i].dev;
+>  		ret = btrfs_free_dev_extent(trans, device,
+>  					    map->stripes[i].physical,
+>  					    &dev_extent_len);
+>  		if (ret) {
+> -			mutex_unlock(&fs_devices->device_list_mutex);
+> +			mutex_unlock(&fs_info->fs_devices->device_list_mutex);
+>  			btrfs_abort_transaction(trans, ret);
+>  			goto out;
+>  		}
+> @@ -2967,12 +2966,12 @@ int btrfs_remove_chunk(struct btrfs_trans_handle *trans, u64 chunk_offset)
+>  
+>  		ret = btrfs_update_device(trans, device);
+>  		if (ret) {
+> -			mutex_unlock(&fs_devices->device_list_mutex);
+> +			mutex_unlock(&fs_info->fs_devices->device_list_mutex);
+>  			btrfs_abort_transaction(trans, ret);
+>  			goto out;
+>  		}
+>  	}
+> -	mutex_unlock(&fs_devices->device_list_mutex);
+> +	mutex_unlock(&fs_info->fs_devices->device_list_mutex);
+>  
+>  	ret = btrfs_free_chunk(trans, chunk_offset);
+>  	if (ret) {
+> 
