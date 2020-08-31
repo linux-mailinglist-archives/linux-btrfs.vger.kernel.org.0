@@ -2,63 +2,65 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 087B1257DD3
-	for <lists+linux-btrfs@lfdr.de>; Mon, 31 Aug 2020 17:43:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48803257E3C
+	for <lists+linux-btrfs@lfdr.de>; Mon, 31 Aug 2020 18:08:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728575AbgHaPni (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 31 Aug 2020 11:43:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57366 "EHLO
+        id S1728491AbgHaQIy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 31 Aug 2020 12:08:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728233AbgHaPnh (ORCPT
+        with ESMTP id S1728486AbgHaQIw (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 31 Aug 2020 11:43:37 -0400
-Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14A13C061573
-        for <linux-btrfs@vger.kernel.org>; Mon, 31 Aug 2020 08:43:37 -0700 (PDT)
-Received: by mail-qv1-xf41.google.com with SMTP id s15so2860579qvv.7
-        for <linux-btrfs@vger.kernel.org>; Mon, 31 Aug 2020 08:43:37 -0700 (PDT)
+        Mon, 31 Aug 2020 12:08:52 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CF8CC061573
+        for <linux-btrfs@vger.kernel.org>; Mon, 31 Aug 2020 09:08:52 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id k18so5087462qtm.10
+        for <linux-btrfs@vger.kernel.org>; Mon, 31 Aug 2020 09:08:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=c2CnYolg5/FhWVQ5Gy2u7c8wW2ql5soAvzMPPk16xuA=;
-        b=ATTVVlgiFiSSy44AW4sc9RmRAxl8xnyqGoppbH3Q1RlKXLRs7Ylucon8tLWuqlnUKI
-         coHcP1o7tZt7JATxO1RM0UT8bL5A1XNyUoDgcujeefcJkICz0y4o0/AnfDPlXzSacoRS
-         3OZmR+zLD8lNF++AS+hPL5ON8dbaBSc5L2sDgRAa37H1qVB44JNS1MZQYODH/mFYG0tl
-         o1K421SLoTwY2YAFESt0ZuoTvlE7oeyzSr8jt4GvWYLjSwD3D4wIDMWeaBmxEsIWAKBQ
-         6UmlofTvzNS94ttdkftcydzkUqHwlxeGLakEbUqzvM2VVkUSjsjMHmKBrry2aG3CI69b
-         +rbA==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=CpzB9FkPdU1V+VkZVHuEtGjiOjXnhv0AXUTpY7kie94=;
+        b=Ev0OzXLgZ9cEInLo9vph+hENnLtBxgBoh/QSOvO7Bv61wMmfoIp/qZH3TGKbg41/9+
+         /yJ887NaoCmXI3xn4pwGpivnKp18la3fgRKUJXi5Uwt0Zade8ZAMWy7Fn6gR5zcOBdX8
+         TNGBcAMpBkngaSvb67op+k+cu3VY68L/hos1ZkYT+YLdI5YZVmk46trVk3Imp1zv/GkG
+         QbHCQqwTaezBTyeQHkxiYVo9hvOl6QBkhtaD97qR9ZM4l592rPeQ+hwQLeQrK4bC39HF
+         MYPPxWXCHsI5zqALTYSb7G/bkJVrA+/2FAu+6nPQhOgyIYFStUATRmo7CwdEfd2+/rXS
+         p1fQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=c2CnYolg5/FhWVQ5Gy2u7c8wW2ql5soAvzMPPk16xuA=;
-        b=eIaCZSy5NE26Q9yKY5JRx8AP0nVn93lePzvDFTkGK4PKrY+rb9TZI/gYDamWSl0RM6
-         mz+vbzx+vlgT9d4ZWh5XwW8Y3VDiD70haFnqOJzUKJ3ZUlwfXz4xA6VnE7YJvtu9/aq5
-         L8oZL3L5vEgo//xRY3PWgPovbtAuYa+fZ6WYw9xqkCxa12R1j1BvSKEO0/VZ62acriNN
-         /clkhRMMUB1Re9scLBA1XFoSPw2RTz6k4JMj8Ikq/YzhWaq24JqLMTxI0fJcie2fh5/T
-         tHDZg8fDukTJ0Z1fa7vAe6vIeJVXW1icVQwV9XNOyoJT1Tn9rU4sCtKsVErxAxvtGqU9
-         TAVA==
-X-Gm-Message-State: AOAM531hjBtey85AZn0IABAsnnRqi0cqgWSBQSRW5Owqh4a03XO24Qpv
-        e95YWLGHpK7QDQZbnFmNUnbRMO8dHd/5CEOA
-X-Google-Smtp-Source: ABdhPJwIdjNt+LU2QZAxlOZXRwPaXcvlLJDTRZEadp89z8bNvOYdAO9Ed26asVBjxfnjQOf39MiX9A==
-X-Received: by 2002:a0c:c304:: with SMTP id f4mr1618949qvi.8.1598888616065;
-        Mon, 31 Aug 2020 08:43:36 -0700 (PDT)
+        bh=CpzB9FkPdU1V+VkZVHuEtGjiOjXnhv0AXUTpY7kie94=;
+        b=skjUhV1yvKBFDZoN/nvSeHUQ9m0kJwCxzJ5s67zrGV35tQuDMvrjtWHQgzee+zlBYX
+         9N2688OrH4bx9hFChCEJNel4zD/5q0JvWeKtTX9Por7PAam6vTkXaImsAtcv5nMr9xAO
+         hwQGjdAiuX8TLhGScqllHqSn/f/q2jh85fqDGzivXER31nZW19DExXlkwXzIBDHjreOO
+         Ku/KlntPXBHtARTg8LRgiBv2c4oUDcXnhlO0NvUc4I+IqSZjv9Mucd0tEfLtcGq3N9yc
+         OWMGeB/Wpkx+Iz3KS1tsbcGiL1oFsxNUF4KtV0fwe2S6eCAd/J2abIzpK2nbMF8mcjwT
+         QH+Q==
+X-Gm-Message-State: AOAM5332CSC7ndz28DcDVSKoBmk7IgFvS1c6QulQXLPu/TZTp4OmDR0H
+        vm4OxPkGh/4gZpNbuKRwR4qETg==
+X-Google-Smtp-Source: ABdhPJwoNc+kEAeBIUaw0C4uVKMmBaT0F+U4GurLO7tipARgMWwiHhzKPijfj8/OEbbvjI2xQPadCw==
+X-Received: by 2002:aed:2742:: with SMTP id n60mr1952658qtd.74.1598890130593;
+        Mon, 31 Aug 2020 09:08:50 -0700 (PDT)
 Received: from [192.168.1.45] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id g18sm10181184qtu.69.2020.08.31.08.43.34
+        by smtp.gmail.com with ESMTPSA id 95sm10683077qtc.29.2020.08.31.09.08.49
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 31 Aug 2020 08:43:35 -0700 (PDT)
-Subject: Re: [PATCH 00/12] Another batch of inode vs btrfs_inode cleanups
-To:     Nikolay Borisov <nborisov@suse.com>, linux-btrfs@vger.kernel.org
-References: <20200831114249.8360-1-nborisov@suse.com>
+        Mon, 31 Aug 2020 09:08:49 -0700 (PDT)
+Subject: Re: [PATCH 04/11] btrfs: reada: use sprout device_list_mutex
+To:     Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org
+Cc:     dsterba@suse.com
+References: <cover.1598792561.git.anand.jain@oracle.com>
+ <b5ad15e6583f4e61cfd44344ef17ea7a93f6bb57.1598792561.git.anand.jain@oracle.com>
 From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <02f72a45-8f6b-ca9b-d47c-daadb6153da8@toxicpanda.com>
-Date:   Mon, 31 Aug 2020 11:43:34 -0400
+Message-ID: <aad607a0-89e4-27da-9d01-ab7ac95761c0@toxicpanda.com>
+Date:   Mon, 31 Aug 2020 12:08:48 -0400
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
  Gecko/20100101 Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <20200831114249.8360-1-nborisov@suse.com>
+In-Reply-To: <b5ad15e6583f4e61cfd44344ef17ea7a93f6bb57.1598792561.git.anand.jain@oracle.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -67,29 +69,21 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 8/31/20 7:42 AM, Nikolay Borisov wrote:
-> Here is the latest batch of inode vs btrfs_inode of interface cleanups for
-> internal btrfs functions.
+On 8/30/20 10:40 AM, Anand Jain wrote:
+> On an fs mounted using a sprout-device, the seed fs_devices are maintained
+> in a linked list under fs_info->fs_devices. Each seed's fs_devices also
+> have device_list_mutex initialized to protect against the potential race
+> with delete threads. But the delete thread (at btrfs_rm_device()) is holding
+> the fs_info::fs_devices::device_list_mutex mutex which is sprout's
+> device_list_mutex instead of seed's device_list_mutex. Moreover, there
+> aren't any significient benefits in using the seed::device_list_mutex
+> instead of sprout::device_list_mutex.
 > 
-> Nikolay Borisov (12):
->    btrfs: Make inode_tree_del take btrfs_inode
->    btrfs: Make btrfs_lookup_first_ordered_extent take btrfs_inode
->    btrfs: Make ordered extent tracepoint take btrfs_inode
->    btrfs: Make btrfs_dec_test_ordered_pending take btrfs_inode
->    btrfs: Convert btrfs_inode_sectorsize to take btrfs_inode
->    btrfs: Make btrfs_invalidatepage work on btrfs_inode
->    btrfs: Make btrfs_writepage_endio_finish_ordered btrfs_inode-centric
->    btrfs: Make get_extent_skip_holes take btrfs_inode
->    btrfs: Make btrfs_find_ordered_sum take btrfs_inode
->    btrfs: Make copy_inline_to_page take btrfs_inode
->    btrfs: Make btrfs_zero_range_check_range_boundary take btrfs_inode
->    btrfs: Make extent_fiemap take btrfs_iode
+> So this patch converts them of using the seed::device_list_mutex to
+> sprout::device_list_mutex.
 > 
+> Signed-off-by: Anand Jain <anand.jain@oracle.com>
 
-Applied and built against misc-next, spot checked everything, you can add
-
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
-
-to the whole series, thanks,
+This doesn't apply cleanly to misc-next as of this morning.  Thanks,
 
 Josef
