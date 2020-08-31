@@ -2,323 +2,115 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17BCD2578D9
-	for <lists+linux-btrfs@lfdr.de>; Mon, 31 Aug 2020 14:00:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10C832578E7
+	for <lists+linux-btrfs@lfdr.de>; Mon, 31 Aug 2020 14:03:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726526AbgHaMAv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 31 Aug 2020 08:00:51 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:35002 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726167AbgHaMAm (ORCPT
+        id S1726326AbgHaMDn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 31 Aug 2020 08:03:43 -0400
+Received: from esa1.hgst.iphmx.com ([68.232.141.245]:43469 "EHLO
+        esa1.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726204AbgHaMDm (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 31 Aug 2020 08:00:42 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07VBtgFn005899;
-        Mon, 31 Aug 2020 12:00:35 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=nnARdiOMPMbazXovj/TapLWevbNi8E5C+baDG+nOSp8=;
- b=jk6ZgM3EXo4BlFEp4OwRB1s2HD9EurzVN8yD1E6CICy1E46+VKZNxhZ5+sRdLI9diJ8L
- vt5B8mKIJ2bIX3+SG86CciluV6Xl1M+ktTY7NwMBBiXwlHlqq8115/kIt0wakLQuzQfH
- KmrdIHVZMDv+c41D1eQ63HsraUrmfFtuuaoHTYE8Wq+6iyxgcsEQlgY5+yelTTDBg5cm
- +Nj2NEABacDS+Q2+qSpYIV7z4aJaygAg+1tqYuPkslgXl1f2WWoPTEie1bdAV7imhDEO
- PYm5JzerSQ8GbATznBNOb70ZOnt3IayHIGOd1PqhGyU/+Pi5FtShNbRPHhv7kG8Whar5 6A== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2120.oracle.com with ESMTP id 337qrhcw8b-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 31 Aug 2020 12:00:35 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07VBuYYU088562;
-        Mon, 31 Aug 2020 12:00:34 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3020.oracle.com with ESMTP id 3380x02xfw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 31 Aug 2020 12:00:34 +0000
-Received: from abhmp0020.oracle.com (abhmp0020.oracle.com [141.146.116.26])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 07VC0V4W011203;
-        Mon, 31 Aug 2020 12:00:33 GMT
-Received: from [192.168.1.102] (/39.109.231.106)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 31 Aug 2020 05:00:31 -0700
-Subject: Re: [PATCH 01/11] btrfs: initialize sysfs devid and device link for
- seed device
-To:     Nikolay Borisov <nborisov@suse.com>, linux-btrfs@vger.kernel.org
-Cc:     dsterba@suse.com, josef@toxicpanda.com
-References: <cover.1598792561.git.anand.jain@oracle.com>
- <2db650ec206db1cb3e68590951b59e222fb10116.1598792561.git.anand.jain@oracle.com>
- <e6175fbf-3439-f290-d3d6-7fb1320f91e6@suse.com>
-From:   Anand Jain <anand.jain@oracle.com>
-Message-ID: <2c60ae0b-8bff-2611-f737-be731b185b93@oracle.com>
-Date:   Mon, 31 Aug 2020 20:00:22 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.2.1
-MIME-Version: 1.0
-In-Reply-To: <e6175fbf-3439-f290-d3d6-7fb1320f91e6@suse.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        Mon, 31 Aug 2020 08:03:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1598875421; x=1630411421;
+  h=from:to:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=sHEVHjW3NKtYyWwEpcHkK9jwBpCxCqm0OiMf5LcZ/Bc=;
+  b=VF1dx7m+XNCwaDwEnluZ4G/USDkRwZlC12b9w50PurlKO3UESlGdSMtQ
+   yvAvyk2F/Exv8Tj8dJ8SrroQWc9c2RbgBTTNqS2miQ/iW93mdiNvmEXXe
+   uX1f4wA+0PsUTuJ3y/WWOhVNFug4m+ulFLWjs4JZ7HUShPaN00ts+sLHf
+   UlHqOdgZuDTHqBhkBdx+AejuLmhBBI6kKhP84hsvRSXJHxQ5GFR93StOW
+   J6Lt50XBzeZBB4fWi5oC7LUAK6d5TM7hdvJkNyZyEcDwuM69gi1EyB2aE
+   ir0awLjxqXgSrmqqD6YFC4WLUyYwofGvKGpky2WRiER9oNx2rHiAayhhj
+   A==;
+IronPort-SDR: hS9UJRBzkkiAqe6+UUfhcE0NO1soVNzHo+QwFXmXEKy2WsqIVfLXxO/GRGwX5z0JaRKlnK7eSF
+ Actq7/wICbkcEUVEVKPii/jbfYZRZjUrwPf6fwXVLrgktMv0S68lS+GagH0QN5971NfKRwAor4
+ XwPlfA4hizqjxmSnIBAu5+NSTe8pKjIXfyoquAy57nDrx0E5F+LNo/sFnPXKYtvd8mPy3gi3va
+ rQLKvkpmvBkOttUsafTS3SF0WYvfoAvccst1GPv5nq/z0pu5+m8iZfTQ7LFfxG8FMPGecNfxb+
+ oDs=
+X-IronPort-AV: E=Sophos;i="5.76,375,1592841600"; 
+   d="scan'208";a="255742268"
+Received: from mail-bn8nam08lp2047.outbound.protection.outlook.com (HELO NAM04-BN8-obe.outbound.protection.outlook.com) ([104.47.74.47])
+  by ob1.hgst.iphmx.com with ESMTP; 31 Aug 2020 20:03:40 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=EpNd+La2c5Ncl8/aWgnKDHim8GVw9+/qXlTuxv2C1cmVIm0b2b4j+Ebsox9d/BcyWpul1uwnV9pX5TT2CIZvXairGhnrtDh7PC/KLyCPXyaKei7h4+ymlRCWfNfqRkKRjfYIGxj79Bu3RCEeyhOrt41KKR/o14jkUJsw5YccZKiWP/N3Wzt5G6GN3+5k0ug1NW51nfR1rvCdM666d7DrAyicIzUxQHQyUfYCSByBw0KxAK02rP+PumVd0C6zDUg88Mrshh1XgmWuTuMzMW/WiSZxF1ytAw6pIehTNpYS9iJubUp+70yvCHDr0jAY27eITAX610gqfbu1aFzjMCWs/g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=sHEVHjW3NKtYyWwEpcHkK9jwBpCxCqm0OiMf5LcZ/Bc=;
+ b=nSK8eI/drr1xDMT/VmBeCWK1SuADC3k98tz1XHi+YdBv9o9YKaVwGsEnw2neOaPLErTBZMtFCf9heLkGPAXFOFVTzvkJzJUYnw5EV0gab1fjhMdw2OTz2K7cV+SUxmIjFJxMDMl4oxdy0bwVTpOdOayu5QQ/d4JXbvVoQmoeSRaxlDaNkSBUZCGmCAKh1IxfOFfP/+seBXiFCGW+6ReivP8PtVu93FaKMj5Vjkzj0p8K5zsKa1J67q41qwXS20wfqKKCuIUJTIxVKjuVkGnz/VgpNpRav176ITWGvINd384mVKys7rNGh1tar0Up0kIK6gp9nQ+jNM/hSVdnyMVIQg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=sHEVHjW3NKtYyWwEpcHkK9jwBpCxCqm0OiMf5LcZ/Bc=;
+ b=nwvkiQRiUrhhbZeqqxLCn7qnBggG8syFaxKSOciw6P/pcBnv67xYoDJEMYFjjcDpbz9a1PNJm7967uE9oA00qQ1Kko3wwC1AIHO4Atztyqv8Al9kEPVvppcBNOfU7maXC707tDVNtw5BJmow2fRF+RtrtYift23HbjOVhgKL8Uw=
+Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
+ (2603:10b6:803:47::21) by SN6PR04MB3885.namprd04.prod.outlook.com
+ (2603:10b6:805:48::20) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3326.22; Mon, 31 Aug
+ 2020 12:03:38 +0000
+Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
+ ([fe80::457e:5fe9:2ae3:e738]) by SN4PR0401MB3598.namprd04.prod.outlook.com
+ ([fe80::457e:5fe9:2ae3:e738%7]) with mapi id 15.20.3326.023; Mon, 31 Aug 2020
+ 12:03:38 +0000
+From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To:     Nikolay Borisov <nborisov@suse.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH 01/12] btrfs: Make inode_tree_del take btrfs_inode
+Thread-Topic: [PATCH 01/12] btrfs: Make inode_tree_del take btrfs_inode
+Thread-Index: AQHWf416xtaQUGN+iUGf+0PLqmX6DQ==
+Date:   Mon, 31 Aug 2020 12:03:38 +0000
+Message-ID: <SN4PR0401MB359857F67927A72EA6252E269B510@SN4PR0401MB3598.namprd04.prod.outlook.com>
+References: <20200831114249.8360-1-nborisov@suse.com>
+ <20200831114249.8360-2-nborisov@suse.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9729 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 phishscore=0
- mlxlogscore=999 adultscore=0 suspectscore=0 bulkscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2008310069
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9729 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 bulkscore=0
- adultscore=0 mlxscore=0 lowpriorityscore=0 phishscore=0 clxscore=1015
- suspectscore=0 priorityscore=1501 spamscore=0 malwarescore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2008310069
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: suse.com; dkim=none (message not signed)
+ header.d=none;suse.com; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [2001:a62:1590:f101:f048:793a:58d7:f0ac]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: f8e05598-60a2-4269-fb31-08d84da5e568
+x-ms-traffictypediagnostic: SN6PR04MB3885:
+x-microsoft-antispam-prvs: <SN6PR04MB3885D3AE6877D372BBA21CFD9B510@SN6PR04MB3885.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:305;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 08KFAYHsRhSUa/Bb0Hu8zDYM9UjbNMleQIWiwUOB0COXjbyKP+S+AJBjqXBNoiQ6db2Yak2nSP5TncqZm9PlQDjfiB16hMwPNnGxtpG2/jVwsgK/eugDzD9JoEE56Kf8UPVeecEiO+nj9Mpmno5eeWdJdR4OZIpimMDg5ydfCnjXvvCJuTxXZoh7fjosUGmw8MfszT9KHJ7QlvAVrcR5kl4bawa3ZaigOVp/A1cddzzlqjzoXvtWS4kQRqX19ORIu9Us5GW7QSS7pTH9iTkaNIYOogb5HSSeJZFGInub9PRxldwtZ4g0vsbqPrmiAry5mLwTSTVqswRUUapCAVxxhg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR0401MB3598.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(39860400002)(396003)(366004)(136003)(376002)(55016002)(186003)(8936002)(66446008)(64756008)(2906002)(6506007)(71200400001)(5660300002)(66476007)(91956017)(76116006)(7696005)(66556008)(478600001)(558084003)(66946007)(9686003)(52536014)(110136005)(316002)(8676002)(86362001)(33656002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: tcIP2l9YkqHo70ef3d+7IsmQnORmmoo+6hwdvXKxoowSY4IJ9dpQLlhcqK8AtxnkyicfLtJhWPtg2rFWUyDjZ57utAVSEL9zfokIrQlgsAg2jTZegkJQKnDvi/NisGQCKpJPW1FmcGv1lI7WEqIyIdfIzo/XMYK69hPlVZRkLMc39NH0YNFiSUM19BszFWyqNkOtl+qoEG2PQYuNQQ09we7Hlp0OHOYQ4OXRabjUkLwxXjoSpIX4oG2C7I4mVRhFfTrarvSzGY6gqCjEP1kO82yWorx+JeMJbbVGqckDTrSLFGKuOcJx1Rf+FmxWPFQId9xhXtqaUfoK6F0tU9HFwjOlzyWKYn7aLjhNRbDfWXh+Ix8qCXMrRSQ7+/se/9MR/o14YBRdq8wOmajdjlRyuK60V1uoBQ+KkGEtP66oy5ochokmhB0pV5NENc6V2dIgWfP+GZRNE8VmZL3ySD05RFctS27W7KKy3oLeZ7AJafmpI8QBGcnfXGrooD3R2qqbqKm2nMh0v3v1gdHdP+XYLi+VXnp024ypnixyGoejGvzSYnBeNVQSCz1tPz/sSjOP6dRSfA/wh7rqK88ugdlsOpEOKyu8VciG/f9MqfBlPSkenGevMSVT2Pn4vf10YDFWd7UdQmWIr7seiodcSQTWGGrVHhbsjwjQRQH6FWS+Y/sgM+hMRyP+WNpF+aY/McXlXdcSK8IG/QHFa5E4ISkQUA==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SN4PR0401MB3598.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f8e05598-60a2-4269-fb31-08d84da5e568
+X-MS-Exchange-CrossTenant-originalarrivaltime: 31 Aug 2020 12:03:38.5860
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: aiArCGH7StMdHQ8dFhqF+qTQMCY3kftJ69W2pUxZ4pWKV2EaUqACTCr/SKl+0BjTv8CXn/gnMEVHc+i+AjrWcCAp/TAzGlTn765e4Q4OYNY=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR04MB3885
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 31/8/20 5:07 pm, Nikolay Borisov wrote:
-> 
-> 
-> On 30.08.20 г. 17:40 ч., Anand Jain wrote:
->> The following test case leads to null kobject-being-freed error.
->>
->>   mount seed /mnt
->>   add sprout to /mnt
->>   umount /mnt
->>   mount sprout to /mnt
->>   delete seed
->>
->>   kobject: '(null)' (00000000dd2b87e4): is not initialized, yet kobject_put() is being called.
->>   WARNING: CPU: 1 PID: 15784 at lib/kobject.c:736 kobject_put+0x80/0x350
->>   RIP: 0010:kobject_put+0x80/0x350
->>   ::
->>   Call Trace:
->>   btrfs_sysfs_remove_devices_dir+0x6e/0x160 [btrfs]
->>   btrfs_rm_device.cold+0xa8/0x298 [btrfs]
->>   btrfs_ioctl+0x206c/0x22a0 [btrfs]
->>   ksys_ioctl+0xe2/0x140
->>   __x64_sys_ioctl+0x1e/0x29
->>   do_syscall_64+0x96/0x150
->>   entry_SYSCALL_64_after_hwframe+0x44/0xa9
->>   RIP: 0033:0x7f4047c6288b
->>   ::
->>
->> This is because, at the end of the seed device-delete, we try to remove
->> the seed's devid sysfs entry. But for the seed devices under the sprout
->> fs, we don't initialize the devid kobject yet. So this patch initializes
->> the seed device devid kobject and the device link in the sysfs. This takes
->> care of the Warning.
->>
->> Signed-off-by: Anand Jain <anand.jain@oracle.com>
-> 
-
-
-
-> This patch is doing too many things at once. Split it so that:
-> 1. You first add the new functions add_device/remove_device in 2
-> separate patches.
-> 2. Switch btrfs_sysfs_add_devices_dir/btrfs_sysfs_remove_devices_dir to
-> ousing the newly added helpers, again in 2 separate patches
-
-yeah and
-
-  3. Initialize seed devices devid kobject to fix the bug.
-
-fixing.
-
--Anand
-
-> 
->> ---
->>   fs/btrfs/sysfs.c | 146 ++++++++++++++++++++++++++++++-----------------
->>   1 file changed, 93 insertions(+), 53 deletions(-)
->>
->> diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
->> index 190e59152be5..9b5e58091fae 100644
->> --- a/fs/btrfs/sysfs.c
->> +++ b/fs/btrfs/sysfs.c
->> @@ -1149,45 +1149,48 @@ int btrfs_sysfs_add_space_info_type(struct btrfs_fs_info *fs_info,
->>   	return 0;
->>   }
->>   
->> -/* when one_device is NULL, it removes all device links */
->> -
->> -int btrfs_sysfs_remove_devices_dir(struct btrfs_fs_devices *fs_devices,
->> -		struct btrfs_device *one_device)
->> +static void btrfs_sysfs_remove_device(struct btrfs_device *device)
->>   {
->>   	struct hd_struct *disk;
->>   	struct kobject *disk_kobj;
->> +	struct kobject *devices_kobj;
->>   
->> -	if (!fs_devices->devices_kobj)
->> -		return -EINVAL;
->> +	/*
->> +	 * Seed fs_devices devices_kobj aren't used, fetch kobject from the
->> +	 * fs_info::fs_devices.
->> +	 */
->> +	devices_kobj = device->fs_info->fs_devices->devices_kobj;
->> +	ASSERT(devices_kobj);
->>   
->> -	if (one_device) {
->> -		if (one_device->bdev) {
->> -			disk = one_device->bdev->bd_part;
->> -			disk_kobj = &part_to_dev(disk)->kobj;
->> -			sysfs_remove_link(fs_devices->devices_kobj,
->> -					  disk_kobj->name);
->> -		}
->> +	if (device->bdev) {
->> +		disk = device->bdev->bd_part;
->> +		disk_kobj = &part_to_dev(disk)->kobj;
->> +		sysfs_remove_link(devices_kobj, disk_kobj->name);
->> +	}
->>   
->> -		kobject_del(&one_device->devid_kobj);
->> -		kobject_put(&one_device->devid_kobj);
->> +	kobject_del(&device->devid_kobj);
->> +	kobject_put(&device->devid_kobj);
->>   
->> -		wait_for_completion(&one_device->kobj_unregister);
->> +	wait_for_completion(&device->kobj_unregister);
->> +}
->>   
->> +/* when 2nd argument device is NULL, it removes all devices link */
->> +int btrfs_sysfs_remove_devices_dir(struct btrfs_fs_devices *fs_devices,
->> +				   struct btrfs_device *device)
->> +{
->> +	struct btrfs_fs_devices *seed_fs_devices;
->> +
->> +	if (device) {
->> +		btrfs_sysfs_remove_device(device);
->>   		return 0;
->>   	}
->>   
->> -	list_for_each_entry(one_device, &fs_devices->devices, dev_list) {
->> -
->> -		if (one_device->bdev) {
->> -			disk = one_device->bdev->bd_part;
->> -			disk_kobj = &part_to_dev(disk)->kobj;
->> -			sysfs_remove_link(fs_devices->devices_kobj,
->> -					  disk_kobj->name);
->> -		}
->> -		kobject_del(&one_device->devid_kobj);
->> -		kobject_put(&one_device->devid_kobj);
->> +	list_for_each_entry(device, &fs_devices->devices, dev_list)
->> +		btrfs_sysfs_remove_device(device);
->>   
->> -		wait_for_completion(&one_device->kobj_unregister);
->> +	list_for_each_entry(seed_fs_devices, &fs_devices->seed_list, seed_list) {
->> +		list_for_each_entry(device, &seed_fs_devices->devices, dev_list)
->> +			btrfs_sysfs_remove_device(device);
->>   	}
->>   
->>   	return 0;
->> @@ -1271,44 +1274,81 @@ static struct kobj_type devid_ktype = {
->>   	.release	= btrfs_release_devid_kobj,
->>   };
->>   
->> +static int btrfs_sysfs_add_device(struct btrfs_device *device)
->> +{
->> +	int ret;
->> +	struct kobject *devices_kobj;
->> +        struct kobject *devinfo_kobj;
->> +
->> +	/*
->> +	 * make sure we use the fs_info::fs_devices to fetch the kobjects
->> +	 * even for the seed fs_devices
->> +	 */
->> +	devices_kobj = device->fs_devices->fs_info->fs_devices->devices_kobj;
->> +	devinfo_kobj = device->fs_devices->fs_info->fs_devices->devinfo_kobj;
->> +	ASSERT(devices_kobj);
->> +	ASSERT(devinfo_kobj);
->> +
->> +	if (device->bdev) {
->> +		struct hd_struct *disk;
->> +		struct kobject *disk_kobj;
->> +
->> +		disk = device->bdev->bd_part;
->> +		disk_kobj = &part_to_dev(disk)->kobj;
->> +
->> +		ret = sysfs_create_link(devices_kobj, disk_kobj,
->> +					disk_kobj->name);
->> +		if (ret) {
->> +			btrfs_warn(device->fs_info,
->> +			   "sysfs create device link failed %d devid %llu",
->> +				   ret, device->devid);
->> +			return ret;
->> +		}
->> +	}
->> +
->> +	init_completion(&device->kobj_unregister);
->> +	ret = kobject_init_and_add(&device->devid_kobj, &devid_ktype,
->> +				   devinfo_kobj, "%llu", device->devid);
->> +	if (ret) {
->> +		kobject_put(&device->devid_kobj);
->> +		btrfs_warn(device->fs_info,
->> +			   "sysfs devinfo init failed %d devid %llu",
->> +			   ret, device->devid);
->> +	}
->> +
->> +	return ret;
->> +}
->> +
->>   int btrfs_sysfs_add_devices_dir(struct btrfs_fs_devices *fs_devices,
->> -				struct btrfs_device *one_device)
->> +				struct btrfs_device *device)
->>   {
->> -	int error = 0;
->> -	struct btrfs_device *dev;
->> +	int ret = 0;
->>   	unsigned int nofs_flag;
->> +	struct btrfs_fs_devices *seed_fs_devices;
->>   
->>   	nofs_flag = memalloc_nofs_save();
->> -	list_for_each_entry(dev, &fs_devices->devices, dev_list) {
->>   
->> -		if (one_device && one_device != dev)
->> -			continue;
->> +	if (device)
->> +		return btrfs_sysfs_add_device(device);
->>   
->> -		if (dev->bdev) {
->> -			struct hd_struct *disk;
->> -			struct kobject *disk_kobj;
->> -
->> -			disk = dev->bdev->bd_part;
->> -			disk_kobj = &part_to_dev(disk)->kobj;
->> -
->> -			error = sysfs_create_link(fs_devices->devices_kobj,
->> -						  disk_kobj, disk_kobj->name);
->> -			if (error)
->> -				break;
->> -		}
->> +	list_for_each_entry(device, &fs_devices->devices, dev_list) {
->> +		ret = btrfs_sysfs_add_device(device);
->> +		if (ret)
->> +			goto out;
->> +	}
->>   
->> -		init_completion(&dev->kobj_unregister);
->> -		error = kobject_init_and_add(&dev->devid_kobj, &devid_ktype,
->> -					     fs_devices->devinfo_kobj, "%llu",
->> -					     dev->devid);
->> -		if (error) {
->> -			kobject_put(&dev->devid_kobj);
->> -			break;
->> +	list_for_each_entry(seed_fs_devices, &fs_devices->seed_list, seed_list) {
->> +		list_for_each_entry(device, &seed_fs_devices->devices, dev_list) {
->> +			ret = btrfs_sysfs_add_device(device);
->> +			if (ret)
->> +				goto out;
->>   		}
->>   	}
->> +
->> +out:
->>   	memalloc_nofs_restore(nofs_flag);
->>   
->> -	return error;
->> +	return ret;
->>   }
->>   
->>   void btrfs_kobject_uevent(struct block_device *bdev, enum kobject_action action)
->>
+Looks good,=0A=
+Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>=0A=
+=0A=
+Haven't looked at the other patches in the series yet, but I think it's =0A=
+worth caching a struct btrfs_inode in btrfs_destroy_inode given there's 11=
+=0A=
+uses of btrfs_inode and 4 struct inode=0A=
