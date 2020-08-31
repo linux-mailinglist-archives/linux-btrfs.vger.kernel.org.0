@@ -2,126 +2,110 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCB7E257785
-	for <lists+linux-btrfs@lfdr.de>; Mon, 31 Aug 2020 12:40:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 789DC257799
+	for <lists+linux-btrfs@lfdr.de>; Mon, 31 Aug 2020 12:47:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726167AbgHaKk3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 31 Aug 2020 06:40:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37990 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726081AbgHaKk0 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 31 Aug 2020 06:40:26 -0400
-Received: from jemma.woof94.com (jemma.woof94.com [IPv6:2404:9400:3:0:216:3eff:fee0:fa86])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75426C061573
-        for <linux-btrfs@vger.kernel.org>; Mon, 31 Aug 2020 03:40:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=moffatt.email; s=woof2014; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=a8Z909a5OqEE6wnnSxiZKgzyjNQnOJBTkcce5oy0VK4=; b=VotY1xEoVXd7PZNlXUD+ttEjSi
-        cQktptHE1dfidTUZAnecA6v7XN2+P5OJfHqTeiWInoHuca3GvVj1XS7WeKsRHzprwadtlEDegEkRw
-        p450bL3gv3nxiy2KpXSoDdEOMNpfHNc/owuAxzMoKTZw1Rsd3POTn6Xd2hyJzchEMUkQ=;
-Received: from 2403-5800-3100-142-30c0-d0ff-28cd-e22a.ip6.aussiebb.net ([2403:5800:3100:142:30c0:d0ff:28cd:e22a])
-        by jemma.woof94.com with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <hamish-btrfs@moffatt.email>)
-        id 1kChEZ-0001ii-Bf; Mon, 31 Aug 2020 20:40:19 +1000
+        id S1726485AbgHaKrw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 31 Aug 2020 06:47:52 -0400
+Received: from mx2.suse.de ([195.135.220.15]:35536 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725964AbgHaKrv (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 31 Aug 2020 06:47:51 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 73DF7AFF3;
+        Mon, 31 Aug 2020 10:48:24 +0000 (UTC)
 Subject: Re: new database files not compressed
-To:     Nikolay Borisov <nborisov@suse.com>,
+To:     Hamish Moffatt <hamish-btrfs@moffatt.email>,
         Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
 Cc:     linux-btrfs@vger.kernel.org
 References: <6992fae3-ce87-8ae1-8dfe-1cb65578a16a@moffatt.email>
  <20200831034731.GX5890@hungrycats.org>
  <baadab71-61a7-704e-86f7-3607895df663@moffatt.email>
  <1ba6d793-30c5-39fc-3b6f-46fee70e5dd8@suse.com>
-From:   Hamish Moffatt <hamish-btrfs@moffatt.email>
-Message-ID: <4b5ff37f-2659-0757-cdc4-e3704ba9768b@moffatt.email>
-Date:   Mon, 31 Aug 2020 20:40:18 +1000
+ <4b5ff37f-2659-0757-cdc4-e3704ba9768b@moffatt.email>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ xsFNBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
+ T7g+RbfPFlmQp+EwFWOtABXlKC54zgSf+uulGwx5JAUFVUIRBmnHOYi/lUiE0yhpnb1KCA7f
+ u/W+DkwGerXqhhe9TvQoGwgCKNfzFPZoM+gZrm+kWv03QLUCr210n4cwaCPJ0Nr9Z3c582xc
+ bCUVbsjt7BN0CFa2BByulrx5xD9sDAYIqfLCcZetAqsTRGxM7LD0kh5WlKzOeAXj5r8DOrU2
+ GdZS33uKZI/kZJZVytSmZpswDsKhnGzRN1BANGP8sC+WD4eRXajOmNh2HL4P+meO1TlM3GLl
+ EQd2shHFY0qjEo7wxKZI1RyZZ5AgJnSmehrPCyuIyVY210CbMaIKHUIsTqRgY5GaNME24w7h
+ TyyVCy2qAM8fLJ4Vw5bycM/u5xfWm7gyTb9V1TkZ3o1MTrEsrcqFiRrBY94Rs0oQkZvunqia
+ c+NprYSaOG1Cta14o94eMH271Kka/reEwSZkC7T+o9hZ4zi2CcLcY0DXj0qdId7vUKSJjEep
+ c++s8ncFekh1MPhkOgNj8pk17OAESanmDwksmzh1j12lgA5lTFPrJeRNu6/isC2zyZhTwMWs
+ k3LkcTa8ZXxh0RfWAqgx/ogKPk4ZxOXQEZetkEyTFghbRH2BIwARAQABzSJOaWtvbGF5IEJv
+ cmlzb3YgPG5ib3Jpc292QHN1c2UuZGU+wsF4BBMBAgAiBQJYijkSAhsDBgsJCAcDAgYVCAIJ
+ CgsEFgIDAQIeAQIXgAAKCRBxvoJG5T8oV/B6D/9a8EcRPdHg8uLEPywuJR8URwXzkofT5bZE
+ IfGF0Z+Lt2ADe+nLOXrwKsamhweUFAvwEUxxnndovRLPOpWerTOAl47lxad08080jXnGfYFS
+ Dc+ew7C3SFI4tFFHln8Y22Q9075saZ2yQS1ywJy+TFPADIprAZXnPbbbNbGtJLoq0LTiESnD
+ w/SUC6sfikYwGRS94Dc9qO4nWyEvBK3Ql8NkoY0Sjky3B0vL572Gq0ytILDDGYuZVo4alUs8
+ LeXS5ukoZIw1QYXVstDJQnYjFxYgoQ5uGVi4t7FsFM/6ykYDzbIPNOx49Rbh9W4uKsLVhTzG
+ BDTzdvX4ARl9La2kCQIjjWRg+XGuBM5rxT/NaTS78PXjhqWNYlGc5OhO0l8e5DIS2tXwYMDY
+ LuHYNkkpMFksBslldvNttSNei7xr5VwjVqW4vASk2Aak5AleXZS+xIq2FADPS/XSgIaepyTV
+ tkfnyreep1pk09cjfXY4A7qpEFwazCRZg9LLvYVc2M2eFQHDMtXsH59nOMstXx2OtNMcx5p8
+ 0a5FHXE/HoXz3p9bD0uIUq6p04VYOHsMasHqHPbsMAq9V2OCytJQPWwe46bBjYZCOwG0+x58
+ fBFreP/NiJNeTQPOa6FoxLOLXMuVtpbcXIqKQDoEte9aMpoj9L24f60G4q+pL/54ql2VRscK
+ d87BTQRYigc+ARAAyJSq9EFk28++SLfg791xOh28tLI6Yr8wwEOvM3wKeTfTZd+caVb9gBBy
+ wxYhIopKlK1zq2YP7ZjTP1aPJGoWvcQZ8fVFdK/1nW+Z8/NTjaOx1mfrrtTGtFxVBdSCgqBB
+ jHTnlDYV1R5plJqK+ggEP1a0mr/rpQ9dFGvgf/5jkVpRnH6BY0aYFPprRL8ZCcdv2DeeicOO
+ YMobD5g7g/poQzHLLeT0+y1qiLIFefNABLN06Lf0GBZC5l8hCM3Rpb4ObyQ4B9PmL/KTn2FV
+ Xq/c0scGMdXD2QeWLePC+yLMhf1fZby1vVJ59pXGq+o7XXfYA7xX0JsTUNxVPx/MgK8aLjYW
+ hX+TRA4bCr4uYt/S3ThDRywSX6Hr1lyp4FJBwgyb8iv42it8KvoeOsHqVbuCIGRCXqGGiaeX
+ Wa0M/oxN1vJjMSIEVzBAPi16tztL/wQtFHJtZAdCnuzFAz8ue6GzvsyBj97pzkBVacwp3/Mw
+ qbiu7sDz7yB0d7J2tFBJYNpVt/Lce6nQhrvon0VqiWeMHxgtQ4k92Eja9u80JDaKnHDdjdwq
+ FUikZirB28UiLPQV6PvCckgIiukmz/5ctAfKpyYRGfez+JbAGl6iCvHYt/wAZ7Oqe/3Cirs5
+ KhaXBcMmJR1qo8QH8eYZ+qhFE3bSPH446+5oEw8A9v5oonKV7zMAEQEAAcLBXwQYAQIACQUC
+ WIoHPgIbDAAKCRBxvoJG5T8oV1pyD/4zdXdOL0lhkSIjJWGqz7Idvo0wjVHSSQCbOwZDWNTN
+ JBTP0BUxHpPu/Z8gRNNP9/k6i63T4eL1xjy4umTwJaej1X15H8Hsh+zakADyWHadbjcUXCkg
+ OJK4NsfqhMuaIYIHbToi9K5pAKnV953xTrK6oYVyd/Rmkmb+wgsbYQJ0Ur1Ficwhp6qU1CaJ
+ mJwFjaWaVgUERoxcejL4ruds66LM9Z1Qqgoer62ZneID6ovmzpCWbi2sfbz98+kW46aA/w8r
+ 7sulgs1KXWhBSv5aWqKU8C4twKjlV2XsztUUsyrjHFj91j31pnHRklBgXHTD/pSRsN0UvM26
+ lPs0g3ryVlG5wiZ9+JbI3sKMfbdfdOeLxtL25ujs443rw1s/PVghphoeadVAKMPINeRCgoJH
+ zZV/2Z/myWPRWWl/79amy/9MfxffZqO9rfugRBORY0ywPHLDdo9Kmzoxoxp9w3uTrTLZaT9M
+ KIuxEcV8wcVjr+Wr9zRl06waOCkgrQbTPp631hToxo+4rA1jiQF2M80HAet65ytBVR2pFGZF
+ zGYYLqiG+mpUZ+FPjxk9kpkRYz61mTLSY7tuFljExfJWMGfgSg1OxfLV631jV1TcdUnx+h3l
+ Sqs2vMhAVt14zT8mpIuu2VNxcontxgVr1kzYA/tQg32fVRbGr449j1gw57BV9i0vww==
+Message-ID: <68468502-c0e4-d126-3e09-4b5afa0a1f29@suse.com>
+Date:   Mon, 31 Aug 2020 13:47:46 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <1ba6d793-30c5-39fc-3b6f-46fee70e5dd8@suse.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <4b5ff37f-2659-0757-cdc4-e3704ba9768b@moffatt.email>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 31/8/20 7:25 pm, Nikolay Borisov wrote:
->
-> Doing the following test :
->
-> root@ubuntu18:~# mount -O compress-force=zstd /dev/vdc /media/scratch/
-> root@ubuntu18:~# rm -rf /media/scratch/zero
-> root@ubuntu18:~# dd if=/dev/zero of=/media/scratch/zero bs=16k count=1024
-> sync
-> btrfs inspect-internal dump-tree -t5 /dev/vdc
->
-> results in:
->
->
-> item 6 key (259 EXTENT_DATA 0) itemoff 15816 itemsize 53
-> 		generation 12 type 1 (regular)
-> 		extent data disk byte 315621376 nr 4096
-> 		extent data offset 0 nr 131072 ram 131072
-> 		extent compression 3 (zstd)
-> 	item 7 key (259 EXTENT_DATA 131072) itemoff 15763 itemsize 53
-> 		generation 12 type 1 (regular)
-> 		extent data disk byte 315625472 nr 4096
-> 		extent data offset 0 nr 131072 ram 131072
-> 		extent compression 3 (zstd)
-> 	item 8 key (259 EXTENT_DATA 262144) itemoff 15710 itemsize 53
-> 		generation 12 type 1 (regular)
-> 		extent data disk byte 315629568 nr 4096
-> 		extent data offset 0 nr 131072 ram 131072
-> 		extent compression 3 (zstd)
->
->
->
-> I.e a bunch of 128k extents, which in fact take only 4k on disk each.
->
-> Whereas if I write the same file but without the compress-force mount
-> option I get:
->
-> item 138 key (260 EXTENT_DATA 0) itemoff 8787 itemsize 53
-> 		generation 14 type 1 (regular)
-> 		extent data disk byte 298844160 nr 16777216
-> 		extent data offset 0 nr 16777216 ram 16777216
-> 		extent compression 0 (none)
->
->
-> I.e a single extent, 16m in size. So instead of using this compsize
-> utility or whatever it is can you dump the state of the filesystem as
-> per the btrfs inspect-internal command shown above?
+<SNIP>
 
-I used compsize as recommended by the wiki page: 
-https://btrfs.wiki.kernel.org/index.php/Compression#How_can_I_determine_compressed_size_of_a_file.3F
+> I created a new file system, ran dd bs=32k count=1024, then the dump
+> shows me items all the way up to item 161. https://pastebin.com/0MPPdqqM
+> 
+>     item 160 key (258 EXTENT_DATA 33292288) itemoff 7750 itemsize 53
+>         generation 7 type 1 (regular)
+>         extent data disk byte 14671872 nr 4096
+>         extent data offset 0 nr 131072 ram 131072
+>         extent compression 3 (zstd)
+>     item 161 key (258 EXTENT_DATA 33423360) itemoff 7697 itemsize 53
+>         generation 7 type 1 (regular)
+>         extent data disk byte 14675968 nr 4096
+>         extent data offset 0 nr 131072 ram 131072
+>         extent compression 3 (zstd)
+> total bytes 32196018176
+> bytes used 1245184
+> uuid 53eaed91-1060-445b-bf7c-5efe9917adbc
 
-I created a new file system, ran dd bs=32k count=1024, then the dump 
-shows me items all the way up to item 161. https://pastebin.com/0MPPdqqM
-
-     item 160 key (258 EXTENT_DATA 33292288) itemoff 7750 itemsize 53
-         generation 7 type 1 (regular)
-         extent data disk byte 14671872 nr 4096
-         extent data offset 0 nr 131072 ram 131072
-         extent compression 3 (zstd)
-     item 161 key (258 EXTENT_DATA 33423360) itemoff 7697 itemsize 53
-         generation 7 type 1 (regular)
-         extent data disk byte 14675968 nr 4096
-         extent data offset 0 nr 131072 ram 131072
-         extent compression 3 (zstd)
-total bytes 32196018176
-bytes used 1245184
-uuid 53eaed91-1060-445b-bf7c-5efe9917adbc
-
-
- From mount: /dev/sdb on /mnt/test type btrfs 
-(rw,relatime,compress-force=zstd:3,space_cache,subvolid=5,subvol=/)
-
-Hamish
-
+This output indicates that extents are compressed, what does compsize
+report on this file?
+> 
+> 
+> From mount: /dev/sdb on /mnt/test type btrfs
+> (rw,relatime,compress-force=zstd:3,space_cache,subvolid=5,subvol=/)
+> 
+> Hamish
+> 
