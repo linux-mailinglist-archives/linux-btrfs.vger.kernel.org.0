@@ -2,24 +2,24 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 815682575DF
-	for <lists+linux-btrfs@lfdr.de>; Mon, 31 Aug 2020 10:54:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCBF02575E7
+	for <lists+linux-btrfs@lfdr.de>; Mon, 31 Aug 2020 10:58:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727918AbgHaIyM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 31 Aug 2020 04:54:12 -0400
-Received: from mx2.suse.de ([195.135.220.15]:55106 "EHLO mx2.suse.de"
+        id S1726800AbgHaI6H (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 31 Aug 2020 04:58:07 -0400
+Received: from mx2.suse.de ([195.135.220.15]:56608 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725978AbgHaIyJ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 31 Aug 2020 04:54:09 -0400
+        id S1726102AbgHaI6G (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 31 Aug 2020 04:58:06 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id C746AAD46;
-        Mon, 31 Aug 2020 08:54:42 +0000 (UTC)
-Subject: Re: [PATCH 04/11] btrfs: reada: use sprout device_list_mutex
+        by mx2.suse.de (Postfix) with ESMTP id 7C87CB5BE;
+        Mon, 31 Aug 2020 08:58:39 +0000 (UTC)
+Subject: Re: [PATCH 03/11] btrfs: refactor btrfs_sysfs_remove_devices_dir
 To:     Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org
 Cc:     dsterba@suse.com, josef@toxicpanda.com
 References: <cover.1598792561.git.anand.jain@oracle.com>
- <b5ad15e6583f4e61cfd44344ef17ea7a93f6bb57.1598792561.git.anand.jain@oracle.com>
+ <170b1d35e76fc68131223839eb74c90557b5da3c.1598792561.git.anand.jain@oracle.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  xsFNBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -63,12 +63,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  KIuxEcV8wcVjr+Wr9zRl06waOCkgrQbTPp631hToxo+4rA1jiQF2M80HAet65ytBVR2pFGZF
  zGYYLqiG+mpUZ+FPjxk9kpkRYz61mTLSY7tuFljExfJWMGfgSg1OxfLV631jV1TcdUnx+h3l
  Sqs2vMhAVt14zT8mpIuu2VNxcontxgVr1kzYA/tQg32fVRbGr449j1gw57BV9i0vww==
-Message-ID: <a069ca08-664e-6720-6c4e-71e078fbb3f0@suse.com>
-Date:   Mon, 31 Aug 2020 11:54:06 +0300
+Message-ID: <1c5e29f5-47e0-19fe-cf17-1038541debfc@suse.com>
+Date:   Mon, 31 Aug 2020 11:58:03 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <b5ad15e6583f4e61cfd44344ef17ea7a93f6bb57.1598792561.git.anand.jain@oracle.com>
+In-Reply-To: <170b1d35e76fc68131223839eb74c90557b5da3c.1598792561.git.anand.jain@oracle.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -80,61 +80,30 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 30.08.20 г. 17:40 ч., Anand Jain wrote:
-> On an fs mounted using a sprout-device, the seed fs_devices are maintained
-> in a linked list under fs_info->fs_devices. Each seed's fs_devices also
-> have device_list_mutex initialized to protect against the potential race
-> with delete threads. But the delete thread (at btrfs_rm_device()) is holding
-> the fs_info::fs_devices::device_list_mutex mutex which is sprout's
-> device_list_mutex instead of seed's device_list_mutex. Moreover, there
-> aren't any significient benefits in using the seed::device_list_mutex
-> instead of sprout::device_list_mutex.
-> 
-> So this patch converts them of using the seed::device_list_mutex to
-> sprout::device_list_mutex.
+> Similar to btrfs_sysfs_add_devices_dir() refactor, refactor
+> btrfs_sysfs_remove_devices_dir() so that we don't have to use the 2nd
+> argument to indicate whether to free all devices or just one device. So
+> this patch also adds a bit of cleanups and return value is dropped to
+> void.
 > 
 > Signed-off-by: Anand Jain <anand.jain@oracle.com>
 
-nit: I'm beginning to think that the structure representing seed devices
-shouldn't be a full-fledged btrfs_fs_devices but a slimmed down version
-which contains only the necessary bits.
+<snip>
 
+> -/* when 2nd argument device is NULL, it removes all devices link */
+> -int btrfs_sysfs_remove_devices_dir(struct btrfs_fs_devices *fs_devices,
+> -				   struct btrfs_device *device)
+> +void btrfs_sysfs_remove_fs_devices(struct btrfs_fs_devices *fs_devices)
+>  {
+> +	struct btrfs_device *device;
+>  	struct btrfs_fs_devices *seed_fs_devices;
+>  
+> -	if (device) {
+> -		btrfs_sysfs_remove_device(device);
+> -		return 0;
+> -	}
 
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+What branch is this based off of ? Because I don't see
+btrfs_sysfs_remove_device function at all ?
 
-> ---
->  fs/btrfs/reada.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
-> 
-> diff --git a/fs/btrfs/reada.c b/fs/btrfs/reada.c
-> index c0035fc0ec67..9b54a51ba860 100644
-> --- a/fs/btrfs/reada.c
-> +++ b/fs/btrfs/reada.c
-> @@ -776,13 +776,11 @@ static int __reada_start_for_fsdevs(struct btrfs_fs_devices *fs_devices)
->  
->  	do {
->  		enqueued = 0;
-> -		mutex_lock(&fs_devices->device_list_mutex);
->  		list_for_each_entry(device, &fs_devices->devices, dev_list) {
->  			if (atomic_read(&device->reada_in_flight) <
->  			    MAX_IN_FLIGHT)
->  				enqueued += reada_start_machine_dev(device);
->  		}
-> -		mutex_unlock(&fs_devices->device_list_mutex);
->  		total += enqueued;
->  	} while (enqueued && total < 10000);
->  
-> @@ -795,10 +793,13 @@ static void __reada_start_machine(struct btrfs_fs_info *fs_info)
->  	int i;
->  	u64 enqueued = 0;
->  
-> +	mutex_lock(&fs_devices->device_list_mutex);
-> +
->  	enqueued += __reada_start_for_fsdevs(fs_devices);
->  	list_for_each_entry(seed_devs, &fs_devices->seed_list, seed_list)
->  		enqueued += __reada_start_for_fsdevs(seed_devs);
->  
-> +	mutex_unlock(&fs_devices->device_list_mutex);
->  	if (enqueued == 0)
->  		return;
->  
-> 
+<snip>
