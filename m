@@ -2,125 +2,210 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DEF1259098
-	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Sep 2020 16:35:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABCC22590B7
+	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Sep 2020 16:37:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728356AbgIAOVJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 1 Sep 2020 10:21:09 -0400
-Received: from esa1.hgst.iphmx.com ([68.232.141.245]:35893 "EHLO
-        esa1.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727080AbgIAOUw (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 1 Sep 2020 10:20:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1598970051; x=1630506051;
-  h=from:to:cc:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=iitLIiqvDjptYh01st0IA5hffKoytQLsqPlFwC9vvdg=;
-  b=T4tQeOpehXEPB5dwNPNlasJnJMyErMcuDoucMh4VwuDDRezo0K/HjyYj
-   LvO4PM8nFnyBxBhLXCmHkry7mynDg+o5VB+ceaU//md2jOVHJFoSmnAG/
-   +XMZZ1n4/w7N3ZiIwHLp0cStiJxBG+xwSQUvgOR0lUdMkmyFjpAxogiRn
-   wQyb1m2u/6uyTqU77guAH8+Ju9a4SJz93KqbaCB7f+KpHig7WfayjmZL5
-   OiKoGfAJvAjsMLwiBIIBPvQn/yqsXeZ1Cm+DNzkLku5nBhcPbDaWbTvfh
-   YtTQs3KD0Na7Vu23bQ0UPmEhB8wBqLlj3uUAKhDp8GR2XbW8WXODm+rVz
-   w==;
-IronPort-SDR: sLxBFK95UsFSIQIYY27rZGIbiTHF9e+6wjgr/EwnaAyJ7p5Gbn/kz6cU56FriYuGZzGRpPEidy
- MgskhpZT8RxGPjLYs61DYkHRAI8Mm4i78QXTJRDyT9Qq+PzhP8S3rDWXkyO1Qf56cm/wFpSe3Z
- FTpcS6X4rU/0a990WUEx5Ypos+BCkF5iyur7mEJ4UC3l5VxDY9WYBCz0UDti9nJXNX7OIGnEM9
- xa6+pCfyXfC0P8K3MIEItC5DK3J380Upwqo9sGtLNXBP8oMCnBWGwkI9UMdsnxEQUWDozjTI0E
- Pk0=
-X-IronPort-AV: E=Sophos;i="5.76,379,1592841600"; 
-   d="scan'208";a="255848033"
-Received: from mail-bn8nam11lp2173.outbound.protection.outlook.com (HELO NAM11-BN8-obe.outbound.protection.outlook.com) ([104.47.58.173])
-  by ob1.hgst.iphmx.com with ESMTP; 01 Sep 2020 22:20:49 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dcw/1l9w7tjLdiFrGsGbJWhHCwIF74KnPVwzW5eGMYoXKDGQQ83SE5i2aQzYIbumdExRuN2WF/zm4BchEyeCPjErQHYqgIcc2k77yrrVtSyFw7+SidS8jBZ8udYv3hZbAZ7vE/k43Q8EKFpE3taIeiBTcbHLzwvrY4plEVD+NbCUm4csCasH+jBtE2d6c4Ab1kDKqfrL/Xve3L/dbmXq+xULzmrU72PqmFDYGXtrdi5UEpiJg59ScVGHtX63XQjuvgLBC9CfkHV6pEXMg83z/a+oSVgqHRWbs98obCm3bJFGiFjmteQcv5kddpCWmLt1rk6sJYZ/iDCMgu50bHiNuw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=iitLIiqvDjptYh01st0IA5hffKoytQLsqPlFwC9vvdg=;
- b=UCB5iVng7Cqc7XJ5AG70lUm/QdK8rXe+YJx9R+tyvnUoeAU42FlU/Ij5j3Iykz+ozvsCpOiRsOF2cC3/L62IGY6JQQUq+epdAM0q2avxgYcrZH9Nbw6ypdilE3OTdODmc4+sQZer1EU5vw+mjIlydvlQDm+kIES+LeJgs9DfXaKJ6zQ+LHHHqlyHe4L1bS/Q5pYHqcZHb2gxygvAqbCH24Qp3uAqOpnJCZG9ibXSnTCJLhS321BrvvBH2O4eWz3DdU6npoXc22p08IvxBtzDMjFgdoW2pP43uoH0p9VeFX4aLicBrzIpfCQzh5VOR+b75XKdzNbGaGA2o40D8yKdoQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
+        id S1728309AbgIAOhc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 1 Sep 2020 10:37:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45990 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728476AbgIAOhP (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 1 Sep 2020 10:37:15 -0400
+Received: from mail-ua1-x942.google.com (mail-ua1-x942.google.com [IPv6:2607:f8b0:4864:20::942])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D37DC061244
+        for <linux-btrfs@vger.kernel.org>; Tue,  1 Sep 2020 07:37:15 -0700 (PDT)
+Received: by mail-ua1-x942.google.com with SMTP id y15so490898uan.9
+        for <linux-btrfs@vger.kernel.org>; Tue, 01 Sep 2020 07:37:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=iitLIiqvDjptYh01st0IA5hffKoytQLsqPlFwC9vvdg=;
- b=s+ckC8SFyxLMfecE5seAivEDXbBjoOjQ/7FtdciG3uCiXUFhUT4p3aXHdqgcs5I9F3iirdYKyBTx4/9adP5/IGEgbaGwr10CanDrGTNO4HY3ja0YU1k8IN3zs+FOlq/gOtSXy9UqG8FNJU17kPvYBXI6tPYM8BupWdPM+pKwJfA=
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
- (2603:10b6:803:47::21) by SN6PR04MB4463.namprd04.prod.outlook.com
- (2603:10b6:805:a5::12) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3348.15; Tue, 1 Sep
- 2020 14:20:47 +0000
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::457e:5fe9:2ae3:e738]) by SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::457e:5fe9:2ae3:e738%7]) with mapi id 15.20.3326.023; Tue, 1 Sep 2020
- 14:20:46 +0000
-From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To:     Goldwyn Rodrigues <rgoldwyn@suse.de>
-CC:     David Sterba <dsterba@suse.com>,
-        "linux-btrfs @ vger . kernel . org" <linux-btrfs@vger.kernel.org>,
-        Filipe Manana <fdmanana@gmail.com>,
-        Josef Bacik <josef@toxicpanda.com>
-Subject: Re: [RFC PATCH] btrfs: don't call btrfs_sync_file from iomap context
-Thread-Topic: [RFC PATCH] btrfs: don't call btrfs_sync_file from iomap context
-Thread-Index: AQHWgGDIsm2Q9fFDf0qcho+qy+MPJQ==
-Date:   Tue, 1 Sep 2020 14:20:46 +0000
-Message-ID: <SN4PR0401MB359823A8A58EA86D03ECAE1B9B2E0@SN4PR0401MB3598.namprd04.prod.outlook.com>
-References: <20200901130644.12655-1-johannes.thumshirn@wdc.com>
- <20200901141715.kpemq765lwikdwoh@fiona>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: suse.de; dkim=none (message not signed)
- header.d=none;suse.de; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [2001:a62:1590:f101:bd07:d1f9:7e6b:2014]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 3f995fc4-befe-4daf-8e3b-08d84e82381c
-x-ms-traffictypediagnostic: SN6PR04MB4463:
-x-microsoft-antispam-prvs: <SN6PR04MB4463483F5FAD6D9EE3006CD89B2E0@SN6PR04MB4463.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: qfCOEBxyh+YlTR7MM/L4bUT+h1s48IhvBAt0+JuODhXKw8awj4tlKHOy6EdCJ0V4jkpUwmtOWt/9tvdowy+C7y8BGaFXhnniYFK61JW9pPZSrJ17kVn7O0xatEcoP7ZGhYDb4rvoXdRiuuTHnNcoM+F/uWOOoPAdL1LPip0TZOiENCJ7OGcsqeldvSwJV4hnkj4nRm+Dj+kq88yAwx4fFQcPT18IZ7lKZVJZwQULiN1OYUvYkvxw8zhd9E81E9QEe5IdKUlbx+1WADzsw9VB2ipq3drHxD/SNCmlCJAvo+JoZDIL2mWOEMWEfI9INq1tGyV//vii5wU5h1hZ8ZM3fQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR0401MB3598.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(376002)(39860400002)(366004)(396003)(136003)(9686003)(7696005)(6506007)(53546011)(4744005)(8936002)(33656002)(55016002)(316002)(54906003)(478600001)(86362001)(2906002)(5660300002)(8676002)(52536014)(66556008)(66946007)(66446008)(64756008)(66476007)(6916009)(83380400001)(76116006)(91956017)(4326008)(186003)(71200400001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: aMxKSvcGdi20uXWRqNUpAruGHtv5lEzCmRrIlbxkwGL5ZKymug55xUPMmUcnIGg1L413mTUDrjW8hkjXkDXmAyLmQTV3jPR5WhgWP7zvqI31lLQfs1u49Ky9iBONS6Gmyo4FY23dCrJsvrKp6BISSdTrtsQc0+nInWjMx2i1P7r8bjEVZ8jnhMXjOBCmCHennL/7cmkqq3xGYiG6VmxXMxw8yus30U93sS9sTL+3Oz6EuCsLmaSX2zO/DKOU+9dSXlqgM5+/O0xqp/0lmFMcJ29cZjS9u3EoK3Fncwz9qPe7pvl1+OPXfwDPROCfQepQ0k1eyjNYiJFvnQbUa5TR0WlhvP6y3nFCKjrWr6Bdv19JTnUkw0Y3zECiRZ2ConBbScoE7V4ibVWXoUfsqYfIgKV9JD+q5hLzDM5TI7yHsgCXfoWN0ExNZZlm4e7VNExC4KowPZk75qyHVXjjhwZ/qZmxddXC081b0SlbQu3RFjRYaqn9nZAV43UyWbgV0ynXYVCsbxdesGwWlzfmqHzvMHg9FPdbnViYCoAx7xtV4hcHih2VwNrJRTce8FfO05u4i/LufJh+9zxLvrnSF9IMIjczvOyDdBLO8X9Nj0f23hbwmDCuDkqypTbrb7Gc7n9j+DZtaK+R6+oZoQMWJYWqhP0YP+GVRiapRd2I1ZzCFKrgEi0375YVDJAru5QqfgXJu+goCJLS6jmTS+yyz+1YaA==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc:content-transfer-encoding;
+        bh=0H0SoqZ07hQkLTIzXxz1yGcRgeqGtfgXdhAKY9ByOnk=;
+        b=J6THoEIj6uwpkp+E2Qbp0y5fI3pu3Z+rh0OZu4oVpBgFTFSqD5SVI8MsM5dLi3694k
+         L7JR1ovzkUYsYtMRIhA1h35rTZ/ZGlaB7htHb8W/lBgEDyUrNHj4Bk/zq6X8Jk7Vvr+U
+         1MJvDEDdJ6fQJkaQ3ddUeLLTgm80HiqqIjWS29tsQxLRDg4csAgY3Ihj9IGEYFtbyyd6
+         VtaZEYvJFrNdQwFwX5gf9pQbnWCO2Y79tAg023Qk7nt95H7zdQwHHrIR2J2Wpl9BdxWY
+         DSu+JSt17hyAzTpbFXSupUXnL42Vzn3lhZIQVu5AIACGxMb87uJ2SlSi0KYO+cRvJWnF
+         /wKQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc:content-transfer-encoding;
+        bh=0H0SoqZ07hQkLTIzXxz1yGcRgeqGtfgXdhAKY9ByOnk=;
+        b=BiE+qiGkvvOsYucFlqdXogGyn0/+cHYjqecDaL3eXIQqxxYFHksAan4IJ5geMSMwGl
+         O8FjftVBPFJ6aLFZIe2uH5XpeP7MHY4kdRIJhiDQYl7n8dQwYxzTFO7tEbKdKawHyB1M
+         8hcH2O3LzEQM4FHNXigOf1k5IQnl3p2ls9HodX8xjAoRgVONOVncbAbBjW8CazxtTyMx
+         K23y/nvx6aWGFciWbgb0YV3Xn7Xynj7bsnlCogn9m9iXIF3+36MgL3W6Ql4bWpVSz8p9
+         GIVypUWMO2Il3dKaaK28Iit6R9KSIqGeIUvZ5Lcu7a0mhH2BJpy9AWj2zgeLPD6oqfs1
+         YYEA==
+X-Gm-Message-State: AOAM532DuwsgeruINP7g3dbIxqiJVPx0SdlW+stYOAOf0LoiBboIbk0K
+        jvMga79phKLowEa1wENAAV4nuUD06NPOPaf4uQo=
+X-Google-Smtp-Source: ABdhPJwkN109LpuK9/umJc/XbzgmzEkMM/fGnV4KFTO6CbwQDPjfWcht7J1Scj2b3VJkI1BvopmveviIRyJPuBba6+w=
+X-Received: by 2002:ab0:76cf:: with SMTP id w15mr1553611uaq.135.1598971033329;
+ Tue, 01 Sep 2020 07:37:13 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SN4PR0401MB3598.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3f995fc4-befe-4daf-8e3b-08d84e82381c
-X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Sep 2020 14:20:46.5326
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: ShsThZMNhz4X0pzaIr/Xs6yO1Ndq6aqrnvQ/Vy5h+6YW95C9D1c0WHZaCIJ1jZP7R5alW7qUisPYTZL8IMKpCmXDB3n0V+TDM6w9+jsZr8E=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR04MB4463
+References: <20200901130644.12655-1-johannes.thumshirn@wdc.com>
+In-Reply-To: <20200901130644.12655-1-johannes.thumshirn@wdc.com>
+Reply-To: fdmanana@gmail.com
+From:   Filipe Manana <fdmanana@gmail.com>
+Date:   Tue, 1 Sep 2020 15:37:02 +0100
+Message-ID: <CAL3q7H6PqGagcRXoGswKhxyOJoFc23c7_1tTu183xCCiEPC5RQ@mail.gmail.com>
+Subject: Re: [RFC PATCH] btrfs: don't call btrfs_sync_file from iomap context
+To:     Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Cc:     David Sterba <dsterba@suse.com>,
+        "linux-btrfs @ vger . kernel . org" <linux-btrfs@vger.kernel.org>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Goldwyn Rodrigues <rgoldwyn@suse.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 01/09/2020 16:17, Goldwyn Rodrigues wrote:=0A=
-> This must be applied before calling generic_write_sync() as opposed to=0A=
-> after so generic_write_sync() can be called with the correct parameters.=
-=0A=
-> This is required for AIO cases.=0A=
-=0A=
-Thanks for spotting, will update and retest.=0A=
-=0A=
-The question I have though is, is this a correct fix or am I papering over =
-=0A=
-something (hence the RFC tag). Maybe we can relax the time we're under the =
-=0A=
-inode_lock() a bit so we can avoid this deadlock. David, Josef, Filipe any=
-=0A=
-comments?=0A=
+On Tue, Sep 1, 2020 at 2:06 PM Johannes Thumshirn
+<johannes.thumshirn@wdc.com> wrote:
+>
+> Fstests generic/113 exposes a deadlock introduced by the switch to iomap
+> for direct I/O.
+>
+> [ 18.291293]
+> [ 18.291532] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> [ 18.292115] WARNING: possible recursive locking detected
+> [ 18.292723] 5.9.0-rc2+ #746 Not tainted
+> [ 18.293145] --------------------------------------------
+> [ 18.293718] aio-stress/922 is trying to acquire lock:
+> [ 18.294274] ffff888217412010 (&sb->s_type->i_mutex_key#11){++++}-{3:3}, =
+at: btrfs_sync_file+0xf7/0x560 [btrfs]
+> [ 18.295450]
+> [ 18.295450] but task is already holding lock:
+> [ 18.296086] ffff888217412010 (&sb->s_type->i_mutex_key#11){++++}-{3:3}, =
+at: btrfs_file_write_iter+0x6e/0x630 [btrfs]
+> [ 18.297249]
+> [ 18.297249] other info that might help us debug this:
+> [ 18.297960] Possible unsafe locking scenario:
+> [ 18.297960]
+> [ 18.298605] CPU0
+> [ 18.298880] ----
+> [ 18.299151] lock(&sb->s_type->i_mutex_key#11);
+> [ 18.299653] lock(&sb->s_type->i_mutex_key#11);
+> [ 18.300156]
+> [ 18.300156] *** DEADLOCK ***
+> [ 18.300156]
+> [ 18.300802] May be due to missing lock nesting notation
+> [ 18.300802]
+> [ 18.301542] 2 locks held by aio-stress/922:
+> [ 18.302000] #0: ffff888217412010 (&sb->s_type->i_mutex_key#11){++++}-{3:=
+3}, at: btrfs_file_write_iter+0x6e/0x630 [btrfs]
+> [ 18.303194] #1: ffff888217411ea0 (&ei->dio_sem){++++}-{3:3}, at: btrfs_d=
+irect_IO+0x113/0x160 [btrfs]
+> [ 18.304223]
+> [ 18.304223] stack backtrace:
+> [ 18.304695] CPU: 0 PID: 922 Comm: aio-stress Not tainted 5.9.0-rc2+ #746
+> [ 18.305383] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS =
+rel-1.13.0-0-gf21b5a4-rebuilt.opensuse.org 04/01/2014
+> [ 18.306532] Call Trace:
+> [ 18.306796] dump_stack+0x78/0xa0
+> [ 18.307145] __lock_acquire.cold+0x121/0x29f
+> [ 18.307613] ? btrfs_dio_iomap_end+0x65/0x130 [btrfs]
+> [ 18.308140] lock_acquire+0x93/0x3b0
+> [ 18.308544] ? btrfs_sync_file+0xf7/0x560 [btrfs]
+> [ 18.309036] down_write+0x33/0x70
+> [ 18.309402] ? btrfs_sync_file+0xf7/0x560 [btrfs]
+> [ 18.309912] btrfs_sync_file+0xf7/0x560 [btrfs]
+> [ 18.310384] iomap_dio_complete+0x10d/0x120
+> [ 18.310824] iomap_dio_rw+0x3c8/0x520
+> [ 18.311225] btrfs_direct_IO+0xd3/0x160 [btrfs]
+> [ 18.311727] btrfs_file_write_iter+0x1fe/0x630 [btrfs]
+> [ 18.312264] ? find_held_lock+0x2b/0x80
+> [ 18.312662] aio_write+0xcd/0x180
+> [ 18.313011] ? __might_fault+0x31/0x80
+> [ 18.313408] ? find_held_lock+0x2b/0x80
+> [ 18.313817] ? __might_fault+0x31/0x80
+> [ 18.314217] io_submit_one+0x4e1/0xb30
+> [ 18.314606] ? find_held_lock+0x2b/0x80
+> [ 18.315010] __x64_sys_io_submit+0x71/0x220
+> [ 18.315449] do_syscall_64+0x33/0x40
+> [ 18.315829] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> [ 18.316363] RIP: 0033:0x7f5940881f79
+> [ 18.316740] Code: 00 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 48 =
+89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48=
+> 3d 01 f0 ff ff 73 01 c3 48 8b 0d e7 4e 0c 00 f7 d8 64 89 01 48
+> [ 18.318651] RSP: 002b:00007f5934f51d88 EFLAGS: 00000246 ORIG_RAX: 000000=
+00000000d1
+> [ 18.319428] RAX: ffffffffffffffda RBX: 00007f5934f52680 RCX: 00007f59408=
+81f79
+> [ 18.320168] RDX: 0000000000b56030 RSI: 0000000000000008 RDI: 00007f59317=
+1f000
+> [ 18.320895] RBP: 00007f593171f000 R08: 0000000000000000 R09: 0000000000b=
+56030
+> [ 18.321630] R10: 00007fffd599e080 R11: 0000000000000246 R12: 00000000000=
+00008
+> [ 18.322369] R13: 0000000000000000 R14: 0000000000b56030 R15: 0000000000b=
+56070
+>
+> This happens because iomap_dio_complete() calls into generic_write_sync()
+> if we have the data-sync flag set. But as we're still under the
+> inode_lock() from btrfs_file_write_iter() we will deadlock once
+> btrfs_sync_file() tries to acquire the inode_lock().
+>
+> Calling into generic_write_sync() is not needed as __btrfs_direct_write()
+> already takes care of persisting the data on disk. We can temporarily dro=
+p
+> the IOCB_DSYNC flag before calling into __btrfs_direct_write() so the
+> iomap code won't try to call into the sync routines as well.
+>
+> References: https://github.com/btrfs/fstests/issues/12
+> Fixes: da4d7c1b4c45 ("btrfs: switch to iomap for direct IO")
+> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+> ---
+>  fs/btrfs/file.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+>
+> diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+> index b62679382799..c75c0f2a5f72 100644
+> --- a/fs/btrfs/file.c
+> +++ b/fs/btrfs/file.c
+> @@ -2023,6 +2023,7 @@ static ssize_t btrfs_file_write_iter(struct kiocb *=
+iocb,
+>                 atomic_inc(&BTRFS_I(inode)->sync_writers);
+>
+>         if (iocb->ki_flags & IOCB_DIRECT) {
+> +               iocb->ki_flags &=3D ~IOCB_DSYNC;
+>                 num_written =3D __btrfs_direct_write(iocb, from);
+>         } else {
+>                 num_written =3D btrfs_buffered_write(iocb, from);
+> @@ -2046,8 +2047,10 @@ static ssize_t btrfs_file_write_iter(struct kiocb =
+*iocb,
+>         if (num_written > 0)
+>                 num_written =3D generic_write_sync(iocb, num_written);
+>
+> -       if (sync)
+> +       if (sync) {
+> +               iocb->ki_flags |=3D IOCB_DSYNC;
+
+This should be set before calling generic_write_sync() above,
+otherwise we don't do the persistence required by dsync.
+
+I have to be honest, I don't like this approach that much, it's a bit
+fragile - what if some other code, invoked in between clearing and
+setting back the flag, needs that flag to operate correctly?
+
+Thanks.
+
+>                 atomic_dec(&BTRFS_I(inode)->sync_writers);
+> +       }
+>  out:
+>         current->backing_dev_info =3D NULL;
+>         return num_written ? num_written : err;
+> --
+> 2.26.2
+>
+
+
+--=20
+Filipe David Manana,
+
+=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
+ right.=E2=80=9D
