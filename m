@@ -2,148 +2,86 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48B7B258ACE
-	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Sep 2020 10:54:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1762258AD2
+	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Sep 2020 10:55:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726078AbgIAIyd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 1 Sep 2020 04:54:33 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:38136 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726020AbgIAIyc (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 1 Sep 2020 04:54:32 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0818s5bb012421;
-        Tue, 1 Sep 2020 08:54:27 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=RdzE8n7hhUbgYfbPg5WvLVd+KdxVQmfTX9dQrBRoB/k=;
- b=buJfcmySdGvpByx09KdCOJrhmJJFuftNzPv9sDkkUyIEuogqs5JQBUtxHDVlj+Nsfhxg
- cvvn42CLKUHpd2DjEIRT4x1jNY7RYXZT7T+86Njc35qIjBvE9Y8NPxfRyXL8XxjiRuHx
- uXQP3TMjQydwiHL25VePOvvl5j91E3xWYamNJrRLUcUoGN3Uc2ABprjKXkiVEUbujnC5
- 93JcvUxw2GuUbgJGLi/pb15nK0fbvZx+N4OsWOBZVrxMCxBxI/muUycUBrVryQoE3INj
- 8T6j65xlrDuWhuHtoYCbIKrtUFQOgbr8Adr5BOVRzM5zFeUlSvRQtVYRDl1WwsdredCP Xg== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2120.oracle.com with ESMTP id 337eym2vjn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 01 Sep 2020 08:54:27 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0818pCYx017314;
-        Tue, 1 Sep 2020 08:54:27 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3030.oracle.com with ESMTP id 3380kmusg2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 01 Sep 2020 08:54:27 +0000
-Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0818sQVw030215;
-        Tue, 1 Sep 2020 08:54:26 GMT
-Received: from [192.168.1.102] (/39.109.231.106)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 01 Sep 2020 01:54:26 -0700
-Subject: Re: [PATCH 05/11] btrfs: btrfs_init_devices_late: use sprout
- device_list_mutex
-To:     Nikolay Borisov <nborisov@suse.com>, linux-btrfs@vger.kernel.org
-Cc:     dsterba@suse.com, josef@toxicpanda.com
-References: <cover.1598792561.git.anand.jain@oracle.com>
- <f9d69d94feeab53df416837d5e8bcc85da4df394.1598792561.git.anand.jain@oracle.com>
- <4fe0e0fe-37a8-1d36-dd97-1197b50fff4a@suse.com>
-From:   Anand Jain <anand.jain@oracle.com>
-Message-ID: <231132fb-21e8-1997-ac5f-a834cb3f199e@oracle.com>
-Date:   Tue, 1 Sep 2020 16:54:07 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.2.1
+        id S1727046AbgIAIzP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 1 Sep 2020 04:55:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49636 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726426AbgIAIzK (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 1 Sep 2020 04:55:10 -0400
+Received: from jemma.woof94.com (jemma.woof94.com [IPv6:2404:9400:3:0:216:3eff:fee0:fa86])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD57FC061245
+        for <linux-btrfs@vger.kernel.org>; Tue,  1 Sep 2020 01:55:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=moffatt.email; s=woof2014; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=yvwEuZBMf4TT7xZr2LP1XwVB4js/dmsMngL/KiZuXMo=; b=CbhmNSJDsvV/wMUvAwsKcey7H6
+        lOB9kMk9WtnBDzEkHpE1rEeZzJG0S+Cp1dze+qafZlSZuzgWcjFIS6afS7hubAx0ALjj0JppLTzVx
+        LgMmOtX3yoY1mvbLjILtDnt4arbQEXYA9a78y2Rfo0CXmT6zX+45bHvb8N7EBntTEOTQ=;
+Received: from 2403-5800-3100-142-5d22-5e60-9f0d-1cf5.ip6.aussiebb.net ([2403:5800:3100:142:5d22:5e60:9f0d:1cf5])
+        by jemma.woof94.com with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <hamish-btrfs@moffatt.email>)
+        id 1kD24H-0007cY-Rj; Tue, 01 Sep 2020 18:55:05 +1000
+Subject: Re: new database files not compressed
+To:     Nikolay Borisov <nborisov@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+References: <6992fae3-ce87-8ae1-8dfe-1cb65578a16a@moffatt.email>
+ <20200831034731.GX5890@hungrycats.org>
+ <baadab71-61a7-704e-86f7-3607895df663@moffatt.email>
+ <20200831161505.369be693@natsu>
+ <c7415ce2-f025-6c31-60b7-f0b927ed4808@moffatt.email>
+ <41107373-cc61-ea3f-7ae9-c9eef0ee47f9@suse.com>
+ <2d060b13-7a1a-7cc5-927f-2c6a067f9c03@moffatt.email>
+ <0bf29a8c-23b2-26f4-2efd-2e82f38c437d@suse.com>
+From:   Hamish Moffatt <hamish-btrfs@moffatt.email>
+Message-ID: <4c3d4141-4452-bb79-b18e-f32c8e35cb13@moffatt.email>
+Date:   Tue, 1 Sep 2020 18:55:04 +1000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-In-Reply-To: <4fe0e0fe-37a8-1d36-dd97-1197b50fff4a@suse.com>
+In-Reply-To: <0bf29a8c-23b2-26f4-2efd-2e82f38c437d@suse.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9730 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 spamscore=0 adultscore=0
- mlxscore=0 suspectscore=2 malwarescore=0 mlxlogscore=999 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009010078
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9730 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=2 adultscore=0
- priorityscore=1501 phishscore=0 mlxlogscore=999 mlxscore=0
- lowpriorityscore=0 clxscore=1015 spamscore=0 bulkscore=0 impostorscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009010079
+Content-Language: en-US
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 31/8/20 4:37 pm, Nikolay Borisov wrote:
-> 
-> 
-> On 30.08.20 г. 17:41 ч., Anand Jain wrote:
->> In a mounted sprout FS, all threads now are using the
->> sprout::device_list_mutex, and this is the only piece of code using
->> the seed::device_list_mutex. This patch converts to use the sprouts
->> fs_info->fs_devices->device_list_mutex.
+On 1/9/20 3:15 pm, Nikolay Borisov wrote:
+>
+> On 1.09.20 г. 2:50 ч., Hamish Moffatt wrote:
+>> On 31/8/20 10:57 pm, Nikolay Borisov wrote:
+>>> This means the data being passed to btrfs is not compressible. I.e after
+>>> coompression the data is not smaller than the original, input data.
+>> It is though - if I copy it, or run defrag, it compresses very well:
 >>
->> The same reasoning holds true here, that device delete is holding
->> the sprout::device_list_mutex.
 >>
->> Signed-off-by: Anand Jain <anand.jain@oracle.com>
->> ---
->>   fs/btrfs/volumes.c | 4 +---
->>   1 file changed, 1 insertion(+), 3 deletions(-)
->>
->> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
->> index 9921b43ef839..7639a048c6cf 100644
->> --- a/fs/btrfs/volumes.c
->> +++ b/fs/btrfs/volumes.c
->> @@ -7184,16 +7184,14 @@ void btrfs_init_devices_late(struct btrfs_fs_info *fs_info)
->>   	mutex_lock(&fs_devices->device_list_mutex);
->>   	list_for_each_entry(device, &fs_devices->devices, dev_list)
->>   		device->fs_info = fs_info;
->> -	mutex_unlock(&fs_devices->device_list_mutex);
->>   
->>   	list_for_each_entry(seed_devs, &fs_devices->seed_list, seed_list) {
->> -		mutex_lock(&seed_devs->device_list_mutex);
->>   		list_for_each_entry(device, &seed_devs->devices, dev_list)
->>   			device->fs_info = fs_info;
->> -		mutex_unlock(&seed_devs->device_list_mutex);
->>   
->>   		seed_devs->fs_info = fs_info;
->>   	}
->> +	mutex_unlock(&fs_devices->device_list_mutex);
-> 
-> Instead of doing the looping here to set fs_info I think it makes more
-> sense to move the initialization of fs_info for the seed fs_info/seed
-> devices to open_seed_devices.
-> 
-
-  But that will be out of the purpose of this patch. May be in
-  a different patch.
-
-  And seed_devs->fs_info = fs_info co-exists with the
-  device->fs_info = fs_info as well.
+> As Zygo explained - with 16k writes you'd need at least 25% compression
+>   in order for btrfs to deem it useful. If firebird's 16k writes are not
+> 25% compressible then it won't compress. It also depends on whether it
+> issues fsync after every write to ensure consistency meaning it won't
+> allow more data to accumulate.
 
 
-> As a matter of fact at the point where btrfs_init_devices_late is called
-> btrfs_read_chunk_tree would have already been called which would have
-> resulted in all present seed devices be added to fs_info::seed_list. So
-> acquiring the lock here serves no purpose really.
+I understand, but I think these conditions are being met.
 
-  I tried to tests few times before. If any of the user initiated device
-  operation could race with the mount thread. The ans was no. So the
-  lock is not really required. But then there was mount and unmount
-  racing bug, which was very strange to me. With that bug, if unmount
-  wins the race, user initiated forget thread may free the devices. Now
-  its fixed. So should be safe. But I am not too sure if that covers all
-  the threads that could potentially race.
+1. strace shows Firebird is writing sequential 16k blocks. I don't see 
+fsync either. Example trace: https://hastebin.com/ecayosilog.pl
 
-  So for now, its ok to consolidate the lock to
-  sprout::device_list_mutex at least.
+2. Copying the file with 'dd if=foo.fdb of=copy bs=16k', even with 
+'oflag=sync' or 'flag=direct', results in a compressed copy.
 
-Thanks, Anand
+There are no special attributes on the file according to lsattr. What 
+else could Firebird be doing that would cause the file not to compress?
 
-> 
->>   }
->>   
->>   static u64 btrfs_dev_stats_value(const struct extent_buffer *eb,
->>
+Hamish
+
+
+
