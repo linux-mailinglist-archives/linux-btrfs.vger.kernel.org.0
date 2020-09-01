@@ -2,64 +2,64 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E650A259F07
-	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Sep 2020 21:13:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E3EB259F16
+	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Sep 2020 21:19:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729606AbgIATNn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 1 Sep 2020 15:13:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60650 "EHLO
+        id S1731229AbgIATTD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 1 Sep 2020 15:19:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728130AbgIATNm (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 1 Sep 2020 15:13:42 -0400
-Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 334A6C061244
-        for <linux-btrfs@vger.kernel.org>; Tue,  1 Sep 2020 12:13:42 -0700 (PDT)
-Received: by mail-qv1-xf2c.google.com with SMTP id di5so1058722qvb.13
-        for <linux-btrfs@vger.kernel.org>; Tue, 01 Sep 2020 12:13:42 -0700 (PDT)
+        with ESMTP id S1728406AbgIATTC (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 1 Sep 2020 15:19:02 -0400
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BB3FC061244
+        for <linux-btrfs@vger.kernel.org>; Tue,  1 Sep 2020 12:19:02 -0700 (PDT)
+Received: by mail-qt1-x843.google.com with SMTP id x12so1809079qtp.1
+        for <linux-btrfs@vger.kernel.org>; Tue, 01 Sep 2020 12:19:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=subject:to:references:from:message-id:date:user-agent:mime-version
          :in-reply-to:content-language:content-transfer-encoding;
-        bh=70NjmJLVLgjUipVfawiuWJ9nxlcI94la/P5w8czv/8I=;
-        b=1hhYf1aGoOUd9EZI/Dwk5alXADlNncC8WMF8/58hl/if9j0eAhYv/QtO567s8vGvKH
-         3dp5xv1I9bzt0RTI5M172a+j1D9TMnRq8/inNMxhWwtV/N+zrfKpK1AlKZMrdoAHrkHK
-         bPZv01oKQj7P8GHYPqQbMK5oGtm4rp5ziAf4YOLiBIZtHIvY0lVviJJsn0ulZ4XYgVgq
-         uH/jKcsVC/xE8hBHlLX1iKAaaZQXXZKvdIMcT73ioNnLBwlU05j8/yWdReIaxlW8u4SF
-         rXMvbzVQt3qecVE1YDtFlA1XJcrWMkUVCghXdoHqVBt7mhPVFIIgAMfTfgEP8k8hdovL
-         SQWw==
+        bh=hRIadBzZNV5KzZUsuzBCseeTxnXW7Fiq7f561RH6Bzs=;
+        b=LZMAju+wRKoiOwJfl9tmzWsslEiQURia7xYT/FC/WHMA+KlHKwKF9WuOCJawZ7HTUK
+         OMKWWTwtWFo6OfWBtBjsJ6U4xl/qiBGzn33tb0P9siuvYTlbF0iFmoPg8YJji+OpjJBm
+         WILutaINCafVc8nUaYX6vP1XCk1jY46rted0StM5cu35gK8UbklAzF3FncxQdeCjkDEW
+         5YoR51ZQ/u59MHKkeZkX03UsjV8JjA+IvcQ7v3NZYtjgVWnPuSFN1u2B1JUhctr4zXux
+         464G5mHNR0x+UXFAhbu024eJz3ks+91rGBb0z+wOvKvKh8CG+13MBSgjSrjwGfXxopwn
+         HMTQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=70NjmJLVLgjUipVfawiuWJ9nxlcI94la/P5w8czv/8I=;
-        b=XkK1YfoM8LS2HLNpM0V8fWb6WkZNwdF4pIPWVLtxxf54EstSH/KG9yGp19yGmFyIJG
-         jLSlYFKbWjt13t294Yi+hGJAn5LHJBQ6x6QyyOlLIQEyVgF6ozXgfWp+66qYqYewP0GP
-         fbXbfYSByU4Uj9Psz+WAmA8BZhcxKjNNWPHY/XFEbhUpXyr233nbAHAP6Hi9c4XK3PwK
-         EwFc4wv3PbQWBqyZxMLUQl+SO9dT6SQqC9BADYFMSGOLWygT5PrpF0qAYnhEr2zEKqYA
-         yMweB3ss7u7D4+E+6J60gOQfbTBRIOwLbrI1qZ3r2lmqSc5ze45VVR7FoJUZbvtrQyGs
-         oN8Q==
-X-Gm-Message-State: AOAM5332+PYlQr67QVUo85MsBTK20WNPfFgwRhzcDk3mFbqWnKjomKTW
-        PWmAx+XmRx+QvVqz7BEjJopme1egrxgvZKjN
-X-Google-Smtp-Source: ABdhPJx+lH8qp2//Z44CRz3lki9dRHJnuavI5won+AWkylwcxLf9f7RsisxAwY6ELqDiyzAeuWoSEQ==
-X-Received: by 2002:a0c:e844:: with SMTP id l4mr3522772qvo.154.1598987621059;
-        Tue, 01 Sep 2020 12:13:41 -0700 (PDT)
+        bh=hRIadBzZNV5KzZUsuzBCseeTxnXW7Fiq7f561RH6Bzs=;
+        b=H+chmX1Oe8aMnlQU16vFtBHSXyT+95kNDDdOCXBMRu5R19EmqbKK2e5oXwvSVTQlpa
+         Ik5Ol7dH5yVV+UxZzambXTJxgmNxzKN+IqTb2qXF6ot4PlYYUoKwzkzZZTov7d/XD/1g
+         rqo9RCFWcsOwQ79YfhSyYL/fghScAtzys9F2vG6wDpKELSnG2A9r6yWgVufM3Shzex5M
+         Y9l6KLLS5Kjtgk5VOhAbux5TodYXdwee5opn429m4gIVR5FqrqS3kDaiB7XhC8geC99m
+         V0S58sK0dRb/VYaVEWjsY/Rnk1SerIsBxY40iCw+v6wlEH+GxpXl68WIJvhYhW9VYnrX
+         Zd/A==
+X-Gm-Message-State: AOAM530zDBPt7Cd+y7Vb7D8PxAj9shITm1Trd2sc2rAEHMTuVKEyHx5b
+        vcL30OszvVXAcBOW+U/UGqdIfEKemHyhG7mv
+X-Google-Smtp-Source: ABdhPJxxUGQPckuDisjMNTtk3R8rKh63c7NdKseSUzQXB+tYzXOICP+5AAKUfmcxm0RWq7rQAIHhkA==
+X-Received: by 2002:ac8:48ca:: with SMTP id l10mr3030648qtr.385.1598987940945;
+        Tue, 01 Sep 2020 12:19:00 -0700 (PDT)
 Received: from [192.168.1.45] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id z74sm2419660qkb.11.2020.09.01.12.13.40
+        by smtp.gmail.com with ESMTPSA id q26sm2826183qtq.91.2020.09.01.12.18.59
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 01 Sep 2020 12:13:40 -0700 (PDT)
-Subject: Re: [PATCH 1/5] btrfs: Re-arrange statements in
+        Tue, 01 Sep 2020 12:19:00 -0700 (PDT)
+Subject: Re: [PATCH 2/5] btrfs: Eliminate total_size parameter from
  setup_items_for_insert
 To:     Nikolay Borisov <nborisov@suse.com>, linux-btrfs@vger.kernel.org
 References: <20200901144001.4265-1-nborisov@suse.com>
- <20200901144001.4265-2-nborisov@suse.com>
+ <20200901144001.4265-3-nborisov@suse.com>
 From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <552f71db-7fac-3ff7-b485-0fae20add02c@toxicpanda.com>
-Date:   Tue, 1 Sep 2020 15:13:39 -0400
+Message-ID: <f2143afd-c34f-06fa-214c-2f8a010557fe@toxicpanda.com>
+Date:   Tue, 1 Sep 2020 15:18:58 -0400
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
  Gecko/20100101 Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <20200901144001.4265-2-nborisov@suse.com>
+In-Reply-To: <20200901144001.4265-3-nborisov@suse.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -69,10 +69,22 @@ List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 On 9/1/20 10:39 AM, Nikolay Borisov wrote:
-> Rearrange statements calculating the offset of the newly added items so
-> that the calculation has to be done only once. No functional change.
+> The value of this argument can be derived from the total_data as it's
+> simply the value of the data size + size of btrfs_items being touched.
+> Move the parameter calculation inside the function. This results in a
+> simpler interface and also a minor size reduction:
+> 
+> ./scripts/bloat-o-meter ctree.original fs/btrfs/ctree.o
+> add/remove: 0/0 grow/shrink: 0/3 up/down: 0/-34 (-34)
+> Function                                     old     new   delta
+> btrfs_duplicate_item                         260     259      -1
+> setup_items_for_insert                      1200    1190     -10
+> btrfs_insert_empty_items                     177     154     -23
 > 
 > Signed-off-by: Nikolay Borisov <nborisov@suse.com>
+
+Some of these things, like btrfs_batch_insert_items, we could probably clean up 
+and remove total_size later.
 
 Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 
