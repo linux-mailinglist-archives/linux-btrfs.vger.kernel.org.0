@@ -2,124 +2,183 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BE9025B203
-	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Sep 2020 18:50:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA88D25B21F
+	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Sep 2020 18:53:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728288AbgIBQrh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 2 Sep 2020 12:47:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33800 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726567AbgIBQrb (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 2 Sep 2020 12:47:31 -0400
-Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A2E7C061244
-        for <linux-btrfs@vger.kernel.org>; Wed,  2 Sep 2020 09:47:31 -0700 (PDT)
-Received: by mail-qv1-xf42.google.com with SMTP id cr8so2510853qvb.10
-        for <linux-btrfs@vger.kernel.org>; Wed, 02 Sep 2020 09:47:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=nQO25q/nLJlT714Y47ryMfDUol79zpKt8MoXwz+JXQE=;
-        b=1BOaZ3IHykF6uTh/alOkTs9HN/UfH3yOmQCS/8iYCkuUeSyHxcwAPGggWx/XZpdmBg
-         LEUD+TdcmFkG21gKFnrER/3zTX2Z2Ge+vW4E3jJTz1sAdth2N0NTRX3EYNAwoSDTc3nE
-         Y2jVXTrb0p1IaDxgZtvBIIOVzBaGSNR7a2H75PBknulTt8VNV1qPqdnCjCPuMQ3Fi051
-         t01Ph8rMdmNNYjIkikSTZFCx/81LR5NeN01BL8KBRFaxNj45EndO+OVzovmXR8+Y2GRb
-         yvij9sstV57pS37wd6TbPPORXGYjQrRsAUO0odeshnG/Mbqw5jptdUFvPjqLqfI5z2iQ
-         4qBg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=nQO25q/nLJlT714Y47ryMfDUol79zpKt8MoXwz+JXQE=;
-        b=B7DwfwXSpp2gmiCV0ORp4R45z41dUZXyxfl/q7DJE9V5EwIcLvhlwWAvCJtp98on2N
-         uOdHuTfoiMe024HsfT/0CRhnvoCUme3hxsyVrDQfk50ugRamXH7Q+mg9ZcTJIf32uL1p
-         Fx90B4k3gL9r7M3B00O3ji8zqmZZMxVIzuJzVshGWRyh2ou67TW2L0MbThl1A+8+ZU+A
-         ISimjmlv0+kdKrdpuLV2oLLduojUEGrqQMeH8a1d3MBSERvvW2vR+8Fnsj7aINALyS3A
-         Lg65v60KjeFRK7X6vukoK+Vq7t9qiiD9P1geWOv7KY0N1eV5ryxpEjF2+6C4EEI9be+S
-         gm7w==
-X-Gm-Message-State: AOAM530mOrmLxkfySHRDgpu34/7HwPf7crgrBBFxuJi+esC6B8pHw0+s
-        fe8asMM2echkTmt3+Fxp6j6cAg==
-X-Google-Smtp-Source: ABdhPJx9o4MS6u5mDx2f/nXu8wNg5QtPFOurFOw5yD7Eg/YbqoOVd8AiCHx0iqRKMk+JoDdg30Nwrw==
-X-Received: by 2002:a05:6214:178d:: with SMTP id ct13mr7541292qvb.195.1599065250411;
-        Wed, 02 Sep 2020 09:47:30 -0700 (PDT)
-Received: from [192.168.1.45] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id n33sm4975846qtd.43.2020.09.02.09.47.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 02 Sep 2020 09:47:29 -0700 (PDT)
-Subject: Re: [RFC PATCH] btrfs: don't call btrfs_sync_file from iomap context
-To:     "Darrick J. Wong" <darrick.wong@oracle.com>
-Cc:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        Dave Chinner <david@fromorbit.com>,
-        David Sterba <dsterba@suse.com>,
-        "linux-btrfs @ vger . kernel . org" <linux-btrfs@vger.kernel.org>,
-        Filipe Manana <fdmanana@gmail.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>
-References: <20200901130644.12655-1-johannes.thumshirn@wdc.com>
- <42efa646-73cd-d884-1c9c-dd889294bde2@toxicpanda.com>
- <20200901214613.GH12096@dread.disaster.area>
- <551b2801-d626-9bd7-7cb2-9d20674c06bf@toxicpanda.com>
- <20200901235830.GI12096@dread.disaster.area>
- <d2ba3cc5-5648-2e4b-6ae4-2515b1365ce2@toxicpanda.com>
- <SN4PR0401MB3598CDEB0ADC4E43179DE2E29B2F0@SN4PR0401MB3598.namprd04.prod.outlook.com>
- <43272cc6-4d40-caf7-8777-4ef1e1725c97@toxicpanda.com>
- <20200902162944.GH6090@magnolia>
-From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <d001c8df-1c35-6426-4000-ad1222af7196@toxicpanda.com>
-Date:   Wed, 2 Sep 2020 12:47:28 -0400
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.12.0
+        id S1728219AbgIBQwz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 2 Sep 2020 12:52:55 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:40814 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726938AbgIBQwv (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 2 Sep 2020 12:52:51 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 082Gnl4o153969;
+        Wed, 2 Sep 2020 16:52:47 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=jxr21YykYZKdullgKkPHFfg+o0ZD8pj+EE1nxrBvYr8=;
+ b=YGtPF4fP8Hn+/VT3GSH7KJB+wzo6IZcu9uFbTR/KNIdguSiFdQ6P+Mrqqwyc4eXKmmqK
+ 9ufDRsdhUy/JIbuIY4Y8gbIkZO3l2NUvZd9LmeapKDLwByNIT41qEjo2veKFQF+cTL/x
+ wGWCsjoCoyW5J+d1KhfAZhtd2SHHN7hgH0wRzXpf2mAE6lh5rovPttId61+bes0bNgdR
+ N9v/gnTiaL9j9Lw5mC8bRncJa4u24DRxVnKSDTPM+UQkIICRMbcRKvW2qBzCOxr/x1Tg
+ y8/LVbp2HCQhxzFcuKUQt16Vg7qSG0d0jlmcZnd0awDellpIcMcji4fdRod/HNfPsBoL zw== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2120.oracle.com with ESMTP id 339dmn2ag8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 02 Sep 2020 16:52:47 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 082GnjAS137913;
+        Wed, 2 Sep 2020 16:50:47 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3030.oracle.com with ESMTP id 3380y021ae-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 02 Sep 2020 16:50:46 +0000
+Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 082Gojd7016554;
+        Wed, 2 Sep 2020 16:50:46 GMT
+Received: from localhost (/67.169.218.210)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 02 Sep 2020 09:50:45 -0700
+Date:   Wed, 2 Sep 2020 09:50:44 -0700
+From:   "Darrick J. Wong" <darrick.wong@oracle.com>
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     linux-btrfs@vger.kernel.org, fstests@vger.kernel.org,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Subject: Re: [PATCH][v3 fstests: add generic/609 to test O_DIRECT|O_DSYNC
+Message-ID: <20200902165044.GE191798@magnolia>
+References: <f5ba8625d6277035b69e466f6ea87f19620f7fcb.1599058822.git.josef@toxicpanda.com>
+ <20200902160044.266690-1-josef@toxicpanda.com>
 MIME-Version: 1.0
-In-Reply-To: <20200902162944.GH6090@magnolia>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200902160044.266690-1-josef@toxicpanda.com>
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9732 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 adultscore=0 phishscore=0
+ malwarescore=0 bulkscore=0 mlxscore=0 mlxlogscore=999 suspectscore=1
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009020161
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9732 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 phishscore=0
+ mlxlogscore=999 adultscore=0 impostorscore=0 mlxscore=0 suspectscore=1
+ spamscore=0 clxscore=1015 malwarescore=0 lowpriorityscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009020161
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 9/2/20 12:29 PM, Darrick J. Wong wrote:
-> On Wed, Sep 02, 2020 at 07:10:08AM -0400, Josef Bacik wrote:
->> On 9/2/20 3:12 AM, Johannes Thumshirn wrote:
->>> On 02/09/2020 02:22, Josef Bacik wrote:
->>>> Instead now we have to rip
->>>> it out until we figure out what to do about it.
->>>
->>> I don't think we need to rip out the iomap conversion. We can
->>> take my fix albeit not pretty, until we have reworked the locking
->>> around ->fsync(). Probably with a big fat comment attached to it.
->>>
->>
->> We do, because your fix breaks DSYNC for AIO.  You didn't hit this with
->> direct io, you hit it with AIO, and the reason you hit it is because you are
->> on zram, so your bio's completed before we exited iomap_dio_rw.  So that was
->> the last put on the iomap_dio, and thus we ran
->> iomap_dio_complete() and deadlocked.  We can't just drop the DSYNC thing for
->> AIO because in the normal case where this doesn't happen we need to know
->> when the last thing is finished in order to run ->fsync(), we can't just run
->> it after submission.  Thanks,
+On Wed, Sep 02, 2020 at 12:00:44PM -0400, Josef Bacik wrote:
+> We had a problem recently where btrfs would deadlock with
+> O_DIRECT|O_DSYNC because of an unexpected dependency on ->fsync in
+> iomap.  This was only caught by chance with aiostress, because weirdly
+> we don't actually test this particular configuration anywhere in
+> xfstests.  Fix this by adding a basic test that just does
+> O_DIRECT|O_DSYNC writes.  With this test the box deadlocks right away
+> with Btrfs, which would have been helpful in finding this issue before
+> the patches were merged.
 > 
-> Bleh, Oracle mail (or vger or something) is being slow again...
+> Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> ---
+> v2->v3:
+> - This time with 609.out added, verified it passed with xfs.
 > 
-> It occurred to me that we added iomap_dio_ops.submit_io for the benefit
-> of btrfs.  Could we solve all this for now by adding a ->write_sync
-> function pointer to iomap_dio_ops that could lead back into a btrfs
-> function that would flush the necessary bits without itself taking the
-> inode lock?  And if a ->write_sync is not supplied, then the caller gets
-> generic_write_sync?
+>  tests/generic/609     | 43 +++++++++++++++++++++++++++++++++++++++++++
+>  tests/generic/609.out |  3 +++
+>  tests/generic/group   |  1 +
+>  3 files changed, 47 insertions(+)
+>  create mode 100755 tests/generic/609
+>  create mode 100644 tests/generic/609.out
 > 
-> It's kind of a bandaid, but maybe less bad of one than restructuring the
-> btrfs locking model under time pressure...
-> 
+> diff --git a/tests/generic/609 b/tests/generic/609
+> new file mode 100755
+> index 00000000..3d1c97b2
+> --- /dev/null
+> +++ b/tests/generic/609
+> @@ -0,0 +1,43 @@
+> +#! /bin/bash
+> +# SPDX-License-Identifier: GPL-2.0
+> +# Copyright (c) 2020 Josef Bacik.  All Rights Reserved.
+> +#
+> +# FS QA Test 609
+> +#
+> +# iomap can call generic_write_sync() if we're O_DSYNC, so write a basic test to
+> +# exercise O_DSYNC so any unsuspecting file systems will get lockdep warnings if
+> +# their locking isn't compatible.
+> +#
+> +seq=`basename $0`
+> +seqres=$RESULT_DIR/$seq
+> +echo "QA output created by $seq"
+> +
+> +here=`pwd`
+> +tmp=/tmp/$$
+> +status=1	# failure is the default!
+> +trap "_cleanup; exit \$status" 0 1 2 3 15
+> +
+> +_cleanup()
+> +{
+> +	cd /
+> +	rm -f $tmp.*
+> +	rm -rf $TEST_DIR/file
+> +}
+> +
+> +# get standard environment, filters and checks
+> +. ./common/rc
+> +. ./common/filter
+> +
+> +# remove previous $seqres.full before test
+> +rm -f $seqres.full
+> +
+> +# Modify as appropriate.
+> +_supported_fs generic
+> +_supported_os Linux
+> +_require_test
+> +_require_xfs_io_command "pwrite" "-DV"
+> +
+> +$XFS_IO_PROG -f -d -c "pwrite -D -V 1 0 4k"  $TEST_DIR/file | _filter_xfs_io
 
-I'd rather not mess around with the generic iomap stuff for this, coordinating 
-changes between generic and fs stuff is annoying enough as it is.  We've got a 
-strategy to work around this in btrfs so we don't have to rip out the iomap work 
-right now.  And then we'll rip out the workaround once we've reworked the 
-locking, since the locking stuff will require a fair bit of testing and soak 
-time to be sure it's safe.  Thanks,
+I wonder, does this also work if you did:
 
-Josef
+$XFS_IO_PROG -f -d -s -c 'pwrite 0 4k' $TEST_DIR/file
+
+In other words, can you reproduce the problem with good old pwrite() and
+a file descriptor opened O_SYNC?  Or do you specifically have to have
+pwritev2 with RWF_DSYNC?
+
+(I might also write 64k to future proof this testcase for the day when
+someone builds an fs that can only do 64k direct writes, but maybe
+that's crazy...)
+
+> +
+> +status=0
+> +exit
+> diff --git a/tests/generic/609.out b/tests/generic/609.out
+> new file mode 100644
+> index 00000000..db3242cb
+> --- /dev/null
+> +++ b/tests/generic/609.out
+> @@ -0,0 +1,3 @@
+> +QA output created by 609
+> +wrote 4096/4096 bytes at offset 0
+> +XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+> diff --git a/tests/generic/group b/tests/generic/group
+> index aa969bcb..ae2567a0 100644
+> --- a/tests/generic/group
+> +++ b/tests/generic/group
+> @@ -611,3 +611,4 @@
+>  606 auto attr quick dax
+>  607 auto attr quick dax
+>  608 auto attr quick dax
+> +609 auto quick
+
+This probably ought to be 'auto quick rw' since it's a write test.
+
+The rest of the logic looks sound to me though.
+
+--D
+
+> -- 
+> 2.28.0
+> 
