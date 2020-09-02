@@ -2,158 +2,157 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBA1E25B2B8
-	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Sep 2020 19:10:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 407BE25B2C9
+	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Sep 2020 19:15:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727852AbgIBRKl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 2 Sep 2020 13:10:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37400 "EHLO
+        id S1726521AbgIBROJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 2 Sep 2020 13:14:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726771AbgIBRKk (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 2 Sep 2020 13:10:40 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 945A1C061245
-        for <linux-btrfs@vger.kernel.org>; Wed,  2 Sep 2020 10:10:39 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id b14so388348qkn.4
-        for <linux-btrfs@vger.kernel.org>; Wed, 02 Sep 2020 10:10:39 -0700 (PDT)
+        with ESMTP id S1726269AbgIBROI (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 2 Sep 2020 13:14:08 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C040C061244
+        for <linux-btrfs@vger.kernel.org>; Wed,  2 Sep 2020 10:14:07 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id o64so354988qkb.10
+        for <linux-btrfs@vger.kernel.org>; Wed, 02 Sep 2020 10:14:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=/g6cqMHXVmB8wRLu+eAmzUbroOhh00B3gBSFyDzIicE=;
-        b=DefJW2zaytREjYgLyzG/oekWAAna2PFpCyMl4BZe0e+X1sUo6kvqwGMz768Hi77ZNH
-         dgnOsW84K6siZFmI12pcstm6O5st4CDN4uWBzv2EHOVI3YJhApKLJvS7f+xMvBDN2MCc
-         hPAhJHUVhEZMajfpFnSTVxoZx9qGZbxqzNvWI5cv6YzwUIB9D6loG3ieyZ+Da/rv95oq
-         K6HBK6JhW/+s4dXFxTAklCsPvAJcnVCT6b3l7mZzrhmmZ1u/rCuNK63q5A78FqeDSKc3
-         XQ8Fy5lvkBV8AWV7VkvXsNGm+vSzWuDry4b/RwZn3ljENtOmafkFWc81SQcFXQt3yfto
-         kCcQ==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=6adoTve9zeQPmdqINkyHkMTdb/f7HoBVJLeasaxAAQU=;
+        b=dq+3YFhVCrMIkB1NdUvEx+e2NH5BWf0IL/AJTynY5Z4e59EPGvkVb3IPiZuLzMR/k7
+         nIrpTVpo4r6HyUCE8pcUn5oxajQPGJxaoqeUFxpSSTNAcFkx0iIccdmw24P4PSz330ER
+         nMuNf8y+MXKSDcAWG6xip1vyUssF7K089ZWvf3uKDiQzBaVUSW0+Jjhb6gK7lcShBt/e
+         6SA0duNtx2Hs7kzjt+EvdPrFRgo6p6uHYzFswdiRWuf/zUlfj0jgy6OR6CeStrsHuLYu
+         noRjXc+LRAywxnPCFw/4j7XYUGc/DsHlPuTDQ3vdm1FsOeeDLNdFEjBqzt4EZSvgVYou
+         lmug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=/g6cqMHXVmB8wRLu+eAmzUbroOhh00B3gBSFyDzIicE=;
-        b=X8cfmMN2xqa29R7XOiTXNchUaq/EV9V5m98WFMNZODSFWM/M81ZM7oRssXfl9wfHgR
-         oyVTBF9N15DMjCUIG9uuBCjfpU8I+ZEUS3rZOr3lujxH5km388B15N3Nw+rsu7x+Pt7X
-         aOtkfZLCwJrWIEQA79aBSeClj52VEXX+i8aooP9fy+TEkT3pETu74udnN4hmwEiYLItz
-         b4eJ2CP+lbNcWDVC9qsF50cEdqE3rvvhr4HUI/2CbDCA8Cbzi5mW8QtBvA0YoUFvCSbH
-         h0xl8ZzSsSmHI8LUQbFCKJpVcAlQfhu161oYjY25Jz5UQmT6SkJlyUEKANd4fI+aRRPu
-         g9fw==
-X-Gm-Message-State: AOAM532ZjNxAmBGw2YOFs2AdUBWYJMZUoqkQ+kXLxiafQap3g25/4vKD
-        PIgpY8R92xiD+laDv9j4dos0K5eYjMBwtAz5JIQ=
-X-Google-Smtp-Source: ABdhPJxtXW0b5t8DfDSgLolp0STQChAoBvzb8QY2s5PLHeEZBTsV2GDhaSmvObNFg75A7/YysQlufw==
-X-Received: by 2002:a37:30d:: with SMTP id 13mr7933558qkd.44.1599066638237;
-        Wed, 02 Sep 2020 10:10:38 -0700 (PDT)
-Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id l1sm5067151qtp.96.2020.09.02.10.10.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Sep 2020 10:10:37 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=6adoTve9zeQPmdqINkyHkMTdb/f7HoBVJLeasaxAAQU=;
+        b=ZPpod27pzSYe3Z1/xEdh9znBS0uOnG/F3+yKTl3+LziOd/pEYAhqUQkplsNQF24Ayg
+         MlsY4GEcT0GD41HSAncb4CTCTMo/rwM4gy3ynBMMh33Gk+r13I3zJqqTqfXy+9TODk9l
+         rh/1c2Kjmr1rAq2wvmNdclGweGzIWwCfb+6aPz/qw3jEylvSLfw7Wjg0urR60eBcTzOl
+         qZrVo4t07YFO2jBfY5xENaYTw8oXIzaBgkV9nqk0r5ZASsvSfGPrcsxluB0FlSxqxmUH
+         LEegy0gFKB49pzMx3cqshARBRkdcFcVjQaRpXWvrsVETsAHJ5V+a82KgVQd6vQ8dmM79
+         IKyQ==
+X-Gm-Message-State: AOAM531uFIJTxI0mdcaFGfw8vj2uyigqfM30ag4uHwgF2NLqxx4yyNR4
+        mL6040xgSy6mYf+YmolWngzIDKuUUxxmLGpf7Go=
+X-Google-Smtp-Source: ABdhPJwWMMDrTEyOOpSWTy2X5Fd8pHUVdnU5lpydCR4BMCJvV4T79Ita0w8G70wIaTInny4EIy3j5w==
+X-Received: by 2002:a37:7dc4:: with SMTP id y187mr1843993qkc.325.1599066846653;
+        Wed, 02 Sep 2020 10:14:06 -0700 (PDT)
+Received: from [192.168.1.45] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id m30sm2444qtm.46.2020.09.02.10.14.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 02 Sep 2020 10:14:05 -0700 (PDT)
+Subject: Re: [PATCH] btrfs: allow single disk devices to mount with older
+ generations
+To:     Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com
+Cc:     Daan De Meyer <daandemeyer@fb.com>
+References: <6b1f037344cd8d24566f3d9873b820a73384242c.1598995167.git.josef@toxicpanda.com>
+ <779c5224-6726-9a8d-8eab-ffb610cd5ad1@oracle.com>
 From:   Josef Bacik <josef@toxicpanda.com>
-To:     linux-btrfs@vger.kernel.org, fstests@vger.kernel.org
-Cc:     Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Subject: [PATCH][v4] fstests: add generic/609 to test O_DIRECT|O_DSYNC
-Date:   Wed,  2 Sep 2020 13:10:36 -0400
-Message-Id: <20200902171036.273416-1-josef@toxicpanda.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <8e841e0e05934baaf6119363414440b271426a03.1599065695.git.josef@toxicpanda.com>
-References: <8e841e0e05934baaf6119363414440b271426a03.1599065695.git.josef@toxicpanda.com>
+Message-ID: <5a7f5cf7-c70f-8c6e-d402-381ca0d8a7e9@toxicpanda.com>
+Date:   Wed, 2 Sep 2020 13:14:05 -0400
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.12.0
 MIME-Version: 1.0
+In-Reply-To: <779c5224-6726-9a8d-8eab-ffb610cd5ad1@oracle.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-We had a problem recently where btrfs would deadlock with
-O_DIRECT|O_DSYNC because of an unexpected dependency on ->fsync in
-iomap.  This was only caught by chance with aiostress, because weirdly
-we don't actually test this particular configuration anywhere in
-xfstests.  Fix this by adding a basic test that just does
-O_DIRECT|O_DSYNC writes.  With this test the box deadlocks right away
-with Btrfs, which would have been helpful in finding this issue before
-the patches were merged.
+On 9/2/20 6:41 AM, Anand Jain wrote:
+> On 2/9/20 5:19 am, Josef Bacik wrote:
+>> We have this check to make sure we don't accidentally add older devices
+>> that may have disappeared and re-appeared with an older generation from
+>> being added to an fs_devices.  This makes sense, we don't want stale
+>> disks in our file system.  However for single disks this doesn't really
+>> make sense.  I've seen this in testing, but I was provided a reproducer
+>> from a project that builds btrfs images on loopback devices.  The
+>> loopback device gets cached with the new generation, and then if it is
+>> re-used to generate a new file system we'll fail to mount it because the
+>> new fs is "older" than what we have in cache.
+>>
+>> Fix this by simply ignoring this check if we're a single disk file
+>> system, as we're not going to cause problems for the fs by allowing the
+>> disk to be mounted with an older generation than what is in our cache.
+>>
+>> I've also added a error message for this case, as it was kind of
+>> annoying to find originally.
+>>
+>> Reported-by: Daan De Meyer <daandemeyer@fb.com>
+>> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+>> ---
+>>   fs/btrfs/volumes.c | 8 +++++++-
+>>   1 file changed, 7 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+>> index 77b7da42c651..eb2cc27ef602 100644
+>> --- a/fs/btrfs/volumes.c
+>> +++ b/fs/btrfs/volumes.c
+>> @@ -786,6 +786,7 @@ static noinline struct btrfs_device *device_list_add(const 
+>> char *path,
+>>       struct rcu_string *name;
+>>       u64 found_transid = btrfs_super_generation(disk_super);
+>>       u64 devid = btrfs_stack_device_id(&disk_super->dev_item);
+>> +    bool multi_disk = btrfs_super_num_devices(disk_super) > 1;
+>>       bool has_metadata_uuid = (btrfs_super_incompat_flags(disk_super) &
+>>           BTRFS_FEATURE_INCOMPAT_METADATA_UUID);
+>>       bool fsid_change_in_progress = (btrfs_super_flags(disk_super) &
+>> @@ -914,7 +915,8 @@ static noinline struct btrfs_device *device_list_add(const 
+>> char *path,
+>>            * tracking a problem where systems fail mount by subvolume id
+>>            * when we reject replacement on a mounted FS.
+>>            */
+>> -        if (!fs_devices->opened && found_transid < device->generation) {
+>> +        if (multi_disk && !fs_devices->opened &&
+>> +            found_transid < device->generation) {
+>>               /*
+>>                * That is if the FS is _not_ mounted and if you
+>>                * are here, that means there is more than one
+>> @@ -922,6 +924,10 @@ static noinline struct btrfs_device 
+>> *device_list_add(const char *path,
+>>                * with larger generation number or the last-in if
+>>                * generation are equal.
+>>                */
+>> +            btrfs_warn_in_rcu(device->fs_info,
+>> +          "old device %s not being added for fsid:devid for %pU:%llu",
+>> +                      rcu_str_deref(device->name),
+>> +                      disk_super->fsid, devid);
+>>               mutex_unlock(&fs_devices->device_list_mutex);
+>>               return ERR_PTR(-EEXIST);
+>>           }
+>>
+> 
+> After the patch - that means if there are two identical but different
+> generation images/disks and if the systemd auto-scans both of them,
+> the scan will race and the last scanned disk/image will mount
+> successfully. Whereas before the patch- the disk/image with the larger
+> generation always won (even in single disk FS).
+> 
+> Are we ok with this? IMO the last scanned gets mounted is also kind of fair.
+> 
+> Internally I had a similar reported. I just told them to use
+>   btrfs device scan --forget
+> and try. It worked.
+> 
+> 
+> Reviewed-by: Anand Jain <anand.jain@oracle.com>
+> 
 
-Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
----
-v3->v4:
-- Trying to see how many times I can fuck this thing up.
-- Simplified the xfs_io command per Darrick's suggestion.
-- Added it to the rw group.
+Yeah it's kind of wonky, really I just want to make the "surprise! this doesn't 
+work" aspect of this go away.  There's some cases where you really just need to 
+do btrfs device scan --forget, and that'll be ok.  But for the basic "I mounted 
+this, and then blew everything away, and then tried to mount the old version", I 
+want it to work without being weird.  Thanks,
 
- tests/generic/609     | 43 +++++++++++++++++++++++++++++++++++++++++++
- tests/generic/609.out |  3 +++
- tests/generic/group   |  1 +
- 3 files changed, 47 insertions(+)
- create mode 100755 tests/generic/609
- create mode 100644 tests/generic/609.out
-
-diff --git a/tests/generic/609 b/tests/generic/609
-new file mode 100755
-index 00000000..6c74ae63
---- /dev/null
-+++ b/tests/generic/609
-@@ -0,0 +1,43 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright (c) 2020 Josef Bacik.  All Rights Reserved.
-+#
-+# FS QA Test 609
-+#
-+# iomap can call generic_write_sync() if we're O_DSYNC, so write a basic test to
-+# exercise O_DSYNC so any unsuspecting file systems will get lockdep warnings if
-+# their locking isn't compatible.
-+#
-+seq=`basename $0`
-+seqres=$RESULT_DIR/$seq
-+echo "QA output created by $seq"
-+
-+here=`pwd`
-+tmp=/tmp/$$
-+status=1	# failure is the default!
-+trap "_cleanup; exit \$status" 0 1 2 3 15
-+
-+_cleanup()
-+{
-+	cd /
-+	rm -f $tmp.*
-+	rm -rf $TEST_DIR/file
-+}
-+
-+# get standard environment, filters and checks
-+. ./common/rc
-+. ./common/filter
-+
-+# remove previous $seqres.full before test
-+rm -f $seqres.full
-+
-+# Modify as appropriate.
-+_supported_fs generic
-+_supported_os Linux
-+_require_test
-+_require_xfs_io_command "pwrite"
-+
-+$XFS_IO_PROG -f -d -s -c "pwrite 0 64k" $TEST_DIR/file | _filter_xfs_io
-+
-+status=0
-+exit
-diff --git a/tests/generic/609.out b/tests/generic/609.out
-new file mode 100644
-index 00000000..111c7fe9
---- /dev/null
-+++ b/tests/generic/609.out
-@@ -0,0 +1,3 @@
-+QA output created by 609
-+wrote 65536/65536 bytes at offset 0
-+XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-diff --git a/tests/generic/group b/tests/generic/group
-index aa969bcb..ae2567a0 100644
---- a/tests/generic/group
-+++ b/tests/generic/group
-@@ -611,3 +611,4 @@
- 606 auto attr quick dax
- 607 auto attr quick dax
- 608 auto attr quick dax
-+609 auto quick rw
--- 
-2.28.0
-
+Josef
