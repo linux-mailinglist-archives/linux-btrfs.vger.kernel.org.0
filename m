@@ -2,122 +2,172 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42B7525B399
-	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Sep 2020 20:19:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DC9025B3A6
+	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Sep 2020 20:22:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726858AbgIBST1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 2 Sep 2020 14:19:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47994 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726247AbgIBST0 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 2 Sep 2020 14:19:26 -0400
-Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF45DC061244
-        for <linux-btrfs@vger.kernel.org>; Wed,  2 Sep 2020 11:19:26 -0700 (PDT)
-Received: by mail-il1-x12e.google.com with SMTP id t16so31978ilf.13
-        for <linux-btrfs@vger.kernel.org>; Wed, 02 Sep 2020 11:19:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=vEQQX4uMCwDnc4vtNsriROjtdua6NHjnOXbxeJbFXyQ=;
-        b=amI4qDvswUR8gUCM0Fdd3BRCPNq7eGMj85oSUJD4bHP04E3kAHQEu59oRiq49ws0MN
-         2nqsF3MKTk58q5pPJ+Lphxg0/DZcfQ4J1O3oHmUeDUYuQ8HytJYgOZpeR72xl1IgQTrZ
-         C8IFA1NBb3b9At2HQ0I1jxzKwB/FgXISqq65xxH9RDzZ/IzJ962QzSh7ikprNHUNmzlT
-         FmrKr5dx+KnOSmiLxL21s+u3iqIWDqxd9XTo6W9EeEIZqrNEscWHPP++GLyR0XvXP67B
-         +DqKXJTx8abSVdbiN1Zu+DA90E+ge6g/zqbZTp+PtZCpYtFa6CJxw1dri3BaLoySaI78
-         am9g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=vEQQX4uMCwDnc4vtNsriROjtdua6NHjnOXbxeJbFXyQ=;
-        b=bvrOL1L+hpy9YVQXSvze0UTHs6mSUTgkdArFkzIwGXay3vxEQ7S6cOFJwEBMP5hG4W
-         Z9fiN0XQmgX103mT3l39m1VjdLzQK+oWq7A0xIox0jkX7TApkZaMDNkOK2+9IW4lx9zn
-         yAhimE90AFganQiO3ZiWK9299uxVro9dNqsDxtbCuKZKPwkINbjcJ3gEv5Iyf0TmHs+6
-         6y3iznGkNTrPyEskIZXdtH6a/Ud2/9gFPC0iYBoLLCSRm5N1ZvnL0GsSVGnRaLsUf6PF
-         Z90lUA8ZQZtyZZziu8zS/FPaee1XbWy4znbGCeYMjwquGhuLLuw2eLJuns2ftI6eqYQf
-         Vc+Q==
-X-Gm-Message-State: AOAM5327HjAIrNFf8yjXJ1dqxgS5sVFlBNAjYNai0kFN56LodI3U+5oP
-        ggScgqX1Se7QDmc1FhPgLAZnT2nSU9+ulsGWmE5rRalSuc625k9F
-X-Google-Smtp-Source: ABdhPJzNr40fJw4PrU7gnnnu9GVkrEYtTgQT4VL2Cd/kzdevHmUCXeglWkKyTTC4Njr50GWuB2iPHQ7QibkPeTvnDss=
-X-Received: by 2002:a92:d482:: with SMTP id p2mr685469ilg.9.1599070766098;
- Wed, 02 Sep 2020 11:19:26 -0700 (PDT)
-MIME-Version: 1.0
-References: <CAEg-Je8OsZjWU_ZyLJHrbOJb=_C56MOmJ5w8UUbzz3JNuAi5Ow@mail.gmail.com>
- <b9ceb790-e376-69b8-0648-56c9a026b40c@toxicpanda.com>
-In-Reply-To: <b9ceb790-e376-69b8-0648-56c9a026b40c@toxicpanda.com>
-From:   Neal Gompa <ngompa13@gmail.com>
-Date:   Wed, 2 Sep 2020 14:18:50 -0400
-Message-ID: <CAEg-Je8YbAh+945EzjruJUfx08mfw99XGbZcGO+YZy=ggb0yEw@mail.gmail.com>
-Subject: Re: About the state of Btrfs RAID 5/6
+        id S1727977AbgIBSWF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 2 Sep 2020 14:22:05 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:55010 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726310AbgIBSWD (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 2 Sep 2020 14:22:03 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 082I9eVZ094919;
+        Wed, 2 Sep 2020 18:22:02 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=cmKMfdGiIE4tNXnhVXVNmnTi1MSq2Jql+jhofTKa+9c=;
+ b=un5sTMJ7/WBFSj+eJRyAXzbAdG8d0XqKMB9Vor8aztCyLJrGrm61jT/Y6xqP7EAemAl5
+ 6DyTVhfnxJfE1pyju5KJrgncclkvqeg19W8QoORHVCU5oSbNZDHTiy39OjRKtBfaHc1i
+ XIckAlmfRhw98pgWkIcj241sZYLQJNE0Bqc3/iPqRmTInlsz+CCERRwpHml8W1YOiqLI
+ BQ+aXDXpbM7oSNJPXDcGPh1sDHpra5pnkO/gxmi2LrfxUmIypG6U1lFgPdBlpCi16DCg
+ iAtQ7QWQhNfuOtE9EzITNJ9uQ8aej4WTeagSChiVp73Q6LArSrAtTBYzMfBTnE2mHy29 zA== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2120.oracle.com with ESMTP id 339dmn2vgy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 02 Sep 2020 18:22:01 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 082I9kfq040335;
+        Wed, 2 Sep 2020 18:22:01 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3030.oracle.com with ESMTP id 3380y06bw3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 02 Sep 2020 18:22:01 +0000
+Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 082IM0VT029620;
+        Wed, 2 Sep 2020 18:22:00 GMT
+Received: from localhost (/67.169.218.210)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 02 Sep 2020 11:22:00 -0700
+Date:   Wed, 2 Sep 2020 11:21:59 -0700
+From:   "Darrick J. Wong" <darrick.wong@oracle.com>
 To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
-        David Sterba <dsterba@suse.com>,
-        Robbie Ko <robbieko@synology.com>,
-        Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        Chris Murphy <lists@colorremedies.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Cc:     linux-btrfs@vger.kernel.org, fstests@vger.kernel.org,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Subject: Re: [PATCH][v4] fstests: add generic/609 to test O_DIRECT|O_DSYNC
+Message-ID: <20200902182159.GB6084@magnolia>
+References: <8e841e0e05934baaf6119363414440b271426a03.1599065695.git.josef@toxicpanda.com>
+ <20200902171036.273416-1-josef@toxicpanda.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200902171036.273416-1-josef@toxicpanda.com>
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9732 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 adultscore=0 phishscore=0
+ malwarescore=0 bulkscore=0 mlxscore=0 mlxlogscore=999 suspectscore=1
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009020171
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9732 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 phishscore=0
+ mlxlogscore=999 adultscore=0 impostorscore=0 mlxscore=0 suspectscore=1
+ spamscore=0 clxscore=1015 malwarescore=0 lowpriorityscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009020171
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Sep 2, 2020 at 1:37 PM Josef Bacik <josef@toxicpanda.com> wrote:
->
-> On 9/2/20 11:10 AM, Neal Gompa wrote:
-> > Hey all,
-> >
-> > It keeps coming up over and over: "Btrfs RAID 5/6 is bad, therefore
-> > Btrfs is bad". I know in practice that most people don't use the
-> > raid56 modes for various reasons that are unrelated to this, but it's
-> > frustrating and annoying that it keeps coming up.
-> >
-> > I know that Zygo recently posted about how to use RAID 5/6
-> > successfully(-ish)[1], and previously David Sterba tried to work on
-> > this[2]. The result of that was the new raid1cX modes, but we still
-> > have the raid56 modes.
-> >
-> > What's holding back Btrfs raid56 from having its status[3] updated
-> > from "Unstable" to "mostly OK" or even "OK"? I know that Synology NAS
-> > devices use Btrfs and support raid56 using mdraid, why not fix the
-> > native RAID features so that layer can be dropped?
-> >
->
-> Honestly there's just a lot of things that need to be looked at right now=
-.  Poor
-> Zygo is waiting on the delayed refs flushing work I did months ago becaus=
-e I
-> still haven't gotten back to fixing relocation.
->
-> At the moment my core priority is getting all the normal parts of the fil=
-e
-> system working properly, and I've got probably 18 months of hell left bef=
-ore I
-> feel like I'll be able to look up and address the multi-disk aspect of bt=
-rfs.
-> RAID0/1/cX modes all work well and are well understood, and that feels "g=
-ood
-> enough" to me for right now.  I know Johannes is working on something mag=
-ical,
-> but IDK what it is or how far out it is.  Thanks,
->
+On Wed, Sep 02, 2020 at 01:10:36PM -0400, Josef Bacik wrote:
+> We had a problem recently where btrfs would deadlock with
+> O_DIRECT|O_DSYNC because of an unexpected dependency on ->fsync in
+> iomap.  This was only caught by chance with aiostress, because weirdly
+> we don't actually test this particular configuration anywhere in
+> xfstests.  Fix this by adding a basic test that just does
+> O_DIRECT|O_DSYNC writes.  With this test the box deadlocks right away
+> with Btrfs, which would have been helpful in finding this issue before
+> the patches were merged.
+> 
+> Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 
-That's fair. I just want to have a better idea of what's in the
-pipeline here so I can figure out my messaging and roadmap in Fedora.
+Looks fine to me, thanks!  Sorry about Yet Another Iomap Dustup. :(
 
-Downstream in Fedora, we have a tracking item for documenting that
-raid56 should not be used at this time[1], and I just want to collect
-information for the purpose of providing a more complete picture as
-part of the documentation. Today, Anaconda will not expose the ability
-to create raid56 btrfs anyway, so people using that configuration will
-be relatively rare. But having a good story about it is something I'd
-like to have, if possible.
+Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
 
-[1]: https://pagure.io/fedora-btrfs/project/issue/13
+--D
 
---=20
-=E7=9C=9F=E5=AE=9F=E3=81=AF=E3=81=84=E3=81=A4=E3=82=82=E4=B8=80=E3=81=A4=EF=
-=BC=81/ Always, there's only one truth!
+> ---
+> v3->v4:
+> - Trying to see how many times I can fuck this thing up.
+> - Simplified the xfs_io command per Darrick's suggestion.
+> - Added it to the rw group.
+> 
+>  tests/generic/609     | 43 +++++++++++++++++++++++++++++++++++++++++++
+>  tests/generic/609.out |  3 +++
+>  tests/generic/group   |  1 +
+>  3 files changed, 47 insertions(+)
+>  create mode 100755 tests/generic/609
+>  create mode 100644 tests/generic/609.out
+> 
+> diff --git a/tests/generic/609 b/tests/generic/609
+> new file mode 100755
+> index 00000000..6c74ae63
+> --- /dev/null
+> +++ b/tests/generic/609
+> @@ -0,0 +1,43 @@
+> +#! /bin/bash
+> +# SPDX-License-Identifier: GPL-2.0
+> +# Copyright (c) 2020 Josef Bacik.  All Rights Reserved.
+> +#
+> +# FS QA Test 609
+> +#
+> +# iomap can call generic_write_sync() if we're O_DSYNC, so write a basic test to
+> +# exercise O_DSYNC so any unsuspecting file systems will get lockdep warnings if
+> +# their locking isn't compatible.
+> +#
+> +seq=`basename $0`
+> +seqres=$RESULT_DIR/$seq
+> +echo "QA output created by $seq"
+> +
+> +here=`pwd`
+> +tmp=/tmp/$$
+> +status=1	# failure is the default!
+> +trap "_cleanup; exit \$status" 0 1 2 3 15
+> +
+> +_cleanup()
+> +{
+> +	cd /
+> +	rm -f $tmp.*
+> +	rm -rf $TEST_DIR/file
+> +}
+> +
+> +# get standard environment, filters and checks
+> +. ./common/rc
+> +. ./common/filter
+> +
+> +# remove previous $seqres.full before test
+> +rm -f $seqres.full
+> +
+> +# Modify as appropriate.
+> +_supported_fs generic
+> +_supported_os Linux
+> +_require_test
+> +_require_xfs_io_command "pwrite"
+> +
+> +$XFS_IO_PROG -f -d -s -c "pwrite 0 64k" $TEST_DIR/file | _filter_xfs_io
+> +
+> +status=0
+> +exit
+> diff --git a/tests/generic/609.out b/tests/generic/609.out
+> new file mode 100644
+> index 00000000..111c7fe9
+> --- /dev/null
+> +++ b/tests/generic/609.out
+> @@ -0,0 +1,3 @@
+> +QA output created by 609
+> +wrote 65536/65536 bytes at offset 0
+> +XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+> diff --git a/tests/generic/group b/tests/generic/group
+> index aa969bcb..ae2567a0 100644
+> --- a/tests/generic/group
+> +++ b/tests/generic/group
+> @@ -611,3 +611,4 @@
+>  606 auto attr quick dax
+>  607 auto attr quick dax
+>  608 auto attr quick dax
+> +609 auto quick rw
+> -- 
+> 2.28.0
+> 
