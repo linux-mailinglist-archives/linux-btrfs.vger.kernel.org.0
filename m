@@ -2,95 +2,130 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C448625B574
-	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Sep 2020 22:46:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7F6525B571
+	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Sep 2020 22:45:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726312AbgIBUqL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 2 Sep 2020 16:46:11 -0400
-Received: from mx2.suse.de ([195.135.220.15]:36910 "EHLO mx2.suse.de"
+        id S1726298AbgIBUpW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 2 Sep 2020 16:45:22 -0400
+Received: from mx2.suse.de ([195.135.220.15]:36740 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726285AbgIBUqJ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 2 Sep 2020 16:46:09 -0400
+        id S1726285AbgIBUpV (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 2 Sep 2020 16:45:21 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 4B22DAD3C;
-        Wed,  2 Sep 2020 20:46:08 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id BBEEADA703; Wed,  2 Sep 2020 22:44:54 +0200 (CEST)
-Date:   Wed, 2 Sep 2020 22:44:53 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Boris Burkov <boris@bur.io>
-Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com
-Subject: Re: [PATCH] btrfs-progs: support free space tree in mkfs
-Message-ID: <20200902204453.GN28318@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Boris Burkov <boris@bur.io>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com
-References: <0366b5e12a7e6f95d9f274df52f32231dcbe8b05.1599072541.git.boris@bur.io>
+        by mx2.suse.de (Postfix) with ESMTP id 63C63AD3C;
+        Wed,  2 Sep 2020 20:45:21 +0000 (UTC)
+Date:   Wed, 2 Sep 2020 15:45:16 -0500
+From:   Goldwyn Rodrigues <rgoldwyn@suse.de>
+To:     dsterba@suse.cz, linux-btrfs@vger.kernel.org,
+        Goldwyn Rodrigues <rgoldwyn@suse.com>
+Subject: Re: [PATCH 4/4] btrfs-progs: Enqueue command if it can't be
+ performed immediately
+Message-ID: <20200902204516.poralnz3skht5myn@fiona>
+References: <20200825150233.30294-1-rgoldwyn@suse.de>
+ <20200825150338.32610-1-rgoldwyn@suse.de>
+ <20200825150338.32610-4-rgoldwyn@suse.de>
+ <20200902141117.GK28318@twin.jikos.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <0366b5e12a7e6f95d9f274df52f32231dcbe8b05.1599072541.git.boris@bur.io>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <20200902141117.GK28318@twin.jikos.cz>
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Sep 02, 2020 at 11:50:49AM -0700, Boris Burkov wrote:
-> Add a runtime feature (-R) flag for the free space tree. A filesystem
-> that is mkfs'd with -R free-space-tree then mounted with no options has
-> the same contents as one mkfs'd without the option, then mounted with
-> '-o space_cache=v2'.
+On 16:11 02/09, David Sterba wrote:
+> On Tue, Aug 25, 2020 at 10:03:38AM -0500, Goldwyn Rodrigues wrote:
+> > From: Goldwyn Rodrigues <rgoldwyn@suse.com>
+> > 
+> > Wait for the current exclusive operation to finish before issuing the
+> > command ioctl, so we have a better chance of success.
+> > 
+> > Q: The resize argument parsing is hackish. Is there a better way to do
+> > this?
 > 
-> The only tricky thing is in exactly how to call the tree creation code.
-> Using btrfs_create_free_space_tree as is did not quite work, because an
-> extra reference to the eb (root->commit_root) is leaked, which mkfs
-> complains about with a warning. I opted to follow how the uuid tree is
-> created by adding it to the dirty roots list for cleanup by
-> commit_tree_roots in commit_transaction. As a result,
-> btrfs_create_free_space_tree no longer exactly matches the version in
-> the kernel sources.
+> You mean parsing in kernel? Progs pass the 1st non-option parameter
+> without changes, so if you add a new option, the -- separator needs to
+> be used to make sure the relative size update (eg. -1G) is properly
+> recognized. This is built in already and should not require anything
+> special on the option parsing side.
+
+Particularly the example you mention, -1G. You answered it as well :)
+
 > 
-> Signed-off-by: Boris Burkov <boris@bur.io>
-
-Thanks.
-
-> ---
->  common/fsfeatures.c             | 3 +++
->  common/fsfeatures.h             | 3 ++-
->  kernel-shared/disk-io.c         | 5 +++++
->  kernel-shared/free-space-tree.c | 1 +
->  mkfs/main.c                     | 8 ++++++++
->  5 files changed, 19 insertions(+), 1 deletion(-)
+> > --- a/cmds/device.c
+> > +++ b/cmds/device.c
+> > @@ -49,6 +49,7 @@ static const char * const cmd_device_add_usage[] = {
+> >  	"",
+> >  	"-K|--nodiscard    do not perform whole device TRIM on devices that report such capability",
+> >  	"-f|--force        force overwrite existing filesystem on the disk",
+> > +	"-q|--enqueue	   enqueue if an exclusive operation is running",
 > 
-> diff --git a/common/fsfeatures.c b/common/fsfeatures.c
-> index 48ab37ca..3bebc97f 100644
-> --- a/common/fsfeatures.c
-> +++ b/common/fsfeatures.c
-> @@ -107,6 +107,9 @@ static const struct btrfs_feature runtime_features[] = {
->  	{ "quota", BTRFS_RUNTIME_FEATURE_QUOTA, NULL,
->  		VERSION_TO_STRING2(3, 4), NULL, 0, NULL, 0,
->  		"quota support (qgroups)" },
-> +	{ "free-space-tree", BTRFS_RUNTIME_FEATURE_FREE_SPACE_TREE, NULL,
-> +		VERSION_TO_STRING2(4, 5), NULL, 0, NULL, 0,
-> +		"free space tree (space_cache=v2)" },
+> Short for -q should not be used due to confusion with --quiet. Also I
+> think that --enqueue is not a common action that would need a short
+> option, the long option is always safe.
 
-The unfilled items are: sysfs file (we have that, free_space_tree), the
-safe version is 4.9 (that's where the FREE_SPACE_TREE_VALID bit comes
-from).
+Yes, and --quit as well. However, just --enqueue is fine.
 
-I've run the mkfs tests with the -R flag and all passed, so I'll enable
-it in the CI script, with the fixes mentioned above.
+> 
+> > --- a/common/sysfs.c
+> > +++ b/common/sysfs.c
+> > @@ -50,3 +50,29 @@ int get_exclusive_operation(int mp_fd, char *val)
+> >  	val[n - 1] = '\0';
+> >  	return n;
+> >  }
+> > +
+> > +int sysfs_wait(int fd, int seconds)
+> > +{
+> > +	fd_set fds;
+> > +	struct timeval tv;
+> > +
+> > +	FD_ZERO(&fds);
+> > +	FD_SET(fd, &fds);
+> > +
+> > +	tv.tv_sec = seconds;
+> > +	tv.tv_usec = 0;
+> > +
+> > +	return select(fd+1, NULL, NULL, &fds, &tv);
+> 
+> With the short sleep times, do we need to wait using select? Yes this
+> would return once the notification event is sent but as the sleep time
+> is 1 second, it could simply be sleep(1) unconditionally.
 
-We should still have a separate test, similar to what
-mkfs/021-rfeatures-quota-rootdir does but this time the presence of the
-feature should be checked at least after mkfs (by inspect+dump-super)
-and conditionally by mount in case the kernel supports it.
+Yes, the kernel provides the sysfs notification. We could sys_wait() for
+longer (with a higher wait parameter) and yet the function would return
+the moment the kernel notifies the change. I know we are not using it
+now, but it is better to use robust interfaces when a event notification
+is provided by the kernel.
 
-Last but not least the documentation should be updated for mkfs in the
-section 'RUNTIME FEATURES'. Thanks.
+> 
+> > +}
+> > +
+> > +void wait_for_exclusive_operation(int dirfd)
+> > +{
+> > +        char exop[BTRFS_SYSFS_EXOP_SIZE];
+> > +	int fd;
+> > +
+> > +        fd = sysfs_open(dirfd, "exclusive_operation");
+> > +        while ((sysfs_get_str_fd(fd, exop, BTRFS_SYSFS_EXOP_SIZE) > 0) &&
+> > +		strncmp(exop, "none", 4))
+> > +			sysfs_wait(fd, 1);
+> > +	close(fd);
+> > +}
+> > diff --git a/common/utils.h b/common/utils.h
+> > index be8aab58..f141edb6 100644
+> > --- a/common/utils.h
+> > +++ b/common/utils.h
+> > @@ -155,5 +155,6 @@ int btrfs_warn_multiple_profiles(int fd);
+> >  
+> >  #define BTRFS_SYSFS_EXOP_SIZE		16
+> >  int get_exclusive_operation(int fd, char *val);
+> > +void wait_for_exclusive_operation(int fd);
+> >  
+> >  #endif
+> > -- 
+> > 2.26.2
+
+-- 
+Goldwyn
