@@ -2,25 +2,25 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D918625A74E
-	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Sep 2020 10:05:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9B2B25A825
+	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Sep 2020 10:59:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726285AbgIBIEZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 2 Sep 2020 04:04:25 -0400
-Received: from mx2.suse.de ([195.135.220.15]:56634 "EHLO mx2.suse.de"
+        id S1726377AbgIBI7B (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 2 Sep 2020 04:59:01 -0400
+Received: from mx2.suse.de ([195.135.220.15]:36510 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726140AbgIBIEY (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 2 Sep 2020 04:04:24 -0400
+        id S1726167AbgIBI7B (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 2 Sep 2020 04:59:01 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 81FC6AE9D;
-        Wed,  2 Sep 2020 08:04:23 +0000 (UTC)
-Subject: Re: [PATCH 3/4] btrfs: kill the rcu protection for
- fs_info->space_info
+        by mx2.suse.de (Postfix) with ESMTP id A3378B685;
+        Wed,  2 Sep 2020 08:59:00 +0000 (UTC)
+Subject: Re: [PATCH] btrfs: allow single disk devices to mount with older
+ generations
 To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
         kernel-team@fb.com
-References: <cover.1598996236.git.josef@toxicpanda.com>
- <a88fca8411a0b1f5bc25926a4489b07af0f65ffa.1598996236.git.josef@toxicpanda.com>
+Cc:     Daan De Meyer <daandemeyer@fb.com>
+References: <6b1f037344cd8d24566f3d9873b820a73384242c.1598995167.git.josef@toxicpanda.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  xsFNBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -64,12 +64,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  KIuxEcV8wcVjr+Wr9zRl06waOCkgrQbTPp631hToxo+4rA1jiQF2M80HAet65ytBVR2pFGZF
  zGYYLqiG+mpUZ+FPjxk9kpkRYz61mTLSY7tuFljExfJWMGfgSg1OxfLV631jV1TcdUnx+h3l
  Sqs2vMhAVt14zT8mpIuu2VNxcontxgVr1kzYA/tQg32fVRbGr449j1gw57BV9i0vww==
-Message-ID: <516f738c-1dfa-f783-18e7-835cee6a7ef7@suse.com>
-Date:   Wed, 2 Sep 2020 11:04:20 +0300
+Message-ID: <333ef0d3-d026-acce-78be-ab6bac6d95a0@suse.com>
+Date:   Wed, 2 Sep 2020 11:58:58 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <a88fca8411a0b1f5bc25926a4489b07af0f65ffa.1598996236.git.josef@toxicpanda.com>
+In-Reply-To: <6b1f037344cd8d24566f3d9873b820a73384242c.1598995167.git.josef@toxicpanda.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -80,12 +80,26 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2.09.20 г. 0:40 ч., Josef Bacik wrote:
-> We have this thing wrapped in an rcu lock, but it's really not needed.
-> We create all the space_info's on mount, and we destroy them on unmount.
-> The list never changes and we're protected from messing with it by the
-> normal mount/umount path, so kill the RCU stuff around it.
+On 2.09.20 г. 0:19 ч., Josef Bacik wrote:
+> We have this check to make sure we don't accidentally add older devices
+> that may have disappeared and re-appeared with an older generation from
+> being added to an fs_devices.  This makes sense, we don't want stale
+> disks in our file system.  However for single disks this doesn't really
+> make sense.  I've seen this in testing, but I was provided a reproducer
+> from a project that builds btrfs images on loopback devices.  The
+> loopback device gets cached with the new generation, and then if it is
+> re-used to generate a new file system we'll fail to mount it because the
+> new fs is "older" than what we have in cache.
 > 
+> Fix this by simply ignoring this check if we're a single disk file
+> system, as we're not going to cause problems for the fs by allowing the
+> disk to be mounted with an older generation than what is in our cache.
+> 
+> I've also added a error message for this case, as it was kind of
+> annoying to find originally.
+> 
+> Reported-by: Daan De Meyer <daandemeyer@fb.com>
 > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> ---
 
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+Since you've got a reproducer is it possible to turn this into an fstests?
