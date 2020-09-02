@@ -2,183 +2,204 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA88D25B21F
-	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Sep 2020 18:53:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D77CA25B29F
+	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Sep 2020 19:05:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728219AbgIBQwz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 2 Sep 2020 12:52:55 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:40814 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726938AbgIBQwv (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 2 Sep 2020 12:52:51 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 082Gnl4o153969;
-        Wed, 2 Sep 2020 16:52:47 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=jxr21YykYZKdullgKkPHFfg+o0ZD8pj+EE1nxrBvYr8=;
- b=YGtPF4fP8Hn+/VT3GSH7KJB+wzo6IZcu9uFbTR/KNIdguSiFdQ6P+Mrqqwyc4eXKmmqK
- 9ufDRsdhUy/JIbuIY4Y8gbIkZO3l2NUvZd9LmeapKDLwByNIT41qEjo2veKFQF+cTL/x
- wGWCsjoCoyW5J+d1KhfAZhtd2SHHN7hgH0wRzXpf2mAE6lh5rovPttId61+bes0bNgdR
- N9v/gnTiaL9j9Lw5mC8bRncJa4u24DRxVnKSDTPM+UQkIICRMbcRKvW2qBzCOxr/x1Tg
- y8/LVbp2HCQhxzFcuKUQt16Vg7qSG0d0jlmcZnd0awDellpIcMcji4fdRod/HNfPsBoL zw== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2120.oracle.com with ESMTP id 339dmn2ag8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 02 Sep 2020 16:52:47 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 082GnjAS137913;
-        Wed, 2 Sep 2020 16:50:47 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3030.oracle.com with ESMTP id 3380y021ae-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 02 Sep 2020 16:50:46 +0000
-Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 082Gojd7016554;
-        Wed, 2 Sep 2020 16:50:46 GMT
-Received: from localhost (/67.169.218.210)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 02 Sep 2020 09:50:45 -0700
-Date:   Wed, 2 Sep 2020 09:50:44 -0700
-From:   "Darrick J. Wong" <darrick.wong@oracle.com>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-btrfs@vger.kernel.org, fstests@vger.kernel.org,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Subject: Re: [PATCH][v3 fstests: add generic/609 to test O_DIRECT|O_DSYNC
-Message-ID: <20200902165044.GE191798@magnolia>
-References: <f5ba8625d6277035b69e466f6ea87f19620f7fcb.1599058822.git.josef@toxicpanda.com>
- <20200902160044.266690-1-josef@toxicpanda.com>
+        id S1726269AbgIBRDy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 2 Sep 2020 13:03:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36314 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728216AbgIBRDu (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 2 Sep 2020 13:03:50 -0400
+Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EC6BC061245
+        for <linux-btrfs@vger.kernel.org>; Wed,  2 Sep 2020 10:03:49 -0700 (PDT)
+Received: by mail-qv1-xf42.google.com with SMTP id o2so2537150qvk.6
+        for <linux-btrfs@vger.kernel.org>; Wed, 02 Sep 2020 10:03:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=e+oALn4aqSmROLT+VxjsY66j3/hBoe5K1t3AGWj4s84=;
+        b=MzN16LBud4anPVdSKQ91PIPcLMzBqdlzePpF1PoBodluMvaX+mRzBnGearE1eE+eCT
+         BX5iblJ8VZ7d5dhaJb7wAT4HslOVPiS+w680k5jhVDF3TUk6o6mSqlxZZVD6XDbTwBVo
+         xAKCPjtJJDMv+wN+a5zn+ool0Hpwerj/iqSZJe+6WIzYZ/sqSczl4aYTmdbK+Ynw34IM
+         pgIYYMcBKUlTDjzooYp60tNAelqprBTNigqMB3TCZQEfmp2ilVkD26NoOz530TipT8qL
+         PbRZvkq+CT/E7h/p5dc2OM5jJG4hJCgUagEQsdM3GRhr6r6UON6LIwcJXST49WD6X31u
+         HVMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=e+oALn4aqSmROLT+VxjsY66j3/hBoe5K1t3AGWj4s84=;
+        b=GYcPUoUS12SaOX1o7zS0pqcK0aMjDtcGAG1NkkuckSXvQ+RAbSOhE+erUJvxDHgUGf
+         2MaSumQWmVCnKCegfnWfID0+N4X3jxccR7BIadmJnpUVxdcZp1Jb8KVCeK0cLGhLKfy7
+         PkrNTs+k3+3u+c1VMSYi5QMWcyMDNGY7qh0jWFAB1c0+omloOLkEB7QreOlXCgY99F6Y
+         SytkNslbswYLeT7pSI+gSCxMNmZ8i5fI0bqXlzmUiZo0D/+MlydVCVBQar+U9Th3VErl
+         TO/fly+3OVU0cgaaamclPuBavwsL9d3qPiTYKJ7clhef4lukWFcoVR9/xXwqhOU5hRVL
+         D9Yw==
+X-Gm-Message-State: AOAM531NY6o7oadLS9cWWLDIDS1I97cxaVLDlti/RwKKVTaujoo+/D51
+        sYrZLFU56p568uXqSOawvslhj+d38UIeDlQbTpw=
+X-Google-Smtp-Source: ABdhPJwW1Ft0dYscciZN7QBlQLKbhMWvOetw+1z2dblTEdZzkrdpXyfRf2UHVVFZ2f4X7+N5O0sUhw==
+X-Received: by 2002:a0c:9c4d:: with SMTP id w13mr7737895qve.231.1599066228205;
+        Wed, 02 Sep 2020 10:03:48 -0700 (PDT)
+Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id x124sm138923qkd.72.2020.09.02.10.03.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Sep 2020 10:03:47 -0700 (PDT)
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     linux-btrfs@vger.kernel.org, fstests@vger.kernel.org
+Subject: [PATCH] fstests: btrfs/219 add a test for some disk caching usecases
+Date:   Wed,  2 Sep 2020 13:03:45 -0400
+Message-Id: <8e841e0e05934baaf6119363414440b271426a03.1599065695.git.josef@toxicpanda.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200902160044.266690-1-josef@toxicpanda.com>
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9732 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 adultscore=0 phishscore=0
- malwarescore=0 bulkscore=0 mlxscore=0 mlxlogscore=999 suspectscore=1
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009020161
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9732 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 phishscore=0
- mlxlogscore=999 adultscore=0 impostorscore=0 mlxscore=0 suspectscore=1
- spamscore=0 clxscore=1015 malwarescore=0 lowpriorityscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009020161
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Sep 02, 2020 at 12:00:44PM -0400, Josef Bacik wrote:
-> We had a problem recently where btrfs would deadlock with
-> O_DIRECT|O_DSYNC because of an unexpected dependency on ->fsync in
-> iomap.  This was only caught by chance with aiostress, because weirdly
-> we don't actually test this particular configuration anywhere in
-> xfstests.  Fix this by adding a basic test that just does
-> O_DIRECT|O_DSYNC writes.  With this test the box deadlocks right away
-> with Btrfs, which would have been helpful in finding this issue before
-> the patches were merged.
-> 
-> Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-> ---
-> v2->v3:
-> - This time with 609.out added, verified it passed with xfs.
-> 
->  tests/generic/609     | 43 +++++++++++++++++++++++++++++++++++++++++++
->  tests/generic/609.out |  3 +++
->  tests/generic/group   |  1 +
->  3 files changed, 47 insertions(+)
->  create mode 100755 tests/generic/609
->  create mode 100644 tests/generic/609.out
-> 
-> diff --git a/tests/generic/609 b/tests/generic/609
-> new file mode 100755
-> index 00000000..3d1c97b2
-> --- /dev/null
-> +++ b/tests/generic/609
-> @@ -0,0 +1,43 @@
-> +#! /bin/bash
-> +# SPDX-License-Identifier: GPL-2.0
-> +# Copyright (c) 2020 Josef Bacik.  All Rights Reserved.
-> +#
-> +# FS QA Test 609
-> +#
-> +# iomap can call generic_write_sync() if we're O_DSYNC, so write a basic test to
-> +# exercise O_DSYNC so any unsuspecting file systems will get lockdep warnings if
-> +# their locking isn't compatible.
-> +#
-> +seq=`basename $0`
-> +seqres=$RESULT_DIR/$seq
-> +echo "QA output created by $seq"
-> +
-> +here=`pwd`
-> +tmp=/tmp/$$
-> +status=1	# failure is the default!
-> +trap "_cleanup; exit \$status" 0 1 2 3 15
-> +
-> +_cleanup()
-> +{
-> +	cd /
-> +	rm -f $tmp.*
-> +	rm -rf $TEST_DIR/file
-> +}
-> +
-> +# get standard environment, filters and checks
-> +. ./common/rc
-> +. ./common/filter
-> +
-> +# remove previous $seqres.full before test
-> +rm -f $seqres.full
-> +
-> +# Modify as appropriate.
-> +_supported_fs generic
-> +_supported_os Linux
-> +_require_test
-> +_require_xfs_io_command "pwrite" "-DV"
-> +
-> +$XFS_IO_PROG -f -d -c "pwrite -D -V 1 0 4k"  $TEST_DIR/file | _filter_xfs_io
+This is a test to check the behavior of the disk caching code inside
+btrfs.  It's a regression test for the patch
 
-I wonder, does this also work if you did:
+  btrfs: allow single disk devices to mount with older generations
 
-$XFS_IO_PROG -f -d -s -c 'pwrite 0 4k' $TEST_DIR/file
+Thanks,
 
-In other words, can you reproduce the problem with good old pwrite() and
-a file descriptor opened O_SYNC?  Or do you specifically have to have
-pwritev2 with RWF_DSYNC?
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+---
+ tests/btrfs/219     | 101 ++++++++++++++++++++++++++++++++++++++++++++
+ tests/btrfs/219.out |   2 +
+ tests/btrfs/group   |   1 +
+ 3 files changed, 104 insertions(+)
+ create mode 100755 tests/btrfs/219
+ create mode 100644 tests/btrfs/219.out
 
-(I might also write 64k to future proof this testcase for the day when
-someone builds an fs that can only do 64k direct writes, but maybe
-that's crazy...)
+diff --git a/tests/btrfs/219 b/tests/btrfs/219
+new file mode 100755
+index 00000000..14e2792f
+--- /dev/null
++++ b/tests/btrfs/219
+@@ -0,0 +1,101 @@
++#! /bin/bash
++# SPDX-License-Identifier: GPL-2.0
++# Copyright (c) 2020 Facebook.  All Rights Reserved.
++#
++# FS QA Test 219
++#
++# Test a variety of stale device usecases.  We cache the device and generation
++# to make sure we do not allow stale devices, which can end up with some wonky
++# behavior for loop back devices.  This was changed with
++#
++#   btrfs: allow single disk devices to mount with older generations
++#
++# But I've added a few other test cases so it's clear what we expect to happen
++# currently.
++#
++
++seq=`basename $0`
++seqres=$RESULT_DIR/$seq
++echo "QA output created by $seq"
++
++here=`pwd`
++tmp=/tmp/$$
++status=1	# failure is the default!
++trap "_cleanup; exit \$status" 0 1 2 3 15
++
++_cleanup()
++{
++	cd /
++	rm -f $tmp.*
++	$UMOUNT_PROG $loop_mnt
++	rm -rf $loop_mnt
++	rm -rf $loop_mnt1
++	rm -f $fs_img2 $fs_img1
++	[ ! -z "$loop_dev" ] && _destroy_loop_device $loop_dev
++}
++
++# get standard environment, filters and checks
++. ./common/rc
++. ./common/filter
++
++# remove previous $seqres.full before test
++rm -f $seqres.full
++
++# real QA test starts here
++
++_supported_fs btrfs
++_supported_os Linux
++_require_test
++_require_loop
++_require_btrfs_forget_or_module_loadable
++
++loop_mnt=$TEST_DIR/$seq.mnt
++loop_mnt1=$TEST_DIR/$seq.mnt1
++fs_img1=$TEST_DIR/$seq.img1
++fs_img2=$TEST_DIR/$seq.img2
++
++mkdir $loop_mnt
++mkdir $loop_mnt1
++
++$XFS_IO_PROG -f -c "truncate 256m" $fs_img1 >>$seqres.full 2>&1
++
++_mkfs_dev $fs_img1 >>$seqres.full 2>&1
++cp $fs_img1 $fs_img2
++
++# Normal single device case, should pass just fine
++_mount -o loop $fs_img1 $loop_mnt > /dev/null  2>&1 || \
++	_fail "Couldn't do initial mount"
++$UMOUNT_PROG $loop_mnt
++
++_btrfs_forget_or_module_reload
++
++# Now mount the new version again to get the higher generation cached, umount
++# and try to mount the old version.  Mount the new version again just for good
++# measure.
++loop_dev=`_create_loop_device $fs_img1`
++
++_mount $loop_dev $loop_mnt > /dev/null 2>&1 || \
++	_fail "Failed to mount the second time"
++$UMOUNT_PROG $loop_mnt
++
++_mount -o loop $fs_img2 $loop_mnt > /dev/null 2>&1 || \
++	_fail "We couldn't mount the old generation"
++$UMOUNT_PROG $loop_mnt
++
++_mount $loop_dev $loop_mnt > /dev/null 2>&1 || \
++	_fail "Failed to mount the second time"
++$UMOUNT_PROG $loop_mnt
++
++# Now we definitely can't mount them at the same time, because we're still tied
++# to the limitation of one fs_devices per fsid.
++_btrfs_forget_or_module_reload
++
++_mount $loop_dev $loop_mnt > /dev/null 2>&1 || \
++	_fail "Failed to mount the third time"
++_mount -o loop $fs_img2 $loop_mnt1 > /dev/null 2>&1 && \
++	_fail "We were allowed to mount when we should have failed"
++
++# success, all done
++echo "Silence is golden"
++status=0
++exit
+diff --git a/tests/btrfs/219.out b/tests/btrfs/219.out
+new file mode 100644
+index 00000000..162074d3
+--- /dev/null
++++ b/tests/btrfs/219.out
+@@ -0,0 +1,2 @@
++QA output created by 219
++Silence is golden
+diff --git a/tests/btrfs/group b/tests/btrfs/group
+index 3295856d..660cdc25 100644
+--- a/tests/btrfs/group
++++ b/tests/btrfs/group
+@@ -221,3 +221,4 @@
+ 216 auto quick seed
+ 217 auto quick trim dangerous
+ 218 auto quick volume
++219 auto quick volume
+-- 
+2.24.1
 
-> +
-> +status=0
-> +exit
-> diff --git a/tests/generic/609.out b/tests/generic/609.out
-> new file mode 100644
-> index 00000000..db3242cb
-> --- /dev/null
-> +++ b/tests/generic/609.out
-> @@ -0,0 +1,3 @@
-> +QA output created by 609
-> +wrote 4096/4096 bytes at offset 0
-> +XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-> diff --git a/tests/generic/group b/tests/generic/group
-> index aa969bcb..ae2567a0 100644
-> --- a/tests/generic/group
-> +++ b/tests/generic/group
-> @@ -611,3 +611,4 @@
->  606 auto attr quick dax
->  607 auto attr quick dax
->  608 auto attr quick dax
-> +609 auto quick
-
-This probably ought to be 'auto quick rw' since it's a write test.
-
-The rest of the logic looks sound to me though.
-
---D
-
-> -- 
-> 2.28.0
-> 
