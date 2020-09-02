@@ -2,108 +2,152 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7948625A997
-	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Sep 2020 12:40:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79C4225A99C
+	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Sep 2020 12:41:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726446AbgIBKj6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 2 Sep 2020 06:39:58 -0400
-Received: from esa5.hgst.iphmx.com ([216.71.153.144]:8768 "EHLO
-        esa5.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726226AbgIBKju (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 2 Sep 2020 06:39:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1599043189; x=1630579189;
-  h=from:to:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
-  b=QbsG3IvrlQseJYSuABmG9IW+zIvM30Imcxovc9GvMMV04AZTQMWSp2Rr
-   rQxYImi9TkQtzq3wUYioWBUjFXazhuPnJJ/Ds5oWr0s3Ar2PIqMzpxstV
-   1Bg/t2yZOM2ULTzxhGs/GHhwdv64qvfJwV7j9zWJnxd+EAQLJq9kR3tw3
-   wAKPmPifyJH127lMevqRtTEUrn1jiR7UJqhk8ndS1BsNLaeauDemMqaWr
-   QfzTY79KHuVZYfZkk5EfrWr4VeRYGCYwLh+xajvE0aaHodVRg6MQDU6uJ
-   tw2KC5ZeEMJTAN+cNkpo0yDg1ynm8+s6ALibIPJo8PFj63kdKZEMCN9qs
-   Q==;
-IronPort-SDR: HIfC4iuWY3WYQf4BzPe/34EFRvSa0L34pXAq97A5sKA4S6LrTvK6xhdfAEmfQvai8DhHLTjDzU
- 61rx9EgOLsi0ivumECaT1a7EMCaurKNjlUqQuGMWTtcVdGsuakP27QhuRb5GXqLQfw2uSaJLGk
- aXKylnivvL4y93jE3r9MSRF1RQB7shc6cOEksoitcU8eO4mYCA6wbsdnMvVMz+avwDlC4Dcb8J
- yqjqDmrAlcsU/oBaK2pD/vENKkdKGJTfJiIlGVMJjCrGo2CUhzc0Lww0n7E6rWAVSBEFvUAMmh
- I64=
-X-IronPort-AV: E=Sophos;i="5.76,381,1592841600"; 
-   d="scan'208";a="146390141"
-Received: from mail-dm6nam12lp2176.outbound.protection.outlook.com (HELO NAM12-DM6-obe.outbound.protection.outlook.com) ([104.47.59.176])
-  by ob1.hgst.iphmx.com with ESMTP; 02 Sep 2020 18:39:41 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AULA8oqnYGk+jhQJWBE6zfcOmie0NjVIYE1YrGFRX1lmupnRPZErbnYyHExRokXVqSMMlp9o0rRCutuuLnGoqRN5kpxh5stj+Zvc99u2xAv6JvFH6sd9qp1pjaQH7VzfF1t0i/ORo6DwJgId7dqykZW4mZNAi3/1d2lvNUF9JgnHKetfB1F+evZ4TuFYKmvIcmNWCW7VqhxlDjVci1BykIgU51PgxZAMvbMv5b1htFSJFtt1itUF0aMVMBkJa/gFc5l7SaWxXLH7WU/sps1T7DQaCFQmkTiSRHvQObpouYfPsmDbD+xM3n+FxDtut7GcKtQazxyzqD88mnFIpZh5Fw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
- b=Sl6rvu06ysdUPfZnuZOVD5v4S2+d/4cM9FuJ9Tj4/Nxg1WBMBg/BuwDLKb3fxlTz7kLHsnxqKQvHJtxag4Ru4pbL8jBpO1WkDpqtcZL16NuFLNccjByAbo1o2tYRE3vSB7+zRi05OmIwC2mIycURYwVPMIFDnPZQAWglbULTOtutAter+mGdksIQyDPRQdHwI5SvBP2v8pZs022NpBc+PGw5LX0XbiSI2Z5TRNKsZ6QypBdKxBd0w4qlXVb8VjzcrqD9FQOl4yYWSKms4tPZa6DYPXI+0avS+Cnfma6sYPsZYBwIcAaXX1z08vDABBoruOyJWWRV3eAI32WcP+jr/w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
- b=r6ELuOINHZfb81REMzw4oI6NuqauqeKol1SA/VTyEec7dARJNtaJCRWhXHxKy8TBDiDH8n44f2HhiKpXxUaQsI6ftmho4FsdXg1rmfeL9mwbwTpq1vhcMGClk6taVPq/jFKaYg1GRStO/K6Y2Fas9Or4x0+Sd8S2h63k/qaZm5Q=
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
- (2603:10b6:803:47::21) by SN4PR0401MB3520.namprd04.prod.outlook.com
- (2603:10b6:803:4e::32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3326.25; Wed, 2 Sep
- 2020 10:39:39 +0000
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::457e:5fe9:2ae3:e738]) by SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::457e:5fe9:2ae3:e738%7]) with mapi id 15.20.3326.023; Wed, 2 Sep 2020
- 10:39:39 +0000
-From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To:     Nikolay Borisov <nborisov@suse.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH 0/5] Improve setup_items_for_insert
-Thread-Topic: [PATCH 0/5] Improve setup_items_for_insert
-Thread-Index: AQHWgG33M8PQX7t8wk6HTJNn2ZkNzg==
-Date:   Wed, 2 Sep 2020 10:39:39 +0000
-Message-ID: <SN4PR0401MB3598760D6A6D511A0353822D9B2F0@SN4PR0401MB3598.namprd04.prod.outlook.com>
-References: <20200901144001.4265-1-nborisov@suse.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: suse.com; dkim=none (message not signed)
- header.d=none;suse.com; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [2001:a62:1590:f101:bd07:d1f9:7e6b:2014]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: f8937d79-7f91-460b-7d1b-08d84f2c7e91
-x-ms-traffictypediagnostic: SN4PR0401MB3520:
-x-microsoft-antispam-prvs: <SN4PR0401MB3520532384ED199F8F30F29E9B2F0@SN4PR0401MB3520.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:1728;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: m+0kY/VCw+K8rJf4zgMDrJbdes4Bi8bM9HketwFOL15O8XYw7ON0oOmgpiSc81Ii/A/G6ajZhqxNbRbV97cx6WlzbfHng2KhrI5n4rYQ/ckKx1REYaY/aDZFD/6oqU7jmfybVWzBA5HPFYMK4uJJzsJqkC/IPqrI4thsu0LUL1W6l5D3IOVmvML6MNjg7SpwMfZg21Ihz/Usal/jx66uYYbgSn9bCHa7kMp1Oot8pt+tPkmCCDeje/ecfU5dA4lHnX5v+co0mJ9AZ3MD7x/xrjds+DTR75SCYMgtg/zHIKhUgPhbD3Zf0DN4Mg6TIDtmty/uEcGW/QJWHwrwP0CNsw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR0401MB3598.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(66476007)(66946007)(8936002)(4270600006)(55016002)(9686003)(33656002)(498600001)(558084003)(19618925003)(186003)(66556008)(71200400001)(110136005)(76116006)(64756008)(66446008)(8676002)(2906002)(91956017)(52536014)(5660300002)(7696005)(6506007)(86362001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: AembSUJEXuCh1aJq/+aln8d+phobpVsKcr9Ly3b9swVcB3ALzHjXDABvKX6y46EM7dPkGsFUGGCLrgc7Wyzt3MSkoG1Xmz8jgwcqX7b5It0MRk3hOj90dzzBHrxhHPU0SaXTuRgeSHT4dAfyjkMfHIWZ1EQ957s6OA0jytwMqSUSuklwWr0q9wGI5tpdNKUJriCQZEK57ePecCYMdzN6V42Pc0IipKZURDAcTFYs4EgppowC1mBJ09HPaCCLwoxyRrsOm9ZNTTaimQNBkpdFJb2/+zOc8O4ZGLdJqREG7YNUwAeuUg8eQpjL1DvzXdGRi8tq79iW1mPjV1wvvLeX3CECOOclmhtQbGcDOIOGaURKEr0SujWXqyCN3OQxXdX52tE2+pVq7tGjJ6LD55vTU5nBuMBS1VWkOVCCB8jPBkqFktzCWk4EHIAqIXlUVrGKo33X472t8+kKxtbLacue8ubje7skNC/qFZxOVUIJiAujrdjLncQ+le871iS6G6h6CcMLWeIkTi+Y7atSJjNi1u31jvC1CD7lMuYsAs8BDktHKUmay7nhyljyU2ndvIa7JQbSjVzIvHwwSHLwWzlBQZMZB/XpfVarZ+utpS5mkRtUn3xZD8CBFMswz0XBOodkiUEBGz608cMs7onej57gemcSBrtejzG9uK6F3FpSMRNl7QzZ5WICcTjBRytfFzYb3HBs7Tq0udnFykWhWnXOIQ==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1726406AbgIBKlX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 2 Sep 2020 06:41:23 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:59966 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726226AbgIBKlU (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 2 Sep 2020 06:41:20 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 082AYsoY158463;
+        Wed, 2 Sep 2020 10:41:16 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=kY+JqqgBiFwc4mngqjmMZy9OIE5lTE1D+qr6V9keIho=;
+ b=J9pw6yvAhmsYjD29lpDQeyfc2S0i0MIzYd188PqKq/R+lJ6GrdEX92PcxPHc3NADSTcM
+ pp4i2COXfXy6l9DzstZagpT9CI++IyjqwF8tRi0RaxNv34OdJ77ScnQGiwSaPGxA/uz2
+ vjP0UMPU8KU6Pzdel58itob9wKPXcM2f9u2/n0q0JgzcCCXiNWblvC+al4IIFMd9AiWV
+ v+lI3PsPxhzAXLFYPQIftjD08wG1c0+bidGulRnuGwZDPUEctQV6Itzsj+e5UOT0ATAX
+ AHMDMHETDCbX5G0cRMHkX0x3Rd+LVvUn00UUItDxag/9KvWuSh1UPzJwqhOOxpCAuoGQ fQ== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2130.oracle.com with ESMTP id 337eer1t66-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 02 Sep 2020 10:41:16 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 082AfC7m123660;
+        Wed, 2 Sep 2020 10:41:15 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3030.oracle.com with ESMTP id 3380kpshpf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 02 Sep 2020 10:41:15 +0000
+Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 082AfEA6012498;
+        Wed, 2 Sep 2020 10:41:14 GMT
+Received: from [192.168.1.102] (/39.109.231.106)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 02 Sep 2020 03:41:13 -0700
+Subject: Re: [PATCH] btrfs: allow single disk devices to mount with older
+ generations
+To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com
+Cc:     Daan De Meyer <daandemeyer@fb.com>
+References: <6b1f037344cd8d24566f3d9873b820a73384242c.1598995167.git.josef@toxicpanda.com>
+From:   Anand Jain <anand.jain@oracle.com>
+Message-ID: <779c5224-6726-9a8d-8eab-ffb610cd5ad1@oracle.com>
+Date:   Wed, 2 Sep 2020 18:41:10 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.2.1
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SN4PR0401MB3598.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f8937d79-7f91-460b-7d1b-08d84f2c7e91
-X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Sep 2020 10:39:39.2015
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 09RLUsORp13fWER/UgCTrp3qjSKRdlYycVAk8jhlNhRdzjGUgWHnhd2Q2oQKakmYX8LOg1D4LDoP26Mb2UhEXXGPM5vBL83DfBvkjNtG/BQ=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN4PR0401MB3520
+In-Reply-To: <6b1f037344cd8d24566f3d9873b820a73384242c.1598995167.git.josef@toxicpanda.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9731 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 spamscore=0 adultscore=0
+ mlxscore=0 suspectscore=0 malwarescore=0 mlxlogscore=999 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009020101
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9731 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1011 priorityscore=1501
+ lowpriorityscore=0 malwarescore=0 adultscore=0 spamscore=0 mlxscore=0
+ phishscore=0 impostorscore=0 mlxlogscore=999 bulkscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009020100
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Looks good,=0A=
-Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>=0A=
+On 2/9/20 5:19 am, Josef Bacik wrote:
+> We have this check to make sure we don't accidentally add older devices
+> that may have disappeared and re-appeared with an older generation from
+> being added to an fs_devices.  This makes sense, we don't want stale
+> disks in our file system.  However for single disks this doesn't really
+> make sense.  I've seen this in testing, but I was provided a reproducer
+> from a project that builds btrfs images on loopback devices.  The
+> loopback device gets cached with the new generation, and then if it is
+> re-used to generate a new file system we'll fail to mount it because the
+> new fs is "older" than what we have in cache.
+> 
+> Fix this by simply ignoring this check if we're a single disk file
+> system, as we're not going to cause problems for the fs by allowing the
+> disk to be mounted with an older generation than what is in our cache.
+> 
+> I've also added a error message for this case, as it was kind of
+> annoying to find originally.
+> 
+> Reported-by: Daan De Meyer <daandemeyer@fb.com>
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> ---
+>   fs/btrfs/volumes.c | 8 +++++++-
+>   1 file changed, 7 insertions(+), 1 deletion(-)
+> 
+> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+> index 77b7da42c651..eb2cc27ef602 100644
+> --- a/fs/btrfs/volumes.c
+> +++ b/fs/btrfs/volumes.c
+> @@ -786,6 +786,7 @@ static noinline struct btrfs_device *device_list_add(const char *path,
+>   	struct rcu_string *name;
+>   	u64 found_transid = btrfs_super_generation(disk_super);
+>   	u64 devid = btrfs_stack_device_id(&disk_super->dev_item);
+> +	bool multi_disk = btrfs_super_num_devices(disk_super) > 1;
+>   	bool has_metadata_uuid = (btrfs_super_incompat_flags(disk_super) &
+>   		BTRFS_FEATURE_INCOMPAT_METADATA_UUID);
+>   	bool fsid_change_in_progress = (btrfs_super_flags(disk_super) &
+> @@ -914,7 +915,8 @@ static noinline struct btrfs_device *device_list_add(const char *path,
+>   		 * tracking a problem where systems fail mount by subvolume id
+>   		 * when we reject replacement on a mounted FS.
+>   		 */
+> -		if (!fs_devices->opened && found_transid < device->generation) {
+> +		if (multi_disk && !fs_devices->opened &&
+> +		    found_transid < device->generation) {
+>   			/*
+>   			 * That is if the FS is _not_ mounted and if you
+>   			 * are here, that means there is more than one
+> @@ -922,6 +924,10 @@ static noinline struct btrfs_device *device_list_add(const char *path,
+>   			 * with larger generation number or the last-in if
+>   			 * generation are equal.
+>   			 */
+> +			btrfs_warn_in_rcu(device->fs_info,
+> +		  "old device %s not being added for fsid:devid for %pU:%llu",
+> +					  rcu_str_deref(device->name),
+> +					  disk_super->fsid, devid);
+>   			mutex_unlock(&fs_devices->device_list_mutex);
+>   			return ERR_PTR(-EEXIST);
+>   		}
+> 
+
+After the patch - that means if there are two identical but different
+generation images/disks and if the systemd auto-scans both of them,
+the scan will race and the last scanned disk/image will mount
+successfully. Whereas before the patch- the disk/image with the larger
+generation always won (even in single disk FS).
+
+Are we ok with this? IMO the last scanned gets mounted is also kind of fair.
+
+Internally I had a similar reported. I just told them to use
+  btrfs device scan --forget
+and try. It worked.
+
+
+Reviewed-by: Anand Jain <anand.jain@oracle.com>
+
+
+Thanks, Anand
+
+
+
