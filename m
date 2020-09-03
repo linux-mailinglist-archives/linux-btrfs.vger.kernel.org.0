@@ -2,153 +2,342 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40D1C25BE92
-	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Sep 2020 11:42:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAF8A25BE9E
+	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Sep 2020 11:49:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726448AbgICJmO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 3 Sep 2020 05:42:14 -0400
-Received: from mx2.suse.de ([195.135.220.15]:57186 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726047AbgICJmN (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 3 Sep 2020 05:42:13 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 783BBAD3C;
-        Thu,  3 Sep 2020 09:42:12 +0000 (UTC)
-Subject: Re: [PATCH] btrfs: improve messages when devices rescanned
-To:     Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org
-References: <77fc0b0c7c88b14c734b646d1969ccf45a063146.1599118052.git.anand.jain@oracle.com>
- <fe35d005-a3ad-2a30-99a0-99416846d5e1@suse.com>
- <6da22ff1-3dc0-d564-4d9d-befa82827bfe@oracle.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <7d811665-5033-782a-881d-7731f60fecc4@suse.com>
-Date:   Thu, 3 Sep 2020 12:42:09 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1728213AbgICJtt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 3 Sep 2020 05:49:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49338 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725984AbgICJtt (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 3 Sep 2020 05:49:49 -0400
+Received: from mail-vk1-xa43.google.com (mail-vk1-xa43.google.com [IPv6:2607:f8b0:4864:20::a43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8DDAC061244;
+        Thu,  3 Sep 2020 02:49:48 -0700 (PDT)
+Received: by mail-vk1-xa43.google.com with SMTP id n7so650652vkq.5;
+        Thu, 03 Sep 2020 02:49:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc:content-transfer-encoding;
+        bh=q2DGWOwTqsHEBaDT6vLAR8hLlH3KndzPotme8oLKP/M=;
+        b=cdqj+X3FoVTDwL2Hp0N6gN4QHE1+C8yRZBOVMFpq2RWOecoSpzGMeDh6GdvWATppA4
+         CIqcJxTBE6dYUqxk4X6PQvxYfeyhUOsCh2sW4ZxidTc38ULJJptqWPtKykRN+8yfE8ub
+         qiPzSVp4LLvI5owbbZ7p5xk4EFhi7RpK3LAlPiBkjYhwnh48xwepxbXYrRPAnI52YIuH
+         QOngibhLPtRPq36LX9vbDQVEgvn3rGb2c00rd+MD3bPxSNfIgPHVAn+J9aNp6aR+rFu+
+         Rcrd/GqP4E2TgWqKmWPHDfsv81D5EOT9UgSSpZomVYX7MZs3wteTwYelYK9EFgehEWpJ
+         ImYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc:content-transfer-encoding;
+        bh=q2DGWOwTqsHEBaDT6vLAR8hLlH3KndzPotme8oLKP/M=;
+        b=l76fJF6nHhrKCHsFnXbwFFvaDIr2iszAuDPeD92AFgwMei/iQ4xmAcnK+NXb7CvDg+
+         9gFQauLLMqNpW8BQv9pvHeKaxwVubakF4Uh1R4CKU3WyCqk6AsKVf0qCcKEIJQ6z9qQG
+         yRgt6aRD5HA2wqXtzWocje0EwIvdsAPBkhzdO2XF26/F1WOFglqU3eX493kGOwuRchQz
+         Inn+8o5sjc59GHufxGIYcdB7Zw33805enHCakZyZRVPz9OU80/9JxKJkIai5yjvqewjW
+         ixpxbugyOZwsE1HR8qis3pofMa2Bn0wJF6zaHu4pMyWnQau3SJ17kPnQXQHkwUOcj0zI
+         kShA==
+X-Gm-Message-State: AOAM530CArvQWmMVcFSQ68lsg5/GsfwwgByvbBbETdDYvFwuZK7iGMAx
+        kooDWiMlyM/g/I9ao8G+VH4WFTAOs478MnhwHwEOzaRbotv0EQ==
+X-Google-Smtp-Source: ABdhPJwroV+rJle1CoTg1NgAHhSdOKuJE6uNB17Ez+AydqLBzTeuVaG7lhoiQRYKM7KBQbdASzGZdmmKh8NMgH4w3lY=
+X-Received: by 2002:a1f:8f02:: with SMTP id r2mr559747vkd.4.1599126587479;
+ Thu, 03 Sep 2020 02:49:47 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <6da22ff1-3dc0-d564-4d9d-befa82827bfe@oracle.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20200901130644.12655-1-johannes.thumshirn@wdc.com>
+ <42efa646-73cd-d884-1c9c-dd889294bde2@toxicpanda.com> <20200901214613.GH12096@dread.disaster.area>
+ <551b2801-d626-9bd7-7cb2-9d20674c06bf@toxicpanda.com> <20200901235830.GI12096@dread.disaster.area>
+ <20200902114414.GX14765@casper.infradead.org> <20200902122008.GK12096@dread.disaster.area>
+ <424119cd-08ca-8621-5e50-d52e0349a1f5@toxicpanda.com> <20200903022822.GL12096@dread.disaster.area>
+In-Reply-To: <20200903022822.GL12096@dread.disaster.area>
+Reply-To: fdmanana@gmail.com
+From:   Filipe Manana <fdmanana@gmail.com>
+Date:   Thu, 3 Sep 2020 10:49:36 +0100
+Message-ID: <CAL3q7H5mOv+tCN4j+Fm8KEZ31UbcLCCa3PErwMLNpZiHW_cpQg@mail.gmail.com>
+Subject: Re: [RFC PATCH] btrfs: don't call btrfs_sync_file from iomap context
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     Josef Bacik <josef@toxicpanda.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        David Sterba <dsterba@suse.com>,
+        "linux-btrfs @ vger . kernel . org" <linux-btrfs@vger.kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Thu, Sep 3, 2020 at 3:28 AM Dave Chinner <david@fromorbit.com> wrote:
+>
+> On Wed, Sep 02, 2020 at 08:42:25AM -0400, Josef Bacik wrote:
+> > On 9/2/20 8:20 AM, Dave Chinner wrote:
+> > > On Wed, Sep 02, 2020 at 12:44:14PM +0100, Matthew Wilcox wrote:
+> > > > On Wed, Sep 02, 2020 at 09:58:30AM +1000, Dave Chinner wrote:
+> > > > > Put simply: converting a filesystem to use iomap is not a "change
+> > > > > the filesystem interfacing code and it will work" modification.  =
+We
+> > > > > ask that filesystems are modified to conform to the iomap IO
+> > > > > exclusion model; adding special cases for every potential
+> > > > > locking and mapping quirk every different filesystem has is part =
+of
+> > > > > what turned the old direct IO code into an unmaintainable nightma=
+re.
+> > > > >
+> > > > > > That's fine, but this is kind of a bad way to find
+> > > > > > out.  We really shouldn't have generic helper's that have diffe=
+rent generic
+> > > > > > locking rules based on which file system uses them.
+> > > > >
+> > > > > We certainly can change the rules for new infrastructure. Indeed,=
+ we
+> > > > > had to change the rules to support DAX.  The whole point of the
+> > > > > iomap infrastructure was that it enabled us to use code that alre=
+ady
+> > > > > worked for DAX (the XFS code) in multiple filesystems. And as peo=
+ple
+> > > > > have realised that the DIO via iomap is much faster than the old =
+DIO
+> > > > > code and is a much more efficient way of doing large buffered IO,
+> > > > > other filesystems have started to use it.
+> > > > >
+> > > > > However....
+> > > > >
+> > > > > > Because then we end up
+> > > > > > with situations like this, where suddenly we're having to come =
+up with some
+> > > > > > weird solution because the generic thing only works for a subse=
+t of file
+> > > > > > systems.  Thanks,
+> > > > >
+> > > > > .... we've always said "you need to change the filesystem code to
+> > > > > use iomap". This is simply a reflection on the fact that iomap ha=
+s
+> > > > > different rules and constraints to the old code and so it's not a
+> > > > > direct plug in replacement. There are no short cuts here...
+> > > >
+> > > > Can you point me (and I suspect Josef!) towards the documentation o=
+f the
+> > > > locking model?  I was hoping to find Documentation/filesystems/ioma=
+p.rst
+> > > > but all the 'iomap' strings in Documentation/ refer to pci_iomap an=
+d
+> > > > similar, except for this in the DAX documentation:
+> > >
+> > > There's no locking model documentation because there is no locking
+> > > in the iomap direct IO code. The filesystem defines and does all the
+> > > locking, so there's pretty much nothing to document for iomap.
+> > >
+> > > IOWs, the only thing iomap_dio_rw requires is that the IO completion
+> > > paths do not take same locks that the IO submission path
+> > > requires. And that's because:
+> > >
+> > > /*
+> > >   * iomap_dio_rw() always completes O_[D]SYNC writes regardless of wh=
+ether the IO
+> > >   * is being issued as AIO or not. [...]
+> > >
+> > > So you obviously can't sit waiting for dio completion in
+> > > iomap_dio_rw() while holding the submission lock if completion
+> > > requires the submission lock to make progress.
+> > >
+> > > FWIW, iomap_dio_rw() originally required the inode_lock() to be held
+> > > and contained a lockdep assert to verify this, but....
+> > >
+> > > commit 3ad99bec6e82e32fa9faf2f84e74b134586b46f7
+> > > Author: Goldwyn Rodrigues <rgoldwyn@suse.com>
+> > > Date:   Sat Nov 30 09:59:25 2019 -0600
+> > >
+> > >      iomap: remove lockdep_assert_held()
+> > >      Filesystems such as btrfs can perform direct I/O without holding=
+ the
+> > >      inode->i_rwsem in some of the cases like writing within i_size. =
+ So,
+> > >      remove the check for lockdep_assert_held() in iomap_dio_rw().
+> > >      Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
+> > >      Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
+> > >      Signed-off-by: David Sterba <dsterba@suse.com>
+> > >
+> > > ... btrfs has special corner cases for direct IO locking and hence
+> > > we removed the lockdep assert....
+> > >
+> > > IOWs, iomap_dio_rw() really does not care what strategy filesystems
+> > > use to serialise DIO against other operations.  Filesystems can use
+> > > whatever IO serialisation mechanism they want (mutex, rwsem, range
+> > > locks, etc) as long as they obey the one simple requirement: do not
+> > > take the DIO submission lock in the DIO completion path.
+> > >
+> >
+> > Goldwyn has been working on these patches for a long time, and is actua=
+lly
+> > familiar with this code, and he missed that these two interfaces are be=
+ing
+> > mixed.  This is a problem that I want to solve.  He didn't notice it in=
+ any
+> > of his testing, which IIRC was like 6 months to get this stuff actually=
+ into
+> > the btrfs tree.
+>
+> And that "been working on it for 6 months" is what really worries me
+> the most. Hence I've done some post-mortem analysis of the
+> "inode_lock" deadlock situation. I decided to do this after I
+> realised this same patch set was merged last cycle and reverted late in
+> the cycle because of problems it was found to have with page
+> invalidation when mixed IO types were used.
+>
+> I did a bit of looking around yesterday afternoon, both in the btrfs
+> code to understand the iomap_dio_rw changes and at our test
+> coverage for DIO functionality.
+>
+> The more I dug, the more I'm finding that the most important
+> question we need to answer is not "why wasn't this iomap locking
+> requirement documented", the question we should be trying to answer
+> is this:
+>
+>         Why wasn't this *obvious* deadlock detected months ago?
+>
+> First of all, the inode-lock() complaints are largely a red herring
+> as the typical btrfs DIO write path through the patchset does not
+> take the inode lock and hence it is actually "safe" to take the
+> inode lock in the completion path in the common case. i.e. for DIO
+> writes wholly inside EOF, submission drops the inode_lock() before
+> calling iomap_dio_rw() and so there is no inode_lock() deadlock
+> present. From that view point, it looks like there's only a specific
+> corner case where this deadlock might occur and that would explain
+> why it hasn't been discovered until now.
+>
+> However.
+>
+> The new btrfs dio write path always does
+> down_read(BTRFS_I()->dio_sem), even when the inode lock has not been
+> taken.  That's important because btrfs_sync_file() always does a
+> down_write(&BTRFS_I(inode)->dio_sem) call and will deadlock iin IO
+> completion if the IO submission code is holding the dio_sem.
+
+Taking a look at the latest integration branch (misc-next) after 2
+weeks away, indeed the new iomap dio switch change still has that
+problem.
+I reported that in June:
+
+https://lore.kernel.org/linux-btrfs/CAL3q7H4F9iQJy3tgwZrWOKwenAnnn7oSthQZUM=
+EJ_vWx3WE3WQ@mail.gmail.com/
+
+For me, with generic/113 the deadlock happens always.
 
 
-On 3.09.20 г. 12:41 ч., Anand Jain wrote:
-> On 3/9/20 4:16 pm, Nikolay Borisov wrote:
->>
->>
->> On 3.09.20 г. 10:27 ч., Anand Jain wrote:
->>> Systems booting without the initramfs seems to scan an unusual kind
->>> of device path. And at a later time, the device is updated to the
->>> correct path. We generally print the process name and PID of the process
->>> scanning the device but we don't capture the same information if the
->>> device path is rescanned with a different pathname.
->>>
->>> But the current message is too long, so drop the unwanted words and add
->>> process name and PID.
->>>
->>> While at this also update the duplicate device warning to include the
->>> process name and PID.
->>>
->>> Reported-by: https://bugzilla.kernel.org/show_bug.cgi?id=89721
->>> Signed-off-by: Anand Jain <anand.jain@oracle.com>
->>> ---
->>>   fs/btrfs/volumes.c | 14 ++++++++------
->>>   1 file changed, 8 insertions(+), 6 deletions(-)
->>>
->>> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
->>> index dc81646b13c0..c386ad722ae1 100644
->>> --- a/fs/btrfs/volumes.c
->>> +++ b/fs/btrfs/volumes.c
->>> @@ -942,16 +942,18 @@ static noinline struct btrfs_device
->>> *device_list_add(const char *path,
->>>                   bdput(path_bdev);
->>>                   mutex_unlock(&fs_devices->device_list_mutex);
->>>                   btrfs_warn_in_rcu(device->fs_info,
->>> -            "duplicate device fsid:devid for %pU:%llu old:%s new:%s",
->>> -                    disk_super->fsid, devid,
->>> -                    rcu_str_deref(device->name), path);
->>> +    "duplicate device %s devid %llu generation %llu scanned by %s
->>> (%d)",
->>> +                          path, devid, found_transid,
->>> +                          current->comm,
->>> +                          task_pid_nr(current));
->>>                   return ERR_PTR(-EEXIST);
->>>               }
->>>               bdput(path_bdev);
->>>               btrfs_info_in_rcu(device->fs_info,
->>> -                "device fsid %pU devid %llu moved old:%s new:%s",
->>> -                disk_super->fsid, devid,
->>> -                rcu_str_deref(device->name), path);
->>> +                "device path %s changed to %s by %s (pid %d)",
->>> +                      rcu_str_deref(device->name),
->>> +                      path, current->comm,
->>> +                      task_pid_nr(current));
->>
->> This 2nd messages is misleading, it's not the process calling
->> device_list_add which have changed the path per-se but rather it sees
->> the changed path. It's not possible to know why it changed in this
->> context. The idea here is "
->>
->> "Process %pid saw different dev path %new_dev_path for dev %old_path"
-> 
->   Hm. How about we stick to the usual scanned by. That is..
-> 
->   "device path %s changed to %s scanned by %s (pid %d)",
+>
+> So regardless of the inode_lock(), non-AIO O_DSYNC DIO writes
+> through iomap_dio_rw() should deadlock immediately on the first IO
+> with this locking arrangement. It will deadlock on either the
+> inode_lock or the dio_sem, depending on whether the ODSYNC DIO write
+> is wholly within EOF or not, but the deadlock is guaranteed to
+> occur. Hence we can completely ignore the "inode_lock vs fsync" side
+> show, because other btrfs internal locks will trigger the same
+> issue.
+>
+> If this is correct, then how did this "should happen instantly"
+> bug go undiscovered for months?
+>
+> Well....  It appears that fstests has no coverage of non-AIO
+> O_DSYNC DIO writes.  Tools like fsx and fstress don't have O_SYNC,
+> O_DSYNC or RWF_DSYNC modes and O_SYNC and O_DSYNC is not used by any
+> of the common DIO test programs. xfs_io can open files O_SYNC and
+> there's a test that uses xfs_io's RWF_DSYNC capability, but they all
+> use buffered IO and so none of tests that open or write data
+> synchronously use direct IO.
+>
+> The only conclusion I can make from thsi is that the case that
+> should deadlock instantly isn't actually covered by fstests at all.
+> This conclusion only stands up this O_DSYNC code path was only
+> "tested" for feature coverage with fstests. However, it does imply
+> that no pre-implementation audit was done to determine if fstests
+> actually covered all the functionality that needed to be tested
+> here....
+>
+> I tend to use xfs_io and fio for DIO feature correctness testing
+> long before I run fstests on new code.  That's how I developed and
+> tested the FUA optimisations - xfs_io and fio w/ RWF_DSYNC on XFS on
+> iscsi - so I've never noticed that fstests doesn't actually exercise
+> this syscall path directly.
+>
+> Granted, the problem was eventually discovered by fstests, but this
+> also raised questions. The failing test was an AIO+DIO O_DSYNC test,
+> but the trigger has been described as a "unusual event on a rarely
+> tested configuration".
+>
+> That "unusual event" was an DIO completion being run from submission
+> context because the IO completed before the submission had been
+> finish. This is not actually unusual - it's how all AIO on
+> synchronous IO devices complete. i.e. if you have a ram device or a
+> (fake) pmem device, every single AIO will complete in this way as
+> the "IO reference" held by submit_bio() is completed inside
+> submit_bio() before it returns to the submission context. Hence the
+> submission context always drops the last IO reference and completes
+> the IO.
+>
+> Therefore running fstests on a ramdisk or (fake) pmem would have
+> triggered this deadlock *instantly* on the first O_DSYNC AIO+DIO
+> write that fstests issued. This implies that btrfs is rarely tested
+> on fast synchronous storage devices despite ramdisks being available
+> on every test machine that can run fstests. To provide a contrast,
+> the iomap infrastructure is regularly tested on such devices - both
+> Darrick and I have both have (fake) pmem test setups and exercise
+> synchronous completion code paths like this on a daily basis.
+>
+> Hence it looks to me like the answer to the "why wasn't this found
+> earlier" question is a combination of multiple factors:
+>
+> 1. fstests has no specific non-AIO O_DSYNC DIO write unit tests, nor
+> do the stress tests allow use O_DSYNC or RWF_DSYNC.
+>
+> 2. No test coverage audit was performed prior to making a critical
+> change to the btrfs IO path so this specific lack of coverage was
+> not noticed until now.
+>
+> 3. after the first revert of this functionality, post-mortem
+> analysis either wasn't performed or didn't identify process and/or
+> test coverage issues that allowed serious issues in the patch set to
+> go undiscovered.
+>
+> 4. tools and benchmarks that could have easily discovered the
+> problem either weren't run or they weren't configured to test
+> and exercise all the IO path features the change affected.
+>
+> 5. btrfs is not regularly tested on a variety of storage that have
+> distinctly different IO path behaviours.
+>
+> > If we're going to mix interfaces then it should be
+> > blatantly obvious to developers that's what's happening so the find out
+> > during development, not after the patches have landed, and certainly no=
+t
+> > after they've made it out to users.  Thanks,
+>
+> As the above indicates, this issue _should_ have been blatantly
+> obvious months ago and documentation would not change this fact.
+> IOWs, even if the iomap requirement was documented and followed, a
+> locking bug in the btrfs implementation would still not have been
+> discovered until now because that's how long it took to actually
+> exercise the buggy code path and expose it.
+>
+> So, yeah, the lack of documentation contributed to the bug being
+> present. But taking 6 months to actually exercise the new code
+> containing the bug is most definitely not an interface documentation
+> problem, nor a problem that can be fixed by correcting the interface
+> documentation....
+>
+> Cheers,
+>
+> Dave.
+> --
+> Dave Chinner
+> david@fromorbit.com
 
-works for me.
 
-> 
-> Thanks, Anand
-> 
->>
->>>           }
->>>             name = rcu_string_strdup(path, GFP_NOFS);
->>>
-> 
+
+--=20
+Filipe David Manana,
+
+=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
+ right.=E2=80=9D
