@@ -2,163 +2,69 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F1B225C8B8
-	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Sep 2020 20:30:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E534225C9A2
+	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Sep 2020 21:45:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729063AbgICSaG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 3 Sep 2020 14:30:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45038 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729032AbgICS37 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 3 Sep 2020 14:29:59 -0400
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 507D1C061245
-        for <linux-btrfs@vger.kernel.org>; Thu,  3 Sep 2020 11:29:59 -0700 (PDT)
-Received: by mail-qt1-x841.google.com with SMTP id 60so2663748qtc.9
-        for <linux-btrfs@vger.kernel.org>; Thu, 03 Sep 2020 11:29:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
-         :content-transfer-encoding;
-        bh=5DI9ksRlYe7oshTLSbphjFSK3c3tqKX4djgAWzzRtOU=;
-        b=HkEKVyjKpmb2sdoyZ6czpBs/N41JFqUE91F0yKpuGaH3Q+OJ4cK055KIoCw0A891Q7
-         8pGjVA3xZN80jcBg4sqAfwkw2+T37ZyszBHzOnd/4tITR7F+lNwfRZVOIN8iXznH2D1u
-         1cRRvxIKNf4fsUx5r5vk8dm7JEEn40Kpw/whdVw6CrGKc7llFgG+3A9CBZvYvOMN/bBy
-         Zg7lPPh9qnZbNPrlE2mcxRNsZHJOyOCpSwd3bYmbT/VdeLCd8yBdeeqTl7XDZbebv2Nu
-         gJGgX5NDXQch+fMz8emJwWE/Rm3d1Gq7oswm5jq6BtuYn4OLhRi2+ca/LtAsuvJ7zEzz
-         ZTPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=5DI9ksRlYe7oshTLSbphjFSK3c3tqKX4djgAWzzRtOU=;
-        b=Lo4qQHqgvT7dQXSCvREx7Fi9GjeODsM49W+S+DjIu/SXe1cfvkzV8YUpcqodHNEEgb
-         2YQXGTbzIeioPFCmRiVTw48A12nuavWhyp2jQYgeASYsh+9u6LVtMpJfsuHG+5LIrrjs
-         LVwlrLK9Ttgr+0lfsLFUx7VPNxcI+75z/4cu1/rcSUywaxhNl4t8ZCcOTziC6S0noZkD
-         XrNoOzjVKa4rxKf6c0qLRl5ilLf+xwKKsVgOOoB9f/U84NdkS6NhSXWHl4KDPg5PBuQB
-         q09tokRNG/tc1jUEn/60w9HvHlRbUfws5oTCzE6XWM4t59qWSKLUSXmKzlgUe736GJvH
-         qOPQ==
-X-Gm-Message-State: AOAM532skOj/4T6l9pD/U5Frx8fr++n6A/cVLKWr3z2/yccrVdEsfkjc
-        0QKKDM2xwaz7a3cdmXhuDaatoHmOug/JJvFb
-X-Google-Smtp-Source: ABdhPJzxAHylTzbZ59VoaBd2CZo2uBcqbhnJLBN3Oxel3T7si9+90tbS6KsAZwSXdGtEJ3cJr+mMoQ==
-X-Received: by 2002:aed:310e:: with SMTP id 14mr4965647qtg.122.1599157798249;
-        Thu, 03 Sep 2020 11:29:58 -0700 (PDT)
-Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id 64sm2820714qko.117.2020.09.03.11.29.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Sep 2020 11:29:57 -0700 (PDT)
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 2/2] btrfs: pretty print leaked root name
-Date:   Thu,  3 Sep 2020 14:29:51 -0400
-Message-Id: <d749b9482370c5c32d32fb9e8e2a6d4671b19732.1599157686.git.josef@toxicpanda.com>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <cover.1599157686.git.josef@toxicpanda.com>
-References: <cover.1599157686.git.josef@toxicpanda.com>
+        id S1728304AbgICTo7 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-btrfs@lfdr.de>); Thu, 3 Sep 2020 15:44:59 -0400
+Received: from james.kirk.hungrycats.org ([174.142.39.145]:44594 "EHLO
+        james.kirk.hungrycats.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727065AbgICTo6 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 3 Sep 2020 15:44:58 -0400
+Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
+        id D094C7E64BC; Thu,  3 Sep 2020 15:44:54 -0400 (EDT)
+Date:   Thu, 3 Sep 2020 15:44:49 -0400
+From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+To:     Hamish Moffatt <hamish-btrfs@moffatt.email>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: new database files not compressed
+Message-ID: <20200903194437.GA21815@hungrycats.org>
+References: <c7415ce2-f025-6c31-60b7-f0b927ed4808@moffatt.email>
+ <41107373-cc61-ea3f-7ae9-c9eef0ee47f9@suse.com>
+ <2d060b13-7a1a-7cc5-927f-2c6a067f9c03@moffatt.email>
+ <0bf29a8c-23b2-26f4-2efd-2e82f38c437d@suse.com>
+ <4c3d4141-4452-bb79-b18e-f32c8e35cb13@moffatt.email>
+ <d0399ea6-f198-b58f-8b34-f8ba95ef400f@moffatt.email>
+ <03ec55ee-5cf3-54fa-1a81-abc93006ca7b@suse.com>
+ <dede53e.d98f7053.1744e402728@lechevalier.se>
+ <20200902161621.GA5890@hungrycats.org>
+ <f32f6fdf-bc20-b1d1-d0ea-08f779723066@moffatt.email>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <f32f6fdf-bc20-b1d1-d0ea-08f779723066@moffatt.email>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-I'm a actual human being so am incapable of converting u64 to s64 in my
-head, so add a helper to get the pretty name of a root objectid and use
-that helper to spit out the name for any special roots for leaked roots,
-so I don't have to scratch my head and figure out which root I messed up
-the refs for.
+On Thu, Sep 03, 2020 at 10:53:23PM +1000, Hamish Moffatt wrote:
+> On 3/9/20 2:16 am, Zygo Blaxell wrote:
+> > 
+> > fallocate doesn't make a lot of sense on btrfs, except in the special
+> > case of nodatacow files without snapshots.  fallocate breaks compression,
+> > and snapshots/reflinks break fallocate.
+> 
+> 
+> I recompiled Firebird with fallocate disabled (it has a fallback for
+> non-linux OSs), and now I have compressed database files.
+> 
+> It may be that de-duplication suits my application better anyway. Will
+> compsize tell me how much space is being saved by de-duplication, or is
+> there another way to find out?
 
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
----
- fs/btrfs/disk-io.c    |  6 ++++--
- fs/btrfs/print-tree.c | 39 +++++++++++++++++++++++++++++++++++++++
- fs/btrfs/print-tree.h |  3 +++
- 3 files changed, 46 insertions(+), 2 deletions(-)
+Compsize reports "Uncompressed" and "Referenced" columns.  "Uncompressed"
+is the physical size of the uncompressed data (i.e. how many bytes
+you would need to hold all of the extents on disk without compression
+but with dedupe).  "Referenced" is the logical size of the data, after
+counting each reference (i.e. how many bytes you would need to hold all
+of the data without compression or dedupe).
 
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 7147237d9bf0..71beb9493ab4 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -1504,10 +1504,12 @@ void btrfs_check_leaked_roots(struct btrfs_fs_info *fs_info)
- 	struct btrfs_root *root;
- 
- 	while (!list_empty(&fs_info->allocated_roots)) {
-+		char buf[BTRFS_ROOT_NAME_BUF_LEN];
-+
- 		root = list_first_entry(&fs_info->allocated_roots,
- 					struct btrfs_root, leak_list);
--		btrfs_err(fs_info, "leaked root %llu-%llu refcount %d",
--			  root->root_key.objectid, root->root_key.offset,
-+		btrfs_err(fs_info, "leaked root %s refcount %d",
-+			  btrfs_root_name(root->root_key.objectid, buf),
- 			  refcount_read(&root->refs));
- 		while (refcount_read(&root->refs) > 1)
- 			btrfs_put_root(root);
-diff --git a/fs/btrfs/print-tree.c b/fs/btrfs/print-tree.c
-index 80567c11ec12..d0370075a719 100644
---- a/fs/btrfs/print-tree.c
-+++ b/fs/btrfs/print-tree.c
-@@ -7,6 +7,45 @@
- #include "disk-io.h"
- #include "print-tree.h"
- 
-+struct name_map {
-+	u64 id;
-+	char *name;
-+};
-+
-+static const struct name_map root_map[] = {
-+	{ BTRFS_ROOT_TREE_OBJECTID,		"ROOT_TREE"		},
-+	{ BTRFS_EXTENT_TREE_OBJECTID,		"EXTENT_TREE"		},
-+	{ BTRFS_CHUNK_TREE_OBJECTID,		"CHUNK_TREE"		},
-+	{ BTRFS_DEV_TREE_OBJECTID,		"DEV_TREE"		},
-+	{ BTRFS_FS_TREE_OBJECTID,		"FS_TREE"		},
-+	{ BTRFS_ROOT_TREE_DIR_OBJECTID,		"ROOT_TREE_DIR"		},
-+	{ BTRFS_CSUM_TREE_OBJECTID,		"CSUM_TREE"		},
-+	{ BTRFS_TREE_LOG_OBJECTID,		"TREE_LOG"		},
-+	{ BTRFS_QUOTA_TREE_OBJECTID,		"QUOTA_TREE"		},
-+	{ BTRFS_UUID_TREE_OBJECTID,		"UUID_TREE"		},
-+	{ BTRFS_FREE_SPACE_TREE_OBJECTID,	"FREE_SPACE_TREE"	},
-+	{ BTRFS_DATA_RELOC_TREE_OBJECTID,	"DATA_RELOC_TREE"	},
-+};
-+
-+char *btrfs_root_name(u64 objectid, char *buf)
-+{
-+	int i;
-+
-+	if (objectid == BTRFS_TREE_RELOC_OBJECTID) {
-+		snprintf(buf, BTRFS_ROOT_NAME_BUF_LEN,
-+			 "TREE_RELOC offset=%llu", objectid);
-+		return buf;
-+	}
-+
-+	for (i = 0; i < ARRAY_SIZE(root_map); i++) {
-+		if (root_map[i].id == objectid)
-+			return root_map[i].name;
-+	}
-+
-+	snprintf(buf, BTRFS_ROOT_NAME_BUF_LEN, "%llu", objectid);
-+	return buf;
-+}
-+
- static void print_chunk(struct extent_buffer *eb, struct btrfs_chunk *chunk)
- {
- 	int num_stripes = btrfs_chunk_num_stripes(eb, chunk);
-diff --git a/fs/btrfs/print-tree.h b/fs/btrfs/print-tree.h
-index e6bb38fd75ad..8d07f80cead4 100644
---- a/fs/btrfs/print-tree.h
-+++ b/fs/btrfs/print-tree.h
-@@ -6,7 +6,10 @@
- #ifndef BTRFS_PRINT_TREE_H
- #define BTRFS_PRINT_TREE_H
- 
-+#define BTRFS_ROOT_NAME_BUF_LEN 48
-+
- void btrfs_print_leaf(struct extent_buffer *l);
- void btrfs_print_tree(struct extent_buffer *c, bool follow);
-+char *btrfs_root_name(u64 objectid, char *buf);
- 
- #endif
--- 
-2.24.1
+The "none" and "zstd" rows will tell you how much dedupe you're getting
+on uncompressed and compressed extents separately.
 
+> 
+> Hamish
+> 
