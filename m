@@ -2,22 +2,23 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DB4125BCF5
-	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Sep 2020 10:16:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4111425BD7C
+	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Sep 2020 10:40:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728701AbgICIQw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 3 Sep 2020 04:16:52 -0400
-Received: from mx2.suse.de ([195.135.220.15]:59602 "EHLO mx2.suse.de"
+        id S1726536AbgICIk0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 3 Sep 2020 04:40:26 -0400
+Received: from mx2.suse.de ([195.135.220.15]:48214 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728456AbgICIQu (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 3 Sep 2020 04:16:50 -0400
+        id S1726355AbgICIkY (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 3 Sep 2020 04:40:24 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id B6AD0AED8;
-        Thu,  3 Sep 2020 08:16:48 +0000 (UTC)
-Subject: Re: [PATCH] btrfs: improve messages when devices rescanned
+        by mx2.suse.de (Postfix) with ESMTP id E5AD6B6ED;
+        Thu,  3 Sep 2020 08:40:23 +0000 (UTC)
+Subject: Re: [PATCH 01/15] btrfs: add btrfs_sysfs_add_device helper
 To:     Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org
-References: <77fc0b0c7c88b14c734b646d1969ccf45a063146.1599118052.git.anand.jain@oracle.com>
+References: <cover.1599091832.git.anand.jain@oracle.com>
+ <5f8aa8a03a1712adba0023fc1efa18623571c588.1599091832.git.anand.jain@oracle.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  xsFNBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -61,12 +62,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  KIuxEcV8wcVjr+Wr9zRl06waOCkgrQbTPp631hToxo+4rA1jiQF2M80HAet65ytBVR2pFGZF
  zGYYLqiG+mpUZ+FPjxk9kpkRYz61mTLSY7tuFljExfJWMGfgSg1OxfLV631jV1TcdUnx+h3l
  Sqs2vMhAVt14zT8mpIuu2VNxcontxgVr1kzYA/tQg32fVRbGr449j1gw57BV9i0vww==
-Message-ID: <fe35d005-a3ad-2a30-99a0-99416846d5e1@suse.com>
-Date:   Thu, 3 Sep 2020 11:16:46 +0300
+Message-ID: <25dcceb5-631f-3fde-1326-024d0ff02ba8@suse.com>
+Date:   Thu, 3 Sep 2020 11:40:21 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <77fc0b0c7c88b14c734b646d1969ccf45a063146.1599118052.git.anand.jain@oracle.com>
+In-Reply-To: <5f8aa8a03a1712adba0023fc1efa18623571c588.1599091832.git.anand.jain@oracle.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -77,60 +78,78 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 3.09.20 г. 10:27 ч., Anand Jain wrote:
-> Systems booting without the initramfs seems to scan an unusual kind
-> of device path. And at a later time, the device is updated to the
-> correct path. We generally print the process name and PID of the process
-> scanning the device but we don't capture the same information if the
-> device path is rescanned with a different pathname.
+On 3.09.20 г. 3:57 ч., Anand Jain wrote:
+> btrfs_sysfs_add_devices_dir() adds device link and devid kobject
+> (sysfs entries) for a device or all the devices in the btrfs_fs_devices.
+> In preparation to add these sysfs entries for the seed as well, add
+> a btrfs_sysfs_add_device() helper function and avoid code duplication.
 > 
-> But the current message is too long, so drop the unwanted words and add
-> process name and PID.
-> 
-> While at this also update the duplicate device warning to include the
-> process name and PID.
-> 
-> Reported-by: https://bugzilla.kernel.org/show_bug.cgi?id=89721
 > Signed-off-by: Anand Jain <anand.jain@oracle.com>
 > ---
->  fs/btrfs/volumes.c | 14 ++++++++------
->  1 file changed, 8 insertions(+), 6 deletions(-)
+>  fs/btrfs/sysfs.c | 79 ++++++++++++++++++++++++++++++++----------------
+>  1 file changed, 53 insertions(+), 26 deletions(-)
 > 
-> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> index dc81646b13c0..c386ad722ae1 100644
-> --- a/fs/btrfs/volumes.c
-> +++ b/fs/btrfs/volumes.c
-> @@ -942,16 +942,18 @@ static noinline struct btrfs_device *device_list_add(const char *path,
->  				bdput(path_bdev);
->  				mutex_unlock(&fs_devices->device_list_mutex);
->  				btrfs_warn_in_rcu(device->fs_info,
-> -			"duplicate device fsid:devid for %pU:%llu old:%s new:%s",
-> -					disk_super->fsid, devid,
-> -					rcu_str_deref(device->name), path);
-> +	"duplicate device %s devid %llu generation %llu scanned by %s (%d)",
-> +						  path, devid, found_transid,
-> +						  current->comm,
-> +						  task_pid_nr(current));
->  				return ERR_PTR(-EEXIST);
->  			}
->  			bdput(path_bdev);
->  			btrfs_info_in_rcu(device->fs_info,
-> -				"device fsid %pU devid %llu moved old:%s new:%s",
-> -				disk_super->fsid, devid,
-> -				rcu_str_deref(device->name), path);
-> +				"device path %s changed to %s by %s (pid %d)",
-> +					  rcu_str_deref(device->name),
-> +					  path, current->comm,
-> +					  task_pid_nr(current));
-
-This 2nd messages is misleading, it's not the process calling
-device_list_add which have changed the path per-se but rather it sees
-the changed path. It's not possible to know why it changed in this
-context. The idea here is "
-
-"Process %pid saw different dev path %new_dev_path for dev %old_path"
-
->  		}
+> diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
+> index 190e59152be5..3381a91d7deb 100644
+> --- a/fs/btrfs/sysfs.c
+> +++ b/fs/btrfs/sysfs.c
+> @@ -1271,44 +1271,71 @@ static struct kobj_type devid_ktype = {
+>  	.release	= btrfs_release_devid_kobj,
+>  };
 >  
->  		name = rcu_string_strdup(path, GFP_NOFS);
+> -int btrfs_sysfs_add_devices_dir(struct btrfs_fs_devices *fs_devices,
+> -				struct btrfs_device *one_device)
+> +static int btrfs_sysfs_add_device(struct btrfs_device *device)
+>  {
+> -	int error = 0;
+> -	struct btrfs_device *dev;
+> +	int ret;
+>  	unsigned int nofs_flag;
+> +	struct kobject *devices_kobj;
+> +        struct kobject *devinfo_kobj;
+
+Whitespace damage
+
+>  
+> -	nofs_flag = memalloc_nofs_save();
+> -	list_for_each_entry(dev, &fs_devices->devices, dev_list) {
+> +	/*
+> +	 * make sure we use the fs_info::fs_devices to fetch the kobjects
+> +	 * even for the seed fs_devices
+> +	 */
+> +	devices_kobj = device->fs_devices->fs_info->fs_devices->devices_kobj;
+> +	devinfo_kobj = device->fs_devices->fs_info->fs_devices->devinfo_kobj;
+
+This function and its callers are called after the fs_info of devices is
+initialized so can't you simply do 'device->fs_info->fs_devices->'...
+reduces a level of pointer chasing.
+
+> +	ASSERT(devices_kobj);
+> +	ASSERT(devinfo_kobj);
+<snip>
+
+
+>  
+> -	return error;
+> +int btrfs_sysfs_add_devices_dir(struct btrfs_fs_devices *fs_devices,
+> +				struct btrfs_device *one_device)
+> +{
+> +	int ret;
+
+That variable can be defined inside the list_for_each-entry as it's
+being used only in that context.
+> +
+> +	if (one_device)
+> +		return btrfs_sysfs_add_device(one_device);
+> +
+> +	list_for_each_entry(one_device, &fs_devices->devices, dev_list) {
+> +		ret = btrfs_sysfs_add_device(one_device);
+> +		if (ret)
+> +			return ret;
+> +	}
+> +
+> +	return 0;
+>  }
+>  
+>  void btrfs_kobject_uevent(struct block_device *bdev, enum kobject_action action)
 > 
