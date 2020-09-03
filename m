@@ -2,23 +2,24 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4111425BD7C
-	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Sep 2020 10:40:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6289F25BD8C
+	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Sep 2020 10:43:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726536AbgICIk0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 3 Sep 2020 04:40:26 -0400
-Received: from mx2.suse.de ([195.135.220.15]:48214 "EHLO mx2.suse.de"
+        id S1727857AbgICInA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 3 Sep 2020 04:43:00 -0400
+Received: from mx2.suse.de ([195.135.220.15]:51004 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726355AbgICIkY (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 3 Sep 2020 04:40:24 -0400
+        id S1726025AbgICInA (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 3 Sep 2020 04:43:00 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id E5AD6B6ED;
-        Thu,  3 Sep 2020 08:40:23 +0000 (UTC)
-Subject: Re: [PATCH 01/15] btrfs: add btrfs_sysfs_add_device helper
+        by mx2.suse.de (Postfix) with ESMTP id 8CEF4B6ED;
+        Thu,  3 Sep 2020 08:42:59 +0000 (UTC)
+Subject: Re: [PATCH 03/15] btrfs: btrfs_sysfs_remove_devices_dir drop return
+ value
 To:     Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org
 References: <cover.1599091832.git.anand.jain@oracle.com>
- <5f8aa8a03a1712adba0023fc1efa18623571c588.1599091832.git.anand.jain@oracle.com>
+ <5ff561bc46063a3fc7eb12a51600fe754b12ad0d.1599091832.git.anand.jain@oracle.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  xsFNBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -62,12 +63,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  KIuxEcV8wcVjr+Wr9zRl06waOCkgrQbTPp631hToxo+4rA1jiQF2M80HAet65ytBVR2pFGZF
  zGYYLqiG+mpUZ+FPjxk9kpkRYz61mTLSY7tuFljExfJWMGfgSg1OxfLV631jV1TcdUnx+h3l
  Sqs2vMhAVt14zT8mpIuu2VNxcontxgVr1kzYA/tQg32fVRbGr449j1gw57BV9i0vww==
-Message-ID: <25dcceb5-631f-3fde-1326-024d0ff02ba8@suse.com>
-Date:   Thu, 3 Sep 2020 11:40:21 +0300
+Message-ID: <a5bdb9a2-c12f-2c96-3035-60b50fd08b7e@suse.com>
+Date:   Thu, 3 Sep 2020 11:42:57 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <5f8aa8a03a1712adba0023fc1efa18623571c588.1599091832.git.anand.jain@oracle.com>
+In-Reply-To: <5ff561bc46063a3fc7eb12a51600fe754b12ad0d.1599091832.git.anand.jain@oracle.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -79,77 +80,9 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 3.09.20 г. 3:57 ч., Anand Jain wrote:
-> btrfs_sysfs_add_devices_dir() adds device link and devid kobject
-> (sysfs entries) for a device or all the devices in the btrfs_fs_devices.
-> In preparation to add these sysfs entries for the seed as well, add
-> a btrfs_sysfs_add_device() helper function and avoid code duplication.
+> btrfs_sysfs_remove_devices_dir() return value is unused declare it as
+> void.
 > 
 > Signed-off-by: Anand Jain <anand.jain@oracle.com>
-> ---
->  fs/btrfs/sysfs.c | 79 ++++++++++++++++++++++++++++++++----------------
->  1 file changed, 53 insertions(+), 26 deletions(-)
-> 
-> diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
-> index 190e59152be5..3381a91d7deb 100644
-> --- a/fs/btrfs/sysfs.c
-> +++ b/fs/btrfs/sysfs.c
-> @@ -1271,44 +1271,71 @@ static struct kobj_type devid_ktype = {
->  	.release	= btrfs_release_devid_kobj,
->  };
->  
-> -int btrfs_sysfs_add_devices_dir(struct btrfs_fs_devices *fs_devices,
-> -				struct btrfs_device *one_device)
-> +static int btrfs_sysfs_add_device(struct btrfs_device *device)
->  {
-> -	int error = 0;
-> -	struct btrfs_device *dev;
-> +	int ret;
->  	unsigned int nofs_flag;
-> +	struct kobject *devices_kobj;
-> +        struct kobject *devinfo_kobj;
 
-Whitespace damage
-
->  
-> -	nofs_flag = memalloc_nofs_save();
-> -	list_for_each_entry(dev, &fs_devices->devices, dev_list) {
-> +	/*
-> +	 * make sure we use the fs_info::fs_devices to fetch the kobjects
-> +	 * even for the seed fs_devices
-> +	 */
-> +	devices_kobj = device->fs_devices->fs_info->fs_devices->devices_kobj;
-> +	devinfo_kobj = device->fs_devices->fs_info->fs_devices->devinfo_kobj;
-
-This function and its callers are called after the fs_info of devices is
-initialized so can't you simply do 'device->fs_info->fs_devices->'...
-reduces a level of pointer chasing.
-
-> +	ASSERT(devices_kobj);
-> +	ASSERT(devinfo_kobj);
-<snip>
-
-
->  
-> -	return error;
-> +int btrfs_sysfs_add_devices_dir(struct btrfs_fs_devices *fs_devices,
-> +				struct btrfs_device *one_device)
-> +{
-> +	int ret;
-
-That variable can be defined inside the list_for_each-entry as it's
-being used only in that context.
-> +
-> +	if (one_device)
-> +		return btrfs_sysfs_add_device(one_device);
-> +
-> +	list_for_each_entry(one_device, &fs_devices->devices, dev_list) {
-> +		ret = btrfs_sysfs_add_device(one_device);
-> +		if (ret)
-> +			return ret;
-> +	}
-> +
-> +	return 0;
->  }
->  
->  void btrfs_kobject_uevent(struct block_device *bdev, enum kobject_action action)
-> 
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
