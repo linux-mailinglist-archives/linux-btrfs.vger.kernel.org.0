@@ -2,80 +2,98 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4ED025C493
-	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Sep 2020 17:12:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD85725C415
+	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Sep 2020 17:03:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729531AbgICPMu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 3 Sep 2020 11:12:50 -0400
-Received: from esa3.hgst.iphmx.com ([216.71.153.141]:25800 "EHLO
-        esa3.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728662AbgICMTH (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 3 Sep 2020 08:19:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1599135547; x=1630671547;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=VfLOlmE/2aCMCl8VZCY6JBjqufmAUHpAoMuPvGfpSEk=;
-  b=d/c5vM2CJJBbBp18cWiFI7Ka4uWpuNDkGQ0fC3tEKubpTAFPK0Fk52Ki
-   y2zJ8FQl2xvJMXWAsk6AQ7xbpL1vXIjFri8mhGaSpgNQO+MMcU4Rv9toG
-   9wNCTttKimllt2oisxy1/UCsaRHTmmC207rczlVhwo6MlVnnhcmQ0ZPoA
-   ZD4RIQv88/d2kKe2PdtO4BDi914SyokNHDGxnaVVTqRzgVRMpvAh7PTcO
-   Ueq5z7S9LDpFv/sYefvb3t8S3WxQ2oMN3D4ih5aJzVregJuspm4jmeqW+
-   DUFmvXsM7V2WHySdSSXewWYKn8MJZYFvCAF+CHRHnbjBqmWWxl1/V3eTk
-   A==;
-IronPort-SDR: ubY60Qc8no5mSewcoBvn6a2/s2Ed6YN5EIkhKgzKwD4j2CmFblA8h/CFFq03qfaglGocpZ8jWY
- soyZ1AaUUO10JlDG57BCyNRO48ugR3Z64Oi+Y9Ga6EiDroYfsfydJGyZtw+xkKaysIn560gho4
- pc5f0T/MUaxVqgsqJoLOoPiJs9FAf8BqFeSi7/Rid0weNU9x5PEMjfCIDRnbVQB5MawwiIPro4
- u9/WggTp8gQe8zVwU6q2tsZEGpkSUiBrAd3qW/IIt0BQf5COA8pU7vCQCl8ebgXBLx4Fx3hTb7
- Qe0=
-X-IronPort-AV: E=Sophos;i="5.76,386,1592841600"; 
-   d="scan'208";a="150839210"
-Received: from uls-op-cesaip02.wdc.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 03 Sep 2020 20:18:22 +0800
-IronPort-SDR: solpUvhkaisHpFYNuWmWfcrjRe3HKU6yNgZah538E0JjVgwPfRGIUjitUzg8ukKfhh3FW90tLV
- TfYvdlFyA0ww==
-Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Sep 2020 05:04:56 -0700
-IronPort-SDR: I2381ld81JVgHFK1lo/RADNWh60NX6p/nVpdAl4vjz1jQzTJSkhChf/uEMRck13buKzDrohMBR
- cB6WmRSIIppA==
-WDCIronportException: Internal
-Received: from unknown (HELO redsun60.ssa.fujisawa.hgst.com) ([10.149.66.36])
-  by uls-op-cesaip02.wdc.com with ESMTP; 03 Sep 2020 05:18:21 -0700
-From:   Johannes Thumshirn <johannes.thumshirn@wdc.com>
-To:     linux-btrfs@vger.kernel.org, fstests@vger.kernel.org
-Cc:     Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Subject: [PATCH] btrfs/011: skip if on too small devices
-Date:   Thu,  3 Sep 2020 21:18:15 +0900
-Message-Id: <20200903121815.7797-1-johannes.thumshirn@wdc.com>
-X-Mailer: git-send-email 2.26.2
+        id S1729373AbgICPDQ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-btrfs@lfdr.de>); Thu, 3 Sep 2020 11:03:16 -0400
+Received: from mga14.intel.com ([192.55.52.115]:38263 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729035AbgICN6v (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 3 Sep 2020 09:58:51 -0400
+IronPort-SDR: YAhaW+RyLQepdox+9fTVQYjSZtPcCQjixBgP7Klj5NzQUqinJnqDcxle2o5XqL1mmg/049l9Kh
+ aJY8kdcG+s5g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9732"; a="156839375"
+X-IronPort-AV: E=Sophos;i="5.76,386,1592895600"; 
+   d="scan'208";a="156839375"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Sep 2020 06:30:00 -0700
+IronPort-SDR: Ii80nP53OMhKu3YPQanI2V3JEHYHtL7FOqbXWnBxegPkQJnHeLe8iGmOnrNuw5ZytWdFKHt8+v
+ PmIgzgzmD4iA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,386,1592895600"; 
+   d="scan'208";a="282676539"
+Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
+  by fmsmga007.fm.intel.com with ESMTP; 03 Sep 2020 06:30:00 -0700
+Received: from shsmsx601.ccr.corp.intel.com (10.109.6.141) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Thu, 3 Sep 2020 06:29:59 -0700
+Received: from shsmsx601.ccr.corp.intel.com (10.109.6.141) by
+ SHSMSX601.ccr.corp.intel.com (10.109.6.141) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Thu, 3 Sep 2020 21:29:57 +0800
+Received: from shsmsx601.ccr.corp.intel.com ([10.109.6.141]) by
+ SHSMSX601.ccr.corp.intel.com ([10.109.6.141]) with mapi id 15.01.1713.004;
+ Thu, 3 Sep 2020 21:29:57 +0800
+From:   "Sang, Oliver" <oliver.sang@intel.com>
+To:     "dsterba@suse.cz" <dsterba@suse.cz>
+CC:     Goldwyn Rodrigues <rgoldwyn@suse.com>,
+        David Sterba <dsterba@suse.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "lkp@lists.01.org" <lkp@lists.01.org>, lkp <lkp@intel.com>,
+        "ltp@lists.linux.it" <ltp@lists.linux.it>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: RE: [btrfs] c0aaf9b7a1: ltp: stuck at diotest4
+Thread-Topic: [btrfs] c0aaf9b7a1: ltp: stuck at diotest4
+Thread-Index: AQHWgdJgTz1eQ6GVAE+fMaKAQV67JalW6OSQ
+Date:   Thu, 3 Sep 2020 13:29:57 +0000
+Message-ID: <06668b52b9ac4d4e81f945e06223d9b7@intel.com>
+References: <20200903062837.GA3654@xsang-OptiPlex-9020>
+ <20200903091123.GO28318@suse.cz>
+In-Reply-To: <20200903091123.GO28318@suse.cz>
+Accept-Language: zh-CN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+x-originating-ip: [10.239.127.36]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-btrfs/011 does require a spare device of at least 10GB, skip if we don't
-have big enough devices, e.g. when testing on ramdisks.
+> -----Original Message-----
+> From: David Sterba <dsterba@suse.cz>
+> Sent: Thursday, September 3, 2020 5:11 PM
+> To: Sang, Oliver <oliver.sang@intel.com>
+> Cc: Goldwyn Rodrigues <rgoldwyn@suse.com>; David Sterba
+> <dsterba@suse.com>; LKML <linux-kernel@vger.kernel.org>; lkp@lists.01.org;
+> lkp <lkp@intel.com>; ltp@lists.linux.it; linux-btrfs@vger.kernel.org
+> Subject: Re: [btrfs] c0aaf9b7a1: ltp: stuck at diotest4
+> 
+> On Thu, Sep 03, 2020 at 02:28:37PM +0800, kernel test robot wrote:
+> > Greeting,
+> >
+> > FYI, we noticed the following commit (built with gcc-9):
+> >
+> > commit: c0aaf9b7a114f6b75e0da97be7d99c102347a751 ("btrfs: switch to
+> > iomap_dio_rw() for dio")
+> > https://git.kernel.org/cgit/linux/kernel/git/next/linux-next.git
+> > master
+> 
+> That's probably the O_DIRECT + O_(D)SYNC deadlock that was found recently.
+> One of the cases in diotest4 does
+> 
+> 	open(filename, O_DIRECT | O_RDWR | O_SYNC)
+> 
+> Fix is work in progress, thanks for the report.
 
-Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
----
- tests/btrfs/011 | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/tests/btrfs/011 b/tests/btrfs/011
-index de424f876e6e..f96d11ce6ee6 100755
---- a/tests/btrfs/011
-+++ b/tests/btrfs/011
-@@ -51,6 +51,7 @@ _supported_fs btrfs
- _require_scratch_nocheck
- _require_scratch_dev_pool 5
- _require_scratch_dev_pool_equal_size
-+_require_scratch_size $((10 * 1024 * 1024)) #kB
- _require_command "$WIPEFS_PROG" wipefs
- 
- rm -f $seqres.full
--- 
-2.26.2
-
+Thanks a lot for information!
