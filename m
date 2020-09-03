@@ -2,150 +2,85 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BAA425C6E0
-	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Sep 2020 18:32:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A54F25C757
+	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Sep 2020 18:47:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728797AbgICQcm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 3 Sep 2020 12:32:42 -0400
-Received: from verein.lst.de ([213.95.11.211]:38685 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726327AbgICQcl (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 3 Sep 2020 12:32:41 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 45AD867357; Thu,  3 Sep 2020 18:32:37 +0200 (CEST)
-Date:   Thu, 3 Sep 2020 18:32:36 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Josef Bacik <josef@toxicpanda.com>
+        id S1728723AbgICQrC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 3 Sep 2020 12:47:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57380 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727786AbgICQrB (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 3 Sep 2020 12:47:01 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1781C061244
+        for <linux-btrfs@vger.kernel.org>; Thu,  3 Sep 2020 09:47:01 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id f142so3627546qke.13
+        for <linux-btrfs@vger.kernel.org>; Thu, 03 Sep 2020 09:47:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=i7aG5k6pRgcc/LcppLGEeim2es2qXnyQIVJM9eTJudM=;
+        b=QWJswB/C3Cd+djAfaJ2g57w6F6kHc6Ydq1VTTz7Mvv42d07xhtC/DKEhblijbavXEZ
+         R6/BUNucYuciVAc8IPmDnGFU28/zQCaMqyoigFs+qX/LaklJuk4Dk2kjM+rujxr8XC6I
+         HmMgBg8nFcdSsk6n+9P6VWtZyAFvBWuB6cAzWN9cydFJOgLDsPNtxYFQFL/2T8Hp+j8N
+         Ijs9vblbui2DewrfkuzylOPTiIFGTqjm9Y5p5c1xhaEwZKp0Rus/RAJpDkFayePQ5san
+         aOrTo+J9JHGkf5PZRcunG9N5ri8exLI4CryVCqvum/1u23oIKR+lJ1eP4CDvvP1Fs7LR
+         ozdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=i7aG5k6pRgcc/LcppLGEeim2es2qXnyQIVJM9eTJudM=;
+        b=cVYFOa3T5XhlS69f0reyRk+XLNepG5AladTCWl912xRBLHk8nZFSHNxb6vR1wXMJNb
+         Rqsp76AcaUizfuE9T6F0iaiFOQKO9K47hjSY8B+hNopvc89t8+6/QAXx95iR5j+htFGm
+         BOMdUFKpHZoEw5CvON7oAX5eHhaobjRb4rmeb6AoCYyPs1iSZTzbSvNvJUV/kwEyclQB
+         HF5uMtc03gCVHBKOpClDYpXxxJGYCk/8adDt47TrxYe+kpHomt31G1SlAelDYCmkcsLV
+         51dXSC43Dgl1fhprQC04YJEdGk2/G3TR6rnYUgtRQii6uWJmvovDUtaOFBwEgr58r6RZ
+         t93A==
+X-Gm-Message-State: AOAM530eVztTDkOBqMMaGhkygajUjIObeKpnMIRCfLqtK3iunJjKlPmR
+        UHvIyYkqriKVktifEy1EBzSyew==
+X-Google-Smtp-Source: ABdhPJyhWxkXR6H9v+NSJodcNpr97SHmsPy0lcF9LKiwbnuATlgIp/7y4vVsi44mnZPa73+R0KtPEw==
+X-Received: by 2002:a37:909:: with SMTP id 9mr4051361qkj.317.1599151620746;
+        Thu, 03 Sep 2020 09:47:00 -0700 (PDT)
+Received: from [192.168.1.45] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id h17sm2551584qke.68.2020.09.03.09.46.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 03 Sep 2020 09:47:00 -0700 (PDT)
+Subject: Re: [RFC PATCH] btrfs: don't call btrfs_sync_file from iomap context
+To:     Christoph Hellwig <hch@lst.de>
 Cc:     Johannes Thumshirn <johannes.thumshirn@wdc.com>,
         David Sterba <dsterba@suse.com>,
         "linux-btrfs @ vger . kernel . org" <linux-btrfs@vger.kernel.org>,
         Filipe Manana <fdmanana@gmail.com>,
-        Christoph Hellwig <hch@lst.de>,
         Linux FS Devel <linux-fsdevel@vger.kernel.org>
-Subject: Re: [RFC PATCH] btrfs: don't call btrfs_sync_file from iomap
- context
-Message-ID: <20200903163236.GA26043@lst.de>
-References: <20200901130644.12655-1-johannes.thumshirn@wdc.com> <42efa646-73cd-d884-1c9c-dd889294bde2@toxicpanda.com>
+References: <20200901130644.12655-1-johannes.thumshirn@wdc.com>
+ <42efa646-73cd-d884-1c9c-dd889294bde2@toxicpanda.com>
+ <20200903163236.GA26043@lst.de>
+From:   Josef Bacik <josef@toxicpanda.com>
+Message-ID: <180234c3-d05c-1183-f1a6-b9b83c0d1536@toxicpanda.com>
+Date:   Thu, 3 Sep 2020 12:46:58 -0400
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <42efa646-73cd-d884-1c9c-dd889294bde2@toxicpanda.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <20200903163236.GA26043@lst.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-We could trivially do something like this to allow the file system
-to call iomap_dio_complete without i_rwsem:
+On 9/3/20 12:32 PM, Christoph Hellwig wrote:
+> We could trivially do something like this to allow the file system
+> to call iomap_dio_complete without i_rwsem:
+> 
 
-diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
-index c1aafb2ab99072..d970c6bbbe115d 100644
---- a/fs/iomap/direct-io.c
-+++ b/fs/iomap/direct-io.c
-@@ -76,7 +76,7 @@ static void iomap_dio_submit_bio(struct iomap_dio *dio, struct iomap *iomap,
- 		dio->submit.cookie = submit_bio(bio);
- }
- 
--static ssize_t iomap_dio_complete(struct iomap_dio *dio)
-+ssize_t iomap_dio_complete(struct iomap_dio *dio)
- {
- 	const struct iomap_dio_ops *dops = dio->dops;
- 	struct kiocb *iocb = dio->iocb;
-@@ -130,6 +130,7 @@ static ssize_t iomap_dio_complete(struct iomap_dio *dio)
- 
- 	return ret;
- }
-+EXPORT_SYMBOL_GPL(iomap_dio_complete);
- 
- static void iomap_dio_complete_work(struct work_struct *work)
- {
-@@ -406,8 +407,8 @@ iomap_dio_actor(struct inode *inode, loff_t pos, loff_t length,
-  * Returns -ENOTBLK In case of a page invalidation invalidation failure for
-  * writes.  The callers needs to fall back to buffered I/O in this case.
-  */
--ssize_t
--iomap_dio_rw(struct kiocb *iocb, struct iov_iter *iter,
-+struct iomap_dio *
-+__iomap_dio_rw(struct kiocb *iocb, struct iov_iter *iter,
- 		const struct iomap_ops *ops, const struct iomap_dio_ops *dops,
- 		bool wait_for_completion)
- {
-@@ -421,14 +422,14 @@ iomap_dio_rw(struct kiocb *iocb, struct iov_iter *iter,
- 	struct iomap_dio *dio;
- 
- 	if (!count)
--		return 0;
-+		return NULL;
- 
- 	if (WARN_ON(is_sync_kiocb(iocb) && !wait_for_completion))
--		return -EIO;
-+		return ERR_PTR(-EIO);
- 
- 	dio = kmalloc(sizeof(*dio), GFP_KERNEL);
- 	if (!dio)
--		return -ENOMEM;
-+		return ERR_PTR(-ENOMEM);
- 
- 	dio->iocb = iocb;
- 	atomic_set(&dio->ref, 1);
-@@ -558,7 +559,7 @@ iomap_dio_rw(struct kiocb *iocb, struct iov_iter *iter,
- 	dio->wait_for_completion = wait_for_completion;
- 	if (!atomic_dec_and_test(&dio->ref)) {
- 		if (!wait_for_completion)
--			return -EIOCBQUEUED;
-+			return ERR_PTR(-EIOCBQUEUED);
- 
- 		for (;;) {
- 			set_current_state(TASK_UNINTERRUPTIBLE);
-@@ -574,10 +575,25 @@ iomap_dio_rw(struct kiocb *iocb, struct iov_iter *iter,
- 		__set_current_state(TASK_RUNNING);
- 	}
- 
--	return iomap_dio_complete(dio);
-+	return dio;
- 
- out_free_dio:
- 	kfree(dio);
--	return ret;
-+	return ERR_PTR(ret);
-+}
-+EXPORT_SYMBOL_GPL(__iomap_dio_rw);
-+
-+ssize_t
-+iomap_dio_rw(struct kiocb *iocb, struct iov_iter *iter,
-+		const struct iomap_ops *ops, const struct iomap_dio_ops *dops,
-+		bool wait_for_completion)
-+{
-+	struct iomap_dio *dio;
-+
-+	dio = __iomap_dio_rw(iocb, iter, ops, dops, wait_for_completion);
-+	if (IS_ERR_OR_NULL(dio))
-+		return PTR_ERR_OR_ZERO(dio);
-+	return iomap_dio_complete(dio);
- }
- EXPORT_SYMBOL_GPL(iomap_dio_rw);
-+
-diff --git a/include/linux/iomap.h b/include/linux/iomap.h
-index 4d1d3c3469e9a4..172b3397a1a371 100644
---- a/include/linux/iomap.h
-+++ b/include/linux/iomap.h
-@@ -13,6 +13,7 @@
- struct address_space;
- struct fiemap_extent_info;
- struct inode;
-+struct iomap_dio;
- struct iomap_writepage_ctx;
- struct iov_iter;
- struct kiocb;
-@@ -258,6 +259,10 @@ struct iomap_dio_ops {
- ssize_t iomap_dio_rw(struct kiocb *iocb, struct iov_iter *iter,
- 		const struct iomap_ops *ops, const struct iomap_dio_ops *dops,
- 		bool wait_for_completion);
-+struct iomap_dio *__iomap_dio_rw(struct kiocb *iocb, struct iov_iter *iter,
-+		const struct iomap_ops *ops, const struct iomap_dio_ops *dops,
-+		bool wait_for_completion);
-+ssize_t iomap_dio_complete(struct iomap_dio *dio);
- int iomap_dio_iopoll(struct kiocb *kiocb, bool spin);
- 
- #ifdef CONFIG_SWAP
+This is sort of how I envisioned it worked, which is why I was surprised when it 
+bit us.  This would be the cleanest stop-gap right now, but as it stands I've 
+already sent a patch to work around the problem in btrfs for now, and we plan to 
+take up the locking rework next go around.  Thanks,
+
+Josef
