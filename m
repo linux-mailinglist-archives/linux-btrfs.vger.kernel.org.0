@@ -2,165 +2,139 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D17A425BE8E
-	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Sep 2020 11:37:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 234F825BE91
+	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Sep 2020 11:41:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728365AbgICJhC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 3 Sep 2020 05:37:02 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:33070 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726448AbgICJgx (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 3 Sep 2020 05:36:53 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0839ZG77073745;
-        Thu, 3 Sep 2020 09:36:49 GMT
+        id S1726323AbgICJlT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 3 Sep 2020 05:41:19 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:43296 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726047AbgICJlS (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 3 Sep 2020 05:41:18 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0839dpkh190015;
+        Thu, 3 Sep 2020 09:41:14 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
  references : from : message-id : date : mime-version : in-reply-to :
  content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=fVnBK/QPZGTlcYbkL8Z49wM03MZTPcTDurcJgjuCo04=;
- b=gkrpugLl43NJXol6NxUQcmHeaduX9ZGZv0Fgw73fQXnA/m/7OpT/clrjmCzvvN8Kxitw
- lzBxgY0EJ36DP4VgZ6JVqFso6Fub18enSSV03AOjNmHu4Z4hj3e0V58zE4I7FDPpVgnK
- LXPjEWJoYQKLGWX5pjpvMoxdlwr4ky4j4MTr8Q71G5cLSXJjyj/nz57mNSsFi0mZONPs
- X4ppgvPq24H/avO5LuhnEKToQVLGcraQeLK14U0/KjTMWdLpLFFZ/gi9KYlNdJdQlqf9
- ahY2WTPOnnySfWjARzdvRzJKzeinrODn1o+ZLRApq2o+kX5PEtqPEG/zMCX7UThlnn0Z rg== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2130.oracle.com with ESMTP id 337eer7rdn-1
+ bh=No0fvt4FM4QuAJm5OLFrkVmpdYNtmkK2ez2s66vbsm0=;
+ b=uhvL4acU8GiN8EaZNGcOTn5HK8aKsaDmtnY9YIIWo1fE4q7nOkLm0tRx7wXNdzeKLV5g
+ ALZAaK6ieuYLHA25DPkGwx9hBbkWeNF8sdOC80i7SZWTVHHIB7eKtk4mAChWLjdmTCgx
+ UK0EsWv/il/hCEoRbYLo1XL1eA90N/SKY/CeQejUOxBmT8h3tDoGby+fxR1QsNCNKLVm
+ z7B9qJz3SECULBkOICDjr+GMXVoDjsZQicq8VIjrWsvnnXER/kXlbYswl9mePKkPoE4c
+ ScaT/1jhsb70+SylJg+FnFF94V7icjpaX3bb97dS1anJSHIf0vJ/PjbvcNbnf5swvJrM /w== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2120.oracle.com with ESMTP id 339dmn65rh-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 03 Sep 2020 09:36:49 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0839ZI8X066937;
-        Thu, 3 Sep 2020 09:36:48 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3030.oracle.com with ESMTP id 3380krfgka-1
+        Thu, 03 Sep 2020 09:41:14 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0839f7MJ001564;
+        Thu, 3 Sep 2020 09:41:14 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3020.oracle.com with ESMTP id 3380svsfu7-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 03 Sep 2020 09:36:48 +0000
-Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0839al69011111;
-        Thu, 3 Sep 2020 09:36:47 GMT
+        Thu, 03 Sep 2020 09:41:14 +0000
+Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0839fDT8020268;
+        Thu, 3 Sep 2020 09:41:13 GMT
 Received: from [192.168.1.102] (/39.109.231.106)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 03 Sep 2020 02:36:47 -0700
-Subject: Re: [PATCH 01/15] btrfs: add btrfs_sysfs_add_device helper
+        with ESMTP ; Thu, 03 Sep 2020 02:41:13 -0700
+Subject: Re: [PATCH] btrfs: improve messages when devices rescanned
 To:     Nikolay Borisov <nborisov@suse.com>, linux-btrfs@vger.kernel.org
-References: <cover.1599091832.git.anand.jain@oracle.com>
- <5f8aa8a03a1712adba0023fc1efa18623571c588.1599091832.git.anand.jain@oracle.com>
- <25dcceb5-631f-3fde-1326-024d0ff02ba8@suse.com>
+References: <77fc0b0c7c88b14c734b646d1969ccf45a063146.1599118052.git.anand.jain@oracle.com>
+ <fe35d005-a3ad-2a30-99a0-99416846d5e1@suse.com>
 From:   Anand Jain <anand.jain@oracle.com>
-Message-ID: <462d6dba-f7fa-93de-2fe8-e66202cad8a5@oracle.com>
-Date:   Thu, 3 Sep 2020 17:36:44 +0800
+Message-ID: <6da22ff1-3dc0-d564-4d9d-befa82827bfe@oracle.com>
+Date:   Thu, 3 Sep 2020 17:41:09 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.2.1
 MIME-Version: 1.0
-In-Reply-To: <25dcceb5-631f-3fde-1326-024d0ff02ba8@suse.com>
+In-Reply-To: <fe35d005-a3ad-2a30-99a0-99416846d5e1@suse.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9732 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 spamscore=0 adultscore=0
- mlxscore=0 suspectscore=0 malwarescore=0 mlxlogscore=999 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009030087
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 adultscore=0
+ phishscore=0 malwarescore=0 mlxscore=0 spamscore=0 bulkscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009030088
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9732 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1015 priorityscore=1501
- lowpriorityscore=0 malwarescore=0 adultscore=0 spamscore=0 mlxscore=0
- phishscore=0 impostorscore=0 mlxlogscore=999 bulkscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009030087
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 phishscore=0
+ mlxlogscore=999 adultscore=0 impostorscore=0 mlxscore=0 suspectscore=0
+ spamscore=0 clxscore=1015 malwarescore=0 lowpriorityscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009030088
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 3/9/20 4:40 pm, Nikolay Borisov wrote:
+On 3/9/20 4:16 pm, Nikolay Borisov wrote:
 > 
 > 
-> On 3.09.20 г. 3:57 ч., Anand Jain wrote:
->> btrfs_sysfs_add_devices_dir() adds device link and devid kobject
->> (sysfs entries) for a device or all the devices in the btrfs_fs_devices.
->> In preparation to add these sysfs entries for the seed as well, add
->> a btrfs_sysfs_add_device() helper function and avoid code duplication.
+> On 3.09.20 г. 10:27 ч., Anand Jain wrote:
+>> Systems booting without the initramfs seems to scan an unusual kind
+>> of device path. And at a later time, the device is updated to the
+>> correct path. We generally print the process name and PID of the process
+>> scanning the device but we don't capture the same information if the
+>> device path is rescanned with a different pathname.
 >>
+>> But the current message is too long, so drop the unwanted words and add
+>> process name and PID.
+>>
+>> While at this also update the duplicate device warning to include the
+>> process name and PID.
+>>
+>> Reported-by: https://bugzilla.kernel.org/show_bug.cgi?id=89721
 >> Signed-off-by: Anand Jain <anand.jain@oracle.com>
 >> ---
->>   fs/btrfs/sysfs.c | 79 ++++++++++++++++++++++++++++++++----------------
->>   1 file changed, 53 insertions(+), 26 deletions(-)
+>>   fs/btrfs/volumes.c | 14 ++++++++------
+>>   1 file changed, 8 insertions(+), 6 deletions(-)
 >>
->> diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
->> index 190e59152be5..3381a91d7deb 100644
->> --- a/fs/btrfs/sysfs.c
->> +++ b/fs/btrfs/sysfs.c
->> @@ -1271,44 +1271,71 @@ static struct kobj_type devid_ktype = {
->>   	.release	= btrfs_release_devid_kobj,
->>   };
+>> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+>> index dc81646b13c0..c386ad722ae1 100644
+>> --- a/fs/btrfs/volumes.c
+>> +++ b/fs/btrfs/volumes.c
+>> @@ -942,16 +942,18 @@ static noinline struct btrfs_device *device_list_add(const char *path,
+>>   				bdput(path_bdev);
+>>   				mutex_unlock(&fs_devices->device_list_mutex);
+>>   				btrfs_warn_in_rcu(device->fs_info,
+>> -			"duplicate device fsid:devid for %pU:%llu old:%s new:%s",
+>> -					disk_super->fsid, devid,
+>> -					rcu_str_deref(device->name), path);
+>> +	"duplicate device %s devid %llu generation %llu scanned by %s (%d)",
+>> +						  path, devid, found_transid,
+>> +						  current->comm,
+>> +						  task_pid_nr(current));
+>>   				return ERR_PTR(-EEXIST);
+>>   			}
+>>   			bdput(path_bdev);
+>>   			btrfs_info_in_rcu(device->fs_info,
+>> -				"device fsid %pU devid %llu moved old:%s new:%s",
+>> -				disk_super->fsid, devid,
+>> -				rcu_str_deref(device->name), path);
+>> +				"device path %s changed to %s by %s (pid %d)",
+>> +					  rcu_str_deref(device->name),
+>> +					  path, current->comm,
+>> +					  task_pid_nr(current));
+> 
+> This 2nd messages is misleading, it's not the process calling
+> device_list_add which have changed the path per-se but rather it sees
+> the changed path. It's not possible to know why it changed in this
+> context. The idea here is "
+> 
+> "Process %pid saw different dev path %new_dev_path for dev %old_path"
+
+   Hm. How about we stick to the usual scanned by. That is..
+
+   "device path %s changed to %s scanned by %s (pid %d)",
+
+Thanks, Anand
+
+> 
+>>   		}
 >>   
->> -int btrfs_sysfs_add_devices_dir(struct btrfs_fs_devices *fs_devices,
->> -				struct btrfs_device *one_device)
->> +static int btrfs_sysfs_add_device(struct btrfs_device *device)
->>   {
->> -	int error = 0;
->> -	struct btrfs_device *dev;
->> +	int ret;
->>   	unsigned int nofs_flag;
->> +	struct kobject *devices_kobj;
->> +        struct kobject *devinfo_kobj;
-> 
-> Whitespace damage
-
-  oops.
-
-
-> 
->>   
->> -	nofs_flag = memalloc_nofs_save();
->> -	list_for_each_entry(dev, &fs_devices->devices, dev_list) {
->> +	/*
->> +	 * make sure we use the fs_info::fs_devices to fetch the kobjects
->> +	 * even for the seed fs_devices
->> +	 */
->> +	devices_kobj = device->fs_devices->fs_info->fs_devices->devices_kobj;
->> +	devinfo_kobj = device->fs_devices->fs_info->fs_devices->devinfo_kobj;
-> 
-> This function and its callers are called after the fs_info of devices is
-> initialized so can't you simply do 'device->fs_info->fs_devices->'...
-> reduces a level of pointer chasing.
-> 
-
-  Oh. Right. Will fix.
-
->> +	ASSERT(devices_kobj);
->> +	ASSERT(devinfo_kobj);
-> <snip>
-> 
-> 
->>   
->> -	return error;
->> +int btrfs_sysfs_add_devices_dir(struct btrfs_fs_devices *fs_devices,
->> +				struct btrfs_device *one_device)
->> +{
->> +	int ret;
-> 
-> That variable can be defined inside the list_for_each-entry as it's
-> being used only in that context.
-
-ok.
-
-Thanks!
-Anand
-
->> +
->> +	if (one_device)
->> +		return btrfs_sysfs_add_device(one_device);
->> +
->> +	list_for_each_entry(one_device, &fs_devices->devices, dev_list) {
->> +		ret = btrfs_sysfs_add_device(one_device);
->> +		if (ret)
->> +			return ret;
->> +	}
->> +
->> +	return 0;
->>   }
->>   
->>   void btrfs_kobject_uevent(struct block_device *bdev, enum kobject_action action)
+>>   		name = rcu_string_strdup(path, GFP_NOFS);
 >>
+
