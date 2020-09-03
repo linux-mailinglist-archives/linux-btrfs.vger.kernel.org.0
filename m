@@ -2,24 +2,24 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4918125BE07
-	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Sep 2020 11:03:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A47F25BE11
+	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Sep 2020 11:07:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726448AbgICJDr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 3 Sep 2020 05:03:47 -0400
-Received: from mx2.suse.de ([195.135.220.15]:37726 "EHLO mx2.suse.de"
+        id S1726726AbgICJG7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 3 Sep 2020 05:06:59 -0400
+Received: from mx2.suse.de ([195.135.220.15]:39230 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726268AbgICJDq (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 3 Sep 2020 05:03:46 -0400
+        id S1726293AbgICJG6 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 3 Sep 2020 05:06:58 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 11F0DACB7;
-        Thu,  3 Sep 2020 09:03:45 +0000 (UTC)
-Subject: Re: [PATCH 5/5] btrfs: Switch seed device to list api
+        by mx2.suse.de (Postfix) with ESMTP id C7B37AE09;
+        Thu,  3 Sep 2020 09:06:57 +0000 (UTC)
+Subject: Re: [PATCH 06/15] btrfs: initialize sysfs devid and device link for
+ seed device
 To:     Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org
-References: <20200715104850.19071-1-nborisov@suse.com>
- <20200715104850.19071-6-nborisov@suse.com>
- <09086e7f-a00d-a65f-e750-e833e7eba3cc@oracle.com>
+References: <cover.1599091832.git.anand.jain@oracle.com>
+ <0b11ff81143ebfcaa1da26296ee12afcfe41dbb5.1599091832.git.anand.jain@oracle.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  xsFNBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -63,12 +63,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  KIuxEcV8wcVjr+Wr9zRl06waOCkgrQbTPp631hToxo+4rA1jiQF2M80HAet65ytBVR2pFGZF
  zGYYLqiG+mpUZ+FPjxk9kpkRYz61mTLSY7tuFljExfJWMGfgSg1OxfLV631jV1TcdUnx+h3l
  Sqs2vMhAVt14zT8mpIuu2VNxcontxgVr1kzYA/tQg32fVRbGr449j1gw57BV9i0vww==
-Message-ID: <2f98d441-ccb9-a2f0-2beb-eac7e526dee8@suse.com>
-Date:   Thu, 3 Sep 2020 12:03:42 +0300
+Message-ID: <053e3d03-a457-eaf0-2523-551ecfb2faad@suse.com>
+Date:   Thu, 3 Sep 2020 12:06:56 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <09086e7f-a00d-a65f-e750-e833e7eba3cc@oracle.com>
+In-Reply-To: <0b11ff81143ebfcaa1da26296ee12afcfe41dbb5.1599091832.git.anand.jain@oracle.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -79,50 +79,85 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2.09.20 г. 18:58 ч., Anand Jain wrote:
+On 3.09.20 г. 3:57 ч., Anand Jain wrote:
+> The following test case leads to null kobject-being-freed error.
 > 
-> 
-> The seed of the current sprout should rather be at the head instead of
-> at the bottom.
-> 
-> 
->> @@ -2397,7 +2381,7 @@ static int btrfs_prepare_sprout(struct
->> btrfs_fs_info *fs_info)
->>       fs_devices->open_devices = 0;
->>       fs_devices->missing_devices = 0;
->>       fs_devices->rotating = false;
->> -    fs_devices->seed = seed_devices;
->> +    list_add_tail(&seed_devices->seed_list, &fs_devices->seed_list);
-> 
->  It should be list_add_head.
+>  mount seed /mnt
+>  add sprout to /mnt
+>  umount /mnt
+>  mount sprout to /mnt
+>  delete seed
 
-Generally yes, but in this case I don't think it makes any functional
-differences so even adding at the tail is fine.
+This patch warrants an fstests alongside it!
 
 > 
->>         generate_random_uuid(fs_devices->fsid);
->>       memcpy(fs_devices->metadata_uuid, fs_devices->fsid,
->> BTRFS_FSID_SIZE);
+>  kobject: '(null)' (00000000dd2b87e4): is not initialized, yet kobject_put() is being called.
+>  WARNING: CPU: 1 PID: 15784 at lib/kobject.c:736 kobject_put+0x80/0x350
+>  RIP: 0010:kobject_put+0x80/0x350
+>  ::
+>  Call Trace:
+>  btrfs_sysfs_remove_devices_dir+0x6e/0x160 [btrfs]
+>  btrfs_rm_device.cold+0xa8/0x298 [btrfs]
+>  btrfs_ioctl+0x206c/0x22a0 [btrfs]
+>  ksys_ioctl+0xe2/0x140
+>  __x64_sys_ioctl+0x1e/0x29
+>  do_syscall_64+0x96/0x150
+>  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+>  RIP: 0033:0x7f4047c6288b
+>  ::
 > 
+> This is because, at the end of the seed device-delete, we try to remove
+> the seed's devid sysfs entry. But for the seed devices under the sprout
+> fs, we don't initialize the devid kobject yet. So this patch initializes
+> the seed device devid kobject and the device link in the sysfs. This takes
+> care of the Warning.
 > 
+> Signed-off-by: Anand Jain <anand.jain@oracle.com>
+> ---
+>  fs/btrfs/sysfs.c | 15 +++++++++++++++
+>  1 file changed, 15 insertions(+)
 > 
-> 
->> @@ -6728,8 +6718,8 @@ static struct btrfs_fs_devices
->> *open_seed_devices(struct btrfs_fs_info *fs_info,
->>           goto out;
->>       }
->>   -    fs_devices->seed = fs_info->fs_devices->seed;
->> -    fs_info->fs_devices->seed = fs_devices;
->> +    ASSERT(list_empty(&fs_devices->seed_list));
->> +    list_add_tail(&fs_devices->seed_list,
->> &fs_info->fs_devices->seed_list);
-> 
->  It should be list_add_head.
-> 
->>   out:
->>       return fs_devices;
->>   }
-> 
-> 
-> Thanks, Anand
+> diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
+> index 9853b9acd4bd..98ce955a0879 100644
+> --- a/fs/btrfs/sysfs.c
+> +++ b/fs/btrfs/sysfs.c
+> @@ -938,9 +938,15 @@ void btrfs_sysfs_remove_fsid(struct btrfs_fs_devices *fs_devs)
+>  void btrfs_sysfs_remove_fs_devices(struct btrfs_fs_devices *fs_devices)
+>  {
+>  	struct btrfs_device *device;
+> +	struct btrfs_fs_devices *seed;
+>  
+>  	list_for_each_entry(device, &fs_devices->devices, dev_list)
+>  		btrfs_sysfs_remove_device(device);
+> +
+> +	list_for_each_entry(seed, &fs_devices->seed_list, seed_list) {
+> +		list_for_each_entry(device, &seed->devices, dev_list)
+> +			btrfs_sysfs_remove_device(device);
+> +	}
+>  }
+>  
+>  void btrfs_sysfs_remove_mounted(struct btrfs_fs_info *fs_info)
+> @@ -1314,6 +1320,7 @@ int btrfs_sysfs_add_fs_devices(struct btrfs_fs_devices *fs_devices)
+>  {
+>  	int ret;
+>  	struct btrfs_device *device;
+> +	struct btrfs_fs_devices *seed;
+>  
+>  	list_for_each_entry(device, &fs_devices->devices, dev_list) {
+>  		ret = btrfs_sysfs_add_device(device);
+> @@ -1321,6 +1328,14 @@ int btrfs_sysfs_add_fs_devices(struct btrfs_fs_devices *fs_devices)
+>  			return ret;
+>  	}
+>  
+> +	list_for_each_entry(seed, &fs_devices->seed_list, seed_list) {
+> +		list_for_each_entry(device, &seed->devices, dev_list) {
+> +			ret = btrfs_sysfs_add_device(device);
+> +			if (ret)
+> +				return ret;
+> +		}
+> +	}
+> +
+>  	return 0;
+>  }
+>  
 > 
