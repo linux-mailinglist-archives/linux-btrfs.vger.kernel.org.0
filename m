@@ -2,65 +2,66 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C66D725CC75
-	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Sep 2020 23:40:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3443425CC81
+	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Sep 2020 23:43:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728015AbgICVkm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 3 Sep 2020 17:40:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46156 "EHLO
+        id S1728484AbgICVn2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 3 Sep 2020 17:43:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726528AbgICVkm (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 3 Sep 2020 17:40:42 -0400
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25F27C061244
-        for <linux-btrfs@vger.kernel.org>; Thu,  3 Sep 2020 14:40:42 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id f142so4503654qke.13
-        for <linux-btrfs@vger.kernel.org>; Thu, 03 Sep 2020 14:40:42 -0700 (PDT)
+        with ESMTP id S1727804AbgICVn1 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 3 Sep 2020 17:43:27 -0400
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87B45C061244
+        for <linux-btrfs@vger.kernel.org>; Thu,  3 Sep 2020 14:43:27 -0700 (PDT)
+Received: by mail-qk1-x742.google.com with SMTP id w16so4556009qkj.7
+        for <linux-btrfs@vger.kernel.org>; Thu, 03 Sep 2020 14:43:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=LQxz2ToSwsyB9OjRXX/QRAVeXXxaCh7pVgKWnv73MRA=;
-        b=clpVgk5VXULmciF0Vppb11O/KZhDBp2eGSxgTWcN6hNtoh1FcqhWzDSb2uwowAlowW
-         HR8Kvo0kIW1Y2CaAdp18ffejPMLA4nOlczuuaaExdzUVau0LdDvi63xmywQoRKeRPWq4
-         YPYoWmce1WScD/BGYNh8OKFG8BIyoNo6vN2QTHh1cVQ8JcGQyJHWMdHqt/lKr45ITRCp
-         at0niT4wcXby6JORPtUky64NsWklgTUDdm8W1bcEDfpq1rKxtYXsbUoJ4EbZ7vhZe6nn
-         dLROoWuKJcRby41tdj+9binB/pxONbtd70YWM1NKILlQtHhKKP1woou9arwvDpofsyca
-         SbUw==
+        bh=TjHHYmIBA2d3NmlsQp/oEei/WnENPX18h1dgLpIvfCI=;
+        b=oR5ydt/AcP3nUDRTskpWjE6uIZTEd/LnPGWafRm3rBI9br851PmYKi8HfvE/qtIwjX
+         rFMRGVC1URByIWIQABaPN5rk4a4GhNnTKaUN2g3MOy1Tm5VPcKrg7hR89Bi4CUDeuiXu
+         DiJwHbyYVFiC2LscWdRyswBXnc1jAtFGRCmWXEFErwZdDwk1F3Z7xKLwN+LE4FmhWH0L
+         hVr0tuY/fxDQqsLIyciGQ+9TvD5OaZbFvoHE2/6Ce7gp8bVNVS1DsEqslWgI/sySuEsa
+         coBaciQ0qpKdCqHFYBOXeT3YyvpYJwjgV+z/IsplWqnpqVoFQil9tuDC0Wv4i0tlZi3Y
+         dBaA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=LQxz2ToSwsyB9OjRXX/QRAVeXXxaCh7pVgKWnv73MRA=;
-        b=jkeSWhPuyR/0t7QxN4mIaa8JigkoAJ9sUNV9dLuzGNp8FcZFvQiY1c6Sk+Z4xWoZPD
-         GYusyNaECZqV+HQ3AZ8xMnG4eYM23qxYcpfH765/i4RXYsMZ8QqE1fLj8JXmoAHL83cT
-         4Vpaln7vb2R+X1HpKn63X0TgL2SZbqAIeLn++Sff4MWQW8Yu35z8ZyjrxaNTDnpOHJTa
-         ut4euLp/TSmRz1LKaviIzNleQAsFSi6ckw2j3sa0awxW4Acc/DKjgHvC8/yqeLOCRddT
-         R3BMPSR55+Osfb84+qbzIyVemUwkTJqX9OUHoBl4DtkQytjR4tFXMD0be/cTsHxY84bu
-         fTrg==
-X-Gm-Message-State: AOAM530AUvdOqo5QrAK6nbnNGQ2EXOI+Q/3J4l5/lH9wRbQ0bZsR3JJJ
-        TI5f4F5lTqNZD75vaSvjSq85sA==
-X-Google-Smtp-Source: ABdhPJwCuYYXV+kIV3YMTuw21YtvEomPBSs+0a+VQ5+d9GqymGJGAKLpPM8qWXSO7dl66CUS95fhrg==
-X-Received: by 2002:a05:620a:1015:: with SMTP id z21mr5323978qkj.2.1599169241091;
-        Thu, 03 Sep 2020 14:40:41 -0700 (PDT)
+        bh=TjHHYmIBA2d3NmlsQp/oEei/WnENPX18h1dgLpIvfCI=;
+        b=ViLLypQ0JE/074K0tz68N5L9QIPirbj0CwwrievyTSPV8ZXc+JA9jryZSG3nImtyAe
+         gCVjki7+NZDGcNtyBlAkpIUKvqVHU/Jrdqs9QjnS43yZCrogv04bUX58JCUQgxMY92S3
+         WO1IKCi+4ewRs4GPPUPL0QCCB3gzz8Dxj7dVek7OJwa9b2sIV5i6dHEdbE9km6qNVrDo
+         vOjT6TYwXGHkJR+vzLV1NLbnJHio5qKOrEJBvYLGSrQZZK/McvPeeM+qpQgPkNNiKrbr
+         F07Um8lDTIQFKnqP46qHPEHv3Jxvw6eJEgJrAEFIMPdSJCie1uxrsJZpwRwDSIHyaRU0
+         7Drg==
+X-Gm-Message-State: AOAM532SZUJigPLTy9yCYfnF/OhRMGfHqapcZlt9406m1Tw5oKjsLK3H
+        l4fWgJn6OdvUjKLbrTk9sCusRQ==
+X-Google-Smtp-Source: ABdhPJw0xaOFkoAfMDM5j9N3q+NGAl7La8VUkY4kGF9W40JPt56FiCDThxT9E65ptsV5xmudOf4f8Q==
+X-Received: by 2002:a05:620a:4090:: with SMTP id f16mr4969469qko.402.1599169406527;
+        Thu, 03 Sep 2020 14:43:26 -0700 (PDT)
 Received: from ?IPv6:2620:10d:c0a8:11c1::11a2? ([2620:10d:c091:480::1:9e05])
-        by smtp.gmail.com with ESMTPSA id f127sm2983640qke.133.2020.09.03.14.40.39
+        by smtp.gmail.com with ESMTPSA id j88sm867068qte.96.2020.09.03.14.43.25
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 03 Sep 2020 14:40:40 -0700 (PDT)
-Subject: Re: [PATCH 1/2] btrfs: support remount of ro fs with free space tree
+        Thu, 03 Sep 2020 14:43:25 -0700 (PDT)
+Subject: Re: [PATCH 2/2] btrfs: remove free space items when creating free
+ space tree
 To:     Boris Burkov <boris@bur.io>, Dave Sterba <dsterba@suse.com>,
         Chris Mason <clm@fb.com>
 Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
 References: <cover.1599164377.git.boris@bur.io>
- <dea5fb2c9131b0b1c274f011596e5798fdc1971d.1599164377.git.boris@bur.io>
+ <c52c3edb5927356a33a3aa7af2adea69f7361576.1599164377.git.boris@bur.io>
 From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <d21b0694-2ff6-dba0-2c93-ceaef0c0bed8@toxicpanda.com>
-Date:   Thu, 3 Sep 2020 17:40:39 -0400
+Message-ID: <a4e6d3da-50ee-28e4-d7c4-661396a0f53a@toxicpanda.com>
+Date:   Thu, 3 Sep 2020 17:43:25 -0400
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
  Gecko/20100101 Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <dea5fb2c9131b0b1c274f011596e5798fdc1971d.1599164377.git.boris@bur.io>
+In-Reply-To: <c52c3edb5927356a33a3aa7af2adea69f7361576.1599164377.git.boris@bur.io>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -70,73 +71,64 @@ List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 On 9/3/20 4:33 PM, Boris Burkov wrote:
-> When a user attempts to remount a btrfs filesystem with
-> 'mount -o remount,space_cache=v2', that operation succeeds.
-> Unfortunately, this is misleading, because the remount does not create
-> the free space tree. /proc/mounts will incorrectly show space_cache=v2,
-> but on the next mount, the file system will revert to the old
-> space_cache.
+> When the file system transitions from space cache v1 to v2 it removes
+> the old cached data, but does not remove the FREE_SPACE items nor the
+> free space inodes they point to. This doesn't cause any issues besides
+> being a bit inefficient, since these items no longer do anything useful.
 > 
-> For now, we handle only the easier case, where the existing mount is
-> read only. In that case, we can create the free space tree without
-> contending with the block groups changing as we go. If it is not read
-> only, we fail more explicitly so the user knows that the remount was not
-> successful, and we don't end up in a state where /proc/mounts is giving
-> misleading information.
+> To fix it, as part of populating the free space tree, destroy each block
+> group's free space item and free space inode. This code is lifted from
+> the existing code for removing them when removing the block group.
+> 
+> Furthermore, cache_save_setup is called unconditionally from transaction
+> commit on dirty block groups, so we must also stop creating these items
+> when we are not using SPACE_CACHE.
 > 
 > References: https://github.com/btrfs/btrfs-todo/issues/5
 > Signed-off-by: Boris Burkov <boris@bur.io>
 > ---
->   fs/btrfs/super.c | 17 +++++++++++++++++
->   1 file changed, 17 insertions(+)
+>   fs/btrfs/block-group.c      | 42 ++++---------------------------
+>   fs/btrfs/free-space-cache.c | 49 ++++++++++++++++++++++++++++++++++++-
+>   fs/btrfs/free-space-cache.h |  2 ++
+>   fs/btrfs/free-space-tree.c  |  3 +++
+>   4 files changed, 58 insertions(+), 38 deletions(-)
 > 
-> diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-> index 3ebe7240c63d..cbb2cdb0b488 100644
-> --- a/fs/btrfs/super.c
-> +++ b/fs/btrfs/super.c
-> @@ -47,6 +47,7 @@
->   #include "tests/btrfs-tests.h"
->   #include "block-group.h"
->   #include "discard.h"
-> +#include "free-space-tree.h"
+<snip>
+
 >   
->   #include "qgroup.h"
->   #define CREATE_TRACE_POINTS
-> @@ -1862,6 +1863,22 @@ static int btrfs_remount(struct super_block *sb, int *flags, char *data)
->   	btrfs_resize_thread_pool(fs_info,
->   		fs_info->thread_pool_size, old_thread_pool_size);
->   
-> +	if (btrfs_test_opt(fs_info, FREE_SPACE_TREE) &&
-> +	    !btrfs_fs_compat_ro(fs_info, FREE_SPACE_TREE)) {
-> +		if (!sb_rdonly(sb)) {
-> +			btrfs_warn(fs_info, "cannot create free space tree on writeable mount");
-> +			ret = -EINVAL;
-> +			goto restore;
-> +		}
-> +		btrfs_info(fs_info, "creating free space tree");
-> +		ret = btrfs_create_free_space_tree(fs_info);
-> +		if (ret) {
-> +			btrfs_warn(fs_info,
-> +				   "failed to create free space tree: %d", ret);
-> +			goto restore;
-> +		}
-> +	}
+> +	if (!btrfs_test_opt(fs_info, SPACE_CACHE))
+> +		return 0;
 > +
 
-This whole chunk actually needs to be moved down into the
+This is functionally unrelated, so it needs to be it's own patch.
 
-} else {
-	if (test_bit(BTRFS_FS_STATE_ERROR, &fs_info->fs_state)) {
+>   	/*
+>   	 * If this block group is smaller than 100 megs don't bother caching the
+>   	 * block group.
+> diff --git a/fs/btrfs/free-space-cache.c b/fs/btrfs/free-space-cache.c
+> index 8759f5a1d6a0..52612d99a842 100644
+> --- a/fs/btrfs/free-space-cache.c
+> +++ b/fs/btrfs/free-space-cache.c
+> @@ -207,6 +207,54 @@ int create_free_space_inode(struct btrfs_trans_handle *trans,
+>   					 ino, block_group->start);
+>   }
+>   
+> +int remove_free_space_inode(struct btrfs_trans_handle *trans,
+> +			    struct btrfs_block_group *block_group)
+> +{
 
-bit, and after all the checks to make sure it's ok to flip RW, but _before_ we 
-do btrfs_cleanup_roots.
+It's public, lets call this btrfs_remove_free_space_inode().
 
-Also put a comment there saying something like
+<snip>
 
-/*
-  * Don't do anything that writes above this, otherwise bad things will happen.
-  */
+> @@ -2806,7 +2854,6 @@ void btrfs_remove_free_space_cache(struct btrfs_block_group *block_group)
+>   	__btrfs_remove_free_space_cache_locked(ctl);
+>   	btrfs_discard_update_discardable(block_group, ctl);
+>   	spin_unlock(&ctl->tree_lock);
+> -
+>   }
 
-So that nobody accidentally messes this up in the future.  Thanks,
+Thou shall not change random whitespace that's not anywhere near the code you're 
+modifying.  Thanks,
 
 Josef
