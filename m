@@ -2,85 +2,97 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A54F25C757
-	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Sep 2020 18:47:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94B6625C841
+	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Sep 2020 19:55:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728723AbgICQrC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 3 Sep 2020 12:47:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57380 "EHLO
+        id S1726543AbgICRzN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 3 Sep 2020 13:55:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727786AbgICQrB (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 3 Sep 2020 12:47:01 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1781C061244
-        for <linux-btrfs@vger.kernel.org>; Thu,  3 Sep 2020 09:47:01 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id f142so3627546qke.13
-        for <linux-btrfs@vger.kernel.org>; Thu, 03 Sep 2020 09:47:01 -0700 (PDT)
+        with ESMTP id S1726025AbgICRzM (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 3 Sep 2020 13:55:12 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DF14C061244
+        for <linux-btrfs@vger.kernel.org>; Thu,  3 Sep 2020 10:55:12 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id a17so4158272wrn.6
+        for <linux-btrfs@vger.kernel.org>; Thu, 03 Sep 2020 10:55:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=i7aG5k6pRgcc/LcppLGEeim2es2qXnyQIVJM9eTJudM=;
-        b=QWJswB/C3Cd+djAfaJ2g57w6F6kHc6Ydq1VTTz7Mvv42d07xhtC/DKEhblijbavXEZ
-         R6/BUNucYuciVAc8IPmDnGFU28/zQCaMqyoigFs+qX/LaklJuk4Dk2kjM+rujxr8XC6I
-         HmMgBg8nFcdSsk6n+9P6VWtZyAFvBWuB6cAzWN9cydFJOgLDsPNtxYFQFL/2T8Hp+j8N
-         Ijs9vblbui2DewrfkuzylOPTiIFGTqjm9Y5p5c1xhaEwZKp0Rus/RAJpDkFayePQ5san
-         aOrTo+J9JHGkf5PZRcunG9N5ri8exLI4CryVCqvum/1u23oIKR+lJ1eP4CDvvP1Fs7LR
-         ozdQ==
+        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=XSptMSKPYzJomhQEUUQqoiEIgQKeYtuwxqPkpzeTpUk=;
+        b=DbsshT8H3xzm+zteKTSIXFB5h9ae2B6L7HiXqIx9YBdBLqm9Zkxq/qteZTeSUk7WOe
+         7zXNak6PpJGug4i36zI4MRyUCRkd+7ZdsqTRiqtLEy97fn9Ubg5lT0TJahMonyRK8YW9
+         8DD5N+MGkplezaZslieNGjwzWcJpxHDlsUHkST8PPYjhB7h9ZGpZPL254A6Jm5+JgT9B
+         YWxs2yr8ZEQXPSnxPtAErYpUtuWsNfGUwcjveuR2kc8iZ9pU6GAPdT4tE1X+RQbLBE6m
+         kWNETWtfioYTaTRsvvqnVEuEc3XeehmI5AvQm+gChuU0GS2dB9auvPYCeOasx/4Q0jI1
+         0KPw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=i7aG5k6pRgcc/LcppLGEeim2es2qXnyQIVJM9eTJudM=;
-        b=cVYFOa3T5XhlS69f0reyRk+XLNepG5AladTCWl912xRBLHk8nZFSHNxb6vR1wXMJNb
-         Rqsp76AcaUizfuE9T6F0iaiFOQKO9K47hjSY8B+hNopvc89t8+6/QAXx95iR5j+htFGm
-         BOMdUFKpHZoEw5CvON7oAX5eHhaobjRb4rmeb6AoCYyPs1iSZTzbSvNvJUV/kwEyclQB
-         HF5uMtc03gCVHBKOpClDYpXxxJGYCk/8adDt47TrxYe+kpHomt31G1SlAelDYCmkcsLV
-         51dXSC43Dgl1fhprQC04YJEdGk2/G3TR6rnYUgtRQii6uWJmvovDUtaOFBwEgr58r6RZ
-         t93A==
-X-Gm-Message-State: AOAM530eVztTDkOBqMMaGhkygajUjIObeKpnMIRCfLqtK3iunJjKlPmR
-        UHvIyYkqriKVktifEy1EBzSyew==
-X-Google-Smtp-Source: ABdhPJyhWxkXR6H9v+NSJodcNpr97SHmsPy0lcF9LKiwbnuATlgIp/7y4vVsi44mnZPa73+R0KtPEw==
-X-Received: by 2002:a37:909:: with SMTP id 9mr4051361qkj.317.1599151620746;
-        Thu, 03 Sep 2020 09:47:00 -0700 (PDT)
-Received: from [192.168.1.45] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id h17sm2551584qke.68.2020.09.03.09.46.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 03 Sep 2020 09:47:00 -0700 (PDT)
-Subject: Re: [RFC PATCH] btrfs: don't call btrfs_sync_file from iomap context
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        David Sterba <dsterba@suse.com>,
-        "linux-btrfs @ vger . kernel . org" <linux-btrfs@vger.kernel.org>,
-        Filipe Manana <fdmanana@gmail.com>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>
-References: <20200901130644.12655-1-johannes.thumshirn@wdc.com>
- <42efa646-73cd-d884-1c9c-dd889294bde2@toxicpanda.com>
- <20200903163236.GA26043@lst.de>
-From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <180234c3-d05c-1183-f1a6-b9b83c0d1536@toxicpanda.com>
-Date:   Thu, 3 Sep 2020 12:46:58 -0400
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.12.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XSptMSKPYzJomhQEUUQqoiEIgQKeYtuwxqPkpzeTpUk=;
+        b=FouVLP0R9qIcEKiBhKgNU0lmCuWFvLb5abPXHCYofANexDeVabFVIpYbP1yiCTOx4W
+         hUXFTzDPe0Cx5ICZpILeSwNDThceFXpEq/UEoZk5ZnmbsAXndGqPq0gsfQrQtxuz+v4+
+         FfGvu0gA8biOiE7moEFzlOAuZtg+tQrGxGB+UQktCY42nrUJdOeq9e6/RUkidjQbHto/
+         LbO3jP4dcASLJGT8DgpV/32w9CvJgUhcSWEJ9/w8HGsTiYiSoRRfrh7G0dvgAV4zWzVN
+         8vF7m+vPhx3MFl+1XihBxvYcoQhHOCqF5NEvymCEXe1+xPvnZnNWGP5lptDcYQ2aV72U
+         og+Q==
+X-Gm-Message-State: AOAM530lay5BOWiKlq0txnhFPm3zH+tMut3OsX6jG/9+5Ud9r3hY77JD
+        6aTR6unkN04iZxomvqu2egxd8UL6ndhudMdktPBGU2IfccQ8Gw==
+X-Google-Smtp-Source: ABdhPJxbHR/sfzAjbeMpGqdX/XpewHZ5tpI1ki+nwj5/H0r7WlXR9I/bbdBsrjndItLN8NGURKlg9/Q5V8VdBPDlDj4=
+X-Received: by 2002:adf:912b:: with SMTP id j40mr3600159wrj.42.1599155710796;
+ Thu, 03 Sep 2020 10:55:10 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200903163236.GA26043@lst.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <37TAH07_l2Srimzx9YvwQjA7Y1KW9-Xqca9YysAnCJc2c_oOhnmUmvWF7U-JTkntMZQL7qBu82LV-4xA8Sjr3rgtSrM3ses2QPAbaib85Yk=@protonmail.com>
+In-Reply-To: <37TAH07_l2Srimzx9YvwQjA7Y1KW9-Xqca9YysAnCJc2c_oOhnmUmvWF7U-JTkntMZQL7qBu82LV-4xA8Sjr3rgtSrM3ses2QPAbaib85Yk=@protonmail.com>
+From:   Chris Murphy <lists@colorremedies.com>
+Date:   Thu, 3 Sep 2020 11:54:19 -0600
+Message-ID: <CAJCQCtSPQCgXa0UrcC6w86UX6DXS2APu0a0RCY+EsdCRVE3=pA@mail.gmail.com>
+Subject: Re: [btrfs-progs] btrfs check --clear-space-cache v2 segfaults
+To:     Althorion <althorion@protonmail.com>
+Cc:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 9/3/20 12:32 PM, Christoph Hellwig wrote:
-> We could trivially do something like this to allow the file system
-> to call iomap_dio_complete without i_rwsem:
-> 
+On Thu, Sep 3, 2020 at 8:58 AM Althorion <althorion@protonmail.com> wrote:
+>
+> Hi!
+>
+> My BTRFS partition started throwing errors and remounting read-only, with errors like:
+>
+> Sep 02 14:49:44 ripper systemd[1]: Started Scrub btrfs filesystem, verify block checksums.
+> Sep 02 14:50:56 ripper kernel: BTRFS error (device sdc4): incorrect extent count for 82707480576; counted 1, expected 2
+> Sep 02 14:50:56 ripper kernel: BTRFS error (device sdc4): incorrect extent count for 126730895360; counted 5, expected 6
+> Sep 02 14:50:56 ripper kernel: BTRFS error (device sdc4): incorrect extent count for 131025862656; counted 0, expected 1
+> Sep 02 14:51:55 ripper kernel: BTRFS error (device sdc4): incorrect extent count for 82707480576; counted 2, expected 3
+> Sep 02 14:51:55 ripper kernel: BTRFS: error (device sdc4) in convert_free_space_to_bitmaps:316: errno=-5 IO failure
+> Sep 02 14:51:55 ripper kernel: BTRFS info (device sdc4): forced readonly
+>
+> I've tried running btrfs check --clear-space-cache to try and clear the second to last error, but it segfaulted after a few seconds.
 
-This is sort of how I envisioned it worked, which is why I was surprised when it 
-bit us.  This would be the cleanest stop-gap right now, but as it stands I've 
-already sent a patch to work around the problem in btrfs for now, and we plan to 
-take up the locking rework next go around.  Thanks,
+Pretty much everything depends on the extent tree being healthy. Free
+space bitmaps is a reference to v1, and are composed of data extents.
+And v2 is its own btree, and use metadata extents.
 
-Josef
+While it probably shouldn't segfault in this case, it probably should
+refuse making modifications to the extent tree that don't involve
+repairing it. And in that sense it's better that it segfaulted than
+attempting to modify a damaged extent tree.
+
+> OK, but I run Gentoo, so maybe it's something on my end, so I tried again from an Arch LiveCD, using btrfs-progs 5.7-1, and it segfaulted too.
+>
+> What else should I try before wiping up the system and recreating from backup?
+
+Well, once you're prepared to wipe it, you could give --repair a try
+and see if it fixes anything. If not then the big hammer is
+--init-extent-tree. If that completes (it'll take a while) without
+error, then you'll want to run --repair afterward. But depending on
+the size of the file system, wipe and restore might be faster.
+
+
+-- 
+Chris Murphy
