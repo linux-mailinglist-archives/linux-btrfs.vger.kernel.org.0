@@ -2,93 +2,57 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48CEF25C427
-	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Sep 2020 17:04:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD93625C47C
+	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Sep 2020 17:11:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729230AbgICPEn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 3 Sep 2020 11:04:43 -0400
-Received: from mailrelay2-3.pub.mailoutpod1-cph3.one.com ([46.30.212.11]:29085
-        "EHLO mailrelay2-3.pub.mailoutpod1-cph3.one.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729006AbgICPEh (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 3 Sep 2020 11:04:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=lechevalier.se; s=20191106;
-        h=content-transfer-encoding:content-type:in-reply-to:mime-version:date:
-         message-id:from:references:to:subject:from;
-        bh=kMRMhJ7uHKpINWTcjflRbrKF/jHLzW+q7IhaFaDqk4Q=;
-        b=b5EpAlx6SMBUAZCfnvZIYqT/njUuPUGIG++WeqpIR8V3ZKr+hWI+Pg8buJ7BfxbBRqAmYup0SPFZC
-         QyT5sDAZ1MaFvXYebKPVQBlN4yWcYy26Thch4mdD+/T7l+xJrhDLGKxBh0aZ0YtlZ6KcKrdl4S4v8+
-         cslnaVapGVaOaFF9kh8qX4Ry8BevFGp0MD6HMcy2RLSxd5DBLai53gh6etT7eFvPJX6f0sZt7r4lwI
-         aVTDSfxx8KYoVVRlfvf9+M71pNXbR6z85tI+X0A6HF8DSxz9G6X3KvkV54i/h9Rwc7+Dd6xANwR8Gj
-         Nv9emN29wkvy4QJ/2As6sdKgmM/X19A==
-X-HalOne-Cookie: 1c5dce77ad977503a05e479011377a2705fe6a9d
-X-HalOne-ID: c6f7b785-edf6-11ea-84a0-d0431ea8a290
-Received: from [10.0.88.22] (unknown [98.128.186.78])
-        by mailrelay2.pub.mailoutpod1-cph3.one.com (Halon) with ESMTPSA
-        id c6f7b785-edf6-11ea-84a0-d0431ea8a290;
-        Thu, 03 Sep 2020 15:04:34 +0000 (UTC)
-Subject: Re: new database files not compressed
-To:     Nikolay Borisov <nborisov@suse.com>,
-        Hamish Moffatt <hamish-btrfs@moffatt.email>,
+        id S1729270AbgICPLm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 3 Sep 2020 11:11:42 -0400
+Received: from mx2.suse.de ([195.135.220.15]:46698 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729273AbgICPLZ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 3 Sep 2020 11:11:25 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id E2DDDAD1B;
+        Thu,  3 Sep 2020 15:11:23 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 40710DA6E0; Thu,  3 Sep 2020 17:10:10 +0200 (CEST)
+Date:   Thu, 3 Sep 2020 17:10:10 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Nikolay Borisov <nborisov@suse.com>
+Cc:     linux-btrfs@vger.kernel.org, David Sterba <dsterba@suse.cz>
+Subject: Re: [PATCH] btrfs: set ret to 0 in btrfs_get_extent
+Message-ID: <20200903151010.GU28318@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
         linux-btrfs@vger.kernel.org
-References: <6992fae3-ce87-8ae1-8dfe-1cb65578a16a@moffatt.email>
- <20200831034731.GX5890@hungrycats.org>
- <baadab71-61a7-704e-86f7-3607895df663@moffatt.email>
- <20200831161505.369be693@natsu>
- <c7415ce2-f025-6c31-60b7-f0b927ed4808@moffatt.email>
- <41107373-cc61-ea3f-7ae9-c9eef0ee47f9@suse.com>
- <2d060b13-7a1a-7cc5-927f-2c6a067f9c03@moffatt.email>
- <0bf29a8c-23b2-26f4-2efd-2e82f38c437d@suse.com>
- <4c3d4141-4452-bb79-b18e-f32c8e35cb13@moffatt.email>
- <d0399ea6-f198-b58f-8b34-f8ba95ef400f@moffatt.email>
- <03ec55ee-5cf3-54fa-1a81-abc93006ca7b@suse.com>
- <dede53e.d98f7053.1744e402728@lechevalier.se>
- <23ddfe07-9ad0-5651-a77d-de7a9e35818a@suse.com>
-From:   A L <mail@lechevalier.se>
-Message-ID: <ca8bd012-3e5e-64e4-764a-015d9f270ebb@lechevalier.se>
-Date:   Thu, 3 Sep 2020 17:04:33 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+References: <20200903143715.14848-1-nborisov@suse.com>
+ <ca973e9e-d997-3ebd-9c15-f3889c9f8894@suse.com>
 MIME-Version: 1.0
-In-Reply-To: <23ddfe07-9ad0-5651-a77d-de7a9e35818a@suse.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+In-Reply-To: <ca973e9e-d997-3ebd-9c15-f3889c9f8894@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Thu, Sep 03, 2020 at 05:38:29PM +0300, Nikolay Borisov wrote:
+> 
+> 
+> On 3.09.20 г. 17:37 ч., Nikolay Borisov wrote:
+> > When btrfs_get_extent is called for a range that has an overlapping
+> > inline extent coupled with  with 'page' parameter being
+> > NULL it will erroneously return an error instead of the populate
+> > extent_mapping struct. Fix this by setting ret to 0 in case we don't
+> > have an exact match for our range.
+> > 
+> > Fixes: 85b1eebdaf1d: "btrfs: remove err variable from btrfs_get_extent"
+> > Signed-off-by: Nikolay Borisov <nborisov@suse.com>
+> > ---
+> 
+> I believe this could simply be folded in the original patch, no ?
 
-
-On 2020-09-02 12:09, Nikolay Borisov wrote:
->
-> On 2.09.20 г. 12:57 ч., A L wrote:
->>
->> ---- From: Nikolay Borisov <nborisov@suse.com> -- Sent: 2020-09-02 - 07:57 ----
->>>> I've been able to reproduce this with a trivial test program which
->>>> mimics the I/O behaviour of Firebird.
->>>>
->>>> It is calling fallocate() to set up a bunch of blocks and then writing
->>>> them with pwrite(). It seems to be the fallocate() step which is
->>>> preventing compression.
->>>>
->>>> Here is my trivial test program which just writes zeroes to a file. The
->>>> output file does not get compressed by btrfs.
->>> Ag yes, this makes sense, because fallocate creates PREALLOC extents
->>> which are NOCOW (since they are essentially empty so it makes no sense
->>> to CoW them) hence they go through a different path which doesn't
->>> perform compression.
->>>
->> Hi,
->>
->> This is interesting. I think that a lot of applications use fallocate in their normal operations. This is probably why we see weird compsize results every now and then.
->>
->> A file that is nocow will also not have checksums. Is this true for these fallocated files (that has data written to them) too?
-> No, fallocated files will have checksums. It's just that compression is
-> not integrated into it. BTRFS is an open source project so patches are
-> welcomed.
->
-Is it a very big task to add the compression code path here, since we 
-already do checksums?
+Yes, that's what I'm going to do, thanks.
