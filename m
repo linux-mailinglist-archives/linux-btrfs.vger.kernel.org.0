@@ -2,173 +2,281 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0065525B812
-	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Sep 2020 02:58:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8968325B8C5
+	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Sep 2020 04:28:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727950AbgICA6f (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 2 Sep 2020 20:58:35 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:39296 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727996AbgICA6d (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 2 Sep 2020 20:58:33 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0830tP2O048188
-        for <linux-btrfs@vger.kernel.org>; Thu, 3 Sep 2020 00:58:32 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : subject :
- date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=corp-2020-01-29;
- bh=d6xvwbbwFUIhyKqCryBUp8S2eSdVOnERyU3Mb8S9Vzo=;
- b=YC0EVOX6fpFeul85Cog7L+4cg9P2OXeqMcuzu30zxC5s8ZMyc4/XtfnFV4gus3EkzdGk
- WlR0CY+0Q2xW08IdMjc2ghMESTTt0cduAVlQdssRfv2gWr5tvQg4cAjows4VDMT/baCq
- AptvvB8ZiUTqZS8GDMtAoSl9A/8fUCyAZhZJ/XlM5oXuMMkmD1kBPqIE42ywITWPo9sk
- bDVXNennuTku3UjuXXkSZQjhb65JKcxas1PMkW8Sr4Qi3A5fFBXhqCCF3snpzIqMmFfl
- Uyd2mWM+XR9MX9U5wxf8hjY4nAGz99q3XA9agN3ACz4m1ZtiC+KTyE/74ZfVybHO5Nhc SA== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2130.oracle.com with ESMTP id 337eer5xay-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL)
-        for <linux-btrfs@vger.kernel.org>; Thu, 03 Sep 2020 00:58:32 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0830tEVP105147
-        for <linux-btrfs@vger.kernel.org>; Thu, 3 Sep 2020 00:58:31 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3030.oracle.com with ESMTP id 3380kqwuyg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
-        for <linux-btrfs@vger.kernel.org>; Thu, 03 Sep 2020 00:58:31 +0000
-Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0830wV1c020940
-        for <linux-btrfs@vger.kernel.org>; Thu, 3 Sep 2020 00:58:31 GMT
-Received: from localhost.localdomain (/39.109.231.106)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 02 Sep 2020 17:58:30 -0700
-From:   Anand Jain <anand.jain@oracle.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 15/15] btrfs: fix replace of seed device
-Date:   Thu,  3 Sep 2020 08:57:51 +0800
-Message-Id: <4e073022eeed10dd01f4af44c4264abf91fac02c.1599091832.git.anand.jain@oracle.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1599091832.git.anand.jain@oracle.com>
-References: <cover.1599091832.git.anand.jain@oracle.com>
+        id S1726814AbgICC2d (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 2 Sep 2020 22:28:33 -0400
+Received: from mail105.syd.optusnet.com.au ([211.29.132.249]:36405 "EHLO
+        mail105.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726523AbgICC2d (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 2 Sep 2020 22:28:33 -0400
+Received: from dread.disaster.area (pa49-195-191-192.pa.nsw.optusnet.com.au [49.195.191.192])
+        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id 3CC143A72D4;
+        Thu,  3 Sep 2020 12:28:23 +1000 (AEST)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1kDez8-0002kI-BU; Thu, 03 Sep 2020 12:28:22 +1000
+Date:   Thu, 3 Sep 2020 12:28:22 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        David Sterba <dsterba@suse.com>,
+        "linux-btrfs @ vger . kernel . org" <linux-btrfs@vger.kernel.org>,
+        Filipe Manana <fdmanana@gmail.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>
+Subject: Re: [RFC PATCH] btrfs: don't call btrfs_sync_file from iomap context
+Message-ID: <20200903022822.GL12096@dread.disaster.area>
+References: <20200901130644.12655-1-johannes.thumshirn@wdc.com>
+ <42efa646-73cd-d884-1c9c-dd889294bde2@toxicpanda.com>
+ <20200901214613.GH12096@dread.disaster.area>
+ <551b2801-d626-9bd7-7cb2-9d20674c06bf@toxicpanda.com>
+ <20200901235830.GI12096@dread.disaster.area>
+ <20200902114414.GX14765@casper.infradead.org>
+ <20200902122008.GK12096@dread.disaster.area>
+ <424119cd-08ca-8621-5e50-d52e0349a1f5@toxicpanda.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9732 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 spamscore=0 adultscore=0
- mlxscore=0 suspectscore=1 malwarescore=0 mlxlogscore=999 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009030004
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9732 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1015 priorityscore=1501
- lowpriorityscore=0 malwarescore=0 adultscore=0 spamscore=0 mlxscore=0
- phishscore=0 impostorscore=0 mlxlogscore=999 bulkscore=0 suspectscore=1
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009030004
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <424119cd-08ca-8621-5e50-d52e0349a1f5@toxicpanda.com>
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=IuRgj43g c=1 sm=1 tr=0 cx=a_idp_d
+        a=vvDRHhr1aDYKXl+H6jx2TA==:117 a=vvDRHhr1aDYKXl+H6jx2TA==:17
+        a=kj9zAlcOel0A:10 a=reM5J-MqmosA:10 a=iox4zFpeAAAA:8 a=yPCof4ZbAAAA:8
+        a=7-415B0cAAAA:8 a=yIghhBYreof9tE_Kfs8A:9 a=CjuIK1q_8ugA:10
+        a=WzC6qhA0u3u7Ye7llzcV:22 a=biEYGPWJfzWAr4FL6Ov7:22
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-If you replace a seed device in a sprouted fs, it appears to have
-successfully replaced the seed device, but if you look closely, it didn't.
+On Wed, Sep 02, 2020 at 08:42:25AM -0400, Josef Bacik wrote:
+> On 9/2/20 8:20 AM, Dave Chinner wrote:
+> > On Wed, Sep 02, 2020 at 12:44:14PM +0100, Matthew Wilcox wrote:
+> > > On Wed, Sep 02, 2020 at 09:58:30AM +1000, Dave Chinner wrote:
+> > > > Put simply: converting a filesystem to use iomap is not a "change
+> > > > the filesystem interfacing code and it will work" modification.  We
+> > > > ask that filesystems are modified to conform to the iomap IO
+> > > > exclusion model; adding special cases for every potential
+> > > > locking and mapping quirk every different filesystem has is part of
+> > > > what turned the old direct IO code into an unmaintainable nightmare.
+> > > > 
+> > > > > That's fine, but this is kind of a bad way to find
+> > > > > out.  We really shouldn't have generic helper's that have different generic
+> > > > > locking rules based on which file system uses them.
+> > > > 
+> > > > We certainly can change the rules for new infrastructure. Indeed, we
+> > > > had to change the rules to support DAX.  The whole point of the
+> > > > iomap infrastructure was that it enabled us to use code that already
+> > > > worked for DAX (the XFS code) in multiple filesystems. And as people
+> > > > have realised that the DIO via iomap is much faster than the old DIO
+> > > > code and is a much more efficient way of doing large buffered IO,
+> > > > other filesystems have started to use it.
+> > > > 
+> > > > However....
+> > > > 
+> > > > > Because then we end up
+> > > > > with situations like this, where suddenly we're having to come up with some
+> > > > > weird solution because the generic thing only works for a subset of file
+> > > > > systems.  Thanks,
+> > > > 
+> > > > .... we've always said "you need to change the filesystem code to
+> > > > use iomap". This is simply a reflection on the fact that iomap has
+> > > > different rules and constraints to the old code and so it's not a
+> > > > direct plug in replacement. There are no short cuts here...
+> > > 
+> > > Can you point me (and I suspect Josef!) towards the documentation of the
+> > > locking model?  I was hoping to find Documentation/filesystems/iomap.rst
+> > > but all the 'iomap' strings in Documentation/ refer to pci_iomap and
+> > > similar, except for this in the DAX documentation:
+> > 
+> > There's no locking model documentation because there is no locking
+> > in the iomap direct IO code. The filesystem defines and does all the
+> > locking, so there's pretty much nothing to document for iomap.
+> > 
+> > IOWs, the only thing iomap_dio_rw requires is that the IO completion
+> > paths do not take same locks that the IO submission path
+> > requires. And that's because:
+> > 
+> > /*
+> >   * iomap_dio_rw() always completes O_[D]SYNC writes regardless of whether the IO
+> >   * is being issued as AIO or not. [...]
+> > 
+> > So you obviously can't sit waiting for dio completion in
+> > iomap_dio_rw() while holding the submission lock if completion
+> > requires the submission lock to make progress.
+> > 
+> > FWIW, iomap_dio_rw() originally required the inode_lock() to be held
+> > and contained a lockdep assert to verify this, but....
+> > 
+> > commit 3ad99bec6e82e32fa9faf2f84e74b134586b46f7
+> > Author: Goldwyn Rodrigues <rgoldwyn@suse.com>
+> > Date:   Sat Nov 30 09:59:25 2019 -0600
+> > 
+> >      iomap: remove lockdep_assert_held()
+> >      Filesystems such as btrfs can perform direct I/O without holding the
+> >      inode->i_rwsem in some of the cases like writing within i_size.  So,
+> >      remove the check for lockdep_assert_held() in iomap_dio_rw().
+> >      Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
+> >      Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
+> >      Signed-off-by: David Sterba <dsterba@suse.com>
+> > 
+> > ... btrfs has special corner cases for direct IO locking and hence
+> > we removed the lockdep assert....
+> > 
+> > IOWs, iomap_dio_rw() really does not care what strategy filesystems
+> > use to serialise DIO against other operations.  Filesystems can use
+> > whatever IO serialisation mechanism they want (mutex, rwsem, range
+> > locks, etc) as long as they obey the one simple requirement: do not
+> > take the DIO submission lock in the DIO completion path.
+> > 
+> 
+> Goldwyn has been working on these patches for a long time, and is actually
+> familiar with this code, and he missed that these two interfaces are being
+> mixed.  This is a problem that I want to solve.  He didn't notice it in any
+> of his testing, which IIRC was like 6 months to get this stuff actually into
+> the btrfs tree.
 
-Here is an example.
+And that "been working on it for 6 months" is what really worries me
+the most. Hence I've done some post-mortem analysis of the
+"inode_lock" deadlock situation. I decided to do this after I
+realised this same patch set was merged last cycle and reverted late in
+the cycle because of problems it was found to have with page
+invalidation when mixed IO types were used.
 
-mkfs.btrfs -fq /dev/sda
-btrfstune -S1 /dev/sda
-mount /dev/sda /btrfs
-btrfs dev add /dev/sdb /btrfs
-umount /btrfs; btrfs dev scan --forget
-mount -o device=/dev/sda /dev/sdb /btrfs
-btrfs rep start -f /dev/sda /dev/sdc /btrfs; echo $?
-0
+I did a bit of looking around yesterday afternoon, both in the btrfs
+code to understand the iomap_dio_rw changes and at our test
+coverage for DIO functionality.
 
-  BTRFS info (device sdb): dev_replace from /dev/sda (devid 1) to /dev/sdc started
-  BTRFS info (device sdb): dev_replace from /dev/sda (devid 1) to /dev/sdc finished
+The more I dug, the more I'm finding that the most important
+question we need to answer is not "why wasn't this iomap locking
+requirement documented", the question we should be trying to answer
+is this:
 
-btrfs fi show
-Label: none  uuid: ab2c88b7-be81-4a7e-9849-c3666e7f9f4f
-	Total devices 2 FS bytes used 256.00KiB
-	devid    1 size 3.00GiB used 520.00MiB path /dev/sdc
-	devid    2 size 3.00GiB used 896.00MiB path /dev/sdb
+	Why wasn't this *obvious* deadlock detected months ago?
 
-Label: none  uuid: 10bd3202-0415-43af-96a8-d5409f310a7e
-	Total devices 1 FS bytes used 128.00KiB
-	devid    1 size 3.00GiB used 536.00MiB path /dev/sda
+First of all, the inode-lock() complaints are largely a red herring
+as the typical btrfs DIO write path through the patchset does not
+take the inode lock and hence it is actually "safe" to take the
+inode lock in the completion path in the common case. i.e. for DIO
+writes wholly inside EOF, submission drops the inode_lock() before
+calling iomap_dio_rw() and so there is no inode_lock() deadlock
+present. From that view point, it looks like there's only a specific
+corner case where this deadlock might occur and that would explain
+why it hasn't been discovered until now.
 
-So as per the replace start command and kernel log replace was successful.
+However.
 
-Now let's try to clean mount.
+The new btrfs dio write path always does
+down_read(BTRFS_I()->dio_sem), even when the inode lock has not been
+taken.  That's important because btrfs_sync_file() always does a
+down_write(&BTRFS_I(inode)->dio_sem) call and will deadlock iin IO
+completion if the IO submission code is holding the dio_sem.
 
-umount /btrfs;  btrfs dev scan --forget
+So regardless of the inode_lock(), non-AIO O_DSYNC DIO writes
+through iomap_dio_rw() should deadlock immediately on the first IO
+with this locking arrangement. It will deadlock on either the
+inode_lock or the dio_sem, depending on whether the ODSYNC DIO write
+is wholly within EOF or not, but the deadlock is guaranteed to
+occur. Hence we can completely ignore the "inode_lock vs fsync" side
+show, because other btrfs internal locks will trigger the same
+issue.
 
-mount -o device=/dev/sdc /dev/sdb /btrfs
-mount: /btrfs: wrong fs type, bad option, bad superblock on /dev/sdb, missing codepage or helper program, or other error.
+If this is correct, then how did this "should happen instantly"
+bug go undiscovered for months?
 
-[  636.157517] BTRFS error (device sdc): failed to read chunk tree: -2
-[  636.180177] BTRFS error (device sdc): open_ctree failed
+Well....  It appears that fstests has no coverage of non-AIO
+O_DSYNC DIO writes.  Tools like fsx and fstress don't have O_SYNC,
+O_DSYNC or RWF_DSYNC modes and O_SYNC and O_DSYNC is not used by any
+of the common DIO test programs. xfs_io can open files O_SYNC and
+there's a test that uses xfs_io's RWF_DSYNC capability, but they all
+use buffered IO and so none of tests that open or write data
+synchronously use direct IO.
 
-That's because per dev items it is still looking for the original seed
-device.
+The only conclusion I can make from thsi is that the case that
+should deadlock instantly isn't actually covered by fstests at all.
+This conclusion only stands up this O_DSYNC code path was only
+"tested" for feature coverage with fstests. However, it does imply
+that no pre-implementation audit was done to determine if fstests
+actually covered all the functionality that needed to be tested
+here....
 
-btrfs in dump-tree -d /dev/sdb
+I tend to use xfs_io and fio for DIO feature correctness testing
+long before I run fstests on new code.  That's how I developed and
+tested the FUA optimisations - xfs_io and fio w/ RWF_DSYNC on XFS on
+iscsi - so I've never noticed that fstests doesn't actually exercise
+this syscall path directly.
 
-	item 0 key (DEV_ITEMS DEV_ITEM 1) itemoff 16185 itemsize 98
-		devid 1 total_bytes 3221225472 bytes_used 545259520
-		io_align 4096 io_width 4096 sector_size 4096 type 0
-		generation 6 start_offset 0 dev_group 0
-		seek_speed 0 bandwidth 0
-		uuid 59368f50-9af2-4b17-91da-8a783cc418d4  <--- seed uuid
-		fsid 10bd3202-0415-43af-96a8-d5409f310a7e  <--- seed fsid
-	item 1 key (DEV_ITEMS DEV_ITEM 2) itemoff 16087 itemsize 98
-		devid 2 total_bytes 3221225472 bytes_used 939524096
-		io_align 4096 io_width 4096 sector_size 4096 type 0
-		generation 0 start_offset 0 dev_group 0
-		seek_speed 0 bandwidth 0
-		uuid 56a0a6bc-4630-4998-8daf-3c3030c4256a  <- sprout uuid
-		fsid ab2c88b7-be81-4a7e-9849-c3666e7f9f4f <- sprout fsid
+Granted, the problem was eventually discovered by fstests, but this
+also raised questions. The failing test was an AIO+DIO O_DSYNC test,
+but the trigger has been described as a "unusual event on a rarely
+tested configuration".
 
-But the replaced target has the following uuid+fsid in its superblock
-which doesn't match with the expected uuid+fsid in its devitem.
+That "unusual event" was an DIO completion being run from submission
+context because the IO completed before the submission had been
+finish. This is not actually unusual - it's how all AIO on
+synchronous IO devices complete. i.e. if you have a ram device or a
+(fake) pmem device, every single AIO will complete in this way as
+the "IO reference" held by submit_bio() is completed inside
+submit_bio() before it returns to the submission context. Hence the
+submission context always drops the last IO reference and completes
+the IO.
 
-btrfs in dump-super /dev/sdc | egrep '^generation|dev_item.uuid|dev_item.fsid|devid'
-generation	20
-dev_item.uuid	59368f50-9af2-4b17-91da-8a783cc418d4
-dev_item.fsid	ab2c88b7-be81-4a7e-9849-c3666e7f9f4f [match]
-dev_item.devid	1
+Therefore running fstests on a ramdisk or (fake) pmem would have
+triggered this deadlock *instantly* on the first O_DSYNC AIO+DIO
+write that fstests issued. This implies that btrfs is rarely tested
+on fast synchronous storage devices despite ramdisks being available
+on every test machine that can run fstests. To provide a contrast,
+the iomap infrastructure is regularly tested on such devices - both
+Darrick and I have both have (fake) pmem test setups and exercise
+synchronous completion code paths like this on a daily basis.
 
-So if you provide the original seed device the mount shall be successful.
-Which so long happening in the test case btrfs/163.
+Hence it looks to me like the answer to the "why wasn't this found
+earlier" question is a combination of multiple factors:
 
-btrfs dev scan --forget
-mount -o device=/dev/sda /dev/sdb /btrfs
+1. fstests has no specific non-AIO O_DSYNC DIO write unit tests, nor
+do the stress tests allow use O_DSYNC or RWF_DSYNC.
 
-Fix in this patch:
-Make it as you can't replace a seed device, you can only add a new device
-and then delete the seed device. If replace is attempted then returns -EINVAL.
-As in the below changes.
+2. No test coverage audit was performed prior to making a critical
+change to the btrfs IO path so this specific lack of coverage was
+not noticed until now.
 
-Another possible fix:
-If we want to keep the ability to replace for seed-device, then we could
-update the fsid of the replace-target blocks. And after replacement, you
-have seed device but with sprout fsid. But then I don't know what is the
-point and if there is any such use case.
+3. after the first revert of this functionality, post-mortem
+analysis either wasn't performed or didn't identify process and/or
+test coverage issues that allowed serious issues in the patch set to
+go undiscovered.
 
-Signed-off-by: Anand Jain <anand.jain@oracle.com>
----
- fs/btrfs/dev-replace.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+4. tools and benchmarks that could have easily discovered the
+problem either weren't run or they weren't configured to test
+and exercise all the IO path features the change affected.
 
-diff --git a/fs/btrfs/dev-replace.c b/fs/btrfs/dev-replace.c
-index 656d8ba642af..02b7b3edf9a3 100644
---- a/fs/btrfs/dev-replace.c
-+++ b/fs/btrfs/dev-replace.c
-@@ -225,7 +225,7 @@ static int btrfs_init_dev_replace_tgtdev(struct btrfs_fs_info *fs_info,
- 	int ret = 0;
- 
- 	*device_out = NULL;
--	if (fs_info->fs_devices->seeding) {
-+	if (srcdev->fs_devices->seeding) {
- 		btrfs_err(fs_info, "the filesystem is a seed filesystem!");
- 		return -EINVAL;
- 	}
+5. btrfs is not regularly tested on a variety of storage that have
+distinctly different IO path behaviours.
+
+> If we're going to mix interfaces then it should be
+> blatantly obvious to developers that's what's happening so the find out
+> during development, not after the patches have landed, and certainly not
+> after they've made it out to users.  Thanks,
+
+As the above indicates, this issue _should_ have been blatantly
+obvious months ago and documentation would not change this fact.
+IOWs, even if the iomap requirement was documented and followed, a
+locking bug in the btrfs implementation would still not have been
+discovered until now because that's how long it took to actually
+exercise the buggy code path and expose it.
+
+So, yeah, the lack of documentation contributed to the bug being
+present. But taking 6 months to actually exercise the new code
+containing the bug is most definitely not an interface documentation
+problem, nor a problem that can be fixed by correcting the interface
+documentation....
+
+Cheers,
+
+Dave.
 -- 
-2.25.1
-
+Dave Chinner
+david@fromorbit.com
