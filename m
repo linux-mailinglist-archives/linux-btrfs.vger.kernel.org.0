@@ -2,97 +2,244 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94B6625C841
-	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Sep 2020 19:55:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B9A425C8A1
+	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Sep 2020 20:19:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726543AbgICRzN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 3 Sep 2020 13:55:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39720 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726025AbgICRzM (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 3 Sep 2020 13:55:12 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DF14C061244
-        for <linux-btrfs@vger.kernel.org>; Thu,  3 Sep 2020 10:55:12 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id a17so4158272wrn.6
-        for <linux-btrfs@vger.kernel.org>; Thu, 03 Sep 2020 10:55:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=XSptMSKPYzJomhQEUUQqoiEIgQKeYtuwxqPkpzeTpUk=;
-        b=DbsshT8H3xzm+zteKTSIXFB5h9ae2B6L7HiXqIx9YBdBLqm9Zkxq/qteZTeSUk7WOe
-         7zXNak6PpJGug4i36zI4MRyUCRkd+7ZdsqTRiqtLEy97fn9Ubg5lT0TJahMonyRK8YW9
-         8DD5N+MGkplezaZslieNGjwzWcJpxHDlsUHkST8PPYjhB7h9ZGpZPL254A6Jm5+JgT9B
-         YWxs2yr8ZEQXPSnxPtAErYpUtuWsNfGUwcjveuR2kc8iZ9pU6GAPdT4tE1X+RQbLBE6m
-         kWNETWtfioYTaTRsvvqnVEuEc3XeehmI5AvQm+gChuU0GS2dB9auvPYCeOasx/4Q0jI1
-         0KPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=XSptMSKPYzJomhQEUUQqoiEIgQKeYtuwxqPkpzeTpUk=;
-        b=FouVLP0R9qIcEKiBhKgNU0lmCuWFvLb5abPXHCYofANexDeVabFVIpYbP1yiCTOx4W
-         hUXFTzDPe0Cx5ICZpILeSwNDThceFXpEq/UEoZk5ZnmbsAXndGqPq0gsfQrQtxuz+v4+
-         FfGvu0gA8biOiE7moEFzlOAuZtg+tQrGxGB+UQktCY42nrUJdOeq9e6/RUkidjQbHto/
-         LbO3jP4dcASLJGT8DgpV/32w9CvJgUhcSWEJ9/w8HGsTiYiSoRRfrh7G0dvgAV4zWzVN
-         8vF7m+vPhx3MFl+1XihBxvYcoQhHOCqF5NEvymCEXe1+xPvnZnNWGP5lptDcYQ2aV72U
-         og+Q==
-X-Gm-Message-State: AOAM530lay5BOWiKlq0txnhFPm3zH+tMut3OsX6jG/9+5Ud9r3hY77JD
-        6aTR6unkN04iZxomvqu2egxd8UL6ndhudMdktPBGU2IfccQ8Gw==
-X-Google-Smtp-Source: ABdhPJxbHR/sfzAjbeMpGqdX/XpewHZ5tpI1ki+nwj5/H0r7WlXR9I/bbdBsrjndItLN8NGURKlg9/Q5V8VdBPDlDj4=
-X-Received: by 2002:adf:912b:: with SMTP id j40mr3600159wrj.42.1599155710796;
- Thu, 03 Sep 2020 10:55:10 -0700 (PDT)
+        id S1726990AbgICSTc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 3 Sep 2020 14:19:32 -0400
+Received: from wout3-smtp.messagingengine.com ([64.147.123.19]:50011 "EHLO
+        wout3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726025AbgICSTb (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 3 Sep 2020 14:19:31 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.west.internal (Postfix) with ESMTP id A511AD22;
+        Thu,  3 Sep 2020 14:19:30 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Thu, 03 Sep 2020 14:19:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=from
+        :to:cc:subject:date:message-id:in-reply-to:references
+        :mime-version:content-transfer-encoding; s=fm1; bh=ysnh6GiDoiBl5
+        qLDV7EDnwP4Ks6I99YVhLaan64PSZk=; b=buYWv7Idwm8JgrxHe3MTw8zQxoIIA
+        dZj9X6eWWHRCl/BNDIMaZbStVoMMvlA24hq2x9QBPfeHKQ9jHhlxtN9gqd/4bbQT
+        YiqfX20dkMlxOfaPEJRPdr/NVG7z3BJ3XW/wYbPIAE1JMJviHl9FRAzz+TbrH8fv
+        V/QI7x9hSU+3YyLUFRzeKOvWvWA1yoOkTZPVnr1X7DK4r6IOLi+54HMYg1s9q9Y0
+        6LccdlWdtEMMWsv+3iRMZfBMWDgd+McR1HuKHagu1KEVx9KSsRdGcaAmElhg6XY+
+        4tJDx66dNH0SlnTUIEDcU63KGBNPSr8e7zOFX0TjiNL5otS4phUD6eA/w==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :in-reply-to:message-id:mime-version:references:subject:to
+        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+        fm3; bh=ysnh6GiDoiBl5qLDV7EDnwP4Ks6I99YVhLaan64PSZk=; b=MgYx+r7v
+        9js7D44lgtGBXlcHPyyvrSJZ6m/r824iVWBauRQOau+LWWuszK00whi92p0Eh0M9
+        7R7AkUJkPNU6dXbwP7n77qmFgS6ZST5fs1EAEYzhEFVxVv5JEiuBq4iVzhiBEYZz
+        eBWRp1Mt6yEldRVa2VJqpglGXg+Qp2IWA56BR0S2Ar2II/GyPHpdccGjhzdgeJ4u
+        MD2U/PA04+m6m9GP1SJBsLy4lgS2n9cTBoCG0UDnuv77J5l9LQQqg1/RqAMAk4Rw
+        GB0lE5+khK5yOyC8zrBLxD9XS3PCnfTjRIJIPLBf1FObProeOEI/qeq5RsEM3gav
+        yubtnH7H2uX9Pg==
+X-ME-Sender: <xms:sTNRX1Ips48NEpRi60Db9krN1Rb6OHQIqU2N3osoVCN2oXuMG9awdw>
+    <xme:sTNRXxJg9qFsiquU2Dd1U36Qktug2NqJwFGLqtzw5Cs8yZLOJDZfPaQxNxDg25tK_
+    qvgVzFV5M8QdbQmPlE>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrudeguddguddvhecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefhvffufffkofgjfhgggfestdekredtredttdenucfhrhhomhepuehorhhi
+    shcuuehurhhkohhvuceosghorhhishessghurhdrihhoqeenucggtffrrghtthgvrhhnpe
+    eiueffuedvieeujefhheeigfekvedujeejjeffvedvhedtudefiefhkeegueehleenucfk
+    phepudeifedruddugedrudefvddrfeenucevlhhushhtvghrufhiiigvpedtnecurfgrrh
+    grmhepmhgrihhlfhhrohhmpegsohhrihhssegsuhhrrdhioh
+X-ME-Proxy: <xmx:sTNRX9trL3ScPAhl7qA1vvQS4kpcPMuI5VlWcUwdFPMRQ9zrlyT3Dw>
+    <xmx:sTNRX2Ya36_Qcp_FpwewdTm4wk5xzGpuUVYHcW8-5-z4ELBhTfAEZg>
+    <xmx:sTNRX8alAVqbWFTcTKDV0XAPEVdNgcZXtdPPjKB9s7onGiUk9ACSLA>
+    <xmx:sjNRX3zMPIM_B46QTVRpq0584wtDaOJJCDBTJUlSoKtfv2K0UP-HbA>
+Received: from localhost (unknown [163.114.132.3])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 022D33280066;
+        Thu,  3 Sep 2020 14:19:29 -0400 (EDT)
+From:   Boris Burkov <boris@bur.io>
+To:     David Sterba <dsterba@suse.com>
+Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com,
+        Boris Burkov <boris@bur.io>
+Subject: [PATCH v2] btrfs-progs: support free space tree in mkfs
+Date:   Thu,  3 Sep 2020 11:19:23 -0700
+Message-Id: <cf7462fe8c14448703d845d235dce7aca1faf795.1599157021.git.boris@bur.io>
+X-Mailer: git-send-email 2.24.1
+In-Reply-To: <20200902204453.GN28318@twin.jikos.cz>
+References: <20200902204453.GN28318@twin.jikos.cz>
 MIME-Version: 1.0
-References: <37TAH07_l2Srimzx9YvwQjA7Y1KW9-Xqca9YysAnCJc2c_oOhnmUmvWF7U-JTkntMZQL7qBu82LV-4xA8Sjr3rgtSrM3ses2QPAbaib85Yk=@protonmail.com>
-In-Reply-To: <37TAH07_l2Srimzx9YvwQjA7Y1KW9-Xqca9YysAnCJc2c_oOhnmUmvWF7U-JTkntMZQL7qBu82LV-4xA8Sjr3rgtSrM3ses2QPAbaib85Yk=@protonmail.com>
-From:   Chris Murphy <lists@colorremedies.com>
-Date:   Thu, 3 Sep 2020 11:54:19 -0600
-Message-ID: <CAJCQCtSPQCgXa0UrcC6w86UX6DXS2APu0a0RCY+EsdCRVE3=pA@mail.gmail.com>
-Subject: Re: [btrfs-progs] btrfs check --clear-space-cache v2 segfaults
-To:     Althorion <althorion@protonmail.com>
-Cc:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Sep 3, 2020 at 8:58 AM Althorion <althorion@protonmail.com> wrote:
->
-> Hi!
->
-> My BTRFS partition started throwing errors and remounting read-only, with errors like:
->
-> Sep 02 14:49:44 ripper systemd[1]: Started Scrub btrfs filesystem, verify block checksums.
-> Sep 02 14:50:56 ripper kernel: BTRFS error (device sdc4): incorrect extent count for 82707480576; counted 1, expected 2
-> Sep 02 14:50:56 ripper kernel: BTRFS error (device sdc4): incorrect extent count for 126730895360; counted 5, expected 6
-> Sep 02 14:50:56 ripper kernel: BTRFS error (device sdc4): incorrect extent count for 131025862656; counted 0, expected 1
-> Sep 02 14:51:55 ripper kernel: BTRFS error (device sdc4): incorrect extent count for 82707480576; counted 2, expected 3
-> Sep 02 14:51:55 ripper kernel: BTRFS: error (device sdc4) in convert_free_space_to_bitmaps:316: errno=-5 IO failure
-> Sep 02 14:51:55 ripper kernel: BTRFS info (device sdc4): forced readonly
->
-> I've tried running btrfs check --clear-space-cache to try and clear the second to last error, but it segfaulted after a few seconds.
+Add a runtime feature (-R) flag for the free space tree. A filesystem
+that is mkfs'd with -R free-space-tree then mounted with no options has
+the same contents as one mkfs'd without the option, then mounted with
+'-o space_cache=v2'.
 
-Pretty much everything depends on the extent tree being healthy. Free
-space bitmaps is a reference to v1, and are composed of data extents.
-And v2 is its own btree, and use metadata extents.
+The only tricky thing is in exactly how to call the tree creation code.
+Using btrfs_create_free_space_tree as is did not quite work, because an
+extra reference to the eb (root->commit_root) is leaked, which mkfs
+complains about with a warning. I opted to follow how the uuid tree is
+created by adding it to the dirty roots list for cleanup by
+commit_tree_roots in commit_transaction. As a result,
+btrfs_create_free_space_tree no longer exactly matches the version in
+the kernel sources.
 
-While it probably shouldn't segfault in this case, it probably should
-refuse making modifications to the extent tree that don't involve
-repairing it. And in that sense it's better that it segfaulted than
-attempting to modify a damaged extent tree.
+Signed-off-by: Boris Burkov <boris@bur.io>
+---
+- add mkfs test
+- add documentation
+- add safe version and sysfs file to feature struct
 
-> OK, but I run Gentoo, so maybe it's something on my end, so I tried again from an Arch LiveCD, using btrfs-progs 5.7-1, and it segfaulted too.
->
-> What else should I try before wiping up the system and recreating from backup?
+ Documentation/mkfs.btrfs.asciidoc            |  6 ++++++
+ common/fsfeatures.c                          | 10 ++++++++--
+ common/fsfeatures.h                          |  3 ++-
+ kernel-shared/disk-io.c                      |  5 +++++
+ kernel-shared/free-space-tree.c              |  1 +
+ mkfs/main.c                                  |  8 ++++++++
+ tests/mkfs-tests/023-free-space-tree/test.sh | 21 ++++++++++++++++++++
+ 7 files changed, 51 insertions(+), 3 deletions(-)
+ create mode 100755 tests/mkfs-tests/023-free-space-tree/test.sh
 
-Well, once you're prepared to wipe it, you could give --repair a try
-and see if it fixes anything. If not then the big hammer is
---init-extent-tree. If that completes (it'll take a while) without
-error, then you'll want to run --repair afterward. But depending on
-the size of the file system, wipe and restore might be faster.
-
-
+diff --git a/Documentation/mkfs.btrfs.asciidoc b/Documentation/mkfs.btrfs.asciidoc
+index 630f575c..8f1e1429 100644
+--- a/Documentation/mkfs.btrfs.asciidoc
++++ b/Documentation/mkfs.btrfs.asciidoc
+@@ -257,6 +257,12 @@ permanent, this does not replace mount options.
+ Enable quota support (qgroups). The qgroup accounting will be consistent,
+ can be used together with '--rootdir'.  See also `btrfs-quota`(8).
+ 
++*free_space_tree*::
++(kernel support since 3.4)
+++
++Enable the free space tree (mount option space_cache=v2) for persisting the
++free space cache.
++
+ BLOCK GROUPS, CHUNKS, RAID
+ --------------------------
+ 
+diff --git a/common/fsfeatures.c b/common/fsfeatures.c
+index 48ab37ca..6c391806 100644
+--- a/common/fsfeatures.c
++++ b/common/fsfeatures.c
+@@ -104,9 +104,15 @@ static const struct btrfs_feature mkfs_features[] = {
+ };
+ 
+ static const struct btrfs_feature runtime_features[] = {
+-	{ "quota", BTRFS_RUNTIME_FEATURE_QUOTA, NULL,
+-		VERSION_TO_STRING2(3, 4), NULL, 0, NULL, 0,
++	{ "quota", BTRFS_RUNTIME_FEATURE_QUOTA,
++		"free_space_tree",
++		VERSION_TO_STRING2(3, 4),
++		VERSION_TO_STRING2(4, 9),
++		NULL, 0,
+ 		"quota support (qgroups)" },
++	{ "free-space-tree", BTRFS_RUNTIME_FEATURE_FREE_SPACE_TREE, NULL,
++		VERSION_TO_STRING2(4, 5), NULL, 0, NULL, 0,
++		"free space tree (space_cache=v2)" },
+ 	/* Keep this one last */
+ 	{ "list-all", BTRFS_FEATURE_LIST_ALL, NULL }
+ };
+diff --git a/common/fsfeatures.h b/common/fsfeatures.h
+index 13141254..f76fc099 100644
+--- a/common/fsfeatures.h
++++ b/common/fsfeatures.h
+@@ -39,7 +39,8 @@
+ 
+ #define BTRFS_FEATURE_LIST_ALL		(1ULL << 63)
+ 
+-#define BTRFS_RUNTIME_FEATURE_QUOTA	(1ULL << 0)
++#define BTRFS_RUNTIME_FEATURE_QUOTA		(1ULL << 0)
++#define BTRFS_RUNTIME_FEATURE_FREE_SPACE_TREE	(1ULL << 1)
+ 
+ void btrfs_list_all_fs_features(u64 mask_disallowed);
+ void btrfs_list_all_runtime_features(u64 mask_disallowed);
+diff --git a/kernel-shared/disk-io.c b/kernel-shared/disk-io.c
+index 42f733e3..6f584986 100644
+--- a/kernel-shared/disk-io.c
++++ b/kernel-shared/disk-io.c
+@@ -1003,10 +1003,15 @@ int btrfs_setup_all_roots(struct btrfs_fs_info *fs_info, u64 root_tree_bytenr,
+ 		ret = find_and_setup_root(root, fs_info, BTRFS_FREE_SPACE_TREE_OBJECTID,
+ 					  fs_info->free_space_root);
+ 		if (ret) {
++			free(fs_info->free_space_root);
++			fs_info->free_space_root = NULL;
+ 			printk("Couldn't read free space tree\n");
+ 			return -EIO;
+ 		}
+ 		fs_info->free_space_root->track_dirty = 1;
++	} else {
++		free(fs_info->free_space_root);
++		fs_info->free_space_root = NULL;
+ 	}
+ 
+ 	ret = find_and_setup_log_root(root, fs_info, sb);
+diff --git a/kernel-shared/free-space-tree.c b/kernel-shared/free-space-tree.c
+index 3570a9ac..2edc7fc7 100644
+--- a/kernel-shared/free-space-tree.c
++++ b/kernel-shared/free-space-tree.c
+@@ -1433,6 +1433,7 @@ int btrfs_create_free_space_tree(struct btrfs_fs_info *fs_info)
+ 		goto abort;
+ 	}
+ 	fs_info->free_space_root = free_space_root;
++	add_root_to_dirty_list(free_space_root);
+ 
+ 	do {
+ 		block_group = btrfs_lookup_first_block_group(fs_info, start);
+diff --git a/mkfs/main.c b/mkfs/main.c
+index 18dc6f8e..3eb74821 100644
+--- a/mkfs/main.c
++++ b/mkfs/main.c
+@@ -34,6 +34,7 @@
+ #include <blkid/blkid.h>
+ #include "kernel-shared/ctree.h"
+ #include "kernel-shared/disk-io.h"
++#include "kernel-shared/free-space-tree.h"
+ #include "kernel-shared/volumes.h"
+ #include "kernel-shared/transaction.h"
+ #include "common/utils.h"
+@@ -1495,6 +1496,13 @@ raid_groups:
+ 			goto out;
+ 		}
+ 	}
++	if (runtime_features & BTRFS_RUNTIME_FEATURE_FREE_SPACE_TREE) {
++		ret = btrfs_create_free_space_tree(fs_info);
++		if (ret < 0) {
++			error("failed to create free space tree: %d (%m)", ret);
++			goto out;
++		}
++	}
+ 	if (verbose) {
+ 		char features_buf[64];
+ 
+diff --git a/tests/mkfs-tests/023-free-space-tree/test.sh b/tests/mkfs-tests/023-free-space-tree/test.sh
+new file mode 100755
+index 00000000..1b40325a
+--- /dev/null
++++ b/tests/mkfs-tests/023-free-space-tree/test.sh
+@@ -0,0 +1,21 @@
++#!/bin/bash
++# Check if mkfs supports the runtime feature free_space_tree
++
++source "$TEST_TOP/common"
++
++check_prereq mkfs.btrfs
++check_prereq btrfs
++
++setup_root_helper
++
++setup_loopdevs 4
++prepare_loopdevs
++dev1=${loopdevs[1]}
++
++run_check $SUDO_HELPER "$TOP/mkfs.btrfs" -f -R free-space-tree "$dev1"
++run_check_stdout $SUDO_HELPER "$TOP/btrfs" inspect-internal dump-super "$dev1" | grep -q FREE_SPACE_TREE || _fail "free space tree not created"
++run_check_stdout $SUDO_HELPER "$TOP/btrfs" inspect-internal dump-super "$dev1" | grep -q FREE_SPACE_TREE_VALID || _fail "free space tree not valid"
++
++cleanup_loopdevs
++
++exit 0
 -- 
-Chris Murphy
+2.24.1
+
