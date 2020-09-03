@@ -2,64 +2,63 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B156425C597
-	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Sep 2020 17:44:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B63425C598
+	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Sep 2020 17:45:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728320AbgICPo3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 3 Sep 2020 11:44:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47712 "EHLO
+        id S1727786AbgICPpD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 3 Sep 2020 11:45:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727786AbgICPo1 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 3 Sep 2020 11:44:27 -0400
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BED9C061244
-        for <linux-btrfs@vger.kernel.org>; Thu,  3 Sep 2020 08:44:26 -0700 (PDT)
-Received: by mail-qt1-x842.google.com with SMTP id t20so2234620qtr.8
-        for <linux-btrfs@vger.kernel.org>; Thu, 03 Sep 2020 08:44:26 -0700 (PDT)
+        with ESMTP id S1726368AbgICPpA (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 3 Sep 2020 11:45:00 -0400
+Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70E81C061244
+        for <linux-btrfs@vger.kernel.org>; Thu,  3 Sep 2020 08:45:00 -0700 (PDT)
+Received: by mail-qv1-xf43.google.com with SMTP id cy2so1555365qvb.0
+        for <linux-btrfs@vger.kernel.org>; Thu, 03 Sep 2020 08:45:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=subject:to:references:from:message-id:date:user-agent:mime-version
          :in-reply-to:content-language:content-transfer-encoding;
-        bh=+lD79q8n7/o+x5RETjSRyjxlKN7Jv4jjcyL7xNrCJUg=;
-        b=lHITXdeQgvwSN//gtMg/G2EG9hYURnOt52Me6UN9fYEz2shVjGGDDggvK0xQOrCnrD
-         XvS+b3ohtmrHTGC0xp5xEFpf79BKS5FV/TqAypVkB3MRiD39jftY0djceQjAYtciPTaa
-         LAYMkXfYQFo7xKLzStsMUA1kITDmKHdSuYzKEl79Qk6rq7t6tgPFa4XYdXbT8qaB2f5c
-         DszA3YfT8xTfc6zX6dWsSgQpNQwm8IPYWWLsrzz+cWVvl3qd7YHAACfZyO50ySC/FRXt
-         62tJFDudX2eaMfQkFnQo5doIf7GsK1/2lUXJbiYPAC5gqkK4YouxcFzs6hgRfF9szx9F
-         hG6g==
+        bh=OlOL6NNRu0vrRWUjRo8iYwq7yfVfLDxwWdAEPQt+tJw=;
+        b=hW3Bq1AJcmxoyZnJmpXZZmH2EC/tRpTM5EEQqsHDciO4cdx8nFe/3Nrnw0BJQ1vqC5
+         F6yUO+JUaNEj5jzINTTze0MBtFG5e9CvlNXvgWwNmrhyB2ODxUgt0r9XGFx/3TFOJ7pd
+         s+I4o2fvlgAh1eMKruRBO1tDJHg7GpCtDkgncvHi6b/c8ODFxA4K/JzD95juw1MRl4hW
+         WtxiGuAkKPoeIzfIB0MZh66szZVlPhJQOiz7Hk4+0c/wwzo8gvtuPLzbgAE/cKqLvOvT
+         h2aBAgN1w+lzNTD5qKRBU4t4vVeBle6WEVAT5LAh8ZRApKFJzA599n49B1WHt7y1pWHD
+         +VuQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=+lD79q8n7/o+x5RETjSRyjxlKN7Jv4jjcyL7xNrCJUg=;
-        b=FkYrtieyl8L8GVzvps7Ay4PqVPWdUr4qmI405YrAIPNyBwupW/VESdeJPSm1csAsko
-         pidqMFlMHSw2XpAz4dM8lYOKkYPslfnnT3GDMyzYqhn7Bs1f4ChvUVbThpRDYmZETabl
-         JZbgn+lRiFLebNJ/w+wvuMnqPPa2BcV1iwLeiEQvziNv5RqWKEf3rtQbfaKPb2pWTMhk
-         qaHic3h61pOrKLNXlvmWav7PFcSRVJoov1S1YtVai5Hx4hXofR3/MIgliYAd2LfkKSLZ
-         Qghp72TZePyr4Bdko30plHYEPcNqaSfvLGz7ZiwdNDN+LtFbX1pL5XwCyrpR9SXzbbo6
-         XUBw==
-X-Gm-Message-State: AOAM533GbtOoayqYOACcPFGrue49HYZGpOCybXf63o2T7CgiY6uP5Msb
-        ilnaZjFZvUblUWmirwumL8LBgxFJlbPH65uP
-X-Google-Smtp-Source: ABdhPJy3JipHApggtc7ghJBxX6SGo+DYumvz4NYIGp6vhyHwAcB8I4cZmmR/dD+VmCsd9MOnLLdIhw==
-X-Received: by 2002:ac8:c47:: with SMTP id l7mr4232628qti.112.1599147865533;
-        Thu, 03 Sep 2020 08:44:25 -0700 (PDT)
+        bh=OlOL6NNRu0vrRWUjRo8iYwq7yfVfLDxwWdAEPQt+tJw=;
+        b=r7ZehpaG/iR2IfxHWW7nNzPKdIUpeh7xFgf8aFjDHnGxdeP84o3mugtQDtCjvxJ55/
+         ruuFheXgwmHUt3hEuFAQOWAlsJ8JiQRoDWtv1XhtjiMLno47n8OYeSMCynGLHPn9wOnL
+         UfHbZVIEle7ofNruUYztzC/Md4VLJ1RvkHAlbSIASq8ZEMKOTXcKaGwnI4EOBTzaw9sk
+         zeRNIaY1tUm7xI1rnoJQTsRW0N7pAmjDWF/bxYA5yhPMwgf4c3AX8xhCs6/xTJZMYbRP
+         9HfxdU33pu0+NeyGUsjFNWUBtHJU29hX119deGVSDw/jMmRwL6ej0NfK0i+5rq9ImsGX
+         6sEA==
+X-Gm-Message-State: AOAM531Zl9vtqbe2n+tGOes3JpCvbqNMdJRIqsIlCwtrqHX/Sl0HqLrR
+        9CgXvzYZne7izOA0klVfX+Y5SsOiyE1//NAi
+X-Google-Smtp-Source: ABdhPJz/A/RThlLOC+AG7dmg00t2KTP4fBI3OcLzx77N85yZE29Uzeqa5sA4xSRLH3jp0SW9q65BTw==
+X-Received: by 2002:ad4:4f30:: with SMTP id fc16mr2486005qvb.6.1599147899010;
+        Thu, 03 Sep 2020 08:44:59 -0700 (PDT)
 Received: from [192.168.1.45] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id g45sm2308564qtb.60.2020.09.03.08.44.24
+        by smtp.gmail.com with ESMTPSA id u2sm2416336qkf.61.2020.09.03.08.44.58
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 03 Sep 2020 08:44:24 -0700 (PDT)
-Subject: Re: [PATCH 03/15] btrfs: btrfs_sysfs_remove_devices_dir drop return
- value
+        Thu, 03 Sep 2020 08:44:58 -0700 (PDT)
+Subject: Re: [PATCH 04/15] btrfs: refactor btrfs_sysfs_add_devices_dir
 To:     Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org
 References: <cover.1599091832.git.anand.jain@oracle.com>
- <5ff561bc46063a3fc7eb12a51600fe754b12ad0d.1599091832.git.anand.jain@oracle.com>
+ <7f81bf1c3e80e7b558d17c1caf049e0c431033ab.1599091832.git.anand.jain@oracle.com>
 From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <8351b005-a162-38ca-5435-cc6e49147b7b@toxicpanda.com>
-Date:   Thu, 3 Sep 2020 11:44:24 -0400
+Message-ID: <9d394b35-0c05-11d1-e3ff-22297b6156ae@toxicpanda.com>
+Date:   Thu, 3 Sep 2020 11:44:57 -0400
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
  Gecko/20100101 Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <5ff561bc46063a3fc7eb12a51600fe754b12ad0d.1599091832.git.anand.jain@oracle.com>
+In-Reply-To: <7f81bf1c3e80e7b558d17c1caf049e0c431033ab.1599091832.git.anand.jain@oracle.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -69,13 +68,14 @@ List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 On 9/2/20 8:57 PM, Anand Jain wrote:
-> btrfs_sysfs_remove_devices_dir() return value is unused declare it as
-> void.
+> When we add device we need to add a device to the sysfs, so instead of
+> using the btrfs_sysfs_add_devices_dir() 2nd argument to specify whether
+> to add a device or all of fs_devices, call the helper function directly
+> btrfs_sysfs_add_device() and thus make it non static.
 > 
 > Signed-off-by: Anand Jain <anand.jain@oracle.com>
 
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
-
-Thanks,
+This failed to apply cleanly, so I couldn't make sure the rest of the series 
+built or review the rest of them.  Thanks,
 
 Josef
