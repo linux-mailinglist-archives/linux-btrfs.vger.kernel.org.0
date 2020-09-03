@@ -2,119 +2,82 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42BFB25C5B6
-	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Sep 2020 17:49:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B427025C591
+	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Sep 2020 17:42:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728337AbgICPtr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 3 Sep 2020 11:49:47 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:50090 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726025AbgICPtr (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 3 Sep 2020 11:49:47 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 083DT1qv153081
-        for <linux-btrfs@vger.kernel.org>; Thu, 3 Sep 2020 13:30:28 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : subject :
- date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=corp-2020-01-29;
- bh=oLR4RHUZ3OwtaTbCRrCnzVZBRYjRTVJfAKuyxO2T8c4=;
- b=EgifnIiHLcWbCDsFkVlXd5RoJ5Ee7701yVg1ost0dnO1GZjVifBjor6mFz1l9krUL6eH
- gLwAv3Iq0raM/1DycD+mUxcksh6rLmhvgxyAwK823LJNfVRxvh/pZfbL6zJpbM1eujRE
- zblHpBa4yKpGCdk2DwBQPnLJtzlhVJ+VBhr0w1LKIMyn+NCA5CGoNJap35rNzw/y+aZ1
- jyBaR4e7ofZnFMZQIlSElYMWH6rGsDTzExiFuAh1gKHqltzcLFebM0Dnzq5vfu9b9R5t
- rgCnw/KRJ4Ow83QHyHTbrm6K87ESUFtEFj2kif17+eXsC0T532X281P4ly+sWgv41LDI /Q== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2120.oracle.com with ESMTP id 337eymgnwr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL)
-        for <linux-btrfs@vger.kernel.org>; Thu, 03 Sep 2020 13:30:27 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 083DL7Il108420
-        for <linux-btrfs@vger.kernel.org>; Thu, 3 Sep 2020 13:30:27 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3020.oracle.com with ESMTP id 3380sw6ass-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
-        for <linux-btrfs@vger.kernel.org>; Thu, 03 Sep 2020 13:30:27 +0000
-Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 083DUQTi020476
-        for <linux-btrfs@vger.kernel.org>; Thu, 3 Sep 2020 13:30:26 GMT
-Received: from localhost.localdomain (/39.109.231.106)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 03 Sep 2020 06:30:25 -0700
-From:   Anand Jain <anand.jain@oracle.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v2] btrfs: improve messages when devices rescanned
-Date:   Thu,  3 Sep 2020 21:30:12 +0800
-Message-Id: <674264e45246039a7d294415b2e0f42434ec8070.1599139776.git.anand.jain@oracle.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <77fc0b0c7c88b14c734b646d1969ccf45a063146.1599118052.git.anand.jain@oracle.com>
-References: <77fc0b0c7c88b14c734b646d1969ccf45a063146.1599118052.git.anand.jain@oracle.com>
+        id S1727786AbgICPme (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 3 Sep 2020 11:42:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47416 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726025AbgICPmd (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 3 Sep 2020 11:42:33 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C367FC061244
+        for <linux-btrfs@vger.kernel.org>; Thu,  3 Sep 2020 08:42:32 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id n133so3419296qkn.11
+        for <linux-btrfs@vger.kernel.org>; Thu, 03 Sep 2020 08:42:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=VnRq1/dOcFksQZzXHx2R7rL0Ab33hIbT4n7ZP4+8Evc=;
+        b=LVL2CZa33gDgSQHgchOADYPZMBPMyl1tRHs1ymEIcZYSSdSYFqTGCkGglNB58/wYmh
+         93Ol+CM4RFngs+uFINTGb3D0JUeW1Hc4QV2W5VI83e8So4FkEqPNbCbL6TjqFeVSzTOL
+         HOiOAOVOYtOrrkoZZmBrw2uEExLeLWIfpGAUpyxcvwcqmm639iZVCfV/bd8tEXvuFdy5
+         yv+rLxDP32oAhjEMM4jriyPa8iRPtvjea8UWH1pPtDL//VwbudPA0xy+e6JE+OvCQz+q
+         Cqq9Mg4FqjDmXuGUHvIDvc4hzhxZNEYQ3AOIuO5p4Vjf1WsZYe78u05ZYtOGPWzrE2Mk
+         KX6g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=VnRq1/dOcFksQZzXHx2R7rL0Ab33hIbT4n7ZP4+8Evc=;
+        b=jJDxhO9fmO7q2MGW+3vbmAEwmO2Wk/zC7exH3mDLvGVjRpGU7JrZm9EUPMbVfJfWmQ
+         sDjbm0k77Bfbxy6GymTuuJs9ICfLDQRvCnA/KCRDi17E9IJCXCNQuJvhTZwSVJo3PCh1
+         kI6+jqPkbnrRmOf/nUj/iOng3AU9Q3YNpMtd+zZilK1bRiiDvYTyqHx6Zz8qW2EiaMWh
+         DIkEF7gGgSIzq2GlINHyDVw5VoqM0mh+7r7/YFKjwdNEIMwDRGSF0z5ABHKunwVCJwfG
+         G+Ba9BCvusjDSy8ViLqn6U8aIK2MBWtjGZnzAwKGbpOTz0gygZrIeLXWLgPMoithGCzR
+         uNsA==
+X-Gm-Message-State: AOAM531hQjvwGW6JHhlYU6bOJJ1gWHD2VA42PFlaQhQnWUi2l6YEreLD
+        +H73ucuDYlu3Ko9V5KJZo/vA8A==
+X-Google-Smtp-Source: ABdhPJwZoOVK8Fjcxh/pq59Xiq9cnUKYQ3Tu7s/vVRcJpQ85rCyrFODDpBKr7n0hLE3QCmfPQ2jKxw==
+X-Received: by 2002:a37:794:: with SMTP id 142mr3743812qkh.114.1599147751647;
+        Thu, 03 Sep 2020 08:42:31 -0700 (PDT)
+Received: from [192.168.1.45] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id u18sm2329770qtk.61.2020.09.03.08.42.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 03 Sep 2020 08:42:31 -0700 (PDT)
+Subject: Re: [PATCH v3 1/15] btrfs: add btrfs_sysfs_add_device helper
+To:     Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org
+Cc:     nborisov@suse.com
+References: <cover.1599091832.git.anand.jain@oracle.com>
+ <30dc9402060e4361c15082fa52e1470746a2a04b.1599129529.git.anand.jain@oracle.com>
+From:   Josef Bacik <josef@toxicpanda.com>
+Message-ID: <3adb4bd1-fa0e-7e79-44c1-c69be9bf2566@toxicpanda.com>
+Date:   Thu, 3 Sep 2020 11:42:30 -0400
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9732 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 adultscore=0
- phishscore=0 malwarescore=0 mlxscore=0 spamscore=0 bulkscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009030125
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9732 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 adultscore=0
- priorityscore=1501 phishscore=0 mlxlogscore=999 mlxscore=0
- lowpriorityscore=0 clxscore=1015 spamscore=0 bulkscore=0 impostorscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009030124
+In-Reply-To: <30dc9402060e4361c15082fa52e1470746a2a04b.1599129529.git.anand.jain@oracle.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Systems booting without the initramfs seems to scan an unusual kind
-of device path. And at a later time, the device is updated to the
-correct path. We generally print the process name and PID of the process
-scanning the device but we don't capture the same information if the
-device path is rescanned with a different pathname.
+On 9/3/20 6:46 AM, Anand Jain wrote:
+> btrfs_sysfs_add_devices_dir() adds device link and devid kobject
+> (sysfs entries) for a device or all the devices in the btrfs_fs_devices.
+> In preparation to add these sysfs entries for the seed as well, add
+> a btrfs_sysfs_add_device() helper function and avoid code duplication.
+> 
+> Signed-off-by: Anand Jain <anand.jain@oracle.com>
 
-But the current message is too long, so drop the unwanted words and add
-process name and PID.
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 
-While at this also update the duplicate device warning to include the
-process name and PID.
+Thanks,
 
-Reported-by: https://bugzilla.kernel.org/show_bug.cgi?id=89721
-Signed-off-by: Anand Jain <anand.jain@oracle.com>
----
-v2: adds devid and scanned
-
- fs/btrfs/volumes.c | 14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
-
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index dc81646b13c0..60f8ea7232b5 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -942,16 +942,18 @@ static noinline struct btrfs_device *device_list_add(const char *path,
- 				bdput(path_bdev);
- 				mutex_unlock(&fs_devices->device_list_mutex);
- 				btrfs_warn_in_rcu(device->fs_info,
--			"duplicate device fsid:devid for %pU:%llu old:%s new:%s",
--					disk_super->fsid, devid,
--					rcu_str_deref(device->name), path);
-+	"duplicate device %s devid %llu generation %llu scanned by %s (%d)",
-+						  path, devid, found_transid,
-+						  current->comm,
-+						  task_pid_nr(current));
- 				return ERR_PTR(-EEXIST);
- 			}
- 			bdput(path_bdev);
- 			btrfs_info_in_rcu(device->fs_info,
--				"device fsid %pU devid %llu moved old:%s new:%s",
--				disk_super->fsid, devid,
--				rcu_str_deref(device->name), path);
-+	"devid %llu device path %s changed to %s scanned by %s (pid %d)",
-+					  devid, rcu_str_deref(device->name),
-+					  path, current->comm,
-+					  task_pid_nr(current));
- 		}
- 
- 		name = rcu_string_strdup(path, GFP_NOFS);
--- 
-2.25.1
-
+Josef
