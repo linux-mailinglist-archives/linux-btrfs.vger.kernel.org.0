@@ -2,23 +2,23 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE59C25BDA0
-	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Sep 2020 10:45:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8223D25BDB2
+	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Sep 2020 10:47:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726448AbgICIpw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 3 Sep 2020 04:45:52 -0400
-Received: from mx2.suse.de ([195.135.220.15]:52678 "EHLO mx2.suse.de"
+        id S1727095AbgICIre (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 3 Sep 2020 04:47:34 -0400
+Received: from mx2.suse.de ([195.135.220.15]:53878 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726292AbgICIpw (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 3 Sep 2020 04:45:52 -0400
+        id S1726493AbgICIre (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 3 Sep 2020 04:47:34 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 7547AAC4C;
-        Thu,  3 Sep 2020 08:45:51 +0000 (UTC)
-Subject: Re: [PATCH 04/15] btrfs: refactor btrfs_sysfs_add_devices_dir
+        by mx2.suse.de (Postfix) with ESMTP id B0206ACB7;
+        Thu,  3 Sep 2020 08:47:33 +0000 (UTC)
+Subject: Re: [PATCH 05/15] btrfs: refactor btrfs_sysfs_remove_devices_dir
 To:     Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org
 References: <cover.1599091832.git.anand.jain@oracle.com>
- <7f81bf1c3e80e7b558d17c1caf049e0c431033ab.1599091832.git.anand.jain@oracle.com>
+ <86f446238ee7f610090b79342ecf472453d9da4c.1599091832.git.anand.jain@oracle.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  xsFNBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -62,12 +62,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  KIuxEcV8wcVjr+Wr9zRl06waOCkgrQbTPp631hToxo+4rA1jiQF2M80HAet65ytBVR2pFGZF
  zGYYLqiG+mpUZ+FPjxk9kpkRYz61mTLSY7tuFljExfJWMGfgSg1OxfLV631jV1TcdUnx+h3l
  Sqs2vMhAVt14zT8mpIuu2VNxcontxgVr1kzYA/tQg32fVRbGr449j1gw57BV9i0vww==
-Message-ID: <c38115ef-81a1-8b1d-b853-9ce0c30e43aa@suse.com>
-Date:   Thu, 3 Sep 2020 11:45:49 +0300
+Message-ID: <62034c35-7eba-bfe8-5d6c-bcad4e6a94be@suse.com>
+Date:   Thu, 3 Sep 2020 11:47:32 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <7f81bf1c3e80e7b558d17c1caf049e0c431033ab.1599091832.git.anand.jain@oracle.com>
+In-Reply-To: <86f446238ee7f610090b79342ecf472453d9da4c.1599091832.git.anand.jain@oracle.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -79,11 +79,49 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 3.09.20 г. 3:57 ч., Anand Jain wrote:
-> When we add device we need to add a device to the sysfs, so instead of
-> using the btrfs_sysfs_add_devices_dir() 2nd argument to specify whether
-> to add a device or all of fs_devices, call the helper function directly
-> btrfs_sysfs_add_device() and thus make it non static.
+> Similar to btrfs_sysfs_add_devices_dir()'s refactor, refactor
+> btrfs_sysfs_remove_devices_dir() so that we don't have to use the 2nd
+> argument to indicate whether to free all devices or just one device.
+> 
+> Make btrfs_sysfs_remove_device() global as device operations outside of
+> sysfs.c now calls this instead of btrfs_sysfs_remove_devices_dir().
+> 
+> btrfs_sysfs_remove_devices_dir() is renamed to
+> btrfs_sysfs_remove_fs_devices() to suite its new role.
+> 
+> Now, no one outside of sysfs.c calls btrfs_sysfs_remove_fs_devices()
+> so it is redeclared as static. And the same function had to be moved
+> before its first caller.
 > 
 > Signed-off-by: Anand Jain <anand.jain@oracle.com>
 
-Reviewd-by: Nikolay Borisov <nborisov@suse.com>
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+
+> ---
+>  fs/btrfs/dev-replace.c |  2 +-
+>  fs/btrfs/sysfs.c       | 27 +++++++++++----------------
+>  fs/btrfs/sysfs.h       |  3 +--
+>  fs/btrfs/volumes.c     |  8 ++++----
+>  4 files changed, 17 insertions(+), 23 deletions(-)
+> 
+
+<snip>
+
+> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+> index 8952f7031f4b..9921b43ef839 100644
+> --- a/fs/btrfs/volumes.c
+> +++ b/fs/btrfs/volumes.c
+> @@ -2040,7 +2040,7 @@ void btrfs_scratch_superblocks(struct btrfs_fs_info *fs_info,
+>  }
+>  
+>  int btrfs_rm_device(struct btrfs_fs_info *fs_info, const char *device_path,
+> -		u64 devid)
+> +		    u64 devid)
+
+nit: Though I agree with this change it's unrelated.
+
+>  {
+>  	struct btrfs_device *device;
+>  	struct btrfs_fs_devices *cur_devices;
+
+<snip>
