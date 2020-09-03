@@ -2,106 +2,164 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D91C25B813
-	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Sep 2020 02:58:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D04125B811
+	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Sep 2020 02:58:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728022AbgICA6d (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        id S1727973AbgICA6d (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
         Wed, 2 Sep 2020 20:58:33 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:39272 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727986AbgICA6b (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 2 Sep 2020 20:58:31 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0830su21048033
+Received: from userp2120.oracle.com ([156.151.31.85]:57150 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727991AbgICA6c (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 2 Sep 2020 20:58:32 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0830rh0e176256
         for <linux-btrfs@vger.kernel.org>; Thu, 3 Sep 2020 00:58:30 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : subject :
  date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding; s=corp-2020-01-29;
- bh=ngkeAJIBSiQmuqukPm1sf9idiSNbBa5zZ7EEexb9BuY=;
- b=i0tXzmkYu/tFDhrWKZ3bJUDJzv2eZqta2c4ye6d5Vkmr4HSk2Mti591SiA+0zJQ/gQ8G
- M/dQXwnHVsV7NVagyg4fbY5ZHgjjeG3ifpoxVSuzg62TrxZRSunxlV5pZSO034oryoNW
- KUuYA+vacizQpTS5Z86giDmBxk39/H0b55Ne7EMZyV8+IKVLQ0gqq7azB2kyWfGTq/+p
- BYA7XEYup/17YQprPltFk+2g4eHjuQ0J+M/Kw1dP5/7hdCmNJiANstbmLFIL1gVo1sN2
- 9DFdoc0AgqKN/nTdGDd6sWgOG3uUpHxOT+WSthdLQ3glb02nGGy8Bwn4t9SY+BmzOYxN ww== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2130.oracle.com with ESMTP id 337eer5xav-1
+ bh=Vc083YnFtu97ZqoePL72twNfwsR+MAZn8t1SUl/+4qU=;
+ b=FHSYMiL2/ABdnbZgavmi1uogXLLiLlnEQqRhJ8rO3OUgoWHW/tVbym30roDKm6Dw4nb4
+ VdaMWroa1nJ9fzyzIP5KZenZPA0aO8oycgRMULGADOb+6XG/ge5LV6RwzKn9/5nuwlCb
+ t/2+bnLDIxoba6eoBYc1DgJoqhOoQsuLHqwPN4UrPwKJp0mV9YLB6Oj+1hAuqdy4ES9s
+ dyFI9kEsbs7g0UUdDWdgLHqrWIw8dQpdTuWs0+/fbmmmtU7PXN/VnIGbV4aXEOG5L20p
+ POpnodAAV4Bol7YObQIVPAdwtFFQxhWfXpjNzkCF3ZmKWa2iYreE370Lbvqk/tjvMAid cg== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2120.oracle.com with ESMTP id 339dmn4b20-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL)
         for <linux-btrfs@vger.kernel.org>; Thu, 03 Sep 2020 00:58:30 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0830seKF036788
-        for <linux-btrfs@vger.kernel.org>; Thu, 3 Sep 2020 00:58:29 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3020.oracle.com with ESMTP id 3380x8anyw-1
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0830t5Qb179397
+        for <linux-btrfs@vger.kernel.org>; Thu, 3 Sep 2020 00:58:30 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3020.oracle.com with ESMTP id 3380sv16h1-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
-        for <linux-btrfs@vger.kernel.org>; Thu, 03 Sep 2020 00:58:29 +0000
+        for <linux-btrfs@vger.kernel.org>; Thu, 03 Sep 2020 00:58:30 +0000
 Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0830wSHh027565
-        for <linux-btrfs@vger.kernel.org>; Thu, 3 Sep 2020 00:58:28 GMT
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0830wTqY017189
+        for <linux-btrfs@vger.kernel.org>; Thu, 3 Sep 2020 00:58:29 GMT
 Received: from localhost.localdomain (/39.109.231.106)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 02 Sep 2020 17:58:27 -0700
+        with ESMTP ; Wed, 02 Sep 2020 17:58:29 -0700
 From:   Anand Jain <anand.jain@oracle.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 13/15] btrfs: cleanup unnecessary goto in open_seed_device
-Date:   Thu,  3 Sep 2020 08:57:49 +0800
-Message-Id: <5a03a0bc3d94719c0587f6f62276bbc95838cc05.1599091832.git.anand.jain@oracle.com>
+Subject: [PATCH 14/15] btrfs: btrfs_dev_replace_update_device_in_mapping_tree drop file global declare
+Date:   Thu,  3 Sep 2020 08:57:50 +0800
+Message-Id: <30bd83fdbebb6d8f2f3eedf7b7861363af927145.1599091832.git.anand.jain@oracle.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1599091832.git.anand.jain@oracle.com>
 References: <cover.1599091832.git.anand.jain@oracle.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9732 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 phishscore=0
- mlxlogscore=999 adultscore=0 suspectscore=3 bulkscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009030004
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 adultscore=0
+ phishscore=0 malwarescore=0 mlxscore=0 spamscore=0 bulkscore=0
+ suspectscore=3 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009030004
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9732 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1015 priorityscore=1501
- lowpriorityscore=0 malwarescore=0 adultscore=0 spamscore=0 mlxscore=0
- phishscore=0 impostorscore=0 mlxlogscore=999 bulkscore=0 suspectscore=3
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009030004
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 phishscore=0
+ mlxlogscore=999 adultscore=0 impostorscore=0 mlxscore=0 suspectscore=3
+ spamscore=0 clxscore=1015 malwarescore=0 lowpriorityscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009030004
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-open_seed_devices() does goto to just return. So drop goto and just return
-instead.
+There isn't any convoluted child functions inside the
+btrfs_dev_replace_update_device_in_mapping_tree() function. With the
+function moved before where it is called, we can drop its file local
+declare.
+
+No functional changes.
 
 Signed-off-by: Anand Jain <anand.jain@oracle.com>
 Reviewed-by: Nikolay Borisov <nborisov@suse.com>
 ---
- fs/btrfs/volumes.c | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
+ fs/btrfs/dev-replace.c | 56 ++++++++++++++++++++----------------------
+ 1 file changed, 26 insertions(+), 30 deletions(-)
 
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index c8b0d9eb4468..dc81646b13c0 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -6741,19 +6741,17 @@ static struct btrfs_fs_devices *open_seed_devices(struct btrfs_fs_info *fs_info,
- 	ret = open_fs_devices(fs_devices, FMODE_READ, fs_info->bdev_holder);
- 	if (ret) {
- 		free_fs_devices(fs_devices);
--		fs_devices = ERR_PTR(ret);
--		goto out;
-+		return ERR_PTR(ret);
- 	}
+diff --git a/fs/btrfs/dev-replace.c b/fs/btrfs/dev-replace.c
+index aea1c782c009..656d8ba642af 100644
+--- a/fs/btrfs/dev-replace.c
++++ b/fs/btrfs/dev-replace.c
+@@ -64,10 +64,6 @@
  
- 	if (!fs_devices->seeding) {
- 		close_fs_devices(fs_devices);
- 		free_fs_devices(fs_devices);
--		fs_devices = ERR_PTR(-EINVAL);
--		goto out;
-+		return ERR_PTR(-EINVAL);
- 	}
+ static int btrfs_dev_replace_finishing(struct btrfs_fs_info *fs_info,
+ 				       int scrub_ret);
+-static void btrfs_dev_replace_update_device_in_mapping_tree(
+-						struct btrfs_fs_info *fs_info,
+-						struct btrfs_device *srcdev,
+-						struct btrfs_device *tgtdev);
+ static int btrfs_dev_replace_kthread(void *data);
  
- 	list_add_tail(&fs_devices->seed_list, &fs_info->fs_devices->seed_list);
--out:
-+
- 	return fs_devices;
+ int btrfs_init_dev_replace(struct btrfs_fs_info *fs_info)
+@@ -597,6 +593,32 @@ static void btrfs_rm_dev_replace_unblocked(struct btrfs_fs_info *fs_info)
+ 	wake_up(&fs_info->dev_replace.replace_wait);
  }
  
++static void btrfs_dev_replace_update_device_in_mapping_tree(
++						struct btrfs_fs_info *fs_info,
++						struct btrfs_device *srcdev,
++						struct btrfs_device *tgtdev)
++{
++	struct extent_map_tree *em_tree = &fs_info->mapping_tree;
++	struct extent_map *em;
++	struct map_lookup *map;
++	u64 start = 0;
++	int i;
++
++	write_lock(&em_tree->lock);
++	do {
++		em = lookup_extent_mapping(em_tree, start, (u64)-1);
++		if (!em)
++			break;
++		map = em->map_lookup;
++		for (i = 0; i < map->num_stripes; i++)
++			if (srcdev == map->stripes[i].dev)
++				map->stripes[i].dev = tgtdev;
++		start = em->start + em->len;
++		free_extent_map(em);
++	} while (start);
++	write_unlock(&em_tree->lock);
++}
++
+ static int btrfs_dev_replace_finishing(struct btrfs_fs_info *fs_info,
+ 				       int scrub_ret)
+ {
+@@ -759,32 +781,6 @@ static int btrfs_dev_replace_finishing(struct btrfs_fs_info *fs_info,
+ 	return 0;
+ }
+ 
+-static void btrfs_dev_replace_update_device_in_mapping_tree(
+-						struct btrfs_fs_info *fs_info,
+-						struct btrfs_device *srcdev,
+-						struct btrfs_device *tgtdev)
+-{
+-	struct extent_map_tree *em_tree = &fs_info->mapping_tree;
+-	struct extent_map *em;
+-	struct map_lookup *map;
+-	u64 start = 0;
+-	int i;
+-
+-	write_lock(&em_tree->lock);
+-	do {
+-		em = lookup_extent_mapping(em_tree, start, (u64)-1);
+-		if (!em)
+-			break;
+-		map = em->map_lookup;
+-		for (i = 0; i < map->num_stripes; i++)
+-			if (srcdev == map->stripes[i].dev)
+-				map->stripes[i].dev = tgtdev;
+-		start = em->start + em->len;
+-		free_extent_map(em);
+-	} while (start);
+-	write_unlock(&em_tree->lock);
+-}
+-
+ /*
+  * Read progress of device replace status according to the state and last
+  * stored position. The value format is the same as for
 -- 
 2.25.1
 
