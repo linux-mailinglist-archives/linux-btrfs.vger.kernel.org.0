@@ -2,89 +2,112 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1430D25B910
-	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Sep 2020 05:15:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E78325B96C
+	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Sep 2020 05:52:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727065AbgICDPE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 2 Sep 2020 23:15:04 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:55384 "EHLO
+        id S1728231AbgICDwp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 2 Sep 2020 23:52:45 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:47026 "EHLO
         aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726528AbgICDPD (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 2 Sep 2020 23:15:03 -0400
+        with ESMTP id S1726654AbgICDwn (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 2 Sep 2020 23:52:43 -0400
 Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0833C6Et131000;
-        Thu, 3 Sep 2020 03:15:01 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=uSIhunwDl2BLTZ5BTUx/BRUK4Tcif98Ck9hCQW4VlKQ=;
- b=hZ7yXQ+w494xvx/LphAoyQJEoIJMxZ+O6MeG8N/PVtQ3g/mnA3Ohe+jpPWG0V6+iifcu
- XlXFdmyAOmfYSf6HCTEb7tI9nqGklrtUlzeYzNzGFr6xr0L4KbPTgN15qnVjsFC31NR7
- BwAfaL6A9iquPQD+5evuLRRZpIHP0/6epnie40vFfre3mk9z0M2IQLnUkG+bmeqJE/8W
- 5hoXGV+zyKCxKnAP3pr3thD/QJtZ1a3EnMyGa2w7z+M4ikiVsYEIpImVi8AA9ifOEBO2
- qa/g18Sxkg4QCfbGQP0Hf7E30XY5mGRPul7efiGXZKi7EkZlu41mQFvSEK9o9YjvDIFx sA== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2120.oracle.com with ESMTP id 337eyme5g1-1
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0833obwd191914;
+        Thu, 3 Sep 2020 03:52:35 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
+ bh=plrQbRO5We9myfM1D8OZxb2JZVOMVYHNu9vACenTQ7o=;
+ b=umACb64vTspKV52Xcc2OvTOzfLlTJiWJuHOTs9jzlD6zO3V9a3Xcr/kMBdzVreM+DChF
+ 9BKCQK5bYPHT6YHyz/U9aeuNLi4YES3Dq3NuGX/yHXn3+fq96EYCkjeN5JvHkmYjiqtc
+ /x8QihfAhutP8U3M7Yki2WOt2sYSelCosgzJtVhoe41p47nEgTb5BB5tOuNCoaR9o5gd
+ WSPsXdUbv154rNs8yrdoYmmELgCi50Pl/Z7/cOLWSd/QC4GOBJV4GH1ZzCEeGxgndvfJ
+ KudpvhKniH9/J+3E+VWUdcKfafv74WBM/DGcJtFHcY/wTd5FXRUs8/NUpLDNWbbqFW3o Gg== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2120.oracle.com with ESMTP id 337eyme83a-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 03 Sep 2020 03:15:01 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0833B5EU098852;
-        Thu, 3 Sep 2020 03:13:01 GMT
+        Thu, 03 Sep 2020 03:52:35 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0833nlUh078075;
+        Thu, 3 Sep 2020 03:52:35 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by userp3030.oracle.com with ESMTP id 3380y12x5u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 03 Sep 2020 03:52:35 +0000
+Received: from userp3030.oracle.com (userp3030.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0833qYAW084111;
+        Thu, 3 Sep 2020 03:52:34 GMT
 Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3020.oracle.com with ESMTP id 3380sv6r6h-1
+        by userp3030.oracle.com with ESMTP id 3380y12x5j-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 03 Sep 2020 03:13:01 +0000
-Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0833D0Ta014455;
-        Thu, 3 Sep 2020 03:13:00 GMT
-Received: from [192.168.1.102] (/39.109.231.106)
+        Thu, 03 Sep 2020 03:52:34 +0000
+Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0833qQ8V030386;
+        Thu, 3 Sep 2020 03:52:26 GMT
+Received: from localhost (/67.169.218.210)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 02 Sep 2020 20:12:59 -0700
-Subject: Re: [PATCH] fstests: btrfs/219 add a test for some disk caching
- usecases
-To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
-        fstests@vger.kernel.org
-References: <8e841e0e05934baaf6119363414440b271426a03.1599065695.git.josef@toxicpanda.com>
-From:   Anand Jain <anand.jain@oracle.com>
-Message-ID: <0ae4f962-34b2-902e-b7d4-ec55ccac3dfb@oracle.com>
-Date:   Thu, 3 Sep 2020 11:12:56 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.2.1
+        with ESMTP ; Wed, 02 Sep 2020 20:52:26 -0700
+Date:   Wed, 2 Sep 2020 20:52:25 -0700
+From:   "Darrick J. Wong" <darrick.wong@oracle.com>
+To:     linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        xfs <linux-xfs@vger.kernel.org>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        linux-ext4 <linux-ext4@vger.kernel.org>,
+        ocfs2 list <ocfs2-devel@oss.oracle.com>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Dave Chinner <david@fromorbit.com>,
+        Eric Sandeen <sandeen@redhat.com>,
+        "Theodore Ts'o" <tytso@mit.edu>
+Subject: Broken O_{D,}SYNC behavior with FICLONE*?
+Message-ID: <20200903035225.GJ6090@magnolia>
 MIME-Version: 1.0
-In-Reply-To: <8e841e0e05934baaf6119363414440b271426a03.1599065695.git.josef@toxicpanda.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9732 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 adultscore=0
- phishscore=0 malwarescore=0 mlxscore=0 spamscore=0 bulkscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009030029
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9732 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 adultscore=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 adultscore=0
  priorityscore=1501 phishscore=0 mlxlogscore=999 mlxscore=0
- lowpriorityscore=0 clxscore=1011 spamscore=0 bulkscore=0 impostorscore=0
+ lowpriorityscore=0 clxscore=1015 spamscore=0 bulkscore=0 impostorscore=0
  malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009030029
+ engine=8.12.0-2006250000 definitions=main-2009030035
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 3/9/20 1:03 am, Josef Bacik wrote:
-> This is a test to check the behavior of the disk caching code inside
-> btrfs.  It's a regression test for the patch
-> 
->    btrfs: allow single disk devices to mount with older generations
-> 
-> Thanks,
-> 
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+Hi,
 
-Looks good.
+I have a question for everyone-- do FICLONE and FICLONERANGE count as a
+"write operation" for the purposes of reasoning about O_SYNC and
+O_DSYNC?  In other words, is it supposed to be the case that
+(paraphrasing the open(2) manpage) "By the time ioctl(FICLONE) returns,
+the output data and associated file metadata have been transferred to
+the underlying hardware (i.e., as though each ioctl(FICLONE) was
+followed by a call to fsync(2))."?
 
-Reviewed-by: Anand Jain <anand.jain@oracle.com>
+If I open a file with O_SYNC, call FICLONE to reflink some data blocks
+into that file, and hit the reset button as soon as the ioctl call
+returns, should I expect that I will always see the new file contents in
+that file after the system comes back up?  Or am I required to fsync()
+the file despite O_SYNC being set?
 
-Also thanks for adding the kernel patch information in the test case header.
+The reason I ask is that (a) reflinking can definitely change the file
+contents which seems like a write operation; and (b) we wrote a test to
+examine the copy_file_range() semantics wrt O_SYNC and discovered that
+an unaligned c_f_r through the splice code does indeed honor the
+documented O_SYNC semantics, but a block-aligned c_f_r that uses reflink
+does *not* honor this.
 
--Anand
+So, that's inconsistent behavior and I want to know if remap_file_range
+is broken or if we all just don't care about O_SYNC for these fancy
+IO accelerators?
+
+I tend to think reflink is broken on XFS, but I converted that O_SYNC
+test into a fstest and discovered that none of XFS, btrfs, or ocfs2
+actually force the fs to persist metadata changes after reflinking into
+an O_SYNC file.  The manpages for the clone ioctls and copy_file_range
+don't explicitly declare those calls to be "write operations".
+
+FWIW I repeated the analysis with a file that had FS_XFLAG_SYNC or
+FS_SYNC_FL set on the inode but O_SYNC was not set on the fd, and
+observed the same results.
+
+--D
