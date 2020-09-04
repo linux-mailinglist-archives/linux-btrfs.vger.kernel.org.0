@@ -2,309 +2,100 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0106225CEC0
-	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Sep 2020 02:26:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F66C25D2C5
+	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Sep 2020 09:51:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728037AbgIDA0A (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 3 Sep 2020 20:26:00 -0400
-Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:48621 "EHLO
-        wout5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726397AbgIDAZ7 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 3 Sep 2020 20:25:59 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.west.internal (Postfix) with ESMTP id 1160FFB3;
-        Thu,  3 Sep 2020 20:25:57 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Thu, 03 Sep 2020 20:25:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=from
-        :to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm1; bh=FC5yTaAFJrp9R
-        aBl0X1Zoq38lUxabpRtFZFh533QXBk=; b=tDHeouRkmKX/1pi/oIWNuE1EV2b2Z
-        OxBiQfB+V/2NZwPBJt+8xVkRNbbIudWPiXsLvbS7a7nIVjJWbf0JdBUKyPWTMbqz
-        ZtWD2hyxFFbErG/NRU6ZAgq05obmx8KagJyw3kzBwblV64+5MPN8TTWBHECRVeVP
-        2fOCD15N/851O3KoxTZcIYmRBHO5IwZsnavi1W4dA78i7A+oAefR1yyjrNNGPhLI
-        FfjaANi5qhOmMziy9sPaAjVmlpfFGCUC+ZNr0a+k43GJ+z/P4+koDLVlLyN3J94j
-        bSuHfGQ9Mz8iRJlaBi7bBkcpNqQeFy6wCw8nVQabbHzCT3lZZmBvraheQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :in-reply-to:message-id:mime-version:references:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm3; bh=FC5yTaAFJrp9RaBl0X1Zoq38lUxabpRtFZFh533QXBk=; b=uPTAN3gI
-        ZJ0mJhdij7XK5SdvtuYtmpYGSV9OWNIU8IWL2wLC8Dyi+WMQ6aAkChmmc9q1qzBF
-        kYGI8A4ZHhjv7e+v8I7tmYiU2exXa4QuUdpZesBIh6F3xpJjEk5oE55NfVzOdeGD
-        anjajvhJervWIkBGij6h4kvIQNKMF3o4YkJvdSrVM0w9qlfcNl3/M/QyQW6LPO4v
-        vYf6kwIVpUcOtkk2hZnxxUNFzESOTnil8A9wFw1G1FT0JH7R+/i0+yzbu32Z9qDc
-        MAt2FQFGus9SLoYsX18r4jPQQGxWNmtjLRPyQqy9xuZN6YK2t50jd/jx85kK5vvN
-        wntUnjfVosj5Dw==
-X-ME-Sender: <xms:lYlRX85udS1OsaBhiYbzfJUqgxckz5JE6UbU13bbAQ3SFxmLwu0Ljw>
-    <xme:lYlRX95da-7Xut2W_l-iwAeOGCETGERtkxphkn2zJKzpAnIDkeyNHUPmJwc5pl7c1
-    vvnehBu-3iJMgz6BpA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrudegvddgfeehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhephffvufffkffojghfggfgsedtkeertdertddtnecuhfhrohhmpeeuohhrihhs
-    uceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhioheqnecuggftrfgrthhtvghrnhepie
-    euffeuvdeiueejhfehiefgkeevudejjeejffevvdehtddufeeihfekgeeuheelnecukfhp
-    peduieefrdduudegrddufedvrdefnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrg
-    hmpehmrghilhhfrhhomhepsghorhhishessghurhdrihho
-X-ME-Proxy: <xmx:lYlRX7fDFP5jVwb8e70fDA4YvXWGySfhBEEvSu_winbJ4mJFUiZfcQ>
-    <xmx:lYlRXxIrRTqcNTbUcXOY76FO2rwUc7kCzk3dH81v19ICKHoMJcpxYA>
-    <xmx:lYlRXwJHAYExjegzLHJQrAEleBvqXYZpHS9SKbpN31GeAWDbiVT-TQ>
-    <xmx:lYlRX6jGm_t4SFqIGmB_fstax31hP2jh4omBHR-R1Tf_MlOFvty-QQ>
-Received: from localhost (unknown [163.114.132.3])
-        by mail.messagingengine.com (Postfix) with ESMTPA id A919E3280059;
-        Thu,  3 Sep 2020 20:25:56 -0400 (EDT)
-From:   Boris Burkov <boris@bur.io>
-To:     Nikolay Borisov <nborisov@suse.com>, fstests@vger.kernel.org
-Cc:     linux-btrfs@vger.kernel.org, Boris Burkov <boris@bur.io>
-Subject: [PATCH v2] btrfs: add test for free space tree remounts
-Date:   Thu,  3 Sep 2020 17:25:50 -0700
-Message-Id: <d63835858b32cf692993766caa3650eec83d8b32.1599178894.git.boris@bur.io>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <61d279c1-1e2d-a59d-c14b-339ea859549b@suse.com>
+        id S1729863AbgIDHvn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 4 Sep 2020 03:51:43 -0400
+Received: from mx2.suse.de ([195.135.220.15]:47788 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729832AbgIDHvl (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 4 Sep 2020 03:51:41 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 966B5AD21;
+        Fri,  4 Sep 2020 07:51:39 +0000 (UTC)
+Subject: Re: [PATCH v2] btrfs: add test for free space tree remounts
+To:     Boris Burkov <boris@bur.io>, fstests@vger.kernel.org
+Cc:     linux-btrfs@vger.kernel.org
 References: <61d279c1-1e2d-a59d-c14b-339ea859549b@suse.com>
+ <d63835858b32cf692993766caa3650eec83d8b32.1599178894.git.boris@bur.io>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <76d905d1-5686-932f-8745-fd76d2f6019e@suse.com>
+Date:   Fri, 4 Sep 2020 10:51:36 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <d63835858b32cf692993766caa3650eec83d8b32.1599178894.git.boris@bur.io>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-btrfs/131 covers a solid variety of free space tree scenarios, but it
-does not cover remount scenarios. We are adding remount support for read
-only btrfs filesystems to move to the free space tree, so add a few test
-cases covering that workflow as well. Refactor out some common free
-space tree code from btrfs/131 into common/btrfs.
 
-Signed-off-by: Boris Burkov <boris@bur.io>
----
-v2:
-- added a new test for ro->ro remount
-- used _scratch_remount
-- used _scratch_cycle_mount
 
- common/btrfs        | 12 ++++++++
- tests/btrfs/131     | 29 ++++++------------
- tests/btrfs/219     | 74 +++++++++++++++++++++++++++++++++++++++++++++
- tests/btrfs/219.out | 13 ++++++++
- tests/btrfs/group   |  1 +
- 5 files changed, 109 insertions(+), 20 deletions(-)
- create mode 100755 tests/btrfs/219
- create mode 100644 tests/btrfs/219.out
+On 4.09.20 г. 3:25 ч., Boris Burkov wrote:
+> btrfs/131 covers a solid variety of free space tree scenarios, but it
+> does not cover remount scenarios. We are adding remount support for read
+> only btrfs filesystems to move to the free space tree, so add a few test
+> cases covering that workflow as well. Refactor out some common free
+> space tree code from btrfs/131 into common/btrfs.
+> 
+> Signed-off-by: Boris Burkov <boris@bur.io>
 
-diff --git a/common/btrfs b/common/btrfs
-index 6d452d4d..9517c0a4 100644
---- a/common/btrfs
-+++ b/common/btrfs
-@@ -411,3 +411,15 @@ _btrfs_forget_or_module_reload()
- 
- 	_reload_fs_module "btrfs"
- }
-+
-+# print whether or not the free space tree is enabled on the scratch dev
-+_btrfs_free_space_tree_enabled()
-+{
-+	compat_ro="$($BTRFS_UTIL_PROG inspect-internal dump-super "$SCRATCH_DEV" | \
-+		     sed -rn 's/^compat_ro_flags\s+(.*)$/\1/p')"
-+	if ((compat_ro & 0x1)); then
-+		echo "free space tree is enabled"
-+	else
-+		echo "free space tree is disabled"
-+			fi
-+}
-diff --git a/tests/btrfs/131 b/tests/btrfs/131
-index 3de7eef8..93ff59f4 100755
---- a/tests/btrfs/131
-+++ b/tests/btrfs/131
-@@ -52,17 +52,6 @@ mkfs_v2()
- 	_scratch_unmount
- }
- 
--check_fst_compat()
--{
--	compat_ro="$($BTRFS_UTIL_PROG inspect-internal dump-super "$SCRATCH_DEV" | \
--		     sed -rn 's/^compat_ro_flags\s+(.*)$/\1/p')"
--	if ((compat_ro & 0x1)); then
--		echo "free space tree is enabled"
--	else
--		echo "free space tree is disabled"
--	fi
--}
--
- # Mount options might interfere.
- export MOUNT_OPTIONS=""
- 
-@@ -76,19 +65,19 @@ export MOUNT_OPTIONS=""
- mkfs_v1
- echo "Using free space cache"
- _scratch_mount -o space_cache=v1
--check_fst_compat
-+_btrfs_free_space_tree_enabled
- _scratch_unmount
- 
- mkfs_v1
- echo "Enabling free space tree"
- _scratch_mount -o space_cache=v2
--check_fst_compat
-+_btrfs_free_space_tree_enabled
- _scratch_unmount
- 
- mkfs_v1
- echo "Disabling free space cache and enabling free space tree"
- _scratch_mount -o clear_cache,space_cache=v2
--check_fst_compat
-+_btrfs_free_space_tree_enabled
- _scratch_unmount
- 
- # When the free space tree is enabled:
-@@ -106,32 +95,32 @@ _try_scratch_mount -o space_cache=v1 >/dev/null 2>&1 || echo "mount failed"
- mkfs_v2
- echo "Mounting existing free space tree"
- _scratch_mount
--check_fst_compat
-+_btrfs_free_space_tree_enabled
- _scratch_unmount
- _scratch_mount -o space_cache=v2
--check_fst_compat
-+_btrfs_free_space_tree_enabled
- _scratch_unmount
- 
- mkfs_v2
- echo "Recreating free space tree"
- _scratch_mount -o clear_cache,space_cache=v2
--check_fst_compat
-+_btrfs_free_space_tree_enabled
- _scratch_unmount
- mkfs_v2
- _scratch_mount -o clear_cache
--check_fst_compat
-+_btrfs_free_space_tree_enabled
- _scratch_unmount
- 
- mkfs_v2
- echo "Disabling free space tree"
- _scratch_mount -o clear_cache,nospace_cache
--check_fst_compat
-+_btrfs_free_space_tree_enabled
- _scratch_unmount
- 
- mkfs_v2
- echo "Reverting to free space cache"
- _scratch_mount -o clear_cache,space_cache=v1
--check_fst_compat
-+_btrfs_free_space_tree_enabled
- _scratch_unmount
- 
- # success, all done
-diff --git a/tests/btrfs/219 b/tests/btrfs/219
-new file mode 100755
-index 00000000..e6c8cb60
---- /dev/null
-+++ b/tests/btrfs/219
-@@ -0,0 +1,74 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright (c) 2020 Facebook.  All Rights Reserved.
-+#
-+# FS QA Test 219
-+#
-+# Test free space tree remount scenarios.
-+#
-+seq=`basename $0`
-+seqres=$RESULT_DIR/$seq
-+echo "QA output created by $seq"
-+
-+here=`pwd`
-+tmp=/tmp/$$
-+status=1	# failure is the default!
-+trap "_cleanup; exit \$status" 0 1 2 3 15
-+
-+_cleanup()
-+{
-+	cd /
-+	rm -f $tmp.*
-+}
-+
-+# get standard environment, filters and checks
-+. ./common/rc
-+. ./common/filter
-+
-+# remove previous $seqres.full before test
-+rm -f $seqres.full
-+
-+# real QA test starts here
-+
-+_supported_fs btrfs
-+_supported_os Linux
-+_require_scratch
-+_require_btrfs_command inspect-internal dump-super
-+_require_btrfs_fs_feature free_space_tree
-+
-+# Remount:
-+# -o space_cache=v1; -o remount,space_cache=v2: error
-+# -o space_cache=v1,ro; -o remount,ro,space_cache=v2: error
-+# -o space_cache=v1,ro; -o remount,space_cache=v2: success
-+echo "Trying to remount with free space tree"
-+_scratch_mkfs >/dev/null 2>&1
-+_scratch_mount -o clear_cache,space_cache=v1
-+_btrfs_free_space_tree_enabled
-+_scratch_remount space_cache=v2 >/dev/null 2>&1 || echo "remount failed"
-+_scratch_unmount
-+
-+echo "Trying to remount read-only with free space tree"
-+_scratch_mkfs >/dev/null 2>&1
-+_scratch_mount -o clear_cache,space_cache=v1
-+_btrfs_free_space_tree_enabled
-+_scratch_remount ro,space_cache=v1
-+_btrfs_free_space_tree_enabled
-+_scratch_remount ro,space_cache=v2 >/dev/null 2>&1 || echo "remount failed"
-+_scratch_unmount
-+
-+echo "Remount read-only to read-write with free space tree"
-+_scratch_mkfs >/dev/null 2>&1
-+_scratch_mount -o clear_cache,space_cache=v1
-+_btrfs_free_space_tree_enabled
-+_scratch_remount ro,space_cache=v1
-+_btrfs_free_space_tree_enabled
-+_scratch_remount space_cache=v2
-+_btrfs_free_space_tree_enabled
-+# ensure the free space tree is sticky across reboot
-+_scratch_cycle_mount
-+_btrfs_free_space_tree_enabled
-+_scratch_unmount
-+
-+# success, all done
-+status=0
-+exit
-diff --git a/tests/btrfs/219.out b/tests/btrfs/219.out
-new file mode 100644
-index 00000000..1d5624a7
---- /dev/null
-+++ b/tests/btrfs/219.out
-@@ -0,0 +1,13 @@
-+QA output created by 219
-+Trying to remount with free space tree
-+free space tree is disabled
-+remount failed
-+Trying to remount read-only with free space tree
-+free space tree is disabled
-+free space tree is disabled
-+remount failed
-+Remount read-only to read-write with free space tree
-+free space tree is disabled
-+free space tree is disabled
-+free space tree is enabled
-+free space tree is enabled
-diff --git a/tests/btrfs/group b/tests/btrfs/group
-index 3295856d..f4dbfafb 100644
---- a/tests/btrfs/group
-+++ b/tests/btrfs/group
-@@ -221,3 +221,4 @@
- 216 auto quick seed
- 217 auto quick trim dangerous
- 218 auto quick volume
-+219 auto quick
--- 
-2.24.1
+Generally LGTM, but I wonder if it would be beneficial to refer the
+series which is supposed to make this test pass. If you look at other
+patches in xfstest that's done in the header of the test i.e "This test
+freespace remount behavior introduced by xxxx" and you refer to the name
+of the patches (or alternatively the commit id if the patch has landed
+upstream).
 
+In any case:
+
+
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
