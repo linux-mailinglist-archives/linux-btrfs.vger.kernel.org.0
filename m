@@ -2,91 +2,268 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68F7725D333
-	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Sep 2020 10:07:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5877025D45F
+	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Sep 2020 11:13:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728293AbgIDIHt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 4 Sep 2020 04:07:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57612 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726251AbgIDIHs (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 4 Sep 2020 04:07:48 -0400
-Received: from jemma.woof94.com (jemma.woof94.com [IPv6:2404:9400:3:0:216:3eff:fee0:fa86])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D961C061244
-        for <linux-btrfs@vger.kernel.org>; Fri,  4 Sep 2020 01:07:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=moffatt.email; s=woof2014; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=079L23OBHbcbuvblYU11UrcG/TrR0YEpj1cPAboCyKQ=; b=iAEMmIjMLu4Zz+D/6h1hq8B2is
-        35rrNf6XALrjCArXsTWVtPhYVG6mVj5Wx389co1yliWFpcXntSeJs/FyEgHNG/pLrzlsyTeLRLAMD
-        qK8iqTuxKIdQ9r7zzbfMhHVXVQp95z2L5u41eL6iuPlO0FHgywdHagEfZd1+dty9g/Wc=;
-Received: from 2403-5800-3100-142-c9f4-b401-fb77-9109.ip6.aussiebb.net ([2403:5800:3100:142:c9f4:b401:fb77:9109])
-        by jemma.woof94.com with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <hamish-btrfs@moffatt.email>)
-        id 1kE6ku-0000cx-Ua; Fri, 04 Sep 2020 18:07:32 +1000
-Subject: Re: new database files not compressed
-To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-Cc:     linux-btrfs@vger.kernel.org
-References: <c7415ce2-f025-6c31-60b7-f0b927ed4808@moffatt.email>
- <41107373-cc61-ea3f-7ae9-c9eef0ee47f9@suse.com>
- <2d060b13-7a1a-7cc5-927f-2c6a067f9c03@moffatt.email>
- <0bf29a8c-23b2-26f4-2efd-2e82f38c437d@suse.com>
- <4c3d4141-4452-bb79-b18e-f32c8e35cb13@moffatt.email>
- <d0399ea6-f198-b58f-8b34-f8ba95ef400f@moffatt.email>
- <03ec55ee-5cf3-54fa-1a81-abc93006ca7b@suse.com>
- <dede53e.d98f7053.1744e402728@lechevalier.se>
- <20200902161621.GA5890@hungrycats.org>
- <f32f6fdf-bc20-b1d1-d0ea-08f779723066@moffatt.email>
- <20200903194437.GA21815@hungrycats.org>
-From:   Hamish Moffatt <hamish-btrfs@moffatt.email>
-Message-ID: <0c74cc4a-3644-805c-9501-6888c2a03f24@moffatt.email>
-Date:   Fri, 4 Sep 2020 18:07:32 +1000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        id S1729677AbgIDJNk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 4 Sep 2020 05:13:40 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:35648 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726575AbgIDJNk (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 4 Sep 2020 05:13:40 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08494HI1152783;
+        Fri, 4 Sep 2020 09:13:38 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding; s=corp-2020-01-29;
+ bh=gJLsj62C/Va2QPe6srseOEZEtvrgb4O5u7/wmvToEmI=;
+ b=TZrwZeUX7f3g8JNa/+sfy3WjGd65O/Xd5VzYEOJr8XW2AEBxW+NkbAB4QcyNfIvmykVF
+ 2AIyZlCmIGm6J/vaQiZZNXWFD8Tl1wgkpUCfNuAF9GBkBZHiTOdWoY4SZ5Vogq2ZCNu1
+ h/CyxXZyQWt4v/0GXcKx5eWD1csE5aWCYkHpiMImncxHAxlG+dg4N3ZcOlaxK8qmpV/z
+ LYel9J5ot1aGgcR+68unhQP1MFQSc8XuNoVA9CUOVyfSOz6s/qiRXank3SIE1DgkepyZ
+ +A1dk4a58YtjuYwgy4tiV1dFT4vcTlkDmkT85M+upC/zUGnE8pq+8FF9wwjmmX3JnJdP Vg== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2120.oracle.com with ESMTP id 337eymnehf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 04 Sep 2020 09:13:37 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08499nZ8139996;
+        Fri, 4 Sep 2020 09:13:37 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3030.oracle.com with ESMTP id 33b7v27va1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 04 Sep 2020 09:13:37 +0000
+Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0849DZME000741;
+        Fri, 4 Sep 2020 09:13:35 GMT
+Received: from localhost.localdomain (/39.109.231.106)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 04 Sep 2020 02:13:35 -0700
+From:   Anand Jain <anand.jain@oracle.com>
+To:     fstests@vger.kernel.org
+Cc:     linux-btrfs@vger.kernel.org, josef@toxicpanda.com
+Subject: [PATCH] btrfs: add a test case for btrfs seed device delete
+Date:   Fri,  4 Sep 2020 17:13:27 +0800
+Message-Id: <3700450aa442d01eedb1da6d02ff9b2f96116b60.1599210586.git.anand.jain@oracle.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <637723ad-d34c-6dde-6837-508ba68bbd42@toxicpanda.com>
+References: <637723ad-d34c-6dde-6837-508ba68bbd42@toxicpanda.com>
 MIME-Version: 1.0
-In-Reply-To: <20200903194437.GA21815@hungrycats.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9733 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 malwarescore=0 spamscore=0
+ mlxlogscore=999 phishscore=0 bulkscore=0 suspectscore=1 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009040086
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9733 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 adultscore=0
+ priorityscore=1501 phishscore=0 mlxlogscore=999 mlxscore=0
+ lowpriorityscore=0 clxscore=1015 spamscore=0 bulkscore=0 impostorscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009040085
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 4/9/20 5:44 am, Zygo Blaxell wrote:
-> On Thu, Sep 03, 2020 at 10:53:23PM +1000, Hamish Moffatt wrote:
->
->> I recompiled Firebird with fallocate disabled (it has a fallback for
->> non-linux OSs), and now I have compressed database files.
->>
->> It may be that de-duplication suits my application better anyway. Will
->> compsize tell me how much space is being saved by de-duplication, or is
->> there another way to find out?
-> Compsize reports "Uncompressed" and "Referenced" columns.  "Uncompressed"
-> is the physical size of the uncompressed data (i.e. how many bytes
-> you would need to hold all of the extents on disk without compression
-> but with dedupe).  "Referenced" is the logical size of the data, after
-> counting each reference (i.e. how many bytes you would need to hold all
-> of the data without compression or dedupe).
->
-> The "none" and "zstd" rows will tell you how much dedupe you're getting
-> on uncompressed and compressed extents separately.
+This is a regression test for the issue fixed by the kernel patch
+   btrfs: initialize sysfs devid and device link for seed device
 
+In this test case, we verify the seed device delete on a sprouted
+filesystem.
 
-Great, I have it bees running and I see the deduplication in compsize as 
-you said.
+This patch also adds a filter to filter the scratch pool devices
+without the device path.
 
-What is the appropriate place to ask question about bees - here, github 
-or elsewhere?
+Signed-off-by: Anand Jain <anand.jain@oracle.com>
+---
+ common/filter       | 13 +++++++
+ tests/btrfs/219     | 94 +++++++++++++++++++++++++++++++++++++++++++++
+ tests/btrfs/219.out | 39 +++++++++++++++++++
+ tests/btrfs/group   |  1 +
+ 4 files changed, 147 insertions(+)
+ create mode 100755 tests/btrfs/219
+ create mode 100644 tests/btrfs/219.out
 
-I added some files, restarted bees and it ran a deduplication, but then 
-I added some more files (8 hours ago) and there's been some regularly 
-logging but the new files haven't been deduplicated.
-
-
-Hamish
+diff --git a/common/filter b/common/filter
+index 2477f3860151..7c5f288692e7 100644
+--- a/common/filter
++++ b/common/filter
+@@ -304,6 +304,19 @@ _filter_testdir_and_scratch()
+ 	fi
+ }
+ 
++_filter_scratch_pool_short()
++{
++	SHORT=""
++
++	for DEV in $SCRATCH_DEV_POOL
++	do
++		SHORT="$SHORT $(echo $DEV| rev | awk -F / '{print $1}' | rev)"
++	done
++
++	FILTER_STRING=$(echo $SHORT | sed -e 's/\s\+/\\\|/g')
++	sed -e "s,$FILTER_STRING,SCRATCH_DEV,g"
++}
++
+ # Turn any device in the scratch pool into SCRATCH_DEV
+ _filter_scratch_pool()
+ {
+diff --git a/tests/btrfs/219 b/tests/btrfs/219
+new file mode 100755
+index 000000000000..deb2857af004
+--- /dev/null
++++ b/tests/btrfs/219
+@@ -0,0 +1,94 @@
++#! /bin/bash
++# SPDX-License-Identifier: GPL-2.0
++# Copyright (c) 2020 Oracle. All Rights Reserved.
++#
++# FS QA Test 219
++#
++# Test for seed device-delete on a sprouted FS.
++# Requires kernel patch
++#    btrfs: initialize sysfs devid and device link for seed device
++#
++# Steps:
++#  Create a seed FS. Add a RW device to make it sprout FS and then delete
++#  the seed device.
++
++seq=`basename $0`
++seqres=$RESULT_DIR/$seq
++echo "QA output created by $seq"
++
++here=`pwd`
++tmp=/tmp/$$
++status=1	# failure is the default!
++trap "_cleanup; exit \$status" 0 1 2 3 15
++
++_cleanup()
++{
++	cd /
++	rm -f $tmp.*
++}
++
++# get standard environment, filters and checks
++. ./common/rc
++. ./common/filter
++. ./common/filter.btrfs
++
++# remove previous $seqres.full before test
++rm -f $seqres.full
++
++# real QA test starts here
++
++# Modify as appropriate.
++_supported_fs generic
++_supported_os Linux
++_require_test
++_require_scratch_dev_pool 2
++
++_scratch_dev_pool_get 2
++
++seed=$(echo $SCRATCH_DEV_POOL | awk '{print $1}')
++sprout=$(echo $SCRATCH_DEV_POOL | awk '{print $2}')
++
++_mkfs_dev $seed
++_mount $seed $SCRATCH_MNT
++
++$XFS_IO_PROG -f -d -c "pwrite -S 0xab 0 1M" $SCRATCH_MNT/foo > /dev/null
++_scratch_unmount
++$BTRFS_TUNE_PROG -S 1 $seed
++
++# Mount the seed device and add the rw device
++_mount -o ro $seed $SCRATCH_MNT
++$BTRFS_UTIL_PROG device add -f $sprout $SCRATCH_MNT
++_scratch_unmount
++
++# Now remount
++_mount $sprout $SCRATCH_MNT
++$XFS_IO_PROG -f -d -c "pwrite -S 0xcd 0 1M" $SCRATCH_MNT/bar > /dev/null
++
++echo --- before delete ----
++UUID=$($BTRFS_UTIL_PROG filesystem show -m $SCRATCH_MNT | head -1 | \
++							awk '{print $4}')
++find /sys/fs/btrfs/$UUID/devinfo/ | rev | awk -F /  '{print $1}' | rev
++find /sys/fs/btrfs/$UUID/devices/ | rev | awk -F /  '{print $1}' | rev | \
++						_filter_scratch_pool_short
++echo
++od -x $SCRATCH_MNT/foo
++od -x $SCRATCH_MNT/bar
++
++$BTRFS_UTIL_PROG device delete $seed $SCRATCH_MNT
++_scratch_unmount
++_btrfs_forget_or_module_reload
++_mount $sprout $SCRATCH_MNT
++
++echo --- after delete ----
++find /sys/fs/btrfs/$UUID/devinfo/ | rev | awk -F /  '{print $1}' | rev
++find /sys/fs/btrfs/$UUID/devices/ | rev | awk -F /  '{print $1}' | rev | \
++						_filter_scratch_pool_short
++echo
++od -x $SCRATCH_MNT/foo
++od -x $SCRATCH_MNT/bar
++
++_scratch_dev_pool_put
++
++# success, all done
++status=0
++exit
+diff --git a/tests/btrfs/219.out b/tests/btrfs/219.out
+new file mode 100644
+index 000000000000..6b054ccce95d
+--- /dev/null
++++ b/tests/btrfs/219.out
+@@ -0,0 +1,39 @@
++QA output created by 219
++--- before delete ----
++
++1
++in_fs_metadata
++replace_target
++writeable
++missing
++2
++in_fs_metadata
++replace_target
++writeable
++missing
++
++SCRATCH_DEV
++SCRATCH_DEV
++
++0000000 abab abab abab abab abab abab abab abab
++*
++4000000
++0000000 cdcd cdcd cdcd cdcd cdcd cdcd cdcd cdcd
++*
++4000000
++--- after delete ----
++
++2
++in_fs_metadata
++replace_target
++writeable
++missing
++
++SCRATCH_DEV
++
++0000000 abab abab abab abab abab abab abab abab
++*
++4000000
++0000000 cdcd cdcd cdcd cdcd cdcd cdcd cdcd cdcd
++*
++4000000
+diff --git a/tests/btrfs/group b/tests/btrfs/group
+index 3295856d0c8c..3633fa66abe4 100644
+--- a/tests/btrfs/group
++++ b/tests/btrfs/group
+@@ -221,3 +221,4 @@
+ 216 auto quick seed
+ 217 auto quick trim dangerous
+ 218 auto quick volume
++219 auto quick volume seed
+-- 
+2.25.1
 
