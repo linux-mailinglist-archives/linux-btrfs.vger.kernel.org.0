@@ -2,139 +2,114 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A12425DEF1
-	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Sep 2020 18:03:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C41B325DFBB
+	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Sep 2020 18:23:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727081AbgIDQDz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 4 Sep 2020 12:03:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46688 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726005AbgIDQDy (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 4 Sep 2020 12:03:54 -0400
-X-Greylist: delayed 464 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 04 Sep 2020 09:03:54 PDT
-Received: from fieldses.org (fieldses.org [IPv6:2600:3c00:e000:2f7::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8222EC061244
-        for <linux-btrfs@vger.kernel.org>; Fri,  4 Sep 2020 09:03:53 -0700 (PDT)
-Received: by fieldses.org (Postfix, from userid 2815)
-        id A28CE2403; Fri,  4 Sep 2020 11:56:08 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 fieldses.org A28CE2403
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fieldses.org;
-        s=default; t=1599234968;
-        bh=KsjAyd+xfK7a0mx4bX6URfo3cL4U50aCO/beFcK2O0M=;
-        h=Date:To:Cc:Subject:References:In-Reply-To:From:From;
-        b=TzLfIvzy9MbTUuwbcj4RU0YYfZyEZMB+WMyjZXnyH990fWHjqmfAa3ptYDE2f0eju
-         N3jdLG/snY9zgGK2Mt++G8Te7SFzeIHqAjTtFIGExxTLCoq5bmtSmIK4l8k41/1Uh4
-         3ffGlg+0zrcm4eKSsxzw/qdLm+hEkClsdZVtMDrU=
-Date:   Fri, 4 Sep 2020 11:56:08 -0400
-To:     Anna Schumaker <schumaker.anna@gmail.com>
-Cc:     "J. Bruce Fields" <bfields@redhat.com>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v4 0/5] NFSD: Add support for the v4.2 READ_PLUS operation
-Message-ID: <20200904155608.GA2158@fieldses.org>
-References: <20200817165310.354092-1-Anna.Schumaker@Netapp.com>
- <20200826215437.GD62682@pick.fieldses.org>
- <CAFX2JfnEhgr4_CP4rJVsm37+Zo2uFs+zePAENtmPWx-Fmm-HfA@mail.gmail.com>
+        id S1727058AbgIDQXD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 4 Sep 2020 12:23:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60164 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726938AbgIDQXC (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 4 Sep 2020 12:23:02 -0400
+Received: from debian8.Home (bl8-197-74.dsl.telepac.pt [85.241.197.74])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A60092067C
+        for <linux-btrfs@vger.kernel.org>; Fri,  4 Sep 2020 16:23:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599236581;
+        bh=uoCyubcdvhjalOrkdWGPGi11s65u4xC+4Ex5FOBtEnE=;
+        h=From:To:Subject:Date:From;
+        b=CL7E8krjzThzmXtXbyVSL6j2p4xuFpFpGGqA4/5E4kaA1yb8ot6UBVcNKDiew737I
+         N7hhVfiQlbqI1NYgNYKAfWS8P/IfpokrjyAuBVesXp7P6SpEqOmIYDOpcU7xu3HyqJ
+         RYOJZutjjmbb65wYsq50LST+uzdgvZ1yu6FGWvfw=
+From:   fdmanana@kernel.org
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs: fix NULL pointer dereference after failure to create snapshot
+Date:   Fri,  4 Sep 2020 17:22:57 +0100
+Message-Id: <20200904162257.123893-1-fdmanana@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAFX2JfnEhgr4_CP4rJVsm37+Zo2uFs+zePAENtmPWx-Fmm-HfA@mail.gmail.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-From:   bfields@fieldses.org (J. Bruce Fields)
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Aug 31, 2020 at 02:33:30PM -0400, Anna Schumaker wrote:
-> On Wed, Aug 26, 2020 at 5:54 PM J. Bruce Fields <bfields@redhat.com> wrote:
-> > On Mon, Aug 17, 2020 at 12:53:05PM -0400, schumaker.anna@gmail.com wrote:
-> > > I tested by reading various 2G files from a few different underlying
-> > > filesystems and across several NFS versions. I used the `vmtouch` utility
-> > > to make sure files were only cached when we wanted them to be. In addition
-> > > to 100% data and 100% hole cases, I also tested with files that alternate
-> > > between data and hole segments. These files have either 4K, 8K, 16K, or 32K
-> > > segment sizes and start with either data or hole segments. So the file
-> > > mixed-4d has a 4K segment size beginning with a data segment, but mixed-32h
-> > > has 32K segments beginning with a hole. The units are in seconds, with the
-> > > first number for each NFS version being the uncached read time and the second
-> > > number is for when the file is cached on the server.
-> >
-> > The only numbers that look really strange are in the btrfs uncached
-> > case, in the data-only case and the mixed case that start with a hole.
-> > Do we have any idea what's up there?
-> 
-> I'm not really sure. BTRFS does some work to make sure the page cache
-> is synced up with their internal extent representation as part of
-> llseek, so my guess is something related to that (But it's been a
-> while since I looked into that code, so I'm not sure if that's still
-> how it works)
+From: Filipe Manana <fdmanana@suse.com>
 
-Adding linux-btrfs in case they have any updates--are btrfs developers
-aware of known performances issues with SEEK_HOLE/SEEK_DATA, and is it
-something anyone's working on?
+When trying to get a new fs root for a snapshot during the transaction
+at transaction.c:create_pending_snapshot(), if btrfs_get_new_fs_root()
+fails we leave "pending->snap" pointing to an error pointer, and then
+later at ioctl.c:create_snapshot() we dereference that pointer, resulting
+in a crash:
 
-Anna's implementing a read optimization where the server uses seek to
-identify holes to save transmitting all those zeroes back to the client,
-and it's working as expected for ext4 and xfs but performing weirdly for
-btrfs.
+[12264.614689] BUG: kernel NULL pointer dereference, address: 00000000000007c4
+[12264.615650] #PF: supervisor write access in kernel mode
+[12264.616487] #PF: error_code(0x0002) - not-present page
+[12264.617436] PGD 0 P4D 0
+[12264.618328] Oops: 0002 [#1] PREEMPT SMP DEBUG_PAGEALLOC PTI
+[12264.619150] CPU: 0 PID: 2310635 Comm: fsstress Tainted: G        W         5.9.0-rc3-btrfs-next-67 #1
+[12264.619960] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.13.0-0-gf21b5a4aeb02-prebuilt.qemu.org 04/01/2014
+[12264.621769] RIP: 0010:btrfs_mksubvol+0x438/0x4a0 [btrfs]
+[12264.622528] Code: bc ef ff ff (...)
+[12264.624092] RSP: 0018:ffffaa6fc7277cd8 EFLAGS: 00010282
+[12264.624669] RAX: 00000000fffffff4 RBX: ffff9d3e8f151a60 RCX: 0000000000000000
+[12264.625249] RDX: 0000000000000001 RSI: ffffffff9d56c9be RDI: fffffffffffffff4
+[12264.625830] RBP: ffff9d3e8f151b48 R08: 0000000000000000 R09: 0000000000000000
+[12264.626413] R10: 0000000000000000 R11: 0000000000000000 R12: 00000000fffffff4
+[12264.626994] R13: ffff9d3ede380538 R14: ffff9d3ede380500 R15: ffff9d3f61b2eeb8
+[12264.627582] FS:  00007f140d5d8200(0000) GS:ffff9d3fb5e00000(0000) knlGS:0000000000000000
+[12264.628176] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[12264.628773] CR2: 00000000000007c4 CR3: 000000020f8e8004 CR4: 00000000003706f0
+[12264.629379] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[12264.629994] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+[12264.630594] Call Trace:
+[12264.631227]  btrfs_mksnapshot+0x7b/0xb0 [btrfs]
+[12264.631840]  __btrfs_ioctl_snap_create+0x16f/0x1a0 [btrfs]
+[12264.632458]  btrfs_ioctl_snap_create_v2+0xb0/0xf0 [btrfs]
+[12264.633078]  btrfs_ioctl+0x1864/0x3130 [btrfs]
+[12264.633689]  ? do_sys_openat2+0x1a7/0x2d0
+[12264.634295]  ? kmem_cache_free+0x147/0x3a0
+[12264.634899]  ? __x64_sys_ioctl+0x83/0xb0
+[12264.635488]  __x64_sys_ioctl+0x83/0xb0
+[12264.636058]  do_syscall_64+0x33/0x80
+[12264.636616]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-Original message:
-	https://lore.kernel.org/linux-nfs/20200817165310.354092-1-Anna.Schumaker@Netapp.com/
+(gdb) list *(btrfs_mksubvol+0x438)
+0x7c7b8 is in btrfs_mksubvol (fs/btrfs/ioctl.c:858).
+853		ret = 0;
+854		pending_snapshot->anon_dev = 0;
+855	fail:
+856		/* Prevent double freeing of anon_dev */
+857		if (ret && pending_snapshot->snap)
+858			pending_snapshot->snap->anon_dev = 0;
+859		btrfs_put_root(pending_snapshot->snap);
+860		btrfs_subvolume_release_metadata(root, &pending_snapshot->block_rsv);
+861	free_pending:
+862		if (pending_snapshot->anon_dev)
 
---b.
+So fix this by setting "pending->snap" to NULL if we get an error from the
+call to btrfs_get_new_fs_root() at transaction.c:create_pending_snapshot().
 
+Fixes: 2dfb1e43f57dd3 ("btrfs: preallocate anon block device at first phase of snapshot creation")
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+---
+ fs/btrfs/transaction.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-> > > Read Plus Results (btrfs):
-> > >   data
-> > >    :... v4.1 ... Uncached ... 21.317 s, 101 MB/s, 0.63 s kern, 2% cpu
-> > >    :    :....... Cached ..... 18.252 s, 118 MB/s, 0.67 s kern, 3% cpu
-> > >    :... v4.2 ... Uncached ... 28.665 s,  75 MB/s, 0.65 s kern, 2% cpu
-> > >         :....... Cached ..... 18.253 s, 118 MB/s, 0.66 s kern, 3% cpu
-> > >   hole
-> > >    :... v4.1 ... Uncached ... 18.256 s, 118 MB/s, 0.70 s kern,  3% cpu
-> > >    :    :....... Cached ..... 18.254 s, 118 MB/s, 0.73 s kern,  4% cpu
-> > >    :... v4.2 ... Uncached ...  0.851 s, 2.5 GB/s, 0.72 s kern, 84% cpu
-> > >         :....... Cached .....  0.847 s, 2.5 GB/s, 0.73 s kern, 86% cpu
-> > >   mixed-4d
-> > >    :... v4.1 ... Uncached ... 56.857 s,  38 MB/s, 0.76 s kern, 1% cpu
-> > >    :    :....... Cached ..... 18.252 s, 118 MB/s, 0.72 s kern, 3% cpu
-> > >    :... v4.2 ... Uncached ... 54.455 s,  39 MB/s, 0.73 s kern, 1% cpu
-> > >         :....... Cached .....  9.215 s, 233 MB/s, 0.68 s kern, 7% cpu
-> > >   mixed-8d
-> > >    :... v4.1 ... Uncached ... 36.641 s,  59 MB/s, 0.68 s kern, 1% cpu
-> > >    :    :....... Cached ..... 18.252 s, 118 MB/s, 0.70 s kern, 3% cpu
-> > >    :... v4.2 ... Uncached ... 33.205 s,  65 MB/s, 0.67 s kern, 2% cpu
-> > >         :....... Cached .....  9.172 s, 234 MB/s, 0.65 s kern, 7% cpu
-> > >   mixed-16d
-> > >    :... v4.1 ... Uncached ... 28.653 s,  75 MB/s, 0.72 s kern, 2% cpu
-> > >    :    :....... Cached ..... 18.252 s, 118 MB/s, 0.70 s kern, 3% cpu
-> > >    :... v4.2 ... Uncached ... 25.748 s,  83 MB/s, 0.71 s kern, 2% cpu
-> > >         :....... Cached .....  9.150 s, 235 MB/s, 0.64 s kern, 7% cpu
-> > >   mixed-32d
-> > >    :... v4.1 ... Uncached ... 28.886 s,  74 MB/s, 0.67 s kern, 2% cpu
-> > >    :    :....... Cached ..... 18.252 s, 118 MB/s, 0.71 s kern, 3% cpu
-> > >    :... v4.2 ... Uncached ... 24.724 s,  87 MB/s, 0.74 s kern, 2% cpu
-> > >         :....... Cached .....  9.140 s, 235 MB/s, 0.63 s kern, 6% cpu
-> > >   mixed-4h
-> > >    :... v4.1 ... Uncached ...  52.181 s,  41 MB/s, 0.73 s kern, 1% cpu
-> > >    :    :....... Cached .....  18.252 s, 118 MB/s, 0.66 s kern, 3% cpu
-> > >    :... v4.2 ... Uncached ... 150.341 s,  14 MB/s, 0.72 s kern, 0% cpu
-> > >         :....... Cached .....   9.216 s, 233 MB/s, 0.63 s kern, 6% cpu
-> > >   mixed-8h
-> > >    :... v4.1 ... Uncached ... 36.945 s,  58 MB/s, 0.68 s kern, 1% cpu
-> > >    :    :....... Cached ..... 18.252 s, 118 MB/s, 0.65 s kern, 3% cpu
-> > >    :... v4.2 ... Uncached ... 79.781 s,  27 MB/s, 0.68 s kern, 0% cpu
-> > >         :....... Cached .....  9.172 s, 234 MB/s, 0.66 s kern, 7% cpu
-> > >   mixed-16h
-> > >    :... v4.1 ... Uncached ... 28.651 s,  75 MB/s, 0.73 s kern, 2% cpu
-> > >    :    :....... Cached ..... 18.252 s, 118 MB/s, 0.66 s kern, 3% cpu
-> > >    :... v4.2 ... Uncached ... 47.428 s,  45 MB/s, 0.71 s kern, 1% cpu
-> > >         :....... Cached .....  9.150 s, 235 MB/s, 0.67 s kern, 7% cpu
-> > >   mixed-32h
-> > >    :... v4.1 ... Uncached ... 28.618 s,  75 MB/s, 0.69 s kern, 2% cpu
-> > >    :    :....... Cached ..... 18.252 s, 118 MB/s, 0.70 s kern, 3% cpu
-> > >    :... v4.2 ... Uncached ... 38.813 s,  55 MB/s, 0.67 s kern, 1% cpu
-> > >         :....... Cached .....  9.140 s, 235 MB/s, 0.61 s kern, 6% cpu
-> >
+diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
+index 8e4cd2d782c6..52ada47aff50 100644
+--- a/fs/btrfs/transaction.c
++++ b/fs/btrfs/transaction.c
+@@ -1639,6 +1639,7 @@ static noinline int create_pending_snapshot(struct btrfs_trans_handle *trans,
+ 	pending->snap = btrfs_get_new_fs_root(fs_info, objectid, pending->anon_dev);
+ 	if (IS_ERR(pending->snap)) {
+ 		ret = PTR_ERR(pending->snap);
++		pending->snap = NULL;
+ 		btrfs_abort_transaction(trans, ret);
+ 		goto fail;
+ 	}
+-- 
+2.26.2
+
