@@ -2,114 +2,168 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C41B325DFBB
-	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Sep 2020 18:23:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A8A125E0E2
+	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Sep 2020 19:34:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727058AbgIDQXD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 4 Sep 2020 12:23:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60164 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726938AbgIDQXC (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 4 Sep 2020 12:23:02 -0400
-Received: from debian8.Home (bl8-197-74.dsl.telepac.pt [85.241.197.74])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A60092067C
-        for <linux-btrfs@vger.kernel.org>; Fri,  4 Sep 2020 16:23:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599236581;
-        bh=uoCyubcdvhjalOrkdWGPGi11s65u4xC+4Ex5FOBtEnE=;
-        h=From:To:Subject:Date:From;
-        b=CL7E8krjzThzmXtXbyVSL6j2p4xuFpFpGGqA4/5E4kaA1yb8ot6UBVcNKDiew737I
-         N7hhVfiQlbqI1NYgNYKAfWS8P/IfpokrjyAuBVesXp7P6SpEqOmIYDOpcU7xu3HyqJ
-         RYOJZutjjmbb65wYsq50LST+uzdgvZ1yu6FGWvfw=
-From:   fdmanana@kernel.org
+        id S1727115AbgIDRey (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 4 Sep 2020 13:34:54 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:41818 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725984AbgIDRey (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 4 Sep 2020 13:34:54 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 084HYFSt073913;
+        Fri, 4 Sep 2020 17:34:49 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2020-01-29; bh=rT/3QVcffRyCcLYP6M90NuhbeYqqrSxmqbpNAVQygU0=;
+ b=lk31ycPYAytETx6YUGnNpejzC+7jDEYueeHwcVeEMba4NyGHRZt81n2xTJw9eAhHqWdq
+ pemwPf3yfxLorjmQvgBdSngjCnTMTqK+fylBgK+PCEm4SzwWp8s3iEUBGZ60dr9jd+4G
+ ETTSj5+hzBq17aU/mNStvgjvlpLUOTnqfRiwFzxMEXxwibbdpMU6XrDpc53ZNmE4DLf5
+ ifNBwAADEeAxhO71tsbAxhGNR6LgYzNcUFM7zyzRPdqEe7JSSxRFu1dAcIL58/govMSI
+ GPeHiepPYWwOYJbofPBUMDSrhxcxeYfhPSvhUygtabjFXH+JWgUCnaxzg26JIHfoWf/J eg== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2120.oracle.com with ESMTP id 337eymqmet-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 04 Sep 2020 17:34:48 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 084HTrJ3187005;
+        Fri, 4 Sep 2020 17:34:48 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3030.oracle.com with ESMTP id 33b7v30tua-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 04 Sep 2020 17:34:48 +0000
+Received: from abhmp0020.oracle.com (abhmp0020.oracle.com [141.146.116.26])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 084HYkmV014121;
+        Fri, 4 Sep 2020 17:34:46 GMT
+Received: from localhost.localdomain (/39.109.231.106)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 04 Sep 2020 10:34:46 -0700
+From:   Anand Jain <anand.jain@oracle.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: fix NULL pointer dereference after failure to create snapshot
-Date:   Fri,  4 Sep 2020 17:22:57 +0100
-Message-Id: <20200904162257.123893-1-fdmanana@kernel.org>
-X-Mailer: git-send-email 2.26.2
+Cc:     dsterba@suse.com, josef@toxicpanda.com, nborisov@suse.com
+Subject: [PATCH v3 0/16] btrfs: seed fix null ptr, use only main device_list_mutex, and cleanups
+Date:   Sat,  5 Sep 2020 01:34:20 +0800
+Message-Id: <cover.1599234146.git.anand.jain@oracle.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9734 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 malwarescore=0 spamscore=0
+ mlxlogscore=999 phishscore=0 bulkscore=0 suspectscore=1 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009040152
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9734 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 adultscore=0
+ priorityscore=1501 phishscore=0 mlxlogscore=999 mlxscore=0
+ lowpriorityscore=0 clxscore=1015 spamscore=0 bulkscore=0 impostorscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009040152
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
+v3:
+Makes bug fixing patches suitable for the backports. They are patch 1-2.
+patch 1 fix the put of kobject null issue, fixed by checking the
+        state_initalized.
+patch 2 fixes the replacement of seed device in a sprout filesystem.
 
-When trying to get a new fs root for a snapshot during the transaction
-at transaction.c:create_pending_snapshot(), if btrfs_get_new_fs_root()
-fails we leave "pending->snap" pointing to an error pointer, and then
-later at ioctl.c:create_snapshot() we dereference that pointer, resulting
-in a crash:
+The rest of the patches remains the same, except for a conflict fix in patch 4.
 
-[12264.614689] BUG: kernel NULL pointer dereference, address: 00000000000007c4
-[12264.615650] #PF: supervisor write access in kernel mode
-[12264.616487] #PF: error_code(0x0002) - not-present page
-[12264.617436] PGD 0 P4D 0
-[12264.618328] Oops: 0002 [#1] PREEMPT SMP DEBUG_PAGEALLOC PTI
-[12264.619150] CPU: 0 PID: 2310635 Comm: fsstress Tainted: G        W         5.9.0-rc3-btrfs-next-67 #1
-[12264.619960] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.13.0-0-gf21b5a4aeb02-prebuilt.qemu.org 04/01/2014
-[12264.621769] RIP: 0010:btrfs_mksubvol+0x438/0x4a0 [btrfs]
-[12264.622528] Code: bc ef ff ff (...)
-[12264.624092] RSP: 0018:ffffaa6fc7277cd8 EFLAGS: 00010282
-[12264.624669] RAX: 00000000fffffff4 RBX: ffff9d3e8f151a60 RCX: 0000000000000000
-[12264.625249] RDX: 0000000000000001 RSI: ffffffff9d56c9be RDI: fffffffffffffff4
-[12264.625830] RBP: ffff9d3e8f151b48 R08: 0000000000000000 R09: 0000000000000000
-[12264.626413] R10: 0000000000000000 R11: 0000000000000000 R12: 00000000fffffff4
-[12264.626994] R13: ffff9d3ede380538 R14: ffff9d3ede380500 R15: ffff9d3f61b2eeb8
-[12264.627582] FS:  00007f140d5d8200(0000) GS:ffff9d3fb5e00000(0000) knlGS:0000000000000000
-[12264.628176] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[12264.628773] CR2: 00000000000007c4 CR3: 000000020f8e8004 CR4: 00000000003706f0
-[12264.629379] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[12264.629994] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-[12264.630594] Call Trace:
-[12264.631227]  btrfs_mksnapshot+0x7b/0xb0 [btrfs]
-[12264.631840]  __btrfs_ioctl_snap_create+0x16f/0x1a0 [btrfs]
-[12264.632458]  btrfs_ioctl_snap_create_v2+0xb0/0xf0 [btrfs]
-[12264.633078]  btrfs_ioctl+0x1864/0x3130 [btrfs]
-[12264.633689]  ? do_sys_openat2+0x1a7/0x2d0
-[12264.634295]  ? kmem_cache_free+0x147/0x3a0
-[12264.634899]  ? __x64_sys_ioctl+0x83/0xb0
-[12264.635488]  __x64_sys_ioctl+0x83/0xb0
-[12264.636058]  do_syscall_64+0x33/0x80
-[12264.636616]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+The patch set has passed xfstests -g volume and seed
+The new patch (seed delete testing) btrfs/219 has been modified to suit
+the older kernels. Which is also attached to this thread.
 
-(gdb) list *(btrfs_mksubvol+0x438)
-0x7c7b8 is in btrfs_mksubvol (fs/btrfs/ioctl.c:858).
-853		ret = 0;
-854		pending_snapshot->anon_dev = 0;
-855	fail:
-856		/* Prevent double freeing of anon_dev */
-857		if (ret && pending_snapshot->snap)
-858			pending_snapshot->snap->anon_dev = 0;
-859		btrfs_put_root(pending_snapshot->snap);
-860		btrfs_subvolume_release_metadata(root, &pending_snapshot->block_rsv);
-861	free_pending:
-862		if (pending_snapshot->anon_dev)
+-------- v2 cover-letter -------
+v2:
+patch 1-3 are cleanups and is a split from the v1-patch-1/11.
+patch 4-5 are from v1 with conflict fix.
+patch 6 is the core bug fix, which fixes the null sysfs obj being freed
+        which was in v1 also but together with other required
+	preparatory.
+patch 7 fixes a new bug found that we leaked sysfs object in the fail
+        exit path.
+patch 8,9,10,11,12,13,14,15 were in v1 as well. 8,9 consolidates
+	device_list_mutex to use the main fs_info->fs_devices.
+	10-14 are cleanups. 15 fixes bug exposed after replacing of seed
+	and trying to mount without the seed.
 
-So fix this by setting "pending->snap" to NULL if we get an error from the
-call to btrfs_get_new_fs_root() at transaction.c:create_pending_snapshot().
+v2 has been tested with xfstests -g volume
 
-Fixes: 2dfb1e43f57dd3 ("btrfs: preallocate anon block device at first phase of snapshot creation")
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- fs/btrfs/transaction.c | 1 +
- 1 file changed, 1 insertion(+)
+------ v1 cover-letter ------------
+In this patch set:
+Rebased on latest misc-next which contains the seed_list from Nicolas.
+This patchset has been sent before as two sets, here it is been merged.
 
-diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
-index 8e4cd2d782c6..52ada47aff50 100644
---- a/fs/btrfs/transaction.c
-+++ b/fs/btrfs/transaction.c
-@@ -1639,6 +1639,7 @@ static noinline int create_pending_snapshot(struct btrfs_trans_handle *trans,
- 	pending->snap = btrfs_get_new_fs_root(fs_info, objectid, pending->anon_dev);
- 	if (IS_ERR(pending->snap)) {
- 		ret = PTR_ERR(pending->snap);
-+		pending->snap = NULL;
- 		btrfs_abort_transaction(trans, ret);
- 		goto fail;
- 	}
+Patches 1/11 fix the null kobject being put, which is observed with kernel
+compiled with memory poisoning.
+Patches 2/11 and 3/11 are cleanups to maintain better flow in the
+functions btrfs_sysfs_add_devices_dir() and btrfs_sysfs_remove_devices_dir().
+Patches 4/11 and 5/11 drops the last two users of seed device_list_mutex,
+so now they hold main filesystem device_list_mutex. 
+Patches [6-10]/11 are cleanups.
+Patches 11/11 block the replacement of seed device in a sprouted FS, we already
+block replacing a seed device on a non-sprouted device.
+
+This set has passed through fstests/volume.
+
+---- original cover-letter ---------
+In a sprouted file system, the seed's fs_devices are cloned and 
+listed under the sprout's fs_devices. The fs_info::fs_devices
+points to the sprout::fs_devices and various critical operations
+like device-delete holds the top-level main device_list_mutex
+which is sprout::fs_devices::device_list_mutex and _not_ the seed level
+mutex such as sprout::fs_devices::seed::fs_devices::device_list_mutex.
+
+Also all related readers (except for two threads- reada and init_devices_late)
+hold the sprout::fs_devices::device_list_mutex too. And those two threads
+which are missing to hold the correct lock are being fixed here.
+
+I take the approach to fix the read end instead of fixing the writer end
+which are not holding the seed level mutex because to keep things
+simple and there isn't much benefit burning extra CPU cycles in going
+through the lock/unlock process as we traverse through the
+fs_devices::seed fs_devices (for example as in reada and init_devices_late
+threads).
+
+The first two patches (1/7, 2/7) fixes the threads using the
+seed::device_list_mutex.
+
+And rest of the patches ([3-7]/7) are cleanups and these patches
+are independent by themself.
+
+These patchset has been tested with full xfstests btrfs test cases.
+
+*** BLURB HERE ***
+
+Anand Jain (16):
+  btrfs: fix put of uninitialized kobject after seed device delete
+  btrfs: fix replace of seed device
+  btrfs: add btrfs_sysfs_add_device helper
+  btrfs: add btrfs_sysfs_remove_device helper
+  btrfs: btrfs_sysfs_remove_devices_dir drop return value
+  btrfs: refactor btrfs_sysfs_add_devices_dir
+  btrfs: refactor btrfs_sysfs_remove_devices_dir
+  btrfs: initialize sysfs devid and device link for seed device
+  btrfs: handle fail path for btrfs_sysfs_add_fs_devices
+  btrfs: reada: use sprout device_list_mutex
+  btrfs: btrfs_init_devices_late: use sprout device_list_mutex
+  btrfs: open code list_head pointer in btrfs_init_dev_replace_tgtdev
+  btrfs: cleanup btrfs_remove_chunk
+  btrfs: cleanup btrfs_assign_next_active_device()
+  btrfs: cleanup unnecessary goto in open_seed_device
+  btrfs: btrfs_dev_replace_update_device_in_mapping_tree drop file
+    global declare
+
+ fs/btrfs/dev-replace.c |  66 ++++++++---------
+ fs/btrfs/reada.c       |   5 +-
+ fs/btrfs/sysfs.c       | 159 +++++++++++++++++++++++++----------------
+ fs/btrfs/sysfs.h       |   6 +-
+ fs/btrfs/volumes.c     |  40 +++++------
+ 5 files changed, 147 insertions(+), 129 deletions(-)
+
 -- 
-2.26.2
+2.25.1
 
