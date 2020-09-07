@@ -2,136 +2,178 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10D382606F4
-	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Sep 2020 00:35:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4E3326074F
+	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Sep 2020 01:59:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727957AbgIGWfN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 7 Sep 2020 18:35:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35390 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727939AbgIGWfK (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 7 Sep 2020 18:35:10 -0400
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6039EC061573
-        for <linux-btrfs@vger.kernel.org>; Mon,  7 Sep 2020 15:35:10 -0700 (PDT)
-Received: by mail-qt1-x841.google.com with SMTP id 19so9154747qtp.1
-        for <linux-btrfs@vger.kernel.org>; Mon, 07 Sep 2020 15:35:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=konsulko.com; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=7v6x2fvhBe3ExTys2SJOmZJoLvpBVqbv2GHkjH+un/g=;
-        b=PC93oVbrM1UaMfSmPVVWxjnTB/lK7WgyLGF6ZmVEIavNU0lDVn+dNP83v5oiMaXuzY
-         veowtU7vN7NXtt7Eco9HnmPs5VAr/navFlAJa7k8Sy/TICRF8BgwXYDbipnubUq0lgR3
-         p2FL9nGTextdDler+rDnwWdWQV28jUekhrFTE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=7v6x2fvhBe3ExTys2SJOmZJoLvpBVqbv2GHkjH+un/g=;
-        b=eHpGhLIyhsvo1w/fcymeTKNDY+DP9kWgfo8wXli7yRaRN24U2rQjzwacQrC1abK0rb
-         VVlvNYoY0wQbPGDtXt0lTRrfV3hW0j0FcaBvgUtg6VEIMBpL8uCbVrm/eKOUCbMHf3zx
-         7AajK9EDDEN5EhNRVa1sT4d2ZNOg8MXSfIKV5fC2pVJWPJIFYikNf1ZthcLxmnBKp3cr
-         IcEdIWvvQBiy140BcLB3brwtVLT2+wg9nMOxOvUqeauDVx6wqXlBQFePV0jwDk4kxFe+
-         mXuXEYOmEF8Qu1VxV9Z8dYK96pTf8AG6HKksZAxaeSHQ03pJOQ6Ah5WZewxSvQOlMwXz
-         NJJA==
-X-Gm-Message-State: AOAM530eKCH8U8mmdS3buPrwkBbDS2CCSUIg8HW4qasvIYmfOV8gYW+f
-        BbDqx22NoR90GdSPBjRP1N3hUQ==
-X-Google-Smtp-Source: ABdhPJw/TL2R/p6LCeAlxDo8LZxHpM35/3wsCM25IVOOtBGMazPsNQhJ0j+eKogiVUa+8qXehKZdrQ==
-X-Received: by 2002:ac8:71cc:: with SMTP id i12mr22259006qtp.201.1599518109472;
-        Mon, 07 Sep 2020 15:35:09 -0700 (PDT)
-Received: from bill-the-cat (2606-a000-1401-8ebe-8cc9-065c-5dd5-0752.inf6.spectrum.com. [2606:a000:1401:8ebe:8cc9:65c:5dd5:752])
-        by smtp.gmail.com with ESMTPSA id v42sm13141650qth.35.2020.09.07.15.35.08
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 07 Sep 2020 15:35:08 -0700 (PDT)
-Date:   Mon, 7 Sep 2020 18:35:01 -0400
-From:   Tom Rini <trini@konsulko.com>
-To:     Marek =?iso-8859-1?Q?Beh=FAn?= <marek.behun@nic.cz>
-Cc:     u-boot@lists.denx.de,
-        Alberto =?iso-8859-1?Q?S=E1nchez?= Molero 
-        <alsamolero@gmail.com>, Marek Vasut <marex@denx.de>,
-        Pierre Bourdon <delroth@gmail.com>,
-        Simon Glass <sjg@chromium.org>,
-        Yevgeny Popovych <yevgenyp@pointgrab.com>,
-        linux-btrfs@vger.kernel.org, Qu Wenruo <wqu@suse.com>
-Subject: Re: [PATCH U-BOOT v3 25/30] fs: btrfs: Implement btrfs_file_read()
-Message-ID: <20200907223501.GA11147@bill-the-cat>
-References: <20200624160316.5001-1-marek.behun@nic.cz>
- <20200624160316.5001-26-marek.behun@nic.cz>
+        id S1727984AbgIGX66 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 7 Sep 2020 19:58:58 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:37046 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727058AbgIGX64 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 7 Sep 2020 19:58:56 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 087NnlH2149438;
+        Mon, 7 Sep 2020 23:58:54 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=6CFb0BRsXdlAJnXE+I/Y2v5GbooOgc4n36IGMvJK+zI=;
+ b=yXGzJddZe3QEVEDc6KMI2/qizcQwbfBW1qI/1vHVWxVWZUSFYL84oHI0xrBSh4SGcyIw
+ cJY0Qqfja0U3jv1b+t/5wg0szOtk+Wrxz2WOyiyriRSh0u3wfcHEjVBf+deM3IjqMHkm
+ HFsrmAQQXwiHlPiK/7fqdGU/HyoIPvKB7obG7rgaBg9bvAag3YswlV3JVuoC4zLq8CXj
+ WyTSIKw3PkJgP2J+6znN7+Z0pJcD5/ua0y6kZW0xB1PZkvHSBeUx0uwhdJHCkpcoDiXX
+ jGD5F4tjgi5xwYwQbAyXNlm5RbeaNHjgYDMttdiiJMuZZNwRZ6htoGbUSc7AC6DsF5Hq 4w== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2130.oracle.com with ESMTP id 33c23qrdjv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 07 Sep 2020 23:58:53 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 087NtWl5027777;
+        Mon, 7 Sep 2020 23:56:53 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3030.oracle.com with ESMTP id 33dach42u0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 07 Sep 2020 23:56:52 +0000
+Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 087Nuphw005028;
+        Mon, 7 Sep 2020 23:56:51 GMT
+Received: from [192.168.1.102] (/39.109.231.106)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 07 Sep 2020 16:56:51 -0700
+Subject: Re: [PATCH] btrfs: fix NULL pointer dereference after failure to
+ create snapshot
+To:     fdmanana@kernel.org, linux-btrfs@vger.kernel.org
+References: <20200904162257.123893-1-fdmanana@kernel.org>
+From:   Anand Jain <anand.jain@oracle.com>
+Message-ID: <37402255-fc3d-cd6a-5360-cf2ee9acccc7@oracle.com>
+Date:   Tue, 8 Sep 2020 07:56:47 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.2.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="UugvWAfsgieZRqgk"
-Content-Disposition: inline
-In-Reply-To: <20200624160316.5001-26-marek.behun@nic.cz>
-X-Clacks-Overhead: GNU Terry Pratchett
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200904162257.123893-1-fdmanana@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9737 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 malwarescore=0
+ bulkscore=0 phishscore=0 adultscore=0 suspectscore=2 spamscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009070233
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9737 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 priorityscore=1501
+ mlxlogscore=999 mlxscore=0 bulkscore=0 suspectscore=2 spamscore=0
+ malwarescore=0 phishscore=0 lowpriorityscore=0 clxscore=1011
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009070232
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On 5/9/20 12:22 am, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
+> 
+> When trying to get a new fs root for a snapshot during the transaction
+> at transaction.c:create_pending_snapshot(), if btrfs_get_new_fs_root()
+> fails we leave "pending->snap" pointing to an error pointer, and then
+> later at ioctl.c:create_snapshot() we dereference that pointer, resulting
+> in a crash:
+> 
+> [12264.614689] BUG: kernel NULL pointer dereference, address: 00000000000007c4
+> [12264.615650] #PF: supervisor write access in kernel mode
+> [12264.616487] #PF: error_code(0x0002) - not-present page
+> [12264.617436] PGD 0 P4D 0
+> [12264.618328] Oops: 0002 [#1] PREEMPT SMP DEBUG_PAGEALLOC PTI
+> [12264.619150] CPU: 0 PID: 2310635 Comm: fsstress Tainted: G        W         5.9.0-rc3-btrfs-next-67 #1
+> [12264.619960] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.13.0-0-gf21b5a4aeb02-prebuilt.qemu.org 04/01/2014
+> [12264.621769] RIP: 0010:btrfs_mksubvol+0x438/0x4a0 [btrfs]
+> [12264.622528] Code: bc ef ff ff (...)
+> [12264.624092] RSP: 0018:ffffaa6fc7277cd8 EFLAGS: 00010282
+> [12264.624669] RAX: 00000000fffffff4 RBX: ffff9d3e8f151a60 RCX: 0000000000000000
+> [12264.625249] RDX: 0000000000000001 RSI: ffffffff9d56c9be RDI: fffffffffffffff4
+> [12264.625830] RBP: ffff9d3e8f151b48 R08: 0000000000000000 R09: 0000000000000000
+> [12264.626413] R10: 0000000000000000 R11: 0000000000000000 R12: 00000000fffffff4
+> [12264.626994] R13: ffff9d3ede380538 R14: ffff9d3ede380500 R15: ffff9d3f61b2eeb8
+> [12264.627582] FS:  00007f140d5d8200(0000) GS:ffff9d3fb5e00000(0000) knlGS:0000000000000000
+> [12264.628176] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [12264.628773] CR2: 00000000000007c4 CR3: 000000020f8e8004 CR4: 00000000003706f0
+> [12264.629379] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> [12264.629994] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> [12264.630594] Call Trace:
+> [12264.631227]  btrfs_mksnapshot+0x7b/0xb0 [btrfs]
+> [12264.631840]  __btrfs_ioctl_snap_create+0x16f/0x1a0 [btrfs]
+> [12264.632458]  btrfs_ioctl_snap_create_v2+0xb0/0xf0 [btrfs]
+> [12264.633078]  btrfs_ioctl+0x1864/0x3130 [btrfs]
+> [12264.633689]  ? do_sys_openat2+0x1a7/0x2d0
+> [12264.634295]  ? kmem_cache_free+0x147/0x3a0
+> [12264.634899]  ? __x64_sys_ioctl+0x83/0xb0
+> [12264.635488]  __x64_sys_ioctl+0x83/0xb0
+> [12264.636058]  do_syscall_64+0x33/0x80
+> [12264.636616]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> 
+> (gdb) list *(btrfs_mksubvol+0x438)
+> 0x7c7b8 is in btrfs_mksubvol (fs/btrfs/ioctl.c:858).
+> 853		ret = 0;
+> 854		pending_snapshot->anon_dev = 0;
+> 855	fail:
+> 856		/* Prevent double freeing of anon_dev */
+> 857		if (ret && pending_snapshot->snap)
+> 858			pending_snapshot->snap->anon_dev = 0;
+> 859		btrfs_put_root(pending_snapshot->snap);
+> 860		btrfs_subvolume_release_metadata(root, &pending_snapshot->block_rsv);
+> 861	free_pending:
+> 862		if (pending_snapshot->anon_dev)
+> 
+> So fix this by setting "pending->snap" to NULL if we get an error from the
+> call to btrfs_get_new_fs_root() at transaction.c:create_pending_snapshot().
+> 
+> Fixes: 2dfb1e43f57dd3 ("btrfs: preallocate anon block device at first phase of snapshot creation")
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+> ---
+>   fs/btrfs/transaction.c | 1 +
+>   1 file changed, 1 insertion(+)
+> 
+> diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
+> index 8e4cd2d782c6..52ada47aff50 100644
+> --- a/fs/btrfs/transaction.c
+> +++ b/fs/btrfs/transaction.c
+> @@ -1639,6 +1639,7 @@ static noinline int create_pending_snapshot(struct btrfs_trans_handle *trans,
+>   	pending->snap = btrfs_get_new_fs_root(fs_info, objectid, pending->anon_dev);
+>   	if (IS_ERR(pending->snap)) {
+>   		ret = PTR_ERR(pending->snap);
+> +		pending->snap = NULL;
+>   		btrfs_abort_transaction(trans, ret);
+>   		goto fail;
+>   	}
+> 
 
---UugvWAfsgieZRqgk
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jun 24, 2020 at 06:03:11PM +0200, Marek Beh=FAn wrote:
+Looks good to fix the bug. But I wonder, isn't it better to check for 
+IS_ERR_OR_NULL as below, because %pending_snapshot->snap is pointer 
+carrying error.
 
-> From: Qu Wenruo <wqu@suse.com>
->=20
-> This version of btrfs_file_read() has the following new features:
-> - Tries all mirrors
-> - More handling on unaligned size
-> - Better compressed extent handling
->   The old implementation doesn't handle compressed extent with offset
->   properly: we need to read out the whole compressed extent, then
->   decompress the whole extent, and only then copy the requested part.
->=20
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> Reviewed-by: Marek Beh=FAn <marek.behun@nic.cz>
+-----------------------------------
+diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+index 5f06aeb71823..15ece0628965 100644
+--- a/fs/btrfs/ioctl.c
++++ b/fs/btrfs/ioctl.c
+@@ -854,7 +854,7 @@ static int create_snapshot(struct btrfs_root *root, 
+struct inode *dir,
+         pending_snapshot->anon_dev = 0;
+  fail:
+         /* Prevent double freeing of anon_dev */
+-       if (ret && pending_snapshot->snap)
++       if (ret && !IS_ERR_OR_NULL(pending_snapshot->snap))
+                 pending_snapshot->snap->anon_dev = 0;
+         btrfs_put_root(pending_snapshot->snap);
+         btrfs_subvolume_release_metadata(root, 
+&pending_snapshot->block_rsv);
+-----------------------------------
 
-Note that this introduces a warning with LLVM-10:
-fs/btrfs/btrfs.c:246:6: warning: variable 'real_size' is used uninitialized=
- whenever 'if' condition is false [-Wsometimes-uninitialized]
-        if (!len) {
-            ^~~~
-fs/btrfs/btrfs.c:255:12: note: uninitialized use occurs here
-        if (len > real_size - offset)
-                  ^~~~~~~~~
-fs/btrfs/btrfs.c:246:2: note: remove the 'if' if its condition is always tr=
-ue
-        if (!len) {
-        ^~~~~~~~~~
-fs/btrfs/btrfs.c:228:18: note: initialize the variable 'real_size' to silen=
-ce this warning
-        loff_t real_size;
-                        ^
-                         =3D 0
-1 warning generated.
+Anyway as patch looks good.
 
-and I have silenced as suggested.  I'm not 100% happy with that, but
-leave fixing it here and in upstream btrfs-progs to the btrfs-experts.
+Reviewed-by: Anand Jain <anand.jain@oracle.com>
 
---=20
-Tom
+Thanks, Anand
 
---UugvWAfsgieZRqgk
-Content-Type: application/pgp-signature; name="signature.asc"
 
------BEGIN PGP SIGNATURE-----
-
-iQGzBAABCgAdFiEEGjx/cOCPqxcHgJu/FHw5/5Y0tywFAl9WtZUACgkQFHw5/5Y0
-tyw54Av9HWaPp1NViTBgFf1NghCrKY+/ZBw4jUq7ndBeCX1wP3yqnhn3yToouc4d
-imOI117N70iI2yn21Dbi814IQc2wvcXvE6kIqXljmC0gR8iclLRICHe5G7MgUtHo
-5yT4dRDUn8iINoryP2/G+W538ALk4y41krZnunI5RHX2CM6iOKSFltfe4sPoq0Gl
-hGJsLC0q59XegNEHP/tQzCDbfWP0tqBW6epKy4hZdgq0mq0MM/HsOIL4KTp1rqnn
-SjP1qngai9hymD0NBnrIh+IvfCJY/oUdfZIctYblgMBDGsVFWR4fWyEApt6nfZJD
-iCYSOsDc6aK1j2vQjO7TE5RODFIN/1fBECwg/B0TorgdJf24fcibXrwCjLX3nTZY
-/X6DxsvqPu7QRbndKvkPnuLYe8OuyHfYKGqkRuu5IqcOi6lcA/mby3kOSW3ZuQAu
-nXRsDtdUldFWXoqckvWObi1Fi/Ia/Dpu0k6y9PTAjaI0Pw9UN4Rpfj+e7hWlrdQn
-ZCiu/1yD
-=RqWS
------END PGP SIGNATURE-----
-
---UugvWAfsgieZRqgk--
