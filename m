@@ -2,426 +2,100 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 773342604C9
-	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Sep 2020 20:40:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8070C260516
+	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Sep 2020 21:21:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728675AbgIGSkI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 7 Sep 2020 14:40:08 -0400
-Received: from gateway32.websitewelcome.com ([192.185.145.119]:19931 "EHLO
-        gateway32.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728343AbgIGSkG (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 7 Sep 2020 14:40:06 -0400
-Received: from cm14.websitewelcome.com (cm14.websitewelcome.com [100.42.49.7])
-        by gateway32.websitewelcome.com (Postfix) with ESMTP id 95EC61156BF4
-        for <linux-btrfs@vger.kernel.org>; Mon,  7 Sep 2020 13:40:04 -0500 (CDT)
-Received: from br540.hostgator.com.br ([108.179.252.180])
-        by cmsmtp with SMTP
-        id FM3gk9NJNBD8bFM3gkTX20; Mon, 07 Sep 2020 13:40:04 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=mpdesouza.com; s=default; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=Cum7spcH3Rtffg2QmnILX1pvToEE/31XUHSv6ZB5e/U=; b=VttwmA6rEZ6rc2MNiCkS49EwvE
-        gZQavqrZ6hXySLbUzgDzTlNoXfgsJmUB+tDB+O/+8y5EGj39aQKnXeaoHQmPWzK04dodgomhMoHEn
-        38enmhCX++Z6GFvCprBjzC/9kSkO9J9vfS88YailjhsyPbtig7v1kYz7i2UIadxeC+fBkIe1C3bX5
-        YbzPBKVKFqZIMsUExmhT3TMWUruyjqbJbVIFtUiVqKUeBhTHZrKwBPe2779JcchIqcz4IXtDlIxD7
-        vtjXppwpbKnf5lLvmEaHcAFZdEX1H8W0J+36lsK4/+IYUR9jr1GIrAp6foSlSH+mIYmQ9lnnGIHSk
-        DSRImeww==;
-Received: from 189.26.179.200.dynamic.adsl.gvt.net.br ([189.26.179.200]:50158 helo=localhost.localdomain)
-        by br540.hostgator.com.br with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <marcos@mpdesouza.com>)
-        id 1kFM3d-000XYN-Ol; Mon, 07 Sep 2020 15:40:02 -0300
-From:   Marcos Paulo de Souza <marcos@mpdesouza.com>
-To:     dsterba@suse.com, linux-btrfs@vger.kernel.org,
-        fstests@vger.kernel.org, guan@eryu.me
-Cc:     Marcos Paulo de Souza <mpdesouza@suse.com>,
-        Josef Bacik <josef@toxicpanda.com>
-Subject: [PATCH v2] fstests: btrfs/219 check if mount opts are applied
-Date:   Mon,  7 Sep 2020 15:39:12 -0300
-Message-Id: <20200907183912.5048-1-marcos@mpdesouza.com>
-X-Mailer: git-send-email 2.28.0
+        id S1729534AbgIGTVx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 7 Sep 2020 15:21:53 -0400
+Received: from mx2.suse.de ([195.135.220.15]:43126 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728879AbgIGTVx (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 7 Sep 2020 15:21:53 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 348F1AEC2;
+        Mon,  7 Sep 2020 19:21:50 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 85D7DDA7CE; Mon,  7 Sep 2020 21:20:34 +0200 (CEST)
+Date:   Mon, 7 Sep 2020 21:20:34 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     fdmanana@kernel.org
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs: fix NULL pointer dereference after failure to
+ create snapshot
+Message-ID: <20200907192034.GC28318@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, fdmanana@kernel.org,
+        linux-btrfs@vger.kernel.org
+References: <20200904162257.123893-1-fdmanana@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - br540.hostgator.com.br
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - mpdesouza.com
-X-BWhitelist: no
-X-Source-IP: 189.26.179.200
-X-Source-L: No
-X-Exim-ID: 1kFM3d-000XYN-Ol
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 189.26.179.200.dynamic.adsl.gvt.net.br (localhost.localdomain) [189.26.179.200]:50158
-X-Source-Auth: marcos@mpdesouza.com
-X-Email-Count: 5
-X-Source-Cap: bXBkZXNvNTM7bXBkZXNvNTM7YnI1NDAuaG9zdGdhdG9yLmNvbS5icg==
-X-Local-Domain: yes
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200904162257.123893-1-fdmanana@kernel.org>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Marcos Paulo de Souza <mpdesouza@suse.com>
+On Fri, Sep 04, 2020 at 05:22:57PM +0100, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
+> 
+> When trying to get a new fs root for a snapshot during the transaction
+> at transaction.c:create_pending_snapshot(), if btrfs_get_new_fs_root()
+> fails we leave "pending->snap" pointing to an error pointer, and then
+> later at ioctl.c:create_snapshot() we dereference that pointer, resulting
+> in a crash:
+> 
+> [12264.614689] BUG: kernel NULL pointer dereference, address: 00000000000007c4
+> [12264.615650] #PF: supervisor write access in kernel mode
+> [12264.616487] #PF: error_code(0x0002) - not-present page
+> [12264.617436] PGD 0 P4D 0
+> [12264.618328] Oops: 0002 [#1] PREEMPT SMP DEBUG_PAGEALLOC PTI
+> [12264.619150] CPU: 0 PID: 2310635 Comm: fsstress Tainted: G        W         5.9.0-rc3-btrfs-next-67 #1
+> [12264.619960] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.13.0-0-gf21b5a4aeb02-prebuilt.qemu.org 04/01/2014
+> [12264.621769] RIP: 0010:btrfs_mksubvol+0x438/0x4a0 [btrfs]
+> [12264.622528] Code: bc ef ff ff (...)
+> [12264.624092] RSP: 0018:ffffaa6fc7277cd8 EFLAGS: 00010282
+> [12264.624669] RAX: 00000000fffffff4 RBX: ffff9d3e8f151a60 RCX: 0000000000000000
+> [12264.625249] RDX: 0000000000000001 RSI: ffffffff9d56c9be RDI: fffffffffffffff4
+> [12264.625830] RBP: ffff9d3e8f151b48 R08: 0000000000000000 R09: 0000000000000000
+> [12264.626413] R10: 0000000000000000 R11: 0000000000000000 R12: 00000000fffffff4
+> [12264.626994] R13: ffff9d3ede380538 R14: ffff9d3ede380500 R15: ffff9d3f61b2eeb8
+> [12264.627582] FS:  00007f140d5d8200(0000) GS:ffff9d3fb5e00000(0000) knlGS:0000000000000000
+> [12264.628176] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [12264.628773] CR2: 00000000000007c4 CR3: 000000020f8e8004 CR4: 00000000003706f0
+> [12264.629379] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> [12264.629994] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> [12264.630594] Call Trace:
+> [12264.631227]  btrfs_mksnapshot+0x7b/0xb0 [btrfs]
+> [12264.631840]  __btrfs_ioctl_snap_create+0x16f/0x1a0 [btrfs]
+> [12264.632458]  btrfs_ioctl_snap_create_v2+0xb0/0xf0 [btrfs]
+> [12264.633078]  btrfs_ioctl+0x1864/0x3130 [btrfs]
+> [12264.633689]  ? do_sys_openat2+0x1a7/0x2d0
+> [12264.634295]  ? kmem_cache_free+0x147/0x3a0
+> [12264.634899]  ? __x64_sys_ioctl+0x83/0xb0
+> [12264.635488]  __x64_sys_ioctl+0x83/0xb0
+> [12264.636058]  do_syscall_64+0x33/0x80
+> [12264.636616]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> 
+> (gdb) list *(btrfs_mksubvol+0x438)
+> 0x7c7b8 is in btrfs_mksubvol (fs/btrfs/ioctl.c:858).
+> 853		ret = 0;
+> 854		pending_snapshot->anon_dev = 0;
+> 855	fail:
+> 856		/* Prevent double freeing of anon_dev */
+> 857		if (ret && pending_snapshot->snap)
+> 858			pending_snapshot->snap->anon_dev = 0;
+> 859		btrfs_put_root(pending_snapshot->snap);
+> 860		btrfs_subvolume_release_metadata(root, &pending_snapshot->block_rsv);
+> 861	free_pending:
+> 862		if (pending_snapshot->anon_dev)
+> 
+> So fix this by setting "pending->snap" to NULL if we get an error from the
+> call to btrfs_get_new_fs_root() at transaction.c:create_pending_snapshot().
+> 
+> Fixes: 2dfb1e43f57dd3 ("btrfs: preallocate anon block device at first phase of snapshot creation")
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
-This new test will apply different mount points and check if they were applied
-by reading /proc/self/mounts. Almost all available btrfs options are tested
-here, leaving only device=, which is tested in btrfs/125 and space_cache, tested
-in btrfs/131.
-
-This test does not apply any workload after the fs is mounted, just checks is
-the option was set/unset correctly.
-
-Kernel with the following patch should pass the test:
-  btrfs: reset compression level for lzo on remount
-
-Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
----
- Changes from v1:
- * Added Josef's reviewed-by tag
- * Added commit needed for this test to pass
- * Bumped test number to 219
-
- tests/btrfs/219     | 302 ++++++++++++++++++++++++++++++++++++++++++++
- tests/btrfs/219.out |   2 +
- tests/btrfs/group   |   1 +
- 3 files changed, 305 insertions(+)
- create mode 100755 tests/btrfs/219
- create mode 100644 tests/btrfs/219.out
-
-diff --git a/tests/btrfs/219 b/tests/btrfs/219
-new file mode 100755
-index 00000000..e793b568
---- /dev/null
-+++ b/tests/btrfs/219
-@@ -0,0 +1,302 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright (C) 2020 SUSE Linux Products GmbH. All Rights Reserved.
-+#
-+# FS QA Test 219
-+#
-+# Test all existent mount options of btrfs
-+# * device= argument is already being test by btrfs/125
-+# * space cache test already covered by test btrfs/131
-+seq=`basename $0`
-+seqres=$RESULT_DIR/$seq
-+echo "QA output created by $seq"
-+
-+here=`pwd`
-+tmp=/tmp/$$
-+status=1	# failure is the default!
-+trap "cleanup; exit \$status" 0 1 2 3 15
-+
-+# get standard environment, filters and checks
-+. ./common/rc
-+. ./common/filter
-+
-+# remove previous $seqres.full before test
-+rm -f $seqres.full
-+
-+_supported_fs btrfs
-+_supported_os Linux
-+_require_scratch
-+
-+cleanup()
-+{
-+	cd /
-+	rm -f $tmp.*
-+}
-+
-+# Compare the mounted flags with $opt_check. When the comparison fails, $opt is
-+# echoed to help to track which option was used to trigger the unexpected
-+# results.
-+test_mount_flags()
-+{
-+	local opt
-+	local opt_check
-+	opt="$1"
-+	opt_check="$2"
-+
-+	active_opt=$(cat /proc/self/mounts | grep $SCRATCH_MNT | \
-+					$AWK_PROG '{ print $4 }')
-+	if [[ "$active_opt" != *$opt_check* ]]; then
-+		echo "Could not find '$opt_check' in '$active_opt', using '$opt'"
-+	fi
-+}
-+
-+# Mounts using opt ($1), remounts using remount_opt ($2), and remounts again
-+# using opt again (1), checking if the mount opts are being enabled/disabled by
-+# using _check arguments ($3 and $4)
-+test_enable_disable_mount_opt()
-+{
-+	local opt
-+	local opt_check
-+	local remount_opt
-+	local remount_opt_check
-+	opt="$1"
-+	opt_check="$2"
-+	remount_opt="$3"
-+	remount_opt_check="$4"
-+
-+	_scratch_mount "-o $opt"
-+
-+	test_mount_flags $opt $opt_check
-+
-+	_scratch_remount $remount_opt
-+
-+	test_mount_flags $remount_opt $remount_opt_check
-+
-+	_scratch_remount $opt
-+
-+	test_mount_flags $opt $opt_check
-+
-+	_scratch_unmount
-+}
-+
-+# Checks if mount options are applied and reverted correctly.
-+# By using options to mount ($1) and remount ($2), this function will mount,
-+# remount, and the mount with the original args, checking if the mount options
-+# match the _check args ($3 and $4).
-+
-+# Later, opt and remount_opt are swapped, testing the counterpart option if used
-+# to first mount the fs.
-+test_roundtrip_mount()
-+{
-+	local opt
-+	local opt_check
-+	local remount_opt
-+	local remount_opt_check
-+	opt="$1"
-+	opt_check="$2"
-+	remount_opt="$3"
-+	remount_opt_check="$4"
-+
-+	# invert the args to make sure that both options work at mount and
-+	# remount time
-+	test_enable_disable_mount_opt $opt $opt_check $remount_opt $remount_opt_check
-+	test_enable_disable_mount_opt $remount_opt $remount_opt_check $opt $opt_check
-+}
-+
-+# Just mount and check if the options were mounted correctly by comparing the
-+# results with $opt_check
-+test_mount_opt()
-+{
-+	local opt
-+	local opt_check
-+	local active_opt
-+	opt="$1"
-+	opt_check="$2"
-+
-+	_scratch_mount "-o $opt"
-+
-+	test_mount_flags $opt $opt_check
-+
-+	_scratch_unmount
-+}
-+
-+# Test mount options that should fail, usually by wrong arguments to options
-+test_should_fail()
-+{
-+	local opt
-+	opt="$1"
-+
-+	# wrong $opt on purpose, should fail
-+	_try_scratch_mount "-o $opt" >/dev/null 2>&1
-+	if [ $? -ne 0 ]; then
-+		return
-+	fi
-+	echo "Option $opt should fail to mount"
-+	_scratch_unmount
-+}
-+
-+# Try to mount using $opt, and bail our if the mount fails without errors. If
-+# the mount succeeds, then compare the mount options with $opt_check
-+test_optional_mount_opts()
-+{
-+	local opt
-+	local opt_check
-+	opt="$1"
-+	opt_check="$2"
-+
-+	# $opt not enabled, return without running any tests
-+	_try_scratch_mount "-o $opt" >/dev/null 2>&1 || return
-+	_scratch_unmount
-+
-+	# option enabled, run the test
-+	test_mount_opt $opt $opt_check
-+}
-+
-+# Testes related to subvolumes, from subvol and subvolid options.
-+test_subvol()
-+{
-+	test_should_fail "subvol=vol2"
-+
-+	_scratch_mount "-o subvol=vol1"
-+	if [ ! -f "$SCRATCH_MNT/file.txt" ]; then
-+		echo "file.txt not found inside vol1 using subvol=vol1 mount option"
-+	fi
-+	_scratch_unmount
-+
-+	test_should_fail "subvolid=222"
-+
-+	_scratch_mount "-o subvolid=256"
-+	if [ ! -f "$SCRATCH_MNT/file.txt" ]; then
-+		echo "file.txt not found inside vol1 using subvolid=256 mount option"
-+	fi
-+	_scratch_unmount
-+
-+	# subvol and subvolid should point to the same subvolume
-+	test_should_fail "-o subvol=vol1,subvolid=1234132"
-+
-+	test_mount_opt "subvol=vol1,subvolid=256" "space_cache,subvolid=256,subvol=/vol1"
-+	test_roundtrip_mount "subvol=vol1" "space_cache,subvolid=256,subvol=/vol1" "subvolid=256" "space_cache,subvolid=256,subvol=/vol1"
-+}
-+
-+# These options are enable at kernel compile time, so no bother if they fail
-+test_optional_kernel_features()
-+{
-+	# Test options that are enabled by kernel config, and so can fail safely
-+	test_optional_mount_opts "check_int" "space_cache,check_int,subvolid"
-+	test_optional_mount_opts "check_int_data" "space_cache,check_int_data,subvolid"
-+	test_optional_mount_opts "check_int_print_mask=123" "space_cache,check_int_print_mask=123,subvolid"
-+
-+	test_should_fail "fragment=invalid"
-+	test_optional_mount_opts "fragment=all" "space_cache,fragment=data,fragment=metadata,subvolid"
-+	test_optional_mount_opts "fragment=data" "space_cache,fragment=data,subvolid"
-+	test_optional_mount_opts "fragment=metadata" "space_cache,fragment=metadata,subvolid"
-+}
-+
-+test_non_revertible_options()
-+{
-+	test_mount_opt "clear_cache" "relatime,space_cache,clear_cache,subvolid"
-+	test_mount_opt "degraded" "relatime,degraded,space_cache,subvolid"
-+
-+	test_mount_opt "inode_cache" "space_cache,inode_cache,subvolid"
-+
-+	# nologreplay should be used only with
-+	test_should_fail "nologreplay"
-+	test_mount_opt "nologreplay,ro" "ro,relatime,rescue=nologreplay,space_cache"
-+
-+	# norecovery should be used only with. This options is an alias to nologreplay
-+	test_should_fail "norecovery"
-+	test_mount_opt "norecovery,ro" "ro,relatime,rescue=nologreplay,space_cache"
-+	test_mount_opt "rescan_uuid_tree" "relatime,space_cache,rescan_uuid_tree,subvolid"
-+	test_mount_opt "skip_balance" "relatime,space_cache,skip_balance,subvolid"
-+	test_mount_opt "user_subvol_rm_allowed" "space_cache,user_subvol_rm_allowed,subvolid"
-+
-+	test_should_fail "rescue=invalid"
-+
-+	# nologreplay requires readonly
-+	test_should_fail "rescue=nologreplay"
-+	test_mount_opt "rescue=nologreplay,ro" "relatime,rescue=nologreplay,space_cache"
-+
-+	test_mount_opt "rescue=usebackuproot,ro" "relatime,space_cache,subvolid"
-+}
-+
-+# All these options can be reverted (with their "no" counterpart), or can have
-+# their values set to default on remount
-+test_revertible_options()
-+{
-+	test_roundtrip_mount "acl" "relatime,space_cache,subvolid" "noacl" "relatime,noacl,space_cache,subvolid"
-+	test_roundtrip_mount "autodefrag" "relatime,space_cache,autodefrag" "noautodefrag" "relatime,space_cache,subvolid"
-+	test_roundtrip_mount "barrier" "relatime,space_cache,subvolid" "nobarrier" "relatime,nobarrier,space_cache,subvolid"
-+
-+	test_should_fail "commit=-10"
-+	# commit=0 sets the default, so btrfs hides this mount opt
-+	test_roundtrip_mount "commit=35" "relatime,space_cache,commit=35,subvolid" "commit=0" "relatime,space_cache,subvolid"
-+
-+	test_should_fail "compress=invalid"
-+	test_should_fail "compress-force=invalid"
-+	test_roundtrip_mount "compress" "relatime,compress=zlib:3,space_cache,subvolid" "compress=lzo" "relatime,compress=lzo,space_cache,subvolid"
-+	test_roundtrip_mount "compress=zstd" "relatime,compress=zstd:3,space_cache,subvolid" "compress=no" "relatime,space_cache,subvolid"
-+	test_roundtrip_mount "compress-force=no" "relatime,space_cache,subvolid" "compress-force=zstd" "relatime,compress-force=zstd:3,space_cache,subvolid"
-+	# zlib's max level is 9 and zstd's max level is 15
-+	test_roundtrip_mount "compress=zlib:20" "relatime,compress=zlib:9,space_cache,subvolid" "compress=zstd:16" "relatime,compress=zstd:15,space_cache,subvolid"
-+	test_roundtrip_mount "compress-force=lzo" "relatime,compress-force=lzo,space_cache,subvolid" "compress-force=zlib:4" "relatime,compress-force=zlib:4,space_cache,subvolid"
-+
-+	# on remount, if we only pass datacow after nodatacow was used it will remain with nodatasum
-+	test_roundtrip_mount "nodatacow" "relatime,nodatasum,nodatacow,space_cache,subvolid" "datacow,datasum" "relatime,space_cache,subvolid"
-+	# nodatacow disabled compression
-+	test_roundtrip_mount "compress-force" "relatime,compress-force=zlib:3,space_cache,subvolid" "nodatacow" "relatime,nodatasum,nodatacow,space_cache,subvolid"
-+
-+	# nodatacow disabled both datacow and datasum, and datasum enabled datacow and datasum
-+	test_roundtrip_mount "nodatacow" "relatime,nodatasum,nodatacow,space_cache,subvolid" "datasum" "relatime,space_cache,subvolid"
-+	test_roundtrip_mount "nodatasum" "relatime,nodatasum,space_cache,subvolid" "datasum" "relatime,space_cache,subvolid"
-+
-+	test_should_fail "discard=invalid"
-+	test_roundtrip_mount "discard" "relatime,discard,space_cache,subvolid" "discard=sync" "relatime,discard,space_cache,subvolid"
-+	test_roundtrip_mount "discard=async" "relatime,discard=async,space_cache,subvolid" "discard=sync" "relatime,discard,space_cache,subvolid"
-+	test_roundtrip_mount "discard=sync" "relatime,discard,space_cache,subvolid" "nodiscard" "relatime,space_cache,subvolid"
-+
-+	test_roundtrip_mount "enospc_debug" "relatime,space_cache,enospc_debug,subvolid" "noenospc_debug" "relatime,space_cache,subvolid"
-+
-+	test_should_fail "fatal_errors=pani"
-+	# fatal_errors=bug is the default
-+	test_roundtrip_mount "fatal_errors=panic" "relatime,space_cache,fatal_errors=panic,subvolid" "fatal_errors=bug" "relatime,space_cache,subvolid"
-+
-+	test_roundtrip_mount "flushoncommit" "relatime,flushoncommit,space_cache,subvolid" "noflushoncommit" "relatime,space_cache,subvolid"
-+
-+	# 2048 is the max_inline default value
-+	test_roundtrip_mount "max_inline=1024" "relatime,max_inline=1024,space_cache" "max_inline=2048" "relatime,space_cache,subvolid"
-+
-+	test_roundtrip_mount "metadata_ratio=0" "relatime,space_cache,subvolid" "metadata_ratio=10" "space_cache,metadata_ratio=10,subvolid"
-+
-+	# ssd_spread implies ssd, while nossd_spread only disables ssd_spread
-+	test_roundtrip_mount "ssd_spread" "relatime,ssd_spread,space_cache" "nossd" "relatime,nossd,space_cache,subvolid"
-+	test_roundtrip_mount "ssd" "relatime,ssd,space_cache" "nossd" "relatime,nossd,space_cache,subvolid"
-+	test_mount_opt "ssd" "relatime,ssd,space_cache"
-+
-+	test_should_fail "thread_pool=-10"
-+	test_should_fail "thread_pool=0"
-+	test_roundtrip_mount "thread_pool=10" "relatime,thread_pool=10,space_cache" "thread_pool=50" "relatime,thread_pool=50,space_cache"
-+
-+	test_roundtrip_mount "notreelog" "relatime,notreelog,space_cache" "treelog" "relatime,space_cache,subvolid"
-+}
-+
-+# real QA test starts here
-+_scratch_mkfs >/dev/null
-+
-+# create a subvolume that will be used later
-+_scratch_mount
-+$BTRFS_UTIL_PROG subvolume create "$SCRATCH_MNT/vol1" > /dev/null
-+touch "$SCRATCH_MNT/vol1/file.txt"
-+_scratch_unmount
-+
-+test_optional_kernel_features
-+
-+test_non_revertible_options
-+
-+test_revertible_options
-+
-+test_subvol
-+
-+echo "Silence is golden"
-+
-+status=0
-+exit
-diff --git a/tests/btrfs/219.out b/tests/btrfs/219.out
-new file mode 100644
-index 00000000..162074d3
---- /dev/null
-+++ b/tests/btrfs/219.out
-@@ -0,0 +1,2 @@
-+QA output created by 219
-+Silence is golden
-diff --git a/tests/btrfs/group b/tests/btrfs/group
-index 3295856d..f4dbfafb 100644
---- a/tests/btrfs/group
-+++ b/tests/btrfs/group
-@@ -221,3 +221,4 @@
- 216 auto quick seed
- 217 auto quick trim dangerous
- 218 auto quick volume
-+219 auto quick
--- 
-2.28.0
-
+Added to misc-next and queued for 5.9-rc, thanks.
