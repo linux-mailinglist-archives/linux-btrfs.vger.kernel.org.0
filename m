@@ -2,24 +2,24 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADC4B260C77
-	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Sep 2020 09:53:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA5B1260C81
+	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Sep 2020 09:53:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729587AbgIHHxM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 8 Sep 2020 03:53:12 -0400
-Received: from mx2.suse.de ([195.135.220.15]:51098 "EHLO mx2.suse.de"
+        id S1729666AbgIHHxa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 8 Sep 2020 03:53:30 -0400
+Received: from mx2.suse.de ([195.135.220.15]:51120 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729576AbgIHHxE (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 8 Sep 2020 03:53:04 -0400
+        id S1729597AbgIHHxG (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 8 Sep 2020 03:53:06 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id D536FAE24
-        for <linux-btrfs@vger.kernel.org>; Tue,  8 Sep 2020 07:53:03 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 9230BAE25
+        for <linux-btrfs@vger.kernel.org>; Tue,  8 Sep 2020 07:53:05 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 08/17] btrfs: refactor how we extract extent buffer from page for alloc_extent_buffer()
-Date:   Tue,  8 Sep 2020 15:52:21 +0800
-Message-Id: <20200908075230.86856-9-wqu@suse.com>
+Subject: [PATCH 09/17] btrfs: refactor btrfs_release_extent_buffer_pages()
+Date:   Tue,  8 Sep 2020 15:52:22 +0800
+Message-Id: <20200908075230.86856-10-wqu@suse.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200908075230.86856-1-wqu@suse.com>
 References: <20200908075230.86856-1-wqu@suse.com>
@@ -30,87 +30,105 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This patch will extract the code to extract extent_buffer from
-page::private into its own function, grab_extent_buffer_from_page().
+We have attach_extent_buffer_page() and it get utilized in
+btrfs_clone_extent_buffer() and alloc_extent_buffer().
 
-Although it's just one line, for later sub-page size support it will
-become way more larger.
+But in btrfs_release_extent_buffer_pages() we manually call
+detach_page_private().
 
-Also add some extra comments why we need to do such page::private
-dancing.
+This is fine for current code, but if we're going to support subpage
+size, we will do a lot of more work other than just calling
+detach_page_private().
+
+This patch will extract the main work of btrfs_clone_extent_buffer()
+into detach_extent_buffer_page() so that later subpage size support can
+put their own code into them.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/extent_io.c | 49 ++++++++++++++++++++++++++++++++++++--------
- 1 file changed, 40 insertions(+), 9 deletions(-)
+ fs/btrfs/extent_io.c | 58 +++++++++++++++++++-------------------------
+ 1 file changed, 25 insertions(+), 33 deletions(-)
 
 diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 6fafbc1d047b..3c8fe40f67fa 100644
+index 3c8fe40f67fa..1cb41dab7a1d 100644
 --- a/fs/btrfs/extent_io.c
 +++ b/fs/btrfs/extent_io.c
-@@ -5214,6 +5214,44 @@ struct extent_buffer *alloc_test_extent_buffer(struct btrfs_fs_info *fs_info,
+@@ -4920,6 +4920,29 @@ int extent_buffer_under_io(const struct extent_buffer *eb)
+ 		test_bit(EXTENT_BUFFER_DIRTY, &eb->bflags));
  }
- #endif
  
-+/*
-+ * A helper to grab the exist extent buffer from a page.
-+ *
-+ * There is a small race window where two callers of alloc_extent_buffer():
-+ * 		Thread 1		|	Thread 2
-+ * -------------------------------------+---------------------------------------
-+ * alloc_extent_buffer()		| alloc_extent_buffer()
-+ * |- eb = __alloc_extent_buffer()	| |- eb = __alloc_extent_buffer()
-+ * |- p = find_or_create_page()		| |- p = find_or_create_page()
-+ *
-+ * In above case, two ebs get allocated for the same bytenr, and got the same
-+ * page.
-+ * We have to rely on the page->mapping->private_lock to make one of them to
-+ * give up and reuse the allocated eb:
-+ *
-+ * 					| |- grab_extent_buffer_from_page()
-+ * 					| |- get nothing
-+ * 					| |- attach_extent_buffer_page()
-+ * 					| |  |- Now page->private is set
-+ * 					| |- spin_unlock(&mapping->private_lock);
-+ * |- spin_lock(private_lock);		| |- Continue to insert radix tree.
-+ * |- grab_extent_buffer_from_page()	|
-+ * |- got eb from thread 2		|
-+ * |- spin_unlock(private_lock);	|
-+ * |- goto free_eb;			|
-+ *
-+ * The function here is to ensure we have proper locking and detect such race
-+ * so we won't allocating an eb twice.
-+ */
-+static struct extent_buffer *grab_extent_buffer_from_page(struct page *page)
++static void detach_extent_buffer_page(struct extent_buffer *eb,
++				      struct page *page)
 +{
-+	/*
-+	 * For PAGE_SIZE == sectorsize case, a btree_inode page should have its
-+	 * private pointer as extent buffer who owns this page.
-+	 */
-+	return (struct extent_buffer *)page->private;
++	bool mapped = !test_bit(EXTENT_BUFFER_UNMAPPED, &eb->bflags);
++
++	if (!page)
++		return;
++
++	if (mapped)
++		spin_lock(&page->mapping->private_lock);
++	if (PagePrivate(page) && page->private == (unsigned long)eb) {
++		BUG_ON(test_bit(EXTENT_BUFFER_DIRTY, &eb->bflags));
++		BUG_ON(PageDirty(page));
++		BUG_ON(PageWriteback(page));
++		/* We need to make sure we haven't be attached to a new eb. */
++		detach_page_private(page);
++	}
++	if (mapped)
++		spin_unlock(&page->mapping->private_lock);
++	/* One for when we allocated the page */
++	put_page(page);
 +}
 +
- struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
- 					  u64 start)
+ /*
+  * Release all pages attached to the extent buffer.
+  */
+@@ -4927,43 +4950,12 @@ static void btrfs_release_extent_buffer_pages(struct extent_buffer *eb)
  {
-@@ -5258,15 +5296,8 @@ struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
+ 	int i;
+ 	int num_pages;
+-	int mapped = !test_bit(EXTENT_BUFFER_UNMAPPED, &eb->bflags);
  
- 		spin_lock(&mapping->private_lock);
- 		if (PagePrivate(p)) {
+ 	BUG_ON(extent_buffer_under_io(eb));
+ 
+ 	num_pages = num_extent_pages(eb);
+-	for (i = 0; i < num_pages; i++) {
+-		struct page *page = eb->pages[i];
+-
+-		if (!page)
+-			continue;
+-		if (mapped)
+-			spin_lock(&page->mapping->private_lock);
+-		/*
+-		 * We do this since we'll remove the pages after we've
+-		 * removed the eb from the radix tree, so we could race
+-		 * and have this page now attached to the new eb.  So
+-		 * only clear page_private if it's still connected to
+-		 * this eb.
+-		 */
+-		if (PagePrivate(page) &&
+-		    page->private == (unsigned long)eb) {
+-			BUG_ON(test_bit(EXTENT_BUFFER_DIRTY, &eb->bflags));
+-			BUG_ON(PageDirty(page));
+-			BUG_ON(PageWriteback(page));
 -			/*
--			 * We could have already allocated an eb for this page
--			 * and attached one so lets see if we can get a ref on
--			 * the existing eb, and if we can we know it's good and
--			 * we can just return that one, else we know we can just
--			 * overwrite page->private.
+-			 * We need to make sure we haven't be attached
+-			 * to a new eb.
 -			 */
--			exists = (struct extent_buffer *)p->private;
--			if (atomic_inc_not_zero(&exists->refs)) {
-+			exists = grab_extent_buffer_from_page(p);
-+			if (exists && atomic_inc_not_zero(&exists->refs)) {
- 				spin_unlock(&mapping->private_lock);
- 				unlock_page(p);
- 				put_page(p);
+-			detach_page_private(page);
+-		}
+-
+-		if (mapped)
+-			spin_unlock(&page->mapping->private_lock);
+-
+-		/* One for when we allocated the page */
+-		put_page(page);
+-	}
++	for (i = 0; i < num_pages; i++)
++		detach_extent_buffer_page(eb, eb->pages[i]);
+ }
+ 
+ /*
 -- 
 2.28.0
 
