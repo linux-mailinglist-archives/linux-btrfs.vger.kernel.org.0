@@ -2,24 +2,24 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2A1C260C7D
-	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Sep 2020 09:53:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59EA1260C7A
+	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Sep 2020 09:53:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729629AbgIHHxQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 8 Sep 2020 03:53:16 -0400
-Received: from mx2.suse.de ([195.135.220.15]:51166 "EHLO mx2.suse.de"
+        id S1729627AbgIHHxP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 8 Sep 2020 03:53:15 -0400
+Received: from mx2.suse.de ([195.135.220.15]:51186 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729615AbgIHHxL (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 8 Sep 2020 03:53:11 -0400
+        id S1729339AbgIHHxM (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 8 Sep 2020 03:53:12 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 0087EAE67
-        for <linux-btrfs@vger.kernel.org>; Tue,  8 Sep 2020 07:53:09 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id B82C8AE96
+        for <linux-btrfs@vger.kernel.org>; Tue,  8 Sep 2020 07:53:11 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 11/17] btrfs: extract the extent buffer verification from btree_readpage_end_io_hook()
-Date:   Tue,  8 Sep 2020 15:52:24 +0800
-Message-Id: <20200908075230.86856-12-wqu@suse.com>
+Subject: [PATCH 12/17] btrfs: remove the unnecessary parameter @start and @len for check_data_csum()
+Date:   Tue,  8 Sep 2020 15:52:25 +0800
+Message-Id: <20200908075230.86856-13-wqu@suse.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200908075230.86856-1-wqu@suse.com>
 References: <20200908075230.86856-1-wqu@suse.com>
@@ -30,146 +30,93 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Currently btree_readpage_end_io_hook() only needs to handle one extent
-buffer as currently one page only maps to one extent buffer.
+For check_data_csum(), the page we're using is directly from inode
+mapping, thus it has valid page_offset().
 
-But for incoming subpage support, one page can be mapped to multiple
-extent buffers, thus we can no longer use current code.
+We can use (page_offset() + pg_off) to replace @start parameter
+completely, while the @len should always be sectorsize.
 
-This refactor would allow us to call btrfs_check_extent_buffer() on
-all involved extent buffers at btree_readpage_end_io_hook() and other
-locations.
+Since we're here, also add some comment, since there are quite some
+confusion in words like start/offset, without explaining whether it's
+file_offset or logical bytenr.
+
+This should not affect the existing behavior, as for current sectorsize
+== PAGE_SIZE case, @pgoff should always be 0, and len is always
+PAGE_SIZE (or sectorsize from the dio read path).
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/disk-io.c | 78 ++++++++++++++++++++++++++--------------------
- 1 file changed, 45 insertions(+), 33 deletions(-)
+ fs/btrfs/inode.c | 27 +++++++++++++++++++--------
+ 1 file changed, 19 insertions(+), 8 deletions(-)
 
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 62dbd9bbd381..f6e562979682 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -574,60 +574,37 @@ static int check_tree_block_fsid(struct extent_buffer *eb)
- 	return ret;
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index 9570458aa847..078735aa0f68 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -2793,17 +2793,30 @@ void btrfs_writepage_endio_finish_ordered(struct page *page, u64 start,
+ 	btrfs_queue_work(wq, &ordered_extent->work);
  }
  
--static int btree_readpage_end_io_hook(struct btrfs_io_bio *io_bio,
--				      u64 phy_offset, struct page *page,
--				      u64 start, u64 end, int mirror)
-+/* Do basic extent buffer check at read time */
-+static int btrfs_check_extent_buffer(struct extent_buffer *eb)
++/*
++ * Verify the checksum of one sector of uncompressed data.
++ *
++ * @inode:	The inode.
++ * @io_bio:	The btrfs_io_bio which contains the csum.
++ * @icsum:	The csum offset (by number of sectors).
++ * @page:	The page where the data will be written to.
++ * @pgoff:	The offset inside the page.
++ *
++ * The length of such check is always one sector size.
++ */
+ static int check_data_csum(struct inode *inode, struct btrfs_io_bio *io_bio,
+-			   int icsum, struct page *page, int pgoff, u64 start,
+-			   size_t len)
++			   int icsum, struct page *page, int pgoff)
  {
--	u64 found_start;
--	int found_level;
--	struct extent_buffer *eb;
--	struct btrfs_fs_info *fs_info;
-+	struct btrfs_fs_info *fs_info = eb->fs_info;
- 	u16 csum_size;
--	int ret = 0;
-+	u64 found_start;
-+	u8 found_level;
- 	u8 result[BTRFS_CSUM_SIZE];
--	int reads_done;
--
--	if (!page->private)
--		goto out;
-+	int ret = 0;
+ 	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
+ 	SHASH_DESC_ON_STACK(shash, fs_info->csum_shash);
+ 	char *kaddr;
++	u32 len = fs_info->sectorsize;
+ 	u16 csum_size = btrfs_super_csum_size(fs_info->super_copy);
+ 	u8 *csum_expected;
+ 	u8 csum[BTRFS_CSUM_SIZE];
  
--	eb = (struct extent_buffer *)page->private;
--	fs_info = eb->fs_info;
- 	csum_size = btrfs_super_csum_size(fs_info->super_copy);
++	ASSERT(pgoff + len <= PAGE_SIZE);
++
+ 	csum_expected = ((u8 *)io_bio->csum) + icsum * csum_size;
  
--	/* the pending IO might have been the only thing that kept this buffer
--	 * in memory.  Make sure we have a ref for all this other checks
--	 */
--	atomic_inc(&eb->refs);
--
--	reads_done = atomic_dec_and_test(&eb->io_pages);
--	if (!reads_done)
--		goto err;
--
--	eb->read_mirror = mirror;
--	if (test_bit(EXTENT_BUFFER_READ_ERR, &eb->bflags)) {
--		ret = -EIO;
--		goto err;
--	}
--
- 	found_start = btrfs_header_bytenr(eb);
- 	if (found_start != eb->start) {
- 		btrfs_err_rl(fs_info, "bad tree block start, want %llu have %llu",
- 			     eb->start, found_start);
- 		ret = -EIO;
--		goto err;
-+		goto out;
- 	}
- 	if (check_tree_block_fsid(eb)) {
- 		btrfs_err_rl(fs_info, "bad fsid on block %llu",
- 			     eb->start);
- 		ret = -EIO;
--		goto err;
-+		goto out;
- 	}
- 	found_level = btrfs_header_level(eb);
- 	if (found_level >= BTRFS_MAX_LEVEL) {
- 		btrfs_err(fs_info, "bad tree block level %d on %llu",
- 			  (int)btrfs_header_level(eb), eb->start);
- 		ret = -EIO;
--		goto err;
-+		goto out;
+ 	kaddr = kmap_atomic(page);
+@@ -2817,8 +2830,8 @@ static int check_data_csum(struct inode *inode, struct btrfs_io_bio *io_bio,
+ 	kunmap_atomic(kaddr);
+ 	return 0;
+ zeroit:
+-	btrfs_print_data_csum_error(BTRFS_I(inode), start, csum, csum_expected,
+-				    io_bio->mirror_num);
++	btrfs_print_data_csum_error(BTRFS_I(inode), page_offset(page) + pgoff,
++				    csum, csum_expected, io_bio->mirror_num);
+ 	if (io_bio->device)
+ 		btrfs_dev_stat_inc_and_print(io_bio->device,
+ 					     BTRFS_DEV_STAT_CORRUPTION_ERRS);
+@@ -2857,8 +2870,7 @@ static int btrfs_readpage_end_io_hook(struct btrfs_io_bio *io_bio,
  	}
  
- 	btrfs_set_buffer_lockdep_class(btrfs_header_owner(eb),
-@@ -647,7 +624,7 @@ static int btree_readpage_end_io_hook(struct btrfs_io_bio *io_bio,
- 			      fs_info->sb->s_id, eb->start,
- 			      val, found, btrfs_header_level(eb));
- 		ret = -EUCLEAN;
--		goto err;
-+		goto out;
- 	}
+ 	phy_offset >>= inode->i_sb->s_blocksize_bits;
+-	return check_data_csum(inode, io_bio, phy_offset, page, offset, start,
+-			       (size_t)(end - start + 1));
++	return check_data_csum(inode, io_bio, phy_offset, page, offset);
+ }
  
- 	/*
-@@ -669,6 +646,41 @@ static int btree_readpage_end_io_hook(struct btrfs_io_bio *io_bio,
- 		btrfs_err(fs_info,
- 			  "block=%llu read time tree block corruption detected",
- 			  eb->start);
-+out:
-+	return ret;
-+}
-+
-+static int btree_readpage_end_io_hook(struct btrfs_io_bio *io_bio,
-+				      u64 phy_offset, struct page *page,
-+				      u64 start, u64 end, int mirror)
-+{
-+	struct extent_buffer *eb;
-+	int ret = 0;
-+	int reads_done;
-+
-+	if (!page->private)
-+		goto out;
-+
-+	eb = (struct extent_buffer *)page->private;
-+
-+	/*
-+	 * The pending IO might have been the only thing that kept this buffer
-+	 * in memory.  Make sure we have a ref for all this other checks
-+	 */
-+	atomic_inc(&eb->refs);
-+
-+	reads_done = atomic_dec_and_test(&eb->io_pages);
-+	if (!reads_done)
-+		goto err;
-+
-+	eb->read_mirror = mirror;
-+	if (test_bit(EXTENT_BUFFER_READ_ERR, &eb->bflags)) {
-+		ret = -EIO;
-+		goto err;
-+	}
-+
-+	ret = btrfs_check_extent_buffer(eb);
-+
- err:
- 	if (reads_done &&
- 	    test_and_clear_bit(EXTENT_BUFFER_READAHEAD, &eb->bflags))
+ /*
+@@ -7545,8 +7557,7 @@ static blk_status_t btrfs_check_read_dio_bio(struct inode *inode,
+ 			ASSERT(pgoff < PAGE_SIZE);
+ 			if (uptodate &&
+ 			    (!csum || !check_data_csum(inode, io_bio, icsum,
+-						       bvec.bv_page, pgoff,
+-						       start, sectorsize))) {
++						       bvec.bv_page, pgoff))) {
+ 				clean_io_failure(fs_info, failure_tree, io_tree,
+ 						 start, bvec.bv_page,
+ 						 btrfs_ino(BTRFS_I(inode)),
 -- 
 2.28.0
 
