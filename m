@@ -2,39 +2,36 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30CD9260FB8
-	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Sep 2020 12:27:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8068D260FE8
+	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Sep 2020 12:32:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729824AbgIHK1u (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 8 Sep 2020 06:27:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37428 "EHLO mail.kernel.org"
+        id S1729775AbgIHKcZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 8 Sep 2020 06:32:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40022 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729781AbgIHK1j (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 8 Sep 2020 06:27:39 -0400
-Received: from falcondesktop.Home (bl8-197-74.dsl.telepac.pt [85.241.197.74])
+        id S1729767AbgIHKcM (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 8 Sep 2020 06:32:12 -0400
+Received: from debian8.Home (bl8-197-74.dsl.telepac.pt [85.241.197.74])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8B4D2215A4;
-        Tue,  8 Sep 2020 10:27:36 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EADD9206DB;
+        Tue,  8 Sep 2020 10:32:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599560857;
-        bh=bjYgOy319MqJeM405sKBkOqtPYQ9tpilZe2tTuXh/lI=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:In-Reply-To:
-         References:From;
-        b=WaQ6Q69a/3Mkv8Srqbmt9HHTvNEeGLr8GsI+1SB4ydlbg7tkJnN2SntjgtqKFjAzR
-         xsvZOvOa+iVwGRDK+gAJ/WkfqgicppvJ8ifnkSip7BmXuZFHSxFCo/H2KqCfR+JSgR
-         7ZDjk+eB137Qle/qzo1WR1gWWC/PXa7RI2Pm+2NY=
+        s=default; t=1599561129;
+        bh=rAjNo2Ow6A7FccLur3eqVizb+qWyU/wl7RM1COPNrOA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=yBN2DEeDhX7j8nVVWr6P5BQYarg2Ms0KI3m9m5QUJ8dFVGayzNUJMqyF2R0ZrOW+o
+         yyhwSQKpTS1JrwuAJTDZWvkuAYE1O+T21o2JDZY8kKZPhO9tZ+IjNESeAr5VBc9i8f
+         knDiO7B41lNfaK1BlEJS4ADzKoHt5fPMffLFXBf4=
 From:   fdmanana@kernel.org
-To:     linux-btrfs@vger.kernel.org
-Cc:     Filipe Manana <fdmanana@suse.com>
-Subject: [PATCH 5/5] btrfs: rename btrfs_insert_clone_extent() to a more generic name
-Date:   Tue,  8 Sep 2020 11:27:24 +0100
-Message-Id: <708d9e3e76a589d5362b063f01d1d1c58c0e4184.1599560101.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <cover.1599560101.git.fdmanana@suse.com>
-References: <cover.1599560101.git.fdmanana@suse.com>
-In-Reply-To: <cover.1599560101.git.fdmanana@suse.com>
-References: <cover.1599560101.git.fdmanana@suse.com>
+To:     fstests@vger.kernel.org
+Cc:     linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
+Subject: [PATCH] generic: add test for zero range over a file range with many small extents
+Date:   Tue,  8 Sep 2020 11:32:02 +0100
+Message-Id: <e038bd2419f60f0b4c5ac13da78bfba345f4dba7.1599560067.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.26.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
@@ -42,50 +39,111 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-Now that we use the same mechanism to replace all the extents in a file
-range with either a hole, an existing extent (when cloning) or a new
-extent (when using fallocate), the name of btrfs_insert_clone_extent()
-no longer reflects its genericity.
+Test a fallocate() zero range operation against a large file range for which
+there are many small extents allocated. Verify the operation does not fail
+and the respective range return zeroes on subsequent reads.
 
-So rename it to btrfs_insert_replace_extent(), since what it does is
-to either insert an existing extent or a new extent into a file range.
+This test is motivated by a bug found on btrfs. The patch that fixes the
+bug on btrfs has the following subject:
+
+ "btrfs: fix metadata reservation for fallocate that leads to transaction aborts"
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/file.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ tests/generic/609     | 61 +++++++++++++++++++++++++++++++++++++++++++
+ tests/generic/609.out |  5 ++++
+ tests/generic/group   |  1 +
+ 3 files changed, 67 insertions(+)
+ create mode 100755 tests/generic/609
+ create mode 100644 tests/generic/609.out
 
-diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-index 241b34e44a6c..32ceda264b7d 100644
---- a/fs/btrfs/file.c
-+++ b/fs/btrfs/file.c
-@@ -2570,7 +2570,7 @@ static int btrfs_punch_hole_lock_range(struct inode *inode,
- 	return 0;
- }
- 
--static int btrfs_insert_clone_extent(struct btrfs_trans_handle *trans,
-+static int btrfs_insert_replace_extent(struct btrfs_trans_handle *trans,
- 				     struct inode *inode,
- 				     struct btrfs_path *path,
- 				     struct btrfs_replace_extent_info *extent_info,
-@@ -2768,7 +2768,7 @@ int btrfs_replace_file_extents(struct inode *inode, struct btrfs_path *path,
- 		if (extent_info && drop_end > extent_info->file_offset) {
- 			u64 replace_len = drop_end - extent_info->file_offset;
- 
--			ret = btrfs_insert_clone_extent(trans, inode, path,
-+			ret = btrfs_insert_replace_extent(trans, inode, path,
- 							extent_info, replace_len);
- 			if (ret) {
- 				btrfs_abort_transaction(trans, ret);
-@@ -2864,7 +2864,7 @@ int btrfs_replace_file_extents(struct inode *inode, struct btrfs_path *path,
- 
- 	}
- 	if (extent_info) {
--		ret = btrfs_insert_clone_extent(trans, inode, path, extent_info,
-+		ret = btrfs_insert_replace_extent(trans, inode, path, extent_info,
- 						extent_info->data_len);
- 		if (ret) {
- 			btrfs_abort_transaction(trans, ret);
+diff --git a/tests/generic/609 b/tests/generic/609
+new file mode 100755
+index 00000000..cda2b3dc
+--- /dev/null
++++ b/tests/generic/609
+@@ -0,0 +1,61 @@
++#! /bin/bash
++# SPDX-License-Identifier: GPL-2.0
++# Copyright (C) 2020 SUSE Linux Products GmbH. All Rights Reserved.
++#
++# FS QA Test No. 609
++#
++# Test a fallocate() zero range operation against a large file range for which
++# there are many small extents allocated. Verify the operation does not fail
++# and the respective range return zeroes on subsequent reads.
++#
++seq=`basename $0`
++seqres=$RESULT_DIR/$seq
++echo "QA output created by $seq"
++tmp=/tmp/$$
++status=1	# failure is the default!
++trap "_cleanup; exit \$status" 0 1 2 3 15
++
++_cleanup()
++{
++	cd /
++	rm -f $tmp.*
++}
++
++# get standard environment, filters and checks
++. ./common/rc
++. ./common/filter
++
++# real QA test starts here
++_supported_fs generic
++_supported_os Linux
++_require_scratch
++_require_xfs_io_command "fzero"
++_require_xfs_io_command "fpunch"
++_require_test_program "punch-alternating"
++
++rm -f $seqres.full
++
++_scratch_mkfs >>$seqres.full 2>&1
++_scratch_mount
++
++# Create a file with many small extents. To speed up file creation, do
++# buffered writes and then punch a hole on every other block.
++$XFS_IO_PROG -f -c "pwrite -S 0xab -b 10M 0 100M" \
++	$SCRATCH_MNT/foobar >>$seqres.full
++$here/src/punch-alternating $SCRATCH_MNT/foobar >>$seqres.full
++
++# For btrfs, trigger a transaction commit to force metadata COW for the
++# following fallocate zero range operation.
++sync
++
++$XFS_IO_PROG -c "fzero 0 100M" $SCRATCH_MNT/foobar
++
++# Check the file content after umounting and mounting again the fs, to verify
++# everything was persisted.
++_scratch_cycle_mount
++
++echo "File content after zero range operation:"
++od -A d -t x1 $SCRATCH_MNT/foobar
++
++status=0
++exit
+diff --git a/tests/generic/609.out b/tests/generic/609.out
+new file mode 100644
+index 00000000..feb8c211
+--- /dev/null
++++ b/tests/generic/609.out
+@@ -0,0 +1,5 @@
++QA output created by 609
++File content after zero range operation:
++0000000 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
++*
++104857600
+diff --git a/tests/generic/group b/tests/generic/group
+index aa969bcb..f8eabc0a 100644
+--- a/tests/generic/group
++++ b/tests/generic/group
+@@ -611,3 +611,4 @@
+ 606 auto attr quick dax
+ 607 auto attr quick dax
+ 608 auto attr quick dax
++609 auto quick prealloc zero
 -- 
 2.26.2
 
