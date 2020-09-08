@@ -2,104 +2,241 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD7EA261775
-	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Sep 2020 19:35:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BF402619C7
+	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Sep 2020 20:26:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728647AbgIHRe7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 8 Sep 2020 13:34:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56904 "EHLO
+        id S1731772AbgIHSTV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 8 Sep 2020 14:19:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731477AbgIHQPM (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 8 Sep 2020 12:15:12 -0400
+        with ESMTP id S1731350AbgIHSSa (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 8 Sep 2020 14:18:30 -0400
 Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 133F6C06137B
-        for <linux-btrfs@vger.kernel.org>; Tue,  8 Sep 2020 05:52:22 -0700 (PDT)
-Received: by mail-qt1-x844.google.com with SMTP id z2so11710531qtv.12
-        for <linux-btrfs@vger.kernel.org>; Tue, 08 Sep 2020 05:52:22 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 569F6C061573
+        for <linux-btrfs@vger.kernel.org>; Tue,  8 Sep 2020 11:18:21 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id v54so12682617qtj.7
+        for <linux-btrfs@vger.kernel.org>; Tue, 08 Sep 2020 11:18:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=a7mWytfrXx9VxhixW12fSf5IdG2zJ22PQsoK01S4qzE=;
-        b=jSWSaIDtEXu1ExM3EYLbnG7Zye1ztPn+/lb43OIRl3abHpMXKmd4EYtn35VZeh08MP
-         uIot0dbsiuPcxHyKHqLg6rL1tdp3p4nZtk7El2JYAQiNDvdG4OoRC0icPHUCuJ7E4P0x
-         ckuBoUuJodEIwTJJQGqHf1DLAZlCjZs67vG1MhcLiWSb8B/u9VzwzPIj71uZVe3p3l7o
-         aEa4TjNJCqwb62JtqLrMcZKkxqhv90RRlQwb9aazfaqXO+EGAq/YInxPvwsTxUXNS/Ti
-         /eH/andDVeVCXV2sELo7XdXrYb7V/PMsjGfHAY2XCTpPU1pZt3DrWfs907dFHxPDfmqI
-         1CWQ==
+        d=konsulko.com; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=XGwrso0QyvEGqIwAODHOFwe9Wz9n+PvLrD47j45fgGQ=;
+        b=MW88sCwy0wUxz+VYAcAgf9S599k30vpG4yqkz+mR96sjgH7b97IMSWhs0meM05ONrC
+         BxyqIYNqdHTPld5N3hp/TWx9CwI/bs7EoUTA82W5kfvmiZHlUIE7KhbAG3ylshUqLJs6
+         sPoxbm8TeZCv8BpbO0y7YeV8rgQtp5RdGN68s=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=a7mWytfrXx9VxhixW12fSf5IdG2zJ22PQsoK01S4qzE=;
-        b=MOg0wa45htBT5z8vMcCaTO5qJoqH5mhUCGuRP8eOCWpFXPPInrnq68vs17nNnSUARA
-         LWgIkzDf3hjA/wBoExab3QVzON+vEMxGgE9dr0QKY6FN/vPiJIL8e2Eb5PQFpc8SCASa
-         KTUoPiDZ4z9bMSWaugUPk0+PjVaWXvPpudw+07lWQNKoqlrWvYe5nWuctSg4BUfXLlo9
-         4I+GthJMXJEoDsv2GkUOde1NtNbAtQMjsC/QCzoPG6u1wk+UdaZjvb2IkDB4wABQCRYl
-         ic+a6/7d7tAWojJqJZzX4LfVE9HIGSHG9hxxI3fcibOXOiaEsQ2h61AGSUsTVDcFq4KW
-         NS2Q==
-X-Gm-Message-State: AOAM5331/OUmLircEsGNIdlH2/DpJg46x5gJkp4zDefLXSNhnQyRR3/m
-        N7yy/XRvRVyE3QdGsxfQvvkKOw==
-X-Google-Smtp-Source: ABdhPJzP0QVwlleWfsUnxHxSj8b9pfoW1I6ai4xrC/f0LeXMAA5TV7qx8Pa7+8m2mNUCNtwKSh2tmA==
-X-Received: by 2002:ac8:76cb:: with SMTP id q11mr24604777qtr.63.1599569540649;
-        Tue, 08 Sep 2020 05:52:20 -0700 (PDT)
-Received: from [192.168.1.45] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id k6sm14395162qti.23.2020.09.08.05.52.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 08 Sep 2020 05:52:19 -0700 (PDT)
-Subject: Re: [PATCH 4/4] btrfs: do not create raid sysfs entries under any
- locks
-To:     dsterba@suse.cz, linux-btrfs@vger.kernel.org, kernel-team@fb.com
-References: <cover.1598996236.git.josef@toxicpanda.com>
- <2f140cd79a9738e72fc6da6ef4ba3635962dbf9c.1598996236.git.josef@toxicpanda.com>
- <20200908124003.GE28318@twin.jikos.cz>
-From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <ed683b7e-bd67-1f27-58ac-a979d8c97f90@toxicpanda.com>
-Date:   Tue, 8 Sep 2020 08:52:19 -0400
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.12.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=XGwrso0QyvEGqIwAODHOFwe9Wz9n+PvLrD47j45fgGQ=;
+        b=l66ngtKpZco4S8ujX4lxjiD6w+UjLxtJhZ+/MtnI43ILhjMS8vi0wEg92JCaWHUuzv
+         W8HaiCuze68xXJqYZrpaQixfz2T/r8edIuYbt8nXITzYY2UoSsgJgqe0ejJSERTMh/CM
+         /AiDSQTnLBVztoHfXeO6ksl5VsJ9UStjVdFcqUXU62xtdlgzhU7t+wDpSJry0jzpN9Nk
+         VbmSKzqO9XuGcOnA9ENHLGoIMMHZRKg2jKzscvZ42HNrvYAWfcW14TDXc7JyVU2zxO9h
+         0eXAeQiikZkI/J4d1yL4V7k8Ql/aJrLyS3yj6qbMY1woOBLuyTYyEGKU1EFHvqFapb9d
+         V+Uw==
+X-Gm-Message-State: AOAM530RMWnQt7junkBCrtteHlwn7FYY7nQogJ+Ek9f27OY7O5WBshQS
+        RJ4WDRERp7NeR0fLydQb5hZ96w==
+X-Google-Smtp-Source: ABdhPJzHGdxqDhfwvx1NU+eWmpQn4YW0eR2K3MRNQEcYbsDQupRqrsIT/cgJQlZbk0jxqZCc0dsztA==
+X-Received: by 2002:aed:20cb:: with SMTP id 69mr1431053qtb.106.1599589100498;
+        Tue, 08 Sep 2020 11:18:20 -0700 (PDT)
+Received: from bill-the-cat (2606-a000-1401-8ebe-d43f-8015-7222-c895.inf6.spectrum.com. [2606:a000:1401:8ebe:d43f:8015:7222:c895])
+        by smtp.gmail.com with ESMTPSA id q142sm23256qke.48.2020.09.08.11.18.18
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 08 Sep 2020 11:18:19 -0700 (PDT)
+Date:   Tue, 8 Sep 2020 14:18:17 -0400
+From:   Tom Rini <trini@konsulko.com>
+To:     Marek =?iso-8859-1?Q?Beh=FAn?= <marek.behun@nic.cz>
+Cc:     u-boot@lists.denx.de,
+        Alberto =?iso-8859-1?Q?S=E1nchez?= Molero 
+        <alsamolero@gmail.com>, Marek Vasut <marex@denx.de>,
+        Pierre Bourdon <delroth@gmail.com>,
+        Simon Glass <sjg@chromium.org>,
+        Yevgeny Popovych <yevgenyp@pointgrab.com>,
+        linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH U-BOOT v3 00/30] PLEASE TEST fs: btrfs: Re-implement
+ btrfs support using code from btrfs-progs
+Message-ID: <20200908181817.GN7259@bill-the-cat>
+References: <20200624160316.5001-1-marek.behun@nic.cz>
 MIME-Version: 1.0
-In-Reply-To: <20200908124003.GE28318@twin.jikos.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="3MMMIZFJzhAsRj/+"
+Content-Disposition: inline
+In-Reply-To: <20200624160316.5001-1-marek.behun@nic.cz>
+X-Clacks-Overhead: GNU Terry Pratchett
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 9/8/20 8:40 AM, David Sterba wrote:
-> On Tue, Sep 01, 2020 at 05:40:38PM -0400, Josef Bacik wrote:
->>   	}
->>   
->>   	list_for_each_entry(space_info, &info->space_info, list) {
->> +		int i;
->> +
->> +		for (i = 0; i < BTRFS_NR_RAID_TYPES; i++) {
->> +			if (list_empty(&space_info->block_groups[i]))
->> +				continue;
->> +			cache = list_first_entry(&space_info->block_groups[i],
->> +						 struct btrfs_block_group,
->> +						 list);
->> +			btrfs_sysfs_add_block_group_type(cache);
->> +		}
->> +
-> 
-> I had the previous version of the patch pass fstests, with no lockdep
-> warnings and then realized it's not the v2 that depends on the 3rd patch
-> removing RCU from this list traversal.
-> 
-> btrfs_sysfs_add_block_group_type does not seem to be conflicting RCU in
-> this loop so now I'm undecided if v1 is ok or if we really need v2, sice
-> the patch 3 removing RCU seems suspicious.
-> 
 
-It conflicts with RCU here because we could sleep, that's why I had to remove it.
+--3MMMIZFJzhAsRj/+
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Alternatively we could just loop a second time through the space_info's outside 
-of the RCU to do the btrfs_sysfs_add_block_group_type(), and I can drop the RCU 
-removal patch altogether.  It's up to you, but we still need v2 because the 
-problem still exists without it.  Thanks,
+On Wed, Jun 24, 2020 at 06:02:46PM +0200, Marek Beh=FAn wrote:
 
-Josef
+> Hello,
+>=20
+> this is a cleaned up version of Qu's patches that reimplements U-Boot's
+> btrfs driver with code from btrfs-progs.
+>=20
+> I have tested this series, found and corrected one bug (failure when
+> accesing files via symlinks), and it looks it is working now, but I
+> would like more people to do some testing.
+>=20
+> There are a lot of checkpatch warnings and errors left, I shall fix
+> this in the future.
+>=20
+> Marek
+>=20
+> Changes since v2:
+> - fixed btrfs_lookup_path() in patch 19 to correctly handle symlinks
+> - commit messages were updated some
+>   - for example they used the word "crossport" in 3 formats:
+>     "crossport", "cross-port" and "cross port", this was changed
+>     to "crossport"
+>   - corrected some typos
+>   - some English sentences were a bit weirdly written
+> - fixed 2 compiler warnings (one use of maybe uninitialized variable and
+>   one printf specifier warning)
+> - indentation in some places was wrong (usage of 8 spaces instead of a
+>   tab, for example)
+> - added my Reviewed-by
+> - the last patch, adding btrfs mailing list to MAINTAINRES, also adds
+>   Qu as designated reviewer, so that people add him to Cc when they send
+>   patches
+>=20
+> Changes since v1:
+> - Implement btrfs_list_subvols()
+>   In v1 it's completely removed thus would cause problem if btrfsolume
+>   command is compiled in.
+> - Rebased to latest master
+>   Only minor conflicts due to header changes.
+> - Allow next_legnth() to return value > BTRFS_NAME_LEN
+>=20
+> Below is Qu's explanation, from cover letter of v2:
+>=20
+> The current btrfs code in U-boot is using a creative way to read on-disk
+> data.
+> It's pretty simple, involving the least amount of code, but pretty
+> different from btrfs-progs nor kernel, making it pretty hard to sync
+> code between different projects.
+>=20
+> This big patchset will rework the btrfs support, to use code mostly from
+> btrfs-progs, thus all existing btrfs developers will feel at home.
+>=20
+> During the rework, the following new features are added:
+> - More hash algorithm support
+>   SHA256 and XXHASH support are added.
+>   BLAKE2 needs more backport, will happen in a separate patchset.
+>=20
+> - The ability to read degraded RAID1
+>   Although we still only support one device btrfs, the new code base
+>   can choose from different copies already.
+>   As long as new device scan interface is provided, multi-device support
+>   is pretty simple.
+>=20
+> - More correct handling of compressed extents with offset
+>   For compressed extent with offset, we should read the whole compressed
+>   extent, decompress them, then copy the referred part.
+>=20
+> There are some more features incoming, with the new code base it would
+> be much easier to implement:
+> - Data checksum support
+>   The check would happen in read_extent_data(), btrfs-progs has the
+>   needed facility to locate data csum.
+>=20
+> - BLAKE2 support
+>   Need BLAKE2 library cross ported.
+>   For btrfs it's just several lines of modification.
+>=20
+> - Multi-device support along wit degraded RAID support
+>   We only need an interface to scan one device without opening it.
+>   The infrastructure is already provided in this patchset.
+>=20
+> These new features would be submitted after the patchset get merged,
+> since the patchset is already large, I don't want to make it more scary.
+>=20
+> Although this patchset look horribly large, most of them are code copy
+> from btrfs-progs.
+> E.g extent-cache.[ch], rbtree-utils.[ch], btrfs_btree.h.
+> And ctree.h has over 1000 lines copied just for various accessors.
+>=20
+> While for disk-io.[ch] and volumes-io.[ch], they have some small
+> modifications to adapt the interface of U-boot.
+> E.g. btrfs_device::fd is replace with blkdev_desc and disk_partition_t.
+>=20
+> The new code for U-boot are related to the following functions:
+> - btrfs_readlink()
+> - btrfs_lookup_path()
+> - btrfs_read_extent_inline()
+> - btrfs_read_extent_reg()
+> - lookup_data_extent()
+> - btrfs_file_read()
+> - btrfs_list_subvols()
+>=20
+> Qu Wenruo (30):
+>   fs: btrfs: Sync btrfs_btree.h from kernel
+>   fs: btrfs: Add more checksum algorithms
+>   fs: btrfs: Crossport btrfs_read_dev_super() from btrfs-progs
+>   fs: btrfs: Crossport rbtree-utils from btrfs-progs
+>   fs: btrfs: Crossport extent-cache.[ch] from btrfs-progs
+>   fs: btrfs: Crossport extent-io.[ch] from btrfs-progs
+>   fs: btrfs: Crossport structure accessor into ctree.h
+>   fs: btrfs: Crossport volumes.[ch] from btrfs-progs
+>   fs: btrfs: Crossport read_tree_block() from btrfs-progs
+>   fs: btrfs: Rename struct btrfs_path to struct __btrfs_path
+>   fs: btrfs: Rename btrfs_root to __btrfs_root
+>   fs: btrfs: Crossport struct btrfs_root to ctree.h
+>   fs: btrfs: Crossport btrfs_search_slot() from btrfs-progs
+>   fs: btrfs: Crossport btrfs_read_sys_array() and
+>     btrfs_read_chunk_tree()
+>   fs: btrfs: Crossport open_ctree_fs_info() from btrfs-progs
+>   fs: btrfs: Rename path resolve related functions to avoid name
+>     conflicts
+>   fs: btrfs: Use btrfs_readlink() to implement __btrfs_readlink()
+>   fs: btrfs: inode: Allow next_length() to return value > BTRFS_NAME_LEN
+>   fs: btrfs: Implement btrfs_lookup_path()
+>   fs: btrfs: Use btrfs_iter_dir() to replace btrfs_readdir()
+>   fs: btrfs: Use btrfs_lookup_path() to implement btrfs_exists() and
+>     btrfs_size()
+>   fs: btrfs: Rename btrfs_file_read() and its callees to avoid name
+>     conflicts
+>   fs: btrfs: Introduce btrfs_read_extent_inline() and
+>     btrfs_read_extent_reg()
+>   fs: btrfs: Introduce lookup_data_extent() for later use
+>   fs: btrfs: Implement btrfs_file_read()
+>   fs: btrfs: Introduce function to resolve path in one subvolume
+>   fs: btrfs: Introduce function to resolve the path of one subvolume
+>   fs: btrfs: Imeplement btrfs_list_subvols() using new infrastructure
+>   fs: btrfs: Cleanup the old implementation
+>   MAINTAINERS: Add btrfs mailing list and myself as reviewer
+
+With the changes I followed up on to specific patches, the series has
+been applied to u-boot/next, thanks!
+
+--=20
+Tom
+
+--3MMMIZFJzhAsRj/+
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQGzBAABCgAdFiEEGjx/cOCPqxcHgJu/FHw5/5Y0tywFAl9XyugACgkQFHw5/5Y0
+tyy7yAv+J3rN5wsjSlE2I5MJ2idB6OQUIv5IddeXogT3GLbEDxCoM7cy/aam6y8A
+3DReUyN4MMIG3BMICzVvgTdCgMgcRZBV2H5k9+YFMyypBhn47gJCA8K68tItBECh
+VpSnTn3nvMTRKXyVo2C+Z/hreOvHAsR3GFCcpvHwM5+RzOX5UY7bL90omPV5hnXW
+M3J7gSbO7BfWDmbHfayJel0VHwldd1EuOKDvrVhk4XGF7KXkhqh8a4IQqg/bRVV6
+CLj4FGhPz8ffciDpW22BeO8Qqt89gVNfWsKa/Ulu7uWqA5/8hHXyeWgbj1X3sTBY
+nNhjf0/O7SzzeBAvAc6eeqE/aaLwaDlVfzbfPEayFOnum8iHnolsGKk6SCj5xTiX
+yMDV0Uph0mh71zeU9uBxAsVTRFEo46GhrYkFdxnnd4zfvyIt8dx0LTCcUiP87R4j
+kYJVRkin+EKT4G9j+p98HmHtaFKXdL9Uf2tDFdrkLaWLYID8nQZuUI6VmeIFwPS3
+cK1GN6Ll
+=kUa7
+-----END PGP SIGNATURE-----
+
+--3MMMIZFJzhAsRj/+--
