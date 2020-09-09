@@ -2,103 +2,90 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4324C262E6D
-	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Sep 2020 14:22:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6785262EA3
+	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Sep 2020 14:40:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729808AbgIIMWI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 9 Sep 2020 08:22:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46208 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729691AbgIIMU4 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 9 Sep 2020 08:20:56 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6286CC06179E
-        for <linux-btrfs@vger.kernel.org>; Wed,  9 Sep 2020 05:20:40 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id n133so2119857qkn.11
-        for <linux-btrfs@vger.kernel.org>; Wed, 09 Sep 2020 05:20:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=4l8mKt9mfVJ087l8w7qZYrVZQl10TB7eQmTZuL+96YE=;
-        b=CazflOz2+2Zu5QpKy/zLMMIMHLnrAxkzaAw0CestzcRVQyOLWbw47vVQe7j8KNeUJv
-         XMZ9tLci6wYFMjjr+JuJlKgRmSbAm3vnbOBd7OLKUq7DRdH69gXFl25MS4VmXsUlpKv5
-         S3sDheASNQ+abwyHKzSctexCETwe39PMbc9PRzRu18elVlB4vpwHV1u1BdzkcFmjGlgD
-         Jdy0hq/v2JCmL/pXJlHSU6nOyQ2/5Nz+NKQV7s6Dsjk0bGh5owBLLryb1XRgdj/UxJIP
-         08ioUzArjOCRsCxzwqIhyuU0MP6pdgcvOMPlqpW/DQ9XNdeyquV1pj3imXUEawoGc0Kq
-         F7LQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=4l8mKt9mfVJ087l8w7qZYrVZQl10TB7eQmTZuL+96YE=;
-        b=Lt2HrZqDsmVlNYZ9zVdlcM74PMs29nag7GObn3ma7rfueCwsr2v+yPaoe/AivAv3gS
-         DVyAnb7MWV72g7Jy+MiGB08dw9WVpF6pMlx5vLgBhUFW1fuCM9/tWzGk5RYjvdrkV/Xr
-         r8VHd+UAjuF7CmI96xGsf6jqDSTeLlvRX1fxtay7e6SiJpAZEO/NwJg02TA32oJhry3K
-         IWbSuXPXflZKJCmqyeoyei6Xc7n9s3yyvGpeaVcdWOb2jJppbtBg6oGG/xbK/frI3kQj
-         qdewxnoPB94uj+ToMN2rSV0wcfiMqRKNcN6HqHJey0vMSH/KreATobpZ8p4S6u5tzHxO
-         kWag==
-X-Gm-Message-State: AOAM531m3+qpauFKieGR726AJ0njoggbkFdb1tUh7Gol8QZnik48LIVa
-        nL0hSw2HrNW4kcYoHXpkvrU00w==
-X-Google-Smtp-Source: ABdhPJxUTR50sN44TvspyghPStFhAkd3NCostgtOdDzv+E2q+HFazIYxoFBmUtxwn8xHG/cLcmkC2w==
-X-Received: by 2002:a37:bf43:: with SMTP id p64mr2898037qkf.24.1599654039531;
-        Wed, 09 Sep 2020 05:20:39 -0700 (PDT)
-Received: from localhost.localdomain (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id u17sm2682949qtq.20.2020.09.09.05.20.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 09 Sep 2020 05:20:38 -0700 (PDT)
-Subject: Re: [PATCH] fstests: btrfs/219 add a test to test -o rescue=all
-To:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "fstests@vger.kernel.org" <fstests@vger.kernel.org>,
-        "kernel-team@fb.com" <kernel-team@fb.com>
-References: <5e29c56193c6de8bbc364f22595479d292da13d3.1599579754.git.josef@toxicpanda.com>
- <SN4PR0401MB35985107123C67C711DE69E79B260@SN4PR0401MB3598.namprd04.prod.outlook.com>
-From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <8ee024dd-6c7a-3d80-d98d-4f622a380c4d@toxicpanda.com>
-Date:   Wed, 9 Sep 2020 08:20:37 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1730211AbgIIMju (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 9 Sep 2020 08:39:50 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:44010 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730193AbgIIMiC (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 9 Sep 2020 08:38:02 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 089BExUY057407;
+        Wed, 9 Sep 2020 11:15:12 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=RfbiCIreVVi3FHYyKt0s61miRi7A72600y0aaUzUwbg=;
+ b=bHQ7hSJjLPL8F/2fipDkyviHKtVyhW8jAcRQyb0C3BJE+k3fGq+SGhHw7Tf4OeNXhqir
+ kXHfsSRbb3YccwQfW1D3jeugOTGm5l0QMQR3xY5R0flaq2aZlMdOwlzC7Hyf0fs4mwMi
+ 1PqbOxz23BRxIBxV69IZnLeMdyygPqGH9+LmwkIscC2AB3gLVXUrI2lchfkIXB1ge0Ty
+ ptbbmrV1GKmcSDqqRbm71cyNLxeuD1n1yHGhv3ClQbvUAvZtKyuH2TTXfgeRQJEwiWeo
+ nay2pNVyoRLkFXZGIX70Q8tPOwYcwC5g0Kv30Ki/DMJujjYIZGevctfYuPfR3K+pA+EG kA== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2120.oracle.com with ESMTP id 33c2mm11ax-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 09 Sep 2020 11:15:12 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 089B6bR9035517;
+        Wed, 9 Sep 2020 11:15:11 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3030.oracle.com with ESMTP id 33cmkxm32r-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 09 Sep 2020 11:15:11 +0000
+Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 089BFAkZ024115;
+        Wed, 9 Sep 2020 11:15:10 GMT
+Received: from [192.168.1.102] (/39.109.231.106)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 09 Sep 2020 04:15:10 -0700
+Subject: Re: [PATCH 13/16] btrfs: cleanup btrfs_remove_chunk
+To:     dsterba@suse.cz, linux-btrfs@vger.kernel.org, dsterba@suse.com,
+        josef@toxicpanda.com, nborisov@suse.com
+References: <cover.1599234146.git.anand.jain@oracle.com>
+ <731ff89d22332c3e344f9ea4ca28012f01d50656.1599234146.git.anand.jain@oracle.com>
+ <20200909105039.GF18399@twin.jikos.cz>
+From:   Anand Jain <anand.jain@oracle.com>
+Message-ID: <9d15b919-0b9e-8463-9c31-a4ae70c983ec@oracle.com>
+Date:   Wed, 9 Sep 2020 19:15:05 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.2.1
 MIME-Version: 1.0
-In-Reply-To: <SN4PR0401MB35985107123C67C711DE69E79B260@SN4PR0401MB3598.namprd04.prod.outlook.com>
+In-Reply-To: <20200909105039.GF18399@twin.jikos.cz>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9738 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 phishscore=0 suspectscore=0
+ spamscore=0 mlxlogscore=999 adultscore=0 malwarescore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009090099
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9738 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 priorityscore=1501
+ phishscore=0 adultscore=0 bulkscore=0 clxscore=1015 mlxlogscore=999
+ malwarescore=0 suspectscore=0 lowpriorityscore=0 spamscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009090100
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 9/9/20 3:15 AM, Johannes Thumshirn wrote:
-> On 08/09/2020 21:39, Josef Bacik wrote:
->> +# Modify as appropriate.
->> +_supported_fs generic
->> +_supported_os Linux
->> +_require_test
->> +_require_scratch_mountopt "-o rescue=all,ro"
->> +
->> +# if error
->> +exit
->> +
->> +# optional stuff if your test has verbose output to help resolve problems
->> +#echo
->> +#echo "If failure, check $seqres.full (this) and $seqres.full.ok (reference)"
->> +
->> +# success, all done
->> +status=0
->> +exit
+
+
+On 9/9/20 6:50 pm, David Sterba wrote:
+> On Sat, Sep 05, 2020 at 01:34:33AM +0800, Anand Jain wrote:
+>> In the function btrfs_remove_chunk() remove the local variable
+>> %fs_devices, instead use the assigned pointer directly.
 > 
-> This looks very much like the test template. The only thing it does is check if
-> the mount option exit and then exit, doesn't it?
-> 
-> So it either gets skipped if the mount option isn't present or it exits with a
-> failure.
+> Local variable that caches some pointer is ok if it's used multiple
+> time, this patch does the opposite.
 > 
 
-Lol Jesus Christ, I git format-patch'ed to copy the test to the box I 
-was actually going to use and fixed it there, but then forgot to copy 
-the new one back over and sent the template.  I'm an idiot, I'll resend 
-the actual test.  Thanks,
+Oh. By this, it was easy to find and confirm that the device_list_mutex
+is of the main device fs_info->fs_deices. I should have mentioned that
+in the changelog.
 
-Josef
+Thanks, Anand
+
