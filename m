@@ -2,44 +2,44 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0440D2638A6
-	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Sep 2020 23:46:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C10302638A7
+	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Sep 2020 23:46:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726714AbgIIVqu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 9 Sep 2020 17:46:50 -0400
-Received: from out4-smtp.messagingengine.com ([66.111.4.28]:48285 "EHLO
+        id S1727900AbgIIVq5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 9 Sep 2020 17:46:57 -0400
+Received: from out4-smtp.messagingengine.com ([66.111.4.28]:36821 "EHLO
         out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726426AbgIIVqs (ORCPT
+        by vger.kernel.org with ESMTP id S1726426AbgIIVqy (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 9 Sep 2020 17:46:48 -0400
+        Wed, 9 Sep 2020 17:46:54 -0400
 Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.nyi.internal (Postfix) with ESMTP id 5D2635C00C8;
-        Wed,  9 Sep 2020 17:46:47 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Wed, 09 Sep 2020 17:46:47 -0400
+        by mailout.nyi.internal (Postfix) with ESMTP id 83C075C00C3;
+        Wed,  9 Sep 2020 17:46:53 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Wed, 09 Sep 2020 17:46:53 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=from
         :to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm1; bh=P00fKPI9np4IK
-        UXOyCpW3TjIYp/b8PG3mDDGIiKT+YE=; b=Ei+wblFpBgxgG74PosV29TdT5lbQJ
-        ya53a/VT7Ze+tfzUZ8AbEU/owrfDv9CK5wC9zBqX7O/GH7Uh9dgraukvkjsSwdIl
-        vAdpgKdzvpPirir+2ODBGp8vGe9Jlp2s4K57IgkJbtkK6GeXMwLzyShmkpQ3slRO
-        Sw6OesXtIRsDaXSpV2U8vKSjkXFU8eAkq4TaLdnQSXvroW5vNZC2tq9J6y+S6Gpn
-        fhS+cFYDSzlBQzgO4rwi2okPFG+4VtVv09dTOXyHZ6kElycjT7tPCC5sV4trrvc1
-        uOyoMyTFP5rs3Li5//zI67XbWVqYpP+d71/fuuARr/vI7BNCTkJpC+iBQ==
+        :mime-version:content-transfer-encoding; s=fm1; bh=cnlJ2VxE4B6YB
+        WmbLpR870YtmpcEbP0BGQeWJakwIVs=; b=mSD18XV9Jtn2VBZsnrN6AzsARDRk/
+        sMY4KAJ2NIa3POyn8ihjRu6J8htSs72V4+nD1aRbsjZ7gsckDAXTm/KcGL1l2XwX
+        czCKQBAYwUJwVWKpuJpvuAMggG5Psf33yNT37ZUOBSpa4bVLEYCSrGsdYYuOVrQJ
+        YPziZCg5gnZ+7DCarZ17RmHL9/2XA42bh5ZGarmBldE26KYZUBqF8RAEiumeOuA8
+        M+BxMzA3faOAzzwiX86eq0I0uAOvXiElk1T4V0678PPXqBtxl10ykkuRb7mAP74l
+        giFQmraZGDx0GAlC0nChxPqVRoAuBrk2sxM409vL2OQ2QaTcu1Ad3Un/Q==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-transfer-encoding:date:from
         :in-reply-to:message-id:mime-version:references:subject:to
         :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm3; bh=P00fKPI9np4IKUXOyCpW3TjIYp/b8PG3mDDGIiKT+YE=; b=i+tuImKt
-        Zocwq2c0HrsA7DwbxfJA87rULvdTdAqzSy/C8swvG5w7VVZXQZ/v9/5V61avH6Q6
-        H8gx8po0R/pjeiIRZKua2I+nixfQemyNgy7xhyGkvc7JeuNn+iwx7M8P5BthwaUM
-        Hep4I8eezrO9UrYVVXvVxm85vZ7Lr/vGgHsmy8gjL+rY4GbcKZMT+J2WGsDt7IDQ
-        91uhmaEhPeGQKtxFMalK+aCSwO3b5AHg4XYEthcCTvemdb5jCGg0h45q821Hec9E
-        GwEWjPyIruzBrqehPxBG4W5n+BSm0O1ALP6qIoWLqybbFHNeFb7mhoJxBheIZcXt
-        mmkTKJs2ok0W4Q==
-X-ME-Sender: <xms:Rk1ZX-uZu2ojo33qjDkSoEt-0UH1YNqQC9cs4baXhu662U8W1-OulA>
-    <xme:Rk1ZXzfHw_Tb3auB9ZRd3RYWVmczjM6KVmrmV4Z_5XOk81FCO67uBzQa5p1U8pmc3
-    XW1yyNVEaQctaWeHUM>
+        fm3; bh=cnlJ2VxE4B6YBWmbLpR870YtmpcEbP0BGQeWJakwIVs=; b=T+Kxz//y
+        NriALSEKc6JlI2/XstqeBbd1Y6HrXgKxlyxbzkEzK4W2HcyTGMe1gws/XkrRvoW4
+        RndXWZ17/vJ8pPdDKnSVm6e7op4cUXlyS8X55jR7Ol3rYaAPCj9mCyPM0bxm/RTV
+        HbW6TNFN/aZZTysaFIB60gi3xYVe29j7kFCVZSjtXKg1oONNtdMF8/081tyt42+a
+        IZBcCz0jXoz5NUb2zMpDkc63Jp+J4MDHiBIDulM9jR72h0W3NB2bSgerrdVJprKt
+        +/j9EHpbgp6PfbI4NIPoYxIN9Km1ZkZsdd935cA/txRUX3Nlg+aiD7zCnZ9zXycT
+        qmwbujdCx+YamQ==
+X-ME-Sender: <xms:TU1ZX2HIJEbnAMErQpWqPU37NRvk3OnBvtTWl8UtBzjMLlobgdFjHA>
+    <xme:TU1ZX3WTEgkyy62W5UaL-Q_poBb-9AUzSkavDy4vkP07p8QvKpvHVL1ioKHPaU4f-
+    jAXbeisACuINB41TMY>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrudehiedgtdduucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
@@ -47,23 +47,23 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrudehiedgtdduucetufdoteggod
     uceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhioheqnecuggftrfgrthhtvghrnhepte
     ehhedugfellefhheffteettdefledvgffhleekfeeggfdvveegffefvddtfeegnecuffho
     mhgrihhnpehgihhthhhusgdrtghomhenucfkphepudeifedruddugedrudefvddrfeenuc
-    evlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhrihhs
+    evlhhushhtvghrufhiiigvpedunecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhrihhs
     segsuhhrrdhioh
-X-ME-Proxy: <xmx:Rk1ZX5yUa2xKc4NbhKHf8OnyHJOPo7C0RMdDLQS9EZw3wZl7XmhDDQ>
-    <xmx:Rk1ZX5PaBV4-3sMCz-16AYlrQn0j_LOoDt-XMZP46wsPdgQkA5kjZQ>
-    <xmx:Rk1ZX-_mpYBlYu-isX-a1h7CPG5Z5Bn0NISM4uixD03gIaS_kHmL8Q>
-    <xmx:R01ZX1Zdwn2QuTtHl20yIw2_KlKLoZ8EqOonezv_dser-ge6ABS6Ew>
+X-ME-Proxy: <xmx:TU1ZXwI_oOpOybomt0o_dpf40Vl3--hQyWVB1rVcJEUw5Oy9Z9mMJw>
+    <xmx:TU1ZXwEMkvU7XZ_TJMnMjOa8zNDpGZ669bxRpsQqAAYtlzYcF9rxkA>
+    <xmx:TU1ZX8XGJ_EDwtmQAp4bUgFPJscxm6r9F3uH9Trro9j8Xg-ozuwViw>
+    <xmx:TU1ZXzTVWaSXW6ekoIWCJTmI0AJUY3NDKazBi2qGxixexoyGe2sU-w>
 Received: from localhost (unknown [163.114.132.3])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 541443068C65;
-        Wed,  9 Sep 2020 17:46:46 -0400 (EDT)
+        by mail.messagingengine.com (Postfix) with ESMTPA id BE9093280060;
+        Wed,  9 Sep 2020 17:46:52 -0400 (EDT)
 From:   Boris Burkov <boris@bur.io>
 To:     Dave Sterba <dsterba@suse.com>, Josef Bacik <josef@toxicpanda.com>,
         Chris Mason <clm@fb.com>
 Cc:     Boris Burkov <boris@bur.io>, linux-btrfs@vger.kernel.org,
         kernel-team@fb.com
-Subject: [PATCH v2 1/3] btrfs: support remount of ro fs with free space tree
-Date:   Wed,  9 Sep 2020 14:45:16 -0700
-Message-Id: <9bca6fcf34bffc73c42323c9f79f5c1a9e6ef131.1599686801.git.boris@bur.io>
+Subject: [PATCH v2 2/3] btrfs: remove free space items when creating free space tree
+Date:   Wed,  9 Sep 2020 14:45:17 -0700
+Message-Id: <ca7009f0e52c804f85e96f75b54a408a2de8b260.1599686801.git.boris@bur.io>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <cover.1599686801.git.boris@bur.io>
 References: <cover.1599686801.git.boris@bur.io>
@@ -74,93 +74,172 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-When a user attempts to remount a btrfs filesystem with
-'mount -o remount,space_cache=v2', that operation succeeds.
-Unfortunately, this is misleading, because the remount does not create
-the free space tree. /proc/mounts will incorrectly show space_cache=v2,
-but on the next mount, the file system will revert to the old
-space_cache.
+When the file system transitions from space cache v1 to v2 it removes
+the old cached data, but does not remove the FREE_SPACE items nor the
+free space inodes they point to. This doesn't cause any issues besides
+being a bit inefficient, since these items no longer do anything useful.
 
-For now, we handle only the easier case, where the existing mount is
-read only. In that case, we can create the free space tree without
-contending with the block groups changing as we go. If it is not read
-only, we fail more explicitly so the user knows that the remount was not
-successful, and we don't end up in a state where /proc/mounts is giving
-misleading information. We also fail if the remount is read-only, since
-we would not be able to create the free space tree in that case.
+To fix it, as part of populating the free space tree, destroy each block
+group's free space item and free space inode. This code is lifted from
+the existing code for removing them when removing the block group.
 
 References: https://github.com/btrfs/btrfs-todo/issues/5
 Signed-off-by: Boris Burkov <boris@bur.io>
 ---
 v2:
-- move creation down to ro->rw case
-- error on all other remount cases
-- add a comment to help future remount modifiers
+- remove_free_space_inode -> btrfs_remove_free_space_inode
+- undo sinful whitespace change
 
- fs/btrfs/super.c | 29 +++++++++++++++++++++++++++++
- 1 file changed, 29 insertions(+)
+ fs/btrfs/block-group.c      | 39 ++----------------------------
+ fs/btrfs/free-space-cache.c | 48 +++++++++++++++++++++++++++++++++++++
+ fs/btrfs/free-space-cache.h |  2 ++
+ fs/btrfs/free-space-tree.c  |  3 +++
+ 4 files changed, 55 insertions(+), 37 deletions(-)
 
-diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-index 3ebe7240c63d..0a1b5f554c27 100644
---- a/fs/btrfs/super.c
-+++ b/fs/btrfs/super.c
-@@ -47,6 +47,7 @@
- #include "tests/btrfs-tests.h"
- #include "block-group.h"
- #include "discard.h"
-+#include "free-space-tree.h"
- 
- #include "qgroup.h"
- #define CREATE_TRACE_POINTS
-@@ -1838,6 +1839,7 @@ static int btrfs_remount(struct super_block *sb, int *flags, char *data)
- 	u64 old_max_inline = fs_info->max_inline;
- 	u32 old_thread_pool_size = fs_info->thread_pool_size;
- 	u32 old_metadata_ratio = fs_info->metadata_ratio;
-+	bool create_fst = false;
+diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+index 01e8ba1da1d3..e5e5baad88d8 100644
+--- a/fs/btrfs/block-group.c
++++ b/fs/btrfs/block-group.c
+@@ -892,8 +892,6 @@ int btrfs_remove_block_group(struct btrfs_trans_handle *trans,
+ 	struct btrfs_path *path;
+ 	struct btrfs_block_group *block_group;
+ 	struct btrfs_free_cluster *cluster;
+-	struct btrfs_root *tree_root = fs_info->tree_root;
+-	struct btrfs_key key;
+ 	struct inode *inode;
+ 	struct kobject *kobj = NULL;
  	int ret;
+@@ -971,42 +969,9 @@ int btrfs_remove_block_group(struct btrfs_trans_handle *trans,
+ 	spin_unlock(&trans->transaction->dirty_bgs_lock);
+ 	mutex_unlock(&trans->transaction->cache_write_mutex);
  
- 	sync_filesystem(sb);
-@@ -1862,6 +1864,17 @@ static int btrfs_remount(struct super_block *sb, int *flags, char *data)
- 	btrfs_resize_thread_pool(fs_info,
- 		fs_info->thread_pool_size, old_thread_pool_size);
- 
-+	if (btrfs_test_opt(fs_info, FREE_SPACE_TREE) &&
-+	    !btrfs_fs_compat_ro(fs_info, FREE_SPACE_TREE)) {
-+		create_fst = true;
-+		if(!sb_rdonly(sb) || *flags & SB_RDONLY) {
-+			btrfs_warn(fs_info,
-+				   "Remounting with free space tree only allowed from read-only to read-write");
-+			ret = -EINVAL;
-+			goto restore;
-+		}
-+	}
-+
- 	if ((bool)(*flags & SB_RDONLY) == sb_rdonly(sb))
+-	if (!IS_ERR(inode)) {
+-		ret = btrfs_orphan_add(trans, BTRFS_I(inode));
+-		if (ret) {
+-			btrfs_add_delayed_iput(inode);
+-			goto out;
+-		}
+-		clear_nlink(inode);
+-		/* One for the block groups ref */
+-		spin_lock(&block_group->lock);
+-		if (block_group->iref) {
+-			block_group->iref = 0;
+-			block_group->inode = NULL;
+-			spin_unlock(&block_group->lock);
+-			iput(inode);
+-		} else {
+-			spin_unlock(&block_group->lock);
+-		}
+-		/* One for our lookup ref */
+-		btrfs_add_delayed_iput(inode);
+-	}
+-
+-	key.objectid = BTRFS_FREE_SPACE_OBJECTID;
+-	key.type = 0;
+-	key.offset = block_group->start;
+-
+-	ret = btrfs_search_slot(trans, tree_root, &key, path, -1, 1);
+-	if (ret < 0)
++	ret = btrfs_remove_free_space_inode(trans, block_group);
++	if (ret)
  		goto out;
+-	if (ret > 0)
+-		btrfs_release_path(path);
+-	if (ret == 0) {
+-		ret = btrfs_del_item(trans, tree_root, path);
+-		if (ret)
+-			goto out;
+-		btrfs_release_path(path);
+-	}
  
-@@ -1924,6 +1937,22 @@ static int btrfs_remount(struct super_block *sb, int *flags, char *data)
- 			goto restore;
- 		}
+ 	spin_lock(&fs_info->block_group_cache_lock);
+ 	rb_erase(&block_group->cache_node,
+diff --git a/fs/btrfs/free-space-cache.c b/fs/btrfs/free-space-cache.c
+index 8759f5a1d6a0..da6d436c58fa 100644
+--- a/fs/btrfs/free-space-cache.c
++++ b/fs/btrfs/free-space-cache.c
+@@ -207,6 +207,54 @@ int create_free_space_inode(struct btrfs_trans_handle *trans,
+ 					 ino, block_group->start);
+ }
  
-+		/*
-+		 * NOTE: when remounting with a change that does writes, don't
-+		 * put it anywhere above this point, as we are not sure to be
-+		 * safe to write until we pass the above checks.
-+		 */
-+		if (create_fst) {
-+			btrfs_info(fs_info, "creating free space tree");
-+			ret = btrfs_create_free_space_tree(fs_info);
-+			if (ret) {
-+				btrfs_warn(fs_info,
-+					   "failed to create free space tree: %d", ret);
-+				goto restore;
-+			}
-+		}
++int btrfs_remove_free_space_inode(struct btrfs_trans_handle *trans,
++				  struct btrfs_block_group *block_group)
++{
++	struct btrfs_path *path;
++	struct inode *inode;
++	struct btrfs_key key;
++	int ret = 0;
++	path = btrfs_alloc_path();
++	if (!path)
++		return -ENOMEM;
 +
++	inode = lookup_free_space_inode(block_group, path);
++	if (IS_ERR(inode)) {
++		if (PTR_ERR(inode) != -ENOENT)
++			ret = PTR_ERR(inode);
++		goto out;
++	}
++	ret = btrfs_orphan_add(trans, BTRFS_I(inode));
++	if (ret) {
++		btrfs_add_delayed_iput(inode);
++		goto out;
++	}
++	clear_nlink(inode);
++	/* One for the block groups ref */
++	spin_lock(&block_group->lock);
++	if (block_group->iref) {
++		block_group->iref = 0;
++		block_group->inode = NULL;
++		spin_unlock(&block_group->lock);
++		iput(inode);
++	} else {
++		spin_unlock(&block_group->lock);
++	}
++	/* One for our lookup ref */
++	btrfs_add_delayed_iput(inode);
 +
- 		ret = btrfs_cleanup_fs_roots(fs_info);
++	key.objectid = BTRFS_FREE_SPACE_OBJECTID;
++	key.type = 0;
++	key.offset = block_group->start;
++	ret = btrfs_search_slot(trans, trans->fs_info->tree_root, &key, path, -1, 1);
++	if (ret != 0)
++		goto out;
++	ret = btrfs_del_item(trans, trans->fs_info->tree_root, path);
++out:
++	btrfs_free_path(path);
++	return ret;
++}
++
+ int btrfs_check_trunc_cache_free_space(struct btrfs_fs_info *fs_info,
+ 				       struct btrfs_block_rsv *rsv)
+ {
+diff --git a/fs/btrfs/free-space-cache.h b/fs/btrfs/free-space-cache.h
+index e3d5e0ad8f8e..606eca93e43f 100644
+--- a/fs/btrfs/free-space-cache.h
++++ b/fs/btrfs/free-space-cache.h
+@@ -84,6 +84,8 @@ struct inode *lookup_free_space_inode(struct btrfs_block_group *block_group,
+ int create_free_space_inode(struct btrfs_trans_handle *trans,
+ 			    struct btrfs_block_group *block_group,
+ 			    struct btrfs_path *path);
++int btrfs_remove_free_space_inode(struct btrfs_trans_handle *trans,
++				  struct btrfs_block_group *block_group);
+ 
+ int btrfs_check_trunc_cache_free_space(struct btrfs_fs_info *fs_info,
+ 				       struct btrfs_block_rsv *rsv);
+diff --git a/fs/btrfs/free-space-tree.c b/fs/btrfs/free-space-tree.c
+index 6b9faf3b0e96..7b6be89c1862 100644
+--- a/fs/btrfs/free-space-tree.c
++++ b/fs/btrfs/free-space-tree.c
+@@ -1165,6 +1165,9 @@ int btrfs_create_free_space_tree(struct btrfs_fs_info *fs_info)
+ 		block_group = rb_entry(node, struct btrfs_block_group,
+ 				       cache_node);
+ 		ret = populate_free_space_tree(trans, block_group);
++		if (ret)
++			goto abort;
++		ret = btrfs_remove_free_space_inode(trans, block_group);
  		if (ret)
- 			goto restore;
+ 			goto abort;
+ 		node = rb_next(node);
 -- 
 2.24.1
 
