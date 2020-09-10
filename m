@@ -2,191 +2,173 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A6B7263B28
-	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Sep 2020 05:02:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45E90263C82
+	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Sep 2020 07:36:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726738AbgIJDCL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 9 Sep 2020 23:02:11 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20917 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726642AbgIJDA6 (ORCPT
+        id S1725992AbgIJFgu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 10 Sep 2020 01:36:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57720 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725855AbgIJFgn (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 9 Sep 2020 23:00:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1599706856;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=GQalugFKq465b5k5xiN1MGjI2fh4gdBNAsOArzwMH9o=;
-        b=V5TLwRkQX95TCB3SW+dmpQh30CnAdmVwBCuDQ4MlpLFibZEo/XKmjn3d0jIIet2Kwps+uo
-        +wEppHmJogvNoYNvECALjDtDWkliZTKAnMsSlLyqVeoJ9bAQGmvyPj0A1kPYLUkDWJS6UY
-        OVqytt/pii6R7rnWjxXR08z7t80/lnk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-189-5rWQ1AP0N-KDefoSq5Boeg-1; Wed, 09 Sep 2020 23:00:54 -0400
-X-MC-Unique: 5rWQ1AP0N-KDefoSq5Boeg-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3B79E57057;
-        Thu, 10 Sep 2020 03:00:53 +0000 (UTC)
-Received: from localhost (dhcp-12-102.nay.redhat.com [10.66.12.102])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 9D7926FEFE;
-        Thu, 10 Sep 2020 03:00:52 +0000 (UTC)
-Date:   Thu, 10 Sep 2020 11:14:39 +0800
-From:   Zorro Lang <zlang@redhat.com>
-To:     "Darrick J. Wong" <darrick.wong@oracle.com>
-Cc:     fdmanana@kernel.org, fstests@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
-Subject: Re: [PATCH] generic: add test for zero range over a file range with
- many small extents
-Message-ID: <20200910031439.GF2937@dhcp-12-102.nay.redhat.com>
-Mail-Followup-To: "Darrick J. Wong" <darrick.wong@oracle.com>,
-        fdmanana@kernel.org, fstests@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
-References: <e038bd2419f60f0b4c5ac13da78bfba345f4dba7.1599560067.git.fdmanana@suse.com>
- <20200909190213.GA7943@magnolia>
+        Thu, 10 Sep 2020 01:36:43 -0400
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 905DCC061573
+        for <linux-btrfs@vger.kernel.org>; Wed,  9 Sep 2020 22:36:42 -0700 (PDT)
+Received: by mail-ed1-x543.google.com with SMTP id c10so5007881edk.6
+        for <linux-btrfs@vger.kernel.org>; Wed, 09 Sep 2020 22:36:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:references:from:autocrypt:message-id:date:user-agent
+         :mime-version:in-reply-to;
+        bh=DtY1HBelo13GA6F7pH1151n3BpH0f5vQRhoh7ZJdNZ0=;
+        b=kw6goERjeHYDfG8cKmhtAH4Z1mGVJEqUhRS65GnWSmhlE4P4sYZzswhBm/2XnFFVhb
+         vU5ww1o6OO+2+3YDlxfYqZ89+ZGmXiImfpiEXPYpMBldQXZuydMB+NzuWRBWlIwEux14
+         nhw2iNMqa7K5n5XGqdm7VHEcyVmrFRJsGDYlOgaFkOcK9cr0lq/UBSXfO1M8p0M+Ntj5
+         DkOXINxUMPfleGv5tdrRoP1NdQ9vFSWU52oAgVQJO0bIUYW1HHKJ2Oo+mD5m97f/So1Z
+         DSrXPvwraDBgwyaRWnfiFuDc5IekhaBZZZO17E7giElavlT3TiuA6mNPfzXiMf0jevTz
+         QKlA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:autocrypt:message-id
+         :date:user-agent:mime-version:in-reply-to;
+        bh=DtY1HBelo13GA6F7pH1151n3BpH0f5vQRhoh7ZJdNZ0=;
+        b=SKso9JPhI9m/eqcuVej9ImNVE4m65/g1effa+fFAgTKaWRu5duZe1yYkyaMD8NQbYT
+         ihMvqB1XUWAS8sAeDZDlTMa16jrILfiYWvF2n6+lUmUX6qG8jMuJ38BEm5/LGsjYMYP9
+         jVLXift7dCvJtGg6zvliNxY5aE18kEJZQyMCHhwEtSHCcdORokYUQ5p7LbiknfdpI0nF
+         AbKvPgBjjcmlwAJlgSPuNCbhGUDH1Ie2YvFjeXEJLfmEqlr1dS0U8aTaLgrYr5BT+gJl
+         nPBvSiw3pAZVOsYHnsIG38gaDszUDt5ZQEY/U3fLwSRYoRCbW0qenQZ7GVWaQ6fdk8R7
+         yMZg==
+X-Gm-Message-State: AOAM533Gddx8Fq52jD9Rusp5fqbTAzWQ+YypFRr6khDtkL1P1AjLaRD7
+        WmfrV4gnKJJACaKE+yrybfM80vTBP1FfTg==
+X-Google-Smtp-Source: ABdhPJxaUrmfNp12spgcUlGmsZDlVPYG+uDY3Iqf6WjFomPpIu3A2OowLWvDjZ8LiKJH86fnihRk9g==
+X-Received: by 2002:a05:6402:1bc2:: with SMTP id ch2mr7409816edb.60.1599716200674;
+        Wed, 09 Sep 2020 22:36:40 -0700 (PDT)
+Received: from ?IPv6:2003:d3:c72d:9a00:9265:f4f1:4fa5:f9a3? (p200300d3c72d9a009265f4f14fa5f9a3.dip0.t-ipconnect.de. [2003:d3:c72d:9a00:9265:f4f1:4fa5:f9a3])
+        by smtp.gmail.com with ESMTPSA id p11sm5462307edu.93.2020.09.09.22.36.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 09 Sep 2020 22:36:39 -0700 (PDT)
+Subject: Re: backref mismatch / backpointer mismatch
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
+References: <0219bbee-9ca3-135a-8a2f-5d616000c1e0@gmail.com>
+ <f4317021-89e4-904b-6032-10bdfe455450@gmx.com>
+From:   Johannes Rohr <jorohr@gmail.com>
+Autocrypt: addr=jorohr@gmail.com; prefer-encrypt=mutual; keydata=
+ mQENBFT1gLABCADcwcj45ysOenaLb8+pkjeb+6oC5IZQ5rgf42l8tCfU6mwwTyaHI/OE9f1f
+ pClmX+dkEFp9HjFK6e33St+HgcXsmarEpVkGVB1oLwhnECuBngqJLbopXL8QfgVkjaNq2aF9
+ QfR0W2F8BlNDllnJ8q3MToY3RQ2BSkYvsekCS9zJ+8cFrZohpTa9hvtD2tDdHk48A8GaxA7Q
+ CZm3FSbzXEFuGH4TZ4P407b6prXfU8LidTCrkluuM44LhqTGRXmtuVg6jU9vOrkcz8fflGtq
+ Orziu8O32iiL9HU1Oo2wX/vXq9wANj9PAp+cOknXVAH/MeYSIPqo+0pc6ObZxufYyUehABEB
+ AAG0IEpvaGFubmVzIFJvaHIgPGpvcm9ockBnbWFpbC5jb20+iQFOBBMBCAA4FiEEQGpo2KXp
+ zZlAiCX9BQuNsh71kW8FAliYN80CGwMFCwkIBwIGFQgJCgsCBBYCAwECHgECF4AACgkQBQuN
+ sh71kW8GRgf9GKnsiEasxb/0/ngspsDBFCT2GROrA+Qqz7cp14hZVtOkm6nJ7wshAYy+UGfl
+ ovPRi3D3JG/RJvBQHi+rYIBrROOOVbj704AC5oFCUwsFs6pKcnwlRaodIo9u4ZgiYOkNln12
+ UJxuPL1v7J1ccgypP3ufFZaH9gJGssZtajyQkeCRCKNbBPIbXMSnsTWBqyB4AulnyAwVFJAc
+ 4yga8FaJtiDV334tt2TBNw80yqtDczjbjq/tJkcR5VlzVLpPXpbJ8FCL7K945MmN2fpWgWvj
+ WtqEfnsSW/y1x7OfDWQ8CG1szKc6HVsqkRNQwksJapIdresC2dNe7oT+m9bn0+RWIrkBDQRU
+ 9YCwAQgAu86uORuwnEMOhc1poBRsvWns7G0eMd0vdSaiSAPaP8pQrgTC16wBXJXPxPIhIzfs
+ PnGvHgv21BhGcBRcQ7Ybh56dXnWBuKMNnIz2PcMEdHfjd/NG0SDRZdEl/Eztk143kXxsjMTo
+ 10sGHPVJOFIVG1L9K2XcZ/M4SvvR5rSYW2obRbCtT3EkNAcyynA/xKtOhsAFkCVjO4twytQv
+ Og9rpn02bBrjZqaTCHPzVl7ZpjVD6oykY8uJrgKc4EGMouH3WitZppkWSqaB1hgJp78CjwkB
+ 12mT+YcIoM6xzAIklBzKK4qaV1elHhd5clhbDuSpGor/KJcyolx5hbMFwrT+jQARAQABiQEf
+ BBgBAgAJBQJU9YCwAhsMAAoJEAULjbIe9ZFvhS8H/3hMmBhanQeDumAndrJI14228G9QUSW2
+ SO92Uzlek/mQwRbIg/+nkLn2aC4RkEYqox+AuQA7TqX+OS7JjFVS9vtsn2ZM+kgvMpzUaKO5
+ aCjqiyXB4Q3pvg2t46SeuiV1Y3cbyhAH6gzCOei/IMguhYIqNAsf7bf2drN5e1uMHpzJHrBK
+ KugcR5bTfAVQzwnOMPQtPH4mRe7cALp04t4rxSZUiC9Xw9s38oK+Ewk/TtjBEFg4VTDMHdcE
+ B65jlCq15bGxaOSwZbDzx/exLNq41HM3xygY7XFgAdyE6FJLvUc5ehqTjiwsIx3BioRMOTzd
+ 5n0x4xeJ5v4w63j4mSxbZu4=
+Message-ID: <895dd934-8159-e14b-de7a-10fba881d96f@gmail.com>
+Date:   Thu, 10 Sep 2020 07:36:38 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200909190213.GA7943@magnolia>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+In-Reply-To: <f4317021-89e4-904b-6032-10bdfe455450@gmx.com>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="ECUhmYzSmMi6uimsoz3EQnAs5CuTSNlLr"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Sep 09, 2020 at 12:02:13PM -0700, Darrick J. Wong wrote:
-> On Tue, Sep 08, 2020 at 11:32:02AM +0100, fdmanana@kernel.org wrote:
-> > From: Filipe Manana <fdmanana@suse.com>
-> > 
-> > Test a fallocate() zero range operation against a large file range for which
-> > there are many small extents allocated. Verify the operation does not fail
-> > and the respective range return zeroes on subsequent reads.
-> 
-> LOL, we didn't already have a stress test for fzero? :/
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--ECUhmYzSmMi6uimsoz3EQnAs5CuTSNlLr
+Content-Type: multipart/mixed; boundary="iPYZRDi8JyoLqkO0mLTeTnb7XZCwosvXE"
 
-We have lots of test for fzero, but they always test on a file with about 2~2000
-blocks, none of them test with so many small extents.
+--iPYZRDi8JyoLqkO0mLTeTnb7XZCwosvXE
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Content-Language: en-US
 
-We might need to think about this missing test coverage more, not only fzero
-operation :)
+Am 10.09.20 um 04:16 schrieb Qu Wenruo:
+>
+> On 2020/9/9 =E4=B8=8B=E5=8D=8810:51, Johannes Rohr wrote:
 
-Thanks,
-Zorro
+> What about `btrfs check --mode=3Dlowmem` result?
 
-> 
-> > This test is motivated by a bug found on btrfs. The patch that fixes the
-> > bug on btrfs has the following subject:
-> > 
-> >  "btrfs: fix metadata reservation for fallocate that leads to transaction aborts"
-> > 
-> > Signed-off-by: Filipe Manana <fdmanana@suse.com>
-> 
-> Looks good to me!
-> 
-> Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
-> 
-> --D
-> 
-> > ---
-> >  tests/generic/609     | 61 +++++++++++++++++++++++++++++++++++++++++++
-> >  tests/generic/609.out |  5 ++++
-> >  tests/generic/group   |  1 +
-> >  3 files changed, 67 insertions(+)
-> >  create mode 100755 tests/generic/609
-> >  create mode 100644 tests/generic/609.out
-> > 
-> > diff --git a/tests/generic/609 b/tests/generic/609
-> > new file mode 100755
-> > index 00000000..cda2b3dc
-> > --- /dev/null
-> > +++ b/tests/generic/609
-> > @@ -0,0 +1,61 @@
-> > +#! /bin/bash
-> > +# SPDX-License-Identifier: GPL-2.0
-> > +# Copyright (C) 2020 SUSE Linux Products GmbH. All Rights Reserved.
-> > +#
-> > +# FS QA Test No. 609
-> > +#
-> > +# Test a fallocate() zero range operation against a large file range for which
-> > +# there are many small extents allocated. Verify the operation does not fail
-> > +# and the respective range return zeroes on subsequent reads.
-> > +#
-> > +seq=`basename $0`
-> > +seqres=$RESULT_DIR/$seq
-> > +echo "QA output created by $seq"
-> > +tmp=/tmp/$$
-> > +status=1	# failure is the default!
-> > +trap "_cleanup; exit \$status" 0 1 2 3 15
-> > +
-> > +_cleanup()
-> > +{
-> > +	cd /
-> > +	rm -f $tmp.*
-> > +}
-> > +
-> > +# get standard environment, filters and checks
-> > +. ./common/rc
-> > +. ./common/filter
-> > +
-> > +# real QA test starts here
-> > +_supported_fs generic
-> > +_supported_os Linux
-> > +_require_scratch
-> > +_require_xfs_io_command "fzero"
-> > +_require_xfs_io_command "fpunch"
-> > +_require_test_program "punch-alternating"
-> > +
-> > +rm -f $seqres.full
-> > +
-> > +_scratch_mkfs >>$seqres.full 2>&1
-> > +_scratch_mount
-> > +
-> > +# Create a file with many small extents. To speed up file creation, do
-> > +# buffered writes and then punch a hole on every other block.
-> > +$XFS_IO_PROG -f -c "pwrite -S 0xab -b 10M 0 100M" \
-> > +	$SCRATCH_MNT/foobar >>$seqres.full
-> > +$here/src/punch-alternating $SCRATCH_MNT/foobar >>$seqres.full
-> > +
-> > +# For btrfs, trigger a transaction commit to force metadata COW for the
-> > +# following fallocate zero range operation.
-> > +sync
-> > +
-> > +$XFS_IO_PROG -c "fzero 0 100M" $SCRATCH_MNT/foobar
-> > +
-> > +# Check the file content after umounting and mounting again the fs, to verify
-> > +# everything was persisted.
-> > +_scratch_cycle_mount
-> > +
-> > +echo "File content after zero range operation:"
-> > +od -A d -t x1 $SCRATCH_MNT/foobar
-> > +
-> > +status=0
-> > +exit
-> > diff --git a/tests/generic/609.out b/tests/generic/609.out
-> > new file mode 100644
-> > index 00000000..feb8c211
-> > --- /dev/null
-> > +++ b/tests/generic/609.out
-> > @@ -0,0 +1,5 @@
-> > +QA output created by 609
-> > +File content after zero range operation:
-> > +0000000 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> > +*
-> > +104857600
-> > diff --git a/tests/generic/group b/tests/generic/group
-> > index aa969bcb..f8eabc0a 100644
-> > --- a/tests/generic/group
-> > +++ b/tests/generic/group
-> > @@ -611,3 +611,4 @@
-> >  606 auto attr quick dax
-> >  607 auto attr quick dax
-> >  608 auto attr quick dax
-> > +609 auto quick prealloc zero
-> > -- 
-> > 2.26.2
-> > 
-> 
+Too late already. After getting the green light in #btrfs, I ran the
+--repair and it fixed the issue.
 
+>
+> If your btrfs-progs is not uptodate, it may be a false alert.
+
+The reason why I did the offline check in the first place was that there
+were issues, namely, that btrfs balance start -musage=3D70 / resulted in =
+a
+segfault and also my attempts to remove a faulty sdd from the RAID
+reproducibly led to a kernel oops and a hung filesystem. I had asked
+about this two times on the list [1] also reported the issue to the
+kernel bugzilla [2]. Also,=C2=A0 upgraded btrfs-progs to 5.7 before runni=
+ng
+the test.
+
+Fortunately --repair has fixed these issues.
+
+Cheers,
+
+Johannes
+
+
+[1] https://www.mail-archive.com/linux-btrfs@vger.kernel.org/msg88916.htm=
+l
+
+[2] , https://bugzilla.kernel.org/show_bug.cgi?id=3D209143
+
+
+
+
+>
+> Thanks,
+> Qu
+
+
+
+>> Thanks so much in advance for your advice,
+>>
+>> Johannes
+>>
+>>
+>>
+
+
+
+--iPYZRDi8JyoLqkO0mLTeTnb7XZCwosvXE--
+
+--ECUhmYzSmMi6uimsoz3EQnAs5CuTSNlLr
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEEQGpo2KXpzZlAiCX9BQuNsh71kW8FAl9Zu2YACgkQBQuNsh71
+kW/wKgf/X8JBR1O3i+2M1IGwbVzh9SYhm23vVY3iWjvDBRpM/Zfu3qhI9xubu36O
+YiwZvfMOhQLjY4Lfvhy/tH8C7uuRbWMe7aroDOlIAvNPhePihPR/Mpl0UF7Fcbd9
+nfriWUkesooKfsOsworIqa/84Gp1oSyaoI4/lHnplL+HAFIfGPsjX7kOgekvwDaN
+AnrVqWUH4yc8zGioaWoxP5i3q/RRNQ49t9O7R34WHEouP5QCuuGkzpwvYRXzW20h
+sad6u1bbzwUTF9o7wS63/akGkWZMdwcFHLCv5YsUz+02Ar1hCH/Jb4YMMFarXPTz
+jOoHRSoqRhMioXckbTH60ePUbqoZUw==
+=Bl65
+-----END PGP SIGNATURE-----
+
+--ECUhmYzSmMi6uimsoz3EQnAs5CuTSNlLr--
