@@ -2,29 +2,33 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F975263A1B
-	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Sep 2020 04:20:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2571E263ABE
+	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Sep 2020 04:44:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730449AbgIJCTs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 9 Sep 2020 22:19:48 -0400
-Received: from mout.gmx.net ([212.227.17.22]:41207 "EHLO mout.gmx.net"
+        id S1730021AbgIJCA5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 9 Sep 2020 22:00:57 -0400
+Received: from mout.gmx.net ([212.227.15.15]:40805 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730177AbgIJCQ7 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 9 Sep 2020 22:16:59 -0400
+        id S1730093AbgIJBve (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 9 Sep 2020 21:51:34 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1599704215;
-        bh=GghcEZ3m6J+DyDXfeTIFwDQi0HtklYVMT8qnNQYnx3s=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=TfXSLaYKDg6njOBH3rrHG7fMtZ8Fho27mqDK/lnmVvzAuWzQdKIOt7kpdtUtpfDWM
-         /nzYvTn4s5YLFaInLgRdzIqAfFgVaxBJoIZHbD8jhbpOiMi/34u1U3Si53pCKZMWWo
-         EYR9kE85IR34w18t32sYD/v8LiVe4X+KBR3MOfms=
+        s=badeba3b8450; t=1599702690;
+        bh=Pwk4iOyAXc5C7JN4ExztI0oVqxLGdHcmNcqYNdRrP44=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=SQQv5/drzxE4obGQwyKvDlPtq1hRgSF98UDxZ3POEjj0I4/DFiEZBlIoX8dLp+klB
+         VIS2RiLMsSt/LvAwDZ+gt1TvsA7krdsPFqlwKhpJdMijQbNJN2aI0/HpTM2bYbLG2Z
+         k0KpEnhtotyvBexB6Q+Htt4zvAdTj48I0/WJfdEY=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1N6KYb-1kZh4Z3SyP-016ez0; Thu, 10
- Sep 2020 04:16:55 +0200
-Subject: Re: backref mismatch / backpointer mismatch
-To:     Johannes Rohr <jorohr@gmail.com>, linux-btrfs@vger.kernel.org
-References: <0219bbee-9ca3-135a-8a2f-5d616000c1e0@gmail.com>
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MhU5R-1klOEr0c43-00egqk; Thu, 10
+ Sep 2020 02:05:38 +0200
+Subject: Re: [PATCH 14/17] btrfs: make btrfs_readpage_end_io_hook() follow
+ sector size
+To:     Goldwyn Rodrigues <rgoldwyn@suse.de>, Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+References: <20200908075230.86856-1-wqu@suse.com>
+ <20200908075230.86856-15-wqu@suse.com>
+ <20200909173457.e4gpsbwkcsxtdo4g@fiona>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -50,101 +54,146 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
  ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
  oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <f4317021-89e4-904b-6032-10bdfe455450@gmx.com>
-Date:   Thu, 10 Sep 2020 10:16:52 +0800
+Message-ID: <ba262153-9a5d-d940-59fc-a1e1f3337602@gmx.com>
+Date:   Thu, 10 Sep 2020 08:05:34 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <0219bbee-9ca3-135a-8a2f-5d616000c1e0@gmail.com>
+In-Reply-To: <20200909173457.e4gpsbwkcsxtdo4g@fiona>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="i8ciaUXsb9pgj4GIKEwwvYyTqkvuzI0og"
-X-Provags-ID: V03:K1:ZG9b9R0EmaLZkS+s3E029EE7uxsKm6VYlYgoQQpEU5dBjz1iLr/
- 3QPccq/ypNneMDrBHHnaVb1lg32xYvPvqETUR0HZEGBw6wApPA1+fpBEpyPjBj68Do8OvUu
- RzJKPlrkf3IafKtVp+YnIrUVObxK5SQhxM/jGp7JYekIyMeAivpk1deHJb4sF7n9WDe/LtH
- Kh0ey7P7T1UKLULbaQw9w==
+ boundary="M0d0uDf0ynD2wObUyyiFxJ0OeW25rK4g3"
+X-Provags-ID: V03:K1:D+Tt+1W1ioLlM8ByJ1fI9tFO806QX6IvLpQexR8/oOIp8Id9UXP
+ pTYgEgw3S3wIdrIeIY3AcUFkakkBd5sZr7Sh1uItp8yKB2V869MUH8NvQhetQbUF9KhGrPB
+ axNKspnVUWiN9NcC001XU+mC5C09eN6UZqCloF6SkwhlqzqpAzR03ZTP+w14IeFZ3XymOsU
+ 20K82Vnd9LA32BFPOGbqA==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:okw0sAW8VE8=:SdMm2VLuYfYSJizXTG2UYq
- EsH/JKKwR0oDKxk3S9ED2RNZI2AzXeuWeXT6qzmtiOJpY7o8M0fARS3uYg5xIkOXyx/zCelfV
- M1fKNzwgJYKN0gxByHYYPtRx8djl+El2r6xzmhjD3PsmLQbMyDgo+e8eDZgiLaSLRjG5s7GQi
- 8i+ZVl4tQzNgNgjLT7+k+B7T1TLNyL2upf1cM0dq0M0X3YMGm15/+0Q++MdUo1F71I9Ev1zHK
- Y1Wp00grD+BisQJe9THlNPJP8FRtKM9sSf89UwsbVrF0Vf3HQwjRkepuIk3otHb7FRHG1Tdsz
- pmHa7Jfi2BZi9cZ1g2JbNNnDG+ZmeZ0OnIm8tlGd/p7Vjip13vcloJ4xFLNixug7e0S3XEK5Z
- WIYlyrazgncd6prgwiVsc4XShLBHZyjbGET52bSZvWfKpT/laNAsM5LWEzRr1KmUV3pcoOcNY
- 1ndCkg1y5/pMQQ6/vJrDp+VyO2hu6fGAc4a9OhGz1ZLL11ohove0LOowmpyu79iQUQEra4aUu
- SOMylp321CYN3uNCGH8tvi1AU5nLf6gmkpxMJ3mUFECYVOrnzM1wLRX9I0h/cx+Ljyc/wWE/H
- NMlaD/FpCmnsEPYTgFo2S0P3XF9kLLBO3jK4LifIjvAZQQZZ2ogiufj2OGwY0o6/CnDwXORoV
- SD6339jancmb8DuOwIe7uErPA/0C4vA+6PlEsnN4HeeqWMhmDTCJSod8Dg8B9xCjCgKfJi8Kn
- 7FCSeDhU3COm05pV2LXh+AAvaBe4KDoziBb87w029PdpfiGdygBh8X8leHCn3brF5LpiPlyFx
- VZkydWK/1O6lCoADeOt4HnGjBUI1DzCbXXbIYIlcaR0qfcOdHGbUaUxmvf0QiR9+7CfhaBUiB
- cjp/Jj4rW9gRsbl6oP2ZV9jykDIm2KzUrUtXsF2tJhWMQ/n+JhavT45cMBK2+rlRf6wfWHJYu
- 2b6YkuC7jY/52RUokO386LJn24ih8RT+3jP2nOT73oEnPqZ/gYn31+Z/9iUg/0cRMxuysQ8tD
- ENJfthv/y4P4av8eonRt3H5QW/a4AuEjd5CuP92zJjQHb8z6ZLHldvLov6FBmsCcj5kDMAEE0
- zIQIatNisviFLjbKCEs+poWYVaLVf4BEEwt9JwbhNp9SY6ZoWRxGi6QzbjidjyE2w0syNf4xp
- ksiyQB9KuUSGHdkdWGDNiDEceXMratqzZFZR3s/Cdly30GJcaoQiGQJRVeVfs8o0u01j8j1Vt
- JdIJNAWBPqCpuwmR5vgPgdcWgpqpv3Bd97trNfw==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:/EjoegYkFjU=:2qVf+PijP0iDzTFzPfxJWG
+ e4X48brGzDFT8UJGSNN7fatnmFvhMZGJpGLZfxF4vhmxCj6SecvTCQL83EA4tuZrgL4qIKP+a
+ lBFJxqy7GRaoJ0oPFkTedy8iXGr5I+wmjMbTAn1SfiJRGv1uTESoFt6wto7TwaT90Yos3Lp5n
+ mVRZFGFaQyPV1HBggsiY+yNyt+3Bqzh2o/vMHlOQhD9jazkxPpEamNtXvpTDbQb65REohCPAm
+ /Pa4iEq3L2oMbzZIW4nn2P8KN5GpjbeJdlK/26XN50ZYQvqvEC/JTuK/BB4heKbhqDkcVd84G
+ Xlx2b/XgbPmRptDaY5m3KTnMbURrbSeLMWZBfwlHfA+l7ym5NysTCxHQz326FPTao3aats8Gr
+ JyMv54rzEEf5cSr79XuINYWUGPVf6wcXn5PHOHEnWcKuaNY5BExo9oE0gaPZJZrkrTUmh53r8
+ /EH38OEDvC4hoStXnXPp2oRhY90ZEqctj+ShAJANQmY3zewxSP9dBAq0knTLriwiJxFXMs7CE
+ gDyR3aX/KgzJ0oEZ/JGSLD9rs3sAGdE2CM02Ac2ZpF7oG4U7fW0KNNs1FMKTpf319UrcrFfsv
+ hgdaKkmMWH9ebJTwa8k3zkoxIptG24WfNMz5c/wTUItTyZxM1Z02KNNhd7b7igpE8u9MLQkt+
+ /ZFkqqYQ6IQoMN6za9Obrn5jTPGtOAA4yGqvsOObpborRViwdt5UOioeOMHKNwu5wervXbZJb
+ wNE0qfEur+cvIk0sACKQ1c8VkRHTh7GlojvuIG8V8XOlv86drhVODEgblPX3yegS6mc/4QtSl
+ /Vp9lJBBeXy/YAT9FN0OjKcnUKJ/qeOLyh49LAoet4QNDJHBGnbTgwm4pc/baJDQazKaiD1pM
+ 2QF9AndFB9dgwYENqghrHOW+lfGiWxqVI3DElIHcnP1V0Up6RhSMOkqV3x4qYhOoFt6CI/8z6
+ bm1hZqir30rPumMjvVowZQ+G4iGgqDXNM1JozY0XLMbxNpz5IvjSF5E1+BM/Ypmk72T1h+DRU
+ 7UTOOyLRG3BtxtNjSnf7R1Kcv3CIed671HqNPL2JieCHxr9RNCcR/INiUPz26LCNSQUQzCDn4
+ yyRK9jhE4MGTWX6kfgNN3kTTXWTMf0zQFJD23gDlTRUF+cMsngHTjOZb1R75d9T+WLofq+ssq
+ kj+FWc/KxCt5tlDQ18Bavt/93M2iNGuub0gqtHMa7VtSk8GQx19x8EyBF4Lw49FTyOUkNDHG+
+ MY7JGeMxlRKlrFWy+lpoMKQjkXC1tET87OA9sLQ==
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---i8ciaUXsb9pgj4GIKEwwvYyTqkvuzI0og
-Content-Type: multipart/mixed; boundary="1XYXRET6N965yt8Ynwyi5rMzf8OeKsaTM"
+--M0d0uDf0ynD2wObUyyiFxJ0OeW25rK4g3
+Content-Type: multipart/mixed; boundary="jGUHYH2rnCMnnG4CtLJLuYX84IsihURuQ"
 
---1XYXRET6N965yt8Ynwyi5rMzf8OeKsaTM
+--jGUHYH2rnCMnnG4CtLJLuYX84IsihURuQ
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
 
 
 
-On 2020/9/9 =E4=B8=8B=E5=8D=8810:51, Johannes Rohr wrote:
-> Dear all,
->=20
-> Last night I did a readonly offline check of our server's file system
-> and I got a bunch of backref mismatch / backpointer mismatch errors.
->=20
-> Since everybody is warning NOT to use btrfsck --repair, I wonder what
-> options I have of fixing this issue, short of reformatting the whole di=
-sk
->=20
-> All the info (uname -a, btrfs fi usage, btrfs check output) is here:
->=20
-> https://gist.github.com/vasyugan/45471206df5d9981f51b9bbf9362508f
+On 2020/9/10 =E4=B8=8A=E5=8D=881:34, Goldwyn Rodrigues wrote:
+> On 15:52 08/09, Qu Wenruo wrote:
+>> Currently btrfs_readpage_end_io_hook() just pass the whole page to
+>> check_data_csum(), which is fine since we only support sectorsize =3D=3D=
 
-What about `btrfs check --mode=3Dlowmem` result?
-
-If your btrfs-progs is not uptodate, it may be a false alert.
+>> PAGE_SIZE.
+>>
+>> To support subpage RO support, we need to properly honor per-sector
+>> checksum verification, just like what we did in dio read path.
+>>
+>> This patch will do the csum verification in a for loop, starts with
+>> pg_off =3D=3D start - page_offset(page), with sectorsize increasement =
+for
+>> each loop.
+>>
+>> For sectorsize =3D=3D PAGE_SIZE case, the pg_off will always be 0, and=
+ we
+>> will only finish with just one loop.
+>>
+>> For subpage, we do the proper loop.
+>>
+>> Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
+>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>> ---
+>>  fs/btrfs/inode.c | 15 ++++++++++++++-
+>>  1 file changed, 14 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+>> index 078735aa0f68..8bd14dda2067 100644
+>> --- a/fs/btrfs/inode.c
+>> +++ b/fs/btrfs/inode.c
+>> @@ -2851,9 +2851,12 @@ static int btrfs_readpage_end_io_hook(struct bt=
+rfs_io_bio *io_bio,
+>>  				      u64 start, u64 end, int mirror)
+>>  {
+>>  	size_t offset =3D start - page_offset(page);
+>> +	size_t pg_off;
+>>  	struct inode *inode =3D page->mapping->host;
+>>  	struct extent_io_tree *io_tree =3D &BTRFS_I(inode)->io_tree;
+>>  	struct btrfs_root *root =3D BTRFS_I(inode)->root;
+>> +	u32 sectorsize =3D root->fs_info->sectorsize;
+>> +	bool found_err =3D false;
+>> =20
+>>  	if (PageChecked(page)) {
+>>  		ClearPageChecked(page);
+>> @@ -2870,7 +2873,17 @@ static int btrfs_readpage_end_io_hook(struct bt=
+rfs_io_bio *io_bio,
+>>  	}
+>> =20
+>>  	phy_offset >>=3D inode->i_sb->s_blocksize_bits;
+>> -	return check_data_csum(inode, io_bio, phy_offset, page, offset);
+>> +	for (pg_off =3D offset; pg_off < end - page_offset(page);
+>> +	     pg_off +=3D sectorsize, phy_offset++) {
+>> +		int ret;
+>> +
+>> +		ret =3D check_data_csum(inode, io_bio, phy_offset, page, pg_off);
+>> +		if (ret < 0)
+>> +			found_err =3D true;
+>> +	}
+>> +	if (found_err)
+>> +		return -EIO;
+>> +	return 0;
+>>  }
+>=20
+> We don't need found_err here. Just return ret when you encounter the
+> first error.
+>=20
+But that means, the whole range will be marked error, while some sectors
+may still contain good data and pass the csum checking.
 
 Thanks,
 Qu
->=20
-> Thanks so much in advance for your advice,
->=20
-> Johannes
->=20
->=20
->=20
 
 
---1XYXRET6N965yt8Ynwyi5rMzf8OeKsaTM--
+--jGUHYH2rnCMnnG4CtLJLuYX84IsihURuQ--
 
---i8ciaUXsb9pgj4GIKEwwvYyTqkvuzI0og
+--M0d0uDf0ynD2wObUyyiFxJ0OeW25rK4g3
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl9ZjJQACgkQwj2R86El
-/qiY4gf9EAgs+rgb0orfYvRVR0wbVSzKfljzaFMaXuVy+MEfMMffuRDrhynB413t
-ZNm1N85/xQGy2QgiaER7PQZdnt0onbAbWDAbo+zox51ZyNS5ENJPtYx/tlkX5zsT
-693qi6+1a8M4xuhOPLkCtNXHbjZ3KcJssGgFiTtLeYgA8A1Wcd60Z7lDaHgYbMqy
-wkszd56Cf8/aDLATaxZrYPOz8suya8nSSpsQLkOOWPfCxLbTltD+k3zFC4KYhlTi
-BeLAapaCbXVyKgwx2AW7o/cWs/RSmrLg8ZmALVWQ8Jb+rJu2LhUGTAO4KwQHBg55
-zbM/V8RKVHPg5oZWxuoKFtQJTC9JEA==
-=sbK4
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl9Zbc4ACgkQwj2R86El
+/qhlFQf/eu/JH0LSxsSQo5KyX+QSi5FKHS7zlkeApeApAxGXi8MK2hP5wz5pKacD
+PppkpZoxieeF1bU3t+/RhPMriBjFAYTcKTkgSusXPK4VsFUBSgmt0TkCws0D/C1X
+bqzRWyAEHRJpkIad/dQlM3VgHymgO8Sw94mG8U5X0Fx9kzakbCz1W0HC0sLxPT0v
+Xlmj25kbSqen0OyboESgsxocA/SvqdV+8OL4N4vSMPP2ES/kF36W/SW4iNfT6NmT
+WFWJNO5trjTxhMSlVKNX9PQCBzVyZonP81GfgfpW19S9QDcHPNfaWQw1v+xfMunr
+pyTViXkztLxxIugWKrbwJ9GvRa7sYQ==
+=4gVX
 -----END PGP SIGNATURE-----
 
---i8ciaUXsb9pgj4GIKEwwvYyTqkvuzI0og--
+--M0d0uDf0ynD2wObUyyiFxJ0OeW25rK4g3--
