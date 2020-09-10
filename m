@@ -2,64 +2,65 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E005264FA2
-	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Sep 2020 21:47:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D9DF265015
+	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Sep 2020 22:02:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731249AbgIJPYj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 10 Sep 2020 11:24:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33046 "EHLO
+        id S1726293AbgIJT7X (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 10 Sep 2020 15:59:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731242AbgIJPFH (ORCPT
+        with ESMTP id S1730434AbgIJPC1 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 10 Sep 2020 11:05:07 -0400
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A87FC0617B1
-        for <linux-btrfs@vger.kernel.org>; Thu, 10 Sep 2020 08:04:20 -0700 (PDT)
-Received: by mail-qt1-x841.google.com with SMTP id n18so5097950qtw.0
-        for <linux-btrfs@vger.kernel.org>; Thu, 10 Sep 2020 08:04:20 -0700 (PDT)
+        Thu, 10 Sep 2020 11:02:27 -0400
+Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19B8AC061757
+        for <linux-btrfs@vger.kernel.org>; Thu, 10 Sep 2020 08:01:50 -0700 (PDT)
+Received: by mail-qv1-xf41.google.com with SMTP id z18so3485416qvp.6
+        for <linux-btrfs@vger.kernel.org>; Thu, 10 Sep 2020 08:01:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=subject:to:references:from:message-id:date:user-agent:mime-version
          :in-reply-to:content-language:content-transfer-encoding;
-        bh=cCN1cM+BpYA/vwg1dRPAkK53lOBLtHeZQsMaFnEQfsI=;
-        b=QsN7UQknO/u17+c38Ygv5Ot5CnDyzQOjLEJWfwawruDyHrbtIgHxJWtf7drnJJgXDy
-         2YS2cCwd7FoNnsVoPaKBxI0Qy0eC0pWxTV3Hhq/BibB/sbSh/D1TLeSac1WF8iF6rGnF
-         zbHDj9hwogqh4FccnpxAGs4/C6ONPR3PKVNDDqQR1ayAccKqFTA47PYQQDK02Bk2vYPG
-         fvJ1SRggIfkAtwtvSFE9xD0sPzQOC76E5MAiIGPabkkR8CpNlVvLYu81OksVRMB8KYnY
-         XMrbc6opROuBHj8meB7U0/xIbrsfue8HHiSbNJlrLt1X18r7XB4pf0sA/Bo4txGZJvle
-         Bu5g==
+        bh=UXwVIQMANUiXfwYmgVBOM+Gqp5W2riMQlwGg0y5YP4U=;
+        b=E3eSJiTSvkSUJsjlXOBJXf5h/DDazzVO8FI+c/3UVDftPaYhlh1SCHK6Spjj9fx+ra
+         KADQIf+ExUfvrmPxmBfZX3YDWBUeAGfjUf9Z2RpLOTUgBzGQwLbyDjOT1r6gda6igJds
+         5MNd7CJko6flDJdyhsqBblKJRazSCwPTCXzY79Ri+kI+EnTdcBNYtgYeXIbDMKwkHTB3
+         KPybdna8we+CUvxBiLtJJlwE6IfyQzg1iVNpPBjNS45TghC7Z8jclONjGSKBRDbL+kZm
+         O1hhWP8kHpMChibr6PjshLeHQflkcCW944qqxQXSMAe+fN5ynABxhy9/YMm2SJb+fCvn
+         vckA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=cCN1cM+BpYA/vwg1dRPAkK53lOBLtHeZQsMaFnEQfsI=;
-        b=mAcNZ+8lUn9ky+RE7CHYov5yXXy2tfkAEPqCLDZIZp3vvJ9uHiL7x9LgmzqqFjJ8Kh
-         aAHIZMJzpy0FNY3jjHtH7Lt3Ni+qS1qpWBUP2XZ4a4Tb+rTB7xiqgDy+w8l0mHUO/p0F
-         ZEyrwpcq/m3q6xOl3ijTITlvk19ZRFLkvcdDez/AD2SbHpAU/GbDypDPgOb9MoFtkjYL
-         zejPh/AjlRlYglYfoGKtPBDvuI1CSDj5LoBJjBxEi0tTgWIxukfjtOowByR3zZC7qGQK
-         saRrV72jy/4mz/fhucEm2bDAJbmtlH9uRnAB3qIF3sYZHGuUtjClWhlhlIFRmO5F6Jj9
-         XkLg==
-X-Gm-Message-State: AOAM531QyMTeiG7TXjZBW7S4LI3bUjNmvm/9IFYoCK5GleuWjTCPzT2u
-        QUws7GtotyjZRk70UeIl+mPnLRp8dHvKgiNn
-X-Google-Smtp-Source: ABdhPJwIxwH2m1Q/NQWh+WZomG25IVGRufnCtLgQJWRWTNycKDWPgepJdnq5oKJzCgbKlRQYlYqi2A==
-X-Received: by 2002:ac8:c44:: with SMTP id l4mr8533824qti.2.1599750259166;
-        Thu, 10 Sep 2020 08:04:19 -0700 (PDT)
+        bh=UXwVIQMANUiXfwYmgVBOM+Gqp5W2riMQlwGg0y5YP4U=;
+        b=aBN8SGSevNd3QUmKvw1tbDSqnvvxaRxromFz7SO07NE+lGk3j0V0a2YF2UOgLwsnd4
+         S8dpPwBTxe0zYWTJvTfsS80kAxp7NE5gqWt0Av0a53ll87SVptf/1XG/NqkMvky5lcKp
+         9hyl4HVO6T1Wbye713dLR+AH6DEO7eXrlARgligNRUlSiPRUIJkdCjmaf11Q9uAVjvbc
+         B9ofQw8i8Q2RPZ/llq9NtnEoTbhmRTcuSdOvm3e/YSCC2N4DaliavkjYEflLsToSbiQb
+         rpHIn0Ey/s8HInM9krHb6rZUvE6PS9oJiuquOaHfWug1Mt0UGIB/dK4LSB872X5sXKYp
+         EZmw==
+X-Gm-Message-State: AOAM530azuCXoLyuhConR5sf/4UIyW+HwNjALEKivTpIwmA0ukfndPTC
+        wNtuqNPiKGOP4tXdKfZno2KQFOu4HO2dE0KD
+X-Google-Smtp-Source: ABdhPJxMnm7DNTwrgkYCDja88lkgFLpcxzUABNiAoTwsAJ1MdHULdvdTM6SP1L659Om5IKAtdPEdmA==
+X-Received: by 2002:a0c:b21b:: with SMTP id x27mr8989811qvd.12.1599750108990;
+        Thu, 10 Sep 2020 08:01:48 -0700 (PDT)
 Received: from [192.168.1.45] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id x6sm6952412qke.54.2020.09.10.08.04.18
+        by smtp.gmail.com with ESMTPSA id d9sm7472510qtg.51.2020.09.10.08.01.47
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 10 Sep 2020 08:04:18 -0700 (PDT)
-Subject: Re: [PATCH 10/10] btrfs: Sink mirror_num argument in __do_readpage
+        Thu, 10 Sep 2020 08:01:47 -0700 (PDT)
+Subject: Re: [PATCH 07/10] btrfs: Promote extent_read_full_page to
+ btrfs_readpage
 To:     Nikolay Borisov <nborisov@suse.com>, linux-btrfs@vger.kernel.org
 References: <20200909094914.29721-1-nborisov@suse.com>
- <20200909094914.29721-11-nborisov@suse.com>
+ <20200909094914.29721-8-nborisov@suse.com>
 From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <5a837a0f-9f55-0813-3edc-d65f309568b6@toxicpanda.com>
-Date:   Thu, 10 Sep 2020 11:04:17 -0400
+Message-ID: <549e94fe-22b6-6e2e-e759-24d067d96c62@toxicpanda.com>
+Date:   Thu, 10 Sep 2020 11:01:47 -0400
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
  Gecko/20100101 Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <20200909094914.29721-11-nborisov@suse.com>
+In-Reply-To: <20200909094914.29721-8-nborisov@suse.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -69,7 +70,10 @@ List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 On 9/9/20 5:49 AM, Nikolay Borisov wrote:
-> It's always set to 0 by the 2 callers so move it inside __do_readpage.
+> Now that btrfs_readpage is the only caller of extent_read_full_page the
+> latter can be opencoded in the former. Use the occassion to rename
+> __extent_read_full_page to extent_read_full_page. To facillitate this
+> change submit_one_bio has to be exported as well.
 > 
 > Signed-off-by: Nikolay Borisov <nborisov@suse.com>
 
