@@ -2,33 +2,30 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2571E263ABE
-	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Sep 2020 04:44:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 298D9263A85
+	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Sep 2020 04:32:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730021AbgIJCA5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 9 Sep 2020 22:00:57 -0400
-Received: from mout.gmx.net ([212.227.15.15]:40805 "EHLO mout.gmx.net"
+        id S1730083AbgIJCb5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 9 Sep 2020 22:31:57 -0400
+Received: from mout.gmx.net ([212.227.17.22]:40997 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730093AbgIJBve (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 9 Sep 2020 21:51:34 -0400
+        id S1730068AbgIJCZc (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 9 Sep 2020 22:25:32 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1599702690;
-        bh=Pwk4iOyAXc5C7JN4ExztI0oVqxLGdHcmNcqYNdRrP44=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=SQQv5/drzxE4obGQwyKvDlPtq1hRgSF98UDxZ3POEjj0I4/DFiEZBlIoX8dLp+klB
-         VIS2RiLMsSt/LvAwDZ+gt1TvsA7krdsPFqlwKhpJdMijQbNJN2aI0/HpTM2bYbLG2Z
-         k0KpEnhtotyvBexB6Q+Htt4zvAdTj48I0/WJfdEY=
+        s=badeba3b8450; t=1599704729;
+        bh=wqbB4/BwSd5hpVvBlK2Gk6Ax67T3R9WI+VycEU5hQz4=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=DTQ/4jm0HxQ7LLiHwaNc432m28LGLo8bNMMo8BP5MLcMoBYHofIFCSdYWkrBzi6g8
+         dcMhQhGSxH9tStG/tDVtb8aSDye75piVMGtuUjc6cqo2vvVExR+n9y18wDDLhhWCdH
+         bpJtbyveAHSSQObi1iSexFz3tTNxLrcN84G6QFrw=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MhU5R-1klOEr0c43-00egqk; Thu, 10
- Sep 2020 02:05:38 +0200
-Subject: Re: [PATCH 14/17] btrfs: make btrfs_readpage_end_io_hook() follow
- sector size
-To:     Goldwyn Rodrigues <rgoldwyn@suse.de>, Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-References: <20200908075230.86856-1-wqu@suse.com>
- <20200908075230.86856-15-wqu@suse.com>
- <20200909173457.e4gpsbwkcsxtdo4g@fiona>
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1My32F-1kSVOQ0Oxr-00za9d; Thu, 10
+ Sep 2020 04:25:29 +0200
+Subject: Re: Corrupted filesystem after power loss
+To:     Benedikt Rips <benedikt.rips@gmail.com>,
+        linux-btrfs@vger.kernel.org
+References: <2080952.sO1OYyYaP7@orion>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -54,146 +51,201 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
  ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
  oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <ba262153-9a5d-d940-59fc-a1e1f3337602@gmx.com>
-Date:   Thu, 10 Sep 2020 08:05:34 +0800
+Message-ID: <26cc2afa-a71b-c449-a4e9-80ff0c5ae68c@gmx.com>
+Date:   Thu, 10 Sep 2020 10:25:26 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <20200909173457.e4gpsbwkcsxtdo4g@fiona>
+In-Reply-To: <2080952.sO1OYyYaP7@orion>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="M0d0uDf0ynD2wObUyyiFxJ0OeW25rK4g3"
-X-Provags-ID: V03:K1:D+Tt+1W1ioLlM8ByJ1fI9tFO806QX6IvLpQexR8/oOIp8Id9UXP
- pTYgEgw3S3wIdrIeIY3AcUFkakkBd5sZr7Sh1uItp8yKB2V869MUH8NvQhetQbUF9KhGrPB
- axNKspnVUWiN9NcC001XU+mC5C09eN6UZqCloF6SkwhlqzqpAzR03ZTP+w14IeFZ3XymOsU
- 20K82Vnd9LA32BFPOGbqA==
+ boundary="5oyCKOGIHLbYFXxlxRkwQUhhmLwj5X2KI"
+X-Provags-ID: V03:K1:SSBx4gDPr1Y8JXvezDn5PpGtrQVLRdF5z2t5uavCasqhQeITjcg
+ Sw4zYR3YNcGxD/LiXsJH1tDgP7EaTksFPdeJbyjiXwjh1q3BdUWj8gcUv1EnA/7KMGmFHBH
+ 5lVgLyYlWmRTMWLdrRyem7/wsqn15wL7bc3NCEFVF/nTgyg42QfindPdEy1PJjCBGtEFMJe
+ lTkla86aI1lcFwX5OA09w==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:/EjoegYkFjU=:2qVf+PijP0iDzTFzPfxJWG
- e4X48brGzDFT8UJGSNN7fatnmFvhMZGJpGLZfxF4vhmxCj6SecvTCQL83EA4tuZrgL4qIKP+a
- lBFJxqy7GRaoJ0oPFkTedy8iXGr5I+wmjMbTAn1SfiJRGv1uTESoFt6wto7TwaT90Yos3Lp5n
- mVRZFGFaQyPV1HBggsiY+yNyt+3Bqzh2o/vMHlOQhD9jazkxPpEamNtXvpTDbQb65REohCPAm
- /Pa4iEq3L2oMbzZIW4nn2P8KN5GpjbeJdlK/26XN50ZYQvqvEC/JTuK/BB4heKbhqDkcVd84G
- Xlx2b/XgbPmRptDaY5m3KTnMbURrbSeLMWZBfwlHfA+l7ym5NysTCxHQz326FPTao3aats8Gr
- JyMv54rzEEf5cSr79XuINYWUGPVf6wcXn5PHOHEnWcKuaNY5BExo9oE0gaPZJZrkrTUmh53r8
- /EH38OEDvC4hoStXnXPp2oRhY90ZEqctj+ShAJANQmY3zewxSP9dBAq0knTLriwiJxFXMs7CE
- gDyR3aX/KgzJ0oEZ/JGSLD9rs3sAGdE2CM02Ac2ZpF7oG4U7fW0KNNs1FMKTpf319UrcrFfsv
- hgdaKkmMWH9ebJTwa8k3zkoxIptG24WfNMz5c/wTUItTyZxM1Z02KNNhd7b7igpE8u9MLQkt+
- /ZFkqqYQ6IQoMN6za9Obrn5jTPGtOAA4yGqvsOObpborRViwdt5UOioeOMHKNwu5wervXbZJb
- wNE0qfEur+cvIk0sACKQ1c8VkRHTh7GlojvuIG8V8XOlv86drhVODEgblPX3yegS6mc/4QtSl
- /Vp9lJBBeXy/YAT9FN0OjKcnUKJ/qeOLyh49LAoet4QNDJHBGnbTgwm4pc/baJDQazKaiD1pM
- 2QF9AndFB9dgwYENqghrHOW+lfGiWxqVI3DElIHcnP1V0Up6RhSMOkqV3x4qYhOoFt6CI/8z6
- bm1hZqir30rPumMjvVowZQ+G4iGgqDXNM1JozY0XLMbxNpz5IvjSF5E1+BM/Ypmk72T1h+DRU
- 7UTOOyLRG3BtxtNjSnf7R1Kcv3CIed671HqNPL2JieCHxr9RNCcR/INiUPz26LCNSQUQzCDn4
- yyRK9jhE4MGTWX6kfgNN3kTTXWTMf0zQFJD23gDlTRUF+cMsngHTjOZb1R75d9T+WLofq+ssq
- kj+FWc/KxCt5tlDQ18Bavt/93M2iNGuub0gqtHMa7VtSk8GQx19x8EyBF4Lw49FTyOUkNDHG+
- MY7JGeMxlRKlrFWy+lpoMKQjkXC1tET87OA9sLQ==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:s6qp9BWNUS4=:cjhiPw8JnbiMw6mS6sJqWN
+ ORsaadq41P9xZwutAyzWBFIzhSqR8jX3xvURNjucoHdNIRIuhQpCAUyCiPeDKFaF7NWJ4rUV/
+ ubHDowtVbc2oBAloU9MkDIWPqCMau5/lSiWphuytnrUNi90u1AKLtd2rbg56voyZuaeFQE2P4
+ BVXYUXYE3vQcZfBaUjgUr4I574eciRW7KFd04kWTVuoqRLo0lsn4kZ8apaSXITZnyt/CwjoA5
+ 76KSljgaMPVoyEG9brr5mhFP5SGsf1z3GjlJ5FYA6gaz0dGE2HS4iySFRx9Va8eJigGYXlT4F
+ EdjfJUndmAIpal02KCs9/gtu24pdiQRgmqW0vBPnu5FkaxBWwSU+dsQer+fMXv8bvB/PgRSfH
+ 9nZwKaQ1XW0Ydp39evV635HGpP1ZjT+QIM9lqHe7jP3n6meig30KVw6gAJS4txKOiskXJUj6C
+ j66b6arELrxcNmXmwjP10/vPhsoqJMbNrAw//3OSsW+nNJnNIcByc/R9dHIJ7qcg2ff2oPV0k
+ lDy7lE39LHv7KQkdE5qP5tCpIuEOCQSYue0Dq+CzP3lZ51N490zg2GRGRB9GX3qxZyaHejUhb
+ XZ6E5LuigmGvT2Jqt28Q4RK4blQ/ydHbeEePCUkR4U/zSf5Cnk9K0X4A0tqVpvaa/LIPYV8NX
+ kJ8+XU8lTmTibCKSVYPp+Hx+sbWHYZ3dcvdF/1+inlOIqo3/PqI72QflMp+hF/qnZkLiD2OuI
+ n6k1T4cgUSsmSYkQGnlp18RzHm/Pky4cuAJM0qcSX+LB7ke4aG4q/+tAQWgFLoPcJgtdPwYha
+ eY06Pik8omgDAn859pelRPCAkElN4lgeasu3hB+R+YPdOti5cUkQ6K3FhCFSIBt7ZO9GjRM5r
+ xMwIq1U4DTr7LZIdPBjjzcy3kCSlfvM6eSlv5E6D1rdIzD9rsEamouXBGV3yw7i+kBKsOz83F
+ fOgkON8DlTn70UHGQzmZ+rRYJ2T0sWUfZI/OlHcOEf7yTE1/o8bDcYhm5T5MWeUlkMl028j2x
+ NxjVdAt8AMq6baNz0UYJuNkBlhyF+cn//h+8gTgdxIlOzJW74v1+6aOcQpTlztpzIBXPZ6+yk
+ HsWhGHwW9rITmRbN8/QYG2C2s7N2PLd8ljbN7afElrrRfiKNoDwNFiWTtDBGgK6jXE9EUz56h
+ P4imUnit8BZQ94WlzaKXdDUTb0+gwbkbYzrNSiemRlbw4RWcUT3giSyjl09LOakGr+XKnyEv+
+ bpS+8tgcWezIQg7Mz5cj2tYVvQ8pIsAasuPgVVQ==
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---M0d0uDf0ynD2wObUyyiFxJ0OeW25rK4g3
-Content-Type: multipart/mixed; boundary="jGUHYH2rnCMnnG4CtLJLuYX84IsihURuQ"
+--5oyCKOGIHLbYFXxlxRkwQUhhmLwj5X2KI
+Content-Type: multipart/mixed; boundary="cmsuVdfAMdBCR3DRFhQYIeYdgoXa1U3H9"
 
---jGUHYH2rnCMnnG4CtLJLuYX84IsihURuQ
+--cmsuVdfAMdBCR3DRFhQYIeYdgoXa1U3H9
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
 
 
 
-On 2020/9/10 =E4=B8=8A=E5=8D=881:34, Goldwyn Rodrigues wrote:
-> On 15:52 08/09, Qu Wenruo wrote:
->> Currently btrfs_readpage_end_io_hook() just pass the whole page to
->> check_data_csum(), which is fine since we only support sectorsize =3D=3D=
+On 2020/9/9 =E4=B8=8B=E5=8D=888:13, Benedikt Rips wrote:
+> Hi there,
+>=20
+> two weeks ago, I forcibly shut down my system when it was frozen, by pr=
+essing
+> the power button for several seconds. At the next boot, I was not able =
+to=20
+> mount
+> the filesystem. I booted from a usb stick and at mounting my root files=
+ystem
+> (which is btrfs), I got the following error messages:
+>=20
+>=20
+> # journalctl -qxeb | tail ... | head ...
+> Aug 28 16:43:21 archiso kernel: BTRFS info (device dm-2): trying to use=
+ backup=20
+> root at mount time
+> Aug 28 16:43:21 archiso kernel: BTRFS info (device dm-2): use zstd=20
+> compression, level 3
+> Aug 28 16:43:21 archiso kernel: BTRFS info (device dm-2): disk space ca=
+ching=20
+> is enabled
+> Aug 28 16:43:21 archiso kernel: BTRFS info (device dm-2): has skinny ex=
+tents
+> Aug 28 16:43:21 archiso kernel: BTRFS warning (device dm-2): dm-2 check=
+sum=20
+> verify failed on 95634915328 wanted 59c7037e found 97021a59 level 0
+> Aug 28 16:43:21 archiso kernel: BTRFS warning (device dm-2): failed to =
+read=20
+> root (objectid=3D2): -5
 
->> PAGE_SIZE.
->>
->> To support subpage RO support, we need to properly honor per-sector
->> checksum verification, just like what we did in dio read path.
->>
->> This patch will do the csum verification in a for loop, starts with
->> pg_off =3D=3D start - page_offset(page), with sectorsize increasement =
-for
->> each loop.
->>
->> For sectorsize =3D=3D PAGE_SIZE case, the pg_off will always be 0, and=
- we
->> will only finish with just one loop.
->>
->> For subpage, we do the proper loop.
->>
->> Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
->> Signed-off-by: Qu Wenruo <wqu@suse.com>
->> ---
->>  fs/btrfs/inode.c | 15 ++++++++++++++-
->>  1 file changed, 14 insertions(+), 1 deletion(-)
->>
->> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
->> index 078735aa0f68..8bd14dda2067 100644
->> --- a/fs/btrfs/inode.c
->> +++ b/fs/btrfs/inode.c
->> @@ -2851,9 +2851,12 @@ static int btrfs_readpage_end_io_hook(struct bt=
-rfs_io_bio *io_bio,
->>  				      u64 start, u64 end, int mirror)
->>  {
->>  	size_t offset =3D start - page_offset(page);
->> +	size_t pg_off;
->>  	struct inode *inode =3D page->mapping->host;
->>  	struct extent_io_tree *io_tree =3D &BTRFS_I(inode)->io_tree;
->>  	struct btrfs_root *root =3D BTRFS_I(inode)->root;
->> +	u32 sectorsize =3D root->fs_info->sectorsize;
->> +	bool found_err =3D false;
->> =20
->>  	if (PageChecked(page)) {
->>  		ClearPageChecked(page);
->> @@ -2870,7 +2873,17 @@ static int btrfs_readpage_end_io_hook(struct bt=
-rfs_io_bio *io_bio,
->>  	}
->> =20
->>  	phy_offset >>=3D inode->i_sb->s_blocksize_bits;
->> -	return check_data_csum(inode, io_bio, phy_offset, page, offset);
->> +	for (pg_off =3D offset; pg_off < end - page_offset(page);
->> +	     pg_off +=3D sectorsize, phy_offset++) {
->> +		int ret;
->> +
->> +		ret =3D check_data_csum(inode, io_bio, phy_offset, page, pg_off);
->> +		if (ret < 0)
->> +			found_err =3D true;
->> +	}
->> +	if (found_err)
->> +		return -EIO;
->> +	return 0;
->>  }
->=20
-> We don't need found_err here. Just return ret when you encounter the
-> first error.
->=20
-But that means, the whole range will be marked error, while some sectors
-may still contain good data and pass the csum checking.
+This is the real problem, extent tree get csum corruption.
+
+But since you're using backup roots, it should just rollback to next back=
+up.
+
+
+> Aug 28 16:43:21 archiso kernel: BTRFS critical (device dm-2): corrupt l=
+eaf:=20
+> root=3D18446744073709551610 block=3D95602491392 slot=3D0 ino=3D10363009=
+, invalid inode=20
+> generation: has 1518459 expect [0, 1518458]
+
+This is in fact not a bug, but indicates your fs finds a good backup,
+but then log tree is triggering problems.
+
+As log tree is newer than your backup root, tree-checker is rejecting it.=
+
+
+This is easy to handle, just zero the log by 'btrfs rescue zero-log'
+should allow you mount the fs with "-o rescue=3Dusebackuproot".
+
+Furthermore, we should not allow log replay if we use "usebackuproot"
+option at all.
+
+I'll add extra check on that for the kernel.
 
 Thanks,
 Qu
 
+> Aug 28 16:43:21 archiso kernel: BTRFS error (device dm-2): block=3D9560=
+2491392=20
+> read time tree block corruption detected
+> Aug 28 16:43:21 archiso kernel: BTRFS warning (device dm-2): failed to =
+read=20
+> tree root
+> Aug 28 16:43:21 archiso kernel: BTRFS error (device dm-2): parent trans=
+id=20
+> verify failed on 95599607808 wanted 1518455 found 1518457
+> Aug 28 16:43:21 archiso kernel: BTRFS info (device dm-2): bdev /dev/map=
+per/
+> lvm-linux errs: wr 0, rd 2, flush 0, corrupt 0, gen 0
+> Aug 28 16:43:21 archiso kernel: BTRFS critical (device dm-2): corrupt l=
+eaf:=20
+> root=3D261 block=3D95596232704 slot=3D112 ino=3D11473161, invalid inode=
+ generation:=20
+> has 1518457 expect (0, 1518456]
+> Aug 28 16:43:21 archiso kernel: BTRFS error (device dm-2): block=3D9559=
+6232704=20
+> read time tree block corruption detected
+> Aug 28 16:43:21 archiso kernel: BTRFS error (device dm-2): failed to re=
+ad=20
+> block groups: -5
+> Aug 28 16:43:21 archiso kernel: BTRFS error (device dm-2): open_ctree f=
+ailed
+>=20
+>=20
+> The filesystem is on an SSD, my kernel version at the time of the failu=
+re was
+> v5.8.5 and my btrfs-progs version is v5.7.  The information regarding t=
+he SSD
+> are:
+>=20
+>=20
+> # smartctl --info /dev/nvme0
+> smartctl 7.1 2019-12-30 r5022 [x86_64-linux-5.8.7-arch1-1] (local build=
+)
+> Copyright (C) 2002-19, Bruce Allen, Christian Franke, www.smartmontools=
+=2Eorg
+>=20
+> =3D=3D=3D START OF INFORMATION SECTION =3D=3D=3D
+> Model Number:                       THNSN5256GPUK NVMe TOSHIBA 256GB
+> Serial Number:                      Y6EB70N0KMBU
+> Firmware Version:                   5KDA4103
+> PCI Vendor/Subsystem ID:            0x1179
+> IEEE OUI Identifier:                0x00080d
+> Controller ID:                      0
+> Number of Namespaces:               1
+> Namespace 1 Size/Capacity:          256.060.514.304 [256 GB]
+> Namespace 1 Formatted LBA Size:     512
+> Namespace 1 IEEE EUI-64:            00080d 0300085baf
+> Local Time is:                      Wed Sep  9 00:18:09 2020 CEST
+>=20
+>=20
+> After reading through the btrfs wiki (btrfs-restore, btrfs-rescue, btrf=
+s-
+> check),
+> I asked on the IRC channel for help.  With the advice of cmurf and dark=
+ling I
+> ran the following commands, trying to find the cause of this error and =
+a
+> suitable backup root to restore data from: http://cwillu.com:
+> 8080/37.201.170.65/1
+>=20
+> Kind regards,
+> Benedikt
+>=20
 
---jGUHYH2rnCMnnG4CtLJLuYX84IsihURuQ--
 
---M0d0uDf0ynD2wObUyyiFxJ0OeW25rK4g3
+--cmsuVdfAMdBCR3DRFhQYIeYdgoXa1U3H9--
+
+--5oyCKOGIHLbYFXxlxRkwQUhhmLwj5X2KI
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl9Zbc4ACgkQwj2R86El
-/qhlFQf/eu/JH0LSxsSQo5KyX+QSi5FKHS7zlkeApeApAxGXi8MK2hP5wz5pKacD
-PppkpZoxieeF1bU3t+/RhPMriBjFAYTcKTkgSusXPK4VsFUBSgmt0TkCws0D/C1X
-bqzRWyAEHRJpkIad/dQlM3VgHymgO8Sw94mG8U5X0Fx9kzakbCz1W0HC0sLxPT0v
-Xlmj25kbSqen0OyboESgsxocA/SvqdV+8OL4N4vSMPP2ES/kF36W/SW4iNfT6NmT
-WFWJNO5trjTxhMSlVKNX9PQCBzVyZonP81GfgfpW19S9QDcHPNfaWQw1v+xfMunr
-pyTViXkztLxxIugWKrbwJ9GvRa7sYQ==
-=4gVX
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl9ZjpYACgkQwj2R86El
+/qjXTAgAgm66m5uI9+/kreacNaCmOFvdPJUsI0/u3ZNW6Q2u7Ot9aqICZRIBTDuq
+CbKoLujgtGhKbpa4JR5Ez6KOiCOSBa801ARXTdW2BQLq0I5WDA8/K6Xuw+wlSH67
+Fgs0bEMESg63lvZhAhOmsSi96hoMHXFrgudUT/b0WjydMcpT2YYZt9fCjg4FP0Oy
+PtqvLUwO9NfYcZgaAEg/DJmjMTiMXxVIIsf0j1g8Kzj9I43B+/7S2zDCdCIEIl3l
+rNRf6bGTgkizDPQdAxgYJbIyRHYiO5hbYS6suHUE869EzbRgahpk10mar/kDw8fP
+Wqt7P6vyJLiShEdtElCMiREE/mFDuQ==
+=epY3
 -----END PGP SIGNATURE-----
 
---M0d0uDf0ynD2wObUyyiFxJ0OeW25rK4g3--
+--5oyCKOGIHLbYFXxlxRkwQUhhmLwj5X2KI--
