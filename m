@@ -2,57 +2,62 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3060266566
-	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Sep 2020 19:01:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F35E2266600
+	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Sep 2020 19:19:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725860AbgIKRBR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 11 Sep 2020 13:01:17 -0400
-Received: from mx2.suse.de ([195.135.220.15]:47810 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726172AbgIKPEY (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 11 Sep 2020 11:04:24 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id CB7A5AE70;
-        Fri, 11 Sep 2020 14:03:48 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id D585ADA87D; Fri, 11 Sep 2020 16:02:16 +0200 (CEST)
-Date:   Fri, 11 Sep 2020 16:02:16 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     fdmanana@kernel.org
-Cc:     linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
-Subject: Re: [PATCH 0/5] btrfs: fix enospc and transaction aborts during
- fallocate
-Message-ID: <20200911140216.GQ18399@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, fdmanana@kernel.org,
-        linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
-References: <cover.1599560101.git.fdmanana@suse.com>
+        id S1726349AbgIKRTx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 11 Sep 2020 13:19:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56548 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726148AbgIKO5e (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 11 Sep 2020 10:57:34 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5252FC061349;
+        Fri, 11 Sep 2020 07:17:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=hY9rmfrv8UCuGHdrvMA74LoUacs54okGTn77tgIOUTg=; b=gjqxNSJhTHRI78NdQ0N+CiZ7aa
+        8XuuMyP7Bup4JqKaiohZzpS/aPpZM7QZkyein2/NrRK0U9Bcmz1TmQNJ6ED+ISDuwZqx0HnpHlHOz
+        UgsO1nXNSRG1za4KU+Tyk+jvpcP6rCyQckymDzhVTdIMTlmSEgxU+SMybyflZAAx23QdXsOiKJGfz
+        DXjjudLlTaQyNREvphjeGK3/Xr+BA3qlfnw4TzAf98OWkVo+j1xC5DuWcmchf74jlMBVLo3XRFIjv
+        b/WKmmWiS1cNVGowM8BsmHFcuOKZZoWRJ4DHSX0sMiYRdTOY6Lf0bcwtP49bBeZQvLLkgVU6DVWV0
+        M32EEAEg==;
+Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kGjrb-0004AW-9r; Fri, 11 Sep 2020 14:17:19 +0000
+Date:   Fri, 11 Sep 2020 15:17:19 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Naohiro Aota <naohiro.aota@wdc.com>
+Cc:     linux-btrfs@vger.kernel.org, David Sterba <dsterba@suse.com>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        Hannes Reinecke <hare@suse.com>, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v7 19/39] btrfs: limit bio size under max_zone_append_size
+Message-ID: <20200911141719.GA15317@infradead.org>
+References: <20200911123259.3782926-1-naohiro.aota@wdc.com>
+ <20200911123259.3782926-20-naohiro.aota@wdc.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1599560101.git.fdmanana@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <20200911123259.3782926-20-naohiro.aota@wdc.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Sep 08, 2020 at 11:27:19AM +0100, fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
-> 
-> When attempting to fallocate on a large file range with many file extent
-> items, the operation can fail with ENOSPC when it shouldn't and, more
-> critical, abort the transaction and turn the filesystem to RO mode.
-> 
-> First patch fixes the issue, the remaining just do some cleanups after it.
-> 
-> Filipe Manana (5):
->   btrfs: fix metadata reservation for fallocate that leads to
->     transaction aborts
->   btrfs: remove item_size member of struct btrfs_clone_extent_info
->   btrfs: rename struct btrfs_clone_extent_info to a more generic name
->   btrfs: rename btrfs_punch_hole_range() to a more generic name
->   btrfs: rename btrfs_insert_clone_extent() to a more generic name
+On Fri, Sep 11, 2020 at 09:32:39PM +0900, Naohiro Aota wrote:
+> +		if (fs_info->max_zone_append_size &&
+> +		    bio_op(bio) == REQ_OP_WRITE &&
+> +		    bio->bi_iter.bi_size + size > fs_info->max_zone_append_size)
+> +			can_merge = false;
+> +
+>  		if (prev_bio_flags != bio_flags || !contig || !can_merge ||
+>  		    force_bio_submit ||
+>  		    bio_add_page(bio, page, page_size, pg_offset) < page_size) {
 
-Added to misc-next, thanks.
+For zoned devices you need to use bio_add_hw_page instead of so that all
+the hardware restrictions are applied.  bio_add_hw_page asso gets the
+lenght limited passed as the last parameter so we won't need a separate
+check.
