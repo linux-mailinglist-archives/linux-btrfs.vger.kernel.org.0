@@ -2,117 +2,76 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CB64265DC1
-	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Sep 2020 12:24:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DC22265DCC
+	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Sep 2020 12:26:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725888AbgIKKYi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 11 Sep 2020 06:24:38 -0400
-Received: from de-smtp-delivery-102.mimecast.com ([51.163.158.102]:55224 "EHLO
-        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725922AbgIKKYT (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 11 Sep 2020 06:24:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
-        t=1599819856;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=KLn39jl+vIqJet/n9LryG1PCZ0drbUx3/p+Qn7tUV/Y=;
-        b=Wbx6ENaSvu4Di23WHjb+rn+IWfqDWTfaH/RnRE+xXSbapsyPH/Mu4MkRsHZGqZqNa2dts0
-        d6RWhw39t6JmGq6oTE2WAKXdqjdKQApcgCser8Vt8ZYGenzoD/k/DKEnVWD01/5CdS1yF5
-        zNxfsXs8vKhjrOfUiI/Q3NZVyu64T9c=
-Received: from EUR03-AM5-obe.outbound.protection.outlook.com
- (mail-am5eur03lp2059.outbound.protection.outlook.com [104.47.8.59]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- de-mta-11-Ugl0P_u0NFesT1y-niZ4kA-1; Fri, 11 Sep 2020 12:24:14 +0200
-X-MC-Unique: Ugl0P_u0NFesT1y-niZ4kA-1
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mORWtehgRZ50pWAFJMZnw4153YmFc5mUpw2bpNEjvzlKMluYYOYUhcw66N3yf0+C1w+C5mHgWFi0nfLZf4vT/hF7Xd5zfTAQgNLWyxDbXL0CGKspyUfA5YPdm5DCf/lKud81rwxnidJVlwwp1V1BpkfZb2tK/NvIA+btgisIqEO6lTs1h6Q3uisYsaMitiltVviKMZkQR72thmZ/1M8WZWhcaMXkf3eZSHuwDFj3+FCSP+jM4NOcRqqZzt2EZh/ABegb0oFn4HozzbA27ecoxteI78whuqgmdrrJ7u2qVAWlu9JP5VdKlGtDWFFHisGYrQxkZNp5Zl9ymhQ5aihqFg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=BlHEaBUO8vC75JlChQxUwh12VXbRhrK+hjBVNAFLIAY=;
- b=m6ouWqwknwH7MbN0tEJzJ5RbhUoV5g1i+5hADKRoRD37PqGvMMWLjrGt3J/G3Va66VMxbG/rHUw/IcUMIUIftH2PkAkVbbA2Qz6HByI2QAbQhL7EfFXj6xQQ/CzwjXHRuo0xBWI3vhLNNprB0B0jA84QQQBTqUorXWo1J7m9MRUrv+ySVgE4HzmTThhP3kpd0HgHhljby8GsoYxGYXF/EDtjsJFQusVDmI/qiKWso/oQW9tHUhmWYX6yaXCNfBxJ8k1xtMr/Ev09P8XjGlfRaHiVwZcf/y6WIK1b7tbMhmlpDVcrPBp3Qa3+jgnyTh0PzGgds42MmQp9w4uGbWYyww==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=suse.com;
-Received: from AM0PR04MB6195.eurprd04.prod.outlook.com (2603:10a6:208:13c::13)
- by AM0PR04MB7044.eurprd04.prod.outlook.com (2603:10a6:208:191::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16; Fri, 11 Sep
- 2020 10:24:14 +0000
-Received: from AM0PR04MB6195.eurprd04.prod.outlook.com
- ([fe80::e9b0:22ea:e2da:1315]) by AM0PR04MB6195.eurprd04.prod.outlook.com
- ([fe80::e9b0:22ea:e2da:1315%5]) with mapi id 15.20.3370.016; Fri, 11 Sep 2020
- 10:24:14 +0000
-Subject: Re: [PATCH 00/17] btrfs: add read-only support for subpage sector
- size
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
+        id S1725809AbgIKK0y (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 11 Sep 2020 06:26:54 -0400
+Received: from mx2.suse.de ([195.135.220.15]:56560 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725781AbgIKK0x (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 11 Sep 2020 06:26:53 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 4E518AD2F;
+        Fri, 11 Sep 2020 10:27:07 +0000 (UTC)
+Subject: Re: [PATCH 05/17] btrfs: don't allow tree block to cross page
+ boundary for subpage support
+To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
 References: <20200908075230.86856-1-wqu@suse.com>
-Autocrypt: addr=wqu@suse.com; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0GFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPokBTQQTAQgAOAIbAwULCQgHAgYVCAkKCwIE
- FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJdnDWhAAoJEMI9kfOhJf6oZgoH
- 90uqoGyUh5UWtiT9zjUcvlMTCpd/QSgwagDuY+tEdVPaKlcnTNAvZKWSit8VuocjrOFbTLwb
- vZ43n5f/l/1QtwMgQei/RMY2XhW+totimzlHVuxVaIDwkF+zc+pUI6lDPnULZHS3mWhbVr9N
- vZAAYVV7GesyyFpZiNm7GLvLmtEdYbc9OnIAOZb3eKfY3mWEs0eU0MxikcZSOYy3EWY3JES7
- J9pFgBrCn4hF83tPH2sphh1GUFii+AUGBMY/dC6VgMKbCugg+u/dTZEcBXxD17m+UcbucB/k
- F2oxqZBEQrb5SogdIq7Y9dZdlf1m3GRRJTX7eWefZw10HhFhs1mwx7kBDQRZ1YGvAQgAqlPr
- YeBLMv3PAZ75YhQIwH6c4SNcB++hQ9TCT5gIQNw51+SQzkXIGgmzxMIS49cZcE4KXk/kHw5h
- ieQeQZa60BWVRNXwoRI4ib8okgDuMkD5Kz1WEyO149+BZ7HD4/yK0VFJGuvDJR8T7RZwB69u
- VSLjkuNZZmCmDcDzS0c/SJOg5nkxt1iTtgUETb1wNKV6yR9XzRkrEW/qShChyrS9fNN8e9c0
- MQsC4fsyz9Ylx1TOY/IF/c6rqYoEEfwnpdlz0uOM1nA1vK+wdKtXluCa79MdfaeD/dt76Kp/
- o6CAKLLcjU1Iwnkq1HSrYfY3HZWpvV9g84gPwxwxX0uXquHxLwARAQABiQE8BBgBCAAmAhsM
- FiEELd9y5aWlW6idqkLhwj2R86El/qgFAl2cNa4FCQlqTn8ACgkQwj2R86El/qhXBAf/eXLP
- HDNTkHRPxoDnwhscIHJDHlsszke25AFltJQ1adoaYCbsQVv4Mn5rQZ1Gon54IMdxBN3r/B08
- rGVPatIfkycMCShr+rFHPKnExhQ7Wr555fq+sQ1GOwOhr1xLEqAhBMp28u9m8hnkqL36v+AF
- hjTwRtS+tRMZfoG6n72xAj984l56G9NPfs/SOKl6HR0mCDXwJGZAOdtyRmqddi53SXi5N4H1
- jWX1xFshp7nIkRm6hEpISEWr/KKLbAiKKbP0ql5tP5PinJeIBlDv4g/0+aGoGg4dELTnfEVk
- jMC8cJ/LiIaR/OEOF9S2nSeTQoBmusTz+aqkbogvvYGam6uDYw==
-Message-ID: <41181cb3-8168-1dea-a414-58d879965a23@suse.com>
-Date:   Fri, 11 Sep 2020 18:24:04 +0800
+ <20200908075230.86856-6-wqu@suse.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <661f0e00-0d74-e6e4-f9cd-e1a8ae648406@suse.com>
+Date:   Fri, 11 Sep 2020 13:26:50 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
-In-Reply-To: <20200908075230.86856-1-wqu@suse.com>
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20200908075230.86856-6-wqu@suse.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-ClientProxiedBy: BYAPR05CA0077.namprd05.prod.outlook.com
- (2603:10b6:a03:e0::18) To AM0PR04MB6195.eurprd04.prod.outlook.com
- (2603:10a6:208:13c::13)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [0.0.0.0] (149.28.201.231) by BYAPR05CA0077.namprd05.prod.outlook.com (2603:10b6:a03:e0::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.5 via Frontend Transport; Fri, 11 Sep 2020 10:24:12 +0000
-X-Originating-IP: [149.28.201.231]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: ed89482a-5721-49c8-b664-08d8563cd4b2
-X-MS-TrafficTypeDiagnostic: AM0PR04MB7044:
-X-Microsoft-Antispam-PRVS: <AM0PR04MB70449C35936FD7E86AEF081CD6240@AM0PR04MB7044.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: xbr2X4AnrO77k6zS4ygK3hNgjm+vX6T7MdxK9fi0MAfuTOKaKfPpzTtyVghYyoSYSikQ120bNZ1n0vkdweyO4o/Kv0H0wE2/1rUAsQWHUQgyxbEV698pMgvC/Qzeydc5ytzSabQlQmt1WUG8U2yyJNDvbE2J2m0Vpp1E6fWQuFHL3bYUTEvP1UirQGyJOhSU3px8cwCUwXmX5cScpm/8Ah/sOcJ5itMgSZAfwTCD0UvYyDiYLydl3DtY7MpmCO/gN1gXML9jYJ4MD57yEDNSoREBC0atl00UTC8l3BYN59nnumovbQ5tVu5qf97fCzrr8pO1QkLCtEbzK2EpTywXCcBadRJi/SZgsm1kcWcZjyQfb5A+l4hUpKXsSB6UfMYCoWhqdyGc8od24v4AuDdxI3NAzqMse1XizUOEaj6oxG/5ItT9NoU9BATaOiq+egN/4kxt3jp2x4bTumT1ZfNIk98a7PnaNHXLkvP7/jSfjhg=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB6195.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(136003)(376002)(39860400002)(346002)(396003)(8676002)(31686004)(6666004)(478600001)(66556008)(186003)(83380400001)(16526019)(2906002)(26005)(966005)(52116002)(66476007)(16576012)(6916009)(31696002)(66946007)(36756003)(2616005)(316002)(5660300002)(8936002)(6706004)(86362001)(956004)(6486002)(78286006)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: ApHrrxj8X7WhjIHb0lW/BCoBIqSiY88gTBbZRoM6quIHTC13WqyFQNdxUmk9KzzTODJIztcxc+hKV5+f5MNzfdUwJrTcAAD+/fNmqN9cLIQCwohM0g/q3iUN8HVZ3T97O/qKo9aUTUfy5Dih/xLuX5vSfthCg5fgwUX02JZzdlTF5rjZN1lw+9yQTbMFWa/MvYEWGa1cGwy8t0IKhpAuwdf8Y+kWd0DKW2yXa/0UPx+Wy3NILt1i2Z/BgDH6wPB8ogaXXXU714lR0ZO8vemYdzggFeIe50FHReHbIzCBSpVWhezM3hsE6Q13fFmNtfgw29b0pcFv5Yz++YQ9mTuI6h63j4+SceYZqJgIxs78JZMwHwvcKLMt0ijpDcx8zv2sRD7abKbGsZnCvEe5Jkq0vA2pbExC8D0QAx5y18EUpoLIOQJthjTsdrIrsCIsF6oxXmygu54GuA3Z+V3XKZMKTF7OxDulJUXRucaae0QHtZxaj+gBDNDzzHOgK7DSbu88E+997KlzSIzzUNdt846WNqVfnQAFyamCW5oU45Pi+wW0XoJJG1c00cewxKRo9tHr2PDnrDkKkhGSmKI0zqeA+8p/NX4ciFAZpuXi/xX5bZdc66Fjf6PX5fuydmYA2WUKIIGDxrOkTRibgmDALj5avA==
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ed89482a-5721-49c8-b664-08d8563cd4b2
-X-MS-Exchange-CrossTenant-AuthSource: AM0PR04MB6195.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Sep 2020 10:24:14.1272
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: UlSbYvAGpvZTKFg3StoOsyCnxCcWkqmpb3kA3VXPytK+9WmKR2Y6BtiMujlCI8CS
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR04MB7044
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
@@ -120,137 +79,56 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2020/9/8 =E4=B8=8B=E5=8D=883:52, Qu Wenruo wrote:
-> Patches can be fetched from github:
-> https://github.com/adam900710/linux/tree/subpage
->=20
-> Currently btrfs only allows to mount fs with sectorsize =3D=3D PAGE_SIZE.
->=20
-> That means, for 64K page size system, they can only use 64K sector size
-> fs.
-> This brings a big compatible problem for btrfs.
->=20
-> This patch is going to slightly solve the problem by, allowing 64K
-> system to mount 4K sectorsize fs in read-only mode.
->=20
-> The main objective here, is to remove the blockage in the code base, and
-> pave the road to full RW mount support.
->=20
-> =3D=3D What works =3D=3D
->=20
-> Existing regular page sized sector size support
-> Subpage read-only Mount (with all self tests and ASSERT)
-> Subpage metadata read (including all trees and inline extents, and csum c=
-hecking)
-> Subpage uncompressed data read (with csum checking)
->=20
-> =3D=3D What doesn't work =3D=3D
->=20
-> Read-write mount (see the subject)
-> Compressed data read
->=20
-> =3D=3D Challenge we meet =3D=3D
->=20
-> The main problem is metadata, where we have several limitations:
-> - We always read the full page of a metadata
->   In subpage case, one full page can contain several tree blocks.
->=20
-> - We use page::private to point to extent buffer
->   This means we currently can only support one-page-to-one-extent-buffer
->   mapping.
->   For subpage size support, we need one-page-to-multiple-extent-buffer
->   mapping.
->=20
->=20
-> =3D=3D Solutions =3D=3D
->=20
-> So here for the metadata part, we use the following methods to
-> workaround the problem:
->=20
-> - Introduce subpage_eb_mapping structure to do bitmap
->   Now for subpage, page::private points to a subpage_eb_mapping
->   structure, which has a bitmap to mapping one page to multiple extent
->   buffers.
->=20
-> - Still do full page read for metadata
->   This means, at read time, we're not reading just one extent buffer,
->   but possibly many more.
->   In that case, we first do tree block verification for the tree blocks
->   triggering the read, and mark the page uptodate.
->=20
->   For newly incoming tree block read, they will check if the tree block
->   is verified. If not verified, even if the page is uptodate, we still
->   need to check the extent buffer.
->=20
->   By this all subpage extent buffers are verified properly.
->=20
-> For data part, it's pretty simple, all existing infrastructure can be
-> easily converted to support subpage read, without any subpage specific
-> handing yet.
->=20
-> =3D=3D Patchset structure =3D=3D
->=20
-> The structure of the patchset:
-> Patch 01~11: Preparation patches for metadata subpage read support.
->              These patches can be merged without problem, and work for
->              both regular and subpage case.
-> Patch 12~14: Patches for data subpage read support.
->              These patches works for both cases.
->=20
-> That means, patch 01~14 can be applied to current kernel, and shouldn't
-> affect any existing behavior.
->=20
-> Patch 15~17: Subpage metadata read specific patches.
->              These patches introduces the main part of the subpage
->              metadata read support.
+On 8.09.20 г. 10:52 ч., Qu Wenruo wrote:
+> As a preparation for subpage sector size support (allow sector size
+> smaller than page size to be mounted), if the sector size is smaller
 
-For the last 3 patches, it turns out that, we may get rid of
-page::private pointer completely, and greatly simplify the bits handling
-by relying on extent_io_tree.
+nit: (allowing filesystem with sector size smaller than page size to be
+mounted)
 
-So if possible, please ignore these last 3 patches for now. They would
-be the backup solution if the extent_io_tree idea doesn't go well.
+> than page size, we don't allow tree block to be read if it cross page
+> boundary (normally 64K).
 
-Thanks,
-Qu
->=20
-> The number of patches is the main reason I'm submitting them to the mail
-> list. As there are too many preparation patches already.
->=20
-> Qu Wenruo (17):
->   btrfs: extent-io-tests: remove invalid tests
->   btrfs: calculate inline extent buffer page size based on page size
->   btrfs: remove the open-code to read disk-key
->   btrfs: make btrfs_fs_info::buffer_radix to take sector size devided
->     values
->   btrfs: don't allow tree block to cross page boundary for subpage
->     support
->   btrfs: handle sectorsize < PAGE_SIZE case for extent buffer accessors
->   btrfs: make csum_tree_block() handle sectorsize smaller than page size
->   btrfs: refactor how we extract extent buffer from page for
->     alloc_extent_buffer()
->   btrfs: refactor btrfs_release_extent_buffer_pages()
->   btrfs: add assert_spin_locked() for attach_extent_buffer_page()
->   btrfs: extract the extent buffer verification from
->     btree_readpage_end_io_hook()
->   btrfs: remove the unnecessary parameter @start and @len for
->     check_data_csum()
->   btrfs: extent_io: only require sector size alignment for page read
->   btrfs: make btrfs_readpage_end_io_hook() follow sector size
->   btrfs: introduce subpage_eb_mapping for extent buffers
->   btrfs: handle extent buffer verification proper for subpage size
->   btrfs: allow RO mount of 4K sector size fs on 64K page system
->=20
->  fs/btrfs/ctree.c                 |  13 +-
->  fs/btrfs/ctree.h                 |  38 ++-
->  fs/btrfs/disk-io.c               | 111 ++++---
->  fs/btrfs/disk-io.h               |   1 +
->  fs/btrfs/extent_io.c             | 538 +++++++++++++++++++++++++------
->  fs/btrfs/extent_io.h             |  19 +-
->  fs/btrfs/inode.c                 |  40 ++-
->  fs/btrfs/struct-funcs.c          |  18 +-
->  fs/btrfs/super.c                 |   7 +
->  fs/btrfs/tests/extent-io-tests.c |  26 +-
->  10 files changed, 633 insertions(+), 178 deletions(-)
->=20
+Why normally 64k ? I suspect you assume readers are familiar with the
+motivation for this work which they don't necessarily need to be. Please
+make your sentences explicit. Correct me if I'm wrong but you are
+ensuring that an eb doesn't cross the largest possible sectorsize?
+> 
+> This ensures that, tree blocks are always contained in one page for 64K
+> system, which can greatly simplify the handling.
 
+"For system with 64k page size" the term "64k system" is ambiguous, heed
+this when rewording other patches as well since I've seen this used in
+multiple places.
+
+
+> Or we need to do complex multi-page handling for tree blocks.
+> 
+> Currently the only way to create such tree blocks crossing 64K boundary
+> is by btrfs-convert, which will get fixed soon and doesn't get
+> wide-spread usage.
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+>  fs/btrfs/extent_io.c | 7 +++++++
+>  1 file changed, 7 insertions(+)
+> 
+> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+> index 5d969340275e..119193166cec 100644
+> --- a/fs/btrfs/extent_io.c
+> +++ b/fs/btrfs/extent_io.c
+> @@ -5232,6 +5232,13 @@ struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
+>  		btrfs_err(fs_info, "bad tree block start %llu", start);
+>  		return ERR_PTR(-EINVAL);
+>  	}
+> +	if (fs_info->sectorsize < PAGE_SIZE && round_down(start, PAGE_SIZE) !=
+> +	    round_down(start + len - 1, PAGE_SIZE)) {
+> +		btrfs_err(fs_info,
+> +		"tree block crosses page boundary, start %llu nodesize %lu",
+> +			  start, len);
+> +		return ERR_PTR(-EINVAL);
+> +	}
+>  
+>  	eb = find_extent_buffer(fs_info, start);
+>  	if (eb)
+> 
