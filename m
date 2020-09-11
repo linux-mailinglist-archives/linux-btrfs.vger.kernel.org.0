@@ -2,158 +2,127 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84855266273
-	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Sep 2020 17:47:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E44EF266232
+	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Sep 2020 17:33:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726206AbgIKPqd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 11 Sep 2020 11:46:33 -0400
-Received: from mx2.suse.de ([195.135.220.15]:49030 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725851AbgIKPnn (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 11 Sep 2020 11:43:43 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 5859CAC3F;
-        Fri, 11 Sep 2020 13:55:37 +0000 (UTC)
-Subject: Re: [PATCH 13/17] btrfs: extent_io: only require sector size
- alignment for page read
-To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-References: <20200908075230.86856-1-wqu@suse.com>
- <20200908075230.86856-14-wqu@suse.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <89fd9545-c539-3f58-e48a-218a9b111edd@suse.com>
-Date:   Fri, 11 Sep 2020 16:55:21 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726529AbgIKPdk convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-btrfs@lfdr.de>); Fri, 11 Sep 2020 11:33:40 -0400
+Received: from james.kirk.hungrycats.org ([174.142.39.145]:34770 "EHLO
+        james.kirk.hungrycats.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726262AbgIKPdX (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 11 Sep 2020 11:33:23 -0400
+Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
+        id BC7D97FAFA8; Fri, 11 Sep 2020 11:33:20 -0400 (EDT)
+Date:   Fri, 11 Sep 2020 11:33:20 -0400
+From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+To:     Miloslav =?utf-8?B?SMWvbGE=?= <miloslav.hula@gmail.com>
+Cc:     Chris Murphy <lists@colorremedies.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Subject: Re: No space left after add device and balance
+Message-ID: <20200911153320.GE5890@hungrycats.org>
+References: <9224b373-82ee-60c4-4bd1-be359db75ea1@gmail.com>
+ <CAJCQCtQYSPO6Wd2u=WK-mia0WTjU0BybhhhhbT5VZUczUfx+JQ@mail.gmail.com>
+ <d1339a91-0a04-538c-59ca-30bc05b636a5@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20200908075230.86856-14-wqu@suse.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Disposition: inline
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <d1339a91-0a04-538c-59ca-30bc05b636a5@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Fri, Sep 11, 2020 at 12:29:32PM +0200, Miloslav Hůla wrote:
+> Dne 10.09.2020 v 21:18 Chris Murphy napsal(a):
+> > On Wed, Sep 9, 2020 at 2:15 AM Miloslav Hůla <miloslav.hula@gmail.com> wrote:
+> > 
+> > > After ~15.5 hours finished successfully. Unfortunetally, I have no exact
+> > > free space report before first balance, but it looked roughly like:
+> > > 
+> > > Label: 'DATA'  uuid: 5b285a46-e55d-4191-924f-0884fa06edd8
+> > >           Total devices 16 FS bytes used 3.49TiB
+> > >           devid    1 size 558.41GiB used 448.66GiB path /dev/sda
+> > >           devid    2 size 558.41GiB used 448.66GiB path /dev/sdb
+> > >           devid    4 size 558.41GiB used 448.66GiB path /dev/sdd
+> > >           devid    5 size 558.41GiB used 448.66GiB path /dev/sde
+> > >           devid    7 size 558.41GiB used 448.66GiB path /dev/sdg
+> > >           devid    8 size 558.41GiB used 448.66GiB path /dev/sdh
+> > >           devid    9 size 558.41GiB used 448.66GiB path /dev/sdf
+> > >           devid   10 size 558.41GiB used 448.66GiB path /dev/sdi
+> > >           devid   11 size 558.41GiB used 448.66GiB path /dev/sdj
+> > >           devid   13 size 558.41GiB used 448.66GiB path /dev/sdk
+> > >           devid   14 size 558.41GiB used 448.66GiB path /dev/sdc
+> > >           devid   15 size 558.41GiB used 448.66GiB path /dev/sdl
+> > >           devid   16 size 558.41GiB used 448.66GiB path /dev/sdm
+> > >           devid   17 size 558.41GiB used 448.66GiB path /dev/sdn
+> > >           devid   18 size 837.84GiB used 448.66GiB path /dev/sdr
+> > >           devid   19 size 837.84GiB used 448.66GiB path /dev/sdq
+> > >           devid   20 size 837.84GiB used   0.00GiB path /dev/sds
+> > >           devid   21 size 837.84GiB used   0.00GiB path /dev/sdt
+> > > 
+> > > 
+> > > Are we doing something wrong? I found posts, where problems with balace
+> > > of full filesystem are described. And as a recommendation is "add empty
+> > > device, run balance, remove device".
+> > 
+> > It's raid10, so in this case, you probably need to add 4 devices. It's
+> > not required they be equal sizes but it's ideal.
 
+Something is wrong there.  Each new balanced chunk will free space
+on the first 16 drives (each new chunk is 9GB, each old one is 8GB,
+so the number of chunks on each of the old disks required to hold the
+same data decreases by 1/8th each time a chunk is relocated in balance).
+Every drive had at least 100GB of unallocated space at the start, so the
+first 9GB chunk should have been allocated without issue.  Assuming nobody
+was aggressively writing to the disk during the balance to consume all
+available space, it should not have run out of space in a full balance.
 
-On 8.09.20 г. 10:52 ч., Qu Wenruo wrote:
-> If we're reading partial page, btrfs will warn about this as our
-> read/write are always done in sector size, which equals page size.
-> 
-> But for the incoming subpage RO support, our data read is only aligned
-> to sectorsize, which can be smaller than page size.
-> 
-> Thus here we change the warning condition to check it against
-> sectorsize, thus the behavior is not changed for regular sectorsize ==
-> PAGE_SIZE case, while won't report error for subpage read.
-> 
-> Also, pass the proper start/end with bv_offset for check_data_csum() to
-> handle.
-> 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> ---
->  fs/btrfs/extent_io.c | 19 ++++++++++++-------
->  1 file changed, 12 insertions(+), 7 deletions(-)
-> 
-> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-> index 81e43d99feda..a83b63ecc5f8 100644
-> --- a/fs/btrfs/extent_io.c
-> +++ b/fs/btrfs/extent_io.c
-> @@ -2819,6 +2819,7 @@ static void end_bio_extent_readpage(struct bio *bio)
->  		struct page *page = bvec->bv_page;
->  		struct inode *inode = page->mapping->host;
->  		struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
-> +		u32 sectorsize = fs_info->sectorsize;
->  		bool data_inode = btrfs_ino(BTRFS_I(inode))
->  			!= BTRFS_BTREE_INODE_OBJECTID;
->  
-> @@ -2829,13 +2830,17 @@ static void end_bio_extent_readpage(struct bio *bio)
->  		tree = &BTRFS_I(inode)->io_tree;
->  		failure_tree = &BTRFS_I(inode)->io_failure_tree;
->  
-> -		/* We always issue full-page reads, but if some block
-> +		/*
-> +		 * We always issue full-sector reads, but if some block
->  		 * in a page fails to read, blk_update_request() will
->  		 * advance bv_offset and adjust bv_len to compensate.
-> -		 * Print a warning for nonzero offsets, and an error
-> -		 * if they don't add up to a full page.  */
-> -		if (bvec->bv_offset || bvec->bv_len != PAGE_SIZE) {
-> -			if (bvec->bv_offset + bvec->bv_len != PAGE_SIZE)
-> +		 * Print a warning for unaligned offsets, and an error
-> +		 * if they don't add up to a full sector.
-> +		 */
-> +		if (!IS_ALIGNED(bvec->bv_offset, sectorsize) ||
-> +		    !IS_ALIGNED(bvec->bv_offset + bvec->bv_len, sectorsize)) {
-> +			if (!IS_ALIGNED(bvec->bv_offset + bvec->bv_len,
-> +					sectorsize))
+You might have hit a metadata space reservation bug, especially on an
+older kernel.  It's hard to know what happened without a log of the
+'btrfs fi usage' data over time and a stack trace of the ENOSPC event,
+but whatever it was, it was probably fixed some time in the last 4
+years.
 
-Duplicated check ...
+There's a bug (up to at least 5.4) where scrub locks chunks and triggers
+aggressive metadata overallocations, which can lead to this result.
+It forms a feedback loop where scrub keeps locking the metadata chunk that
+balance is using, so balance allocates another metadata chunk, then scrub
+moves on and locks that new metadata chunk, repeat until out of space,
+abort transaction, all the allocations get rolled back and disappear.
+Only relevant if you were running a scrub at the same time as balance.
 
->  				btrfs_err(fs_info,
->  					"partial page read in btrfs with offset %u and length %u",
->  					bvec->bv_offset, bvec->bv_len);
-> @@ -2845,8 +2850,8 @@ static void end_bio_extent_readpage(struct bio *bio)
->  					bvec->bv_offset, bvec->bv_len);
->  		}
->  
-> -		start = page_offset(page);
-> -		end = start + bvec->bv_offset + bvec->bv_len - 1;
-> +		start = page_offset(page) + bvec->bv_offset;
-> +		end = start + bvec->bv_len - 1;
-
-nit: 'start' and 'end' must really be renamed - to file_offset and
-file_end because they represent values in the logical namespace of the
-file. And given the context they are used i.e endio handler where we
-also deal with extent starts and physical offsets such a rename is long
-over due. Perhaps you can create a separate patch when  you are
-resending the series alternatively I'll make a sweep across those
-low-level functions to clean that up.
-
->  		len = bvec->bv_len;
->  
->  		mirror = io_bio->mirror_num;
+> > > Are there some requirements on free space for balance even if you add
+> > > new device?
+> > 
+> > The free space is reported upon adding the two devices; but the raid10
+> > profile requires more than just free space, it needs free space on
+> > four devices.
 > 
+> I didn't realize that. It makes me sense now. So we are probably "wrong"
+> with 18 devices. Multiple of 4 would be better I guess.
+
+Not really.  btrfs profile "raid10" distribute stripes over pairs of
+mirrored drives.  It will allocate raid10 chunks on 4 + N * 2 drives at a
+time, but each chunk can use different drives so all the space is filled.
+Any number of disks above 4 is OK (including odd numbers), but sequential
+read performance will only increase when the number of drives increases
+to the next even number so the next highest stripe width can be used.
+
+i.e. 5 drives will provide more space than 4, but 5 drives will not be
+significantly faster than 4.  6 is faster and larger than 4 or 5.
+7 will be larger, 8 will be larger and faster, 9 will be larger, etc.
+(assuming all the drives are identical)
+
+At some point there's a chunk size limit that kicks in and limits the
+number of drives in a chunk, but I'm not sure what the limit is (the
+kernel code does math on struct and block sizes and the result isn't
+obvious to me).  I think it ends up being 10 of something, but not sure
+if the unit is drives (in which case your 16 drives were already over
+the limit) or gigabytes of logical chunk size (for raid10 that means
+20 drives).  Once that limit is reached, adding more drives only increases
+space and does not improve sequential read performance any further.
+
+> Thank you!
