@@ -2,23 +2,24 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61837265D5F
-	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Sep 2020 12:07:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23271265D74
+	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Sep 2020 12:12:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725778AbgIKKH2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 11 Sep 2020 06:07:28 -0400
-Received: from mx2.suse.de ([195.135.220.15]:53446 "EHLO mx2.suse.de"
+        id S1725826AbgIKKL7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 11 Sep 2020 06:11:59 -0400
+Received: from mx2.suse.de ([195.135.220.15]:34904 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725554AbgIKKH1 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 11 Sep 2020 06:07:27 -0400
+        id S1725802AbgIKKL4 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 11 Sep 2020 06:11:56 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id A0BBFACBF;
-        Fri, 11 Sep 2020 10:07:41 +0000 (UTC)
-Subject: Re: [PATCH 03/17] btrfs: remove the open-code to read disk-key
+        by mx2.suse.de (Postfix) with ESMTP id 9BFF3B313;
+        Fri, 11 Sep 2020 10:12:10 +0000 (UTC)
+Subject: Re: [PATCH 04/17] btrfs: make btrfs_fs_info::buffer_radix to take
+ sector size devided values
 To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
 References: <20200908075230.86856-1-wqu@suse.com>
- <20200908075230.86856-4-wqu@suse.com>
+ <20200908075230.86856-5-wqu@suse.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  xsFNBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -62,12 +63,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  KIuxEcV8wcVjr+Wr9zRl06waOCkgrQbTPp631hToxo+4rA1jiQF2M80HAet65ytBVR2pFGZF
  zGYYLqiG+mpUZ+FPjxk9kpkRYz61mTLSY7tuFljExfJWMGfgSg1OxfLV631jV1TcdUnx+h3l
  Sqs2vMhAVt14zT8mpIuu2VNxcontxgVr1kzYA/tQg32fVRbGr449j1gw57BV9i0vww==
-Message-ID: <1e6f222d-7ea9-7396-df75-94396d1b469c@suse.com>
-Date:   Fri, 11 Sep 2020 13:07:25 +0300
+Message-ID: <cb58ceb4-1636-c717-7ac5-4a45d4d80314@suse.com>
+Date:   Fri, 11 Sep 2020 13:11:54 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20200908075230.86856-4-wqu@suse.com>
+In-Reply-To: <20200908075230.86856-5-wqu@suse.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -79,57 +80,68 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 8.09.20 г. 10:52 ч., Qu Wenruo wrote:
-> There is some ancient code from the old days where we handle the
-> disk_key read manually when the disk key is in one page.>
-> But that's totally unnecessary, as we have read_extent_buffer() to
-> handle everything.
-
-I'd rephrase this to something like:
-
-"generic_bin_search distinguishes between reading a key which doesn't
-cross a page and one which does. However this distinction is not
-necessary since read_extent_buffer handles both cases transparently.
-
-Just use read_extent_buffer to streamline the code"
-
-
+> For subpage size sector size support, one page can contain mutliple tree
+> blocks, thus we can no longer use (eb->start >> PAGE_SHIFT) any more, or
+> we can easily get extent buffer doesn't belongs to us.
+> 
+> This patch will use (extent_buffer::start / sectorsize) as index for radix
+> tree so that we can get correct extent buffer for subpage size support.
 > 
 > Signed-off-by: Qu Wenruo <wqu@suse.com>
+That's fine, however now that we are moving towards sectorsize I wonder
+if it would make more sense to fs_info->sector_bits which would be
+
+log2(fs_info->sectorsize) and have expressions such as:
+
+start >> fs_info->sector_bits. I * think* we can rely on the compiler
+doing the right thing given fs_info->sectorsize is guaranteed to be a
+power of 2 value.
+
+
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
 
 > ---
->  fs/btrfs/ctree.c | 13 ++-----------
->  1 file changed, 2 insertions(+), 11 deletions(-)
+>  fs/btrfs/extent_io.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
 > 
-> diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
-> index cd1cd673bc0b..e204e1320745 100644
-> --- a/fs/btrfs/ctree.c
-> +++ b/fs/btrfs/ctree.c
-> @@ -1697,7 +1697,6 @@ static noinline int generic_bin_search(struct extent_buffer *eb,
+> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+> index 6def411b2eba..5d969340275e 100644
+> --- a/fs/btrfs/extent_io.c
+> +++ b/fs/btrfs/extent_io.c
+> @@ -5142,7 +5142,7 @@ struct extent_buffer *find_extent_buffer(struct btrfs_fs_info *fs_info,
+>  
+>  	rcu_read_lock();
+>  	eb = radix_tree_lookup(&fs_info->buffer_radix,
+> -			       start >> PAGE_SHIFT);
+> +			       start / fs_info->sectorsize);
+>  	if (eb && atomic_inc_not_zero(&eb->refs)) {
+>  		rcu_read_unlock();
+>  		/*
+> @@ -5194,7 +5194,7 @@ struct extent_buffer *alloc_test_extent_buffer(struct btrfs_fs_info *fs_info,
 >  	}
+>  	spin_lock(&fs_info->buffer_lock);
+>  	ret = radix_tree_insert(&fs_info->buffer_radix,
+> -				start >> PAGE_SHIFT, eb);
+> +				start / fs_info->sectorsize, eb);
+>  	spin_unlock(&fs_info->buffer_lock);
+>  	radix_tree_preload_end();
+>  	if (ret == -EEXIST) {
+> @@ -5302,7 +5302,7 @@ struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
 >  
->  	while (low < high) {
-> -		unsigned long oip;
->  		unsigned long offset;
->  		struct btrfs_disk_key *tmp;
->  		struct btrfs_disk_key unaligned;
-> @@ -1705,17 +1704,9 @@ static noinline int generic_bin_search(struct extent_buffer *eb,
+>  	spin_lock(&fs_info->buffer_lock);
+>  	ret = radix_tree_insert(&fs_info->buffer_radix,
+> -				start >> PAGE_SHIFT, eb);
+> +				start / fs_info->sectorsize, eb);
+>  	spin_unlock(&fs_info->buffer_lock);
+>  	radix_tree_preload_end();
+>  	if (ret == -EEXIST) {
+> @@ -5358,7 +5358,7 @@ static int release_extent_buffer(struct extent_buffer *eb)
 >  
->  		mid = (low + high) / 2;
->  		offset = p + mid * item_size;
-> -		oip = offset_in_page(offset);
->  
-> -		if (oip + key_size <= PAGE_SIZE) {
-> -			const unsigned long idx = offset >> PAGE_SHIFT;
-> -			char *kaddr = page_address(eb->pages[idx]);
-> -
-> -			tmp = (struct btrfs_disk_key *)(kaddr + oip);
-> -		} else {
-> -			read_extent_buffer(eb, &unaligned, offset, key_size);
-> -			tmp = &unaligned;
-> -		}
-> +		read_extent_buffer(eb, &unaligned, offset, key_size);
-> +		tmp = &unaligned;
->  
->  		ret = comp_keys(tmp, key);
->  
+>  			spin_lock(&fs_info->buffer_lock);
+>  			radix_tree_delete(&fs_info->buffer_radix,
+> -					  eb->start >> PAGE_SHIFT);
+> +					  eb->start / fs_info->sectorsize);
+>  			spin_unlock(&fs_info->buffer_lock);
+>  		} else {
+>  			spin_unlock(&eb->refs_lock);
 > 
