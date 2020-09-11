@@ -2,116 +2,105 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9B5C265DD7
-	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Sep 2020 12:29:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2811265E8C
+	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Sep 2020 13:10:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725843AbgIKK3i (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 11 Sep 2020 06:29:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44124 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725710AbgIKK3g (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 11 Sep 2020 06:29:36 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0994C061573
-        for <linux-btrfs@vger.kernel.org>; Fri, 11 Sep 2020 03:29:35 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id e16so10988920wrm.2
-        for <linux-btrfs@vger.kernel.org>; Fri, 11 Sep 2020 03:29:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=cVqD1iKA4+GqIY+Xphkq5i7OdQvOFXNUkDxlLeoakOw=;
-        b=lBUGe7YctY6IOLbO1D9RE9lqbyaUpatYY4amO3doEuqlkzHv/FneJ5PGaeegU54yqT
-         2W59Yobx+w0kL8B2dlYNHdLAHV/3H9zhMV3MYcOILqIa07GjLpHeEJtLfJiXO4g9bCla
-         nKN2pjuFYJIPpr/2ldMxyQIZbmHjucvrCl9qjiHhor0Qda9uIudAWrQNGzTRDajoBqpk
-         /6JF9jpQc2+LCOiVR2Its1DFxETwpYJwwPTmaAgpBt2sP3eoTKy4IGpC/Im0VWaiCZFZ
-         /+DgP0AK8xVP8IxmtCbbHNdO7LMR3wwCR9Zlt/qz2NoV9be3ANIXMe7bKaxsEORHThBQ
-         o/uw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=cVqD1iKA4+GqIY+Xphkq5i7OdQvOFXNUkDxlLeoakOw=;
-        b=WDpnFpkvxYAGl+55OIGlKY/NJHTX6nijjKonV5UI5/1bEiJWRC5JKA3xDTFkepDeci
-         S1lluguaJTHSFo4LktQ+YVwEtFGD6eo2xj0NJcRNrgnM6THRxR22RAPbopdHn1j/X7DL
-         bJ7Hsae+xlOuPdshshObmPtYX0rBN8vsn6vIU34kJfDPuGon96MpOIcwUI1O5rv33kZd
-         WFiGioFzd1uMO2gTalXc7y4rDU00lN1LKvP0MlOldk/c/XfEM0+UoGdvDFxl/S2PVHBG
-         hyXf5kpOhraUzO9bAZqn5NvINAoJj7KeTB+F3FAQUU1xB8LZsvcUotYVO1UKfHVwYrXz
-         y2iw==
-X-Gm-Message-State: AOAM533BfjFWtQOKiSliug+aF7BOdQWPv3Ms11apV8naBguayhlFbMYx
-        YbopK9Hkb71FfE49H6POHRSj8Y8hc5A=
-X-Google-Smtp-Source: ABdhPJwJ0gWhC3e4g9JJm7xZE9LfMuSq2Ichx8FyGEyLf8DUyWZGv7sY9QoanhPsdtBnih2xGZ6u7w==
-X-Received: by 2002:a5d:5089:: with SMTP id a9mr1482337wrt.118.1599820174111;
-        Fri, 11 Sep 2020 03:29:34 -0700 (PDT)
-Received: from ?IPv6:2001:718:2:119a:147:32:132:32? ([2001:718:2:119a:147:32:132:32])
-        by smtp.gmail.com with ESMTPSA id b18sm3875196wrn.21.2020.09.11.03.29.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 11 Sep 2020 03:29:33 -0700 (PDT)
-Subject: Re: No space left after add device and balance
-To:     Chris Murphy <lists@colorremedies.com>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-References: <9224b373-82ee-60c4-4bd1-be359db75ea1@gmail.com>
- <CAJCQCtQYSPO6Wd2u=WK-mia0WTjU0BybhhhhbT5VZUczUfx+JQ@mail.gmail.com>
-From:   =?UTF-8?Q?Miloslav_H=c5=afla?= <miloslav.hula@gmail.com>
-Message-ID: <d1339a91-0a04-538c-59ca-30bc05b636a5@gmail.com>
-Date:   Fri, 11 Sep 2020 12:29:32 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1725780AbgIKLKQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 11 Sep 2020 07:10:16 -0400
+Received: from mx2.suse.de ([195.135.220.15]:42690 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725768AbgIKLKO (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 11 Sep 2020 07:10:14 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id B55C2AC46;
+        Fri, 11 Sep 2020 11:10:27 +0000 (UTC)
+Subject: Re: [PATCH 07/17] btrfs: make csum_tree_block() handle sectorsize
+ smaller than page size
+To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+Cc:     Goldwyn Rodrigues <rgoldwyn@suse.com>
+References: <20200908075230.86856-1-wqu@suse.com>
+ <20200908075230.86856-8-wqu@suse.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <ffed1e89-38fe-f41a-f509-54b541b2517c@suse.com>
+Date:   Fri, 11 Sep 2020 14:10:11 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <CAJCQCtQYSPO6Wd2u=WK-mia0WTjU0BybhhhhbT5VZUczUfx+JQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: cs
+In-Reply-To: <20200908075230.86856-8-wqu@suse.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Dne 10.09.2020 v 21:18 Chris Murphy napsal(a):
-> On Wed, Sep 9, 2020 at 2:15 AM Miloslav Hůla <miloslav.hula@gmail.com> wrote:
-> 
->> After ~15.5 hours finished successfully. Unfortunetally, I have no exact
->> free space report before first balance, but it looked roughly like:
->>
->> Label: 'DATA'  uuid: 5b285a46-e55d-4191-924f-0884fa06edd8
->>           Total devices 16 FS bytes used 3.49TiB
->>           devid    1 size 558.41GiB used 448.66GiB path /dev/sda
->>           devid    2 size 558.41GiB used 448.66GiB path /dev/sdb
->>           devid    4 size 558.41GiB used 448.66GiB path /dev/sdd
->>           devid    5 size 558.41GiB used 448.66GiB path /dev/sde
->>           devid    7 size 558.41GiB used 448.66GiB path /dev/sdg
->>           devid    8 size 558.41GiB used 448.66GiB path /dev/sdh
->>           devid    9 size 558.41GiB used 448.66GiB path /dev/sdf
->>           devid   10 size 558.41GiB used 448.66GiB path /dev/sdi
->>           devid   11 size 558.41GiB used 448.66GiB path /dev/sdj
->>           devid   13 size 558.41GiB used 448.66GiB path /dev/sdk
->>           devid   14 size 558.41GiB used 448.66GiB path /dev/sdc
->>           devid   15 size 558.41GiB used 448.66GiB path /dev/sdl
->>           devid   16 size 558.41GiB used 448.66GiB path /dev/sdm
->>           devid   17 size 558.41GiB used 448.66GiB path /dev/sdn
->>           devid   18 size 837.84GiB used 448.66GiB path /dev/sdr
->>           devid   19 size 837.84GiB used 448.66GiB path /dev/sdq
->>           devid   20 size 837.84GiB used   0.00GiB path /dev/sds
->>           devid   21 size 837.84GiB used   0.00GiB path /dev/sdt
->>
->>
->> Are we doing something wrong? I found posts, where problems with balace
->> of full filesystem are described. And as a recommendation is "add empty
->> device, run balance, remove device".
-> 
-> It's raid10, so in this case, you probably need to add 4 devices. It's
-> not required they be equal sizes but it's ideal.
-> 
->> Are there some requirements on free space for balance even if you add
->> new device?
-> 
-> The free space is reported upon adding the two devices; but the raid10
-> profile requires more than just free space, it needs free space on
-> four devices.
 
-I didn't realize that. It makes me sense now. So we are probably "wrong" 
-with 18 devices. Multiple of 4 would be better I guess.
 
-Thank you!
+On 8.09.20 г. 10:52 ч., Qu Wenruo wrote:
+> For subpage size support, we only need to handle the first page.
+> 
+> To make the code work for both cases, we modify the following behaviors:
+> 
+> - num_pages calcuation
+>   Instead of "nodesize >> PAGE_SHIFT", we go
+>   "DIV_ROUND_UP(nodesize, PAGE_SIZE)", this ensures we get at least one
+>   page for subpage size support, while still get the same result for
+>   reguar page size.
+> 
+> - The length for the first run
+>   Instead of PAGE_SIZE - BTRFS_CSUM_SIZE, we go min(PAGE_SIZE, nodesize)
+>   - BTRFS_CSUM_SIZE.
+>   This allows us to handle both cases well.
+> 
+> - The start location of the first run
+>   Instead of always use BTRFS_CSUM_SIZE as csum start position, add
+>   offset_in_page(eb->start) to get proper offset for both cases.
+> 
+> Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
