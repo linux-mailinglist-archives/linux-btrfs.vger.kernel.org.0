@@ -2,25 +2,24 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2811265E8C
-	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Sep 2020 13:10:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1D9D265E9A
+	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Sep 2020 13:14:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725780AbgIKLKQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 11 Sep 2020 07:10:16 -0400
-Received: from mx2.suse.de ([195.135.220.15]:42690 "EHLO mx2.suse.de"
+        id S1725768AbgIKLO3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 11 Sep 2020 07:14:29 -0400
+Received: from mx2.suse.de ([195.135.220.15]:46560 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725768AbgIKLKO (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 11 Sep 2020 07:10:14 -0400
+        id S1725710AbgIKLOT (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 11 Sep 2020 07:14:19 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id B55C2AC46;
-        Fri, 11 Sep 2020 11:10:27 +0000 (UTC)
-Subject: Re: [PATCH 07/17] btrfs: make csum_tree_block() handle sectorsize
- smaller than page size
+        by mx2.suse.de (Postfix) with ESMTP id 56778ACDB;
+        Fri, 11 Sep 2020 11:14:33 +0000 (UTC)
+Subject: Re: [PATCH 08/17] btrfs: refactor how we extract extent buffer from
+ page for alloc_extent_buffer()
 To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-Cc:     Goldwyn Rodrigues <rgoldwyn@suse.com>
 References: <20200908075230.86856-1-wqu@suse.com>
- <20200908075230.86856-8-wqu@suse.com>
+ <20200908075230.86856-9-wqu@suse.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  xsFNBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -64,12 +63,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  KIuxEcV8wcVjr+Wr9zRl06waOCkgrQbTPp631hToxo+4rA1jiQF2M80HAet65ytBVR2pFGZF
  zGYYLqiG+mpUZ+FPjxk9kpkRYz61mTLSY7tuFljExfJWMGfgSg1OxfLV631jV1TcdUnx+h3l
  Sqs2vMhAVt14zT8mpIuu2VNxcontxgVr1kzYA/tQg32fVRbGr449j1gw57BV9i0vww==
-Message-ID: <ffed1e89-38fe-f41a-f509-54b541b2517c@suse.com>
-Date:   Fri, 11 Sep 2020 14:10:11 +0300
+Message-ID: <1a9a0712-bd2c-0fe1-8320-d0d239d87528@suse.com>
+Date:   Fri, 11 Sep 2020 14:14:17 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20200908075230.86856-8-wqu@suse.com>
+In-Reply-To: <20200908075230.86856-9-wqu@suse.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -81,26 +80,95 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 8.09.20 г. 10:52 ч., Qu Wenruo wrote:
-> For subpage size support, we only need to handle the first page.
+> This patch will extract the code to extract extent_buffer from
+> page::private into its own function, grab_extent_buffer_from_page().
 > 
-> To make the code work for both cases, we modify the following behaviors:
+> Although it's just one line, for later sub-page size support it will
+> become way more larger.
 > 
-> - num_pages calcuation
->   Instead of "nodesize >> PAGE_SHIFT", we go
->   "DIV_ROUND_UP(nodesize, PAGE_SIZE)", this ensures we get at least one
->   page for subpage size support, while still get the same result for
->   reguar page size.
+> Also add some extra comments why we need to do such page::private
+> dancing.
 > 
-> - The length for the first run
->   Instead of PAGE_SIZE - BTRFS_CSUM_SIZE, we go min(PAGE_SIZE, nodesize)
->   - BTRFS_CSUM_SIZE.
->   This allows us to handle both cases well.
-> 
-> - The start location of the first run
->   Instead of always use BTRFS_CSUM_SIZE as csum start position, add
->   offset_in_page(eb->start) to get proper offset for both cases.
-> 
-> Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
 > Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+>  fs/btrfs/extent_io.c | 49 ++++++++++++++++++++++++++++++++++++--------
+>  1 file changed, 40 insertions(+), 9 deletions(-)
+> 
+> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+> index 6fafbc1d047b..3c8fe40f67fa 100644
+> --- a/fs/btrfs/extent_io.c
+> +++ b/fs/btrfs/extent_io.c
+> @@ -5214,6 +5214,44 @@ struct extent_buffer *alloc_test_extent_buffer(struct btrfs_fs_info *fs_info,
+>  }
+>  #endif
+>  
+> +/*
+> + * A helper to grab the exist extent buffer from a page.
+> + *
+> + * There is a small race window where two callers of alloc_extent_buffer():
+> + * 		Thread 1		|	Thread 2
+> + * -------------------------------------+---------------------------------------
+> + * alloc_extent_buffer()		| alloc_extent_buffer()
+> + * |- eb = __alloc_extent_buffer()	| |- eb = __alloc_extent_buffer()
+> + * |- p = find_or_create_page()		| |- p = find_or_create_page()
+> + *
+> + * In above case, two ebs get allocated for the same bytenr, and got the same
+> + * page.
+> + * We have to rely on the page->mapping->private_lock to make one of them to
+> + * give up and reuse the allocated eb:
+> + *
+> + * 					| |- grab_extent_buffer_from_page()
+> + * 					| |- get nothing
+> + * 					| |- attach_extent_buffer_page()
+> + * 					| |  |- Now page->private is set
+> + * 					| |- spin_unlock(&mapping->private_lock);
+> + * |- spin_lock(private_lock);		| |- Continue to insert radix tree.
+> + * |- grab_extent_buffer_from_page()	|
+> + * |- got eb from thread 2		|
+> + * |- spin_unlock(private_lock);	|
+> + * |- goto free_eb;			|
 
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+This comment is slightly misleading because it's not
+graB_extent_buffer_form_page's return value which decides who wins the
+race but rather the retval of PagePrivate which invoked _before_
+grab_extent_buffer_from_page.
+
+> + *
+> + * The function here is to ensure we have proper locking and detect such race
+> + * so we won't allocating an eb twice.
+> + */
+> +static struct extent_buffer *grab_extent_buffer_from_page(struct page *page)
+> +{
+> +	/*
+> +	 * For PAGE_SIZE == sectorsize case, a btree_inode page should have its
+> +	 * private pointer as extent buffer who owns this page.
+> +	 */
+> +	return (struct extent_buffer *)page->private;
+> +}
+> +
+>  struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
+>  					  u64 start)
+>  {
+> @@ -5258,15 +5296,8 @@ struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
+>  
+>  		spin_lock(&mapping->private_lock);
+>  		if (PagePrivate(p)) {
+> -			/*
+> -			 * We could have already allocated an eb for this page
+> -			 * and attached one so lets see if we can get a ref on
+> -			 * the existing eb, and if we can we know it's good and
+> -			 * we can just return that one, else we know we can just
+> -			 * overwrite page->private.
+> -			 */
+> -			exists = (struct extent_buffer *)p->private;
+> -			if (atomic_inc_not_zero(&exists->refs)) {
+> +			exists = grab_extent_buffer_from_page(p);
+> +			if (exists && atomic_inc_not_zero(&exists->refs)) {
+
+grab_extent_buffer_from_page is guaranteed to return an extent buffer
+due to the PagePrivate() check above. So simply doing atomic_in_not_zero
+is fine.
+>  				spin_unlock(&mapping->private_lock);
+>  				unlock_page(p);
+>  				put_page(p);
+> 
