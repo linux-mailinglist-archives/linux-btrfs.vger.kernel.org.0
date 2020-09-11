@@ -2,23 +2,24 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBAF5265EAC
-	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Sep 2020 13:18:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 733B4265ED2
+	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Sep 2020 13:34:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725823AbgIKLSL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 11 Sep 2020 07:18:11 -0400
-Received: from mx2.suse.de ([195.135.220.15]:48380 "EHLO mx2.suse.de"
+        id S1725828AbgIKLez (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 11 Sep 2020 07:34:55 -0400
+Received: from mx2.suse.de ([195.135.220.15]:34012 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725803AbgIKLR4 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 11 Sep 2020 07:17:56 -0400
+        id S1725774AbgIKLdy (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 11 Sep 2020 07:33:54 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 51B99ADE4;
-        Fri, 11 Sep 2020 11:18:04 +0000 (UTC)
-Subject: Re: [PATCH 09/17] btrfs: refactor btrfs_release_extent_buffer_pages()
+        by mx2.suse.de (Postfix) with ESMTP id 75A8EACDB;
+        Fri, 11 Sep 2020 11:22:44 +0000 (UTC)
+Subject: Re: [PATCH 10/17] btrfs: add assert_spin_locked() for
+ attach_extent_buffer_page()
 To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
 References: <20200908075230.86856-1-wqu@suse.com>
- <20200908075230.86856-10-wqu@suse.com>
+ <20200908075230.86856-11-wqu@suse.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  xsFNBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -62,12 +63,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  KIuxEcV8wcVjr+Wr9zRl06waOCkgrQbTPp631hToxo+4rA1jiQF2M80HAet65ytBVR2pFGZF
  zGYYLqiG+mpUZ+FPjxk9kpkRYz61mTLSY7tuFljExfJWMGfgSg1OxfLV631jV1TcdUnx+h3l
  Sqs2vMhAVt14zT8mpIuu2VNxcontxgVr1kzYA/tQg32fVRbGr449j1gw57BV9i0vww==
-Message-ID: <dad03832-6de2-5aac-3f67-6b6f2d13cabc@suse.com>
-Date:   Fri, 11 Sep 2020 14:17:47 +0300
+Message-ID: <a808eda5-9724-1b0c-4b22-8ec7fab7c4bd@suse.com>
+Date:   Fri, 11 Sep 2020 14:22:28 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20200908075230.86856-10-wqu@suse.com>
+In-Reply-To: <20200908075230.86856-11-wqu@suse.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -79,111 +80,42 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 8.09.20 г. 10:52 ч., Qu Wenruo wrote:
-> We have attach_extent_buffer_page() and it get utilized in
-> btrfs_clone_extent_buffer() and alloc_extent_buffer().
+> When calling attach_extent_buffer_page(), either we're attaching
+> anonymous pages, called from btrfs_clone_extent_buffer().
 > 
-> But in btrfs_release_extent_buffer_pages() we manually call
-> detach_page_private().
+> Or we're attaching btree_inode pages, called from alloc_extent_buffer().
 > 
-> This is fine for current code, but if we're going to support subpage
-> size, we will do a lot of more work other than just calling
-> detach_page_private().
+> For the later case, we should have page->mapping->private_lock hold to
+> avoid race modifying page->private.
 > 
-> This patch will extract the main work of btrfs_clone_extent_buffer()
-
-Did you mean to type btrfs_release_extent_buffer_pages instead of
-clone_extent_buffer ?
-
-> into detach_extent_buffer_page() so that later subpage size support can
-> put their own code into them.
+> Add assert_spin_locked() if we're calling from alloc_extent_buffer().
 > 
 > Signed-off-by: Qu Wenruo <wqu@suse.com>
+
+Reviewed-by: Nikolay Borisov <nborisov@suse.com> but see one nit below.
 > ---
->  fs/btrfs/extent_io.c | 58 +++++++++++++++++++-------------------------
->  1 file changed, 25 insertions(+), 33 deletions(-)
+>  fs/btrfs/extent_io.c | 3 +++
+>  1 file changed, 3 insertions(+)
 > 
 > diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-> index 3c8fe40f67fa..1cb41dab7a1d 100644
+> index 1cb41dab7a1d..81e43d99feda 100644
 > --- a/fs/btrfs/extent_io.c
 > +++ b/fs/btrfs/extent_io.c
-> @@ -4920,6 +4920,29 @@ int extent_buffer_under_io(const struct extent_buffer *eb)
->  		test_bit(EXTENT_BUFFER_DIRTY, &eb->bflags));
->  }
->  
-> +static void detach_extent_buffer_page(struct extent_buffer *eb,
-> +				      struct page *page)
-> +{
-> +	bool mapped = !test_bit(EXTENT_BUFFER_UNMAPPED, &eb->bflags);
-
-nit: Now you are performing the atomic op once per page rather than once
-per-eb.
-
-> +
-> +	if (!page)
-> +		return;
-> +
-> +	if (mapped)
-> +		spin_lock(&page->mapping->private_lock);
-> +	if (PagePrivate(page) && page->private == (unsigned long)eb) {
-> +		BUG_ON(test_bit(EXTENT_BUFFER_DIRTY, &eb->bflags));
-> +		BUG_ON(PageDirty(page));
-> +		BUG_ON(PageWriteback(page));
-> +		/* We need to make sure we haven't be attached to a new eb. */
-> +		detach_page_private(page);
-> +	}
-> +	if (mapped)
-> +		spin_unlock(&page->mapping->private_lock);
-> +	/* One for when we allocated the page */
-> +	put_page(page);
-> +}
-> +
->  /*
->   * Release all pages attached to the extent buffer.
->   */
-> @@ -4927,43 +4950,12 @@ static void btrfs_release_extent_buffer_pages(struct extent_buffer *eb)
+> @@ -3096,6 +3096,9 @@ static int submit_extent_page(unsigned int opf,
+>  static void attach_extent_buffer_page(struct extent_buffer *eb,
+>  				      struct page *page)
 >  {
->  	int i;
->  	int num_pages;
-> -	int mapped = !test_bit(EXTENT_BUFFER_UNMAPPED, &eb->bflags);
->  
->  	BUG_ON(extent_buffer_under_io(eb));
->  
->  	num_pages = num_extent_pages(eb);
-> -	for (i = 0; i < num_pages; i++) {
-> -		struct page *page = eb->pages[i];
-> -
-> -		if (!page)
-> -			continue;
-> -		if (mapped)
-> -			spin_lock(&page->mapping->private_lock);
-> -		/*
-> -		 * We do this since we'll remove the pages after we've
-> -		 * removed the eb from the radix tree, so we could race
-> -		 * and have this page now attached to the new eb.  So
-> -		 * only clear page_private if it's still connected to
-> -		 * this eb.
-> -		 */
-> -		if (PagePrivate(page) &&
-> -		    page->private == (unsigned long)eb) {
-> -			BUG_ON(test_bit(EXTENT_BUFFER_DIRTY, &eb->bflags));
-> -			BUG_ON(PageDirty(page));
-> -			BUG_ON(PageWriteback(page));
-> -			/*
-> -			 * We need to make sure we haven't be attached
-> -			 * to a new eb.
-> -			 */
-> -			detach_page_private(page);
-> -		}
-> -
-> -		if (mapped)
-> -			spin_unlock(&page->mapping->private_lock);
-> -
-> -		/* One for when we allocated the page */
-> -		put_page(page);
-> -	}
-> +	for (i = 0; i < num_pages; i++)
-> +		detach_extent_buffer_page(eb, eb->pages[i]);
->  }
->  
->  /*
+> +	if (page->mapping)
+> +		assert_spin_locked(&page->mapping->private_lock);
+
+nit: In addition to the changelog I'd rather have a comment explaining
+where the distinction we make : So something like:
+
+"Only pages allocated through alloc_extent_buffer will have their
+mapping set"
+
+> +
+>  	if (!PagePrivate(page))
+>  		attach_page_private(page, eb);
+>  	else
 > 
