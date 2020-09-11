@@ -2,89 +2,119 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5134C266742
-	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Sep 2020 19:41:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB9B22667C5
+	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Sep 2020 19:51:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726338AbgIKRlJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 11 Sep 2020 13:41:09 -0400
-Received: from esa5.hgst.iphmx.com ([216.71.153.144]:38428 "EHLO
-        esa5.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725991AbgIKMmE (ORCPT
+        id S1725902AbgIKRvR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 11 Sep 2020 13:51:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56642 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725867AbgIKRvQ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 11 Sep 2020 08:42:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1599828124; x=1631364124;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=4XBBV9Fp6sjoRwi/igxARQSGbC6vCYxHPBzketHaDMg=;
-  b=MadKBhmI5V7x7zSTg51w56ZD2ENHDWg7G5d/SvNU+ed/RDRKvMkJVhRd
-   KHHXC+lYBfl6ypWv11RaNr3hDNaqSJQOoGO4hfMd8vGJB7A4AZcU03ZzW
-   0GodF5ZMsDG5qKB40VLubC7XkGRQ6I/0c7sLP7uBDQoi0CvXobp+jZNL5
-   8FaL2DjSVNBob9CebRRWBvS3edC+aC/bNEl7tn9pTPjaZN13MdWdu22y3
-   gT1egDCfwnojJcqusyLcF7xZAH2VTUjXITHH0M3V9QETcvdF/toqk2Xha
-   wQmrTt4qXTwJ8LS7qUWBvthkdrloqTP33HGWYKAgk56+fupRsU20t+SBq
-   g==;
-IronPort-SDR: 9YLGQ8SftZ3l0mSPqWZsRHT41JnGu0ER83yjDDJuTmlQ8d0aO0xWbQ8amPCT4ZuP0VRykdmFQT
- RXKI98zISp6XfNZ9gOn2LERxHT81EDG+rEPplz1bPhkUWpO32bUBBfktDs/D6GqjVZQ4opqyJe
- aEI+UOj+QpVm7pGEfJSUSNZs7T5y+oLca98MGkvd2nLjRpW8Oeo17/AWqqIIfen7DIpQb09cC6
- y/NFOcB5E4l+n0Zgnhrb/noOc4+T0KwTlcoq4kNLwq0sL31CjadSMEeX0WXf5w8asPmrIlbO61
- rAU=
-X-IronPort-AV: E=Sophos;i="5.76,415,1592841600"; 
-   d="scan'208";a="147126054"
-Received: from h199-255-45-15.hgst.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 11 Sep 2020 20:34:04 +0800
-IronPort-SDR: TdKD4AgQtykkG9gvQrxgnwoHqbIkpl65PCvPHxwfdVIoT5asf1Ymeno2X40lRyB3IRfUjXYHIk
- /nZYp7Qe/plA==
-Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2020 05:20:24 -0700
-IronPort-SDR: N0//q2KoYG7BBS+QU9ezO0q2sv2T3tkxv2q+/TzSU5jevXUpPY0eeZDRbgFz1bWUwSlUGjKD88
- 0z+xrTiCLzOA==
-WDCIronportException: Internal
-Received: from naota.dhcp.fujisawa.hgst.com ([10.149.52.155])
-  by uls-op-cesaip02.wdc.com with ESMTP; 11 Sep 2020 05:34:01 -0700
-From:   Naohiro Aota <naohiro.aota@wdc.com>
-To:     linux-btrfs@vger.kernel.org, David Sterba <dsterba@suse.com>
-Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        Hannes Reinecke <hare@suse.com>, linux-fsdevel@vger.kernel.org,
-        Naohiro Aota <naohiro.aota@wdc.com>
-Subject: [PATCH v7 39/39] btrfs: enable to mount ZONED incompat flag
-Date:   Fri, 11 Sep 2020 21:32:59 +0900
-Message-Id: <20200911123259.3782926-40-naohiro.aota@wdc.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200911123259.3782926-1-naohiro.aota@wdc.com>
-References: <20200911123259.3782926-1-naohiro.aota@wdc.com>
+        Fri, 11 Sep 2020 13:51:16 -0400
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28D68C061573
+        for <linux-btrfs@vger.kernel.org>; Fri, 11 Sep 2020 10:51:16 -0700 (PDT)
+Received: by mail-pg1-x533.google.com with SMTP id m5so7151040pgj.9
+        for <linux-btrfs@vger.kernel.org>; Fri, 11 Sep 2020 10:51:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=to:from:subject:message-id:date:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=vZfa69IbjWieWe7vh7bX50tqf8UQuznZiHw0grJWjC8=;
+        b=bE1kM8EQBjIbLrAu3+sL/DdZcBRyX6qU7Yh4YZZR+Wrsh0TK0me+MTyCKLfOvrS3ir
+         bm7maGzIoT8x/xcyg5ijxbEc90xzCuZ6H8KFTuTNYoLQdx66eNgr40IycqsdALKvJv3i
+         iQw4SVqbnLBqwK+WKz9DGCOx501ojkEYUfjfzKVQ7WDggjiLMIBjrkv+If/EjV68Srrg
+         6zWiutQMR2+LhtpkZiPCCXjLm2uYGOxZNE3QCCMyVM5SOIlcq++Ir9IACyaG4kTxak2p
+         ygRzFVgyVaVKfX7nTY/da6YheWvHgHj50RzwABM8SCOROHSNmGkGgYJVK1JfE9X6iCPD
+         Cy+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:from:subject:message-id:date:user-agent
+         :mime-version:content-transfer-encoding;
+        bh=vZfa69IbjWieWe7vh7bX50tqf8UQuznZiHw0grJWjC8=;
+        b=GjgcDx0eq+OlRdldWYCghEJ84QgepLfQlPl2tTGrxtBlTiY3Rc4umiAikSs2/ERL+r
+         euhFDnI2e5iEPLtS0mpkk4fll0ZsIkIFcr1VLDcdSVH9HOeqbQ4EL2Unz3RnqgVceOVO
+         hXf8Ur62hKZkAmzTSHxo/Bi+YhsYund7mMQx4pfzn9ez58BTaK9q8yReR9A2YOuTBqt+
+         EevFIfDFryvpkyl0quQPJvNuf45mEODZ5VwOsvV89aY8IXx+cbGbi2XGdu/3NDxClopm
+         ZhrB5V7SdjVCkqHKzyQ3wOlqTpxcZBmytj/IkKLXqZQxVfdv1k9MutbnfbEBFRcy27OK
+         VamQ==
+X-Gm-Message-State: AOAM533AbnRWH8K1a9BSc51xKzMlhOaV4JXki3M6VJzrwJq3PRd/aac6
+        cVf3/2XBYQ1CzHVJzXiOHXSgmZz+cEJOQg==
+X-Google-Smtp-Source: ABdhPJyJSfHKAB70a6Dt6oxWhfu9C5jjaVjH4GApEd5sL2enjZC7OcJt0P2Urm+iFy0sP6h08blnxg==
+X-Received: by 2002:a62:108:: with SMTP id 8mr3227087pfb.36.1599846675362;
+        Fri, 11 Sep 2020 10:51:15 -0700 (PDT)
+Received: from [0.0.0.0] (tunnel595741-pt.tunnel.tserv22.tyo1.ipv6.he.net. [2001:470:23:8a4::2])
+        by smtp.gmail.com with ESMTPSA id v26sm2331321pgo.83.2020.09.11.10.51.14
+        for <linux-btrfs@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 11 Sep 2020 10:51:14 -0700 (PDT)
+To:     linux-btrfs@vger.kernel.org
+From:   Zhang Boyang <zhangboyang.id@gmail.com>
+Subject: Not all deduped disk space freed?
+Message-ID: <66ea94f5-ba6b-da68-7d6b-c422b66f058d@gmail.com>
+Date:   Sat, 12 Sep 2020 01:51:12 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=gbk; format=flowed
+Content-Transfer-Encoding: 7bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This final patch adds the ZONED incompat flag to
-BTRFS_FEATURE_INCOMPAT_SUPP and enables btrfs to mount ZONED flagged file
-system.
+Hello all,
 
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
-Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
----
- fs/btrfs/ctree.h | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+The background was I developed a btrfs deduplication tool recently, 
+which was opensourced at github.com/zhangboyang/simplededup
 
-diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index 6e05eb180a77..e8639f6f7dec 100644
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -303,7 +303,8 @@ struct btrfs_super_block {
- 	 BTRFS_FEATURE_INCOMPAT_SKINNY_METADATA |	\
- 	 BTRFS_FEATURE_INCOMPAT_NO_HOLES	|	\
- 	 BTRFS_FEATURE_INCOMPAT_METADATA_UUID	|	\
--	 BTRFS_FEATURE_INCOMPAT_RAID1C34)
-+	 BTRFS_FEATURE_INCOMPAT_RAID1C34	|	\
-+	 BTRFS_FEATURE_INCOMPAT_ZONED)
- 
- #define BTRFS_FEATURE_INCOMPAT_SAFE_SET			\
- 	(BTRFS_FEATURE_INCOMPAT_EXTENDED_IREF)
--- 
-2.27.0
+The dedup algorithm is very simple: hash & find dupe blocks (4K) and 
+ioctl(FIDEDUPERANGE) to eliminate them.
+
+However, after I run my tool, I found not all deduped blocks turned into 
+free space, and `btrfs fi du' [Exclusive+Set shared] != `btrfs fi usage' 
+[Used], as below: 2932206698496+945128120320 is far lower than 4119389741056
+
+
+root@athlon:/media/datahdd# btrfs fi du --raw -s /media/datahdd
+      Total   Exclusive  Set shared  Filename
+4369431683072  2932206698496  945128120320  /media/datahdd
+
+root@athlon:/media/datahdd# btrfs fi usage --raw  /media/datahdd
+Overall:
+     Device size:             8999528280064
+     Device allocated:             4144710549504
+     Device unallocated:             4854817730560
+     Device missing:                         0
+     Used:                 4138705166336
+     Free (estimated):             4856449110016    (min: 2429040244736)
+     Data ratio:                          1.00
+     Metadata ratio:                      2.00
+     Global reserve:                  75546624    (used: 0)
+
+Data,single: Size:4121021120512, Used:4119389741056 (99.96%)
+    /dev/sdc1    2559800508416
+    /dev/sdb1    1561220612096
+
+Metadata,RAID1: Size:11811160064, Used:9657270272 (81.76%)
+    /dev/sdc1    11811160064
+    /dev/sdb1    11811160064
+
+System,RAID1: Size:33554432, Used:442368 (1.32%)
+    /dev/sdc1      33554432
+    /dev/sdb1      33554432
+
+Unallocated:
+    /dev/sdc1    2429196152832
+    /dev/sdb1    2425621577728
+root@athlon:/media/datahdd#
+
+
+That's quite strange. Is this an expected behaviour?
+
+Thank you all!
+
+
+ZBY
 
