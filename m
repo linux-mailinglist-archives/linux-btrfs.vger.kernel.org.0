@@ -2,97 +2,104 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A237267BDC
-	for <lists+linux-btrfs@lfdr.de>; Sat, 12 Sep 2020 21:07:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A438267C1E
+	for <lists+linux-btrfs@lfdr.de>; Sat, 12 Sep 2020 21:45:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725875AbgILTHv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 12 Sep 2020 15:07:51 -0400
-Received: from sonic305-2.consmr.mail.bf2.yahoo.com ([74.6.133.41]:41950 "EHLO
-        sonic305-2.consmr.mail.bf2.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725838AbgILTHt (ORCPT
+        id S1725877AbgILTps (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 12 Sep 2020 15:45:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41092 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725872AbgILTps (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 12 Sep 2020 15:07:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1599937668; bh=+NKq2YP/4c3bLm2HmGhxa/KCZOXr0NIUKHs/ECuC0yk=; h=Date:From:Reply-To:Subject:References:From:Subject; b=R5NM2QP1TgUL8GMSmfc3vofbumHSzF/TJYXsvTrN0612QpU41LSLuXz7JTkEJWb2MCXHMO5fLynJFHsa6akZaSzyA/dQV4lzkWXIHyDwuU6bcyCu6eqk0Uoa2BBCHkZjNqmqamVVR3a52+uqsCzp412W9ESbdt2t5HJ2JWptmZDRuJ/YedA6rylfXP2vD0nOSjV3f9SykKqfqPjHO6gCCyikHh3gta16vbn96uPYBHkP0iSPviRqsz3ftws/O2AOo/p7lgx3WFP33+CfiKTALwb1eu0PArN1eQn1WqBqpAg9e0dz8sGAJMaj0U8pEHT5CtMDDMxPvjkpuf+rlzhEwQ==
-X-YMail-OSG: ZnvdTcwVM1mrD6zjyf_ebbiYFaU6keGBmeNmbb_eGxgbN4SsDT_ECPZceWGDPXV
- UVZ7MC8iIN4LUTp8z3hAmwQQhXkQxYqsEZgEjW6gYNuEdk2eZVAEZjh.1jvllz4EK6kmVw7UpC1s
- NHc1JvWK_93WI6FSk2pPRbOXYwXyHzNkDrc_urlCPc6TbXOWyUYmU9TzaKn08imGKBAgvlMPJYrp
- yhnaHrekpqss1EB2nEg5ohAkrBHpdJ1hyC21aJsvayFdQRdhY_ITjXpE97tXD2umO9qc9iBM3_KP
- 3lLJyzCo0zOIZB.PYlZLuKYH02Id5cCCMMdOc18rMl1aVokfiiBpo4og4YN.vxk0GK1anYzFukyR
- Rk8A7ZrH1gdFRDiKLxltzII2ZlcqXcQRiCvm6eArTiT__Tliufop4nH3iOp4nRU_O_z1oX7oDkGX
- fHJz9PYPC4jggybPw1K.mS2T5y12r8SXIplgbK3G_IiCDnvvqMhVmwy.5hKJ5C7LIvBs3HzrrUoj
- lNbjrgT2R3_HR8ivzrmVIAcyB757rHgkOYqDSAiozzvDwmYGxYVvHhCYGP26pc5qgitJFtGbGcOO
- kU7YAEvZWPzdnovZiBtnUOCD51j0GBFjD3y_q_Bb9NSeS5Yv0ADZsSSAfQDCwr8PPyaYAh0AwneI
- x6xSiiGOMHLcneTgubs5o9SZ11Q_nB74QvnuZjciA2U6TAYDr8T1JcQXa3RVwlv54T7lCaKPMayu
- dxe9fFKSP9R_ByRkjlhp8zt8cL3wyAQ6IZMer91_r10KLAdS0_KzqQyX9CqG9wpzBHyeLHzzZT7w
- yCXYIMls.zGFaiXMqoej1Vvu97Qi3bX9DeHUVqb_.Zqsp5EEPUDXzZRvCP9MKJTSM.e6ahLm6NPv
- 0RQAD1ybBWAy9sc9ICc2lpV9Dvt7FcRupRVWwFdqnKC7t18n4pZqw__lzOAwDvGIKYeuMtrENnWP
- Irrt.o3l84bPcOxHL1nYGSjEbX6A2eZ88oLw7XDdSzCG6BLHz1kA53bDQdj15KDOjOGpkM86_j65
- unXz0vA5MCaEEmXAIcoe6cApzIk306vemTpLL1QOk2fq06sulf_cwYkCvBOT7XfD5anVIzBngW82
- HNe0asPsPnxbWUD4FnacZaU9ooXP6b1ob1E2RVj_DHNA7aMz7QJcMRAxZQ4YctUJ5BR85xReexrI
- 5P98rIswWqcW0KoqmhKnrbl3dEmcVwoCRd7vP1jNJC9gS.O6kV1KV7I3iuKt2JA5SEx.bEaP5CYc
- HE0ysoAdN.KalUfy4AzZhhSB6xrln4aV3sEoKZbGZtqQb9ISEtW4e9UVPyH6w5nHzU.CxjV2YWLS
- N0mIGDZV.7JjdOziGc7rbegZbqemRNSfFk1S8MMT0APgrmh0OvZ.lXoW8qEIK9dD9LVDSNKkbKpC
- zNJZoGVGwU116tae97HK4i8MMJ3UDOY8zoTrd2yy.gnTzvCOFs9TW8DA-
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic305.consmr.mail.bf2.yahoo.com with HTTP; Sat, 12 Sep 2020 19:07:48 +0000
-Date:   Sat, 12 Sep 2020 19:07:36 +0000 (UTC)
-From:   "Mrs. Mina A, Brunel" <mrs.minaaaliyahbrunel216@gmail.com>
-Reply-To: mrs.minaaaliyahbrunel31@gmail.com
-Message-ID: <1818263650.1465011.1599937656272@mail.yahoo.com>
-Subject: My Dear in the lord
+        Sat, 12 Sep 2020 15:45:48 -0400
+Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 329CFC061573
+        for <linux-btrfs@vger.kernel.org>; Sat, 12 Sep 2020 12:45:46 -0700 (PDT)
+Received: by mail-qv1-xf43.google.com with SMTP id cr8so6944340qvb.10
+        for <linux-btrfs@vger.kernel.org>; Sat, 12 Sep 2020 12:45:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc:content-transfer-encoding;
+        bh=Hs6TcuQitY1nvEfkuXyVkzxXR/QogY0gKQWbp5AkrSI=;
+        b=U0d/6n+pJVk14RqKNjDZikCJ3lQ0AB/YP77G0Fw4syCHZ+R6eOBYrsDgzm3bqixDlC
+         vTmPKaJj6Q9oDDARFHJZqlzMOmCT8OeJ3zwBhsX6n34zfQ+fykHRqEj2EyOzn5kg7Kay
+         1fiWTkB2e5NOuYYK67OZ0kTmuue3VEpDe0DKcz0/UerjavbE4vKwWVP+WB9GYH5+pGTc
+         M8MvynivVGlXQjD1gXj0a3gRSHuz/NW1Gh/rsocEpjVm9iNtc0hlFwzP6aZemkE7J4Nd
+         DnARDMEyYnzA0DvBpxQlyUimX6YM/h4yjKykTVB+ZtsU1erUTw4aTtsUi8MHmtrABbAJ
+         05Mw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc:content-transfer-encoding;
+        bh=Hs6TcuQitY1nvEfkuXyVkzxXR/QogY0gKQWbp5AkrSI=;
+        b=IjAZzeaeB26UvW4Pmalc/Kza3TZtj8N/tigytj7jBJvpY2dAlRnHhCg7CQH/FFMlIB
+         0uZ3tfEauJugYt264gVKCVYK3J3yAfHGdJAI/Hd9q4Oo60VbLpHpnrlS54oKt93pUdr0
+         fJgSPhuah+FEc5AY3cCxMbWt1JTueWKPvtmbjAcdEEuJYexxqbR4KFu3cXWs48rfMFSW
+         iewvfglDc0J6attJGnDnkbZTfXY3iTEnSwfcF7RA4XN0w4j15zwLs5zdGusg/pbK3dyx
+         MktvUD+Q1UUeQKM/rpwhDRskBJrwoVpe5eMm7MfCcnAm7xPv7/nAKFWkLVnqghlOHkX6
+         XVLQ==
+X-Gm-Message-State: AOAM532Ix0QbqhqWKnUUQlIPwcApQofx2dgJkJnVFwGvI6rpRTw0gY9d
+        jOLdO+w08CJAw3ni1fD8Um7+/84yOwals9u3Wxc=
+X-Google-Smtp-Source: ABdhPJwI+Y66Luwx8YCgTpw3sFALl0d6NImAW5+ez8t4FEZoPfgCHAgFIHTbpkS2XLtCZoaFIbXEpTpzXFTeZAvNnCU=
+X-Received: by 2002:ad4:568d:: with SMTP id bc13mr7342156qvb.107.1599939944427;
+ Sat, 12 Sep 2020 12:45:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+References: <632b888d-a3c3-b085-cdf5-f9bb61017d92@lechevalier.se> <dccf4603-ee16-37e0-11b2-d72f8956a74b@googlemail.com>
+In-Reply-To: <dccf4603-ee16-37e0-11b2-d72f8956a74b@googlemail.com>
+Reply-To: fdmanana@gmail.com
+From:   Filipe Manana <fdmanana@gmail.com>
+Date:   Sat, 12 Sep 2020 20:45:33 +0100
+Message-ID: <CAL3q7H4s1W33DovgTJRAr3qTh+wjPZqbiHUjmvPMqQ=rce8YMQ@mail.gmail.com>
+Subject: Re: Changes in 5.8.x cause compsize/bees failure
+To:     Oliver Freyermuth <o.freyermuth@googlemail.com>
+Cc:     A L <mail@lechevalier.se>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-References: <1818263650.1465011.1599937656272.ref@mail.yahoo.com>
-X-Mailer: WebService/1.1.16583 YMailNodin Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:80.0) Gecko/20100101 Firefox/80.0
-To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Sat, Sep 12, 2020 at 6:27 PM Oliver Freyermuth
+<o.freyermuth@googlemail.com> wrote:
+>
+> Am 12.09.20 um 19:13 schrieb A L:
+> > I noticed that in (at least 5.8.6 and 5.8.8) there is some change in Bt=
+rfs kernel code that cause them to fail.
+> > For example compsize now often/usually fails with: "Regular extent's he=
+ader not 53 bytes (0) long?!?"
+>
+> I noticed the same after upgrade from 5.8.5 to 5.8.8 and reported it to c=
+ompsize:
+>  https://github.com/kilobyte/compsize/issues/34
+> However, since it's userspace breakage, indeed it's probably a good idea =
+to also report here.
+>
+> Since you see it with 5.8.6 already and I did not observe it in 5.8.5, th=
+is should pin it down to the 5.8.6 patchset.
+> Sadly, I don't have time at hand for a bisect at the moment, and at first=
+ glance, none of the commits strikes me in regard to this issue (I don't us=
+e qgroups on my end).
+>
+> >
+> > Bees is having plenty of errors too, and does not succeed to read any f=
+iles (hash db is always empty). Perhaps this is an unrelated problem?
+> >
+
+Can any of you try the following patch and see if it fixes the issue?
+
+https://pastebin.com/vTdxznbh
+
+Thanks.
+
+> >
 
 
-My Dear in the lord
 
+--=20
+Filipe David Manana,
 
-My name is Mrs. Mina A. Brunel I am a Norway Citizen who is living in Burki=
-na Faso, I am married to Mr. Brunel Patrice, a politician who owns a small =
-gold company in Burkina Faso; He died of Leprosy and Radesyge, in the year =
-February 2010, During his lifetime he deposited the sum of =E2=82=AC 8.5 Mi=
-llion Euro) Eight million, Five hundred thousand Euros in a bank in Ouagado=
-ugou the capital city of Burkina Faso in West Africa. The money was from th=
-e sale of his company and death benefits payment and entitlements of my dec=
-eased husband by his company.
-
-I am sending you this message with heavy tears in my eyes and great sorrow =
-in my heart, and also praying that it will reach you in good health because=
- I am not in good health, I sleep every night without knowing if I may be a=
-live to see the next day. I am suffering from long time cancer and presentl=
-y I am partially suffering from Leprosy, which has become difficult for me =
-to move around. I was married to my late husband for more than 6 years with=
-out having a child and my doctor confided that I have less chance to live, =
-having to know when the cup of death will come, I decided to contact you to=
- claim the fund since I don't have any relation I grew up from an orphanage=
- home.
-
-I have decided to donate this money for the support of helping Motherless b=
-abies/Less privileged/Widows and churches also to build the house of God be=
-cause I am dying and diagnosed with cancer for about 3 years ago. I have de=
-cided to donate from what I have inherited from my late husband to you for =
-the good work of Almighty God; I will be going in for an operation surgery =
-soon.
-
-Now I want you to stand as my next of kin to claim the funds for charity pu=
-rposes. Because of this money remains unclaimed after my death, the bank ex=
-ecutives or the government will take the money as unclaimed fund and maybe =
-use it for selfishness and worthless ventures, I need a very honest person =
-who can claim this money and use it for Charity works, for orphanages, wido=
-ws and also build schools and churches for less privilege that will be name=
-d after my late husband and my name.
-
-I need your urgent answer to know if you will be able to execute this proje=
-ct, and I will give you more information on how the fund will be transferre=
-d to your bank account or online banking.
-
-Thanks
-Mrs. Mina A. Brunel
+=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
+ right.=E2=80=9D
