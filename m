@@ -2,70 +2,74 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2BDC26822C
-	for <lists+linux-btrfs@lfdr.de>; Mon, 14 Sep 2020 02:36:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80489268578
+	for <lists+linux-btrfs@lfdr.de>; Mon, 14 Sep 2020 09:07:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726008AbgINAge (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 13 Sep 2020 20:36:34 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:34616 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725975AbgINAg2 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 13 Sep 2020 20:36:28 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08E0aM3J036337;
-        Mon, 14 Sep 2020 00:36:22 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=8au3AxKrOUwYd2WsHaFmLLHTgmGnY1C4E28oQVmzZmk=;
- b=WvFiqJUW4E/2D3LiST/+I1BQEPK82KSfO8TYEIltLjTBBuAbWViZPtXiZoBR9XahcSqf
- vYkmzPpSe8He3n7Fnz1FumgTVDGFkRkLyoRKh1ugDNOHAE6kZ3qRj16eYvYnZY7EKQYr
- A/wemcytaDQF3hZ8iXH9bUY3mHrU5IdAxzBPG6Tz5n8HCv/agwd5693JHfBDA6/ps86F
- hfMK/iYZO3kFF4/BRK2qlKsZ7SArtSlu3P+evfHHUU3V0SqTQwX7IWJ9ZnbZVu7NacSB
- idaDNhRnAvEiDTkUWWHBbFWgFDDhc3D0r05k6aA1RISaaUbdRCtkHNE6YU9fGzi0tqjw Fg== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2130.oracle.com with ESMTP id 33gnrqkn55-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 14 Sep 2020 00:36:22 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08E0ZiHS187658;
-        Mon, 14 Sep 2020 00:36:22 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3020.oracle.com with ESMTP id 33hm2vyek4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 14 Sep 2020 00:36:22 +0000
-Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 08E0aKaE030508;
-        Mon, 14 Sep 2020 00:36:20 GMT
-Received: from [192.168.1.102] (/39.109.231.106)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 14 Sep 2020 00:36:20 +0000
-Subject: Re: Detecting new partitions fails after "btrfs device scan --forget"
-To:     Jonas Zeiger <jonas.zeiger@talpidae.net>,
-        linux-btrfs@vger.kernel.org
-References: <1ab4e230fe413c033b195bbd0f7e1db0@talpidae.net>
-From:   Anand Jain <anand.jain@oracle.com>
-Message-ID: <40e2315e-e60e-6161-ceb7-acd8b8a4e4a0@oracle.com>
-Date:   Mon, 14 Sep 2020 08:36:16 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.2.2
+        id S1726115AbgINHHE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 14 Sep 2020 03:07:04 -0400
+Received: from mx2.suse.de ([195.135.220.15]:36580 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726035AbgINHHC (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 14 Sep 2020 03:07:02 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 22E11ACF3;
+        Mon, 14 Sep 2020 07:07:15 +0000 (UTC)
+Subject: Re: 64k and 4k page size inter-op?
+To:     Daniel Pocock <daniel@pocock.pro>, linux-btrfs@vger.kernel.org
+References: <01a71119-f662-e559-534b-82a6d9fc79f4@pocock.pro>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <b83c6955-4dc1-4e1f-fb27-8fb9f5b1d2c0@suse.com>
+Date:   Mon, 14 Sep 2020 10:06:58 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <1ab4e230fe413c033b195bbd0f7e1db0@talpidae.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <01a71119-f662-e559-534b-82a6d9fc79f4@pocock.pro>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9743 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 bulkscore=0 mlxlogscore=999
- malwarescore=0 mlxscore=0 phishscore=0 adultscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009140004
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9743 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 spamscore=0
- lowpriorityscore=0 malwarescore=0 mlxscore=0 bulkscore=0 suspectscore=0
- clxscore=1011 mlxlogscore=999 adultscore=0 priorityscore=1501
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009140004
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
@@ -73,15 +77,30 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-> /dev/sda have been 
-> written, but we have been unable to inform the kernel of the change, 
-> probably because it/they are in use.  As a result, the old partition(s) 
-> will remain in use.  You should reboot now before making further changes.
+On 14.09.20 г. 1:49 ч., Daniel Pocock wrote:
 > 
-> The partitions do not become visible so the deployment can't continue.
+> I recently ran into trouble moving btrfs volumes between an amd64 host
+> (4k page size) and powerpc64el (64k page size)
+> 
+> As far as I can tell, the only option to ensure compatibility between
+> the two hosts is to
+> 
+> a) recompile the powerpc64el kernel for a 4k page size,
+> 
+> b) re-format any volumes created with 64k sectorsize so they have 4k instead
+> 
+> Is there any other reasonable way to proceed?
+> 
+> Are there any downsides to using the 4k page size on powerpc64el?
 
-The forget subcommand does not touch the mounted device, and it frees 
-only the unmounted or unopened btrfs devices from its kernel memory.
+There is currently work underway to allow btrfs to work with subpage
+blocksizes i.e being able to mount a 4k filesystem on a 64k page
+filesystem. Currently you cannot do this so as you correctly deduced -
+you'd have to either equalize the page sizes of both systems or wait
+until this work lands in upstream.
 
-Now the error seems to be about the device being kept open. Can you find 
-out who did not close it?
+> 
+> Regards,
+> 
+> Daniel
+> 
