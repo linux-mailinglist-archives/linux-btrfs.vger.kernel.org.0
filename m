@@ -2,32 +2,29 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3DA5268720
-	for <lists+linux-btrfs@lfdr.de>; Mon, 14 Sep 2020 10:22:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8495F268742
+	for <lists+linux-btrfs@lfdr.de>; Mon, 14 Sep 2020 10:34:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726227AbgINIW5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 14 Sep 2020 04:22:57 -0400
-Received: from mout.gmx.net ([212.227.17.21]:38909 "EHLO mout.gmx.net"
+        id S1726265AbgINIeP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 14 Sep 2020 04:34:15 -0400
+Received: from mout.gmx.net ([212.227.15.18]:35169 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726249AbgINIWw (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 14 Sep 2020 04:22:52 -0400
+        id S1726139AbgINIeM (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 14 Sep 2020 04:34:12 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1600071762;
-        bh=w9/bKl4l0gm6TaZN4ABpgZKAIYwVaJjqbn/9BpZuoqE=;
+        s=badeba3b8450; t=1600072447;
+        bh=Jh8IvuMpuyoyTpRjPsQYe1IYbem5RP5I/ZuGleLUFtc=;
         h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=dNEJRfkqbSHsy7BBBsWA2Jehz2uZALJon67uamoJcXcjz5hkO52wH3G9Mwafswhp8
-         IVjdsTaD55ck5r7dH2TY/pw8hrwYwJWs8Ti+wrvcS7gX2Siovr8luAzhFgpxUapU7z
-         FPRBCbJ3QunQUKZVEOEmcWPwxVZp/1M6BgqFNVYk=
+        b=D1RRNpRDuRzwc3K/2jeZjYPM3Qyb1wiyg2/Y2P4KJxky9+RwWEjPrHAjQrJ9+bDSj
+         L5XoahWj4eu5bQComAM0TpEc4RkRC9FTBr0AiWetyu5wqjlWmZLWvAZA3rUqf9byzn
+         sQGlVIvJyO85cs+yOtndv14XFEng4opKKNjDvPEE=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MtfNf-1kVPtV0eTf-00v4OP; Mon, 14
- Sep 2020 10:22:42 +0200
-Subject: Re: [PATCH 03/10] btrfs: Simplify metadata pages reading
-To:     Nikolay Borisov <nborisov@suse.com>, linux-btrfs@vger.kernel.org
-References: <20200909094914.29721-1-nborisov@suse.com>
- <20200909094914.29721-4-nborisov@suse.com>
- <d4a8e47d-04ea-79dd-3dd9-0080b611112b@gmx.com>
- <7a1ae6a0-30d9-63de-f3f9-2b6f3c9653f2@suse.com>
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MYNJg-1k42Wa2JsY-00VQSJ; Mon, 14
+ Sep 2020 10:34:07 +0200
+Subject: Re: Drive won't mount, please help
+To:     J J <j333111@icloud.com>, linux-btrfs@vger.kernel.org
+References: <91595165-FA0C-4BFB-BA8F-30BEAE6281A3@icloud.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -53,136 +50,177 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
  ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
  oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <81ec5378-3ed0-7cfb-eab1-93c958fa426b@gmx.com>
-Date:   Mon, 14 Sep 2020 16:22:39 +0800
+Message-ID: <fff0f71b-0db7-cbfc-5546-ea87f9bbf838@gmx.com>
+Date:   Mon, 14 Sep 2020 16:34:04 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <7a1ae6a0-30d9-63de-f3f9-2b6f3c9653f2@suse.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:w3WJDfPwtRXhQjt4qQu2CR+CpQ5pG//SZsTDguHFpJa3Fx9h7HG
- 6wALGuL2rzNAxWGbLBzIgXD4Nn7UY2huN7sPVPeIgCLs9e3qezlkzJrTH3gcPmuHgBkyLXb
- 7ZG2saRxLQoySprC7J2eW/xSTNbEj/cetlz2WdpVOw5eU1lMglEXOo1bnVz9TrW3ygKmEuE
- wODhs6JXdSKzvINJwy5pw==
+In-Reply-To: <91595165-FA0C-4BFB-BA8F-30BEAE6281A3@icloud.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="IYRyfZeHt6qtxfs6Nddav8M2pmOqvAY4Y"
+X-Provags-ID: V03:K1:+5dnwNCAL2U8pExS+qF6pevMgACJc2SVqlEJlWeH/QYDiOm+XbN
+ rsEN9DnB+SRQJdbVYfG4XgbFykYrmKJluc31bYP8ktbkeXFBqyMV+tvRkC7e/D6JXtk95ds
+ UeVObJcs4y5BGidLle9lgfU0WsREE+fLWBTnFijZ07mO7DPlxxF9xsk6d0lYpKR+vtYJS7v
+ Ztz+xJoSfajhrVC+/WipA==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:iYmASMgrghA=:SpAyugTKjGV09RebBE8NiH
- Q6BAPmVu5NzaScGOM8vqcfxj8ZtGul7FnNqDVta3Z7PoxtztaKm0moX3R1QjXdfvJDeEJDSnV
- fjGtx5XEVhOk7Oo4pufsvZQMs0AmRr++qZpS8kHEg551lYUPbTWiRizdLyE7mPyoN7J+BTvcm
- HjanTPn1Vg2ukqAiPON9QalnkpdHyK4qaCBHMK2/8jjKdVSmfnIMIudtuFDko/+l11wh9y0UX
- W+3oSFSXGGc2odjYo1N/0eZOd22S6B/rRlV7rZJbHZjEfRiJzTCKqLrOW2HmUGPeVlF/ag9PV
- kQcY9IZPuxCgeVwbbyQjRtRxDxFmrI5JhLEPMf7J4Y/t2MtQ/dd03mD1n9yO8RxptEioxwMro
- LggLNLC/Wg9i17v+H1314cCK1EYQbPxq6Bd2B8e//VX48VXDoQEoc6USmcNItRG86jDcCxSYZ
- vZCGbjlcr+YOe+j4nodLXGNTsDCDI5GkpLsA1dq0UTIQ65jmxzd/p3Tp5/liwIaQZMJEdgT03
- PLxhd5/PolRBkK8hMn0oEXD8Pl+uega/7lsKicxIHlwnYhTY61oNDKbIcAslamho6slfxSAKC
- if0ExM6OM/dbhFJ0/99qVkHbxAu9aznJAaUDtT8/TqmG7J7+6Bsx1NQblGwIbayOzKyS10cq1
- 4iHq7Ll5Id+frkdvva4BLOTleFyPsLnsH5ICXgWTW7gPgFkbk/Lzbw2AQ2aNflJZiZEgXNYQ5
- 9zl/8CbZle0BfGpR4kui7hi4RxXTGpg1PvpSYhoiMCa4TkGCmRmT7oqUzACVtBZbC6WFPyVJc
- WzaDkX9PDLjaYfeen/XlmYP7pWMr6CmJmg0XynuA4ZGb4eb5QUhatlxnnNwx/1jXggy1v8vaH
- +cN9E+eSSN7ATzF4toEd1jRQj6Nqb9MCrcBMGcVJYhWXu3cP+MBk+UGfYPo88Gs2WzOuTgqMU
- 7f0PSGvP0/0+xQ8gaV3yFr1eJG/fULuEbMyMNCcxSfwFbZJDNN7D11DDuc7ijZ8+LY32bwpJX
- VX/OIin0YDYwl1jMjTXScqIXlkE/rmNtamYnWQpPk2vVeZf4qmd2dOiGBhATFl4P3accFKVB7
- JUJZpO9FcAEy1bZhuhJXHmoWzIMccUOWR7wR2ZbH+nmN+0Siij0WmDr32PRYb1NJtqW81c3ek
- qD2y4dee7FSxqfbdQAkHKvRTjB6C1ukYY0o3OuxV+34izaPKTFHBs6cS80yDUPdVF3AdoRCew
- T3RpbeYUk6e0YVOkBTBZUH2plqctmsDgC1FpjvQ==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:57+DaYqm+XU=:4HsYhKjATsmJCKwgqknXnX
+ 7AMUfU0Of61v4fMRdsZ9Xb562jLFwRSpoSd6Iaizww9Vmx/nPFOfpf5TBS+Zf5RdVHdezJgAo
+ ZwDQogNhIB1pTaah7m7tBQiCxSugk9pEhT7TuY4mzOFw5PR7s1hnLY5qLd+nXBleSSQ/vAGO4
+ 1E+TC8Wp6LMATyWBZ6l60iF0nEr86R4+2pIwFkEyN+2LXbqKb96PLDgxBkCjtV/88hrY0mQBR
+ YklmKF41lklbMZ/l9IWB5Ra9wQn4gx/iDGGqW+qlA/HiPf2TgmhTb/3Xg0lBzyD9nRWXaHfmX
+ h4drsRX++aHx4ErR1enqY+OzgY043xdFUVR5uPrm4TNjDeLLI57zSYk4jkeBF1ruiJI5oR67x
+ HGMRTijbkkoqtKS2cOouxGvxR7+HGlNZ00RxBtjnay2Up8CyEtbj9UtWaSbV9GqrCCC01kYJA
+ 40fMc4Dwh4+l0RjiEQiXOn9wQYbeeKZOIY9q7/O67GFrB4KtuBGQDCvYg3RIFiiUl4hybT+e1
+ SQUlcGlhLJDa6xtVU3gBpxMyIlV9iLF6NZkAxrlbs/mjP5njuVrKwoGplsss9lsc60IxPTwVr
+ TJEazT4wDbWPWOi2A/ibYVfjATNVaYNqTg1ENmEpGVL3qpKXbSQ4HLCcC4EZfP33IkeIANnSR
+ JCDkR2Kn2JA+kFQxvb/sAtrgLsDx5mZlQxVEre3klbYHQvVKGUfWNiTyRjuUmM37wXqtVCRTd
+ l41EL0pCiEOfSmnWifZOi/fvM4/tlIQuforsHqTdHgWLmW6rWtk4JehJ6Y09vm69Xin8kq+WB
+ CHtOPqZ1iuJvWNuUs15rkQp9Fqx/CfXAEi1hYhv9z08LHX935PQ7xajtQeoZ5eEzFWh5EEFqz
+ gNqggUKh2Lmtdm7+OlIkkqeMW1qcxEcGZh3M5ru6iqh44uRfTs9jHhzwEmEH6aTH0rGAVkkjN
+ QhGg56A995tSw18UMWc/j5Jtha0vzpq6YHx9qOhldWSYYL5SY9SaStXGYQVd7D85cg+/vwshN
+ AbBK9Gk/NjaBIytJd1v+Ze+FDp2+ohriWvdZpZbg+SdsHM0EL+F976lzsY2oxcnaIZ8hjax4r
+ e2RzE9bsNilk5kyGdi8Y7m9C9CYxHX89DEYHGhiJnNFAuAHbPBBrqbaPCOMB8vXotZKFLl+6U
+ lk/2xZSBTTfvoiDzLXPQGModlrMo8OoGcY1xagIFyVLvlgQ2kxitxWFhQrAPaK1Ya+4aVFpVF
+ 6UiEjqF4lnDrjNj0nHlEXWQPEY+nRCX97j2lYHA==
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--IYRyfZeHt6qtxfs6Nddav8M2pmOqvAY4Y
+Content-Type: multipart/mixed; boundary="NHeFO872a5QIePyYFARGp14ggkAvbmbwL"
+
+--NHeFO872a5QIePyYFARGp14ggkAvbmbwL
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
 
-On 2020/9/14 =E4=B8=8B=E5=8D=884:08, Nikolay Borisov wrote:
->
->
-> On 9.09.20 =D0=B3. 14:20 =D1=87., Qu Wenruo wrote:
->>
->>
->> On 2020/9/9 =E4=B8=8B=E5=8D=885:49, Nikolay Borisov wrote:
->>> Metadata pages currently use __do_readpage to read metadata pages,
->>> unfortunately this function is also used to deal with ordinary data
->>> pages. This makes the metadata pages reading code to go through multip=
-le
->>> hoops in order to adhere to __do_readpage invariants. Most of these ar=
-e
->>> necessary for data pages which could be compressed. For metadata it's
->>> enough to simply build a bio and submit it.
->>>
->>> To this effect simply call submit_extent_page directly from
->>> read_extent_buffer_pages which is the only callpath used to populate
->>> extent_buffers with data. This in turn enables further cleanups.
->>
->> This is awesome!!!
->>
->> And the code also looks pretty good to me.
->>
->> Reviewed-by: Qu Wenruo <wqu@suse.com>
->>
->> Just a note for further enhancement inlined below.
->>
->>>
->>> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
->>> ---
->>>  fs/btrfs/extent_io.c | 18 ++++++------------
->>>  1 file changed, 6 insertions(+), 12 deletions(-)
->>>
->>> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
->>> index ac92c0ab1402..1789a7931312 100644
->>> --- a/fs/btrfs/extent_io.c
->>> +++ b/fs/btrfs/extent_io.c
->>> @@ -5575,20 +5575,14 @@ int read_extent_buffer_pages(struct extent_buf=
-fer *eb, int wait, int mirror_num)
->>>  			}
->>>
->>>  			ClearPageError(page);
->>> -			err =3D __extent_read_full_page(page,
->>> -						      btree_get_extent, &bio,
->>> -						      mirror_num, &bio_flags,
->>> -						      REQ_META);
->>> +			err =3D submit_extent_page(REQ_OP_READ | REQ_META, NULL,
->>> +					 page, page_offset(page), PAGE_SIZE, 0,
->>
->> It would be better to enhance the comment for submit_extent_page() of
->> @offset.
->> It's in fact btrfs logical bytenr.
->>
->> For metadata, page_offset(page) is also the btrfs logical bytenr so it'=
-s
->> completely fine.
->> But it can be different for data inodes, so it's better to make it more
->> clear in the comment.
->
-> How can it be different for data node? page_offset is always page->index
-> << PAGE_SHIFT, meaning it's the offset in the file that this page refers
-> to. I.e page 5 would refer to 20k.
 
-For data inode, its page_offset() is the file offset, not logical bytenr.
+On 2020/9/14 =E4=B8=8A=E5=8D=884:56, J J wrote:
+>  I=E2=80=99m new to a lot of this, just trying to use a NAS at home, si=
+ngle usb external disk, not RAID. Was working great for a few months, I=E2=
+=80=99m not sure what changed today when it stopped mounting. Any advice =
+appreciated.
+
+Transid mismatch, and the expected transid is newer than the on-disk
+transid.
+
+This means, either btrfs has some bug that causes metadata writeback not
+following COW, or the disk controller/disk itself ignores Flush/FUA
+commands.
+
+Considering it's usb external disk, I doubt the later case.
+
+In that case, any fs would experience similar problem if a sudden power
+loss or cable loss happened.
+
+You may workaround such problem by disabling the writecache, but I doubt
+if the USB->Sata convert would follow the request.
 
 Thanks,
 Qu
+>=20
+> Dmesg log attached
+>=20
+>=20
+> uname -a
+> Linux rock64 4.4.190-1233-rockchip-ayufan-gd3f1be0ed310 #1 SMP Wed Aug =
+28 08:59:34 UTC 2019 aarch64 GNU/Linux
+>=20
+>=20
+>=20
+> btrfs --version
+> btrfs-progs v4.7.3
+>=20
+>=20
+>=20
+> btrfs fi show
+> Label: '3TBRock64'  uuid: 71eda2e3-384c-4868-b5d4-683f222865e6
+> 	Total devices 1 FS bytes used 2.48TiB
+> 	devid    1 size 2.73TiB used 2.59TiB path /dev/mapper/sda-crypt
+>=20
+>=20
+> btrfs fi df /dev/mapper/sda-crypt
+> ERROR: not a btrfs filesystem: /dev/mapper/sda-crypt
+>=20
+>=20
+> btrfs inspect-internal dump-super /dev/mapper/sda-crypt=20
+> superblock: bytenr=3D65536, device=3D/dev/mapper/sda-crypt
+> ---------------------------------------------------------
+> csum_type		0 (crc32c)
+> csum_size		4
+> csum			0x9e8b0c33 [match]
+> bytenr			65536
+> flags			0x1
+> 			( WRITTEN )
+> magic			_BHRfS_M [match]
+> fsid			71eda2e3-384c-4868-b5d4-683f222865e6
+> label			3TBRock64
+> generation		395886
+> root			2638934654976
+> sys_array_size		129
+> chunk_root_generation	377485
+> root_level		1
+> chunk_root		20971520
+> chunk_root_level	1
+> log_root		2638952366080
+> log_root_transid	0
+> log_root_level		0
+> total_bytes		3000556847104
+> bytes_used		2729422221312
+> sectorsize		4096
+> nodesize		16384
+> leafsize		16384
+> stripesize		4096
+> root_dir		6
+> num_devices		1
+> compat_flags		0x0
+> compat_ro_flags		0x0
+> incompat_flags		0x161
+> 			( MIXED_BACKREF |
+> 			  BIG_METADATA |
+> 			  EXTENDED_IREF |
+> 			  SKINNY_METADATA )
+> cache_generation	395886
+> uuid_tree_generation	395886
+> dev_item.uuid		b7f4386a-18e0-437b-9588-6064ff483fd5
+> dev_item.fsid		71eda2e3-384c-4868-b5d4-683f222865e6 [match]
+> dev_item.type		0
+> dev_item.total_bytes	3000556847104
+> dev_item.bytes_used	2843293515776
+> dev_item.io_align	4096
+> dev_item.io_width	4096
+> dev_item.sector_size	4096
+> dev_item.devid		1
+> dev_item.dev_group	0
+> dev_item.seek_speed	0
+> dev_item.bandwidth	0
+>=20
+>=20
+> dev_item.generation	0
+>=20
 
->
->>
->> Thanks,
->> Qu
->>
->>> +					 &bio, end_bio_extent_readpage,
->>> +					 mirror_num, 0, 0, false);
->>>  			if (err) {
->>>  				ret =3D err;
->>> -				/*
->>> -				 * We use &bio in above __extent_read_full_page,
->>> -				 * so we ensure that if it returns error, the
->>> -				 * current page fails to add itself to bio and
->>> -				 * it's been unlocked.
->>> -				 *
->>> -				 * We must dec io_pages by ourselves.
->>> -				 */
->>> +				SetPageError(page);
->>> +				unlock_page(page);
->>>  				atomic_dec(&eb->io_pages);
->>>  			}
->>>  		} else {
->>>
->>
+
+--NHeFO872a5QIePyYFARGp14ggkAvbmbwL--
+
+--IYRyfZeHt6qtxfs6Nddav8M2pmOqvAY4Y
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl9fKvwACgkQwj2R86El
+/qiFmwf+NPsjh+twp1O8AKO71M+SPIbpXycPoJDNWKZg01btKTq1ZKECphMUemy+
+HGpxl4m+1zJ52FOYTLX8iEC1de4AAWUVkIcUb+I4A0pUP+45EMCS2bqgqytHKECQ
+4SJ/UjaoduHnkBugrwaiTJGbs3lh0xY5yvcnOo0GAf1wqutQSVR3VnTcrCTKPThP
+Qi1/TT8AMzFof7tVJTDFH7NpI7roFWqqBe8pN68RdO0KVKd5KUzvBLxyk/FXhrtJ
+bFMUlIpLmJVhXZzkW+UBUViMYCFpn86oM2ZEZxbIAiBs4wpp/sREvtyfYZdz6Rql
+2rhxzff1F9qffXUQD5sp2cGXzQi42Q==
+=kKGw
+-----END PGP SIGNATURE-----
+
+--IYRyfZeHt6qtxfs6Nddav8M2pmOqvAY4Y--
