@@ -2,225 +2,89 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8495F268742
-	for <lists+linux-btrfs@lfdr.de>; Mon, 14 Sep 2020 10:34:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DE9C2687FF
+	for <lists+linux-btrfs@lfdr.de>; Mon, 14 Sep 2020 11:11:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726265AbgINIeP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 14 Sep 2020 04:34:15 -0400
-Received: from mout.gmx.net ([212.227.15.18]:35169 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726139AbgINIeM (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 14 Sep 2020 04:34:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1600072447;
-        bh=Jh8IvuMpuyoyTpRjPsQYe1IYbem5RP5I/ZuGleLUFtc=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=D1RRNpRDuRzwc3K/2jeZjYPM3Qyb1wiyg2/Y2P4KJxky9+RwWEjPrHAjQrJ9+bDSj
-         L5XoahWj4eu5bQComAM0TpEc4RkRC9FTBr0AiWetyu5wqjlWmZLWvAZA3rUqf9byzn
-         sQGlVIvJyO85cs+yOtndv14XFEng4opKKNjDvPEE=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MYNJg-1k42Wa2JsY-00VQSJ; Mon, 14
- Sep 2020 10:34:07 +0200
-Subject: Re: Drive won't mount, please help
-To:     J J <j333111@icloud.com>, linux-btrfs@vger.kernel.org
-References: <91595165-FA0C-4BFB-BA8F-30BEAE6281A3@icloud.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
- PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
- 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
- D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
- efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
- ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
- BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
- 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
- 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
- EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
- 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
- ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
- oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
- fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
- 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
- ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
- oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <fff0f71b-0db7-cbfc-5546-ea87f9bbf838@gmx.com>
-Date:   Mon, 14 Sep 2020 16:34:04 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1726184AbgINJLh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 14 Sep 2020 05:11:37 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:35844 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726110AbgINJLg (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 14 Sep 2020 05:11:36 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08E998ED145846
+        for <linux-btrfs@vger.kernel.org>; Mon, 14 Sep 2020 09:11:35 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2020-01-29; bh=0qfr+5BdZ576Zw7uQcLlLGNx8FIAJihimEvbUjvywH0=;
+ b=M2YtDaT4FoJ0bj3nDN8fUk4Oux6PoKu8bKTKhT0mrKpMCfo8JgyPi+0NFWkszZ+ySV+y
+ przFBsMhwcgnnFfIcuaXYTPw96R1dsF2tscVaHZrZuq7eOS6UH2RVUScl9cxrHZj6k7M
+ pdeYC3lF+u8VgjVZmvQFbi/6ONaPa2VsqVhEL5Pthw9/A2Kl5kBoQBEiVD1Iyd0BpmVs
+ y/8h7IA+0M7mPrCQlamHB8MyxWJVyxnYBODCHRchU41fdn87icLVqGpMOpy7XFOqCNPP
+ 9KIjknMWqIfQLZhMXwHrdt09ke2m2MJ1dLZSOV6jexoWGvfCAevgiAmCgW7bRF2QIs87 Rw== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 33gp9kwb6s-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL)
+        for <linux-btrfs@vger.kernel.org>; Mon, 14 Sep 2020 09:11:35 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08E9BLPV114101
+        for <linux-btrfs@vger.kernel.org>; Mon, 14 Sep 2020 09:11:35 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3020.oracle.com with ESMTP id 33h880v18s-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
+        for <linux-btrfs@vger.kernel.org>; Mon, 14 Sep 2020 09:11:35 +0000
+Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 08E9BYwp026382
+        for <linux-btrfs@vger.kernel.org>; Mon, 14 Sep 2020 09:11:35 GMT
+Received: from localhost.localdomain (/39.109.231.106)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 14 Sep 2020 09:11:34 +0000
+From:   Anand Jain <anand.jain@oracle.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     Anand Jain <anand.jain@oracle.com>
+Subject: [PATCH] btrfs: add a warning to check on the leaking device close
+Date:   Mon, 14 Sep 2020 17:11:14 +0800
+Message-Id: <8ad72827dc32542915f87db73cbb6b609f24dce4.1600074377.git.anand.jain@oracle.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <91595165-FA0C-4BFB-BA8F-30BEAE6281A3@icloud.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="IYRyfZeHt6qtxfs6Nddav8M2pmOqvAY4Y"
-X-Provags-ID: V03:K1:+5dnwNCAL2U8pExS+qF6pevMgACJc2SVqlEJlWeH/QYDiOm+XbN
- rsEN9DnB+SRQJdbVYfG4XgbFykYrmKJluc31bYP8ktbkeXFBqyMV+tvRkC7e/D6JXtk95ds
- UeVObJcs4y5BGidLle9lgfU0WsREE+fLWBTnFijZ07mO7DPlxxF9xsk6d0lYpKR+vtYJS7v
- Ztz+xJoSfajhrVC+/WipA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:57+DaYqm+XU=:4HsYhKjATsmJCKwgqknXnX
- 7AMUfU0Of61v4fMRdsZ9Xb562jLFwRSpoSd6Iaizww9Vmx/nPFOfpf5TBS+Zf5RdVHdezJgAo
- ZwDQogNhIB1pTaah7m7tBQiCxSugk9pEhT7TuY4mzOFw5PR7s1hnLY5qLd+nXBleSSQ/vAGO4
- 1E+TC8Wp6LMATyWBZ6l60iF0nEr86R4+2pIwFkEyN+2LXbqKb96PLDgxBkCjtV/88hrY0mQBR
- YklmKF41lklbMZ/l9IWB5Ra9wQn4gx/iDGGqW+qlA/HiPf2TgmhTb/3Xg0lBzyD9nRWXaHfmX
- h4drsRX++aHx4ErR1enqY+OzgY043xdFUVR5uPrm4TNjDeLLI57zSYk4jkeBF1ruiJI5oR67x
- HGMRTijbkkoqtKS2cOouxGvxR7+HGlNZ00RxBtjnay2Up8CyEtbj9UtWaSbV9GqrCCC01kYJA
- 40fMc4Dwh4+l0RjiEQiXOn9wQYbeeKZOIY9q7/O67GFrB4KtuBGQDCvYg3RIFiiUl4hybT+e1
- SQUlcGlhLJDa6xtVU3gBpxMyIlV9iLF6NZkAxrlbs/mjP5njuVrKwoGplsss9lsc60IxPTwVr
- TJEazT4wDbWPWOi2A/ibYVfjATNVaYNqTg1ENmEpGVL3qpKXbSQ4HLCcC4EZfP33IkeIANnSR
- JCDkR2Kn2JA+kFQxvb/sAtrgLsDx5mZlQxVEre3klbYHQvVKGUfWNiTyRjuUmM37wXqtVCRTd
- l41EL0pCiEOfSmnWifZOi/fvM4/tlIQuforsHqTdHgWLmW6rWtk4JehJ6Y09vm69Xin8kq+WB
- CHtOPqZ1iuJvWNuUs15rkQp9Fqx/CfXAEi1hYhv9z08LHX935PQ7xajtQeoZ5eEzFWh5EEFqz
- gNqggUKh2Lmtdm7+OlIkkqeMW1qcxEcGZh3M5ru6iqh44uRfTs9jHhzwEmEH6aTH0rGAVkkjN
- QhGg56A995tSw18UMWc/j5Jtha0vzpq6YHx9qOhldWSYYL5SY9SaStXGYQVd7D85cg+/vwshN
- AbBK9Gk/NjaBIytJd1v+Ze+FDp2+ohriWvdZpZbg+SdsHM0EL+F976lzsY2oxcnaIZ8hjax4r
- e2RzE9bsNilk5kyGdi8Y7m9C9CYxHX89DEYHGhiJnNFAuAHbPBBrqbaPCOMB8vXotZKFLl+6U
- lk/2xZSBTTfvoiDzLXPQGModlrMo8OoGcY1xagIFyVLvlgQ2kxitxWFhQrAPaK1Ya+4aVFpVF
- 6UiEjqF4lnDrjNj0nHlEXWQPEY+nRCX97j2lYHA==
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9743 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 adultscore=0
+ suspectscore=3 phishscore=0 malwarescore=0 bulkscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009140078
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9743 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999
+ adultscore=0 malwarescore=0 clxscore=1015 lowpriorityscore=0 phishscore=0
+ spamscore=0 priorityscore=1501 suspectscore=3 impostorscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009140078
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---IYRyfZeHt6qtxfs6Nddav8M2pmOqvAY4Y
-Content-Type: multipart/mixed; boundary="NHeFO872a5QIePyYFARGp14ggkAvbmbwL"
+To help better understand the device-close leaks, add a warning if the
+device freed is still open.
 
---NHeFO872a5QIePyYFARGp14ggkAvbmbwL
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Anand Jain <anand.jain@oracle.com>
+---
+ fs/btrfs/volumes.c | 1 +
+ 1 file changed, 1 insertion(+)
 
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index 2d5cc644741e..c0dfc0b569e9 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -371,6 +371,7 @@ static struct btrfs_fs_devices *alloc_fs_devices(const u8 *fsid,
+ void btrfs_free_device(struct btrfs_device *device)
+ {
+ 	WARN_ON(!list_empty(&device->post_commit_list));
++	WARN_ON(device->bdev);
+ 	rcu_string_free(device->name);
+ 	extent_io_tree_release(&device->alloc_state);
+ 	bio_put(device->flush_bio);
+-- 
+2.25.1
 
-
-On 2020/9/14 =E4=B8=8A=E5=8D=884:56, J J wrote:
->  I=E2=80=99m new to a lot of this, just trying to use a NAS at home, si=
-ngle usb external disk, not RAID. Was working great for a few months, I=E2=
-=80=99m not sure what changed today when it stopped mounting. Any advice =
-appreciated.
-
-Transid mismatch, and the expected transid is newer than the on-disk
-transid.
-
-This means, either btrfs has some bug that causes metadata writeback not
-following COW, or the disk controller/disk itself ignores Flush/FUA
-commands.
-
-Considering it's usb external disk, I doubt the later case.
-
-In that case, any fs would experience similar problem if a sudden power
-loss or cable loss happened.
-
-You may workaround such problem by disabling the writecache, but I doubt
-if the USB->Sata convert would follow the request.
-
-Thanks,
-Qu
->=20
-> Dmesg log attached
->=20
->=20
-> uname -a
-> Linux rock64 4.4.190-1233-rockchip-ayufan-gd3f1be0ed310 #1 SMP Wed Aug =
-28 08:59:34 UTC 2019 aarch64 GNU/Linux
->=20
->=20
->=20
-> btrfs --version
-> btrfs-progs v4.7.3
->=20
->=20
->=20
-> btrfs fi show
-> Label: '3TBRock64'  uuid: 71eda2e3-384c-4868-b5d4-683f222865e6
-> 	Total devices 1 FS bytes used 2.48TiB
-> 	devid    1 size 2.73TiB used 2.59TiB path /dev/mapper/sda-crypt
->=20
->=20
-> btrfs fi df /dev/mapper/sda-crypt
-> ERROR: not a btrfs filesystem: /dev/mapper/sda-crypt
->=20
->=20
-> btrfs inspect-internal dump-super /dev/mapper/sda-crypt=20
-> superblock: bytenr=3D65536, device=3D/dev/mapper/sda-crypt
-> ---------------------------------------------------------
-> csum_type		0 (crc32c)
-> csum_size		4
-> csum			0x9e8b0c33 [match]
-> bytenr			65536
-> flags			0x1
-> 			( WRITTEN )
-> magic			_BHRfS_M [match]
-> fsid			71eda2e3-384c-4868-b5d4-683f222865e6
-> label			3TBRock64
-> generation		395886
-> root			2638934654976
-> sys_array_size		129
-> chunk_root_generation	377485
-> root_level		1
-> chunk_root		20971520
-> chunk_root_level	1
-> log_root		2638952366080
-> log_root_transid	0
-> log_root_level		0
-> total_bytes		3000556847104
-> bytes_used		2729422221312
-> sectorsize		4096
-> nodesize		16384
-> leafsize		16384
-> stripesize		4096
-> root_dir		6
-> num_devices		1
-> compat_flags		0x0
-> compat_ro_flags		0x0
-> incompat_flags		0x161
-> 			( MIXED_BACKREF |
-> 			  BIG_METADATA |
-> 			  EXTENDED_IREF |
-> 			  SKINNY_METADATA )
-> cache_generation	395886
-> uuid_tree_generation	395886
-> dev_item.uuid		b7f4386a-18e0-437b-9588-6064ff483fd5
-> dev_item.fsid		71eda2e3-384c-4868-b5d4-683f222865e6 [match]
-> dev_item.type		0
-> dev_item.total_bytes	3000556847104
-> dev_item.bytes_used	2843293515776
-> dev_item.io_align	4096
-> dev_item.io_width	4096
-> dev_item.sector_size	4096
-> dev_item.devid		1
-> dev_item.dev_group	0
-> dev_item.seek_speed	0
-> dev_item.bandwidth	0
->=20
->=20
-> dev_item.generation	0
->=20
-
-
---NHeFO872a5QIePyYFARGp14ggkAvbmbwL--
-
---IYRyfZeHt6qtxfs6Nddav8M2pmOqvAY4Y
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl9fKvwACgkQwj2R86El
-/qiFmwf+NPsjh+twp1O8AKO71M+SPIbpXycPoJDNWKZg01btKTq1ZKECphMUemy+
-HGpxl4m+1zJ52FOYTLX8iEC1de4AAWUVkIcUb+I4A0pUP+45EMCS2bqgqytHKECQ
-4SJ/UjaoduHnkBugrwaiTJGbs3lh0xY5yvcnOo0GAf1wqutQSVR3VnTcrCTKPThP
-Qi1/TT8AMzFof7tVJTDFH7NpI7roFWqqBe8pN68RdO0KVKd5KUzvBLxyk/FXhrtJ
-bFMUlIpLmJVhXZzkW+UBUViMYCFpn86oM2ZEZxbIAiBs4wpp/sREvtyfYZdz6Rql
-2rhxzff1F9qffXUQD5sp2cGXzQi42Q==
-=kKGw
------END PGP SIGNATURE-----
-
---IYRyfZeHt6qtxfs6Nddav8M2pmOqvAY4Y--
