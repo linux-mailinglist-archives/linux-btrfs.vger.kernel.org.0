@@ -2,30 +2,30 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAAA926899A
-	for <lists+linux-btrfs@lfdr.de>; Mon, 14 Sep 2020 12:51:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E69A82689B3
+	for <lists+linux-btrfs@lfdr.de>; Mon, 14 Sep 2020 13:01:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726437AbgINKvy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 14 Sep 2020 06:51:54 -0400
-Received: from mout.gmx.net ([212.227.15.15]:53375 "EHLO mout.gmx.net"
+        id S1725961AbgINLBp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 14 Sep 2020 07:01:45 -0400
+Received: from mout.gmx.net ([212.227.15.19]:45097 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726412AbgINKvx (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 14 Sep 2020 06:51:53 -0400
+        id S1725953AbgINLBR (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 14 Sep 2020 07:01:17 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1600080710;
-        bh=b8izZVPmanoh7f82TucVnlMonUuB2rmigd/Nz3wTUOo=;
+        s=badeba3b8450; t=1600081270;
+        bh=6G76sIdVfW9c9pYEMN3g9T8YSLHwIkLFFq/zccB0824=;
         h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=CcE/V+kZeL+HVLNGFa+RF57rGKveAWc/OuCxMV5kG+wvKyVFPqv4i9/NWGmxgv7T1
-         ZvY70WjQ8k+MQ6g/7aADlNwBZTjIzTgDzmKd43BSKJCluSjB9Jau5YSCr25n5ZGH0e
-         9wGFqy2NwR1985IJeyHzsjNvkccCNM9y0SOaCEeo=
+        b=NWZDy/ddu64vM7l8OXkY7WUiH+XUmLMX0gjCNuNnG9A4VvGAbPGK1zhIQ3nEiZQ9E
+         BHYoG/H2Hbk8C+rKGTSDHjovlpGAEu+/vXgH9KqV4Gy6XgH3zJ2fQhePVic94sjbAB
+         eu1llk5/Qp/XyBcERTcgOBmHWYc5/Cr9Sxbd0U3I=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
 Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1M26vL-1kFI323ZIv-002Wsx; Mon, 14
- Sep 2020 12:51:50 +0200
-Subject: Re: [PATCH v2 1/9] btrfs: Remove btree_readpage
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MXp5a-1k1FP62GgW-00YAQF; Mon, 14
+ Sep 2020 13:01:10 +0200
+Subject: Re: [PATCH v2 2/9] btrfs: Simplify metadata pages reading
 To:     Nikolay Borisov <nborisov@suse.com>, linux-btrfs@vger.kernel.org
 References: <20200914093711.13523-1-nborisov@suse.com>
- <20200914093711.13523-2-nborisov@suse.com>
+ <20200914093711.13523-3-nborisov@suse.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -51,39 +51,39 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
  ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
  oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <c39f36e5-5502-c118-6df0-8dd0ef278d7c@gmx.com>
-Date:   Mon, 14 Sep 2020 18:51:45 +0800
+Message-ID: <cffbc9ba-f63c-77ea-1516-da4da7043db3@gmx.com>
+Date:   Mon, 14 Sep 2020 19:01:04 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <20200914093711.13523-2-nborisov@suse.com>
+In-Reply-To: <20200914093711.13523-3-nborisov@suse.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:z4WU5WbEMtM0X4LERA8AqZ8mI0PSBhbd2ZoXXMhVKhyWgfwISzr
- rJz0KSij8+uLPAjWnQDllKO0YBiIdt0kPEIVsdD958+tFgciT1O2z3VziuVmQ1MgGX9R4pK
- TNO2hl4bzdkzYmHmgsLwyEdRQW/caHDeVBY9ralivuwLcgx/zvSXWnkaffM6c+oYERnfTee
- dvOGfVat+HeIti/zcTsMQ==
+X-Provags-ID: V03:K1:UNKCKv/1sUm6wI4M7iuambwYqZeIv+uLiuuZXTFEGZhTYdb1Ia1
+ SaqGT4TYH6XO7A3ZxTAE+X3c+R7iZZDIYEOsHM2Bum6c4lKgOHCxNMHe3lKbTOoxJSldo4+
+ XFoY7Vc9MhlE4Xm3+ehpAKcSRGEJOuW3gyqo/YnE9Ax1yL8VlorH31lSkJYYK/+tw5noGMk
+ HlDOCTl5SRyMvPu93929Q==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:OTc7ftDAmhA=:MVcO0wT5DEoavAt++eO8Oj
- tDVrKhf++2PkSu2+R2GgiwVV6pLk5AFMAV8dwqJ7UD7vs4fER1u0EZ1stzTEzF6gbItRjnzOj
- l1lopwvKG0gdSgiPq0MGwFg1qDV/5Jecmy3LFVh2dCgHZVdQi6kgll7Gr/hJJIj0xt5wTxH9U
- hkGz6C7smkqMTvYYiwf3dqV96wPpTXQYttzr3sGWf2cZdiM/AW6bEv17WSzLqIQ1PknUCi8UX
- 3BQoHFKJwtB9H4UrottXCyt6Ysz72S42+hkk4ZLORDx0/Ffa9C3JZJiUlAQy2VHhbtcIF+hHg
- xaCcGKrm6vyGPDg8IsKGZN7YN4Itil23O+AXXbKFCRTmPsVm1k1CoOSACxpZksuqy//8JZAxr
- 0+W3MNO0wojqWUmLj9GbRF/ZIhrvkLcfljXUGtIyI3d4I5iIuTLPuMslYeXCesxTKCCQ4KfB6
- lo4/I93o6+5Fk+gogAoJp3+KJV9Sks6uN+qH7q7U+BFTOonNCEJC206z8fVsr7sioF5u0pAgX
- IQ/oI4+5YSDrABs7Tj5iQQwZp27/u2i7Q4dCHAwDMT7AatttA52M5EA+9K3quF0nWQIWScB2r
- +9Roj461c/k+J6wbwPkvUWGERHmb50Jay1r4Vd22RO1qNj/AI2te6Zaw4LS660zvYQPav0yJD
- EvENY7ijKT7hgRmGTS0fI5qvlRQHTtnfCtvMt6H4ZKCpPPMwT7BmaF9uTKCADMorxBdvvtS0m
- QP0dxSAbLfaSZF8pusQ9zP6N/SugotLVXBI0/9/owGhlyQhnrBhElSj/jx03hQrrgmFcey1kX
- pCEpOX3BFPs14YHl8OarIbRd1p5wf6LsuNz1//ueg2o+SK85GVWKxpfz0c8chloTb55mH4Ub3
- xpijtjXhc/XuKcPMZA8nrsSgxKt2nCcO3Fg50l506MOQs7zRJowHF1/y9/a3e1RKfzoFm26Pm
- 6qb8RAuqocrCvg5nXmXzKPI66j2topuhA+j5uLn+A7ym4wULV5nq1adFVYP8IwIMk7pMicjAX
- ZitzH1Eqqu1qBErLdesxxkFDA3k5KAj+bFVm8/CcKSt8AVr25BOIaGPlzdEamCg3JynX4OHvI
- yVexn6h5WZ+qevgbaaMZE259LlirH0j4m9nn3BM2SMvrMWpnZn8xBIfxp8SgfP3SSAUsABtlV
- 85DcLVsV+Mh5sNdDMfJ9lljlgV8ENyxMP9J0AVyIzwJoDPzISGiGKTdDmD9ua25gbLOCPsGLT
- 3+BrgTOjnN+/13AVbnV7oG2m9LaKUmg3MHrhKCg==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:lpa3Fg7ytDE=:Yx17gBvIv94mfuIQUqitzr
+ KODoIlij7sBq8lL4KeYNdi9xfDA1dW7BjEuU5hyr2l2/Xt6VKY0K+8fMr/IxQwpS2/+Mz7hnG
+ lBsMBz/uurZwkJD2eig4YZ8l6s6xfgL65tEEaXA0B0oOFKqSEStE6tQBlFY+AKD6FUicO9Py1
+ KBsoqKLIpjJLHOfuF9gQFFQ44C/i/DaDwUqMgb16qYQhOTOCFgWcFwVJfoJzO3FQRLUzT/2Hg
+ eYcc33Bdaw8lyMeE7ISx0051mq0zpf3NjB9KWc9gAMKWpgsiJyvctTJpgcvN/8gw9CF7/y5oY
+ qwpzhUi79HQPn23LuwLqS15jVx5PVYOETqS+yjvsMDleRcTNJ/t1T0xgXcq5HBa0JSBs7+TEj
+ LNxoVecaqYAjUNvUNEc9mjo8sVCmAGGsqG7pLzEXWrF9MXMZE++dUm6DUnjESS0RkpPK4nu3R
+ WOW82PZq5HNZcEcz9YTMvhAKNgWgJP3rX0NQ6p1l+j5J1vZFylFVWnXoV+BBxi6pz2SJD2/sT
+ ctvzCdS8HnrQMugdlHEKPInjehg81QDfICWU56icTip6jZ2smVsub8F2+X59TzwniwAiWZ0JB
+ gUkZ0NfABmn0C4PVa5Fkgm4OCvLb66JmU1Klfb9yoneKr53lN0mjcNwPy8drudwQYmZ3ramYB
+ +X2eHC1TuJJMnEjzmbnki4a3Cfn9+0kvV3nBouiGkWxPzRyxslYfwjIL9D2VdJTp1svWr3pgd
+ PBTc5bJ+V/g9t2cJO90U3QYP+ax3HBnTCPGGudTwUlFXI83EGPNx73QmUu6GifGjS8tKP6mXI
+ qnwctoX1FpmwNGPgYTBuSXVAkVz8lT5mwhiF0bUUAC4fz6Gu3ScDlf6L/5Sr7ls99b6vwYgm3
+ ucnyp4MLDnhVOEhvbKUcBeqgk0FNml4H0HmMC4vKHCJUREW8OwRu88WkEJRNzQ/WZoA67n7Sl
+ DGfaGzOHFVqCB0fuMMOmz2LuLOHyWGq2UvGrEfIaf4paLhFbA/smpDnT059iP7knZC9oOk1Xp
+ GiQuKhrdN6V71dIFzVwH1blrJtyxFS7NxE3V32JMMQv3Arn/y1dZg8uL7K4tIjsOksLYeHtel
+ 075ITJ+pi3gVZqMDMkfXWO7xg5j77axw2dG5yir2zZh7Fm9EGluYi5oARi7hFyEOELzut/7tx
+ KUf3IMDlcFdOPZiIZaatoFIyd73aFZO684tTKTjoSQq9r4+QSMyn+aw8fquUfTKeaASdXwP9+
+ 0fir0rH6hZa9R5GXplin0Q0Rj4Y49SUSChoJebA==
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
@@ -92,48 +92,61 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 2020/9/14 =E4=B8=8B=E5=8D=885:37, Nikolay Borisov wrote:
-> There is no way for this function to be called as ->readpage() since
-> it's called from
-> generic_file_buffered_read/filemap_fault/do_read_cache_page/readhead
-> code. BTRFS doesn't utilize the first 3 for the btree inode and
-> implements it's owon readhead mechanism. So simply remove the function.
+> Metadata pages currently use __do_readpage to read metadata pages,
+> unfortunately this function is also used to deal with ordinary data
+> pages. This makes the metadata pages reading code to go through multiple
+> hoops in order to adhere to __do_readpage invariants. Most of these are
+> necessary for data pages which could be compressed. For metadata it's
+> enough to simply build a bio and submit it.
+>
+> To this effect simply call submit_extent_page directly from
+> read_extent_buffer_pages which is the only callpath used to populate
+> extent_buffers with data. This in turn enables further cleanups.
 >
 > Signed-off-by: Nikolay Borisov <nborisov@suse.com>
-
-With the new commit message, it's way easier to know why that function
-is not needed.
 
 Reviewed-by: Qu Wenruo <wqu@suse.com>
 
 Thanks,
 Qu
 > ---
->  fs/btrfs/disk-io.c | 6 ------
->  1 file changed, 6 deletions(-)
+>  fs/btrfs/extent_io.c | 21 ++++++++++-----------
+>  1 file changed, 10 insertions(+), 11 deletions(-)
 >
-> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-> index 7147237d9bf0..d63498f3c75f 100644
-> --- a/fs/btrfs/disk-io.c
-> +++ b/fs/btrfs/disk-io.c
-> @@ -949,11 +949,6 @@ static int btree_writepages(struct address_space *m=
-apping,
->  	return btree_write_cache_pages(mapping, wbc);
->  }
+> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+> index a1e070ec7ad8..0a6cda4c30ed 100644
+> --- a/fs/btrfs/extent_io.c
+> +++ b/fs/btrfs/extent_io.c
+> @@ -5573,20 +5573,19 @@ int read_extent_buffer_pages(struct extent_buffe=
+r *eb, int wait, int mirror_num)
+>  			}
 >
-> -static int btree_readpage(struct file *file, struct page *page)
-> -{
-> -	return extent_read_full_page(page, btree_get_extent, 0);
-> -}
-> -
->  static int btree_releasepage(struct page *page, gfp_t gfp_flags)
->  {
->  	if (PageWriteback(page) || PageDirty(page))
-> @@ -993,7 +988,6 @@ static int btree_set_page_dirty(struct page *page)
->  }
->
->  static const struct address_space_operations btree_aops =3D {
-> -	.readpage	=3D btree_readpage,
->  	.writepages	=3D btree_writepages,
->  	.releasepage	=3D btree_releasepage,
->  	.invalidatepage =3D btree_invalidatepage,
+>  			ClearPageError(page);
+> -			err =3D __extent_read_full_page(page,
+> -						      btree_get_extent, &bio,
+> -						      mirror_num, &bio_flags,
+> -						      REQ_META);
+> +			err =3D submit_extent_page(REQ_OP_READ | REQ_META, NULL,
+> +					 page, page_offset(page), PAGE_SIZE, 0,
+> +					 &bio, end_bio_extent_readpage,
+> +					 mirror_num, 0, 0, false);
+>  			if (err) {
+> -				ret =3D err;
+>  				/*
+> -				 * We use &bio in above __extent_read_full_page,
+> -				 * so we ensure that if it returns error, the
+> -				 * current page fails to add itself to bio and
+> -				 * it's been unlocked.
+> -				 *
+> -				 * We must dec io_pages by ourselves.
+> +				 * We failed to submit the bio so it's the
+> +				 * caller's responsibility to perform cleanup
+> +				 * i.e unlock page/set error bit.
+>  				 */
+> +				ret =3D err;
+> +				SetPageError(page);
+> +				unlock_page(page);
+>  				atomic_dec(&eb->io_pages);
+>  			}
+>  		} else {
 >
