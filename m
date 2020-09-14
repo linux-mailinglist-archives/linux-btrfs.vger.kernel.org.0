@@ -2,25 +2,25 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2853526889A
-	for <lists+linux-btrfs@lfdr.de>; Mon, 14 Sep 2020 11:37:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59E21268899
+	for <lists+linux-btrfs@lfdr.de>; Mon, 14 Sep 2020 11:37:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726354AbgINJh3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 14 Sep 2020 05:37:29 -0400
-Received: from mx2.suse.de ([195.135.220.15]:41232 "EHLO mx2.suse.de"
+        id S1726393AbgINJh0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 14 Sep 2020 05:37:26 -0400
+Received: from mx2.suse.de ([195.135.220.15]:41246 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726295AbgINJhT (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        id S1726352AbgINJhT (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
         Mon, 14 Sep 2020 05:37:19 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 62A8BAF43;
+        by mx2.suse.de (Postfix) with ESMTP id 9F87EAF74;
         Mon, 14 Sep 2020 09:37:32 +0000 (UTC)
 From:   Nikolay Borisov <nborisov@suse.com>
 To:     linux-btrfs@vger.kernel.org
 Cc:     Nikolay Borisov <nborisov@suse.com>
-Subject: [PATCH v2 6/9] btrfs: Promote extent_read_full_page to btrfs_readpage
-Date:   Mon, 14 Sep 2020 12:37:08 +0300
-Message-Id: <20200914093711.13523-7-nborisov@suse.com>
+Subject: [PATCH v2 7/9] btrfs: Sink mirror_num argument in extent_read_full_page
+Date:   Mon, 14 Sep 2020 12:37:09 +0300
+Message-Id: <20200914093711.13523-8-nborisov@suse.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200914093711.13523-1-nborisov@suse.com>
 References: <20200914093711.13523-1-nborisov@suse.com>
@@ -29,101 +29,65 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Now that btrfs_readpage is the only caller of extent_read_full_page the
-latter can be opencoded in the former. Use the occassion to rename
-__extent_read_full_page to extent_read_full_page. To facillitate this
-change submit_one_bio has to be exported as well.
+It's always set to 0 from the sole caller - btrfs_readpage.
 
 Signed-off-by: Nikolay Borisov <nborisov@suse.com>
 Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/extent_io.c | 21 ++++-----------------
- fs/btrfs/extent_io.h |  5 ++++-
- fs/btrfs/inode.c     |  9 ++++++++-
- 3 files changed, 16 insertions(+), 19 deletions(-)
+ fs/btrfs/extent_io.c | 5 ++---
+ fs/btrfs/extent_io.h | 2 +-
+ fs/btrfs/inode.c     | 2 +-
+ 3 files changed, 4 insertions(+), 5 deletions(-)
 
 diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 355db40a1cb5..402b88ddcbca 100644
+index 402b88ddcbca..f43827bee7e6 100644
 --- a/fs/btrfs/extent_io.c
 +++ b/fs/btrfs/extent_io.c
-@@ -160,8 +160,8 @@ static int add_extent_changeset(struct extent_state *state, unsigned bits,
- 	return ret;
- }
-
--static int __must_check submit_one_bio(struct bio *bio, int mirror_num,
--				       unsigned long bio_flags)
-+int __must_check submit_one_bio(struct bio *bio, int mirror_num,
-+				unsigned long bio_flags)
- {
- 	blk_status_t ret = 0;
- 	struct extent_io_tree *tree = bio->bi_private;
-@@ -3365,9 +3365,8 @@ static inline void contiguous_readpages(struct page *pages[], int nr_pages,
+@@ -3365,7 +3365,7 @@ static inline void contiguous_readpages(struct page *pages[], int nr_pages,
  	}
  }
 
--static int __extent_read_full_page(struct page *page, struct bio **bio,
--				   int mirror_num, unsigned long *bio_flags,
--				   unsigned int read_flags)
-+int extent_read_full_page(struct page *page, struct bio **bio, int mirror_num,
-+			  unsigned long *bio_flags, unsigned int read_flags)
+-int extent_read_full_page(struct page *page, struct bio **bio, int mirror_num,
++int extent_read_full_page(struct page *page, struct bio **bio,
+ 			  unsigned long *bio_flags, unsigned int read_flags)
  {
  	struct btrfs_inode *inode = BTRFS_I(page->mapping->host);
- 	u64 start = page_offset(page);
-@@ -3381,18 +3380,6 @@ static int __extent_read_full_page(struct page *page, struct bio **bio,
+@@ -3375,8 +3375,7 @@ int extent_read_full_page(struct page *page, struct bio **bio, int mirror_num,
+
+ 	btrfs_lock_and_flush_ordered_range(inode, start, end, NULL);
+
+-	ret = __do_readpage(page, NULL, bio, mirror_num, bio_flags, read_flags,
+-			    NULL);
++	ret = __do_readpage(page, NULL, bio, 0, bio_flags, read_flags, NULL);
  	return ret;
  }
 
--int extent_read_full_page(struct page *page)
--{
--	struct bio *bio = NULL;
--	unsigned long bio_flags = 0;
--	int ret;
--
--	ret = __extent_read_full_page(page, &bio, 0, &bio_flags, 0);
--	if (bio)
--		ret = submit_one_bio(bio, 0, bio_flags);
--	return ret;
--}
--
- static void update_nr_written(struct writeback_control *wbc,
- 			      unsigned long nr_written)
- {
 diff --git a/fs/btrfs/extent_io.h b/fs/btrfs/extent_io.h
-index 0ccb2dabc291..8fec00c50846 100644
+index 8fec00c50846..3562c9203de3 100644
 --- a/fs/btrfs/extent_io.h
 +++ b/fs/btrfs/extent_io.h
-@@ -193,7 +193,10 @@ typedef struct extent_map *(get_extent_t)(struct btrfs_inode *inode,
- int try_release_extent_mapping(struct page *page, gfp_t mask);
- int try_release_extent_buffer(struct page *page);
+@@ -195,7 +195,7 @@ int try_release_extent_buffer(struct page *page);
 
--int extent_read_full_page(struct page *page);
-+int __must_check submit_one_bio(struct bio *bio, int mirror_num,
-+				unsigned long bio_flags);
-+int extent_read_full_page(struct page *page, struct bio **bio, int mirror_num,
-+			  unsigned long *bio_flags, unsigned int read_flags);
+ int __must_check submit_one_bio(struct bio *bio, int mirror_num,
+ 				unsigned long bio_flags);
+-int extent_read_full_page(struct page *page, struct bio **bio, int mirror_num,
++int extent_read_full_page(struct page *page, struct bio **bio,
+ 			  unsigned long *bio_flags, unsigned int read_flags);
  int extent_write_full_page(struct page *page, struct writeback_control *wbc);
  int extent_write_locked_range(struct inode *inode, u64 start, u64 end,
- 			      int mode);
 diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index e78099d1db34..f01066607901 100644
+index f01066607901..31a154c7fb00 100644
 --- a/fs/btrfs/inode.c
 +++ b/fs/btrfs/inode.c
-@@ -8040,7 +8040,14 @@ static int btrfs_fiemap(struct inode *inode, struct fiemap_extent_info *fieinfo,
+@@ -8044,7 +8044,7 @@ int btrfs_readpage(struct file *file, struct page *page)
+ 	unsigned long bio_flags = 0;
+ 	int ret;
 
- int btrfs_readpage(struct file *file, struct page *page)
- {
--	return extent_read_full_page(page);
-+	struct bio *bio = NULL;
-+	unsigned long bio_flags = 0;
-+	int ret;
-+
-+	ret = extent_read_full_page(page, &bio, 0, &bio_flags, 0);
-+	if (bio)
-+		ret = submit_one_bio(bio, 0, bio_flags);
-+	return ret;
- }
-
- static int btrfs_writepage(struct page *page, struct writeback_control *wbc)
+-	ret = extent_read_full_page(page, &bio, 0, &bio_flags, 0);
++	ret = extent_read_full_page(page, &bio, &bio_flags, 0);
+ 	if (bio)
+ 		ret = submit_one_bio(bio, 0, bio_flags);
+ 	return ret;
 --
 2.17.1
 
