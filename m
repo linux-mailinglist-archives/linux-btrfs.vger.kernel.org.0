@@ -2,138 +2,119 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6277E268DA1
-	for <lists+linux-btrfs@lfdr.de>; Mon, 14 Sep 2020 16:29:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7E21268FC0
+	for <lists+linux-btrfs@lfdr.de>; Mon, 14 Sep 2020 17:26:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726586AbgINO2N (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 14 Sep 2020 10:28:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44280 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726694AbgINO1y (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 14 Sep 2020 10:27:54 -0400
-Received: from localhost.localdomain (bl8-197-74.dsl.telepac.pt [85.241.197.74])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6FE9B20829
-        for <linux-btrfs@vger.kernel.org>; Mon, 14 Sep 2020 14:27:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600093673;
-        bh=FZEnicL3Py28tpp8sQzMyxWJigcJ4bAeNu+h2kXjV68=;
-        h=From:To:Subject:Date:From;
-        b=hPiT0B7BOZdP61Myt7tDM5LJbk7Ux8QqnF10tvNP0ngMtPFodXYjxJwoKW6w4JPh0
-         fV1DSRmGw2L8J8UjNdDaica6exlRgAvD/9qODSHu4cD5ob6gDB4G8rDzaVFEFryqge
-         uiBsnuTJiWjuqbnzzjexJ0m+6Tow568d9IdVtVYE=
-From:   fdmanana@kernel.org
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: reschedule if necessary when logging directory items
-Date:   Mon, 14 Sep 2020 15:27:50 +0100
-Message-Id: <606910fad0a0c62d162acf92953d8f38c8537643.1600093362.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.17.1
+        id S1726379AbgINPYe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 14 Sep 2020 11:24:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46328 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726112AbgINPX0 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 14 Sep 2020 11:23:26 -0400
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CCA4C061788
+        for <linux-btrfs@vger.kernel.org>; Mon, 14 Sep 2020 08:23:25 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id v123so432080qkd.9
+        for <linux-btrfs@vger.kernel.org>; Mon, 14 Sep 2020 08:23:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=P88sZPJFN6pjg1/rBpYAr1dfE1xKLYR1psgTh/kSK58=;
+        b=v2zsmXoaQHuKuTLSI56DmnLoufgGGU+J/f3LjvF4v34Q6KPI5HyPGTQ21jiSPhwAQ4
+         lk9t/YRRXcRGIsRYd5083WF78DCqO1tKVw68gA8p5BbhvGBZGiMTEHDJ3cHeyO2qoQuF
+         UOWzUWKkVpqbU0LjZYrd6/+nmJ/ecw3Hqz6SFnfWKqRClyuzq29c95lRUzEh9pkOtDk1
+         5COpR0vOdB4Xt/6byyDqdU3Xa0lks2yq83AqLbGoWL8Vt7X/VL8aUQev5EqXuPloVd60
+         sRD5pm3oXwf4sV8zGwzb+QoANX7JwaWE+fQaANGSx9dpQmUF/TDx81WZf+V6H2Ep+0MJ
+         0AiQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=P88sZPJFN6pjg1/rBpYAr1dfE1xKLYR1psgTh/kSK58=;
+        b=X57exRgSjfgWa8E4GGOLPjEVsNB8oCxjXrOCV+Kye4GSEfSi2STXoUFUSBlUig2a05
+         pLPAaXwBJHYaCDcVb8o/iIAOpOTez633q1JiO0rxI7ROYUB/X9ttN4J4hYJhzfnFYO9f
+         RlWgXFQ/9+qk1UMAmQiebzgokErjBLtZTYHr2BYKbESq/TmgAm8M8TYjAgogw+OFWpEg
+         rWDKAmXC+PeFx+an6o0isXMQZD2wjivyZI334mGLB8sdpA25iUcE2JjEXteYTSrrHG9s
+         wqkvoLcOww7ni9N3dvUIeZo3+VRweeCM/xL+y+5eMOuKw4pTCIET8XPlSmi2fReDKiT9
+         K4ZA==
+X-Gm-Message-State: AOAM531XIvnEM3RtX+cJuDzjMPM3KFASVJFhnwjhloteoOcZvrXQhDGI
+        /PZfjS7V1ZDCZvEW4CJvhLjjVkgFpbsWf2vG
+X-Google-Smtp-Source: ABdhPJxML7P5UFyuwupKlgmXyBQeG9Wy/uhuMqnzQOUkcnJmkuMVG/chGT9OuwkebrxHYqRoM3c6dA==
+X-Received: by 2002:a37:e211:: with SMTP id g17mr12791704qki.417.1600097004283;
+        Mon, 14 Sep 2020 08:23:24 -0700 (PDT)
+Received: from ?IPv6:2620:10d:c0a8:11c1::111c? ([2620:10d:c091:480::1:9b22])
+        by smtp.gmail.com with ESMTPSA id f64sm5006681qkj.124.2020.09.14.08.23.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 14 Sep 2020 08:23:23 -0700 (PDT)
+Subject: Re: [PATCH] btrfs: fix wrong address when faulting in pages in the
+ search ioctl
+To:     fdmanana@kernel.org, linux-btrfs@vger.kernel.org
+References: <78bf853ef63f2dbd62587bb02bb723fbaa77c198.1600070418.git.fdmanana@suse.com>
+From:   Josef Bacik <josef@toxicpanda.com>
+Message-ID: <8c2f5f20-3868-4291-5bed-b571c8ae61a0@toxicpanda.com>
+Date:   Mon, 14 Sep 2020 11:23:22 -0400
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.12.0
+MIME-Version: 1.0
+In-Reply-To: <78bf853ef63f2dbd62587bb02bb723fbaa77c198.1600070418.git.fdmanana@suse.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
+On 9/14/20 4:01 AM, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
+> 
+> When faulting in the pages for the user supplied buffer for the search
+> ioctl, we are passing only the base address of the buffer to the function
+> fault_in_pages_writeable(). This means that after the first iteration of
+> the while loop that searches for leaves, when we have a non-zero offset,
+> stored in 'sk_offset', we try to fault in a wrong page range.
+> 
+> So fix this by adding the offset in 'sk_offset' to the base address of the
+> user supplied buffer when calling fault_in_pages_writeable().
+> 
+> Several users have reported that the applications compsize and bees have
+> started to operate incorrectly since commit a48b73eca4ceb9 ("btrfs: fix
+> potential deadlock in the search ioctl") was added to stable trees, and
+> these applications make heavy use of the search ioctls. This fixes their
+> issues.
+> 
+> Link: https://lore.kernel.org/linux-btrfs/632b888d-a3c3-b085-cdf5-f9bb61017d92@lechevalier.se/
+> Link: https://github.com/kilobyte/compsize/issues/34
+> Tested-by: A L <mail@lechevalier.se>
+> Fixes: a48b73eca4ceb9 ("btrfs: fix potential deadlock in the search ioctl")
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+> ---
+>   fs/btrfs/ioctl.c | 3 ++-
+>   1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+> index 5f06aeb71823..b91444e810a5 100644
+> --- a/fs/btrfs/ioctl.c
+> +++ b/fs/btrfs/ioctl.c
+> @@ -2194,7 +2194,8 @@ static noinline int search_ioctl(struct inode *inode,
+>   	key.offset = sk->min_offset;
+>   
+>   	while (1) {
+> -		ret = fault_in_pages_writeable(ubuf, *buf_size - sk_offset);
+> +		ret = fault_in_pages_writeable(ubuf + sk_offset,
+> +					       *buf_size - sk_offset);
+>   		if (ret)
+>   			break;
+>   
+> 
 
-Logging directories with many entries can take a significant amount of
-time, and in some cases monopolize a cpu/core for a long time if the
-logging task doesn't happen to block often enough.
+Eesh, can we get an xfstest for this?
 
-Johannes and Lu Fengqi reported test case generic/041 triggering a soft
-lockup when the kernel has CONFIG_SOFTLOCKUP_DETECTOR=y. For this test
-case we log an inode with 3002 hard links, and because the test removed
-one hard link before fsyncing the file, the inode logging causes the
-parent directory do be logged as well, which has 6004 directory items to
-log (3002 BTRFS_DIR_ITEM_KEY items plus 3002 BTRFS_DIR_INDEX_KEY items),
-so it can take a significant amount of time and trigger the soft lockup.
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 
-So just make tree-log.c:log_dir_items() reschedule when necessary,
-releasing the current search path before doing so and then resume from
-where it was before the reschedule.
+Thanks,
 
-The stack trace produced when the soft lockup happens is the following:
-
-[10480.277653] watchdog: BUG: soft lockup - CPU#2 stuck for 22s! [xfs_io:28172]
-[10480.279418] Modules linked in: dm_thin_pool dm_persistent_data (...)
-[10480.284915] irq event stamp: 29646366
-[10480.285987] hardirqs last  enabled at (29646365): [<ffffffff85249b66>] __slab_alloc.constprop.0+0x56/0x60
-[10480.288482] hardirqs last disabled at (29646366): [<ffffffff8579b00d>] irqentry_enter+0x1d/0x50
-[10480.290856] softirqs last  enabled at (4612): [<ffffffff85a00323>] __do_softirq+0x323/0x56c
-[10480.293615] softirqs last disabled at (4483): [<ffffffff85800dbf>] asm_call_on_stack+0xf/0x20
-[10480.296428] CPU: 2 PID: 28172 Comm: xfs_io Not tainted 5.9.0-rc4-default+ #1248
-[10480.298948] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.12.0-59-gc9ba527-rebuilt.opensuse.org 04/01/2014
-[10480.302455] RIP: 0010:__slab_alloc.constprop.0+0x19/0x60
-[10480.304151] Code: 86 e8 31 75 21 00 66 66 2e 0f 1f 84 00 00 00 (...)
-[10480.309558] RSP: 0018:ffffadbe09397a58 EFLAGS: 00000282
-[10480.311179] RAX: ffff8a495ab92840 RBX: 0000000000000282 RCX: 0000000000000006
-[10480.313242] RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffffffff85249b66
-[10480.315260] RBP: ffff8a497d04b740 R08: 0000000000000001 R09: 0000000000000001
-[10480.317229] R10: ffff8a497d044800 R11: ffff8a495ab93c40 R12: 0000000000000000
-[10480.319169] R13: 0000000000000000 R14: 0000000000000c40 R15: ffffffffc01daf70
-[10480.321104] FS:  00007fa1dc5c0e40(0000) GS:ffff8a497da00000(0000) knlGS:0000000000000000
-[10480.323559] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[10480.325235] CR2: 00007fa1dc5befb8 CR3: 0000000004f8a006 CR4: 0000000000170ea0
-[10480.327259] Call Trace:
-[10480.328286]  ? overwrite_item+0x1f0/0x5a0 [btrfs]
-[10480.329784]  __kmalloc+0x831/0xa20
-[10480.331009]  ? btrfs_get_32+0xb0/0x1d0 [btrfs]
-[10480.332464]  overwrite_item+0x1f0/0x5a0 [btrfs]
-[10480.333948]  log_dir_items+0x2ee/0x570 [btrfs]
-[10480.335413]  log_directory_changes+0x82/0xd0 [btrfs]
-[10480.336926]  btrfs_log_inode+0xc9b/0xda0 [btrfs]
-[10480.338374]  ? init_once+0x20/0x20 [btrfs]
-[10480.339711]  btrfs_log_inode_parent+0x8d3/0xd10 [btrfs]
-[10480.341257]  ? dget_parent+0x97/0x2e0
-[10480.342480]  btrfs_log_dentry_safe+0x3a/0x50 [btrfs]
-[10480.343977]  btrfs_sync_file+0x24b/0x5e0 [btrfs]
-[10480.345381]  do_fsync+0x38/0x70
-[10480.346483]  __x64_sys_fsync+0x10/0x20
-[10480.347703]  do_syscall_64+0x2d/0x70
-[10480.348891]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-[10480.350444] RIP: 0033:0x7fa1dc80970b
-[10480.351642] Code: 0f 05 48 3d 00 f0 ff ff 77 45 c3 0f 1f 40 00 48 (...)
-[10480.356952] RSP: 002b:00007fffb3d081d0 EFLAGS: 00000293 ORIG_RAX: 000000000000004a
-[10480.359458] RAX: ffffffffffffffda RBX: 0000562d93d45e40 RCX: 00007fa1dc80970b
-[10480.361426] RDX: 0000562d93d44ab0 RSI: 0000562d93d45e60 RDI: 0000000000000003
-[10480.363367] RBP: 0000000000000001 R08: 0000000000000000 R09: 00007fa1dc7b2a40
-[10480.365317] R10: 0000562d93d0e366 R11: 0000000000000293 R12: 0000000000000001
-[10480.367299] R13: 0000562d93d45290 R14: 0000562d93d45e40 R15: 0000562d93d45e60
-
-Link: https://github.com/btrfs/fstests/issues/22
-Link: https://lore.kernel.org/linux-btrfs/20180713090216.GC575@fnst.localdomain/
-Tested-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- fs/btrfs/tree-log.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
-
-diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-index e35cfe8cf68b..56cbc1706b6f 100644
---- a/fs/btrfs/tree-log.c
-+++ b/fs/btrfs/tree-log.c
-@@ -3611,6 +3611,7 @@ static noinline int log_dir_items(struct btrfs_trans_handle *trans,
- 	 * search and this search we'll not find the key again and can just
- 	 * bail.
- 	 */
-+search:
- 	ret = btrfs_search_slot(NULL, root, &min_key, path, 0, 0);
- 	if (ret != 0)
- 		goto done;
-@@ -3630,6 +3631,13 @@ static noinline int log_dir_items(struct btrfs_trans_handle *trans,
- 
- 			if (min_key.objectid != ino || min_key.type != key_type)
- 				goto done;
-+
-+			if (need_resched()) {
-+				btrfs_release_path(path);
-+				cond_resched();
-+				goto search;
-+			}
-+
- 			ret = overwrite_item(trans, log, dst_path, src, i,
- 					     &min_key);
- 			if (ret) {
--- 
-2.26.2
-
+Josef
