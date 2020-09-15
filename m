@@ -2,24 +2,24 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53097269DE5
-	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Sep 2020 07:36:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D53B269DE8
+	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Sep 2020 07:36:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726187AbgIOFgW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 15 Sep 2020 01:36:22 -0400
-Received: from mx2.suse.de ([195.135.220.15]:43480 "EHLO mx2.suse.de"
+        id S1726199AbgIOFg3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 15 Sep 2020 01:36:29 -0400
+Received: from mx2.suse.de ([195.135.220.15]:43514 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726186AbgIOFgV (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 15 Sep 2020 01:36:21 -0400
+        id S1726191AbgIOFgX (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 15 Sep 2020 01:36:23 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 26841AF39
-        for <linux-btrfs@vger.kernel.org>; Tue, 15 Sep 2020 05:36:35 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id B967BAF8D
+        for <linux-btrfs@vger.kernel.org>; Tue, 15 Sep 2020 05:36:36 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 18/19] btrfs: implement btree_readpage() and try_release_extent_buffer() for subpage
-Date:   Tue, 15 Sep 2020 13:35:31 +0800
-Message-Id: <20200915053532.63279-19-wqu@suse.com>
+Subject: [PATCH v2 19/19] btrfs: allow RO mount of 4K sector size fs on 64K page system
+Date:   Tue, 15 Sep 2020 13:35:32 +0800
+Message-Id: <20200915053532.63279-20-wqu@suse.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200915053532.63279-1-wqu@suse.com>
 References: <20200915053532.63279-1-wqu@suse.com>
@@ -30,112 +30,81 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-For btree_readpage() we just block the function, as btree read should
-only be triggered by btrfs itself, VFS shouldn't need to bother.
+This adds the basic RO mount ability for 4K sector size on 64K page
+system.
 
-For try_release_extent_buffer(), we just iterate through all the range
-with EXTENT_NEW set, and try freeing each extent buffer.
+Currently we only plan to support 4K and 64K page system.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/disk-io.c   |  6 +++++
- fs/btrfs/extent_io.c | 62 ++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 68 insertions(+)
+ fs/btrfs/disk-io.c | 24 +++++++++++++++++++++---
+ fs/btrfs/super.c   |  7 +++++++
+ 2 files changed, 28 insertions(+), 3 deletions(-)
 
 diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 1de5a0fef2f5..769ffb191683 100644
+index 769ffb191683..75bbe879ed18 100644
 --- a/fs/btrfs/disk-io.c
 +++ b/fs/btrfs/disk-io.c
-@@ -1048,6 +1048,12 @@ static int btree_writepages(struct address_space *mapping,
- 
- static int btree_readpage(struct file *file, struct page *page)
- {
-+	/*
-+	 * For subpage, we don't support VFS to call btree_readpages(),
-+	 * directly.
-+	 */
-+	if (page_to_fs_info(page)->sectorsize < PAGE_SIZE)
-+		return -ENOTTY;
- 	return extent_read_full_page(page, btree_get_extent, 0);
- }
- 
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 75437a55a986..4eceae7183c9 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -6324,10 +6324,72 @@ void memmove_extent_buffer(const struct extent_buffer *dst,
+@@ -2538,13 +2538,21 @@ static int validate_super(struct btrfs_fs_info *fs_info,
+ 		btrfs_err(fs_info, "invalid sectorsize %llu", sectorsize);
+ 		ret = -EINVAL;
  	}
- }
+-	/* Only PAGE SIZE is supported yet */
+-	if (sectorsize != PAGE_SIZE) {
++
++	/*
++	 * For 4K page size, we only support 4K sector size.
++	 * For 64K page size, we support RW for 64K sector size, and RO for
++	 * 4K sector size.
++	 */
++	if ((PAGE_SIZE == SZ_4K && sectorsize != PAGE_SIZE) ||
++	    (PAGE_SIZE == SZ_64K && (sectorsize != SZ_4K &&
++				     sectorsize != SZ_64K))) {
+ 		btrfs_err(fs_info,
+-			"sectorsize %llu not supported yet, only support %lu",
++			"sectorsize %llu not supported yet for page size %lu",
+ 			sectorsize, PAGE_SIZE);
+ 		ret = -EINVAL;
+ 	}
++
+ 	if (!is_power_of_2(nodesize) || nodesize < sectorsize ||
+ 	    nodesize > BTRFS_MAX_METADATA_BLOCKSIZE) {
+ 		btrfs_err(fs_info, "invalid nodesize %llu", nodesize);
+@@ -3192,6 +3200,16 @@ int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_device
+ 		goto fail_alloc;
+ 	}
  
-+static int try_release_subpage_eb(struct page *page)
-+{
-+	struct btrfs_fs_info *fs_info = page_to_fs_info(page);
-+	struct extent_io_tree *io_tree = info_to_btree_io_tree(fs_info);
-+	u64 cur = page_offset(page);
-+	u64 end = page_offset(page) + PAGE_SIZE - 1;
-+	int ret;
-+
-+	while (cur <= end) {
-+		struct extent_buffer *eb;
-+		u64 found_start;
-+		u64 found_end;
-+
-+		spin_lock(&page->mapping->private_lock);
-+		ret = find_first_extent_bit(io_tree, cur, &found_start,
-+				&found_end, EXTENT_NEW, NULL);
-+		/* No found or found range beyond end */
-+		if (ret > 0 || found_start > end) {
-+			spin_unlock(&page->mapping->private_lock);
-+			goto out;
++	/* For 4K sector size support, it's only read-only yet */
++	if (PAGE_SIZE == SZ_64K && sectorsize == SZ_4K) {
++		if (!sb_rdonly(sb) || btrfs_super_log_root(disk_super)) {
++			btrfs_err(fs_info,
++				"subpage sector size only support RO yet");
++			err = -EINVAL;
++			goto fail_alloc;
 +		}
-+
-+		/* found_start can be smaller than cur */
-+		cur = max(cur, found_start);
-+
-+		/*
-+		 * Here we have private_lock and is very safe to lookup the
-+		 * radix tree.
-+		 * And we can't call find_extent_buffer() which will increase
-+		 * eb->refs.
-+		 */
-+		eb = radix_tree_lookup(&fs_info->buffer_radix,
-+				cur / fs_info->sectorsize);
-+		ASSERT(eb);
-+		cur = eb->start + eb->len;
-+
-+		spin_lock(&eb->refs_lock);
-+		if (atomic_read(&eb->refs) != 1 || extent_buffer_under_io(eb) ||
-+		    !test_and_clear_bit(EXTENT_BUFFER_TREE_REF, &eb->bflags)) {
-+			spin_unlock(&eb->refs_lock);
-+			spin_unlock(&page->mapping->private_lock);
-+			continue;
-+		}
-+		spin_unlock(&page->mapping->private_lock);
-+		/*
-+		 * Here we don't care the return value, we will always check
-+		 * the EXTENT_NEW bits at the end.
-+		 */
-+		release_extent_buffer(eb);
 +	}
-+out:
-+	/* Finally check if there is any EXTENT_NEW bit in the range */
-+	if (test_range_bit(io_tree, page_offset(page), end, EXTENT_NEW, 0,
-+			   NULL))
-+		ret = 0;
-+	else
-+		ret = 1;
-+	return ret;
-+}
 +
- int try_release_extent_buffer(struct page *page)
- {
- 	struct extent_buffer *eb;
+ 	ret = btrfs_init_workqueues(fs_info, fs_devices);
+ 	if (ret) {
+ 		err = ret;
+diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
+index 25967ecaaf0a..edc731780d64 100644
+--- a/fs/btrfs/super.c
++++ b/fs/btrfs/super.c
+@@ -1922,6 +1922,13 @@ static int btrfs_remount(struct super_block *sb, int *flags, char *data)
+ 			ret = -EINVAL;
+ 			goto restore;
+ 		}
++		if (fs_info->sectorsize < PAGE_SIZE) {
++			btrfs_warn(fs_info,
++	"read-write mount is not yet allowed for sector size %u page size %lu",
++				   fs_info->sectorsize, PAGE_SIZE);
++			ret = -EINVAL;
++			goto restore;
++		}
  
-+	if (page_to_fs_info(page)->sectorsize < PAGE_SIZE)
-+		return try_release_subpage_eb(page);
- 	/*
- 	 * We need to make sure nobody is attaching this page to an eb right
- 	 * now.
+ 		ret = btrfs_cleanup_fs_roots(fs_info);
+ 		if (ret)
 -- 
 2.28.0
 
