@@ -2,62 +2,71 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FB1626ACBC
-	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Sep 2020 20:58:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E00FB26AFF9
+	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Sep 2020 23:52:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727591AbgIOS6n (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 15 Sep 2020 14:58:43 -0400
-Received: from mail.itouring.de ([85.10.202.141]:54836 "EHLO mail.itouring.de"
+        id S1727591AbgIOVta (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 15 Sep 2020 17:49:30 -0400
+Received: from mx2.suse.de ([195.135.220.15]:50804 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727713AbgIOS6U (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 15 Sep 2020 14:58:20 -0400
-X-Greylist: delayed 609 seconds by postgrey-1.27 at vger.kernel.org; Tue, 15 Sep 2020 14:58:20 EDT
-Received: from tux.applied-asynchrony.com (p5ddd745f.dip0.t-ipconnect.de [93.221.116.95])
-        by mail.itouring.de (Postfix) with ESMTPSA id 7DCFB1250EE;
-        Tue, 15 Sep 2020 20:48:07 +0200 (CEST)
-Received: from [192.168.100.223] (ragnarok.applied-asynchrony.com [192.168.100.223])
-        by tux.applied-asynchrony.com (Postfix) with ESMTP id 38FB4F01600;
-        Tue, 15 Sep 2020 20:48:07 +0200 (CEST)
-Subject: Re: Changes in 5.8.x cause compsize/bees failure
-To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>, dsterba@suse.cz,
-        A L <mail@lechevalier.se>, linux-btrfs@vger.kernel.org
-References: <632b888d-a3c3-b085-cdf5-f9bb61017d92@lechevalier.se>
- <20200915081725.GH1791@twin.jikos.cz> <20200915183438.GG5890@hungrycats.org>
-From:   =?UTF-8?Q?Holger_Hoffst=c3=a4tte?= <holger@applied-asynchrony.com>
-Organization: Applied Asynchrony, Inc.
-Message-ID: <2424bf74-2fae-025d-9e0d-0b1d3b5f6baa@applied-asynchrony.com>
-Date:   Tue, 15 Sep 2020 20:48:07 +0200
+        id S1728081AbgIOVtB (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 15 Sep 2020 17:49:01 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id D4CF4AC7D;
+        Tue, 15 Sep 2020 21:49:12 +0000 (UTC)
+Date:   Tue, 15 Sep 2020 16:48:53 -0500
+From:   Goldwyn Rodrigues <rgoldwyn@suse.com>
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     Christoph Hellwig <hch@lst.de>, Josef Bacik <josef@toxicpanda.com>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        David Sterba <dsterba@suse.com>,
+        "linux-btrfs @ vger . kernel . org" <linux-btrfs@vger.kernel.org>,
+        Filipe Manana <fdmanana@gmail.com>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>
+Subject: Re: [RFC PATCH] btrfs: don't call btrfs_sync_file from iomap context
+Message-ID: <20200915214853.iurg43dt52h5z2gp@fiona>
+References: <20200901130644.12655-1-johannes.thumshirn@wdc.com>
+ <42efa646-73cd-d884-1c9c-dd889294bde2@toxicpanda.com>
+ <20200903163236.GA26043@lst.de>
+ <20200907000432.GM12096@dread.disaster.area>
 MIME-Version: 1.0
-In-Reply-To: <20200915183438.GG5890@hungrycats.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200907000432.GM12096@dread.disaster.area>
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 2020-09-15 20:34, Zygo Blaxell wrote:
-> On Tue, Sep 15, 2020 at 10:17:25AM +0200, David Sterba wrote:
->> On Sat, Sep 12, 2020 at 07:13:21PM +0200, A L wrote:
->>> I noticed that in (at least 5.8.6 and 5.8.8) there is some change in
->>> Btrfs kernel code that cause them to fail.
->>>
->>> For example compsize now often/usually fails with: "Regular extent's
->>> header not 53 bytes (0) long?!?"
->>>
->>> Bees is having plenty of errors too, and does not succeed to read any
->>> files (hash db is always empty). Perhaps this is an unrelated problem?
->>
->> The fix is now in stable queue, to be released in 5.8.10. Thanks for the
->> report!
+On 10:04 07/09, Dave Chinner wrote:
+> On Thu, Sep 03, 2020 at 06:32:36PM +0200, Christoph Hellwig wrote:
+> > We could trivially do something like this to allow the file system
+> > to call iomap_dio_complete without i_rwsem:
 > 
-> And hopefully 5.4?  5.4.64 is also affected (and also fixed by Filipe's
-> patch).
+> That just exposes another deadlock vector:
+> 
+> P0			P1
+> inode_lock()		fallocate(FALLOC_FL_ZERO_RANGE)
+> __iomap_dio_rw()	inode_lock()
+> 			<block>
+> <submits IO>
+> <completes IO>
+> inode_unlock()
+> 			<gets inode_lock()>
+> 			inode_dio_wait()
+> iomap_dio_complete()
+>   generic_write_sync()
+>     btrfs_file_fsync()
+>       inode_lock()
+>       <deadlock>
 
-Yes, it is queued. You can always check what's coming:
-https://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git/tree/queue-5.4
+Can inode_dio_end() be called before generic_write_sync(), as it is done
+in fs/direct-io.c:dio_complete()?
 
-For other trees just see the parent dir.
+Christoph's solution is a clean approach and would prefer to use it as
+the final solution.
 
--h
+
+-- 
+Goldwyn
