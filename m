@@ -2,119 +2,129 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D30F726A0D7
-	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Sep 2020 10:27:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59A1526A0FD
+	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Sep 2020 10:35:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726202AbgIOI1a (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 15 Sep 2020 04:27:30 -0400
-Received: from esa5.hgst.iphmx.com ([216.71.153.144]:16078 "EHLO
-        esa5.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726184AbgIOI13 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 15 Sep 2020 04:27:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1600158450; x=1631694450;
-  h=from:to:cc:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=F5kysXEwkyNMb3XS4bgZdnCc1hPY040Trlk4JN++6T0=;
-  b=AJhjv/8SlvL9iXkDJeqzPi84Dr/jJ7jAScrYwDkLcecHnZO5EpJAmk9z
-   joChGQ9qPaJbsajuIrOuTTunHushdmDTKddEEj8KJp9seB2p7ctEMHeP8
-   YgjhKh7GagGkXskn2o2+6AvW2TD59MI1QmRxdIuoM1573/Y1RuRqB/Emc
-   Qgsp5UgBvaVjr2S2SXgA4hCAcGxOyjTrih+D0XxOnfuRsa4PUSXs7HIJq
-   jaG/O176eQuXYSJbxY3MjnH1S8kaDMUGgdtPY26w/VS54XqG6Rq2OVhy3
-   3Zm9D023OP8K2vv2m68QP/mdcw8BcR1A/RlEObrk7VbHbXA+v8c+SLJwZ
-   Q==;
-IronPort-SDR: KMnyzgSzHsLfBO1mnE13Lulr/lJK0lqpr2/Kt9U2meM7WAdTBUBRoaBPcajMjDeYQyf4b0vjIH
- oc/nDOcgZYiyZcWzrrHfh0UdXnPoBVZwZBZ1hPwBEpnEkwYXbmOvxQxFmtp2+S6IxzWiWlbTBM
- n1Q6cR8lA/9B8IGVIgDv7EuuWhJoGd8HXvy3ZywRaxBAHZWOGXJyl9LTERpEKs83py9EHyhZid
- EVOba+a6b/z3yaKUfg67rOzMmmCo9NC9NysjcYbvT7kBVGNPo6jPa6kAlwQNWSFsMKZbD7OUdO
- 8V0=
-X-IronPort-AV: E=Sophos;i="5.76,429,1592841600"; 
-   d="scan'208";a="147411226"
-Received: from mail-bn8nam12lp2177.outbound.protection.outlook.com (HELO NAM12-BN8-obe.outbound.protection.outlook.com) ([104.47.55.177])
-  by ob1.hgst.iphmx.com with ESMTP; 15 Sep 2020 16:27:29 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=g+dVMxsYsi+Fdoas+kdkfb1vaI185/7qdcCG3YCQKDTJqhjt8RSCehcylD8zdxgzb86b6SM1wybKXLSrGt1OuD4g5TkmGZ6E7kk+5aMl7io0ko8QVRhrYs0EpAP81iLlh2GzriuaaQWAkKDxK4rM/jvdfGvX8IdY5Tnpdtup4Zx5oPEl28Av77UqoGKShvScCLNeJf0Q0OU31d3KgjX0XHCxdtqDIaoL9B5Lp3izREc7X/3lWwILaMYqsgeKtQJMoXnV/g2RiGcr8GNj6RlO+elK63Toub9X8g6Wy3ft+oosIRjzocBCjaowKplxgQWE74ztIk88DVSkb2FxLJmJLw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=A4VLpDt79YIy5lGukxlxv4vYUZp1uqXX4mxOznb4OKM=;
- b=lVP9SZ+nn1RSiioWMAybbYt3d4RusTCtOh5okZXmWtcM9Oa3cdOjIjJUmTuWk4YRnsSBvjFJuqGYYIgSPXwK8E/fvvsf5Qa6IvV99V1G2JJfF4o1n7FGv2LtwJSAcecxUpGJOC/oLiHXrwZOuKpN5HsgR7xDtkINLqyCliDII2eL1k2VPVGPSi5gG/IKY36KDlIanrFBWUfyiPELmg3bkZbnPN+CQPU2Blp6T04XwCCf1WmkKVU1YHRGgv+P6tlYT5LDuObIsdHHLt4+QKDlOjPQmvif+1FyaztdXa24FxUkyt/robPULUviUCLQvbn2co4N0Can2Vs6wORmf0izfg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=A4VLpDt79YIy5lGukxlxv4vYUZp1uqXX4mxOznb4OKM=;
- b=Cyx19zMNq1HbhEhFKs7X9vhwN+5j27kZbG5vNn/TZjSYa2PFSEmWZ+KVxJPYskhb+eSmefNbOKdax3IHChFCWoYwg2IuCQBCIMuDuJy7qTZ8YEzyBilqTrL5S3/Iu+XbUc4x9hYRMVOGqKOsBmKXO2ukcqAMOqBoZ4f4osgj8Hc=
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
- (2603:10b6:803:47::21) by SN2PR04MB2238.namprd04.prod.outlook.com
- (2603:10b6:804:10::13) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.17; Tue, 15 Sep
- 2020 08:27:27 +0000
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::457e:5fe9:2ae3:e738]) by SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::457e:5fe9:2ae3:e738%7]) with mapi id 15.20.3370.019; Tue, 15 Sep 2020
- 08:27:27 +0000
-From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To:     Qu Wenruo <wqu@suse.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-CC:     Nikolay Borisov <nborisov@suse.com>
-Subject: Re: [PATCH v2 05/19] btrfs: make btrfs_fs_info::buffer_radix to take
- sector size devided values
-Thread-Topic: [PATCH v2 05/19] btrfs: make btrfs_fs_info::buffer_radix to take
- sector size devided values
-Thread-Index: AQHWiyIaFB5Tct8Sd0CX7t+FPfvMLw==
-Date:   Tue, 15 Sep 2020 08:27:27 +0000
-Message-ID: <SN4PR0401MB35989CC0C4C17E2FA93A2AC09B200@SN4PR0401MB3598.namprd04.prod.outlook.com>
+        id S1726252AbgIOIfs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 15 Sep 2020 04:35:48 -0400
+Received: from mx2.suse.de ([195.135.220.15]:49764 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726122AbgIOIfq (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 15 Sep 2020 04:35:46 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 4B018ABF4;
+        Tue, 15 Sep 2020 08:36:00 +0000 (UTC)
+Subject: Re: [PATCH v2 03/19] btrfs: calculate inline extent buffer page size
+ based on page size
+To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
 References: <20200915053532.63279-1-wqu@suse.com>
- <20200915053532.63279-6-wqu@suse.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: suse.com; dkim=none (message not signed)
- header.d=none;suse.com; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [2001:a62:1460:3d01:38cf:f1ce:e1ec:d261]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 6c64f07d-f050-4903-d0c4-08d859512e2c
-x-ms-traffictypediagnostic: SN2PR04MB2238:
-x-microsoft-antispam-prvs: <SN2PR04MB22385C980FF7C59CC79306919B200@SN2PR04MB2238.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:1360;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: lE5x+JM0v+5USAPKS89DC7Jz0l8FmTd/uhelDsyJ3xh2dvI39wwVU9ky2A4cMjl5kRibwTdYsTfhA5kIn9KoGs1TUgWLf6JLW1JcWjCaErBd4x8TB8EJ0h3iWYS8iI7SLed94dy0rzLYOl1bTdjod3ITWEQ6RwwYWVu7S8PeVJeey2JLTDrkSx2IwWqAenK59qMiaAkkIFvR0YFDyy7NAtU2DL1NRsWYD8Lcwp4MXNYC6uGRQpTF2QmP6nlJxEalwXMVBzifVFrzRjZI/qo9mRK7hl9vobnkITl32HcTlyYSozt0+O9KXgbFRkawSpk4uhrVe53IsqMJaQiRXEGLDA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR0401MB3598.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(346002)(376002)(136003)(366004)(396003)(55016002)(91956017)(64756008)(66476007)(76116006)(66446008)(7696005)(66556008)(186003)(86362001)(66946007)(6506007)(53546011)(4326008)(478600001)(316002)(33656002)(52536014)(8936002)(110136005)(2906002)(8676002)(9686003)(558084003)(5660300002)(71200400001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: OGcK4bUlP1UB6z0D8EvkDEGYUPKzcrkkosmaWqU3bUuXTrkw6xwIJ8SiOCUHX03B6HiWjoXb59Ved7Cd1+KU+Oa3iqzIAFQri8S9MhNayi9anP95acRrxh5YQDqrEWGyY3dssLBsOKXGaDvb4KC5WFWZ3Ozssaa6xd7FGn7QYNYRycJCHEnhXuN2X3TFeZLM71uUB957oivOCgdjIarbcWR8EI9k4fxcuhUfXH849i+lGC2HmEbs9hT5SugHvbhQNWBUy0nOFkjcvv69SITD5vm1UvxILPLCLqvVXO+V7/12vmGQCCDcV/kj96UzdKW6/HDqhVnziWRC2zDtzhXVsCjTRJnhdcQIQzxMCs7iF+LgCJb1ciPfaguuw4DmDCan05t36mXPBpgeXy/lzUu9zEebyytsN4fO9dgBKvY7pb+3npyf3Sb+H+mkaNlYnZwgX32EJhdJJBZURm7cuBH7YEcbWAoQd25n1Yv8D4Y7OYiYJxFa6BwDOwQ2vLNfT3PCr3oxdAsS+7a2I+VJ8fmSy1RPicKwgYXGj3cHyZ18akWlZRGLzXr9Est+FFm9XxrIzPiGSffkpqMpQnxsMRMH7SxzVaZnClXe3mLdhjqepsAkhURa8KQHimCjDzUvjyevb2fMEz8Jx8SuEa9VlDR7bvNXMIDNGkLA3JFsiXvh3JZVEeB5WQWJbS1pV9jGIji7dPp+cZ4aOXwyDx6HyA7quA==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ <20200915053532.63279-4-wqu@suse.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <acd4c9ff-841e-1449-7253-222d5469967d@suse.com>
+Date:   Tue, 15 Sep 2020 11:35:44 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SN4PR0401MB3598.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6c64f07d-f050-4903-d0c4-08d859512e2c
-X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Sep 2020 08:27:27.3607
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Hm3qtjeDEiGZ4Ea4BYG2iLJ6odvREe603dNU5Txp2tes/J5jx12sQcTsgIZaF4/XqmnHbbPHeo9S/yzt/lA2YLY6Dmw1AzNys+X73Y2HgDQ=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN2PR04MB2238
+In-Reply-To: <20200915053532.63279-4-wqu@suse.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 15/09/2020 07:36, Qu Wenruo wrote:=0A=
->  	eb =3D radix_tree_lookup(&fs_info->buffer_radix,=0A=
-> -			       start >> PAGE_SHIFT);=0A=
-> +			       start / fs_info->sectorsize);=0A=
-=0A=
-=0A=
-These should be div_u64(start, fs_info->sectorsize) I think.=0A=
-At least 'start' is a u64.=0A=
+
+
+On 15.09.20 г. 8:35 ч., Qu Wenruo wrote:
+> Btrfs only support 64K as max node size, thus for 4K page system, we
+> would have at most 16 pages for one extent buffer.
+> 
+> For a system using 64K page size, we would really have just one
+> single page.
+> 
+> While we always use 16 pages for extent_buffer::pages[], this means for
+> systems using 64K pages, we are wasting memory for the 15 pages which
+> will never be utilized.
+> 
+> So this patch will change how the extent_buffer::pages[] array size is
+> calclulated, now it will be calculated using
+> BTRFS_MAX_METADATA_BLOCKSIZE and PAGE_SIZE.
+> 
+> For systems using 4K page size, it will stay 16 pages.
+> For systems using 64K page size, it will be just 1 page.
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+
+<snip>
+
+> diff --git a/fs/btrfs/extent_io.h b/fs/btrfs/extent_io.h
+> index 00a88f2eb5ab..d511890702cc 100644
+> --- a/fs/btrfs/extent_io.h
+> +++ b/fs/btrfs/extent_io.h
+> @@ -85,9 +85,11 @@ struct extent_io_ops {
+>  				    int mirror);
+>  };
+>  
+> -
+> -#define INLINE_EXTENT_BUFFER_PAGES 16
+> -#define MAX_INLINE_EXTENT_BUFFER_SIZE (INLINE_EXTENT_BUFFER_PAGES * PAGE_SIZE)
+> +/*
+> + * The SZ_64K is BTRFS_MAX_METADATA_BLOCKSIZE, here just to avoid circle
+> + * including "ctree.h".
+> + */
+> +#define INLINE_EXTENT_BUFFER_PAGES (SZ_64K / PAGE_SIZE)
+
+nit: Instead of doing this it would be better if this define is simply
+moved next to BTRFS_MAX_METADATA_BLOCKSIZE so that every define relating
+to eb's are clustered together.
+
+>  struct extent_buffer {
+>  	u64 start;
+>  	unsigned long len;
+> 
