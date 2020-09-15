@@ -2,310 +2,161 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63BD3269D9E
-	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Sep 2020 06:59:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52E77269DD5
+	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Sep 2020 07:35:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726106AbgIOE7Z (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 15 Sep 2020 00:59:25 -0400
-Received: from mail-io1-f78.google.com ([209.85.166.78]:46258 "EHLO
-        mail-io1-f78.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726046AbgIOE7W (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 15 Sep 2020 00:59:22 -0400
-Received: by mail-io1-f78.google.com with SMTP id j8so1400483iof.13
-        for <linux-btrfs@vger.kernel.org>; Mon, 14 Sep 2020 21:59:20 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=ddGtd3+Sz9+XwdJwsR/LnYm1C3I3CJ47y3f44n/RKmM=;
-        b=lssnAle4KDUhbwBQgKKTzel0MH5ka///wHY5NNBWPUDF2FsR9nQHn3LBp6gM4UMlu2
-         rmybSJEgZiHPXQJ/2OITpYl9IZk2hqH/xb81fSga2IJD2OAEspMh4sCdBcu4CqrbFrgO
-         CBeOKLBmHjvOwzNE3zOPoLkX7uyG+uCstRA5umZQCrRFrWQpqnTZgmyYfd4glB9N6IzM
-         4FVtPrFpIZDvrnky4Ue1EYH2ujAeP7ZF18eWOGKFS0vG3vcM/AZpf5exJ7egSTCt+4A8
-         j0kK78PDsTLTOelRP+EmEXKDpMtXnZl65HMBs5t7fu2m7nsEjJx6pLh28B4KwYTb0hcx
-         jXxg==
-X-Gm-Message-State: AOAM533C+Ug2HyrtLMxrj+QZQzGTIlJI3rwPAxkbwqOSNBZfV9+WACnL
-        SpXDP4EvAdrGxD5QZj6X4E1WlHP1NL0QoPU3eKMrvGqFPG8j
-X-Google-Smtp-Source: ABdhPJxcc/oRX47trpq7nPKnxBdMo7rZoAdZBhDPsiH3qO8s+RQlmvJNgcnnyPFkfNdb0Hcp9vfzTKOjlOu6SempdVe0FNhCpdIl
+        id S1726061AbgIOFfi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 15 Sep 2020 01:35:38 -0400
+Received: from mx2.suse.de ([195.135.220.15]:42936 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726046AbgIOFfh (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 15 Sep 2020 01:35:37 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id C6889AC98
+        for <linux-btrfs@vger.kernel.org>; Tue, 15 Sep 2020 05:35:51 +0000 (UTC)
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH v2 00/19] btrfs: add read-only support for subpage sector size
+Date:   Tue, 15 Sep 2020 13:35:13 +0800
+Message-Id: <20200915053532.63279-1-wqu@suse.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-X-Received: by 2002:a92:9f4d:: with SMTP id u74mr13828930ili.134.1600145960098;
- Mon, 14 Sep 2020 21:59:20 -0700 (PDT)
-Date:   Mon, 14 Sep 2020 21:59:20 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000008a633505af53038f@google.com>
-Subject: INFO: task hung in vfs_setxattr (3)
-From:   syzbot <syzbot+738cca7d7d9754493513@syzkaller.appspotmail.com>
-To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, nborisov@suse.com,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello,
+Patches can be fetched from github:
+https://github.com/adam900710/linux/tree/subpage
 
-syzbot found the following issue on:
+Currently btrfs only allows to mount fs with sectorsize == PAGE_SIZE.
 
-HEAD commit:    7fe10096 Merge branch 'linus' of git://git.kernel.org/pub/..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=140b0853900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=a9075b36a6ae26c9
-dashboard link: https://syzkaller.appspot.com/bug?extid=738cca7d7d9754493513
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=108d45a5900000
+That means, for 64K page size system, they can only use 64K sector size
+fs.
+This brings a big compatible problem for btrfs.
 
-The issue was bisected to:
+This patch is going to slightly solve the problem by, allowing 64K
+system to mount 4K sectorsize fs in read-only mode.
 
-commit 6a3c7f5c87854e948c3c234e5f5e745c7c553722
-Author: Nikolay Borisov <nborisov@suse.com>
-Date:   Thu May 28 08:05:13 2020 +0000
+The main objective here, is to remove the blockage in the code base, and
+pave the road to full RW mount support.
 
-    btrfs: don't balance btree inode pages from buffered write path
+== What works ==
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=14884d21900000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=16884d21900000
-console output: https://syzkaller.appspot.com/x/log.txt?x=12884d21900000
+Existing regular page sized sector size support
+Subpage read-only Mount (with all self tests and ASSERT)
+Subpage metadata read (including all trees and inline extents, and csum checking)
+Subpage uncompressed data read (with csum checking)
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+738cca7d7d9754493513@syzkaller.appspotmail.com
-Fixes: 6a3c7f5c8785 ("btrfs: don't balance btree inode pages from buffered write path")
+== What doesn't work ==
 
-INFO: task syz-executor.2:9042 blocked for more than 143 seconds.
-      Not tainted 5.9.0-rc4-syzkaller #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor.2  state:D stack:29136 pid: 9042 ppid:  6892 flags:0x00000000
-Call Trace:
- context_switch kernel/sched/core.c:3778 [inline]
- __schedule+0xea9/0x2230 kernel/sched/core.c:4527
- schedule+0xd0/0x2a0 kernel/sched/core.c:4602
- rwsem_down_write_slowpath+0x603/0xc60 kernel/locking/rwsem.c:1235
- __down_write kernel/locking/rwsem.c:1389 [inline]
- down_write+0x137/0x150 kernel/locking/rwsem.c:1532
- inode_lock include/linux/fs.h:779 [inline]
- vfs_setxattr+0xc7/0x270 fs/xattr.c:282
- setxattr+0x23d/0x330 fs/xattr.c:548
- path_setxattr+0x170/0x190 fs/xattr.c:567
- __do_sys_setxattr fs/xattr.c:582 [inline]
- __se_sys_setxattr fs/xattr.c:578 [inline]
- __x64_sys_setxattr+0xc0/0x160 fs/xattr.c:578
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x45d5b9
-Code: Bad RIP value.
-RSP: 002b:00007f37140efc78 EFLAGS: 00000246 ORIG_RAX: 00000000000000bc
-RAX: ffffffffffffffda RBX: 00000000000324c0 RCX: 000000000045d5b9
-RDX: 0000000000000000 RSI: 0000000020000100 RDI: 00000000200000c0
-RBP: 000000000118d0d0 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000118d08c
-R13: 00007ffda389b2af R14: 00007f37140f09c0 R15: 000000000118d08c
+Read-write mount (see the subject)
+Compressed data read
 
-Showing all locks held in the system:
-1 lock held by khungtaskd/1170:
- #0: ffffffff89bd6a40 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x53/0x260 kernel/locking/lockdep.c:5829
-1 lock held by in:imklog/6526:
- #0: ffff88809a802630 (&f->f_pos_lock){+.+.}-{3:3}, at: __fdget_pos+0xe9/0x100 fs/file.c:930
-1 lock held by syz-executor.2/6892:
- #0: ffff8880ae735e18 (&rq->lock){-.-.}-{2:2}, at: rq_lock kernel/sched/sched.h:1292 [inline]
- #0: ffff8880ae735e18 (&rq->lock){-.-.}-{2:2}, at: __schedule+0x270/0x2230 kernel/sched/core.c:4445
-2 locks held by syz-executor.3/8619:
- #0: ffff88809d79a450 (sb_writers#16){.+.+}-{0:0}, at: sb_start_write include/linux/fs.h:1643 [inline]
- #0: ffff88809d79a450 (sb_writers#16){.+.+}-{0:0}, at: mnt_want_write+0x3a/0xb0 fs/namespace.c:354
- #1: ffff888088e4b2d0 (&sb->s_type->i_mutex_key#21){+.+.}-{3:3}, at: inode_lock include/linux/fs.h:779 [inline]
- #1: ffff888088e4b2d0 (&sb->s_type->i_mutex_key#21){+.+.}-{3:3}, at: vfs_setxattr+0xc7/0x270 fs/xattr.c:282
-2 locks held by syz-executor.2/9017:
- #0: ffff88808fbaa450 (sb_writers#16){.+.+}-{0:0}, at: sb_start_write include/linux/fs.h:1643 [inline]
- #0: ffff88808fbaa450 (sb_writers#16){.+.+}-{0:0}, at: mnt_want_write+0x3a/0xb0 fs/namespace.c:354
- #1: ffff888078d40790 (&sb->s_type->i_mutex_key#21){+.+.}-{3:3}, at: inode_lock include/linux/fs.h:779 [inline]
- #1: ffff888078d40790 (&sb->s_type->i_mutex_key#21){+.+.}-{3:3}, at: vfs_setxattr+0xc7/0x270 fs/xattr.c:282
-2 locks held by syz-executor.2/9042:
- #0: ffff88808fbaa450 (sb_writers#16){.+.+}-{0:0}, at: sb_start_write include/linux/fs.h:1643 [inline]
- #0: ffff88808fbaa450 (sb_writers#16){.+.+}-{0:0}, at: mnt_want_write+0x3a/0xb0 fs/namespace.c:354
- #1: ffff888078d40790 (&sb->s_type->i_mutex_key#21){+.+.}-{3:3}, at: inode_lock include/linux/fs.h:779 [inline]
- #1: ffff888078d40790 (&sb->s_type->i_mutex_key#21){+.+.}-{3:3}, at: vfs_setxattr+0xc7/0x270 fs/xattr.c:282
-2 locks held by syz-executor.0/9486:
- #0: ffff888076092450 (sb_writers#16){.+.+}-{0:0}, at: sb_start_write include/linux/fs.h:1643 [inline]
- #0: ffff888076092450 (sb_writers#16){.+.+}-{0:0}, at: mnt_want_write+0x3a/0xb0 fs/namespace.c:354
- #1: ffff888078d2b450 (&sb->s_type->i_mutex_key#21){+.+.}-{3:3}, at: inode_lock include/linux/fs.h:779 [inline]
- #1: ffff888078d2b450 (&sb->s_type->i_mutex_key#21){+.+.}-{3:3}, at: vfs_setxattr+0xc7/0x270 fs/xattr.c:282
-2 locks held by syz-executor.3/9622:
- #0: ffff88809e782450 (sb_writers#16){.+.+}-{0:0}, at: sb_start_write include/linux/fs.h:1643 [inline]
- #0: ffff88809e782450 (sb_writers#16){.+.+}-{0:0}, at: mnt_want_write+0x3a/0xb0 fs/namespace.c:354
- #1: ffff888078d9f850 (&sb->s_type->i_mutex_key#21){+.+.}-{3:3}, at: inode_lock include/linux/fs.h:779 [inline]
- #1: ffff888078d9f850 (&sb->s_type->i_mutex_key#21){+.+.}-{3:3}, at: vfs_setxattr+0xc7/0x270 fs/xattr.c:282
-2 locks held by syz-executor.0/9913:
- #0: ffff88808ebfa450 (sb_writers#16){.+.+}-{0:0}, at: sb_start_write include/linux/fs.h:1643 [inline]
- #0: ffff88808ebfa450 (sb_writers#16){.+.+}-{0:0}, at: mnt_want_write+0x3a/0xb0 fs/namespace.c:354
- #1: ffff888078e06390 (&sb->s_type->i_mutex_key#21){+.+.}-{3:3}, at: inode_lock include/linux/fs.h:779 [inline]
- #1: ffff888078e06390 (&sb->s_type->i_mutex_key#21){+.+.}-{3:3}, at: vfs_setxattr+0xc7/0x270 fs/xattr.c:282
-2 locks held by syz-executor.0/10432:
- #0: ffff888068e02450 (sb_writers#16){.+.+}-{0:0}, at: sb_start_write include/linux/fs.h:1643 [inline]
- #0: ffff888068e02450 (sb_writers#16){.+.+}-{0:0}, at: mnt_want_write+0x3a/0xb0 fs/namespace.c:354
- #1: ffff888078e7e950 (&sb->s_type->i_mutex_key#21){+.+.}-{3:3}, at: inode_lock include/linux/fs.h:779 [inline]
- #1: ffff888078e7e950 (&sb->s_type->i_mutex_key#21){+.+.}-{3:3}, at: vfs_setxattr+0xc7/0x270 fs/xattr.c:282
-2 locks held by syz-executor.0/10443:
- #0: ffff888068e02450 (sb_writers#16){.+.+}-{0:0}, at: sb_start_write include/linux/fs.h:1643 [inline]
- #0: ffff888068e02450 (sb_writers#16){.+.+}-{0:0}, at: mnt_want_write+0x3a/0xb0 fs/namespace.c:354
- #1: ffff888078e7e950 (&sb->s_type->i_mutex_key#21){+.+.}-{3:3}, at: inode_lock include/linux/fs.h:779 [inline]
- #1: ffff888078e7e950 (&sb->s_type->i_mutex_key#21){+.+.}-{3:3}, at: vfs_setxattr+0xc7/0x270 fs/xattr.c:282
-2 locks held by syz-executor.1/10731:
- #0: ffff88808dadc450 (sb_writers#16){.+.+}-{0:0}, at: sb_start_write include/linux/fs.h:1643 [inline]
- #0: ffff88808dadc450 (sb_writers#16){.+.+}-{0:0}, at: mnt_want_write+0x3a/0xb0 fs/namespace.c:354
- #1: ffff888087b46150 (&sb->s_type->i_mutex_key#21){+.+.}-{3:3}, at: inode_lock include/linux/fs.h:779 [inline]
- #1: ffff888087b46150 (&sb->s_type->i_mutex_key#21){+.+.}-{3:3}, at: vfs_setxattr+0xc7/0x270 fs/xattr.c:282
-2 locks held by syz-executor.5/11612:
- #0: ffff88809f5c4450 (sb_writers#16){.+.+}-{0:0}, at: sb_start_write include/linux/fs.h:1643 [inline]
- #0: ffff88809f5c4450 (sb_writers#16){.+.+}-{0:0}, at: mnt_want_write+0x3a/0xb0 fs/namespace.c:354
- #1: ffff888078fcc890 (&sb->s_type->i_mutex_key#21){+.+.}-{3:3}, at: inode_lock include/linux/fs.h:779 [inline]
- #1: ffff888078fcc890 (&sb->s_type->i_mutex_key#21){+.+.}-{3:3}, at: vfs_setxattr+0xc7/0x270 fs/xattr.c:282
-2 locks held by syz-executor.5/12306:
- #0: ffff888075c50450 (sb_writers#16){.+.+}-{0:0}, at: sb_start_write include/linux/fs.h:1643 [inline]
- #0: ffff888075c50450 (sb_writers#16){.+.+}-{0:0}, at: mnt_want_write+0x3a/0xb0 fs/namespace.c:354
- #1: ffff888078e98990 (&sb->s_type->i_mutex_key#21){+.+.}-{3:3}, at: inode_lock include/linux/fs.h:779 [inline]
- #1: ffff888078e98990 (&sb->s_type->i_mutex_key#21){+.+.}-{3:3}, at: vfs_setxattr+0xc7/0x270 fs/xattr.c:282
-2 locks held by syz-executor.4/12782:
- #0: ffff888076d84450 (sb_writers#16){.+.+}-{0:0}, at: sb_start_write include/linux/fs.h:1643 [inline]
- #0: ffff888076d84450 (sb_writers#16){.+.+}-{0:0}, at: mnt_want_write+0x3a/0xb0 fs/namespace.c:354
- #1: ffff888084b6a450 (&sb->s_type->i_mutex_key#21){+.+.}-{3:3}, at: inode_lock include/linux/fs.h:779 [inline]
- #1: ffff888084b6a450 (&sb->s_type->i_mutex_key#21){+.+.}-{3:3}, at: vfs_setxattr+0xc7/0x270 fs/xattr.c:282
-2 locks held by syz-executor.0/14244:
- #0: ffff88808ee8e450 (sb_writers#16){.+.+}-{0:0}, at: sb_start_write include/linux/fs.h:1643 [inline]
- #0: ffff88808ee8e450 (sb_writers#16){.+.+}-{0:0}, at: mnt_want_write+0x3a/0xb0 fs/namespace.c:354
- #1: ffff888054cd1210 (&sb->s_type->i_mutex_key#21){+.+.}-{3:3}, at: inode_lock include/linux/fs.h:779 [inline]
- #1: ffff888054cd1210 (&sb->s_type->i_mutex_key#21){+.+.}-{3:3}, at: vfs_setxattr+0xc7/0x270 fs/xattr.c:282
-2 locks held by syz-executor.4/15284:
- #0: ffff888073912450 (sb_writers#16){.+.+}-{0:0}, at: sb_start_write include/linux/fs.h:1643 [inline]
- #0: ffff888073912450 (sb_writers#16){.+.+}-{0:0}, at: mnt_want_write+0x3a/0xb0 fs/namespace.c:354
- #1: ffff888054d377d0 (&sb->s_type->i_mutex_key#21){+.+.}-{3:3}, at: inode_lock include/linux/fs.h:779 [inline]
- #1: ffff888054d377d0 (&sb->s_type->i_mutex_key#21){+.+.}-{3:3}, at: vfs_setxattr+0xc7/0x270 fs/xattr.c:282
-2 locks held by syz-executor.5/15419:
- #0: ffff8880935d4450 (sb_writers#16){.+.+}-{0:0}, at: sb_start_write include/linux/fs.h:1643 [inline]
- #0: ffff8880935d4450 (sb_writers#16){.+.+}-{0:0}, at: mnt_want_write+0x3a/0xb0 fs/namespace.c:354
- #1: ffff88803586f810 (&sb->s_type->i_mutex_key#21){+.+.}-{3:3}, at: inode_lock include/linux/fs.h:779 [inline]
- #1: ffff88803586f810 (&sb->s_type->i_mutex_key#21){+.+.}-{3:3}, at: vfs_setxattr+0xc7/0x270 fs/xattr.c:282
-2 locks held by syz-executor.0/15659:
- #0: ffff8880a1c3c450 (sb_writers#16){.+.+}-{0:0}, at: sb_start_write include/linux/fs.h:1643 [inline]
- #0: ffff8880a1c3c450 (sb_writers#16){.+.+}-{0:0}, at: mnt_want_write+0x3a/0xb0 fs/namespace.c:354
- #1: ffff888054f75290 (&sb->s_type->i_mutex_key#21){+.+.}-{3:3}, at: inode_lock include/linux/fs.h:779 [inline]
- #1: ffff888054f75290 (&sb->s_type->i_mutex_key#21){+.+.}-{3:3}, at: vfs_setxattr+0xc7/0x270 fs/xattr.c:282
-2 locks held by syz-executor.5/16372:
- #0: ffff8880886f8450 (sb_writers#16){.+.+}-{0:0}, at: sb_start_write include/linux/fs.h:1643 [inline]
- #0: ffff8880886f8450 (sb_writers#16){.+.+}-{0:0}, at: mnt_want_write+0x3a/0xb0 fs/namespace.c:354
- #1: ffff8880358f67d0 (&sb->s_type->i_mutex_key#21){+.+.}-{3:3}, at: inode_lock include/linux/fs.h:779 [inline]
- #1: ffff8880358f67d0 (&sb->s_type->i_mutex_key#21){+.+.}-{3:3}, at: vfs_setxattr+0xc7/0x270 fs/xattr.c:282
-2 locks held by syz-executor.3/16634:
- #0: ffff888098182450 (sb_writers#16){.+.+}-{0:0}, at: sb_start_write include/linux/fs.h:1643 [inline]
- #0: ffff888098182450 (sb_writers#16){.+.+}-{0:0}, at: mnt_want_write+0x3a/0xb0 fs/namespace.c:354
- #1: ffff888035849410 (&sb->s_type->i_mutex_key#21){+.+.}-{3:3}, at: inode_lock include/linux/fs.h:779 [inline]
- #1: ffff888035849410 (&sb->s_type->i_mutex_key#21){+.+.}-{3:3}, at: vfs_setxattr+0xc7/0x270 fs/xattr.c:282
-2 locks held by syz-executor.0/17172:
- #0: ffff88809da2a450 (sb_writers#16){.+.+}-{0:0}, at: sb_start_write include/linux/fs.h:1643 [inline]
- #0: ffff88809da2a450 (sb_writers#16){.+.+}-{0:0}, at: mnt_want_write+0x3a/0xb0 fs/namespace.c:354
- #1: ffff888035b51810 (&sb->s_type->i_mutex_key#21){+.+.}-{3:3}, at: inode_lock include/linux/fs.h:779 [inline]
- #1: ffff888035b51810 (&sb->s_type->i_mutex_key#21){+.+.}-{3:3}, at: vfs_setxattr+0xc7/0x270 fs/xattr.c:282
-2 locks held by syz-executor.3/17649:
- #0: ffff888023504450 (sb_writers#16){.+.+}-{0:0}, at: sb_start_write include/linux/fs.h:1643 [inline]
- #0: ffff888023504450 (sb_writers#16){.+.+}-{0:0}, at: mnt_want_write+0x3a/0xb0 fs/namespace.c:354
- #1: ffff888035ba5290 (&sb->s_type->i_mutex_key#21){+.+.}-{3:3}, at: inode_lock include/linux/fs.h:779 [inline]
- #1: ffff888035ba5290 (&sb->s_type->i_mutex_key#21){+.+.}-{3:3}, at: vfs_setxattr+0xc7/0x270 fs/xattr.c:282
-2 locks held by syz-executor.5/18338:
- #0: ffff8880217a0450 (sb_writers#16){.+.+}-{0:0}, at: sb_start_write include/linux/fs.h:1643 [inline]
- #0: ffff8880217a0450 (sb_writers#16){.+.+}-{0:0}, at: mnt_want_write+0x3a/0xb0 fs/namespace.c:354
- #1: ffff888054ede2d0 (&sb->s_type->i_mutex_key#21){+.+.}-{3:3}, at: inode_lock include/linux/fs.h:779 [inline]
- #1: ffff888054ede2d0 (&sb->s_type->i_mutex_key#21){+.+.}-{3:3}, at: vfs_setxattr+0xc7/0x270 fs/xattr.c:282
-2 locks held by syz-executor.1/18583:
- #0: ffff88809f09c450 (sb_writers#16){.+.+}-{0:0}, at: sb_start_write include/linux/fs.h:1643 [inline]
- #0: ffff88809f09c450 (sb_writers#16){.+.+}-{0:0}, at: mnt_want_write+0x3a/0xb0 fs/namespace.c:354
- #1: ffff888035a4a9d0 (&sb->s_type->i_mutex_key#21){+.+.}-{3:3}, at: inode_lock include/linux/fs.h:779 [inline]
- #1: ffff888035a4a9d0 (&sb->s_type->i_mutex_key#21){+.+.}-{3:3}, at: vfs_setxattr+0xc7/0x270 fs/xattr.c:282
-2 locks held by syz-executor.4/19575:
- #0: ffff888055606450 (sb_writers#16){.+.+}-{0:0}, at: sb_start_write include/linux/fs.h:1643 [inline]
- #0: ffff888055606450 (sb_writers#16){.+.+}-{0:0}, at: mnt_want_write+0x3a/0xb0 fs/namespace.c:354
- #1: ffff88801cea8210 (&sb->s_type->i_mutex_key#21){+.+.}-{3:3}, at: inode_lock include/linux/fs.h:779 [inline]
- #1: ffff88801cea8210 (&sb->s_type->i_mutex_key#21){+.+.}-{3:3}, at: vfs_setxattr+0xc7/0x270 fs/xattr.c:282
-2 locks held by syz-executor.4/19695:
- #0: ffff8880934d6450 (sb_writers#16){.+.+}-{0:0}, at: sb_start_write include/linux/fs.h:1643 [inline]
- #0: ffff8880934d6450 (sb_writers#16){.+.+}-{0:0}, at: mnt_want_write+0x3a/0xb0 fs/namespace.c:354
- #1: ffff888035bf43d0 (&sb->s_type->i_mutex_key#21){+.+.}-{3:3}, at: inode_lock include/linux/fs.h:779 [inline]
- #1: ffff888035bf43d0 (&sb->s_type->i_mutex_key#21){+.+.}-{3:3}, at: vfs_setxattr+0xc7/0x270 fs/xattr.c:282
-2 locks held by syz-executor.0/19828:
- #0: ffff888036c7e450 (sb_writers#16){.+.+}-{0:0}, at: sb_start_write include/linux/fs.h:1643 [inline]
- #0: ffff888036c7e450 (sb_writers#16){.+.+}-{0:0}, at: mnt_want_write+0x3a/0xb0 fs/namespace.c:354
- #1: ffff888035a91790 (&sb->s_type->i_mutex_key#21){+.+.}-{3:3}, at: inode_lock include/linux/fs.h:779 [inline]
- #1: ffff888035a91790 (&sb->s_type->i_mutex_key#21){+.+.}-{3:3}, at: vfs_setxattr+0xc7/0x270 fs/xattr.c:282
-2 locks held by syz-executor.0/20224:
- #0: ffff8880a1e14450 (sb_writers#16){.+.+}-{0:0}, at: sb_start_write include/linux/fs.h:1643 [inline]
- #0: ffff8880a1e14450 (sb_writers#16){.+.+}-{0:0}, at: mnt_want_write+0x3a/0xb0 fs/namespace.c:354
- #1: ffff8880008003d0 (&sb->s_type->i_mutex_key#21){+.+.}-{3:3}, at: inode_lock include/linux/fs.h:779 [inline]
- #1: ffff8880008003d0 (&sb->s_type->i_mutex_key#21){+.+.}-{3:3}, at: vfs_setxattr+0xc7/0x270 fs/xattr.c:282
+== Challenge we meet ==
 
-=============================================
+The main problem is metadata, where we have several limitations:
+- We always read the full page of a metadata
+  In subpage case, one full page can contain several tree blocks.
 
-NMI backtrace for cpu 0
-CPU: 0 PID: 1170 Comm: khungtaskd Not tainted 5.9.0-rc4-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x198/0x1fd lib/dump_stack.c:118
- nmi_cpu_backtrace.cold+0x70/0xb1 lib/nmi_backtrace.c:101
- nmi_trigger_cpumask_backtrace+0x1b3/0x223 lib/nmi_backtrace.c:62
- trigger_all_cpu_backtrace include/linux/nmi.h:146 [inline]
- check_hung_uninterruptible_tasks kernel/hung_task.c:209 [inline]
- watchdog+0xd7d/0x1000 kernel/hung_task.c:295
- kthread+0x3b5/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-Sending NMI from CPU 0 to CPUs 1:
-NMI backtrace for cpu 1
-CPU: 1 PID: 3911 Comm: systemd-udevd Not tainted 5.9.0-rc4-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:lockdep_recursion_finish kernel/locking/lockdep.c:398 [inline]
-RIP: 0010:lockdep_hardirqs_on_prepare kernel/locking/lockdep.c:3698 [inline]
-RIP: 0010:lockdep_hardirqs_on_prepare+0x21c/0x530 kernel/locking/lockdep.c:3649
-Code: fa 48 c1 ea 03 0f b6 14 02 48 89 f8 83 e0 07 83 c0 03 38 d0 7c 08 84 d2 0f 85 c9 01 00 00 8b 83 e4 08 00 00 83 e8 01 66 85 c0 <89> 83 e4 08 00 00 0f 85 31 01 00 00 5b 5d c3 48 c7 c0 40 3c b6 89
-RSP: 0018:ffffc900016276e0 EFLAGS: 00000046
-RAX: 0000000000000000 RBX: ffff888099824280 RCX: 0000000000000006
-RDX: 0000000000000000 RSI: 0000000000000008 RDI: ffff888099824b64
-RBP: ffff888099824280 R08: 0000000000000000 R09: ffffffff8c5f59f7
-R10: fffffbfff18beb3e R11: 0000000000000001 R12: 0000000000000282
-R13: ffffffff81b3f5e9 R14: ffff8880aa06f500 R15: 0000000000000200
-FS:  00007f9a3eb638c0(0000) GS:ffff8880ae700000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000055ea5e261280 CR3: 00000000a74cf000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- trace_hardirqs_on+0x5f/0x220 kernel/trace/trace_preemptirq.c:49
- slab_alloc mm/slab.c:3305 [inline]
- kmem_cache_alloc+0x269/0x3a0 mm/slab.c:3482
- vm_area_dup+0x88/0x2b0 kernel/fork.c:355
- dup_mmap kernel/fork.c:531 [inline]
- dup_mm+0x508/0x1300 kernel/fork.c:1354
- copy_mm kernel/fork.c:1410 [inline]
- copy_process+0x28e4/0x6920 kernel/fork.c:2069
- _do_fork+0xe8/0xb10 kernel/fork.c:2428
- __do_sys_clone+0xc8/0x110 kernel/fork.c:2545
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x7f9a3d9b338b
-Code: db 45 85 f6 0f 85 95 01 00 00 64 4c 8b 04 25 10 00 00 00 31 d2 4d 8d 90 d0 02 00 00 31 f6 bf 11 00 20 01 b8 38 00 00 00 0f 05 <48> 3d 00 f0 ff ff 0f 87 de 00 00 00 85 c0 41 89 c5 0f 85 e5 00 00
-RSP: 002b:00007ffd4929fc40 EFLAGS: 00000246 ORIG_RAX: 0000000000000038
-RAX: ffffffffffffffda RBX: 00007ffd4929fc40 RCX: 00007f9a3d9b338b
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000001200011
-RBP: 00007ffd4929fc90 R08: 00007f9a3eb638c0 R09: 0000000000000210
-R10: 00007f9a3eb63b90 R11: 0000000000000246 R12: 0000000000000000
-R13: 0000000000000020 R14: 0000000000000000 R15: 0000000000000000
+- We use page::private to point to extent buffer
+  This means we currently can only support one-page-to-one-extent-buffer
+  mapping.
+  For subpage size support, we need one-page-to-multiple-extent-buffer
+  mapping.
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+== Solutions ==
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+So here for the metadata part, we use the following methods to
+workaround the problem:
+
+- Completely rely on extent_io_tree for metadata status/locking
+  Now for subpage metadata, page::private is never utilized. It always
+  points to NULL.
+  And we only utilize private page status, other status
+  (locked/uptodate/dirty/...) are all ignored.
+
+  Instead, page lock is replayed by EXTENT_LOCK of extent_io_tree.
+  Page uptodate is replaced by EXTENT_UPTODATE of extent_io_tree.
+  And if a range has extent buffer is represented by EXTENT_NEW.
+
+  This provides the full potential for later RW support.
+
+- Do subpage read for metadata
+  Now we do proper subpage read for both data and metadata.
+  For metadata we never merge bio for adjacent tree blocks, but always
+  submit one bio for one tree block.
+  This allows us to do proper verification for each tree blocks.
+
+For data part, it's pretty simple, all existing infrastructure can be
+easily converted to support subpage read, without any subpage specific
+handing yet.
+
+== Patchset structure ==
+
+The structure of the patchset:
+Patch 01~15: Preparation patches for data and metadata subpage read support.
+             These patches can be merged without problem, and work for
+             both regular and subpage case.
+	     This part can conflict with Nikolay's latest cleanup, but
+	     the conflicts should be pretty controllable.
+
+Patch 16~19: Patches for metadata subpage read support.
+	     The main part of the patchset. It converts metadata to
+	     purely extent_io_tree based solution for subpage read.
+
+	     In theory, page sized routine can also be converted to
+	     extent_io_tree. But that would be another topic in the
+	     future.
+
+The number of patches is the main reason I'm submitting them to the mail
+list. As there are too many preparation patches already.
+
+Qu Wenruo (19):
+  btrfs: extent-io-tests: remove invalid tests
+  btrfs: remove the unnecessary parameter @start and @len for
+    check_data_csum()
+  btrfs: calculate inline extent buffer page size based on page size
+  btrfs: remove the open-code to read disk-key
+  btrfs: make btrfs_fs_info::buffer_radix to take sector size devided
+    values
+  btrfs: don't allow tree block to cross page boundary for subpage
+    support
+  btrfs: update num_extent_pages() to support subpage sized extent
+    buffer
+  btrfs: handle sectorsize < PAGE_SIZE case for extent buffer accessors
+  btrfs: make csum_tree_block() handle sectorsize smaller than page size
+  btrfs: add assert_spin_locked() for attach_extent_buffer_page()
+  btrfs: extract the extent buffer verification from
+    btree_readpage_end_io_hook()
+  btrfs: extent_io: only require sector size alignment for page read
+  btrfs: make btrfs_readpage_end_io_hook() follow sector size
+  btrfs: make btree inode io_tree has its special owner
+  btrfs: don't set extent_io_tree bits for btree inode at endio time
+  btrfs: use extent_io_tree to handle subpage extent buffer allocation
+  btrfs: implement subpage metadata read and its endio function
+  btrfs: implement btree_readpage() and try_release_extent_buffer() for
+    subpage
+  btrfs: allow RO mount of 4K sector size fs on 64K page system
+
+ fs/btrfs/btrfs_inode.h           |  12 +
+ fs/btrfs/ctree.c                 |  13 +-
+ fs/btrfs/ctree.h                 |  38 +++-
+ fs/btrfs/disk-io.c               | 217 ++++++++++++++----
+ fs/btrfs/extent-io-tree.h        |   8 +
+ fs/btrfs/extent_io.c             | 376 +++++++++++++++++++++++++++----
+ fs/btrfs/extent_io.h             |  19 +-
+ fs/btrfs/inode.c                 |  40 +++-
+ fs/btrfs/ordered-data.c          |   8 +
+ fs/btrfs/qgroup.c                |   4 +
+ fs/btrfs/struct-funcs.c          |  18 +-
+ fs/btrfs/super.c                 |   7 +
+ fs/btrfs/tests/extent-io-tests.c |  26 +--
+ 13 files changed, 642 insertions(+), 144 deletions(-)
+
+-- 
+2.28.0
+
