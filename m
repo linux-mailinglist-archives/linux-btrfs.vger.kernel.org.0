@@ -2,24 +2,23 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59A1526A0FD
-	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Sep 2020 10:35:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81DCC26A0FE
+	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Sep 2020 10:36:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726252AbgIOIfs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 15 Sep 2020 04:35:48 -0400
-Received: from mx2.suse.de ([195.135.220.15]:49764 "EHLO mx2.suse.de"
+        id S1726254AbgIOIgL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 15 Sep 2020 04:36:11 -0400
+Received: from mx2.suse.de ([195.135.220.15]:50192 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726122AbgIOIfq (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 15 Sep 2020 04:35:46 -0400
+        id S1726119AbgIOIgK (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 15 Sep 2020 04:36:10 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 4B018ABF4;
-        Tue, 15 Sep 2020 08:36:00 +0000 (UTC)
-Subject: Re: [PATCH v2 03/19] btrfs: calculate inline extent buffer page size
- based on page size
+        by mx2.suse.de (Postfix) with ESMTP id 113C6AC79;
+        Tue, 15 Sep 2020 08:36:24 +0000 (UTC)
+Subject: Re: [PATCH v2 04/19] btrfs: remove the open-code to read disk-key
 To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
 References: <20200915053532.63279-1-wqu@suse.com>
- <20200915053532.63279-4-wqu@suse.com>
+ <20200915053532.63279-5-wqu@suse.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  xsFNBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -63,12 +62,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  KIuxEcV8wcVjr+Wr9zRl06waOCkgrQbTPp631hToxo+4rA1jiQF2M80HAet65ytBVR2pFGZF
  zGYYLqiG+mpUZ+FPjxk9kpkRYz61mTLSY7tuFljExfJWMGfgSg1OxfLV631jV1TcdUnx+h3l
  Sqs2vMhAVt14zT8mpIuu2VNxcontxgVr1kzYA/tQg32fVRbGr449j1gw57BV9i0vww==
-Message-ID: <acd4c9ff-841e-1449-7253-222d5469967d@suse.com>
-Date:   Tue, 15 Sep 2020 11:35:44 +0300
+Message-ID: <03406c6f-272c-92af-ca1a-9653622a2c71@suse.com>
+Date:   Tue, 15 Sep 2020 11:36:08 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20200915053532.63279-4-wqu@suse.com>
+In-Reply-To: <20200915053532.63279-5-wqu@suse.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -80,51 +79,12 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 15.09.20 г. 8:35 ч., Qu Wenruo wrote:
-> Btrfs only support 64K as max node size, thus for 4K page system, we
-> would have at most 16 pages for one extent buffer.
+> generic_bin_search() distinguishes between reading a key which doesn't
+> cross a page and one which does. However this distinction is not
+> necessary since read_extent_buffer handles both cases transparently.
 > 
-> For a system using 64K page size, we would really have just one
-> single page.
-> 
-> While we always use 16 pages for extent_buffer::pages[], this means for
-> systems using 64K pages, we are wasting memory for the 15 pages which
-> will never be utilized.
-> 
-> So this patch will change how the extent_buffer::pages[] array size is
-> calclulated, now it will be calculated using
-> BTRFS_MAX_METADATA_BLOCKSIZE and PAGE_SIZE.
-> 
-> For systems using 4K page size, it will stay 16 pages.
-> For systems using 64K page size, it will be just 1 page.
+> Just use read_extent_buffer to streamline the code.
 > 
 > Signed-off-by: Qu Wenruo <wqu@suse.com>
 
 Reviewed-by: Nikolay Borisov <nborisov@suse.com>
-
-<snip>
-
-> diff --git a/fs/btrfs/extent_io.h b/fs/btrfs/extent_io.h
-> index 00a88f2eb5ab..d511890702cc 100644
-> --- a/fs/btrfs/extent_io.h
-> +++ b/fs/btrfs/extent_io.h
-> @@ -85,9 +85,11 @@ struct extent_io_ops {
->  				    int mirror);
->  };
->  
-> -
-> -#define INLINE_EXTENT_BUFFER_PAGES 16
-> -#define MAX_INLINE_EXTENT_BUFFER_SIZE (INLINE_EXTENT_BUFFER_PAGES * PAGE_SIZE)
-> +/*
-> + * The SZ_64K is BTRFS_MAX_METADATA_BLOCKSIZE, here just to avoid circle
-> + * including "ctree.h".
-> + */
-> +#define INLINE_EXTENT_BUFFER_PAGES (SZ_64K / PAGE_SIZE)
-
-nit: Instead of doing this it would be better if this define is simply
-moved next to BTRFS_MAX_METADATA_BLOCKSIZE so that every define relating
-to eb's are clustered together.
-
->  struct extent_buffer {
->  	u64 start;
->  	unsigned long len;
-> 
