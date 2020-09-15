@@ -2,24 +2,24 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0090269DD6
-	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Sep 2020 07:35:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38CEA269DD7
+	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Sep 2020 07:35:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726082AbgIOFfk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 15 Sep 2020 01:35:40 -0400
-Received: from mx2.suse.de ([195.135.220.15]:42946 "EHLO mx2.suse.de"
+        id S1726093AbgIOFfo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 15 Sep 2020 01:35:44 -0400
+Received: from mx2.suse.de ([195.135.220.15]:42958 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726046AbgIOFfk (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 15 Sep 2020 01:35:40 -0400
+        id S1726046AbgIOFfm (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 15 Sep 2020 01:35:42 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id BCB1FAC98
-        for <linux-btrfs@vger.kernel.org>; Tue, 15 Sep 2020 05:35:53 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 4E93EAC98
+        for <linux-btrfs@vger.kernel.org>; Tue, 15 Sep 2020 05:35:56 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 01/19] btrfs: extent-io-tests: remove invalid tests
-Date:   Tue, 15 Sep 2020 13:35:14 +0800
-Message-Id: <20200915053532.63279-2-wqu@suse.com>
+Subject: [PATCH v2 02/19] btrfs: remove the unnecessary parameter @start and @len for check_data_csum()
+Date:   Tue, 15 Sep 2020 13:35:15 +0800
+Message-Id: <20200915053532.63279-3-wqu@suse.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200915053532.63279-1-wqu@suse.com>
 References: <20200915053532.63279-1-wqu@suse.com>
@@ -30,107 +30,93 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-In extent-io-test, there are two invalid tests:
-- Invalid nodesize for test_eb_bitmaps()
-  Instead of the sectorsize and nodesize combination passed in, we're
-  always using hand-crafted nodesize.
-  Although it has some extra check for 64K page size, we can still hit
-  a case where PAGE_SIZE == 32K, then we got 128K nodesize which is
-  larger than max valid node size.
+For check_data_csum(), the page we're using is directly from inode
+mapping, thus it has valid page_offset().
 
-  Thankfully most machines are either 4K or 64K page size, thus we
-  haven't yet hit such case.
+We can use (page_offset() + pg_off) to replace @start parameter
+completely, while the @len should always be sectorsize.
 
-- Invalid extent buffer bytenr
-  For 64K page size, the only combination we're going to test is
-  sectorsize = nodesize = 64K.
-  In that case, we'll try to create an extent buffer with 32K bytenr,
-  which is not aligned to sectorsize thus invalid.
+Since we're here, also add some comment, since there are quite some
+confusion in words like start/offset, without explaining whether it's
+file_offset or logical bytenr.
 
-This patch will fix both problems by:
-- Honor the sectorsize/nodesize combination
-  Now we won't bother to hand-craft a strange length and use it as
-  nodesize.
-
-- Use sectorsize as the 2nd run extent buffer start
-  This would test the case where extent buffer is aligned to sectorsize
-  but not always aligned to nodesize.
+This should not affect the existing behavior, as for current sectorsize
+== PAGE_SIZE case, @pgoff should always be 0, and len is always
+PAGE_SIZE (or sectorsize from the dio read path).
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/tests/extent-io-tests.c | 26 +++++++++++---------------
- 1 file changed, 11 insertions(+), 15 deletions(-)
+ fs/btrfs/inode.c | 27 +++++++++++++++++++--------
+ 1 file changed, 19 insertions(+), 8 deletions(-)
 
-diff --git a/fs/btrfs/tests/extent-io-tests.c b/fs/btrfs/tests/extent-io-tests.c
-index df7ce874a74b..73e96d505f4f 100644
---- a/fs/btrfs/tests/extent-io-tests.c
-+++ b/fs/btrfs/tests/extent-io-tests.c
-@@ -379,54 +379,50 @@ static int __test_eb_bitmaps(unsigned long *bitmap, struct extent_buffer *eb,
- static int test_eb_bitmaps(u32 sectorsize, u32 nodesize)
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index 9570458aa847..bb4442950d2b 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -2793,17 +2793,30 @@ void btrfs_writepage_endio_finish_ordered(struct page *page, u64 start,
+ 	btrfs_queue_work(wq, &ordered_extent->work);
+ }
+ 
++/*
++ * Verify the checksum of one sector of uncompressed data.
++ *
++ * @inode:	The inode.
++ * @io_bio:	The btrfs_io_bio which contains the csum.
++ * @icsum:	The csum offset (by number of sectors).
++ * @page:	The page where the data to be verified is.
++ * @pgoff:	The offset inside the page.
++ *
++ * The length of such check is always one sector size.
++ */
+ static int check_data_csum(struct inode *inode, struct btrfs_io_bio *io_bio,
+-			   int icsum, struct page *page, int pgoff, u64 start,
+-			   size_t len)
++			   int icsum, struct page *page, int pgoff)
  {
- 	struct btrfs_fs_info *fs_info;
--	unsigned long len;
- 	unsigned long *bitmap = NULL;
- 	struct extent_buffer *eb = NULL;
- 	int ret;
+ 	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
+ 	SHASH_DESC_ON_STACK(shash, fs_info->csum_shash);
+ 	char *kaddr;
++	u32 len = fs_info->sectorsize;
+ 	u16 csum_size = btrfs_super_csum_size(fs_info->super_copy);
+ 	u8 *csum_expected;
+ 	u8 csum[BTRFS_CSUM_SIZE];
  
- 	test_msg("running extent buffer bitmap tests");
- 
--	/*
--	 * In ppc64, sectorsize can be 64K, thus 4 * 64K will be larger than
--	 * BTRFS_MAX_METADATA_BLOCKSIZE.
--	 */
--	len = (sectorsize < BTRFS_MAX_METADATA_BLOCKSIZE)
--		? sectorsize * 4 : sectorsize;
--
--	fs_info = btrfs_alloc_dummy_fs_info(len, len);
-+	fs_info = btrfs_alloc_dummy_fs_info(nodesize, sectorsize);
- 	if (!fs_info) {
- 		test_std_err(TEST_ALLOC_FS_INFO);
- 		return -ENOMEM;
- 	}
- 
--	bitmap = kmalloc(len, GFP_KERNEL);
-+	bitmap = kmalloc(nodesize, GFP_KERNEL);
- 	if (!bitmap) {
- 		test_err("couldn't allocate test bitmap");
- 		ret = -ENOMEM;
- 		goto out;
- 	}
- 
--	eb = __alloc_dummy_extent_buffer(fs_info, 0, len);
-+	eb = __alloc_dummy_extent_buffer(fs_info, 0, nodesize);
- 	if (!eb) {
- 		test_std_err(TEST_ALLOC_ROOT);
- 		ret = -ENOMEM;
- 		goto out;
- 	}
- 
--	ret = __test_eb_bitmaps(bitmap, eb, len);
-+	ret = __test_eb_bitmaps(bitmap, eb, nodesize);
- 	if (ret)
- 		goto out;
- 
--	/* Do it over again with an extent buffer which isn't page-aligned. */
- 	free_extent_buffer(eb);
--	eb = __alloc_dummy_extent_buffer(fs_info, nodesize / 2, len);
++	ASSERT(pgoff + len <= PAGE_SIZE);
 +
-+	/*
-+	 * Test again for case where the tree block is sectorsize aligned but
-+	 * not nodesize aligned.
-+	 */
-+	eb = __alloc_dummy_extent_buffer(fs_info, sectorsize, nodesize);
- 	if (!eb) {
- 		test_std_err(TEST_ALLOC_ROOT);
- 		ret = -ENOMEM;
- 		goto out;
+ 	csum_expected = ((u8 *)io_bio->csum) + icsum * csum_size;
+ 
+ 	kaddr = kmap_atomic(page);
+@@ -2817,8 +2830,8 @@ static int check_data_csum(struct inode *inode, struct btrfs_io_bio *io_bio,
+ 	kunmap_atomic(kaddr);
+ 	return 0;
+ zeroit:
+-	btrfs_print_data_csum_error(BTRFS_I(inode), start, csum, csum_expected,
+-				    io_bio->mirror_num);
++	btrfs_print_data_csum_error(BTRFS_I(inode), page_offset(page) + pgoff,
++				    csum, csum_expected, io_bio->mirror_num);
+ 	if (io_bio->device)
+ 		btrfs_dev_stat_inc_and_print(io_bio->device,
+ 					     BTRFS_DEV_STAT_CORRUPTION_ERRS);
+@@ -2857,8 +2870,7 @@ static int btrfs_readpage_end_io_hook(struct btrfs_io_bio *io_bio,
  	}
  
--	ret = __test_eb_bitmaps(bitmap, eb, len);
-+	ret = __test_eb_bitmaps(bitmap, eb, nodesize);
- out:
- 	free_extent_buffer(eb);
- 	kfree(bitmap);
+ 	phy_offset >>= inode->i_sb->s_blocksize_bits;
+-	return check_data_csum(inode, io_bio, phy_offset, page, offset, start,
+-			       (size_t)(end - start + 1));
++	return check_data_csum(inode, io_bio, phy_offset, page, offset);
+ }
+ 
+ /*
+@@ -7545,8 +7557,7 @@ static blk_status_t btrfs_check_read_dio_bio(struct inode *inode,
+ 			ASSERT(pgoff < PAGE_SIZE);
+ 			if (uptodate &&
+ 			    (!csum || !check_data_csum(inode, io_bio, icsum,
+-						       bvec.bv_page, pgoff,
+-						       start, sectorsize))) {
++						       bvec.bv_page, pgoff))) {
+ 				clean_io_failure(fs_info, failure_tree, io_tree,
+ 						 start, bvec.bv_page,
+ 						 btrfs_ino(BTRFS_I(inode)),
 -- 
 2.28.0
 
