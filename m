@@ -2,23 +2,24 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81DCC26A0FE
-	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Sep 2020 10:36:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC69A26A101
+	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Sep 2020 10:37:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726254AbgIOIgL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 15 Sep 2020 04:36:11 -0400
-Received: from mx2.suse.de ([195.135.220.15]:50192 "EHLO mx2.suse.de"
+        id S1726132AbgIOIhZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 15 Sep 2020 04:37:25 -0400
+Received: from mx2.suse.de ([195.135.220.15]:50724 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726119AbgIOIgK (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 15 Sep 2020 04:36:10 -0400
+        id S1726119AbgIOIhW (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 15 Sep 2020 04:37:22 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 113C6AC79;
-        Tue, 15 Sep 2020 08:36:24 +0000 (UTC)
-Subject: Re: [PATCH v2 04/19] btrfs: remove the open-code to read disk-key
+        by mx2.suse.de (Postfix) with ESMTP id 084B6B15A;
+        Tue, 15 Sep 2020 08:37:37 +0000 (UTC)
+Subject: Re: [PATCH v2 06/19] btrfs: don't allow tree block to cross page
+ boundary for subpage support
 To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
 References: <20200915053532.63279-1-wqu@suse.com>
- <20200915053532.63279-5-wqu@suse.com>
+ <20200915053532.63279-7-wqu@suse.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  xsFNBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -62,12 +63,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  KIuxEcV8wcVjr+Wr9zRl06waOCkgrQbTPp631hToxo+4rA1jiQF2M80HAet65ytBVR2pFGZF
  zGYYLqiG+mpUZ+FPjxk9kpkRYz61mTLSY7tuFljExfJWMGfgSg1OxfLV631jV1TcdUnx+h3l
  Sqs2vMhAVt14zT8mpIuu2VNxcontxgVr1kzYA/tQg32fVRbGr449j1gw57BV9i0vww==
-Message-ID: <03406c6f-272c-92af-ca1a-9653622a2c71@suse.com>
-Date:   Tue, 15 Sep 2020 11:36:08 +0300
+Message-ID: <d24a14cd-b708-195e-68d2-94934b024625@suse.com>
+Date:   Tue, 15 Sep 2020 11:37:20 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20200915053532.63279-5-wqu@suse.com>
+In-Reply-To: <20200915053532.63279-7-wqu@suse.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -79,12 +80,48 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 15.09.20 г. 8:35 ч., Qu Wenruo wrote:
-> generic_bin_search() distinguishes between reading a key which doesn't
-> cross a page and one which does. However this distinction is not
-> necessary since read_extent_buffer handles both cases transparently.
+> As a preparation for subpage sector size support (allowing filesystem
+> with sector size smaller than page size to be mounted) if the sector
+> size is smaller than page size, we don't allow tree block to be read if
+> it cross 64K(*) boundary.
 > 
-> Just use read_extent_buffer to streamline the code.
+> The 64K is selected because:
+> - We are only going to support 64K page size for subpage
+
+What does "only support 64k page size for subpage" ?
+
+> - 64K is also the max node size btrfs supports
+> 
+> This ensures that, tree blocks are always contained in one page for a
+> system with 64K page size, which can greatly simplify the handling.
+> 
+> Or we need to do complex multi-page handling for tree blocks.
+> 
+> Currently the only way to create such tree blocks crossing 64K boundary
+> is by btrfs-convert, which will get fixed soon and doesn't get
+> wide-spread usage.
 > 
 > Signed-off-by: Qu Wenruo <wqu@suse.com>
-
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+> ---
+>  fs/btrfs/extent_io.c | 7 +++++++
+>  1 file changed, 7 insertions(+)
+> 
+> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+> index e56aa68cd9fe..9af972999a09 100644
+> --- a/fs/btrfs/extent_io.c
+> +++ b/fs/btrfs/extent_io.c
+> @@ -5232,6 +5232,13 @@ struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
+>  		btrfs_err(fs_info, "bad tree block start %llu", start);
+>  		return ERR_PTR(-EINVAL);
+>  	}
+> +	if (fs_info->sectorsize < PAGE_SIZE && round_down(start, PAGE_SIZE) !=
+> +	    round_down(start + len - 1, PAGE_SIZE)) {
+> +		btrfs_err(fs_info,
+> +		"tree block crosses page boundary, start %llu nodesize %lu",
+> +			  start, len);
+> +		return ERR_PTR(-EINVAL);
+> +	}
+>  
+>  	eb = find_extent_buffer(fs_info, start);
+>  	if (eb)
+> 
