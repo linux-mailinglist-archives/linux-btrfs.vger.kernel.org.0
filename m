@@ -2,26 +2,26 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D444926A2BD
-	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Sep 2020 12:07:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8FB626A2C3
+	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Sep 2020 12:08:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726185AbgIOKHl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 15 Sep 2020 06:07:41 -0400
-Received: from mout.gmx.net ([212.227.17.22]:41619 "EHLO mout.gmx.net"
+        id S1726125AbgIOKIL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 15 Sep 2020 06:08:11 -0400
+Received: from mout.gmx.net ([212.227.15.18]:44207 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726119AbgIOKHf (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 15 Sep 2020 06:07:35 -0400
+        id S1726130AbgIOKIJ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 15 Sep 2020 06:08:09 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1600164450;
-        bh=MNJqGD5nhFUh47kCkgrjnjqFJoyOE7SZhlQgu9fZjuY=;
+        s=badeba3b8450; t=1600164483;
+        bh=i5vo4cUTeV4qevUsaOoWddZSH+Vl5QO+92c5cN535Vw=;
         h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=lMEpCcVEPv02PVbsecr2Skz51+Fcm8s9QfImmDJIIpH6e0Xq8o05j6xh4ArF4I51i
-         HT/5dhdOuCT8qA3MXNMgoRVeMvHCu4BuCzd8rvdpwbKD2M6PFsKkWeDLbCCZkAm5tc
-         /njPInJtQ89Z0Y3u1CLVsCDooCETjMLVVXtUDdpk=
+        b=QYdyvqAlAfiF1aIC7SoW6GONi/FYNMpE2uCgRKlFHbLo5xw/4VwcKn2X9bX1ZhsGZ
+         JIFocgi+Yl+QNYPt+MRYiuxNsICI+yaaUUki3Us7+9Die79i7GdY5B18FV/dO173wl
+         ycv9ClbGQC13CenXF4aHUvMxZQUT6GjqatV4jKQA=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MWAOQ-1jyy9j2t6w-00Xc4p; Tue, 15
- Sep 2020 12:07:30 +0200
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1Mplc7-1kqONj1YDN-00q7G9; Tue, 15
+ Sep 2020 12:08:03 +0200
 Subject: Re: [PATCH v2 07/19] btrfs: update num_extent_pages() to support
  subpage sized extent buffer
 To:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
@@ -55,49 +55,49 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
  ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
  oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <56c0c885-fb75-36d3-00de-202ea53b1b0b@gmx.com>
-Date:   Tue, 15 Sep 2020 18:07:26 +0800
+Message-ID: <187cc0ea-99e1-fbe5-19f8-b6b1b1898d4e@gmx.com>
+Date:   Tue, 15 Sep 2020 18:07:58 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.12.0
 MIME-Version: 1.0
 In-Reply-To: <DM5PR0401MB3591309523CD789D48387C8B9B200@DM5PR0401MB3591.namprd04.prod.outlook.com>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="3fzIuSauCBmPd09e1Jc89lSqQjej3uTNo"
-X-Provags-ID: V03:K1:6ld0ldt17ErhnoAITsiUnTaGzH/HO8BmmNMvF3NXKw/9OuTZPLO
- IcjD3iKJyOE7w1N4E5pesfBkDbqrfdBn+UF38MsKVJK9ktY0yNYzFQlEPHtnDFw/biAFDJx
- wc/y2X9jO3RQ4dPgFEaE/AmEBFTpUMDmzZtPLh0F984jhMh49efWm506B10PvlmUnzlxNJe
- 1E8jBP0Zqj2jgXxei/ocA==
+ boundary="FaYY8vMDGhVGv2hjLAronTfEutkAnlne7"
+X-Provags-ID: V03:K1:QTwW1+BwXTVjeQ5L5wJGiI6bpeb6y6reNVqeu17icUYnJaBWeCd
+ HPa9Acs6uF8sO7Xreao+ch0ink7Lud5XZsz6k9LjfHWU339ohroq9vhZqFNWLxleIE7OFk9
+ JLqjxiF6QHr+8X85CkBZfB5TzMnPoaCPVEMYR/RmGkDipeUNfTcFN5pzf1RD+Xw1/5/SLED
+ wr0g6hHkVGB5ByJZHA06g==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:nG79zx8lwog=:mcYxghgLudTSH5Rdsqm+Fj
- wH8JFiHoPD17WM2D2Zeuu9JdH4lpWvlwr1KMIwEU/vxsz/danBmYMH3QSXCFTGygppnMozhYg
- 4KDpTwozZu+ssV1wIwSpalvfptGu/Bx7EZ5auVhdzz/aRwhz7DajzH8vJDv8XPsqHvA4paYpR
- QbtXo7KJasFBmOhzQXJi88j8aomQMBYsvFeH36W5HA0wFfMYU3kbS9dIKi6i1EL1tnbHdUu0H
- r80sqYQQlt2YR57UzvRbJah9xP+vSHuItVkQcKsnKe3/jxgeeA49tpz7Nj6lQb6fqLVP+Mk7m
- 7pYh4UAFcFdjV7EyLfO5M0Zr4tF9w6BjjBJqckcJcbV+kqyhxj9/y7IDL0rCGiESpczroU05m
- ywhdQkzF1BWzf3foWidI1jCMZotBJylx98U+E3tPANZtHjZ9wCgRCPIw3jNkINyxOhQMrKIz5
- HyOCL63od9agNyiziqlfLITzFIlmtnAVMMeqQiCoaijZF8QWJFxS3OfmKoDUDUCOQiVC7hmzD
- cqDhsctt/Br1eTbKPRKuzC7vCuXwfcle9RBFc9ARXnKbep4oZMB+ZyihxYYncW8cSZ1+D0mGd
- LYl6jxn5JXBwr6G6SSbtVZKlPOk0KrSSEFilLFdPyb//aoFs7u5mxVB+NaTS+Ep7DjR1gviQv
- Iedvjahw6Pg7FoQqUmoHwfkymRrI+YZCq9dJmcTc06/HFA54FuvrTNct4sdm/r6w4HgOWXFDk
- FvE5OnB3VydBgjEZbrD4stqj+EDhsjpQ3KS3eqodY80nsfIyb5Ik/s0tnlPrL4PpiiytMRhGN
- 6Ddsub5BBqzt+WIkSu8LGaVPKeKSSMlUsC8+xQDrLfrpIT7ih80ByUaH1gU1mzfrvZ7S99PAe
- 6hzpAjb+LrwL4NchomGv4oRsFUnxXWgPYD2u82O30Ap04QcZhKlq/fiDLWyFlaPMzCoQHE4T0
- homGfliUHD7IS7jdKw8UOKD0nEiRs1HhSsv4ntjJkwxHhchOMScf+A21yLDOKY6sxP49ty5HY
- KkYmihwEHE4W5tP/ARLdFOEjWzYOjj/mJbhAfaoyOVexTwbjOaRyuLV+DPnaTtWVDUbA7jwlU
- H0AU2+Olaa6qWnQocIuw3oJd/+fFEOULSqsSv3Uys8zwJaEefGRFOkAQrzykBHkUOtDL26Mfx
- 5t2fg4fgyKKYU58NZtADSFK0O2moVUxyTw57rCw8miQIE+pd60jYFuI/Hv0brOPOEdNHloj1f
- m38Szem6MsipbkBKjou0F8vftU90YBh0v/qH36g==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:K7OlrVua7hY=:HCIWa+of6n40enPqZjPv+m
+ RiqyGAzrzpxdFyG8bfD7+cJ6oShFW/yb6LuLFM34OwZX0xbk3t8HfvxCMrJ0GDFFmLenJVjVC
+ OEIixy4iIAFvJ7Ucs0/WsbmYRIfdRLaAy2Fd3pd7++UMLH2q3/1jaZW8fDOxHX9RoVmaZNU7Q
+ lmClNdu+ptoF8PKHv9YOLYT5ZwznTyvSugsCl4yNW0vgRn5K4KNLlf7Go4ba4G5k+n6t6Mh7o
+ tIAg+zdWMaQu/byNptG6QvsdoJaquDXnjNDD8Ts56KmtlYUsXnUCvzQH/e7QWarvGLK9n9JWU
+ CDV97+NymRJJEy5NnnIgrtiGCSJCJjGmZPMV/ok99mjlGv9GFYq9dXpdhALsHX8Y9AxM4ba06
+ VaCX4WE0i2DW8gAfIoSoMPg3s+z3u+AjdosjuRnK0vadooGkh50qPc5R+rQSW9hcRxsJKIl9L
+ BBwU3VlKQtY/XrbYic/NntWL87MEy2xNnp148RltdNd4dp5Af6vAonZX330C9VaX7xF3vABEt
+ 3PZvDdDIcxW7Y5NkZwa3Ij3lPkeT8XikT5M3BsF8tC0+FCFd9b/Rxq2OMy20YAnRzYiiLCmWI
+ +ejZO0VL6c5mh+dkcCFZBMy5oAhc9+DruRczOD/ymOQ9/RF41cBPhMK0EamuCnNnfZyYDJCOJ
+ 8AhzL0t2gIVT7WnNXabfZmY5PcVkucYbXb5FZXpxtOeMF1KYf1UG/ibcyG9D6Vstjb5t/Fzf8
+ s5CduodDclZs6AKu/PNuzzsFX0PbAr/xz+22/U8e/R6WBr90KTL/s9o65alJ/6+nqG4qYus2g
+ vdT2K4MoskE6XwOzI8jRX3tYz3DvymNPKI9LHLuPKPt9s+SLGhMXFqvsuU3UlAafSj+VLM2eN
+ TyCyDiqdmAz0Z/62c9J57yobIAdz62liKULtmpRVQU+NG1UczgCcR0lNLNIWl5nnJTeqJpdhm
+ lVN3W+vySnhijP/wbzKYtDhUtRpkih0qRFBTnAA+n4yD1C6SudQa8orWhllUT7Rb+ny9dZvP0
+ z4Pc/+KPiL+sfV+T74mKpueEl7BpQAXwYdKdZ6zcYIsZH8Q9sPNZFQyjvEwkZbC9ZYvBmqQ8Q
+ XoqSQV12pPAR+q7PheJvexHzbjwrlwHyl4F0D+aXDE8UCOHC5mYnM92dfgofPzw0MHmOeyzbq
+ bEShTaJXew8x+1uuKQBEIej4IaED25OzQYoyhgiZcl1K5mjIROEg/BmKnIAEi8kbIKV0r8zb2
+ DvMk9dc0F+RzRS6GP7DPOinL7KAOYubV6D/cF+g==
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---3fzIuSauCBmPd09e1Jc89lSqQjej3uTNo
-Content-Type: multipart/mixed; boundary="VeqYIhLWcBzbATeKJw7QUf1V6bGHOAi37"
+--FaYY8vMDGhVGv2hjLAronTfEutkAnlne7
+Content-Type: multipart/mixed; boundary="zP75XCMTlha3TK9SWQkFNU0wHaObP9IWy"
 
---VeqYIhLWcBzbATeKJw7QUf1V6bGHOAi37
+--zP75XCMTlha3TK9SWQkFNU0wHaObP9IWy
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
@@ -114,31 +114,29 @@ On 2020/9/15 =E4=B8=8B=E5=8D=884:42, Johannes Thumshirn wrote:
 > Just to clarify, does this mean we won't support 512B sector size with =
 4K pages?
 >=20
-At least that's why I have planned.
-
-I think the current minimal 4K sector size is pretty reasonable.
+At least I don't plan to support sector size smaller than 4K.
 
 Thanks,
 Qu
 
 
---VeqYIhLWcBzbATeKJw7QUf1V6bGHOAi37--
+--zP75XCMTlha3TK9SWQkFNU0wHaObP9IWy--
 
---3fzIuSauCBmPd09e1Jc89lSqQjej3uTNo
+--FaYY8vMDGhVGv2hjLAronTfEutkAnlne7
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl9gkl4ACgkQwj2R86El
-/qj4CAf/dFDxJ7xkp1cNpBQw68AUAReu97XVIsQRa1k/vYaRAK3YXCBJ09VrPorU
-93DBvapeHiaj1YmBBwY/ANtfrOkBaquvlM9gybKWLsHFNF9sm/89gA1KxBtPbC3G
-Zp998R+/KvYyAQJ8wP/aZdV5zJpBCE1fIkw7yQ83OB/8qFM20j8oTyIsaDPsLccS
-JpapGAqmUzg0i0iig1voJrv8C9UpQoJV38fkpb0Z5EfbF2c6S+nDdsWGLyJmAVRj
-Wdp94hIvGRf9TQ4fJSfrow3uw2OHCedGTQSBkRSZQUeK31fLKhfi6Pat36DqNRB3
-a7NTT3njIERAcmMK1LRhDlovh2UDEw==
-=rJPa
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl9gkn4ACgkQwj2R86El
+/qh+9Af/XTZNHZiprSOR/yDuNjT3fdkKyph6108dCa5ZqEGlrPNdTYvM3IT0WEUl
+JIrcCT/4g2VS/ZwSecunZmSW3+YzN3iyLm9dETvkoGUYPlEJGM7nV11ZSrfGsfTo
+2vdNYdnBmxj1S/rBNlLa/tWP8ndQAEakSY4cWOnCARpSekIZ65+3WWs/TwzWG/ss
+ZDo8rLLB6xPS2g2zw3LeVsnKkoQP2Z4M7vyOVQxQfH7MlGE9WpYSJbYQJqSOVGc/
+sl6Fj6xanyqY50L2H59AZn4LaAf8xGWIqveJV60veFm2zW9zxE3ZuBNPKDUmaCRW
+7U6cNoAjiauknC1z0OjwKZ8JTSoNbA==
+=qxO5
 -----END PGP SIGNATURE-----
 
---3fzIuSauCBmPd09e1Jc89lSqQjej3uTNo--
+--FaYY8vMDGhVGv2hjLAronTfEutkAnlne7--
