@@ -2,24 +2,24 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42CAD269DE7
-	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Sep 2020 07:36:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0471269DE6
+	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Sep 2020 07:36:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726196AbgIOFgY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 15 Sep 2020 01:36:24 -0400
-Received: from mx2.suse.de ([195.135.220.15]:43418 "EHLO mx2.suse.de"
+        id S1726193AbgIOFgX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 15 Sep 2020 01:36:23 -0400
+Received: from mx2.suse.de ([195.135.220.15]:43450 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726183AbgIOFgR (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 15 Sep 2020 01:36:17 -0400
+        id S1726185AbgIOFgU (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 15 Sep 2020 01:36:20 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 3A6FDAD52
-        for <linux-btrfs@vger.kernel.org>; Tue, 15 Sep 2020 05:36:31 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 61043AEA2
+        for <linux-btrfs@vger.kernel.org>; Tue, 15 Sep 2020 05:36:33 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 16/19] btrfs: use extent_io_tree to handle subpage extent buffer allocation
-Date:   Tue, 15 Sep 2020 13:35:29 +0800
-Message-Id: <20200915053532.63279-17-wqu@suse.com>
+Subject: [PATCH v2 17/19] btrfs: implement subpage metadata read and its endio function
+Date:   Tue, 15 Sep 2020 13:35:30 +0800
+Message-Id: <20200915053532.63279-18-wqu@suse.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200915053532.63279-1-wqu@suse.com>
 References: <20200915053532.63279-1-wqu@suse.com>
@@ -30,210 +30,286 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Currently btrfs uses page::private as an indicator of who owns the
-extent buffer, this method won't really work on subpage support, as one
-page can contain several tree blocks (up to 16 for 4K node size and 64K
-page size).
+For subpage metadata read, since we're completely relying on io tree
+other than page bits, its read submission and endio function is
+different from the original page size.
 
-Instead, here we utilize btree extent io tree to handle them.
-Now EXTENT_NEW means we have an extent buffer for the range.
+For submission part:
+- Do extent locking/waiting
+  Instead of page locking/waiting, since we don't rely on page bits anymore.
 
-This will affects the following functions:
-- alloc_extent_buffer()
-  Now for subpage we never use page->private to grab an existing eb.
-  Instead, we rely on extra safenet in alloc_extent_buffer() to detect two
-  callers on the same eb.
+- Submit extent page directly
+  To simply the process, as all the metadata read is always contained in
+  one page.
 
-- btrfs_release_extent_buffer_pages()
-  Now for subpage, we clear the EXTENT_NEW bit first, then check if the
-  remaining range in the page has EXTENT_NEW bit.
-  If not, then clear the private bit for the page.
+For endio part:
+- Do extent locking/waiting
 
-- attach_extent_buffer_page()
-  Now we set EXTENT_NEW bit for the new extent buffer to be attached,
-  and set the page private, with NULL as page::private.
+This behavior has a small problem that, extent locking/waiting are all
+going to allocate memory, thus they can all fail.
+
+Currently we're using GFP_ATOMIC, but still we may hit ENOSPC someday.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/btrfs_inode.h | 12 +++++++
- fs/btrfs/disk-io.c     |  7 ++++
- fs/btrfs/extent_io.c   | 79 ++++++++++++++++++++++++++++++++++++++++--
- 3 files changed, 96 insertions(+), 2 deletions(-)
+ fs/btrfs/disk-io.c   |  89 ++++++++++++++++++++++++++++++++++++++
+ fs/btrfs/extent_io.c | 101 ++++++++++++++++++++++++++++++++++++++++++-
+ 2 files changed, 189 insertions(+), 1 deletion(-)
 
-diff --git a/fs/btrfs/btrfs_inode.h b/fs/btrfs/btrfs_inode.h
-index c47b6c6fea9f..cff818e0c406 100644
---- a/fs/btrfs/btrfs_inode.h
-+++ b/fs/btrfs/btrfs_inode.h
-@@ -217,6 +217,18 @@ static inline struct btrfs_inode *BTRFS_I(const struct inode *inode)
- 	return container_of(inode, struct btrfs_inode, vfs_inode);
- }
- 
-+static inline struct btrfs_fs_info *page_to_fs_info(struct page *page)
-+{
-+	ASSERT(page->mapping);
-+	return BTRFS_I(page->mapping->host)->root->fs_info;
-+}
-+
-+static inline struct extent_io_tree
-+*info_to_btree_io_tree(struct btrfs_fs_info *fs_info)
-+{
-+	return &BTRFS_I(fs_info->btree_inode)->io_tree;
-+}
-+
- static inline unsigned long btrfs_inode_hash(u64 objectid,
- 					     const struct btrfs_root *root)
- {
 diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index b526adf20f3e..2ef35eb7a6e1 100644
+index 2ef35eb7a6e1..1de5a0fef2f5 100644
 --- a/fs/btrfs/disk-io.c
 +++ b/fs/btrfs/disk-io.c
-@@ -2120,6 +2120,13 @@ static void btrfs_init_btree_inode(struct btrfs_fs_info *fs_info)
- 	inode->i_mapping->a_ops = &btree_aops;
+@@ -645,6 +645,92 @@ static int btrfs_check_extent_buffer(struct extent_buffer *eb)
+ 	return ret;
+ }
  
- 	RB_CLEAR_NODE(&BTRFS_I(inode)->rb_node);
++static int btree_read_subpage_endio_hook(struct page *page, u64 start, u64 end,
++					 int mirror)
++{
++	struct btrfs_fs_info *fs_info = page_to_fs_info(page);
++	struct extent_io_tree *io_tree = info_to_btree_io_tree(fs_info);
++	struct extent_buffer *eb;
++	int reads_done;
++	int ret = 0;
++
++	if (!IS_ALIGNED(start, fs_info->sectorsize) ||
++	    !IS_ALIGNED(end - start + 1, fs_info->sectorsize) ||
++	    !IS_ALIGNED(end - start + 1, fs_info->nodesize)) {
++		WARN_ON(IS_ENABLED(CONFIG_BTRFS_DEBUG));
++		btrfs_err(fs_info, "invalid tree read bytenr");
++		return -EUCLEAN;
++	}
++
 +	/*
-+	 * This extent io tree is subpage metadata specific.
-+	 *
-+	 * It uses the following bits to represent new meaning:
-+	 * - EXTENT_NEW:	Has extent buffer allocated
-+	 * - EXTENT_UPTODATE	Has latest metadata read from disk
++	 * We don't allow bio merge for subpage metadata read, so we should
++	 * only get one eb for each endio hook.
 +	 */
- 	extent_io_tree_init(fs_info, &BTRFS_I(inode)->io_tree,
- 			    IO_TREE_BTREE_IO, inode);
- 	BTRFS_I(inode)->io_tree.track_uptodate = false;
++	ASSERT(end == start + fs_info->nodesize - 1);
++	ASSERT(PagePrivate(page));
++
++	rcu_read_lock();
++	eb = radix_tree_lookup(&fs_info->buffer_radix,
++			       start / fs_info->sectorsize);
++	rcu_read_unlock();
++
++	/*
++	 * When we are reading one tree block, eb must have been
++	 * inserted into the radix tree. If not something is wrong.
++	 */
++	if (!eb) {
++		WARN_ON(IS_ENABLED(CONFIG_BTRFS_DEBUG));
++		btrfs_err(fs_info,
++			"can't find extent buffer for bytenr %llu",
++			start);
++		return -EUCLEAN;
++	}
++	/*
++	 * The pending IO might have been the only thing that kept
++	 * this buffer in memory.  Make sure we have a ref for all
++	 * this other checks
++	 */
++	atomic_inc(&eb->refs);
++
++	reads_done = atomic_dec_and_test(&eb->io_pages);
++	/* Subpage read must finish in page read */
++	ASSERT(reads_done);
++
++	eb->read_mirror= mirror;
++	if (test_bit(EXTENT_BUFFER_READ_ERR, &eb->bflags)) {
++		ret = -EIO;
++		goto err;
++	}
++	ret = btrfs_check_extent_buffer(eb);
++	if (ret < 0)
++		goto err;
++
++	if (test_and_clear_bit(EXTENT_BUFFER_READAHEAD, &eb->bflags))
++		btree_readahead_hook(eb, ret);
++
++	set_extent_buffer_uptodate(eb);
++
++	free_extent_buffer(eb);
++
++	/*
++	 * Since we don't use PageLocked() but extent_io_tree lock to lock the
++	 * range, we need to unlock the range here.
++	 */
++	unlock_extent(io_tree, start, end);
++	return ret;
++err:
++	/*
++	 * our io error hook is going to dec the io pages
++	 * again, we have to make sure it has something to
++	 * decrement
++	 */
++	atomic_inc(&eb->io_pages);
++	clear_extent_buffer_uptodate(eb);
++	free_extent_buffer(eb);
++	unlock_extent(io_tree, start, end);
++	return ret;
++}
++
+ static int btree_readpage_end_io_hook(struct btrfs_io_bio *io_bio,
+ 				      u64 phy_offset, struct page *page,
+ 				      u64 start, u64 end, int mirror)
+@@ -653,6 +739,9 @@ static int btree_readpage_end_io_hook(struct btrfs_io_bio *io_bio,
+ 	int ret = 0;
+ 	bool reads_done;
+ 
++	if (page_to_fs_info(page)->sectorsize < PAGE_SIZE)
++		return btree_read_subpage_endio_hook(page, start, end, mirror);
++
+ 	/* Metadata pages that goes through IO should all have private set */
+ 	ASSERT(PagePrivate(page) && page->private);
+ 	eb = (struct extent_buffer *)page->private;
 diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 16fe9f4313a1..2af6786e6ab4 100644
+index 2af6786e6ab4..75437a55a986 100644
 --- a/fs/btrfs/extent_io.c
 +++ b/fs/btrfs/extent_io.c
-@@ -3116,6 +3116,20 @@ static void attach_extent_buffer_page(struct extent_buffer *eb,
- 	if (page->mapping)
- 		assert_spin_locked(&page->mapping->private_lock);
+@@ -2923,7 +2923,13 @@ static void end_bio_extent_readpage(struct bio *bio)
+ 			ClearPageUptodate(page);
+ 			SetPageError(page);
+ 		}
+-		unlock_page(page);
++
++		/*
++		 * For subpage metadata read, we don't have page locked, but
++		 * rely on EXTENT_LOCKED bit to handle lock completely.
++		 */
++		if (!(fs_info->sectorsize < PAGE_SIZE && !data_inode))
++			unlock_page(page);
+ 		offset += len;
  
-+	if (eb->fs_info->sectorsize < PAGE_SIZE && page->mapping) {
+ 		if (unlikely(!uptodate)) {
+@@ -3064,6 +3070,14 @@ static int submit_extent_page(unsigned int opf,
+ 		else
+ 			contig = bio_end_sector(bio) == sector;
+ 
++		/*
++		 * For subpage metadata read, never merge request, so that
++		 * we get endio hook called on each metadata read.
++		 */
++		if (page_to_fs_info(page)->sectorsize < PAGE_SIZE &&
++		    tree->owner == IO_TREE_BTREE_IO)
++			ASSERT(force_bio_submit);
++
+ 		ASSERT(tree->ops);
+ 		if (btrfs_bio_fits_in_stripe(page, page_size, bio, bio_flags))
+ 			can_merge = false;
+@@ -5593,6 +5607,15 @@ void clear_extent_buffer_uptodate(struct extent_buffer *eb)
+ 	int num_pages;
+ 
+ 	clear_bit(EXTENT_BUFFER_UPTODATE, &eb->bflags);
++	/* For subpage eb, we don't set page bits, but extent_io_tree bits */
++	if (eb->fs_info->sectorsize < PAGE_SIZE) {
 +		struct extent_io_tree *io_tree =
 +			info_to_btree_io_tree(eb->fs_info);
 +
-+		if (!PagePrivate(page))
-+			attach_page_private(page, NULL);
++		clear_extent_bits(io_tree, eb->start, eb->start + eb->len - 1,
++				  EXTENT_UPTODATE);
++		return;
++	}
+ 	num_pages = num_extent_pages(eb);
+ 	for (i = 0; i < num_pages; i++) {
+ 		page = eb->pages[i];
+@@ -5608,6 +5631,20 @@ void set_extent_buffer_uptodate(struct extent_buffer *eb)
+ 	int num_pages;
+ 
+ 	set_bit(EXTENT_BUFFER_UPTODATE, &eb->bflags);
 +
-+		/* EXTENT_NEW represents we have an extent buffer */
-+		set_extent_bit(io_tree, eb->start, eb->start + eb->len - 1,
-+				EXTENT_NEW, NULL, NULL, GFP_ATOMIC);
-+		eb->pages[0] = page;
++	/*
++	 * For subpage size, we ignore page bits, but need to set io tree range
++	 * uptodate
++	 */
++	if (eb->fs_info->sectorsize < PAGE_SIZE) {
++		struct extent_io_tree *io_tree =
++			info_to_btree_io_tree(eb->fs_info);
++
++		set_extent_uptodate(io_tree, eb->start, eb->start + eb->len - 1,
++				    NULL, GFP_ATOMIC);
 +		return;
 +	}
 +
- 	if (!PagePrivate(page))
- 		attach_page_private(page, eb);
- 	else
-@@ -4943,6 +4957,37 @@ int extent_buffer_under_io(const struct extent_buffer *eb)
- 		test_bit(EXTENT_BUFFER_DIRTY, &eb->bflags));
+ 	num_pages = num_extent_pages(eb);
+ 	for (i = 0; i < num_pages; i++) {
+ 		page = eb->pages[i];
+@@ -5615,6 +5652,65 @@ void set_extent_buffer_uptodate(struct extent_buffer *eb)
+ 	}
  }
  
-+static void detach_extent_buffer_subpage(struct extent_buffer *eb)
++static int read_extent_buffer_subpage(struct extent_buffer *eb, int wait,
++				      int mirror_num)
 +{
 +	struct btrfs_fs_info *fs_info = eb->fs_info;
 +	struct extent_io_tree *io_tree = info_to_btree_io_tree(fs_info);
 +	struct page *page = eb->pages[0];
-+	bool mapped = !test_bit(EXTENT_BUFFER_UNMAPPED, &eb->bflags);
-+	int ret;
++	struct bio *bio = NULL;
++	int ret = 0;
 +
-+	if (!page)
-+		return;
++	/* We don't lock page, but only extent_io_tree for btree inode*/
++	if (wait == WAIT_NONE) {
++		ret = try_lock_extent(io_tree, eb->start,
++				      eb->start + eb->len - 1);
++		if (ret == 0)
++			return ret;
++	} else {
++		ret = lock_extent(io_tree, eb->start, eb->start + eb->len - 1);
++		if (ret < 0)
++			return ret;
++	}
 +
-+	if (mapped)
-+		spin_lock(&page->mapping->private_lock);
++	ret = 0;
++	atomic_set(&eb->io_pages, 1);
++	if (test_bit(EXTENT_BUFFER_UPTODATE, &eb->bflags) ||
++	    test_range_bit(io_tree, eb->start, eb->start + eb->len - 1,
++			   EXTENT_UPTODATE, 1, NULL)) {
++		unlock_extent(io_tree, eb->start, eb->start + eb->len - 1);
++		return ret;
++	}
 +
-+	/*
-+	 * Clear the EXTENT_NEW bit from io tree, to indicate that there is
-+	 * no longer an extent buffer in the range.
-+	 */
-+	__clear_extent_bit(io_tree, eb->start, eb->start + eb->len - 1,
-+			   EXTENT_NEW, 0, 0, NULL, GFP_ATOMIC, NULL);
++	ret = submit_extent_page(REQ_OP_READ | REQ_META, NULL, page, eb->start,
++				 eb->len, eb->start - page_offset(page), &bio,
++				 end_bio_extent_readpage, mirror_num, 0, 0,
++				 true);
++	if (ret) {
++		/*
++		 * In the endio function, if we hit something wrong we will
++		 * increase the io_pages, so here we need to decrease it for error
++		 * path.
++		 */
++		atomic_dec(&eb->io_pages);
++	}
++	if (bio) {
++		int tmp;
 +
-+	/* Test if we still have other extent buffer in the page range */
-+	ret = test_range_bit(io_tree, round_down(eb->start, PAGE_SIZE),
-+			     round_down(eb->start, PAGE_SIZE) + PAGE_SIZE - 1,
-+			     EXTENT_NEW, 0, NULL);
-+	if (!ret)
-+		detach_page_private(eb->pages[0]);
-+	if (mapped)
-+		spin_unlock(&page->mapping->private_lock);
++		tmp = submit_one_bio(bio, mirror_num, 0);
++		if (tmp < 0)
++			return tmp;
++	}
++	if (ret || wait != WAIT_COMPLETE)
++		return ret;
++
++	wait_extent_bit(io_tree, eb->start, eb->start + eb->len - 1,
++			EXTENT_LOCKED);
++	if (!test_bit(EXTENT_BUFFER_UPTODATE, &eb->bflags))
++		ret = -EIO;
++	return ret;
 +}
 +
- /*
-  * Release all pages attached to the extent buffer.
-  */
-@@ -4954,6 +4999,9 @@ static void btrfs_release_extent_buffer_pages(struct extent_buffer *eb)
- 
- 	BUG_ON(extent_buffer_under_io(eb));
+ int read_extent_buffer_pages(struct extent_buffer *eb, int wait, int mirror_num)
+ {
+ 	int i;
+@@ -5631,6 +5727,9 @@ int read_extent_buffer_pages(struct extent_buffer *eb, int wait, int mirror_num)
+ 	if (test_bit(EXTENT_BUFFER_UPTODATE, &eb->bflags))
+ 		return 0;
  
 +	if (eb->fs_info->sectorsize < PAGE_SIZE)
-+		return detach_extent_buffer_subpage(eb);
++		return read_extent_buffer_subpage(eb, wait, mirror_num);
 +
  	num_pages = num_extent_pages(eb);
  	for (i = 0; i < num_pages; i++) {
- 		struct page *page = eb->pages[i];
-@@ -5248,6 +5296,7 @@ struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
- 	struct extent_buffer *exists = NULL;
- 	struct page *p;
- 	struct address_space *mapping = fs_info->btree_inode->i_mapping;
-+	bool subpage = (fs_info->sectorsize < PAGE_SIZE);
- 	int uptodate = 1;
- 	int ret;
- 
-@@ -5280,7 +5329,7 @@ struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
- 		}
- 
- 		spin_lock(&mapping->private_lock);
--		if (PagePrivate(p)) {
-+		if (PagePrivate(p) && !subpage) {
- 			/*
- 			 * We could have already allocated an eb for this page
- 			 * and attached one so lets see if we can get a ref on
-@@ -5321,8 +5370,21 @@ struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
- 		 * we could crash.
- 		 */
- 	}
--	if (uptodate)
-+	if (uptodate && !subpage)
- 		set_bit(EXTENT_BUFFER_UPTODATE, &eb->bflags);
-+	/*
-+	 * For subpage, we must check extent_io_tree to get if the eb is really
-+	 * UPTODATE, as the page bit is no longer reliable as we can do subpage
-+	 * read.
-+	 */
-+	if (subpage) {
-+		struct extent_io_tree *io_tree = info_to_btree_io_tree(fs_info);
-+
-+		ret = test_range_bit(io_tree, eb->start, eb->start + eb->len - 1,
-+				     EXTENT_UPTODATE, 1, NULL);
-+		if (ret)
-+			set_bit(EXTENT_BUFFER_UPTODATE, &eb->bflags);
-+	}
- again:
- 	ret = radix_tree_preload(GFP_NOFS);
- 	if (ret) {
-@@ -5361,6 +5423,19 @@ struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
- 		if (eb->pages[i])
- 			unlock_page(eb->pages[i]);
- 	}
-+	/*
-+	 * For subpage case, btrfs_release_extent_buffer() will clear the
-+	 * EXTENT_NEW bit if there is a page, and EXTENT_NEW bit represents
-+	 * we have an extent buffer in that range.
-+	 *
-+	 * Since we're here because we hit a race with another caller, who
-+	 * succeeded in inserting the eb, we shouldn't clear that EXTENT_NEW
-+	 * bit. So here we cleanup the page manually.
-+	 */
-+	if (subpage) {
-+		put_page(eb->pages[0]);
-+		eb->pages[i] = NULL;
-+	}
- 
- 	btrfs_release_extent_buffer(eb);
- 	return exists;
+ 		page = eb->pages[i];
 -- 
 2.28.0
 
