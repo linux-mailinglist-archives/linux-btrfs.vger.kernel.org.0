@@ -2,33 +2,34 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E184B26A2B5
-	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Sep 2020 12:06:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D444926A2BD
+	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Sep 2020 12:07:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726156AbgIOKGX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 15 Sep 2020 06:06:23 -0400
-Received: from mout.gmx.net ([212.227.17.22]:40743 "EHLO mout.gmx.net"
+        id S1726185AbgIOKHl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 15 Sep 2020 06:07:41 -0400
+Received: from mout.gmx.net ([212.227.17.22]:41619 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726119AbgIOKGW (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 15 Sep 2020 06:06:22 -0400
+        id S1726119AbgIOKHf (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 15 Sep 2020 06:07:35 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1600164379;
-        bh=XKFsOhU3zGjcJrBOjjUEc/jWofk3BEKHJQi2dicJ1x4=;
+        s=badeba3b8450; t=1600164450;
+        bh=MNJqGD5nhFUh47kCkgrjnjqFJoyOE7SZhlQgu9fZjuY=;
         h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=KFyu9Zmmj9rodqPqmpojfzS3WBDuWOR0oLvcYJ7KfdeMXIuVcFf9vuAC31OOh+7Yv
-         hQ/7Lh8UElawj33uSQcC2sUrrp3jba0jT/6XeXdQ2lUS6ArL66lgu/lWKgVJaIQQjA
-         83ujY9nllCMO+89ilAikWdPtch8FsSlNRtwVj0Mw=
+        b=lMEpCcVEPv02PVbsecr2Skz51+Fcm8s9QfImmDJIIpH6e0Xq8o05j6xh4ArF4I51i
+         HT/5dhdOuCT8qA3MXNMgoRVeMvHCu4BuCzd8rvdpwbKD2M6PFsKkWeDLbCCZkAm5tc
+         /njPInJtQ89Z0Y3u1CLVsCDooCETjMLVVXtUDdpk=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MMGRK-1k2FQb0bqQ-00JMeH; Tue, 15
- Sep 2020 12:06:19 +0200
-Subject: Re: [PATCH v2 06/19] btrfs: don't allow tree block to cross page
- boundary for subpage support
-To:     Nikolay Borisov <nborisov@suse.com>, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MWAOQ-1jyy9j2t6w-00Xc4p; Tue, 15
+ Sep 2020 12:07:30 +0200
+Subject: Re: [PATCH v2 07/19] btrfs: update num_extent_pages() to support
+ subpage sized extent buffer
+To:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        Qu Wenruo <wqu@suse.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
 References: <20200915053532.63279-1-wqu@suse.com>
- <20200915053532.63279-7-wqu@suse.com>
- <d24a14cd-b708-195e-68d2-94934b024625@suse.com>
+ <20200915053532.63279-8-wqu@suse.com>
+ <DM5PR0401MB3591309523CD789D48387C8B9B200@DM5PR0401MB3591.namprd04.prod.outlook.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -54,103 +55,90 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
  ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
  oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <52001ac7-61cf-81d5-25d1-9c9e98f97720@gmx.com>
-Date:   Tue, 15 Sep 2020 18:06:14 +0800
+Message-ID: <56c0c885-fb75-36d3-00de-202ea53b1b0b@gmx.com>
+Date:   Tue, 15 Sep 2020 18:07:26 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <d24a14cd-b708-195e-68d2-94934b024625@suse.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:syoiEvmUcI+0W85qFjyILscA13JGNRN+Go5wqgf7JR8QlRQJzfK
- XvKloCGLjrSjXUWL8v61gbWWpEkcT7P7pin4KCDbntttcy+HDWtsUoVCCKgnLA15dj74yTr
- QsHiOn9lxP0S+A9Gc2KpleCMEIop08/rrXefVaeKjTjK5pAPytv4nDznCc46TOEmR5AEkMN
- KGQr2ZkdOpQtoxb2SAvwA==
+In-Reply-To: <DM5PR0401MB3591309523CD789D48387C8B9B200@DM5PR0401MB3591.namprd04.prod.outlook.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="3fzIuSauCBmPd09e1Jc89lSqQjej3uTNo"
+X-Provags-ID: V03:K1:6ld0ldt17ErhnoAITsiUnTaGzH/HO8BmmNMvF3NXKw/9OuTZPLO
+ IcjD3iKJyOE7w1N4E5pesfBkDbqrfdBn+UF38MsKVJK9ktY0yNYzFQlEPHtnDFw/biAFDJx
+ wc/y2X9jO3RQ4dPgFEaE/AmEBFTpUMDmzZtPLh0F984jhMh49efWm506B10PvlmUnzlxNJe
+ 1E8jBP0Zqj2jgXxei/ocA==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:luwOdna1t8I=:9U4itNBYN2UMiJHSL4sb9R
- DTtUjhkNjBej0R/VDLV5KlTgn3KNWTyC91T/mFfzhEjXL0xZUQ8FBd8Eo404b3JXInEmPVTRS
- jJCAAViiuAi+FHe/7gaj1JB4ISRn8Qe7Xt5vssIje/OR2J3wXe9Lyif5wiW2qVaE8Rfg0RJGn
- xpMQ1/vQHQBcOOLOZdDijL6TbxIXpIva9lSJLl205RZiSIvSPlGOQy6uTWCbQbSs0eYf5broy
- kLzCQo9U+mPRviX3en4qJvv+pcUySzImRhGyk1IshYMfwxiZX7nA6W9jz2jnkafFi1XDJ+PMv
- W9+zl/N5hyl6zVu6wMv8uhbiENUYqhHfDzES2y4Vk7cKuhVqDwxzcwZLxHzBHXyxTKFfYs+wB
- OTOigvs3zIcZYpevIGro2Ae4ZA8cTwtCFKKylYpjecZ+2xBKeiWtXx5xOwSiHhSdxgS8kQSxS
- 9hFvYnkCcsn/cv5IieUn7t22W5qlqI4GGsETmdKmSahBTCnUFscSQny+rh8WfwTGIyCb8Qd+7
- nm6Fq2CJQaE9Yn/tlsOhOkRJ2/fWc/3xvbyVEwCdRzWBhruPH58TmwKl+rMBqAWi95mJ/vTgT
- EJhJ9kLhbty0csGSA/jKlHdWkE+ebQd0LMjWN7oOeNvJcTYYCLi3pb4IvgvzGZZgwlxzwnf7u
- EuGxkepucmGtQduAgR3HrSYSSfd7nucHmyar+TT4MNPVGeQUGtAY3M1bgDNHY+GmoXTRNel3h
- gmxWxqGGt9sNH02gDXv1MqwKcdsNUamPcTFjUbrbKVA62cWnxxoc5H25lEsrTrwf1FpSa/EpH
- TkvQMkRTFzUfvVgQk5qUhKeDrzbIq83sBtm48JpfrAQlCWQqFQ6405Q6cjMrkfQtxuG2JZVhm
- Ihi0DAI1hgWLgx0g2KwPG8i8wnv+rRB/otaNf14tMdDeAdyJ5Y5T9lpIECvhlr2wtoipWDbBm
- ZmE+qXLJ4yl0OA0ORnv54UdXAsLqoVQgMDTIZZ6wrQVEgBilxREpKfWmd+B7Rd5i7mApwAjx4
- R+Fd8UChRoGu/mIqCgDnyQoTh41Suw74jR8nLMSaGJ5mnlaUMEggmjh6BMrRUo92y7uk7jyda
- M3sY/FogzVTdU8LADI22M/LBbq7duj19UPspR8S+/8yfcx5LJ5BK7eONOhXxHNLkzBI2LOEmk
- FPWtOCBz2/evLfGjZxFfH3/jn0UONg8D+WwGc3eqtVOeBiLtSFAXp7uySVGxsTVHN+cZErmoY
- 0tNoy1wfyt6LUaAO4B8RO3Npx7E65lcY9jf+YDg==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:nG79zx8lwog=:mcYxghgLudTSH5Rdsqm+Fj
+ wH8JFiHoPD17WM2D2Zeuu9JdH4lpWvlwr1KMIwEU/vxsz/danBmYMH3QSXCFTGygppnMozhYg
+ 4KDpTwozZu+ssV1wIwSpalvfptGu/Bx7EZ5auVhdzz/aRwhz7DajzH8vJDv8XPsqHvA4paYpR
+ QbtXo7KJasFBmOhzQXJi88j8aomQMBYsvFeH36W5HA0wFfMYU3kbS9dIKi6i1EL1tnbHdUu0H
+ r80sqYQQlt2YR57UzvRbJah9xP+vSHuItVkQcKsnKe3/jxgeeA49tpz7Nj6lQb6fqLVP+Mk7m
+ 7pYh4UAFcFdjV7EyLfO5M0Zr4tF9w6BjjBJqckcJcbV+kqyhxj9/y7IDL0rCGiESpczroU05m
+ ywhdQkzF1BWzf3foWidI1jCMZotBJylx98U+E3tPANZtHjZ9wCgRCPIw3jNkINyxOhQMrKIz5
+ HyOCL63od9agNyiziqlfLITzFIlmtnAVMMeqQiCoaijZF8QWJFxS3OfmKoDUDUCOQiVC7hmzD
+ cqDhsctt/Br1eTbKPRKuzC7vCuXwfcle9RBFc9ARXnKbep4oZMB+ZyihxYYncW8cSZ1+D0mGd
+ LYl6jxn5JXBwr6G6SSbtVZKlPOk0KrSSEFilLFdPyb//aoFs7u5mxVB+NaTS+Ep7DjR1gviQv
+ Iedvjahw6Pg7FoQqUmoHwfkymRrI+YZCq9dJmcTc06/HFA54FuvrTNct4sdm/r6w4HgOWXFDk
+ FvE5OnB3VydBgjEZbrD4stqj+EDhsjpQ3KS3eqodY80nsfIyb5Ik/s0tnlPrL4PpiiytMRhGN
+ 6Ddsub5BBqzt+WIkSu8LGaVPKeKSSMlUsC8+xQDrLfrpIT7ih80ByUaH1gU1mzfrvZ7S99PAe
+ 6hzpAjb+LrwL4NchomGv4oRsFUnxXWgPYD2u82O30Ap04QcZhKlq/fiDLWyFlaPMzCoQHE4T0
+ homGfliUHD7IS7jdKw8UOKD0nEiRs1HhSsv4ntjJkwxHhchOMScf+A21yLDOKY6sxP49ty5HY
+ KkYmihwEHE4W5tP/ARLdFOEjWzYOjj/mJbhAfaoyOVexTwbjOaRyuLV+DPnaTtWVDUbA7jwlU
+ H0AU2+Olaa6qWnQocIuw3oJd/+fFEOULSqsSv3Uys8zwJaEefGRFOkAQrzykBHkUOtDL26Mfx
+ 5t2fg4fgyKKYU58NZtADSFK0O2moVUxyTw57rCw8miQIE+pd60jYFuI/Hv0brOPOEdNHloj1f
+ m38Szem6MsipbkBKjou0F8vftU90YBh0v/qH36g==
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--3fzIuSauCBmPd09e1Jc89lSqQjej3uTNo
+Content-Type: multipart/mixed; boundary="VeqYIhLWcBzbATeKJw7QUf1V6bGHOAi37"
+
+--VeqYIhLWcBzbATeKJw7QUf1V6bGHOAi37
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
 
-On 2020/9/15 =E4=B8=8B=E5=8D=884:37, Nikolay Borisov wrote:
->
->
-> On 15.09.20 =D0=B3. 8:35 =D1=87., Qu Wenruo wrote:
->> As a preparation for subpage sector size support (allowing filesystem
->> with sector size smaller than page size to be mounted) if the sector
->> size is smaller than page size, we don't allow tree block to be read if
->> it cross 64K(*) boundary.
->>
->> The 64K is selected because:
->> - We are only going to support 64K page size for subpage
->
-> What does "only support 64k page size for subpage" ?
 
-That means, we only support 64K page size system to mount sector size
-smaller than page size.
+On 2020/9/15 =E4=B8=8B=E5=8D=884:42, Johannes Thumshirn wrote:
+> On 15/09/2020 07:36, Qu Wenruo wrote:
+>> +	 * For sectorsize < PAGE_SIZE case, we only want to support 64K
+>> +	 * PAGE_SIZE, and ensured all tree blocks won't cross page boundary.=
 
-Or to be more specific, we only support 64K page size system to mount 4K
-sector size fs.
+>> +	 * So in that case we always got 1 page.
+>=20
+> Just to clarify, does this mean we won't support 512B sector size with =
+4K pages?
+>=20
+At least that's why I have planned.
+
+I think the current minimal 4K sector size is pretty reasonable.
 
 Thanks,
 Qu
->
->> - 64K is also the max node size btrfs supports
->>
->> This ensures that, tree blocks are always contained in one page for a
->> system with 64K page size, which can greatly simplify the handling.
->>
->> Or we need to do complex multi-page handling for tree blocks.
->>
->> Currently the only way to create such tree blocks crossing 64K boundary
->> is by btrfs-convert, which will get fixed soon and doesn't get
->> wide-spread usage.
->>
->> Signed-off-by: Qu Wenruo <wqu@suse.com>
->> ---
->>  fs/btrfs/extent_io.c | 7 +++++++
->>  1 file changed, 7 insertions(+)
->>
->> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
->> index e56aa68cd9fe..9af972999a09 100644
->> --- a/fs/btrfs/extent_io.c
->> +++ b/fs/btrfs/extent_io.c
->> @@ -5232,6 +5232,13 @@ struct extent_buffer *alloc_extent_buffer(struct=
- btrfs_fs_info *fs_info,
->>  		btrfs_err(fs_info, "bad tree block start %llu", start);
->>  		return ERR_PTR(-EINVAL);
->>  	}
->> +	if (fs_info->sectorsize < PAGE_SIZE && round_down(start, PAGE_SIZE) !=
-=3D
->> +	    round_down(start + len - 1, PAGE_SIZE)) {
->> +		btrfs_err(fs_info,
->> +		"tree block crosses page boundary, start %llu nodesize %lu",
->> +			  start, len);
->> +		return ERR_PTR(-EINVAL);
->> +	}
->>
->>  	eb =3D find_extent_buffer(fs_info, start);
->>  	if (eb)
->>
+
+
+--VeqYIhLWcBzbATeKJw7QUf1V6bGHOAi37--
+
+--3fzIuSauCBmPd09e1Jc89lSqQjej3uTNo
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl9gkl4ACgkQwj2R86El
+/qj4CAf/dFDxJ7xkp1cNpBQw68AUAReu97XVIsQRa1k/vYaRAK3YXCBJ09VrPorU
+93DBvapeHiaj1YmBBwY/ANtfrOkBaquvlM9gybKWLsHFNF9sm/89gA1KxBtPbC3G
+Zp998R+/KvYyAQJ8wP/aZdV5zJpBCE1fIkw7yQ83OB/8qFM20j8oTyIsaDPsLccS
+JpapGAqmUzg0i0iig1voJrv8C9UpQoJV38fkpb0Z5EfbF2c6S+nDdsWGLyJmAVRj
+Wdp94hIvGRf9TQ4fJSfrow3uw2OHCedGTQSBkRSZQUeK31fLKhfi6Pat36DqNRB3
+a7NTT3njIERAcmMK1LRhDlovh2UDEw==
+=rJPa
+-----END PGP SIGNATURE-----
+
+--3fzIuSauCBmPd09e1Jc89lSqQjej3uTNo--
