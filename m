@@ -2,24 +2,24 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2B11269DDB
-	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Sep 2020 07:35:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E9A5269DDC
+	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Sep 2020 07:35:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726144AbgIOFfw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 15 Sep 2020 01:35:52 -0400
-Received: from mx2.suse.de ([195.135.220.15]:42984 "EHLO mx2.suse.de"
+        id S1726148AbgIOFfy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 15 Sep 2020 01:35:54 -0400
+Received: from mx2.suse.de ([195.135.220.15]:42990 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726131AbgIOFfv (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 15 Sep 2020 01:35:51 -0400
+        id S1726137AbgIOFfw (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 15 Sep 2020 01:35:52 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 57B19AC98
-        for <linux-btrfs@vger.kernel.org>; Tue, 15 Sep 2020 05:36:05 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 3F114AEA2
+        for <linux-btrfs@vger.kernel.org>; Tue, 15 Sep 2020 05:36:07 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 06/19] btrfs: don't allow tree block to cross page boundary for subpage support
-Date:   Tue, 15 Sep 2020 13:35:19 +0800
-Message-Id: <20200915053532.63279-7-wqu@suse.com>
+Subject: [PATCH v2 07/19] btrfs: update num_extent_pages() to support subpage sized extent buffer
+Date:   Tue, 15 Sep 2020 13:35:20 +0800
+Message-Id: <20200915053532.63279-8-wqu@suse.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200915053532.63279-1-wqu@suse.com>
 References: <20200915053532.63279-1-wqu@suse.com>
@@ -30,47 +30,42 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-As a preparation for subpage sector size support (allowing filesystem
-with sector size smaller than page size to be mounted) if the sector
-size is smaller than page size, we don't allow tree block to be read if
-it cross 64K(*) boundary.
+For subpage sized extent buffer, we have ensured no extent buffer will
+cross page boundary, thus we would only need one page for any extent
+buffer.
 
-The 64K is selected because:
-- We are only going to support 64K page size for subpage
-- 64K is also the max node size btrfs supports
-
-This ensures that, tree blocks are always contained in one page for a
-system with 64K page size, which can greatly simplify the handling.
-
-Or we need to do complex multi-page handling for tree blocks.
-
-Currently the only way to create such tree blocks crossing 64K boundary
-is by btrfs-convert, which will get fixed soon and doesn't get
-wide-spread usage.
+This patch will update the function num_extent_pages() to handle such
+case.
+Now num_extent_pages() would return 1 instead of for subpage sized
+extent buffer.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/extent_io.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ fs/btrfs/extent_io.h | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
 
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index e56aa68cd9fe..9af972999a09 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -5232,6 +5232,13 @@ struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
- 		btrfs_err(fs_info, "bad tree block start %llu", start);
- 		return ERR_PTR(-EINVAL);
- 	}
-+	if (fs_info->sectorsize < PAGE_SIZE && round_down(start, PAGE_SIZE) !=
-+	    round_down(start + len - 1, PAGE_SIZE)) {
-+		btrfs_err(fs_info,
-+		"tree block crosses page boundary, start %llu nodesize %lu",
-+			  start, len);
-+		return ERR_PTR(-EINVAL);
-+	}
+diff --git a/fs/btrfs/extent_io.h b/fs/btrfs/extent_io.h
+index d511890702cc..61556d6e9363 100644
+--- a/fs/btrfs/extent_io.h
++++ b/fs/btrfs/extent_io.h
+@@ -229,8 +229,15 @@ void wait_on_extent_buffer_writeback(struct extent_buffer *eb);
  
- 	eb = find_extent_buffer(fs_info, start);
- 	if (eb)
+ static inline int num_extent_pages(const struct extent_buffer *eb)
+ {
+-	return (round_up(eb->start + eb->len, PAGE_SIZE) >> PAGE_SHIFT) -
+-	       (eb->start >> PAGE_SHIFT);
++	/*
++	 * For sectorsize == PAGE_SIZE case, since eb is always aligned to
++	 * sectorsize, it's just (eb->len / PAGE_SIZE) >> PAGE_SHIFT.
++	 *
++	 * For sectorsize < PAGE_SIZE case, we only want to support 64K
++	 * PAGE_SIZE, and ensured all tree blocks won't cross page boundary.
++	 * So in that case we always got 1 page.
++	 */
++	return (round_up(eb->len, PAGE_SIZE) >> PAGE_SHIFT);
+ }
+ 
+ static inline int extent_buffer_uptodate(const struct extent_buffer *eb)
 -- 
 2.28.0
 
