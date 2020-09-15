@@ -2,64 +2,50 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 426A926A07A
-	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Sep 2020 10:16:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7408826A09D
+	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Sep 2020 10:22:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726325AbgIOIQh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 15 Sep 2020 04:16:37 -0400
-Received: from mx2.suse.de ([195.135.220.15]:60030 "EHLO mx2.suse.de"
+        id S1726234AbgIOIWs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 15 Sep 2020 04:22:48 -0400
+Received: from mx2.suse.de ([195.135.220.15]:36398 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726123AbgIOIQD (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 15 Sep 2020 04:16:03 -0400
+        id S1726344AbgIOISw (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 15 Sep 2020 04:18:52 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 6B1A8AC6E;
-        Tue, 15 Sep 2020 08:16:15 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 8295BB195;
+        Tue, 15 Sep 2020 08:18:52 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id B5957DA818; Tue, 15 Sep 2020 10:14:48 +0200 (CEST)
-Date:   Tue, 15 Sep 2020 10:14:48 +0200
+        id C5CB1DA818; Tue, 15 Sep 2020 10:17:25 +0200 (CEST)
+Date:   Tue, 15 Sep 2020 10:17:25 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Omar Sandoval <osandov@osandov.com>
-Cc:     dsterba@suse.cz, linux-btrfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH 2/9] btrfs: send: avoid copying file data
-Message-ID: <20200915081448.GG1791@twin.jikos.cz>
+To:     A L <mail@lechevalier.se>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: Changes in 5.8.x cause compsize/bees failure
+Message-ID: <20200915081725.GH1791@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Omar Sandoval <osandov@osandov.com>,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org
-References: <cover.1597994106.git.osandov@osandov.com>
- <be54e8e7658f85dd5e62627a1ad02beb7a4aeed8.1597994106.git.osandov@osandov.com>
- <20200911141339.GR18399@twin.jikos.cz>
- <20200914220448.GC148663@relinquished.localdomain>
+Mail-Followup-To: dsterba@suse.cz, A L <mail@lechevalier.se>,
+        linux-btrfs@vger.kernel.org
+References: <632b888d-a3c3-b085-cdf5-f9bb61017d92@lechevalier.se>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200914220448.GC148663@relinquished.localdomain>
+In-Reply-To: <632b888d-a3c3-b085-cdf5-f9bb61017d92@lechevalier.se>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 03:04:48PM -0700, Omar Sandoval wrote:
-> On Fri, Sep 11, 2020 at 04:13:39PM +0200, David Sterba wrote:
-> > On Fri, Aug 21, 2020 at 12:39:52AM -0700, Omar Sandoval wrote:
-> > > +static int put_data_header(struct send_ctx *sctx, u32 len)
-> > > +{
-> > > +	struct btrfs_tlv_header *hdr;
-> > > +
-> > > +	if (sctx->send_max_size - sctx->send_size < sizeof(*hdr) + len)
-> > > +		return -EOVERFLOW;
-> > > +	hdr = (struct btrfs_tlv_header *)(sctx->send_buf + sctx->send_size);
-> > > +	hdr->tlv_type = cpu_to_le16(BTRFS_SEND_A_DATA);
-> > > +	hdr->tlv_len = cpu_to_le16(len);
-> > 
-> > I think we need put_unaligned_le16 here, it's mapping a random buffer to
-> > a pointer, this is not alignment safe in general.
+On Sat, Sep 12, 2020 at 07:13:21PM +0200, A L wrote:
+> I noticed that in (at least 5.8.6 and 5.8.8) there is some change in 
+> Btrfs kernel code that cause them to fail.
 > 
-> I think you're right, although tlv_put() seems to have this same
-> problem.
+> For example compsize now often/usually fails with: "Regular extent's 
+> header not 53 bytes (0) long?!?"
+> 
+> Bees is having plenty of errors too, and does not succeed to read any 
+> files (hash db is always empty). Perhaps this is an unrelated problem?
 
-Indeed and there's more: tlv_put, TLV_PUT_DEFINE_INT, begin_cmd,
-send_cmd. Other direct assignments are in local structs so the alignment
-is fine.
+The fix is now in stable queue, to be released in 5.8.10. Thanks for the
+report!
