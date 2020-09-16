@@ -2,32 +2,32 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A50926BFB8
-	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Sep 2020 10:49:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3B7326BFCB
+	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Sep 2020 10:50:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726659AbgIPItM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 16 Sep 2020 04:49:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35796 "EHLO
+        id S1726692AbgIPIuJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 16 Sep 2020 04:50:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726377AbgIPItL (ORCPT
+        with ESMTP id S1726682AbgIPIuB (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 16 Sep 2020 04:49:11 -0400
+        Wed, 16 Sep 2020 04:50:01 -0400
 Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61BA7C06174A;
-        Wed, 16 Sep 2020 01:49:11 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CA0CC06174A;
+        Wed, 16 Sep 2020 01:50:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
         References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
         Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=yFjrMsePDJlQkzG4d2Vn8z/692IKzJ049uA8PvEMcO4=; b=Ncdb8mKIyo2jzNf/4eaE4LnpE4
-        vFj38ShjIXOy8kyLU7yoLOGb+kFF78Rsm0VwpmpGVyTX3s306CGrpGaxuvnR2qMJRP/c+7onbjD2o
-        xlf88CQo90s+kNfDXNdGx9DpBk2YXjtyBEKR057ZhUmbPSKKoohMzOxPdp7lOD776J/L8ar5x3vPr
-        tCur5rOtVXOE1W9N7ysn155eEtqs8hrBxog4BoZUqAD++P78ZzqZzJWUKHLBbQ7CHtoPIBSnVqexZ
-        2weYDIUQokHvqdlyaP1xT/gi4Ao0WZ/BebOnYeahK2Pb4/KNNOKj97cffPeG/WKbGYSFx+5AdAQky
-        jzrMrnIw==;
+        bh=HY5sSDf+1gYa2b3NXHBac5E/PqpXZ7sU5Qg7bTCCCV4=; b=hUxTXtIwup8HwXzRn4HnMIRdA5
+        FPpltTYYiaSUM8IwPHrwFgbd1a9DADpv9bhUGqJLTh2LIDgW3qQoydHUySggdhzxU97zPROKeanBn
+        2UGUonQzrkanDUmkWGawx1Kz3VDSPGdQOGCFC5/QmRQH/zLYeCQpTnchFIqk0K7Mj0WSP5YrWzQIG
+        qQqg+11Uzy9xSKl9cSXBhYTJkQEMppsELiB9kas2wXnbt8/4LschRanwncC6AhwXNXZnpiBkPt5mJ
+        F4UVmELqbY187ZKI+XMx7ALpwqvZfYhNMTim956FO9UZVhQYTuVHW4+YzCH41xaTf2tOfUoN8gp5Z
+        hW2p2S9w==;
 Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kIT7l-0008Lu-46; Wed, 16 Sep 2020 08:49:09 +0000
-Date:   Wed, 16 Sep 2020 09:49:09 +0100
+        id 1kIT8Z-0008Nz-0U; Wed, 16 Sep 2020 08:49:59 +0000
+Date:   Wed, 16 Sep 2020 09:49:58 +0100
 From:   Christoph Hellwig <hch@infradead.org>
 To:     Nick Terrell <nickrterrell@gmail.com>
 Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
@@ -38,27 +38,26 @@ Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
         Nick Terrell <terrelln@fb.com>, Chris Mason <clm@fb.com>,
         Petr Malat <oss@malat.biz>, Johannes Weiner <jweiner@fb.com>,
         Niket Agarwal <niketa@fb.com>, Yann Collet <cyan@fb.com>
-Subject: Re: [PATCH 4/9] crypto: zstd: Switch to zstd-1.4.6 API
-Message-ID: <20200916084909.GB31608@infradead.org>
+Subject: Re: [PATCH 5/9] btrfs: zstd: Switch to the zstd-1.4.6 API
+Message-ID: <20200916084958.GC31608@infradead.org>
 References: <20200916034307.2092020-1-nickrterrell@gmail.com>
- <20200916034307.2092020-5-nickrterrell@gmail.com>
+ <20200916034307.2092020-7-nickrterrell@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200916034307.2092020-5-nickrterrell@gmail.com>
+In-Reply-To: <20200916034307.2092020-7-nickrterrell@gmail.com>
 X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-> +	const size_t wksp_size = ZSTD_estimateCCtxSize(ZSTD_DEF_LEVEL);
-> +
-> +	if (ZSTD_isError(wksp_size)) {
-> +		ret = -EINVAL;
-> +		goto out_free;
-> +	}
+On Tue, Sep 15, 2020 at 08:42:59PM -0700, Nick Terrell wrote:
+> From: Nick Terrell <terrelln@fb.com>
+> 
+> Move away from the compatibility wrapper to the zstd-1.4.6 API. This
+> code is functionally equivalent.
 
-Pleas switch to properly named functions when you touch this.
-
-The API names here look like a cat threw up on the keyboard.
+Again, please use sensible names  And no one gives a fuck if this bad
+API is "zstd-1.4.6" as the Linux kernel uses its own APIs, not some
+random mess from a badly written userspace package.
