@@ -2,72 +2,69 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6E4B26CA9E
-	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Sep 2020 22:10:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABDBF26CA98
+	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Sep 2020 22:09:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727633AbgIPUKI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 16 Sep 2020 16:10:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33276 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727046AbgIPRdm (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
+        id S1728248AbgIPUJ0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 16 Sep 2020 16:09:26 -0400
+Received: from mx2.suse.de ([195.135.220.15]:36634 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727045AbgIPRdm (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
         Wed, 16 Sep 2020 13:33:42 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8BD4C00217F;
-        Wed, 16 Sep 2020 07:46:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=I+Wrsf2OsM4H/FvG28XmzjWSyq2hOoPWFZhAVEE3RCk=; b=vuzIdI2myzrcSR8N8YUZIxJs7P
-        Sx91GDqxw7SKvTK3Q/nRp4WnHClkpkK/1OSKRygFhe90fZaV9fh+k7GQDAKnGLqU52NU1R7o24SfD
-        seMr7Y2+IlmkwzW5l1W2SFiJm7EC1UQvsJqgorQoJrd0mihZ0kd7Vp8ebhVZCF0Q0ELXjj/VrFWna
-        ctPysIiI3CtHiEShBsJMczKgdXTh3NyyyLxs+T7ZmyrJaIQAuUEi+E+Z480NRxWRE3n4HU0iyYgbT
-        oc26VCkL3wOc32lThfhoy8TDA7vL4lHIHRx7dN1lyrOOFn10v1O1A0ycsq6YvIr+h+Hpjh/++0yzE
-        tDUCoKHA==;
-Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kIYhO-0004Yh-Kj; Wed, 16 Sep 2020 14:46:18 +0000
-Date:   Wed, 16 Sep 2020 15:46:18 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Chris Mason <clm@fb.com>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Nick Terrell <nickrterrell@gmail.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        linux-crypto@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        squashfs-devel@lists.sourceforge.net,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, Kernel Team <Kernel-team@fb.com>,
-        Nick Terrell <terrelln@fb.com>, Petr Malat <oss@malat.biz>,
-        Johannes Weiner <jweiner@fb.com>,
-        Niket Agarwal <niketa@fb.com>, Yann Collet <cyan@fb.com>
-Subject: Re: [PATCH 5/9] btrfs: zstd: Switch to the zstd-1.4.6 API
-Message-ID: <20200916144618.GB16392@infradead.org>
-References: <20200916034307.2092020-1-nickrterrell@gmail.com>
- <20200916034307.2092020-7-nickrterrell@gmail.com>
- <20200916084958.GC31608@infradead.org>
- <CCDAB4AB-DE8D-4ADE-9221-02AE732CBAE2@fb.com>
- <20200916143046.GA13543@infradead.org>
- <1CAB33F1-95DB-4BC5-9023-35DD2E4E0C20@fb.com>
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id B4712B21D;
+        Wed, 16 Sep 2020 16:07:39 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 64B60DA7C7; Wed, 16 Sep 2020 18:06:12 +0200 (CEST)
+Date:   Wed, 16 Sep 2020 18:06:12 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v2 14/19] btrfs: make btree inode io_tree has its special
+ owner
+Message-ID: <20200916160612.GO1791@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <20200915053532.63279-1-wqu@suse.com>
+ <20200915053532.63279-15-wqu@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1CAB33F1-95DB-4BC5-9023-35DD2E4E0C20@fb.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20200915053532.63279-15-wqu@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 10:43:04AM -0400, Chris Mason wrote:
-> Otherwise we just end up with drift and kernel-specific bugs that are harder
-> to debug.  To the extent those APIs make us contort the kernel code, I???m
-> sure Nick is interested in improving things in both places.
+On Tue, Sep 15, 2020 at 01:35:27PM +0800, Qu Wenruo wrote:
+> Btree inode is pretty special compared to all other inode extent io
+> tree, although it has a btrfs inode, it doesn't have the track_uptodate
+> bit at all.
+> 
+> This means a lot of things like extent locking doesn't even need to be
+> applied to btree io tree.
+> 
+> Since it's so special, adds a new owner value for it to make debuging a
+> little easier.
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+>  fs/btrfs/disk-io.c        | 2 +-
+>  fs/btrfs/extent-io-tree.h | 1 +
+>  2 files changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+> index 1ba16951ccaa..82a841bd0702 100644
+> --- a/fs/btrfs/disk-io.c
+> +++ b/fs/btrfs/disk-io.c
+> @@ -2126,7 +2126,7 @@ static void btrfs_init_btree_inode(struct btrfs_fs_info *fs_info)
+>  
+>  	RB_CLEAR_NODE(&BTRFS_I(inode)->rb_node);
+>  	extent_io_tree_init(fs_info, &BTRFS_I(inode)->io_tree,
+> -			    IO_TREE_INODE_IO, inode);
+> +			    IO_TREE_BTREE_IO, inode);
 
-Seriously, we do not care elsewhere.  Why would zlib be any different?
-
-> There are probably 1000 constructive ways to have that conversation.  Please
-> choose one of those instead of being an asshole.
-
-I think you are the asshole here by ignoring the practices we are using
-elsewhere and think your employers pet project is somehow special.  It
-is not, and claiming so is everything but constructive.
+This looks like an independent patch, so it could be taken separately.
