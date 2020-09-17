@@ -2,191 +2,115 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A277C26CFF4
-	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Sep 2020 02:29:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D937826D0C7
+	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Sep 2020 03:46:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726064AbgIQA3d (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 16 Sep 2020 20:29:33 -0400
-Received: from mout.gmx.net ([212.227.15.19]:54401 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725987AbgIQA3c (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 16 Sep 2020 20:29:32 -0400
-X-Greylist: delayed 304 seconds by postgrey-1.27 at vger.kernel.org; Wed, 16 Sep 2020 20:29:31 EDT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1600302570;
-        bh=mz+7DqUt7EPSV4LH/TXdVCY6AtmOXsmPgRnPaWLcpew=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=PGVfvuH72aoNr2up1L/Q+dmjbgbxsy+iglkKnqVCPRXoHld2PTtqZ4V01XY85X35H
-         GM6dDSVfg4zl+oN37tbnE5S0B/kSzl/pZUyqgCM1HaE389CVPY//Hqg2dLeyiNklVM
-         Ui0EVxGTtZSVxtocqHsTSgqGx3euBH7QB7pjXJp8=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MYeQr-1jwUA32fzP-00Vcwn; Thu, 17
- Sep 2020 02:24:21 +0200
-Subject: Re: [PATCH v2 00/19] btrfs: add read-only support for subpage sector
- size
-To:     Neal Gompa <ngompa13@gmail.com>, Qu Wenruo <wqu@suse.com>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Chris Murphy <lists@colorremedies.com>
-References: <20200915053532.63279-1-wqu@suse.com>
- <CAEg-Je-y6BaXYbfDOdoeF_H85E2+PqRQ-PCJrW6KPHe9Haz6MA@mail.gmail.com>
- <6802c45f-16eb-90a3-4ad5-b3bb92dc4cbd@suse.com>
- <CAEg-Je-204GbuVRyrAK+jSYN9YPpCJf8e7CneyYz+PtRxbM1EQ@mail.gmail.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
- PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
- 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
- D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
- efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
- ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
- BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
- 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
- 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
- EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
- 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
- ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
- oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
- fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
- 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
- ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
- oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <a50bcca5-3704-c7f3-6358-5015d797adf6@gmx.com>
-Date:   Thu, 17 Sep 2020 08:24:16 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1726157AbgIQBqn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 16 Sep 2020 21:46:43 -0400
+Received: from shelob.surriel.com ([96.67.55.147]:56590 "EHLO
+        shelob.surriel.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726072AbgIQBqm (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 16 Sep 2020 21:46:42 -0400
+X-Greylist: delayed 626 seconds by postgrey-1.27 at vger.kernel.org; Wed, 16 Sep 2020 21:46:41 EDT
+Received: from imladris.surriel.com ([96.67.55.152])
+        by shelob.surriel.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <riel@shelob.surriel.com>)
+        id 1kIiqF-00061g-DK; Wed, 16 Sep 2020 21:36:07 -0400
+Message-ID: <b1eec667d42849f757bbd55f014739509498a59d.camel@surriel.com>
+Subject: Re: [PATCH 5/9] btrfs: zstd: Switch to the zstd-1.4.6 API
+From:   Rik van Riel <riel@surriel.com>
+To:     Nick Terrell <terrelln@fb.com>,
+        Christoph Hellwig <hch@infradead.org>
+Cc:     Chris Mason <clm@fb.com>, Nick Terrell <nickrterrell@gmail.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
+        "squashfs-devel@lists.sourceforge.net" 
+        <squashfs-devel@lists.sourceforge.net>,
+        "linux-f2fs-devel@lists.sourceforge.net" 
+        <linux-f2fs-devel@lists.sourceforge.net>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Kernel Team <Kernel-team@fb.com>, Petr Malat <oss@malat.biz>,
+        Johannes Weiner <jweiner@fb.com>,
+        Niket Agarwal <niketa@fb.com>, Yann Collet <cyan@fb.com>
+Date:   Wed, 16 Sep 2020 21:35:51 -0400
+In-Reply-To: <4D04D534-75BD-4B13-81B9-31B9687A6B64@fb.com>
+References: <20200916034307.2092020-1-nickrterrell@gmail.com>
+         <20200916034307.2092020-7-nickrterrell@gmail.com>
+         <20200916084958.GC31608@infradead.org>
+         <CCDAB4AB-DE8D-4ADE-9221-02AE732CBAE2@fb.com>
+         <20200916143046.GA13543@infradead.org>
+         <1CAB33F1-95DB-4BC5-9023-35DD2E4E0C20@fb.com>
+         <20200916144618.GB16392@infradead.org>
+         <4D04D534-75BD-4B13-81B9-31B9687A6B64@fb.com>
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-00l4H219Xi95l7myD8I0"
+User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
 MIME-Version: 1.0
-In-Reply-To: <CAEg-Je-204GbuVRyrAK+jSYN9YPpCJf8e7CneyYz+PtRxbM1EQ@mail.gmail.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="t2SPohldi8OmUrFOIuaYXXvEh286ADwGR"
-X-Provags-ID: V03:K1:cK5VlPrtsb0rwugVyZQwCj8qAsvgG1Xo+yZeMkAh8F5cSiX9d6j
- Eu1zICDdmZiH5nWQNWBs04RE/OsbiwqWvTo1bfPqSaLtDxEDnOpEdHKzWwt3AbbG7YDXUZ0
- 4mIAPbu9Sa2Mr4K+sjoyYnYFRG+NQlhOVEjotabYOxLqVq4wxLxIsHLYLthowKo1GDsRsE1
- Qk/RLNOvrPBJdIK0AzCxQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:z7l6FwzHhGo=:FGP56ndPjJgp5w3dlgZ30K
- 3iCud7xpgLtyN7kREGgVxvMqEgQjtyBYwHQhBvzi3qW9KmuuZCDvHw43R/ZDn/4e57BJA4PNB
- O9rqdFXl2mJZI/FuFPj+QzbImUBrTj22b3q5oQ4Pup5YW84FH+9QHTUX89odcsx0P14mOi8VC
- wg70EcTPmmG9CtoZKsOsX2vj2QyeC2TcA17luMVCG4f1NfwfOd4GgK9d6fDaXc896IhWTXBKb
- SEdlL6skXiy0lRcYC54GAhKmlnZk53YXnqWgMkgQ4FGefJxgqTjyvSp+WCJ3oPDbRCJ3GggHU
- oQIO/CpFkTU6CrL59C7/c2JT9cfCFERCdWRzzf9TOqqu8psaCJ0GJwknHJ61C+esz5f3NiDAG
- aiydXMe9TX9Em5rfE1mnVNkallSZWxfor9cgDsj+mqAbeSjjlerJzm1lehxr82v8109a8If0s
- 7iuqPR5ULm5K4QaeHUeCd2yHpHZRw6gcR3DR3HS07w36XsTE/ecF6pJZrEezAH9Y3GSkw7DIJ
- J6tsZChXJGa4dp+dfHYdpG/6PeLQelUFhylzQJid1Tdd5gsg9m++D5u3LUA5vDTW0vcvH2b1Z
- mtjjpMucEpMR1vkfPGKL7T/pp3Pn7bHHOz5xWJwZMwNk48VrfbLleaTW9/El/CqtExzhdsgi+
- Z/e0Efi7gWIx+/RXcdEhLSwkBhw7qsgUcZ24MYOhAdW1RX9597il5KvzptG+l8sWSGz7JRpIk
- 2O8vUHTsjjnBWSoSxaYFc/LbC+Ggzc+psaDdqkF+5/hA1M++oe+s74XJqAmZDFBK/ju5B8qbA
- DMkDMP0bLjpo0/xN8b86nDBTwY8JQ2iNoCg5G88r8yJz2Mji9Wgj2MqyEvyhG/+D++5ht3uPF
- 13bgjvs/XNc8sr8PvCLtFO+bXe8NcqcivWK0I93VXicxH1azbAxdlQJm2ahWRNMm4KvM9OCWH
- Omrz7pfXMS8rfGsxBzWs3UmKsHm9DyOI/7iHb/rJ/iJzZvIrbsV8z2dPkVZycvuwbdDuuzHZv
- k8R9whyS5PDtaYNmm89E3Bbx9ykFMN7Y0E1xodB4I93QHhXzttqSxwCSI9giwAEY7ELX9yrhc
- pIDEQnrfLlawk0obOKsAJ9tWSzFvDPVFFbZ0fQd7u9tsLNcATQxTo/4Cfv2+S1JGF8d+8UZCz
- LO9JhucmX3TMOJryRrC67twiYQYobbF7EMVypAYzHZHpnZn/ISLBht2LSfy75v3lPQbjuDnLn
- YwxU6zyQq8xAZZEbddnWaQ38b7QA6v9V6oJ1Qmg==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---t2SPohldi8OmUrFOIuaYXXvEh286ADwGR
-Content-Type: multipart/mixed; boundary="rxJGM1gxsCcgGm9eDgrKMAIdcMRKJuovB"
 
---rxJGM1gxsCcgGm9eDgrKMAIdcMRKJuovB
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+--=-00l4H219Xi95l7myD8I0
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
+On Wed, 2020-09-16 at 15:18 -0400, Nick Terrell wrote:
 
+> The zstd version in the kernel works fine. But, you can see that the
+> version
+> that got imported stagnated where upstream had 14 released versions.
+> I
+> don't think it makes sense to have kernel developers maintain their
+> own copy
+> of zstd. Their time would be better spent working on the rest of the
+> kernel.
+> Using upstream directly lets the kernel profit from the work that we,
+> the zstd
+> developers, are doing. And it still allows kernel developers to fix
+> bugs if any
+> show up, and we can back-port them to upstream.
 
-On 2020/9/17 =E4=B8=8A=E5=8D=888:13, Neal Gompa wrote:
-> On Wed, Sep 16, 2020 at 8:03 PM Qu Wenruo <wqu@suse.com> wrote:
->>
->>
->>
->> On 2020/9/17 =E4=B8=8A=E5=8D=8812:18, Neal Gompa wrote:
->>> On Tue, Sep 15, 2020 at 1:36 AM Qu Wenruo <wqu@suse.com> wrote:
->>>>
->>>> Patches can be fetched from github:
->>>> https://github.com/adam900710/linux/tree/subpage
->>>>
->>>> Currently btrfs only allows to mount fs with sectorsize =3D=3D PAGE_=
-SIZE.
->>>>
->>>> That means, for 64K page size system, they can only use 64K sector s=
-ize
->>>> fs.
->>>> This brings a big compatible problem for btrfs.
->>>>
->>>> This patch is going to slightly solve the problem by, allowing 64K
->>>> system to mount 4K sectorsize fs in read-only mode.
->>>>
->>>> The main objective here, is to remove the blockage in the code base,=
- and
->>>> pave the road to full RW mount support.
->>>>
->>>
->>> Is there a reason we don't include a patch in here to just hardwire
->>> the block size to 4K going forward?
->>>
->>
->> Did you mean to make 4K sector size the hard requirement?
->>
->> That would make existing 64K sector size fs unable to be mounted then.=
+I can't argue with that.
 
->>
->=20
-> I mean, make the 64K variant a legacy one and force 4K for all new
-> filesystems. That then simplifies this work to making it mountable and
-> usable as a legacy filesystem format.
+> One possibility is to have a kernel wrapper on top of the zstd API to
+> make it
+> more ergonomic. I personally don=E2=80=99t really see the value in it, si=
+nce
+> it adds
+> another layer of indirection between zstd and the caller, but it
+> could be done.
 
-That's the plan.
+Zstd would not be the first part of the kernel to
+come from somewhere else, and have wrappers when
+it gets integrated into the kernel. There certainly
+is precedence there.
 
-But not for now, since currently the subpage support is only read-only.
+It would be interesting to know what Christoph's
+preference is.
 
->=20
-> I guess that would be an incompat flag, no?
+--=20
+All Rights Reversed.
 
-No need for incompat flag.
-
-For older kernel they just can't mount subpage fs.
-
-Thanks,
-Qu
-
->=20
->=20
->=20
-> --
-> =E7=9C=9F=E5=AE=9F=E3=81=AF=E3=81=84=E3=81=A4=E3=82=82=E4=B8=80=E3=81=A4=
-=EF=BC=81/ Always, there's only one truth!
->=20
-
-
---rxJGM1gxsCcgGm9eDgrKMAIdcMRKJuovB--
-
---t2SPohldi8OmUrFOIuaYXXvEh286ADwGR
+--=-00l4H219Xi95l7myD8I0
 Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl9irLAACgkQwj2R86El
-/qgwQAf+N973Mb/9jztN0qrQBpJ1IaPtoN44tP2Ym65EV0VM566uXfgO/wXtZSXV
-kodQRvVHgo6YzfvREgbrWWshRdNEgY1fkzYqrWFJvG2k9SHOODwQA68IUY7+knfM
-X78ofJc45qVya4HGNLt3kX2WLQhPzxcXrQ6lXzJLf8mijFTpz3pXDddo8l5lPWq7
-HQVPDGtaz+OOacHmZITtiVkzaLqYH3XXaQh+ZMCx4FHnHKzJzUF7EQW+LJdFRuwu
-PQQx/qF2OQSdvZl0NVxVwxuM2/4KBhZkh+cpNiB5gK5OsnpsPXsggMXUhZyaw0CL
-D5qz6vFuMOt3EQ2QPFw0XykYoCgD2w==
-=zpp7
+iQEzBAABCAAdFiEEKR73pCCtJ5Xj3yADznnekoTE3oMFAl9ivXcACgkQznnekoTE
+3oOPpggAtolHgM9baGGYRypnu9M14qxIuWCs0R5dsHUAIeaf3t58BwsYiat23RYs
+FzWV01KQfvBTe9eQUKM/m9u+p3kqegVy3tIrE+4VCx1PxWpjlnB42ep6+02SXLzz
+P82Z4KvkyvwRw8jF7ixqa4vQN2G3pTOUejb9hN/BULrYZxijOR9/MoYXo2xGXZP7
+7rX/7LiqVYGommGQxYE5dEsVlXLSKdBdkV5690AwVUVky/eaYM4oxhp0882DscYy
+3BB1f4yAkmBlDATmTucb5dLpQM/1l2RMrpg9bMUNO/tmVmeq7LIszs/ymSXhi21U
+iIiPectvPTSs+UZiD7oxuK0x3OBzoA==
+=wqCT
 -----END PGP SIGNATURE-----
 
---t2SPohldi8OmUrFOIuaYXXvEh286ADwGR--
+--=-00l4H219Xi95l7myD8I0--
+
