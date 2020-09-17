@@ -2,108 +2,92 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECE1C26D32A
-	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Sep 2020 07:38:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86FF626D32D
+	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Sep 2020 07:39:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726149AbgIQFhr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 17 Sep 2020 01:37:47 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:33978 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726106AbgIQFhr (ORCPT
+        id S1726171AbgIQFjh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 17 Sep 2020 01:39:37 -0400
+Received: from esa6.hgst.iphmx.com ([216.71.154.45]:36405 "EHLO
+        esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725267AbgIQFjg (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 17 Sep 2020 01:37:47 -0400
-X-Greylist: delayed 13800 seconds by postgrey-1.27 at vger.kernel.org; Thu, 17 Sep 2020 01:37:46 EDT
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08H1kKL7150971;
-        Thu, 17 Sep 2020 01:47:31 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=YACpWeJWy4LHltrKxgba5kfoRSfcptXZK/mAzJLdVXM=;
- b=z83QzQfcZITi2F4T2SA/jRydig4u4ssPOuhpDDljnpjEaZ1bmn9fx+xUY3uDyI/ZwzJH
- 6ZNz1CnTFEZ0FvWZYt0GiiKe3JAiJXJT+LlQNS5Wjqylf2xYOQRzZTHEYTZF6qvgmJrc
- ypot+0K19S/3aqp+kOZduIo49rUcFJnTijKiYP5zt3mK/xZU9Y5BpOm9nYlxz1lHpAEE
- hOsYOG6w6/1sCA/pUFTkV++u653pkzbjy49MIuPDabpCD9QRgZJaCWcTJ5/FIyTu259w
- pnPyRW2OxWIfeZqJYmlPdr0XfS5D0xdnYlFNSx6xlpBXfuR7d3HuqxhxKWQ+nfRxF3BQ 1Q== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2120.oracle.com with ESMTP id 33j91dqx6x-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 17 Sep 2020 01:47:31 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08H1k2pw190202;
-        Thu, 17 Sep 2020 01:47:30 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3030.oracle.com with ESMTP id 33khpmajsq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 17 Sep 2020 01:47:30 +0000
-Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 08H1lTII010905;
-        Thu, 17 Sep 2020 01:47:29 GMT
-Received: from [192.168.1.102] (/39.109.231.106)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 17 Sep 2020 01:47:29 +0000
-Subject: Re: [PATCH -next] btrfs: Make btrfs_sysfs_add_fs_devices static
-To:     YueHaibing <yuehaibing@huawei.com>, clm@fb.com,
-        josef@toxicpanda.com, dsterba@suse.com
-Cc:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200916142604.37744-1-yuehaibing@huawei.com>
-From:   Anand Jain <anand.jain@oracle.com>
-Message-ID: <9d4c2521-338a-8bce-46a7-b48818ddad66@oracle.com>
-Date:   Thu, 17 Sep 2020 09:47:24 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.2.2
+        Thu, 17 Sep 2020 01:39:36 -0400
+X-Greylist: delayed 429 seconds by postgrey-1.27 at vger.kernel.org; Thu, 17 Sep 2020 01:39:36 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1600321176; x=1631857176;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=C+tNjfAB8G7xN42sK6N2ECKfbEjUHhJ8IAL/lOjYzLw=;
+  b=b7weoAcNkTujmxZGvx8m6MmoHIRjOmRxSUmsJU95Ezp7VxNGlrvCUquM
+   wv1Rai0x6Xx/GN0zjTD7soX11K70Ckd+chx8RipFWnTQGhUDs/WSudDF8
+   VIWgq3G1nB2cHrb3b9fNCQdXfVvwRW/96jDcQtl++wy9DE4VcxnfoFWj1
+   R9YxzxY6ug/fNc64BlWSUIcvSJY8K2JixGCjMD05BZZcOu3+jt0jTRFNc
+   WT9yG/PakEaWzuclJtKvmqoIs+UiChW5ivQZz/7E1SC5hqubyIJQMRTqp
+   wfNYVTPEumiT1HZoPbTVZpabiLxbjC5JP42yaJOciNQDo0elzgNjyPaWn
+   w==;
+IronPort-SDR: 3STTfhUIYj3xXMkcnUS/3P7xFUGojbrZYr/9biFC4iCWDLYb4c4gLdmO2RBu6bAAq37ZeLJx4W
+ FNgIOHQ4I0So1HoaQ8hUC+PkG4R4Mchh1ZULV1Osy8FYcZQXxNuhEOpmxtuFcTnIXUVAv+BJmW
+ /iKQZ7LH3aBxSCKYI7LZ/LB4eJfFDafXVNUmv6RgJQCenp9XFbr+5GzdurSNV6URm8QG/pmoaH
+ Pg4EagOz68ao7e8EOsJW4io5L3HbneddrauflNN+jB1rWlXJKYveZGxdOkrYdP2UD2MbCdYhCo
+ TtQ=
+X-IronPort-AV: E=Sophos;i="5.76,435,1592841600"; 
+   d="scan'208";a="148829733"
+Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
+  by ob1.hgst.iphmx.com with ESMTP; 17 Sep 2020 13:32:27 +0800
+IronPort-SDR: aqIb4wp2T5WziIul2uPQn9/+ukadWLjMm6ctoiss1WAUGbIhCvlghesk+yVwRIHiVbPoIVHv0m
+ tGWIYFormwOQ==
+Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2020 22:19:35 -0700
+IronPort-SDR: oRQWlAkM6hdbX6UA7u08OT1QRFATMInnFf7IR/oNyAfd4goMLoPvwgc9DzMxL6EdIyWrmpTUee
+ VEv4dEUbHP+g==
+WDCIronportException: Internal
+Received: from naota.dhcp.fujisawa.hgst.com ([10.149.52.155])
+  by uls-op-cesaip01.wdc.com with SMTP; 16 Sep 2020 22:32:26 -0700
+Received: (nullmailer pid 816930 invoked by uid 1000);
+        Thu, 17 Sep 2020 05:32:25 -0000
+Date:   Thu, 17 Sep 2020 14:32:25 +0900
+From:   Naohiro Aota <naohiro.aota@wdc.com>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     linux-btrfs@vger.kernel.org, David Sterba <dsterba@suse.com>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        Hannes Reinecke <hare@suse.com>, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v7 19/39] btrfs: limit bio size under max_zone_append_size
+Message-ID: <20200917053225.zs2ebj63mz2mwd2r@naota.dhcp.fujisawa.hgst.com>
+References: <20200911123259.3782926-1-naohiro.aota@wdc.com>
+ <20200911123259.3782926-20-naohiro.aota@wdc.com>
+ <20200911141719.GA15317@infradead.org>
+ <20200912041424.w4jhmsvrgtrcie2n@naota.dhcp.fujisawa.hgst.com>
+ <20200912053056.GA15640@infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <20200916142604.37744-1-yuehaibing@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9746 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 suspectscore=0
- mlxlogscore=999 phishscore=0 mlxscore=0 adultscore=0 spamscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009170011
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9746 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 impostorscore=0
- priorityscore=1501 malwarescore=0 suspectscore=0 mlxlogscore=999
- clxscore=1015 adultscore=0 lowpriorityscore=0 spamscore=0 mlxscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009170011
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20200912053056.GA15640@infradead.org>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Sat, Sep 12, 2020 at 06:30:56AM +0100, Christoph Hellwig wrote:
+>On Sat, Sep 12, 2020 at 01:14:24PM +0900, Naohiro Aota wrote:
+>> > For zoned devices you need to use bio_add_hw_page instead of so that all
+>> > the hardware restrictions are applied.  bio_add_hw_page asso gets the
+>> > lenght limited passed as the last parameter so we won't need a separate
+>> > check.
+>>
+>> I think we can't use it here. This bio is built for btrfs's logical space,
+>> so the corresponding request queue is not available here.
+>>
+>> Technically, we can use fs_devices->lateste_bdev. But considering this bio
+>> can map to multiple bios to multiple devices, limiting the size of this bio
+>> under the minimum queue_max_zone_appends_sectors() among devices is
+>> feasible.
+>
+>Well, how do you then ensure the bio actually fits all the other
+>device limits as well?  e.g. max segment size, no SG gaps policy,
+>etc?
 
+Yeah, that's problematic, and I realized we could not deal with all the
+restrictions in this manner. I'm reimplementing this patch basing on
+bio_add_hw_page().
 
-
-On 16/9/20 10:26 pm, YueHaibing wrote:
-> Fix sparse warning:
-> 
-> fs/btrfs/sysfs.c:1386:5: warning:
->   symbol 'btrfs_sysfs_add_fs_devices' was not declared. Should it be static?
-
-
-  misc-next branch has it declared static. It was fixed later.
-
-Thanks, Anand
-
-
-> 
-> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-> ---
->   fs/btrfs/sysfs.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
-> index e7b0e10685d9..279d9262b676 100644
-> --- a/fs/btrfs/sysfs.c
-> +++ b/fs/btrfs/sysfs.c
-> @@ -1383,7 +1383,7 @@ int btrfs_sysfs_add_device(struct btrfs_device *device)
->   	return ret;
->   }
->   
-> -int btrfs_sysfs_add_fs_devices(struct btrfs_fs_devices *fs_devices)
-> +static int btrfs_sysfs_add_fs_devices(struct btrfs_fs_devices *fs_devices)
->   {
->   	int ret;
->   	struct btrfs_device *device;
-> 
+Regards,
