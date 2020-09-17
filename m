@@ -2,115 +2,100 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D937826D0C7
-	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Sep 2020 03:46:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCF3026D1DA
+	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Sep 2020 05:42:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726157AbgIQBqn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 16 Sep 2020 21:46:43 -0400
-Received: from shelob.surriel.com ([96.67.55.147]:56590 "EHLO
-        shelob.surriel.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726072AbgIQBqm (ORCPT
+        id S1726055AbgIQDmi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 16 Sep 2020 23:42:38 -0400
+Received: from mail105.syd.optusnet.com.au ([211.29.132.249]:46294 "EHLO
+        mail105.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725858AbgIQDmh (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 16 Sep 2020 21:46:42 -0400
-X-Greylist: delayed 626 seconds by postgrey-1.27 at vger.kernel.org; Wed, 16 Sep 2020 21:46:41 EDT
-Received: from imladris.surriel.com ([96.67.55.152])
-        by shelob.surriel.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94)
-        (envelope-from <riel@shelob.surriel.com>)
-        id 1kIiqF-00061g-DK; Wed, 16 Sep 2020 21:36:07 -0400
-Message-ID: <b1eec667d42849f757bbd55f014739509498a59d.camel@surriel.com>
-Subject: Re: [PATCH 5/9] btrfs: zstd: Switch to the zstd-1.4.6 API
-From:   Rik van Riel <riel@surriel.com>
-To:     Nick Terrell <terrelln@fb.com>,
-        Christoph Hellwig <hch@infradead.org>
-Cc:     Chris Mason <clm@fb.com>, Nick Terrell <nickrterrell@gmail.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
-        "squashfs-devel@lists.sourceforge.net" 
-        <squashfs-devel@lists.sourceforge.net>,
-        "linux-f2fs-devel@lists.sourceforge.net" 
-        <linux-f2fs-devel@lists.sourceforge.net>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Kernel Team <Kernel-team@fb.com>, Petr Malat <oss@malat.biz>,
-        Johannes Weiner <jweiner@fb.com>,
-        Niket Agarwal <niketa@fb.com>, Yann Collet <cyan@fb.com>
-Date:   Wed, 16 Sep 2020 21:35:51 -0400
-In-Reply-To: <4D04D534-75BD-4B13-81B9-31B9687A6B64@fb.com>
-References: <20200916034307.2092020-1-nickrterrell@gmail.com>
-         <20200916034307.2092020-7-nickrterrell@gmail.com>
-         <20200916084958.GC31608@infradead.org>
-         <CCDAB4AB-DE8D-4ADE-9221-02AE732CBAE2@fb.com>
-         <20200916143046.GA13543@infradead.org>
-         <1CAB33F1-95DB-4BC5-9023-35DD2E4E0C20@fb.com>
-         <20200916144618.GB16392@infradead.org>
-         <4D04D534-75BD-4B13-81B9-31B9687A6B64@fb.com>
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-00l4H219Xi95l7myD8I0"
-User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
+        Wed, 16 Sep 2020 23:42:37 -0400
+X-Greylist: delayed 1969 seconds by postgrey-1.27 at vger.kernel.org; Wed, 16 Sep 2020 23:42:35 EDT
+Received: from dread.disaster.area (pa49-195-191-192.pa.nsw.optusnet.com.au [49.195.191.192])
+        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id E2FAB3AA31D;
+        Thu, 17 Sep 2020 13:09:43 +1000 (AEST)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1kIkIo-00015p-TR; Thu, 17 Sep 2020 13:09:42 +1000
+Date:   Thu, 17 Sep 2020 13:09:42 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     Goldwyn Rodrigues <rgoldwyn@suse.com>
+Cc:     Christoph Hellwig <hch@lst.de>, Josef Bacik <josef@toxicpanda.com>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        David Sterba <dsterba@suse.com>,
+        "linux-btrfs @ vger . kernel . org" <linux-btrfs@vger.kernel.org>,
+        Filipe Manana <fdmanana@gmail.com>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>
+Subject: Re: [RFC PATCH] btrfs: don't call btrfs_sync_file from iomap context
+Message-ID: <20200917030942.GU12096@dread.disaster.area>
+References: <20200901130644.12655-1-johannes.thumshirn@wdc.com>
+ <42efa646-73cd-d884-1c9c-dd889294bde2@toxicpanda.com>
+ <20200903163236.GA26043@lst.de>
+ <20200907000432.GM12096@dread.disaster.area>
+ <20200915214853.iurg43dt52h5z2gp@fiona>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200915214853.iurg43dt52h5z2gp@fiona>
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=XJ9OtjpE c=1 sm=1 tr=0 cx=a_idp_d
+        a=vvDRHhr1aDYKXl+H6jx2TA==:117 a=vvDRHhr1aDYKXl+H6jx2TA==:17
+        a=kj9zAlcOel0A:10 a=reM5J-MqmosA:10 a=7-415B0cAAAA:8
+        a=n9nB9iI-1VlEs8jUNu4A:9 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Tue, Sep 15, 2020 at 04:48:53PM -0500, Goldwyn Rodrigues wrote:
+> On 10:04 07/09, Dave Chinner wrote:
+> > On Thu, Sep 03, 2020 at 06:32:36PM +0200, Christoph Hellwig wrote:
+> > > We could trivially do something like this to allow the file system
+> > > to call iomap_dio_complete without i_rwsem:
+> > 
+> > That just exposes another deadlock vector:
+> > 
+> > P0			P1
+> > inode_lock()		fallocate(FALLOC_FL_ZERO_RANGE)
+> > __iomap_dio_rw()	inode_lock()
+> > 			<block>
+> > <submits IO>
+> > <completes IO>
+> > inode_unlock()
+> > 			<gets inode_lock()>
+> > 			inode_dio_wait()
+> > iomap_dio_complete()
+> >   generic_write_sync()
+> >     btrfs_file_fsync()
+> >       inode_lock()
+> >       <deadlock>
+> 
+> Can inode_dio_end() be called before generic_write_sync(), as it is done
+> in fs/direct-io.c:dio_complete()?
 
---=-00l4H219Xi95l7myD8I0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Don't think so.  inode_dio_wait() is supposed to indicate that all
+DIO is complete, and having the "make it stable" parts of an O_DSYNC
+DIO still running after inode_dio_wait() returns means that we still
+have DIO running....
 
-On Wed, 2020-09-16 at 15:18 -0400, Nick Terrell wrote:
+For some filesystems, ensuring the DIO data is stable may involve
+flushing other data (perhaps we did EOF zeroing before the file
+extending DIO) and/or metadata to the log, so we need to guarantee
+these DIO related operations are complete and stable before we say
+the DIO is done.
 
-> The zstd version in the kernel works fine. But, you can see that the
-> version
-> that got imported stagnated where upstream had 14 released versions.
-> I
-> don't think it makes sense to have kernel developers maintain their
-> own copy
-> of zstd. Their time would be better spent working on the rest of the
-> kernel.
-> Using upstream directly lets the kernel profit from the work that we,
-> the zstd
-> developers, are doing. And it still allows kernel developers to fix
-> bugs if any
-> show up, and we can back-port them to upstream.
+> Christoph's solution is a clean approach and would prefer to use it as
+> the final solution.
 
-I can't argue with that.
+/me shrugs
 
-> One possibility is to have a kernel wrapper on top of the zstd API to
-> make it
-> more ergonomic. I personally don=E2=80=99t really see the value in it, si=
-nce
-> it adds
-> another layer of indirection between zstd and the caller, but it
-> could be done.
+Christoph's solution simply means you can't use inode_dio_wait() in
+the filesystem. btrfs would need its own DIO barrier....
 
-Zstd would not be the first part of the kernel to
-come from somewhere else, and have wrappers when
-it gets integrated into the kernel. There certainly
-is precedence there.
+Cheers,
 
-It would be interesting to know what Christoph's
-preference is.
-
---=20
-All Rights Reversed.
-
---=-00l4H219Xi95l7myD8I0
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEKR73pCCtJ5Xj3yADznnekoTE3oMFAl9ivXcACgkQznnekoTE
-3oOPpggAtolHgM9baGGYRypnu9M14qxIuWCs0R5dsHUAIeaf3t58BwsYiat23RYs
-FzWV01KQfvBTe9eQUKM/m9u+p3kqegVy3tIrE+4VCx1PxWpjlnB42ep6+02SXLzz
-P82Z4KvkyvwRw8jF7ixqa4vQN2G3pTOUejb9hN/BULrYZxijOR9/MoYXo2xGXZP7
-7rX/7LiqVYGommGQxYE5dEsVlXLSKdBdkV5690AwVUVky/eaYM4oxhp0882DscYy
-3BB1f4yAkmBlDATmTucb5dLpQM/1l2RMrpg9bMUNO/tmVmeq7LIszs/ymSXhi21U
-iIiPectvPTSs+UZiD7oxuK0x3OBzoA==
-=wqCT
------END PGP SIGNATURE-----
-
---=-00l4H219Xi95l7myD8I0--
-
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
