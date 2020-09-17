@@ -2,77 +2,78 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2B2F26DE8F
-	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Sep 2020 16:43:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BC4026DFE8
+	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Sep 2020 17:42:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727192AbgIQOW1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 17 Sep 2020 10:22:27 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:38336 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727456AbgIQOUk (ORCPT
+        id S1728194AbgIQPmb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 17 Sep 2020 11:42:31 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:31094 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728097AbgIQPQW (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 17 Sep 2020 10:20:40 -0400
-X-Greylist: delayed 972 seconds by postgrey-1.27 at vger.kernel.org; Thu, 17 Sep 2020 10:20:18 EDT
-Received: from pps.filterd (m0042983.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08HE0ju0003861;
-        Thu, 17 Sep 2020 07:01:07 -0700
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-00082601.pphosted.com with ESMTP id 33k5pem09d-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 17 Sep 2020 07:01:07 -0700
-Received: from pps.reinject (m0042983.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08HDv0dG028393;
-        Thu, 17 Sep 2020 06:57:40 -0700
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 33k5q65h7r-3
+        Thu, 17 Sep 2020 11:16:22 -0400
+X-Greylist: delayed 2795 seconds by postgrey-1.27 at vger.kernel.org; Thu, 17 Sep 2020 11:16:08 EDT
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08HEOM3t021946;
+        Thu, 17 Sep 2020 07:28:31 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : in-reply-to : references : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=agTxKaqAVoCtTsETVEdQq2b9zMJZlv9JPP0RSxlOtgE=;
+ b=bQNbsCcYNZEICd+McZhkRlmXS2aLGVcFWsYSD6mAS9hufNAAkeJJ8Y0pPo1U7DGDcJmK
+ ZQBsmeC6LyCVE88SNVIN72FytQj4ryeyCcvCFhqn73CHzQsEbPSfy2t8zMXikPTPSgQL
+ +Z+C4TQPB6RkRIKHV9ak6u1ppnFwlvPAjrs= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 33kwpxjyju-5
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Wed, 16 Sep 2020 12:18:22 -0700
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.36.100) with Microsoft SMTP Server
+        Thu, 17 Sep 2020 07:28:31 -0700
+Received: from NAM02-CY1-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.228) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Wed, 16 Sep 2020 12:18:21 -0700
+ 15.1.1979.3; Thu, 17 Sep 2020 07:28:23 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=M0InFZXC9ZxuTTf0SEDyjuokpEL06DCzzq7ung6ixG6nrFkgTNgWQ/8ksMiZCtyjAm1xKOIyebOgHmnqu06++0bC+zbn1R6C7d8iqpeQbMw1CPQG/QpM5jUt9o7cYgijzGW+KfOQz5RefjLKfBbrszWMVaYnaBjEx0rl3X/uJTJUj29rKRdoRSzBH2FmCLYRhd0ffIiEwiW/kvuQFtxOqXto826UFGyYSGKYElDagE39UO8RcBSIYYbyXG8a4PA9BZ0+UB/hhmV3zG2WSQrr+l9lD+CZwtZa4Fam4DNt618q9Y+8B4cNT3hAOBCvEXfC0UfA2yhqu3r+ltufYQyJOg==
+ b=VUgKTsOqJOIRrpHijezgnzO1ZZduSj0KV9KTfpO0sWC1JkqThegp0CXDotQ3ywiIltD/92TUFRRMyL6F55cYJX5i92DivbiE7oqre214L78bxlSoR3ffKBmf+om3393flDDStXo/cx9rfzzNMDeLLhoelF3Xrs9/Xl9aBeBtQo242z8+qhdv7jcf3HO/MoQpNNYnR4mtM2ZuExCI/KOd/WVmSbnRjXvX3z0ZsmfTOMc+Kg+iTa7VYYgSrPwPb97idMtapbc64lNhn8fOrxndoAjMa7T+j+qjglCmztUgtP1XYC96lB8aBZUjmU9WU9JB9+IB5tC7HvuFC7sfVoyRWg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Pl/bAI3AqxzrrH9ft3zpTCD/pLp07hprxYHeL2EAyfg=;
- b=g9lj6YLVfEUoOcAN0ESmUEkbig8Q6NlQtnInfNL3qHGzyypKWBw9X4YpWyGErUWnycWP1o34T43ZEbaHtqhOx7XNEIMQTrs7exfYuT+dfQoNJSjoG+CNNL3mAXeOl8VrDMPzv9GUfESgmFrvqnOyepMPl+c9fMrpgy3iLbCxoXpH6ijU7wIcI3nYKtjZo9C6Az9rIzbuiFU9SfMl1Nl6hXUQc3IPzMh1zWhz5vZCB6f5bVyQCh/8NAodP7QD5Zj3y0Bv+uAHDO0qrE6dznhUSLm8vemcDDh2hqkmY5wfXsEeD5cMQBMrLc/hJrgb0t9WTRS94CKRYL92bIs/UlxCkw==
+ bh=agTxKaqAVoCtTsETVEdQq2b9zMJZlv9JPP0RSxlOtgE=;
+ b=a/2Cq+GylMBbv7TkbUFmCdAHVdsAI9oxVmEPEseX8lBxyuEMumUZYe+xdFwejtRlsZsyvp7FhIa2xlq55dCgG4IPiDszSxynQ/11SI9juLWfp0uWawgV3HXFNQQ1YD/WxgkWazxfCbLaEiCdBZhaTPUMPlWVdYTpAJsS+tjynhX1vVu0TrJWa/MTMK6Le1EY0lp27HVBqGh7C83859TNysK8rJs2jSH6IHsX89ftYPVo60eHAj1+u9kbxch5LHkw4ciuqBe/4dDJiuTBhLuW5z9CbcMVjEUST++FAaRM1d8dg7dxCVnOikgzecJcwLT7nqXOlWdcqCAOvk9r6OWGMw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
  header.d=fb.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
  s=selector2-fb-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Pl/bAI3AqxzrrH9ft3zpTCD/pLp07hprxYHeL2EAyfg=;
- b=JGbt6PlgaL1lV6csxMctlfLUmUH52a7N8x8L9J6uabp9cdV5S20yF2Sf5eW37ErhWFaXBAuzterOXZ0nNpKR4h/X5QXtOsDPK9sLiT5v66+aNPCsSsIHkWY45I6R+V0Ju65G0ktr/4RPmcNkfLsBUXdikYUJsIweMWCE0x5svJI=
-Received: from BY5PR15MB3667.namprd15.prod.outlook.com (2603:10b6:a03:1f9::18)
- by BYAPR15MB2997.namprd15.prod.outlook.com (2603:10b6:a03:b0::18) with
+ bh=agTxKaqAVoCtTsETVEdQq2b9zMJZlv9JPP0RSxlOtgE=;
+ b=BNVYfRD7LHNvwh/OxmWZAIFgkW1AMvmGs2s1E40SKCju/Xps0nZGw3G0MV2my8UVKmYlgnhrAs3+NRy5fjyY14cCE4dfY1mCTs5ebjDzfAZzJ0HaArwGcRi3kkeegnsnC7nl29+a35ZLTHP6TbWJwNbMvXD8s/hHqaLInl/Aw/I=
+Authentication-Results: infradead.org; dkim=none (message not signed)
+ header.d=none;infradead.org; dmarc=none action=none header.from=fb.com;
+Received: from MN2PR15MB3582.namprd15.prod.outlook.com (2603:10b6:208:1b5::23)
+ by MN2PR15MB3584.namprd15.prod.outlook.com (2603:10b6:208:1b7::22) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16; Wed, 16 Sep
- 2020 19:18:17 +0000
-Received: from BY5PR15MB3667.namprd15.prod.outlook.com
- ([fe80::2d08:987a:126:1c9c]) by BY5PR15MB3667.namprd15.prod.outlook.com
- ([fe80::2d08:987a:126:1c9c%7]) with mapi id 15.20.3391.014; Wed, 16 Sep 2020
- 19:18:17 +0000
-From:   Nick Terrell <terrelln@fb.com>
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.14; Thu, 17 Sep
+ 2020 14:28:18 +0000
+Received: from MN2PR15MB3582.namprd15.prod.outlook.com
+ ([fe80::bd7a:9d1e:2fd0:34e6]) by MN2PR15MB3582.namprd15.prod.outlook.com
+ ([fe80::bd7a:9d1e:2fd0:34e6%6]) with mapi id 15.20.3391.014; Thu, 17 Sep 2020
+ 14:28:18 +0000
+From:   "Chris Mason" <clm@fb.com>
 To:     Christoph Hellwig <hch@infradead.org>
-CC:     Chris Mason <clm@fb.com>, Nick Terrell <nickrterrell@gmail.com>,
-        "Herbert Xu" <herbert@gondor.apana.org.au>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+CC:     Rik van Riel <riel@surriel.com>, Nick Terrell <terrelln@fb.com>,
+        Nick Terrell <nickrterrell@gmail.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        <linux-crypto@vger.kernel.org>,
         Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
-        "squashfs-devel@lists.sourceforge.net" 
         <squashfs-devel@lists.sourceforge.net>,
-        "linux-f2fs-devel@lists.sourceforge.net" 
         <linux-f2fs-devel@lists.sourceforge.net>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Kernel Team <Kernel-team@fb.com>, Petr Malat <oss@malat.biz>,
-        Johannes Weiner <jweiner@fb.com>,
+        <linux-kernel@vger.kernel.org>, Kernel Team <Kernel-team@fb.com>,
+        Petr Malat <oss@malat.biz>, Johannes Weiner <jweiner@fb.com>,
         Niket Agarwal <niketa@fb.com>, Yann Collet <cyan@fb.com>
-Thread-Topic: [PATCH 5/9] btrfs: zstd: Switch to the zstd-1.4.6 API
-Thread-Index: AQHWi9t+F+963YLOT0SgwBoo2TG/malq9P8AgABcdACAAALEAIAAA28AgAAA6ACAAEv8AA==
-Date:   Wed, 16 Sep 2020 19:18:17 +0000
-Message-ID: <4D04D534-75BD-4B13-81B9-31B9687A6B64@fb.com>
+Subject: Re: [PATCH 5/9] btrfs: zstd: Switch to the zstd-1.4.6 API
+Date:   Thu, 17 Sep 2020 10:28:15 -0400
+X-Mailer: MailMate (1.13.2r5673)
+Message-ID: <2073A599-E7CA-476A-9B4B-7BC76B454B9A@fb.com>
+In-Reply-To: <20200917100458.GA28031@infradead.org>
 References: <20200916034307.2092020-1-nickrterrell@gmail.com>
  <20200916034307.2092020-7-nickrterrell@gmail.com>
  <20200916084958.GC31608@infradead.org>
@@ -80,105 +81,100 @@ References: <20200916034307.2092020-1-nickrterrell@gmail.com>
  <20200916143046.GA13543@infradead.org>
  <1CAB33F1-95DB-4BC5-9023-35DD2E4E0C20@fb.com>
  <20200916144618.GB16392@infradead.org>
-In-Reply-To: <20200916144618.GB16392@infradead.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: infradead.org; dkim=none (message not signed)
- header.d=none;infradead.org; dmarc=none action=none header.from=fb.com;
-x-originating-ip: [2620:10d:c090:400::5:d83f]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 97a5bd0e-43fb-42a2-f4da-08d85a75441d
-x-ms-traffictypediagnostic: BYAPR15MB2997:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BYAPR15MB299780DCB400AFD7B04A0361AB210@BYAPR15MB2997.namprd15.prod.outlook.com>
-x-fb-source: Internal
-x-ms-oob-tlc-oobclassifiers: OLM:8273;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: NVcV/Vtkfy+btdGrv35JUEYADiDiC2P/EB6jTD+hbJQEC7sewWq9c0yOrPfhslVYIZVHhoTK0R9bwJuHUiWswPO//U+wPnvhgav9GnN+ndkK1Aial1vFw4Qr6T+xPaS9mCG/sWiHZTqGJBCDEXU3P2cDcOQTFlqtk+5QMdSdeRVcul7dBW/OU8Gz/H3FOYLhz6Zr4JnYxRhEdu7v026x5AfZf3njJPLrGZV/bAmkzx3LRo0U7W6sqLFaNIVD12FjpKfNHrgEF1qvpmWj2DhGeMzdIyqltz8WSPicaY1bZHnXyXO+6IyJV67onsNv8PQPMTD8cSkx+sRwhgheFpf0wuYsGqsMTtbR1QvmLEgAtupZHzxrdqgzFQ3QjLKNzgul
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR15MB3667.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(376002)(346002)(366004)(396003)(136003)(33656002)(54906003)(2906002)(64756008)(66476007)(76116006)(71200400001)(66946007)(5660300002)(91956017)(66446008)(6506007)(186003)(316002)(4326008)(86362001)(66556008)(6486002)(53546011)(478600001)(6512007)(36756003)(8676002)(8936002)(2616005)(6916009);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: GbDkf9zRIf4fbXdCu0/czb1JawfWzOllAc5/aye20eRw60401jr4KClHdz+N8AyYcT2ptUbbLWzbcgiY5E/ID9/oytH9QnjD9RvZ6egBQwEnTYqyyR6LcfhsQMSbVVSO058RG/BeDNPRw2U1zAhWI8G4p0M/1h/LoiaALIwFQ3uuKw5KY5DFNC2bsiEFlIg0I8ymHfl/PdE/P3BYs/AFtFQOmTXH8ZxeB8WxucUabkHDwtHPz/OgBELpwid49jxbD3t224+vCOuBbuVcxehisJzfZf4a7UTby3AC45ChSm3O++13DNDn29j4bx89zcep30sG+xZDHuxSUW6Gw08i/QLM9gyKcey0VDilw2wC4ef99utZd+qIXJK9xUG9vDvBHoCxFXMi8v/fEt8a00ClBsgEyR5jHVh5E45IUCxAOUBSnI3B3uUvKZmDTBhC5xe8ntNUXkMlBy0ZoVe6bIpHmE3E+7kol1Kn4LYRfI63xl0u0bH7Y1+gSmFh2QADsZ4+FUh6vKbvaVxHL9zy9AAxfygqNdjJjIRStRcL/6JzIS09lvldcy1CMRQTMnYKb76g3eeNc4sxVs9IxHFdHgjJOOj3SmBxMzoXSDbw+n+YDZw2mYSTJ4nBU9z9ZO8E8TTXwWIom9oPF5LG5OOr071WsBH7mVP4+bEZIQ/rzi/EyL+DCKidOzmXHRDIvuaLraJ4
-Content-ID: <74653741ADB844449A7BD81A4044B26F@namprd15.prod.outlook.com>
+ <4D04D534-75BD-4B13-81B9-31B9687A6B64@fb.com>
+ <b1eec667d42849f757bbd55f014739509498a59d.camel@surriel.com>
+ <20200917100458.GA28031@infradead.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: MN2PR16CA0020.namprd16.prod.outlook.com
+ (2603:10b6:208:134::33) To MN2PR15MB3582.namprd15.prod.outlook.com
+ (2603:10b6:208:1b5::23)
 MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [100.109.170.31] (2620:10d:c091:480::1:c860) by MN2PR16CA0020.namprd16.prod.outlook.com (2603:10b6:208:134::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3326.19 via Frontend Transport; Thu, 17 Sep 2020 14:28:17 +0000
+X-Mailer: MailMate (1.13.2r5673)
+X-Originating-IP: [2620:10d:c091:480::1:c860]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 47d3ac0e-6266-4753-a2c5-08d85b15ebf9
+X-MS-TrafficTypeDiagnostic: MN2PR15MB3584:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <MN2PR15MB3584BBAE97AA8C91CF08946ED33E0@MN2PR15MB3584.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Kw/QaqoXQLlxXQGNtWvfnRH+mCG85BkJsCRRElu0Iq5oqlwzjuw1y7UEe166g8Hk66bgMwAJUAdd9VTp1QQ3DL2bveNs3B5brXLs2Gr27ihcyIfXjh9DjN6pJGdpLdEjZXZtdmQWuvN2/beopeWnaazIz/SLSFQazPD6j9oavWxmTMTMDo6h4s0uWXcHqMGtorPv7vhLQBM8gxDXi9ugz8udSimCz6NEX2wdW7spsF7JIO6Ar/QWHoSLD/F36NPghFTh1ZJj1HiBeYttTWUMB8mEetCCAvALHIAtEUgQ509dTsFoT49CzOch7pIXOckJcgUvxMtWiBuGt8yAeS3aL3UnJ537y9zPRACR5YYw94gwWaqBgNMlE0r09ZcelITp
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR15MB3582.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(376002)(136003)(366004)(346002)(39860400002)(33656002)(7416002)(478600001)(8936002)(6486002)(66556008)(6916009)(16526019)(4326008)(36756003)(66946007)(316002)(66476007)(186003)(5660300002)(83380400001)(8676002)(54906003)(2616005)(86362001)(956004)(53546011)(2906002)(52116002)(78286007);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: t8JpnR/Qn/k275ulHL0LUkuCb5OBPDlz4HZf//4saf9odDHQppwOpNIbf8Frq/vEDvJETcrStDkBpuD5Qmo0n9kkf1Pl8H00jxQZBCCyMfNzZ0JINUeF8tD0AjdETfd7FihKx4Ak+cSGxEHXg2D7Ao33v0da1wyUjSCdZ5cbO5derQIjPHQmRjI3/gfND0QuBEaCHbll8YJI/A4t/pzv+6lpHh5SvzDqSRl+cBt9FOsxmAaynXYhz1NepfShPCjXdSKbtYU+8kqCGfTTsZnMv9Xc8+AcQGa+P/yGvgSlBHD0Vi5InBNgS/R+/JvbJhlGODD6MyAVW+czn+02Jlaha90lA9Lxm2zU7ACrtfpD9pK0DnMDtEZBqhl7jh+frDc5NHiuVPMnJZUl4kroMW8FuiyKpwu5dUFKr+4QdgBj3/nuc9pN3xdj5CvyjQBxzvQkyxJxf5nfD0hAMS2wxy33osqe2wAr5xt13aSBufvXTKa+s3PZi0PN3vo6johnrIew+yWMip6h3ou/WhdhhfP39k7ylOXTHClg8CSbc52hHIs1BUdwRNb2p0Q/EFkX2xSW4S8bvYDkAn2V0pgwJ0RYk7QPPOQFicadVAdElS5AIHTm+ZMJbL6wVKbgVCQlfp+UL406WfCSJKG0sQaGfNn4gUMCPEZz7Jx/Hflhy8gL1XEwTVEiXLHWpjEJyitnm6hD
+X-MS-Exchange-CrossTenant-Network-Message-Id: 47d3ac0e-6266-4753-a2c5-08d85b15ebf9
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR15MB3582.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR15MB3667.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 97a5bd0e-43fb-42a2-f4da-08d85a75441d
-X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Sep 2020 19:18:17.1633
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Sep 2020 14:28:18.7140
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: vPzQgLi29MiCYv6hPBiPZ0gbFYqZYyrcjVrybmrzi+cckDzUJwrmwM7+D2jgwo56
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2997
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: C2p4K+6TnJpnZ+K/tdCk3thuo8YrQDHf/Utkz6lHaISnzA5opWKjuNWKfJ4foMFx
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR15MB3584
 X-OriginatorOrg: fb.com
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-16_12:2020-09-16,2020-09-16 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- bulkscore=0 mlxscore=0 spamscore=0 lowpriorityscore=0 phishscore=0
- mlxlogscore=999 suspectscore=0 malwarescore=0 impostorscore=0 adultscore=0
- clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009160135
-X-FB-Internal: deliver
-subject: Re: [PATCH 5/9] btrfs: zstd: Switch to the zstd-1.4.6 API
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
  definitions=2020-09-17_09:2020-09-16,2020-09-17 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxlogscore=780
+ suspectscore=0 bulkscore=0 phishscore=0 spamscore=0 malwarescore=0
+ adultscore=0 priorityscore=1501 lowpriorityscore=0 impostorscore=0
+ mlxscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009170113
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-DQoNCj4gT24gU2VwIDE2LCAyMDIwLCBhdCA3OjQ2IEFNLCBDaHJpc3RvcGggSGVsbHdpZyA8aGNo
-QGluZnJhZGVhZC5vcmc+IHdyb3RlOg0KPiANCj4gT24gV2VkLCBTZXAgMTYsIDIwMjAgYXQgMTA6
-NDM6MDRBTSAtMDQwMCwgQ2hyaXMgTWFzb24gd3JvdGU6DQo+PiBPdGhlcndpc2Ugd2UganVzdCBl
-bmQgdXAgd2l0aCBkcmlmdCBhbmQga2VybmVsLXNwZWNpZmljIGJ1Z3MgdGhhdCBhcmUgaGFyZGVy
-DQo+PiB0byBkZWJ1Zy4gIFRvIHRoZSBleHRlbnQgdGhvc2UgQVBJcyBtYWtlIHVzIGNvbnRvcnQg
-dGhlIGtlcm5lbCBjb2RlLCBJPz8/bQ0KPj4gc3VyZSBOaWNrIGlzIGludGVyZXN0ZWQgaW4gaW1w
-cm92aW5nIHRoaW5ncyBpbiBib3RoIHBsYWNlcy4NCj4gDQo+IFNlcmlvdXNseSwgd2UgZG8gbm90
-IGNhcmUgZWxzZXdoZXJlLiAgV2h5IHdvdWxkIHpsaWIgYmUgYW55IGRpZmZlcmVudD8NCj4gDQo+
-PiBUaGVyZSBhcmUgcHJvYmFibHkgMTAwMCBjb25zdHJ1Y3RpdmUgd2F5cyB0byBoYXZlIHRoYXQg
-Y29udmVyc2F0aW9uLiAgUGxlYXNlDQo+PiBjaG9vc2Ugb25lIG9mIHRob3NlIGluc3RlYWQgb2Yg
-YmVpbmcgYW4gYXNzaG9sZS4NCj4gDQo+IEkgdGhpbmsgeW91IGFyZSB0aGUgYXNzaG9sZSBoZXJl
-IGJ5IGlnbm9yaW5nIHRoZSBwcmFjdGljZXMgd2UgYXJlIHVzaW5nDQo+IGVsc2V3aGVyZSBhbmQg
-dGhpbmsgeW91ciBlbXBsb3llcnMgcGV0IHByb2plY3QgaXMgc29tZWhvdyBzcGVjaWFsLiAgSXQN
-Cj4gaXMgbm90LCBhbmQgY2xhaW1pbmcgc28gaXMgZXZlcnl0aGluZyBidXQgY29uc3RydWN0aXZl
-Lg0KDQpNeSBnb2FsIGluIHVwZGF0aW5nIHRoZSB6c3RkIGtlcm5lbCB0byB1c2UgdGhlIHVwc3Ry
-ZWFtIEFQSSBkaXJlY3RseSBpcyB0bw0KbWFrZSBmcmVxdWVudCBzeW5jcyBpbnRvIHRoZSBrZXJu
-ZWwgZWFzeS4gVGhpcyBpcyBpbXBvcnRhbnQgc28gdGhlIGtlcm5lbA0KZG9lc24ndCBtaXNzIG91
-dCBvbiBidWcgZml4ZXMgYW5kIHBlcmZvcm1hbmNlIGltcHJvdmVtZW50cy4NCg0KVGhlIHVwc3Ry
-ZWFtIHpzdGQgaXMgY29udGludW91c2x5IGZ1enplZCBhbmQgaXMgYmF0dGxlIHRlc3RlZCBpbiBw
-cm9kdWN0aW9uDQphbmQgYWNyb3NzIG1hbnkgZGlmZmVyZW50IHByb2plY3RzIGV4dGVybmFsIHRv
-IEZhY2Vib29rLiBUaGF0IG1lYW5zIHRoYXQNCnpzdGQtMS40LjYgaGFzIGFuIGFkZGl0aW9uYWwg
-MyB5ZWFycyBvZiBjb250aW51b3VzIGZ1enppbmcsIGFzIHdlbGwgYXMNCmltcHJvdmVtZW50cyB0
-byBvdXIgZnV6eiBhbmQgdGVzdCBzdWl0ZS4NCg0KVGhlIHpzdGQgdmVyc2lvbiBpbiB0aGUga2Vy
-bmVsIHdvcmtzIGZpbmUuIEJ1dCwgeW91IGNhbiBzZWUgdGhhdCB0aGUgdmVyc2lvbg0KdGhhdCBn
-b3QgaW1wb3J0ZWQgc3RhZ25hdGVkIHdoZXJlIHVwc3RyZWFtIGhhZCAxNCByZWxlYXNlZCB2ZXJz
-aW9ucy4gSQ0KZG9uJ3QgdGhpbmsgaXQgbWFrZXMgc2Vuc2UgdG8gaGF2ZSBrZXJuZWwgZGV2ZWxv
-cGVycyBtYWludGFpbiB0aGVpciBvd24gY29weQ0Kb2YgenN0ZC4gVGhlaXIgdGltZSB3b3VsZCBi
-ZSBiZXR0ZXIgc3BlbnQgd29ya2luZyBvbiB0aGUgcmVzdCBvZiB0aGUga2VybmVsLg0KVXNpbmcg
-dXBzdHJlYW0gZGlyZWN0bHkgbGV0cyB0aGUga2VybmVsIHByb2ZpdCBmcm9tIHRoZSB3b3JrIHRo
-YXQgd2UsIHRoZSB6c3RkDQpkZXZlbG9wZXJzLCBhcmUgZG9pbmcuIEFuZCBpdCBzdGlsbCBhbGxv
-d3Mga2VybmVsIGRldmVsb3BlcnMgdG8gZml4IGJ1Z3MgaWYgYW55DQpzaG93IHVwLCBhbmQgd2Ug
-Y2FuIGJhY2stcG9ydCB0aGVtIHRvIHVwc3RyZWFtLg0KDQpGb3IgZXhhbXBsZSwgSeKAmXZlIG1l
-YXN1cmVkIHRoYXQgQnRyRlMgZGVjb21wcmVzc2lvbiArIHJlYWQgcGVyZm9ybWFuY2UNCmlzIGlt
-cHJvdmVkIDE1JSB3aXRoIHRoaXMgcGF0Y2guIEFuZCBaUkFNIHBlcmZvcm1hbmNlIGltcHJvdmVz
-IDMwJS4NCkFuZCBTcXVhc2hGUyBkZWNvbXByZXNzaW9uICsgcmVhZCBwZXJmb3JtYW5jZSBpbXBy
-b3ZlcyAxNSUuDQoNCkFkbWl0dGVkbHksIHRoZSBBUEkgcHJvdmlkZWQgZm9yIHN0YXRpYyB3b3Jr
-c3BhY2UgYWxsb2NhdGlvbiBpcyB2ZXJib3NlLiBNb3N0DQp6c3RkIHVzZXJzIGRvbuKAmXQgbmVl
-ZCBpdCwgc28gb3VyIGVmZm9ydHMgdG8gaW1wcm92ZSB0aGUgZXJnb25vbWljcyBvZiB0aGUgQVBJ
-DQpoYXZlbuKAmXQgYmVlbiBmb2N1c2VkIGhlcmUuIEF0IHRoaXMgcG9pbnQsIHdlIGNvdWxkbuKA
-mXQgcmVuYW1lIHRoZXNlIEFQSXMgZWFzaWx5LA0Kc2luY2Ugd2UgaGF2ZSB1c2VycyByZWx5aW5n
-IG9uIG91ciBBUEkuIEl0IGNvdWxkIGJlIGRvbmUsIGJlY2F1c2Ugd2UgZG9u4oCZdA0KZ3VhcmFu
-dGVlIEFCSSBzdGFiaWxpdHkgZm9yIHRoaXMgcG9ydGlvbiBvZiB0aGUgQVBJLCBidXQgd2Ugd291
-bGQgaGF2ZSB0byBoYXZlDQphIGdvb2QgcmVhc29uIGZvciBpdC4NCg0KT25lIHBvc3NpYmlsaXR5
-IGlzIHRvIGhhdmUgYSBrZXJuZWwgd3JhcHBlciBvbiB0b3Agb2YgdGhlIHpzdGQgQVBJIHRvIG1h
-a2UgaXQNCm1vcmUgZXJnb25vbWljLiBJIHBlcnNvbmFsbHkgZG9u4oCZdCByZWFsbHkgc2VlIHRo
-ZSB2YWx1ZSBpbiBpdCwgc2luY2UgaXQgYWRkcw0KYW5vdGhlciBsYXllciBvZiBpbmRpcmVjdGlv
-biBiZXR3ZWVuIHpzdGQgYW5kIHRoZSBjYWxsZXIsIGJ1dCBpdCBjb3VsZCBiZSBkb25lLg0KDQpP
-ZiBhbGwgdGhlIGNvbXByZXNzb3JzIGluIHRoZSBrZXJuZWwsIG9ubHkgbHo0IGFuZCB6c3RkIGFy
-ZSB1bmRlciBhY3RpdmUNCmRldmVsb3BtZW50LiBBbmQgbHo0IGhhcyBzd2l0Y2hlZCB0byB1c2lu
-ZyB0aGUgdXBzdHJlYW0gQVBJIGRpcmVjdGx5Lg0KWHogZG9lcyBzZWUgYSBsaXR0bGUgYml0IG9m
-IGRldmVsb3BtZW50LCBidXQgbm90aGluZyBoYXMgYmVlbiBzeW5jZWQgdG8gdGhlDQprZXJuZWwu
-DQoNCkJlc3QsDQpOaWNr
+On 17 Sep 2020, at 6:04, Christoph Hellwig wrote:
+
+> On Wed, Sep 16, 2020 at 09:35:51PM -0400, Rik van Riel wrote:
+>>> One possibility is to have a kernel wrapper on top of the zstd API 
+>>> to
+>>> make it
+>>> more ergonomic. I personally don???t really see the value in it, 
+>>> since
+>>> it adds
+>>> another layer of indirection between zstd and the caller, but it
+>>> could be done.
+>>
+>> Zstd would not be the first part of the kernel to
+>> come from somewhere else, and have wrappers when
+>> it gets integrated into the kernel. There certainly
+>> is precedence there.
+>>
+>> It would be interesting to know what Christoph's
+>> preference is.
+>
+> Yes, I think kernel wrappers would be a pretty sensible step forward.
+> That also avoid the need to do strange upgrades to a new version,
+> and instead we can just change APIs on a as-needed basis.
+
+When we add wrappers, we end up creating a kernel specific API that 
+doesn’t match the upstream zstd docs, and it doesn’t leverage as 
+much of the zstd fuzzing and testing.
+
+So we’re actually making kernel zstd slightly less usable in hopes 
+that our kernel specific part of the API is familiar enough to us that 
+it makes zstd more usable.  There’s no way to compare the two until 
+the wrappers are done, but given the code today I’d prefer that we 
+focus on making it really easy to track upstream.  I really understand 
+Christoph’s side here, but I’d rather ride a camel with the group 
+than go it alone.
+
+I’d also much rather spend time on any problems where the structure of 
+the zstd APIs don’t fit the kernel’s needs.  The btrfs streaming 
+compression/decompression looks pretty clean to me, but I think Johannes 
+mentioned some possibilities to improve things for zswap (optimizations 
+for page-at-atime).  If there are places where the zstd memory 
+management or error handling don’t fit naturally into the kernel, that 
+would also be higher on my list.
+
+Fixing those are probably going to be much easier if we’re close to 
+the zstd upstream, again so that we can leverage testing and long term 
+code maintenance done there.
+
+-chris
