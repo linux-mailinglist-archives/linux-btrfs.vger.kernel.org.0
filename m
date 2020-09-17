@@ -2,88 +2,111 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E381D26D97B
-	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Sep 2020 12:48:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 521AF26DC18
+	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Sep 2020 14:54:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726362AbgIQKrv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 17 Sep 2020 06:47:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52620 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726718AbgIQKrf (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 17 Sep 2020 06:47:35 -0400
-Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4750C06174A
-        for <linux-btrfs@vger.kernel.org>; Thu, 17 Sep 2020 03:47:34 -0700 (PDT)
-Received: by mail-il1-x142.google.com with SMTP id f82so1787990ilh.8
-        for <linux-btrfs@vger.kernel.org>; Thu, 17 Sep 2020 03:47:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=EYP0l981WinCRpG0BQMz4qZFP8BZ46bu8MMhK2FkeeA=;
-        b=mnGKtN74G8N8VXDLUt6a/jQsnhtRK8EvBgI3KpH2KAnVmB7Qy/+KN7fFcd7cZl8FTq
-         gTAomNHN1FIeusE27g1wGCGDUGtSiJelaRw856/8VBrQ+nXgBF3bf4G9uAhAZClnH1hN
-         HFyb5pfUiYrr8ZGRn245FxRdaWAOc71hRag2PeO6eW09KJj9PRvAhD/j85vRtLCV+CmU
-         Ccw/8B69LPMN/PRxeVDLoK8ifSl+oa3dbouwy/5p8xefFbZnqloOTa4ywzX/airtMJVd
-         SqZv3GgLOiWDJOpeAwi+vuds3Jj6ncfdgpcur/bcUHuqkPfMQCeCl2EYNn2bZGj3xF0i
-         XxNg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=EYP0l981WinCRpG0BQMz4qZFP8BZ46bu8MMhK2FkeeA=;
-        b=iPQYF6ciHUn4CUPzLVGRY3NbifVV9CGexVqgYv30CnMHfVq04ncx1GD0YoZcEqjq7y
-         QmsNBjZpdfPjVln30EQtAxu9I1KJmHUSBtT7Ek/BK+GppzaJ9iPz2DI4SAjn5iA5Qk9G
-         Et8fEdZTcAWXHsH7gpJ+YIBhj6tb8sAo6pBs1tDgNlSur6r82tlU/hOYuvimyHkqrmFc
-         ZvEpfUQRgZjMZDl6aEHVshg8vt2x7VBwTGK3dURMlq7V3mjUiq7GhOB/Ya7xGww19WIl
-         AybcgGJ3NSU0d6/gnMG9RDKJfQ5yGOPNBRCTnMTjbUFOQtIBLWKENWhgL7akEprlEyo9
-         5Eww==
-X-Gm-Message-State: AOAM5312a9RjHm8Yu5gTSr3DOYBBWjUktZoUHrz0oDRJ0DD5zD7l78r3
-        JSspBsMYwmjXOJsmiQgICoomfn+vDeSqOs0A8aA=
-X-Google-Smtp-Source: ABdhPJyhqUNSrWIO2tqUFp+39CoFjJIkiOihkO0V9yauYQWMyDxDh8BUmQZGwHEiX6FdtAPRB6nfG5wcDxR3YDMNQuE=
-X-Received: by 2002:a05:6e02:e4e:: with SMTP id l14mr24025730ilk.10.1600339653811;
- Thu, 17 Sep 2020 03:47:33 -0700 (PDT)
+        id S1727120AbgIQMxv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 17 Sep 2020 08:53:51 -0400
+Received: from mx2.suse.de ([195.135.220.15]:35584 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727115AbgIQMxp (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 17 Sep 2020 08:53:45 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 98C52ACBF;
+        Thu, 17 Sep 2020 12:39:25 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 25500DA7C7; Thu, 17 Sep 2020 14:37:39 +0200 (CEST)
+Date:   Thu, 17 Sep 2020 14:37:39 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v2 04/19] btrfs: remove the open-code to read disk-key
+Message-ID: <20200917123738.GR1791@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+References: <20200915053532.63279-1-wqu@suse.com>
+ <20200915053532.63279-5-wqu@suse.com>
+ <20200916160115.GN1791@twin.jikos.cz>
+ <e5a6d6a4-93b7-9845-5448-ac56ecf97075@gmx.com>
 MIME-Version: 1.0
-References: <CA+XNQ=ijYZbtTejEcdfgOAgmUu68d7c2YL-3BLQfokq3YYuZNQ@mail.gmail.com>
- <9b5706c1-fe21-6905-9c42-ffdc985202d9@gmx.com> <CA+XNQ=j1=XObwis138fphNcRVfwgXUcfm7JW1FJG2UWm8pBEGA@mail.gmail.com>
- <9415e33b-c018-7a60-33c5-4d2b992bca80@suse.com> <CA+XNQ=hVzU5vWB-hw=3vVpiH=Fmx5QAeE-uvmRkSavD2wspdbQ@mail.gmail.com>
- <927663a6-589d-e35e-99a7-3ef74b87d046@suse.com>
-In-Reply-To: <927663a6-589d-e35e-99a7-3ef74b87d046@suse.com>
-From:   Neal Gompa <ngompa13@gmail.com>
-Date:   Thu, 17 Sep 2020 06:46:57 -0400
-Message-ID: <CAEg-Je_zAnNybwESr=giF2aenLfnpfxW5N0vzRbdB2oZS-++xw@mail.gmail.com>
-Subject: Re: Need solution: BTRFS read-only
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     Thommandra Gowtham <trgowtham123@gmail.com>,
-        Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <e5a6d6a4-93b7-9845-5448-ac56ecf97075@gmx.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Sep 17, 2020 at 2:31 AM Qu Wenruo <wqu@suse.com> wrote:
->
->
->
-> On 2020/9/17 =E4=B8=8B=E5=8D=882:15, Thommandra Gowtham wrote:
-> > Thanks a lot for your response. A few questions
-> >
-> > - I had evaluated the SSD health by looking at the SMART attributes
-> > and did not find any faults. Is there any other way to evaluate if a
-> > problem is indeed hardware related?
->
-> SMART should report read error, but I'm not sure if all vendors follows
-> that.
->
+On Thu, Sep 17, 2020 at 04:02:37PM +0800, Qu Wenruo wrote:
+> On 2020/9/17 上午12:01, David Sterba wrote:
+> > On Tue, Sep 15, 2020 at 01:35:17PM +0800, Qu Wenruo wrote:
+> >> generic_bin_search() distinguishes between reading a key which doesn't
+> >> cross a page and one which does. However this distinction is not
+> >> necessary since read_extent_buffer handles both cases transparently.
+> >>
+> >> Just use read_extent_buffer to streamline the code.
+> >>
+> >> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> >> ---
+> >>  fs/btrfs/ctree.c | 13 ++-----------
+> >>  1 file changed, 2 insertions(+), 11 deletions(-)
+> >>
+> >> diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
+> >> index cd1cd673bc0b..e204e1320745 100644
+> >> --- a/fs/btrfs/ctree.c
+> >> +++ b/fs/btrfs/ctree.c
+> >> @@ -1697,7 +1697,6 @@ static noinline int generic_bin_search(struct extent_buffer *eb,
+> >>  	}
+> >>  
+> >>  	while (low < high) {
+> >> -		unsigned long oip;
+> >>  		unsigned long offset;
+> >>  		struct btrfs_disk_key *tmp;
+> >>  		struct btrfs_disk_key unaligned;
+> >> @@ -1705,17 +1704,9 @@ static noinline int generic_bin_search(struct extent_buffer *eb,
+> >>  
+> >>  		mid = (low + high) / 2;
+> >>  		offset = p + mid * item_size;
+> >> -		oip = offset_in_page(offset);
+> >>  
+> >> -		if (oip + key_size <= PAGE_SIZE) {
+> >> -			const unsigned long idx = offset >> PAGE_SHIFT;
+> >> -			char *kaddr = page_address(eb->pages[idx]);
+> >> -
+> >> -			tmp = (struct btrfs_disk_key *)(kaddr + oip);
+> >> -		} else {
+> >> -			read_extent_buffer(eb, &unaligned, offset, key_size);
+> >> -			tmp = &unaligned;
+> >> -		}
+> >> +		read_extent_buffer(eb, &unaligned, offset, key_size);
+> >> +		tmp = &unaligned;
+> > 
+> > Reading from the first page is a performance optimization on systems
+> > with 4K pages, ie. the majority. I'm not in favor removing it just to
+> > make the code look nicer.
+> 
+> For 4K system, with the optimization it only saves one
+> read_extent_buffer() call cost.
 
-Unfortunately, in my experience, most SSD vendors either send garbage
-SMART data or do nothing at all (always report "good" values). So
-SMART is an unreliable way to determine SSD health. :(
+This evaluation is wrong, you missed several things that
+generic_bin_search and read_extent_buffer do.
 
+generic_bin_search is called very often, each search slot so
+optimization is worth here
 
---=20
-=E7=9C=9F=E5=AE=9F=E3=81=AF=E3=81=84=E3=81=A4=E3=82=82=E4=B8=80=E3=81=A4=EF=
-=BC=81/ Always, there's only one truth!
+read_extent_buffer is used _only_ for keys that cross page boundary, so
+we need to read the bytes in two steps and this is wrapped into a
+function that we call in a limited number of cases
+
+In all other cases, when the whole key is contained in the page the call
+is inline in generic_bin_search, ie. no function call overhead
+
+> Or we will need to manually call get_eb_page_offset() here to make it
+> work for subpage.
+
+For nodesize that is smaller than PAGE_SIZE there's no page crossing at
+all so using read_extent_buffer would be making things worse.
