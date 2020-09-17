@@ -2,145 +2,164 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A54126CDAD
-	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Sep 2020 23:03:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BBCC26CFCC
+	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Sep 2020 02:09:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726357AbgIPVDm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 16 Sep 2020 17:03:42 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:25410 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726217AbgIPQPB (ORCPT
+        id S1726011AbgIQAJK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 16 Sep 2020 20:09:10 -0400
+Received: from de-smtp-delivery-102.mimecast.com ([62.140.7.102]:43266 "EHLO
+        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726007AbgIQAJI (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 16 Sep 2020 12:15:01 -0400
-Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08GEK016023430;
-        Wed, 16 Sep 2020 07:21:07 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=etrroz13TiaCLCbsxTpY39RWGrIeG0ErfV5IujprH5I=;
- b=L4NR1zlywwWuh8wQQNjjRW1fX0iLj3ZpYyE5GUytW7UlHU8UqRHIB4m13ZJHuvZ2R41K
- BpIT89U8kXv7PzyfrcQ451uuoTrzcf+T2H98uycZ3L6CT9uTuI+ZtOT+8FJmkH2chY2m
- ihAYinv7DTm3SK111RCjrn7G7ntN7oI1mOc= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 33k5nbkucn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Wed, 16 Sep 2020 07:21:06 -0700
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.173) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Wed, 16 Sep 2020 07:21:05 -0700
+        Wed, 16 Sep 2020 20:09:08 -0400
+X-Greylist: delayed 317 seconds by postgrey-1.27 at vger.kernel.org; Wed, 16 Sep 2020 20:09:06 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
+        t=1600301343;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=sI9sFVOaYcAlmH3rW3xSlB6fzDevMYb4qr7gdiLbejQ=;
+        b=NHvBoegfmKbwTYL/hYVf04V6STVtLLpYSqxkgFvrltXCXFNXglQuBlmqoIHemfzqJKScLI
+        cb3E5Vxt44yC9rmYfyvunVszOGpacXLRYgHsC3HvXvYnkHyfG4c55ZqOk+tsUYVPLUX6ib
+        oDHm9i1oDnkLx6aflX/ja1iKUscC8kU=
+Received: from EUR05-DB8-obe.outbound.protection.outlook.com
+ (mail-db8eur05lp2113.outbound.protection.outlook.com [104.47.17.113])
+ (Using TLS) by relay.mimecast.com with ESMTP id
+ de-mta-39-sY-gwJWENh6J3s84uRCzYw-1; Thu, 17 Sep 2020 02:02:24 +0200
+X-MC-Unique: sY-gwJWENh6J3s84uRCzYw-1
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KCtTig7gClBSwiAE42XiLqviAxPkMJbI3uCtm4qzv4cMBUYe82xXgnOmlI2kpQaNq2p5b5GkDLpOZc71hKzZ3B23CkqDJzdpWu5DrbGdmkSmdh5DHbu6voOpYAug5n/7zMZS2ZjI20i6/BHQlZDC4R1k5DbW9YHvCHbciH/AEcUW8O5Bh2QSaN13KK2HnDzPGNAOroKQoHl3r5KYPYopeK7sFcA9lxEMAqXVBIp50FYBnvOjdD/lkg90AH1CJWQgg0TqAiWVK4eYAYm3f0qJzkyD4imh8rqKOl/YRRoHzZLBiYIPr9jepaSx487GIdu8a8ZT7HSkYxbnDcKVGIhsYA==
+ b=d+vK27HH1Hito7+XZsfBBOpXQ56HcshFpvysulMYKy6sV3RV+gApHNqVkSOmRmpIyyNyQwh0X70RtZOnxK05IyK2zoZyT/Vy78xvg90EyRabXmSp5jgPQkBSneELr6iLIHxpwCZfq7KP4BHEYw3oU4Cu0fAU0011wp3x1iwf2kQUPBAnZ+9Mg1TkFQ3l6AjWh1Y2Hw0oQ5LJRSF/fAlKxfjusdJRBI6o57xCT8Gu9wOnyY+ExVv6kD61UQA4uhjw9HhZQlStp5l99c0lzsNPFILJ6xv5MS+wyiBXm5wXe9FxLDx0+X8VnwNz7nQ5s6od3Sk49Bbq9EOsTyixrftQzg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=etrroz13TiaCLCbsxTpY39RWGrIeG0ErfV5IujprH5I=;
- b=dUlq1Otm0IMrT8h0EMrPdvpaVtOhxR8QElHZATk5ubvgWxy2YZROfSa+zQYXyOPN/m9FOn0EP0083INFIMKVIfdE8FhSnhbfeCdCBQS6Jpe6zJc6X+g0DhcdH4dsTYuJlGQABftgegMrp19NemHb8cYhTfIEQ1NZCsliXJjxuKTtQiR+jqDIHr3Mnq19zPgOBPFwDyTleACr1yTzqs1FAqSLI2ixXvXeBZOhk46Ddz8KxstPXQFB1qOCAb/AwajWn1qopMtOsqFWKeU+hyyy4/4aA37oAK83vyWe2WlDOkokMNsF++FHoczYWXOeUgGIGaZFp4Is6MJhvWkCbWfNcw==
+ bh=OeiPdtFLJ6GcYFuKnpEpUQe79BQQNTFGoG+R7BWFiz0=;
+ b=Ino+sWDXeU0TBl7OwpVluZhEhZZDEhGc8L/PXFqdlIxi9glGMtdYeC5IBuks7A+akr/WO8hd/nTj+jpj+nYmQ3VuvplRwlBemi+6M3wRvdJN7ocVQeoiAKM8Qrw1gf+Mi1Iwz9qfTs/YAoRCmcpNzi+AE39o4aq+0F8rBfxtXk7XjieKGGe40vsL+c5LsWOMTEXIB1bsPqFqopZ+NNu2bFkUsi7zXVfyBSGSIQAlOAaoq/IkpJbcTsr8rDqQdD54Vv/ijMLvMRcNbhtiAqyA+C9xu5X8EQLzUKBLOQUXKb5a46KZncl8hgmrB0yfQoNSD9MOAm9bf4/PbhyC5IBpMg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=etrroz13TiaCLCbsxTpY39RWGrIeG0ErfV5IujprH5I=;
- b=PbtVbKx494ZapUNkekJxc6Iy4c9SH2NH7lGOJ+YMPp3O7YahSieXuKcxBGVV98cX5vSUGuF9Yj9CCrrrqUAaoHfmSlXhONrLqUXaNCvlGBhaFWduNYg1JSAf84REKC1sMGEh0VifjEI0UmqUXiBRmDzctpe5QcWAbogfoNunAZw=
-Authentication-Results: infradead.org; dkim=none (message not signed)
- header.d=none;infradead.org; dmarc=none action=none header.from=fb.com;
-Received: from MN2PR15MB3582.namprd15.prod.outlook.com (2603:10b6:208:1b5::23)
- by MN2PR15MB3728.namprd15.prod.outlook.com (2603:10b6:208:1b9::23) with
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=suse.com;
+Received: from AM0PR04MB6195.eurprd04.prod.outlook.com (2603:10a6:208:13c::13)
+ by AM0PR04MB6452.eurprd04.prod.outlook.com (2603:10a6:208:16d::21) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.17; Wed, 16 Sep
- 2020 14:20:56 +0000
-Received: from MN2PR15MB3582.namprd15.prod.outlook.com
- ([fe80::bd7a:9d1e:2fd0:34e6]) by MN2PR15MB3582.namprd15.prod.outlook.com
- ([fe80::bd7a:9d1e:2fd0:34e6%6]) with mapi id 15.20.3391.014; Wed, 16 Sep 2020
- 14:20:56 +0000
-From:   "Chris Mason" <clm@fb.com>
-To:     Christoph Hellwig <hch@infradead.org>
-CC:     Nick Terrell <nickrterrell@gmail.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        <linux-crypto@vger.kernel.org>, <linux-btrfs@vger.kernel.org>,
-        <squashfs-devel@lists.sourceforge.net>,
-        <linux-f2fs-devel@lists.sourceforge.net>,
-        <linux-kernel@vger.kernel.org>, Kernel Team <Kernel-team@fb.com>,
-        Nick Terrell <terrelln@fb.com>, Petr Malat <oss@malat.biz>,
-        Johannes Weiner <jweiner@fb.com>,
-        Niket Agarwal <niketa@fb.com>, Yann Collet <cyan@fb.com>
-Subject: Re: [PATCH 5/9] btrfs: zstd: Switch to the zstd-1.4.6 API
-Date:   Wed, 16 Sep 2020 10:20:52 -0400
-X-Mailer: MailMate (1.13.2r5673)
-Message-ID: <CCDAB4AB-DE8D-4ADE-9221-02AE732CBAE2@fb.com>
-In-Reply-To: <20200916084958.GC31608@infradead.org>
-References: <20200916034307.2092020-1-nickrterrell@gmail.com>
- <20200916034307.2092020-7-nickrterrell@gmail.com>
- <20200916084958.GC31608@infradead.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: MN2PR15CA0029.namprd15.prod.outlook.com
- (2603:10b6:208:1b4::42) To MN2PR15MB3582.namprd15.prod.outlook.com
- (2603:10b6:208:1b5::23)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16; Thu, 17 Sep
+ 2020 00:02:23 +0000
+Received: from AM0PR04MB6195.eurprd04.prod.outlook.com
+ ([fe80::e9b0:22ea:e2da:1315]) by AM0PR04MB6195.eurprd04.prod.outlook.com
+ ([fe80::e9b0:22ea:e2da:1315%5]) with mapi id 15.20.3370.019; Thu, 17 Sep 2020
+ 00:02:22 +0000
+Subject: Re: [PATCH v2 14/19] btrfs: make btree inode io_tree has its special
+ owner
+To:     dsterba@suse.cz, linux-btrfs@vger.kernel.org
+References: <20200915053532.63279-1-wqu@suse.com>
+ <20200915053532.63279-15-wqu@suse.com> <20200916160612.GO1791@twin.jikos.cz>
+From:   Qu Wenruo <wqu@suse.com>
+Autocrypt: addr=wqu@suse.com; keydata=
+ mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAG0GFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPokBTQQTAQgAOAIbAwULCQgHAgYVCAkKCwIE
+ FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJdnDWhAAoJEMI9kfOhJf6oZgoH
+ 90uqoGyUh5UWtiT9zjUcvlMTCpd/QSgwagDuY+tEdVPaKlcnTNAvZKWSit8VuocjrOFbTLwb
+ vZ43n5f/l/1QtwMgQei/RMY2XhW+totimzlHVuxVaIDwkF+zc+pUI6lDPnULZHS3mWhbVr9N
+ vZAAYVV7GesyyFpZiNm7GLvLmtEdYbc9OnIAOZb3eKfY3mWEs0eU0MxikcZSOYy3EWY3JES7
+ J9pFgBrCn4hF83tPH2sphh1GUFii+AUGBMY/dC6VgMKbCugg+u/dTZEcBXxD17m+UcbucB/k
+ F2oxqZBEQrb5SogdIq7Y9dZdlf1m3GRRJTX7eWefZw10HhFhs1mwx7kBDQRZ1YGvAQgAqlPr
+ YeBLMv3PAZ75YhQIwH6c4SNcB++hQ9TCT5gIQNw51+SQzkXIGgmzxMIS49cZcE4KXk/kHw5h
+ ieQeQZa60BWVRNXwoRI4ib8okgDuMkD5Kz1WEyO149+BZ7HD4/yK0VFJGuvDJR8T7RZwB69u
+ VSLjkuNZZmCmDcDzS0c/SJOg5nkxt1iTtgUETb1wNKV6yR9XzRkrEW/qShChyrS9fNN8e9c0
+ MQsC4fsyz9Ylx1TOY/IF/c6rqYoEEfwnpdlz0uOM1nA1vK+wdKtXluCa79MdfaeD/dt76Kp/
+ o6CAKLLcjU1Iwnkq1HSrYfY3HZWpvV9g84gPwxwxX0uXquHxLwARAQABiQE8BBgBCAAmAhsM
+ FiEELd9y5aWlW6idqkLhwj2R86El/qgFAl2cNa4FCQlqTn8ACgkQwj2R86El/qhXBAf/eXLP
+ HDNTkHRPxoDnwhscIHJDHlsszke25AFltJQ1adoaYCbsQVv4Mn5rQZ1Gon54IMdxBN3r/B08
+ rGVPatIfkycMCShr+rFHPKnExhQ7Wr555fq+sQ1GOwOhr1xLEqAhBMp28u9m8hnkqL36v+AF
+ hjTwRtS+tRMZfoG6n72xAj984l56G9NPfs/SOKl6HR0mCDXwJGZAOdtyRmqddi53SXi5N4H1
+ jWX1xFshp7nIkRm6hEpISEWr/KKLbAiKKbP0ql5tP5PinJeIBlDv4g/0+aGoGg4dELTnfEVk
+ jMC8cJ/LiIaR/OEOF9S2nSeTQoBmusTz+aqkbogvvYGam6uDYw==
+Message-ID: <9ea58668-b6e5-6471-01fe-d4bf8ae8b310@suse.com>
+Date:   Thu, 17 Sep 2020 08:02:05 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
+In-Reply-To: <20200916160612.GO1791@twin.jikos.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-ClientProxiedBy: BYAPR08CA0064.namprd08.prod.outlook.com
+ (2603:10b6:a03:117::41) To AM0PR04MB6195.eurprd04.prod.outlook.com
+ (2603:10a6:208:13c::13)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [100.109.1.1] (2620:10d:c091:480::1:60bc) by MN2PR15CA0029.namprd15.prod.outlook.com (2603:10b6:208:1b4::42) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.13 via Frontend Transport; Wed, 16 Sep 2020 14:20:54 +0000
-X-Mailer: MailMate (1.13.2r5673)
-X-Originating-IP: [2620:10d:c091:480::1:60bc]
+Received: from [0.0.0.0] (149.28.201.231) by BYAPR08CA0064.namprd08.prod.outlook.com (2603:10b6:a03:117::41) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.14 via Frontend Transport; Thu, 17 Sep 2020 00:02:21 +0000
+X-Originating-IP: [149.28.201.231]
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 96fcc2d2-e1af-4bf3-22b5-08d85a4bb97a
-X-MS-TrafficTypeDiagnostic: MN2PR15MB3728:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <MN2PR15MB3728DD06D46CCF28FCFECFFFD3210@MN2PR15MB3728.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:234;
+X-MS-Office365-Filtering-Correlation-Id: 33b1deb7-3f1c-49c3-fd55-08d85a9cf3f3
+X-MS-TrafficTypeDiagnostic: AM0PR04MB6452:
+X-Microsoft-Antispam-PRVS: <AM0PR04MB64528C57613931BB163C2C38D63E0@AM0PR04MB6452.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Sy/NdzNrQQ3GlHtolqw2vPdqIg0tXKt0yh4XLW+qm45TOLSO6TFm0474HrQqo/wi3eqw9vbqscO93CDNIEej4YqkIKbFhyL4IUH8cO3+W+WMdvX8EJFwbAwrKAl9XvTvajhnedIxHK9zFu7J0trerimsq16F+c6u+UrIFV7SDLXuyKIHiH0HiB6Nquy8d4jVumrUctwbvoS7Nxl+8Cqw0cNOBD/RW8va7ZAYFwdnseHdXdRHTSmEw2sHfLUVImrUP/Aq3OigG6LwN+9mz06mxIDb+OJr43Yg0V4x7u6qQ7iqUfaCJt1quOuPOo92wxh5CuqN+gEO0ychvK7tqFoyQP+tttrAtNjlvAal37hl7Z3xM59E/vq5KEeK8t4289GHLQTAKhw+xnvaaDifdUAsJw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR15MB3582.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(39860400002)(346002)(376002)(396003)(366004)(36756003)(478600001)(16526019)(186003)(33656002)(8936002)(86362001)(4326008)(2616005)(8676002)(956004)(53546011)(6486002)(4744005)(316002)(54906003)(5660300002)(6916009)(66476007)(66556008)(52116002)(2906002)(66946007)(556444002)(78286007);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: gg8rPw6CIqkqO5cHtdfgcbj6Qm6AzI3RA00aJzdvYZ1HDZagpcPM2Dnray9ComqldpXJ6Iq8z99PPCKNOZrBSfPWKJ5ksDIco1WaqYxDcWH9+ibq5HT6zd+zQrMPYehqrsESV6NmUw7E/uv4E0J0AH/fMF/998UDHUDCMxki7kc9YPx5MlnCO0mnRTcMiTc3VhS4DKiQFaXWYur/dWMzXntS2/oTagyc+MyAVQij3iurra+gqmj/ndOsxON3ahLTDWyjH61pOknMCCNweH4DHk6ugyJD/RVKfWD7x7ZOM6VSamm4iK0NGqV1iD5xE+oNn0Nz2J8sp/33A+zDbsMnxtB5LyHbFPDcOx0wczCroALXOSyXyzXmzmOStw1RxIvaL5qmeIZG/4xCXRgLn42LnLuQIBIAgVgjGRpagCJEnUF4ZV0hYijF4hWJLR4dsnFzAm0Z47dr0OMTm8naKmUFyIyCe11Ve0e5yknDXMwRQlOoR+z2KbB579MdKSstDjpWw8pnnxa+kJsQPMMIhzDKetbCO/PHBR8LZYS9MviUD6xTzK1OiasA73lgY0rP80ItL2N+8upLN8ZDVjsY/s2UAxxiJ/zVCdbJk7v7q5ClA3U6eA+Xkvo1C7MD+Byves7jGfTIRcqc0IHCaXqdPODww3oJLiH+Zb/lq8zmSrA9hjdkQCPmmILNeFvIeUPMDON7
-X-MS-Exchange-CrossTenant-Network-Message-Id: 96fcc2d2-e1af-4bf3-22b5-08d85a4bb97a
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR15MB3582.namprd15.prod.outlook.com
+X-Microsoft-Antispam-Message-Info: DZbdmuMuJkYnlTESFFGnh8rXJ7BF9iILhdXoHWTRnq7lDZpD0mQmX3WqSFbrKnQ9qzlDhHdWNdf0mXcca1y0yFjTNfr/vNVBR4izYcubwJJnaz+OuF2BXu264CTHeJkqMbtpIlDNuceGTWikR05jq72D6m8JItBWmclY7s9o4bvMO0oFY2fxomiI1Lv+4KPMP4moSzWS7aQjJWguFWsaFIf2nmyxb0B5OH6ZinLXuactwjrsW8rT1exZVb4e5eWmhcwigh6tMXgH/UWaSb/Z9r8aXdWpElK/DBCcC6r3+PeiOZXjrJexH//m7iDEcYiRmF+vUe0wkG+bcjt2xeQ8vDTRfbOq7uFFBE02Zz5pb0fd/TAEx/bmz1qFp6gO7js79oUgwh5dDJLCgLzVjWBvtBWv5EusonrVd0o/6PRu/B40xGs+YrJ31k1xOObADV3T+Ni5dp1/eKh12wf67uydIA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB6195.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(39860400002)(346002)(396003)(376002)(366004)(316002)(8676002)(186003)(83380400001)(6486002)(6706004)(478600001)(52116002)(31686004)(956004)(31696002)(16576012)(16526019)(66946007)(26005)(86362001)(6666004)(8936002)(66476007)(36756003)(2906002)(2616005)(66556008)(5660300002)(78286007)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: 010x+1Q3NHWsJqyGCgKQPVxFPQZqkbRmILuP8ZRQjbSQwvDK++rENo0jNulYvVuHg52jgCeMKIwykQgzH501mX6ykuo3oaigefs8JUE+ATAciG15PxdfM2OVbD2voYfHnILpUFSnJhC25Wfi1IUcQlknZ7qDX8x6k/AApimu1mpGT4ikMFxfng9p4SgDi/t8OnI5xRWH0r/m4PvOG634NnF9CSsnxjuQIwsx+fRvVYYA+SmwkQdFfBdBGhB83EV5LX9x8+gpQeKyGNx5177CxgWaHkRUxES/26kIpHVzL0fEwTOSstIIVqMtyL+TLqh2/LsS9Lkvjfe7uhF8HlEzd4zMIis8hrDjRsyBElf0RzKAP7WrYqc3cbb2lM/5uTHYdZbOrw64ujQ5bu9fBfj/Zd+xIZOb+NU9PbpouayVuYuGTIIhbErvFAKHTOGHCAomCGlMLKG8kNkrkDU7+a1dvgR3+jcSslWVq/so9hY9HRFuvJ5AxUtO3TZALm2VTS3+6RNEOspskMCkA0uhRYhoKOurq9JRqcCr8b60pTqrhViN4KsgpLKZLStOJ2tgw/0cIkDo1RsyHdJczlw5UytBgMmXtdIW3Z9+cbmmETycr/EFf4wLLY6KMl57HwNZbIVrQQR8qeg5J0XwWcWInhyFzg==
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 33b1deb7-3f1c-49c3-fd55-08d85a9cf3f3
+X-MS-Exchange-CrossTenant-AuthSource: AM0PR04MB6195.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Sep 2020 14:20:55.8228
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Sep 2020 00:02:22.8476
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: sSkC3A7D43p5YUjlhtAVCYLGPjh03ZQjWSkMlPf31Y2Z5M7p4neS6Wumx7RABP+P
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR15MB3728
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-16_10:2020-09-16,2020-09-16 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 bulkscore=0
- priorityscore=1501 adultscore=0 malwarescore=0 impostorscore=0
- clxscore=1011 mlxlogscore=863 lowpriorityscore=0 phishscore=0 spamscore=0
- mlxscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009160108
-X-FB-Internal: deliver
-Sender: linux-btrfs-owner@vger.kernel.org
+X-MS-Exchange-CrossTenant-UserPrincipalName: Ge26xgxkZy+kPjvodb1wnT06FOOBRIY5g+7qBp940pXWFXPntSQ1uIESD3zwcq9Y
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR04MB6452
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 16 Sep 2020, at 4:49, Christoph Hellwig wrote:
 
-> On Tue, Sep 15, 2020 at 08:42:59PM -0700, Nick Terrell wrote:
->> From: Nick Terrell <terrelln@fb.com>
+
+On 2020/9/17 =E4=B8=8A=E5=8D=8812:06, David Sterba wrote:
+> On Tue, Sep 15, 2020 at 01:35:27PM +0800, Qu Wenruo wrote:
+>> Btree inode is pretty special compared to all other inode extent io
+>> tree, although it has a btrfs inode, it doesn't have the track_uptodate
+>> bit at all.
 >>
->> Move away from the compatibility wrapper to the zstd-1.4.6 API. This
->> code is functionally equivalent.
->
-> Again, please use sensible names  And no one gives a fuck if this bad
-> API is "zstd-1.4.6" as the Linux kernel uses its own APIs, not some
-> random mess from a badly written userspace package.
+>> This means a lot of things like extent locking doesn't even need to be
+>> applied to btree io tree.
+>>
+>> Since it's so special, adds a new owner value for it to make debuging a
+>> little easier.
+>>
+>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>> ---
+>>  fs/btrfs/disk-io.c        | 2 +-
+>>  fs/btrfs/extent-io-tree.h | 1 +
+>>  2 files changed, 2 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+>> index 1ba16951ccaa..82a841bd0702 100644
+>> --- a/fs/btrfs/disk-io.c
+>> +++ b/fs/btrfs/disk-io.c
+>> @@ -2126,7 +2126,7 @@ static void btrfs_init_btree_inode(struct btrfs_fs=
+_info *fs_info)
+>> =20
+>>  	RB_CLEAR_NODE(&BTRFS_I(inode)->rb_node);
+>>  	extent_io_tree_init(fs_info, &BTRFS_I(inode)->io_tree,
+>> -			    IO_TREE_INODE_IO, inode);
+>> +			    IO_TREE_BTREE_IO, inode);
+>=20
+> This looks like an independent patch, so it could be taken separately.
+>=20
+Errr, why?
 
-Hi Christoph,
+We added a new owner for btree inode io tree, and utilize that new owner
+in the same patch looks completely sane to me.
 
-It’s not completely clear what you’re asking for here.  If the API 
-matches what’s in zstd-1.4.6, that seems like a reasonable way to 
-label it.  That’s what the upstream is for this code.
+Or did I miss something?
 
-I’m also not sure why we’re taking extra time to shit on the zstd 
-userspace package.  Can we please be constructive or at least 
-actionable?
+Thanks,
+Qu
 
--chris
