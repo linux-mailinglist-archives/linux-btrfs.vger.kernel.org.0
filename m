@@ -2,181 +2,161 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EB2F26E36E
-	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Sep 2020 20:23:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C0FC26E36B
+	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Sep 2020 20:22:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726582AbgIQSXi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 17 Sep 2020 14:23:38 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:20738 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726540AbgIQSWz (ORCPT
+        id S1726202AbgIQSWo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 17 Sep 2020 14:22:44 -0400
+Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:51367 "EHLO
+        wout2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726544AbgIQSV2 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 17 Sep 2020 14:22:55 -0400
-X-Greylist: delayed 1365 seconds by postgrey-1.27 at vger.kernel.org; Thu, 17 Sep 2020 14:21:19 EDT
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08HHpAZW031090;
-        Thu, 17 Sep 2020 10:57:46 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=XCOEkT2hGjYICdGFrJpPyKKEKALHdwgIt0U5/RrDeY8=;
- b=YKPiO9UWNlzagG650BCR8IoFm7KBJ1eaSnsPkCXoLkqjKo03+XN5HD1U0za0hGPwXsEe
- mtmC6yUBoUsZB1i6HWNeZzoCi9GyVbFIP+pG3sSWr6yoOlOt/df6Swa9p4a91pi3fVyJ
- G8aTVwE/YbfwZCR00B448s98kQbozoD9oMg= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 33mc4rr67m-3
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 17 Sep 2020 10:57:46 -0700
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.36.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Thu, 17 Sep 2020 10:57:44 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=asqT+k4EH5YSN2ONT8M45bBV3BsVxLlmKdCPUZEkB3cxhN2brBMqZsTiP0SMBCPnFBSSO++kby2jTWefZzyQU+F+kh2Ou+6I/7f9s6KNO+5rJxYKfTDNMn/EJXO03OIEY/485j5XWKjv/W27F+ui6zVAo0XyzO2xU1CbrnfMl2pNw7/MDnqn6yX/C/AkJ/MxQDhEbELHz/d0NZSre1JQxOwyvUMO/oIqOswGqZXrOBR+ivZ81zaXdWMsJ7wh0RlKnlwD33nktouPEJQR2Mnpoqf6R5KGP2KQcrOMb4iNz+2QhAJE3fmpQDEmgy5zKoM6y1yV5LMyvqvp1uKfRrluPA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=XCOEkT2hGjYICdGFrJpPyKKEKALHdwgIt0U5/RrDeY8=;
- b=RYFe8SqPa+liC15k18YWpbvyTdKe1mUM1xhBuWRRgNa5CeJ0WnoHvjIZ8zTTahWhQPbz1p5tZhiMkJ98Dk3kP5aIMoLvclj/R4puIzpurCJqQT08aF+fBCqg5+7kjBDOe5TRbyUFu9J8eDAOtqe3jq2lIHCNvoSG9J5LoeXZz6tDXhAUe2eXQ53BWD6cV53uY7ycoOnAjBVV3GnLh1cpB++Yu6DTTiQIJpVe/q4lFquVgAAxWI2B7SDRBfuYFjSgu+HA/KNyrVkuwLEF0/OREtIVgVkK/gb6umbLiCTwH0UrAI26ehRrJ+muimxKVPaMRzhyHP49+MnbLacALOqW/w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=XCOEkT2hGjYICdGFrJpPyKKEKALHdwgIt0U5/RrDeY8=;
- b=Qp/YW6GLn3DC22LyBNYvB8Q1OKPP59ibYE339x+bH2fvQCGvhcu8WkojV4UmzqAU6xmKpqEEaLZKrLaBRWhyg1Gv0qRwvfC1kQatBOsZNnlEwYmRp5m6CZfvN32bhw676m6ysaxBwu1z6sU6RqYAanwj29LF8cLjcztFCuYpvF0=
-Received: from BY5PR15MB3667.namprd15.prod.outlook.com (2603:10b6:a03:1f9::18)
- by BYAPR15MB2408.namprd15.prod.outlook.com (2603:10b6:a02:85::25) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.14; Thu, 17 Sep
- 2020 17:57:39 +0000
-Received: from BY5PR15MB3667.namprd15.prod.outlook.com
- ([fe80::2d08:987a:126:1c9c]) by BY5PR15MB3667.namprd15.prod.outlook.com
- ([fe80::2d08:987a:126:1c9c%7]) with mapi id 15.20.3391.014; Thu, 17 Sep 2020
- 17:57:39 +0000
-From:   Nick Terrell <terrelln@fb.com>
-To:     Chris Mason <clm@fb.com>
-CC:     Christoph Hellwig <hch@infradead.org>,
-        Rik van Riel <riel@surriel.com>,
-        Nick Terrell <nickrterrell@gmail.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
-        "squashfs-devel@lists.sourceforge.net" 
-        <squashfs-devel@lists.sourceforge.net>,
-        "linux-f2fs-devel@lists.sourceforge.net" 
-        <linux-f2fs-devel@lists.sourceforge.net>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Kernel Team <Kernel-team@fb.com>, Petr Malat <oss@malat.biz>,
-        Johannes Weiner <jweiner@fb.com>,
-        Niket Agarwal <niketa@fb.com>, Yann Collet <cyan@fb.com>
-Subject: Re: [PATCH 5/9] btrfs: zstd: Switch to the zstd-1.4.6 API
-Thread-Topic: [PATCH 5/9] btrfs: zstd: Switch to the zstd-1.4.6 API
-Thread-Index: AQHWi9t+F+963YLOT0SgwBoo2TG/malq9P8AgABcdACAAALEAIAAA28AgAAA6ACAAEv8AIAAaX+AgACOPwCAAEmPgIAAOoKA
-Date:   Thu, 17 Sep 2020 17:57:39 +0000
-Message-ID: <570EC702-5364-437A-B74B-06FEFEFCC161@fb.com>
-References: <20200916034307.2092020-1-nickrterrell@gmail.com>
- <20200916034307.2092020-7-nickrterrell@gmail.com>
- <20200916084958.GC31608@infradead.org>
- <CCDAB4AB-DE8D-4ADE-9221-02AE732CBAE2@fb.com>
- <20200916143046.GA13543@infradead.org>
- <1CAB33F1-95DB-4BC5-9023-35DD2E4E0C20@fb.com>
- <20200916144618.GB16392@infradead.org>
- <4D04D534-75BD-4B13-81B9-31B9687A6B64@fb.com>
- <b1eec667d42849f757bbd55f014739509498a59d.camel@surriel.com>
- <20200917100458.GA28031@infradead.org>
- <2073A599-E7CA-476A-9B4B-7BC76B454B9A@fb.com>
-In-Reply-To: <2073A599-E7CA-476A-9B4B-7BC76B454B9A@fb.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [98.33.101.203]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 44dbdcfa-a913-477d-c5d7-08d85b332b3b
-x-ms-traffictypediagnostic: BYAPR15MB2408:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BYAPR15MB2408618C97A5153D96C91A93AB3E0@BYAPR15MB2408.namprd15.prod.outlook.com>
-x-fb-source: Internal
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: Q3AsIkuPyYHiwJLLjm/bK4opOpOUKRClQ2UJUB2O0MWnbafhxb8DXLDpcLnlx8CdDU/FSePKRE0pscXMMxAadboauWK+11NOssLz/FbZArC6OktlPEL/wfyS3Htw+PErf+/xPEJIh+dCggn+ZjgQ1Pstnyys6vMQSDz9nQ7Bcb8E0hgny7wsQuw6t1Jfy50aRhodhlZz66VVOCvoDl9lxH6J2qbvaUD/nQICkmUP2pM5oxL/b7ZFrMIw5ZHSbC+y0SJvZ3YeEjCnqpXtVL+SEAq2Ru10BFtdAbklcRYkPhK9J545aV7ClEGBZElWxGMYAipAuR1iWE+kgoAclDnIMQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR15MB3667.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(396003)(376002)(366004)(136003)(346002)(6486002)(4326008)(7416002)(36756003)(54906003)(6636002)(6862004)(33656002)(6512007)(2906002)(53546011)(6506007)(76116006)(5660300002)(66446008)(66556008)(66946007)(66476007)(64756008)(2616005)(71200400001)(8936002)(37006003)(86362001)(26005)(316002)(186003)(8676002)(83380400001)(478600001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: Y1+KDAwGDZoc5e7VqKEPyr6Qi9GvpQVKvuAHNRNNyA2SZtIenAqfVDkx9BmmoeuY8i+ym5XuURNXUCa/Qq3YfVFZi+afoOAoobZl7ol4Lgg7/46wTluPNRnNAK/1Vc4Rx1Ny8cOf8mu0M1Uv6dbHNQY9vCMG62e/zCeDu7DHP9q+C++40ugqtAennAQ/9tDe5Nf67VyCPbWDFETQ0EV6UMnGh+9lmw1qsQWR4BavDIJY0OafPtzek/IEeoSDIQsQ2YlLDshIZSsijWStb2L0MR5MyVdbgdngERsDXKfLXYX1oNeUp9SV48Cgr9/j8YrrxALgkVH2izRrZqt8xgEt6gfc0AbkqAMqowPEd9XG5mPBRxRiDCHczeqPopjhPtA58Toz6xaWUba588uvn2Z130Nx3X2rxpSCjf4+nnkfjM7HabJxMWfVV81cdZfJYK1yEGOkTqDbzEkmhMPILlA4fqxS/iasA9CU0ZzfZJOdk3P8zjzCMcbhOkqhjUGSGuR8KJy6dlF/ys8k5PmPZKYx2E8xt6SKbrgZZ/sN7IE131JUgG+rbOdygAsna8pzzPn+iYNdgVaTyH0vLz+pWi1989cjCMkKiCs7vjToe6uXjb7wvmXMSz+BQ+qLOGea2eS0csfcCbFCmQGcMjgcATIidw==
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <C65AFC3C2E5B0C4EAAFAD0C6F9A8CB75@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        Thu, 17 Sep 2020 14:21:28 -0400
+X-Greylist: delayed 433 seconds by postgrey-1.27 at vger.kernel.org; Thu, 17 Sep 2020 14:21:20 EDT
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.west.internal (Postfix) with ESMTP id 1AA7994A;
+        Thu, 17 Sep 2020 14:14:03 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Thu, 17 Sep 2020 14:14:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=from
+        :to:cc:subject:date:message-id:in-reply-to:references
+        :mime-version:content-transfer-encoding; s=fm1; bh=IpEfRybLa8wi7
+        /AMXW1zdFQPhFNVcCq7L3X+9DWs09s=; b=MprqB2RQVkXt53c6GjjNP6wXPg5w6
+        KBfBej9DP6Dwl/+zqGKYWRNI3vrbkK/lF+DYbeehhT89HvKphjCXuVFUb5nhnYRy
+        86TxjC8BTRDWIY/QnPOGTfqoBraSDYOi7d6Q523q0sQuuHDdyyRNa6SMsrro0LlY
+        IgRCSVBsnxx4uXDnAAxO+h/iihd5CGp+ArsysgKUu0JSQDnd5xtwUU3cqC+AeZKT
+        cmEhNpuwNwNgNW4eu9OLgNCN/AdtjbU/Kg8mkh+A8Zre0lWivB1Dc7D0EDKourcY
+        9/ZiTEsgFuOsfwg46ach0XrBWYZfcagazmmK7hNHsJGbdnIUGrrMkQ+Gg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :in-reply-to:message-id:mime-version:references:subject:to
+        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+        fm3; bh=IpEfRybLa8wi7/AMXW1zdFQPhFNVcCq7L3X+9DWs09s=; b=bXZYJYsm
+        1ZBveSUSEUuN/uIdFAI86IyrFGaHqhZ4n/8Ie+yZzzzmYDWZF9yXJJl0i4DskpVt
+        L9gTw7S1gyFq7BjFU2K2XQaHw2kp7YnsR+9Zy5O7w8qcdHY2dFsbFvXfqtRBTmNK
+        0DBVuAVQUXg1Q2czAbq6AC8v2D6q6TZQJnwTeXIJbj9/R/Bvl4fC9GC2nFX0yPBT
+        pT1uGIlsLfygI/8hz5Zr3QS09ZAbab+BWw66bcHHvcHqv5eTzQyCnqfXvBleDBWi
+        Aw8RCxVk6pxcQQ5sHpfaqML07O9bc3V248wqtd7fvFWwEmzzfYBQ3av6pKNfJ7Lb
+        Yyb/nv5Qx+jRYQ==
+X-ME-Sender: <xms:aqdjX3WGqFDeNF8LDO8xycJrVkmBC0pZLBuKti8NN_AO_do7jV0B_g>
+    <xme:aqdjX_l5YHJSCEt4j6YFC-LHmQKeZsDOeXTbHOi79R84q1BoBcLRJmQLTxiahcHvb
+    HWWSV1I7H8t0mpEuq4>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrtdeggdduvdegucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgjfhgggfestdekre
+    dtredttdenucfhrhhomhepuehorhhishcuuehurhhkohhvuceosghorhhishessghurhdr
+    ihhoqeenucggtffrrghtthgvrhhnpeetheehudfgleelhfehffettedtfeelvdfghfelke
+    efgefgvdevgefffedvtdefgeenucffohhmrghinhepghhithhhuhgsrdgtohhmnecukfhp
+    peduieefrdduudegrddufedvrdefnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrg
+    hmpehmrghilhhfrhhomhepsghorhhishessghurhdrihho
+X-ME-Proxy: <xmx:aqdjXzb9lbeTXR4UZC471LLw1i4LPdI25a8JRz-phGJkon4UKYg53A>
+    <xmx:aqdjXyXABnOlFfMGsCJE5nQamraPM7vuwbg--P-3SQ49usBh7pmxFA>
+    <xmx:aqdjXxnS4H5v6jySbXHNt9yfHuQRynJlzA8ggpXrltVE28exuHFugQ>
+    <xmx:aqdjXwtLtR2R4Ta3_llKd-4yGuHCsGSTVmXM6uF_985wki_BUxzWDg>
+Received: from localhost (unknown [163.114.132.3])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 00A123280064;
+        Thu, 17 Sep 2020 14:14:02 -0400 (EDT)
+From:   Boris Burkov <boris@bur.io>
+To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Cc:     Boris Burkov <boris@bur.io>
+Subject: [PATCH v3 1/4] btrfs: support remount of ro fs with free space tree
+Date:   Thu, 17 Sep 2020 11:13:38 -0700
+Message-Id: <1d0cca6ce1f67484c6b7ef591e264c04ca740c96.1600282812.git.boris@bur.io>
+X-Mailer: git-send-email 2.24.1
+In-Reply-To: <cover.1600282812.git.boris@bur.io>
+References: <cover.1600282812.git.boris@bur.io>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR15MB3667.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 44dbdcfa-a913-477d-c5d7-08d85b332b3b
-X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Sep 2020 17:57:39.8493
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: ikXWZd9HOUavrWR+dtos4fxB2dEbyYsvHmONAlBugmuM2AHweCFU7TzwEDAG/lnX
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2408
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-17_14:2020-09-16,2020-09-17 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0 mlxscore=0
- clxscore=1011 bulkscore=0 adultscore=0 spamscore=0 priorityscore=1501
- suspectscore=0 phishscore=0 impostorscore=0 lowpriorityscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009170133
-X-FB-Internal: deliver
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-DQoNCj4gT24gU2VwIDE3LCAyMDIwLCBhdCA3OjI4IEFNLCBDaHJpcyBNYXNvbiA8Y2xtQGZiLmNv
-bT4gd3JvdGU6DQo+IA0KPiBPbiAxNyBTZXAgMjAyMCwgYXQgNjowNCwgQ2hyaXN0b3BoIEhlbGx3
-aWcgd3JvdGU6DQo+IA0KPj4gT24gV2VkLCBTZXAgMTYsIDIwMjAgYXQgMDk6MzU6NTFQTSAtMDQw
-MCwgUmlrIHZhbiBSaWVsIHdyb3RlOg0KPj4+PiBPbmUgcG9zc2liaWxpdHkgaXMgdG8gaGF2ZSBh
-IGtlcm5lbCB3cmFwcGVyIG9uIHRvcCBvZiB0aGUgenN0ZCBBUEkgdG8NCj4+Pj4gbWFrZSBpdA0K
-Pj4+PiBtb3JlIGVyZ29ub21pYy4gSSBwZXJzb25hbGx5IGRvbj8/P3QgcmVhbGx5IHNlZSB0aGUg
-dmFsdWUgaW4gaXQsIHNpbmNlDQo+Pj4+IGl0IGFkZHMNCj4+Pj4gYW5vdGhlciBsYXllciBvZiBp
-bmRpcmVjdGlvbiBiZXR3ZWVuIHpzdGQgYW5kIHRoZSBjYWxsZXIsIGJ1dCBpdA0KPj4+PiBjb3Vs
-ZCBiZSBkb25lLg0KPj4+IA0KPj4+IFpzdGQgd291bGQgbm90IGJlIHRoZSBmaXJzdCBwYXJ0IG9m
-IHRoZSBrZXJuZWwgdG8NCj4+PiBjb21lIGZyb20gc29tZXdoZXJlIGVsc2UsIGFuZCBoYXZlIHdy
-YXBwZXJzIHdoZW4NCj4+PiBpdCBnZXRzIGludGVncmF0ZWQgaW50byB0aGUga2VybmVsLiBUaGVy
-ZSBjZXJ0YWlubHkNCj4+PiBpcyBwcmVjZWRlbmNlIHRoZXJlLg0KPj4+IA0KPj4+IEl0IHdvdWxk
-IGJlIGludGVyZXN0aW5nIHRvIGtub3cgd2hhdCBDaHJpc3RvcGgncw0KPj4+IHByZWZlcmVuY2Ug
-aXMuDQo+PiANCj4+IFllcywgSSB0aGluayBrZXJuZWwgd3JhcHBlcnMgd291bGQgYmUgYSBwcmV0
-dHkgc2Vuc2libGUgc3RlcCBmb3J3YXJkLg0KPj4gVGhhdCBhbHNvIGF2b2lkIHRoZSBuZWVkIHRv
-IGRvIHN0cmFuZ2UgdXBncmFkZXMgdG8gYSBuZXcgdmVyc2lvbiwNCj4+IGFuZCBpbnN0ZWFkIHdl
-IGNhbiBqdXN0IGNoYW5nZSBBUElzIG9uIGEgYXMtbmVlZGVkIGJhc2lzLg0KPiANCj4gV2hlbiB3
-ZSBhZGQgd3JhcHBlcnMsIHdlIGVuZCB1cCBjcmVhdGluZyBhIGtlcm5lbCBzcGVjaWZpYyBBUEkg
-dGhhdCBkb2VzbuKAmXQgbWF0Y2ggdGhlIHVwc3RyZWFtIHpzdGQgZG9jcywgYW5kIGl0IGRvZXNu
-4oCZdCBsZXZlcmFnZSBhcyBtdWNoIG9mIHRoZSB6c3RkIGZ1enppbmcgYW5kIHRlc3RpbmcuDQo+
-IA0KPiBTbyB3ZeKAmXJlIGFjdHVhbGx5IG1ha2luZyBrZXJuZWwgenN0ZCBzbGlnaHRseSBsZXNz
-IHVzYWJsZSBpbiBob3BlcyB0aGF0IG91ciBrZXJuZWwgc3BlY2lmaWMgcGFydCBvZiB0aGUgQVBJ
-IGlzIGZhbWlsaWFyIGVub3VnaCB0byB1cyB0aGF0IGl0IG1ha2VzIHpzdGQgbW9yZSB1c2FibGUu
-ICBUaGVyZeKAmXMgbm8gd2F5IHRvIGNvbXBhcmUgdGhlIHR3byB1bnRpbCB0aGUgd3JhcHBlcnMg
-YXJlIGRvbmUsIGJ1dCBnaXZlbiB0aGUgY29kZSB0b2RheSBJ4oCZZCBwcmVmZXIgdGhhdCB3ZSBm
-b2N1cyBvbiBtYWtpbmcgaXQgcmVhbGx5IGVhc3kgdG8gdHJhY2sgdXBzdHJlYW0uICBJIHJlYWxs
-eSB1bmRlcnN0YW5kIENocmlzdG9waOKAmXMgc2lkZSBoZXJlLCBidXQgSeKAmWQgcmF0aGVyIHJp
-ZGUgYSBjYW1lbCB3aXRoIHRoZSBncm91cCB0aGFuIGdvIGl0IGFsb25lLg0KPiANCj4gSeKAmWQg
-YWxzbyBtdWNoIHJhdGhlciBzcGVuZCB0aW1lIG9uIGFueSBwcm9ibGVtcyB3aGVyZSB0aGUgc3Ry
-dWN0dXJlIG9mIHRoZSB6c3RkIEFQSXMgZG9u4oCZdCBmaXQgdGhlIGtlcm5lbOKAmXMgbmVlZHMu
-ICBUaGUgYnRyZnMgc3RyZWFtaW5nIGNvbXByZXNzaW9uL2RlY29tcHJlc3Npb24gbG9va3MgcHJl
-dHR5IGNsZWFuIHRvIG1lLCBidXQgSSB0aGluayBKb2hhbm5lcyBtZW50aW9uZWQgc29tZSBwb3Nz
-aWJpbGl0aWVzIHRvIGltcHJvdmUgdGhpbmdzIGZvciB6c3dhcCAob3B0aW1pemF0aW9ucyBmb3Ig
-cGFnZS1hdC1hdGltZSkuICBJZiB0aGVyZSBhcmUgcGxhY2VzIHdoZXJlIHRoZSB6c3RkIG1lbW9y
-eSBtYW5hZ2VtZW50IG9yIGVycm9yIGhhbmRsaW5nIGRvbuKAmXQgZml0IG5hdHVyYWxseSBpbnRv
-IHRoZSBrZXJuZWwsIHRoYXQgd291bGQgYWxzbyBiZSBoaWdoZXIgb24gbXkgbGlzdC4NCg0KVGhp
-cyB1cGRhdGUgaW5jbHVkZXMgdGhlIHJlY2VudCBvcHRpbWl6YXRpb25zIGZvciBaU3dhcCB0aGF0
-IEkndmUgbWFkZSwgd2hpY2gNCmdpdmVzIGEgMzAlIHNwZWVkIGJvb3N0IGZvciBwYWdlLWF0LWEt
-dGltZSBkZWNvbXByZXNzaW9uLg0KDQpXZSdyZSB2ZXJ5IG9wZW4gdG8gaW1wcm92aW5nIGFuZCBj
-aGFuZ2luZyB6c3RkIHRvIGJldHRlciBmaXQgdGhlIG5lZWRzIG9mIHRoZQ0Ka2VybmVsLiBJZiB0
-aGVyZSBhcmUgdXNlIGNhc2VzIHRoYXQgY2FuJ3QgdXNlIHRoZSBleGlzdGluZyBBUEksIG9yIHRo
-ZSBleGlzdGluZw0KQVBJIGlzbid0IG9wdGltYWwsIG9yIGFueSBvdGhlciBwcm9ibGVtcywgd2Xi
-gJlyZSBoYXBweSB0byBoZWxwIGZpZ3VyZSBvdXQgdGhlDQpiZXN0IHNvbHV0aW9uLiBPcGVuaW5n
-IGFuIGlzc3VlIG9uIG91ciB1cHN0cmVhbSBHaXRIdWIgcmVwbyBpcyB0aGUgYmVzdCB3YXkgdG8N
-CmdldCBvdXIgYXR0ZW50aW9uDQoNCi1OaWNrDQoNCj4gRml4aW5nIHRob3NlIGFyZSBwcm9iYWJs
-eSBnb2luZyB0byBiZSBtdWNoIGVhc2llciBpZiB3ZeKAmXJlIGNsb3NlIHRvIHRoZSB6c3RkIHVw
-c3RyZWFtLCBhZ2FpbiBzbyB0aGF0IHdlIGNhbiBsZXZlcmFnZSB0ZXN0aW5nIGFuZCBsb25nIHRl
-cm0gY29kZSBtYWludGVuYW5jZSBkb25lIHRoZXJlLg0KPiANCj4gLWNocmlzDQoNCg==
+When a user attempts to remount a btrfs filesystem with
+'mount -o remount,space_cache=v2', that operation silently succeeds.
+Unfortunately, this is misleading, because the remount does not create
+the free space tree. /proc/mounts will incorrectly show space_cache=v2,
+but on the next mount, the file system will revert to the old
+space_cache.
+
+For now, we handle only the easier case, where the existing mount is
+read-only and the new mount is read-write. In that case, we can create
+the free space tree without contending with the block groups changing
+as we go. If the remount is ro->ro, rw->ro, or rw->rw, we will not
+create the free space tree, and print a warning to dmesg so that this
+failure is more visible.
+
+References: https://github.com/btrfs/btrfs-todo/issues/5
+Signed-off-by: Boris Burkov <boris@bur.io>
+---
+v3:
+- change failure to warning in dmesg for consistency
+v2:
+- move creation down to ro->rw case
+- error on all other remount cases
+- add a comment to help future remount modifiers
+
+ fs/btrfs/super.c | 27 +++++++++++++++++++++++++++
+ 1 file changed, 27 insertions(+)
+
+diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
+index 3ebe7240c63d..8dfd6089e31d 100644
+--- a/fs/btrfs/super.c
++++ b/fs/btrfs/super.c
+@@ -47,6 +47,7 @@
+ #include "tests/btrfs-tests.h"
+ #include "block-group.h"
+ #include "discard.h"
++#include "free-space-tree.h"
+ 
+ #include "qgroup.h"
+ #define CREATE_TRACE_POINTS
+@@ -1838,6 +1839,7 @@ static int btrfs_remount(struct super_block *sb, int *flags, char *data)
+ 	u64 old_max_inline = fs_info->max_inline;
+ 	u32 old_thread_pool_size = fs_info->thread_pool_size;
+ 	u32 old_metadata_ratio = fs_info->metadata_ratio;
++	bool create_fst = false;
+ 	int ret;
+ 
+ 	sync_filesystem(sb);
+@@ -1862,6 +1864,16 @@ static int btrfs_remount(struct super_block *sb, int *flags, char *data)
+ 	btrfs_resize_thread_pool(fs_info,
+ 		fs_info->thread_pool_size, old_thread_pool_size);
+ 
++	if (btrfs_test_opt(fs_info, FREE_SPACE_TREE) &&
++	    !btrfs_fs_compat_ro(fs_info, FREE_SPACE_TREE)) {
++		create_fst = true;
++		if (!sb_rdonly(sb) || *flags & SB_RDONLY) {
++			btrfs_warn(fs_info,
++				   "Remounting with free space tree only supported from read-only to read-write");
++			create_fst = false;
++		}
++	}
++
+ 	if ((bool)(*flags & SB_RDONLY) == sb_rdonly(sb))
+ 		goto out;
+ 
+@@ -1924,6 +1936,21 @@ static int btrfs_remount(struct super_block *sb, int *flags, char *data)
+ 			goto restore;
+ 		}
+ 
++		/*
++		 * NOTE: when remounting with a change that does writes, don't
++		 * put it anywhere above this point, as we are not sure to be
++		 * safe to write until we pass the above checks.
++		 */
++		if (create_fst) {
++			ret = btrfs_create_free_space_tree(fs_info);
++			if (ret) {
++				btrfs_warn(fs_info,
++					   "failed to create free space tree: %d", ret);
++				goto restore;
++			}
++		}
++
++
+ 		ret = btrfs_cleanup_fs_roots(fs_info);
+ 		if (ret)
+ 			goto restore;
+-- 
+2.24.1
+
