@@ -2,35 +2,34 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BBA626EB6A
-	for <lists+linux-btrfs@lfdr.de>; Fri, 18 Sep 2020 04:06:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F218526EBC9
+	for <lists+linux-btrfs@lfdr.de>; Fri, 18 Sep 2020 04:10:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727437AbgIRCFE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 17 Sep 2020 22:05:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52974 "EHLO mail.kernel.org"
+        id S1727862AbgIRCHJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 17 Sep 2020 22:07:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57128 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727427AbgIRCFC (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 17 Sep 2020 22:05:02 -0400
+        id S1727849AbgIRCHI (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 17 Sep 2020 22:07:08 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5255B23888;
-        Fri, 18 Sep 2020 02:05:01 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 157C223A03;
+        Fri, 18 Sep 2020 02:06:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600394702;
-        bh=aHxsQgvwNnbGIwSSy69r9VE0YCKcjB1WtDe7bHMU8QY=;
+        s=default; t=1600394820;
+        bh=DDxF845h1pAP92mHR2gh3x4UCcQR5hpUgSszHYxM3+g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MA/hRaJda772Wog2nl3fb95K8ntJWyzHoWgBP3bm1OwYJpAUZaJY0I2fp08bzzOmu
-         2B3hMMhjcG1D5bYp9hAK7A9kDgNScHHe6rqv8NQoo2Hxrtl2uhPEfiN6itQei42KZU
-         ye4h3VLSjA3Q2SepzQrM51qFPn+QodIAuZvm2D58=
+        b=lC/aKjn9/UtHRLrLzoBoIzWwxKOdAiDL8+Ga0/2qu2EQ7sQn03Y55YSz0MFadK5vo
+         GOIFrmHzJQ7f7562Dy0OWQmgR5/1ACKjJyFJoBOSDG+Xoqq9ew5Z+gKEpnfQopRFgl
+         0lQM1vw/KUu6d3lm8Ae5QfU5wk2nZNGBo+34/vMU=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Sasha Levin <sashal@kernel.org>, linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 188/330] btrfs: free the reloc_control in a consistent way
-Date:   Thu, 17 Sep 2020 21:58:48 -0400
-Message-Id: <20200918020110.2063155-188-sashal@kernel.org>
+Cc:     David Sterba <dsterba@suse.com>, Sasha Levin <sashal@kernel.org>,
+        linux-btrfs@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.4 286/330] btrfs: don't force read-only after error in drop snapshot
+Date:   Thu, 17 Sep 2020 22:00:26 -0400
+Message-Id: <20200918020110.2063155-286-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200918020110.2063155-1-sashal@kernel.org>
 References: <20200918020110.2063155-1-sashal@kernel.org>
@@ -42,65 +41,43 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Josef Bacik <josef@toxicpanda.com>
+From: David Sterba <dsterba@suse.com>
 
-[ Upstream commit 1a0afa0ecfc4dbc8d7583d03cafd3f68f781df0c ]
+[ Upstream commit 7c09c03091ac562ddca2b393e5d65c1d37da79f1 ]
 
-If we have an error while processing the reloc roots we could leak roots
-that were added to rc->reloc_roots before we hit the error.  We could
-have also not removed the reloc tree mapping from our rb_tree, so clean
-up any remaining nodes in the reloc root rb_tree.
+Deleting a subvolume on a full filesystem leads to ENOSPC followed by a
+forced read-only. This is not a transaction abort and the filesystem is
+otherwise ok, so the error should be just propagated to the callers.
 
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-Reviewed-by: David Sterba <dsterba@suse.com>
-[ use rbtree_postorder_for_each_entry_safe ]
+This is caused by unnecessary call to btrfs_handle_fs_error for all
+errors, except EAGAIN. This does not make sense as the standard
+transaction abort mechanism is in btrfs_drop_snapshot so all relevant
+failures are handled.
+
+Originally in commit cb1b69f4508a ("Btrfs: forced readonly when
+btrfs_drop_snapshot() fails") there was no return value at all, so the
+btrfs_std_error made some sense but once the error handling and
+propagation has been implemented we don't need it anymore.
+
 Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/btrfs/relocation.c | 16 ++++++++++++++--
- 1 file changed, 14 insertions(+), 2 deletions(-)
+ fs/btrfs/extent-tree.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-index 1313506a7ecb5..ece53d2f55ae3 100644
---- a/fs/btrfs/relocation.c
-+++ b/fs/btrfs/relocation.c
-@@ -4354,6 +4354,18 @@ static struct reloc_control *alloc_reloc_control(struct btrfs_fs_info *fs_info)
- 	return rc;
- }
- 
-+static void free_reloc_control(struct reloc_control *rc)
-+{
-+	struct mapping_node *node, *tmp;
-+
-+	free_reloc_roots(&rc->reloc_roots);
-+	rbtree_postorder_for_each_entry_safe(node, tmp,
-+			&rc->reloc_root_tree.rb_root, rb_node)
-+		kfree(node);
-+
-+	kfree(rc);
-+}
-+
- /*
-  * Print the block group being relocated
-  */
-@@ -4486,7 +4498,7 @@ out:
- 		btrfs_dec_block_group_ro(rc->block_group);
- 	iput(rc->data_inode);
- 	btrfs_put_block_group(rc->block_group);
--	kfree(rc);
-+	free_reloc_control(rc);
+diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
+index 541497036cc24..60c3a03203fae 100644
+--- a/fs/btrfs/extent-tree.c
++++ b/fs/btrfs/extent-tree.c
+@@ -5429,8 +5429,6 @@ out:
+ 	 */
+ 	if (!for_reloc && !root_dropped)
+ 		btrfs_add_dead_root(root);
+-	if (err && err != -EAGAIN)
+-		btrfs_handle_fs_error(fs_info, err, NULL);
  	return err;
  }
  
-@@ -4659,7 +4671,7 @@ out_clean:
- 		err = ret;
- out_unset:
- 	unset_reloc_control(rc);
--	kfree(rc);
-+	free_reloc_control(rc);
- out:
- 	if (!list_empty(&reloc_roots))
- 		free_reloc_roots(&reloc_roots);
 -- 
 2.25.1
 
