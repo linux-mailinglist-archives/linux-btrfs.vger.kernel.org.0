@@ -2,37 +2,35 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9D9626F205
-	for <lists+linux-btrfs@lfdr.de>; Fri, 18 Sep 2020 04:55:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3F0B26F1C1
+	for <lists+linux-btrfs@lfdr.de>; Fri, 18 Sep 2020 04:54:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728068AbgIRCz2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 17 Sep 2020 22:55:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57220 "EHLO mail.kernel.org"
+        id S1727999AbgIRCHu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 17 Sep 2020 22:07:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58444 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727851AbgIRCHI (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 17 Sep 2020 22:07:08 -0400
+        id S1727994AbgIRCHs (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 17 Sep 2020 22:07:48 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 17FB423A04;
-        Fri, 18 Sep 2020 02:07:00 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 35B3B23770;
+        Fri, 18 Sep 2020 02:07:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600394822;
-        bh=Srm+hnaDUGZZ9CJvWHJmxDLBzqgEQgsXkNGyMr+BVQc=;
+        s=default; t=1600394868;
+        bh=Ys4BXVQKu1BJf2pHka02imQW3nBiwA2HiB/Nyx5Sucg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TqEdsCWjUtwOLky90LMOECPryU4ywTwMq3x7Vx3tcMRVjOEhivgVu68neE41Jow4k
-         BBDuUtrdtNeCVFr8p0rSmsm0brMUS5zVzGWpVrHH2kpyelbPaOA6hljxyYwWL12PF8
-         wSoZde0annpcIp8GgrnQ9SWx8E3eVEACyRbVSgY8=
+        b=WBdqbFc1Ru9cGu1dijvY+bbvSiavp8g4isAcft4O0qViO5BilFkrVwIaOadQSfcpq
+         fde6Ri6cFjBiFBtdg/xkw9TR9NXCh9AlNPPL36onpeb0qCDGDvMurzbf35DGkJ29To
+         KiX2E0WUbC9+rSkprP8ELGq3oiCyuKWVOA5HjBaE=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Omar Sandoval <osandov@fb.com>,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        Nikolay Borisov <nborisov@suse.com>,
+Cc:     Qu Wenruo <wqu@suse.com>, Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>,
         Sasha Levin <sashal@kernel.org>, linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 287/330] btrfs: fix double __endio_write_update_ordered in direct I/O
-Date:   Thu, 17 Sep 2020 22:00:27 -0400
-Message-Id: <20200918020110.2063155-287-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 320/330] btrfs: qgroup: fix data leak caused by race between writeback and truncate
+Date:   Thu, 17 Sep 2020 22:01:00 -0400
+Message-Id: <20200918020110.2063155-320-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200918020110.2063155-1-sashal@kernel.org>
 References: <20200918020110.2063155-1-sashal@kernel.org>
@@ -44,268 +42,116 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Omar Sandoval <osandov@fb.com>
+From: Qu Wenruo <wqu@suse.com>
 
-[ Upstream commit c36cac28cb94e58f7e21ff43bdc6064346dab32c ]
+[ Upstream commit fa91e4aa1716004ea8096d5185ec0451e206aea0 ]
 
-In btrfs_submit_direct(), if we fail to allocate the btrfs_dio_private,
-we complete the ordered extent range. However, we don't mark that the
-range doesn't need to be cleaned up from btrfs_direct_IO() until later.
-Therefore, if we fail to allocate the btrfs_dio_private, we complete the
-ordered extent range twice. We could fix this by updating
-unsubmitted_oe_range earlier, but it's cleaner to reorganize the code so
-that creating the btrfs_dio_private and submitting the bios are
-separate, and once the btrfs_dio_private is created, cleanup always
-happens through the btrfs_dio_private.
+[BUG]
+When running tests like generic/013 on test device with btrfs quota
+enabled, it can normally lead to data leak, detected at unmount time:
 
-The logic around unsubmitted_oe_range_end and unsubmitted_oe_range_start
-is really subtle. We have the following:
+  BTRFS warning (device dm-3): qgroup 0/5 has unreleased space, type 0 rsv 4096
+  ------------[ cut here ]------------
+  WARNING: CPU: 11 PID: 16386 at fs/btrfs/disk-io.c:4142 close_ctree+0x1dc/0x323 [btrfs]
+  RIP: 0010:close_ctree+0x1dc/0x323 [btrfs]
+  Call Trace:
+   btrfs_put_super+0x15/0x17 [btrfs]
+   generic_shutdown_super+0x72/0x110
+   kill_anon_super+0x18/0x30
+   btrfs_kill_super+0x17/0x30 [btrfs]
+   deactivate_locked_super+0x3b/0xa0
+   deactivate_super+0x40/0x50
+   cleanup_mnt+0x135/0x190
+   __cleanup_mnt+0x12/0x20
+   task_work_run+0x64/0xb0
+   __prepare_exit_to_usermode+0x1bc/0x1c0
+   __syscall_return_slowpath+0x47/0x230
+   do_syscall_64+0x64/0xb0
+   entry_SYSCALL_64_after_hwframe+0x44/0xa9
+  ---[ end trace caf08beafeca2392 ]---
+  BTRFS error (device dm-3): qgroup reserved space leaked
 
-  1. btrfs_direct_IO sets those two to the same value.
+[CAUSE]
+In the offending case, the offending operations are:
+2/6: writev f2X[269 1 0 0 0 0] [1006997,67,288] 0
+2/7: truncate f2X[269 1 0 0 48 1026293] 18388 0
 
-  2. When we call __blockdev_direct_IO unless
-     btrfs_get_blocks_direct->btrfs_get_blocks_direct_write is called to
-     modify unsubmitted_oe_range_start so that start < end. Cleanup
-     won't happen.
+The following sequence of events could happen after the writev():
+	CPU1 (writeback)		|		CPU2 (truncate)
+-----------------------------------------------------------------
+btrfs_writepages()			|
+|- extent_write_cache_pages()		|
+   |- Got page for 1003520		|
+   |  1003520 is Dirty, no writeback	|
+   |  So (!clear_page_dirty_for_io())   |
+   |  gets called for it		|
+   |- Now page 1003520 is Clean.	|
+   |					| btrfs_setattr()
+   |					| |- btrfs_setsize()
+   |					|    |- truncate_setsize()
+   |					|       New i_size is 18388
+   |- __extent_writepage()		|
+   |  |- page_offset() > i_size		|
+      |- btrfs_invalidatepage()		|
+	 |- Page is clean, so no qgroup |
+	    callback executed
 
-  3. We come into btrfs_submit_direct - if it dip allocation fails we'd
-     return with oe_range_end now modified so cleanup will happen.
+This means, the qgroup reserved data space is not properly released in
+btrfs_invalidatepage() as the page is Clean.
 
-  4. If we manage to allocate the dip we reset the unsubmitted range
-     members to be equal so that cleanup happens from
-     btrfs_endio_direct_write.
+[FIX]
+Instead of checking the dirty bit of a page, call
+btrfs_qgroup_free_data() unconditionally in btrfs_invalidatepage().
 
-This 4-step logic is not really obvious, especially given it's scattered
-across 3 functions.
+As qgroup rsv are completely bound to the QGROUP_RESERVED bit of
+io_tree, not bound to page status, thus we won't cause double freeing
+anyway.
 
-Fixes: f28a49287817 ("Btrfs: fix leaking of ordered extents after direct IO write error")
-Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
-Signed-off-by: Omar Sandoval <osandov@fb.com>
-[ add range start/end logic explanation from Nikolay ]
+Fixes: 0b34c261e235 ("btrfs: qgroup: Prevent qgroup->reserved from going subzero")
+CC: stable@vger.kernel.org # 4.14+
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+Signed-off-by: Qu Wenruo <wqu@suse.com>
 Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/btrfs/inode.c | 178 +++++++++++++++++++----------------------------
- 1 file changed, 70 insertions(+), 108 deletions(-)
+ fs/btrfs/inode.c | 23 ++++++++++-------------
+ 1 file changed, 10 insertions(+), 13 deletions(-)
 
 diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 9ac40991a6405..e9787b7b943a2 100644
+index e9787b7b943a2..182e93a5b11d5 100644
 --- a/fs/btrfs/inode.c
 +++ b/fs/btrfs/inode.c
-@@ -8586,14 +8586,64 @@ err:
- 	return ret;
- }
- 
--static int btrfs_submit_direct_hook(struct btrfs_dio_private *dip)
-+/*
-+ * If this succeeds, the btrfs_dio_private is responsible for cleaning up locked
-+ * or ordered extents whether or not we submit any bios.
-+ */
-+static struct btrfs_dio_private *btrfs_create_dio_private(struct bio *dio_bio,
-+							  struct inode *inode,
-+							  loff_t file_offset)
- {
--	struct inode *inode = dip->inode;
-+	const bool write = (bio_op(dio_bio) == REQ_OP_WRITE);
-+	struct btrfs_dio_private *dip;
-+	struct bio *bio;
-+
-+	dip = kzalloc(sizeof(*dip), GFP_NOFS);
-+	if (!dip)
-+		return NULL;
-+
-+	bio = btrfs_bio_clone(dio_bio);
-+	bio->bi_private = dip;
-+	btrfs_io_bio(bio)->logical = file_offset;
-+
-+	dip->private = dio_bio->bi_private;
-+	dip->inode = inode;
-+	dip->logical_offset = file_offset;
-+	dip->bytes = dio_bio->bi_iter.bi_size;
-+	dip->disk_bytenr = (u64)dio_bio->bi_iter.bi_sector << 9;
-+	dip->orig_bio = bio;
-+	dip->dio_bio = dio_bio;
-+	atomic_set(&dip->pending_bios, 1);
-+
-+	if (write) {
-+		struct btrfs_dio_data *dio_data = current->journal_info;
-+
-+		/*
-+		 * Setting range start and end to the same value means that
-+		 * no cleanup will happen in btrfs_direct_IO
-+		 */
-+		dio_data->unsubmitted_oe_range_end = dip->logical_offset +
-+			dip->bytes;
-+		dio_data->unsubmitted_oe_range_start =
-+			dio_data->unsubmitted_oe_range_end;
-+
-+		bio->bi_end_io = btrfs_endio_direct_write;
-+	} else {
-+		bio->bi_end_io = btrfs_endio_direct_read;
-+		dip->subio_endio = btrfs_subio_endio_read;
-+	}
-+	return dip;
-+}
-+
-+static void btrfs_submit_direct(struct bio *dio_bio, struct inode *inode,
-+				loff_t file_offset)
-+{
-+	const bool write = (bio_op(dio_bio) == REQ_OP_WRITE);
- 	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
-+	struct btrfs_dio_private *dip;
- 	struct bio *bio;
--	struct bio *orig_bio = dip->orig_bio;
--	u64 start_sector = orig_bio->bi_iter.bi_sector;
--	u64 file_offset = dip->logical_offset;
-+	struct bio *orig_bio;
-+	u64 start_sector;
- 	int async_submit = 0;
- 	u64 submit_len;
- 	int clone_offset = 0;
-@@ -8602,11 +8652,24 @@ static int btrfs_submit_direct_hook(struct btrfs_dio_private *dip)
- 	blk_status_t status;
- 	struct btrfs_io_geometry geom;
- 
-+	dip = btrfs_create_dio_private(dio_bio, inode, file_offset);
-+	if (!dip) {
-+		if (!write) {
-+			unlock_extent(&BTRFS_I(inode)->io_tree, file_offset,
-+				file_offset + dio_bio->bi_iter.bi_size - 1);
-+		}
-+		dio_bio->bi_status = BLK_STS_RESOURCE;
-+		dio_end_io(dio_bio);
-+		return;
-+	}
-+
-+	orig_bio = dip->orig_bio;
-+	start_sector = orig_bio->bi_iter.bi_sector;
- 	submit_len = orig_bio->bi_iter.bi_size;
- 	ret = btrfs_get_io_geometry(fs_info, btrfs_op(orig_bio),
- 				    start_sector << 9, submit_len, &geom);
- 	if (ret)
--		return -EIO;
-+		goto out_err;
- 
- 	if (geom.len >= submit_len) {
- 		bio = orig_bio;
-@@ -8669,7 +8732,7 @@ static int btrfs_submit_direct_hook(struct btrfs_dio_private *dip)
- submit:
- 	status = btrfs_submit_dio_bio(bio, inode, file_offset, async_submit);
- 	if (!status)
--		return 0;
-+		return;
- 
- 	if (bio != orig_bio)
- 		bio_put(bio);
-@@ -8683,107 +8746,6 @@ out_err:
+@@ -9044,20 +9044,17 @@ again:
+ 	/*
+ 	 * Qgroup reserved space handler
+ 	 * Page here will be either
+-	 * 1) Already written to disk
+-	 *    In this case, its reserved space is released from data rsv map
+-	 *    and will be freed by delayed_ref handler finally.
+-	 *    So even we call qgroup_free_data(), it won't decrease reserved
+-	 *    space.
+-	 * 2) Not written to disk
+-	 *    This means the reserved space should be freed here. However,
+-	 *    if a truncate invalidates the page (by clearing PageDirty)
+-	 *    and the page is accounted for while allocating extent
+-	 *    in btrfs_check_data_free_space() we let delayed_ref to
+-	 *    free the entire extent.
++	 * 1) Already written to disk or ordered extent already submitted
++	 *    Then its QGROUP_RESERVED bit in io_tree is already cleaned.
++	 *    Qgroup will be handled by its qgroup_record then.
++	 *    btrfs_qgroup_free_data() call will do nothing here.
++	 *
++	 * 2) Not written to disk yet
++	 *    Then btrfs_qgroup_free_data() call will clear the QGROUP_RESERVED
++	 *    bit of its io_tree, and free the qgroup reserved data space.
++	 *    Since the IO will never happen for this page.
  	 */
- 	if (atomic_dec_and_test(&dip->pending_bios))
- 		bio_io_error(dip->orig_bio);
--
--	/* bio_end_io() will handle error, so we needn't return it */
--	return 0;
--}
--
--static void btrfs_submit_direct(struct bio *dio_bio, struct inode *inode,
--				loff_t file_offset)
--{
--	struct btrfs_dio_private *dip = NULL;
--	struct bio *bio = NULL;
--	struct btrfs_io_bio *io_bio;
--	bool write = (bio_op(dio_bio) == REQ_OP_WRITE);
--	int ret = 0;
--
--	bio = btrfs_bio_clone(dio_bio);
--
--	dip = kzalloc(sizeof(*dip), GFP_NOFS);
--	if (!dip) {
--		ret = -ENOMEM;
--		goto free_ordered;
--	}
--
--	dip->private = dio_bio->bi_private;
--	dip->inode = inode;
--	dip->logical_offset = file_offset;
--	dip->bytes = dio_bio->bi_iter.bi_size;
--	dip->disk_bytenr = (u64)dio_bio->bi_iter.bi_sector << 9;
--	bio->bi_private = dip;
--	dip->orig_bio = bio;
--	dip->dio_bio = dio_bio;
--	atomic_set(&dip->pending_bios, 1);
--	io_bio = btrfs_io_bio(bio);
--	io_bio->logical = file_offset;
--
--	if (write) {
--		bio->bi_end_io = btrfs_endio_direct_write;
--	} else {
--		bio->bi_end_io = btrfs_endio_direct_read;
--		dip->subio_endio = btrfs_subio_endio_read;
--	}
--
--	/*
--	 * Reset the range for unsubmitted ordered extents (to a 0 length range)
--	 * even if we fail to submit a bio, because in such case we do the
--	 * corresponding error handling below and it must not be done a second
--	 * time by btrfs_direct_IO().
--	 */
--	if (write) {
--		struct btrfs_dio_data *dio_data = current->journal_info;
--
--		dio_data->unsubmitted_oe_range_end = dip->logical_offset +
--			dip->bytes;
--		dio_data->unsubmitted_oe_range_start =
--			dio_data->unsubmitted_oe_range_end;
--	}
--
--	ret = btrfs_submit_direct_hook(dip);
--	if (!ret)
--		return;
--
--	btrfs_io_bio_free_csum(io_bio);
--
--free_ordered:
--	/*
--	 * If we arrived here it means either we failed to submit the dip
--	 * or we either failed to clone the dio_bio or failed to allocate the
--	 * dip. If we cloned the dio_bio and allocated the dip, we can just
--	 * call bio_endio against our io_bio so that we get proper resource
--	 * cleanup if we fail to submit the dip, otherwise, we must do the
--	 * same as btrfs_endio_direct_[write|read] because we can't call these
--	 * callbacks - they require an allocated dip and a clone of dio_bio.
--	 */
--	if (bio && dip) {
--		bio_io_error(bio);
--		/*
--		 * The end io callbacks free our dip, do the final put on bio
--		 * and all the cleanup and final put for dio_bio (through
--		 * dio_end_io()).
--		 */
--		dip = NULL;
--		bio = NULL;
--	} else {
--		if (write)
--			__endio_write_update_ordered(inode,
--						file_offset,
--						dio_bio->bi_iter.bi_size,
--						false);
--		else
--			unlock_extent(&BTRFS_I(inode)->io_tree, file_offset,
--			      file_offset + dio_bio->bi_iter.bi_size - 1);
--
--		dio_bio->bi_status = BLK_STS_IOERR;
--		/*
--		 * Releases and cleans up our dio_bio, no need to bio_put()
--		 * nor bio_endio()/bio_io_error() against dio_bio.
--		 */
--		dio_end_io(dio_bio);
--	}
--	if (bio)
--		bio_put(bio);
--	kfree(dip);
- }
- 
- static ssize_t check_direct_IO(struct btrfs_fs_info *fs_info,
+-	if (PageDirty(page))
+-		btrfs_qgroup_free_data(inode, NULL, page_start, PAGE_SIZE);
++	btrfs_qgroup_free_data(inode, NULL, page_start, PAGE_SIZE);
+ 	if (!inode_evicting) {
+ 		clear_extent_bit(tree, page_start, page_end, EXTENT_LOCKED |
+ 				 EXTENT_DELALLOC | EXTENT_DELALLOC_NEW |
 -- 
 2.25.1
 
