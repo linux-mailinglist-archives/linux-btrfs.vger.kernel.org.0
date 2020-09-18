@@ -2,36 +2,37 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDF0126F274
-	for <lists+linux-btrfs@lfdr.de>; Fri, 18 Sep 2020 04:59:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9D9626F205
+	for <lists+linux-btrfs@lfdr.de>; Fri, 18 Sep 2020 04:55:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728947AbgIRC7G (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 17 Sep 2020 22:59:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54976 "EHLO mail.kernel.org"
+        id S1728068AbgIRCz2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 17 Sep 2020 22:55:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57220 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727692AbgIRCGB (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 17 Sep 2020 22:06:01 -0400
+        id S1727851AbgIRCHI (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 17 Sep 2020 22:07:08 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 05C3C2388E;
-        Fri, 18 Sep 2020 02:05:59 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 17FB423A04;
+        Fri, 18 Sep 2020 02:07:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600394760;
-        bh=OyqdvDmYpNYFuLdMZDjqakwuFP7f2e4gvxS8ALoPd/M=;
+        s=default; t=1600394822;
+        bh=Srm+hnaDUGZZ9CJvWHJmxDLBzqgEQgsXkNGyMr+BVQc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gsyT+2RuO0eCa+WcwACJBNXyNN6OiV+xMccc/Vd5HqyJ9HYEKJouAn1wxXF6zhOvn
-         0MKWznr0dC/PBKKYMUDLtWKW269BYKyiaG8cgaZj7QGw0Qf9/mepqg7gJYjQhE0ALv
-         89r+b2chPflJl46Eb6hol3zq4Pc3RYUX/rcv8UAc=
+        b=TqEdsCWjUtwOLky90LMOECPryU4ywTwMq3x7Vx3tcMRVjOEhivgVu68neE41Jow4k
+         BBDuUtrdtNeCVFr8p0rSmsm0brMUS5zVzGWpVrHH2kpyelbPaOA6hljxyYwWL12PF8
+         wSoZde0annpcIp8GgrnQ9SWx8E3eVEACyRbVSgY8=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Josef Bacik <josef@toxicpanda.com>,
-        Filipe Manana <fdmanana@suse.com>,
+Cc:     Omar Sandoval <osandov@fb.com>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        Nikolay Borisov <nborisov@suse.com>,
         David Sterba <dsterba@suse.com>,
         Sasha Levin <sashal@kernel.org>, linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 237/330] btrfs: fix setting last_trans for reloc roots
-Date:   Thu, 17 Sep 2020 21:59:37 -0400
-Message-Id: <20200918020110.2063155-237-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 287/330] btrfs: fix double __endio_write_update_ordered in direct I/O
+Date:   Thu, 17 Sep 2020 22:00:27 -0400
+Message-Id: <20200918020110.2063155-287-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200918020110.2063155-1-sashal@kernel.org>
 References: <20200918020110.2063155-1-sashal@kernel.org>
@@ -43,121 +44,268 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Josef Bacik <josef@toxicpanda.com>
+From: Omar Sandoval <osandov@fb.com>
 
-[ Upstream commit aec7db3b13a07d515c15ada752a7287a44a79ea0 ]
+[ Upstream commit c36cac28cb94e58f7e21ff43bdc6064346dab32c ]
 
-I made a mistake with my previous fix, I assumed that we didn't need to
-mess with the reloc roots once we were out of the part of relocation where
-we are actually moving the extents.
+In btrfs_submit_direct(), if we fail to allocate the btrfs_dio_private,
+we complete the ordered extent range. However, we don't mark that the
+range doesn't need to be cleaned up from btrfs_direct_IO() until later.
+Therefore, if we fail to allocate the btrfs_dio_private, we complete the
+ordered extent range twice. We could fix this by updating
+unsubmitted_oe_range earlier, but it's cleaner to reorganize the code so
+that creating the btrfs_dio_private and submitting the bios are
+separate, and once the btrfs_dio_private is created, cleanup always
+happens through the btrfs_dio_private.
 
-The subtle thing that I missed is that btrfs_init_reloc_root() also
-updates the last_trans for the reloc root when we do
-btrfs_record_root_in_trans() for the corresponding fs_root.  I've added a
-comment to make sure future me doesn't make this mistake again.
+The logic around unsubmitted_oe_range_end and unsubmitted_oe_range_start
+is really subtle. We have the following:
 
-This showed up as a WARN_ON() in btrfs_copy_root() because our
-last_trans didn't == the current transid.  This could happen if we
-snapshotted a fs root with a reloc root after we set
-rc->create_reloc_tree = 0, but before we actually merge the reloc root.
+  1. btrfs_direct_IO sets those two to the same value.
 
-Worth mentioning that the regression produced the following warning
-when running snapshot creation and balance in parallel:
+  2. When we call __blockdev_direct_IO unless
+     btrfs_get_blocks_direct->btrfs_get_blocks_direct_write is called to
+     modify unsubmitted_oe_range_start so that start < end. Cleanup
+     won't happen.
 
-  BTRFS info (device sdc): relocating block group 30408704 flags metadata|dup
-  ------------[ cut here ]------------
-  WARNING: CPU: 0 PID: 12823 at fs/btrfs/ctree.c:191 btrfs_copy_root+0x26f/0x430 [btrfs]
-  CPU: 0 PID: 12823 Comm: btrfs Tainted: G        W 5.6.0-rc7-btrfs-next-58 #1
-  Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
-  RIP: 0010:btrfs_copy_root+0x26f/0x430 [btrfs]
-  RSP: 0018:ffffb96e044279b8 EFLAGS: 00010202
-  RAX: 0000000000000009 RBX: ffff9da70bf61000 RCX: ffffb96e04427a48
-  RDX: ffff9da733a770c8 RSI: ffff9da70bf61000 RDI: ffff9da694163818
-  RBP: ffff9da733a770c8 R08: fffffffffffffff8 R09: 0000000000000002
-  R10: ffffb96e044279a0 R11: 0000000000000000 R12: ffff9da694163818
-  R13: fffffffffffffff8 R14: ffff9da6d2512000 R15: ffff9da714cdac00
-  FS:  00007fdeacf328c0(0000) GS:ffff9da735e00000(0000) knlGS:0000000000000000
-  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-  CR2: 000055a2a5b8a118 CR3: 00000001eed78002 CR4: 00000000003606f0
-  DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-  DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-  Call Trace:
-   ? create_reloc_root+0x49/0x2b0 [btrfs]
-   ? kmem_cache_alloc_trace+0xe5/0x200
-   create_reloc_root+0x8b/0x2b0 [btrfs]
-   btrfs_reloc_post_snapshot+0x96/0x5b0 [btrfs]
-   create_pending_snapshot+0x610/0x1010 [btrfs]
-   create_pending_snapshots+0xa8/0xd0 [btrfs]
-   btrfs_commit_transaction+0x4c7/0xc50 [btrfs]
-   ? btrfs_mksubvol+0x3cd/0x560 [btrfs]
-   btrfs_mksubvol+0x455/0x560 [btrfs]
-   __btrfs_ioctl_snap_create+0x15f/0x190 [btrfs]
-   btrfs_ioctl_snap_create_v2+0xa4/0xf0 [btrfs]
-   ? mem_cgroup_commit_charge+0x6e/0x540
-   btrfs_ioctl+0x12d8/0x3760 [btrfs]
-   ? do_raw_spin_unlock+0x49/0xc0
-   ? _raw_spin_unlock+0x29/0x40
-   ? __handle_mm_fault+0x11b3/0x14b0
-   ? ksys_ioctl+0x92/0xb0
-   ksys_ioctl+0x92/0xb0
-   ? trace_hardirqs_off_thunk+0x1a/0x1c
-   __x64_sys_ioctl+0x16/0x20
-   do_syscall_64+0x5c/0x280
-   entry_SYSCALL_64_after_hwframe+0x49/0xbe
-  RIP: 0033:0x7fdeabd3bdd7
+  3. We come into btrfs_submit_direct - if it dip allocation fails we'd
+     return with oe_range_end now modified so cleanup will happen.
 
-Fixes: 2abc726ab4b8 ("btrfs: do not init a reloc root if we aren't relocating")
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+  4. If we manage to allocate the dip we reset the unsubmitted range
+     members to be equal so that cleanup happens from
+     btrfs_endio_direct_write.
+
+This 4-step logic is not really obvious, especially given it's scattered
+across 3 functions.
+
+Fixes: f28a49287817 ("Btrfs: fix leaking of ordered extents after direct IO write error")
+Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+Signed-off-by: Omar Sandoval <osandov@fb.com>
+[ add range start/end logic explanation from Nikolay ]
 Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/btrfs/relocation.c | 19 +++++++++++++++++--
- 1 file changed, 17 insertions(+), 2 deletions(-)
+ fs/btrfs/inode.c | 178 +++++++++++++++++++----------------------------
+ 1 file changed, 70 insertions(+), 108 deletions(-)
 
-diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-index ece53d2f55ae3..1bc57f7b91cfa 100644
---- a/fs/btrfs/relocation.c
-+++ b/fs/btrfs/relocation.c
-@@ -1468,8 +1468,7 @@ int btrfs_init_reloc_root(struct btrfs_trans_handle *trans,
- 	int clear_rsv = 0;
- 	int ret;
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index 9ac40991a6405..e9787b7b943a2 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -8586,14 +8586,64 @@ err:
+ 	return ret;
+ }
  
--	if (!rc || !rc->create_reloc_tree ||
--	    root->root_key.objectid == BTRFS_TREE_RELOC_OBJECTID)
-+	if (!rc)
- 		return 0;
- 
- 	/*
-@@ -1479,12 +1478,28 @@ int btrfs_init_reloc_root(struct btrfs_trans_handle *trans,
- 	if (reloc_root_is_dead(root))
- 		return 0;
- 
-+	/*
-+	 * This is subtle but important.  We do not do
-+	 * record_root_in_transaction for reloc roots, instead we record their
-+	 * corresponding fs root, and then here we update the last trans for the
-+	 * reloc root.  This means that we have to do this for the entire life
-+	 * of the reloc root, regardless of which stage of the relocation we are
-+	 * in.
-+	 */
- 	if (root->reloc_root) {
- 		reloc_root = root->reloc_root;
- 		reloc_root->last_trans = trans->transid;
- 		return 0;
- 	}
- 
-+	/*
-+	 * We are merging reloc roots, we do not need new reloc trees.  Also
-+	 * reloc trees never need their own reloc tree.
-+	 */
-+	if (!rc->create_reloc_tree ||
-+	    root->root_key.objectid == BTRFS_TREE_RELOC_OBJECTID)
-+		return 0;
+-static int btrfs_submit_direct_hook(struct btrfs_dio_private *dip)
++/*
++ * If this succeeds, the btrfs_dio_private is responsible for cleaning up locked
++ * or ordered extents whether or not we submit any bios.
++ */
++static struct btrfs_dio_private *btrfs_create_dio_private(struct bio *dio_bio,
++							  struct inode *inode,
++							  loff_t file_offset)
+ {
+-	struct inode *inode = dip->inode;
++	const bool write = (bio_op(dio_bio) == REQ_OP_WRITE);
++	struct btrfs_dio_private *dip;
++	struct bio *bio;
 +
- 	if (!trans->reloc_reserved) {
- 		rsv = trans->block_rsv;
- 		trans->block_rsv = rc->block_rsv;
++	dip = kzalloc(sizeof(*dip), GFP_NOFS);
++	if (!dip)
++		return NULL;
++
++	bio = btrfs_bio_clone(dio_bio);
++	bio->bi_private = dip;
++	btrfs_io_bio(bio)->logical = file_offset;
++
++	dip->private = dio_bio->bi_private;
++	dip->inode = inode;
++	dip->logical_offset = file_offset;
++	dip->bytes = dio_bio->bi_iter.bi_size;
++	dip->disk_bytenr = (u64)dio_bio->bi_iter.bi_sector << 9;
++	dip->orig_bio = bio;
++	dip->dio_bio = dio_bio;
++	atomic_set(&dip->pending_bios, 1);
++
++	if (write) {
++		struct btrfs_dio_data *dio_data = current->journal_info;
++
++		/*
++		 * Setting range start and end to the same value means that
++		 * no cleanup will happen in btrfs_direct_IO
++		 */
++		dio_data->unsubmitted_oe_range_end = dip->logical_offset +
++			dip->bytes;
++		dio_data->unsubmitted_oe_range_start =
++			dio_data->unsubmitted_oe_range_end;
++
++		bio->bi_end_io = btrfs_endio_direct_write;
++	} else {
++		bio->bi_end_io = btrfs_endio_direct_read;
++		dip->subio_endio = btrfs_subio_endio_read;
++	}
++	return dip;
++}
++
++static void btrfs_submit_direct(struct bio *dio_bio, struct inode *inode,
++				loff_t file_offset)
++{
++	const bool write = (bio_op(dio_bio) == REQ_OP_WRITE);
+ 	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
++	struct btrfs_dio_private *dip;
+ 	struct bio *bio;
+-	struct bio *orig_bio = dip->orig_bio;
+-	u64 start_sector = orig_bio->bi_iter.bi_sector;
+-	u64 file_offset = dip->logical_offset;
++	struct bio *orig_bio;
++	u64 start_sector;
+ 	int async_submit = 0;
+ 	u64 submit_len;
+ 	int clone_offset = 0;
+@@ -8602,11 +8652,24 @@ static int btrfs_submit_direct_hook(struct btrfs_dio_private *dip)
+ 	blk_status_t status;
+ 	struct btrfs_io_geometry geom;
+ 
++	dip = btrfs_create_dio_private(dio_bio, inode, file_offset);
++	if (!dip) {
++		if (!write) {
++			unlock_extent(&BTRFS_I(inode)->io_tree, file_offset,
++				file_offset + dio_bio->bi_iter.bi_size - 1);
++		}
++		dio_bio->bi_status = BLK_STS_RESOURCE;
++		dio_end_io(dio_bio);
++		return;
++	}
++
++	orig_bio = dip->orig_bio;
++	start_sector = orig_bio->bi_iter.bi_sector;
+ 	submit_len = orig_bio->bi_iter.bi_size;
+ 	ret = btrfs_get_io_geometry(fs_info, btrfs_op(orig_bio),
+ 				    start_sector << 9, submit_len, &geom);
+ 	if (ret)
+-		return -EIO;
++		goto out_err;
+ 
+ 	if (geom.len >= submit_len) {
+ 		bio = orig_bio;
+@@ -8669,7 +8732,7 @@ static int btrfs_submit_direct_hook(struct btrfs_dio_private *dip)
+ submit:
+ 	status = btrfs_submit_dio_bio(bio, inode, file_offset, async_submit);
+ 	if (!status)
+-		return 0;
++		return;
+ 
+ 	if (bio != orig_bio)
+ 		bio_put(bio);
+@@ -8683,107 +8746,6 @@ out_err:
+ 	 */
+ 	if (atomic_dec_and_test(&dip->pending_bios))
+ 		bio_io_error(dip->orig_bio);
+-
+-	/* bio_end_io() will handle error, so we needn't return it */
+-	return 0;
+-}
+-
+-static void btrfs_submit_direct(struct bio *dio_bio, struct inode *inode,
+-				loff_t file_offset)
+-{
+-	struct btrfs_dio_private *dip = NULL;
+-	struct bio *bio = NULL;
+-	struct btrfs_io_bio *io_bio;
+-	bool write = (bio_op(dio_bio) == REQ_OP_WRITE);
+-	int ret = 0;
+-
+-	bio = btrfs_bio_clone(dio_bio);
+-
+-	dip = kzalloc(sizeof(*dip), GFP_NOFS);
+-	if (!dip) {
+-		ret = -ENOMEM;
+-		goto free_ordered;
+-	}
+-
+-	dip->private = dio_bio->bi_private;
+-	dip->inode = inode;
+-	dip->logical_offset = file_offset;
+-	dip->bytes = dio_bio->bi_iter.bi_size;
+-	dip->disk_bytenr = (u64)dio_bio->bi_iter.bi_sector << 9;
+-	bio->bi_private = dip;
+-	dip->orig_bio = bio;
+-	dip->dio_bio = dio_bio;
+-	atomic_set(&dip->pending_bios, 1);
+-	io_bio = btrfs_io_bio(bio);
+-	io_bio->logical = file_offset;
+-
+-	if (write) {
+-		bio->bi_end_io = btrfs_endio_direct_write;
+-	} else {
+-		bio->bi_end_io = btrfs_endio_direct_read;
+-		dip->subio_endio = btrfs_subio_endio_read;
+-	}
+-
+-	/*
+-	 * Reset the range for unsubmitted ordered extents (to a 0 length range)
+-	 * even if we fail to submit a bio, because in such case we do the
+-	 * corresponding error handling below and it must not be done a second
+-	 * time by btrfs_direct_IO().
+-	 */
+-	if (write) {
+-		struct btrfs_dio_data *dio_data = current->journal_info;
+-
+-		dio_data->unsubmitted_oe_range_end = dip->logical_offset +
+-			dip->bytes;
+-		dio_data->unsubmitted_oe_range_start =
+-			dio_data->unsubmitted_oe_range_end;
+-	}
+-
+-	ret = btrfs_submit_direct_hook(dip);
+-	if (!ret)
+-		return;
+-
+-	btrfs_io_bio_free_csum(io_bio);
+-
+-free_ordered:
+-	/*
+-	 * If we arrived here it means either we failed to submit the dip
+-	 * or we either failed to clone the dio_bio or failed to allocate the
+-	 * dip. If we cloned the dio_bio and allocated the dip, we can just
+-	 * call bio_endio against our io_bio so that we get proper resource
+-	 * cleanup if we fail to submit the dip, otherwise, we must do the
+-	 * same as btrfs_endio_direct_[write|read] because we can't call these
+-	 * callbacks - they require an allocated dip and a clone of dio_bio.
+-	 */
+-	if (bio && dip) {
+-		bio_io_error(bio);
+-		/*
+-		 * The end io callbacks free our dip, do the final put on bio
+-		 * and all the cleanup and final put for dio_bio (through
+-		 * dio_end_io()).
+-		 */
+-		dip = NULL;
+-		bio = NULL;
+-	} else {
+-		if (write)
+-			__endio_write_update_ordered(inode,
+-						file_offset,
+-						dio_bio->bi_iter.bi_size,
+-						false);
+-		else
+-			unlock_extent(&BTRFS_I(inode)->io_tree, file_offset,
+-			      file_offset + dio_bio->bi_iter.bi_size - 1);
+-
+-		dio_bio->bi_status = BLK_STS_IOERR;
+-		/*
+-		 * Releases and cleans up our dio_bio, no need to bio_put()
+-		 * nor bio_endio()/bio_io_error() against dio_bio.
+-		 */
+-		dio_end_io(dio_bio);
+-	}
+-	if (bio)
+-		bio_put(bio);
+-	kfree(dip);
+ }
+ 
+ static ssize_t check_direct_IO(struct btrfs_fs_info *fs_info,
 -- 
 2.25.1
 
