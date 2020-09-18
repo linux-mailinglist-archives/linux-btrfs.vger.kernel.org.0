@@ -2,112 +2,122 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADC6026F300
-	for <lists+linux-btrfs@lfdr.de>; Fri, 18 Sep 2020 05:03:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E539426F687
+	for <lists+linux-btrfs@lfdr.de>; Fri, 18 Sep 2020 09:14:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727428AbgIRCFC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 17 Sep 2020 22:05:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52958 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727423AbgIRCFB (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 17 Sep 2020 22:05:01 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2923D2344C;
-        Fri, 18 Sep 2020 02:05:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600394700;
-        bh=cy6Vb+w8dw3c/JpKeFygjW4q0sjZBzO0mk4wcmcKE64=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xhwoS+HDOLJPbDKBAjEarxv5rMLa3kdoYCIUEvOwqRn1VE9fxPHfirFMNAZOuSh/J
-         Guv7cMSNTBDJ/DRKjYXs2qo+8HdhuHWZVyGAI6RiCYLjXmOinx2cUg4mEwbVbLtn8D
-         +/eXwO7W2BxKT7b8dhPRVi7HdlNMuAkkUmWwRdVs=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Josef Bacik <josef@toxicpanda.com>, Qu Wenruo <wqu@suse.com>,
-        David Sterba <dsterba@suse.com>,
-        Sasha Levin <sashal@kernel.org>, linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 187/330] btrfs: do not init a reloc root if we aren't relocating
-Date:   Thu, 17 Sep 2020 21:58:47 -0400
-Message-Id: <20200918020110.2063155-187-sashal@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200918020110.2063155-1-sashal@kernel.org>
-References: <20200918020110.2063155-1-sashal@kernel.org>
+        id S1726388AbgIRHNx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 18 Sep 2020 03:13:53 -0400
+Received: from esa6.hgst.iphmx.com ([216.71.154.45]:64534 "EHLO
+        esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726149AbgIRHNx (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 18 Sep 2020 03:13:53 -0400
+X-Greylist: delayed 427 seconds by postgrey-1.27 at vger.kernel.org; Fri, 18 Sep 2020 03:13:51 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1600413231; x=1631949231;
+  h=from:to:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=sKVTiYQeJGUszfjwLfkL5VvJG/8Gs3egAp/vQW7GIhs=;
+  b=qkFPU2xkyiPwf2BgnjvgB0hI5N6dyPI3XOtXlCmiswZrnmwkGVPP9+2k
+   pLu6U9LecAFfNG93o0ZGaQ1CuYRHObZTUHVTMmK4j5GST1gOBfdJOUV4d
+   xCt8iCS3xMCV6skZg9E+X1gciJPxZWARCYH5AzaA6kBJZmIQ0+iVjdVo6
+   gl6L1YYpWlNLQBKLBukFvtpgLMAEKLLmBhIacLuM4Ag+eGXc+y70W28jg
+   0STJN/2jCKSMNtNvVv8nVfBehn/w9Bsyz4rX3jJ72f7WrQLAUz6Jh/UzQ
+   NQ33r6aOCS79Ew1Sz4T44XLSWTXt1BcocDeame4GAFViL9x43tg9nwvJn
+   Q==;
+IronPort-SDR: oOtL+O5LPk36xsirrf1SC7yquucvCpR+/LEDvLB95sYbhzhJm+w9q/ZI2XcMMn09s1lwegaOI+
+ LMEXUbVbkwqz9ntuvVxpMRa426Kps1cfm1uKuc/WDpyetaVQ1pF3DeVHd35L9YK0kaEte7yYsi
+ hjXiDfqYNDCFyg/1vHQgVKLm14kqIloJn/T2f85KkxY09OmPETKY9+oNwGydqAR6NHxsk0/W58
+ G/mjPaoJa8muSduwZg/qn8gVfbHPYE0vCd1xU2KT3b0N+r6YKeZhPgFtMLCXCa4S5tlFAzmeog
+ O0c=
+X-IronPort-AV: E=Sophos;i="5.77,274,1596470400"; 
+   d="scan'208";a="148937358"
+Received: from mail-bn7nam10lp2100.outbound.protection.outlook.com (HELO NAM10-BN7-obe.outbound.protection.outlook.com) ([104.47.70.100])
+  by ob1.hgst.iphmx.com with ESMTP; 18 Sep 2020 15:06:44 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=AUlxQa8QFFrHh83QGdREI28yVDqIbZtOThHnXGFZhkVzc4Dm8g8HSXW++yE/29L7JhDiY1jAtakXm6j1LzWIxyIjnSZJSuD5YOfD5zKnrqfEuH5srbGckn/Yq9scKHtZIBIH1VD/X7+sLnpNMP39u1avDcKA29B/xDz3Lk0bPHi5ih9z10uyuRNijrt9Gz/JcRI9rnDqm7nRGMfyNXPrFY0YuIQVlK8JAPLV5hNfZ2KpgQlgzKdnrGPNxa6d9M9Bk4ddD98LypjdgIND/UcgCymZnUxioGMjfRgXf/yEBux5pDTV3AS9F+hbqlAN7TbrCOg0byUNG9X82o1eHwLZlQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=sKVTiYQeJGUszfjwLfkL5VvJG/8Gs3egAp/vQW7GIhs=;
+ b=On5m+jGcLMIdOgzJmJB8fNoJvmQ21s63R1WkrptMflJUciNg1LjekTPMXbvS5P5lnI525Wp58KyxwwcTBzhl4uljHcF+Q2K+x3n/Pery9tmbFzbhYI8+63LOQy/aZJMuqUsnmeG0ctck+OfzhGp8f9IBp53ksNFfqEWYV/I49gLeJ5mxd2DzF9iNttlJnmM7l8pvD0aAjFmcCd3AHo518j/4pwlWaXXJJMdNkEzF1PfcQSD7asGCd/knn1DlpIbUmCdk8H5LTj80l+J1CTqtwinvV+UbwvKGgOSwwYR9yKyVw1XI6Fo4rare2pQmac1Xgb4HsudHTzxrRlDuY84zDg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=sKVTiYQeJGUszfjwLfkL5VvJG/8Gs3egAp/vQW7GIhs=;
+ b=YVBFP85bzXTDtwUJRYOqNW/RlFC7ytk+VjU7/hhcuqLj4CRecXPoemgE0Gs298OyTK1krnaLRv9VRG4i/j9kzWfXZvz7+yQHXM4FeZ5oOkBcPVNXsRnNvxq44MvDaVtKbao9liBYoeXm6fSUTNK+q6TOCRINl2VNcr+tDJvA8Lg=
+Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
+ (2603:10b6:803:47::21) by SN6PR04MB5166.namprd04.prod.outlook.com
+ (2603:10b6:805:94::10) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.14; Fri, 18 Sep
+ 2020 07:06:42 +0000
+Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
+ ([fe80::457e:5fe9:2ae3:e738]) by SN4PR0401MB3598.namprd04.prod.outlook.com
+ ([fe80::457e:5fe9:2ae3:e738%7]) with mapi id 15.20.3370.019; Fri, 18 Sep 2020
+ 07:06:42 +0000
+From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To:     Anand Jain <anand.jain@oracle.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        "fstests@vger.kernel.org" <fstests@vger.kernel.org>
+Subject: Re: [PATCH] btrfs: remove stale test for alien devices
+Thread-Topic: [PATCH] btrfs: remove stale test for alien devices
+Thread-Index: AQHWjPzP2xqtKbJRkkWsoQIT/o7XrQ==
+Date:   Fri, 18 Sep 2020 07:06:42 +0000
+Message-ID: <SN4PR0401MB35987D9F6868271DAD0A05009B3F0@SN4PR0401MB3598.namprd04.prod.outlook.com>
+References: <20200917141353.28566-1-johannes.thumshirn@wdc.com>
+ <f4606506-78a1-4771-96cd-6bc28e6a7074@oracle.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: oracle.com; dkim=none (message not signed)
+ header.d=none;oracle.com; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [2001:a62:1460:3d01:8d9e:cb93:a2df:3de3]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: fbacc1e8-60c6-4ff8-ff8d-08d85ba165d3
+x-ms-traffictypediagnostic: SN6PR04MB5166:
+x-microsoft-antispam-prvs: <SN6PR04MB516664CAD4FC7AD88870C6CE9B3F0@SN6PR04MB5166.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:7691;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: w3MIwSZtJslEsiSwcPQ5KrHFPUevAshs8UsklGd1tE94hv7aG09vMStsVhIhBBfHRC5EJfrVz+tJIwlmzerJ2VWEP4ixUYZmX7xl/TpLAPOPeGjFXP4GT846tpqxJ4UyPC9A7K/O6qzi2TFkXhEogcVPOguPufJSQtKSm8Sw4pJ7oZg5yLEHR78Y/BfKArqKAbYQiU+BAgZAwoyeh2KgVFRAE+bnVwnukaNe2KpNaKqwcYB24/IH1EmCxkMsoekfg96Ay/grpNAP2HAEqfqWi9gpkz7vLX4LXAHGMvkIB0FQrhSA3alB66O1GIbC4tZe
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR0401MB3598.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(376002)(346002)(396003)(136003)(39860400002)(8936002)(71200400001)(83380400001)(478600001)(8676002)(316002)(186003)(86362001)(91956017)(9686003)(33656002)(55016002)(52536014)(110136005)(6506007)(4744005)(5660300002)(64756008)(66476007)(76116006)(66946007)(66446008)(2906002)(7696005)(66556008)(53546011);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: FpYWEtUaCVnpTT4DuksSX32zuzIrUP34u2oSg7nb+9PB9yg5dmtAl21xGw2RfcRgeo9QU5KpcCKZnkCJyyI4jLXqD6QUSezJ0xcGVcHF46pRQpBtS5iIowCvT1JhSc1u30aKEiFTGzNFX99KKV9s+u9j04uGhecnZy51Fk5qCHwXzM2LRnsPzSO1MDDmPodW9wL0akELA8iPvpVu3vpdBPBa4vPhbcFjITtQowqe+/61Bj0OXdmKVYKzPr6u+9ZBney06/gMQ0T7z4QMFX0qqzw690/g+yygZsp+x+0eSTUAD+b93Yb9TJCtzyKPmtP1KdvLqr8j4aQ8Cq7jheImFA+TSgRuymM3e847FqFDVyVhSpUc5qYkPMFlamEIdktZYBxAUT8XmXicfa60KeHpc6UdoTj6OpjE6EbPiWuvHj0m0qwHrcrpgXwgWCOk+j94iXDxSWeq6Fw6asCfyppn3Tz0Nlc8l91OXS+TfhtY6somJBs7mF1k8lVX0TsHe1vFFbiR1RtgYRHnXneaaEDLsFjCO+VJ9o+JItppLnVgEuvrr4lq98n6FxTmTHKqc/Mx/p9TF06hPTQf6q2yRn8TfmRBKAOWDLc7jQyJxhaJzmeIkEo5LGRlbkOiiDb2mRtF3AkFOmVWiP3rGRp4vOBOrTVzPbqeVyLKYuPc8YB41agF1QtVVsMEi0/kEszMFsYiPNPqlBZLj670T8MO68l8Vg==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SN4PR0401MB3598.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: fbacc1e8-60c6-4ff8-ff8d-08d85ba165d3
+X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Sep 2020 07:06:42.8100
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: zPdzahjeT6X59mqacimuUNJWHF9viHT9zZCfJK8ADiNzmShNc2cxov6GIbrc54Fq93Zt1iCZ9iDzxlt/bqPFUVG631opu818REBJe/3fpAw=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR04MB5166
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Josef Bacik <josef@toxicpanda.com>
-
-[ Upstream commit 2abc726ab4b83db774e315c660ab8da21477092f ]
-
-We previously were checking if the root had a dead root before accessing
-root->reloc_root in order to avoid a use-after-free type bug.  However
-this scenario happens after we've unset the reloc control, so we would
-have been saved if we'd simply checked for fs_info->reloc_control.  At
-this point during relocation we no longer need to be creating new reloc
-roots, so simply move this check above the reloc_root checks to avoid
-any future races and confusion.
-
-Reviewed-by: Qu Wenruo <wqu@suse.com>
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-Reviewed-by: David Sterba <dsterba@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- fs/btrfs/relocation.c | 20 ++++++++++++++++----
- 1 file changed, 16 insertions(+), 4 deletions(-)
-
-diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-index af3605a0bf2e0..1313506a7ecb5 100644
---- a/fs/btrfs/relocation.c
-+++ b/fs/btrfs/relocation.c
-@@ -1468,6 +1468,10 @@ int btrfs_init_reloc_root(struct btrfs_trans_handle *trans,
- 	int clear_rsv = 0;
- 	int ret;
- 
-+	if (!rc || !rc->create_reloc_tree ||
-+	    root->root_key.objectid == BTRFS_TREE_RELOC_OBJECTID)
-+		return 0;
-+
- 	/*
- 	 * The subvolume has reloc tree but the swap is finished, no need to
- 	 * create/update the dead reloc tree
-@@ -1481,10 +1485,6 @@ int btrfs_init_reloc_root(struct btrfs_trans_handle *trans,
- 		return 0;
- 	}
- 
--	if (!rc || !rc->create_reloc_tree ||
--	    root->root_key.objectid == BTRFS_TREE_RELOC_OBJECTID)
--		return 0;
--
- 	if (!trans->reloc_reserved) {
- 		rsv = trans->block_rsv;
- 		trans->block_rsv = rc->block_rsv;
-@@ -2336,6 +2336,18 @@ static noinline_for_stack int merge_reloc_root(struct reloc_control *rc,
- 			trans = NULL;
- 			goto out;
- 		}
-+
-+		/*
-+		 * At this point we no longer have a reloc_control, so we can't
-+		 * depend on btrfs_init_reloc_root to update our last_trans.
-+		 *
-+		 * But that's ok, we started the trans handle on our
-+		 * corresponding fs_root, which means it's been added to the
-+		 * dirty list.  At commit time we'll still call
-+		 * btrfs_update_reloc_root() and update our root item
-+		 * appropriately.
-+		 */
-+		reloc_root->last_trans = trans->transid;
- 		trans->block_rsv = rc->block_rsv;
- 
- 		replaced = 0;
--- 
-2.25.1
-
+On 18/09/2020 02:15, Anand Jain wrote:=0A=
+> The fix is not too far. It got stuck whether to use EUCLEAN or not.=0A=
+> Its better to fix the fix rather than killing the messenger in this case.=
+=0A=
+=0A=
+OK how about removing the test from the auto group then until the fix is me=
+rged?=0A=
+It's a constant failure and hiding real regressions. And having to maintain=
+ an=0A=
+expunge list doesn't scale either.=0A=
+=0A=
+Thoughts?=0A=
+=0A=
