@@ -2,35 +2,35 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E71EA26F3C6
-	for <lists+linux-btrfs@lfdr.de>; Fri, 18 Sep 2020 05:10:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADC6026F300
+	for <lists+linux-btrfs@lfdr.de>; Fri, 18 Sep 2020 05:03:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730464AbgIRDJQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 17 Sep 2020 23:09:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49088 "EHLO mail.kernel.org"
+        id S1727428AbgIRCFC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 17 Sep 2020 22:05:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52958 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726979AbgIRCDJ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 17 Sep 2020 22:03:09 -0400
+        id S1727423AbgIRCFB (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 17 Sep 2020 22:05:01 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E38972376F;
-        Fri, 18 Sep 2020 02:03:07 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2923D2344C;
+        Fri, 18 Sep 2020 02:05:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600394588;
-        bh=gK1pCVrS3EWbvsNEZcGrV7NFBFqJjT6F0+m+yH146Hs=;
+        s=default; t=1600394700;
+        bh=cy6Vb+w8dw3c/JpKeFygjW4q0sjZBzO0mk4wcmcKE64=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jqbbOov9HCHoZwqDSi8pFi8iTvUT/E6EaUZtM4INr4UEFBAtwgyW651SZExb4YQNb
-         nwFyDgr4/DLpJo9Q1aJW5x3ZB2tbHtZsaJvfezdNkTo+EfTG5Z++O7yDRJz5sULQqS
-         3gxDnChkgqHcE5F+/pKomTjqE9ensSmeaaoHYx7k=
+        b=xhwoS+HDOLJPbDKBAjEarxv5rMLa3kdoYCIUEvOwqRn1VE9fxPHfirFMNAZOuSh/J
+         Guv7cMSNTBDJ/DRKjYXs2qo+8HdhuHWZVyGAI6RiCYLjXmOinx2cUg4mEwbVbLtn8D
+         +/eXwO7W2BxKT7b8dhPRVi7HdlNMuAkkUmWwRdVs=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Qu Wenruo <wqu@suse.com>, Josef Bacik <josef@toxicpanda.com>,
+Cc:     Josef Bacik <josef@toxicpanda.com>, Qu Wenruo <wqu@suse.com>,
         David Sterba <dsterba@suse.com>,
         Sasha Levin <sashal@kernel.org>, linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 097/330] btrfs: tree-checker: Check leaf chunk item size
-Date:   Thu, 17 Sep 2020 21:57:17 -0400
-Message-Id: <20200918020110.2063155-97-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 187/330] btrfs: do not init a reloc root if we aren't relocating
+Date:   Thu, 17 Sep 2020 21:58:47 -0400
+Message-Id: <20200918020110.2063155-187-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200918020110.2063155-1-sashal@kernel.org>
 References: <20200918020110.2063155-1-sashal@kernel.org>
@@ -42,95 +42,72 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Qu Wenruo <wqu@suse.com>
+From: Josef Bacik <josef@toxicpanda.com>
 
-[ Upstream commit f6d2a5c263afca84646cf3300dc13061bedbd99e ]
+[ Upstream commit 2abc726ab4b83db774e315c660ab8da21477092f ]
 
-Inspired by btrfs-progs github issue #208, where chunk item in chunk
-tree has invalid num_stripes (0).
+We previously were checking if the root had a dead root before accessing
+root->reloc_root in order to avoid a use-after-free type bug.  However
+this scenario happens after we've unset the reloc control, so we would
+have been saved if we'd simply checked for fs_info->reloc_control.  At
+this point during relocation we no longer need to be creating new reloc
+roots, so simply move this check above the reloc_root checks to avoid
+any future races and confusion.
 
-Although that can already be caught by current btrfs_check_chunk_valid(),
-that function doesn't really check item size as it needs to handle chunk
-item in super block sys_chunk_array().
-
-This patch will add two extra checks for chunk items in chunk tree:
-
-- Basic chunk item size
-  If the item is smaller than btrfs_chunk (which already contains one
-  stripe), exit right now as reading num_stripes may even go beyond
-  eb boundary.
-
-- Item size check against num_stripes
-  If item size doesn't match with calculated chunk size, then either the
-  item size or the num_stripes is corrupted. Error out anyway.
-
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
-Signed-off-by: Qu Wenruo <wqu@suse.com>
+Reviewed-by: Qu Wenruo <wqu@suse.com>
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 Reviewed-by: David Sterba <dsterba@suse.com>
 Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/btrfs/tree-checker.c | 40 +++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 39 insertions(+), 1 deletion(-)
+ fs/btrfs/relocation.c | 20 ++++++++++++++++----
+ 1 file changed, 16 insertions(+), 4 deletions(-)
 
-diff --git a/fs/btrfs/tree-checker.c b/fs/btrfs/tree-checker.c
-index 91ea38506fbb7..84b8d6ebf98f3 100644
---- a/fs/btrfs/tree-checker.c
-+++ b/fs/btrfs/tree-checker.c
-@@ -674,6 +674,44 @@ int btrfs_check_chunk_valid(struct extent_buffer *leaf,
- 	return 0;
- }
+diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
+index af3605a0bf2e0..1313506a7ecb5 100644
+--- a/fs/btrfs/relocation.c
++++ b/fs/btrfs/relocation.c
+@@ -1468,6 +1468,10 @@ int btrfs_init_reloc_root(struct btrfs_trans_handle *trans,
+ 	int clear_rsv = 0;
+ 	int ret;
  
-+/*
-+ * Enhanced version of chunk item checker.
-+ *
-+ * The common btrfs_check_chunk_valid() doesn't check item size since it needs
-+ * to work on super block sys_chunk_array which doesn't have full item ptr.
-+ */
-+static int check_leaf_chunk_item(struct extent_buffer *leaf,
-+				 struct btrfs_chunk *chunk,
-+				 struct btrfs_key *key, int slot)
-+{
-+	int num_stripes;
++	if (!rc || !rc->create_reloc_tree ||
++	    root->root_key.objectid == BTRFS_TREE_RELOC_OBJECTID)
++		return 0;
 +
-+	if (btrfs_item_size_nr(leaf, slot) < sizeof(struct btrfs_chunk)) {
-+		chunk_err(leaf, chunk, key->offset,
-+			"invalid chunk item size: have %u expect [%zu, %u)",
-+			btrfs_item_size_nr(leaf, slot),
-+			sizeof(struct btrfs_chunk),
-+			BTRFS_LEAF_DATA_SIZE(leaf->fs_info));
-+		return -EUCLEAN;
-+	}
+ 	/*
+ 	 * The subvolume has reloc tree but the swap is finished, no need to
+ 	 * create/update the dead reloc tree
+@@ -1481,10 +1485,6 @@ int btrfs_init_reloc_root(struct btrfs_trans_handle *trans,
+ 		return 0;
+ 	}
+ 
+-	if (!rc || !rc->create_reloc_tree ||
+-	    root->root_key.objectid == BTRFS_TREE_RELOC_OBJECTID)
+-		return 0;
+-
+ 	if (!trans->reloc_reserved) {
+ 		rsv = trans->block_rsv;
+ 		trans->block_rsv = rc->block_rsv;
+@@ -2336,6 +2336,18 @@ static noinline_for_stack int merge_reloc_root(struct reloc_control *rc,
+ 			trans = NULL;
+ 			goto out;
+ 		}
 +
-+	num_stripes = btrfs_chunk_num_stripes(leaf, chunk);
-+	/* Let btrfs_check_chunk_valid() handle this error type */
-+	if (num_stripes == 0)
-+		goto out;
-+
-+	if (btrfs_chunk_item_size(num_stripes) !=
-+	    btrfs_item_size_nr(leaf, slot)) {
-+		chunk_err(leaf, chunk, key->offset,
-+			"invalid chunk item size: have %u expect %lu",
-+			btrfs_item_size_nr(leaf, slot),
-+			btrfs_chunk_item_size(num_stripes));
-+		return -EUCLEAN;
-+	}
-+out:
-+	return btrfs_check_chunk_valid(leaf, chunk, key->offset);
-+}
-+
- __printf(3, 4)
- __cold
- static void dev_item_err(const struct extent_buffer *eb, int slot,
-@@ -1265,7 +1303,7 @@ static int check_leaf_item(struct extent_buffer *leaf,
- 		break;
- 	case BTRFS_CHUNK_ITEM_KEY:
- 		chunk = btrfs_item_ptr(leaf, slot, struct btrfs_chunk);
--		ret = btrfs_check_chunk_valid(leaf, chunk, key->offset);
-+		ret = check_leaf_chunk_item(leaf, chunk, key, slot);
- 		break;
- 	case BTRFS_DEV_ITEM_KEY:
- 		ret = check_dev_item(leaf, key, slot);
++		/*
++		 * At this point we no longer have a reloc_control, so we can't
++		 * depend on btrfs_init_reloc_root to update our last_trans.
++		 *
++		 * But that's ok, we started the trans handle on our
++		 * corresponding fs_root, which means it's been added to the
++		 * dirty list.  At commit time we'll still call
++		 * btrfs_update_reloc_root() and update our root item
++		 * appropriately.
++		 */
++		reloc_root->last_trans = trans->transid;
+ 		trans->block_rsv = rc->block_rsv;
+ 
+ 		replaced = 0;
 -- 
 2.25.1
 
