@@ -2,155 +2,96 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBF47270BBF
-	for <lists+linux-btrfs@lfdr.de>; Sat, 19 Sep 2020 10:12:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 816152710B4
+	for <lists+linux-btrfs@lfdr.de>; Sat, 19 Sep 2020 23:48:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726219AbgISIMQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 19 Sep 2020 04:12:16 -0400
-Received: from mail-il1-f208.google.com ([209.85.166.208]:45600 "EHLO
-        mail-il1-f208.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726097AbgISIMQ (ORCPT
+        id S1726705AbgISVss (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 19 Sep 2020 17:48:48 -0400
+Received: from sonic312-21.consmr.mail.bf2.yahoo.com ([74.6.128.83]:42817 "EHLO
+        sonic312-21.consmr.mail.bf2.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726617AbgISVss (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 19 Sep 2020 04:12:16 -0400
-Received: by mail-il1-f208.google.com with SMTP id m80so6613885ilb.12
-        for <linux-btrfs@vger.kernel.org>; Sat, 19 Sep 2020 01:12:15 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=6HhLE0HT4Q+SqFsTd2grsdiwXmoqbVkPB3FBmd86n98=;
-        b=nzU0FsEs6jem+4CsS9RXJU3H6mMj6VsqdhMf3g/cY3gHxzIcNsG5RsOJyUuDNGGnPt
-         q5WLW+2ClRNzLPsQh4fQGPCgZ8BS4RjzzvY8qs7HhoIsAxUPVH1WXefYA5gtZB6SJquo
-         024Dr8+CXEEQ35AZJZhm5iQ7o+bp8BcT5pESFQg5impI8C+DLV1t/JylhtIroOnWeoVj
-         RjaD3epzSdl9TDF11jodHu2KpUXxExGwC31pkSxIAapKD071jyWG5HQq0FwDNCEGgA82
-         tC2pzQsXHj7dqi7M1GJQnMcKZ9qiTr72YfvBKNDH+SrdtFmGXvc47D4n4qFHB6CAfani
-         0G3Q==
-X-Gm-Message-State: AOAM533arqEvMsssTtwIVfRk00Rj6s5SdMKHtt8+GSGLe3VYbXUjsu2x
-        0Ekm03CqwoUPSkg3J1+57InkORLxJh4wNVwZ18Oo9h9rTjYF
-X-Google-Smtp-Source: ABdhPJxiTw0xJg+Isg+E4HXVmoCdg7n6xrPKOmy+dKMxnVByjvrmj77RBPRXVtJdg2NGUv5CX3qAe68PHqLo7VhNWT2A+s5G3n1j
+        Sat, 19 Sep 2020 17:48:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1600552127; bh=DPYuw2gUpgtMJzJhlH/AVmRGu2wSKCY1C+f8nOCoxu0=; h=Date:From:Reply-To:Subject:References:From:Subject; b=gA5sHVNo3YlIRWzEVOmA9fsYnPWFxldrQEIr5GNvNEnrOYD74/qcdFsBK7sYGRtBA8rH9AfDdoM7LHH+aLI/xbTBllBznDXXUiyRyr6tqvywjRT3wbth81zsUSzxEzdq6nOhgqj7jrKT7pP9zB2/Nw7UKKQ5yuAPz8DTskBER+KouOIlFf4JOV2sBhtlBPVRz8wK2dKAgzCmD6B83ThB4+D4rtygPRIjwFIsIxLLw5zGurAmg+d3+PtETlTiM4h+JUPMfE9XzYT3vx1/nTdyB1Aq0NPp9EsCnNCS5MnDGpWv9+qp6VigsZr7TMSyEFjiuJOENmZBSqgk75sUryMTJQ==
+X-YMail-OSG: oPGC9u4VM1lZSkFtRvZbOcT4FwTtUOQMkhW4gQLfh_9G9x8VTw6lf21PoWTLE7Q
+ xGdQjs8cluEopbzVozcPZs8EWehEyHMKFCMLfjNZf3pkx19g125QEqToc.hRmNrjXSxVy94qTOVn
+ yIM95ZhuNzdVjTQ5NPBNPIzvG9HoPldXqHkjI_E0S8pp0X8XC3RdfSc4n19CHbzDYpSrR.WLgZhz
+ 8wLDAhH_1fD_1X.sstpN69r_3RYJpzPS8C4JxFLj79Rxgmr8jiXcM4eZHfDeEkVjB3_50JBsC3WS
+ NKdIjHWlXZyXvDeHPp9DL4Q3fymLQ1N_2DK5lX397WoL8NbbgE6CYaFTlKQpf.HtFt6gLS0kqZoj
+ H.xtbTzmpR4ugewMxDYP_AmFTbwiVEYWePS1PUK7E2OjTISlxct7QgVYjl0ObCjPWyxexwBL1D4l
+ GEHQim2Ljol3Q3jFj8mK1rEgyTVpXEol0DpCpoIK4cIWf38mY8m0lAaNncZZW_KHAGYnVu1jUmF3
+ 1kBIzjrWDl9DDs06_mZt0yXVhqb2PkBYP12iSTxZhczimYd1tEuBrt4sbVNbEP_a0PjpvS6u0f_Z
+ WvULonsssdjXCOc8lnqMGNbIsm_JHtS6.DgFu_UbXhUD3Bq7MmM8JHDfd10VBVtieNQ3jiAw11Zt
+ miIU_j_CKLjw4TiodL5bygpKpkhABC_ribdtkc19t5.HJ0SJh.0cMux_FYjxuKncbT7d4DJNsqx_
+ RkbM6YJCbJxuWX9BuihR1GlHXgjQu6lbV4_CGMeYnWimkUANWd1v2a75x46OBP2Umx31t2kegz.9
+ gZ9Z4yWPa6tCdi2OYJEWNmGByKxR0MEUjqq4HXLx1_82bqzolim2buYcs8Eg6RQn3J7oa0ck9Cx3
+ kOJAk8JlPH8EKd7TdwO5VOFNpK9BB5g98WHEdzRhpPhWIXDMe4AlxD3fyQtVNwdz81TNI11c5Sg3
+ .DI7.7ww4spOQFq3ZDoDwKVDEQeJ5jXLu6eigJpDW_I9zKHKyXnHtElmps0HSlZb5yYZ0OlwglXZ
+ eRQOLLuQt610EJD9vrcs6cK_c9i6lhQRwRuVDHtYuMWhyZ9ciXq1Cuu_umiCRlhIqM2TRtaN8vfV
+ REIJPZNauS3l7Rr3Udbs5JT1fyMd9gV.V3WAmymPQJOeiMswROVAkfvY3wQuPltXY4JruqYtf_va
+ RcQHGsegdJhgi3qndLtnPGwdDLnltGL7C1mFlEifaXoZhGotRNmtFF7HCtYTOPcoEVv2Oo23aSCA
+ kQ..6DgaQbTqhFEL6G6VUbzPaF45oj7pgZ03lLmr7HMg7Vc7H.VtitUZP0KRJGuh4KyRffP79WP7
+ Sv_nk..ADb0iLKz2Pia6dz1r0kZ7hnhpvURUupnOZw_b7gO2LMnX838yQuINwnPbJJbRvfWYt1C2
+ KTlIO7njnyYJerozcnZlc_2l_aZH33iFLOwoUm9doIyvuUpUdFoezIEFn
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic312.consmr.mail.bf2.yahoo.com with HTTP; Sat, 19 Sep 2020 21:48:47 +0000
+Date:   Sat, 19 Sep 2020 21:48:46 +0000 (UTC)
+From:   "Mrs. Mina A. Brunel" <minaabrunel43@gmail.com>
+Reply-To: mrsminaabrunel36@gmail.com
+Message-ID: <1356144648.3960096.1600552126190@mail.yahoo.com>
+Subject: My Dear in the lord
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:eb0:: with SMTP id u16mr29723757ilj.291.1600503135094;
- Sat, 19 Sep 2020 01:12:15 -0700 (PDT)
-Date:   Sat, 19 Sep 2020 01:12:15 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000d4502f05afa62cf4@google.com>
-Subject: KMSAN: uninit-value in btrfs_clean_tree_block
-From:   syzbot <syzbot+37fb1c865f4d57cc1e7c@syzkaller.appspotmail.com>
-To:     clm@fb.com, dsterba@suse.com, glider@google.com,
-        josef@toxicpanda.com, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+References: <1356144648.3960096.1600552126190.ref@mail.yahoo.com>
+X-Mailer: WebService/1.1.16583 YMailNodin Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello,
-
-syzbot found the following issue on:
-
-HEAD commit:    c5a13b33 kmsan: clang-format core
-git tree:       https://github.com/google/kmsan.git master
-console output: https://syzkaller.appspot.com/x/log.txt?x=1081d69b900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=20f149ad694ba4be
-dashboard link: https://syzkaller.appspot.com/bug?extid=37fb1c865f4d57cc1e7c
-compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
-userspace arch: i386
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+37fb1c865f4d57cc1e7c@syzkaller.appspotmail.com
-
-=====================================================
-BUG: KMSAN: uninit-value in btrfs_clean_tree_block+0x293/0x330 fs/btrfs/disk-io.c:1066
-CPU: 0 PID: 10879 Comm: syz-executor.5 Not tainted 5.9.0-rc4-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x21c/0x280 lib/dump_stack.c:118
- kmsan_report+0xf7/0x1e0 mm/kmsan/kmsan_report.c:122
- __msan_warning+0x58/0xa0 mm/kmsan/kmsan_instr.c:219
- btrfs_clean_tree_block+0x293/0x330 fs/btrfs/disk-io.c:1066
- btrfs_init_new_buffer fs/btrfs/extent-tree.c:4532 [inline]
- btrfs_alloc_tree_block+0x93d/0x1f40 fs/btrfs/extent-tree.c:4609
- alloc_tree_block_no_bg_flush fs/btrfs/ctree.c:987 [inline]
- __btrfs_cow_block+0xaee/0x23f0 fs/btrfs/ctree.c:1042
- btrfs_cow_block+0xa15/0xce0 fs/btrfs/ctree.c:1487
- commit_cowonly_roots+0x1c0/0x1620 fs/btrfs/transaction.c:1184
- btrfs_commit_transaction+0x32ff/0x5630 fs/btrfs/transaction.c:2271
- btrfs_sync_fs+0x63c/0x6c0 fs/btrfs/super.c:1383
- __sync_filesystem fs/sync.c:39 [inline]
- sync_filesystem+0x2d4/0x440 fs/sync.c:67
- generic_shutdown_super+0xc7/0x650 fs/super.c:448
- kill_anon_super+0x6c/0xb0 fs/super.c:1108
- btrfs_kill_super+0x61/0x90 fs/btrfs/super.c:2265
- deactivate_locked_super+0x10d/0x1e0 fs/super.c:335
- deactivate_super+0x1b7/0x1d0 fs/super.c:366
- cleanup_mnt+0x796/0x880 fs/namespace.c:1118
- __cleanup_mnt+0x3b/0x50 fs/namespace.c:1125
- task_work_run+0x1f2/0x2e0 kernel/task_work.c:141
- tracehook_notify_resume include/linux/tracehook.h:188 [inline]
- exit_to_user_mode_loop kernel/entry/common.c:163 [inline]
- exit_to_user_mode_prepare+0x434/0x540 kernel/entry/common.c:190
- syscall_exit_to_user_mode+0x35/0x50 kernel/entry/common.c:265
- __do_fast_syscall_32+0x151/0x180 arch/x86/entry/common.c:80
- do_fast_syscall_32+0x6a/0xc0 arch/x86/entry/common.c:162
- do_SYSENTER_32+0x73/0x90 arch/x86/entry/common.c:205
- entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
-RIP: 0023:0xf7f10549
-Code: b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 00 00 00 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 eb 0d 90 90 90 90 90 90 90 90 90 90 90 90
-RSP: 002b:00000000ffa2f56c EFLAGS: 00000296 ORIG_RAX: 0000000000000034
-RAX: 0000000000000000 RBX: 00000000ffa2f5fc RCX: 0000000000000002
-RDX: 000000000a24f228 RSI: 000000000a24f2b4 RDI: 00000000080d837e
-RBP: 00000000ffa2f5fc R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
-
-Uninit was created at:
- kmsan_save_stack_with_flags+0x3c/0x90 mm/kmsan/kmsan.c:143
- kmsan_internal_alloc_meta_for_pages mm/kmsan/kmsan_shadow.c:268 [inline]
- kmsan_alloc_page+0xc5/0x1a0 mm/kmsan/kmsan_shadow.c:292
- __alloc_pages_nodemask+0xf34/0x1120 mm/page_alloc.c:4927
- alloc_pages_current+0x685/0xb50 mm/mempolicy.c:2275
- alloc_pages include/linux/gfp.h:545 [inline]
- __page_cache_alloc+0xc8/0x310 mm/filemap.c:957
- pagecache_get_page+0xe81/0x1cd0 mm/filemap.c:1710
- find_or_create_page include/linux/pagemap.h:348 [inline]
- alloc_extent_buffer+0x7c5/0x2820 fs/btrfs/extent_io.c:5246
- btrfs_find_create_tree_block+0x68/0x80 fs/btrfs/disk-io.c:1031
- btrfs_init_new_buffer fs/btrfs/extent-tree.c:4513 [inline]
- btrfs_alloc_tree_block+0x4f6/0x1f40 fs/btrfs/extent-tree.c:4609
- alloc_tree_block_no_bg_flush fs/btrfs/ctree.c:987 [inline]
- __btrfs_cow_block+0xaee/0x23f0 fs/btrfs/ctree.c:1042
- btrfs_cow_block+0xa15/0xce0 fs/btrfs/ctree.c:1487
- commit_cowonly_roots+0x1c0/0x1620 fs/btrfs/transaction.c:1184
- btrfs_commit_transaction+0x32ff/0x5630 fs/btrfs/transaction.c:2271
- btrfs_sync_fs+0x63c/0x6c0 fs/btrfs/super.c:1383
- __sync_filesystem fs/sync.c:39 [inline]
- sync_filesystem+0x2d4/0x440 fs/sync.c:67
- generic_shutdown_super+0xc7/0x650 fs/super.c:448
- kill_anon_super+0x6c/0xb0 fs/super.c:1108
- btrfs_kill_super+0x61/0x90 fs/btrfs/super.c:2265
- deactivate_locked_super+0x10d/0x1e0 fs/super.c:335
- deactivate_super+0x1b7/0x1d0 fs/super.c:366
- cleanup_mnt+0x796/0x880 fs/namespace.c:1118
- __cleanup_mnt+0x3b/0x50 fs/namespace.c:1125
- task_work_run+0x1f2/0x2e0 kernel/task_work.c:141
- tracehook_notify_resume include/linux/tracehook.h:188 [inline]
- exit_to_user_mode_loop kernel/entry/common.c:163 [inline]
- exit_to_user_mode_prepare+0x434/0x540 kernel/entry/common.c:190
- syscall_exit_to_user_mode+0x35/0x50 kernel/entry/common.c:265
- __do_fast_syscall_32+0x151/0x180 arch/x86/entry/common.c:80
- do_fast_syscall_32+0x6a/0xc0 arch/x86/entry/common.c:162
- do_SYSENTER_32+0x73/0x90 arch/x86/entry/common.c:205
- entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
-=====================================================
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+My Dear in the lord
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+My name is Mrs. Mina A. Brunel I am a Norway Citizen who is living in Burki=
+na Faso, I am married to Mr. Brunel Patrice, a politicians who owns a small=
+ gold company in Burkina Faso; He died of Leprosy and Radesyge, in year Feb=
+ruary 2010, During his lifetime he deposited the sum of =E2=82=AC 8.5 Milli=
+on Euro) Eight million, Five hundred thousand Euros in a bank in Ouagadougo=
+u the capital city of of Burkina in West Africa. The money was from the sal=
+e of his company and death benefits payment and entitlements of my deceased=
+ husband by his company.
+
+I am sending you this message with heavy tears in my eyes and great sorrow =
+in my heart, and also praying that it will reach you in good health because=
+ I am not in good health, I sleep every night without knowing if I may be a=
+live to see the next day. I am suffering from long time cancer and presentl=
+y I am partially suffering from Leprosy, which has become difficult for me =
+to move around. I was married to my late husband for more than 6 years with=
+out having a child and my doctor confided that I have less chance to live, =
+having to know when the cup of death will come, I decided to contact you to=
+ claim the fund since I don't have any relation I grew up from an orphanage=
+ home.
+
+I have decided to donate this money for the support of helping Motherless b=
+abies/Less privileged/Widows and churches also to build the house of God be=
+cause I am dying and diagnosed with cancer for about 3 years ago. I have de=
+cided to donate from what I have inherited from my late husband to you for =
+the good work of Almighty God; I will be going in for an operation surgery =
+soon.
+
+Now I want you to stand as my next of kin to claim the funds for charity pu=
+rposes. Because of this money remains unclaimed after my death, the bank ex=
+ecutives or the government will take the money as unclaimed fund and maybe =
+use it for selfishness and worthless ventures, I need a very honest person =
+who can claim this money and use it for Charity works, for orphanages, wido=
+ws and also build schools and churches for less privilege that will be name=
+d after my late husband and my name.
+
+I need your urgent answer to know if you will be able to execute this proje=
+ct, and I will give you more information on how the fund will be transferre=
+d to your bank account or online banking.
+
+Thanks
+Mrs. Mina A. Brunel
