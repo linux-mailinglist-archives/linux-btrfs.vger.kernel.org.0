@@ -2,153 +2,155 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DC95270A46
-	for <lists+linux-btrfs@lfdr.de>; Sat, 19 Sep 2020 04:53:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBF47270BBF
+	for <lists+linux-btrfs@lfdr.de>; Sat, 19 Sep 2020 10:12:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726119AbgISCxN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 18 Sep 2020 22:53:13 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:48852 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726104AbgISCxN (ORCPT
+        id S1726219AbgISIMQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 19 Sep 2020 04:12:16 -0400
+Received: from mail-il1-f208.google.com ([209.85.166.208]:45600 "EHLO
+        mail-il1-f208.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726097AbgISIMQ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 18 Sep 2020 22:53:13 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08J2oTBn022261
-        for <linux-btrfs@vger.kernel.org>; Sat, 19 Sep 2020 02:53:11 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding;
- s=corp-2020-01-29; bh=r2AyDytRDR+7BOV3Gc77FaBi2VORXkniDWshkONFu6Y=;
- b=hWjocD/JaoKCH1EZOBx1Q/KsB4Usi9MZa8ytFIanCExG0hmhnMkXoEqkHIntyfDAPlCi
- u2O3Mwu1z7VGcx4lPS53zrdNECu6Lkk/hVcuPAICdGs9X0kBEVgwIHP7EqnMt4k4Bssn
- 3RRsP2Ck2OHseYHnKZOFX5V2TbUkdfWrWj/kL6CEJgdxD2qoENr9dmRgXgLImf5ZYall
- EsK7mb3ljuGA0iyeW7oVpoRrqaWVYyJXDBdn+9dy0nGVT5MZzHDA9Vfox32e1pb6FqqX
- PYnDz8a3nZjJG53FnI0Fz5MSSDO5nOJjTc6pA0eJBy5bp1uK4VsIcguBDpxgJjUxjRex yw== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2130.oracle.com with ESMTP id 33n9dqr0fw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL)
-        for <linux-btrfs@vger.kernel.org>; Sat, 19 Sep 2020 02:53:11 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08J2jdss073086
-        for <linux-btrfs@vger.kernel.org>; Sat, 19 Sep 2020 02:53:11 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3020.oracle.com with ESMTP id 33h88g7fcm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
-        for <linux-btrfs@vger.kernel.org>; Sat, 19 Sep 2020 02:53:11 +0000
-Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 08J2rA7G023274
-        for <linux-btrfs@vger.kernel.org>; Sat, 19 Sep 2020 02:53:10 GMT
-Received: from localhost.localdomain (/39.109.231.106)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Sat, 19 Sep 2020 02:52:56 +0000
-From:   Anand Jain <anand.jain@oracle.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     Anand Jain <anand.jain@oracle.com>
-Subject: [PATCH] btrfs: free device without BTRFS_MAGIC
-Date:   Sat, 19 Sep 2020 10:52:22 +0800
-Message-Id: <dbc067b24194241f6d87b8f9799d9b6484984a13.1600473987.git.anand.jain@oracle.com>
-X-Mailer: git-send-email 2.25.1
+        Sat, 19 Sep 2020 04:12:16 -0400
+Received: by mail-il1-f208.google.com with SMTP id m80so6613885ilb.12
+        for <linux-btrfs@vger.kernel.org>; Sat, 19 Sep 2020 01:12:15 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=6HhLE0HT4Q+SqFsTd2grsdiwXmoqbVkPB3FBmd86n98=;
+        b=nzU0FsEs6jem+4CsS9RXJU3H6mMj6VsqdhMf3g/cY3gHxzIcNsG5RsOJyUuDNGGnPt
+         q5WLW+2ClRNzLPsQh4fQGPCgZ8BS4RjzzvY8qs7HhoIsAxUPVH1WXefYA5gtZB6SJquo
+         024Dr8+CXEEQ35AZJZhm5iQ7o+bp8BcT5pESFQg5impI8C+DLV1t/JylhtIroOnWeoVj
+         RjaD3epzSdl9TDF11jodHu2KpUXxExGwC31pkSxIAapKD071jyWG5HQq0FwDNCEGgA82
+         tC2pzQsXHj7dqi7M1GJQnMcKZ9qiTr72YfvBKNDH+SrdtFmGXvc47D4n4qFHB6CAfani
+         0G3Q==
+X-Gm-Message-State: AOAM533arqEvMsssTtwIVfRk00Rj6s5SdMKHtt8+GSGLe3VYbXUjsu2x
+        0Ekm03CqwoUPSkg3J1+57InkORLxJh4wNVwZ18Oo9h9rTjYF
+X-Google-Smtp-Source: ABdhPJxiTw0xJg+Isg+E4HXVmoCdg7n6xrPKOmy+dKMxnVByjvrmj77RBPRXVtJdg2NGUv5CX3qAe68PHqLo7VhNWT2A+s5G3n1j
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9748 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 adultscore=0
- suspectscore=3 phishscore=0 malwarescore=0 bulkscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009190023
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9748 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999
- phishscore=0 priorityscore=1501 malwarescore=0 mlxscore=0 impostorscore=0
- clxscore=1015 lowpriorityscore=0 suspectscore=3 spamscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009190023
+X-Received: by 2002:a05:6e02:eb0:: with SMTP id u16mr29723757ilj.291.1600503135094;
+ Sat, 19 Sep 2020 01:12:15 -0700 (PDT)
+Date:   Sat, 19 Sep 2020 01:12:15 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000d4502f05afa62cf4@google.com>
+Subject: KMSAN: uninit-value in btrfs_clean_tree_block
+From:   syzbot <syzbot+37fb1c865f4d57cc1e7c@syzkaller.appspotmail.com>
+To:     clm@fb.com, dsterba@suse.com, glider@google.com,
+        josef@toxicpanda.com, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Many things can happen after the device is scanned and before the device
-is mounted.
+Hello,
 
-One such thing is losing the BTRFS_MAGIC on the device.
+syzbot found the following issue on:
 
-If it happens we still won't free that device from the memory and causes
-the userland to confuse.
+HEAD commit:    c5a13b33 kmsan: clang-format core
+git tree:       https://github.com/google/kmsan.git master
+console output: https://syzkaller.appspot.com/x/log.txt?x=1081d69b900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=20f149ad694ba4be
+dashboard link: https://syzkaller.appspot.com/bug?extid=37fb1c865f4d57cc1e7c
+compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
+userspace arch: i386
 
-For example: As the BTRFS_IOC_DEV_INFO still carries the device path which
-does not have the BTRFS_MAGIC, the btrfs fi show still shows device
-which does not belong. As shown below.
+Unfortunately, I don't have any reproducer for this issue yet.
 
-mkfs.btrfs -fq -draid1 -mraid1 /dev/sda /dev/sdb
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+37fb1c865f4d57cc1e7c@syzkaller.appspotmail.com
 
-wipefs -a /dev/sdb
-mount -o degraded /dev/sda /btrfs
-btrfs fi show -m
+=====================================================
+BUG: KMSAN: uninit-value in btrfs_clean_tree_block+0x293/0x330 fs/btrfs/disk-io.c:1066
+CPU: 0 PID: 10879 Comm: syz-executor.5 Not tainted 5.9.0-rc4-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x21c/0x280 lib/dump_stack.c:118
+ kmsan_report+0xf7/0x1e0 mm/kmsan/kmsan_report.c:122
+ __msan_warning+0x58/0xa0 mm/kmsan/kmsan_instr.c:219
+ btrfs_clean_tree_block+0x293/0x330 fs/btrfs/disk-io.c:1066
+ btrfs_init_new_buffer fs/btrfs/extent-tree.c:4532 [inline]
+ btrfs_alloc_tree_block+0x93d/0x1f40 fs/btrfs/extent-tree.c:4609
+ alloc_tree_block_no_bg_flush fs/btrfs/ctree.c:987 [inline]
+ __btrfs_cow_block+0xaee/0x23f0 fs/btrfs/ctree.c:1042
+ btrfs_cow_block+0xa15/0xce0 fs/btrfs/ctree.c:1487
+ commit_cowonly_roots+0x1c0/0x1620 fs/btrfs/transaction.c:1184
+ btrfs_commit_transaction+0x32ff/0x5630 fs/btrfs/transaction.c:2271
+ btrfs_sync_fs+0x63c/0x6c0 fs/btrfs/super.c:1383
+ __sync_filesystem fs/sync.c:39 [inline]
+ sync_filesystem+0x2d4/0x440 fs/sync.c:67
+ generic_shutdown_super+0xc7/0x650 fs/super.c:448
+ kill_anon_super+0x6c/0xb0 fs/super.c:1108
+ btrfs_kill_super+0x61/0x90 fs/btrfs/super.c:2265
+ deactivate_locked_super+0x10d/0x1e0 fs/super.c:335
+ deactivate_super+0x1b7/0x1d0 fs/super.c:366
+ cleanup_mnt+0x796/0x880 fs/namespace.c:1118
+ __cleanup_mnt+0x3b/0x50 fs/namespace.c:1125
+ task_work_run+0x1f2/0x2e0 kernel/task_work.c:141
+ tracehook_notify_resume include/linux/tracehook.h:188 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:163 [inline]
+ exit_to_user_mode_prepare+0x434/0x540 kernel/entry/common.c:190
+ syscall_exit_to_user_mode+0x35/0x50 kernel/entry/common.c:265
+ __do_fast_syscall_32+0x151/0x180 arch/x86/entry/common.c:80
+ do_fast_syscall_32+0x6a/0xc0 arch/x86/entry/common.c:162
+ do_SYSENTER_32+0x73/0x90 arch/x86/entry/common.c:205
+ entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
+RIP: 0023:0xf7f10549
+Code: b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 00 00 00 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 eb 0d 90 90 90 90 90 90 90 90 90 90 90 90
+RSP: 002b:00000000ffa2f56c EFLAGS: 00000296 ORIG_RAX: 0000000000000034
+RAX: 0000000000000000 RBX: 00000000ffa2f5fc RCX: 0000000000000002
+RDX: 000000000a24f228 RSI: 000000000a24f2b4 RDI: 00000000080d837e
+RBP: 00000000ffa2f5fc R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
 
-/dev/sdb does not contain BTRFS_MAGIC and we still show it as part of
-btrfs.
-Label: none  uuid: 470ec6fb-646b-4464-b3cb-df1b26c527bd
-        Total devices 2 FS bytes used 128.00KiB
-        devid    1 size 3.00GiB used 571.19MiB path /dev/sda
-        devid    2 size 3.00GiB used 571.19MiB path /dev/sdb
+Uninit was created at:
+ kmsan_save_stack_with_flags+0x3c/0x90 mm/kmsan/kmsan.c:143
+ kmsan_internal_alloc_meta_for_pages mm/kmsan/kmsan_shadow.c:268 [inline]
+ kmsan_alloc_page+0xc5/0x1a0 mm/kmsan/kmsan_shadow.c:292
+ __alloc_pages_nodemask+0xf34/0x1120 mm/page_alloc.c:4927
+ alloc_pages_current+0x685/0xb50 mm/mempolicy.c:2275
+ alloc_pages include/linux/gfp.h:545 [inline]
+ __page_cache_alloc+0xc8/0x310 mm/filemap.c:957
+ pagecache_get_page+0xe81/0x1cd0 mm/filemap.c:1710
+ find_or_create_page include/linux/pagemap.h:348 [inline]
+ alloc_extent_buffer+0x7c5/0x2820 fs/btrfs/extent_io.c:5246
+ btrfs_find_create_tree_block+0x68/0x80 fs/btrfs/disk-io.c:1031
+ btrfs_init_new_buffer fs/btrfs/extent-tree.c:4513 [inline]
+ btrfs_alloc_tree_block+0x4f6/0x1f40 fs/btrfs/extent-tree.c:4609
+ alloc_tree_block_no_bg_flush fs/btrfs/ctree.c:987 [inline]
+ __btrfs_cow_block+0xaee/0x23f0 fs/btrfs/ctree.c:1042
+ btrfs_cow_block+0xa15/0xce0 fs/btrfs/ctree.c:1487
+ commit_cowonly_roots+0x1c0/0x1620 fs/btrfs/transaction.c:1184
+ btrfs_commit_transaction+0x32ff/0x5630 fs/btrfs/transaction.c:2271
+ btrfs_sync_fs+0x63c/0x6c0 fs/btrfs/super.c:1383
+ __sync_filesystem fs/sync.c:39 [inline]
+ sync_filesystem+0x2d4/0x440 fs/sync.c:67
+ generic_shutdown_super+0xc7/0x650 fs/super.c:448
+ kill_anon_super+0x6c/0xb0 fs/super.c:1108
+ btrfs_kill_super+0x61/0x90 fs/btrfs/super.c:2265
+ deactivate_locked_super+0x10d/0x1e0 fs/super.c:335
+ deactivate_super+0x1b7/0x1d0 fs/super.c:366
+ cleanup_mnt+0x796/0x880 fs/namespace.c:1118
+ __cleanup_mnt+0x3b/0x50 fs/namespace.c:1125
+ task_work_run+0x1f2/0x2e0 kernel/task_work.c:141
+ tracehook_notify_resume include/linux/tracehook.h:188 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:163 [inline]
+ exit_to_user_mode_prepare+0x434/0x540 kernel/entry/common.c:190
+ syscall_exit_to_user_mode+0x35/0x50 kernel/entry/common.c:265
+ __do_fast_syscall_32+0x151/0x180 arch/x86/entry/common.c:80
+ do_fast_syscall_32+0x6a/0xc0 arch/x86/entry/common.c:162
+ do_SYSENTER_32+0x73/0x90 arch/x86/entry/common.c:205
+ entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
+=====================================================
 
-Fix is to return -ENODATA error code in btrfs_read_dev_one_super()
-when BTRFS_MAGIC check fails, so that its parent open_fs_devices()
-shall free the device in the mount-thread.
 
-Signed-off-by: Anand Jain <anand.jain@oracle.com>
 ---
-Now the fstests btrfs/198 pass with this fix.
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
- fs/btrfs/disk-io.c |  2 +-
- fs/btrfs/volumes.c | 19 +++++++++++++------
- 2 files changed, 14 insertions(+), 7 deletions(-)
-
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 160b485d2cc0..9c91d12530a6 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -3432,7 +3432,7 @@ struct btrfs_super_block *btrfs_read_dev_one_super(struct block_device *bdev,
- 	if (btrfs_super_bytenr(super) != bytenr ||
- 		    btrfs_super_magic(super) != BTRFS_MAGIC) {
- 		btrfs_release_disk_super(super);
--		return ERR_PTR(-EINVAL);
-+		return ERR_PTR(-ENODATA);
- 	}
- 
- 	return super;
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index 7cc677a7e544..ec9dac40b4f1 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -1198,17 +1198,24 @@ static int open_fs_devices(struct btrfs_fs_devices *fs_devices,
- {
- 	struct btrfs_device *device;
- 	struct btrfs_device *latest_dev = NULL;
-+	struct btrfs_device *tmp_device;
- 
- 	flags |= FMODE_EXCL;
- 
--	list_for_each_entry(device, &fs_devices->devices, dev_list) {
--		/* Just open everything we can; ignore failures here */
--		if (btrfs_open_one_device(fs_devices, device, flags, holder))
--			continue;
-+	list_for_each_entry_safe(device, tmp_device, &fs_devices->devices,
-+				 dev_list) {
-+		int ret;
- 
--		if (!latest_dev ||
--		    device->generation > latest_dev->generation)
-+		/* Just open everything we can; ignore failures here */
-+		ret = btrfs_open_one_device(fs_devices, device, flags, holder);
-+		if (ret == 0 && (!latest_dev ||
-+		    device->generation > latest_dev->generation)) {
- 			latest_dev = device;
-+		} else if (ret == -ENODATA) {
-+			fs_devices->num_devices--;
-+			list_del(&device->dev_list);
-+			btrfs_free_device(device);
-+		}
- 	}
- 	if (fs_devices->open_devices == 0)
- 		return -EINVAL;
--- 
-2.25.1
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
