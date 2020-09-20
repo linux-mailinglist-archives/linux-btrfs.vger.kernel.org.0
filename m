@@ -2,96 +2,135 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 816152710B4
-	for <lists+linux-btrfs@lfdr.de>; Sat, 19 Sep 2020 23:48:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A489271304
+	for <lists+linux-btrfs@lfdr.de>; Sun, 20 Sep 2020 10:58:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726705AbgISVss (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 19 Sep 2020 17:48:48 -0400
-Received: from sonic312-21.consmr.mail.bf2.yahoo.com ([74.6.128.83]:42817 "EHLO
-        sonic312-21.consmr.mail.bf2.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726617AbgISVss (ORCPT
+        id S1726273AbgITI6p (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 20 Sep 2020 04:58:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52678 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726201AbgITI6p (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 19 Sep 2020 17:48:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1600552127; bh=DPYuw2gUpgtMJzJhlH/AVmRGu2wSKCY1C+f8nOCoxu0=; h=Date:From:Reply-To:Subject:References:From:Subject; b=gA5sHVNo3YlIRWzEVOmA9fsYnPWFxldrQEIr5GNvNEnrOYD74/qcdFsBK7sYGRtBA8rH9AfDdoM7LHH+aLI/xbTBllBznDXXUiyRyr6tqvywjRT3wbth81zsUSzxEzdq6nOhgqj7jrKT7pP9zB2/Nw7UKKQ5yuAPz8DTskBER+KouOIlFf4JOV2sBhtlBPVRz8wK2dKAgzCmD6B83ThB4+D4rtygPRIjwFIsIxLLw5zGurAmg+d3+PtETlTiM4h+JUPMfE9XzYT3vx1/nTdyB1Aq0NPp9EsCnNCS5MnDGpWv9+qp6VigsZr7TMSyEFjiuJOENmZBSqgk75sUryMTJQ==
-X-YMail-OSG: oPGC9u4VM1lZSkFtRvZbOcT4FwTtUOQMkhW4gQLfh_9G9x8VTw6lf21PoWTLE7Q
- xGdQjs8cluEopbzVozcPZs8EWehEyHMKFCMLfjNZf3pkx19g125QEqToc.hRmNrjXSxVy94qTOVn
- yIM95ZhuNzdVjTQ5NPBNPIzvG9HoPldXqHkjI_E0S8pp0X8XC3RdfSc4n19CHbzDYpSrR.WLgZhz
- 8wLDAhH_1fD_1X.sstpN69r_3RYJpzPS8C4JxFLj79Rxgmr8jiXcM4eZHfDeEkVjB3_50JBsC3WS
- NKdIjHWlXZyXvDeHPp9DL4Q3fymLQ1N_2DK5lX397WoL8NbbgE6CYaFTlKQpf.HtFt6gLS0kqZoj
- H.xtbTzmpR4ugewMxDYP_AmFTbwiVEYWePS1PUK7E2OjTISlxct7QgVYjl0ObCjPWyxexwBL1D4l
- GEHQim2Ljol3Q3jFj8mK1rEgyTVpXEol0DpCpoIK4cIWf38mY8m0lAaNncZZW_KHAGYnVu1jUmF3
- 1kBIzjrWDl9DDs06_mZt0yXVhqb2PkBYP12iSTxZhczimYd1tEuBrt4sbVNbEP_a0PjpvS6u0f_Z
- WvULonsssdjXCOc8lnqMGNbIsm_JHtS6.DgFu_UbXhUD3Bq7MmM8JHDfd10VBVtieNQ3jiAw11Zt
- miIU_j_CKLjw4TiodL5bygpKpkhABC_ribdtkc19t5.HJ0SJh.0cMux_FYjxuKncbT7d4DJNsqx_
- RkbM6YJCbJxuWX9BuihR1GlHXgjQu6lbV4_CGMeYnWimkUANWd1v2a75x46OBP2Umx31t2kegz.9
- gZ9Z4yWPa6tCdi2OYJEWNmGByKxR0MEUjqq4HXLx1_82bqzolim2buYcs8Eg6RQn3J7oa0ck9Cx3
- kOJAk8JlPH8EKd7TdwO5VOFNpK9BB5g98WHEdzRhpPhWIXDMe4AlxD3fyQtVNwdz81TNI11c5Sg3
- .DI7.7ww4spOQFq3ZDoDwKVDEQeJ5jXLu6eigJpDW_I9zKHKyXnHtElmps0HSlZb5yYZ0OlwglXZ
- eRQOLLuQt610EJD9vrcs6cK_c9i6lhQRwRuVDHtYuMWhyZ9ciXq1Cuu_umiCRlhIqM2TRtaN8vfV
- REIJPZNauS3l7Rr3Udbs5JT1fyMd9gV.V3WAmymPQJOeiMswROVAkfvY3wQuPltXY4JruqYtf_va
- RcQHGsegdJhgi3qndLtnPGwdDLnltGL7C1mFlEifaXoZhGotRNmtFF7HCtYTOPcoEVv2Oo23aSCA
- kQ..6DgaQbTqhFEL6G6VUbzPaF45oj7pgZ03lLmr7HMg7Vc7H.VtitUZP0KRJGuh4KyRffP79WP7
- Sv_nk..ADb0iLKz2Pia6dz1r0kZ7hnhpvURUupnOZw_b7gO2LMnX838yQuINwnPbJJbRvfWYt1C2
- KTlIO7njnyYJerozcnZlc_2l_aZH33iFLOwoUm9doIyvuUpUdFoezIEFn
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic312.consmr.mail.bf2.yahoo.com with HTTP; Sat, 19 Sep 2020 21:48:47 +0000
-Date:   Sat, 19 Sep 2020 21:48:46 +0000 (UTC)
-From:   "Mrs. Mina A. Brunel" <minaabrunel43@gmail.com>
-Reply-To: mrsminaabrunel36@gmail.com
-Message-ID: <1356144648.3960096.1600552126190@mail.yahoo.com>
-Subject: My Dear in the lord
+        Sun, 20 Sep 2020 04:58:45 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC2DCC061755;
+        Sun, 20 Sep 2020 01:58:44 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id q12so5313874plr.12;
+        Sun, 20 Sep 2020 01:58:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=kkzfTh7DhmBVBq+EkhqaG5Kztu1aiM+Ht4R++Xy4/Lo=;
+        b=Plgt9bgLdAa144i6kugLh5Dv3Y9bI111u4BMC7luZpMJIZfmigP3g8mfv9PlczYvRj
+         GB5sK2lUMTlmU8tvt0VfVSNjgWBtGQjaFNUevhxAFzDDP+9xOt97L/HqOm0ruJxN/TBZ
+         TJoMGhSN7rldCQ61YBJ9IVoMV6CULaN4QBdGdT9xLm04c8WagG0Z+QzqKJbQbdqb6ZTW
+         WMAyP833EuCC5p/OegHZR16TN6SjOxLFZrNwdzCiwZ3KZkUGEGprkzLKnbldiMSdU+4B
+         zCWmup7SWZ/hrRE20yFbn+OIaxu/uC8KgDijkAxzhtTXPuwjWqcdHSAQIxLUhd6F5lHa
+         9mQg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=kkzfTh7DhmBVBq+EkhqaG5Kztu1aiM+Ht4R++Xy4/Lo=;
+        b=tMMPSW1hOESV5A049n/R5q0mFlmEOEEzSN4efWhVKRKK97ZdaMB1B22S3Sva9c31+T
+         yA24vgPDnJoh8L1h7YzqnvVWtm200QHDdsibnOrjg1lUbmUh8LABNlEI7yv4IwOQmBo+
+         s2JYMvHVSSrS5hCcLpU/PHCkTnkdoXiAia0Ur3QS1M9lXIiSKKKVfQnPR/FzaUk7LAYY
+         uJav5V6U4pZZfBmllW3tQLBL8jppHCu4jlFLIZoe1m8h/QL0cBCy7Gr87BCEirItA9A6
+         6IW+SpFqhCYtsRFnunK6+GWFMuTIphopEKbgdtqqKrL4GH2RXIhlWR8Nm+os2iAg7+u5
+         +Nug==
+X-Gm-Message-State: AOAM530SFWMdHlbKS2XIWodY8gBMalW7jKebfmNUiHbgkextP2NfIch+
+        gBgnVOlKMv5hZC6Yd3r7RFpAj1MsH/U=
+X-Google-Smtp-Source: ABdhPJyULjqwhaTK21TWzzku566YHfYL70kLseQ/7Wzlu6Hx6lucPg0NBjHCr/TtOmZDM9MDSm/kXw==
+X-Received: by 2002:a17:902:522:b029:d1:9bc8:15df with SMTP id 31-20020a1709020522b02900d19bc815dfmr41117711plf.25.1600592324039;
+        Sun, 20 Sep 2020 01:58:44 -0700 (PDT)
+Received: from localhost.localdomain ([112.216.230.34])
+        by smtp.googlemail.com with ESMTPSA id 99sm7433863pjo.40.2020.09.20.01.58.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 20 Sep 2020 01:58:43 -0700 (PDT)
+From:   Sidong Yang <realwakka@gmail.com>
+To:     linux-btrfs@vger.kernel.org, fstests@vger.kernel.org
+Cc:     Sidong Yang <realwakka@gmail.com>, Qu Wenruo <wqu@suse.com>,
+        Josef Bacik <josef@toxicpanda.com>
+Subject: [PATCH] btrfs/022: Add qgroup assign test
+Date:   Sun, 20 Sep 2020 08:57:53 +0000
+Message-Id: <20200920085753.277590-1-realwakka@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-References: <1356144648.3960096.1600552126190.ref@mail.yahoo.com>
-X-Mailer: WebService/1.1.16583 YMailNodin Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36
-To:     unlisted-recipients:; (no To-header on input)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+The btrfs/022 test is basic test about qgroup. but it doesn't have
+test with qgroup assign function. This patch adds parent assign
+test. parent assign test make two subvolumes and a qgroup for assign.
+Assign two subvolumes with a qgroup and check that quota of group
+has same value with sum of two subvolumes.
 
+Signed-off-by: Sidong Yang <realwakka@gmail.com>
+---
+ tests/btrfs/022 | 40 ++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 40 insertions(+)
 
-My Dear in the lord
+diff --git a/tests/btrfs/022 b/tests/btrfs/022
+index aaa27aaa..cafaa8b2 100755
+--- a/tests/btrfs/022
++++ b/tests/btrfs/022
+@@ -110,6 +110,40 @@ _limit_test_noexceed()
+ 	[ $? -eq 0 ] || _fail "should have been allowed to write"
+ }
+ 
++#basic assign testing
++_parent_assign_test()
++{
++	echo "=== parent assign test ===" >> $seqres.full
++	_run_btrfs_util_prog subvolume create $SCRATCH_MNT/a
++	_run_btrfs_util_prog quota enable $SCRATCH_MNT
++	subvolid_a=$(_btrfs_get_subvolid $SCRATCH_MNT a)
++
++	_run_btrfs_util_prog subvolume create $SCRATCH_MNT/b
++	_run_btrfs_util_prog quota enable $SCRATCH_MNT
++	subvolid_b=$(_btrfs_get_subvolid $SCRATCH_MNT b)
++
++	_run_btrfs_util_prog qgroup create 1/100 $SCRATCH_MNT
++
++	_run_btrfs_util_prog qgroup assign 0/$subvolid_a 1/100 $SCRATCH_MNT
++	_run_btrfs_util_prog qgroup assign 0/$subvolid_b 1/100 $SCRATCH_MNT
++
++	_ddt of=$SCRATCH_MNT/a/file bs=4M count=1 >> $seqres.full 2>&1
++	_ddt of=$SCRATCH_MNT/b/file bs=4M count=1 >> $seqres.full 2>&1
++	sync
++
++	a_shared=$($BTRFS_UTIL_PROG qgroup show $units $SCRATCH_MNT | grep "0/$subvolid_a")
++	a_shared=$(echo $a_shared | awk '{ print $2 }' | tr -dc '0-9')
++
++	b_shared=$($BTRFS_UTIL_PROG qgroup show $units $SCRATCH_MNT | grep "0/$subvolid_b")
++	b_shared=$(echo $b_shared | awk '{ print $2 }' | tr -dc '0-9')
++	sum=$(expr $b_shared  + $a_shared)
++
++	q_shared=$($BTRFS_UTIL_PROG qgroup show $units $SCRATCH_MNT | grep "1/100")
++	q_shared=$(echo $q_shared | awk '{ print $2 }' | tr -dc '0-9')
++
++	[ $sum -eq $q_shared ] || _fail "shared values don't match"
++}
++
+ units=`_btrfs_qgroup_units`
+ 
+ _scratch_mkfs > /dev/null 2>&1
+@@ -133,6 +167,12 @@ _check_scratch_fs
+ _scratch_mkfs > /dev/null 2>&1
+ _scratch_mount
+ _limit_test_noexceed
++_scratch_unmount
++_check_scratch_fs
++
++_scratch_mkfs > /dev/null 2>&1
++_scratch_mount
++_parent_assign_test
+ 
+ # success, all done
+ echo "Silence is golden"
+-- 
+2.25.1
 
-
-My name is Mrs. Mina A. Brunel I am a Norway Citizen who is living in Burki=
-na Faso, I am married to Mr. Brunel Patrice, a politicians who owns a small=
- gold company in Burkina Faso; He died of Leprosy and Radesyge, in year Feb=
-ruary 2010, During his lifetime he deposited the sum of =E2=82=AC 8.5 Milli=
-on Euro) Eight million, Five hundred thousand Euros in a bank in Ouagadougo=
-u the capital city of of Burkina in West Africa. The money was from the sal=
-e of his company and death benefits payment and entitlements of my deceased=
- husband by his company.
-
-I am sending you this message with heavy tears in my eyes and great sorrow =
-in my heart, and also praying that it will reach you in good health because=
- I am not in good health, I sleep every night without knowing if I may be a=
-live to see the next day. I am suffering from long time cancer and presentl=
-y I am partially suffering from Leprosy, which has become difficult for me =
-to move around. I was married to my late husband for more than 6 years with=
-out having a child and my doctor confided that I have less chance to live, =
-having to know when the cup of death will come, I decided to contact you to=
- claim the fund since I don't have any relation I grew up from an orphanage=
- home.
-
-I have decided to donate this money for the support of helping Motherless b=
-abies/Less privileged/Widows and churches also to build the house of God be=
-cause I am dying and diagnosed with cancer for about 3 years ago. I have de=
-cided to donate from what I have inherited from my late husband to you for =
-the good work of Almighty God; I will be going in for an operation surgery =
-soon.
-
-Now I want you to stand as my next of kin to claim the funds for charity pu=
-rposes. Because of this money remains unclaimed after my death, the bank ex=
-ecutives or the government will take the money as unclaimed fund and maybe =
-use it for selfishness and worthless ventures, I need a very honest person =
-who can claim this money and use it for Charity works, for orphanages, wido=
-ws and also build schools and churches for less privilege that will be name=
-d after my late husband and my name.
-
-I need your urgent answer to know if you will be able to execute this proje=
-ct, and I will give you more information on how the fund will be transferre=
-d to your bank account or online banking.
-
-Thanks
-Mrs. Mina A. Brunel
