@@ -2,277 +2,210 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAD2D27250C
-	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Sep 2020 15:13:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D82827252D
+	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Sep 2020 15:16:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726899AbgIUNNl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 21 Sep 2020 09:13:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43144 "EHLO mail.kernel.org"
+        id S1726630AbgIUNPi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 21 Sep 2020 09:15:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44342 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727358AbgIUNNg (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 21 Sep 2020 09:13:36 -0400
-Received: from localhost.localdomain (bl8-197-74.dsl.telepac.pt [85.241.197.74])
+        id S1726445AbgIUNPi (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 21 Sep 2020 09:15:38 -0400
+Received: from debian8.Home (bl8-197-74.dsl.telepac.pt [85.241.197.74])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 98D1221BE5
-        for <linux-btrfs@vger.kernel.org>; Mon, 21 Sep 2020 13:13:34 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1A36220719;
+        Mon, 21 Sep 2020 13:15:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600694015;
-        bh=T6b8MQEjNyS2vY/bwH0erWu7dzBbswx780u2pjfjkWw=;
-        h=From:To:Subject:Date:In-Reply-To:References:In-Reply-To:
-         References:From;
-        b=ZJzYsZJXg8/d0o7P10ZXvgZU2by/nl/bYiKo0T8a0X4Eveam0gn3zir3BwzyR6dbh
-         HqAH4ANnF2ynXf/lnj8E5dQeB3kYfQKwLpeXY8chsS49QHC/CFW8FbPolZf/wYBtcj
-         mA8HEczdV7OCY9thj+6MOnT7YJ5mYkCJbxbA56I8=
+        s=default; t=1600694137;
+        bh=T+quOTiY2P4ZUT6PMc491pg9cSDAM2YMf8N6cRVFYnw=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=p3HpUndH8D0dVQ72oMMXTKMZHnwanF4Ceak7x4BTFlQntdlK5Rh6BCT4sRIOeN+sU
+         ybjrO8ni1hWoN3fOJ9TB1tYXBzOROJF9SX4K+8O/eRo3ujVWyQmJxSTa767Z/Ao524
+         x9fP5fOircWqxc0NV5IUiMzYkpjkPIQKOByZPlK4=
 From:   fdmanana@kernel.org
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 2/2] btrfs: send, recompute reference path after orphanization of a directory
-Date:   Mon, 21 Sep 2020 14:13:30 +0100
-Message-Id: <a4efc296c0520963aac09a1374e338e14a03e211.1600693246.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <cover.1600693246.git.fdmanana@suse.com>
-References: <cover.1600693246.git.fdmanana@suse.com>
-In-Reply-To: <cover.1600693246.git.fdmanana@suse.com>
-References: <cover.1600693246.git.fdmanana@suse.com>
+To:     fstests@vger.kernel.org
+Cc:     linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
+Subject: [PATCH 1/2] btrfs: test incremental send after a succession of rename and link operations
+Date:   Mon, 21 Sep 2020 14:15:31 +0100
+Message-Id: <83001e537cdf42258dd4b4e3212546dfd099a337.1600693732.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <cover.1600693732.git.fdmanana@suse.com>
+References: <cover.1600693732.git.fdmanana@suse.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-During an incremental send, when an inode has multiple new references we
-might end up emitting rename operations for orphanizations that have a
-source path that is no longer valid due to a previous orphanization of
-some directory inode. This causes the receiver to fail since it tries
-to rename a path that does not exists.
+Test that an incremental send operation emits the correct path for link
+and rename operation after swapping the names and locations of several
+inodes in a way that creates a nasty dependency of rename and link
+operations. Notably one file has its name and location swapped with a
+directory for which it used to have a directory entry in it.
 
-Example reproducer:
+This test currently fails but a kernel patch for it exists and has the
+following subject:
 
-  $ cat reproducer.sh
-  #!/bin/bash
-
-  mkfs.btrfs -f /dev/sdi >/dev/null
-  mount /dev/sdi /mnt/sdi
-
-  touch /mnt/sdi/f1
-  touch /mnt/sdi/f2
-  mkdir /mnt/sdi/d1
-  mkdir /mnt/sdi/d1/d2
-
-  # Filesystem looks like:
-  #
-  # .                           (ino 256)
-  # |----- f1                   (ino 257)
-  # |----- f2                   (ino 258)
-  # |----- d1/                  (ino 259)
-  #        |----- d2/           (ino 260)
-
-  btrfs subvolume snapshot -r /mnt/sdi /mnt/sdi/snap1
-  btrfs send -f /tmp/snap1.send /mnt/sdi/snap1
-
-  # Now do a series of changes such that:
-  #
-  # *) inode 258 has one new hardlink and the previous name changed
-  #
-  # *) both names conflict with the old names of two other inodes:
-  #
-  #    1) the new name "d1" conflicts with the old name of inode 259,
-  #       under directory inode 256 (root)
-  #
-  #    2) the new name "d2" conflicts with the old name of inode 260
-  #       under directory inode 259
-  #
-  # *) inodes 259 and 260 now have the old names of inode 258
-  #
-  # *) inode 257 is now located under inode 260 - an inode with a number
-  #    smaller than the inode (258) for which we created a second hard
-  #    link and swapped its names with inodes 259 and 260
-  #
-  ln /mnt/sdi/f2 /mnt/sdi/d1/f2_link
-  mv /mnt/sdi/f1 /mnt/sdi/d1/d2/f1
-
-  # Swap d1 and f2.
-  mv /mnt/sdi/d1 /mnt/sdi/tmp
-  mv /mnt/sdi/f2 /mnt/sdi/d1
-  mv /mnt/sdi/tmp /mnt/sdi/f2
-
-  # Swap d2 and f2_link
-  mv /mnt/sdi/f2/d2 /mnt/sdi/tmp
-  mv /mnt/sdi/f2/f2_link /mnt/sdi/f2/d2
-  mv /mnt/sdi/tmp /mnt/sdi/f2/f2_link
-
-  # Filesystem now looks like:
-  #
-  # .                                (ino 256)
-  # |----- d1                        (ino 258)
-  # |----- f2/                       (ino 259)
-  #        |----- f2_link/           (ino 260)
-  #        |       |----- f1         (ino 257)
-  #        |
-  #        |----- d2                 (ino 258)
-
-  btrfs subvolume snapshot -r /mnt/sdi /mnt/sdi/snap2
-  btrfs send -f /tmp/snap2.send -p /mnt/sdi/snap1 /mnt/sdi/snap2
-
-  mkfs.btrfs -f /dev/sdj >/dev/null
-  mount /dev/sdj /mnt/sdj
-
-  btrfs receive -f /tmp/snap1.send /mnt/sdj
-  btrfs receive -f /tmp/snap2.send /mnt/sdj
-
-  umount /mnt/sdi
-  umount /mnt/sdj
-
-When executed the receive of the incremental stream fails:
-
-  $ ./reproducer.sh
-  Create a readonly snapshot of '/mnt/sdi' in '/mnt/sdi/snap1'
-  At subvol /mnt/sdi/snap1
-  Create a readonly snapshot of '/mnt/sdi' in '/mnt/sdi/snap2'
-  At subvol /mnt/sdi/snap2
-  At subvol snap1
-  At snapshot snap2
-  ERROR: rename d1/d2 -> o260-6-0 failed: No such file or directory
-
-This happens because:
-
-1) When processing inode 257 we end up computing the name for inode 259
-   because it is an ancestor in the send snapshot, and at that point it
-   still has its old name, "d1", from the parent snapshot because inode
-   259 was not yet processed. We then cache that name, which is valid
-   until we start processing inode 259 (or set the progress to 260 after
-   processing its references);
-
-2) Later we start processing inode 258 and collecting all its new
-   references into the list sctx->new_refs. The first reference in the
-   list happens to be the reference for name "d1" while the reference for
-   name "d2" is next (the last element of the list).
-   We compute the full path "d1/d2" for this second reference and store
-   it in the reference (its ->full_path member). The path used for the
-   new parent directory was "d1" and not "f2" because inode 259, the
-   new parent, was not yet processed;
-
-3) When we start processing the new references at process_recorded_refs()
-   we start with the first reference in the list, for the new name "d1".
-   Because there is a conflicting inode that was not yet processed, which
-   is directory inode 259, we orphanize it, renaming it from "d1" to
-   "o259-6-0";
-
-4) Then we start processing the new reference for name "d2", and we
-   realize it conflicts with the reference of inode 260 in the parent
-   snapshot. So we issue an orphanization operation for inode 260 by
-   emitting a rename operation with a destination path of "o260-6-0"
-   and a source path of "d1/d2" - this source path is the value we
-   stored in the reference earlier at step 2), corresponding to the
-   ->full_path member of the reference, however that path is no longer
-   valid due to the orphanization of the directory inode 259 in step 3).
-   This makes the receiver fail since the path does not exists, it should
-   have been "o259-6-0/d2".
-
-Fix this by recomputing the full path of a reference before emitting an
-orphanization if we previously orphanized any directory, since that
-directory could be a parent in the new path. This is a rare scenario so
-keeping it simple and not checking if that previously orphanized directory
-is in fact an ancestor of the inode we are trying to orphanize.
-
-A test case for fstests follows soon.
+  "btrfs: send, orphanize first all conflicting inodes when processing references"
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/send.c | 73 +++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 73 insertions(+)
+ tests/btrfs/221     | 119 ++++++++++++++++++++++++++++++++++++++++++++
+ tests/btrfs/221.out |   6 +++
+ tests/btrfs/group   |   1 +
+ 3 files changed, 126 insertions(+)
+ create mode 100755 tests/btrfs/221
+ create mode 100644 tests/btrfs/221.out
 
-diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
-index 1153f30d9db1..39c000228139 100644
---- a/fs/btrfs/send.c
-+++ b/fs/btrfs/send.c
-@@ -3805,6 +3805,73 @@ static int update_ref_path(struct send_ctx *sctx, struct recorded_ref *ref)
- 	return 0;
- }
- 
-+/*
-+ * When processing the new references for an inode we may orphanize an existing
-+ * directory inode because its old name conflicts with one of the new references
-+ * of the current inode. Later, when processing another new reference of our
-+ * inode, we might need to orphanize another inode, but the path we have in the
-+ * reference reflects the pre-orphanization name of the directory we previously
-+ * orphanized. For example:
-+ *
-+ * parent snapshot looks like:
-+ *
-+ * .                                     (ino 256)
-+ * |----- f1                             (ino 257)
-+ * |----- f2                             (ino 258)
-+ * |----- d1/                            (ino 259)
-+ *        |----- d2/                     (ino 260)
-+ *
-+ * send snapshot looks like:
-+ *
-+ * .                                     (ino 256)
-+ * |----- d1                             (ino 258)
-+ * |----- f2/                            (ino 259)
-+ *        |----- f2_link/                (ino 260)
-+ *        |       |----- f1              (ino 257)
-+ *        |
-+ *        |----- d2                      (ino 258)
-+ *
-+ * When processing inode 257 we compute the name for inode 259 as "d1", and we
-+ * cache it in the name cache. Later when we start processing inode 258, when
-+ * collecting all its new references we set a full path of "d1/d2" for its new
-+ * reference with name "d2". When we start processing the new references we
-+ * start by processing the new reference with name "d1", and this results in
-+ * orphanizing inode 259, since its old reference causes a conflict. Then we
-+ * move on the next new reference, with name "d2", and we find out we must
-+ * orphanize inode 260, as its old reference conflicts with ours - but for the
-+ * orphanization we use a source path corresponding to the path we stored in the
-+ * new reference, which is "d1/d2" and not "o259-6-0/d2" - this makes the
-+ * receiver fail since the path component "d1/" no longer exists, it was renamed
-+ * to "o259-6-0/" when processing the previous new reference. So in this case we
-+ * must recompute the path in the new reference and use it for the new
-+ * orphanization operation.
-+ */
-+static int refresh_ref_path(struct send_ctx *sctx, struct recorded_ref *ref)
+diff --git a/tests/btrfs/221 b/tests/btrfs/221
+new file mode 100755
+index 00000000..a482d0c5
+--- /dev/null
++++ b/tests/btrfs/221
+@@ -0,0 +1,119 @@
++#! /bin/bash
++# SPDX-License-Identifier: GPL-2.0
++# Copyright (C) 2020 SUSE Linux Products GmbH. All Rights Reserved.
++#
++# FS QA Test No. btrfs/221
++#
++# Test that an incremental send operation emits the correct path for link and
++# rename operation after swapping the names and locations of several inodes in
++# a way that creates a nasty dependency of rename and link operations. Notably
++# one file has its name and location swapped with a directory for which it used
++# to have a directory entry in it.
++#
++seq=`basename $0`
++seqres=$RESULT_DIR/$seq
++echo "QA output created by $seq"
++
++tmp=/tmp/$$
++status=1	# failure is the default!
++trap "_cleanup; exit \$status" 0 1 2 3 15
++
++_cleanup()
 +{
-+	char *name;
-+	int ret;
-+
-+	name = kmalloc(ref->name_len, GFP_KERNEL);
-+	if (!name)
-+		return -ENOMEM;
-+	memcpy(name, ref->name, ref->name_len);
-+
-+	fs_path_reset(ref->full_path);
-+	ret = get_cur_path(sctx, ref->dir, ref->dir_gen, ref->full_path);
-+	if (ret < 0)
-+		goto out;
-+
-+	ret = fs_path_add(ref->full_path, name, ref->name_len);
-+	if (ret < 0)
-+		goto out;
-+
-+	/* Update the reference's base name pointer. */
-+	set_ref_path(ref, ref->full_path);
-+out:
-+	kfree(name);
-+	return ret;
++	cd /
++	rm -fr $send_files_dir
++	rm -f $tmp.*
 +}
 +
- /*
-  * This does all the move/link/unlink/rmdir magic.
-  */
-@@ -3939,6 +4006,12 @@ static int process_recorded_refs(struct send_ctx *sctx, int *pending_move)
- 				struct name_cache_entry *nce;
- 				struct waiting_dir_move *wdm;
- 
-+				if (orphanized_dir) {
-+					ret = refresh_ref_path(sctx, cur);
-+					if (ret < 0)
-+						goto out;
-+				}
++# get standard environment, filters and checks
++. ./common/rc
++. ./common/filter
 +
- 				ret = orphanize_inode(sctx, ow_inode, ow_gen,
- 						cur->full_path);
- 				if (ret < 0)
++# real QA test starts here
++_supported_fs btrfs
++_require_test
++_require_scratch
++_require_fssum
++
++send_files_dir=$TEST_DIR/btrfs-test-$seq
++
++rm -f $seqres.full
++rm -fr $send_files_dir
++mkdir $send_files_dir
++
++_scratch_mkfs >>$seqres.full 2>&1
++_scratch_mount
++
++touch $SCRATCH_MNT/a
++touch $SCRATCH_MNT/b
++mkdir $SCRATCH_MNT/testdir
++# We want "a" to have a lower inode number than its parent directory, so it
++# was created before the directory and then moved into it.
++mv $SCRATCH_MNT/a $SCRATCH_MNT/testdir/a
++
++# Filesystem looks like:
++#
++# .                                                      (ino 256)
++# |----- testdir/                                        (ino 259)
++# |          |----- a                                    (ino 257)
++# |
++# |----- b                                               (ino 258)
++#
++$BTRFS_UTIL_PROG subvolume snapshot -r $SCRATCH_MNT \
++	$SCRATCH_MNT/mysnap1 > /dev/null
++
++$BTRFS_UTIL_PROG send -f $send_files_dir/1.snap \
++	$SCRATCH_MNT/mysnap1 2>&1 1>/dev/null | _filter_scratch
++
++# Now rename 259 to "testdir_2", then change the name of 257 to "testdir" and
++# make it a direct descendant of the root inode (256). Also create a new link
++# for inode 257 with the old name of inode 258. By swapping the names and
++# location of several inodes and create a nasty dependency chain of rename and
++# link operations.
++mv $SCRATCH_MNT/testdir/a $SCRATCH_MNT/a2
++touch $SCRATCH_MNT/testdir/a
++mv $SCRATCH_MNT/b $SCRATCH_MNT/b2
++ln $SCRATCH_MNT/a2 $SCRATCH_MNT/b
++mv $SCRATCH_MNT/testdir $SCRATCH_MNT/testdir_2
++mv $SCRATCH_MNT/a2 $SCRATCH_MNT/testdir
++
++# Filesystem now looks like:
++#
++# .                                                      (ino 256)
++# |----- testdir_2/                                      (ino 259)
++# |          |----- a                                    (ino 260)
++# |
++# |----- testdir                                         (ino 257)
++# |----- b                                               (ino 257)
++# |----- b2                                              (ino 258)
++#
++
++$BTRFS_UTIL_PROG subvolume snapshot -r $SCRATCH_MNT \
++		 $SCRATCH_MNT/mysnap2 > /dev/null
++$BTRFS_UTIL_PROG send -p $SCRATCH_MNT/mysnap1 -f $send_files_dir/2.snap \
++		 $SCRATCH_MNT/mysnap2 2>&1 1>/dev/null | _filter_scratch
++
++$FSSUM_PROG -A -f -w $send_files_dir/1.fssum $SCRATCH_MNT/mysnap1
++$FSSUM_PROG -A -f -w $send_files_dir/2.fssum \
++	-x $SCRATCH_MNT/mysnap2/mysnap1 $SCRATCH_MNT/mysnap2
++
++# Now recreate the filesystem by receiving both send streams and verify we get
++# the same content that the original filesystem had.
++_scratch_unmount
++_scratch_mkfs >>$seqres.full 2>&1
++_scratch_mount
++
++$BTRFS_UTIL_PROG receive -f $send_files_dir/1.snap $SCRATCH_MNT > /dev/null
++
++# The receive operation below used to fail because when attemping to create the
++# hard link named "b" for inode 257, the link operation contained a target path
++# of "o259-6-0/a", which caused the receiver process to fail because inode 259
++# was not yet orphanized (renamed to "o259-6-0"), it still had the name "testdir"
++# when the link operation was issued.
++$BTRFS_UTIL_PROG receive -f $send_files_dir/2.snap $SCRATCH_MNT > /dev/null
++
++$FSSUM_PROG -r $send_files_dir/1.fssum $SCRATCH_MNT/mysnap1
++$FSSUM_PROG -r $send_files_dir/2.fssum $SCRATCH_MNT/mysnap2
++
++status=0
++exit
+diff --git a/tests/btrfs/221.out b/tests/btrfs/221.out
+new file mode 100644
+index 00000000..4c887062
+--- /dev/null
++++ b/tests/btrfs/221.out
+@@ -0,0 +1,6 @@
++QA output created by 221
++At subvol SCRATCH_MNT/mysnap1
++At subvol SCRATCH_MNT/mysnap2
++At subvol mysnap1
++OK
++OK
+diff --git a/tests/btrfs/group b/tests/btrfs/group
+index 1b5fa695..8b285dbb 100644
+--- a/tests/btrfs/group
++++ b/tests/btrfs/group
+@@ -222,3 +222,4 @@
+ 218 auto quick volume
+ 219 auto quick volume
+ 220 auto quick
++221 auto quick send
 -- 
 2.26.2
 
