@@ -2,33 +2,33 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D82827252D
-	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Sep 2020 15:16:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A19D27252E
+	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Sep 2020 15:16:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726630AbgIUNPi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 21 Sep 2020 09:15:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44342 "EHLO mail.kernel.org"
+        id S1726795AbgIUNPk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 21 Sep 2020 09:15:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44354 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726445AbgIUNPi (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 21 Sep 2020 09:15:38 -0400
+        id S1726445AbgIUNPk (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 21 Sep 2020 09:15:40 -0400
 Received: from debian8.Home (bl8-197-74.dsl.telepac.pt [85.241.197.74])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1A36220719;
-        Mon, 21 Sep 2020 13:15:36 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 408BE21789;
+        Mon, 21 Sep 2020 13:15:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600694137;
-        bh=T+quOTiY2P4ZUT6PMc491pg9cSDAM2YMf8N6cRVFYnw=;
+        s=default; t=1600694139;
+        bh=qJhpdYjpnba+2A/Z0duqTIyXEWwPxdXaL2zODSwbcjo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=p3HpUndH8D0dVQ72oMMXTKMZHnwanF4Ceak7x4BTFlQntdlK5Rh6BCT4sRIOeN+sU
-         ybjrO8ni1hWoN3fOJ9TB1tYXBzOROJF9SX4K+8O/eRo3ujVWyQmJxSTa767Z/Ao524
-         x9fP5fOircWqxc0NV5IUiMzYkpjkPIQKOByZPlK4=
+        b=1+RwN+STFHNZB2tl/zsDY/hie5g0VzrGAGPidZL8NY5ebwFrn5urVbCoE3ARekBs6
+         55wdfo87tj4T5Y31ViWELG/nzXOE4SjAIUXhn9Qsju/1REBihJgxAxoA/VE1ns2bvd
+         hszlwPmg5inhYT4mn0y+fFTwhKj3nbv6RNk50/24=
 From:   fdmanana@kernel.org
 To:     fstests@vger.kernel.org
 Cc:     linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
-Subject: [PATCH 1/2] btrfs: test incremental send after a succession of rename and link operations
-Date:   Mon, 21 Sep 2020 14:15:31 +0100
-Message-Id: <83001e537cdf42258dd4b4e3212546dfd099a337.1600693732.git.fdmanana@suse.com>
+Subject: [PATCH 2/2] btrfs: test incremental send after swapping same file with two directories
+Date:   Mon, 21 Sep 2020 14:15:32 +0100
+Message-Id: <86d811965c984a6b16afa12ecb7e6e7512780ba6.1600693732.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <cover.1600693732.git.fdmanana@suse.com>
 References: <cover.1600693732.git.fdmanana@suse.com>
@@ -40,43 +40,43 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-Test that an incremental send operation emits the correct path for link
-and rename operation after swapping the names and locations of several
-inodes in a way that creates a nasty dependency of rename and link
-operations. Notably one file has its name and location swapped with a
-directory for which it used to have a directory entry in it.
+Test an incremental send operation after doing a series of changes in a
+tree such that one inode gets two hardlinks with names and locations
+swapped with two other inodes that correspond to different directories,
+and one of these directories is the parent of the other directory.
 
-This test currently fails but a kernel patch for it exists and has the
-following subject:
+This currently fails on btrfs, the receive of the incremental send stream
+fails. This is fixed by a patchset for btrfs which has two patches with the
+following subjects:
 
   "btrfs: send, orphanize first all conflicting inodes when processing references"
+  "btrfs: send, recompute reference path after orphanization of a directory"
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- tests/btrfs/221     | 119 ++++++++++++++++++++++++++++++++++++++++++++
- tests/btrfs/221.out |   6 +++
+ tests/btrfs/222     | 142 ++++++++++++++++++++++++++++++++++++++++++++
+ tests/btrfs/222.out |   6 ++
  tests/btrfs/group   |   1 +
- 3 files changed, 126 insertions(+)
- create mode 100755 tests/btrfs/221
- create mode 100644 tests/btrfs/221.out
+ 3 files changed, 149 insertions(+)
+ create mode 100755 tests/btrfs/222
+ create mode 100644 tests/btrfs/222.out
 
-diff --git a/tests/btrfs/221 b/tests/btrfs/221
+diff --git a/tests/btrfs/222 b/tests/btrfs/222
 new file mode 100755
-index 00000000..a482d0c5
+index 00000000..51fd052a
 --- /dev/null
-+++ b/tests/btrfs/221
-@@ -0,0 +1,119 @@
++++ b/tests/btrfs/222
+@@ -0,0 +1,142 @@
 +#! /bin/bash
 +# SPDX-License-Identifier: GPL-2.0
 +# Copyright (C) 2020 SUSE Linux Products GmbH. All Rights Reserved.
 +#
-+# FS QA Test No. btrfs/221
++# FS QA Test No. btrfs/222
 +#
-+# Test that an incremental send operation emits the correct path for link and
-+# rename operation after swapping the names and locations of several inodes in
-+# a way that creates a nasty dependency of rename and link operations. Notably
-+# one file has its name and location swapped with a directory for which it used
-+# to have a directory entry in it.
++# Test an incremental send operation after doing a series of changes in a tree
++# such that one inode gets two hardlinks with names and locations swapped with
++# two other inodes that correspond to different directories, and one of these
++# directories is the parent of the other directory.
 +#
 +seq=`basename $0`
 +seqres=$RESULT_DIR/$seq
@@ -112,20 +112,18 @@ index 00000000..a482d0c5
 +_scratch_mkfs >>$seqres.full 2>&1
 +_scratch_mount
 +
-+touch $SCRATCH_MNT/a
-+touch $SCRATCH_MNT/b
-+mkdir $SCRATCH_MNT/testdir
-+# We want "a" to have a lower inode number than its parent directory, so it
-+# was created before the directory and then moved into it.
-+mv $SCRATCH_MNT/a $SCRATCH_MNT/testdir/a
++touch $SCRATCH_MNT/f1
++touch $SCRATCH_MNT/f2
++mkdir $SCRATCH_MNT/d1
++mkdir $SCRATCH_MNT/d1/d2
 +
 +# Filesystem looks like:
 +#
-+# .                                                      (ino 256)
-+# |----- testdir/                                        (ino 259)
-+# |          |----- a                                    (ino 257)
-+# |
-+# |----- b                                               (ino 258)
++# .                                     (ino 256)
++# |----- f1                             (ino 257)
++# |----- f2                             (ino 258)
++# |----- d1/                            (ino 259)
++#        |----- d2/                     (ino 260)
 +#
 +$BTRFS_UTIL_PROG subvolume snapshot -r $SCRATCH_MNT \
 +	$SCRATCH_MNT/mysnap1 > /dev/null
@@ -133,27 +131,46 @@ index 00000000..a482d0c5
 +$BTRFS_UTIL_PROG send -f $send_files_dir/1.snap \
 +	$SCRATCH_MNT/mysnap1 2>&1 1>/dev/null | _filter_scratch
 +
-+# Now rename 259 to "testdir_2", then change the name of 257 to "testdir" and
-+# make it a direct descendant of the root inode (256). Also create a new link
-+# for inode 257 with the old name of inode 258. By swapping the names and
-+# location of several inodes and create a nasty dependency chain of rename and
-+# link operations.
-+mv $SCRATCH_MNT/testdir/a $SCRATCH_MNT/a2
-+touch $SCRATCH_MNT/testdir/a
-+mv $SCRATCH_MNT/b $SCRATCH_MNT/b2
-+ln $SCRATCH_MNT/a2 $SCRATCH_MNT/b
-+mv $SCRATCH_MNT/testdir $SCRATCH_MNT/testdir_2
-+mv $SCRATCH_MNT/a2 $SCRATCH_MNT/testdir
++# Now do a series of changes such that:
++#
++# *) inode 258 has one new hardlink and the previous name changed
++#
++# *) both names conflict with the old names of two other inodes:
++#
++#    1) the new name "d1" conflicts with the old name of inode 259, under
++#       directory inode 256 (root)
++#
++#    2) the new name "d2" conflicts with the old name of inode 260 under
++#       directory inode 259
++#
++# *) inodes 259 and 260 now have the old names of inode 258
++#
++# *) inode 257 is now located under inode 260 - an inode with a number
++#    smaller than the inode (258) for which we created a second hard link
++#    and swapped its names with inodes 259 and 260
++#
++ln $SCRATCH_MNT/f2 $SCRATCH_MNT/d1/f2_link
++mv $SCRATCH_MNT/f1 $SCRATCH_MNT/d1/d2/f1
++
++# Swap d1 and f2.
++mv $SCRATCH_MNT/d1 $SCRATCH_MNT/tmp
++mv $SCRATCH_MNT/f2 $SCRATCH_MNT/d1
++mv $SCRATCH_MNT/tmp $SCRATCH_MNT/f2
++
++# Swap d2 and f2_link
++mv $SCRATCH_MNT/f2/d2 $SCRATCH_MNT/tmp
++mv $SCRATCH_MNT/f2/f2_link $SCRATCH_MNT/f2/d2
++mv $SCRATCH_MNT/tmp $SCRATCH_MNT/f2/f2_link
 +
 +# Filesystem now looks like:
 +#
-+# .                                                      (ino 256)
-+# |----- testdir_2/                                      (ino 259)
-+# |          |----- a                                    (ino 260)
-+# |
-+# |----- testdir                                         (ino 257)
-+# |----- b                                               (ino 257)
-+# |----- b2                                              (ino 258)
++# .                                     (ino 256)
++# |----- d1                             (ino 258)
++# |----- f2/                            (ino 259)
++#        |----- f2_link/                (ino 260)
++#        |       |----- f1              (ino 257)
++#        |
++#        |----- d2                      (ino 258)
 +#
 +
 +$BTRFS_UTIL_PROG subvolume snapshot -r $SCRATCH_MNT \
@@ -173,11 +190,18 @@ index 00000000..a482d0c5
 +
 +$BTRFS_UTIL_PROG receive -f $send_files_dir/1.snap $SCRATCH_MNT > /dev/null
 +
-+# The receive operation below used to fail because when attemping to create the
-+# hard link named "b" for inode 257, the link operation contained a target path
-+# of "o259-6-0/a", which caused the receiver process to fail because inode 259
-+# was not yet orphanized (renamed to "o259-6-0"), it still had the name "testdir"
-+# when the link operation was issued.
++# The receive operation below used to fail with the following error:
++#
++#    ERROR: rename d1/d2 -> o260-6-0 failed: No such file or directory
++#
++# Because when processing inode 258, the kernel orphanized first inode 259,
++# renaming it from "d1" to "o259-6-0", since it the new reference named "d1"
++# for inode 258 conflicts with the old one of inode 259, which was not yet
++# processed. After that, because the new reference named "d2" for inode 258
++# conflicts with the old reference of the not yet processed inode 260, it
++# tried to orphanize inode 260 - however the corresponding rename operation
++# used a source path of "d1/d2", instead of "o259-6-0/d2".
++#
 +$BTRFS_UTIL_PROG receive -f $send_files_dir/2.snap $SCRATCH_MNT > /dev/null
 +
 +$FSSUM_PROG -r $send_files_dir/1.fssum $SCRATCH_MNT/mysnap1
@@ -185,27 +209,27 @@ index 00000000..a482d0c5
 +
 +status=0
 +exit
-diff --git a/tests/btrfs/221.out b/tests/btrfs/221.out
+diff --git a/tests/btrfs/222.out b/tests/btrfs/222.out
 new file mode 100644
-index 00000000..4c887062
+index 00000000..4fea113d
 --- /dev/null
-+++ b/tests/btrfs/221.out
++++ b/tests/btrfs/222.out
 @@ -0,0 +1,6 @@
-+QA output created by 221
++QA output created by 222
 +At subvol SCRATCH_MNT/mysnap1
 +At subvol SCRATCH_MNT/mysnap2
 +At subvol mysnap1
 +OK
 +OK
 diff --git a/tests/btrfs/group b/tests/btrfs/group
-index 1b5fa695..8b285dbb 100644
+index 8b285dbb..3b009220 100644
 --- a/tests/btrfs/group
 +++ b/tests/btrfs/group
-@@ -222,3 +222,4 @@
- 218 auto quick volume
+@@ -223,3 +223,4 @@
  219 auto quick volume
  220 auto quick
-+221 auto quick send
+ 221 auto quick send
++222 auto quick send
 -- 
 2.26.2
 
