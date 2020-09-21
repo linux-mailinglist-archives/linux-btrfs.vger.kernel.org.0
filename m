@@ -2,78 +2,74 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D33362722ED
-	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Sep 2020 13:46:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFF7D272384
+	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Sep 2020 14:15:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726466AbgIULqS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 21 Sep 2020 07:46:18 -0400
-Received: from luna.lichtvoll.de ([194.150.191.11]:46369 "EHLO
-        mail.lichtvoll.de" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726402AbgIULqR (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 21 Sep 2020 07:46:17 -0400
-X-Greylist: delayed 4544 seconds by postgrey-1.27 at vger.kernel.org; Mon, 21 Sep 2020 07:46:16 EDT
-Received: from 127.0.0.1 (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.lichtvoll.de (Postfix) with ESMTPSA id 0C48A154A6F;
-        Mon, 21 Sep 2020 13:46:15 +0200 (CEST)
-From:   Martin Steigerwald <martin@lichtvoll.de>
-To:     linux-btrfs@vger.kernel.org, Qu Wenruo <quwenruo.btrfs@gmx.com>
-Subject: Re: external harddisk: bogus corrupt leaf error?
-Date:   Mon, 21 Sep 2020 13:46:13 +0200
-Message-ID: <8020498.oVlb7o6SH1@merkaba>
-In-Reply-To: <8d2987f8-e27e-eedb-164f-b05d74ad8f3b@gmx.com>
-References: <1978673.BsW9qxMyvF@merkaba> <4131924.Vjtf9Mc2VK@merkaba> <8d2987f8-e27e-eedb-164f-b05d74ad8f3b@gmx.com>
+        id S1726795AbgIUMPu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 21 Sep 2020 08:15:50 -0400
+Received: from mx2.suse.de ([195.135.220.15]:34418 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726341AbgIUMPt (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 21 Sep 2020 08:15:49 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id C0AFEACAF;
+        Mon, 21 Sep 2020 12:16:24 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 88AEDDA6E0; Mon, 21 Sep 2020 14:14:33 +0200 (CEST)
+Date:   Mon, 21 Sep 2020 14:14:33 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Anand Jain <anand.jain@oracle.com>
+Cc:     Eryu Guan <guan@eryu.me>,
+        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        "fstests@vger.kernel.org" <fstests@vger.kernel.org>
+Subject: Re: [PATCH] btrfs: remove stale test for alien devices
+Message-ID: <20200921121432.GI6756@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Anand Jain <anand.jain@oracle.com>,
+        Eryu Guan <guan@eryu.me>,
+        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        "fstests@vger.kernel.org" <fstests@vger.kernel.org>
+References: <20200917141353.28566-1-johannes.thumshirn@wdc.com>
+ <f4606506-78a1-4771-96cd-6bc28e6a7074@oracle.com>
+ <SN4PR0401MB35987D9F6868271DAD0A05009B3F0@SN4PR0401MB3598.namprd04.prod.outlook.com>
+ <20200920161532.GP3853@desktop>
+ <0763fac7-d9a8-e486-ef20-670e139deb14@oracle.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-Authentication-Results: mail.lichtvoll.de;
-        auth=pass smtp.auth=martin smtp.mailfrom=martin@lichtvoll.de
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0763fac7-d9a8-e486-ef20-670e139deb14@oracle.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Qu Wenruo - 21.09.20, 13:14:05 CEST:
-> >> For the root cause, it should be some older kernel creating the
-> >> wrong
-> >> root item size.
-> >> I can't find the commit but it should be pretty old, as after v5.4
-> >> we
-> >> have mandatory write time tree checks, which will reject such write
-> >> directly.
+On Mon, Sep 21, 2020 at 10:37:49AM +0800, Anand Jain wrote:
+> 
+> 
+> On 21/9/20 12:15 am, Eryu Guan wrote:
+> > On Fri, Sep 18, 2020 at 07:06:42AM +0000, Johannes Thumshirn wrote:
+> >> On 18/09/2020 02:15, Anand Jain wrote:
+> >>> The fix is not too far. It got stuck whether to use EUCLEAN or not.
+> >>> Its better to fix the fix rather than killing the messenger in this case.
+> >>
+> >> OK how about removing the test from the auto group then until the fix is merged?
+> >> It's a constant failure and hiding real regressions. And having to maintain an
+> >> expunge list doesn't scale either.
+> >>
+> >> Thoughts?
 > > 
-> > So eventually I would have to backup the disk and create FS from
-> > scratch to get rid of the error? Or can I, even if its no subvolume
-> > involved, find the item affected, copy it somewhere else and then
-> > write it to the disk again?
-> That's the theory.
 > 
-> We can easily rebuild that data reloc tree, since it should be empty
-> if balance is not running.
+> The patch is in the ML for review.
 > 
-> But we don't have it ready at hand in btrfs-progs...
+>   [PATCH] btrfs: free device without BTRFS_MAGIC
 > 
-> So you may either want to wait until some quick dirty fixer arrives,
-> or can start backup right now.
-> All the data/files shouldn't be affected at all.
+>   https://patchwork.kernel.org/patch/11786607/
+> 
+> I am OK if you still think it has to be removed from the auto.
+> But I don't think it is required now.
 
-Hmmm, do you have an idea if and when such a quick dirty fixer would be 
-available?
-
-Also, is it still safe to write to the filesystem? I looked at the disk, 
-cause I wanted to move some large files over to it to free up some space 
-on my laptop's internal SSDs.
-
-If its still safe to write to the filesystem, I may just wait. I will 
-refresh the backup of the disk anyway. But if its not safe to write to 
-it anymore, I would redo the filesystem from scratch. Would give the 
-added benefit of having everything zstd compressed and I could also go 
-for XXHASH or what one of the faster of the new checksum algorithms was.
-
-Best,
--- 
-Martin
-
-
+The patch needs some discussion so the ETA when it'll land in some
+branch is unclear, removing it from auto still makes sense.
