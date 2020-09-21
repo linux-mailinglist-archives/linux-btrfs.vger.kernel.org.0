@@ -2,90 +2,86 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53A6B272703
-	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Sep 2020 16:29:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBBCA272708
+	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Sep 2020 16:30:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726641AbgIUO3h (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 21 Sep 2020 10:29:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41414 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726341AbgIUO3h (ORCPT
+        id S1726969AbgIUOap (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 21 Sep 2020 10:30:45 -0400
+Received: from esa4.hgst.iphmx.com ([216.71.154.42]:27276 "EHLO
+        esa4.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726501AbgIUOap (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 21 Sep 2020 10:29:37 -0400
-Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 601EEC061755
-        for <linux-btrfs@vger.kernel.org>; Mon, 21 Sep 2020 07:29:37 -0700 (PDT)
-Received: by mail-qv1-xf41.google.com with SMTP id j3so7394258qvi.7
-        for <linux-btrfs@vger.kernel.org>; Mon, 21 Sep 2020 07:29:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=0yB3brJnv3h3rN/PnVNRp77qwEfWE0K3KYu7D5vWvg4=;
-        b=OFdZG6bHqEmwDXBJ+L/cchCM5AkBjpmULtSGOS+IYe0WxHuI6nwg/mLTuJJrPlsjur
-         NeRUrgzXgIHlzQF/Lw8DUr3nMaopbryYPR4i7LMdNU9u2E4wAcg1DqSR0qxKBH01b73H
-         b9FL1/5piNHDHhLbq9hYOocW/e9JhD2ur3NEbCzM5GmWDntd9Lp24brV6UUsV3IxNNYH
-         4ctqksmjDmles5i2y6Qdk1j96KIImQecprjN2XW2oRLpPrdom6CbDxp6BUymB0DbXF3M
-         +5mg64oyqBUdkhoY6hfIEzWt2JDxPRkMyRXV9qwZAi81yXWonnwPs2TNKHNCMhn6tOqW
-         HFog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=0yB3brJnv3h3rN/PnVNRp77qwEfWE0K3KYu7D5vWvg4=;
-        b=ca3k6lXhIPNAnVHI/05qywYJqJw7kCDd/DDyPSO+DGT1yBDe8EBNwbkluSzMfEICQU
-         hi+ZpYrbzK40bVtIVVTF3P87Q9qTkq4kfFP/zEZShGrLke9YT+zAFkI9OYmUz5ecPC5g
-         WOquJ+uFWT0T7PM3R6VK5S2Itta0VIuwT70+oATSQVhd8YJWGHW9O6vEEYYo0tCEtbeP
-         O26mOIqPhMRE8N/JgO4aoAXsq64QqvY60JEHjtb7KcuuHotKTlzRNcqdFfyxm+8/tsEh
-         oQVgRSj/WGLj3PxMRVHWwpA9lR7uu2KVzbjJj3ak55RPS/pRzAaSo+MrGFeKqwqvY/wq
-         AFCw==
-X-Gm-Message-State: AOAM531MMyMMrQD22U/UZVKSFnc6uVX1kK/2mnEKWi70Twbgei25hRWY
-        PsytHpn79vNQeri0WpEyOtxq1r0rVLRLhaX/
-X-Google-Smtp-Source: ABdhPJyqY9xsFm1b3HPhvqR5ZnrUiAJu73XBc/aPEEOnXGrb8mTq+0rpRUClkoIOKOtsxluti8N/Jg==
-X-Received: by 2002:a0c:8645:: with SMTP id p63mr159461qva.21.1600698575896;
-        Mon, 21 Sep 2020 07:29:35 -0700 (PDT)
-Received: from [192.168.1.45] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id k185sm8930411qkd.94.2020.09.21.07.29.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 21 Sep 2020 07:29:34 -0700 (PDT)
-Subject: Re: [PATCH 0/2] btrfs: send, fix some failures due to commands with
- wrong paths
-To:     fdmanana@kernel.org, linux-btrfs@vger.kernel.org
-References: <cover.1600693246.git.fdmanana@suse.com>
-From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <26720bed-d4f6-987d-f36a-190b215f9a99@toxicpanda.com>
-Date:   Mon, 21 Sep 2020 10:29:33 -0400
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.2.2
+        Mon, 21 Sep 2020 10:30:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1600698645; x=1632234645;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=hIPCgkv88milcjNzRRkd5ayi8pFW3zweK7LgZUTxAMg=;
+  b=mn0u5MeBwzOGcpB9nst9qnQatSGrcOMEgRsOB6aJSzmDJi37JOzFZWAO
+   U219hHRj2fQBHzXa+JfWP/UGBt9fEVJxBAiplpgKYil3TiEDbtYSXlbY3
+   J1s3zsU2bEOll7TFB2nWm9LUR91N/en4UFuxkCX4h7LV5jhRDbcBLE6+/
+   SWVRk65S2C7JMSteQRMQr1FgtkMl907AadD9RKWfbDB70b1Vft8JUKJgX
+   VfRBMAQbNrJiKsFz12BnRIAc2NUpsQWpNqG6Y+LjYKwq/mM7lhbIJwMhS
+   4JST3IRh9cbjUWT2k5+WLdcVOvqd9GkCtnhpkqwwBsSUe6xRQ2UwvJ8JZ
+   w==;
+IronPort-SDR: HrdlCHP/a3zB4kUB2yCP9kvQsKhOmP7+rgQOq5YdmGqSCXPv0G653ViIJ6p7vsbFpc5H4ILj0l
+ yMOvzbQYgNhOvOjU1jM4uCMTiPchLqEbf8WW1/MaoYp/vOm2PItm/vfjlZz60400SbCvwO+JQw
+ q7v6YSSo1wVqvjZVbp8GJMitOlkLMoQG6xW7NuioXHLWvR3eh+ZqF9A2yuMJPVkLM0TSWN6diw
+ 4MT01MSaFWRYZm4Co9z6mb2+3lAAXRDcGPCFAVzSNZL9/xcnQUsPEy5D9MfOWhT8zvrH4pV9c5
+ cdg=
+X-IronPort-AV: E=Sophos;i="5.77,286,1596470400"; 
+   d="scan'208";a="147817423"
+Received: from h199-255-45-15.hgst.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
+  by ob1.hgst.iphmx.com with ESMTP; 21 Sep 2020 22:30:44 +0800
+IronPort-SDR: YvYMhTQUDQAHbfLCpKFjq4DvgF05FFVN2sxoMeAt7LhiZfM+kOR+aVryur/c+hcvD7+tUxiq0k
+ g9RNgp5XSEdQ==
+Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
+  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2020 07:16:53 -0700
+IronPort-SDR: GY+GIzqLqM90CxrW4fcL5TNTmEV0P2OMP4B+HO30k/odRS8+c9+2h/GDdw2uJVlgioX94Ve7lz
+ B36PcZDW8h/Q==
+WDCIronportException: Internal
+Received: from unknown (HELO redsun60.ssa.fujisawa.hgst.com) ([10.149.66.36])
+  by uls-op-cesaip01.wdc.com with ESMTP; 21 Sep 2020 07:30:44 -0700
+From:   Johannes Thumshirn <johannes.thumshirn@wdc.com>
+To:     Eryu Guan <guan@eryu.me>
+Cc:     linux-btrfs@vger.kernel.org, Anand Jain <anand.jain@oracle.com>,
+        fstests@vger.kernel.org,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Subject: [PATCH v2] btrfs: remove stale test for alien devices from auto group
+Date:   Mon, 21 Sep 2020 23:30:35 +0900
+Message-Id: <20200921143035.26282-1-johannes.thumshirn@wdc.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <cover.1600693246.git.fdmanana@suse.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 9/21/20 9:13 AM, fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
-> 
-> Incremental send operations can often fail at the receiver due to a wrong
-> path in some command. This small patchset fixes a few more cases where
-> such problems happen. There are sporadic reports of this type of failures,
-> such as [1] and [2] for example, and many similar issues were fixed in a
-> more distant past. Without having the full directory trees of the parent
-> and send snapshots, with inode numbers, it's hard to tell if this patchset
-> fixes exactly those reported cases, but the cases fixed by this patchset
-> are all I could find in the last two weeks.
-> 
-> [1] https://lore.kernel.org/linux-btrfs/57021127-01ea-6533-6de6-56c4f22c4a5b@gmail.com/
-> [2] https://lore.kernel.org/linux-btrfs/87a7obowwn.fsf@lausen.nl/
-> 
-> 
+btrfs/198 is supposed to be a test for the patch
+"btrfs: remove identified alien device in open_fs_devices" but this patch
+was never merged in btrfs.
 
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+Remove the test from fstests' auto group, as it is constantly failing.
 
-Thanks,
+Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+---
+ tests/btrfs/group | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Josef
+diff --git a/tests/btrfs/group b/tests/btrfs/group
+index 1b5fa695a9f7..a1ec54c51631 100644
+--- a/tests/btrfs/group
++++ b/tests/btrfs/group
+@@ -199,7 +199,7 @@
+ 195 auto volume balance
+ 196 auto metadata log volume
+ 197 auto quick volume
+-198 auto quick volume
++198 quick volume
+ 199 auto quick trim
+ 200 auto quick send clone
+ 201 auto quick punch log
+-- 
+2.26.2
+
