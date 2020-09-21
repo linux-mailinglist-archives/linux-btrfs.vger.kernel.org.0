@@ -2,100 +2,73 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB35A273047
-	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Sep 2020 19:04:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF2F427307D
+	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Sep 2020 19:05:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729178AbgIURDw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 21 Sep 2020 13:03:52 -0400
-Received: from mail-lf1-f66.google.com ([209.85.167.66]:42100 "EHLO
-        mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730492AbgIURDv (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 21 Sep 2020 13:03:51 -0400
-Received: by mail-lf1-f66.google.com with SMTP id b12so14837345lfp.9;
-        Mon, 21 Sep 2020 10:03:49 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=0CrJyG3ddy1yqE5EHK/s9PAflZP2qnO9iNUuDmPM0w0=;
-        b=YT2SKmOC+yeJYQ3mPZQyCYNV32dSvUpe9vG7L2gLqBGV37o4whDorIp92e3hJXBkOD
-         JXU1tp2SLXjkW+qDqu0E1+G7sBf1rHv4mR4+VqeqmNg/UqNAoxMw4gcqha+0rdw/gFx4
-         y+eRhuD+Xx/wUx24NOCtoBMoJ60BganonQl3mN16KkmzY4BXEYH41khSkkTT6bjwM480
-         vR/LjixgOTvb7rm1cdxgYpKdQNqB+RJBRgzViyMw1bB7AFkoaFqxgW7C0y3tXv1zemtl
-         JsvQYMrQsKF8oxM4LoZmbJC+HGbelG+/vJmnWHkY4cT49O/sT8qMM09OtOSr2AWABVlZ
-         zVow==
-X-Gm-Message-State: AOAM531s1s/EURFTm/6yAOOwnBkJ0ieBw8Nt7CWYG/BMfNlxXEflpyWm
-        H5mgC5RXSKnB4CJap9vVZfA=
-X-Google-Smtp-Source: ABdhPJzdz2V3SyrsoMH/S6hyA0iHuIAZywlJV57P81G63zh0Zscugbwew5VnSJhP09HLn2VJQ9jb0g==
-X-Received: by 2002:ac2:53a3:: with SMTP id j3mr333399lfh.86.1600707828703;
-        Mon, 21 Sep 2020 10:03:48 -0700 (PDT)
-Received: from green.intra.ispras.ru (winnie.ispras.ru. [83.149.199.91])
-        by smtp.googlemail.com with ESMTPSA id c22sm2689992lff.202.2020.09.21.10.03.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Sep 2020 10:03:48 -0700 (PDT)
-From:   Denis Efremov <efremov@linux.com>
-To:     David Sterba <dsterba@suse.com>
-Cc:     Denis Efremov <efremov@linux.com>,
-        Josef Bacik <josef@toxicpanda.com>, Chris Mason <clm@fb.com>,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Kees Cook <keescook@chromium.org>
-Subject: [PATCH 2/2] btrfs: check allocation size in btrfs_ioctl_send()
-Date:   Mon, 21 Sep 2020 20:03:36 +0300
-Message-Id: <20200921170336.82643-2-efremov@linux.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200921170336.82643-1-efremov@linux.com>
-References: <20200921170336.82643-1-efremov@linux.com>
+        id S1728705AbgIURFb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 21 Sep 2020 13:05:31 -0400
+Received: from mx2.suse.de ([195.135.220.15]:37386 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728330AbgIURFX (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 21 Sep 2020 13:05:23 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 17741AC7D;
+        Mon, 21 Sep 2020 17:05:57 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id F1FEEDA6E0; Mon, 21 Sep 2020 19:04:05 +0200 (CEST)
+Date:   Mon, 21 Sep 2020 19:04:05 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     Boris Burkov <boris@bur.io>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com
+Subject: Re: [PATCH 2/4] btrfs: use sb state to print space_cache mount option
+Message-ID: <20200921170405.GL6756@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
+        Boris Burkov <boris@bur.io>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com
+References: <cover.1600282812.git.boris@bur.io>
+ <e7fe51d3013637cfe2bc9581983468d5940fdce5.1600282812.git.boris@bur.io>
+ <bae2283f-ed1e-d09c-55bd-afedabe9b3f3@toxicpanda.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <bae2283f-ed1e-d09c-55bd-afedabe9b3f3@toxicpanda.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Replace kvzalloc() call with kvcalloc() that checks
-the size internally. Use array_size() helper to compute
-the memory size for clone_sources_tmp.
+On Mon, Sep 21, 2020 at 10:50:25AM -0400, Josef Bacik wrote:
+> On 9/17/20 2:13 PM, Boris Burkov wrote:
+> > To make the contents of /proc/mounts better match the actual state of
+> > the file system, base the display of the space cache mount options off
+> > the contents of the super block rather than the last mount options
+> > passed in. Since there are many scenarios where the mount will ignore a
+> > space cache option, simply showing the passed in option is misleading.
+> > 
+> > For example, if we mount with -o remount,space_cache=v2 on a read-write
+> > file system without an existing free space tree, we won't build a free
+> > space tree, but /proc/mounts will read space_cache=v2 (until we mount
+> > again and it goes away)
+> > 
+> > There is already mount logic based on the super block's cache_generation
+> > and free space tree flag that helps decide a consistent setting for the
+> > space cache options, so we just bring those further to the fore. For
+> > free space tree, the flag is already consistent, so we just switch mount
+> > option display to use it. cache_generation is not always reliably set
+> > correctly, so we ensure that cache_generation > 0 iff the file system
+> > is using space_cache v1. This requires committing a transaction on any
+> > mount which changes whether we are using v1. (v1->nospace_cache, v1->v2,
+> > nospace_cache->v1, v2->v1).
+> > 
+> > References: https://github.com/btrfs/btrfs-todo/issues/5
+> > Signed-off-by: Boris Burkov <boris@bur.io>
+> 
+> Dave already took this, but next time I'd prefer if we'd keep logical changes 
+> separate.  So one patch to change /proc/mounts, one patch to deal with clearing 
+> the free space generation field if we're not using it.
 
-Cc: Kees Cook <keescook@chromium.org>
-Signed-off-by: Denis Efremov <efremov@linux.com>
----
- fs/btrfs/send.c | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
-
-diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
-index c874ddda6252..9e02aba30651 100644
---- a/fs/btrfs/send.c
-+++ b/fs/btrfs/send.c
-@@ -7087,7 +7087,7 @@ long btrfs_ioctl_send(struct file *mnt_file, struct btrfs_ioctl_send_args *arg)
- 	u32 i;
- 	u64 *clone_sources_tmp = NULL;
- 	int clone_sources_to_rollback = 0;
--	unsigned alloc_size;
-+	size_t alloc_size;
- 	int sort_clone_roots = 0;
- 
- 	if (!capable(CAP_SYS_ADMIN))
-@@ -7179,15 +7179,16 @@ long btrfs_ioctl_send(struct file *mnt_file, struct btrfs_ioctl_send_args *arg)
- 	sctx->waiting_dir_moves = RB_ROOT;
- 	sctx->orphan_dirs = RB_ROOT;
- 
--	alloc_size = sizeof(struct clone_root) * (arg->clone_sources_count + 1);
--
--	sctx->clone_roots = kvzalloc(alloc_size, GFP_KERNEL);
-+	sctx->clone_roots = kvcalloc(sizeof(*sctx->clone_roots),
-+				     arg->clone_sources_count + 1,
-+				     GFP_KERNEL);
- 	if (!sctx->clone_roots) {
- 		ret = -ENOMEM;
- 		goto out;
- 	}
- 
--	alloc_size = arg->clone_sources_count * sizeof(*arg->clone_sources);
-+	alloc_size = array_size(sizeof(*arg->clone_sources),
-+				arg->clone_sources_count);
- 
- 	if (arg->clone_sources_count) {
- 		clone_sources_tmp = kvmalloc(alloc_size, GFP_KERNEL);
--- 
-2.26.2
-
+I haven't taken it yet, adding branches to for-next is only to get test
+coverage, by 'taken' you can count addig it to misc-next.
