@@ -2,31 +2,33 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84D222736C4
-	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Sep 2020 01:48:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EDF52736CA
+	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Sep 2020 01:49:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728638AbgIUXsM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 21 Sep 2020 19:48:12 -0400
-Received: from mout.gmx.net ([212.227.15.18]:48755 "EHLO mout.gmx.net"
+        id S1728891AbgIUXt3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 21 Sep 2020 19:49:29 -0400
+Received: from mout.gmx.net ([212.227.15.19]:55657 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727062AbgIUXsM (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 21 Sep 2020 19:48:12 -0400
+        id S1728671AbgIUXt3 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 21 Sep 2020 19:49:29 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1600732088;
-        bh=H9E1UxozrNLmRvoeQQVvO0/LuL4Y1nUjWyUGmKkCpoQ=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=DiKLX+Iz63X0ZA+noPczY26u41NPLmNc2hg+Zs/QTZTpZ3jMLLbpmHKJeKkbs3ywW
-         +7TNRHQIAU7M+CBEUPE71+G6VJGTZVyXjF2U3stM9UvoWymglwEqSuBkko4kS3eCzM
-         Wc52cC36L9o/u7KkjOn0QJWkM6+5fl0ylAw5ZlXM=
+        s=badeba3b8450; t=1600732163;
+        bh=b5MIxytuutY6FEopVEBlxAjD0Z5KIymJ1J/FJw2bCRo=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=MpI4jlY4jreeYNps7aVPSy3rfXuofVQrpq0M5oWWNdAHNaJBXrf3ji5C4o/1uVvrv
+         g05ptztj9VuX+pvdxeGXXey1WH9xZ5FfzEqlo/AQJ5wrvG8zfwFGrAJPkBlNBcyALF
+         9mjYdQ1LbYPzfGotyjetJOJFMOiSRqIIrTJsOWUI=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
 Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1N3se2-1kTTjb1CRk-00zktR; Tue, 22
- Sep 2020 01:48:07 +0200
-Subject: Re: external harddisk: bogus corrupt leaf error?
-To:     Martin Steigerwald <martin@lichtvoll.de>,
-        linux-btrfs@vger.kernel.org
-References: <1978673.BsW9qxMyvF@merkaba> <4131924.Vjtf9Mc2VK@merkaba>
- <8d2987f8-e27e-eedb-164f-b05d74ad8f3b@gmx.com> <8020498.oVlb7o6SH1@merkaba>
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MeU0k-1kuwJ43Y4S-00aYgW; Tue, 22
+ Sep 2020 01:49:23 +0200
+Subject: Re: [PATCH] btrfs/022: Add qgroup assign test
+To:     Sidong Yang <realwakka@gmail.com>, Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org, fstests@vger.kernel.org,
+        Josef Bacik <josef@toxicpanda.com>
+References: <20200920085753.277590-1-realwakka@gmail.com>
+ <585901fa-663a-b9e6-3f2f-9d060cd345c7@suse.com>
+ <20200921151641.GB28122@realwakka>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -52,129 +54,228 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
  ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
  oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <f0fd36fd-3ffa-ff02-e5d9-265fc64e38f3@gmx.com>
-Date:   Tue, 22 Sep 2020 07:48:04 +0800
+Message-ID: <4538473b-eff3-8e2f-2ac4-b66d90beebb9@gmx.com>
+Date:   Tue, 22 Sep 2020 07:49:19 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <8020498.oVlb7o6SH1@merkaba>
+In-Reply-To: <20200921151641.GB28122@realwakka>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="OfePvZoNYmnQ97vALCoQb2W6e8TsPWXAT"
-X-Provags-ID: V03:K1:dXWXJy6LoWTX4inLDpSd2DEGXunourMg4WuvSZxkldN5B0eq/P9
- 9BbFlD8JNot4Xov9lMKC6Z5E/hSh22pgV/j/oBOP71JgugzkkDA91qKGQgNHVCU7W4OFlM5
- a/cxZM7yPNvUrl433Qoe9ybfXi9QcsNkP9mXfXQqVzeGEVKXkCSWFXy7Du59N3q4jCGsQL7
- GjufUHK32qucLjRekB7DA==
+ boundary="9sxVCYXqFExXiGZiYrQcgAZlzltE78ayJ"
+X-Provags-ID: V03:K1:ddrrWZg4UP3p8h8yUDzZrNzLTnMliIOlaVhxkyUXtvkwnJ2r5g4
+ Aa4rpbo+ydJQ1usm2ry2LSXIu6eq7E8RdV8IauMnX4le4Ea5wDGAQJCy5X9tGD61iDnNo2V
+ gxcSNUOr6D/PI55tYsPpy1n7p0mn3z+TqUkoEJ0JanX5p4jcSmIIVjC6vkL21o5NoDK7Sw7
+ /SG8XCUFkYfu7lgHnkXsQ==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:BB1rtA8Yxq4=:/SRKQZ9oODo7U/jN4FM5Xl
- p6nA3x5jXO6iT2JTEG+2e9xpEIAXFtf+1H6PI3yNkNX+p7uUN9Y6s7oz6oqAXRmM+LXZgofAE
- J3UYwGBrXnvHNr4aHLiDYKm7xvyiN13AQ2VvdyREpaqiXnxvMq1VUd0U/jW1nEfkU/Tw4PZEb
- 65HZMZT4jgANFxOzsYvR4siXjNcHTOE9/DX8PF/gNKEjra1g/DZVmXHqKk+yHFyUzX/yPrl+J
- md3gcadG9aC7wNQhdICKKF+hlcOqnBY5H27PaqoFTzyL7Zs+Ke+mva6hS7w5zXDjhNYuYGTOF
- TD665otPIHfapT/FpNGQEs2TBYAi65VAzu+hk5oHf10ycb/EJXUGmtHJRkPP9JVjKXY0qZKyj
- xp7r+hERKSZx5HgqyxtX/RHCsXOnp59lZWw9v28N/NzUZoETwUg05OKFbeask1ur5Yhb3KMnQ
- 6Kui6YBbEeGmVgBSdkT1BIui/8ZHBlSZVGvyCb1q9tzzcO15+/lakR1r5wzhdUCoiCx5sidXL
- aooRARUT1eHnN50Xg0/Mn/nLdxGXACvBrW1x3T9VfDffld7nm2mpWYyLvadARnWkyRNXi1zGr
- m3+MGOYelZBlXLgU/EpIFuMw808Ty9hs82waOAgA3sU/UrH1NI1g8NJUwwvDM7U3eljWMS8aA
- LBI1qkcBmEfwkuGeYiof+jGnlSzwdUe7ZzK/Gu/jnO+ThY298ioCHJ4sV2obZEJc7UXbIku+7
- IU1lzXNqdUnt7zZwmbyoP/oVpn5Cu/8oBRuPPzlEAjNekjMJEJj4+VVRLNcYfv2crjpKns97x
- +5QiunS3AOx/6BhnEIIadBZx7FeEWXBoXi97rrzzmRtM4Ccm/+UDIgkX5QBqRML74A5896k3O
- afQwxn72aYj4nXnY88WQOd1fOnVqKKAa6ctcjnVXWBoDL9p9yNN5jgdC42hfA1VZnYYITGKsS
- NDY78Vz0plicCcWpptX1ilfkUkDN3wcSC0z3kOJxT6+rJuA50WjpidfxhoELXEXc+VGHHhiGw
- eIObOgPcHHrCJnfSB/1CdQQBm5AJ5k38e4+DCZTVvDtKPEtLq0JkbZWpBCr7eopp2zEH35PdE
- vcU8/r0ObZu/lqh8DHrU1ZRu+kqGIriDUnSQM/WbNCBwGQ5si2e6pp/CYu7EWDtThkXlzRbEv
- WbMjRL5RcuHJ9exUDTr8qgM9VcLU6l7/mCFV+d4BXv2nOsxRDCRb+kwMvEgE2g66IewAUJ/rF
- dxSKFPHGkV1z+XQi801d+Fcolk4/XFhpUuhAIiw==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:gfeybGwq3Yo=:FC+VacrNWoBqRCRQJmcYke
+ +DaSlZTg0ouT4XNthnnwZdT/kxNI3ZH150IhtBodmaiK+8UvaX6lteSVZ4XNQbjCRB30BKyXa
+ rEMQi/mHWLRv1jk7sruCGGIF+CZrL9XQ1bYjlElb2nn5uKNQFtmnDqss+pHmqmpXKDsGUJZSL
+ 2/Vu7jySj9ycn3tkv3rvkqdVS2EtCOOBQ2TVvVmq1scT4zBJnu7KImfh53fQF5ohOyBb/R2+i
+ gHG7tj0mR3MY2oRkAV5oEjZb+Qf+Tzb8E837C8qQ+mwQnOR34wJ/5SxVLHUue2Rj8QWf9Sq4z
+ mPJso0wc7iV6ByaIIPD9uxbIoxfbEd/9Mam3u1VmhLIKDx+L26NfJKe7p8Lify7CP5BMR41L6
+ MEzBX/oyr9/NCoy+VN4ogdgpYEkQomx5nVH8tmCWBnALEv1EhagL31qsY817mNKlz1ujFnBT3
+ rlAULDfKNsDPKfLphHJ8XrIyiZIVV31tqZX93aNCcL/ZCUv2b6bLpJXry7fVE4/c7nuZzGNMb
+ qfg5lHEvKvtI+OvjZ7l460eBTSKXvCdiXpg+r76jd3hvWLQv5SqFMMAVPp9aK8JHiBRqxI4Uy
+ VQnM3Ox7tj+jeJ6cbSEoEFkuFwANsrvNwByATWTBjfaK8MRuA4UrL1Um7cOcfSF1u7u30NTWb
+ PT2VmykpPl3m57i7HQ9aWIjIDBLYOWUkK25f0h/XJE2+wtyGJlqXfkqW3d4fM7nQljDA+o/TL
+ ATBTzx+CUlFEYwScSJ8tBt6/1ntQK0aP2P25Emjik0GSvA87L2Z3aeyoYzGvh/3AxUpdQtNm3
+ BAyzJM3mrAI9jJN+5v95zzK/PTayMrWo9eiHdUSVZu6qAOFUjDPwt3u/JmT1zX3jGmaesyqCr
+ MfbTkMaifdCmRVKtUz7b8iA++e6HmS9S2SaecNJnVVmKrLRlpUHCgFF/PdIi7eBgl72yxrvFo
+ KG8Qo4o3GlHfQNiuKtEkVS0w4if4lI9LFhc1nOATyysPfaAsWHxdYoL/tEJXpr10O1KVkwIiq
+ pGy5pH3AILIqgNwfpeuqbSNDt8aUcYBfiOxqnmhagT6zncZk2GtY+rvOinFdNaT+Gh/htTnk2
+ oYB/TS/Ft95WiVpaFhMp18bw2MoCmK7WWMt3D3HBewdd/OI7Y2VLqNdKEtD1K2xL8cuu/FviO
+ h2VRxJr0wI3LEdxUKX4pqffNZ6LJ2JdnA+OPdGhWW201BNfnI4/kJjAnV0Sm3/iuNWGsN4VMT
+ 8MNGxK28D5Az6QKgfm8FQiKFNU1KvFq3ZE9SfTw==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---OfePvZoNYmnQ97vALCoQb2W6e8TsPWXAT
-Content-Type: multipart/mixed; boundary="KUhvlqX2g183NFD4uNH3Wn6ZVx0FinCmc"
+--9sxVCYXqFExXiGZiYrQcgAZlzltE78ayJ
+Content-Type: multipart/mixed; boundary="qy3YxZTpM0DwGnE6wTUUDWSN5SDMOC6Rb"
 
---KUhvlqX2g183NFD4uNH3Wn6ZVx0FinCmc
+--qy3YxZTpM0DwGnE6wTUUDWSN5SDMOC6Rb
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
 
 
 
-On 2020/9/21 =E4=B8=8B=E5=8D=887:46, Martin Steigerwald wrote:
-> Qu Wenruo - 21.09.20, 13:14:05 CEST:
->>>> For the root cause, it should be some older kernel creating the
->>>> wrong
->>>> root item size.
->>>> I can't find the commit but it should be pretty old, as after v5.4
->>>> we
->>>> have mandatory write time tree checks, which will reject such write
->>>> directly.
+On 2020/9/21 =E4=B8=8B=E5=8D=8811:16, Sidong Yang wrote:
+> On Mon, Sep 21, 2020 at 09:21:33AM +0800, Qu Wenruo wrote:
+>>
+>>
+>> On 2020/9/20 =E4=B8=8B=E5=8D=884:57, Sidong Yang wrote:
+>>> The btrfs/022 test is basic test about qgroup. but it doesn't have
+>>> test with qgroup assign function. This patch adds parent assign
+>>> test. parent assign test make two subvolumes and a qgroup for assign.=
+
+>>> Assign two subvolumes with a qgroup and check that quota of group
+>>> has same value with sum of two subvolumes.
+>=20
+> Hi Qu!
+> Thanks for review!
+>=20
+>>
+>> A little surprised that I haven't submitted such test case, especially=
+
+>> we had a fix in kernel.
+>>
+>> cbab8ade585a ("btrfs: qgroup: mark qgroup inconsistent if we're
+>> inherting snapshot to a new qgroup")
+>=20
+> Yeah, there was no test code for qgroup.
+>=20
+>>
+>> Despite the comment from Eryu, some btrfs specific comment inlined bel=
+ow.
+>>
 >>>
->>> So eventually I would have to backup the disk and create FS from
->>> scratch to get rid of the error? Or can I, even if its no subvolume
->>> involved, find the item affected, copy it somewhere else and then
->>> write it to the disk again?
->> That's the theory.
+>>> Signed-off-by: Sidong Yang <realwakka@gmail.com>
+>>> ---
+>>>  tests/btrfs/022 | 40 ++++++++++++++++++++++++++++++++++++++++
+>>>  1 file changed, 40 insertions(+)
+>>>
+>>> diff --git a/tests/btrfs/022 b/tests/btrfs/022
+>>> index aaa27aaa..cafaa8b2 100755
+>>> --- a/tests/btrfs/022
+>>> +++ b/tests/btrfs/022
+>>> @@ -110,6 +110,40 @@ _limit_test_noexceed()
+>>>  	[ $? -eq 0 ] || _fail "should have been allowed to write"
+>>>  }
+>>> =20
+>>> +#basic assign testing
+>>> +_parent_assign_test()
+>>> +{
+>>> +	echo "=3D=3D=3D parent assign test =3D=3D=3D" >> $seqres.full
+>>> +	_run_btrfs_util_prog subvolume create $SCRATCH_MNT/a
+>>> +	_run_btrfs_util_prog quota enable $SCRATCH_MNT
+>>> +	subvolid_a=3D$(_btrfs_get_subvolid $SCRATCH_MNT a)
+>>> +
+>>> +	_run_btrfs_util_prog subvolume create $SCRATCH_MNT/b
+>>> +	_run_btrfs_util_prog quota enable $SCRATCH_MNT
+>>> +	subvolid_b=3D$(_btrfs_get_subvolid $SCRATCH_MNT b)
+>>> +
+>>> +	_run_btrfs_util_prog qgroup create 1/100 $SCRATCH_MNT
+>>> +
+>>> +	_run_btrfs_util_prog qgroup assign 0/$subvolid_a 1/100 $SCRATCH_MNT=
+
+>>> +	_run_btrfs_util_prog qgroup assign 0/$subvolid_b 1/100 $SCRATCH_MNT=
+
 >>
->> We can easily rebuild that data reloc tree, since it should be empty
->> if balance is not running.
+>> The coverage is not good enough.
 >>
->> But we don't have it ready at hand in btrfs-progs...
+>> Qgroup assign (or inherit) happens not only during "btrfs qgroup assig=
+n"
+>> but also "btrfs subvolume snapshot -i".
 >>
->> So you may either want to wait until some quick dirty fixer arrives,
->> or can start backup right now.
->> All the data/files shouldn't be affected at all.
+>> And we also need to consider cases like shared extents between two
+>> subvolumes (either caused by snapshot or reflink).
+>>
+>> That means we have two factors, assign or snapshot -i, subvolumes with=
+
+>> shared extents or not.
+>> That means we need at least 3 combinations:
+>>
+>> - assign, no shared extents
+>> - assign, shared extents
+>> - snapshot -i, shared extents
+>>
+>> (snapshot -i, no shared extents is invalid, as snapshot will always
+>> cause shared extents)
 >=20
-> Hmmm, do you have an idea if and when such a quick dirty fixer would be=
-=20
-> available?
+> Thanks for good example!
+> but there is a question. How can I make shared extents in test code?
 
-If you need, I guess in 24 hours.
+Reflink is the most simple solution.
 
->=20
-> Also, is it still safe to write to the filesystem? I looked at the disk=
-,=20
-> cause I wanted to move some large files over to it to free up some spac=
-e=20
-> on my laptop's internal SSDs.
+> It's okay that write some file and make a snapshot from it?
 
-Yes. If you want to be extra safe, just don't utilize balance until it's
-fixed.
+If you only want some shared extents, reflink is easier than snapshot.
 
 Thanks,
 Qu
 
 >=20
-> If its still safe to write to the filesystem, I may just wait. I will=20
-> refresh the backup of the disk anyway. But if its not safe to write to =
-
-> it anymore, I would redo the filesystem from scratch. Would give the=20
-> added benefit of having everything zstd compressed and I could also go =
-
-> for XXHASH or what one of the faster of the new checksum algorithms was=
-=2E
+>>
+>>> +
+>>> +	_ddt of=3D$SCRATCH_MNT/a/file bs=3D4M count=3D1 >> $seqres.full 2>&=
+1
+>>> +	_ddt of=3D$SCRATCH_MNT/b/file bs=3D4M count=3D1 >> $seqres.full 2>&=
+1
+>>> +	sync
+>>> +
+>>> +	a_shared=3D$($BTRFS_UTIL_PROG qgroup show $units $SCRATCH_MNT | gre=
+p "0/$subvolid_a")
+>>> +	a_shared=3D$(echo $a_shared | awk '{ print $2 }' | tr -dc '0-9')
+>>> +
+>>> +	b_shared=3D$($BTRFS_UTIL_PROG qgroup show $units $SCRATCH_MNT | gre=
+p "0/$subvolid_b")
+>>> +	b_shared=3D$(echo $b_shared | awk '{ print $2 }' | tr -dc '0-9')
+>>> +	sum=3D$(expr $b_shared  + $a_shared)
+>>> +
+>>> +	q_shared=3D$($BTRFS_UTIL_PROG qgroup show $units $SCRATCH_MNT | gre=
+p "1/100")
+>>> +	q_shared=3D$(echo $q_shared | awk '{ print $2 }' | tr -dc '0-9')
+>>> +
+>>> +	[ $sum -eq $q_shared ] || _fail "shared values don't match"
+>>
+>> Nope, we don't need to do such complex checking all by ourselves.
+>>
+>> Just let "btrfs check" to handle it, as it will also check the qgroup
+>> numbers.
 >=20
-> Best,
+> It's very easy way to check! Thanks.
 >=20
+> Taken together, I'll work for new test case that tests qgroup cases.
+>=20
+> Sincerely,
+> Sidong
+>=20
+>>
+>> Thanks,
+>> Qu
+>>
+>>> +}
+>>> +
+>>>  units=3D`_btrfs_qgroup_units`
+>>> =20
+>>>  _scratch_mkfs > /dev/null 2>&1
+>>> @@ -133,6 +167,12 @@ _check_scratch_fs
+>>>  _scratch_mkfs > /dev/null 2>&1
+>>>  _scratch_mount
+>>>  _limit_test_noexceed
+>>> +_scratch_unmount
+>>> +_check_scratch_fs
+>>> +
+>>> +_scratch_mkfs > /dev/null 2>&1
+>>> +_scratch_mount
+>>> +_parent_assign_test
+>>> =20
+>>>  # success, all done
+>>>  echo "Silence is golden"
+>>>
+>>
 
 
---KUhvlqX2g183NFD4uNH3Wn6ZVx0FinCmc--
+--qy3YxZTpM0DwGnE6wTUUDWSN5SDMOC6Rb--
 
---OfePvZoNYmnQ97vALCoQb2W6e8TsPWXAT
+--9sxVCYXqFExXiGZiYrQcgAZlzltE78ayJ
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl9pO7QACgkQwj2R86El
-/qhEZwgAhRffnsNPIWs/Z7TpCGr0vVRzESpNpzsFJ14xZh/ApC0DAay0Fni9k4OA
-/u5xfai2xMDcj037fcUQnXw8Lyk+jDvD43feVVmGesD6h3+lpbmX8oHLZ23j12Q9
-81mZQC3MInqioQG2X734Ot6+xhls4veym28R/U/xb+kPp4dLNiMpCv4Fixm2930b
-em3qHVi1Hdy+V32sxXT6PcdB4ZyIudVpsbUzgG10bIDCp+oC0GLitkdR0P0h6KIv
-18zyY+03xeqbXd2lHfFBOxt06JsKKeITUwyUbbvhWG+nePZl7HOT+TxNJlCyJCp9
-FdmZNWeao+Wo0zIVGEmU9eCL1p4Uhw==
-=VwHv
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl9pO/8ACgkQwj2R86El
+/qg8Ugf+PhRow7QrLgb0ZTZJMY9W1+hCZ5Q9vNdfN6loP7aUXdA0R4CowIhsk+8Q
+PhbMA5hKnf9ixJPkzJw9HC8kRIsQG0D5+jFV8RiCcS0A+DncYGofKSFs50samMpL
+MSeBaljsY/GofcgV+LK9MFNN0k/wXGqWNzQndwJqo0B7Tj7iOjPrsMoDIqOyZEsF
+/Vj3d10UrqyKjnnG2M2Y7cElicUOfsa73p4hv/fCSVMTRAOGkiR3+CwF/D+adBfR
+fFyF/4F//CXKQWHzOAIM8KCJ8+xZqFGywKfnNoOgte1M1B4OSCheC5BvbugoM/Zx
+dFMATsG5XLfyLFYbNGr3uNt6iqeuxg==
+=3Xhs
 -----END PGP SIGNATURE-----
 
---OfePvZoNYmnQ97vALCoQb2W6e8TsPWXAT--
+--9sxVCYXqFExXiGZiYrQcgAZlzltE78ayJ--
