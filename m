@@ -2,117 +2,90 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C93E2730C6
-	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Sep 2020 19:20:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 585F72730EF
+	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Sep 2020 19:38:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727285AbgIURUI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 21 Sep 2020 13:20:08 -0400
-Received: from out1-smtp.messagingengine.com ([66.111.4.25]:46871 "EHLO
-        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726991AbgIURUI (ORCPT
+        id S1727113AbgIURi0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 21 Sep 2020 13:38:26 -0400
+Received: from esa6.hgst.iphmx.com ([216.71.154.45]:30829 "EHLO
+        esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726419AbgIURi0 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 21 Sep 2020 13:20:08 -0400
-X-Greylist: delayed 404 seconds by postgrey-1.27 at vger.kernel.org; Mon, 21 Sep 2020 13:20:07 EDT
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.nyi.internal (Postfix) with ESMTP id AA4A55C0213;
-        Mon, 21 Sep 2020 13:13:22 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Mon, 21 Sep 2020 13:13:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=date
-        :from:to:subject:message-id:references:mime-version:content-type
-        :in-reply-to; s=fm2; bh=5Un/rAP2bNsPAcdNhW6C0yPPHkQMvz+gjm1DVuFH
-        G30=; b=dJoGia7JyyhDcpYJZ8Z+Eo9rX8l/5v/OS8gNtijF3H3v798Oq/nzcsOC
-        QDik4q05y2YrQoHWY9utzN9DkJ89RqHKz2nQujLQI2mpXgSrcQzDMIv1pFxjEiBr
-        e+Bf1cXBMHNjYtakqVGL0+WSDd7TjXRQ2jeWAIly63Iy82wwp2qYFu+HXXCci5mq
-        PWAqs2IC5j04b4b3aRCVukvmHH4JbECZR9S4lOp9SLHwhWSoFztRNFmzWeUTDTNa
-        qTi4eGjMq8ho2yXeE+uiuENEiEdplOsl1unzLSuMhb0Y4vZwjNAVMMJF1aFDeChZ
-        cZq1p45o6ifYLjr2a7unP9ZKgSeOwg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=5Un/rA
-        P2bNsPAcdNhW6C0yPPHkQMvz+gjm1DVuFHG30=; b=uF5lYUm11n+PVK+ww5zxz4
-        6aZhJtMCZNfMKjvm6Awp52kF9BB7f+dnynZoQTiVcOAfezfxfP13Mq350/gSHcEJ
-        8lKujz5T4RNUA/M0GBtsDCl/T5mT0MYSKv19iNXrCy7wowYNcDcmXqMLV5JfbUT+
-        PPZcIyNjrJeZTA0zBYOXP/B6B+CFy1o6fE1ljoz0/jjXQmVBz9T7TRGOouS4TeCR
-        AdgEP9RMKz1PpGdajM9HnK2rSGfKOIQieufBZuhyfi79DWrHM5pLwVoUbdzgeCQT
-        egwOIXM7xtiOqJ5TswYeUY5qZtoSEzIEACU7OTYCAmbUswxllqTac7FtmGqVWpGg
-        ==
-X-ME-Sender: <xms:Md9oXzsFuQ1m1FlaI4uBtMPwIvrsWyEB-m9nwRapkoOlWR5BtUmQlA>
-    <xme:Md9oX0dY1FadIzJSQaHKPC0e2xcXbvJgaXR7-3P8XJZL5K6stRersDKTJzoa4c9CP
-    PjgALxiTw2YKDB3WC8>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedruddvgdduuddvucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjfgesthdtredttdervdenucfhrhhomhepuehorhhi
-    shcuuehurhhkohhvuceosghorhhishessghurhdrihhoqeenucggtffrrghtthgvrhhnpe
-    eugefhvdffgedvuefgffeufeegkedtuefhtddtveevgfekleelkeeiueekleelteenucff
-    ohhmrghinhepghhithhhuhgsrdgtohhmnecukfhppeduieefrdduudegrddufedvrdefne
-    cuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsghorhhi
-    shessghurhdrihho
-X-ME-Proxy: <xmx:Md9oX2y4japuzfRjy_Ki1q3qZfoXhJ9rLaCIxXxMwa_xGL0eYzUhCg>
-    <xmx:Md9oXyP6e-LKpv2aSf0eNZ9tXbUt4tIOWXPMnC1j_Aipi-Bp_NJmJA>
-    <xmx:Md9oXz-3DADfxZCHUPKimbeCUyvkKPsGveUaev-PVksOwMGIpe8Pug>
-    <xmx:Mt9oX9kGvTFdNJscpDwEl4YEFOEMvflwthyilNVhQuhqBcGiVnuWmQ>
-Received: from localhost (unknown [163.114.132.3])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 5F5AB3064680;
-        Mon, 21 Sep 2020 13:13:20 -0400 (EDT)
-Date:   Mon, 21 Sep 2020 10:13:17 -0700
-From:   Boris Burkov <boris@bur.io>
-To:     dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
-        linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH 2/4] btrfs: use sb state to print space_cache mount option
-Message-ID: <20200921171317.GA4045720@devvm842.ftw2.facebook.com>
-References: <cover.1600282812.git.boris@bur.io>
- <e7fe51d3013637cfe2bc9581983468d5940fdce5.1600282812.git.boris@bur.io>
- <bae2283f-ed1e-d09c-55bd-afedabe9b3f3@toxicpanda.com>
- <20200921170405.GL6756@twin.jikos.cz>
+        Mon, 21 Sep 2020 13:38:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1600709906; x=1632245906;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=FAIIY2PAFRdf4cIbitlZAY7MLD9DY9hs0VtS2BGZpdM=;
+  b=kaIFFhTp5hBwY7INe3N1ZtiLMxbVWyTF69BweRR5OzLv+A+l9jLZiEOP
+   INBxXA3ZAehPEsM25eCcYA9/RCoktfU2JIRgZKoZqebjUaoBc1z/pWfGX
+   00oPQD3dAmZkeOCoQgzdryG5UUM1Bu9gfvwmC0Jvgill444V/3YcGu5Z7
+   HFaPUdUjsTCnsjDEVgX3c6vR/77yws2kjvINGhlEm2CJ0gXl+d7ncyzbf
+   i8C6r1Kitx0Q3amUk6CB7Wh9LAdyVXlEiFQadem9B7DjOGPIJMc3ng7ox
+   ZmaKNeA0x1xUKJuLq2kVEnp/1VDGp5kRJzTerIZVbW39pJMsGlNUkKh3y
+   g==;
+IronPort-SDR: jfXp14XE6F1pRqyeySUM+CwD7zhfCvBZgX6LJMWxr5B/Ulp+R73s4izVQknB7nmsiB9Twzw2wZ
+ guEp0xgKyNkW9mszV16DGIiO5veABr9tKcSzU+jLyaC3U2fyPiLo6WTKlU6pGQ2xNjsHKYKS1I
+ PNtYVL2T1dt8B5tV0pkNsvjXBkGq+bQMJ3/u4BJHIq/VlD6Qu/I/QbOqFGqpx7Gu075yCJc2Xe
+ fNTPF/uJ3r3SXhnlva7vZQRb6eXRrASXKTsWa4uK3E2Q3jKltyX4GupUgveyXA5NgVV9PDad4l
+ 9QE=
+X-IronPort-AV: E=Sophos;i="5.77,287,1596470400"; 
+   d="scan'208";a="149143156"
+Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
+  by ob1.hgst.iphmx.com with ESMTP; 22 Sep 2020 01:38:26 +0800
+IronPort-SDR: exOsnfLoar61acedZxkVpOwGLmRC/K9lUfFaGPP9muovrjzTBeWdlw2pynwvJbxFqCS8VPAoR7
+ ggebemONsIbA==
+Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2020 10:25:29 -0700
+IronPort-SDR: vHEcO6YKd/Qjcw9PYbXjCLFi3Rk5XfmvKj0XuMg/1g5o3H8cL9x+SRUDV3PBtKYLxUoqAdicd8
+ dLdExBaHYLmA==
+WDCIronportException: Internal
+Received: from unknown (HELO redsun60.ssa.fujisawa.hgst.com) ([10.149.66.36])
+  by uls-op-cesaip01.wdc.com with ESMTP; 21 Sep 2020 10:38:24 -0700
+From:   Johannes Thumshirn <johannes.thumshirn@wdc.com>
+To:     David Sterba <dsterba@suse.com>
+Cc:     linux-btrfs@vger.kernel.org,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Subject: [PATCH] btrfs: reschedule when cloning lots of extents
+Date:   Tue, 22 Sep 2020 02:38:10 +0900
+Message-Id: <23e7f73a25cea63f33c220c1da3daf62d9ffd3e8.1600709608.git.johannes.thumshirn@wdc.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200921170405.GL6756@twin.jikos.cz>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 07:04:05PM +0200, David Sterba wrote:
-> On Mon, Sep 21, 2020 at 10:50:25AM -0400, Josef Bacik wrote:
-> > On 9/17/20 2:13 PM, Boris Burkov wrote:
-> > > To make the contents of /proc/mounts better match the actual state of
-> > > the file system, base the display of the space cache mount options off
-> > > the contents of the super block rather than the last mount options
-> > > passed in. Since there are many scenarios where the mount will ignore a
-> > > space cache option, simply showing the passed in option is misleading.
-> > > 
-> > > For example, if we mount with -o remount,space_cache=v2 on a read-write
-> > > file system without an existing free space tree, we won't build a free
-> > > space tree, but /proc/mounts will read space_cache=v2 (until we mount
-> > > again and it goes away)
-> > > 
-> > > There is already mount logic based on the super block's cache_generation
-> > > and free space tree flag that helps decide a consistent setting for the
-> > > space cache options, so we just bring those further to the fore. For
-> > > free space tree, the flag is already consistent, so we just switch mount
-> > > option display to use it. cache_generation is not always reliably set
-> > > correctly, so we ensure that cache_generation > 0 iff the file system
-> > > is using space_cache v1. This requires committing a transaction on any
-> > > mount which changes whether we are using v1. (v1->nospace_cache, v1->v2,
-> > > nospace_cache->v1, v2->v1).
-> > > 
-> > > References: https://github.com/btrfs/btrfs-todo/issues/5
-> > > Signed-off-by: Boris Burkov <boris@bur.io>
-> > 
-> > Dave already took this, but next time I'd prefer if we'd keep logical changes 
-> > separate.  So one patch to change /proc/mounts, one patch to deal with clearing 
-> > the free space generation field if we're not using it.
-> 
-> I haven't taken it yet, adding branches to for-next is only to get test
-> coverage, by 'taken' you can count addig it to misc-next.
+We have several occurrences of a soft lockup from generic/175. All of these
+lockup reports have the call chain btrfs_clone_files() -> btrfs_clone() in
+common.
 
-Would you guys like me to split it up? I felt it was worth keeping the
-two changes together because changing the mount options without clearing
-the generation will break /proc/mounts in cases that currently work OK.
+btrfs_clone_files() calls btrfs_clone() with both source and destination
+extents locked and loops over the source extent to create the clones.
 
-e.g., I believe it will never show space_cache=v2 if you have the
-space_cache if look at generation, and the generation has ever been set.
+Conditionally reschedule in the btrfs_clone() loop, to give some time back
+to other processes.
+
+Link: https://github.com/btrfs/fstests/issues/23
+Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+---
+ fs/btrfs/reflink.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/fs/btrfs/reflink.c b/fs/btrfs/reflink.c
+index 39b3269e5760..99aa87c08912 100644
+--- a/fs/btrfs/reflink.c
++++ b/fs/btrfs/reflink.c
+@@ -520,6 +520,8 @@ static int btrfs_clone(struct inode *src, struct inode *inode,
+ 			ret = -EINTR;
+ 			goto out;
+ 		}
++
++		cond_resched();
+ 	}
+ 	ret = 0;
+ 
+-- 
+2.26.2
+
