@@ -2,86 +2,91 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBBCA272708
-	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Sep 2020 16:30:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB652272710
+	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Sep 2020 16:31:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726969AbgIUOap (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 21 Sep 2020 10:30:45 -0400
-Received: from esa4.hgst.iphmx.com ([216.71.154.42]:27276 "EHLO
-        esa4.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726501AbgIUOap (ORCPT
+        id S1727307AbgIUObb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 21 Sep 2020 10:31:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41708 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726818AbgIUObb (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 21 Sep 2020 10:30:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1600698645; x=1632234645;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=hIPCgkv88milcjNzRRkd5ayi8pFW3zweK7LgZUTxAMg=;
-  b=mn0u5MeBwzOGcpB9nst9qnQatSGrcOMEgRsOB6aJSzmDJi37JOzFZWAO
-   U219hHRj2fQBHzXa+JfWP/UGBt9fEVJxBAiplpgKYil3TiEDbtYSXlbY3
-   J1s3zsU2bEOll7TFB2nWm9LUR91N/en4UFuxkCX4h7LV5jhRDbcBLE6+/
-   SWVRk65S2C7JMSteQRMQr1FgtkMl907AadD9RKWfbDB70b1Vft8JUKJgX
-   VfRBMAQbNrJiKsFz12BnRIAc2NUpsQWpNqG6Y+LjYKwq/mM7lhbIJwMhS
-   4JST3IRh9cbjUWT2k5+WLdcVOvqd9GkCtnhpkqwwBsSUe6xRQ2UwvJ8JZ
-   w==;
-IronPort-SDR: HrdlCHP/a3zB4kUB2yCP9kvQsKhOmP7+rgQOq5YdmGqSCXPv0G653ViIJ6p7vsbFpc5H4ILj0l
- yMOvzbQYgNhOvOjU1jM4uCMTiPchLqEbf8WW1/MaoYp/vOm2PItm/vfjlZz60400SbCvwO+JQw
- q7v6YSSo1wVqvjZVbp8GJMitOlkLMoQG6xW7NuioXHLWvR3eh+ZqF9A2yuMJPVkLM0TSWN6diw
- 4MT01MSaFWRYZm4Co9z6mb2+3lAAXRDcGPCFAVzSNZL9/xcnQUsPEy5D9MfOWhT8zvrH4pV9c5
- cdg=
-X-IronPort-AV: E=Sophos;i="5.77,286,1596470400"; 
-   d="scan'208";a="147817423"
-Received: from h199-255-45-15.hgst.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 21 Sep 2020 22:30:44 +0800
-IronPort-SDR: YvYMhTQUDQAHbfLCpKFjq4DvgF05FFVN2sxoMeAt7LhiZfM+kOR+aVryur/c+hcvD7+tUxiq0k
- g9RNgp5XSEdQ==
-Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
-  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2020 07:16:53 -0700
-IronPort-SDR: GY+GIzqLqM90CxrW4fcL5TNTmEV0P2OMP4B+HO30k/odRS8+c9+2h/GDdw2uJVlgioX94Ve7lz
- B36PcZDW8h/Q==
-WDCIronportException: Internal
-Received: from unknown (HELO redsun60.ssa.fujisawa.hgst.com) ([10.149.66.36])
-  by uls-op-cesaip01.wdc.com with ESMTP; 21 Sep 2020 07:30:44 -0700
-From:   Johannes Thumshirn <johannes.thumshirn@wdc.com>
-To:     Eryu Guan <guan@eryu.me>
-Cc:     linux-btrfs@vger.kernel.org, Anand Jain <anand.jain@oracle.com>,
-        fstests@vger.kernel.org,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Subject: [PATCH v2] btrfs: remove stale test for alien devices from auto group
-Date:   Mon, 21 Sep 2020 23:30:35 +0900
-Message-Id: <20200921143035.26282-1-johannes.thumshirn@wdc.com>
-X-Mailer: git-send-email 2.26.2
+        Mon, 21 Sep 2020 10:31:31 -0400
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BB55C061755
+        for <linux-btrfs@vger.kernel.org>; Mon, 21 Sep 2020 07:31:31 -0700 (PDT)
+Received: by mail-qt1-x842.google.com with SMTP id p65so12437181qtd.2
+        for <linux-btrfs@vger.kernel.org>; Mon, 21 Sep 2020 07:31:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=xup/6l0/GUl/Q1GS1OD6QBEEYkQUDiMG4VGCKb3WaZ4=;
+        b=FmsFIJViZvZbOhXuN7WcjJZgLOdjjtAt45r1K8gsDunmRnuL7o5IKpmfNY4rY/d1R6
+         ywSUAYXfeOuVjF/GiZvaDhV6s8003W3ZCjqozUi2KJ7OQCaBMeNf6nWQ8VL0mm2XeZPA
+         HcosbleoTU3fngKiPEoWC2ii/TBePj1+cOF4Tfg8vL2odygAzO0dlX0iD1pJqOWIKJuV
+         H+x5Q8P3cwkF8bGFnDZe7KX6zxA/UiK7qfNFtRyiAnbmu45sYOP4nUQsSMjb3eeZytG7
+         FZCiDyNxevjGY+QVHVUJ0yjqrsd9UX49ikVoaTdQXd9e4FOSgtalklvOIlColvL7yUpn
+         gpzA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=xup/6l0/GUl/Q1GS1OD6QBEEYkQUDiMG4VGCKb3WaZ4=;
+        b=TAKep4vdPboq+6xGFKmJht9BCTHfA+S5C2KqgOJK7ugqDoGR7gpGQy7oaNq8/WjfkW
+         LT9BF809iIvy36wR1TOuuxR9OCEhw6cN3cOnCpTs/vB0Rxqs+3PxCNz4PzOWLvlxZvYw
+         BBAVZE8rcasyZ/g3ElZTyNRExB1m0JChOPHKREw1dv5uompHIqJCy/SVxagY5C82opev
+         JVyEEvx9fSSXSueQPiRCs+4Msg9E+HZfzahR6VF53AAo2dxLggdfce3h4BCq+n7DbJLe
+         CYc3a2MMqyMkL+a90PUDs5Bq7rZLC03Yphz9HgDnmKu1abvLBrq4LAqmnwbcMHc2Zp7J
+         2sCw==
+X-Gm-Message-State: AOAM533qlPLyyq4K+t9a1lCwTMn6S2TBpSC9u7T15qNNb4aJsfi6rNxQ
+        VP1pGRcNUpZtkboGfru7HDDf8A==
+X-Google-Smtp-Source: ABdhPJwPrbg4Ym2iu6C3wPjA2uv+X0G28SeKTQvf82EsiBtY3Q30LKsaXtcWF9P06HDkn3mCxI0BZQ==
+X-Received: by 2002:aed:23fc:: with SMTP id k57mr27040226qtc.216.1600698690610;
+        Mon, 21 Sep 2020 07:31:30 -0700 (PDT)
+Received: from [192.168.1.45] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id n136sm8847639qkn.14.2020.09.21.07.31.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 21 Sep 2020 07:31:29 -0700 (PDT)
+Subject: Re: [PATCH 1/2] btrfs: test incremental send after a succession of
+ rename and link operations
+To:     fdmanana@kernel.org, fstests@vger.kernel.org
+Cc:     linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
+References: <cover.1600693732.git.fdmanana@suse.com>
+ <83001e537cdf42258dd4b4e3212546dfd099a337.1600693732.git.fdmanana@suse.com>
+From:   Josef Bacik <josef@toxicpanda.com>
+Message-ID: <f2073f68-2491-54e0-a504-2b18fb00d86d@toxicpanda.com>
+Date:   Mon, 21 Sep 2020 10:31:28 -0400
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.2.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <83001e537cdf42258dd4b4e3212546dfd099a337.1600693732.git.fdmanana@suse.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-btrfs/198 is supposed to be a test for the patch
-"btrfs: remove identified alien device in open_fs_devices" but this patch
-was never merged in btrfs.
+On 9/21/20 9:15 AM, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
+> 
+> Test that an incremental send operation emits the correct path for link
+> and rename operation after swapping the names and locations of several
+> inodes in a way that creates a nasty dependency of rename and link
+> operations. Notably one file has its name and location swapped with a
+> directory for which it used to have a directory entry in it.
+> 
+> This test currently fails but a kernel patch for it exists and has the
+> following subject:
+> 
+>    "btrfs: send, orphanize first all conflicting inodes when processing references"
+> 
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
-Remove the test from fstests' auto group, as it is constantly failing.
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 
-Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
----
- tests/btrfs/group | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thanks,
 
-diff --git a/tests/btrfs/group b/tests/btrfs/group
-index 1b5fa695a9f7..a1ec54c51631 100644
---- a/tests/btrfs/group
-+++ b/tests/btrfs/group
-@@ -199,7 +199,7 @@
- 195 auto volume balance
- 196 auto metadata log volume
- 197 auto quick volume
--198 auto quick volume
-+198 quick volume
- 199 auto quick trim
- 200 auto quick send clone
- 201 auto quick punch log
--- 
-2.26.2
-
+Josef
