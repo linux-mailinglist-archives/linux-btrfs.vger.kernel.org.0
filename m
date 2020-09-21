@@ -2,109 +2,187 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96D3C271871
-	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Sep 2020 00:42:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 550962718DB
+	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Sep 2020 02:55:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726244AbgITWmV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 20 Sep 2020 18:42:21 -0400
-Received: from mail-il1-f197.google.com ([209.85.166.197]:37671 "EHLO
-        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726156AbgITWmV (ORCPT
+        id S1726236AbgIUAzp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 20 Sep 2020 20:55:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57080 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726126AbgIUAzp (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 20 Sep 2020 18:42:21 -0400
-Received: by mail-il1-f197.google.com with SMTP id c66so9657044ilf.4
-        for <linux-btrfs@vger.kernel.org>; Sun, 20 Sep 2020 15:42:20 -0700 (PDT)
+        Sun, 20 Sep 2020 20:55:45 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CE95C061755;
+        Sun, 20 Sep 2020 17:55:45 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id 7so7464852pgm.11;
+        Sun, 20 Sep 2020 17:55:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ygTGQtlvHxCxEH9uG0f8lrwshg3qNyL8NnJCyUolwZ4=;
+        b=FiuoMToWvXmKp6vPksgDVFt70jLke6TEY2UUJkjqvgEcjIwOXdTPKpW5Q0YMBcD7MD
+         UNfgr5Te/nPLAjzk41ZF0VzGb8MoVijhXMmHhmk4o43MRS7b0B4YWewCAWW9588EuErQ
+         45O7n1WMJZBzSRrsSaUqf1kNkEjDn1GVY6jOGMY3PhI1OleHifARfD2hi/hthwufA/kb
+         oMTz/u+3v/xZ2ufcAq4YJ15QwE4Mcrr0Phk3pmSY8XH2sjKDa4yheL+cFGQIph13qdNV
+         qQv48fULtIwFaSB1F4YgELPAHaeTFpkG6tzJOUJK1RISUfVa1YHK4QOisLBr/tbLqtQi
+         YFAQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=H8iW92ujtgUgPXmkcxERXfVbVqmUrXppy9oOwBajsLw=;
-        b=QB0s3w1cxBCh9OjavWA8e2dP6QG2rfsTie3cpHLn1EwnKvqttOWs6XvqG2BGZw+Bkl
-         1zt04FohQq7kM/x2QoOs1PkSi6sOEjXSzO1hD4FV5UqoR11IwAxhqImV5FmBogDFa7ul
-         JzkOqKgl2PIp/NtS2RAiI3LiwkweOLgsUlrYpVo3XG2cxVdfsvl0jpqpFnVxPSdAzM4o
-         /pnhyQUdct4r/kZVBdF2rzUvJlG84H3Ul7WFsPK61CHxeL7OGduJ6iBA4RM4Ec5h8sjB
-         qwA50pBGYTxy7V1PhSIIWf/Bbcf1vsYqpdVSZ5up3UV0K+ZI2xtI1EzElFNFxL0VEBqo
-         bbOA==
-X-Gm-Message-State: AOAM532/G5kEgOIqnL60t4x0bk3PQPCdbJJoakMlabZS0K+xM5ul7I+7
-        txLjd9JGonf90rKQd8psNIRcXHa4AAfwfyN+hn7pjlWFibrA
-X-Google-Smtp-Source: ABdhPJyTiGqe99EzTSz6Fh4ToweZBJHR9QyO//vhW/noPTAvKr2fh+qZqWVwHC8pkV+wEXy1kNP/MBul8QVKvAZCNpu4k27SJR3G
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ygTGQtlvHxCxEH9uG0f8lrwshg3qNyL8NnJCyUolwZ4=;
+        b=ncTX6De8sR8ttpP+udvfseklesYEufb7VC0RU8oejVvzRQLg403SoYvZjZoHIeJKIg
+         hn3QrCp5XDeZOrHq3sqDjKsZL4zyPfJZYVILNXMJmAzS7CtEjlFyHFl254p7TMoees6l
+         yQd0EyOEnaTlhMThqAFW9eJiDmPE1vae8b3kva8EaJU/kmiLBbKI2j5txXcesnFWpWV9
+         bGgWMG7uPnJFLPtIrxzd9hkvl1avsjpvmhTm7uHif0fEcgZs0cgshCuHCJOaScgyNgGd
+         SjVT+7kYMo68bmCc/se59lRI/kZPyURO9OsUIGQbow20KFNK/aAeeDkyY9QpiqQrL7sW
+         q2jw==
+X-Gm-Message-State: AOAM530CWd3YckhCMSXVE7b0DYm3u2rFs8/gLr5jIQaNHKKkXaMudew6
+        h53bdzZUJs03fsES4Bi3RQP2eiOokWo/L93Y
+X-Google-Smtp-Source: ABdhPJxm3OUHHKpaGTW7HxbBkfLBOIcjXT+7Hv7zTS1bI9X9DB9AVa3U6Pk7v/2SQqhdUPUCkfoLzA==
+X-Received: by 2002:a63:5d07:: with SMTP id r7mr22631515pgb.440.1600649744266;
+        Sun, 20 Sep 2020 17:55:44 -0700 (PDT)
+Received: from realwakka ([175.195.128.78])
+        by smtp.gmail.com with ESMTPSA id c68sm3887395pfc.31.2020.09.20.17.55.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 20 Sep 2020 17:55:43 -0700 (PDT)
+Date:   Mon, 21 Sep 2020 00:55:35 +0000
+From:   Sidong Yang <realwakka@gmail.com>
+To:     Eryu Guan <guan@eryu.me>
+Cc:     linux-btrfs@vger.kernel.org, fstests@vger.kernel.org,
+        Qu Wenruo <wqu@suse.com>, Josef Bacik <josef@toxicpanda.com>
+Subject: Re: [PATCH] btrfs/022: Add qgroup assign test
+Message-ID: <20200921005535.GA28122@realwakka>
+References: <20200920085753.277590-1-realwakka@gmail.com>
+ <20200920172740.GQ3853@desktop>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:f87:: with SMTP id v7mr4578614ilo.212.1600641740472;
- Sun, 20 Sep 2020 15:42:20 -0700 (PDT)
-Date:   Sun, 20 Sep 2020 15:42:20 -0700
-In-Reply-To: <0000000000008fbadb05af94b61e@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000005a890b05afc67285@google.com>
-Subject: Re: WARNING in close_fs_devices (2)
-From:   syzbot <syzbot+4cfe71a4da060be47502@syzkaller.appspotmail.com>
-To:     clm@fb.com, dsterba@suse.com, dsterba@suse.cz,
-        josef@toxicpanda.com, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200920172740.GQ3853@desktop>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
+On Mon, Sep 21, 2020 at 01:27:40AM +0800, Eryu Guan wrote:
+> On Sun, Sep 20, 2020 at 08:57:53AM +0000, Sidong Yang wrote:
+> > The btrfs/022 test is basic test about qgroup. but it doesn't have
+> > test with qgroup assign function. This patch adds parent assign
+> > test. parent assign test make two subvolumes and a qgroup for assign.
+> > Assign two subvolumes with a qgroup and check that quota of group
+> > has same value with sum of two subvolumes.
+> > 
+> > Signed-off-by: Sidong Yang <realwakka@gmail.com>
+> 
 
-HEAD commit:    b652d2a5 Add linux-next specific files for 20200918
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=17e84b07900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=3cf0782933432b43
-dashboard link: https://syzkaller.appspot.com/bug?extid=4cfe71a4da060be47502
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=112425d9900000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1486929b900000
+Hi Eryu.
+Thanks for review!
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+4cfe71a4da060be47502@syzkaller.appspotmail.com
+> We usually don't add new test case to existing tests, as that may make a
+> PASSed test starting to FAIL, which looks like a regression.
 
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 6972 at fs/btrfs/volumes.c:1172 close_fs_devices+0x715/0x930 fs/btrfs/volumes.c:1172
-Modules linked in:
-CPU: 1 PID: 6972 Comm: syz-executor044 Not tainted 5.9.0-rc5-next-20200918-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:close_fs_devices+0x715/0x930 fs/btrfs/volumes.c:1172
-Code: e8 00 b8 4c fe 85 db 0f 85 65 f9 ff ff e8 93 bb 4c fe 0f 0b e9 59 f9 ff ff e8 87 bb 4c fe 0f 0b e9 c0 fe ff ff e8 7b bb 4c fe <0f> 0b e9 f9 fe ff ff 48 c7 c7 fc a1 8f 8b e8 e8 0b 8e fe e9 19 f9
-RSP: 0018:ffffc900061b7758 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: ffffffffffffffff RCX: ffffffff83285c2c
-RDX: ffff8880a6bbe4c0 RSI: ffffffff83285d35 RDI: 0000000000000007
-RBP: dffffc0000000000 R08: 0000000000000000 R09: ffff8880a2be1133
-R10: 0000000000000000 R11: 0000000000000000 R12: ffff8880a2be1130
-R13: ffff8880a2be11ec R14: ffff888093ab0508 R15: ffff8880a2be1050
-FS:  000000000208a880(0000) GS:ffff8880ae500000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00000000004babec CR3: 00000000a7bc7000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- btrfs_close_devices+0x8e/0x4b0 fs/btrfs/volumes.c:1184
- open_ctree+0x492a/0x49cf fs/btrfs/disk-io.c:3381
- btrfs_fill_super fs/btrfs/super.c:1316 [inline]
- btrfs_mount_root.cold+0x14/0x165 fs/btrfs/super.c:1672
- legacy_get_tree+0x105/0x220 fs/fs_context.c:592
- vfs_get_tree+0x89/0x2f0 fs/super.c:1547
- fc_mount fs/namespace.c:983 [inline]
- vfs_kern_mount.part.0+0xd3/0x170 fs/namespace.c:1013
- vfs_kern_mount+0x3c/0x60 fs/namespace.c:1000
- btrfs_mount+0x234/0xaa0 fs/btrfs/super.c:1732
- legacy_get_tree+0x105/0x220 fs/fs_context.c:592
- vfs_get_tree+0x89/0x2f0 fs/super.c:1547
- do_new_mount fs/namespace.c:2896 [inline]
- path_mount+0x12ae/0x1e70 fs/namespace.c:3216
- do_mount fs/namespace.c:3229 [inline]
- __do_sys_mount fs/namespace.c:3437 [inline]
- __se_sys_mount fs/namespace.c:3414 [inline]
- __x64_sys_mount+0x27f/0x300 fs/namespace.c:3414
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x44851a
-Code: b8 08 00 00 00 0f 05 48 3d 01 f0 ff ff 0f 83 cd a2 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 0f 83 aa a2 fb ff c3 66 0f 1f 84 00 00 00 00 00
-RSP: 002b:00007ffcb26bce08 EFLAGS: 00000293 ORIG_RAX: 00000000000000a5
-RAX: ffffffffffffffda RBX: 0000000000000004 RCX: 000000000044851a
-RDX: 0000000020000000 RSI: 0000000020000100 RDI: 00007ffcb26bce50
-RBP: 00007ffcb26bce90 R08: 00007ffcb26bce90 R09: 0000000020000000
-R10: 0000000000000000 R11: 0000000000000293 R12: 0000000000000003
-R13: 00007ffcb26bce50 R14: 0000000000000003 R15: 0000000000000001
+Okay, If then, is it okay for writing a new script for this?
+> 
+> > ---
+> >  tests/btrfs/022 | 40 ++++++++++++++++++++++++++++++++++++++++
+> >  1 file changed, 40 insertions(+)
+> > 
+> > diff --git a/tests/btrfs/022 b/tests/btrfs/022
+> > index aaa27aaa..cafaa8b2 100755
+> > --- a/tests/btrfs/022
+> > +++ b/tests/btrfs/022
+> > @@ -110,6 +110,40 @@ _limit_test_noexceed()
+> >  	[ $? -eq 0 ] || _fail "should have been allowed to write"
+> >  }
+> >  
+> > +#basic assign testing
+> > +_parent_assign_test()
+> 
+> Local function names don't need to be prefixed with "_".
+okay, thanks.
+> 
+> > +{
+> > +	echo "=== parent assign test ===" >> $seqres.full
+> > +	_run_btrfs_util_prog subvolume create $SCRATCH_MNT/a
+> 
+> The helpers based on run_check are not recommended, please just
+> open-coded btrfs subvolume command and filter the output when necessary.
+> j
+> > +	_run_btrfs_util_prog quota enable $SCRATCH_MNT
+> > +	subvolid_a=$(_btrfs_get_subvolid $SCRATCH_MNT a)
+> > +
+> > +	_run_btrfs_util_prog subvolume create $SCRATCH_MNT/b
+> > +	_run_btrfs_util_prog quota enable $SCRATCH_MNT
+> > +	subvolid_b=$(_btrfs_get_subvolid $SCRATCH_MNT b)
+> > +
+> > +	_run_btrfs_util_prog qgroup create 1/100 $SCRATCH_MNT
+> > +
+> > +	_run_btrfs_util_prog qgroup assign 0/$subvolid_a 1/100 $SCRATCH_MNT
+> > +	_run_btrfs_util_prog qgroup assign 0/$subvolid_b 1/100 $SCRATCH_MNT
+> > +
+> > +	_ddt of=$SCRATCH_MNT/a/file bs=4M count=1 >> $seqres.full 2>&1
+> > +	_ddt of=$SCRATCH_MNT/b/file bs=4M count=1 >> $seqres.full 2>&1
+> > +	sync
+> 
+> Just fsync the individule files if possible.
 
+Thanks. I'll fix it like this.
+sync $SCRATCH_MNT/b/file
+
+> 
+> 
+> > +
+> > +	a_shared=$($BTRFS_UTIL_PROG qgroup show $units $SCRATCH_MNT | grep "0/$subvolid_a")
+> > +	a_shared=$(echo $a_shared | awk '{ print $2 }' | tr -dc '0-9')
+> 
+> $AWK_PROG
+Okay! awk -> $AWK_PROG
+> 
+> > +
+> > +	b_shared=$($BTRFS_UTIL_PROG qgroup show $units $SCRATCH_MNT | grep "0/$subvolid_b")
+> > +	b_shared=$(echo $b_shared | awk '{ print $2 }' | tr -dc '0-9')
+> > +	sum=$(expr $b_shared  + $a_shared)
+> > +
+> > +	q_shared=$($BTRFS_UTIL_PROG qgroup show $units $SCRATCH_MNT | grep "1/100")
+> > +	q_shared=$(echo $q_shared | awk '{ print $2 }' | tr -dc '0-9')
+> > +
+> > +	[ $sum -eq $q_shared ] || _fail "shared values don't match"
+> 
+> Print the actual number and expected number as well?
+Yes, you mean writing like this?
+
+echo "a_shared = $a_shared" >> $seqres.full
+echo "b_shared = $b_shared" >> $seqres.full
+echo "sum = $sum" >> $seqres.full
+echo "q_shared = $q_shared" >> $seqres.full
+
+and I'm just curious that we don't need to cleanup qgroup environment after testing finished?
+
+Thanks,
+Sidong
+
+> 
+> Thanks,
+> Eryu
+> 
+> > +}
+> > +
+> >  units=`_btrfs_qgroup_units`
+> >  
+> >  _scratch_mkfs > /dev/null 2>&1
+> > @@ -133,6 +167,12 @@ _check_scratch_fs
+> >  _scratch_mkfs > /dev/null 2>&1
+> >  _scratch_mount
+> >  _limit_test_noexceed
+> > +_scratch_unmount
+> > +_check_scratch_fs
+> > +
+> > +_scratch_mkfs > /dev/null 2>&1
+> > +_scratch_mount
+> > +_parent_assign_test
+> >  
+> >  # success, all done
+> >  echo "Silence is golden"
+> > -- 
+> > 2.25.1
