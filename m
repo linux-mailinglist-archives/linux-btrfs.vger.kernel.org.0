@@ -2,54 +2,55 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 479142731F8
-	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Sep 2020 20:30:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C33DB273228
+	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Sep 2020 20:45:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727393AbgIUSaM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 21 Sep 2020 14:30:12 -0400
-Received: from mx2.suse.de ([195.135.220.15]:52848 "EHLO mx2.suse.de"
+        id S1728121AbgIUSpL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 21 Sep 2020 14:45:11 -0400
+Received: from mx2.suse.de ([195.135.220.15]:59372 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726456AbgIUSaM (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 21 Sep 2020 14:30:12 -0400
+        id S1728083AbgIUSpK (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 21 Sep 2020 14:45:10 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id DDC3CACC2;
-        Mon, 21 Sep 2020 18:30:47 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id AC4F6B198;
+        Mon, 21 Sep 2020 18:45:45 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id AB453DA6E0; Mon, 21 Sep 2020 20:28:56 +0200 (CEST)
-Date:   Mon, 21 Sep 2020 20:28:56 +0200
+        id 6E759DA6E0; Mon, 21 Sep 2020 20:43:54 +0200 (CEST)
+Date:   Mon, 21 Sep 2020 20:43:54 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: reschedule when cloning lots of extents
-Message-ID: <20200921182856.GP6756@twin.jikos.cz>
+To:     Denis Efremov <efremov@linux.com>
+Cc:     David Sterba <dsterba@suse.com>,
+        Josef Bacik <josef@toxicpanda.com>, Chris Mason <clm@fb.com>,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Subject: Re: [PATCH 1/2] btrfs: use kvzalloc() to allocate clone_roots in
+ btrfs_ioctl_send()
+Message-ID: <20200921184354.GQ6756@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-References: <23e7f73a25cea63f33c220c1da3daf62d9ffd3e8.1600709608.git.johannes.thumshirn@wdc.com>
+Mail-Followup-To: dsterba@suse.cz, Denis Efremov <efremov@linux.com>,
+        David Sterba <dsterba@suse.com>, Josef Bacik <josef@toxicpanda.com>,
+        Chris Mason <clm@fb.com>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+References: <20200921170336.82643-1-efremov@linux.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <23e7f73a25cea63f33c220c1da3daf62d9ffd3e8.1600709608.git.johannes.thumshirn@wdc.com>
+In-Reply-To: <20200921170336.82643-1-efremov@linux.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Sep 22, 2020 at 02:38:10AM +0900, Johannes Thumshirn wrote:
-> We have several occurrences of a soft lockup from generic/175. All of these
-> lockup reports have the call chain btrfs_clone_files() -> btrfs_clone() in
-> common.
+On Mon, Sep 21, 2020 at 08:03:35PM +0300, Denis Efremov wrote:
+> btrfs_ioctl_send() used open-coded kvzalloc implementation earlier.
+> The code was accidentally replaced with kzalloc() call [1]. Restore
+> the original code by using kvzalloc() to allocate sctx->clone_roots.
 > 
-> btrfs_clone_files() calls btrfs_clone() with both source and destination
-> extents locked and loops over the source extent to create the clones.
+> [1] https://patchwork.kernel.org/patch/9757891/#20529627
 > 
-> Conditionally reschedule in the btrfs_clone() loop, to give some time back
-> to other processes.
-> 
-> Link: https://github.com/btrfs/fstests/issues/23
+> Cc: stable@vger.kernel.org
+> Fixes: 818e010bf9d0 ("btrfs: replace opencoded kvzalloc with the helper")
+> Signed-off-by: Denis Efremov <efremov@linux.com>
 
-It would be better to put relevant parts of the report to the changelog,
-the fstests issues are more like a todo list than a long-term bug
-tracking tool.
+Thanks, the kvzalloc fixup got lost on the way.
