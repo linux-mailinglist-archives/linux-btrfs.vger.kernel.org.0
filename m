@@ -2,97 +2,78 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83960272223
-	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Sep 2020 13:19:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D33362722ED
+	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Sep 2020 13:46:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726619AbgIULTy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 21 Sep 2020 07:19:54 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:46256 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726526AbgIULTx (ORCPT
+        id S1726466AbgIULqS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 21 Sep 2020 07:46:18 -0400
+Received: from luna.lichtvoll.de ([194.150.191.11]:46369 "EHLO
+        mail.lichtvoll.de" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726402AbgIULqR (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 21 Sep 2020 07:19:53 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08LBJq6W142195;
-        Mon, 21 Sep 2020 11:19:53 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=kc0wMejO6+FYzrxYka//8OOZs47+Oi6AP8yiUy27IDw=;
- b=gnylYI449ftwTsdjiXjqsOzBo3I+/7P/FXTRIhHAiG1LPbmFH5uGpDBSh79krYe6b131
- xk7DJBGFUwRqOzLmuPC+HsFRj+rLpLZKqq1PaBtYn1EkNd7cfTC23DRG8e27ufdz0PSv
- iHdm1L6p/R7TeVqoRTS/TJb4RueB555zH9SrRk6ifGfG/p2qWGHm7L5sxZSIZ2EgDFiV
- tPGP51iRQILi//XNuHHyF62IpRe4wMVKIyLk6Wtq7oFLvgvK2/26iqZZZ3sdAASOKM8a
- rj52ujAhnU/mZazZxGkj+tLSaf/WY1K8tbntnmpUGikOzXisgfljxtKGlorHuitE72de OQ== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2130.oracle.com with ESMTP id 33n9dqw2g5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 21 Sep 2020 11:19:52 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08LBJmKU069279;
-        Mon, 21 Sep 2020 11:19:48 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3020.oracle.com with ESMTP id 33nuw0j3bp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 21 Sep 2020 11:19:48 +0000
-Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 08LBJi6a024617;
-        Mon, 21 Sep 2020 11:19:44 GMT
-Received: from [192.168.1.102] (/39.109.231.106)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 21 Sep 2020 04:19:44 -0700
-Subject: Re: [PATCH] btrfs: free device without BTRFS_MAGIC
-To:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-References: <dbc067b24194241f6d87b8f9799d9b6484984a13.1600473987.git.anand.jain@oracle.com>
- <SN4PR0401MB35985D5EE98316CC15DBB5DB9B3A0@SN4PR0401MB3598.namprd04.prod.outlook.com>
-From:   Anand Jain <anand.jain@oracle.com>
-Message-ID: <e37d4e83-7e2f-3bd4-9e34-22c04a86b4f3@oracle.com>
-Date:   Mon, 21 Sep 2020 19:19:41 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.2.2
+        Mon, 21 Sep 2020 07:46:17 -0400
+X-Greylist: delayed 4544 seconds by postgrey-1.27 at vger.kernel.org; Mon, 21 Sep 2020 07:46:16 EDT
+Received: from 127.0.0.1 (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.lichtvoll.de (Postfix) with ESMTPSA id 0C48A154A6F;
+        Mon, 21 Sep 2020 13:46:15 +0200 (CEST)
+From:   Martin Steigerwald <martin@lichtvoll.de>
+To:     linux-btrfs@vger.kernel.org, Qu Wenruo <quwenruo.btrfs@gmx.com>
+Subject: Re: external harddisk: bogus corrupt leaf error?
+Date:   Mon, 21 Sep 2020 13:46:13 +0200
+Message-ID: <8020498.oVlb7o6SH1@merkaba>
+In-Reply-To: <8d2987f8-e27e-eedb-164f-b05d74ad8f3b@gmx.com>
+References: <1978673.BsW9qxMyvF@merkaba> <4131924.Vjtf9Mc2VK@merkaba> <8d2987f8-e27e-eedb-164f-b05d74ad8f3b@gmx.com>
 MIME-Version: 1.0
-In-Reply-To: <SN4PR0401MB35985D5EE98316CC15DBB5DB9B3A0@SN4PR0401MB3598.namprd04.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9750 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0 malwarescore=0
- mlxscore=0 suspectscore=0 adultscore=0 mlxlogscore=999 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009210084
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9750 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999
- phishscore=0 priorityscore=1501 malwarescore=0 mlxscore=0 impostorscore=0
- clxscore=1015 lowpriorityscore=0 suspectscore=0 spamscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009210084
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+Authentication-Results: mail.lichtvoll.de;
+        auth=pass smtp.auth=martin smtp.mailfrom=martin@lichtvoll.de
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 21/9/20 6:52 pm, Johannes Thumshirn wrote:
-> On 19/09/2020 04:53, Anand Jain wrote:
->> Fix is to return -ENODATA error code in btrfs_read_dev_one_super()
->> when BTRFS_MAGIC check fails, so that its parent open_fs_devices()
->> shall free the device in the mount-thread.
+Qu Wenruo - 21.09.20, 13:14:05 CEST:
+> >> For the root cause, it should be some older kernel creating the
+> >> wrong
+> >> root item size.
+> >> I can't find the commit but it should be pretty old, as after v5.4
+> >> we
+> >> have mandatory write time tree checks, which will reject such write
+> >> directly.
+> > 
+> > So eventually I would have to backup the disk and create FS from
+> > scratch to get rid of the error? Or can I, even if its no subvolume
+> > involved, find the item affected, copy it somewhere else and then
+> > write it to the disk again?
+> That's the theory.
 > 
-> But now it doesn't only fail if the BTRFS_MAGIC check failed but also,
-> if the offset of the superblock doesn't match the offset for the copy.
+> We can easily rebuild that data reloc tree, since it should be empty
+> if balance is not running.
 > 
-> Sorry for not spotting this earlier.
+> But we don't have it ready at hand in btrfs-progs...
 > 
+> So you may either want to wait until some quick dirty fixer arrives,
+> or can start backup right now.
+> All the data/files shouldn't be affected at all.
+
+Hmmm, do you have an idea if and when such a quick dirty fixer would be 
+available?
+
+Also, is it still safe to write to the filesystem? I looked at the disk, 
+cause I wanted to move some large files over to it to free up some space 
+on my laptop's internal SSDs.
+
+If its still safe to write to the filesystem, I may just wait. I will 
+refresh the backup of the disk anyway. But if its not safe to write to 
+it anymore, I would redo the filesystem from scratch. Would give the 
+added benefit of having everything zstd compressed and I could also go 
+for XXHASH or what one of the faster of the new checksum algorithms was.
+
+Best,
+-- 
+Martin
 
 
-Here are the links to the older comments.
-
-  https://patchwork.kernel.org/patch/11177085/
-  https://patchwork.kernel.org/patch/11177081/
-
-I am not sure if -ENODATA is ok. It is open to comments. If it is not ok
-then suggestions better alternative will help.
-
-You are right I didn't intend to include btrfs_super_bytenr(super) != 
-bytenr under -ENODATA thanks for spotting. Will fix.
