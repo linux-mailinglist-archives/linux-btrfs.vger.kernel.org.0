@@ -2,93 +2,66 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E4C927276A
-	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Sep 2020 16:35:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A4E2272890
+	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Sep 2020 16:44:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727420AbgIUOfg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 21 Sep 2020 10:35:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42358 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727775AbgIUOfd (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 21 Sep 2020 10:35:33 -0400
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2F67C061755
-        for <linux-btrfs@vger.kernel.org>; Mon, 21 Sep 2020 07:35:33 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id o5so15170203qke.12
-        for <linux-btrfs@vger.kernel.org>; Mon, 21 Sep 2020 07:35:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=+1Jyo6ZDCsQx4GG3FiRFZBXG250AS9nyE0vZAWZDr8A=;
-        b=PYHPbLvWRXndX+z+eBYmkUKcQfl1hjentPCeic0bFjGe6NfNnZCjuddGJsjvlVTsyX
-         IxPMDys0O/g2tKHx0usMvB/rPMjoXDoGacTIRYXbjHfyM8grro5dBmUrqLXNwCFu9XBX
-         52s29UtLH9zz0xHDdM1KhHyF7oZmrno0wUjMpI1IiPj+wxrOQ/B4V73wDIlEN0+ITqfh
-         gulRR6k9AaH0iLeXXGxA4QMziQ+hf8ADom4YXjUSRzgiHYam96pnTASRr7+ljLZLFQEQ
-         Yv3aTRvgMVB7FkkF91Bbm522TBr7m0fq+YVqjoOUmVma/AUfxhFiShnJr2Iz3m72dpIL
-         iCPQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=+1Jyo6ZDCsQx4GG3FiRFZBXG250AS9nyE0vZAWZDr8A=;
-        b=i+4+0w4DzdzSurW3L/73UWPTOXwBrQGYawlPtapqtROOFh9Ww56wdYNHg5S4qKYMHg
-         V8vjIcUi2pRVHWlKuiQUR1ibajxCCkUQSdwidshsMcxePzZh5DQ6mwcsGUosK7lrjlV5
-         8hOKTGqwkLzo9N068SowtQL/JkvG3v3jdhAN8pL8ezpiXmJjWH3qPJPgt5up/bhJZoa8
-         k4GWR52ZtvKBMDeKg++prpthOgv1MIUVdywmKcgwBwGX5I2wAFaKrVqLYSrawOxYzYOb
-         B69ihxOx9bIyWCP7ETRrnE5H1gG80FXcjuEaScit3lfgu0X1DkYhqcNKFwb1CKyxenSF
-         V+2Q==
-X-Gm-Message-State: AOAM531qgQvZ/CRownBoMvUlOV9en1XnihbUBl3L+MeQ1BIN5vkr4+vH
-        TJkAzu9lpaLEx7yLrXhDdMY+K6++VVXnNAii
-X-Google-Smtp-Source: ABdhPJy0uVwWUOtcCge1OIyae/RMHI8w8kUyTkd6Jw+lBuBAH0EqK3uRFtk/8F9y0OBZUIQ4z0wGpQ==
-X-Received: by 2002:a37:68c7:: with SMTP id d190mr57619qkc.127.1600698932871;
-        Mon, 21 Sep 2020 07:35:32 -0700 (PDT)
-Received: from [192.168.1.45] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id f2sm1011097qkk.80.2020.09.21.07.35.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 21 Sep 2020 07:35:32 -0700 (PDT)
-Subject: Re: [PATCH v3 1/4] btrfs: support remount of ro fs with free space
- tree
-To:     Boris Burkov <boris@bur.io>, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com
-References: <cover.1600282812.git.boris@bur.io>
- <1d0cca6ce1f67484c6b7ef591e264c04ca740c96.1600282812.git.boris@bur.io>
-From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <eb59aeaa-0193-6582-9660-6db0cf1b2ef0@toxicpanda.com>
-Date:   Mon, 21 Sep 2020 10:35:31 -0400
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.2.2
+        id S1727779AbgIUOoG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 21 Sep 2020 10:44:06 -0400
+Received: from mx2.suse.de ([195.135.220.15]:55192 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728009AbgIUOoG (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 21 Sep 2020 10:44:06 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 6268FAD5F;
+        Mon, 21 Sep 2020 14:44:40 +0000 (UTC)
+From:   Goldwyn Rodrigues <rgoldwyn@suse.de>
+To:     linux-fsdevel@vger.kernel.org
+Cc:     linux-btrfs@vger.kernel.org, david@fromorbit.com, hch@lst.de,
+        johannes.thumshirn@wdc.com, dsterba@suse.com,
+        darrick.wong@oracle.com, josef@toxicpanda.com
+Subject: [PATCH 0/15 v2] BTRFS DIO inode locking/D_SYNC fix
+Date:   Mon, 21 Sep 2020 09:43:38 -0500
+Message-Id: <20200921144353.31319-1-rgoldwyn@suse.de>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <1d0cca6ce1f67484c6b7ef591e264c04ca740c96.1600282812.git.boris@bur.io>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 9/17/20 2:13 PM, Boris Burkov wrote:
-> When a user attempts to remount a btrfs filesystem with
-> 'mount -o remount,space_cache=v2', that operation silently succeeds.
-> Unfortunately, this is misleading, because the remount does not create
-> the free space tree. /proc/mounts will incorrectly show space_cache=v2,
-> but on the next mount, the file system will revert to the old
-> space_cache.
-> 
-> For now, we handle only the easier case, where the existing mount is
-> read-only and the new mount is read-write. In that case, we can create
-> the free space tree without contending with the block groups changing
-> as we go. If the remount is ro->ro, rw->ro, or rw->rw, we will not
-> create the free space tree, and print a warning to dmesg so that this
-> failure is more visible.
-> 
-> References: https://github.com/btrfs/btrfs-todo/issues/5
-> Signed-off-by: Boris Burkov <boris@bur.io>
+I have merged two series here:
+(1) Using inode_lock_shared for <EOF DIO writes
+(2) Fix O_DSYNC | O_DIRECT
 
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+Both require inode locking to be pushed closer to I/O calls and thought
+was relevant. (2) requires changes in iomap code. If there is a need to 
+separate the two please let me know. I don't have any ulterior motives
+here ;)
 
-Thanks,
+Testing: xfstests on both btrfs and xfs
 
-Josef
+Git: https://github.com/goldwynr/linux/tree/btrfs-inode-lock
+
+Changes since v1:
+
+ - Changed fix for deadlock due to O_DSYNC (iomap patches added)
+ - btrfs_inode_lock() shifted to inode.c
+ - Reinstated lockdep_assert_held() in iomap_dio_rw()
+
+-- 
+Goldwyn
+
+ fs/btrfs/btrfs_inode.h |   28 --
+ fs/btrfs/ctree.h       |   13 +
+ fs/btrfs/file.c        |  497 +++++++++++++++++++++++++++----------------------
+ fs/btrfs/inode.c       |  176 +++--------------
+ fs/btrfs/transaction.h |    1
+ fs/direct-io.c         |   19 -
+ fs/iomap/direct-io.c   |   38 ++-
+ include/linux/fs.h     |    2
+ include/linux/iomap.h  |    5
+ 9 files changed, 355 insertions(+), 424 deletions(-)
+
+
+
