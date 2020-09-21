@@ -2,116 +2,261 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE63C27217B
-	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Sep 2020 12:52:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAE8D272204
+	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Sep 2020 13:14:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726384AbgIUKw1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 21 Sep 2020 06:52:27 -0400
-Received: from esa5.hgst.iphmx.com ([216.71.153.144]:11573 "EHLO
-        esa5.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726333AbgIUKwZ (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 21 Sep 2020 06:52:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1600685544; x=1632221544;
-  h=from:to:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=rnlynXlUCao1dm3l5j0Vsuxkd19EsWXr6aHRsu7zK6c=;
-  b=eymZqxHHdNNYC/cKbf+divB2Y1VoCr8pgTuuMjguZjQgDRSXImrzFG11
-   qGpJsQ+JHuSR4x+UyHkQsovEIsDAHuAm1Cnb1ah8YPB6Oi+q5ftvCu57B
-   D0gqgO83DGVzv7QRMt54383gTruu8i+9aS4G1lv25B2S/vit4ooL/mQb1
-   F11G8N2cC8hLKCpQTq3d0TM9WfyWnB2UobBSh5uvItaJaM3SI0kERr4A8
-   GEVUqAqmILZiq0+2Mf41TkFbq13fGF7sGNkEpvhsmWorfedDcuzUEjlmR
-   o0ze5+sOkaeEz5UVTlFZD09w5FmQSHQaTC8/IKZgG6PZN6G64nL6P/R2D
-   w==;
-IronPort-SDR: ZooTQNVhk0zGci36umz3sLJ0LvbHMgfNj4qwZI5Ygi0wY6Zjba0EEg65Yqd2Cfxj3mNranpa8a
- Y7ayMyjMR7qDZ9KFl2VoJv7MuLJ6lY7U+t3EWXSiCrBJ2051HewnPXW2m6Vn+RMg+zNvMAJvwC
- a3LEHS1lc8NTL+AX/y/YhfwzuRvJexMtPr9uNDhJ8AoUBux2kDs5AnCHDdvBs2lu7fzqCi0Hwr
- deUdXlKwWjpEwlyzcDy/RjswC8eKH4+uynJhGj8mpsp+mBKG3mw/wkUvk9S75dK/3htQ+MT614
- x9o=
-X-IronPort-AV: E=Sophos;i="5.77,286,1596470400"; 
-   d="scan'208";a="147897745"
-Received: from mail-dm6nam10lp2108.outbound.protection.outlook.com (HELO NAM10-DM6-obe.outbound.protection.outlook.com) ([104.47.58.108])
-  by ob1.hgst.iphmx.com with ESMTP; 21 Sep 2020 18:52:24 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=K/AwYE52TSFn7eGm2TfJr3OlxX1DIbmVdjI+PV+oJpwYdpwTuSvTv6CdMpH1caZUKEioHGSVnRpl0hp5KTqZ8wBMCeeg16KbmLDc680KxGfaRaNKYq7MQqa68t1RVjhzOX2+GEjrWlc9LlmICiavURP70aCLqaWyEr88KnWH1fqZ3F17PFRhhmmGmzxKFXSqmPC5x0sRJtKILgtpJSev8W7ZJwMEw9ErpwvuXQQupPwVp6En3/WuhimzUT4H0cLWPJsHW8CzKvxSCx9Jq6euWDfPFrLd00tLnMU3yiR/d4XP7LIz+ikPmgCo4wj/TMJmWFk3p2fTiXtSKcvsHsvg6g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rnlynXlUCao1dm3l5j0Vsuxkd19EsWXr6aHRsu7zK6c=;
- b=lPH7bM6lHdCvXAwi3N0CwedCHUMFoLOkF3rOWDE8crt22y1GaG6y1OzesQTvjr0r+D0fuj1LJNcb5aHTV8DufsgGq84pmQ314aP9d/zUei0Vo1N7Ql+pjssjaW0DUU6a/QyzFJ30pt1eX4vXQIECNnQts0Qsek99AXU2Bv02JHTmJOS3Vyn6rMqeDwUeF3d5yLbqPTFDUb7ASpRfaZ0Hi07sA4yhylxVB2G5VgcEMja49eawUWxgqDRVwhrHxAY2V07QGcFPMxJvs8L7mIdqVMuKijOhT4gIBLiR+dngMWIYOic2HZf9ng2F2/ooMcDkEIO9j05Oi8KXHqqRugRXIg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rnlynXlUCao1dm3l5j0Vsuxkd19EsWXr6aHRsu7zK6c=;
- b=wW6HNvYeuL5E8kyzhPHrsj90hVPjsM7xEF4rc74/K4Hpgc2UKF7er82EgjYHLkIy7RULg0QokY4A2AVSTUwHnkRQqMbpCPavWhb84BJlb/lq2DyDRMeaCHYtiQUz7UtfPJsACzZLVj/f5GI9PVtuY0tHhlu9MOA6egIi8O+laVM=
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
- (2603:10b6:803:47::21) by SN6PR04MB4045.namprd04.prod.outlook.com
- (2603:10b6:805:47::13) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.19; Mon, 21 Sep
- 2020 10:52:23 +0000
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::457e:5fe9:2ae3:e738]) by SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::457e:5fe9:2ae3:e738%7]) with mapi id 15.20.3370.019; Mon, 21 Sep 2020
- 10:52:23 +0000
-From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To:     Anand Jain <anand.jain@oracle.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH] btrfs: free device without BTRFS_MAGIC
-Thread-Topic: [PATCH] btrfs: free device without BTRFS_MAGIC
-Thread-Index: AQHWjjAHxGCzaohAWkGL2VfRK7aP2A==
-Date:   Mon, 21 Sep 2020 10:52:22 +0000
-Message-ID: <SN4PR0401MB35985D5EE98316CC15DBB5DB9B3A0@SN4PR0401MB3598.namprd04.prod.outlook.com>
-References: <dbc067b24194241f6d87b8f9799d9b6484984a13.1600473987.git.anand.jain@oracle.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: oracle.com; dkim=none (message not signed)
- header.d=none;oracle.com; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [62.216.205.147]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 56b10722-ad12-431f-ca2d-08d85e1c6b96
-x-ms-traffictypediagnostic: SN6PR04MB4045:
-x-microsoft-antispam-prvs: <SN6PR04MB40451494B79A72A9557B08F99B3A0@SN6PR04MB4045.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:8273;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: UUjXxg0zNWWIjUZ8k1Hquhb43REoIieGfPouzrcUI4X6LyTLBrZUYG/t/OcvThtZBnz8OkjSjp/bDBJiAm48EEC4w2kwkxGWWJdPjoR2KSbpMo6WHKjbQlDBjD35E6b8pquyB8QtPCuqzqH+zWcG8BNucUkcU6jHuhrkoKXse1Fro+AZS/FWWWEymE+XfSInXBFArITszGYNgQ63VC+dEt4UM4QwOt4sXCDA5LLYIPbIMyyaoYaMYqbsMwRq5LyyISCYwrxY7AirIepDnhpCSye2ayUkN4ZEcO09mGGAMy58oThLARFlB+9JHiNGS/1OpwnT0ZX490jBHLfIOT1dcA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR0401MB3598.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(346002)(136003)(39860400002)(396003)(366004)(6506007)(76116006)(26005)(86362001)(91956017)(316002)(52536014)(8676002)(53546011)(66946007)(83380400001)(55016002)(110136005)(5660300002)(64756008)(7696005)(66556008)(66446008)(66476007)(8936002)(186003)(2906002)(478600001)(9686003)(33656002)(71200400001)(4744005);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: OGV4RhHgcEO80YgfSebX3ZXxfvhN+wuydL1zn+3MuZQmOHMmyKwhJ1Sf3Ce+maqtaNp+xskygf+nvuFxs5wOFrMWsWwhSlsbsCwMO4kbSrYn6fxLzcxNmUm4JFJomK7g8u4ZEvBmoWEpb/V2QdVBecgI5XdzBbfhj2Pj1FRbZvPxP16wWVtJXFUIZ8d8rgQPXccl4A2SEHA5LfAxJvawVpkwIA00QOAuUch/1wbo5qnWm92AoXQiw4d1Cg1eCatgMzp0SsB+Qk5SXJ8S6Q0iyn/ZwczVOUt1tNa8AkTdDKJeFIVnsNNn3rZG1fPW0es8sEqLu8kgTKsLOdO3Esr+1qvs2EwymSqy0S/Cck7RET7w79sTnFOrRzplpVSP0SQKZdd4ySb5HmEZ+CQRWDwoIhFGL21P+K16qCW72XoyS258NRdlCxyNcJbPmQdZHPsKgaaZsGHMLq7sWxKMzqqjo6npaJ6lXiOBl2ZU6l9YzfEn9d/cSviCFj+rTV1IhRrDM8kFWslOy0kII/G2cUl0zCx/1Dbhz0Owe/23yogYQ7UWUq5qereSUXb76L1/RmmbUt6sXf9sBHii9UlWSFDsS6gazXgnLUvJ+nGfqT0063PaFLm0AkCm3tek+GPNr05xOMzfwB1vevA2Hyei5xfizQ==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1726444AbgIULON (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 21 Sep 2020 07:14:13 -0400
+Received: from mout.gmx.net ([212.227.17.21]:35271 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726353AbgIULOM (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 21 Sep 2020 07:14:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1600686848;
+        bh=cfOt07FQ9/3Nywat9sGRujfM4HyiVGR9ZDFRRTFzL2c=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=lsa90y1DNRjw26iTcpmFgi6wfa52qf6JNdWymW1B7BtDxlAAJq7AugwdMFQSpQkZK
+         HTw57Y67OTMm9QYcJQg1PZ7oY+m1YDmWq9eKmbIDosCS9fcxIqeE05xfrrze/PZLKu
+         xH3ilBttvfd92nyXJxR3HFPkukihkkoJLdNOjQ6c=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1M1Ycl-1kIvnP0VdT-0031XM; Mon, 21
+ Sep 2020 13:14:08 +0200
+Subject: Re: external harddisk: bogus corrupt leaf error?
+To:     Martin Steigerwald <martin@lichtvoll.de>,
+        linux-btrfs@vger.kernel.org
+References: <1978673.BsW9qxMyvF@merkaba>
+ <111a2551-98c1-61f4-8981-3f7de4b9084a@gmx.com> <4131924.Vjtf9Mc2VK@merkaba>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
+ mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
+ PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
+ 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
+ D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
+ efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
+ ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
+ BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
+ 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
+ 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
+ EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
+ 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
+ ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
+ oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
+ fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
+ 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
+ ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
+ oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
+Message-ID: <8d2987f8-e27e-eedb-164f-b05d74ad8f3b@gmx.com>
+Date:   Mon, 21 Sep 2020 19:14:05 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SN4PR0401MB3598.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 56b10722-ad12-431f-ca2d-08d85e1c6b96
-X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Sep 2020 10:52:22.8415
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: stuabmhxrYgLFXdVd2i85S/tvESq5Nr6AH2LOzqgZ+FiY3sqLYO68sGFGVLE4Mb7BpoRP+ydRENUEsD0YISHh4s+zZoOcFSHesIsNuBoXYM=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR04MB4045
+In-Reply-To: <4131924.Vjtf9Mc2VK@merkaba>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="ZC5C9jqb3pePvbOQLCDJJbpafMxMQyM9v"
+X-Provags-ID: V03:K1:mJ+HXWpcp4Q3gn0anml2cMZuPzzkKLmRNC9l6phc5IiFT3kCdD6
+ RLKy6WP5rUKRY1TgXAaU7ojTfwSFH2WoXhRAoLqtsolHqWhFhJVoV07AeLLGWK4Gan7+GiU
+ JZ55FUxTAgyr9PPKJOR5zATlx7bZxi/TnV/JyvdErYzalzlJqlTqFfvax7WS9kF9bfEsgSD
+ sme0wUpi+hGm/j0j4wfoQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:9dX+1pHCUi8=:VqdKnjNA6tbLLJDiW681nk
+ jv+3rx/eo1o7pjbqBt4/ZN5EfUW8siKdyeMkT9IisBe8DVdMa+U/pdPTmPPbLeGdcaXiDlg2r
+ b2n8PaCUUdDhMdPTOCPw/bYwzrZ8frKV9pl/UxRDJrBy4k4My7gNX1VMUgD2XFao0cGicYyr4
+ qVuzZsO555oV0IkRAei9c2zZNEFo0WHrlZzTzB0wZc8m34ABrsx3biv99wRw0o8lWjBWk+mTW
+ RiSc5oyfTGQCXiNJFXlfvzfEcQcMqbav4ZKxVaj/1ow1O5+uay6LgCzrvYaOemazBaWVFBDy8
+ m+NZQmDBaYupBa90pnuoEH5C6W0csBGpaWhVMFq+1874nIv6MGui1wXwjzPQRUFWW6c+oc81b
+ gcupnGNQbo9BGdO5UpWevnsGr8F5UwfAtel+nx/EV7m/ONJgnhJc8YB5U5MnykXvYTIY5pTrr
+ cLoWFuNRcVNudvWMjizMNIhAqBNXQa7TYSeGv+SovfuWEmyv90EF40ha6GU9jNVtC7aQCkQPS
+ a4SFwbmDDmc/48kwsKXNOtE92UMaMW5amfb9sR0pE/ydjRRjZdqayaqzctyae6YCzZCsmttjY
+ 2oXdcdGuxDomoYdUqc/SCANmdGf+lGn1oxqSkI1BLwlBFJS9yXdqddiE2ttoRtkSXAXVlFsfg
+ bGwxjJDBhyIrL5Fd8pfKMfglujVzlKhNqgFxGqQ4LmXI/SzncTg3RQqgcUR6c42KsKYH9w9Zm
+ STTgzvxNmgRr8upAYCstdjwmj4bNecAjFz6fu30oVjFTXYZ+uVJuTZg1Liq+skza8XhOKk7Q3
+ eihJZUDK6QuBc47Olw0EBzWvKYs1tg9h1GyN+9OhY7nF9d0mmKjYX3TWSkbOMhLgH8KptwkQg
+ WKMb3fm81V6X/Pyg7ZfGtZd6SjuYQM/0K3A1ddG3sRCkFZ0IGQR26vQjK5Hh+YlgA+EFoPwBJ
+ /Q+gKX44j1iC77HQ/3ml+G2rvNtwkxykhKhDR4RNufd/60DYmb1Isflh0/1WdMQwIsz2x1YAj
+ lT2A/hjcpUpl+5dQrePD2QoISdFAWcbIB6IVUeIE360fzdA835HEmQN3KEGgLhmu8weDTkGOo
+ vO7enYi39ltk6RP8vXFjq5AqDOQtiL1XEC1SvM4GYSB0ybyQc1mFZoibcsEb4dyrfFbUZXRN5
+ 53lNfniRTNln9nhEFI9AgbGCd/DCybjIpnVnG5nwDj9vVNZsDIoBk2yWRgWnY5HS3llqKoTxf
+ EpiKoPsMCkQiwJfWneM3ZoqSdsXpSzHCAjI1sGA==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 19/09/2020 04:53, Anand Jain wrote:=0A=
-> Fix is to return -ENODATA error code in btrfs_read_dev_one_super()=0A=
-> when BTRFS_MAGIC check fails, so that its parent open_fs_devices()=0A=
-> shall free the device in the mount-thread.=0A=
-=0A=
-But now it doesn't only fail if the BTRFS_MAGIC check failed but also,=0A=
-if the offset of the superblock doesn't match the offset for the copy.=0A=
-=0A=
-Sorry for not spotting this earlier.=0A=
-=0A=
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--ZC5C9jqb3pePvbOQLCDJJbpafMxMQyM9v
+Content-Type: multipart/mixed; boundary="GmYZOCw0uruYbFCj4TXOe0pMeeip2QOTp"
+
+--GmYZOCw0uruYbFCj4TXOe0pMeeip2QOTp
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+
+
+
+On 2020/9/21 =E4=B8=8B=E5=8D=886:30, Martin Steigerwald wrote:
+> Qu Wenruo - 21.09.20, 12:09:01 CEST:
+>> On 2020/9/21 =E4=B8=8B=E5=8D=885:29, Martin Steigerwald wrote:
+>>> Hi!
+>>>
+>>> I have an external 500 GB harddisk with BTRFS. On mounting it the
+>>> kernel (5.9-rc5, vanilla, self compiled) reports:
+>>>
+>>> [282409.344208] BTRFS info (device sdc1): enabling auto defrag
+>>> [282409.344222] BTRFS info (device sdc1): use zstd compression,
+>>> level 3 [282409.344225] BTRFS info (device sdc1): disk space
+>>> caching is enabled [282409.465837] BTRFS critical (device sdc1):
+>>> corrupt leaf: root=3D1 block=3D906756096 slot=3D204, invalid root ite=
+m
+>>> size, have 239 expect 439
+>> This one can only be detected by kernel, not btrfs check yet.
+>>
+>> Recently kernel has much more strict checks than btrfs-check,
+>> sometimes it can be too strict, as some error is not really going to
+>> cause problems, but just against on-disk format.
+>>
+>> And this is the case.
+>>
+>> In theory, you can mount the fs with older kernel, any kernel older
+>> than commit 259ee7754b67 ("btrfs: tree-checker: Add ROOT_ITEM check")
+>> should still be able to mount the fs.
+>=20
+> Oh, I can still mount the filesystem just fine, so no problem there.
+>=20
+>> For workaround, you can dump the tree block 906756096, locate the slot=
+
+>> 204, see what tree root it is.
+>=20
+> While mounted, as the scrub is still running:
+>=20
+> btrfs-progs v5.7=20
+> leaf 906756096 items 205 free space 2555 generation 12080 owner ROOT_TR=
+EE
+> leaf 906756096 flags 0x1(WRITTEN) backref revision 1
+> fs uuid [=E2=80=A6]
+>=20
+> [=E2=80=A6]
+>=20
+>         item 204 key (DATA_RELOC_TREE ROOT_ITEM 0) itemoff 7680 itemsiz=
+e 239
+>                 generation 4 root_dirid 256 bytenr 29442048 level 0 ref=
+s 1
+>                 lastsnap 0 byte_limit 0 bytes_used 16384 flags 0x0(none=
+)
+>                 drop key (0 UNKNOWN.0 0) level 0
+>=20
+> Now what does that tell me?
+
+Oh, that's data reloc tree. It can't be easily fixed by regular
+operations, we may have to craft a special repairer for you to repair tha=
+t.
+
+>=20
+>> If it's a subvolume/snapshot, deleting it should solve the problem,
+>> even for the latest kernel.
+>=20
+> The device has just one subvolume except root subvolume:
+>=20
+> % btrfs subvol list /mnt/amazon=20
+> ID 258 gen 12560 top level 5 path daten
+
+Yep, that data reloc tree is not visible to the user, thus much tricker
+to handle.
+
+>=20
+>> For the root cause, it should be some older kernel creating the wrong
+>> root item size.
+>> I can't find the commit but it should be pretty old, as after v5.4 we
+>> have mandatory write time tree checks, which will reject such write
+>> directly.
+>=20
+> So eventually I would have to backup the disk and create FS from scratc=
+h
+> to get rid of the error? Or can I, even if its no subvolume involved, f=
+ind the
+> item affected, copy it somewhere else and then write it to the disk aga=
+in?
+
+That's the theory.
+
+We can easily rebuild that data reloc tree, since it should be empty if
+balance is not running.
+
+But we don't have it ready at hand in btrfs-progs...
+
+So you may either want to wait until some quick dirty fixer arrives, or
+can start backup right now.
+All the data/files shouldn't be affected at all.
+
+Thanks,
+Qu
+
+>=20
+>> Thanks,
+>> Qu
+>=20
+> Somehow I am reminded of mister Q in Star Trek=E2=80=A6 :)
+>=20
+> Thank you!
+> Martin
+> =20
+>>> Note: It has used LZO compression before, but I switched mount
+>>> option to zstd meanwhile.
+>>>
+>>> However, btrfs-progds 5.7 gives:
+>>>
+>>> % btrfs check /dev/sdc1
+>>> Opening filesystem to check...
+>>> Checking filesystem on /dev/sdc1
+>>> UUID: [=E2=80=A6]
+>>> [1/7] checking root items
+>>> [2/7] checking extents
+>>> [3/7] checking free space cache
+>>> [4/7] checking fs roots
+>>> [5/7] checking only csums items (without verifying data)
+>>> [6/7] checking root refs
+>>> [7/7] checking quota groups skipped (not enabled on this FS)
+>>> found 249031409664 bytes used, no error found
+>>> total csum bytes: 242738928
+>>> total tree bytes: 352387072
+>>> total fs tree bytes: 67747840
+>>> total extent tree bytes: 14565376
+>>> btree space waste bytes: 37691414
+>>> file data blocks allocated: 1067158315008
+>>>
+>>>  referenced 247077785600
+>>>
+>>> Is this kernel message in error? Or does 'btrfs check' not check for
+>>> this error yet?
+>>>
+>>> Here some more information:
+> [=E2=80=A6]
+>=20
+
+
+--GmYZOCw0uruYbFCj4TXOe0pMeeip2QOTp--
+
+--ZC5C9jqb3pePvbOQLCDJJbpafMxMQyM9v
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl9oiv0ACgkQwj2R86El
+/qjrAAgAn34qM4+NdoNuzuFn/rhtavxh+1H/065oOIMLsJL5qs08TCdeM2ifJwGn
+17LnhgUs7aZL1ogRMIXcCd2S7EXpk2sVCRPNcIQd1MVb0gMj6LuzP7OxNnfaRpfH
+weRxCOkpu6o0luyJYEHL+wKLVbf3Puf/W4BYw5ZA/LkuvfO6IrOLUhNvqYO4bpEH
+V7758ATZzp5ZzU7ejYyCC0hms2zNDXQYa2GTfVkuEizVsJasOBgf46uTkQ0Oiz3h
+/f3veZPwEvj+nXR8zYsUUE6OTA25IXDb4h09V+8dMxVnMHDF6D5oJclnrqm3DOzB
+QCOPHqiNSNZHMt9eKCuwOo+1zBy1nw==
+=vZgX
+-----END PGP SIGNATURE-----
+
+--ZC5C9jqb3pePvbOQLCDJJbpafMxMQyM9v--
