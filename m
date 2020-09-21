@@ -2,106 +2,102 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1730273253
-	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Sep 2020 21:01:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 111B5273295
+	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Sep 2020 21:13:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727059AbgIUTBJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 21 Sep 2020 15:01:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55292 "EHLO
+        id S1727305AbgIUTNX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 21 Sep 2020 15:13:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727001AbgIUTBI (ORCPT
+        with ESMTP id S1726810AbgIUTNX (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 21 Sep 2020 15:01:08 -0400
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3BB1C061755
-        for <linux-btrfs@vger.kernel.org>; Mon, 21 Sep 2020 12:01:08 -0700 (PDT)
-Received: by mail-qk1-x742.google.com with SMTP id 16so16329238qkf.4
-        for <linux-btrfs@vger.kernel.org>; Mon, 21 Sep 2020 12:01:08 -0700 (PDT)
+        Mon, 21 Sep 2020 15:13:23 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACE05C061755;
+        Mon, 21 Sep 2020 12:13:22 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id z4so13978613wrr.4;
+        Mon, 21 Sep 2020 12:13:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=bDuv3B41gzO3aAv6vsdlpegJ1NcWg0gGdBJRIjuMpTI=;
-        b=vvGqYx5xT1dcd/8ltglM0AJAmRN0B6Pmy41AbSFFtG4ydVpv2klYffqKI3UUZlqmcC
-         E2shgdLpDmF8Gy15efKxkTDzXVzh0MQXE+KngwvGKkPLWJbL+tJJriMojN+IFxLPlXeH
-         +U1t1f7hdZ6tNAzALYWgrMkf5y2xmYFTaidsr6Jumv6anN2ZtCf6y41INRHwYAIFjvbM
-         mIVOdYW+KwrdI+YfIYRV96UrHKNEGtq2J4/NHFK32ML07wUDO0H/4nfTvJVndhnWFs6R
-         hI95qeewm1h5MzdkP2R0YXfRzNByZgVQ/iETneGK+CcD+dFxyDfxc38JwH223/KstvuQ
-         c2CQ==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=aPi1IscOmPCDTsGEXayQqIEZk0OLwEPpIOImWgP4cnQ=;
+        b=bnj1JHq7CcAGVKoKWOfIh+tsUynbNk25F6tBjfR2b7ExNP9P3sPNDyyFOlV53LMkcU
+         OtcZyoh+5k+zdWgFqCZLq1hlEP7T6vNBO5eCAksb9FzrElsiEViZ2yB5VL0f684DDq7b
+         ARsRJf05ILNP9eqxtEGyRcc8a6fX+O3/xyaAHoR5BjAU+ScuqXK8Ekjs1RDTkSz5Utke
+         785ruqM/npzdW3xwJ6BS+eriz2YIM+AiE8N75ICc+S9mwHvLz6qwkKb1Gua5QJ1R0vgh
+         y3Y+USuwmL3DfmA0KzQYDSpmev9MDtGa/fEeGcCCQBI4U2OQFnHEOz1hlz8CLDc2bQqP
+         XO9w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=bDuv3B41gzO3aAv6vsdlpegJ1NcWg0gGdBJRIjuMpTI=;
-        b=bp0mE+6dqhAzaHRmPxaZym+05mJVn3GCJ4rzMCOW0+UhDs3t/Is9rh9Ua7j2aLm0Af
-         BW4YUZ6v9i/jfLitJsQJL8TEzyVMm2tjBsjpA1exEwN3LySgdbWgwEAATRaFr3L0TIWk
-         HMPVhz2Jh/JBDXxux7vhiepSgFSrEOhWPHY4CpsqKCSNvUZ0TSFNaZt8JbWNW25PSzz0
-         N0Zismh8ZozpG/YVf+XOhTd4F4oZZNHccrrF/EU6pfpmAV8/zleE5ayYqGgz/5QTgy/N
-         cABhWzzJjCipWP6Fq+ZYbWsBcuneLU+53TnYB2F6e7PgoGUM10/oslFokIiyoNwjLrTa
-         mIPQ==
-X-Gm-Message-State: AOAM532yH9MPEgsehkoSMLEip+zLnGTAIaDy+NjHKqlIS8IwMbHRny2q
-        55z2Ry/JvttfOvC5WwirdyBmBbALbeKh8AxY
-X-Google-Smtp-Source: ABdhPJyFbvwToc9F4C2ru3bao+0QpN2GwtDUOGVV9svOBltZOa7v1wfwleK7caH+zKoI2l2j+PqvFQ==
-X-Received: by 2002:a37:952:: with SMTP id 79mr1208311qkj.57.1600714867759;
-        Mon, 21 Sep 2020 12:01:07 -0700 (PDT)
-Received: from [192.168.1.45] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id j197sm9542156qke.131.2020.09.21.12.01.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 21 Sep 2020 12:01:07 -0700 (PDT)
-Subject: Re: [PATCH v3 3/4] btrfs: remove free space items when creating free
- space tree
-To:     dsterba@suse.cz, Boris Burkov <boris@bur.io>,
-        linux-btrfs@vger.kernel.org, kernel-team@fb.com
-References: <cover.1600282812.git.boris@bur.io>
- <e8c4e0e500f1f19787c84cf8fb7a54063f0fedf0.1600282812.git.boris@bur.io>
- <20200921171304.GM6756@twin.jikos.cz>
-From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <47c03527-573f-3f43-f6b7-c015dcb71c97@toxicpanda.com>
-Date:   Mon, 21 Sep 2020 15:01:06 -0400
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.2.2
+        bh=aPi1IscOmPCDTsGEXayQqIEZk0OLwEPpIOImWgP4cnQ=;
+        b=o+JDlkWsBjGB/RItsqMsIXoaWULccm/mDOEcyc8S3LC7aa1h3ei4wvrOLzKCJRfUZK
+         K5wdnvH1CCG8acXlYdynEppKNSHzFatKSdW872+MBBrbriarIMC4BXxzmARlSA9hI5P/
+         tNWvrhMEAa1g+Iws+WKjOnPkZUhA+hhTBOctS6n6lxsO8J+vLoTO3D7smZYwlLOXzoZO
+         OuI757U94Ba6Z7Ab3ptfIwKOePWCDkhFwEr5CfdAjsaMd5H1uPzF1uccZ52SbroxyQaY
+         x1KbAFhEjniGdtWAt2Av9vHo0JzJr5N82B3ygMXMtjTjeINPjcVAfHS4PMA8cqfw3Fn2
+         X5Kg==
+X-Gm-Message-State: AOAM532bnop/6OC4RhV5bqXik7MtJQL8c+QwytZ4l1eWeXDby25eLgqO
+        dZEPX4H7eo5j6FnFz0eX00w=
+X-Google-Smtp-Source: ABdhPJxvfPxZM/4oUFnZ0MvIM9LiFCHrzJweXb63DAr++LmDEgMfMhW3R4OIuoyfgW8omvxEmzXGHA==
+X-Received: by 2002:adf:fe43:: with SMTP id m3mr1282186wrs.19.1600715601388;
+        Mon, 21 Sep 2020 12:13:21 -0700 (PDT)
+Received: from localhost.localdomain (cpc83661-brig20-2-0-cust443.3-3.cable.virginm.net. [82.28.105.188])
+        by smtp.gmail.com with ESMTPSA id z83sm874068wmb.4.2020.09.21.12.13.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Sep 2020 12:13:20 -0700 (PDT)
+From:   Alex Dewar <alex.dewar90@gmail.com>
+X-Google-Original-From: Alex Dewar <a.dewar@sussex.ac.uk>
+Cc:     Alex Dewar <a.dewar@sussex.ac.uk>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] btrfs: Fix potential null pointer deref
+Date:   Mon, 21 Sep 2020 20:12:44 +0100
+Message-Id: <20200921191243.27833-1-a.dewar@sussex.ac.uk>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-In-Reply-To: <20200921171304.GM6756@twin.jikos.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 9/21/20 1:13 PM, David Sterba wrote:
-> On Thu, Sep 17, 2020 at 11:13:40AM -0700, Boris Burkov wrote:
->> --- a/fs/btrfs/disk-io.c
->> +++ b/fs/btrfs/disk-io.c
->> @@ -3333,6 +3333,15 @@ int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_device
->>   			close_ctree(fs_info);
->>   			return ret;
->>   		}
->> +		/*
->> +		 * Creating the free space tree creates inode orphan items and
->> +		 * delayed iputs when it deletes the free space inodes. Later in
->> +		 * open_ctree, we run btrfs_orphan_cleanup which tries to clean
->> +		 * up the orphan items. However, the outstanding references on
->> +		 * the inodes from the delayed iputs causes the cleanup to fail.
->> +		 * To fix it, force going through the delayed iputs here.
->> +		 */
->> +		btrfs_run_delayed_iputs(fs_info);
-> 
-> This is called from open_ctree, so this is mount context and the free
-> space tree creation is called before that. That will schedule all free
-> space inodes for deletion and waits here. This takes time proportional
-> to the filesystem size.
-> 
-> We've had reports that this takes a lot of time already, so I wonder if
-> the delayed iputs can be avoided here.
-> 
+In btrfs_destroy_inode(), the variable root may be NULL, but the check
+for this takes place after its value has already been dereferenced to
+access its fs_info member. Move the dereference operation to later in
+the function.
 
-Chris and I told him to do it this way.  If you have a giant FS the time is 
-mostly going to be spent doing the free space tree, the iputs won't add much 
-more time to that.  We have to do this so the orphan cleanup that follows 
-doesn't screw up because we haven't put our inodes yet.  This is one time pain 
-and avoids us having to figure out what to do about orphans we generate while 
-mounting the file system.  Thanks,
+Fixes: a6dbd429d8dd ("Btrfs: fix panic when trying to destroy a newly allocated")
+Addresses-Coverity: CID 1497103: Null pointer dereferences (REVERSE_INULL)
+Signed-off-by: Alex Dewar <a.dewar@sussex.ac.uk>
+---
+ fs/btrfs/inode.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-Josef
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index a5dae53c1e27..8f230b7bfe65 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -8648,7 +8648,6 @@ void btrfs_destroy_inode(struct inode *vfs_inode)
+ 	struct btrfs_ordered_extent *ordered;
+ 	struct btrfs_inode *inode = BTRFS_I(vfs_inode);
+ 	struct btrfs_root *root = inode->root;
+-	struct btrfs_fs_info *fs_info = root->fs_info;
+ 
+ 	WARN_ON(!hlist_empty(&vfs_inode->i_dentry));
+ 	WARN_ON(vfs_inode->i_data.nrpages);
+@@ -8673,7 +8672,7 @@ void btrfs_destroy_inode(struct inode *vfs_inode)
+ 		if (!ordered)
+ 			break;
+ 		else {
+-			btrfs_err(fs_info,
++			btrfs_err(root->fs_info,
+ 				  "found ordered extent %llu %llu on inode cleanup",
+ 				  ordered->file_offset, ordered->num_bytes);
+ 			btrfs_remove_ordered_extent(inode, ordered);
+-- 
+2.28.0
+
