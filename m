@@ -2,83 +2,129 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06EB5274376
-	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Sep 2020 15:49:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C6712743CF
+	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Sep 2020 16:06:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726621AbgIVNts (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 22 Sep 2020 09:49:48 -0400
-Received: from mailrelay3-3.pub.mailoutpod1-cph3.one.com ([46.30.212.12]:23996
-        "EHLO mailrelay3-3.pub.mailoutpod1-cph3.one.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726473AbgIVNtr (ORCPT
+        id S1726614AbgIVOGL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 22 Sep 2020 10:06:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34136 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726473AbgIVOGL (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 22 Sep 2020 09:49:47 -0400
+        Tue, 22 Sep 2020 10:06:11 -0400
+Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A8D7C061755;
+        Tue, 22 Sep 2020 07:06:11 -0700 (PDT)
+Received: by mail-qv1-xf41.google.com with SMTP id f11so9590526qvw.3;
+        Tue, 22 Sep 2020 07:06:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=lechevalier.se; s=20191106;
-        h=content-transfer-encoding:content-type:in-reply-to:mime-version:date:
-         message-id:from:references:to:subject:from;
-        bh=O/uMd1a9X1pttMwgLjT++HiEl2Pjj+FDCTlVIDGKfCs=;
-        b=up4bh/6PEKQoflydw54bt9oeBxG+NP11gLJJGG+LR4aH0ARkC7liuHuy5kP0sXCtsFQc6upTPnSXe
-         ZYYc6CVHnXe2FcwSS/6/W0MkYFktI7hOQs6rkuqremZXbcR0MfW0h4MmlQpGpR50uDwq1MC4lgBjBH
-         cHbdVmSQ0j8BJrvtzNKH+zFfzfV10wPi13bzrJaxt73SBymxlgqleWWaJk36UUZfYJo1pFbDQf5Yd4
-         xlOEsrhLUSZxEKOjUHoQbimxI42ffsCrLz2riHAJ5P5tVumWasxNH3oViNsxUuDcJG+eRySpQ0lu06
-         zfsOLS4mi5NjF2RNU4ZB7EMFbTf8g9g==
-X-HalOne-Cookie: 2e5b11af2cd89f12ff83e50b613da05dc3b01a88
-X-HalOne-ID: 78a908d0-fcda-11ea-a7fd-d0431ea8bb03
-Received: from [10.0.155.198] (unknown [98.128.186.115])
-        by mailrelay3.pub.mailoutpod1-cph3.one.com (Halon) with ESMTPSA
-        id 78a908d0-fcda-11ea-a7fd-d0431ea8bb03;
-        Tue, 22 Sep 2020 13:49:44 +0000 (UTC)
-Subject: Re: Btrfs wiki lincese and GDPR notices?
-To:     dsterba@suse.cz, linux-btrfs@vger.kernel.org
-References: <b317b7cc-8810-57ea-b859-6bef7638a5c7@lechevalier.se>
- <20200921181834.GO6756@twin.jikos.cz>
-From:   A L <mail@lechevalier.se>
-Message-ID: <fe9dc70f-25fc-978d-eab8-c40d5e2105b0@lechevalier.se>
-Date:   Tue, 22 Sep 2020 15:49:44 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc:content-transfer-encoding;
+        bh=ggv8VuLQMJBV80+GzZgkXohh+I/h8XJJBp5IUz+/fvo=;
+        b=p4MQ96FSgJ+qhEE9FsMlf9iPP1EKo3i6eXh8PekF+Z8ZJtAvSWWKJomaFDWkJIVBxx
+         g1UdB6PKqDQjHPJ5Y2QI1uLWZmpj03Ie1OmKV6QETtOXAKTF0Bx89UVOwOqZehk8WZ1C
+         gnrOSydC3qqJkUpEYgZxurxgz9TtKFDfYav3YuPgELvHyiCIavz9slbW3V8eaogcoLoV
+         zbS+W0qZ3+GyizlbrtqXJI8ecYXiK3ucVB/XoHit7s0vE2VU9vTf1WmkeS4pWw4M7L6L
+         g5APi97Ksne3ulKMs47b1+Xde0+Pcp1wJ+getd21S4iypZo63u4s0QJBOvJIymfdghak
+         otXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc:content-transfer-encoding;
+        bh=ggv8VuLQMJBV80+GzZgkXohh+I/h8XJJBp5IUz+/fvo=;
+        b=rFWpffKZzO3Qaw2Pw/VJIzigkC221g/Q11WpT9PHK+7nAIc1dBEjfxAchvuvEHcyZs
+         QvYWMPEcc8nYRRSpj9aGVxIu0fdT+0+gtx6BgIyr/tjFtwazG8n8mbrccxk/EVv/XtPw
+         Mb5SAWgmtVbTZ3l/10aPzdFkvioRZG887DT+4Yj4mnf4eMp1/JmwoDwWAS0JQxsj5u7x
+         5qdOS1y1SLnO2HHb3nDnwe3p7l78GyTFFa/wAvziEsTvOLXw1ZXzFGcGyl3pA0xgTy31
+         YnSgbFPhnvFFovRhzoqpneSuaAd0Joo01Y3vnyqIRA++tfHS4GTK86joGojsI+mJpPr0
+         btJw==
+X-Gm-Message-State: AOAM530tTjBOO6jltFiLV3wXybWqR6G2JLyKNMM2u8suQ2ZYxYOxWens
+        keax5LoqWri9zxiZbxVOFOFV7/wQHGCjoyMNXCOe7mR2
+X-Google-Smtp-Source: ABdhPJy0quvn8ooCZ9FzdxcJz0oeTjjL80e0/hZRi09LVHcCir/HqRUgAdt1yOaX3YPW4XrtaivqT5W9aYtNJsycsSA=
+X-Received: by 2002:a0c:e152:: with SMTP id c18mr5893009qvl.41.1600783570742;
+ Tue, 22 Sep 2020 07:06:10 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200921181834.GO6756@twin.jikos.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+References: <alpine.DEB.2.22.394.2009221219560.2659@hadrien>
+In-Reply-To: <alpine.DEB.2.22.394.2009221219560.2659@hadrien>
+Reply-To: fdmanana@gmail.com
+From:   Filipe Manana <fdmanana@gmail.com>
+Date:   Tue, 22 Sep 2020 15:05:59 +0100
+Message-ID: <CAL3q7H6e7gQWs9X-N4RMxK+UhZKHGxNmP0-q+B6x19uyH9TOwA@mail.gmail.com>
+Subject: Re: [PATCH] btrfs: fix memdup.cocci warnings
+To:     Julia Lawall <julia.lawall@inria.fr>
+Cc:     Filipe Manana <fdmanana@suse.com>,
+        Chris Mason <chris.mason@fusionio.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        kbuild-all@lists.01.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 2020-09-21 20:18, David Sterba wrote:
-> Hi,
+On Tue, Sep 22, 2020 at 11:29 AM Julia Lawall <julia.lawall@inria.fr> wrote=
+:
 >
-> On Sun, Sep 20, 2020 at 11:03:07AM +0200, A L wrote:
->> Under what license are the content and uploaded images and documents on
->> https://btrfs.wiki.kernel.org/
-> I think nobody has asked this question until now, so I don't know.
+> From: kernel test robot <lkp@intel.com>
+>
+> fs/btrfs/send.c:3854:8-15: WARNING opportunity for kmemdup
+>
+>  Use kmemdup rather than duplicating its implementation
+>
+> Generated by: scripts/coccinelle/api/memdup.cocci
+>
+> Fixes: 28314eb24e6c ("btrfs: send, recompute reference path after orphani=
+zation of a directory")
+> Signed-off-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Julia Lawall <julia.lawall@inria.fr>
 
-No worries. I was curious because I had an idea to re-use some text and 
-images on a personal blog.
+Since this is not in Linus' tree yet, it can be folded in the original patc=
+h.
+David, can you do that when you pick it?
 
-I think it is common for MediaWiki platforms to be setup so that 
-user-provided content is under the Creative Commons 
-Attribution-ShareAlike Licence unless otherwise stated. For example an 
-image might be uploaded with CC0 or some other license while the text is 
-CC-BY-SA or GPL. For example, the XFS wiki ( https://xfs.wiki.kernel.org 
-) is using this approach.
+Btw, isn't the Fixes tag meant only for bug fixes? This is a pure
+cleanup afaics.
 
-Perhaps it is worth considering adding this to the Btrfs wiki?
+Thanks.
 
->> For example, file have no copyright or license information:
->> https://btrfs.wiki.kernel.org/index.php/File:Send_subvol_command.png
->> https://btrfs.wiki.kernel.org/index.php/File:Fs-tree.svg
->>
->> Currently the "Privacy Policy" and "About" pages are empty. There is
->> also no GDPR information.
-> All the wikis fall under the Linux foundation policies regarding
-> accounts, so the GDPR questions better be directed there
-> (https://korg.docs.kernel.org/wiki.html,
-> https://korg.docs.kernel.org/support.html).
-Thanks for the links.  I note that in general, it seems that GDPR 
-implementations, and especially GDPR info for FOSS is lacking in a many 
-communities and projects. kernel.org does not have a GDPR notice, for 
-example.
+> ---
+>
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/fdmanana/linux.gi=
+t misc-next
+> head:   28314eb24e6cb8124d1e5da2ef2ccb90ec44cc06
+> commit: 28314eb24e6cb8124d1e5da2ef2ccb90ec44cc06 [2/2] btrfs: send, recom=
+pute reference path after orphanization of a directory
+> :::::: branch date: 17 hours ago
+> :::::: commit date: 17 hours ago
+>
+>
+>  send.c |    3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+>
+> --- a/fs/btrfs/send.c
+> +++ b/fs/btrfs/send.c
+> @@ -3851,10 +3851,9 @@ static int refresh_ref_path(struct send_
+>         char *name;
+>         int ret;
+>
+> -       name =3D kmalloc(ref->name_len, GFP_KERNEL);
+> +       name =3D kmemdup(ref->name, ref->name_len, GFP_KERNEL);
+>         if (!name)
+>                 return -ENOMEM;
+> -       memcpy(name, ref->name, ref->name_len);
+>
+>         fs_path_reset(ref->full_path);
+>         ret =3D get_cur_path(sctx, ref->dir, ref->dir_gen, ref->full_path=
+);
+
+
+
+--=20
+Filipe David Manana,
+
+=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
+ right.=E2=80=9D
