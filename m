@@ -2,68 +2,68 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 052BA2744A8
-	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Sep 2020 16:48:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8041B2744B9
+	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Sep 2020 16:52:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726654AbgIVOsY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 22 Sep 2020 10:48:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40678 "EHLO
+        id S1726715AbgIVOwS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 22 Sep 2020 10:52:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726614AbgIVOsY (ORCPT
+        with ESMTP id S1726625AbgIVOwR (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 22 Sep 2020 10:48:24 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0F72C0613D0
-        for <linux-btrfs@vger.kernel.org>; Tue, 22 Sep 2020 07:48:23 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id q5so19286768qkc.2
-        for <linux-btrfs@vger.kernel.org>; Tue, 22 Sep 2020 07:48:23 -0700 (PDT)
+        Tue, 22 Sep 2020 10:52:17 -0400
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D26AEC061755
+        for <linux-btrfs@vger.kernel.org>; Tue, 22 Sep 2020 07:52:17 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id g72so19243070qke.8
+        for <linux-btrfs@vger.kernel.org>; Tue, 22 Sep 2020 07:52:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Dgn0sm8nR69UiFf8jtySk7cGzpV3gq7JlokrBzDz9Ho=;
-        b=JzvlXSUbrd2alcye/WaB/cJ2zGsFlxYW7UcHXXKAAlYzixNPpC0hntm679hPiRQNDm
-         Wq/JMwVTdfNjPceg5NcZvSuhn3DkrEtZwUNQDr3doh3gHC63IqhjibK+QbOBZhVYv96T
-         VkNeOAidqfP7aBb09ZsAqNDwPUSQ2Gq1oWM8uW6v3G7FOcySa7fVw6GWIjxqCUsF9Z1k
-         OloZE3gY9UBhWD/fpKD7Cue6r+jbmva3mWmJWpSr4BOSb1ShGjntruNBpok8je3dA+Dq
-         jrcvJfelbHs/NppPwV0wx4UE87eReO1t5Gs7G6994C0rNLf8UTjfIriHa6iXf2KWYpbB
-         RTrg==
+        bh=dF1fa23J+l+HEWIXsoK1ROlWlXhWeKk0bxWwAqVjy6A=;
+        b=R/YjV4UwaRJaRG9MQlKAYtN1BOWc8h82b6sGyauvHvepfQsfJzCmVK9FhxF3nnsJ2F
+         cEBRu7HaKjfHjjWrxaXpf0ud6Zzm/krjFOmgV65w+fTPAtPLXuFbYTJWoYtO5uXFTcxP
+         1QPSjVoI3Aosl0SzyEAWjTJh1fC+CMsOVJho9mFPoFpNYp2UDJGLxdjbjgOxv4n5PNuz
+         H7fAMMBoF2x0h/wfJWeHTRBl4d9KfVU2YKGVgdMU5ze2Esklk9DHAQkqadozEp+g9HXo
+         1SZ5Dv+MRAVYL/ge1w7bR31LLCumyh9OlxKJ5P/bVJ1k9h6lzEVq+7QW4PvjRz7zYTk8
+         c1ng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=Dgn0sm8nR69UiFf8jtySk7cGzpV3gq7JlokrBzDz9Ho=;
-        b=olRQL+7hxRLJqyBdx1JmSQgRHuVpEZecqGfGc/TuPZg0b0bzhq8NPs358zQadn8e6i
-         Ac5QC6jXHwYYybge/zcXIy1fgGIWEz/q4jv3zun6jSiTpRNsqhhFuZWQG0kC+1ywmP/s
-         c5oB/uKtBq0dS8yTpGIdl97KEfxYbo5+10XGMLhJqXYBVBmcxKqF/sqrzyqCs9ztIKNn
-         JrT9+vs78Q7Gn3MrIhdWcF4AkNMLEr9zebv6z1/eZMyv4c5PaB5BOinYhG8hTJPEMdwH
-         i/ufsxnAEzs89j10f/NhLZBMOPo5jB5fVxvzKoiwR7G4JdSr9yeImKGwy7qivraSCyCg
-         fEzA==
-X-Gm-Message-State: AOAM530+YhQKiTdZNCBJ8IGUSmfLynCR8ynVAbQzvKH133KQjASiIKpZ
-        kdbQlqj+GkgSApkR8TcWjrrTJBJMya1nvsHqKJM=
-X-Google-Smtp-Source: ABdhPJwHIjTmZ+M7C9Dk9PHxKI+gN2SpzzNZb5l9rLws2FTxHhyvEeQfsVu+7h7XklNt3XlvOurdjg==
-X-Received: by 2002:a05:620a:55d:: with SMTP id o29mr5249651qko.12.1600786102729;
-        Tue, 22 Sep 2020 07:48:22 -0700 (PDT)
+        bh=dF1fa23J+l+HEWIXsoK1ROlWlXhWeKk0bxWwAqVjy6A=;
+        b=pZDUUWJdp+Kctwz2917D6KvH8v/0y14tN0whSbkoMspnJQMYMWCdxrjFc8WIda/xHO
+         v5Szwjp2OaLoeBVRWj0ETYOQz8NZ44Mp5w9QObEJpOMdFC2L0LCaaavY8liW+f8JfeK4
+         zr1ieLT5OCn/b9v4n/MMzimmnAq6c3pmJQGugv02s5k9cVNHf9oVv+s5hlWNZXQtD0Um
+         65M45wdGbiwyxp9u01i9+ahCQALNiFhBgkcK3S0dVHQb1Gy1gK28birq4hycPSGkV4W7
+         uJH0OGfLiIjouVT7jutbt+te7aH1iqDfNUizkaHNoxiiTMBDnKfK9ARLXaaPJle1bNGB
+         8B9Q==
+X-Gm-Message-State: AOAM530d3OtyiiyEbihZgqHUJ5/lyftXHwjPKYPGc+BsQVUmJrhSO3vj
+        5On6WDNjyAzmB2JStYGMdYyDeA==
+X-Google-Smtp-Source: ABdhPJxasZxfhJZ5H4uf8BgLFKo+hiKwBWwEWJEVZFgSQMLbqae8mXbxm2At9NC2QyAm2exLoabS9g==
+X-Received: by 2002:a37:62c4:: with SMTP id w187mr5124409qkb.102.1600786336392;
+        Tue, 22 Sep 2020 07:52:16 -0700 (PDT)
 Received: from [192.168.1.45] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id s15sm11645443qkj.21.2020.09.22.07.48.20
+        by smtp.gmail.com with ESMTPSA id 205sm11386504qki.118.2020.09.22.07.52.15
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 22 Sep 2020 07:48:20 -0700 (PDT)
-Subject: Re: [PATCH 10/15] btrfs: Push inode locking and unlocking into
- buffered/direct write
+        Tue, 22 Sep 2020 07:52:15 -0700 (PDT)
+Subject: Re: [PATCH 11/15] btrfs: Use inode_lock_shared() for direct writes
+ within EOF
 To:     Goldwyn Rodrigues <rgoldwyn@suse.de>, linux-fsdevel@vger.kernel.org
 Cc:     linux-btrfs@vger.kernel.org, david@fromorbit.com, hch@lst.de,
         johannes.thumshirn@wdc.com, dsterba@suse.com,
         darrick.wong@oracle.com, Goldwyn Rodrigues <rgoldwyn@suse.com>
 References: <20200921144353.31319-1-rgoldwyn@suse.de>
- <20200921144353.31319-11-rgoldwyn@suse.de>
+ <20200921144353.31319-12-rgoldwyn@suse.de>
 From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <de9e9d48-20db-f2c5-2ba1-cf277226dcb5@toxicpanda.com>
-Date:   Tue, 22 Sep 2020 10:48:20 -0400
+Message-ID: <f3a6965f-f3e2-9bef-3dc6-b53cdc715833@toxicpanda.com>
+Date:   Tue, 22 Sep 2020 10:52:14 -0400
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
  Gecko/20100101 Thunderbird/78.2.2
 MIME-Version: 1.0
-In-Reply-To: <20200921144353.31319-11-rgoldwyn@suse.de>
+In-Reply-To: <20200921144353.31319-12-rgoldwyn@suse.de>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -74,17 +74,47 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 On 9/21/20 10:43 AM, Goldwyn Rodrigues wrote:
 > From: Goldwyn Rodrigues <rgoldwyn@suse.com>
 > 
-> Push inode locking and unlocking closer to where we perform the I/O. For
-> this we need to move the write checks inside the respective functions as
-> well.
+> Direct writes within EOF are safe to be performed with inode shared lock
+> to improve parallelization with other direct writes or reads because EOF
+> is not changed and there is no race with truncate().
 > 
-> pos is assigned after write checks because generic_write_check can
-> modify iocb->ki_pos.
+> Direct reads are already performed under shared inode lock.
+> 
+> This patch is precursor to removing btrfs_inode->dio_sem.
 > 
 > Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
+> ---
+>   fs/btrfs/file.c | 33 +++++++++++++++++++++------------
+>   1 file changed, 21 insertions(+), 12 deletions(-)
+> 
+> diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+> index d9c3be19d7b3..50092d24eee2 100644
+> --- a/fs/btrfs/file.c
+> +++ b/fs/btrfs/file.c
+> @@ -1977,7 +1977,6 @@ static ssize_t btrfs_direct_write(struct kiocb *iocb, struct iov_iter *from)
+>   	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
+>   	loff_t pos;
+>   	ssize_t written = 0;
+> -	bool relock = false;
+>   	ssize_t written_buffered;
+>   	loff_t endbyte;
+>   	int err;
+> @@ -1986,6 +1985,15 @@ static ssize_t btrfs_direct_write(struct kiocb *iocb, struct iov_iter *from)
+>   	if (iocb->ki_flags & IOCB_NOWAIT)
+>   		ilock_flags |= BTRFS_ILOCK_TRY;
+>   
+> +	/*
+> +	 * If the write DIO within EOF,  use a shared lock
+> +	 */
+> +	if (iocb->ki_pos + iov_iter_count(from) <= i_size_read(inode))
+> +		ilock_flags |= BTRFS_ILOCK_SHARED;
+> +	else if (iocb->ki_flags & IOCB_NOWAIT)
+> +		return -EAGAIN;
+> +
+> +relock:
 
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
-
+Huh?  Why are you making it so EOF extending NOWAIT writes now fail?  We are 
+still using ILOCK_TRY here, so we may still not block, am I missing something? 
 Thanks,
 
 Josef
