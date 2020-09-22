@@ -2,185 +2,107 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34FB0274751
-	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Sep 2020 19:17:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 892F5274761
+	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Sep 2020 19:25:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726566AbgIVRRY convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-btrfs@lfdr.de>); Tue, 22 Sep 2020 13:17:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35416 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726526AbgIVRRX (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 22 Sep 2020 13:17:23 -0400
-Received: from mail.lichtvoll.de (lichtvoll.de [IPv6:2001:67c:14c:12f::11:100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6310C061755
-        for <linux-btrfs@vger.kernel.org>; Tue, 22 Sep 2020 10:17:23 -0700 (PDT)
-Received: from 127.0.0.1 (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.lichtvoll.de (Postfix) with ESMTPSA id 000DE1559A3;
-        Tue, 22 Sep 2020 19:17:20 +0200 (CEST)
-From:   Martin Steigerwald <martin@lichtvoll.de>
-To:     linux-btrfs@vger.kernel.org, Qu Wenruo <wqu@suse.com>,
-        Qu Wenruo <quwenruo.btrfs@gmx.com>
-Subject: Re: [PATCH] btrfs: fix false alert caused by legacy btrfs root item
-Date:   Tue, 22 Sep 2020 19:17:19 +0200
-Message-ID: <10820501.WrPryYWVak@merkaba>
-In-Reply-To: <6db35b15-1f16-dfd8-368c-b03e428eba08@gmx.com>
-References: <20200922023701.32654-1-wqu@suse.com> <4591966.Q0mfgpEauH@merkaba> <6db35b15-1f16-dfd8-368c-b03e428eba08@gmx.com>
+        id S1726583AbgIVRZi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 22 Sep 2020 13:25:38 -0400
+Received: from mx2.suse.de ([195.135.220.15]:46722 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726526AbgIVRZi (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 22 Sep 2020 13:25:38 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id D68F0ADAD;
+        Tue, 22 Sep 2020 17:26:13 +0000 (UTC)
+Date:   Tue, 22 Sep 2020 12:25:33 -0500
+From:   Goldwyn Rodrigues <rgoldwyn@suse.de>
+To:     "Darrick J. Wong" <darrick.wong@oracle.com>
+Cc:     Josef Bacik <josef@toxicpanda.com>, linux-fsdevel@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, david@fromorbit.com, hch@lst.de,
+        johannes.thumshirn@wdc.com, dsterba@suse.com
+Subject: Re: [PATCH 04/15] iomap: Call inode_dio_end() before
+ generic_write_sync()
+Message-ID: <20200922172533.kyg7flcfv4cpaebn@fiona>
+References: <20200921144353.31319-1-rgoldwyn@suse.de>
+ <20200921144353.31319-5-rgoldwyn@suse.de>
+ <20bf949a-7237-8409-4230-cddb430026a9@toxicpanda.com>
+ <20200922163156.GD7949@magnolia>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset="UTF-8"
-Authentication-Results: mail.lichtvoll.de;
-        auth=pass smtp.auth=martin smtp.mailfrom=martin@lichtvoll.de
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200922163156.GD7949@magnolia>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Qu Wenruo - 22.09.20, 12:34:18 CEST:
-> On 2020/9/22 下午6:20, Martin Steigerwald wrote:
-> > Instead of the tool, can I also patch my kernel with the patch below
-> > to have it automatically fix it?
+On  9:31 22/09, Darrick J. Wong wrote:
+> On Tue, Sep 22, 2020 at 10:20:11AM -0400, Josef Bacik wrote:
+> > On 9/21/20 10:43 AM, Goldwyn Rodrigues wrote:
+> > > From: Goldwyn Rodrigues <rgoldwyn@suse.com>
+> > > 
+> > > iomap complete routine can deadlock with btrfs_fallocate because of the
+> > > call to generic_write_sync().
+> > > 
+> > > P0                      P1
+> > > inode_lock()            fallocate(FALLOC_FL_ZERO_RANGE)
+> > > __iomap_dio_rw()        inode_lock()
+> > >                          <block>
+> > > <submits IO>
+> > > <completes IO>
+> > > inode_unlock()
+> > >                          <gets inode_lock()>
+> > >                          inode_dio_wait()
+> > > iomap_dio_complete()
+> > >    generic_write_sync()
+> > >      btrfs_file_fsync()
+> > >        inode_lock()
+> > >        <deadlock>
+> > > 
+> > > inode_dio_end() is used to notify the end of DIO data in order
+> > > to synchronize with truncate. Call inode_dio_end() before calling
+> > > generic_write_sync(), so filesystems can lock i_rwsem during a sync.
+> > > 
+> > > ---
+> > >   fs/iomap/direct-io.c | 2 +-
+> > >   1 file changed, 1 insertion(+), 1 deletion(-)
+> > > 
+> > > diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
+> > > index d970c6bbbe11..e01f81e7b76f 100644
+> > > --- a/fs/iomap/direct-io.c
+> > > +++ b/fs/iomap/direct-io.c
+> > > @@ -118,6 +118,7 @@ ssize_t iomap_dio_complete(struct iomap_dio *dio)
+> > >   			dio_warn_stale_pagecache(iocb->ki_filp);
+> > >   	}
+> > > +	inode_dio_end(file_inode(iocb->ki_filp));
+> > >   	/*
+> > >   	 * If this is a DSYNC write, make sure we push it to stable storage now
+> > >   	 * that we've written data.
+> > > @@ -125,7 +126,6 @@ ssize_t iomap_dio_complete(struct iomap_dio *dio)
+> > >   	if (ret > 0 && (dio->flags & IOMAP_DIO_NEED_SYNC))
+> > >   		ret = generic_write_sync(iocb, ret);
+> > > -	inode_dio_end(file_inode(iocb->ki_filp));
+> > >   	kfree(dio);
+> > >   	return ret;
+> > > 
+> > 
+> > Did you verify that xfs or ext4 don't rely on the inode_dio_end() happening
+> > before the generic_write_sync()?  I wouldn't expect that they would, but
+> > we've already run into problems making those kind of assumptions.  If it's
+> > fine you can add
 > 
-> Sure, this one is a little safer than the tool.
+> I was gonna ask the same question, but as there's no SoB on this patch I
+> hadn't really looked at it yet. ;)
 > 
-> > If so, which approach would you prefer for testing?
-> > 
-> > I can apply the patch as I compile kernels myself.
+> Operations that rely on inode_dio_wait to have blocked until all the
+> directios are complete could get tripped up by iomap not having done the
+> generic_write_sync to stabilise the metadata, but I /think/ most
+> operations that do that also themselves flush the file.  But I don't
+> really know if there's a subtlety there if the inode_dio_wait thread
+> manages to grab the ILOCK before the generic_write_sync thread does.
 > 
-> That's great.
-> 
-> That should solve the problem.
-> 
-> And if you don't like the legacy root item, just do a balance (no
-> matter data or metadata), and that legacy root item will be converted
-> to current one, and even affected kernel won't report any error any
-> more.
 
-Tested with patch. No error message :)
-
-Tested-By: Martin Steigerwald <martin@lichtvoll.de>
-
-Will do balance once I know whether a minimal one is enough. Can test 
-with old unpatched kernel then as well. Both 5.9-rc5, as 5.9-rc6 didn't 
-compile for some reason.
-
-Thanks,
-Martin
-
-> > Qu Wenruo - 22.09.20, 04:37:01 CEST:
-> >> Commit 259ee7754b67 ("btrfs: tree-checker: Add ROOT_ITEM check")
-> >> introduced btrfs root item size check, however btrfs root item has
-> >> two format, the legacy one which just ends before generation_v2
-> >> member, is smaller than current btrfs root item size.
-> >> 
-> >> This caused btrfs kernel to reject valid but old tree root leaves.
-> >> 
-> >> Fix this problem by also allowing legacy root item, since kernel
-> >> can
-> >> already handle them pretty well and upgrade to newer root item
-> >> format
-> >> when needed.
-> >> 
-> >> Reported-by: Martin Steigerwald <martin@lichtvoll.de>
-> >> Fixes: 259ee7754b67 ("btrfs: tree-checker: Add ROOT_ITEM check")
-> >> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> >> ---
-> >> 
-> >>  fs/btrfs/tree-checker.c         | 17 ++++++++++++-----
-> >>  include/uapi/linux/btrfs_tree.h |  9 +++++++++
-> >>  2 files changed, 21 insertions(+), 5 deletions(-)
-> >> 
-> >> diff --git a/fs/btrfs/tree-checker.c b/fs/btrfs/tree-checker.c
-> >> index 7b1fee630f97..6f794aca48d3 100644
-> >> --- a/fs/btrfs/tree-checker.c
-> >> +++ b/fs/btrfs/tree-checker.c
-> >> @@ -1035,7 +1035,7 @@ static int check_root_item(struct
-> >> extent_buffer
-> >> *leaf, struct btrfs_key *key, int slot)
-> >> 
-> >>  {
-> >>  
-> >>  	struct btrfs_fs_info *fs_info = leaf->fs_info;
-> >> 
-> >> -	struct btrfs_root_item ri;
-> >> +	struct btrfs_root_item ri = { 0 };
-> >> 
-> >>  	const u64 valid_root_flags = BTRFS_ROOT_SUBVOL_RDONLY |
-> >>  	
-> >>  				     BTRFS_ROOT_SUBVOL_DEAD;
-> >>  	
-> >>  	int ret;
-> >> 
-> >> @@ -1044,14 +1044,21 @@ static int check_root_item(struct
-> >> extent_buffer *leaf, struct btrfs_key *key, if (ret < 0)
-> >> 
-> >>  		return ret;
-> >> 
-> >> -	if (btrfs_item_size_nr(leaf, slot) != sizeof(ri)) {
-> >> +	if (btrfs_item_size_nr(leaf, slot) != sizeof(ri) &&
-> >> +	    btrfs_item_size_nr(leaf, slot) !=
-> > 
-> > btrfs_legacy_root_item_size())
-> > 
-> >> { generic_err(leaf, slot,
-> >> -			    "invalid root item size, have %u expect %zu",
-> >> -			    btrfs_item_size_nr(leaf, slot), sizeof(ri));
-> >> +			    "invalid root item size, have %u expect %zu or
-> > 
-> > %zu",
-> > 
-> >> +			    btrfs_item_size_nr(leaf, slot), sizeof(ri),
-> >> +			    btrfs_legacy_root_item_size());
-> >> 
-> >>  	}
-> >> 
-> >> +	/*
-> >> +	 * For legacy root item, the members starting at generation_v2
-> > 
-> > will
-> > 
-> >> be +	 * all filled with 0.
-> >> +	 * And since we allow geneartion_v2 as 0, it will still pass the
-> >> check. +	 */
-> >> 
-> >>  	read_extent_buffer(leaf, &ri, btrfs_item_ptr_offset(leaf, slot),
-> >> 
-> >> -			   sizeof(ri));
-> >> +			   btrfs_item_size_nr(leaf, slot));
-> >> 
-> >>  	/* Generation related */
-> >>  	if (btrfs_root_generation(&ri) >
-> >> 
-> >> diff --git a/include/uapi/linux/btrfs_tree.h
-> >> b/include/uapi/linux/btrfs_tree.h index 9ba64ca6b4ac..464095a28b18
-> >> 100644
-> >> --- a/include/uapi/linux/btrfs_tree.h
-> >> +++ b/include/uapi/linux/btrfs_tree.h
-> >> @@ -644,6 +644,15 @@ struct btrfs_root_item {
-> >> 
-> >>  	__le64 reserved[8]; /* for future */
-> >>  
-> >>  } __attribute__ ((__packed__));
-> >> 
-> >> +/*
-> >> + * Btrfs root item used to be smaller than current size.
-> >> + * The old format ends at where member generation_v2 is.
-> >> + */
-> >> +static inline size_t btrfs_legacy_root_item_size(void)
-> >> +{
-> >> +	return offsetof(struct btrfs_root_item, generation_v2);
-> >> +}
-> >> +
-> >> 
-> >>  /*
-> >>  
-> >>   * this is used for both forward and backward root refs
-> >>   */
-
+I ran xfstests and it was successful. I am testing ext4 now.
 
 -- 
-Martin
-
-
+Goldwyn
