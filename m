@@ -2,88 +2,89 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36BB82743E7
-	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Sep 2020 16:15:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 197872743F9
+	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Sep 2020 16:17:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726652AbgIVOPV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 22 Sep 2020 10:15:21 -0400
-Received: from mx2.suse.de ([195.135.220.15]:50676 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726641AbgIVOPV (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 22 Sep 2020 10:15:21 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 1BFDAB15B;
-        Tue, 22 Sep 2020 14:15:57 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id E3504DA6E9; Tue, 22 Sep 2020 16:14:04 +0200 (CEST)
-Date:   Tue, 22 Sep 2020 16:14:04 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v2 14/19] btrfs: make btree inode io_tree has its special
- owner
-Message-ID: <20200922141404.GA6756@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20200915053532.63279-1-wqu@suse.com>
- <20200915053532.63279-15-wqu@suse.com>
+        id S1726613AbgIVORL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 22 Sep 2020 10:17:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35850 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726593AbgIVORL (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 22 Sep 2020 10:17:11 -0400
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17D62C0613CF
+        for <linux-btrfs@vger.kernel.org>; Tue, 22 Sep 2020 07:17:11 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id w16so19145864qkj.7
+        for <linux-btrfs@vger.kernel.org>; Tue, 22 Sep 2020 07:17:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=IF/VeFlQWv+XOsjueScQCMEysjJ4rjkdCkDflKceYao=;
+        b=s71nT25ioisAEiIG8/0Q5VC2l/TcsaRH9Fdtr6GiSJTAs538himWdVQwLFsxzSpUGf
+         61RsWwqTfT/7XsNXXWxOmq1EkqiF2XJgaJvYJM2JghFPepIcPQeLPx3roaZ2WIV9rpGg
+         kguPrBr95fSCWcmqS1Pms+vWVQH5IyY1LRHNhBUsUbXZ9tv1Z0kTFKk0VkLp7YyO9Es6
+         C6upSQNR5mlI639KTjezjWmJFmKihpY/9cc6bCwLldld4/86GeGxOzhV9KooVJvasVw6
+         nfd49Obf4DWeDqpNA/GGd0sYNJVrxsrUqD89Rh37qgH3Jrt+I5PbaGItjAD2Cl2RjpW7
+         6aWw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=IF/VeFlQWv+XOsjueScQCMEysjJ4rjkdCkDflKceYao=;
+        b=r/aptgr/PIy62/hmpIducDZItNtTgilLcPYKkYLz5y8SCe4hMiO8+qowQzpfYh3mft
+         2bvMsG3joZze2ZrXGRwVcRIkcS3CTYfyhriAHt5z0bC48RfVYkSAmUmKngjwXPu1nWxR
+         B9uxSnhNyA7G8bqqrwdTaWDlcIY7WpFlZgfWWROn8troLqBilhvjzF8/A91y9EtDwJAe
+         u7FrFqo6lIqQbvMwA0+SI5MZXzwP9ljLeahOFpUpXVTh/9IgCEZGVyuisSXWH6FISufy
+         4ju67uf2pn4JBllrPAqvfJ/vZZtwnmWqOABAZb2zQiMgrLjRCOMur/6+ta6fR7YurF6Y
+         Ye2Q==
+X-Gm-Message-State: AOAM533b/yskd1RMKEwiGjbfxXa8NDrJtYxiS22U08iDlehuK3cxXeNt
+        h3je0CF01Bvrt8eNza3vWyxCLg==
+X-Google-Smtp-Source: ABdhPJziGkDMVn4JtwXN/Cq2Ds2exGSBUy4/ZrJ8byUA1LgIujCyqJjOQLEPkWeHeU+Vp0HKNKsa7A==
+X-Received: by 2002:a37:545:: with SMTP id 66mr4854742qkf.338.1600784230218;
+        Tue, 22 Sep 2020 07:17:10 -0700 (PDT)
+Received: from [192.168.1.45] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id q7sm13017061qte.95.2020.09.22.07.17.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 22 Sep 2020 07:17:09 -0700 (PDT)
+Subject: Re: [PATCH 01/15] fs: remove dio_end_io()
+To:     Goldwyn Rodrigues <rgoldwyn@suse.de>, linux-fsdevel@vger.kernel.org
+Cc:     linux-btrfs@vger.kernel.org, david@fromorbit.com, hch@lst.de,
+        johannes.thumshirn@wdc.com, dsterba@suse.com,
+        darrick.wong@oracle.com, Goldwyn Rodrigues <rgoldwyn@suse.com>,
+        Nikolay Borisov <nborisov@suse.com>,
+        Johannes Thumshirn <jthumshirn@suse.de>
+References: <20200921144353.31319-1-rgoldwyn@suse.de>
+ <20200921144353.31319-2-rgoldwyn@suse.de>
+From:   Josef Bacik <josef@toxicpanda.com>
+Message-ID: <8372f830-6a0d-b88b-fbd7-de90b0996269@toxicpanda.com>
+Date:   Tue, 22 Sep 2020 10:17:08 -0400
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.2.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200915053532.63279-15-wqu@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <20200921144353.31319-2-rgoldwyn@suse.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 01:35:27PM +0800, Qu Wenruo wrote:
-> Btree inode is pretty special compared to all other inode extent io
-> tree, although it has a btrfs inode, it doesn't have the track_uptodate
-> bit at all.
+On 9/21/20 10:43 AM, Goldwyn Rodrigues wrote:
+> From: Goldwyn Rodrigues <rgoldwyn@suse.com>
 > 
-> This means a lot of things like extent locking doesn't even need to be
-> applied to btree io tree.
+> Since we removed the last user of dio_end_io(), remove the helper
+> function dio_end_io().
 > 
-> Since it's so special, adds a new owner value for it to make debuging a
-> little easier.
-> 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> ---
->  fs/btrfs/disk-io.c        | 2 +-
->  fs/btrfs/extent-io-tree.h | 1 +
->  2 files changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-> index 1ba16951ccaa..82a841bd0702 100644
-> --- a/fs/btrfs/disk-io.c
-> +++ b/fs/btrfs/disk-io.c
-> @@ -2126,7 +2126,7 @@ static void btrfs_init_btree_inode(struct btrfs_fs_info *fs_info)
->  
->  	RB_CLEAR_NODE(&BTRFS_I(inode)->rb_node);
->  	extent_io_tree_init(fs_info, &BTRFS_I(inode)->io_tree,
-> -			    IO_TREE_INODE_IO, inode);
-> +			    IO_TREE_BTREE_IO, inode);
->  	BTRFS_I(inode)->io_tree.track_uptodate = false;
->  	extent_map_tree_init(&BTRFS_I(inode)->extent_tree);
->  
-> diff --git a/fs/btrfs/extent-io-tree.h b/fs/btrfs/extent-io-tree.h
-> index 219a09a2b734..21d128383bfd 100644
-> --- a/fs/btrfs/extent-io-tree.h
-> +++ b/fs/btrfs/extent-io-tree.h
-> @@ -40,6 +40,7 @@ struct io_failure_record;
->  enum {
->  	IO_TREE_FS_PINNED_EXTENTS,
->  	IO_TREE_FS_EXCLUDED_EXTENTS,
-> +	IO_TREE_BTREE_IO,
+> Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+> Reviewed-by: Johannes Thumshirn <jthumshirn@suse.de>
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
+> Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
 
-I've renamed it to IO_TREE_BTREE_INODE_IO, and btw don't forget to check
-if enums aren't exported to tracepoints. This is and needs to be added
-there as well.
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 
->  	IO_TREE_INODE_IO,
->  	IO_TREE_INODE_IO_FAILURE,
->  	IO_TREE_RELOC_BLOCKS,
-> -- 
-> 2.28.0
+Thanks,
+
+Josef
