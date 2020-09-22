@@ -2,119 +2,166 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBB892738CA
-	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Sep 2020 04:37:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63430273924
+	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Sep 2020 05:13:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729995AbgIVChH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 21 Sep 2020 22:37:07 -0400
-Received: from mx2.suse.de ([195.135.220.15]:46674 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728750AbgIVChG (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 21 Sep 2020 22:37:06 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1600742225;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=EF3FmnK752coUBHd7BkrBiD8aHm8sgqjasNtrBnIdCI=;
-        b=inneviJsokCG+aYrohngfmJDAJfyrzto1dcvB48ZVx9xLRBANteZtSa01hcuoFy6uKssY0
-        tLvWgW36Kd3VaFP4SMa7qq10lxC7bQY8FBB2b/bTF2Bhiq994CwMXM3ynQXiA1o533ijY/
-        jzYD7l6fmRTIeS9+6Y+ov2B8XEHGE6c=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 4D9B4AB3E;
-        Tue, 22 Sep 2020 02:37:42 +0000 (UTC)
-From:   Qu Wenruo <wqu@suse.com>
+        id S1728239AbgIVDNr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 21 Sep 2020 23:13:47 -0400
+Received: from aserp2130.oracle.com ([141.146.126.79]:57868 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726818AbgIVDNr (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 21 Sep 2020 23:13:47 -0400
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08M39PI3109772;
+        Tue, 22 Sep 2020 03:13:45 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding; s=corp-2020-01-29;
+ bh=flWvV1QoAJyIY0HmZijef149njLPDxEGD0Dnu3+gsZg=;
+ b=MhWXx8Mp0koxroXGMQO9IxHIcZNWAtK8Eu4F6ifm0kPv6jPqrnSZK5fRPPC1fQoAzADc
+ eXvLq6W38yOw7tpzteZhjGXRKxJ89en5UCrhMDlKfxQuTSnoJrCP1OBR1XAwF/LYUQ/k
+ mx5650+LMhpmVF6kihH3zQPtUTPy27fbDSYAMXqqE3aCjE2c2LK3JXecVHCrwslYz5mO
+ QgylQT3yWT8xOD9DWjPRcDn2xZYDX0GYO54SZrYTtAlvX8vC7wzxqIP+YGaxhrBqremb
+ EGmeJClw+Atlp9g0fzJwE1adRnbGhA8GikjCVxO3mIJ2cn6Xxzv06TYZk7in9kwCHeI9 RQ== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2130.oracle.com with ESMTP id 33n7gad31t-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 22 Sep 2020 03:13:45 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08M3BKCo078432;
+        Tue, 22 Sep 2020 03:13:45 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3030.oracle.com with ESMTP id 33nuwxj2ph-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 22 Sep 2020 03:13:44 +0000
+Received: from abhmp0020.oracle.com (abhmp0020.oracle.com [141.146.116.26])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 08M3Dheb022438;
+        Tue, 22 Sep 2020 03:13:43 GMT
+Received: from localhost.localdomain (/39.109.231.106)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 21 Sep 2020 20:13:43 -0700
+From:   Anand Jain <anand.jain@oracle.com>
 To:     linux-btrfs@vger.kernel.org
-Cc:     Martin Steigerwald <martin@lichtvoll.de>
-Subject: [PATCH] btrfs: fix false alert caused by legacy btrfs root item
-Date:   Tue, 22 Sep 2020 10:37:01 +0800
-Message-Id: <20200922023701.32654-1-wqu@suse.com>
-X-Mailer: git-send-email 2.28.0
+Cc:     Johannes.Thumshirn@wdc.com
+Subject: [PATCH v2] btrfs: free device without BTRFS_MAGIC
+Date:   Tue, 22 Sep 2020 11:13:34 +0800
+Message-Id: <1ee9b318e3bb851aaec9c1efd1eadb117ad46638.1600741332.git.anand.jain@oracle.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <dbc067b24194241f6d87b8f9799d9b6484984a13.1600473987.git.anand.jain@oracle.com>
+References: <dbc067b24194241f6d87b8f9799d9b6484984a13.1600473987.git.anand.jain@oracle.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9751 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0 adultscore=0
+ bulkscore=0 mlxlogscore=999 phishscore=0 suspectscore=3 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009220027
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9751 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 bulkscore=0
+ mlxscore=0 suspectscore=3 impostorscore=0 malwarescore=0 spamscore=0
+ phishscore=0 mlxlogscore=999 clxscore=1015 adultscore=0 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009220027
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Commit 259ee7754b67 ("btrfs: tree-checker: Add ROOT_ITEM check")
-introduced btrfs root item size check, however btrfs root item has two
-format, the legacy one which just ends before generation_v2 member, is
-smaller than current btrfs root item size.
+Many things can happen after the device is scanned and before the device
+is mounted.
 
-This caused btrfs kernel to reject valid but old tree root leaves.
+One such thing is losing the BTRFS_MAGIC on the device.
 
-Fix this problem by also allowing legacy root item, since kernel can
-already handle them pretty well and upgrade to newer root item format
-when needed.
+If it happens we still won't free that device from the memory and causes
+the userland to confuse.
 
-Reported-by: Martin Steigerwald <martin@lichtvoll.de>
-Fixes: 259ee7754b67 ("btrfs: tree-checker: Add ROOT_ITEM check")
-Signed-off-by: Qu Wenruo <wqu@suse.com>
+For example: As the BTRFS_IOC_DEV_INFO still carries the device path which
+does not have the BTRFS_MAGIC, the btrfs fi show still shows device
+which does not belong. As shown below.
+
+mkfs.btrfs -fq -draid1 -mraid1 /dev/sda /dev/sdb
+
+wipefs -a /dev/sdb
+mount -o degraded /dev/sda /btrfs
+btrfs fi show -m
+
+/dev/sdb does not contain BTRFS_MAGIC and we still show it as part of
+btrfs.
+Label: none  uuid: 470ec6fb-646b-4464-b3cb-df1b26c527bd
+        Total devices 2 FS bytes used 128.00KiB
+        devid    1 size 3.00GiB used 571.19MiB path /dev/sda
+        devid    2 size 3.00GiB used 571.19MiB path /dev/sdb
+
+Fix is to return -ENODATA error code in btrfs_read_dev_one_super()
+when BTRFS_MAGIC check fails, and its parent open_fs_devices() to
+free the device in the mount-thread.
+
+Signed-off-by: Anand Jain <anand.jain@oracle.com>
 ---
- fs/btrfs/tree-checker.c         | 17 ++++++++++++-----
- include/uapi/linux/btrfs_tree.h |  9 +++++++++
- 2 files changed, 21 insertions(+), 5 deletions(-)
+v2: Do not return ENODATA on `btrfs_super_bytenr(super) != bytenr`
 
-diff --git a/fs/btrfs/tree-checker.c b/fs/btrfs/tree-checker.c
-index 7b1fee630f97..6f794aca48d3 100644
---- a/fs/btrfs/tree-checker.c
-+++ b/fs/btrfs/tree-checker.c
-@@ -1035,7 +1035,7 @@ static int check_root_item(struct extent_buffer *leaf, struct btrfs_key *key,
- 			   int slot)
- {
- 	struct btrfs_fs_info *fs_info = leaf->fs_info;
--	struct btrfs_root_item ri;
-+	struct btrfs_root_item ri = { 0 };
- 	const u64 valid_root_flags = BTRFS_ROOT_SUBVOL_RDONLY |
- 				     BTRFS_ROOT_SUBVOL_DEAD;
- 	int ret;
-@@ -1044,14 +1044,21 @@ static int check_root_item(struct extent_buffer *leaf, struct btrfs_key *key,
- 	if (ret < 0)
- 		return ret;
+ fs/btrfs/disk-io.c |  8 ++++++--
+ fs/btrfs/volumes.c | 19 +++++++++++++------
+ 2 files changed, 19 insertions(+), 8 deletions(-)
+
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index 160b485d2cc0..d84a49fe9639 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -3429,12 +3429,16 @@ struct btrfs_super_block *btrfs_read_dev_one_super(struct block_device *bdev,
+ 		return ERR_CAST(page);
  
--	if (btrfs_item_size_nr(leaf, slot) != sizeof(ri)) {
-+	if (btrfs_item_size_nr(leaf, slot) != sizeof(ri) &&
-+	    btrfs_item_size_nr(leaf, slot) != btrfs_legacy_root_item_size()) {
- 		generic_err(leaf, slot,
--			    "invalid root item size, have %u expect %zu",
--			    btrfs_item_size_nr(leaf, slot), sizeof(ri));
-+			    "invalid root item size, have %u expect %zu or %zu",
-+			    btrfs_item_size_nr(leaf, slot), sizeof(ri),
-+			    btrfs_legacy_root_item_size());
+ 	super = page_address(page);
+-	if (btrfs_super_bytenr(super) != bytenr ||
+-		    btrfs_super_magic(super) != BTRFS_MAGIC) {
++	if (btrfs_super_bytenr(super) != bytenr) {
+ 		btrfs_release_disk_super(super);
+ 		return ERR_PTR(-EINVAL);
  	}
  
-+	/*
-+	 * For legacy root item, the members starting at generation_v2 will be
-+	 * all filled with 0.
-+	 * And since we allow geneartion_v2 as 0, it will still pass the check.
-+	 */
- 	read_extent_buffer(leaf, &ri, btrfs_item_ptr_offset(leaf, slot),
--			   sizeof(ri));
-+			   btrfs_item_size_nr(leaf, slot));
- 
- 	/* Generation related */
- 	if (btrfs_root_generation(&ri) >
-diff --git a/include/uapi/linux/btrfs_tree.h b/include/uapi/linux/btrfs_tree.h
-index 9ba64ca6b4ac..464095a28b18 100644
---- a/include/uapi/linux/btrfs_tree.h
-+++ b/include/uapi/linux/btrfs_tree.h
-@@ -644,6 +644,15 @@ struct btrfs_root_item {
- 	__le64 reserved[8]; /* for future */
- } __attribute__ ((__packed__));
- 
-+/*
-+ * Btrfs root item used to be smaller than current size.
-+ * The old format ends at where member generation_v2 is.
-+ */
-+static inline size_t btrfs_legacy_root_item_size(void)
-+{
-+	return offsetof(struct btrfs_root_item, generation_v2);
-+}
++	if (btrfs_super_magic(super) != BTRFS_MAGIC) {
++		btrfs_release_disk_super(super);
++		return ERR_PTR(-ENODATA);
++	}
 +
- /*
-  * this is used for both forward and backward root refs
-  */
+ 	return super;
+ }
+ 
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index 7cc677a7e544..ec9dac40b4f1 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -1198,17 +1198,24 @@ static int open_fs_devices(struct btrfs_fs_devices *fs_devices,
+ {
+ 	struct btrfs_device *device;
+ 	struct btrfs_device *latest_dev = NULL;
++	struct btrfs_device *tmp_device;
+ 
+ 	flags |= FMODE_EXCL;
+ 
+-	list_for_each_entry(device, &fs_devices->devices, dev_list) {
+-		/* Just open everything we can; ignore failures here */
+-		if (btrfs_open_one_device(fs_devices, device, flags, holder))
+-			continue;
++	list_for_each_entry_safe(device, tmp_device, &fs_devices->devices,
++				 dev_list) {
++		int ret;
+ 
+-		if (!latest_dev ||
+-		    device->generation > latest_dev->generation)
++		/* Just open everything we can; ignore failures here */
++		ret = btrfs_open_one_device(fs_devices, device, flags, holder);
++		if (ret == 0 && (!latest_dev ||
++		    device->generation > latest_dev->generation)) {
+ 			latest_dev = device;
++		} else if (ret == -ENODATA) {
++			fs_devices->num_devices--;
++			list_del(&device->dev_list);
++			btrfs_free_device(device);
++		}
+ 	}
+ 	if (fs_devices->open_devices == 0)
+ 		return -EINVAL;
 -- 
-2.28.0
+2.25.1
 
