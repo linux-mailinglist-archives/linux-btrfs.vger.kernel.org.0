@@ -2,68 +2,68 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9E6E274401
-	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Sep 2020 16:18:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B61D927440F
+	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Sep 2020 16:20:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726671AbgIVOSB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 22 Sep 2020 10:18:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35982 "EHLO
+        id S1726566AbgIVOUP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 22 Sep 2020 10:20:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726494AbgIVOSB (ORCPT
+        with ESMTP id S1726605AbgIVOUO (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 22 Sep 2020 10:18:01 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A12FC061755
-        for <linux-btrfs@vger.kernel.org>; Tue, 22 Sep 2020 07:18:01 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id q5so19169354qkc.2
-        for <linux-btrfs@vger.kernel.org>; Tue, 22 Sep 2020 07:18:01 -0700 (PDT)
+        Tue, 22 Sep 2020 10:20:14 -0400
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54F6EC0613CF
+        for <linux-btrfs@vger.kernel.org>; Tue, 22 Sep 2020 07:20:14 -0700 (PDT)
+Received: by mail-qt1-x841.google.com with SMTP id d1so3155250qtr.6
+        for <linux-btrfs@vger.kernel.org>; Tue, 22 Sep 2020 07:20:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=TP7WW6V2WlFkm4YOA5DbswwIEfm2T1k9LUW/JDxwHMQ=;
-        b=uYxUaJAKyvKzep/JhSZloI/JGiE4oOVwDCau09odI07DaCQ0ZzDErcAsx+YXnlOPB/
-         eeKTV84vItuUjkMMEirrL4j9v5v8udgxPVm9wk/8lLIwk7b/YK0JMBoL2YIONWrVq43n
-         UBmaMQclonkzYOd2SR8U3ZMOvtcBjBfgtERfPM2fq0Z6+qo5vbVUfRCwXpaSomDIrkut
-         TA84lM5AgEjgQqVAGZwQfI7kr3/+FOBGLhIKKAgVVdxBItrwE4K29oe24Auws6mYlj+C
-         dydTpRDmF+9K3xoUh2Wsylasd3mc9TpznXeTp3wcOBqCXbaxif5ANtjRkz5A6cJKHIOz
-         M0oA==
+        bh=uC6IysBO6eYkTM0Edb76q612kH6aCJXdfPK18r8nFlw=;
+        b=KRxt/7xJBgfsNAM7oM3hJOTq2jFfZrAylzIaDXiC/5dsHQiWFwE+Gj5DpGuhnWsjEQ
+         i7ia24PqUH1LaP+z8xjuq29vAf1BG9qFB+NBJ7zeuqf+1OnAzhEXMZnbZCbiGmRmZmuv
+         MEkl02gsXRFzG4Ij498q+PP+W0t4QGsDHm1XCMthYWUlQuYnOQgFWshPaM9O0Pk4eqoY
+         l4akyXhI5ZihQPkbVWu2favUPguU4mAm9icpLiIi5w1RrRJMArfCcnhRYkR+rqdzIato
+         7iwQABaoY2Re9gJT0Fp0rYSEu5KUxbFDC9j36VkPPSfSwDCKxIQDWjHDvdOHI9xbbAYZ
+         9nyQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=TP7WW6V2WlFkm4YOA5DbswwIEfm2T1k9LUW/JDxwHMQ=;
-        b=Yd4s5MpKzppFu49FeDeS9YlMsFGh3AwoUkZIYRfrqvgC5VuaADqak/6SkrSc3KmnOt
-         wLEe0vxUcIT3ts23KZ0dSxI0djfXh0tCtdDejoC9TznFqgSosVmeHzZjT7u4bQPdtdw3
-         dsRE97zQ6KGGw+ltLnj3YK8G6wHSPbUQUJ673tjhBXowaPqmXpyPm9sdq35AIh4h4E/N
-         J6jDeMjedcRDu2l+1l8pmLFwBIlg4+8Oa3XB8ZextacjqaCrF1ELS7eaH0D9mtIAwrZV
-         BG0YtywlyN2SUJ4IvgeyaoTS9uHSUqpdTMaqnvEdehG221GoewqeK8+GfFiT8MuHj4cq
-         ZG2A==
-X-Gm-Message-State: AOAM532esUVfvH9MvWJRX5dZh4nyR1XMwjCV7fXBf12NEgbW6C+0ZJnH
-        JAOlZ47rNsfbxxBpixN+YTFxnQ==
-X-Google-Smtp-Source: ABdhPJwCKv3NhKucIaQsvV3pi1VTtlsX+eWxacLzj4qpCyOh/I7DAmgLV+kv2yB/i0ZTAR2EDS7+dg==
-X-Received: by 2002:a37:d44:: with SMTP id 65mr4964199qkn.399.1600784280197;
-        Tue, 22 Sep 2020 07:18:00 -0700 (PDT)
+        bh=uC6IysBO6eYkTM0Edb76q612kH6aCJXdfPK18r8nFlw=;
+        b=Poy8imOWBweqYa1vp8HxjX8pBpPe/1Gcyq5BHanqcdb440TM3MUwcYxC5R+dn/NxI/
+         yq7P6DdlNMenqV3er+MdbUIz7qNkpWpi3ktIeRiwfW/jsuh+a26dn9VAaS1Z0mgBX1n5
+         uCJnl4hgH0OmG2Thfgdoy9qv6vsG/CygIS9EHyrBKAp8pV3MT6czqpqC3ok8bNgIkaWr
+         wPIlAfBPYfSptkv9rJZM4XXdtPGcvTTLWh06aZKKhtercaMZL/Zb3asyXlsdZGn8LaUY
+         Ev88PXTiRH6u71hxrmoaMSN1fwKUksJ7DWgpdCtI1u3Lxip8N+PtFWUJRsjb5/H5e0Kb
+         w2Qg==
+X-Gm-Message-State: AOAM530HByI8keCpFeiCAMudfKVzEW6KmiSFPbOZUArzeuddZpVZNKQX
+        lV0WbHqrAGZPnsun18qXrrJeiA==
+X-Google-Smtp-Source: ABdhPJx65By5VzFaEda5soVTLuEK7K4FZR95u1wFXB3eP8bTSddXWMB3fXBVXtUEucVCWhP2UFtZUQ==
+X-Received: by 2002:ac8:3848:: with SMTP id r8mr4808638qtb.205.1600784413447;
+        Tue, 22 Sep 2020 07:20:13 -0700 (PDT)
 Received: from [192.168.1.45] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id z7sm2725764qtc.10.2020.09.22.07.17.59
+        by smtp.gmail.com with ESMTPSA id b34sm12983022qtc.73.2020.09.22.07.20.12
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 22 Sep 2020 07:17:59 -0700 (PDT)
-Subject: Re: [PATCH 03/15] iomap: Allow filesystem to call iomap_dio_complete
- without i_rwsem
+        Tue, 22 Sep 2020 07:20:12 -0700 (PDT)
+Subject: Re: [PATCH 04/15] iomap: Call inode_dio_end() before
+ generic_write_sync()
 To:     Goldwyn Rodrigues <rgoldwyn@suse.de>, linux-fsdevel@vger.kernel.org
 Cc:     linux-btrfs@vger.kernel.org, david@fromorbit.com, hch@lst.de,
         johannes.thumshirn@wdc.com, dsterba@suse.com,
         darrick.wong@oracle.com, Goldwyn Rodrigues <rgoldwyn@suse.com>
 References: <20200921144353.31319-1-rgoldwyn@suse.de>
- <20200921144353.31319-4-rgoldwyn@suse.de>
+ <20200921144353.31319-5-rgoldwyn@suse.de>
 From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <9c669220-a5d9-48fe-8e0e-e2c3d3de5695@toxicpanda.com>
-Date:   Tue, 22 Sep 2020 10:17:58 -0400
+Message-ID: <20bf949a-7237-8409-4230-cddb430026a9@toxicpanda.com>
+Date:   Tue, 22 Sep 2020 10:20:11 -0400
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
  Gecko/20100101 Thunderbird/78.2.2
 MIME-Version: 1.0
-In-Reply-To: <20200921144353.31319-4-rgoldwyn@suse.de>
+In-Reply-To: <20200921144353.31319-5-rgoldwyn@suse.de>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -72,117 +72,60 @@ List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 On 9/21/20 10:43 AM, Goldwyn Rodrigues wrote:
-> From: Christoph Hellwig <hch@lst.de>
+> From: Goldwyn Rodrigues <rgoldwyn@suse.com>
 > 
-> This is to avoid the deadlock caused in btrfs because of O_DIRECT |
-> O_DSYNC.
+> iomap complete routine can deadlock with btrfs_fallocate because of the
+> call to generic_write_sync().
 > 
-> Filesystems such as btrfs require i_rwsem while performing sync on a
-> file. iomap_dio_rw() is called under i_rw_sem. This leads to a
-> deadlock because of:
-> 
+> P0                      P1
+> inode_lock()            fallocate(FALLOC_FL_ZERO_RANGE)
+> __iomap_dio_rw()        inode_lock()
+>                          <block>
+> <submits IO>
+> <completes IO>
+> inode_unlock()
+>                          <gets inode_lock()>
+>                          inode_dio_wait()
 > iomap_dio_complete()
 >    generic_write_sync()
->      btrfs_sync_file()
+>      btrfs_file_fsync()
+>        inode_lock()
+>        <deadlock>
 > 
-> Separate out iomap_dio_complete() from iomap_dio_rw(), so filesystems
-> can call iomap_dio_complete() after unlocking i_rwsem.
+> inode_dio_end() is used to notify the end of DIO data in order
+> to synchronize with truncate. Call inode_dio_end() before calling
+> generic_write_sync(), so filesystems can lock i_rwsem during a sync.
 > 
-> Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
 > ---
->   fs/iomap/direct-io.c  | 34 +++++++++++++++++++++++++---------
->   include/linux/iomap.h |  5 +++++
->   2 files changed, 30 insertions(+), 9 deletions(-)
+>   fs/iomap/direct-io.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
 > 
 > diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
-> index c1aafb2ab990..d970c6bbbe11 100644
+> index d970c6bbbe11..e01f81e7b76f 100644
 > --- a/fs/iomap/direct-io.c
 > +++ b/fs/iomap/direct-io.c
-> @@ -76,7 +76,7 @@ static void iomap_dio_submit_bio(struct iomap_dio *dio, struct iomap *iomap,
->   		dio->submit.cookie = submit_bio(bio);
->   }
->   
-> -static ssize_t iomap_dio_complete(struct iomap_dio *dio)
-> +ssize_t iomap_dio_complete(struct iomap_dio *dio)
->   {
->   	const struct iomap_dio_ops *dops = dio->dops;
->   	struct kiocb *iocb = dio->iocb;
-> @@ -130,6 +130,7 @@ static ssize_t iomap_dio_complete(struct iomap_dio *dio)
->   
->   	return ret;
->   }
-> +EXPORT_SYMBOL_GPL(iomap_dio_complete);
->   
->   static void iomap_dio_complete_work(struct work_struct *work)
->   {
-> @@ -406,8 +407,8 @@ iomap_dio_actor(struct inode *inode, loff_t pos, loff_t length,
->    * Returns -ENOTBLK In case of a page invalidation invalidation failure for
->    * writes.  The callers needs to fall back to buffered I/O in this case.
->    */
-> -ssize_t
-> -iomap_dio_rw(struct kiocb *iocb, struct iov_iter *iter,
-> +struct iomap_dio *
-> +__iomap_dio_rw(struct kiocb *iocb, struct iov_iter *iter,
->   		const struct iomap_ops *ops, const struct iomap_dio_ops *dops,
->   		bool wait_for_completion)
->   {
-> @@ -421,14 +422,14 @@ iomap_dio_rw(struct kiocb *iocb, struct iov_iter *iter,
->   	struct iomap_dio *dio;
->   
->   	if (!count)
-> -		return 0;
-> +		return NULL;
->   
->   	if (WARN_ON(is_sync_kiocb(iocb) && !wait_for_completion))
-> -		return -EIO;
-> +		return ERR_PTR(-EIO);
->   
->   	dio = kmalloc(sizeof(*dio), GFP_KERNEL);
->   	if (!dio)
-> -		return -ENOMEM;
-> +		return ERR_PTR(-ENOMEM);
->   
->   	dio->iocb = iocb;
->   	atomic_set(&dio->ref, 1);
-> @@ -558,7 +559,7 @@ iomap_dio_rw(struct kiocb *iocb, struct iov_iter *iter,
->   	dio->wait_for_completion = wait_for_completion;
->   	if (!atomic_dec_and_test(&dio->ref)) {
->   		if (!wait_for_completion)
-> -			return -EIOCBQUEUED;
-> +			return ERR_PTR(-EIOCBQUEUED);
->   
->   		for (;;) {
->   			set_current_state(TASK_UNINTERRUPTIBLE);
-> @@ -574,10 +575,25 @@ iomap_dio_rw(struct kiocb *iocb, struct iov_iter *iter,
->   		__set_current_state(TASK_RUNNING);
+> @@ -118,6 +118,7 @@ ssize_t iomap_dio_complete(struct iomap_dio *dio)
+>   			dio_warn_stale_pagecache(iocb->ki_filp);
 >   	}
 >   
-> -	return iomap_dio_complete(dio);
-> +	return dio;
+> +	inode_dio_end(file_inode(iocb->ki_filp));
+>   	/*
+>   	 * If this is a DSYNC write, make sure we push it to stable storage now
+>   	 * that we've written data.
+> @@ -125,7 +126,6 @@ ssize_t iomap_dio_complete(struct iomap_dio *dio)
+>   	if (ret > 0 && (dio->flags & IOMAP_DIO_NEED_SYNC))
+>   		ret = generic_write_sync(iocb, ret);
 >   
->   out_free_dio:
+> -	inode_dio_end(file_inode(iocb->ki_filp));
 >   	kfree(dio);
-> -	return ret;
-> +	return ERR_PTR(ret);
-> +}
-> +EXPORT_SYMBOL_GPL(__iomap_dio_rw);
-> +
-> +ssize_t
-> +iomap_dio_rw(struct kiocb *iocb, struct iov_iter *iter,
-> +		const struct iomap_ops *ops, const struct iomap_dio_ops *dops,
-> +		bool wait_for_completion)
-> +{
-> +	struct iomap_dio *dio;
-> +
-> +	dio = __iomap_dio_rw(iocb, iter, ops, dops, wait_for_completion);
-> +	if (IS_ERR_OR_NULL(dio))
-> +		return PTR_ERR_OR_ZERO(dio);
-> +	return iomap_dio_complete(dio);
->   }
->   EXPORT_SYMBOL_GPL(iomap_dio_rw);
-> +
+>   
+>   	return ret;
+> 
 
-Got an extra + here for some reason.  Otherwise
+Did you verify that xfs or ext4 don't rely on the inode_dio_end() happening 
+before the generic_write_sync()?  I wouldn't expect that they would, but we've 
+already run into problems making those kind of assumptions.  If it's fine you 
+can add
 
 Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 
