@@ -2,133 +2,148 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C793B273C07
-	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Sep 2020 09:32:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5252273D47
+	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Sep 2020 10:28:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730087AbgIVHcC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 22 Sep 2020 03:32:02 -0400
-Received: from esa1.hgst.iphmx.com ([68.232.141.245]:34775 "EHLO
-        esa1.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729887AbgIVHb6 (ORCPT
+        id S1726788AbgIVI2E (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 22 Sep 2020 04:28:04 -0400
+Received: from esa5.hgst.iphmx.com ([216.71.153.144]:45254 "EHLO
+        esa5.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726537AbgIVI2E (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 22 Sep 2020 03:31:58 -0400
+        Tue, 22 Sep 2020 04:28:04 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1600759917; x=1632295917;
-  h=from:to:cc:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=OBWuNALCnfLdjKAkdjtNwd9fAkCv8SAhW9ygkTmNM2I=;
-  b=J4Z9BFNTQ1iFphnvqNy1MdIPH7vca/KiyM+PKx2CPonfMu0vjz4oW7VF
-   sKpQpX4lrE5S/ax4juQQDhQ7RQvnjsjNCKK+p0pvYURh8j3H6ic4fShvi
-   phwQHtYTe+tGvSS+mGrx3U90B4nbad+obS5DT4eWq9/NnBXgAchtFJfYu
-   rW5akxgUX42hq2G6Uvlhu3659pobFTMUZCa+i7U0T5rhQmna1xIfPh1bJ
-   XavGGHoxaub/SQI72YLnQfDLO6FadGLyB3cFh9u3pHJwg/W8pU5jA9o6b
-   inZhGdnzTzEdqbaJFikZ5Y7HDXu5BJh0eNO8k622K4npF+lALa4dhIPmV
-   w==;
-IronPort-SDR: /+dI3skuV2VnxtHC3y3TzIWhpXOtjXkO38mnRZudwuHX1T7ZFoNNBsNCUIlgRdt1+WGyFonK6f
- QosvedBHrz3LoE59ujd0iDt6EwFeUTA9Y5gUEEv+dOtCia4s/qNxwo+tfgzIY7VfTm4+bYESLH
- jTyBRBLwZ0vrY77dvDhzySiVLKXtBGTBRJrXh4chY8Qs+xChI0KeXAwVdWl1eSbOXQshim+Xeu
- rPqNngQ/sTTVKCe6rKBjy/czUWh2R1WpITU8ZBPaeda/guh1MvUA0MhsbciNbCgf7lNWBF74u0
- m8I=
-X-IronPort-AV: E=Sophos;i="5.77,289,1596470400"; 
-   d="scan'208";a="257668716"
-Received: from mail-bl2nam02lp2054.outbound.protection.outlook.com (HELO NAM02-BL2-obe.outbound.protection.outlook.com) ([104.47.38.54])
-  by ob1.hgst.iphmx.com with ESMTP; 22 Sep 2020 15:31:57 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nVW1fQxwvhg145pCC2+JZmfRIxI6Zadk5Cgr47of09qlfGbg5WdDHjK38fHUy7g9+3Sm86fNBgyaK/p8+VT/zIOYBuLeyL+Pkeq5cirqR6C2YrRtBBZ7FA9c8y3HxspXMmKwlRMY7xezRW8rt/RfPUreLapuQCJj6ZFujmHJtWw8P3rceQ9jTyqLf436L3Nze7Z847hz49OSn9SGII7IqSaERU5zZhQNgv2elHvgOOk0eRFVsstzRgrDDZyHUY6G6RlLxhucXNbVsTZ85djjaExe3AHFIxYoRF18VJELTXFIH0mUlFDz/5jrzZ4Hz29Vxtt5D5pFMuuB7JZPDvxP7w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OBWuNALCnfLdjKAkdjtNwd9fAkCv8SAhW9ygkTmNM2I=;
- b=m1KscqflSHghR0MmQW17qNQgOYpZWGYSdrnJcFj4hZxRTm+qL5/LPJpDf9wXDXce2PojPxOuCMbzN/tJ+w1WrxwYzgTi3S58Olokax5DcJzNkETDfGg04lVTrbaRuzvf2hWqw0lOOD2YdkZC1AnOwQOqEGGBtbDPb2tFEd0WIgweb6zj1NIVr0HLiKdrrkNRbrNOxgcRH4ujockheeeheKp/rbFJtEroQIbZD/sxl/7ZyG5w4DxqpKNywbtXedi4j9kzL1DY+Kt+po81NU1HqhqT/Dp4gfax+hSqYpIMG7mClidE9V5la/p85ngXCVPTBLDimg1cX+ppmtmXP9vbtA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OBWuNALCnfLdjKAkdjtNwd9fAkCv8SAhW9ygkTmNM2I=;
- b=bkuxxSUBB3buPpEQOYAyy2snYhUy/86HE/vW9OlMYlgI7yTEEdBsMfrY9GRDGCA8ziSLl3bZa/GruoFia/cR+WiYBNSmpnIqQ2j7fWthHIbQ2/OGsORLuDrGOBv+WJBYfeurkUuD+y1wOyxFG0Arxh3vsDv5qkHcsH/2ifq8iKQ=
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
- (2603:10b6:803:47::21) by SN6PR04MB4781.namprd04.prod.outlook.com
- (2603:10b6:805:b2::23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.15; Tue, 22 Sep
- 2020 07:31:56 +0000
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::457e:5fe9:2ae3:e738]) by SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::457e:5fe9:2ae3:e738%7]) with mapi id 15.20.3370.033; Tue, 22 Sep 2020
- 07:31:55 +0000
-From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To:     "dsterba@suse.cz" <dsterba@suse.cz>
-CC:     David Sterba <dsterba@suse.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH] btrfs: reschedule when cloning lots of extents
-Thread-Topic: [PATCH] btrfs: reschedule when cloning lots of extents
-Thread-Index: AQHWkD4DVh/O4LLPQkW1WjKSvaAYoQ==
-Date:   Tue, 22 Sep 2020 07:31:55 +0000
-Message-ID: <SN4PR0401MB3598FC44A3C81E9D3A9FF9F49B3B0@SN4PR0401MB3598.namprd04.prod.outlook.com>
-References: <23e7f73a25cea63f33c220c1da3daf62d9ffd3e8.1600709608.git.johannes.thumshirn@wdc.com>
- <20200921182856.GP6756@twin.jikos.cz>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: suse.cz; dkim=none (message not signed)
- header.d=none;suse.cz; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [129.253.240.72]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 6930e093-f68f-4d99-7680-08d85ec99556
-x-ms-traffictypediagnostic: SN6PR04MB4781:
-x-microsoft-antispam-prvs: <SN6PR04MB4781CC40EFB595F299021C3C9B3B0@SN6PR04MB4781.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:6430;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: /TK4r+Up1GwFSFISbDye78bDs1JEHsWRI9NW5GQDaE7Nh+su9utFu7g1pV1+lHMDepsBf5m7zykmDCN/KDEnFwIseLyFcpiE2qyZJ2WLix1I6rVoxjGDe1sgzD2FoE8x/0hTIzr9IoOQyPJ30288aW4UrSefM8z7bJ0qbnlUv07J4Rc8SuPOX7TYPaRMHB0rTHu8F8OI2pZeSCsl6SYn/vlxdgtCzttSc09IFWVFqolpvCrrq1J3JT4VZiA3zZPlVbRZzmqLjkOyEXXKNMvR+HKPWJyctOGxIkvPCcLq3A76mIMLpsUToLle6GouNx/H5ZEbUkrMH2mQZXlpan5Vf2IcorZNVtBKzQ4HybBIOWV83/7fdETbLd40FUgwIqCocdHSH7dgw8JJnvKPnss3DQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR0401MB3598.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(136003)(396003)(366004)(376002)(346002)(52536014)(86362001)(76116006)(66556008)(5660300002)(4744005)(91956017)(71200400001)(64756008)(66946007)(66476007)(316002)(66446008)(2906002)(478600001)(186003)(4326008)(9686003)(53546011)(7696005)(8676002)(83380400001)(54906003)(55016002)(6506007)(33656002)(966005)(6916009)(26005)(8936002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: qX/f0LMVpahS0vMKiVBeGSjYFS3PqroiGIK/+/pYjxxEKmyqcsd+MlnVQV5UMHasMlWk7JLod4uFA0HhBrMZaqwdpy5dzZgArGkz3DSX60WS7ttjtJ1gKHEgi2hlH2gPbacoTzTNvKFCIGMgx92nmHkxvoJcrthDI+Hsu1+feFBvZb2z+WWslDA/k+OB24OblEY0hfM9wxyZdXPTptEgX7ZbLiH+H7sqQJalnU9ey9BP7V8P0RfcHn/y5IckiWuphHmz5c1JGpL3BUB3JXdKFuU2pSVNalkzGlpFbOv0Tvt042cTtzfuObM3eB7aAuoz9etWiRU6KNzCxW1jjBUTWXMYK3QQocvlf/lrDOVXK49SdgBGGfz9EL13usaBdH0EuMdBWath27QTXMjR/77wblECd4RsQM9FOvQWQRENwhStywYuid138lamTyj4MQ4e710kqcz0KmB/LNv5Gh9tTMsEwAH1UwqkQ5R0Kz9FZavf574nUk0fzGsnuNBxJQP0JNkVYT5tcZtI3S6ktc3nQJLSqz9Q2yH8s62P2t6afWDWD8RjZCK9vb+VeZpv7CbaJnpQlYwQjO8YO1nw0sEFZmh7riVMknHOln3hfmnmCh6wk03hVklL3FwLJ6PFza8POWukPVu2fQhHDOBAVmBF9w==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+  t=1600763285; x=1632299285;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=AQkOyEKRLSc+Vr3jY0wPdwR5EUwS2wbYEl2sfH05dwA=;
+  b=AU9Rtd/MeZn8IxgKChQvwQHQrjx468B4PMsatSDZdx0M+D9VKdMGPQBs
+   nf3Bsn2f4tA3ibFU572kiPqiFNtWaKX/Dh4yAt+z6aM24h+aBfnIIr6M9
+   aqPigSdmS8wERshJ+hwgcPJKHXPklW8855OVewgxGoXnah/hT1ZHWROMY
+   2qnEsRPSpIie1TCPhn95aWDZW1VNq3I3LW4HMgUK0nGlFQsA4JoOpvhgf
+   MgyzvvR8m07U8HgSipAe+hW7r3X2Zo0+biMndug0lT1n777S/B5LLxEPn
+   HvsR9MeE1Tnn0i6Q86JQSDI85kz3AdroTu+WYPpdeEkH4qTH8sHyh4lGN
+   Q==;
+IronPort-SDR: slzkhDGyQWvGZFktBC0as25cukXJ73L6pggc6IWKFbOjhmDUHvfLA7OlWjlZQxrTNzO5bQ9aoH
+ 4y+m005QVrCoV2MNxFx7F5b/4zNAE3TNezT9xeg454MPXX4F+sWMdQmF3EONEq5ilOHU2J+PkK
+ MQ/ClDFjsT0IKFbCI+ZJX+CAT4ZpvaB9ieRKCrE2d0iSRqykRi4++mcUIitb0W73VabDiJR+Dr
+ Gwa7hQJDhmlfpBg9F8AtteyIsnOZIsQP2x9a+X3PMdg/vZUM7C9/9V+lrGdXAgmiuFUP5hACFY
+ 4bA=
+X-IronPort-AV: E=Sophos;i="5.77,290,1596470400"; 
+   d="scan'208";a="147982336"
+Received: from h199-255-45-15.hgst.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
+  by ob1.hgst.iphmx.com with ESMTP; 22 Sep 2020 16:28:04 +0800
+IronPort-SDR: rq5SOrhPHZ1VnuXy2OyO96WjxFQRNxGJhqYZJxryNI1hOM1k2e0MbWN5qZtTKUYKQikytU9O0x
+ But6VMxUjFsA==
+Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
+  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2020 01:14:12 -0700
+IronPort-SDR: 5SS+Ld5eLaUF3XpcuPgGBZAXx/vT4BrtOHplFInl4OxeZG/VzqtDMPyLtK1n9R1e7pJUajHTH3
+ fw6HsudZ5Q+Q==
+WDCIronportException: Internal
+Received: from unknown (HELO redsun60.ssa.fujisawa.hgst.com) ([10.149.66.36])
+  by uls-op-cesaip02.wdc.com with ESMTP; 22 Sep 2020 01:28:02 -0700
+From:   Johannes Thumshirn <johannes.thumshirn@wdc.com>
+To:     David Sterba <dsterba@suse.com>
+Cc:     linux-btrfs@vger.kernel.org,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Subject: [PATCH v2] btrfs: reschedule when cloning lots of extents
+Date:   Tue, 22 Sep 2020 17:27:29 +0900
+Message-Id: <42f05219ee6dfd612fe38f0ec6209d5a2c6c23dc.1600763203.git.johannes.thumshirn@wdc.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SN4PR0401MB3598.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6930e093-f68f-4d99-7680-08d85ec99556
-X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Sep 2020 07:31:55.8125
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 7MsT+nyhp4PBPx8x/kafFs7yUFASVZyO/S0tnKRNbaPdxA2AtlxSSSSgtkPSwBIOXW3XyNRNWnDJJOUaA3JBRIsNhreAxbmLoZkLQgDwbIs=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR04MB4781
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 21/09/2020 20:30, David Sterba wrote:=0A=
-> On Tue, Sep 22, 2020 at 02:38:10AM +0900, Johannes Thumshirn wrote:=0A=
->> We have several occurrences of a soft lockup from generic/175. All of th=
-ese=0A=
->> lockup reports have the call chain btrfs_clone_files() -> btrfs_clone() =
-in=0A=
->> common.=0A=
->>=0A=
->> btrfs_clone_files() calls btrfs_clone() with both source and destination=
-=0A=
->> extents locked and loops over the source extent to create the clones.=0A=
->>=0A=
->> Conditionally reschedule in the btrfs_clone() loop, to give some time ba=
-ck=0A=
->> to other processes.=0A=
->>=0A=
->> Link: https://github.com/btrfs/fstests/issues/23=0A=
-> =0A=
-> It would be better to put relevant parts of the report to the changelog,=
-=0A=
-> the fstests issues are more like a todo list than a long-term bug=0A=
-> tracking tool.=0A=
-> =0A=
-=0A=
-OK, I'll add one of the stacktraces here and remove the link in v2.=0A=
+We have several occurrences of a soft lockup from xfstest's generic/175
+test-case, which look more or less like this one:
+
+ watchdog: BUG: soft lockup - CPU#0 stuck for 22s! [xfs_io:10030]
+ Kernel panic - not syncing: softlockup: hung tasks
+ CPU: 0 PID: 10030 Comm: xfs_io Tainted: G             L    5.9.0-rc5+ #768
+ Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.13.0-0-gf21b5a4-rebuilt.opensuse.org 04/01/2014
+ Call Trace:
+  <IRQ>
+  dump_stack+0x77/0xa0
+  panic+0xfa/0x2cb
+  watchdog_timer_fn.cold+0x85/0xa5
+  ? lockup_detector_update_enable+0x50/0x50
+  __hrtimer_run_queues+0x99/0x4c0
+  ? recalibrate_cpu_khz+0x10/0x10
+  hrtimer_run_queues+0x9f/0xb0
+  update_process_times+0x28/0x80
+  tick_handle_periodic+0x1b/0x60
+  __sysvec_apic_timer_interrupt+0x76/0x210
+  asm_call_on_stack+0x12/0x20
+  </IRQ>
+  sysvec_apic_timer_interrupt+0x7f/0x90
+  asm_sysvec_apic_timer_interrupt+0x12/0x20
+ RIP: 0010:btrfs_tree_unlock+0x91/0x1a0 [btrfs]
+ Code: 85 1e 01 00 00 c7 83 84 00 00 00 00 00 00 00 f0 83 44 24 fc 00 48 8b 83 10 01 00 00 48 8d bb d0 00 00 00 48 81 c3 10 01 00 00 <48> 39 d8 74 63 5b 31 c9 5d ba 01 00 00 00 be 03 00 00 00 41 5c e9
+ RSP: 0018:ffffc90007123a58 EFLAGS: 00000282
+ RAX: ffff8881cea2fbe0 RBX: ffff8881cea2fbe0 RCX: 0000000000000000
+ RDX: ffff8881d23fd200 RSI: ffffffff82045220 RDI: ffff8881cea2fba0
+ RBP: 0000000000000001 R08: 0000000000000000 R09: 0000000000000032
+ R10: 0000160000000000 R11: 0000000000001000 R12: 0000000000001000
+ R13: ffff8882357fd5b0 R14: ffff88816fa76e70 R15: ffff8881cea2fad0
+  ? btrfs_tree_unlock+0x15b/0x1a0 [btrfs]
+  btrfs_release_path+0x67/0x80 [btrfs]
+  btrfs_insert_replace_extent+0x177/0x2c0 [btrfs]
+  btrfs_replace_file_extents+0x472/0x7c0 [btrfs]
+  btrfs_clone+0x9ba/0xbd0 [btrfs]
+  btrfs_clone_files.isra.0+0xeb/0x140 [btrfs]
+  ? file_update_time+0xcd/0x120
+  btrfs_remap_file_range+0x322/0x3b0 [btrfs]
+  do_clone_file_range+0xb7/0x1e0
+  vfs_clone_file_range+0x30/0xa0
+  ioctl_file_clone+0x8a/0xc0
+  do_vfs_ioctl+0x5b2/0x6f0
+  __x64_sys_ioctl+0x37/0xa0
+  do_syscall_64+0x33/0x40
+  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+ RIP: 0033:0x7f87977fc247
+ Code: 00 00 90 48 8b 05 49 8c 0c 00 64 c7 00 26 00 00 00 48 c7 c0 ff ff ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 b8 10 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 19 8c 0c 00 f7 d8 64 89 01 48
+ RSP: 002b:00007ffd51a2f6d8 EFLAGS: 00000206 ORIG_RAX: 0000000000000010
+ RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f87977fc247
+ RDX: 00007ffd51a2f710 RSI: 000000004020940d RDI: 0000000000000003
+ RBP: 0000000000000004 R08: 00007ffd51a79080 R09: 0000000000000000
+ R10: 00005621f11352f2 R11: 0000000000000206 R12: 0000000000000000
+ R13: 0000000000000000 R14: 00005621f128b958 R15: 0000000080000000
+ Kernel Offset: disabled
+ ---[ end Kernel panic - not syncing: softlockup: hung tasks ]---
+
+All of these lockup reports have the call chain btrfs_clone_files() ->
+btrfs_clone() in common. btrfs_clone_files() calls btrfs_clone() with
+both source and destination extents locked and loops over the source
+extent to create the clones.
+
+Conditionally reschedule in the btrfs_clone() loop, to give some time back
+to other processes.
+
+Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+
+---
+Changes to v1:
+- Update changelog
+---
+ fs/btrfs/reflink.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/fs/btrfs/reflink.c b/fs/btrfs/reflink.c
+index 39b3269e5760..99aa87c08912 100644
+--- a/fs/btrfs/reflink.c
++++ b/fs/btrfs/reflink.c
+@@ -520,6 +520,8 @@ static int btrfs_clone(struct inode *src, struct inode *inode,
+ 			ret = -EINTR;
+ 			goto out;
+ 		}
++
++		cond_resched();
+ 	}
+ 	ret = 0;
+ 
+-- 
+2.26.2
+
