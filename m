@@ -2,49 +2,50 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A94A927421A
-	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Sep 2020 14:33:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C285027421C
+	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Sep 2020 14:36:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726573AbgIVMc5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 22 Sep 2020 08:32:57 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:50070 "EHLO
+        id S1726541AbgIVMgJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 22 Sep 2020 08:36:09 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:52544 "EHLO
         aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726505AbgIVMc5 (ORCPT
+        with ESMTP id S1726505AbgIVMgJ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 22 Sep 2020 08:32:57 -0400
+        Tue, 22 Sep 2020 08:36:09 -0400
 Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08MCPGvM183477
-        for <linux-btrfs@vger.kernel.org>; Tue, 22 Sep 2020 12:32:56 GMT
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08MCP9gW183310;
+        Tue, 22 Sep 2020 12:36:07 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
  subject : date : message-id : mime-version : content-transfer-encoding;
- s=corp-2020-01-29; bh=39VMLnaGgbnyWGXs9cnicwCzN+Ma6Z1aV97mEG457Gs=;
- b=JNuFP1oqOoWEWeW/7WUCeguT4tp+ISWKAAOyRa+gbU2yBSGK399sh8VFDEo5CGOi9e8C
- /v/r4Lf2JVl4ujlqgku6GdYN0pQpBHC7VVuZkhGIpAXvXaKSWgPdAorV3SDNC53bEEoA
- ZNpZ64exVkHE2BUMPEfi0IL+QwJuQWPxtO2V9o/EnkmsQ85upgI+A38zrp5Pm/GatpRw
- 1YQAIYS1Fuw8CvvpBxAH0GjPgHVWnJtAAKLERQFgT90OV3uymZ7SV/8nhRfxXIyMdhAb
- 7hxFZXmHH27hx2xz5Yjw2Jk1P5o6vjbbfMx/n/PE4ZwLXCkidE7hGFKfawxEqIXC2i3B kw== 
+ s=corp-2020-01-29; bh=mWGOki7qvTMN6V9Vz+pRJqaaY4FvPUd3CXtiwW+fdZo=;
+ b=zRXvUdq0edGBKp24UqveztKlC4yX2+RajOyFFgccDzlPLoBd5OO8PbHWyBu6bNT42M80
+ xmdRozx0JIgPV7r0rzl9xtlkkMTcbndUESag6OQyumcqks57XH1lQi3oKwjUg8L8Ru9Q
+ HGih1of8L6DJY/OV4xCVQXAdSB2YPyEP6sAFqgtUIh4kPt58RjpzWp50j+QFaFM4BS07
+ 1i334jPZyQ5zgFox18vV+LYgv3LL+ve7O1hmWhOs1E/Vr4HedLfrEtfTAZkAnyjBvTqF
+ UyqtbHJWnhaaFIIhra1jgvmYQkAZINrw6eXSLVImWntVNN+cQdhAF/AtNDrI+TLyA0/G 3w== 
 Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2120.oracle.com with ESMTP id 33q5rgasg4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL)
-        for <linux-btrfs@vger.kernel.org>; Tue, 22 Sep 2020 12:32:56 +0000
+        by aserp2120.oracle.com with ESMTP id 33q5rgasxh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 22 Sep 2020 12:36:07 +0000
 Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08MCPLDE146258
-        for <linux-btrfs@vger.kernel.org>; Tue, 22 Sep 2020 12:30:55 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3030.oracle.com with ESMTP id 33nuwy8q0v-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
-        for <linux-btrfs@vger.kernel.org>; Tue, 22 Sep 2020 12:30:55 +0000
-Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 08MCUsnO017539
-        for <linux-btrfs@vger.kernel.org>; Tue, 22 Sep 2020 12:30:54 GMT
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08MCPMsT146307;
+        Tue, 22 Sep 2020 12:34:06 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3030.oracle.com with ESMTP id 33nuwy8vqc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 22 Sep 2020 12:34:06 +0000
+Received: from abhmp0002.oracle.com (abhmp0002.oracle.com [141.146.116.8])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 08MCY5Ts019324;
+        Tue, 22 Sep 2020 12:34:05 GMT
 Received: from localhost.localdomain (/39.109.231.106)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 22 Sep 2020 05:30:54 -0700
+        with ESMTP ; Tue, 22 Sep 2020 05:34:04 -0700
 From:   Anand Jain <anand.jain@oracle.com>
 To:     linux-btrfs@vger.kernel.org
-Cc:     Anand Jain <anand.jain@oracle.com>
-Subject: [PATCH] btrfs: fix rw_devices count in __btrfs_free_extra_devids
-Date:   Tue, 22 Sep 2020 20:30:41 +0800
+Cc:     Anand Jain <anand.jain@oracle.com>,
+        syzbot+4cfe71a4da060be47502@syzkaller.appspotmail.com
+Subject: [PATCH add reported by] btrfs: fix rw_devices count in __btrfs_free_extra_devids
+Date:   Tue, 22 Sep 2020 20:33:55 +0800
 Message-Id: <b3a0a629df98bd044a1fd5c4964f381ff6e7aa05.1600777827.git.anand.jain@oracle.com>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
@@ -135,6 +136,7 @@ R10: 0000000000000000 R11: 0000000000000202 R12: 0000000020000000
 R13: 0000000020000100 R14: 0000000020000200 R15: 000000002001a800
 
 Signed-off-by: Anand Jain <anand.jain@oracle.com>
+Reported-by: syzbot+4cfe71a4da060be47502@syzkaller.appspotmail.com
 ---
  fs/btrfs/volumes.c | 3 +--
  1 file changed, 1 insertion(+), 2 deletions(-)
