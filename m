@@ -2,96 +2,185 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CE9827474D
-	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Sep 2020 19:13:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34FB0274751
+	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Sep 2020 19:17:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726617AbgIVRN5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 22 Sep 2020 13:13:57 -0400
-Received: from mx2.suse.de ([195.135.220.15]:57602 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726526AbgIVRN5 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 22 Sep 2020 13:13:57 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 6C88BAD49;
-        Tue, 22 Sep 2020 17:14:32 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 13787DA6E9; Tue, 22 Sep 2020 19:12:40 +0200 (CEST)
-Date:   Tue, 22 Sep 2020 19:12:39 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH 1/2] btrfs: init device stats for seed devices
-Message-ID: <20200922171239.GG6756@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
-        linux-btrfs@vger.kernel.org, kernel-team@fb.com
-References: <cover.1600461724.git.josef@toxicpanda.com>
- <b0c2be2e6722f091821521301f251628afcd8313.1600461724.git.josef@toxicpanda.com>
+        id S1726566AbgIVRRY convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-btrfs@lfdr.de>); Tue, 22 Sep 2020 13:17:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35416 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726526AbgIVRRX (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 22 Sep 2020 13:17:23 -0400
+Received: from mail.lichtvoll.de (lichtvoll.de [IPv6:2001:67c:14c:12f::11:100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6310C061755
+        for <linux-btrfs@vger.kernel.org>; Tue, 22 Sep 2020 10:17:23 -0700 (PDT)
+Received: from 127.0.0.1 (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.lichtvoll.de (Postfix) with ESMTPSA id 000DE1559A3;
+        Tue, 22 Sep 2020 19:17:20 +0200 (CEST)
+From:   Martin Steigerwald <martin@lichtvoll.de>
+To:     linux-btrfs@vger.kernel.org, Qu Wenruo <wqu@suse.com>,
+        Qu Wenruo <quwenruo.btrfs@gmx.com>
+Subject: Re: [PATCH] btrfs: fix false alert caused by legacy btrfs root item
+Date:   Tue, 22 Sep 2020 19:17:19 +0200
+Message-ID: <10820501.WrPryYWVak@merkaba>
+In-Reply-To: <6db35b15-1f16-dfd8-368c-b03e428eba08@gmx.com>
+References: <20200922023701.32654-1-wqu@suse.com> <4591966.Q0mfgpEauH@merkaba> <6db35b15-1f16-dfd8-368c-b03e428eba08@gmx.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b0c2be2e6722f091821521301f251628afcd8313.1600461724.git.josef@toxicpanda.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset="UTF-8"
+Authentication-Results: mail.lichtvoll.de;
+        auth=pass smtp.auth=martin smtp.mailfrom=martin@lichtvoll.de
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Sep 18, 2020 at 04:44:32PM -0400, Josef Bacik wrote:
-> We recently started recording device stats across the fleet, and noticed
-> a large increase in messages such as this
+Qu Wenruo - 22.09.20, 12:34:18 CEST:
+> On 2020/9/22 下午6:20, Martin Steigerwald wrote:
+> > Instead of the tool, can I also patch my kernel with the patch below
+> > to have it automatically fix it?
 > 
-> BTRFS warning (device dm-0): get dev_stats failed, not yet valid
+> Sure, this one is a little safer than the tool.
 > 
-> on our tiers that use seed devices for their root devices.  This is
-> because we do not initialize the device stats for any seed devices if we
-> have a sprout device and mount using that sprout device.  The basic
-> steps for reproducing are
+> > If so, which approach would you prefer for testing?
+> > 
+> > I can apply the patch as I compile kernels myself.
 > 
-> mkfs seed device
-> mount seed device
-> fill seed device
-> umount seed device
-> btrfstune -S 1 seed device
-> mount seed device
-> btrfs device add -f sprout device /mnt/wherever
-> umount /mnt/wherever
-> mount sprout device /mnt/wherever
-> btrfs device stats /mnt/wherever
+> That's great.
 > 
-> This will fail with the above message in dmesg.
+> That should solve the problem.
 > 
-> Fix this by iterating over the fs_devices->seed if they exist in
-> btrfs_init_dev_stats.  This fixed the problem and properly reports the
-> stats for both devices.
-> 
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-> ---
->  fs/btrfs/volumes.c | 88 +++++++++++++++++++++++++---------------------
->  1 file changed, 48 insertions(+), 40 deletions(-)
-> 
-> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> index 6c7c8819cb31..c0cea9f5fdbc 100644
-> --- a/fs/btrfs/volumes.c
-> +++ b/fs/btrfs/volumes.c
-> @@ -7223,61 +7223,69 @@ static void btrfs_set_dev_stats_value(struct extent_buffer *eb,
->  			    sizeof(val));
->  }
->  
-> -int btrfs_init_dev_stats(struct btrfs_fs_info *fs_info)
-> +static void __btrfs_init_dev_stats(struct btrfs_fs_info *fs_info,
-> +				   struct btrfs_device *device,
-> +				   struct btrfs_path *path)
+> And if you don't like the legacy root item, just do a balance (no
+> matter data or metadata), and that legacy root item will be converted
+> to current one, and even affected kernel won't report any error any
+> more.
 
-__ is not necessary and can be avoided by naming the function properly,
-as it initializes the stats on a device
+Tested with patch. No error message :)
 
->  {
-> -	struct btrfs_key key;
->  	struct btrfs_root *dev_root = fs_info->dev_root;
+Tested-By: Martin Steigerwald <martin@lichtvoll.de>
 
-The fs_info parameter is used only once, just to read the dev_root, that
-is also used just once. Both can be obtained from the @device.
+Will do balance once I know whether a minimal one is enough. Can test 
+with old unpatched kernel then as well. Both 5.9-rc5, as 5.9-rc6 didn't 
+compile for some reason.
 
-The path is passed for convenience as it's reused and allocated out of
-mutex, so that's fine for a helper.
+Thanks,
+Martin
+
+> > Qu Wenruo - 22.09.20, 04:37:01 CEST:
+> >> Commit 259ee7754b67 ("btrfs: tree-checker: Add ROOT_ITEM check")
+> >> introduced btrfs root item size check, however btrfs root item has
+> >> two format, the legacy one which just ends before generation_v2
+> >> member, is smaller than current btrfs root item size.
+> >> 
+> >> This caused btrfs kernel to reject valid but old tree root leaves.
+> >> 
+> >> Fix this problem by also allowing legacy root item, since kernel
+> >> can
+> >> already handle them pretty well and upgrade to newer root item
+> >> format
+> >> when needed.
+> >> 
+> >> Reported-by: Martin Steigerwald <martin@lichtvoll.de>
+> >> Fixes: 259ee7754b67 ("btrfs: tree-checker: Add ROOT_ITEM check")
+> >> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> >> ---
+> >> 
+> >>  fs/btrfs/tree-checker.c         | 17 ++++++++++++-----
+> >>  include/uapi/linux/btrfs_tree.h |  9 +++++++++
+> >>  2 files changed, 21 insertions(+), 5 deletions(-)
+> >> 
+> >> diff --git a/fs/btrfs/tree-checker.c b/fs/btrfs/tree-checker.c
+> >> index 7b1fee630f97..6f794aca48d3 100644
+> >> --- a/fs/btrfs/tree-checker.c
+> >> +++ b/fs/btrfs/tree-checker.c
+> >> @@ -1035,7 +1035,7 @@ static int check_root_item(struct
+> >> extent_buffer
+> >> *leaf, struct btrfs_key *key, int slot)
+> >> 
+> >>  {
+> >>  
+> >>  	struct btrfs_fs_info *fs_info = leaf->fs_info;
+> >> 
+> >> -	struct btrfs_root_item ri;
+> >> +	struct btrfs_root_item ri = { 0 };
+> >> 
+> >>  	const u64 valid_root_flags = BTRFS_ROOT_SUBVOL_RDONLY |
+> >>  	
+> >>  				     BTRFS_ROOT_SUBVOL_DEAD;
+> >>  	
+> >>  	int ret;
+> >> 
+> >> @@ -1044,14 +1044,21 @@ static int check_root_item(struct
+> >> extent_buffer *leaf, struct btrfs_key *key, if (ret < 0)
+> >> 
+> >>  		return ret;
+> >> 
+> >> -	if (btrfs_item_size_nr(leaf, slot) != sizeof(ri)) {
+> >> +	if (btrfs_item_size_nr(leaf, slot) != sizeof(ri) &&
+> >> +	    btrfs_item_size_nr(leaf, slot) !=
+> > 
+> > btrfs_legacy_root_item_size())
+> > 
+> >> { generic_err(leaf, slot,
+> >> -			    "invalid root item size, have %u expect %zu",
+> >> -			    btrfs_item_size_nr(leaf, slot), sizeof(ri));
+> >> +			    "invalid root item size, have %u expect %zu or
+> > 
+> > %zu",
+> > 
+> >> +			    btrfs_item_size_nr(leaf, slot), sizeof(ri),
+> >> +			    btrfs_legacy_root_item_size());
+> >> 
+> >>  	}
+> >> 
+> >> +	/*
+> >> +	 * For legacy root item, the members starting at generation_v2
+> > 
+> > will
+> > 
+> >> be +	 * all filled with 0.
+> >> +	 * And since we allow geneartion_v2 as 0, it will still pass the
+> >> check. +	 */
+> >> 
+> >>  	read_extent_buffer(leaf, &ri, btrfs_item_ptr_offset(leaf, slot),
+> >> 
+> >> -			   sizeof(ri));
+> >> +			   btrfs_item_size_nr(leaf, slot));
+> >> 
+> >>  	/* Generation related */
+> >>  	if (btrfs_root_generation(&ri) >
+> >> 
+> >> diff --git a/include/uapi/linux/btrfs_tree.h
+> >> b/include/uapi/linux/btrfs_tree.h index 9ba64ca6b4ac..464095a28b18
+> >> 100644
+> >> --- a/include/uapi/linux/btrfs_tree.h
+> >> +++ b/include/uapi/linux/btrfs_tree.h
+> >> @@ -644,6 +644,15 @@ struct btrfs_root_item {
+> >> 
+> >>  	__le64 reserved[8]; /* for future */
+> >>  
+> >>  } __attribute__ ((__packed__));
+> >> 
+> >> +/*
+> >> + * Btrfs root item used to be smaller than current size.
+> >> + * The old format ends at where member generation_v2 is.
+> >> + */
+> >> +static inline size_t btrfs_legacy_root_item_size(void)
+> >> +{
+> >> +	return offsetof(struct btrfs_root_item, generation_v2);
+> >> +}
+> >> +
+> >> 
+> >>  /*
+> >>  
+> >>   * this is used for both forward and backward root refs
+> >>   */
+
+
+-- 
+Martin
+
+
