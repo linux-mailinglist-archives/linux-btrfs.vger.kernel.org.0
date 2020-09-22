@@ -2,213 +2,385 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB67D273864
-	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Sep 2020 04:14:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 923D327389C
+	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Sep 2020 04:33:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729527AbgIVCOk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 21 Sep 2020 22:14:40 -0400
-Received: from mout.gmx.net ([212.227.17.22]:58265 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729477AbgIVCOk (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 21 Sep 2020 22:14:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1600740877;
-        bh=J/scEJWEkagu/CiiVdoegLC95+ISgMx/W1e9yNrg12k=;
-        h=X-UI-Sender-Class:Subject:From:To:References:Date:In-Reply-To;
-        b=WhXVMQttGNfMrOWw+20MrzumxKXwbnAiSs3fsZZMVgaRsIx6AGs/y+rIwne/HF68M
-         o/VXkpoKgtQax1WLt6NESJjrB02ciULF0b4kOWzbCnAqyTYHOBEi4x18sWjihsldtx
-         P9tRwrmxj+wmt5iMB9iHALtAI0rqaQWzk5XMwyJE=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1N49lJ-1kTArM0VI9-0107nx; Tue, 22
- Sep 2020 04:14:37 +0200
-Subject: Re: external harddisk: bogus corrupt leaf error?
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-To:     Martin Steigerwald <martin@lichtvoll.de>,
-        linux-btrfs@vger.kernel.org
-References: <1978673.BsW9qxMyvF@merkaba> <4131924.Vjtf9Mc2VK@merkaba>
- <8d2987f8-e27e-eedb-164f-b05d74ad8f3b@gmx.com> <8020498.oVlb7o6SH1@merkaba>
- <f0fd36fd-3ffa-ff02-e5d9-265fc64e38f3@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
- PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
- 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
- D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
- efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
- ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
- BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
- 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
- 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
- EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
- 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
- ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
- oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
- fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
- 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
- ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
- oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <6e508d1c-32fe-1162-f905-2e57022f8dc6@gmx.com>
-Date:   Tue, 22 Sep 2020 10:14:34 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1729751AbgIVCdh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 21 Sep 2020 22:33:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40200 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729379AbgIVCdh (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 21 Sep 2020 22:33:37 -0400
+Received: from mail-vs1-xe2a.google.com (mail-vs1-xe2a.google.com [IPv6:2607:f8b0:4864:20::e2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3E31C061755
+        for <linux-btrfs@vger.kernel.org>; Mon, 21 Sep 2020 19:33:36 -0700 (PDT)
+Received: by mail-vs1-xe2a.google.com with SMTP id j185so9402947vsc.3
+        for <linux-btrfs@vger.kernel.org>; Mon, 21 Sep 2020 19:33:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=Dbp1RdqxFuHJ40Jg/xtckfuG9i7g5Td9TTuUwMqv0YM=;
+        b=qlMr4JAaEmVvBX1shL+dDf5SdoJK342BXqa+IsOVfqq51ZUiYgImtA9foUOfNAUh9y
+         a9EN/wxdR6v14ESgXbVb4Co39IIsdRyIUheNt0O4vSrtFsFTbfcY5ud+uyQmyOWRMGgX
+         cxqdQastXN76IRz932Xww7yklM7pZ1BxfV9LKzHRL2j5OA4nrdmPuqrAzo2uFoBp1XM+
+         ZlOZYlW3bBihL1IRq+LzSUREVT60epHzQF/bxVeb6UlbjqP9b2Vd5PF7qpBOUln3DOO0
+         eSdexmjJnIEgheEeu7YXUbVGucDXm8lmQD2+Wd9umPsjv4R4+mlVYANkMvjen1/Q5tSM
+         wuVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=Dbp1RdqxFuHJ40Jg/xtckfuG9i7g5Td9TTuUwMqv0YM=;
+        b=b0//8S4I29G0NQh5OW5ldvhEhJSSLz+LE6GxtZcLRJj5UeQORwGTlUGv9JwPC19Teq
+         ct08Y+uSZMAPJ+R8Tw5FUAmAWiath9YvbNysokSTAmmqgdXv3kuQf+OK34CmcL5+LlA0
+         F7yR3UFOvT4BEFi1fOPYgGOnps7hTpEPMMv5Fc1ApNuMNTFCkxy6PmFi1CmXSl0patJW
+         iE6op/6hT06fU9UafzNGVW7Xn0Ofa1DcC3PSu6miFyrDjvTAv1QtNGzWzScnbmEWPR2p
+         5ru+VV8yj2GdnLNNhUlkGOCDPU+Gg1MBXFH3s3dAHD0Or3wDmcf4eal2ogypWSDeUbJr
+         GSEA==
+X-Gm-Message-State: AOAM533cICGygo3ebpPzDwPa8Ie6I41n1tCbBu1/nwmgA7mrpyoCjqYl
+        Le6FbqwvgMPkT1ENpAqzu/4zXFhYcqQ9aRdnZGrf+Tio1ompYtKi
+X-Google-Smtp-Source: ABdhPJx4Cz2DlXxhW82A05Ijuv3r7EAa3s3ia9ELIR1MmBd+oYNaJ3vjZ4a0RqbNJNY2OvDAx0x3l66uxJRqxTTJhcw=
+X-Received: by 2002:a05:6102:11b:: with SMTP id z27mr2031930vsq.6.1600742015549;
+ Mon, 21 Sep 2020 19:33:35 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <f0fd36fd-3ffa-ff02-e5d9-265fc64e38f3@gmx.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="5M3DvXBhKKwgFKQQGFupXtAuBhdiIzDAP"
-X-Provags-ID: V03:K1:AcLFXCBhtqKR4llx5VU2FzRIU8FsZR1JP9S0Qzp9wATjb6o4QEQ
- ctXo+XdMbNllQ/N2rZPDH6u0YACsnEWt+dOnxBY4LvVOMot0QWS/sMpQaXht3qUbs6lF567
- YscDGJj08B5e5if9Zk/oXvgLyCMtKIVsd5pBh9o82evcqDokEBZqIA/LXgTsIeUmR2YQ3Ee
- tShtKMvCJtspkiQf3YZVw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:IoEgI5WEN6U=:2WA190A20V9/VzEZZajz/M
- UDJMyDgF/NS2Iz8sRF3LaU41h6j234gfkP3ICDJB4myaPfy0A+u37S/Te0eSVnbK1QVpJhE/l
- 2EX7xr6DdGJBgY9DIZcQfZBwbjsp7p3t2Vap2Csibo24QNQAZk2HGefczK29l2Q2hFY0/t/Jd
- /P9XXv2upsMEtEXTFAqn76Ry1SyY5ivUA8jIF8L6mqQc3tN3Kd3vcQ7jrnxoLKGSfxLxj48Dr
- Tptme7WjVkTaMHUtciB91yG4he/UeD92i0MSmSl9uBEpqh4FtFidu8neBWdFci/yNULdmN7k2
- uW8xniIpZZCBSUuT99BPayzM6yXYAdAMANc+UgqgoBFtx353QYROxqRNI80V4nF3ee2nqGKHd
- 7eS3sOPfzndSqtbTQlKieB3744PuwonwaoaOqWScMw+szEY0wJX4Dy9ktewjh+SH4jge6Im33
- g+InbSGVreRMv3WToBPpoVe+cWqJoPuRUJcIJVAVBQK2PPLTTsjByww4orhyuiBswVAJMZbop
- iv67xARS5HqtKrbVZlYqsvGEent/w+nJZp+q33wG6IfQR36Og5ZmDXjdYKM/Ze6Iop7qAamV7
- ee3veueDHcVWWQJwICysGKV2hyTgSAY7dcCCBF1FRXZYCG9iH+PV3jBLGbuuEZWDsgDgcjqpW
- gcKbhG9Xq3sL9FdCICqrBc87QIU21hP/iRGJaJhi7mC/Uhav1odSE+TVtwnSh8Y1/GXftwm9f
- dVf3t7ALtF8aVAw1W+d74spzRYdnVc907N06fU+t35jBGWY8ChUzbWwc/ZqUzYM+ZmeM9dCfY
- dX579UNEEYiv8WuYO7+a243xP9KQQJu/ZbProWrIJHyioi3+iFeUK0Lz0w4C/dbwm80d3Kg9T
- LZzfMSzyTJb8Nc6YtR2LtCXsXs2C0wZnca68gy730j6Vsp8SL4SsJMmOY1G56Uj65dq2mZ9YO
- uHq4DTqxZ7kZIDJB1+czon+KrMOwq6344knBslWupQpSe0ycSe3fjzdfLBXhLtdqlb8dxx3s9
- 0IDfbcFVhrwTmuRBp94QTRzXFQ/T2x7yXfhrukoYks48eboRqoJjvHHeokSFL1njSQHzhKKFw
- 2sms9I5xHUYe3BZFKDejIix345y2ZHlLo9HACrXHPBhfHuy14CNFaDTXNxmmONEUCCtThI7gh
- tntg8tWDpov5jGVfdJ24C3no58yNyejMOi9kY15i/Rv9RUJNmP/JOHJIXc6Dn8yVOozHErr+A
- YkAl/RDAo3M2DNvPLoSLBnPT9ekqTdupZck9qLA==
+From:   Stefan N <stefannnau@gmail.com>
+Date:   Tue, 22 Sep 2020 12:03:25 +0930
+Message-ID: <CA+W5K0qRCPZXR1qW=cg_g2_iufBHL42wV023VEU_Aj-mrLgoOw@mail.gmail.com>
+Subject: parent transid verify failures
+To:     linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---5M3DvXBhKKwgFKQQGFupXtAuBhdiIzDAP
-Content-Type: multipart/mixed; boundary="eTPMRfTcBjJDJ86Sq30RZoNWEsp6K2Wp2"
+Hi all,
 
---eTPMRfTcBjJDJ86Sq30RZoNWEsp6K2Wp2
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+What's the best fix for a handful of transid verify failures?
 
+Overwritten data is non-critical, and in raid5, though it'd be great
+to know which files!
 
+A controller cable was dodgy and some writes weren't committed across
+at least one disk, but I believe the error output suggests it's
+relatively minor damage?
 
-On 2020/9/22 =E4=B8=8A=E5=8D=887:48, Qu Wenruo wrote:
->=20
->=20
-> On 2020/9/21 =E4=B8=8B=E5=8D=887:46, Martin Steigerwald wrote:
->> Qu Wenruo - 21.09.20, 13:14:05 CEST:
->>>>> For the root cause, it should be some older kernel creating the
->>>>> wrong
->>>>> root item size.
->>>>> I can't find the commit but it should be pretty old, as after v5.4
->>>>> we
->>>>> have mandatory write time tree checks, which will reject such write=
+The errors occurred on CentOS 7 running btrfs 4.12 but I was getting
+errors running the tools so have been using a live USB of SUSE with
+4.19.1 which seems to be having the same issues. Command output
+follows below
 
->>>>> directly.
->>>>
->>>> So eventually I would have to backup the disk and create FS from
->>>> scratch to get rid of the error? Or can I, even if its no subvolume
->>>> involved, find the item affected, copy it somewhere else and then
->>>> write it to the disk again?
->>> That's the theory.
->>>
->>> We can easily rebuild that data reloc tree, since it should be empty
->>> if balance is not running.
->>>
->>> But we don't have it ready at hand in btrfs-progs...
->>>
->>> So you may either want to wait until some quick dirty fixer arrives,
->>> or can start backup right now.
->>> All the data/files shouldn't be affected at all.
->>
->> Hmmm, do you have an idea if and when such a quick dirty fixer would b=
-e=20
->> available?
->=20
-> If you need, I guess in 24 hours.
+I can currently mount the filesystem, but it reverts to read-only.
+Any solutions would be appreciated.
 
-Here you go:
-https://github.com/adam900710/btrfs-progs/tree/dirty_fix
+I coincidentally have two spare disks handy, but was trying to avoid
+starting a new array unless absolutely necessary.
 
-You need to compile the btrfs-progs (in fact, you need to compile
-btrfs-corrupt-block).
-Then execute:
-# ./btrfs-corrupt-block -X <device>
+Cheers,
 
-It should solve the problem.
-If nothing is output, and no crash, then the repair is done.
-Or you will see a crash with calltrace, and your on-disk data is untouche=
-d.
+Stefan
 
+linux@localhost:~> uname -a
+Linux localhost.localdomain 5.3.18-lpl52.36-default #1 SMP Tue Aug 18
+17:09:44 UTC 2020 (885251f) x86_64 x86_64  x86_64  GNU/Linux
+linux@localhost:~> btrfs --version
+btrfs-progs v4.19.1
+linux@localhost:~>
 
-The root problem turns out to be a false alert.
+[root@rockstor ~]# uname -a
+Linux ### 4.12.4-1.el7.elrepo.x86_64 #1 SMP Thu Jul 27 20:03:28 EDT
+2017 x86_64 x86_64 x86_64 GNU/Linux
+[root@rockstor ~]# btrfs --version
+btrfs-progs v4.12
+[root@rockstor ~]# btrfs fi show /dev/sda
+Label: 'data'  uuid: f17e56d3-cf7b-42bd-9057-a252e7c8ab31
+        Total devices 4 FS bytes used 30.90TiB
+        devid    1 size 10.91TiB used 10.91TiB path /dev/sde1
+        devid    2 size 10.91TiB used 10.91TiB path /dev/sdc
+        devid    3 size 10.91TiB used 10.91TiB path /dev/sda
+        devid    4 size 10.91TiB used 10.91TiB path /dev/sdf
+[root@rockstor ~]#
 
-It's possible to have an old root item, which is smaller than current
-root_item.
-In that case, current kernel can handle it without problem.
+linux@localhost:~> sudo btrfs check /dev/sda
+[1/7] checking root items
+parent transid verify failed on 23379494830080 wanted 370310 found 370296
+parent transid verify failed on 23379494830080 wanted 370310 found 370296
+parent transid verify failed on 23379494830080 wanted 370310 found 370296
+Ignoring transid failure
+parent transid verify failed on 23379501907968 wanted 370310 found 370296
+parent transid verify failed on 23379501907968 wanted 370310 found 370296
+parent transid verify failed on 23379501907968 wanted 370310 found 370296
+Ignoring transid failure
+parent transid verify failed on 23379594969088 wanted 370310 found 370296
+parent transid verify failed on 23379594969088 wanted 370310 found 370296
+parent transid verify failed on 23379594969088 wanted 370310 found 370296
+Ignoring transid failure
+parent transid verify failed on 23379605192704 wanted 370310 found 370281
+parent transid verify failed on 23379605192704 wanted 370310 found 370281
+parent transid verify failed on 23379605192704 wanted 370310 found 370281
+Ignoring transid failure
+parent transid verify failed on 23379613597696 wanted 370310 found 370281
+parent transid verify failed on 23379613597696 wanted 370310 found 370281
+parent transid verify failed on 23379613597696 wanted 370310 found 370281
+Ignoring transid failure
+parent transid verify failed on 64705165721600 wanted 370303 found 370288
+parent transid verify failed on 64705165721600 wanted 370303 found 370288
+bad tree block 64705165721600, bytenr mismatch, want=64705165721600,
+have=64705165656064
+ERROR: failed to repair root items: Input/output error
+Opening filesystem to check...
+Checking filesystem on /dev/sda
+UUID: f17e56d3-cf7b-42bd-9057-a252e7c8ab31
+linux@localhost:~>
 
-I'll fix the problem in the kernel too to prevent further false alerts.
-
-Thanks,
-Qu
-
->=20
->>
->> Also, is it still safe to write to the filesystem? I looked at the dis=
-k,=20
->> cause I wanted to move some large files over to it to free up some spa=
-ce=20
->> on my laptop's internal SSDs.
->=20
-> Yes. If you want to be extra safe, just don't utilize balance until it'=
-s
-> fixed.
->=20
-> Thanks,
-> Qu
->=20
->>
->> If its still safe to write to the filesystem, I may just wait. I will =
-
->> refresh the backup of the disk anyway. But if its not safe to write to=
-=20
->> it anymore, I would redo the filesystem from scratch. Would give the=20
->> added benefit of having everything zstd compressed and I could also go=
-=20
->> for XXHASH or what one of the faster of the new checksum algorithms wa=
-s.
->>
->> Best,
->>
->=20
-
-
---eTPMRfTcBjJDJ86Sq30RZoNWEsp6K2Wp2--
-
---5M3DvXBhKKwgFKQQGFupXtAuBhdiIzDAP
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl9pXgoACgkQwj2R86El
-/qhJAAgAkm6UiaaGo8WrpMD4+OHnBowrmDplK49/+qWVTs0Q+lCTTcRR98bevuPs
-4jwz0E0B4GAA853No1MnN2Mr6Zp5MLbWj11OLkiERRu91sBZKfCgsIinYPulKY5W
-apKUP3uJcC3duG0Q4glZghKDNz5Cs03rp6zozusIWXEZLQw9CWBq6P+/WgR6E/9r
-1ZtzfanwEyj6Fa/SZ6nKQORwvNWvjHKUJxIfE9/bzKh9roe7WSijJj/Wct/nH6VQ
-Hxy7WYkTT4M3uEULs76CZ1hUlWBJfTnv6NGqOtvEdivOTPBPrkZfN3MGUFfOb/rU
-lfT0vbBbxeKd3g5IpUfwbxz+AR0tCw==
-=isn3
------END PGP SIGNATURE-----
-
---5M3DvXBhKKwgFKQQGFupXtAuBhdiIzDAP--
+linux@localhost:~> sudo btrfs check --repair /dev/sda
+enabling repair mode
+Opening filesystem to check...
+ Checking filesystem on /dev/sda
+UUID: f17e56d3-cf7b-42bd-9057-a252e7c8ab31
+repair mode will force to clear out log tree, are you sure? [y/N]: y
+parent transid verify failed on 23379494830080 wanted 370310 found 370296
+parent transid verify failed on 23379494830080 wanted 370310 found 370296
+parent transid verify failed on 23379494830080 wanted 370310 found 370296
+Ignoring transid failure
+parent transid verify failed on 23379501907968 wanted 370310 found 370296
+parent transid verify failed on 23379501907968 wanted 370310 found 370296
+parent transid verify failed on 23379501907968 wanted 370310 found 370296
+Ignoring transid failure
+parent transid verify failed on 23379594969088 wanted 370310 found 370296
+parent transid verify failed on 23379594969088 wanted 370310 found 370296
+parent transid verify failed on 23379594969088 wanted 370310 found 370296
+Ignoring transid failure
+parent transid verify failed on 23379605192704 wanted 370310 found 370281
+parent transid verify failed on 23379605192704 wanted 370310 found 370281
+parent transid verify failed on 23379605192704 wanted 370310 found 370281
+Ignoring transid failure
+parent transid verify failed on 64705165721600 wanted 370303 found 370288
+parent transid verify failed on 64705165721600 wanted 370303 found 370288
+bad tree block 64705165721600, bytenr mismatch, want=64705165721600,
+have=64705165656064
+parent transid verify failed on 26602944331776 wanted 370310 found 370296
+parent transid verify failed on 26602944331776 wanted 370310 found 370296
+parent transid verify failed on 26602944331776 wanted 370310 found 370296
+Ignoring transid failure
+parent transid verify failed on 63705658638336 wanted 370302 found 370287
+parent transid verify failed on 63705658638336 wanted 370302 found 370287
+parent transid verify failed on 63705658638336 wanted 370302 found 370287
+Ignoring transid failure
+parent transid verify failed on 26603323555840 wanted 370310 found 370296
+parent transid verify failed on 26603323555840 wanted 370310 found 370296
+bad tree block 26603323555840, bytenr mismatch, want=26603323555840,
+have=26603323424768
+parent transid verify failed on 26602347708416 wanted 370310 found 370281
+parent transid verify failed on 26602347708416 wanted 370310 found 370281
+parent transid verify failed on 26602347708416 wanted 370310 found 370281
+Ignoring transid failure
+parent transid verify failed on 63704756502528 wanted 370301 found 370286
+parent transid verify failed on 63704756502528 wanted 370301 found 370286
+bad tree block 63704756502528, bytenr mismatch, want=63704756502528,
+have=63704756633600
+parent transid verify failed on 26601476980736 wanted 370310 found 370296
+parent transid verify failed on 26601476980736 wanted 370310 found 370296
+parent transid verify failed on 26601476980736 wanted 370310 found 370296
+Ignoring transid failure
+parent transid verify failed on 23798875439104 wanted 370310 found 370296
+parent transid verify failed on 23798875439104 wanted 370310 found 370296
+parent transid verify failed on 23798875439104 wanted 370310 found 370296
+Ignoring transid failure
+parent transid verify failed on 26600572469248 wanted 370310 found 370296
+parent transid verify failed on 26600572469248 wanted 370310 found 370296
+parent transid verify failed on 26600572469248 wanted 370310 found 370296
+Ignoring transid failure
+parent transid verify failed on 23798877814784 wanted 370310 found 370296
+parent transid verify failed on 23798877814784 wanted 370310 found 370296
+parent transid verify failed on 23798877814784 wanted 370310 found 370296
+Ignoring transid failure
+parent transid verify failed on 63705612271616 wanted 370302 found 370287
+parent transid verify failed on 63705612271616 wanted 370302 found 370287
+parent transid verify failed on 63705612271616 wanted 370302 found 370287
+Ignoring transid failure
+parent transid verify failed on 63705115246592 wanted 370302 found 370286
+parent transid verify failed on 63705115246592 wanted 370302 found 370286
+parent transid verify failed on 63705115246592 wanted 370302 found 370286
+Ignoring transid failure
+parent transid verify failed on 65633906524160 wanted 370305 found 370292
+parent transid verify failed on 65633906524160 wanted 370305 found 370292
+parent transid verify failed on 65633906524160 wanted 370305 found 370292
+Ignoring transid failure
+ERROR: child eb corrupted: parent bytenr=42808083890176 item=294
+parent level=1 child level=1
+parent transid verify failed on 26601781477376 wanted 370310 found 370296
+parent transid verify failed on 26601781477376 wanted 370310 found 370296
+bad tree block 26601781477376, bytenr mismatch, want=26601781477376,
+have=26601781673984
+parent transid verify failed on 26602572496896 wanted 370310 found 370296
+parent transid verify failed on 26602572496896 wanted 370310 found 370296
+parent transid verify failed on 26602572496896 wanted 370310 found 370296
+Ignoring transid failure
+parent transid verify failed on 65633913372672 wanted 370305 found 370290
+parent transid verify failed on 65633913372672 wanted 370305 found 370290
+parent transid verify failed on 65633913372672 wanted 370305 found 370290
+Ignoring transid failure
+parent transid verify failed on 66607399272448 wanted 370307 found 370293
+parent transid verify failed on 66607399272448 wanted 370307 found 370293
+parent transid verify failed on 66607399272448 wanted 370307 found 370293
+Ignoring transid failure
+parent transid verify failed on 66607249817600 wanted 370307 found 370292
+parent transid verify failed on 66607249817600 wanted 370307 found 370292
+bad tree block 66607249817600, bytenr mismatch, want=66607249817600,
+have=66607249752064
+parent transid verify failed on 63705652232192 wanted 370302 found 370287
+parent transid verify failed on 63705652232192 wanted 370302 found 370287
+parent transid verify failed on 63705652232192 wanted 370302 found 370287
+Ignoring transid failure
+parent transid verify failed on 64705165721600 wanted 370303 found 370288
+parent transid verify failed on 64705165721600 wanted 370303 found 370288
+bad tree block 64705165721600, bytenr mismatch, want=64705165721600,
+have=64705165656064
+parent transid verify failed on 26603323555840 wanted 370310 found 370296
+parent transid verify failed on 26603323555840 wanted 370310 found 370296
+bad tree block 26603323555840, bytenr mismatch, want=26603323555840,
+have=26603323424768
+parent transid verify failed on 26602347708416 wanted 370310 found 370281
+Ignoring transid failure
+parent transid verify failed on 63704756502528 wanted 370301 found 370286
+parent transid verify failed on 63704756502528 wanted 370301 found 370286
+bad tree block 63704756502528, bytenr mismatch, want=63704756502528,
+have=63704756633600
+parent transid verify failed on 65633906524160 wanted 370305 found 370292
+Ignoring transid failure
+ERROR: child eb corrupted: parent bytenr=42808083890176 item=294
+parent level=1 child level=1
+parent transid verify failed on 26601781477376 wanted 370310 found 370296
+parent transid verify failed on 26601781477376 wanted 370310 found 370296
+bad tree block 26601781477376, bytenr mismatch, want=26601781477376,
+have=26601781673984
+parent transid verify failed on 66607399272448 wanted 370307 found 370293
+Ignoring transid failure
+parent transid verify failed on 66607249817600 wanted 370307 found 370292
+parent transid verify failed on 66607249817600 wanted 370307 found 370292
+bad tree block 66607249817600, bytenr mismatch, want=66607249817600,
+have=66607249752064
+Unable to find block group for 0
+parent transid verify failed on 64705165721600 wanted 370303 found 370288
+parent transid verify failed on 64705165721600 wanted 370303 found 370288
+bad tree block 64705165721600, bytenr mismatch, want=64705165721600,
+have=64705165656064
+parent transid verify failed on 26603323555840 wanted 370310 found 370296
+parent transid verify failed on 26603323555840 wanted 370310 found 370296
+bad tree block 26603323555840, bytenr mismatch, want=26603323555840,
+have=26603323424768
+parent transid verify failed on 26602347708416 wanted 370310 found 370281
+Ignoring transid failure
+parent transid verify failed on 63704756502528 wanted 370301 found 370286
+parent transid verify failed on 63704756502528 wanted 370301 found 370286
+bad tree block 63704756502528, bytenr mismatch, want=63704756502528,
+have=63704756633600
+parent transid verify failed on 65633906524160 wanted 370305 found 370292
+Ignoring transid failure
+ERROR: child eb corrupted: parent bytenr=42808083890176 item=294
+parent level=1 child level=1
+parent transid verify failed on 26601781477376 wanted 370310 found 370296
+parent transid verify failed on 26601781477376 wanted 370310 found 370296
+bad tree block 26601781477376, bytenr mismatch, want=26601781477376,
+have=26601781673984
+parent transid verify failed on 66607399272448 wanted 370307 found 370293
+Ignoring transid failure
+parent transid verify failed on 66607249817600 wanted 370307 found 370292
+parent transid verify failed on 66607249817600 wanted 370307 found 370292
+bad tree block 66607249817600, bytenr mismatch, want=66607249817600,
+have=66607249752064
+parent transid verify failed on 64705165721600 wanted 370303 found 370288
+parent transid verify failed on 64705165721600 wanted 370303 found 370288
+bad tree block 64705165721600, bytenr mismatch, want=64705165721600,
+have=64705165656064
+parent transid verify failed on 26603323555840 wanted 370310 found 370296
+parent transid verify failed on 26603323555840 wanted 370310 found 370296
+bad tree block 26603323555840, bytenr mismatch, want=26603323555840,
+have=26603323424768
+parent transid verify failed on 26602347708416 wanted 370310 found 370281
+Ignoring transid failure
+parent transid verify failed on 63704756502528 wanted 370301 found 370286
+parent transid verify failed on 63704756502528 wanted 370301 found 370286
+bad tree block 63704756502528, bytenr mismatch, want=63704756502528,
+have=63704756633600
+parent transid verify failed on 65633906524160 wanted 370305 found 370292
+Ignoring transid failure
+ERROR: child eb corrupted: parent bytenr=42808083890176 item=294
+parent level=1 child level=1
+parent transid verify failed on 26601781477376 wanted 370310 found 370296
+parent transid verify failed on 26601781477376 wanted 370310 found 370296
+bad tree block 26601781477376, bytenr mismatch, want=26601781477376,
+have=26601781673984
+parent transid verify failed on 66607399272448 wanted 370307 found 370293
+Ignoring transid failure
+parent transid verify failed on 66607249817600 wanted 370307 found 370292
+parent transid verify failed on 66607249817600 wanted 370307 found 370292
+bad tree block 66607249817600, bytenr mismatch, want=66607249817600,
+have=66607249752064
+Unable to find block group for 0
+parent transid verify failed on 64705165721600 wanted 370303 found 370288
+parent transid verify failed on 64705165721600 wanted 370303 found 370288
+bad tree block 64705165721600, bytenr mismatch, want=64705165721600,
+have=64705165656064
+parent transid verify failed on 26603323555840 wanted 370310 found 370296
+parent transid verify failed on 26603323555840 wanted 370310 found 370296
+bad tree block 26603323555840, bytenr mismatch, want=26603323555840,
+have=26603323424768
+parent transid verify failed on 26602347708416 wanted 370310 found 370281
+Ignoring transid failure
+parent transid verify failed on 63704756502528 wanted 370301 found 370286
+parent transid verify failed on 63704756502528 wanted 370301 found 370286
+bad tree block 63704756502528, bytenr mismatch, want=63704756502528,
+have=63704756633600
+parent transid verify failed on 65633906524160 wanted 370305 found 370292
+Ignoring transid failure
+ERROR: child eb corrupted: parent bytenr=42808083890176 item=294
+parent level=1 child level=1
+parent transid verify failed on 26601781477376 wanted 370310 found 370296
+parent transid verify failed on 26601781477376 wanted 370310 found 370296
+bad tree block 26601781477376, bytenr mismatch, want=26601781477376,
+have=26601781673984
+parent transid verify failed on 66607399272448 wanted 370307 found 370293
+Ignoring transid failure
+parent transid verify failed on 66607249817600 wanted 370307 found 370292
+parent transid verify failed on 66607249817600 wanted 370307 found 370292
+bad tree block 66607249817600, bytenr mismatch, want=66607249817600,
+have=66607249752064
+parent transid verify failed on 64705165721600 wanted 370303 found 370288
+parent transid verify failed on 64705165721600 wanted 370303 found 370288
+bad tree block 64705165721600, bytenr mismatch, want=64705165721600,
+have=64705165656064
+parent transid verify failed on 26603323555840 wanted 370310 found 370296
+parent transid verify failed on 26603323555840 wanted 370310 found 370296
+bad tree block 26603323555840, bytenr mismatch, want=26603323555840,
+have=26603323424768
+parent transid verify failed on 26602347708416 wanted 370310 found 370281
+Ignoring transid failure
+parent transid verify failed on 63704756502528 wanted 370301 found 370286
+parent transid verify failed on 63704756502528 wanted 370301 found 370286
+bad tree block 63704756502528, bytenr mismatch, want=63704756502528,
+have=63704756633600
+parent transid verify failed on 65633906524160 wanted 370305 found 370292
+Ignoring transid failure
+ERROR: child eb corrupted: parent bytenr=42808083890176 item=294
+parent level=1 child level=1
+parent transid verify failed on 26601781477376 wanted 370310 found 370296
+parent transid verify failed on 26601781477376 wanted 370310 found 370296
+bad tree block 26601781477376, bytenr mismatch, want=26601781477376,
+have=26601781673984
+parent transid verify failed on 66607399272448 wanted 370307 found 370293
+Ignoring transid failure
+parent transid verify failed on 66607249817600 wanted 370307 found 370292
+parent transid verify failed on 66607249817600 wanted 370307 found 370292
+bad tree block 66607249817600, bytenr mismatch, want=66607249817600,
+have=66607249752064
+Unable to find block group for 0
+transaction.c:189: btrfs_commit_transaction: BUG_ON `ret` triggered, value -28
+btrfs(+0x51829)[0x55bf7a751829]
+btrfs(+0x51e39)[0x55bf7a751e39]
+btrfs(cmd_check+0x11ee)[0x55bf7a76749e]
+btrfs(main+0x8e)[0x55bf7a71ed2e]
+/lib64/libc.so.6(__libc_start_main+0xea)[0x7fe97796834a]
+btrfs(_start+0x2a)[0x55bf7a71ef2a]
+Aborted
+linux@localhost:~>
