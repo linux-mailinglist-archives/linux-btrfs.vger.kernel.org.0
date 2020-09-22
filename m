@@ -2,145 +2,136 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29BE6274B05
-	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Sep 2020 23:18:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 556A1274B86
+	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Sep 2020 23:49:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726640AbgIVVSi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 22 Sep 2020 17:18:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44254 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726448AbgIVVSi (ORCPT
+        id S1726721AbgIVVtn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 22 Sep 2020 17:49:43 -0400
+Received: from mail105.syd.optusnet.com.au ([211.29.132.249]:37404 "EHLO
+        mail105.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726179AbgIVVtm (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 22 Sep 2020 17:18:38 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1D36C061755
-        for <linux-btrfs@vger.kernel.org>; Tue, 22 Sep 2020 14:18:37 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id f142so20664483qke.13
-        for <linux-btrfs@vger.kernel.org>; Tue, 22 Sep 2020 14:18:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
-         :content-transfer-encoding;
-        bh=Q4RyGL1VJG4SU29OYchV/RwfjC4Y/g03qGNnsSHlyOU=;
-        b=0f3lk8F9DJSTspeEEpRWdmA9ohrePSliZLa9/SNYFZsmeXsEIagPWMeVKY7K5yJQvT
-         ldQR9EpgVPO+nkzcaeGH1yVMZWMab+z7QroNWPzluawH9Z9dB+RTJ/nws334bIM8W/+A
-         LXnMhwE4oo2KgWiSaZNb9izdDu3gMywLnLSPkF7ib6kzAYFKSnDSr9CQfDyKdtSSYffj
-         NmVViCpEJoXuLmGqXgba22E56cifwYSbVZNXeVictH+d0dRlfEkOlVGivdjeKmZ7CIyv
-         3FSzZkJwBpt6TN+IAPfpzLbqbOzWmp7Dhh0wWeDGfblNquNT1fJMvDfBdtbFO0AtZKk3
-         Lg4Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Q4RyGL1VJG4SU29OYchV/RwfjC4Y/g03qGNnsSHlyOU=;
-        b=CdS+Emj0LQVeYJM91v79ycd1tbxLvERYR3iHCPaFTL4CyH7i+wjYSV4U2Sx8yYStbE
-         GmXr8cOmzSw1I/X5z2aPkJGZwZ7Dv3mX+IPLLl5duydt2Cy8LxXH93X2x9Y9yq1UM5uy
-         3yhRwEKhURyJm5+hCnu+Q8qQrHBwhsiVs+cvrFNXa6jcnqaJRnv8x7oVXhXWRD3wnGmS
-         /m78eeLRdEk8TAPYBy5L3VA1DYRNOf/9Wd0EHzFWEZWPWBFj3ZysBlLg2TRO/cqRZ/nZ
-         6srEuxF0m96STjVrIhlaS0VO+N22NCLoAwMbSgwpHBAoQzws5y1+hg6yLknxpkQBbw2U
-         XREQ==
-X-Gm-Message-State: AOAM530lv6rjxybocJzB21F2rVrp1BXwwc2c8BUVzR+TwYBEOtxDf3ym
-        NLT50LEtORZ+PwDX1tt+sFemYf41mpYGvQJD
-X-Google-Smtp-Source: ABdhPJxTidYjypVB7/I8hl/8SQqkUi9w5ghhNdeN8Vd5tT/0c8n57q7r06W2e3f0QaRhQTmlRj5FcQ==
-X-Received: by 2002:a37:4d8c:: with SMTP id a134mr7072247qkb.500.1600809516753;
-        Tue, 22 Sep 2020 14:18:36 -0700 (PDT)
-Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id q72sm11910551qka.22.2020.09.22.14.18.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Sep 2020 14:18:36 -0700 (PDT)
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH v3 2/2] btrfs: return error if we're unable to read device stats
-Date:   Tue, 22 Sep 2020 17:18:30 -0400
-Message-Id: <39d1268e66082fe065c49c8fe634628373521301.1600809318.git.josef@toxicpanda.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <cover.1600809318.git.josef@toxicpanda.com>
-References: <cover.1600809318.git.josef@toxicpanda.com>
+        Tue, 22 Sep 2020 17:49:42 -0400
+Received: from dread.disaster.area (pa49-195-191-192.pa.nsw.optusnet.com.au [49.195.191.192])
+        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id 17ECE3A8668;
+        Wed, 23 Sep 2020 07:49:35 +1000 (AEST)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1kKqAJ-0003rH-01; Wed, 23 Sep 2020 07:49:35 +1000
+Date:   Wed, 23 Sep 2020 07:49:34 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     "Darrick J. Wong" <darrick.wong@oracle.com>
+Cc:     Josef Bacik <josef@toxicpanda.com>,
+        Goldwyn Rodrigues <rgoldwyn@suse.de>,
+        linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        hch@lst.de, johannes.thumshirn@wdc.com, dsterba@suse.com,
+        Goldwyn Rodrigues <rgoldwyn@suse.com>
+Subject: Re: [PATCH 04/15] iomap: Call inode_dio_end() before
+ generic_write_sync()
+Message-ID: <20200922214934.GC12096@dread.disaster.area>
+References: <20200921144353.31319-1-rgoldwyn@suse.de>
+ <20200921144353.31319-5-rgoldwyn@suse.de>
+ <20bf949a-7237-8409-4230-cddb430026a9@toxicpanda.com>
+ <20200922163156.GD7949@magnolia>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200922163156.GD7949@magnolia>
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=YKPhNiOx c=1 sm=1 tr=0 cx=a_idp_d
+        a=vvDRHhr1aDYKXl+H6jx2TA==:117 a=vvDRHhr1aDYKXl+H6jx2TA==:17
+        a=kj9zAlcOel0A:10 a=reM5J-MqmosA:10 a=iox4zFpeAAAA:8 a=7-415B0cAAAA:8
+        a=qVYXC0LHI1IRUiICw7YA:9 a=IORDTW5l82JP8UU_:21 a=SW7t0_conF5gZlKb:21
+        a=CjuIK1q_8ugA:10 a=WzC6qhA0u3u7Ye7llzcV:22 a=biEYGPWJfzWAr4FL6Ov7:22
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-I noticed when fixing device stats for seed devices that we simply threw
-away the return value from btrfs_search_slot().  This is because we may
-not have stat items, but we could very well get an error, and thus miss
-reporting the error up the chain.  Fix this by returning ret if it's an
-actual error, and then stop trying to init the rest of the devices stats
-and return the error up the chain.
+On Tue, Sep 22, 2020 at 09:31:56AM -0700, Darrick J. Wong wrote:
+> On Tue, Sep 22, 2020 at 10:20:11AM -0400, Josef Bacik wrote:
+> > On 9/21/20 10:43 AM, Goldwyn Rodrigues wrote:
+> > > From: Goldwyn Rodrigues <rgoldwyn@suse.com>
+> > > 
+> > > iomap complete routine can deadlock with btrfs_fallocate because of the
+> > > call to generic_write_sync().
+> > > 
+> > > P0                      P1
+> > > inode_lock()            fallocate(FALLOC_FL_ZERO_RANGE)
+> > > __iomap_dio_rw()        inode_lock()
+> > >                          <block>
+> > > <submits IO>
+> > > <completes IO>
+> > > inode_unlock()
+> > >                          <gets inode_lock()>
+> > >                          inode_dio_wait()
+> > > iomap_dio_complete()
+> > >    generic_write_sync()
+> > >      btrfs_file_fsync()
+> > >        inode_lock()
+> > >        <deadlock>
+> > > 
+> > > inode_dio_end() is used to notify the end of DIO data in order
+> > > to synchronize with truncate. Call inode_dio_end() before calling
+> > > generic_write_sync(), so filesystems can lock i_rwsem during a sync.
+> > > 
+> > > ---
+> > >   fs/iomap/direct-io.c | 2 +-
+> > >   1 file changed, 1 insertion(+), 1 deletion(-)
+> > > 
+> > > diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
+> > > index d970c6bbbe11..e01f81e7b76f 100644
+> > > --- a/fs/iomap/direct-io.c
+> > > +++ b/fs/iomap/direct-io.c
+> > > @@ -118,6 +118,7 @@ ssize_t iomap_dio_complete(struct iomap_dio *dio)
+> > >   			dio_warn_stale_pagecache(iocb->ki_filp);
+> > >   	}
+> > > +	inode_dio_end(file_inode(iocb->ki_filp));
+> > >   	/*
+> > >   	 * If this is a DSYNC write, make sure we push it to stable storage now
+> > >   	 * that we've written data.
+> > > @@ -125,7 +126,6 @@ ssize_t iomap_dio_complete(struct iomap_dio *dio)
+> > >   	if (ret > 0 && (dio->flags & IOMAP_DIO_NEED_SYNC))
+> > >   		ret = generic_write_sync(iocb, ret);
+> > > -	inode_dio_end(file_inode(iocb->ki_filp));
+> > >   	kfree(dio);
+> > >   	return ret;
+> > > 
+> > 
+> > Did you verify that xfs or ext4 don't rely on the inode_dio_end() happening
+> > before the generic_write_sync()?  I wouldn't expect that they would, but
+> > we've already run into problems making those kind of assumptions.  If it's
+> > fine you can add
+> 
+> I was gonna ask the same question, but as there's no SoB on this patch I
+> hadn't really looked at it yet. ;)
+> 
+> Operations that rely on inode_dio_wait to have blocked until all the
+> directios are complete could get tripped up by iomap not having done the
+> generic_write_sync to stabilise the metadata, but I /think/ most
+> operations that do that also themselves flush the file.  But I don't
+> really know if there's a subtlety there if the inode_dio_wait thread
+> manages to grab the ILOCK before the generic_write_sync thread does.
 
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
----
- fs/btrfs/volumes.c | 24 ++++++++++++++++--------
- 1 file changed, 16 insertions(+), 8 deletions(-)
+I did point out in the previous thread that this actually means that
+inode_dio_wait() now has inconsistent wait semantics for O_DSYNC
+writes. If it's a pure overwrite and we hit the FUA path, the
+O_DSYNC write will be complete and guaranteed to be on stable storage
+before the IO completes. If the inode is metadata dirty, then the IO
+will now be signalled complete *before* the data and metadata are
+flushed to stable storage.
 
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index ed6de5817efb..5c7b0c0e9408 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -7223,8 +7223,7 @@ static void btrfs_set_dev_stats_value(struct extent_buffer *eb,
- 			    sizeof(val));
- }
- 
--static void init_dev_stats(struct btrfs_device *device,
--			   struct btrfs_path *path)
-+static int init_dev_stats(struct btrfs_device *device, struct btrfs_path *path)
- {
- 	struct btrfs_root *dev_root = device->fs_info->dev_root;
- 	struct btrfs_dev_stats_item *ptr;
-@@ -7242,7 +7241,7 @@ static void init_dev_stats(struct btrfs_device *device,
- 			btrfs_dev_stat_set(device, i, 0);
- 		device->dev_stats_valid = 1;
- 		btrfs_release_path(path);
--		return;
-+		return ret < 0 ? ret : 0;
- 	}
- 	slot = path->slots[0];
- 	eb = path->nodes[0];
-@@ -7262,6 +7261,7 @@ static void init_dev_stats(struct btrfs_device *device,
- 	device->dev_stats_valid = 1;
- 	btrfs_dev_stat_print_on_load(device);
- 	btrfs_release_path(path);
-+	return 0;
- }
- 
- int btrfs_init_dev_stats(struct btrfs_fs_info *fs_info)
-@@ -7269,22 +7269,30 @@ int btrfs_init_dev_stats(struct btrfs_fs_info *fs_info)
- 	struct btrfs_fs_devices *fs_devices = fs_info->fs_devices, *seed_devs;
- 	struct btrfs_device *device;
- 	struct btrfs_path *path = NULL;
-+	int ret = 0;
- 
- 	path = btrfs_alloc_path();
- 	if (!path)
- 		return -ENOMEM;
- 
- 	mutex_lock(&fs_devices->device_list_mutex);
--	list_for_each_entry(device, &fs_devices->devices, dev_list)
--		init_dev_stats(device, path);
-+	list_for_each_entry(device, &fs_devices->devices, dev_list) {
-+		ret = init_dev_stats(device, path);
-+		if (ret)
-+			goto out;
-+	}
- 	list_for_each_entry(seed_devs, &fs_devices->seed_list, seed_list) {
--		list_for_each_entry(device, &seed_devs->devices, dev_list)
--			init_dev_stats(device, path);
-+		list_for_each_entry(device, &seed_devs->devices, dev_list) {
-+			ret = init_dev_stats(device, path);
-+			if (ret)
-+				goto out;
-+		}
- 	}
-+out:
- 	mutex_unlock(&fs_devices->device_list_mutex);
- 
- 	btrfs_free_path(path);
--	return 0;
-+	return ret;
- }
- 
- static int update_dev_stat_item(struct btrfs_trans_handle *trans,
+Hence, from the perspective of writes to *stable* storage, this
+makes the ordering of O_DSYNC DIO against anything waiting for it to
+complete to be potentially inconsistent at the stable storage level.
+
+That's an extremely subtle change of behaviour, and something that
+would be largely impossible to test or reproduce. And, really, I
+don't like having this sort of "oh, it should be fine" handwavy
+justification when we are talking about data integrity operations...
+
+Cheers,
+
+Dave.
 -- 
-2.26.2
-
+Dave Chinner
+david@fromorbit.com
