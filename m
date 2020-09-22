@@ -2,107 +2,78 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 892F5274761
-	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Sep 2020 19:25:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A63127477A
+	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Sep 2020 19:30:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726583AbgIVRZi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 22 Sep 2020 13:25:38 -0400
-Received: from mx2.suse.de ([195.135.220.15]:46722 "EHLO mx2.suse.de"
+        id S1726566AbgIVRaM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 22 Sep 2020 13:30:12 -0400
+Received: from mx2.suse.de ([195.135.220.15]:48700 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726526AbgIVRZi (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 22 Sep 2020 13:25:38 -0400
+        id S1726526AbgIVRaM (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 22 Sep 2020 13:30:12 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id D68F0ADAD;
-        Tue, 22 Sep 2020 17:26:13 +0000 (UTC)
-Date:   Tue, 22 Sep 2020 12:25:33 -0500
-From:   Goldwyn Rodrigues <rgoldwyn@suse.de>
-To:     "Darrick J. Wong" <darrick.wong@oracle.com>
-Cc:     Josef Bacik <josef@toxicpanda.com>, linux-fsdevel@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, david@fromorbit.com, hch@lst.de,
-        johannes.thumshirn@wdc.com, dsterba@suse.com
-Subject: Re: [PATCH 04/15] iomap: Call inode_dio_end() before
- generic_write_sync()
-Message-ID: <20200922172533.kyg7flcfv4cpaebn@fiona>
-References: <20200921144353.31319-1-rgoldwyn@suse.de>
- <20200921144353.31319-5-rgoldwyn@suse.de>
- <20bf949a-7237-8409-4230-cddb430026a9@toxicpanda.com>
- <20200922163156.GD7949@magnolia>
+        by mx2.suse.de (Postfix) with ESMTP id 2B48EB040;
+        Tue, 22 Sep 2020 17:30:48 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id EFB82DA6E9; Tue, 22 Sep 2020 19:28:55 +0200 (CEST)
+Date:   Tue, 22 Sep 2020 19:28:55 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH 2/2] btrfs: return error if we're unable to read device
+ stats
+Message-ID: <20200922172855.GH6756@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
+        linux-btrfs@vger.kernel.org, kernel-team@fb.com
+References: <cover.1600461724.git.josef@toxicpanda.com>
+ <6f50f5be859468da38bd504c0f78a97dbcd0306d.1600461724.git.josef@toxicpanda.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200922163156.GD7949@magnolia>
+In-Reply-To: <6f50f5be859468da38bd504c0f78a97dbcd0306d.1600461724.git.josef@toxicpanda.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On  9:31 22/09, Darrick J. Wong wrote:
-> On Tue, Sep 22, 2020 at 10:20:11AM -0400, Josef Bacik wrote:
-> > On 9/21/20 10:43 AM, Goldwyn Rodrigues wrote:
-> > > From: Goldwyn Rodrigues <rgoldwyn@suse.com>
-> > > 
-> > > iomap complete routine can deadlock with btrfs_fallocate because of the
-> > > call to generic_write_sync().
-> > > 
-> > > P0                      P1
-> > > inode_lock()            fallocate(FALLOC_FL_ZERO_RANGE)
-> > > __iomap_dio_rw()        inode_lock()
-> > >                          <block>
-> > > <submits IO>
-> > > <completes IO>
-> > > inode_unlock()
-> > >                          <gets inode_lock()>
-> > >                          inode_dio_wait()
-> > > iomap_dio_complete()
-> > >    generic_write_sync()
-> > >      btrfs_file_fsync()
-> > >        inode_lock()
-> > >        <deadlock>
-> > > 
-> > > inode_dio_end() is used to notify the end of DIO data in order
-> > > to synchronize with truncate. Call inode_dio_end() before calling
-> > > generic_write_sync(), so filesystems can lock i_rwsem during a sync.
-> > > 
-> > > ---
-> > >   fs/iomap/direct-io.c | 2 +-
-> > >   1 file changed, 1 insertion(+), 1 deletion(-)
-> > > 
-> > > diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
-> > > index d970c6bbbe11..e01f81e7b76f 100644
-> > > --- a/fs/iomap/direct-io.c
-> > > +++ b/fs/iomap/direct-io.c
-> > > @@ -118,6 +118,7 @@ ssize_t iomap_dio_complete(struct iomap_dio *dio)
-> > >   			dio_warn_stale_pagecache(iocb->ki_filp);
-> > >   	}
-> > > +	inode_dio_end(file_inode(iocb->ki_filp));
-> > >   	/*
-> > >   	 * If this is a DSYNC write, make sure we push it to stable storage now
-> > >   	 * that we've written data.
-> > > @@ -125,7 +126,6 @@ ssize_t iomap_dio_complete(struct iomap_dio *dio)
-> > >   	if (ret > 0 && (dio->flags & IOMAP_DIO_NEED_SYNC))
-> > >   		ret = generic_write_sync(iocb, ret);
-> > > -	inode_dio_end(file_inode(iocb->ki_filp));
-> > >   	kfree(dio);
-> > >   	return ret;
-> > > 
-> > 
-> > Did you verify that xfs or ext4 don't rely on the inode_dio_end() happening
-> > before the generic_write_sync()?  I wouldn't expect that they would, but
-> > we've already run into problems making those kind of assumptions.  If it's
-> > fine you can add
-> 
-> I was gonna ask the same question, but as there's no SoB on this patch I
-> hadn't really looked at it yet. ;)
-> 
-> Operations that rely on inode_dio_wait to have blocked until all the
-> directios are complete could get tripped up by iomap not having done the
-> generic_write_sync to stabilise the metadata, but I /think/ most
-> operations that do that also themselves flush the file.  But I don't
-> really know if there's a subtlety there if the inode_dio_wait thread
-> manages to grab the ILOCK before the generic_write_sync thread does.
-> 
+On Fri, Sep 18, 2020 at 04:44:33PM -0400, Josef Bacik wrote:
+> @@ -7270,22 +7271,30 @@ int btrfs_init_dev_stats(struct btrfs_fs_info *fs_info)
+>  	struct btrfs_fs_devices *fs_devices = fs_info->fs_devices, *seed_devs;
+>  	struct btrfs_device *device;
+>  	struct btrfs_path *path = NULL;
+> +	int ret = 0;
+>  
+>  	path = btrfs_alloc_path();
+>  	if (!path)
+>  		return -ENOMEM;
+>  
+>  	mutex_lock(&fs_devices->device_list_mutex);
+> -	list_for_each_entry(device, &fs_devices->devices, dev_list)
+> -		__btrfs_init_dev_stats(fs_info, device, path);
+> +	list_for_each_entry(device, &fs_devices->devices, dev_list) {
+> +		ret = __btrfs_init_dev_stats(fs_info, device, path);
+> +		if (ret)
+> +			goto out;
+> +	}
+>  	list_for_each_entry(seed_devs, &fs_devices->seed_list, seed_list) {
+> -		list_for_each_entry(device, &seed_devs->devices, dev_list)
+> -			__btrfs_init_dev_stats(fs_info, device, path);
+> +		list_for_each_entry(device, &seed_devs->devices, dev_list) {
+> +			ret = __btrfs_init_dev_stats(fs_info, device, path);
+> +			if (ret)
+> +				break;
 
-I ran xfstests and it was successful. I am testing ext4 now.
+This jumps out of the inner list_for_each and continues traversing the
+seed_list, is that intentional? Or goto out should be here as well.
 
--- 
-Goldwyn
+> +		}
+>  	}
+> +out:
+>  	mutex_unlock(&fs_devices->device_list_mutex);
+>  
+>  	btrfs_free_path(path);
+> -	return 0;
+> +	return ret;
+>  }
