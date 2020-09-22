@@ -2,78 +2,90 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A63127477A
-	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Sep 2020 19:30:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF455274788
+	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Sep 2020 19:34:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726566AbgIVRaM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 22 Sep 2020 13:30:12 -0400
-Received: from mx2.suse.de ([195.135.220.15]:48700 "EHLO mx2.suse.de"
+        id S1726617AbgIVReA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 22 Sep 2020 13:34:00 -0400
+Received: from mx2.suse.de ([195.135.220.15]:50438 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726526AbgIVRaM (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 22 Sep 2020 13:30:12 -0400
+        id S1726526AbgIVReA (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 22 Sep 2020 13:34:00 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 2B48EB040;
-        Tue, 22 Sep 2020 17:30:48 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id EFB82DA6E9; Tue, 22 Sep 2020 19:28:55 +0200 (CEST)
-Date:   Tue, 22 Sep 2020 19:28:55 +0200
-From:   David Sterba <dsterba@suse.cz>
+        by mx2.suse.de (Postfix) with ESMTP id 283B4B040;
+        Tue, 22 Sep 2020 17:34:35 +0000 (UTC)
+Date:   Tue, 22 Sep 2020 12:33:55 -0500
+From:   Goldwyn Rodrigues <rgoldwyn@suse.de>
 To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH 2/2] btrfs: return error if we're unable to read device
- stats
-Message-ID: <20200922172855.GH6756@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
-        linux-btrfs@vger.kernel.org, kernel-team@fb.com
-References: <cover.1600461724.git.josef@toxicpanda.com>
- <6f50f5be859468da38bd504c0f78a97dbcd0306d.1600461724.git.josef@toxicpanda.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        david@fromorbit.com, hch@lst.de, johannes.thumshirn@wdc.com,
+        dsterba@suse.com, darrick.wong@oracle.com
+Subject: Re: [PATCH 11/15] btrfs: Use inode_lock_shared() for direct writes
+ within EOF
+Message-ID: <20200922173355.bxacigifg72zavep@fiona>
+References: <20200921144353.31319-1-rgoldwyn@suse.de>
+ <20200921144353.31319-12-rgoldwyn@suse.de>
+ <f3a6965f-f3e2-9bef-3dc6-b53cdc715833@toxicpanda.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <6f50f5be859468da38bd504c0f78a97dbcd0306d.1600461724.git.josef@toxicpanda.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <f3a6965f-f3e2-9bef-3dc6-b53cdc715833@toxicpanda.com>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Sep 18, 2020 at 04:44:33PM -0400, Josef Bacik wrote:
-> @@ -7270,22 +7271,30 @@ int btrfs_init_dev_stats(struct btrfs_fs_info *fs_info)
->  	struct btrfs_fs_devices *fs_devices = fs_info->fs_devices, *seed_devs;
->  	struct btrfs_device *device;
->  	struct btrfs_path *path = NULL;
-> +	int ret = 0;
->  
->  	path = btrfs_alloc_path();
->  	if (!path)
->  		return -ENOMEM;
->  
->  	mutex_lock(&fs_devices->device_list_mutex);
-> -	list_for_each_entry(device, &fs_devices->devices, dev_list)
-> -		__btrfs_init_dev_stats(fs_info, device, path);
-> +	list_for_each_entry(device, &fs_devices->devices, dev_list) {
-> +		ret = __btrfs_init_dev_stats(fs_info, device, path);
-> +		if (ret)
-> +			goto out;
-> +	}
->  	list_for_each_entry(seed_devs, &fs_devices->seed_list, seed_list) {
-> -		list_for_each_entry(device, &seed_devs->devices, dev_list)
-> -			__btrfs_init_dev_stats(fs_info, device, path);
-> +		list_for_each_entry(device, &seed_devs->devices, dev_list) {
-> +			ret = __btrfs_init_dev_stats(fs_info, device, path);
-> +			if (ret)
-> +				break;
+On 10:52 22/09, Josef Bacik wrote:
+> On 9/21/20 10:43 AM, Goldwyn Rodrigues wrote:
+> > From: Goldwyn Rodrigues <rgoldwyn@suse.com>
+> > 
+> > Direct writes within EOF are safe to be performed with inode shared lock
+> > to improve parallelization with other direct writes or reads because EOF
+> > is not changed and there is no race with truncate().
+> > 
+> > Direct reads are already performed under shared inode lock.
+> > 
+> > This patch is precursor to removing btrfs_inode->dio_sem.
+> > 
+> > Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
+> > ---
+> >   fs/btrfs/file.c | 33 +++++++++++++++++++++------------
+> >   1 file changed, 21 insertions(+), 12 deletions(-)
+> > 
+> > diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+> > index d9c3be19d7b3..50092d24eee2 100644
+> > --- a/fs/btrfs/file.c
+> > +++ b/fs/btrfs/file.c
+> > @@ -1977,7 +1977,6 @@ static ssize_t btrfs_direct_write(struct kiocb *iocb, struct iov_iter *from)
+> >   	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
+> >   	loff_t pos;
+> >   	ssize_t written = 0;
+> > -	bool relock = false;
+> >   	ssize_t written_buffered;
+> >   	loff_t endbyte;
+> >   	int err;
+> > @@ -1986,6 +1985,15 @@ static ssize_t btrfs_direct_write(struct kiocb *iocb, struct iov_iter *from)
+> >   	if (iocb->ki_flags & IOCB_NOWAIT)
+> >   		ilock_flags |= BTRFS_ILOCK_TRY;
+> > +	/*
+> > +	 * If the write DIO within EOF,  use a shared lock
+> > +	 */
+> > +	if (iocb->ki_pos + iov_iter_count(from) <= i_size_read(inode))
+> > +		ilock_flags |= BTRFS_ILOCK_SHARED;
+> > +	else if (iocb->ki_flags & IOCB_NOWAIT)
+> > +		return -EAGAIN;
+> > +
+> > +relock:
+> 
+> Huh?  Why are you making it so EOF extending NOWAIT writes now fail?  We are
+> still using ILOCK_TRY here, so we may still not block, am I missing
+> something? Thanks,
+> 
 
-This jumps out of the inner list_for_each and continues traversing the
-seed_list, is that intentional? Or goto out should be here as well.
+Yes, this is incorrect. I had thought of this would block on disk space
+allocations. But did not consider the prealloc case.
 
-> +		}
->  	}
-> +out:
->  	mutex_unlock(&fs_devices->device_list_mutex);
->  
->  	btrfs_free_path(path);
-> -	return 0;
-> +	return ret;
->  }
+I am removing this check to match the previous behavior.
+
+-- 
+Goldwyn
