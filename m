@@ -2,90 +2,51 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04DEE2742AE
-	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Sep 2020 15:09:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F0AB2742C8
+	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Sep 2020 15:18:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726633AbgIVNJr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 22 Sep 2020 09:09:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53688 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726591AbgIVNJr (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 22 Sep 2020 09:09:47 -0400
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04ADEC0613CF
-        for <linux-btrfs@vger.kernel.org>; Tue, 22 Sep 2020 06:09:46 -0700 (PDT)
-Received: by mail-qt1-x844.google.com with SMTP id p65so15432220qtd.2
-        for <linux-btrfs@vger.kernel.org>; Tue, 22 Sep 2020 06:09:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=vqr0QIjgGnH/md+DPTcLiUrZQZNCzuz2rR04td1JWzk=;
-        b=V1HdYFqGhmFRrJHKvVMc3CAktzjlY3N1JGJZ2JYQ8Cq3yBKTnwNSPXOnY295wGg75m
-         lIGUE86UooaRU7H/Apt9lsgCHF7DU1M74zOR39rv069AR+F09F/H3t7ntyLe23mQATp2
-         jl6O9+wZKOjM3nuZQGiZd9D1ZxWq7nmpINElJyd3W3g6UAko2LA5vkH+4yKH7HHL7ZXg
-         jLX/kwydBgQMRh8ldSgrpiuV7UmCmo3PPMg5n6+JpBBffqDxRE+06odZymudNgfsV3UY
-         WtnmKfGAA0W9bNFdVVxQoPnz/vsnQKsKk1Q4QiqUzoPQwP8STP+foeBuqxMk1haA4aCa
-         5j9g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=vqr0QIjgGnH/md+DPTcLiUrZQZNCzuz2rR04td1JWzk=;
-        b=VBtEv2zQ4+SkN2amJhbGIVHw5N4NTWWxmU/SmhyTor7DUTtC/9EHwAmORCTi9ombGx
-         QWdn6T9/NNjgmwRa9uBq7CJ2lc5E4zBsbMB00v1QexfHmeUz/27/0MDFWJlnN/MG/h2y
-         v1ai79HPcBLEBNO5rV76HH3SRMUhKQbWXQdpLZDJBPyaGrQixlba0nGk7XWmp2rlS3ih
-         Qik130sej5IE6WkL1nbgkQ0TIGYjtTUL2Pbt9FC4yRGTmGnhME1+WcY+GniDFFKEJztR
-         /Dgn/9yXX+Ygo7wRquB+3oInN6M4XyEet9fC+o/znug2C1Jf0htjqZOjJ3BxRipi4P02
-         ETVw==
-X-Gm-Message-State: AOAM530ZTYxRg7D+h9tGHHDvncqgIf7xOTafF+WLuuZZMWXHcaf6KVFd
-        ZX+JTEW4vV5eAW97UEBxeB7ta2TGAOSM9SuK
-X-Google-Smtp-Source: ABdhPJxutOyD10vxZzsERtUGc6Z0D7vku2dw2ShiwRJkrPN6iz/xx6aboIdik1N8k3xfdA2uen4/kQ==
-X-Received: by 2002:ac8:3630:: with SMTP id m45mr4510478qtb.358.1600780186027;
-        Tue, 22 Sep 2020 06:09:46 -0700 (PDT)
-Received: from [192.168.1.45] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id 145sm11653102qkf.18.2020.09.22.06.09.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 22 Sep 2020 06:09:45 -0700 (PDT)
-Subject: Re: [PATCH] btrfs: fix memdup.cocci warnings
-To:     Julia Lawall <julia.lawall@inria.fr>,
-        Filipe Manana <fdmanana@suse.com>
-Cc:     Chris Mason <chris.mason@fusionio.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kbuild-all@lists.01.org
-References: <alpine.DEB.2.22.394.2009221219560.2659@hadrien>
-From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <a2a5af65-40f6-b163-6f55-9098c5e05404@toxicpanda.com>
-Date:   Tue, 22 Sep 2020 09:09:43 -0400
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.2.2
+        id S1726607AbgIVNSz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 22 Sep 2020 09:18:55 -0400
+Received: from verein.lst.de ([213.95.11.211]:44557 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726563AbgIVNSy (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 22 Sep 2020 09:18:54 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 8FD4E67373; Tue, 22 Sep 2020 15:18:51 +0200 (CEST)
+Date:   Tue, 22 Sep 2020 15:18:51 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Goldwyn Rodrigues <rgoldwyn@suse.de>
+Cc:     linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        david@fromorbit.com, hch@lst.de, johannes.thumshirn@wdc.com,
+        dsterba@suse.com, darrick.wong@oracle.com, josef@toxicpanda.com,
+        Goldwyn Rodrigues <rgoldwyn@suse.com>,
+        Nikolay Borisov <nborisov@suse.com>,
+        Johannes Thumshirn <jth@kernel.org>
+Subject: Re: [PATCH 02/15] btrfs: remove BTRFS_INODE_READDIO_NEED_LOCK
+Message-ID: <20200922131851.GA20432@lst.de>
+References: <20200921144353.31319-1-rgoldwyn@suse.de> <20200921144353.31319-3-rgoldwyn@suse.de>
 MIME-Version: 1.0
-In-Reply-To: <alpine.DEB.2.22.394.2009221219560.2659@hadrien>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200921144353.31319-3-rgoldwyn@suse.de>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 9/22/20 6:21 AM, Julia Lawall wrote:
-> From: kernel test robot <lkp@intel.com>
+On Mon, Sep 21, 2020 at 09:43:40AM -0500, Goldwyn Rodrigues wrote:
+> From: Goldwyn Rodrigues <rgoldwyn@suse.com>
 > 
-> fs/btrfs/send.c:3854:8-15: WARNING opportunity for kmemdup
+> Since we now perform direct reads using i_rwsem, we can remove this
+> inode flag used to co-ordinate unlocked reads.
 > 
->   Use kmemdup rather than duplicating its implementation
+> The truncate call takes i_rwsem. This means it is correctly synchronized
+> with concurrent direct reads.
 > 
-> Generated by: scripts/coccinelle/api/memdup.cocci
-> 
-> Fixes: 28314eb24e6c ("btrfs: send, recompute reference path after orphanization of a directory")
-> Signed-off-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Julia Lawall <julia.lawall@inria.fr>
+> Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+> Reviewed-by: Johannes Thumshirn <jth@kernel.org>
+> Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
 
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+Looks good,
 
-Thanks,
-
-Josef
-
+Reviewed-by: Christoph Hellwig <hch@lst.de>
