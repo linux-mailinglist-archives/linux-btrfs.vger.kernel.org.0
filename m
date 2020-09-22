@@ -2,129 +2,67 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C6712743CF
-	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Sep 2020 16:06:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DD712743D4
+	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Sep 2020 16:07:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726614AbgIVOGL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 22 Sep 2020 10:06:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34136 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726473AbgIVOGL (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 22 Sep 2020 10:06:11 -0400
-Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A8D7C061755;
-        Tue, 22 Sep 2020 07:06:11 -0700 (PDT)
-Received: by mail-qv1-xf41.google.com with SMTP id f11so9590526qvw.3;
-        Tue, 22 Sep 2020 07:06:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc:content-transfer-encoding;
-        bh=ggv8VuLQMJBV80+GzZgkXohh+I/h8XJJBp5IUz+/fvo=;
-        b=p4MQ96FSgJ+qhEE9FsMlf9iPP1EKo3i6eXh8PekF+Z8ZJtAvSWWKJomaFDWkJIVBxx
-         g1UdB6PKqDQjHPJ5Y2QI1uLWZmpj03Ie1OmKV6QETtOXAKTF0Bx89UVOwOqZehk8WZ1C
-         gnrOSydC3qqJkUpEYgZxurxgz9TtKFDfYav3YuPgELvHyiCIavz9slbW3V8eaogcoLoV
-         zbS+W0qZ3+GyizlbrtqXJI8ecYXiK3ucVB/XoHit7s0vE2VU9vTf1WmkeS4pWw4M7L6L
-         g5APi97Ksne3ulKMs47b1+Xde0+Pcp1wJ+getd21S4iypZo63u4s0QJBOvJIymfdghak
-         otXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc:content-transfer-encoding;
-        bh=ggv8VuLQMJBV80+GzZgkXohh+I/h8XJJBp5IUz+/fvo=;
-        b=rFWpffKZzO3Qaw2Pw/VJIzigkC221g/Q11WpT9PHK+7nAIc1dBEjfxAchvuvEHcyZs
-         QvYWMPEcc8nYRRSpj9aGVxIu0fdT+0+gtx6BgIyr/tjFtwazG8n8mbrccxk/EVv/XtPw
-         Mb5SAWgmtVbTZ3l/10aPzdFkvioRZG887DT+4Yj4mnf4eMp1/JmwoDwWAS0JQxsj5u7x
-         5qdOS1y1SLnO2HHb3nDnwe3p7l78GyTFFa/wAvziEsTvOLXw1ZXzFGcGyl3pA0xgTy31
-         YnSgbFPhnvFFovRhzoqpneSuaAd0Joo01Y3vnyqIRA++tfHS4GTK86joGojsI+mJpPr0
-         btJw==
-X-Gm-Message-State: AOAM530tTjBOO6jltFiLV3wXybWqR6G2JLyKNMM2u8suQ2ZYxYOxWens
-        keax5LoqWri9zxiZbxVOFOFV7/wQHGCjoyMNXCOe7mR2
-X-Google-Smtp-Source: ABdhPJy0quvn8ooCZ9FzdxcJz0oeTjjL80e0/hZRi09LVHcCir/HqRUgAdt1yOaX3YPW4XrtaivqT5W9aYtNJsycsSA=
-X-Received: by 2002:a0c:e152:: with SMTP id c18mr5893009qvl.41.1600783570742;
- Tue, 22 Sep 2020 07:06:10 -0700 (PDT)
+        id S1726604AbgIVOHS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 22 Sep 2020 10:07:18 -0400
+Received: from mx2.suse.de ([195.135.220.15]:40468 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726473AbgIVOHS (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 22 Sep 2020 10:07:18 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id CD028AC7D;
+        Tue, 22 Sep 2020 14:07:53 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id BB545DA6E9; Tue, 22 Sep 2020 16:06:01 +0200 (CEST)
+Date:   Tue, 22 Sep 2020 16:06:01 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v2 14/19] btrfs: make btree inode io_tree has its special
+ owner
+Message-ID: <20200922140601.GZ6756@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+References: <20200915053532.63279-1-wqu@suse.com>
+ <20200915053532.63279-15-wqu@suse.com>
+ <20200916160612.GO1791@twin.jikos.cz>
+ <9ea58668-b6e5-6471-01fe-d4bf8ae8b310@suse.com>
+ <20200917125031.GS1791@twin.jikos.cz>
+ <08592bd0-0336-7170-3f3e-0d730d002aaa@gmx.com>
 MIME-Version: 1.0
-References: <alpine.DEB.2.22.394.2009221219560.2659@hadrien>
-In-Reply-To: <alpine.DEB.2.22.394.2009221219560.2659@hadrien>
-Reply-To: fdmanana@gmail.com
-From:   Filipe Manana <fdmanana@gmail.com>
-Date:   Tue, 22 Sep 2020 15:05:59 +0100
-Message-ID: <CAL3q7H6e7gQWs9X-N4RMxK+UhZKHGxNmP0-q+B6x19uyH9TOwA@mail.gmail.com>
-Subject: Re: [PATCH] btrfs: fix memdup.cocci warnings
-To:     Julia Lawall <julia.lawall@inria.fr>
-Cc:     Filipe Manana <fdmanana@suse.com>,
-        Chris Mason <chris.mason@fusionio.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        kbuild-all@lists.01.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <08592bd0-0336-7170-3f3e-0d730d002aaa@gmx.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Sep 22, 2020 at 11:29 AM Julia Lawall <julia.lawall@inria.fr> wrote=
-:
->
-> From: kernel test robot <lkp@intel.com>
->
-> fs/btrfs/send.c:3854:8-15: WARNING opportunity for kmemdup
->
->  Use kmemdup rather than duplicating its implementation
->
-> Generated by: scripts/coccinelle/api/memdup.cocci
->
-> Fixes: 28314eb24e6c ("btrfs: send, recompute reference path after orphani=
-zation of a directory")
-> Signed-off-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Julia Lawall <julia.lawall@inria.fr>
+On Fri, Sep 18, 2020 at 04:18:27PM +0800, Qu Wenruo wrote:
+> >>> This looks like an independent patch, so it could be taken separately.
+> >>>
+> >> Errr, why?
+> >>
+> >> We added a new owner for btree inode io tree, and utilize that new owner
+> >> in the same patch looks completely sane to me.
+> >>
+> >> Or did I miss something?
+> > 
+> > The IO_TREE_* ids are only for debugging and IO_TREE_INODE_IO is
+> > supposed to be used for data inodes. But the btree_inode has that too,
+> > which does not seem to follow the purpose of the tree id, you fix that
+> > in this patch and it applies to current code too.
+> > 
+> Oh, I didn't see it as a fix. But your point still stands, and makes sense.
+> 
+> And this patch would be the base stone for later btree io tree specific
+> re-mapping bits.
+> So if this patch can be applied to current code, it would only be a good
+> thing.
 
-Since this is not in Linus' tree yet, it can be folded in the original patc=
-h.
-David, can you do that when you pick it?
-
-Btw, isn't the Fixes tag meant only for bug fixes? This is a pure
-cleanup afaics.
-
-Thanks.
-
-> ---
->
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/fdmanana/linux.gi=
-t misc-next
-> head:   28314eb24e6cb8124d1e5da2ef2ccb90ec44cc06
-> commit: 28314eb24e6cb8124d1e5da2ef2ccb90ec44cc06 [2/2] btrfs: send, recom=
-pute reference path after orphanization of a directory
-> :::::: branch date: 17 hours ago
-> :::::: commit date: 17 hours ago
->
->
->  send.c |    3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
->
-> --- a/fs/btrfs/send.c
-> +++ b/fs/btrfs/send.c
-> @@ -3851,10 +3851,9 @@ static int refresh_ref_path(struct send_
->         char *name;
->         int ret;
->
-> -       name =3D kmalloc(ref->name_len, GFP_KERNEL);
-> +       name =3D kmemdup(ref->name, ref->name_len, GFP_KERNEL);
->         if (!name)
->                 return -ENOMEM;
-> -       memcpy(name, ref->name, ref->name_len);
->
->         fs_path_reset(ref->full_path);
->         ret =3D get_cur_path(sctx, ref->dir, ref->dir_gen, ref->full_path=
-);
-
-
-
---=20
-Filipe David Manana,
-
-=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
- right.=E2=80=9D
+Thanks for confirming, I'll add it to misc-next.
