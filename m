@@ -2,198 +2,261 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3A9E273D9C
-	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Sep 2020 10:44:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3EED273E54
+	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Sep 2020 11:16:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726515AbgIVIoc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 22 Sep 2020 04:44:32 -0400
-Received: from mout.gmx.net ([212.227.17.22]:50703 "EHLO mout.gmx.net"
+        id S1726539AbgIVJQp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 22 Sep 2020 05:16:45 -0400
+Received: from mx2.suse.de ([195.135.220.15]:60358 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726142AbgIVIoc (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 22 Sep 2020 04:44:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1600764269;
-        bh=N7qD5BB998/ijim8XT88cF4+m3cFGdubAnDQMWd3CGI=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=DK9crQlyuGF+YxawnGqI1+wIhFdGoPO6SUX1z0116q9D5tbNHMHbAloq/YAI0L8PR
-         GgZROFbJIbReJhbs6ocV63riAZkXRmT4gpHjDotoniN0EYsrzVmmHxMYRuq8xM69fe
-         Ofa1OPbYRZdJe3J1V90SDLn5qYPwIM6r1S5YNHrM=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MeCpb-1kv5Fz0Vjb-00bGId; Tue, 22
- Sep 2020 10:44:28 +0200
-Subject: Re: external harddisk: bogus corrupt leaf error?
-To:     Martin Steigerwald <martin@lichtvoll.de>,
-        linux-btrfs@vger.kernel.org
-References: <1978673.BsW9qxMyvF@merkaba>
- <f0fd36fd-3ffa-ff02-e5d9-265fc64e38f3@gmx.com>
- <6e508d1c-32fe-1162-f905-2e57022f8dc6@gmx.com> <4501761.uZMkQUx0QA@merkaba>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
- PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
- 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
- D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
- efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
- ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
- BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
- 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
- 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
- EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
- 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
- ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
- oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
- fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
- 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
- ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
- oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <312a23f3-ac58-2e05-05f7-74849872d2be@gmx.com>
-Date:   Tue, 22 Sep 2020 16:44:23 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1726343AbgIVJQp (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 22 Sep 2020 05:16:45 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id C8D0EACDF;
+        Tue, 22 Sep 2020 09:17:19 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id E47DC1E12E3; Tue, 22 Sep 2020 11:16:42 +0200 (CEST)
+Date:   Tue, 22 Sep 2020 11:16:42 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     syzbot <syzbot+84a0634dc5d21d488419@syzkaller.appspotmail.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk,
+        linux-btrfs@vger.kernel.org, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>
+Subject: Re: possible deadlock in blkdev_put
+Message-ID: <20200922091642.GE16464@quack2.suse.cz>
+References: <000000000000fc04d105afcf86d7@google.com>
 MIME-Version: 1.0
-In-Reply-To: <4501761.uZMkQUx0QA@merkaba>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="iHcOBCXQpjD6o69B0QQLszu2Pz8GmiRq5"
-X-Provags-ID: V03:K1:VCOsdRQPDm/7AXZYL4OLRPFzOrppJxuwwbmCZok1YLAIrymIx4h
- vIgZOJzOPDWUwy9oY4q+kcw7FO4ZkaFEdgvAKIaLVg1UO4QO4KvqbwvkvU3hOc/w4jIfHOq
- TzG2N08VBUig8QLIUTAABlMS0CDnCBlNpJVVKJtidfWipCdmtkXZhY7YwmYK8WBtdkBD7GE
- i+r/s9n5srZwSEGh5OvRw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:EuzZBAvAO8Q=:mDbhl+8uGc8+grHpwkrBgK
- XDK7BbALi0UwMclsVF1td/kE6bYgdlpcmY02srQf3apQPafSZ+0iuRwA+ZKEBb4LBMvj5AlbS
- A9Ehj2js/kQKY8O4lSAOU4hAfD6OQfYqxGMkPp3f069iZpe+Pd3rlz9KHCL0dQ0oTzfurBnuk
- TcvTAGnnvSyK1Ife7Ek4sc/nNY7vKXDqdK4Jib5JNiJ00hOvQVAHhZrmoC2XrqIQM1krTLVKA
- JwDw7sczd9aQNdpyh+G7HECHXfes6zT1sc3VCVvEbx9D4EAFIwhYYnHSvX9uss9GCHyBgNLyh
- Uj/ba7B1qF2OtMDRz/yKYNe49RlzrC3wXgPejBPGxjqq+rLLOwNVa2tLc/WjbY72NVL0jrKRe
- kguOgl4+7gE+VeT0MoWCTRzqV5GWQAbGKKoIGUAnbNp51QJaJAOfWcXjiH990SRI//OJe1CWz
- O4z2Joqk9RUVyY75DuJKBHjCNq3XpE1KUbz2/QMkm0cr7xJ0zhgghHJ6eL2gWkDcIMJOAJaUH
- 1CnC0AsU6pe3w5IKud0tCPz4HXtRa6Zg8gVjMW4QVTTkMarMwjipwnLKh6ub0euEcR1a+e5ZZ
- 236kG6/B4jFzAw37iSJJCsFE47R15hVaBfRjuKTkmtMgr/dg5eJgM+OQdT0axM7G32ly3m8bu
- UPMPaJXkK+PwvGyK9U/09FAcuRD8YK5J5+N/shDZJAsnPknRf47/PAZYY2gp6DKrDZE0IVcXM
- dhbvcmI4FmB08j2EDcruDMrkWih8AdBTKEG6E+sX/0uFtY7Ky1dcercY1b5uh3fdO0mMQqDvs
- NZs5mmSIGZOWkMsXU1S3XpPO0nLy/s5zTWFz1nnQhgHDWgNURqMtCgZ5ILnL3m1JLG1lbXQKM
- kg9kTbDk+aIcU5TpRVhQWbdch49K/upIbqRJhzKHkHfg3kXpipyVMA/hqijmGEwrTNg2gLUJ1
- V9sY5DDBGmkkx17h/BxRwAGLh5JhhUwcMDjGIzSzPbVRpLyZtuU+plSwXL0tYmFZuXD2JKk/Z
- lKlLIyXSlLuppgypt3O8b1S/ZIgXTMdc7Q1pODBsm5No2M1j4Lugvi/d3A10u6Kkir761xC1t
- EstQt1zWMHs1Z5hpLJGq2Dc+z93UXXuVtxTipRUUEPQLMu/xWPdOqSzSPW3b2UG27qaXNm700
- xYw2WJSCoXJQ+ofhZMNIso7Bn+mEcYCG1uxys/9gjzAff0fhadAy1uTV2arkFdmGAG3FEAFmX
- 6+ebZE0z0ZE55G/gIl9KEFIp0/r8OcPn08HgOMQ==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <000000000000fc04d105afcf86d7@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---iHcOBCXQpjD6o69B0QQLszu2Pz8GmiRq5
-Content-Type: multipart/mixed; boundary="kPrpEhzrjaatCMjniN7OE3NFHmkT848BK"
+Looks like btrfs issue. Adding relevant people to CC.
 
---kPrpEhzrjaatCMjniN7OE3NFHmkT848BK
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-
-
-
-On 2020/9/22 =E4=B8=8B=E5=8D=884:40, Martin Steigerwald wrote:
-> Qu Wenruo - 22.09.20, 04:14:34 CEST:
->> On 2020/9/22 =E4=B8=8A=E5=8D=887:48, Qu Wenruo wrote:
->>> On 2020/9/21 =E4=B8=8B=E5=8D=887:46, Martin Steigerwald wrote:
->>>> Qu Wenruo - 21.09.20, 13:14:05 CEST:
->>>>>>> For the root cause, it should be some older kernel creating the
->>>>>>> wrong
->>>>>>> root item size.
->>>>>>> I can't find the commit but it should be pretty old, as after
->>>>>>> v5.4
->>>>>>> we
->>>>>>> have mandatory write time tree checks, which will reject such
->>>>>>> write
->>>>>>> directly.
->>>>>>
->>>>>> So eventually I would have to backup the disk and create FS from
->>>>>> scratch to get rid of the error? Or can I, even if its no
->>>>>> subvolume
->>>>>> involved, find the item affected, copy it somewhere else and then
->>>>>> write it to the disk again?
->>>>>
->>>>> That's the theory.
->>>>>
->>>>> We can easily rebuild that data reloc tree, since it should be
->>>>> empty
->>>>> if balance is not running.
->>>>>
->>>>> But we don't have it ready at hand in btrfs-progs...
->>>>>
->>>>> So you may either want to wait until some quick dirty fixer
->>>>> arrives,
->>>>> or can start backup right now.
->>>>> All the data/files shouldn't be affected at all.
->>>>
->>>> Hmmm, do you have an idea if and when such a quick dirty fixer
->>>> would be available?
->>>
->>> If you need, I guess in 24 hours.
->>
->> Here you go:
->> https://github.com/adam900710/btrfs-progs/tree/dirty_fix
->>
->> You need to compile the btrfs-progs (in fact, you need to compile
->> btrfs-corrupt-block).
->> Then execute:
->> # ./btrfs-corrupt-block -X <device>
->>
->> It should solve the problem.
->> If nothing is output, and no crash, then the repair is done.
->> Or you will see a crash with calltrace, and your on-disk data is
->> untouched.
->=20
-> Thank you very much for the prompt delivery of that tool.
->=20
-> No, in case its safe enough to write it would have not been that urgent=
-=2E
-
-Since I have manually crafted an image with the same situation, and
-tested, it should be OK.
->=20
-> I hope to find time to try it out this evening. Currently in a training=
-=2E
-
-Another solution is waiting for the kernel patch to arrive.
-That one should be 100% safe.
-
-I hope that one can be merged in v5.9-rc cycle.
-
-Thanks,
-Qu
-
->=20
-> Ciao,
->=20
-
-
---kPrpEhzrjaatCMjniN7OE3NFHmkT848BK--
-
---iHcOBCXQpjD6o69B0QQLszu2Pz8GmiRq5
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl9puWcACgkQwj2R86El
-/qgsywf+Jf9ffVzFnXfm5gmQNMIVqyuCcA29C93vs84CU24tf3X+GXhuU/+sZrRy
-wSVv663oOXmcaTmUvIR84sP+4qpVfIRKxjgNkUf22kDopfGWnAaAMh2p2lEAANHW
-AV9jcWI5nlKriH6zilPWv7kxTDWP6pF95J5Qwi+kevPfpQjeYmLTfqudnlOZG51H
-LtMNS+4f/o+stouz+aEXNwgaKts3J3fIm/EAd4QrdJeoRAPNB/v5gjslBKAIQ/5f
-nNBxhlOUjrp/3m0hXpg51/2l7C/niQr+G9kKY09skVjKYpLC15fBrIJqy/q2+9Ro
-psHPPFKH8LRKhhFnPimemBuYjR8gqw==
-=TS+K
------END PGP SIGNATURE-----
-
---iHcOBCXQpjD6o69B0QQLszu2Pz8GmiRq5--
+On Mon 21-09-20 02:32:21, syzbot wrote:
+> Hello,
+> 
+> syzbot found the following issue on:
+> 
+> HEAD commit:    325d0eab Merge branch 'akpm' (patches from Andrew)
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=102425d9900000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=b12e84189082991c
+> dashboard link: https://syzkaller.appspot.com/bug?extid=84a0634dc5d21d488419
+> compiler:       gcc (GCC) 10.1.0-syz 20200507
+> 
+> Unfortunately, I don't have any reproducer for this issue yet.
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+84a0634dc5d21d488419@syzkaller.appspotmail.com
+> 
+> ======================================================
+> WARNING: possible circular locking dependency detected
+> 5.9.0-rc5-syzkaller #0 Not tainted
+> ------------------------------------------------------
+> syz-executor.0/6878 is trying to acquire lock:
+> ffff88804c17d780 (&bdev->bd_mutex){+.+.}-{3:3}, at: blkdev_put+0x30/0x520 fs/block_dev.c:1804
+> 
+> but task is already holding lock:
+> ffff8880908cfce0 (&fs_devs->device_list_mutex){+.+.}-{3:3}, at: close_fs_devices.part.0+0x2e/0x800 fs/btrfs/volumes.c:1159
+> 
+> which lock already depends on the new lock.
+> 
+> 
+> the existing dependency chain (in reverse order) is:
+> 
+> -> #4 (&fs_devs->device_list_mutex){+.+.}-{3:3}:
+>        __mutex_lock_common kernel/locking/mutex.c:956 [inline]
+>        __mutex_lock+0x134/0x10e0 kernel/locking/mutex.c:1103
+>        btrfs_finish_chunk_alloc+0x281/0xf90 fs/btrfs/volumes.c:5255
+>        btrfs_create_pending_block_groups+0x2f3/0x700 fs/btrfs/block-group.c:2109
+>        __btrfs_end_transaction+0xf5/0x690 fs/btrfs/transaction.c:916
+>        find_free_extent_update_loop fs/btrfs/extent-tree.c:3807 [inline]
+>        find_free_extent+0x23b7/0x2e60 fs/btrfs/extent-tree.c:4127
+>        btrfs_reserve_extent+0x166/0x460 fs/btrfs/extent-tree.c:4206
+>        cow_file_range+0x3de/0x9b0 fs/btrfs/inode.c:1063
+>        btrfs_run_delalloc_range+0x2cf/0x1410 fs/btrfs/inode.c:1838
+>        writepage_delalloc+0x150/0x460 fs/btrfs/extent_io.c:3439
+>        __extent_writepage+0x441/0xd00 fs/btrfs/extent_io.c:3653
+>        extent_write_cache_pages.constprop.0+0x69d/0x1040 fs/btrfs/extent_io.c:4249
+>        extent_writepages+0xcd/0x2b0 fs/btrfs/extent_io.c:4370
+>        do_writepages+0xec/0x290 mm/page-writeback.c:2352
+>        __writeback_single_inode+0x125/0x1400 fs/fs-writeback.c:1461
+>        writeback_sb_inodes+0x53d/0xf40 fs/fs-writeback.c:1721
+>        wb_writeback+0x2ad/0xd40 fs/fs-writeback.c:1894
+>        wb_do_writeback fs/fs-writeback.c:2039 [inline]
+>        wb_workfn+0x2dc/0x13e0 fs/fs-writeback.c:2080
+>        process_one_work+0x94c/0x1670 kernel/workqueue.c:2269
+>        worker_thread+0x64c/0x1120 kernel/workqueue.c:2415
+>        kthread+0x3b5/0x4a0 kernel/kthread.c:292
+>        ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+> 
+> -> #3 (sb_internal#2){.+.+}-{0:0}:
+>        percpu_down_read include/linux/percpu-rwsem.h:51 [inline]
+>        __sb_start_write+0x234/0x470 fs/super.c:1672
+>        sb_start_intwrite include/linux/fs.h:1690 [inline]
+>        start_transaction+0xbe7/0x1170 fs/btrfs/transaction.c:624
+>        find_free_extent_update_loop fs/btrfs/extent-tree.c:3789 [inline]
+>        find_free_extent+0x25e1/0x2e60 fs/btrfs/extent-tree.c:4127
+>        btrfs_reserve_extent+0x166/0x460 fs/btrfs/extent-tree.c:4206
+>        cow_file_range+0x3de/0x9b0 fs/btrfs/inode.c:1063
+>        btrfs_run_delalloc_range+0x2cf/0x1410 fs/btrfs/inode.c:1838
+>        writepage_delalloc+0x150/0x460 fs/btrfs/extent_io.c:3439
+>        __extent_writepage+0x441/0xd00 fs/btrfs/extent_io.c:3653
+>        extent_write_cache_pages.constprop.0+0x69d/0x1040 fs/btrfs/extent_io.c:4249
+>        extent_writepages+0xcd/0x2b0 fs/btrfs/extent_io.c:4370
+>        do_writepages+0xec/0x290 mm/page-writeback.c:2352
+>        __writeback_single_inode+0x125/0x1400 fs/fs-writeback.c:1461
+>        writeback_sb_inodes+0x53d/0xf40 fs/fs-writeback.c:1721
+>        wb_writeback+0x2ad/0xd40 fs/fs-writeback.c:1894
+>        wb_do_writeback fs/fs-writeback.c:2039 [inline]
+>        wb_workfn+0x2dc/0x13e0 fs/fs-writeback.c:2080
+>        process_one_work+0x94c/0x1670 kernel/workqueue.c:2269
+>        worker_thread+0x64c/0x1120 kernel/workqueue.c:2415
+>        kthread+0x3b5/0x4a0 kernel/kthread.c:292
+>        ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+> 
+> -> #2 ((work_completion)(&(&wb->dwork)->work)){+.+.}-{0:0}:
+>        __flush_work+0x60e/0xac0 kernel/workqueue.c:3041
+>        wb_shutdown+0x180/0x220 mm/backing-dev.c:355
+>        bdi_unregister+0x174/0x590 mm/backing-dev.c:872
+>        del_gendisk+0x820/0xa10 block/genhd.c:933
+>        loop_remove drivers/block/loop.c:2192 [inline]
+>        loop_control_ioctl drivers/block/loop.c:2291 [inline]
+>        loop_control_ioctl+0x3b1/0x480 drivers/block/loop.c:2257
+>        vfs_ioctl fs/ioctl.c:48 [inline]
+>        __do_sys_ioctl fs/ioctl.c:753 [inline]
+>        __se_sys_ioctl fs/ioctl.c:739 [inline]
+>        __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:739
+>        do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+>        entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> 
+> -> #1 (loop_ctl_mutex){+.+.}-{3:3}:
+>        __mutex_lock_common kernel/locking/mutex.c:956 [inline]
+>        __mutex_lock+0x134/0x10e0 kernel/locking/mutex.c:1103
+>        lo_open+0x19/0xd0 drivers/block/loop.c:1893
+>        __blkdev_get+0x759/0x1aa0 fs/block_dev.c:1507
+>        blkdev_get fs/block_dev.c:1639 [inline]
+>        blkdev_open+0x227/0x300 fs/block_dev.c:1753
+>        do_dentry_open+0x4b9/0x11b0 fs/open.c:817
+>        do_open fs/namei.c:3251 [inline]
+>        path_openat+0x1b9a/0x2730 fs/namei.c:3368
+>        do_filp_open+0x17e/0x3c0 fs/namei.c:3395
+>        do_sys_openat2+0x16d/0x420 fs/open.c:1168
+>        do_sys_open fs/open.c:1184 [inline]
+>        __do_sys_open fs/open.c:1192 [inline]
+>        __se_sys_open fs/open.c:1188 [inline]
+>        __x64_sys_open+0x119/0x1c0 fs/open.c:1188
+>        do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+>        entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> 
+> -> #0 (&bdev->bd_mutex){+.+.}-{3:3}:
+>        check_prev_add kernel/locking/lockdep.c:2496 [inline]
+>        check_prevs_add kernel/locking/lockdep.c:2601 [inline]
+>        validate_chain kernel/locking/lockdep.c:3218 [inline]
+>        __lock_acquire+0x2a96/0x5780 kernel/locking/lockdep.c:4426
+>        lock_acquire+0x1f3/0xae0 kernel/locking/lockdep.c:5006
+>        __mutex_lock_common kernel/locking/mutex.c:956 [inline]
+>        __mutex_lock+0x134/0x10e0 kernel/locking/mutex.c:1103
+>        blkdev_put+0x30/0x520 fs/block_dev.c:1804
+>        btrfs_close_bdev fs/btrfs/volumes.c:1117 [inline]
+>        btrfs_close_bdev fs/btrfs/volumes.c:1107 [inline]
+>        btrfs_close_one_device fs/btrfs/volumes.c:1133 [inline]
+>        close_fs_devices.part.0+0x1a4/0x800 fs/btrfs/volumes.c:1161
+>        close_fs_devices fs/btrfs/volumes.c:1193 [inline]
+>        btrfs_close_devices+0x95/0x1f0 fs/btrfs/volumes.c:1179
+>        close_ctree+0x688/0x6cb fs/btrfs/disk-io.c:4149
+>        generic_shutdown_super+0x144/0x370 fs/super.c:464
+>        kill_anon_super+0x36/0x60 fs/super.c:1108
+>        btrfs_kill_super+0x38/0x50 fs/btrfs/super.c:2265
+>        deactivate_locked_super+0x94/0x160 fs/super.c:335
+>        deactivate_super+0xad/0xd0 fs/super.c:366
+>        cleanup_mnt+0x3a3/0x530 fs/namespace.c:1118
+>        task_work_run+0xdd/0x190 kernel/task_work.c:141
+>        tracehook_notify_resume include/linux/tracehook.h:188 [inline]
+>        exit_to_user_mode_loop kernel/entry/common.c:163 [inline]
+>        exit_to_user_mode_prepare+0x1e1/0x200 kernel/entry/common.c:190
+>        syscall_exit_to_user_mode+0x7e/0x2e0 kernel/entry/common.c:265
+>        entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> 
+> other info that might help us debug this:
+> 
+> Chain exists of:
+>   &bdev->bd_mutex --> sb_internal#2 --> &fs_devs->device_list_mutex
+> 
+>  Possible unsafe locking scenario:
+> 
+>        CPU0                    CPU1
+>        ----                    ----
+>   lock(&fs_devs->device_list_mutex);
+>                                lock(sb_internal#2);
+>                                lock(&fs_devs->device_list_mutex);
+>   lock(&bdev->bd_mutex);
+> 
+>  *** DEADLOCK ***
+> 
+> 3 locks held by syz-executor.0/6878:
+>  #0: ffff88809070c0e0 (&type->s_umount_key#70){++++}-{3:3}, at: deactivate_super+0xa5/0xd0 fs/super.c:365
+>  #1: ffffffff8a5b37a8 (uuid_mutex){+.+.}-{3:3}, at: btrfs_close_devices+0x23/0x1f0 fs/btrfs/volumes.c:1178
+>  #2: ffff8880908cfce0 (&fs_devs->device_list_mutex){+.+.}-{3:3}, at: close_fs_devices.part.0+0x2e/0x800 fs/btrfs/volumes.c:1159
+> 
+> stack backtrace:
+> CPU: 0 PID: 6878 Comm: syz-executor.0 Not tainted 5.9.0-rc5-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> Call Trace:
+>  __dump_stack lib/dump_stack.c:77 [inline]
+>  dump_stack+0x198/0x1fd lib/dump_stack.c:118
+>  check_noncircular+0x324/0x3e0 kernel/locking/lockdep.c:1827
+>  check_prev_add kernel/locking/lockdep.c:2496 [inline]
+>  check_prevs_add kernel/locking/lockdep.c:2601 [inline]
+>  validate_chain kernel/locking/lockdep.c:3218 [inline]
+>  __lock_acquire+0x2a96/0x5780 kernel/locking/lockdep.c:4426
+>  lock_acquire+0x1f3/0xae0 kernel/locking/lockdep.c:5006
+>  __mutex_lock_common kernel/locking/mutex.c:956 [inline]
+>  __mutex_lock+0x134/0x10e0 kernel/locking/mutex.c:1103
+>  blkdev_put+0x30/0x520 fs/block_dev.c:1804
+>  btrfs_close_bdev fs/btrfs/volumes.c:1117 [inline]
+>  btrfs_close_bdev fs/btrfs/volumes.c:1107 [inline]
+>  btrfs_close_one_device fs/btrfs/volumes.c:1133 [inline]
+>  close_fs_devices.part.0+0x1a4/0x800 fs/btrfs/volumes.c:1161
+>  close_fs_devices fs/btrfs/volumes.c:1193 [inline]
+>  btrfs_close_devices+0x95/0x1f0 fs/btrfs/volumes.c:1179
+>  close_ctree+0x688/0x6cb fs/btrfs/disk-io.c:4149
+>  generic_shutdown_super+0x144/0x370 fs/super.c:464
+>  kill_anon_super+0x36/0x60 fs/super.c:1108
+>  btrfs_kill_super+0x38/0x50 fs/btrfs/super.c:2265
+>  deactivate_locked_super+0x94/0x160 fs/super.c:335
+>  deactivate_super+0xad/0xd0 fs/super.c:366
+>  cleanup_mnt+0x3a3/0x530 fs/namespace.c:1118
+>  task_work_run+0xdd/0x190 kernel/task_work.c:141
+>  tracehook_notify_resume include/linux/tracehook.h:188 [inline]
+>  exit_to_user_mode_loop kernel/entry/common.c:163 [inline]
+>  exit_to_user_mode_prepare+0x1e1/0x200 kernel/entry/common.c:190
+>  syscall_exit_to_user_mode+0x7e/0x2e0 kernel/entry/common.c:265
+>  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> RIP: 0033:0x460027
+> Code: 64 89 04 25 d0 02 00 00 58 5f ff d0 48 89 c7 e8 2f be ff ff 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 b8 a6 00 00 00 0f 05 <48> 3d 01 f0 ff ff 0f 83 fd 89 fb ff c3 66 2e 0f 1f 84 00 00 00 00
+> RSP: 002b:00007fff59216328 EFLAGS: 00000246 ORIG_RAX: 00000000000000a6
+> RAX: 0000000000000000 RBX: 0000000000076035 RCX: 0000000000460027
+> RDX: 0000000000403188 RSI: 0000000000000002 RDI: 00007fff592163d0
+> RBP: 0000000000000333 R08: 0000000000000000 R09: 000000000000000b
+> R10: 0000000000000005 R11: 0000000000000246 R12: 00007fff59217460
+> R13: 0000000002df2a60 R14: 0000000000000000 R15: 00007fff59217460
+> 
+> 
+> ---
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+> 
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
