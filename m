@@ -2,75 +2,170 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96E5D274477
-	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Sep 2020 16:41:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EBF9274479
+	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Sep 2020 16:42:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726627AbgIVOlH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 22 Sep 2020 10:41:07 -0400
-Received: from mx2.suse.de ([195.135.220.15]:48658 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726507AbgIVOlG (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 22 Sep 2020 10:41:06 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id E5063ACC2;
-        Tue, 22 Sep 2020 14:41:41 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id AD317DA6E9; Tue, 22 Sep 2020 16:39:49 +0200 (CEST)
-Date:   Tue, 22 Sep 2020 16:39:49 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Filipe Manana <fdmanana@gmail.com>
-Cc:     Julia Lawall <julia.lawall@inria.fr>,
-        Filipe Manana <fdmanana@suse.com>,
-        Chris Mason <chris.mason@fusionio.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        kbuild-all@lists.01.org
-Subject: Re: [PATCH] btrfs: fix memdup.cocci warnings
-Message-ID: <20200922143949.GB6756@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Filipe Manana <fdmanana@gmail.com>,
-        Julia Lawall <julia.lawall@inria.fr>,
-        Filipe Manana <fdmanana@suse.com>,
-        Chris Mason <chris.mason@fusionio.com>,
-        Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        kbuild-all@lists.01.org
-References: <alpine.DEB.2.22.394.2009221219560.2659@hadrien>
- <CAL3q7H6e7gQWs9X-N4RMxK+UhZKHGxNmP0-q+B6x19uyH9TOwA@mail.gmail.com>
+        id S1726646AbgIVOmK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 22 Sep 2020 10:42:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39680 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726613AbgIVOmK (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 22 Sep 2020 10:42:10 -0400
+Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3BCBC0613CF
+        for <linux-btrfs@vger.kernel.org>; Tue, 22 Sep 2020 07:42:09 -0700 (PDT)
+Received: by mail-qv1-xf41.google.com with SMTP id z18so9640209qvp.6
+        for <linux-btrfs@vger.kernel.org>; Tue, 22 Sep 2020 07:42:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=d1qBGSKO9ATTg+f/hu81D/+Ogeb5+q29w+qcULru148=;
+        b=nvs5BRy23crgSS41CONEZl9lNAoYTJ49XKXHHgFLUXlFoZWkbE02kUtBSmYyL0AG+B
+         Te4pyRH3kRFBlVQ4JOI50wgls5tp4QS0qRZ/5qLuL8Z3SFWjIFPsgXxeVyNOal62J/4H
+         ntilpkK5Fd/Lbsir2yZNVC61SVTCLQ4E4HGxxVHtYCH/WNITD+3HTgpkSKViUwjuDbsl
+         skvMBJniNb5WL8quJHh9VZhFlFCcNgYd8DBPZzSpz1MKNXhQrrr9ptstVUf2KgUsJMIz
+         tHKd9LNKp7wnyVLogldyz6fqVaXuqH/MHokhu/lQflex9Uo4ijnqI2QPajgH02xWm2fX
+         ekcA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=d1qBGSKO9ATTg+f/hu81D/+Ogeb5+q29w+qcULru148=;
+        b=bYIvaARUpkqjkYTh1fDQYJXUmxfxkjjf+6Sp0YwF+3ULeQuqM97EdmCiCH71gKDDmi
+         RUT/yYDZSqnmi2pfd9KsEiJj2gg7bt+r9d/xAsYboY8vk9VLAorlrtnvhIySLMjXMs4N
+         U9ULTt/EwO2JIdCMO3csMYv4fL/VRWw7lZ6rv4n5eprtfi6l/2zmGYHh3qix7P6aoT2p
+         TPhH+qkgE4eBarLunmEi/r6IW7KKllBxE32/ZakTkEWQ/cxGqjdu/8WU9sQBRTdlRibJ
+         WFi0Hlf0Oq0WaAidGa1jTKp/8aMIF1bLiz35psuyZHY+facl4F9907BeZNEUAuDZS7Wr
+         7ykQ==
+X-Gm-Message-State: AOAM530OMCvOci8i36mrTRgoW9NjEkVxe8CcNwDZqHT93KPaubzsxfrq
+        A8fmW8eZu3ZWk/u8e3/AcIq6nw==
+X-Google-Smtp-Source: ABdhPJwigwK3l7zbqg1gn2HtaF8rE/bmH3MH3vxRgirqPS5yzxb6fpk63hptbpUW4OqOK6eYGbk4kg==
+X-Received: by 2002:a0c:bec4:: with SMTP id f4mr6429297qvj.14.1600785728932;
+        Tue, 22 Sep 2020 07:42:08 -0700 (PDT)
+Received: from [192.168.1.45] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id p205sm11530078qke.2.2020.09.22.07.42.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 22 Sep 2020 07:42:08 -0700 (PDT)
+Subject: Re: [PATCH 08/15] btrfs: Introduce btrfs_write_check()
+To:     Goldwyn Rodrigues <rgoldwyn@suse.de>, linux-fsdevel@vger.kernel.org
+Cc:     linux-btrfs@vger.kernel.org, david@fromorbit.com, hch@lst.de,
+        johannes.thumshirn@wdc.com, dsterba@suse.com,
+        darrick.wong@oracle.com, Goldwyn Rodrigues <rgoldwyn@suse.com>
+References: <20200921144353.31319-1-rgoldwyn@suse.de>
+ <20200921144353.31319-9-rgoldwyn@suse.de>
+From:   Josef Bacik <josef@toxicpanda.com>
+Message-ID: <5628b9ec-0dfa-4618-fa31-4f3357a47cda@toxicpanda.com>
+Date:   Tue, 22 Sep 2020 10:42:07 -0400
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.2.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAL3q7H6e7gQWs9X-N4RMxK+UhZKHGxNmP0-q+B6x19uyH9TOwA@mail.gmail.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <20200921144353.31319-9-rgoldwyn@suse.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Sep 22, 2020 at 03:05:59PM +0100, Filipe Manana wrote:
-> On Tue, Sep 22, 2020 at 11:29 AM Julia Lawall <julia.lawall@inria.fr> wrote:
-> >
-> > From: kernel test robot <lkp@intel.com>
-> >
-> > fs/btrfs/send.c:3854:8-15: WARNING opportunity for kmemdup
-> >
-> >  Use kmemdup rather than duplicating its implementation
-> >
-> > Generated by: scripts/coccinelle/api/memdup.cocci
-> >
-> > Fixes: 28314eb24e6c ("btrfs: send, recompute reference path after orphanization of a directory")
-> > Signed-off-by: kernel test robot <lkp@intel.com>
-> > Signed-off-by: Julia Lawall <julia.lawall@inria.fr>
+On 9/21/20 10:43 AM, Goldwyn Rodrigues wrote:
+> From: Goldwyn Rodrigues <rgoldwyn@suse.com>
 > 
-> Since this is not in Linus' tree yet, it can be folded in the original patch.
-> David, can you do that when you pick it?
+> btrfs_write_check() checks for all parameters in one place before
+> beginning a write. This does away with inode_unlock() after every check.
+> In the later patches, it will help push inode_lock/unlock() in buffered
+> and direct write functions respectively.
+> 
+> Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
+> ---
+>   fs/btrfs/file.c | 159 ++++++++++++++++++++++++------------------------
+>   1 file changed, 81 insertions(+), 78 deletions(-)
+> 
+> diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+> index ca374cb5ffc9..0f961ce1fa98 100644
+> --- a/fs/btrfs/file.c
+> +++ b/fs/btrfs/file.c
+> @@ -1615,6 +1615,85 @@ void btrfs_check_nocow_unlock(struct btrfs_inode *inode)
+>   	btrfs_drew_write_unlock(&inode->root->snapshot_lock);
+>   }
+>   
+> +static void update_time_for_write(struct inode *inode)
+> +{
+> +	struct timespec64 now;
+> +
+> +	if (IS_NOCMTIME(inode))
+> +		return;
+> +
+> +	now = current_time(inode);
+> +	if (!timespec64_equal(&inode->i_mtime, &now))
+> +		inode->i_mtime = now;
+> +
+> +	if (!timespec64_equal(&inode->i_ctime, &now))
+> +		inode->i_ctime = now;
+> +
+> +	if (IS_I_VERSION(inode))
+> +		inode_inc_iversion(inode);
+> +}
+> +
+> +static size_t btrfs_write_check(struct kiocb *iocb, struct iov_iter *from)
+> +{
+> +	struct file *file = iocb->ki_filp;
+> +	struct inode *inode = file_inode(file);
+> +	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
+> +	loff_t pos = iocb->ki_pos;
+> +	size_t count = iov_iter_count(from);
+> +	int err;
+> +	loff_t oldsize;
+> +	loff_t start_pos;
+> +
+> +	err = generic_write_checks(iocb, from);
+> +	if (err <= 0)
+> +		return err;
+> +
+> +	if (iocb->ki_flags & IOCB_NOWAIT) {
+> +		size_t nocow_bytes = count;
+> +
+> +		/*
+> +		 * We will allocate space in case nodatacow is not set,
+> +		 * so bail
+> +		 */
+> +		if (check_nocow_nolock(BTRFS_I(inode), pos, &nocow_bytes)
+> +		    <= 0)
+> +			return -EAGAIN;
+> +		/*
+> +		 * There are holes in the range or parts of the range that must
+> +		 * be COWed (shared extents, RO block groups, etc), so just bail
+> +		 * out.
+> +		 */
+> +		if (nocow_bytes < count)
+> +			return -EAGAIN;
+> +	}
+> +
+> +	current->backing_dev_info = inode_to_bdi(inode);
+> +	err = file_remove_privs(file);
+> +	if (err)
+> +		return err;
+> +
+> +	/*
+> +	 * We reserve space for updating the inode when we reserve space for the
+> +	 * extent we are going to write, so we will enospc out there.  We don't
+> +	 * need to start yet another transaction to update the inode as we will
+> +	 * update the inode when we finish writing whatever data we write.
+> +	 */
+> +	update_time_for_write(inode);
+> +
+> +	start_pos = round_down(pos, fs_info->sectorsize);
+> +	oldsize = i_size_read(inode);
+> +	if (start_pos > oldsize) {
+> +		/* Expand hole size to cover write data, preventing empty gap */
+> +		loff_t end_pos = round_up(pos + count,
+> +					  fs_info->sectorsize);
+> +		err = btrfs_cont_expand(inode, oldsize, end_pos);
+> +		if (err)
+> +			return err;
 
-Yes, I'll do that.
+In this case we're not re-setting current->backing_dev_info to NULL.  Thanks,
 
-> Btw, isn't the Fixes tag meant only for bug fixes? This is a pure
-> cleanup afaics.
-
-Agreed.
+Josef
