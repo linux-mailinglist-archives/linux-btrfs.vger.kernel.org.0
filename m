@@ -2,71 +2,61 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4134B275773
-	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Sep 2020 13:51:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB1C1275830
+	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Sep 2020 14:47:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726506AbgIWLvY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 23 Sep 2020 07:51:24 -0400
-Received: from hermes.cta.br ([161.24.235.5]:52596 "EHLO hermes.cta.br"
+        id S1726682AbgIWMrY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 23 Sep 2020 08:47:24 -0400
+Received: from mx2.suse.de ([195.135.220.15]:50652 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726472AbgIWLvY (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 23 Sep 2020 07:51:24 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by hermes.cta.br (Postfix) with ESMTP id 67C5415C9DF9;
-        Wed, 23 Sep 2020 08:34:58 -0300 (-03)
-Received: from hermes.cta.br ([127.0.0.1])
-        by localhost (hermes.cta.br [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id 33obg2221iEO; Wed, 23 Sep 2020 08:34:57 -0300 (-03)
-Received: from localhost (localhost [127.0.0.1])
-        by hermes.cta.br (Postfix) with ESMTP id 541B4172325E;
-        Wed, 23 Sep 2020 04:12:33 -0300 (-03)
-DKIM-Filter: OpenDKIM Filter v2.10.3 hermes.cta.br 541B4172325E
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cta.br;
-        s=50824260-A46F-11E8-B5E3-16F5207DEC71; t=1600845154;
-        bh=PEgy+RpcsckcVXxslQn6d+tc//P81+6V7lvSU9dRFp0=;
-        h=MIME-Version:To:From:Date:Message-Id;
-        b=w3SMjV8TVOo8SJGax6EQJWdkpctGpq+JvQwGeQuhWwSKFE7Ra1PCIsTf9eM+6YIa6
-         JRAKGp9mZ8+ZtNMh1+51vQWeDVxv2HmWyHe2EfAZN/ds8+Ce3NMuEl2CUxUqlP3bCU
-         XHF4RD3JzG5n9dhn29zwUHbvxT91s0gNy+QhsyEPNbtWhMj+HbAwEs+WBA7omEmP2m
-         D0bpqKDG39LaKrnm13BdZ2Ld/jNSQSpWT5Uo+wNMmi8HUe32f6fz1Wx/WwTD5xzgKU
-         Cbx+opyxEAAYcNspfK+CY8cmSFVxJGQgfCxr6WY84Fn7UnZDW903euLi3GKjA3Vw2Y
-         PegUCHI/hCPqA==
-X-Virus-Scanned: amavisd-new at cta.br
-Received: from hermes.cta.br ([127.0.0.1])
-        by localhost (hermes.cta.br [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id tABMZPotZguL; Wed, 23 Sep 2020 04:12:33 -0300 (-03)
-Received: from [10.120.212.214] (unknown [105.12.3.179])
-        by hermes.cta.br (Postfix) with ESMTPSA id 22CF51701935;
-        Wed, 23 Sep 2020 02:19:41 -0300 (-03)
-Content-Type: text/plain; charset="iso-8859-1"
+        id S1726668AbgIWMrY (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 23 Sep 2020 08:47:24 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id D8F1CB2B5;
+        Wed, 23 Sep 2020 12:47:59 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id B4B48DA6E3; Wed, 23 Sep 2020 14:46:06 +0200 (CEST)
+Date:   Wed, 23 Sep 2020 14:46:06 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     fdmanana@kernel.org
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 0/2] btrfs: send, fix some failures due to commands with
+ wrong paths
+Message-ID: <20200923124606.GM6756@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, fdmanana@kernel.org,
+        linux-btrfs@vger.kernel.org
+References: <cover.1600693246.git.fdmanana@suse.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Description: Mail message body
-Subject: spende von 2,000,000 euro
-To:     Recipients <scco@cta.br>
-From:   ''Tayeb souami'' <scco@cta.br>
-Date:   Wed, 23 Sep 2020 07:22:00 +0200
-Reply-To: Tayebsouam.spende@gmail.com
-Message-Id: <20200923051943.22CF51701935@hermes.cta.br>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1600693246.git.fdmanana@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hallo mein lieber Freund
-                                  Mein Name ist Tayeb Souami aus New Jersey=
- in Amerika und ich habe den America Lottery Jackpot von 315 Millionen Euro=
- gewonnen. Ich habe mich entschlossen, die Summe von 2.000.000 Euro an f=FC=
-nf gl=FCckliche Personen zu spenden, und Sie wurden als einer der Beg=FCnst=
-igten ausgew=E4hlt. Bitte klicken Sie auf diesen Link, um mehr =FCber meine=
-n Gewinn zu erfahren.
+On Mon, Sep 21, 2020 at 02:13:28PM +0100, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
+> 
+> Incremental send operations can often fail at the receiver due to a wrong
+> path in some command. This small patchset fixes a few more cases where
+> such problems happen. There are sporadic reports of this type of failures,
+> such as [1] and [2] for example, and many similar issues were fixed in a
+> more distant past. Without having the full directory trees of the parent
+> and send snapshots, with inode numbers, it's hard to tell if this patchset
+> fixes exactly those reported cases, but the cases fixed by this patchset
+> are all I could find in the last two weeks.
+> 
+> [1] https://lore.kernel.org/linux-btrfs/57021127-01ea-6533-6de6-56c4f22c4a5b@gmail.com/
+> [2] https://lore.kernel.org/linux-btrfs/87a7obowwn.fsf@lausen.nl/
+> 
+> 
+> Filipe Manana (2):
+>   btrfs: send, orphanize first all conflicting inodes when processing
+>     references
+>   btrfs: send, recompute reference path after orphanization of a
+>     directory
 
-
-UHR MICH HIER: https://www.youtube.com/watch?v=3DZ6ui8ZDQ6Ks
-
-Bitte kontaktieren Sie mich =FCber diese E-Mail: Tayebsouam.spende@gmail.com
-
-
-Ich hoffe, Sie und Ihre Familie gl=FCcklich zu machen.
-
-Gr=FC=DFe
-Herr Tayeb Souami
+Thanks, added to misc-next.
