@@ -2,34 +2,34 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81A532756DF
-	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Sep 2020 13:09:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 040F32756F2
+	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Sep 2020 13:15:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726573AbgIWLJz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 23 Sep 2020 07:09:55 -0400
-Received: from mx2.suse.de ([195.135.220.15]:50352 "EHLO mx2.suse.de"
+        id S1726483AbgIWLPQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 23 Sep 2020 07:15:16 -0400
+Received: from mx2.suse.de ([195.135.220.15]:56360 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726332AbgIWLJy (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 23 Sep 2020 07:09:54 -0400
+        id S1726332AbgIWLPQ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 23 Sep 2020 07:15:16 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1600859393;
+        t=1600859714;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=O4oxZyN5NeWKP6/0kzdUwsXsHgu058b+Xap3d0jbRzQ=;
-        b=juqgWmmE9rgnvNJWBYU2qubqAfD9W7uEbtZhPqpuZIxV0b4nEUF8cUiPAGF66ip3XCPcuv
-        Mm0RjTfDakSQEUrwfBmag1S8JqLUfOUBtbe1Bg9RsTfdukAy8d7eBXHuBPnwbzujCWreo0
-        HItnilpOveP7+puWHbc7cAhhjuAsgPU=
+        bh=xImd+wFwDMX8qvp6xhPX9o2IoUz+xNALCxlBBFOOpV4=;
+        b=Hfoiu4aRyBYcXTeM8n/vFfPR+32XVoQHoQlARnP0oHDHgFZpRj0I56MmVGpZ7VPf1jZ/gg
+        b96wM2PByPjt7MHRGlKjgHDRhPG6QedKbqnDzbXTScmQdzG/eUVllwpiWi7LSGj+FmFlwq
+        dnJApm40PB/zahynOmHu2PbEO0UUTU8=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 8D669AC79;
-        Wed, 23 Sep 2020 11:10:30 +0000 (UTC)
-Subject: Re: [PATCH v2] btrfs: free device without BTRFS_MAGIC
-To:     Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org
-Cc:     Johannes.Thumshirn@wdc.com
-References: <dbc067b24194241f6d87b8f9799d9b6484984a13.1600473987.git.anand.jain@oracle.com>
- <1ee9b318e3bb851aaec9c1efd1eadb117ad46638.1600741332.git.anand.jain@oracle.com>
+        by mx2.suse.de (Postfix) with ESMTP id D39D5ACB8;
+        Wed, 23 Sep 2020 11:15:51 +0000 (UTC)
+Subject: Re: [PATCH] btrfs: Fix missing close devices
+To:     qiang.zhang@windriver.com, clm@fb.com, josef@toxicpanda.com,
+        dsterba@suse.com
+Cc:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200921072926.24639-1-qiang.zhang@windriver.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  xsFNBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -73,12 +73,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  KIuxEcV8wcVjr+Wr9zRl06waOCkgrQbTPp631hToxo+4rA1jiQF2M80HAet65ytBVR2pFGZF
  zGYYLqiG+mpUZ+FPjxk9kpkRYz61mTLSY7tuFljExfJWMGfgSg1OxfLV631jV1TcdUnx+h3l
  Sqs2vMhAVt14zT8mpIuu2VNxcontxgVr1kzYA/tQg32fVRbGr449j1gw57BV9i0vww==
-Message-ID: <a0dc643f-81ee-8450-1371-d5c7f89dd8db@suse.com>
-Date:   Wed, 23 Sep 2020 14:09:52 +0300
+Message-ID: <e0ba2e26-c336-a9e4-1377-78e8d9507052@suse.com>
+Date:   Wed, 23 Sep 2020 14:15:13 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <1ee9b318e3bb851aaec9c1efd1eadb117ad46638.1600741332.git.anand.jain@oracle.com>
+In-Reply-To: <20200921072926.24639-1-qiang.zhang@windriver.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -88,38 +88,42 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 22.09.20 г. 6:13 ч., Anand Jain wrote:
-> Many things can happen after the device is scanned and before the device
-> is mounted.
+On 21.09.20 г. 10:29 ч., qiang.zhang@windriver.com wrote:
+> From: Zqiang <qiang.zhang@windriver.com>
 > 
-> One such thing is losing the BTRFS_MAGIC on the device.
+> When the btrfs fill super error, we should first close devices and
+> then call deactivate_locked_super func to free fs_info.
 > 
-> If it happens we still won't free that device from the memory and causes
-> the userland to confuse.
+> Signed-off-by: Zqiang <qiang.zhang@windriver.com>
+> ---
+>  fs/btrfs/super.c | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> For example: As the BTRFS_IOC_DEV_INFO still carries the device path which
-> does not have the BTRFS_MAGIC, the btrfs fi show still shows device
-> which does not belong. As shown below.
+> diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
+> index 8840a4fa81eb..3bfd54e8f388 100644
+> --- a/fs/btrfs/super.c
+> +++ b/fs/btrfs/super.c
+> @@ -1675,6 +1675,7 @@ static struct dentry *btrfs_mount_root(struct file_system_type *fs_type,
+>  		error = security_sb_set_mnt_opts(s, new_sec_opts, 0, NULL);
+>  	security_free_mnt_opts(&new_sec_opts);
+>  	if (error) {
+> +		btrfs_close_devices(fs_devices);
+>  		deactivate_locked_super(s);
+>  		return ERR_PTR(error);
+>  	}
 > 
-> mkfs.btrfs -fq -draid1 -mraid1 /dev/sda /dev/sdb
-> 
-> wipefs -a /dev/sdb
-> mount -o degraded /dev/sda /btrfs
-> btrfs fi show -m
-> 
-> /dev/sdb does not contain BTRFS_MAGIC and we still show it as part of
-> btrfs.
-> Label: none  uuid: 470ec6fb-646b-4464-b3cb-df1b26c527bd
->         Total devices 2 FS bytes used 128.00KiB
->         devid    1 size 3.00GiB used 571.19MiB path /dev/sda
->         devid    2 size 3.00GiB used 571.19MiB path /dev/sdb
-> 
-> Fix is to return -ENODATA error code in btrfs_read_dev_one_super()
-> when BTRFS_MAGIC check fails, and its parent open_fs_devices() to
-> free the device in the mount-thread.
-> 
-> Signed-off-by: Anand Jain <anand.jain@oracle.com>
 
-Has an fstest for this been submitted ?
+NAK,
 
-<snip>
+Devices are properly closed via:
+
+
+deactivate_locked_super
+  kill_sb (btrfs_kill_super)
+    kill_anon_super
+      generic_shutdown_super
+       put_super (btrfs_put_super)
+         close_ctree
+
+
+It seems you haven't done deep enough analysis of the involved call chains.
