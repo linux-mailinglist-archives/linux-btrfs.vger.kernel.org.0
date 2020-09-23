@@ -2,137 +2,108 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27003275EDF
-	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Sep 2020 19:40:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9455275F3A
+	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Sep 2020 19:56:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726595AbgIWRkr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 23 Sep 2020 13:40:47 -0400
-Received: from gateway22.websitewelcome.com ([192.185.46.233]:31326 "EHLO
-        gateway22.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726498AbgIWRkr (ORCPT
+        id S1726615AbgIWR4f (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 23 Sep 2020 13:56:35 -0400
+Received: from esa1.hgst.iphmx.com ([68.232.141.245]:43196 "EHLO
+        esa1.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726234AbgIWR4f (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 23 Sep 2020 13:40:47 -0400
-X-Greylist: delayed 1435 seconds by postgrey-1.27 at vger.kernel.org; Wed, 23 Sep 2020 13:40:47 EDT
-Received: from cm17.websitewelcome.com (cm17.websitewelcome.com [100.42.49.20])
-        by gateway22.websitewelcome.com (Postfix) with ESMTP id 9CE5F193FF
-        for <linux-btrfs@vger.kernel.org>; Wed, 23 Sep 2020 12:15:20 -0500 (CDT)
-Received: from br540.hostgator.com.br ([108.179.252.180])
-        by cmsmtp with SMTP
-        id L8MSkR36jPiqfL8MSk5xiu; Wed, 23 Sep 2020 12:15:20 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=mpdesouza.com; s=default; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=ttIgXGEyxX2u9UUrhUVBi1dcTzIv7cHGeOtdPNPYFkQ=; b=HMDPK4kJUphvuld+Lixq9oYFpd
-        VBIOPplkgEy1auDZcaTHdklhCIaF4SqE1iBOB3c8lRe2EoHe6gWxdt3L9Wp3lifcQpsqbfquLljS9
-        Aj0pm8BuxB+zm561ELreKU1Ypl4zUIwjqIA3RsBrogq5Adi/0uWbxkDRHxEdWamWkKJXONVlp9MtO
-        RTVymbT1a6/5Gjv4XuTEtvcB+RFbtIgbP4p/Eht8tR0WC53Yoog7kmyHUICeLkfOt32kq0mbbT6zo
-        vkeSUJvjqSczTOSlzLqhBhZaCrjabU0wfifQ8c+1uvVrQ4X8ccr6V9cREQAqUWMJ4ej70MdX7XqUI
-        gxg80Lqw==;
-Received: from [179.185.209.227] (port=52864 helo=hephaestus.suse.de)
-        by br540.hostgator.com.br with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <marcos@mpdesouza.com>)
-        id 1kL8MR-001Jyj-SU; Wed, 23 Sep 2020 14:15:20 -0300
-From:   Marcos Paulo de Souza <marcos@mpdesouza.com>
-To:     dsterba@suse.com, linux-btrfs@vger.kernel.org, wqu@suse.com
-Cc:     Marcos Paulo de Souza <mpdesouza@suse.com>
-Subject: [PATCH] btrfs-progs: convert: Mention which reserve_space call failed
-Date:   Wed, 23 Sep 2020 14:14:05 -0300
-Message-Id: <20200923171405.17456-1-marcos@mpdesouza.com>
-X-Mailer: git-send-email 2.28.0
+        Wed, 23 Sep 2020 13:56:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1600883794; x=1632419794;
+  h=from:to:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
+  b=gMMpwPMKt0mWsYZizkr/xuNTYxnSbhPyRotPkSFs37SX1hpHduXcPKXY
+   Xw5S4IEym5aaWOhypAxSw/QAtlIdrkQSw54OSKyuDbUStSt5GJCnt8l9M
+   6HRg/WpY3+rNFNCr+0r1jR4p0XQPK7aNnm4gWJ3+/mHticgdynAeDBbGR
+   r+jYd/6hJKqcPaPWADphZ85n5ORsql9fap1EcV+RbiwAkHyBBRaKc8vwB
+   ki6XQwUFbz7cOx5Rq34EhYdD+vgfrarn9o1v9zqWHbe+BRr40sRY8KSg+
+   ZGCnr3K2nRKEwb9AB3FodRZGoZQhZOmKvHKIopwIkez4gAK7jHpxQq+S5
+   A==;
+IronPort-SDR: OlFlq+jDfOLy/78yWsM0+0JPjB0tmHHXL0bWKUrSq4nuZJp8lJA0TSNtN0GPm0Nnflk6NkFNaO
+ P2nj3TRcmqZp1iPosKBVM0kTJHkLMQOMQxAXvuKONv46UHD++l7vDP5gWoDvBCkKxcBp/8NFk0
+ d3rKpwC3IDac6+R450eDHQqOiWeXGaD/hT2J7seWBQE740YrPoByV8MjXWVzcrGio7YLdj6puk
+ d9dFQn+nTzYwiMPraMiXx3Y+oa8T9W9+G1TaJf2CkGatLJAAhx6eKTvspkgPlNCLNmA2YJcpqn
+ z3o=
+X-IronPort-AV: E=Sophos;i="5.77,293,1596470400"; 
+   d="scan'208";a="257819796"
+Received: from mail-dm6nam12lp2168.outbound.protection.outlook.com (HELO NAM12-DM6-obe.outbound.protection.outlook.com) ([104.47.59.168])
+  by ob1.hgst.iphmx.com with ESMTP; 24 Sep 2020 01:56:34 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=PO3bXXGbFfzI0EcpeHp07RKmGgcZJP3y6EEM4LYjmvOISEliR/y9ZL0H4cgyznmtIfbJ5xYnwQGmPwyqRURcU0gyOiL31CeP5/G0sGqBaONCgGm/mR9j3u352vJGb0o8mdLaPyc64vdawtASqGZXDPfM5v62SYWr8OqJattK4nW0hT4f+hIE38hf/zDvYlakb2RSNzNKmUJGJVLkdgnpWDkYlGYAZmvgM11LnW8MsObJq0Si8AdjAFp6GKZcjyIOqw5mzGkA3h1USRY+fLeiR/WFgFWFCD/O6FFJIvE6UMP6fNaFHwTg+AHFazFg3vEW+Uu/UomWIFQkVgN7JgXCjQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
+ b=jYQxEZaD4LJu3ObxRQ5dD5wlcYCpjOfOsPb7a/buJbGpg1tecc2fMWT4O5PIff2UM0vwRvJN3EAyJToadSnnkcho7ylYm3CliNKbfydgscn2lqFt1vA9o+PFgYXjoGdelJ3xHirha4DgLvzG+MBJXutInmM6YaF6MSaaGr5o3kLLIpCY+q402NzmrSpOXiqo3pygpOoHbzvNCrb6U+McM1JbT8YT3WEdrpOWYkVIZ+wgKnJR3YgP5kxtTydSfL61ERLyHFUwCNdXIR+yIfzItQfkFOJNjBoalojKGlQNnM4fbTd6R5Mvh4LRYpWqK5kOihBNk4es+9BZhP9rrTLy3A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
+ b=Bfqyh/P7tI0wwZ839RHgLkw4YeXN/Ob/2Kv28M1xls2nM8Q6OpaEdjMby1dYloJDTslpYSwS7pKcx56mBY063f1M0SRkarcxiqiUTdc4GQUVwmTGaKIFLf2FYukPnKH99AFvVnhyXQkAQBrYGIjAyGgSu/W+oqpZepXVwXEHUIM=
+Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
+ (2603:10b6:803:47::21) by SN6PR04MB4606.namprd04.prod.outlook.com
+ (2603:10b6:805:ac::16) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.19; Wed, 23 Sep
+ 2020 17:56:33 +0000
+Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
+ ([fe80::457e:5fe9:2ae3:e738]) by SN4PR0401MB3598.namprd04.prod.outlook.com
+ ([fe80::457e:5fe9:2ae3:e738%7]) with mapi id 15.20.3370.033; Wed, 23 Sep 2020
+ 17:56:33 +0000
+From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To:     "fdmanana@kernel.org" <fdmanana@kernel.org>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH] btrfs: fix filesystem corruption after a device replace
+Thread-Topic: [PATCH] btrfs: fix filesystem corruption after a device replace
+Thread-Index: AQHWkbYTQ+UpJ3h2rkepM11McmRIgQ==
+Date:   Wed, 23 Sep 2020 17:56:33 +0000
+Message-ID: <SN4PR0401MB3598122F5C3CD616AA4EC2309B380@SN4PR0401MB3598.namprd04.prod.outlook.com>
+References: <09c4d27ac71d847fdc5a030a7d860610039d5332.1600871060.git.fdmanana@suse.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [129.253.240.72]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 86e0bf5f-0d6f-4a89-ec07-08d85fea0202
+x-ms-traffictypediagnostic: SN6PR04MB4606:
+x-microsoft-antispam-prvs: <SN6PR04MB4606B03FC4C5659DEB1CE12B9B380@SN6PR04MB4606.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:1728;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: WOZMWNh9uBXNqaKdSf2ug19rLwJ5QAJ7gV9TQzSpxg2rGJ+W+eNN2Ww51aLfOMk8gWGSe4IBZ1GHePIfvwhzVRHmH76qs/N9NZSemUkfzpLuCzTSCGAIaxwWGlR9vvAmoGV0xUjAnP4/rzMRmW4ghD5gPIMC89uYS2Ca1HPqD0XhPbi9VUJPsk0HoaU1f9i1trM1Xke54IZGqGdFpaKKjD5ElLtm62HQG0F482JbmE5qdI34npiZzNDdu0BvTqlacfwLG5i2/+OwHX1ADbaBx2DXygXsN2ysrcgUe9hOwTVbvd4xWEN0OdBi7NQCZLLMiGUMPvNly9b/7wxsqMc6Og==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR0401MB3598.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(39860400002)(376002)(366004)(136003)(396003)(316002)(33656002)(6506007)(478600001)(186003)(86362001)(110136005)(9686003)(8676002)(55016002)(26005)(52536014)(66556008)(2906002)(4270600006)(19618925003)(66446008)(66476007)(71200400001)(64756008)(8936002)(66946007)(558084003)(5660300002)(76116006)(7696005)(91956017);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: Mtg4WHtPmCFEtPGYf1oq4Dgr/gqTKKNmj5l7G+yYEUN0hqCkhXtCUW8Wt5id8522ashyw8lKAY0j8Q4QGbDqSRzm7bpce4wm/C/ZXuIIDdiaYWnGBpHPSpZ0dnoSJ1VYigpT+9CiDDktDz7R8HCZE+fphKjvqF4tcSvYh/eJW7IZbt8Q3vpQaBXBPO5zdtnHPFaY+dRFOdqXl4h8zt2PDBP33IB8L/Vf/71KDXhyRoLz07XEj2gPdf4woKRd1aWOZZksVdXLm0ONRDi6tAsiIq0bSotTsY5hb4y5EUAMsV/ZSo/NUGsCjbzodJPXGekQbqqEfg2gNjK64Hg/sGlysNEQpYgX9ybfZXp4winJcVJJwQCS9VoaVF1VCBJ/oJTe/i9bkwbSn6OZ94oZWPlScwORXNwY9Mb0rjj9ed8pGucj7/v7hRTnflPEtzmrZ/i0vwTP+0qYx0wOAnGGRWVGBzbBLU1iVbChHZxdMjf385k5nkt0xzH8nEC4evJapE7ulx7TCeOk7ERauhE+OpjfiOUYFbm3B3ozoAynP6y31rKkszK8rndjQBj7uaKN9YGdZOn083zVp7Zn0wvhdS/y+w6xPXZ09qDA6OfKv1WcW2QOk4etw/Po9s9La8Y/hftp4Toe5RmSyvXUKkfaE/b4Qw==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - br540.hostgator.com.br
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - mpdesouza.com
-X-BWhitelist: no
-X-Source-IP: 179.185.209.227
-X-Source-L: No
-X-Exim-ID: 1kL8MR-001Jyj-SU
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: (hephaestus.suse.de) [179.185.209.227]:52864
-X-Source-Auth: marcos@mpdesouza.com
-X-Email-Count: 3
-X-Source-Cap: bXBkZXNvNTM7bXBkZXNvNTM7YnI1NDAuaG9zdGdhdG9yLmNvbS5icg==
-X-Local-Domain: yes
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SN4PR0401MB3598.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 86e0bf5f-0d6f-4a89-ec07-08d85fea0202
+X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Sep 2020 17:56:33.1528
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: afr19vArG8UxF1xWJt0v8M0cX3RvG8/GwNpFUxDq59TpeN4D/PZztGf8THYRjfFoWVax8wtfQHF19lwXytcKUhZu1LyqtanNJvnE6R0m9QA=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR04MB4606
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Marcos Paulo de Souza <mpdesouza@suse.com>
-
-btrfs-convert currently can't handle more fragmented block groups when
-converting ext4 because the minimum size of a data chunk is 32Mb.
-
-When converting an ext4 fs with more fragmented block group and the disk
-almost full, we can end up hitting a ENOSPC problem [1] since smaller
-block groups (10Mb for example) end up being extended to 32Mb, leaving
-the free space tree smaller when converting it to btrfs.
-
-This patch adds error messages telling which needed bytes couldn't be
-allocated from the free space tree:
-
-create btrfs filesystem:
-        blocksize: 4096
-        nodesize:  16384
-        features:  extref, skinny-metadata (default)
-        checksum:  crc32c
-free space report:
-        total:     1073741824
-        free:      39124992 (3.64%)
-ERROR: failed to reserve 33554432 bytes from free space for metadata chunk
-ERROR: unable to create initial ctree: No space left on device
-
-Link: https://github.com/kdave/btrfs-progs/issues/251
-
-Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
----
- convert/common.c | 12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
-
-diff --git a/convert/common.c b/convert/common.c
-index 048629df..6392e7f4 100644
---- a/convert/common.c
-+++ b/convert/common.c
-@@ -812,8 +812,10 @@ int make_convert_btrfs(int fd, struct btrfs_mkfs_config *cfg,
- 	 */
- 	ret = reserve_free_space(free_space, BTRFS_STRIPE_LEN,
- 				 &cfg->super_bytenr);
--	if (ret < 0)
-+	if (ret < 0) {
-+		error("failed to reserve %d bytes from free space for temporary superblock", BTRFS_STRIPE_LEN);
- 		goto out;
-+	}
- 
- 	/*
- 	 * Then reserve system chunk space
-@@ -823,12 +825,16 @@ int make_convert_btrfs(int fd, struct btrfs_mkfs_config *cfg,
- 	 */
- 	ret = reserve_free_space(free_space, BTRFS_MKFS_SYSTEM_GROUP_SIZE,
- 				 &sys_chunk_start);
--	if (ret < 0)
-+	if (ret < 0) {
-+		error("failed to reserve %d bytes from free space for system chunk", BTRFS_MKFS_SYSTEM_GROUP_SIZE);
- 		goto out;
-+	}
- 	ret = reserve_free_space(free_space, BTRFS_CONVERT_META_GROUP_SIZE,
- 				 &meta_chunk_start);
--	if (ret < 0)
-+	if (ret < 0) {
-+		error("failed to reserve %d bytes from free space for metadata chunk", BTRFS_CONVERT_META_GROUP_SIZE);
- 		goto out;
-+	}
- 
- 	/*
- 	 * Allocated meta/sys chunks will be mapped 1:1 with device offset.
--- 
-2.28.0
-
+Looks good,=0A=
+Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>=0A=
