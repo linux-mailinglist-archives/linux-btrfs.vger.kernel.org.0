@@ -2,52 +2,52 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67DD62763F9
-	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Sep 2020 00:39:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC8912763FD
+	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Sep 2020 00:39:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726821AbgIWWjZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 23 Sep 2020 18:39:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52624 "EHLO
+        id S1726834AbgIWWja (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 23 Sep 2020 18:39:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726199AbgIWWjT (ORCPT
+        with ESMTP id S1726199AbgIWWj0 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 23 Sep 2020 18:39:19 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46206C0613CE;
-        Wed, 23 Sep 2020 15:39:19 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id 34so593176pgo.13;
-        Wed, 23 Sep 2020 15:39:19 -0700 (PDT)
+        Wed, 23 Sep 2020 18:39:26 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46602C0613CE;
+        Wed, 23 Sep 2020 15:39:26 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id r19so533386pls.1;
+        Wed, 23 Sep 2020 15:39:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=290Bo0sJTh/t678nA8yWOfHRoSh5E7Ekj1ME0hd0Klk=;
-        b=rntHv/l8i81xrUrJZaum/4CBHjVaChe93wcHMpr4kzhSayGTC4JlwUReQdim/gtble
-         IW3nWXYd8niBBBYiaTnC+8/MzFwoZFPaXqfgPUL4NZE5HzFziZ9U1rU1ng4pdet+QXWz
-         bCUFdYUxktEXcB8Cdl8aLthah9Q66m1Qk/WZiQ0eWyjtAD/Y77/UsoAhXePNaXjkSnD0
-         ljujAj6qnYv6sRv3yX1AHCK9QngPBUzlrkdEmo7dxRHrM7ra+Deb6Cldrc1XGJqyW4nD
-         lCvvBAe7kd5DY1k4Mu+WtGIrnzbvgdTN3Vp32EMSXlww1CxjD7UJFgpbHh9MuZ5SMx/4
-         ejeQ==
+        bh=krGpYOVpUat0gERMlMR1P1lhK//ROWK8HUHnVTxyKd4=;
+        b=TRVB6YoAJ0whsK+JjLavKdJGY910o0e55vCsOmMG9xOulamN8dC7oZ8uJso8ou7iIh
+         cT2++GvOks3i+kEPb27o/tjpP5i8/0VtKYd912AYbMhR99Yh4EV3Bt5n6fwG1TkqFiFE
+         76h+nTXm95grDzfW+KAOQfJbQcORBGoQkmsSayb2HokQQQDDts/vhCWaDr1ax2j6qtgh
+         4C1IjOzK7SUrwd2plPI5/2zb3R2vHAROky+6r9P1JTlZamQzzJQCmhhLtFbxgAXWVFl/
+         mq3Vs56RuvFxfUY2iXYJoaxw1OCuLjRoRYQL3XPjXqCFVGm39zPt1BxZZFPvt0XM+JSD
+         PUMg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=290Bo0sJTh/t678nA8yWOfHRoSh5E7Ekj1ME0hd0Klk=;
-        b=e0q2TmjmefwbzWMGrnLfXt9nwZ2wT/q5fpGcpRBN10Xr+A2tem2OaOii2jMX7jnBdb
-         Pea24XVmu0/7MHq2sxamoXz7xoha5Ex9RiiJYIcB/WyZNv/7l0JM6EYMEhaLsxpeEkHy
-         2t4aXa/qxV/eiztBbOH+iGoLDyCwVyhODPXVrSL5cjc/Dogbea9EalMcMw5GR6u0YMMp
-         i4T+0nvU+nudhN/+PULw+nmCM4RiOWNn3tFm8GOz3tfVcsO0B3ZAauKhACls8VIAwiso
-         SlnVOsjjFXoHKBg192QH3nQ3TnRBCDwvkC8wTuJMvdHoKpaiIcRJ+9JUxpadbbYu35lS
-         mkGA==
-X-Gm-Message-State: AOAM530SZSVKV/GH7XIUECOzVHEy7J23wWn77uvYuI7uCvACWTHVfTt3
-        FIHzsP2GhW6XtdQLo4KB2fk=
-X-Google-Smtp-Source: ABdhPJwxxbrCN2rraAHy6PxgAVcj0F+cZCxi+3LujAkBcpHIA4r7LjmnWzG/ktYMG+XnAVCJ0r5a+w==
-X-Received: by 2002:a62:19c4:0:b029:13e:d13d:a081 with SMTP id 187-20020a6219c40000b029013ed13da081mr1867606pfz.24.1600900758806;
-        Wed, 23 Sep 2020 15:39:18 -0700 (PDT)
+        bh=krGpYOVpUat0gERMlMR1P1lhK//ROWK8HUHnVTxyKd4=;
+        b=fyaRDnyPAiKLfD6Q5jlxTxITfz+sFN/LdFYcufTGIZiU5OzynS/gaLo8J02W1kCLGD
+         tC9gfdh2sxSQACFP3VExkTb3SstoQ+2BtN5WhvI5LH73+PG28z3+mLBc6dbRMj8P+hud
+         /iWYaWIJEm6ekwc6xvJPYIjHL6Wx58m+2plGVHWb1t5sKF2uaDzGetzSADCu4wt402xH
+         JosVTp4nNBlN+40j1SVdlzOJI/SXAfEV8gPmLY5MJAUYl7tJC8aBc1IkkcJutJhfdzOo
+         dh90FTDuAwpbENYd6kGrYGdEtlb8C0WnCs9Wb8a+YsngSRAGGjXRWb4JmayXOk4fMJcM
+         5uXg==
+X-Gm-Message-State: AOAM532jymGncwwrRF8comvXBEXw6ob03UrBaLW42cJZCMj0ivWQebKX
+        vrd/Ew/Ti9jwt/z5P1JlEAw=
+X-Google-Smtp-Source: ABdhPJz2H99rI2FqjO5LsTP7RCrEBNN2PpY2ToE0myJihd4WY/YJikSpqN8USAN04qo9xm8JAgTBFg==
+X-Received: by 2002:a17:90a:ff92:: with SMTP id hf18mr1341818pjb.51.1600900765752;
+        Wed, 23 Sep 2020 15:39:25 -0700 (PDT)
 Received: from nickserv.localdomain (c-98-33-101-203.hsd1.ca.comcast.net. [98.33.101.203])
-        by smtp.gmail.com with ESMTPSA id d20sm417964pjv.39.2020.09.23.15.39.17
+        by smtp.gmail.com with ESMTPSA id d20sm417964pjv.39.2020.09.23.15.39.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Sep 2020 15:39:18 -0700 (PDT)
+        Wed, 23 Sep 2020 15:39:25 -0700 (PDT)
 From:   Nick Terrell <nickrterrell@gmail.com>
 To:     Herbert Xu <herbert@gondor.apana.org.au>
 Cc:     linux-crypto@vger.kernel.org, linux-btrfs@vger.kernel.org,
@@ -59,9 +59,9 @@ Cc:     linux-crypto@vger.kernel.org, linux-btrfs@vger.kernel.org,
         Petr Malat <oss@malat.biz>, Johannes Weiner <jweiner@fb.com>,
         Niket Agarwal <niketa@fb.com>, Yann Collet <cyan@fb.com>,
         Christoph Hellwig <hch@infradead.org>
-Subject: [PATCH v3 7/9] squashfs: zstd: Switch to the zstd-1.4.6 API
-Date:   Wed, 23 Sep 2020 15:42:04 -0700
-Message-Id: <20200923224206.68968-8-nickrterrell@gmail.com>
+Subject: [PATCH v3 8/9] lib: unzstd: Switch to the zstd-1.4.6 API
+Date:   Wed, 23 Sep 2020 15:42:05 -0700
+Message-Id: <20200923224206.68968-9-nickrterrell@gmail.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200923224206.68968-1-nickrterrell@gmail.com>
 References: <20200923224206.68968-1-nickrterrell@gmail.com>
@@ -78,50 +78,90 @@ code is functionally equivalent.
 
 Signed-off-by: Nick Terrell <terrelln@fb.com>
 ---
- fs/squashfs/zstd_wrapper.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+ lib/decompress_unzstd.c | 40 ++++++++++++++--------------------------
+ 1 file changed, 14 insertions(+), 26 deletions(-)
 
-diff --git a/fs/squashfs/zstd_wrapper.c b/fs/squashfs/zstd_wrapper.c
-index f8c512a6204e..add582409866 100644
---- a/fs/squashfs/zstd_wrapper.c
-+++ b/fs/squashfs/zstd_wrapper.c
-@@ -11,7 +11,7 @@
- #include <linux/mutex.h>
- #include <linux/bio.h>
- #include <linux/slab.h>
+diff --git a/lib/decompress_unzstd.c b/lib/decompress_unzstd.c
+index a79f705f236d..d4685df0e120 100644
+--- a/lib/decompress_unzstd.c
++++ b/lib/decompress_unzstd.c
+@@ -73,7 +73,8 @@
+ 
+ #include <linux/decompress/mm.h>
+ #include <linux/kernel.h>
 -#include <linux/zstd_compat.h>
 +#include <linux/zstd.h>
- #include <linux/vmalloc.h>
++#include <linux/zstd_errors.h>
  
- #include "squashfs_fs.h"
-@@ -34,7 +34,7 @@ static void *zstd_init(struct squashfs_sb_info *msblk, void *buff)
- 		goto failed;
- 	wksp->window_size = max_t(size_t,
- 			msblk->block_size, SQUASHFS_METADATA_SIZE);
--	wksp->mem_size = ZSTD_DStreamWorkspaceBound(wksp->window_size);
-+	wksp->mem_size = ZSTD_estimateDStreamSize(wksp->window_size);
- 	wksp->mem = vmalloc(wksp->mem_size);
- 	if (wksp->mem == NULL)
- 		goto failed;
-@@ -71,7 +71,7 @@ static int zstd_uncompress(struct squashfs_sb_info *msblk, void *strm,
- 	struct bvec_iter_all iter_all = {};
- 	struct bio_vec *bvec = bvec_init_iter_all(&iter_all);
+ /* 128MB is the maximum window size supported by zstd. */
+ #define ZSTD_WINDOWSIZE_MAX	(1 << ZSTD_WINDOWLOG_MAX)
+@@ -120,9 +121,9 @@ static int INIT decompress_single(const u8 *in_buf, long in_len, u8 *out_buf,
+ 				  long out_len, long *in_pos,
+ 				  void (*error)(char *x))
+ {
+-	const size_t wksp_size = ZSTD_DCtxWorkspaceBound();
++	const size_t wksp_size = ZSTD_estimateDCtxSize();
+ 	void *wksp = large_malloc(wksp_size);
+-	ZSTD_DCtx *dctx = ZSTD_initDCtx(wksp, wksp_size);
++	ZSTD_DCtx *dctx = ZSTD_initStaticDCtx(wksp, wksp_size);
+ 	int err;
+ 	size_t ret;
  
--	stream = ZSTD_initDStream(wksp->window_size, wksp->mem, wksp->mem_size);
-+	stream = ZSTD_initStaticDStream(wksp->mem, wksp->mem_size);
+@@ -165,7 +166,6 @@ static int INIT __unzstd(unsigned char *in_buf, long in_len,
+ {
+ 	ZSTD_inBuffer in;
+ 	ZSTD_outBuffer out;
+-	ZSTD_frameParams params;
+ 	void *in_allocated = NULL;
+ 	void *out_allocated = NULL;
+ 	void *wksp = NULL;
+@@ -229,36 +229,24 @@ static int INIT __unzstd(unsigned char *in_buf, long in_len,
+ 	out.size = out_len;
  
- 	if (!stream) {
- 		ERROR("Failed to initialize zstd decompressor\n");
-@@ -122,8 +122,7 @@ static int zstd_uncompress(struct squashfs_sb_info *msblk, void *strm,
- 			break;
- 
- 		if (ZSTD_isError(zstd_err)) {
--			ERROR("zstd decompression error: %d\n",
--					(int)ZSTD_getErrorCode(zstd_err));
-+			ERROR("zstd decompression error: %s\n", ZSTD_getErrorName(zstd_err));
- 			error = -EIO;
- 			break;
- 		}
+ 	/*
+-	 * We need to know the window size to allocate the ZSTD_DStream.
+-	 * Since we are streaming, we need to allocate a buffer for the sliding
+-	 * window. The window size varies from 1 KB to ZSTD_WINDOWSIZE_MAX
+-	 * (8 MB), so it is important to use the actual value so as not to
+-	 * waste memory when it is smaller.
++	 * Zstd determines the workspace size from the window size written
++	 * into the frame header. This ensures that we use the minimum value
++	 * possible, since the window size varies from 1 KB to ZSTD_WINDOWSIZE_MAX
++	 * (1 GB), so it is very important to use the actual value.
+ 	 */
+-	ret = ZSTD_getFrameParams(&params, in.src, in.size);
++	wksp_size = ZSTD_estimateDStreamSize_fromFrame(in.src, in.size);
+ 	err = handle_zstd_error(ret, error);
+ 	if (err)
+ 		goto out;
+-	if (ret != 0) {
+-		error("ZSTD-compressed data has an incomplete frame header");
+-		err = -1;
+-		goto out;
+-	}
+-	if (params.windowSize > ZSTD_WINDOWSIZE_MAX) {
+-		error("ZSTD-compressed data has too large a window size");
++	wksp = large_malloc(wksp_size);
++	if (wksp == NULL) {
++		error("Out of memory while allocating ZSTD_DStream");
+ 		err = -1;
+ 		goto out;
+ 	}
+-
+-	/*
+-	 * Allocate the ZSTD_DStream now that we know how much memory is
+-	 * required.
+-	 */
+-	wksp_size = ZSTD_DStreamWorkspaceBound(params.windowSize);
+-	wksp = large_malloc(wksp_size);
+-	dstream = ZSTD_initDStream(params.windowSize, wksp, wksp_size);
++	dstream = ZSTD_initStaticDStream(wksp, wksp_size);
+ 	if (dstream == NULL) {
+-		error("Out of memory while allocating ZSTD_DStream");
++		error("ZSTD_initStaticDStream failed");
+ 		err = -1;
+ 		goto out;
+ 	}
 -- 
 2.28.0
 
