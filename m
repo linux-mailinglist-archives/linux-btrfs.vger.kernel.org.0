@@ -2,90 +2,103 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BC0A275968
-	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Sep 2020 16:08:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2513E275987
+	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Sep 2020 16:11:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726700AbgIWOID (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 23 Sep 2020 10:08:03 -0400
-Received: from mx2.suse.de ([195.135.220.15]:34064 "EHLO mx2.suse.de"
+        id S1726648AbgIWOL0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 23 Sep 2020 10:11:26 -0400
+Received: from mx2.suse.de ([195.135.220.15]:37494 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726603AbgIWOIC (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 23 Sep 2020 10:08:02 -0400
+        id S1726550AbgIWOL0 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 23 Sep 2020 10:11:26 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id B4C28ACC6;
-        Wed, 23 Sep 2020 14:08:37 +0000 (UTC)
-Date:   Wed, 23 Sep 2020 09:07:57 -0500
-From:   Goldwyn Rodrigues <rgoldwyn@suse.de>
+        by mx2.suse.de (Postfix) with ESMTP id 8C012B1D0;
+        Wed, 23 Sep 2020 14:12:02 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 569B9DA6E3; Wed, 23 Sep 2020 16:10:09 +0200 (CEST)
+Date:   Wed, 23 Sep 2020 16:10:09 +0200
+From:   David Sterba <dsterba@suse.cz>
 To:     Nikolay Borisov <nborisov@suse.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        david@fromorbit.com, hch@lst.de, johannes.thumshirn@wdc.com,
-        dsterba@suse.com, darrick.wong@oracle.com, josef@toxicpanda.com
-Subject: Re: [PATCH 07/15] btrfs: Move FS error state bit early during write
-Message-ID: <20200923140757.bspzgzwajcvpr62i@fiona>
-References: <20200921144353.31319-1-rgoldwyn@suse.de>
- <20200921144353.31319-8-rgoldwyn@suse.de>
- <832c6168-42cf-4ba1-1254-ce0057ff8c0a@suse.com>
+Cc:     dsterba@suse.cz, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 1/7] btrfs: Don't call readpage_end_io_hook for the btree
+ inode
+Message-ID: <20200923141009.GN6756@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <20200918133439.23187-1-nborisov@suse.com>
+ <20200918133439.23187-2-nborisov@suse.com>
+ <20200921174509.GN6756@twin.jikos.cz>
+ <f874055e-34d7-f972-9cfc-551dbbd023a8@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <832c6168-42cf-4ba1-1254-ce0057ff8c0a@suse.com>
+In-Reply-To: <f874055e-34d7-f972-9cfc-551dbbd023a8@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 12:10 23/09, Nikolay Borisov wrote:
+On Wed, Sep 23, 2020 at 09:29:00AM +0300, Nikolay Borisov wrote:
 > 
 > 
-> On 21.09.20 г. 17:43 ч., Goldwyn Rodrigues wrote:
-> > From: Goldwyn Rodrigues <rgoldwyn@suse.com>
+> On 21.09.20 г. 20:45 ч., David Sterba wrote:
+> > On Fri, Sep 18, 2020 at 04:34:33PM +0300, Nikolay Borisov wrote:
+> >> Instead of relying on indirect calls to implement metadata buffer
+> >> validation simply check if the inode whose page we are processing equals
+> >> the btree inode. If it does call the necessary function.
+> >>
+> >> This is an improvement in 2 directions:
+> >> 1. We aren't paying the penalty of indirect calls in a post-speculation
+> >>    attacks world.
+> >>
+> >> 2. The function is now named more explicitly so it's obvious what's
+> >>    going on
 > > 
-> > fs_info->fs_state is a filesystem bit check as opposed to inode
-> > and can be performed before we begin with write checks. This eliminates
-> > inode lock/unlock in case of error bit is set.
+> > The new naming is not making things clear, btrfs_check_csum sounds very
+> > generic while it does a very specific thing just by the number and type
+> > of the parameters. Similar for btrfs_validate_metadata_buffer.
 > > 
-> > Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
-> > ---
-> >  fs/btrfs/file.c | 21 +++++++++------------
-> >  1 file changed, 9 insertions(+), 12 deletions(-)
+> >> --- a/fs/btrfs/extent_io.c
+> >> +++ b/fs/btrfs/extent_io.c
+> >> @@ -2851,9 +2851,12 @@ static void end_bio_extent_readpage(struct bio *bio)
+> >>  
+> >>  		mirror = io_bio->mirror_num;
+> >>  		if (likely(uptodate)) {
+> >> -			ret = tree->ops->readpage_end_io_hook(io_bio, offset,
+> >> -							      page, start, end,
+> >> -							      mirror);
+> >> +			if (data_inode)
+> >> +				ret = btrfs_check_csum(io_bio, offset, page,
+> >> +						       start, end, mirror);
+> >> +			else
+> >> +				ret = btrfs_validate_metadata_buffer(io_bio,
+> >> +					offset, page, start, end, mirror);
 > > 
-> > diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-> > index 4c40a2742aab..ca374cb5ffc9 100644
-> > --- a/fs/btrfs/file.c
-> > +++ b/fs/btrfs/file.c
-> > @@ -1981,6 +1981,15 @@ static ssize_t btrfs_file_write_iter(struct kiocb *iocb,
-> >  	size_t count;
-> >  	loff_t oldsize;
-> >  
-> > +	/*
-> > +	 * If BTRFS flips readonly due to some impossible error
-> > +	 * (fs_info->fs_state now has BTRFS_SUPER_FLAG_ERROR),
-> > +	 * although we have opened a file as writable, we have
-> > +	 * to stop this write operation to ensure FS consistency.
-> > +	 */
-> > +	if (test_bit(BTRFS_FS_STATE_ERROR, &fs_info->fs_state))
-> > +		return -EROFS;
-> > +
+> > In the context where the functions are used I'd expect some symmetry,
+> > data/metadata. Something like btrfs_validate_data_bio.
+> > 
 > 
-> nit: Actually can't this check be eliminated altogether or the comment
-> vastly simplified because BTRFS_SUPER_FLAG_ERROR check is performed only
-> during mount so the description in the parantheses is invalid i.e the fs
-> won't flip to RO because BTRFS_SUPER_FLAG_ERROR is now set in the super
-> block. As a matter of fact how is this flag set - because I don't see it
-> set in the kernel code nor in btrfs-progs ?
+> The reason for this naming is that btrfs_vlidate_metadata_buffer
+> actually validates as in "tree-checker style validation" of the extent
+> buffer not simply calculating the checksum. So to me it feels like a
+> more complete,heavyweight operations hence "validating", whlist
+> btrfs_check_csum just checks the csum of a single sector/blocksize in
+> the bio. I think the metadata function's name conveys what it's doing in
+> full:
+> 
+> 1. It's doing validation as per aforementioned explanation
+> 2. It's doing it for a whole extent buffer and not just a chunk of it.
 
-You are right. This flag originated from 
-acce952b0263 ("Btrfs: forced readonly mounts on errors")
+No problem with the metadata function name, I agree with the reasoning
+above.
 
-However, the following commit removed writing the super in case of the
-error:
-68ce9682a4bb ("Btrfs: remove superblock writing after fatal error")
+> I agree that the data function's name is somewhat generic, perhahps it
+> could be renamed so that it points to the fact it's validating a single
+> sector/blocksize? I.e btrfs_check_ blocksize_csum or something like that ?
 
-So, it does not land in the super flags anyways.
-The flag does not make sense if we use BTRFS_FS_STATE_ERROR.
-
-I will remove BTRFS_SUPER_FLAG_ERROR comment for now.
-
--- 
-Goldwyn
+Yeah, that the data have a simpler validation maybe does not deserve to
+be called like that. We should not use 'sector' here as bios use that
+too. So btrfs_check_data_block_csum or btrfs_check_block_csum?
