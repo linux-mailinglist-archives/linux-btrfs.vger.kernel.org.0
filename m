@@ -2,34 +2,35 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E8A3275174
-	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Sep 2020 08:25:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38B2727517D
+	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Sep 2020 08:29:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726643AbgIWGZw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 23 Sep 2020 02:25:52 -0400
-Received: from mx2.suse.de ([195.135.220.15]:39992 "EHLO mx2.suse.de"
+        id S1726550AbgIWG3C (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 23 Sep 2020 02:29:02 -0400
+Received: from mx2.suse.de ([195.135.220.15]:41128 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726629AbgIWGZw (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 23 Sep 2020 02:25:52 -0400
+        id S1726179AbgIWG3C (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 23 Sep 2020 02:29:02 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1600842350;
+        t=1600842541;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=g8DLAHyevxpR+fRtqbfDbqJIRicWl8u6h1jsr20p5Aw=;
-        b=FZS1wPtOlGwKek540yna/0Do2TkIx4JWptZk3zuzWsI/Lv2LY/IAXE9nSU2mxjJRvyeKOk
-        VsKRC0NpNXZkuJq8jcm8TTkNQIfS4XlJsCyg4PUYKVMSTDhaXsVf6Fc3mFTF1f6TEGip/R
-        lwW99bTnNh8I5L+VGpYMtH7obOdGqcw=
+        bh=ZWHE2j9FEZI862z95A73Hc2MYIKYOPOHXXba+Bwl2as=;
+        b=lmVihO6RWyBiSkkK2IKBs8itAl4ZtNWvtPJO/e9s/6SEZnpCr+RDwZPi03odc7amfEtSpz
+        pNm+irZ6MzGpWI6bhS+zjrQUvz0KXdpklScxpXGWgmjrYbFW0knOT0ysUWPWby6TTmRWg7
+        pbTG4XwKMKoO+9doL9klSypLa3QuIxE=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 0DD13AA55
-        for <linux-btrfs@vger.kernel.org>; Wed, 23 Sep 2020 06:26:28 +0000 (UTC)
-Subject: Re: [PATCH 7/7] btrfs: Remove struct extent_io_ops
+        by mx2.suse.de (Postfix) with ESMTP id 537B3AC3C
+        for <linux-btrfs@vger.kernel.org>; Wed, 23 Sep 2020 06:29:38 +0000 (UTC)
+Subject: Re: [PATCH 1/7] btrfs: Don't call readpage_end_io_hook for the btree
+ inode
 To:     dsterba@suse.cz, linux-btrfs@vger.kernel.org
 References: <20200918133439.23187-1-nborisov@suse.com>
- <20200918133439.23187-8-nborisov@suse.com>
- <20200921203808.GW6756@twin.jikos.cz>
+ <20200918133439.23187-2-nborisov@suse.com>
+ <20200921174509.GN6756@twin.jikos.cz>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  xsFNBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -73,12 +74,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  KIuxEcV8wcVjr+Wr9zRl06waOCkgrQbTPp631hToxo+4rA1jiQF2M80HAet65ytBVR2pFGZF
  zGYYLqiG+mpUZ+FPjxk9kpkRYz61mTLSY7tuFljExfJWMGfgSg1OxfLV631jV1TcdUnx+h3l
  Sqs2vMhAVt14zT8mpIuu2VNxcontxgVr1kzYA/tQg32fVRbGr449j1gw57BV9i0vww==
-Message-ID: <94e97e0e-7b91-a877-aad1-446e231b27d5@suse.com>
-Date:   Wed, 23 Sep 2020 09:25:50 +0300
+Message-ID: <f874055e-34d7-f972-9cfc-551dbbd023a8@suse.com>
+Date:   Wed, 23 Sep 2020 09:29:00 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20200921203808.GW6756@twin.jikos.cz>
+In-Reply-To: <20200921174509.GN6756@twin.jikos.cz>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -88,17 +89,54 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 21.09.20 г. 23:38 ч., David Sterba wrote:
-> On Fri, Sep 18, 2020 at 04:34:39PM +0300, Nikolay Borisov wrote:
+On 21.09.20 г. 20:45 ч., David Sterba wrote:
+> On Fri, Sep 18, 2020 at 04:34:33PM +0300, Nikolay Borisov wrote:
+>> Instead of relying on indirect calls to implement metadata buffer
+>> validation simply check if the inode whose page we are processing equals
+>> the btree inode. If it does call the necessary function.
+>>
+>> This is an improvement in 2 directions:
+>> 1. We aren't paying the penalty of indirect calls in a post-speculation
+>>    attacks world.
+>>
+>> 2. The function is now named more explicitly so it's obvious what's
+>>    going on
 > 
-> You should really write changelogs for patches that not obviously
-> trivial.
+> The new naming is not making things clear, btrfs_check_csum sounds very
+> generic while it does a very specific thing just by the number and type
+> of the parameters. Similar for btrfs_validate_metadata_buffer.
 > 
->> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
+>> --- a/fs/btrfs/extent_io.c
+>> +++ b/fs/btrfs/extent_io.c
+>> @@ -2851,9 +2851,12 @@ static void end_bio_extent_readpage(struct bio *bio)
+>>  
+>>  		mirror = io_bio->mirror_num;
+>>  		if (likely(uptodate)) {
+>> -			ret = tree->ops->readpage_end_io_hook(io_bio, offset,
+>> -							      page, start, end,
+>> -							      mirror);
+>> +			if (data_inode)
+>> +				ret = btrfs_check_csum(io_bio, offset, page,
+>> +						       start, end, mirror);
+>> +			else
+>> +				ret = btrfs_validate_metadata_buffer(io_bio,
+>> +					offset, page, start, end, mirror);
+> 
+> In the context where the functions are used I'd expect some symmetry,
+> data/metadata. Something like btrfs_validate_data_bio.
 > 
 
+The reason for this naming is that btrfs_vlidate_metadata_buffer
+actually validates as in "tree-checker style validation" of the extent
+buffer not simply calculating the checksum. So to me it feels like a
+more complete,heavyweight operations hence "validating", whlist
+btrfs_check_csum just checks the csum of a single sector/blocksize in
+the bio. I think the metadata function's name conveys what it's doing in
+full:
 
-I thought this patch was rather self-explanatory - just removing no
-longer used struct and related functions but I guess that's just me
-given I have written the previous 6 patches, so will add a changelog in
-the next iteration. Thanks.
+1. It's doing validation as per aforementioned explanation
+2. It's doing it for a whole extent buffer and not just a chunk of it.
+
+I agree that the data function's name is somewhat generic, perhahps it
+could be renamed so that it points to the fact it's validating a single
+sector/blocksize? I.e btrfs_check_ blocksize_csum or something like that ?
