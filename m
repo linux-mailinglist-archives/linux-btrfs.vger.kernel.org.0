@@ -2,173 +2,124 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67889275657
-	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Sep 2020 12:29:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81A532756DF
+	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Sep 2020 13:09:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726415AbgIWK3B (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 23 Sep 2020 06:29:01 -0400
-Received: from mout.gmx.net ([212.227.15.19]:60425 "EHLO mout.gmx.net"
+        id S1726573AbgIWLJz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 23 Sep 2020 07:09:55 -0400
+Received: from mx2.suse.de ([195.135.220.15]:50352 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726314AbgIWK3B (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 23 Sep 2020 06:29:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1600856927;
-        bh=qIr/OuYYNAbYDj22Sb8DqYO6oV5dMSnzRONJKfuvOFY=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=LafYmGuuxsUyycDKfpZ4AYAMB4HycesDuZqdZODweKqVl+rj1a3W1zlYVSLoxYORs
-         n3Jc6pE0aMTfXgrpDUNDu2thdpuWJPMybRpBTjU4KvAksDUq/Vxko51+8Fh6Qm/Dtx
-         EEGLc2jM5+uUhzyxcr/pRriq93bxZvAFryrPLGIg=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MnaoZ-1kmMUV1jGP-00jb7O; Wed, 23
- Sep 2020 12:28:47 +0200
-Subject: Re: [PATCH] btrfs: fix false alert caused by legacy btrfs root item
-To:     dsterba@suse.cz, kernel test robot <lkp@intel.com>,
-        Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org,
-        kbuild-all@lists.01.org, clang-built-linux@googlegroups.com,
-        Martin Steigerwald <martin@lichtvoll.de>
-References: <20200922023701.32654-1-wqu@suse.com>
- <202009231428.5CFBSt9U%lkp@intel.com> <20200923093133.GJ6756@twin.jikos.cz>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
- PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
- 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
- D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
- efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
- ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
- BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
- 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
- 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
- EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
- 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
- ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
- oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
- fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
- 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
- ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
- oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <ab9e6eb3-6aff-1ea3-62e0-4489fe73e066@gmx.com>
-Date:   Wed, 23 Sep 2020 18:28:41 +0800
+        id S1726332AbgIWLJy (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 23 Sep 2020 07:09:54 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1600859393;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=O4oxZyN5NeWKP6/0kzdUwsXsHgu058b+Xap3d0jbRzQ=;
+        b=juqgWmmE9rgnvNJWBYU2qubqAfD9W7uEbtZhPqpuZIxV0b4nEUF8cUiPAGF66ip3XCPcuv
+        Mm0RjTfDakSQEUrwfBmag1S8JqLUfOUBtbe1Bg9RsTfdukAy8d7eBXHuBPnwbzujCWreo0
+        HItnilpOveP7+puWHbc7cAhhjuAsgPU=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 8D669AC79;
+        Wed, 23 Sep 2020 11:10:30 +0000 (UTC)
+Subject: Re: [PATCH v2] btrfs: free device without BTRFS_MAGIC
+To:     Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org
+Cc:     Johannes.Thumshirn@wdc.com
+References: <dbc067b24194241f6d87b8f9799d9b6484984a13.1600473987.git.anand.jain@oracle.com>
+ <1ee9b318e3bb851aaec9c1efd1eadb117ad46638.1600741332.git.anand.jain@oracle.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <a0dc643f-81ee-8450-1371-d5c7f89dd8db@suse.com>
+Date:   Wed, 23 Sep 2020 14:09:52 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20200923093133.GJ6756@twin.jikos.cz>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="vgnfynEVXBIxDjL5gKofa873v00si57IU"
-X-Provags-ID: V03:K1:GV3DMxNi9U/kpTABAHQdlmrO8Hj8UgXyTCnoJ3tvx8Yc0Fxrbx6
- iwlcLSQ0gCTfwRvIWecbN9jbNGK5xmEq0ftL3x6Ga2IQcJKNbIVZwKlyccinTRIdeCDzFGk
- +e1BYn0hMZ9ATkP+VS55wrKIk0+I+KN2aoVxBdotRu238rrKvIruYF+QPDQrrzKBX7FRlSp
- X9QAhblFAbhj2mBoErPbA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:nEdP/bw3oew=:PKLTQs5ww/FcOoYj74shNq
- t/T6r/1VpSZQnJFYiNg0l7TdD2GBj6j/KBRWrYnSYRj2++/UN1pZ3VYL3KfdiihCK5qmzU692
- 5fm+IMDXznYlrts7zWdbQmKSHVvNvY5OqQjIqnkVDbO1GAaSP1DK7NRMk0m/9zB+3lYoGX8VM
- OOzXQMhUa9Np3ZvS5pagKfqbgzrtDz0q0VOOyuzdQjmOHg3kMb7XAmRuHSxG/QoH7yPlMZwDo
- 6UBikkXlmuqNicxdnG0AFtNtZ+P4viege9w0i1+YUUMQnXijHP0glJN/SeFqMOJLhE+coF72N
- 2Y63zIBRqXK0jjTU0udSCM47DN0UuFADIMhXFJbbbGDtzmF/1oBMXyZpJNM8JBlbMbVTn7Bcz
- jWKIKZy97h4tG9GqSr61kYTyniEkqgj2057mkqHBeDuGUFq2F9VEc5YH6zcZULYH9Bk8mGVYc
- 2mLQ/QPH6tox+ReZzGP00Qzp0sJeByezlx78NNUE1y/MKJneWIe8Zge2xdO5ipXs0MgnykU4F
- cLwSXSq3C76eA/vCsyHtyOp8Lrkwxgz9c8ny654oxe45bPHAn2Ne3fQmF36hhvVf1Yd0Z+Vny
- WmoVfoLJ5HcliauduNUzvdU09S0X3621WbQVyULVb8ig9or5Onq42Ooml0B4jyvn+TRrehFMD
- 2OtUYdTH4ns2pHg/40Vk9POwkYTPfig/tEnT1X4NLKzuFDsr7dx1bDsVK3m/MptSq2AWGJhXd
- XX9zP5b5384uOzO6d7Yo8XzCr+D8vtBztrAn55htJwZJZSjvaIKtnHNR4wglU3XIs8UkZHFC/
- uR7b8iNcL/rXzMFcUrb1S5UNMV2jJQ270wJ16R/ZihKMq3nLWc07hBT/fZfoGCJS9ImcGglQI
- Zc+o2Fn6jrILcjpkVsfG/FqK38M6ppIPA8y61UX8oqr0Q9M174Oispy6P/QKPrWdBIxUqe5Of
- ew6EDKG/YxdBV9A8oBDrxlKc60Jc1C10VIiu/bxZWOTpPMoCTZLXScefsVUUwsI7Fhwe6ni0j
- 9e8fgEOrUFqXv6No2Ai24ekUl7H6u8gAV5+a3Ds+UXN+8xu1wxaONGLRbujZ/m+zIkCkHkH+Q
- bnF6pLtoVm0vmv/HVVAQYRXIUWPxASAKXosSnwvVfz7wjWahdDUitOIHnLnMpe7GOzfrR6BBW
- UECRLLTcqmJLX4fR+q7jfLHhS5ES0uBJTqaUkiUh1u437ua+LgYR92YjHT5w58JH9e0f5pplh
- 1FavFxYQ0fDUMWDXDc5ImxDD+8ZxmjelWZp1nng==
+In-Reply-To: <1ee9b318e3bb851aaec9c1efd1eadb117ad46638.1600741332.git.anand.jain@oracle.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---vgnfynEVXBIxDjL5gKofa873v00si57IU
-Content-Type: multipart/mixed; boundary="R1toVwMLlj2OJeGPfzwiLqmw0EA1Uzc5q"
-
---R1toVwMLlj2OJeGPfzwiLqmw0EA1Uzc5q
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
 
 
+On 22.09.20 г. 6:13 ч., Anand Jain wrote:
+> Many things can happen after the device is scanned and before the device
+> is mounted.
+> 
+> One such thing is losing the BTRFS_MAGIC on the device.
+> 
+> If it happens we still won't free that device from the memory and causes
+> the userland to confuse.
+> 
+> For example: As the BTRFS_IOC_DEV_INFO still carries the device path which
+> does not have the BTRFS_MAGIC, the btrfs fi show still shows device
+> which does not belong. As shown below.
+> 
+> mkfs.btrfs -fq -draid1 -mraid1 /dev/sda /dev/sdb
+> 
+> wipefs -a /dev/sdb
+> mount -o degraded /dev/sda /btrfs
+> btrfs fi show -m
+> 
+> /dev/sdb does not contain BTRFS_MAGIC and we still show it as part of
+> btrfs.
+> Label: none  uuid: 470ec6fb-646b-4464-b3cb-df1b26c527bd
+>         Total devices 2 FS bytes used 128.00KiB
+>         devid    1 size 3.00GiB used 571.19MiB path /dev/sda
+>         devid    2 size 3.00GiB used 571.19MiB path /dev/sdb
+> 
+> Fix is to return -ENODATA error code in btrfs_read_dev_one_super()
+> when BTRFS_MAGIC check fails, and its parent open_fs_devices() to
+> free the device in the mount-thread.
+> 
+> Signed-off-by: Anand Jain <anand.jain@oracle.com>
 
-On 2020/9/23 =E4=B8=8B=E5=8D=885:31, David Sterba wrote:
-> On Wed, Sep 23, 2020 at 02:23:18PM +0800, kernel test robot wrote:
->> Hi Qu,
->>
->> Thank you for the patch! Yet something to improve:
->>
->> [auto build test ERROR on kdave/for-next]
->> [also build test ERROR on v5.9-rc6 next-20200922]
->> [If your patch is applied to the wrong git tree, kindly drop us a note=
-=2E
->> And when submitting patch, we suggest to use '--base' as documented in=
+Has an fstest for this been submitted ?
 
->> https://git-scm.com/docs/git-format-patch]
->>
->> url:    https://github.com/0day-ci/linux/commits/Qu-Wenruo/btrfs-fix-f=
-alse-alert-caused-by-legacy-btrfs-root-item/20200922-103827
->> base:   https://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.gi=
-t for-next
->> config: x86_64-randconfig-a014-20200920 (attached as .config)
->> compiler: clang version 12.0.0 (https://github.com/llvm/llvm-project 6=
-a6b06f5262bb96523eceef4a42fe8e60ae2a630)
->> reproduce (this is a W=3D1 build):
->>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/=
-sbin/make.cross -O ~/bin/make.cross
->>         chmod +x ~/bin/make.cross
->>         # install x86_64 cross compiling tool for clang build
->>         # apt-get install binutils-x86-64-linux-gnu
->>         # save the attached .config to linux build tree
->>         COMPILER_INSTALL_PATH=3D$HOME/0day COMPILER=3Dclang make.cross=
- ARCH=3Dx86_64=20
->>
->> If you fix the issue, kindly add following tag as appropriate
->> Reported-by: kernel test robot <lkp@intel.com>
->>
->> All errors (new ones prefixed by >>):
->>
->>    In file included from <built-in>:1:
->>>> ./usr/include/linux/btrfs_tree.h:651:19: error: unknown type name 's=
-ize_t'
->>    static __inline__ size_t btrfs_legacy_root_item_size(void)
->>                      ^
->=20
-> u32 should be fine here, we use it for all the other item helpers.
->=20
-Sure, but I'm a little interested in why it passes in gcc v10.20...
-
-Thanks,
-Qu
-
-
---R1toVwMLlj2OJeGPfzwiLqmw0EA1Uzc5q--
-
---vgnfynEVXBIxDjL5gKofa873v00si57IU
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl9rI1kACgkQwj2R86El
-/qgIFAf+P3SmtUwZZiMoYd2ysWauUrTdN8nepLc9bVb1UDnIepQN8QuzuHg0giF6
-7nZw8ihlKH3uo2AV0YGgNOW3eNJaU0F2iXT6vWoOd5E5KruuqjEe/7L3m64ygXU3
-Khy5eNc3+AGq0jbzDbJaG1PAoUuAqNN4ozXHLHJT6CzEv82b+LVYZVP+rBUsyoiR
-sSx/PszSogTc9w70e82h+VlDQY2dPOOg5wPlwaoDB6Bqh+ljcqij2evQzTrgvGdd
-KC83ro6SLRNEFTZPUOvMge6ltU+tG7L9e0wWZifZ1jLvsvR2dAcYtAmrSqceoJ0z
-GluZ7zMdwDn5zbdOxhRp7kcYkhyu0w==
-=rCIk
------END PGP SIGNATURE-----
-
---vgnfynEVXBIxDjL5gKofa873v00si57IU--
+<snip>
