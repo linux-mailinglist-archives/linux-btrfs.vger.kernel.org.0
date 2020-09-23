@@ -2,58 +2,55 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07235275078
-	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Sep 2020 07:49:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAF68275081
+	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Sep 2020 07:57:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726980AbgIWFt3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 23 Sep 2020 01:49:29 -0400
-Received: from verein.lst.de ([213.95.11.211]:47260 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726883AbgIWFt3 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 23 Sep 2020 01:49:29 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id CB6F367373; Wed, 23 Sep 2020 07:49:25 +0200 (CEST)
-Date:   Wed, 23 Sep 2020 07:49:25 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     "Darrick J. Wong" <darrick.wong@oracle.com>
-Cc:     Christoph Hellwig <hch@lst.de>, Dave Chinner <david@fromorbit.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Goldwyn Rodrigues <rgoldwyn@suse.de>,
-        linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        johannes.thumshirn@wdc.com, dsterba@suse.com,
-        Goldwyn Rodrigues <rgoldwyn@suse.com>
-Subject: Re: [PATCH 04/15] iomap: Call inode_dio_end() before
- generic_write_sync()
-Message-ID: <20200923054925.GA15389@lst.de>
-References: <20200921144353.31319-1-rgoldwyn@suse.de> <20200921144353.31319-5-rgoldwyn@suse.de> <20bf949a-7237-8409-4230-cddb430026a9@toxicpanda.com> <20200922163156.GD7949@magnolia> <20200922214934.GC12096@dread.disaster.area> <20200923051658.GA14957@lst.de> <20200923053149.GK7964@magnolia>
+        id S1726615AbgIWF5U (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 23 Sep 2020 01:57:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39458 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726448AbgIWF5U (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 23 Sep 2020 01:57:20 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26EBEC061755;
+        Tue, 22 Sep 2020 22:57:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=+xPayIM5KsnWTfKDPlxSGNgmE5Ab/DG3SsTYQ0nYWCA=; b=g/f91SGO92fFuYvJtguHCdSROs
+        1Kl3jQYtC3DJmj9dFU+X/DxR2smj2rRxEiMVTCdpcVec1wTczcbnjIg4MRK5bGkoL38Dny+RvaB3g
+        mdma3P/6FfdNyO8L2AQ1mZMCsPxdzEDJV4mfqL972CHGS7iqYA1ZKxm9Jklkqk2t48cWxc9wbvikZ
+        89h2DQQYsF6wQTCjDfLCFb6eo9aX6Ql5xCzzbuZ+KS+SRmmlVEQD1kIF1BeFck/pwuOT8Ism12NW1
+        IW033ZHgZHMiPVMGFmIaU7YkHWiPus6SQH2uk+BD2umQQFRbBX/aAyTuaGhJ6KLBgtsXGBf/DjjHX
+        gbrdKdlA==;
+Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kKxmG-0002rE-HI; Wed, 23 Sep 2020 05:57:16 +0000
+Date:   Wed, 23 Sep 2020 06:57:16 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Nick Terrell <nickrterrell@gmail.com>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        linux-crypto@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        squashfs-devel@lists.sourceforge.net,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, Kernel Team <Kernel-team@fb.com>,
+        Nick Terrell <terrelln@fb.com>, Chris Mason <clm@fb.com>,
+        Petr Malat <oss@malat.biz>, Johannes Weiner <jweiner@fb.com>,
+        Niket Agarwal <niketa@fb.com>, Yann Collet <cyan@fb.com>
+Subject: Re: [PATCH v2 0/9] Update to zstd-1.4.6
+Message-ID: <20200923055716.GA10796@infradead.org>
+References: <20200922210924.1725-1-nickrterrell@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200923053149.GK7964@magnolia>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <20200922210924.1725-1-nickrterrell@gmail.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Sep 22, 2020 at 10:31:49PM -0700, Darrick J. Wong wrote:
-> > ... and I replied with a detailed analysis of what it is fine, and
-> > how this just restores the behavior we historically had before
-> > switching to the iomap direct I/O code.  Although if we want to go
-> > into the fine details we did not have the REQ_FUA path back then,
-> > but that does not change the analysis.
-> 
-> You did?  Got a link?  Not sure if vger/oraclemail are still delaying
-> messages for me.... :/
-
-Two replies from September 17 to the
-"Re: [RFC PATCH] btrfs: don't call btrfs_sync_file from iomap context"
-
-thread.
-
-Msg IDs:
-
-20200917055232.GA31646@lst.de
-
-and
-
-20200917064238.GA32441@lst.de
+FYI, as mentioned last time:  clear NAK for letting these bad APIs
+slip into the overall kernel code.  Please provide proper kernel style
+wrappers to avoid these kinds of updates and in the future just change
+APIs on an as-needed basis.
