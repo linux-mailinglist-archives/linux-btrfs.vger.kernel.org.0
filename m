@@ -2,37 +2,34 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26F09275165
-	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Sep 2020 08:24:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E8A3275174
+	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Sep 2020 08:25:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726846AbgIWGYz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 23 Sep 2020 02:24:55 -0400
-Received: from mx2.suse.de ([195.135.220.15]:39416 "EHLO mx2.suse.de"
+        id S1726643AbgIWGZw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 23 Sep 2020 02:25:52 -0400
+Received: from mx2.suse.de ([195.135.220.15]:39992 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726853AbgIWGYw (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 23 Sep 2020 02:24:52 -0400
+        id S1726629AbgIWGZw (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 23 Sep 2020 02:25:52 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1600842290;
+        t=1600842350;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=dur8n5utW0Cj6ksxirWnY4CFp1QSnqkSy6ayQ+h6jLY=;
-        b=gIZJBRqVvXW8VS7nY8zIVKRyUc/QHCBttupv75g32EXQVz1htTXFlHMZKOQuIsIgsdcrGe
-        ps04Ij7fkbRLdGkWuPHsdsuNnUS0EN0axOGZh5PP8y8UgD/kXMsv7R+sSscO2milFHnn2c
-        3muJ5Flwncsc25a+HneHlqmApno1+gk=
+        bh=g8DLAHyevxpR+fRtqbfDbqJIRicWl8u6h1jsr20p5Aw=;
+        b=FZS1wPtOlGwKek540yna/0Do2TkIx4JWptZk3zuzWsI/Lv2LY/IAXE9nSU2mxjJRvyeKOk
+        VsKRC0NpNXZkuJq8jcm8TTkNQIfS4XlJsCyg4PUYKVMSTDhaXsVf6Fc3mFTF1f6TEGip/R
+        lwW99bTnNh8I5L+VGpYMtH7obOdGqcw=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id E67F3AC3C;
-        Wed, 23 Sep 2020 06:25:27 +0000 (UTC)
-Subject: Re: [PATCH 6/7] btrfs: Call submit_bio_hook directly for metadata
- pages
-To:     dsterba@suse.cz, Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+        by mx2.suse.de (Postfix) with ESMTP id 0DD13AA55
+        for <linux-btrfs@vger.kernel.org>; Wed, 23 Sep 2020 06:26:28 +0000 (UTC)
+Subject: Re: [PATCH 7/7] btrfs: Remove struct extent_io_ops
+To:     dsterba@suse.cz, linux-btrfs@vger.kernel.org
 References: <20200918133439.23187-1-nborisov@suse.com>
- <20200918133439.23187-7-nborisov@suse.com>
- <SN4PR0401MB35988E131C20F42AF70484FA9B3A0@SN4PR0401MB3598.namprd04.prod.outlook.com>
- <20200921203240.GV6756@twin.jikos.cz>
+ <20200918133439.23187-8-nborisov@suse.com>
+ <20200921203808.GW6756@twin.jikos.cz>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  xsFNBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -76,12 +73,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  KIuxEcV8wcVjr+Wr9zRl06waOCkgrQbTPp631hToxo+4rA1jiQF2M80HAet65ytBVR2pFGZF
  zGYYLqiG+mpUZ+FPjxk9kpkRYz61mTLSY7tuFljExfJWMGfgSg1OxfLV631jV1TcdUnx+h3l
  Sqs2vMhAVt14zT8mpIuu2VNxcontxgVr1kzYA/tQg32fVRbGr449j1gw57BV9i0vww==
-Message-ID: <f57deace-5457-9f8c-2aac-cdf32d39d619@suse.com>
-Date:   Wed, 23 Sep 2020 09:24:49 +0300
+Message-ID: <94e97e0e-7b91-a877-aad1-446e231b27d5@suse.com>
+Date:   Wed, 23 Sep 2020 09:25:50 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20200921203240.GV6756@twin.jikos.cz>
+In-Reply-To: <20200921203808.GW6756@twin.jikos.cz>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -91,34 +88,17 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 21.09.20 г. 23:32 ч., David Sterba wrote:
-> On Mon, Sep 21, 2020 at 03:04:54PM +0000, Johannes Thumshirn wrote:
->> On 18/09/2020 15:34, Nikolay Borisov wrote:
->>> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
->>> index 8cabcb7642a9..4a00cfd4082f 100644
->>> --- a/fs/btrfs/extent_io.c
->>> +++ b/fs/btrfs/extent_io.c
->>> @@ -172,8 +172,8 @@ int __must_check submit_one_bio(struct bio *bio, int mirror_num,
->>>  		ret = btrfs_submit_data_bio(tree->private_data, bio, mirror_num,
->>>  					    bio_flags);
->>>  	else
->>> -		ret = tree->ops->submit_bio_hook(tree->private_data, bio,
->>> -						 mirror_num, bio_flags);
->>> +		ret = btrfs_submit_metadata_bio(tree->private_data, bio,
->>> +						mirror_num, bio_flags);
->>>  
->>
->>
->> Hmm we could even turn this into a little helper calling either
->> btrfs_submit_data_bio or btrfs_submit_metadata_bio. But that's just stylistic
->> preference I guess.
+On 21.09.20 г. 23:38 ч., David Sterba wrote:
+> On Fri, Sep 18, 2020 at 04:34:39PM +0300, Nikolay Borisov wrote:
 > 
-> Yeah a helper could be here but I think it's fine without that extra
-> indirection, the code is clear that for data inode it's some "data"
-> function, with the same set of parameters. If there's just one location
-> switching the two, the helper would not help much IMHO.
+> You should really write changelogs for patches that not obviously
+> trivial.
+> 
+>> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
 > 
 
-<NOD> The idea here is to have less functions in the way, if there were
-more places that this change was necessary I would have gone the helper
-way.
+
+I thought this patch was rather self-explanatory - just removing no
+longer used struct and related functions but I guess that's just me
+given I have written the previous 6 patches, so will add a changelog in
+the next iteration. Thanks.
