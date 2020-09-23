@@ -2,145 +2,200 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBE3F2759D9
-	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Sep 2020 16:25:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B940C2759FE
+	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Sep 2020 16:30:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726641AbgIWOZc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 23 Sep 2020 10:25:32 -0400
-Received: from esa5.hgst.iphmx.com ([216.71.153.144]:8612 "EHLO
-        esa5.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726550AbgIWOZc (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 23 Sep 2020 10:25:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1600871132; x=1632407132;
-  h=from:to:cc:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=hbeGSzixm6exwp1qYtk5NTW2rjLlfa44BHiVozcxf0M=;
-  b=q7wsM/yNmEawxcpnfXsOLc5FWbyK1kKUbYLyYJgJi/c+2MSXmXAbmYKv
-   w3hRFrmLqAlrbgSxcC7qYgIOze3VmG8VDAQPKADwIl3i2A0ZshJf4id6W
-   x/Ao0Tno7Jdz1UGNki+e+g+XOKCaQAKjwtilhJ+WFPoDbFgZq+6R3A8ae
-   opq9D9tO45JfGJBMXQkQq+s3CjOWwXOiswwTl3R+26GlfXnhdzZU133gD
-   0xWF5xeQwAKtpvSxxvXewwYLSR3KwT2ovlaKNv0ClRgEHBceihEcasipg
-   8vGP5brwfSRGAez1PPYVhYhZVg82Vsg3CVO3My8ge6FGJ2ZYJ0C73pAQS
-   A==;
-IronPort-SDR: jqFkIEvB3XiMCULBO9xpsrw8JuYtLufUBWwpH/jf/ripkO3hng2J/Wh/MslLjG7bSuUCf9uidR
- 9l0Ag6Ive6Ajm4Bt0yyVilb75k2kcfY8IijQBorr62LE9gx8rawnyZhYiSBENsPFv4ER0BvonA
- 7scToqkr9A5586HoE9883N1aR04Y2IEXtwcb+Hoxx25r+6qoorUpDLfa3w7eZfgXaXA/obn96V
- SYOYQ59N1X39LZfrF6rT/Akn33UpA8BLJ2ZxvrkczeETcpEK2I7N2PyUlZZjdRx9hpxtmJ3C3z
- 9vg=
-X-IronPort-AV: E=Sophos;i="5.77,293,1596470400"; 
-   d="scan'208";a="148110872"
-Received: from mail-dm6nam10lp2104.outbound.protection.outlook.com (HELO NAM10-DM6-obe.outbound.protection.outlook.com) ([104.47.58.104])
-  by ob1.hgst.iphmx.com with ESMTP; 23 Sep 2020 22:25:32 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=WN0wWvhsARmIQOI0Y6p4YQPCMmWPruC4UHmuaslOCP0+vKx5SUwxebKZBMGecGIVlfEnGyqPcdeErCECWumt7KZFj1H2ZpyGD/x/SK6aeU4tFgItBkS00VTEKDPYDiN4tP04jPZznI6C4U6WFdutEYN/kdVEoNf1YDFsNrgIq68HA5CcyLbIisymc14jgBpu67QIpDA8bhBVNoxUmclWCHTR5ekxuyCF5vWoAPUA9L2QWaaoXaE+qsYe66B+5goRcW9nEqce2PtdG7blwZQEktAyaa5IXvXF9p3zPn0r9HKb9+lfMRxCqD8r8dITyIb5vlBBnrZHdekd0VEomuAo7w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=73zziZaPpOVW1PqClC9SknnrRN9+ZMPj0oWqmJshh5Y=;
- b=BfoJFPVbKgCyrSKm2wQQZxZqPhnA14sjScYG2cQGwKpaLya+Hu1eJP1mle+PlWvfQOC7j2Z2/7mboDIsbv40gZRIkNe88x76JpnoEEEdRIRAAOMtgf62oyA78i/kC7vzPyyY8ImsG0EeLOOMcqgk5Kkky0s2dqOeBIKTdwaq3Wlo5r333U5F6C0302xb3EcWwn4mJo+9NAzaPcpeWZgR5KNyWgpJiRb+E7lv2IHrOj+SKxvD1n0syX5ikd67jGBZhl+eTUjKVezzdhTTnj0Q1yT5FKXPvZ5Jmn4Sah0fq5J8Abd3XX27vXOL1MFGAV8Atsz3Dtrd4pFT1chXsMeHCA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=73zziZaPpOVW1PqClC9SknnrRN9+ZMPj0oWqmJshh5Y=;
- b=MQVV9hbUk9Kn0MA8Pkl74O7czGaJTNHmn3ZW/jVVeNYkIYffPwJsSiWberOtWNZ/MwWInhdE8VQ+9kgS9hzMocW3eaDfHHmdu24IxhQxdefSaVw6nj05aSDcpbMHqUxLu3dQryoqUibjTw3h9Vg5XdWZCDJ3owMX29UNcyi9lrA=
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
- (2603:10b6:803:47::21) by SN6PR04MB3806.namprd04.prod.outlook.com
- (2603:10b6:805:45::11) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.11; Wed, 23 Sep
- 2020 14:25:27 +0000
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::457e:5fe9:2ae3:e738]) by SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::457e:5fe9:2ae3:e738%7]) with mapi id 15.20.3370.033; Wed, 23 Sep 2020
- 14:25:27 +0000
-From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To:     "dsterba@suse.cz" <dsterba@suse.cz>,
-        "fdmanana@kernel.org" <fdmanana@kernel.org>
-CC:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH 0/2] btrfs: send, fix some failures due to commands with
- wrong paths
-Thread-Topic: [PATCH 0/2] btrfs: send, fix some failures due to commands with
- wrong paths
-Thread-Index: AQHWkBkV5cI98yIg6UWv2uOwE2vxDA==
-Date:   Wed, 23 Sep 2020 14:25:27 +0000
-Message-ID: <SN4PR0401MB35986C9D1C5514C73B2AAFFD9B380@SN4PR0401MB3598.namprd04.prod.outlook.com>
-References: <cover.1600693246.git.fdmanana@suse.com>
- <20200923124606.GM6756@twin.jikos.cz>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: suse.cz; dkim=none (message not signed)
- header.d=none;suse.cz; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [129.253.240.72]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 716a433e-e4d7-4600-dce1-08d85fcc84a9
-x-ms-traffictypediagnostic: SN6PR04MB3806:
-x-microsoft-antispam-prvs: <SN6PR04MB3806A493F2B49BC5B69453079B380@SN6PR04MB3806.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: SwHlu6VUViJ4WIocaHagWD+8PWWAwFWx+NHnAT+c9vcUIiI4Mo9OIFRVHTa/3SV/tNVZCMz0jM+UUDsGUfm5D0VOdr26Zhzcfudl9+uaZCUHpjq7pJn/krOYlkXKQEzPWZ5SmomqLkNZ5xqLn3Uq9IP4m7VcZ1W8C0FUGxFF7HQHskWKI2i703ivS5qYG3qhrKq+rE8DzCNTq7uCTnwTsAQOJNQKaDUH8vuZPxZHHKmmyrSdWJiEnSqncrBZ9FbMV1JnlwG4rLgviqdoMw4rfKT+yycPdMkJYg2AS+svs1HcpFcLxA22DU2C2wP0MJ54Gm90HVtHJYnRNFBmuFgrBMzp57XhcR5RYhfjJEkVHy12eemIPzslG3xRUmgpfAjgZ/bY6NmFcMDiNPjz8wRGnA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR0401MB3598.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(346002)(376002)(366004)(396003)(39860400002)(316002)(66476007)(53546011)(64756008)(66556008)(71200400001)(66946007)(7696005)(4326008)(110136005)(966005)(6506007)(478600001)(8936002)(76116006)(2906002)(66446008)(91956017)(52536014)(83380400001)(186003)(5660300002)(9686003)(26005)(55016002)(8676002)(86362001)(33656002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: gAcC7Y3T9A/mlxGmigzbW6bJ9T/utlYJE0f9m+vs1PJz1EWNP1tKNpywgC8LZQDrqynltuR1oHz76J0y77wdfZw4gEBSE0RjbwRDKHl9B9KHs08KOLet37Jn722OBy+jpza15AW6G/NDVR87cJ6ku9bISHtNRrs3Ft1RxMUwb1w06cKx/psrMl1kyZy2khFcE6kQpUxRLuXt9MjVzYuyC0P1W3nTXOPkLa+3hOhFwPwm132z+FPwkwd19hoA7swMrsE+nFsrCTAr/0ds4ubfVnLC6hk2aDyfmShicJDcRmGAnw1r82vI0Rj7IZGgQNr6adVaAD07M0q6a+WcSVbfEm0euMbIrF0/4pw30fp4gM3RjlQ3I+J8OxKWF3BVhdriobO95IbtO+Bi/DUibA0OVFEoaMcfawJ3kE3J3IZwgYjWtLt1wzpIyGT7qLH+EFlEJdCBp+bihNTzwb1wrBlBP6L2vO/3iUt5nTGq2GpK2fF64f0ijR3KGSytLVogOoUg3MYLDCb1GVE89RiCdVkyrWe2nEVD1D5dmrHk0EudHnIWUwEuAF2pBzvt4d8bJecgoeqllHfw6V07rsAjdhmIn/z8yioLPGhO5iNEHH+4NtOqHshSe75Y1hu66Y/mBOvFkdEPamcSAq5QdXNj80HCbQ==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SN4PR0401MB3598.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 716a433e-e4d7-4600-dce1-08d85fcc84a9
-X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Sep 2020 14:25:27.4598
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: tfGdU/U5iMJ6H/QcShtOx2nNw5wXdRtqULDh/lKeVHzvLffyO+JDOsrDx5Acc7KKX3AEubH/BUB5bbcHuVrChi9upq0OQ1viuaauAInltU8=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR04MB3806
+        id S1726715AbgIWOaU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 23 Sep 2020 10:30:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35972 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726650AbgIWOaU (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 23 Sep 2020 10:30:20 -0400
+Received: from localhost.localdomain (bl8-197-74.dsl.telepac.pt [85.241.197.74])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 40E75206FB
+        for <linux-btrfs@vger.kernel.org>; Wed, 23 Sep 2020 14:30:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600871419;
+        bh=pOnAbiAnp/ifBDfMhtKiWlNV9fEkGWPl/IVic1A8upo=;
+        h=From:To:Subject:Date:From;
+        b=ulV1P5hLh0IS9pgh2WaaKHQy4Ur5u6aBRqleZv5tUUXY/C5mq9IHWcec8riBlo7qW
+         E1obeJOhrawVW9Pg2e51crkB8hmz3N11vI8nxR4pGx5M4wH8muFwjbKTR5Bvp+BXn/
+         cM5h4Y2Pli7mIZA/DCxUzQ8/GiJT4KO2GP6b+FRw=
+From:   fdmanana@kernel.org
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs: fix filesystem corruption after a device replace
+Date:   Wed, 23 Sep 2020 15:30:16 +0100
+Message-Id: <09c4d27ac71d847fdc5a030a7d860610039d5332.1600871060.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 23/09/2020 14:47, David Sterba wrote:=0A=
-> On Mon, Sep 21, 2020 at 02:13:28PM +0100, fdmanana@kernel.org wrote:=0A=
->> From: Filipe Manana <fdmanana@suse.com>=0A=
->>=0A=
->> Incremental send operations can often fail at the receiver due to a wron=
-g=0A=
->> path in some command. This small patchset fixes a few more cases where=
-=0A=
->> such problems happen. There are sporadic reports of this type of failure=
-s,=0A=
->> such as [1] and [2] for example, and many similar issues were fixed in a=
-=0A=
->> more distant past. Without having the full directory trees of the parent=
-=0A=
->> and send snapshots, with inode numbers, it's hard to tell if this patchs=
-et=0A=
->> fixes exactly those reported cases, but the cases fixed by this patchset=
-=0A=
->> are all I could find in the last two weeks.=0A=
->>=0A=
->> [1] https://lore.kernel.org/linux-btrfs/57021127-01ea-6533-6de6-56c4f22c=
-4a5b@gmail.com/=0A=
->> [2] https://lore.kernel.org/linux-btrfs/87a7obowwn.fsf@lausen.nl/=0A=
->>=0A=
->>=0A=
->> Filipe Manana (2):=0A=
->>   btrfs: send, orphanize first all conflicting inodes when processing=0A=
->>     references=0A=
->>   btrfs: send, recompute reference path after orphanization of a=0A=
->>     directory=0A=
-> =0A=
-> Thanks, added to misc-next.=0A=
-> =0A=
-=0A=
-Respective testcases pushed to btrfs' fstests staging as well.=0A=
+From: Filipe Manana <fdmanana@suse.com>
+
+We use a device's allocation state tree to track ranges in a device used
+for allocated chunks, and we set ranges in this tree when allocating a new
+chunk. However after a device replace operation, we were not setting the
+allocated ranges in the new device's allocation state tree, so that tree
+is empty after a device replace.
+
+This means that a fitrim operation after a device replace will trim the
+device ranges that have allocated chunks and extents, as we trim every
+range for which there is not a range marked in the device's allocation
+state tree. It is also important during chunk allocation, since the
+device's allocation state is used to determine if a range is already
+allocated when allocating a new chunk.
+
+This is trivial to reproduce and the following script triggers the bug:
+
+  $ cat reproducer.sh
+  #!/bin/bash
+
+  DEV1="/dev/sdg"
+  DEV2="/dev/sdh"
+  DEV3="/dev/sdi"
+
+  wipefs -a $DEV1 $DEV2 $DEV3 &> /dev/null
+
+  # Create a raid1 test fs on 2 devices.
+  mkfs.btrfs -f -m raid1 -d raid1 $DEV1 $DEV2 > /dev/null
+  mount $DEV1 /mnt/btrfs
+
+  xfs_io -f -c "pwrite -S 0xab 0 10M" /mnt/btrfs/foo
+
+  echo "Starting to replace $DEV1 with $DEV3"
+  btrfs replace start -B $DEV1 $DEV3 /mnt/btrfs
+  echo
+
+  echo "Running fstrim"
+  fstrim /mnt/btrfs
+  echo
+
+  echo "Unmounting filesystem"
+  umount /mnt/btrfs
+
+  echo "Mounting filesystem in degraded mode using $DEV3 only"
+  wipefs -a $DEV1 $DEV2 &> /dev/null
+  mount -o degraded $DEV3 /mnt/btrfs
+  if [ $? -ne 0 ]; then
+          dmesg | tail
+          echo
+          echo "Failed to mount in degraded mode"
+          exit 1
+  fi
+
+  echo
+  echo "File foo data (expected all bytes = 0xab):"
+  od -A d -t x1 /mnt/btrfs/foo
+
+  umount /mnt/btrfs
+
+When running the reproducer:
+
+  $ ./replace-test.sh
+  wrote 10485760/10485760 bytes at offset 0
+  10 MiB, 2560 ops; 0.0901 sec (110.877 MiB/sec and 28384.5216 ops/sec)
+  Starting to replace /dev/sdg with /dev/sdi
+
+  Running fstrim
+
+  Unmounting filesystem
+  Mounting filesystem in degraded mode using /dev/sdi only
+  mount: /mnt/btrfs: wrong fs type, bad option, bad superblock on /dev/sdi, missing codepage or helper program, or other error.
+  [19581.748641] BTRFS info (device sdg): dev_replace from /dev/sdg (devid 1) to /dev/sdi started
+  [19581.803842] BTRFS info (device sdg): dev_replace from /dev/sdg (devid 1) to /dev/sdi finished
+  [19582.208293] BTRFS info (device sdi): allowing degraded mounts
+  [19582.208298] BTRFS info (device sdi): disk space caching is enabled
+  [19582.208301] BTRFS info (device sdi): has skinny extents
+  [19582.212853] BTRFS warning (device sdi): devid 2 uuid 1f731f47-e1bb-4f00-bfbb-9e5a0cb4ba9f is missing
+  [19582.213904] btree_readpage_end_io_hook: 25839 callbacks suppressed
+  [19582.213907] BTRFS error (device sdi): bad tree block start, want 30490624 have 0
+  [19582.214780] BTRFS warning (device sdi): failed to read root (objectid=7): -5
+  [19582.231576] BTRFS error (device sdi): open_ctree failed
+
+  Failed to mount in degraded mode
+
+So fix by setting all allocated ranges in the replace target device when
+the replace operation is finishing, when we are holding the chunk mutex
+and we can not race with new chunk allocations.
+
+A test case for fstests follows soon.
+
+Fixes: 1c11b63eff2a67 ("btrfs: replace pending/pinned chunks lists with io tree")
+CC: stable@vger.kernel.org # 5.2+
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+---
+ fs/btrfs/dev-replace.c | 40 +++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 39 insertions(+), 1 deletion(-)
+
+diff --git a/fs/btrfs/dev-replace.c b/fs/btrfs/dev-replace.c
+index 119721eeecf6..20ce1970015f 100644
+--- a/fs/btrfs/dev-replace.c
++++ b/fs/btrfs/dev-replace.c
+@@ -619,6 +619,37 @@ static void btrfs_dev_replace_update_device_in_mapping_tree(
+ 	write_unlock(&em_tree->lock);
+ }
+ 
++/*
++ * When finishing the device replace, before swapping the source device with the
++ * target device we must update the chunk allocation state in the target device,
++ * as it is empty because replace works by directly copying the chunks and not
++ * through the normal chunk allocation path.
++ */
++static int btrfs_set_target_alloc_state(struct btrfs_device *srcdev,
++					struct btrfs_device *tgtdev)
++{
++	struct extent_state *cached_state = NULL;
++	u64 start = 0;
++	u64 found_start;
++	u64 found_end;
++	int ret = 0;
++
++	lockdep_assert_held(&srcdev->fs_info->chunk_mutex);
++
++	while (!find_first_extent_bit(&srcdev->alloc_state, start,
++				      &found_start, &found_end,
++				      CHUNK_ALLOCATED, &cached_state)) {
++		ret = set_extent_bits(&tgtdev->alloc_state, found_start,
++				      found_end, CHUNK_ALLOCATED);
++		if (ret)
++			break;
++		start = found_end + 1;
++	}
++
++	free_extent_state(cached_state);
++	return ret;
++}
++
+ static int btrfs_dev_replace_finishing(struct btrfs_fs_info *fs_info,
+ 				       int scrub_ret)
+ {
+@@ -693,8 +724,14 @@ static int btrfs_dev_replace_finishing(struct btrfs_fs_info *fs_info,
+ 	dev_replace->time_stopped = ktime_get_real_seconds();
+ 	dev_replace->item_needs_writeback = 1;
+ 
+-	/* replace old device with new one in mapping tree */
++	/*
++	 * Update allocation state in the new device and replace the old device
++	 * with the new one in the mapping tree.
++	 */
+ 	if (!scrub_ret) {
++		scrub_ret = btrfs_set_target_alloc_state(src_device, tgt_device);
++		if (scrub_ret)
++			goto error;
+ 		btrfs_dev_replace_update_device_in_mapping_tree(fs_info,
+ 								src_device,
+ 								tgt_device);
+@@ -705,6 +742,7 @@ static int btrfs_dev_replace_finishing(struct btrfs_fs_info *fs_info,
+ 				 btrfs_dev_name(src_device),
+ 				 src_device->devid,
+ 				 rcu_str_deref(tgt_device->name), scrub_ret);
++error:
+ 		up_write(&dev_replace->rwsem);
+ 		mutex_unlock(&fs_info->chunk_mutex);
+ 		mutex_unlock(&fs_info->fs_devices->device_list_mutex);
+-- 
+2.28.0
+
