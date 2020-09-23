@@ -2,103 +2,82 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2513E275987
-	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Sep 2020 16:11:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA560275991
+	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Sep 2020 16:12:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726648AbgIWOL0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 23 Sep 2020 10:11:26 -0400
-Received: from mx2.suse.de ([195.135.220.15]:37494 "EHLO mx2.suse.de"
+        id S1726606AbgIWOMc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 23 Sep 2020 10:12:32 -0400
+Received: from mx2.suse.de ([195.135.220.15]:39948 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726550AbgIWOL0 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 23 Sep 2020 10:11:26 -0400
+        id S1726130AbgIWOMc (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 23 Sep 2020 10:12:32 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 8C012B1D0;
-        Wed, 23 Sep 2020 14:12:02 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id A912FAE7A;
+        Wed, 23 Sep 2020 14:13:08 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 569B9DA6E3; Wed, 23 Sep 2020 16:10:09 +0200 (CEST)
-Date:   Wed, 23 Sep 2020 16:10:09 +0200
+        id 77D7ADA6E3; Wed, 23 Sep 2020 16:11:15 +0200 (CEST)
+Date:   Wed, 23 Sep 2020 16:11:15 +0200
 From:   David Sterba <dsterba@suse.cz>
 To:     Nikolay Borisov <nborisov@suse.com>
 Cc:     dsterba@suse.cz, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 1/7] btrfs: Don't call readpage_end_io_hook for the btree
- inode
-Message-ID: <20200923141009.GN6756@twin.jikos.cz>
+Subject: Re: [PATCH 4/7] btrfs: Don't opencode is_data_inode in
+ end_bio_extent_readpage
+Message-ID: <20200923141115.GO6756@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
 Mail-Followup-To: dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
         linux-btrfs@vger.kernel.org
 References: <20200918133439.23187-1-nborisov@suse.com>
- <20200918133439.23187-2-nborisov@suse.com>
- <20200921174509.GN6756@twin.jikos.cz>
- <f874055e-34d7-f972-9cfc-551dbbd023a8@suse.com>
+ <20200918133439.23187-5-nborisov@suse.com>
+ <20200921202909.GU6756@twin.jikos.cz>
+ <e6268502-272f-ff6f-b38c-24949d18dbe4@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <f874055e-34d7-f972-9cfc-551dbbd023a8@suse.com>
+In-Reply-To: <e6268502-272f-ff6f-b38c-24949d18dbe4@suse.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Sep 23, 2020 at 09:29:00AM +0300, Nikolay Borisov wrote:
+On Wed, Sep 23, 2020 at 09:23:48AM +0300, Nikolay Borisov wrote:
 > 
 > 
-> On 21.09.20 г. 20:45 ч., David Sterba wrote:
-> > On Fri, Sep 18, 2020 at 04:34:33PM +0300, Nikolay Borisov wrote:
-> >> Instead of relying on indirect calls to implement metadata buffer
-> >> validation simply check if the inode whose page we are processing equals
-> >> the btree inode. If it does call the necessary function.
+> On 21.09.20 г. 23:29 ч., David Sterba wrote:
+> > On Fri, Sep 18, 2020 at 04:34:36PM +0300, Nikolay Borisov wrote:
+> >> Use the is_data_inode helper.
 > >>
-> >> This is an improvement in 2 directions:
-> >> 1. We aren't paying the penalty of indirect calls in a post-speculation
-> >>    attacks world.
+> >> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
+> >> ---
+> >>  fs/btrfs/extent_io.c | 3 +--
+> >>  1 file changed, 1 insertion(+), 2 deletions(-)
 > >>
-> >> 2. The function is now named more explicitly so it's obvious what's
-> >>    going on
-> > 
-> > The new naming is not making things clear, btrfs_check_csum sounds very
-> > generic while it does a very specific thing just by the number and type
-> > of the parameters. Similar for btrfs_validate_metadata_buffer.
-> > 
+> >> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+> >> index 6e976bd86600..26b002e2f3b3 100644
 > >> --- a/fs/btrfs/extent_io.c
 > >> +++ b/fs/btrfs/extent_io.c
-> >> @@ -2851,9 +2851,12 @@ static void end_bio_extent_readpage(struct bio *bio)
-> >>  
-> >>  		mirror = io_bio->mirror_num;
-> >>  		if (likely(uptodate)) {
-> >> -			ret = tree->ops->readpage_end_io_hook(io_bio, offset,
-> >> -							      page, start, end,
-> >> -							      mirror);
-> >> +			if (data_inode)
-> >> +				ret = btrfs_check_csum(io_bio, offset, page,
-> >> +						       start, end, mirror);
-> >> +			else
-> >> +				ret = btrfs_validate_metadata_buffer(io_bio,
-> >> +					offset, page, start, end, mirror);
+> >> @@ -2816,8 +2816,7 @@ static void end_bio_extent_readpage(struct bio *bio)
+> >>  		struct page *page = bvec->bv_page;
+> >>  		struct inode *inode = page->mapping->host;
+> >>  		struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
+> >> -		bool data_inode = btrfs_ino(BTRFS_I(inode))
+> >> -			!= BTRFS_BTREE_INODE_OBJECTID;
+> >> +		bool data_inode = is_data_inode(inode);
 > > 
-> > In the context where the functions are used I'd expect some symmetry,
-> > data/metadata. Something like btrfs_validate_data_bio.
+> > I think you can remove the temporary variable and call is_data_inode
+> > directly in the later code, there's only one use.
 > > 
 > 
-> The reason for this naming is that btrfs_vlidate_metadata_buffer
-> actually validates as in "tree-checker style validation" of the extent
-> buffer not simply calculating the checksum. So to me it feels like a
-> more complete,heavyweight operations hence "validating", whlist
-> btrfs_check_csum just checks the csum of a single sector/blocksize in
-> the bio. I think the metadata function's name conveys what it's doing in
-> full:
-> 
-> 1. It's doing validation as per aforementioned explanation
-> 2. It's doing it for a whole extent buffer and not just a chunk of it.
+> Actually it's used twice, yet I did an experiment to remove it and
+> bloat-o-meter indicates it's a win to call the inline function twice:
 
-No problem with the metadata function name, I agree with the reasoning
-above.
+My oversight, sorry.
 
-> I agree that the data function's name is somewhat generic, perhahps it
-> could be renamed so that it points to the fact it's validating a single
-> sector/blocksize? I.e btrfs_check_ blocksize_csum or something like that ?
+> add/remove: 0/0 grow/shrink: 0/2 up/down: 0/-161 (-161)
+> Function                                     old     new   delta
+> end_bio_extent_readpage.cold                 117     104     -13
+> end_bio_extent_readpage                     1614    1466    -148
+> Total: Before=45527, After=45366, chg -0.35%
 
-Yeah, that the data have a simpler validation maybe does not deserve to
-be called like that. We should not use 'sector' here as bios use that
-too. So btrfs_check_data_block_csum or btrfs_check_block_csum?
+Ok, I'll update it to call the helper.
