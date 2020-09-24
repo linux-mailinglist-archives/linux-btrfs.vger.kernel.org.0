@@ -2,364 +2,252 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 430FB276791
-	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Sep 2020 06:14:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88B8D276819
+	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Sep 2020 07:08:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726666AbgIXEOm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 24 Sep 2020 00:14:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47648 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726421AbgIXEOl (ORCPT
+        id S1726729AbgIXFId (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 24 Sep 2020 01:08:33 -0400
+Received: from de-smtp-delivery-102.mimecast.com ([62.140.7.102]:24829 "EHLO
+        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726691AbgIXFIc (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 24 Sep 2020 00:14:41 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E690C0613CE;
-        Wed, 23 Sep 2020 21:14:41 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id d19so984164pld.0;
-        Wed, 23 Sep 2020 21:14:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=O9eU9IcMxwOkpeCw15QJZfSZ7Wwg0QQAR4KazDUkrUE=;
-        b=ML8VRNVeXCIB4opv/HtFiw/XOLs4e0LOSdRp9RrB+5i7TKAnjjoiJn25pGq/RKoiGm
-         pmxqN79+DwIUz9fBmZXnJxyforFSLXuMov4x1IB2KzLwJde7JYeIoU9ILXTYy6feWJOc
-         giuwyXbZyyMbTY4w3oLQDBLXglRaWldcxlYpKevYAerXIMcjHbXqOlX3Xjj1SgdCuN/4
-         /tIhOPuk/UUnxZmQeLE1jhNiwh8TYyg7OaA5HaJBlsg4WH4gccURZniHvxVREnLY/IxW
-         FnTyD31dgJnRY/5yxFanklo5poyXfo/R13RGYUye6g9Kr0snahMm5a4DNSGXx50Ku5ZS
-         CbpA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=O9eU9IcMxwOkpeCw15QJZfSZ7Wwg0QQAR4KazDUkrUE=;
-        b=PIUG0M+QUzrFc7EpJcMvYZJIUzmXpMjsxapk9/y3kgQXelkP/ESOQK5SFITKroV+Aj
-         S4I+Z2QZK3Xx+FYeb63yMRy0LrK0OTLPd5/bF/uDRYSyapbj6fbD9ttyCARNf/QJjl8x
-         Omgcau/CRV+X2eegurQp6LAbcYfuGbj7RK8Cg8t6lPfIHr9+LWvwGak1wkDk0WcDf7W/
-         fLNd0N0v2rGVSRSkJqE3p+d9Paa1w8SHjCqXGS3F2B92ntTUqKgod1mwri7swVUAA6ZL
-         ZflNv0iqA7xbE1BNHJpyxMqrkWciWoDzISpolTh/HYVFw50QRIiZ2G+4MsQmwpy4HT1R
-         Ueiw==
-X-Gm-Message-State: AOAM530ZayoTPRqkdzfxtBgxHrAdmFcAnBycr/Yv8e83mmuHqlx2iiYt
-        nVDpHeGoZYnSR/4Bik8n5Wg=
-X-Google-Smtp-Source: ABdhPJzOLgImCnF6LRWF2PaM166Keus6W/4ceFOGiMy+BqqNM1f/Prc5BJYu7d6ypPGAv3Lae9MvuQ==
-X-Received: by 2002:a17:902:b186:b029:d1:cc21:9a7d with SMTP id s6-20020a170902b186b02900d1cc219a7dmr2734309plr.8.1600920879790;
-        Wed, 23 Sep 2020 21:14:39 -0700 (PDT)
-Received: from realwakka ([175.195.128.78])
-        by smtp.gmail.com with ESMTPSA id gn24sm808852pjb.8.2020.09.23.21.14.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Sep 2020 21:14:39 -0700 (PDT)
-Date:   Thu, 24 Sep 2020 04:14:29 +0000
-From:   Sidong Yang <realwakka@gmail.com>
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     linux-btrfs@vger.kernel.org, fstests@vger.kernel.org,
-        Qu Wenruo <wqu@suse.com>, Josef Bacik <josef@toxicpanda.com>,
-        Eryu Guan <guan@eryu.me>
-Subject: Re: [PATCH v2] btrfs: Add new test for qgroup assign functionality
-Message-ID: <20200924041429.GA30950@realwakka>
-References: <20200922153604.10004-1-realwakka@gmail.com>
- <de490dbb-6fd2-be19-54b5-7e4a4c5e10c5@gmx.com>
- <20200923165028.GA1091@realwakka>
- <0a1b6b19-20bf-b278-13a5-89543e9b7997@gmx.com>
-MIME-Version: 1.0
+        Thu, 24 Sep 2020 01:08:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
+        t=1600924108;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=5TOuyrrVbhz42jLB8ZNy8xafolLdUx3sMQ5hdSrHlqE=;
+        b=Mqb65tl1px8+ebuNXzQy7K+k/T6VpACdWO1kz87D7LcekPMnjJd/rfJfVpLea0RMarxGmO
+        NiCvufqNNNERkGLbyDZyXvXniwa2tMy0Fczc3GtQXAy/1DYESB8Za0kfOmG1rNRrmv3S/L
+        F8LyjvjQxWvOAYDNNGWDvaoCSKKxigk=
+Received: from EUR04-VI1-obe.outbound.protection.outlook.com
+ (mail-vi1eur04lp2053.outbound.protection.outlook.com [104.47.14.53]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ de-mta-22-2nlqWkGhO-GLqCEcznCA0w-1; Thu, 24 Sep 2020 07:08:26 +0200
+X-MC-Unique: 2nlqWkGhO-GLqCEcznCA0w-1
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=X8/FBZPXDwoffOdue9u3ZuFmFBBZ6yxgIMVMBbBFHBfyAwaS/cpf0/kYRX3tbpvFfaodwIRxmhcR6/EwEQh2RZmr1oSYRoGGhW512wv+SzJO6nYeTbgbHJC8p8zVJozMiBP1eaCU53ngu96HGowGzrAhiu6pJvmLPyqX7bBxphNdQf3tCQIpmy5zTPPhDbVKbICoN3BoLizRTUx3obWvqpGyPCLzR6rxiIsOTEbexCbZjNS78Byntwbb3TPwHiT8+pFHEov9iVexXV1rIQEDTzuab7J2+hFXTC6gl8mEfNJDjKP3HmlZ+Z+6CMzyejZ7BJ89HtRPgidtj9DYBo0ghQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=m5xJifC4eHUM9fgaarkxzc2O70jKYp1fPfoUhQAGHKY=;
+ b=aF+p04i3Hoz39F7ulKKzEvM9gUMEEex3wS7hjlCi5aWS6IYy5uP1mMdimc4VNynZAsRMitFMVZ9q15BWqJzNdYfVmdjLLUkM2Beq9DQxx1jhVP5+hO1xGv78nTlz58q0rnq5BFcgc2x5e7QMH/HEcUxCUZFNzwq+tEkvLrsqukPFvQpv0A7dmpU/NFiC3/g+/SLsIdYDGxsNHZNrMM1iHa6fOC6AKRITjwOt0cXldVfAE2y2GNYohQu5BP8b5a2foa/e3ogyuFXqOpmr0n/i6YzStHSVScLea19KXOaujm+9tFQNg3S2IbjocoqOj9lKAvcz6hmvupEiFwQ496ViIQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+Authentication-Results: eryu.me; dkim=none (message not signed)
+ header.d=none;eryu.me; dmarc=none action=none header.from=suse.com;
+Received: from AM0PR04MB6195.eurprd04.prod.outlook.com (2603:10a6:208:13c::13)
+ by AM8PR04MB7236.eurprd04.prod.outlook.com (2603:10a6:20b:1d9::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.20; Thu, 24 Sep
+ 2020 05:08:25 +0000
+Received: from AM0PR04MB6195.eurprd04.prod.outlook.com
+ ([fe80::e9b0:22ea:e2da:1315]) by AM0PR04MB6195.eurprd04.prod.outlook.com
+ ([fe80::e9b0:22ea:e2da:1315%5]) with mapi id 15.20.3412.020; Thu, 24 Sep 2020
+ 05:08:25 +0000
+Subject: Re: [PATCH v3] btrfs: Add new test for qgroup assign functionality
+To:     Sidong Yang <realwakka@gmail.com>, linux-btrfs@vger.kernel.org,
+        fstests@vger.kernel.org
+CC:     Josef Bacik <josef@toxicpanda.com>, Eryu Guan <guan@eryu.me>
+References: <20200924041146.32577-1-realwakka@gmail.com>
+From:   Qu Wenruo <wqu@suse.com>
+Autocrypt: addr=wqu@suse.com; keydata=
+ mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAG0GFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPokBTQQTAQgAOAIbAwULCQgHAgYVCAkKCwIE
+ FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJdnDWhAAoJEMI9kfOhJf6oZgoH
+ 90uqoGyUh5UWtiT9zjUcvlMTCpd/QSgwagDuY+tEdVPaKlcnTNAvZKWSit8VuocjrOFbTLwb
+ vZ43n5f/l/1QtwMgQei/RMY2XhW+totimzlHVuxVaIDwkF+zc+pUI6lDPnULZHS3mWhbVr9N
+ vZAAYVV7GesyyFpZiNm7GLvLmtEdYbc9OnIAOZb3eKfY3mWEs0eU0MxikcZSOYy3EWY3JES7
+ J9pFgBrCn4hF83tPH2sphh1GUFii+AUGBMY/dC6VgMKbCugg+u/dTZEcBXxD17m+UcbucB/k
+ F2oxqZBEQrb5SogdIq7Y9dZdlf1m3GRRJTX7eWefZw10HhFhs1mwx7kBDQRZ1YGvAQgAqlPr
+ YeBLMv3PAZ75YhQIwH6c4SNcB++hQ9TCT5gIQNw51+SQzkXIGgmzxMIS49cZcE4KXk/kHw5h
+ ieQeQZa60BWVRNXwoRI4ib8okgDuMkD5Kz1WEyO149+BZ7HD4/yK0VFJGuvDJR8T7RZwB69u
+ VSLjkuNZZmCmDcDzS0c/SJOg5nkxt1iTtgUETb1wNKV6yR9XzRkrEW/qShChyrS9fNN8e9c0
+ MQsC4fsyz9Ylx1TOY/IF/c6rqYoEEfwnpdlz0uOM1nA1vK+wdKtXluCa79MdfaeD/dt76Kp/
+ o6CAKLLcjU1Iwnkq1HSrYfY3HZWpvV9g84gPwxwxX0uXquHxLwARAQABiQE8BBgBCAAmAhsM
+ FiEELd9y5aWlW6idqkLhwj2R86El/qgFAl2cNa4FCQlqTn8ACgkQwj2R86El/qhXBAf/eXLP
+ HDNTkHRPxoDnwhscIHJDHlsszke25AFltJQ1adoaYCbsQVv4Mn5rQZ1Gon54IMdxBN3r/B08
+ rGVPatIfkycMCShr+rFHPKnExhQ7Wr555fq+sQ1GOwOhr1xLEqAhBMp28u9m8hnkqL36v+AF
+ hjTwRtS+tRMZfoG6n72xAj984l56G9NPfs/SOKl6HR0mCDXwJGZAOdtyRmqddi53SXi5N4H1
+ jWX1xFshp7nIkRm6hEpISEWr/KKLbAiKKbP0ql5tP5PinJeIBlDv4g/0+aGoGg4dELTnfEVk
+ jMC8cJ/LiIaR/OEOF9S2nSeTQoBmusTz+aqkbogvvYGam6uDYw==
+Message-ID: <d67277a5-c0a9-cee5-cddd-54ab8610fc41@suse.com>
+Date:   Thu, 24 Sep 2020 13:08:13 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
+In-Reply-To: <20200924041146.32577-1-realwakka@gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <0a1b6b19-20bf-b278-13a5-89543e9b7997@gmx.com>
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-ClientProxiedBy: BYAPR03CA0034.namprd03.prod.outlook.com
+ (2603:10b6:a02:a8::47) To AM0PR04MB6195.eurprd04.prod.outlook.com
+ (2603:10a6:208:13c::13)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [0.0.0.0] (149.28.201.231) by BYAPR03CA0034.namprd03.prod.outlook.com (2603:10b6:a02:a8::47) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.22 via Frontend Transport; Thu, 24 Sep 2020 05:08:22 +0000
+X-Originating-IP: [149.28.201.231]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: a4b34a28-fce7-4993-bb6a-08d86047ddb3
+X-MS-TrafficTypeDiagnostic: AM8PR04MB7236:
+X-Microsoft-Antispam-PRVS: <AM8PR04MB72366013C764EE58C29BD1BCD6390@AM8PR04MB7236.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5236;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Qa128ig9Ku3JbMpuOlZ2osBwp0G0AjKqqECen6hNa61KZIIjeVVmDeiaNqeUw03v6r/vAFJMxdR+6hbNEQ7l5+z8PwPhy87XiXb0izTzI/3My8vcahPXPaDCD4r0amo17IAwVMOiZ90zvm76LaxZ9DbDQw8VNJM0PN/YvN1eUAMedqGY6nRHzh+muboyPblOEy/WVe+TbQAcqgrQAPAEFbO8D+poqXBOBz3toOzqo0jj8rqBHm5HxBXWnNT8q+o4Q5wUCyJbNMpTFQSMn5d13phpKDLVVNAjTzutz8wRQvW/eo9/x+ji5ko24A4OXsjxFKRa/l8egkdzFzeZ1Pzyo4hzs31OJ3d+zR88pUt0lOMqsqRT8rm3gXpKRhq5ngqfjh8NkTUryOJpZcCn6oxPiw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB6195.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(396003)(39850400004)(346002)(376002)(136003)(52116002)(186003)(16576012)(478600001)(36756003)(86362001)(26005)(31686004)(6706004)(4326008)(6666004)(6486002)(5660300002)(16526019)(316002)(8676002)(2906002)(66476007)(83380400001)(54906003)(66946007)(31696002)(956004)(2616005)(66556008)(8936002)(78286007)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: mIhRoQh5UJL0OeNdPtWuMZvw2lxgtXBfTwQrvCgCV0MRNOzkGyjbj+nlLWvaQs6oCPXMrGVKipcqgsauTj6l8tcW3Yt3DL8DPd3Q9u8CFtygN363cgJDMsI/J2vEoVeQtH5KZ9SGLJaxoiWfislK4/YoPebk59bdmVdTfuRdv8NesKMBn9N6WqPOOqPlBukEdygZBAcU6COwuktEYtwmTr0/57Yq23zqRuUsJSFPLMNPwePK5kHXqUKU48zBrnGE9ItWuLsWRpYFPNEO/hdmkq0EcHEfbWb1e2QP3kjPTqVari61ajY97qLSLM3xe+BtXTyBalgSrKkjXQDUOf/ec8s8Km5bdvF7xbmW1XIYyVOp1QpVb2b7u1Vd2ZGEDY6Zpt53bTcNiA7kIYuz97wz1CmA7EXjLJUleXowRc6uo/QXfHGiq/JTke4mmxtFfED7jZn+uqw6Y9A2ITflHHwBLwA3BmWV+g7w0xRvf8vG2jOGPfxeAXdzZ2ivNdhFBjZg5uW+osFkoeIpxL+v7RBYeFTTKVWZul8+hMM1clECaLlHrDbMHRMu1qEOJsPF3rwSOZPIVbLC5+nhgVimwm4zodNgkj1/IhKqeaxBlafiDEMtjAOu0VujsQGF0CyWV2l6egLvTxWlUmM3T81ypnNoOQ==
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a4b34a28-fce7-4993-bb6a-08d86047ddb3
+X-MS-Exchange-CrossTenant-AuthSource: AM0PR04MB6195.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Sep 2020 05:08:25.3372
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: gfiFQSmMDAyDAy53WA42fgIIi6DfXcNo4AjHBnQ0dy7d/BuMKMdkAnqL17Cm9rNu
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM8PR04MB7236
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Sep 24, 2020 at 08:48:20AM +0800, Qu Wenruo wrote:
-> 
-> 
-> On 2020/9/24 上午12:50, Sidong Yang wrote:
-> > On Wed, Sep 23, 2020 at 09:55:02AM +0800, Qu Wenruo wrote:
-> >>
-> >>
-> >> On 2020/9/22 下午11:36, Sidong Yang wrote:
-> >>> This new test will test btrfs's qgroup assign functionality. The
-> >>> test has 3 cases.
-> >>>
-> >>>  - assign, no shared extents
-> >>>  - assign, shared extents
-> >>>  - snapshot -i, shared extents
-> >>>
-> >>> Each cases create subvolumes and assign qgroup in their own way
-> >>> and check with the command "btrfs check".
-> >>>
-> >>> Cc: Qu Wenruo <wqu@suse.com>
-> >>> Cc: Eryu Guan <guan@eryu.me>
-> >>>
-> >>> Signed-off-by: Sidong Yang <realwakka@gmail.com>
-> >>> ---
-> >>> v2: create new test and use the cases
-> >>> ---
-> >>>  tests/btrfs/221     | 121 ++++++++++++++++++++++++++++++++++++++++++++
-> >>>  tests/btrfs/221.out |   2 +
-> >>>  tests/btrfs/group   |   1 +
-> >>>  3 files changed, 124 insertions(+)
-> >>>  create mode 100755 tests/btrfs/221
-> >>>  create mode 100644 tests/btrfs/221.out
-> >>>
-> >>> diff --git a/tests/btrfs/221 b/tests/btrfs/221
-> >>> new file mode 100755
-> >>> index 00000000..7fe5d78f
-> >>> --- /dev/null
-> >>> +++ b/tests/btrfs/221
-> >>> @@ -0,0 +1,121 @@
-> >>> +#! /bin/bash
-> >>> +# SPDX-License-Identifier: GPL-2.0
-> >>> +# Copyright (c) 2020 YOUR NAME HERE.  All Rights Reserved.
-> >>
-> >> So, "YOUR NAME HERE" is your name? :)
-> > 
-> > Oops! I missed it.
-> > 
-> >>
-> >>> +#
-> >>> +# FS QA Test 221
-> >>> +#
-> >>> +# Test the assign functionality of qgroups
-> >>> +#
-> >>> +seq=`basename $0`
-> >>> +seqres=$RESULT_DIR/$seq
-> >>> +echo "QA output created by $seq"
-> >>> +
-> >>> +here=`pwd`
-> >>> +tmp=/tmp/$$
-> >>> +status=1	# failure is the default!
-> >>> +trap "_cleanup; exit \$status" 0 1 2 3 15
-> >>> +
-> >>> +_cleanup()
-> >>> +{
-> >>> +	cd /
-> >>> +	rm -f $tmp.*
-> >>> +}
-> >>> +
-> >>> +# get standard environment, filters and checks
-> >>> +. ./common/rc
-> >>> +. ./common/filter
-> >>> +. ./common/reflink
-> >>> +
-> >>> +# remove previous $seqres.full before test
-> >>> +rm -f $seqres.full
-> >>> +
-> >>> +# real QA test starts here
-> >>> +
-> >>> +# Modify as appropriate.
-> >>> +_supported_fs generic
-> >>
-> >> It's a btrfs specific test.
-> > Thanks!
-> >>
-> >>> +_supported_os Linux
-> >>> +
-> >>> +_require_test
-> >>
-> >> You don't need test_dev at all.
-> > Yeah, I just realized that I used only scratch dev noy test dev.
-> > Thanks!
-> >>
-> >>> +_require_scratch
-> >>> +_require_btrfs_qgroup_report
-> >>> +_require_cp_reflink
-> >>> +
-> >>> +# Test assign qgroup for submodule with shared extents by reflink
-> >>> +assign_shared_test()
-> >>> +{
-> >>> +	echo "=== qgroup assign shared test ===" >> $seqres.full
-> >>> +	_run_btrfs_util_prog quota enable $SCRATCH_MNT
-> >>
-> >> I'm not sure if _run_btrfs_util_prog is still recommended.
-> >> IIRC nowadays we recommend to call $BTRFS_UTIL_PROG directly.
-> >>
-> >> Test case btrfs/193 would be the example.
-> > It's good to replace it! Thanks.
-> >>
-> >>> +	_run_btrfs_util_prog qgroup create 1/100 $SCRATCH_MNT
-> >>> +
-> >>> +	_run_btrfs_util_prog subvolume create $SCRATCH_MNT/a
-> >>> +	subvolid=$(_btrfs_get_subvolid $SCRATCH_MNT a)
-> >>> +	_run_btrfs_util_prog qgroup assign 0/$subvolid 1/100 $SCRATCH_MNT
-> >>
-> >> "btrfs qgroup assign" can take path directly. This would save your some
-> >> lines. E.g:
-> >>
-> >>   # btrfs qgroup create 1/100 /mnt/btrfs/
-> >>   # btrfs qgroup assign /mnt/btrfs/ 1/100 /mnt/btrfs/
-> >>   # btrfs qgroup  show -pc /mnt/btrfs/
-> >>   qgroupid         rfer         excl parent  child
-> >>   --------         ----         ---- ------  -----
-> >>   0/5          16.00KiB     16.00KiB 1/100   ---
-> >>   1/100        16.00KiB     16.00KiB ---     0/5
-> > Thanks for good tip!
-> > 
-> >>
-> >>> +
-> >>> +	_run_btrfs_util_prog subvolume create $SCRATCH_MNT/b
-> >>> +	subvolid=$(_btrfs_get_subvolid $SCRATCH_MNT b)
-> >>> +	_run_btrfs_util_prog qgroup assign 0/$subvolid 1/100 $SCRATCH_MNT
-> >>
-> >> Shouldn't this assign happens when we have shared extents between the
-> >> two subvolumes?
-> >>
-> >> Now you're just testing the basic qgroup functionality of accounting,
-> >> not assign.
-> >>
-> >> For real assign tests, what we want is either:
-> >> - After assign, qgroup accounting is still correct
-> >>   We don't need even to rescan.
-> >>   And "btrfs check" will verify the numbers are correct.
-> >>
-> >> - After assign, qgroup accounting is inconsistent
-> >>   At least we should either have qgroup inconsistent bit set, or qgroup
-> >>   rescan kicked in automatically.
-> >>   And "btrfs check" will skip the qgroup numbers.
-> >>
-> >> But in your case, we're assigning two empty subovlumes into the same
-> >> qgroup, then do some operations.
-> >> This only covers the "assign, no shared extents" case.
-> > 
-> > You mean that there should be some data with reflink before assigning?
-> > If so, the code below should be executed before assigning qgroups.
-> > Should test process be like this?
-> > make submodules -> make data -> copy with reflink -> assign qgroup
-> 
-> Yep.
-> 
-> Furthermore, we should have qgroup enabled/rescanned before make subvolumes.
-> > 
-> >>
-> >>> +	_run_btrfs_util_prog quota rescan -w $SCRATCH_MNT
-> >>> +
-> >>> +	_ddt of="$SCRATCH_MNT"/a/file1 bs=1M count=1 >> $seqres.full 2>&1
-> >>> +	cp --reflink=always "$SCRATCH_MNT"/a/file1 "$SCRATCH_MNT"/b/file1 >> $seqres.full 2>&1
-> >>> +
-> >>> +	_scratch_unmount
-> >>
-> >> Since you're unmounting here, why not keep the _scratch_mkfs and
-> >> _scratch_unmount pair in the same function?
-> >>
-> >>> +	_run_btrfs_util_prog check $SCRATCH_DEV
-> >>> +}
-> >>> +
-> >>> +# Test assign qgroup for submodule without shared extents
-> >>> +assign_no_shared_test()
-> >>> +{
-> >>> +	echo "=== qgroup assign no shared test ===" >> $seqres.full
-> >>> +	_run_btrfs_util_prog quota enable $SCRATCH_MNT
-> >>> +	_run_btrfs_util_prog qgroup create 1/100 $SCRATCH_MNT
-> >>> +
-> >>> +	_run_btrfs_util_prog subvolume create $SCRATCH_MNT/a
-> >>> +	subvolid=$(_btrfs_get_subvolid $SCRATCH_MNT a)
-> >>> +	_run_btrfs_util_prog qgroup assign 0/$subvolid 1/100 $SCRATCH_MNT
-> >>> +
-> >>> +	_run_btrfs_util_prog subvolume create $SCRATCH_MNT/b
-> >>> +	subvolid=$(_btrfs_get_subvolid $SCRATCH_MNT b)
-> >>> +	_run_btrfs_util_prog qgroup assign 0/$subvolid 1/100 $SCRATCH_MNT
-> >>> +
-> >>> +	_run_btrfs_util_prog quota rescan -w $SCRATCH_MNT
-> >>
-> >> No, we don't want rescan.
-> >>
-> >> And the timing is still wrong.
-> > Yeah, I'll delete it.
-> >>
-> >>> +	_scratch_unmount
-> >>> +
-> >>> +	_run_btrfs_util_prog check $SCRATCH_DEV
-> >>> +}
-> >>> +
-> >>> +# Test snapshot with assigning qgroup for submodule
-> >>> +snapshot_test()
-> >>> +{
-> >>> +	echo "=== qgroup snapshot test ===" >> $seqres.full
-> >>> +	_run_btrfs_util_prog quota enable $SCRATCH_MNT
-> >>> +
-> >>> +	_run_btrfs_util_prog subvolume create $SCRATCH_MNT/a
-> >>> +	subvolid=$(_btrfs_get_subvolid $SCRATCH_MNT a)
-> >>> +
-> >>> +	_run_btrfs_util_prog subvolume snapshot -i 0/$subvolid $SCRATCH_MNT/a $SCRATCH_MNT/b
-> >>> +	subvolid=$(_btrfs_get_subvolid $SCRATCH_MNT b)
-> >>
-> >> Even we're snapshotting on the source subvolume, since it's empty, we
-> >> will only copy the root item, resulting two empty subvolumes without
-> >> sharing anything.
-> >>
-> >> You need to at least fill the source subvolumes with some data.
-> >> It's better to bump the tree level with some inline extents.
-> > 
-> > I should write some data before snapshot. is it right?
-> 
-> Right. That's the bare minimal.
-> 
-> Thanks,
-> qu
 
-Thanks so much! I've written a new patch just before.
-Could you review it please?
+
+On 2020/9/24 =E4=B8=8B=E5=8D=8812:11, Sidong Yang wrote:
+> This new test will test btrfs's qgroup assign functionality. The
+> test has 3 cases.
+>=20
+>  - assign, no shared extents
+>  - assign, shared extents
+>  - snapshot -i, shared extents
+>=20
+> Each cases create subvolumes and assign qgroup in their own way
+> and check with the command "btrfs check".
+>=20
+> Cc: Qu Wenruo <wqu@suse.com>
+> Cc: Eryu Guan <guan@eryu.me>
+>=20
+> Signed-off-by: Sidong Yang <realwakka@gmail.com>
+
+This version is much better overall.
+
+The remaining small problems are mostly fstests related then.
+...
+> +# Test assign qgroup for submodule with shared extents by reflink
+> +assign_shared_test()
+> +{
+> +	_scratch_mkfs > /dev/null 2>&1
+> +	_scratch_mount
+> +
+> +	echo "=3D=3D=3D qgroup assign shared test =3D=3D=3D" >> $seqres.full
+> +	$BTRFS_UTIL_PROG quota enable $SCRATCH_MNT
+> +	$BTRFS_UTIL_PROG quota rescan -w $SCRATCH_MNT >> $seqres.full
+> +
+> +	$BTRFS_UTIL_PROG subvolume create $SCRATCH_MNT/a >> $seqres.full
+> +	$BTRFS_UTIL_PROG subvolume create $SCRATCH_MNT/b >> $seqres.full
+> +
+> +	_ddt of=3D"$SCRATCH_MNT"/a/file1 bs=3D1M count=3D1 >> $seqres.full 2>&1
+> +	cp --reflink=3Dalways "$SCRATCH_MNT"/a/file1 "$SCRATCH_MNT"/b/file1
+> +
+> +	$BTRFS_UTIL_PROG qgroup create 1/100 $SCRATCH_MNT
+> +	$BTRFS_UTIL_PROG qgroup assign $SCRATCH_MNT/a 1/100 $SCRATCH_MNT
+> +	$BTRFS_UTIL_PROG qgroup assign $SCRATCH_MNT/b 1/100 $SCRATCH_MNT
+> +
+> +	_scratch_unmount
+> +	$BTRFS_UTIL_PROG check $SCRATCH_DEV >> $seqres.full 2>&1
+
+We have _check_scratch_fs() function to do it properly already.
+
+> +	[ $? -eq 0 ] || _fail "btrfs check failed"
+> +}
+> +
+> +# Test assign qgroup for submodule without shared extents
+> +assign_no_shared_test()
+> +{
+> +	_scratch_mkfs > /dev/null 2>&1
+> +	_scratch_mount
+> +
+> +	echo "=3D=3D=3D qgroup assign no shared test =3D=3D=3D" >> $seqres.full
+> +	$BTRFS_UTIL_PROG quota enable $SCRATCH_MNT
+
+It's recommended to call "quota rescan -w" to ensure we finished rescan.
+
+As fast enough system can go to next command before the auto rescan even
+finished.
+
+Not sure if Eryu would have extra comments.
 
 Thanks,
-Sidong
+Qu
 
-> 
-> > Thanks for all your comments.
-> > 
-> > Thanks,
-> > Sidong
-> > 
-> >>
-> >> Thanks,
-> >> Qu
-> >>
-> >>> +
-> >>> +	_run_btrfs_util_prog quota rescan -w $SCRATCH_MNT
-> >>> +	_scratch_unmount
-> >>> +
-> >>> +	_run_btrfs_util_prog check $SCRATCH_DEV
-> >>> +}
-> >>> +
-> >>> +
-> >>> +_scratch_mkfs > /dev/null 2>&1
-> >>> +_scratch_mount
-> >>> +assign_no_shared_test
-> >>> +
-> >>> +_scratch_mkfs > /dev/null 2>&1
-> >>> +_scratch_mount
-> >>> +assign_shared_test
-> >>> +
-> >>> +_scratch_mkfs > /dev/null 2>&1
-> >>> +_scratch_mount
-> >>> +snapshot_test
-> >>> +
-> >>> +# success, all done
-> >>> +echo "Silence is golden"
-> >>> +status=0
-> >>> +exit
-> >>> diff --git a/tests/btrfs/221.out b/tests/btrfs/221.out
-> >>> new file mode 100644
-> >>> index 00000000..aa4351cd
-> >>> --- /dev/null
-> >>> +++ b/tests/btrfs/221.out
-> >>> @@ -0,0 +1,2 @@
-> >>> +QA output created by 221
-> >>> +Silence is golden
-> >>> diff --git a/tests/btrfs/group b/tests/btrfs/group
-> >>> index 1b5fa695..cdda38f3 100644
-> >>> --- a/tests/btrfs/group
-> >>> +++ b/tests/btrfs/group
-> >>> @@ -222,3 +222,4 @@
-> >>>  218 auto quick volume
-> >>>  219 auto quick volume
-> >>>  220 auto quick
-> >>> +221 auto quick qgroup
-> >>>
-> >>
-> > 
-> > 
-> > 
-> 
-
-
+> +	$BTRFS_UTIL_PROG qgroup create 1/100 $SCRATCH_MNT
+> +
+> +	$BTRFS_UTIL_PROG subvolume create $SCRATCH_MNT/a >> $seqres.full
+> +	$BTRFS_UTIL_PROG subvolume create $SCRATCH_MNT/b >> $seqres.full
+> +
+> +	$BTRFS_UTIL_PROG qgroup assign $SCRATCH_MNT/a 1/100 $SCRATCH_MNT
+> +	$BTRFS_UTIL_PROG qgroup assign $SCRATCH_MNT/b 1/100 $SCRATCH_MNT
+> +	_scratch_unmount
+> +
+> +	$BTRFS_UTIL_PROG check $SCRATCH_DEV >> $seqres.full 2>&1
+> +	[ $? -eq 0 ] || _fail "btrfs check failed"
+> +}
+> +
+> +# Test snapshot with assigning qgroup for submodule
+> +snapshot_test()
+> +{
+> +	_scratch_mkfs > /dev/null 2>&1
+> +	_scratch_mount
+> +
+> +	echo "=3D=3D=3D qgroup snapshot test =3D=3D=3D" >> $seqres.full
+> +	$BTRFS_UTIL_PROG quota enable $SCRATCH_MNT
+> +	$BTRFS_UTIL_PROG quota rescan -w $SCRATCH_MNT >> $seqres.full
+> +
+> +	$BTRFS_UTIL_PROG subvolume create $SCRATCH_MNT/a >> $seqres.full
+> +	_ddt of=3D"$SCRATCH_MNT"/a/file1 bs=3D1M count=3D1 >> $seqres.full 2>&1
+> +	subvolid=3D$(_btrfs_get_subvolid $SCRATCH_MNT a)
+> +	$BTRFS_UTIL_PROG subvolume snapshot -i 0/$subvolid $SCRATCH_MNT/a $SCRA=
+TCH_MNT/b >> $seqres.full
+> +	_scratch_unmount
+> +
+> +	$BTRFS_UTIL_PROG check $SCRATCH_DEV >> $seqres.full 2>&1
+> +	[ $? -eq 0 ] || _fail "btrfs check failed"
+> +}
+> +
+> +
+> +assign_no_shared_test
+> +
+> +assign_shared_test
+> +
+> +snapshot_test
+> +
+> +# success, all done
+> +echo "Silence is golden"
+> +status=3D0
+> +exit
+> diff --git a/tests/btrfs/221.out b/tests/btrfs/221.out
+> new file mode 100644
+> index 00000000..aa4351cd
+> --- /dev/null
+> +++ b/tests/btrfs/221.out
+> @@ -0,0 +1,2 @@
+> +QA output created by 221
+> +Silence is golden
+> diff --git a/tests/btrfs/group b/tests/btrfs/group
+> index 1b5fa695..cdda38f3 100644
+> --- a/tests/btrfs/group
+> +++ b/tests/btrfs/group
+> @@ -222,3 +222,4 @@
+>  218 auto quick volume
+>  219 auto quick volume
+>  220 auto quick
+> +221 auto quick qgroup
+>=20
 
