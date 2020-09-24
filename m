@@ -2,74 +2,171 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0990C277128
-	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Sep 2020 14:37:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 259962773B9
+	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Sep 2020 16:16:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727704AbgIXMhc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 24 Sep 2020 08:37:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40524 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727561AbgIXMhc (ORCPT
+        id S1728045AbgIXOQK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 24 Sep 2020 10:16:10 -0400
+Received: from gateway33.websitewelcome.com ([192.185.146.87]:44483 "EHLO
+        gateway33.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728028AbgIXOQK (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 24 Sep 2020 08:37:32 -0400
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7DB6C0613CE;
-        Thu, 24 Sep 2020 05:37:31 -0700 (PDT)
-Received: by mail-ed1-x541.google.com with SMTP id n22so3202802edt.4;
-        Thu, 24 Sep 2020 05:37:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:from:mime-version:content-transfer-encoding
-         :content-description:subject:to:date:reply-to;
-        bh=rUiEbTkFRYTKacHBjpkGu4iBc7Yy8pQW6dlUm/MZgag=;
-        b=OIzZVlTSJMUayp47xJfqFDyCgk0TEtTPmeHFkhGehfFo8gltXJ0E0Cs1OUHlfsIbds
-         VtT6Si90gkwRoo+BUKrWK4IjWhfiFUoQY1hGYRgoo6aRaEaFUMKwui6tpCNgZ+4FSBvz
-         joZjiKq7QxeOeGiH0ZY+JawkBjJFBsIfI987p76rFSQ01nKMHE+liH9IOsqOzahfRP90
-         ZieGs2TVeDMYVoKe6B9yDKGIc152INkTD1m2cvxTQHmrM/aXCK1w7eHWCi8Fyoo+0I5B
-         tAu9JLnQRQWGd92i0gR6ZctPDm19IOPcybMLAkebRXO0GLNBgyr/ETugPiOo+ww6h9rn
-         0uVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:from:mime-version
-         :content-transfer-encoding:content-description:subject:to:date
-         :reply-to;
-        bh=rUiEbTkFRYTKacHBjpkGu4iBc7Yy8pQW6dlUm/MZgag=;
-        b=L3AUne49D79AP1TUM1Ntj584ZDxXp3K9vpUbVAwmry9olPS0P3yhpPMl+CpZYvlo8I
-         6uEjMJ9cpmTPFhkQjvHG7HMfMc/xvengdR8WzDaMHxKfZ7tTDoeBUnT+J8N9OKqGIE2c
-         FEmOYgz0RNhsGZlFjD6LHxq3no5LVvUjyuDS8xQAgFTHumQgspySUp95hcC6d9OGouQE
-         lmdBW2Msu4sAexLwh/lCthAmUCEnJopFjD8F8+jhbohB1tPKdpm+GhVhpAfXNTms3o1n
-         dcxUUMlVSI5kwINvlHzOk+yfNJm4Px9j2FyMRrkvCP/0maSgAV43qQbGWw/1P7pmSjHK
-         A8UA==
-X-Gm-Message-State: AOAM533Bz+sc+7bScTgBiSM42H4VL0wvQ/YjV4y5x7Q6XhYeFSeHISIs
-        6Dxo4gqwRRF0hJrURuHC9yo=
-X-Google-Smtp-Source: ABdhPJxDEZQCjUGFkhaOmyfqnVqC2pCnChZHT87HaorkaAXsTyNkpMmlKm6gYIXRxxmiFTMvREoj3g==
-X-Received: by 2002:a05:6402:1593:: with SMTP id c19mr812023edv.33.1600951050715;
-        Thu, 24 Sep 2020 05:37:30 -0700 (PDT)
-Received: from [10.20.30.70] ([196.171.44.145])
-        by smtp.gmail.com with ESMTPSA id b6sm2457744eds.46.2020.09.24.05.37.25
-        (version=TLS1 cipher=AES128-SHA bits=128/128);
-        Thu, 24 Sep 2020 05:37:30 -0700 (PDT)
-Message-ID: <5f6c930a.1c69fb81.c35d3.6283@mx.google.com>
-From:   Lucas steven <jo718357@gmail.com>
-X-Google-Original-From: Lucas steven
-Content-Type: text/plain; charset="iso-8859-1"
+        Thu, 24 Sep 2020 10:16:10 -0400
+X-Greylist: delayed 1253 seconds by postgrey-1.27 at vger.kernel.org; Thu, 24 Sep 2020 10:16:09 EDT
+Received: from cm10.websitewelcome.com (cm10.websitewelcome.com [100.42.49.4])
+        by gateway33.websitewelcome.com (Postfix) with ESMTP id E5676D58BA
+        for <linux-btrfs@vger.kernel.org>; Thu, 24 Sep 2020 08:55:15 -0500 (CDT)
+Received: from br540.hostgator.com.br ([108.179.252.180])
+        by cmsmtp with SMTP
+        id LRiNkSGsFLFNkLRiNkdUi5; Thu, 24 Sep 2020 08:55:15 -0500
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=mpdesouza.com; s=default; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=dxRBcTZKGNxKgluVgKqXR+0Zm7NcxtQozMjNfNCthbo=; b=XeeVMoA9LxOaosVRJKXVTTxX+E
+        pIt97Y1i7/1AFXgzc/2mNcAJMNckl1mh/kVXO42HzAONM9Uy52a5ch8ApSoVeoclyigtHpWb3GYYQ
+        1UgRUjCqcU0mfOJb6AvNQoDjjTatvMB5yE9dYwY/vZqmdCR++bQNG1oWFDGH67xTSnCaES7JiHLaC
+        pegzxCD0iiG+FNZ152WQ1rAS49lR0vjb+X2xUN3tITgJcuTOphzeL9AUdbRDhL4UlEXcK4xlnpQlU
+        nTA3DdOOQ7KYR0Z5S8I20Y0WLvitJKLNeuhLTqAimDGDiZ7qV8AWcE+sixqdtFCaKtbfprNenXLzI
+        9M5ceZCQ==;
+Received: from [179.183.202.67] (port=37758 helo=hephaestus.suse.de)
+        by br540.hostgator.com.br with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <marcos@mpdesouza.com>)
+        id 1kLRiM-0032Dg-Q7; Thu, 24 Sep 2020 10:55:15 -0300
+From:   Marcos Paulo de Souza <marcos@mpdesouza.com>
+To:     dsterba@suse.com, linux-btrfs@vger.kernel.org, wqu@suse.com
+Cc:     Marcos Paulo de Souza <mpdesouza@suse.com>,
+        Neal Gompa <ngompa13@gmail.com>
+Subject: [PATCH v2] btrfs-progs: convert: Show more info when reserve_space fails
+Date:   Thu, 24 Sep 2020 10:55:02 -0300
+Message-Id: <20200924135502.19560-1-marcos@mpdesouza.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Description: Mail message body
-Subject: AUF
-To:     Recipients <Lucas@vger.kernel.org>
-Date:   Thu, 24 Sep 2020 13:37:19 +0100
-Reply-To: purchaseirorder@gmail.com
+Content-Transfer-Encoding: 8bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - br540.hostgator.com.br
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - mpdesouza.com
+X-BWhitelist: no
+X-Source-IP: 179.183.202.67
+X-Source-L: No
+X-Exim-ID: 1kLRiM-0032Dg-Q7
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: (hephaestus.suse.de) [179.183.202.67]:37758
+X-Source-Auth: marcos@mpdesouza.com
+X-Email-Count: 4
+X-Source-Cap: bXBkZXNvNTM7bXBkZXNvNTM7YnI1NDAuaG9zdGdhdG9yLmNvbS5icg==
+X-Local-Domain: yes
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Greetings!,
+From: Marcos Paulo de Souza <mpdesouza@suse.com>
 
-send us your Catalog of Products and FOB Prices, we are interested in
-buy large quantities and send to Japan for our customers,
- =
+btrfs-convert currently can't handle more fragmented block groups when
+converting ext4 because the minimum size of a data chunk is 32Mb.
 
-Censtar Science & Technology Co., Ltd.
-Lucas steven
-Purchase Manager
+When converting an ext4 fs with more fragmented block group with the disk
+almost full, we can end up hitting a ENOSPC problem [1] since smaller
+block groups (10Mb for example) end up being extended to 32Mb, leaving
+the free space tree smaller when converting it to btrfs.
+
+This patch adds error messages telling which needed bytes couldn't be
+allocated from the free space tree and shows the largest portion available:
+
+create btrfs filesystem:
+        blocksize: 4096
+        nodesize:  16384
+        features:  extref, skinny-metadata (default)
+        checksum:  crc32c
+free space report:
+        total:     1073741824
+        free:      39124992 (3.64%)
+ERROR: failed to reserve 33554432 bytes for metadata chunk, largest available: 33488896 bytes
+ERROR: unable to create initial ctree: No space left on device
+
+Link: https://github.com/kdave/btrfs-progs/issues/251
+
+Reviewed-by: Neal Gompa <ngompa13@gmail.com>
+Reviewed-by: Qu Wenruo <wqu@suse.com>
+Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
+---
+ Changes from v1:
+ * Added reviewed-by tag from Neal and Qu
+ * Add largest free space portion available to the error message (Qu)
+
+ convert/common.c | 32 +++++++++++++++++++++++++++++---
+ 1 file changed, 29 insertions(+), 3 deletions(-)
+
+diff --git a/convert/common.c b/convert/common.c
+index 048629df..e636896b 100644
+--- a/convert/common.c
++++ b/convert/common.c
+@@ -774,6 +774,20 @@ out:
+ 	return ret;
+ }
+ 
++static u64 largest_free_space(struct cache_tree *free_space)
++{
++	struct cache_extent *cache;
++	u64 largest_free_space = 0;
++
++	for (cache = first_cache_extent(free_space); cache;
++	     cache = next_cache_extent(cache)) {
++		if (cache->size > largest_free_space)
++			largest_free_space = cache->size;
++	}
++
++	return largest_free_space;
++}
++
+ /*
+  * Improved version of make_btrfs().
+  *
+@@ -812,8 +826,12 @@ int make_convert_btrfs(int fd, struct btrfs_mkfs_config *cfg,
+ 	 */
+ 	ret = reserve_free_space(free_space, BTRFS_STRIPE_LEN,
+ 				 &cfg->super_bytenr);
+-	if (ret < 0)
++	if (ret < 0) {
++		error("failed to reserve %d bytes for temporary superblock, largest available: %llu bytes",
++				BTRFS_STRIPE_LEN,
++				largest_free_space(free_space));
+ 		goto out;
++	}
+ 
+ 	/*
+ 	 * Then reserve system chunk space
+@@ -823,12 +841,20 @@ int make_convert_btrfs(int fd, struct btrfs_mkfs_config *cfg,
+ 	 */
+ 	ret = reserve_free_space(free_space, BTRFS_MKFS_SYSTEM_GROUP_SIZE,
+ 				 &sys_chunk_start);
+-	if (ret < 0)
++	if (ret < 0) {
++		error("failed to reserve %d bytes for system chunk, largest available: %llu bytes",
++				BTRFS_MKFS_SYSTEM_GROUP_SIZE,
++				largest_free_space(free_space));
+ 		goto out;
++	}
+ 	ret = reserve_free_space(free_space, BTRFS_CONVERT_META_GROUP_SIZE,
+ 				 &meta_chunk_start);
+-	if (ret < 0)
++	if (ret < 0) {
++		error("failed to reserve %d bytes for metadata chunk, largest available: %llu bytes",
++				BTRFS_CONVERT_META_GROUP_SIZE,
++				largest_free_space(free_space));
+ 		goto out;
++	}
+ 
+ 	/*
+ 	 * Allocated meta/sys chunks will be mapped 1:1 with device offset.
+-- 
+2.28.0
+
