@@ -2,160 +2,178 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DD96277079
-	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Sep 2020 13:59:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE5DC2770B9
+	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Sep 2020 14:16:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727475AbgIXL7C (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 24 Sep 2020 07:59:02 -0400
-Received: from mout.gmx.net ([212.227.17.21]:45023 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727437AbgIXL7C (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 24 Sep 2020 07:59:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1600948735;
-        bh=sJ7oqCMT9Er5Je7Ee7V8YXsNfAarvnzasxAfevcXvrw=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=CqCLKammkIE5S49WkFTpp6k47c+EDxTHeb0I3kmxYyxpITozGNLFSdgJ4Ja7dlJIe
-         j3v/80cFyoaSlT5QLcHHOLY8CU24IymJzPcI5Ikw5QmPi2zu48qQfx8+1bYaGhdR35
-         YBGqmACPZF5LM9NGeFDXFGDa3JOCAA9jFB/pEo1k=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MdNY8-1kuTbK1M92-00ZLYN; Thu, 24
- Sep 2020 13:58:55 +0200
-Subject: Re: [PATCH 1/2] btrfs: drop never met condition of disk_total_bytes
- == 0
-To:     Nikolay Borisov <nborisov@suse.com>,
-        Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org
-Cc:     wqu@suse.com, dsterba@suse.com
-References: <cover.1600940809.git.anand.jain@oracle.com>
- <4fea8a706aedf7407d6af7a545126511168e15f5.1600940809.git.anand.jain@oracle.com>
- <c9e538dd-c039-478c-d677-0e9dd95cfc39@suse.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
- PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
- 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
- D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
- efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
- ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
- BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
- 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
- 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
- EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
- 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
- ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
- oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
- fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
- 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
- ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
- oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <b879f134-5bf9-a28a-885a-750d39f29a63@gmx.com>
-Date:   Thu, 24 Sep 2020 19:58:49 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1727534AbgIXMQT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 24 Sep 2020 08:16:19 -0400
+Received: from gateway21.websitewelcome.com ([192.185.45.91]:39833 "EHLO
+        gateway21.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727267AbgIXMQT (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 24 Sep 2020 08:16:19 -0400
+X-Greylist: delayed 1282 seconds by postgrey-1.27 at vger.kernel.org; Thu, 24 Sep 2020 08:16:18 EDT
+Received: from cm14.websitewelcome.com (cm14.websitewelcome.com [100.42.49.7])
+        by gateway21.websitewelcome.com (Postfix) with ESMTP id B5AB2400CC019
+        for <linux-btrfs@vger.kernel.org>; Thu, 24 Sep 2020 06:54:55 -0500 (CDT)
+Received: from br540.hostgator.com.br ([108.179.252.180])
+        by cmsmtp with SMTP
+        id LPpvkAxQ4BD8bLPpvkKz77; Thu, 24 Sep 2020 06:54:55 -0500
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=mpdesouza.com; s=default; h=Content-Transfer-Encoding:MIME-Version:
+        Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=n4pzCiu3+y0WUo1q1TMs6Uj/K/FGbzEb/h9IBW5KjME=; b=SjjYzkfKqRd8el6/AoCqZ9ti2G
+        kzWJcNH/7haSLXPWyW06JbA7gkIgrbl8JUBSQGZDJpcuTI5e7S3dYjmxBKzKkjOE27iDIeB+bRjsA
+        QQ3IsORpNqKojvsnKDgg0wKplAR6gQdU11mwyW1SapLxOdTFaSd0w9SIcNxSG+yKy1kqlBZhqz32Z
+        hO/QNYseCZFKAIyOwsiyct4k1vszPplueFe05c9zsKShIUDy5rnYsJ65+kicBhqfnLKW49au8gkzu
+        yXHDPNHbyfLI5fVdu/rwoO2282BFTiVesImT2dEQMwQ5Va+hgsrIhnyoyKEema3bp5YVVsI1Dv5ay
+        VZvRlCRw==;
+Received: from [179.183.202.67] (port=35166 helo=[192.168.0.172])
+        by br540.hostgator.com.br with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <marcos@mpdesouza.com>)
+        id 1kLPpv-001Wta-5o; Thu, 24 Sep 2020 08:54:55 -0300
+Message-ID: <cd7b29bb4546ca82b511d254edcf6219f28a37c6.camel@mpdesouza.com>
+Subject: Re: [PATCH] btrfs-progs: convert: Mention which reserve_space call
+ failed
+From:   Marcos Paulo de Souza <marcos@mpdesouza.com>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, dsterba@suse.com,
+        linux-btrfs@vger.kernel.org, wqu@suse.com
+Cc:     Marcos Paulo de Souza <mpdesouza@suse.com>
+Date:   Thu, 24 Sep 2020 08:54:51 -0300
+In-Reply-To: <528b370d-c594-6530-62aa-ef9067a2e275@gmx.com>
+References: <20200923171405.17456-1-marcos@mpdesouza.com>
+         <528b370d-c594-6530-62aa-ef9067a2e275@gmx.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 
 MIME-Version: 1.0
-In-Reply-To: <c9e538dd-c039-478c-d677-0e9dd95cfc39@suse.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:oexcBFCUoHyY12mptNQSrwzq2svE4kG2rMRpSkNeAtv0A3t/py3
- dYdwzsTIbT3Om3zHXpbmXNBDB2J1FoqeoFpBFN9TN0lmP6Zo4D8ag/PjmPuD0zlYgdqKzXL
- 8iFkOh60e0y/YspvOMJidb5ypI23EC6o0ebxDrqX/M4tQ3nVl9ZolISk5UzzgW/Y4t1fzlO
- MS7w//3hkImvdmN16oakw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:WfhYL/ZwBK4=:MmN2HQTJ6+DItOZOy3j17A
- mKKIba0r5+Bs178dkxSHhRIP7FEHoqV36EK6BbFacTKpYtgYav9sRI1865cGLhwGRg0ebH/wT
- 43Fq59cajL2SWz91KgtHH6F8/4xhkL6FPRrIoUJnh7tDOwJabhMqrUH/VelV6Jsx3HV1cFT60
- fb022VuhbGwacj/YtsI8DTCAhwCWqSwjERpI0dWhZHnNdtPxAn7XXkSIzLGhKXihoL+YnMYNb
- 3aFOiTRDCEN1enejwlgzr2uMzjSFxSLyS3zVZ2bVsYUvjhUk9seq0R5bSNx8170jjuKe08Fwh
- OTzFsoZp9oeXOaUDaTTG1eAcIGREMrlIfL/9Rnc7dM8SsV7Zh0X2lyL6e3+hhbE1+2U0HMjvo
- yKSztsWQsLz8lN6wB92Jr3zUtQpud0TzCvYWp8lxgLIO6nf6KzLvnOCLp3h2aMDsGbG7DZ62U
- Ru2oWNRBG67zSmaNYUxxg9rue5Yix5291TIIPRViRyCZgbb4qICLjuLDIPMkxYc1PIAcoa4i5
- cut/H4N0H6WfRoQOeA1kMH3CBuaCd1V3wzK3MSY9XJS8MKyLq26ta/xYpY2bg7CjlrTbfrUwl
- +KdNY7D5nLLadBsgfkJVdhL5yByN0zxEQ5ezrGLR+xHpMtiIV2vM+4WILHvNOBRPjf81qIDwZ
- jqUGeNuBynpbaLbElc5RWKJHkZiibA+Q1Y8qDxzbIckNVxvKC+xU+V3Igo1WQvaYgJN8DBvyD
- 1+nj0/5ZsAXs/AJ3HO6BK++fcpyYobMkTy/14qv4uI6VVAcQXLDrh6A8GJD0k/iHjEzQgE/53
- C6lCzlTXznrFfD9GTZIn/Eon4nUS/VlqGqhgGkI3GgCHCWISaIqWjgQ1qA6YSS4u/1egTqzvq
- yVD57FXHrwrBDYnz7xSKMcqxlFuJYpgaGpxWZ3qhMcUyKVRlnB8fMud0zkVoEfa54R/oyAAs6
- in0ugOpMNPrS012q2vOdwKgPW3Q5jyRsQb1plJVwRm+PwG9w/4v6tivA1UTdb4m+NdPeTnJri
- Z9e18+FtXQpQfk8TRc93sc7YeuX1K5DeWkwbkiU7hXFH858K5Q91TMeS6ZuZN/kw4PeMf0Olb
- DSpzKc3ru2Gh/+T3ltdDaWa97eRKdwINB+59gt03rSYaOlTxT4TYVdvJvh5JmJ8WeRpTYw+5U
- y75jfReDskJCMr+cgmtWa1V5F7DRxCaDa/GQOMmQNpdqfl/qbYuVehe0za4x9Gt/poxNc9EK8
- 0+/7PayKjB2wZKLsnVgK862LlLmNSck8TMuOAGQ==
+Content-Transfer-Encoding: 8bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - br540.hostgator.com.br
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - mpdesouza.com
+X-BWhitelist: no
+X-Source-IP: 179.183.202.67
+X-Source-L: No
+X-Exim-ID: 1kLPpv-001Wta-5o
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: ([192.168.0.172]) [179.183.202.67]:35166
+X-Source-Auth: marcos@mpdesouza.com
+X-Email-Count: 3
+X-Source-Cap: bXBkZXNvNTM7bXBkZXNvNTM7YnI1NDAuaG9zdGdhdG9yLmNvbS5icg==
+X-Local-Domain: yes
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Thu, 2020-09-24 at 08:08 +0800, Qu Wenruo wrote:
+> 
+> On 2020/9/24 上午1:14, Marcos Paulo de Souza wrote:
+> > From: Marcos Paulo de Souza <mpdesouza@suse.com>
+> > 
+> > btrfs-convert currently can't handle more fragmented block groups
+> when
+> > converting ext4 because the minimum size of a data chunk is 32Mb.
+> > 
+> > When converting an ext4 fs with more fragmented block group and the
+> disk
+> > almost full, we can end up hitting a ENOSPC problem [1] since
+> smaller
+> > block groups (10Mb for example) end up being extended to 32Mb,
+> leaving
+> > the free space tree smaller when converting it to btrfs.
+> > 
+> > This patch adds error messages telling which needed bytes couldn't
+> be
+> > allocated from the free space tree:
+> > 
+> > create btrfs filesystem:
+> >         blocksize: 4096
+> >         nodesize:  16384
+> >         features:  extref, skinny-metadata (default)
+> >         checksum:  crc32c
+> > free space report:
+> >         total:     1073741824
+> >         free:      39124992 (3.64%)
+> > ERROR: failed to reserve 33554432 bytes from free space for
+> metadata chunk
+> > ERROR: unable to create initial ctree: No space left on device
+> > 
+> > Link: https://github.com/kdave/btrfs-progs/issues/251
+> > 
+> > Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
+> 
+> Looks pretty good, but can be enhanced a little, inlined below.
+> 
+> Despite that, feel free to add my tag:
+> Reviewed-by: Qu Wenruo <wqu@suse.com>
+> 
+> > ---
+> >  convert/common.c | 12 +++++++++---
+> >  1 file changed, 9 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/convert/common.c b/convert/common.c
+> > index 048629df..6392e7f4 100644
+> > --- a/convert/common.c
+> > +++ b/convert/common.c
+> > @@ -812,8 +812,10 @@ int make_convert_btrfs(int fd, struct
+> btrfs_mkfs_config *cfg,
+> >  	 */
+> >  	ret = reserve_free_space(free_space, BTRFS_STRIPE_LEN,
+> >  				 &cfg->super_bytenr);
+> > -	if (ret < 0)
+> > +	if (ret < 0) {
+> > +		error("failed to reserve %d bytes from free space for
+> temporary superblock", BTRFS_STRIPE_LEN);
+> 
+> It would be awesome if we can output the free space.
+> 
+> Just the largest portion is enough to show that we're hitting a real
+> ENOSPC situation.
 
+Indeed, I'll send a v2 printing the free space tree when ENOSPC
+happens.
 
-On 2020/9/24 =E4=B8=8B=E5=8D=887:48, Nikolay Borisov wrote:
->
->
-> On 24.09.20 =D0=B3. 13:11 =D1=87., Anand Jain wrote:
->> btrfs_device::disk_total_bytes is set even for a seed device (the
->> comment is wrong).
->>
->> The function fill_device_from_item() does the job of reading it from th=
-e
->> item and updating btrfs_device::disk_total_bytes. So both the missing
->> device and the seed devices do have their disk_total_bytes updated.
->>
->> So this patch removes the check dev->disk_total_bytes =3D=3D 0 in the
->> function verify_one_dev_extent()
->>
->> Signed-off-by: Anand Jain <anand.jain@oracle.com>
->> ---
->>  fs/btrfs/volumes.c | 15 ---------------
->>  1 file changed, 15 deletions(-)
->>
->> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
->> index 7f43ed88fffc..9be40eece8ed 100644
->> --- a/fs/btrfs/volumes.c
->> +++ b/fs/btrfs/volumes.c
->> @@ -7578,21 +7578,6 @@ static int verify_one_dev_extent(struct btrfs_fs=
-_info *fs_info,
->>  		goto out;
->>  	}
->>
->> -	/* It's possible this device is a dummy for seed device */
->> -	if (dev->disk_total_bytes =3D=3D 0) {
->> -		struct btrfs_fs_devices *devs;
->> -
->> -		devs =3D list_first_entry(&fs_info->fs_devices->seed_list,
->> -					struct btrfs_fs_devices, seed_list);
->> -		dev =3D btrfs_find_device(devs, devid, NULL, NULL, false);
->> -		if (!dev) {
->> -			btrfs_err(fs_info, "failed to find seed devid %llu",
->> -				  devid);
->> -			ret =3D -EUCLEAN;
->> -			goto out;
->> -		}
->> -	}
->
-> The commit which introduced this check states that the device with a
-> disk_total_bytes =3D 0 occurs from clone_fs_devices called from open_see=
-d.
-> It seems the check is legit and your changelog doesn't account for that
-> if it's safe you should provide description why is that.
+> 
+> Thanks,
+> Qu
+> >  		goto out;
+> > +	}
+> >  
+> >  	/*
+> >  	 * Then reserve system chunk space
+> > @@ -823,12 +825,16 @@ int make_convert_btrfs(int fd, struct
+> btrfs_mkfs_config *cfg,
+> >  	 */
+> >  	ret = reserve_free_space(free_space,
+> BTRFS_MKFS_SYSTEM_GROUP_SIZE,
+> >  				 &sys_chunk_start);
+> > -	if (ret < 0)
+> > +	if (ret < 0) {
+> > +		error("failed to reserve %d bytes from free space for
+> system chunk", BTRFS_MKFS_SYSTEM_GROUP_SIZE);
+> >  		goto out;
+> > +	}
+> >  	ret = reserve_free_space(free_space,
+> BTRFS_CONVERT_META_GROUP_SIZE,
+> >  				 &meta_chunk_start);
+> > -	if (ret < 0)
+> > +	if (ret < 0) {
+> > +		error("failed to reserve %d bytes from free space for
+> metadata chunk", BTRFS_CONVERT_META_GROUP_SIZE);
+> >  		goto out;
+> > +	}
+> >  
+> >  	/*
+> >  	 * Allocated meta/sys chunks will be mapped 1:1 with device
+> offset.
+> > 
+> 
 
-And it would be even better to mention the fragmentation problem in the
-man page for btrfs-convert.
-
-The fragmentation problem is a little too complex to explain in the
-error message nor usage.
-
-Thanks,
-Qu
->
->> -
->>  	if (physical_offset + physical_len > dev->disk_total_bytes) {
->>  		btrfs_err(fs_info,
->>  "dev extent devid %llu physical offset %llu len %llu is beyond device =
-boundary %llu",
->>
