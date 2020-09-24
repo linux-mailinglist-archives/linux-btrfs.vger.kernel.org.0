@@ -2,132 +2,150 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BE0027E286
-	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Sep 2020 09:23:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C40727E3D2
+	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Sep 2020 10:33:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727657AbgI3HX4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 30 Sep 2020 03:23:56 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:36496 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725440AbgI3HX4 (ORCPT
+        id S1728608AbgI3Idp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 30 Sep 2020 04:33:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34610 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727657AbgI3Ido (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 30 Sep 2020 03:23:56 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08U7NkAl148248;
-        Wed, 30 Sep 2020 07:23:54 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : subject : to :
- cc : references : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=Dr4Fby3T9I1eQ6rAF38+A7tTXOaAdnxHvIe1GZ8Sf8I=;
- b=zBnYnJIt5WJMP85sjkaDCTZhmHiSaeDEzG+XVBp27CMlUUk0kE3hQUGBdPYuOe0uIg1c
- y/q9/4+Y8gd6G/3uakoEYSpVALGMXKvZmZT3GeNcn1STtTM+X+wcuBF9N6qUjqvTj/ts
- 1I6BkitGG/9PPY9EPzBuQZ7CiYiZ89by6DNVy5NKovst01HKJcXdft7XrNbwCbw56YPl
- mgK00fEMHqGxzPAlIMhlg3V5c8HSYJynnHRxXObcOoFn5EOC8zlbN22GZs0xq2fXquLS
- aSAN7MEClE7GVSM/EJEatxs+9oanFvjeb6Yq0SFtn8QpzpCiVvpYuG+/OmvxAUNgqrgk vQ== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2120.oracle.com with ESMTP id 33swkkxwr3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 30 Sep 2020 07:23:54 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08U7FmC8087662;
-        Wed, 30 Sep 2020 07:21:54 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3030.oracle.com with ESMTP id 33tfjy6m1k-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 30 Sep 2020 07:21:53 +0000
-Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 08U7LrW7017747;
-        Wed, 30 Sep 2020 07:21:53 GMT
-Received: from [192.168.1.102] (/39.109.231.106)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 30 Sep 2020 00:21:52 -0700
-From:   Anand Jain <anand.jain@oracle.com>
-Subject: Re: [PATCH v2] btrfs: free device without BTRFS_MAGIC
-To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org
-Cc:     Johannes.Thumshirn@wdc.com
-References: <dbc067b24194241f6d87b8f9799d9b6484984a13.1600473987.git.anand.jain@oracle.com>
- <1ee9b318e3bb851aaec9c1efd1eadb117ad46638.1600741332.git.anand.jain@oracle.com>
- <abf4c158-6b31-be1a-8645-59fc0ca7306a@toxicpanda.com>
-Message-ID: <2d4b10fd-a5f4-7e6b-85f4-f92591e2a539@oracle.com>
-Date:   Wed, 30 Sep 2020 15:21:48 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        Wed, 30 Sep 2020 04:33:44 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F935C061755
+        for <linux-btrfs@vger.kernel.org>; Wed, 30 Sep 2020 01:33:44 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id z19so673954pfn.8
+        for <linux-btrfs@vger.kernel.org>; Wed, 30 Sep 2020 01:33:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=sYWzne90SO1PJBn9gAyCE0w8xLyBAysD6hOJjnKb/t0=;
+        b=pzGW6YBq8+azn/p3DIgC6XcIZWd6VNwXKMTjupsfcdAOdMu0EkZEZIGLvEwGCnBB85
+         H6M+37ezGCFg23lnApy3y/mO3OeDXBWxCTHoLmqKI81NL4ah1+294CsP7xkkScRaNbfv
+         fckJ2+FDX9bZJfeJ1+HO6KHHEeFxYqk7Hye/9D+ap6payQ9fHaS8LvWoSql9dQkxY4SU
+         QNBkfceDKxdMtwA7tnNeFlIiMfTTYEUqsV/ia91Id7uTX9sEhBgaLtx0xBnZKeKCEhCO
+         1hUmFvrIoXHDEHQu2UNEj9enpfVJxK+nTTXrpSol5KOCnTIj/H0LmdXKuBwJKvvX8W0D
+         oC5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=sYWzne90SO1PJBn9gAyCE0w8xLyBAysD6hOJjnKb/t0=;
+        b=Oxkg/aFjA64M64x/wcgqH68q0Z0HoeiBGDUSHgQHwdgbMLkKs01pD5l+KskqJB50Vj
+         YL2pxL9v+ZYopXfiBA6MMOYihi/W0BqHCftHLjDdmUw8xJ9c10shcjT9DtiRJArI3MDN
+         NL3L1XO+ok25xOJwd5kYqgujnz9sbGxBL8ZW2ngaHL+lMXT9zv1ewJlA4PLWciDWhIFV
+         aDXyRGSOiQIyI0uB9HyTtLonKrH8aCfAzqw1+KTvPbW0UuHfD4/Q+PbCpYPZ4mtqnkxM
+         8JAh2F/MfHL20u5WzQGCJiK5WING/CylFNwuf85jPxVKCjR68W2sKJEzp6CotojfG2vo
+         C9vA==
+X-Gm-Message-State: AOAM532NPZXyMsds/FNdPKbJKsYKq634dp+YCmZy1P3MINcYozB26URy
+        rAQpTpvGoy3FVn1NbRYKnDY1NFEn0VRX1g==
+X-Google-Smtp-Source: ABdhPJzGoxJSPM5P8PiPedGn3Vem1UhTLsxewsmJXoAeTPDS8rIkOrvdp4RAXLyfd0e5qVr3YzTugA==
+X-Received: by 2002:a05:6a00:1483:b029:142:2501:3965 with SMTP id v3-20020a056a001483b029014225013965mr1674297pfu.42.1601454823896;
+        Wed, 30 Sep 2020 01:33:43 -0700 (PDT)
+Received: from realwakka ([175.195.128.78])
+        by smtp.gmail.com with ESMTPSA id c127sm1454605pfa.165.2020.09.30.01.33.42
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 30 Sep 2020 01:33:43 -0700 (PDT)
+Date:   Thu, 24 Sep 2020 12:45:13 +0000
+From:   Sidong Yang <realwakka@gmail.com>
+To:     Su Yue <l@damenly.su>
+Cc:     linux-btrfs@vger.kernel.org, David Sterba <dsterba@suse.cz>
+Subject: Re: [PATCH] btrfs-progs: subvolume: Add warning on deleting default
+ subvolume
+Message-ID: <20200924124513.GA23361@realwakka>
+References: <20200928150729.2239-1-realwakka@gmail.com>
+ <blhogiac.fsf@damenly.su>
 MIME-Version: 1.0
-In-Reply-To: <abf4c158-6b31-be1a-8645-59fc0ca7306a@toxicpanda.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9759 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 spamscore=0 mlxscore=0
- phishscore=0 adultscore=0 bulkscore=0 mlxlogscore=999 suspectscore=2
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009300056
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9759 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0 phishscore=0
- suspectscore=2 mlxlogscore=999 clxscore=1015 priorityscore=1501
- impostorscore=0 lowpriorityscore=0 bulkscore=0 spamscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009300057
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <blhogiac.fsf@damenly.su>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 29/9/20 2:14 am, Josef Bacik wrote:
-> On 9/21/20 11:13 PM, Anand Jain wrote:
->> Many things can happen after the device is scanned and before the device
->> is mounted.
->>
->> One such thing is losing the BTRFS_MAGIC on the device.
->>
->> If it happens we still won't free that device from the memory and causes
->> the userland to confuse.
->>
->> For example: As the BTRFS_IOC_DEV_INFO still carries the device path 
->> which
->> does not have the BTRFS_MAGIC, the btrfs fi show still shows device
->> which does not belong. As shown below.
->>
->> mkfs.btrfs -fq -draid1 -mraid1 /dev/sda /dev/sdb
->>
->> wipefs -a /dev/sdb
->> mount -o degraded /dev/sda /btrfs
->> btrfs fi show -m
->>
->> /dev/sdb does not contain BTRFS_MAGIC and we still show it as part of
->> btrfs.
->> Label: none  uuid: 470ec6fb-646b-4464-b3cb-df1b26c527bd
->>          Total devices 2 FS bytes used 128.00KiB
->>          devid    1 size 3.00GiB used 571.19MiB path /dev/sda
->>          devid    2 size 3.00GiB used 571.19MiB path /dev/sdb
->>
+On Wed, Sep 30, 2020 at 09:33:31AM +0800, Su Yue wrote:
 > 
-> Wouldn't this also happen if the bytenrs didn't match?  In that case you 
-> aren't freeing anything, and we'd still show the improper device 
-> correct?  So why not deal with that case in a similar way?  Thanks,
+> On Mon 28 Sep 2020 at 23:07, Sidong Yang <realwakka@gmail.com> wrote:
+> 
+> > This patch add warning messages when user try to delete default
+> > subvolume. When deleting default subvolume, kernel will not allow and
+> > make error message on syslog. but there is only message that permission
+> > denied on userspace. User can be noticed the reason by this warning
+> > message.
+> > 
+> > This patch implements github issue.
+> > https://github.com/kdave/btrfs-progs/issues/274
+> > 
+> > Signed-off-by: Sidong Yang <realwakka@gmail.com>
+> > ---
+> >  cmds/subvolume.c | 20 ++++++++++++++++++++
+> >  1 file changed, 20 insertions(+)
+> > 
+> > diff --git a/cmds/subvolume.c b/cmds/subvolume.c
+> > index 2020e486..0cdf7a68 100644
+> > --- a/cmds/subvolume.c
+> > +++ b/cmds/subvolume.c
+> > @@ -264,6 +264,7 @@ static int cmd_subvol_delete(const struct cmd_struct
+> > *cmd,
+> >  	struct seen_fsid *seen_fsid_hash[SEEN_FSID_HASH_SIZE] = {  NULL, };
+> >  	enum { COMMIT_AFTER = 1, COMMIT_EACH = 2 };
+> >  	enum btrfs_util_error err;
+> > +	uint64_t default_subvol_id = 0, target_subvol_id = 0;
+> > 
+> >  	optind = 0;
+> >  	while (1) {
+> > @@ -360,6 +361,25 @@ again:
+> >  		goto out;
+> >  	}
+> > 
+> > +	err = btrfs_util_get_default_subvolume_fd(fd, &default_subvol_id);
+> > +	if (fd < 0) {
+> > 
+> Should it be
+> "     if (err) { |
+>         error_btrfs_util(err);
+>         ...
+> "?
 
-Freeing the device without the BTRFS_MAGIC is mandatory because the
-device does not belong to btrfs even though we could notice from the
-sysfs that there is missing flag on this devid.
+Hi Su! Thanks for review!
 
-I think I should check for the BTRFS_MAGIC first before bytenr check,
-I shall swap them in v2 if there are no other comments. We need this
-patch as a fix for the test case btrfs/198.
-
-However bytenrs mismatch indicates corruption. If the degraded mount
-option is not provided we would fail the mount. The user shall have the
-opportunity to fix the corrupted superblock. We don't automatically
-recover the corrupted superblock from the backup superblock copies. If
-the degraded mount option is provided the corrupted device still be in
-the device_list but with the missing flag set. Just by looking at btrfs
-fi show the user won't know that one of the devices is not part of the
-volume however when he looks into the /sys/fs/btrfs/fsid/devinfo/<devid>
-/missing it shall show 1. Our serviceability part of the degraded volume
-has some unfinished business when we evaluate it against the standard
-RAS features, but we are slowly getting there.
-
-Thanks, Anand
+Yeah, I think it's definitely wrong. My mistake.
 
 > 
-> Josef
+> > +		ret = 1;
+> > +		goto out;
+> > +	}
+> > +
+> > +	if (subvolid > 0)
+> > +		target_subvol_id = subvolid;
+> > +	else {
+> > +		err = btrfs_util_subvolume_id(path, &target_subvol_id);
+> > +		if (fd < 0) {
+> > 
+> And here.
+> 
+
+It's wrong too.
+
+Dave, maybe this patch needs for Su's review.
+Usually in this case, Could you fix it directly ?
+or do I need to send a new patch?
+
+Thanks,
+Sidong
+
+> > +			ret = 1;
+> > +			goto out;
+> > +		}
+> > +	}
+> > +
+> > +	if (target_subvol_id == default_subvol_id)
+> > +		warning("trying to delete default subvolume.");
+> > +
+> >  	pr_verbose(MUST_LOG, "Delete subvolume (%s): ",
+> >  		commit_mode == COMMIT_EACH ||
+> >  		(commit_mode == COMMIT_AFTER && cnt + 1 == argc) ?
+> 
