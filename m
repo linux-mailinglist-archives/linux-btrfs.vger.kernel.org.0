@@ -2,31 +2,31 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FD2E277D23
-	for <lists+linux-btrfs@lfdr.de>; Fri, 25 Sep 2020 02:47:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39DA7277D2B
+	for <lists+linux-btrfs@lfdr.de>; Fri, 25 Sep 2020 02:50:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726718AbgIYArQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 24 Sep 2020 20:47:16 -0400
-Received: from mout.gmx.net ([212.227.15.15]:37237 "EHLO mout.gmx.net"
+        id S1726756AbgIYAuz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 24 Sep 2020 20:50:55 -0400
+Received: from mout.gmx.net ([212.227.15.19]:54749 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726703AbgIYArP (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 24 Sep 2020 20:47:15 -0400
+        id S1726700AbgIYAuy (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 24 Sep 2020 20:50:54 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1600994831;
-        bh=BvawnFVoC5Cfle46NJVjcyukKNsRci3KPvfp6QQ0eEs=;
+        s=badeba3b8450; t=1600995048;
+        bh=Jth8YaVCb/yNKclq0pFTxA2qcvWvjYlplqe+jKRMwxw=;
         h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=NKjIVXYO3WY00vMFoCM1U7Xp4WR+lBITj+2GCnnspsa/CMv4NK0CPyjFmnmRpHWiP
-         0n6jGmQDY19EG7ynqlxzAcixcASeubesaBRlnZkxbpxEq48R2RA3l1iBTKrL975LD5
-         xK1J3CtjYYizyLpbY79MpgZc6UELpL1YMe+NCwsQ=
+        b=gId/3Te0J3Zo+1duFuiLGhbZaUB3iQeuXbwNz4gWAe9aohcO7Bjt4LWSW7kNhuGmU
+         qifBvVNwCg5UJuluO/ESmWwPvNkfUUgTDi4y/LjoUIO5G8my5/tWoiMj9bY2N+YUSR
+         bZM3W/N6lt7mna7BU6Lw+pmHzOaHiIA4K0L5QhZ8=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
 Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1N0FxV-1kgy653hgN-00xNkJ; Fri, 25
- Sep 2020 02:47:11 +0200
-Subject: Re: [PATCH 3/5] btrfs: introduce rescue=ignorebadroots
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MGQjH-1kDZb03fJN-00Go3g; Fri, 25
+ Sep 2020 02:50:48 +0200
+Subject: Re: [PATCH 4/5] btrfs: introduce rescue=ignoredatacsums
 To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
         kernel-team@fb.com
 References: <cover.1600961206.git.josef@toxicpanda.com>
- <b7b5dfb5542c3eb965cd2d8a9baa2999b6bae638.1600961206.git.josef@toxicpanda.com>
+ <c3cc0815c5756d07201c57063f3759250f662c77.1600961206.git.josef@toxicpanda.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -52,48 +52,48 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
  ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
  oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <b6710997-5150-d082-e260-9fbbaee74e4c@gmx.com>
-Date:   Fri, 25 Sep 2020 08:47:07 +0800
+Message-ID: <b880c67e-b6e2-1044-334d-1d82ac3e03be@gmx.com>
+Date:   Fri, 25 Sep 2020 08:50:44 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <b7b5dfb5542c3eb965cd2d8a9baa2999b6bae638.1600961206.git.josef@toxicpanda.com>
+In-Reply-To: <c3cc0815c5756d07201c57063f3759250f662c77.1600961206.git.josef@toxicpanda.com>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="dyYSH39J9IuiaxDYAmwKgib9Abpq2v1qP"
-X-Provags-ID: V03:K1:mKNsnxFJ5OPWvn64Dli33WaogkK8t95FwuZAQdSHeB31dPTNFsF
- Q1KalZy9S2oHsadLOdvTABiVxJUrV6hVFf8mtcH8ovSMNI7R3v02pYSHAlpBirZ0hMc2bBM
- i/7rYrSz1vN2QUR3tIW8Q1TvnyokdtSwfbq1cahlWqrvurmM27SmgEWc/Tn03Oaogylq4RU
- nWr5r/FhrV3FV1wUeGZfg==
+ boundary="9NUWjrK0CGuzCZ9N0pOsdLoSulufcJFGu"
+X-Provags-ID: V03:K1:Kn0lEiNLK9QA/ZkXO9tyu9CldtCwrb4znYVBulEDoJtyjtwoiNt
+ OWv55NDyr/RRdB+G6t9Hbj1zEYpWz9SH2KmLiT2I7PIhMXbHTMKcQwlt63cAYFSXWxCLwnK
+ PQXF+GaWQS5HJJk/z02ofQiBtFo+lbo0Dols1b5gah1ZpXDbsghXqfX6jUP1RSnJswfyJRb
+ S2EG8+lM2U6PdjQxlCTrw==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:GUkFTgO2Bf8=:5wDtGXJS6caHmlvuMj3p9/
- znSrtOK27wP6ya0gf64EeFpCXBZPOHCv+dMTRolZhTwS9JFtphTUdZ/w1iPGEpIZEZUvF33tx
- Weu3OfSgCfX4ljjgkVnu8qvbhpTaJmmaLLzb59ac/Bi1KhKR4csCVAK0qXTkHI96+auxixDjB
- zaGLP8N+lb/po7uq/dIU4BijkLZx7JycfYKU3VUEHkWJVRG5uz5InLuuavnFVhgs3Rq3xJ8pf
- 4yqDVGE6xjv6v99hL3IXAkhPUCiBG7cqCx5KCfSWR9NiZ+5YWLq5/i4bUnlHG6ECQaI+LmR0/
- rwU+5l1CHUXX8q4KjzL3Xj+mImVFPUIafPrgORgUarxIfpc4LatKxRnExsYJ+WlaU1/znasLU
- LqFDy66dgIXwTtflhn7DfVeZ6eX5rxpEhhIlnX7x0XmSbTefUQGE4IRhbwfCRVG/ji0PLzH3d
- BTP1IukEC9B4fVmZtKLMADRojtmvpTCRi8HULsUiCV1/7l0fuwvdQpM52tblH//SW8ZNwaDlt
- WbBjCOnmxBd9kzWLszCEZoQKEkTBRFRM/9pJ6bewAyva2KLcmesEQAP5sKpMH0yYQARx0vROR
- Z8/duTsT5fC3xl2bd8Vhod8WnJaripSArhLfmC6pEzpVEyYS6aUQ7oG3eFjQjnFw2JO84Knh3
- sFRYaxyp64RTK9tPkpIOFczM3qLln9kQ0ijhGHlo567bTxvZEoG+7L805yYJPQTpm6MPPM/SH
- 0BtQBXBRYE239bd7PZvkQ51dDw4Vy6/guhixz4DpK2itAMTchp81kOFuu9C2QeX3UkoUv/BCT
- 9b5wMRMqSGLrnpe5ia1O2AUyOnBWHzcWQnocVEvWdPJaqcVx4cizYMzsudNNQxt0FhW+ueUIP
- 70FdBA7e7E75HK5rfS1qZNKFKU9cr8xJ0ZUL3GQ1V1A2ENw7jfUEif0/0/NQaJinpZJoHv+ZM
- xTK7HoYfmgzTEXTlKPKMf/m7fub90OEYEgpglPZ20qVQdEvLm5Is9Mw+Wn5tTAh3gE4GlnJ+p
- FgFRLCvyw53rch98cUpaXwznH+1xk3S5ggmoOLA6AFoH8L72M5/7Og+kvsX4Qdf8ow32FBjmf
- 1GJ4+KGcSI03kCKYs3vUUnjYTl1mU2uPVNTe3ZNYh/T1qUvnYx7L4oovnjBIcMDsj3TDShxbg
- /TULYLwxBcvqHvyTJl6QdS/1CaQ1rZ8HQ54eGGcsX5fc81qH4NC3xhaiTF+UL+Xw89pPOl1/W
- SErY4vUzsnSNe9Uz6ZniBP+eGC+KSMaA0YQxKBg==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:Jig8l3+LsxM=:nZYMxXQ2F0YXJpl/yHItuu
+ zCbdq4ZZPqekKOXTPzeYog+0ObFCsnli6L0wxOdba6dbDJOjB8PnEgj1U297smQSgwsS62yTm
+ XRrDNAuIVV6xYlYJH8/L9z5gOLrEtNXQ7nTUD+669jijKc1hum5oEJOksJntL3BrodVWLH0FQ
+ OFdoLGpg5AlvW1pFg1Qiz6QnaQcSzqMuzI9xPS3n6p97bo/FCnSdHdRBYQCSSXa+TkYH7/3DO
+ 73YojDNMvJ9hqcY4q3IK7UeuGX8Rg8K+ftRL6uIPFt+g0HQkD0utsI05nDXv0a8PgSoMgVk2+
+ +wolrKx4cLcnvZIAAmG4dGPXadtv06iP5gWStrxxdiiMAIb6eQZC2hsFQX6EceeBFyXaGp6QF
+ isMvCek9IR8kV8i+RugpAsgLmd06QDbfQB5a9ngRlOq3KQwYimMBUep0iOoveDQuNDgK9Z9WR
+ n+ltNVySSdKpX+dvg1ynAU9K7rUaHXLOXfyg7nfd/NpE6m6VcII2Gr6GmpD3Y+CqAiCzsh/H/
+ IsFMm9EqyGJl5fMgtfeKQpMPGfFVUo7ixOfYvkbX/QwT6yOeQ8zwYgt42Uvb6YyIXg26WC8Jf
+ I8pWRuG96hYgrFx6wNl9sUhPwxwh7+Jg6SqD+16RnWAWj55wy6jLM0yPEp0+zEuDPVxxP9b7I
+ 2Y1oZDD31M5eXP/2zLl6AhRk0lQM1+lrbf6v7XVOBkdEp5+lh8KrfdjnC3RcYCjChs0sa6dBZ
+ H6oHAkSyxqsXkvCr3gLY15kRLPPq5Ymrwz+FXnDeIN8mJtn+Cmdk326ScyAcrCx/YQ1qTS+RJ
+ yi/qcvWvc0baqJ3docyN9s7e8DMMSmauzb2mnJcW8XoQKoDFFXDDT4zOyN5yPQe1V//dwNueL
+ Nt2eYU06BXA0cWCoVCNpDICQV7yKCcEn1JueZxraBhvNpjd9eKHmX9ppyJKZ2OubsIisnGr6l
+ eUmwm0HTOfHd9upmzKmSk3eCrtXfQP2CyATVIaW028msrO9Qy8kN+RfLIiaSiYVwaw9k/NVY3
+ cMH5Ycgz2+RQVGfWH1Th+SzrbJQN03RMCSkXrvD5YsoY4O+lM+qIWLXLylLe7CLMN7SCBTJLL
+ Vh6tySfl2YhFwNxbQFGSvYTfQ+zjHJfPmL5Knl+keEbwzp2Pb6npD6B3sy/o2qv7R/98q8wh1
+ XsMtY48AXNoI6nRVV15Qk1NVhAXmdrZ8suzfPuGn4jEARHwreJpcqauJazfm9DkW0wzVF3/PD
+ LdDGnMaAqOTY0X++q+3xkgIBBpe0m3TVBqGcFJA==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---dyYSH39J9IuiaxDYAmwKgib9Abpq2v1qP
-Content-Type: multipart/mixed; boundary="v2QVVYR2IscpfnjFYHhF6mfcZbc5ITthw"
+--9NUWjrK0CGuzCZ9N0pOsdLoSulufcJFGu
+Content-Type: multipart/mixed; boundary="FWrO0XO5b3sy5uKVFSYQshl1pkSlswp3q"
 
---v2QVVYR2IscpfnjFYHhF6mfcZbc5ITthw
+--FWrO0XO5b3sy5uKVFSYQshl1pkSlswp3q
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
@@ -101,77 +101,145 @@ Content-Transfer-Encoding: quoted-printable
 
 
 On 2020/9/24 =E4=B8=8B=E5=8D=8811:32, Josef Bacik wrote:
-> In the face of extent root corruption, or any other core fs wide root
-> corruption we will fail to mount the file system.  This makes recovery
-> kind of a pain, because you need to fall back to userspace tools to
-> scrape off data.  Instead provide a mechanism to gracefully handle bad
-> roots, so we can at least mount read-only and possibly recover data fro=
-m
-> the file system.
+> There are cases where you can end up with bad data csums because of
+> misbehaving applications.  This happens when an application modifies a
+> buffer in-flight when doing an O_DIRECT write.  In order to recover the=
+
+> file we need a way to turn off data checksums so you can copy the file
+> off, and then you can delete the file and restore it properly later.
 >=20
 > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-
-Mostly OK, but still a small problem inlined below.
-[...]
-> index 46f4efd58652..08b3ca60f3df 100644
-> --- a/fs/btrfs/volumes.c
-> +++ b/fs/btrfs/volumes.c
-> @@ -7656,6 +7656,13 @@ int btrfs_verify_dev_extents(struct btrfs_fs_inf=
-o *fs_info)
->  	u64 prev_dev_ext_end =3D 0;
->  	int ret =3D 0;
+> ---
+>  fs/btrfs/ctree.h   |  1 +
+>  fs/btrfs/disk-io.c | 21 ++++++++++++---------
+>  fs/btrfs/super.c   | 11 ++++++++++-
+>  3 files changed, 23 insertions(+), 10 deletions(-)
+>=20
+> diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+> index fb3cfd0aaf1e..397f5f6b88a4 100644
+> --- a/fs/btrfs/ctree.h
+> +++ b/fs/btrfs/ctree.h
+> @@ -1296,6 +1296,7 @@ static inline u32 BTRFS_MAX_XATTR_SIZE(const stru=
+ct btrfs_fs_info *info)
+>  #define BTRFS_MOUNT_REF_VERIFY		(1 << 28)
+>  #define BTRFS_MOUNT_DISCARD_ASYNC	(1 << 29)
+>  #define BTRFS_MOUNT_IGNOREBADROOTS	(1 << 30)
+> +#define BTRFS_MOUNT_IGNOREDATACSUMS	(1 << 31)
 > =20
-> +	/*
-> +	 * We don't have a dev_root because we mounted with ignorebadroots an=
-d
-> +	 * failed to load the root, so skip the verification.
-> +	 */
-> +	if (!root)
-> +		return 0;
-> +
+>  #define BTRFS_DEFAULT_COMMIT_INTERVAL	(30)
+>  #define BTRFS_DEFAULT_MAX_INLINE	(2048)
+> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+> index 5deedfb0e5c7..6f9d37567a10 100644
+> --- a/fs/btrfs/disk-io.c
+> +++ b/fs/btrfs/disk-io.c
+> @@ -2269,16 +2269,19 @@ static int btrfs_read_roots(struct btrfs_fs_inf=
+o *fs_info)
+>  		btrfs_init_devices_late(fs_info);
+>  	}
+> =20
+> -	location.objectid =3D BTRFS_CSUM_TREE_OBJECTID;
+> -	root =3D btrfs_read_tree_root(tree_root, &location);
+> -	if (IS_ERR(root)) {
+> -		if (!btrfs_test_opt(fs_info, IGNOREBADROOTS)) {
+> -			ret =3D PTR_ERR(root);
+> -			goto out;
+> +	/* If IGNOREDATASCUMS is set don't bother reading the csum root. */
+> +	if (!btrfs_test_opt(fs_info, IGNOREDATACSUMS)) {
 
-The check itself is mostly for write, to ensure we won't have
-missing/unnecessary dev extents to mess up chunk allocation.
+This indeed matches the name, ignoredatacsums, no matter if the data
+csum matches or not.
 
-For RO operations, the check makes little sense, and can be safely
-ignored for ignorebadroots.
+I guess if the user is using this option, they really don't bother the
+datacsum and just want to grab whatever they can get.
 
-Furthermore this only handles the case where the device tree root is
-corrupted.
-But if only part of the device tree is corrupted, we still continue
-checking and fail to mount.
-
-It's better to skip the whole check for dev extents if we're using
-ignorebadroots rescue option.
-No matter if the root is corrupted or not.
-
+Reviewed-by: Qu Wenruo <wqu@suse.com>
 
 Thanks,
 Qu
 
->  	key.objectid =3D 1;
->  	key.type =3D BTRFS_DEV_EXTENT_KEY;
->  	key.offset =3D 0;
+> +		location.objectid =3D BTRFS_CSUM_TREE_OBJECTID;
+> +		root =3D btrfs_read_tree_root(tree_root, &location);
+> +		if (IS_ERR(root)) {
+> +			if (!btrfs_test_opt(fs_info, IGNOREBADROOTS)) {
+> +				ret =3D PTR_ERR(root);
+> +				goto out;
+> +			}
+> +		} else {
+> +			set_bit(BTRFS_ROOT_TRACK_DIRTY, &root->state);
+> +			fs_info->csum_root =3D root;
+>  		}
+> -	} else {
+> -		set_bit(BTRFS_ROOT_TRACK_DIRTY, &root->state);
+> -		fs_info->csum_root =3D root;
+>  	}
+> =20
+>  	/*
+> diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
+> index 7cc7a9233f5e..2282f0240c1d 100644
+> --- a/fs/btrfs/super.c
+> +++ b/fs/btrfs/super.c
+> @@ -361,6 +361,7 @@ enum {
+>  	Opt_usebackuproot,
+>  	Opt_nologreplay,
+>  	Opt_ignorebadroots,
+> +	Opt_ignoredatacsums,
+> =20
+>  	/* Deprecated options */
+>  	Opt_recovery,
+> @@ -457,6 +458,7 @@ static const match_table_t rescue_tokens =3D {
+>  	{Opt_usebackuproot, "usebackuproot"},
+>  	{Opt_nologreplay, "nologreplay"},
+>  	{Opt_ignorebadroots, "ignorebadroots"},
+> +	{Opt_ignoredatacsums, "ignoredatacsums"},
+>  	{Opt_err, NULL},
+>  };
+> =20
+> @@ -504,6 +506,10 @@ static int parse_rescue_options(struct btrfs_fs_in=
+fo *info, const char *options)
+>  			btrfs_set_and_info(info, IGNOREBADROOTS,
+>  					   "ignoring bad roots");
+>  			break;
+> +		case Opt_ignoredatacsums:
+> +			btrfs_set_and_info(info, IGNOREDATACSUMS,
+> +					   "ignoring data csums");
+> +			break;
+>  		case Opt_err:
+>  			btrfs_info(info, "unrecognized rescue option '%s'", p);
+>  			ret =3D -EINVAL;
+> @@ -990,7 +996,10 @@ int btrfs_parse_options(struct btrfs_fs_info *info=
+, char *options,
+>  		goto out;
+> =20
+>  	if (check_ro_option(info, BTRFS_MOUNT_NOLOGREPLAY, "nologreplay") ||
+> -	    check_ro_option(info, BTRFS_MOUNT_IGNOREBADROOTS, "ignorebadroots=
+"))
+> +	    check_ro_option(info, BTRFS_MOUNT_IGNOREBADROOTS,
+> +			    "ignorebadroots") ||
+> +	    check_ro_option(info, BTRFS_MOUNT_IGNOREDATACSUMS,
+> +			    "ignoredatacsums"))
+>  		ret =3D -EINVAL;
+>  out:
+>  	if (btrfs_fs_compat_ro(info, FREE_SPACE_TREE) &&
 >=20
 
 
---v2QVVYR2IscpfnjFYHhF6mfcZbc5ITthw--
+--FWrO0XO5b3sy5uKVFSYQshl1pkSlswp3q--
 
---dyYSH39J9IuiaxDYAmwKgib9Abpq2v1qP
+--9NUWjrK0CGuzCZ9N0pOsdLoSulufcJFGu
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl9tPgsACgkQwj2R86El
-/qipNAgAq10SXaFhTu2a4K5loFcQC8yB7xnKEbsOAR+XhpqFjOMh/OJpmg8e7mtD
-ONZygsTwbP6yjvpwRWZZlXVapQxUzBDm/evAYAZDqwI9mxMB5j3Mhw7OeMf0JFrE
-fafhZoKR3tLoFyIb4vNxY6CLck7VyRL8MncmLNdinhqYMWdzTVjoFDxe2zqqkTnO
-YOah3b4cA27I5eh4CkP1M+Pv+elXgi0W7WRX0Ehf47vQrcdy6o2oheTs8LG3Cr4s
-fmoNg2tNQKsUTtx6BrSToKqz1t9cgjFMI1X/XKaqTyrqPSWcXuGXKF4lA087XwCl
-AKIkrutWkh7SWUYJQSmJebDCThFUUQ==
-=lbhG
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl9tPuUACgkQwj2R86El
+/qittgf9HKVCKadREsjOh4mfgXDpb23FZgTrEIaWFWp6SA1UZ/R9nKNgfnpwuoiH
+YY1JZ+J91JzimGQwtzXJ1kMixRH74rTfvWU7csuHT1QdhgvTpDPkpd7MrvRfInJD
+ZJAo21Jx79TyYMJxR7bDzbD0ekYxcBVsrq18U/ZP1aW2vvJ5XPHzfOmsH7y0QfnA
+itNH4oPzvQUm2cDEcNQJc6mNL3DLUacPfD3WDXnc3HSvdRuFma7udcPZFXOHKdip
+s1aH72RJI3YZGpu+6zd0p9lBu1CwAfvCAZkU74FSeVNr9g1RRxFf53LBcjUaQNSA
+urWnipsGt1JkOtxVxO6eN18Q5qyojA==
+=oZQ0
 -----END PGP SIGNATURE-----
 
---dyYSH39J9IuiaxDYAmwKgib9Abpq2v1qP--
+--9NUWjrK0CGuzCZ9N0pOsdLoSulufcJFGu--
