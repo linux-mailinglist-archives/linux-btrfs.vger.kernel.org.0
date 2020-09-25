@@ -2,31 +2,32 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DCBF277CF9
-	for <lists+linux-btrfs@lfdr.de>; Fri, 25 Sep 2020 02:36:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAD9A277CFF
+	for <lists+linux-btrfs@lfdr.de>; Fri, 25 Sep 2020 02:40:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726718AbgIYAgW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 24 Sep 2020 20:36:22 -0400
-Received: from mout.gmx.net ([212.227.15.15]:49371 "EHLO mout.gmx.net"
+        id S1726768AbgIYAkE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 24 Sep 2020 20:40:04 -0400
+Received: from mout.gmx.net ([212.227.15.15]:39753 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726631AbgIYAgV (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 24 Sep 2020 20:36:21 -0400
+        id S1726703AbgIYAkE (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 24 Sep 2020 20:40:04 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1600994177;
-        bh=OOUKh1rPbif7loOuY2mDtXrc+m8Z3u45QLSjuteO9qM=;
+        s=badeba3b8450; t=1600994397;
+        bh=e8lf7mOdfPTq1SoZd+JSxliu+cxs7pssGUAGc26+Kzk=;
         h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=Gb+y5OOEEjEc6c9svhJc/onLA90s0oD6BW9Mu52y3taefxC6KczYftlbJC2lHv2Jq
-         bfgu+GEpB2cD0BTmzd+6w3oZ2YBtAygQTsvvb95sjSvSjxQ3/fXsuxtvhIXkugvpMl
-         CDJRaYU/i8QnNOHbNowjes+AQFgv27jwk41Kmoeg=
+        b=Zeqo9jGlMdmks0qFobbr8CXf/NVyD72WeHn3V2L3tyg8+Haz2kXNeOpmsvKscSIQS
+         CsrE5O/9vaxOev3sU+McA5+PzmVyYaFxyq6uD0qA5RA0h78Mp3TEmmfgKGvbLy5qep
+         KTBG4V3rt74ZtDn3LSIRw8dOBAHF9UJDA4LIF0ds=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
 Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MRmjw-1jtaDy1YKI-00TE8J; Fri, 25
- Sep 2020 02:36:17 +0200
-Subject: Re: [PATCH 1/5] btrfs: unify the ro checking for mount options
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1M7sHo-1kQXio2dV4-0050ZF; Fri, 25
+ Sep 2020 02:39:57 +0200
+Subject: Re: [PATCH 2/5] btrfs: push the NODATASUM check into
+ btrfs_lookup_bio_sums
 To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
         kernel-team@fb.com
 References: <cover.1600961206.git.josef@toxicpanda.com>
- <d307f1d95415232dabfb700e79cda73618aa7d50.1600961206.git.josef@toxicpanda.com>
+ <bdf1bf5c65679fdf39021e16a242094acd71b270.1600961206.git.josef@toxicpanda.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -52,48 +53,48 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
  ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
  oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <fad6a957-c1ad-60c8-c6d6-d66f506fc9fe@gmx.com>
-Date:   Fri, 25 Sep 2020 08:36:13 +0800
+Message-ID: <a3d17402-7e3d-7fb4-9831-2db5be18d5b2@gmx.com>
+Date:   Fri, 25 Sep 2020 08:39:53 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <d307f1d95415232dabfb700e79cda73618aa7d50.1600961206.git.josef@toxicpanda.com>
+In-Reply-To: <bdf1bf5c65679fdf39021e16a242094acd71b270.1600961206.git.josef@toxicpanda.com>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="pKu0RCboHYyUCdPAxdE0HKbMYvUCYRoio"
-X-Provags-ID: V03:K1:eh3AO7Z6S/RzFs/g0yKhjHb6k6GxesP3hv+dyosYQ0F2QCZ8gm7
- +AHLfk9GBTJWsbAWbtLCTsfTovWg0YT1A/OxJLiK1wcgeb9GhOQHJqREoykDpD0O2LvncV4
- oF1BHM4xxJ3JN9duFLLYQyj9WGDyTk7eQ2zZ5wc7x6YkH4Ufu0MUoVVsdGyze6s+KCxv884
- s5AMw6NtGVU+5A+T5Q7Eg==
+ boundary="Xx7NFr293VzVQxSefb3Fg0ISWIFUxtaSY"
+X-Provags-ID: V03:K1:Gwy1HMGFyVsaNkTq4PAFYXzV+fV28FgEG6zp593lnmW6KLCKdBH
+ fomyZIkSvDBPnoLExBCr5M5e2B7OTDcDHpTYhXdOL9cgBTs1g4MplNdqDJgr1jngNoLoPoK
+ 1Nger92O7hHWy39hSoTCpzOalUxm0iYc4V83hECeiOt390waSpvbyNY0M9GwSxE9snBZ9Ln
+ 8AMkS3sa+TZHQ6yoHL2sQ==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:gcItatrIF9E=:uvH1Gt1XKukxgz1vhvSixh
- 7UzJhg34IsiNse/VEKKQawr6I3zEoB9DR5jeL51azA54S2ZhyX9jbXEVY008l2616RRNe6Xi1
- ZL0sGGT/bDGfR67HfsEBcJlHacza6AwlR5aT+wL8SFHyEpNynMBqhhcWwjpEzZO0AFT+hYuF+
- DBhBct1+FRGJk4O/g5QjpjlHXoLSB0GupfRqNreFnyg/wAZJ6EdTZD0fqCRhufEfqMem7PIwT
- DwUxlLbOSToFAdqirtf6gMEON0y5/a4D/JBTz98z9YiOHBDQdaELgCAzVcaUSSJI4wrlB13Jg
- zAOwonOUWIQQUMDdyNGWXyyLCvDNaNAwv9kSzMluucybL4LAPvucJine6YmwZkwFKIldCLUzp
- ClxiuFCda6ba+kpMc7+CCrt0oFmRyUpFHmQatuNTSqcgy7iohFcOT0M+sZTca6EqLBe5KoCFA
- Abc08YJjXbHoBSTqvvxVHvcLL6+UMPWsHxGS1oWL1cE8Thi8Vwk4rl8vB0bFaz2Tb3wg6l3V3
- JB8PQ7iWYU2p2/U6Gbd8CHtEK8CaLwwawFuWnhtHBe7TU2LD2bS1vJxUUpqWv3hR1jTNm72B0
- ERO1vWqb7wz76R0uskfpkbuWmUKBCkpGEQ8y3woUtwsO7td9zYE1k6/iydue/vbS/Npe33Olo
- bHWayUyHGZas4EA1eapaHfN4X0TJNr02LqltMyIRNrue0TsjUficzKSREnMaonif8YHHAXg74
- AFwQQI0liT8LG5ANWBGGEYfYrtM7CWyzustXjJa7dl9b4jOfRonKjirNTcQOKlaS6tY4B5TCT
- N8rMezMEGzAYBIB4o8nmfMg7YOM1GDtzIhdvHcUT/kJGaAu6Yyadt7lDSgcYvjEfyFzdKV5qE
- P8D3LYDa/NA4XMO0PRW7WqkBH7PUR3BMe6FVfGYNUwloXcQjoRINd6SSvcs1MNScDnEgCO8mX
- 1UENP/L32ieo6OA6GH3lhPx6wStLl2F2VRntQ61P93idiy5tXwlY8PrbTm8pWO/2MmVlQnrr9
- mtd38SnG+AWVNyM080Gb+nzmr8R26ByFYcHzICaAM9krEE3kZgnhsfdQ+8HSEwUvCGU+U+m30
- 9Fw8f0ZRpGQwlOpScKzxgq7HG5I0irU+HU91oyuIoqnGfcelhDXCO4N7cYzbiChopTTjFAj4+
- kMAwEACdgdCu3qFnqRkwsYu6ba5MO3HLkCr5BNx0l0FnLMtZv90+Ln6KfS9kJoH3iZR2lTDvJ
- ekxZb/F8C0c65drlT05fX1SJlXhNNqMA9jkjWtA==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:qFOagxRD6ZM=:gAKfKOTxW83uqh5glmG+xp
+ T2lwZjnYeCtMWCQ9TXImpfrGOhVZ0Bjwq1jzJ4JD7wnzeCL+m2Ox9ezCh8+y9gCnrGuRgKeIi
+ NytlWV0Wtf+Ezt+ftfm7omr2Yzt17XaEb7mFkeLVruQ9Y9uyEnEv+XRepL4hWrMiKP2Xm33Fh
+ JbKZWmKm4UUU4zAh2lyxj7RgyiHP7uwwTEoczUHBCzZ+fqOFUWyRBe6Hnh3mLTG+n/OAzK5P6
+ fcBPB1iTHm038Ue83bf/XQSwp8+Bq31HIutshD+UNN82v7Bo4UklVINs83Nnx5E/HWXpxJOy5
+ 9jua9L1sCGRxM7XiX5xn5+z2mFFmnV2Sae+lf6oA2TxpJZhokgDJllDw3gw6C2xhu6WweQxjV
+ bYLusXToNs+eUsYpDvLMB1P0FB2xSeLOY8OJJt7tQtGRo3XVUui1nEIQDbWGuHBE3DPsAneek
+ FqyZ9fWU8Jcx9lQl3l3MeQzsAJyntPW9jEkT0p4DfNORGfNxXn0GBw7ParkohR53wHh9ZWd3H
+ UrtXP4NLY7bKZX8dyY5OGfY3sexptttBnSMp9A0dyyFLPvc2LKz5DJqD2CNk4XIh3WPX3KfLK
+ 0q8FCLryskz6ylO6mDIA8uqS9uSbsgj/g3jNVQVO67ZZR7MAoBZeOArQ3IBfFgSfFit+fxA7O
+ WMH4PjV8k3UsWwl50Wf8tWUttRsrk7KK2vReYIF1DrA08lWMwfQV8tj1Ujea9cwfWdVX7WEHI
+ uwGpCwbKYv74vnOQnJLRhbKUPeOQTFh4n4aI6H3s9OS3Cev7rzzVlLAc58gSUSqoB7LFuVJ3W
+ Uu3nTZPNmMxG5R1y0SMtbHTO+sjCfwiK2H1Vsa7Cbmf81mD31uo00cNkngCnvp+isB/pP5+D1
+ 8q5JOs3m1dxKipGZ4RWpO9ZSbYu8b1oxqZ4YP4ghjSyBKx2bLHh7PqlpMs5lxWECjdYzJuelS
+ e2hqaUqsQXpeXaXTHWVfxJDWe1ASNFbDuLQBy0OxRJP7uvPjrFX3NtvxGr9fLDuppkE62jEov
+ 7J4/5QSCODT4b4rGc2cQabdUk8PmrkPrl86pwmDchIE0IhaDbJyfEjXbZ1OKJtA7waDratB6D
+ htNITYAll8ZdJnkoCQUWZyOu3ea5QjtZxkYtxKnOc6bWzdM4pQYevKoDbZ8JLKCrr/WO0cXdZ
+ yrFiLD45jhHm/z2SN/NaDCy9kCANjhRozsh7AY/rfhtDRD+LuOy4ZJIkjXQ3LqB7PqhZM1a1m
+ 91qekWQazYfqhvHWtavcprdnNfBORbLZD7pkM2Q==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---pKu0RCboHYyUCdPAxdE0HKbMYvUCYRoio
-Content-Type: multipart/mixed; boundary="PUD6LJv30DH14K0vjDXHPlEIJWZ75Fd8T"
+--Xx7NFr293VzVQxSefb3Fg0ISWIFUxtaSY
+Content-Type: multipart/mixed; boundary="bQ7dLhVRrR5aRSdJ90kBdNMozgZEjwhoT"
 
---PUD6LJv30DH14K0vjDXHPlEIJWZ75Fd8T
+--bQ7dLhVRrR5aRSdJ90kBdNMozgZEjwhoT
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
@@ -101,83 +102,146 @@ Content-Transfer-Encoding: quoted-printable
 
 
 On 2020/9/24 =E4=B8=8B=E5=8D=8811:32, Josef Bacik wrote:
-> We're going to be adding more options that require RDONLY, so add a
-> helper to do the check and error out if we don't have RDONLY set.
+> When we move to being able to handle NULL csum_roots it'll be cleaner t=
+o
+> just check in btrfs_lookup_bio_sums instead of at all of the caller
+> locations, so push the NODATASUM check into it as well so it's unified.=
+
 >=20
 > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+
 Reviewed-by: Qu Wenruo <wqu@suse.com>
+
+But an off-topic question inlined below:
+
+> ---
+>  fs/btrfs/compression.c | 14 +++++---------
+>  fs/btrfs/file-item.c   |  3 +++
+>  fs/btrfs/inode.c       | 12 +++++++++---
+>  3 files changed, 17 insertions(+), 12 deletions(-)
+>=20
+> diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
+> index eeface30facd..7e1eb57b923c 100644
+> --- a/fs/btrfs/compression.c
+> +++ b/fs/btrfs/compression.c
+> @@ -722,11 +722,9 @@ blk_status_t btrfs_submit_compressed_read(struct i=
+node *inode, struct bio *bio,
+>  			 */
+>  			refcount_inc(&cb->pending_bios);
+> =20
+> -			if (!(BTRFS_I(inode)->flags & BTRFS_INODE_NODATASUM)) {
+> -				ret =3D btrfs_lookup_bio_sums(inode, comp_bio,
+> -							    (u64)-1, sums);
+> -				BUG_ON(ret); /* -ENOMEM */
+
+Is it really possible to have compressed extent without data csum?
+Won't nodatacsum disable compression?
+
+Or are we just here to handle some old compressed but not csumed data?
 
 Thanks,
 Qu
-> ---
->  fs/btrfs/super.c | 23 ++++++++++++++++-------
->  1 file changed, 16 insertions(+), 7 deletions(-)
->=20
-> diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-> index 8840a4fa81eb..f99e89ec46b2 100644
-> --- a/fs/btrfs/super.c
-> +++ b/fs/btrfs/super.c
-> @@ -458,6 +458,17 @@ static const match_table_t rescue_tokens =3D {
->  	{Opt_err, NULL},
->  };
+
+> -			}
+> +			ret =3D btrfs_lookup_bio_sums(inode, comp_bio, (u64)-1,
+> +						    sums);
+> +			BUG_ON(ret); /* -ENOMEM */
 > =20
-> +static bool check_ro_option(struct btrfs_fs_info *fs_info, unsigned lo=
-ng opt,
-> +			    const char *opt_name)
-> +{
-> +	if (fs_info->mount_opt & opt) {
-> +		btrfs_err(fs_info, "%s must be used with ro mount option",
-> +			  opt_name);
-> +		return true;
-> +	}
-> +	return false;
-> +}
-> +
->  static int parse_rescue_options(struct btrfs_fs_info *info, const char=
- *options)
->  {
->  	char *opts;
-> @@ -968,14 +979,12 @@ int btrfs_parse_options(struct btrfs_fs_info *inf=
-o, char *options,
->  		}
->  	}
->  check:
-> -	/*
-> -	 * Extra check for current option against current flag
-> -	 */
-> -	if (btrfs_test_opt(info, NOLOGREPLAY) && !(new_flags & SB_RDONLY)) {
-> -		btrfs_err(info,
-> -			  "nologreplay must be used with ro mount option");
-> +	/* We're read-only, don't have to check. */
-> +	if (new_flags & SB_RDONLY)
-> +		goto out;
-> +
-> +	if (check_ro_option(info, BTRFS_MOUNT_NOLOGREPLAY, "nologreplay"))
->  		ret =3D -EINVAL;
+>  			nr_sectors =3D DIV_ROUND_UP(comp_bio->bi_iter.bi_size,
+>  						  fs_info->sectorsize);
+> @@ -751,10 +749,8 @@ blk_status_t btrfs_submit_compressed_read(struct i=
+node *inode, struct bio *bio,
+>  	ret =3D btrfs_bio_wq_end_io(fs_info, comp_bio, BTRFS_WQ_ENDIO_DATA);
+>  	BUG_ON(ret); /* -ENOMEM */
+> =20
+> -	if (!(BTRFS_I(inode)->flags & BTRFS_INODE_NODATASUM)) {
+> -		ret =3D btrfs_lookup_bio_sums(inode, comp_bio, (u64)-1, sums);
+> -		BUG_ON(ret); /* -ENOMEM */
 > -	}
->  out:
->  	if (btrfs_fs_compat_ro(info, FREE_SPACE_TREE) &&
->  	    !btrfs_test_opt(info, FREE_SPACE_TREE) &&
+> +	ret =3D btrfs_lookup_bio_sums(inode, comp_bio, (u64)-1, sums);
+> +	BUG_ON(ret); /* -ENOMEM */
+> =20
+>  	ret =3D btrfs_map_bio(fs_info, comp_bio, mirror_num);
+>  	if (ret) {
+> diff --git a/fs/btrfs/file-item.c b/fs/btrfs/file-item.c
+> index 8f4f2bd6d9b9..8083d71d6af6 100644
+> --- a/fs/btrfs/file-item.c
+> +++ b/fs/btrfs/file-item.c
+> @@ -272,6 +272,9 @@ blk_status_t btrfs_lookup_bio_sums(struct inode *in=
+ode, struct bio *bio,
+>  	int count =3D 0;
+>  	u16 csum_size =3D btrfs_super_csum_size(fs_info->super_copy);
+> =20
+> +	if (BTRFS_I(inode)->flags & BTRFS_INODE_NODATASUM)
+> +		return BLK_STS_OK;
+> +
+>  	path =3D btrfs_alloc_path();
+>  	if (!path)
+>  		return BLK_STS_RESOURCE;
+> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+> index d526833b5ec0..d262944c4297 100644
+> --- a/fs/btrfs/inode.c
+> +++ b/fs/btrfs/inode.c
+> @@ -2202,7 +2202,12 @@ blk_status_t btrfs_submit_data_bio(struct inode =
+*inode, struct bio *bio,
+>  							   mirror_num,
+>  							   bio_flags);
+>  			goto out;
+> -		} else if (!skip_sum) {
+> +		} else {
+> +			/*
+> +			 * Lookup bio sums does extra checks around whether we
+> +			 * need to csum or not, which is why we ignore skip_sum
+> +			 * here.
+> +			 */
+>  			ret =3D btrfs_lookup_bio_sums(inode, bio, (u64)-1, NULL);
+>  			if (ret)
+>  				goto out;
+> @@ -7781,7 +7786,6 @@ static blk_qc_t btrfs_submit_direct(struct inode =
+*inode, struct iomap *iomap,
+>  		struct bio *dio_bio, loff_t file_offset)
+>  {
+>  	const bool write =3D (bio_op(dio_bio) =3D=3D REQ_OP_WRITE);
+> -	const bool csum =3D !(BTRFS_I(inode)->flags & BTRFS_INODE_NODATASUM);=
+
+>  	struct btrfs_fs_info *fs_info =3D btrfs_sb(inode->i_sb);
+>  	const bool raid56 =3D (btrfs_data_alloc_profile(fs_info) &
+>  			     BTRFS_BLOCK_GROUP_RAID56_MASK);
+> @@ -7808,10 +7812,12 @@ static blk_qc_t btrfs_submit_direct(struct inod=
+e *inode, struct iomap *iomap,
+>  		return BLK_QC_T_NONE;
+>  	}
+> =20
+> -	if (!write && csum) {
+> +	if (!write) {
+>  		/*
+>  		 * Load the csums up front to reduce csum tree searches and
+>  		 * contention when submitting bios.
+> +		 *
+> +		 * If we have csums disabled this will do nothing.
+>  		 */
+>  		status =3D btrfs_lookup_bio_sums(inode, dio_bio, file_offset,
+>  					       dip->csums);
 >=20
 
 
---PUD6LJv30DH14K0vjDXHPlEIJWZ75Fd8T--
+--bQ7dLhVRrR5aRSdJ90kBdNMozgZEjwhoT--
 
---pKu0RCboHYyUCdPAxdE0HKbMYvUCYRoio
+--Xx7NFr293VzVQxSefb3Fg0ISWIFUxtaSY
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl9tO30ACgkQwj2R86El
-/qh+lAf/el4Uppxe7qSmpMyZXIPH6ShwQQbXPSOvxdvV0yJy7M/BmwTwgn78eMKO
-2yhX48k+UN3kmm4OaHPVj6+/rR80igdj/Upz2wUGq8FYalYP/YnflAkf+xsBCSvk
-UVqQrqhjzhZM99yTEtZFhRnCSj3n+RryYo9aJCWMT3vIAHLWQJ/XML3zTjhuhwUv
-l22fPjg3OrFBs4SX3dMPTTZg5KMLfbWv0vnyglBaaCOYkLSWUtTjx42e89inveWc
-CKd47Ci3jtdh0qoetJHNj536cOWrvEV+VFf3Xo41uBWsDC6JCzJJkrp9/UsVPnDx
-XZBDvL0OGSp1gZ1vltdqRmfXBNqW0Q==
-=/nRh
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl9tPFkACgkQwj2R86El
+/qhEAAf/dhsVljVX0TtHLVeKDNQWnFzVMyhwcGp6g1iQ82fhNAozb2FlmNtwM6Jj
+R+r7yMc3GAU5zUiEVvNV9BreFGrXKuhDXWe/Ll1J8vJCr96nCYm0Vh7iLN/KJHC2
+3AfemmTMat3v/IM8Z1F+1oqoOymE/e/II0MrRQ8cr9Lp+YpYcy+0J+/tyQ4KFeWC
+CI1NROBdp+Wo6lU9JyAlvKhFU+z1sobm8nmSoB9MDEJwWWHfX9pJlrCz5PyEw851
+frlxJbni6orLjjKt6GOxl3+zTslEyOEhZv7dJFaT+i7A/GIZZMls3hyQ9rd2SzJB
+FP6jU0Ny7hGT9kOciJox6Z0ff2+j3A==
+=u0ZV
 -----END PGP SIGNATURE-----
 
---pKu0RCboHYyUCdPAxdE0HKbMYvUCYRoio--
+--Xx7NFr293VzVQxSefb3Fg0ISWIFUxtaSY--
