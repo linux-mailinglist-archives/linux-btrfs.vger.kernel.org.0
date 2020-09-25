@@ -2,31 +2,30 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 655C4277C3D
-	for <lists+linux-btrfs@lfdr.de>; Fri, 25 Sep 2020 01:14:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88FAB277CF7
+	for <lists+linux-btrfs@lfdr.de>; Fri, 25 Sep 2020 02:34:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726738AbgIXXO3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 24 Sep 2020 19:14:29 -0400
-Received: from mout.gmx.net ([212.227.15.15]:60713 "EHLO mout.gmx.net"
+        id S1726826AbgIYAek (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 24 Sep 2020 20:34:40 -0400
+Received: from mout.gmx.net ([212.227.15.15]:44227 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726676AbgIXXO3 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 24 Sep 2020 19:14:29 -0400
+        id S1726631AbgIYAej (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 24 Sep 2020 20:34:39 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1600989259;
-        bh=pv47lmYEzJzivhusP2FEoUULHZ/cr9Vw3avxO/rPBQ4=;
+        s=badeba3b8450; t=1600994075;
+        bh=3eCb0dfVlKZtPWD/VZwtfvHxI7xaF72hPtt3G5jWavo=;
         h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=LwEZBR0rIpHbHm4rY6N6xtcypWFQgBkrhMZI1DEDscjcIzpiJmh5WgtHYLKWPVJoA
-         jszspr9Xz5CuhRI5LhCJ7Hhr1ujHvN3dqD6ip8yvCx3crpEbFT6ARggwrzirNvN5gM
-         uy0q2YFRfb0KmsbEqalmVp3GK4MdEQjLDIqBotMI=
+        b=CK/3eY6OODynZlyAws+MuLfBUVmjbSQZK2dpURPp0i2pujHRTADc7sg1y0ibKtLrl
+         W9I64ihWHEGRcf8xkAZ/SeS166PcNxiz6LJBiJadiju0DhDlozmlbKlZdiM63+O7vw
+         9fnfbfbDeVgWlafoSpjjkRf/HYnsT1Q+D3bdTKg8=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
 Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MNswE-1k6GTy1Gfo-00OF9W; Fri, 25
- Sep 2020 01:14:19 +0200
-Subject: Re: Drive won't mount, please help
-To:     J J <j333111@icloud.com>, linux-btrfs@vger.kernel.org
-References: <91595165-FA0C-4BFB-BA8F-30BEAE6281A3@icloud.com>
- <fff0f71b-0db7-cbfc-5546-ea87f9bbf838@gmx.com>
- <C83FF9DC-77A2-4D21-A26A-4C2AE5255A20@icloud.com>
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MeU0k-1ktqaE1V8W-00aZF6; Fri, 25
+ Sep 2020 02:34:35 +0200
+Subject: Re: [PATCH 0/5] New rescue mount options
+To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com
+References: <cover.1600961206.git.josef@toxicpanda.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -52,197 +51,150 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
  ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
  oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <c992de06-0df7-4b68-2b39-d8e78332c53d@gmx.com>
-Date:   Fri, 25 Sep 2020 07:14:15 +0800
+Message-ID: <3530c799-992b-d6f1-d40a-f855b3fe8be7@gmx.com>
+Date:   Fri, 25 Sep 2020 08:34:31 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <C83FF9DC-77A2-4D21-A26A-4C2AE5255A20@icloud.com>
+In-Reply-To: <cover.1600961206.git.josef@toxicpanda.com>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="pcK4UcJR4MZ4hXr2vMR2mjYzDX8ablCzI"
-X-Provags-ID: V03:K1:IgvuPJKEvEOfgisIDfOOP7NV+mQOWN5sQfY0TeY9pg3Avm14Rwd
- QFH8du8k+pq7iD5tUt+VAzBiIPpip8vL5Upvas/ATko75JfvHKiLvsyPDulVYpNDnOlT+bx
- L7W+MsakNwRxaoxzt2c1TekzsniL2tUcoChllArk+B73oe2feQvvV+J4N0WjTIHqkFUghrH
- uE09HSTWkUMvvyxEYH0AA==
+ boundary="DAHE50sU0GAxgbJPF0oR0TzIleR6EtnFS"
+X-Provags-ID: V03:K1:6FQQq+Ny9ywPPeNsNlrFlvtVWSDu1jAbhoD5DD0dqT+KQzj4Mp/
+ I4Q9wEMvt0BT7ZLNLSXvMWDdXXDR/Xn+zqe5Sg0dgV8Kc33xw36mt8f0ycm4HsnHOwV/Q/j
+ Z8cnrjwoVyTiI7T9lZE5Opuhv7x2HRLHIpan9I6iAjYBDPjaiP3I2I85siIXCsSQ3Mg4buS
+ NSq70/3I5dIJhuQVse3/w==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:Kc0vnpjqwvg=:0iDKSpG0cQWyFixAzK+quE
- xsjdKkuOGK6fA1p+Zr4GfYj4sFjpkt6SjCf0EJH/TVnUEO+g+DdulJC0LiZstYJhXFnl1Uh52
- vpPBi4M9RHBdnvg2x+Zg4RJzggEbrI8wXR0HRLi+0XPIN+J09ImXUKNR6UsWK5VQD5p6+eojZ
- Jn+L/qhC9RrEknZotri/G17YXnYqgy7xilDRG4hPP+5LTQuQgOyDjl5ySTqbRxBqgtQrECsQv
- wBscyxtHhz2lPItAEk1j6fDTYnMHptBVIABJDnb2+fTbnsKDDtv/RKlrivniRRM7D8FskAi6B
- MMgoVWTHIAltdMjW0q1mApDDBCViKVNmK91IQ6AJJpmRGIdJJ/JZXWnLq3orxK9FBEkGOE6RE
- qVo+RipUNfRPmB2jb7GBpcq1zenTnXhEDf3FYtFB9/pb3d7qOy9zPymUCaZU6lM0vVMaEQY/f
- qcICdwGV0HDrwbi2Epfz4jEoo/f9thNTccHIHkuX3NKSqEbM+ugXZXXV2ZXvqUvBkePnYqTIJ
- Md95PDtwetcl+VsOo/KY2dh44Wj5LKNIo8heKAAq8VTaqEYJKsjmm506/aC1kqga23ly+zx5F
- emf2Qa7nGWoaRaMi808H4ITHigBmgon52QN/7l5+Cea6Zcg/wftAkZk9nRHZTDAcgRXUMA8Tg
- MA03zSgUSfK0QYw4aing0wH03wt1t9YgwsxEk3LRVEtdkniL8twVtVisGRdJ78t5dtAH3KEIS
- biuTqxEukVvNDxndEHSckATnAxvpah5z4BfTU0NipBkm1XQxSQZK0Q2KEW6674MMhHVa5GwnS
- q2ltCKu2xuBzVb/2qq3XtI357+gZWWX0DaXX1ia8RGHs/CVgeTCsOX8X194J0y/cqlQ0OS+zQ
- ij2pafNnMZsj838Nqp3f0qXuxjgLljRHsxT5rYCanSEo7KMoAJrzVjNZJJiRYPR4D1qGq8BTl
- MxBuK77Wrj1D87Sq9GuJj+lIGnxfP9mvxZVqrMFkfkFqtEN0cW/z3O/o1Pi9yRl2es7wCDLEW
- A5B1/Xem870s0uPZ8UBs5na8mPpi8NZ5a1xuaCZvHcB0nhobLcVrPgqzMfOVRjPhYPozO5V8J
- HtvL2IXLRs04fQeiY5i0y5+GckM/my/9HkSe2JcG2v0A6/VmMvnW9rQ/oGpjiGqxDBQzO5t73
- r14Z868f/33y5JY24h04vMandVM0rJJoiZoPxRVPZRiS8l7PKOq6RdRs8NhZKAzq5ysL+Wh4h
- gw0nWQlfqSa8/EJMo9lwXly9s4izNbOe4e/roEw==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:7nwpLnCr3bU=:bHxKgkWXTKBUgoOCv35Zpn
+ owl/tXfpRtUIMwUHvhhJ2mDlWF7y4L4SaBvt/o0XWqkhd7p+O1X40Dz0Qm31C5ISGSj90T14G
+ /kJZrM0FKqlBpGXS1RZKNY7DkqcKaIQZxTrABzjoe29j3d0GA+yFLpbSs+PdJ1lp80DsI+nfb
+ TWuvHDMK8j0fEzkVU/b9Vcyp1zhgCiAHnW1DBE3z9OiaO5QFkstXh8zzO6nyTWHtlqbQlssV9
+ iIXdHtu7U34RiPgCSC9g8R6P1iMmqVnHI/LVYrCCTWJplXtwEPHZhIpfG/qzYRPFcD6UrRg1b
+ zcEDjI/SSSAU4myN0CCpO+10TOJJp/62AKbsi5a+QFIvcyBqpcrxgV/r+UPMvKqmepKeEpnys
+ kwwDh5nvLUihxeyF9r02HIa+CHy/qrj/MTofQdc/jmpVUjkIuHewkd9uuxI9XgrVvRFF1Awec
+ G8q6gN2yxLwk5N5RDxPspCskyYtQa1gUdr7jIEY/vXg/EBUorf90wtWRYJw/BXnMWTDGauOOP
+ c194t8ZzlCMdmMVdaaSxekteCX4vZW8A+N9E8m92fU1cIqfLZNyfm6fg7lrFD1FzgqFEeSZFm
+ 4U+uLN096tqWprjeOT2QGU9qvF7y5ZfTBhzT2Rqym+a7k2gi8vz6ZzBtyOA9EPUiI5IJYy4zO
+ emIINMvFNqE4mKT0slW8AOlZAJ/aAf4y9b30nvVUz9A7JRRpTIdD4JDH4opQ2MQ/PjD9Jhy3e
+ wpihLlGApTxQWqwXnjloCpWc/hPtZh9wGckZihjPWP/Wk2OFDZTR/+5zRyoIZNbCj09bse4P8
+ 8YwFSfW2ztGuSPa6OMldAJ/cNCtkBRx2nOkUnbIIJygvXo0kmrhijagTqEt3ixPrTkTVk1Z9A
+ 8sovUd8pzBH17FYemthWnfm5S+xsng0RR3hUHCwrAKt/al5ctxmWiRFncWoFEdkZeKri1jL4c
+ SYzd1YRfdGxqe1hqcO9xLjNIbID4YL9cOqvEX+ZndXprpu/SXXZ1xR01ppgGIFLrZHHoHkklu
+ o0zbJuWMSUC6QO6oH8goEOROd+tFicQ4U9laCmD6sY3UHNnNE4iSetY8XfxBthDaBhTSdppzx
+ hYkNY0w3bX3Sp+WosJL6oO9P7re+2ZIhh5MvPNgaoAmFHFoLsnk3uRPuHwDUotP7VZsMWzwsx
+ AvcPpYrMUySmiqagUTRdrRLYAQ8/Mgzc+mLROS1P2X9EqD3LkwjLkO7T4fhsOF8RCNWfd0y28
+ nMBZrCJl+uirHfwPi7x5jJOm69s6/ZQekdtRE0A==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---pcK4UcJR4MZ4hXr2vMR2mjYzDX8ablCzI
-Content-Type: multipart/mixed; boundary="p7b4O9yBDXIqjPyaxWQ3o2ycnJWItswSD"
+--DAHE50sU0GAxgbJPF0oR0TzIleR6EtnFS
+Content-Type: multipart/mixed; boundary="LOctzHlekc9PAaw5mlUk4a7qDZ8d5ecNk"
 
---p7b4O9yBDXIqjPyaxWQ3o2ycnJWItswSD
+--LOctzHlekc9PAaw5mlUk4a7qDZ8d5ecNk
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
 
 
 
-On 2020/9/25 =E4=B8=8A=E5=8D=886:28, J J wrote:
-> Thanks for your help Qu.
-> So is the data lost? Should I follow the procedure to recover what I ca=
-n to another disk?
-> Any other suggestions for next steps?
+On 2020/9/24 =E4=B8=8B=E5=8D=8811:32, Josef Bacik wrote:
+> Hello,
+>=20
+> This is the next version of my rescue=3Dall patches, this time broken u=
+p in to a
+> few discrete patches, with some cleanups as well.  I have a PR for the =
+xfstest
+> that exercises these options, it can be found here
+>=20
+>   https://github.com/btrfs/fstests/pull/35
+>=20
+> This is the same idea as the previous versions, except I've made a mech=
+anical
+> change.  Instead we have rescue=3Dignorebadroots, which ignores any glo=
+bal roots
+> that we may not be able to read.  We will still fail to mount if thinks=
+ like the
+> chunk root or the tree root are corrupt, but this will allow us to moun=
+t read
+> only if the extent root or csum root are completely hosed.
+>=20
+> I've added a new patch this go around, rescue=3Dignoredatacsums.  Someb=
+ody had
+> indicated that they would prefer that the original rescue=3Dall allowed=
+ us to
+> continue to read csums if the root was still intact.  In order to handl=
+e that
+> usecase that's what you get with rescue=3Dignorebadroots, however if yo=
+ur csum
+> tree is corrupt in the middle of the tree you could still end up with p=
+roblems.
+> Thus we have rescue=3Dignoredatacsums which will completely disable the=
+ csum tree
+> as well.
 
-btrfs-restore is the normally the tool you need to salvage your data.
+The extra hard ignore for data csum is really good.
+
+>=20
+> And finally we have rescue=3Dall, which simply enables ignoredatacsums,=
+
+> ignorebadroots, and notreelogreplay.  We need an easy catch-all option =
+for
+> distros to fallback on to get users the highest probability of being ab=
+le to
+> recover their data, so we will use rescue=3Dall to turn on all the fanc=
+iest rescue
+> options that we have, and then use the discrete options for more fine g=
+rained
+> recovery.  Thanks,
+
+Now rescue=3Dall makes more sense. It's just an alias for one to salvage
+as much data as possible.
 
 Thanks,
 Qu
 >=20
->> On Sep 14, 2020, at 4:34 AM, Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:=
+> Josef
+>=20
+> Josef Bacik (5):
+>   btrfs: unify the ro checking for mount options
+>   btrfs: push the NODATASUM check into btrfs_lookup_bio_sums
+>   btrfs: introduce rescue=3Dignorebadroots
+>   btrfs: introduce rescue=3Dignoredatacsums
+>   btrfs: introduce rescue=3Dall
+>=20
+>  fs/btrfs/block-group.c | 48 +++++++++++++++++++++++++++
+>  fs/btrfs/block-rsv.c   |  8 +++++
+>  fs/btrfs/compression.c | 17 ++++------
+>  fs/btrfs/ctree.h       |  2 ++
+>  fs/btrfs/disk-io.c     | 74 +++++++++++++++++++++++++++---------------=
 
->>
->>
->>
->> On 2020/9/14 =E4=B8=8A=E5=8D=884:56, J J wrote:
->>> I=E2=80=99m new to a lot of this, just trying to use a NAS at home, s=
-ingle usb external disk, not RAID. Was working great for a few months, I=E2=
-=80=99m not sure what changed today when it stopped mounting. Any advice =
-appreciated.
->>
->> Transid mismatch, and the expected transid is newer than the on-disk
->> transid.
->>
->> This means, either btrfs has some bug that causes metadata writeback n=
-ot
->> following COW, or the disk controller/disk itself ignores Flush/FUA
->> commands.
->>
->> Considering it's usb external disk, I doubt the later case.
->>
->> In that case, any fs would experience similar problem if a sudden powe=
-r
->> loss or cable loss happened.
->>
->> You may workaround such problem by disabling the writecache, but I dou=
-bt
->> if the USB->Sata convert would follow the request.
->>
->> Thanks,
->> Qu
->>>
->>> Dmesg log attached
->>>
->>>
->>> uname -a
->>> Linux rock64 4.4.190-1233-rockchip-ayufan-gd3f1be0ed310 #1 SMP Wed Au=
-g 28 08:59:34 UTC 2019 aarch64 GNU/Linux
->>>
->>>
->>>
->>> btrfs --version
->>> btrfs-progs v4.7.3
->>>
->>>
->>>
->>> btrfs fi show
->>> Label: '3TBRock64'  uuid: 71eda2e3-384c-4868-b5d4-683f222865e6
->>> 	Total devices 1 FS bytes used 2.48TiB
->>> 	devid    1 size 2.73TiB used 2.59TiB path /dev/mapper/sda-crypt
->>>
->>>
->>> btrfs fi df /dev/mapper/sda-crypt
->>> ERROR: not a btrfs filesystem: /dev/mapper/sda-crypt
->>>
->>>
->>> btrfs inspect-internal dump-super /dev/mapper/sda-crypt=20
->>> superblock: bytenr=3D65536, device=3D/dev/mapper/sda-crypt
->>> ---------------------------------------------------------
->>> csum_type		0 (crc32c)
->>> csum_size		4
->>> csum			0x9e8b0c33 [match]
->>> bytenr			65536
->>> flags			0x1
->>> 			( WRITTEN )
->>> magic			_BHRfS_M [match]
->>> fsid			71eda2e3-384c-4868-b5d4-683f222865e6
->>> label			3TBRock64
->>> generation		395886
->>> root			2638934654976
->>> sys_array_size		129
->>> chunk_root_generation	377485
->>> root_level		1
->>> chunk_root		20971520
->>> chunk_root_level	1
->>> log_root		2638952366080
->>> log_root_transid	0
->>> log_root_level		0
->>> total_bytes		3000556847104
->>> bytes_used		2729422221312
->>> sectorsize		4096
->>> nodesize		16384
->>> leafsize		16384
->>> stripesize		4096
->>> root_dir		6
->>> num_devices		1
->>> compat_flags		0x0
->>> compat_ro_flags		0x0
->>> incompat_flags		0x161
->>> 			( MIXED_BACKREF |
->>> 			  BIG_METADATA |
->>> 			  EXTENDED_IREF |
->>> 			  SKINNY_METADATA )
->>> cache_generation	395886
->>> uuid_tree_generation	395886
->>> dev_item.uuid		b7f4386a-18e0-437b-9588-6064ff483fd5
->>> dev_item.fsid		71eda2e3-384c-4868-b5d4-683f222865e6 [match]
->>> dev_item.type		0
->>> dev_item.total_bytes	3000556847104
->>> dev_item.bytes_used	2843293515776
->>> dev_item.io_align	4096
->>> dev_item.io_width	4096
->>> dev_item.sector_size	4096
->>> dev_item.devid		1
->>> dev_item.dev_group	0
->>> dev_item.seek_speed	0
->>> dev_item.bandwidth	0
->>>
->>>
->>> dev_item.generation	0
->>>
->>
+>  fs/btrfs/file-item.c   |  4 +++
+>  fs/btrfs/inode.c       | 18 +++++++---
+>  fs/btrfs/super.c       | 49 ++++++++++++++++++++++++----
+>  fs/btrfs/volumes.c     |  7 ++++
+>  9 files changed, 179 insertions(+), 48 deletions(-)
 >=20
 
 
---p7b4O9yBDXIqjPyaxWQ3o2ycnJWItswSD--
+--LOctzHlekc9PAaw5mlUk4a7qDZ8d5ecNk--
 
---pcK4UcJR4MZ4hXr2vMR2mjYzDX8ablCzI
+--DAHE50sU0GAxgbJPF0oR0TzIleR6EtnFS
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl9tKEcACgkQwj2R86El
-/qjqIwf+MGeBZUl8EEfjki5RVuwb1Ny6BVpuRaTqDxWbZ51rb+Oov5X2WSnB2DEC
-92DCkDWvLToerwmZgpGR6jz1UkGr8IOUMvTAtWGYf4f6Q4TSGfhSsudRERUvd6H7
-iSYzh79ebmFJ3GhwlEFean2aS63Y+nbWoBDlJLH13IF+1yuY1Qnk9Cqr5X7LB9yX
-AxSoRtNYhi/FWC9OXrkzt0EbUvUe/nsZiaYDQiFBUpmjpwmDYWURHcTrDRQwycy5
-Xo1J//KyOHAjDtKt0C9wsE4jHETVWSTgCUmIC7sm2bQ11QCknVgp5yvqYBNWOJ4x
-5XeaLpFKShQpe3GAyD0Q9Dou4eCx3w==
-=3Z+G
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl9tOxcACgkQwj2R86El
+/qhw+wf/X+88O97WfPRj1NOu/UnGvl/lYzgkol8YGKVoFoBZasZYjrkYqdoeUIrU
+XJI4oBdGTvzuNN3Y3kbrbuijD41nchZ9rg4OSLXt/lZFclh/KUx2kEFeCrj3nwRi
+b2YDF/kq2LGoW+s+B9OBicP/ImmJg94VYqlooZJnTCjoCTqEyS+ezQUJveV3Q6aT
+N2pewbq3R/Z1j9J9Une4qbXbFMBqgAzPNEC0dU6yaNPQ1rwN55B3r4ASsT5sz3xl
+HXvSbBg9FjI4jqaHOAtUBkaK3HMmv1Meo94CTWFf+UJ0vRwAgn89jH5/1ua6MiQV
+VMA02IK56cyORTqUwEQzfMJAo0EPiw==
+=HHM8
 -----END PGP SIGNATURE-----
 
---pcK4UcJR4MZ4hXr2vMR2mjYzDX8ablCzI--
+--DAHE50sU0GAxgbJPF0oR0TzIleR6EtnFS--
