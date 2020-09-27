@@ -2,105 +2,230 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BCEF279E7B
-	for <lists+linux-btrfs@lfdr.de>; Sun, 27 Sep 2020 07:44:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 679A427A063
+	for <lists+linux-btrfs@lfdr.de>; Sun, 27 Sep 2020 11:57:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727614AbgI0FoC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 27 Sep 2020 01:44:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48824 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726382AbgI0FoB (ORCPT
+        id S1726239AbgI0J5N (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 27 Sep 2020 05:57:13 -0400
+Received: from out20-74.mail.aliyun.com ([115.124.20.74]:53692 "EHLO
+        out20-74.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726149AbgI0J5N (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 27 Sep 2020 01:44:01 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82CE5C0613CE
-        for <linux-btrfs@vger.kernel.org>; Sat, 26 Sep 2020 22:44:01 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id y15so3346736wmi.0
-        for <linux-btrfs@vger.kernel.org>; Sat, 26 Sep 2020 22:44:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=fJPzoShlulolTsCANwxHPouik8hhFIKRZxbrnyMnBxg=;
-        b=gm6JRmHyu6FCIlYLlcuF3gkpdPQmOZiAaQ6r0qJ/LqLvrr5GSqX1wO8sc0Wx7x01i5
-         r+KJyoZFwKB8ohUDqRgFZKW2Eghmqd6gBGInvCSJQ2SAvcB80EzamxolkyvEb66Uqy67
-         D/k82CtITb/Tgysxji2gtWwLnH+9k+bJSJyu0jgym9eRVtPmawF3Zwjrq4gfOlTGJTan
-         CyFGtUQ8V+0WG/Bhk+s1rNe20mRyuDB2eO6705ZLMwcu6NVLpk2eUlGk4AtCm2ag0M/B
-         oFLJGol08xUmUCecCKpEi9Qo/nlCAbKQKEN1necZaLyOzbD12OL6jCo1Qw/cd4QUgO0a
-         kw/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=fJPzoShlulolTsCANwxHPouik8hhFIKRZxbrnyMnBxg=;
-        b=WiY59Ljwr87Ke5uaQZjlZjyebCY9AHG3X5CmFymdnNxSxYWz5/KvVmHBXNb42PJvbM
-         cQqyzl1pUsyOnDBnftQGjE9BeZSjPajyr/7841VQPLDDKwdi9cnHXjXGnUsCXVc9yHWd
-         9Qhr9vCy94AwTTERvtEUdX3h6S/56Y91k6jvog/4aIeRKMzNGCJ7w974ShSATJBWZ0eC
-         m4G7RL3YcyBKHjVhOi1hR1Mhbfz8uTOeCF7m80JuB2ay88wF640sj0muke5UjhAt47Nh
-         1FuFHYLWu/BvKvzSMzjeVufrT9cqttwlo/mSkX1G9Mk5ir7OuVvB+9DM78AunyTnfAJO
-         JufQ==
-X-Gm-Message-State: AOAM530wgWkM7wRRL6SMElhGEuPXQRPZ12tQ2tl1kJPMHP0K2axWonfV
-        lFss2Ca18HxXCPTWYQSKxMi8rc4fBiZPSMHOqCeVug==
-X-Google-Smtp-Source: ABdhPJxT9NYBk+UqAfqtCmRdbqh9aHh/1i1OkjqDkopnJe+C1jWbsWENY7dtupPkhEQHwtjmA7+f3FodboFCNwdk4ew=
-X-Received: by 2002:a1c:35c5:: with SMTP id c188mr5589117wma.11.1601185440226;
- Sat, 26 Sep 2020 22:44:00 -0700 (PDT)
+        Sun, 27 Sep 2020 05:57:13 -0400
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.0743787|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.0314969-0.00109733-0.967406;FP=0|0|0|0|0|-1|-1|-1;HT=e01l07447;MF=guan@eryu.me;NM=1;PH=DS;RN=5;RT=5;SR=0;TI=SMTPD_---.Icq6gc7_1601200628;
+Received: from localhost(mailfrom:guan@eryu.me fp:SMTPD_---.Icq6gc7_1601200628)
+          by smtp.aliyun-inc.com(10.147.41.187);
+          Sun, 27 Sep 2020 17:57:08 +0800
+Date:   Sun, 27 Sep 2020 17:57:07 +0800
+From:   Eryu Guan <guan@eryu.me>
+To:     Sidong Yang <realwakka@gmail.com>
+Cc:     linux-btrfs@vger.kernel.org, fstests@vger.kernel.org,
+        Qu Wenruo <wqu@suse.com>, Josef Bacik <josef@toxicpanda.com>
+Subject: Re: [PATCH v4] btrfs: Add new test for qgroup assign functionality
+Message-ID: <20200927095707.GS3853@desktop>
+References: <20200924144348.46203-1-realwakka@gmail.com>
 MIME-Version: 1.0
-References: <91595165-FA0C-4BFB-BA8F-30BEAE6281A3@icloud.com>
- <fff0f71b-0db7-cbfc-5546-ea87f9bbf838@gmx.com> <C83FF9DC-77A2-4D21-A26A-4C2AE5255A20@icloud.com>
- <c992de06-0df7-4b68-2b39-d8e78332c53d@gmx.com> <33E2EE2B-38B5-49A3-AB9F-0D99886751C4@icloud.com>
-In-Reply-To: <33E2EE2B-38B5-49A3-AB9F-0D99886751C4@icloud.com>
-From:   Chris Murphy <lists@colorremedies.com>
-Date:   Sat, 26 Sep 2020 23:43:44 -0600
-Message-ID: <CAJCQCtTjj7Q9D9uKQRPixC6MPKRbNw3xkf=xdF1yONcqR=FM6w@mail.gmail.com>
-Subject: Re: Drive won't mount, please help
-To:     J J <j333111@icloud.com>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200924144348.46203-1-realwakka@gmail.com>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sat, Sep 26, 2020 at 11:27 AM J J <j333111@icloud.com> wrote:
->
-> I ran btrfs-restore and recovered some data, but not most, and not the mo=
-st critical. Believe it or not, my other backup drive failed within the sam=
-e week (different file system, different location), so I=E2=80=99m worried =
-I lost a lot of data.
->
-> I'm Following this page https://btrfs.wiki.kernel.org/index.php/Restore, =
-is this the best source for information?
+On Thu, Sep 24, 2020 at 02:43:48PM +0000, Sidong Yang wrote:
+> This new test will test btrfs's qgroup assign functionality. The
+> test has 3 cases.
+> 
+>  - assign, no shared extents
+>  - assign, shared extents
+>  - snapshot -i, shared extents
+> 
+> Each cases create subvolumes and assign qgroup in their own way
+> and check with the command "btrfs check".
+> 
+> Cc: Qu Wenruo <wqu@suse.com>
+> Cc: Eryu Guan <guan@eryu.me>
+> 
+> Signed-off-by: Sidong Yang <realwakka@gmail.com>
+> ---
+> v2:
+>  - Create new test and use the cases
+> v3:
+>  - Fix some minor mistakes
+>  - Make that write some data before assign or snapshot in test
+>  - Put mkfs & mount pair in test function
+> v4:
+>  - Add rescan command for assign no shared
+>  - Use _check_scratch_fs for checking  
+> ---
+>  tests/btrfs/221     | 116 ++++++++++++++++++++++++++++++++++++++++++++
+>  tests/btrfs/221.out |   2 +
+>  tests/btrfs/group   |   1 +
+>  3 files changed, 119 insertions(+)
+>  create mode 100755 tests/btrfs/221
+>  create mode 100644 tests/btrfs/221.out
+> 
+> diff --git a/tests/btrfs/221 b/tests/btrfs/221
+> new file mode 100755
+> index 00000000..6b7c9674
+> --- /dev/null
+> +++ b/tests/btrfs/221
+> @@ -0,0 +1,116 @@
+> +#! /bin/bash
+> +# SPDX-License-Identifier: GPL-2.0
+> +# Copyright (c) 2020 Sidong Yang.  All Rights Reserved.
+> +#
+> +# FS QA Test 221
+> +#
+> +# Test the assign functionality of qgroups
+> +#
+> +seq=`basename $0`
+> +seqres=$RESULT_DIR/$seq
+> +echo "QA output created by $seq"
+> +
+> +here=`pwd`
+> +tmp=/tmp/$$
+> +status=1	# failure is the default!
+> +trap "_cleanup; exit \$status" 0 1 2 3 15
+> +
+> +_cleanup()
+> +{
+> +	cd /
+> +	rm -f $tmp.*
+> +}
+> +
+> +# get standard environment, filters and checks
+> +. ./common/rc
+> +. ./common/filter
+> +. ./common/reflink
+> +
+> +# remove previous $seqres.full before test
+> +rm -f $seqres.full
+> +
+> +# real QA test starts here
+> +
+> +# Modify as appropriate.
+> +_supported_fs btrfs
+> +_supported_os Linux
+> +
+> +_require_scratch
+> +_require_btrfs_qgroup_report
+> +_require_cp_reflink
+> +
+> +# Test assign qgroup for submodule with shared extents by reflink
+> +assign_shared_test()
+> +{
+> +	_scratch_mkfs > /dev/null 2>&1
+> +	_scratch_mount
+> +
+> +	echo "=== qgroup assign shared test ===" >> $seqres.full
+> +	$BTRFS_UTIL_PROG quota enable $SCRATCH_MNT
+> +	$BTRFS_UTIL_PROG quota rescan -w $SCRATCH_MNT >> $seqres.full
+> +
+> +	$BTRFS_UTIL_PROG subvolume create $SCRATCH_MNT/a >> $seqres.full
+> +	$BTRFS_UTIL_PROG subvolume create $SCRATCH_MNT/b >> $seqres.full
+> +
+> +	_ddt of="$SCRATCH_MNT"/a/file1 bs=1M count=1 >> $seqres.full 2>&1
+> +	cp --reflink=always "$SCRATCH_MNT"/a/file1 "$SCRATCH_MNT"/b/file1
 
-One thing missing is  -l|--list-roots doesn't show the
-subvolume/snapshot names. That might make recovery harder because if
-there's tree damage and the data you're after is in an older snapshot
-- decent chance that tree is not damaged and you can get data out that
-way.
+There's a helper to do this, _cp_reflink.
 
-Something like this:
+> +
+> +	$BTRFS_UTIL_PROG qgroup create 1/100 $SCRATCH_MNT
+> +	$BTRFS_UTIL_PROG qgroup assign $SCRATCH_MNT/a 1/100 $SCRATCH_MNT
+> +	$BTRFS_UTIL_PROG qgroup assign $SCRATCH_MNT/b 1/100 $SCRATCH_MNT
+> +
+> +	_scratch_unmount
+> +	_check_scratch_fs
+> +}
+> +
+> +# Test assign qgroup for submodule without shared extents
+> +assign_no_shared_test()
+> +{
+> +	_scratch_mkfs > /dev/null 2>&1
+> +	_scratch_mount
+> +
+> +	echo "=== qgroup assign no shared test ===" >> $seqres.full
+> +	$BTRFS_UTIL_PROG quota enable $SCRATCH_MNT
+> +	$BTRFS_UTIL_PROG quota rescan -w $SCRATCH_MNT >> $seqres.full	
 
- btrfs insp dump-t -t 1 /dev/whatever | grep -A1 'ROOT_REF'
+Trailing whitespace in above line.
 
-For each item, first line contains the root ID number you need, and
-the second line contains the name you're familiar with.
+> +
+> +	$BTRFS_UTIL_PROG subvolume create $SCRATCH_MNT/a >> $seqres.full
+> +	$BTRFS_UTIL_PROG subvolume create $SCRATCH_MNT/b >> $seqres.full
+> +	
 
-    item 4 key (FS_TREE ROOT_REF 258) itemoff 31311 itemsize 22
-        root ref key dirid 256 sequence 3 name home
+Trailing whitespace in above line.
 
-If I want to work on just home, I need to use
+> +	$BTRFS_UTIL_PROG qgroup create 1/100 $SCRATCH_MNT
+> +	$BTRFS_UTIL_PROG qgroup assign $SCRATCH_MNT/a 1/100 $SCRATCH_MNT
+> +	$BTRFS_UTIL_PROG qgroup assign $SCRATCH_MNT/b 1/100 $SCRATCH_MNT
+> +	
 
-btrfs restore --ignore-errors --verbose --root 258
+Trailing whitespace in above line.
 
-Also, you probably want newer btrfs-progs than 4.7. I don't know if
-there have been improvements to restore since then, but why not give
-it a shot and see. Most people give up because the restore tool is
-sort of a choose your own adventure book.
+> +	_scratch_unmount
+> +	_check_scratch_fs
+> +}
+> +
+> +# Test snapshot with assigning qgroup for submodule
+> +snapshot_test()
+> +{
+> +	_scratch_mkfs > /dev/null 2>&1
+> +	_scratch_mount
+> +
+> +	echo "=== qgroup snapshot test ===" >> $seqres.full
+> +	$BTRFS_UTIL_PROG quota enable $SCRATCH_MNT
+> +	$BTRFS_UTIL_PROG quota rescan -w $SCRATCH_MNT >> $seqres.full
+> +
+> +	$BTRFS_UTIL_PROG subvolume create $SCRATCH_MNT/a >> $seqres.full
+> +	_ddt of="$SCRATCH_MNT"/a/file1 bs=1M count=1 >> $seqres.full 2>&1
+> +	subvolid=$(_btrfs_get_subvolid $SCRATCH_MNT a)
+> +	$BTRFS_UTIL_PROG subvolume snapshot -i 0/$subvolid $SCRATCH_MNT/a $SCRATCH_MNT/b >> $seqres.full
+> +	
 
-In particular, the part about filtering with regex is a hurdle of its
-own but if the subvolume/snapshot you're restoring as a lot of files
-in it that you don't want to restore, then it can be useful time
-savings wise. If you'd rather filter through things later, then you
-can skip --path-regex option.
+Trailing whitespace in above line.
 
---=20
-Chris Murphy
+> +	_scratch_unmount
+> +	_check_scratch_fs	
+
+Trailing whitespace in above line.
+
+Otherwise looks fine.
+
+Thanks,
+Eryu
+
+> +}
+> +
+> +
+> +assign_no_shared_test
+> +
+> +assign_shared_test
+> +
+> +snapshot_test
+> +
+> +# success, all done
+> +echo "Silence is golden"
+> +status=0
+> +exit
+> diff --git a/tests/btrfs/221.out b/tests/btrfs/221.out
+> new file mode 100644
+> index 00000000..aa4351cd
+> --- /dev/null
+> +++ b/tests/btrfs/221.out
+> @@ -0,0 +1,2 @@
+> +QA output created by 221
+> +Silence is golden
+> diff --git a/tests/btrfs/group b/tests/btrfs/group
+> index 1b5fa695..cdda38f3 100644
+> --- a/tests/btrfs/group
+> +++ b/tests/btrfs/group
+> @@ -222,3 +222,4 @@
+>  218 auto quick volume
+>  219 auto quick volume
+>  220 auto quick
+> +221 auto quick qgroup
+> -- 
+> 2.25.1
