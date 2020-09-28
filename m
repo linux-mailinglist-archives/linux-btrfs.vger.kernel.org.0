@@ -2,91 +2,119 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED58127B466
-	for <lists+linux-btrfs@lfdr.de>; Mon, 28 Sep 2020 20:23:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFEAC27B468
+	for <lists+linux-btrfs@lfdr.de>; Mon, 28 Sep 2020 20:24:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726578AbgI1SXT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 28 Sep 2020 14:23:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48022 "EHLO
+        id S1726500AbgI1SYp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 28 Sep 2020 14:24:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726564AbgI1SXS (ORCPT
+        with ESMTP id S1726461AbgI1SYp (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 28 Sep 2020 14:23:18 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EE5CC061755
-        for <linux-btrfs@vger.kernel.org>; Mon, 28 Sep 2020 11:23:18 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id o5so1883678qke.12
-        for <linux-btrfs@vger.kernel.org>; Mon, 28 Sep 2020 11:23:18 -0700 (PDT)
+        Mon, 28 Sep 2020 14:24:45 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A45D5C061755
+        for <linux-btrfs@vger.kernel.org>; Mon, 28 Sep 2020 11:24:43 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id a4so1543698qth.0
+        for <linux-btrfs@vger.kernel.org>; Mon, 28 Sep 2020 11:24:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=subject:to:references:from:message-id:date:user-agent:mime-version
          :in-reply-to:content-language:content-transfer-encoding;
-        bh=PGSRqY7WmaGPROLvxotsgfJ58npBfiOFTiAoqTdjB20=;
-        b=CnLv37fAEcXs6Q3eQ8mUrb2DMS3ucL+BTEvlTBGeQmMazWR9udQweo6Js9fLJ2hQ9v
-         3kNyV/8BGFT+lr7MYkyKUcZUQprgW4rGvrBeD9DrB9mtykp7+kaWoP+syVWra/JCHnRc
-         YEJFBYMZztFK7RF3brQCZosXCheTmFI9oQCQc33uIqTFp6K8Dp6DZzNTQHeq6jeh3JpI
-         MPLIIk9vRZCD2vgTMSlomumlQJeeQBMrtaW971XaDY4lLNfRR9wE05DOXFTlNavK2i8y
-         +T5+o4IfxaOPFcbtExgm9ULK+SSJF/I866GJxwSGj+3+ARLeATfKjJ16Z43ec6oY/kBU
-         EDXg==
+        bh=AX5zU4ZaC7GvxpywLfriMV9AQlSkB0apvNWJK9p8wPU=;
+        b=FOtgwCMpls1udxrNO+SqTE0q2IFPeEg1lRo2rGgWQuJmHtHlwGN+VngfaVxHCztvdh
+         wRpDoeTCMG+dMrCxvpzAxiuWvFE5auhT+cbihb8pupLUYXRrhTc91q/4w5kYDm252IgR
+         MukYswsm1jlEp2d/lWC7uMsm97lb6qaTETmzUenKDfJggrfzOFrWw5NDfpGvIyr3civ6
+         90iuK75oYgOCUC36VX5I9HX7VJviEa0nBGzStzpXC/rz3zn+o2X79IaL0W494vfAGU9R
+         qDVSjYZ9NNcm62PzwuZ1O7GxVNxU9qhzPVVSPF5h5VNqYrjAOWFP3sa+In/0g3jUTlsf
+         L7VQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=PGSRqY7WmaGPROLvxotsgfJ58npBfiOFTiAoqTdjB20=;
-        b=byvLx8Nw3YSgSc+FxrcPoaFgiLYROhL7Dtw9qU/sdNg5kzsTbZWAjnRRBKR/NEzfU1
-         J4pioo6boZFMfMuz2FGeAAz9hIYSVwNu6ORd+i2q3abuee3ErGhLE9zUSlBq3kx+ksUm
-         miyHk1TCqxxcSRqvi1HNBrYa6DKRZrxPctDU30CuHlt/bLJEzBYpgsOijIOqwCVSQjKh
-         5B9IcuQZDkSTHyJ6xoqCe0rIiE3dj+fSjfgvkSkbW8igRTI5UqQLwSfBm3IJTbTTa2mE
-         UrtbwZuqRcIDZa5qzEXgdYhU69wPfpufB++GFMjtqx+RtA6ke960myYdtkd7S3bnuSc/
-         0QBQ==
-X-Gm-Message-State: AOAM531L6P8rODLW7cYLJrNEaY7Olx/uFzbuskpXc4s+ocTn/CrlUTrJ
-        iEmDbhFMzvG00iPLG6w2BuBfvldUroM40qKt
-X-Google-Smtp-Source: ABdhPJw3Stfb+rgw7XDf7Sgl2Ss5uEC0it46UhPry+OWgTUl/mb21vF2+JwOZ1xSPbOCRHs0SFWTcA==
-X-Received: by 2002:ae9:c015:: with SMTP id u21mr794163qkk.268.1601317397376;
-        Mon, 28 Sep 2020 11:23:17 -0700 (PDT)
+        bh=AX5zU4ZaC7GvxpywLfriMV9AQlSkB0apvNWJK9p8wPU=;
+        b=qJNneNDa7qVN3JcxW0FaVj9mgZX4URM1QpC2Z6VqqOusEEYo8B45G+iD8olNe4DEqT
+         mSOOj1fRn9ndiSJ/00JEaaVDLZ2jGcL+gJDY8XftZZKty731nouwyw4OsA2wXo6aPfnO
+         myJLDMhThWgxoNLcU2CPDewNJ6GyRPXYaYYca85wchE3O7KjJj/lwAAzvEFCQVsjAlo2
+         aJm81N8YlTIquSEafe55OXMrZqd+eV0LOk8DuopDk93ZgoUMtCjtzHaipT0AQawu1e+K
+         0zdla1t4/KX+ou63GQUBlbCzid+Ml19TD98YRmUC4M0FQwKHwn1M0nwnlLQNdEfrWFCe
+         hsGg==
+X-Gm-Message-State: AOAM533V/1Z0aDcraM4VYeWvc8qj/2VQ39SAAiOQOkCIbSsE89NTd2+H
+        gEJdlqCHyaIXrFA/UyrbTsuzLg==
+X-Google-Smtp-Source: ABdhPJwTOdpJU9f3PIfgNGSseM6enV1BTDB3ihILjs5YcMkyPJXiEJfmvmA1pdsBcA0/Yc8qwg9hqA==
+X-Received: by 2002:aed:2907:: with SMTP id s7mr2763170qtd.321.1601317482818;
+        Mon, 28 Sep 2020 11:24:42 -0700 (PDT)
 Received: from [192.168.1.45] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id p28sm2201226qta.88.2020.09.28.11.23.16
+        by smtp.gmail.com with ESMTPSA id t10sm1847303qkt.55.2020.09.28.11.24.41
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 28 Sep 2020 11:23:16 -0700 (PDT)
-Subject: Re: [PATCH 1/5] btrfs: unify the ro checking for mount options
-To:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "kernel-team@fb.com" <kernel-team@fb.com>
+        Mon, 28 Sep 2020 11:24:42 -0700 (PDT)
+Subject: Re: [PATCH 3/5] btrfs: introduce rescue=ignorebadroots
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com
 References: <cover.1600961206.git.josef@toxicpanda.com>
- <d307f1d95415232dabfb700e79cda73618aa7d50.1600961206.git.josef@toxicpanda.com>
- <DM5PR0401MB3591BBA587DD3D36F47FAA549B350@DM5PR0401MB3591.namprd04.prod.outlook.com>
+ <b7b5dfb5542c3eb965cd2d8a9baa2999b6bae638.1600961206.git.josef@toxicpanda.com>
+ <b6710997-5150-d082-e260-9fbbaee74e4c@gmx.com>
 From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <be964e53-0adb-a829-8057-fe5c9115fe70@toxicpanda.com>
-Date:   Mon, 28 Sep 2020 14:23:15 -0400
+Message-ID: <355c3b88-1bb6-e79f-b06a-6aa684c3ed67@toxicpanda.com>
+Date:   Mon, 28 Sep 2020 14:24:41 -0400
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
  Gecko/20100101 Thunderbird/78.2.2
 MIME-Version: 1.0
-In-Reply-To: <DM5PR0401MB3591BBA587DD3D36F47FAA549B350@DM5PR0401MB3591.namprd04.prod.outlook.com>
+In-Reply-To: <b6710997-5150-d082-e260-9fbbaee74e4c@gmx.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 9/28/20 8:37 AM, Johannes Thumshirn wrote:
-> On 24/09/2020 17:33, Josef Bacik wrote:
->> We're going to be adding more options that require RDONLY, so add a
->> helper to do the check and error out if we don't have RDONLY set.
+On 9/24/20 8:47 PM, Qu Wenruo wrote:
+> 
+> 
+> On 2020/9/24 下午11:32, Josef Bacik wrote:
+>> In the face of extent root corruption, or any other core fs wide root
+>> corruption we will fail to mount the file system.  This makes recovery
+>> kind of a pain, because you need to fall back to userspace tools to
+>> scrape off data.  Instead provide a mechanism to gracefully handle bad
+>> roots, so we can at least mount read-only and possibly recover data from
+>> the file system.
 >>
->> +	/* We're read-only, don't have to check. */
->> +	if (new_flags & SB_RDONLY)
->> +		goto out;
+>> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> 
+> Mostly OK, but still a small problem inlined below.
+> [...]
+>> index 46f4efd58652..08b3ca60f3df 100644
+>> --- a/fs/btrfs/volumes.c
+>> +++ b/fs/btrfs/volumes.c
+>> @@ -7656,6 +7656,13 @@ int btrfs_verify_dev_extents(struct btrfs_fs_info *fs_info)
+>>   	u64 prev_dev_ext_end = 0;
+>>   	int ret = 0;
+>>   
+>> +	/*
+>> +	 * We don't have a dev_root because we mounted with ignorebadroots and
+>> +	 * failed to load the root, so skip the verification.
+>> +	 */
+>> +	if (!root)
+>> +		return 0;
 >> +
 > 
-> Why aren't you moving the SB_RDONLY check into the new check_ro_option() as well?
-> This is what I would have thought this patch does after just reading the commit message.
+> The check itself is mostly for write, to ensure we won't have
+> missing/unnecessary dev extents to mess up chunk allocation.
+> 
+> For RO operations, the check makes little sense, and can be safely
+> ignored for ignorebadroots.
+> 
+> Furthermore this only handles the case where the device tree root is
+> corrupted.
+> But if only part of the device tree is corrupted, we still continue
+> checking and fail to mount.
+> 
+> It's better to skip the whole check for dev extents if we're using
+> ignorebadroots rescue option.
+> No matter if the root is corrupted or not.
 > 
 
-To avoid the multiple calls if we're not read only, otherwise it'll be multiple 
-function calls to check that that SB_RDONLY is set.  The compiler will probably 
-optimize that away, but I just went with this instead.  I'm good either way if 
-people have strong opinions one way or the other.  Thanks,
+Yeah good point, I'll fix this up.  Thanks,
 
 Josef
