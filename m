@@ -2,66 +2,67 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFEAC27B468
-	for <lists+linux-btrfs@lfdr.de>; Mon, 28 Sep 2020 20:24:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8EE527B474
+	for <lists+linux-btrfs@lfdr.de>; Mon, 28 Sep 2020 20:28:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726500AbgI1SYp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 28 Sep 2020 14:24:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48242 "EHLO
+        id S1726526AbgI1S2e (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 28 Sep 2020 14:28:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726461AbgI1SYp (ORCPT
+        with ESMTP id S1726442AbgI1S2e (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 28 Sep 2020 14:24:45 -0400
+        Mon, 28 Sep 2020 14:28:34 -0400
 Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A45D5C061755
-        for <linux-btrfs@vger.kernel.org>; Mon, 28 Sep 2020 11:24:43 -0700 (PDT)
-Received: by mail-qt1-x844.google.com with SMTP id a4so1543698qth.0
-        for <linux-btrfs@vger.kernel.org>; Mon, 28 Sep 2020 11:24:43 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46C8FC061755
+        for <linux-btrfs@vger.kernel.org>; Mon, 28 Sep 2020 11:28:34 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id c18so1549110qtw.5
+        for <linux-btrfs@vger.kernel.org>; Mon, 28 Sep 2020 11:28:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=subject:to:references:from:message-id:date:user-agent:mime-version
          :in-reply-to:content-language:content-transfer-encoding;
-        bh=AX5zU4ZaC7GvxpywLfriMV9AQlSkB0apvNWJK9p8wPU=;
-        b=FOtgwCMpls1udxrNO+SqTE0q2IFPeEg1lRo2rGgWQuJmHtHlwGN+VngfaVxHCztvdh
-         wRpDoeTCMG+dMrCxvpzAxiuWvFE5auhT+cbihb8pupLUYXRrhTc91q/4w5kYDm252IgR
-         MukYswsm1jlEp2d/lWC7uMsm97lb6qaTETmzUenKDfJggrfzOFrWw5NDfpGvIyr3civ6
-         90iuK75oYgOCUC36VX5I9HX7VJviEa0nBGzStzpXC/rz3zn+o2X79IaL0W494vfAGU9R
-         qDVSjYZ9NNcm62PzwuZ1O7GxVNxU9qhzPVVSPF5h5VNqYrjAOWFP3sa+In/0g3jUTlsf
-         L7VQ==
+        bh=euQIOrsi9FPVEvCIjs63tukkQEoGirlCzRtpjIQcx48=;
+        b=T3i02tRj0XjXye48OqltGkYyAU7GYEuofUzzug/cF01sKibAX4XywDkALBpR1PQDbq
+         m5tVLX7eKsc5n79VFXFna1WQ5xUURExgCCOfawu+x5/z9iMPPj3fG9QMQfKDT0m2BzNQ
+         lxLHAYVvZfh/0Yh3YlOSva2p2vKMcvsm0ydzhcyKds+7D5I78vXWZdBx4IvhNxsILmP0
+         MX/fxRY91VZcHxSFeixlSpJDr8SNzYvYODXYGpc1rDgzod5JvdcNnqX5l7ydna2Y3Bt/
+         C2KRbzEV3CVbYDa9+JR77tn/M12uer8WGQX/9CIKCx3u7OUw4oJYG1TYNOVhq5n4Ou/C
+         Qodg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=AX5zU4ZaC7GvxpywLfriMV9AQlSkB0apvNWJK9p8wPU=;
-        b=qJNneNDa7qVN3JcxW0FaVj9mgZX4URM1QpC2Z6VqqOusEEYo8B45G+iD8olNe4DEqT
-         mSOOj1fRn9ndiSJ/00JEaaVDLZ2jGcL+gJDY8XftZZKty731nouwyw4OsA2wXo6aPfnO
-         myJLDMhThWgxoNLcU2CPDewNJ6GyRPXYaYYca85wchE3O7KjJj/lwAAzvEFCQVsjAlo2
-         aJm81N8YlTIquSEafe55OXMrZqd+eV0LOk8DuopDk93ZgoUMtCjtzHaipT0AQawu1e+K
-         0zdla1t4/KX+ou63GQUBlbCzid+Ml19TD98YRmUC4M0FQwKHwn1M0nwnlLQNdEfrWFCe
-         hsGg==
-X-Gm-Message-State: AOAM533V/1Z0aDcraM4VYeWvc8qj/2VQ39SAAiOQOkCIbSsE89NTd2+H
-        gEJdlqCHyaIXrFA/UyrbTsuzLg==
-X-Google-Smtp-Source: ABdhPJwTOdpJU9f3PIfgNGSseM6enV1BTDB3ihILjs5YcMkyPJXiEJfmvmA1pdsBcA0/Yc8qwg9hqA==
-X-Received: by 2002:aed:2907:: with SMTP id s7mr2763170qtd.321.1601317482818;
-        Mon, 28 Sep 2020 11:24:42 -0700 (PDT)
+        bh=euQIOrsi9FPVEvCIjs63tukkQEoGirlCzRtpjIQcx48=;
+        b=PE1x75kvQmospp0GeLnEvOAC8+4lPulTGE9uKFudROgQOSjs8DBvE1f42Ezs5vcxfS
+         Iy1ixZiKMIGiL6wcvZDUfDXLz1LtJM0Kp76vmIn0eGkv/bcQ3h2cBUftyHhFRgvmfqyR
+         HBtgSRWdZZ22FP5JPfiiSI7jo1+qQQHRpEmnKHm4IW+BFUaxOuEPn91N3Wk3AbI3Ke4g
+         H0WBXM+pF3ePIWdAJhq5TkKbybktk7A0hAV0sbAObPf8uldQg7R2LsEUMqIMOOCfwodd
+         LTH1r1LWQ2My8S8Q4h5O8/VB3ChTXkamoTrxfGjSMpkyzVS/Y1aDvVuYT0bpPEAapJeJ
+         O7nw==
+X-Gm-Message-State: AOAM53143eTrY57Jupvps5T+dBdZEKhdJhZ888rBsEWwLZtne0+jbtbW
+        QdwepgXWzGNNdePVXUi+AnEL9Q==
+X-Google-Smtp-Source: ABdhPJyb79XaaVBLLb+AeFvhxIvgjI2uNgfdNbdwATlMsHjodrWxKPBKxzRdMy/hZANX+G8BUhIugg==
+X-Received: by 2002:ac8:743:: with SMTP id k3mr3038102qth.182.1601317713464;
+        Mon, 28 Sep 2020 11:28:33 -0700 (PDT)
 Received: from [192.168.1.45] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id t10sm1847303qkt.55.2020.09.28.11.24.41
+        by smtp.gmail.com with ESMTPSA id 25sm1896767qks.41.2020.09.28.11.28.32
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 28 Sep 2020 11:24:42 -0700 (PDT)
-Subject: Re: [PATCH 3/5] btrfs: introduce rescue=ignorebadroots
+        Mon, 28 Sep 2020 11:28:32 -0700 (PDT)
+Subject: Re: [PATCH 2/5] btrfs: push the NODATASUM check into
+ btrfs_lookup_bio_sums
 To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org,
         kernel-team@fb.com
 References: <cover.1600961206.git.josef@toxicpanda.com>
- <b7b5dfb5542c3eb965cd2d8a9baa2999b6bae638.1600961206.git.josef@toxicpanda.com>
- <b6710997-5150-d082-e260-9fbbaee74e4c@gmx.com>
+ <bdf1bf5c65679fdf39021e16a242094acd71b270.1600961206.git.josef@toxicpanda.com>
+ <a3d17402-7e3d-7fb4-9831-2db5be18d5b2@gmx.com>
 From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <355c3b88-1bb6-e79f-b06a-6aa684c3ed67@toxicpanda.com>
-Date:   Mon, 28 Sep 2020 14:24:41 -0400
+Message-ID: <d208801b-01cd-9b81-a666-b4fa910c6a8e@toxicpanda.com>
+Date:   Mon, 28 Sep 2020 14:28:32 -0400
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
  Gecko/20100101 Thunderbird/78.2.2
 MIME-Version: 1.0
-In-Reply-To: <b6710997-5150-d082-e260-9fbbaee74e4c@gmx.com>
+In-Reply-To: <a3d17402-7e3d-7fb4-9831-2db5be18d5b2@gmx.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -69,52 +70,47 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 9/24/20 8:47 PM, Qu Wenruo wrote:
+On 9/24/20 8:39 PM, Qu Wenruo wrote:
 > 
 > 
 > On 2020/9/24 下午11:32, Josef Bacik wrote:
->> In the face of extent root corruption, or any other core fs wide root
->> corruption we will fail to mount the file system.  This makes recovery
->> kind of a pain, because you need to fall back to userspace tools to
->> scrape off data.  Instead provide a mechanism to gracefully handle bad
->> roots, so we can at least mount read-only and possibly recover data from
->> the file system.
+>> When we move to being able to handle NULL csum_roots it'll be cleaner to
+>> just check in btrfs_lookup_bio_sums instead of at all of the caller
+>> locations, so push the NODATASUM check into it as well so it's unified.
 >>
 >> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 > 
-> Mostly OK, but still a small problem inlined below.
-> [...]
->> index 46f4efd58652..08b3ca60f3df 100644
->> --- a/fs/btrfs/volumes.c
->> +++ b/fs/btrfs/volumes.c
->> @@ -7656,6 +7656,13 @@ int btrfs_verify_dev_extents(struct btrfs_fs_info *fs_info)
->>   	u64 prev_dev_ext_end = 0;
->>   	int ret = 0;
+> Reviewed-by: Qu Wenruo <wqu@suse.com>
+> 
+> But an off-topic question inlined below:
+> 
+>> ---
+>>   fs/btrfs/compression.c | 14 +++++---------
+>>   fs/btrfs/file-item.c   |  3 +++
+>>   fs/btrfs/inode.c       | 12 +++++++++---
+>>   3 files changed, 17 insertions(+), 12 deletions(-)
+>>
+>> diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
+>> index eeface30facd..7e1eb57b923c 100644
+>> --- a/fs/btrfs/compression.c
+>> +++ b/fs/btrfs/compression.c
+>> @@ -722,11 +722,9 @@ blk_status_t btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
+>>   			 */
+>>   			refcount_inc(&cb->pending_bios);
 >>   
->> +	/*
->> +	 * We don't have a dev_root because we mounted with ignorebadroots and
->> +	 * failed to load the root, so skip the verification.
->> +	 */
->> +	if (!root)
->> +		return 0;
->> +
+>> -			if (!(BTRFS_I(inode)->flags & BTRFS_INODE_NODATASUM)) {
+>> -				ret = btrfs_lookup_bio_sums(inode, comp_bio,
+>> -							    (u64)-1, sums);
+>> -				BUG_ON(ret); /* -ENOMEM */
 > 
-> The check itself is mostly for write, to ensure we won't have
-> missing/unnecessary dev extents to mess up chunk allocation.
+> Is it really possible to have compressed extent without data csum?
+> Won't nodatacsum disable compression?
 > 
-> For RO operations, the check makes little sense, and can be safely
-> ignored for ignorebadroots.
-> 
-> Furthermore this only handles the case where the device tree root is
-> corrupted.
-> But if only part of the device tree is corrupted, we still continue
-> checking and fail to mount.
-> 
-> It's better to skip the whole check for dev extents if we're using
-> ignorebadroots rescue option.
-> No matter if the root is corrupted or not.
+> Or are we just here to handle some old compressed but not csumed data?
 > 
 
-Yeah good point, I'll fix this up.  Thanks,
+We used to allow it, so I'm content to leave this here.  Maybe at some point 
+we'll allow it in the future, but IDK it doesn't hurt anything to handle it 
+here.  Thanks,
 
 Josef
