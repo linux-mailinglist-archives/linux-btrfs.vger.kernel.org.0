@@ -2,239 +2,124 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70F4327A1FB
-	for <lists+linux-btrfs@lfdr.de>; Sun, 27 Sep 2020 19:15:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A495B27ADF9
+	for <lists+linux-btrfs@lfdr.de>; Mon, 28 Sep 2020 14:38:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726303AbgI0RP2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 27 Sep 2020 13:15:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41772 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726255AbgI0RP2 (ORCPT
+        id S1726661AbgI1Mhu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 28 Sep 2020 08:37:50 -0400
+Received: from esa1.hgst.iphmx.com ([68.232.141.245]:26959 "EHLO
+        esa1.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726659AbgI1Mht (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 27 Sep 2020 13:15:28 -0400
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76EA2C0613CE;
-        Sun, 27 Sep 2020 10:15:28 -0700 (PDT)
-Received: by mail-pg1-x52e.google.com with SMTP id 7so6184120pgm.11;
-        Sun, 27 Sep 2020 10:15:28 -0700 (PDT)
+        Mon, 28 Sep 2020 08:37:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1601296669; x=1632832669;
+  h=from:to:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=qu/8eyR2xxY1gD5+vGtWDvY9b21AZtP2ZYAAHFxAZPY=;
+  b=VD7j0FF2itX6lKyCuNIzfwE4KE6373uTviOUCM72eIfYrQN42E8Aqd5F
+   PRPWeafnGk3y/qNt7AuR2hEKaYvbZ0FdIm2va4gfNXaZ4AGg/2sBIQvpF
+   KxwD6SqOomUCTJhec1kAmqamKfZqBqmF0XC35T9Sa9xEkmnWg9HlDktfm
+   6aKSiNUdGkBtuIz+OcZ9a2VjfG/kUp7Huiqi5yKmIw9z/ZN/kSlvCYzY1
+   WyIwbyQ+abruLJzVSry9ltt/8DH2h7enVTlII9Xgf93acGwKonjcmVrNP
+   jhooXyYS61AjViaK+OCy2x90S8eum2QLwh0Ryc3Rkj+ZyOxmzRPuDFkj5
+   A==;
+IronPort-SDR: YcQv0Ig/XYLEZocrsSfHH4uU2GPpkUBkZNFdsChDxTX4O6hzR03fflhH1ahpQuRutRH5Pgx2yg
+ dQ2YW9b7Ec1swnEK2Kz1CrMT9ZFFxoPxrH5bmoI90pQPojrw5M6FVNOjA39Q48nrF6nIhyk/c2
+ TBIaUlcTEE8IO/nRUoHenw3j2qxVQma4a54RIa+q/bDF0zjQkSr+ZYfMx3a7R4LILa9/THHXim
+ PW0U+ZZiaOa6PliKrAGj/ajykhpjbL/Zb/WcZKOLNVia+LVfAwyryA2NgMhbNvZgC7tx4rKecS
+ DbY=
+X-IronPort-AV: E=Sophos;i="5.77,313,1596470400"; 
+   d="scan'208";a="258163431"
+Received: from mail-dm6nam11lp2172.outbound.protection.outlook.com (HELO NAM11-DM6-obe.outbound.protection.outlook.com) ([104.47.57.172])
+  by ob1.hgst.iphmx.com with ESMTP; 28 Sep 2020 20:37:48 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=EQNWtNLvmO22j2EDzqjNSU7Ga1bjgCfk8SMPRQYhnw0EkN21XE4d2iMvxp2LDdrHSpoOXIoLE1hKuL2rGVLlWiSFAkNRA3lBmFfBMfy7nniCZJ/4+qaIfoN7njDLRCsCaWTwZg0S+2rhnnNeIz/B35pOuPb74lfWxEmcqJgzKDRz1ie8SMr5XcnI1QYzcSbiPGH6lI5QMdUS//eJ8Vk4M9vJt1OxUiBf575RYTYRvt/x07i+4HQn3xzKQ2wwTrZaFiYttEIVDgE/1Fo6eMQpHmiwGt98kOnfN5W+e0OBJCKYUT18AK6kB/U7kWxd+NbPAq+E609W09nu5nMC4PUrTw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=dbUPsYes3UTNlxy4A208pNuZXdpDKEpnxhYzCXm6SVg=;
+ b=VtUkjxuCdWTbZWYFlr5MKdC36AOXhJHCkhYB68ZxrR5842h9xVhP3LJh0wpy9BP/8CvzleGNM8SImmuGlnWv3h6KvfSWX/icug1Nf3F2hEDjVpNQx4HhBa3ydRHAvcu5pmOMY3y6Y2I5fIgnztPu82hRY0KwukcW2t/Ahz9G63nRyHMSCRmf7tF00yNqmMuTZfEFEXPoaRKutSqZ/B7pZeIQQr+ZGugL487Jkb5S2kLaNuII0UpKsPqw+oExaw4+2q4FHVbOwUv6DjNzLm8Yv0VUzpNltQIMAaFsKDb0IWRm30YRKWKNeoak5zargVExAQ39XRtFElXn4jTCIQI/ww==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=bCB/gR5DCf/duOs2FcxvscpF3biWclepxbmD5HHNBoQ=;
-        b=fvaYWIT2/1nVyTBMOd34hdm6YE0a0B2yo9iud5iCajIs4fK3VSs9aSIkU99IJmg0+z
-         Ak57wtviiRtBntAEi0Fyf5Zt+X3d5pwByPwm7QUFcToWQfMR2RfEZtVdfTou7PhuhgfC
-         DUfiHVNAxTpKkY1r9WSieiOsHvU5G4r/APTVzus2pTrfws0W1jh2zzrxA+gWxhpd1MKu
-         D2unhZQenpUInnloccG4ohYrNAyMLU1dFaORWuq9GZhNxEtPFzFrpjaJpJ77EO1IP9L7
-         p/GJkzqpFSaCh6uISrPlcbTWHK1GI40vQfTFWxmN8zx1pVR8YGxk/xbj6YAaozepMeAt
-         eR3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=bCB/gR5DCf/duOs2FcxvscpF3biWclepxbmD5HHNBoQ=;
-        b=FhCW8qw/943Orcj0mslyf0jAwBzAYAWobpvK7OMbFq5yA4HMQJ903YDygpikH6bVMZ
-         OfDLQQX9c0Q/nHlrnTARB5M6sbQ87QUbSpROV7ufhEQkAFcZju5A1FaEqEYpkgYrMzwO
-         fulM0xg8aqmt4mn9n3yW88IXO4WqvgNqPMPkmzyREN2+3wg1nd9BuuEc8ZVRlN+EaCoD
-         v2FMylYNrDShhdjGCLQS60jA+9wSic8kNIGeYaVv83n6jGSJtD36JJVah3fXDzhBXhY9
-         qJOKb6oxoheD2gG6Ynp6ZMXTlHSf9r/mz6jXiOUD3/SCS3PqdvIQJ6KszFRewMQp3+t/
-         AMKw==
-X-Gm-Message-State: AOAM531PrPEEdUQo+JUYD1cVzJUWs7HiZIllSoo0wTp/skOj3Mh/5agH
-        aFFyoDVtyQCXRKMwJ1oihmk2K5FcQ093Uvho
-X-Google-Smtp-Source: ABdhPJzKVDpaGrr0DinRJ0FJU1fKuzykxhYwTFwy1S1ONliPmskXtVTtgwnp5RxXLWtLCQKs4MsqtA==
-X-Received: by 2002:a63:5d0e:: with SMTP id r14mr6040901pgb.278.1601226927377;
-        Sun, 27 Sep 2020 10:15:27 -0700 (PDT)
-Received: from localhost.localdomain ([175.195.128.78])
-        by smtp.googlemail.com with ESMTPSA id m188sm8867248pfd.56.2020.09.27.10.15.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 27 Sep 2020 10:15:26 -0700 (PDT)
-From:   Sidong Yang <realwakka@gmail.com>
-To:     linux-btrfs@vger.kernel.org, fstests@vger.kernel.org
-Cc:     Sidong Yang <realwakka@gmail.com>, Qu Wenruo <wqu@suse.com>,
-        Josef Bacik <josef@toxicpanda.com>, Eryu Guan <guan@eryu.me>
-Subject: [PATCH v5] btrfs: Add new test for qgroup assign functionality
-Date:   Sun, 27 Sep 2020 17:15:12 +0000
-Message-Id: <20200927171512.1253-1-realwakka@gmail.com>
-X-Mailer: git-send-email 2.25.1
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=dbUPsYes3UTNlxy4A208pNuZXdpDKEpnxhYzCXm6SVg=;
+ b=Cpx2VMVjJ6J4F44qgjdP/g4uw8G4V3dsyGd5VSzcIK/IXFQH6EZwdoTSMh5WBUGT27gKbVFTAOjO0Bq8t3uRBNNcRZ8vbUvaqcnjJztHzW1Vif3ZawFb/4ehAGC42Tzk1o/H/cs3NjzOEPKC1YRr2CunyRsvePKue2CGI6xz6Ls=
+Received: from DM5PR0401MB3591.namprd04.prod.outlook.com (2603:10b6:4:7e::15)
+ by DM6PR04MB6411.namprd04.prod.outlook.com (2603:10b6:5:1e8::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.24; Mon, 28 Sep
+ 2020 12:37:47 +0000
+Received: from DM5PR0401MB3591.namprd04.prod.outlook.com
+ ([fe80::7036:fd5b:a165:9089]) by DM5PR0401MB3591.namprd04.prod.outlook.com
+ ([fe80::7036:fd5b:a165:9089%7]) with mapi id 15.20.3412.026; Mon, 28 Sep 2020
+ 12:37:47 +0000
+From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To:     Josef Bacik <josef@toxicpanda.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        "kernel-team@fb.com" <kernel-team@fb.com>
+Subject: Re: [PATCH 1/5] btrfs: unify the ro checking for mount options
+Thread-Topic: [PATCH 1/5] btrfs: unify the ro checking for mount options
+Thread-Index: AQHWkogD6DR4VnBkkUCrp0wy4BDLBA==
+Date:   Mon, 28 Sep 2020 12:37:47 +0000
+Message-ID: <DM5PR0401MB3591BBA587DD3D36F47FAA549B350@DM5PR0401MB3591.namprd04.prod.outlook.com>
+References: <cover.1600961206.git.josef@toxicpanda.com>
+ <d307f1d95415232dabfb700e79cda73618aa7d50.1600961206.git.josef@toxicpanda.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: toxicpanda.com; dkim=none (message not signed)
+ header.d=none;toxicpanda.com; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [2001:a62:1460:3d01:dd62:96c5:79f:bf52]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: f9e5e830-85e2-45d4-cfb8-08d863ab4e34
+x-ms-traffictypediagnostic: DM6PR04MB6411:
+x-microsoft-antispam-prvs: <DM6PR04MB6411A41BC1CE062D7DB61FDE9B350@DM6PR04MB6411.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 0LMAs9GxUduCfjqhJEj3nd+FlOctIyugzngQ7NrnCrX3Q8E0KkMyIhdtoqRlgCyBC8k8DWP4Y5xz8dHWVqnE1dTYf6IBQNzfDNfFHJpa3QdchW83bdjYKmQTq+HDU4hE9qm5vSO/V7OWy24p8WEcSsDKRI01noFKE9FPDnTGp28OdzpzE3eEt2RZv97xuSq+YZsHia7PNuThOQiSaQwrMS9pM8DPwKU9+l+wPRw3KWgI8S54fYogSro5NPO6PFL8UzQs2Vblyr7+W3NkVOMdDAXAY2fLv6x0jIrHFbt83Z5hkB6ztI5CIid1vDnOccTjWQb49nLqpY/+tO8eKeUVWX85d6se0S5sem4BDG+k7s3NNfP764XiFHBcE7KAPvsj
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR0401MB3591.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(376002)(366004)(136003)(396003)(39860400002)(6506007)(71200400001)(52536014)(66446008)(64756008)(66556008)(66476007)(83380400001)(33656002)(91956017)(76116006)(66946007)(4744005)(5660300002)(55016002)(8676002)(86362001)(186003)(53546011)(7696005)(9686003)(110136005)(478600001)(2906002)(316002)(8936002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: V3OJtZEOW5aD/j/f8PU/COI3zC6zpddX5F20VCTM69Fya6+IjpnI2FJ9elvoNTt2tOoB16Z3T9DZ1nl3Xfg28q003/JFSLka+zvpEjGSz3P5DMBpcUm1/GkP8l9z7SlvK7r93nifmR/k1gWC91sUW9CEgq4vPsjqAPLic07S9K65SWhzzk97Yyqw8dql5FUJui7YtG833jrlf430U9Xz27pkGOvy93AeLcC/f9IRyCg3BomM1DjZf2lvNoTFRbMrfI899mLhsjjZZywXio2d9AHnJ5FimZScuAP3GtmI/s2vAVZZ8BX3m3ROqVv0HXK15/hb6oIgBRdlMWlC19TFvRHaktnKIUrelkdiJBLeHvyUkWTVkYX59D2uTmIuZQT3IF8JNZF8WvcUt9ApJYBLaQXqi7q4qykIGKmTDfURethAOtcoyKTiXZ7AppsIuyzZt3cMSILWclDQqUhBVJ2hZZKvmwwvd5kIqPgio9eJmrqRKL96eSj9VNkzzWDvZ5xpd0UnBf+FzjSMefcolux57DRW2xt7REuPTLqSvvevCms1TsYWXpfVIinz8qCvAVHEQKcvSIZqYNCCLsCOrMCPtgxzNFOvDJiqROHv8g0fJfsz/yOr3zrI2NMk4G2UJuo+AgDmDrqE+CIv1HpCJ/zYf37j9y6MKxuaFLv9HCksNQJRfaRaVM86e7ZzpfZwoJ1U9nE9FkQjGzGZkmCN4MWCYQ==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM5PR0401MB3591.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f9e5e830-85e2-45d4-cfb8-08d863ab4e34
+X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Sep 2020 12:37:47.4087
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Qwyfba6IX09QoV+r/1jKcBFE6oHPHJztjLw7KIZI5cdHUknNt0g2F9kJLFNsdHXp8OshLxkbW16hpPqn8X8+2gc+zOer85RxZa1DF+GkGfc=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR04MB6411
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This new test will test btrfs's qgroup assign functionality. The
-test has 3 cases.
-
- - assign, no shared extents
- - assign, shared extents
- - snapshot -i, shared extents
-
-Each cases create subvolumes and assign qgroup in their own way
-and check with the command "btrfs check".
-
-Signed-off-by: Sidong Yang <realwakka@gmail.com>
-Reviewed-by: Qu Wenruo <wqu@suse.com>
-Reviewed-by: Eryu Guan <guan@eryu.me>
-
----
-v2:
- - Create new test and use the cases
-v3:
- - Fix some minor mistakes
- - Make that write some data before assign or snapshot in test
- - Put mkfs & mount pair in test function
-v4:
- - Add rescan command for assign no shared
- - Use _check_scratch_fs for checking
-v5:
- - Remove trailing whitespaces
----
- tests/btrfs/221     | 116 ++++++++++++++++++++++++++++++++++++++++++++
- tests/btrfs/221.out |   2 +
- tests/btrfs/group   |   1 +
- 3 files changed, 119 insertions(+)
- create mode 100755 tests/btrfs/221
- create mode 100644 tests/btrfs/221.out
-
-diff --git a/tests/btrfs/221 b/tests/btrfs/221
-new file mode 100755
-index 00000000..19b3740b
---- /dev/null
-+++ b/tests/btrfs/221
-@@ -0,0 +1,116 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright (c) 2020 Sidong Yang.  All Rights Reserved.
-+#
-+# FS QA Test 221
-+#
-+# Test the assign functionality of qgroups
-+#
-+seq=`basename $0`
-+seqres=$RESULT_DIR/$seq
-+echo "QA output created by $seq"
-+
-+here=`pwd`
-+tmp=/tmp/$$
-+status=1	# failure is the default!
-+trap "_cleanup; exit \$status" 0 1 2 3 15
-+
-+_cleanup()
-+{
-+	cd /
-+	rm -f $tmp.*
-+}
-+
-+# get standard environment, filters and checks
-+. ./common/rc
-+. ./common/filter
-+. ./common/reflink
-+
-+# remove previous $seqres.full before test
-+rm -f $seqres.full
-+
-+# real QA test starts here
-+
-+# Modify as appropriate.
-+_supported_fs btrfs
-+_supported_os Linux
-+
-+_require_scratch
-+_require_btrfs_qgroup_report
-+_require_cp_reflink
-+
-+# Test assign qgroup for submodule with shared extents by reflink
-+assign_shared_test()
-+{
-+	_scratch_mkfs > /dev/null 2>&1
-+	_scratch_mount
-+
-+	echo "=== qgroup assign shared test ===" >> $seqres.full
-+	$BTRFS_UTIL_PROG quota enable $SCRATCH_MNT
-+	$BTRFS_UTIL_PROG quota rescan -w $SCRATCH_MNT >> $seqres.full
-+
-+	$BTRFS_UTIL_PROG subvolume create $SCRATCH_MNT/a >> $seqres.full
-+	$BTRFS_UTIL_PROG subvolume create $SCRATCH_MNT/b >> $seqres.full
-+
-+	_ddt of="$SCRATCH_MNT"/a/file1 bs=1M count=1 >> $seqres.full 2>&1
-+	cp --reflink=always "$SCRATCH_MNT"/a/file1 "$SCRATCH_MNT"/b/file1
-+
-+	$BTRFS_UTIL_PROG qgroup create 1/100 $SCRATCH_MNT
-+	$BTRFS_UTIL_PROG qgroup assign $SCRATCH_MNT/a 1/100 $SCRATCH_MNT
-+	$BTRFS_UTIL_PROG qgroup assign $SCRATCH_MNT/b 1/100 $SCRATCH_MNT
-+
-+	_scratch_unmount
-+	_check_scratch_fs
-+}
-+
-+# Test assign qgroup for submodule without shared extents
-+assign_no_shared_test()
-+{
-+	_scratch_mkfs > /dev/null 2>&1
-+	_scratch_mount
-+
-+	echo "=== qgroup assign no shared test ===" >> $seqres.full
-+	$BTRFS_UTIL_PROG quota enable $SCRATCH_MNT
-+	$BTRFS_UTIL_PROG quota rescan -w $SCRATCH_MNT >> $seqres.full
-+
-+	$BTRFS_UTIL_PROG subvolume create $SCRATCH_MNT/a >> $seqres.full
-+	$BTRFS_UTIL_PROG subvolume create $SCRATCH_MNT/b >> $seqres.full
-+
-+	$BTRFS_UTIL_PROG qgroup create 1/100 $SCRATCH_MNT
-+	$BTRFS_UTIL_PROG qgroup assign $SCRATCH_MNT/a 1/100 $SCRATCH_MNT
-+	$BTRFS_UTIL_PROG qgroup assign $SCRATCH_MNT/b 1/100 $SCRATCH_MNT
-+
-+	_scratch_unmount
-+	_check_scratch_fs
-+}
-+
-+# Test snapshot with assigning qgroup for submodule
-+snapshot_test()
-+{
-+	_scratch_mkfs > /dev/null 2>&1
-+	_scratch_mount
-+
-+	echo "=== qgroup snapshot test ===" >> $seqres.full
-+	$BTRFS_UTIL_PROG quota enable $SCRATCH_MNT
-+	$BTRFS_UTIL_PROG quota rescan -w $SCRATCH_MNT >> $seqres.full
-+
-+	$BTRFS_UTIL_PROG subvolume create $SCRATCH_MNT/a >> $seqres.full
-+	_ddt of="$SCRATCH_MNT"/a/file1 bs=1M count=1 >> $seqres.full 2>&1
-+	subvolid=$(_btrfs_get_subvolid $SCRATCH_MNT a)
-+	$BTRFS_UTIL_PROG subvolume snapshot -i 0/$subvolid $SCRATCH_MNT/a $SCRATCH_MNT/b >> $seqres.full
-+
-+	_scratch_unmount
-+	_check_scratch_fs
-+}
-+
-+
-+assign_no_shared_test
-+
-+assign_shared_test
-+
-+snapshot_test
-+
-+# success, all done
-+echo "Silence is golden"
-+status=0
-+exit
-diff --git a/tests/btrfs/221.out b/tests/btrfs/221.out
-new file mode 100644
-index 00000000..aa4351cd
---- /dev/null
-+++ b/tests/btrfs/221.out
-@@ -0,0 +1,2 @@
-+QA output created by 221
-+Silence is golden
-diff --git a/tests/btrfs/group b/tests/btrfs/group
-index 1b5fa695..cdda38f3 100644
---- a/tests/btrfs/group
-+++ b/tests/btrfs/group
-@@ -222,3 +222,4 @@
- 218 auto quick volume
- 219 auto quick volume
- 220 auto quick
-+221 auto quick qgroup
--- 
-2.25.1
-
+On 24/09/2020 17:33, Josef Bacik wrote:=0A=
+> We're going to be adding more options that require RDONLY, so add a=0A=
+> helper to do the check and error out if we don't have RDONLY set.=0A=
+>=0A=
+> +	/* We're read-only, don't have to check. */=0A=
+> +	if (new_flags & SB_RDONLY)=0A=
+> +		goto out;=0A=
+> +=0A=
+=0A=
+Why aren't you moving the SB_RDONLY check into the new check_ro_option() as=
+ well?=0A=
+This is what I would have thought this patch does after just reading the co=
+mmit message.=0A=
+=0A=
+Thanks,=0A=
+	Johannes=0A=
