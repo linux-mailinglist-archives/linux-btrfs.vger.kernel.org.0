@@ -2,116 +2,85 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9128527B084
-	for <lists+linux-btrfs@lfdr.de>; Mon, 28 Sep 2020 17:07:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 368B427B0F7
+	for <lists+linux-btrfs@lfdr.de>; Mon, 28 Sep 2020 17:33:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726477AbgI1PHn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 28 Sep 2020 11:07:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45950 "EHLO
+        id S1726504AbgI1PdH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 28 Sep 2020 11:33:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726409AbgI1PHn (ORCPT
+        with ESMTP id S1726460AbgI1PdH (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 28 Sep 2020 11:07:43 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28F6FC061755
-        for <linux-btrfs@vger.kernel.org>; Mon, 28 Sep 2020 08:07:43 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id 7so1101697pgm.11
-        for <linux-btrfs@vger.kernel.org>; Mon, 28 Sep 2020 08:07:43 -0700 (PDT)
+        Mon, 28 Sep 2020 11:33:07 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4834C061755
+        for <linux-btrfs@vger.kernel.org>; Mon, 28 Sep 2020 08:33:05 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id k18so1603320wmj.5
+        for <linux-btrfs@vger.kernel.org>; Mon, 28 Sep 2020 08:33:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Bsx1HInsV2scLzzcef+tREHC7FGRmjcR9O+wKodODIc=;
-        b=Q7tOppDDxi0NrmMmNQc5hgoP6WggSGD0W2AcxuVvEAR/BHq1fTMJBWJeiMAZkIIAw0
-         kj+Or12n/iFbjjBndY3fss9ewVQj7HbXgwzwJwgZmjD/Mcti1ODvRZIVcub7Uj8sccIt
-         QlDZFSOYmTkPQ5thzv57Sob9w7YChxZ/nojUCFVLR+5T01AOD9n8t0dDTtoVdxuOUExU
-         0EGyuVDO4/2pHul+ttbZyJ9MYr8JP6GfhPxxZliV5l4pFTsEw3XdrpGI+yhb+2JvHLXD
-         SGPexaTg93ib1UGfXPVukcvrAEqFBpR3CzWxDBqICMaj+c8fobqRYwhQ8DmsulPmnnWE
-         zmFg==
+        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=oS8i+xN9xU0O7oZ5xF3Cirk3qaaYVKOTZ2NyPhcevDg=;
+        b=NVbVj+ldHMRyjU870LqMnF6u22irNxBWlx7NeCTsF4jAe+L4T1Q66XP3E2HXaItOnG
+         Bks/f9k1a5F/FmKXS+4mx2sM/bF5BnVC+XWCzsZOjJ5sxfcDcPliOX8SFefdsEbiMqfm
+         udZl+JkQGzxzSPP/0GoKDuyDJKV3jMeiCagXJZhcDAonzbpNN+l3jAeVc16Bt+t5RhqC
+         kgXvNV/vJPX6SyOPcHo33867YTGtLnnaS0k8lHhaceWyVIyjSRRCBtqR5dt3f113GXN2
+         D20zyCJ+wmuBDBbkK56yCFpS2FEWqlJMkbHLWkY+2iCV3NUSfs1X0jFeqGuLY3qv10iE
+         570g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Bsx1HInsV2scLzzcef+tREHC7FGRmjcR9O+wKodODIc=;
-        b=LnKWUJ+W30xu8kFdWhJLJskTkpAW+dr1SjJEYHJvtRw59i3HzjtIE976n2v4w4u4MO
-         BbgCGQ3ibWphTCp2789aCRJin+sbzTf+X46JD7veCWJzhscg9cfZQAXtYiOh0gbOkwHS
-         M3pUGGaZ5wfpn3gZz8YYTpo4+rEtVIgczx46Tp+A1zHs9zaUSzCU7U8esPJkx3BNIz0Y
-         iXV+r9aPsxp9uhz71ADZYJgkEInwo6dE5dwcm5yJdMRKQ3hLY6EMvXhSOMUzOELp06Ye
-         wogQC/MIhE3h8ph5xboEW1Z6meEkosvPHOm2F13DKTNd4PRnE531Wvw2CvHxYSz0HGn2
-         dTRQ==
-X-Gm-Message-State: AOAM530RF79ce1S8bXXnxZqZ9S8SqAk3IdfuQ1wa94F1GHTtIChz7yqE
-        W/6ipJhAp1Yrk3JyFiYu7lwKrP9bAAtczg==
-X-Google-Smtp-Source: ABdhPJwRmwnLNiq7whfxhKPYKtMH5iFHT4FvLYk66Lbzo13FT4wGnaMRtgsqVO5p1nelFwEwVq4iNg==
-X-Received: by 2002:a17:902:6a88:b029:d2:254:c89c with SMTP id n8-20020a1709026a88b02900d20254c89cmr1956890plk.19.1601305662394;
-        Mon, 28 Sep 2020 08:07:42 -0700 (PDT)
-Received: from localhost.localdomain ([175.195.128.78])
-        by smtp.googlemail.com with ESMTPSA id i36sm1726156pgm.43.2020.09.28.08.07.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Sep 2020 08:07:41 -0700 (PDT)
-From:   Sidong Yang <realwakka@gmail.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     Sidong Yang <realwakka@gmail.com>
-Subject: [PATCH] btrfs-progs: subvolume: Add warning on deleting default subvolume
-Date:   Mon, 28 Sep 2020 15:07:29 +0000
-Message-Id: <20200928150729.2239-1-realwakka@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=oS8i+xN9xU0O7oZ5xF3Cirk3qaaYVKOTZ2NyPhcevDg=;
+        b=UfFOAEcpdn8bGqlMG4KIra9tC4T5YivvR7WlryHbyBNUsw54Yp4cZfbomFcYy93rQK
+         UeQLEKap7ftk61OVjc4Ezd0oSsYgfXI9rDZTm8vtAwYsfOsHXlhvyHBlxisWg6xBAnqq
+         gZTtAyzzjSv9ENkcBA2wxetPmADaONf0xmrYfZ7eVhhdiAITCoL3PvI8G6TeUFwoQq7S
+         YYgmfo9W5nj9xx17eLvs2WYUzsPHTppy4IJ+9t0G4cek/h+V1l67Z1ud4RXm0yBEHV0w
+         9LTmjctIQ/32saXVzJf5AGYw1/GyHaeu1LYopAnMscA2IBqBEtjxxueywg9J+z/C/r1n
+         WuPA==
+X-Gm-Message-State: AOAM533iufZNPsn2fKGjNEEmPoYJ7WrY+3V64niinORuHPKtK5bM3o0N
+        Eg7B/wgENNK9OCVxM9Y2qF+r36HSi6xvO/VPeZllqLcE30Rf5Rrk
+X-Google-Smtp-Source: ABdhPJzRZn3RVBaQXHOsN7WYv7o99NZaVOtGdCLa6CELb5wJK4r8vB1Ary0FNs5pXUI5wGkm/csIOleT/b3Y0WMsF4U=
+X-Received: by 2002:a1c:960a:: with SMTP id y10mr2180822wmd.128.1601307184577;
+ Mon, 28 Sep 2020 08:33:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <5df695c82cd7f44da5e57d3a8c8549a01130d759.camel@wittke-web.de>
+In-Reply-To: <5df695c82cd7f44da5e57d3a8c8549a01130d759.camel@wittke-web.de>
+From:   Chris Murphy <lists@colorremedies.com>
+Date:   Mon, 28 Sep 2020 09:32:48 -0600
+Message-ID: <CAJCQCtSCRDh65+aAKs4C0t+c3n4aA8sBrE_QLsPy6JkZ0PwGmA@mail.gmail.com>
+Subject: Re: Recover from Extent Tree Corruption (maybe due to hardware failure)
+To:     Marc Wittke <marc@wittke-web.de>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This patch add warning messages when user try to delete default
-subvolume. When deleting default subvolume, kernel will not allow and
-make error message on syslog. but there is only message that permission
-denied on userspace. User can be noticed the reason by this warning message.
+On Mon, Sep 28, 2020 at 7:18 AM Marc Wittke <marc@wittke-web.de> wrote:
 
-This patch implements github issue.
-https://github.com/kdave/btrfs-progs/issues/274
+> # mount /dev/sdc1 /mnt
+> mount: /mnt: can't read superblock on /dev/sdc1.
 
-Signed-off-by: Sidong Yang <realwakka@gmail.com>
----
- cmds/subvolume.c | 20 ++++++++++++++++++++
- 1 file changed, 20 insertions(+)
+What about 'mount -o ro,usebackuproot' ?
+Also include dmesg if it fails, and include:
 
-diff --git a/cmds/subvolume.c b/cmds/subvolume.c
-index 2020e486..0cdf7a68 100644
---- a/cmds/subvolume.c
-+++ b/cmds/subvolume.c
-@@ -264,6 +264,7 @@ static int cmd_subvol_delete(const struct cmd_struct *cmd,
- 	struct seen_fsid *seen_fsid_hash[SEEN_FSID_HASH_SIZE] = { NULL, };
- 	enum { COMMIT_AFTER = 1, COMMIT_EACH = 2 };
- 	enum btrfs_util_error err;
-+	uint64_t default_subvol_id = 0, target_subvol_id = 0;
- 
- 	optind = 0;
- 	while (1) {
-@@ -360,6 +361,25 @@ again:
- 		goto out;
- 	}
- 
-+	err = btrfs_util_get_default_subvolume_fd(fd, &default_subvol_id);
-+	if (fd < 0) {
-+		ret = 1;
-+		goto out;
-+	}
-+
-+	if (subvolid > 0)
-+		target_subvol_id = subvolid;
-+	else {
-+		err = btrfs_util_subvolume_id(path, &target_subvol_id);
-+		if (fd < 0) {
-+			ret = 1;
-+			goto out;
-+		}
-+	}
-+
-+	if (target_subvol_id == default_subvol_id)
-+		warning("trying to delete default subvolume.");
-+
- 	pr_verbose(MUST_LOG, "Delete subvolume (%s): ",
- 		commit_mode == COMMIT_EACH ||
- 		(commit_mode == COMMIT_AFTER && cnt + 1 == argc) ?
+'btrfs insp dump-s -f /dev/'
+
+> # sudo btrfs restore -oi /dev/sdc1 /home/marc/rescued/
+
+From the backup roots in the super, and also using 'btrfs-find-root'
+it might be possible to find another root tree to use. This was NVMe.
+What were the mount options being used?
+
+Another possibility is to recover by isolating a specific snapshot.
+Are there any snapshots on this file system?
+
+'btrfs restore --list-roots'
+
+Might be easier to do this on #btrfs, irc.freenode.net because it's
+kinda iterative.
+
 -- 
-2.25.1
-
+Chris Murphy
