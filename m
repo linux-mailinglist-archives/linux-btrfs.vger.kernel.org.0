@@ -2,34 +2,34 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF22127DDFC
-	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Sep 2020 03:55:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC06127DDFD
+	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Sep 2020 03:55:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729747AbgI3Bzy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 29 Sep 2020 21:55:54 -0400
-Received: from mx2.suse.de ([195.135.220.15]:49598 "EHLO mx2.suse.de"
+        id S1729762AbgI3Bz6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 29 Sep 2020 21:55:58 -0400
+Received: from mx2.suse.de ([195.135.220.15]:49630 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729322AbgI3Bzy (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 29 Sep 2020 21:55:54 -0400
+        id S1729322AbgI3Bz5 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 29 Sep 2020 21:55:57 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1601430953;
+        t=1601430956;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=ubi6dxuYF1ruxqVWZUNpXQle0M+Nuln4OPBkB7debVE=;
-        b=rC/l1732RtnQryElaRPc4JvzJU6ilx/NhAyn9y4axU26vd0YyXXDXzjnjmCV/11GixSXyn
-        mI+y8X0DhYH5+S24plykdyz/mpZZYtQILmxC2GWhBV228LUj5xe+749IuDUBsrjeyNqZ3g
-        NM8EPSwk+h74kAXMhalw1jLeGe3clfE=
+        bh=Y+G2sGC0w9FY5CXQ37yGwGh8U0WjUxV4C//ehhZOP4k=;
+        b=pWMZ9WzROXDDQaUQd4qgqDR4kVkMUYdFglp6U8/Jm0z7YwvfXLdZwfRqUBlIjwGQCvS2fp
+        w1Qkhx+4GB8tCS9IdBXFWPMgpiQsHDLl5CJ+4Kr7gI4cG4+2Rpws5anx2g8ncKFuJeQZ2p
+        mLOWmpaUu8i5MOczNgePsYYoYVNzWPw=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 6295BAE07
-        for <linux-btrfs@vger.kernel.org>; Wed, 30 Sep 2020 01:55:53 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 44992AE07
+        for <linux-btrfs@vger.kernel.org>; Wed, 30 Sep 2020 01:55:56 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v3 04/49] btrfs: extent_io: update the comment for find_first_extent_bit()
-Date:   Wed, 30 Sep 2020 09:54:54 +0800
-Message-Id: <20200930015539.48867-5-wqu@suse.com>
+Subject: [PATCH v3 05/49] btrfs: make btree inode io_tree has its special owner
+Date:   Wed, 30 Sep 2020 09:54:55 +0800
+Message-Id: <20200930015539.48867-6-wqu@suse.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200930015539.48867-1-wqu@suse.com>
 References: <20200930015539.48867-1-wqu@suse.com>
@@ -39,40 +39,57 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The pitfall here is, if the parameter @bits has multiple bits set, we
-will return the first range which just has one of the specified bits
-set.
+Btree inode is pretty special compared to all other inode extent io
+tree, although it has a btrfs inode, it doesn't have the track_uptodate
+bit set to true, and never has ordered extent.
 
-This is a little tricky if we want an exact match.
-
-Anyway, update the comment to inform the callers.
+Since it's so special, adds a new owner value for it to make debuging a
+little easier.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/extent_io.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ fs/btrfs/disk-io.c           | 2 +-
+ fs/btrfs/extent-io-tree.h    | 1 +
+ include/trace/events/btrfs.h | 1 +
+ 3 files changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index a64d88163f3b..2980e8384e74 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -1554,11 +1554,12 @@ find_first_extent_bit_state(struct extent_io_tree *tree,
- }
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index f6bba7eb1fa1..be6edbd34934 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -2116,7 +2116,7 @@ static void btrfs_init_btree_inode(struct btrfs_fs_info *fs_info)
  
- /*
-- * find the first offset in the io tree with 'bits' set. zero is
-- * returned if we find something, and *start_ret and *end_ret are
-- * set to reflect the state struct that was found.
-+ * Find the first offset in the io tree with one or more @bits set.
-  *
-- * If nothing was found, 1 is returned. If found something, return 0.
-+ * NOTE: If @bits are multiple bits, any bit of @bits will meet the match.
-+ *
-+ * Return 0 if we find something, and update @start_ret and @end_ret.
-+ * Return 1 if we found nothing.
-  */
- int find_first_extent_bit(struct extent_io_tree *tree, u64 start,
- 			  u64 *start_ret, u64 *end_ret, unsigned bits,
+ 	RB_CLEAR_NODE(&BTRFS_I(inode)->rb_node);
+ 	extent_io_tree_init(fs_info, &BTRFS_I(inode)->io_tree,
+-			    IO_TREE_INODE_IO, inode);
++			    IO_TREE_BTREE_INODE_IO, inode);
+ 	BTRFS_I(inode)->io_tree.track_uptodate = false;
+ 	extent_map_tree_init(&BTRFS_I(inode)->extent_tree);
+ 
+diff --git a/fs/btrfs/extent-io-tree.h b/fs/btrfs/extent-io-tree.h
+index 219a09a2b734..960d4a24f13e 100644
+--- a/fs/btrfs/extent-io-tree.h
++++ b/fs/btrfs/extent-io-tree.h
+@@ -40,6 +40,7 @@ struct io_failure_record;
+ enum {
+ 	IO_TREE_FS_PINNED_EXTENTS,
+ 	IO_TREE_FS_EXCLUDED_EXTENTS,
++	IO_TREE_BTREE_INODE_IO,
+ 	IO_TREE_INODE_IO,
+ 	IO_TREE_INODE_IO_FAILURE,
+ 	IO_TREE_RELOC_BLOCKS,
+diff --git a/include/trace/events/btrfs.h b/include/trace/events/btrfs.h
+index 863335ecb7e8..89397605e465 100644
+--- a/include/trace/events/btrfs.h
++++ b/include/trace/events/btrfs.h
+@@ -79,6 +79,7 @@ struct btrfs_space_info;
+ #define IO_TREE_OWNER						    \
+ 	EM( IO_TREE_FS_PINNED_EXTENTS, 	  "PINNED_EXTENTS")	    \
+ 	EM( IO_TREE_FS_EXCLUDED_EXTENTS,  "EXCLUDED_EXTENTS")	    \
++	EM( IO_TREE_BTREE_INODE_IO,	  "BTRFS_INODE_IO")	    \
+ 	EM( IO_TREE_INODE_IO,		  "INODE_IO")		    \
+ 	EM( IO_TREE_INODE_IO_FAILURE,	  "INODE_IO_FAILURE")	    \
+ 	EM( IO_TREE_RELOC_BLOCKS,	  "RELOC_BLOCKS")	    \
 -- 
 2.28.0
 
