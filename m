@@ -2,34 +2,34 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B1AA27DE09
-	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Sep 2020 03:56:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6A7A27DE0A
+	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Sep 2020 03:56:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729848AbgI3B4W (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 29 Sep 2020 21:56:22 -0400
-Received: from mx2.suse.de ([195.135.220.15]:50056 "EHLO mx2.suse.de"
+        id S1729859AbgI3B4Z (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 29 Sep 2020 21:56:25 -0400
+Received: from mx2.suse.de ([195.135.220.15]:50088 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729843AbgI3B4V (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 29 Sep 2020 21:56:21 -0400
+        id S1729843AbgI3B4Z (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 29 Sep 2020 21:56:25 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1601430980;
+        t=1601430983;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=HvFXedX2aANewbCvKqGgEfcvtnPnwaJHRwN+3JuD3Po=;
-        b=c07LzLwaUAnr3peqTncJaUjs4GGoKBQS5JYqHW6a3jXNHmF5mRIc48yM7e0O8BJ79QzyyR
-        qpuI+C1N0K7IJIJaz9KBtoj/yLH3rBMYkJT959N18sAClcY3y6uERjQAv5NNVTPw43IzT+
-        ro3Y8sKuhXGi36ZvBKg2mjy0dtWXKpk=
+        bh=Gxrv4wSosYa7MrZ2ZHfsCdTF6wqjXfGIk9G0NFcshO8=;
+        b=s6wzjDf1wf5P7M4+/RC4bOs8xyp8bxQ/Nj3FmhNJFyR09XHK5bgW3Vj8tTIm+sQp8WrdGu
+        IML/GFHmcHZ7oDWF68MsT2WeBiQTW/bw/m2TS2pwPIyhEWfUJ0KKoC6pd9jsQGpoKuo81q
+        MDtcMR5Z0Wq5rW0DnypDdO/ATpvbe4Q=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 53BE5AF99
-        for <linux-btrfs@vger.kernel.org>; Wed, 30 Sep 2020 01:56:20 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 20040AF95
+        for <linux-btrfs@vger.kernel.org>; Wed, 30 Sep 2020 01:56:23 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v3 17/49] btrfs: extent_io: extract the btree page submission code into its own helper function
-Date:   Wed, 30 Sep 2020 09:55:07 +0800
-Message-Id: <20200930015539.48867-18-wqu@suse.com>
+Subject: [PATCH v3 18/49] btrfs: extent_io: calculate inline extent buffer page size based on page size
+Date:   Wed, 30 Sep 2020 09:55:08 +0800
+Message-Id: <20200930015539.48867-19-wqu@suse.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200930015539.48867-1-wqu@suse.com>
 References: <20200930015539.48867-1-wqu@suse.com>
@@ -39,168 +39,65 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-In btree_write_cache_pages() we have a btree page submission routine
-buried deeply into a nested loop.
+Btrfs only support 64K as max node size, thus for 4K page system, we
+would have at most 16 pages for one extent buffer.
 
-This patch will extract that part of code into a helper function,
-submit_btree_page(), to do the same work.
+For a system using 64K page size, we would really have just one
+single page.
 
-Also, since submit_btree_page() now can return >0 for successfull extent
-buffer submission, remove the "ASSERT(ret <= 0);" line.
+While we always use 16 pages for extent_buffer::pages[], this means for
+systems using 64K pages, we are wasting memory for the 15 pages which
+will never be utilized.
+
+So this patch will change how the extent_buffer::pages[] array size is
+calclulated, now it will be calculated using
+BTRFS_MAX_METADATA_BLOCKSIZE and PAGE_SIZE.
+
+For systems using 4K page size, it will stay 16 pages.
+For systems using 64K page size, it will be just 1 page.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/extent_io.c | 116 +++++++++++++++++++++++++------------------
- 1 file changed, 69 insertions(+), 47 deletions(-)
+ fs/btrfs/extent_io.c | 6 +++---
+ fs/btrfs/extent_io.h | 8 +++++---
+ 2 files changed, 8 insertions(+), 6 deletions(-)
 
 diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index e282eb63ad1b..6b925094608c 100644
+index 6b925094608c..8662b27e42d6 100644
 --- a/fs/btrfs/extent_io.c
 +++ b/fs/btrfs/extent_io.c
-@@ -3988,10 +3988,75 @@ static noinline_for_stack int write_one_eb(struct extent_buffer *eb,
- 	return ret;
- }
+@@ -5024,9 +5024,9 @@ __alloc_extent_buffer(struct btrfs_fs_info *fs_info, u64 start,
+ 	/*
+ 	 * Sanity checks, currently the maximum is 64k covered by 16x 4k pages
+ 	 */
+-	BUILD_BUG_ON(BTRFS_MAX_METADATA_BLOCKSIZE
+-		> MAX_INLINE_EXTENT_BUFFER_SIZE);
+-	BUG_ON(len > MAX_INLINE_EXTENT_BUFFER_SIZE);
++	BUILD_BUG_ON(BTRFS_MAX_METADATA_BLOCKSIZE >
++		     INLINE_EXTENT_BUFFER_PAGES * PAGE_SIZE);
++	BUG_ON(len > BTRFS_MAX_METADATA_BLOCKSIZE);
  
+ #ifdef CONFIG_BTRFS_DEBUG
+ 	eb->spinning_writers = 0;
+diff --git a/fs/btrfs/extent_io.h b/fs/btrfs/extent_io.h
+index 3c9252b429e0..e588b3100ede 100644
+--- a/fs/btrfs/extent_io.h
++++ b/fs/btrfs/extent_io.h
+@@ -85,9 +85,11 @@ struct extent_io_ops {
+ 				    int mirror);
+ };
+ 
+-
+-#define INLINE_EXTENT_BUFFER_PAGES 16
+-#define MAX_INLINE_EXTENT_BUFFER_SIZE (INLINE_EXTENT_BUFFER_PAGES * PAGE_SIZE)
 +/*
-+ * A helper to submit a btree page.
-+ *
-+ * This function is not always submitting the page, as we only submit the full
-+ * extent buffer in a batch.
-+ *
-+ * @page:	The btree page
-+ * @prev_eb:	Previous extent buffer, to determine if we need to submit
-+ * 		this page.
-+ *
-+ * Return >0 if we have submitted the extent buffer successfully.
-+ * Return 0 if we don't need to do anything for the page.
-+ * Return <0 for fatal error.
++ * The SZ_64K is BTRFS_MAX_METADATA_BLOCKSIZE, here just to avoid circle
++ * including "ctree.h".
 + */
-+static int submit_btree_page(struct page *page, struct writeback_control *wbc,
-+			     struct extent_page_data *epd,
-+			     struct extent_buffer **prev_eb)
-+{
-+	struct address_space *mapping = page->mapping;
-+	struct extent_buffer *eb;
-+	int ret;
-+
-+	if (!PagePrivate(page))
-+		return 0;
-+
-+	spin_lock(&mapping->private_lock);
-+	if (!PagePrivate(page)) {
-+		spin_unlock(&mapping->private_lock);
-+		return 0;
-+	}
-+
-+	eb = (struct extent_buffer *)page->private;
-+
-+	/*
-+	 * Shouldn't happen and normally this would be a BUG_ON but no sense
-+	 * in crashing the users box for something we can survive anyway.
-+	 */
-+	if (WARN_ON(!eb)) {
-+		spin_unlock(&mapping->private_lock);
-+		return 0;
-+	}
-+
-+	if (eb == *prev_eb) {
-+		spin_unlock(&mapping->private_lock);
-+		return 0;
-+	}
-+	ret = atomic_inc_not_zero(&eb->refs);
-+	spin_unlock(&mapping->private_lock);
-+	if (!ret)
-+		return 0;
-+
-+	*prev_eb = eb;
-+
-+	ret = lock_extent_buffer_for_io(eb, epd);
-+	if (ret <= 0) {
-+		free_extent_buffer(eb);
-+		return ret;
-+	}
-+	ret = write_one_eb(eb, wbc, epd);
-+	free_extent_buffer(eb);
-+	if (ret < 0)
-+		return ret;
-+	return 1;
-+}
-+
- int btree_write_cache_pages(struct address_space *mapping,
- 				   struct writeback_control *wbc)
- {
--	struct extent_buffer *eb, *prev_eb = NULL;
-+	struct extent_buffer *prev_eb = NULL;
- 	struct extent_page_data epd = {
- 		.bio = NULL,
- 		.extent_locked = 0,
-@@ -4037,55 +4102,13 @@ int btree_write_cache_pages(struct address_space *mapping,
- 		for (i = 0; i < nr_pages; i++) {
- 			struct page *page = pvec.pages[i];
- 
--			if (!PagePrivate(page))
--				continue;
--
--			spin_lock(&mapping->private_lock);
--			if (!PagePrivate(page)) {
--				spin_unlock(&mapping->private_lock);
--				continue;
--			}
--
--			eb = (struct extent_buffer *)page->private;
--
--			/*
--			 * Shouldn't happen and normally this would be a BUG_ON
--			 * but no sense in crashing the users box for something
--			 * we can survive anyway.
--			 */
--			if (WARN_ON(!eb)) {
--				spin_unlock(&mapping->private_lock);
--				continue;
--			}
--
--			if (eb == prev_eb) {
--				spin_unlock(&mapping->private_lock);
--				continue;
--			}
--
--			ret = atomic_inc_not_zero(&eb->refs);
--			spin_unlock(&mapping->private_lock);
--			if (!ret)
--				continue;
--
--			prev_eb = eb;
--			ret = lock_extent_buffer_for_io(eb, &epd);
--			if (!ret) {
--				free_extent_buffer(eb);
-+			ret = submit_btree_page(page, wbc, &epd, &prev_eb);
-+			if (ret == 0)
- 				continue;
--			} else if (ret < 0) {
--				done = 1;
--				free_extent_buffer(eb);
--				break;
--			}
--
--			ret = write_one_eb(eb, wbc, &epd);
--			if (ret) {
-+			if (ret < 0) {
- 				done = 1;
--				free_extent_buffer(eb);
- 				break;
- 			}
--			free_extent_buffer(eb);
- 
- 			/*
- 			 * the filesystem may choose to bump up nr_to_write.
-@@ -4106,7 +4129,6 @@ int btree_write_cache_pages(struct address_space *mapping,
- 		index = 0;
- 		goto retry;
- 	}
--	ASSERT(ret <= 0);
- 	if (ret < 0) {
- 		end_write_bio(&epd, ret);
- 		return ret;
++#define INLINE_EXTENT_BUFFER_PAGES (SZ_64K / PAGE_SIZE)
+ struct extent_buffer {
+ 	u64 start;
+ 	unsigned long len;
 -- 
 2.28.0
 
