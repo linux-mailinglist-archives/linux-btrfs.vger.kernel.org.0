@@ -2,34 +2,34 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62B8B27DDFE
-	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Sep 2020 03:56:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FF5B27DDFF
+	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Sep 2020 03:56:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729767AbgI3B4A (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 29 Sep 2020 21:56:00 -0400
-Received: from mx2.suse.de ([195.135.220.15]:49660 "EHLO mx2.suse.de"
+        id S1729777AbgI3B4C (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 29 Sep 2020 21:56:02 -0400
+Received: from mx2.suse.de ([195.135.220.15]:49696 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729322AbgI3Bz7 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 29 Sep 2020 21:55:59 -0400
+        id S1729322AbgI3B4C (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 29 Sep 2020 21:56:02 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1601430958;
+        t=1601430960;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=9qwYOpGiFv4UAj3z+FgIDuOK6halmkGEViP5Q2QNedI=;
-        b=BnLvyBFP3c/XwEikfdS7xqUv1b9Qqg9mFcdvQbvXgyE8SCPUSMiTfkXOVWeCsjJsJ2EMTY
-        QmMY1JaETnlix/Yc6mQZN+sAZNFKM1qWXlddPH9bpJMR33EIB3WCCU1aSDd+Dr1n0k8szx
-        BGF+a7r9BxnS8+5DiiPgi/cZ6XfDCg8=
+        bh=KFZDA0ErJ2fdfe7ernxUM9QVz0rHd5+wQcecA2oUE2k=;
+        b=O7MpL1PG88Vmm/nFMnz1HjMeiJn5ESzVqmPVXBQSnYc45FRPwEH7W5eYD5w6vggOwuCINP
+        cRXv/OexlA8NEJdvVnc6HIDhdtBg4dS7zDWAHiq37peGcCjhM8DepsMbN/i9pngrUqI46W
+        P8S47PFltykSQBpPZCfDoqzATgzhTxo=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 20CF6AE07
-        for <linux-btrfs@vger.kernel.org>; Wed, 30 Sep 2020 01:55:58 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 3240CAF95
+        for <linux-btrfs@vger.kernel.org>; Wed, 30 Sep 2020 01:56:00 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v3 06/49] btrfs: disk-io: replace @fs_info and @private_data with @inode for btrfs_wq_submit_bio()
-Date:   Wed, 30 Sep 2020 09:54:56 +0800
-Message-Id: <20200930015539.48867-7-wqu@suse.com>
+Subject: [PATCH v3 07/49] btrfs: inode: sink parameter @start and @len for check_data_csum()
+Date:   Wed, 30 Sep 2020 09:54:57 +0800
+Message-Id: <20200930015539.48867-8-wqu@suse.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200930015539.48867-1-wqu@suse.com>
 References: <20200930015539.48867-1-wqu@suse.com>
@@ -39,187 +39,93 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-All callers for btrfs_wq_submit_bio() passes struct inode as
-@private_data, so there is no need for @private_data to be (void *),
-just replace it with "struct inode *inode".
+For check_data_csum(), the page we're using is directly from inode
+mapping, thus it has valid page_offset().
 
-While we can extra fs_info from struct inode, also remove the @fs_info
-parameter.
+We can use (page_offset() + pg_off) to replace @start parameter
+completely, while the @len should always be sectorsize.
 
-Since we're here, also replace all the (void *private_data) into (struct
-inode *inode).
+Since we're here, also add some comment, as there are quite some
+confusion in words like start/offset, without explaining whether it's
+file_offset or logical bytenr.
+
+This should not affect the existing behavior, as for current sectorsize
+== PAGE_SIZE case, @pgoff should always be 0, and len is always
+PAGE_SIZE (or sectorsize from the dio read path).
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/disk-io.c   | 21 +++++++++++----------
- fs/btrfs/disk-io.h   |  8 ++++----
- fs/btrfs/extent_io.h |  2 +-
- fs/btrfs/inode.c     | 21 +++++++++------------
- 4 files changed, 25 insertions(+), 27 deletions(-)
+ fs/btrfs/inode.c | 27 +++++++++++++++++++--------
+ 1 file changed, 19 insertions(+), 8 deletions(-)
 
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index be6edbd34934..b7436ab7bba9 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -110,7 +110,7 @@ static void btrfs_free_csum_hash(struct btrfs_fs_info *fs_info)
-  * just before they are sent down the IO stack.
-  */
- struct async_submit_bio {
--	void *private_data;
-+	struct inode *inode;
- 	struct bio *bio;
- 	extent_submit_bio_start_t *submit_bio_start;
- 	int mirror_num;
-@@ -746,7 +746,7 @@ static void run_one_async_start(struct btrfs_work *work)
- 	blk_status_t ret;
- 
- 	async = container_of(work, struct  async_submit_bio, work);
--	ret = async->submit_bio_start(async->private_data, async->bio,
-+	ret = async->submit_bio_start(async->inode, async->bio,
- 				      async->bio_offset);
- 	if (ret)
- 		async->status = ret;
-@@ -767,7 +767,7 @@ static void run_one_async_done(struct btrfs_work *work)
- 	blk_status_t ret;
- 
- 	async = container_of(work, struct  async_submit_bio, work);
--	inode = async->private_data;
-+	inode = async->inode;
- 
- 	/* If an error occurred we just want to clean up the bio and move on */
- 	if (async->status) {
-@@ -797,18 +797,19 @@ static void run_one_async_free(struct btrfs_work *work)
- 	kfree(async);
- }
- 
--blk_status_t btrfs_wq_submit_bio(struct btrfs_fs_info *fs_info, struct bio *bio,
-+blk_status_t btrfs_wq_submit_bio(struct inode *inode, struct bio *bio,
- 				 int mirror_num, unsigned long bio_flags,
--				 u64 bio_offset, void *private_data,
-+				 u64 bio_offset,
- 				 extent_submit_bio_start_t *submit_bio_start)
- {
-+	struct btrfs_fs_info *fs_info = BTRFS_I(inode)->root->fs_info;
- 	struct async_submit_bio *async;
- 
- 	async = kmalloc(sizeof(*async), GFP_NOFS);
- 	if (!async)
- 		return BLK_STS_RESOURCE;
- 
--	async->private_data = private_data;
-+	async->inode = inode;
- 	async->bio = bio;
- 	async->mirror_num = mirror_num;
- 	async->submit_bio_start = submit_bio_start;
-@@ -845,8 +846,8 @@ static blk_status_t btree_csum_one_bio(struct bio *bio)
- 	return errno_to_blk_status(ret);
- }
- 
--static blk_status_t btree_submit_bio_start(void *private_data, struct bio *bio,
--					     u64 bio_offset)
-+static blk_status_t btree_submit_bio_start(struct inode *inode, struct bio *bio,
-+					   u64 bio_offset)
- {
- 	/*
- 	 * when we're called for a write, we're already in the async
-@@ -893,8 +894,8 @@ static blk_status_t btree_submit_bio_hook(struct inode *inode, struct bio *bio,
- 		 * kthread helpers are used to submit writes so that
- 		 * checksumming can happen in parallel across all CPUs
- 		 */
--		ret = btrfs_wq_submit_bio(fs_info, bio, mirror_num, 0,
--					  0, inode, btree_submit_bio_start);
-+		ret = btrfs_wq_submit_bio(inode, bio, mirror_num, 0,
-+					  0, btree_submit_bio_start);
- 	}
- 
- 	if (ret)
-diff --git a/fs/btrfs/disk-io.h b/fs/btrfs/disk-io.h
-index 00dc39d47ed3..2d564e9223e2 100644
---- a/fs/btrfs/disk-io.h
-+++ b/fs/btrfs/disk-io.h
-@@ -105,10 +105,10 @@ int btrfs_read_buffer(struct extent_buffer *buf, u64 parent_transid, int level,
- 		      struct btrfs_key *first_key);
- blk_status_t btrfs_bio_wq_end_io(struct btrfs_fs_info *info, struct bio *bio,
- 			enum btrfs_wq_endio_type metadata);
--blk_status_t btrfs_wq_submit_bio(struct btrfs_fs_info *fs_info, struct bio *bio,
--			int mirror_num, unsigned long bio_flags,
--			u64 bio_offset, void *private_data,
--			extent_submit_bio_start_t *submit_bio_start);
-+blk_status_t btrfs_wq_submit_bio(struct inode *inode, struct bio *bio,
-+				 int mirror_num, unsigned long bio_flags,
-+				 u64 bio_offset,
-+				 extent_submit_bio_start_t *submit_bio_start);
- blk_status_t btrfs_submit_bio_done(void *private_data, struct bio *bio,
- 			  int mirror_num);
- int btrfs_init_log_root_tree(struct btrfs_trans_handle *trans,
-diff --git a/fs/btrfs/extent_io.h b/fs/btrfs/extent_io.h
-index 30794ae58498..3c9252b429e0 100644
---- a/fs/btrfs/extent_io.h
-+++ b/fs/btrfs/extent_io.h
-@@ -71,7 +71,7 @@ typedef blk_status_t (submit_bio_hook_t)(struct inode *inode, struct bio *bio,
- 					 int mirror_num,
- 					 unsigned long bio_flags);
- 
--typedef blk_status_t (extent_submit_bio_start_t)(void *private_data,
-+typedef blk_status_t (extent_submit_bio_start_t)(struct inode *inode,
- 		struct bio *bio, u64 bio_offset);
- 
- struct extent_io_ops {
 diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 9570458aa847..e5d558ef4c7f 100644
+index e5d558ef4c7f..10ea6a92685b 100644
 --- a/fs/btrfs/inode.c
 +++ b/fs/btrfs/inode.c
-@@ -2157,11 +2157,9 @@ int btrfs_bio_fits_in_stripe(struct page *page, size_t size, struct bio *bio,
-  * At IO completion time the cums attached on the ordered extent record
-  * are inserted into the btree
-  */
--static blk_status_t btrfs_submit_bio_start(void *private_data, struct bio *bio,
--				    u64 bio_offset)
-+static blk_status_t btrfs_submit_bio_start(struct inode *inode, struct bio *bio,
-+					   u64 bio_offset)
- {
--	struct inode *inode = private_data;
--
- 	return btrfs_csum_one_bio(BTRFS_I(inode), bio, 0, 0);
+@@ -2791,17 +2791,30 @@ void btrfs_writepage_endio_finish_ordered(struct page *page, u64 start,
+ 	btrfs_queue_work(wq, &ordered_extent->work);
  }
  
-@@ -2221,8 +2219,8 @@ static blk_status_t btrfs_submit_bio_hook(struct inode *inode, struct bio *bio,
- 		if (root->root_key.objectid == BTRFS_DATA_RELOC_TREE_OBJECTID)
- 			goto mapit;
- 		/* we're doing a write, do the async checksumming */
--		ret = btrfs_wq_submit_bio(fs_info, bio, mirror_num, bio_flags,
--					  0, inode, btrfs_submit_bio_start);
-+		ret = btrfs_wq_submit_bio(inode, bio, mirror_num, bio_flags,
-+					  0, btrfs_submit_bio_start);
- 		goto out;
- 	} else if (!skip_sum) {
- 		ret = btrfs_csum_one_bio(BTRFS_I(inode), bio, 0, 0);
-@@ -7616,11 +7614,10 @@ static void __endio_write_update_ordered(struct btrfs_inode *inode,
++/*
++ * Verify the checksum of one sector of uncompressed data.
++ *
++ * @inode:	The inode.
++ * @io_bio:	The btrfs_io_bio which contains the csum.
++ * @icsum:	The csum offset (by number of sectors).
++ * @page:	The page where the data to be verified is.
++ * @pgoff:	The offset inside the page.
++ *
++ * The length of such check is always one sector size.
++ */
+ static int check_data_csum(struct inode *inode, struct btrfs_io_bio *io_bio,
+-			   int icsum, struct page *page, int pgoff, u64 start,
+-			   size_t len)
++			   int icsum, struct page *page, int pgoff)
+ {
+ 	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
+ 	SHASH_DESC_ON_STACK(shash, fs_info->csum_shash);
+ 	char *kaddr;
++	u32 len = fs_info->sectorsize;
+ 	u16 csum_size = btrfs_super_csum_size(fs_info->super_copy);
+ 	u8 *csum_expected;
+ 	u8 csum[BTRFS_CSUM_SIZE];
+ 
++	ASSERT(pgoff + len <= PAGE_SIZE);
++
+ 	csum_expected = ((u8 *)io_bio->csum) + icsum * csum_size;
+ 
+ 	kaddr = kmap_atomic(page);
+@@ -2815,8 +2828,8 @@ static int check_data_csum(struct inode *inode, struct btrfs_io_bio *io_bio,
+ 	kunmap_atomic(kaddr);
+ 	return 0;
+ zeroit:
+-	btrfs_print_data_csum_error(BTRFS_I(inode), start, csum, csum_expected,
+-				    io_bio->mirror_num);
++	btrfs_print_data_csum_error(BTRFS_I(inode), page_offset(page) + pgoff,
++				    csum, csum_expected, io_bio->mirror_num);
+ 	if (io_bio->device)
+ 		btrfs_dev_stat_inc_and_print(io_bio->device,
+ 					     BTRFS_DEV_STAT_CORRUPTION_ERRS);
+@@ -2855,8 +2868,7 @@ static int btrfs_readpage_end_io_hook(struct btrfs_io_bio *io_bio,
  	}
+ 
+ 	phy_offset >>= inode->i_sb->s_blocksize_bits;
+-	return check_data_csum(inode, io_bio, phy_offset, page, offset, start,
+-			       (size_t)(end - start + 1));
++	return check_data_csum(inode, io_bio, phy_offset, page, offset);
  }
  
--static blk_status_t btrfs_submit_bio_start_direct_io(void *private_data,
--				    struct bio *bio, u64 offset)
-+static blk_status_t btrfs_submit_bio_start_direct_io(struct inode *inode,
-+						     struct bio *bio,
-+						     u64 offset)
- {
--	struct inode *inode = private_data;
--
- 	return btrfs_csum_one_bio(BTRFS_I(inode), bio, offset, 1);
- }
- 
-@@ -7671,8 +7668,8 @@ static inline blk_status_t btrfs_submit_dio_bio(struct bio *bio,
- 		goto map;
- 
- 	if (write && async_submit) {
--		ret = btrfs_wq_submit_bio(fs_info, bio, 0, 0,
--					  file_offset, inode,
-+		ret = btrfs_wq_submit_bio(inode, bio, 0, 0,
-+					  file_offset,
- 					  btrfs_submit_bio_start_direct_io);
- 		goto err;
- 	} else if (write) {
+ /*
+@@ -7543,8 +7555,7 @@ static blk_status_t btrfs_check_read_dio_bio(struct inode *inode,
+ 			ASSERT(pgoff < PAGE_SIZE);
+ 			if (uptodate &&
+ 			    (!csum || !check_data_csum(inode, io_bio, icsum,
+-						       bvec.bv_page, pgoff,
+-						       start, sectorsize))) {
++						       bvec.bv_page, pgoff))) {
+ 				clean_io_failure(fs_info, failure_tree, io_tree,
+ 						 start, bvec.bv_page,
+ 						 btrfs_ino(BTRFS_I(inode)),
 -- 
 2.28.0
 
