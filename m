@@ -2,34 +2,34 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C0F027DE22
-	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Sep 2020 03:57:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A89327DE23
+	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Sep 2020 03:57:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729968AbgI3B5L (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 29 Sep 2020 21:57:11 -0400
-Received: from mx2.suse.de ([195.135.220.15]:50998 "EHLO mx2.suse.de"
+        id S1729973AbgI3B5N (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 29 Sep 2020 21:57:13 -0400
+Received: from mx2.suse.de ([195.135.220.15]:51032 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729777AbgI3B5K (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 29 Sep 2020 21:57:10 -0400
+        id S1729777AbgI3B5M (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 29 Sep 2020 21:57:12 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1601431029;
+        t=1601431030;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=1SB1pqWVr7NbERMw+v2ieT057OZaaR08zrX57by8fIA=;
-        b=O59lWBorFAMsXV3dXhSJUjhD1x/RxgtKLXP4oBJGqltxtm7tBEUgVHfOzCJ5PZNlsCRSQ3
-        oq0N1VMkrHv5iL2g6UgEEliV6xMsXVSJhXtSKFfCKVTIdV8fO+ec61tePrX5mKXmNylS3A
-        0+cy7L8WD5KXDdhwZs7YinKfYx5k9xc=
+        bh=ZfWv7koY0dyceo8JE3xCSKQAF7wUxt/o89+5X+bjTrg=;
+        b=i2aF//8OFdKjoYSQbifEfyw0g9VaZlxJr2uTThJ3NeTRuTiW6Cpnffs4y5/07t5BKW/LWf
+        wKrsx2XKf0sq9SVI/UYuMahCD/MZ2IdXn1stHVebGPP87Nrxm9pGkwdapkVMWst8aLM9qO
+        YQfYwUMSNV29Y+OqL3O/8epAkxNJmU8=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 181CDAE07
-        for <linux-btrfs@vger.kernel.org>; Wed, 30 Sep 2020 01:57:09 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id D3830AF99
+        for <linux-btrfs@vger.kernel.org>; Wed, 30 Sep 2020 01:57:10 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v3 41/49] btrfs: extent_io: prevent extent_state from being merged for btree io tree
-Date:   Wed, 30 Sep 2020 09:55:31 +0800
-Message-Id: <20200930015539.48867-42-wqu@suse.com>
+Subject: [PATCH v3 42/49] btrfs: extent_io: make set_extent_buffer_dirty() to support subpage sized metadata
+Date:   Wed, 30 Sep 2020 09:55:32 +0800
+Message-Id: <20200930015539.48867-43-wqu@suse.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200930015539.48867-1-wqu@suse.com>
 References: <20200930015539.48867-1-wqu@suse.com>
@@ -39,148 +39,88 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-For incoming subpage metadata rw support, prevent extent_state from
-being merged for btree io tree.
+For set_extent_buffer_dirty() to support subpage sized metadata, we only
+need to call set_extent_dirty().
 
-The main cause is set_extent_buffer_dirty().
+As any dirty extent buffer in the page would make the whole page dirty,
+we can re-use the existing routine without problem, just need to add
+above call of set_extent_buffer_dirty().
 
-In the following call chain, we could fall into the situation where we
-have to call set_extent_dirty() with atomic context:
-
-alloc_reserved_tree_block()
-|- path->leave_spinning = 1;
-|- btrfs_insert_empty_item()
-   |- btrfs_search_slot()
-   |  Now the path has all its tree block spinning locked
-   |- setup_items_for_insert();
-   |- btrfs_unlock_up_safe(path, 1);
-   |  Now path->nodes[0] still spin locked
-   |- btrfs_mark_buffer_dirty(leaf);
-      |- set_extent_buffer_dirty()
-
-Since set_extent_buffer_dirty() is in fact a pretty common call, just
-fall back to GFP_ATOMIC allocation used in __set_extent_bit() may
-exhause the pool sooner than we expected.
-
-So this patch goes another direction, by not merging all extent_state
-for subpage btree io tree.
-
-Since for subpage btree io tree, all in tree extent buffers has
-EXTENT_HAS_TREE_BLOCK bit set during its lifespan, as long as
-extent_state is not merged, each extent buffer would has its own
-extent_state, so that set/clear_extent_bit() can reuse existing extent
-buffer extent_state, without allocating new memory.
-
-The cost is obvious, around 150 bytes per subpage extent buffer.
-But considering for subpage extent buffer, we saved 15 page pointers,
-this should save 120 bytes, so the net cost is just 30 bytes per subpage
-extent buffer, which should be acceptable.
+Now since a page is dirty if any extent buffer in it is dirty, the
+WARN_ON() in alloc_extent_buffer() can be falsely triggered, also update
+the WARN_ON(PageDirty()) check into assert_eb_range_not_dirty() to
+support subpage case.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/disk-io.c        | 14 ++++++++++++--
- fs/btrfs/extent-io-tree.h | 14 ++++++++++++++
- fs/btrfs/extent_io.c      | 19 ++++++++++++++-----
- 3 files changed, 40 insertions(+), 7 deletions(-)
+ fs/btrfs/extent_io.c | 35 ++++++++++++++++++++++++++++++++++-
+ 1 file changed, 34 insertions(+), 1 deletion(-)
 
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 9aa68e2344e1..e466c30b52c8 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -2326,11 +2326,21 @@ static void btrfs_init_btree_inode(struct btrfs_fs_info *fs_info)
- 	/*
- 	 * For subpage size support, btree inode tracks EXTENT_UPTODATE for
- 	 * its IO.
-+	 *
-+	 * And never merge extent states to make all set/clear operation never
-+	 * to allocate memory, except the initial EXTENT_HAS_TREE_BLOCK bit.
-+	 * This adds extra ~150 bytes for each extent buffer.
-+	 *
-+	 * TODO: Josef's rwsem rework on tree lock would kill the leave_spining
-+	 * case, and then we can revert this behavior.
- 	 */
--	if (btrfs_is_subpage(fs_info))
-+	if (btrfs_is_subpage(fs_info)) {
- 		BTRFS_I(inode)->io_tree.track_uptodate = true;
--	else
-+		BTRFS_I(inode)->io_tree.never_merge = true;
-+	} else {
- 		BTRFS_I(inode)->io_tree.track_uptodate = false;
-+		BTRFS_I(inode)->io_tree.never_merge = false;
-+	}
- 	extent_map_tree_init(&BTRFS_I(inode)->extent_tree);
- 
- 	BTRFS_I(inode)->io_tree.ops = &btree_extent_io_ops;
-diff --git a/fs/btrfs/extent-io-tree.h b/fs/btrfs/extent-io-tree.h
-index c4e73c84ba34..5c0a66146f05 100644
---- a/fs/btrfs/extent-io-tree.h
-+++ b/fs/btrfs/extent-io-tree.h
-@@ -62,6 +62,20 @@ struct extent_io_tree {
- 	u64 dirty_bytes;
- 	bool track_uptodate;
- 
-+	/*
-+	 * Never to merge extent_state.
-+	 *
-+	 * This allows any set/clear function to be execute in atomic context
-+	 * without allocating extra memory.
-+	 * The cost is extra memory usage.
-+	 *
-+	 * Should only be used for subpage btree io tree, which mostly adds per
-+	 * extent buffer memory usage.
-+	 *
-+	 * Default: false.
-+	 */
-+	bool never_merge;
-+
- 	/* Who owns this io tree, should be one of IO_TREE_* */
- 	u8 owner;
- 
 diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 5750a3b92777..d9a05979396d 100644
+index d9a05979396d..ae7ab7364115 100644
 --- a/fs/btrfs/extent_io.c
 +++ b/fs/btrfs/extent_io.c
-@@ -285,6 +285,7 @@ void extent_io_tree_init(struct btrfs_fs_info *fs_info,
- 	spin_lock_init(&tree->lock);
- 	tree->private_data = private_data;
- 	tree->owner = owner;
-+	tree->never_merge = false;
- 	if (owner == IO_TREE_INODE_FILE_EXTENT)
- 		lockdep_set_class(&tree->lock, &file_extent_tree_class);
+@@ -5354,6 +5354,22 @@ struct extent_buffer *alloc_test_extent_buffer(struct btrfs_fs_info *fs_info,
  }
-@@ -480,11 +481,18 @@ static inline struct rb_node *tree_search(struct extent_io_tree *tree,
- }
+ #endif
  
- /*
-- * utility function to look for merge candidates inside a given range.
-+ * Utility function to look for merge candidates inside a given range.
-  * Any extents with matching state are merged together into a single
-- * extent in the tree.  Extents with EXTENT_IO in their state field
-- * are not merged because the end_io handlers need to be able to do
-- * operations on them without sleeping (or doing allocations/splits).
-+ * extent in the tree.
-+ *
-+ * Except the following cases:
-+ * - extent_state with EXTENT_LOCK or EXTENT_BOUNDARY bit set
-+ *   Those extents are not merged because end_io handlers need to be able
-+ *   to do operations on them without sleeping (or doing allocations/splits)
-+ *
-+ * - extent_io_tree with never_merge bit set
-+ *   Same reason as above, but extra call sites may have spinlock/rwlock hold,
-+ *   and we don't want to abuse GFP_ATOMIC.
-  *
-  * This should be called with the tree lock held.
-  */
-@@ -494,7 +502,8 @@ static void merge_state(struct extent_io_tree *tree,
- 	struct extent_state *other;
- 	struct rb_node *other_node;
++static void assert_eb_range_not_dirty(struct extent_buffer *eb,
++				      struct page *page)
++{
++	struct btrfs_fs_info *fs_info = eb->fs_info;
++
++	if (btrfs_is_subpage(fs_info) && page->mapping) {
++		struct extent_io_tree *io_tree = info_to_btree_io_tree(fs_info);
++
++		WARN_ON(test_range_bit(io_tree, eb->start,
++				eb->start + eb->len - 1, EXTENT_DIRTY, 0,
++				NULL));
++	} else {
++		WARN_ON(PageDirty(page));
++	}
++}
++
+ struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
+ 					  u64 start)
+ {
+@@ -5426,12 +5442,13 @@ struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
+ 			 * drop the ref the old guy had.
+ 			 */
+ 			ClearPagePrivate(p);
++			assert_eb_range_not_dirty(eb, p);
+ 			WARN_ON(PageDirty(p));
+ 			put_page(p);
+ 		}
+ 		attach_extent_buffer_page(eb, p);
+ 		spin_unlock(&mapping->private_lock);
+-		WARN_ON(PageDirty(p));
++		assert_eb_range_not_dirty(eb, p);
+ 		eb->pages[i] = p;
+ 		if (!PageUptodate(p))
+ 			uptodate = 0;
+@@ -5651,6 +5668,22 @@ bool set_extent_buffer_dirty(struct extent_buffer *eb)
+ 		for (i = 0; i < num_pages; i++)
+ 			set_page_dirty(eb->pages[i]);
  
--	if (state->state & (EXTENT_LOCKED | EXTENT_BOUNDARY))
-+	if (state->state & (EXTENT_LOCKED | EXTENT_BOUNDARY) ||
-+	    tree->never_merge)
- 		return;
- 
- 	other_node = rb_prev(&state->rb_node);
++	/*
++	 * For subpage size, also set the sector aligned EXTENT_DIRTY range for
++	 * btree io tree
++	 */
++	if (btrfs_is_subpage(eb->fs_info)) {
++		struct extent_io_tree *io_tree =
++			info_to_btree_io_tree(eb->fs_info);
++
++		/*
++		 * set_extent_buffer_dirty() can be called with
++		 * path->leave_spinning == 1, in that case we can't sleep.
++		 */
++		set_extent_dirty(io_tree, eb->start, eb->start + eb->len - 1,
++				 GFP_ATOMIC);
++	}
++
+ #ifdef CONFIG_BTRFS_DEBUG
+ 	for (i = 0; i < num_pages; i++)
+ 		ASSERT(PageDirty(eb->pages[i]));
 -- 
 2.28.0
 
