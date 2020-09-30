@@ -2,34 +2,34 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD60F27DE04
-	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Sep 2020 03:56:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFE1C27DE05
+	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Sep 2020 03:56:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729816AbgI3B4M (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 29 Sep 2020 21:56:12 -0400
-Received: from mx2.suse.de ([195.135.220.15]:49886 "EHLO mx2.suse.de"
+        id S1729820AbgI3B4O (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 29 Sep 2020 21:56:14 -0400
+Received: from mx2.suse.de ([195.135.220.15]:49918 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729322AbgI3B4L (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 29 Sep 2020 21:56:11 -0400
+        id S1729322AbgI3B4O (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 29 Sep 2020 21:56:14 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1601430970;
+        t=1601430972;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=iasRtm5zrtMkabllbAnYb9DckTE5AphGgDVWiwEKhOo=;
-        b=iUxutkTLCcf5nRKNCoFWP+ZsJ6gy6mFrUM4muXP/tok9/6HsDUHATCLT/2ijOU4PoOzEik
-        Rp6x/QldDWMwdaUptCHiXG8AIO9CpTENiKa0h0IzWfSceS3ZvozvYwjAAb6v9oqn+p3QnP
-        hfF+SMRIN92NFZCCqDwpHZw8zkcvNyU=
+        bh=3iS2307cMCGnMHbFC7R/ImaTgJTDPotZVzQDeD1EvuQ=;
+        b=KIsgdrC+ASRa59vbuA0IK6DFonW+blnksWPB421gNTmd2MSsTOHdAfqXuDSfWbvUkZaUPQ
+        CVHwmlbaY5sNKTWsvunDW3bjFsZym7jCDAvYDxl3xqMUFG9coxkpsf67l53dlTKiKInDh3
+        U21ZQikS4CD3NK0qzWZBZGo+jcY9Yk0=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 30F20AF95
-        for <linux-btrfs@vger.kernel.org>; Wed, 30 Sep 2020 01:56:10 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 79FD6AF99
+        for <linux-btrfs@vger.kernel.org>; Wed, 30 Sep 2020 01:56:12 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v3 12/49] btrfs: extent_io: only require sector size alignment for page read
-Date:   Wed, 30 Sep 2020 09:55:02 +0800
-Message-Id: <20200930015539.48867-13-wqu@suse.com>
+Subject: [PATCH v3 13/49] btrfs: extent_io: remove the extent_start/extent_len for end_bio_extent_readpage()
+Date:   Wed, 30 Sep 2020 09:55:03 +0800
+Message-Id: <20200930015539.48867-14-wqu@suse.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200930015539.48867-1-wqu@suse.com>
 References: <20200930015539.48867-1-wqu@suse.com>
@@ -39,78 +39,83 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-If we're reading partial page, btrfs will warn about this as our
-read/write are always done in sector size, which equals page size.
+In end_bio_extent_readpage() we had a strange dance around
+extent_start/extent_len.
 
-But for the incoming subpage RO support, our data read is only aligned
-to sectorsize, which can be smaller than page size.
+The truth is, no matter what we're doing using those two variable, the
+end result is just the same, clear the EXTENT_LOCKED bit and if needed
+set the EXTENT_UPTODATE bit for the io_tree.
 
-Thus here we change the warning condition to check it against
-sectorsize, thus the behavior is not changed for regular sectorsize ==
-PAGE_SIZE case, and won't report error for subpage read.
+This doesn't need the complex dance, we can do it pretty easily by just
+calling endio_readpage_release_extent() for each bvec.
 
-Also, pass the proper start/end with bv_offset for check_data_csum() to
-handle.
+This greatly streamlines the code.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/extent_io.c | 34 ++++++++++++++++++----------------
- 1 file changed, 18 insertions(+), 16 deletions(-)
+ fs/btrfs/extent_io.c | 30 ++----------------------------
+ 1 file changed, 2 insertions(+), 28 deletions(-)
 
 diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index d35eae29bc80..1da7897a799e 100644
+index 1da7897a799e..395fa52ed2f9 100644
 --- a/fs/btrfs/extent_io.c
 +++ b/fs/btrfs/extent_io.c
-@@ -2838,6 +2838,7 @@ static void end_bio_extent_readpage(struct bio *bio)
- 		struct page *page = bvec->bv_page;
- 		struct inode *inode = page->mapping->host;
- 		struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
-+		u32 sectorsize = fs_info->sectorsize;
- 		bool data_inode = btrfs_ino(BTRFS_I(inode))
- 			!= BTRFS_BTREE_INODE_OBJECTID;
+@@ -2795,11 +2795,10 @@ static void end_bio_extent_writepage(struct bio *bio)
+ }
  
-@@ -2848,24 +2849,25 @@ static void end_bio_extent_readpage(struct bio *bio)
- 		tree = &BTRFS_I(inode)->io_tree;
- 		failure_tree = &BTRFS_I(inode)->io_failure_tree;
+ static void
+-endio_readpage_release_extent(struct extent_io_tree *tree, u64 start, u64 len,
++endio_readpage_release_extent(struct extent_io_tree *tree, u64 start, u64 end,
+ 			      int uptodate)
+ {
+ 	struct extent_state *cached = NULL;
+-	u64 end = start + len - 1;
  
--		/* We always issue full-page reads, but if some block
-+		/*
-+		 * We always issue full-sector reads, but if some block
- 		 * in a page fails to read, blk_update_request() will
- 		 * advance bv_offset and adjust bv_len to compensate.
--		 * Print a warning for nonzero offsets, and an error
--		 * if they don't add up to a full page.  */
--		if (bvec->bv_offset || bvec->bv_len != PAGE_SIZE) {
--			if (bvec->bv_offset + bvec->bv_len != PAGE_SIZE)
--				btrfs_err(fs_info,
--					"partial page read in btrfs with offset %u and length %u",
--					bvec->bv_offset, bvec->bv_len);
--			else
--				btrfs_info(fs_info,
--					"incomplete page read in btrfs with offset %u and length %u",
--					bvec->bv_offset, bvec->bv_len);
+ 	if (uptodate && tree->track_uptodate)
+ 		set_extent_uptodate(tree, start, end, &cached, GFP_ATOMIC);
+@@ -2827,8 +2826,6 @@ static void end_bio_extent_readpage(struct bio *bio)
+ 	u64 start;
+ 	u64 end;
+ 	u64 len;
+-	u64 extent_start = 0;
+-	u64 extent_len = 0;
+ 	int mirror;
+ 	int ret;
+ 	struct bvec_iter_all iter_all;
+@@ -2936,32 +2933,9 @@ static void end_bio_extent_readpage(struct bio *bio)
+ 		unlock_page(page);
+ 		offset += len;
+ 
+-		if (unlikely(!uptodate)) {
+-			if (extent_len) {
+-				endio_readpage_release_extent(tree,
+-							      extent_start,
+-							      extent_len, 1);
+-				extent_start = 0;
+-				extent_len = 0;
+-			}
+-			endio_readpage_release_extent(tree, start,
+-						      end - start + 1, 0);
+-		} else if (!extent_len) {
+-			extent_start = start;
+-			extent_len = end + 1 - start;
+-		} else if (extent_start + extent_len == start) {
+-			extent_len += end + 1 - start;
+-		} else {
+-			endio_readpage_release_extent(tree, extent_start,
+-						      extent_len, uptodate);
+-			extent_start = start;
+-			extent_len = end + 1 - start;
 -		}
--
--		start = page_offset(page);
--		end = start + bvec->bv_offset + bvec->bv_len - 1;
-+		 * Print a warning for unaligned offsets, and an error
-+		 * if they don't add up to a full sector.
-+		 */
-+		if (!IS_ALIGNED(bvec->bv_offset, sectorsize))
-+			btrfs_err(fs_info,
-+		"partial page read in btrfs with offset %u and length %u",
-+				  bvec->bv_offset, bvec->bv_len);
-+		else if (!IS_ALIGNED(bvec->bv_offset + bvec->bv_len,
-+				     sectorsize))
-+			btrfs_info(fs_info,
-+		"incomplete page read in btrfs with offset %u and length %u",
-+				   bvec->bv_offset, bvec->bv_len);
-+
-+		start = page_offset(page) + bvec->bv_offset;
-+		end = start + bvec->bv_len - 1;
- 		len = bvec->bv_len;
++		endio_readpage_release_extent(tree, start, end, uptodate);
+ 	}
  
- 		mirror = io_bio->mirror_num;
+-	if (extent_len)
+-		endio_readpage_release_extent(tree, extent_start, extent_len,
+-					      uptodate);
+ 	btrfs_io_bio_free_csum(io_bio);
+ 	bio_put(bio);
+ }
 -- 
 2.28.0
 
