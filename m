@@ -2,35 +2,34 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB10927DE16
-	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Sep 2020 03:56:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE88A27DE17
+	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Sep 2020 03:56:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729914AbgI3B4t (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 29 Sep 2020 21:56:49 -0400
-Received: from mx2.suse.de ([195.135.220.15]:50628 "EHLO mx2.suse.de"
+        id S1729918AbgI3B4u (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 29 Sep 2020 21:56:50 -0400
+Received: from mx2.suse.de ([195.135.220.15]:50664 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729898AbgI3B4t (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 29 Sep 2020 21:56:49 -0400
+        id S1729917AbgI3B4u (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 29 Sep 2020 21:56:50 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1601431007;
+        t=1601431008;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
+         to:to:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=XI2PNYGAU+IBiV2ZX6VjBzpjJBnS1gIwj1h/0qleh+Y=;
-        b=Yz3HTJXu1SCO1f/XKw3TSY/JFSQJK+izzoC06bW4AXSjLkiE9lzYwigmfwdvdIVr4ddvjJ
-        xUGniI0pRjNjpP0f0pvfAvRwAzTEKUb5+dGpxznzBpvvR8R4BOn2HVmKrN/ED7CvlQA3TB
-        f7FKworZMsbJ5qeiIigF4eR2VhjjXHg=
+        bh=nATJwzB7HNMv3p8xpmRB7SDjAV7YkGig36/MnT0PnCc=;
+        b=AJ0OIRfAMiBOcY+giO0pWLBvrv9mgy0AcsiFt+xjEFNpN8Ha4YVFPxwfGfG5/18ieN+Im7
+        h0Lb+rCxPk/GPglgbR6RQRnSzqmDCs3Wyu1Zey0gWtOoqPofNYS1EgwT3jSiXBOVe0EdBT
+        1cDo6Paas12bSFDLnk191qPwvOuSqjY=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id E3708AF95;
-        Wed, 30 Sep 2020 01:56:46 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id DE42BAFAB
+        for <linux-btrfs@vger.kernel.org>; Wed, 30 Sep 2020 01:56:48 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Cc:     Goldwyn Rodrigues <rgoldwyn@suse.com>
-Subject: [PATCH v3 29/49] btrfs: handle sectorsize < PAGE_SIZE case for extent buffer accessors
-Date:   Wed, 30 Sep 2020 09:55:19 +0800
-Message-Id: <20200930015539.48867-30-wqu@suse.com>
+Subject: [PATCH v3 30/49] btrfs: disk-io: only clear EXTENT_LOCK bit for extent_invalidatepage()
+Date:   Wed, 30 Sep 2020 09:55:20 +0800
+Message-Id: <20200930015539.48867-31-wqu@suse.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200930015539.48867-1-wqu@suse.com>
 References: <20200930015539.48867-1-wqu@suse.com>
@@ -40,376 +39,47 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-To support sectorsize < PAGE_SIZE case, we need to take extra care for
-extent buffer accessors.
+In extent_invalidatepage() it will try to clear all possible bits since
+it's calling clear_extent_bit() with delete == 1.
+That would try to clear all existing bits.
 
-Since sectorsize is smaller than PAGE_SIZE, one page can contain
-multiple tree blocks, we must use eb->start to determine the real offset
-to read/write for extent buffer accessors.
+This is currently fine, since for btree io tree, it only utilizes
+EXTENT_LOCK bit.
+But this could be a problem for later subpage support, which will
+utilize extra io tree bit to represent extra info.
 
-This patch introduces two helpers to do these:
-- get_eb_page_index()
-  This is to calculate the index to access extent_buffer::pages.
-  It's just a simple wrapper around "start >> PAGE_SHIFT".
+This patch will just convert that clear_extent_bit() to
+unlock_extent_cached().
 
-  For sectorsize == PAGE_SIZE case, nothing is changed.
-  For sectorsize < PAGE_SIZE case, we always get index as 0, and
-  the existing page shift works also fine.
+As for btree io tree, only EXTENT_LOCKED bit is utilized, this doesn't
+change the behavior, but provides a much cleaner basis for incoming
+subpage support.
 
-- get_eb_page_offset()
-  This is to calculate the offset to access extent_buffer::pages.
-  This needs to take extent_buffer::start into consideration.
-
-  For sectorsize == PAGE_SIZE case, extent_buffer::start is always
-  aligned to PAGE_SIZE, thus adding extent_buffer::start to
-  offset_in_page() won't change the result.
-  For sectorsize < PAGE_SIZE case, adding extent_buffer::start gives
-  us the correct offset to access.
-
-This patch will touch the following parts to cover all extent buffer
-accessors:
-
-- BTRFS_SETGET_HEADER_FUNCS()
-- read_extent_buffer()
-- read_extent_buffer_to_user()
-- memcmp_extent_buffer()
-- write_extent_buffer_chunk_tree_uuid()
-- write_extent_buffer_fsid()
-- write_extent_buffer()
-- memzero_extent_buffer()
-- copy_extent_buffer_full()
-- copy_extent_buffer()
-- memcpy_extent_buffer()
-- memmove_extent_buffer()
-- btrfs_get_token_##bits()
-- btrfs_get_##bits()
-- btrfs_set_token_##bits()
-- btrfs_set_##bits()
-- generic_bin_search()
-
-Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/ctree.c        |  5 ++--
- fs/btrfs/ctree.h        | 38 ++++++++++++++++++++++--
- fs/btrfs/extent_io.c    | 66 ++++++++++++++++++++++++-----------------
- fs/btrfs/struct-funcs.c | 18 ++++++-----
- 4 files changed, 88 insertions(+), 39 deletions(-)
+ fs/btrfs/disk-io.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
-index cd392da69b81..0f6944a3a836 100644
---- a/fs/btrfs/ctree.c
-+++ b/fs/btrfs/ctree.c
-@@ -1712,10 +1712,11 @@ static noinline int generic_bin_search(struct extent_buffer *eb,
- 		oip = offset_in_page(offset);
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index 1ca121ca28aa..10bdb0a8a92f 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -996,8 +996,13 @@ static void extent_invalidatepage(struct extent_io_tree *tree,
  
- 		if (oip + key_size <= PAGE_SIZE) {
--			const unsigned long idx = offset >> PAGE_SHIFT;
-+			const unsigned long idx = get_eb_page_index(offset);
- 			char *kaddr = page_address(eb->pages[idx]);
- 
--			tmp = (struct btrfs_disk_key *)(kaddr + oip);
-+			tmp = (struct btrfs_disk_key *)(kaddr +
-+					get_eb_page_offset(eb, offset));
- 		} else {
- 			read_extent_buffer(eb, &unaligned, offset, key_size);
- 			tmp = &unaligned;
-diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index e3501dad88e2..0c3ea3599dc7 100644
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -1448,14 +1448,15 @@ static inline void btrfs_set_token_##name(struct btrfs_map_token *token,\
- #define BTRFS_SETGET_HEADER_FUNCS(name, type, member, bits)		\
- static inline u##bits btrfs_##name(const struct extent_buffer *eb)	\
- {									\
--	const type *p = page_address(eb->pages[0]);			\
-+	const type *p = page_address(eb->pages[0]) +			\
-+			offset_in_page(eb->start);			\
- 	u##bits res = le##bits##_to_cpu(p->member);			\
- 	return res;							\
- }									\
- static inline void btrfs_set_##name(const struct extent_buffer *eb,	\
- 				    u##bits val)			\
- {									\
--	type *p = page_address(eb->pages[0]);				\
-+	type *p = page_address(eb->pages[0]) + offset_in_page(eb->start); \
- 	p->member = cpu_to_le##bits(val);				\
- }
- 
-@@ -3241,6 +3242,39 @@ static inline void assertfail(const char *expr, const char* file, int line) { }
- #define ASSERT(expr)	(void)(expr)
- #endif
- 
-+/*
-+ * Get the correct offset inside the page of extent buffer.
-+ *
-+ * Will handle both sectorsize == PAGE_SIZE and sectorsize < PAGE_SIZE cases.
-+ *
-+ * @eb:		The target extent buffer
-+ * @start:	The offset inside the extent buffer
-+ */
-+static inline size_t get_eb_page_offset(const struct extent_buffer *eb,
-+					unsigned long offset_in_eb)
-+{
+ 	lock_extent_bits(tree, start, end, &cached_state);
+ 	wait_on_page_writeback(page);
+-	clear_extent_bit(tree, start, end, EXTENT_LOCKED | EXTENT_DELALLOC |
+-			 EXTENT_DO_ACCOUNTING, 1, 1, &cached_state);
++
 +	/*
-+	 * For sectorsize == PAGE_SIZE case, eb->start will always be aligned
-+	 * to PAGE_SIZE, thus adding it won't cause any difference.
-+	 *
-+	 * For sectorsize < PAGE_SIZE, we must only read the data belongs to
-+	 * the eb, thus we have to take the eb->start into consideration.
++	 * Currently for btree io tree, only EXTENT_LOCKED is utilized,
++	 * so here we only need to unlock the extent range to free any
++	 * existing extent state.
 +	 */
-+	return offset_in_page(offset_in_eb + eb->start);
-+}
-+
-+static inline unsigned long get_eb_page_index(unsigned long offset_in_eb)
-+{
-+	/*
-+	 * For sectorsize == PAGE_SIZE case, plain >> PAGE_SHIFT is enough.
-+	 *
-+	 * For sectorsize < PAGE_SIZE case, we only support 64K PAGE_SIZE,
-+	 * and has ensured all tree blocks are contained in one page, thus
-+	 * we always get index == 0.
-+	 */
-+	return offset_in_eb >> PAGE_SHIFT;
-+}
-+
- /*
-  * Use that for functions that are conditionally exported for sanity tests but
-  * otherwise static
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 28188509a206..e42a17039bf6 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -5673,7 +5673,7 @@ void read_extent_buffer(const struct extent_buffer *eb, void *dstv,
- 	struct page *page;
- 	char *kaddr;
- 	char *dst = (char *)dstv;
--	unsigned long i = start >> PAGE_SHIFT;
-+	unsigned long i = get_eb_page_index(start);
- 
- 	if (start + len > eb->len) {
- 		WARN(1, KERN_ERR "btrfs bad mapping eb start %llu len %lu, wanted %lu %lu\n",
-@@ -5682,7 +5682,7 @@ void read_extent_buffer(const struct extent_buffer *eb, void *dstv,
- 		return;
- 	}
- 
--	offset = offset_in_page(start);
-+	offset = get_eb_page_offset(eb, start);
- 
- 	while (len > 0) {
- 		page = eb->pages[i];
-@@ -5707,13 +5707,13 @@ int read_extent_buffer_to_user_nofault(const struct extent_buffer *eb,
- 	struct page *page;
- 	char *kaddr;
- 	char __user *dst = (char __user *)dstv;
--	unsigned long i = start >> PAGE_SHIFT;
-+	unsigned long i = get_eb_page_index(start);
- 	int ret = 0;
- 
- 	WARN_ON(start > eb->len);
- 	WARN_ON(start + len > eb->start + eb->len);
- 
--	offset = offset_in_page(start);
-+	offset = get_eb_page_offset(eb, start);
- 
- 	while (len > 0) {
- 		page = eb->pages[i];
-@@ -5742,13 +5742,13 @@ int memcmp_extent_buffer(const struct extent_buffer *eb, const void *ptrv,
- 	struct page *page;
- 	char *kaddr;
- 	char *ptr = (char *)ptrv;
--	unsigned long i = start >> PAGE_SHIFT;
-+	unsigned long i = get_eb_page_index(start);
- 	int ret = 0;
- 
- 	WARN_ON(start > eb->len);
- 	WARN_ON(start + len > eb->start + eb->len);
- 
--	offset = offset_in_page(start);
-+	offset = get_eb_page_offset(eb, start);
- 
- 	while (len > 0) {
- 		page = eb->pages[i];
-@@ -5774,7 +5774,7 @@ void write_extent_buffer_chunk_tree_uuid(const struct extent_buffer *eb,
- 	char *kaddr;
- 
- 	WARN_ON(!PageUptodate(eb->pages[0]));
--	kaddr = page_address(eb->pages[0]);
-+	kaddr = page_address(eb->pages[0]) + get_eb_page_offset(eb, 0);
- 	memcpy(kaddr + offsetof(struct btrfs_header, chunk_tree_uuid), srcv,
- 			BTRFS_FSID_SIZE);
- }
-@@ -5784,7 +5784,7 @@ void write_extent_buffer_fsid(const struct extent_buffer *eb, const void *srcv)
- 	char *kaddr;
- 
- 	WARN_ON(!PageUptodate(eb->pages[0]));
--	kaddr = page_address(eb->pages[0]);
-+	kaddr = page_address(eb->pages[0]) + get_eb_page_offset(eb, 0);
- 	memcpy(kaddr + offsetof(struct btrfs_header, fsid), srcv,
- 			BTRFS_FSID_SIZE);
- }
-@@ -5797,12 +5797,12 @@ void write_extent_buffer(const struct extent_buffer *eb, const void *srcv,
- 	struct page *page;
- 	char *kaddr;
- 	char *src = (char *)srcv;
--	unsigned long i = start >> PAGE_SHIFT;
-+	unsigned long i = get_eb_page_index(start);
- 
- 	WARN_ON(start > eb->len);
- 	WARN_ON(start + len > eb->start + eb->len);
- 
--	offset = offset_in_page(start);
-+	offset = get_eb_page_offset(eb, start);
- 
- 	while (len > 0) {
- 		page = eb->pages[i];
-@@ -5826,12 +5826,12 @@ void memzero_extent_buffer(const struct extent_buffer *eb, unsigned long start,
- 	size_t offset;
- 	struct page *page;
- 	char *kaddr;
--	unsigned long i = start >> PAGE_SHIFT;
-+	unsigned long i = get_eb_page_index(start);
- 
- 	WARN_ON(start > eb->len);
- 	WARN_ON(start + len > eb->start + eb->len);
- 
--	offset = offset_in_page(start);
-+	offset = get_eb_page_offset(eb, start);
- 
- 	while (len > 0) {
- 		page = eb->pages[i];
-@@ -5855,10 +5855,22 @@ void copy_extent_buffer_full(const struct extent_buffer *dst,
- 
- 	ASSERT(dst->len == src->len);
- 
--	num_pages = num_extent_pages(dst);
--	for (i = 0; i < num_pages; i++)
--		copy_page(page_address(dst->pages[i]),
--				page_address(src->pages[i]));
-+	if (dst->fs_info->sectorsize == PAGE_SIZE) {
-+		num_pages = num_extent_pages(dst);
-+		for (i = 0; i < num_pages; i++)
-+			copy_page(page_address(dst->pages[i]),
-+				  page_address(src->pages[i]));
-+	} else {
-+		unsigned long src_index = get_eb_page_index(0);
-+		unsigned long dst_index = get_eb_page_index(0);
-+		size_t src_offset = get_eb_page_offset(src, 0);
-+		size_t dst_offset = get_eb_page_offset(dst, 0);
-+
-+		ASSERT(src_index == 0 && dst_index == 0);
-+		memcpy(page_address(dst->pages[dst_index]) + dst_offset,
-+		       page_address(src->pages[src_index]) + src_offset,
-+		       src->len);
-+	}
++	unlock_extent_cached(tree, start, end, &cached_state);
  }
  
- void copy_extent_buffer(const struct extent_buffer *dst,
-@@ -5871,11 +5883,11 @@ void copy_extent_buffer(const struct extent_buffer *dst,
- 	size_t offset;
- 	struct page *page;
- 	char *kaddr;
--	unsigned long i = dst_offset >> PAGE_SHIFT;
-+	unsigned long i = get_eb_page_index(dst_offset);
- 
- 	WARN_ON(src->len != dst_len);
- 
--	offset = offset_in_page(dst_offset);
-+	offset = get_eb_page_offset(dst, dst_offset);
- 
- 	while (len > 0) {
- 		page = dst->pages[i];
-@@ -5919,7 +5931,7 @@ static inline void eb_bitmap_offset(const struct extent_buffer *eb,
- 	 * the bitmap item in the extent buffer + the offset of the byte in the
- 	 * bitmap item.
- 	 */
--	offset = start + byte_offset;
-+	offset = start + offset_in_page(eb->start) + byte_offset;
- 
- 	*page_index = offset >> PAGE_SHIFT;
- 	*page_offset = offset_in_page(offset);
-@@ -6083,11 +6095,11 @@ void memcpy_extent_buffer(const struct extent_buffer *dst,
- 	}
- 
- 	while (len > 0) {
--		dst_off_in_page = offset_in_page(dst_offset);
--		src_off_in_page = offset_in_page(src_offset);
-+		dst_off_in_page = get_eb_page_offset(dst, dst_offset);
-+		src_off_in_page = get_eb_page_offset(dst, src_offset);
- 
--		dst_i = dst_offset >> PAGE_SHIFT;
--		src_i = src_offset >> PAGE_SHIFT;
-+		dst_i = get_eb_page_index(dst_offset);
-+		src_i = get_eb_page_index(src_offset);
- 
- 		cur = min(len, (unsigned long)(PAGE_SIZE -
- 					       src_off_in_page));
-@@ -6133,11 +6145,11 @@ void memmove_extent_buffer(const struct extent_buffer *dst,
- 		return;
- 	}
- 	while (len > 0) {
--		dst_i = dst_end >> PAGE_SHIFT;
--		src_i = src_end >> PAGE_SHIFT;
-+		dst_i = get_eb_page_index(dst_end);
-+		src_i = get_eb_page_index(src_end);
- 
--		dst_off_in_page = offset_in_page(dst_end);
--		src_off_in_page = offset_in_page(src_end);
-+		dst_off_in_page = get_eb_page_offset(dst, dst_end);
-+		src_off_in_page = get_eb_page_offset(dst, src_end);
- 
- 		cur = min_t(unsigned long, len, src_off_in_page + 1);
- 		cur = min(cur, dst_off_in_page + 1);
-diff --git a/fs/btrfs/struct-funcs.c b/fs/btrfs/struct-funcs.c
-index 079b059818e9..769901c2b3c9 100644
---- a/fs/btrfs/struct-funcs.c
-+++ b/fs/btrfs/struct-funcs.c
-@@ -67,8 +67,9 @@ u##bits btrfs_get_token_##bits(struct btrfs_map_token *token,		\
- 			       const void *ptr, unsigned long off)	\
- {									\
- 	const unsigned long member_offset = (unsigned long)ptr + off;	\
--	const unsigned long idx = member_offset >> PAGE_SHIFT;		\
--	const unsigned long oip = offset_in_page(member_offset);	\
-+	const unsigned long idx = get_eb_page_index(member_offset);	\
-+	const unsigned long oip = get_eb_page_offset(token->eb, 	\
-+						     member_offset);	\
- 	const int size = sizeof(u##bits);				\
- 	u8 lebytes[sizeof(u##bits)];					\
- 	const int part = PAGE_SIZE - oip;				\
-@@ -95,8 +96,8 @@ u##bits btrfs_get_##bits(const struct extent_buffer *eb,		\
- 			 const void *ptr, unsigned long off)		\
- {									\
- 	const unsigned long member_offset = (unsigned long)ptr + off;	\
--	const unsigned long oip = offset_in_page(member_offset);	\
--	const unsigned long idx = member_offset >> PAGE_SHIFT;		\
-+	const unsigned long oip = get_eb_page_offset(eb, member_offset);\
-+	const unsigned long idx = get_eb_page_index(member_offset);	\
- 	char *kaddr = page_address(eb->pages[idx]);			\
- 	const int size = sizeof(u##bits);				\
- 	const int part = PAGE_SIZE - oip;				\
-@@ -116,8 +117,9 @@ void btrfs_set_token_##bits(struct btrfs_map_token *token,		\
- 			    u##bits val)				\
- {									\
- 	const unsigned long member_offset = (unsigned long)ptr + off;	\
--	const unsigned long idx = member_offset >> PAGE_SHIFT;		\
--	const unsigned long oip = offset_in_page(member_offset);	\
-+	const unsigned long idx = get_eb_page_index(member_offset);	\
-+	const unsigned long oip = get_eb_page_offset(token->eb,		\
-+						     member_offset);	\
- 	const int size = sizeof(u##bits);				\
- 	u8 lebytes[sizeof(u##bits)];					\
- 	const int part = PAGE_SIZE - oip;				\
-@@ -146,8 +148,8 @@ void btrfs_set_##bits(const struct extent_buffer *eb, void *ptr,	\
- 		      unsigned long off, u##bits val)			\
- {									\
- 	const unsigned long member_offset = (unsigned long)ptr + off;	\
--	const unsigned long oip = offset_in_page(member_offset);	\
--	const unsigned long idx = member_offset >> PAGE_SHIFT;		\
-+	const unsigned long oip = get_eb_page_offset(eb, member_offset);\
-+	const unsigned long idx = get_eb_page_index(member_offset);	\
- 	char *kaddr = page_address(eb->pages[idx]);			\
- 	const int size = sizeof(u##bits);				\
- 	const int part = PAGE_SIZE - oip;				\
+ static void btree_invalidatepage(struct page *page, unsigned int offset,
 -- 
 2.28.0
 
