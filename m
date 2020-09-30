@@ -2,57 +2,57 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0628527F2E1
+	by mail.lfdr.de (Postfix) with ESMTP id 731C927F2E2
 	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Sep 2020 22:01:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730260AbgI3UBh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 30 Sep 2020 16:01:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56264 "EHLO
+        id S1730263AbgI3UBj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 30 Sep 2020 16:01:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730220AbgI3UBg (ORCPT
+        with ESMTP id S1728368AbgI3UBi (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 30 Sep 2020 16:01:36 -0400
+        Wed, 30 Sep 2020 16:01:38 -0400
 Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 662E0C061755
-        for <linux-btrfs@vger.kernel.org>; Wed, 30 Sep 2020 13:01:35 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id o5so2790261qke.12
-        for <linux-btrfs@vger.kernel.org>; Wed, 30 Sep 2020 13:01:35 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92951C061755
+        for <linux-btrfs@vger.kernel.org>; Wed, 30 Sep 2020 13:01:37 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id q5so2818026qkc.2
+        for <linux-btrfs@vger.kernel.org>; Wed, 30 Sep 2020 13:01:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=5T4eeHdnmKr5ODQ2vQG6/MB7MsF6PHFHpGutlLVudRM=;
-        b=XDoln5lIkSj/M0A6ggyyQlnPwxL3BPuo739hgRjyLuundCM9Q5ofv2fcYthGpLbAQN
-         rox7gzRuZlbsJQynDi6B26v/ZidWVzwMM0lsgoWTneBIPzedyCI28iXUhaxrc9UkvXSX
-         ZlFpiqXjbuhu/g4FDUFagUuZKCwdc4K/SOBbc/v7WmJBag2fpl51YE5FaGrSkqXCWKt6
-         LulDrvsLG+6BOV+/49rxUNN1cAbNrJDSsIKOnqu5+Z0EaS2w8yYztF4j7d1brU8Y409F
-         Xe2wicxfjngYHZRP2oQ9AemTdVL5O4NCP4YSPYm/peBAnHTSeuKTD89t/2hFX6/sPGYk
-         CroA==
+        bh=WobvOBhzTUSaULdY03g8qlWp0ZrVM0dAjHmKU+H6kN0=;
+        b=ePfkq2SWvN4wImdr5KCwkAunrbpJsoOx9ww/HFwz8j3llg1fUC1Mtl0uuvPghs+BOO
+         VYoSsdDdxJxRXoMAGTkmFN0w5xMXOuNIYvjTrASwgBrKOfkIlbFxfOcXGZfr9v0blVs4
+         qmdCoYLdtBD7pmc1fI2hNTC/1E3qNWkM/D5i2vIs46b5EPw1fIo4VliyQO5kbr18lnRm
+         dzmaC5XCuewsD73PspvEhv7/aqT2G+jCXlZPfOSHT7OA1b+46bdqBI+AUKu1B47tduoJ
+         mCFU98SIc+axCrsagcHfwZeQl9tYEZM7vm4iALyJhlOo7Jz2ETV2916hAjLhAZol6QXi
+         lDsQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=5T4eeHdnmKr5ODQ2vQG6/MB7MsF6PHFHpGutlLVudRM=;
-        b=Hr3n6WJbxLOx4/By9tzTgJ+gCqn0YkZTa2Jxs7L8LcmCn7xotFv8n5Dm1D4XblEJf5
-         GA68IVW2z6qe1XN4JMSNtQVEbws4aMFTopArqwOLRx+2OWmfpJlro0+7FuA+wKBWoaL9
-         ehcSUG/fXCvkoYaqX0aQu19TbN77mBVoNFijWZSkZ4PHbkasGPqzMdaHtsU+gGif4tkt
-         jsVRd8zzoQovrbTYpM5QLF2sG8cUNzI83yDfQKowscpMvC8KyjkGjGtsYvDt7BlW9QYC
-         U4RfP1ZZk68BgQH0dNHC9/Bg2HaYXwm/rCcnaF8U+aVlT2toIqH5Dex0ursXylWcvs/P
-         wERg==
-X-Gm-Message-State: AOAM533oAxPhxIAVy0kMip2/6pkF0Jj3laM7NoUlCeBz1fDquutQ3vq1
-        Tu6mMprUY4T7zcylPDS896VHtLuKy6vrmeP+
-X-Google-Smtp-Source: ABdhPJxc7vlxc/vydg9DtbouCSQTrf55fXenLWI/ePvOlCe2IlKJqU6cOBUBGwUhr1y0vQt+3bKaCw==
-X-Received: by 2002:a05:620a:1185:: with SMTP id b5mr4213494qkk.386.1601496094170;
-        Wed, 30 Sep 2020 13:01:34 -0700 (PDT)
+        bh=WobvOBhzTUSaULdY03g8qlWp0ZrVM0dAjHmKU+H6kN0=;
+        b=t9GsxAd0Ld2Qea9XGp19RarMTYSQGb8fl3XKTEI6q9/hFtayoSr5bXRQIK+6myJqOi
+         wLLNCXji+yXU28zdsOXWLm+QOpHPeHe2s1EoeoKKgQw9N+rSGGjZmWKPIg6eYjcIQg5J
+         mBbW3oKWxlh2m0mr1jtZyolR0aBsEoaSlXVwxvyn+y3Xoc9Tr2FhkEdIkvh6QER0mHWZ
+         6sxQgeEHWfHRawnvdaTgB/bY7BtZDs8PItHvI3owhpqS18qpeqmfuo02Q+FXcP3mv7cT
+         /QsoDbrmD8PUE78U/w7LGSOXyYN4eP05PIh6yeOCOEEUs18Mo1xsgtFF4wbkvRn5hg7o
+         4k6g==
+X-Gm-Message-State: AOAM531gHWB3InVrF2Qhx3dw4ZAqj2swDF+Lj9d2f+ASe/R67wBxWBdJ
+        3k9wtzORGKQRDvQ258qQtPUQpgsDraIJBMyn
+X-Google-Smtp-Source: ABdhPJx0OsLNkLawDG0X73DIWvavn2weHTjiwG9eLMeD018/Qf4mcl5Nfq9FCGc0xDz9T6sym5PkEg==
+X-Received: by 2002:a37:ef19:: with SMTP id j25mr4013009qkk.363.1601496096374;
+        Wed, 30 Sep 2020 13:01:36 -0700 (PDT)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id x43sm3989995qtx.40.2020.09.30.13.01.32
+        by smtp.gmail.com with ESMTPSA id s15sm3198628qkj.21.2020.09.30.13.01.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Sep 2020 13:01:33 -0700 (PDT)
+        Wed, 30 Sep 2020 13:01:35 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 6/9] btrfs: simplify the logic in need_preemptive_flushing
-Date:   Wed, 30 Sep 2020 16:01:06 -0400
-Message-Id: <8f5cc79f377c0358c3ad40188bf5917b4bc07924.1601495426.git.josef@toxicpanda.com>
+Subject: [PATCH 7/9] btrfs: implement space clamping for preemptive flushing
+Date:   Wed, 30 Sep 2020 16:01:07 -0400
+Message-Id: <629f3b0d6b9a100ae2a9ec5826c20cef28eb6b0d.1601495426.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <cover.1601495426.git.josef@toxicpanda.com>
 References: <cover.1601495426.git.josef@toxicpanda.com>
@@ -62,115 +62,107 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-A lot of this was added all in one go with no explanation, and is a bit
-unwieldy and confusing.  Simplify the logic to start preemptive flushing
-if we've reserved more than half of our available free space.
+Starting preemptive flushing at 50% of available free space is a good
+start, but some workloads are particularly abusive and can quickly
+overwhelm the preemptive flushing code and drive us into using tickets.
+
+Handle this by clamping down on our threshold for starting and
+continuing to run preemptive flushing.  This is particularly important
+for our overcommit case, as we can really drive the file system into
+overages and then it's more difficult to pull it back as we start to
+actually fill up the file system.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/space-info.c | 51 ++++++++++++++++++++-----------------------
- 1 file changed, 24 insertions(+), 27 deletions(-)
+ fs/btrfs/space-info.c | 20 ++++++++++++++++++--
+ fs/btrfs/space-info.h |  3 +++
+ 2 files changed, 21 insertions(+), 2 deletions(-)
 
 diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
-index 37eb5a11a875..a41cf358f438 100644
+index a41cf358f438..5ecdd6c41a51 100644
 --- a/fs/btrfs/space-info.c
 +++ b/fs/btrfs/space-info.c
-@@ -773,11 +773,10 @@ btrfs_calc_reclaim_metadata_size(struct btrfs_fs_info *fs_info,
- }
+@@ -206,6 +206,7 @@ static int create_space_info(struct btrfs_fs_info *info, u64 flags)
+ 	INIT_LIST_HEAD(&space_info->ro_bgs);
+ 	INIT_LIST_HEAD(&space_info->tickets);
+ 	INIT_LIST_HEAD(&space_info->priority_tickets);
++	space_info->clamp = 1;
  
- static inline int need_preemptive_reclaim(struct btrfs_fs_info *fs_info,
--					  struct btrfs_space_info *space_info,
--					  u64 used)
-+					  struct btrfs_space_info *space_info)
- {
- 	u64 thresh = div_factor_fine(space_info->total_bytes, 98);
--	u64 to_reclaim, expected;
-+	u64 used;
+ 	ret = btrfs_sysfs_add_space_info_type(info, space_info);
+ 	if (ret)
+@@ -801,13 +802,13 @@ static inline int need_preemptive_reclaim(struct btrfs_fs_info *fs_info,
+ 	 * because this doesn't quite work how we want.  If we had more than 50%
+ 	 * of the space_info used by bytes_used and we had 0 available we'd just
+ 	 * constantly run the background flusher.  Instead we want it to kick in
+-	 * if our reclaimable space exceeds 50% of our available free space.
++	 * if our reclaimable space exceeds our clamped free space.
+ 	 */
+ 	thresh = calc_available_free_space(fs_info, space_info,
+ 					   BTRFS_RESERVE_FLUSH_ALL);
+ 	thresh += (space_info->total_bytes - space_info->bytes_used -
+ 		   space_info->bytes_reserved - space_info->bytes_readonly);
+-	thresh >>= 1;
++	thresh >>= space_info->clamp;
  
- 	/* If we're just plain full then async reclaim just slows us down. */
- 	if ((space_info->bytes_used + space_info->bytes_reserved) >= thresh)
-@@ -790,26 +789,27 @@ static inline int need_preemptive_reclaim(struct btrfs_fs_info *fs_info,
- 	if (space_info->reclaim_size)
- 		return 0;
+ 	used = space_info->bytes_may_use + space_info->bytes_pinned;
  
--	to_reclaim = min_t(u64, num_online_cpus() * SZ_1M, SZ_16M);
--	if (btrfs_can_overcommit(fs_info, space_info, to_reclaim,
--				 BTRFS_RESERVE_FLUSH_ALL))
--		return 0;
--
--	used = btrfs_space_info_used(space_info, true);
--	if (btrfs_can_overcommit(fs_info, space_info, SZ_1M,
--				 BTRFS_RESERVE_FLUSH_ALL))
--		expected = div_factor_fine(space_info->total_bytes, 95);
--	else
--		expected = div_factor_fine(space_info->total_bytes, 90);
-+	/*
-+	 * If we have over half of the free space occupied by reservations or
-+	 * pinned then we want to start flushing.
-+	 *
-+	 * We do not do the traditional thing here, which is to say
-+	 *
-+	 *   if (used >= ((total_bytes + avail) >> 1))
-+	 *     return 1;
-+	 *
-+	 * because this doesn't quite work how we want.  If we had more than 50%
-+	 * of the space_info used by bytes_used and we had 0 available we'd just
-+	 * constantly run the background flusher.  Instead we want it to kick in
-+	 * if our reclaimable space exceeds 50% of our available free space.
-+	 */
-+	thresh = calc_available_free_space(fs_info, space_info,
-+					   BTRFS_RESERVE_FLUSH_ALL);
-+	thresh += (space_info->total_bytes - space_info->bytes_used -
-+		   space_info->bytes_reserved - space_info->bytes_readonly);
-+	thresh >>= 1;
- 
--	if (used > expected)
--		to_reclaim = used - expected;
--	else
--		to_reclaim = 0;
--	to_reclaim = min(to_reclaim, space_info->bytes_may_use +
--				     space_info->bytes_reserved);
--	if (!to_reclaim)
--		return 0;
-+	used = space_info->bytes_may_use + space_info->bytes_pinned;
- 
- 	return (used >= thresh && !btrfs_fs_closing(fs_info) &&
- 		!test_bit(BTRFS_FS_STATE_REMOUNTING, &fs_info->fs_state));
-@@ -1006,7 +1006,6 @@ static void btrfs_preempt_reclaim_metadata_space(struct work_struct *work)
+@@ -1006,6 +1007,7 @@ static void btrfs_preempt_reclaim_metadata_space(struct work_struct *work)
  	struct btrfs_block_rsv *delayed_refs_rsv;
  	struct btrfs_block_rsv *global_rsv;
  	struct btrfs_block_rsv *trans_rsv;
--	u64 used;
++	int loops = 0;
  
  	fs_info = container_of(work, struct btrfs_fs_info,
  			       preempt_reclaim_work);
-@@ -1017,8 +1016,7 @@ static void btrfs_preempt_reclaim_metadata_space(struct work_struct *work)
- 	trans_rsv = &fs_info->trans_block_rsv;
- 
- 	spin_lock(&space_info->lock);
--	used = btrfs_space_info_used(space_info, true);
--	while (need_preemptive_reclaim(fs_info, space_info, used)) {
-+	while (need_preemptive_reclaim(fs_info, space_info)) {
- 		enum btrfs_reserve_flush_enum flush;
- 		u64 delalloc_size = 0;
+@@ -1022,6 +1024,8 @@ static void btrfs_preempt_reclaim_metadata_space(struct work_struct *work)
  		u64 to_reclaim, block_rsv_size;
-@@ -1101,7 +1099,6 @@ static void btrfs_preempt_reclaim_metadata_space(struct work_struct *work)
- next:
+ 		u64 global_rsv_size = global_rsv->reserved;
+ 
++		loops++;
++
+ 		/*
+ 		 * If we're just full of pinned, commit the transaction.  We
+ 		 * don't call flush_space(COMMIT_TRANS) here because that has
+@@ -1100,6 +1104,10 @@ static void btrfs_preempt_reclaim_metadata_space(struct work_struct *work)
  		cond_resched();
  		spin_lock(&space_info->lock);
--		used = btrfs_space_info_used(space_info, true);
  	}
++
++	/* We only went through once, back off our clamping. */
++	if (loops == 1 && !space_info->reclaim_size)
++		space_info->clamp = max(1, space_info->clamp - 1);
  	spin_unlock(&space_info->lock);
  }
-@@ -1512,7 +1509,7 @@ static int __reserve_bytes(struct btrfs_fs_info *fs_info,
- 		 * the async reclaim as we will panic.
- 		 */
- 		if (!test_bit(BTRFS_FS_LOG_RECOVERING, &fs_info->flags) &&
--		    need_preemptive_reclaim(fs_info, space_info, used) &&
-+		    need_preemptive_reclaim(fs_info, space_info) &&
- 		    !work_busy(&fs_info->preempt_reclaim_work)) {
- 			trace_btrfs_trigger_flush(fs_info, space_info->flags,
- 						  orig_bytes, flush, "preempt");
+ 
+@@ -1499,6 +1507,14 @@ static int __reserve_bytes(struct btrfs_fs_info *fs_info,
+ 			list_add_tail(&ticket.list,
+ 				      &space_info->priority_tickets);
+ 		}
++
++		/*
++		 * We were forced to add a reserve ticket, so our preemptive
++		 * flushing is unable to keep up.  Clamp down on the threshold
++		 * for the preemptive flushing in order to keep up with the
++		 * workload.
++		 */
++		space_info->clamp = min(space_info->clamp + 1, 8);
+ 		trace_btrfs_add_reserve_ticket(fs_info, space_info->flags,
+ 					       flush, orig_bytes);
+ 	} else if (!ret && space_info->flags & BTRFS_BLOCK_GROUP_METADATA) {
+diff --git a/fs/btrfs/space-info.h b/fs/btrfs/space-info.h
+index 5646393b928c..bcbbfae131f6 100644
+--- a/fs/btrfs/space-info.h
++++ b/fs/btrfs/space-info.h
+@@ -22,6 +22,9 @@ struct btrfs_space_info {
+ 				   the space info if we had an ENOSPC in the
+ 				   allocator. */
+ 
++	int clamp;		/* Used to scale our threshold for preemptive
++				   flushing. */
++
+ 	unsigned int full:1;	/* indicates that we cannot allocate any more
+ 				   chunks for this space */
+ 	unsigned int chunk_alloc:1;	/* set if we are allocating a chunk */
 -- 
 2.26.2
 
