@@ -2,150 +2,186 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C40727E3D2
-	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Sep 2020 10:33:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72C9727E4E9
+	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Sep 2020 11:17:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728608AbgI3Idp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 30 Sep 2020 04:33:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34610 "EHLO
+        id S1728725AbgI3JRB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 30 Sep 2020 05:17:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727657AbgI3Ido (ORCPT
+        with ESMTP id S1725776AbgI3JRB (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 30 Sep 2020 04:33:44 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F935C061755
-        for <linux-btrfs@vger.kernel.org>; Wed, 30 Sep 2020 01:33:44 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id z19so673954pfn.8
-        for <linux-btrfs@vger.kernel.org>; Wed, 30 Sep 2020 01:33:44 -0700 (PDT)
+        Wed, 30 Sep 2020 05:17:01 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F849C061755;
+        Wed, 30 Sep 2020 02:17:01 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id e7so599572qtj.11;
+        Wed, 30 Sep 2020 02:17:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=sYWzne90SO1PJBn9gAyCE0w8xLyBAysD6hOJjnKb/t0=;
-        b=pzGW6YBq8+azn/p3DIgC6XcIZWd6VNwXKMTjupsfcdAOdMu0EkZEZIGLvEwGCnBB85
-         H6M+37ezGCFg23lnApy3y/mO3OeDXBWxCTHoLmqKI81NL4ah1+294CsP7xkkScRaNbfv
-         fckJ2+FDX9bZJfeJ1+HO6KHHEeFxYqk7Hye/9D+ap6payQ9fHaS8LvWoSql9dQkxY4SU
-         QNBkfceDKxdMtwA7tnNeFlIiMfTTYEUqsV/ia91Id7uTX9sEhBgaLtx0xBnZKeKCEhCO
-         1hUmFvrIoXHDEHQu2UNEj9enpfVJxK+nTTXrpSol5KOCnTIj/H0LmdXKuBwJKvvX8W0D
-         oC5Q==
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc:content-transfer-encoding;
+        bh=Mml1BIpLHXxQZjvF6KnG/D7MyJp0Mrl7xgRY3q/FOhI=;
+        b=bAW/lCnzQICiT2pv/N5oq7LH0VUEz4TCKG/JQMJpmk5UMaIcRSf100vFdcW0klmitx
+         AmPSmTIUv+nvLyUF8glb7ugPGXlTS5RAP81xaVrfp98V/oqshHIPW8l8DphWYcNPZ7QZ
+         usRBRdMyClWM7TlYREKf38CQqCufn/Om1eRvWO3xn+olyavJob9vbNbwzXEQLvF3IJk4
+         ZAJxR6HyIrq+f6uDr9fEHOPg0aXk8MhU7bqxQ/RMQq2w8GAF44Iv2Cm0XYbCJMgFCBYj
+         jw2FYu7A4Ek3N7f1GcfL/mYAXXinvrEAQd3xhc1LMhT3GoU7p6W5OqxZUHORrXwrL4/d
+         EvUw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=sYWzne90SO1PJBn9gAyCE0w8xLyBAysD6hOJjnKb/t0=;
-        b=Oxkg/aFjA64M64x/wcgqH68q0Z0HoeiBGDUSHgQHwdgbMLkKs01pD5l+KskqJB50Vj
-         YL2pxL9v+ZYopXfiBA6MMOYihi/W0BqHCftHLjDdmUw8xJ9c10shcjT9DtiRJArI3MDN
-         NL3L1XO+ok25xOJwd5kYqgujnz9sbGxBL8ZW2ngaHL+lMXT9zv1ewJlA4PLWciDWhIFV
-         aDXyRGSOiQIyI0uB9HyTtLonKrH8aCfAzqw1+KTvPbW0UuHfD4/Q+PbCpYPZ4mtqnkxM
-         8JAh2F/MfHL20u5WzQGCJiK5WING/CylFNwuf85jPxVKCjR68W2sKJEzp6CotojfG2vo
-         C9vA==
-X-Gm-Message-State: AOAM532NPZXyMsds/FNdPKbJKsYKq634dp+YCmZy1P3MINcYozB26URy
-        rAQpTpvGoy3FVn1NbRYKnDY1NFEn0VRX1g==
-X-Google-Smtp-Source: ABdhPJzGoxJSPM5P8PiPedGn3Vem1UhTLsxewsmJXoAeTPDS8rIkOrvdp4RAXLyfd0e5qVr3YzTugA==
-X-Received: by 2002:a05:6a00:1483:b029:142:2501:3965 with SMTP id v3-20020a056a001483b029014225013965mr1674297pfu.42.1601454823896;
-        Wed, 30 Sep 2020 01:33:43 -0700 (PDT)
-Received: from realwakka ([175.195.128.78])
-        by smtp.gmail.com with ESMTPSA id c127sm1454605pfa.165.2020.09.30.01.33.42
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 30 Sep 2020 01:33:43 -0700 (PDT)
-Date:   Thu, 24 Sep 2020 12:45:13 +0000
-From:   Sidong Yang <realwakka@gmail.com>
-To:     Su Yue <l@damenly.su>
-Cc:     linux-btrfs@vger.kernel.org, David Sterba <dsterba@suse.cz>
-Subject: Re: [PATCH] btrfs-progs: subvolume: Add warning on deleting default
- subvolume
-Message-ID: <20200924124513.GA23361@realwakka>
-References: <20200928150729.2239-1-realwakka@gmail.com>
- <blhogiac.fsf@damenly.su>
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc:content-transfer-encoding;
+        bh=Mml1BIpLHXxQZjvF6KnG/D7MyJp0Mrl7xgRY3q/FOhI=;
+        b=E1d9vJ6M2FQ361dlu2dXjNJ1wuFoFaujb4EfpNu9oMAjsa2Lp2o5KEJWbfGLOwnofn
+         YpJATv2+vjqqgrQLJl9sp+omF88/fvTMB1k6XESk8V9At6AVFx6AaV1F46ovL/PaRaIY
+         Q9NHujsq8btDJVbgRquWLvtBuLMBVOWP1LxuFPnsXg6BUOkAJxadOCL5ShG01M3I4Gfj
+         +Dlu2wE+Jxg81LiEizh5uVBGmLdWPJ9idHAsmWWBfLXqKhkHSbDasIZRpj+R4d5gZHWI
+         by5xtztT5Djd3ByKlNot3vDPUUKsRlvEJ6WeiLf4rQdXOu96zEfK7BRE8w43sG/h0FA7
+         mrBw==
+X-Gm-Message-State: AOAM531Df1AycdFsTJYT/69WZOpat3cH5B9ksm8k8RLa9w0HMsfwfegC
+        mHpNQbH7Pt3XbPTP6iAkthnvyy89WVZZDCLjeKw=
+X-Google-Smtp-Source: ABdhPJxZldcNSr9KJMTIkxFBjc/6yVh85NGeNzwozGVLL8NDJXjSSDX7WVeGre62WsWxMQB5iHYJpEKhdAyqbYe7DeI=
+X-Received: by 2002:ac8:cc4:: with SMTP id o4mr1181589qti.21.1601457420429;
+ Wed, 30 Sep 2020 02:17:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <blhogiac.fsf@damenly.su>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <f36fdfad33395cbf99520479b162590935f3cfd1.1601394562.git.anand.jain@oracle.com>
+ <CAL3q7H7QLe6EpK_g1S6MVhOPKaEsaYY9MeAHexdsEO=nz_qubQ@mail.gmail.com>
+ <eba12792-b4b0-ca2e-3b78-7648ae60571c@toxicpanda.com> <CAL3q7H6qkVXMrJXeDnQWzVa95KS2QTEniKEEQbepEugPKMDrHQ@mail.gmail.com>
+ <9dff9883-6275-d92c-e8d1-d5f0ef771613@toxicpanda.com> <a6c80503-df28-f25d-6437-657640bf8ade@oracle.com>
+In-Reply-To: <a6c80503-df28-f25d-6437-657640bf8ade@oracle.com>
+Reply-To: fdmanana@gmail.com
+From:   Filipe Manana <fdmanana@gmail.com>
+Date:   Wed, 30 Sep 2020 10:16:49 +0100
+Message-ID: <CAL3q7H6k4c9om0+of6yjib=OnNecnLvQMEi1n1NJWXK8L0MY5w@mail.gmail.com>
+Subject: Re: [PATCH] fstests: delete btrfs/064 it makes no sense
+To:     Anand Jain <anand.jain@oracle.com>
+Cc:     Josef Bacik <josef@toxicpanda.com>,
+        fstests <fstests@vger.kernel.org>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        Eryu Guan <guaneryu@gmail.com>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Sep 30, 2020 at 09:33:31AM +0800, Su Yue wrote:
-> 
-> On Mon 28 Sep 2020 at 23:07, Sidong Yang <realwakka@gmail.com> wrote:
-> 
-> > This patch add warning messages when user try to delete default
-> > subvolume. When deleting default subvolume, kernel will not allow and
-> > make error message on syslog. but there is only message that permission
-> > denied on userspace. User can be noticed the reason by this warning
-> > message.
-> > 
-> > This patch implements github issue.
-> > https://github.com/kdave/btrfs-progs/issues/274
-> > 
-> > Signed-off-by: Sidong Yang <realwakka@gmail.com>
-> > ---
-> >  cmds/subvolume.c | 20 ++++++++++++++++++++
-> >  1 file changed, 20 insertions(+)
-> > 
-> > diff --git a/cmds/subvolume.c b/cmds/subvolume.c
-> > index 2020e486..0cdf7a68 100644
-> > --- a/cmds/subvolume.c
-> > +++ b/cmds/subvolume.c
-> > @@ -264,6 +264,7 @@ static int cmd_subvol_delete(const struct cmd_struct
-> > *cmd,
-> >  	struct seen_fsid *seen_fsid_hash[SEEN_FSID_HASH_SIZE] = {  NULL, };
-> >  	enum { COMMIT_AFTER = 1, COMMIT_EACH = 2 };
-> >  	enum btrfs_util_error err;
-> > +	uint64_t default_subvol_id = 0, target_subvol_id = 0;
-> > 
-> >  	optind = 0;
-> >  	while (1) {
-> > @@ -360,6 +361,25 @@ again:
-> >  		goto out;
-> >  	}
-> > 
-> > +	err = btrfs_util_get_default_subvolume_fd(fd, &default_subvol_id);
-> > +	if (fd < 0) {
-> > 
-> Should it be
-> "     if (err) { |
->         error_btrfs_util(err);
->         ...
-> "?
+On Wed, Sep 30, 2020 at 5:14 AM Anand Jain <anand.jain@oracle.com> wrote:
+>
+> On 30/9/20 1:26 am, Josef Bacik wrote:
+> > On 9/29/20 12:13 PM, Filipe Manana wrote:
+> >> On Tue, Sep 29, 2020 at 5:02 PM Josef Bacik <josef@toxicpanda.com> wro=
+te:
+> >>>
+> >>> On 9/29/20 11:55 AM, Filipe Manana wrote:
+> >>>> On Tue, Sep 29, 2020 at 4:50 PM Anand Jain <anand.jain@oracle.com>
+> >>>> wrote:
+> >>>>>
+> >>>>> btrfs/064 aimed to test balance and replace concurrency while the
+> >>>>> stress
+> >>>>> test is running in the background.
+> >>>>>
+> >>>>> However, as the balance and the replace operation are mutually
+> >>>>> exclusive, so they can never run concurrently.
+> >>>>
+> >>>> And it's good to have a test that verifies that attempting to run th=
+em
+> >>>> concurrently doesn't cause any problems, like crashes, memory leaks =
+or
+> >>>> some sort of filesystem corruption.
+> >>>>
+> >>>> For example btrfs/187, which I wrote sometime ago, tests that runnin=
+g
+> >>>> send, balance and deduplication in parallel doesn't result in crashe=
+s,
+> >>>> since in the past they were allowed to run concurrently.
+> >>>>
+> >>>> I see no point in removing the test, it's useful.
+> >>>
+> >>> My confusion was around whether this test was actually testing what w=
+e
+> >>> think it should be testing.  If this test was meant to make sure that
+> >>> replace works while we've got load on the fs, then clearly it's not
+> >>> doing what we think it's doing.
+> >>
+> >> Given that neither the test's description nor the changelog mention
+> >> that it expects device replace and balance to be able to run
+> >> concurrently,
+> >> that errors are explicitly ignored and redirected to $seqres.full, and
+> >> we don't do any sort of validation after device replace operations, it
+> >> makes it clear to me it's a stress test.
+> >>
+> >
+> > Sure but I spent a while looking at it when it was failing being very
+> > confused.  In my mind my snapshot-stress.sh is a stress test, because
+> > its meant to run without errors.  The changelog and description are
+> > sufficiently vague enough that it appeared that Eryu meant to write a
+> > test that actually did a replace and balance at the same time.  The tes=
+t
+> > clearly isn't doing that, so we need to update the description so it's
+> > clear that's what's going on.  And then I wanted to make sure that we d=
+o
+> > in fact have a test that stresses replace in these scenarios, because I
+> > want to make sure we actually test replace as well.
+> >
+> > Not ripping it out is fine, but updating the description so I'm not
+> > confused in a couple years when I trip over this again would be nice.
+> > Thanks,
+> >
+>
+> As of now, we have the following balance concurrency tests.
+> -----
+> 028 balance and unlink fsstress concurrency [1]
+> 060 balance and subvol ops concurrency with fsstress [2]
+> 061 balance and scrub concurrency with fsstress [2]
+> 062 balance and defrag concurrency with fsstress [2]
+> 063 balance and remount concurrency with fsstress [2]
+> 064 balance and replace concurrency with fsstress  [2]
+> 177 balance and resize concurrency
 
-Hi Su! Thanks for review!
+No, 177 does not test balance and resize concurrency.
+It tests balance when a swap file exists. And the resize happens
+(starts and ends) before setting the swap file and before doing the
+balance.
 
-Yeah, I think it's definitely wrong. My mistake.
+Thanks.
 
-> 
-> > +		ret = 1;
-> > +		goto out;
-> > +	}
-> > +
-> > +	if (subvolid > 0)
-> > +		target_subvol_id = subvolid;
-> > +	else {
-> > +		err = btrfs_util_subvolume_id(path, &target_subvol_id);
-> > +		if (fd < 0) {
-> > 
-> And here.
-> 
 
-It's wrong too.
+> 187 balance, send and dedupe concurrency
+> 190 balance with qgroup
+>
+> [1]
+> args=3D`_scale_fsstress_args -z \
+>          -f write=3D10 -f unlink=3D10 \
+>          -f creat=3D10 -f fsync=3D10 \
+>          -f fsync=3D10 -n 100000 -p 2 \
+>          -d $SCRATCH_MNT/stress_dir`
+>
+> [2]
+> args=3D`_scale_fsstress_args -p 20 -n 100 $FSSTRESS_AVOID -d
+> $SCRATCH_MNT/stressdir`
+> -----
+>
+> 064 shall test balance with fsstress in the background. The replace
+> thread is kept out with the early check of BTRFS_FS_EXCL_OP in the kernel=
+.
+> I am ok with the 064 headers updated, will send v2.
+>
+>
+> Also, it turns out that this test case helped to find a btrfs-progs bug.
+> Its patch [1] is sent to the ML.
+>    [1] btrfs-progs: fix return code for failed replace start
+>
+> Thanks, Anand
+>
+>
+> > Josef
+>
 
-Dave, maybe this patch needs for Su's review.
-Usually in this case, Could you fix it directly ?
-or do I need to send a new patch?
 
-Thanks,
-Sidong
+--=20
+Filipe David Manana,
 
-> > +			ret = 1;
-> > +			goto out;
-> > +		}
-> > +	}
-> > +
-> > +	if (target_subvol_id == default_subvol_id)
-> > +		warning("trying to delete default subvolume.");
-> > +
-> >  	pr_verbose(MUST_LOG, "Delete subvolume (%s): ",
-> >  		commit_mode == COMMIT_EACH ||
-> >  		(commit_mode == COMMIT_AFTER && cnt + 1 == argc) ?
-> 
+=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
+ right.=E2=80=9D
