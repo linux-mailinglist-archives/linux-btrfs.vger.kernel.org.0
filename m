@@ -2,34 +2,36 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B073A27DDF9
-	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Sep 2020 03:55:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7631127DDFA
+	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Sep 2020 03:55:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729708AbgI3Bzr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 29 Sep 2020 21:55:47 -0400
-Received: from mx2.suse.de ([195.135.220.15]:49510 "EHLO mx2.suse.de"
+        id S1729717AbgI3Bzu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 29 Sep 2020 21:55:50 -0400
+Received: from mx2.suse.de ([195.135.220.15]:49540 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729322AbgI3Bzr (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 29 Sep 2020 21:55:47 -0400
+        id S1729322AbgI3Bzu (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 29 Sep 2020 21:55:50 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1601430945;
+        t=1601430948;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:
+         to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=DrRbpVF/5vthz1rTFsGhZ0kkdAn5jEC49CjFpBGtrEo=;
-        b=pE83HhHsme0QIrRqDjkwCRawbKtiy8jRj7Xa2o9Un/IZe9y/vF7+kfB5m1ROoyvWZuSXdd
-        NFbWCbIPA1ncsS5qGYQLs/6Domg2n9EnGM63rK2rDbjeXyvLgjyFimWJd6CjQ0omLeKQBm
-        40rqO9qatWqqW+wlNO2cHABEHivyJLY=
+        bh=4PpVl209z3KEQlPi7nxsOc6ZqHyPbggMt6Dqzr4kkZc=;
+        b=Wm+6sgTUSh6nnnhCx1cUNnLhaPK5UKfMY6sthBKyDkWH30fRZlORMUTV5id1up7m0LDRAC
+        gbwyVgSkWGTYaI6gGuetVL9KR0XyRmAt0cA35jsNkUJWZeaZSEqCUtTJKHERnaQ4lO1mou
+        6zjGB0ObabQOL0xp0UNEda88Xr+DQqA=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 93830AF95
-        for <linux-btrfs@vger.kernel.org>; Wed, 30 Sep 2020 01:55:45 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 5A61DAE07;
+        Wed, 30 Sep 2020 01:55:48 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v3 01/49] btrfs: extent-io-tests: remove invalid tests
-Date:   Wed, 30 Sep 2020 09:54:51 +0800
-Message-Id: <20200930015539.48867-2-wqu@suse.com>
+Cc:     Goldwyn Rodrigues <rgoldwyn@suse.de>,
+        Goldwyn Rodrigues <rgoldwyn@suse.com>
+Subject: [PATCH v3 02/49] btrfs: use iosize while reading compressed pages
+Date:   Wed, 30 Sep 2020 09:54:52 +0800
+Message-Id: <20200930015539.48867-3-wqu@suse.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200930015539.48867-1-wqu@suse.com>
 References: <20200930015539.48867-1-wqu@suse.com>
@@ -39,107 +41,63 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-In extent-io-test, there are two invalid tests:
-- Invalid nodesize for test_eb_bitmaps()
-  Instead of the sectorsize and nodesize combination passed in, we're
-  always using hand-crafted nodesize.
-  Although it has some extra check for 64K page size, we can still hit
-  a case where PAGE_SIZE == 32K, then we got 128K nodesize which is
-  larger than max valid node size.
+From: Goldwyn Rodrigues <rgoldwyn@suse.de>
 
-  Thankfully most machines are either 4K or 64K page size, thus we
-  haven't yet hit such case.
+While using compression, a submitted bio is mapped with a compressed bio
+which performs the read from disk, decompresses and returns uncompressed
+data to original bio. The original bio must reflect the uncompressed
+size (iosize) of the I/O to be performed, or else the page just gets the
+decompressed I/O length of data (disk_io_size). The compressed bio
+checks the extent map and get the correct length while performing the
+I/O from disk.
 
-- Invalid extent buffer bytenr
-  For 64K page size, the only combination we're going to test is
-  sectorsize = nodesize = 64K.
-  In that case, we'll try to create an extent buffer with 32K bytenr,
-  which is not aligned to sectorsize thus invalid.
+This came up in subpage work when only compressed length of the original
+bio was filled in the page. This worked correctly for pagesize ==
+sectorsize because both compressed and uncompressed data are at pagesize
+boundaries, and would end up filling the requested page.
 
-This patch will fix both problems by:
-- Honor the sectorsize/nodesize combination
-  Now we won't bother to hand-craft a strange length and use it as
-  nodesize.
-
-- Use sectorsize as the 2nd run extent buffer start
-  This would test the case where extent buffer is aligned to sectorsize
-  but not always aligned to nodesize.
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
+Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
 ---
- fs/btrfs/tests/extent-io-tests.c | 26 +++++++++++---------------
- 1 file changed, 11 insertions(+), 15 deletions(-)
+ fs/btrfs/extent_io.c | 10 +++-------
+ 1 file changed, 3 insertions(+), 7 deletions(-)
 
-diff --git a/fs/btrfs/tests/extent-io-tests.c b/fs/btrfs/tests/extent-io-tests.c
-index df7ce874a74b..73e96d505f4f 100644
---- a/fs/btrfs/tests/extent-io-tests.c
-+++ b/fs/btrfs/tests/extent-io-tests.c
-@@ -379,54 +379,50 @@ static int __test_eb_bitmaps(unsigned long *bitmap, struct extent_buffer *eb,
- static int test_eb_bitmaps(u32 sectorsize, u32 nodesize)
- {
- 	struct btrfs_fs_info *fs_info;
--	unsigned long len;
- 	unsigned long *bitmap = NULL;
- 	struct extent_buffer *eb = NULL;
- 	int ret;
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index a940edb1e64f..64f7f61ce718 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -3162,7 +3162,6 @@ static int __do_readpage(struct page *page,
+ 	int nr = 0;
+ 	size_t pg_offset = 0;
+ 	size_t iosize;
+-	size_t disk_io_size;
+ 	size_t blocksize = inode->i_sb->s_blocksize;
+ 	unsigned long this_bio_flag = 0;
+ 	struct extent_io_tree *tree = &BTRFS_I(inode)->io_tree;
+@@ -3228,13 +3227,10 @@ static int __do_readpage(struct page *page,
+ 		iosize = min(extent_map_end(em) - cur, end - cur + 1);
+ 		cur_end = min(extent_map_end(em) - 1, end);
+ 		iosize = ALIGN(iosize, blocksize);
+-		if (this_bio_flag & EXTENT_BIO_COMPRESSED) {
+-			disk_io_size = em->block_len;
++		if (this_bio_flag & EXTENT_BIO_COMPRESSED)
+ 			offset = em->block_start;
+-		} else {
++		else
+ 			offset = em->block_start + extent_offset;
+-			disk_io_size = iosize;
+-		}
+ 		block_start = em->block_start;
+ 		if (test_bit(EXTENT_FLAG_PREALLOC, &em->flags))
+ 			block_start = EXTENT_MAP_HOLE;
+@@ -3323,7 +3319,7 @@ static int __do_readpage(struct page *page,
+ 		}
  
- 	test_msg("running extent buffer bitmap tests");
- 
--	/*
--	 * In ppc64, sectorsize can be 64K, thus 4 * 64K will be larger than
--	 * BTRFS_MAX_METADATA_BLOCKSIZE.
--	 */
--	len = (sectorsize < BTRFS_MAX_METADATA_BLOCKSIZE)
--		? sectorsize * 4 : sectorsize;
--
--	fs_info = btrfs_alloc_dummy_fs_info(len, len);
-+	fs_info = btrfs_alloc_dummy_fs_info(nodesize, sectorsize);
- 	if (!fs_info) {
- 		test_std_err(TEST_ALLOC_FS_INFO);
- 		return -ENOMEM;
- 	}
- 
--	bitmap = kmalloc(len, GFP_KERNEL);
-+	bitmap = kmalloc(nodesize, GFP_KERNEL);
- 	if (!bitmap) {
- 		test_err("couldn't allocate test bitmap");
- 		ret = -ENOMEM;
- 		goto out;
- 	}
- 
--	eb = __alloc_dummy_extent_buffer(fs_info, 0, len);
-+	eb = __alloc_dummy_extent_buffer(fs_info, 0, nodesize);
- 	if (!eb) {
- 		test_std_err(TEST_ALLOC_ROOT);
- 		ret = -ENOMEM;
- 		goto out;
- 	}
- 
--	ret = __test_eb_bitmaps(bitmap, eb, len);
-+	ret = __test_eb_bitmaps(bitmap, eb, nodesize);
- 	if (ret)
- 		goto out;
- 
--	/* Do it over again with an extent buffer which isn't page-aligned. */
- 	free_extent_buffer(eb);
--	eb = __alloc_dummy_extent_buffer(fs_info, nodesize / 2, len);
-+
-+	/*
-+	 * Test again for case where the tree block is sectorsize aligned but
-+	 * not nodesize aligned.
-+	 */
-+	eb = __alloc_dummy_extent_buffer(fs_info, sectorsize, nodesize);
- 	if (!eb) {
- 		test_std_err(TEST_ALLOC_ROOT);
- 		ret = -ENOMEM;
- 		goto out;
- 	}
- 
--	ret = __test_eb_bitmaps(bitmap, eb, len);
-+	ret = __test_eb_bitmaps(bitmap, eb, nodesize);
- out:
- 	free_extent_buffer(eb);
- 	kfree(bitmap);
+ 		ret = submit_extent_page(REQ_OP_READ | read_flags, NULL,
+-					 page, offset, disk_io_size,
++					 page, offset, iosize,
+ 					 pg_offset, bio,
+ 					 end_bio_extent_readpage, mirror_num,
+ 					 *bio_flags,
 -- 
 2.28.0
 
