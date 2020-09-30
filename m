@@ -2,34 +2,34 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65D5127DE06
-	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Sep 2020 03:56:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D52427DE07
+	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Sep 2020 03:56:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729829AbgI3B4Q (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 29 Sep 2020 21:56:16 -0400
-Received: from mx2.suse.de ([195.135.220.15]:49946 "EHLO mx2.suse.de"
+        id S1729835AbgI3B4S (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 29 Sep 2020 21:56:18 -0400
+Received: from mx2.suse.de ([195.135.220.15]:50004 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729322AbgI3B4Q (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 29 Sep 2020 21:56:16 -0400
+        id S1729834AbgI3B4R (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 29 Sep 2020 21:56:17 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1601430974;
+        t=1601430976;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=7N1lEz3GNECxQnamSUKY5iUbvutBfHM130bIrLdMV8Q=;
-        b=Z0p3EpztVjWZLl7K8i1ysDH55cZZkP3zYmJteUTo92bktJzOHpGM0iEThlJjOJaJN4Puau
-        HW0y2CS+7EnFxSRmAevLil2bgxnDogEd4Mu9TnkgtA/YlVemkWpgB2b+tkFGBndIzhLCcX
-        iBDlECRQZhMWiXcieDakGA7O1e+cWqQ=
+        bh=Vv0yJtbKGnV0EDeGG517OHV3D0lR08GPoVnTyFgHN6A=;
+        b=CxGWyKZK7DzzXEI93hHyOQOfNZtx5g6zJ6KhueX1vQNrmVfJp6ou6F9+GDIrItwrmHbhF9
+        JIJAh9SnVKn1qsw1uoS7PQd8bU1iKd7Mqd2BPSF5lT1+yIVwNqYVCqIpZkPQaRPtXUbw/R
+        iI+V5WBNGxzzbZM6T0tm3DHGAc9tZ+s=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 53B80AFBC
-        for <linux-btrfs@vger.kernel.org>; Wed, 30 Sep 2020 01:56:14 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 12B35AFAB
+        for <linux-btrfs@vger.kernel.org>; Wed, 30 Sep 2020 01:56:16 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v3 14/49] btrfs: extent_io: integrate page status update into endio_readpage_release_extent()
-Date:   Wed, 30 Sep 2020 09:55:04 +0800
-Message-Id: <20200930015539.48867-15-wqu@suse.com>
+Subject: [PATCH v3 15/49] btrfs: extent_io: rename page_size to io_size in submit_extent_page()
+Date:   Wed, 30 Sep 2020 09:55:05 +0800
+Message-Id: <20200930015539.48867-16-wqu@suse.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200930015539.48867-1-wqu@suse.com>
 References: <20200930015539.48867-1-wqu@suse.com>
@@ -39,95 +39,71 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-In end_bio_extent_readpage(), we set page uptodate or error according to
-the bio status.
-However that assumes all submitted read are in page size.
+The variable @page_size of submit_extent_page() is not bounded to page
+size.
 
-To support case like subpage read, we should only set the whole page
-uptodate if all data in the page has been read from disk.
-
-This patch will integrate the page status update into
-endio_readpage_release_extent() for end_bio_extent_readpage().
-
-Now in endio_readpage_release_extent() we will set the page uptodate if
-either:
-- start/end covers the full page
-  This is the existing behavior already.
-
-- all the page range is already uptodate
-  This adds the support for subpage read.
-
-And for the error path, we always clear the page uptodate and set the
-page error.
+It can already be smaller than PAGE_SIZE, so rename it to io_size to
+reduce confusion, this is especially important for later subpage
+support.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/extent_io.c | 39 +++++++++++++++++++++++++++++----------
- 1 file changed, 29 insertions(+), 10 deletions(-)
+ fs/btrfs/extent_io.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
 diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 395fa52ed2f9..af86289f465e 100644
+index af86289f465e..2edbac6c089e 100644
 --- a/fs/btrfs/extent_io.c
 +++ b/fs/btrfs/extent_io.c
-@@ -2795,13 +2795,36 @@ static void end_bio_extent_writepage(struct bio *bio)
- }
- 
- static void
--endio_readpage_release_extent(struct extent_io_tree *tree, u64 start, u64 end,
--			      int uptodate)
-+endio_readpage_release_extent(struct extent_io_tree *tree, struct page *page,
-+			      u64 start, u64 end, int uptodate)
+@@ -3051,7 +3051,7 @@ static int submit_extent_page(unsigned int opf,
  {
- 	struct extent_state *cached = NULL;
+ 	int ret = 0;
+ 	struct bio *bio;
+-	size_t page_size = min_t(size_t, size, PAGE_SIZE);
++	size_t io_size = min_t(size_t, size, PAGE_SIZE);
+ 	sector_t sector = offset >> 9;
+ 	struct extent_io_tree *tree = &BTRFS_I(page->mapping->host)->io_tree;
  
--	if (uptodate && tree->track_uptodate)
--		set_extent_uptodate(tree, start, end, &cached, GFP_ATOMIC);
-+	if (uptodate) {
-+		u64 page_start = page_offset(page);
-+		u64 page_end = page_offset(page) + PAGE_SIZE - 1;
-+
-+		if (tree->track_uptodate) {
-+			/*
-+			 * The tree has EXTENT_UPTODATE bit tracking, update
-+			 * extent io tree, and use it to update the page if
-+			 * needed.
-+			 */
-+			set_extent_uptodate(tree, start, end, &cached,
-+					    GFP_NOFS);
-+			check_page_uptodate(tree, page);
-+		} else if ((start <= page_start && end >= page_end)) {
-+			/* We have covered the full page, set it uptodate */
-+			SetPageUptodate(page);
-+		}
-+	} else if (!uptodate){
-+		if (tree->track_uptodate)
-+			clear_extent_uptodate(tree, start, end, &cached);
-+
-+		/* Any error in the page range would invalid the uptodate bit */
-+		ClearPageUptodate(page);
-+		SetPageError(page);
-+	}
- 	unlock_extent_cached_atomic(tree, start, end, &cached);
- }
+@@ -3068,12 +3068,12 @@ static int submit_extent_page(unsigned int opf,
+ 			contig = bio_end_sector(bio) == sector;
  
-@@ -2925,15 +2948,11 @@ static void end_bio_extent_readpage(struct bio *bio)
- 			off = offset_in_page(i_size);
- 			if (page->index == end_index && off)
- 				zero_user_segment(page, off, PAGE_SIZE);
--			SetPageUptodate(page);
--		} else {
--			ClearPageUptodate(page);
--			SetPageError(page);
+ 		ASSERT(tree->ops);
+-		if (btrfs_bio_fits_in_stripe(page, page_size, bio, bio_flags))
++		if (btrfs_bio_fits_in_stripe(page, io_size, bio, bio_flags))
+ 			can_merge = false;
+ 
+ 		if (prev_bio_flags != bio_flags || !contig || !can_merge ||
+ 		    force_bio_submit ||
+-		    bio_add_page(bio, page, page_size, pg_offset) < page_size) {
++		    bio_add_page(bio, page, io_size, pg_offset) < io_size) {
+ 			ret = submit_one_bio(bio, mirror_num, prev_bio_flags);
+ 			if (ret < 0) {
+ 				*bio_ret = NULL;
+@@ -3082,13 +3082,13 @@ static int submit_extent_page(unsigned int opf,
+ 			bio = NULL;
+ 		} else {
+ 			if (wbc)
+-				wbc_account_cgroup_owner(wbc, page, page_size);
++				wbc_account_cgroup_owner(wbc, page, io_size);
+ 			return 0;
  		}
--		unlock_page(page);
- 		offset += len;
- 
--		endio_readpage_release_extent(tree, start, end, uptodate);
-+		endio_readpage_release_extent(tree, page, start, end, uptodate);
-+		unlock_page(page);
  	}
  
- 	btrfs_io_bio_free_csum(io_bio);
+ 	bio = btrfs_bio_alloc(offset);
+-	bio_add_page(bio, page, page_size, pg_offset);
++	bio_add_page(bio, page, io_size, pg_offset);
+ 	bio->bi_end_io = end_io_func;
+ 	bio->bi_private = tree;
+ 	bio->bi_write_hint = page->mapping->host->i_write_hint;
+@@ -3099,7 +3099,7 @@ static int submit_extent_page(unsigned int opf,
+ 		bdev = BTRFS_I(page->mapping->host)->root->fs_info->fs_devices->latest_bdev;
+ 		bio_set_dev(bio, bdev);
+ 		wbc_init_bio(wbc, bio);
+-		wbc_account_cgroup_owner(wbc, page, page_size);
++		wbc_account_cgroup_owner(wbc, page, io_size);
+ 	}
+ 
+ 	*bio_ret = bio;
 -- 
 2.28.0
 
