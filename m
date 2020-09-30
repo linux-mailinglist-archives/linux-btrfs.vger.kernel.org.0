@@ -2,35 +2,34 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8379527DE0C
+	by mail.lfdr.de (Postfix) with ESMTP id F0CFF27DE0D
 	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Sep 2020 03:56:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729862AbgI3B41 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 29 Sep 2020 21:56:27 -0400
-Received: from mx2.suse.de ([195.135.220.15]:50132 "EHLO mx2.suse.de"
+        id S1729868AbgI3B43 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 29 Sep 2020 21:56:29 -0400
+Received: from mx2.suse.de ([195.135.220.15]:50190 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729843AbgI3B41 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 29 Sep 2020 21:56:27 -0400
+        id S1729843AbgI3B42 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 29 Sep 2020 21:56:28 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1601430985;
+        t=1601430987;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
+         to:to:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=QNwjGDop0yq1npkoOSByeSBCO0oYGouY/j6QD1ffwsk=;
-        b=Xq/wkGCkBf5mROU0thLfj8lLWazp8eyzPI/pgSNjiT/IYy5XyIO+FwInN0bsg4wZ9ht7RM
-        oyluN3+Wt0S6JjIDMdIOv092FUucgfPn55dtjtLR4ieBOejWiZU4j+XvIoY3dehelhcFVf
-        bRHQhYp9imSdaZ/5De2pDLrrOqjRjXk=
+        bh=ktf6xVJ3A6pAe8XjPeZRKQjD59dj9Vy8Xu06DjXEJpE=;
+        b=pZgKO0BXP4Ov0TqDpvS7BqR539XWUn40mb1LfnENmw0K9er+OH0GQ4JheSZhFNYwQE4pvX
+        ONNvDkTq5S/JV4np7ielYWyqyUuAb7WDRpmfUN398v19jSwg5qKoKlBfu9TvW6tRNKggsU
+        rbjX7ZViLi3DXTDJSaNIgjq3OuF+xQg=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id A5158AF99;
-        Wed, 30 Sep 2020 01:56:25 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 83E4CAFCD
+        for <linux-btrfs@vger.kernel.org>; Wed, 30 Sep 2020 01:56:27 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Cc:     Nikolay Borisov <nborisov@suse.com>
-Subject: [PATCH v3 19/49] btrfs: extent_io: make btrfs_fs_info::buffer_radix to take sector size devided values
-Date:   Wed, 30 Sep 2020 09:55:09 +0800
-Message-Id: <20200930015539.48867-20-wqu@suse.com>
+Subject: [PATCH v3 20/49] btrfs: disk_io: grab fs_info from extent_buffer::fs_info directly for btrfs_mark_buffer_dirty()
+Date:   Wed, 30 Sep 2020 09:55:10 +0800
+Message-Id: <20200930015539.48867-21-wqu@suse.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200930015539.48867-1-wqu@suse.com>
 References: <20200930015539.48867-1-wqu@suse.com>
@@ -40,60 +39,40 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-For subpage sized sector size support, one page can contain mutliple tree
-blocks, thus we can no longer use (eb->start >> PAGE_SHIFT) any more, or
-we can easily get extent buffer doesn't belongs to the bytenr.
+Since commit f28491e0a6c4 ("Btrfs: move the extent buffer radix tree into
+the fs_info"), fs_info can be grabbed from extent_buffer directly.
 
-This patch will use (extent_buffer::start / sectorsize) as index for radix
-tree so that we can get correct extent buffer for subpage size support.
-While still keep the behavior same for regular sector size.
+So use that extent_buffer::fs_info directly in btrfs_mark_buffer_dirty()
+to make things a little easier.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
 ---
- fs/btrfs/extent_io.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ fs/btrfs/disk-io.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 8662b27e42d6..5d982441bf6e 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -5162,7 +5162,7 @@ struct extent_buffer *find_extent_buffer(struct btrfs_fs_info *fs_info,
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index c81b7e53149c..58928076d08d 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -4190,8 +4190,7 @@ int btrfs_buffer_uptodate(struct extent_buffer *buf, u64 parent_transid,
  
- 	rcu_read_lock();
- 	eb = radix_tree_lookup(&fs_info->buffer_radix,
--			       start >> PAGE_SHIFT);
-+			       start / fs_info->sectorsize);
- 	if (eb && atomic_inc_not_zero(&eb->refs)) {
- 		rcu_read_unlock();
- 		/*
-@@ -5214,7 +5214,7 @@ struct extent_buffer *alloc_test_extent_buffer(struct btrfs_fs_info *fs_info,
- 	}
- 	spin_lock(&fs_info->buffer_lock);
- 	ret = radix_tree_insert(&fs_info->buffer_radix,
--				start >> PAGE_SHIFT, eb);
-+				start / fs_info->sectorsize, eb);
- 	spin_unlock(&fs_info->buffer_lock);
- 	radix_tree_preload_end();
- 	if (ret == -EEXIST) {
-@@ -5322,7 +5322,7 @@ struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
+ void btrfs_mark_buffer_dirty(struct extent_buffer *buf)
+ {
+-	struct btrfs_fs_info *fs_info;
+-	struct btrfs_root *root;
++	struct btrfs_fs_info *fs_info = buf->fs_info;
+ 	u64 transid = btrfs_header_generation(buf);
+ 	int was_dirty;
  
- 	spin_lock(&fs_info->buffer_lock);
- 	ret = radix_tree_insert(&fs_info->buffer_radix,
--				start >> PAGE_SHIFT, eb);
-+				start / fs_info->sectorsize, eb);
- 	spin_unlock(&fs_info->buffer_lock);
- 	radix_tree_preload_end();
- 	if (ret == -EEXIST) {
-@@ -5378,7 +5378,7 @@ static int release_extent_buffer(struct extent_buffer *eb)
- 
- 			spin_lock(&fs_info->buffer_lock);
- 			radix_tree_delete(&fs_info->buffer_radix,
--					  eb->start >> PAGE_SHIFT);
-+					  eb->start / fs_info->sectorsize);
- 			spin_unlock(&fs_info->buffer_lock);
- 		} else {
- 			spin_unlock(&eb->refs_lock);
+@@ -4204,8 +4203,6 @@ void btrfs_mark_buffer_dirty(struct extent_buffer *buf)
+ 	if (unlikely(test_bit(EXTENT_BUFFER_UNMAPPED, &buf->bflags)))
+ 		return;
+ #endif
+-	root = BTRFS_I(buf->pages[0]->mapping->host)->root;
+-	fs_info = root->fs_info;
+ 	btrfs_assert_tree_locked(buf);
+ 	if (transid != fs_info->generation)
+ 		WARN(1, KERN_CRIT "btrfs transid mismatch buffer %llu, found %llu running %llu\n",
 -- 
 2.28.0
 
