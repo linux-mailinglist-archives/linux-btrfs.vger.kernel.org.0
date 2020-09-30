@@ -2,129 +2,142 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D1E727DDEE
-	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Sep 2020 03:41:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7779F27DDF4
+	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Sep 2020 03:44:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729820AbgI3Blh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 29 Sep 2020 21:41:37 -0400
-Received: from eu-shark1.inbox.eu ([195.216.236.81]:55938 "EHLO
-        eu-shark1.inbox.eu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729776AbgI3BlZ (ORCPT
+        id S1729499AbgI3Bot (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 29 Sep 2020 21:44:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56708 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726689AbgI3Bot (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 29 Sep 2020 21:41:25 -0400
-X-Greylist: delayed 464 seconds by postgrey-1.27 at vger.kernel.org; Tue, 29 Sep 2020 21:41:23 EDT
-Received: from eu-shark1.inbox.eu (localhost [127.0.0.1])
-        by eu-shark1-out.inbox.eu (Postfix) with ESMTP id 5054F6C00776;
-        Wed, 30 Sep 2020 04:33:38 +0300 (EEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=inbox.eu; s=20140211;
-        t=1601429618; bh=jf8uf4SIn92dGdGBlmsIqUR5mX3wDuCODPy1eVzqeRY=;
-        h=References:From:To:Cc:Cc:Subject:In-reply-to:Date;
-        b=P/nTBU68B99khjQM+zksCHpXCcg6EXbLHkYIj6QqoSn0CYTch488j7yYzGOxCnCjD
-         67FpgqqStrMFxuVKYvadTOBcI19wVggGnzTbeD7Uk5Tbb2hO6un5VA9Fn2lMhpFSZZ
-         cBqTrTsDpUNNAbfOlRvUzyGCu4Bd37coOZUcZ/20=
-Received: from localhost (localhost [127.0.0.1])
-        by eu-shark1-in.inbox.eu (Postfix) with ESMTP id 3E4B66C0079B;
-        Wed, 30 Sep 2020 04:33:38 +0300 (EEST)
-X-Amavis-Alert: BAD HEADER SECTION, Duplicate header field: "Cc"
-Received: from eu-shark1.inbox.eu ([127.0.0.1])
-        by localhost (eu-shark1.inbox.eu [127.0.0.1]) (spamfilter, port 35)
-        with ESMTP id XeMBzgFar9Y0; Wed, 30 Sep 2020 04:33:38 +0300 (EEST)
-Received: from mail.inbox.eu (eu-pop1 [127.0.0.1])
-        by eu-shark1-in.inbox.eu (Postfix) with ESMTP id ED8586C00776;
-        Wed, 30 Sep 2020 04:33:37 +0300 (EEST)
-Received: from nas (unknown [103.116.47.51])
-        (Authenticated sender: l@damenly.su)
-        by mail.inbox.eu (Postfix) with ESMTPA id 9DD441BE00F2;
-        Wed, 30 Sep 2020 04:33:36 +0300 (EEST)
-References: <20200928150729.2239-1-realwakka@gmail.com>
-User-agent: mu4e 1.4.13; emacs 27.1
-From:   Su Yue <l@damenly.su>
-To:     Sidong Yang <realwakka@gmail.com>
-Cc:     linux-btrfs@vger.kernel.org
-Cc:     David Sterba <dsterba@suse.cz>
-Subject: Re: [PATCH] btrfs-progs: subvolume: Add warning on deleting default
- subvolume
-In-reply-to: <20200928150729.2239-1-realwakka@gmail.com>
-Message-ID: <blhogiac.fsf@damenly.su>
-Date:   Wed, 30 Sep 2020 09:33:31 +0800
+        Tue, 29 Sep 2020 21:44:49 -0400
+Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC5C1C061755
+        for <linux-btrfs@vger.kernel.org>; Tue, 29 Sep 2020 18:44:48 -0700 (PDT)
+Received: by mail-il1-x135.google.com with SMTP id b17so18336ilr.12
+        for <linux-btrfs@vger.kernel.org>; Tue, 29 Sep 2020 18:44:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=O7sVte+xRxqWOGprSEH8qE4lhcpkImhUuchpVQ9+5VI=;
+        b=SJJOiTIWvq1tC8VowAdRfVfOaBZECBHptYzm8GqHmz9vXsncWj2UjUDOv/3c/ffMaE
+         n/cOBdoVJx0Qb1oxNWQWutw6gDBuInJEAUChuNXfOk00mPEBxliWi4fZYljz2X/a7uAw
+         znJar7rht9wTORUx1KLloS0EQtgTX/sNulJcXH6SE0KauLeh8DMjax1FK4hprHLoV3Um
+         u0J76fDwiJyjmNzN3b1tiLbS66Ztq46JCAapuRl/Ip9bDjqV0ol09CNkVRbICY8N3KGG
+         opmQ5WrRjC9n/CbcabkJQOFlEm4D5QTKlNfKsmMi0rJv96QNFnVDxJHQm57dTRZOsvZl
+         h2Vw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=O7sVte+xRxqWOGprSEH8qE4lhcpkImhUuchpVQ9+5VI=;
+        b=gRNcQ28OvL1e5/4xfeFTsuAPOswc4OzMiySRvKJOqFk3796zV/lBX3YO702nub67rs
+         U2GhcPwpf3jgrIAEGFd7xjyACKcGhLgkAHDjOgiRZbcUfgdVhICSGwVT+9rJ7cWYZpXX
+         tTbd5zIDhMcnh0Vu90cGrAgoG2Vyh3ZRe5rg0m3TZOy8bm2VdegOZXb/4IOVquLfp49A
+         lT/uiRy/l3JuJXGXGeNx1sFg9QRSMBh3/z7/OFHGtwe6oYEqO5KCKqPW/0TRhOWuvf8r
+         Delb83ervIPuMggle2vvMQ24junCSJNbaI8zNZfLK/Ov2/RWfLlZPL7Y9JkY3Oe+p9Kj
+         6CVg==
+X-Gm-Message-State: AOAM530DlETFtTw7y++VW5/5+SQEn1Wkzpm9QrxsDWadSyDKdBMU/la7
+        l8Bdrp0UAKxTrSQSbYXJJnnDxHv+wKXC3kWcur7Zy1LvbXcjRot5
+X-Google-Smtp-Source: ABdhPJwjl4au/tZw+pnw7RgWZn1BIlVpwAhNMsbwYowx6oX29KzwtBcU82gK3cGssF+EtZk3mnfj58K+yQoI9sJW4VM=
+X-Received: by 2002:a92:d08f:: with SMTP id h15mr115547ilh.27.1601430287392;
+ Tue, 29 Sep 2020 18:44:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; format=flowed
-X-Virus-Scanned: OK
-X-ESPOL: 885mlYpNBD+ljEClRGXbBBpV3CdKQJ6b9qflkAEq73aHWDLmCkUMVhC2n2R1THi+og==
+From:   Eric Levy <ericlevy@gmail.com>
+Date:   Tue, 29 Sep 2020 21:44:36 -0400
+Message-ID: <CA++hEgx2x=HjjUR=o2=PFHdQSFSqquNffePTVUqMNs19sj_wcQ@mail.gmail.com>
+Subject: ERROR... please contact btrfs developers
+To:     linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+I recently upgraded a Linux system running on btrfs from a 5.3.x
+kernel to a 5.4.x version. The system failed to run for more than a
+few minutes after the upgrade, because the root mount degraded to a
+read-only state. I continued to use the system by booting using the
+5.3.x kernel.
 
-On Mon 28 Sep 2020 at 23:07, Sidong Yang <realwakka@gmail.com> 
-wrote:
+Some time later, I attempted to migrate the root subvolume using a
+send-receive command pairing, and noticed that the operation would
+invariably abort before completion. I also noticed that a full file
+walk of the mounted volume was impossible, because operations on some
+files generated errors from the file-system level.
 
-> This patch add warning messages when user try to delete default
-> subvolume. When deleting default subvolume, kernel will not 
-> allow and
-> make error message on syslog. but there is only message that 
-> permission
-> denied on userspace. User can be noticed the reason by this 
-> warning message.
->
-> This patch implements github issue.
-> https://github.com/kdave/btrfs-progs/issues/274
->
-> Signed-off-by: Sidong Yang <realwakka@gmail.com>
-> ---
->  cmds/subvolume.c | 20 ++++++++++++++++++++
->  1 file changed, 20 insertions(+)
->
-> diff --git a/cmds/subvolume.c b/cmds/subvolume.c
-> index 2020e486..0cdf7a68 100644
-> --- a/cmds/subvolume.c
-> +++ b/cmds/subvolume.c
-> @@ -264,6 +264,7 @@ static int cmd_subvol_delete(const struct 
-> cmd_struct *cmd,
->  	struct seen_fsid *seen_fsid_hash[SEEN_FSID_HASH_SIZE] = { 
->  NULL, };
->  	enum { COMMIT_AFTER = 1, COMMIT_EACH = 2 };
->  	enum btrfs_util_error err;
-> +	uint64_t default_subvol_id = 0, target_subvol_id = 0;
->
->  	optind = 0;
->  	while (1) {
-> @@ -360,6 +361,25 @@ again:
->  		goto out;
->  	}
->
-> +	err = btrfs_util_get_default_subvolume_fd(fd, 
-> &default_subvol_id);
-> +	if (fd < 0) {
->
-Should it be
-"     if (err) { 
-|
-         error_btrfs_util(err);
-         ...
-"?
+Upon investigating using a check command, I learned that the file
+system had errors.
 
-> +		ret = 1;
-> +		goto out;
-> +	}
-> +
-> +	if (subvolid > 0)
-> +		target_subvol_id = subvolid;
-> +	else {
-> +		err = btrfs_util_subvolume_id(path, &target_subvol_id);
-> +		if (fd < 0) {
->
-And here.
+Examining the error report (not saved), I noticed that overall my
+situation had rather clear similarities to one described in an earlier
+discussion [1].
 
-> +			ret = 1;
-> +			goto out;
-> +		}
-> +	}
-> +
-> +	if (target_subvol_id == default_subvol_id)
-> +		warning("trying to delete default subvolume.");
-> +
->  	pr_verbose(MUST_LOG, "Delete subvolume (%s): ",
->  		commit_mode == COMMIT_EACH ||
->  		(commit_mode == COMMIT_AFTER && cnt + 1 == argc) ?
+Unfortunately, it appears that the differences in the kernels may have
+corrupted the file system.
 
+Based on eagerness for a resolution, and on an optimistic comment
+toward the end of the discussion, I chose to run a check operation on
+the partition with the --repair flag included.
+
+Perhaps not surprisingly to some, the result of a read-only check
+operation after the attempted repair gave a much more discouraging
+report, suggesting that the damage to the file system was made worse
+not better by the operation. I realize that this possibility is
+explained in the documentation.
+
+At the moment, the full report appears as below.
+
+Presently, the file system mounts, but the ability to successfully
+read files degrades the longer the system is mounted and the more
+files are read during a continuous mount. Experiments involving
+unmounting and then mounting again give some indication that this
+degradation is not entirely permanent.
+
+What possibility is open to recover all or part of the file system?
+After such a rescue attempt, would I have any way to know what is lost
+versus saved? Might I expect corruption within the file contents that
+would not be detected by the rescue effort?
+
+I would be thankful for any guidance that might lead to restoring the data
+
+
+[1] https://www.spinics.net/lists/linux-btrfs/msg96735.html
+---
+
+Opening filesystem to check...
+Checking filesystem on /dev/sda5
+UUID: 9a4da0b6-7e39-4a5f-85eb-74acd11f5b94
+[1/7] checking root items
+[2/7] checking extents
+ERROR: invalid generation for extent 4064026624, have 94810718697136
+expect (0, 33469925]
+ERROR: invalid generation for extent 16323178496, have 94811372174048
+expect (0, 33469925]
+ERROR: invalid generation for extent 79980945408, have 94811372219744
+expect (0, 33469925]
+ERROR: invalid generation for extent 318963990528, have 94810111593504
+expect (0, 33469925]
+ERROR: invalid generation for extent 319650189312, have 14758526976
+expect (0, 33469925]
+ERROR: invalid generation for extent 319677259776, have 414943019007
+expect (0, 33469925]
+ERROR: errors found in extent allocation tree or chunk allocation
+[3/7] checking free space cache
+block group 71962722304 has wrong amount of free space, free space
+cache has 266420224 block group has 266354688
+ERROR: free space cache has more free space than block group item,
+this could leads to serious corruption, please contact btrfs
+developers
+failed to load free space cache for block group 71962722304
+[4/7] checking fs roots
+[5/7] checking only csums items (without verifying data)
+[6/7] checking root refs
+[7/7] checking quota groups
+found 399845548032 bytes used, error(s) found
+total csum bytes: 349626220
+total tree bytes: 5908873216
+total fs tree bytes: 4414324736
+total extent tree bytes: 879493120
+btree space waste bytes: 1122882578
+file data blocks allocated: 550505705472
+ referenced 512080416768
