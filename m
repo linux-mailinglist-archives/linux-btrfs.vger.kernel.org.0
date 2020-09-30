@@ -2,29 +2,29 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2609D27DE35
-	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Sep 2020 04:03:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B54827DE4C
+	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Sep 2020 04:08:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729487AbgI3CDd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 29 Sep 2020 22:03:33 -0400
-Received: from mout.gmx.net ([212.227.15.15]:35067 "EHLO mout.gmx.net"
+        id S1729690AbgI3CID (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 29 Sep 2020 22:08:03 -0400
+Received: from mout.gmx.net ([212.227.15.15]:42847 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729322AbgI3CDd (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 29 Sep 2020 22:03:33 -0400
+        id S1729811AbgI3CID (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 29 Sep 2020 22:08:03 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1601431410;
-        bh=W98oOjEuclZ0eqM8JDQW0UPiHamX2APWYP5TnnkiTpY=;
+        s=badeba3b8450; t=1601431678;
+        bh=QCEd6RZO1WgTBmPaJgsP/0qjL75gGnX7A2peRZVWuZg=;
         h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=lGdDMrvD3jziJgd+792Gu2KQOYsATPo4wpHcgK5Hkg/8XRruhPQUm4NJjUemg+Pjn
-         T03L9K6EtxZHRULZhh/52xOIOMMj6zc2yGeWQAwEGFVLuND01ucdVgdm27q9uctt21
-         OZ8iquY0jA92LclM4UdsgxzkuUrB2V7Evh7Swmuw=
+        b=FcMTDaU3n/1Muxo+NUyyxKrC8SJIWThLT52KwcufOMGW2UJDIKJZ/OTxM1SAU7s0F
+         0jUx2TWGwrxCZrVQXXLDBEwxWPPyr1Nxp8NR9PWVGLfoGL9XG8V/e7s/XO86WhlU4Q
+         IrTJKgssUlDUE0pKxR1remSMNnJDxsNeBocZibuo=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1N33Il-1kZ1rQ1TZ7-013LEY; Wed, 30
- Sep 2020 04:03:30 +0200
-Subject: Re: ERROR... please contact btrfs developers
-To:     Eric Levy <ericlevy@gmail.com>, linux-btrfs@vger.kernel.org
-References: <CA++hEgx2x=HjjUR=o2=PFHdQSFSqquNffePTVUqMNs19sj_wcQ@mail.gmail.com>
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MLiCo-1k5m7p3Qzg-00Hhdh; Wed, 30
+ Sep 2020 04:07:58 +0200
+Subject: Re: RAID 5 disk full, can't balance
+To:     gumbi 2400 <gumbi2400@gmail.com>, linux-btrfs@vger.kernel.org
+References: <CAPw8+313EMnUXRWcacFqUqpOSQ2N1oQ2Fq0ubykzTy0F+t_ykA@mail.gmail.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -50,183 +50,232 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
  ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
  oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <c2d13609-564d-1e3b-482a-0af65532b42b@gmx.com>
-Date:   Wed, 30 Sep 2020 10:03:26 +0800
+Message-ID: <6e6565b2-58c6-c8c1-62d0-6e8357e41a42@gmx.com>
+Date:   Wed, 30 Sep 2020 10:07:55 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <CA++hEgx2x=HjjUR=o2=PFHdQSFSqquNffePTVUqMNs19sj_wcQ@mail.gmail.com>
+In-Reply-To: <CAPw8+313EMnUXRWcacFqUqpOSQ2N1oQ2Fq0ubykzTy0F+t_ykA@mail.gmail.com>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="MGyyWyMLupsjwSZNsGb5ld5v8B4mLDDsr"
-X-Provags-ID: V03:K1:GEQWNt7YE3VXLNthayAJUrxeWCEYKZvO2sSqdJFeQ2R1zgyaaIC
- TSg2BtSrYFhMg/pHf5Lpk3WEgTLGPhrGk+dqPwI9jUmRTjik3yXHcW1HE3HVWk/XeKS7MKA
- ZDTKuvu2S4W2YHu2zmcqqZ4DqErXj0+lt15P1Om9mDHsGpZonzsbI/+bA4qy/4KaqA0yWla
- U9btxoBHsoaR6C/WhKDGA==
+ boundary="RX9Tkw4QtjZLOV8U3UKqXU6SIXzApMY3K"
+X-Provags-ID: V03:K1:HctCYqv8sodSsAiW1KaPHeeZi9Tm+ifAmxBXA0BIpqfeZdC8S8X
+ nwiYg3vskgIDnaE37aXTSHHExYqCpyI6kzVsiHRul6Ou9mmGxBFlfV6g/ww74Dk5Rojfkw/
+ w9i45k3N4zaXUsjy8FUcWEYtwG3MPpxmlRW/Fe0Rt5u6L3Ts3w1phbn/fjj8ZLjR5QFlCld
+ c2P9qB9vb0cDsTYngKlwA==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:xeTN4NkMONs=:FIP2c1khSaYgkzrOcitS8w
- 0qVwl193kSdeu9xEt4tcUzc1dk2DBauYkM43d5409HMYd+dg1Z3EP5LgKY0hDlC2sj6WKNdf1
- vIEur1M7+DsqOdUkOdX/NpCYGmMyfFcPZEyaaK067NpChLqsoXkZwD2t16iKkabRrnAIRSFZu
- J2J5bBQlQo4pfAKb8y0McXxt9iH2mTXrYJFYycvm1GpwjkZp0NQlKlir3SiAdJhjptCNG8RyM
- b7bWR1g1HWfLN7T0K4/zwRbdjf8t4VJbOGz/bRhwmzHGfQYjZ1kOkQYXUj67DCLkHst2fvmrh
- Rrnrh1QRhcud34MUwMurtcvjpu+AfY3x3SEZkOk3tiKtqYfjeClJtxkWLAhLqjjMWyz9BzO/+
- 5aanNoQgZXnEgzwvL/u4bkFavAwNR3MqpPRAz5jyKE5yfNi9TR4zm/h8X0MARW2L7NNSOfXU2
- FW2kPixMlzFS7dZxAXTR1xNBpnCxWhemVF3V4bxZWE48EwueF+AFb0RGUA2nd/2Y607oQ1ZZA
- An535IFqTpL+S4rnfCCCkwx5iXJPFYBLod1Vly/wqD2UNUqL7L3TOw86bNSFydYTVYKVbLmAG
- Gl271LFF1vUY1hQm6sZdptcIYqR90+5dsauigW0OMDUY2Uck5KZ1mUFqG7e7E6xgB2Tmq2TX/
- 34POjDBVWj1V57Ht4fsAE+bs8W22dqD6sTlYHImu/GfxjGj8m/+NC1RGkXK5S255Izmaj8pZi
- iW3BDiEQTeysOWpvY9WBvXmYDo2bW5iue+yfPfS5Y6r7P8eMeCC71u2uw5OAKhjXIj2pBBIPI
- mZKMFJFCijJcxi9fO7IR6FGlrQ0xSwFY9aLa2HULLkt+04EkU5X9iDVju1lD1Kci7LsF5whY7
- zdtwRBzwonADxYWKQHSiGV4tWBlj1q79eu2p3iWXCwEbfcwCWFDgPOPq3+8i28UtXi62WBaLA
- UCSAPX5Vnoh8NGRBxc0dXPY62ruroWFLqRllXy/x0SRJNLJ0+YDJR7O5EynLRV5+p1DacdqC6
- 6+PYCgkUdWLePe9ptkgSaQ3/8TLOkUclNoZ5wCrB58CGcFEkRPjEC/Px1wihtcQ+fcBplhoRB
- cnJwHrowvi8tpApnDZi22AA5WJdCHor+futFIBmTTH9C32fQyoUgyv3Cikpo+eMw7lG54trq4
- Ie45gwccYMw0VeHiSKBinls74g57Q/qqMh/FTjIhXrugMzDhYUIvg0N9XCjNo06ed0Qxx+t4L
- m+wC8nVFPoAmlhPec2q6YoNRgOsquzl4+rcHG8Q==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:+WMFRemFmZg=:ORdw/1lyYYdq5l5l2KOi1m
+ Iw5Tin3sZIP29C/oTRdyLLoor2NJuLkMqif6Kt6TrnJukxyZnOuQeT3H9QsjUE7auadVNLmrN
+ qkddEX4y9RTSgVddVIbTi5mbO/FCejxOptanddCzt7NRBgYAiV+oPtSivw3QgybwOJ4vnOHIi
+ E8+nv9XcSY+Fo77ZpLAGsPDzsiQW7tP5RJr0R8GnBFNUZIkqx9PjYd0pzdxnOEQOhpqrI/aZm
+ AT9BOBaBleQ4JTxcsdRNITV8lmSrwK+TzA5kHnKB6gIQ/bnNCj9plvVrapR6Xoa0kRZdCTFd9
+ rNNCcRE0CCLAeR3gyxSf4KQaZe5K90jVy7scPcgpZTPZL0N+vND1vc8JX6HONJd+Wx2X474qn
+ L5OUOwg0B8nbLp1o+vNJVDmEc6b+K50SflvNGoeanIREQde78fJTvEQZfsiD4wQSrf+NQsfXr
+ 5s+xu8OAUdUxXIZ0Y39AWSDgxV5vAQvMsNRbiCGXuWQ4RYIdr0jBqgUQDMtsAcQetMdqn7MPE
+ LsAKpuDKgncDsBMOuuxTv7VHkDpkyBzUgVI/Ou1nEhi/ftJ6UGnn6ODGkjlGwYQZp71WvjvKy
+ IhUi/0rc8jFuPBXotIEEbR69DtJkp6ijcR2oadaxKyXX14NaH3jN1tsGZbMqMNezDk5EP2brd
+ LuCiULhSZ+gwz3IkzCRcD1SWmcIfkeIKoWXXYlT77CWB4q+nUEDUeuacfneM8Ckul1UJ9zBJM
+ Qmzphwy8Y9Mg+BIGOcwg5rcZnT8e6xP59jyTp++nSLFQfaEN7elUXT6DDXXZXOPzo4S1vv1+X
+ ES5/OgZcf/Tzrf2eAt2/bo7u1IVCYaI5BbvE/Iuwcs5Rr3inuGpIbIgFMNQccq3TKx+SWrUlq
+ EQrIstWBiQubIvhAf2QPMdg3i2/HEjCO+Bh5kvkg2dnOHWV1PZS/wop7dlRTaM8DTAMJKFSUY
+ Ng9Z+4M/hXgIAnY/FYeZEBWWUmoTmNaOIrLVXhbBF6IHIsAoba992aS7ldWzAbGkULjqE+ya8
+ 7Wo4QreeikaZWmn1Dxr3d0/CFLlb0wHsKPYAQRhJXxLdZlhITXt7ZGvlJ2BTbKj2mhbloeGUG
+ 5fg0kCZsvBWjzJj49f7DXvKzjNch6uCY6lFx88nJ98+PGkM09neQo7tGYXRwcPcmL0zzmQDK/
+ jvUWvRwNsbCjSxmPbwDvJpmq9J1lfKuy1GHMn15NNV6nDEQR1k+mtj0SqP42VNlAAIozG+g0o
+ b4v0iMaRgPdOsBcrHMeRgmfwPNK55SwloGlOW3A==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---MGyyWyMLupsjwSZNsGb5ld5v8B4mLDDsr
-Content-Type: multipart/mixed; boundary="CBRlebZ70CingcR07EbGSEIPpKJGdDChW"
+--RX9Tkw4QtjZLOV8U3UKqXU6SIXzApMY3K
+Content-Type: multipart/mixed; boundary="PDLXQW5RUk9yZpYvKAg6g7n7JWegakuq5"
 
---CBRlebZ70CingcR07EbGSEIPpKJGdDChW
+--PDLXQW5RUk9yZpYvKAg6g7n7JWegakuq5
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
 
 
 
-On 2020/9/30 =E4=B8=8A=E5=8D=889:44, Eric Levy wrote:
-> I recently upgraded a Linux system running on btrfs from a 5.3.x
-> kernel to a 5.4.x version. The system failed to run for more than a
-> few minutes after the upgrade, because the root mount degraded to a
-> read-only state. I continued to use the system by booting using the
-> 5.3.x kernel.
-
-Dmesg please. But according to your btrfs check result, I think it's
-already caused by bad extent generation from older kernels.
-
+On 2020/9/30 =E4=B8=8A=E5=8D=883:11, gumbi 2400 wrote:
+> Hello all,
 >=20
-> Some time later, I attempted to migrate the root subvolume using a
-> send-receive command pairing, and noticed that the operation would
-> invariably abort before completion. I also noticed that a full file
-> walk of the mounted volume was impossible, because operations on some
-> files generated errors from the file-system level.
+> I have a RAID5 array of mixed disks as follows:
 >=20
-> Upon investigating using a check command, I learned that the file
-> system had errors.
+> Label: 'MEDIA'  uuid: e59ff456-aa03-4954-887f-b616ae0dc270
+> Total devices 5 FS bytes used 13.07TiB
+> devid    1 size 3.64TiB used 3.64TiB path /dev/mapper/crypt-sdb
+> devid    2 size 7.28TiB used 4.54TiB path /dev/mapper/crypt-sdd
+> devid    3 size 7.28TiB used 4.54TiB path /dev/mapper/crypt-sde
+> devid    4 size 1.36TiB used 1.36TiB path /dev/mapper/crypt-sdf
+> devid    5 size 3.64TiB used 3.64TiB path /dev/mapper/crypt-sdc
 >=20
-> Examining the error report (not saved), I noticed that overall my
-> situation had rather clear similarities to one described in an earlier
-> discussion [1].
+> I had a full server rebuild recently and when setting everything back
+> up needed to run a chown across the array to reflect new UIDs. This
+> failed due to not enough space and dropped into read-only. I'm aware
+> that this is a common issue that is usually fixed by a rebalance and
+> proceeded to kick off the following:
 >=20
-> Unfortunately, it appears that the differences in the kernels may have
-> corrupted the file system.
-
-Nope, your fs is still fine.
-
+> btrfs balance start -dusage=3D90 /media
 >=20
-> Based on eagerness for a resolution, and on an optimistic comment
-> toward the end of the discussion, I chose to run a check operation on
-> the partition with the --repair flag included.
+> This ran briefly and rebalanced a couple of chunks before I realised I
+> had mistakenly not put this into the background. I canceled the
+> balance and attempted to start a new one after remounting. However, on
+> mount the previous balance tried to start again, which immediately
+> kicked the fs back into read-only. At which point I attempted the
+> following:
+>=20
+> mount -o skip_balance /media && btrfs balance cancel /media
+>=20
+> This again kicked it back into read-only as it couldn't wrote to
+> cancel the balance. Next step was to try a temp 10G loopback device.
+>=20
+> mount -o skip_balance /media && btrfs device add /dev/loop3 /media &&
+> btrfs balance cancel /media
+>=20
+> Again, back into read-only.
+>=20
+> Last attempt. It was suggested on reddit that running zero-log may
+> blow out any pending transactions getting in the way, tried this and
+> again back into read-only.
+>=20
+> btrfs rescue zero-log /dev/crypt-sdb
+> mount -o skip_balance /media&& btrfs device add /dev/loop3 /media&&
+> btrfs balance cancel /media
+>=20
+> At this point, I'm wondering if it's possible to figure out what
+> transaction is causing issues even without trying to run anything
+> other than a skip_balance it still drops into read-only after about 30
+> seconds. I'd like to add a device and rebalance, but it can't seem to
+> get that far. Any suggestions on what to look at next?
 
-And obviously it won't help. Since we don't have extent item repair
-functionality yet.
+In theory, btrfs should not start balance if it knows it can no longer
+allocate new chunks any more.
 
-There is an off-tree branch to do the repair:
-https://github.com/adam900710/btrfs-progs/tree/extent_gen_repair
+But unfortunately due to a bug in over-commit calculation, btrfs can't
+distinguish raid5 complex space calculation from SINGLE, and believe we
+can continue (since we still have 2 device with some space).
 
-You could try that to see if it works.
+There is a patchset to address this, but not yet merged.
+
+The only solution I guess now is just delete, delete, delete, until you
+deleted enough files to free space for a proper balance.
 
 Thanks,
 Qu
 
 >=20
-> Perhaps not surprisingly to some, the result of a read-only check
-> operation after the attempted repair gave a much more discouraging
-> report, suggesting that the damage to the file system was made worse
-> not better by the operation. I realize that this possibility is
-> explained in the documentation.
+> uname -a:
+> Linux magickbrick 5.8.0-19-generic #20-Ubuntu SMP Fri Sep 11 09:08:26
+> UTC 2020 x86_64 x86_64 x86_64 GNU/Linux
 >=20
-> At the moment, the full report appears as below.
+> btrfs --version: btrfs-progs v5.7
 >=20
-> Presently, the file system mounts, but the ability to successfully
-> read files degrades the longer the system is mounted and the more
-> files are read during a continuous mount. Experiments involving
-> unmounting and then mounting again give some indication that this
-> degradation is not entirely permanent.
+> btrfs fi show:
 >=20
-> What possibility is open to recover all or part of the file system?
-> After such a rescue attempt, would I have any way to know what is lost
-> versus saved? Might I expect corruption within the file contents that
-> would not be detected by the rescue effort?
+> Data, RAID5: total=3D13.16TiB, used=3D13.05TiB
+> System, RAID1C3: total=3D32.00MiB, used=3D960.00KiB
+> Metadata, RAID1C3: total=3D14.00GiB, used=3D13.86GiB
+> GlobalReserve, single: total=3D512.00MiB, used=3D656.00KiB
 >=20
-> I would be thankful for any guidance that might lead to restoring the d=
-ata
+> Label: 'MEDIA'  uuid: e59ff456-aa03-4954-887f-b616ae0dc270
+> Total devices 5 FS bytes used 13.07TiB
+> devid    1 size 3.64TiB used 3.64TiB path /dev/mapper/crypt-sdb
+> devid    2 size 7.28TiB used 4.54TiB path /dev/mapper/crypt-sdd
+> devid    3 size 7.28TiB used 4.54TiB path /dev/mapper/crypt-sde
+> devid    4 size 1.36TiB used 1.36TiB path /dev/mapper/crypt-sdf
+> devid    5 size 3.64TiB used 3.64TiB path /dev/mapper/crypt-sdc
 >=20
 >=20
-> [1] https://www.spinics.net/lists/linux-btrfs/msg96735.html
-> ---
 >=20
-> Opening filesystem to check...
-> Checking filesystem on /dev/sda5
-> UUID: 9a4da0b6-7e39-4a5f-85eb-74acd11f5b94
-> [1/7] checking root items
-> [2/7] checking extents
-> ERROR: invalid generation for extent 4064026624, have 94810718697136
-> expect (0, 33469925]
-> ERROR: invalid generation for extent 16323178496, have 94811372174048
-> expect (0, 33469925]
-> ERROR: invalid generation for extent 79980945408, have 94811372219744
-> expect (0, 33469925]
-> ERROR: invalid generation for extent 318963990528, have 94810111593504
-> expect (0, 33469925]
-> ERROR: invalid generation for extent 319650189312, have 14758526976
-> expect (0, 33469925]
-> ERROR: invalid generation for extent 319677259776, have 414943019007
-> expect (0, 33469925]
-> ERROR: errors found in extent allocation tree or chunk allocation
-> [3/7] checking free space cache
-> block group 71962722304 has wrong amount of free space, free space
-> cache has 266420224 block group has 266354688
-> ERROR: free space cache has more free space than block group item,
-> this could leads to serious corruption, please contact btrfs
-> developers
-> failed to load free space cache for block group 71962722304
-> [4/7] checking fs roots
-> [5/7] checking only csums items (without verifying data)
-> [6/7] checking root refs
-> [7/7] checking quota groups
-> found 399845548032 bytes used, error(s) found
-> total csum bytes: 349626220
-> total tree bytes: 5908873216
-> total fs tree bytes: 4414324736
-> total extent tree bytes: 879493120
-> btree space waste bytes: 1122882578
-> file data blocks allocated: 550505705472
->  referenced 512080416768
+> Most recent dmesg:
+>=20
+> BTRFS info (device dm-4): use lzo compression, level 0
+> BTRFS info (device dm-4): disk space caching is enabled
+> BTRFS info (device dm-4): has skinny extents
+> BTRFS info (device dm-4): bdev /dev/mapper/crypt-sdb errs: wr 0, rd 1,
+> flush 0, corrupt 0, gen 0
+> BTRFS info (device dm-4): bdev /dev/mapper/crypt-sdf errs: wr 18, rd
+> 136, flush 0, corrupt 0, gen 0
+> BTRFS info (device dm-4): disk space caching is enabled
+> BTRFS info (device dm-4): balance: resume skipped
+> ------------[ cut here ]------------
+> BTRFS: Transaction aborted (error -28)
+> WARNING: CPU: 3 PID: 11529 at fs/btrfs/extent-tree.c:3070
+> __btrfs_free_extent.isra.0+0x589/0x930 [btrfs]
+> Modules linked in: binfmt_misc xfs nls_iso8859_1 reiserfs dm_multipath
+> scsi_dh_rdac scsi_dh_emc scsi_dh_alua snd_hda_codec_realtek
+> snd_hda_codec_generic ledtrig_audio snd_hda_codec_hdmi snd_hda_intel
+> snd_intel_dspcfg edac_mce_amd snd_hda_codec snd_hda_core snd_hwdep
+> snd_pcm kvm snd_timer snd rapl efi_pstore wmi_bmof soundcore k10temp
+> ccp input_leds joydev mac_hid sch_fq_codel ip_tables x_tables autofs4
+> btrfs blake2b_generic dm_crypt raid10 raid456 async_raid6_recov
+> async_memcpy async_pq async_xor async_tx xor raid6_pq libcrc32c raid1
+> raid0 multipath linear hid_generic usbhid hid nouveau crct10dif_pclmul
+> mxm_wmi crc32_pclmul video i2c_algo_bit ttm ghash_clmulni_intel
+> drm_kms_helper aesni_intel syscopyarea sysfillrect sysimgblt
+> fb_sys_fops crypto_simd cec cryptd glue_helper rc_core drm i2c_piix4
+> r8169 realtek ahci xhci_pci libahci xhci_pci_renesas nvme nvme_core
+> wmi gpio_amdpt gpio_generic
+> CPU: 3 PID: 11529 Comm: btrfs-transacti Tainted: G        W
+> 5.8.0-19-generic #20-Ubuntu
+> Hardware name: Gigabyte Technology Co., Ltd. B450M GAMING/B450M
+> GAMING, BIOS F50 11/27/2019
+> RIP: 0010:__btrfs_free_extent.isra.0+0x589/0x930 [btrfs]
+> Code: 84 48 8b 7d 88 ba 5c 0c 00 00 48 c7 c6 c0 30 8a c0 e8 4e f7 0a
+> 00 e9 af fe ff ff 44 89 ee 48 c7 c7 08 dc 8a c0 e8 5c 31 2c fa <0f> 0b
+> 48 8b 7d 88 44 89 e9 ba fe 0b 00 00 48 c7 c6 c0 30 8a c0 e8
+> RSP: 0018:ffffb7a0413d3b70 EFLAGS: 00010282
+> RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffff91bb168d8cd8
+> RDX: 00000000ffffffd8 RSI: 0000000000000027 RDI: ffff91bb168d8cd0
+> RBP: ffffb7a0413d3c20 R08: 0000000000000004 R09: 0000000000000c8d
+> R10: 0000000000000000 R11: 0000000000000001 R12: 00002177776b4000
+> R13: 00000000ffffffe4 R14: ffff91b99abc00e0 R15: 0000000000000000
+> FS:  0000000000000000(0000) GS:ffff91bb168c0000(0000) knlGS:00000000000=
+00000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 00007fa3e5cdcb20 CR3: 0000000212ae8000 CR4: 00000000003406e0
+> Call Trace:
+>  run_delayed_tree_ref+0x7f/0x160 [btrfs]
+>  btrfs_run_delayed_refs_for_head+0x2e1/0x480 [btrfs]
+>  __btrfs_run_delayed_refs+0x8c/0x1d0 [btrfs]
+>  btrfs_run_delayed_refs+0x73/0x200 [btrfs]
+>  btrfs_start_dirty_block_groups+0x2c0/0x480 [btrfs]
+>  btrfs_commit_transaction+0xc6/0x9e0 [btrfs]
+>  ? start_transaction+0xd7/0x550 [btrfs]
+>  ? __next_timer_interrupt+0xa0/0xe0
+>  transaction_kthread+0x146/0x190 [btrfs]
+>  kthread+0x12f/0x150
+>  ? btrfs_cleanup_transaction.isra.0+0x2a0/0x2a0 [btrfs]
+>  ? __kthread_bind_mask+0x70/0x70
+>  ret_from_fork+0x22/0x30
+> ---[ end trace 5734fd11b340fd6d ]---
+> BTRFS: error (device dm-4) in __btrfs_free_extent:3070: errno=3D-28 No =
+space left
+> BTRFS info (device dm-4): forced readonly
+> BTRFS: error (device dm-4) in btrfs_run_delayed_refs:2174: errno=3D-28
+> No space left
 >=20
 
 
---CBRlebZ70CingcR07EbGSEIPpKJGdDChW--
+--PDLXQW5RUk9yZpYvKAg6g7n7JWegakuq5--
 
---MGyyWyMLupsjwSZNsGb5ld5v8B4mLDDsr
+--RX9Tkw4QtjZLOV8U3UKqXU6SIXzApMY3K
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl9z524ACgkQwj2R86El
-/qhnbwf+Jlxon38xt6FUB0ooFFTAx5KwdzTrEi8R2xVwWZ/I25dn8AwBLD/gNyIU
-OsKc2MY3gPLG1bXqyX3Ii2iWg0xRoC/V6BZ/X2dhSOWO753l1alNAjUxzQRZQ/5l
-XJAFvfvgBwPRUQl+hW/EaZV3pz96t5jDdM0eT6ykULKHIhDFDSGmjr1vtVINNqiU
-zLsIoVSuf/STIfqgZyNQYZCl+fnyz0Bimni+R0acQbkYPFhCL0NsSczC/rbgcNZS
-pXEK+k783wSaVYqLMnzYTFCF4FZ32nz7uiiAeKBC6mtcuD05vEpgl3zJUTNOPpWT
-tL+ffvV4gK3hlnrZ25MbNm1IGPEyVw==
-=hYVA
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl9z6HsACgkQwj2R86El
+/qgJ8gf/SivAuFPyMu7AGxZL+nd7X/FyWEl2nZQJ7OFwTB+zXQwtXDLhErlS6yEU
+PvmE0Yf6YVE04ccl6CXEcXVD5y1l2UNzKimlSXELvo794418bMwZR6pHj+3hmLo6
+C7hCRKxYq/tQa66tVc2EVAiZqjj+54tOCBsW4bVi6TyeM449qnVxsA4E9nfW7/yP
+VgwFLTwQfA42C4G/WWakA+kpGcxPRx4D+UYWpZRljY2FAUASO5UpsDixFNCCUB+m
+FRVB/K99FCL0WJTOX2DE2uAqTeqQ84cUZ0T4ZMZc5dGgexIWbgkfPaBEg5oS5ZcJ
+en3wbzhgBwdbnd1uxoatHbT3UiIYjg==
+=tLP9
 -----END PGP SIGNATURE-----
 
---MGyyWyMLupsjwSZNsGb5ld5v8B4mLDDsr--
+--RX9Tkw4QtjZLOV8U3UKqXU6SIXzApMY3K--
