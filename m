@@ -2,50 +2,112 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ED1B280142
-	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Oct 2020 16:29:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D357A2801A1
+	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Oct 2020 16:49:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732368AbgJAO3m (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 1 Oct 2020 10:29:42 -0400
-Received: from mx2.suse.de ([195.135.220.15]:57886 "EHLO mx2.suse.de"
+        id S1732449AbgJAOtc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 1 Oct 2020 10:49:32 -0400
+Received: from mx2.suse.de ([195.135.220.15]:45028 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732099AbgJAO3l (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 1 Oct 2020 10:29:41 -0400
+        id S1732020AbgJAOt3 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 1 Oct 2020 10:49:29 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1601563767;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=9r4T0REeYvH+IqlL2trIoQV8bCagtBy8IVER0WN/jmc=;
+        b=XYZVQS5AKtMtiB66H55QRP3XbJuWUbvfqc48zGZpmkVaTsxuOpe3ChrU/Bh7C9leBicsdX
+        q+OpXc9sLtNydfoKCKN8BOvmTvSH4SWWf1uQUnJx36K1Sn4QZKsD8kjBUq0h4M1sCid+PK
+        k9iw8ddWE6av+2uAQxwMhkX3nxGsSgk=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 2E89BAF8F;
-        Thu,  1 Oct 2020 14:29:40 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 08AC9DA781; Thu,  1 Oct 2020 16:28:19 +0200 (CEST)
-Date:   Thu, 1 Oct 2020 16:28:19 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Nikolay Borisov <nborisov@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: Rename BTRFS_INODE_ORDERED_DATA_CLOSE flag
-Message-ID: <20201001142819.GW6756@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20201001064039.3231-1-nborisov@suse.com>
+        by mx2.suse.de (Postfix) with ESMTP id 9B6EFAB9F;
+        Thu,  1 Oct 2020 14:49:27 +0000 (UTC)
+Subject: Re: [PATCH 7/9] btrfs: implement space clamping for preemptive
+ flushing
+To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com
+References: <cover.1601495426.git.josef@toxicpanda.com>
+ <629f3b0d6b9a100ae2a9ec5826c20cef28eb6b0d.1601495426.git.josef@toxicpanda.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <74509cfa-1a09-10aa-c2d6-e272afb225d4@suse.com>
+Date:   Thu, 1 Oct 2020 17:49:26 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201001064039.3231-1-nborisov@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <629f3b0d6b9a100ae2a9ec5826c20cef28eb6b0d.1601495426.git.josef@toxicpanda.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Oct 01, 2020 at 09:40:39AM +0300, Nikolay Borisov wrote:
-> Commit 8d875f95da43 ("btrfs: disable strict file flushes for
-> renames and truncates") eliminated the notion of ordered operations and
-> instead BTRFS_INODE_ORDERED_DATA_CLOSE only remained as a flag
-> indicating that a file's content should be synced to disk in case a
-> file is truncated and any writes happen to it concurrently. In fact
-> this intendend behavior was broken until it was fixed in
-> f6dc45c7a93a ("Btrfs: fix filemap_flush call in btrfs_file_release").
-> 
-> All things considered let's give the flag a more descriptive name. Also
-> slightly reword comments.
 
-Added to misc-next, thanks.
+
+On 30.09.20 г. 23:01 ч., Josef Bacik wrote:
+> Starting preemptive flushing at 50% of available free space is a good
+> start, but some workloads are particularly abusive and can quickly
+> overwhelm the preemptive flushing code and drive us into using tickets.
+> 
+> Handle this by clamping down on our threshold for starting and
+> continuing to run preemptive flushing.  This is particularly important
+> for our overcommit case, as we can really drive the file system into
+> overages and then it's more difficult to pull it back as we start to
+> actually fill up the file system.
+> 
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+
+nit: IMO it would be worthile to very briefly describe the threshold
+calculation, essentially it will be 2^CLAMP and we start with 1. So in
+the best case we'll preempt flush when we have allocated more than 1/2
+(50%) of the freespace and in the worst case 1/256th 0.4 %
+
+
+LGTM:
+
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
