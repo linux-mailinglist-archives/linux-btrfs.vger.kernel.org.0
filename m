@@ -2,186 +2,221 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90D4C27F92A
-	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Oct 2020 07:55:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3F2327F932
+	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Oct 2020 07:57:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725892AbgJAFy6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 1 Oct 2020 01:54:58 -0400
-Received: from mx2.suse.de ([195.135.220.15]:38622 "EHLO mx2.suse.de"
+        id S1730357AbgJAF5x (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 1 Oct 2020 01:57:53 -0400
+Received: from mx2.suse.de ([195.135.220.15]:40030 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725878AbgJAFy6 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 1 Oct 2020 01:54:58 -0400
+        id S1730301AbgJAF5x (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 1 Oct 2020 01:57:53 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1601531696;
+        t=1601531871;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=23FzjoGdVEBIUHb1Ju8ScFrr027ZHbUWVj9HqiQU374=;
-        b=eiLdV/pU3FkgqbctnqogYqt+k8hCnWZT+NmIszqh0OWIDEVfnoh1O9oe4cQ7+9Mfd2C90D
-        IgNtR6SFkU9CbmMR0/wopBTpNUVVYuGWjbxviKyLawla74gyCU2sXcQZwfzXKvWusie8bz
-        accZHnHx0uWZgwSd8Td2Ff9qggruTOk=
+         to:to:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=JcJSDXQXYo1WycIARlLoi4LRa1XljdIHaK/Gy2ZmbD0=;
+        b=KP3t1qXEOioieT9ZI47jLRYF1ptwZld6AnV/fzreT1P6/r+P8pebt7U8Wt5pXzAgQU/1d7
+        yg3DOaEfwYnSZ9XfKD3UUJjE287GA07zApsjPxRbBOXZE9qChEB2snNrmni28RXkk2q2ya
+        JIw7wdwFBc4Rp0S+MDGQ70UoS+Qg+D0=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 0AFAAB328;
-        Thu,  1 Oct 2020 05:54:56 +0000 (UTC)
-Subject: Re: [PATCH 1/9] btrfs: add a trace point for reserve tickets
-To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com
-References: <cover.1601495426.git.josef@toxicpanda.com>
- <35017faea237f88452785b208e4fe36002b46fc9.1601495426.git.josef@toxicpanda.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <8808e629-06c6-5015-9ef3-ac9783078526@suse.com>
-Date:   Thu, 1 Oct 2020 08:54:54 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        by mx2.suse.de (Postfix) with ESMTP id BF0A7B328
+        for <linux-btrfs@vger.kernel.org>; Thu,  1 Oct 2020 05:57:51 +0000 (UTC)
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH 9 00/12] Introduce per-profile available space array to avoid over-confident can_overcommit()
+Date:   Thu,  1 Oct 2020 13:57:32 +0800
+Message-Id: <20201001055744.103261-1-wqu@suse.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-In-Reply-To: <35017faea237f88452785b208e4fe36002b46fc9.1601495426.git.josef@toxicpanda.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+[BUG]
+There are several bug reports of ENOSPC error in various locations.
+Some of the most series case can't even start transaction for device
+add.
+This makes the fs mostly unusable, can only act as a cold storage, no
+write is allowed any more.
 
+[CAUSE]
+With some extra info from one reporter, it turns out that
+can_overcommit() is using a wrong way to calculate allocatable metadata
+space.
 
-On 30.09.20 г. 23:01 ч., Josef Bacik wrote:
-> While debugging a ENOSPC related performance problem I needed to see the
-> time difference between start and end of a reserve ticket, so add a
-> tracepoint where we add the ticket, and where we end the ticket.
-> 
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+The most typical case would look like:
+  devid 1 unallocated:	1G
+  devid 2 unallocated:  10G
+  metadata profile:	RAID1
 
-I wonder can't we get away with a single tracepoint - simply record the
-queue time when we create the ticket in __reserve_bytes and then have a
-single tracepoint in handle_reserve_ticket which calculates the
-difference between curr_time and the written one while the ticket was
-queued? IMO it will be more user friendly for manual inspection, I
-assume you have analyzed the duration with a bpf script rather than
-looking at every pair of start/end events manually? Also won't it be
-useful to also have the flush type printed in the end event so that at
-least we know what is the type of the ticket ? Let's not forget
-tracepoint from the POV of Linus are more or less ABI so it's preferable
-if we get them right from the beginning.
+In above case, we can at most allocate 1G chunk for metadata, due to
+unbalanced disk free space.
+But current can_overcommit() uses factor based calculation, which never
+consider the disk free space balance.
 
-> ---
->  fs/btrfs/space-info.c        |  3 +++
->  include/trace/events/btrfs.h | 40 ++++++++++++++++++++++++++++++++++++
->  2 files changed, 43 insertions(+)
-> 
-> diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
-> index 64099565ab8f..40726c8888f7 100644
-> --- a/fs/btrfs/space-info.c
-> +++ b/fs/btrfs/space-info.c
-> @@ -1279,6 +1279,7 @@ static int handle_reserve_ticket(struct btrfs_fs_info *fs_info,
->  	 * space wasn't reserved at all).
->  	 */
->  	ASSERT(!(ticket->bytes == 0 && ticket->error));
-> +	trace_btrfs_end_reserve_ticket(fs_info, ticket->error);
->  	return ret;
->  }
->  
-> @@ -1380,6 +1381,8 @@ static int __reserve_bytes(struct btrfs_fs_info *fs_info,
->  			list_add_tail(&ticket.list,
->  				      &space_info->priority_tickets);
->  		}
-> +		trace_btrfs_add_reserve_ticket(fs_info, space_info->flags,
-> +					       flush, orig_bytes);
->  	} else if (!ret && space_info->flags & BTRFS_BLOCK_GROUP_METADATA) {
->  		used += orig_bytes;
->  		/*
-> diff --git a/include/trace/events/btrfs.h b/include/trace/events/btrfs.h
-> index ecd24c719de4..68d1622623c7 100644
-> --- a/include/trace/events/btrfs.h
-> +++ b/include/trace/events/btrfs.h
-> @@ -2025,6 +2025,46 @@ TRACE_EVENT(btrfs_convert_extent_bit,
->  		  __print_flags(__entry->clear_bits, "|", EXTENT_FLAGS))
->  );
->  
-> +TRACE_EVENT(btrfs_add_reserve_ticket,
-> +	TP_PROTO(const struct btrfs_fs_info *fs_info, u64 flags, int flush,
-> +		 u64 bytes),
-> +
-> +	TP_ARGS(fs_info, flags, flush, bytes),
-> +
-> +	TP_STRUCT__entry_btrfs(
-> +		__field(	u64,	flags	)
-> +		__field(	int,	flush	)
-> +		__field(	u64,	bytes	)
-> +	),
-> +
-> +	TP_fast_assign_btrfs(fs_info,
-> +		__entry->flags	= flags;
-> +		__entry->flush	= flush;
-> +		__entry->bytes	= bytes;
-> +	),
-> +
-> +	TP_printk_btrfs("flags=%s flush=%s bytes=%llu",
-> +			__print_symbolic(__entry->flush, FLUSH_ACTIONS),
-> +			__print_flags(__entry->flags, "|", BTRFS_GROUP_FLAGS),
-> +			__entry->bytes)
-> +);
-> +
-> +TRACE_EVENT(btrfs_end_reserve_ticket,
-> +	TP_PROTO(const struct btrfs_fs_info *fs_info, int error),
-> +
-> +	TP_ARGS(fs_info, error),
-> +
-> +	TP_STRUCT__entry_btrfs(
-> +		__field(	int,	error	)
-> +	),
-> +
-> +	TP_fast_assign_btrfs(fs_info,
-> +		__entry->error	= error;
-> +	),
-> +
-> +	TP_printk_btrfs("error=%d", __entry->error)
-> +);
-> +
->  DECLARE_EVENT_CLASS(btrfs_sleep_tree_lock,
->  	TP_PROTO(const struct extent_buffer *eb, u64 start_ns),
->  
-> 
+[FIX]
+To address this problem, here comes the per-profile available space
+array, which gets updated every time a chunk get allocated/removed or a
+device get grown or shrunk.
+
+This provides a quick way for hotter place like can_overcommit() to grab
+an estimation on how many bytes it can over-commit.
+
+The per-profile available space calculation tries to keep the behavior
+of chunk allocator, thus it can handle uneven disks pretty well.
+
+And statfs() can also grab that pre-calculated value for instance usage.
+
+Since this patch introduced a new failure pattern, some new error
+handling are introduced:
+- __btrfs_alloc_chunk()
+  At the end of that function where calc_per_profile_avail() get called,
+  if it failed due to -ENOMEM, we will revert device used space, and
+  remove the allocated chunk and block group.
+
+- btrfs_init_new_device()
+- btrfs_remove_chunk()
+  There is no good way to revert the change. So here we abort
+  transaction, just like what the old error handling does.
+
+- btrfs_grow_device()
+  We need to revert device size to its old size.
+
+- btrfs_shrink_device()
+- btrfs_rm_device()
+  This function already has good error handling, reuse it.
+
+- btrfs_verify_dev_extents()
+  Mount time error will lead to mount failure, nothing to worry about.
+
+[PATCH CONTENT]
+Patch 01~05:	Refactors and cleanups
+Patch 06:	Introduce the needed cleanup function for error handling
+Patch 07~12:	Implement the per-profile available space.
+
+I have tested the patchset using error injection to verify the non-abort
+error cases, and no obvious problem is reported by btrfs.
+(In fact, there are several problems during error injection, but I just
+ fixed them)
+
+Changelog:
+v1:
+- Fix a bug where we forgot to update per-profile array after allocating
+  a chunk.
+  To avoid ABBA deadlock, this introduce a small windows at the end
+  __btrfs_alloc_chunk(), it's not elegant but should be good enough
+  before we rework chunk and device list mutex.
+  
+- Make statfs() to use virtual chunk allocator to do better estimation
+  Now statfs() can report not only more accurate result, but can also
+  handle RAID5/6 better.
+
+v2:
+- Fix a deadlock caused by acquiring device_list_mutex under
+  __btrfs_alloc_chunk()
+  There is no need to acquire device_list_mutex when holding
+  chunk_mutex.
+  Fix it and remove the lockdep assert.
+
+v3:
+- Use proper chunk_mutex instead of device_list_mutex
+  Since they are protecting two different things, and we only care about
+  alloc_list, we should only use chunk_mutex.
+  With improved lock situation, it's easier to fold
+  calc_per_profile_available() calls into the first patch.
+
+- Add performance benchmark for statfs() modification
+  As Facebook seems to run into some problems with statfs() calls, add
+  some basic ftrace results.
+
+v4:
+- Keep the lock-free design for statfs()
+  As extra sleeping in statfs() may not be a good idea, keep the old
+  lock-free design, and use factor based calculation as fall back.
+
+v5:
+- Enhance btrfs_update_device() error handling in btrfs_grow_device()
+- Ensure all failure caused by calc_per_profile_available() is the same
+  with existing error handling
+- Fix a bug where chunk_mutex is not released in btrfs_shrink_device()
+
+v6:
+- Don't update the array if we hit any error.
+  To avoid calling calc_per_profile_avail() in error handling path.
+
+- Re-order the patchset
+  Make the core facility the first patch.
+  Error handling improvement in later patches.
+
+- Add better error handling
+  Improve one existing bad error handling, and provide a better solution
+  for __btrfs_alloc_chunk()
+
+v7:
+- Remove btrfs_calc_avail_data_space() completely
+  Now we only need to grab the pre-calculated number, no need for a
+  function over 100 lines.
+
+- Keep the 0-avail-if-metadata-exhausted behavior
+  Now it's handled by space_info->full, which indicates if we can
+  allocate new chunks in metadata space info.
+  We have no need to bother that now.
+
+v8:
+- Cosmetic changes
+  * Comment fixes
+  * Use rounddown() to replace one open-code
+  * while() loop reformat
+  * Remove one redundant 0-size check
+  * Add one lockdep_assert() for calc_one_profile_avail()
+  * Use atomic64_t to remove spinlock
+
+- Add two more timing to call calc_per_profile_avail()
+  * btrfs_rm_device()
+  * btrfs_init_new_device()
+
+v9:
+- Rebased to v5.9-rc4
+- More cleanup and refactors for properly reverting a newly created
+  block group
+- Do proper block group revert for chunk allocation failure case.
+- Better patch split
+  Now the implementation and added btrfs_update_per_profile_avail()
+  calls are in separate patches.
+  Allowing reviewers to exam each failure pattern.
+
+Qu Wenruo (12):
+  btrfs: block-group: cleanup btrfs_add_block_group_cache()
+  btrfs: block-group: extra the code to delete block group from fs_info
+    rb tree
+  btrfs: block-group: make link_block_group() to handle avail alloc bits
+  btrfs: block-group: extract the code to unlink block group from space
+    info
+  btrfs: space-info: update btrfs_update_space_info() to handle block
+    group removal
+  btrfs: block-group: introduce btrfs_revert_block_group()
+  btrfs: volumes: introduce the device layout aware per-profile
+    available space infrastructure
+  btrfs: volumes: update per-profile available space at mount time
+  btrfs: volumes: call btrfs_update_per_profile_avail() for chunk
+    allocation and removal
+  btrfs: volumes: update per-profile available space for device update
+  btrfs: space-info: Use per-profile available space in can_overcommit()
+  btrfs: statfs: Use pre-calculated per-profile available space
+
+ fs/btrfs/block-group.c | 144 +++++++++++++----------
+ fs/btrfs/block-group.h |   1 +
+ fs/btrfs/space-info.c  |  70 ++++++++----
+ fs/btrfs/space-info.h  |   4 +-
+ fs/btrfs/super.c       | 131 ++-------------------
+ fs/btrfs/volumes.c     | 251 ++++++++++++++++++++++++++++++++++++-----
+ fs/btrfs/volumes.h     |  10 ++
+ 7 files changed, 375 insertions(+), 236 deletions(-)
+
+-- 
+2.28.0
+
