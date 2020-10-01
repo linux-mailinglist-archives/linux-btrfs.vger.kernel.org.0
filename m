@@ -2,98 +2,117 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1ABF02802C7
-	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Oct 2020 17:32:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4D6A280368
+	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Oct 2020 18:01:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732031AbgJAPcI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 1 Oct 2020 11:32:08 -0400
-Received: from mx2.suse.de ([195.135.220.15]:60066 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730534AbgJAPcI (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 1 Oct 2020 11:32:08 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1601566326;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=iFuzI25+5ZsKpTr1Kxg01hMI6TYJndW5YHf5Qr6hqug=;
-        b=bEsllHM8S14SWwxQSJzgigbJJhmycr/gx1Jiru3vz/q5ccuW065kseJnqo08prPZUNwpHi
-        FlOY1YRxsjfV7uLO61UHQeLE5sC0MOZbG5XpcyPe13OW2AsVt8NMWrfISQoHu7jq0EYPJH
-        q4hEjh9pjIsbXPAulEREKBcrFWsBHG4=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 9AE9DAE85;
-        Thu,  1 Oct 2020 15:32:06 +0000 (UTC)
-Subject: Re: [PATCH 8/9] btrfs: adjust the flush trace point to include the
- source
-To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com
-References: <cover.1601495426.git.josef@toxicpanda.com>
- <f561822c1ce993a10fe67f348bf96950cd9e38aa.1601495426.git.josef@toxicpanda.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <902f5599-cb5a-a5a4-0a85-347a73a7530e@suse.com>
-Date:   Thu, 1 Oct 2020 18:32:05 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1732529AbgJAQBw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 1 Oct 2020 12:01:52 -0400
+Received: from sonic301-21.consmr.mail.sg3.yahoo.com ([106.10.242.84]:36405
+        "EHLO sonic301-21.consmr.mail.sg3.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1732213AbgJAQBw (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 1 Oct 2020 12:01:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1601568106; bh=rL9Nereyf6z11xgF2Y4betqrYfTpmZ3zohYWpfFPbDg=; h=Date:From:Reply-To:Subject:References:From:Subject; b=FNNtvqkaiQDepSmdHDNrQsumFfBkLVMXyFdl8wdo0Pc6Z4nuDKRoBYgndbZkUm2X0GK1FrifHC0mj7NnktHSQlS/vClkX3DWWTTNilJrlmb409b4m2pQ/wm1peyRA+Arx4xIXz3d1gsFSBoHmR/itLmMx0f8JLoARcOLrpDaRI/l5IMUqSBssyjCP4HdjqvsHAV+BtjouqW9HBYThbvmxQ0dTirdlvtE68TgD4lLH0IHPBboGMgaSaKH2aLYQfTBJH22zMdM6AOI//G+0S6UWV9lmwrOrm9wSGuWgBoa6GzbsuriHqd8mo27lwP06sj4U8iFZlF4YJCQAANis+7o8A==
+X-YMail-OSG: mWhbC0cVM1lQDDXzMOI4jHbwe9BFERgFBFnKfotLDMnAyZx94sCNt519y.XL9yI
+ 5he6oqrHI_YQjRTBIxWvBQlNjkMUzZd5M4zhsalbvuZI86duMVKHej3ZPGi6V4ryRqXCkeefv1CQ
+ AtlCnZ.7PjhWtve24WEsLRcEn.utXE74VsK1U8YPWLaBpdzYiaDfqztQ4LkwNgEQN_Z5Bfp6CFJj
+ jH1teWMgnSKeUePP3F_eUi.MoqYzdK0nvRNxjDAhNcZKxJKDi04sinaY4IFjPToLC9ek287VBorq
+ PBg_GXKknXGwkPVAjElpimHTGKX7WDBBkSH9oKscQG2Sz4vpP9qOswJyn5hMSQBxjTfFXDSVd9JD
+ JGCddris2NArvbvSpRtriLFcgAlUVvJjtCyJOdX6tyIZiMo6rhN9lj8rMQqD7RSKas2.MQZnPJjD
+ 4p7GQKkKSJJfTWq4i72dsZK4Y4_REcIpGFg27RAzhpGLBi.E4fa8ZlPfchS5Hl8vlgkQM9c1ZXr9
+ oUs9WRUkgUt9FZM2l7F.rEwXwxhYkkiKviCKtVlErsiD.vRU.56sJMhqP5ZrU1UDvK1WihuXobAF
+ iQUyP1QLzVYRy2t9onjwlpnvDVVWFldlY0KHWxGCgY8dKbfGdNeSYIcToODFmvOJ7Mxi37Qnz8f9
+ 1d.vuWHw6POtBeK6rlXzugIUA.vYXBAmjEdVbRXZhO18jRJgkAL_UAF_U1ooHPZIWQ_hHFlip2MU
+ 3cvPQzUjWN_jbZvZZPoeEIXy4QAMqNCnewRYHSCIKoB0NH5vyLMru68jOxGS26_71qNSVIHq5tB0
+ IsdZSQr3qHfRGOUpXX3KQa4YJdEydP0YZNJKdmZRFXZcqUtJLt7unyKKqRxYveOIRqaH7LzdWyfm
+ _xhFAS3i1KdI7LZksiPVIpZxURBHKHP_kBZCRXM6ibstlcmneOwUirB3HsWpZfD8appMJzjTLXUS
+ bQnAFeamsyg2DfA0YVhUaunasRgBMrpU4x43augZrgKrEBb90_l4SufezhWnWERpbGmq9dmE3oL2
+ 6wvoEEZTxp0GX_BSzdtNmzhEAwxLU79lHV.91tO48yJ1CZ5ls.zPHFUBfaTyzz9vDh9_0oL9sdTG
+ Q6DlIPsGUOPKZGVFh6_AgfDhFLQA35Y5mkJagwHBQjuo7CZGlPtsfs7Fny_ZkHvdkcsilTqoKomB
+ DvN5wrZjHudi.c9X7OIoOzma1JDB_ngt1dqF69f5J7aqDXoVbwDfExmwl.DDZy..NFbfi.1oANFw
+ K16ERO2ce1ymVvSDmjorKOK9i4DYOxZq8274DTc9AKQ498Jf8unHHCtlGcr4Ya8f5aYdfuEfFrt9
+ DD1ElQoZ6u6YRWPbGFe3sedIW78UOYRLfxapxcPiSPGnDz09ZvRWAB803tkd3179psUjB69zloXO
+ 46SjYkhg3M0GYikMr0ym7P3WBtRW8jXbH3a4m3IQ4S1YJI6Owjw--
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic301.consmr.mail.sg3.yahoo.com with HTTP; Thu, 1 Oct 2020 16:01:46 +0000
+Date:   Thu, 1 Oct 2020 16:01:41 +0000 (UTC)
+From:   "Mr. Abdul Salam" <as6171099@gmail.com>
+Reply-To: as6174759@gmail.com
+Message-ID: <591264205.681264.1601568101790@mail.yahoo.com>
+Subject: With Due Respect,
 MIME-Version: 1.0
-In-Reply-To: <f561822c1ce993a10fe67f348bf96950cd9e38aa.1601495426.git.josef@toxicpanda.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+References: <591264205.681264.1601568101790.ref@mail.yahoo.com>
+X-Mailer: WebService/1.1.16718 YMailNodin Mozilla/5.0 (Windows NT 6.1; rv:47.0) Gecko/20100101 Firefox/47.0
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 30.09.20 г. 23:01 ч., Josef Bacik wrote:
-> Since we have normal ticketed flushing and preemptive flushing, adjust
-> the tracepoint so that we know the source of the flushing action to make
-> it easier to debug problems.
-> 
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+My Dear Friend,
 
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+Before I introduce myself, I wish to inform you that this letter is not a h=
+oax mail and I urge you to treat it serious. This letter must come to you a=
+s a big surprise, but I believe it is only a day that people meet and becom=
+e great friends and business partners. Please I want you to read this lette=
+r very carefully and I must apologize for barging this message into your ma=
+il box without any formal introduction due to the urgency and confidentiali=
+ty of this business and I know that this message will come to you as a surp=
+rise. Please this is not a joke and I will not like you to joke with it ok,=
+ with due respect to your person and much sincerity of purpose, I make this=
+ contact with you as I believe that you can be of great assistance to me. M=
+y name is Mr. Abdul Salam, from Burkina Faso, West Africa. I work in United=
+ Bank for Africa (UBA) as telex manager, please see this as a confidential =
+message and do not reveal it to another person and let me know whether you =
+can be of assistance regarding my proposal below because it is top secret.
+
+I am about to retire from active Banking service to start a new life but I =
+am skeptical to reveal this particular secret to a stranger. You must assur=
+e me that everything will be handled confidentially because we are not goin=
+g to suffer again in life. It has been 10 years now that most of the greedy=
+ African Politicians used our bank to launder money overseas through the he=
+lp of their Political advisers. Most of the funds which they transferred ou=
+t of the shores of Africa were gold and oil money that was supposed to have=
+ been used to develop the continent. Their Political advisers always inflat=
+ed the amounts before transferring to foreign accounts, so I also used the =
+opportunity to divert part of the funds hence I am aware that there is no o=
+fficial trace of how much was transferred as all the accounts used for such=
+ transfers were being closed after transfer. I acted as the Bank Officer to=
+ most of the politicians and when I discovered that they were using me to s=
+ucceed in their greedy act; I also cleaned some of their banking records fr=
+om the Bank files and no one cared to ask me because the money was too much=
+ for them to control. They laundered over $5billion Dollars during the proc=
+ess.
+
+Before I send this message to you, I have already diverted ($10.5million Do=
+llars) to an escrow account belonging to no one in the bank. The bank is an=
+xious now to know who the beneficiary to the funds is because they have mad=
+e a lot of profits with the funds. It is more than Eight years now and most=
+ of the politicians are no longer using our bank to transfer funds overseas=
+. The ($10.5million Dollars) has been laying waste in our bank and I don=E2=
+=80=99t want to retire from the bank without transferring the funds to a fo=
+reign account to enable me share the proceeds with the receiver (a foreigne=
+r). The money will be shared 60% for me and 40% for you. There is no one co=
+ming to ask you about the funds because I secured everything. I only want y=
+ou to assist me by providing a reliable bank account where the funds can be=
+ transferred.
+
+You are not to face any difficulties or legal implications as I am going to=
+ handle the transfer personally. If you are capable of receiving the funds,=
+ do let me know immediately to enable me give you a detailed information on=
+ what to do. For me, I have not stolen the money from anyone because the ot=
+her people that took the whole money did not face any problems. This is my =
+chance to grab my own life opportunity but you must keep the details of the=
+ funds secret to avoid any leakages as no one in the bank knows about my pl=
+ans. Please get back to me if you are interested and capable to handle this=
+ project, I shall intimate you on what to do when I hear from your confirma=
+tion and acceptance. If you are capable of being my trusted associate, do d=
+eclare your consent to me I am looking forward to hear from you immediately=
+ for further information.
+Thanks with my best regards.
+Mr. Abdul Salam,
+Telex Manager
+United Bank for Africa (UBA)
+Burkina Faso
