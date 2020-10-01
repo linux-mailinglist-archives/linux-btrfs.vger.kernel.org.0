@@ -2,34 +2,34 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0073B27FFEF
-	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Oct 2020 15:21:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18131280007
+	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Oct 2020 15:24:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732294AbgJANUz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 1 Oct 2020 09:20:55 -0400
-Received: from mx2.suse.de ([195.135.220.15]:36298 "EHLO mx2.suse.de"
+        id S1732319AbgJANX4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 1 Oct 2020 09:23:56 -0400
+Received: from mx2.suse.de ([195.135.220.15]:42240 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732274AbgJANUs (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 1 Oct 2020 09:20:48 -0400
+        id S1731993AbgJANXw (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 1 Oct 2020 09:23:52 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1601558446;
+        t=1601558631;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=oWVF5dAL39Ed89wAILrnPSFgFoZjdomuI4umrG0A7Js=;
-        b=qoOdtn1bKLpZM+ljF0qPPyyawuMjmuIAOGrYjS57xvkTz97He8bXZmZgi7zM8JW93ZZr3E
-        3XzJN+QOkq5w6+nHgzg/HfjnkF5nBLbJrpVt0bswZA8JC2NYDGmcBGQb21j6k8rOFTAnqQ
-        +bKMIJpt1iPNo4p/3in0nrWbsIpumUk=
+        bh=abH/w0iwll6KU2gOlHy3/m2zTXlTDNtR+9Osp3pdCeU=;
+        b=LFOOnqqt7++ntrgwniVDjqbSJm+OZLJ5ya3mkcuXnOgOL9wkKvqJ0lrqPFrjFpmXeMK3hU
+        L0dPysx+SCtx4Y3s5JHnLPeIpk19Ry0Tvxd6GWKmDpgWzAt5e3fb+ZVFODx96B3TrKhlXV
+        xTUAilvXZg/qsu6IVU3cbJJ39e62OoA=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 6DE61B31E;
-        Thu,  1 Oct 2020 13:20:46 +0000 (UTC)
-Subject: Re: [PATCH 3/9] btrfs: rename need_do_async_reclaim
+        by mx2.suse.de (Postfix) with ESMTP id 03101ACF6;
+        Thu,  1 Oct 2020 13:23:51 +0000 (UTC)
+Subject: Re: [PATCH 4/9] btrfs: check reclaim_size in need_preemptive_reclaim
 To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
         kernel-team@fb.com
 References: <cover.1601495426.git.josef@toxicpanda.com>
- <0a1d66e4cc97d705ec58980f5883cf2a763a44f6.1601495426.git.josef@toxicpanda.com>
+ <855a8376fa0d8e63e066ac323a985fe7bc1e562f.1601495426.git.josef@toxicpanda.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  xsFNBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -73,12 +73,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  KIuxEcV8wcVjr+Wr9zRl06waOCkgrQbTPp631hToxo+4rA1jiQF2M80HAet65ytBVR2pFGZF
  zGYYLqiG+mpUZ+FPjxk9kpkRYz61mTLSY7tuFljExfJWMGfgSg1OxfLV631jV1TcdUnx+h3l
  Sqs2vMhAVt14zT8mpIuu2VNxcontxgVr1kzYA/tQg32fVRbGr449j1gw57BV9i0vww==
-Message-ID: <5d71c57b-4b67-2d33-2638-5ac2c36e932e@suse.com>
-Date:   Thu, 1 Oct 2020 16:20:45 +0300
+Message-ID: <3a3a2fc0-53fe-a080-e166-85b129db2ff1@suse.com>
+Date:   Thu, 1 Oct 2020 16:23:50 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <0a1d66e4cc97d705ec58980f5883cf2a763a44f6.1601495426.git.josef@toxicpanda.com>
+In-Reply-To: <855a8376fa0d8e63e066ac323a985fe7bc1e562f.1601495426.git.josef@toxicpanda.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -89,10 +89,42 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 30.09.20 г. 23:01 ч., Josef Bacik wrote:
-> All of our normal flushing is asynchronous reclaim, so this helper is
-> poorly named.  This is more checking if we need to preemptively flush
-> space, so rename it to need_preemptive_reclaim.
+> If we're flushing space for tickets then we have
+> space_info->reclaim_size set and we do not need to do background
+> reclaim.
 > 
 > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 
+I'm fine with this but check my remak below.
+
 Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+> ---
+>  fs/btrfs/space-info.c | 7 +++++++
+>  1 file changed, 7 insertions(+)
+> 
+> diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
+> index 98207ea57a3d..518749093bc5 100644
+> --- a/fs/btrfs/space-info.c
+> +++ b/fs/btrfs/space-info.c
+> @@ -805,6 +805,13 @@ static inline int need_preemptive_reclaim(struct btrfs_fs_info *fs_info,
+>  	if ((space_info->bytes_used + space_info->bytes_reserved) >= thresh)
+>  		return 0;
+>  
+> +	/*
+> +	 * We have tickets queued, bail so we don't compete with the async
+> +	 * flushers.
+> +	 */
+> +	if (space_info->reclaim_size)
+> +		return 0;
+> +
+
+nit: So where do we draw the line if this check should be in this
+function or in __reserve_bytes so that we eliminate the case where a
+preemptive reclaim is scheduled only to return instantly because of
+tickets. Though the 'if' in __reserve_bytes is getting slitghly out of
+hand :)
+
+>  	if (!btrfs_calc_reclaim_metadata_size(fs_info, space_info))
+>  		return 0;
+>  
+> 
