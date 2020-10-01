@@ -2,34 +2,34 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B626528009F
-	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Oct 2020 15:59:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C622C2800EE
+	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Oct 2020 16:10:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732380AbgJAN75 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 1 Oct 2020 09:59:57 -0400
-Received: from mx2.suse.de ([195.135.220.15]:56478 "EHLO mx2.suse.de"
+        id S1732213AbgJAOKC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 1 Oct 2020 10:10:02 -0400
+Received: from mx2.suse.de ([195.135.220.15]:37106 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732169AbgJAN75 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 1 Oct 2020 09:59:57 -0400
+        id S1732020AbgJAOKC (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 1 Oct 2020 10:10:02 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1601560795;
+        t=1601561400;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=HaxNX6Tg9u7vhDHnrEhLCs4vrVA/3FYV0lf8NnGT20o=;
-        b=AcNCeFzZiDm6pClJIjG+d3xwOVbg8eoCtadQZ9U/+LIkqh7edg5Mkbjt3rK4PC+tOzIc97
-        GpSJG4GCcuCcsUo+wb2C9glXI9LQjhYHBdgNxI/n+eYSq8Oc3mytZ2KG2CNZZLi5rzvE3x
-        2vLJLjOnC938wAxwG0Kp9LLDMLnGtas=
+        bh=HCoMFDWzBv6qf2PI4oNdVjujVpcwTJv3ULVeK42G9LQ=;
+        b=siTqm2hcUHq2tSwFWvY3R1uAkSDHP4q+ixLMdASbkako6NY2ao7IkvNRYSjEjT6djm+MnH
+        dlZC2L42CjfLPEsoZoulf0FCIC/oAXd6eY2C7vJIe+CeW/pz5r/WOugrTgio1JMk08l9EU
+        zw6iTsrx6UmfK+pxEbVVpxgsZdxTz7c=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 74325B1DA;
-        Thu,  1 Oct 2020 13:59:55 +0000 (UTC)
-Subject: Re: [PATCH 5/9] btrfs: rework btrfs_calc_reclaim_metadata_size
+        by mx2.suse.de (Postfix) with ESMTP id 86F76AD52;
+        Thu,  1 Oct 2020 14:10:00 +0000 (UTC)
+Subject: Re: [PATCH 6/9] btrfs: simplify the logic in need_preemptive_flushing
 To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
         kernel-team@fb.com
 References: <cover.1601495426.git.josef@toxicpanda.com>
- <bc6b0eeceacb2b444acf1ff74673471e2dfd2bb9.1601495426.git.josef@toxicpanda.com>
+ <8f5cc79f377c0358c3ad40188bf5917b4bc07924.1601495426.git.josef@toxicpanda.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  xsFNBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -73,12 +73,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  KIuxEcV8wcVjr+Wr9zRl06waOCkgrQbTPp631hToxo+4rA1jiQF2M80HAet65ytBVR2pFGZF
  zGYYLqiG+mpUZ+FPjxk9kpkRYz61mTLSY7tuFljExfJWMGfgSg1OxfLV631jV1TcdUnx+h3l
  Sqs2vMhAVt14zT8mpIuu2VNxcontxgVr1kzYA/tQg32fVRbGr449j1gw57BV9i0vww==
-Message-ID: <812450cb-e21f-83ac-27b3-803000d7b5d5@suse.com>
-Date:   Thu, 1 Oct 2020 16:59:54 +0300
+Message-ID: <96d536af-71f3-e69d-15f6-a5ab78cc1251@suse.com>
+Date:   Thu, 1 Oct 2020 17:09:59 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <bc6b0eeceacb2b444acf1ff74673471e2dfd2bb9.1601495426.git.josef@toxicpanda.com>
+In-Reply-To: <8f5cc79f377c0358c3ad40188bf5917b4bc07924.1601495426.git.josef@toxicpanda.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -89,59 +89,53 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 30.09.20 г. 23:01 ч., Josef Bacik wrote:
+> A lot of this was added all in one go with no explanation, and is a bit
+> unwieldy and confusing.  Simplify the logic to start preemptive flushing
+> if we've reserved more than half of our available free space.
+> 
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+
 <snip>
+
+> +	 * If we have over half of the free space occupied by reservations or
+> +	 * pinned then we want to start flushing.
+> +	 *
+> +	 * We do not do the traditional thing here, which is to say
+> +	 *
+> +	 *   if (used >= ((total_bytes + avail) >> 1))
+> +	 *     return 1;
+> +	 *
+> +	 * because this doesn't quite work how we want.  If we had more than 50%
+> +	 * of the space_info used by bytes_used and we had 0 available we'd just
+> +	 * constantly run the background flusher.  Instead we want it to kick in
+> +	 * if our reclaimable space exceeds 50% of our available free space.
+> +	 */
+> +	thresh = calc_available_free_space(fs_info, space_info,
+> +					   BTRFS_RESERVE_FLUSH_ALL);
+> +	thresh += (space_info->total_bytes - space_info->bytes_used -
+> +		   space_info->bytes_reserved - space_info->bytes_readonly);
+
+Isn't the freespace in space_info calculated by subtracting every
+bytes_* from total_bytes ? I.e why aren't you subtracting bytes_may_use
+and bytes_pinned ? Shouldn't this be
+
+thresh += space_info->total_bytes - btrfs_space_info_used(space_info, true)
+
+
+
+> +	thresh >>= 1;
 >  
-> @@ -800,6 +777,7 @@ static inline int need_preemptive_reclaim(struct btrfs_fs_info *fs_info,
->  					  u64 used)
->  {
->  	u64 thresh = div_factor_fine(space_info->total_bytes, 98);
-> +	u64 to_reclaim, expected;
->  
->  	/* If we're just plain full then async reclaim just slows us down. */
->  	if ((space_info->bytes_used + space_info->bytes_reserved) >= thresh)
-> @@ -812,7 +790,25 @@ static inline int need_preemptive_reclaim(struct btrfs_fs_info *fs_info,
->  	if (space_info->reclaim_size)
->  		return 0;
->  
-> -	if (!btrfs_calc_reclaim_metadata_size(fs_info, space_info))
-> +	to_reclaim = min_t(u64, num_online_cpus() * SZ_1M, SZ_16M);
-> +	if (btrfs_can_overcommit(fs_info, space_info, to_reclaim,
-> +				 BTRFS_RESERVE_FLUSH_ALL))
-> +		return 0;
-> +
-> +	used = btrfs_space_info_used(space_info, true);
-> +	if (btrfs_can_overcommit(fs_info, space_info, SZ_1M,
-> +				 BTRFS_RESERVE_FLUSH_ALL))
-> +		expected = div_factor_fine(space_info->total_bytes, 95);
-> +	else
-> +		expected = div_factor_fine(space_info->total_bytes, 90);
-
-I think this should be just:
-
-expected = div_factor_fine(space_info->total_bytes, 90);
-
-Because before this check we tried to overcommit between 1 and 16m
-(depending on the online CPU's) and we failed. So there is no reason to
-think that :
-
-btrfs_can_overcommit(fs_info, space_info, SZ_1M, BTRFS_RESERVE_FLUSH_ALL)
-
-would succeed. So you can simplify the logic by eliminating the 2nd
-check for btrfs_can_overcommit
-
-> +
-> +	if (used > expected)
-> +		to_reclaim = used - expected;
-> +	else
-> +		to_reclaim = 0;
-> +	to_reclaim = min(to_reclaim, space_info->bytes_may_use +
-> +				     space_info->bytes_reserved);
-> +	if (!to_reclaim)
->  		return 0;
+> -	if (used > expected)
+> -		to_reclaim = used - expected;
+> -	else
+> -		to_reclaim = 0;
+> -	to_reclaim = min(to_reclaim, space_info->bytes_may_use +
+> -				     space_info->bytes_reserved);
+> -	if (!to_reclaim)
+> -		return 0;
+> +	used = space_info->bytes_may_use + space_info->bytes_pinned;
 >  
 >  	return (used >= thresh && !btrfs_fs_closing(fs_info) &&
-> 
+>  		!test_bit(BTRFS_FS_STATE_REMOUNTING, &fs_info->fs_state));
 
-nit: Not directly related to your patch but since you are moving the
-code does it make sense to keep the fs_closing and STATE_REMOUNTING
-checks around?
+<snip>
