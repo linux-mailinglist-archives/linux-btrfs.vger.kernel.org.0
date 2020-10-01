@@ -2,112 +2,106 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D357A2801A1
-	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Oct 2020 16:49:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A7642802BD
+	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Oct 2020 17:28:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732449AbgJAOtc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 1 Oct 2020 10:49:32 -0400
-Received: from mx2.suse.de ([195.135.220.15]:45028 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732020AbgJAOt3 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 1 Oct 2020 10:49:29 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1601563767;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=9r4T0REeYvH+IqlL2trIoQV8bCagtBy8IVER0WN/jmc=;
-        b=XYZVQS5AKtMtiB66H55QRP3XbJuWUbvfqc48zGZpmkVaTsxuOpe3ChrU/Bh7C9leBicsdX
-        q+OpXc9sLtNydfoKCKN8BOvmTvSH4SWWf1uQUnJx36K1Sn4QZKsD8kjBUq0h4M1sCid+PK
-        k9iw8ddWE6av+2uAQxwMhkX3nxGsSgk=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 9B6EFAB9F;
-        Thu,  1 Oct 2020 14:49:27 +0000 (UTC)
-Subject: Re: [PATCH 7/9] btrfs: implement space clamping for preemptive
- flushing
-To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com
-References: <cover.1601495426.git.josef@toxicpanda.com>
- <629f3b0d6b9a100ae2a9ec5826c20cef28eb6b0d.1601495426.git.josef@toxicpanda.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <74509cfa-1a09-10aa-c2d6-e272afb225d4@suse.com>
-Date:   Thu, 1 Oct 2020 17:49:26 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1732449AbgJAP2Q (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 1 Oct 2020 11:28:16 -0400
+Received: from mailrelay2-3.pub.mailoutpod1-cph3.one.com ([46.30.212.11]:51306
+        "EHLO mailrelay2-3.pub.mailoutpod1-cph3.one.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730534AbgJAP2Q (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 1 Oct 2020 11:28:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=lechevalier.se; s=20191106;
+        h=content-transfer-encoding:content-type:in-reply-to:mime-version:date:
+         message-id:from:references:cc:to:subject:from;
+        bh=t7bkS1VEsBFBc3nVPA04mzGs4JuqBDxfovycieI85PI=;
+        b=sBwwq3tdXSSBkL/UnkPkzd7JNkVCRYJyIvpnR1NjN7FLSfEAjytpvhFMVt2ftEVQxxQWlOAqYvh55
+         66lI/8RRxGIJh9at/twy7Z3xsYpjYxjh/4FvoGEXvhGSmc+HQsjUzC3h0dzIlcZf+b1xI0NYHy8Lvs
+         ZGndsYeSscxhvnIxW3E9JydEIJOFgFt97DjIvSfWoEEtnlRIHK8NNefT82RjtCEodrxUFUFqm34xK5
+         VB1DaiSD8mNBE93k1hwjpMF+7s417TFIY3/LpIDHR+qLgwob92M4XlbOC5oKTAaqdhGLXnLjYGlh9v
+         AXav+GuDbWZ4jkmKzPt/yloYMnwBeag==
+X-HalOne-Cookie: 10f930dd8fc5703e50af513ce900fa26cdbbd471
+X-HalOne-ID: b82a712e-03fa-11eb-84a6-d0431ea8a290
+Received: from [192.168.0.10] (h-131-138.a357.priv.bahnhof.se [81.170.131.138])
+        by mailrelay2.pub.mailoutpod1-cph3.one.com (Halon) with ESMTPSA
+        id b82a712e-03fa-11eb-84a6-d0431ea8a290;
+        Thu, 01 Oct 2020 15:28:13 +0000 (UTC)
+Subject: Re: how to recover from "enospc errors during balance"
+To:     Giovanni Biscuolo <g@xelera.eu>,
+        Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+Cc:     linux-btrfs@vger.kernel.org
+References: <87r1qk4q4d.fsf@roquette.i-did-not-set--mail-host-address--so-tickle-me>
+ <20200930000417.GH5890@hungrycats.org>
+ <878scq1g0g.fsf@roquette.i-did-not-set--mail-host-address--so-tickle-me>
+From:   A L <mail@lechevalier.se>
+Message-ID: <0afae20d-62d2-00eb-4ac5-fa9b5205a937@lechevalier.se>
+Date:   Thu, 1 Oct 2020 17:28:13 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <629f3b0d6b9a100ae2a9ec5826c20cef28eb6b0d.1601495426.git.josef@toxicpanda.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <878scq1g0g.fsf@roquette.i-did-not-set--mail-host-address--so-tickle-me>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 30.09.20 г. 23:01 ч., Josef Bacik wrote:
-> Starting preemptive flushing at 50% of available free space is a good
-> start, but some workloads are particularly abusive and can quickly
-> overwhelm the preemptive flushing code and drive us into using tickets.
-> 
-> Handle this by clamping down on our threshold for starting and
-> continuing to run preemptive flushing.  This is particularly important
-> for our overcommit case, as we can really drive the file system into
-> overages and then it's more difficult to pull it back as we start to
-> actually fill up the file system.
-> 
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+On 2020-10-01 10:56, Giovanni Biscuolo wrote:
+> [...]
+>
+>>> I tried to add a new device (I have 2 spare disks) but it does not work
+>>> with a read-only filesystem.
+>>>
+>>> Please how can I remount the filesystem read-write and free some space
+>>> deleting some files?
+>> Add 'skip_balance' to mount options so that the next mount will not
+>> attempt to resume balancing metadata.  Keep mounting and umounting
+>> (not remounting) until it completes orphan and relocation cleanup (it
+>> may take more than one attempt, probably fewer than 20 attempts).
+> I try to mount with this command:
+>
+> --8<---------------cut here---------------start------------->8---
+>
+> ~$ mount -o skip_balance,relatime,ssd,subvol=/ /dev/sda3 /
+> mount: /: wrong fs type, bad option, bad superblock on /dev/sda3, missing codepage or helper program, or other error.
+>
+> --8<---------------cut here---------------end--------------->8---
+>
+> dmesg says:
+>
+> --8<---------------cut here---------------start------------->8---
+>
+> [7484575.970136] BTRFS info (device sda3): disk space caching is enabled
+> [7484576.001375] BTRFS error (device sda3): Remounting read-write after error is not allowed
+>
+> --8<---------------cut here---------------end--------------->8---
+>
+> Am I doing something wrong?
+>
+> It seems that the filesystem is not allowed to be remounted RW after the
+> error.
+>
+> I don't think rebooting is a good option since it will be unbootable
+> (and it's a remote machine).
+>
+> I fear the only option is to reboot from USB and revover :(
+>
+> Do you have any other option in mind please?
+I think you need to mount an unmounted filesystem and not re-mounting it 
+(as per dmesg output).
 
-nit: IMO it would be worthile to very briefly describe the threshold
-calculation, essentially it will be 2^CLAMP and we start with 1. So in
-the best case we'll preempt flush when we have allocated more than 1/2
-(50%) of the freespace and in the worst case 1/256th 0.4 %
+Example: "mount -o skip_balance /media && btrfs balance cancel /media"
 
+However, I think this is your root filesystem, correct? They you must 
+boot with a bootable media and do recovery from there
 
-LGTM:
+Just remember that deleting data on Btrfs can increase metadata usage, 
+especially if you have lots of snapshots and such. In the case your 
+filesystem goes back into ro mode when deleting files, you may need to 
+add two additional disks (or loop devices, usb sticks etc) to continue.
 
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
