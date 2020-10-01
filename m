@@ -2,42 +2,42 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44F3827FB70
-	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Oct 2020 10:24:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3983327FC11
+	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Oct 2020 10:57:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726992AbgJAIYm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 1 Oct 2020 04:24:42 -0400
-Received: from ns13.heimat.it ([46.4.214.66]:47930 "EHLO ns13.heimat.it"
+        id S1731863AbgJAI4z (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 1 Oct 2020 04:56:55 -0400
+Received: from ns13.heimat.it ([46.4.214.66]:48084 "EHLO ns13.heimat.it"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725878AbgJAIYl (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 1 Oct 2020 04:24:41 -0400
+        id S1731861AbgJAI4l (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 1 Oct 2020 04:56:41 -0400
 Received: from localhost (ip6-localhost [127.0.0.1])
-        by ns13.heimat.it (Postfix) with ESMTP id 7D5293021B8;
-        Thu,  1 Oct 2020 08:24:39 +0000 (UTC)
+        by ns13.heimat.it (Postfix) with ESMTP id 2BBB73021B8;
+        Thu,  1 Oct 2020 08:56:39 +0000 (UTC)
 X-Virus-Scanned: Debian amavisd-new at ns13.heimat.it
 Received: from ns13.heimat.it ([127.0.0.1])
         by localhost (ns13.heimat.it [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id NaD9V067-a6f; Thu,  1 Oct 2020 08:24:20 +0000 (UTC)
+        with ESMTP id 0qbbZ0HqYNud; Thu,  1 Oct 2020 08:56:19 +0000 (UTC)
 Received: from bourrache.mug.xelera.it (unknown [93.56.169.211])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (Client did not present a certificate)
-        by ns13.heimat.it (Postfix) with ESMTPSA id 041533021B5;
-        Thu,  1 Oct 2020 08:24:20 +0000 (UTC)
+        by ns13.heimat.it (Postfix) with ESMTPSA id 3901E3021B5;
+        Thu,  1 Oct 2020 08:56:19 +0000 (UTC)
 Received: from roquette.mug.biscuolo.net (roquette [10.38.2.14])
-        by bourrache.mug.xelera.it (Postfix) with SMTP id 06C1E76ECCA;
-        Thu,  1 Oct 2020 10:24:18 +0200 (CEST)
-Received: (nullmailer pid 27380 invoked by uid 1000);
-        Thu, 01 Oct 2020 08:24:17 -0000
+        by bourrache.mug.xelera.it (Postfix) with SMTP id 7D31076EF9A;
+        Thu,  1 Oct 2020 10:56:18 +0200 (CEST)
+Received: (nullmailer pid 28204 invoked by uid 1000);
+        Thu, 01 Oct 2020 08:56:16 -0000
 From:   Giovanni Biscuolo <g@xelera.eu>
-To:     A L <mail@lechevalier.se>
+To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
 Cc:     linux-btrfs@vger.kernel.org
 Subject: Re: how to recover from "enospc errors during balance"
-In-Reply-To: <9063a16.9d7d1dfc.174da67af85@lechevalier.se>
+In-Reply-To: <20200930000417.GH5890@hungrycats.org>
 Organization: Xelera.eu
 References: <87r1qk4q4d.fsf@roquette.i-did-not-set--mail-host-address--so-tickle-me>
- <9063a16.9d7d1dfc.174da67af85@lechevalier.se>
-Date:   Thu, 01 Oct 2020 10:24:17 +0200
-Message-ID: <87blhm1hhq.fsf@roquette.i-did-not-set--mail-host-address--so-tickle-me>
+ <20200930000417.GH5890@hungrycats.org>
+Date:   Thu, 01 Oct 2020 10:56:15 +0200
+Message-ID: <878scq1g0g.fsf@roquette.i-did-not-set--mail-host-address--so-tickle-me>
 MIME-Version: 1.0
 Content-Type: multipart/signed; boundary="=-=-=";
         micalg=pgp-sha512; protocol="application/pgp-signature"
@@ -49,37 +49,136 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 Content-Type: text/plain
 Content-Transfer-Encoding: quoted-printable
 
-Hello,
+Hello Zygo,
 
-A L <mail@lechevalier.se> writes:
+thank you for your help!
 
-> ---- From: Giovanni Biscuolo <g@xelera.eu> -- Sent: 2020-09-29 - 16:25 --=
---
+...but I still cannot mount the filesystem RW, see below.
 
-[...]
+Zygo Blaxell <ce3g8jdj@umail.furryterror.org> writes:
 
->> Thank you for any useful hint!
->> Best regards, Giovanni
+> On Tue, Sep 29, 2020 at 04:25:06PM +0200, Giovanni Biscuolo wrote:
 
 [...]
 
-> Hi,
+>> [6928066.755704] BTRFS info (device sda3): balance: start -dusage=3D50 -=
+musage=3D70 -susage=3D70
 >
-> I think you need to mount with -o skip_balance to get it back into rw
-> mode.
->
-> Then you may need to add two new disks, because raid1 profile
-> allocates two chunks (1GiB each) on two disks. At the moment you don't
-> have space for any additional data or metadata chunks.
->
-> You can also as for help on irc channel #btrfs on Freenode.
->
-> Good luck!=20
+> Never balance metadata on a schedule.  If it is done too often, and the
+> disk fills up, it will eventually lead to ENOSPC errors that are hard
+> to get out of...
 
-Thanky you very much for your advice, I'm going to try what Zygo Blaxell
-suggested me yesterday in this thread.
+OK I got it: I'll fix it as soon as I'll get to remount the (root)
+filesystem.
 
-Happy hacking! Giovanni.
+I was using an option I did not fully understand and I was not able to
+find such a warning in the documentation.
+
+[...]
+
+>> I tried to add a new device (I have 2 spare disks) but it does not work
+>> with a read-only filesystem.
+>>=20
+>> Please how can I remount the filesystem read-write and free some space
+>> deleting some files?
+>
+> Add 'skip_balance' to mount options so that the next mount will not
+> attempt to resume balancing metadata.  Keep mounting and umounting
+> (not remounting) until it completes orphan and relocation cleanup (it
+> may take more than one attempt, probably fewer than 20 attempts).
+
+I try to mount with this command:
+
+=2D-8<---------------cut here---------------start------------->8---
+
+~$ mount -o skip_balance,relatime,ssd,subvol=3D/ /dev/sda3 /
+mount: /: wrong fs type, bad option, bad superblock on /dev/sda3, missing c=
+odepage or helper program, or other error.
+
+=2D-8<---------------cut here---------------end--------------->8---
+
+dmesg says:
+
+=2D-8<---------------cut here---------------start------------->8---
+
+[7484575.970136] BTRFS info (device sda3): disk space caching is enabled
+[7484576.001375] BTRFS error (device sda3): Remounting read-write after err=
+or is not allowed
+
+=2D-8<---------------cut here---------------end--------------->8---
+
+Am I doing something wrong?
+
+It seems that the filesystem is not allowed to be remounted RW after the
+error.
+
+I don't think rebooting is a good option since it will be unbootable
+(and it's a remote machine).
+
+I fear the only option is to reboot from USB and revover :(
+
+Do you have any other option in mind please?
+
+> Once you have the filesystem mounted, run 'btrfs balance cancel' on
+> the mount point.  Then edit your maintenance scripts and remove the
+> metadata balance (-m flag to 'btrfs balance start').
+
+OK clear thanks.
+
+>> Additional data:
+>>=20
+>> --8<---------------cut here---------------start------------->8---
+
+[...]
+
+>> ~$ sudo btrfs fi usage /
+>> Overall:
+>>     Device size:                 899.07GiB
+>>     Device allocated:            899.07GiB
+>>     Device unallocated:            2.01MiB
+>>     Device missing:                  0.00B
+>>     Used:                        897.05GiB
+>>     Free (estimated):             85.87MiB      (min: 85.87MiB)
+>>     Data ratio:                       2.00
+>>     Metadata ratio:                   2.00
+>>     Global reserve:              512.00MiB      (used: 5.53MiB)
+>>=20
+>> Data,RAID1: Size:446.50GiB, Used:446.42GiB (99.98%)
+>>    /dev/sda3     446.50GiB
+>>    /dev/sdb3     446.50GiB
+>>=20
+>> Metadata,RAID1: Size:3.00GiB, Used:2.11GiB (70.22%)
+>>    /dev/sda3       3.00GiB
+>>    /dev/sdb3       3.00GiB
+>>=20
+>> System,RAID1: Size:32.00MiB, Used:80.00KiB (0.24%)
+>>    /dev/sda3      32.00MiB
+>>    /dev/sdb3      32.00MiB
+>>=20
+>> Unallocated:
+>>    /dev/sda3       1.00MiB
+>>    /dev/sdb3       1.00MiB
+
+[...]
+
+> To avoid this, never run metadata balances from a scheduled job (or for
+> any reason other than working around a kernel bug or adding disks to a
+> RAID array) so that an appropriate number of metadata block groups is
+> allocated and _stay_ allocated.
+
+[...]
+
+> Scheduled data balances (-d) are OK.  They defragment free space and
+> improve allocator performance, and make unallocated space available so
+> that additional metadata block groups can be allocated when necessary.
+
+OK got it: thank you for the clear and complete explanation.
+
+No doubt I made a bad mistake with that scheduled job :-(
+
+[...]
+
+Thanks, Giovanni.
 
 =2D-=20
 Giovanni Biscuolo
@@ -91,19 +190,19 @@ Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQJABAEBCgAqFiEERcxjuFJYydVfNLI5030Op87MORIFAl91kjEMHGdAeGVsZXJh
-LmV1AAoJENN9DqfOzDkSB1EQAK6wJtdYr+SZpNZU2rnLbXtL0BQ/Tcy3hSgubT6R
-KbuYHiDnyp8oMoD8AY6Q/Hw0h09wwTvGu2sy2eUxJbgfdsfPSe1n93qs12qHA785
-oejmaceDbQS1tN+aMcg2Fw3QcRHIzsTXTi1T5kGQx+w6BnAElSSCNc2YFtbrCHlq
-axuvU41XIA98kBt6+0tBxcvucrVhtn0r0g/hq7RZpEc1OkMq7X8fcERofeWABG/W
-In+2UELLgpv32bxQ06ZT67WbGl1PhtnhipZdFn3Wl8zhIpy9jZnSAwN7/y/JZnVC
-6uQsgcOm0RVwNqg3ZiWwPujp2ToV6uALR8Y1c4BubzGauvSACZHh9rAstePzJQ6F
-S1n7Cw6SXckdyktn5qY1A7Q1MBbrd4f2t3eXszu72qTGhr23v9cQmDFCjKAVKKXZ
-ZowEKgb0YbnqfXfiiByH+Y0yjVoX3NdO25Nds/RF9Hplp25F5VpO16GXsAOfZfDU
-9WQqX5/u8jeiq+ahs4aftM9Abye0mY1yXgrUbrjdIUOAQgCo/qbJBLC7aP4ly5Bp
-pgtD0r8Q+bEAWznfp1sXajv8aWsy6AO9IAuappUCY6rof7Ry6W3KiwS7DAWOqLMF
-RlJmRrs56RNen9Z2H9ziRCB53LWXA58UPyD9/Q6yPbepeRcW0PtC2SFMe49nQbkh
-glAf
-=JcY+
+iQJABAEBCgAqFiEERcxjuFJYydVfNLI5030Op87MORIFAl91mbAMHGdAeGVsZXJh
+LmV1AAoJENN9DqfOzDkSdWsP/1ItL8PyDvcmzYtG/qCjom+IsiP6Y8jn/NUOP44e
+lrx6dqFd4GcoSkV/yZSHI9ZOvpHcGiFmU8+lruu45UEB51LpKReJNS7xwgysArs0
+57vsBDzfUVCX0dSBFO4psvheVwINcVK7Ja77ZZYOgDcpY/tuSKSKrvctsI1hjUHv
+DxVmkwUsYC5+mxqjqk+cGU85PBlR5+xId3WmPYdExXA/EIvvyT64K/T1ikk3T6xn
+DAy/4BUS3C3qRHpYG6jRJPNcrt5em+WwQBvpWCBBG0bjF0N2Y5yuDuVFB2g7X2oD
+7O7rQ4kOwcRLodlysVFqoedX9jKs+OEibejV5EBKhTRgYamT5ZH9+b5nHsTu4G1X
+pvuePQtumEHAQeITwDNvIpXatUgfiQiHGUZZipyGJQSJJv4hOgRtMMSYa4yHqKoy
+83XadY/5KhmoiIfJNXnZsiIoTlGtVtmSm7+npKPL/UhPWEZpg9TDGEpLyrXzhVVu
+OpEbo1NMzVBpkkUqaaiFF2GZIInM7PlkBERKddXZP+FN1R5TJXzN7apNQ8jnmfib
+MHGMkAapdPvf3mDxgQA9KbfTsrvZ2WV8UmsLmKLs9z/ZB3Ivgxi/IzJf1HrJDF0i
+DxX5GYlqYTGAB6kJw+BeU5uPG9i4zLDo/GGOjtLu9RcOw7Mm0Q1OzyjTYIuM8Vz8
+agrb
+=eBSB
 -----END PGP SIGNATURE-----
 --=-=-=--
