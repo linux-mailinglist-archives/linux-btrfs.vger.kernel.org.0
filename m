@@ -2,71 +2,64 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F67B281A44
-	for <lists+linux-btrfs@lfdr.de>; Fri,  2 Oct 2020 19:56:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDBB5281BDE
+	for <lists+linux-btrfs@lfdr.de>; Fri,  2 Oct 2020 21:23:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387934AbgJBR4V (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 2 Oct 2020 13:56:21 -0400
-Received: from mx2.suse.de ([195.135.220.15]:33766 "EHLO mx2.suse.de"
+        id S2388599AbgJBTXa convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-btrfs@lfdr.de>); Fri, 2 Oct 2020 15:23:30 -0400
+Received: from mx.metalurgs.lv ([81.198.125.103]:65054 "EHLO mx.metalurgs.lv"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726096AbgJBR4V (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 2 Oct 2020 13:56:21 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 06582ACDB;
-        Fri,  2 Oct 2020 17:56:20 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 04EEFDA781; Fri,  2 Oct 2020 19:54:58 +0200 (CEST)
-Date:   Fri, 2 Oct 2020 19:54:58 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Sheng Mao <shngmao@gmail.com>
-Cc:     linux-btrfs@vger.kernel.org, Neal Gompa <ngompa13@gmail.com>
-Subject: Re: [PATCH v2] btrfs-progs: btrfsutil: add pkg-config files for
- btrfsutil
-Message-ID: <20201002175458.GZ6756@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Sheng Mao <shngmao@gmail.com>,
-        linux-btrfs@vger.kernel.org, Neal Gompa <ngompa13@gmail.com>
-References: <CAEg-Je8L+KUx93im15DPGvczpvw8TfvhN752itm88w9Qwkg+sg@mail.gmail.com>
- <20200820043618.51575-1-shngmao@gmail.com>
+        id S2388589AbgJBTXa (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 2 Oct 2020 15:23:30 -0400
+X-Greylist: delayed 500 seconds by postgrey-1.27 at vger.kernel.org; Fri, 02 Oct 2020 15:23:30 EDT
+Received: from mx.metalurgs.lv (localhost [127.0.0.1])
+        by mx.metalurgs.lv (Postfix) with ESMTP id 471A761F89
+        for <linux-btrfs@vger.kernel.org>; Fri,  2 Oct 2020 22:15:09 +0300 (EEST)
+Received: from kas30pipe.localhost (localhost [127.0.0.1])
+        by mx.metalurgs.lv (Postfix) with ESMTP id 29E3762B50
+        for <linux-btrfs@vger.kernel.org>; Fri,  2 Oct 2020 22:15:09 +0300 (EEST)
+Received: by mx.metalurgs.lv (Postfix, from userid 1005)
+        id D406862A83; Fri,  2 Oct 2020 22:15:07 +0300 (EEST)
+Received: from [100.64.1.74] (unknown [190.15.125.50])
+        (Authenticated sender: admin)
+        by mx.metalurgs.lv (Postfix) with ESMTPA id A0E2B61E42;
+        Fri,  2 Oct 2020 22:15:01 +0300 (EEST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200820043618.51575-1-shngmao@gmail.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Content-Description: Mail message body
+To:     Recipients <financialcapability6@gmail.com>
+From:   "Mr. Hashim Bin" <financialcapability6@gmail.com>
+Date:   Fri, 02 Oct 2020 16:14:54 -0300
+Reply-To: binmurrah@gmail.com
+X-SpamTest-Envelope-From: financialcapability6@gmail.com
+X-SpamTest-Group-ID: 00000000
+X-SpamTest-Info: Profiles 71303 [Jan 01 2015]
+X-SpamTest-Info: {TO: forged address, i.e. recipient, investors, public, etc.}
+X-SpamTest-Info: {DATE: unreal year}
+X-SpamTest-Method: none
+X-SpamTest-Rate: 55
+X-SpamTest-Status: Not detected
+X-SpamTest-Status-Extended: not_detected
+X-SpamTest-Version: SMTP-Filter Version 3.0.0 [0284], KAS30/Release
+Message-ID: <20201002191507.D406862A83@mx.metalurgs.lv>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 8BIT
+Subject: Low Rate Loan.
+X-Anti-Virus: Kaspersky Anti-Virus for Linux Mail Server 5.6.39/RELEASE,
+         bases: 20140401 #7726142, check: 20201002 notchecked
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Aug 19, 2020 at 10:36:18PM -0600, Sheng Mao wrote:
-> Add pc file for btrfsutil libraries. Users can use
-> pkg-config to set up compilation and linking flags.
-> 
-> The paths in pc file depend on prefix variable but
-> ignore DESTDIR. DESTDIR is used for packaging and
-> it should not affect the paths in pc file.
-> 
-> Signed-off-by: Sheng Mao <shngmao@gmail.com>
+Hello Dear,
 
-Thanks, I've added it to devel.
+We are Investment Company offering Corporate and Personal
+Loan at 3% Interest Rate for a duration of 10Years.
 
-> +test-pkg-config:
-> +	@echo "Test pkg-config settings"
-> +	export libdir incdir
-> +	$(Q)bash tests/pkg-config-tests.sh
+We also pay 1% commission to brokers, who introduce project
+owners for finance or other opportunities.
 
-I've deleted this section and the script, there's no point testing it
-like that.
+Please get back to me if you are interested for more
+details.
 
-> --- a/configure.ac
-> +++ b/configure.ac
-> @@ -12,6 +12,10 @@ LIBBTRFS_MAJOR=0
->  LIBBTRFS_MINOR=1
->  LIBBTRFS_PATCHLEVEL=2
->  
-> +BTRFS_UTIL_VERSION_MAJOR=1
-> +BTRFS_UTIL_VERSION_MINOR=2
-> +BTRFS_UTIL_VERSION_PATCH=0
-
-This would duplicate the version definition, so this needs to parse it
-from libbtrfsutil/btrfsutil.h.
+Yours faithfully,
+Hashim Bin 
