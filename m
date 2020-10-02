@@ -2,20 +2,20 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5717280F63
-	for <lists+linux-btrfs@lfdr.de>; Fri,  2 Oct 2020 11:01:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FD7B280F7C
+	for <lists+linux-btrfs@lfdr.de>; Fri,  2 Oct 2020 11:06:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726176AbgJBJBX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 2 Oct 2020 05:01:23 -0400
-Received: from out20-73.mail.aliyun.com ([115.124.20.73]:53631 "EHLO
-        out20-73.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725993AbgJBJBX (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 2 Oct 2020 05:01:23 -0400
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.04437751|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.239847-0.00544084-0.754712;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047201;MF=wangyugui@e16-tech.com;NM=1;PH=DS;RN=3;RT=3;SR=0;TI=SMTPD_---.Iek71fU_1601629279;
-Received: from 192.168.2.112(mailfrom:wangyugui@e16-tech.com fp:SMTPD_---.Iek71fU_1601629279)
-          by smtp.aliyun-inc.com(10.147.41.143);
-          Fri, 02 Oct 2020 17:01:19 +0800
-Date:   Fri, 02 Oct 2020 17:01:25 +0800
+        id S2387590AbgJBJGQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 2 Oct 2020 05:06:16 -0400
+Received: from out20-50.mail.aliyun.com ([115.124.20.50]:50899 "EHLO
+        out20-50.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726176AbgJBJGM (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 2 Oct 2020 05:06:12 -0400
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.0443774|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.239847-0.00544084-0.754712;FP=15414563096077390322|2|2|4|0|-1|-1|-1;HT=ay29a033018047199;MF=wangyugui@e16-tech.com;NM=1;PH=DS;RN=3;RT=3;SR=0;TI=SMTPD_---.Iel5Hcb_1601629569;
+Received: from 192.168.2.112(mailfrom:wangyugui@e16-tech.com fp:SMTPD_---.Iel5Hcb_1601629569)
+          by smtp.aliyun-inc.com(10.147.41.158);
+          Fri, 02 Oct 2020 17:06:09 +0800
+Date:   Fri, 02 Oct 2020 17:06:14 +0800
 From:   Wang Yugui <wangyugui@e16-tech.com>
 To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
 Subject: Re: simple Chunk allocator like calculation to replace Factor based calculation
@@ -23,7 +23,7 @@ Cc:     Qu Wenruo <wqu@suse.com>,
         "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
 In-Reply-To: <3cf4a1c4-b4a3-732d-6852-5b13e0cb1bf4@gmx.com>
 References: <20201002095951.8454.409509F4@e16-tech.com> <3cf4a1c4-b4a3-732d-6852-5b13e0cb1bf4@gmx.com>
-Message-Id: <20201002170124.20D8.409509F4@e16-tech.com>
+Message-Id: <20201002170614.65B5.409509F4@e16-tech.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="GB2312"
 Content-Transfer-Encoding: 8bit
@@ -36,12 +36,17 @@ Hi,
 
 We have another user case difficult to process.
 
+#with a fix of RAID10 to RAID1C4
+#for RAID10, the iteration number is not big.
+#but for RAID1C4,the iteration number is big.
+
 Use case: 
-Add 10T disk * 4  to near full  full RAID10 10T *4;
+Add 10T disk * 4  to near full  full RAID1C4 10T *4;
 free space maybe be such as 10T,10T,10T,10T,2G,2G,2G,2G.
 
 There maybe a lot of iterations for this case because of 2G chunk size,
 and then result in bad performance?
+
 
 Best Regards
 Õı”ÒπÛ
