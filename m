@@ -2,134 +2,222 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCBE2280FEC
-	for <lists+linux-btrfs@lfdr.de>; Fri,  2 Oct 2020 11:32:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA03F281081
+	for <lists+linux-btrfs@lfdr.de>; Fri,  2 Oct 2020 12:22:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726181AbgJBJcy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 2 Oct 2020 05:32:54 -0400
-Received: from ns13.heimat.it ([46.4.214.66]:57576 "EHLO ns13.heimat.it"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725993AbgJBJcx (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 2 Oct 2020 05:32:53 -0400
-Received: from localhost (ip6-localhost [127.0.0.1])
-        by ns13.heimat.it (Postfix) with ESMTP id DC2D53021B8;
-        Fri,  2 Oct 2020 09:32:50 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at ns13.heimat.it
-Received: from ns13.heimat.it ([127.0.0.1])
-        by localhost (ns13.heimat.it [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id iCfedeEtkzvg; Fri,  2 Oct 2020 09:32:31 +0000 (UTC)
-Received: from bourrache.mug.xelera.it (unknown [93.56.169.211])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by ns13.heimat.it (Postfix) with ESMTPSA id 43B7E3021B5;
-        Fri,  2 Oct 2020 09:32:31 +0000 (UTC)
-Received: from roquette.mug.biscuolo.net (roquette [10.38.2.14])
-        by bourrache.mug.xelera.it (Postfix) with SMTP id 0A78577748D;
-        Fri,  2 Oct 2020 11:32:29 +0200 (CEST)
-Received: (nullmailer pid 27735 invoked by uid 1000);
-        Fri, 02 Oct 2020 09:32:28 -0000
-From:   Giovanni Biscuolo <g@xelera.eu>
-To:     A L <mail@lechevalier.se>,
-        Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: how to recover from "enospc errors during balance"
-In-Reply-To: <0afae20d-62d2-00eb-4ac5-fa9b5205a937@lechevalier.se>
-Organization: Xelera.eu
-References: <87r1qk4q4d.fsf@roquette.i-did-not-set--mail-host-address--so-tickle-me>
- <20200930000417.GH5890@hungrycats.org>
- <878scq1g0g.fsf@roquette.i-did-not-set--mail-host-address--so-tickle-me>
- <0afae20d-62d2-00eb-4ac5-fa9b5205a937@lechevalier.se>
-Date:   Fri, 02 Oct 2020 11:32:27 +0200
-Message-ID: <87v9ftdlck.fsf@roquette.i-did-not-set--mail-host-address--so-tickle-me>
+        id S1726386AbgJBKWq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 2 Oct 2020 06:22:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44802 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725993AbgJBKWq (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 2 Oct 2020 06:22:46 -0400
+X-Greylist: delayed 633 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 02 Oct 2020 03:22:46 PDT
+Received: from savella.carfax.org.uk (2001-ba8-1f1-f0e6-0-0-0-2.autov6rev.bitfolk.space [IPv6:2001:ba8:1f1:f0e6::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A461C0613D0
+        for <linux-btrfs@vger.kernel.org>; Fri,  2 Oct 2020 03:22:46 -0700 (PDT)
+Received: from hrm by savella.carfax.org.uk with local (Exim 4.92)
+        (envelope-from <hrm@savella.carfax.org.uk>)
+        id 1kOIE9-0004Ho-AP; Fri, 02 Oct 2020 11:23:49 +0100
+Date:   Fri, 2 Oct 2020 11:23:49 +0100
+From:   Hugo Mills <hugo@carfax.org.uk>
+To:     Wang Yugui <wangyugui@e16-tech.com>,
+        Qu Wenruo <quwenruo.btrfs@gmx.com>, Qu Wenruo <wqu@suse.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Re: simple Chunk allocator like calculation to replace Factor based
+ calculation
+Message-ID: <20201002102349.GK3679@savella.carfax.org.uk>
+Mail-Followup-To: Hugo Mills <hugo@carfax.org.uk>,
+        Wang Yugui <wangyugui@e16-tech.com>,
+        Qu Wenruo <quwenruo.btrfs@gmx.com>, Qu Wenruo <wqu@suse.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+References: <20201002095951.8454.409509F4@e16-tech.com>
+ <3cf4a1c4-b4a3-732d-6852-5b13e0cb1bf4@gmx.com>
+ <20201002170614.65B5.409509F4@e16-tech.com>
+ <20201002101313.GJ3679@savella.carfax.org.uk>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-        micalg=pgp-sha512; protocol="application/pgp-signature"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201002101313.GJ3679@savella.carfax.org.uk>
+X-GPG-Fingerprint: DD84 D558 9D81 DDEE 930D  2054 585E 1475 E2AB 1DE4
+X-GPG-Key: E2AB1DE4
+X-Parrot: It is no more. It has joined the choir invisible.
+X-IRC-Nicks: darksatanic darkersatanic darkling darkthing
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+   Oh, I forgot: the write-up of this algorithm, sich as it is, is at
+https://carfax.org.uk/files/btrfs-usage.pdf, if anyone's interested.
+It's incomplete because I was unable to complete a formal proof of its
+correctness.
 
-Hello,
+   Hugo.
 
-A L <mail@lechevalier.se> writes:
+On Fri, Oct 02, 2020 at 11:13:13AM +0100, Hugo Mills wrote:
+>    We can do this calculation precisely, in at most O(n^2) time, where
+> n is the number of *devices* in the FS.
+> 
+> Inner step:
+> 
+>    Let s be the number of devices allocated in a single allocation step(*).
+> 
+>    Sort the n devices in decreasing order of size, c[i].
+> 
+>    For each device i, let b[i] = floor(sum c[j] / (s-i)), where the
+>       sum is taken over all devices smaller than i.
+> 
+>    Throw out values of b[i] where c[i] < b[i].
+> 
+>    Let B = floor(sum c[j] / n), where the sum is taken over all devices.
+> 
+>    Let t_max be the smallest value of B and the remaining b[i].
+> 
+>    t_max is the number of allocations that can be performed on the
+>    filesystem using an allocation size of s.
+> 
+> Outer step:
+> 
+>    If the RAID level has a fixed s value, run the inner step and stop.
+> 
+>    If the RAID level can vary, run the inner step, setting s to the
+>    number of devices with free space on at each iteration.
+> 
+> 
+> (*) single:       s = 1
+>     RAID1(c3,c4): s = 2(,3,4)
+>     RAID10:       s = 4
+>     RAID0,5,6:    s = the number of devices with free space
+> 
+>    This is the algorithm used in the carfax btrfs-usage calculator,
+> and has been fairly comprehensively battle-tested over the years,
+> although I was unable to prove its correctness mathematically.
+> 
+>    Hugo.
+> 
+> On Fri, Oct 02, 2020 at 05:06:14PM +0800, Wang Yugui wrote:
+> > Hi,
+> > 
+> > We have another user case difficult to process.
+> > 
+> > #with a fix of RAID10 to RAID1C4
+> > #for RAID10, the iteration number is not big.
+> > #but for RAID1C4,the iteration number is big.
+> > 
+> > Use case: 
+> > Add 10T disk * 4  to near full  full RAID1C4 10T *4;
+> > free space maybe be such as 10T,10T,10T,10T,2G,2G,2G,2G.
+> > 
+> > There maybe a lot of iterations for this case because of 2G chunk size,
+> > and then result in bad performance?
+> > 
+> > 
+> > Best Regards
+> > 王玉贵
+> > 2020/10/02
+> > 
+> > > 
+> > > 
+> > > On 2020/10/2 上午9:59, Wang Yugui wrote:
+> > > > Hi,
+> > > > 
+> > > > 
+> > > >>> such as
+> > > >>> 1) RAID10 with 8T,1T,1T,1T,1T
+> > > >>>     the virtal chunk size of 1st iteration:	1T or 0.33T?
+> > > >>>     1T    chunk will use 4T at most
+> > > >>>     0.33T chunk will use 5.33T at most?
+> > > >>
+> > > >> You didn't get the point.
+> > > >> For the each loop we:
+> > > >> - Sort the devices with their free space.
+> > > >>   In this case, it's 8, 1, 1, 1, 1.
+> > > >>
+> > > >> - Round down to dev increament
+> > > >>   Then we got 8, 1, 1, 1.
+> > > >>
+> > > >> - Then allocate chunk
+> > > >>   Since the biggest unallocated space is 1T, we allocate a RAID10 with
+> > > >>   1T stripe size, which will be a 2T chunk.
+> > > >>
+> > > >>   The remaining size is 7, 0, 0, 0, 1.
+> > > > 
+> > > > That is the problem.  1T chunk size is too big for this case.
+> > > > 
+> > > > if we use 1/3T chunk size, the result will be same as 1G chunk size.
+> > > > 
+> > > > 1st:	8T - 1/3T     2/3T, 2/3T, 2/3T, 1T
+> > > > 2nd:	8T -2/3T     2/3T, 1/3T, 1/3T, 2/3T
+> > > > 3rd:	8T -1T        1/3T, 1/3T, 0T, 1/3T
+> > > > 4th:	8T -4/3T     0T,     0T,   0T,  0T
+> > > 
+> > > You're right, smaller balloon chunk size would make the allocation more
+> > > accurate to real chunk allocator.
+> > > 
+> > > However that would slow down the calculation, don't forget that we need
+> > > to run that calculation on each chunk allocation.
+> > > Changing the balloon chunk allocation size dynamically may improve this.
+> > > 
+> > > But please also keep in mind that, with less and less space left, our
+> > > predication will be more and more accurate, and under estimate is always
+> > > less a problem.
+> > > 
+> > > So I'll keep your suggestion for future enhancement.
+> > > 
+> > > Thanks for pointing out the pitfall of current calculation,
+> > > Qu
+> > > 
+> > > > 
+> > > > Best Regards
+> > > > 王玉贵
+> > > > 2020/10/02
+> > > > 
+> > > >>
+> > > >> - We go to next round.
+> > > >>   No way to allocate new chunk.
+> > > >>
+> > > >> In this case, we can only get 2T chunk.
+> > > >> Just as the chunk allocator do.
+> > > >>
+> > > >>>
+> > > >>> 2) RAID10 with 8T,1T,1T,1T,0.5T
+> > > >>>     the virtal chunk size of 1st iteration:0.5T or smaller?
+> > > >>
+> > > >> Still the same, 2T chunk can be allocated using the largest 4 devices.
+> > > >>
+> > > >> Thanks,
+> > > >> Qu
+> > > >>
+> > > >>>
+> > > >>> Best Regards
+> > > >>> 王玉贵
+> > > >>> 2020/10/02
+> > > >>>
+> > > >>>
+> > > >>> --------------------------------------
+> > > >>> 北京京垓科技有限公司
+> > > >>> 王玉贵	wangyugui@e16-tech.com
+> > > >>> 电话：+86-136-71123776
+> > > >>>
+> > > >>
+> > > > 
+> > > > --------------------------------------
+> > > > 北京京垓科技有限公司
+> > > > 王玉贵	wangyugui@e16-tech.com
+> > > > 电话：+86-136-71123776
+> > > > 
+> > > 
+> > 
+> > --------------------------------------
+> > 北京京垓科技有限公司
+> > 王玉贵	wangyugui@e16-tech.com
+> > 电话：+86-136-71123776
+> > 
+> 
 
-> On 2020-10-01 10:56, Giovanni Biscuolo wrote:
-
-[...]
-
->> --8<---------------cut here---------------start------------->8---
->>
->> ~$ mount -o skip_balance,relatime,ssd,subvol=3D/ /dev/sda3 /
->> mount: /: wrong fs type, bad option, bad superblock on /dev/sda3, missin=
-g codepage or helper program, or other error.
->>
->> --8<---------------cut here---------------end--------------->8---
->>
->> dmesg says:
->>
->> --8<---------------cut here---------------start------------->8---
->>
->> [7484575.970136] BTRFS info (device sda3): disk space caching is enabled
->> [7484576.001375] BTRFS error (device sda3): Remounting read-write after =
-error is not allowed
->>
->> --8<---------------cut here---------------end--------------->8---
->>
->> Am I doing something wrong?
-
-[...]
-
-> I think you need to mount an unmounted filesystem and not re-mounting it=
-=20
-> (as per dmesg output).
->
-> Example: "mount -o skip_balance /media && btrfs balance cancel /media"
-
-Ah OK, now I understand
-
-> However, I think this is your root filesystem, correct? They you must=20
-> boot with a bootable media and do recovery from there
-
-Yes it's the roof filesystem of that machine, so yes: I'll have to
-recover via bootable media.
-
-> Just remember that deleting data on Btrfs can increase metadata usage,=20
-> especially if you have lots of snapshots and such. In the case your=20
-> filesystem goes back into ro mode when deleting files, you may need to=20
-> add two additional disks (or loop devices, usb sticks etc) to continue.
-
-OK I'll do that.
-
-Thank you both for your support!
-
-Best regards, Giovanni.
-
-=2D-=20
-Giovanni Biscuolo
-
-Xelera IT Infrastructures
-
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQJABAEBCgAqFiEERcxjuFJYydVfNLI5030Op87MORIFAl9286wMHGdAeGVsZXJh
-LmV1AAoJENN9DqfOzDkSsLMQANRgwTnTZCkOVm4YFnUWXAi9NzCYSs5J/T6wVlup
-EmYyIEgzf62FDjDreh1U8drA1AAJyD1WLJ2c1zYf7MSFpML2TB4NLqjbkt5CXN/6
-1eS8saFTlI/6uo4LUunX+ptqnS4qz5fuROVL4n9GluzarMNZnG9q03aOhm91LIc7
-LsdGpB/LA/ibU5qNIPr7TNgoqs2npz6m/FDWyMlH8NbzZHzj4c0UNe2p6R9y3pjU
-giaKnlHlC4IGodj2KuvxzxKU+oH9HI2ziHpR0Rr5QQUCOc5uaKm4YcRxSKcH2Emv
-ViDHNfB9987FvDhf1kyIAou+4chuzf3U4Sg+HMt0u8n16Fdyt40S6LNZsYIdm5XW
-M3aGnTK2BHVHooPnD7Dl0g48zUHg/kcjkQGUxNhZRpQdyG+6GzPF+HHrPYA8+s73
-nT5VM733VOKqOKA7BijsnqPkp5YhfaWvDrLYZyo1I9G0DQ5F6GWfh8cJ574N/Ukf
-LQ0fMjS9vXFUfuVwJLDV5D/QfZVozchMHJcQ7ebGoDsgiHPmJNZ7OjQd4+RR5lrd
-z4+6sf9xvfAfVz2u8377C1BoUKngqIo4tVvn0/PKzj4mlqzYugWUViR1OgnWv1lO
-xQUwNY/j4qKc4EyxthzMTrwe33cv7FIdW2d5pn3pdYQGLz638ZlIIQHqC9kPoLJt
-i44y
-=CTcF
------END PGP SIGNATURE-----
---=-=-=--
+-- 
+Hugo Mills             | Gomez, darling, don't torture yourself.
+hugo@... carfax.org.uk | That's my job.
+http://carfax.org.uk/  |
+PGP: E2AB1DE4          |                                       Morticia Addams
