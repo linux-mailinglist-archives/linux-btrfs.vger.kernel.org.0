@@ -2,34 +2,35 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75A69280DEC
-	for <lists+linux-btrfs@lfdr.de>; Fri,  2 Oct 2020 09:13:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5182B280EF4
+	for <lists+linux-btrfs@lfdr.de>; Fri,  2 Oct 2020 10:30:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725971AbgJBHNd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 2 Oct 2020 03:13:33 -0400
-Received: from mx2.suse.de ([195.135.220.15]:56126 "EHLO mx2.suse.de"
+        id S1726090AbgJBIaa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 2 Oct 2020 04:30:30 -0400
+Received: from mx2.suse.de ([195.135.220.15]:55038 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725948AbgJBHNd (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 2 Oct 2020 03:13:33 -0400
+        id S1726017AbgJBIa3 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 2 Oct 2020 04:30:29 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1601622810;
+        t=1601627427;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=VRufrpkjlTj73wKHFn+bO66gh2Jt4A4sK87ePu9RUxM=;
-        b=KzXdvmnr9+i0O/C1bCXzKtLspzqT6MLumvecOtkvE+OLuGCGkllIMABGV/8m3wNqQTdATk
-        3q7QRep9qXTJz3uXaeyi0R07FFASB7bTMiam9fzVo4eiEzPOrP7yCMRrS9DHGgfgOZMK0g
-        b54hUlxtEh/y/pflGkwlZmua8Im90Yw=
+        bh=+L/m6983WlsbJMggF0cKwokzdvsnJMttVPLU3QMcNfE=;
+        b=NC5in5KJA5bltywHdpBuBsO6aiyU+o2C/p8pPOTGNSoHqzmgqyvm4fYhYL7OIsZTZ48DSr
+        wt/ujf0k54sg4CJTwe4gBKgtYkSuq1ONJojsSInN1wgjMYgSHjenuK1XSplHg0QUI47S0s
+        rAKfRcRogU2ZU9UrWNUxkl5qkUljL7c=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 0B584B1D1;
-        Fri,  2 Oct 2020 07:13:30 +0000 (UTC)
-Subject: Re: [PATCH 6/9] btrfs: simplify the logic in need_preemptive_flushing
+        by mx2.suse.de (Postfix) with ESMTP id 3F211AD31;
+        Fri,  2 Oct 2020 08:30:27 +0000 (UTC)
+Subject: Re: [PATCH 9/9] btrfs: add a trace class for dumping the current
+ ENOSPC state
 To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
         kernel-team@fb.com
 References: <cover.1601495426.git.josef@toxicpanda.com>
- <8f5cc79f377c0358c3ad40188bf5917b4bc07924.1601495426.git.josef@toxicpanda.com>
+ <bf8f40699e24ea12b405a580262d99016ce7ffa0.1601495426.git.josef@toxicpanda.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  xsFNBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -73,12 +74,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  KIuxEcV8wcVjr+Wr9zRl06waOCkgrQbTPp631hToxo+4rA1jiQF2M80HAet65ytBVR2pFGZF
  zGYYLqiG+mpUZ+FPjxk9kpkRYz61mTLSY7tuFljExfJWMGfgSg1OxfLV631jV1TcdUnx+h3l
  Sqs2vMhAVt14zT8mpIuu2VNxcontxgVr1kzYA/tQg32fVRbGr449j1gw57BV9i0vww==
-Message-ID: <fe3e6caa-5aca-d074-f8c2-a2eeb3e1d798@suse.com>
-Date:   Fri, 2 Oct 2020 10:13:28 +0300
+Message-ID: <777f67b3-8c6a-4bb1-1a0b-32b866018efc@suse.com>
+Date:   Fri, 2 Oct 2020 11:30:26 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <8f5cc79f377c0358c3ad40188bf5917b4bc07924.1601495426.git.josef@toxicpanda.com>
+In-Reply-To: <bf8f40699e24ea12b405a580262d99016ce7ffa0.1601495426.git.josef@toxicpanda.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -89,42 +90,108 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 30.09.20 г. 23:01 ч., Josef Bacik wrote:
-> A lot of this was added all in one go with no explanation, and is a bit
-> unwieldy and confusing.  Simplify the logic to start preemptive flushing
-> if we've reserved more than half of our available free space.
+> Often when I'm debugging ENOSPC related issues I have to resort to
+> printing the entire ENOSPC state with trace_printk() in different spots.
+> This gets pretty annoying, so add a trace state that does this for us.
+> Then add a trace point at the end of preemptive flushing so you can see
+> the state of the space_info when we decide to exit preemptive flushing.
+> This helped me figure out we weren't kicking in the preemptive flushing
+> soon enough.
 > 
 > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
-
 > ---
+>  fs/btrfs/space-info.c        |  1 +
+>  include/trace/events/btrfs.h | 62 ++++++++++++++++++++++++++++++++++++
+>  2 files changed, 63 insertions(+)
+> 
+> diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
+> index b9735e7de480..6f569a7d2df4 100644
+> --- a/fs/btrfs/space-info.c
+> +++ b/fs/btrfs/space-info.c
+> @@ -1109,6 +1109,7 @@ static void btrfs_preempt_reclaim_metadata_space(struct work_struct *work)
+>  	/* We only went through once, back off our clamping. */
+>  	if (loops == 1 && !space_info->reclaim_size)
+>  		space_info->clamp = max(1, space_info->clamp - 1);
+> +	trace_btrfs_done_preemptive_reclaim(fs_info, space_info);
+>  	spin_unlock(&space_info->lock);
+>  }
+>  
+> diff --git a/include/trace/events/btrfs.h b/include/trace/events/btrfs.h
+> index c340bff65450..651ac47a6945 100644
+> --- a/include/trace/events/btrfs.h
+> +++ b/include/trace/events/btrfs.h
+> @@ -2027,6 +2027,68 @@ TRACE_EVENT(btrfs_convert_extent_bit,
+>  		  __print_flags(__entry->clear_bits, "|", EXTENT_FLAGS))
+>  );
+>  
+> +DECLARE_EVENT_CLASS(btrfs_dump_space_info,
+> +	TP_PROTO(const struct btrfs_fs_info *fs_info,
+> +		 const struct btrfs_space_info *sinfo),
+> +
+> +	TP_ARGS(fs_info, sinfo),
+> +
+> +	TP_STRUCT__entry_btrfs(
+> +		__field(	u64,	flags			)
+> +		__field(	u64,	total_bytes		)
+> +		__field(	u64,	bytes_used		)
+> +		__field(	u64,	bytes_pinned		)
+> +		__field(	u64,	bytes_reserved		)
+> +		__field(	u64,	bytes_may_use		)
+> +		__field(	u64,	bytes_readonly		)
+> +		__field(	u64,	reclaim_size		)
+> +		__field(	int,	clamp			)
+> +		__field(	u64,	global_reserved		)
+> +		__field(	u64,	trans_reserved		)
+> +		__field(	u64,	delayed_refs_reserved	)
+> +		__field(	u64,	delayed_reserved	)
+> +		__field(	u64,	free_chunk_space	)
+> +	),
+> +
+> +	TP_fast_assign_btrfs(fs_info,
+> +		__entry->flags			=	sinfo->flags;
+> +		__entry->total_bytes		=	sinfo->total_bytes;
+> +		__entry->bytes_used		=	sinfo->bytes_used;
+> +		__entry->bytes_pinned		=	sinfo->bytes_pinned;
+> +		__entry->bytes_reserved		=	sinfo->bytes_reserved;
+> +		__entry->bytes_may_use		=	sinfo->bytes_may_use;
+> +		__entry->bytes_readonly		=	sinfo->bytes_readonly;
+> +		__entry->reclaim_size		=	sinfo->reclaim_size;
+> +		__entry->clamp			=	sinfo->clamp;
+> +		__entry->global_reserved	=	fs_info->global_block_rsv.reserved;
+> +		__entry->trans_reserved		=	fs_info->trans_block_rsv.reserved;
+> +		__entry->delayed_refs_reserved	=	fs_info->delayed_refs_rsv.reserved;
+> +		__entry->delayed_reserved	=	fs_info->delayed_block_rsv.reserved;
+> +		__entry->free_chunk_space	=	atomic64_read(&fs_info->free_chunk_space);
+> +	),
+> +
+> +	TP_printk_btrfs("flags=%s total_bytes=%llu bytes_used=%llu "
+> +			"bytes_pinned=%llu bytes_reserved=%llu "
+> +			"bytes_may_use=%llu bytes_readonly=%llu "
+> +			"reclaim_size=%llu clamp=%d global_reserved=%llu "
+> +			"trans_reserved=%llu delayed_refs_reserved=%llu "
+> +			"delayed_reserved=%llu chunk_free_space=%llu",
+> +			__print_flags(__entry->flags, "|", BTRFS_GROUP_FLAGS),
+> +			__entry->total_bytes, __entry->bytes_used,
+> +			__entry->bytes_pinned, __entry->bytes_reserved,
+> +			__entry->bytes_may_use, __entry->bytes_readonly,
+> +			__entry->reclaim_size, __entry->clamp,
+> +			__entry->global_reserved, __entry->trans_reserved,
+> +			__entry->delayed_refs_reserved,
+> +			__entry->delayed_reserved, __entry->free_chunk_space)
+> +);
+> +
+> +DEFINE_EVENT(btrfs_dump_space_info, btrfs_done_preemptive_reclaim,
+> +	TP_PROTO(const struct btrfs_fs_info *fs_info,
+> +		 const struct btrfs_space_info *sinfo),
+> +	TP_ARGS(fs_info, sinfo)
+> +);
 
-<snip>
 
-> +	/*
-> +	 * If we have over half of the free space occupied by reservations or
-> +	 * pinned then we want to start flushing.
-> +	 *
-> +	 * We do not do the traditional thing here, which is to say
-> +	 *
-> +	 *   if (used >= ((total_bytes + avail) >> 1))
-> +	 *     return 1;
-> +	 *
-> +	 * because this doesn't quite work how we want.  If we had more than 50%
-> +	 * of the space_info used by bytes_used and we had 0 available we'd just
-> +	 * constantly run the background flusher.  Instead we want it to kick in
-> +	 * if our reclaimable space exceeds 50% of our available free space.
-> +	 */
-> +	thresh = calc_available_free_space(fs_info, space_info,
-> +					   BTRFS_RESERVE_FLUSH_ALL);
-> +	thresh += (space_info->total_bytes - space_info->bytes_used -
-> +		   space_info->bytes_reserved - space_info->bytes_readonly);
-> +	thresh >>= 1;
+I think this could be just a TRACE_EVENT, do you expect to define
+further events based on the same class ?
 
-Ok, a fresh read illuminates the logic, thresh contains the freespace in
-space_info + bytes_may_use + bytes_pinned so the check below says if
-byte_may_use + bytes-Pinned are 50% or more than what's potentially
-available - flush .
-
-
-<snip>
+> +
+>  TRACE_EVENT(btrfs_add_reserve_ticket,
+>  	TP_PROTO(const struct btrfs_fs_info *fs_info, u64 flags, int flush,
+>  		 u64 bytes),
+> 
