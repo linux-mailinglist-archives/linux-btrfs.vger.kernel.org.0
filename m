@@ -2,158 +2,180 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8226C281463
-	for <lists+linux-btrfs@lfdr.de>; Fri,  2 Oct 2020 15:43:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC5C1281467
+	for <lists+linux-btrfs@lfdr.de>; Fri,  2 Oct 2020 15:45:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387929AbgJBNnr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 2 Oct 2020 09:43:47 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:14278 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2387768AbgJBNnq (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 2 Oct 2020 09:43:46 -0400
-Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 092DhAZ8012646;
-        Fri, 2 Oct 2020 06:43:12 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : content-type :
- mime-version; s=facebook; bh=J+YdCu8/gBpXoHZ9M9fM+xboKuiKNgfwLD9imvik/eo=;
- b=hqifwXY7FNQSRb5YXduDwKc+kneOgrtliIl6zNhUTfGWDEX1AhktYSZRL/068vSqR724
- ht5un1ZMmfcaIXttGkTYmPPGvTtXx9mEzWE8rYGbaC05ifJxgtUS8f9oCxeNdonRYty9
- +XUJch7QAmhK9//Cv1bJ3gWfbfrjGYw7bSA= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 33x0n214w8-3
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Fri, 02 Oct 2020 06:43:12 -0700
-Received: from NAM02-BL2-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.36.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Fri, 2 Oct 2020 06:42:46 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jK844WG8sIdUIXcCMyANtqzLaEhhewjSxQ1Y8zzZQImXoIHu71LcmeP436cftp/gwPvEUOggc4liTK0D/lxWE4mIEAFyQwCOVf064GfXBmILMrLYEzB7LVdys1o0DwozXJ5qPvxp6I9oDu4SXr+0T/oy0S2ixkHaQDhDQlPphD7ueNK8lei4x/d2TxJtmLeuecjhc69jI0VDxONdKYNFAN0wZoAWe/DnCAFr1hWvGRXen0mi0vWLi9KTZAYz5YwusZh0KrUh4NzJ9ZwTztwvq6946ugvNk635t7RrWBDEA4cIBGAv2eE+15LA3zFDu7l0xh227SOdFagNm2FfKOFBg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=J+YdCu8/gBpXoHZ9M9fM+xboKuiKNgfwLD9imvik/eo=;
- b=J9RX3RUtmtCs5jAEppSSm1W0ICUCoDEMUR1Zjy3oq4CziQ6DuARYKcbnTOVcjl/pOMo4BKcWeq4MVggWdk0dvKenq9KaG0eIZAu/EavYSSQAWQT2ICknI8Woyx6Oa66YWgeqiGybETlKs32AVsKWMRvSbsVmFpTzWYo4vNTwKaOBy5aNL8VXUlHFm33MWNo9HaxGxCOnU/0miKR9n7iFPamyjLYTACy14idRzoRm3Kc90iaM/PCkfwytKu4nt9CQ5LPUqtchyjOVb4Zz942nkEPThp6aDkbTuGHSS4bXBdn2xc58nLbbabaEpZM4Iw4IQnreirPkkAK3/ALiW9Jpqw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=J+YdCu8/gBpXoHZ9M9fM+xboKuiKNgfwLD9imvik/eo=;
- b=kdGXPLLd2CLA2zoc8pgNeFr9+UR7ORtfPM6Hl2AT6EuNfY/Byc6atvq3RQX9TuexOWHLmgBduTeMDjIY1tGE5PhW6OE9Q+FMx1PEpAPb6sMI8utxjwBV4rBlpHwVFBwUGU84GPYktzPbuNCHj1lgKcHPTWIYL0+qEgJGCuX1WXw=
-Authentication-Results: infradead.org; dkim=none (message not signed)
- header.d=none;infradead.org; dmarc=none action=none header.from=fb.com;
-Received: from MN2PR15MB3582.namprd15.prod.outlook.com (2603:10b6:208:1b5::23)
- by BLAPR15MB3825.namprd15.prod.outlook.com (2603:10b6:208:27c::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.32; Fri, 2 Oct
- 2020 13:42:32 +0000
-Received: from MN2PR15MB3582.namprd15.prod.outlook.com
- ([fe80::31f2:99f0:d90d:76ab]) by MN2PR15MB3582.namprd15.prod.outlook.com
- ([fe80::31f2:99f0:d90d:76ab%7]) with mapi id 15.20.3433.038; Fri, 2 Oct 2020
- 13:42:32 +0000
-From:   "Chris Mason" <clm@fb.com>
-To:     Christoph Hellwig <hch@infradead.org>
-CC:     Nick Terrell <terrelln@fb.com>,
-        Nick Terrell <nickrterrell@gmail.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        <linux-crypto@vger.kernel.org>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
-        <squashfs-devel@lists.sourceforge.net>,
-        <linux-f2fs-devel@lists.sourceforge.net>,
-        <linux-kernel@vger.kernel.org>, Kernel Team <Kernel-team@fb.com>,
-        Petr Malat <oss@malat.biz>, Johannes Weiner <jweiner@fb.com>,
-        Niket Agarwal <niketa@fb.com>, Yann Collet <cyan@fb.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH v4 0/9] Update to zstd-1.4.6
-Date:   Fri, 02 Oct 2020 09:42:29 -0400
-X-Mailer: MailMate (1.13.2r5673)
-Message-ID: <3E8AACF8-5168-4D19-B47F-8611B292D540@fb.com>
-In-Reply-To: <20201002065454.GA29993@infradead.org>
-References: <20200930065318.3326526-1-nickrterrell@gmail.com>
- <20200930065336.GA13656@infradead.org>
- <8743398B-0BBB-424E-A6A7-9D8AE4EFE8ED@fb.com>
- <20201002065454.GA29993@infradead.org>
-Content-Type: text/plain; format=flowed
-X-Originating-IP: [2620:10d:c091:480::1:504f]
-X-ClientProxiedBy: MN2PR15CA0006.namprd15.prod.outlook.com
- (2603:10b6:208:1b4::19) To MN2PR15MB3582.namprd15.prod.outlook.com
- (2603:10b6:208:1b5::23)
+        id S2387857AbgJBNpG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 2 Oct 2020 09:45:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47672 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387768AbgJBNpG (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 2 Oct 2020 09:45:06 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5336C0613D0
+        for <linux-btrfs@vger.kernel.org>; Fri,  2 Oct 2020 06:45:05 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id 19so1219463qtp.1
+        for <linux-btrfs@vger.kernel.org>; Fri, 02 Oct 2020 06:45:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=eqKBrwU0CK03MGkMkVzCsiibWkSZIzrrKL2TVmrnYRU=;
+        b=HomwjVux2F9T07qCPxeVAy0+93BLI4Jhdpybr1u2NS0qatuT/Bf8HqM6O5FVB4/hGr
+         c/zA9jnTinV8ltI8jFqULHvFJe3GDOOKzFh1bNsYxbpJTFbl3pNQH9vXvVnJPzhqW9dw
+         2vi9Mf/nP3rzuI/qWx+p8QZC2ggDQlRpnI9GFfOnPTrf+BZOLBMXvocQ8Faa/s+EK1wI
+         HdkIfxoyRfP5eUwFglw4p09+4sUK14HUY1XJy86ByRFawvZ6tZcyt3uAEWIYIqaq6aY9
+         oHDNsTQS8gnN8L9qMOsT8/PUPTP2+px7FZsjEbA3x0uDYm0SUS9Ekwi9AMRkTLDR4pA1
+         FoMQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=eqKBrwU0CK03MGkMkVzCsiibWkSZIzrrKL2TVmrnYRU=;
+        b=pVbJpJo0cJkZ7F3zGdtg1ob9M0XSisd88XbCSj6Rq4m5dZS5HfzVN0C66vNPgL3T23
+         aMO4FkFmRzvCj9Gw7vwu3QoXBwULWozKx+NAjHj5+doV5wfVleyMK9daL8lMGzDr4VdV
+         5BakIEMIP7+2nFzOQx5a07bVbR//CTgmtVk0MTzgSAfH1SSd7hxwPSzErzsIxys7VWSa
+         SK9mMwiPuFCjyxDFmS5460MG8M5MDXpGmSQNy6dyoLiTJp4a7sjGL28OA4rHXGrjb0Ud
+         /kMP8ZMZmvz4oNuuJTwbbUo3WF3uu2ThsKPRdjEoRa/nRHWB0vLt7dt06Ncu8YG/F7AW
+         LQaA==
+X-Gm-Message-State: AOAM532FI8WMXCkVHkAR6+HJNw+msO/qHHCQ4UsLx7dcOItDZJHxZwuL
+        MfFq9r2MeqHGOTaAkatuVD0McA==
+X-Google-Smtp-Source: ABdhPJyKSZNXVIenn3gPB+rKfBadHj7CvNqLqkx+n7jvO/p5KddvfWuBFaiRsQ1C7/EIl6SKjZNzeg==
+X-Received: by 2002:aed:2434:: with SMTP id r49mr2278176qtc.370.1601646304893;
+        Fri, 02 Oct 2020 06:45:04 -0700 (PDT)
+Received: from [192.168.1.45] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id e9sm1098288qkb.8.2020.10.02.06.45.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 02 Oct 2020 06:45:04 -0700 (PDT)
+Subject: Re: [PATCH 9/9] btrfs: add a trace class for dumping the current
+ ENOSPC state
+To:     Nikolay Borisov <nborisov@suse.com>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com
+References: <cover.1601495426.git.josef@toxicpanda.com>
+ <bf8f40699e24ea12b405a580262d99016ce7ffa0.1601495426.git.josef@toxicpanda.com>
+ <777f67b3-8c6a-4bb1-1a0b-32b866018efc@suse.com>
+From:   Josef Bacik <josef@toxicpanda.com>
+Message-ID: <425b82a1-7fd7-3fcc-374f-7f950482823e@toxicpanda.com>
+Date:   Fri, 2 Oct 2020 09:45:03 -0400
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.3.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [100.109.10.224] (2620:10d:c091:480::1:504f) by MN2PR15CA0006.namprd15.prod.outlook.com (2603:10b6:208:1b4::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.32 via Frontend Transport; Fri, 2 Oct 2020 13:42:31 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 649b3745-3c8b-4014-f79b-08d866d9033f
-X-MS-TrafficTypeDiagnostic: BLAPR15MB3825:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BLAPR15MB382523E849622A96D357D538D3310@BLAPR15MB3825.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: KyQeqWgUGDE0KgpPHpxBp7wnE9wRM4Fwyjoqc1sKZGq3wjQPiZL76jR/V6lJVX2TZ/DtLVqR7VdYCt9ZLIqfp3BKRLg9mnfcbs25nZqvtTbuss2vpMe2eoc2egqg7Dt3lAzZVptOrV8PrnFi5nZRTjlCJ9mF3dQMZLyoPkzIKthjh6R3KMtFWGSLaAQhyGv0sn6NkUwQmH+Y5YORsX7uD1fNAUaIvInnje7bSQvDwYfbsplMXPi7PhkN8mA6BTfTTxUtP5/e8b0mA2m2UIOR86XaqSLGWHvsvP0y+Pajq18giKhA1a13xnxdKgaiRGnb/JYRW6A2Jt6RB3E2YahVulncKsUBq7rUmYrQxqZ8wM1fH7hMJp3CHERgGShFogO9
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR15MB3582.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(396003)(346002)(39860400002)(136003)(366004)(956004)(2616005)(53546011)(36756003)(7416002)(8936002)(6486002)(186003)(16526019)(33656002)(6916009)(2906002)(52116002)(8676002)(66476007)(66556008)(4326008)(66946007)(86362001)(316002)(54906003)(5660300002)(478600001)(78286007);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: I3ctoQiMgj4rWODCXNc9qsJUYEJPf9GEoJ6K4AvAziDBmAomIJwkcGqOrzncQpXIw/o5zzZ17W/y1JF/98Gf9qBzKDHkfjCl/b7RbWb95b+aSS1lBuXeOTG1Tg9W+9IGjzROjL0p6uaSP44RDIXFR06tXOzLEHuA+Y3mydS+HNp5PXIUqMlJXOrNV5SitbVoaV9BSNu2ubFYK6KcJDZ6VoXVUMisoInC2tPXB7lkir2PbsjxmsRD9cp/1T4NMJw5NofUBBt9AjiA0K4lYV24LvSOJGsyPL0jiATPbBnDhKyoGJDZEhPRV4i3XvLgG4/SU6QoeEJfY3rLFLKM0ijAS64P3GKwJnENTPCOxgciF4oWorpu9GmMWe/tDxIoVT/ZjbW8DzNrrlt8RggHTPlKAmVtsJhJFAf1FmONACnxxWOSNFaevJgbsufwwo0lf7xANC3cjlcCid7n4akYpW8MCGhmcg2ztX1vvNBkhzlnj9eCg3pznbUfNpm32sTidD2PHlTPU2A2q1Po6APxgZjCjxg8EmXzIBRt89VicL/6R+km01YkAXUjYFJHj8SCZ5ZbzMBbOjy4oVT3z1ldbQSvRXPLAJYYqXBpJm6K53LvwvQg2D+PvSz7vNF3nXKucKZGR1JlPSLjwOjVtkS6kVNpkArtG4ExnPO9+yiLdUGvN0jFAxKN1fBvcUu8hmLrx1sj
-X-MS-Exchange-CrossTenant-Network-Message-Id: 649b3745-3c8b-4014-f79b-08d866d9033f
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR15MB3582.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Oct 2020 13:42:32.4003
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: GAQNArK7NmQyAyCOUbcs2FCALEaH25eIcUlFcHQgzEfY6PYrMXi0EokvyZ5GaNts
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BLAPR15MB3825
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-10-02_06:2020-10-02,2020-10-02 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- mlxlogscore=799 impostorscore=0 mlxscore=0 phishscore=0 bulkscore=0
- clxscore=1015 spamscore=0 lowpriorityscore=0 malwarescore=0 adultscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2010020108
-X-FB-Internal: deliver
+In-Reply-To: <777f67b3-8c6a-4bb1-1a0b-32b866018efc@suse.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 2 Oct 2020, at 2:54, Christoph Hellwig wrote:
-
-> On Wed, Sep 30, 2020 at 08:05:45PM +0000, Nick Terrell wrote:
+On 10/2/20 4:30 AM, Nikolay Borisov wrote:
+> 
+> 
+> On 30.09.20 г. 23:01 ч., Josef Bacik wrote:
+>> Often when I'm debugging ENOSPC related issues I have to resort to
+>> printing the entire ENOSPC state with trace_printk() in different spots.
+>> This gets pretty annoying, so add a trace state that does this for us.
+>> Then add a trace point at the end of preemptive flushing so you can see
+>> the state of the space_info when we decide to exit preemptive flushing.
+>> This helped me figure out we weren't kicking in the preemptive flushing
+>> soon enough.
 >>
+>> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+>> ---
+>>   fs/btrfs/space-info.c        |  1 +
+>>   include/trace/events/btrfs.h | 62 ++++++++++++++++++++++++++++++++++++
+>>   2 files changed, 63 insertions(+)
 >>
->>> On Sep 29, 2020, at 11:53 PM, Christoph Hellwig <hch@infradead.org> 
->>> wrote:
->>>
->>> As you keep resend this I keep retelling you that should not do it.
->>> Please provide a proper Linux API, and switch to that.  Versioned 
->>> APIs
->>> have absolutely no business in the Linux kernel.
->>
->> The API is not versioned. We provide a stable ABI for a large section 
->> of our API,
->> and the parts that aren???t ABI stable don???t change in semantics, 
->> and undergo long
->> deprecation periods before being removed.
->>
->> The change of callers is a one-time change to transition from the 
->> existing API
->> in the kernel, which was never upstream's API, to upstream's API.
->
-> Again, please transition it to a sane kernel API.  We don't have an
-> "upstream" in this case.
+>> diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
+>> index b9735e7de480..6f569a7d2df4 100644
+>> --- a/fs/btrfs/space-info.c
+>> +++ b/fs/btrfs/space-info.c
+>> @@ -1109,6 +1109,7 @@ static void btrfs_preempt_reclaim_metadata_space(struct work_struct *work)
+>>   	/* We only went through once, back off our clamping. */
+>>   	if (loops == 1 && !space_info->reclaim_size)
+>>   		space_info->clamp = max(1, space_info->clamp - 1);
+>> +	trace_btrfs_done_preemptive_reclaim(fs_info, space_info);
+>>   	spin_unlock(&space_info->lock);
+>>   }
+>>   
+>> diff --git a/include/trace/events/btrfs.h b/include/trace/events/btrfs.h
+>> index c340bff65450..651ac47a6945 100644
+>> --- a/include/trace/events/btrfs.h
+>> +++ b/include/trace/events/btrfs.h
+>> @@ -2027,6 +2027,68 @@ TRACE_EVENT(btrfs_convert_extent_bit,
+>>   		  __print_flags(__entry->clear_bits, "|", EXTENT_FLAGS))
+>>   );
+>>   
+>> +DECLARE_EVENT_CLASS(btrfs_dump_space_info,
+>> +	TP_PROTO(const struct btrfs_fs_info *fs_info,
+>> +		 const struct btrfs_space_info *sinfo),
+>> +
+>> +	TP_ARGS(fs_info, sinfo),
+>> +
+>> +	TP_STRUCT__entry_btrfs(
+>> +		__field(	u64,	flags			)
+>> +		__field(	u64,	total_bytes		)
+>> +		__field(	u64,	bytes_used		)
+>> +		__field(	u64,	bytes_pinned		)
+>> +		__field(	u64,	bytes_reserved		)
+>> +		__field(	u64,	bytes_may_use		)
+>> +		__field(	u64,	bytes_readonly		)
+>> +		__field(	u64,	reclaim_size		)
+>> +		__field(	int,	clamp			)
+>> +		__field(	u64,	global_reserved		)
+>> +		__field(	u64,	trans_reserved		)
+>> +		__field(	u64,	delayed_refs_reserved	)
+>> +		__field(	u64,	delayed_reserved	)
+>> +		__field(	u64,	free_chunk_space	)
+>> +	),
+>> +
+>> +	TP_fast_assign_btrfs(fs_info,
+>> +		__entry->flags			=	sinfo->flags;
+>> +		__entry->total_bytes		=	sinfo->total_bytes;
+>> +		__entry->bytes_used		=	sinfo->bytes_used;
+>> +		__entry->bytes_pinned		=	sinfo->bytes_pinned;
+>> +		__entry->bytes_reserved		=	sinfo->bytes_reserved;
+>> +		__entry->bytes_may_use		=	sinfo->bytes_may_use;
+>> +		__entry->bytes_readonly		=	sinfo->bytes_readonly;
+>> +		__entry->reclaim_size		=	sinfo->reclaim_size;
+>> +		__entry->clamp			=	sinfo->clamp;
+>> +		__entry->global_reserved	=	fs_info->global_block_rsv.reserved;
+>> +		__entry->trans_reserved		=	fs_info->trans_block_rsv.reserved;
+>> +		__entry->delayed_refs_reserved	=	fs_info->delayed_refs_rsv.reserved;
+>> +		__entry->delayed_reserved	=	fs_info->delayed_block_rsv.reserved;
+>> +		__entry->free_chunk_space	=	atomic64_read(&fs_info->free_chunk_space);
+>> +	),
+>> +
+>> +	TP_printk_btrfs("flags=%s total_bytes=%llu bytes_used=%llu "
+>> +			"bytes_pinned=%llu bytes_reserved=%llu "
+>> +			"bytes_may_use=%llu bytes_readonly=%llu "
+>> +			"reclaim_size=%llu clamp=%d global_reserved=%llu "
+>> +			"trans_reserved=%llu delayed_refs_reserved=%llu "
+>> +			"delayed_reserved=%llu chunk_free_space=%llu",
+>> +			__print_flags(__entry->flags, "|", BTRFS_GROUP_FLAGS),
+>> +			__entry->total_bytes, __entry->bytes_used,
+>> +			__entry->bytes_pinned, __entry->bytes_reserved,
+>> +			__entry->bytes_may_use, __entry->bytes_readonly,
+>> +			__entry->reclaim_size, __entry->clamp,
+>> +			__entry->global_reserved, __entry->trans_reserved,
+>> +			__entry->delayed_refs_reserved,
+>> +			__entry->delayed_reserved, __entry->free_chunk_space)
+>> +);
+>> +
+>> +DEFINE_EVENT(btrfs_dump_space_info, btrfs_done_preemptive_reclaim,
+>> +	TP_PROTO(const struct btrfs_fs_info *fs_info,
+>> +		 const struct btrfs_space_info *sinfo),
+>> +	TP_ARGS(fs_info, sinfo)
+>> +);
+> 
+> 
+> I think this could be just a TRACE_EVENT, do you expect to define
+> further events based on the same class ?
 
-The upstream is the zstd project where all this code originates, and 
-where the active development takes place.  As Eric Biggers pointed out, 
-it also receives a lot of Q/A separate from the kernel.  I think we gain 
-a great deal by leveraging the testing and documentation of the zstd 
-project in the kernel interfaces we use.
+Yes, the idea is that the next time I'm doing something I can add a new event 
+where I need it.  I had thoughts of where I'd add ones right now, but I'd rather 
+wait until I have real need of another tracepoint before I go adding them 
+randomly in our code.  Thanks,
 
-We lose some consistency with the kernel coding style, but we gain the 
-ability to search for docs, issues, and fixes directly against the zstd 
-project and git repo.
-
--chris
+Josef
