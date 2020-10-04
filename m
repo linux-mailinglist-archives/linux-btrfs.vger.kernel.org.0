@@ -2,133 +2,250 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4DEA28225E
-	for <lists+linux-btrfs@lfdr.de>; Sat,  3 Oct 2020 10:04:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 412002828AE
+	for <lists+linux-btrfs@lfdr.de>; Sun,  4 Oct 2020 06:29:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725763AbgJCIEe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 3 Oct 2020 04:04:34 -0400
-Received: from mx2.suse.de ([195.135.220.15]:39810 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725601AbgJCIEe (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 3 Oct 2020 04:04:34 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1601712272;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=Sf4LuO79pJtn1h8GcldPVEayw9DaZgt5IWpkc17EoAI=;
-        b=ApHVckZk+6W7nGlUuD18Bzex5yiJL10vcRoz1kk0UyVJg6lx+jo5dpjWJOs5Lhry43Nz9D
-        UowFTX0hgqBd12z3bBP/sAbwEWHVDXX/0iJoqA/ClRoh72kT385cZYUADXIkaldN54Q72b
-        b0/6LMErFaxjRFYCDKbQtWDRhKYnVRU=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id E6C26AC8B;
-        Sat,  3 Oct 2020 08:04:31 +0000 (UTC)
-Subject: Re: [PATCH] fs: tree-checker: fix missing brace warning for old
- compilers
-To:     Pujin Shi <shipujin.t@gmail.com>, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>
-Cc:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, hankinsea@gmail.com
-References: <20201003001151.1306-1-shipujin.t@gmail.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <fbddb15a-6e46-3f21-23ba-b18f66e3448a@suse.com>
-Date:   Sat, 3 Oct 2020 11:04:29 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1725822AbgJDE3R (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 4 Oct 2020 00:29:17 -0400
+Received: from mail-il1-f207.google.com ([209.85.166.207]:52825 "EHLO
+        mail-il1-f207.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725818AbgJDE3R (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 4 Oct 2020 00:29:17 -0400
+Received: by mail-il1-f207.google.com with SMTP id m1so4485450iln.19
+        for <linux-btrfs@vger.kernel.org>; Sat, 03 Oct 2020 21:29:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=dEm5RHm6t/xovL74zB0iSaDTAFwH2/BwEjmJeGG3iy8=;
+        b=V4cHYClUflggi4RMRkp7LneB17YDm0oMu1YjTrcsB/o0Nmkf14mvGhB2RUCyzBQ0un
+         OTfGL6lRiTM1suGOxpVvEeHDBMMMtlfi/jY+7M/LxlLr7oerzEIgVOLBxR8MAvgV5aBf
+         ljoDvdp4vJw9LiLM3oJL7yz32MAvIzicx2jxJPxHaKsNGm9gBUhXAcGXfuzd4ycYL9qu
+         /frnV2wMRAaW5lrGVqPqFCPegQxdw/FHGl59ReN5xdR3I6wYfwmF1GuUNc1oenIN8hP2
+         p0TIYTGIFpcgQ4NlqxCqTRdbxiRK4gMXnjFnwX56Sk+Aj193sywigSpJLO8+03yGSBlB
+         BrLw==
+X-Gm-Message-State: AOAM531nUJOt+uIj4SCp/JLWiU8Qndx6uPR7x3jVERFdO4z5DFW8Liu/
+        3atcyQa6qodNv1O6GPfn/XOW6Nn9cWV6/77D4CJZI9izQhvY
+X-Google-Smtp-Source: ABdhPJzEix4IFeWYT03sr2/StXiM78rygvQjceotGmxH6bwpFEXOjcvhQcckriNY6FGgWZmJ/6M3N6px5foTXQg9lziec3Ggqqzz
 MIME-Version: 1.0
-In-Reply-To: <20201003001151.1306-1-shipujin.t@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a92:c7b4:: with SMTP id f20mr1110169ilk.199.1601785755736;
+ Sat, 03 Oct 2020 21:29:15 -0700 (PDT)
+Date:   Sat, 03 Oct 2020 21:29:15 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000fa228105b0d0cead@google.com>
+Subject: possible deadlock in start_transaction
+From:   syzbot <syzbot+ec309a632856890f2635@syzkaller.appspotmail.com>
+To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Hello,
+
+syzbot found the following issue on:
+
+HEAD commit:    ccc1d052 Merge tag 'dmaengine-fix-5.9' of git://git.kernel..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=17f1fa5b900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=41b736b7ce1b3ea4
+dashboard link: https://syzkaller.appspot.com/bug?extid=ec309a632856890f2635
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+ec309a632856890f2635@syzkaller.appspotmail.com
+
+======================================================
+WARNING: possible circular locking dependency detected
+5.9.0-rc7-syzkaller #0 Not tainted
+------------------------------------------------------
+kworker/u4:6/8345 is trying to acquire lock:
+ffff888091200640 (sb_internal#3){.+.+}-{0:0}, at: sb_start_intwrite include/linux/fs.h:1690 [inline]
+ffff888091200640 (sb_internal#3){.+.+}-{0:0}, at: start_transaction+0xbe7/0x1170 fs/btrfs/transaction.c:624
+
+but task is already holding lock:
+ffffc900161ffda8 ((work_completion)(&(&wb->dwork)->work)){+.+.}-{0:0}, at: process_one_work+0x85f/0x1670 kernel/workqueue.c:2244
+
+which lock already depends on the new lock.
 
 
-On 3.10.20 г. 3:11 ч., Pujin Shi wrote:
-> For older versions of gcc, the array = {0}; will cause warnings:
-> 
-> fs/btrfs/tree-checker.c: In function 'check_root_item':
-> fs/btrfs/tree-checker.c:1038:9: warning: missing braces around initializer [-Wmissing-braces]
->   struct btrfs_root_item ri = { 0 };
->          ^
-> fs/btrfs/tree-checker.c:1038:9: warning: (near initialization for 'ri.inode') [-Wmissing-braces]
-> 
-> 1 warnings generated
-> 
-> Fixes: 443b313c7ff8 ("btrfs: tree-checker: fix false alert caused by legacy btrfs root item")
-> Signed-off-by: Pujin Shi <shipujin.t@gmail.com>
+the existing dependency chain (in reverse order) is:
 
-This is a compiler artifact, please see:
-http://www.ex-parrot.com/~chris/random/initialise.html
+-> #4 ((work_completion)(&(&wb->dwork)->work)){+.+.}-{0:0}:
+       __flush_work+0x60e/0xac0 kernel/workqueue.c:3041
+       wb_shutdown+0x180/0x220 mm/backing-dev.c:355
+       bdi_unregister+0x174/0x590 mm/backing-dev.c:872
+       del_gendisk+0x820/0xa10 block/genhd.c:933
+       loop_remove drivers/block/loop.c:2192 [inline]
+       loop_control_ioctl drivers/block/loop.c:2291 [inline]
+       loop_control_ioctl+0x3b1/0x480 drivers/block/loop.c:2257
+       vfs_ioctl fs/ioctl.c:48 [inline]
+       __do_sys_ioctl fs/ioctl.c:753 [inline]
+       __se_sys_ioctl fs/ioctl.c:739 [inline]
+       __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:739
+       do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+       entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-ALso having an empty initialization list like = {} while valid for gcc
-is actually invalid according to the official standard. Check ISO C
-Standard section 6.7.9 for the correct syntax of initializer-list.
+-> #3 (loop_ctl_mutex){+.+.}-{3:3}:
+       __mutex_lock_common kernel/locking/mutex.c:956 [inline]
+       __mutex_lock+0x134/0x10e0 kernel/locking/mutex.c:1103
+       lo_open+0x19/0xd0 drivers/block/loop.c:1893
+       __blkdev_get+0x759/0x1aa0 fs/block_dev.c:1507
+       blkdev_get fs/block_dev.c:1639 [inline]
+       blkdev_open+0x227/0x300 fs/block_dev.c:1753
+       do_dentry_open+0x4b9/0x11b0 fs/open.c:817
+       do_open fs/namei.c:3251 [inline]
+       path_openat+0x1b9a/0x2730 fs/namei.c:3368
+       do_filp_open+0x17e/0x3c0 fs/namei.c:3395
+       do_sys_openat2+0x16d/0x420 fs/open.c:1168
+       do_sys_open fs/open.c:1184 [inline]
+       __do_sys_open fs/open.c:1192 [inline]
+       __se_sys_open fs/open.c:1188 [inline]
+       __x64_sys_open+0x119/0x1c0 fs/open.c:1188
+       do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+       entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-IOW - NAK.
+-> #2 (&bdev->bd_mutex){+.+.}-{3:3}:
+       __mutex_lock_common kernel/locking/mutex.c:956 [inline]
+       __mutex_lock+0x134/0x10e0 kernel/locking/mutex.c:1103
+       blkdev_put+0x30/0x520 fs/block_dev.c:1804
+       btrfs_close_bdev fs/btrfs/volumes.c:1117 [inline]
+       btrfs_close_bdev fs/btrfs/volumes.c:1107 [inline]
+       btrfs_close_one_device fs/btrfs/volumes.c:1133 [inline]
+       close_fs_devices.part.0+0x1a4/0x800 fs/btrfs/volumes.c:1161
+       close_fs_devices fs/btrfs/volumes.c:1193 [inline]
+       btrfs_close_devices+0x95/0x1f0 fs/btrfs/volumes.c:1179
+       close_ctree+0x688/0x6cb fs/btrfs/disk-io.c:4148
+       generic_shutdown_super+0x144/0x370 fs/super.c:464
+       kill_anon_super+0x36/0x60 fs/super.c:1108
+       btrfs_kill_super+0x38/0x50 fs/btrfs/super.c:2265
+       deactivate_locked_super+0x94/0x160 fs/super.c:335
+       deactivate_super+0xad/0xd0 fs/super.c:366
+       cleanup_mnt+0x3a3/0x530 fs/namespace.c:1118
+       task_work_run+0xdd/0x190 kernel/task_work.c:141
+       tracehook_notify_resume include/linux/tracehook.h:188 [inline]
+       exit_to_user_mode_loop kernel/entry/common.c:165 [inline]
+       exit_to_user_mode_prepare+0x1e1/0x200 kernel/entry/common.c:192
+       syscall_exit_to_user_mode+0x7e/0x2e0 kernel/entry/common.c:267
+       entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-> ---
->  fs/btrfs/tree-checker.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/fs/btrfs/tree-checker.c b/fs/btrfs/tree-checker.c
-> index f0ffd5ee77bd..5028b3af308c 100644
-> --- a/fs/btrfs/tree-checker.c
-> +++ b/fs/btrfs/tree-checker.c
-> @@ -1035,7 +1035,7 @@ static int check_root_item(struct extent_buffer *leaf, struct btrfs_key *key,
->  			   int slot)
->  {
->  	struct btrfs_fs_info *fs_info = leaf->fs_info;
-> -	struct btrfs_root_item ri = { 0 };
-> +	struct btrfs_root_item ri = {};
->  	const u64 valid_root_flags = BTRFS_ROOT_SUBVOL_RDONLY |
->  				     BTRFS_ROOT_SUBVOL_DEAD;
->  	int ret;
-> 
+-> #1 (&fs_devs->device_list_mutex){+.+.}-{3:3}:
+       __mutex_lock_common kernel/locking/mutex.c:956 [inline]
+       __mutex_lock+0x134/0x10e0 kernel/locking/mutex.c:1103
+       btrfs_finish_chunk_alloc+0x281/0xf90 fs/btrfs/volumes.c:5255
+       btrfs_create_pending_block_groups+0x2f3/0x700 fs/btrfs/block-group.c:2109
+       __btrfs_end_transaction+0xf5/0x690 fs/btrfs/transaction.c:916
+       btrfs_alloc_data_chunk_ondemand+0x2a1/0x670 fs/btrfs/delalloc-space.c:167
+       btrfs_fallocate+0x279/0x2900 fs/btrfs/file.c:3282
+       vfs_fallocate+0x48d/0x9d0 fs/open.c:309
+       ksys_fallocate fs/open.c:332 [inline]
+       __do_sys_fallocate fs/open.c:340 [inline]
+       __se_sys_fallocate fs/open.c:338 [inline]
+       __x64_sys_fallocate+0xcf/0x140 fs/open.c:338
+       do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+       entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+-> #0 (sb_internal#3){.+.+}-{0:0}:
+       check_prev_add kernel/locking/lockdep.c:2496 [inline]
+       check_prevs_add kernel/locking/lockdep.c:2601 [inline]
+       validate_chain kernel/locking/lockdep.c:3218 [inline]
+       __lock_acquire+0x2a96/0x5780 kernel/locking/lockdep.c:4441
+       lock_acquire+0x1f3/0xaf0 kernel/locking/lockdep.c:5029
+       percpu_down_read include/linux/percpu-rwsem.h:51 [inline]
+       __sb_start_write+0x228/0x450 fs/super.c:1672
+       sb_start_intwrite include/linux/fs.h:1690 [inline]
+       start_transaction+0xbe7/0x1170 fs/btrfs/transaction.c:624
+       find_free_extent_update_loop fs/btrfs/extent-tree.c:3789 [inline]
+       find_free_extent+0x25e1/0x2e60 fs/btrfs/extent-tree.c:4127
+       btrfs_reserve_extent+0x166/0x460 fs/btrfs/extent-tree.c:4206
+       cow_file_range+0x3de/0x9b0 fs/btrfs/inode.c:1063
+       btrfs_run_delalloc_range+0x2cf/0x1410 fs/btrfs/inode.c:1838
+       writepage_delalloc+0x150/0x460 fs/btrfs/extent_io.c:3439
+       __extent_writepage+0x441/0xd00 fs/btrfs/extent_io.c:3653
+       extent_write_cache_pages.constprop.0+0x69d/0x1040 fs/btrfs/extent_io.c:4249
+       extent_writepages+0xcd/0x2b0 fs/btrfs/extent_io.c:4370
+       do_writepages+0xec/0x290 mm/page-writeback.c:2352
+       __writeback_single_inode+0x125/0x1400 fs/fs-writeback.c:1461
+       writeback_sb_inodes+0x53d/0xf40 fs/fs-writeback.c:1721
+       wb_writeback+0x2ad/0xd40 fs/fs-writeback.c:1894
+       wb_do_writeback fs/fs-writeback.c:2039 [inline]
+       wb_workfn+0x2dc/0x13e0 fs/fs-writeback.c:2080
+       process_one_work+0x94c/0x1670 kernel/workqueue.c:2269
+       worker_thread+0x64c/0x1120 kernel/workqueue.c:2415
+       kthread+0x3b5/0x4a0 kernel/kthread.c:292
+       ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+
+other info that might help us debug this:
+
+Chain exists of:
+  sb_internal#3 --> loop_ctl_mutex --> (work_completion)(&(&wb->dwork)->work)
+
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock((work_completion)(&(&wb->dwork)->work));
+                               lock(loop_ctl_mutex);
+                               lock((work_completion)(&(&wb->dwork)->work));
+  lock(sb_internal#3);
+
+ *** DEADLOCK ***
+
+2 locks held by kworker/u4:6/8345:
+ #0: ffff88821ade2938 ((wq_completion)writeback){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
+ #0: ffff88821ade2938 ((wq_completion)writeback){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
+ #0: ffff88821ade2938 ((wq_completion)writeback){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
+ #0: ffff88821ade2938 ((wq_completion)writeback){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
+ #0: ffff88821ade2938 ((wq_completion)writeback){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
+ #0: ffff88821ade2938 ((wq_completion)writeback){+.+.}-{0:0}, at: process_one_work+0x82b/0x1670 kernel/workqueue.c:2240
+ #1: ffffc900161ffda8 ((work_completion)(&(&wb->dwork)->work)){+.+.}-{0:0}, at: process_one_work+0x85f/0x1670 kernel/workqueue.c:2244
+
+stack backtrace:
+CPU: 0 PID: 8345 Comm: kworker/u4:6 Not tainted 5.9.0-rc7-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: writeback wb_workfn (flush-btrfs-6)
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x198/0x1fd lib/dump_stack.c:118
+ check_noncircular+0x324/0x3e0 kernel/locking/lockdep.c:1827
+ check_prev_add kernel/locking/lockdep.c:2496 [inline]
+ check_prevs_add kernel/locking/lockdep.c:2601 [inline]
+ validate_chain kernel/locking/lockdep.c:3218 [inline]
+ __lock_acquire+0x2a96/0x5780 kernel/locking/lockdep.c:4441
+ lock_acquire+0x1f3/0xaf0 kernel/locking/lockdep.c:5029
+ percpu_down_read include/linux/percpu-rwsem.h:51 [inline]
+ __sb_start_write+0x228/0x450 fs/super.c:1672
+ sb_start_intwrite include/linux/fs.h:1690 [inline]
+ start_transaction+0xbe7/0x1170 fs/btrfs/transaction.c:624
+ find_free_extent_update_loop fs/btrfs/extent-tree.c:3789 [inline]
+ find_free_extent+0x25e1/0x2e60 fs/btrfs/extent-tree.c:4127
+ btrfs_reserve_extent+0x166/0x460 fs/btrfs/extent-tree.c:4206
+ cow_file_range+0x3de/0x9b0 fs/btrfs/inode.c:1063
+ btrfs_run_delalloc_range+0x2cf/0x1410 fs/btrfs/inode.c:1838
+ writepage_delalloc+0x150/0x460 fs/btrfs/extent_io.c:3439
+ __extent_writepage+0x441/0xd00 fs/btrfs/extent_io.c:3653
+ extent_write_cache_pages.constprop.0+0x69d/0x1040 fs/btrfs/extent_io.c:4249
+ extent_writepages+0xcd/0x2b0 fs/btrfs/extent_io.c:4370
+ do_writepages+0xec/0x290 mm/page-writeback.c:2352
+ __writeback_single_inode+0x125/0x1400 fs/fs-writeback.c:1461
+ writeback_sb_inodes+0x53d/0xf40 fs/fs-writeback.c:1721
+ wb_writeback+0x2ad/0xd40 fs/fs-writeback.c:1894
+ wb_do_writeback fs/fs-writeback.c:2039 [inline]
+ wb_workfn+0x2dc/0x13e0 fs/fs-writeback.c:2080
+ process_one_work+0x94c/0x1670 kernel/workqueue.c:2269
+ worker_thread+0x64c/0x1120 kernel/workqueue.c:2415
+ kthread+0x3b5/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
