@@ -2,62 +2,65 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D68B283661
-	for <lists+linux-btrfs@lfdr.de>; Mon,  5 Oct 2020 15:14:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4912528366F
+	for <lists+linux-btrfs@lfdr.de>; Mon,  5 Oct 2020 15:22:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726105AbgJENO5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 5 Oct 2020 09:14:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56124 "EHLO
+        id S1725936AbgJENWv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 5 Oct 2020 09:22:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725970AbgJENO5 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 5 Oct 2020 09:14:57 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44D9AC0613CE
-        for <linux-btrfs@vger.kernel.org>; Mon,  5 Oct 2020 06:14:57 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id c62so11791166qke.1
-        for <linux-btrfs@vger.kernel.org>; Mon, 05 Oct 2020 06:14:57 -0700 (PDT)
+        with ESMTP id S1725932AbgJENWv (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 5 Oct 2020 09:22:51 -0400
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A3ABC0613CE
+        for <linux-btrfs@vger.kernel.org>; Mon,  5 Oct 2020 06:22:51 -0700 (PDT)
+Received: by mail-qt1-x841.google.com with SMTP id j22so9476671qtj.8
+        for <linux-btrfs@vger.kernel.org>; Mon, 05 Oct 2020 06:22:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=oWn1uI9+BHolv7wouG39QBnJV+w4A8ptyHvcKkepmcE=;
-        b=NyQ1V+zADJCg3fRJfaCINQs12gGtUT9gvkI5ilnO0Ilratthu2+Lo9VU7O3BOstBak
-         ENcpgR91iqM/eaXg+FBVBr7vCQ6Wr4Cgmn8RwQFmIYpScD/C4cNslKXigYTsWh45rF9y
-         wiCFDeBmQxL7ChOdpgZb5+L3GqTMZcOXswUzPmuP3v/HbwM1CLofR5hqGF3vJNnGpYE+
-         3KOQFPahRBLt21aSqRe5A8dV64usY8KDHTAa6/bEAvA/VhQhMMrFsDVBFuf6UcFBq+p1
-         byHnjHY1HXtLBFmuwZiXpw1xHN0S8CJF4cJ7/+tceNXcDwxMYa9bdMgIZD5TC/HXRU92
-         k+dA==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=VIgwe0JHMpCsWtyL0UC/jfREZOke1ZFWSMztrR3WjOk=;
+        b=ZBBGKX62oyUHCZWldidySppRJ/gMVqVAy7Rn/kategGhPk2fuLGsL3QNUEcgP424RA
+         HEcTF8KV6aojMtfWTZjoTmPsCj30WaHMZOlaAgdbLUXCv9hBGUvsiH7pS3U82bEp6UXK
+         M1caCvKJMIYlguYpILxY+f4Y0p90U2ottBS5SABX8rfApEsv0cRVdKryOIr1LygCLGSH
+         b8KEoKJCB9gnxUga1q0SFHF4kpexC9VkZ28Lryt0518O2xpPRJNmPLdAClg5ywufRjQI
+         xfFJkdl8ny8qhUPN+3fU7p4uuvyFMuD5p7ZS1d9i6eVl0YMAnMMk5C1u8f5tpOhHtzLT
+         a+qg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=oWn1uI9+BHolv7wouG39QBnJV+w4A8ptyHvcKkepmcE=;
-        b=XHpuS28yfdUi/lmTHF7rTqMKEeEb9zQuwQsaq5srR0UQtAHBZhCybiiNiu7ryGMSsd
-         n7yL8jhUzK9iPUTK+Tl2fKBvRuvENPMndtPPtdtHNchgiSFR63yR+d4IZGFv4rkU3gTo
-         J4qmZhNicWUYQlaBagqveyqvcXVwjK4rk7AnFZg5DCV658jOSGq+YnCzb8H979ghQ4y+
-         iVRjsgtalVRIy5kz2U4laeQfd+5vD49V8jyzcBD8goG4DPqd7jAxKfSdDpwhkMOfj2F3
-         gEXx/Nin/Mr1UVLey6G4bqWi66gJRAnUmWEjh0h5Sr0epW0fKURYzXVQc6MwaaxQJhho
-         iDBA==
-X-Gm-Message-State: AOAM530ety+I1oMNyS7nrH7XxvpBmEsJ2AOKJT3XshC00sgzu5Pv+es6
-        Jio/lG24ZfVIe0RPy/+nhsGDSQkhZLH7M1zK
-X-Google-Smtp-Source: ABdhPJxrLrx3Ntc6ifzBsdpFAxz8uLEYA1STydmOOYH030X35MTFe/tCW2w+lJYuz+VnJHWxTEySKA==
-X-Received: by 2002:a37:aa0a:: with SMTP id t10mr12256159qke.128.1601903696130;
-        Mon, 05 Oct 2020 06:14:56 -0700 (PDT)
+        bh=VIgwe0JHMpCsWtyL0UC/jfREZOke1ZFWSMztrR3WjOk=;
+        b=B9TSZU7zStSvQ/TXb4gUfVqbN63FbVarIfXIZKY5gex0Ut/2FR4vayWSY93MOH1Aod
+         ZlHdo5APUku94JZ4Afm2cDq9Y0krI/znyLwQY/CEIjClEOaIfFUhSmWv8MCmMnGYnISb
+         GFALbA7NUigNBbsInixfx0+qMGl51SDUFA+wdAx7W3F2kyt4rLwZ+HYZQyBMiVLDe9ly
+         Yruu8UETIzmrjk/nP79JXvxT/mRzx+A96z0nhivjjARIQnMQtrOfyIJeYUCP9VXZnZle
+         fDrJvsBMiRckg2MQIqXVK8oaPPczDSkRhML1dOFMJm+xoSyQs7ki4g7/BnH9T25+X2k/
+         hs6A==
+X-Gm-Message-State: AOAM530vVUzVW9tuRkDwYsB6OdRNfgt0izA16hqGrfTMf3D5hwLyN9Yl
+        A7OEA70cGNaYM0riKkV1XMOghOZT1oVcJEAc
+X-Google-Smtp-Source: ABdhPJy4vWmMB5n5fAiJdzoNyNt10S4imgm4MzQMmJjzL1HtJVrHW8124/G/fceuCiQOesaRGJs3LA==
+X-Received: by 2002:ac8:6916:: with SMTP id e22mr14160336qtr.141.1601904170650;
+        Mon, 05 Oct 2020 06:22:50 -0700 (PDT)
 Received: from [192.168.1.45] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id k52sm7710073qtc.56.2020.10.05.06.14.55
+        by smtp.gmail.com with ESMTPSA id d37sm2499156qta.76.2020.10.05.06.22.49
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 05 Oct 2020 06:14:55 -0700 (PDT)
-Subject: Re: [PATCH] btrfs: Increment i_size after dio write completes
-To:     Goldwyn Rodrigues <rgoldwyn@suse.de>, linux-btrfs@vger.kernel.org
-References: <20200921191930.e7phg6zpw4v4snin@fiona>
+        Mon, 05 Oct 2020 06:22:49 -0700 (PDT)
+Subject: Re: [PATCH 1/2] btrfs: drop never met condition of disk_total_bytes
+ == 0
+To:     Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org
+Cc:     nborisov@suse.com, wqu@suse.com, dsterba@suse.com
+References: <cover.1600940809.git.anand.jain@oracle.com>
+ <4fea8a706aedf7407d6af7a545126511168e15f5.1600940809.git.anand.jain@oracle.com>
 From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <41cc296f-5233-0eaa-62f5-295575836c93@toxicpanda.com>
-Date:   Mon, 5 Oct 2020 09:14:54 -0400
+Message-ID: <2a768517-2ab4-8671-5d70-e80ed01e406d@toxicpanda.com>
+Date:   Mon, 5 Oct 2020 09:22:48 -0400
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
  Gecko/20100101 Thunderbird/78.3.1
 MIME-Version: 1.0
-In-Reply-To: <20200921191930.e7phg6zpw4v4snin@fiona>
+In-Reply-To: <4fea8a706aedf7407d6af7a545126511168e15f5.1600940809.git.anand.jain@oracle.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -65,15 +68,24 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 9/21/20 3:19 PM, Goldwyn Rodrigues wrote:
-> i_size is incremented when btrfs creates new extents during the start of
-> a DIO write. If there is a failure until the endio, we will have a file
-> with incremented filesize but no data. Increment the filesize after the
-> successful completion of a DIO write.
+On 9/24/20 6:11 AM, Anand Jain wrote:
+> btrfs_device::disk_total_bytes is set even for a seed device (the
+> comment is wrong).
 > 
-> Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
+> The function fill_device_from_item() does the job of reading it from the
+> item and updating btrfs_device::disk_total_bytes. So both the missing
+> device and the seed devices do have their disk_total_bytes updated.
 > 
+> So this patch removes the check dev->disk_total_bytes == 0 in the
+> function verify_one_dev_extent()
+> 
+> Signed-off-by: Anand Jain <anand.jain@oracle.com>
 
-We can't update the i_size outside of the i_mutex, this isn't ok.  Thanks,
+Ok I understand that logically this check is incorrect, however we pull this 
+value from the device item, which could be corrupt.  I'm looking around and I 
+don't see a similar check in any of our other code, it should probably go in 
+check_dev_item() maybe?  I think that removing this check is ok, but we need to 
+make sure we catch the invalid case where total_disk_bytes == 0 somewhere, so 
+please add that in the appropriate place.  Thanks,
 
 Josef
