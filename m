@@ -2,32 +2,33 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96CBB2830BC
-	for <lists+linux-btrfs@lfdr.de>; Mon,  5 Oct 2020 09:14:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C35452830BD
+	for <lists+linux-btrfs@lfdr.de>; Mon,  5 Oct 2020 09:16:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725902AbgJEHOz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 5 Oct 2020 03:14:55 -0400
-Received: from mout.gmx.net ([212.227.15.18]:57733 "EHLO mout.gmx.net"
+        id S1725898AbgJEHQB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 5 Oct 2020 03:16:01 -0400
+Received: from mout.gmx.net ([212.227.15.18]:59395 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725870AbgJEHOy (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 5 Oct 2020 03:14:54 -0400
+        id S1725870AbgJEHQA (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 5 Oct 2020 03:16:00 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1601882092;
-        bh=kVhZgqL51GBp6hEqb2/SmD0vH384kW+6gyGRdMbK36U=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=fgub7wxXALkWmhudHjx639ZeVCPFxylaY+XqJ0EcpxbufC9tcSkshJhTzxRE0QJCO
-         /iY0Ilz/GU2Z7PkThYBt48nGrSze2HiTaW5SMeTlTb94dONd64hML1j8ey9FPuKQGF
-         qQNuMWXFHPTIof69FHMM9jZuRpsMrpacWnp2sz1k=
+        s=badeba3b8450; t=1601882157;
+        bh=+8mfqq5Bq/Weu5FbeMj18EcIUcVmAokWG6WQLi+HQSw=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=ZPUfoiZBYZNqHqKPOA/S/dzQr/rYM0wVPOsGMm7tmw/+fUKGho9nuvgkI8mVJKrjY
+         3t+NIp5E+AmEnGvlXMXqUr7RrK+cwNqF3lBTa8pCBz8iZStds5bjCXOdiIHIXVCz25
+         tWlWh9mGI5RZ0900wbyPHiae/3RFpLX33vzqG7b8=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
 Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1M7Jza-1kJr432TRk-007oJ2; Mon, 05
- Oct 2020 09:14:52 +0200
-Subject: Re: ERROR... please contact btrfs developers
-To:     Eric Levy <ericlevy@gmail.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-References: <CA++hEgx2x=HjjUR=o2=PFHdQSFSqquNffePTVUqMNs19sj_wcQ@mail.gmail.com>
- <c2d13609-564d-1e3b-482a-0af65532b42b@gmx.com>
- <CA++hEgwsLH=9-PCpkR4X2MEqSwwK6ZMhpb+YEB=ze-kOJ8cwaQ@mail.gmail.com>
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1N3se2-1kXxfw0sjY-00zl0o; Mon, 05
+ Oct 2020 09:15:56 +0200
+Subject: Re: BTRFS device unmountable after system freeze
+To:     Chris Murphy <lists@colorremedies.com>
+Cc:     Pet Eren <peteren@gmx.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+References: <trinity-8bafe7e4-3944-4586-8ccf-01fca6664979-1601808281835@3c-app-mailcom-bs04>
+ <1c7b7bf3-5912-3d51-c1f2-5c2c889367f6@gmx.com>
+ <CAJCQCtQSy5Dknp46G08YHU2XxBuhKO2uCGkyU-eptHx4QSKRvw@mail.gmail.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -53,131 +54,158 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
  ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
  oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <c65b1e8b-c05d-7547-cb01-d12e8ab83cb3@gmx.com>
-Date:   Mon, 5 Oct 2020 15:14:49 +0800
+Message-ID: <a7f5c202-0a6d-9253-b7ac-49fe89c9d703@gmx.com>
+Date:   Mon, 5 Oct 2020 15:15:53 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <CA++hEgwsLH=9-PCpkR4X2MEqSwwK6ZMhpb+YEB=ze-kOJ8cwaQ@mail.gmail.com>
+In-Reply-To: <CAJCQCtQSy5Dknp46G08YHU2XxBuhKO2uCGkyU-eptHx4QSKRvw@mail.gmail.com>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="j545DQ6zMKdBdZMr6AzHerF2LrVemLOnj"
-X-Provags-ID: V03:K1:vksWOLHT6buE88p9qPACgkUwTaUxhGII1phdUUNeu+lhVCPsbXZ
- etG7JpOhL4AfwRMNs1wZaCkH+Pihpm+hQ1KP0l14TS2iSl431e04wVfoMKbKXG0YVCYLsu7
- xuyrOFe9aVFlBFfs1TZESFuLLBmgtNSkGn80CIK1w/uFk2JcRiBERKEb5KOoKumFSSLKTGw
- Nq8hqxwq2TMf4nw335qAA==
+ boundary="RbgKwJp3llNMi4ViInsIk6ZLI1bONxQPz"
+X-Provags-ID: V03:K1:i/BLAEntDpPfwifeps1AsdBDoWKAOzMOoZNSusXpOzS9d3iCARW
+ pGKFBfIO3jChZYYYHySH0VAQq2tUgmRXE25E84nSJNbvUrA+32epwlzLKEPwH0ZOYuPCP9o
+ RZTRZ3r10wpYKKSK505osVqvk8cfDraeyJ5uYCnzX9vuJAcRRL3TYHoHF5OSX9kQYu+0DEF
+ wdKpVAYnO9hYBw3wac82A==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:9f8CZyPQl1c=:ooO40levHTBrVqPCtHIJ20
- N6xX/zeUVGyboqW1Q4rXgNiTg+rS0+v2mxYPWSN1qIP84c82TwAklnVpEnhIHb+lwPZjn0DDD
- LlGwYGdvpq+HIC7jqPyoq+PPjT5ZAw1Eg+kqe4D98y6QaZAjIGyl96ziTQ70/HLCrlaI7MXqJ
- GbazyRpQn7tMYwGj+ueprIyt0ZXVFZLw1E2LQlgiGXo+SQTuC0k0pn+rWSraRqNSsoIH7ymBM
- FV3DhZCGUkk/DazK0qXWu9Lh75Aa01bYnmK/kOZPmi4RZxJUNjcz2KI3BQdD6+veSdLv98Rb0
- M/nRBrg2zHDtffZAAcOnZtgUD79iObBnkm0RHRcrGis/IIarUB59vRxPUAifVNiaQ2pdjQwo0
- 1PAD7Dc0zXSrEts7x8UvSqJdfBds2ZpxiwACH/Q0d0aN1xQ0q21HmQNrc2uD5fQylrao7uqNy
- 2QVZL7I8QFmCR3+yiT8PtDNYLHaDYBclF6a4/+y+AuA+6CjpUYuXDTFK2w43dRmn3YxWUjZ/8
- ULJuEB3XjCakg6qO6zhsR+N3Iib8xCPhRIG9ypnySZrAQZg9ZnVeQ2kGTA+AUf3dBGF08DbGE
- sU12BjRlzMN+wmNAHNm18pyQhXfS4Jh7NcPAvTg71UndLUepPVusazsxwP7jrsvqzcJ+hUT8h
- Oxxbs2bkydtbRyY9Gu/ziQr67MM9JE+BNt6HYrnv7PuC2U16iiG2BQu6jsSeebOIPlel+SwfZ
- W+RHf2Km3tJ8MfpE4TXStYbznwVzCDZ5O9qa+hz1J1nDGDfOzRDh65AluQjS6GrCDzf/T00/K
- CcuzVNFLjO6wJyt1teJ7IqCVznglPzrzG99vgIwJGcUHtU59p4xDjFryfI2hQuV8WH8wetZER
- hZZeKMA/1TkBytyc0rLGKvPF6IRVtgz9mgmkU6h6dNSljVBpKmRWbdabQ7BNrt7SW0NFF5M07
- gw54BuphnhkZ1er+PiNgSFg6eOql8vEHiq5/yoIFINDVcG9kcTlOXAMgYBa+NSe3Mh7rrEfb4
- zppfkz+TKL/XQcdof5C7caHyWaaMKtcSaBInuiqhAI/+K7yXMOSYWUqW30Ba1+Mf015M33qQv
- glA6ow8O5pu69QF2dgPyBeuUeSiqlaVXWd/eU9Wr271bbpzdyse4Ov3tbK9Ql9bm7xVyndFqw
- j+0AhGBBDUsEqA7alyN3BJTwdp0+gKUW68shYeYTUAukhYb1/4KRqqAlf32Txxmkr5OyDnTSs
- 5QDM6c3nB5fiFCFo0jWTX+G5eCVpDW+fhO4wKMA==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:3BzcTCHh3RU=:cDSLNR+6DLzplgyqlkNQ9z
+ lgNuhCNc6tAU7MosHt6eChQKZp+i+9uYh4+nmq0BHbsgWi4BdFZesvn/b7f0gDNuhKmWQlsCa
+ D0uYdPooQxA9JyJIKm7ODbfIAD53DZ4DLre2uCKq11pa3R0E+OLPT4D4x4OwqgDi3S+RME2Ew
+ GM/8f2zl6gJMUIzchGww2i/tPIHUlaZNktWCjq9oNnnn9MhbpebvV4sxwTt2eRO/TcentkaXH
+ TWPIEsSNo80w3gnX8erQ2oSWiZbkDbMdB1NAH6a0pNHJ3FVnpGQ4gTpYtoeC4/pNFPbWtpwYH
+ cy0yl8mAEGZHL3mPnIwxuDmH4RzaKfUBey6H96c69iXvxOR9x2vKWHrZ3+lYxzx0YuyjpuZTl
+ +VZmV45gakocFbQVp2p5WMW0IBPVk8Dd8S+8STr5Zilx5OyexHBl0ilrPy2ej70YBfId2YzH7
+ HfmpfQe5Evngg2DuHRf0djkj4Oven8iPc6psGPuEr+qgjLvfZ1Jabhh8SNVTv/Z+VTIu79OUd
+ qV2uFZzeJpWfns8PC/MVk4caz2viXlFY0qwK2P2TYUri76dCnsgNFBFeXET/zEixWn2PfNQD7
+ OLSGiSdFro/H0QFKrhKT/aWURXyfvvni5fSvllWZGlS10TS3uOpor9IgDGo944x8NuMkz4yhT
+ zeehafQuuOqb3Qaj23g1Ymvy+qjh9OREVYd12DEsr4qH4yYrDvFI7q4zzSR3bStYJQV7BR9xC
+ ZcLOmXjwSDy6hWFKgHVHJnm1K/tQ89gpgdpix7ejTFMRYloOOJbXU8Cnx3s3p+mlwtjY01no0
+ PZdOcOda/vrLFjm9ms+cDV7eRe4t/NGhQGK9bNcsNnYF+u1mECpTOnQsldDw1r0Qv6M00+ytH
+ oyu3sxlO8r36JT2o8xXLOa7mX3FM5ES6WBo2cHhCyoC2YvGcI2dqeL6MK7/XKoB/AnIzhqUGk
+ zU1Ftj+D+BJJZaCUl0nvokbrPszbOIGLyFPVSZDOFRF4SBWAsd3WEXvA/yhkO9wGA/9CH1RrC
+ OKS4VRj9S2IfdJMvPw+nUKXRE6G8wBhKgyDa+J3ph0X7BS5mSVAeUsueq1FeixZn3Klu3sHbt
+ ve53r21JLYWnHYtTfHhp58FDY7D4TWfl/AGbSY0Q7C4g/T+p9gN2Vio2MEmrRKtezoTNppMxD
+ 0ELKaqKAflu2LI4N+VjQyUw7KFmbX7S0wRq+JoKrfMI9C1C32vxRBHvu7kUm1uo2N49ucK5ks
+ 0kjW6eZhJcpQRINJdig9/lPQY8naB/LDHzxQJFA==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---j545DQ6zMKdBdZMr6AzHerF2LrVemLOnj
-Content-Type: multipart/mixed; boundary="VBAa3RXI0eH6gZ8oTOlnI0tYFs3M9s0AV"
+--RbgKwJp3llNMi4ViInsIk6ZLI1bONxQPz
+Content-Type: multipart/mixed; boundary="Z8c60uJCdAz7XI6ynREwqfUG5azjh2vMC"
 
---VBAa3RXI0eH6gZ8oTOlnI0tYFs3M9s0AV
+--Z8c60uJCdAz7XI6ynREwqfUG5azjh2vMC
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
 
 
 
-On 2020/10/5 =E4=B8=8A=E5=8D=8811:35, Eric Levy wrote:
->> There is an off-tree branch to do the repair:
->> https://github.com/adam900710/btrfs-progs/tree/extent_gen_repair
+On 2020/10/5 =E4=B8=8B=E5=8D=882:01, Chris Murphy wrote:
+> On Sun, Oct 4, 2020 at 6:12 AM Qu Wenruo <quwenruo.btrfs@gmx.com> wrote=
+:
+>>
+>>
+>>
+>> On 2020/10/4 =E4=B8=8B=E5=8D=886:44, Pet Eren wrote:
+>>> Hi there!
+>>>
+>>> I have been using BTRFS on an external hdd (WD Elements 8TB, Single m=
+ode, data, metadata and system in DUP). The device is LUKS encrypted.
+>>> After my Ubuntu 18.04 freezed, I can unlock LUKS, but I am not able t=
+o mount the BTRFS filesystem.
+>>>
+>>> - uname -a =3D 5.8.6-1-MANJARO
+>>> - btrfs --version =3D btrfs-progs v5.7
+>>> - btrfs fi show =3D Label: 'Elements'  uuid: 62a62962-2ad6-45db-a3ad-=
+77d7f64983e8
+>>>                           Total devices 1 FS bytes used 2.81TiB
+>>>                           devid    1 size 7.28TiB used 5.77TiB path /=
+dev/mapper/elements
+>>> - btrfs fi df /home =3D Unfortunatly I am not able to mount de btrfs =
+filesystem
+>>> - dmesg:
+>>> [560852.004810] BTRFS info (device dm-4): disk space caching is enabl=
+ed
+>>> [560852.004812] BTRFS info (device dm-4): has skinny extents
+>>> [560852.552878] BTRFS critical (device dm-4): corrupt leaf: block=3D2=
+90783232 slot=3D81 extent bytenr=3D2054053203968 len=3D262144 invalid gen=
+eration, have 878116864 expect (0, 1475717]
+>>> [560852.552884] BTRFS error (device dm-4): block=3D290783232 read tim=
+e tree block corruption detected
+>>> [560852.557557] BTRFS critical (device dm-4): corrupt leaf: block=3D2=
+90783232 slot=3D81 extent bytenr=3D2054053203968 len=3D262144 invalid gen=
+eration, have 878116864 expect (0, 1475717]
+>>> [560852.557564] BTRFS error (device dm-4): block=3D290783232 read tim=
+e tree block corruption detected
+>>> [560852.557605] BTRFS error (device dm-4): failed to read block group=
+s: -5
+>>> [560852.616539] BTRFS error (device dm-4): open_ctree failed
+>>>
+>>> I also tried to mount the device on another system (where the volume =
+is created) with the same results:
+>>> - uname -a =3D 4.15.0-118-generic
+>>> - btrfs --version =3D btrfs-progs v4.15.1
+>>>
+>>>
+>>> sudo btrfs check --readonly /dev/mapper/elements
+>>> Ends like this (with many more "Error: invalid generation for extent"=
+ lines)
+>>> ..
+>>> ERROR: invalid generation for extent 4552998985728, have 150461808037=
+10188199 expect (0, 1475717]
+>>> ERROR: invalid generation for extent 4555984134144, have 692194499035=
+0260720 expect (0, 1475717]
+>>> ERROR: invalid generation for extent 4556810252288, have 133837308938=
+51772781 expect (0, 1475717]
+>>> ERROR: invalid generation for extent 4558174781440, have 864906746759=
+2986678 expect (0, 1475717]
+>>> ERROR: invalid generation for extent 4558308999168, have 129530214745=
+35714951 expect (0, 1475717]
+>>
+>> Only extent tree corruptions, not a big problem.
+>>
+>> Nothing of your fs is lost, just kernel is too sensitive to any possib=
+le
+>> corrupted metadata, thus rejecting it completely, to avoid further pro=
+blems.
+>>
+>> In fact, if you go several kernel version backward, you can mount the =
+fs
+>> without problem.
 >=20
-> Ok. I was able to build and run. Part of the earlier confusion was
-> from reading the documentation in the wrong branch of the repository.
+> Well he tried with 4.15 and got the same messages. Would '-o
+> usebackuproot' work here? Or is it corruption older than just this one
+> crash?
 >=20
-> I ran the repair, and now the check passes in both the stock and
-> forked version of the utility.
->=20
-> However, the file system is still behaving badly. It reverts to RO
-> mode after several minutes of use.
 
-Would you provide the dmesg of when the RO happens?
+v4.15 is heavily backported, even for the stable branch.
 
-It should be another problem.
+We need to go several releases back to the v4.15 kernel which doesn't
+has such check.
 
 Thanks,
 Qu
->=20
-> Even a scrub operation fails ('aborted" result was not from a manual
-> intervention).
->=20
-> $ btrfs check /dev/sda5
-> Opening filesystem to check...
-> Checking filesystem on /dev/sda5
-> UUID: 9a4da0b6-7e39-4a5f-85eb-74acd11f5b94
-> [1/7] checking root items
-> [2/7] checking extents
-> [3/7] checking free space cache
-> [4/7] checking fs roots
-> [5/7] checking only csums items (without verifying data)
-> [6/7] checking root refs
-> [7/7] checking quota groups
-> Rescan hasn't been initialized, a difference in qgroup accounting is ex=
-pected
-> Qgroup are marked as inconsistent.
-> found 399944884224 bytes used, no error found
-> total csum bytes: 349626220
-> total tree bytes: 6007685120
-> total fs tree bytes: 4510924800
-> total extent tree bytes: 881704960
-> btree space waste bytes: 1148459015
-> file data blocks allocated: 570546290688
->  referenced 530623602688
->=20
-> $ sudo btrfs scrub start -B /mnt/custom
-> ERROR: scrubbing /mnt/custom failed for device id 1: ret=3D-1, errno=3D=
-5
-> (Input/output error)
-> scrub canceled for 9a4da0b6-7e39-4a5f-85eb-74acd11f5b94
-> Scrub started:    Sun Oct  4 23:25:22 2020
-> Status:           aborted
-> Duration:         0:01:41
-> Total to scrub:   378.04GiB
-> Rate:             0.00B/s
-> Error summary:    no errors found
->=20
 
 
---VBAa3RXI0eH6gZ8oTOlnI0tYFs3M9s0AV--
+--Z8c60uJCdAz7XI6ynREwqfUG5azjh2vMC--
 
---j545DQ6zMKdBdZMr6AzHerF2LrVemLOnj
+--RbgKwJp3llNMi4ViInsIk6ZLI1bONxQPz
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl96x+kACgkQwj2R86El
-/qjeGQf/c64S+9kuVT+4AVrzoOMj6uyzHD88N3mEQ0gRbJfVdwfN5DyetM+d4p2W
-nKc64l+DFNCXM7PZSFr2JENWos/+i97Bmqw5L5UqO5cd8SbKjhrt7clsoJGtlrhj
-iGLXGRcMtRhpfjF0bCM7wYFJyYMB3L5gQMeb/n3A93ac+PMpgkBuNSDxZGsJYhU1
-Skq+LDVDMUJhuuJkBi8UtycqB8s3fNuUqA1CiG9TD0WJJBv7RmP6/3hBvBFIK35Y
-E267l9IE8hTR/+Lm0JBezch+cZLQ9j2Xaj+0M92OKjkKBnHoHewGlBNUlFPiMmar
-E87IGw3Pcq9e7Q+X3oAa3gkMedL0pw==
-=NFDS
+iQEyBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl96yCkACgkQwj2R86El
+/qhNdAf2IUDzHfbFbzOaMwayc6VNdxXntIVUanm2FNAExmsKm38oftN/++atW0/c
+c8urRI7PvtvHR7a1j8lXLzcNux0ty7AoLvC+TZ5XpXwQSvMdEjt6VGoB0rrA/X0k
+J6VU9PLJ75mVy4QZCnunhslDm1oLVRRlitAHSKvhZizqO1BOc1i6nKkahpKBBRCn
+ZL7LBhm6MEJnJ79pQEb5j3N8OQ210Iox+AF0mOqO6Jk3F8oAJafvtLAlBW/r1ddI
+uKg875I3QRx7RLYcIELL6UeeAbypJYTLb3OJanjLQIxQhiE03EN6Fic4ttvsNEX4
+1SvQeF8V3Szs3ENGAwZEZzSK7PFO
+=D1Pk
 -----END PGP SIGNATURE-----
 
---j545DQ6zMKdBdZMr6AzHerF2LrVemLOnj--
+--RbgKwJp3llNMi4ViInsIk6ZLI1bONxQPz--
