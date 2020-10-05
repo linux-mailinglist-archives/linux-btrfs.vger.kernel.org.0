@@ -2,252 +2,159 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97520282EA7
-	for <lists+linux-btrfs@lfdr.de>; Mon,  5 Oct 2020 03:37:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B27BF282EAD
+	for <lists+linux-btrfs@lfdr.de>; Mon,  5 Oct 2020 03:46:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725848AbgJEBg7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 4 Oct 2020 21:36:59 -0400
-Received: from mout.gmx.net ([212.227.17.21]:49437 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725841AbgJEBg7 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 4 Oct 2020 21:36:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1601861816;
-        bh=IuIV7+lprFFeUSaU5DJJkXLWZusXwwgPmqDcsFckU38=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=k00o5Gehi5LsNL1PgX86FJ3vUHFSeOpleX1atVnjXXWTCVXWH4ewccq7SPKV5KI2u
-         AIzHyFA7MS40+5MFd9UmoSy/qm+bvASBiOoraaZaauRnnxCrG3i2C7eHMoc3vMNnTF
-         LiTQU27M7BTCA2AQe0UB449DDLxpyNZeW+TsUNlg=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MJE27-1k56Hk1bVz-00Kgxm; Mon, 05
- Oct 2020 03:36:56 +0200
-Subject: Re: ERROR... please contact btrfs developers
-To:     Eric Levy <ericlevy@gmail.com>, linux-btrfs@vger.kernel.org
-References: <CA++hEgx2x=HjjUR=o2=PFHdQSFSqquNffePTVUqMNs19sj_wcQ@mail.gmail.com>
- <CA++hEgxubm6qW++ozNbxUfeikjJ9g_MGn3wnQBoj=mST3x0kZg@mail.gmail.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
- PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
- 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
- D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
- efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
- ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
- BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
- 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
- 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
- EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
- 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
- ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
- oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
- fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
- 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
- ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
- oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <854a65c4-1fa2-ab4e-ed68-aafd5ed3ef4e@gmx.com>
-Date:   Mon, 5 Oct 2020 09:36:52 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1725902AbgJEBqi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 4 Oct 2020 21:46:38 -0400
+Received: from esa6.hgst.iphmx.com ([216.71.154.45]:35295 "EHLO
+        esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725841AbgJEBqi (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 4 Oct 2020 21:46:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1601862398; x=1633398398;
+  h=from:to:cc:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=jrsTXWvtcKh0dg5JxZRgTyxtJf58VJEvPAELy9fdAiw=;
+  b=Ajwp5LrC+tBeP8pU7dTBKEJx1qaRUfDJlKRtGYZlUPTMbP/QWh5mKalV
+   AbG/JYRAxzifrfzu0+xFeO2fOY8VuILc3EzPW9VWHB7oaoU6s+rxuCMU9
+   mouGw1Pk3oBFITyJ1sIYbPe3uB7Xj1QelB3KosahkQ8NHWQY49oG1tG0o
+   c+6+3sdrrwsfEO+NwHu9LyiP1p2Gc4dn2KXzno7AZ1tHqZZ7jQRADtOTe
+   79g2nQc/vTFUxFJ6JsPAeDSGF0UCVbtFYvrfhJ9roZa4wykB9RL4uZdUD
+   2mKz480zeBfzyck049MrjIg2CEbGglQlnxBg3biH/1631jOVVEpUzKEgy
+   A==;
+IronPort-SDR: YCkeUSUmmLALDUVdEL769tRxY9jyGcPBVxclP33ONQNX8csRxNuok2gK6j4yesH13odEP+QoPi
+ ZLozSKfLVQv9yhrQJhBzBTGbdYA36lJADcWckXe+FCN5v/ynjGlgD721DXRVRm3Q52iZ+2M8uZ
+ ShRLxjt04QcijTGUBWXnkyZYHzXFG8J0ImBOMRZ63W/nGQhNMihhR8dNlW3XdLk6EdNp0PZugk
+ BEPs/tW/MAoaDYHZUDS5jmzgL5eMM0q5UvpaNHEtY/vz5wCSooLL5WyCcKMiwKZgUV7KbXSHEy
+ nrk=
+X-IronPort-AV: E=Sophos;i="5.77,337,1596470400"; 
+   d="scan'208";a="150252644"
+Received: from mail-dm6nam12lp2170.outbound.protection.outlook.com (HELO NAM12-DM6-obe.outbound.protection.outlook.com) ([104.47.59.170])
+  by ob1.hgst.iphmx.com with ESMTP; 05 Oct 2020 09:46:37 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=L9BUXOjZqe5qd4sbnbxtnqWiy64t/9PrLABWiixk3Twu2EWUFi7p6kajT+VLD7B86+HaXNwg6ddcfgh9zYdeZIeHI/scm7yYEYeW95PHAYuZ0Y4Y+ttA+r2mjCUBNi2tVvJrc3Nd5KGiALF1ygh4h8A96ldN8/8oexdQciomc9fSXjwSk+yUmB936wE3XIdO0pvdCOIwZL8iELZk/oXMg7DOt6cQv3uLa451nNck8N6BNFXtb31oSJv3P5hDObZ7nFYn9rVjObJzliKKKs1SyeEetzIUXkFSWJRTS/+BZjtuzgkr28gUUOmKeMU63+IuiMDFL4D3vdFcqPDMdZCTbw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=jrsTXWvtcKh0dg5JxZRgTyxtJf58VJEvPAELy9fdAiw=;
+ b=LLwKpU9L3McaeYm3jbbb4dDUZHR8u7BfMoH9Si2EmPOWbTAfbo4Pv+Ab2lKqXxd5bemDHzLw3Ofm2I+x5vNoA9THOGbxY9L/MH3S2BTHzFVYfMH4EDM5cTlpaYQKkQnR5v+uq12FH63zU1rkQ9ure5oPtDXyGZFetZPGE/G2IvFvYpS1uuy9VX6GBz9/zSD14ZGOfhW+kGAFwlZlNJC4cSuDe9x5IyM+xkD0gcpitg6LVBSZA+9TkCuJYwlji4YFLN6GNGjVCjcUn0YT8xqBvGaQsNEMSqRs3qrsBI3bX6CM5xAuvCvfJXGcW+pcfZuTt/CZGsIscMsvdOa6aLjiaA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=jrsTXWvtcKh0dg5JxZRgTyxtJf58VJEvPAELy9fdAiw=;
+ b=EmnGacQcR8DI8aGMXHwUrdm/PzV9KRVOsHRN63KaNvmbfvR5IKWaio4lOLdodz6gl8U3HSG/93XwBubtq/PuZBIVHsl/xgFyVS6wp1vbeQAW2EE8acbdwHBoYzgh3nNl9qOz/EwG+boJC1uhaaUIix/nayt3EeQyvkgnkDlM+Bc=
+Received: from CY4PR04MB3751.namprd04.prod.outlook.com (10.172.142.14) by
+ CY4PR0401MB3587.namprd04.prod.outlook.com (52.132.99.33) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3433.43; Mon, 5 Oct 2020 01:46:35 +0000
+Received: from CY4PR04MB3751.namprd04.prod.outlook.com
+ ([fe80::9124:2453:fe9c:9a7]) by CY4PR04MB3751.namprd04.prod.outlook.com
+ ([fe80::9124:2453:fe9c:9a7%12]) with mapi id 15.20.3433.043; Mon, 5 Oct 2020
+ 01:46:34 +0000
+From:   Damien Le Moal <Damien.LeMoal@wdc.com>
+To:     "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Naohiro Aota <Naohiro.Aota@wdc.com>
+CC:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        "dsterba@suse.com" <dsterba@suse.com>,
+        "hare@suse.com" <hare@suse.com>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+Subject: Re: [PATCH v8 01/41] block: add bio_add_zone_append_page
+Thread-Topic: [PATCH v8 01/41] block: add bio_add_zone_append_page
+Thread-Index: AQHWmCICMDDhRg8S9EGeqVQ0V4cAqg==
+Date:   Mon, 5 Oct 2020 01:46:34 +0000
+Message-ID: <CY4PR04MB3751168260AB3888599741D9E70C0@CY4PR04MB3751.namprd04.prod.outlook.com>
+References: <cover.1601572459.git.naohiro.aota@wdc.com>
+ <dece91bca322ce44bed19f2b0f460fa5ded2e512.1601574234.git.naohiro.aota@wdc.com>
+ <yq1k0w8g3rw.fsf@ca-mkp.ca.oracle.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: oracle.com; dkim=none (message not signed)
+ header.d=none;oracle.com; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [2400:2411:43c0:6000:809a:93a5:8305:e8b2]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: fd9c6c9c-3e66-4872-1e1e-08d868d07e07
+x-ms-traffictypediagnostic: CY4PR0401MB3587:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <CY4PR0401MB3587175A4715811CC3E412DEE70C0@CY4PR0401MB3587.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: CdPdCW92f2TdFGwd/CPW0TVDjB2XyZRxD2lkVJv8bZxStRDPRsf4XOGtohbMvC/qQ7j1QwnYfVLco/riuybqfBsRyQzOp9bxYF00CPvHr1OYpwx9tqsthGXeomRBRn9BpQicke4tZPg4+z0lFJocqSGWnd/UtH7C0PN6dzIULbt5geXgIZfUHC0s4sjz9zR8vekz0lZIsaCQ5lpI8AOKnpLNFoe4h9kV23dqemRRL1Ob9IShoaazCFl5+6DoSScsH6G5Eq3OOOIlC4oxosfp5JAk+4ne5eKHHkivx9ZAq60Bj6OTM7y7pn3GlKzEBUasDHtTTzN9+J1VvuQTwXzzyA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR04MB3751.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(376002)(346002)(366004)(396003)(39860400002)(7696005)(33656002)(54906003)(8936002)(6636002)(110136005)(66556008)(64756008)(2906002)(53546011)(66476007)(66446008)(4326008)(66946007)(6506007)(76116006)(91956017)(8676002)(86362001)(71200400001)(55016002)(83380400001)(9686003)(478600001)(5660300002)(186003)(52536014)(316002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: TDWHODlP4NAWFw19ggZGF9ZygeP9hdO6W2H9tPWJmUAGOue9XEBt92RtK9QiBjErL9QgV/d087/bkkIMhKie7HF+3j+1n1PFzQtVYbGbogiWCJCp0JkUtuzg2Ic9o6/Ejv2W0m4IWsGxPy/jA5yocufiEPONpsO2omWO4zZCThClX8/Kt5e6vbi/UZZMfb6b0E5iODw44AgldOhzkBw2ei/E/UC3LKinq5MZR+JRmDPVxhRVAkeoQ0FCKKkl97u6nKtdgDOe1M3eCwAPUDcmftrmg13U083h0m1WsoiZfs7QAMEUkP8DfjgfJkgD3NfvWPaoGx0LXbzsK6sdj3hYTCfSF/DmbY+t0fDCAKM9CuLhA6r4dP3UR3FkuUwJTu8tVjos+3V3HWmC4+bktq65Ki5WP8uUkessInGdPn1Cd2gVcl1hdfsmnFuMTO6PnAClGeQKsgAh96s6m3JnCwVLmZ6LCXwfnLcYWRYIsTgLk23UZYczbJ+Wyo084nhlS56qoxl2UBZAUW82Qq7ADaCdRvEQXjW5io+U0TnklOsf7kYFR5WMk+nPJgsVfDVD5XRAh+pcuFkR/NeN97Ej31H+1WHYAVvzH8M1cVatFz0NJzYKH5+xMUKApDQgYCeqC20rU+lXWJ+F8KlSJwKXQ8m+VQyoQLfs33Nu8mdRYOtO0orS4kL9bKSUAVxQzGKDn+j6oPUb5wXsEIAAjl+H/b60RQ==
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-In-Reply-To: <CA++hEgxubm6qW++ozNbxUfeikjJ9g_MGn3wnQBoj=mST3x0kZg@mail.gmail.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="H79aW7hVvwfLCdqIMNTO74ncKU3qp1L2y"
-X-Provags-ID: V03:K1:JbCPr5HuUlmREZdAEyMBwxNHSVjV4Xafh1E8qyaFzc5PtISjGDX
- K0Be+h4galDNBU2kDMNURDmehxyIlgDXahcZB77K62E3nj5JntfH9AVq6NWva1RalCcAACT
- H0/88DzsdUrQJhlzrNCxBTEpnEajjyZUhNAfd8yhxVlL18fejfEgJxNpj5dgaYQDJ7xJyhy
- SRyHDyFLzkOJA+5MMjlPQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:0j77+edp2Uo=:oi/jeX+7JJwEoyb2/hvnOw
- 9PmFj+UHUzlEiPIi4+N1uDotchn7ap3MovdArTzR/QQCTBshkPpjAZHZZQKnqF02W82pjAqdF
- K8eCRUNAHYr8r2NjaVcMNwvsUB549lpY8Ze+Z4gfg6aZvh85mJMDXtjOjBmH1I7pMkL0mLf40
- Kqna/V8tO5YDrxDVobyQx5/OkDPbIIsBK6tkWAMj1LepN6vQ6XBuEa5JpP9pEFsthDCyeKsX5
- 4UZ9jqf5YGGplC1crAlA5JewVI9oar5s1AWkoI3DEsC2xpUySn+ti3eXzAwRoL5JQGXIyrKBP
- IwDdUj2lLbLVNrlkqV107QaSQAJ9ErsZGlQzA4A1SIMFk/jdXTdphinLLp/1uCd2bvjU9lIhF
- mt5VmaM7zGxWGsAhgPQTGHHC3ulU5QzjYZXi43+zmP6jxu7K1pYJqArgO+2CaPBWjNMN8TtBe
- YL+X30GvBdQR+7ZKMh+IFOyLdUQgfpC/raCwVzYnsBvu4pKcmBqIEEZlzzjjKhurxS7h2LMZ4
- eh4ZCHXn6QQ4y0XC7Th+HcYPSxaz/y02MN+k9J6RMcVfvg9Odm7SU4DJcP77SnzjevDUK2gQb
- ErIm54cs1Aq9h+/QUgcasaSvw3A/wbuN75YCHe5BTQWfOZo8CiLP/TdzcCnbsXWE6hh3sgDcW
- YeZV/IyxxuEvg/tbG/9PlH0wCo8J3Bo51/rvY3A3ayWMWG6k+/jnj43R2dXhlGMmNWoBiypub
- lJPbjTdaqz0zdQX915VepcXmHEpg8pevphCdLtW3kXFzYtn76tKowZ6VNw0wEUFlXWPQGvtHN
- ZZAQIj5MQSF/8sgw2EK3BlxJK4/BIhCP5HH3LPbvnju8nw6WxF3EG5/5j7FWgsd30kNANAdvU
- Dgel7Ol4divwTnLXs35ninHsbhiv42D39p76a7lcsA/AEQqATYuHJ3wg8x9CM4aP8WtRS73DZ
- 4v9W7or3ovieEOiiOo8v2LpHwctBn4EPtTu87qnBRU3RlH3gBrTdupthEbSr394MuwxaqJpym
- jyw+AKPzSYF9pEdR5tMDRircqYcGHlLLraqRMAtCvsaa78ChmZ9HXYfPrWHo+Kjbu9poMRoCM
- FXJi53yLEsYY4j/BuxN8MAW2lTb7Nvg6uENnkeIW7MbxBV/LForgOrNuBYdWtJDwHYvYjmWQ1
- Xu0N/fvBwqQ/tKds9kKWEpZM6rZRuGM5xF9YzVEEpilEofNFEWyGJOagWIISMybbZZ++7tJhj
- BrmhmP0Ci7Z4w2bZHKvMMifyxDF5rAj+hMlEoxQ==
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CY4PR04MB3751.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: fd9c6c9c-3e66-4872-1e1e-08d868d07e07
+X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Oct 2020 01:46:34.7868
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: T4/NE9acpNt3YTSmFjTFbzXYf4C7EOmA4DpFnD3AyN0/WBgrqrVxyDtOR62v8FhkXMtnyMdqE6RwFU8s4rngeg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR0401MB3587
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---H79aW7hVvwfLCdqIMNTO74ncKU3qp1L2y
-Content-Type: multipart/mixed; boundary="F5jzwwvlff1C7vy2L7Q9h69AdAcySRZMJ"
-
---F5jzwwvlff1C7vy2L7Q9h69AdAcySRZMJ
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-
-
-
-On 2020/10/5 =E4=B8=8A=E5=8D=889:33, Eric Levy wrote:
-> A new observation is that I notice that through the RO option,
-> although the mount still degrades after continued use, it is more
-> stable than in a standard RW mode. At this point, I believe I have
-> recovered the crucial folders, though I have no guarantee that no
-> files are missing or corrupted.
-
-As replied, none of your data is lost or corrupted by this incident.
-
-You can reverted to older kernel without the extent item generation
-check to continue your usage without any problem.
-
-Also as said, using this branch with "btrfs check --repair" should solve
-your problem, and make the fs safe against latest kernel
-https://github.com/adam900710/btrfs-progs/tree/extent_gen_repair
-
-Thanks,
-Qu
-
-
-> I would hope to restore this
-> filesystem to a fully functional state, or otherwise clone the
-> subvolumes successfully to another partition, with as much data
-> recovery as possible.
->=20
-> Even with RO, the receive command still fails rather abruptly, though
-> not always immediately:
->=20
-> ERROR: send ioctl failed with -5: Input/output error
->=20
-> I have written to the list because I believe that doing so best
-> satisfies the request within the error message to "please contact
-> btrfs developers". If another avenue of communication is more
-> suitable, then please advise.
->=20
-> On Tue, Sep 29, 2020 at 9:44 PM Eric Levy <ericlevy@gmail.com> wrote:
->>
->> I recently upgraded a Linux system running on btrfs from a 5.3.x
->> kernel to a 5.4.x version. The system failed to run for more than a
->> few minutes after the upgrade, because the root mount degraded to a
->> read-only state. I continued to use the system by booting using the
->> 5.3.x kernel.
->>
->> Some time later, I attempted to migrate the root subvolume using a
->> send-receive command pairing, and noticed that the operation would
->> invariably abort before completion. I also noticed that a full file
->> walk of the mounted volume was impossible, because operations on some
->> files generated errors from the file-system level.
->>
->> Upon investigating using a check command, I learned that the file
->> system had errors.
->>
->> Examining the error report (not saved), I noticed that overall my
->> situation had rather clear similarities to one described in an earlier=
-
->> discussion [1].
->>
->> Unfortunately, it appears that the differences in the kernels may have=
-
->> corrupted the file system.
->>
->> Based on eagerness for a resolution, and on an optimistic comment
->> toward the end of the discussion, I chose to run a check operation on
->> the partition with the --repair flag included.
->>
->> Perhaps not surprisingly to some, the result of a read-only check
->> operation after the attempted repair gave a much more discouraging
->> report, suggesting that the damage to the file system was made worse
->> not better by the operation. I realize that this possibility is
->> explained in the documentation.
->>
->> At the moment, the full report appears as below.
->>
->> Presently, the file system mounts, but the ability to successfully
->> read files degrades the longer the system is mounted and the more
->> files are read during a continuous mount. Experiments involving
->> unmounting and then mounting again give some indication that this
->> degradation is not entirely permanent.
->>
->> What possibility is open to recover all or part of the file system?
->> After such a rescue attempt, would I have any way to know what is lost=
-
->> versus saved? Might I expect corruption within the file contents that
->> would not be detected by the rescue effort?
->>
->> I would be thankful for any guidance that might lead to restoring the =
-data
->>
->>
->> [1] https://www.spinics.net/lists/linux-btrfs/msg96735.html
->> ---
->>
->> Opening filesystem to check...
->> Checking filesystem on /dev/sda5
->> UUID: 9a4da0b6-7e39-4a5f-85eb-74acd11f5b94
->> [1/7] checking root items
->> [2/7] checking extents
->> ERROR: invalid generation for extent 4064026624, have 94810718697136
->> expect (0, 33469925]
->> ERROR: invalid generation for extent 16323178496, have 94811372174048
->> expect (0, 33469925]
->> ERROR: invalid generation for extent 79980945408, have 94811372219744
->> expect (0, 33469925]
->> ERROR: invalid generation for extent 318963990528, have 94810111593504=
-
->> expect (0, 33469925]
->> ERROR: invalid generation for extent 319650189312, have 14758526976
->> expect (0, 33469925]
->> ERROR: invalid generation for extent 319677259776, have 414943019007
->> expect (0, 33469925]
->> ERROR: errors found in extent allocation tree or chunk allocation
->> [3/7] checking free space cache
->> block group 71962722304 has wrong amount of free space, free space
->> cache has 266420224 block group has 266354688
->> ERROR: free space cache has more free space than block group item,
->> this could leads to serious corruption, please contact btrfs
->> developers
->> failed to load free space cache for block group 71962722304
->> [4/7] checking fs roots
->> [5/7] checking only csums items (without verifying data)
->> [6/7] checking root refs
->> [7/7] checking quota groups
->> found 399845548032 bytes used, error(s) found
->> total csum bytes: 349626220
->> total tree bytes: 5908873216
->> total fs tree bytes: 4414324736
->> total extent tree bytes: 879493120
->> btree space waste bytes: 1122882578
->> file data blocks allocated: 550505705472
->>  referenced 512080416768
-
-
---F5jzwwvlff1C7vy2L7Q9h69AdAcySRZMJ--
-
---H79aW7hVvwfLCdqIMNTO74ncKU3qp1L2y
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl96eLQACgkQwj2R86El
-/qhOUwgAqYmZJ/LwMrUi1k4WLogcnC1paZ6RYJwdLrh2p0hbNw1env0x7bS/u4JH
-lzR75+N2t9LE6MVmTJUvtt+QfNBrYcHUHrravfAIHrY/79PxRVPJ803rq2Ot5enQ
-kBBF8pMGRkVLQxGd9gFittPfKEMMXWUyUa7IqI0ZIdvA5AsmauCW+dul0udwzhHj
-dvX12f5t8hRuYZjYOlKVGJiTikJWwgHA8vqsbvsh++4rfBz47nfXdaTwvXBle7Vc
-QCTl57bvsWgyS1wL7jqp8++4jalgOm+CVw55XzDAZQS3aJ9QlkzmcB2YuRFRHIbF
-N8p6ltJW2nTRcHxV/Kk1osB0KtpI4Q==
-=0Gh4
------END PGP SIGNATURE-----
-
---H79aW7hVvwfLCdqIMNTO74ncKU3qp1L2y--
+On 2020/10/02 22:39, Martin K. Petersen wrote:=0A=
+> =0A=
+> Naohiro/Johannes,=0A=
+> =0A=
+>> Add bio_add_zone_append_page(), a wrapper around bio_add_hw_page() which=
+=0A=
+>> is intended to be used by file systems that directly add pages to a bio=
+=0A=
+>> instead of using bio_iov_iter_get_pages().=0A=
+> =0A=
+> Why use the hardware limit? For filesystem I/O we generally use the=0A=
+> queue soft limit to prevent I/Os getting too big which can lead to very=
+=0A=
+> unpredictable latency in mixed workloads.=0A=
+=0A=
+max_zone_append_sectors is already gated by max_hw_sectors, but it is not g=
+ated=0A=
+by max_sectors/BLK_DEF_MAX_SECTORS. If we add such gating to=0A=
+blk_queue_max_zone_append_sectors(), max_zone_append_sectors would become a=
+ soft=0A=
+limit too. So should we have max_zone_append_sectors and=0A=
+max_hw_zone_append_sectors ?=0A=
+=0A=
+Which also means that we should tweak queue_max_sectors_store() to gate=0A=
+max_zone_append_sectors to that limit upon a user change.=0A=
+=0A=
+> =0A=
+> max_zone_append_sectors also appears to be gated exclusively by hardware=
+=0A=
+> constraints. Is there user-controllable limit in place for append=0A=
+> operations?=0A=
+=0A=
+No, none that I know of. At the HW level, max_zone_append_sectors is basica=
+lly=0A=
+max_hw_sectors. That is gated by the zone size in=0A=
+blk_queue_max_zone_append_sectors(). If as mentioned above we tweak=0A=
+queue_max_sectors_store() to change max_zone_append_sectors too if needed, =
+we=0A=
+would then have an indirect user-controllable limit. Or we could implement =
+a=0A=
+queue_zone_append_max_store() too I guess. Yet, having everything indirectl=
+y=0A=
+controlled through queue_max_sectors_store() is probably simpler I think.=
+=0A=
+=0A=
+-- =0A=
+Damien Le Moal=0A=
+Western Digital Research=0A=
