@@ -2,133 +2,67 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 701462839FD
-	for <lists+linux-btrfs@lfdr.de>; Mon,  5 Oct 2020 17:30:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAF43283D0D
+	for <lists+linux-btrfs@lfdr.de>; Mon,  5 Oct 2020 19:09:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727741AbgJEPaP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 5 Oct 2020 11:30:15 -0400
-Received: from luna.lichtvoll.de ([194.150.191.11]:49669 "EHLO
-        mail.lichtvoll.de" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727692AbgJEP3y (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 5 Oct 2020 11:29:54 -0400
-Received: from 127.0.0.1 (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.lichtvoll.de (Postfix) with ESMTPSA id D5BF9161416;
-        Mon,  5 Oct 2020 17:29:51 +0200 (CEST)
-From:   Martin Steigerwald <martin@lichtvoll.de>
-To:     linux-btrfs@vger.kernel.org, Qu Wenruo <wqu@suse.com>
-Subject: Re: [PATCH] btrfs: fix false alert caused by legacy btrfs root item
-Date:   Mon, 05 Oct 2020 17:29:51 +0200
-Message-ID: <1786699.e55IGcOCre@merkaba>
-In-Reply-To: <20200922023701.32654-1-wqu@suse.com>
-References: <20200922023701.32654-1-wqu@suse.com>
+        id S1727450AbgJERJk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 5 Oct 2020 13:09:40 -0400
+Received: from cryptearth.de ([91.121.4.115]:48240 "EHLO cryptearth.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726615AbgJERJk (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 5 Oct 2020 13:09:40 -0400
+X-Greylist: delayed 611 seconds by postgrey-1.27 at vger.kernel.org; Mon, 05 Oct 2020 13:09:39 EDT
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-Authentication-Results: mail.lichtvoll.de;
-        auth=pass smtp.auth=martin smtp.mailfrom=martin@lichtvoll.de
+X-UserIsAuth: true
+Received: from 2a0c:d242:3803:9400:ec14:863c:b9cb:c16f (EHLO [IPv6:2a0c:d242:3803:9400:ec14:863c:b9cb:c16f]) ([2a0c:d242:3803:9400:ec14:863c:b9cb:c16f])
+          by cryptearth.de (JAMES SMTP Server ) with ESMTPA ID 1764098952
+          for <linux-btrfs@vger.kernel.org>;
+          Mon, 05 Oct 2020 18:59:27 +0200 (CEST)
+To:     linux-btrfs@vger.kernel.org
+From:   cryptearth <cryptearth@cryptearth.de>
+Subject: using raid56 on a private machine
+Message-ID: <dbf47c42-932c-9cf0-0e50-75f1d779d024@cryptearth.de>
+Date:   Mon, 5 Oct 2020 18:59:20 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi Qu!
+Hello there,
 
-Qu Wenruo - 22.09.20, 04:37:01 CEST:
-> Commit 259ee7754b67 ("btrfs: tree-checker: Add ROOT_ITEM check")
-> introduced btrfs root item size check, however btrfs root item has two
-> format, the legacy one which just ends before generation_v2 member,
-> is smaller than current btrfs root item size.
->
-> This caused btrfs kernel to reject valid but old tree root leaves.
-> 
-> Fix this problem by also allowing legacy root item, since kernel can
-> already handle them pretty well and upgrade to newer root item format
-> when needed.
+as I plan to use a 8 drive RAID6 with BtrFS I'd like to ask about the 
+current status of BtrFS RAID5/6 support or if I should go with a more 
+traditional mdadm array.
 
-Is this going into 5.9? Asking cause it is not in 5.9-rc8.
+The general status page on the btrfs wiki shows "unstable" for RAID5/6, 
+and it's specific pages mentions some issue marked as "not production 
+ready". It also says to not use it for the metadata but only for the 
+actual data.
 
-Of course I can keep the patch and as the external disk has been fixed, I 
-would not even need it anymore.
+I plan to use it for my own personal system at home - and I do 
+understand that RAID is no replacement for a backup, but I'd rather like 
+to ask upfront if it's ready to use before I encounter issues when I use it.
+I already had the plan about using a more "traditional" mdadm setup and 
+just format the resulting volume with ext4, but as I asked about that 
+many actually suggested to me to rather use modern filesystems like 
+BtrFS or ZFS instead of "old school RAID".
 
-Best,
-Martin
+Do you have any help for me about using BtrFS with RAID6 vs mdadm or ZFS?
 
-> Reported-by: Martin Steigerwald <martin@lichtvoll.de>
-> Fixes: 259ee7754b67 ("btrfs: tree-checker: Add ROOT_ITEM check")
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> ---
->  fs/btrfs/tree-checker.c         | 17 ++++++++++++-----
->  include/uapi/linux/btrfs_tree.h |  9 +++++++++
->  2 files changed, 21 insertions(+), 5 deletions(-)
-> 
-> diff --git a/fs/btrfs/tree-checker.c b/fs/btrfs/tree-checker.c
-> index 7b1fee630f97..6f794aca48d3 100644
-> --- a/fs/btrfs/tree-checker.c
-> +++ b/fs/btrfs/tree-checker.c
-> @@ -1035,7 +1035,7 @@ static int check_root_item(struct extent_buffer
-> *leaf, struct btrfs_key *key, int slot)
->  {
->  	struct btrfs_fs_info *fs_info = leaf->fs_info;
-> -	struct btrfs_root_item ri;
-> +	struct btrfs_root_item ri = { 0 };
->  	const u64 valid_root_flags = BTRFS_ROOT_SUBVOL_RDONLY |
->  				     BTRFS_ROOT_SUBVOL_DEAD;
->  	int ret;
-> @@ -1044,14 +1044,21 @@ static int check_root_item(struct
-> extent_buffer *leaf, struct btrfs_key *key, if (ret < 0)
->  		return ret;
-> 
-> -	if (btrfs_item_size_nr(leaf, slot) != sizeof(ri)) {
-> +	if (btrfs_item_size_nr(leaf, slot) != sizeof(ri) &&
-> +	    btrfs_item_size_nr(leaf, slot) != 
-btrfs_legacy_root_item_size())
-> { generic_err(leaf, slot,
-> -			    "invalid root item size, have %u expect %zu",
-> -			    btrfs_item_size_nr(leaf, slot), sizeof(ri));
-> +			    "invalid root item size, have %u expect %zu or 
-%zu",
-> +			    btrfs_item_size_nr(leaf, slot), sizeof(ri),
-> +			    btrfs_legacy_root_item_size());
->  	}
-> 
-> +	/*
-> +	 * For legacy root item, the members starting at generation_v2 
-will
-> be +	 * all filled with 0.
-> +	 * And since we allow geneartion_v2 as 0, it will still pass the
-> check. +	 */
->  	read_extent_buffer(leaf, &ri, btrfs_item_ptr_offset(leaf, slot),
-> -			   sizeof(ri));
-> +			   btrfs_item_size_nr(leaf, slot));
-> 
->  	/* Generation related */
->  	if (btrfs_root_generation(&ri) >
-> diff --git a/include/uapi/linux/btrfs_tree.h
-> b/include/uapi/linux/btrfs_tree.h index 9ba64ca6b4ac..464095a28b18
-> 100644
-> --- a/include/uapi/linux/btrfs_tree.h
-> +++ b/include/uapi/linux/btrfs_tree.h
-> @@ -644,6 +644,15 @@ struct btrfs_root_item {
->  	__le64 reserved[8]; /* for future */
->  } __attribute__ ((__packed__));
-> 
-> +/*
-> + * Btrfs root item used to be smaller than current size.
-> + * The old format ends at where member generation_v2 is.
-> + */
-> +static inline size_t btrfs_legacy_root_item_size(void)
-> +{
-> +	return offsetof(struct btrfs_root_item, generation_v2);
-> +}
-> +
->  /*
->   * this is used for both forward and backward root refs
->   */
+I also don't really understand why and what's the difference between 
+metadata, data, and system. When I set up a volume only define RAID6 for 
+the data it sets metadata and systemdata default to RAID1, but doesn't 
+this mean that those important metadata are only stored on two drives 
+instead of spread accross all drives like in a regular RAID6? This would 
+somewhat negate the benefit of RAID6 to withstand a double failure like 
+a 2nd drive fail while rebuilding the first failed one.
+
+Any information appreciated.
 
 
--- 
-Martin
+Greetings from Germany,
 
-
+Matt
