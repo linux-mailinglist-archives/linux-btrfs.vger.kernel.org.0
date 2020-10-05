@@ -2,26 +2,26 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FEB5283298
-	for <lists+linux-btrfs@lfdr.de>; Mon,  5 Oct 2020 10:54:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D205283306
+	for <lists+linux-btrfs@lfdr.de>; Mon,  5 Oct 2020 11:17:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725905AbgJEIyZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 5 Oct 2020 04:54:25 -0400
-Received: from mout.gmx.net ([212.227.15.18]:36361 "EHLO mout.gmx.net"
+        id S1725919AbgJEJRx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 5 Oct 2020 05:17:53 -0400
+Received: from mout.gmx.net ([212.227.17.20]:33087 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725880AbgJEIyZ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 5 Oct 2020 04:54:25 -0400
+        id S1725887AbgJEJRw (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 5 Oct 2020 05:17:52 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1601888062;
-        bh=X/AnM2wzb2FqwEURz+1HdDkIdR+eiLuCmmteOp8Orbs=;
+        s=badeba3b8450; t=1601889469;
+        bh=psAWT7m++FZ8RETNajyLFli+D02vOVJkk5i3796ITJw=;
         h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=j9ucpodz1pOlF7keKCOYDsGa96BqN6M7Ap/xT3zQFyVOnKGy09BbaAlkg98VYhXrE
-         BS0nTlkHpnwaYnC5KbVnPPA6BuTRkBUDmAwk1qrr/XNENZV8ESXAFFbFOUC4PuP2BF
-         QVdxNfaofAslrBVcb9tohcovEXhhjjVAp5EsB6vE=
+        b=fSV9VT/8WfKdfSOnLgoxJNkJ2/Fq0Io9nbA1tLpxNJwHe2QTnWGj6BRC34OX71vQe
+         ue7yQ1pBVO79wRGInFVMi9PxVtLHsb3rp03Dn1dR7JAJdi/uD97rKk5a3cAQE6psXI
+         nR5PQkgvmZTY4Imx3WOmA4q8lEmJd0ePzuc6BiPM=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MvK4Z-1kh1dX0KUj-00rGOT; Mon, 05
- Oct 2020 10:54:22 +0200
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1M8QS8-1kKyuC3Rui-004QSw; Mon, 05
+ Oct 2020 11:17:49 +0200
 Subject: Re: ERROR... please contact btrfs developers
 To:     Eric Levy <ericlevy@gmail.com>,
         "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
@@ -29,7 +29,8 @@ References: <CA++hEgx2x=HjjUR=o2=PFHdQSFSqquNffePTVUqMNs19sj_wcQ@mail.gmail.com>
  <c2d13609-564d-1e3b-482a-0af65532b42b@gmx.com>
  <CA++hEgwsLH=9-PCpkR4X2MEqSwwK6ZMhpb+YEB=ze-kOJ8cwaQ@mail.gmail.com>
  <CA++hEgzbFsf6LgPb+XJbf-kkEYEy0cYAbaF=+m3pbEdSd+f62g@mail.gmail.com>
- <CA++hEgzRkz+qQQf_+YBX2r5bBiNvtexiguPG99jBzVM6JhtPzg@mail.gmail.com>
+ <c2c0f8e7-b3ff-9e88-9d98-3b903c241644@gmx.com>
+ <CA++hEgwdYmfGFudNvkBR6zo3Ux01UFRwHN1WDd7csH5_jBZ0Rg@mail.gmail.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -55,109 +56,160 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
  ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
  oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <eb1060b8-8316-0866-141d-70498222db9a@gmx.com>
-Date:   Mon, 5 Oct 2020 16:54:19 +0800
+Message-ID: <0b0cab47-1824-13ae-61c0-1c3c42c5fa10@gmx.com>
+Date:   Mon, 5 Oct 2020 17:17:46 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <CA++hEgzRkz+qQQf_+YBX2r5bBiNvtexiguPG99jBzVM6JhtPzg@mail.gmail.com>
+In-Reply-To: <CA++hEgwdYmfGFudNvkBR6zo3Ux01UFRwHN1WDd7csH5_jBZ0Rg@mail.gmail.com>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="Ncw5kIrCyxRDcH9J7lVLWJ4IQ3p5dYFnw"
-X-Provags-ID: V03:K1:kqhGimJugQyf8PcDtwDsyuTvi3gY8T91U+nkAaqznsUZr49BiT/
- 0ecjHTSUdQvxe2ujFcb0ZMfsbv+bCEPvuhcaDuRBpeglTvZBKzJrGcI3dUWe1RCDcVkXXUN
- Vr3mh13gIdQO8e4kUgvCiim59ZkCdpD+pZxWaBehDZVVxciHOeHN0gS3aotfs2GOxIUROBX
- 4uP2lJTDt3DvdjG+i7cjA==
+ boundary="O3FkZOAxEZ742bgakEnVX0UBBezksaHYw"
+X-Provags-ID: V03:K1:ql03qWoyJIbblMJJMVLzc8cs6hNoYVpqHGhcLnoRNroSudBw0pb
+ 2/Mbhcm5F/4Y/O9lZJmx6bACaVeE/YC7HsjPvbknAQRtSNkv/COD7m6nU8di/VgQSmVYf4F
+ jCbJ2BeyCQLQarP/dPKezLDgW3gq8HSr6xvhdAjdxOqIjI2j0r4JzrslDdOoQs27cDrbple
+ 110vCk4P6Ymg6YbR1F8BA==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:3GTrbUAb5h0=:pQy4Bq9ZxNSqeY/5Aca8Nc
- FoNnqTLmzQcGJwepLoH60dQN98f9jIezg/kIhcAJ+opHnjnT0T4uXwLv6wTKjBtJukDhtK6Yo
- oaYZqK32gKKD3fSy9zly3WI4RzJtB2Um5uSBKsttCtTlbWGzh7G5aBwfktpy5g11kQegY4AO7
- 0OX3ZzjeX7ZWxXyQR7i4YeYbvCE1fIgdv24RmOIMhoD5CNXYY8nFQ5tyP4qU6lofW1amhRa/X
- Ecnyp0r6wwa2ayx9+MMBFl/sF95roZJyhzTsfoLjuBqDetfFw+mmy0OynnbzTKr5WOVWphEKi
- JJNeKkkcI9Eq+5R8iUnQkFRg41XLQiHo6cWFKHDCNheiF3iDW69azdKlkS9Gd43yyWITWAss7
- rpVUrphjCOCRNSDucOo5a31WeKgjrIZ+czRbVYWJ1kFHdzXEC6m1O9rzJhvyvpbj8ogD+psT0
- SY4AR7ZFzNJs3vijM2w9Lw0fkBIoRPsqpH/Q2I6SwNy5i/Q2u6pUrZQUw8z2Yc8FzIAdAPaiR
- X4+a7x+6MAvMpGIp0PXXd502tyNq/DVVhwJ2+49vhnW/Q5jUATCKKwruSZq2o/DLNqcoM9lQg
- yjkkHpofjmu8BTWB4wBN8CZtThzyoH9ADSYczW6drfe11zjEh0P69hqfIZXWxUr/GPLM3xekJ
- 6ud529KfShORzeKjlm5sQY/Z+tN/X2s9OHBUK9YD44IyXb/fO9mAod0PZXJykF4hSB2wmVwKF
- rpgb59wTV/lv2cXrB98FQltQ3ssUtX0b2vBujNZsH5KQ2P9CSKOKmuBOJGRWJJBaK18CFX87F
- QHF4q0DqajwDopQ/VDN0aq3TmgQSmxrTny88sedRqlIBbr1t0vGamfKaqecL62eMtOLr6rdpd
- 4EwUlkH7TiQfJabQHU9moVlDfwQB3Fs5rNUCWGB2m50CNyaSvQqKLhFeY+CzzzL+y4RzMh5mB
- rrN2K24XydIilEAEgiwcJhhNoHzVgpXQj6WhpJNIkioOt2biVR+JXIkNch/A9AxyzONsbgeY1
- XIZUSpC5271m5w8fTwgGRBVPr9yyAb8X/cvzXPLN4Z56xNpHw7oAJsiVFR8cfsTT+0XkGbBZT
- AblGP3+cgquvibyZ0sVR1WsRV9C4m+Vkp/++sMYonQCpp2TiIn94LyrUAXjGOVa/g/lnbFoNm
- 3F/mEzZ//7SK5lktkNupD8XBy+kCbmKPp4HCZ/NLW+ZDwVZR5dg7mHY9sz+W2n6jkp6+9xWVd
- Mse5lPnncjMHPVDkh6CdF+36Io5N3MHDx+WFkCg==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:EeQjA/3clNA=:NEGycSX7W2YA6X662UXVih
+ h7+p9pFf04vGPVCi+QYQcQRQJTJa0095p/hlfWWQC/QNsfu9qAYm+dBm/CYXINni2lPJf7OPI
+ MbNq5F8itt02ap25npVJXUFyEEouQCs3cAlFmYxzm3FXLAvK41W3cQ04aHIsHINnT4uWT8f90
+ IvhN/UtSUPOqlv2vuZSAeUFkbbs+SKqXozBXKJva2X7iEE143R1xTGFD8UIkYn/+ZJMqdUtL9
+ /vcQYgz/Pbbl0iOKutx9i85N2wnTJfr+vVO01Sq5CKk12eFvIwZBd4PdiT+r3gd2zVIXinIhJ
+ KMEXM4SXzyyxXYEx55WIXRUpHTgewRuRi1fkbkRP11fB9tm4//YxlAcN/+adnEVyh5bI4MzFU
+ 0LhQcpo5LDq8xOmp6DH8OLs06JWFC9nVW67c/t6EODroCOi6RDz219SIgDpumFss5XJxXTh9m
+ Mej+nZIrNas3h7ftXVGFWjqvR7uH4h6qlz/t36iM6Of4INMNXx1RBkO0yIWFk2rF50U1Dypss
+ 8Pa1vMh7ifKglajO+vgWMepPuYBL1582v/wbAWkcPeIe/twWaWgPeRWyjyXSuixcJYRJaMtL8
+ 5Sh9fnRNJLMbIngDvcNMrfSyxGA/Wpj4/204i9+E6wwPzgAcTgDkHHWufe64aNfGqsnDmWjzs
+ Z9l69B76s3sQ6NUmipMUFGPotYJRYBB7zr1t1owRSFM5pJmSHrCIhL5lt6zjWOhkoPGFRFq31
+ Q8UfEDluhmRUfYJA8rHB1ATBp/XSdNqXf+dC3rDMFf+ET4npxDv/DmfqFHJTcqH/mGXB+26DS
+ F6iibTzrzNGdE8L/Gxa/+93PwH95XeETrWOYrT6iwHTYW6XYTcjAxzmMUnJwn2XUKfuNWS+6M
+ GVv87KMR6JkziChJmu/5DYRn4gPHWaOOm0ifEYbxx+hKovyMtaPcBIxQ0MU3A2/K7O0p2riLG
+ 3k7KEC/MZDQlcMGGDSo/T2y5+xRFkvy9YgwELirQ974v65OYsOUMa422suWcWYZupqs3BffqX
+ rYGsgRnhZQ4bQaRgQeakJMZgJC49JGjalaGMlnL+VSUmftyMBWcGZsuKEYtCBVPAXqApALNXk
+ 03ouwb7zunU3VCg1TeUO7z4i4hkPyW2RaRCuomiD4+IPa/xp1IWjhNELALS5L8ddcrawY2pCb
+ jB5ZXy7JCFlvRS4e+AjWJqgWVY7n7alOXhpQA8JcKmBe+VSPNEY+CMzzKT7N30u6u9c4XC1Pp
+ K8vchtq9mwfVgcU+9wU6txqYVPB+0YHE6u5k0Kw==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---Ncw5kIrCyxRDcH9J7lVLWJ4IQ3p5dYFnw
-Content-Type: multipart/mixed; boundary="D13mNfcZ8yGmf0CtcONq9MlHKf93MheCq"
+--O3FkZOAxEZ742bgakEnVX0UBBezksaHYw
+Content-Type: multipart/mixed; boundary="1c5OCB0rqqoyUgzln2RsYta9CWKsrxxHW"
 
---D13mNfcZ8yGmf0CtcONq9MlHKf93MheCq
+--1c5OCB0rqqoyUgzln2RsYta9CWKsrxxHW
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
 
 
 
-On 2020/10/5 =E4=B8=8B=E5=8D=884:25, Eric Levy wrote:
-> I freed considerable space by destroying the swap file and old
-> snapshots. The usage is down to 86% of the total volume, as reported
-> by df. Nevertheless, I get the same message, "No space left";
-Yeah, it's really hard to free enough space to free one data block group.=
+On 2020/10/5 =E4=B8=8B=E5=8D=885:05, Eric Levy wrote:
+> The volume is not RAID, only a single NVMe card.
+
+Then this means, we may have a bigger problem.
+
+Normally btrfs space reservation keeps enough margin for critical
+operations, thus it will return ENOSPC before we really go to do some
+space consuming operations, thus no abort_transaction problem like yours.=
 
 
-E.g. if one data block group sized 10G, has just 4K used by a file.
-Then the whole 10G can't be freed for metadata usage.
-Btrfs can still utilize the remaining (10G - 4K) space, but only for
-data, not metadata.
+If it's single device, and still hit the case we need more space than we
+have, either the space reservation or the space consumer,
+btrfs_drop_snapshot(), has something wrong.
+>=20
+> I deleted all the files and subvolumes except what I need to recover.
 
-Thus it's really really hard to free enough continous space to free a
-full data block group.
+You may want to wait until btrfs really drops the subvolume/snapshot.
 
-BTW, btrfs fi usage output would definitely help in this case.
+The command is "btrfs subv sync <mount>". And then check if the usage dro=
+ps.
+
+>=20
+> Below is the dump from fi usage. It looks as though 1.00Mb is all that
+> is unallocated.
+>=20
+>=20
+> $ sudo btrfs fi usage /mnt/custom
+> Overall:
+>     Device size:         378.04GiB
+>     Device allocated:         378.04GiB
+>     Device unallocated:           1.00MiB
+>     Device missing:             0.00B
+>     Used:             323.54GiB
+>     Free (estimated):          53.13GiB    (min: 53.13GiB)
+>     Data ratio:                  1.00
+>     Metadata ratio:              1.00
+>     Global reserve:         512.00MiB    (used: 0.00B)
+>=20
+> Data,single: Size:371.02GiB, Used:317.89GiB (85.68%)
+>    /dev/sdb5     371.02GiB
+>=20
+> Metadata,single: Size:7.01GiB, Used:5.65GiB (80.66%)
+>    /dev/sdb5       7.01GiB
+
+This is strange. Even accounting the GlobalRSV (0.5G), we should still
+have 1GiB space for metadata.
+We shouldn't use that much space just for delete.
+
+Would you please try a more uptodate kernel to see if it works?
+(One simpler solution is using rolling release ISOs, like OpenSUSE
+tumbleweed or Arch install iso).
+
+I'm wondering it may be a bug not fixed in v4.15 due to the hardness to
+backport.
+
+
+BTW, when mounting the fs, you may want to mount with skip_balance mount
+option.
 
 Thanks,
 Qu
 
 >=20
-> [279314.876489] BTRFS info (device sda5): relocating block group
-> 518463160320 flags metadata
-> [279372.777369] BTRFS: error (device sda5) in
-> btrfs_drop_snapshot:5428: errno=3D-28 No space left
+> System,single: Size:4.00MiB, Used:64.00KiB (1.56%)
+>    /dev/sdb5       4.00MiB
+>=20
+> Unallocated:
+>    /dev/sdb5       1.00MiB
 >=20
 >=20
-> On Mon, Oct 5, 2020 at 3:58 AM Eric Levy <ericlevy@gmail.com> wrote:
+>> Oh, that's a completely different bug.
 >>
->> Well, I see the complaint about limited disk space. I suppose it is a
->> surprise to me that disk usage causes this problem, because the mount
->> was fully functional under kernel versions 5.3.x.
+>> Somehow btrfs exhausted the metadata space.
 >>
->> Is the best solution simply to free disk space? If so, then the act
->> would have to fall in the time window during which the mount retains
->> RW state.
+>> Normally caused by unbalanced data/metadata usage and multi-device.
+>> (Currently, RAID1/RAID0/RAID10/RAID5/RAID6 can all over-estimate the
+>> available space, and cause ENOSPC to happen in critical context, where=
+
+>> we can only abort transaction to avoid further corruption)
+>>
+>> Currently I guess you need to don't do any balance, but try to remove =
+as
+>> many unused files as possible, until you have enough unallocated space=
+
+>> for metadata.
+>>
+>> To check your unalloated space, you can use btrfs fi usage:
 
 
---D13mNfcZ8yGmf0CtcONq9MlHKf93MheCq--
+--1c5OCB0rqqoyUgzln2RsYta9CWKsrxxHW--
 
---Ncw5kIrCyxRDcH9J7lVLWJ4IQ3p5dYFnw
+--O3FkZOAxEZ742bgakEnVX0UBBezksaHYw
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl963zsACgkQwj2R86El
-/qjPEgf/VOLlWrpcI1sfs0LXdRQwSbjfMQ6QAze2TImuF4VdjG/tVtlaDwxLY79T
-Mkp3Qn+F+FOXLSjUOAt9A9FwPD3rvHofgJXpcdHR6uIeVsh7fJ0sv80aci3UeAtw
-uVC4oxihJ4mdMUHSh8m86VIf+g3oIoi2Ji7aElPKS974njkUwQsfecwy+cxnvzEp
-+afpfm3rcKh+afoRgGkWFLRanp3BXxbWAfJZyPkHlUYbk+ueSpB1DVrbMtEGmiZW
-G8y9Ocrtg0ZuvWc0moJjM5lYCNPUv+f5YcnPE8SJGUKEREyuuX4sEkaBeRGkpEnP
-nQEkno+o0/mK/T+G8r0WPsLvuyxHhg==
-=xa8Y
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl965LoACgkQwj2R86El
+/qi7Qwf8DoVKXuCmjrKQRjyKyzDAT5RFs4b2xD0YojukjDPsn96/9Wi+iz/hvYDX
+ThmhdycsBp0/1nQ+DvSwtAPGg1TOTV79Sw5A1CtIoPKg/C7UEdPDmwozdC60tmf1
+MIafewE7lAzFxbNzwhZSgiB107BQm27af9wGFhQwN4WeRp5//b2wDWo7SdfU7ZBF
+YNYEedydTIMN0DEHdHFkkJn2lDJfSv0y2wMlP35eyrxEUZ9fzh1h2cjVTP6kYLcg
+sjX38ARH+yVRFQq6GsOprFXc2EZwiA/tnhagZ7D5zeNGEcIpbu5z3rrTJLuo2wRX
+JnPUTE47io/0yHKpWzB87I+A4IB84w==
+=Ocod
 -----END PGP SIGNATURE-----
 
---Ncw5kIrCyxRDcH9J7lVLWJ4IQ3p5dYFnw--
+--O3FkZOAxEZ742bgakEnVX0UBBezksaHYw--
