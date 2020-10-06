@@ -2,80 +2,66 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90B122850A7
-	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Oct 2020 19:20:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33E312851C1
+	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Oct 2020 20:41:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726138AbgJFRUq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 6 Oct 2020 13:20:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43010 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725902AbgJFRUq (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 6 Oct 2020 13:20:46 -0400
-Received: from tleilax.poochiereds.net (68-20-15-154.lightspeed.rlghnc.sbcglobal.net [68.20.15.154])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B991F20760;
-        Tue,  6 Oct 2020 17:20:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602004845;
-        bh=4Foc+jU1k/rvfrsLBs93aOS5mcxlAz0t1W5dlS01hRo=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=yfq1ofdv7rZJ5+ORDfeANL1fIsq8QvuchUDnxEjqXkiwUkrM7f+jjDjX5qOtiLO5H
-         KgoJQ7KK3SEr6FYxnD9spCEDZHYO6JW2VHKg3xA8vU0tmZENoeSzu13L85e+BVMqfp
-         TIMjQvJyW9M69GHv5p0s87KXy50U736GRLHqcUY8=
-Message-ID: <f10381885b6e3ea8af828f1b7be5c2f7035e82df.camel@kernel.org>
-Subject: Re: [PATCH 3/7] ceph: Promote to unsigned long long before shifting
-From:   Jeff Layton <jlayton@kernel.org>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        linux-fsdevel@vger.kernel.org, Ilya Dryomov <idryomov@gmail.com>
-Cc:     ericvh@gmail.com, lucho@ionkov.net, viro@zeniv.linux.org.uk,
-        idryomov@gmail.com, mark@fasheh.com, jlbec@evilplan.org,
-        joseph.qi@linux.alibaba.com, v9fs-developer@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, ceph-devel@vger.kernel.org,
-        ocfs2-devel@oss.oracle.com, linux-btrfs@vger.kernel.org,
-        clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
-        stable@vger.kernel.org
-Date:   Tue, 06 Oct 2020 13:20:42 -0400
-In-Reply-To: <20201004180428.14494-4-willy@infradead.org>
-References: <20201004180428.14494-1-willy@infradead.org>
-         <20201004180428.14494-4-willy@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
+        id S1726871AbgJFSla (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 6 Oct 2020 14:41:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46286 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726831AbgJFSl3 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 6 Oct 2020 14:41:29 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C34DDC0613D3
+        for <linux-btrfs@vger.kernel.org>; Tue,  6 Oct 2020 11:41:27 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id dt13so9734647ejb.12
+        for <linux-btrfs@vger.kernel.org>; Tue, 06 Oct 2020 11:41:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=C8GBCgQbcL72bHfuvAY+Zdl7rDxtS++c+cKqr1GrZYs=;
+        b=DjuJ/p24mQDEl/vbTYnWHBbmgNI9BSc0YKBExESfRytQ6pfYduML0M70l4DO6jipI2
+         zaX+9OrKjTaumELrIGwrKGRM2EXzuMkBrJnSRljYKOHVmkQ6E/cLd3MK4KvQ8oAnqJbm
+         UpxCAUlOuV7STQXFSNMIEdRxiwdEW36wXZThR9e6+j6jXEVPG/GcIb7QBPh9EiTy7Tu3
+         8GhHeU4/UQhsP5UREXADAaMQ2TaQeTtuRgxCYGYxoRhYGaWu0PwEr++ETasnNHi+M2k4
+         j3FoRYxuc5fexqm8AS9165nxSRcnGJezi56zpM2HsiZcbEp+jCVj0TvMO8izM05Sz+VK
+         Scrg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=C8GBCgQbcL72bHfuvAY+Zdl7rDxtS++c+cKqr1GrZYs=;
+        b=r96PxF194dszWZEqSp8JbL8LITajLZnapvwgJNKgqwInggiMHtum/PlMAI1dAwdmh2
+         8UO55VAYjAMtyYX7ACnIdy0irGDE+O0StcNKN6ECxT4BXrbUuFker76h4OB6NQOj7AvY
+         Dzu/GbvJDybW+x8ik2RIJZ0CQvXUli/3RKAjEgo64WhWrX8XNJribDRZI42tjlQSuzl7
+         4SgjMp0wbe7YpMDkjQSfTRfE64vSmnHKYURulqAPnSc3p3BBvmcWnPPiG3wnuQASoIMn
+         H3SwAXetkfjqbtSUNmKZ80sCGScP5VGM0x88sOBGYXkthBzjnqEJ7rXf3ds4sAgAdVuX
+         wsug==
+X-Gm-Message-State: AOAM53198OPneGB+HwpEWtWZ9mXOkIOt684bd3XKl1dhEh/NqdUvPF8j
+        IeVTTxgcV0iNbeNQ3O5V6GDjThgxIc1WCGclS38=
+X-Google-Smtp-Source: ABdhPJwxxh6PGu/CiD43ih/QOxChqReyXCVpm+S5i7eBm5XszzzFBNZYupRSu3v7y35kr7/OJFx65zzal/TZxdtBGKc=
+X-Received: by 2002:a17:906:a51:: with SMTP id x17mr945268ejf.137.1602009686244;
+ Tue, 06 Oct 2020 11:41:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Received: by 2002:a17:906:bc55:0:0:0:0 with HTTP; Tue, 6 Oct 2020 11:41:24
+ -0700 (PDT)
+Reply-To: mfdp@tlen.pl
+From:   Mr Bill T Winters <missfavourkip@gmail.com>
+Date:   Tue, 6 Oct 2020 11:41:24 -0700
+Message-ID: <CAJc0UUnUJvey7LoCQ_rsx28BKJ4u1pYKARah2rS2M9ttjqHKkg@mail.gmail.com>
+Subject: Good Morning!
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sun, 2020-10-04 at 19:04 +0100, Matthew Wilcox (Oracle) wrote:
-> On 32-bit systems, this shift will overflow for files larger than 4GB.
-> 
-> Cc: stable@vger.kernel.org
-> Fixes: 61f68816211e ("ceph: check caps in filemap_fault and page_mkwrite")
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> ---
->  fs/ceph/addr.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/fs/ceph/addr.c b/fs/ceph/addr.c
-> index 6ea761c84494..970e5a094035 100644
-> --- a/fs/ceph/addr.c
-> +++ b/fs/ceph/addr.c
-> @@ -1522,7 +1522,7 @@ static vm_fault_t ceph_filemap_fault(struct vm_fault *vmf)
->  	struct ceph_inode_info *ci = ceph_inode(inode);
->  	struct ceph_file_info *fi = vma->vm_file->private_data;
->  	struct page *pinned_page = NULL;
-> -	loff_t off = vmf->pgoff << PAGE_SHIFT;
-> +	loff_t off = (loff_t)vmf->pgoff << PAGE_SHIFT;
->  	int want, got, err;
->  	sigset_t oldset;
->  	vm_fault_t ret = VM_FAULT_SIGBUS;
-
-
-I went ahead and merged this into the ceph-client/testing branch. Given
-how old this bug is, I don't see a real need to rush this into v5.9, but
-if we have any other patches going in before that ships, then it might
-be good to send this one along too.
 -- 
-Jeff Layton <jlayton@kernel.org>
+Greetings,
+I Mr Bill T, did you Receive the (FUND), that was paid to you?
+Let me know with your full name:...  immediately,
 
+Sincerely Yours, Respectfully,
+
+Mr Bill T Winters,
+Group Chief Executive Officer & Executive Director,
