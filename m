@@ -2,181 +2,170 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00F56284B53
-	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Oct 2020 14:07:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0796284C0F
+	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Oct 2020 14:56:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726335AbgJFMHQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 6 Oct 2020 08:07:16 -0400
-Received: from mout.gmx.net ([212.227.15.19]:47177 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726143AbgJFMHQ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 6 Oct 2020 08:07:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1601986018;
-        bh=thkTqNg3b3z0eJ+XPlxzV/jDIfY+bnVzUtHi1ASkVpM=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=OQpWsP7bDJRy/2udNMUzATVsgIMpwNUthD9lE+vJTU32FGksBxVhAm84yI2yVr2kz
-         L+on9kSVH+4fPBEXn9A/liVkaFCk9fvGAwDAHUekOPUO+21N9ORFTTmJkOjQq6va+N
-         S8Y+qC40sM2fWLNKzupt0ELhrbMNC2pRqe5UtlnU=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MOA3P-1k1kYC2pRJ-00OWFB; Tue, 06
- Oct 2020 14:06:58 +0200
-Subject: Re: failed to read block groups: Operation not permitted
-To:     Johannes Hirte <johannes.hirte@datenkhaos.de>,
-        linux-btrfs@vger.kernel.org
-References: <20201006090918.GA269054@latitude>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
- PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
- 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
- D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
- efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
- ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
- BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
- 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
- 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
- EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
- 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
- ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
- oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
- fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
- 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
- ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
- oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <9cd7f2d0-4256-7311-483e-b1169e4c3655@gmx.com>
-Date:   Tue, 6 Oct 2020 20:06:48 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
-MIME-Version: 1.0
-In-Reply-To: <20201006090918.GA269054@latitude>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="k1lgRC3I4TlTNmQm9L1Z6JaKli7Py6a1t"
-X-Provags-ID: V03:K1:1tJp2NPdFhWbKQpuLsugZuhcSE3LcFPzsIXR7Nz1t3bR5XYpP3n
- D6PF9vw0sA42+54sS0+J/Ts02J4lq/YPFSciTdskmaG/EJNM+PHJRJUip6uXw/4SMbrM7Ek
- giy4t0QaF26fnSmORHXiuMgLIkk9NwIjJKQ+FMaNEQM9OTBruNlbVOp71ikB4nKZ40e67qW
- 75bCcHRbUic4y/Ny1F1SQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:xKKH751ME3I=:3hqmovpLgv2pC8sCS9EDpr
- gBgu0XTqCXSxMsVXh9RVdJDqUkSFr/zH5343/4zuhdYTAh2seOstgclKlNCMDCDVsJw4X9gGQ
- J1UPRNfb+42skuUAPFq64Na53DE6i6EX6l6vnvmPHkzRAs0kbGfjX7wAOLLF/+3UaYpagLa8R
- gtlD6JFNWo4E9da9X8pc7e+Uu8NOZ3vqGNhLgERME4b3j58l5P5vhuZdzXwPaDjNuVm1IGELE
- Hm14Fud/RaxUrFNxV9PU+Fg4ajp6mh+ArlP1hkf7QWEFZazvdU/LWUZbWzOYA/TEXsOdtCrz0
- VUx9aM424DtnGx1eH3Amseyqhpt3nGwHU+f70fHTNTsG2+caPgTi/rs7U9Sul6A1EPkgZSUhU
- IHXn94nSTXdLwViBQ9PPFP4/UBg1lHHxX1agSG2J7xNtDSZ4Cfxrit5y7P6wSwT0is9L5N+4r
- saUYHfkNzGbdx8XDZ5Qyw77S8aygzvyJ/Ex7KEIPoeS5xqGf11WcetnwFPqeBietJCCi+yIST
- kfuZjgFhdA+s0RsEkn2VVudGGztpAdCOok3sDbkIYUgn0tyn2eHravw9ix+owRYTOqxEZ9obv
- vFD3PcTKPadwQh1Kr9pBetkJELFkJQNUZlzgdCpg7s4LhzQZlR69dgXo+xBc87CQ9CTy6Useg
- RGBF4sNLJuRXzEkcUlwjOUehi15vpLwP/eCrkgSlKxuk052EwX6UCRBPwxRJa2XGe5YKXbZgi
- /a1/XabZEMXENmlUqG2HHE+le+wV23/2fCBBZ1kvvn5pRPznGP1b4se+WS9PRLhGXXxNtMK+c
- plu66BAB1e09actB4KRnibXdMEYGDx+3VZ88PFwZGDSQinf3W0cP9yko+mHIypRL2CMCgdkTw
- SlFW0SCplJ0Duuqcn7T6T1mR3idA5i1vmZf27INThzoFCeiRQw4L2iFIOAQfk4PofcBJG7ptV
- 3E+IEvlLJhm/hkgV6PQhY+bRHVOnW1Pr6ouiGfKlmwMMOJbfbUhkvLboFsgoPvMlg/AaCQfjg
- /dN+QzgMbHqjRt0VzXMpZVE/aZFjP8oFvcaCTKA+tCgRw52e8KF/mpNHKIHLY6Of3BUrNGU+g
- JTWUb3t0cR3kgly0YaW4BGA29ETba+6hqoum1lZ8v33eRdpzhWsYEy43xZYHC30Hkg69aH4ob
- Jc8waIANh7d0o24k1e4Z+7JmfidhaHYEVeqRD347xpVNj6IrIsU4hLDQustZriSERlclNxqT5
- Z17jQKhg4c13210VnRfRuefwrWhCWvBQwk73Tpg==
+        id S1726235AbgJFM4L (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 6 Oct 2020 08:56:11 -0400
+Received: from static.214.254.202.116.clients.your-server.de ([116.202.254.214]:45150
+        "EHLO ciao.gmane.io" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726032AbgJFM4K (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 6 Oct 2020 08:56:10 -0400
+Received: from list by ciao.gmane.io with local (Exim 4.92)
+        (envelope-from <gcfb-btrfs-devel-moved1-3@m.gmane-mx.org>)
+        id 1kPmQt-0008io-Sa
+        for linux-btrfs@vger.kernel.org; Tue, 06 Oct 2020 14:51:07 +0200
+X-Injected-Via-Gmane: http://gmane.org/
+Mail-Followup-To: linux-btrfs@vger.kernel.org
+To:     linux-btrfs@vger.kernel.org
+From:   Torsten Bronger <bronger@physik.rwth-aachen.de>
+Subject: Re: Why so much "btrfs send" data for "cp -a --reflink"?
+Date:   Tue, 06 Oct 2020 14:48:21 +0200
+Organization: Phoenix Foundation
+Message-ID: <87a6wzplka.fsf@physik.rwth-aachen.de>
+References: <87362t3y67.fsf@physik.rwth-aachen.de>
+Mime-Version: 1.0
+Content-Type: multipart/signed; boundary="=-=-=";
+        micalg=sha256;   protocol="application/pkcs7-signature"
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.0.50 (gnu/linux)
+Cancel-Lock: sha1:903oDX9ysbwvpW0zxebJlYxHINk=
+X-PGP-Fingerprint: C5C8 D6E2 79D2 EFE9 8C0F  6D77 D5E3 CEFC 9F51 6B77
+X-PGP-Affinity: will accept encrypted message for GPG
+X-Home-Page: http://www.wikipedia.org/wiki/User:Bronger
+X-Face: +wpw"|jN2Fde|7<r"A\7[g0RGE#"N'WgB|46ohZy$RfV+Y!oH=FKMC>_<EQ_IdY;pJcjJrx
+ {m$r$vTG>lKBa0\7!_6<ouwhB1|a+k#?z597ims{Y+POGr7Z{,b]wj]6Z"PqUHzA2\|m(:>suIE_m!
+ x)'S9ytBu8tkt'k779jbzQ4o|p+@H_DCrIdnKG]E*w
+X-Binford: 6100 (more power)
+X-Accept-Language: de, en
+Jabber-ID: torsten.bronger@jabber.rwth-aachen.de
+Mail-Copies-To: never
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---k1lgRC3I4TlTNmQm9L1Z6JaKli7Py6a1t
-Content-Type: multipart/mixed; boundary="nJxeuLUHg6yE2suCUYpkrw90HAc8Y9V0d"
-
---nJxeuLUHg6yE2suCUYpkrw90HAc8Y9V0d
+--=-=-=
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
 
+Hall=C3=B6chen!
 
+Torsten Bronger writes:
 
-On 2020/10/6 =E4=B8=8B=E5=8D=885:09, Johannes Hirte wrote:
-> I recently encountered filesystem damage on a VM. During normal
-> operation, the filesystem was remounted ro suddenly. Dmesg showed me
-> some errors about parent transid verify failed. I've forced of the VM
-> and tried to mount the image on the host, but failed with:
->=20
-> [  340.702391] BTRFS info (device loop0p1): disk space caching is enabl=
-ed
-> [  340.702393] BTRFS info (device loop0p1): has skinny extents
-> [  341.815890] BTRFS error (device loop0p1): parent transid verify fail=
-ed on 152064327680 wanted 323984 found 323888
-> [  341.831183] BTRFS error (device loop0p1): parent transid verify fail=
-ed on 152064327680 wanted 323984 found 323888
+> I have two subvolumes A and B.  =E2=80=9EA=E2=80=9C contains 50GB data, B=
+ is empty.
+> None is a snapshot of the other.  Now, I copy all data from A to B
+> with "cp -a --reflink A/* B".  This copying takes less than a
+> second.  So apparently, no bulk data was duplicated.  "diff -rq A B"
+> is empty.  So far, so good.
+>
+> However, it surprises me that
+>
+>     btrfs send -p A B | wc -c
+>
+> reports 12GB.
 
-Your extent tree is corrupted. Metadata CoW is broken.
+At <https://wilson.bronger.org/btrfs-receive.dump.xz>, I have
+uploaded the output of "btrfs receive --dump".  Apparently, there
+are many "write".  Why doesn=E2=80=99t btrfs detect that all those extents
+are present in the parent?
 
-I don't believe only extent tree get corrupted, other part of your fs
-can also be corrupted.
+Regards,
+Torsten.
 
-> [  341.831194] BTRFS error (device loop0p1): failed to read block group=
-s: -5
-> [  341.851954] BTRFS error (device loop0p1): open_ctree failed
->=20
-> A btrfs check resulted in:
->=20
-> btrfs check /dev/loop0p1
-> Opening filesystem to check...
-> parent transid verify failed on 152064327680 wanted 323984 found 323888=
+=2D-=20
+Torsten Bronger
 
-> parent transid verify failed on 152064327680 wanted 323984 found 323888=
+--=-=-=
+Content-Type: application/pkcs7-signature; name=smime.p7s
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename=smime.p7s
 
-> parent transid verify failed on 152064327680 wanted 323984 found 323888=
+MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCCEI8w
+ggUSMIID+qADAgECAgkA4wvV+K8l2YEwDQYJKoZIhvcNAQELBQAwgYIxCzAJBgNVBAYTAkRFMSsw
+KQYDVQQKDCJULVN5c3RlbXMgRW50ZXJwcmlzZSBTZXJ2aWNlcyBHbWJIMR8wHQYDVQQLDBZULVN5
+c3RlbXMgVHJ1c3QgQ2VudGVyMSUwIwYDVQQDDBxULVRlbGVTZWMgR2xvYmFsUm9vdCBDbGFzcyAy
+MB4XDTE2MDIyMjEzMzgyMloXDTMxMDIyMjIzNTk1OVowgZUxCzAJBgNVBAYTAkRFMUUwQwYDVQQK
+EzxWZXJlaW4genVyIEZvZXJkZXJ1bmcgZWluZXMgRGV1dHNjaGVuIEZvcnNjaHVuZ3NuZXR6ZXMg
+ZS4gVi4xEDAOBgNVBAsTB0RGTi1QS0kxLTArBgNVBAMTJERGTi1WZXJlaW4gQ2VydGlmaWNhdGlv
+biBBdXRob3JpdHkgMjCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMtg1/9moUHN0vqH
+l4pzq5lN6mc5WqFggEcVToyVsuXPztNXS43O+FZsFVV2B+pG/cgDRWM+cNSrVICxI5y+NyipCf8F
+XRgPxJiZN7Mg9mZ4F4fCnQ7MSjLnFp2uDo0peQcAIFTcFV9Kltd4tjTTwXS1nem/wHdN6r1ZB+Ba
+L2w8pQDcNb1lDY9/Mm3yWmpLYgHurDg0WUU2SQXaeMpqbVvAgWsRzNI8qIv4cRrKO+KA3Ra0Z3qL
+NupOkSk9s1FcragMvp0049ENF4N1xDkesJQLEvHVaY4l9Lg9K7/AjsMeO6W/VRCrKq4Xl14zzsjz
+9AkH4wKGMUZrAcUQDBHHWekCAwEAAaOCAXQwggFwMA4GA1UdDwEB/wQEAwIBBjAdBgNVHQ4EFgQU
+k+PYMiba1fFKpZFK4OpL4qIMz+EwHwYDVR0jBBgwFoAUv1kgNgB5oKAia4zV8mHSuCzLgkowEgYD
+VR0TAQH/BAgwBgEB/wIBAjAzBgNVHSAELDAqMA8GDSsGAQQBga0hgiwBAQQwDQYLKwYBBAGBrSGC
+LB4wCAYGZ4EMAQICMEwGA1UdHwRFMEMwQaA/oD2GO2h0dHA6Ly9wa2kwMzM2LnRlbGVzZWMuZGUv
+cmwvVGVsZVNlY19HbG9iYWxSb290X0NsYXNzXzIuY3JsMIGGBggrBgEFBQcBAQR6MHgwLAYIKwYB
+BQUHMAGGIGh0dHA6Ly9vY3NwMDMzNi50ZWxlc2VjLmRlL29jc3ByMEgGCCsGAQUFBzAChjxodHRw
+Oi8vcGtpMDMzNi50ZWxlc2VjLmRlL2NydC9UZWxlU2VjX0dsb2JhbFJvb3RfQ2xhc3NfMi5jZXIw
+DQYJKoZIhvcNAQELBQADggEBAIcL/z4Cm2XIVi3WO5qYi3FP2ropqiH5Ri71sqQPrhE4eTizDnS6
+dl2e6BiClmLbTDPo3flq3zK9LExHYFV/53RrtCyD2HlrtrdNUAtmB7Xts5et6u5/MOaZ/SLick0+
+hFvu+c+Z6n/XUjkurJgARH5pO7917tALOxrN5fcPImxHhPalR6D90Bo0fa3SPXez7vTXTf/D6OWS
+T1k+kEcQSrCFWMBvf/iu7QhCnh7U3xQuTY+8npTD5+32GPg8SecmqKc22CzeIs2LgtjZeOJVEqM7
+h0S2EQvVDFKvaYwPBt/QolOLV5h7z/0HJPT8vcP9SpIClxvyt7bPZYoaorVyGTkwggWsMIIElKAD
+AgECAgcbY7rQHiw9MA0GCSqGSIb3DQEBCwUAMIGVMQswCQYDVQQGEwJERTFFMEMGA1UEChM8VmVy
+ZWluIHp1ciBGb2VyZGVydW5nIGVpbmVzIERldXRzY2hlbiBGb3JzY2h1bmdzbmV0emVzIGUuIFYu
+MRAwDgYDVQQLEwdERk4tUEtJMS0wKwYDVQQDEyRERk4tVmVyZWluIENlcnRpZmljYXRpb24gQXV0
+aG9yaXR5IDIwHhcNMTYwNTI0MTEzODQwWhcNMzEwMjIyMjM1OTU5WjCBjTELMAkGA1UEBhMCREUx
+RTBDBgNVBAoMPFZlcmVpbiB6dXIgRm9lcmRlcnVuZyBlaW5lcyBEZXV0c2NoZW4gRm9yc2NodW5n
+c25ldHplcyBlLiBWLjEQMA4GA1UECwwHREZOLVBLSTElMCMGA1UEAwwcREZOLVZlcmVpbiBHbG9i
+YWwgSXNzdWluZyBDQTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAJ07eRxH3h+Gy8Zp
+1xCeOdfZojDbchwFfylfS2jxrRnWTOFrG7ELf6Gr4HuLi9gtzm6IOhDuV+UefwRRNuu6cG1joL6W
+LkDh0YNMZj0cZGnlm6Stcq5oOVGHecwX064vXWNxSzl660Knl5BpBb+Q/6RAcL0D57+eGIgfn5mI
+TQ5HjUhfZZkQ0tkqSe3BuS0dnxLLFdM/fx5ULzquk1enfnjK1UriGuXtQX1TX8izKvWKMKztFwUk
+P7agCwf9TRqaA1KgNpzeJIdl5Of6x5ZzJBTN0OgbaJ4YWa52fvfRCng8h0uwN89Tyjo4EPPLR22M
+ZD08WkVKusqAfLjz56dMTM0CAwEAAaOCAgUwggIBMBIGA1UdEwEB/wQIMAYBAf8CAQEwDgYDVR0P
+AQH/BAQDAgEGMCkGA1UdIAQiMCAwDQYLKwYBBAGBrSGCLB4wDwYNKwYBBAGBrSGCLAEBBDAdBgNV
+HQ4EFgQUazqYi/nyU4na4K2yMh4JH+iqO3QwHwYDVR0jBBgwFoAUk+PYMiba1fFKpZFK4OpL4qIM
+z+EwgY8GA1UdHwSBhzCBhDBAoD6gPIY6aHR0cDovL2NkcDEucGNhLmRmbi5kZS9nbG9iYWwtcm9v
+dC1nMi1jYS9wdWIvY3JsL2NhY3JsLmNybDBAoD6gPIY6aHR0cDovL2NkcDIucGNhLmRmbi5kZS9n
+bG9iYWwtcm9vdC1nMi1jYS9wdWIvY3JsL2NhY3JsLmNybDCB3QYIKwYBBQUHAQEEgdAwgc0wMwYI
+KwYBBQUHMAGGJ2h0dHA6Ly9vY3NwLnBjYS5kZm4uZGUvT0NTUC1TZXJ2ZXIvT0NTUDBKBggrBgEF
+BQcwAoY+aHR0cDovL2NkcDEucGNhLmRmbi5kZS9nbG9iYWwtcm9vdC1nMi1jYS9wdWIvY2FjZXJ0
+L2NhY2VydC5jcnQwSgYIKwYBBQUHMAKGPmh0dHA6Ly9jZHAyLnBjYS5kZm4uZGUvZ2xvYmFsLXJv
+b3QtZzItY2EvcHViL2NhY2VydC9jYWNlcnQuY3J0MA0GCSqGSIb3DQEBCwUAA4IBAQCBeEWkTqR/
+DlXwCbFqPnjMaDWpHPOVnj/z+N9rOHeJLI21rT7H8pTNoAauusyosa0zCLYkhmI2THhuUPDVbmCN
+T1IxQ5dGdfBi5G5mUcFCMWdQ5UnnOR7Ln8qGSN4IFP8VSytmm6A4nwDO/afr0X9XLchMX9wQEZc+
+lgQCXISoKTlslPwQkgZ7nu7YRrQbtQMMONncsKk/cQYLsgMHM8KNSGMlJTx6e1du94oFOO+4oK4v
+9NsH1VuEGMGpuEvObJAaguS5Pfp38dIfMwK/U+d2+dwmJUFvL6Yb+qQTkPp8ftkLYF3sv8pBoGH7
+EUkp2KgtdRXYShjqFu9VNCIaE40GMIIFxTCCBK2gAwIBAgIMITwlCcbKdKftcTO4MA0GCSqGSIb3
+DQEBCwUAMIGNMQswCQYDVQQGEwJERTFFMEMGA1UECgw8VmVyZWluIHp1ciBGb2VyZGVydW5nIGVp
+bmVzIERldXRzY2hlbiBGb3JzY2h1bmdzbmV0emVzIGUuIFYuMRAwDgYDVQQLDAdERk4tUEtJMSUw
+IwYDVQQDDBxERk4tVmVyZWluIEdsb2JhbCBJc3N1aW5nIENBMB4XDTE5MDcwMzEzMDI1NVoXDTIy
+MDcwMjEzMDI1NVowWTELMAkGA1UEBhMCREUxFDASBgNVBAoMC1JXVEggQWFjaGVuMRowGAYDVQQL
+DBFGYWNoZ3J1cHBlIFBoeXNpazEYMBYGA1UEAwwPVG9yc3RlbiBCcm9uZ2VyMIIBIjANBgkqhkiG
+9w0BAQEFAAOCAQ8AMIIBCgKCAQEAxIt1wvBlWL2/0G7NCH8mUFfYMKxDGvkhTDYpmB4k+6GtNT9l
+2mka4RjFpNyd/e5l3/ocZ3IhmGKwAaqB6tuIuIfgYP5J1jZ5msb11uHL7Bpx7phFXC6EG0ML3zk0
+qcdSibcSHVtxiaI7fl+O1y9XGc0DVXVTWn15uv2SsXNXhVHTGe6Z+wpdCssWV2pi+b4crAAp7K3t
+2mUikg/uacH4R8YGoCUPVDitg3U+KUQK8PSFjBU+4FmS9fkXDdu8HeEWQevJqfPdMl4KTkPaR4iz
+SoP4pagxRsGZ4CsweHt4NvrfDkFxmNuocXs1urmnCgYV9L7iZpkWdFyP6RVfiNae0wIDAQABo4IC
+VjCCAlIwPgYDVR0gBDcwNTAPBg0rBgEEAYGtIYIsAQEEMBAGDisGAQQBga0hgiwBAQQEMBAGDisG
+AQQBga0hgiwCAQQEMAkGA1UdEwQCMAAwDgYDVR0PAQH/BAQDAgXgMB0GA1UdJQQWMBQGCCsGAQUF
+BwMCBggrBgEFBQcDBDAdBgNVHQ4EFgQUNZQD5+pPH0gqw7F8YDbUDcYUuJowHwYDVR0jBBgwFoAU
+azqYi/nyU4na4K2yMh4JH+iqO3QwKAYDVR0RBCEwH4EdYnJvbmdlckBwaHlzaWsucnd0aC1hYWNo
+ZW4uZGUwgY0GA1UdHwSBhTCBgjA/oD2gO4Y5aHR0cDovL2NkcDEucGNhLmRmbi5kZS9kZm4tY2Et
+Z2xvYmFsLWcyL3B1Yi9jcmwvY2FjcmwuY3JsMD+gPaA7hjlodHRwOi8vY2RwMi5wY2EuZGZuLmRl
+L2Rmbi1jYS1nbG9iYWwtZzIvcHViL2NybC9jYWNybC5jcmwwgdsGCCsGAQUFBwEBBIHOMIHLMDMG
+CCsGAQUFBzABhidodHRwOi8vb2NzcC5wY2EuZGZuLmRlL09DU1AtU2VydmVyL09DU1AwSQYIKwYB
+BQUHMAKGPWh0dHA6Ly9jZHAxLnBjYS5kZm4uZGUvZGZuLWNhLWdsb2JhbC1nMi9wdWIvY2FjZXJ0
+L2NhY2VydC5jcnQwSQYIKwYBBQUHMAKGPWh0dHA6Ly9jZHAyLnBjYS5kZm4uZGUvZGZuLWNhLWds
+b2JhbC1nMi9wdWIvY2FjZXJ0L2NhY2VydC5jcnQwDQYJKoZIhvcNAQELBQADggEBAE95rsRSu+9O
+2hw2ZEmTXrVZLN52MNXJbOwdXguommCHvIuxkxaNwIUHEF3pVo5Z5UO55oZZaIcFyw2PS9XUhYkN
+rh4T5Lp6Nqca0b3AfZOBcR16FD3bbUIpPdSQQwkuQCPiXEMam2QjCUfyC3oYja+bmPU2JDiKpunY
+NJ6/KEp4Yi32U5YEKvkr7ixzl13IKdLoNjO79VCz0iXi9aZ82ixcEli3CXEDxWbo601OTm8abNUX
+6QUomu5IDPGAPK65GimsXJbNYN2lhayrgGYKMslQd2ygVm2x5amfrxo1j9I6XvfnnVO1BtJ+e8Cm
+BPZgGN3+6fE9G6c9IvEhfKUeWZoxggJgMIICXAIBATCBnjCBjTELMAkGA1UEBhMCREUxRTBDBgNV
+BAoMPFZlcmVpbiB6dXIgRm9lcmRlcnVuZyBlaW5lcyBEZXV0c2NoZW4gRm9yc2NodW5nc25ldHpl
+cyBlLiBWLjEQMA4GA1UECwwHREZOLVBLSTElMCMGA1UEAwwcREZOLVZlcmVpbiBHbG9iYWwgSXNz
+dWluZyBDQQIMITwlCcbKdKftcTO4MA0GCWCGSAFlAwQCAQUAoIGTMBgGCSqGSIb3DQEJAzELBgkq
+hkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIwMTAwNjEyNDgyMVowKAYJKoZIhvcNAQkPMRswGTAL
+BglghkgBZQMEAQIwCgYIKoZIhvcNAwcwLwYJKoZIhvcNAQkEMSIEIN6qNkiTDBgWoLIQqLZr2bEP
+9CudEvebZAG9Y2cUhlOyMA0GCSqGSIb3DQEBAQUABIIBAAa1g1v2Gkz3Y6+n2WDO4hHh02dzp4DP
+ZjGXC2TymblpRh/lHQsl0gX1RP5JIj2an6+49WuSHSDhEIm/LpeTY++huSAy9Ml4XB+OuN0sTo7L
+y7HnaVsDpDQewTl1sO2qucbI6dNchyR0sVhIuMNEHbrohVeCZVOAgjWhd66KN7ImVvJvir6aR60m
++ekCePQLGYf5GDe+AS5K52Nv3ZX98eFAZLa84itpBkozXIvNp1lgwi2zPFtKnJ/1WS8qFFCYNdU4
++Nl5VZjMZ51KxGM/mf9hgQ8pUyGwQlnMR6Hq4trSJWLW6m2Q30nGknEQ7UJ9fhQPArLgrC2JCR00
+CaeaqIsAAAAAAAA=
+--=-=-=--
 
-> Ignoring transid failure
-> leaf parent key incorrect 152064327680
-> ERROR: failed to read block groups: Operation not permitted
-> ERROR: cannot open file system
->=20
-> The host is running libvirt with kvm, btrfs with RAID1. The VMs are raw=
-
-> images, with btrfs too. I've switche this VM from io=3Dnative to
-> io=3Dio_uring, and suspect that this caused the damage. All machines ar=
-e
-> running kernel 5.8.13.
-
-I'm not sure about the io_uring setup. IIRC as long as you're not using
-cache=3Dunsafe, it should be safe.
-
-Does the io_uring ignores the flush?
-
-Thanks,
-Qu
->=20
-> I was able to recover most of the damaged filesystem with btrfs recover=
-=2E
-> Is there anything I can do for repair it? And why does the damage happe=
-n
-> at all with io_uring?
->=20
-
-
---nJxeuLUHg6yE2suCUYpkrw90HAc8Y9V0d--
-
---k1lgRC3I4TlTNmQm9L1Z6JaKli7Py6a1t
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl98XdgACgkQwj2R86El
-/qgqvAf/bVA9IljIfe5x37HHijEOAur7ysuXaYGlCyjs+nmAao/8p2FmFaGzwCKK
-jOJ+LoFaPKEETaeWOeYsuOPMFyitqMOUpMaM8rkqlZo5+HKEUNf36oyofaLUA5fJ
-VhJqLgGoBG0oDZTnysUhjc71HrFAgCeAZPCP/sMDzJbK1vAzrhG9eaRYoa1qBO+I
-zevTMLt6LAWzFhebWnKpl7rG/VFLVALnMJogsNEZxr1r9cjnCLzhZ6+WjOSS5OUs
-2l3mqjV4NkPf8yFl/hjoTxZYq9KRGBw4ZE/BzndoUJJ5AfkZ/ySyda/OH3rLf27g
-+/HYFUk2ip20PA72W5H5UZahgylUkw==
-=rW5+
------END PGP SIGNATURE-----
-
---k1lgRC3I4TlTNmQm9L1Z6JaKli7Py6a1t--
