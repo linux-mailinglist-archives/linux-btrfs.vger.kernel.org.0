@@ -2,169 +2,232 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF18D283F84
-	for <lists+linux-btrfs@lfdr.de>; Mon,  5 Oct 2020 21:22:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2077A284347
+	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Oct 2020 02:21:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729342AbgJETWp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 5 Oct 2020 15:22:45 -0400
-Received: from cryptearth.de ([91.121.4.115]:48368 "EHLO cryptearth.de"
+        id S1726989AbgJFATI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 5 Oct 2020 20:19:08 -0400
+Received: from mout.gmx.net ([212.227.17.22]:35063 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725785AbgJETWp (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 5 Oct 2020 15:22:45 -0400
+        id S1726562AbgJFATI (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 5 Oct 2020 20:19:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1601943544;
+        bh=7YKU6dYdCIRhf7+bS4cV0tyya+t/y/wVKb4DROgR0io=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=KfcvaB7gO92PkSm9ZcWrCgWDI2mSHZLX8+EFVpdNWr2VZLAbVIH0kivq1wy8KoBZu
+         rkYshjGipSXp13D2RDxfbLlN98RUOqAz2yvv5pWy6Bv8rPaZl2iLUPDgow+XT5J5k5
+         FZf+z1AsC0rHSdd8ZznqEvbSS57mMxTtrJ+trq3E=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MTAFb-1jxIpU159r-00UdLp; Tue, 06
+ Oct 2020 02:19:03 +0200
+Subject: Re: [PATCH] btrfs: fix false alert caused by legacy btrfs root item
+To:     Martin Steigerwald <martin@lichtvoll.de>,
+        linux-btrfs@vger.kernel.org, Qu Wenruo <wqu@suse.com>
+References: <20200922023701.32654-1-wqu@suse.com> <1786699.e55IGcOCre@merkaba>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
+ mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
+ PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
+ 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
+ D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
+ efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
+ ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
+ BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
+ 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
+ 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
+ EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
+ 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
+ ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
+ oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
+ fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
+ 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
+ ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
+ oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
+Message-ID: <cc82efa0-4f13-d22d-7fc0-bddc4d61a869@gmx.com>
+Date:   Tue, 6 Oct 2020 08:19:00 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-X-UserIsAuth: true
-Received: from 2a0c:d242:3803:9400:ec14:863c:b9cb:c16f (EHLO [IPv6:2a0c:d242:3803:9400:ec14:863c:b9cb:c16f]) ([2a0c:d242:3803:9400:ec14:863c:b9cb:c16f])
-          by cryptearth.de (JAMES SMTP Server ) with ESMTPA ID 215071160
-          for <linux-btrfs@vger.kernel.org>;
-          Mon, 05 Oct 2020 21:22:43 +0200 (CEST)
-Subject: Re: using raid56 on a private machine
-To:     linux-btrfs@vger.kernel.org
-References: <dbf47c42-932c-9cf0-0e50-75f1d779d024@cryptearth.de>
- <91a18b63-6211-08e1-6cd9-8ef403db1922@libero.it>
-From:   cryptearth <cryptearth@cryptearth.de>
-Message-ID: <beb2862b-a5fa-c9eb-53a6-c964b849da75@cryptearth.de>
-Date:   Mon, 5 Oct 2020 21:22:27 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
-In-Reply-To: <91a18b63-6211-08e1-6cd9-8ef403db1922@libero.it>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <1786699.e55IGcOCre@merkaba>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="tCUBQq1PQ0xvVnp75WMvxE5w3KHwJ6VTN"
+X-Provags-ID: V03:K1:cL6ZZjw5zzystFTPKzPdMSQOYwinCnwx5R7DqJ1+VIREKLKLf4K
+ 2f6hpaXdSkkEDm47orueDsLL6YLVEHKtuPIKYe10sDISj0IX4AxdTxQhjTUm18U6H7TcaIs
+ NI/LKYpBqOL/TCM4BIuG4axahQLmoBqNbO3qln66XFU4N6bPE0vbZu6Pv1+C2xktjLCNajl
+ ptKs3Bg+g1o8NDCqC76Vg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:xgGxfihCKw4=:MZmdRHqdQfGnidUhxL4djg
+ WnQ3i6JrLfaCm1/PwvR3GCc8U8NvyjOajlY5QLP0hkvqbZVINrhk43bGxOEiVoivYPCGP9DL1
+ ss8iHSfNpeOU0o6zkU8+FHIvn1gq5Pz7zuuxcx2GmDVlOKxTo8k6jt8Zfg0nrQvt7lcx+Xyu1
+ qv8t556f9efK9eysqfoDNhsSMW+Z8Z7ewCw/OgqZs6f7fy80tl2+DgybeN6DCMxFOfm5PMgSk
+ A690vH7fxe8xXJJLvJwQhIOsotYXlY/E7QcVauIPG6ccWW8JIjjorwMfuOa2elAzQkK1rzK4M
+ FXMDwVfcpc9sHnpEY/cpNpWJ/Cq0n0TFPcIhq5y7D5SUgIy6MrxZO/urDCK5MwXpcsbDabNW0
+ SugWPgSGxkniw5pD4yAFVUr3zX0Ibznju46DRM946DF+uSVyUib2aJlg2hHTtSf7M/HoGBAjq
+ jhnGFlNKSpgDJ4EByY11sLJ24Ji8GjKr0WbZvocBBXrUBAhxp9EDjtQN69z7gGK+Gm58Pn2tu
+ tNDNESkRGMqV2q7CwaQtLDJn70x5UtQAfTv0HPCqq3ht7tB451u+4Kt5Se7zQd/EijNFJLLcc
+ VyOWf5CnDyu4AcwWefp22j2cUpM/LT+YWupcL2D3VOjGE2ejh7B0pxb8pfTdwpb6Q8NrwIdwf
+ cy88henf1A3brn1jpGVdjIibGZyxPEi2ibNdEcqvVSQ9XexpTlDMRQU9HvY0M8ET557c3sqia
+ 0/wx5EQpd1HeB9R9iWAhXPg+TPCF5roOJNmTFis8HDmnNfmgQt9GRlx5vJMGeaMID3KNwx5/9
+ m/rQpXrkJUtocziKKsBHf6w/oORH1cG/m1d3fLq8p2YpfVzMHuvlHLVow+QXztQ0Bm1haZmWO
+ W+OhKZKo74KZYJ4cdzDvJ9ESyh69IAJvZ2JR5jYh8vrHm2yMa76YWtY0tXJo+T/gyI6ZRzml5
+ LF1YAqNFPmIN6wtLl6Jc7ncr0c8pdcSUt7RbPG3Dja2W9jR2aL8MWlPXRvocE3EeQFsy0f3CL
+ 3pcPMjV+BOt3KABKVp3ex4bfiaDJX+COpJ+bpkzYIXDD6q3dv1prGqYU3gyhUs+Us1Cl7gfXd
+ 3HCdnUf2pXJrEys6qhonmjfNmGVMLQjZK+mg+3MuhW/Y+9yvX39zm7zZiY+NIn9ryJdtItGjH
+ adYDThZ+kZBs7eWyUckskycB5Lf/OdPyQiTxlAGzSe+TVwGch+0NaJdTxEvCjtGPy6YQ+8pGf
+ Kv4wt0mxC4xw/zU5quWnOIatRoL2H/dj6DLib1A==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello Goffredo,
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--tCUBQq1PQ0xvVnp75WMvxE5w3KHwJ6VTN
+Content-Type: multipart/mixed; boundary="wqvZnh1zElW1SbyJ69rrzkye4HeSVRzca"
 
-thank you for the quick reply, I didn't expected one this late.
-
-Thanks for the provided information.
-I'm a bit surprised of the current status of support for RAID5/6 as I 
-thought it to be already more advanced to at least a "relaible" state 
-where data-recovery is as straight forward as with a "regular" array 
-when a drive fails. But reading that there's still the risk of 
-catastrophic total data loss is not what I was ready for to read.
-
-As I tried to set up a test array in a VM I was unable to set raid1c3/4 
-for metadata as I got the error it's an unknown profile. I'm using 
-OpenSuSE Leap 15.2 running kernel 5.3.18. According to zypper the btrfs 
-package version is 4.19.1 - so I'm at the state of december 2018. 
-According to the changelog raid1c3/4 were added with 5.4 in december 
-2019. As I'm using Linux only on my server, and OpenSuSE more specificly 
-for its "easy to use thanks to it's overall 'control center' YaST", I'm 
-unsure if it's possible to simply "upgrade" to a more recent version as 
-like installing a newer version of some software on windows. Maybe a 
-different distribution with more recent kernel and packages would fit me 
-requirements better than rely on the rather outdated stuff the SuSE devs 
-put together, although it would be a rather steep learning curve and 
-most likely much copy'n'paste from some wikis.
-
-As for your suggestions: Some good advices in there - but some are 
-currently just not feaseable (like running a UPS). As for the increased 
-risk of failure due to number of drives: I'm currently running a 5 drive 
-RAID5 on a so called "fakeraid" provided by the chipset of my 
-motherboard (specificly AMD SB950 / FX990 - AM3+ platform) which relies 
-on a windows7-only driver from AMD (don't ask me why - but I'm not able 
-to get it running with windows10) - and already had at least 3 or even 4 
-failures (can't exactly remember right now). The provided software has 
-the advantage of active drive monitoring. So, when something goes wrong 
-the failing drive is put offline and the array into a critical mode. As 
-it's only RAID5 it's kind of a gamble to hopefully not encounter another 
-failure while rebuilding, that's why I plan to change over to RAID6. 
-Going up to 8 drives is just an unrelated choice as that's the number of 
-drive bays my case has and as it seem many HBAs to mostly offer ports in 
-increments of powers of 2 (like 2, 4, 8, 16 - and so on). Do you see any 
-problem with that? Or would run a RAID6 with only 6 drives be any 
-beneficial over a 8 drive array?
-
-Although this is the btrfs list - as it seems btrfs not really ready for 
-running in RAID-like modes - and ZFS is also quite wide spread - would 
-it be a better idea to use that instead?
+--wqvZnh1zElW1SbyJ69rrzkye4HeSVRzca
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
 
-Greetings,
 
-Matt
+On 2020/10/5 =E4=B8=8B=E5=8D=8811:29, Martin Steigerwald wrote:
+> Hi Qu!
+>=20
+> Qu Wenruo - 22.09.20, 04:37:01 CEST:
+>> Commit 259ee7754b67 ("btrfs: tree-checker: Add ROOT_ITEM check")
+>> introduced btrfs root item size check, however btrfs root item has two=
 
-Am 05.10.2020 um 19:57 schrieb Goffredo Baroncelli:
-> On 10/5/20 6:59 PM, cryptearth wrote:
->> Hello there,
+>> format, the legacy one which just ends before generation_v2 member,
+>> is smaller than current btrfs root item size.
 >>
->> as I plan to use a 8 drive RAID6 with BtrFS I'd like to ask about the 
->> current status of BtrFS RAID5/6 support or if I should go with a more 
->> traditional mdadm array.
+>> This caused btrfs kernel to reject valid but old tree root leaves.
 >>
->> The general status page on the btrfs wiki shows "unstable" for 
->> RAID5/6, and it's specific pages mentions some issue marked as "not 
->> production ready". It also says to not use it for the metadata but 
->> only for the actual data.
->>
->> I plan to use it for my own personal system at home - and I do 
->> understand that RAID is no replacement for a backup, but I'd rather 
->> like to ask upfront if it's ready to use before I encounter issues 
->> when I use it.
->> I already had the plan about using a more "traditional" mdadm setup 
->> and just format the resulting volume with ext4, but as I asked about 
->> that many actually suggested to me to rather use modern filesystems 
->> like BtrFS or ZFS instead of "old school RAID".
->>
->> Do you have any help for me about using BtrFS with RAID6 vs mdadm or 
->> ZFS?
->
-> Zygo collected some useful information about RAID5/6:
->
-> https://lore.kernel.org/linux-btrfs/20200627032414.GX10769@hungrycats.org/ 
->
->
-> However more recently Josef (one of the main developers), declared 
-> that BTRFS with RAID5/6 has  "...some dark and scary corners..."
->
-> https://lore.kernel.org/linux-btrfs/bf9594ea55ce40af80548888070427ad97daf78a.1598374255.git.josef@toxicpanda.com/ 
->
->
->>
->> I also don't really understand why and what's the difference between 
->> metadata, data, and system.
->> When I set up a volume only define RAID6 for the data it sets 
->> metadata and systemdata default to RAID1, but doesn't this mean that 
->> those important metadata are only stored on two drives instead of 
->> spread accross all drives like in a regular RAID6? This would 
->> somewhat negate the benefit of RAID6 to withstand a double failure 
->> like a 2nd drive fail while rebuilding the first failed one.
->
-> Correct. In fact Zygo suggested to user RAID6 + RAID1C3.
->
-> I have only few suggestions:
-> 1) don't store valuable data on BTRFS with raid5/6 profile. Use it if 
-> you want to experiment and want to help the development of BTRFS. But 
-> be ready to face the lost of all data. (very unlikely, but more the 
-> size of the filesystem is big, more difficult is a restore of the data 
-> in case of problem).
-> 2) doesn't fill the filesystem more than 70-80%. If you go further 
-> this limit the likelihood to catch the "dark and scary corners" 
-> quickly increases.
-> 3) run scrub periodically and after a power failure ; better to use an 
-> uninterruptible power supply (this is true for all the RAID, even the 
-> MD one).
-> 4) I don't have any data to support this; but as occasional reader of 
-> this mailing list I have the feeling that combing BTRFS with LUCKS(or 
-> bcache) raises the likelihood of a problem.
-> 5) pay attention that having an 8 disks raid, raises the likelihood of 
-> a failure of about an order of magnitude more than a single disk ! 
-> RAID6 (or any other RAID) mitigates that, in the sense that it creates 
-> a time window where it is possible to make maintenance (e.g. a disk 
-> replacement) before the lost of data.
-> 6) leave the room in the disks array for an additional disk (to use 
-> when a disk replacement is needed)
-> 7) avoid the USB disks, because these are not reliable
->
->
->>
->> Any information appreciated.
->>
->>
->> Greetings from Germany,
->>
->> Matt
->
->
+>> Fix this problem by also allowing legacy root item, since kernel can
+>> already handle them pretty well and upgrade to newer root item format
+>> when needed.
+>=20
+> Is this going into 5.9? Asking cause it is not in 5.9-rc8.
 
+David has the final say on whether to go into a late rc.
+
+But it's already in David's misc-next branch, which means v5.10 would
+have it at least.
+
+>=20
+> Of course I can keep the patch and as the external disk has been fixed,=
+ I=20
+> would not even need it anymore.
+
+That's true, so you don't need to bother the problem any more.
+
+Thanks,
+Qu
+
+>=20
+> Best,
+> Martin
+>=20
+>> Reported-by: Martin Steigerwald <martin@lichtvoll.de>
+>> Fixes: 259ee7754b67 ("btrfs: tree-checker: Add ROOT_ITEM check")
+>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>> ---
+>>  fs/btrfs/tree-checker.c         | 17 ++++++++++++-----
+>>  include/uapi/linux/btrfs_tree.h |  9 +++++++++
+>>  2 files changed, 21 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/fs/btrfs/tree-checker.c b/fs/btrfs/tree-checker.c
+>> index 7b1fee630f97..6f794aca48d3 100644
+>> --- a/fs/btrfs/tree-checker.c
+>> +++ b/fs/btrfs/tree-checker.c
+>> @@ -1035,7 +1035,7 @@ static int check_root_item(struct extent_buffer
+>> *leaf, struct btrfs_key *key, int slot)
+>>  {
+>>  	struct btrfs_fs_info *fs_info =3D leaf->fs_info;
+>> -	struct btrfs_root_item ri;
+>> +	struct btrfs_root_item ri =3D { 0 };
+>>  	const u64 valid_root_flags =3D BTRFS_ROOT_SUBVOL_RDONLY |
+>>  				     BTRFS_ROOT_SUBVOL_DEAD;
+>>  	int ret;
+>> @@ -1044,14 +1044,21 @@ static int check_root_item(struct
+>> extent_buffer *leaf, struct btrfs_key *key, if (ret < 0)
+>>  		return ret;
+>>
+>> -	if (btrfs_item_size_nr(leaf, slot) !=3D sizeof(ri)) {
+>> +	if (btrfs_item_size_nr(leaf, slot) !=3D sizeof(ri) &&
+>> +	    btrfs_item_size_nr(leaf, slot) !=3D=20
+> btrfs_legacy_root_item_size())
+>> { generic_err(leaf, slot,
+>> -			    "invalid root item size, have %u expect %zu",
+>> -			    btrfs_item_size_nr(leaf, slot), sizeof(ri));
+>> +			    "invalid root item size, have %u expect %zu or=20
+> %zu",
+>> +			    btrfs_item_size_nr(leaf, slot), sizeof(ri),
+>> +			    btrfs_legacy_root_item_size());
+>>  	}
+>>
+>> +	/*
+>> +	 * For legacy root item, the members starting at generation_v2=20
+> will
+>> be +	 * all filled with 0.
+>> +	 * And since we allow geneartion_v2 as 0, it will still pass the
+>> check. +	 */
+>>  	read_extent_buffer(leaf, &ri, btrfs_item_ptr_offset(leaf, slot),
+>> -			   sizeof(ri));
+>> +			   btrfs_item_size_nr(leaf, slot));
+>>
+>>  	/* Generation related */
+>>  	if (btrfs_root_generation(&ri) >
+>> diff --git a/include/uapi/linux/btrfs_tree.h
+>> b/include/uapi/linux/btrfs_tree.h index 9ba64ca6b4ac..464095a28b18
+>> 100644
+>> --- a/include/uapi/linux/btrfs_tree.h
+>> +++ b/include/uapi/linux/btrfs_tree.h
+>> @@ -644,6 +644,15 @@ struct btrfs_root_item {
+>>  	__le64 reserved[8]; /* for future */
+>>  } __attribute__ ((__packed__));
+>>
+>> +/*
+>> + * Btrfs root item used to be smaller than current size.
+>> + * The old format ends at where member generation_v2 is.
+>> + */
+>> +static inline size_t btrfs_legacy_root_item_size(void)
+>> +{
+>> +	return offsetof(struct btrfs_root_item, generation_v2);
+>> +}
+>> +
+>>  /*
+>>   * this is used for both forward and backward root refs
+>>   */
+>=20
+>=20
+
+
+--wqvZnh1zElW1SbyJ69rrzkye4HeSVRzca--
+
+--tCUBQq1PQ0xvVnp75WMvxE5w3KHwJ6VTN
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl97t/QACgkQwj2R86El
+/qiCiwf/b9H3fGBN3VWxg+swhLRFvaQ1Ja5RZgQdtx8nx5YYPlx1yloXRMRuz9vW
+DXuLfS+SuAlySOaBm5Jnbk/UgeC95bNOk4tIBbUKbxt4NKX93423PZQL9TvbfmGL
+2pCQeKJ4QMQzoujNMKSTmmD788nxE1mvCSAOC0V0l/z3O0sMw4N5OvNvOTolFz4r
+j7U/MjhYXj3LhmWDTFvWif1I7Mbk91CG16u9v+GXyPUqL9KWu1xyfmCECZZk5HP1
+HN5dc10GN42yU2yselr19sSYmpW6GCIGt8ZUBrWOkOtDp1aKK8CdjgPsuKwv40w0
+S3iVPLB8tv3u2svGr7j6EklSiwstHg==
+=B2Jg
+-----END PGP SIGNATURE-----
+
+--tCUBQq1PQ0xvVnp75WMvxE5w3KHwJ6VTN--
