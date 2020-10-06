@@ -2,229 +2,131 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10689284C40
-	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Oct 2020 15:08:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB454284C54
+	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Oct 2020 15:12:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725981AbgJFNIk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 6 Oct 2020 09:08:40 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:56654 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725902AbgJFNIk (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 6 Oct 2020 09:08:40 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 096D45J8075820;
-        Tue, 6 Oct 2020 13:08:37 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=corp-2020-01-29;
- bh=KBCk/wf6QWTEdCZrtQLGiQqHMDCJ5UC1yrJ9qPc065Q=;
- b=mVgbYFAAdy8E9JbQwUsYJpARLwZWeMTr/HVnnW7/Fsb2QUDW1jk+CV51PbcvH1HlgTJ4
- DuFbTmAF0r0ws+0XLcGfrOndw7vtB1XKVg1uIAmtLLeao8T6+frqNnKFHyJbQSKu9WIB
- mKBtYMIm6VrCqdh1O3EPTPsbgJJfukLGElckJtjDcSRuQbfLbAj+zQSWrqzoqVZ+5Rer
- Yndb9/C+HcE2oDbG7ssZJJHJkFNwIScpcb9KOXbKJwgOp9ho4yAC8eDua1JZjWM1bxim
- plFP9HhgAEwF7ETy0GnP3liJ2qLYeRwmcRwBhK+G5NLwhymV09NG4ain2sog1ndMIumj 3w== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2120.oracle.com with ESMTP id 33ym34h081-1
+        id S1725906AbgJFNMc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 6 Oct 2020 09:12:32 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:49860 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725891AbgJFNMc (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 6 Oct 2020 09:12:32 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 096D9OTp194056;
+        Tue, 6 Oct 2020 13:12:26 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=Y5DozJRjQnNuYBJzFij3tyPPkAw7i6h6WpMP2ZPgGWk=;
+ b=Ry3sL6wdoPK3vFsmBYFomPsu+llnaJGD08TQD7sdBi7SKiQwgvyBzjtqzGvNirmNpEGi
+ D9GKkVMqy3oxXTJGhKhvL8PWB5Esmy/BxGNjyoCICOA1fR/VUWzXiX9KxE4s4Qap4VQD
+ F51Ke9fHglRENPopOKgYs1xQIAtig3+qKRtXlEWIJT0uFSfdgjsF9eHMaAncusH1uqYf
+ Rjfp6x19Xe7gEu3MMrc6FhLqwleGQH4bLiGIxSYyYojz5pKTuUN0kDHQfx/obeyAcWeY
+ 3r6uHUkzHPiPAjmCOxtsJKfrOTqSkZFxBwGKNnp3prJhPjv+hB7Ba45ADNlT4R2HuC42 6w== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2120.oracle.com with ESMTP id 33xhxmuucf-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 06 Oct 2020 13:08:37 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 096D1DQt116930;
-        Tue, 6 Oct 2020 13:08:37 GMT
+        Tue, 06 Oct 2020 13:12:26 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 096DAo1u006845;
+        Tue, 6 Oct 2020 13:12:25 GMT
 Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3020.oracle.com with ESMTP id 33yyjfhgym-1
+        by aserp3020.oracle.com with ESMTP id 33y36xy3v5-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 06 Oct 2020 13:08:36 +0000
-Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 096D8Z7x014881;
-        Tue, 6 Oct 2020 13:08:35 GMT
-Received: from localhost.localdomain (/39.109.231.106)
+        Tue, 06 Oct 2020 13:12:25 +0000
+Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 096DCNs6016884;
+        Tue, 6 Oct 2020 13:12:23 GMT
+Received: from [192.168.1.102] (/39.109.231.106)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 06 Oct 2020 06:08:35 -0700
+        with ESMTP ; Tue, 06 Oct 2020 06:12:22 -0700
+Subject: Re: [PATCH add reported by] btrfs: fix rw_devices count in
+ __btrfs_free_extra_devids
+To:     Josef Bacik <josef@toxicpanda.com>, dsterba@suse.cz,
+        linux-btrfs@vger.kernel.org,
+        syzbot+4cfe71a4da060be47502@syzkaller.appspotmail.com
+References: <b3a0a629df98bd044a1fd5c4964f381ff6e7aa05.1600777827.git.anand.jain@oracle.com>
+ <4f924276-2db3-daba-32ec-1b2cf077d15d@toxicpanda.com>
+ <3d5fdbd9-7a2c-d17f-62b7-f312042c7e0a@oracle.com>
+ <a9910086-ad40-2cc8-8dd5-923ba6ff3990@toxicpanda.com>
+ <20200924112513.GT6756@twin.jikos.cz>
+ <a6766b76-a1fd-4011-5290-11406bc2923e@toxicpanda.com>
+ <b93a6de0-96f7-11f1-e4ac-59de97d60cc0@oracle.com>
+ <7b481788-110e-b2a7-607c-2f443f30f663@toxicpanda.com>
 From:   Anand Jain <anand.jain@oracle.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     josef@toxicpanda.com
-Subject: [PATCH] btrfs: fix devid 0 without a replace item by failing the mount
-Date:   Tue,  6 Oct 2020 21:08:26 +0800
-Message-Id: <944e4246d4cfcb411b2bd09e941931ac7616e961.1601988987.git.anand.jain@oracle.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200922123355.ylTJsThacZjBaG9vO1CVBztE6R5uFMoyrhD7aGkmcIU@z>
-References: <20200922123355.ylTJsThacZjBaG9vO1CVBztE6R5uFMoyrhD7aGkmcIU@z>
+Message-ID: <6a59bb52-1603-74ca-9bd8-7b30888a4842@oracle.com>
+Date:   Tue, 6 Oct 2020 21:12:18 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
+In-Reply-To: <7b481788-110e-b2a7-607c-2f443f30f663@toxicpanda.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9765 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=3 adultscore=0 bulkscore=0
- phishscore=0 mlxlogscore=999 mlxscore=0 spamscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2010060084
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 adultscore=0
+ bulkscore=0 spamscore=0 malwarescore=0 suspectscore=2 phishscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2010060085
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9765 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 priorityscore=1501
- mlxscore=0 mlxlogscore=999 clxscore=1015 bulkscore=0 spamscore=0
- malwarescore=0 phishscore=0 suspectscore=3 adultscore=0 lowpriorityscore=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 malwarescore=0 bulkscore=0
+ impostorscore=0 lowpriorityscore=0 suspectscore=2 phishscore=0
+ mlxlogscore=999 adultscore=0 clxscore=1015 spamscore=0 priorityscore=1501
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2010060084
+ definitions=main-2010060085
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-If there is a BTRFS_DEV_REPLACE_DEVID without a replace item, then
-it means some device is trying to attack or may be corrupted. Fail the
-mount so that the user can remove the attacking or fix the corrupted
-device.
+On 25/9/20 10:28 pm, Josef Bacik wrote:
+> On 9/25/20 6:11 AM, Anand Jain wrote:
+>> On 24/9/20 10:02 pm, Josef Bacik wrote:
+>>> On 9/24/20 7:25 AM, David Sterba wrote:
+>>>> On Wed, Sep 23, 2020 at 09:42:17AM -0400, Josef Bacik wrote:
+>>>>> On 9/23/20 12:42 AM, Anand Jain wrote:
+>>>>>> On 22/9/20 9:08 pm, Josef Bacik wrote:
+>>>>>>> On 9/22/20 8:33 AM, Anand Jain wrote:
+>>>>
+>>>>> Yeah I mean we do something in btrfs_init_dev_replace(), like when 
+>>>>> we search for
+>>>>> the key, we double check to make sure we don't have a devid ==
+>>>>> BTRFS_DEV_REPLACE_DEVID in our devices if we don't find a key. 
+>>
+>>
+>>>>> If we do we
+>>>>> return -EIO and bail out of the mount.  Thanks,
+>>
+>>
+>> I read fast and missed the bailout part before.
+>>
+>> If we bailout the mount, it means a btrfs rootfs can fail to boot up.
+>>
+>> To recover from it, the user has to remove the trespassing/extra device
+>> manually and reboot.
+>> For a non-rootfs, the user would have to remove the device manually 
+>> and run
+>> 'btrfs dev scan --forget' to free up the extra devices.
+>> What we are doing now is removing the extra/trespassing device
+>> internally.
+>>
+>> IMO. The case of trespassing/extra device trying to sabotage the setup
+>> is a bit different from a corrupted device, in the former case
+>> resilience is preferred?
+>>
+> 
+> Well this doesn't happen in real life right?  This is purely from a 
+> fuzzing standpoint, so while resilience should be the first thing we 
+> shoot for, I'd rather not spend a long time trying to make it work.
+> 
+> In the case of just randomly deleting a device, I don't think that's a 
+> decision that the kernel can/should make, we should require a user to 
+> intervene at that point.  That makes failure the best option here, thanks,
+> 
 
-As of now if BTRFS_DEV_REPLACE_DEVID is present without the replace
-item, then in __btrfs_free_extra_devids() we determine that there is an
-extra device, and free those extra devices but continue to mount the
-device.
-However, we were wrong in keeping tack of the rw_devices so the syzbot
-testcase failed as below [1].
+  It makes sense to me, its different from what we had before.
+  Made those changes in v2.
 
-[1]
-WARNING: CPU: 1 PID: 3612 at fs/btrfs/volumes.c:1166 close_fs_devices.part.0+0x607/0x800 fs/btrfs/volumes.c:1166
-Kernel panic - not syncing: panic_on_warn set ...
-CPU: 1 PID: 3612 Comm: syz-executor.2 Not tainted 5.9.0-rc4-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x198/0x1fd lib/dump_stack.c:118
- panic+0x347/0x7c0 kernel/panic.c:231
- __warn.cold+0x20/0x46 kernel/panic.c:600
- report_bug+0x1bd/0x210 lib/bug.c:198
- handle_bug+0x38/0x90 arch/x86/kernel/traps.c:234
- exc_invalid_op+0x14/0x40 arch/x86/kernel/traps.c:254
- asm_exc_invalid_op+0x12/0x20 arch/x86/include/asm/idtentry.h:536
-RIP: 0010:close_fs_devices.part.0+0x607/0x800 fs/btrfs/volumes.c:1166
-Code: 0f b6 04 02 84 c0 74 02 7e 33 48 8b 44 24 18 c6 80 30 01 00 00 00 48 83 c4 30 5b 5d 41 5c 41 5d 41 5e 41 5f c3 e8 99 ce 6a fe <0f> 0b e9 71 ff ff ff e8 8d ce 6a fe 0f 0b e9 20 ff ff ff e8 d1 d5
-RSP: 0018:ffffc900091777e0 EFLAGS: 00010246
-RAX: 0000000000040000 RBX: ffffffffffffffff RCX: ffffc9000c8b7000
-RDX: 0000000000040000 RSI: ffffffff83097f47 RDI: 0000000000000007
-RBP: dffffc0000000000 R08: 0000000000000001 R09: ffff8880988a187f
-R10: 0000000000000000 R11: 0000000000000001 R12: ffff88809593a130
-R13: ffff88809593a1ec R14: ffff8880988a1908 R15: ffff88809593a050
- close_fs_devices fs/btrfs/volumes.c:1193 [inline]
- btrfs_close_devices+0x95/0x1f0 fs/btrfs/volumes.c:1179
- open_ctree+0x4984/0x4a2d fs/btrfs/disk-io.c:3434
- btrfs_fill_super fs/btrfs/super.c:1316 [inline]
- btrfs_mount_root.cold+0x14/0x165 fs/btrfs/super.c:1672
+Thanks, Anand
 
-The fix here is, when we determine that there isn't a replace item
-then fail the mount if there is a replace target device (devid 0).
-
-The reproducer looks like this.
- mkfs.btrfs -fq /dev/sda
- dd if=/dev/sda of=/dev/sdb bs=1 seek=64K skip=64K count=4096
- btrfs-sv-mod /dev/sdb devid=0
- mount -o device=/dev/sdb /dev/sda /btrfs
-
-Reported-by: syzbot+4cfe71a4da060be47502@syzkaller.appspotmail.com
-Signed-off-by: Anand Jain <anand.jain@oracle.com>
----
-Depends on the patches
- btrfs: drop never met condition of disk_total_bytes == 0
- btrfs: fix btrfs_find_device unused arg seed
-If these patches aren't integrated yet, then please add the last arg in
-the function btrfs_find_device(). Any value is fine as it doesn't care.
-
-fstest case will follow.
-
-v2: changed title
-    old: btrfs: fix rw_devices count in __btrfs_free_extra_devids
-
-    In btrfs_init_dev_replace() try to match the presence of replace_item
-    with the BTRFS_DEV_REPLACE_DEVID device. If fails then fail the
-    mount. So drop the similar check in __btrfs_free_extra_devids().
-
- fs/btrfs/dev-replace.c | 26 ++++++++++++++++++++++++--
- fs/btrfs/volumes.c     | 26 +++++++-------------------
- 2 files changed, 31 insertions(+), 21 deletions(-)
-
-diff --git a/fs/btrfs/dev-replace.c b/fs/btrfs/dev-replace.c
-index 02a54177c0df..7a96380a9f1e 100644
---- a/fs/btrfs/dev-replace.c
-+++ b/fs/btrfs/dev-replace.c
-@@ -91,6 +91,17 @@ int btrfs_init_dev_replace(struct btrfs_fs_info *fs_info)
- 	ret = btrfs_search_slot(NULL, dev_root, &key, path, 0, 0);
- 	if (ret) {
- no_valid_dev_replace_entry_found:
-+		/*
-+		 * We don't have a replace item or it's corrupted.
-+		 * If there is a replace target, fail the mount.
-+		 */
-+		if (btrfs_find_device(fs_info->fs_devices,
-+				      BTRFS_DEV_REPLACE_DEVID, NULL, NULL)) {
-+			btrfs_err(fs_info,
-+			"found replace target device without a replace item");
-+			ret = -EIO;
-+			goto out;
-+		}
- 		ret = 0;
- 		dev_replace->replace_state =
- 			BTRFS_IOCTL_DEV_REPLACE_STATE_NEVER_STARTED;
-@@ -143,8 +154,19 @@ int btrfs_init_dev_replace(struct btrfs_fs_info *fs_info)
- 	case BTRFS_IOCTL_DEV_REPLACE_STATE_NEVER_STARTED:
- 	case BTRFS_IOCTL_DEV_REPLACE_STATE_FINISHED:
- 	case BTRFS_IOCTL_DEV_REPLACE_STATE_CANCELED:
--		dev_replace->srcdev = NULL;
--		dev_replace->tgtdev = NULL;
-+		/*
-+		 * We don't have an active replace item but if there is a
-+		 * replace target, fail the mount.
-+		 */
-+		if (btrfs_find_device(fs_info->fs_devices,
-+				      BTRFS_DEV_REPLACE_DEVID, NULL, NULL)) {
-+			btrfs_err(fs_info,
-+			"replace devid present without an active replace item");
-+			ret = -EIO;
-+		} else {
-+			dev_replace->srcdev = NULL;
-+			dev_replace->tgtdev = NULL;
-+		}
- 		break;
- 	case BTRFS_IOCTL_DEV_REPLACE_STATE_STARTED:
- 	case BTRFS_IOCTL_DEV_REPLACE_STATE_SUSPENDED:
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index a88655d60a94..0c6049f9ace3 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -1056,22 +1056,13 @@ static void __btrfs_free_extra_devids(struct btrfs_fs_devices *fs_devices,
- 			continue;
- 		}
- 
--		if (device->devid == BTRFS_DEV_REPLACE_DEVID) {
--			/*
--			 * In the first step, keep the device which has
--			 * the correct fsid and the devid that is used
--			 * for the dev_replace procedure.
--			 * In the second step, the dev_replace state is
--			 * read from the device tree and it is known
--			 * whether the procedure is really active or
--			 * not, which means whether this device is
--			 * used or whether it should be removed.
--			 */
--			if (step == 0 || test_bit(BTRFS_DEV_STATE_REPLACE_TGT,
--						  &device->dev_state)) {
--				continue;
--			}
--		}
-+		/*
-+		 * We have already validated the presence of BTRFS_DEV_REPLACE_DEVID,
-+		 * in btrfs_init_dev_replace() so just continue.
-+		 */
-+		if (device->devid == BTRFS_DEV_REPLACE_DEVID)
-+			continue;
-+
- 		if (device->bdev) {
- 			blkdev_put(device->bdev, device->mode);
- 			device->bdev = NULL;
-@@ -1080,9 +1071,6 @@ static void __btrfs_free_extra_devids(struct btrfs_fs_devices *fs_devices,
- 		if (test_bit(BTRFS_DEV_STATE_WRITEABLE, &device->dev_state)) {
- 			list_del_init(&device->dev_alloc_list);
- 			clear_bit(BTRFS_DEV_STATE_WRITEABLE, &device->dev_state);
--			if (!test_bit(BTRFS_DEV_STATE_REPLACE_TGT,
--				      &device->dev_state))
--				fs_devices->rw_devices--;
- 		}
- 		list_del_init(&device->dev_list);
- 		fs_devices->num_devices--;
--- 
-2.25.1
+> Josef
 
