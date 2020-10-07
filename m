@@ -2,195 +2,302 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15DBC285547
-	for <lists+linux-btrfs@lfdr.de>; Wed,  7 Oct 2020 02:14:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F274D285690
+	for <lists+linux-btrfs@lfdr.de>; Wed,  7 Oct 2020 04:08:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726740AbgJGANo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 6 Oct 2020 20:13:44 -0400
-Received: from mout.gmx.net ([212.227.17.21]:45159 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725972AbgJGANn (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 6 Oct 2020 20:13:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1602029618;
-        bh=s8UWs6xNdDsMdM75CVtip3/pLN5UoylbTUNqFcJQIdw=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=Ayd3RF052NCPaGAB682fBror6S7FJTXf+Sn9l8afNCya2WcpYYyW+i2q6w5TCuWDJ
-         st2zwK/fYGRRUkFWQw22L4+k6SLPxLBGQcWFeFcvV5l/x36R18v9agH8JRRvV6yDzi
-         HbKh9m8fuIuNu7X6xc8HIOhzfqtXmwNxSyhQO0RI=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MBDnC-1kER1Y0kQg-00CgmP; Wed, 07
- Oct 2020 02:13:38 +0200
-Subject: Re: Counts for qgroup id are different
-To:     JMinson <minsonj2016@gmail.com>,
-        BTRFS Kernel <linux-btrfs@vger.kernel.org>
-References: <8547cc42-6768-d6f0-6336-fac1fc42b85d@gmail.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
- PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
- 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
- D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
- efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
- ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
- BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
- 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
- 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
- EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
- 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
- ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
- oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
- fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
- 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
- ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
- oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <9ded0048-a480-8873-899d-576210490606@gmx.com>
-Date:   Wed, 7 Oct 2020 08:13:34 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1726181AbgJGCII (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 6 Oct 2020 22:08:08 -0400
+Received: from aserp2130.oracle.com ([141.146.126.79]:47510 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725970AbgJGCII (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 6 Oct 2020 22:08:08 -0400
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09724Q5L021521;
+        Wed, 7 Oct 2020 02:08:02 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=dhMVO0+t35MyFcHtyWc/2L7Etotl6+mGq41bLSwuUWI=;
+ b=WIl/v1YgjxjPeUho/Ug0veBU8cf+ebGYqVzsEQXXOGwdVScQ+Kv1bzDMy/AN3QhaoX3D
+ Hraa48xgiOCdilNz4/aL0mUwujUNyDhiC1hHh6zZHO47f9Lwt0hKrgDi6wyNzvEMuPnV
+ 8Ek+VjPZp51/J3dKRoqvm9BZreTWBYTtkIWDpiR4HJbiJtF59t9FvjtyDaxa25klpYc9
+ RqqMi7xsMEHoJfosGWAf0Xo5Fj69/JiGxMAwKikD48umeYBrp20Ciq7/g0PZGPIIDf/E
+ MkBLw9bJebWcfqBvZz9nZ7+Z2NfbVWFOsXHlxPk2NJixgfCr0/hVJl0hqdoPaC3zLj6h LQ== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2130.oracle.com with ESMTP id 33xetayexy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 07 Oct 2020 02:08:02 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 097269UA140654;
+        Wed, 7 Oct 2020 02:08:02 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3030.oracle.com with ESMTP id 33y37xw1wd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 07 Oct 2020 02:08:01 +0000
+Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 097280WU009871;
+        Wed, 7 Oct 2020 02:08:00 GMT
+Received: from [192.168.1.102] (/39.109.231.106)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 06 Oct 2020 19:08:00 -0700
+Subject: Re: [PATCH] btrfs: fix devid 0 without a replace item by failing the
+ mount
+To:     kernel test robot <lkp@intel.com>, linux-btrfs@vger.kernel.org
+Cc:     kbuild-all@lists.01.org, josef@toxicpanda.com
+References: <944e4246d4cfcb411b2bd09e941931ac7616e961.1601988987.git.anand.jain@oracle.com>
+ <202010062208.6rn9cld4-lkp@intel.com>
+From:   Anand Jain <anand.jain@oracle.com>
+Message-ID: <9f78a512-5733-a44b-458e-0453a6a2b479@oracle.com>
+Date:   Wed, 7 Oct 2020 10:07:51 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-In-Reply-To: <8547cc42-6768-d6f0-6336-fac1fc42b85d@gmail.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="pA5cJZd997VhRHONE9mEyZARzlSTdX28h"
-X-Provags-ID: V03:K1:S/exaUsTfHf1559L8RG3IGus3phhNRVJ9bWN5GQO90jxp1uCXeg
- Y3J+aVs0tmp3x4TEewC9DBmGwAiAcVydob+hwzZdTmJdVNIc3XVjWODNHvcCrOyZRKUfLo7
- 8GO+c7h7+m5mI/OmZMwDrpHBNYlkD2c41LV75I73R+PLoLE44BuIpnN58CTmJBKo98k1Q1f
- 4wMqwHeOm5+RjIiSBYKcg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:oX8uaCvf98c=:0x3HQ8Kk72bAScfN4cFi8M
- nBNKi3xyFQ9YYV/aNS7Z44ruBC0WEotvs7xBhT+O4XZVOYuloMg05rcObMr1XtHDVM3oYegcK
- oKTZMjHUrZrSl4xK2jBZmoutq9FHAn/BH/ZduohYdbf6r/WJ5bXHTA17TswEWqNTYcpmyzPAd
- 3FQ+1YxjfHwNaz92mL2XUqK2337UZIlyO6Ba28wRTp+vuKRg7x8pXVBdmGZIjDzqJKMSqHD8d
- RIC+wnlo940oJ0RVVpeLWIrMWucUrnSH1a5s/7Q8hcwtDYrT2CETePJqFd/feVluGEaTWjx73
- +HcpyHbIpBb9j/kVL6gzHFJ5s8/4dIS+RsoZbKcx8axbuNH9BlFGJj0q6xSiNezdgLI9Yhgd+
- PyHS+8RPfdYiWJSDmpRZ3sze8IjQpAR5ksJXBQzMhscru5WptVl/jkethw/25LWRvyD8bFHUK
- 0Ki6Le0dtAh5wMmrvr8H99WD6PR0YSD4VgH99H+ess0OuJ9vAGbQWvxoYrJC+Z8DYHv9KR2go
- Joqhen3iPwvpZ4FoJOv133B1FeE7A5E/yq6ityE1fp8jzIKBARYoD5KEu2UPnJml1uDnOmyr4
- 7trhlE058XEgkQ9xRP0xJvM4dULkV5yuMCfV4s+LCdw4+V2gO2POOP06OrjG09gawZh/ovW/8
- +JAblvgffODjruA5jNI3w6I1VVtFdjzqdFYPUSy2L5EIUMFH8w8k/j6nfVsrN+X/qVs78ZDE+
- kveaHed4Mz9XTch1jE24nvcb4JzyxdxFBrBWwDcy3g7+2lkZcKihbbmoeakA4/oSNtcKhrzYR
- SVt+2bYusKWlnglfylEZFOOUy3aPZgRu6dI0JBQPIeI9h2lDB1azAqjuL8HNdYGQy2czt4EWK
- PeBmZJuA5wemkRWlzE6EbWrpm6NtnzmOusxzFRo2h7V1hHSwdvS1m8/qO7rfwmIwdILAhL0l1
- zwHpC+VpAc+dZXY6z1P/rzUsBBorlevYdcIEucJLWZD5jfDT6O9pZ8wtUVTW2H5k6irO4JoQd
- qf5gFEHCgPd1TREqd1/TJI0Ttf4VxVIv4rWl8l8RyKipx16RZ2MjSIYrwqzg4PxvihKZKO0tv
- S/SW+e9/lxlorLnhEiVvm77GjD+0TjKz+/1E0gWe5OG8JLhfOSiz1bwciLZmdzoIxo2FF6ods
- yDo6Tk59momdGY47XJwAy7fruQSbHVttTE91Nm7Nc/kiwuISLc8Ri92UlGLydfB8yXHybDtiP
- SUX+tcAPUmo1R79Wj88nm2oyTLW3mV7feuHqyIg==
+In-Reply-To: <202010062208.6rn9cld4-lkp@intel.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9766 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 bulkscore=0 spamscore=0
+ mlxscore=0 malwarescore=0 suspectscore=0 adultscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2010070011
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9766 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 spamscore=0 mlxscore=0
+ clxscore=1011 priorityscore=1501 adultscore=0 mlxlogscore=999 phishscore=0
+ impostorscore=0 malwarescore=0 suspectscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2010070011
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---pA5cJZd997VhRHONE9mEyZARzlSTdX28h
-Content-Type: multipart/mixed; boundary="KKlstWaoR8Y41lwWTtugp6qdN5cITcPhX"
+On 6/10/20 10:54 pm, kernel test robot wrote:
+> Hi Anand,
+> 
+> Thank you for the patch! Yet something to improve:
+> 
+> [auto build test ERROR on kdave/for-next]
+> [also build test ERROR on v5.9-rc8 next-20201006]
+> [If your patch is applied to the wrong git tree, kindly drop us a note.
+> And when submitting patch, we suggest to use '--base' as documented in
+> https://git-scm.com/docs/git-format-patch]
+> 
+> url:    https://github.com/0day-ci/linux/commits/Anand-Jain/btrfs-fix-devid-0-without-a-replace-item-by-failing-the-mount/20201006-210957
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-next
+> config: i386-randconfig-s001-20201005 (attached as .config)
+> compiler: gcc-9 (Debian 9.3.0-15) 9.3.0
+> reproduce:
+>          # apt-get install sparse
+>          # sparse version: v0.6.2-201-g24bdaac6-dirty
+>          # https://github.com/0day-ci/linux/commit/ed4ebb4eb3f213f048ea5f6a2ed80f6bd728c9e1
+>          git remote add linux-review https://github.com/0day-ci/linux
+>          git fetch --no-tags linux-review Anand-Jain/btrfs-fix-devid-0-without-a-replace-item-by-failing-the-mount/20201006-210957
+>          git checkout ed4ebb4eb3f213f048ea5f6a2ed80f6bd728c9e1
+>          # save the attached .config to linux build tree
+>          make W=1 C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' ARCH=i386
+> 
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+> 
+> All errors (new ones prefixed by >>):
+> 
+>     fs/btrfs/dev-replace.c: In function 'btrfs_init_dev_replace':
+>>> fs/btrfs/dev-replace.c:98:7: error: too few arguments to function 'btrfs_find_device'
+>        98 |   if (btrfs_find_device(fs_info->fs_devices,
+>           |       ^~~~~~~~~~~~~~~~~
+>     In file included from fs/btrfs/dev-replace.c:18:
+>     fs/btrfs/volumes.h:455:22: note: declared here
+>       455 | struct btrfs_device *btrfs_find_device(struct btrfs_fs_devices *fs_devices,
+>           |                      ^~~~~~~~~~~~~~~~~
+>     fs/btrfs/dev-replace.c:161:7: error: too few arguments to function 'btrfs_find_device'
+>       161 |   if (btrfs_find_device(fs_info->fs_devices,
+>           |       ^~~~~~~~~~~~~~~~~
+>     In file included from fs/btrfs/dev-replace.c:18:
+>     fs/btrfs/volumes.h:455:22: note: declared here
+>       455 | struct btrfs_device *btrfs_find_device(struct btrfs_fs_devices *fs_devices,
+>           |                      ^~~~~~~~~~~~~~~~~
+> 
 
---KKlstWaoR8Y41lwWTtugp6qdN5cITcPhX
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+  Is there is a way to mention the patch dependencies, so that 0-Day 
+tests would understand. As in the patch's changelog, two dependent 
+patches [1] aren't in the misc-next yet.
 
+[1]
+https://patchwork.kernel.org/patch/11818635
+https://patchwork.kernel.org/patch/11796905
 
-
-On 2020/10/6 =E4=B8=8B=E5=8D=8810:27, JMinson wrote:
-> Linux linux-desktop 5.4.0-48-generic #52-Ubuntu SMP Thu Sep 10 10:58:49=
-
-> UTC 2020 x86_64 x86_64 x86_64 GNU/Linux
->=20
-> btrfs-progs v5.4.1
->=20
-> Label: 'Daily'=C2=A0 uuid: 1426edb8-4fed-419a-b0f1-d131b97224fd
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Total devices 1 FS bytes use=
-d 1.13TiB
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 devid=C2=A0=C2=A0=C2=A0 1 si=
-ze 1.82TiB used 1.14TiB path /dev/sdb
->=20
->=20
-> I use rsync to backup to an external btrfs formatted usb drive . The
-> process is :
->=20
->=20
-> mount btrfs volume "/Daily"
->=20
-> take a snapshot of subvolume "BackupRoot" and give the snapshot a name
-> like "snap@BackupRoot-2020-10-05-Oct-1601938835"
->=20
-> run rsync with the destination being "/Daily/BackupRoot"
->=20
-> unmount the btrfs volume "/Daily"
->=20
-> I've been using this procedure for about 6 months and is far as I know
-> all the data is good . However I discovered yesterday that when I run
-> btrfsck I get 1 or more of these
->=20
-> Counts for qgroup id: 0/1561 are different
-> our:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 =
-referenced 1051233288192 referenced compressed
-> 1051233288192
-> disk:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 refer=
-enced 1046914453504 referenced compressed
-> 1046914453504
-> diff:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 refer=
-enced 4318834688 referenced compressed 4318834688
-
-This means btrfs qgroup on-disk is smaller than what btrfs check think is=
-=2E
-
-Is there any subvolume deletion involved in this case?
-IIRC btrfs kernel and btrfs-check has different opinion on half-dropped
-subvolumes. But when the subvolume is fully dropped, then everything
-goes back into sync again.
-
-> our:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 =
-exclusive 1206681600 exclusive compressed 1206681600
-> disk:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 exclu=
-sive 1206681600 exclusive compressed 1206681600
-
-But exclusive is correct, thus it doesn't look like regular qgroup error.=
+Thanks, Anand
 
 
->=20
->=20
-> Is this something to be concerned about ?
+> vim +/btrfs_find_device +98 fs/btrfs/dev-replace.c
+> 
+>      68	
+>      69	int btrfs_init_dev_replace(struct btrfs_fs_info *fs_info)
+>      70	{
+>      71		struct btrfs_key key;
+>      72		struct btrfs_root *dev_root = fs_info->dev_root;
+>      73		struct btrfs_dev_replace *dev_replace = &fs_info->dev_replace;
+>      74		struct extent_buffer *eb;
+>      75		int slot;
+>      76		int ret = 0;
+>      77		struct btrfs_path *path = NULL;
+>      78		int item_size;
+>      79		struct btrfs_dev_replace_item *ptr;
+>      80		u64 src_devid;
+>      81	
+>      82		path = btrfs_alloc_path();
+>      83		if (!path) {
+>      84			ret = -ENOMEM;
+>      85			goto out;
+>      86		}
+>      87	
+>      88		key.objectid = 0;
+>      89		key.type = BTRFS_DEV_REPLACE_KEY;
+>      90		key.offset = 0;
+>      91		ret = btrfs_search_slot(NULL, dev_root, &key, path, 0, 0);
+>      92		if (ret) {
+>      93	no_valid_dev_replace_entry_found:
+>      94			/*
+>      95			 * We don't have a replace item or it's corrupted.
+>      96			 * If there is a replace target, fail the mount.
+>      97			 */
+>    > 98			if (btrfs_find_device(fs_info->fs_devices,
+>      99					      BTRFS_DEV_REPLACE_DEVID, NULL, NULL)) {
+>     100				btrfs_err(fs_info,
+>     101				"found replace target device without a replace item");
+>     102				ret = -EIO;
+>     103				goto out;
+>     104			}
+>     105			ret = 0;
+>     106			dev_replace->replace_state =
+>     107				BTRFS_IOCTL_DEV_REPLACE_STATE_NEVER_STARTED;
+>     108			dev_replace->cont_reading_from_srcdev_mode =
+>     109			    BTRFS_DEV_REPLACE_ITEM_CONT_READING_FROM_SRCDEV_MODE_ALWAYS;
+>     110			dev_replace->time_started = 0;
+>     111			dev_replace->time_stopped = 0;
+>     112			atomic64_set(&dev_replace->num_write_errors, 0);
+>     113			atomic64_set(&dev_replace->num_uncorrectable_read_errors, 0);
+>     114			dev_replace->cursor_left = 0;
+>     115			dev_replace->committed_cursor_left = 0;
+>     116			dev_replace->cursor_left_last_write_of_item = 0;
+>     117			dev_replace->cursor_right = 0;
+>     118			dev_replace->srcdev = NULL;
+>     119			dev_replace->tgtdev = NULL;
+>     120			dev_replace->is_valid = 0;
+>     121			dev_replace->item_needs_writeback = 0;
+>     122			goto out;
+>     123		}
+>     124		slot = path->slots[0];
+>     125		eb = path->nodes[0];
+>     126		item_size = btrfs_item_size_nr(eb, slot);
+>     127		ptr = btrfs_item_ptr(eb, slot, struct btrfs_dev_replace_item);
+>     128	
+>     129		if (item_size != sizeof(struct btrfs_dev_replace_item)) {
+>     130			btrfs_warn(fs_info,
+>     131				"dev_replace entry found has unexpected size, ignore entry");
+>     132			goto no_valid_dev_replace_entry_found;
+>     133		}
+>     134	
+>     135		src_devid = btrfs_dev_replace_src_devid(eb, ptr);
+>     136		dev_replace->cont_reading_from_srcdev_mode =
+>     137			btrfs_dev_replace_cont_reading_from_srcdev_mode(eb, ptr);
+>     138		dev_replace->replace_state = btrfs_dev_replace_replace_state(eb, ptr);
+>     139		dev_replace->time_started = btrfs_dev_replace_time_started(eb, ptr);
+>     140		dev_replace->time_stopped =
+>     141			btrfs_dev_replace_time_stopped(eb, ptr);
+>     142		atomic64_set(&dev_replace->num_write_errors,
+>     143			     btrfs_dev_replace_num_write_errors(eb, ptr));
+>     144		atomic64_set(&dev_replace->num_uncorrectable_read_errors,
+>     145			     btrfs_dev_replace_num_uncorrectable_read_errors(eb, ptr));
+>     146		dev_replace->cursor_left = btrfs_dev_replace_cursor_left(eb, ptr);
+>     147		dev_replace->committed_cursor_left = dev_replace->cursor_left;
+>     148		dev_replace->cursor_left_last_write_of_item = dev_replace->cursor_left;
+>     149		dev_replace->cursor_right = btrfs_dev_replace_cursor_right(eb, ptr);
+>     150		dev_replace->is_valid = 1;
+>     151	
+>     152		dev_replace->item_needs_writeback = 0;
+>     153		switch (dev_replace->replace_state) {
+>     154		case BTRFS_IOCTL_DEV_REPLACE_STATE_NEVER_STARTED:
+>     155		case BTRFS_IOCTL_DEV_REPLACE_STATE_FINISHED:
+>     156		case BTRFS_IOCTL_DEV_REPLACE_STATE_CANCELED:
+>     157			/*
+>     158			 * We don't have an active replace item but if there is a
+>     159			 * replace target, fail the mount.
+>     160			 */
+>     161			if (btrfs_find_device(fs_info->fs_devices,
+>     162					      BTRFS_DEV_REPLACE_DEVID, NULL, NULL)) {
+>     163				btrfs_err(fs_info,
+>     164				"replace devid present without an active replace item");
+>     165				ret = -EIO;
+>     166			} else {
+>     167				dev_replace->srcdev = NULL;
+>     168				dev_replace->tgtdev = NULL;
+>     169			}
+>     170			break;
+>     171		case BTRFS_IOCTL_DEV_REPLACE_STATE_STARTED:
+>     172		case BTRFS_IOCTL_DEV_REPLACE_STATE_SUSPENDED:
+>     173			dev_replace->srcdev = btrfs_find_device(fs_info->fs_devices,
+>     174							src_devid, NULL, NULL, true);
+>     175			dev_replace->tgtdev = btrfs_find_device(fs_info->fs_devices,
+>     176								BTRFS_DEV_REPLACE_DEVID,
+>     177								NULL, NULL, true);
+>     178			/*
+>     179			 * allow 'btrfs dev replace_cancel' if src/tgt device is
+>     180			 * missing
+>     181			 */
+>     182			if (!dev_replace->srcdev &&
+>     183			    !btrfs_test_opt(fs_info, DEGRADED)) {
+>     184				ret = -EIO;
+>     185				btrfs_warn(fs_info,
+>     186				   "cannot mount because device replace operation is ongoing and");
+>     187				btrfs_warn(fs_info,
+>     188				   "srcdev (devid %llu) is missing, need to run 'btrfs dev scan'?",
+>     189				   src_devid);
+>     190			}
+>     191			if (!dev_replace->tgtdev &&
+>     192			    !btrfs_test_opt(fs_info, DEGRADED)) {
+>     193				ret = -EIO;
+>     194				btrfs_warn(fs_info,
+>     195				   "cannot mount because device replace operation is ongoing and");
+>     196				btrfs_warn(fs_info,
+>     197				   "tgtdev (devid %llu) is missing, need to run 'btrfs dev scan'?",
+>     198					BTRFS_DEV_REPLACE_DEVID);
+>     199			}
+>     200			if (dev_replace->tgtdev) {
+>     201				if (dev_replace->srcdev) {
+>     202					dev_replace->tgtdev->total_bytes =
+>     203						dev_replace->srcdev->total_bytes;
+>     204					dev_replace->tgtdev->disk_total_bytes =
+>     205						dev_replace->srcdev->disk_total_bytes;
+>     206					dev_replace->tgtdev->commit_total_bytes =
+>     207						dev_replace->srcdev->commit_total_bytes;
+>     208					dev_replace->tgtdev->bytes_used =
+>     209						dev_replace->srcdev->bytes_used;
+>     210					dev_replace->tgtdev->commit_bytes_used =
+>     211						dev_replace->srcdev->commit_bytes_used;
+>     212				}
+>     213				set_bit(BTRFS_DEV_STATE_REPLACE_TGT,
+>     214					&dev_replace->tgtdev->dev_state);
+>     215	
+>     216				WARN_ON(fs_info->fs_devices->rw_devices == 0);
+>     217				dev_replace->tgtdev->io_width = fs_info->sectorsize;
+>     218				dev_replace->tgtdev->io_align = fs_info->sectorsize;
+>     219				dev_replace->tgtdev->sector_size = fs_info->sectorsize;
+>     220				dev_replace->tgtdev->fs_info = fs_info;
+>     221				set_bit(BTRFS_DEV_STATE_IN_FS_METADATA,
+>     222					&dev_replace->tgtdev->dev_state);
+>     223			}
+>     224			break;
+>     225		}
+>     226	
+>     227	out:
+>     228		btrfs_free_path(path);
+>     229		return ret;
+>     230	}
+>     231	
+> 
+> ---
+> 0-DAY CI Kernel Test Service, Intel Corporation
+> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+> 
 
-Normally you don't need to be concerned.
-
-If you really don't like this, you can just trigger a qgroup rescan and
-it will be handled well.
-
-Another thing is, if you're running btrfs check with --force, on running
-fs, it could give false alert.
-
-Thanks,
-Qu
-
->=20
-
-
---KKlstWaoR8Y41lwWTtugp6qdN5cITcPhX--
-
---pA5cJZd997VhRHONE9mEyZARzlSTdX28h
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEyBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl99CC4ACgkQwj2R86El
-/qj59gf3TjhqFaV6OTX9K8FVYQVZ0YDED+DFst+L4XmpEMdrrj3XUcmq1UUeafq1
-6VqQuHRa3qcWZnvzW3eso9GDb/w76H9UVrFkU+oLhsSMtWnq7U/DdWWsek5XY7iB
-M2IiOR7QTusv1/enPQkIgtMFzg1EaHAn2a1KmF9toyC4juEkYldJnW53Kfnc72ug
-f7X/VSRHEbnBji+Ki+0O2IwMnRmY5Y/TQFqNnCMQHo4j0ycrKZocpFL8Xp/yrPnn
-M2/dDb4KB8FQ37zjeq762xwLyDIduaPA0CButg6xpMQAsaUyUh2d4opgnOrXAcKL
-mKJyw3ha208sNAyt/ZndvbY9l88D
-=VoCA
------END PGP SIGNATURE-----
-
---pA5cJZd997VhRHONE9mEyZARzlSTdX28h--
