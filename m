@@ -2,208 +2,195 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 141A02852E1
-	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Oct 2020 22:07:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15DBC285547
+	for <lists+linux-btrfs@lfdr.de>; Wed,  7 Oct 2020 02:14:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727134AbgJFUHR convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-btrfs@lfdr.de>); Tue, 6 Oct 2020 16:07:17 -0400
-Received: from james.kirk.hungrycats.org ([174.142.39.145]:33854 "EHLO
-        james.kirk.hungrycats.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725962AbgJFUHR (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 6 Oct 2020 16:07:17 -0400
-Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
-        id ECFBE84035C; Tue,  6 Oct 2020 16:07:15 -0400 (EDT)
-Date:   Tue, 6 Oct 2020 16:07:15 -0400
-From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-To:     Goffredo Baroncelli <kreijack@inwind.it>
-Cc:     cryptearth <cryptearth@cryptearth.de>, linux-btrfs@vger.kernel.org,
-        Josef Bacik <jbacik@fb.com>
-Subject: Re: using raid56 on a private machine
-Message-ID: <20201006200715.GN5890@hungrycats.org>
-References: <dbf47c42-932c-9cf0-0e50-75f1d779d024@cryptearth.de>
- <91a18b63-6211-08e1-6cd9-8ef403db1922@libero.it>
- <20201006012427.GD21815@hungrycats.org>
- <db963644-ac4b-cf19-dcf6-795ff92413e8@inwind.it>
+        id S1726740AbgJGANo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 6 Oct 2020 20:13:44 -0400
+Received: from mout.gmx.net ([212.227.17.21]:45159 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725972AbgJGANn (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 6 Oct 2020 20:13:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1602029618;
+        bh=s8UWs6xNdDsMdM75CVtip3/pLN5UoylbTUNqFcJQIdw=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=Ayd3RF052NCPaGAB682fBror6S7FJTXf+Sn9l8afNCya2WcpYYyW+i2q6w5TCuWDJ
+         st2zwK/fYGRRUkFWQw22L4+k6SLPxLBGQcWFeFcvV5l/x36R18v9agH8JRRvV6yDzi
+         HbKh9m8fuIuNu7X6xc8HIOhzfqtXmwNxSyhQO0RI=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MBDnC-1kER1Y0kQg-00CgmP; Wed, 07
+ Oct 2020 02:13:38 +0200
+Subject: Re: Counts for qgroup id are different
+To:     JMinson <minsonj2016@gmail.com>,
+        BTRFS Kernel <linux-btrfs@vger.kernel.org>
+References: <8547cc42-6768-d6f0-6336-fac1fc42b85d@gmail.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
+ mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
+ PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
+ 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
+ D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
+ efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
+ ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
+ BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
+ 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
+ 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
+ EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
+ 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
+ ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
+ oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
+ fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
+ 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
+ ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
+ oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
+Message-ID: <9ded0048-a480-8873-899d-576210490606@gmx.com>
+Date:   Wed, 7 Oct 2020 08:13:34 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <db963644-ac4b-cf19-dcf6-795ff92413e8@inwind.it>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <8547cc42-6768-d6f0-6336-fac1fc42b85d@gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="pA5cJZd997VhRHONE9mEyZARzlSTdX28h"
+X-Provags-ID: V03:K1:S/exaUsTfHf1559L8RG3IGus3phhNRVJ9bWN5GQO90jxp1uCXeg
+ Y3J+aVs0tmp3x4TEewC9DBmGwAiAcVydob+hwzZdTmJdVNIc3XVjWODNHvcCrOyZRKUfLo7
+ 8GO+c7h7+m5mI/OmZMwDrpHBNYlkD2c41LV75I73R+PLoLE44BuIpnN58CTmJBKo98k1Q1f
+ 4wMqwHeOm5+RjIiSBYKcg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:oX8uaCvf98c=:0x3HQ8Kk72bAScfN4cFi8M
+ nBNKi3xyFQ9YYV/aNS7Z44ruBC0WEotvs7xBhT+O4XZVOYuloMg05rcObMr1XtHDVM3oYegcK
+ oKTZMjHUrZrSl4xK2jBZmoutq9FHAn/BH/ZduohYdbf6r/WJ5bXHTA17TswEWqNTYcpmyzPAd
+ 3FQ+1YxjfHwNaz92mL2XUqK2337UZIlyO6Ba28wRTp+vuKRg7x8pXVBdmGZIjDzqJKMSqHD8d
+ RIC+wnlo940oJ0RVVpeLWIrMWucUrnSH1a5s/7Q8hcwtDYrT2CETePJqFd/feVluGEaTWjx73
+ +HcpyHbIpBb9j/kVL6gzHFJ5s8/4dIS+RsoZbKcx8axbuNH9BlFGJj0q6xSiNezdgLI9Yhgd+
+ PyHS+8RPfdYiWJSDmpRZ3sze8IjQpAR5ksJXBQzMhscru5WptVl/jkethw/25LWRvyD8bFHUK
+ 0Ki6Le0dtAh5wMmrvr8H99WD6PR0YSD4VgH99H+ess0OuJ9vAGbQWvxoYrJC+Z8DYHv9KR2go
+ Joqhen3iPwvpZ4FoJOv133B1FeE7A5E/yq6ityE1fp8jzIKBARYoD5KEu2UPnJml1uDnOmyr4
+ 7trhlE058XEgkQ9xRP0xJvM4dULkV5yuMCfV4s+LCdw4+V2gO2POOP06OrjG09gawZh/ovW/8
+ +JAblvgffODjruA5jNI3w6I1VVtFdjzqdFYPUSy2L5EIUMFH8w8k/j6nfVsrN+X/qVs78ZDE+
+ kveaHed4Mz9XTch1jE24nvcb4JzyxdxFBrBWwDcy3g7+2lkZcKihbbmoeakA4/oSNtcKhrzYR
+ SVt+2bYusKWlnglfylEZFOOUy3aPZgRu6dI0JBQPIeI9h2lDB1azAqjuL8HNdYGQy2czt4EWK
+ PeBmZJuA5wemkRWlzE6EbWrpm6NtnzmOusxzFRo2h7V1hHSwdvS1m8/qO7rfwmIwdILAhL0l1
+ zwHpC+VpAc+dZXY6z1P/rzUsBBorlevYdcIEucJLWZD5jfDT6O9pZ8wtUVTW2H5k6irO4JoQd
+ qf5gFEHCgPd1TREqd1/TJI0Ttf4VxVIv4rWl8l8RyKipx16RZ2MjSIYrwqzg4PxvihKZKO0tv
+ S/SW+e9/lxlorLnhEiVvm77GjD+0TjKz+/1E0gWe5OG8JLhfOSiz1bwciLZmdzoIxo2FF6ods
+ yDo6Tk59momdGY47XJwAy7fruQSbHVttTE91Nm7Nc/kiwuISLc8Ri92UlGLydfB8yXHybDtiP
+ SUX+tcAPUmo1R79Wj88nm2oyTLW3mV7feuHqyIg==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Oct 06, 2020 at 07:12:04PM +0200, Goffredo Baroncelli wrote:
-> On 10/6/20 3:24 AM, Zygo Blaxell wrote:
-> > On Mon, Oct 05, 2020 at 07:57:51PM +0200, Goffredo Baroncelli wrote:
-> [...]
-> 
-> > > 
-> > > I have only few suggestions:
-> > > 1) don't store valuable data on BTRFS with raid5/6 profile. Use it if
-> > > you want to experiment and want to help the development of BTRFS. But
-> > > be ready to face the lost of all data. (very unlikely, but more the
-> > > size of the filesystem is big, more difficult is a restore of the data
-> > > in case of problem).
-> > 
-> > Losing all of the data seems unlikely given the bugs that exist so far.
-> > The known issues are related to availability (it crashes a lot and
-> > isn't fully usable in degraded mode) and small amounts of data loss
-> > (like 5 blocks per TB).
-> 
-> From what I reading in the mailing list when the problem is too complex to solve
-> to the point that the filesystem has to be re-format, quite often the main issue is not to
-> "extract" the data, but is about the availability of additional space to "store" the data.
-> 
-> > 
-> > The above assumes you never use raid5 or raid6 for btrfs metadata.  Using
-> > raid5 or raid6 for metadata can result in total loss of the filesystem,
-> > but you can use raid1 or raid1c3 for metadata instead.
-> > 
-> > > 2) doesn't fill the filesystem more than 70-80%. If you go further
-> > > this limit the likelihood to catch the "dark and scary corners"
-> > > quickly increases.
-> > 
-> > Can you elaborate on that?  I run a lot of btrfs filesystems at 99%
-> > capacity, some of the bigger ones even higher.  If there were issues at
-> > 80% I expect I would have noticed them.  There were some performance
-> > issues with full filesystems on kernels using space_cache=v1, but
-> > space_cache=v2 went upstream 4 years ago, and other significant
-> > performance problems a year before that.
-> 
-> My suggestion was more to have enough space to not stress the filesystem
-> than "if you go behind this limit you have problem".
-> 
-> A problem of BTRFS that confuses the users is that you can have space, but you
-> can't allocate a new metadata chunk.
-> 
-> See
-> https://lore.kernel.org/linux-btrfs/6e6565b2-58c6-c8c1-62d0-6e8357e41a42@gmx.com/T/#t
-> 
-> 
-> Having the filesystem filled to 99% means that you have to check carefully
-> the filesystem (and balance it) to avoid scenarios like this.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--pA5cJZd997VhRHONE9mEyZARzlSTdX28h
+Content-Type: multipart/mixed; boundary="KKlstWaoR8Y41lwWTtugp6qdN5cITcPhX"
 
-Nah.  Never balance metadata, and let the filesystem fill up.  As long
-as the largest disks are sufficient for the raid profile, and there
-isn't a radical change in usage after it's mostly full (i.e. a sudden
-increase in snapshots or dedupe for the first time after the filesystem
-has been filled), it'll be fine with no balances at all.
+--KKlstWaoR8Y41lwWTtugp6qdN5cITcPhX
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-If the largest disks are the wrong sizes (e.g.  you're using raid6 and
-the 2 largest disks are larger than the third), then you'll hit ENOSPC
-at some point (which might be 80% full, or 10% full, depending on disk
-sizes and profile), and it's inevitable, you'll hit ENOSPC no matter
-what you do.
 
-Arguably the tools could detect and warn about that case.  It's not
-exactly hard to predict the failure.  A few lines of 'btrfs fi usage'
-output and some counting are enough to spot it.
 
-> On other side 1% of 1TB (a small filesystem for today standard) are about
-> 10GB, that everybody should consider enough....
+On 2020/10/6 =E4=B8=8B=E5=8D=8810:27, JMinson wrote:
+> Linux linux-desktop 5.4.0-48-generic #52-Ubuntu SMP Thu Sep 10 10:58:49=
 
-Most of the ENOSPC paint-into-the-corner cases I've seen (assuming it's
-possible to allocate all the space with the chosen disk sizes and raid
-profile) are on drives below 1TB, where GB-sized metadata allocations take
-up bigger percentages of free space.  btrfs allocates space in absolute
-units (1GB per chunk), so it's the absolute amount of free space that
-causes the problems.  A 20GB filesystem can run into problems that need
-workarounds at 50% full, while a 20TB filesystem can go all the way up
-to 99.95% without issue.
+> UTC 2020 x86_64 x86_64 x86_64 GNU/Linux
+>=20
+> btrfs-progs v5.4.1
+>=20
+> Label: 'Daily'=C2=A0 uuid: 1426edb8-4fed-419a-b0f1-d131b97224fd
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Total devices 1 FS bytes use=
+d 1.13TiB
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 devid=C2=A0=C2=A0=C2=A0 1 si=
+ze 1.82TiB used 1.14TiB path /dev/sdb
+>=20
+>=20
+> I use rsync to backup to an external btrfs formatted usb drive . The
+> process is :
+>=20
+>=20
+> mount btrfs volume "/Daily"
+>=20
+> take a snapshot of subvolume "BackupRoot" and give the snapshot a name
+> like "snap@BackupRoot-2020-10-05-Oct-1601938835"
+>=20
+> run rsync with the destination being "/Daily/BackupRoot"
+>=20
+> unmount the btrfs volume "/Daily"
+>=20
+> I've been using this procedure for about 6 months and is far as I know
+> all the data is good . However I discovered yesterday that when I run
+> btrfsck I get 1 or more of these
+>=20
+> Counts for qgroup id: 0/1561 are different
+> our:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 =
+referenced 1051233288192 referenced compressed
+> 1051233288192
+> disk:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 refer=
+enced 1046914453504 referenced compressed
+> 1046914453504
+> diff:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 refer=
+enced 4318834688 referenced compressed 4318834688
 
-> > The last few GB is a bit of a performance disaster and there are
-> > some other gotchas, but that's an absolute number, not a percentage.
-> 
-> True, it is sufficient to have few GB free (i.e. not allocated by chunk)
-> in *enough* disks...
-> 
-> However these requirements are a bit complex to understand by a new BTRFS
-> users.
+This means btrfs qgroup on-disk is smaller than what btrfs check think is=
+=2E
 
-True, more tool support for the provably bad cases would be good here,
-as well as a reliable estimate for how much space remains available for
-metadata.  Some of the issues are difficult to boil down to numbers,
-though, they are about _shape_.
+Is there any subvolume deletion involved in this case?
+IIRC btrfs kernel and btrfs-check has different opinion on half-dropped
+subvolumes. But when the subvolume is fully dropped, then everything
+goes back into sync again.
 
-> > Never balance metadata.  That is a ticket to a dark and scary corner.
-> > Make sure you don't do it, and that you don't accidentally install a
-> > cron job that does it.
-> > 
-> > > 3) run scrub periodically and after a power failure ; better to use
-> > > an uninterruptible power supply (this is true for all the RAID, even
-> > > the MD one).
-> > 
-> > scrub also provides early warning of disk failure, and detects disks
-> > that are silently corrupting your data.  It should be run not less than
-> > once a month, though you can skip months where you've already run a
-> > full-filesystem read for other reasons (e.g. replacing a failed disk).
-> > 
-> > > 4) I don't have any data to support this; but as occasional reader of
-> > > this mailing list I have the feeling that combing BTRFS with LUCKS(or
-> > > bcache) raises the likelihood of a problem.
-> 
-> > I haven't seen that correlation.  All of my machines run at least one
-> > btrfs on luks (dm-crypt).  The larger ones use lvmcache.  I've also run
-> > bcache on test machines doing power-fail tests.
-> 
-> 
-> > 
-> > That said, there are additional hardware failure risks involved in
-> > caching (more storage hardware components = more failures) and the
-> > system must be designed to tolerate and recover from these failures.
-> > 
-> > When cache disks fail, just uncache and run scrub to repair.  btrfs
-> > checksums will validate the data on the backing HDD (which will be badly
-> > corrupted after a cache SSD failure) and will restore missing data from
-> > other drives in the array.
-> > 
-> > It's definitely possible to configure bcache or lvmcache incorrectly,
-> > and then you will have severe problems.  Each HDD must have a separate
-> > dedicated SSD.  No sharing between cache devices is permitted.  They must
-> > use separate cache pools.  If one SSD is used to cache two or more HDDs
-> > and the SSD fails, it will behave the same as a multi-disk failure and
-> > probably destroy the filesystem.  So don't do that.
-> > 
-> > Note that firmware in the SSDs used for caching must respect write
-> > ordering, or the cache will do severe damage to the filesystem on
-> > just about every power failure.  It's a good idea to test hardware
-> > in a separate system through a few power failures under load before
-> > deploying them in production.  Most devices are OK, but a few percent
-> > of models out there have problems so severe they'll damage a filesystem
-> > in a single-digit number of power loss events.  It's fairly common to
-> > encounter users who have lost a btrfs on their first or second power
-> > failure with a problematic drive.  If you're stuck with one of these
-> > disks, you can disable write caching and still use it, but there will
-> > be added write latency, and in the long run it's better to upgrade to
-> > a better disk model.
-> > 
-> > > 5) pay attention that having an 8 disks raid, raises the likelihood of a
-> > > failure of about an order of magnitude more than a single disk ! RAID6
-> > > (or any other RAID) mitigates that, in the sense that it creates a
-> > > time window where it is possible to make maintenance (e.g. a disk
-> > > replacement) before the lost of data.
-> > > 6) leave the room in the disks array for an additional disk (to use
-> > > when a disk replacement is needed)
-> > > 7) avoid the USB disks, because these are not reliable
-> > > 
-> > > 
-> > > > 
-> > > > Any information appreciated.
-> > > > 
-> > > > 
-> > > > Greetings from Germany,
-> > > > 
-> > > > Matt
-> > > 
-> > > 
-> > > -- 
-> > > gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
-> > > Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
-> > > 
-> 
-> 
-> -- 
-> gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
-> Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
+> our:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 =
+exclusive 1206681600 exclusive compressed 1206681600
+> disk:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 exclu=
+sive 1206681600 exclusive compressed 1206681600
+
+But exclusive is correct, thus it doesn't look like regular qgroup error.=
+
+
+>=20
+>=20
+> Is this something to be concerned about ?
+
+Normally you don't need to be concerned.
+
+If you really don't like this, you can just trigger a qgroup rescan and
+it will be handled well.
+
+Another thing is, if you're running btrfs check with --force, on running
+fs, it could give false alert.
+
+Thanks,
+Qu
+
+>=20
+
+
+--KKlstWaoR8Y41lwWTtugp6qdN5cITcPhX--
+
+--pA5cJZd997VhRHONE9mEyZARzlSTdX28h
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEyBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl99CC4ACgkQwj2R86El
+/qj59gf3TjhqFaV6OTX9K8FVYQVZ0YDED+DFst+L4XmpEMdrrj3XUcmq1UUeafq1
+6VqQuHRa3qcWZnvzW3eso9GDb/w76H9UVrFkU+oLhsSMtWnq7U/DdWWsek5XY7iB
+M2IiOR7QTusv1/enPQkIgtMFzg1EaHAn2a1KmF9toyC4juEkYldJnW53Kfnc72ug
+f7X/VSRHEbnBji+Ki+0O2IwMnRmY5Y/TQFqNnCMQHo4j0ycrKZocpFL8Xp/yrPnn
+M2/dDb4KB8FQ37zjeq762xwLyDIduaPA0CButg6xpMQAsaUyUh2d4opgnOrXAcKL
+mKJyw3ha208sNAyt/ZndvbY9l88D
+=VoCA
+-----END PGP SIGNATURE-----
+
+--pA5cJZd997VhRHONE9mEyZARzlSTdX28h--
