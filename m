@@ -2,75 +2,68 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D38DA28583F
-	for <lists+linux-btrfs@lfdr.de>; Wed,  7 Oct 2020 07:48:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01F9C2858AA
+	for <lists+linux-btrfs@lfdr.de>; Wed,  7 Oct 2020 08:29:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726730AbgJGFsy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 7 Oct 2020 01:48:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35970 "EHLO
+        id S1727153AbgJGG3q (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 7 Oct 2020 02:29:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725970AbgJGFsx (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 7 Oct 2020 01:48:53 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 888C7C061755;
-        Tue,  6 Oct 2020 22:48:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=BBGqLkpiWOAukT4cGbe+ekpiE16tTJaZW03Gt7ynzdI=; b=t/QSLeG7RQBiWYRnopnrssXYFK
-        n3vc0rGv17CNvb8Y/WkwuC/SxjNbRnzsh5m9BRlD8G6GX7t98k1d/y8cbqRO3l5L1aMv6Ydc0Mlg5
-        mI7i+pJQhT+VDALgc36DA0L/rTkp3ekxv+5aT/QsLlOv6P0LrPlMneAQMxZv5s2RdPz9PrRCSBa+T
-        mSbtHJTbLCF/3NY+XJ95FcoXB62OM28dlVXti3pxX4KlwMT2J1tLLDuKyTyp1gXlUOrs/GWjXG7M9
-        YPio7RcXP51/avKaLimQVw1+JGWGKFzzAB90Z4jGDaZdw3MOOzI9IPKUfE6nNI5jJkBF/BQQWeSoh
-        mzhEKVAg==;
-Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kQ2Jl-0004NF-9U; Wed, 07 Oct 2020 05:48:49 +0000
-Date:   Wed, 7 Oct 2020 06:48:49 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     linux-fsdevel@vger.kernel.org, ericvh@gmail.com, lucho@ionkov.net,
-        viro@zeniv.linux.org.uk, jlayton@kernel.org, idryomov@gmail.com,
-        mark@fasheh.com, jlbec@evilplan.org, joseph.qi@linux.alibaba.com,
-        v9fs-developer@lists.sourceforge.net, linux-kernel@vger.kernel.org,
-        ceph-devel@vger.kernel.org, ocfs2-devel@oss.oracle.com,
-        linux-btrfs@vger.kernel.org, clm@fb.com, josef@toxicpanda.com,
-        dsterba@suse.com, stable@vger.kernel.org
-Subject: Re: [PATCH 1/7] 9P: Cast to loff_t before multiplying
-Message-ID: <20201007054849.GA16556@infradead.org>
-References: <20201004180428.14494-1-willy@infradead.org>
- <20201004180428.14494-2-willy@infradead.org>
+        with ESMTP id S1726564AbgJGG3q (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 7 Oct 2020 02:29:46 -0400
+Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69A35C061755
+        for <linux-btrfs@vger.kernel.org>; Tue,  6 Oct 2020 23:29:46 -0700 (PDT)
+Received: by mail-io1-xd32.google.com with SMTP id l8so1150843ioh.11
+        for <linux-btrfs@vger.kernel.org>; Tue, 06 Oct 2020 23:29:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=ANhptuHlPUpoaaOh0q0v4+9AAb9B8GXt5np8UCHJ0oc=;
+        b=FSToFYn4fMigaX/1XbghXI3D0f252pCPQ3ZgA5RqgaxUc9g49gvASrlajXni9oakAW
+         wAf1oit3F9DwBedlWSnOLbg+3ACU34Rj/nah8tyo/q5bNdJzkxb/zqbk0wWAfYc011K+
+         cXeXPQuKC4GtXfSnct/R+wuPFoy+qzjs6ytqsb+d5mtr9DfqsrThLf+R2tT4lOmbWu0e
+         u4ColmgAItPbVqA2x88THVNf4UZogSZ79Dl33R2s5UzfbCkATY3xvR/v01mTEVBX5nPr
+         URGl3md6ALpc1ChNbKc9eFMc31NOLhbjI4+cyIwOL5l4aDX5Q6AC1hlLr47RDhDc2cxT
+         hDrA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=ANhptuHlPUpoaaOh0q0v4+9AAb9B8GXt5np8UCHJ0oc=;
+        b=KW/XBIDAgh2JeI1ZOH4zbxfYU++kxyoAhByA7Oad1m6awt8KW4TIrUkhOVHFDt/lYi
+         iH9/Y9ZStlxsKAVczbycy3gdj4Nh7tO98Chwobew8i8TCxsCf0SkpfRylWBHAhDySDVS
+         zErDJGaY0zBx7V+eIhGb9awIUpgcApeC8lcZ2Ejwmi3TAMDGOTcPnSjECN4ViM8r+AyT
+         uMX+XcUA3xf4yedI23lxc32smsaoL+Ys5Oet7+hzaXHtQYiZFZeUbiNpbZqdw9CuXhsZ
+         eqcCse9AB2F2uB7qftr9IWVtcRb07fmYr+UkkkSV2yGJgIL/E8ZMDjWfnnkl73P50M+e
+         oCRw==
+X-Gm-Message-State: AOAM5330JPCPD9uzY8QjSTJJ00yg6BL5I1XKVyw9Z+t4piSZ1PJ92PS0
+        v+L2LdOrTonMwQclsE8gnv4xTPBRJfIUrgYGWmyQAiZcUww=
+X-Google-Smtp-Source: ABdhPJyhavfS6ajUe1thd1ctn7L+r2FtnpzKWHsrMV5RHNRsoM0B0U2cZd0pM0u1yuYkWYFUEK6vaqrNqM3co9QPabo=
+X-Received: by 2002:a02:ccb9:: with SMTP id t25mr1725238jap.21.1602052185549;
+ Tue, 06 Oct 2020 23:29:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201004180428.14494-2-willy@infradead.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+From:   Eric Levy <ericlevy@gmail.com>
+Date:   Wed, 7 Oct 2020 02:29:34 -0400
+Message-ID: <CA++hEgxkGhnbKBhwuwSAJn2BtZ+RAPuN+-ovkKLsUUfTRnD1_g@mail.gmail.com>
+Subject: de-duplicating +C files
+To:     linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sun, Oct 04, 2020 at 07:04:22PM +0100, Matthew Wilcox (Oracle) wrote:
-> On 32-bit systems, this multiplication will overflow for files larger
-> than 4GB.
-> 
-> Cc: stable@vger.kernel.org
-> Fixes: fb89b45cdfdc ("9P: introduction of a new cache=mmap model.")
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> ---
->  fs/9p/vfs_file.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/fs/9p/vfs_file.c b/fs/9p/vfs_file.c
-> index 3576123d8299..6d97b6b4d34b 100644
-> --- a/fs/9p/vfs_file.c
-> +++ b/fs/9p/vfs_file.c
-> @@ -612,9 +612,9 @@ static void v9fs_mmap_vm_close(struct vm_area_struct *vma)
->  	struct writeback_control wbc = {
->  		.nr_to_write = LONG_MAX,
->  		.sync_mode = WB_SYNC_ALL,
-> -		.range_start = vma->vm_pgoff * PAGE_SIZE,
-> +		.range_start = (loff_t)vma->vm_pgoff * PAGE_SIZE,
+Recently a discussion [1] began about the desirability or risk of
+applying a de-duplication operation on files with a C (no-CoW)
+attribute set. The controversy rests largely on the observation that
+calls to Btrfs currently fail for de-duplication between two files if
+exactly one has the attribute set, but succeed in other cases, even in
+which both have the attribute set. It may seem more natural that
+success depends on neither file having the attribute set.
 
-Given the may places where this issue shows up I think we really need
-a vma_offset or similar helper for it.  Much better than chasing missing
-casts everywhere.
+Comments would be welcome in either this thread, or perhaps even more
+conveniently, in the Github discussion, over how this behavior of
+Btrfs relates to the preferred operation of a de-duplication
+application.
+
+
+[1] https://github.com/markfasheh/duperemove/issues/251
