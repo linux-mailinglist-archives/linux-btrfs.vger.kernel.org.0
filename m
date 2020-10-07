@@ -2,230 +2,79 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D3D6285F7A
-	for <lists+linux-btrfs@lfdr.de>; Wed,  7 Oct 2020 14:48:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E7752863D0
+	for <lists+linux-btrfs@lfdr.de>; Wed,  7 Oct 2020 18:24:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728253AbgJGMsH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 7 Oct 2020 08:48:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44152 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727927AbgJGMsH (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 7 Oct 2020 08:48:07 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30510C061755
-        for <linux-btrfs@vger.kernel.org>; Wed,  7 Oct 2020 05:48:07 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id w12so2461138qki.6
-        for <linux-btrfs@vger.kernel.org>; Wed, 07 Oct 2020 05:48:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:subject:to:references:message-id:date:user-agent:mime-version
-         :in-reply-to:content-transfer-encoding:content-language;
-        bh=2uM4+ejxSvF21aMjd9wWJKqsvJal6C6QSBNTet+Af4A=;
-        b=qF76h4TWX5boR4OFnrQe+oMYaSgy5f90t6BDjMesWKBx3HERBVe7eke87H5dITEdlI
-         pqh+DNuKynlJzoFBk/JpjMnFyMLEMT7/U1FUpihAR7CV4JvLhZbNHVBPRYMoMH7Y8ijs
-         w1CN88cMOXgIvgv6lHU6HHycF9jn0lUgMMqcIRmK+21Rp9iJDJsZGFww13ZVhzv6PTmS
-         mbHBHS1mVQyIOZil4FYoM77q0I7QmhglvRa7DlfaiCE2Q8gmv61KiLJhwMn4n27Ykks/
-         b8ccZYb3jXp0U/g0WuO3/4cqieLLFOubsaoWkId/X4oMqYjpHWtsv0d5vEPR8v+OQXBa
-         mmNA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=2uM4+ejxSvF21aMjd9wWJKqsvJal6C6QSBNTet+Af4A=;
-        b=oEa+yMtg/LCsOgMSah0Stndxg7rCQmy0wvdwd3MQVBPYCEmzrH6TmMkgQZzxAoKyEM
-         59UKg3Fz5J+4MnIBGpuJ5WImMFHCl5L+1gZlueDSUKWZ6TnA34xo+PGTYQyK5A99reOS
-         v27gh6PaEpq+HBF+ZUeb59+i0z9ruytIsCu4EW0YPUbz7nOlN5Q9ClZSV8WpZzGn9dW1
-         DKGHttKbm+tm16Z54dYpCOsYJzL/paYjxPEICAq02Xy726j0OIfeWfIqT36EO0jjirNd
-         biDSWYQTZX6JcVjbkZDMi9FnYNnOzpgq4vjFcf7neOOts2XAIOB/nrB/BdDfQyolD0fH
-         k1JQ==
-X-Gm-Message-State: AOAM532eHDQLFSsObwggY/Ue1F4AopnWhClSbgnB1Bki1mNW1qwx/aPs
-        C7fJBBNdqPTSPuqoYKFRkTE1T+PlcfR/Tg==
-X-Google-Smtp-Source: ABdhPJxHXO45ADVQSrz/HPU8bVN+nmTJawyHaZI8eYt39QtbJjJcYtVa6rBZHpBpFIzHEdVa/hYPuA==
-X-Received: by 2002:ae9:e40c:: with SMTP id q12mr2663789qkc.309.1602074885890;
-        Wed, 07 Oct 2020 05:48:05 -0700 (PDT)
-Received: from [192.168.1.249] (user-69-1-51-100.knology.net. [69.1.51.100])
-        by smtp.gmail.com with ESMTPSA id g9sm1282463qkb.106.2020.10.07.05.48.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 07 Oct 2020 05:48:04 -0700 (PDT)
-From:   JMinson <minsonj2016@gmail.com>
-Subject: Re: Counts for qgroup id are different
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        BTRFS Kernel <linux-btrfs@vger.kernel.org>
-References: <8547cc42-6768-d6f0-6336-fac1fc42b85d@gmail.com>
- <9ded0048-a480-8873-899d-576210490606@gmx.com>
- <91df37d7-d173-f264-6a2b-22649b0f7e68@gmail.com>
- <c7e12280-0a86-6677-2cf9-de32bf68b07d@gmx.com>
-Message-ID: <2e7c5cbb-82c8-208c-139d-b33ca7f66ac7@gmail.com>
-Date:   Wed, 7 Oct 2020 08:48:04 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1728544AbgJGQYZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 7 Oct 2020 12:24:25 -0400
+Received: from sonic309-14.consmr.mail.bf2.yahoo.com ([74.6.129.124]:34244
+        "EHLO sonic309-14.consmr.mail.bf2.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726980AbgJGQYY (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 7 Oct 2020 12:24:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1602087863; bh=PxMwWzXvs+dqOoH0/FHvFmQpYH2JguaCUHYAVLLmaiw=; h=Date:From:Reply-To:Subject:References:From:Subject; b=LlqJvgYWtqIuUi175z/2J3pNcE+D1WXCvGFAO63XtY5qqzJYXBkrJKeRMZPVXN9D/e3snUXAligDYW7Ko6YkYIQeb/OdW33b9Wd/V9tm7CL2NPuQ5HpvNVdGwj3c1Dk6a2u3KOH9beglenfEKBgTAj/cP57x25qPQeTnzPzBfXSN7yUSaDDnk0KKg9Gi46EwVr3jYgmzpGekzFfq4cUgkAvLNkcNqef5TAw1y4pQRaDjI4cMOHZgjV9zJssdWgeWZk7D9puVoWAQUI/GfOs+fv5IlKFuBPtJ4Gb4fq3TfsHW7nbi/DBCX6SuY37h2lmfvP4oNR/uqyuSB04Yi40Oyg==
+X-YMail-OSG: eFDkHdoVM1nYhLlI4Woh9m82mXms2CSOvs.6lGYBflOY6whFUpTAj6qa.QS6FyV
+ .MlLYxq4jEICQVB5kT2PCbHpsMgSRoMcOaq3UspI__7kQq1wG3IB44bpFWSCVJK7MRSxsmjmB7Lg
+ pFPpkkEcwuxYwO5iLVy_Nz3FF8_eyhcMK.DMlSfmtVrkXVAgf7agalSmAX1Z1uDiE7IoP33eXVYl
+ 7YQKvctnaC8gKyYi5hSPd3CUPWgiOTMIBPwqDZzBUmxK7q7537BGnnIeV25kbcBuvKBsKxVNnm80
+ 3n.U8.aoWLM1GDZzoHy.LLs0okAqeSztbnEhW0M7xZxBC3B9R8LZ6jJziiOn_81f.vZQ6eB.Fiu2
+ dWLa6qPF.djPLb2YLoCzFmc1_mm_AJe1JtW1AcjcqYHcCrbs6VMq5uqlh35VFJsKcdd_mhfGcnng
+ MvhVjrk1MrpVazQ6R4ikuIGrOOfocYsiezGUhuvz9G4BS1d8tKpE0vTgqNvIDUiUOL4QY0iLy40D
+ sc7YViQcs6BKn1u5dJNT4PfAK6zbRN_o25DwhYnz8HLcPEHVZsO3CJRNCGrHEEpV2Ytke7eGt5ub
+ rWlveHXbg5QJY4xgsOQp6akuT8Dbc9lV_Rh7Y2T0NVOiUnaPa7aNgRoHyfVG2Jf4cmIxt1jUF9Pn
+ Jb17xdyxAKZM6PyWNkIiZc8MtQizg82ardPtkCM5e0CLWv19uv1SbcumrNdbAp3bp5tfEsveoATk
+ OQyj9pPSNC2ddocaPDYfqx1a0d6jCn2ZukF6nYrJ5tvg98OpY34Aj0Bc_2hFc6PD0FBlrhnaum8k
+ qdp0UgfGsQFkoGiX.t3gV16vpAH8TbOjW8fFNuq4GMuuGtXut1Whz9YquUeZFCfP97pTWHvB.pps
+ kMngbxLgMjfNIrOvJ76WrV5m7CMkUF_g7bGGaGNu9dAgTEN3MgwmV5QacnkN_oQLRLjoc6JiLzey
+ 3VGGkL28e68xQjBW4JB5ur2i4Fx9LKwGdM9R43UYqcEZEbvgRSCNj4TBpzR0M.NP4eju.gpnx3bC
+ NkFIh0JrDsOn7ZPCwNsEEuhIG8IAaCfAwgQZeEZ00n2J5EqzdTZbx8v1aHXpPs14A.y5BYKfczZY
+ Lq8MiXzs1ejJnFvewADnRRKoJMJwlltEW4HJgsuhKtaZjl8M7PmWLBFZn4R_Cl4D8tKOcax4Ago4
+ _22uJDCiZP8WeHj6ukDgyd8VmWDhbHFePx0crI95zKnN2Fpw3.jiTLnh0caB851l5L4v0K95mv.C
+ BzOb2XcrAVnau7R12_lJE.ndUDZCpebBB3veoOex3Idx9uAhCXTkq7jP6OQe8skQfqvdvrleRKzl
+ jnbpYaLq6Cw9qvYwpVP98fbJ.y3_Ae9ET4LSB3P0EuTCdpdmB0vBfw2KwWRfeYuF3salmL1FulMu
+ e0lc0JtOp1Yu8rzq4ZqGf0bRKH8VoOpzf_q55mAvwuHLBzA--
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic309.consmr.mail.bf2.yahoo.com with HTTP; Wed, 7 Oct 2020 16:24:23 +0000
+Date:   Wed, 7 Oct 2020 16:24:22 +0000 (UTC)
+From:   Marilyn Robert <fredodinga22@gmail.com>
+Reply-To: marilyobert@gmail.com
+Message-ID: <1960100655.143882.1602087862365@mail.yahoo.com>
+Subject: =?UTF-8?B?0J3QsNGY0LzQuNC70LAg0LrQsNGYINCz0L7RgdC/0L7QtNCw0YDQvtGC?=
 MIME-Version: 1.0
-In-Reply-To: <c7e12280-0a86-6677-2cf9-de32bf68b07d@gmx.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
+References: <1960100655.143882.1602087862365.ref@mail.yahoo.com>
+X-Mailer: WebService/1.1.16795 YMailNodin Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.125 Safari/537.36
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-I got this same error when running the rescan on an internal hd with a 
-btrfs formatted lv so its not usb specific .
-
-
-rsync'ing to external usb drive daily as described below
-
-
-On 10/7/20 7:14 AM, Qu Wenruo wrote:
-> On 2020/10/7 下午6:58, JMinson wrote:
->> Good News / Bad News
->>
->> The good news is that btrfs quota rescan /Daily cleared the Counts for
->> qgroup id are different error .
->>
->> The bad news is that during the rescan these errors are being generated:
->>
->>
->> Oct  7 06:25:27 linux-desktop kernel: [ 4001.145760] ------------[ cut
->> here ]------------
->> Oct  7 06:25:27 linux-desktop kernel: [ 4001.145766] WARNING: CPU: 4
->> PID: 4850 at fs/fs-writeback.c:2466 __writeback_inodes_sb_nr+0xbf/0xd0
-> This is completely unrelated to qgroup then.
->
-> According to the code, it looks like some lock schema problem.
-> At least for the qgroup part it should be fine now.
->
-> For the new part, unless you're a developer, you can just ignore it.
-> Or could you provide the workload for us to reproduce?
-> Just your regular backup workload?
->
-> Thanks,
-> Qu
->
->> Oct  7 06:25:27 linux-desktop kernel: [ 4001.145766] Modules linked in:
->> ccm rfcomm cmac algif_hash algif_skcipher af_alg bnep
->> snd_hda_codec_realtek snd_hda_codec_generic ledtrig_audio
->> snd_hda_codec_hdmi snd_hda_intel snd_intel_dspcfg snd_hda_codec
->> snd_hda_core snd_hwdep snd_pcm snd_seq_midi snd_seq_midi_event
->> nls_iso8859_1 snd_rawmidi snd_seq iwlmvm snd_seq_device edac_mce_amd
->> mac80211 kvm_amd ccp snd_timer libarc4 kvm eeepc_wmi iwlwifi asus_wmi
->> sparse_keymap wmi_bmof btusb snd k10temp cfg80211 btrtl btbcm btintel
->> joydev soundcore input_leds bluetooth ecdh_generic ecc mac_hid
->> sch_fq_codel parport_pc ppdev lp parport ip_tables x_tables autofs4
->> btrfs zstd_compress raid10 raid456 async_raid6_recov async_memcpy
->> async_pq async_xor async_tx xor raid6_pq libcrc32c raid1 raid0 multipath
->> linear hid_logitech_hidpp uas usb_storage hid_logitech_dj hid_generic
->> usbhid hid amdgpu crct10dif_pclmul crc32_pclmul ghash_clmulni_intel
->> amd_iommu_v2 gpu_sched aesni_intel i2c_algo_bit ttm crypto_simd
->> drm_kms_helper cryptd glue_helper syscopyarea
->> Oct  7 06:25:27 linux-desktop kernel: [ 4001.145791]  sysfillrect
->> sysimgblt nvme fb_sys_fops i2c_piix4 drm nvme_core ahci libahci wmi
->> video gpio_amdpt gpio_generic
->> Oct  7 06:25:27 linux-desktop kernel: [ 4001.145796] CPU: 4 PID: 4850
->> Comm: btrfs-transacti Tainted: G        W 5.4.0-48-generic #52-Ubuntu
->> Oct  7 06:25:27 linux-desktop kernel: [ 4001.145797] Hardware name:
->> System manufacturer System Product Name/PRIME B450M-A, BIOS 2202 07/14/2020
->> Oct  7 06:25:27 linux-desktop kernel: [ 4001.145799] RIP:
->> 0010:__writeback_inodes_sb_nr+0xbf/0xd0
->> Oct  7 06:25:27 linux-desktop kernel: [ 4001.145800] Code: b6 d1 48 8d
->> 75 b0 e8 80 fc ff ff 4c 89 e7 e8 e8 fb ff ff 48 8b 45 f0 65 48 33 04 25
->> 28 00 00 00 75 0c 48 83 c4 58 41 5c 5d c3 <0f> 0b eb ce e8 48 c4 d8 ff
->> 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00
->> Oct  7 06:25:27 linux-desktop kernel: [ 4001.145800] RSP:
->> 0018:ffffb9ac82a5fdb0 EFLAGS: 00010246
->> Oct  7 06:25:27 linux-desktop kernel: [ 4001.145801] RAX:
->> 0000000000000000 RBX: 0000000000000125 RCX: 0000000000000000
->> Oct  7 06:25:27 linux-desktop kernel: [ 4001.145802] RDX:
->> 0000000000000002 RSI: 00000000000122ba RDI: ffff9a07f0396800
->> Oct  7 06:25:27 linux-desktop kernel: [ 4001.145802] RBP:
->> ffffb9ac82a5fe10 R08: ffff9a07f0395800 R09: ffffb9ac82a5fdd0
->> Oct  7 06:25:27 linux-desktop kernel: [ 4001.145803] R10:
->> 0000000000000000 R11: 0000000000000000 R12: ffffb9ac82a5fdb0
->> Oct  7 06:25:27 linux-desktop kernel: [ 4001.145803] R13:
->> 0000000000000002 R14: ffff9a0842aba800 R15: 0000000000000000
->> Oct  7 06:25:27 linux-desktop kernel: [ 4001.145804] FS:
->> 0000000000000000(0000) GS:ffff9a0850900000(0000) knlGS:0000000000000000
->> Oct  7 06:25:27 linux-desktop kernel: [ 4001.145804] CS:  0010 DS: 0000
->> ES: 0000 CR0: 0000000080050033
->> Oct  7 06:25:27 linux-desktop kernel: [ 4001.145805] CR2:
->> 00007fe990379000 CR3: 00000003fff9e000 CR4: 00000000003406e0
->> Oct  7 06:25:27 linux-desktop kernel: [ 4001.145805] Call Trace:
->> Oct  7 06:25:27 linux-desktop kernel: [ 4001.145808]
->> writeback_inodes_sb+0x4b/0x60
->> Oct  7 06:25:27 linux-desktop kernel: [ 4001.145820]
->> btrfs_commit_transaction+0x2f6/0x960 [btrfs]
->> Oct  7 06:25:27 linux-desktop kernel: [ 4001.145828]  ?
->> start_transaction+0xb7/0x510 [btrfs]
->> Oct  7 06:25:27 linux-desktop kernel: [ 4001.145830]  ?
->> del_timer_sync+0x30/0x40
->> Oct  7 06:25:27 linux-desktop kernel: [ 4001.145838]
->> transaction_kthread+0x146/0x190 [btrfs]
->> Oct  7 06:25:27 linux-desktop kernel: [ 4001.145840] kthread+0x104/0x140
->> Oct  7 06:25:27 linux-desktop kernel: [ 4001.145847]  ?
->> btrfs_cleanup_transaction+0x530/0x530 [btrfs]
->> Oct  7 06:25:27 linux-desktop kernel: [ 4001.145848]  ?
->> kthread_park+0x90/0x90
->> Oct  7 06:25:27 linux-desktop kernel: [ 4001.145850]
->> ret_from_fork+0x22/0x40
->> Oct  7 06:25:27 linux-desktop kernel: [ 4001.145851] ---[ end trace
->> 21d9e8c753568b19 ]---
->>
->> On 10/6/20 8:13 PM, Qu Wenruo wrote:
->>> On 2020/10/6 下午10:27, JMinson wrote:
->>>> Linux linux-desktop 5.4.0-48-generic #52-Ubuntu SMP Thu Sep 10 10:58:49
->>>> UTC 2020 x86_64 x86_64 x86_64 GNU/Linux
->>>>
->>>> btrfs-progs v5.4.1
->>>>
->>>> Label: 'Daily'  uuid: 1426edb8-4fed-419a-b0f1-d131b97224fd
->>>>            Total devices 1 FS bytes used 1.13TiB
->>>>            devid    1 size 1.82TiB used 1.14TiB path /dev/sdb
->>>>
->>>>
->>>> I use rsync to backup to an external btrfs formatted usb drive . The
->>>> process is :
->>>>
->>>>
->>>> mount btrfs volume "/Daily"
->>>>
->>>> take a snapshot of subvolume "BackupRoot" and give the snapshot a name
->>>> like "snap@BackupRoot-2020-10-05-Oct-1601938835"
->>>>
->>>> run rsync with the destination being "/Daily/BackupRoot"
->>>>
->>>> unmount the btrfs volume "/Daily"
->>>>
->>>> I've been using this procedure for about 6 months and is far as I know
->>>> all the data is good . However I discovered yesterday that when I run
->>>> btrfsck I get 1 or more of these
->>>>
->>>> Counts for qgroup id: 0/1561 are different
->>>> our:            referenced 1051233288192 referenced compressed
->>>> 1051233288192
->>>> disk:           referenced 1046914453504 referenced compressed
->>>> 1046914453504
->>>> diff:           referenced 4318834688 referenced compressed 4318834688
->>> This means btrfs qgroup on-disk is smaller than what btrfs check think
->>> is.
->>>
->>> Is there any subvolume deletion involved in this case?
->>> IIRC btrfs kernel and btrfs-check has different opinion on half-dropped
->>> subvolumes. But when the subvolume is fully dropped, then everything
->>> goes back into sync again.
->>>
->>>> our:            exclusive 1206681600 exclusive compressed 1206681600
->>>> disk:           exclusive 1206681600 exclusive compressed 1206681600
->>> But exclusive is correct, thus it doesn't look like regular qgroup error.
->>>
->>>> Is this something to be concerned about ?
->>> Normally you don't need to be concerned.
->>>
->>> If you really don't like this, you can just trigger a qgroup rescan and
->>> it will be handled well.
->>>
->>> Another thing is, if you're running btrfs check with --force, on running
->>> fs, it could give false alert.
->>>
->>> Thanks,
->>> Qu
->>>
+DQoNCtCd0LDRmNC80LjQu9CwINC60LDRmCDQs9C+0YHQv9C+0LTQsNGA0L7Rgg0KDQrQiNCw0YEg
+0YHRg9C8IDY4LdCz0L7QtNC40YjQvdCwINC20LXQvdCwLCDQutC+0ZjQsCDRgdGC0YDQsNC00LAg
+0L7QtCDQv9GA0L7QtNC+0LvQttC10L0g0LrQsNGA0YbQuNC90L7QvCDQvdCwINC00L7RmNC60LAs
+INC+0LQg0YHQuNGC0LUg0LzQtdC00LjRhtC40L3RgdC60Lgg0LjQvdC00LjQutCw0YbQuNC4LCDQ
+vNC+0ZjQsNGC0LAg0YHQvtGB0YLQvtGY0LHQsCDQvdCw0LLQuNGB0YLQuNC90LAg0YHQtSDQstC7
+0L7RiNC4INC4INC+0YfQuNCz0LvQtdC00L3QviDQtSDQtNC10LrQsCDQvNC+0LbQtdCx0Lgg0L3Q
+tdC80LAg0LTQsCDQttC40LLQtdCw0Lwg0L/QvtCy0LXRnNC1INC+0LQg0YjQtdGB0YIg0LzQtdGB
+0LXRhtC4INC60LDQutC+INGA0LXQt9GD0LvRgtCw0YIg0L3QsCDQsdGA0LfQuNC+0YIg0YDQsNGB
+0YIg0Lgg0LHQvtC70LrQsNGC0LAg0YjRgtC+INGB0LUg0ZjQsNCy0YPQstCwINC60LDRmCDQvdC1
+0LAuINCc0L7RmNC+0YIg0YHQvtC/0YDRg9CzINC/0L7Rh9C40L3QsCDQvdC10LrQvtC70LrRgyDQ
+s9C+0LTQuNC90Lgg0L3QsNC90LDQt9Cw0LQg0Lgg0L3QsNGI0LjRgtC1INC00L7Qu9Cz0Lgg0LPQ
+vtC00LjQvdC4INCx0YDQsNC6INC90LUg0LHQtdCwINCx0LvQsNCz0L7RgdC70L7QstC10L3QuCDR
+gdC+INC90LjRgtGDINC10LTQvdC+INC00LXRgtC1LCDQv9C+INC90LXQs9C+0LLQsNGC0LAg0YHQ
+vNGA0YIg0LPQviDQvdCw0YHQu9C10LTQuNCyINGG0LXQu9C+0YLQviDQvdC10LPQvtCy0L4g0LHQ
+vtCz0LDRgtGB0YLQstC+Lg0KDQrQlNC+0LDRk9Cw0Lwg0LrQsNGYINCy0LDRgSDQvtGC0LrQsNC6
+0L4g0YHQtSDQv9C+0LzQvtC70LjQsiDQt9CwINGC0L7QsCwg0L/QvtC00LPQvtGC0LLQtdC9INGB
+0YPQvCDQtNCwINC00L7QvdC40YDQsNC8INGB0YPQvNCwINC+0LQgMiwgMzAwLCAwMDAg0LXQstGA
+0LAg0LfQsCDQv9C+0LzQvtGIINC90LAg0YHQuNGA0L7QvNCw0YjQvdC40YLQtSwg0YHQuNGA0L7Q
+vNCw0YjQvdC40YLQtSDQuCDQv9C+0LzQsNC70LrRgyDQv9GA0LjQstC40LvQtdCz0LjRgNCw0L3Q
+uNGC0LUg0LzQtdGT0YMg0LLQsNGI0LjRgtC1INGB0L7QsdGA0LDQvdC40ZjQsCAvINC+0L/RiNGC
+0LXRgdGC0LLQvi4g0JfQsNCx0LXQu9C10LbQtdGC0LUg0LTQtdC60LAg0L7QstC+0Zgg0YTQvtC9
+0LQg0LUg0LTQtdC/0L7QvdC40YDQsNC9INCy0L4g0LHQsNC90LrQsCDQutCw0LTQtSDRiNGC0L4g
+0YDQsNCx0L7RgtC10YjQtSDQvNC+0ZjQvtGCINGB0L7Qv9GA0YPQsy4gQXBwcmVjaWF0ZdC1INGG
+0LXQvdCw0Lwg0LDQutC+INC+0LHRgNC90LXRgtC1INCy0L3QuNC80LDQvdC40LUg0L3QsCDQvNC+
+0LXRgtC+INCx0LDRgNCw0ZrQtSDQt9CwINC/0YDQvtC/0LDQs9C40YDQsNGa0LUg0L3QsCDQvNCw
+0YHQsNC20LDRgtCwINC90LAg0LrRgNCw0LvRgdGC0LLQvtGC0L4sINGc0LUg0LLQuCDQtNCw0LTQ
+sNC8INC/0L7QstC10ZzQtSDQtNC10YLQsNC70Lgg0LfQsCDRgtC+0LAg0LrQsNC60L4g0LTQsCDQ
+v9C+0YHRgtCw0L/QuNGC0LUuDQoNCtCR0LvQsNCz0L7QtNCw0YDQsNC8DQrQky3Rk9CwINCc0LXR
+gNC40LvQuNC9INCg0L7QsdC10YDRgg==
