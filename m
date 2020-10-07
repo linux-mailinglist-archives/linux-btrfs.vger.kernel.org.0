@@ -2,52 +2,53 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E9BA285F51
-	for <lists+linux-btrfs@lfdr.de>; Wed,  7 Oct 2020 14:39:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D3D6285F7A
+	for <lists+linux-btrfs@lfdr.de>; Wed,  7 Oct 2020 14:48:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728204AbgJGMi7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 7 Oct 2020 08:38:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42730 "EHLO
+        id S1728253AbgJGMsH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 7 Oct 2020 08:48:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728081AbgJGMi7 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 7 Oct 2020 08:38:59 -0400
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25C9FC061755
-        for <linux-btrfs@vger.kernel.org>; Wed,  7 Oct 2020 05:38:59 -0700 (PDT)
-Received: by mail-qt1-x841.google.com with SMTP id h12so57294qtu.1
-        for <linux-btrfs@vger.kernel.org>; Wed, 07 Oct 2020 05:38:59 -0700 (PDT)
+        with ESMTP id S1727927AbgJGMsH (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 7 Oct 2020 08:48:07 -0400
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30510C061755
+        for <linux-btrfs@vger.kernel.org>; Wed,  7 Oct 2020 05:48:07 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id w12so2461138qki.6
+        for <linux-btrfs@vger.kernel.org>; Wed, 07 Oct 2020 05:48:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
+        h=from:subject:to:references:message-id:date:user-agent:mime-version
          :in-reply-to:content-transfer-encoding:content-language;
-        bh=RlupcIKUnugicCcvnf7Fz6tnQNmFhuWAnu29Kl6KHpo=;
-        b=Wu+6KHSdnGry2fsWe6vhvOkTbve7vxGA1+aG+XiLifnacJ5GXvJBy7Xf3EVOzRjdDC
-         wwqShIl8jQCQ/8SDARm0iRODQKAnaWtdjGfN9bEOcKB8C1cQ7y08mC8seZeXIbSeN9fW
-         1HKjEw7gBguCVSu8DB+5hs7KSub/fFJ2CIUSXMR6kmndNhRrUtJxfP57SMWUiCNIZc/9
-         EjfmeSDJUJWtFYqVsa55cD4hCDX6gHXJRxm5sGhS8FFv9njoalNzi/ibYyPwnOA47yS6
-         frfgJngBAPUK0Ymw6wMsStN1dPJlCuD2dbmYX3UQERexpBKZmeAxY0YriU662qpNOaCu
-         D/bA==
+        bh=2uM4+ejxSvF21aMjd9wWJKqsvJal6C6QSBNTet+Af4A=;
+        b=qF76h4TWX5boR4OFnrQe+oMYaSgy5f90t6BDjMesWKBx3HERBVe7eke87H5dITEdlI
+         pqh+DNuKynlJzoFBk/JpjMnFyMLEMT7/U1FUpihAR7CV4JvLhZbNHVBPRYMoMH7Y8ijs
+         w1CN88cMOXgIvgv6lHU6HHycF9jn0lUgMMqcIRmK+21Rp9iJDJsZGFww13ZVhzv6PTmS
+         mbHBHS1mVQyIOZil4FYoM77q0I7QmhglvRa7DlfaiCE2Q8gmv61KiLJhwMn4n27Ykks/
+         b8ccZYb3jXp0U/g0WuO3/4cqieLLFOubsaoWkId/X4oMqYjpHWtsv0d5vEPR8v+OQXBa
+         mmNA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
+        h=x-gm-message-state:from:subject:to:references:message-id:date
          :user-agent:mime-version:in-reply-to:content-transfer-encoding
          :content-language;
-        bh=RlupcIKUnugicCcvnf7Fz6tnQNmFhuWAnu29Kl6KHpo=;
-        b=Bex5G9UftEIOjg1htUhbvUtkBGGkTmYrSBsfus9GRW9R74jPO8Bij5Xl3URh6mc2L1
-         0KG8qVBK7fLNV0VyOMNjndmZ83fv2dWEP9NceJK1Qg+AAntQbEUnJFOrM0Rr8mqYcKSi
-         7rAWPVc1T6Awyy57xhd4V7fla0t3j5Y5Nwcmi/ZiYqtwG3wRCrG060z6aaEMV78o6z5J
-         lT55J/jUMjhsky/BlEHTFuN2mfsJagBBC77IjP6KYhrpUfPyLEodv+h06bIJaB1qD9Dq
-         T0Hwiy7Wi61tt+xUoThfIKBBVGRb4j7hwVq9cGl2xZs6oZiBlLU2K/uOTrHNqq4m5kKY
-         8EYQ==
-X-Gm-Message-State: AOAM531AKqML4F0gHtPBJiMvneIbe8Bn68uNEZfkdDyq0ug84NPdtb2e
-        9qG6Xy1Pup8aGURvI+L2jINAILJbGs6Ljg==
-X-Google-Smtp-Source: ABdhPJwNGygIvIRvu6XCx73eXvrOnHdoaCq+Pkh0wCov6Sf1G7+UP80Go510KaDd0IDv5Nsz34F1Zg==
-X-Received: by 2002:ac8:1005:: with SMTP id z5mr2966278qti.130.1602074337884;
-        Wed, 07 Oct 2020 05:38:57 -0700 (PDT)
+        bh=2uM4+ejxSvF21aMjd9wWJKqsvJal6C6QSBNTet+Af4A=;
+        b=oEa+yMtg/LCsOgMSah0Stndxg7rCQmy0wvdwd3MQVBPYCEmzrH6TmMkgQZzxAoKyEM
+         59UKg3Fz5J+4MnIBGpuJ5WImMFHCl5L+1gZlueDSUKWZ6TnA34xo+PGTYQyK5A99reOS
+         v27gh6PaEpq+HBF+ZUeb59+i0z9ruytIsCu4EW0YPUbz7nOlN5Q9ClZSV8WpZzGn9dW1
+         DKGHttKbm+tm16Z54dYpCOsYJzL/paYjxPEICAq02Xy726j0OIfeWfIqT36EO0jjirNd
+         biDSWYQTZX6JcVjbkZDMi9FnYNnOzpgq4vjFcf7neOOts2XAIOB/nrB/BdDfQyolD0fH
+         k1JQ==
+X-Gm-Message-State: AOAM532eHDQLFSsObwggY/Ue1F4AopnWhClSbgnB1Bki1mNW1qwx/aPs
+        C7fJBBNdqPTSPuqoYKFRkTE1T+PlcfR/Tg==
+X-Google-Smtp-Source: ABdhPJxHXO45ADVQSrz/HPU8bVN+nmTJawyHaZI8eYt39QtbJjJcYtVa6rBZHpBpFIzHEdVa/hYPuA==
+X-Received: by 2002:ae9:e40c:: with SMTP id q12mr2663789qkc.309.1602074885890;
+        Wed, 07 Oct 2020 05:48:05 -0700 (PDT)
 Received: from [192.168.1.249] (user-69-1-51-100.knology.net. [69.1.51.100])
-        by smtp.gmail.com with ESMTPSA id m15sm269586qtc.90.2020.10.07.05.38.56
+        by smtp.gmail.com with ESMTPSA id g9sm1282463qkb.106.2020.10.07.05.48.04
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 07 Oct 2020 05:38:56 -0700 (PDT)
+        Wed, 07 Oct 2020 05:48:04 -0700 (PDT)
+From:   JMinson <minsonj2016@gmail.com>
 Subject: Re: Counts for qgroup id are different
 To:     Qu Wenruo <quwenruo.btrfs@gmx.com>,
         BTRFS Kernel <linux-btrfs@vger.kernel.org>
@@ -55,9 +56,8 @@ References: <8547cc42-6768-d6f0-6336-fac1fc42b85d@gmail.com>
  <9ded0048-a480-8873-899d-576210490606@gmx.com>
  <91df37d7-d173-f264-6a2b-22649b0f7e68@gmail.com>
  <c7e12280-0a86-6677-2cf9-de32bf68b07d@gmx.com>
-From:   JMinson <minsonj2016@gmail.com>
-Message-ID: <de10f971-54f0-c3de-f7fe-41d7df33c4f6@gmail.com>
-Date:   Wed, 7 Oct 2020 08:38:55 -0400
+Message-ID: <2e7c5cbb-82c8-208c-139d-b33ca7f66ac7@gmail.com>
+Date:   Wed, 7 Oct 2020 08:48:04 -0400
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
@@ -69,10 +69,14 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+I got this same error when running the rescan on an internal hd with a 
+btrfs formatted lv so its not usb specific .
+
+
 rsync'ing to external usb drive daily as described below
 
+
 On 10/7/20 7:14 AM, Qu Wenruo wrote:
->
 > On 2020/10/7 下午6:58, JMinson wrote:
 >> Good News / Bad News
 >>
@@ -174,8 +178,8 @@ On 10/7/20 7:14 AM, Qu Wenruo wrote:
 >>>> btrfs-progs v5.4.1
 >>>>
 >>>> Label: 'Daily'  uuid: 1426edb8-4fed-419a-b0f1-d131b97224fd
->>>>           Total devices 1 FS bytes used 1.13TiB
->>>>           devid    1 size 1.82TiB used 1.14TiB path /dev/sdb
+>>>>            Total devices 1 FS bytes used 1.13TiB
+>>>>            devid    1 size 1.82TiB used 1.14TiB path /dev/sdb
 >>>>
 >>>>
 >>>> I use rsync to backup to an external btrfs formatted usb drive . The
