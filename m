@@ -2,68 +2,103 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01F9C2858AA
-	for <lists+linux-btrfs@lfdr.de>; Wed,  7 Oct 2020 08:29:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0C4028594D
+	for <lists+linux-btrfs@lfdr.de>; Wed,  7 Oct 2020 09:22:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727153AbgJGG3q (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 7 Oct 2020 02:29:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42212 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726564AbgJGG3q (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 7 Oct 2020 02:29:46 -0400
-Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69A35C061755
-        for <linux-btrfs@vger.kernel.org>; Tue,  6 Oct 2020 23:29:46 -0700 (PDT)
-Received: by mail-io1-xd32.google.com with SMTP id l8so1150843ioh.11
-        for <linux-btrfs@vger.kernel.org>; Tue, 06 Oct 2020 23:29:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=ANhptuHlPUpoaaOh0q0v4+9AAb9B8GXt5np8UCHJ0oc=;
-        b=FSToFYn4fMigaX/1XbghXI3D0f252pCPQ3ZgA5RqgaxUc9g49gvASrlajXni9oakAW
-         wAf1oit3F9DwBedlWSnOLbg+3ACU34Rj/nah8tyo/q5bNdJzkxb/zqbk0wWAfYc011K+
-         cXeXPQuKC4GtXfSnct/R+wuPFoy+qzjs6ytqsb+d5mtr9DfqsrThLf+R2tT4lOmbWu0e
-         u4ColmgAItPbVqA2x88THVNf4UZogSZ79Dl33R2s5UzfbCkATY3xvR/v01mTEVBX5nPr
-         URGl3md6ALpc1ChNbKc9eFMc31NOLhbjI4+cyIwOL5l4aDX5Q6AC1hlLr47RDhDc2cxT
-         hDrA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=ANhptuHlPUpoaaOh0q0v4+9AAb9B8GXt5np8UCHJ0oc=;
-        b=KW/XBIDAgh2JeI1ZOH4zbxfYU++kxyoAhByA7Oad1m6awt8KW4TIrUkhOVHFDt/lYi
-         iH9/Y9ZStlxsKAVczbycy3gdj4Nh7tO98Chwobew8i8TCxsCf0SkpfRylWBHAhDySDVS
-         zErDJGaY0zBx7V+eIhGb9awIUpgcApeC8lcZ2Ejwmi3TAMDGOTcPnSjECN4ViM8r+AyT
-         uMX+XcUA3xf4yedI23lxc32smsaoL+Ys5Oet7+hzaXHtQYiZFZeUbiNpbZqdw9CuXhsZ
-         eqcCse9AB2F2uB7qftr9IWVtcRb07fmYr+UkkkSV2yGJgIL/E8ZMDjWfnnkl73P50M+e
-         oCRw==
-X-Gm-Message-State: AOAM5330JPCPD9uzY8QjSTJJ00yg6BL5I1XKVyw9Z+t4piSZ1PJ92PS0
-        v+L2LdOrTonMwQclsE8gnv4xTPBRJfIUrgYGWmyQAiZcUww=
-X-Google-Smtp-Source: ABdhPJyhavfS6ajUe1thd1ctn7L+r2FtnpzKWHsrMV5RHNRsoM0B0U2cZd0pM0u1yuYkWYFUEK6vaqrNqM3co9QPabo=
-X-Received: by 2002:a02:ccb9:: with SMTP id t25mr1725238jap.21.1602052185549;
- Tue, 06 Oct 2020 23:29:45 -0700 (PDT)
-MIME-Version: 1.0
-From:   Eric Levy <ericlevy@gmail.com>
-Date:   Wed, 7 Oct 2020 02:29:34 -0400
-Message-ID: <CA++hEgxkGhnbKBhwuwSAJn2BtZ+RAPuN+-ovkKLsUUfTRnD1_g@mail.gmail.com>
-Subject: de-duplicating +C files
+        id S1727678AbgJGHWX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 7 Oct 2020 03:22:23 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:39012 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727672AbgJGHWW (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 7 Oct 2020 03:22:22 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0977JQfY111898;
+        Wed, 7 Oct 2020 07:22:18 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2020-01-29; bh=RX29MUHTMg/X8OvJ+pV50CFiPWU7iDxZ/vKIkJmp/eY=;
+ b=WUS/fwxV+5GYuEDmAZfd4MRq04cJFZSdKlFGzs15JagSwk4sD0yJ+fwtL1XMth5m/lvO
+ JSscJm1WjdYBwG01THTgbwWvmI43hfP1TiGzetreHoE6QuKTSqKNLWWQWt5JJyCk4ThA
+ 8YeNv1VlzH9bEcuAUOQNWDfcMWZXR6FVvwyfb7DqoeQtc2ACUxfGyZNhFPHuolOg7TrV
+ pWE6Fk2OUV/brPHaF0hYF49KbYyyTc+6kx3HEHZYMsl4nwVh1fhKfTjc1Slrm5V3yzlS
+ y/orFX8vaIJla5nSyUW4harDuErsZ7M4cvSlJq3RRXOGBqBZ5xTlOSPb5up4ujG1fkw2 Bw== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2120.oracle.com with ESMTP id 33xhxn00t7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 07 Oct 2020 07:22:18 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0977KEFU063030;
+        Wed, 7 Oct 2020 07:20:18 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3030.oracle.com with ESMTP id 33y37y6ds6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 07 Oct 2020 07:20:17 +0000
+Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0977KEc9015399;
+        Wed, 7 Oct 2020 07:20:14 GMT
+Received: from localhost.localdomain (/39.109.231.106)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 07 Oct 2020 00:20:14 -0700
+From:   Anand Jain <anand.jain@oracle.com>
 To:     linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Cc:     dsterba@suse.com, Anand Jain <anand.jain@oracle.com>
+Subject: [PATCH] btrfs: add fs_info generation to sysfs
+Date:   Wed,  7 Oct 2020 15:20:03 +0800
+Message-Id: <feba5530a78df4066d5052aed57d814eb6f95814.1602055130.git.anand.jain@oracle.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9766 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 bulkscore=0 spamscore=0
+ mlxscore=0 malwarescore=0 suspectscore=1 adultscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2010070047
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9766 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 malwarescore=0 bulkscore=0
+ impostorscore=0 lowpriorityscore=0 suspectscore=1 phishscore=0
+ mlxlogscore=999 adultscore=0 clxscore=1015 spamscore=0 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2010070047
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Recently a discussion [1] began about the desirability or risk of
-applying a de-duplication operation on files with a C (no-CoW)
-attribute set. The controversy rests largely on the observation that
-calls to Btrfs currently fail for de-duplication between two files if
-exactly one has the attribute set, but succeed in other cases, even in
-which both have the attribute set. It may seem more natural that
-success depends on neither file having the attribute set.
+Matching with the information that's available from the ioctl
+BTRFS_IOC_FS_INFO, this patch adds generation to the sysfs.
 
-Comments would be welcome in either this thread, or perhaps even more
-conveniently, in the Github discussion, over how this behavior of
-Btrfs relates to the preferred operation of a de-duplication
-application.
+Signed-off-by: Anand Jain <anand.jain@oracle.com>
+---
+ fs/btrfs/sysfs.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
+diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
+index 279d9262b676..8424f5d0e5ed 100644
+--- a/fs/btrfs/sysfs.c
++++ b/fs/btrfs/sysfs.c
+@@ -854,6 +854,15 @@ static ssize_t btrfs_exclusive_operation_show(struct kobject *kobj,
+ }
+ BTRFS_ATTR(, exclusive_operation, btrfs_exclusive_operation_show);
+ 
++static ssize_t btrfs_generation_show(struct kobject *kobj,
++				     struct kobj_attribute *a, char *buf)
++{
++	struct btrfs_fs_info *fs_info = to_fs_info(kobj);
++
++	return scnprintf(buf, PAGE_SIZE, "%llu\n", fs_info->generation);
++}
++BTRFS_ATTR(, generation, btrfs_generation_show);
++
+ static const struct attribute *btrfs_attrs[] = {
+ 	BTRFS_ATTR_PTR(, label),
+ 	BTRFS_ATTR_PTR(, nodesize),
+@@ -863,6 +872,7 @@ static const struct attribute *btrfs_attrs[] = {
+ 	BTRFS_ATTR_PTR(, metadata_uuid),
+ 	BTRFS_ATTR_PTR(, checksum),
+ 	BTRFS_ATTR_PTR(, exclusive_operation),
++	BTRFS_ATTR_PTR(, generation),
+ 	NULL,
+ };
+ 
+-- 
+2.25.1
 
-[1] https://github.com/markfasheh/duperemove/issues/251
