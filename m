@@ -2,166 +2,142 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E9062889CE
-	for <lists+linux-btrfs@lfdr.de>; Fri,  9 Oct 2020 15:29:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 530D1288A65
+	for <lists+linux-btrfs@lfdr.de>; Fri,  9 Oct 2020 16:11:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388614AbgJIN26 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 9 Oct 2020 09:28:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44000 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388573AbgJIN26 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 9 Oct 2020 09:28:58 -0400
-Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42391C0613D7
-        for <linux-btrfs@vger.kernel.org>; Fri,  9 Oct 2020 06:28:56 -0700 (PDT)
-Received: by mail-qv1-xf43.google.com with SMTP id t20so4738514qvv.8
-        for <linux-btrfs@vger.kernel.org>; Fri, 09 Oct 2020 06:28:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=JTr5aqhEyIRHE9K85alzYsjgkaWjmpYmLjJbpalEuuo=;
-        b=0qc36ks7BcjrARp6nLoDBw/77ZWZZWqyybrqkj4pcpG70V9q9Q8jy+TYYl1zJcx1SE
-         753nlO6m14cuj8sX8mvLRQTEsmhuuYe5Cf+7vktOkQ55cDFqCEnE9iZzgLqYSyUdiSkf
-         NYPAcuNo4r9zj7weIMcEo5Ssoerx0vFnpBnltHM3WxNQU1G/GmGrhOLUBXzI46id9TtW
-         DDoZT6AINW/ICrme4H4HSkV735+YmWVzkpuerVjoJNGl9hjkW5al0IF0MD2Hrh9+yuMt
-         X6MEtnH8L+3iMoWAZ++0QH/EwJWIxdYYbFnfYOewXdLoT8wT45zhIqRlHXUuw+lxVpOt
-         ixmA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=JTr5aqhEyIRHE9K85alzYsjgkaWjmpYmLjJbpalEuuo=;
-        b=M4pP+QPWk6f0ggJm6ijZibFI8xXBVxIXtE+A81ATRr7szeSjgPVnCnNQAnIleZH2X+
-         WSpifi/W/hoGUte0GA3swQioB64V9FS9OKf+aMfqZ5I5dd3h9NOD533zy8FdMeAwqkBV
-         IlQBdu+maq6Zu/hNfk9hNLjt0/y9TbxuZtOi2mh9DHEKuDLL6vYmWF9DXA/fokjkHJHr
-         sTrhblFqzPFGpPFCWACOf+ievtG9A4GOMh+2bo9s14Va74MP10rkYtm7OrsENDQTTxpI
-         cx0GcwmcoBZFy2kHnL7ImsP8UtH4Gczox1GbL1XvCZ/RzEI8UM75rSVXBASCQEenoxlf
-         nPtg==
-X-Gm-Message-State: AOAM532O7nwkB+27Qr/AATpkl2fLSskSiAOMEO8gX+BJJBDQhcy7i/ml
-        ycXY21FLtMBHiPbFdRT8N2f9+UoxV0RnAYle
-X-Google-Smtp-Source: ABdhPJwTx+T9PoJQmtL7NIqCB9u2kTdPmek+u+8Rn4K7nPVohJ56wb6T9jF7QKGJzPpsXMv0Pt1Wiw==
-X-Received: by 2002:ad4:42b3:: with SMTP id e19mr12619789qvr.6.1602250135041;
-        Fri, 09 Oct 2020 06:28:55 -0700 (PDT)
-Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id k20sm6209420qtm.44.2020.10.09.06.28.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Oct 2020 06:28:54 -0700 (PDT)
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Cc:     Nikolay Borisov <nborisov@suse.com>
-Subject: [PATCH v3 12/12] btrfs: add a trace class for dumping the current ENOSPC state
-Date:   Fri,  9 Oct 2020 09:28:29 -0400
-Message-Id: <3e5d1e29372cbbdb022185ffb5b10e6823478fc6.1602249928.git.josef@toxicpanda.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <cover.1602249928.git.josef@toxicpanda.com>
-References: <cover.1602249928.git.josef@toxicpanda.com>
+        id S1732816AbgJIOL1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 9 Oct 2020 10:11:27 -0400
+Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:44901 "EHLO
+        wout5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727560AbgJIOL1 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 9 Oct 2020 10:11:27 -0400
+X-Greylist: delayed 323 seconds by postgrey-1.27 at vger.kernel.org; Fri, 09 Oct 2020 10:11:27 EDT
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.west.internal (Postfix) with ESMTP id 763826A3;
+        Fri,  9 Oct 2020 10:06:03 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Fri, 09 Oct 2020 10:06:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm2; bh=QA1BxHl/gsKUUyFeFALiOB1m/Z+
+        blvmdd5I9GCrB3kU=; b=iv8Vr0ACoqWlXa1w9ikn0KDS1VhK/H/SR66vblm5/fB
+        Od8R49fMCkCKlUB4iF2N4W3zceHD4qmsFdbMzEWwkF/azFu9QNSdj5hLDB1sJejh
+        rrRNbUHHMK294gPtEqu2OsqBHU3NPRSq7CyHvl14tBNOZP9sm+nJueBRrciEyz+s
+        MXyB08LRVaxZjhmcivMVNCQTYOVbFuiia2/EvCwu7cuGPclF6NYn5SUBgGQoqOeg
+        PYCuSEAa9xmB05X6BVKB5YNTmonm9dx3WQiaywC1qi6e/3ke6cvqLSH+sxdAmYFB
+        08/YRbLea8hmQo228Olm8jJQv0fbL44ed9OTIpP1z/w==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=QA1BxH
+        l/gsKUUyFeFALiOB1m/Z+blvmdd5I9GCrB3kU=; b=EELLIb/RhTEJU2Y+v3K3Qi
+        R+EoMK1meguKEDLOzi/aKIFyE2srjnNksnvLUhbRFOqiP/uaBN7acoySbIl6Dgt3
+        It/s+qGomgDmb/QbEN1muUPDvZl88IF+KsdcJSw6Tb9gr3tBbcO/tu2GZCIQchwU
+        6UKLh70FXpVQ2jbyKTwve5+qdr93k1VMVTsL23rCqzpsNjsJ84qPrdxYgqrgcw/A
+        Ypbag91B/8/dF/128nzBP+3sk9ueuqKAt0oGENMCqeEHwGNLC4fImpftkjZzg9sI
+        rcz3fa0spXLbviQnhwDpsqBLaW359zYwE3B35r/KUidXUu2Tr2SNyHJmGEAWrowQ
+        ==
+X-ME-Sender: <xms:Sm6AX9HuLQbJ_INlim0Gn9UZwtjRsRXLZ3unFpXMEtxrdc8-f0fdig>
+    <xme:Sm6AXyWRwJTGErgYU4l_r9Cw9vJZs-hm_9EwyV5FdzdjAiwH17vY7Aihrc-qSPwIZ
+    yHwdXKn6IpGGQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrhedugdejfecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghgucfm
+    jfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepveeuheejgf
+    ffgfeivddukedvkedtleelleeghfeljeeiueeggeevueduudekvdetnecukfhppeekfedr
+    keeirdejgedrieegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilh
+    hfrhhomhepghhrvghgsehkrhhorghhrdgtohhm
+X-ME-Proxy: <xmx:Sm6AX_Ji4TPz--QEiAxTuWIceueKeoXyXczObkxvbQfncER_8NYDvg>
+    <xmx:Sm6AXzH51-2ZoPTFDXznIH7W5hT5ATCJhSxLRInfxXngr0enhLpDRg>
+    <xmx:Sm6AXzXkRsKCcy1ic79xERgHyQ2ep7PgYi74sBiRIXCY33dKGF1mXg>
+    <xmx:S26AX5z_enu8sWs-J0MVT6R0lBhxYrRe1Xr1X48f1TWPqtXB2-sJpA>
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 7B90D328005A;
+        Fri,  9 Oct 2020 10:06:02 -0400 (EDT)
+Date:   Fri, 9 Oct 2020 16:06:48 +0200
+From:   Greg KH <greg@kroah.com>
+To:     Anand Jain <anand.jain@oracle.com>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org, wqu@suse.com,
+        fdmanana@suse.com, dsterba@suse.com, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH stable-5.4 6/6] btrfs: allow btrfs_truncate_block() to
+ fallback to nocow for data space reservation
+Message-ID: <20201009140648.GB573779@kroah.com>
+References: <cover.1599750901.git.anand.jain@oracle.com>
+ <9df7b36688030028271fe5d4265512328534f9b6.1599750901.git.anand.jain@oracle.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9df7b36688030028271fe5d4265512328534f9b6.1599750901.git.anand.jain@oracle.com>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Often when I'm debugging ENOSPC related issues I have to resort to
-printing the entire ENOSPC state with trace_printk() in different spots.
-This gets pretty annoying, so add a trace state that does this for us.
-Then add a trace point at the end of preemptive flushing so you can see
-the state of the space_info when we decide to exit preemptive flushing.
-This helped me figure out we weren't kicking in the preemptive flushing
-soon enough.
+On Thu, Oct 08, 2020 at 06:59:54PM +0800, Anand Jain wrote:
+> From: Qu Wenruo <wqu@suse.com>
+> 
+> commit 6d4572a9d71d5fc2affee0258d8582d39859188c upstream.
+> 
+> [BUG]
+> When the data space is exhausted, even if the inode has NOCOW attribute,
+> we will still refuse to truncate unaligned range due to ENOSPC.
+> 
+> The following script can reproduce it pretty easily:
+>   #!/bin/bash
+> 
+>   dev=/dev/test/test
+>   mnt=/mnt/btrfs
+> 
+>   umount $dev &> /dev/null
+>   umount $mnt &> /dev/null
+> 
+>   mkfs.btrfs -f $dev -b 1G
+>   mount -o nospace_cache $dev $mnt
+>   touch $mnt/foobar
+>   chattr +C $mnt/foobar
+> 
+>   xfs_io -f -c "pwrite -b 4k 0 4k" $mnt/foobar > /dev/null
+>   xfs_io -f -c "pwrite -b 4k 0 1G" $mnt/padding &> /dev/null
+>   sync
+> 
+>   xfs_io -c "fpunch 0 2k" $mnt/foobar
+>   umount $mnt
+> 
+> Currently this will fail at the fpunch part.
+> 
+> [CAUSE]
+> Because btrfs_truncate_block() always reserves space without checking
+> the NOCOW attribute.
+> 
+> Since the writeback path follows NOCOW bit, we only need to bother the
+> space reservation code in btrfs_truncate_block().
+> 
+> [FIX]
+> Make btrfs_truncate_block() follow btrfs_buffered_write() to try to
+> reserve data space first, and fall back to NOCOW check only when we
+> don't have enough space.
+> 
+> Such always-try-reserve is an optimization introduced in
+> btrfs_buffered_write(), to avoid expensive btrfs_check_can_nocow() call.
+> 
+> This patch will export check_can_nocow() as btrfs_check_can_nocow(), and
+> use it in btrfs_truncate_block() to fix the problem.
+> 
+> Reported-by: Martin Doucha <martin.doucha@suse.com>
+> Reviewed-by: Filipe Manana <fdmanana@suse.com>
+> Reviewed-by: Anand Jain <anand.jain@oracle.com>
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> Reviewed-by: David Sterba <dsterba@suse.com>
+> Signed-off-by: David Sterba <dsterba@suse.com>
+> Signed-off-by: Anand Jain <anand.jain@oracle.com>
+>  Conflicts:
+> 	fs/btrfs/ctree.h
+> 	fs/btrfs/file.c
+> 	fs/btrfs/inode.c
 
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
----
- fs/btrfs/space-info.c        |  1 +
- include/trace/events/btrfs.h | 62 ++++++++++++++++++++++++++++++++++++
- 2 files changed, 63 insertions(+)
+Why are these Conflicts: lines here?
 
-diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
-index 30474fa30985..656c46b77250 100644
---- a/fs/btrfs/space-info.c
-+++ b/fs/btrfs/space-info.c
-@@ -1118,6 +1118,7 @@ static void btrfs_preempt_reclaim_metadata_space(struct work_struct *work)
- 	/* We only went through once, back off our clamping. */
- 	if (loops == 1 && !space_info->reclaim_size)
- 		space_info->clamp = max(1, space_info->clamp - 1);
-+	trace_btrfs_done_preemptive_reclaim(fs_info, space_info);
- 	spin_unlock(&space_info->lock);
- }
- 
-diff --git a/include/trace/events/btrfs.h b/include/trace/events/btrfs.h
-index 6d93637bae02..74b466dc20ac 100644
---- a/include/trace/events/btrfs.h
-+++ b/include/trace/events/btrfs.h
-@@ -2028,6 +2028,68 @@ TRACE_EVENT(btrfs_convert_extent_bit,
- 		  __print_flags(__entry->clear_bits, "|", EXTENT_FLAGS))
- );
- 
-+DECLARE_EVENT_CLASS(btrfs_dump_space_info,
-+	TP_PROTO(const struct btrfs_fs_info *fs_info,
-+		 const struct btrfs_space_info *sinfo),
-+
-+	TP_ARGS(fs_info, sinfo),
-+
-+	TP_STRUCT__entry_btrfs(
-+		__field(	u64,	flags			)
-+		__field(	u64,	total_bytes		)
-+		__field(	u64,	bytes_used		)
-+		__field(	u64,	bytes_pinned		)
-+		__field(	u64,	bytes_reserved		)
-+		__field(	u64,	bytes_may_use		)
-+		__field(	u64,	bytes_readonly		)
-+		__field(	u64,	reclaim_size		)
-+		__field(	int,	clamp			)
-+		__field(	u64,	global_reserved		)
-+		__field(	u64,	trans_reserved		)
-+		__field(	u64,	delayed_refs_reserved	)
-+		__field(	u64,	delayed_reserved	)
-+		__field(	u64,	free_chunk_space	)
-+	),
-+
-+	TP_fast_assign_btrfs(fs_info,
-+		__entry->flags			=	sinfo->flags;
-+		__entry->total_bytes		=	sinfo->total_bytes;
-+		__entry->bytes_used		=	sinfo->bytes_used;
-+		__entry->bytes_pinned		=	sinfo->bytes_pinned;
-+		__entry->bytes_reserved		=	sinfo->bytes_reserved;
-+		__entry->bytes_may_use		=	sinfo->bytes_may_use;
-+		__entry->bytes_readonly		=	sinfo->bytes_readonly;
-+		__entry->reclaim_size		=	sinfo->reclaim_size;
-+		__entry->clamp			=	sinfo->clamp;
-+		__entry->global_reserved	=	fs_info->global_block_rsv.reserved;
-+		__entry->trans_reserved		=	fs_info->trans_block_rsv.reserved;
-+		__entry->delayed_refs_reserved	=	fs_info->delayed_refs_rsv.reserved;
-+		__entry->delayed_reserved	=	fs_info->delayed_block_rsv.reserved;
-+		__entry->free_chunk_space	=	atomic64_read(&fs_info->free_chunk_space);
-+	),
-+
-+	TP_printk_btrfs("flags=%s total_bytes=%llu bytes_used=%llu "
-+			"bytes_pinned=%llu bytes_reserved=%llu "
-+			"bytes_may_use=%llu bytes_readonly=%llu "
-+			"reclaim_size=%llu clamp=%d global_reserved=%llu "
-+			"trans_reserved=%llu delayed_refs_reserved=%llu "
-+			"delayed_reserved=%llu chunk_free_space=%llu",
-+			__print_flags(__entry->flags, "|", BTRFS_GROUP_FLAGS),
-+			__entry->total_bytes, __entry->bytes_used,
-+			__entry->bytes_pinned, __entry->bytes_reserved,
-+			__entry->bytes_may_use, __entry->bytes_readonly,
-+			__entry->reclaim_size, __entry->clamp,
-+			__entry->global_reserved, __entry->trans_reserved,
-+			__entry->delayed_refs_reserved,
-+			__entry->delayed_reserved, __entry->free_chunk_space)
-+);
-+
-+DEFINE_EVENT(btrfs_dump_space_info, btrfs_done_preemptive_reclaim,
-+	TP_PROTO(const struct btrfs_fs_info *fs_info,
-+		 const struct btrfs_space_info *sinfo),
-+	TP_ARGS(fs_info, sinfo)
-+);
-+
- TRACE_EVENT(btrfs_reserve_ticket,
- 	TP_PROTO(const struct btrfs_fs_info *fs_info, u64 flags, u64 bytes,
- 		 u64 start_ns, int flush, int error),
--- 
-2.26.2
+Anyway, fixed up, and all queued up now, thansk!
 
+greg k-h
