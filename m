@@ -2,122 +2,130 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A553A2894B5
-	for <lists+linux-btrfs@lfdr.de>; Fri,  9 Oct 2020 21:54:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F974289925
+	for <lists+linux-btrfs@lfdr.de>; Fri,  9 Oct 2020 22:10:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391345AbgJITys (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 9 Oct 2020 15:54:48 -0400
-Received: from mga12.intel.com ([192.55.52.136]:29419 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391275AbgJITyL (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 9 Oct 2020 15:54:11 -0400
-IronPort-SDR: q1PZMJUmKFKlQ0BClGvwyzOjNwzGSo5B944T29UwXjVfp2YopDniYa7pTU6UFtwNvsti9h6T08
- dfV2TT7Nz02w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9769"; a="144851137"
-X-IronPort-AV: E=Sophos;i="5.77,355,1596524400"; 
-   d="scan'208";a="144851137"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2020 12:54:10 -0700
-IronPort-SDR: LoljxrxdEbdUiebRGt6guGtjo6SPfpWGHMJuLgTgYB7BeDU8CJtiGau7DzbQyZ+Y5gpHVnCtT5
- urTwCEpflSRg==
-X-IronPort-AV: E=Sophos;i="5.77,355,1596524400"; 
-   d="scan'208";a="343972696"
-Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2020 12:54:09 -0700
-From:   ira.weiny@intel.com
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Ira Weiny <ira.weiny@intel.com>, x86@kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        kvm@vger.kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
-        kexec@lists.infradead.org, linux-bcache@vger.kernel.org,
-        linux-mtd@lists.infradead.org, devel@driverdev.osuosl.org,
-        linux-efi@vger.kernel.org, linux-mmc@vger.kernel.org,
-        linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
-        linux-nfs@vger.kernel.org, ceph-devel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-aio@kvack.org,
-        io-uring@vger.kernel.org, linux-erofs@lists.ozlabs.org,
-        linux-um@lists.infradead.org, linux-ntfs-dev@lists.sourceforge.net,
-        reiserfs-devel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-nilfs@vger.kernel.org, cluster-devel@redhat.com,
-        ecryptfs@vger.kernel.org, linux-cifs@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-afs@lists.infradead.org,
-        linux-rdma@vger.kernel.org, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        drbd-dev@lists.linbit.com, linux-block@vger.kernel.org,
-        xen-devel@lists.xenproject.org, linux-cachefs@redhat.com,
-        samba-technical@lists.samba.org, intel-wired-lan@lists.osuosl.org
-Subject: [PATCH RFC PKS/PMEM 58/58] [dax|pmem]: Enable stray access protection
-Date:   Fri,  9 Oct 2020 12:50:33 -0700
-Message-Id: <20201009195033.3208459-59-ira.weiny@intel.com>
-X-Mailer: git-send-email 2.28.0.rc0.12.gb6a658bd00c9
-In-Reply-To: <20201009195033.3208459-1-ira.weiny@intel.com>
-References: <20201009195033.3208459-1-ira.weiny@intel.com>
+        id S1731858AbgJIUJ5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 9 Oct 2020 16:09:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49624 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391223AbgJIUIY (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 9 Oct 2020 16:08:24 -0400
+Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1166C0613E5
+        for <linux-btrfs@vger.kernel.org>; Fri,  9 Oct 2020 13:07:23 -0700 (PDT)
+Received: by mail-qv1-xf2d.google.com with SMTP id b19so5355594qvm.6
+        for <linux-btrfs@vger.kernel.org>; Fri, 09 Oct 2020 13:07:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=C+M3+ROHRz9CKEUDJ5h8a7fwXqKecN9ftIY2W3KiD8U=;
+        b=NEAyJAYcmFGJ9TmsUW99B4wyr5c3JevI/PzlJbF+x3b58EwZRWcRQv8AgKKX0uB+a0
+         xBUomj4B1FxbjUvi09ilGXEisdHOcpdeGHB9Kms1lNtsNEUlKGacmt7Fo9dBGzbfHGeL
+         Gxn95x4xJas+V8iI5IL5m8a0f2Q+Eiv6bL54M1zeFcil5Xr02+U4fKEeCuHFlFjJmRbF
+         CYUeaBk8Y2qTkg70AYIYRK1cpZVtcqQ8PqvD3Ckmr8vmL0cCWNwoqSUKubIcXAZ360sM
+         xYDWYt1BI7v5YjNiqp1bQ+gdJkMNogOH25JhN31kB5pmN08CN7LxhCdjD4QtsqivkaNx
+         onEQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=C+M3+ROHRz9CKEUDJ5h8a7fwXqKecN9ftIY2W3KiD8U=;
+        b=PyYKlbsoKEmM1ELgjr4h5ZKumoMjIfHaI6ltEDCed77Dd6yIWgzQLm/JRyRCY3p1wW
+         AyLOu8YwQYjskfNTKUln+1whpW4XPo/+8k2d2TCbMTRmRbd6OqO+jU4L7bTiQWUM25vA
+         ltE7Sbs5EECM73nxZLDZEGNzGrJAGKpN5Su4vHyIdnHDth/Ci9mO4KJJp1YytjZUyMkS
+         +rDJHDGcxdfkpxZpJp+7mlplOjnztVZD3mMHlwBIghijC8rJPGJuUw2EgvfOr+edvt5i
+         JlZl6mQj6zk8p3sWawZIbFD9ub7mHIxjkVCfcYEaSr42KINFIrB+am8UO+pDDPKsIkHD
+         Q44w==
+X-Gm-Message-State: AOAM531OLLIKBCk3pltw6W+9qhH4jXah9/sCAvwmTwhEocUsaoEP3Vxl
+        YpoE7DmQUmK/Z2adoa+tX5OobVCQb6bqFbaK
+X-Google-Smtp-Source: ABdhPJzWGtSquA1/0CaVWmOMlJc/asKiS6G9JQ1fMPi93cF2N7kU5fVMhNxl+Un32Ms7UOCvMqtbuQ==
+X-Received: by 2002:a0c:9d03:: with SMTP id m3mr14317368qvf.54.1602274042486;
+        Fri, 09 Oct 2020 13:07:22 -0700 (PDT)
+Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id s22sm6974559qtq.78.2020.10.09.13.07.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Oct 2020 13:07:21 -0700 (PDT)
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: [PATCH v3 0/8] New rescue mount options
+Date:   Fri,  9 Oct 2020 16:07:12 -0400
+Message-Id: <cover.1602273837.git.josef@toxicpanda.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Ira Weiny <ira.weiny@intel.com>
+v2->v3:
+- Re-worked the showmount format for rescue= options, so it's in the format of
+  rescue=option1:option2:option3.
+- Added aliases for ignore* with just a i<opt>.
+- Added a sysfs file to spit out supported rescue options.
+- Fixed where we weren't spitting out rescue=usebackuproot in showmount.
+- The only thing I didn't do was the no/^ options, since that's trickier and
+  puts us in a murky place for some things (nonologreplay).
 
-Protecting against stray writes is particularly important for PMEM
-because, unlike writes to anonymous memory, writes to PMEM persists
-across a reboot.  Thus data corruption could result in permanent loss of
-data.
+v1->v2:
+- Add Qu's reviewed-bys.
+- Addressed the comment about dev extent verification for ignorebadroots.
 
-While stray writes are more serious than reads, protection is also
-enabled for reads.  This helps to detect bugs in code which would
-incorrectly access device memory and prevents a more serious machine
-checks should those bug reads from a poison page.
+--- Original email ---
+Hello,
 
-Enable stray access protection by setting the flag in pgmap which
-requests it.  There is no option presented to the user.  If Zone Device
-Access Protection not be supported this flag will have no affect.
+This is the next version of my rescue=all patches, this time broken up in to a
+few discrete patches, with some cleanups as well.  I have a PR for the xfstest
+that exercises these options, it can be found here
 
-Signed-off-by: Ira Weiny <ira.weiny@intel.com>
----
- drivers/dax/device.c  | 2 ++
- drivers/nvdimm/pmem.c | 2 ++
- 2 files changed, 4 insertions(+)
+  https://github.com/btrfs/fstests/pull/35
 
-diff --git a/drivers/dax/device.c b/drivers/dax/device.c
-index 1e89513f3c59..e6fb35b4f0fb 100644
---- a/drivers/dax/device.c
-+++ b/drivers/dax/device.c
-@@ -430,6 +430,8 @@ int dev_dax_probe(struct device *dev)
- 	}
- 
- 	dev_dax->pgmap.type = MEMORY_DEVICE_GENERIC;
-+	dev_dax->pgmap.flags |= PGMAP_PROT_ENABLED;
-+
- 	addr = devm_memremap_pages(dev, &dev_dax->pgmap);
- 	if (IS_ERR(addr))
- 		return PTR_ERR(addr);
-diff --git a/drivers/nvdimm/pmem.c b/drivers/nvdimm/pmem.c
-index e4dc1ae990fc..9fcd8338e23f 100644
---- a/drivers/nvdimm/pmem.c
-+++ b/drivers/nvdimm/pmem.c
-@@ -426,6 +426,8 @@ static int pmem_attach_disk(struct device *dev,
- 		return -EBUSY;
- 	}
- 
-+	pmem->pgmap.flags |= PGMAP_PROT_ENABLED;
-+
- 	q = blk_alloc_queue(dev_to_node(dev));
- 	if (!q)
- 		return -ENOMEM;
+This is the same idea as the previous versions, except I've made a mechanical
+change.  Instead we have rescue=ignorebadroots, which ignores any global roots
+that we may not be able to read.  We will still fail to mount if thinks like the
+chunk root or the tree root are corrupt, but this will allow us to mount read
+only if the extent root or csum root are completely hosed.
+
+I've added a new patch this go around, rescue=ignoredatacsums.  Somebody had
+indicated that they would prefer that the original rescue=all allowed us to
+continue to read csums if the root was still intact.  In order to handle that
+usecase that's what you get with rescue=ignorebadroots, however if your csum
+tree is corrupt in the middle of the tree you could still end up with problems.
+Thus we have rescue=ignoredatacsums which will completely disable the csum tree
+as well.
+
+And finally we have rescue=all, which simply enables ignoredatacsums,
+ignorebadroots, and notreelogreplay.  We need an easy catch-all option for
+distros to fallback on to get users the highest probability of being able to
+recover their data, so we will use rescue=all to turn on all the fanciest rescue
+options that we have, and then use the discrete options for more fine grained
+recovery.  Thanks,
+
+Josef
+
+Josef Bacik (8):
+  btrfs: unify the ro checking for mount options
+  btrfs: push the NODATASUM check into btrfs_lookup_bio_sums
+  btrfs: add a supported_rescue_options file to sysfs
+  btrfs: add a helper to print out rescue= options
+  btrfs: show rescue=usebackuproot in /proc/mounts
+  btrfs: introduce rescue=ignorebadroots
+  btrfs: introduce rescue=ignoredatacsums
+  btrfs: introduce rescue=all
+
+ fs/btrfs/block-group.c | 48 +++++++++++++++++++++++++++
+ fs/btrfs/block-rsv.c   |  8 +++++
+ fs/btrfs/compression.c | 17 ++++------
+ fs/btrfs/ctree.h       |  2 ++
+ fs/btrfs/disk-io.c     | 74 +++++++++++++++++++++++++++---------------
+ fs/btrfs/file-item.c   |  4 +++
+ fs/btrfs/inode.c       | 18 +++++++---
+ fs/btrfs/super.c       | 65 ++++++++++++++++++++++++++++++++-----
+ fs/btrfs/sysfs.c       | 25 ++++++++++++++
+ fs/btrfs/volumes.c     | 13 ++++++++
+ 10 files changed, 224 insertions(+), 50 deletions(-)
+
 -- 
-2.28.0.rc0.12.gb6a658bd00c9
+2.26.2
 
