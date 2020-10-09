@@ -2,35 +2,35 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F13228836A
-	for <lists+linux-btrfs@lfdr.de>; Fri,  9 Oct 2020 09:25:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D16428865D
+	for <lists+linux-btrfs@lfdr.de>; Fri,  9 Oct 2020 11:50:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731486AbgJIHZE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 9 Oct 2020 03:25:04 -0400
-Received: from mx2.suse.de ([195.135.220.15]:57116 "EHLO mx2.suse.de"
+        id S1733267AbgJIJub (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 9 Oct 2020 05:50:31 -0400
+Received: from mx2.suse.de ([195.135.220.15]:56766 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725908AbgJIHZD (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 9 Oct 2020 03:25:03 -0400
+        id S1725917AbgJIJub (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 9 Oct 2020 05:50:31 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1602228302;
+        t=1602237029;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=VypjBFJNkJGjzj23WLbFJ8/rKVCpNMX4T/iELYQ+pBE=;
-        b=b94uk+1paBJlgZp6u9goIYR9wLZDtcrnoqCtHmRAq8Yl5F0TYIY0z6tj9mTNQEZ1CLrx/N
-        cayIq/eUmwnhcvjL2uZdg3DIHIhiBzMYc2NpD9j/4dbYLCYT9gK308rnOzXOli6alRPPrd
-        umiSqYY4foSBrb6W402xgl0KDopad2c=
+        bh=Are3aA0JlcJl0tudcPcYTE2TO//+H1MmcStopcw5ckM=;
+        b=hT5M2DWl6tklKvqoltXOCFrvBxMASs1aJESYSqmWF5RLxf0TRPf/ZSfmGjER5YJSdIPxRa
+        ghORjqEQAcSJ20cRNTubVEA60nMKH0tQJzU9SpFcp271ZxzmHusElDBXFWTVECQqmoihpo
+        vtI4+0D+h+5pPv9ccHiQCWWdECqKLjI=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 6C785ACBA;
-        Fri,  9 Oct 2020 07:25:02 +0000 (UTC)
-Subject: Re: [PATCH v2 02/11] btrfs: track ordered bytes instead of just dio
- ordered bytes
+        by mx2.suse.de (Postfix) with ESMTP id 4D612AC79;
+        Fri,  9 Oct 2020 09:50:29 +0000 (UTC)
+Subject: Re: [PATCH v2 11/11] btrfs: add a trace class for dumping the current
+ ENOSPC state
 To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
         kernel-team@fb.com
 References: <cover.1602189832.git.josef@toxicpanda.com>
- <cf8c1d7231092a9fbe9128339739352d84448b8a.1602189832.git.josef@toxicpanda.com>
+ <1c3db31ef6d948a07236e63bc7b7b09f4671fbc5.1602189832.git.josef@toxicpanda.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  mQINBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -74,12 +74,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
  RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
  5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <6251a242-37ba-e836-e95c-340a045b53cc@suse.com>
-Date:   Fri, 9 Oct 2020 10:25:01 +0300
+Message-ID: <610996c3-0e67-a9f1-6479-7db9c2058640@suse.com>
+Date:   Fri, 9 Oct 2020 12:50:27 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <cf8c1d7231092a9fbe9128339739352d84448b8a.1602189832.git.josef@toxicpanda.com>
+In-Reply-To: <1c3db31ef6d948a07236e63bc7b7b09f4671fbc5.1602189832.git.josef@toxicpanda.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -90,47 +90,14 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 8.10.20 г. 23:48 ч., Josef Bacik wrote:
-> We track dio_bytes because the shrink delalloc code needs to know if we
-> have more DIO in flight than we have normal buffered IO.  The reason for
-> this is because we can't "flush" DIO, we have to just wait on the
-> ordered extents to finish.
-> 
-> However this is true of all ordered extents.  If we have more ordered
-> space outstanding than dirty pages we should be waiting on ordered
-> extents.  We already are ok on this front technically, because we always
-> do a FLUSH_DELALLOC_WAIT loop, but I want to use the ordered counter in
-> the preemptive flushing code as well, so change this to count all
-> ordered bytes instead of just DIO ordered bytes.
+> Often when I'm debugging ENOSPC related issues I have to resort to
+> printing the entire ENOSPC state with trace_printk() in different spots.
+> This gets pretty annoying, so add a trace state that does this for us.
+> Then add a trace point at the end of preemptive flushing so you can see
+> the state of the space_info when we decide to exit preemptive flushing.
+> This helped me figure out we weren't kicking in the preemptive flushing
+> soon enough.
 > 
 > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 
-<snip>
-
-> --- a/fs/btrfs/space-info.c
-> +++ b/fs/btrfs/space-info.c
-> @@ -489,7 +489,7 @@ static void shrink_delalloc(struct btrfs_fs_info *fs_info,
->  {
->  	struct btrfs_trans_handle *trans;
->  	u64 delalloc_bytes;
-> -	u64 dio_bytes;
-> +	u64 ordered_bytes;
->  	u64 items;
->  	long time_left;
->  	int loops;
-> @@ -513,8 +513,8 @@ static void shrink_delalloc(struct btrfs_fs_info *fs_info,
->  
->  	delalloc_bytes = percpu_counter_sum_positive(
->  						&fs_info->delalloc_bytes);
-> -	dio_bytes = percpu_counter_sum_positive(&fs_info->dio_bytes);
-> -	if (delalloc_bytes == 0 && dio_bytes == 0) {
-> +	ordered_bytes = percpu_counter_sum_positive(&fs_info->ordered_bytes);
-> +	if (delalloc_bytes == 0 && ordered_bytes == 0) {
->  		if (trans)
->  			return;
->  		if (wait_ordered)
-Does it make sense to wait for ordered even if wait_ordered is true and
-ordered_bytes is 0 ? Perhaps this condition can be simplified to just :
-
-if (delalloc_bytes == 0 && ordered_bytes == 0) return;
-
-<snip>
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
