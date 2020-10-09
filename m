@@ -2,57 +2,57 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9FE02889CC
-	for <lists+linux-btrfs@lfdr.de>; Fri,  9 Oct 2020 15:29:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E9062889CE
+	for <lists+linux-btrfs@lfdr.de>; Fri,  9 Oct 2020 15:29:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388611AbgJIN25 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 9 Oct 2020 09:28:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43994 "EHLO
+        id S2388614AbgJIN26 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 9 Oct 2020 09:28:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388573AbgJIN24 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 9 Oct 2020 09:28:56 -0400
-Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D835C0613D6
-        for <linux-btrfs@vger.kernel.org>; Fri,  9 Oct 2020 06:28:55 -0700 (PDT)
-Received: by mail-qt1-x833.google.com with SMTP id c23so7924053qtp.0
-        for <linux-btrfs@vger.kernel.org>; Fri, 09 Oct 2020 06:28:55 -0700 (PDT)
+        with ESMTP id S2388573AbgJIN26 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 9 Oct 2020 09:28:58 -0400
+Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42391C0613D7
+        for <linux-btrfs@vger.kernel.org>; Fri,  9 Oct 2020 06:28:56 -0700 (PDT)
+Received: by mail-qv1-xf43.google.com with SMTP id t20so4738514qvv.8
+        for <linux-btrfs@vger.kernel.org>; Fri, 09 Oct 2020 06:28:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=C47/6Lu3kLBk7z18hoHpNXzwGHJ09XisxNmwegv3ccI=;
-        b=QpW+yRpAJR60m8O5YO3fN7H+BejVIYfJG03BuWuOYTw8aWHMmIRsAiSCZ5JRBMMb2+
-         ECuq21ftaHXIuM7xhwImGJJh9UveTAhkF9P2A+vqP+9XMA2GGWBW5oWspk0SInQrQXG0
-         M0Pg+q3s0jmG3wncb2gQbcRN7K6vluPeO+NtcYHvOySfD7VfJ0nDrCblZXCO6JKym0rM
-         ZH6lDzybqlVkHyr1mJMvlaa/DARKT1DcKzghlNZFgXqu0hJ4qVXw2NFG/++8k2SNnH1M
-         e/BIwvD51TzvzP3Vy5lCH0UKJ/XZUUt/N8/Ej7H0kf+xkm7QA836ZmD9BakksqujaShK
-         cFnQ==
+        bh=JTr5aqhEyIRHE9K85alzYsjgkaWjmpYmLjJbpalEuuo=;
+        b=0qc36ks7BcjrARp6nLoDBw/77ZWZZWqyybrqkj4pcpG70V9q9Q8jy+TYYl1zJcx1SE
+         753nlO6m14cuj8sX8mvLRQTEsmhuuYe5Cf+7vktOkQ55cDFqCEnE9iZzgLqYSyUdiSkf
+         NYPAcuNo4r9zj7weIMcEo5Ssoerx0vFnpBnltHM3WxNQU1G/GmGrhOLUBXzI46id9TtW
+         DDoZT6AINW/ICrme4H4HSkV735+YmWVzkpuerVjoJNGl9hjkW5al0IF0MD2Hrh9+yuMt
+         X6MEtnH8L+3iMoWAZ++0QH/EwJWIxdYYbFnfYOewXdLoT8wT45zhIqRlHXUuw+lxVpOt
+         ixmA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=C47/6Lu3kLBk7z18hoHpNXzwGHJ09XisxNmwegv3ccI=;
-        b=iTz1DBmzDEexx7Z5py8bRHR+V+St/3RQ+gEmnUvYS0x4k/WuC5d4wOa1XSH8QpiHS2
-         lM/W7M5zKRtv1/erjOfmlmNhm4364cuiBtwp6Ufiik0S3DEJ/1rL5RMrNOVoJsSON8Ym
-         7dhHEOekl6nkI4/idpjwac5DMpLT3/gK7sZcgE5rRMe9zJw9nq3bgYKtIeep6gCD2gdw
-         n6GctJZU+7amgfj+0FNJuv4gShYVUiJ0eE1ENlt8UukaZlY1mIi5Mo6tSzZEsmedbRDD
-         ZYfYZyeW3cCk4J0VrzSr4zEJ0pxs4V075vEkxYOoPJ2uqEsgcLaMxrsbBDNs6ETZDiFx
-         l8qw==
-X-Gm-Message-State: AOAM531WACnoQYfyqJ7UhhNzQUkTPkbjPBxIkWAMcZIiv2bvD8DvGFsI
-        Qomyam1XVF3Vy6P4tNQBBGlDNfDb/r0Ban9J
-X-Google-Smtp-Source: ABdhPJwNTnwKed59LbRjub5hXmoh8Htg6Q/pa32jy4+PCAowkDUV8Ex6Wlt9DBI9rpJMm9/Xh8EuTA==
-X-Received: by 2002:ac8:5948:: with SMTP id 8mr13138469qtz.215.1602250133052;
-        Fri, 09 Oct 2020 06:28:53 -0700 (PDT)
+        bh=JTr5aqhEyIRHE9K85alzYsjgkaWjmpYmLjJbpalEuuo=;
+        b=M4pP+QPWk6f0ggJm6ijZibFI8xXBVxIXtE+A81ATRr7szeSjgPVnCnNQAnIleZH2X+
+         WSpifi/W/hoGUte0GA3swQioB64V9FS9OKf+aMfqZ5I5dd3h9NOD533zy8FdMeAwqkBV
+         IlQBdu+maq6Zu/hNfk9hNLjt0/y9TbxuZtOi2mh9DHEKuDLL6vYmWF9DXA/fokjkHJHr
+         sTrhblFqzPFGpPFCWACOf+ievtG9A4GOMh+2bo9s14Va74MP10rkYtm7OrsENDQTTxpI
+         cx0GcwmcoBZFy2kHnL7ImsP8UtH4Gczox1GbL1XvCZ/RzEI8UM75rSVXBASCQEenoxlf
+         nPtg==
+X-Gm-Message-State: AOAM532O7nwkB+27Qr/AATpkl2fLSskSiAOMEO8gX+BJJBDQhcy7i/ml
+        ycXY21FLtMBHiPbFdRT8N2f9+UoxV0RnAYle
+X-Google-Smtp-Source: ABdhPJwTx+T9PoJQmtL7NIqCB9u2kTdPmek+u+8Rn4K7nPVohJ56wb6T9jF7QKGJzPpsXMv0Pt1Wiw==
+X-Received: by 2002:ad4:42b3:: with SMTP id e19mr12619789qvr.6.1602250135041;
+        Fri, 09 Oct 2020 06:28:55 -0700 (PDT)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id r13sm6076138qtp.94.2020.10.09.06.28.51
+        by smtp.gmail.com with ESMTPSA id k20sm6209420qtm.44.2020.10.09.06.28.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Oct 2020 06:28:52 -0700 (PDT)
+        Fri, 09 Oct 2020 06:28:54 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
 Cc:     Nikolay Borisov <nborisov@suse.com>
-Subject: [PATCH v3 11/12] btrfs: adjust the flush trace point to include the source
-Date:   Fri,  9 Oct 2020 09:28:28 -0400
-Message-Id: <cbc33fd7a2d39ca651ba1f1e44345663f5c369cc.1602249928.git.josef@toxicpanda.com>
+Subject: [PATCH v3 12/12] btrfs: add a trace class for dumping the current ENOSPC state
+Date:   Fri,  9 Oct 2020 09:28:29 -0400
+Message-Id: <3e5d1e29372cbbdb022185ffb5b10e6823478fc6.1602249928.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <cover.1602249928.git.josef@toxicpanda.com>
 References: <cover.1602249928.git.josef@toxicpanda.com>
@@ -62,139 +62,106 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Since we have normal ticketed flushing and preemptive flushing, adjust
-the tracepoint so that we know the source of the flushing action to make
-it easier to debug problems.
+Often when I'm debugging ENOSPC related issues I have to resort to
+printing the entire ENOSPC state with trace_printk() in different spots.
+This gets pretty annoying, so add a trace state that does this for us.
+Then add a trace point at the end of preemptive flushing so you can see
+the state of the space_info when we decide to exit preemptive flushing.
+This helped me figure out we weren't kicking in the preemptive flushing
+soon enough.
 
 Reviewed-by: Nikolay Borisov <nborisov@suse.com>
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/space-info.c        | 20 ++++++++++++--------
- include/trace/events/btrfs.h | 10 ++++++----
- 2 files changed, 18 insertions(+), 12 deletions(-)
+ fs/btrfs/space-info.c        |  1 +
+ include/trace/events/btrfs.h | 62 ++++++++++++++++++++++++++++++++++++
+ 2 files changed, 63 insertions(+)
 
 diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
-index 5ee698c12a7b..30474fa30985 100644
+index 30474fa30985..656c46b77250 100644
 --- a/fs/btrfs/space-info.c
 +++ b/fs/btrfs/space-info.c
-@@ -664,7 +664,7 @@ static int may_commit_transaction(struct btrfs_fs_info *fs_info,
-  */
- static void flush_space(struct btrfs_fs_info *fs_info,
- 		       struct btrfs_space_info *space_info, u64 num_bytes,
--		       enum btrfs_flush_state state)
-+		       enum btrfs_flush_state state, bool for_preempt)
- {
- 	struct btrfs_root *root = fs_info->extent_root;
- 	struct btrfs_trans_handle *trans;
-@@ -747,7 +747,7 @@ static void flush_space(struct btrfs_fs_info *fs_info,
- 	}
- 
- 	trace_btrfs_flush_space(fs_info, space_info->flags, num_bytes, state,
--				ret);
-+				ret, for_preempt);
- 	return;
+@@ -1118,6 +1118,7 @@ static void btrfs_preempt_reclaim_metadata_space(struct work_struct *work)
+ 	/* We only went through once, back off our clamping. */
+ 	if (loops == 1 && !space_info->reclaim_size)
+ 		space_info->clamp = max(1, space_info->clamp - 1);
++	trace_btrfs_done_preemptive_reclaim(fs_info, space_info);
+ 	spin_unlock(&space_info->lock);
  }
  
-@@ -973,7 +973,8 @@ static void btrfs_async_reclaim_metadata_space(struct work_struct *work)
- 
- 	flush_state = FLUSH_DELAYED_ITEMS_NR;
- 	do {
--		flush_space(fs_info, space_info, to_reclaim, flush_state);
-+		flush_space(fs_info, space_info, to_reclaim, flush_state,
-+			    false);
- 		spin_lock(&space_info->lock);
- 		if (list_empty(&space_info->tickets)) {
- 			space_info->flush = 0;
-@@ -1109,7 +1110,7 @@ static void btrfs_preempt_reclaim_metadata_space(struct work_struct *work)
- 		to_reclaim >>= 2;
- 		if (!to_reclaim)
- 			to_reclaim = btrfs_calc_insert_metadata_size(fs_info, 1);
--		flush_space(fs_info, space_info, to_reclaim, flush);
-+		flush_space(fs_info, space_info, to_reclaim, flush, true);
- 		cond_resched();
- 		spin_lock(&space_info->lock);
- 	}
-@@ -1200,7 +1201,8 @@ static void btrfs_async_reclaim_data_space(struct work_struct *work)
- 	spin_unlock(&space_info->lock);
- 
- 	while (!space_info->full) {
--		flush_space(fs_info, space_info, U64_MAX, ALLOC_CHUNK_FORCE);
-+		flush_space(fs_info, space_info, U64_MAX, ALLOC_CHUNK_FORCE,
-+			    false);
- 		spin_lock(&space_info->lock);
- 		if (list_empty(&space_info->tickets)) {
- 			space_info->flush = 0;
-@@ -1213,7 +1215,7 @@ static void btrfs_async_reclaim_data_space(struct work_struct *work)
- 
- 	while (flush_state < ARRAY_SIZE(data_flush_states)) {
- 		flush_space(fs_info, space_info, U64_MAX,
--			    data_flush_states[flush_state]);
-+			    data_flush_states[flush_state], false);
- 		spin_lock(&space_info->lock);
- 		if (list_empty(&space_info->tickets)) {
- 			space_info->flush = 0;
-@@ -1286,7 +1288,8 @@ static void priority_reclaim_metadata_space(struct btrfs_fs_info *fs_info,
- 
- 	flush_state = 0;
- 	do {
--		flush_space(fs_info, space_info, to_reclaim, states[flush_state]);
-+		flush_space(fs_info, space_info, to_reclaim, states[flush_state],
-+			    false);
- 		flush_state++;
- 		spin_lock(&space_info->lock);
- 		if (ticket->bytes == 0) {
-@@ -1302,7 +1305,8 @@ static void priority_reclaim_data_space(struct btrfs_fs_info *fs_info,
- 					struct reserve_ticket *ticket)
- {
- 	while (!space_info->full) {
--		flush_space(fs_info, space_info, U64_MAX, ALLOC_CHUNK_FORCE);
-+		flush_space(fs_info, space_info, U64_MAX, ALLOC_CHUNK_FORCE,
-+			    false);
- 		spin_lock(&space_info->lock);
- 		if (ticket->bytes == 0) {
- 			spin_unlock(&space_info->lock);
 diff --git a/include/trace/events/btrfs.h b/include/trace/events/btrfs.h
-index 0a3d35d952c4..6d93637bae02 100644
+index 6d93637bae02..74b466dc20ac 100644
 --- a/include/trace/events/btrfs.h
 +++ b/include/trace/events/btrfs.h
-@@ -1112,15 +1112,16 @@ TRACE_EVENT(btrfs_trigger_flush,
- TRACE_EVENT(btrfs_flush_space,
- 
- 	TP_PROTO(const struct btrfs_fs_info *fs_info, u64 flags, u64 num_bytes,
--		 int state, int ret),
-+		 int state, int ret, int for_preempt),
- 
--	TP_ARGS(fs_info, flags, num_bytes, state, ret),
-+	TP_ARGS(fs_info, flags, num_bytes, state, ret, for_preempt),
- 
- 	TP_STRUCT__entry_btrfs(
- 		__field(	u64,	flags			)
- 		__field(	u64,	num_bytes		)
- 		__field(	int,	state			)
- 		__field(	int,	ret			)
-+		__field(	int,	for_preempt		)
- 	),
- 
- 	TP_fast_assign_btrfs(fs_info,
-@@ -1128,15 +1129,16 @@ TRACE_EVENT(btrfs_flush_space,
- 		__entry->num_bytes	=	num_bytes;
- 		__entry->state		=	state;
- 		__entry->ret		=	ret;
-+		__entry->for_preempt	=	for_preempt;
- 	),
- 
--	TP_printk_btrfs("state=%d(%s) flags=%llu(%s) num_bytes=%llu ret=%d",
-+	TP_printk_btrfs("state=%d(%s) flags=%llu(%s) num_bytes=%llu ret=%d for_preempt=%d",
- 		  __entry->state,
- 		  __print_symbolic(__entry->state, FLUSH_STATES),
- 		  __entry->flags,
- 		  __print_flags((unsigned long)__entry->flags, "|",
- 				BTRFS_GROUP_FLAGS),
--		  __entry->num_bytes, __entry->ret)
-+		  __entry->num_bytes, __entry->ret, __entry->for_preempt)
+@@ -2028,6 +2028,68 @@ TRACE_EVENT(btrfs_convert_extent_bit,
+ 		  __print_flags(__entry->clear_bits, "|", EXTENT_FLAGS))
  );
  
- DECLARE_EVENT_CLASS(btrfs__reserved_extent,
++DECLARE_EVENT_CLASS(btrfs_dump_space_info,
++	TP_PROTO(const struct btrfs_fs_info *fs_info,
++		 const struct btrfs_space_info *sinfo),
++
++	TP_ARGS(fs_info, sinfo),
++
++	TP_STRUCT__entry_btrfs(
++		__field(	u64,	flags			)
++		__field(	u64,	total_bytes		)
++		__field(	u64,	bytes_used		)
++		__field(	u64,	bytes_pinned		)
++		__field(	u64,	bytes_reserved		)
++		__field(	u64,	bytes_may_use		)
++		__field(	u64,	bytes_readonly		)
++		__field(	u64,	reclaim_size		)
++		__field(	int,	clamp			)
++		__field(	u64,	global_reserved		)
++		__field(	u64,	trans_reserved		)
++		__field(	u64,	delayed_refs_reserved	)
++		__field(	u64,	delayed_reserved	)
++		__field(	u64,	free_chunk_space	)
++	),
++
++	TP_fast_assign_btrfs(fs_info,
++		__entry->flags			=	sinfo->flags;
++		__entry->total_bytes		=	sinfo->total_bytes;
++		__entry->bytes_used		=	sinfo->bytes_used;
++		__entry->bytes_pinned		=	sinfo->bytes_pinned;
++		__entry->bytes_reserved		=	sinfo->bytes_reserved;
++		__entry->bytes_may_use		=	sinfo->bytes_may_use;
++		__entry->bytes_readonly		=	sinfo->bytes_readonly;
++		__entry->reclaim_size		=	sinfo->reclaim_size;
++		__entry->clamp			=	sinfo->clamp;
++		__entry->global_reserved	=	fs_info->global_block_rsv.reserved;
++		__entry->trans_reserved		=	fs_info->trans_block_rsv.reserved;
++		__entry->delayed_refs_reserved	=	fs_info->delayed_refs_rsv.reserved;
++		__entry->delayed_reserved	=	fs_info->delayed_block_rsv.reserved;
++		__entry->free_chunk_space	=	atomic64_read(&fs_info->free_chunk_space);
++	),
++
++	TP_printk_btrfs("flags=%s total_bytes=%llu bytes_used=%llu "
++			"bytes_pinned=%llu bytes_reserved=%llu "
++			"bytes_may_use=%llu bytes_readonly=%llu "
++			"reclaim_size=%llu clamp=%d global_reserved=%llu "
++			"trans_reserved=%llu delayed_refs_reserved=%llu "
++			"delayed_reserved=%llu chunk_free_space=%llu",
++			__print_flags(__entry->flags, "|", BTRFS_GROUP_FLAGS),
++			__entry->total_bytes, __entry->bytes_used,
++			__entry->bytes_pinned, __entry->bytes_reserved,
++			__entry->bytes_may_use, __entry->bytes_readonly,
++			__entry->reclaim_size, __entry->clamp,
++			__entry->global_reserved, __entry->trans_reserved,
++			__entry->delayed_refs_reserved,
++			__entry->delayed_reserved, __entry->free_chunk_space)
++);
++
++DEFINE_EVENT(btrfs_dump_space_info, btrfs_done_preemptive_reclaim,
++	TP_PROTO(const struct btrfs_fs_info *fs_info,
++		 const struct btrfs_space_info *sinfo),
++	TP_ARGS(fs_info, sinfo)
++);
++
+ TRACE_EVENT(btrfs_reserve_ticket,
+ 	TP_PROTO(const struct btrfs_fs_info *fs_info, u64 flags, u64 bytes,
+ 		 u64 start_ns, int flush, int error),
 -- 
 2.26.2
 
