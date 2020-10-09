@@ -2,57 +2,56 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93A8E2889C3
-	for <lists+linux-btrfs@lfdr.de>; Fri,  9 Oct 2020 15:29:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 300A82889C4
+	for <lists+linux-btrfs@lfdr.de>; Fri,  9 Oct 2020 15:29:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388496AbgJIN2h (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 9 Oct 2020 09:28:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43928 "EHLO
+        id S2388499AbgJIN2j (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 9 Oct 2020 09:28:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388473AbgJIN2h (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 9 Oct 2020 09:28:37 -0400
-Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE021C0613D2
-        for <linux-btrfs@vger.kernel.org>; Fri,  9 Oct 2020 06:28:36 -0700 (PDT)
-Received: by mail-qv1-xf43.google.com with SMTP id 13so4721856qvc.9
-        for <linux-btrfs@vger.kernel.org>; Fri, 09 Oct 2020 06:28:36 -0700 (PDT)
+        with ESMTP id S2388473AbgJIN2j (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 9 Oct 2020 09:28:39 -0400
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCE8AC0613D2
+        for <linux-btrfs@vger.kernel.org>; Fri,  9 Oct 2020 06:28:38 -0700 (PDT)
+Received: by mail-qt1-x843.google.com with SMTP id c5so7897052qtw.3
+        for <linux-btrfs@vger.kernel.org>; Fri, 09 Oct 2020 06:28:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=/x3pvpis+2ALXcFAR7IF+wTWcLA0xu88xOUJr8tb810=;
-        b=WcYrZmipXhK3Q195G7CL3/nHfJ3bOyNPd+8+runNJ+BBcTWucdKCIMYYPlGeyzZA28
-         e3Z+yp2cJVvM03rxB8Q2SJYsccNPUJvhzXxwzzSnaylDa1T0FxEdFg9YFTIhL5IbYXDi
-         k0U72gJTa6H/k+qo6ANORgYyMqkJJhq0eTf8z088Hq3IfJf2P9syPwKUIpt9yCiie53I
-         54mPc4b130d3W+6+LSA1NyYO5xzjmIdPvhcg6Ywq5Iw9upsFlp/4cX6d0MW4HE0uspcG
-         olHQYeZn65hxIflxrhE4Jn5EzA9hXxIdwkya1c5r73Gm+MJNNmOtN0edLuT4dKwQzHne
-         u1MA==
+        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
+         :content-transfer-encoding;
+        bh=TNchmHo9Lcyrgb7+5XCiMKeNczgC1I7OF5JL5wmyvvM=;
+        b=tXJ0VJc3Li8VEe8/dYd9XLtWDvdXWb+Wud/EnqHBLmIhekLDhsUxxJPNxvKhP6l/60
+         xRlIMYF1Gj6NtYaQAfHlxARM0t41RVevMMP88sIbrnod1Wp3yI+n3KyAsV9ZX6JfhlY7
+         vgtgeivhuad/WEgoAJBDw8t7lKQq0c8hYEpNmjhEbn62xtyjEXUCKF5gKG6poeiR39OK
+         komn0i4z0NKXZntAL1ixHPiyXBKIxN2FK9nNaONDdQXV1vVH2d0fWJ7MrafYPYtZmvN+
+         MzJfp7KD9F0Lg6GyZstAKK9tRdr07/aV3v+VUt32vpass4/kgq36wyUXQhPu3yi5bbs6
+         Rttg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=/x3pvpis+2ALXcFAR7IF+wTWcLA0xu88xOUJr8tb810=;
-        b=PcxEWPiDwRJxo4a2Kf7qDb2CtyXkUvNeeiro5gBUAnckhRAegEDjcKrBM/ZWZ+lDtJ
-         RxiA/yyDSvQTs9CjqUT4FMS3dhiw32qHt29oehz+Z4QpTJplefUwAUMzc/BwRDyNdoay
-         R70MTysAIRzPSemKy9IriSReuTLc2zSyJjUEnN6s5JM/AAQpdGylOcMSuaoaMcPfPs0X
-         RwgwbslCti+lGy5vq/IZNlU6PsBNB3fbUCsD11lgKOllsDi/Tx2k2MELLuSn6CTwwpN+
-         QXhyPocLuPn7yIfQyPf1mT0RxprwGBZNIzLFy6hWMdGK+0UZ7Yc1lP2jYOm1dCyCXbZs
-         BXqw==
-X-Gm-Message-State: AOAM531fQffllgSlQDXxrxIE4xEZ1d85HZ8IwaS4aU4RW9ykgWxEMgxK
-        nLl4TVetfmkTcmAj3bkquaJyBUS4+TLKjceq
-X-Google-Smtp-Source: ABdhPJzyS7jrQITJAYj7tiENwM3a63pMKupwWQ4iBtucknPKt86CUJCv/Z3ylRjxgcmmMWNJf7yRgw==
-X-Received: by 2002:a0c:a945:: with SMTP id z5mr12547087qva.55.1602250115451;
-        Fri, 09 Oct 2020 06:28:35 -0700 (PDT)
+        bh=TNchmHo9Lcyrgb7+5XCiMKeNczgC1I7OF5JL5wmyvvM=;
+        b=pvX+xQXA4IPJzCLPERxg/LOwumRjzSLbE8CfM/fSdWM0WJjyxfxK5qJ0U8fB/4cEr3
+         V+drfj+sPCFOI/ByYbOKHiWX3oE6vjaAZvXHmVigQwkdRgiCSMzeJcZLM1+2kN+khD3a
+         0w2+4LmtqcDglZMUXFxg1dRrX6KJD1ZnyhXP/N/e3QIDV4bO2AzB0DpeF8+868GBJ+pL
+         7TKH1jlzvaMW1I3sUE0WJGZxwjtZJABeU8sD/YggSLNKhglb5AqVQt6BJZFcyWHy76kE
+         oqTWMqXON8UjX2jx2ZzoT6+WpX0wJrLqHe4yEWzMKnh8CDi/rAAHZl6FbQv/kxJETeRk
+         Lvrw==
+X-Gm-Message-State: AOAM531y237DUIrVBOuLg+RA2VdwxQYMH9FdL/hNwGtgAt4dy5Du9zjH
+        rV1MGk8xID3U5Ez4rnkbFjCEltZenfygAIRY
+X-Google-Smtp-Source: ABdhPJzfazSe4x/lHjkKvJ8fuPpkEGW8XLbDjVTl1Gpw73DXFslg0BCgbPlyvPOFry/4VKIRQGBbqQ==
+X-Received: by 2002:aed:362a:: with SMTP id e39mr13372648qtb.121.1602250117529;
+        Fri, 09 Oct 2020 06:28:37 -0700 (PDT)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id t3sm6160286qtq.24.2020.10.09.06.28.34
+        by smtp.gmail.com with ESMTPSA id r187sm5864933qkc.63.2020.10.09.06.28.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Oct 2020 06:28:34 -0700 (PDT)
+        Fri, 09 Oct 2020 06:28:36 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Cc:     Nikolay Borisov <nborisov@suse.com>
-Subject: [PATCH v3 02/12] btrfs: add a trace point for reserve tickets
-Date:   Fri,  9 Oct 2020 09:28:19 -0400
-Message-Id: <a950d7af5cd8b905b951c83db0c144177235abbc.1602249928.git.josef@toxicpanda.com>
+Subject: [PATCH v3 03/12] btrfs: track ordered bytes instead of just dio ordered bytes
+Date:   Fri,  9 Oct 2020 09:28:20 -0400
+Message-Id: <578ef22806511ccbe29ebe9e70bb6524793ba813.1602249928.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <cover.1602249928.git.josef@toxicpanda.com>
 References: <cover.1602249928.git.josef@toxicpanda.com>
@@ -62,111 +61,157 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-While debugging a ENOSPC related performance problem I needed to see the
-time difference between start and end of a reserve ticket, so add a
-trace point to report when we handle a reserve ticket.
+We track dio_bytes because the shrink delalloc code needs to know if we
+have more DIO in flight than we have normal buffered IO.  The reason for
+this is because we can't "flush" DIO, we have to just wait on the
+ordered extents to finish.
 
-I opted to spit out start_ns itself without calculating the difference
-because there could be a gap between enabling the tracpoint and setting
-start_ns.  Doing it this way allows us to filter on 0 start_ns so we
-don't get bogus entries, and we can easily calculate the time difference
-with bpftrace or something else.
+However this is true of all ordered extents.  If we have more ordered
+space outstanding than dirty pages we should be waiting on ordered
+extents.  We already are ok on this front technically, because we always
+do a FLUSH_DELALLOC_WAIT loop, but I want to use the ordered counter in
+the preemptive flushing code as well, so change this to count all
+ordered bytes instead of just DIO ordered bytes.
 
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/space-info.c        | 10 +++++++++-
- include/trace/events/btrfs.h | 29 +++++++++++++++++++++++++++++
- 2 files changed, 38 insertions(+), 1 deletion(-)
+ fs/btrfs/ctree.h        |  2 +-
+ fs/btrfs/disk-io.c      |  8 ++++----
+ fs/btrfs/ordered-data.c | 13 ++++++-------
+ fs/btrfs/space-info.c   | 18 +++++++-----------
+ 4 files changed, 18 insertions(+), 23 deletions(-)
 
-diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
-index ba2b72409d46..ac7269cf1904 100644
---- a/fs/btrfs/space-info.c
-+++ b/fs/btrfs/space-info.c
-@@ -1224,6 +1224,7 @@ static void wait_reserve_ticket(struct btrfs_fs_info *fs_info,
- static int handle_reserve_ticket(struct btrfs_fs_info *fs_info,
- 				 struct btrfs_space_info *space_info,
- 				 struct reserve_ticket *ticket,
-+				 u64 start_ns, u64 orig_bytes,
- 				 enum btrfs_reserve_flush_enum flush)
- {
- 	int ret;
-@@ -1279,6 +1280,8 @@ static int handle_reserve_ticket(struct btrfs_fs_info *fs_info,
- 	 * space wasn't reserved at all).
- 	 */
- 	ASSERT(!(ticket->bytes == 0 && ticket->error));
-+	trace_btrfs_reserve_ticket(fs_info, space_info->flags, orig_bytes,
-+				   start_ns, flush, ticket->error);
- 	return ret;
- }
+diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+index aac3d6f4e35b..e817b3b3483d 100644
+--- a/fs/btrfs/ctree.h
++++ b/fs/btrfs/ctree.h
+@@ -790,7 +790,7 @@ struct btrfs_fs_info {
+ 	/* used to keep from writing metadata until there is a nice batch */
+ 	struct percpu_counter dirty_metadata_bytes;
+ 	struct percpu_counter delalloc_bytes;
+-	struct percpu_counter dio_bytes;
++	struct percpu_counter ordered_bytes;
+ 	s32 dirty_metadata_batch;
+ 	s32 delalloc_batch;
  
-@@ -1312,6 +1315,7 @@ static int __reserve_bytes(struct btrfs_fs_info *fs_info,
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index 764001609a15..61bb3321efaa 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -1466,7 +1466,7 @@ void btrfs_free_fs_info(struct btrfs_fs_info *fs_info)
  {
- 	struct work_struct *async_work;
- 	struct reserve_ticket ticket;
-+	u64 start_ns = 0;
- 	u64 used;
- 	int ret = 0;
- 	bool pending_tickets;
-@@ -1364,6 +1368,9 @@ static int __reserve_bytes(struct btrfs_fs_info *fs_info,
- 		space_info->reclaim_size += ticket.bytes;
- 		init_waitqueue_head(&ticket.wait);
- 		ticket.steal = (flush == BTRFS_RESERVE_FLUSH_ALL_STEAL);
-+		if (trace_btrfs_reserve_ticket_enabled())
-+			start_ns = ktime_get_ns();
-+
- 		if (flush == BTRFS_RESERVE_FLUSH_ALL ||
- 		    flush == BTRFS_RESERVE_FLUSH_ALL_STEAL ||
- 		    flush == BTRFS_RESERVE_FLUSH_DATA) {
-@@ -1400,7 +1407,8 @@ static int __reserve_bytes(struct btrfs_fs_info *fs_info,
- 	if (!ret || flush == BTRFS_RESERVE_NO_FLUSH)
+ 	percpu_counter_destroy(&fs_info->dirty_metadata_bytes);
+ 	percpu_counter_destroy(&fs_info->delalloc_bytes);
+-	percpu_counter_destroy(&fs_info->dio_bytes);
++	percpu_counter_destroy(&fs_info->ordered_bytes);
+ 	percpu_counter_destroy(&fs_info->dev_replace.bio_counter);
+ 	btrfs_free_csum_hash(fs_info);
+ 	btrfs_free_stripe_hash_table(fs_info);
+@@ -2748,7 +2748,7 @@ static int init_mount_fs_info(struct btrfs_fs_info *fs_info, struct super_block
+ 	sb->s_blocksize = BTRFS_BDEV_BLOCKSIZE;
+ 	sb->s_blocksize_bits = blksize_bits(BTRFS_BDEV_BLOCKSIZE);
+ 
+-	ret = percpu_counter_init(&fs_info->dio_bytes, 0, GFP_KERNEL);
++	ret = percpu_counter_init(&fs_info->ordered_bytes, 0, GFP_KERNEL);
+ 	if (ret)
  		return ret;
  
--	return handle_reserve_ticket(fs_info, space_info, &ticket, flush);
-+	return handle_reserve_ticket(fs_info, space_info, &ticket, start_ns,
-+				     orig_bytes, flush);
+@@ -4055,9 +4055,9 @@ void __cold close_ctree(struct btrfs_fs_info *fs_info)
+ 		       percpu_counter_sum(&fs_info->delalloc_bytes));
+ 	}
+ 
+-	if (percpu_counter_sum(&fs_info->dio_bytes))
++	if (percpu_counter_sum(&fs_info->ordered_bytes))
+ 		btrfs_info(fs_info, "at unmount dio bytes count %lld",
+-			   percpu_counter_sum(&fs_info->dio_bytes));
++			   percpu_counter_sum(&fs_info->ordered_bytes));
+ 
+ 	btrfs_sysfs_remove_mounted(fs_info);
+ 	btrfs_sysfs_remove_fsid(fs_info->fs_devices);
+diff --git a/fs/btrfs/ordered-data.c b/fs/btrfs/ordered-data.c
+index 87bac9ecdf4c..9a277a475a1c 100644
+--- a/fs/btrfs/ordered-data.c
++++ b/fs/btrfs/ordered-data.c
+@@ -202,11 +202,11 @@ static int __btrfs_add_ordered_extent(struct btrfs_inode *inode, u64 file_offset
+ 	if (type != BTRFS_ORDERED_IO_DONE && type != BTRFS_ORDERED_COMPLETE)
+ 		set_bit(type, &entry->flags);
+ 
+-	if (dio) {
+-		percpu_counter_add_batch(&fs_info->dio_bytes, num_bytes,
+-					 fs_info->delalloc_batch);
++	percpu_counter_add_batch(&fs_info->ordered_bytes, num_bytes,
++				 fs_info->delalloc_batch);
++
++	if (dio)
+ 		set_bit(BTRFS_ORDERED_DIRECT, &entry->flags);
+-	}
+ 
+ 	/* one ref for the tree */
+ 	refcount_set(&entry->refs, 1);
+@@ -480,9 +480,8 @@ void btrfs_remove_ordered_extent(struct btrfs_inode *btrfs_inode,
+ 		btrfs_delalloc_release_metadata(btrfs_inode, entry->num_bytes,
+ 						false);
+ 
+-	if (test_bit(BTRFS_ORDERED_DIRECT, &entry->flags))
+-		percpu_counter_add_batch(&fs_info->dio_bytes, -entry->num_bytes,
+-					 fs_info->delalloc_batch);
++	percpu_counter_add_batch(&fs_info->ordered_bytes, -entry->num_bytes,
++				 fs_info->delalloc_batch);
+ 
+ 	tree = &btrfs_inode->ordered_tree;
+ 	spin_lock_irq(&tree->lock);
+diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
+index ac7269cf1904..540960365787 100644
+--- a/fs/btrfs/space-info.c
++++ b/fs/btrfs/space-info.c
+@@ -489,7 +489,7 @@ static void shrink_delalloc(struct btrfs_fs_info *fs_info,
+ {
+ 	struct btrfs_trans_handle *trans;
+ 	u64 delalloc_bytes;
+-	u64 dio_bytes;
++	u64 ordered_bytes;
+ 	u64 items;
+ 	long time_left;
+ 	int loops;
+@@ -513,25 +513,20 @@ static void shrink_delalloc(struct btrfs_fs_info *fs_info,
+ 
+ 	delalloc_bytes = percpu_counter_sum_positive(
+ 						&fs_info->delalloc_bytes);
+-	dio_bytes = percpu_counter_sum_positive(&fs_info->dio_bytes);
+-	if (delalloc_bytes == 0 && dio_bytes == 0) {
+-		if (trans)
+-			return;
+-		if (wait_ordered)
+-			btrfs_wait_ordered_roots(fs_info, items, 0, (u64)-1);
++	ordered_bytes = percpu_counter_sum_positive(&fs_info->ordered_bytes);
++	if (delalloc_bytes == 0 && ordered_bytes == 0)
+ 		return;
+-	}
+ 
+ 	/*
+ 	 * If we are doing more ordered than delalloc we need to just wait on
+ 	 * ordered extents, otherwise we'll waste time trying to flush delalloc
+ 	 * that likely won't give us the space back we need.
+ 	 */
+-	if (dio_bytes > delalloc_bytes)
++	if (ordered_bytes > delalloc_bytes)
+ 		wait_ordered = true;
+ 
+ 	loops = 0;
+-	while ((delalloc_bytes || dio_bytes) && loops < 3) {
++	while ((delalloc_bytes || ordered_bytes) && loops < 3) {
+ 		btrfs_start_delalloc_roots(fs_info, items);
+ 
+ 		loops++;
+@@ -553,7 +548,8 @@ static void shrink_delalloc(struct btrfs_fs_info *fs_info,
+ 
+ 		delalloc_bytes = percpu_counter_sum_positive(
+ 						&fs_info->delalloc_bytes);
+-		dio_bytes = percpu_counter_sum_positive(&fs_info->dio_bytes);
++		ordered_bytes = percpu_counter_sum_positive(
++						&fs_info->ordered_bytes);
+ 	}
  }
- 
- /**
-diff --git a/include/trace/events/btrfs.h b/include/trace/events/btrfs.h
-index ecd24c719de4..eb348656839f 100644
---- a/include/trace/events/btrfs.h
-+++ b/include/trace/events/btrfs.h
-@@ -2025,6 +2025,35 @@ TRACE_EVENT(btrfs_convert_extent_bit,
- 		  __print_flags(__entry->clear_bits, "|", EXTENT_FLAGS))
- );
- 
-+TRACE_EVENT(btrfs_reserve_ticket,
-+	TP_PROTO(const struct btrfs_fs_info *fs_info, u64 flags, u64 bytes,
-+		 u64 start_ns, int flush, int error),
-+
-+	TP_ARGS(fs_info, flags, bytes, start_ns, flush, error),
-+
-+	TP_STRUCT__entry_btrfs(
-+		__field(	u64,	flags		)
-+		__field(	u64,	bytes		)
-+		__field(	u64,	start_ns	)
-+		__field(	int,	flush		)
-+		__field(	int,	error		)
-+	),
-+
-+	TP_fast_assign_btrfs(fs_info,
-+		__entry->flags		= flags;
-+		__entry->bytes		= bytes;
-+		__entry->start_ns	= start_ns;
-+		__entry->flush		= flush;
-+		__entry->error		= error;
-+	),
-+
-+	TP_printk_btrfs("flags=%s bytes=%llu start_ns=%llu flush=%s error=%d",
-+			__print_flags(__entry->flags, "|", BTRFS_GROUP_FLAGS),
-+			__entry->bytes, __entry->start_ns,
-+			__print_symbolic(__entry->flush, FLUSH_ACTIONS),
-+			__entry->error)
-+);
-+
- DECLARE_EVENT_CLASS(btrfs_sleep_tree_lock,
- 	TP_PROTO(const struct extent_buffer *eb, u64 start_ns),
  
 -- 
 2.26.2
