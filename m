@@ -2,144 +2,103 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 965C528818E
-	for <lists+linux-btrfs@lfdr.de>; Fri,  9 Oct 2020 06:57:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A94A28835B
+	for <lists+linux-btrfs@lfdr.de>; Fri,  9 Oct 2020 09:20:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726496AbgJIE5b (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 9 Oct 2020 00:57:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49598 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725917AbgJIE5b (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 9 Oct 2020 00:57:31 -0400
-X-Greylist: delayed 2222 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 08 Oct 2020 21:57:31 PDT
-Received: from hz.preining.info (hz.preining.info [IPv6:2a01:4f9:2a:1a08::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E2ACC0613D2
-        for <linux-btrfs@vger.kernel.org>; Thu,  8 Oct 2020 21:57:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=preining.info; s=201909; h=In-Reply-To:Content-Type:MIME-Version:References
-        :Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding
-        :Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=4l6oQ2SR7Iu+yPbWYxUCulUeaonkBYnkB09EyvQquSQ=; b=H2QLyQcDEAJ5rxIGiCpJr4UE33
-        7CQinxD0RGEHlO/lGYT9S98AZNXSKhjlxPVW7z7H4LG+/rNNxWRyJg6PdIwh0b6jZuiFcBdV75De4
-        ltgWH746RKIupijz9S9cH6zyS9tERa95nYGdZtsIXBcxAdHvHCd8n4QmEhAFl3KlIX43j1M+hrGk8
-        NXVBEZOLWA9WtF0GvDGedkgZdmFHsBjgVb/tT9tBdpltBxOF9eyJK94tpGv/ypCUZJ+tpSFlofk8p
-        8WN5juZfQZABVZlKVXxLkISLSrVYvYKxzFTWO/qaxNJRHfJQrC0yFJTZAR/Nj7HzV3jZVXVZbRd9C
-        O+MaenSw==;
-Received: from tvk213002.tvk.ne.jp ([180.94.213.2] helo=bulldog.preining.info)
-        by hz.preining.info with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <norbert@preining.info>)
-        id 1kQjtK-00089x-HK; Fri, 09 Oct 2020 04:20:26 +0000
-Received: by bulldog.preining.info (Postfix, from userid 1000)
-        id 82FBDDE3A652; Fri,  9 Oct 2020 13:20:23 +0900 (JST)
-Date:   Fri, 9 Oct 2020 13:20:23 +0900
-From:   Norbert Preining <norbert@preining.info>
-To:     Chris Murphy <lists@colorremedies.com>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Subject: Re: replacing a disk in a btrfs multi disk array with raid10
-Message-ID: <20201009042023.GG52743@bulldog.preining.info>
-References: <20200803052651.GA685777@bulldog.preining.info>
- <CAJCQCtSeZCVpnxeip6D1nRb-nuvTYyJdY2SFWeDUQMV0BnAbyw@mail.gmail.com>
+        id S1730467AbgJIHU2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 9 Oct 2020 03:20:28 -0400
+Received: from mx2.suse.de ([195.135.220.15]:52002 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725908AbgJIHU2 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 9 Oct 2020 03:20:28 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1602228027;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=lR4s9pz1+9OBSggLS60DoDEs25UxQUAbDZx9G08TXqg=;
+        b=YnXe1Bg3+j2rugGp11ylPBhFyfj59zFKNFH5dGEXmeZnakTBvpqcA21Nt0/TVF+4fbwqKG
+        WIv+/aUPFNl1yZNo6kwc6XG99sFgD+dnAJdjxyu/ym4qYKU+UKvwTZ5f+8Q17IxPBvbNol
+        1r2L+qXhP592qrfvlEdZ7cLxqR32tLo=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id E770FAFE8;
+        Fri,  9 Oct 2020 07:20:26 +0000 (UTC)
+Subject: Re: [PATCH v2 01/11] btrfs: add a trace point for reserve tickets
+To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com
+References: <cover.1602189832.git.josef@toxicpanda.com>
+ <2c9e83b67b44db093fd8d854f484e478bc2abef6.1602189832.git.josef@toxicpanda.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <967f742d-cb75-fa45-f935-e25de7ffe432@suse.com>
+Date:   Fri, 9 Oct 2020 10:20:25 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJCQCtSeZCVpnxeip6D1nRb-nuvTYyJdY2SFWeDUQMV0BnAbyw@mail.gmail.com>
+In-Reply-To: <2c9e83b67b44db093fd8d854f484e478bc2abef6.1602189832.git.josef@toxicpanda.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi Chris,
 
-(please Cc)
 
-sorry for the late reply - real life.
+On 8.10.20 г. 23:48 ч., Josef Bacik wrote:
+> While debugging a ENOSPC related performance problem I needed to see the
+> time difference between start and end of a reserve ticket, so add a
+> trace point to report when we handle a reserve ticket.
+> 
+> I opted to spit out start_ns itself without calculating the difference
+> because there could be a gap between enabling the tracpoint and setting
+> start_ns.  Doing it this way allows us to filter on 0 start_ns so we
+> don't get bogus entries, and we can easily calculate the time difference
+> with bpftrace or something else.
+> 
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 
-It turned out that the disk I use is well known to misreport this
-property, and thus it can be ignored.
-
-But I had to deal with (temporary) loss of one disk. Fortunately, 
-Debian's initramfs dropped me into a proper shell where I could mount
-the array in degraded mode and just remove the device.
-
-Just one hiccup I realized: **after** some time I could re-connect the
-one disc from the array that was missing (I needed a x1 NVMe extender
-which I didn't have at the beginning). I though reconnecting is as
-simple as 
-	btrfs device add -f /dev/nvme0n1p1 /
-but it turned out, because that disk has been part of the array, it was
-rejected. Even using the -f option did not work. At the end I had to
-fdisk the drive and trash the partition table and btrfs info to get it
-ready to be re-added.
-Full story https://www.preining.info/blog/2020/09/dealing-with-lost-disks-in-a-btrfs-array/
-
-Anyway, all suprisingly smooth. Thanks to all of you.
-
-Best
-
-Norbert
-
-On Mon, 03 Aug 2020, Chris Murphy wrote:
-> On Sun, Aug 2, 2020 at 11:51 PM Norbert Preining <norbert@preining.info> wrote:
-> >
-> > Hi all
-> >
-> > (please Cc)
-> >
-> > I am running Linux 5.7 or 5.8 on a btrfs array of 7 disks, with metadata
-> > and data both on raid1, which contains the complete system.
-> > (btrfs balance start -dconvert=raid1 -mconvert=raid1 /)
-> >
-> > Although btrfs device stats / doesn't show any errors, SMART warns about
-> > one disk (reallocated sector count property) and I was pondering
-> > replacing the device.
-> 
-> Some of these are considered normal. I suggest making sure each
-> drive's SCT ERC value is less than the SCSI command timer. You want
-> the drive to give up on reading a sector before the kernel considers
-> the command "overdue" and does a link reset - losing the contents of
-> the command queue. Upon read error, the drive reports the sector LBA
-> so that Btrfs can automatically do a fixup.
-> 
-> More info here. It applies to mdadm, lvm, and Btrfs raid.
-> https://raid.wiki.kernel.org/index.php/Timeout_Mismatch
-> 
-> Once you've done that, do a btrfs scrub.
-> 
-> >
-> > What is the currently suggested method given that I cannot plug in
-> > another disk into the computer, all slots are used up (thus a btrfs
-> > replace will not work as far as I understand).
-> 
-> btrfs replace will work whether the drive is present or not. It's just
-> safer to do it with the drive present because you don't have to mount
-> degraded.
-> 
-> 
-> > Do I need to:
-> > - shutdown
-> > - pysically replace disk
-> > - reboot into rescue system
-> > - mount in degraded mode
-> > - add the new device
-> 
-> Use 'btrfs replace'
-> 
-> > - resize the file system (new disk would be bigger)
-> 
-> Currently 'btrfs replace' does require a separate resize step. 'device
-> add' doesn't, resize is implied by the command.
-> 
-> 
-> > - start a new rebalancing
-> >         (for the rebalance, do I need to give the
-> >         same -dconvert=raid1 -mconvert=raid1 arguments?)
-> 
-> Not necessary. But it's worth checking 'btrfs fi us -T' and making
-> sure everything is raid1 as you expect.
-
---
-PREINING Norbert                              https://www.preining.info
-Accelia Inc. + IFMGA ProGuide + TU Wien + JAIST + TeX Live + Debian Dev
-GPG: 0x860CDC13   fp: F7D8 A928 26E3 16A1 9FA0 ACF0 6CAC A448 860C DC13
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
