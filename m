@@ -2,34 +2,33 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90030288662
-	for <lists+linux-btrfs@lfdr.de>; Fri,  9 Oct 2020 11:53:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DDEF288716
+	for <lists+linux-btrfs@lfdr.de>; Fri,  9 Oct 2020 12:39:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733272AbgJIJxW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 9 Oct 2020 05:53:22 -0400
-Received: from mx2.suse.de ([195.135.220.15]:57990 "EHLO mx2.suse.de"
+        id S2387744AbgJIKjz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 9 Oct 2020 06:39:55 -0400
+Received: from mx2.suse.de ([195.135.220.15]:36672 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725917AbgJIJxW (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 9 Oct 2020 05:53:22 -0400
+        id S1725979AbgJIKjz (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 9 Oct 2020 06:39:55 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1602237200;
+        t=1602239992;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=puYZ6edC7KWhIWhn1vu/w360MrUK8PMQ3PGXEsNMdNM=;
-        b=V3PvF9BjJpS3CFiH1cXFOmaExk3wTLyQUfH4jkeYvvSyC1ok61jWzlhPHwRhQ51SFZ3/NV
-        x4hfi6qJ+sc5rmkUjWsICHQwh5QZ6/U0WkUoJ585f2Uu8fuBGohWBEaLJiVAth7cYJjm6u
-        WxLHTINeQFj1TwAU3OpT7tFY2Md4r9k=
+        bh=dS2NT1y9GX4JESbiMPaLCPMh7xAsZxI9VGwucAC6F6w=;
+        b=PJDozDcKlr7eDIulgVRp12JvxCJNGxgmkOVrJUz+SGQr9rhrDqxx06str6R4i2Cemr4jfR
+        dYARDd9J/6KkpSlsnYQnawC5GO1Tg7f/N6dexWdIbsKJI/APHGv2Nh6Q8p9KuME3aJuzDV
+        pfwl5QhQrgY3ooqX/CZQoBVL3R9R5pQ=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 965EEB011;
-        Fri,  9 Oct 2020 09:53:20 +0000 (UTC)
-Subject: Re: [PATCH v2 07/11] btrfs: rework btrfs_calc_reclaim_metadata_size
+        by mx2.suse.de (Postfix) with ESMTP id CEAD6B281;
+        Fri,  9 Oct 2020 10:39:52 +0000 (UTC)
+Subject: Re: [PATCH v2 00/11] Improve preemptive ENOSPC flushing
 To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
         kernel-team@fb.com
 References: <cover.1602189832.git.josef@toxicpanda.com>
- <2017283776449f9c59db05f301e7929e0a8db0bf.1602189832.git.josef@toxicpanda.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  mQINBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -73,12 +72,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
  RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
  5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <c8026e69-3549-d8c3-fabf-f62fd5b53e01@suse.com>
-Date:   Fri, 9 Oct 2020 12:53:19 +0300
+Message-ID: <09dd58a3-970e-59a9-d9fc-a4c4d1858450@suse.com>
+Date:   Fri, 9 Oct 2020 13:39:50 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <2017283776449f9c59db05f301e7929e0a8db0bf.1602189832.git.josef@toxicpanda.com>
+In-Reply-To: <cover.1602189832.git.josef@toxicpanda.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -89,27 +88,82 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 8.10.20 г. 23:48 ч., Josef Bacik wrote:
-> Currently btrfs_calc_reclaim_metadata_size does two things, it returns
-> the space currently required for flushing by the tickets, and if there
-> are no tickets it calculates a value for the preemptive flushing.
+> There's a lot of individual changes, but most of it revolves around fixing the
+> O_DIRECT regression that Nikolay noted.  With this set of patches we get
+> slightly better performance in the buffered case than before, and the O_DIRECT
+> case is slightly improved from baseline as well.
 > 
-> However for the normal ticketed flushing we really only care about the
-> space required for tickets.  We will accidentally come in and flush one
-> time, but as soon as we see there are no tickets we bail out of our
-> flushing.
+> v1->v2:
+> - Added a FORCE_COMMIT_TRANS flush operation so we can keep the flush_space
+>   stuff consistent and get all the normal tracepoints.
+> - Renamed fs_info->dio_bytes to ->ordered_bytes and changed it to count all
+>   ordered extents that were pending, not just DIO ordered extents that were
+>   pending.
+> - Reworked the clamping to not apply if we're not doing a lot of delalloc
+>   reservations.
+> - Reworked the preempt flushing loop to be more straightforward.
+> - Fixed the need_preemptive_flushing() helper to take into account DIO heavy
+>   workloads.
 > 
-> Fix this by making btrfs_calc_reclaim_metadata_size really only tell us
-> what is required for flushing if we have people waiting on space.  Then
-> move the preemptive flushing logic into need_preemptive_reclaim().  We
-> ignore btrfs_calc_reclaim_metadata_size() in need_preemptive_reclaim()
-> because if we are in this path then we made our reservation and there
-> are not pending tickets currently, so we do not need to check it, simply
-> do the fuzzy logic to check if we're getting low on space.
-> 
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+<snip>
+
+So indeed it seems to result in slightly better results: 
+
+dio-josef-v2:
+  WRITE: bw=48.6MiB/s (50.0MB/s), 48.6MiB/s-48.6MiB/s (50.0MB/s-50.0MB/s), io=8192MiB (8590MB), run=168534-168534msec
+  WRITE: bw=50.4MiB/s (52.8MB/s), 50.4MiB/s-50.4MiB/s (52.8MB/s-52.8MB/s), io=8192MiB (8590MB), run=162601-162601msec
+  WRITE: bw=50.9MiB/s (53.4MB/s), 50.9MiB/s-50.9MiB/s (53.4MB/s-53.4MB/s), io=8192MiB (8590MB), run=160964-160964msec
+  WRITE: bw=50.6MiB/s (53.0MB/s), 50.6MiB/s-50.6MiB/s (53.0MB/s-53.0MB/s), io=8192MiB (8590MB), run=161938-161938msec
+  WRITE: bw=49.8MiB/s (52.2MB/s), 49.8MiB/s-49.8MiB/s (52.2MB/s-52.2MB/s), io=8192MiB (8590MB), run=164577-164577msec
 
 
-This really does code movement and subsequently reworks the newly
-removed code in need_preemptive_reclaim so:
+buffered-josef-v2:
 
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+  WRITE: bw=32.0MiB/s (33.6MB/s), 32.0MiB/s-32.0MiB/s (33.6MB/s-33.6MB/s), io=8192MiB (8590MB), run=255670-255670msec
+  WRITE: bw=29.5MiB/s (30.9MB/s), 29.5MiB/s-29.5MiB/s (30.9MB/s-30.9MB/s), io=8192MiB (8590MB), run=277829-277829msec
+  WRITE: bw=31.8MiB/s (33.4MB/s), 31.8MiB/s-31.8MiB/s (33.4MB/s-33.4MB/s), io=8192MiB (8590MB), run=257554-257554msec
+  WRITE: bw=29.8MiB/s (31.3MB/s), 29.8MiB/s-29.8MiB/s (31.3MB/s-31.3MB/s), io=8192MiB (8590MB), run=274516-274516msec
+  WRITE: bw=29.8MiB/s (31.2MB/s), 29.8MiB/s-29.8MiB/s (31.2MB/s-31.2MB/s), io=8192MiB (8590MB), run=274975-274975msec
+
+In comparison with V1 posting: 
+
+buffered-josef-v1:
+ WRITE: bw=29.1MiB/s (30.5MB/s), 29.1MiB/s-29.1MiB/s (30.5MB/s-30.5MB/s), io=8192MiB (8590MB), run=281678-281678msec
+ WRITE: bw=30.0MiB/s (32.5MB/s), 30.0MiB/s-30.0MiB/s (32.5MB/s-32.5MB/s), io=8192MiB (8590MB), run=264337-264337msec
+ WRITE: bw=29.6MiB/s (31.1MB/s), 29.6MiB/s-29.6MiB/s (31.1MB/s-31.1MB/s), io=8192MiB (8590MB), run=276312-276312msec
+ WRITE: bw=29.8MiB/s (31.2MB/s), 29.8MiB/s-29.8MiB/s (31.2MB/s-31.2MB/s), io=8192MiB (8590MB), run=274916-274916msec
+ WRITE: bw=30.4MiB/s (31.9MB/s), 30.4MiB/s-30.4MiB/s (31.9MB/s-31.9MB/s), io=8192MiB (8590MB), run=269030-269030msec
+
+buffered-misc-next-no-josef:
+  WRITE: bw=20.2MiB/s (21.2MB/s), 20.2MiB/s-20.2MiB/s (21.2MB/s-21.2MB/s), io=8192MiB (8590MB), run=404831-404831msec
+  WRITE: bw=20.8MiB/s (21.8MB/s), 20.8MiB/s-20.8MiB/s (21.8MB/s-21.8MB/s), io=8192MiB (8590MB), run=394749-394749msec
+  WRITE: bw=20.8MiB/s (21.8MB/s), 20.8MiB/s-20.8MiB/s (21.8MB/s-21.8MB/s), io=8192MiB (8590MB), run=393291-393291msec
+  WRITE: bw=20.7MiB/s (21.8MB/s), 20.7MiB/s-20.7MiB/s (21.8MB/s-21.8MB/s), io=8192MiB (8590MB), run=394918-394918msec
+  WRITE: bw=21.1MiB/s (22.1MB/s), 21.1MiB/s-21.1MiB/s (22.1MB/s-22.1MB/s), io=8192MiB (8590MB), run=388499-388499msec
+
+buffered-4.19.x:
+  WRITE: bw=23.3MiB/s (24.4MB/s), 23.3MiB/s-23.3MiB/s (24.4MB/s-24.4MB/s), io=6387MiB (6697MB), run=274460-274460msec
+  WRITE: bw=23.3MiB/s (24.5MB/s), 23.3MiB/s-23.3MiB/s (24.5MB/s-24.5MB/s), io=6643MiB (6966MB), run=284518-284518msec
+  WRITE: bw=23.4MiB/s (24.5MB/s), 23.4MiB/s-23.4MiB/s (24.5MB/s-24.5MB/s), io=6643MiB (6966MB), run=284372-284372msec
+  WRITE: bw=23.6MiB/s (24.7MB/s), 23.6MiB/s-23.6MiB/s (24.7MB/s-24.7MB/s), io=6387MiB (6697MB), run=271200-271200msec
+  WRITE: bw=23.4MiB/s (24.6MB/s), 23.4MiB/s-23.4MiB/s (24.6MB/s-24.6MB/s), io=6387MiB (6697MB), run=272670-272670msec
+
+And dio: 
+
+dio-josef-v1:
+  WRITE: bw=47.1MiB/s (49.4MB/s), 47.1MiB/s-47.1MiB/s (49.4MB/s-49.4MB/s), io=8192MiB (8590MB), run=174049-174049msec
+  WRITE: bw=48.5MiB/s (50.8MB/s), 48.5MiB/s-48.5MiB/s (50.8MB/s-50.8MB/s), io=8192MiB (8590MB), run=169045-169045msec
+  WRITE: bw=45.0MiB/s (48.2MB/s), 45.0MiB/s-45.0MiB/s (48.2MB/s-48.2MB/s), io=8192MiB (8590MB), run=178196-178196msec
+  WRITE: bw=46.1MiB/s (48.3MB/s), 46.1MiB/s-46.1MiB/s (48.3MB/s-48.3MB/s), io=8192MiB (8590MB), run=177861-177861msec
+  WRITE: bw=46.4MiB/s (48.7MB/s), 46.4MiB/s-46.4MiB/s (48.7MB/s-48.7MB/s), io=8192MiB (8590MB), run=176376-176376msec
+
+dio-misc-next-no-josef:
+  WRITE: bw=50.1MiB/s (52.6MB/s), 50.1MiB/s-50.1MiB/s (52.6MB/s-52.6MB/s), io=8192MiB (8590MB), run=163365-163365msec
+  WRITE: bw=50.3MiB/s (52.8MB/s), 50.3MiB/s-50.3MiB/s (52.8MB/s-52.8MB/s), io=8192MiB (8590MB), run=162753-162753msec
+  WRITE: bw=50.6MiB/s (53.1MB/s), 50.6MiB/s-50.6MiB/s (53.1MB/s-53.1MB/s), io=8192MiB (8590MB), run=161766-161766msec
+  WRITE: bw=50.2MiB/s (52.7MB/s), 50.2MiB/s-50.2MiB/s (52.7MB/s-52.7MB/s), io=8192MiB (8590MB), run=163074-163074msec
+  WRITE: bw=50.5MiB/s (52.9MB/s), 50.5MiB/s-50.5MiB/s (52.9MB/s-52.9MB/s), io=8192MiB (8590MB), run=162252-162252msec
+
+With this: 
+
+Tested-by: Nikolay Borisov <nborisov@suse.com>
