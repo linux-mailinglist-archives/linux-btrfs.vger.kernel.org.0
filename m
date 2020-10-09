@@ -2,137 +2,161 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE686288894
-	for <lists+linux-btrfs@lfdr.de>; Fri,  9 Oct 2020 14:22:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C1AD2889C0
+	for <lists+linux-btrfs@lfdr.de>; Fri,  9 Oct 2020 15:28:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732712AbgJIMWt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 9 Oct 2020 08:22:49 -0400
-Received: from mx2.suse.de ([195.135.220.15]:57100 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731118AbgJIMWt (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 9 Oct 2020 08:22:49 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1602246167;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=oU0DTfCt543JSxHbeMWnF95+U+nfaxpxuEnO8+f43wI=;
-        b=IrdUufpvIhFfp09At0qQccHnNsKZO4FwYtK5mj/2DVjWqak1XThGOF+ZTQB2xDR/peoWkh
-        JHyiNQ6ImCKwft60fOvKlZLXWszylwJsagz4DiUky8mArQ5lsuTBXuFU5Iw9lTvonVLAP5
-        uhAuIVcck87igPxryNGv4nuQEsG5CLk=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id AD4A2AD20;
-        Fri,  9 Oct 2020 12:22:47 +0000 (UTC)
-Subject: Re: [PATCH v2 09/11] btrfs: implement space clamping for preemptive
- flushing
-To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com
-References: <cover.1602189832.git.josef@toxicpanda.com>
- <501bfeaa3dc6f4c59dd6062f6108bab974316b85.1602189832.git.josef@toxicpanda.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <f5156e78-08c5-caae-435b-3e182292460b@suse.com>
-Date:   Fri, 9 Oct 2020 15:22:45 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S2388470AbgJIN2d (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 9 Oct 2020 09:28:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43912 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728317AbgJIN2d (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 9 Oct 2020 09:28:33 -0400
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC055C0613D2
+        for <linux-btrfs@vger.kernel.org>; Fri,  9 Oct 2020 06:28:32 -0700 (PDT)
+Received: by mail-qt1-x842.google.com with SMTP id d1so7886389qtr.6
+        for <linux-btrfs@vger.kernel.org>; Fri, 09 Oct 2020 06:28:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OmmUJmZ43vDu0bZ5OVGmC9yaiq+Qsbq43RHjdwm0sBs=;
+        b=HoHeKH4/g2R4ZP0bgx6uboB+f6cozhN0xiPR1tmpPxjlIxbWc/BiG2YLBorwLGAHk3
+         o/0eGw4FYc4RXRyRkgflPXAq/DccLke26xneAQq7a501CAj1FyGsPmwiYsT4s6ppKf4p
+         4IBfIGaXdo0EdlAIYIGRlsYFCJqp960fdtm/lJHlk7y7z4NuJ+l0LNrkhI04u+5SDTb9
+         ZKiZbNu9t7MIsmQ8gey0vlXrImf6ucGyElnwu3SAn4i2+RCpLHLFe+e8DPorKwkhzYQu
+         y/qP3toHdNL+zy25pfIT2GQMjB7141LRCE/p/Fi15qDnguiGjl6LxcqIoDxcUKtzGy6L
+         rMSw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OmmUJmZ43vDu0bZ5OVGmC9yaiq+Qsbq43RHjdwm0sBs=;
+        b=iE68IzRC0tUX/9+kTjnjgeCmVy9I/bald6kSQUnvY2gHLfngerQn/017PHF9Gg1p9P
+         KQc5dVo8ej95kmGKwcW1a0Uxb/lQSpo/k1a6sjhOHUmOcCvXUdFEwVPGxqI2/kAwIDPf
+         UimZYvhRkrNe1ynXMCCByIcdk5qP1ZBb6xqvNUXrXaCIX/ulKs3Jjk3JBe0NSDjGlgmD
+         2GejCPnIZWN68szH5NQPDNs5SHU032JSNw4OXnnz6j78dA0C1sB+kuOZf8TGtK0GPcNA
+         RDR7Wn4x+7LIehNku4WxpYewO9OMSMr4gAg4mLIs72aLAhi7Whf2xuL6q7l+YbrY7j7C
+         EiWA==
+X-Gm-Message-State: AOAM531y9ASjfsTLx7pvNPuh41+dbyi7XG0CbZ2iMGE0eHX1sID4vCcP
+        yivYJDQpx/Es6YusE1dwQ05k5FhWTSbNj3Xq
+X-Google-Smtp-Source: ABdhPJydFB2nj7Y3g0zxY2NXRuco2qI5nNRQdNxgydX8VYHVTL4Kf8W1d/4vkgbV45jCVx/aTpdf6g==
+X-Received: by 2002:ac8:3165:: with SMTP id h34mr13496040qtb.87.1602250111624;
+        Fri, 09 Oct 2020 06:28:31 -0700 (PDT)
+Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id o4sm5967507qkj.22.2020.10.09.06.28.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Oct 2020 06:28:30 -0700 (PDT)
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: [PATCH v3 00/12] Improve preemptive ENOSPC flushing
+Date:   Fri,  9 Oct 2020 09:28:17 -0400
+Message-Id: <cover.1602249928.git.josef@toxicpanda.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <501bfeaa3dc6f4c59dd6062f6108bab974316b85.1602189832.git.josef@toxicpanda.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+v2->v3:
+- Added a cleanup to make sure we pass the right enum around for flush_space().
+- Fixed a problem reported by a clang build where I used the wrong enum in the
+  preemptive flushing for flush_space().
+- Fixed up some nits pointed out by Nikolay.
 
+v1->v2:
+- Added a FORCE_COMMIT_TRANS flush operation so we can keep the flush_space
+  stuff consistent and get all the normal tracepoints.
+- Renamed fs_info->dio_bytes to ->ordered_bytes and changed it to count all
+  ordered extents that were pending, not just DIO ordered extents that were
+  pending.
+- Reworked the clamping to not apply if we're not doing a lot of delalloc
+  reservations.
+- Reworked the preempt flushing loop to be more straightforward.
+- Fixed the need_preemptive_flushing() helper to take into account DIO heavy
+  workloads.
 
-On 8.10.20 г. 23:48 ч., Josef Bacik wrote:
-> Starting preemptive flushing at 50% of available free space is a good
-> start, but some workloads are particularly abusive and can quickly
-> overwhelm the preemptive flushing code and drive us into using tickets.
-> 
-> Handle this by clamping down on our threshold for starting and
-> continuing to run preemptive flushing.  This is particularly important
-> for our overcommit case, as we can really drive the file system into
-> overages and then it's more difficult to pull it back as we start to
-> actually fill up the file system.
-> 
-> The clamping is essentially 2^CLAMP, but we start at 1 so whatever we
-> calculate for overcommit is the baseline.
-> 
+--- Original email ---
 
-<snip>
+A while ago Nikolay started digging into a problem where they were seeing an
+around 20% regression on random writes, and he bisected it down to
 
-> +static inline void maybe_clamp_preempt(struct btrfs_fs_info *fs_info,
-> +				       struct btrfs_space_info *space_info)
-> +{
-> +	u64 ordered, delalloc;
-> +
-> +	ordered = percpu_counter_sum_positive(&fs_info->ordered_bytes);
-> +	delalloc = percpu_counter_sum_positive(&fs_info->delalloc_bytes);
+  btrfs: don't end the transaction for delayed refs in throttle
 
-nit: This can easily be rewritten to :
+However this wasn't actually the cause of the problem.
 
- u64 ordered = percpu_counter_sum_positive(&fs_info->ordered_bytes);
- u64 delalloc =  percpu_counter_sum_positive(&fs_info->delalloc_bytes);
+This patch removed the code that would preemptively end the transactions if we
+were low on space.  Because we had just introduced the ticketing code, this was
+no longer necessary and was causing a lot of transaction commits.
 
-as it doesn't cross the 80 chars boundary, no need for the extra 2 lines :)
+And in Nikolay's testing he validated this, we would see like 100x more
+transaction commits without that patch than with it, but the write regression
+clearly appeared when this patch was applied.
 
-> +
-> +	/*
-> +	 * If we're heavy on ordered operations then clamping won't help us.  We
-> +	 * need to clamp specifically to keep up with dirty'ing buffered
-> +	 * writers, because there's not a 1:1 correlation of writing delalloc
-> +	 * and freeing space, like there is with flushing delayed refs or
-> +	 * delayed nodes.  If we're already more ordered than delalloc then
-> +	 * we're keeping up, otherwise we aren't and should probably clamp.
-> +	 */
-> +	if (ordered < delalloc)
-> +		space_info->clamp = min(space_info->clamp + 1, 8);
-> +}
+The root cause of this is that the transaction commits were essentially
+happening so quickly that we didn't end up needing to wait on space in the
+ENOSPC ticketing code as much, and thus were able to write pretty quickly.  With
+this gone, we now were getting a sawtoothy sort of behavior where we'd run up,
+stop while we flushed metadata space, run some more, stop again etc.
 
-<snip>
+When I implemented the ticketing infrastructure, I was trying to get us out of
+excessively flushing space because we would sometimes over create block groups,
+and thus short circuited flushing if we no longer had tickets.  This had the
+side effect of breaking the preemptive flushing code, where we attempted to
+flush space in the background before we were forced to wait for space.
+
+Enter this patchset.  We still have some of this preemption logic sprinkled
+everywhere, so I've separated it out of the normal ticketed flushing code, and
+made preemptive flushing it's own thing.
+
+The preemptive flushing logic is more specialized than the standard flushing
+logic.  It attempts to flush in whichever pool has the highest usage.  This
+means that if most of our space is tied up in pinned extents, we'll commit the
+transaction.  If most of the space is tied up in delalloc, we'll flush delalloc,
+etc.
+
+To test this out I used the fio job that Nikolay used, this needs to be adjusted
+so the overall IO size is at least 2x the RAM size for the box you are testing
+
+fio --direct=0 --ioengine=sync --thread --directory=/mnt/test --invalidate=1 \
+        --group_reporting=1 --runtime=300 --fallocate=none --ramp_time=10 \
+        --name=RandomWrites-async-64512-4k-4 --new_group --rw=randwrite \
+        --size=2g --numjobs=4 --bs=4k --fsync_on_close=0 --end_fsync=0 \
+        --filename_format=FioWorkloads.\$jobnum
+
+I got the following results
+
+misc-next:Josefbw=13.4MiB/s (14.0MB/s), 13.4MiB/s-13.4MiB/s (14.0MB/s-14.0MB/s), io=4015MiB (4210MB), run=300323-300323msec
+pre-throttling:Josefbw=16.9MiB/s (17.7MB/s), 16.9MiB/s-16.9MiB/s (17.7MB/s-17.7MB/s), io=5068MiB (5314MB), run=300069-300069msec
+my patches:Josefbw=18.0MiB/s (18.9MB/s), 18.0MiB/s-18.0MiB/s (18.9MB/s-18.9MB/s), io=5403MiB (5666MB), run=300001-300001msec
+
+Thanks,
+
+Josef
+
+Josef Bacik (12):
+  btrfs: make flush_space take a enum btrfs_flush_state instead of int
+  btrfs: add a trace point for reserve tickets
+  btrfs: track ordered bytes instead of just dio ordered bytes
+  btrfs: introduce a FORCE_COMMIT_TRANS flush operation
+  btrfs: improve preemptive background space flushing
+  btrfs: rename need_do_async_reclaim
+  btrfs: check reclaim_size in need_preemptive_reclaim
+  btrfs: rework btrfs_calc_reclaim_metadata_size
+  btrfs: simplify the logic in need_preemptive_flushing
+  btrfs: implement space clamping for preemptive flushing
+  btrfs: adjust the flush trace point to include the source
+  btrfs: add a trace class for dumping the current ENOSPC state
+
+ fs/btrfs/ctree.h             |   4 +-
+ fs/btrfs/disk-io.c           |   9 +-
+ fs/btrfs/ordered-data.c      |  13 +-
+ fs/btrfs/space-info.c        | 274 ++++++++++++++++++++++++++++-------
+ fs/btrfs/space-info.h        |   3 +
+ include/trace/events/btrfs.h | 104 ++++++++++++-
+ 6 files changed, 340 insertions(+), 67 deletions(-)
+
+-- 
+2.26.2
 
