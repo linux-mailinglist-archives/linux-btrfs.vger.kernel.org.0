@@ -2,325 +2,267 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 881B628A26E
-	for <lists+linux-btrfs@lfdr.de>; Sun, 11 Oct 2020 00:57:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9323328A368
+	for <lists+linux-btrfs@lfdr.de>; Sun, 11 Oct 2020 01:08:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390415AbgJJW5L (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 10 Oct 2020 18:57:11 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:48206 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731430AbgJJTVw (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 10 Oct 2020 15:21:52 -0400
-Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09ABWB5X081825
-        for <linux-btrfs@vger.kernel.org>; Sat, 10 Oct 2020 07:36:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=in-reply-to : subject :
- from : to : cc : date : mime-version : references :
- content-transfer-encoding : content-type : message-id; s=pp1;
- bh=NiDLo4pOxkTOHNh379y2lMt59tGJeK9BGhibE+AHe30=;
- b=fFl+sWZ60CJNW5vj7Uw0QdIFBZaJLDIK+TmFY7+uXdPQEExbAUVKU05YhKg5dS5u6J9M
- gRTcbWK1ehAiHgiW0QiEErv4vh+5MOV1iJMmz3AgZqVrCWi+Nh1nNGlGLl5qNxYu9TT3
- rsErWvzJTnT/TvD/yGmIkQ5cIJnW2dxyfP5KEerqQF50430xLTdRCdzrzGOBj/IVBjpb
- ZIGntFQpbgC01amsKXwfy1cB65UwCiqnbdgLT6Z6Qd+CSe7yV4n3BXy+qSd8xdiYdQTK
- an7SA2yY6csjDSnstIEkYdPhg6mYvKJGwGGY1NoLkcuzdqKyvDxx/5UGYpv3tzPn6Oq9 ZA== 
-Received: from smtp.notes.na.collabserv.com (smtp.notes.na.collabserv.com [192.155.248.91])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 343bvk8a6w-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-btrfs@vger.kernel.org>; Sat, 10 Oct 2020 07:36:56 -0400
-Received: from localhost
-        by smtp.notes.na.collabserv.com with smtp.notes.na.collabserv.com ESMTP
-        for <linux-btrfs@vger.kernel.org> from <BMT@zurich.ibm.com>;
-        Sat, 10 Oct 2020 11:36:55 -0000
-Received: from us1a3-smtp05.a3.dal06.isc4sb.com (10.146.71.159)
-        by smtp.notes.na.collabserv.com (10.106.227.143) with smtp.notes.na.collabserv.com ESMTP;
-        Sat, 10 Oct 2020 11:36:50 -0000
-Received: from us1a3-mail162.a3.dal06.isc4sb.com ([10.146.71.4])
-          by us1a3-smtp05.a3.dal06.isc4sb.com
-          with ESMTP id 2020101011364991-175970 ;
-          Sat, 10 Oct 2020 11:36:49 +0000 
-In-Reply-To: <20201009195033.3208459-11-ira.weiny@intel.com>
-Subject: Re: [PATCH RFC PKS/PMEM 10/58] drivers/rdma: Utilize new kmap_thread()
-From:   "Bernard Metzler" <BMT@zurich.ibm.com>
-To:     ira.weiny@intel.com
-Cc:     "Andrew Morton" <akpm@linux-foundation.org>,
-        "Thomas Gleixner" <tglx@linutronix.de>,
-        "Ingo Molnar" <mingo@redhat.com>, "Borislav Petkov" <bp@alien8.de>,
-        "Andy Lutomirski" <luto@kernel.org>,
-        "Peter Zijlstra" <peterz@infradead.org>,
-        "Mike Marciniszyn" <mike.marciniszyn@intel.com>,
-        "Dennis Dalessandro" <dennis.dalessandro@intel.com>,
-        "Doug Ledford" <dledford@redhat.com>,
-        "Jason Gunthorpe" <jgg@ziepe.ca>,
-        "Faisal Latif" <faisal.latif@intel.com>,
-        "Shiraz Saleem" <shiraz.saleem@intel.com>, x86@kernel.org,
-        "Dave Hansen" <dave.hansen@linux.intel.com>,
-        "Dan Williams" <dan.j.williams@intel.com>,
-        "Fenghua Yu" <fenghua.yu@intel.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        kvm@vger.kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
-        kexec@lists.infradead.org, linux-bcache@vger.kernel.org,
-        linux-mtd@lists.infradead.org, devel@driverdev.osuosl.org,
-        linux-efi@vger.kernel.org, linux-mmc@vger.kernel.org,
-        linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
-        linux-nfs@vger.kernel.org, ceph-devel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-aio@kvack.org,
-        io-uring@vger.kernel.org, linux-erofs@lists.ozlabs.org,
-        linux-um@lists.infradead.org, linux-ntfs-dev@lists.sourceforge.net,
-        reiserfs-devel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-nilfs@vger.kernel.org, cluster-devel@redhat.com,
-        ecryptfs@vger.kernel.org, linux-cifs@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-afs@lists.infradead.org,
-        linux-rdma@vger.kernel.org, amd-gfx@lists.freed.esktop.org,
-        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        drbd-dev@tron.linbit.com, linux-block@vger.kernel.org,
-        xen-devel@lists.xenproject.org, linux-cachefs@redhat.com,
-        samba-technical@lists.samba.org, intel-wired-lan@lists.osuosl.org
-Date:   Sat, 10 Oct 2020 11:36:49 +0000
+        id S2390433AbgJJW5M (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 10 Oct 2020 18:57:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57038 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732260AbgJJTyP (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Sat, 10 Oct 2020 15:54:15 -0400
+Received: from debian8.Home (bl8-197-74.dsl.telepac.pt [85.241.197.74])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0FF722224A;
+        Sat, 10 Oct 2020 12:57:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602334658;
+        bh=MaLISDCB2RSLpt/pf91quIbg1sZCW3stizpbbmihe2g=;
+        h=From:To:Cc:Subject:Date:From;
+        b=1q8otWNEdDAZWT/7SfQE8Zrg+m4RHbDDigwyUuZeVMhweIi3JR8RuOT48d50i7JN/
+         CFO02sFE44QXwmPBBl+GXiFq13Ju6AH+vxzK5uavz1juucHXW2YlNYTM2xCVR+ue65
+         sqFtlcXWrEYcBr9SdHNMHKErB+2BZmrG50VKI6NM=
+From:   fdmanana@kernel.org
+To:     fstests@vger.kernel.org
+Cc:     linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
+Subject: [PATCH] fstests: add a filter for the new getcap output
+Date:   Sat, 10 Oct 2020 13:57:31 +0100
+Message-Id: <f2980ed83a5268a96b3ff9da15c58477ff24d7a4.1602334589.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Sensitivity: 
-Importance: Normal
-X-Priority: 3 (Normal)
-References: <20201009195033.3208459-11-ira.weiny@intel.com>,<20201009195033.3208459-1-ira.weiny@intel.com>
-X-Mailer: IBM iNotes ($HaikuForm 1054.1) | IBM Domino Build
- SCN1812108_20180501T0841_FP65 April 15, 2020 at 09:48
-X-LLNOutbound: False
-X-Disclaimed: 59823
-X-TNEFEvaluated: 1
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-x-cbid: 20101011-2475-0000-0000-0000044A0339
-X-IBM-SpamModules-Scores: BY=0.233045; FL=0; FP=0; FZ=0; HX=0; KW=0; PH=0;
- SC=0.421684; ST=0; TS=0; UL=0; ISC=; MB=0.000000
-X-IBM-SpamModules-Versions: BY=3.00013982; HX=3.00000242; KW=3.00000007;
- PH=3.00000004; SC=3.00000295; SDB=6.01447073; UDB=6.00777937; IPR=6.01229775;
- MB=3.00034472; MTD=3.00000008; XFM=3.00000015; UTC=2020-10-10 11:36:54
-X-IBM-AV-DETECTION: SAVI=unsuspicious REMOTE=unsuspicious XFE=unused
-X-IBM-AV-VERSION: SAVI=2020-10-10 06:57:40 - 6.00011937
-x-cbparentid: 20101011-2476-0000-0000-0000DAA5035B
-Message-Id: <OF849D92D8.F4735ECA-ON002585FD.003F5F27-002585FD.003FCBD6@notes.na.collabserv.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-10-10_07:2020-10-09,2020-10-10 signatures=0
-X-Proofpoint-Spam-Reason: orgsafe
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
------ira.weiny@intel.com wrote: -----
+From: Filipe Manana <fdmanana@suse.com>
 
->To: "Andrew Morton" <akpm@linux-foundation.org>, "Thomas Gleixner"
-><tglx@linutronix.de>, "Ingo Molnar" <mingo@redhat.com>, "Borislav
->Petkov" <bp@alien8.de>, "Andy Lutomirski" <luto@kernel.org>, "Peter
->Zijlstra" <peterz@infradead.org>
->From: ira.weiny@intel.com
->Date: 10/09/2020 09:52PM
->Cc: "Ira Weiny" <ira.weiny@intel.com>, "Mike Marciniszyn"
-><mike.marciniszyn@intel.com>, "Dennis Dalessandro"
-><dennis.dalessandro@intel.com>, "Doug Ledford" <dledford@redhat.com>,
->"Jason Gunthorpe" <jgg@ziepe.ca>, "Faisal Latif"
-><faisal.latif@intel.com>, "Shiraz Saleem" <shiraz.saleem@intel.com>,
->"Bernard Metzler" <bmt@zurich.ibm.com>, x86@kernel.org, "Dave Hansen"
-><dave.hansen@linux.intel.com>, "Dan Williams"
-><dan.j.williams@intel.com>, "Fenghua Yu" <fenghua.yu@intel.com>,
->linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
->linux-nvdimm@lists.01.org, linux-fsdevel@vger.kernel.org,
->linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
->linuxppc-dev@lists.ozlabs.org, kvm@vger.kernel.org,
->netdev@vger.kernel.org, bpf@vger.kernel.org,
->kexec@lists.infradead.org, linux-bcache@vger.kernel.org,
->linux-mtd@lists.infradead.org, devel@driverdev.osuosl.org,
->linux-efi@vger.kernel.org, linux-mmc@vger.kernel.org,
->linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
->linux-nfs@vger.kernel.org, ceph-devel@vger.kernel.org,
->linux-ext4@vger.kernel.org, linux-aio@kvack.org,
->io-uring@vger.kernel.org, linux-erofs@lists.ozlabs.org,
->linux-um@lists.infradead.org, linux-ntfs-dev@lists.sourceforge.net,
->reiserfs-devel@vger.kernel.org,
->linux-f2fs-devel@lists.sourceforge.net, linux-nilfs@vger.kernel.org,
->cluster-devel@redhat.com, ecryptfs@vger.kernel.org,
->linux-cifs@vger.kernel.org, linux-btrfs@vger.kernel.org,
->linux-afs@lists.infradead.org, linux-rdma@vger.kernel.org,
->amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
->intel-gfx@lists.freedesktop.org, drbd-dev@tron.linbit.com,
->linux-block@vger.kernel.org, xen-devel@lists.xenproject.org,
->linux-cachefs@redhat.com, samba-technical@lists.samba.org,
->intel-wired-lan@lists.osuosl.org
->Subject: [EXTERNAL] [PATCH RFC PKS/PMEM 10/58] drivers/rdma: Utilize
->new kmap=5Fthread()
->
->From: Ira Weiny <ira.weiny@intel.com>
->
->The kmap() calls in these drivers are localized to a single thread.
->To
->avoid the over head of global PKRS updates use the new kmap=5Fthread()
->call.
->
->Cc: Mike Marciniszyn <mike.marciniszyn@intel.com>
->Cc: Dennis Dalessandro <dennis.dalessandro@intel.com>
->Cc: Doug Ledford <dledford@redhat.com>
->Cc: Jason Gunthorpe <jgg@ziepe.ca>
->Cc: Faisal Latif <faisal.latif@intel.com>
->Cc: Shiraz Saleem <shiraz.saleem@intel.com>
->Cc: Bernard Metzler <bmt@zurich.ibm.com>
->Signed-off-by: Ira Weiny <ira.weiny@intel.com>
->---
-> drivers/infiniband/hw/hfi1/sdma.c      |  4 ++--
-> drivers/infiniband/hw/i40iw/i40iw=5Fcm.c | 10 +++++-----
-> drivers/infiniband/sw/siw/siw=5Fqp=5Ftx.c  | 14 +++++++-------
-> 3 files changed, 14 insertions(+), 14 deletions(-)
->
->diff --git a/drivers/infiniband/hw/hfi1/sdma.c
->b/drivers/infiniband/hw/hfi1/sdma.c
->index 04575c9afd61..09d206e3229a 100644
->--- a/drivers/infiniband/hw/hfi1/sdma.c
->+++ b/drivers/infiniband/hw/hfi1/sdma.c
->@@ -3130,7 +3130,7 @@ int ext=5Fcoal=5Fsdma=5Ftx=5Fdescs(struct hfi1=5Fdev=
-data
->*dd, struct sdma=5Ftxreq *tx,
-> 		}
->=20
-> 		if (type =3D=3D SDMA=5FMAP=5FPAGE) {
->-			kvaddr =3D kmap(page);
->+			kvaddr =3D kmap=5Fthread(page);
-> 			kvaddr +=3D offset;
-> 		} else if (WARN=5FON(!kvaddr)) {
-> 			=5F=5Fsdma=5Ftxclean(dd, tx);
->@@ -3140,7 +3140,7 @@ int ext=5Fcoal=5Fsdma=5Ftx=5Fdescs(struct hfi1=5Fdev=
-data
->*dd, struct sdma=5Ftxreq *tx,
-> 		memcpy(tx->coalesce=5Fbuf + tx->coalesce=5Fidx, kvaddr, len);
-> 		tx->coalesce=5Fidx +=3D len;
-> 		if (type =3D=3D SDMA=5FMAP=5FPAGE)
->-			kunmap(page);
->+			kunmap=5Fthread(page);
->=20
-> 		/* If there is more data, return */
-> 		if (tx->tlen - tx->coalesce=5Fidx)
->diff --git a/drivers/infiniband/hw/i40iw/i40iw=5Fcm.c
->b/drivers/infiniband/hw/i40iw/i40iw=5Fcm.c
->index a3b95805c154..122d7a5642a1 100644
->--- a/drivers/infiniband/hw/i40iw/i40iw=5Fcm.c
->+++ b/drivers/infiniband/hw/i40iw/i40iw=5Fcm.c
->@@ -3721,7 +3721,7 @@ int i40iw=5Faccept(struct iw=5Fcm=5Fid *cm=5Fid, str=
-uct
->iw=5Fcm=5Fconn=5Fparam *conn=5Fparam)
-> 		ibmr->device =3D iwpd->ibpd.device;
-> 		iwqp->lsmm=5Fmr =3D ibmr;
-> 		if (iwqp->page)
->-			iwqp->sc=5Fqp.qp=5Fuk.sq=5Fbase =3D kmap(iwqp->page);
->+			iwqp->sc=5Fqp.qp=5Fuk.sq=5Fbase =3D kmap=5Fthread(iwqp->page);
-> 		dev->iw=5Fpriv=5Fqp=5Fops->qp=5Fsend=5Flsmm(&iwqp->sc=5Fqp,
-> 							iwqp->ietf=5Fmem.va,
-> 							(accept.size + conn=5Fparam->private=5Fdata=5Flen),
->@@ -3729,12 +3729,12 @@ int i40iw=5Faccept(struct iw=5Fcm=5Fid *cm=5Fid,
->struct iw=5Fcm=5Fconn=5Fparam *conn=5Fparam)
->=20
-> 	} else {
-> 		if (iwqp->page)
->-			iwqp->sc=5Fqp.qp=5Fuk.sq=5Fbase =3D kmap(iwqp->page);
->+			iwqp->sc=5Fqp.qp=5Fuk.sq=5Fbase =3D kmap=5Fthread(iwqp->page);
-> 		dev->iw=5Fpriv=5Fqp=5Fops->qp=5Fsend=5Flsmm(&iwqp->sc=5Fqp, NULL, 0, 0);
-> 	}
->=20
-> 	if (iwqp->page)
->-		kunmap(iwqp->page);
->+		kunmap=5Fthread(iwqp->page);
->=20
-> 	iwqp->cm=5Fid =3D cm=5Fid;
-> 	cm=5Fnode->cm=5Fid =3D cm=5Fid;
->@@ -4102,10 +4102,10 @@ static void i40iw=5Fcm=5Fevent=5Fconnected(struct
->i40iw=5Fcm=5Fevent *event)
-> 	i40iw=5Fcm=5Finit=5Ftsa=5Fconn(iwqp, cm=5Fnode);
-> 	read0 =3D (cm=5Fnode->send=5Frdma0=5Fop =3D=3D SEND=5FRDMA=5FREAD=5FZERO=
-);
-> 	if (iwqp->page)
->-		iwqp->sc=5Fqp.qp=5Fuk.sq=5Fbase =3D kmap(iwqp->page);
->+		iwqp->sc=5Fqp.qp=5Fuk.sq=5Fbase =3D kmap=5Fthread(iwqp->page);
-> 	dev->iw=5Fpriv=5Fqp=5Fops->qp=5Fsend=5Frtt(&iwqp->sc=5Fqp, read0);
-> 	if (iwqp->page)
->-		kunmap(iwqp->page);
->+		kunmap=5Fthread(iwqp->page);
->=20
-> 	memset(&attr, 0, sizeof(attr));
-> 	attr.qp=5Fstate =3D IB=5FQPS=5FRTS;
->diff --git a/drivers/infiniband/sw/siw/siw=5Fqp=5Ftx.c
->b/drivers/infiniband/sw/siw/siw=5Fqp=5Ftx.c
->index d19d8325588b..4ed37c328d02 100644
->--- a/drivers/infiniband/sw/siw/siw=5Fqp=5Ftx.c
->+++ b/drivers/infiniband/sw/siw/siw=5Fqp=5Ftx.c
->@@ -76,7 +76,7 @@ static int siw=5Ftry=5F1seg(struct siw=5Fiwarp=5Ftx *c=
-=5Ftx,
->void *paddr)
-> 			if (unlikely(!p))
-> 				return -EFAULT;
->=20
->-			buffer =3D kmap(p);
->+			buffer =3D kmap=5Fthread(p);
->=20
-> 			if (likely(PAGE=5FSIZE - off >=3D bytes)) {
-> 				memcpy(paddr, buffer + off, bytes);
->@@ -84,7 +84,7 @@ static int siw=5Ftry=5F1seg(struct siw=5Fiwarp=5Ftx *c=
-=5Ftx,
->void *paddr)
-> 				unsigned long part =3D bytes - (PAGE=5FSIZE - off);
->=20
-> 				memcpy(paddr, buffer + off, part);
->-				kunmap(p);
->+				kunmap=5Fthread(p);
->=20
-> 				if (!mem->is=5Fpbl)
-> 					p =3D siw=5Fget=5Fupage(mem->umem,
->@@ -96,10 +96,10 @@ static int siw=5Ftry=5F1seg(struct siw=5Fiwarp=5Ftx
->*c=5Ftx, void *paddr)
-> 				if (unlikely(!p))
-> 					return -EFAULT;
->=20
->-				buffer =3D kmap(p);
->+				buffer =3D kmap=5Fthread(p);
-> 				memcpy(paddr + part, buffer, bytes - part);
-> 			}
->-			kunmap(p);
->+			kunmap=5Fthread(p);
-> 		}
-> 	}
-> 	return (int)bytes;
->@@ -505,7 +505,7 @@ static int siw=5Ftx=5Fhdt(struct siw=5Fiwarp=5Ftx *c=
-=5Ftx,
->struct socket *s)
-> 				page=5Farray[seg] =3D p;
->=20
-> 				if (!c=5Ftx->use=5Fsendpage) {
->-					iov[seg].iov=5Fbase =3D kmap(p) + fp=5Foff;
->+					iov[seg].iov=5Fbase =3D kmap=5Fthread(p) + fp=5Foff;
+Starting with version 2.41 of libcap, the output of the getcap program
+changed and therefore some existing tests fail when the installed version
+of libcap is >= 2.41 (the latest version available at the moment is 2.44).
 
-This misses a corresponding kunmap=5Fthread() in siw=5Funmap=5Fpages()
-(pls change line 403 in siw=5Fqp=5Ftx.c as well)
+The change was made by the following commit of libcap:
 
-Thanks,
-Bernard.
+  commit 177cd418031b1acfcf73fe3b1af9f3279828681c
+  Author: Andrew G. Morgan <morgan@kernel.org>
+  Date:   Tue Jul 21 22:58:05 2020 -0700
 
-> 					iov[seg].iov=5Flen =3D plen;
->=20
-> 					/* Remember for later kunmap() */
->@@ -518,9 +518,9 @@ static int siw=5Ftx=5Fhdt(struct siw=5Fiwarp=5Ftx *c=
-=5Ftx,
->struct socket *s)
-> 							plen);
-> 				} else if (do=5Fcrc) {
-> 					crypto=5Fshash=5Fupdate(c=5Ftx->mpa=5Fcrc=5Fhd,
->-							    kmap(p) + fp=5Foff,
->+							    kmap=5Fthread(p) + fp=5Foff,
-> 							    plen);
->-					kunmap(p);
->+					kunmap=5Fthread(p);
-> 				}
-> 			} else {
-> 				u64 va =3D sge->laddr + sge=5Foff;
->--=20
->2.28.0.rc0.12.gb6a658bd00c9
->
->
+      A more compact form for the text representation of capabilities.
+
+      While this does not change anything about the supported range of
+      equivalent text specifications for capabilities, as accepted by
+      cap_from_text(), this does alter the preferred output format of
+      cap_to_text() to be two characters shorter in most cases. That is,
+      what used to be summarized as:
+
+         "= cap_foo+..."
+
+      is now converted to the equivalent text:
+
+         "cap_foo=..."
+
+      which is also more intuitive.
+
+So add a filter to change the old format to the new one and adapt existing
+tests to use it and expect the new format in the golden output.
+
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+---
+ common/filter         | 28 ++++++++++++++++++++++++++++
+ tests/btrfs/214       | 14 +++++++-------
+ tests/generic/093     |  2 +-
+ tests/generic/093.out |  2 +-
+ tests/overlay/064     |  4 ++--
+ tests/overlay/064.out |  4 ++--
+ tests/xfs/296         |  2 +-
+ tests/xfs/296.out     |  4 ++--
+ 8 files changed, 44 insertions(+), 16 deletions(-)
+
+diff --git a/common/filter b/common/filter
+index 2477f386..64844c98 100644
+--- a/common/filter
++++ b/common/filter
+@@ -603,5 +603,33 @@ _filter_assert_dmesg()
+ 	    -e "s#$warn2#Intentional warnings in assfail#"
+ }
+ 
++# With version 2.41 of libcap, the output format of getcap changed.
++# More specifically such change was added by the following commit:
++#
++# commit 177cd418031b1acfcf73fe3b1af9f3279828681c
++# Author: Andrew G. Morgan <morgan@kernel.org>
++# Date:   Tue Jul 21 22:58:05 2020 -0700
++#
++#     A more compact form for the text representation of capabilities.
++#
++#     While this does not change anything about the supported range of
++#     equivalent text specifications for capabilities, as accepted by
++#     cap_from_text(), this does alter the preferred output format of
++#     cap_to_text() to be two characters shorter in most cases. That is,
++#     what used to be summarized as:
++#
++#        "= cap_foo+..."
++#
++#     is now converted to the equivalent text:
++#
++#        "cap_foo=..."
++#
++#     which is also more intuitive.
++#
++_filter_getcap()
++{
++        sed -e "s/ = / /" -e "s/\+/=/"
++}
++
+ # make sure this script returns success
+ /bin/true
+diff --git a/tests/btrfs/214 b/tests/btrfs/214
+index 35c4656c..6d08b991 100755
+--- a/tests/btrfs/214
++++ b/tests/btrfs/214
+@@ -43,7 +43,7 @@ check_capabilities()
+ 	local ret
+ 	file="$1"
+ 	cap="$2"
+-	ret=$($GETCAP_PROG "$file")
++	ret=$($GETCAP_PROG "$file" | _filter_getcap)
+ 	if [ -z "$ret" ]; then
+ 		echo "$ret"
+ 		echo "missing capability in file $file"
+@@ -84,7 +84,7 @@ full_nocap_inc_withcap_send()
+ 	$BTRFS_UTIL_PROG subvolume snapshot -r "$FS1" "$FS1/snap_inc" >/dev/null
+ 	$BTRFS_UTIL_PROG send -p "$FS1/snap_init" "$FS1/snap_inc" -q | \
+ 					$BTRFS_UTIL_PROG receive "$FS2" -q
+-	check_capabilities "$FS2/snap_inc/foo.bar" "cap_sys_ptrace,cap_sys_nice+ep"
++	check_capabilities "$FS2/snap_inc/foo.bar" "cap_sys_ptrace,cap_sys_nice=ep"
+ 
+ 	_scratch_unmount
+ }
+@@ -107,25 +107,25 @@ roundtrip_send()
+ 	$SETCAP_PROG "cap_sys_ptrace+ep cap_sys_nice+ep" "$FS1/foo.bar"
+ 	$BTRFS_UTIL_PROG subvolume snapshot -r "$FS1" "$FS1/snap_init" >/dev/null
+ 	$BTRFS_UTIL_PROG send "$FS1/snap_init" -q | $BTRFS_UTIL_PROG receive "$FS2" -q
+-	check_capabilities "$FS2/snap_init/foo.bar" "cap_sys_ptrace,cap_sys_nice+ep"
++	check_capabilities "$FS2/snap_init/foo.bar" "cap_sys_ptrace,cap_sys_nice=ep"
+ 
+ 	# Test incremental send with different owner/group but same capabilities
+ 	chgrp 100 "$FS1/foo.bar"
+ 	$SETCAP_PROG "cap_sys_ptrace+ep cap_sys_nice+ep" "$FS1/foo.bar"
+ 	$BTRFS_UTIL_PROG subvolume snapshot -r "$FS1" "$FS1/snap_inc" >/dev/null
+-	check_capabilities "$FS1/snap_inc/foo.bar" "cap_sys_ptrace,cap_sys_nice+ep"
++	check_capabilities "$FS1/snap_inc/foo.bar" "cap_sys_ptrace,cap_sys_nice=ep"
+ 	$BTRFS_UTIL_PROG send -p "$FS1/snap_init" "$FS1/snap_inc" -q | \
+ 				$BTRFS_UTIL_PROG receive "$FS2" -q
+-	check_capabilities "$FS2/snap_inc/foo.bar" "cap_sys_ptrace,cap_sys_nice+ep"
++	check_capabilities "$FS2/snap_inc/foo.bar" "cap_sys_ptrace,cap_sys_nice=ep"
+ 
+ 	# Test capabilities after incremental send with different group and capabilities
+ 	chgrp 0 "$FS1/foo.bar"
+ 	$SETCAP_PROG "cap_sys_time+ep cap_syslog+ep" "$FS1/foo.bar"
+ 	$BTRFS_UTIL_PROG subvolume snapshot -r "$FS1" "$FS1/snap_inc2" >/dev/null
+-	check_capabilities "$FS1/snap_inc2/foo.bar" "cap_sys_time,cap_syslog+ep"
++	check_capabilities "$FS1/snap_inc2/foo.bar" "cap_sys_time,cap_syslog=ep"
+ 	$BTRFS_UTIL_PROG send -p "$FS1/snap_inc" "$FS1/snap_inc2" -q | \
+ 				$BTRFS_UTIL_PROG receive "$FS2"  -q
+-	check_capabilities "$FS2/snap_inc2/foo.bar" "cap_sys_time,cap_syslog+ep"
++	check_capabilities "$FS2/snap_inc2/foo.bar" "cap_sys_time,cap_syslog=ep"
+ 
+ 	_scratch_unmount
+ }
+diff --git a/tests/generic/093 b/tests/generic/093
+index 0f835e7e..ed5f6f50 100755
+--- a/tests/generic/093
++++ b/tests/generic/093
+@@ -51,7 +51,7 @@ touch $file
+ 
+ echo "**** Verifying that appending to file clears capabilities ****"
+ $SETCAP_PROG cap_chown+ep $file
+-$GETCAP_PROG $file | filefilter
++$GETCAP_PROG $file | filefilter | _filter_getcap
+ echo data1 >> $file
+ cat $file
+ $GETCAP_PROG $file | filefilter
+diff --git a/tests/generic/093.out b/tests/generic/093.out
+index cb29153e..fe6dfe5c 100644
+--- a/tests/generic/093.out
++++ b/tests/generic/093.out
+@@ -1,7 +1,7 @@
+ QA output created by 093
+ 
+ **** Verifying that appending to file clears capabilities ****
+-file = cap_chown+ep
++file cap_chown=ep
+ data1
+ 
+ **** Verifying that appending to file doesn't clear other xattrs ****
+diff --git a/tests/overlay/064 b/tests/overlay/064
+index f5d5df1b..7ec3e420 100755
+--- a/tests/overlay/064
++++ b/tests/overlay/064
+@@ -55,7 +55,7 @@ _scratch_mount "-o metacopy=on"
+ $XFS_IO_PROG -c "stat" ${SCRATCH_MNT}/file1 >>$seqres.full
+ 
+ # Make sure cap_setuid is still there
+-$GETCAP_PROG ${SCRATCH_MNT}/file1 | _filter_scratch
++$GETCAP_PROG ${SCRATCH_MNT}/file1 | _filter_scratch | _filter_getcap
+ 
+ # Trigger metadata only copy-up
+ chmod 000 ${SCRATCH_MNT}/file2
+@@ -64,7 +64,7 @@ chmod 000 ${SCRATCH_MNT}/file2
+ $XFS_IO_PROG -c "stat" ${SCRATCH_MNT}/file2 >>$seqres.full
+ 
+ # Make sure cap_setuid is still there
+-$GETCAP_PROG ${SCRATCH_MNT}/file2 | _filter_scratch
++$GETCAP_PROG ${SCRATCH_MNT}/file2 | _filter_scratch | _filter_getcap
+ 
+ # success, all done
+ status=0
+diff --git a/tests/overlay/064.out b/tests/overlay/064.out
+index cdd3064d..07f89fbd 100644
+--- a/tests/overlay/064.out
++++ b/tests/overlay/064.out
+@@ -1,3 +1,3 @@
+ QA output created by 064
+-SCRATCH_MNT/file1 = cap_setuid+ep
+-SCRATCH_MNT/file2 = cap_setuid+ep
++SCRATCH_MNT/file1 cap_setuid=ep
++SCRATCH_MNT/file2 cap_setuid=ep
+diff --git a/tests/xfs/296 b/tests/xfs/296
+index 915ffa0c..f67b8386 100755
+--- a/tests/xfs/296
++++ b/tests/xfs/296
+@@ -49,7 +49,7 @@ $SETCAP_PROG cap_setgid,cap_setuid+ep $dump_dir/testfile
+ echo "Checking for xattr on source file"
+ getfattr --absolute-names -m user.name $dump_dir/testfile | _dir_filter
+ echo "Checking for capability on source file"
+-$GETCAP_PROG $dump_dir/testfile | _dir_filter
++$GETCAP_PROG $dump_dir/testfile | _dir_filter | _filter_getcap
+ getfattr --absolute-names -m security.capability $dump_dir/testfile | _dir_filter
+ 
+ _do_dump_file -f $tmp.df.0
+diff --git a/tests/xfs/296.out b/tests/xfs/296.out
+index c279465c..f5cc624e 100644
+--- a/tests/xfs/296.out
++++ b/tests/xfs/296.out
+@@ -4,7 +4,7 @@ Checking for xattr on source file
+ user.name
+ 
+ Checking for capability on source file
+-DUMP_DIR/testfile = cap_setgid,cap_setuid+ep
++DUMP_DIR/testfile cap_setgid,cap_setuid=ep
+ # file: DUMP_DIR/testfile
+ security.capability
+ 
+@@ -50,7 +50,7 @@ Checking for xattr on restored file
+ user.name
+ 
+ Checking for capability on restored file
+-RESTORE_DIR/DUMP_SUBDIR/testfile = cap_setgid,cap_setuid+ep
++RESTORE_DIR/DUMP_SUBDIR/testfile cap_setgid,cap_setuid=ep
+ # file: RESTORE_DIR/DUMP_SUBDIR/testfile
+ security.capability
+ 
+-- 
+2.28.0
 
