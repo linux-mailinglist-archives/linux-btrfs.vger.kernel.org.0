@@ -2,497 +2,179 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05D73289B90
-	for <lists+linux-btrfs@lfdr.de>; Sat, 10 Oct 2020 00:06:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97298289CD2
+	for <lists+linux-btrfs@lfdr.de>; Sat, 10 Oct 2020 02:55:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390667AbgJIWET (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 9 Oct 2020 18:04:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39478 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390223AbgJIWEL (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 9 Oct 2020 18:04:11 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1231EC0613D2
-        for <linux-btrfs@vger.kernel.org>; Fri,  9 Oct 2020 15:04:09 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id f21so11200517wml.3
-        for <linux-btrfs@vger.kernel.org>; Fri, 09 Oct 2020 15:04:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=6AdF7ImouyBo1v+UVVHbR2jrgxlTgfY49UnpKuJl2vo=;
-        b=MAvLr2XnoBdtbc8e8cEo1YppoaD8vfmQyJEZKkS/CF5FMGYOCD9W7O0IZtWYq8ODgA
-         hPrQ1FmqoKh8rvOQoL3cQ1KrqxgRTT0OnIwFAo1dmcJzppCqnka5FyN347HmibM8jSEz
-         e9ww2l67YncgPsbvE8VuHqhkcOIRrbdxVqCNU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=6AdF7ImouyBo1v+UVVHbR2jrgxlTgfY49UnpKuJl2vo=;
-        b=gg8z+pBcvSLLksHJGhEn5OX3HetYppj/AAIfWVBmrzYq/rKc5Shc+dAzhq99t8fL91
-         45Iyk/8KTiEOqyIIW5fGliWpqeqlpvniow7oNUaXMdFUsjuo34odSijdjtaoMZLYuktF
-         e6RgjtgIqyN9poRLxLSttnDfpJwpQtrT8qFTRMkwMENs9TBwANcAO7wejQ4rltXrCuVv
-         tkRCqkackF6+IQcqVeo2sSJjg8DmUEzAne9C6PCXickR4RSHbubKUsjZ9k8bW46JSHWm
-         lM8S0mWLj/Ede8ra32666p0QdIDYlL3jFERGn0tKzM51Og+t0/XH5u8a2RrYrR8hfOSA
-         P5aw==
-X-Gm-Message-State: AOAM533G2wy/QpilqNY0jGRtVQrGfCIW4jiLDKseBoNXDKW86cpmnf1+
-        BsMagu9sfSQ4H8PjIYyUHCeZKu1H6FLtC0YC
-X-Google-Smtp-Source: ABdhPJzLUGH0qXD9MRJ9uaTqaSHXSKqVIytWPhW+Fv8l3CnjdOFUZRdjqAS25NTJ59jhdr8rs7Tm+A==
-X-Received: by 2002:a1c:a9d1:: with SMTP id s200mr4476wme.107.1602281034146;
-        Fri, 09 Oct 2020 15:03:54 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id c18sm14231894wrq.5.2020.10.09.15.03.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Oct 2020 15:03:52 -0700 (PDT)
-Date:   Sat, 10 Oct 2020 00:03:49 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     ira.weiny@intel.com
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Patrik Jakobsson <patrik.r.jakobsson@gmail.com>,
-        x86@kernel.org, Dave Hansen <dave.hansen@linux.intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        kvm@vger.kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
-        kexec@lists.infradead.org, linux-bcache@vger.kernel.org,
-        linux-mtd@lists.infradead.org, devel@driverdev.osuosl.org,
-        linux-efi@vger.kernel.org, linux-mmc@vger.kernel.org,
-        linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
-        linux-nfs@vger.kernel.org, ceph-devel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-aio@kvack.org,
-        io-uring@vger.kernel.org, linux-erofs@lists.ozlabs.org,
-        linux-um@lists.infradead.org, linux-ntfs-dev@lists.sourceforge.net,
-        reiserfs-devel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-nilfs@vger.kernel.org, cluster-devel@redhat.com,
-        ecryptfs@vger.kernel.org, linux-cifs@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-afs@lists.infradead.org,
-        linux-rdma@vger.kernel.org, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        drbd-dev@lists.linbit.com, linux-block@vger.kernel.org,
-        xen-devel@lists.xenproject.org, linux-cachefs@redhat.com,
-        samba-technical@lists.samba.org, intel-wired-lan@lists.osuosl.org
-Subject: Re: [PATCH RFC PKS/PMEM 09/58] drivers/gpu: Utilize new kmap_thread()
-Message-ID: <20201009220349.GQ438822@phenom.ffwll.local>
-Mail-Followup-To: ira.weiny@intel.com,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        David Airlie <airlied@linux.ie>,
-        Patrik Jakobsson <patrik.r.jakobsson@gmail.com>, x86@kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        kvm@vger.kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
-        kexec@lists.infradead.org, linux-bcache@vger.kernel.org,
-        linux-mtd@lists.infradead.org, devel@driverdev.osuosl.org,
-        linux-efi@vger.kernel.org, linux-mmc@vger.kernel.org,
-        linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
-        linux-nfs@vger.kernel.org, ceph-devel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-aio@kvack.org,
-        io-uring@vger.kernel.org, linux-erofs@lists.ozlabs.org,
-        linux-um@lists.infradead.org, linux-ntfs-dev@lists.sourceforge.net,
-        reiserfs-devel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, linux-nilfs@vger.kernel.org,
-        cluster-devel@redhat.com, ecryptfs@vger.kernel.org,
-        linux-cifs@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        linux-afs@lists.infradead.org, linux-rdma@vger.kernel.org,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        intel-gfx@lists.freedesktop.org, drbd-dev@lists.linbit.com,
-        linux-block@vger.kernel.org, xen-devel@lists.xenproject.org,
-        linux-cachefs@redhat.com, samba-technical@lists.samba.org,
-        intel-wired-lan@lists.osuosl.org
-References: <20201009195033.3208459-1-ira.weiny@intel.com>
- <20201009195033.3208459-10-ira.weiny@intel.com>
+        id S1729257AbgJJAyn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 9 Oct 2020 20:54:43 -0400
+Received: from mout.gmx.net ([212.227.17.22]:60391 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729082AbgJJAfs (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 9 Oct 2020 20:35:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1602290092;
+        bh=ey+L/r99umsX7aY3OXaPct1ijObG1XE1Ur3EKyFIts8=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=io7zy2vjPUIE7qQ3RqDIOj2k0znUnGFRVYBEvgDBFlpiKMeKEY57HNuWP+XmgAV8B
+         u568+brzhN7QENU2Nv2HQEYrRVieqwCzL4MgfQs59xLVoY+8E0Ym/UecWCwor2afk4
+         b+1/nizrTu/ZFFhZjZ5VztE+aSR9M5gtwoU06sis=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1M89Gt-1kVjoW17rf-005FWe; Sat, 10
+ Oct 2020 02:34:51 +0200
+Subject: Re: [PATCH v3 3/8] btrfs: add a supported_rescue_options file to
+ sysfs
+To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com
+References: <cover.1602273837.git.josef@toxicpanda.com>
+ <8ac207c64e2917d7980570e6c9f696e234baf070.1602273837.git.josef@toxicpanda.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
+ mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
+ PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
+ 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
+ D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
+ efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
+ ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
+ BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
+ 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
+ 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
+ EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
+ 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
+ ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
+ oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
+ fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
+ 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
+ ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
+ oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
+Message-ID: <4483b815-3482-2857-a8e7-b0d0991da7d1@gmx.com>
+Date:   Sat, 10 Oct 2020 08:34:48 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201009195033.3208459-10-ira.weiny@intel.com>
-X-Operating-System: Linux phenom 5.7.0-1-amd64 
+In-Reply-To: <8ac207c64e2917d7980570e6c9f696e234baf070.1602273837.git.josef@toxicpanda.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="uYfnpr6pbdWvc3XxVt4Ok9cSpMP4CeBi0"
+X-Provags-ID: V03:K1:0qrzWS6wZDZP2SYQH6RrRxR8Hjo+yK2aZyYfFAAIG1dLNbA/FK4
+ ISFYm1syyOYVePT6gTWvYzsQ8p/iPxF2fOWxdFrkEXTqlbXfcozdbAmqB9WAMqyfqueuRNg
+ 65R2NW0s/pOkBQotYHrPZnm5C4RI1OV+ChJplBOTcBJrkOsiyOnnPfoQTc55yEq2gfHhrhU
+ +6GQU71GG76+jU7winkZw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:TUziTEHIius=:Kz3BBHI7nAHdthJqCH8/3G
+ HlUo8ZwESVrP9OkKCj2m+vFXdagXiABhINK64TV8u7Z7GG3m93doxYpe+BvF4UxVQJB89sccc
+ KrNgLYLIs/pOujFT8Uo87/KpN9lD3JFFh6bjeOqQJJ/1HcFhHlX7GlQ7ICWlrLxo/9GOJFboQ
+ dSTy+BGyn/mDbAJdcZ6OWRAdPm2hSxyPMB7JjLc6aIIHypuQBXRK+ISg7r4hR55n3FpclQjnd
+ YUU2o+m6ZaGHkCB8gQkuRZh7hOHfjAfgNshAfL08wW2pMILRIoAOSbZbrX09aSihUDtlBT2dt
+ I6pHXVMehj/WMhkYhtptwg6r31CfwpFun+TWiIW57gEtxjBp5oebE42XAr2JktSfE2Y8yo9Uw
+ BY4RUp6WB1ipi+qLZmU6jubWely/wN01QaOaPj941DnaIlUShFfDRUhUFWfc98Mk4CBIV+n0Q
+ hbe9KCojzAnZBtT+mvgMGA8R6fjaxA/7y8W5psmbNTMS5cZMkfqooP19LoW8a3L000bjnYhnL
+ Urg8ozoj0SA3L/v0Fp3mP4oCMsR13vnmVLYqRNvVW3bq8rkwCczzJjmWNUkHHBoiMc6d/DKw7
+ SGhtYqa0f58/PZgmSb4Y2qLwqXxDBqg0Ja+BNuZrOMn0q5t+/YfBTAB4sgmCMODyvXFwQXJdZ
+ kdvuvfGbTlbMoMLadWl1P5cZXxT4ED+/Ox3/O8SyVwa4IwswN5nsqztK4k+X8HnbmbKFMqQfe
+ 4OXTOuxb+cB7PXlUdRsDFso8SBjUksrmugp47CjBwtt7XecItq8mai7wMEPW+8mECeemZPdCp
+ 7OnMCEVgYrJ6musI4YzD9pCw4mREMp99B1h7QM3GzfOP/VLTa/S3W5jbAbzVBd+OshJn+8SJK
+ nxe35EfvpYhXQZmczPXor33xeTP1EivVrUvTJEYWkj38EofCDWkg+x/35t7EIPLRTGwi8+mdJ
+ c/4DQXZERU0bVQqkjCtBQbcM+jZNdq5uXJ9Wr9Tn2aTekjvYtDtFACF5FeZGFVd1OqZWbqi+s
+ EhzYIJogfdS1J9yQpRFQsPSOCgcnVqBmCot74Rhd/LEUdbkNQbqu9ay/8aZl/U6GWo1nC6sDl
+ m131kLojH4IE3K5kESVj1/79GqU+iIY6k9M8slYDn4PYzjWGBt3lqdXTi9QYcyMOnCdKyp/c+
+ rqMOPLuK+Y6ko211zBswE1j+zhem5UQ573JDn2eW7VYHr/CC1WEScABhyYboK4phu9/AlyGdr
+ f9qiSVTsap6al6lISoD5S68sanNBQ/uwbOqVrbw==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Oct 09, 2020 at 12:49:44PM -0700, ira.weiny@intel.com wrote:
-> From: Ira Weiny <ira.weiny@intel.com>
-> 
-> These kmap() calls in the gpu stack are localized to a single thread.
-> To avoid the over head of global PKRS updates use the new kmap_thread()
-> call.
-> 
-> Cc: David Airlie <airlied@linux.ie>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: Patrik Jakobsson <patrik.r.jakobsson@gmail.com>
-> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--uYfnpr6pbdWvc3XxVt4Ok9cSpMP4CeBi0
+Content-Type: multipart/mixed; boundary="cMgnpXVJvH9bpkl8Wv1Wq0yrMJsiXZWAW"
 
-I'm guessing the entire pile goes in through some other tree. If so:
+--cMgnpXVJvH9bpkl8Wv1Wq0yrMJsiXZWAW
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
 
-If you want this to land through maintainer trees, then we need a
-per-driver split (since aside from amdgpu and radeon they're all different
-subtrees).
 
-btw the two kmap calls in drm you highlight in the cover letter should
-also be convertible to kmap_thread. We only hold vmalloc mappings for a
-longer time (or it'd be quite a driver bug). So if you want maybe throw
-those two as two additional patches on top, and we can do some careful
-review & testing for them.
--Daniel
+On 2020/10/10 =E4=B8=8A=E5=8D=884:07, Josef Bacik wrote:
+> We're going to be adding a variety of different rescue options, we
+> should advertise which ones we support to make user spaces life easier
+> in the future.
+>=20
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 
+Reveiwed-by: Qu Wenruo <wqu@suse.com>
+
+Thanks,
+Qu
 > ---
->  drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c              | 12 ++++++------
->  drivers/gpu/drm/gma500/gma_display.c                 |  4 ++--
->  drivers/gpu/drm/gma500/mmu.c                         | 10 +++++-----
->  drivers/gpu/drm/i915/gem/i915_gem_shmem.c            |  4 ++--
->  .../gpu/drm/i915/gem/selftests/i915_gem_context.c    |  4 ++--
->  drivers/gpu/drm/i915/gem/selftests/i915_gem_mman.c   |  8 ++++----
->  drivers/gpu/drm/i915/gt/intel_ggtt_fencing.c         |  4 ++--
->  drivers/gpu/drm/i915/gt/intel_gtt.c                  |  4 ++--
->  drivers/gpu/drm/i915/gt/shmem_utils.c                |  4 ++--
->  drivers/gpu/drm/i915/i915_gem.c                      |  8 ++++----
->  drivers/gpu/drm/i915/i915_gpu_error.c                |  4 ++--
->  drivers/gpu/drm/i915/selftests/i915_perf.c           |  4 ++--
->  drivers/gpu/drm/radeon/radeon_ttm.c                  |  4 ++--
->  13 files changed, 37 insertions(+), 37 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
-> index 978bae731398..bd564bccb7a3 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
-> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
-> @@ -2437,11 +2437,11 @@ static ssize_t amdgpu_ttm_gtt_read(struct file *f, char __user *buf,
->  
->  		page = adev->gart.pages[p];
->  		if (page) {
-> -			ptr = kmap(page);
-> +			ptr = kmap_thread(page);
->  			ptr += off;
->  
->  			r = copy_to_user(buf, ptr, cur_size);
-> -			kunmap(adev->gart.pages[p]);
-> +			kunmap_thread(adev->gart.pages[p]);
->  		} else
->  			r = clear_user(buf, cur_size);
->  
-> @@ -2507,9 +2507,9 @@ static ssize_t amdgpu_iomem_read(struct file *f, char __user *buf,
->  		if (p->mapping != adev->mman.bdev.dev_mapping)
->  			return -EPERM;
->  
-> -		ptr = kmap(p);
-> +		ptr = kmap_thread(p);
->  		r = copy_to_user(buf, ptr + off, bytes);
-> -		kunmap(p);
-> +		kunmap_thread(p);
->  		if (r)
->  			return -EFAULT;
->  
-> @@ -2558,9 +2558,9 @@ static ssize_t amdgpu_iomem_write(struct file *f, const char __user *buf,
->  		if (p->mapping != adev->mman.bdev.dev_mapping)
->  			return -EPERM;
->  
-> -		ptr = kmap(p);
-> +		ptr = kmap_thread(p);
->  		r = copy_from_user(ptr + off, buf, bytes);
-> -		kunmap(p);
-> +		kunmap_thread(p);
->  		if (r)
->  			return -EFAULT;
->  
-> diff --git a/drivers/gpu/drm/gma500/gma_display.c b/drivers/gpu/drm/gma500/gma_display.c
-> index 3df6d6e850f5..35f4e55c941f 100644
-> --- a/drivers/gpu/drm/gma500/gma_display.c
-> +++ b/drivers/gpu/drm/gma500/gma_display.c
-> @@ -400,9 +400,9 @@ int gma_crtc_cursor_set(struct drm_crtc *crtc,
->  		/* Copy the cursor to cursor mem */
->  		tmp_dst = dev_priv->vram_addr + cursor_gt->offset;
->  		for (i = 0; i < cursor_pages; i++) {
-> -			tmp_src = kmap(gt->pages[i]);
-> +			tmp_src = kmap_thread(gt->pages[i]);
->  			memcpy(tmp_dst, tmp_src, PAGE_SIZE);
-> -			kunmap(gt->pages[i]);
-> +			kunmap_thread(gt->pages[i]);
->  			tmp_dst += PAGE_SIZE;
->  		}
->  
-> diff --git a/drivers/gpu/drm/gma500/mmu.c b/drivers/gpu/drm/gma500/mmu.c
-> index 505044c9a673..fba7a3a461fd 100644
-> --- a/drivers/gpu/drm/gma500/mmu.c
-> +++ b/drivers/gpu/drm/gma500/mmu.c
-> @@ -192,20 +192,20 @@ struct psb_mmu_pd *psb_mmu_alloc_pd(struct psb_mmu_driver *driver,
->  		pd->invalid_pte = 0;
->  	}
->  
-> -	v = kmap(pd->dummy_pt);
-> +	v = kmap_thread(pd->dummy_pt);
->  	for (i = 0; i < (PAGE_SIZE / sizeof(uint32_t)); ++i)
->  		v[i] = pd->invalid_pte;
->  
-> -	kunmap(pd->dummy_pt);
-> +	kunmap_thread(pd->dummy_pt);
->  
-> -	v = kmap(pd->p);
-> +	v = kmap_thread(pd->p);
->  	for (i = 0; i < (PAGE_SIZE / sizeof(uint32_t)); ++i)
->  		v[i] = pd->invalid_pde;
->  
-> -	kunmap(pd->p);
-> +	kunmap_thread(pd->p);
->  
->  	clear_page(kmap(pd->dummy_page));
-> -	kunmap(pd->dummy_page);
-> +	kunmap_thread(pd->dummy_page);
->  
->  	pd->tables = vmalloc_user(sizeof(struct psb_mmu_pt *) * 1024);
->  	if (!pd->tables)
-> diff --git a/drivers/gpu/drm/i915/gem/i915_gem_shmem.c b/drivers/gpu/drm/i915/gem/i915_gem_shmem.c
-> index 38113d3c0138..274424795fb7 100644
-> --- a/drivers/gpu/drm/i915/gem/i915_gem_shmem.c
-> +++ b/drivers/gpu/drm/i915/gem/i915_gem_shmem.c
-> @@ -566,9 +566,9 @@ i915_gem_object_create_shmem_from_data(struct drm_i915_private *dev_priv,
->  		if (err < 0)
->  			goto fail;
->  
-> -		vaddr = kmap(page);
-> +		vaddr = kmap_thread(page);
->  		memcpy(vaddr, data, len);
-> -		kunmap(page);
-> +		kunmap_thread(page);
->  
->  		err = pagecache_write_end(file, file->f_mapping,
->  					  offset, len, len,
-> diff --git a/drivers/gpu/drm/i915/gem/selftests/i915_gem_context.c b/drivers/gpu/drm/i915/gem/selftests/i915_gem_context.c
-> index 7ffc3c751432..b466c677d007 100644
-> --- a/drivers/gpu/drm/i915/gem/selftests/i915_gem_context.c
-> +++ b/drivers/gpu/drm/i915/gem/selftests/i915_gem_context.c
-> @@ -1754,7 +1754,7 @@ static int check_scratch_page(struct i915_gem_context *ctx, u32 *out)
->  		return -EINVAL;
->  	}
->  
-> -	vaddr = kmap(page);
-> +	vaddr = kmap_thread(page);
->  	if (!vaddr) {
->  		pr_err("No (mappable) scratch page!\n");
->  		return -EINVAL;
-> @@ -1765,7 +1765,7 @@ static int check_scratch_page(struct i915_gem_context *ctx, u32 *out)
->  		pr_err("Inconsistent initial state of scratch page!\n");
->  		err = -EINVAL;
->  	}
-> -	kunmap(page);
-> +	kunmap_thread(page);
->  
->  	return err;
+>  fs/btrfs/sysfs.c | 22 ++++++++++++++++++++++
+>  1 file changed, 22 insertions(+)
+>=20
+> diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
+> index 279d9262b676..5c558e65c1ba 100644
+> --- a/fs/btrfs/sysfs.c
+> +++ b/fs/btrfs/sysfs.c
+> @@ -329,10 +329,32 @@ static ssize_t send_stream_version_show(struct ko=
+bject *kobj,
 >  }
-> diff --git a/drivers/gpu/drm/i915/gem/selftests/i915_gem_mman.c b/drivers/gpu/drm/i915/gem/selftests/i915_gem_mman.c
-> index 9c7402ce5bf9..447df22e2e06 100644
-> --- a/drivers/gpu/drm/i915/gem/selftests/i915_gem_mman.c
-> +++ b/drivers/gpu/drm/i915/gem/selftests/i915_gem_mman.c
-> @@ -143,7 +143,7 @@ static int check_partial_mapping(struct drm_i915_gem_object *obj,
->  	intel_gt_flush_ggtt_writes(&to_i915(obj->base.dev)->gt);
->  
->  	p = i915_gem_object_get_page(obj, offset >> PAGE_SHIFT);
-> -	cpu = kmap(p) + offset_in_page(offset);
-> +	cpu = kmap_thread(p) + offset_in_page(offset);
->  	drm_clflush_virt_range(cpu, sizeof(*cpu));
->  	if (*cpu != (u32)page) {
->  		pr_err("Partial view for %lu [%u] (offset=%llu, size=%u [%llu, row size %u], fence=%d, tiling=%d, stride=%d) misalignment, expected write to page (%llu + %u [0x%llx]) of 0x%x, found 0x%x\n",
-> @@ -161,7 +161,7 @@ static int check_partial_mapping(struct drm_i915_gem_object *obj,
->  	}
->  	*cpu = 0;
->  	drm_clflush_virt_range(cpu, sizeof(*cpu));
-> -	kunmap(p);
-> +	kunmap_thread(p);
->  
->  out:
->  	__i915_vma_put(vma);
-> @@ -236,7 +236,7 @@ static int check_partial_mappings(struct drm_i915_gem_object *obj,
->  		intel_gt_flush_ggtt_writes(&to_i915(obj->base.dev)->gt);
->  
->  		p = i915_gem_object_get_page(obj, offset >> PAGE_SHIFT);
-> -		cpu = kmap(p) + offset_in_page(offset);
-> +		cpu = kmap_thread(p) + offset_in_page(offset);
->  		drm_clflush_virt_range(cpu, sizeof(*cpu));
->  		if (*cpu != (u32)page) {
->  			pr_err("Partial view for %lu [%u] (offset=%llu, size=%u [%llu, row size %u], fence=%d, tiling=%d, stride=%d) misalignment, expected write to page (%llu + %u [0x%llx]) of 0x%x, found 0x%x\n",
-> @@ -254,7 +254,7 @@ static int check_partial_mappings(struct drm_i915_gem_object *obj,
->  		}
->  		*cpu = 0;
->  		drm_clflush_virt_range(cpu, sizeof(*cpu));
-> -		kunmap(p);
-> +		kunmap_thread(p);
->  		if (err)
->  			return err;
->  
-> diff --git a/drivers/gpu/drm/i915/gt/intel_ggtt_fencing.c b/drivers/gpu/drm/i915/gt/intel_ggtt_fencing.c
-> index 7fb36b12fe7a..38da348282f1 100644
-> --- a/drivers/gpu/drm/i915/gt/intel_ggtt_fencing.c
-> +++ b/drivers/gpu/drm/i915/gt/intel_ggtt_fencing.c
-> @@ -731,7 +731,7 @@ static void swizzle_page(struct page *page)
->  	char *vaddr;
->  	int i;
->  
-> -	vaddr = kmap(page);
-> +	vaddr = kmap_thread(page);
->  
->  	for (i = 0; i < PAGE_SIZE; i += 128) {
->  		memcpy(temp, &vaddr[i], 64);
-> @@ -739,7 +739,7 @@ static void swizzle_page(struct page *page)
->  		memcpy(&vaddr[i + 64], temp, 64);
->  	}
->  
-> -	kunmap(page);
-> +	kunmap_thread(page);
->  }
->  
->  /**
-> diff --git a/drivers/gpu/drm/i915/gt/intel_gtt.c b/drivers/gpu/drm/i915/gt/intel_gtt.c
-> index 2a72cce63fd9..4cfb24e9ed62 100644
-> --- a/drivers/gpu/drm/i915/gt/intel_gtt.c
-> +++ b/drivers/gpu/drm/i915/gt/intel_gtt.c
-> @@ -312,9 +312,9 @@ static void poison_scratch_page(struct page *page, unsigned long size)
->  	do {
->  		void *vaddr;
->  
-> -		vaddr = kmap(page);
-> +		vaddr = kmap_thread(page);
->  		memset(vaddr, POISON_FREE, PAGE_SIZE);
-> -		kunmap(page);
-> +		kunmap_thread(page);
->  
->  		page = pfn_to_page(page_to_pfn(page) + 1);
->  		size -= PAGE_SIZE;
-> diff --git a/drivers/gpu/drm/i915/gt/shmem_utils.c b/drivers/gpu/drm/i915/gt/shmem_utils.c
-> index 43c7acbdc79d..a40d3130cebf 100644
-> --- a/drivers/gpu/drm/i915/gt/shmem_utils.c
-> +++ b/drivers/gpu/drm/i915/gt/shmem_utils.c
-> @@ -142,12 +142,12 @@ static int __shmem_rw(struct file *file, loff_t off,
->  		if (IS_ERR(page))
->  			return PTR_ERR(page);
->  
-> -		vaddr = kmap(page);
-> +		vaddr = kmap_thread(page);
->  		if (write)
->  			memcpy(vaddr + offset_in_page(off), ptr, this);
->  		else
->  			memcpy(ptr, vaddr + offset_in_page(off), this);
-> -		kunmap(page);
-> +		kunmap_thread(page);
->  		put_page(page);
->  
->  		len -= this;
-> diff --git a/drivers/gpu/drm/i915/i915_gem.c b/drivers/gpu/drm/i915/i915_gem.c
-> index 9aa3066cb75d..cae8300fd224 100644
-> --- a/drivers/gpu/drm/i915/i915_gem.c
-> +++ b/drivers/gpu/drm/i915/i915_gem.c
-> @@ -312,14 +312,14 @@ shmem_pread(struct page *page, int offset, int len, char __user *user_data,
->  	char *vaddr;
->  	int ret;
->  
-> -	vaddr = kmap(page);
-> +	vaddr = kmap_thread(page);
->  
->  	if (needs_clflush)
->  		drm_clflush_virt_range(vaddr + offset, len);
->  
->  	ret = __copy_to_user(user_data, vaddr + offset, len);
->  
-> -	kunmap(page);
-> +	kunmap_thread(page);
->  
->  	return ret ? -EFAULT : 0;
->  }
-> @@ -708,7 +708,7 @@ shmem_pwrite(struct page *page, int offset, int len, char __user *user_data,
->  	char *vaddr;
->  	int ret;
->  
-> -	vaddr = kmap(page);
-> +	vaddr = kmap_thread(page);
->  
->  	if (needs_clflush_before)
->  		drm_clflush_virt_range(vaddr + offset, len);
-> @@ -717,7 +717,7 @@ shmem_pwrite(struct page *page, int offset, int len, char __user *user_data,
->  	if (!ret && needs_clflush_after)
->  		drm_clflush_virt_range(vaddr + offset, len);
->  
-> -	kunmap(page);
-> +	kunmap_thread(page);
->  
->  	return ret ? -EFAULT : 0;
->  }
-> diff --git a/drivers/gpu/drm/i915/i915_gpu_error.c b/drivers/gpu/drm/i915/i915_gpu_error.c
-> index 3e6cbb0d1150..aecd469b6b6e 100644
-> --- a/drivers/gpu/drm/i915/i915_gpu_error.c
-> +++ b/drivers/gpu/drm/i915/i915_gpu_error.c
-> @@ -1058,9 +1058,9 @@ i915_vma_coredump_create(const struct intel_gt *gt,
->  
->  			drm_clflush_pages(&page, 1);
->  
-> -			s = kmap(page);
-> +			s = kmap_thread(page);
->  			ret = compress_page(compress, s, dst, false);
-> -			kunmap(page);
-> +			kunmap_thread(page);
->  
->  			drm_clflush_pages(&page, 1);
->  
-> diff --git a/drivers/gpu/drm/i915/selftests/i915_perf.c b/drivers/gpu/drm/i915/selftests/i915_perf.c
-> index c2d001d9c0ec..7f7ef2d056f4 100644
-> --- a/drivers/gpu/drm/i915/selftests/i915_perf.c
-> +++ b/drivers/gpu/drm/i915/selftests/i915_perf.c
-> @@ -307,7 +307,7 @@ static int live_noa_gpr(void *arg)
->  	}
->  
->  	/* Poison the ce->vm so we detect writes not to the GGTT gt->scratch */
-> -	scratch = kmap(ce->vm->scratch[0].base.page);
-> +	scratch = kmap_thread(ce->vm->scratch[0].base.page);
->  	memset(scratch, POISON_FREE, PAGE_SIZE);
->  
->  	rq = intel_context_create_request(ce);
-> @@ -405,7 +405,7 @@ static int live_noa_gpr(void *arg)
->  out_rq:
->  	i915_request_put(rq);
->  out_ce:
-> -	kunmap(ce->vm->scratch[0].base.page);
-> +	kunmap_thread(ce->vm->scratch[0].base.page);
->  	intel_context_put(ce);
->  out:
->  	stream_destroy(stream);
-> diff --git a/drivers/gpu/drm/radeon/radeon_ttm.c b/drivers/gpu/drm/radeon/radeon_ttm.c
-> index 004344dce140..0aba0cac51e1 100644
-> --- a/drivers/gpu/drm/radeon/radeon_ttm.c
-> +++ b/drivers/gpu/drm/radeon/radeon_ttm.c
-> @@ -1013,11 +1013,11 @@ static ssize_t radeon_ttm_gtt_read(struct file *f, char __user *buf,
->  
->  		page = rdev->gart.pages[p];
->  		if (page) {
-> -			ptr = kmap(page);
-> +			ptr = kmap_thread(page);
->  			ptr += off;
->  
->  			r = copy_to_user(buf, ptr, cur_size);
-> -			kunmap(rdev->gart.pages[p]);
-> +			kunmap_thread(rdev->gart.pages[p]);
->  		} else
->  			r = clear_user(buf, cur_size);
->  
-> -- 
-> 2.28.0.rc0.12.gb6a658bd00c9
-> 
+>  BTRFS_ATTR(static_feature, send_stream_version, send_stream_version_sh=
+ow);
+> =20
+> +static const char *rescue_opts[] =3D {
+> +	"usebackuproot",
+> +	"nologreplay",
+> +};
+> +
+> +static ssize_t supported_rescue_options_show(struct kobject *kobj,
+> +					     struct kobj_attribute *a,
+> +					     char *buf)
+> +{
+> +	ssize_t ret =3D 0;
+> +	int i;
+> +
+> +	for (i =3D 0; i < ARRAY_SIZE(rescue_opts); i++)
+> +		ret +=3D scnprintf(buf + ret, PAGE_SIZE - ret, "%s%s",
+> +				 (i ? " " : ""), rescue_opts[i]);
+> +	ret +=3D scnprintf(buf + ret, PAGE_SIZE - ret, "\n");
+> +	return ret;
+> +}
+> +BTRFS_ATTR(static_feature, supported_rescue_options,
+> +	   supported_rescue_options_show);
+> +
+>  static struct attribute *btrfs_supported_static_feature_attrs[] =3D {
+>  	BTRFS_ATTR_PTR(static_feature, rmdir_subvol),
+>  	BTRFS_ATTR_PTR(static_feature, supported_checksums),
+>  	BTRFS_ATTR_PTR(static_feature, send_stream_version),
+> +	BTRFS_ATTR_PTR(static_feature, supported_rescue_options),
+>  	NULL
+>  };
+> =20
+>=20
 
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+
+--cMgnpXVJvH9bpkl8Wv1Wq0yrMJsiXZWAW--
+
+--uYfnpr6pbdWvc3XxVt4Ok9cSpMP4CeBi0
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl+BAagACgkQwj2R86El
+/qjOyAf9HsK8XFWCzdqnO51UEFzFanNCdaJlxx2zEki8cTUkT8TXwVXaINkCoE8i
+9mzOF7qtffm6FzIspTEp5pwHqj8dM391dnj7D30Cs0r71w1WzUPQCFnGKn+GEynS
+OVcjIvgI7Y3+LvClapi6/0z7kdRJycQNAF1CMWHb3UfahKky0KF5RVOLY+FJt+Hs
+ixbA+68k/o6Hb5oIGHSzBe7eHUuIdAMKirMB3x5AlVSezoAmAghll98dyde5AzcM
+wIyO8RTSLMSJfh8VTIoSVnfPT9J8OqV0RrSZMFUN5Rt5yLb1iQlDF21v7Pr1NCOO
+o9+Ql35xU9CpeBXauNUUj6fjbMwflg==
+=9CUk
+-----END PGP SIGNATURE-----
+
+--uYfnpr6pbdWvc3XxVt4Ok9cSpMP4CeBi0--
