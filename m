@@ -2,274 +2,264 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5ED2128A5C1
-	for <lists+linux-btrfs@lfdr.de>; Sun, 11 Oct 2020 07:13:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2554328A5DD
+	for <lists+linux-btrfs@lfdr.de>; Sun, 11 Oct 2020 08:13:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726413AbgJKFNq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 11 Oct 2020 01:13:46 -0400
-Received: from out20-75.mail.aliyun.com ([115.124.20.75]:51154 "EHLO
-        out20-75.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725882AbgJKFNq (ORCPT
+        id S1726562AbgJKGN1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 11 Oct 2020 02:13:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51876 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725882AbgJKGN1 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 11 Oct 2020 01:13:46 -0400
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07436612|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.299902-0.0029918-0.697107;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047202;MF=guan@eryu.me;NM=1;PH=DS;RN=4;RT=4;SR=0;TI=SMTPD_---.IhgccVE_1602393220;
-Received: from localhost(mailfrom:guan@eryu.me fp:SMTPD_---.IhgccVE_1602393220)
-          by smtp.aliyun-inc.com(10.147.41.120);
-          Sun, 11 Oct 2020 13:13:40 +0800
-Date:   Sun, 11 Oct 2020 13:13:40 +0800
-From:   Eryu Guan <guan@eryu.me>
-To:     fdmanana@kernel.org
-Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        Filipe Manana <fdmanana@suse.com>
-Subject: Re: [PATCH] fstests: add a filter for the new getcap output
-Message-ID: <20201011051340.GW3853@desktop>
-References: <f2980ed83a5268a96b3ff9da15c58477ff24d7a4.1602334589.git.fdmanana@suse.com>
+        Sun, 11 Oct 2020 02:13:27 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E35DC0613CE;
+        Sat, 10 Oct 2020 23:13:26 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id u24so10984079pgi.1;
+        Sat, 10 Oct 2020 23:13:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=HVxeznub2EIoRkzXrms9sz9JcvVi3jKYOyxnRqiXeTE=;
+        b=o41c9LtQHDPNwKr4DRRRuqMx2HOetW7fwiVbRRP1MSRh9Oadq8TxzrNHn9XJwok7VD
+         xaJPulpKvNV+MSzVX//Rzcle37MfaYWh7m2c8T/a8EMWgvILsU/0X48tWunT4HIduNvJ
+         WIIDrvxgZr4OM0Y2xa9WlD0K7SXYBgONg/4cHztEZMbwWZj4uMSsF7T8oIEVyCInotZi
+         Weh8sSJhHFVUby8qqU/h3m63XCyuDK3ORt0YknUrtnvR+qiu/a7VfXN7c6njaCz/m9j1
+         D7XQ8t8LaWjbbln6BOY+Limd02TyM/SNQq8SrQ5+6juSf5hbb195KV2/Cr7LM4pUYa2Z
+         cnYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=HVxeznub2EIoRkzXrms9sz9JcvVi3jKYOyxnRqiXeTE=;
+        b=L9STdXORhi6s/wbwyDvYpOE180Rt606kj8B0OcnA8MHb/SMpRFOrdfgPECLxsJPkMl
+         2o6mlEK6psnPCvlMJiPJcAeN2w5PaXONDwoyX+kbqHIWUVV0QSonlXF/9JBMj3Ds6uzL
+         yJD796lfms6MtumatzjhM2TvHm7T2WtUlo1VGAHEOyqPt6Hj7ZLdqAqovMOF3hixLtjg
+         sDGjteSYl9hy6kQzxfAovbY3PTc7uOPk/SRsho+Gv2Ya0xCo3KgfhSizWqWSinx3D9Eq
+         Jp8ecajLcdLCan8irkSu986M8dUokABMsgLCbjZOGhQkHdxMkFp7V5ho05PvL79z0byy
+         uX4A==
+X-Gm-Message-State: AOAM533a+Bh1v2ZXhKEss/rv+IZf0Abxhw8c9HMSY0q3FgMDbX9yTpD8
+        0IUo2UfsWmXrVNgfaoSBcRWu1NPNbMQBNA==
+X-Google-Smtp-Source: ABdhPJx1BJ7/Ks+4kzb62VNbnGZN6k3IBnn76akwDp63ix/h1Ar6xN4L7THIfhikcwg0JjqkkmqmQQ==
+X-Received: by 2002:a17:90a:6b0d:: with SMTP id v13mr13721867pjj.206.1602396805503;
+        Sat, 10 Oct 2020 23:13:25 -0700 (PDT)
+Received: from realwakka ([175.195.128.78])
+        by smtp.gmail.com with ESMTPSA id d2sm9881736pjx.4.2020.10.10.23.13.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 10 Oct 2020 23:13:24 -0700 (PDT)
+Date:   Sun, 11 Oct 2020 06:13:12 +0000
+From:   Sidong Yang <realwakka@gmail.com>
+To:     Eryu Guan <guan@eryu.me>
+Cc:     linux-btrfs@vger.kernel.org, fstests@vger.kernel.org,
+        Qu Wenruo <wqu@suse.com>, Josef Bacik <josef@toxicpanda.com>
+Subject: Re: [PATCH v5] btrfs: Add new test for qgroup assign functionality
+Message-ID: <20201011061312.GA2898@realwakka>
+References: <20200927171512.1253-1-realwakka@gmail.com>
+ <20201011031457.GT3853@desktop>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <f2980ed83a5268a96b3ff9da15c58477ff24d7a4.1602334589.git.fdmanana@suse.com>
+In-Reply-To: <20201011031457.GT3853@desktop>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sat, Oct 10, 2020 at 01:57:31PM +0100, fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
+On Sun, Oct 11, 2020 at 11:14:57AM +0800, Eryu Guan wrote:
+> On Sun, Sep 27, 2020 at 05:15:12PM +0000, Sidong Yang wrote:
+> > This new test will test btrfs's qgroup assign functionality. The
+> > test has 3 cases.
+> > 
+> >  - assign, no shared extents
+> >  - assign, shared extents
+> >  - snapshot -i, shared extents
+> > 
+> > Each cases create subvolumes and assign qgroup in their own way
+> > and check with the command "btrfs check".
+> > 
+> > Signed-off-by: Sidong Yang <realwakka@gmail.com>
+> > Reviewed-by: Qu Wenruo <wqu@suse.com>
+> > Reviewed-by: Eryu Guan <guan@eryu.me>
 > 
-> Starting with version 2.41 of libcap, the output of the getcap program
-> changed and therefore some existing tests fail when the installed version
-> of libcap is >= 2.41 (the latest version available at the moment is 2.44).
-> 
-> The change was made by the following commit of libcap:
-> 
->   commit 177cd418031b1acfcf73fe3b1af9f3279828681c
->   Author: Andrew G. Morgan <morgan@kernel.org>
->   Date:   Tue Jul 21 22:58:05 2020 -0700
-> 
->       A more compact form for the text representation of capabilities.
-> 
->       While this does not change anything about the supported range of
->       equivalent text specifications for capabilities, as accepted by
->       cap_from_text(), this does alter the preferred output format of
->       cap_to_text() to be two characters shorter in most cases. That is,
->       what used to be summarized as:
-> 
->          "= cap_foo+..."
-> 
->       is now converted to the equivalent text:
-> 
->          "cap_foo=..."
-> 
->       which is also more intuitive.
-> 
-> So add a filter to change the old format to the new one and adapt existing
-> tests to use it and expect the new format in the golden output.
-> 
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
-> ---
->  common/filter         | 28 ++++++++++++++++++++++++++++
->  tests/btrfs/214       | 14 +++++++-------
->  tests/generic/093     |  2 +-
->  tests/generic/093.out |  2 +-
->  tests/overlay/064     |  4 ++--
->  tests/overlay/064.out |  4 ++--
->  tests/xfs/296         |  2 +-
->  tests/xfs/296.out     |  4 ++--
->  8 files changed, 44 insertions(+), 16 deletions(-)
-> 
-> diff --git a/common/filter b/common/filter
-> index 2477f386..64844c98 100644
-> --- a/common/filter
-> +++ b/common/filter
-> @@ -603,5 +603,33 @@ _filter_assert_dmesg()
->  	    -e "s#$warn2#Intentional warnings in assfail#"
->  }
->  
-> +# With version 2.41 of libcap, the output format of getcap changed.
-> +# More specifically such change was added by the following commit:
-> +#
-> +# commit 177cd418031b1acfcf73fe3b1af9f3279828681c
-> +# Author: Andrew G. Morgan <morgan@kernel.org>
-> +# Date:   Tue Jul 21 22:58:05 2020 -0700
-> +#
-> +#     A more compact form for the text representation of capabilities.
-> +#
-> +#     While this does not change anything about the supported range of
-> +#     equivalent text specifications for capabilities, as accepted by
-> +#     cap_from_text(), this does alter the preferred output format of
-> +#     cap_to_text() to be two characters shorter in most cases. That is,
-> +#     what used to be summarized as:
-> +#
-> +#        "= cap_foo+..."
-> +#
-> +#     is now converted to the equivalent text:
-> +#
-> +#        "cap_foo=..."
-> +#
-> +#     which is also more intuitive.
-> +#
-> +_filter_getcap()
-> +{
-> +        sed -e "s/ = / /" -e "s/\+/=/"
-> +}
-> +
+> Please don't add "Reviewed-by" tag before it's provided explicitly,
+> Qu and I have given review comments but that doesn't mean we provide a
+> "Reviewed-by" tag.
 
-Thanks for the fix!
+Thanks! I should take care of it next time.
 
-I' wondering if we could introduce a new _getcap helper which calls
-_filter_getcap internally, so external users could just call _getcap
-instead of "$GETCAP_PROG ... | _filter_getcap", like what we did in
-commit 794f4594fbf4 ("fstests: filter redundant output by getfattr")
+> 
+> > 
+> > ---
+> > v2:
+> >  - Create new test and use the cases
+> > v3:
+> >  - Fix some minor mistakes
+> >  - Make that write some data before assign or snapshot in test
+> >  - Put mkfs & mount pair in test function
+> > v4:
+> >  - Add rescan command for assign no shared
+> >  - Use _check_scratch_fs for checking
+> > v5:
+> >  - Remove trailing whitespaces
+> > ---
+> >  tests/btrfs/221     | 116 ++++++++++++++++++++++++++++++++++++++++++++
+> >  tests/btrfs/221.out |   2 +
+> >  tests/btrfs/group   |   1 +
+> >  3 files changed, 119 insertions(+)
+> >  create mode 100755 tests/btrfs/221
+> >  create mode 100644 tests/btrfs/221.out
+> > 
+> > diff --git a/tests/btrfs/221 b/tests/btrfs/221
+> > new file mode 100755
+> > index 00000000..19b3740b
+> > --- /dev/null
+> > +++ b/tests/btrfs/221
+> > @@ -0,0 +1,116 @@
+> > +#! /bin/bash
+> > +# SPDX-License-Identifier: GPL-2.0
+> > +# Copyright (c) 2020 Sidong Yang.  All Rights Reserved.
+> > +#
+> > +# FS QA Test 221
+> > +#
+> > +# Test the assign functionality of qgroups
+> > +#
+> > +seq=`basename $0`
+> > +seqres=$RESULT_DIR/$seq
+> > +echo "QA output created by $seq"
+> > +
+> > +here=`pwd`
+> > +tmp=/tmp/$$
+> > +status=1	# failure is the default!
+> > +trap "_cleanup; exit \$status" 0 1 2 3 15
+> > +
+> > +_cleanup()
+> > +{
+> > +	cd /
+> > +	rm -f $tmp.*
+> > +}
+> > +
+> > +# get standard environment, filters and checks
+> > +. ./common/rc
+> > +. ./common/filter
+> > +. ./common/reflink
+> > +
+> > +# remove previous $seqres.full before test
+> > +rm -f $seqres.full
+> > +
+> > +# real QA test starts here
+> > +
+> > +# Modify as appropriate.
+> > +_supported_fs btrfs
+> > +_supported_os Linux
+> > +
+> > +_require_scratch
+> > +_require_btrfs_qgroup_report
+> > +_require_cp_reflink
+> > +
+> > +# Test assign qgroup for submodule with shared extents by reflink
+> > +assign_shared_test()
+> > +{
+> > +	_scratch_mkfs > /dev/null 2>&1
+> > +	_scratch_mount
+> > +
+> > +	echo "=== qgroup assign shared test ===" >> $seqres.full
+> > +	$BTRFS_UTIL_PROG quota enable $SCRATCH_MNT
+> > +	$BTRFS_UTIL_PROG quota rescan -w $SCRATCH_MNT >> $seqres.full
+> > +
+> > +	$BTRFS_UTIL_PROG subvolume create $SCRATCH_MNT/a >> $seqres.full
+> > +	$BTRFS_UTIL_PROG subvolume create $SCRATCH_MNT/b >> $seqres.full
+> > +
+> > +	_ddt of="$SCRATCH_MNT"/a/file1 bs=1M count=1 >> $seqres.full 2>&1
+> > +	cp --reflink=always "$SCRATCH_MNT"/a/file1 "$SCRATCH_MNT"/b/file1
+> 
+> Seems you miss the comment about using "_cp_reflink" helper.
+
+Yes, I missed it sorry. 
+I'll write a new patch right away.
+Thanks so much!
 
 Thanks,
-Eryu
-
->  # make sure this script returns success
->  /bin/true
-> diff --git a/tests/btrfs/214 b/tests/btrfs/214
-> index 35c4656c..6d08b991 100755
-> --- a/tests/btrfs/214
-> +++ b/tests/btrfs/214
-> @@ -43,7 +43,7 @@ check_capabilities()
->  	local ret
->  	file="$1"
->  	cap="$2"
-> -	ret=$($GETCAP_PROG "$file")
-> +	ret=$($GETCAP_PROG "$file" | _filter_getcap)
->  	if [ -z "$ret" ]; then
->  		echo "$ret"
->  		echo "missing capability in file $file"
-> @@ -84,7 +84,7 @@ full_nocap_inc_withcap_send()
->  	$BTRFS_UTIL_PROG subvolume snapshot -r "$FS1" "$FS1/snap_inc" >/dev/null
->  	$BTRFS_UTIL_PROG send -p "$FS1/snap_init" "$FS1/snap_inc" -q | \
->  					$BTRFS_UTIL_PROG receive "$FS2" -q
-> -	check_capabilities "$FS2/snap_inc/foo.bar" "cap_sys_ptrace,cap_sys_nice+ep"
-> +	check_capabilities "$FS2/snap_inc/foo.bar" "cap_sys_ptrace,cap_sys_nice=ep"
->  
->  	_scratch_unmount
->  }
-> @@ -107,25 +107,25 @@ roundtrip_send()
->  	$SETCAP_PROG "cap_sys_ptrace+ep cap_sys_nice+ep" "$FS1/foo.bar"
->  	$BTRFS_UTIL_PROG subvolume snapshot -r "$FS1" "$FS1/snap_init" >/dev/null
->  	$BTRFS_UTIL_PROG send "$FS1/snap_init" -q | $BTRFS_UTIL_PROG receive "$FS2" -q
-> -	check_capabilities "$FS2/snap_init/foo.bar" "cap_sys_ptrace,cap_sys_nice+ep"
-> +	check_capabilities "$FS2/snap_init/foo.bar" "cap_sys_ptrace,cap_sys_nice=ep"
->  
->  	# Test incremental send with different owner/group but same capabilities
->  	chgrp 100 "$FS1/foo.bar"
->  	$SETCAP_PROG "cap_sys_ptrace+ep cap_sys_nice+ep" "$FS1/foo.bar"
->  	$BTRFS_UTIL_PROG subvolume snapshot -r "$FS1" "$FS1/snap_inc" >/dev/null
-> -	check_capabilities "$FS1/snap_inc/foo.bar" "cap_sys_ptrace,cap_sys_nice+ep"
-> +	check_capabilities "$FS1/snap_inc/foo.bar" "cap_sys_ptrace,cap_sys_nice=ep"
->  	$BTRFS_UTIL_PROG send -p "$FS1/snap_init" "$FS1/snap_inc" -q | \
->  				$BTRFS_UTIL_PROG receive "$FS2" -q
-> -	check_capabilities "$FS2/snap_inc/foo.bar" "cap_sys_ptrace,cap_sys_nice+ep"
-> +	check_capabilities "$FS2/snap_inc/foo.bar" "cap_sys_ptrace,cap_sys_nice=ep"
->  
->  	# Test capabilities after incremental send with different group and capabilities
->  	chgrp 0 "$FS1/foo.bar"
->  	$SETCAP_PROG "cap_sys_time+ep cap_syslog+ep" "$FS1/foo.bar"
->  	$BTRFS_UTIL_PROG subvolume snapshot -r "$FS1" "$FS1/snap_inc2" >/dev/null
-> -	check_capabilities "$FS1/snap_inc2/foo.bar" "cap_sys_time,cap_syslog+ep"
-> +	check_capabilities "$FS1/snap_inc2/foo.bar" "cap_sys_time,cap_syslog=ep"
->  	$BTRFS_UTIL_PROG send -p "$FS1/snap_inc" "$FS1/snap_inc2" -q | \
->  				$BTRFS_UTIL_PROG receive "$FS2"  -q
-> -	check_capabilities "$FS2/snap_inc2/foo.bar" "cap_sys_time,cap_syslog+ep"
-> +	check_capabilities "$FS2/snap_inc2/foo.bar" "cap_sys_time,cap_syslog=ep"
->  
->  	_scratch_unmount
->  }
-> diff --git a/tests/generic/093 b/tests/generic/093
-> index 0f835e7e..ed5f6f50 100755
-> --- a/tests/generic/093
-> +++ b/tests/generic/093
-> @@ -51,7 +51,7 @@ touch $file
->  
->  echo "**** Verifying that appending to file clears capabilities ****"
->  $SETCAP_PROG cap_chown+ep $file
-> -$GETCAP_PROG $file | filefilter
-> +$GETCAP_PROG $file | filefilter | _filter_getcap
->  echo data1 >> $file
->  cat $file
->  $GETCAP_PROG $file | filefilter
-> diff --git a/tests/generic/093.out b/tests/generic/093.out
-> index cb29153e..fe6dfe5c 100644
-> --- a/tests/generic/093.out
-> +++ b/tests/generic/093.out
-> @@ -1,7 +1,7 @@
->  QA output created by 093
->  
->  **** Verifying that appending to file clears capabilities ****
-> -file = cap_chown+ep
-> +file cap_chown=ep
->  data1
->  
->  **** Verifying that appending to file doesn't clear other xattrs ****
-> diff --git a/tests/overlay/064 b/tests/overlay/064
-> index f5d5df1b..7ec3e420 100755
-> --- a/tests/overlay/064
-> +++ b/tests/overlay/064
-> @@ -55,7 +55,7 @@ _scratch_mount "-o metacopy=on"
->  $XFS_IO_PROG -c "stat" ${SCRATCH_MNT}/file1 >>$seqres.full
->  
->  # Make sure cap_setuid is still there
-> -$GETCAP_PROG ${SCRATCH_MNT}/file1 | _filter_scratch
-> +$GETCAP_PROG ${SCRATCH_MNT}/file1 | _filter_scratch | _filter_getcap
->  
->  # Trigger metadata only copy-up
->  chmod 000 ${SCRATCH_MNT}/file2
-> @@ -64,7 +64,7 @@ chmod 000 ${SCRATCH_MNT}/file2
->  $XFS_IO_PROG -c "stat" ${SCRATCH_MNT}/file2 >>$seqres.full
->  
->  # Make sure cap_setuid is still there
-> -$GETCAP_PROG ${SCRATCH_MNT}/file2 | _filter_scratch
-> +$GETCAP_PROG ${SCRATCH_MNT}/file2 | _filter_scratch | _filter_getcap
->  
->  # success, all done
->  status=0
-> diff --git a/tests/overlay/064.out b/tests/overlay/064.out
-> index cdd3064d..07f89fbd 100644
-> --- a/tests/overlay/064.out
-> +++ b/tests/overlay/064.out
-> @@ -1,3 +1,3 @@
->  QA output created by 064
-> -SCRATCH_MNT/file1 = cap_setuid+ep
-> -SCRATCH_MNT/file2 = cap_setuid+ep
-> +SCRATCH_MNT/file1 cap_setuid=ep
-> +SCRATCH_MNT/file2 cap_setuid=ep
-> diff --git a/tests/xfs/296 b/tests/xfs/296
-> index 915ffa0c..f67b8386 100755
-> --- a/tests/xfs/296
-> +++ b/tests/xfs/296
-> @@ -49,7 +49,7 @@ $SETCAP_PROG cap_setgid,cap_setuid+ep $dump_dir/testfile
->  echo "Checking for xattr on source file"
->  getfattr --absolute-names -m user.name $dump_dir/testfile | _dir_filter
->  echo "Checking for capability on source file"
-> -$GETCAP_PROG $dump_dir/testfile | _dir_filter
-> +$GETCAP_PROG $dump_dir/testfile | _dir_filter | _filter_getcap
->  getfattr --absolute-names -m security.capability $dump_dir/testfile | _dir_filter
->  
->  _do_dump_file -f $tmp.df.0
-> diff --git a/tests/xfs/296.out b/tests/xfs/296.out
-> index c279465c..f5cc624e 100644
-> --- a/tests/xfs/296.out
-> +++ b/tests/xfs/296.out
-> @@ -4,7 +4,7 @@ Checking for xattr on source file
->  user.name
->  
->  Checking for capability on source file
-> -DUMP_DIR/testfile = cap_setgid,cap_setuid+ep
-> +DUMP_DIR/testfile cap_setgid,cap_setuid=ep
->  # file: DUMP_DIR/testfile
->  security.capability
->  
-> @@ -50,7 +50,7 @@ Checking for xattr on restored file
->  user.name
->  
->  Checking for capability on restored file
-> -RESTORE_DIR/DUMP_SUBDIR/testfile = cap_setgid,cap_setuid+ep
-> +RESTORE_DIR/DUMP_SUBDIR/testfile cap_setgid,cap_setuid=ep
->  # file: RESTORE_DIR/DUMP_SUBDIR/testfile
->  security.capability
->  
-> -- 
-> 2.28.0
+Sidong
+> 
+> Thanks,
+> Eryu
+> 
+> > +
+> > +	$BTRFS_UTIL_PROG qgroup create 1/100 $SCRATCH_MNT
+> > +	$BTRFS_UTIL_PROG qgroup assign $SCRATCH_MNT/a 1/100 $SCRATCH_MNT
+> > +	$BTRFS_UTIL_PROG qgroup assign $SCRATCH_MNT/b 1/100 $SCRATCH_MNT
+> > +
+> > +	_scratch_unmount
+> > +	_check_scratch_fs
+> > +}
+> > +
+> > +# Test assign qgroup for submodule without shared extents
+> > +assign_no_shared_test()
+> > +{
+> > +	_scratch_mkfs > /dev/null 2>&1
+> > +	_scratch_mount
+> > +
+> > +	echo "=== qgroup assign no shared test ===" >> $seqres.full
+> > +	$BTRFS_UTIL_PROG quota enable $SCRATCH_MNT
+> > +	$BTRFS_UTIL_PROG quota rescan -w $SCRATCH_MNT >> $seqres.full
+> > +
+> > +	$BTRFS_UTIL_PROG subvolume create $SCRATCH_MNT/a >> $seqres.full
+> > +	$BTRFS_UTIL_PROG subvolume create $SCRATCH_MNT/b >> $seqres.full
+> > +
+> > +	$BTRFS_UTIL_PROG qgroup create 1/100 $SCRATCH_MNT
+> > +	$BTRFS_UTIL_PROG qgroup assign $SCRATCH_MNT/a 1/100 $SCRATCH_MNT
+> > +	$BTRFS_UTIL_PROG qgroup assign $SCRATCH_MNT/b 1/100 $SCRATCH_MNT
+> > +
+> > +	_scratch_unmount
+> > +	_check_scratch_fs
+> > +}
+> > +
+> > +# Test snapshot with assigning qgroup for submodule
+> > +snapshot_test()
+> > +{
+> > +	_scratch_mkfs > /dev/null 2>&1
+> > +	_scratch_mount
+> > +
+> > +	echo "=== qgroup snapshot test ===" >> $seqres.full
+> > +	$BTRFS_UTIL_PROG quota enable $SCRATCH_MNT
+> > +	$BTRFS_UTIL_PROG quota rescan -w $SCRATCH_MNT >> $seqres.full
+> > +
+> > +	$BTRFS_UTIL_PROG subvolume create $SCRATCH_MNT/a >> $seqres.full
+> > +	_ddt of="$SCRATCH_MNT"/a/file1 bs=1M count=1 >> $seqres.full 2>&1
+> > +	subvolid=$(_btrfs_get_subvolid $SCRATCH_MNT a)
+> > +	$BTRFS_UTIL_PROG subvolume snapshot -i 0/$subvolid $SCRATCH_MNT/a $SCRATCH_MNT/b >> $seqres.full
+> > +
+> > +	_scratch_unmount
+> > +	_check_scratch_fs
+> > +}
+> > +
+> > +
+> > +assign_no_shared_test
+> > +
+> > +assign_shared_test
+> > +
+> > +snapshot_test
+> > +
+> > +# success, all done
+> > +echo "Silence is golden"
+> > +status=0
+> > +exit
+> > diff --git a/tests/btrfs/221.out b/tests/btrfs/221.out
+> > new file mode 100644
+> > index 00000000..aa4351cd
+> > --- /dev/null
+> > +++ b/tests/btrfs/221.out
+> > @@ -0,0 +1,2 @@
+> > +QA output created by 221
+> > +Silence is golden
+> > diff --git a/tests/btrfs/group b/tests/btrfs/group
+> > index 1b5fa695..cdda38f3 100644
+> > --- a/tests/btrfs/group
+> > +++ b/tests/btrfs/group
+> > @@ -222,3 +222,4 @@
+> >  218 auto quick volume
+> >  219 auto quick volume
+> >  220 auto quick
+> > +221 auto quick qgroup
+> > -- 
+> > 2.25.1
