@@ -2,35 +2,35 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA1AE28B855
-	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Oct 2020 15:52:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F38728B852
+	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Oct 2020 15:51:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390039AbgJLNv0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 12 Oct 2020 09:51:26 -0400
-Received: from mx2.suse.de ([195.135.220.15]:40512 "EHLO mx2.suse.de"
+        id S2390105AbgJLNvW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 12 Oct 2020 09:51:22 -0400
+Received: from mx2.suse.de ([195.135.220.15]:40788 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390060AbgJLNud (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 12 Oct 2020 09:50:33 -0400
+        id S2390121AbgJLNux (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 12 Oct 2020 09:50:53 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1602510631;
+        t=1602510652;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=qEyRG+yoGC7S97mlBDeDyniML+S/1B2U55OipkHritQ=;
-        b=f6O5RPQtu/IQVXc4FSgacVA9NmdTXSvXxzK1aLi8A3Rbjm9FE9VbmrXfMH4d8ZDj4LKBoH
-        F7n5bFS9uqVDw55CgC3sitDQKN7YjmU7/7X2OZyl2Hk/bri6E56jle+c0O/zUqRf5aeHrq
-        5Ru9NIRUQzMBdqlHqlutK5su+nMDZJ4=
+        bh=de3nac+Tk6PCRgl6D+pmxm7NqxituGq8crO3jifTBp4=;
+        b=pGQsTv9R4RRJZkhPdfMCfmMnAx9QzKNLV7gk+RzcAC42COWIF0guWc4tYP2/D6QC0blBmP
+        Gwpjs+6NjG6rlbyHxLSaEJQ19ej0OsU1YBfHMKsOSax0Fbcbb2WIrK1Bw2Zt2mLXlPZBZV
+        bNQJPM3/ScjKpittFmfPafTNnUjzLXo=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id C1B5CB2C4;
-        Mon, 12 Oct 2020 13:50:31 +0000 (UTC)
-Subject: Re: [PATCH v3 03/12] btrfs: track ordered bytes instead of just dio
- ordered bytes
+        by mx2.suse.de (Postfix) with ESMTP id 09863ADBB;
+        Mon, 12 Oct 2020 13:50:52 +0000 (UTC)
+Subject: Re: [PATCH v3 04/12] btrfs: introduce a FORCE_COMMIT_TRANS flush
+ operation
 To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
         kernel-team@fb.com
 References: <cover.1602249928.git.josef@toxicpanda.com>
- <578ef22806511ccbe29ebe9e70bb6524793ba813.1602249928.git.josef@toxicpanda.com>
+ <58ae7655908a28c446139452ea8f5210d590acb4.1602249928.git.josef@toxicpanda.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  mQINBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -74,12 +74,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
  RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
  5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <59f6e49e-0484-7ae8-3103-afa1a8e563ac@suse.com>
-Date:   Mon, 12 Oct 2020 16:50:30 +0300
+Message-ID: <e052ce95-5bc4-42b0-6761-29b82749f16a@suse.com>
+Date:   Mon, 12 Oct 2020 16:50:51 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <578ef22806511ccbe29ebe9e70bb6524793ba813.1602249928.git.josef@toxicpanda.com>
+In-Reply-To: <58ae7655908a28c446139452ea8f5210d590acb4.1602249928.git.josef@toxicpanda.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -90,17 +90,12 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 9.10.20 г. 16:28 ч., Josef Bacik wrote:
-> We track dio_bytes because the shrink delalloc code needs to know if we
-> have more DIO in flight than we have normal buffered IO.  The reason for
-> this is because we can't "flush" DIO, we have to just wait on the
-> ordered extents to finish.
-> 
-> However this is true of all ordered extents.  If we have more ordered
-> space outstanding than dirty pages we should be waiting on ordered
-> extents.  We already are ok on this front technically, because we always
-> do a FLUSH_DELALLOC_WAIT loop, but I want to use the ordered counter in
-> the preemptive flushing code as well, so change this to count all
-> ordered bytes instead of just DIO ordered bytes.
+> Sole-y for preemptive flushing, we want to be able to force the
+> transaction commit without any of the ambiguity of
+> may_commit_transaction().  This is because may_commit_transaction()
+> checks tickets and such, and in preemptive flushing we already know
+> it'll be helpful, so use this to keep the code nice and clean and
+> straightforward.
 > 
 > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 
