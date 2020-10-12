@@ -2,94 +2,95 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4D3428B3D8
-	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Oct 2020 13:34:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66E3028B45D
+	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Oct 2020 14:08:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388100AbgJLLd5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 12 Oct 2020 07:33:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39644 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387617AbgJLLd5 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 12 Oct 2020 07:33:57 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CB6BC0613CE
-        for <linux-btrfs@vger.kernel.org>; Mon, 12 Oct 2020 04:33:57 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id v12so1754528ply.12
-        for <linux-btrfs@vger.kernel.org>; Mon, 12 Oct 2020 04:33:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:subject:to:message-id:date:user-agent:mime-version
-         :content-transfer-encoding;
-        bh=LQb25rjSWbC3PuGd6zv6QO2qRPm6z0zKMm5447zonXg=;
-        b=PWr2KIVj68oEqj0lgV0QAIDyZ2eog390B1OBPgeyEvPu8rDKJ4NOVZQlZ94ahHgJbN
-         W5yJHervAnOSZZTwOmelDzyqBWlRRbSLwztEM/PqoR3kIN/6J8sX6zOQl2r3pn55Xv+n
-         AcrL7lV0qHAtM7KJY1ypiNluEGDkHIhWxUNMxSGGWzW0wEx/anW/s+w9b2htfNgEfN45
-         U72nsmzuoQP9upZr5rcRx85gYndgbTaQdut9oni3RlZdrWifAkdbbRQcFOBvrk4dYbt0
-         sWALO0JINvFwohB0lwf7/jSNi6qdyg9cRXglJPkIDua+KGK2j1x9zL+IfyRbubWfJnCA
-         cy2Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:message-id:date:user-agent
-         :mime-version:content-transfer-encoding;
-        bh=LQb25rjSWbC3PuGd6zv6QO2qRPm6z0zKMm5447zonXg=;
-        b=YyNP+Req6pVwTH8/ipqfOzsHTBnfqdClof/FSjtzp+OB0gAsBHL9wXrHYioMfv+gVI
-         +u+jU8PDQVrb/WVdeRMeYixJtkGQPCQK7goUz7daNs2agV/f8RLc9Qb+Kazoh/ydPeKa
-         v8BRIwBPIAoluKlaGKaqv5tRkz5H1mvA4jZnW97oaETEb6SG+lS2eiwcfbzFPMuGrT1X
-         dQzn2bKBtrN2rM2aCkQR6eNVHpvXaaWg0SWisr9r4Fa4arTFamoUhUUai4CNmMZTvdBa
-         +5BxIOovOta23vPOqo2IZpISP21bbIL7c0/7swk5kT7/xdqXcIMNOUHZ6R5pLS+ACRHs
-         LMZw==
-X-Gm-Message-State: AOAM531Ab9sMozYzkdA9z0nrKLsCI+ug/1v+gtUUt1nglDf6L2cKbkUa
-        ZwkT1bmisSX/wI1tjIhccD+xIIgjCyE=
-X-Google-Smtp-Source: ABdhPJzHpLa7pIm1Dq13zSApa6cW5QDl0bNAZyxKl3yX2ZEsVZ/BWSbUXex4AsXsogBF0z+pisgVpA==
-X-Received: by 2002:a17:902:be0d:b029:d2:8084:cb19 with SMTP id r13-20020a170902be0db02900d28084cb19mr23363135pls.45.1602502436564;
-        Mon, 12 Oct 2020 04:33:56 -0700 (PDT)
-Received: from [0.0.0.0] (tunnel595741-pt.tunnel.tserv22.tyo1.ipv6.he.net. [2001:470:23:8a4::2])
-        by smtp.gmail.com with ESMTPSA id e186sm20527296pfh.60.2020.10.12.04.33.54
-        for <linux-btrfs@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 12 Oct 2020 04:33:56 -0700 (PDT)
-From:   Zhang Boyang <zhangboyang.id@gmail.com>
-Subject: [discuss] GUI for "btrfs inspect-internal"?
-To:     linux-btrfs@vger.kernel.org
-Message-ID: <37457d69-df20-7280-0707-c5e69dabb48d@gmail.com>
-Date:   Mon, 12 Oct 2020 19:33:52 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.2
+        id S2388401AbgJLMII (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 12 Oct 2020 08:08:08 -0400
+Received: from mx2.suse.de ([195.135.220.15]:40600 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388209AbgJLMIH (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 12 Oct 2020 08:08:07 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1602504486;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=9LNxd1YQgiax2K9unx76+I2Uq5ZwfS++TYCJEfrMUwo=;
+        b=FITCX2O9ZvTi445p+niFtbBDdVHW1nvnNEHeZ8onoUHz1mOEQcr7Iu1+QJYhh8pM5UoM1K
+        i7MlyPZ9NB9gijeNCbZTL2oEqiWHnf78NM450xjvJnweTppvLWHAslybKfRBsCZLm2z80K
+        Os7UupXj4bRlgP/M/ECbk+k6sBbE1Zs=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 7C79CABF4;
+        Mon, 12 Oct 2020 12:08:06 +0000 (UTC)
+Subject: Re: [PATCH] btrfs: space-info: fix the wrong trace name for
+ bytes_may_use
+To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+References: <20201012065624.80649-1-wqu@suse.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <018b567a-5671-4ace-7c63-e22e8546500c@suse.com>
+Date:   Mon, 12 Oct 2020 15:08:05 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20201012065624.80649-1-wqu@suse.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello all,
-
-I'm a learner of btrfs, I found "btrfs inspect-internal" is very useful. 
-However it's seems not user friendly. For example, if I want view 
-EXTENT_DATA for some inode, I need to walk through root to leaf (I'm not 
-sure), which is a boring task.
-
-I want to develop a GUI for "btrfs inspect-internal". Basically it will 
-communicate with "btrfs inspect-internal" CLI using pipes.
-
-+------------------------+
-| btrfs inspect-internal |
-+------------------------+
-            | pipe
-  +---------------------+                   +---------------+
-  |    backend server   |-------------------|  web browser  |
-  | maybe: python+flask |       http        |     (GUI)     |
-  +---------------------+                   +---------------+
 
 
-The GUI will include features like "click block offset to jump", "view 
-history", "jump to inode", etc.
+On 12.10.20 г. 9:56 ч., Qu Wenruo wrote:
+> The trace_name for bytes_may_use should be "may_use", "space_info".
+> 
+> Fixes: f3e75e3805e1 ("btrfs: roll tracepoint into btrfs_space_info_update helper")
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
 
-Do you think this is a good idea? Comments are welcome.
-
-Thank you all!
-
-
-ZBY
-
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
