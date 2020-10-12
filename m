@@ -2,33 +2,34 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66E3028B45D
-	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Oct 2020 14:08:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC88128B4E5
+	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Oct 2020 14:46:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388401AbgJLMII (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 12 Oct 2020 08:08:08 -0400
-Received: from mx2.suse.de ([195.135.220.15]:40600 "EHLO mx2.suse.de"
+        id S1729737AbgJLMqj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 12 Oct 2020 08:46:39 -0400
+Received: from mx2.suse.de ([195.135.220.15]:51090 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388209AbgJLMIH (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 12 Oct 2020 08:08:07 -0400
+        id S1729704AbgJLMqj (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 12 Oct 2020 08:46:39 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1602504486;
+        t=1602506796;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=9LNxd1YQgiax2K9unx76+I2Uq5ZwfS++TYCJEfrMUwo=;
-        b=FITCX2O9ZvTi445p+niFtbBDdVHW1nvnNEHeZ8onoUHz1mOEQcr7Iu1+QJYhh8pM5UoM1K
-        i7MlyPZ9NB9gijeNCbZTL2oEqiWHnf78NM450xjvJnweTppvLWHAslybKfRBsCZLm2z80K
-        Os7UupXj4bRlgP/M/ECbk+k6sBbE1Zs=
+        bh=PJg4fgDJJRiOvokxTWxE0wgmDd+jiKBzrb75ZC/+XAk=;
+        b=uJMcRlLnmqPSqUjLi2H1R4MzPBFStMmuF84hqtwd88lClG+zAwktDB2z+dEX9lNkq5gGnJ
+        qhMroMTQcychiZsk0M9mgx+Qd1uRK8f48dKTRnrQDs0032x3GqR6hp+Va73EYHOF5eEj2w
+        e/s4kAqV75d2Sj8IHM7PIDgRhgyUb98=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 7C79CABF4;
-        Mon, 12 Oct 2020 12:08:06 +0000 (UTC)
-Subject: Re: [PATCH] btrfs: space-info: fix the wrong trace name for
- bytes_may_use
-To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-References: <20201012065624.80649-1-wqu@suse.com>
+        by mx2.suse.de (Postfix) with ESMTP id A526FAFEF;
+        Mon, 12 Oct 2020 12:46:36 +0000 (UTC)
+Subject: Re: [PATCH 4/4] btrfs: do not start readahead for csum tree when
+ scrubbing non-data block groups
+To:     fdmanana@kernel.org, linux-btrfs@vger.kernel.org
+References: <cover.1602499587.git.fdmanana@suse.com>
+ <fdde80f42dc3e822ab990d28d584175eb0ca222f.1602499588.git.fdmanana@suse.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  mQINBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -72,12 +73,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
  RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
  5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <018b567a-5671-4ace-7c63-e22e8546500c@suse.com>
-Date:   Mon, 12 Oct 2020 15:08:05 +0300
+Message-ID: <1aab142c-43de-9e26-2aa9-b9d90808bf5f@suse.com>
+Date:   Mon, 12 Oct 2020 15:46:35 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20201012065624.80649-1-wqu@suse.com>
+In-Reply-To: <fdde80f42dc3e822ab990d28d584175eb0ca222f.1602499588.git.fdmanana@suse.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -87,10 +88,20 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 12.10.20 г. 9:56 ч., Qu Wenruo wrote:
-> The trace_name for bytes_may_use should be "may_use", "space_info".
+On 12.10.20 г. 13:55 ч., fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
 > 
-> Fixes: f3e75e3805e1 ("btrfs: roll tracepoint into btrfs_space_info_update helper")
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> When scrubbing a stripe of a block group we always start readahead for the
+> checksums btree and wait for it to complete, however when the blockgroup is
+> not a data block group (or a mixed block group) it is a waste of time to do
+> it, since there are no checksums for metadata extents in that btree.
+> 
+> So skip that when the block group does not have the data flag set, saving
+> some time doing memory allocations, queueing a job in the readahead work
+> queue, waiting for it to complete and potentially avoiding some IO as well
+> (when csum tree extents are not in memory already).
+> 
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+
 
 Reviewed-by: Nikolay Borisov <nborisov@suse.com>
