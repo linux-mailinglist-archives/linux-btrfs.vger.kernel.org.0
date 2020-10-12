@@ -2,172 +2,108 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBE0528AC4D
-	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Oct 2020 04:52:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BE3528AD54
+	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Oct 2020 06:48:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726920AbgJLCwO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 11 Oct 2020 22:52:14 -0400
-Received: from mga17.intel.com ([192.55.52.151]:8719 "EHLO mga17.intel.com"
+        id S1726441AbgJLEsI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 12 Oct 2020 00:48:08 -0400
+Received: from mga01.intel.com ([192.55.52.88]:22482 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725917AbgJLCwN (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 11 Oct 2020 22:52:13 -0400
-IronPort-SDR: SogkLglfTOI448c8gun46fRIloB7Tv+N0KPwHJF683WZ/+KKYfZiiQzDAXjxpcwrr38JvcAD2a
- 4e+UOJEUbyIg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9771"; a="145547481"
+        id S1725917AbgJLEsH (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 12 Oct 2020 00:48:07 -0400
+IronPort-SDR: D5zKImA/blPs9ugNxSdwTFqrAiCPQ7MfkSDjdD7L1ZPrs2PLYW8mlo8pL00EnU95KhYD7GvV7Z
+ Er8+B/ppaVCA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9771"; a="183144505"
 X-IronPort-AV: E=Sophos;i="5.77,365,1596524400"; 
-   d="scan'208";a="145547481"
+   d="scan'208";a="183144505"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2020 19:52:12 -0700
-IronPort-SDR: 3TnKVbPylH9BSwlAJH1Ov9Njiu7wLWib2Ho9gu9BPc1TY+o5+XOiq5utRuLPPVnNa1ctMk2mPQ
- /52wnoZJ6cWQ==
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2020 21:47:58 -0700
+IronPort-SDR: OeJlrvjJIthwDW5ZiLkp+F246Fw9BWID0JMdXYyjjISLX5UipnPYleFarWgQdoLnt1ZOhIB0kv
+ QrFucSf/AAcw==
 X-IronPort-AV: E=Sophos;i="5.77,365,1596524400"; 
-   d="scan'208";a="529769581"
-Received: from shao2-debian.sh.intel.com (HELO [10.239.13.3]) ([10.239.13.3])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2020 19:52:10 -0700
-Subject: Re: [kbuild-all] Re: [PATCH] btrfs: fix devid 0 without a replace
- item by failing the mount
-To:     Anand Jain <anand.jain@oracle.com>,
-        kernel test robot <lkp@intel.com>,
-        linux-btrfs@vger.kernel.org
-Cc:     kbuild-all@lists.01.org, josef@toxicpanda.com
-References: <944e4246d4cfcb411b2bd09e941931ac7616e961.1601988987.git.anand.jain@oracle.com>
- <202010062208.6rn9cld4-lkp@intel.com>
- <9f78a512-5733-a44b-458e-0453a6a2b479@oracle.com>
-From:   Rong Chen <rong.a.chen@intel.com>
-Message-ID: <2358c0fe-3aa5-c395-eaca-8f6cddf86b9b@intel.com>
-Date:   Mon, 12 Oct 2020 10:51:21 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+   d="scan'208";a="529805779"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2020 21:47:57 -0700
+Date:   Sun, 11 Oct 2020 21:47:56 -0700
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Bernard Metzler <BMT@zurich.ibm.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mike Marciniszyn <mike.marciniszyn@intel.com>,
+        Dennis Dalessandro <dennis.dalessandro@intel.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Faisal Latif <faisal.latif@intel.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>, x86@kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        kvm@vger.kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
+        kexec@lists.infradead.org, linux-bcache@vger.kernel.org,
+        linux-mtd@lists.infradead.org, devel@driverdev.osuosl.org,
+        linux-efi@vger.kernel.org, linux-mmc@vger.kernel.org,
+        linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, ceph-devel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-aio@kvack.org,
+        io-uring@vger.kernel.org, linux-erofs@lists.ozlabs.org,
+        linux-um@lists.infradead.org, linux-ntfs-dev@lists.sourceforge.net,
+        reiserfs-devel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-nilfs@vger.kernel.org, cluster-devel@redhat.com,
+        ecryptfs@vger.kernel.org, linux-cifs@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-afs@lists.infradead.org,
+        linux-rdma@vger.kernel.org, amd-gfx@lists.freed.esktop.org,
+        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        drbd-dev@tron.linbit.com, linux-block@vger.kernel.org,
+        xen-devel@lists.xenproject.org, linux-cachefs@redhat.com,
+        samba-technical@lists.samba.org, intel-wired-lan@lists.osuosl.org
+Subject: Re: [PATCH RFC PKS/PMEM 10/58] drivers/rdma: Utilize new
+ kmap_thread()
+Message-ID: <20201012044756.GY2046448@iweiny-DESK2.sc.intel.com>
+References: <20201009195033.3208459-11-ira.weiny@intel.com>
+ <20201009195033.3208459-1-ira.weiny@intel.com>
+ <OF849D92D8.F4735ECA-ON002585FD.003F5F27-002585FD.003FCBD6@notes.na.collabserv.com>
 MIME-Version: 1.0
-In-Reply-To: <9f78a512-5733-a44b-458e-0453a6a2b479@oracle.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <OF849D92D8.F4735ECA-ON002585FD.003F5F27-002585FD.003FCBD6@notes.na.collabserv.com>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Sat, Oct 10, 2020 at 11:36:49AM +0000, Bernard Metzler wrote:
+> -----ira.weiny@intel.com wrote: -----
+> 
 
+[snip]
 
-On 10/7/20 10:07 AM, Anand Jain wrote:
-> On 6/10/20 10:54 pm, kernel test robot wrote:
->> Hi Anand,
->>
->> Thank you for the patch! Yet something to improve:
->>
->> [auto build test ERROR on kdave/for-next]
->> [also build test ERROR on v5.9-rc8 next-20201006]
->> [If your patch is applied to the wrong git tree, kindly drop us a note.
->> And when submitting patch, we suggest to use '--base' as documented in
->> https://git-scm.com/docs/git-format-patch]
->>
->> url: 
->> https://github.com/0day-ci/linux/commits/Anand-Jain/btrfs-fix-devid-0-without-a-replace-item-by-failing-the-mount/20201006-210957
->> base: https://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git 
->> for-next
->> config: i386-randconfig-s001-20201005 (attached as .config)
->> compiler: gcc-9 (Debian 9.3.0-15) 9.3.0
->> reproduce:
->>          # apt-get install sparse
->>          # sparse version: v0.6.2-201-g24bdaac6-dirty
->>          # 
->> https://github.com/0day-ci/linux/commit/ed4ebb4eb3f213f048ea5f6a2ed80f6bd728c9e1
->>          git remote add linux-review https://github.com/0day-ci/linux
->>          git fetch --no-tags linux-review 
->> Anand-Jain/btrfs-fix-devid-0-without-a-replace-item-by-failing-the-mount/20201006-210957
->>          git checkout ed4ebb4eb3f213f048ea5f6a2ed80f6bd728c9e1
->>          # save the attached .config to linux build tree
->>          make W=1 C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' 
->> ARCH=i386
->>
->> If you fix the issue, kindly add following tag as appropriate
->> Reported-by: kernel test robot <lkp@intel.com>
->>
->> All errors (new ones prefixed by >>):
->>
->>     fs/btrfs/dev-replace.c: In function 'btrfs_init_dev_replace':
->>>> fs/btrfs/dev-replace.c:98:7: error: too few arguments to function 
->>>> 'btrfs_find_device'
->>        98 |   if (btrfs_find_device(fs_info->fs_devices,
->>           |       ^~~~~~~~~~~~~~~~~
->>     In file included from fs/btrfs/dev-replace.c:18:
->>     fs/btrfs/volumes.h:455:22: note: declared here
->>       455 | struct btrfs_device *btrfs_find_device(struct 
->> btrfs_fs_devices *fs_devices,
->>           |                      ^~~~~~~~~~~~~~~~~
->>     fs/btrfs/dev-replace.c:161:7: error: too few arguments to 
->> function 'btrfs_find_device'
->>       161 |   if (btrfs_find_device(fs_info->fs_devices,
->>           |       ^~~~~~~~~~~~~~~~~
->>     In file included from fs/btrfs/dev-replace.c:18:
->>     fs/btrfs/volumes.h:455:22: note: declared here
->>       455 | struct btrfs_device *btrfs_find_device(struct 
->> btrfs_fs_devices *fs_devices,
->>           |                      ^~~~~~~~~~~~~~~~~
->>
->
->  Is there is a way to mention the patch dependencies, so that 0-Day 
-> tests would understand. As in the patch's changelog, two dependent 
-> patches [1] aren't in the misc-next yet.
->
-> [1]
-> https://patchwork.kernel.org/patch/11818635
-> https://patchwork.kernel.org/patch/11796905
+> >@@ -505,7 +505,7 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx,
+> >struct socket *s)
+> > 				page_array[seg] = p;
+> > 
+> > 				if (!c_tx->use_sendpage) {
+> >-					iov[seg].iov_base = kmap(p) + fp_off;
+> >+					iov[seg].iov_base = kmap_thread(p) + fp_off;
+> 
+> This misses a corresponding kunmap_thread() in siw_unmap_pages()
+> (pls change line 403 in siw_qp_tx.c as well)
 
-HI Anand,
+Thanks I missed that.
 
-The '--base' option in git format-patch may help, from man git format-patch:
+Done.
 
-BASE TREE INFORMATION
-        The base tree information block is used for maintainers or third 
-party testers to know the exact state the patch series applies to. It 
-consists of the base commit, which is a well-known commit that is part 
-of the stable part of the project history everybody else works
-        off of, and zero or more prerequisite patches, which are 
-well-known patches in flight that is not yet part of the base commit 
-that need to be applied on top of base commit in topological order 
-before the patches can be applied.
+Ira
 
-        The base commit is shown as "base-commit: " followed by the 
-40-hex of the commit object name. A prerequisite patch is shown as 
-"prerequisite-patch-id: " followed by the 40-hex patch id, which can be 
-obtained by passing the patch through the git patch-id --stable
-        command.
-
-        Imagine that on top of the public commit P, you applied 
-well-known patches X, Y and Z from somebody else, and then built your 
-three-patch series A, B, C, the history would be like:
-
-            ---P---X---Y---Z---A---B---C
-
-        With git format-patch --base=P -3 C (or variants thereof, e.g. 
-with --cover-letter or using Z..C instead of -3 C to specify the range), 
-the base tree information block is shown at the end of the first message 
-the command outputs (either the first patch, or the cover
-        letter), like this:
-
-            base-commit: P
-            prerequisite-patch-id: X
-            prerequisite-patch-id: Y
-            prerequisite-patch-id: Z
-
-        For non-linear topology, such as
-
-            ---P---X---A---M---C
-                \         /
-                 Y---Z---B
-
-        You can also use git format-patch --base=P -3 C to generate 
-patches for A, B and C, and the identifiers for P, X, Y, Z are appended 
-at the end of the first message.
-
-        If set --base=auto in cmdline, it will track base commit 
-automatically, the base commit will be the merge base of tip commit of 
-the remote-tracking branch and revision-range specified in cmdline. For 
-a local branch, you need to track a remote branch by git branch
-        --set-upstream-to before using this option.
-
-Best Regards,
-Rong Chen
+> 
+> Thanks,
+> Bernard.
+> 
