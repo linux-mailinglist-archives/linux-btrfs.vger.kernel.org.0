@@ -2,35 +2,35 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3266A28CC9A
-	for <lists+linux-btrfs@lfdr.de>; Tue, 13 Oct 2020 13:29:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEA6928CE35
+	for <lists+linux-btrfs@lfdr.de>; Tue, 13 Oct 2020 14:18:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726871AbgJML3V (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 13 Oct 2020 07:29:21 -0400
-Received: from mx2.suse.de ([195.135.220.15]:44406 "EHLO mx2.suse.de"
+        id S1726707AbgJMMSm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 13 Oct 2020 08:18:42 -0400
+Received: from mx2.suse.de ([195.135.220.15]:54724 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726867AbgJML3V (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 13 Oct 2020 07:29:21 -0400
+        id S1726111AbgJMMSm (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 13 Oct 2020 08:18:42 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1602588560;
+        t=1602591520;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=xdqOJLAwgp5DwsQ2VWIQvqA1WIfLxh2Np5LjXjS3OuU=;
-        b=H5H2W8Bz+rJbi7bcEkC1uc5YxwKlEN/8mlHuMhFoHJmH+wG1mT+KE42Cd3tNuorlmvVjxS
-        XumCqSW/exyAXQUBQN+4LQ8JxPNqoCaB58Pcd0VezwRQib6PtnQli0TaxPw7RovahKHqdV
-        Vo+a9yQJeirM8ebwAI8pjT8/1WLFpvo=
+        bh=gpzckZ+4eK8KAlKwWTDuGQvh7lV/xXAWY5o3IAHx620=;
+        b=bQ2YjaGQT3Cg774cg+hl3AQsn3BoX6EWVgGQdocgHw39lY/x66WtIOdJvW84+sgSS+nnbU
+        3f9aqRO/9XhciQRL2x3JZjJS8Cb/bqs0Ws/xMm0KLJiWFJEgBvw2LLwHvj/HJz4QKaftEX
+        OTa2MPzxwp3HWLmE12iDRqA+F0BXiNY=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 317C5AD03;
-        Tue, 13 Oct 2020 11:29:20 +0000 (UTC)
-Subject: Re: [PATCH v3 05/12] btrfs: improve preemptive background space
- flushing
+        by mx2.suse.de (Postfix) with ESMTP id 6E8DAACB8;
+        Tue, 13 Oct 2020 12:18:40 +0000 (UTC)
+Subject: Re: [PATCH v3 09/12] btrfs: simplify the logic in
+ need_preemptive_flushing
 To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
         kernel-team@fb.com
 References: <cover.1602249928.git.josef@toxicpanda.com>
- <26c66e1d02a0fee72d79ed92e24d2d2f4620d487.1602249928.git.josef@toxicpanda.com>
+ <8b46bf643eb38d6381345b9985b2abbdc47711ad.1602249928.git.josef@toxicpanda.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  mQINBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -74,12 +74,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
  RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
  5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <2f95c845-5c0f-7574-7715-c425e10709d6@suse.com>
-Date:   Tue, 13 Oct 2020 14:29:19 +0300
+Message-ID: <53484187-4c54-abcd-3aaa-83d151da117b@suse.com>
+Date:   Tue, 13 Oct 2020 15:18:39 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <26c66e1d02a0fee72d79ed92e24d2d2f4620d487.1602249928.git.josef@toxicpanda.com>
+In-Reply-To: <8b46bf643eb38d6381345b9985b2abbdc47711ad.1602249928.git.josef@toxicpanda.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -90,42 +90,11 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 9.10.20 г. 16:28 ч., Josef Bacik wrote:
-> Currently if we ever have to flush space because we do not have enough
-> we allocate a ticket and attach it to the space_info, and then
-> systematically flush things in the file system that hold space
-> reservations until our space is reclaimed.
-> 
-> However this has a latency cost, we must go to sleep and wait for the
-> flushing to make progress before we are woken up and allowed to continue
-> doing our work.
-> 
-> In order to address that we used to kick off the async worker to flush
-> space preemptively, so that we could be reclaiming space hopefully
-> before any tasks needed to stop and wait for space to reclaim.
-> 
-> When I introduced the ticketed ENOSPC stuff this broke slightly in the
-> fact that we were using tickets to indicate if we were done flushing.
-> No tickets, no more flushing.  However this meant that we essentially
-> never preemptively flushed.  This caused a write performance regression
-> that Nikolay noticed in an unrelated patch that removed the committing
-> of the transaction during btrfs_end_transaction.
-> 
-> The behavior that happened pre that patch was btrfs_end_transaction()
-> would see that we were low on space, and it would commit the
-> transaction.  This was bad because in this particular case you could end
-> up with thousands and thousands of transactions being committed during
-> the 5 minute reproducer.  With the patch to remove this behavior you got
-> much more sane transaction commits, but we ended up slower because we
-> would write for a while, flush, write for a while, flush again.
-> 
-> To address this we need to reinstate a preemptive flushing mechanism.
-> However it is distinctly different from our ticketing flushing in that
-> it doesn't have tickets to base it's decisions on.  Instead of bolting
-> this logic into our existing flushing work, add another worker to handle
-> this preemptive flushing.  Here we will attempt to be slightly
-> intelligent about the things that we flushing, attempting to balance
-> between whichever pool is taking up the most space.
+> A lot of this was added all in one go with no explanation, and is a bit
+> unwieldy and confusing.  Simplify the logic to start preemptive flushing
+> if we've reserved more than half of our available free space.
 > 
 > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+
 
 Reviewed-by: Nikolay Borisov <nborisov@suse.com>
