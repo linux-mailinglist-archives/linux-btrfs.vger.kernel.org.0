@@ -2,99 +2,94 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEA6928CE35
-	for <lists+linux-btrfs@lfdr.de>; Tue, 13 Oct 2020 14:18:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D085D28D0F3
+	for <lists+linux-btrfs@lfdr.de>; Tue, 13 Oct 2020 17:04:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726707AbgJMMSm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 13 Oct 2020 08:18:42 -0400
-Received: from mx2.suse.de ([195.135.220.15]:54724 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726111AbgJMMSm (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 13 Oct 2020 08:18:42 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1602591520;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=gpzckZ+4eK8KAlKwWTDuGQvh7lV/xXAWY5o3IAHx620=;
-        b=bQ2YjaGQT3Cg774cg+hl3AQsn3BoX6EWVgGQdocgHw39lY/x66WtIOdJvW84+sgSS+nnbU
-        3f9aqRO/9XhciQRL2x3JZjJS8Cb/bqs0Ws/xMm0KLJiWFJEgBvw2LLwHvj/HJz4QKaftEX
-        OTa2MPzxwp3HWLmE12iDRqA+F0BXiNY=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 6E8DAACB8;
-        Tue, 13 Oct 2020 12:18:40 +0000 (UTC)
-Subject: Re: [PATCH v3 09/12] btrfs: simplify the logic in
- need_preemptive_flushing
-To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com
-References: <cover.1602249928.git.josef@toxicpanda.com>
- <8b46bf643eb38d6381345b9985b2abbdc47711ad.1602249928.git.josef@toxicpanda.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <53484187-4c54-abcd-3aaa-83d151da117b@suse.com>
-Date:   Tue, 13 Oct 2020 15:18:39 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1727029AbgJMPEn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 13 Oct 2020 11:04:43 -0400
+Received: from 6.mo179.mail-out.ovh.net ([46.105.56.76]:45590 "EHLO
+        6.mo179.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726157AbgJMPEm (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 13 Oct 2020 11:04:42 -0400
+X-Greylist: delayed 3608 seconds by postgrey-1.27 at vger.kernel.org; Tue, 13 Oct 2020 11:04:42 EDT
+Received: from player795.ha.ovh.net (unknown [10.108.35.240])
+        by mo179.mail-out.ovh.net (Postfix) with ESMTP id D82C817B6FD
+        for <linux-btrfs@vger.kernel.org>; Tue, 13 Oct 2020 15:46:51 +0200 (CEST)
+Received: from grubelek.pl (89-77-39-184.dynamic.chello.pl [89.77.39.184])
+        (Authenticated sender: szarpaj@grubelek.pl)
+        by player795.ha.ovh.net (Postfix) with ESMTPSA id 2B95A16F93A6E;
+        Tue, 13 Oct 2020 13:46:49 +0000 (UTC)
+Authentication-Results: garm.ovh; auth=pass (GARM-101G004f01e56be-0a30-4757-8a4a-5aae3aab91e0,
+                    AA506B1D2CAA152689122792A0433A89576A5AF1) smtp.auth=szarpaj@grubelek.pl
+Received: by teh mailsystemz
+        id 11F2527C6179; Tue, 13 Oct 2020 15:46:48 +0200 (CEST)
+Date:   Tue, 13 Oct 2020 15:46:48 +0200
+From:   Piotr Szymaniak <szarpaj@grubelek.pl>
+To:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+Cc:     Hendrik Friedel <hendrik@friedels.name>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Re: Raid5 Write Hole: Is it worse than in MD?
+Message-ID: <20201013134648.GG4220@pontus>
+References: <em46b9d48d-39d4-44bc-9fd7-a08d9a96fca2@ryzen>
+ <SN4PR0401MB3598F3C8CAC47F1BB28801279B040@SN4PR0401MB3598.namprd04.prod.outlook.com>
 MIME-Version: 1.0
-In-Reply-To: <8b46bf643eb38d6381345b9985b2abbdc47711ad.1602249928.git.josef@toxicpanda.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="n8g4imXOkfNTN/H1"
+Content-Disposition: inline
+In-Reply-To: <SN4PR0401MB3598F3C8CAC47F1BB28801279B040@SN4PR0401MB3598.namprd04.prod.outlook.com>
+X-Ovh-Tracer-Id: 12667218377992836674
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedujedrheelgdeilecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpeffhffvuffkfhggtggujgesghdtreertddtjeenucfhrhhomheprfhiohhtrhcuufiihihmrghnihgrkhcuoehsiigrrhhprghjsehgrhhusggvlhgvkhdrphhlqeenucggtffrrghtthgvrhhnpeejheffvdelkeefhfeuieetfeeugfevgfelgfefiefhtdethfeuvdekleevvdejveenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecukfhppedtrddtrddtrddtpdekledrjeejrdefledrudekgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhhouggvpehsmhhtphdqohhuthdphhgvlhhopehplhgrhigvrhejleehrdhhrgdrohhvhhdrnhgvthdpihhnvghtpedtrddtrddtrddtpdhmrghilhhfrhhomhepshiirghrphgrjhesghhruhgsvghlvghkrdhplhdprhgtphhtthhopehlihhnuhigqdgsthhrfhhssehvghgvrhdrkhgvrhhnvghlrdhorhhg
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
+--n8g4imXOkfNTN/H1
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 9.10.20 г. 16:28 ч., Josef Bacik wrote:
-> A lot of this was added all in one go with no explanation, and is a bit
-> unwieldy and confusing.  Simplify the logic to start preemptive flushing
-> if we've reserved more than half of our available free space.
-> 
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+On Tue, Oct 13, 2020 at 09:43:25AM +0000, Johannes Thumshirn wrote:
+> *snip*
+> For the other problems of raid56, Zygo once compiled a very comprehensive=
+ list,
+> but I don't have the link anymore.
+
+This list (both user/dev):
+https://lore.kernel.org/linux-btrfs/20200627032414.GX10769@hungrycats.org/
+https://lore.kernel.org/linux-btrfs/20200627030614.GW10769@hungrycats.org/
 
 
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+Best regards,
+Piotr Szymaniak.
+--=20
+Chyba  musze  juz wracac do sklepu.  Kelly jest w porzadku,  ale czasem
+potrafi  zupelnie sie wylaczyc.  I do tego nie wierzy w cos takiego jak
+odpowiedzialnosc.  Ma to jakis zwiazek z ta sekta,  do  ktorej  nalezy.
+Maharishi Woda-z-mozgu czy cos w tym stylu.
+  -- Graham Masterton, "Mirror"
+
+--n8g4imXOkfNTN/H1
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEFSphDYLXjiCg60ZUQykCi/VzD2UFAl+Fr8IACgkQQykCi/Vz
+D2Us0w/+NnR30fqmsLF6sDXhK6rXaV+L1FMfV/XI3L8zx5YH1uZXLgpW4mHQyvTP
+X+2wOM2s7FI87s3eWGkUQ8Ns5uTBgn64RbkyWWO9rnzzdvxmTPI6RcNEyDELIV6I
+GqL9sg5UQojnuVxlpld/T+iCLr/GVNUrzsMZIJ1wsyc6tp7mTWf2opopt2cfIce5
+QdpUkb+MF27AZuGLtHS8kMYSm7JGy3zF9Zv8eczENOLq0BntmpmTHZbyax7Cyhnm
+qiv/xMM92FOLawOvHNeOJdHnA4tq+DvJCWWoyirafzaus9tma+1EatqE1Ae60Y5s
+eQgPeKvpKt7JY1vG/XlWysoYOQExs+Z/Iw60exWSRFwmPSKz5t+9kcohDwjFmyA1
+FyvcE1ajjApkQz0c8TEQbqxt6UReZa7zHmqLIiCNtBT/p80qP0/G0CtfwqD2k8jB
+jn3Tr4HXE5mE1ANhTjIHVG/DHQUi33bleHb1l+z0x73cXBtVG+UWUQGQsYz9f5A+
+SgAz+zz9aW8yt/VuO5htyk2hGcKhDQqPOYJj413ZMXME3ysBC0Hocf97kF5JRriE
+ZwxDQndXjJhMOmTxuxwvsuMw1vLQQ1UPAP348z6AEF9uCmT5jifzL+Aao1m/Mn8w
+ZmbD15+A3IHgp0mu7WttNpDR5Ksnj6EuVZPT3Q9zTvLZ4LEmzkA=
+=9VpT
+-----END PGP SIGNATURE-----
+
+--n8g4imXOkfNTN/H1--
