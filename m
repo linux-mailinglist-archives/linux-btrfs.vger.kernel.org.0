@@ -2,111 +2,123 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25DBD28CADE
-	for <lists+linux-btrfs@lfdr.de>; Tue, 13 Oct 2020 11:18:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C1FC28CABB
+	for <lists+linux-btrfs@lfdr.de>; Tue, 13 Oct 2020 11:02:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390721AbgJMJSP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 13 Oct 2020 05:18:15 -0400
-Received: from esa4.hgst.iphmx.com ([216.71.154.42]:8703 "EHLO
-        esa4.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389649AbgJMJSP (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 13 Oct 2020 05:18:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1602580694; x=1634116694;
-  h=from:to:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=xcF+bWKL6GNDnoAURaIc10eKVQfUV5uvMRGwLPXC9gU=;
-  b=YkeaasIXN2DHedNxT1rr4uUT20SE6BXUWuRGILPX4EEHDNO+uQg1W55X
-   C9ULJ3+jyHeNujgdOIjvQkS4I5rm0B3giYO3XMr5bwqEdt0IEQhna+buD
-   TRD9ekHJDGpiEU0h2mm24tjt+PJ5nL8U+f56YiN6NX9uu2hMFM/ozSNzI
-   ODvxuJQvZ+/apWKt1d+94jDY2z5YL4g4op7xNadaI4P3RijEiGaL9F4Jf
-   C9BuAeeNnxGUL98Fd0UA9cqnS4X6RR8WxPOAO52q3IJJ5dwUm3RoSjO46
-   ++1r9MSuN5BUZGx35Bkjb71s6YYD0sBTa2CW/LIGoCTm8N2mc8vFier1N
-   A==;
-IronPort-SDR: zIOGz9hfi8oesnOvdqkI7UPVy2Nk3TLbCVNZkfB1J4DgH5B6oaniPE97EW2KP+p0vi9f3G9zgC
- GI022KRAcjKlbGXk+sxcE88SZgRFPvdHK6Tn/eflgO5m8eWVqBqePGV3mhsJQN6zbo8w99HA0w
- rb/yFhof9mN8xSpFRnXhKShsL7l6cemZTP94/sg/BXwlnXFN5xhTElSJbGUK1yeiVdvn72Em6Q
- e/bmaiPc9L17CF6tOVPw+aq1MbLHQSDm+4qTTJ7GomLfxbipcCKRR8osTAALTvtlLF12paeOg2
- V/Y=
-X-IronPort-AV: E=Sophos;i="5.77,369,1596470400"; 
-   d="scan'208";a="149626640"
-Received: from mail-dm6nam12lp2177.outbound.protection.outlook.com (HELO NAM12-DM6-obe.outbound.protection.outlook.com) ([104.47.59.177])
-  by ob1.hgst.iphmx.com with ESMTP; 13 Oct 2020 16:59:32 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KPYxXNWqPrC+9J4iLS+ho9Av2luZYi9xZWD3qkO0Tb+4T4rpu6rSyoiNQEIjM/3VM+/D4P1bRp/KqRgRrflAaKgty0oXpRPeZcmz4JxoOdNNMh4eUPdY3Yjh3y8piCu3OkERy4TdK85VHs239QXvO3ok3ZJMMEbYFzX4P4rcV6obtbx62GaFGU+y2TJAPK/47LfoHLOIGp2A+o6x5oFUHonNrZuMZw8wkBqWTe+EafgZReYHSqRyx93rKSX8KXeq0zG83c8/zM8iuasTVAV0gNqK2SY3+B3zoDWdyh1T+tVq+X4p1p5ju4y4MNm38I+IYnJiakFebyCwod3n/jV6dg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xcF+bWKL6GNDnoAURaIc10eKVQfUV5uvMRGwLPXC9gU=;
- b=gmNy5UYthr2V5jGDbsX5+7xOf7XG3ussYaKUsXqeV6eeC+6k38rHlDzBSH3YqdwEmS9RAsyJDAr+J/iifflP+Z1hBFGANoxpt68c6T/+5OOzOHUf97KR7ZWXbVHSF5FFKNxofQE2Z5qZD7sLg/OOJIe8KJCW50z1bxobGl2Qtep4sng+tsdvV1R8IX75mAEWJbFnQAsLGxfxUxuHIJe0qzf4Paan6duhSrIbL3ZfdoCVMSB+MpBF4ZCXQYpdV/ZKcfN4PEfIetz9Bxt/q/C7hQDg6KqTVENbeSbtnZYB81Ux4jkfd8IjniWG3O2G1bF89MgF8fBQNc1ujmjPxPiGZg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xcF+bWKL6GNDnoAURaIc10eKVQfUV5uvMRGwLPXC9gU=;
- b=M9VhGoedcAZlb5s9mF9DI448M+VNdfuoiRXneW2HHpXsSjS3SqOLrEyfkzlcE1o1nUg2+EW8av9g6xC7QA8cZT12ve6KdeK5U/H+sEFC1Ezlnrn0eui7x7fxzKNiODfiZe9croNPuRA6j39LNBklk0W2c8pexf3BDiQ32n6xjUM=
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
- (2603:10b6:803:47::21) by SN2PR04MB2319.namprd04.prod.outlook.com
- (2603:10b6:804:12::14) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.22; Tue, 13 Oct
- 2020 08:59:31 +0000
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::619a:567c:d053:ce25]) by SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::619a:567c:d053:ce25%6]) with mapi id 15.20.3455.031; Tue, 13 Oct 2020
- 08:59:31 +0000
-From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To:     "fdmanana@kernel.org" <fdmanana@kernel.org>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH 1/4] btrfs: fix use-after-free on readahead extent after
- failure to create it
-Thread-Topic: [PATCH 1/4] btrfs: fix use-after-free on readahead extent after
- failure to create it
-Thread-Index: AQHWoIY4LUoA7feslUaQL8m9RgO5Cw==
-Date:   Tue, 13 Oct 2020 08:59:31 +0000
-Message-ID: <SN4PR0401MB3598AB57C10AE34F084521849B040@SN4PR0401MB3598.namprd04.prod.outlook.com>
-References: <cover.1602499587.git.fdmanana@suse.com>
- <2db542cfa0e255a78eb25a11eb719caa5760087d.1602499588.git.fdmanana@suse.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [129.253.240.72]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 1800f256-d8f2-4e46-af13-08d86f564c8f
-x-ms-traffictypediagnostic: SN2PR04MB2319:
-x-microsoft-antispam-prvs: <SN2PR04MB2319B40126694C7F731D48409B040@SN2PR04MB2319.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:1824;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: HQBNYqp+riz64R+aR4NhDuTbCdUn+pT3sB9oV1aIVUEyBQqPpyec05WI+ImwkRgtd7DQf1T/hGCxsO3+gr4P77UB5HFYO+YJgOqsHKg/JwinhT+TKPFLaNFYBKsNICxiVW4W/fyrDxK5W11vjAdq2VXjm9NlaHyM1R9eRAWIaPTyE4EKA43ycNCpE3KsELxdk9rRtJIgXdp1n84r325FobJwD0a/cUaTCcsBCydygcV3/HuVHgLz5T+696XT8V+0OrZS1+MhSd4KSQpEh901suqgMdEBYsNeGNSVYWBo88jO3L6nZTWkKxX1bJa4pWKbrbZyXPV36Ma+iEbkUDzSZg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR0401MB3598.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(346002)(366004)(39860400002)(136003)(396003)(8936002)(71200400001)(8676002)(55016002)(478600001)(4270600006)(86362001)(9686003)(186003)(26005)(6506007)(7696005)(316002)(2906002)(110136005)(558084003)(33656002)(64756008)(5660300002)(52536014)(66476007)(66556008)(66946007)(66446008)(76116006)(91956017);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: PAwoSoK1CvHPYzZGRAkJTUZmrEsglU45J+DJ3TL+j4NwoN7fdjx3lK457VkTfWM706d0d9+IIRqwAHpNdjJvig7k4rNz/e7n4AF9D346fcAX53ARoI2kHvxJPmtvtYKwkvKX8LEMITEDASTovJoj4FSEL0SiiTY1tMO8pSZQLnrB7CFAoXr9pt8kK+LopSZDSP88cKRgU7GcXQpwc07BF/Tl6KyhARXJc2NDFChoaByoWkjugR8X+MXCJ6+VLTuhxtLVq6j2bVTAYLcVnpSC1oG1Rk9gp4033fclfW6GCHhEYM5JgxsVupw9/yBbq3X36eObhG/JA2TQ8DjI7FJYQiMljmY/e+LFz74g0TGSaKMk3lVYJeQSMTS1H5G3HZ4ElNAgg/SYgpzVVs080rzhTzucvP8Rz4saRQLTo/zCH1KJkCSd4rqO2tsnEo2ERmnI6IYWwnz6dhFMmgxgpoAlbJPbR2K7RJMDLcj9iF2USunIsOmnpQ1JJJqnZeVV3gdHkDYt8zOYUJjHiYoJmigw85enhBJzQ4bSIOx1byUuLCCiqCyBK+hVd4V/mOSGOiWPPX572czuiEJVVFO0mLAiv0BgBa6qTnSjxbZhcs2eAlVJlvEWuuE+q6GZmJWoK2NuN1759XNlbaY6lwbJfjFz8g==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S2391421AbgJMJCa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 13 Oct 2020 05:02:30 -0400
+Received: from mx2.suse.de ([195.135.220.15]:37556 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388779AbgJMJC3 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 13 Oct 2020 05:02:29 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1602579747;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=H7s0LQb6s1jXbJbvueueIGttOGTxsGI3Ad3SmJE5Qz8=;
+        b=dpXtUfQA6Sa90FlfXsNCRKHlsw+uctxr4IeWxq6b8k0bISMg8uBAZgt7SovZ94EQSxXttq
+        Z1jd4FfhrGk8cIowHOaS/6xbuiHyDl8uzydWGKEF3s4gGQcB9foFDrpxCRWJh9Ozz0/6Ev
+        YDItWvSpQT67ul4kzx1plgEbqQz/PSs=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id A799AAF87;
+        Tue, 13 Oct 2020 09:02:27 +0000 (UTC)
+Subject: Re: Tracking Previously (or to-be-) TRIM'd Blocks
+To:     "Ellis H. Wilson III" <ellisw@panasas.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+References: <a75c093a-ce4f-d4cc-8659-22072d7468b2@panasas.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <f2597392-7818-69f5-a9f2-c748ce44eb45@suse.com>
+Date:   Tue, 13 Oct 2020 12:02:26 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SN4PR0401MB3598.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1800f256-d8f2-4e46-af13-08d86f564c8f
-X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Oct 2020 08:59:31.3951
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: DTy6HpoV7kYV5nfJLgVzfkwmNySSIpyOCw051V+2TueDpvUrD++57Qlw9Kbg5y91zYCRWm21f+BIOj+P7rEGkkFPqzmNOrR+zkkXT+wmoEw=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN2PR04MB2319
+In-Reply-To: <a75c093a-ce4f-d4cc-8659-22072d7468b2@panasas.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hope I didn't miss anything,=0A=
-Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>=0A=
+
+
+On 12.10.20 г. 20:51 ч., Ellis H. Wilson III wrote:
+> Hi all,
+> 
+> Another performance-related question.  We use fstrim to TRIM our
+> SATA-SSD backed BTRFS filesystems at daily and weekly intervals,
+> typically with a 1MB minimum size specified.  Without such thresholds
+> the time to complete can be extremely onerous (approaching 10 hours).
+> 
+> I note that (via dstat) after a short blip where low reads/writes are
+> being done the throughput ramps to 86GB/s.  While fast, even in the case
+> of an empty SATA SSD that's been previously trimmed and nothing
+> additional written to it, it will take 47 seconds to trim and will be
+> largely unresponsive during that time even if the underlying SSD does
+> little to no actual erases.
+> 
+> Are there any plans to track previously trimmed (or to-be-trimmed)
+> blocks as ext4 does, or does such functionality exist in a more modern
+> release (we're running on roughly 5.5)?  Apologies if this is an
+> old/previously discussed topic.  My search-engine-foo is failing me.
+> 
+> Alternatively, is there any way to instruct BTRFS to take it's time
+> issuing the TRIM commands to the underlying SSD, or break large
+> contiguous ranges into smaller ones to improve QoS for other commands?
+> Right now it appears BTRFS goes as fast as possible and can leave
+> userspace processes stuck in D state for extreme amounts of time for
+> more aggressive TRIM runs.
+
+BTRFS supports async discards which include throttling logic, it landed
+in 5.6.
+
+> 
+> Thanks,
+> 
+> ellis
+> 
