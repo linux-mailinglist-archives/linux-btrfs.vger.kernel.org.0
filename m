@@ -2,54 +2,54 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E86828E1FE
-	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Oct 2020 16:14:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9203028E2A0
+	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Oct 2020 16:56:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731432AbgJNOOR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 14 Oct 2020 10:14:17 -0400
-Received: from mx2.suse.de ([195.135.220.15]:37410 "EHLO mx2.suse.de"
+        id S1728813AbgJNOz5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 14 Oct 2020 10:55:57 -0400
+Received: from mx2.suse.de ([195.135.220.15]:38696 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731395AbgJNOOQ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 14 Oct 2020 10:14:16 -0400
+        id S1728799AbgJNOz5 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 14 Oct 2020 10:55:57 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 96598AD1E
-        for <linux-btrfs@vger.kernel.org>; Wed, 14 Oct 2020 14:14:15 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 9374FDA7C3; Wed, 14 Oct 2020 16:12:48 +0200 (CEST)
-Date:   Wed, 14 Oct 2020 16:12:48 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Goldwyn Rodrigues <rgoldwyn@suse.de>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: use iosize while reading compressed pages
-Message-ID: <20201014141248.GN6756@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Goldwyn Rodrigues <rgoldwyn@suse.de>,
-        linux-btrfs@vger.kernel.org
-References: <20200915154140.mlmlwmctre2prf2s@fiona>
+        by mx2.suse.de (Postfix) with ESMTP id 80C7FAD18;
+        Wed, 14 Oct 2020 14:55:56 +0000 (UTC)
+From:   Goldwyn Rodrigues <rgoldwyn@suse.de>
+To:     linux-btrfs@vger.kernel.org
+Cc:     Goldwyn Rodrigues <rgoldwyn@suse.com>
+Subject: [PATCH] btrfs: Use round_down while calculating start position in btrfs_dirty_pages()
+Date:   Wed, 14 Oct 2020 09:55:44 -0500
+Message-Id: <20201014145545.10878-1-rgoldwyn@suse.de>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200915154140.mlmlwmctre2prf2s@fiona>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 10:41:40AM -0500, Goldwyn Rodrigues wrote:
-> While using compression, a submitted bio is mapped with a compressed bio
-> which performs the read from disk, decompresses and returns uncompressed
-> data to original bio. The original bio must reflect the uncompressed
-> size (iosize) of the I/O to be performed, or else the page just gets the
-> decompressed I/O length of data (disk_io_size). The compressed bio
-> checks the extent map and get the correct length while performing the
-> I/O from disk.
-> 
-> This came up in subpage work when only compressed length of the original
-> bio was filled in the page. This worked correctly for pagesize ==
-> sectorsize because both compressed and uncompressed data are at pagesize
-> boundaries, and would end up filling the requested page.
-> 
-> Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
+From: Goldwyn Rodrigues <rgoldwyn@suse.com>
 
-Added to misc-next, thanks.
+round_down looks prettier than the bit mask operations.
+
+Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
+---
+ fs/btrfs/file.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+index 0ff659455b1e..6e52e2360d8e 100644
+--- a/fs/btrfs/file.c
++++ b/fs/btrfs/file.c
+@@ -514,7 +514,7 @@ int btrfs_dirty_pages(struct btrfs_inode *inode, struct page **pages,
+ 	loff_t isize = i_size_read(&inode->vfs_inode);
+ 	unsigned int extra_bits = 0;
+ 
+-	start_pos = pos & ~((u64) fs_info->sectorsize - 1);
++	start_pos = round_down(pos, fs_info->sectorsize);
+ 	num_bytes = round_up(write_bytes + pos - start_pos,
+ 			     fs_info->sectorsize);
+ 
+-- 
+2.26.2
+
