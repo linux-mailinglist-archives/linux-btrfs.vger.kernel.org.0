@@ -2,71 +2,57 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F9832938B0
-	for <lists+linux-btrfs@lfdr.de>; Tue, 20 Oct 2020 11:59:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BACB328E750
+	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Oct 2020 21:30:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405845AbgJTJ7t (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 20 Oct 2020 05:59:49 -0400
-Received: from mail.plutonline.ru ([62.112.114.134]:39268 "EHLO
-        mail.plutonline.ru" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1729434AbgJTJ7t (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 20 Oct 2020 05:59:49 -0400
-Received: from Shop01 (localhost [127.0.0.1])
-        by mail.plutonline.ru (8.14.7/8.14.7) with SMTP id 09EK1bCR021523;
-        Wed, 14 Oct 2020 23:01:39 +0300 (FET)
-        (envelope-from Osmaisa@hptmail.com)
-Received: from [140.7.127.112] by Shop01 id <7214358-28798>; Wed, 14 Oct 2020 19:21:07 -0400
-Message-ID: <0jzum5oe$6gi$auue2pici5y7h1@ei3.4v.89sh>
-From:   "OSMAN" <Osmaisa@hptmail.com>
-Reply-To: "OSMAN" <Osmaisa@hptmail.com>
-To:     info@radioseagull.nl
-Subject: Reply
-Date:   Wed, 14 Oct 20 19:21:07 GMT
-X-Mailer: Microsoft Outlook Express 5.50.4522.1200
-MIME-Version: 1.0
-Content-Type: multipart/alternative;
-        boundary="257964.C.D70B3"
-X-Priority: 1
-X-MSMail-Priority: High
+        id S2390662AbgJNTaG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 14 Oct 2020 15:30:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34722 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389668AbgJNTaF (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 14 Oct 2020 15:30:05 -0400
+Subject: Re: [GIT PULL] iomap: new code for 5.10-rc1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602703805;
+        bh=20XkeA8xKqwTx4Bcvf0F8549PQcXxbGnosNdRXGgVm4=;
+        h=From:In-Reply-To:References:Date:To:Cc:From;
+        b=zH3bMIthX3zEanuDKypSFxaordffP0IrdlCyw5DM6HIZeuS+D5X1DH49No56IUSIJ
+         /INl737Z/QwPtPV3CKu56qgUjCiAsPg4JueOI7KS80cIMUAUn7t3A0d3EEJyW5OTRf
+         ep31oEymKsn7nxvu3+6X14jX1HDCpKaXplvCoESk=
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20201013164131.GB9832@magnolia>
+References: <20201013164131.GB9832@magnolia>
+X-PR-Tracked-List-Id: <linux-btrfs.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20201013164131.GB9832@magnolia>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/fs/xfs/xfs-linux.git tags/iomap-5.10-merge-4
+X-PR-Tracked-Commit-Id: 1a31182edd0083bb9f26e582ed39f92f898c4d0a
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 37187df45af7d28d27b5c130c23f407ca9dbefa2
+Message-Id: <160270380520.23686.2410213425284683792.pr-tracker-bot@kernel.org>
+Date:   Wed, 14 Oct 2020 19:30:05 +0000
+To:     "Darrick J. Wong" <djwong@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        david@fromorbit.com, linux-kernel@vger.kernel.org,
+        sandeen@sandeen.net, hch@lst.de,
+        linux-ext4 <linux-ext4@vger.kernel.org>,
+        Theodore Ts'o <tytso@mit.edu>, riteshh@linux.ibm.com,
+        rgoldwyn@suse.de, agruenba@redhat.com, linux-btrfs@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+The pull request you sent on Tue, 13 Oct 2020 09:41:31 -0700:
 
---257964.C.D70B3
-Content-Type: text/plain;
-Content-Transfer-Encoding: quoted-printable
+> git://git.kernel.org/pub/scm/fs/xfs/xfs-linux.git tags/iomap-5.10-merge-4
 
-Hello,
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/37187df45af7d28d27b5c130c23f407ca9dbefa2
 
-I hope this email meets you in good health, My names are Osman Jalloh and =
-I am from Sierra Leone, I
-have some kilos of gold which I inherited from my late parents and I will =
-like to
-ship it out to overseas for investment, I need a partner
-who can receive the gold and make
-arrangement for me to leave my country and meet you after you receive the =
-gold.
-Please note that, the gold is not a stolen gold but my family treasure
-left behind by my late parents who were
-local miners. If you are sincere and can handle this, provide your particu=
-lars as stated below:
+Thank you!
 
-FULL NAME:
-ADDRESS:
-TELEPHONE:
-DATE OF BIRTH:
-COUNTRY:
-SEX:
-OCCUPATION:
-IDENTIFICATION: 
-
-Please write me back on my secure email addresses: (osmasj1990@gmail.com) =
-and (osmasj1990@yahoo.com). 
-
-Thanks,
-Osman Jalloh.
-
---257964.C.D70B3--
-
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
