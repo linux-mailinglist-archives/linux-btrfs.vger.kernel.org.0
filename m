@@ -2,74 +2,84 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FBBD28D6BF
-	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Oct 2020 01:01:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D9AF28D8AB
+	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Oct 2020 04:47:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729605AbgJMXB0 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-btrfs@lfdr.de>); Tue, 13 Oct 2020 19:01:26 -0400
-Received: from james.kirk.hungrycats.org ([174.142.39.145]:40254 "EHLO
-        james.kirk.hungrycats.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726894AbgJMXB0 (ORCPT
+        id S1727821AbgJNCrI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 13 Oct 2020 22:47:08 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:37136 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726575AbgJNCrI (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 13 Oct 2020 19:01:26 -0400
-X-Greylist: delayed 396 seconds by postgrey-1.27 at vger.kernel.org; Tue, 13 Oct 2020 19:01:26 EDT
-Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
-        id D384E850147; Tue, 13 Oct 2020 18:54:49 -0400 (EDT)
-Date:   Tue, 13 Oct 2020 18:54:49 -0400
-From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
-        "@hungrycats.org"@hungrycats.org
-To:     Hendrik Friedel <hendrik@friedels.name>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: Raid5 Write Hole: Is it worse than in MD?
-Message-ID: <20201013225449.GQ5890@hungrycats.org>
-References: <em46b9d48d-39d4-44bc-9fd7-a08d9a96fca2@ryzen>
+        Tue, 13 Oct 2020 22:47:08 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09E2j804024158;
+        Wed, 14 Oct 2020 02:47:00 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2020-01-29; bh=uVnsyxcHGW0c/HU+BRstfT07Ja6Su+mQgjhsGkUTUYw=;
+ b=BYObUBCz2ZC5XBOK9Kn2mqpfU8ccLPexU+SvLNWdEO5uoKyKKmu9JP0TlV5oUbRqgsjO
+ 6n8EzCCtghMWPEDWkTSvjwQNQYEGSZuJxw0xQMo/F2FGSzm9RK2CXkleam6JaeqTNtDA
+ jy2Nvu/cQpRfqRk7SczZRjzZlsQsDktG1iAqIV3lwXyvLouPBDlU1/MI0n1y4gmffnKp
+ C129NtWty9jlyz7r2eQCLSEGdIZFiQT+9X76Cl+cLr0xAM1g60iSH3wbfV1VvZcjefEh
+ n9L8l7Um30xCD+HgnUu4GukBaN319FvHc21NWoipZemqlVtPKg+YegQYti4yaV1J1Wtg SQ== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2120.oracle.com with ESMTP id 3434wkn6w2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 14 Oct 2020 02:47:00 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09E2ZWwv120436;
+        Wed, 14 Oct 2020 02:45:00 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3020.oracle.com with ESMTP id 344by31yp9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 14 Oct 2020 02:44:59 +0000
+Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 09E2iwBN009715;
+        Wed, 14 Oct 2020 02:44:58 GMT
+Received: from localhost.localdomain (/39.109.231.106)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 13 Oct 2020 19:44:57 -0700
+From:   Anand Jain <anand.jain@oracle.com>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     linux-btrfs@vger.kernel.org, nborisov@suse.com, wqu@suse.com,
+        jthumshirn@suse.de, josef@toxicpanda.com, dsterba@suse.com,
+        anand.jain@oracle.com
+Subject: [PATCH stable-5.4] backport enospc issues during balance
+Date:   Wed, 14 Oct 2020 10:44:45 +0800
+Message-Id: <cover.1602243894.git.anand.jain@oracle.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <em46b9d48d-39d4-44bc-9fd7-a08d9a96fca2@ryzen>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9773 signatures=668681
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 spamscore=0
+ suspectscore=0 mlxscore=0 malwarescore=0 adultscore=0 bulkscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2010140017
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9773 signatures=668681
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 mlxscore=0
+ malwarescore=0 phishscore=0 suspectscore=0 impostorscore=0 clxscore=1015
+ spamscore=0 priorityscore=1501 bulkscore=0 adultscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2010140018
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Oct 13, 2020 at 09:34:50AM +0000, Hendrik Friedel wrote:
-> Hello,
-> 
-> I recently read this article about the write-hole in md:
-> https://lwn.net/Articles/665299/
-> 
-> Whilst the article is focused on the journal as a fix for the write hole (by
-> the way: Is that possible with btrfs?), it made me wonder, if the write hole
-> in btrfs is any worse than in md?
+Patch 1 is a preparatory patch to reduce conflicts. Patch 2 fixes
+balance failure due to ENOSPC in btrfs/156 on arm64 systems with
+pagesize=64k. Minor conflicts in fs/btrfs/block-group.c are resolved.
+Thanks.
 
-It is hard to compare them directly, because write hole is only one of
-several ways a raid5 array can fail on either mdadm or btrfs, and both
-have significant shortcomings.
+Josef Bacik (2):
+  btrfs: don't pass system_chunk into can_overcommit
+  btrfs: take overcommit into account in inc_block_group_ro
 
-btrfs and mdadm have separate strengths and weaknesses in their raid5
-implementations.  e.g. btrfs can often recover from data corruption that
-is not reported by the drives, while mdadm can't detect or repair it.
-On the other hand, mdadm has no problems reading a degraded non-corrupted
-raid5 array that I know of, while btrfs has some known troubles there.
+ fs/btrfs/block-group.c | 38 ++++++++++++++++++++++----------
+ fs/btrfs/space-info.c  | 50 +++++++++++++++++-------------------------
+ fs/btrfs/space-info.h  |  3 +++
+ 3 files changed, 49 insertions(+), 42 deletions(-)
 
-It's possible to implement a raid5 stripe update journal (or tree), but
-it's not the only possible solution (or only part of a complete solution).
-Other possible solutions include:
+-- 
+2.18.4
 
-	- adjust the allocator to minimize stripe RMW update operations
-	(effectively banning them outright for datacow and metadata), or
-
-	- throw out the existing raid5/6 implementation and start
-	over with an implementation that works in harmony with the
-	copy-on-write semantics, more like the way data compression in
-	btrfs works now (effectively solving the problem the same way
-	ZFS did).
-
-These all have various performance and capability tradeoffs.  Some of
-them can even be combined (e.g. minimize RMW updates with allocator
-changes, fall back to stripe log tree for the rest).
-
-> Regards,
-> Hendrik
-> 
