@@ -2,130 +2,97 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 600DB28E4BF
-	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Oct 2020 18:47:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 828F528E5B6
+	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Oct 2020 19:49:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388264AbgJNQrb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 14 Oct 2020 12:47:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37044 "EHLO mail.kernel.org"
+        id S1727705AbgJNRtH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 14 Oct 2020 13:49:07 -0400
+Received: from mx2.suse.de ([195.135.220.15]:47898 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727440AbgJNQrb (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 14 Oct 2020 12:47:31 -0400
-Received: from gmail.com (unknown [104.132.1.76])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B47DC214D8;
-        Wed, 14 Oct 2020 16:47:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602694050;
-        bh=qQcbXQWCCAd7m2Lti1WPtkd5kda8Yy9gyEeggiebHmw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UXYn3s9uEfz94tVD2BODD8ynlMifbwOGmH+hE/wJTeN1DUTrEgmOqjPU9XFhaz9yQ
-         22OyKfZasWpZpy3ryu/t4ffiJbKBU7b+HB1iH/eY4XkdrFcUSY4vaBfWIyVIcLa2S7
-         oSmoGJnGdtgaR4HDRTIeNbWzBaOrqYmgVGeEMorc=
-Date:   Wed, 14 Oct 2020 09:47:28 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     linux-btrfs@vger.kernel.org
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk,
-        syzbot <syzbot+b8ff83b095e45f39e27e@syzkaller.appspotmail.com>
-Subject: Re: WARNING in __writeback_inodes_sb_nr
-Message-ID: <20201014164728.GA2545693@gmail.com>
-References: <0000000000004ffb3205b1a04abe@google.com>
+        id S1726119AbgJNRtF (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 14 Oct 2020 13:49:05 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1602697744;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=YRDOWuus4OddBQ26ove3Hg2o8rYlvsjtujqYOaRvD54=;
+        b=ZOiHdFdXJ4UkmhITMxlb8Lq0tjbi4WbKGSmVwFseDc17xtldor8H7dxLl++/EO3oFhM27g
+        +CcOYxGBl/ehCU04M4HemDGfUVY4+SJBHyY4dKCpfh23WAk83P7/Pfv4lRgJl5LtFzsTE4
+        LDFEuAZXDhgpQZIcpNQRe9LgNR5hAJU=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id E8706ACE5;
+        Wed, 14 Oct 2020 17:49:03 +0000 (UTC)
+Subject: Re: [PATCH] btrfs: Use round_down while calculating start position in
+ btrfs_dirty_pages()
+To:     Goldwyn Rodrigues <rgoldwyn@suse.de>, linux-btrfs@vger.kernel.org
+Cc:     Goldwyn Rodrigues <rgoldwyn@suse.com>
+References: <20201014145545.10878-1-rgoldwyn@suse.de>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <5c65c219-2d6e-0eb7-3e30-7dea30334e35@suse.com>
+Date:   Wed, 14 Oct 2020 20:49:03 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0000000000004ffb3205b1a04abe@google.com>
+In-Reply-To: <20201014145545.10878-1-rgoldwyn@suse.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-+linux-btrfs, for btrfs calling writeback_inodes_sb() from
-btrfs_start_delalloc_flush() without holding super_block::s_umount.
 
-On Wed, Oct 14, 2020 at 05:01:23AM -0700, syzbot wrote:
-> Hello,
+
+On 14.10.20 г. 17:55 ч., Goldwyn Rodrigues wrote:
+> From: Goldwyn Rodrigues <rgoldwyn@suse.com>
 > 
-> syzbot found the following issue on:
+> round_down looks prettier than the bit mask operations.
 > 
-> HEAD commit:    bbf5c979 Linux 5.9
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=1664b377900000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=3d8333c88fe898d7
-> dashboard link: https://syzkaller.appspot.com/bug?extid=b8ff83b095e45f39e27e
-> compiler:       gcc (GCC) 10.1.0-syz 20200507
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13127ef0500000
-> 
-> Bisection is inconclusive: the issue happens on the oldest tested release.
-> 
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=14878558500000
-> final oops:     https://syzkaller.appspot.com/x/report.txt?x=16878558500000
-> console output: https://syzkaller.appspot.com/x/log.txt?x=12878558500000
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+b8ff83b095e45f39e27e@syzkaller.appspotmail.com
-> 
-> BTRFS info (device loop0): disk space caching is enabled
-> BTRFS info (device loop0): has skinny extents
-> BTRFS info (device loop0): enabling ssd optimizations
-> BTRFS info (device loop0): checking UUID tree
-> ------------[ cut here ]------------
-> WARNING: CPU: 0 PID: 7118 at fs/fs-writeback.c:2469 __writeback_inodes_sb_nr+0x229/0x280 fs/fs-writeback.c:2469
-> Kernel panic - not syncing: panic_on_warn set ...
-> CPU: 0 PID: 7118 Comm: syz-executor.0 Not tainted 5.9.0-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> Call Trace:
->  __dump_stack lib/dump_stack.c:77 [inline]
->  dump_stack+0x198/0x1fd lib/dump_stack.c:118
->  panic+0x382/0x7fb kernel/panic.c:231
->  __warn.cold+0x20/0x4b kernel/panic.c:600
->  report_bug+0x1bd/0x210 lib/bug.c:198
->  handle_bug+0x38/0x90 arch/x86/kernel/traps.c:234
->  exc_invalid_op+0x14/0x40 arch/x86/kernel/traps.c:254
->  asm_exc_invalid_op+0x12/0x20 arch/x86/include/asm/idtentry.h:536
-> RIP: 0010:__writeback_inodes_sb_nr+0x229/0x280 fs/fs-writeback.c:2469
-> Code: 48 8b 84 24 c0 00 00 00 65 48 2b 04 25 28 00 00 00 75 38 48 81 c4 c8 00 00 00 5b 5d 41 5c 41 5d 41 5e 41 5f c3 e8 f7 75 a7 ff <0f> 0b e9 69 ff ff ff 4c 89 f7 e8 a8 4e e8 ff e9 ea fe ff ff 4c 89
-> RSP: 0018:ffffc900064076e0 EFLAGS: 00010293
-> RAX: 0000000000000000 RBX: 1ffff92000c80edd RCX: ffffffff81cec880
-> RDX: ffff888099db2200 RSI: ffffffff81cec919 RDI: 0000000000000007
-> RBP: ffff8880994ec000 R08: 0000000000000000 R09: ffff8880994ec077
-> R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
-> R13: ffffc90006407708 R14: 0000000000006400 R15: ffff8880994ec158
->  btrfs_start_delalloc_flush fs/btrfs/transaction.c:1970 [inline]
->  btrfs_commit_transaction+0x8ea/0x2830 fs/btrfs/transaction.c:2150
->  btrfs_sync_file+0x821/0xd80 fs/btrfs/file.c:2279
->  vfs_fsync_range+0x13a/0x220 fs/sync.c:200
->  generic_write_sync include/linux/fs.h:2747 [inline]
->  btrfs_file_write_iter+0x1101/0x14a9 fs/btrfs/file.c:2049
->  call_write_iter include/linux/fs.h:1882 [inline]
->  do_iter_readv_writev+0x532/0x7b0 fs/read_write.c:721
->  do_iter_write+0x188/0x670 fs/read_write.c:1026
->  vfs_writev+0x1aa/0x2e0 fs/read_write.c:1099
->  do_pwritev fs/read_write.c:1196 [inline]
->  __do_sys_pwritev fs/read_write.c:1243 [inline]
->  __se_sys_pwritev fs/read_write.c:1238 [inline]
->  __x64_sys_pwritev+0x231/0x310 fs/read_write.c:1238
->  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
->  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> RIP: 0033:0x45de59
-> Code: 0d b4 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 db b3 fb ff c3 66 2e 0f 1f 84 00 00 00 00
-> RSP: 002b:00007f098f185c78 EFLAGS: 00000246 ORIG_RAX: 0000000000000128
-> RAX: ffffffffffffffda RBX: 0000000000026400 RCX: 000000000045de59
-> RDX: 0000000000000001 RSI: 00000000200014c0 RDI: 0000000000000003
-> RBP: 000000000118bf70 R08: 0000000000000020 R09: 0000000000000000
-> R10: 0000000000000002 R11: 0000000000000246 R12: 000000000118bf2c
-> R13: 00007ffe7dd36ddf R14: 00007f098f1869c0 R15: 000000000118bf2c
-> Kernel Offset: disabled
-> Rebooting in 86400 seconds..
-> 
-> 
-> ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
-> 
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-> syzbot can test patches for this issue, for details see:
-> https://goo.gl/tpsmEJ#testing-patches
+> Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
+
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
