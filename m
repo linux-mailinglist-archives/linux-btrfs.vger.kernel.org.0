@@ -2,134 +2,130 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27FF628E2A1
-	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Oct 2020 16:56:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 600DB28E4BF
+	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Oct 2020 18:47:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730099AbgJNO4G (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 14 Oct 2020 10:56:06 -0400
-Received: from mx2.suse.de ([195.135.220.15]:38734 "EHLO mx2.suse.de"
+        id S2388264AbgJNQrb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 14 Oct 2020 12:47:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37044 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728799AbgJNO4F (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 14 Oct 2020 10:56:05 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 07380AD18;
-        Wed, 14 Oct 2020 14:56:04 +0000 (UTC)
-From:   Goldwyn Rodrigues <rgoldwyn@suse.de>
+        id S1727440AbgJNQrb (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 14 Oct 2020 12:47:31 -0400
+Received: from gmail.com (unknown [104.132.1.76])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B47DC214D8;
+        Wed, 14 Oct 2020 16:47:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602694050;
+        bh=qQcbXQWCCAd7m2Lti1WPtkd5kda8Yy9gyEeggiebHmw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=UXYn3s9uEfz94tVD2BODD8ynlMifbwOGmH+hE/wJTeN1DUTrEgmOqjPU9XFhaz9yQ
+         22OyKfZasWpZpy3ryu/t4ffiJbKBU7b+HB1iH/eY4XkdrFcUSY4vaBfWIyVIcLa2S7
+         oSmoGJnGdtgaR4HDRTIeNbWzBaOrqYmgVGeEMorc=
+Date:   Wed, 14 Oct 2020 09:47:28 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
 To:     linux-btrfs@vger.kernel.org
-Cc:     Goldwyn Rodrigues <rgoldwyn@suse.com>
-Subject: [PATCH] btrfs: Set EXTENT_NORESERVE bits in btrfs_dirty_pages()
-Date:   Wed, 14 Oct 2020 09:55:45 -0500
-Message-Id: <20201014145545.10878-2-rgoldwyn@suse.de>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20201014145545.10878-1-rgoldwyn@suse.de>
-References: <20201014145545.10878-1-rgoldwyn@suse.de>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk,
+        syzbot <syzbot+b8ff83b095e45f39e27e@syzkaller.appspotmail.com>
+Subject: Re: WARNING in __writeback_inodes_sb_nr
+Message-ID: <20201014164728.GA2545693@gmail.com>
+References: <0000000000004ffb3205b1a04abe@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0000000000004ffb3205b1a04abe@google.com>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Goldwyn Rodrigues <rgoldwyn@suse.com>
++linux-btrfs, for btrfs calling writeback_inodes_sb() from
+btrfs_start_delalloc_flush() without holding super_block::s_umount.
 
-Set the extent bits EXTENT_NORESERVE in btrfs_dirty_pages() as opposed
-to calling set_extent_bits again later.
-
-Fold check for written length within the function.
-
-Note: EXTENT_NORESERVE is set before unlocking extents.
-
-Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
----
- fs/btrfs/ctree.h            |  2 +-
- fs/btrfs/file.c             | 26 ++++++++++----------------
- fs/btrfs/free-space-cache.c |  2 +-
- 3 files changed, 12 insertions(+), 18 deletions(-)
-
-diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index aac3d6f4e35b..42e9ac0fb641 100644
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -3109,7 +3109,7 @@ int btrfs_mark_extent_written(struct btrfs_trans_handle *trans,
- int btrfs_release_file(struct inode *inode, struct file *file);
- int btrfs_dirty_pages(struct btrfs_inode *inode, struct page **pages,
- 		      size_t num_pages, loff_t pos, size_t write_bytes,
--		      struct extent_state **cached);
-+		      struct extent_state **cached, bool noreserve);
- int btrfs_fdatawrite_range(struct inode *inode, loff_t start, loff_t end);
- int btrfs_check_nocow_lock(struct btrfs_inode *inode, loff_t pos,
- 			   size_t *write_bytes);
-diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-index 6e52e2360d8e..6b4114a5fd92 100644
---- a/fs/btrfs/file.c
-+++ b/fs/btrfs/file.c
-@@ -502,7 +502,7 @@ static int btrfs_find_new_delalloc_bytes(struct btrfs_inode *inode,
-  */
- int btrfs_dirty_pages(struct btrfs_inode *inode, struct page **pages,
- 		      size_t num_pages, loff_t pos, size_t write_bytes,
--		      struct extent_state **cached)
-+		      struct extent_state **cached, bool noreserve)
- {
- 	struct btrfs_fs_info *fs_info = inode->root->fs_info;
- 	int err = 0;
-@@ -514,6 +514,12 @@ int btrfs_dirty_pages(struct btrfs_inode *inode, struct page **pages,
- 	loff_t isize = i_size_read(&inode->vfs_inode);
- 	unsigned int extra_bits = 0;
- 
-+	if (write_bytes == 0)
-+		return 0;
-+
-+	if (noreserve)
-+		extra_bits |= EXTENT_NORESERVE;
-+
- 	start_pos = round_down(pos, fs_info->sectorsize);
- 	num_bytes = round_up(write_bytes + pos - start_pos,
- 			     fs_info->sectorsize);
-@@ -1787,10 +1793,9 @@ static noinline ssize_t btrfs_buffered_write(struct kiocb *iocb,
- 		release_bytes = round_up(copied + sector_offset,
- 					fs_info->sectorsize);
- 
--		if (copied > 0)
--			ret = btrfs_dirty_pages(BTRFS_I(inode), pages,
--						dirty_pages, pos, copied,
--						&cached_state);
-+		ret = btrfs_dirty_pages(BTRFS_I(inode), pages,
-+					dirty_pages, pos, copied,
-+					&cached_state, only_release_metadata);
- 
- 		/*
- 		 * If we have not locked the extent range, because the range's
-@@ -1815,17 +1820,6 @@ static noinline ssize_t btrfs_buffered_write(struct kiocb *iocb,
- 		if (only_release_metadata)
- 			btrfs_check_nocow_unlock(BTRFS_I(inode));
- 
--		if (only_release_metadata && copied > 0) {
--			lockstart = round_down(pos,
--					       fs_info->sectorsize);
--			lockend = round_up(pos + copied,
--					   fs_info->sectorsize) - 1;
--
--			set_extent_bit(&BTRFS_I(inode)->io_tree, lockstart,
--				       lockend, EXTENT_NORESERVE, NULL,
--				       NULL, GFP_NOFS);
--		}
--
- 		btrfs_drop_pages(pages, num_pages);
- 
- 		cond_resched();
-diff --git a/fs/btrfs/free-space-cache.c b/fs/btrfs/free-space-cache.c
-index af0013d3df63..5ea36a06e514 100644
---- a/fs/btrfs/free-space-cache.c
-+++ b/fs/btrfs/free-space-cache.c
-@@ -1332,7 +1332,7 @@ static int __btrfs_write_out_cache(struct btrfs_root *root, struct inode *inode,
- 	/* Everything is written out, now we dirty the pages in the file. */
- 	ret = btrfs_dirty_pages(BTRFS_I(inode), io_ctl->pages,
- 				io_ctl->num_pages, 0, i_size_read(inode),
--				&cached_state);
-+				&cached_state, false);
- 	if (ret)
- 		goto out_nospc;
- 
--- 
-2.26.2
-
+On Wed, Oct 14, 2020 at 05:01:23AM -0700, syzbot wrote:
+> Hello,
+> 
+> syzbot found the following issue on:
+> 
+> HEAD commit:    bbf5c979 Linux 5.9
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=1664b377900000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=3d8333c88fe898d7
+> dashboard link: https://syzkaller.appspot.com/bug?extid=b8ff83b095e45f39e27e
+> compiler:       gcc (GCC) 10.1.0-syz 20200507
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13127ef0500000
+> 
+> Bisection is inconclusive: the issue happens on the oldest tested release.
+> 
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=14878558500000
+> final oops:     https://syzkaller.appspot.com/x/report.txt?x=16878558500000
+> console output: https://syzkaller.appspot.com/x/log.txt?x=12878558500000
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+b8ff83b095e45f39e27e@syzkaller.appspotmail.com
+> 
+> BTRFS info (device loop0): disk space caching is enabled
+> BTRFS info (device loop0): has skinny extents
+> BTRFS info (device loop0): enabling ssd optimizations
+> BTRFS info (device loop0): checking UUID tree
+> ------------[ cut here ]------------
+> WARNING: CPU: 0 PID: 7118 at fs/fs-writeback.c:2469 __writeback_inodes_sb_nr+0x229/0x280 fs/fs-writeback.c:2469
+> Kernel panic - not syncing: panic_on_warn set ...
+> CPU: 0 PID: 7118 Comm: syz-executor.0 Not tainted 5.9.0-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> Call Trace:
+>  __dump_stack lib/dump_stack.c:77 [inline]
+>  dump_stack+0x198/0x1fd lib/dump_stack.c:118
+>  panic+0x382/0x7fb kernel/panic.c:231
+>  __warn.cold+0x20/0x4b kernel/panic.c:600
+>  report_bug+0x1bd/0x210 lib/bug.c:198
+>  handle_bug+0x38/0x90 arch/x86/kernel/traps.c:234
+>  exc_invalid_op+0x14/0x40 arch/x86/kernel/traps.c:254
+>  asm_exc_invalid_op+0x12/0x20 arch/x86/include/asm/idtentry.h:536
+> RIP: 0010:__writeback_inodes_sb_nr+0x229/0x280 fs/fs-writeback.c:2469
+> Code: 48 8b 84 24 c0 00 00 00 65 48 2b 04 25 28 00 00 00 75 38 48 81 c4 c8 00 00 00 5b 5d 41 5c 41 5d 41 5e 41 5f c3 e8 f7 75 a7 ff <0f> 0b e9 69 ff ff ff 4c 89 f7 e8 a8 4e e8 ff e9 ea fe ff ff 4c 89
+> RSP: 0018:ffffc900064076e0 EFLAGS: 00010293
+> RAX: 0000000000000000 RBX: 1ffff92000c80edd RCX: ffffffff81cec880
+> RDX: ffff888099db2200 RSI: ffffffff81cec919 RDI: 0000000000000007
+> RBP: ffff8880994ec000 R08: 0000000000000000 R09: ffff8880994ec077
+> R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+> R13: ffffc90006407708 R14: 0000000000006400 R15: ffff8880994ec158
+>  btrfs_start_delalloc_flush fs/btrfs/transaction.c:1970 [inline]
+>  btrfs_commit_transaction+0x8ea/0x2830 fs/btrfs/transaction.c:2150
+>  btrfs_sync_file+0x821/0xd80 fs/btrfs/file.c:2279
+>  vfs_fsync_range+0x13a/0x220 fs/sync.c:200
+>  generic_write_sync include/linux/fs.h:2747 [inline]
+>  btrfs_file_write_iter+0x1101/0x14a9 fs/btrfs/file.c:2049
+>  call_write_iter include/linux/fs.h:1882 [inline]
+>  do_iter_readv_writev+0x532/0x7b0 fs/read_write.c:721
+>  do_iter_write+0x188/0x670 fs/read_write.c:1026
+>  vfs_writev+0x1aa/0x2e0 fs/read_write.c:1099
+>  do_pwritev fs/read_write.c:1196 [inline]
+>  __do_sys_pwritev fs/read_write.c:1243 [inline]
+>  __se_sys_pwritev fs/read_write.c:1238 [inline]
+>  __x64_sys_pwritev+0x231/0x310 fs/read_write.c:1238
+>  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+>  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> RIP: 0033:0x45de59
+> Code: 0d b4 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 db b3 fb ff c3 66 2e 0f 1f 84 00 00 00 00
+> RSP: 002b:00007f098f185c78 EFLAGS: 00000246 ORIG_RAX: 0000000000000128
+> RAX: ffffffffffffffda RBX: 0000000000026400 RCX: 000000000045de59
+> RDX: 0000000000000001 RSI: 00000000200014c0 RDI: 0000000000000003
+> RBP: 000000000118bf70 R08: 0000000000000020 R09: 0000000000000000
+> R10: 0000000000000002 R11: 0000000000000246 R12: 000000000118bf2c
+> R13: 00007ffe7dd36ddf R14: 00007f098f1869c0 R15: 000000000118bf2c
+> Kernel Offset: disabled
+> Rebooting in 86400 seconds..
+> 
+> 
+> ---
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+> 
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+> syzbot can test patches for this issue, for details see:
+> https://goo.gl/tpsmEJ#testing-patches
