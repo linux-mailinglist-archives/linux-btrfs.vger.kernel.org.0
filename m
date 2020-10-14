@@ -2,52 +2,69 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 903B228E18E
-	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Oct 2020 15:43:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82F8728E19D
+	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Oct 2020 15:48:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731352AbgJNNn0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 14 Oct 2020 09:43:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57646 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726152AbgJNNn0 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 14 Oct 2020 09:43:26 -0400
-Received: from localhost (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8497D2076D;
-        Wed, 14 Oct 2020 13:43:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602683005;
-        bh=50Isp1fMzF5odDRXVVph1ceNw+hQjzrFBAILlrLX2Pw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VLCdrvtuFG07Z1otCTA6ipma9/tMTg6ZBE84GGwqekGo+fEI829dON8/2wEoEWo2J
-         9Wy5/VSiRYI49fMWlG3KkC4gAtgrhRfGMBgBEwUfQwLQ5Rimh8M0fh5uaONE+fv/Wo
-         0G1VvxaSqeGB8AAxryBG+QZ9lwBNe8q1+GMbNzL8=
-Date:   Wed, 14 Oct 2020 09:43:24 -0400
-From:   Sasha Levin <sashal@kernel.org>
-To:     Anand Jain <anand.jain@oracle.com>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, nborisov@suse.com, wqu@suse.com,
-        jthumshirn@suse.de, josef@toxicpanda.com, dsterba@suse.com
-Subject: Re: [PATCH stable-5.4] backport enospc issues during balance
-Message-ID: <20201014134324.GP2415204@sasha-vm>
-References: <cover.1602243894.git.anand.jain@oracle.com>
+        id S1731337AbgJNNsI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 14 Oct 2020 09:48:08 -0400
+Received: from mail-ot1-f66.google.com ([209.85.210.66]:44147 "EHLO
+        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729537AbgJNNsH (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 14 Oct 2020 09:48:07 -0400
+Received: by mail-ot1-f66.google.com with SMTP id e20so3426611otj.11;
+        Wed, 14 Oct 2020 06:48:07 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vCcrvv05spG628FR3qi+rwMkg+PNDU/9M4ZzaARaVPY=;
+        b=GC4kXpG8MlHedG+TBspFLsg2i6kzpWO9CWbBRYpcvW66T/O8KBHNasQ45zLJr1B2c6
+         OpW9aeHrqyAVspXce8mP79ZuZSTmcWFLknXoJ5a9AeKyiNbPMQBU1i/6QiVpC6jy9t7m
+         K3wPi97MlRQfV2oM0Ws9T1+hxBm1O9e31WcguJTft35CypioPIg/z/DTc4vh/gtq8Hxp
+         0vTgL4/+QiBpUgkdMl50CLTye6eRkJYE/2yR3RTc8G9uA9v53ASocYGzm0GkqDnu6b9V
+         7hZsaW98iEye+QHTN/KdhDh774C1sS29EpzpBJxqgpDv1PI/eYOTsnfT06CfuUAW6xaH
+         cRHA==
+X-Gm-Message-State: AOAM530GpQPM71jk8zTkBmbS3gdInPvbTNz45uYULTSKkUVxjzhMvhcg
+        D78V+EKv34YC/IqFKmzcLLyrgTK2DiIw/lZkRGY=
+X-Google-Smtp-Source: ABdhPJxyDuijTzpz93NI8FemP/mZsCuRf9XLrpU9nvOrHX45RVFiRFl5Th5e2l7IUuU7aUhmksTOGfnKFdCIdx+6mKU=
+X-Received: by 2002:a05:6830:210a:: with SMTP id i10mr3500011otc.145.1602683286818;
+ Wed, 14 Oct 2020 06:48:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <cover.1602243894.git.anand.jain@oracle.com>
+References: <20201014032419.1268-1-shipujin.t@gmail.com>
+In-Reply-To: <20201014032419.1268-1-shipujin.t@gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 14 Oct 2020 15:47:55 +0200
+Message-ID: <CAMuHMdWEg=xBgi+gMNtPb9Ct1POVLO1nU=WsGuLA=C3exqpXXQ@mail.gmail.com>
+Subject: Re: [PATCH] fs: btrfs: Fix incorrect printf qualifier
+To:     Pujin Shi <shipujin.t@gmail.com>
+Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Nikolay Borisov <nborisov@suse.com>, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Oct 14, 2020 at 10:44:45AM +0800, Anand Jain wrote:
->Patch 1 is a preparatory patch to reduce conflicts. Patch 2 fixes
->balance failure due to ENOSPC in btrfs/156 on arm64 systems with
->pagesize=64k. Minor conflicts in fs/btrfs/block-group.c are resolved.
->Thanks.
+On Wed, Oct 14, 2020 at 11:24 AM Pujin Shi <shipujin.t@gmail.com> wrote:
+> This patch addresses a compile warning:
+> fs/btrfs/extent-tree.c: In function '__btrfs_free_extent':
+> fs/btrfs/extent-tree.c:3187:4: warning: format '%lu' expects argument of type 'long unsigned int', but argument 8 has type 'unsigned int' [-Wformat=]
+>
+> Fixes: 3b7b6ffa4f8f ("btrfs: extent-tree: kill BUG_ON() in __btrfs_free_extent()")
+> Signed-off-by: Pujin Shi <shipujin.t@gmail.com>
 
-Queued up, thanks!
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+
+Gr{oetje,eeting}s,
+
+                        Geert
 
 -- 
-Thanks,
-Sasha
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
