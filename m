@@ -2,56 +2,56 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42CD428F60D
-	for <lists+linux-btrfs@lfdr.de>; Thu, 15 Oct 2020 17:45:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDAC428F622
+	for <lists+linux-btrfs@lfdr.de>; Thu, 15 Oct 2020 17:50:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731040AbgJOPp2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 15 Oct 2020 11:45:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40806 "EHLO
+        id S2389861AbgJOPuO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 15 Oct 2020 11:50:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730951AbgJOPp2 (ORCPT
+        with ESMTP id S2389860AbgJOPuN (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 15 Oct 2020 11:45:28 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17CCCC061755;
-        Thu, 15 Oct 2020 08:45:27 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id b69so2668339qkg.8;
-        Thu, 15 Oct 2020 08:45:27 -0700 (PDT)
+        Thu, 15 Oct 2020 11:50:13 -0400
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4839DC061755;
+        Thu, 15 Oct 2020 08:50:12 -0700 (PDT)
+Received: by mail-qk1-x742.google.com with SMTP id h140so2691057qke.7;
+        Thu, 15 Oct 2020 08:50:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:reply-to:from:date:message-id
          :subject:to:cc:content-transfer-encoding;
-        bh=get3lmOGf8J6HCZZGRd2LhZ9QmsBRKMjErGrqguK9Ls=;
-        b=tc6pCKX1w6x2S2u0IqsgNWuqcnc/4rFwx32T7fqFqUcrN5+fAXCJHCMO9Rk3742t3S
-         x2ktlhSSIr6Ozmt3qxq+tAhi1fFwoamwHSoiXJcyH1/bg4T9N2ZdwwqB1th3DIXK85fE
-         XVQG6M/RZ5s7ywC13Qdb7+//yvCtgHQ3gsu5fcRHxF3cHajLkznQVbjD+ji20PV5P2vb
-         D1Zp2AXEcgv4V4Gps5U0Wcn04fNNJDLQC00p0B5l6hKK5F4uH9vY9gxp3ifIZisibAEv
-         xsR6NvjWm56xGb/HCu+Q4YBpdUWqAIlp0InQA2pcAsejvk5N7u3SHaqon6cj5cptZXkC
-         Gcsg==
+        bh=rEbjske5mDlNieltAoCJbb+TMr09wUzshU8wqhJozBM=;
+        b=BH10G57vzbt2BRHjUitflSSLc9QcTptJ3/+Sbznc7Q3pb1FSyfxHIIZElUKR0ZfWB6
+         7N27VaMvDSGUL31GiEKtBzC4WHAEHmhnbAMIiqPVBpDMse5/9hs3VVbdGkTJPfLY16Li
+         83/ZivaYfHdxUFoXEeumuK/ltJuAe1Je39SbQxCARhs5wUoSazrttwl39uuiW/EkQMz2
+         iqjVdFNxNOC34nTSU5kV4k84qJOI1GFw7Yo+j7SWpJ0Kx1hP1niap6vZzXboSq+bujqN
+         IyZb94R5hBHBZlhqL37/l88J1+Xbk1vGl625UCqCaVI3L9OdkZkupNwkGBA7LD8xlVLz
+         EgQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
          :from:date:message-id:subject:to:cc:content-transfer-encoding;
-        bh=get3lmOGf8J6HCZZGRd2LhZ9QmsBRKMjErGrqguK9Ls=;
-        b=JDfEpVoZA1e310F3rxIv/I1ddgeoxyO2HI634ovJl2hPNCPCqRt8S+Lbwuzl5Fzu8p
-         Ouf9Qa8+CS0HVaNfPi1KPKJ8UXVsFYiRnpIgdAJgev7yxiR00bh89Ag6BnEG+a9XuUhB
-         hJ8pOWz9JslSybVhCsa1E+UNuIfYWykS+cUHp1rQCn+oKV57DPfx4Ix6EzNpK/MtQVSv
-         LlIW9XvJI0xdF3W3CEvnpSHwL10w3sHzRvQrzdbwVKzntthENohMzD1y+ZMzB58gyjlx
-         zgcTyEm5TcAxI9Do96iADAHvk6FJ82AcDoB10U/vvDP8NhbyfrrmHNEdpDyKbZErbG6x
-         dIKw==
-X-Gm-Message-State: AOAM533DlosjVWkyquRKfQ42dWOLx33oO9Ss+RZ7dre80xo0oeiqAdO0
-        6TcaMwKwG5i/qCgkB6q65tKBrOMwP2UF3tMSMQxf935Q
-X-Google-Smtp-Source: ABdhPJzNaYjxcWKQ+/zNwHqZ4DnKlNQsr862k/EBf2JcIJzLcfZkM+iz07HWpcg5aSII0MB54u3oqNOpB0tdrcF1v3E=
-X-Received: by 2002:a37:9cd3:: with SMTP id f202mr4440055qke.479.1602776726265;
- Thu, 15 Oct 2020 08:45:26 -0700 (PDT)
+        bh=rEbjske5mDlNieltAoCJbb+TMr09wUzshU8wqhJozBM=;
+        b=sFpV8OQKhNtHFRoWS/cq68sE9qgOLuNHMWkH76DP0C+QvFLY2DIMaRZ+iTBDeWl1Vm
+         aO1kE7OQASPblzyQcEMjYGFHYbBF8J4Two6A6SIzCpvHlGrhyAvb41OaPf146ojNDOXx
+         M3bdtUPnYELbNtG8llMSXQfbpH9Pyv3KqGnDUKJwDmLHhmrTSSWd2Qy0T8FgUTmfQ2ZK
+         GPfxDOcv6QbU6gH4Em2gPr98YZvky1se9N/IM/rapXux38s/p6Nrou71piDF2ar2Z0Ge
+         dxGg24seuKJTkkKmX2x9WD7n27oBOqIfsiIvSXPniDpaPcb02D+yCwXhzL5mZY6+DO5O
+         7LhA==
+X-Gm-Message-State: AOAM532/5YN2Twtxf4ANTLyIODGI8ubriZo/GGwJxpdI+nhmHz7AUmuk
+        q5fuPfMIoh7SkOXTOhUo/ZCpBMzxh7wvTm7vOYw=
+X-Google-Smtp-Source: ABdhPJy2O2+MrGrQHX5lSX9G513JkGpNbh60nXpwD78ay80bSoGDbN7JaFBhHwbY6rR6tsPSEm9z3dSnw2lGIkFlKdI=
+X-Received: by 2002:a37:a202:: with SMTP id l2mr4561971qke.0.1602777011474;
+ Thu, 15 Oct 2020 08:50:11 -0700 (PDT)
 MIME-Version: 1.0
-References: <cover.1599233551.git.anand.jain@oracle.com> <53f76be87a0b414d6074f358b45b40cf1419950b.1599233551.git.anand.jain@oracle.com>
-In-Reply-To: <53f76be87a0b414d6074f358b45b40cf1419950b.1599233551.git.anand.jain@oracle.com>
+References: <cover.1599233551.git.anand.jain@oracle.com> <2378cbf0ec6f649de7269a756b652f0b7a6619b3.1599233551.git.anand.jain@oracle.com>
+In-Reply-To: <2378cbf0ec6f649de7269a756b652f0b7a6619b3.1599233551.git.anand.jain@oracle.com>
 Reply-To: fdmanana@gmail.com
 From:   Filipe Manana <fdmanana@gmail.com>
-Date:   Thu, 15 Oct 2020 16:45:14 +0100
-Message-ID: <CAL3q7H7Kkz=5gwaAyNvHoer+rYrqRPjjOL_reQay6DvQtU7HMw@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] btrfs: add a test case for btrfs seed device delete
+Date:   Thu, 15 Oct 2020 16:49:59 +0100
+Message-ID: <CAL3q7H5kmY5pGqXpWF6gycVOuf-9GqtWXgqJrDPcDGe=0W=Jaw@mail.gmail.com>
+Subject: Re: [PATCH 2/2] btrfs/163: replace sprout instead of seed
 To:     Anand Jain <anand.jain@oracle.com>
 Cc:     fstests <fstests@vger.kernel.org>,
         linux-btrfs <linux-btrfs@vger.kernel.org>,
@@ -64,174 +64,131 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 On Sat, Sep 5, 2020 at 12:25 AM Anand Jain <anand.jain@oracle.com> wrote:
 >
-> This is a regression test for the issue fixed by the kernel patch
->    btrfs: fix put of uninitialized kobject after seed device delete
+> Make this test case inline with the kernel patch [1] changes
+> [1] btrfs: fix replace of seed device
 
-Now that the patch is in Linus' tree, we could have the commit id as well.
-Just a few comments below.
-
+Same comment as in the previous patch. Now that this is in Linus'
+tree, it would be good to mention the commit id too.
 >
-> In this test case, we verify the seed device delete on a sprouted
-> filesystem.
+> So use the sprout device as the replace target instead of the seed device=
+.
+> This change is compatible with the older kernels.
+>
+> While at this, this patch also fixes a typo fix as well.
 >
 > Signed-off-by: Anand Jain <anand.jain@oracle.com>
 > ---
-> v2 drop the sysfs layout check as it breaks the test-case backward
-> compatibility.
+>  tests/btrfs/163     | 21 ++++++++++++++++-----
+>  tests/btrfs/163.out |  5 ++++-
+>  2 files changed, 20 insertions(+), 6 deletions(-)
 >
->  tests/btrfs/219     | 83 +++++++++++++++++++++++++++++++++++++++++++++
->  tests/btrfs/219.out | 15 ++++++++
->  tests/btrfs/group   |  1 +
->  3 files changed, 99 insertions(+)
->  create mode 100755 tests/btrfs/219
->  create mode 100644 tests/btrfs/219.out
+> diff --git a/tests/btrfs/163 b/tests/btrfs/163
+> index 24c725afb6b9..354d88502d47 100755
+> --- a/tests/btrfs/163
+> +++ b/tests/btrfs/163
+> @@ -4,11 +4,15 @@
+>  #
+>  # FS QA Test 163
+>  #
+> -# Test case to verify that a seed device can be replaced
+> +# Test case to verify that a sprouted device can be replaced
+>  #  Create a seed device
+>  #  Create a sprout device
+>  #  Remount RW
+> -#  Run device replace on the seed device
+> +#  Run device replace on the sprout device
+> +#
+> +# Depends on the kernel patch
+> +#   btrfs: fail replace of seed device
+> +
+>  seq=3D`basename $0`
+>  seqres=3D$RESULT_DIR/$seq
+>  echo "QA output created by $seq"
+> @@ -39,6 +43,7 @@ _supported_fs btrfs
+>  _supported_os Linux
+>  _require_command "$BTRFS_TUNE_PROG" btrfstune
+>  _require_scratch_dev_pool 3
+> +_require_btrfs_forget_or_module_loadable
 >
-> diff --git a/tests/btrfs/219 b/tests/btrfs/219
-> new file mode 100755
-> index 000000000000..86f2a6991bd7
-> --- /dev/null
-> +++ b/tests/btrfs/219
-> @@ -0,0 +1,83 @@
-> +#! /bin/bash
-> +# SPDX-License-Identifier: GPL-2.0
-> +# Copyright (c) 2020 Oracle. All Rights Reserved.
-> +#
-> +# FS QA Test 219
-> +#
-> +# Test for seed device-delete on a sprouted FS.
-> +# Requires kernel patch
-> +#    btrfs: fix put of uninitialized kobject after seed device delete
-> +#
-> +# Steps:
-> +#  Create a seed FS. Add a RW device to make it sprout FS and then delet=
-e
-> +#  the seed device.
-> +
-> +seq=3D`basename $0`
-> +seqres=3D$RESULT_DIR/$seq
-> +echo "QA output created by $seq"
-> +
-> +here=3D`pwd`
-> +tmp=3D/tmp/$$
-> +status=3D1       # failure is the default!
-> +trap "_cleanup; exit \$status" 0 1 2 3 15
-> +
-> +_cleanup()
-> +{
-> +       cd /
-> +       rm -f $tmp.*
-> +}
-> +
-> +# get standard environment, filters and checks
-> +. ./common/rc
-> +. ./common/filter
-> +
-> +# remove previous $seqres.full before test
-> +rm -f $seqres.full
-> +
-> +# real QA test starts here
-> +
-> +# Modify as appropriate.
-> +_supported_fs generic
+>  _scratch_dev_pool_get 3
+>
+> @@ -52,7 +57,7 @@ create_seed()
+>         run_check _mount $dev_seed $SCRATCH_MNT
+>         $XFS_IO_PROG -f -d -c "pwrite -S 0xab 0 4M" $SCRATCH_MNT/foobar >=
+\
+>                 /dev/null
+> -       echo -- gloden --
+> +       echo -- golden --
+>         od -x $SCRATCH_MNT/foobar
+>         _run_btrfs_util_prog filesystem show -m $SCRATCH_MNT
+>         _scratch_unmount
+> @@ -64,22 +69,28 @@ add_sprout()
+>  {
+>         _run_btrfs_util_prog device add -f $dev_sprout $SCRATCH_MNT
+>         _run_btrfs_util_prog filesystem show -m $SCRATCH_MNT
+> +       _mount -o remount,rw $dev_sprout $SCRATCH_MNT
+> +       $XFS_IO_PROG -f -d -c "pwrite -S 0xcd 0 4M" $SCRATCH_MNT/foobar2 =
+>\
+> +               /dev/null
 
-s/generic/btrfs
+Same comment as for the other patch.
+Why the direct IO? The test passes with buffered IO as well.
+If there's a reason for direct IO, it should be mentioned in a comment
+and _require_odirect added above.
 
-> +_supported_os Linux
+>  }
+>
+>  replace_seed()
+>  {
+> -       _run_btrfs_util_prog replace start -fB $dev_seed $dev_replace_tgt=
+ $SCRATCH_MNT
+> +       _run_btrfs_util_prog replace start -fB $dev_sprout $dev_replace_t=
+gt $SCRATCH_MNT
 
-This should go away, _supported_os is gone now.
+So now the function should be renamed from replace_seed() to
+replace_sprout() as well. Shouldn't it?
 
-> +_require_test
-> +_require_scratch_dev_pool 2
-> +
-> +_scratch_dev_pool_get 2
-> +
-> +seed=3D$(echo $SCRATCH_DEV_POOL | awk '{print $1}')
-> +sprout=3D$(echo $SCRATCH_DEV_POOL | awk '{print $2}')
-
-$AWK_PROG should be used instead.
-
-> +
-> +_mkfs_dev $seed
-> +_mount $seed $SCRATCH_MNT
-> +
-> +$XFS_IO_PROG -f -d -c "pwrite -S 0xab 0 1M" $SCRATCH_MNT/foo > /dev/null
-
-Why the direct IO write? Why not buffered IO?
-I just tried the test, and it passes too with a buffered write (no -d).
-If there's any reason for using direct IO, it should be mentioned in a
-comment, and _require_odirect added at the top.
-
-> +_scratch_unmount
-> +$BTRFS_TUNE_PROG -S 1 $seed
-> +
-> +# Mount the seed device and add the rw device
-> +_mount -o ro $seed $SCRATCH_MNT
-> +$BTRFS_UTIL_PROG device add -f $sprout $SCRATCH_MNT
-> +_scratch_unmount
-> +
-> +# Now remount
-> +_mount $sprout $SCRATCH_MNT
-> +$XFS_IO_PROG -f -d -c "pwrite -S 0xcd 0 1M" $SCRATCH_MNT/bar > /dev/null
-
-Same comment here regarding the use of direct IO.
-
-> +
-> +echo --- before delete ----
-> +od -x $SCRATCH_MNT/foo
-> +od -x $SCRATCH_MNT/bar
-> +
-> +$BTRFS_UTIL_PROG device delete $seed $SCRATCH_MNT
-> +_scratch_unmount
-> +_btrfs_forget_or_module_reload
-> +_mount $sprout $SCRATCH_MNT
-> +
-> +echo --- after delete ----
-> +od -x $SCRATCH_MNT/foo
-> +od -x $SCRATCH_MNT/bar
-> +
-> +_scratch_dev_pool_put
-> +
-> +# success, all done
-> +status=3D0
-> +exit
-> diff --git a/tests/btrfs/219.out b/tests/btrfs/219.out
-> new file mode 100644
-> index 000000000000..d39e0d8ffafd
-> --- /dev/null
-> +++ b/tests/btrfs/219.out
-> @@ -0,0 +1,15 @@
-> +QA output created by 219
-> +--- before delete ----
-> +0000000 abab abab abab abab abab abab abab abab
-> +*
-> +4000000
-> +0000000 cdcd cdcd cdcd cdcd cdcd cdcd cdcd cdcd
-> +*
-> +4000000
-> +--- after delete ----
-> +0000000 abab abab abab abab abab abab abab abab
-> +*
-> +4000000
-> +0000000 cdcd cdcd cdcd cdcd cdcd cdcd cdcd cdcd
-> +*
-> +4000000
-> diff --git a/tests/btrfs/group b/tests/btrfs/group
-> index 3295856d0c8c..3633fa66abe4 100644
-> --- a/tests/btrfs/group
-> +++ b/tests/btrfs/group
-> @@ -221,3 +221,4 @@
->  216 auto quick seed
->  217 auto quick trim dangerous
->  218 auto quick volume
-> +219 auto quick volume seed
-
-New tests were added in the meanwhile.
-For the next version don't forget to renumber the test to 224.
-
-Other than those minor comments, it looks fine and it works.
+Other than that, it looks good and it works as expected.
 
 Thanks.
 
+>         _run_btrfs_util_prog filesystem show -m $SCRATCH_MNT
+>         _scratch_unmount
+> -       run_check _mount $dev_replace_tgt $SCRATCH_MNT
+> +       _btrfs_forget_or_module_reload
+> +       run_check _mount -o device=3D$dev_seed $dev_replace_tgt $SCRATCH_=
+MNT
+>         echo -- sprout --
+>         od -x $SCRATCH_MNT/foobar
+> +       od -x $SCRATCH_MNT/foobar2
+>         _scratch_unmount
+>
+>  }
+>
+>  seed_is_mountable()
+>  {
+> +       _btrfs_forget_or_module_reload
+>         run_check _mount $dev_seed $SCRATCH_MNT
+>         _run_btrfs_util_prog filesystem show -m $SCRATCH_MNT
+>         _scratch_unmount
+> diff --git a/tests/btrfs/163.out b/tests/btrfs/163.out
+> index 91f6f5b6f48a..351ef7b040b2 100644
+> --- a/tests/btrfs/163.out
+> +++ b/tests/btrfs/163.out
+> @@ -1,5 +1,5 @@
+>  QA output created by 163
+> --- gloden --
+> +-- golden --
+>  0000000 abab abab abab abab abab abab abab abab
+>  *
+>  20000000
+> @@ -7,3 +7,6 @@ QA output created by 163
+>  0000000 abab abab abab abab abab abab abab abab
+>  *
+>  20000000
+> +0000000 cdcd cdcd cdcd cdcd cdcd cdcd cdcd cdcd
+> +*
+> +20000000
 > --
 > 2.25.1
 >
