@@ -2,184 +2,243 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7481528F5F2
-	for <lists+linux-btrfs@lfdr.de>; Thu, 15 Oct 2020 17:36:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42CD428F60D
+	for <lists+linux-btrfs@lfdr.de>; Thu, 15 Oct 2020 17:45:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388393AbgJOPgt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 15 Oct 2020 11:36:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42824 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729327AbgJOPgt (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 15 Oct 2020 11:36:49 -0400
-Received: from debian8.Home (bl8-197-74.dsl.telepac.pt [85.241.197.74])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4391522254;
-        Thu, 15 Oct 2020 15:36:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602776208;
-        bh=iDrwb+wpqra6bNPqHPQf6M1LsY3Yl8q1XG6uj9Tzvs4=;
-        h=From:To:Cc:Subject:Date:From;
-        b=AkgmMSTZ3lPUKO/Gx+gEnV1vYXj6wxV9eKE1e50W6RU8Qd3bfKaefgzxkMpR4ZbG4
-         cpmcXr49BbXHySkkjvM+Twzzw/R70Gp+tC7Qwfv/fFlK2nwwKuy5tAWEhOu+cgsCav
-         Xf9PhcBqIEm5iKu2h5tiUAPl/E93HUUUBMFzDtgQ=
-From:   fdmanana@kernel.org
-To:     fstests@vger.kernel.org
-Cc:     linux-btrfs@vger.kernel.org, jack@suse.cz,
-        Filipe Manana <fdmanana@suse.com>
-Subject: [PATCH] generic: test the correctness of several cases of RWF_NOWAIT writes
-Date:   Thu, 15 Oct 2020 16:36:38 +0100
-Message-Id: <aa8318c5beb380a9e99142d1b5e776b739d04bdb.1602774113.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.28.0
+        id S1731040AbgJOPp2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 15 Oct 2020 11:45:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40806 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730951AbgJOPp2 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 15 Oct 2020 11:45:28 -0400
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17CCCC061755;
+        Thu, 15 Oct 2020 08:45:27 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id b69so2668339qkg.8;
+        Thu, 15 Oct 2020 08:45:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc:content-transfer-encoding;
+        bh=get3lmOGf8J6HCZZGRd2LhZ9QmsBRKMjErGrqguK9Ls=;
+        b=tc6pCKX1w6x2S2u0IqsgNWuqcnc/4rFwx32T7fqFqUcrN5+fAXCJHCMO9Rk3742t3S
+         x2ktlhSSIr6Ozmt3qxq+tAhi1fFwoamwHSoiXJcyH1/bg4T9N2ZdwwqB1th3DIXK85fE
+         XVQG6M/RZ5s7ywC13Qdb7+//yvCtgHQ3gsu5fcRHxF3cHajLkznQVbjD+ji20PV5P2vb
+         D1Zp2AXEcgv4V4Gps5U0Wcn04fNNJDLQC00p0B5l6hKK5F4uH9vY9gxp3ifIZisibAEv
+         xsR6NvjWm56xGb/HCu+Q4YBpdUWqAIlp0InQA2pcAsejvk5N7u3SHaqon6cj5cptZXkC
+         Gcsg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc:content-transfer-encoding;
+        bh=get3lmOGf8J6HCZZGRd2LhZ9QmsBRKMjErGrqguK9Ls=;
+        b=JDfEpVoZA1e310F3rxIv/I1ddgeoxyO2HI634ovJl2hPNCPCqRt8S+Lbwuzl5Fzu8p
+         Ouf9Qa8+CS0HVaNfPi1KPKJ8UXVsFYiRnpIgdAJgev7yxiR00bh89Ag6BnEG+a9XuUhB
+         hJ8pOWz9JslSybVhCsa1E+UNuIfYWykS+cUHp1rQCn+oKV57DPfx4Ix6EzNpK/MtQVSv
+         LlIW9XvJI0xdF3W3CEvnpSHwL10w3sHzRvQrzdbwVKzntthENohMzD1y+ZMzB58gyjlx
+         zgcTyEm5TcAxI9Do96iADAHvk6FJ82AcDoB10U/vvDP8NhbyfrrmHNEdpDyKbZErbG6x
+         dIKw==
+X-Gm-Message-State: AOAM533DlosjVWkyquRKfQ42dWOLx33oO9Ss+RZ7dre80xo0oeiqAdO0
+        6TcaMwKwG5i/qCgkB6q65tKBrOMwP2UF3tMSMQxf935Q
+X-Google-Smtp-Source: ABdhPJzNaYjxcWKQ+/zNwHqZ4DnKlNQsr862k/EBf2JcIJzLcfZkM+iz07HWpcg5aSII0MB54u3oqNOpB0tdrcF1v3E=
+X-Received: by 2002:a37:9cd3:: with SMTP id f202mr4440055qke.479.1602776726265;
+ Thu, 15 Oct 2020 08:45:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <cover.1599233551.git.anand.jain@oracle.com> <53f76be87a0b414d6074f358b45b40cf1419950b.1599233551.git.anand.jain@oracle.com>
+In-Reply-To: <53f76be87a0b414d6074f358b45b40cf1419950b.1599233551.git.anand.jain@oracle.com>
+Reply-To: fdmanana@gmail.com
+From:   Filipe Manana <fdmanana@gmail.com>
+Date:   Thu, 15 Oct 2020 16:45:14 +0100
+Message-ID: <CAL3q7H7Kkz=5gwaAyNvHoer+rYrqRPjjOL_reQay6DvQtU7HMw@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] btrfs: add a test case for btrfs seed device delete
+To:     Anand Jain <anand.jain@oracle.com>
+Cc:     fstests <fstests@vger.kernel.org>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        David Sterba <dsterba@suse.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
+On Sat, Sep 5, 2020 at 12:25 AM Anand Jain <anand.jain@oracle.com> wrote:
+>
+> This is a regression test for the issue fixed by the kernel patch
+>    btrfs: fix put of uninitialized kobject after seed device delete
 
-Verify some attempts to write into a file using RWF_NOWAIT:
+Now that the patch is in Linus' tree, we could have the commit id as well.
+Just a few comments below.
 
-1) Writing into a fallocated extent that starts at eof should work;
-2) Writing into a hole should fail;
-3) Writing into a range that is partially allocated should fail.
+>
+> In this test case, we verify the seed device delete on a sprouted
+> filesystem.
+>
+> Signed-off-by: Anand Jain <anand.jain@oracle.com>
+> ---
+> v2 drop the sysfs layout check as it breaks the test-case backward
+> compatibility.
+>
+>  tests/btrfs/219     | 83 +++++++++++++++++++++++++++++++++++++++++++++
+>  tests/btrfs/219.out | 15 ++++++++
+>  tests/btrfs/group   |  1 +
+>  3 files changed, 99 insertions(+)
+>  create mode 100755 tests/btrfs/219
+>  create mode 100644 tests/btrfs/219.out
+>
+> diff --git a/tests/btrfs/219 b/tests/btrfs/219
+> new file mode 100755
+> index 000000000000..86f2a6991bd7
+> --- /dev/null
+> +++ b/tests/btrfs/219
+> @@ -0,0 +1,83 @@
+> +#! /bin/bash
+> +# SPDX-License-Identifier: GPL-2.0
+> +# Copyright (c) 2020 Oracle. All Rights Reserved.
+> +#
+> +# FS QA Test 219
+> +#
+> +# Test for seed device-delete on a sprouted FS.
+> +# Requires kernel patch
+> +#    btrfs: fix put of uninitialized kobject after seed device delete
+> +#
+> +# Steps:
+> +#  Create a seed FS. Add a RW device to make it sprout FS and then delet=
+e
+> +#  the seed device.
+> +
+> +seq=3D`basename $0`
+> +seqres=3D$RESULT_DIR/$seq
+> +echo "QA output created by $seq"
+> +
+> +here=3D`pwd`
+> +tmp=3D/tmp/$$
+> +status=3D1       # failure is the default!
+> +trap "_cleanup; exit \$status" 0 1 2 3 15
+> +
+> +_cleanup()
+> +{
+> +       cd /
+> +       rm -f $tmp.*
+> +}
+> +
+> +# get standard environment, filters and checks
+> +. ./common/rc
+> +. ./common/filter
+> +
+> +# remove previous $seqres.full before test
+> +rm -f $seqres.full
+> +
+> +# real QA test starts here
+> +
+> +# Modify as appropriate.
+> +_supported_fs generic
 
-This is motivated by several bugs that btrfs and ext4 had and were fixed
-by the following kernel commits:
+s/generic/btrfs
 
-  4b1946284dd6 ("btrfs: fix failure of RWF_NOWAIT write into prealloc extent beyond eof")
-  260a63395f90 ("btrfs: fix RWF_NOWAIT write not failling when we need to cow")
-  0b3171b6d195 ("ext4: do not block RWF_NOWAIT dio write on unallocated space")
+> +_supported_os Linux
 
-At the moment, on a 5.9-rc6 kernel at least, ext4 is failing for case 1),
-but when I found and fixed case 1) in btrfs, around kernel 5.7, it was not
-failing on ext4, so some regression happened in the meanwhile. For xfs and
-btrfs on a 5.9 kernel, all the three cases pass.
+This should go away, _supported_os is gone now.
 
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- tests/generic/613     | 74 +++++++++++++++++++++++++++++++++++++++++++
- tests/generic/613.out | 19 +++++++++++
- tests/generic/group   |  1 +
- 3 files changed, 94 insertions(+)
- create mode 100755 tests/generic/613
- create mode 100644 tests/generic/613.out
+> +_require_test
+> +_require_scratch_dev_pool 2
+> +
+> +_scratch_dev_pool_get 2
+> +
+> +seed=3D$(echo $SCRATCH_DEV_POOL | awk '{print $1}')
+> +sprout=3D$(echo $SCRATCH_DEV_POOL | awk '{print $2}')
 
-diff --git a/tests/generic/613 b/tests/generic/613
-new file mode 100755
-index 00000000..931876dc
---- /dev/null
-+++ b/tests/generic/613
-@@ -0,0 +1,74 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright (C) 2020 SUSE Linux Products GmbH. All Rights Reserved.
-+#
-+# FS QA Test No. 613
-+#
-+# Verify some attempts to write into a file using RWF_NOWAIT:
-+#
-+# 1) Writing into a fallocated extent that starts at eof should work;
-+# 2) Writing into a hole should fail;
-+# 3) Writing into a range that is partially allocated should fail.
-+#
-+seq=`basename $0`
-+seqres=$RESULT_DIR/$seq
-+echo "QA output created by $seq"
-+tmp=/tmp/$$
-+status=1	# failure is the default!
-+trap "_cleanup; exit \$status" 0 1 2 3 15
-+
-+_cleanup()
-+{
-+	cd /
-+	rm -f $tmp.*
-+}
-+
-+# get standard environment, filters and checks
-+. ./common/rc
-+. ./common/filter
-+
-+# real QA test starts here
-+_supported_fs generic
-+_require_scratch
-+_require_odirect
-+_require_xfs_io_command pwrite -N
-+_require_xfs_io_command falloc -k
-+_require_xfs_io_command fpunch
-+
-+rm -f $seqres.full
-+
-+_scratch_mkfs >>$seqres.full 2>&1
-+_scratch_mount
-+
-+echo "Creating file"
-+$XFS_IO_PROG -f -d -c "pwrite -S 0xab 0 512K" $SCRATCH_MNT/foo | _filter_xfs_io
-+
-+# Now add an unwritten extent using fallocate without bumping the file size and
-+# then attempt to do a  RWF_NOWAIT write into this extent. It should not fail.
-+echo "Writing into fallocated extent at eof"
-+$XFS_IO_PROG -c "falloc -k 512K 512K" \
-+	     -d -c "pwrite -N -V 1 -S 0xcd -b 512K 512K 512K" \
-+	     $SCRATCH_MNT/foo | _filter_xfs_io
-+
-+# Now punch a hole and try a RWF_NOWAIT write into the hole. It should fail.
-+echo "Writing into a hole"
-+$XFS_IO_PROG -c "fpunch 0 256K" \
-+	     -d -c "pwrite -N -V 1 -S 0xff -b 128K 0 128K" \
-+	     $SCRATCH_MNT/foo | _filter_xfs_io
-+
-+# Allocate an extent for the first half of the hole, then attempt to write into
-+# a range that covers the new extent and the hole. It should fail.
-+echo "Writing into a range partially allocated (ending with a hole)"
-+$XFS_IO_PROG -c "falloc 0 128K" \
-+	     -d -c "pwrite -N -V 1 -S 0xef -b 256K 0 256K" \
-+	     $SCRATCH_MNT/foo | _filter_xfs_io
-+
-+# Just double check none of the writes above that should fail did not change the
-+# file data in an unexpected way. First 256K of file data should be all zeros,
-+# the range from 256K to 512K should have all bytes with a value of 0xab and the
-+# range from 512K to 1M should have all bytes with a value of 0xcd.
-+echo "Final file content:"
-+od -A d -t x1 $SCRATCH_MNT/foo
-+
-+status=0
-+exit
-diff --git a/tests/generic/613.out b/tests/generic/613.out
-new file mode 100644
-index 00000000..a542fa5b
---- /dev/null
-+++ b/tests/generic/613.out
-@@ -0,0 +1,19 @@
-+QA output created by 613
-+Creating file
-+wrote 524288/524288 bytes at offset 0
-+XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-+Writing into fallocated extent at eof
-+wrote 524288/524288 bytes at offset 524288
-+XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-+Writing into a hole
-+pwrite: Resource temporarily unavailable
-+Writing into a range partially allocated (ending with a hole)
-+pwrite: Resource temporarily unavailable
-+Final file content:
-+0000000 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-+*
-+0262144 ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab
-+*
-+0524288 cd cd cd cd cd cd cd cd cd cd cd cd cd cd cd cd
-+*
-+1048576
-diff --git a/tests/generic/group b/tests/generic/group
-index 8054d874..b8bf8ec1 100644
---- a/tests/generic/group
-+++ b/tests/generic/group
-@@ -615,3 +615,4 @@
- 610 auto quick prealloc zero
- 611 auto quick attr
- 612 auto quick clone
-+613 auto quick rw prealloc punch
--- 
-2.28.0
+$AWK_PROG should be used instead.
 
+> +
+> +_mkfs_dev $seed
+> +_mount $seed $SCRATCH_MNT
+> +
+> +$XFS_IO_PROG -f -d -c "pwrite -S 0xab 0 1M" $SCRATCH_MNT/foo > /dev/null
+
+Why the direct IO write? Why not buffered IO?
+I just tried the test, and it passes too with a buffered write (no -d).
+If there's any reason for using direct IO, it should be mentioned in a
+comment, and _require_odirect added at the top.
+
+> +_scratch_unmount
+> +$BTRFS_TUNE_PROG -S 1 $seed
+> +
+> +# Mount the seed device and add the rw device
+> +_mount -o ro $seed $SCRATCH_MNT
+> +$BTRFS_UTIL_PROG device add -f $sprout $SCRATCH_MNT
+> +_scratch_unmount
+> +
+> +# Now remount
+> +_mount $sprout $SCRATCH_MNT
+> +$XFS_IO_PROG -f -d -c "pwrite -S 0xcd 0 1M" $SCRATCH_MNT/bar > /dev/null
+
+Same comment here regarding the use of direct IO.
+
+> +
+> +echo --- before delete ----
+> +od -x $SCRATCH_MNT/foo
+> +od -x $SCRATCH_MNT/bar
+> +
+> +$BTRFS_UTIL_PROG device delete $seed $SCRATCH_MNT
+> +_scratch_unmount
+> +_btrfs_forget_or_module_reload
+> +_mount $sprout $SCRATCH_MNT
+> +
+> +echo --- after delete ----
+> +od -x $SCRATCH_MNT/foo
+> +od -x $SCRATCH_MNT/bar
+> +
+> +_scratch_dev_pool_put
+> +
+> +# success, all done
+> +status=3D0
+> +exit
+> diff --git a/tests/btrfs/219.out b/tests/btrfs/219.out
+> new file mode 100644
+> index 000000000000..d39e0d8ffafd
+> --- /dev/null
+> +++ b/tests/btrfs/219.out
+> @@ -0,0 +1,15 @@
+> +QA output created by 219
+> +--- before delete ----
+> +0000000 abab abab abab abab abab abab abab abab
+> +*
+> +4000000
+> +0000000 cdcd cdcd cdcd cdcd cdcd cdcd cdcd cdcd
+> +*
+> +4000000
+> +--- after delete ----
+> +0000000 abab abab abab abab abab abab abab abab
+> +*
+> +4000000
+> +0000000 cdcd cdcd cdcd cdcd cdcd cdcd cdcd cdcd
+> +*
+> +4000000
+> diff --git a/tests/btrfs/group b/tests/btrfs/group
+> index 3295856d0c8c..3633fa66abe4 100644
+> --- a/tests/btrfs/group
+> +++ b/tests/btrfs/group
+> @@ -221,3 +221,4 @@
+>  216 auto quick seed
+>  217 auto quick trim dangerous
+>  218 auto quick volume
+> +219 auto quick volume seed
+
+New tests were added in the meanwhile.
+For the next version don't forget to renumber the test to 224.
+
+Other than those minor comments, it looks fine and it works.
+
+Thanks.
+
+> --
+> 2.25.1
+>
+
+
+--=20
+Filipe David Manana,
+
+=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
+ right.=E2=80=9D
