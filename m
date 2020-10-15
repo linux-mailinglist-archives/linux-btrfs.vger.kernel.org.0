@@ -2,148 +2,139 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 227F828EDB0
-	for <lists+linux-btrfs@lfdr.de>; Thu, 15 Oct 2020 09:26:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EB8028EDDC
+	for <lists+linux-btrfs@lfdr.de>; Thu, 15 Oct 2020 09:45:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726742AbgJOH0o (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 15 Oct 2020 03:26:44 -0400
-Received: from mout.gmx.net ([212.227.17.20]:35705 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726245AbgJOH0o (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 15 Oct 2020 03:26:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1602746800;
-        bh=o4S9Hplqjp9OtUXRBJYNw0QLR49h3q+i/8rMA2pIzIA=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=d0X+kAiGcERKW7RSN76YbjcU52Dz9aOvqakmFUJDPHxR8RLggknlbBp9e9o4WdkTL
-         dn6D60bJAyuUqSEtvRHcRBRKQLnoYfM8zuxhejBvQmibjpGbqL1o3NsQdtJnTAoQCn
-         GCOHC0qUGKh/9756j4/d3ylzuoHOXty9W1WULmHI=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MsYqp-1kCWV219i7-00u1Mk; Thu, 15
- Oct 2020 09:26:39 +0200
-Subject: Re: [PATCH] btrfs: Use round_down while calculating start position in
- btrfs_dirty_pages()
-To:     Goldwyn Rodrigues <rgoldwyn@suse.de>, linux-btrfs@vger.kernel.org
-Cc:     Goldwyn Rodrigues <rgoldwyn@suse.com>
-References: <20201014145545.10878-1-rgoldwyn@suse.de>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
- PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
- 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
- D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
- efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
- ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
- BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
- 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
- 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
- EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
- 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
- ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
- oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
- fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
- 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
- ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
- oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <b4424edf-8e94-31c2-4269-d23ad6b910e4@gmx.com>
-Date:   Thu, 15 Oct 2020 15:26:35 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1728902AbgJOHpf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 15 Oct 2020 03:45:35 -0400
+Received: from esa2.hgst.iphmx.com ([68.232.143.124]:60993 "EHLO
+        esa2.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726103AbgJOHpe (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 15 Oct 2020 03:45:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1602748747; x=1634284747;
+  h=from:to:cc:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=24r6PJUDJQYAZ9lVcHNjQriNGFZaW6ErUsDTFdiheC4=;
+  b=QtqIXWKuqGpMYkenZWwi/wys8LcdP13HNHoOOnNJMbpfb9omj8acgjVP
+   E5ETfMf+1a5I70Px+1364dyvinTsk3+ckvom5Ray7VgxFuHr7BOeyvBok
+   deJyFV6cePJE+hTapYN1UpNfqbB/JpyQ9JhEqpWoWAiY2MHCQPdNJu+4+
+   GCFWoWYoYt19Rkk2jtJg8K2WnRTKk1VNC9HY80f/WqXjE09Q/Cg4mNI6I
+   FX0t8BdkvgxV+F6gB7bTVdyXPd0fOIOl+JPIEeNmbzTWkMuwgo5CqDqi3
+   pJxDvY7k+FToqesPovptdXlE767Jb+H1iS5eleeZYCUZBBsB6lAD5Pej1
+   w==;
+IronPort-SDR: dZLTwlhBhhqYmlMYVOgCOfIOiKbB1ly+wnNJxgIk3ad3rWewA0lax9fbhVofWqMpVKXMM8nvya
+ s4xAH1/FK+BmbN0CSZ7B775cFpeXC/mJct6WvAo7OksAT27hIGKu+A22zNIZhdXCUBt0ZK5LRN
+ BnKd5fiV6CnmCRNZirYUjWxfHDovYJIwQUV+ITUltP+Rc2Q+RhQkWQ/g9pRz4Ps5didVEfUoUK
+ LzDE5Ny5dC4ACClpBdMuskJZw2vuIU3bl/naTrLsCCRp0wrR2903fGigu/S4i/m30WAIchuxvt
+ 1R8=
+X-IronPort-AV: E=Sophos;i="5.77,378,1596470400"; 
+   d="scan'208";a="253410435"
+Received: from mail-bn3nam04lp2056.outbound.protection.outlook.com (HELO NAM04-BN3-obe.outbound.protection.outlook.com) ([104.47.46.56])
+  by ob1.hgst.iphmx.com with ESMTP; 15 Oct 2020 15:59:05 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=FnSS8qiDwxcRaLUrzG6xq7vCP4XFa+kK73Oiow50NwbIVRIHLVG9O2h8+qWurnHxmsP1PbzwoQZtme7cMrHVnbZgt0qlcUIznoMmMXPEd/X1nS1WVw57zbNtdYrUbg2vdCM7eBon2fRlWNnZ2FnXlLYZwukHaSJB3BHmUCde7QVdPLBqD7bPy4ZmD4irmaStqb+U69M4fs5SleTk/Wo6dWnBU//d6abr4yyNbGvPawBn2XGPc3PnMRZqR2hJe4GJdu9dMNRywfCzGd7Yfs8R3xtfAFnyskaG6qXLtugwJOUvcqNGRy+dcAszm/Ro4YQ/BU2y9iq99aBfFaKISRgS3w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=JtY2/LidgOGa+Gx2LJxRDSkZHfbBLHjd2yRk6uDjjvI=;
+ b=oT96yl+t8xJmyaOJRx7V+IUrgzYdNWaMIzPl7evh/958dPeVlKOEXLasUSSdyCHcDmD3uHU5Hm2E6XaMJOnS7hcz7zAOUyFuaW15pRQ8Nv5y55BjLBy//7Kh9s0W9aLHKBjqbjKe2QTJCvXNB8F4IPL/4djok9WclXmCgW14EkdhfoqP+j6oUWzfqdvE0qEMEJ1aLzjf9oCbJLJkIkEwqlNkzEZHKeAudLEWciOMcbzuNJoJVXMb/yPxyxJTXZu5AMbxGGIszw5psNc2dibrjznMWeDsKxgvMMxIR6nHO1QzDsrzIkomeRBzRZxdLxxc+L1DXk1u4pmYb/zFvd5SDw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=JtY2/LidgOGa+Gx2LJxRDSkZHfbBLHjd2yRk6uDjjvI=;
+ b=CHHV/uyQBBPjqqXn09Zx/gnlOO2Uz+Jq940J6XvbUFm47hLJol+wSxZn+5MhjEHClNIi9kXfhQ420LGcfdlRqmsG7q0zN4byuu4suEm0W7lr+cZebFTaXG+lKG0sH4jthD0vZfK2RNChtWQR2vaoHi2tdDVX5X8VREBqHwTMPqQ=
+Received: from DM5PR0401MB3591.namprd04.prod.outlook.com (2603:10b6:4:7e::15)
+ by DM6PR04MB3948.namprd04.prod.outlook.com (2603:10b6:5:b8::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.24; Thu, 15 Oct
+ 2020 07:45:31 +0000
+Received: from DM5PR0401MB3591.namprd04.prod.outlook.com
+ ([fe80::7036:fd5b:a165:9089]) by DM5PR0401MB3591.namprd04.prod.outlook.com
+ ([fe80::7036:fd5b:a165:9089%7]) with mapi id 15.20.3455.030; Thu, 15 Oct 2020
+ 07:45:30 +0000
+From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To:     "dsterba@suse.cz" <dsterba@suse.cz>,
+        Naohiro Aota <Naohiro.Aota@wdc.com>
+CC:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        "dsterba@suse.com" <dsterba@suse.com>,
+        "hare@suse.com" <hare@suse.com>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Damien Le Moal <Damien.LeMoal@wdc.com>
+Subject: Re: [PATCH v8 03/41] btrfs: Get zone information of zoned block
+ devices
+Thread-Topic: [PATCH v8 03/41] btrfs: Get zone information of zoned block
+ devices
+Thread-Index: AQHWmuaeJDKMOB9LSUer+b2KN1Je6w==
+Date:   Thu, 15 Oct 2020 07:45:30 +0000
+Message-ID: <DM5PR0401MB3591567D922E2F5E4113D27A9B020@DM5PR0401MB3591.namprd04.prod.outlook.com>
+References: <cover.1601572459.git.naohiro.aota@wdc.com>
+ <dd872ec3ab449a3a97c7a3843aafe15b10154a3f.1601574234.git.naohiro.aota@wdc.com>
+ <20201013155301.GE6756@twin.jikos.cz>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: suse.cz; dkim=none (message not signed)
+ header.d=none;suse.cz; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [129.253.240.72]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: cef8ee51-76e1-440a-1f47-08d870de4a9f
+x-ms-traffictypediagnostic: DM6PR04MB3948:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DM6PR04MB39487BB41161D15AB39C14809B020@DM6PR04MB3948.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:4941;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: T5gDidoz/F1o5aJzZl5P846h1ollf6zMB+MmLLyg4HhBBl1dk5yl1FyvjsojmLHpN+cDymFdJczuPzA/oggzj5L/EAhe3WG5CEpojrsUK5PKN4WtHPAMnXLYOt/7WLnNI4WHM/+63KNvTV5rXGZJEDfnYhbP/EF0UzC6dTF2wiUZMC60We4uLIEhOePd+Uw+kjgyoxjLTJShoQ/xH95HK19VJocmDQJoNfxS/Gvbvz67OvrxolfQ1ATmp7QfRJmoyyqGFOJfQWCFuAeiCwE8c+mikwPE5O7D4L5KiPKiROYvao2NVTok2TtWu+ujDvxG
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR0401MB3591.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(39860400002)(346002)(136003)(376002)(366004)(4744005)(86362001)(33656002)(91956017)(4326008)(6506007)(66556008)(66446008)(8676002)(64756008)(5660300002)(186003)(76116006)(66476007)(52536014)(71200400001)(66946007)(8936002)(478600001)(6636002)(9686003)(7696005)(53546011)(110136005)(26005)(55016002)(316002)(2906002)(83380400001)(54906003);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: 86MnPf23IrLZNW1omA7+uGal3/wvOGoMTpzMxRcx55EXrNlC/rhM1yYeJH+AuP2wtKB/1fJ92FH1Of+t0oh6GRRcVozjgvElS7YViSMJI6Ks+kBb0NKcqt6n/9mKZ8Wkkvkf8dQX8413CM99J9SJMkpqFc/DRsdcOfXMgt9HqgpR/K7OMOEBdy+1MPWLio9AYBs1nZbU5x42G7bsmtcie/XRM6x2D2HtHZLCgC4obuFl4Nw0Dx//A4qd3nTZ7VMo8C+R3uMUw29FQLaQfzCYF7YghD+7P/0zkbXXoUL34nqk61TVAUSB8Xf2HZxYchJIIxXPNWdYwhWDEZwlefGqX7SbuV0OeV9M/NRPE7HS89c5bcRUeLA63BqFLy8dILxXBTjOLg4AEtxsep9HRxTQQxOlSfw/euWtrHaeCTkAzUAHvu4uXBY+ss8LsUpLY5NrBYuQeO8VvUT2YpwYhR9yuPxiBqbzPRvnp7mcci8bG5JsuzhvWKwEXsa1DpdQtXnEvyXC7G8bFThOTw9uHbgQZV2o/lCtpJwSKMrYU17ioT3HoXSKO1WJ2ISbqvQkAJMZROyaYnQstTDRyCjh9kpFqTG+k7d4cEwujV20TBZ7S08NTnmepqvKwfEtrqYoI0joazKHRCk+oI6UAJoM5oSqzw==
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-In-Reply-To: <20201014145545.10878-1-rgoldwyn@suse.de>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="B7nc0swnnzGXVTTr2sTlLdQNgk0HnCs7m"
-X-Provags-ID: V03:K1:u48O7oV+OT+7wvoO4FazoFWR55elfJ6iC68MfOPWkXvIggPoQ8Y
- Eyipm3xjLXSc/Ke+iTlnquuINDGo8zzMSVEsqgUO3tUfO5F0RaLmNkGTJc79NZcWvNYRttK
- U3p7Xh303UEYSoyMl/vbaQ/4cWELD9okzVMyBN6FRb9YI17w4udV48JgABWTwM4mYTXMw5A
- r1wJ0Weue45PQGqr2qJnA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:3LW5EgyGytQ=:nPZMt30ObF4ilfoWVQM1y6
- INRv76xO/nIZ33GmYPb6durSF4Xbqz4ONGWPM1dlwsc48osaD36lIS949qxLhURHYrMkkV09Z
- GgXFuNzmS/zpuqxLRyPA3cjuoNlXyR1fd1rdTERiCTbiyFgC38yQ6n2eJ1/NYt6i7Ll1DyIdW
- I8ToVVTp2Q9uLhO4seBi5PvBYRlxBHJNO/QYNaatrIyfj5QUIrC7fSrBFKUNGqgBa7/iy2Rvc
- oWqYpMb+/52jyAq0t5yfiWXGO5fk3sKShLgV2YscLvvs/npFXz9HYb6mc/vrwtMpstPKCXQm1
- 6lE7dqkxta4rRY6B0CEs2jluI8XRxa1+Q5uITmahe+zKE9qeZeQWxULPToSIKZTbp7ESZ/Woz
- rSYtHlQ5jdZqa3/Br/wNTSnFCQv7XxTFvMHBo43BzwkGW/Heay1UNtlTfw7BTiGtas54eUgBU
- IoJX94iJOsS7+DZLo9ZCw4Dvx5aRYUSpmp3q5pMHYw9D4K5R3Gv2uNz7JtEtpM/qSD94Dw8g+
- N9eErClFJbb6a+Qy/XgRaG4u8JmTzEE2fBuXYPxoG3nWuqLHKBJMlsuGl6vHp9wtf+Ora5o70
- vYQl2A4n/DeZlLLhFlPfnGS/KadA14GDCwLP7LXQXmcCJPHi9STXw3ZSN0XiKB8p+l2CJ2263
- Md1VIXPG4EHvxQl8PUqWKo7ajR0dIbVRypguwL3gkyqYdzlBPMY4kKSEGJDnpdhnneb/l0ikE
- gRU03HGOonKLCSmryg0PYGf2am0Wzqv9QRJRWziEkepNbJUxh8XFVQX97GdF3Gz8wMZ+DIACO
- V99vJ8le65d5Jv/kR1YyhEg1nojwJ3BZApr/kEHomrohbVTjTYL66r9p4tX7Qq34uF+oIkAAG
- FYGcqjUKIhxxH5LQHEbg==
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM5PR0401MB3591.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: cef8ee51-76e1-440a-1f47-08d870de4a9f
+X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Oct 2020 07:45:30.8328
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: TzqtaEuTYKAFDxBy9iPyMuz02i9zfnAgvYwViigIcRgqQZreSZWPb+xAtJATAuyDaAbedUatHhMcyletIuN9z/tkDGE9dr4+NI0gAQ90fus=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR04MB3948
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---B7nc0swnnzGXVTTr2sTlLdQNgk0HnCs7m
-Content-Type: multipart/mixed; boundary="XiMurL57DFmFggIQPvJwmXnuLLVy2iaWt"
-
---XiMurL57DFmFggIQPvJwmXnuLLVy2iaWt
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-
-
-
-On 2020/10/14 =E4=B8=8B=E5=8D=8810:55, Goldwyn Rodrigues wrote:
-> From: Goldwyn Rodrigues <rgoldwyn@suse.com>
->=20
-> round_down looks prettier than the bit mask operations.
->=20
-> Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
-
-Reviewed-by: Qu Wenruo <wqu@suse.com>
-
-Thanks,
-Qu
-> ---
->  fs/btrfs/file.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-> index 0ff659455b1e..6e52e2360d8e 100644
-> --- a/fs/btrfs/file.c
-> +++ b/fs/btrfs/file.c
-> @@ -514,7 +514,7 @@ int btrfs_dirty_pages(struct btrfs_inode *inode, st=
-ruct page **pages,
->  	loff_t isize =3D i_size_read(&inode->vfs_inode);
->  	unsigned int extra_bits =3D 0;
-> =20
-> -	start_pos =3D pos & ~((u64) fs_info->sectorsize - 1);
-> +	start_pos =3D round_down(pos, fs_info->sectorsize);
->  	num_bytes =3D round_up(write_bytes + pos - start_pos,
->  			     fs_info->sectorsize);
-> =20
->=20
-
-
---XiMurL57DFmFggIQPvJwmXnuLLVy2iaWt--
-
---B7nc0swnnzGXVTTr2sTlLdQNgk0HnCs7m
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl+H+asACgkQwj2R86El
-/qiJxAf+LAMxlNTYzRLKOfx6H9dNEQSbh1/jMHfYWqVHTKuXyxP/9Oq9Z8sUjB74
-TMEOIjIb09dn22NXr4mGx6q9e/zsqx6dXtbG/l+GjayNNLO7wwgLK4+BJBeBIVLy
-Bca2NJKAhXXetGLxoKgpqlmIf2AsjYCWhS4J2492ra6oWRV0niZOq4mM518Emb6z
-hWBk8USywJWHKSvVZ6p+r2ruHrmwz2bxoFuCvVZnym7qVdJNO/Kt2t+fBZtMejUf
-Av7NhTsXj0GJbl9ZphqdpscDeP3gqaisvpvGTno+JwwGWm2twL1AayRH2SawaH4b
-CoeuBv52AN9+e/GOJv63x9h72N+kxg==
-=2rxC
------END PGP SIGNATURE-----
-
---B7nc0swnnzGXVTTr2sTlLdQNgk0HnCs7m--
+On 13/10/2020 17:54, David Sterba wrote:=0A=
+> On Fri, Oct 02, 2020 at 03:36:10AM +0900, Naohiro Aota wrote:=0A=
+>> --- a/fs/btrfs/Makefile=0A=
+>> +++ b/fs/btrfs/Makefile=0A=
+>> @@ -16,6 +16,7 @@ btrfs-y +=3D super.o ctree.o extent-tree.o print-tree.=
+o root-tree.o dir-item.o \=0A=
+>>  btrfs-$(CONFIG_BTRFS_FS_POSIX_ACL) +=3D acl.o=0A=
+>>  btrfs-$(CONFIG_BTRFS_FS_CHECK_INTEGRITY) +=3D check-integrity.o=0A=
+>>  btrfs-$(CONFIG_BTRFS_FS_REF_VERIFY) +=3D ref-verify.o=0A=
+>> +btrfs-$(CONFIG_BLK_DEV_ZONED) +=3D zoned.o=0A=
+> =0A=
+> As this is conditionally built in, it should be also added to the string=
+=0A=
+> printed by btrfs_print_mod_info and we want the actual status so=0A=
+> =0A=
+> #ifdef CONFIG_BLK_DEV_ZONED=0A=
+> 	", zoned=3Dyes"=0A=
+> #else=0A=
+> 	", zoned=3Dno"=0A=
+> #endif=0A=
+> =0A=
+=0A=
+done=0A=
