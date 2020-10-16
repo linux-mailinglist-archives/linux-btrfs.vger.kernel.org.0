@@ -2,58 +2,57 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5E5F2908E1
-	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Oct 2020 17:52:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E6132908E2
+	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Oct 2020 17:52:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2410436AbgJPPwo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 16 Oct 2020 11:52:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39036 "EHLO
+        id S2408856AbgJPPwp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 16 Oct 2020 11:52:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406328AbgJPPwk (ORCPT
+        with ESMTP id S2410434AbgJPPwm (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 16 Oct 2020 11:52:40 -0400
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6761AC061755
-        for <linux-btrfs@vger.kernel.org>; Fri, 16 Oct 2020 08:52:40 -0700 (PDT)
-Received: by mail-qk1-x742.google.com with SMTP id i22so2276653qkn.9
-        for <linux-btrfs@vger.kernel.org>; Fri, 16 Oct 2020 08:52:40 -0700 (PDT)
+        Fri, 16 Oct 2020 11:52:42 -0400
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D9DDC0613D3
+        for <linux-btrfs@vger.kernel.org>; Fri, 16 Oct 2020 08:52:42 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id b69so2273513qkg.8
+        for <linux-btrfs@vger.kernel.org>; Fri, 16 Oct 2020 08:52:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=87Y4xx8k4l9SWKhBL5qDQEDmAjOFQT2JlqjhNy2ajUU=;
-        b=SZDqU55q+S4evwkVjuXggrZ6ZQ/kbkJ5iWWaaj7hZ1k3WiBDCf+BSU3frh4V5wAUsQ
-         6rR3s0PwiMySgoabfWwSJ8XGBfawj/R4XO4iP9Lkn4fawop1+/puLU0iZMHQZ2EUs8qQ
-         JZ0Lv8H8dJ8alUVKjVrdZUQLFOGndr2ujL0m9VIHrXo5E1Ixiw57i2+ircp0iNJSfdf2
-         hAOQvJ/kxIkvc1SRKjgeo13nlY3DYCyVxaraxzbUj6IBq/dch8eOcO0nLhkbKRrMwMjp
-         wnG684P0W1wH6oWLBah6oXLfBAmrJoMXbQ0z95KxgAri3q3nzBgvoeJ4MjaCDKnFumc5
-         D34Q==
+        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
+         :content-transfer-encoding;
+        bh=u29MibVRrdeOz/BunwXkCITdu8XVwuKE95DxmNprRV4=;
+        b=BT/xPyWBTPNbnpHX10JbDI0X99G+K96x0CaHEHLlMJqgH+kG+jl6AIpZ9VrgCTEHgo
+         1QyHwnw1sEhrGdZjUR/IvhtLB4Fjg7xmf2FgR2qcMphHWwlYHVaqo8BBlSyFMhwwQwaZ
+         jauu19SKv/aU0v9rVEOk2TIJpz67YRAk4ASLxBhyrA6FXvKCgF9cH/NK72/gAQtz7A86
+         YajLmzBelqpG1uKBtIcar1ICkxjb1KYYJRFf950pM/MUQj7v00+jufnTkz1zNeMRE8UO
+         UTgYA1IL6Adr2oUqn6QUfZNn+w2WL3XgBVN3uD7rDn56lzVOHYhrZiek5D7FmMZDUgwC
+         MLyA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=87Y4xx8k4l9SWKhBL5qDQEDmAjOFQT2JlqjhNy2ajUU=;
-        b=D5B8rnAd/rcDlCnK0g1ZJKaVWe7/J4AvLvZucM+dqOR86rQ+zgX3EeoAcNSPuSI0+n
-         +hhffw5zA5iheegg2zXbf3km/RknGcpBoNeTE/6HT1onJfNCVuXjwNUOgpeZ9C9gi+rc
-         BktFygkhAvrvh1IE7+cWFgYhGBHKGlUuBRdzB9eG4e3oYuQWSsOjKW97MZMLqGnKstUJ
-         DgXW2zvIoTK2GxwUEHRMhil0qsWng/FrPzq7h0TO2R+YcRROhoNJ6ocS4wPbPyNWCENE
-         fNHuPmPU06EtQ8ZGFkC52O2RcwgDNLgBvdCQxg7lK38mnDeoBfoRwhIYJ2hig3yj2K2z
-         7FQg==
-X-Gm-Message-State: AOAM5310WI0CND1g9Gew8OtYdYnIWtqcBneYcCxxglwpsSxLyTi8sUvp
-        M2q70cTp+BqS8PIoNrw+iTwvrU3qGlJX0aJ2
-X-Google-Smtp-Source: ABdhPJx5kgJYbwxm968rJzwrHMl9DNzALlNp01T15BsN2z1umOFVlY42OPN26YUkuemVglqxESXLjQ==
-X-Received: by 2002:a37:b283:: with SMTP id b125mr4119983qkf.407.1602863559163;
-        Fri, 16 Oct 2020 08:52:39 -0700 (PDT)
+        bh=u29MibVRrdeOz/BunwXkCITdu8XVwuKE95DxmNprRV4=;
+        b=b1HOeIof9z72KekY96ZzehPNwy543OFjr5OebSgrZlzw3Qrj2s/4nMTjYwyarSgOLm
+         D5fcf8nty+nBoNOCtbY3sf4NDPfociNVGcxxNEwIEG3w92cgqjHjkOCQHl+FW8j+7tpW
+         2xceyJ0bU54WggBVg9+QyCQ+oAgMmp/8xAThxi8LOcJTTQVNZTbzp4ULPPenr/1BKsA9
+         cp2i1e8FONPK3eDgEmIW3MtKAxT51PTPHW35rQV6xyv3kFlgZmqt/NtqLoJyKCr5ZLeh
+         gt/S4uZQ9BDYNiV4uart6N5dRwaY/XRBxEO36WZlQsecZx3M8XLHwKqzHomYE6kVbAVd
+         caEg==
+X-Gm-Message-State: AOAM530zyfmZvTPFxh2zxVexl7SX/nETqRL56sGXZH7IdHWPD4j30IHt
+        laqUdXMsMB2zV2BUdo2T2K8CeECbsQVRLAC3
+X-Google-Smtp-Source: ABdhPJwhv+oNbQDWnpAqixddVQLSaeaLOB/SS+CRbCwrB8qkNyxhYqv1uFem+Zjp4xYWv9Y2vjvWxQ==
+X-Received: by 2002:a05:620a:19:: with SMTP id j25mr4545614qki.498.1602863560977;
+        Fri, 16 Oct 2020 08:52:40 -0700 (PDT)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id m6sm992438qki.112.2020.10.16.08.52.38
+        by smtp.gmail.com with ESMTPSA id j16sm1013082qkg.26.2020.10.16.08.52.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Oct 2020 08:52:38 -0700 (PDT)
+        Fri, 16 Oct 2020 08:52:40 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Cc:     Nikolay Borisov <nborisov@suse.com>
-Subject: [PATCH v2 1/6] btrfs: do not block on deleted bgs mutex in the cleaner
-Date:   Fri, 16 Oct 2020 11:52:30 -0400
-Message-Id: <f7adcf9a7a95a7e04ba566377e7c3be15052a11b.1602863482.git.josef@toxicpanda.com>
+Subject: [PATCH v2 2/6] btrfs: only let one thread pre-flush delayed refs in commit
+Date:   Fri, 16 Oct 2020 11:52:31 -0400
+Message-Id: <67141376f81981ed0a54df7c002a9599f48d7ee2.1602863482.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <cover.1602863482.git.josef@toxicpanda.com>
 References: <cover.1602863482.git.josef@toxicpanda.com>
@@ -63,62 +62,122 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-While running some stress tests I started getting hung task messages.
-This is because the delete unused bg's code has to take the
-delete_unused_bgs_mutex to do it's work, which is taken by balance to
-make sure we don't delete block groups while we're balancing.
+I've been running a stress test that runs 20 workers in their own
+subvolume, which are running an fsstress instance with 4 threads per
+worker, which is 80 total fsstress threads.  In addition to this I'm
+running balance in the background as well as creating and deleting
+snapshots.  This test takes around 12 hours to run normally, going
+slower and slower as the test goes on.
 
-The problem is a balance can take a while, and so we were getting hung
-task warnings.  We don't need to block and run these things, and the
-cleaner is needed to do other work, so trylock on this mutex and just
-bail if we can't acquire it right away.
+The reason for this is because fsstress is running fsync sometimes, and
+because we're messing with block groups we often fall through to
+btrfs_commit_transaction, so will often have 20-30 threads all calling
+btrfs_commit_transaction at the same time.
 
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+These all get stuck contending on the extent tree while they try to run
+delayed refs during the initial part of the commit.
+
+This is suboptimal, really because the extent tree is a single point of
+failure we only want one thread acting on that tree at once to reduce
+lock contention.  Fix this by making the flushing mechanism a bit
+operation, to make it easy to use test_and_set_bit() in order to make
+sure only one task does this initial flush.
+
+Once we're into the transaction commit we only have one thread doing
+delayed ref running, it's just this initial pre-flush that is
+problematic.  With this patch my stress test takes around 90 minutes to
+run, instead of 12 hours.
+
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/block-group.c | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+ fs/btrfs/delayed-ref.h | 12 ++++++------
+ fs/btrfs/transaction.c | 33 ++++++++++++++++-----------------
+ 2 files changed, 22 insertions(+), 23 deletions(-)
 
-diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-index 3ba6f3839d39..2b5f91b35032 100644
---- a/fs/btrfs/block-group.c
-+++ b/fs/btrfs/block-group.c
-@@ -1333,6 +1333,13 @@ void btrfs_delete_unused_bgs(struct btrfs_fs_info *fs_info)
- 	if (!test_bit(BTRFS_FS_OPEN, &fs_info->flags))
- 		return;
+diff --git a/fs/btrfs/delayed-ref.h b/fs/btrfs/delayed-ref.h
+index 1c977e6d45dc..6e414785b56f 100644
+--- a/fs/btrfs/delayed-ref.h
++++ b/fs/btrfs/delayed-ref.h
+@@ -135,6 +135,11 @@ struct btrfs_delayed_data_ref {
+ 	u64 offset;
+ };
  
-+	/*
-+	 * Long running balances can keep us blocked here for eternity, so
-+	 * simply skip deletion if we're unable to get the mutex.
-+	 */
-+	if (!mutex_trylock(&fs_info->delete_unused_bgs_mutex))
-+		return;
++enum btrfs_delayed_ref_flags {
++	/* Used to indicate that we are flushing delayed refs for the commit. */
++	BTRFS_DELAYED_REFS_FLUSHING,
++};
 +
- 	spin_lock(&fs_info->unused_bgs_lock);
- 	while (!list_empty(&fs_info->unused_bgs)) {
- 		int trimming;
-@@ -1352,8 +1359,6 @@ void btrfs_delete_unused_bgs(struct btrfs_fs_info *fs_info)
+ struct btrfs_delayed_ref_root {
+ 	/* head ref rbtree */
+ 	struct rb_root_cached href_root;
+@@ -158,12 +163,7 @@ struct btrfs_delayed_ref_root {
  
- 		btrfs_discard_cancel_work(&fs_info->discard_ctl, block_group);
+ 	u64 pending_csums;
  
--		mutex_lock(&fs_info->delete_unused_bgs_mutex);
+-	/*
+-	 * set when the tree is flushing before a transaction commit,
+-	 * used by the throttling code to decide if new updates need
+-	 * to be run right away
+-	 */
+-	int flushing;
++	unsigned long flags;
+ 
+ 	u64 run_delayed_start;
+ 
+diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
+index 52ada47aff50..f73f3c7aeda2 100644
+--- a/fs/btrfs/transaction.c
++++ b/fs/btrfs/transaction.c
+@@ -870,9 +870,9 @@ int btrfs_should_end_transaction(struct btrfs_trans_handle *trans)
+ {
+ 	struct btrfs_transaction *cur_trans = trans->transaction;
+ 
+-	smp_mb();
+ 	if (cur_trans->state >= TRANS_STATE_COMMIT_START ||
+-	    cur_trans->delayed_refs.flushing)
++	    test_bit(BTRFS_DELAYED_REFS_FLUSHING,
++		     &cur_trans->delayed_refs.flags))
+ 		return 1;
+ 
+ 	return should_end_transaction(trans);
+@@ -2042,23 +2042,22 @@ int btrfs_commit_transaction(struct btrfs_trans_handle *trans)
+ 	btrfs_trans_release_metadata(trans);
+ 	trans->block_rsv = NULL;
+ 
+-	/* make a pass through all the delayed refs we have so far
+-	 * any runnings procs may add more while we are here
+-	 */
+-	ret = btrfs_run_delayed_refs(trans, 0);
+-	if (ret) {
+-		btrfs_end_transaction(trans);
+-		return ret;
+-	}
 -
- 		/* Don't want to race with allocators so take the groups_sem */
- 		down_write(&space_info->groups_sem);
+-	cur_trans = trans->transaction;
+-
+ 	/*
+-	 * set the flushing flag so procs in this transaction have to
+-	 * start sending their work down.
++	 * We only want one transaction commit doing the flushing so we do not
++	 * waste a bunch of time on lock contention on the extent root node.
+ 	 */
+-	cur_trans->delayed_refs.flushing = 1;
+-	smp_wmb();
++	if (!test_and_set_bit(BTRFS_DELAYED_REFS_FLUSHING,
++			      &cur_trans->delayed_refs.flags)) {
++		/*
++		 * make a pass through all the delayed refs we have so far
++		 * any runnings procs may add more while we are here
++		 */
++		ret = btrfs_run_delayed_refs(trans, 0);
++		if (ret) {
++			btrfs_end_transaction(trans);
++			return ret;
++		}
++	}
  
-@@ -1499,11 +1504,11 @@ void btrfs_delete_unused_bgs(struct btrfs_fs_info *fs_info)
- end_trans:
- 		btrfs_end_transaction(trans);
- next:
--		mutex_unlock(&fs_info->delete_unused_bgs_mutex);
- 		btrfs_put_block_group(block_group);
- 		spin_lock(&fs_info->unused_bgs_lock);
- 	}
- 	spin_unlock(&fs_info->unused_bgs_lock);
-+	mutex_unlock(&fs_info->delete_unused_bgs_mutex);
- 	return;
+ 	btrfs_create_pending_block_groups(trans);
  
- flip_async:
 -- 
 2.24.1
 
