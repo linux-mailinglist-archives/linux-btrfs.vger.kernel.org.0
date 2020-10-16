@@ -2,96 +2,60 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6849528FDDD
-	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Oct 2020 07:58:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD66E28FE04
+	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Oct 2020 08:05:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390599AbgJPF6C (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 16 Oct 2020 01:58:02 -0400
-Received: from mail105.syd.optusnet.com.au ([211.29.132.249]:36921 "EHLO
-        mail105.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2390173AbgJPF6C (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 16 Oct 2020 01:58:02 -0400
-Received: from dread.disaster.area (pa49-179-6-140.pa.nsw.optusnet.com.au [49.179.6.140])
-        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id 0850C3AAF43;
-        Fri, 16 Oct 2020 16:57:57 +1100 (AEDT)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1kTIkX-0012SF-0l; Fri, 16 Oct 2020 16:57:57 +1100
-Date:   Fri, 16 Oct 2020 16:57:57 +1100
-From:   Dave Chinner <david@fromorbit.com>
-To:     Jan Kara <jack@suse.cz>
-Cc:     fdmanana@kernel.org, fstests@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
-Subject: Re: [PATCH] generic: test the correctness of several cases of
- RWF_NOWAIT writes
-Message-ID: <20201016055757.GA7322@dread.disaster.area>
-References: <aa8318c5beb380a9e99142d1b5e776b739d04bdb.1602774113.git.fdmanana@suse.com>
- <20201015161355.GI7037@quack2.suse.cz>
+        id S2391460AbgJPGF3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 16 Oct 2020 02:05:29 -0400
+Received: from waffle.tech ([104.225.250.114]:50648 "EHLO mx.waffle.tech"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2391456AbgJPGF3 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 16 Oct 2020 02:05:29 -0400
+X-Greylist: delayed 367 seconds by postgrey-1.27 at vger.kernel.org; Fri, 16 Oct 2020 02:05:28 EDT
+Received: from mx.waffle.tech (unknown [10.50.1.6])
+        by mx.waffle.tech (Postfix) with ESMTP id 0FE036D800;
+        Thu, 15 Oct 2020 23:59:20 -0600 (MDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx.waffle.tech 0FE036D800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=waffle.tech; s=mx;
+        t=1602827960; bh=1SOOzZUEPtTZ1cEnxe0bGc3shN/MtTJj5BxDLkuKFFA=;
+        h=Date:From:Subject:To:From;
+        b=PlbrU3B6CT8RjpMdJ/M7nXuOu9O621r1CH8MWvVjO1gTc1tZBgPXmyR7gYSoPTUKK
+         O1lUqbz38Fon9qmm3ufgI38jN3REKGaqmR6EpzLY6o2H/DV6H4O9utUpMpsSJoKHR0
+         eAqD52P+9ZfSXvdTvEzTDQfyGTfCURvqo3I780gM=
+Received: from waffle.tech ([10.50.1.3])
+        by mx.waffle.tech with ESMTPSA
+        id DiCbArg2iV+EXQcAQqPLoA
+        (envelope-from <louis@waffle.tech>); Thu, 15 Oct 2020 23:59:20 -0600
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201015161355.GI7037@quack2.suse.cz>
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=Ubgvt5aN c=1 sm=1 tr=0 cx=a_idp_d
-        a=uDU3YIYVKEaHT0eX+MXYOQ==:117 a=uDU3YIYVKEaHT0eX+MXYOQ==:17
-        a=kj9zAlcOel0A:10 a=afefHYAZSVUA:10 a=VwQbUJbxAAAA:8 a=iox4zFpeAAAA:8
-        a=7-415B0cAAAA:8 a=OwwBgDynDYpeuBj-idcA:9 a=CjuIK1q_8ugA:10
-        a=AjGcO6oz07-iQ99wixmX:22 a=WzC6qhA0u3u7Ye7llzcV:22
-        a=biEYGPWJfzWAr4FL6Ov7:22
+Date:   Fri, 16 Oct 2020 05:59:19 +0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-Mailer: RainLoop/1.14.0
+From:   louis@waffle.tech
+Message-ID: <8541d6d7a63e470b9f4c22ba95cd64fc@waffle.tech>
+Subject: [PATCH] btrfs: balance RAID1/RAID10 mirror selection
+To:     linux-btrfs@vger.kernel.org
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,UNPARSEABLE_RELAY autolearn=ham
+        autolearn_force=no version=3.4.2
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mx.waffle.tech
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Oct 15, 2020 at 06:13:56PM +0200, Jan Kara wrote:
-> On Thu 15-10-20 16:36:38, fdmanana@kernel.org wrote:
-> > From: Filipe Manana <fdmanana@suse.com>
-> > 
-> > Verify some attempts to write into a file using RWF_NOWAIT:
-> > 
-> > 1) Writing into a fallocated extent that starts at eof should work;
-> 
-> Why? We need to update i_size which requires transaction start and e.g.
-> ext4 does not support that in non-blocking mode...
-
-Right, different filesystems behave differently given similar
-pre-conditions. That's not a bug, that's exactly how RWF_NOWAIT is
-expected to be implemented by each filesystem....
-
-> > 2) Writing into a hole should fail;
-> > 3) Writing into a range that is partially allocated should fail.
-
-Same for these - these are situations where a -specific filesystem
-implementation- might block, not a situation where the RWF_NOWAIT
-API specification says that IO submission "should fail" and hence
-return EAGAIN.
-
-> > This is motivated by several bugs that btrfs and ext4 had and were fixed
-> > by the following kernel commits:
-> > 
-> >   4b1946284dd6 ("btrfs: fix failure of RWF_NOWAIT write into prealloc extent beyond eof")
-> >   260a63395f90 ("btrfs: fix RWF_NOWAIT write not failling when we need to cow")
-> >   0b3171b6d195 ("ext4: do not block RWF_NOWAIT dio write on unallocated space")
-> > 
-> > At the moment, on a 5.9-rc6 kernel at least, ext4 is failing for case 1),
-> > but when I found and fixed case 1) in btrfs, around kernel 5.7, it was not
-> > failing on ext4, so some regression happened in the meanwhile. For xfs and
-> > btrfs on a 5.9 kernel, all the three cases pass.
-
-Sure, until we propagate IOMAP_NOWAIT far enough into the allocation
-code that allocation will either succeed without blocking or fail
-without changing anything.  At which point, the filesystem behaviour
-is absolutely correct according to the RWF_NOWAIT specification, but
-the test is most definitely wrong.
-
-IOWs, I think any test that says "RWF_NOWAIT IO in a <specific
-situation> must do <specific thing>" is incorrect. RWF_NOWAIT simply
-does not not define behaviour like this, and different filesystems
-will do different things given the same file layouts...
-
-Cheers,
-
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+Balance RAID1/RAID10 mirror selection via plain round-robin scheduling. T=
+his should roughly double throughput for large reads.=0A=0ASigned-off-by:=
+ Louis Jencka <louis@waffle.tech>=0A---=0A fs/btrfs/volumes.c | 6 +++++-=
+=0A 1 file changed, 5 insertions(+), 1 deletion(-)=0A=0Adiff --git a/fs/b=
+trfs/volumes.c b/fs/btrfs/volumes.c=0Aindex 58b9c419a..45c581d46 100644=
+=0A--- a/fs/btrfs/volumes.c=0A+++ b/fs/btrfs/volumes.c=0A@@ -333,6 +333,9=
+ @@ struct list_head * __attribute_const__ btrfs_get_fs_uuids(void)=0A 	r=
+eturn &fs_uuids;=0A }=0A =0A+/* Used for round-robin balancing RAID1/RAID=
+10 reads. */=0A+atomic_t rr_counter =3D ATOMIC_INIT(0);=0A+=0A /*=0A  * a=
+lloc_fs_devices - allocate struct btrfs_fs_devices=0A  * @fsid:		if not N=
+ULL, copy the UUID to fs_devices::fsid=0A@@ -5482,7 +5485,8 @@ static int=
+ find_live_mirror(struct btrfs_fs_info *fs_info,=0A 	else=0A 		num_stripe=
+s =3D map->num_stripes;=0A =0A-	preferred_mirror =3D first + current->pid=
+ % num_stripes;=0A+	preferred_mirror =3D first +=0A+	    (unsigned)atomic=
+_inc_return(&rr_counter) % num_stripes;=0A =0A 	if (dev_replace_is_ongoin=
+g &&=0A 	    fs_info->dev_replace.cont_reading_from_srcdev_mode =3D=3D
