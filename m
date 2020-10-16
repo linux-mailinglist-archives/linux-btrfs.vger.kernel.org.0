@@ -2,94 +2,123 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3810A2908E0
-	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Oct 2020 17:52:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5E5F2908E1
+	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Oct 2020 17:52:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2410432AbgJPPwj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 16 Oct 2020 11:52:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39028 "EHLO
+        id S2410436AbgJPPwo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 16 Oct 2020 11:52:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406328AbgJPPwi (ORCPT
+        with ESMTP id S2406328AbgJPPwk (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 16 Oct 2020 11:52:38 -0400
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D6C9C061755
-        for <linux-btrfs@vger.kernel.org>; Fri, 16 Oct 2020 08:52:38 -0700 (PDT)
-Received: by mail-qt1-x841.google.com with SMTP id q26so1881917qtb.5
-        for <linux-btrfs@vger.kernel.org>; Fri, 16 Oct 2020 08:52:38 -0700 (PDT)
+        Fri, 16 Oct 2020 11:52:40 -0400
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6761AC061755
+        for <linux-btrfs@vger.kernel.org>; Fri, 16 Oct 2020 08:52:40 -0700 (PDT)
+Received: by mail-qk1-x742.google.com with SMTP id i22so2276653qkn.9
+        for <linux-btrfs@vger.kernel.org>; Fri, 16 Oct 2020 08:52:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Js0LxOI/Y5Cmr5/OQjs9BBq8uJirY5/9jGAF9zR+JzI=;
-        b=hYLfhLcxUQYV1NM1/TXmaR3SFHnQFTd7T0hToW+d+8QUD4kWZQN4y6pWkHu38fBRzh
-         ykan7bFDayyQK+FUHfExGxohOe4yu9dUT4QAdhhiltLfArjMFxIJ3wvVOCMBiOX3L8ZV
-         REbMDfekKjTqpug9Xqi58Uz0uQ7I9RUAjcFoQMyFqBDuld6WoDRCskhqn7j3vux5HGjO
-         p6YS3NhgoBUMojiGM3qqvbNeHWPNlh1mnDDekdpmR4vDO59kWsqsuJYAKRbmenSri2jf
-         xE1YvU4rsaD7OlQU8Tgu0HmEV2/fDuzrVlfPxEMDrX5gLHHjdM6gbs3NWhAJeu5lNGYK
-         C0mg==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=87Y4xx8k4l9SWKhBL5qDQEDmAjOFQT2JlqjhNy2ajUU=;
+        b=SZDqU55q+S4evwkVjuXggrZ6ZQ/kbkJ5iWWaaj7hZ1k3WiBDCf+BSU3frh4V5wAUsQ
+         6rR3s0PwiMySgoabfWwSJ8XGBfawj/R4XO4iP9Lkn4fawop1+/puLU0iZMHQZ2EUs8qQ
+         JZ0Lv8H8dJ8alUVKjVrdZUQLFOGndr2ujL0m9VIHrXo5E1Ixiw57i2+ircp0iNJSfdf2
+         hAOQvJ/kxIkvc1SRKjgeo13nlY3DYCyVxaraxzbUj6IBq/dch8eOcO0nLhkbKRrMwMjp
+         wnG684P0W1wH6oWLBah6oXLfBAmrJoMXbQ0z95KxgAri3q3nzBgvoeJ4MjaCDKnFumc5
+         D34Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Js0LxOI/Y5Cmr5/OQjs9BBq8uJirY5/9jGAF9zR+JzI=;
-        b=p+F8wRJTp2ClMQMACHmG+fTofvgWRBY5tcTZDrTjGbatRfC/Lbh6/yO9ESF3qtKKY6
-         QoKEloPdkly+pJ5KMAL5g+2yH0//k4q9pkI0aX/P6ce98V2wIxP0AYoIt6BS3cEZgnSX
-         n+KSYVZjUB6inMuSATg3/biduadMOYVq//5Tcn02TwOXAZJU0OqygbGWbowdSlQJik1v
-         MPBds4HJhKvdGxB2cGBPst43Umr5keXqWYAIhScEAIgq1Iyw08NmeZQ6RnMAdRTajMvj
-         CIqBaNaS07nfyjs6Z2VcgnYPLw6BVzOuObBZdQ0eDOLV0OTs9PLUNU47Z6NBwriIDG33
-         5ClA==
-X-Gm-Message-State: AOAM532MkKBPNerO9bYIKNC8Mk2v3Gf6qpx0dWwrzE97GdA+iyuFy2lJ
-        fM1OeuAup3gIEEiRqZvH/L8sHqlSNw5m5wCG
-X-Google-Smtp-Source: ABdhPJzmCR7nyg4nOCAgtRJbhoAsTd1oEyE577STgPrOAuAoP588QsoYLMTbID3GMzRRKnUFO4EXBQ==
-X-Received: by 2002:ac8:162b:: with SMTP id p40mr3935032qtj.288.1602863557215;
-        Fri, 16 Oct 2020 08:52:37 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=87Y4xx8k4l9SWKhBL5qDQEDmAjOFQT2JlqjhNy2ajUU=;
+        b=D5B8rnAd/rcDlCnK0g1ZJKaVWe7/J4AvLvZucM+dqOR86rQ+zgX3EeoAcNSPuSI0+n
+         +hhffw5zA5iheegg2zXbf3km/RknGcpBoNeTE/6HT1onJfNCVuXjwNUOgpeZ9C9gi+rc
+         BktFygkhAvrvh1IE7+cWFgYhGBHKGlUuBRdzB9eG4e3oYuQWSsOjKW97MZMLqGnKstUJ
+         DgXW2zvIoTK2GxwUEHRMhil0qsWng/FrPzq7h0TO2R+YcRROhoNJ6ocS4wPbPyNWCENE
+         fNHuPmPU06EtQ8ZGFkC52O2RcwgDNLgBvdCQxg7lK38mnDeoBfoRwhIYJ2hig3yj2K2z
+         7FQg==
+X-Gm-Message-State: AOAM5310WI0CND1g9Gew8OtYdYnIWtqcBneYcCxxglwpsSxLyTi8sUvp
+        M2q70cTp+BqS8PIoNrw+iTwvrU3qGlJX0aJ2
+X-Google-Smtp-Source: ABdhPJx5kgJYbwxm968rJzwrHMl9DNzALlNp01T15BsN2z1umOFVlY42OPN26YUkuemVglqxESXLjQ==
+X-Received: by 2002:a37:b283:: with SMTP id b125mr4119983qkf.407.1602863559163;
+        Fri, 16 Oct 2020 08:52:39 -0700 (PDT)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id r8sm997799qkm.115.2020.10.16.08.52.36
+        by smtp.gmail.com with ESMTPSA id m6sm992438qki.112.2020.10.16.08.52.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Oct 2020 08:52:36 -0700 (PDT)
+        Fri, 16 Oct 2020 08:52:38 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH v2 0/6] A variety of lock contention fixes
-Date:   Fri, 16 Oct 2020 11:52:29 -0400
-Message-Id: <cover.1602863482.git.josef@toxicpanda.com>
+Cc:     Nikolay Borisov <nborisov@suse.com>
+Subject: [PATCH v2 1/6] btrfs: do not block on deleted bgs mutex in the cleaner
+Date:   Fri, 16 Oct 2020 11:52:30 -0400
+Message-Id: <f7adcf9a7a95a7e04ba566377e7c3be15052a11b.1602863482.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.24.1
+In-Reply-To: <cover.1602863482.git.josef@toxicpanda.com>
+References: <cover.1602863482.git.josef@toxicpanda.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-v1->v2:
-- Fixed the log messages that Nikolay pointed out.
-- Added Nikolay's reviewed by for the first patch.
-- Removed the unneeded mb for flushing.
+While running some stress tests I started getting hung task messages.
+This is because the delete unused bg's code has to take the
+delete_unused_bgs_mutex to do it's work, which is taken by balance to
+make sure we don't delete block groups while we're balancing.
 
---- Original email ---
-Hello,
+The problem is a balance can take a while, and so we were getting hung
+task warnings.  We don't need to block and run these things, and the
+cleaner is needed to do other work, so trylock on this mutex and just
+bail if we can't acquire it right away.
 
-I've been running some stress tests recently in order to try and reproduce some
-problems I've tripped over in relocation.  Most of this series is a reposting of
-patches I wrote when debugging related issues for Zygo that got lost.  I've
-updated one of them to make the lock contention even better, making it so I have
-to ramp up my stress test loops because it now finishes way too fast.  Thanks,
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+---
+ fs/btrfs/block-group.c | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
 
-Josef
-
-Josef Bacik (6):
-  btrfs: do not block on deleted bgs mutex in the cleaner
-  btrfs: only let one thread pre-flush delayed refs in commit
-  btrfs: delayed refs pre-flushing should only run the heads we have
-  btrfs: only run delayed refs once before committing
-  btrfs: stop running all delayed refs during snapshot
-  btrfs: run delayed refs less often in commit_cowonly_roots
-
- fs/btrfs/block-group.c | 11 +++++--
- fs/btrfs/delayed-ref.h | 12 +++----
- fs/btrfs/extent-tree.c |  2 +-
- fs/btrfs/transaction.c | 74 ++++++++++++++++--------------------------
- 4 files changed, 43 insertions(+), 56 deletions(-)
-
+diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+index 3ba6f3839d39..2b5f91b35032 100644
+--- a/fs/btrfs/block-group.c
++++ b/fs/btrfs/block-group.c
+@@ -1333,6 +1333,13 @@ void btrfs_delete_unused_bgs(struct btrfs_fs_info *fs_info)
+ 	if (!test_bit(BTRFS_FS_OPEN, &fs_info->flags))
+ 		return;
+ 
++	/*
++	 * Long running balances can keep us blocked here for eternity, so
++	 * simply skip deletion if we're unable to get the mutex.
++	 */
++	if (!mutex_trylock(&fs_info->delete_unused_bgs_mutex))
++		return;
++
+ 	spin_lock(&fs_info->unused_bgs_lock);
+ 	while (!list_empty(&fs_info->unused_bgs)) {
+ 		int trimming;
+@@ -1352,8 +1359,6 @@ void btrfs_delete_unused_bgs(struct btrfs_fs_info *fs_info)
+ 
+ 		btrfs_discard_cancel_work(&fs_info->discard_ctl, block_group);
+ 
+-		mutex_lock(&fs_info->delete_unused_bgs_mutex);
+-
+ 		/* Don't want to race with allocators so take the groups_sem */
+ 		down_write(&space_info->groups_sem);
+ 
+@@ -1499,11 +1504,11 @@ void btrfs_delete_unused_bgs(struct btrfs_fs_info *fs_info)
+ end_trans:
+ 		btrfs_end_transaction(trans);
+ next:
+-		mutex_unlock(&fs_info->delete_unused_bgs_mutex);
+ 		btrfs_put_block_group(block_group);
+ 		spin_lock(&fs_info->unused_bgs_lock);
+ 	}
+ 	spin_unlock(&fs_info->unused_bgs_lock);
++	mutex_unlock(&fs_info->delete_unused_bgs_mutex);
+ 	return;
+ 
+ flip_async:
 -- 
 2.24.1
 
