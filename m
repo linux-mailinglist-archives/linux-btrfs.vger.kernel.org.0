@@ -2,106 +2,106 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A84CD28FF18
-	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Oct 2020 09:29:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77D2828FF33
+	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Oct 2020 09:35:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404522AbgJPH3b (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 16 Oct 2020 03:29:31 -0400
-Received: from mout.gmx.net ([212.227.17.21]:53889 "EHLO mout.gmx.net"
+        id S2404685AbgJPHfS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 16 Oct 2020 03:35:18 -0400
+Received: from mx2.suse.de ([195.135.220.15]:45968 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2394538AbgJPH3b (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 16 Oct 2020 03:29:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1602833368;
-        bh=Jomdj7VmpN8weC9aGRG6kSFSE3bjLUJU8UGq6oSzF2w=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=iRideI3RjM3s3HbvZvsBdjuBja8gc+Hw70Sj3r/sp50ECc0doNGvH8VWwkqVCTHI+
-         NgCqQMPsdZnXXA4EPjDBf35u2xhQdiRKrMWrB46zR6/drpH8pgchWLleMJclt0xU2u
-         IDnYrcDYq7AZbiiSH4KONLTbi1nwpT5W2CFYCJ38=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MbzuB-1jtQnQ2L9T-00daxK; Fri, 16
- Oct 2020 09:29:28 +0200
-Subject: Re: [PATCH] btrfs: balance RAID1/RAID10 mirror selection
-To:     Nikolay Borisov <nborisov@suse.com>, louis@waffle.tech,
-        linux-btrfs@vger.kernel.org
-References: <8541d6d7a63e470b9f4c22ba95cd64fc@waffle.tech>
- <4226ff1b-e313-2881-0670-965e7e98ce59@suse.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
- PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
- 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
- D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
- efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
- ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
- BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
- 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
- 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
- EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
- 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
- ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
- oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
- fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
- 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
- ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
- oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <b4f37e58-496d-818a-35d9-ab0832a6fe61@gmx.com>
-Date:   Fri, 16 Oct 2020 15:29:22 +0800
+        id S2404683AbgJPHfS (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 16 Oct 2020 03:35:18 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1602833717;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=CSoRg3feg2FEDw6oCfWXxMQaWup/zgmvm85VVfnIGks=;
+        b=BaWjret6jdrQVJHO7T8lvzRBGtTHQCBwj7s2iiVYyOFY6el9GZlC5JZjCRJOdLO+nhGGE+
+        cSjr+QIJp+uPMwSudMgTVJ6U8pG8rpdlPRJH6XDGOhQzxAikbXsOx0vw7CnekDYF7xPd16
+        SELI6WTGmo/+X1p74O2cvXMZXdhF9Qs=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 34F80B1D1;
+        Fri, 16 Oct 2020 07:35:17 +0000 (UTC)
+Subject: Re: [PATCH 5/6] btrfs: run delayed refs less often in
+ commit_cowonly_roots
+To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com
+References: <cover.1602786206.git.josef@toxicpanda.com>
+ <5acecc97a54db388043887540238c87101b03885.1602786206.git.josef@toxicpanda.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <560da202-611c-9d86-4396-f95d583d3adc@suse.com>
+Date:   Fri, 16 Oct 2020 10:35:16 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <4226ff1b-e313-2881-0670-965e7e98ce59@suse.com>
+In-Reply-To: <5acecc97a54db388043887540238c87101b03885.1602786206.git.josef@toxicpanda.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:Z++fT3x8Cr1FnA2VUTuYViSMDi3He/mvzrvYceozzl697NEKUt9
- zt9HXiYCMpN+lQ3dp1tsVNeJMUXxrB6Rt9KWinN1vQqFTuHfRUEP7V4DSWqcomUvI8aSAVg
- wZwgvw+ml1Ij3OsnS77s8rMKp3/CdY2VdmW40rmdAWLiu/kWw6jauxUq2KiCgZUBLdKuN9l
- nbI5GHmbdsAjBxCDNqqXg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:BbNeXeiP9vc=:NNeUCkSGKCzsojMOxmuRtm
- 9ze0uE68DFUBYawZseJqHIm2HCDexnjnp2V1PgB110DdWax9hcI9ytPuuAjxsb2iqco93XgY6
- tDcNZaX4O8DZ/CnfEfcGfNHuUJldkD9ys/XoRh/b6Lf3SpDvaqZ15t+YEkRcOv1w+efEru/yl
- ve90JOJgUpjzI3hezX4Dcx4v/XoQoy5r54FvJfysLJE0GP1gsATIJjj27UXf7Mhd2Q80CWRty
- RI39frzuuD4cHdNCu/ICFAh9H05gVDZyWPybWD5uoaRKFhXqHKbb4KvANyTZPz92vFc7dN0p8
- Y1pHXC5agJ+61wWhN2pLyKYyOaVzdJEW68vWLW0mgJ4uXJ4fPi1WaPoJSUqWJSBNIcuEHu0yx
- NwBjn4X5w6lkDQgzpdMwHbVV+JtWuyqfj83Sq8W1YOJP/q2tHQlJh9vF46owVMi7MIQzbg7Qb
- nmx+b6xVKHEdUzZEThhPg9C6k36P7E5SRv8ZrKX4G1mCVixByJhwhjliztywKFJbXZEKMrwJl
- gr/lOOmVYm+LWcK0/lxVAo7HL/jlUeM/3g2l1eynlHgGTrAeR+G2pQ+M3jM/eIz8jWhXeujwI
- CKKNTHf0HBqQRUZYpKctuWCjWvhcPHKe9ul31yuUVSfFdxgrT/1EX2zCHxP+amyQLHz0dPhTN
- md1RhcvVvQbYxMh+ej9Dt0xssjpfCuV4S2O/629+NjCJ9mAlzgeul8sO4PaGF7bLA5tfRk5pU
- F07T70IbmCgLiUmEsWu+lpCvqK0Jnzm3c1VgMGv2khyk+voaG7nKb8eCRbXgw0EyaOhp6yduG
- dfmnnhsz6SokNLR9rW8mTgVo77RqRk8LbYaiDyfZpkowjvCrLhZDv6K2oXf3S6uDy10H3ZmEF
- qkBIDI6BzZpojRGb8mKA==
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2020/10/16 =E4=B8=8B=E5=8D=883:15, Nikolay Borisov wrote:
->
->
-> On 16.10.20 =D0=B3. 8:59 =D1=87., louis@waffle.tech wrote:
->> Balance RAID1/RAID10 mirror selection via plain round-robin scheduling.=
- This should roughly double throughput for large reads.
->>
->> Signed-off-by: Louis Jencka <louis@waffle.tech>
->
-> Can you show numbers substantiating your claims?
->
-And isn't this related to the read policy? IIRC some patches are
-floating in the mail list to provide the framework of how the read
-policy should work.
+On 15.10.20 г. 21:26 ч., Josef Bacik wrote:
+> We love running delayed refs in commit_cowonly_roots, but it is a bit
+> excessive.  I was seeing cases of running 3 or 4 refs a few times in a
+> row during this time.  Instead simply update all of the roots first,
+> then run delayed refs, then handle the empty block groups case, and then
+> if we have any more dirty roots do the whole thing again.  This allows
+> us to be much more efficient with our delayed ref running, as we can
+> batch a few more operations at once.
+> 
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 
-Those patches aren't yet merged?
 
-Thanks,
-Qu
+I remember pointing this out but the commit messages of this and next
+patch are transposed. Here you talk about commit_cowonly_roots but you
+change create_pending_snapshot, analogically the same is happening in
+next commit. Please fix it.
