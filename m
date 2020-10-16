@@ -2,60 +2,57 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BCF2290722
-	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Oct 2020 16:28:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58F7C290747
+	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Oct 2020 16:35:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407660AbgJPO2G (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 16 Oct 2020 10:28:06 -0400
-Received: from mx2.suse.de ([195.135.220.15]:53672 "EHLO mx2.suse.de"
+        id S2408942AbgJPOfY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 16 Oct 2020 10:35:24 -0400
+Received: from mx2.suse.de ([195.135.220.15]:59500 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2407408AbgJPO2G (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 16 Oct 2020 10:28:06 -0400
+        id S2408868AbgJPOfX (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 16 Oct 2020 10:35:23 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id C8342B1F7;
-        Fri, 16 Oct 2020 14:28:04 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id B00D2ADFE;
+        Fri, 16 Oct 2020 14:35:22 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 723D6DA7C3; Fri, 16 Oct 2020 16:26:31 +0200 (CEST)
-Date:   Fri, 16 Oct 2020 16:26:31 +0200
+        id 5567BDA7C3; Fri, 16 Oct 2020 16:33:54 +0200 (CEST)
+Date:   Fri, 16 Oct 2020 16:33:54 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Nikolay Borisov <nborisov@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 0/4] Small QOI fixes for transaction_kthread
-Message-ID: <20201016142631.GT6756@twin.jikos.cz>
+To:     Daniel Xu <dxu@dxuuu.xyz>
+Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com,
+        josef@toxicpanda.com, quwenruo.btrfs@gmx.com,
+        Qu Wenruo <wqu@suse.com>
+Subject: Re: [PATCH v2] btrfs: Fix divide by zero
+Message-ID: <20201016143354.GU6756@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20201008122430.93433-1-nborisov@suse.com>
+Mail-Followup-To: dsterba@suse.cz, Daniel Xu <dxu@dxuuu.xyz>,
+        linux-btrfs@vger.kernel.org, kernel-team@fb.com,
+        josef@toxicpanda.com, quwenruo.btrfs@gmx.com,
+        Qu Wenruo <wqu@suse.com>
+References: <20201009010910.270794-1-dxu@dxuuu.xyz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201008122430.93433-1-nborisov@suse.com>
+In-Reply-To: <20201009010910.270794-1-dxu@dxuuu.xyz>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Oct 08, 2020 at 03:24:26PM +0300, Nikolay Borisov wrote:
-> Following 4 patches make transaction_kthread code slitghly more user friendly.
-> Namely, patch 1 convert from open-coded multiplicaiton by HZ to using
-> msecs_to_jiffies helper. Patch 2 relies on the observation that the running
-> transaction is obtained under trans_lock so an extra check can be removed.
-> Patch 3/4 could possibly be squashed into 1 but the net effect is that the code
-> is more intuitive when sleeping in case a lower interval than commit_trans has
-> elapsed.
+On Thu, Oct 08, 2020 at 06:09:10PM -0700, Daniel Xu wrote:
+> If there's no parity and num_stripes < ncopies, an btrfs image can
+> trigger a divide by zero in calc_stripe_length().
 > 
+> The image (see link) was generated through fuzzing.
 > 
-> This has survived full xfstest run.
-> 
-> Nikolay Borisov (4):
->   btrfs: Use helpers to convert from seconds to jiffies in
->     transaction_kthread
->   btrfs: Remove redundant check
->   btrfs: Record delta directly in transaction_kthread
+> Reviewed-by: Qu Wenruo <wqu@suse.com>
+> Link: https://bugzilla.kernel.org/show_bug.cgi?id=209587
 
-1-3 added to misc-next, with some fixups.
+For bugzillas please use Bugzilla: tag.
 
->   btrfs: Be smarter when sleeping in transaction_kthread
+> Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
 
-There's a comment regarding correctness.
+Please write more descriptive subjects like
+
+"btrfs: tree-checker: validate number of chunk stripes and parity"
