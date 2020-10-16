@@ -2,120 +2,67 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD57C2901D0
-	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Oct 2020 11:26:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0469290715
+	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Oct 2020 16:22:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2395254AbgJPJ0A (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 16 Oct 2020 05:26:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48276 "EHLO mail.kernel.org"
+        id S2408794AbgJPOWR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 16 Oct 2020 10:22:17 -0400
+Received: from mx2.suse.de ([195.135.220.15]:44708 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2395031AbgJPJ0A (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 16 Oct 2020 05:26:00 -0400
-Received: from mail-qt1-f176.google.com (mail-qt1-f176.google.com [209.85.160.176])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1DC65206DD;
-        Fri, 16 Oct 2020 09:25:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602840359;
-        bh=ZIFdCdaDAkaPMybI9x5q3GOJwy0ogix4SCHyqwGyE7I=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=mh5tCoR8FWDTlsL0SDstCjrH2yZGm0hN3VKGp2zKF/oK4SrHxiWuZbKB8ZCOHmdb2
-         qHZ0fh0Bw8juJHUfUuSqNM0pyWe4yQZfFBX0Soxeujjr6wTZzxkNc31QsohsSqGY4+
-         me9dbaUOhGsfTPG3RxU9pp/GnfEONi8K8gR5lvYo=
-Received: by mail-qt1-f176.google.com with SMTP id z33so1193844qth.8;
-        Fri, 16 Oct 2020 02:25:59 -0700 (PDT)
-X-Gm-Message-State: AOAM533d9wSBNOl8mdYoWaZ09TtczJqoR21AXIz4WsFKLO7+c4BSbf8y
-        g5MbJOr6mkL7vchU/0PPlQtMpZu5rMtMa2cAdZU=
-X-Google-Smtp-Source: ABdhPJzac7iB5EEvVUiAI0+5S2np1DZmnSowCY/Cr0hgtoywO3pJ8CkEahASJwwR6qouJkEn9L/LuMF5RkpY3pctIgY=
-X-Received: by 2002:ac8:5a53:: with SMTP id o19mr2346093qta.183.1602840358071;
- Fri, 16 Oct 2020 02:25:58 -0700 (PDT)
+        id S2394682AbgJPOWR (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 16 Oct 2020 10:22:17 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id CB938B1F7;
+        Fri, 16 Oct 2020 14:22:15 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id C5986DA7C3; Fri, 16 Oct 2020 16:20:47 +0200 (CEST)
+Date:   Fri, 16 Oct 2020 16:20:47 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Nikolay Borisov <nborisov@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 4/4] btrfs: Be smarter when sleeping in
+ transaction_kthread
+Message-ID: <20201016142047.GS6756@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <20201008122430.93433-1-nborisov@suse.com>
+ <20201008122430.93433-5-nborisov@suse.com>
 MIME-Version: 1.0
-References: <aa8318c5beb380a9e99142d1b5e776b739d04bdb.1602774113.git.fdmanana@suse.com>
- <20201015161355.GI7037@quack2.suse.cz> <20201016055757.GA7322@dread.disaster.area>
- <20201016084613.GJ7037@quack2.suse.cz>
-In-Reply-To: <20201016084613.GJ7037@quack2.suse.cz>
-From:   Filipe Manana <fdmanana@kernel.org>
-Date:   Fri, 16 Oct 2020 10:25:47 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H4XNkQwQP2b2wToDfjaVccR3MvtivMD3f6eYpjLmjJSWA@mail.gmail.com>
-Message-ID: <CAL3q7H4XNkQwQP2b2wToDfjaVccR3MvtivMD3f6eYpjLmjJSWA@mail.gmail.com>
-Subject: Re: [PATCH] generic: test the correctness of several cases of
- RWF_NOWAIT writes
-To:     Jan Kara <jack@suse.cz>
-Cc:     Dave Chinner <david@fromorbit.com>,
-        fstests <fstests@vger.kernel.org>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>,
-        Filipe Manana <fdmanana@suse.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201008122430.93433-5-nborisov@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Oct 16, 2020 at 9:46 AM Jan Kara <jack@suse.cz> wrote:
->
-> On Fri 16-10-20 16:57:57, Dave Chinner wrote:
-> > On Thu, Oct 15, 2020 at 06:13:56PM +0200, Jan Kara wrote:
-> > > On Thu 15-10-20 16:36:38, fdmanana@kernel.org wrote:
-> > > > From: Filipe Manana <fdmanana@suse.com>
-> > > >
-> > > > Verify some attempts to write into a file using RWF_NOWAIT:
-> > > >
-> > > > 1) Writing into a fallocated extent that starts at eof should work;
-> > >
-> > > Why? We need to update i_size which requires transaction start and e.g.
-> > > ext4 does not support that in non-blocking mode...
-> >
-> > Right, different filesystems behave differently given similar
-> > pre-conditions. That's not a bug, that's exactly how RWF_NOWAIT is
-> > expected to be implemented by each filesystem....
-> >
-> > > > 2) Writing into a hole should fail;
-> > > > 3) Writing into a range that is partially allocated should fail.
-> >
-> > Same for these - these are situations where a -specific filesystem
-> > implementation- might block, not a situation where the RWF_NOWAIT
-> > API specification says that IO submission "should fail" and hence
-> > return EAGAIN.
-> >
-> > > > This is motivated by several bugs that btrfs and ext4 had and were fixed
-> > > > by the following kernel commits:
-> > > >
-> > > >   4b1946284dd6 ("btrfs: fix failure of RWF_NOWAIT write into prealloc extent beyond eof")
-> > > >   260a63395f90 ("btrfs: fix RWF_NOWAIT write not failling when we need to cow")
-> > > >   0b3171b6d195 ("ext4: do not block RWF_NOWAIT dio write on unallocated space")
-> > > >
-> > > > At the moment, on a 5.9-rc6 kernel at least, ext4 is failing for case 1),
-> > > > but when I found and fixed case 1) in btrfs, around kernel 5.7, it was not
-> > > > failing on ext4, so some regression happened in the meanwhile. For xfs and
-> > > > btrfs on a 5.9 kernel, all the three cases pass.
-> >
-> > Sure, until we propagate IOMAP_NOWAIT far enough into the allocation
-> > code that allocation will either succeed without blocking or fail
-> > without changing anything.  At which point, the filesystem behaviour
-> > is absolutely correct according to the RWF_NOWAIT specification, but
-> > the test is most definitely wrong.
-> >
-> > IOWs, I think any test that says "RWF_NOWAIT IO in a <specific
-> > situation> must do <specific thing>" is incorrect. RWF_NOWAIT simply
-> > does not not define behaviour like this, and different filesystems
-> > will do different things given the same file layouts...
->
-> I agree with this. That being said it would be still worthwhile to have
-> some tests verifying RWF_NOWAIT behavior is sane - that we don't block with
-> RWF_NOWAIT (this is a requirement), and that what used to work with
-> RWF_NOWAIT didn't unexpectedly regress (this is more a sanity check)... I'm
-> not sure how to test that in an automated way through.
+On Thu, Oct 08, 2020 at 03:24:30PM +0300, Nikolay Borisov wrote:
+> If transaction_kthread is woken up before
+> btrfs_fs_info::commit_interval seconds have elapsed it will sleep for a
+> fixed period of 5 seconds. This is not a problem per-se but is not
+> accuaret, instead the code should sleep for an interval which guarantees
+> on next wakeup commit_interval would have passed. Since time tracking is
+> not accurate add 1 second to ensure next wake up would be after
+> commit_interval.
+> 
+> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
+> ---
+>  fs/btrfs/disk-io.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+> index c5d3e7f75066..a1fe99cf0831 100644
+> --- a/fs/btrfs/disk-io.c
+> +++ b/fs/btrfs/disk-io.c
+> @@ -1735,7 +1735,7 @@ static int transaction_kthread(void *arg)
+>  		if (cur->state < TRANS_STATE_COMMIT_START &&
+>  		    delta < fs_info->commit_interval) {
+>  			spin_unlock(&fs_info->trans_lock);
+> -			delay = msecs_to_jiffies(5000);
+> +			delay = msecs_to_jiffies((1+delta) * 1000);
 
-Yes, my intention was to serve more as a regression test than anything
-else (as it's not a new feature anyway).
-I only excluded here cases that are obviously btrfs specific like when
-trying to write into a file range that has extents shared by
-snapshots.
-
-Thanks.
-
->
->                                                                 Honza
-> --
-> Jan Kara <jack@suse.com>
-> SUSE Labs, CR
+This does not seem right. Delta is number of seconds since the
+transaction started, so we need to sleep for the remaining time. Which
+is commit_interval - delta.
