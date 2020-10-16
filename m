@@ -2,133 +2,94 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E19B82908E7
-	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Oct 2020 17:52:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6827B290981
+	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Oct 2020 18:18:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2410450AbgJPPwt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 16 Oct 2020 11:52:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39066 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2408908AbgJPPwt (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 16 Oct 2020 11:52:49 -0400
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24EE0C061755
-        for <linux-btrfs@vger.kernel.org>; Fri, 16 Oct 2020 08:52:49 -0700 (PDT)
-Received: by mail-qk1-x742.google.com with SMTP id x20so2306715qkn.1
-        for <linux-btrfs@vger.kernel.org>; Fri, 16 Oct 2020 08:52:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
-         :content-transfer-encoding;
-        bh=ouKQo3AOYSkuqXsuiFtAv/KiWiTVfNs27TuAPcn78Ao=;
-        b=mnR+NR8yHczEOFfa7vWtaODH/GkhKhu1rxc/KPdHU3DJL8U155KNE+BzziJYHJD55f
-         qlllJiJizykOTqWwup7eQ+1KndaDwJeftnjf1yTpdX42JkCxgUdihAdUZR5GtU9gc8Wg
-         I6ELqPAFvMDlSEgBsq5SaS185Koit5H18bPJaxU22wz3x2ht3EsjcDItj8IySJIlrzV2
-         5JlKr6SrFFK+9cfRbjIFmto1/zL85e338GiVGjnRYL400Slbz9bxHyCF7J2bwYGFKBk+
-         A0bzU899Hx9wM63Hx5jPTLQc5CPF/o+f5uS/4scBCCtp0rA9ne+xfpa3vz6cpD34TBxf
-         dx6w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ouKQo3AOYSkuqXsuiFtAv/KiWiTVfNs27TuAPcn78Ao=;
-        b=Gq87cwnC7hYu5a0qcuJgtgFLkKgkmTnOQNekr/+ytm/DJVl+kkLV21jiwXE2UhpfNj
-         RK5UVS5cISTyZKBGmihslP4ps4EDzJaAKVzxRqKHfuLjHAMYX/rTFStK2gSAe7DAN4Yx
-         DD+ZUlkeppwk+9dR6y8DTKB0iUljCP81P5Zb6HGL9XnGcOaOLWmEOAzGCwmkDU+9y3zD
-         xCEh9hahYDA8FAf/zkOGAzsvqWSvXTheTdnLm3P7T1QphzcCth2vSQNgofssdvhnapHQ
-         LptwLxjwPT59F+rfyg5Ro/3e6klJdOqCkfSODqluET+Ib0P9Ii8MC9Ri6mtBAoeSomJ1
-         S6Bg==
-X-Gm-Message-State: AOAM533zGr/y2NCIGrIUOHr4kg6oCUboX+PgpsKS7qh/IQZ4pKCnrtAd
-        up7sxOlGdT3F2MgznwDhKxRI7oJhItHvBfAJ
-X-Google-Smtp-Source: ABdhPJzuAu5Grfuu8TpKZ/xNDGAGwWvLRRc5kvyOmVmqYs6NrwuHxijZVQiusEZ6inh4hDmBzI+FOQ==
-X-Received: by 2002:a37:b985:: with SMTP id j127mr4410072qkf.282.1602863567910;
-        Fri, 16 Oct 2020 08:52:47 -0700 (PDT)
-Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id z66sm1017597qkb.50.2020.10.16.08.52.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Oct 2020 08:52:47 -0700 (PDT)
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH v2 6/6] btrfs: run delayed refs less often in commit_cowonly_roots
-Date:   Fri, 16 Oct 2020 11:52:35 -0400
-Message-Id: <dd5a84ddc9582a6723d2c4c90980376b04dc4d37.1602863482.git.josef@toxicpanda.com>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <cover.1602863482.git.josef@toxicpanda.com>
-References: <cover.1602863482.git.josef@toxicpanda.com>
+        id S2409816AbgJPQSP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 16 Oct 2020 12:18:15 -0400
+Received: from waffle.tech ([104.225.250.114]:54090 "EHLO mx.waffle.tech"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2409702AbgJPQSP (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 16 Oct 2020 12:18:15 -0400
+Received: from mx.waffle.tech (unknown [10.50.1.6])
+        by mx.waffle.tech (Postfix) with ESMTP id 90D1B6D807;
+        Fri, 16 Oct 2020 10:18:12 -0600 (MDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx.waffle.tech 90D1B6D807
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=waffle.tech; s=mx;
+        t=1602865092; bh=g+e059dAp5+y1BT10SBQkD7QSOk8gUZV2NeS+VgUcME=;
+        h=Date:From:Subject:To:In-Reply-To:References:From;
+        b=lbHBJuuvCV7Ew4JB4S4huHGg2GkJ7QIHnkKpLae5izYsSVoxb6ZC1jXq2J2WrsTM6
+         r8XRIJQ7478CDNLaHOQZUTwkz0lKL+J7pwtdUcrsVfA2KK0L/SLCiIdRHO/XbW9NV8
+         tmr9S/mkJWb8ibgkWx/lulbUQ+a+6Jtiwh3beE3w=
+Received: from waffle.tech ([10.50.1.3])
+        by mx.waffle.tech with ESMTPSA
+        id cFYUIsTHiV+sZwcAQqPLoA
+        (envelope-from <louis@waffle.tech>); Fri, 16 Oct 2020 10:18:12 -0600
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Date:   Fri, 16 Oct 2020 16:18:11 +0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-Mailer: RainLoop/1.14.0
+From:   louis@waffle.tech
+Message-ID: <3ac1cd1113ac25f11bbed6c90d814fd8@waffle.tech>
+Subject: Re: [PATCH] btrfs: balance RAID1/RAID10 mirror selection
+To:     "Nikolay Borisov" <nborisov@suse.com>, linux-btrfs@vger.kernel.org
+In-Reply-To: <4226ff1b-e313-2881-0670-965e7e98ce59@suse.com>
+References: <4226ff1b-e313-2881-0670-965e7e98ce59@suse.com>
+ <8541d6d7a63e470b9f4c22ba95cd64fc@waffle.tech>
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+        DKIM_VALID_AU,DKIM_VALID_EF,UNPARSEABLE_RELAY autolearn=ham
+        autolearn_force=no version=3.4.2
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mx.waffle.tech
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-We love running delayed refs in commit_cowonly_roots, but it is a bit
-excessive.  I was seeing cases of running 3 or 4 refs a few times in a
-row during this time.  Instead simply update all of the roots first,
-then run delayed refs, then handle the empty block groups case, and then
-if we have any more dirty roots do the whole thing again.  This allows
-us to be much more efficient with our delayed ref running, as we can
-batch a few more operations at once.
-
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
----
- fs/btrfs/transaction.c | 23 ++++++++++++-----------
- 1 file changed, 12 insertions(+), 11 deletions(-)
-
-diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
-index 93006da039a3..cefdd0dc4c20 100644
---- a/fs/btrfs/transaction.c
-+++ b/fs/btrfs/transaction.c
-@@ -1188,10 +1188,6 @@ static noinline int commit_cowonly_roots(struct btrfs_trans_handle *trans)
- 	btrfs_tree_unlock(eb);
- 	free_extent_buffer(eb);
- 
--	if (ret)
--		return ret;
--
--	ret = btrfs_run_delayed_refs(trans, (unsigned long)-1);
- 	if (ret)
- 		return ret;
- 
-@@ -1209,10 +1205,6 @@ static noinline int commit_cowonly_roots(struct btrfs_trans_handle *trans)
- 	if (ret)
- 		return ret;
- 
--	/* run_qgroups might have added some more refs */
--	ret = btrfs_run_delayed_refs(trans, (unsigned long)-1);
--	if (ret)
--		return ret;
- again:
- 	while (!list_empty(&fs_info->dirty_cowonly_roots)) {
- 		struct btrfs_root *root;
-@@ -1227,15 +1219,24 @@ static noinline int commit_cowonly_roots(struct btrfs_trans_handle *trans)
- 		ret = update_cowonly_root(trans, root);
- 		if (ret)
- 			return ret;
--		ret = btrfs_run_delayed_refs(trans, (unsigned long)-1);
--		if (ret)
--			return ret;
- 	}
- 
-+	/* Now flush any delayed refs generated by updating all of the roots. */
-+	ret = btrfs_run_delayed_refs(trans, (unsigned long)-1);
-+	if (ret)
-+		return ret;
-+
- 	while (!list_empty(dirty_bgs) || !list_empty(io_bgs)) {
- 		ret = btrfs_write_dirty_block_groups(trans);
- 		if (ret)
- 			return ret;
-+
-+		/*
-+		 * We're writing the dirty block groups, which could generate
-+		 * delayed refs, which could generate more dirty block groups,
-+		 * so we want to keep this flushing in this loop to make sure
-+		 * everything gets run.
-+		 */
- 		ret = btrfs_run_delayed_refs(trans, (unsigned long)-1);
- 		if (ret)
- 			return ret;
--- 
-2.24.1
-
+October 16, 2020 1:15 AM, "Nikolay Borisov" <nborisov@suse.com> wrote:=0A=
+=0A> On 16.10.20 =D0=B3. 8:59 =D1=87., louis@waffle.tech wrote:=0A> =0A>>=
+ Balance RAID1/RAID10 mirror selection via plain round-robin scheduling. =
+This should roughly double=0A>> throughput for large reads.=0A>> =0A>> Si=
+gned-off-by: Louis Jencka <louis@waffle.tech>=0A> =0A> Can you show numbe=
+rs substantiating your claims?=0A=0ASure thing. Below are the results fro=
+m some tests I've run using a Debian 10 VM. It has two 10GiB disks attach=
+ed which are each independently limited to 100MB/s total IO (using libvir=
+t's iotune feature). They've been used to create the RAID1 volume mounted=
+ at /mnt. I've truncated the fio output to just show the high-level stats=
+.=0A=0AReading a large file performs twice as well with the patch applied=
+ (203 MB/s vs 101 MB/s). Writing a large file, and the random read-write =
+tests, look like they perform roughly the same to me.=0A=0ALouis=0A=0A---=
+=0A=0AWithout patch=0A=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=0A=0Alouis@=
+debian:/mnt$ uname -a=0ALinux debian 4.19.0-11-amd64 #1 SMP Debian 4.19.1=
+46-1 (2020-09-17) x86_64 GNU/Linux=0A=0Alouis@debian:/mnt$ btrfs fi df /m=
+nt=0AData, RAID1: total=3D7.00GiB, used=3D2.00MiB=0ASystem, RAID1: total=
+=3D8.00MiB, used=3D16.00KiB=0AMetadata, RAID1: total=3D1.00GiB, used=3D68=
+8.00KiB=0AGlobalReserve, single: total=3D29.19MiB, used=3D352.00KiB=0A=0A=
+louis@debian:/mnt$ dd if=3D/dev/urandom of=3D/mnt/test bs=3D1M count=3D10=
+24 conv=3Dfdatasync=0A1024+0 records in=0A1024+0 records out=0A1073741824=
+ bytes (1.1 GB, 1.0 GiB) copied, 12.928 s, 83.1 MB/s=0A=0Alouis@debian:/m=
+nt$ dd if=3D/mnt/test of=3D/dev/null=0A2097152+0 records in=0A2097152+0 r=
+ecords out=0A1073741824 bytes (1.1 GB, 1.0 GiB) copied, 10.6403 s, 101 MB=
+/s=0A=0Alouis@debian:/mnt$ fio --name=3Drandom-rw --ioengine=3Dposixaio -=
+-rw=3Drandrw --bs=3D4k --numjobs=3D2 --size=3D2g --iodepth=3D1 --runtime=
+=3D60 --time_based --end_fsync=3D1=0Arandom-rw: (g=3D0): rw=3Drandrw, bs=
+=3D(R) 4096B-4096B, (W) 4096B-4096B, (T) 4096B-4096B, ioengine=3Dposixaio=
+, iodepth=3D1=0A...=0ARun status group 0 (all jobs):=0A   READ: bw=3D15.8=
+MiB/s (16.5MB/s), 7459KiB/s-8671KiB/s (7638kB/s-8879kB/s), io=3D964MiB (1=
+010MB), run=3D61179-61179msec=0A  WRITE: bw=3D15.8MiB/s (16.6MB/s), 7490K=
+iB/s-8682KiB/s (7670kB/s-8890kB/s), io=3D966MiB (1013MB), run=3D61179-611=
+79msec=0A=0A=0AWith patch=0A=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=0A=0Alouis@deb=
+ian:/mnt$ uname -a=0ALinux debian 4.19.0-11-amd64 #1 SMP Debian 4.19.146-=
+1a~test (2020-10-15) x86_64 GNU/Linux=0A=0Alouis@debian:/mnt$ dd if=3D/de=
+v/urandom of=3D/mnt/test bs=3D1M count=3D1024 conv=3Dfdatasync=0A1024+0 r=
+ecords in=0A1024+0 records out=0A1073741824 bytes (1.1 GB, 1.0 GiB) copie=
+d, 11.8067 s, 90.9 MB/s=0A=0Alouis@debian:/mnt$ dd if=3D/mnt/test of=3D/d=
+ev/null=0A2097152+0 records in=0A2097152+0 records out=0A1073741824 bytes=
+ (1.1 GB, 1.0 GiB) copied, 5.28642 s, 203 MB/s=0A=0Alouis@debian:/mnt$ fi=
+o --name=3Drandom-rw --ioengine=3Dposixaio --rw=3Drandrw --bs=3D4k --numj=
+obs=3D2 --size=3D2g --iodepth=3D1 --runtime=3D60 --time_based --end_fsync=
+=3D1=0Arandom-rw: (g=3D0): rw=3Drandrw, bs=3D(R) 4096B-4096B, (W) 4096B-4=
+096B, (T) 4096B-4096B, ioengine=3Dposixaio, iodepth=3D1=0A...=0ARun statu=
+s group 0 (all jobs):=0A   READ: bw=3D16.5MiB/s (17.3MB/s), 8217KiB/s-865=
+2KiB/s (8414kB/s-8860kB/s), io=3D1025MiB (1074MB), run=3D62202-62202msec=
+=0A  WRITE: bw=3D16.5MiB/s (17.3MB/s), 8218KiB/s-8698KiB/s (8415kB/s-8907=
+kB/s), io=3D1028MiB (1077MB), run=3D62202-62202msec
