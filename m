@@ -2,57 +2,57 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87F3C29085A
-	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Oct 2020 17:29:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0072929085B
+	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Oct 2020 17:29:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2410108AbgJPP3b (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 16 Oct 2020 11:29:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35410 "EHLO
+        id S2410111AbgJPP3d (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 16 Oct 2020 11:29:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2407477AbgJPP3a (ORCPT
+        with ESMTP id S2407477AbgJPP3c (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 16 Oct 2020 11:29:30 -0400
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D14D6C061755
-        for <linux-btrfs@vger.kernel.org>; Fri, 16 Oct 2020 08:29:30 -0700 (PDT)
-Received: by mail-qk1-x742.google.com with SMTP id i22so2216702qkn.9
-        for <linux-btrfs@vger.kernel.org>; Fri, 16 Oct 2020 08:29:30 -0700 (PDT)
+        Fri, 16 Oct 2020 11:29:32 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86F4DC061755
+        for <linux-btrfs@vger.kernel.org>; Fri, 16 Oct 2020 08:29:32 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id e6so1819132qtw.10
+        for <linux-btrfs@vger.kernel.org>; Fri, 16 Oct 2020 08:29:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=0MSsz6C6/qJTpq+PhQqbvsOarnY1YcBhqdx9TT4q8z0=;
-        b=V+dwo/PZpm1jkddagfWykzS2cz5Z1kBHcbs/4wAKU+KdUSxIYEw+RscZVbU1IB0FLK
-         YXfHIgqGzATQu8VZN9qUkTgJtnucnIhS7WwONQvf6fkd8uZk/Xw4QEqYk/WjmRIP21fE
-         XHDP+pM2f1thBinjTDZF0Cicel72S1cypp1A2devp+CY6689ICvnVN4OV5JkIEED7jmC
-         gMi0o9qhSdvhSyODEm/8/P/U1jn5PnbQZ64msc+O4dXYLiZp8PiP54Dxr3P9hPtYEUAe
-         Gs3kaOIQdXBsD7UgnzcZxgPJh0kroWvYBUQQjyExGllhDEe0CGdP4GxLAE34wSsgOs12
-         nWvA==
+        bh=Yx9otvDd5onkeTvAXlblsQFo6BfxZq/uyXmsV0srymM=;
+        b=gd06BLzRX9qG66VRM7VOVUOYVQhEf7vFhSPG4O+dwfbL40/nME8lSaypu1fESmxlBj
+         395yevBuh+I64OmR43Y1uab2sk/o6RScD6wWwd6vTbfmxdvVXn6V71d4ramh7qNq3XJV
+         OI34a1Uns6Yt2/fSwc3jTKu/aruUsa9QDsIpqi6/R2wJqT4xayNepDl7dj77eUv+KUA8
+         4bcQLi7VsfsnVcyDu+0sNCDmgRlGa3UqoMtBykETVXqhrEzZyJ5IBX/m+FVrkQSnu6Fq
+         T6ZKkn2kApimGcwQbEGpZywUive2okzNt9GUiBCYmymLjNvF5QdKTFRW+iJby3+PBiw1
+         FgXQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=0MSsz6C6/qJTpq+PhQqbvsOarnY1YcBhqdx9TT4q8z0=;
-        b=MlvcCzkjksyPUMJL3Wi3I2FZYTxwBZM5m42huw0QAq4Ri+2DcRAxkgxPJsnxy9ctuX
-         3gzrT2Wkf55Mb9DAOdKsAuJxzImKAaKnWqo1vAQdjAJfWScYtDHM0eOJkT8s0dOyljTJ
-         6oddBhErPqZuQ9CRE9ltCcct5a+o8wvBJSKTiK/ixAy0lr/dwVlzy9e/EQcd9gtIwXZD
-         kZ8+eNs+c46P6cfd9aJO+HdF916XCcmSjve3oI4KvGWm8kOgz1a93rgfMasUAvsQVf4a
-         ZQXVjoxip/LK2TpYnla7GT+AYExIlJsPUdCRoUZAotYBdwyXhO9ClT0MFQ2s+qG1UFKz
-         ha5w==
-X-Gm-Message-State: AOAM532gcGIwSxtYQLTba/7QKcFmIi8Cbv3brGcA2qY3ITIL5TGg3bV1
-        kAAKVNHO7IAwR5AwZ41PHz8B8w9ajfilEP2C
-X-Google-Smtp-Source: ABdhPJzz08VY2hpzCAfYY7vxTIeSznmNdG3bD0NlrJ0xuxFXTF7QRiw2Z1aktldUchJlITr5B4PwhA==
-X-Received: by 2002:ae9:ec0a:: with SMTP id h10mr4476136qkg.102.1602862169520;
-        Fri, 16 Oct 2020 08:29:29 -0700 (PDT)
+        bh=Yx9otvDd5onkeTvAXlblsQFo6BfxZq/uyXmsV0srymM=;
+        b=Ycre7Fjm10qGlUNw0tQ8FJWM7RVvgJNSV28nNtRkRYeNyD+8mkXIjjR1/NuMxjPl39
+         1943o4LbiKOA3ztbZB8OBOg1SH+55ayJlVs6ZkfMOhMXJkN7hDCzkW2mtGWHavqPSdP6
+         q5rVr8Y3FOf+afdCGDaeMmIRVYHGlEu55sKCevuvX7qrYLtoLKSGzIl/+rP7Tli81e1b
+         6/7hVr7FyuCcBXDFsffga4rqgFbIKQ48kMHKphEBFL2MqQc2ZLUadVWAfoC7LwXlxAsq
+         MYm64w/zF4/nwHEJsVQBj/FvWjJ+QhXIZL2yStTMqSNISL1Djb0o7/lFyvOdzfOu8waZ
+         iHyA==
+X-Gm-Message-State: AOAM533p96ED+lvgJwjn0P+EfgXZ1s3FT429NBd+e7vHCHuF2B7YXRBM
+        enTJqy+0Cqa2ZUWpI0sWp4fVh23LDmKfWCzD
+X-Google-Smtp-Source: ABdhPJxxvubOMo5eXfL79N1Bd8ghTVcbCu03N+RxJe1IwUOs8VyW0L+Fuoxyp3gvwzFQkCD6lxt3Dg==
+X-Received: by 2002:ac8:4791:: with SMTP id k17mr3995990qtq.264.1602862171203;
+        Fri, 16 Oct 2020 08:29:31 -0700 (PDT)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id l125sm998463qke.23.2020.10.16.08.29.28
+        by smtp.gmail.com with ESMTPSA id m6sm968201qki.112.2020.10.16.08.29.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Oct 2020 08:29:28 -0700 (PDT)
+        Fri, 16 Oct 2020 08:29:30 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH v4 4/8] btrfs: add a helper to print out rescue= options
-Date:   Fri, 16 Oct 2020 11:29:16 -0400
-Message-Id: <4d3297668dd9ab26681b5632232fb1f6eb00cb73.1602862052.git.josef@toxicpanda.com>
+Subject: [PATCH v4 5/8] btrfs: show rescue=usebackuproot in /proc/mounts
+Date:   Fri, 16 Oct 2020 11:29:17 -0400
+Message-Id: <007ef6e4d542210148bc373d3a432d801e83019e.1602862052.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <cover.1602862052.git.josef@toxicpanda.com>
 References: <cover.1602862052.git.josef@toxicpanda.com>
@@ -62,44 +62,23 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-We're going to have a lot of rescue options, add a helper to collapse
-the /proc/mounts output to rescue=option1:option2:option3 format.
+This got missed somehow, so add it in.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/super.c | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+ fs/btrfs/super.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
 diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-index f99e89ec46b2..f41f7af27ff7 100644
+index f41f7af27ff7..ca270649fe10 100644
 --- a/fs/btrfs/super.c
 +++ b/fs/btrfs/super.c
-@@ -1392,11 +1392,19 @@ int btrfs_sync_fs(struct super_block *sb, int wait)
- 	return btrfs_commit_transaction(trans);
- }
- 
-+static void print_rescue_option(struct seq_file *seq, const char *s,
-+				bool *printed)
-+{
-+	seq_printf(seq, "%s%s", (*printed) ? ":" : ",rescue=", s);
-+	*printed = true;
-+}
-+
- static int btrfs_show_options(struct seq_file *seq, struct dentry *dentry)
- {
- 	struct btrfs_fs_info *info = btrfs_sb(dentry->d_sb);
- 	const char *compress_type;
- 	const char *subvol_name;
-+	bool printed = false;
- 
- 	if (btrfs_test_opt(info, DEGRADED))
- 		seq_puts(seq, ",degraded");
-@@ -1429,7 +1437,7 @@ static int btrfs_show_options(struct seq_file *seq, struct dentry *dentry)
- 	if (btrfs_test_opt(info, NOTREELOG))
+@@ -1438,6 +1438,8 @@ static int btrfs_show_options(struct seq_file *seq, struct dentry *dentry)
  		seq_puts(seq, ",notreelog");
  	if (btrfs_test_opt(info, NOLOGREPLAY))
--		seq_puts(seq, ",rescue=nologreplay");
-+		print_rescue_option(seq, "nologreplay", &printed);
+ 		print_rescue_option(seq, "nologreplay", &printed);
++	if (btrfs_test_opt(info, USEBACKUPROOT))
++		print_rescue_option(seq, "usebackuproot", &printed);
  	if (btrfs_test_opt(info, FLUSHONCOMMIT))
  		seq_puts(seq, ",flushoncommit");
  	if (btrfs_test_opt(info, DISCARD_SYNC))
