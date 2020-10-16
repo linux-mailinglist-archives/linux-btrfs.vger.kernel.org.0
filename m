@@ -2,58 +2,58 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B9492908E3
-	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Oct 2020 17:52:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04DE62908E5
+	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Oct 2020 17:52:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2410442AbgJPPwp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 16 Oct 2020 11:52:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39044 "EHLO
+        id S2410444AbgJPPwq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 16 Oct 2020 11:52:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2410437AbgJPPwo (ORCPT
+        with ESMTP id S2410441AbgJPPwp (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 16 Oct 2020 11:52:44 -0400
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEC51C061755
-        for <linux-btrfs@vger.kernel.org>; Fri, 16 Oct 2020 08:52:43 -0700 (PDT)
-Received: by mail-qt1-x841.google.com with SMTP id c5so1895682qtw.3
-        for <linux-btrfs@vger.kernel.org>; Fri, 16 Oct 2020 08:52:43 -0700 (PDT)
+        Fri, 16 Oct 2020 11:52:45 -0400
+Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A079CC061755
+        for <linux-btrfs@vger.kernel.org>; Fri, 16 Oct 2020 08:52:45 -0700 (PDT)
+Received: by mail-qv1-xf42.google.com with SMTP id t6so1283024qvz.4
+        for <linux-btrfs@vger.kernel.org>; Fri, 16 Oct 2020 08:52:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Y4EgaWystIlF90x35w9qnfr8J1eR6g4H9snf0FYgXNM=;
-        b=TMBbf39boZXeTeFbH3pdmCFucKkJdqPThYxgxdsVdg0ABDwKQqjQjmm2OdJKZeKVYf
-         sClW2tkdWTUU7QtDqZZ+mvPAqW7SYis3f5357bxVT3l3EA3fGrbX8M6cby+2XlHz5Tv/
-         1aKSXWsQPNc/vSGGbA+rCOubDxTamGT/MDja2wGGv0YamB5Vue9wQ/RMavNZHfhlpse/
-         7vuKB8A5++KaitOYEf3RDRcNtGB9wRXVZ5iA+x2tNBxnQqPUYtJxAFse0qluwZmYAWZw
-         ra2pNeYNLx0k4WDh4d2NFv6Ry8QSDENhYobRrpkCg/8Ko9P72H3wHhjD1wfkJsZFNsmW
-         Rx+Q==
+        bh=BFOCDEykp0SPZgn5GU2NA0oO+g5NSlh3fUMr1bqdQRA=;
+        b=bN9d7DuOhIJzAQhziBG7YSFZFIFN0mJyeM92PkN1+cy6MglkbzFdjJ8NwyE5FPnl0p
+         1QzMLSWj2c5xZ0o6KGuzGYEGqD4a+1PGWkTdLsyQIY8FyVvRJHLalVRF8gDU6bckU2xb
+         g+vKGpUTBJvUKo+GCurrfu8KIHHqm4yW0W3Npi7VIqs0RNiLXLGjuHbOTsqMEhj5zkeN
+         P0JzeyNIKpdIm2ZyQ3lgULvtFoFzBK618xvt7vGfef2Hvl2gq7pPnosGFcNgw+RfT3rT
+         gfRcKqn/rBQ3sFk5j2e2Xgg6la8whVa7wVt9R7pAoA8oVntm7BAnqoAdgReHzjyrVmS4
+         NrqQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Y4EgaWystIlF90x35w9qnfr8J1eR6g4H9snf0FYgXNM=;
-        b=aBJkt+qVdTTW6s2s8mn1se/YQcSK39Ic5k9JYPbgz+0Zh20KcFUru14hZXuwkW9S3l
-         PTBInERlRsWC8CzYCqC8kaBC6TZiRYCwS2VLwOiuYhcLmRotsemb5kgqyLZi933ywFyx
-         SNlGA+1YWcqxDxNE28CF5TkJF7kbBpg3Msy3YadfiEmuIdRLq8nVO623Bhy/WZaHAXEU
-         WJQWgcbCiUnUjeQYgw3ZeHjlI/+6s6zv/g18ZqLx8TWzm0qBB4zN5/dq6dU2QD1PRZqJ
-         hMR0lByg/sxi0BNRB2+S1j/dP/KxzQIvInpK6fa2Dowp0T8HZdUyEYEHJEZlTGGL4ZOn
-         YG4Q==
-X-Gm-Message-State: AOAM532YIBRdYzWK7ngubO5fxJCQqAMH3VVYN+h6BxEkByF+2+Xovr6b
-        fjkrj+dat20jjxqpRQjt9adD4/S+DL6U61EC
-X-Google-Smtp-Source: ABdhPJylf5bHQ8y6ON6c6qafhotOPizNWrK8OHy5Lh6GEOXE6syzTWfOFHgISeaqCppbYVMklG/OXQ==
-X-Received: by 2002:a05:622a:9:: with SMTP id x9mr4016696qtw.43.1602863562642;
-        Fri, 16 Oct 2020 08:52:42 -0700 (PDT)
+        bh=BFOCDEykp0SPZgn5GU2NA0oO+g5NSlh3fUMr1bqdQRA=;
+        b=uSDpAuHWr8+iwRgshEUweb5Y2ZyNjxkTkiimuYZcbGwimbBaDib2EvNGLVyOi6ffHb
+         VgfIV9f/k2lj2zCpad6KJiju2JUhOHRekQ6/ZF/aExeg7mdZcCIIw7zpOBZw7GgoUAs5
+         zLjl2mTy06H/57gZIZK7zyr2E6pqZaaZ7VgVOuS0ypu0fFFhs67bIcS4AvhFNsZEGc8F
+         v8ArSRVcP/XYligGDlvw8neFxZP05Zzw5P37y7ZtrsXmBKhuN9AiJJ+Xai+CHNPl1vYI
+         b2I7v1wjuZW7pZgYoXv1x9DpwNqvgn5gQ9z4yCD6qw8+fB9oPX8q31nTMtawz1KR49eQ
+         ZAYA==
+X-Gm-Message-State: AOAM532956OWJ6mupL3x31xLEu7TkXcP+ew4guQLEiDOBEqA4gGraPd+
+        8rWO4Si8YlPLpD0SGIHBiy+P7ZjOel63AC8J
+X-Google-Smtp-Source: ABdhPJx/sQRYnLDHz+KPz7bymL2Y2s1+reZeo3INu/ViPjprK0E1t+0ey+G+iKiIcpJzns4nIR1HCA==
+X-Received: by 2002:a0c:cb02:: with SMTP id o2mr2445390qvk.8.1602863564466;
+        Fri, 16 Oct 2020 08:52:44 -0700 (PDT)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id p5sm1160575qte.95.2020.10.16.08.52.41
+        by smtp.gmail.com with ESMTPSA id m25sm999645qki.105.2020.10.16.08.52.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Oct 2020 08:52:42 -0700 (PDT)
+        Fri, 16 Oct 2020 08:52:43 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
 Cc:     Nikolay Borisov <nborisov@suse.com>
-Subject: [PATCH v2 3/6] btrfs: delayed refs pre-flushing should only run the heads we have
-Date:   Fri, 16 Oct 2020 11:52:32 -0400
-Message-Id: <4ff8bc928e3770828b2e272e817bc649bf98ab6d.1602863482.git.josef@toxicpanda.com>
+Subject: [PATCH v2 4/6] btrfs: only run delayed refs once before committing
+Date:   Fri, 16 Oct 2020 11:52:33 -0400
+Message-Id: <9838ea6ddbab7464104e49cc4c0c193d0bb94fe2.1602863482.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <cover.1602863482.git.josef@toxicpanda.com>
 References: <cover.1602863482.git.josef@toxicpanda.com>
@@ -63,40 +63,41 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Previously our delayed ref running used the total number of items as the
-items to run.  However we changed that to number of heads to run with
-the delayed_refs_rsv, as generally we want to run all of the operations
-for one bytenr.
+We try to pre-flush the delayed refs when committing, because we want to
+do as little work as possible in the critical section of the transaction
+commit.
 
-But with btrfs_run_delayed_refs(trans, 0) we set our count to 2x the
-number of items that we have.  This is generally fine, but if we have
-some operation generation loads of delayed refs while we're doing this
-pre-flushing in the transaction commit, we'll just spin forever doing
-delayed refs.
+However doing this twice can lead to very long transaction commit delays
+as other threads are allowed to continue to generate more delayed refs,
+which potentially delays the commit by multiple minutes in very extreme
+cases.
 
-Fix this to simply pick the number of delayed refs we currently have,
-that way we do not end up doing a lot of extra work that's being
-generated in other threads.
+So simply stick to one pre-flush, and then continue the rest of the
+transaction commit.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 Reviewed-by: Nikolay Borisov <nborisov@suse.com>
 ---
- fs/btrfs/extent-tree.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/btrfs/transaction.c | 6 ------
+ 1 file changed, 6 deletions(-)
 
-diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-index 5fd60b13f4f8..a7f0a1480cd9 100644
---- a/fs/btrfs/extent-tree.c
-+++ b/fs/btrfs/extent-tree.c
-@@ -2180,7 +2180,7 @@ int btrfs_run_delayed_refs(struct btrfs_trans_handle *trans,
+diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
+index f73f3c7aeda2..1b6fef512121 100644
+--- a/fs/btrfs/transaction.c
++++ b/fs/btrfs/transaction.c
+@@ -2061,12 +2061,6 @@ int btrfs_commit_transaction(struct btrfs_trans_handle *trans)
  
- 	delayed_refs = &trans->transaction->delayed_refs;
- 	if (count == 0)
--		count = atomic_read(&delayed_refs->num_entries) * 2;
-+		count = delayed_refs->num_heads_ready;
+ 	btrfs_create_pending_block_groups(trans);
  
- again:
- #ifdef SCRAMBLE_DELAYED_REFS
+-	ret = btrfs_run_delayed_refs(trans, 0);
+-	if (ret) {
+-		btrfs_end_transaction(trans);
+-		return ret;
+-	}
+-
+ 	if (!test_bit(BTRFS_TRANS_DIRTY_BG_RUN, &cur_trans->flags)) {
+ 		int run_it = 0;
+ 
 -- 
 2.24.1
 
