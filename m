@@ -2,94 +2,130 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6827B290981
-	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Oct 2020 18:18:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 759D82909A8
+	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Oct 2020 18:26:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2409816AbgJPQSP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 16 Oct 2020 12:18:15 -0400
-Received: from waffle.tech ([104.225.250.114]:54090 "EHLO mx.waffle.tech"
+        id S2408454AbgJPQ0z (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 16 Oct 2020 12:26:55 -0400
+Received: from mx2.suse.de ([195.135.220.15]:52118 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2409702AbgJPQSP (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 16 Oct 2020 12:18:15 -0400
-Received: from mx.waffle.tech (unknown [10.50.1.6])
-        by mx.waffle.tech (Postfix) with ESMTP id 90D1B6D807;
-        Fri, 16 Oct 2020 10:18:12 -0600 (MDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx.waffle.tech 90D1B6D807
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=waffle.tech; s=mx;
-        t=1602865092; bh=g+e059dAp5+y1BT10SBQkD7QSOk8gUZV2NeS+VgUcME=;
-        h=Date:From:Subject:To:In-Reply-To:References:From;
-        b=lbHBJuuvCV7Ew4JB4S4huHGg2GkJ7QIHnkKpLae5izYsSVoxb6ZC1jXq2J2WrsTM6
-         r8XRIJQ7478CDNLaHOQZUTwkz0lKL+J7pwtdUcrsVfA2KK0L/SLCiIdRHO/XbW9NV8
-         tmr9S/mkJWb8ibgkWx/lulbUQ+a+6Jtiwh3beE3w=
-Received: from waffle.tech ([10.50.1.3])
-        by mx.waffle.tech with ESMTPSA
-        id cFYUIsTHiV+sZwcAQqPLoA
-        (envelope-from <louis@waffle.tech>); Fri, 16 Oct 2020 10:18:12 -0600
+        id S2408398AbgJPQ0y (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 16 Oct 2020 12:26:54 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1602865613;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=OcQvbvduP0sQh0dFT9t18W6qWXGMR11QsAZgP3oLksU=;
+        b=Rf5X8vXYfa/EYSsm1XBc8mTNZ5sHdhr+03WGtJh5VGQswaJtuUbUnzEms9vYCSyS5JQ1sL
+        Y3Zr4ztCrlS9ydCmev/N1VLIQV3N6WyLtI1bmNnQcRbkruD8BCnAqSy+64hQH3n2nufs4E
+        E9nAz0BU3jOa2vwWY+JtBH86LWdz5Ew=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 3E602ADD8;
+        Fri, 16 Oct 2020 16:26:53 +0000 (UTC)
+Subject: Re: [PATCH 4/4] btrfs: Be smarter when sleeping in
+ transaction_kthread
+To:     dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <20201008122430.93433-1-nborisov@suse.com>
+ <20201008122430.93433-5-nborisov@suse.com>
+ <20201016142047.GS6756@twin.jikos.cz>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <f7d242d5-aaa7-6cb6-f2a8-8f45766b1874@suse.com>
+Date:   Fri, 16 Oct 2020 19:26:52 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Date:   Fri, 16 Oct 2020 16:18:11 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Mailer: RainLoop/1.14.0
-From:   louis@waffle.tech
-Message-ID: <3ac1cd1113ac25f11bbed6c90d814fd8@waffle.tech>
-Subject: Re: [PATCH] btrfs: balance RAID1/RAID10 mirror selection
-To:     "Nikolay Borisov" <nborisov@suse.com>, linux-btrfs@vger.kernel.org
-In-Reply-To: <4226ff1b-e313-2881-0670-965e7e98ce59@suse.com>
-References: <4226ff1b-e313-2881-0670-965e7e98ce59@suse.com>
- <8541d6d7a63e470b9f4c22ba95cd64fc@waffle.tech>
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-        DKIM_VALID_AU,DKIM_VALID_EF,UNPARSEABLE_RELAY autolearn=ham
-        autolearn_force=no version=3.4.2
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mx.waffle.tech
+In-Reply-To: <20201016142047.GS6756@twin.jikos.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-October 16, 2020 1:15 AM, "Nikolay Borisov" <nborisov@suse.com> wrote:=0A=
-=0A> On 16.10.20 =D0=B3. 8:59 =D1=87., louis@waffle.tech wrote:=0A> =0A>>=
- Balance RAID1/RAID10 mirror selection via plain round-robin scheduling. =
-This should roughly double=0A>> throughput for large reads.=0A>> =0A>> Si=
-gned-off-by: Louis Jencka <louis@waffle.tech>=0A> =0A> Can you show numbe=
-rs substantiating your claims?=0A=0ASure thing. Below are the results fro=
-m some tests I've run using a Debian 10 VM. It has two 10GiB disks attach=
-ed which are each independently limited to 100MB/s total IO (using libvir=
-t's iotune feature). They've been used to create the RAID1 volume mounted=
- at /mnt. I've truncated the fio output to just show the high-level stats=
-.=0A=0AReading a large file performs twice as well with the patch applied=
- (203 MB/s vs 101 MB/s). Writing a large file, and the random read-write =
-tests, look like they perform roughly the same to me.=0A=0ALouis=0A=0A---=
-=0A=0AWithout patch=0A=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=0A=0Alouis@=
-debian:/mnt$ uname -a=0ALinux debian 4.19.0-11-amd64 #1 SMP Debian 4.19.1=
-46-1 (2020-09-17) x86_64 GNU/Linux=0A=0Alouis@debian:/mnt$ btrfs fi df /m=
-nt=0AData, RAID1: total=3D7.00GiB, used=3D2.00MiB=0ASystem, RAID1: total=
-=3D8.00MiB, used=3D16.00KiB=0AMetadata, RAID1: total=3D1.00GiB, used=3D68=
-8.00KiB=0AGlobalReserve, single: total=3D29.19MiB, used=3D352.00KiB=0A=0A=
-louis@debian:/mnt$ dd if=3D/dev/urandom of=3D/mnt/test bs=3D1M count=3D10=
-24 conv=3Dfdatasync=0A1024+0 records in=0A1024+0 records out=0A1073741824=
- bytes (1.1 GB, 1.0 GiB) copied, 12.928 s, 83.1 MB/s=0A=0Alouis@debian:/m=
-nt$ dd if=3D/mnt/test of=3D/dev/null=0A2097152+0 records in=0A2097152+0 r=
-ecords out=0A1073741824 bytes (1.1 GB, 1.0 GiB) copied, 10.6403 s, 101 MB=
-/s=0A=0Alouis@debian:/mnt$ fio --name=3Drandom-rw --ioengine=3Dposixaio -=
--rw=3Drandrw --bs=3D4k --numjobs=3D2 --size=3D2g --iodepth=3D1 --runtime=
-=3D60 --time_based --end_fsync=3D1=0Arandom-rw: (g=3D0): rw=3Drandrw, bs=
-=3D(R) 4096B-4096B, (W) 4096B-4096B, (T) 4096B-4096B, ioengine=3Dposixaio=
-, iodepth=3D1=0A...=0ARun status group 0 (all jobs):=0A   READ: bw=3D15.8=
-MiB/s (16.5MB/s), 7459KiB/s-8671KiB/s (7638kB/s-8879kB/s), io=3D964MiB (1=
-010MB), run=3D61179-61179msec=0A  WRITE: bw=3D15.8MiB/s (16.6MB/s), 7490K=
-iB/s-8682KiB/s (7670kB/s-8890kB/s), io=3D966MiB (1013MB), run=3D61179-611=
-79msec=0A=0A=0AWith patch=0A=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=0A=0Alouis@deb=
-ian:/mnt$ uname -a=0ALinux debian 4.19.0-11-amd64 #1 SMP Debian 4.19.146-=
-1a~test (2020-10-15) x86_64 GNU/Linux=0A=0Alouis@debian:/mnt$ dd if=3D/de=
-v/urandom of=3D/mnt/test bs=3D1M count=3D1024 conv=3Dfdatasync=0A1024+0 r=
-ecords in=0A1024+0 records out=0A1073741824 bytes (1.1 GB, 1.0 GiB) copie=
-d, 11.8067 s, 90.9 MB/s=0A=0Alouis@debian:/mnt$ dd if=3D/mnt/test of=3D/d=
-ev/null=0A2097152+0 records in=0A2097152+0 records out=0A1073741824 bytes=
- (1.1 GB, 1.0 GiB) copied, 5.28642 s, 203 MB/s=0A=0Alouis@debian:/mnt$ fi=
-o --name=3Drandom-rw --ioengine=3Dposixaio --rw=3Drandrw --bs=3D4k --numj=
-obs=3D2 --size=3D2g --iodepth=3D1 --runtime=3D60 --time_based --end_fsync=
-=3D1=0Arandom-rw: (g=3D0): rw=3Drandrw, bs=3D(R) 4096B-4096B, (W) 4096B-4=
-096B, (T) 4096B-4096B, ioengine=3Dposixaio, iodepth=3D1=0A...=0ARun statu=
-s group 0 (all jobs):=0A   READ: bw=3D16.5MiB/s (17.3MB/s), 8217KiB/s-865=
-2KiB/s (8414kB/s-8860kB/s), io=3D1025MiB (1074MB), run=3D62202-62202msec=
-=0A  WRITE: bw=3D16.5MiB/s (17.3MB/s), 8218KiB/s-8698KiB/s (8415kB/s-8907=
-kB/s), io=3D1028MiB (1077MB), run=3D62202-62202msec
+
+
+On 16.10.20 г. 17:20 ч., David Sterba wrote:
+> On Thu, Oct 08, 2020 at 03:24:30PM +0300, Nikolay Borisov wrote:
+>> If transaction_kthread is woken up before
+>> btrfs_fs_info::commit_interval seconds have elapsed it will sleep for a
+>> fixed period of 5 seconds. This is not a problem per-se but is not
+>> accuaret, instead the code should sleep for an interval which guarantees
+>> on next wakeup commit_interval would have passed. Since time tracking is
+>> not accurate add 1 second to ensure next wake up would be after
+>> commit_interval.
+>>
+>> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
+>> ---
+>>  fs/btrfs/disk-io.c | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+>> index c5d3e7f75066..a1fe99cf0831 100644
+>> --- a/fs/btrfs/disk-io.c
+>> +++ b/fs/btrfs/disk-io.c
+>> @@ -1735,7 +1735,7 @@ static int transaction_kthread(void *arg)
+>>  		if (cur->state < TRANS_STATE_COMMIT_START &&
+>>  		    delta < fs_info->commit_interval) {
+>>  			spin_unlock(&fs_info->trans_lock);
+>> -			delay = msecs_to_jiffies(5000);
+>> +			delay = msecs_to_jiffies((1+delta) * 1000);
+> 
+> This does not seem right. Delta is number of seconds since the
+> transaction started, so we need to sleep for the remaining time. Which
+> is commit_interval - delta.
+
+Doh, you are right. The correct line should be :
+
+delay -= msecs_to_jiffies((1+delta) * 1000);
+
+The + 1  is needed so that upon next wake up we are guaranteed next
+delta is  >= commit_interval. Shall I send a fixed patch or are you
+going to modify it and merge it?
+
+> 
