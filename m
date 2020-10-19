@@ -2,57 +2,57 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A476292F12
+	by mail.lfdr.de (Postfix) with ESMTP id A8543292F13
 	for <lists+linux-btrfs@lfdr.de>; Mon, 19 Oct 2020 22:02:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728145AbgJSUCj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 19 Oct 2020 16:02:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37658 "EHLO
+        id S1728148AbgJSUCk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 19 Oct 2020 16:02:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726385AbgJSUCi (ORCPT
+        with ESMTP id S1726385AbgJSUCk (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 19 Oct 2020 16:02:38 -0400
+        Mon, 19 Oct 2020 16:02:40 -0400
 Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D5E8C0613CE
-        for <linux-btrfs@vger.kernel.org>; Mon, 19 Oct 2020 13:02:38 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id a23so757744qkg.13
-        for <linux-btrfs@vger.kernel.org>; Mon, 19 Oct 2020 13:02:38 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02214C0613CE
+        for <linux-btrfs@vger.kernel.org>; Mon, 19 Oct 2020 13:02:40 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id x20so830061qkn.1
+        for <linux-btrfs@vger.kernel.org>; Mon, 19 Oct 2020 13:02:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=c5m1L8oH6oATq0CIdT1D+cCkC2hwJmiql8OHjhRJGJA=;
-        b=bKBUUF24RcnGmJINVI28wJIDwFaoeptQTa7cG6/HSLB38+SnCerLNBKu5zKWFoO/WC
-         vaC81A8vgGFQOgWQfWgRp4dvmal9B5+6W6y3KCLy9nUdNhyNZmMV8VEZp2PJcSre2Wv5
-         6X+Ey4hEjt2kriC0jFco8RWNw9ivX5e4SAy8Uf/UslSN+f/xBKIrz5nLjejihXh6Yb10
-         hNzL5e35KFGe5hHJ6fNsY8UhaV0lSfxFDLS3Nywi7FvSqTeJXlYubEy6S9VuCqUzhmo9
-         o9/1XikPcjduWyPbDiyP/zf2wRbYblmrb+cGLDjReRGKD3VxCbqCxw8QNdVql6mzrRjI
-         s7Qw==
+        bh=nXkZVFptfjTCTXJ6do6kFvwOvfZsx6b9sJqq183mHUg=;
+        b=TKoyQSwPC302JmRdNeBB/GVkgGfYIiz89SenZWy9eU8VPaa1Hul2RDoXtbQj6E+oB4
+         huZdiOXZRh/ai80my4bryZYrQDf6YmzF12kQ9UMeDDqT9HAHFeoRX4J9VnDJ1X//TmkX
+         YeTBHatqpJkvOyoVZMLKJxHfLuxs0/zt69qWCXkPESxjPmElgatbmOndztL+genWNwwm
+         BMQRqTfM8z0IlOQkdNyVGzSvh5g/s9b3lmGxD8PvjVfuiGXjum2i+PJV4q3DN9XOBgjn
+         Z66WNqHFy6cmh59e0gsdAx2wHr2CcsGfYxOsDM/vBErtc0VrSbxsp4yhnf+mEabupA9r
+         718Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=c5m1L8oH6oATq0CIdT1D+cCkC2hwJmiql8OHjhRJGJA=;
-        b=C1ZfA5/WhogPaA1XFpLQ1QHqwHs2+iHM/nMhFGQh1PfMQgRWvd9RIGAtj8sH21tVxT
-         qcCUoYti7GIlvbiE/TKNOl4c7JyW0jSKpdPd4KRvWVU7nxxeSAJ9WAsmHp1+PF/Slio1
-         RKKk/JtW+7V8PD+H8ERr0icW5nM058QhXsbPt8MVAtNBxDm3KMhbZ22WZbjybF2d34nG
-         Hq2bORYzGxRvBXWKf9BB7gSbEWwSULVERu943TVJpUT39gDCC1pl96Iwb6E7dFIeRJN0
-         GhxSJLHGd+EyJp4I2HDs7Ewyh5pwF8vw1Yw7wkE6n/TVZ1NELNUk/WPhm37Q1dho1gXB
-         NOew==
-X-Gm-Message-State: AOAM531+vcfil/2rPkNmGjiWG53wQh6AHsld0TWTJn0soAQAFiHYDD5x
-        XLEOgX7GBTW9EZwIRt0dyQorC9fdcehcAmc1
-X-Google-Smtp-Source: ABdhPJwitLGxQIIjDWFNF7wwdkG1lxs1/Czz19Y9tOVqdUOg8R9o0VZCeir7ZXRCsA1JD8dAGDbI/w==
-X-Received: by 2002:a37:e212:: with SMTP id g18mr1254425qki.366.1603137756816;
-        Mon, 19 Oct 2020 13:02:36 -0700 (PDT)
+        bh=nXkZVFptfjTCTXJ6do6kFvwOvfZsx6b9sJqq183mHUg=;
+        b=cVt5uxouoYQn2hxkT046Hcxkwh8mISsWlb3PKBvGf2LvTG+urlRVYAEC6fQ6KvKs08
+         ZYfB0z1qsW6vxH85ewWbJa82BgeR247I/7DVNxKg9T/Q79h0m8G+n0vtScOTnqDKds3f
+         6sfNld10dZLKGQ4NZpS+QqqQk0ffha1tx3XgzyPl3G+/DH8+uqV/lxJlo+ERrg23xdmx
+         PHii8Y+seZK3IsQVcn1sa0vW6oem1oRfujbGnqt74iDnT937CsGgnWp74eFBCrKKdnzk
+         FFKzsuiJTynUtqdCagkFFizCkjvwXaekRLNakIDH8IQCuEtyHJp2WLOelc29a4vbZQnP
+         x7zA==
+X-Gm-Message-State: AOAM530Dw9DLZkLBhEBeAiNBcwzQJPA0UerH6kq7bPbmknk90FUZowej
+        DXLfviGT2uJ6gECb1TUVHaq/uRcvO5OsGvT0
+X-Google-Smtp-Source: ABdhPJyg+SJuK7LdcXYr64/CMFXV91Wuqi3P+zQ/ZPtXXz4CPzcY08Xotfavl5W2YRrIT2rMOwEMiQ==
+X-Received: by 2002:a05:620a:6d4:: with SMTP id 20mr1340256qky.228.1603137758572;
+        Mon, 19 Oct 2020 13:02:38 -0700 (PDT)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id t1sm461259qkh.19.2020.10.19.13.02.36
+        by smtp.gmail.com with ESMTPSA id h141sm467348qke.41.2020.10.19.13.02.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Oct 2020 13:02:36 -0700 (PDT)
+        Mon, 19 Oct 2020 13:02:37 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 2/3] btrfs: protect the fs_info->caching_block_groups differently
-Date:   Mon, 19 Oct 2020 16:02:30 -0400
-Message-Id: <64816a7abd985112ddd7c44998753f72b5775a1a.1603137558.git.josef@toxicpanda.com>
+Subject: [PATCH 3/3] btrfs: add a helper to read the tree_root commit root for backref lookup
+Date:   Mon, 19 Oct 2020 16:02:31 -0400
+Message-Id: <2402f8ee46e0e080f9c22115b7ba3a02962ded4e.1603137558.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <cover.1603137558.git.josef@toxicpanda.com>
 References: <cover.1603137558.git.josef@toxicpanda.com>
@@ -62,25 +62,34 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-I got the following lockdep splat
+I got the following lockdep splat with my rwsem patches on btrfs/104
 
 ======================================================
 WARNING: possible circular locking dependency detected
-5.9.0+ #101 Not tainted
+5.9.0+ #102 Not tainted
 ------------------------------------------------------
-btrfs-cleaner/3445 is trying to acquire lock:
-ffff89dbec39ab48 (btrfs-root-00){++++}-{3:3}, at: __btrfs_tree_read_lock+0x32/0x170
+btrfs-cleaner/903 is trying to acquire lock:
+ffff8e7fab6ffe30 (btrfs-root-00){++++}-{3:3}, at: __btrfs_tree_read_lock+0x32/0x170
 
 but task is already holding lock:
-ffff89dbeaf28a88 (&fs_info->commit_root_sem){++++}-{3:3}, at: btrfs_find_all_roots+0x41/0x80
+ffff8e7fab628a88 (&fs_info->commit_root_sem){++++}-{3:3}, at: btrfs_find_all_roots+0x41/0x80
 
 which lock already depends on the new lock.
 
 the existing dependency chain (in reverse order) is:
 
--> #2 (&fs_info->commit_root_sem){++++}-{3:3}:
-       down_write+0x3d/0x70
-       btrfs_cache_block_group+0x2d5/0x510
+-> #3 (&fs_info->commit_root_sem){++++}-{3:3}:
+       down_read+0x40/0x130
+       caching_thread+0x53/0x5a0
+       btrfs_work_helper+0xfa/0x520
+       process_one_work+0x238/0x540
+       worker_thread+0x55/0x3c0
+       kthread+0x13a/0x150
+       ret_from_fork+0x1f/0x30
+
+-> #2 (&caching_ctl->mutex){+.+.}-{3:3}:
+       __mutex_lock+0x7e/0x7b0
+       btrfs_cache_block_group+0x1e0/0x510
        find_free_extent+0xb6e/0x12f0
        btrfs_reserve_extent+0xb3/0x1b0
        btrfs_alloc_tree_block+0xb1/0x330
@@ -149,26 +158,26 @@ the existing dependency chain (in reverse order) is:
 other info that might help us debug this:
 
 Chain exists of:
-  btrfs-root-00 --> &space_info->groups_sem --> &fs_info->commit_root_sem
+  btrfs-root-00 --> &caching_ctl->mutex --> &fs_info->commit_root_sem
 
  Possible unsafe locking scenario:
 
        CPU0                    CPU1
        ----                    ----
   lock(&fs_info->commit_root_sem);
-                               lock(&space_info->groups_sem);
+                               lock(&caching_ctl->mutex);
                                lock(&fs_info->commit_root_sem);
   lock(btrfs-root-00);
 
  *** DEADLOCK ***
 
-3 locks held by btrfs-cleaner/3445:
- #0: ffff89dbeaf28838 (&fs_info->cleaner_mutex){+.+.}-{3:3}, at: cleaner_kthread+0x6e/0x140
- #1: ffff89dbeb6c7640 (sb_internal){.+.+}-{0:0}, at: start_transaction+0x40b/0x5c0
- #2: ffff89dbeaf28a88 (&fs_info->commit_root_sem){++++}-{3:3}, at: btrfs_find_all_roots+0x41/0x80
+3 locks held by btrfs-cleaner/903:
+ #0: ffff8e7fab628838 (&fs_info->cleaner_mutex){+.+.}-{3:3}, at: cleaner_kthread+0x6e/0x140
+ #1: ffff8e7faadac640 (sb_internal){.+.+}-{0:0}, at: start_transaction+0x40b/0x5c0
+ #2: ffff8e7fab628a88 (&fs_info->commit_root_sem){++++}-{3:3}, at: btrfs_find_all_roots+0x41/0x80
 
 stack backtrace:
-CPU: 0 PID: 3445 Comm: btrfs-cleaner Not tainted 5.9.0+ #101
+CPU: 0 PID: 903 Comm: btrfs-cleaner Not tainted 5.9.0+ #102
 Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-2.fc32 04/01/2014
 Call Trace:
  dump_stack+0x8b/0xb0
@@ -204,91 +213,189 @@ Call Trace:
  kthread+0x13a/0x150
  ? kthread_create_worker_on_cpu+0x40/0x40
  ret_from_fork+0x1f/0x30
+BTRFS info (device sdb): disk space caching is enabled
+BTRFS info (device sdb): has skinny extents
 
-while testing another lockdep fix.  This happens because we're using the
-commit_root_sem to protect fs_info->caching_block_groups, which creates
-a dependency on the groups_sem -> commit_root_sem, which is problematic
-because we will allocate blocks while holding tree roots.  Fix this by
-making the list itself protected by the fs_info->block_group_cache_lock.
+This happens because qgroups does a backref lookup when we create a
+delayed ref.  From here it may have to look up a root from an indirect
+ref, which does a normal lookup on the tree_root, which takes the read
+lock on the tree_root nodes.
+
+To fix this we need to add a variant for looking up roots that searches
+the commit root of the tree_root.  Then when we do the backref search
+using the commit root we are sure to not take any locks on the tree_root
+nodes.  This gets rid of the lockdep splat when running btrfs/104.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/block-group.c | 12 ++++++------
- fs/btrfs/extent-tree.c |  2 ++
- 2 files changed, 8 insertions(+), 6 deletions(-)
+ fs/btrfs/backref.c | 14 +++++++-
+ fs/btrfs/disk-io.c | 79 ++++++++++++++++++++++++++++++++++------------
+ fs/btrfs/disk-io.h |  3 ++
+ 3 files changed, 74 insertions(+), 22 deletions(-)
 
-diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-index 3ba6f3839d39..a8240913e6fc 100644
---- a/fs/btrfs/block-group.c
-+++ b/fs/btrfs/block-group.c
-@@ -796,10 +796,10 @@ int btrfs_cache_block_group(struct btrfs_block_group *cache, int load_cache_only
- 		return 0;
+diff --git a/fs/btrfs/backref.c b/fs/btrfs/backref.c
+index b3268f4ea5f3..cacba965c535 100644
+--- a/fs/btrfs/backref.c
++++ b/fs/btrfs/backref.c
+@@ -544,7 +544,19 @@ static int resolve_indirect_ref(struct btrfs_fs_info *fs_info,
+ 	int level = ref->level;
+ 	struct btrfs_key search_key = ref->key_for_search;
+ 
+-	root = btrfs_get_fs_root(fs_info, ref->root_id, false);
++	/*
++	 * If we're search_commit_root we could possibly be holding locks on
++	 * other tree nodes.  This happens when qgroups does backref walks when
++	 * adding new delayed refs.  To deal with this we need to look in cache
++	 * for the root, and if we don't find it then we need to search the
++	 * tree_root's commit root, thus the btrfs_get_fs_root_commit_root usage
++	 * here.
++	 */
++	if (path->search_commit_root)
++		root = btrfs_get_fs_root_commit_root(fs_info, path,
++						     ref->root_id);
++	else
++		root = btrfs_get_fs_root(fs_info, ref->root_id, false);
+ 	if (IS_ERR(root)) {
+ 		ret = PTR_ERR(root);
+ 		goto out_free;
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index 81e7b1880b5b..3972f16b333d 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -1281,32 +1281,26 @@ int btrfs_add_log_tree(struct btrfs_trans_handle *trans,
+ 	return 0;
+ }
+ 
+-struct btrfs_root *btrfs_read_tree_root(struct btrfs_root *tree_root,
+-					struct btrfs_key *key)
++static struct btrfs_root *read_tree_root_path(struct btrfs_root *tree_root,
++					      struct btrfs_path *path,
++					      struct btrfs_key *key)
+ {
+ 	struct btrfs_root *root;
+ 	struct btrfs_fs_info *fs_info = tree_root->fs_info;
+-	struct btrfs_path *path;
+ 	u64 generation;
+ 	int ret;
+ 	int level;
+ 
+-	path = btrfs_alloc_path();
+-	if (!path)
+-		return ERR_PTR(-ENOMEM);
+-
+ 	root = btrfs_alloc_root(fs_info, key->objectid, GFP_NOFS);
+-	if (!root) {
+-		ret = -ENOMEM;
+-		goto alloc_fail;
+-	}
++	if (!root)
++		return ERR_PTR(-ENOMEM);
+ 
+ 	ret = btrfs_find_root(tree_root, key, path,
+ 			      &root->root_item, &root->root_key);
+ 	if (ret) {
+ 		if (ret > 0)
+ 			ret = -ENOENT;
+-		goto find_fail;
++		goto fail;
  	}
  
--	down_write(&fs_info->commit_root_sem);
-+	spin_lock(&fs_info->block_group_cache_lock);
- 	refcount_inc(&caching_ctl->count);
- 	list_add_tail(&caching_ctl->list, &fs_info->caching_block_groups);
--	up_write(&fs_info->commit_root_sem);
-+	spin_unlock(&fs_info->block_group_cache_lock);
- 
- 	btrfs_get_block_group(cache);
- 
-@@ -1043,7 +1043,7 @@ int btrfs_remove_block_group(struct btrfs_trans_handle *trans,
- 	if (block_group->cached == BTRFS_CACHE_STARTED)
- 		btrfs_wait_block_group_cache_done(block_group);
- 	if (block_group->has_caching_ctl) {
--		down_write(&fs_info->commit_root_sem);
-+		spin_lock(&fs_info->block_group_cache_lock);
- 		if (!caching_ctl) {
- 			struct btrfs_caching_control *ctl;
- 
-@@ -1057,7 +1057,7 @@ int btrfs_remove_block_group(struct btrfs_trans_handle *trans,
- 		}
- 		if (caching_ctl)
- 			list_del_init(&caching_ctl->list);
--		up_write(&fs_info->commit_root_sem);
-+		spin_unlock(&fs_info->block_group_cache_lock);
- 		if (caching_ctl) {
- 			/* Once for the caching bgs list and once for us. */
- 			btrfs_put_caching_control(caching_ctl);
-@@ -3307,14 +3307,14 @@ int btrfs_free_block_groups(struct btrfs_fs_info *info)
- 	struct btrfs_caching_control *caching_ctl;
- 	struct rb_node *n;
- 
--	down_write(&info->commit_root_sem);
-+	spin_lock(&info->block_group_cache_lock);
- 	while (!list_empty(&info->caching_block_groups)) {
- 		caching_ctl = list_entry(info->caching_block_groups.next,
- 					 struct btrfs_caching_control, list);
- 		list_del(&caching_ctl->list);
- 		btrfs_put_caching_control(caching_ctl);
+ 	generation = btrfs_root_generation(&root->root_item);
+@@ -1317,21 +1311,30 @@ struct btrfs_root *btrfs_read_tree_root(struct btrfs_root *tree_root,
+ 	if (IS_ERR(root->node)) {
+ 		ret = PTR_ERR(root->node);
+ 		root->node = NULL;
+-		goto find_fail;
++		goto fail;
+ 	} else if (!btrfs_buffer_uptodate(root->node, generation, 0)) {
+ 		ret = -EIO;
+-		goto find_fail;
++		goto fail;
  	}
--	up_write(&info->commit_root_sem);
-+	spin_unlock(&info->block_group_cache_lock);
+ 	root->commit_root = btrfs_root_node(root);
+-out:
+-	btrfs_free_path(path);
+ 	return root;
+-
+-find_fail:
++fail:
+ 	btrfs_put_root(root);
+-alloc_fail:
+-	root = ERR_PTR(ret);
+-	goto out;
++	return ERR_PTR(ret);
++}
++
++struct btrfs_root *btrfs_read_tree_root(struct btrfs_root *tree_root,
++					struct btrfs_key *key)
++{
++	struct btrfs_root *root;
++	struct btrfs_path *path;
++
++	path = btrfs_alloc_path();
++	if (!path)
++		return ERR_PTR(-ENOMEM);
++	root = read_tree_root_path(tree_root, path, key);
++	btrfs_free_path(path);
++	return root;
+ }
  
- 	spin_lock(&info->unused_bgs_lock);
- 	while (!list_empty(&info->unused_bgs)) {
-diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-index 5fd60b13f4f8..ff2b5c132a70 100644
---- a/fs/btrfs/extent-tree.c
-+++ b/fs/btrfs/extent-tree.c
-@@ -2738,6 +2738,7 @@ void btrfs_prepare_extent_commit(struct btrfs_fs_info *fs_info)
+ /*
+@@ -1621,6 +1624,40 @@ struct btrfs_root *btrfs_get_new_fs_root(struct btrfs_fs_info *fs_info,
+ 	return btrfs_get_root_ref(fs_info, objectid, anon_dev, true);
+ }
  
- 	down_write(&fs_info->commit_root_sem);
++/* btrfs_get_fs_root_commit_root - return a root for the given objectid
++ * @fs_info - the fs_info.
++ * @objectid = the objectid we need to lookup.
++ *
++ * This is exclusively used for backref walking, and exists specifically because
++ * of how qgroups does lookups.  Qgroups will do a backref lookup at delayed ref
++ * creation time, which means we may have to read the tree_root in order to look
++ * up a fs root that is not in memory.  If the root is not in memory we will
++ * read the tree root commit root and look up the fs root from there.  This is a
++ * temporary root, it will not be inserted into the radix tree as it doesn't
++ * have the most uptodate information, it'll simply be discarded once the
++ * backref code is finished using the root.
++ */
++struct btrfs_root *btrfs_get_fs_root_commit_root(struct btrfs_fs_info *fs_info,
++						 struct btrfs_path *path,
++						 u64 objectid)
++{
++	struct btrfs_root *root;
++	struct btrfs_key key;
++
++	ASSERT(path->search_commit_root && path->skip_locking);
++
++	root = btrfs_lookup_fs_root(fs_info, objectid);
++	if (root)
++		return root;
++
++	key.objectid = objectid;
++	key.type = BTRFS_ROOT_ITEM_KEY;
++	key.offset = (u64)-1;
++	root = read_tree_root_path(fs_info->tree_root, path, &key);
++	btrfs_release_path(path);
++	return root;
++}
++
+ /*
+  * called by the kthread helper functions to finally call the bio end_io
+  * functions.  This is where read checksum verification actually happens
+diff --git a/fs/btrfs/disk-io.h b/fs/btrfs/disk-io.h
+index fee69ced58b4..182540bdcea0 100644
+--- a/fs/btrfs/disk-io.h
++++ b/fs/btrfs/disk-io.h
+@@ -69,6 +69,9 @@ struct btrfs_root *btrfs_get_fs_root(struct btrfs_fs_info *fs_info,
+ 				     u64 objectid, bool check_ref);
+ struct btrfs_root *btrfs_get_new_fs_root(struct btrfs_fs_info *fs_info,
+ 					 u64 objectid, dev_t anon_dev);
++struct btrfs_root *btrfs_get_fs_root_commit_root(struct btrfs_fs_info *fs_info,
++						 struct btrfs_path *path,
++						 u64 objectid);
  
-+	spin_lock(&fs_info->block_group_cache_lock);
- 	list_for_each_entry_safe(caching_ctl, next,
- 				 &fs_info->caching_block_groups, list) {
- 		cache = caching_ctl->block_group;
-@@ -2749,6 +2750,7 @@ void btrfs_prepare_extent_commit(struct btrfs_fs_info *fs_info)
- 			cache->last_byte_to_unpin = caching_ctl->progress;
- 		}
- 	}
-+	spin_unlock(&fs_info->block_group_cache_lock);
- 
- 	up_write(&fs_info->commit_root_sem);
- 
+ void btrfs_free_fs_info(struct btrfs_fs_info *fs_info);
+ int btrfs_cleanup_fs_roots(struct btrfs_fs_info *fs_info);
 -- 
 2.26.2
 
