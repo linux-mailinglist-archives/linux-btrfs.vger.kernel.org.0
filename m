@@ -2,51 +2,51 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5702293BB1
-	for <lists+linux-btrfs@lfdr.de>; Tue, 20 Oct 2020 14:34:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A09C0293BB2
+	for <lists+linux-btrfs@lfdr.de>; Tue, 20 Oct 2020 14:34:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406161AbgJTMeQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 20 Oct 2020 08:34:16 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:34048 "EHLO
+        id S2406171AbgJTMeX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 20 Oct 2020 08:34:23 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:34112 "EHLO
         aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406160AbgJTMeQ (ORCPT
+        with ESMTP id S2406160AbgJTMeX (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 20 Oct 2020 08:34:16 -0400
+        Tue, 20 Oct 2020 08:34:23 -0400
 Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09KCSqU1013455;
-        Tue, 20 Oct 2020 12:34:14 GMT
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09KCTCV7030421;
+        Tue, 20 Oct 2020 12:34:21 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding; s=corp-2020-01-29;
- bh=ccEiv40ZQrW+Dz4qi6vvKKUTEPCAtNk5roG781WSGis=;
- b=q71OEBg6WUoOJRV+swzh49VinzMRdmGt+QC7+FOImjLs/rtynEf3dNVwlfiwElOohmyj
- 2mfWbcptRrSzq5TbBsERmwrhLQkrhx/SyYjpxQpMhJJawn16XEBV8UjF4hDdob6Tl8J2
- PvzUeHaaO5IKW7omVhUknR3XY2qScFFb2TbGR8vZXlmPGrzcYiMyjySJZ4CCbQ5YUMOd
- jqBTprLatnSe0KdUsjodqAoFUNfkWRjlK2GsVKx7jXG419wMZy7+VPm66H7sm+tGTAW3
- okyZshovbwucO1y9RUa+HywDPH/knRxhZEUl2Acd3a5O0TwegB1sCINvw/9WEY7c5BXX yg== 
+ bh=ZS4CwhgYwVKJ622blqkQk7o9ZDMdG1GJvoXCkjVyYe4=;
+ b=dsegsVC4LniL9dBdYwZUPWCPWY6nMueT8+7wMN4bYjUJzTuuUmy5HprhYYh8LzVVeLT2
+ 9xvBdDq1CA6xUyBrhEJwvtskQqmf4j34jwR32X2M6cpdtqc2g9ToWZf07YOkin7MsEMS
+ X98B8eyXztv4yIBffSpSRTFtYkp/z7vCoO3q0LtpToukuHHWB0/TDGDN/5yiDyXO7caJ
+ PYewsKXK56ZbuUPLDH10m3HZto75pKfmwL0PSZDc0xFfHlSOGdFuKL89rWAFcL+Ssqkg
+ 7KO9YRQUv3r3eHa4I0J5YAnZs5kHJmg4h9N4TfFieaOyqaTlht1qJebXu5kWZnpGnR40 4w== 
 Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 349jrpjr92-1
+        by aserp2120.oracle.com with ESMTP id 349jrpjr9m-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 20 Oct 2020 12:34:14 +0000
+        Tue, 20 Oct 2020 12:34:21 +0000
 Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09KCVo1v006605;
-        Tue, 20 Oct 2020 12:34:14 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3020.oracle.com with ESMTP id 348agxb5ue-1
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09KCVnDl006505;
+        Tue, 20 Oct 2020 12:34:20 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3020.oracle.com with ESMTP id 348agxb5x9-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 20 Oct 2020 12:34:13 +0000
+        Tue, 20 Oct 2020 12:34:20 +0000
 Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 09KCYDHF027891;
-        Tue, 20 Oct 2020 12:34:13 GMT
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 09KCYKPs023945;
+        Tue, 20 Oct 2020 12:34:20 GMT
 Received: from localhost.localdomain (/39.109.231.106)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 20 Oct 2020 05:34:10 -0700
+        with ESMTP ; Tue, 20 Oct 2020 05:34:19 -0700
 From:   Anand Jain <anand.jain@oracle.com>
 To:     fstests@vger.kernel.org
 Cc:     linux-btrfs@vger.kernel.org, fdmanana@gmail.com
-Subject: [PATCH v3 1/2] btrfs: add a test case for btrfs seed device delete
-Date:   Tue, 20 Oct 2020 20:32:56 +0800
-Message-Id: <07f630546b05c655fc68c38a695f67176673aa21.1603196609.git.anand.jain@oracle.com>
+Subject: [PATCH v3 2/2] btrfs/163: replace sprout instead of seed
+Date:   Tue, 20 Oct 2020 20:32:57 +0800
+Message-Id: <da8894afef8f5186ee2876c6a3cff32bd28e8cb6.1603196609.git.anand.jain@oracle.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1603196609.git.anand.jain@oracle.com>
 References: <cover.1603196609.git.anand.jain@oracle.com>
@@ -67,151 +67,126 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is a regression test for the issue fixed by the kernel commit
-b5ddcffa3777 (btrfs: fix put of uninitialized kobject after seed device
-delete).
+Make this test case inline with the kernel patch [1] changes
+[1] c6a5d954950c btrfs: fix replace of seed device
 
-In this test case, we verify the seed device delete on a sprouted
-filesystem.
+So use the sprout device as the replace target instead of the seed device.
+This change is compatible with the older kernels.
+
+While at this, this patch also fixes a typo fix as well.
 
 Signed-off-by: Anand Jain <anand.jain@oracle.com>
 ---
-v3: Add commit id for the kernel patch mentioned in the change log and
-the header.
-    Fix to _supported_fs btrfs
-    Drop _supported_os Linux
-    Use define AWK_PROG
-    Drop the directIO in xfs_io it has no use
-    Make it a new test case 225
+v3:
+  add kernel commit id in the change log and in the header.
+  remove directio in xfs_io.
+  rename replace_seed() to replace_sprout().
 
-v2: drop the sysfs layout check as it breaks the test-case backward
-compatibility.
+v2:
+  none
 
- tests/btrfs/225     | 82 +++++++++++++++++++++++++++++++++++++++++++++
- tests/btrfs/225.out | 15 +++++++++
- tests/btrfs/group   |  1 +
- 3 files changed, 98 insertions(+)
- create mode 100755 tests/btrfs/225
- create mode 100644 tests/btrfs/225.out
+ tests/btrfs/163     | 25 ++++++++++++++++++-------
+ tests/btrfs/163.out |  5 ++++-
+ 2 files changed, 22 insertions(+), 8 deletions(-)
 
-diff --git a/tests/btrfs/225 b/tests/btrfs/225
-new file mode 100755
-index 000000000000..730d9645f34c
---- /dev/null
-+++ b/tests/btrfs/225
-@@ -0,0 +1,82 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright (c) 2020 Oracle. All Rights Reserved.
+diff --git a/tests/btrfs/163 b/tests/btrfs/163
+index 3047862f9e15..735881c6936e 100755
+--- a/tests/btrfs/163
++++ b/tests/btrfs/163
+@@ -4,11 +4,15 @@
+ #
+ # FS QA Test 163
+ #
+-# Test case to verify that a seed device can be replaced
++# Test case to verify that a sprouted device can be replaced
+ #  Create a seed device
+ #  Create a sprout device
+ #  Remount RW
+-#  Run device replace on the seed device
++#  Run device replace on the sprout device
 +#
-+# FS QA Test 225
-+#
-+# Test for seed device-delete on a sprouted FS.
-+# Requires kernel patch
-+#    b5ddcffa3777  btrfs: fix put of uninitialized kobject after seed device delete
-+#
-+# Steps:
-+#  Create a seed FS. Add a RW device to make it sprout FS and then delete
-+#  the seed device.
++# Depends on the kernel patch
++#   c6a5d954950c btrfs: fail replace of seed device
 +
-+seq=`basename $0`
-+seqres=$RESULT_DIR/$seq
-+echo "QA output created by $seq"
-+
-+here=`pwd`
-+tmp=/tmp/$$
-+status=1	# failure is the default!
-+trap "_cleanup; exit \$status" 0 1 2 3 15
-+
-+_cleanup()
-+{
-+	cd /
-+	rm -f $tmp.*
-+}
-+
-+# get standard environment, filters and checks
-+. ./common/rc
-+. ./common/filter
-+
-+# remove previous $seqres.full before test
-+rm -f $seqres.full
-+
-+# real QA test starts here
-+
-+# Modify as appropriate.
-+_supported_fs btrfs
-+_require_test
-+_require_scratch_dev_pool 2
-+
-+_scratch_dev_pool_get 2
-+
-+seed=$(echo $SCRATCH_DEV_POOL | $AWK_PROG '{print $1}')
-+sprout=$(echo $SCRATCH_DEV_POOL | $AWK_PROG '{print $2}')
-+
-+_mkfs_dev $seed
-+_mount $seed $SCRATCH_MNT
-+
-+$XFS_IO_PROG -f -c "pwrite -S 0xab 0 1M" $SCRATCH_MNT/foo > /dev/null
-+_scratch_unmount
-+$BTRFS_TUNE_PROG -S 1 $seed
-+
-+# Mount the seed device and add the rw device
-+_mount -o ro $seed $SCRATCH_MNT
-+$BTRFS_UTIL_PROG device add -f $sprout $SCRATCH_MNT
-+_scratch_unmount
-+
-+# Now remount
-+_mount $sprout $SCRATCH_MNT
-+$XFS_IO_PROG -f -c "pwrite -S 0xcd 0 1M" $SCRATCH_MNT/bar > /dev/null
-+
-+echo --- before delete ----
-+od -x $SCRATCH_MNT/foo
-+od -x $SCRATCH_MNT/bar
-+
-+$BTRFS_UTIL_PROG device delete $seed $SCRATCH_MNT
-+_scratch_unmount
-+_btrfs_forget_or_module_reload
-+_mount $sprout $SCRATCH_MNT
-+
-+echo --- after delete ----
-+od -x $SCRATCH_MNT/foo
-+od -x $SCRATCH_MNT/bar
-+
-+_scratch_dev_pool_put
-+
-+# success, all done
-+status=0
-+exit
-diff --git a/tests/btrfs/225.out b/tests/btrfs/225.out
-new file mode 100644
-index 000000000000..2e5d6ebee2c3
---- /dev/null
-+++ b/tests/btrfs/225.out
-@@ -0,0 +1,15 @@
-+QA output created by 225
-+--- before delete ----
-+0000000 abab abab abab abab abab abab abab abab
-+*
-+4000000
+ seq=`basename $0`
+ seqres=$RESULT_DIR/$seq
+ echo "QA output created by $seq"
+@@ -38,6 +42,7 @@ rm -f $seqres.full
+ _supported_fs btrfs
+ _require_command "$BTRFS_TUNE_PROG" btrfstune
+ _require_scratch_dev_pool 3
++_require_btrfs_forget_or_module_loadable
+ 
+ _scratch_dev_pool_get 3
+ 
+@@ -51,7 +56,7 @@ create_seed()
+ 	run_check _mount $dev_seed $SCRATCH_MNT
+ 	$XFS_IO_PROG -f -d -c "pwrite -S 0xab 0 4M" $SCRATCH_MNT/foobar >\
+ 		/dev/null
+-	echo -- gloden --
++	echo -- golden --
+ 	od -x $SCRATCH_MNT/foobar
+ 	_run_btrfs_util_prog filesystem show -m $SCRATCH_MNT
+ 	_scratch_unmount
+@@ -63,22 +68,28 @@ add_sprout()
+ {
+ 	_run_btrfs_util_prog device add -f $dev_sprout $SCRATCH_MNT
+ 	_run_btrfs_util_prog filesystem show -m $SCRATCH_MNT
++	_mount -o remount,rw $dev_sprout $SCRATCH_MNT
++	$XFS_IO_PROG -f -c "pwrite -S 0xcd 0 4M" $SCRATCH_MNT/foobar2 >\
++		/dev/null
+ }
+ 
+-replace_seed()
++replace_sprout()
+ {
+-	_run_btrfs_util_prog replace start -fB $dev_seed $dev_replace_tgt $SCRATCH_MNT
++	_run_btrfs_util_prog replace start -fB $dev_sprout $dev_replace_tgt $SCRATCH_MNT
+ 	_run_btrfs_util_prog filesystem show -m $SCRATCH_MNT
+ 	_scratch_unmount
+-	run_check _mount $dev_replace_tgt $SCRATCH_MNT
++	_btrfs_forget_or_module_reload
++	run_check _mount -o device=$dev_seed $dev_replace_tgt $SCRATCH_MNT
+ 	echo -- sprout --
+ 	od -x $SCRATCH_MNT/foobar
++	od -x $SCRATCH_MNT/foobar2
+ 	_scratch_unmount
+ 
+ }
+ 
+ seed_is_mountable()
+ {
++	_btrfs_forget_or_module_reload
+ 	run_check _mount $dev_seed $SCRATCH_MNT
+ 	_run_btrfs_util_prog filesystem show -m $SCRATCH_MNT
+ 	_scratch_unmount
+@@ -86,7 +97,7 @@ seed_is_mountable()
+ 
+ create_seed
+ add_sprout
+-replace_seed
++replace_sprout
+ 
+ seed_is_mountable
+ 
+diff --git a/tests/btrfs/163.out b/tests/btrfs/163.out
+index 91f6f5b6f48a..351ef7b040b2 100644
+--- a/tests/btrfs/163.out
++++ b/tests/btrfs/163.out
+@@ -1,5 +1,5 @@
+ QA output created by 163
+--- gloden --
++-- golden --
+ 0000000 abab abab abab abab abab abab abab abab
+ *
+ 20000000
+@@ -7,3 +7,6 @@ QA output created by 163
+ 0000000 abab abab abab abab abab abab abab abab
+ *
+ 20000000
 +0000000 cdcd cdcd cdcd cdcd cdcd cdcd cdcd cdcd
 +*
-+4000000
-+--- after delete ----
-+0000000 abab abab abab abab abab abab abab abab
-+*
-+4000000
-+0000000 cdcd cdcd cdcd cdcd cdcd cdcd cdcd cdcd
-+*
-+4000000
-diff --git a/tests/btrfs/group b/tests/btrfs/group
-index 9ad33baa8119..960981e57eb1 100644
---- a/tests/btrfs/group
-+++ b/tests/btrfs/group
-@@ -226,3 +226,4 @@
- 222 auto quick send
- 223 auto quick replace trim
- 224 auto quick qgroup
-+225 auto quick volume seed
++20000000
 -- 
 2.25.1
 
