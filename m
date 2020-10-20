@@ -2,446 +2,262 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EECAB293999
-	for <lists+linux-btrfs@lfdr.de>; Tue, 20 Oct 2020 13:06:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD4612939FF
+	for <lists+linux-btrfs@lfdr.de>; Tue, 20 Oct 2020 13:23:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392470AbgJTLGs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 20 Oct 2020 07:06:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36896 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2393449AbgJTLGs (ORCPT
+        id S2391762AbgJTLXo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 20 Oct 2020 07:23:44 -0400
+Received: from aserp2130.oracle.com ([141.146.126.79]:57640 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391542AbgJTLXn (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 20 Oct 2020 07:06:48 -0400
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB111C061755
-        for <linux-btrfs@vger.kernel.org>; Tue, 20 Oct 2020 04:06:47 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id z6so1185760qkz.4
-        for <linux-btrfs@vger.kernel.org>; Tue, 20 Oct 2020 04:06:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc:content-transfer-encoding;
-        bh=5yXXYLWZnyh6XMtwapjhTVkesuuBn3kUaJbLKJaUJCY=;
-        b=JGTVi7OLHctkvcOopvZbLl4Sbxphpp4z0PBcRqT3CDKUkKhi0sTzP4Fn8v2lZixzhY
-         vuAeFPT1JSQrnbr5ENZvG/mKzkCFslkbbrMaGaoPt7+77jVw0I65yY8EQTLW3pVzpswJ
-         XkAIpCJwFFRvvBOoYNNnpN/xemgkelszuiI6GP5LZm9ys0HAIYDjgBfefmDJ6YzRxZz7
-         1+kIyC9mmpI6GngdqQOgoer+qBKEGByEHFPPb0MzOJU5eo4CDAmbvFvklC+PIqEIT+B/
-         EAastKHWofKtcwAVD36JZribErQEXVAT65on7bn1F06cZ8UryOSZOfCK7GdkRBMJC+4y
-         BM4w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc:content-transfer-encoding;
-        bh=5yXXYLWZnyh6XMtwapjhTVkesuuBn3kUaJbLKJaUJCY=;
-        b=fSFNb7Z3pRJFFnkZBxWKQUKqLRNAD1oSob76cMf5RDJp9sJpqQntFgv4Gc8Cy4xNkJ
-         c2WF3ZFjXTZ95Ro8+1TRU7StUg0+erRSX2vECqIMajf0hYK95GkNt/L4oFt5Hs1+zoIw
-         sRpQFXOCZrwMgl8szsO2qEA578DdmvskzBnTearlZhMJ288MGT2vikfnQmqvwJkS53a3
-         WbGoA2Kz9thdZX7FuSixoqYb5icerpFwIrxV1mvSxc5tGiMm/R+4ht8xTbezx/8A/gqi
-         ZQgpTE6y0PtgAalbDgnlHpUwkqzCiAVnyn0qlrBHCyJkqeJ19LBC0y/jPmHcVXDNA5Ey
-         +Bkg==
-X-Gm-Message-State: AOAM532zItBETD1kLku5Jnw2ffKcEv5onzt+FRWu6kmzr3JD/AVHe47E
-        rLnZ2zuQLccqzENdb6WtVWn0OB7bP+5wIB5WXkM=
-X-Google-Smtp-Source: ABdhPJy+jbisR0TcoWYoOPpfwW971K1+smR8moaLloLiG6Rxz9+0quD7mJXah/I7Xoy7QzVFaFJjKRP86UtLxFoaBPg=
-X-Received: by 2002:a05:620a:1426:: with SMTP id k6mr2184802qkj.438.1603192006913;
- Tue, 20 Oct 2020 04:06:46 -0700 (PDT)
+        Tue, 20 Oct 2020 07:23:43 -0400
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09KBJbw3003573;
+        Tue, 20 Oct 2020 11:23:39 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=yuNAdh+2Ur4Tq2HGcPud42wlE8y6ic/9H+x/nqJoNDk=;
+ b=w1c9DSwmj6EcP3ib19G8PccP0Ni6oKxKr27bUNSMiPU+JD+rSMEpv2veQtllcLBHjSur
+ 2jSX/q8ozDYWaAdMKtyK7J3BtGkrF6ixqXxKtIjQOKSr5PY6xEe0KygqrAbF+Zwqz8hd
+ /ebNRUwYHkqwQ1wfVercuh9GnHAUnjQPNtBNGR8YCoBHAlEDwvg1C67Jz2P7nKJv/K0I
+ XliicRg7yipIksjNVmXLsH5kFXXwYAUZOuKw/W/ZbxDJoavkJzCBPVSHWeMjCQucwJAF
+ mQ9BDnbYiTe1FuKh/BQiwW2IRuWPSS4NQ8QEKd8BEhNdbwi4OwJBYi6QjibUXSnAyhfx sw== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2130.oracle.com with ESMTP id 347p4atfkn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 20 Oct 2020 11:23:39 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09KBJsnJ183283;
+        Tue, 20 Oct 2020 11:21:38 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3020.oracle.com with ESMTP id 348acqmwes-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 20 Oct 2020 11:21:38 +0000
+Received: from abhmp0020.oracle.com (abhmp0020.oracle.com [141.146.116.26])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 09KBLbuh030033;
+        Tue, 20 Oct 2020 11:21:37 GMT
+Received: from [192.168.1.102] (/39.109.231.106)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 20 Oct 2020 04:21:37 -0700
+Subject: Re: [PATCH v2 1/2] btrfs: add a test case for btrfs seed device
+ delete
+To:     fdmanana@gmail.com
+Cc:     fstests <fstests@vger.kernel.org>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        David Sterba <dsterba@suse.com>
+References: <cover.1599233551.git.anand.jain@oracle.com>
+ <53f76be87a0b414d6074f358b45b40cf1419950b.1599233551.git.anand.jain@oracle.com>
+ <CAL3q7H7Kkz=5gwaAyNvHoer+rYrqRPjjOL_reQay6DvQtU7HMw@mail.gmail.com>
+From:   Anand Jain <anand.jain@oracle.com>
+Message-ID: <3dfb9cfe-e0cf-f285-4777-4477e565fbb0@oracle.com>
+Date:   Tue, 20 Oct 2020 19:21:24 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.3
 MIME-Version: 1.0
-References: <cover.1603137558.git.josef@toxicpanda.com> <2402f8ee46e0e080f9c22115b7ba3a02962ded4e.1603137558.git.josef@toxicpanda.com>
-In-Reply-To: <2402f8ee46e0e080f9c22115b7ba3a02962ded4e.1603137558.git.josef@toxicpanda.com>
-Reply-To: fdmanana@gmail.com
-From:   Filipe Manana <fdmanana@gmail.com>
-Date:   Tue, 20 Oct 2020 12:06:35 +0100
-Message-ID: <CAL3q7H6ESjQPYCYwAa-_rQ3bUO67BqLAe8=tg_kYiTzM9FdOCA@mail.gmail.com>
-Subject: Re: [PATCH 3/3] btrfs: add a helper to read the tree_root commit root
- for backref lookup
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>, kernel-team@fb.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAL3q7H7Kkz=5gwaAyNvHoer+rYrqRPjjOL_reQay6DvQtU7HMw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9779 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 bulkscore=0 adultscore=0
+ mlxscore=0 malwarescore=0 suspectscore=1 spamscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2010200077
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9779 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 priorityscore=1501
+ clxscore=1015 malwarescore=0 mlxscore=0 bulkscore=0 lowpriorityscore=0
+ phishscore=0 adultscore=0 mlxlogscore=999 impostorscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2010200077
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Oct 20, 2020 at 8:37 AM Josef Bacik <josef@toxicpanda.com> wrote:
->
-> I got the following lockdep splat with my rwsem patches on btrfs/104
->
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D
-> WARNING: possible circular locking dependency detected
-> 5.9.0+ #102 Not tainted
-> ------------------------------------------------------
-> btrfs-cleaner/903 is trying to acquire lock:
-> ffff8e7fab6ffe30 (btrfs-root-00){++++}-{3:3}, at: __btrfs_tree_read_lock+=
-0x32/0x170
->
-> but task is already holding lock:
-> ffff8e7fab628a88 (&fs_info->commit_root_sem){++++}-{3:3}, at: btrfs_find_=
-all_roots+0x41/0x80
->
-> which lock already depends on the new lock.
->
-> the existing dependency chain (in reverse order) is:
->
-> -> #3 (&fs_info->commit_root_sem){++++}-{3:3}:
->        down_read+0x40/0x130
->        caching_thread+0x53/0x5a0
->        btrfs_work_helper+0xfa/0x520
->        process_one_work+0x238/0x540
->        worker_thread+0x55/0x3c0
->        kthread+0x13a/0x150
->        ret_from_fork+0x1f/0x30
->
-> -> #2 (&caching_ctl->mutex){+.+.}-{3:3}:
->        __mutex_lock+0x7e/0x7b0
->        btrfs_cache_block_group+0x1e0/0x510
->        find_free_extent+0xb6e/0x12f0
->        btrfs_reserve_extent+0xb3/0x1b0
->        btrfs_alloc_tree_block+0xb1/0x330
->        alloc_tree_block_no_bg_flush+0x4f/0x60
->        __btrfs_cow_block+0x11d/0x580
->        btrfs_cow_block+0x10c/0x220
->        commit_cowonly_roots+0x47/0x2e0
->        btrfs_commit_transaction+0x595/0xbd0
->        sync_filesystem+0x74/0x90
->        generic_shutdown_super+0x22/0x100
->        kill_anon_super+0x14/0x30
->        btrfs_kill_super+0x12/0x20
->        deactivate_locked_super+0x36/0xa0
->        cleanup_mnt+0x12d/0x190
->        task_work_run+0x5c/0xa0
->        exit_to_user_mode_prepare+0x1df/0x200
->        syscall_exit_to_user_mode+0x54/0x280
->        entry_SYSCALL_64_after_hwframe+0x44/0xa9
->
-> -> #1 (&space_info->groups_sem){++++}-{3:3}:
->        down_read+0x40/0x130
->        find_free_extent+0x2ed/0x12f0
->        btrfs_reserve_extent+0xb3/0x1b0
->        btrfs_alloc_tree_block+0xb1/0x330
->        alloc_tree_block_no_bg_flush+0x4f/0x60
->        __btrfs_cow_block+0x11d/0x580
->        btrfs_cow_block+0x10c/0x220
->        commit_cowonly_roots+0x47/0x2e0
->        btrfs_commit_transaction+0x595/0xbd0
->        sync_filesystem+0x74/0x90
->        generic_shutdown_super+0x22/0x100
->        kill_anon_super+0x14/0x30
->        btrfs_kill_super+0x12/0x20
->        deactivate_locked_super+0x36/0xa0
->        cleanup_mnt+0x12d/0x190
->        task_work_run+0x5c/0xa0
->        exit_to_user_mode_prepare+0x1df/0x200
->        syscall_exit_to_user_mode+0x54/0x280
->        entry_SYSCALL_64_after_hwframe+0x44/0xa9
->
-> -> #0 (btrfs-root-00){++++}-{3:3}:
->        __lock_acquire+0x1167/0x2150
->        lock_acquire+0xb9/0x3d0
->        down_read_nested+0x43/0x130
->        __btrfs_tree_read_lock+0x32/0x170
->        __btrfs_read_lock_root_node+0x3a/0x50
->        btrfs_search_slot+0x614/0x9d0
->        btrfs_find_root+0x35/0x1b0
->        btrfs_read_tree_root+0x61/0x120
->        btrfs_get_root_ref+0x14b/0x600
->        find_parent_nodes+0x3e6/0x1b30
->        btrfs_find_all_roots_safe+0xb4/0x130
->        btrfs_find_all_roots+0x60/0x80
->        btrfs_qgroup_trace_extent_post+0x27/0x40
->        btrfs_add_delayed_data_ref+0x3fd/0x460
->        btrfs_free_extent+0x42/0x100
->        __btrfs_mod_ref+0x1d7/0x2f0
->        walk_up_proc+0x11c/0x400
->        walk_up_tree+0xf0/0x180
->        btrfs_drop_snapshot+0x1c7/0x780
->        btrfs_clean_one_deleted_snapshot+0xfb/0x110
->        cleaner_kthread+0xd4/0x140
->        kthread+0x13a/0x150
->        ret_from_fork+0x1f/0x30
->
-> other info that might help us debug this:
->
-> Chain exists of:
->   btrfs-root-00 --> &caching_ctl->mutex --> &fs_info->commit_root_sem
->
->  Possible unsafe locking scenario:
->
->        CPU0                    CPU1
->        ----                    ----
->   lock(&fs_info->commit_root_sem);
->                                lock(&caching_ctl->mutex);
->                                lock(&fs_info->commit_root_sem);
->   lock(btrfs-root-00);
->
->  *** DEADLOCK ***
->
-> 3 locks held by btrfs-cleaner/903:
->  #0: ffff8e7fab628838 (&fs_info->cleaner_mutex){+.+.}-{3:3}, at: cleaner_=
-kthread+0x6e/0x140
->  #1: ffff8e7faadac640 (sb_internal){.+.+}-{0:0}, at: start_transaction+0x=
-40b/0x5c0
->  #2: ffff8e7fab628a88 (&fs_info->commit_root_sem){++++}-{3:3}, at: btrfs_=
-find_all_roots+0x41/0x80
->
-> stack backtrace:
-> CPU: 0 PID: 903 Comm: btrfs-cleaner Not tainted 5.9.0+ #102
-> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-2.fc32=
- 04/01/2014
-> Call Trace:
->  dump_stack+0x8b/0xb0
->  check_noncircular+0xcf/0xf0
->  __lock_acquire+0x1167/0x2150
->  ? __bfs+0x42/0x210
->  lock_acquire+0xb9/0x3d0
->  ? __btrfs_tree_read_lock+0x32/0x170
->  down_read_nested+0x43/0x130
->  ? __btrfs_tree_read_lock+0x32/0x170
->  __btrfs_tree_read_lock+0x32/0x170
->  __btrfs_read_lock_root_node+0x3a/0x50
->  btrfs_search_slot+0x614/0x9d0
->  ? find_held_lock+0x2b/0x80
->  btrfs_find_root+0x35/0x1b0
->  ? do_raw_spin_unlock+0x4b/0xa0
->  btrfs_read_tree_root+0x61/0x120
->  btrfs_get_root_ref+0x14b/0x600
->  find_parent_nodes+0x3e6/0x1b30
->  btrfs_find_all_roots_safe+0xb4/0x130
->  btrfs_find_all_roots+0x60/0x80
->  btrfs_qgroup_trace_extent_post+0x27/0x40
->  btrfs_add_delayed_data_ref+0x3fd/0x460
->  btrfs_free_extent+0x42/0x100
->  __btrfs_mod_ref+0x1d7/0x2f0
->  walk_up_proc+0x11c/0x400
->  walk_up_tree+0xf0/0x180
->  btrfs_drop_snapshot+0x1c7/0x780
->  ? btrfs_clean_one_deleted_snapshot+0x73/0x110
->  btrfs_clean_one_deleted_snapshot+0xfb/0x110
->  cleaner_kthread+0xd4/0x140
->  ? btrfs_alloc_root+0x50/0x50
->  kthread+0x13a/0x150
->  ? kthread_create_worker_on_cpu+0x40/0x40
->  ret_from_fork+0x1f/0x30
-> BTRFS info (device sdb): disk space caching is enabled
-> BTRFS info (device sdb): has skinny extents
->
-> This happens because qgroups does a backref lookup when we create a
-> delayed ref.  From here it may have to look up a root from an indirect
-> ref, which does a normal lookup on the tree_root, which takes the read
-> lock on the tree_root nodes.
->
-> To fix this we need to add a variant for looking up roots that searches
-> the commit root of the tree_root.  Then when we do the backref search
-> using the commit root we are sure to not take any locks on the tree_root
-> nodes.  This gets rid of the lockdep splat when running btrfs/104.
->
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+On 15/10/20 11:45 pm, Filipe Manana wrote:
+> On Sat, Sep 5, 2020 at 12:25 AM Anand Jain <anand.jain@oracle.com> wrote:
+>>
+>> This is a regression test for the issue fixed by the kernel patch
+>>     btrfs: fix put of uninitialized kobject after seed device delete
+> 
+> Now that the patch is in Linus' tree, we could have the commit id as well.
+> Just a few comments below.
+> 
+>>
+>> In this test case, we verify the seed device delete on a sprouted
+>> filesystem.
+>>
+>> Signed-off-by: Anand Jain <anand.jain@oracle.com>
+>> ---
+>> v2 drop the sysfs layout check as it breaks the test-case backward
+>> compatibility.
+>>
+>>   tests/btrfs/219     | 83 +++++++++++++++++++++++++++++++++++++++++++++
+>>   tests/btrfs/219.out | 15 ++++++++
+>>   tests/btrfs/group   |  1 +
+>>   3 files changed, 99 insertions(+)
+>>   create mode 100755 tests/btrfs/219
+>>   create mode 100644 tests/btrfs/219.out
+>>
+>> diff --git a/tests/btrfs/219 b/tests/btrfs/219
+>> new file mode 100755
+>> index 000000000000..86f2a6991bd7
+>> --- /dev/null
+>> +++ b/tests/btrfs/219
+>> @@ -0,0 +1,83 @@
+>> +#! /bin/bash
+>> +# SPDX-License-Identifier: GPL-2.0
+>> +# Copyright (c) 2020 Oracle. All Rights Reserved.
+>> +#
+>> +# FS QA Test 219
+>> +#
+>> +# Test for seed device-delete on a sprouted FS.
+>> +# Requires kernel patch
+>> +#    btrfs: fix put of uninitialized kobject after seed device delete
+>> +#
+>> +# Steps:
+>> +#  Create a seed FS. Add a RW device to make it sprout FS and then delete
+>> +#  the seed device.
+>> +
+>> +seq=`basename $0`
+>> +seqres=$RESULT_DIR/$seq
+>> +echo "QA output created by $seq"
+>> +
+>> +here=`pwd`
+>> +tmp=/tmp/$$
+>> +status=1       # failure is the default!
+>> +trap "_cleanup; exit \$status" 0 1 2 3 15
+>> +
+>> +_cleanup()
+>> +{
+>> +       cd /
+>> +       rm -f $tmp.*
+>> +}
+>> +
+>> +# get standard environment, filters and checks
+>> +. ./common/rc
+>> +. ./common/filter
+>> +
+>> +# remove previous $seqres.full before test
+>> +rm -f $seqres.full
+>> +
+>> +# real QA test starts here
+>> +
+>> +# Modify as appropriate.
+>> +_supported_fs generic
+> 
+> s/generic/btrfs
+> 
+>> +_supported_os Linux
+> 
+> This should go away, _supported_os is gone now.
+> 
+>> +_require_test
+>> +_require_scratch_dev_pool 2
+>> +
+>> +_scratch_dev_pool_get 2
+>> +
+>> +seed=$(echo $SCRATCH_DEV_POOL | awk '{print $1}')
+>> +sprout=$(echo $SCRATCH_DEV_POOL | awk '{print $2}')
+> 
+> $AWK_PROG should be used instead.
+> 
+>> +
+>> +_mkfs_dev $seed
+>> +_mount $seed $SCRATCH_MNT
+>> +
+>> +$XFS_IO_PROG -f -d -c "pwrite -S 0xab 0 1M" $SCRATCH_MNT/foo > /dev/null
+> 
+> Why the direct IO write? Why not buffered IO?
+> I just tried the test, and it passes too with a buffered write (no -d).
+> If there's any reason for using direct IO, it should be mentioned in a
+> comment, and _require_odirect added at the top.
+> 
 
-Looks good, only the first comment line at the top of the new function
-btrfs_get_fs_root_commit_root() doesn't follow the preferred style.
-
-Other than that, it's fine as far as I can see.
-
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
-
-Thanks.
-
-> ---
->  fs/btrfs/backref.c | 14 +++++++-
->  fs/btrfs/disk-io.c | 79 ++++++++++++++++++++++++++++++++++------------
->  fs/btrfs/disk-io.h |  3 ++
->  3 files changed, 74 insertions(+), 22 deletions(-)
->
-> diff --git a/fs/btrfs/backref.c b/fs/btrfs/backref.c
-> index b3268f4ea5f3..cacba965c535 100644
-> --- a/fs/btrfs/backref.c
-> +++ b/fs/btrfs/backref.c
-> @@ -544,7 +544,19 @@ static int resolve_indirect_ref(struct btrfs_fs_info=
- *fs_info,
->         int level =3D ref->level;
->         struct btrfs_key search_key =3D ref->key_for_search;
->
-> -       root =3D btrfs_get_fs_root(fs_info, ref->root_id, false);
-> +       /*
-> +        * If we're search_commit_root we could possibly be holding locks=
- on
-> +        * other tree nodes.  This happens when qgroups does backref walk=
-s when
-> +        * adding new delayed refs.  To deal with this we need to look in=
- cache
-> +        * for the root, and if we don't find it then we need to search t=
-he
-> +        * tree_root's commit root, thus the btrfs_get_fs_root_commit_roo=
-t usage
-> +        * here.
-> +        */
-> +       if (path->search_commit_root)
-> +               root =3D btrfs_get_fs_root_commit_root(fs_info, path,
-> +                                                    ref->root_id);
-> +       else
-> +               root =3D btrfs_get_fs_root(fs_info, ref->root_id, false);
->         if (IS_ERR(root)) {
->                 ret =3D PTR_ERR(root);
->                 goto out_free;
-> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-> index 81e7b1880b5b..3972f16b333d 100644
-> --- a/fs/btrfs/disk-io.c
-> +++ b/fs/btrfs/disk-io.c
-> @@ -1281,32 +1281,26 @@ int btrfs_add_log_tree(struct btrfs_trans_handle =
-*trans,
->         return 0;
->  }
->
-> -struct btrfs_root *btrfs_read_tree_root(struct btrfs_root *tree_root,
-> -                                       struct btrfs_key *key)
-> +static struct btrfs_root *read_tree_root_path(struct btrfs_root *tree_ro=
-ot,
-> +                                             struct btrfs_path *path,
-> +                                             struct btrfs_key *key)
->  {
->         struct btrfs_root *root;
->         struct btrfs_fs_info *fs_info =3D tree_root->fs_info;
-> -       struct btrfs_path *path;
->         u64 generation;
->         int ret;
->         int level;
->
-> -       path =3D btrfs_alloc_path();
-> -       if (!path)
-> -               return ERR_PTR(-ENOMEM);
-> -
->         root =3D btrfs_alloc_root(fs_info, key->objectid, GFP_NOFS);
-> -       if (!root) {
-> -               ret =3D -ENOMEM;
-> -               goto alloc_fail;
-> -       }
-> +       if (!root)
-> +               return ERR_PTR(-ENOMEM);
->
->         ret =3D btrfs_find_root(tree_root, key, path,
->                               &root->root_item, &root->root_key);
->         if (ret) {
->                 if (ret > 0)
->                         ret =3D -ENOENT;
-> -               goto find_fail;
-> +               goto fail;
->         }
->
->         generation =3D btrfs_root_generation(&root->root_item);
-> @@ -1317,21 +1311,30 @@ struct btrfs_root *btrfs_read_tree_root(struct bt=
-rfs_root *tree_root,
->         if (IS_ERR(root->node)) {
->                 ret =3D PTR_ERR(root->node);
->                 root->node =3D NULL;
-> -               goto find_fail;
-> +               goto fail;
->         } else if (!btrfs_buffer_uptodate(root->node, generation, 0)) {
->                 ret =3D -EIO;
-> -               goto find_fail;
-> +               goto fail;
->         }
->         root->commit_root =3D btrfs_root_node(root);
-> -out:
-> -       btrfs_free_path(path);
->         return root;
-> -
-> -find_fail:
-> +fail:
->         btrfs_put_root(root);
-> -alloc_fail:
-> -       root =3D ERR_PTR(ret);
-> -       goto out;
-> +       return ERR_PTR(ret);
-> +}
-> +
-> +struct btrfs_root *btrfs_read_tree_root(struct btrfs_root *tree_root,
-> +                                       struct btrfs_key *key)
-> +{
-> +       struct btrfs_root *root;
-> +       struct btrfs_path *path;
-> +
-> +       path =3D btrfs_alloc_path();
-> +       if (!path)
-> +               return ERR_PTR(-ENOMEM);
-> +       root =3D read_tree_root_path(tree_root, path, key);
-> +       btrfs_free_path(path);
-> +       return root;
->  }
->
->  /*
-> @@ -1621,6 +1624,40 @@ struct btrfs_root *btrfs_get_new_fs_root(struct bt=
-rfs_fs_info *fs_info,
->         return btrfs_get_root_ref(fs_info, objectid, anon_dev, true);
->  }
->
-> +/* btrfs_get_fs_root_commit_root - return a root for the given objectid
-> + * @fs_info - the fs_info.
-> + * @objectid =3D the objectid we need to lookup.
-> + *
-> + * This is exclusively used for backref walking, and exists specifically=
- because
-> + * of how qgroups does lookups.  Qgroups will do a backref lookup at del=
-ayed ref
-> + * creation time, which means we may have to read the tree_root in order=
- to look
-> + * up a fs root that is not in memory.  If the root is not in memory we =
-will
-> + * read the tree root commit root and look up the fs root from there.  T=
-his is a
-> + * temporary root, it will not be inserted into the radix tree as it doe=
-sn't
-> + * have the most uptodate information, it'll simply be discarded once th=
-e
-> + * backref code is finished using the root.
-> + */
-> +struct btrfs_root *btrfs_get_fs_root_commit_root(struct btrfs_fs_info *f=
-s_info,
-> +                                                struct btrfs_path *path,
-> +                                                u64 objectid)
-> +{
-> +       struct btrfs_root *root;
-> +       struct btrfs_key key;
-> +
-> +       ASSERT(path->search_commit_root && path->skip_locking);
-> +
-> +       root =3D btrfs_lookup_fs_root(fs_info, objectid);
-> +       if (root)
-> +               return root;
-> +
-> +       key.objectid =3D objectid;
-> +       key.type =3D BTRFS_ROOT_ITEM_KEY;
-> +       key.offset =3D (u64)-1;
-> +       root =3D read_tree_root_path(fs_info->tree_root, path, &key);
-> +       btrfs_release_path(path);
-> +       return root;
-> +}
-> +
->  /*
->   * called by the kthread helper functions to finally call the bio end_io
->   * functions.  This is where read checksum verification actually happens
-> diff --git a/fs/btrfs/disk-io.h b/fs/btrfs/disk-io.h
-> index fee69ced58b4..182540bdcea0 100644
-> --- a/fs/btrfs/disk-io.h
-> +++ b/fs/btrfs/disk-io.h
-> @@ -69,6 +69,9 @@ struct btrfs_root *btrfs_get_fs_root(struct btrfs_fs_in=
-fo *fs_info,
->                                      u64 objectid, bool check_ref);
->  struct btrfs_root *btrfs_get_new_fs_root(struct btrfs_fs_info *fs_info,
->                                          u64 objectid, dev_t anon_dev);
-> +struct btrfs_root *btrfs_get_fs_root_commit_root(struct btrfs_fs_info *f=
-s_info,
-> +                                                struct btrfs_path *path,
-> +                                                u64 objectid);
->
->  void btrfs_free_fs_info(struct btrfs_fs_info *fs_info);
->  int btrfs_cleanup_fs_roots(struct btrfs_fs_info *fs_info);
-> --
-> 2.26.2
->
+  Ah. No there isn't any reason for using direct IO. I will take it out.
 
 
---=20
-Filipe David Manana,
 
-=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
- right.=E2=80=9D
+>> +_scratch_unmount
+>> +$BTRFS_TUNE_PROG -S 1 $seed
+>> +
+>> +# Mount the seed device and add the rw device
+>> +_mount -o ro $seed $SCRATCH_MNT
+>> +$BTRFS_UTIL_PROG device add -f $sprout $SCRATCH_MNT
+>> +_scratch_unmount
+>> +
+>> +# Now remount
+>> +_mount $sprout $SCRATCH_MNT
+>> +$XFS_IO_PROG -f -d -c "pwrite -S 0xcd 0 1M" $SCRATCH_MNT/bar > /dev/null
+> 
+> Same comment here regarding the use of direct IO.
+> 
+>> +
+>> +echo --- before delete ----
+>> +od -x $SCRATCH_MNT/foo
+>> +od -x $SCRATCH_MNT/bar
+>> +
+>> +$BTRFS_UTIL_PROG device delete $seed $SCRATCH_MNT
+>> +_scratch_unmount
+>> +_btrfs_forget_or_module_reload
+>> +_mount $sprout $SCRATCH_MNT
+>> +
+>> +echo --- after delete ----
+>> +od -x $SCRATCH_MNT/foo
+>> +od -x $SCRATCH_MNT/bar
+>> +
+>> +_scratch_dev_pool_put
+>> +
+>> +# success, all done
+>> +status=0
+>> +exit
+>> diff --git a/tests/btrfs/219.out b/tests/btrfs/219.out
+>> new file mode 100644
+>> index 000000000000..d39e0d8ffafd
+>> --- /dev/null
+>> +++ b/tests/btrfs/219.out
+>> @@ -0,0 +1,15 @@
+>> +QA output created by 219
+>> +--- before delete ----
+>> +0000000 abab abab abab abab abab abab abab abab
+>> +*
+>> +4000000
+>> +0000000 cdcd cdcd cdcd cdcd cdcd cdcd cdcd cdcd
+>> +*
+>> +4000000
+>> +--- after delete ----
+>> +0000000 abab abab abab abab abab abab abab abab
+>> +*
+>> +4000000
+>> +0000000 cdcd cdcd cdcd cdcd cdcd cdcd cdcd cdcd
+>> +*
+>> +4000000
+>> diff --git a/tests/btrfs/group b/tests/btrfs/group
+>> index 3295856d0c8c..3633fa66abe4 100644
+>> --- a/tests/btrfs/group
+>> +++ b/tests/btrfs/group
+>> @@ -221,3 +221,4 @@
+>>   216 auto quick seed
+>>   217 auto quick trim dangerous
+>>   218 auto quick volume
+>> +219 auto quick volume seed
+> 
+> New tests were added in the meanwhile.
+> For the next version don't forget to renumber the test to 224.
+> 
+> Other than those minor comments, it looks fine and it works.
+> 
+
+  Rest of the comments are accepted. I am sending v3.
+
+Thanks, Anand
+
+> Thanks.
+> 
+>> --
+>> 2.25.1
+>>
+> 
+> 
+
