@@ -2,97 +2,141 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C33F29538A
-	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Oct 2020 22:38:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A514C2953F1
+	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Oct 2020 23:15:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2505403AbgJUUiK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 21 Oct 2020 16:38:10 -0400
-Received: from mx2.suse.de ([195.135.220.15]:50708 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2410455AbgJUUiK (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 21 Oct 2020 16:38:10 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 7C3F7AD85;
-        Wed, 21 Oct 2020 20:38:07 +0000 (UTC)
-From:   Davidlohr Bueso <dave@stgolabs.net>
-To:     dsterba@suse.com
-Cc:     a.darwish@linutronix.de, dave@stgolabs.net,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Davidlohr Bueso <dbueso@suse.de>
-Subject: [PATCH] btrfs: convert data_seqcount to seqcount_mutex_t
-Date:   Wed, 21 Oct 2020 13:17:24 -0700
-Message-Id: <20201021201724.27213-1-dave@stgolabs.net>
-X-Mailer: git-send-email 2.26.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S2505922AbgJUVPG convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-btrfs@lfdr.de>); Wed, 21 Oct 2020 17:15:06 -0400
+Received: from mout.kundenserver.de ([212.227.17.13]:37011 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2411408AbgJUVPG (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 21 Oct 2020 17:15:06 -0400
+Received: from [192.168.177.174] ([91.63.161.114]) by mrelayeu.kundenserver.de
+ (mreue106 [213.165.67.113]) with ESMTPSA (Nemesis) id
+ 1MOAr1-1kl78s1myP-00OUwE; Wed, 21 Oct 2020 23:14:59 +0200
+From:   "Hendrik Friedel" <hendrik@friedels.name>
+To:     "Zygo Blaxell" <ce3g8jdj@umail.furryterror.org>
+Subject: Re[2]: parent transid verify failed: Fixed but re-appearing
+Cc:     "Btrfs BTRFS" <linux-btrfs@vger.kernel.org>
+Date:   Wed, 21 Oct 2020 21:15:06 +0000
+Message-Id: <em33511ef4-7da1-4e7c-8b0c-8b8d7043164c@desktop-g0r648m>
+In-Reply-To: <20201021193246.GE21815@hungrycats.org>
+References: <em2ffec6ef-fe64-4239-b238-ae962d1826f6@ryzen>
+ <20201021134635.GT5890@hungrycats.org>
+ <em85884e42-e959-40f1-9eae-cd818450c26d@ryzen>
+ <20201021193246.GE21815@hungrycats.org>
+Reply-To: "Hendrik Friedel" <hendrik@friedels.name>
+User-Agent: eM_Client/7.2.38682.0
+Mime-Version: 1.0
+Content-Type: text/plain; format=flowed; charset=utf-8
+Content-Transfer-Encoding: 8BIT
+X-Provags-ID: V03:K1:DVOy4p1GQl75OMxctk3fONI9A4Yf10eKbidCnkFjUIa2x4KFyeh
+ SIpdu33amoe8hVE3U02jVX5TuMHwgrODvSl2bMMfMQlJdZavyOp4IzYJK3Uz85SOIu1SUBN
+ rLhlW143HRO7MJx9hVtnlHnjv6hfX3eKIouplOfO1HtEA1TUs+XFnvDnmk8G3sezAi/5QFQ
+ Shdh5fzbxFn7ts7st+g7Q==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:pFeCuedE9BQ=:lDiiCDfyQn7btfbUYsSIHX
+ WDCodYwakTwTgySSp86B9Zfn+FRTVhHZZ5JLC3hAiVU6jgxl2Wsj47xCVzML2J4MQU+KTdZyc
+ EhcNa8kZASXgJWuvQi2ykiPwm8gag6agoUDqjuY44yP/XLYIUld1ygL1bm3VqjwM/8EvLU7lw
+ 1CXV95f5wcUhFjPoHbX/nXbhycKtKC1wmJOt/bIi7RRrdZfBmk7WWlGn3FbIZyM7Io7MT8xx9
+ s9np3eXfAENvtKyl3lwWXt20yCM6sDgChUQth+6WB7Idec7FIsK17zzuNWJOy5E+88QXrOwDP
+ ubjh5DHkGyy+O1DFNZyzKRBqi0kvrQ/gKDRy+OgxaM3EZB5ESIKivP6tdMVMDOAtPU7T/JoPv
+ h5JlL23W1Y+DPmxcUtcwNe6qFm5zPXCrwjGntZuyob7a3P2rVOMgWmg7vAxjZpczNk05CjvKC
+ nYVXNuinmA==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-By doing so we can associate the sequence counter to the chunk_mutex
-for lockdep purposes (compiled-out otherwise) and also avoid
-explicitly disabling preemption around the write region as it will now
-be done automatically by the seqcount machinery based on the lock type.
+Hello Zygo,
 
-Signed-off-by: Davidlohr Bueso <dbueso@suse.de>
----
- fs/btrfs/volumes.c |  2 +-
- fs/btrfs/volumes.h | 10 ++++------
- 2 files changed, 5 insertions(+), 7 deletions(-)
+thanks for your reply.
+>To be clear, scrub is the first thing to try, it will try to walk all
+>the trees on the filesystem and read all the blocks.
+>
+Understood. Also thanks for explaining the other two options.
+I think, it would be really advisable to add some recipies in the btrfs 
+wiki - especially because btrfs check --repair is often not the right 
+option opposed to the equivalent on other file systems.
 
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index 58b9c419a2b6..b6ee92ddc624 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -431,7 +431,7 @@ static struct btrfs_device *__alloc_device(struct btrfs_fs_info *fs_info)
- 
- 	atomic_set(&dev->reada_in_flight, 0);
- 	atomic_set(&dev->dev_stats_ccnt, 0);
--	btrfs_device_data_ordered_init(dev);
-+	btrfs_device_data_ordered_init(dev, fs_info);
- 	INIT_RADIX_TREE(&dev->reada_zones, GFP_NOFS & ~__GFP_DIRECT_RECLAIM);
- 	INIT_RADIX_TREE(&dev->reada_extents, GFP_NOFS & ~__GFP_DIRECT_RECLAIM);
- 	extent_io_tree_init(fs_info, &dev->alloc_state,
-diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
-index bf27ac07d315..ff3ec11bb9d2 100644
---- a/fs/btrfs/volumes.h
-+++ b/fs/btrfs/volumes.h
-@@ -39,10 +39,10 @@ struct btrfs_io_geometry {
- #if BITS_PER_LONG==32 && defined(CONFIG_SMP)
- #include <linux/seqlock.h>
- #define __BTRFS_NEED_DEVICE_DATA_ORDERED
--#define btrfs_device_data_ordered_init(device)	\
--	seqcount_init(&device->data_seqcount)
-+#define btrfs_device_data_ordered_init(device, info)				\
-+	seqcount_mutex_init(&device->data_seqcount, &info->chunk_mutex)
- #else
--#define btrfs_device_data_ordered_init(device) do { } while (0)
-+#define btrfs_device_data_ordered_init(device, info) do { } while (0)
- #endif
- 
- #define BTRFS_DEV_STATE_WRITEABLE	(0)
-@@ -71,7 +71,7 @@ struct btrfs_device {
- 	blk_status_t last_flush_error;
- 
- #ifdef __BTRFS_NEED_DEVICE_DATA_ORDERED
--	seqcount_t data_seqcount;
-+	seqcount_mutex_t data_seqcount;
- #endif
- 
- 	/* the internal btrfs device id */
-@@ -162,11 +162,9 @@ btrfs_device_get_##name(const struct btrfs_device *dev)			\
- static inline void							\
- btrfs_device_set_##name(struct btrfs_device *dev, u64 size)		\
- {									\
--	preempt_disable();						\
- 	write_seqcount_begin(&dev->data_seqcount);			\
- 	dev->name = size;						\
- 	write_seqcount_end(&dev->data_seqcount);			\
--	preempt_enable();						\
- }
- #elif BITS_PER_LONG==32 && defined(CONFIG_PREEMPTION)
- #define BTRFS_DEVICE_GETSET_FUNCS(name)					\
---
-2.26.2
+>>  > Scrub iterates over all metadata pages and should hit ptvf if it's
+>>  > on disk.
+>>
+>>  But apparently it did not?!
+>
+>...which indicates the problem is probably in memory, not on disk.
+
+Which is good. On the other hand, that leaves the question why I have 
+re-occuring failures of this kind (apparently) in memory.
+What are possible reasons?
+
+>>  So it looks like it is raid1 metadata
+>
+>That would mean either that recovery already happened (if the corruption
+>was on disk and has been removed), or the problem never reached a disk
+>(if it is only in memory).
+Ok.
+Good news.
+
+But it's still there:
+dduper --device /dev/sda1 --dir 
+/srv/dev-disk-by-label-DataPool1/dduper_test/testfiles -r --dry-run
+parent transid verify failed on 8333716668416 wanted 357026 found 357028
+parent transid verify failed on 8333716668416 wanted 357026 found 357028
+parent transid verify failed on 8333716668416 wanted 357026 found 357028
+
+
+>
+>>  > only one of your disks is silently dropping writes.  In that case
+>>  > btrfs will recover from ptvf by replacing the missing block from the
+>>  > other drive.  But there are no scrub errors or kernel messages related
+>>  > to this, so there aren't any symptoms of that happening, so it seems
+>>  > these ptvf are not coming from the disk.
+>>  And can this be confirmed somehow? Would be good to replace that disk
+>>  then...
+>
+>These normally appear in 'btrfs dev stats', although there are various
+>coverage gaps with raid5/6 and (until recently) compressed data blocks.
+I do not use raid5/6 and I think I do not use compressed data.
+
+btrfs dev stats /dev/sda1
+[/dev/sda1].write_io_errs    0
+[/dev/sda1].read_io_errs     0
+[/dev/sda1].flush_io_errs    0
+[/dev/sda1].corruption_errs  0
+[/dev/sda1].generation_errs  1
+
+So, what does the generation_errs tell us?
+
+>'btrfs scrub status -d' will give a per-drive error breakdown.
+
+btrfs scrub status -d /dev/sda1
+scrub status for c4a6a2c9-5cf0-49b8-812a-0784953f9ba3
+scrub device /dev/sda1 (id 1) history
+         scrub started at Mon Oct 19 21:07:13 2020 and finished after 
+15:11:10
+         total bytes scrubbed: 6.56TiB with 0 errors
+
+btrfs scrub status -d /dev/sdj1
+scrub status for c4a6a2c9-5cf0-49b8-812a-0784953f9ba3
+scrub device /dev/sdj1 (id 2) history
+         scrub started at Mon Oct 19 21:07:13 2020 and finished after 
+17:06:15
+         total bytes scrubbed: 6.56TiB with 0 errors
+
+
+>I haven't seen spurious ptvf errors on my test machines since the 5.4.30s,
+>but 5.4 has a lot of fixes that between-LTS kernels like 5.6 do not
+>always get.
+
+Ok, I am compiling 5.9.1 now.
+
+Apart from switching to the latest Kernel - what next step do you 
+recommend?
+I tend to run a scrub again. Is it possible/useful to make it more 
+verbose?
+What else?
+
+Greetings,
+Hendrik
 
