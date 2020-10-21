@@ -2,34 +2,34 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 749C3294830
-	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Oct 2020 08:26:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F38CB294831
+	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Oct 2020 08:26:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2440755AbgJUG0o (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 21 Oct 2020 02:26:44 -0400
-Received: from mx2.suse.de ([195.135.220.15]:43036 "EHLO mx2.suse.de"
+        id S2440758AbgJUG0p (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 21 Oct 2020 02:26:45 -0400
+Received: from mx2.suse.de ([195.135.220.15]:43090 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2408709AbgJUG0o (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 21 Oct 2020 02:26:44 -0400
+        id S2408709AbgJUG0p (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 21 Oct 2020 02:26:45 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1603261602;
+        t=1603261604;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=OglTn2D1BP/D3KSqQOu+najGHjAbuRY4Xjxwjjkrzgw=;
-        b=DOPZ1lhS3R4pjoFrUgOXEj1UpEKN4Fpf7034LhBA9e2/hjabHXXdQ7e92kpVoMZiwefFnU
-        nR/NnI7w//1dg20OrY2aklN/gfyDbTPLW8kLvIwNVgKHeLEYl4QYC9jx9UCqVA1bWKi47g
-        9Ga1pjqMG3o0cCjd0eP+nnSEmjSqfdk=
+        bh=yAsvUnTjhihyWg22r8hxrNfUDHPJhWIb8XUBYQF7rOw=;
+        b=jBVZhdseOZ5ajHdoQwfxIdyUlkTiWtpq26PCpDPQGSykpoyPju5NKyly6/9Exm101L4JLD
+        AyCZ1IKJr89pNQY2HuhezAkwmSeNzbcdJIAvb93XXqH0ziu6ZCMYCwLtuXuWw1mAwxTmws
+        z+t7VQ6ndFRZdevNTZ5lCF+gfY6h3HA=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 3DAF3AC1D
-        for <linux-btrfs@vger.kernel.org>; Wed, 21 Oct 2020 06:26:42 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id E2E89AC35
+        for <linux-btrfs@vger.kernel.org>; Wed, 21 Oct 2020 06:26:43 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v4 20/68] btrfs: extent_io: sink less common parameters for __set_extent_bit()
-Date:   Wed, 21 Oct 2020 14:25:06 +0800
-Message-Id: <20201021062554.68132-21-wqu@suse.com>
+Subject: [PATCH v4 21/68] btrfs: extent_io: sink less common parameters for __clear_extent_bit()
+Date:   Wed, 21 Oct 2020 14:25:07 +0800
+Message-Id: <20201021062554.68132-22-wqu@suse.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201021062554.68132-1-wqu@suse.com>
 References: <20201021062554.68132-1-wqu@suse.com>
@@ -39,211 +39,206 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-For __set_extent_bit(), those parameter are less common for most
-callers:
-- exclusive_bits
-- failed_start
-  Paired together for EXTENT_LOCKED usage.
+The following parameters are less commonly used for
+__clear_extent_bit():
+- wake
+  To wake up the waiters
 
-- extent_changeset
-  For qgroup usage.
+- delete
+  For cleanup cases, to remove the extent state regardless of its state
 
-As a common design principle, less common parameters should have their
-default values and only callers really need them will set the parameters
-to non-default values.
+- changeset
+  Only utilized for qgroup
 
-Sink those parameters into a new structure, extent_io_extra_options.
-So most callers won't bother those less used parameters, and make later
-expansion easier.
+Sink them into extent_io_extra_options structure.
+
+For most callers who don't care these options, we obviously sink some
+parameters, without any impact.
+For callers who care these options, we slightly increase the stack
+usage, as the extent_io_extra options has extra members only for
+__set_extent_bits().
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/extent-io-tree.h | 22 ++++++++++++++
- fs/btrfs/extent_io.c      | 61 ++++++++++++++++++++++++---------------
- 2 files changed, 59 insertions(+), 24 deletions(-)
+ fs/btrfs/extent-io-tree.h | 30 +++++++++++++++++++-------
+ fs/btrfs/extent_io.c      | 45 ++++++++++++++++++++++++++++-----------
+ fs/btrfs/extent_map.c     |  2 +-
+ 3 files changed, 56 insertions(+), 21 deletions(-)
 
 diff --git a/fs/btrfs/extent-io-tree.h b/fs/btrfs/extent-io-tree.h
-index 3aaf83376797..dfbb65ac9c8c 100644
+index dfbb65ac9c8c..2893573eb556 100644
 --- a/fs/btrfs/extent-io-tree.h
 +++ b/fs/btrfs/extent-io-tree.h
-@@ -82,6 +82,28 @@ struct extent_state {
- #endif
+@@ -102,6 +102,15 @@ struct extent_io_extra_options {
+ 	 * For qgroup related functions.
+ 	 */
+ 	struct extent_changeset *changeset;
++
++	/*
++	 * For __clear_extent_bit().
++	 * @wake:	Wake up the waiters. Mostly for EXTENT_LOCKED case
++	 * @delete:	Delete the extent regardless of its state. Mostly for
++	 * 		cleanup.
++	 */
++	bool wake;
++	bool delete;
  };
  
-+/*
-+ * Extra options for extent io tree operations.
-+ *
-+ * All of these options are initialized to 0/false/NULL by default,
-+ * and most callers should utilize the wrappers other than the extra options.
-+ */
-+struct extent_io_extra_options {
-+	/*
-+	 * For __set_extent_bit(), to return -EEXIST when hit an extent with
-+	 * @excl_bits set, and update @excl_failed_start.
-+	 * Utizlied by EXTENT_LOCKED wrappers.
-+	 */
-+	u32 excl_bits;
-+	u64 excl_failed_start;
-+
-+	/*
-+	 * For __set/__clear_extent_bit() to record how many bytes is modified.
-+	 * For qgroup related functions.
-+	 */
-+	struct extent_changeset *changeset;
-+};
-+
  int __init extent_state_cache_init(void);
- void __cold extent_state_cache_exit(void);
+@@ -139,9 +148,8 @@ int clear_extent_bit(struct extent_io_tree *tree, u64 start, u64 end,
+ 		     unsigned bits, int wake, int delete,
+ 		     struct extent_state **cached);
+ int __clear_extent_bit(struct extent_io_tree *tree, u64 start, u64 end,
+-		     unsigned bits, int wake, int delete,
+-		     struct extent_state **cached, gfp_t mask,
+-		     struct extent_changeset *changeset);
++		       unsigned bits, struct extent_state **cached_state,
++		       gfp_t mask, struct extent_io_extra_options *extra_opts);
+ 
+ static inline int unlock_extent(struct extent_io_tree *tree, u64 start, u64 end)
+ {
+@@ -151,15 +159,21 @@ static inline int unlock_extent(struct extent_io_tree *tree, u64 start, u64 end)
+ static inline int unlock_extent_cached(struct extent_io_tree *tree, u64 start,
+ 		u64 end, struct extent_state **cached)
+ {
+-	return __clear_extent_bit(tree, start, end, EXTENT_LOCKED, 1, 0, cached,
+-				GFP_NOFS, NULL);
++	struct extent_io_extra_options extra_opts = {
++		.wake = true,
++	};
++	return __clear_extent_bit(tree, start, end, EXTENT_LOCKED, cached,
++				GFP_NOFS, &extra_opts);
+ }
+ 
+ static inline int unlock_extent_cached_atomic(struct extent_io_tree *tree,
+ 		u64 start, u64 end, struct extent_state **cached)
+ {
+-	return __clear_extent_bit(tree, start, end, EXTENT_LOCKED, 1, 0, cached,
+-				GFP_ATOMIC, NULL);
++	struct extent_io_extra_options extra_opts = {
++		.wake = true,
++	};
++	return __clear_extent_bit(tree, start, end, EXTENT_LOCKED, cached,
++				GFP_ATOMIC, &extra_opts);
+ }
+ 
+ static inline int clear_extent_bits(struct extent_io_tree *tree, u64 start,
+@@ -190,7 +204,7 @@ static inline int set_extent_bits(struct extent_io_tree *tree, u64 start,
+ static inline int clear_extent_uptodate(struct extent_io_tree *tree, u64 start,
+ 		u64 end, struct extent_state **cached_state)
+ {
+-	return __clear_extent_bit(tree, start, end, EXTENT_UPTODATE, 0, 0,
++	return __clear_extent_bit(tree, start, end, EXTENT_UPTODATE,
+ 				cached_state, GFP_NOFS, NULL);
+ }
  
 diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 4ac315d8753f..5f899b27962b 100644
+index 5f899b27962b..98b114becd52 100644
 --- a/fs/btrfs/extent_io.c
 +++ b/fs/btrfs/extent_io.c
-@@ -29,6 +29,7 @@ static struct kmem_cache *extent_state_cache;
- static struct kmem_cache *extent_buffer_cache;
- static struct bio_set btrfs_bioset;
- 
-+static struct extent_io_extra_options default_opts = { 0 };
- static inline bool extent_state_in_tree(const struct extent_state *state)
- {
- 	return !RB_EMPTY_NODE(&state->rb_node);
-@@ -952,10 +953,10 @@ static void cache_state(struct extent_state *state,
- }
- 
- /*
-- * set some bits on a range in the tree.  This may require allocations or
-+ * Set some bits on a range in the tree.  This may require allocations or
-  * sleeping, so the gfp mask is used to indicate what is allowed.
+@@ -688,26 +688,38 @@ static void extent_io_tree_panic(struct extent_io_tree *tree, int err)
+  * or inserting elements in the tree, so the gfp mask is used to
+  * indicate which allocations or sleeping are allowed.
   *
-- * If any of the exclusive bits are set, this will fail with -EEXIST if some
-+ * If *any* of the exclusive bits are set, this will fail with -EEXIST if some
-  * part of the range already has the desired bits set.  The start of the
-  * existing range is returned in failed_start in this case.
+- * pass 'wake' == 1 to kick any sleepers, and 'delete' == 1 to remove
+- * the given range from the tree regardless of state (ie for truncate).
++ * extar_opts::wake:		To kick any sleeps.
++ * extra_opts::delete:		To remove the given range regardless of state
++ *				(ie for truncate)
++ * extra_opts::changeset: 	To record how many bytes are modified and
++ * 				which ranges are modified. (for qgroup)
   *
-@@ -964,26 +965,30 @@ static void cache_state(struct extent_state *state,
- 
- static int __must_check
- __set_extent_bit(struct extent_io_tree *tree, u64 start, u64 end,
--		 unsigned bits, unsigned exclusive_bits,
--		 u64 *failed_start, struct extent_state **cached_state,
--		 gfp_t mask, struct extent_changeset *changeset)
-+		 unsigned bits, struct extent_state **cached_state,
-+		 gfp_t mask, struct extent_io_extra_options *extra_opts)
+- * the range [start, end] is inclusive.
++ * The range [start, end] is inclusive.
+  *
+- * This takes the tree lock, and returns 0 on success and < 0 on error.
++ * Returns 0 on success
++ * No error can be returned yet, the ENOMEM for memory is handled by BUG_ON().
+  */
+ int __clear_extent_bit(struct extent_io_tree *tree, u64 start, u64 end,
+-			      unsigned bits, int wake, int delete,
+-			      struct extent_state **cached_state,
+-			      gfp_t mask, struct extent_changeset *changeset)
++		       unsigned bits, struct extent_state **cached_state,
++		       gfp_t mask, struct extent_io_extra_options *extra_opts)
  {
++	struct extent_changeset *changeset;
  	struct extent_state *state;
+ 	struct extent_state *cached;
  	struct extent_state *prealloc = NULL;
  	struct rb_node *node;
- 	struct rb_node **p;
- 	struct rb_node *parent;
-+	struct extent_changeset *changeset;
- 	int err = 0;
-+	u32 exclusive_bits;
-+	u64 *failed_start;
- 	u64 last_start;
++	bool wake;
++	bool delete;
  	u64 last_end;
+ 	int err;
+ 	int clear = 0;
  
- 	btrfs_debug_check_extent_io_range(tree, start, end);
- 	trace_btrfs_set_extent_bit(tree, start, end - start + 1, bits);
- 
--	if (exclusive_bits)
--		ASSERT(failed_start);
--	else
--		ASSERT(!failed_start);
 +	if (!extra_opts)
 +		extra_opts = &default_opts;
-+	exclusive_bits = extra_opts->excl_bits;
-+	failed_start = &extra_opts->excl_failed_start;
 +	changeset = extra_opts->changeset;
++	wake = extra_opts->wake;
++	delete = extra_opts->delete;
 +
- again:
- 	if (!prealloc && gfpflags_allow_blocking(mask)) {
- 		/*
-@@ -1187,7 +1192,7 @@ int set_extent_bit(struct extent_io_tree *tree, u64 start, u64 end,
- 		   unsigned bits, struct extent_state **cached_state,
- 		   gfp_t mask)
+ 	btrfs_debug_check_extent_io_range(tree, start, end);
+ 	trace_btrfs_clear_extent_bit(tree, start, end - start + 1, bits);
+ 
+@@ -1445,21 +1457,30 @@ int clear_extent_bit(struct extent_io_tree *tree, u64 start, u64 end,
+ 		     unsigned bits, int wake, int delete,
+ 		     struct extent_state **cached)
  {
--	return __set_extent_bit(tree, start, end, bits, 0, NULL, cached_state,
-+	return __set_extent_bit(tree, start, end, bits, cached_state,
- 			        mask, NULL);
+-	return __clear_extent_bit(tree, start, end, bits, wake, delete,
+-				  cached, GFP_NOFS, NULL);
++	struct extent_io_extra_options extra_opts = {
++		.wake = wake,
++		.delete = delete,
++	};
++
++	return __clear_extent_bit(tree, start, end, bits,
++				  cached, GFP_NOFS, &extra_opts);
  }
  
-@@ -1414,6 +1419,10 @@ int convert_extent_bit(struct extent_io_tree *tree, u64 start, u64 end,
- int set_record_extent_bits(struct extent_io_tree *tree, u64 start, u64 end,
- 			   unsigned bits, struct extent_changeset *changeset)
+ int clear_record_extent_bits(struct extent_io_tree *tree, u64 start, u64 end,
+ 		unsigned bits, struct extent_changeset *changeset)
  {
 +	struct extent_io_extra_options extra_opts = {
 +		.changeset = changeset,
 +	};
 +
  	/*
- 	 * We don't support EXTENT_LOCKED yet, as current changeset will
- 	 * record any bits changed, so for EXTENT_LOCKED case, it will
-@@ -1422,15 +1431,14 @@ int set_record_extent_bits(struct extent_io_tree *tree, u64 start, u64 end,
+ 	 * Don't support EXTENT_LOCKED case, same reason as
+ 	 * set_record_extent_bits().
  	 */
  	BUG_ON(bits & EXTENT_LOCKED);
  
--	return __set_extent_bit(tree, start, end, bits, 0, NULL, NULL, GFP_NOFS,
--				changeset);
-+	return __set_extent_bit(tree, start, end, bits, NULL, GFP_NOFS,
-+				&extra_opts);
+-	return __clear_extent_bit(tree, start, end, bits, 0, 0, NULL, GFP_NOFS,
+-				  changeset);
++	return __clear_extent_bit(tree, start, end, bits, NULL, GFP_NOFS,
++				  &extra_opts);
  }
  
- int set_extent_bits_nowait(struct extent_io_tree *tree, u64 start, u64 end,
- 			   unsigned bits)
- {
--	return __set_extent_bit(tree, start, end, bits, 0, NULL, NULL,
--				GFP_NOWAIT, NULL);
-+	return __set_extent_bit(tree, start, end, bits, NULL, GFP_NOWAIT, NULL);
- }
+ /*
+@@ -4479,7 +4500,7 @@ static int try_release_extent_state(struct extent_io_tree *tree,
+ 		 */
+ 		ret = __clear_extent_bit(tree, start, end,
+ 				 ~(EXTENT_LOCKED | EXTENT_NODATASUM),
+-				 0, 0, NULL, mask, NULL);
++				 NULL, mask, NULL);
  
- int clear_extent_bit(struct extent_io_tree *tree, u64 start, u64 end,
-@@ -1461,16 +1469,18 @@ int clear_record_extent_bits(struct extent_io_tree *tree, u64 start, u64 end,
- int lock_extent_bits(struct extent_io_tree *tree, u64 start, u64 end,
- 		     struct extent_state **cached_state)
- {
-+	struct extent_io_extra_options extra_opts = {
-+		.excl_bits = EXTENT_LOCKED,
-+	};
- 	int err;
--	u64 failed_start;
+ 		/* if clear_extent_bit failed for enomem reasons,
+ 		 * we can't allow the release to continue.
+diff --git a/fs/btrfs/extent_map.c b/fs/btrfs/extent_map.c
+index bd6229fb2b6f..95651ddbb3a7 100644
+--- a/fs/btrfs/extent_map.c
++++ b/fs/btrfs/extent_map.c
+@@ -380,7 +380,7 @@ static void extent_map_device_clear_bits(struct extent_map *em, unsigned bits)
  
- 	while (1) {
- 		err = __set_extent_bit(tree, start, end, EXTENT_LOCKED,
--				       EXTENT_LOCKED, &failed_start,
--				       cached_state, GFP_NOFS, NULL);
-+				       cached_state, GFP_NOFS, &extra_opts);
- 		if (err == -EEXIST) {
--			wait_extent_bit(tree, failed_start, end, EXTENT_LOCKED);
--			start = failed_start;
-+			wait_extent_bit(tree, extra_opts.excl_failed_start, end,
-+					EXTENT_LOCKED);
-+			start = extra_opts.excl_failed_start;
- 		} else
- 			break;
- 		WARN_ON(start > end);
-@@ -1480,14 +1490,17 @@ int lock_extent_bits(struct extent_io_tree *tree, u64 start, u64 end,
- 
- int try_lock_extent(struct extent_io_tree *tree, u64 start, u64 end)
- {
-+	struct extent_io_extra_options extra_opts = {
-+		.excl_bits = EXTENT_LOCKED,
-+	};
- 	int err;
--	u64 failed_start;
- 
--	err = __set_extent_bit(tree, start, end, EXTENT_LOCKED, EXTENT_LOCKED,
--			       &failed_start, NULL, GFP_NOFS, NULL);
-+	err = __set_extent_bit(tree, start, end, EXTENT_LOCKED,
-+			       NULL, GFP_NOFS, &extra_opts);
- 	if (err == -EEXIST) {
--		if (failed_start > start)
--			clear_extent_bit(tree, start, failed_start - 1,
-+		if (extra_opts.excl_failed_start > start)
-+			clear_extent_bit(tree, start,
-+					 extra_opts.excl_failed_start - 1,
- 					 EXTENT_LOCKED, 1, 0, NULL);
- 		return 0;
+ 		__clear_extent_bit(&device->alloc_state, stripe->physical,
+ 				   stripe->physical + stripe_size - 1, bits,
+-				   0, 0, NULL, GFP_NOWAIT, NULL);
++				   NULL, GFP_NOWAIT, NULL);
  	}
+ }
+ 
 -- 
 2.28.0
 
