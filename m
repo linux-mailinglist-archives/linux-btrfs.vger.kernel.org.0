@@ -2,105 +2,195 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DF282952AE
-	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Oct 2020 21:03:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 350FC2952FD
+	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Oct 2020 21:32:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502441AbgJUTDx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 21 Oct 2020 15:03:53 -0400
-Received: from mx2.suse.de ([195.135.220.15]:60140 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2502390AbgJUTDw (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 21 Oct 2020 15:03:52 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id E9E70AE95;
-        Wed, 21 Oct 2020 19:03:50 +0000 (UTC)
-Date:   Wed, 21 Oct 2020 14:03:48 -0500
-From:   Goldwyn Rodrigues <rgoldwyn@suse.de>
-To:     Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Cc:     David Sterba <dsterba@suse.cz>, linux-btrfs@vger.kernel.org,
-        Matthew Wilcox <willy@infradead.org>
-Subject: Re: [PATCH] btrfs: skip call to generic_file_buffered_read if we
- don't need to
-Message-ID: <20201021190348.vqc6jtmppel63ltc@fiona>
-References: <e9b1d098cd97cf275009a80d0ce087ba39267dcf.1603300854.git.johannes.thumshirn@wdc.com>
+        id S2504809AbgJUTcs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 21 Oct 2020 15:32:48 -0400
+Received: from james.kirk.hungrycats.org ([174.142.39.145]:35548 "EHLO
+        james.kirk.hungrycats.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2504781AbgJUTcs (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 21 Oct 2020 15:32:48 -0400
+Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
+        id BCC32867A1C; Wed, 21 Oct 2020 15:32:46 -0400 (EDT)
+Date:   Wed, 21 Oct 2020 15:32:46 -0400
+From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+To:     Hendrik Friedel <hendrik@friedels.name>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Subject: Re: parent transid verify failed: Fixed but re-appearing
+Message-ID: <20201021193246.GE21815@hungrycats.org>
+References: <em2ffec6ef-fe64-4239-b238-ae962d1826f6@ryzen>
+ <20201021134635.GT5890@hungrycats.org>
+ <em85884e42-e959-40f1-9eae-cd818450c26d@ryzen>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <e9b1d098cd97cf275009a80d0ce087ba39267dcf.1603300854.git.johannes.thumshirn@wdc.com>
+In-Reply-To: <em85884e42-e959-40f1-9eae-cd818450c26d@ryzen>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On  2:22 22/10, Johannes Thumshirn wrote:
-> Since we switched to the iomap infrastructure in b5ff9f1a96e8f ("btrfs:
-> switch to iomap for direct IO") we're calling generic_file_buffered_read()
-> directly and not via generic_file_read_iter() anymore.
+On Wed, Oct 21, 2020 at 06:19:02PM +0000, Hendrik Friedel wrote:
+> Hello Zygo,
 > 
-> If the read could read everything there is no need to bother calling
-> generic_file_buffered_read(), like it is handled in
-> generic_file_read_iter().
+> thanks for your reply.
 > 
-> If we call generic_file_buffered_read() in this case we can hit a
-> situation where we do an invalid readahead and cause this UBSAN splat:
-> johannes@redsun60:linux(btrfs-misc-next)$ kasan_symbolize.py < ubsan.txt
-> rapido1:/home/johannes/src/xfstests-dev# cat results/generic/091.dmesg
-> run fstests generic/091 at 2020-10-21 10:52:32
-> ================================================================================
-> UBSAN: shift-out-of-bounds in ./include/linux/log2.h:57:13
-> shift exponent 64 is too large for 64-bit type 'long unsigned int'
-> CPU: 0 PID: 656 Comm: fsx Not tainted 5.9.0-rc7+ #821
-> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.13.0-0-gf21b5a4-rebuilt.opensuse.org 04/01/2014
-> Call Trace:
->  __dump_stack lib/dump_stack.c:77
->  dump_stack+0x57/0x70 lib/dump_stack.c:118
->  ubsan_epilogue+0x5/0x40 lib/ubsan.c:148
->  __ubsan_handle_shift_out_of_bounds.cold+0x61/0xe9 lib/ubsan.c:395
->  __roundup_pow_of_two ./include/linux/log2.h:57
->  get_init_ra_size mm/readahead.c:318
->  ondemand_readahead.cold+0x16/0x2c mm/readahead.c:530
->  generic_file_buffered_read+0x3ac/0x840 mm/filemap.c:2199
->  call_read_iter ./include/linux/fs.h:1876
->  new_sync_read+0x102/0x180 fs/read_write.c:415
->  vfs_read+0x11c/0x1a0 fs/read_write.c:481
->  ksys_read+0x4f/0xc0 fs/read_write.c:615
->  do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
->  entry_SYSCALL_64_after_hwframe+0x44/0xa9 arch/x86/entry/entry_64.S:118
-> RIP: 0033:0x7fe87fee992e
-> Code: 0f 1f 40 00 48 8b 15 a1 96 00 00 f7 d8 64 89 02 48 c7 c0 ff ff ff ff eb ba 0f 1f 00 64 8b 04 25 18 00 00 00 85 c0 75 14 0f 05 <48> 3d 00 f0 ff ff 77 5a c3 66 0f 1f 84 00 00 00 00 00 48 83 ec 28
-> RSP: 002b:00007ffe01605278 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
-> RAX: ffffffffffffffda RBX: 000000000004f000 RCX: 00007fe87fee992e
-> RDX: 0000000000004000 RSI: 0000000001677000 RDI: 0000000000000003
-> RBP: 000000000004f000 R08: 0000000000004000 R09: 000000000004f000
-> R10: 0000000000053000 R11: 0000000000000246 R12: 0000000000004000
-> R13: 0000000000000000 R14: 000000000007a120 R15: 0000000000000000
-> ================================================================================
-> BTRFS info (device nullb0): has skinny extents
-> BTRFS info (device nullb0): ZONED mode enabled, zone size 268435456 B
-> BTRFS info (device nullb0): enabling ssd optimizations
+> > Were there any other symptoms?  IO errors?  Inaccessible files?  Filesystem
+> > remounted read-only?
+> > 
+> No, not at all.
 > 
-> Fixes: b5ff9f1a96e8f ("btrfs: switch to iomap for direct IO")
-> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-> ---
->  fs/btrfs/file.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-> index 6f5ecba74f54..8e6def2c463d 100644
-> --- a/fs/btrfs/file.c
-> +++ b/fs/btrfs/file.c
-> @@ -3612,7 +3612,7 @@ static ssize_t btrfs_file_read_iter(struct kiocb *iocb, struct iov_iter *to)
->  		inode_lock_shared(inode);
->  		ret = btrfs_direct_IO(iocb, to);
->  		inode_unlock_shared(inode);
-> -		if (ret < 0)
-> +		if (ret < 0 || (ret > 0 && iov_iter_count(to) == 0))
->  			return ret;
->  	}
->  
+> > 
+> > >  I cured that by unmounting and
+> > >    mount -t btrfs -o nospace_cache,clear_cache /dev/sda1 /mnt/test
+> > 
+> > That command normally won't cure a parent transid verify failure if it
+> > has been persisted on disk.  The only command that can fix ptvf is 'btrfs
+> > check --repair --init-extent-tree', i.e. a full rebuild of btrfs metadata.
+> 
+> Hm, it would be good to document that somewhere.
+> I found
+> https://askubuntu.com/questions/157917/how-do-i-recover-a-btrfs-partition-that-will-not-mount
+> (there I found that recommendation)
+> https://stackoverflow.com/questions/46472439/fix-btrfs-btrfs-parent-transid-verify-failed-on/46472522#46472522
+> Here the selected answer says:
+> 
+> "Surfing the web I found a lot of answers recommending to clear btrfs'
+> internal log by using btrfs-zero-log. I thought btrfsck could help but
+> eventually I discovered the official recommendation which is to first just
+> start a btrfs scrub before taking other actions!"
 
-You can also include the check (iocb->ki_pos >=
-i_size_read(file_inode(iocb->ki_filp))
+To be clear, scrub is the first thing to try, it will try to walk all
+the trees on the filesystem and read all the blocks.
 
--- 
-Goldwyn
+'--init-extent-tree' is the very last resort, after "copy all data
+to another filesystem" and before "give up, mkfs and start over."
+--init-extent-tree either works perfectly, or damages the filesystem
+beyond all possible recovery (and can silently corrupt data in either
+case).  There's a non-zero chance of the second thing, so you don't want
+to do --init-extent-tree unless you're ready to mkfs and start over when
+it fails.
+
+zero-log is useful for correcting log tree replay errors (and nothing
+else).  It deletes the last 30 seconds of fsync() data updates.
+zero-log clears the log tree, but the log tree is only for data updates
+via fsync(), it is not used for metadata and will have no effect on
+parent transid verification failures.
+
+> > >  After that, I was able to run that dduper command without a failure.
+> > >  But some days later, the same command resulted in:
+> > >    parent transid verify failed on 16465691033600 wanted 352083 found 352085
+> > > 
+> > >  again.
+> > > 
+> > >  A scrub showed no error
+> > >   btrfs scrub status /dev/sda1
+> > >  scrub status for c4a6a2c9-5cf0-49b8-812a-0784953f9ba3
+> > >          scrub started at Mon Oct 19 21:07:13 2020 and finished after
+> > >  15:11:10
+> > >          total bytes scrubbed: 6.56TiB with 0 errors
+> > 
+> > Scrub iterates over all metadata pages and should hit ptvf if it's
+> > on disk.
+> 
+> But apparently it did not?!
+
+...which indicates the problem is probably in memory, not on disk.
+
+> > >  Filesystem info:
+> > >   btrfs fi show /dev/sda1
+> > >  Label: 'DataPool1'  uuid: c4a6a2c9-5cf0-49b8-812a-0784953f9ba3
+> > >          Total devices 2 FS bytes used 6.56TiB
+> > >          devid    1 size 7.28TiB used 6.75TiB path /dev/sda1
+> > >          devid    2 size 7.28TiB used 6.75TiB path /dev/sdj1
+> > 
+> > If you have raid1 metadata (see 'btrfs fi usage') then it's possible
+> 
+>  btrfs fi usage /srv/dev-disk-by-label-DataPool1
+> Overall:
+>     Device size:                  14.55TiB
+>     Device allocated:             13.51TiB
+>     Device unallocated:            1.04TiB
+>     Device missing:                  0.00B
+>     Used:                         13.12TiB
+>     Free (estimated):            731.48GiB      (min: 731.48GiB)
+>     Data ratio:                       2.00
+>     Metadata ratio:                   2.00
+>     Global reserve:              512.00MiB      (used: 0.00B)
+> 
+> Data,RAID1: Size:6.74TiB, Used:6.55TiB
+>    /dev/sda1       6.74TiB
+>    /dev/sdj1       6.74TiB
+> 
+> Metadata,RAID1: Size:15.00GiB, Used:9.91GiB
+>    /dev/sda1      15.00GiB
+>    /dev/sdj1      15.00GiB
+> 
+> System,RAID1: Size:32.00MiB, Used:992.00KiB
+>    /dev/sda1      32.00MiB
+>    /dev/sdj1      32.00MiB
+> 
+> Unallocated:
+>    /dev/sda1     535.00GiB
+>    /dev/sdj1     535.00GiB
+> 
+> So it looks like it is raid1 metadata
+
+That would mean either that recovery already happened (if the corruption
+was on disk and has been removed), or the problem never reached a disk
+(if it is only in memory).
+
+> > only one of your disks is silently dropping writes.  In that case
+> > btrfs will recover from ptvf by replacing the missing block from the
+> > other drive.  But there are no scrub errors or kernel messages related
+> > to this, so there aren't any symptoms of that happening, so it seems
+> > these ptvf are not coming from the disk.
+> And can this be confirmed somehow? Would be good to replace that disk
+> then...
+
+These normally appear in 'btrfs dev stats', although there are various
+coverage gaps with raid5/6 and (until recently) compressed data blocks.
+
+'btrfs scrub status -d' will give a per-drive error breakdown.
+
+> > >  The system has a USV. Consequently, it should not experience any power
+> > >  interruptions during writes.
+> > > 
+> > >  I did not find any indications of it in /var/log/*
+> > >  (grep  -i btrfs /var/log/* | grep -v snapper |grep sda)
+> > > 
+> > >  What could be the reason for this re-appearing issue?
+> > 
+> > What kernel are you running?
+> 5.6.12 since May 11th. Before that, (since Jan 5th) I ran 5.4.8.
+
+5.4.8 could corrupt the filesystem, but not in a recoverable way.
+So that's probably not the cause here.
+
+5.6.12 should have all the relevant tree mod log fixes, but might be
+missing some other UAF fixes from 5.7 (there were almost 20 of these
+fixes in 2019 and 2020, it's not always possible to pin them all down
+to a specific behavior).
+
+I haven't seen spurious ptvf errors on my test machines since the 5.4.30s,
+but 5.4 has a lot of fixes that between-LTS kernels like 5.6 do not
+always get.
+
+> >  Until early 2020 there was a UAF bug in tree
+> > mod log code that could occasionally spit out harmless ptvf messages and
+> > a few other verification messages like "bad tree block start" because
+> > it was essentially verifying garbage from kernel RAM.
+> Of course I did use older kernels in the past. But as I understand this bug,
+> it would only give spurious error messages but not have caused any errors on
+> the disk that would be now hit?
+
+Correct, the spurious failure occurs only in memory (that's why it's
+spurious--the data on disk is correct).
+
+> Regards,
+> Hendrik
+> 
+> 
