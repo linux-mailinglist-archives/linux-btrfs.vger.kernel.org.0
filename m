@@ -2,65 +2,65 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F8C6294EFA
-	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Oct 2020 16:46:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC6DC294F12
+	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Oct 2020 16:51:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2443290AbgJUOqy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 21 Oct 2020 10:46:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39626 "EHLO
+        id S2443493AbgJUOv3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 21 Oct 2020 10:51:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2442691AbgJUOqy (ORCPT
+        with ESMTP id S2443440AbgJUOv3 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 21 Oct 2020 10:46:54 -0400
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5057CC0613CE
-        for <linux-btrfs@vger.kernel.org>; Wed, 21 Oct 2020 07:46:54 -0700 (PDT)
-Received: by mail-qt1-x842.google.com with SMTP id t9so2264728qtp.9
-        for <linux-btrfs@vger.kernel.org>; Wed, 21 Oct 2020 07:46:54 -0700 (PDT)
+        Wed, 21 Oct 2020 10:51:29 -0400
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20D6FC0613CE
+        for <linux-btrfs@vger.kernel.org>; Wed, 21 Oct 2020 07:51:29 -0700 (PDT)
+Received: by mail-qt1-x841.google.com with SMTP id j62so2344872qtd.0
+        for <linux-btrfs@vger.kernel.org>; Wed, 21 Oct 2020 07:51:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=rKXAuMxhLaNOdNwpm6cTWCNVi9r/VLeCCTM098GVGaQ=;
-        b=xPcWI/l7OtBLXB29o1oelKm6f8EAzansaYq/aVD27DhOL5gWQ8NYuE5MrTdyoRr9Ze
-         CqUs2AehbMpgnjv5U5AbHCN6XFiG7P/KLSVQIr0nKHjBip/06LG+BPmF/j75KdWN9t/4
-         ezouCyVpZzGiEuch8OGc6auCpiYW3GjlGY53MI1SpDb4dcmlf/ZZIJZeYtOd780dM0pK
-         maVFrxGED6BrzE5+cNmtwnBOfK67Ea/WqVUET2Zs99DBEgt6PNlwp6dOQuGO2RbwfkpU
-         9jYqN1L04yxxZGrEDooJ06QkmBiXJITlqbToJ6z+6mn93wvfFWz+hS10j4U5acnBcpuK
-         1wmg==
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=gBUhu4mlQ4yINNkcwiaoSBwv+Db0/osGi5DP39WcSV4=;
+        b=ykHLM+q1heuXsi79Mt4uh585YBUxNCsZQgnifbv3XFtHRVXSzO739xwPGLTW3HL1lv
+         xriDTL2xTOjCoHulO93GglF4GarQL8t4aedNuYgVcM80FXE5QCW6RnKmbPbFmLEE5i55
+         GYz95NLAbda2kSwOtNoKQx/WfYD+gsWM3IJTOA4rBKKBST2bErnIsOsYOpbO8UX+tfkC
+         iXaAR8f7pMw+d+k7fYRHzoat5e4D8l4X+4tN2KT2lg9BWYnzpdmXvzng4Wfz2FSrVzfq
+         vbl5YP3iP+YTnoKZt85otiM18/xD95zf5+CGpHVtkuYWMJVohkrTrAWxQACjiOmNfpIZ
+         UCpw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+        h=x-gm-message-state:subject:to:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=rKXAuMxhLaNOdNwpm6cTWCNVi9r/VLeCCTM098GVGaQ=;
-        b=FkmTT0fWFHsZvXzil+mv2C7mQxxjT026wyGRagYcTolasYksfSJAFgRzGgS/pDsMFD
-         ubQGDezH+Prd4HxKdWCiI505/55hmLRAeFCYmszifpgNmq5X547xDPX1YBKsSro493ko
-         ysCnJLWcL/rneP34DUzo6gJCaND/ZxVEp2m2CEnBnp1HXGCbbl9X6xiihcKI0JeVDSRe
-         G2PNnb9/23Flf2mCmohdZJGApaC8y4m4Ne9OIpDXpS4H/IyaOjWvh0hX34ZU4ktmTUm+
-         8hXuVEzJEgRvVwnVf7yAW6dCA7oS/+wgonxFypzEuclSC2Q2F3RlPxdKYOG4/38TA7Wf
-         cTsA==
-X-Gm-Message-State: AOAM532+rzsk0Or697CVxbEoAI1evdE1VMHDzS3Wc9ZSZzGWtQy/r705
-        sFxUcY7ZSwF9EXmZlco8HZ+Iin1GVB3god7K
-X-Google-Smtp-Source: ABdhPJzr2mC8GL9zZajzmNshaP6UR2yT1hSu9iWGxfmDt+DNqePtKp//e4+vYSr4Rov7NEeqb3FqEw==
-X-Received: by 2002:ac8:4407:: with SMTP id j7mr3354239qtn.287.1603291613368;
-        Wed, 21 Oct 2020 07:46:53 -0700 (PDT)
+        bh=gBUhu4mlQ4yINNkcwiaoSBwv+Db0/osGi5DP39WcSV4=;
+        b=WB4xHy/NpSUGL9uXHRwzzC8Xmv6WHHWr0X8bqoaKZuFGy1MrPicti4eKez9/zDthVH
+         3doRkC+8JX0c1GPNtUbF4/cfWQkw7v/vbw3CKFTaVPQK5SXVR02H48XSGMKlKpmmFiwW
+         zQb/DV0wIv5EXlUWsqwIqxRo45rQEyvQ791dpv7V6tyoPY6BIHoFZUNwrIsJoVyMB2yS
+         LGq4fOiIbhJ/uxy5gjOfi0pHRJBa9whxErHwmUs/2rxxm37kfisQQ16ywFHjeT54S/ze
+         1ZCVjnyrSN91UQlHu2TQTQKbKL3xW3e+T8sTP/wWbYCiWNlCLOfMPldlK1ySo5Erm9OD
+         ij7A==
+X-Gm-Message-State: AOAM532lc0Or2LG5i2v/jtUpbqgoIBKcUMNZMzRQc36WERG90ET3kLRW
+        4PVXyPw+hogofdBEeVT1N2Qq82g1ozoUO96o
+X-Google-Smtp-Source: ABdhPJzQlxvUSjvqTO6T/9q35J1DbEE4n8N55UBqMseEMJnIgAn8e0hYn9nsHn98drpbQ9ljt7nh9g==
+X-Received: by 2002:ac8:1c1b:: with SMTP id a27mr3526589qtk.157.1603291887747;
+        Wed, 21 Oct 2020 07:51:27 -0700 (PDT)
 Received: from [192.168.1.45] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id w11sm1349583qtk.37.2020.10.21.07.46.52
+        by smtp.gmail.com with ESMTPSA id u2sm1241220qtw.40.2020.10.21.07.51.26
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 21 Oct 2020 07:46:52 -0700 (PDT)
-Subject: Re: [PATCH v8 2/3] btrfs: create read policy framework
-To:     Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org
-Cc:     dsterba@suse.com
-References: <cover.1602756068.git.anand.jain@oracle.com>
- <faf2c011057fab289535c3a84256272a23687097.1602756068.git.anand.jain@oracle.com>
+        Wed, 21 Oct 2020 07:51:27 -0700 (PDT)
+Subject: Re: [PATCH 1/4] btrfs: Use helpers to convert from seconds to jiffies
+ in transaction_kthread
+To:     Nikolay Borisov <nborisov@suse.com>, linux-btrfs@vger.kernel.org
+References: <20201008122430.93433-1-nborisov@suse.com>
+ <20201008122430.93433-2-nborisov@suse.com>
 From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <abc5a765-4327-c3e8-bc75-1868d8dd5345@toxicpanda.com>
-Date:   Wed, 21 Oct 2020 10:46:51 -0400
+Message-ID: <50566dfc-0bcd-9a71-8e53-4aac42561489@toxicpanda.com>
+Date:   Wed, 21 Oct 2020 10:51:26 -0400
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
  Gecko/20100101 Thunderbird/78.3.2
 MIME-Version: 1.0
-In-Reply-To: <faf2c011057fab289535c3a84256272a23687097.1602756068.git.anand.jain@oracle.com>
+In-Reply-To: <20201008122430.93433-2-nborisov@suse.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -68,23 +68,29 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 10/20/20 10:02 AM, Anand Jain wrote:
-> As of now, we use the %pid method to read striped mirrored data, which means
-> process id determines the stripe id to read. This type of routing
-> typically helps in a system with many small independent processes tying
-> to read random data. On the other hand, the %pid based read IO policy is
-> inefficient because if there is a single process trying to read a large
-> file, the overall disk bandwidth remains under-utilized.
+On 10/8/20 8:24 AM, Nikolay Borisov wrote:
+> The kernel provides easy to understand helpers to convert from human
+> understandable units to the kernel-friendly 'jiffies'. So let's use
+> those to make the code easier to understand. No functional changes.
 > 
-> So this patch introduces a read policy framework so that we could add more
-> read policies, such as IO routing based on the device's wait-queue or manual
-> when we have a read-preferred device or a policy based on the target
-> storage caching.
+> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
+> ---
+>   fs/btrfs/disk-io.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> Signed-off-by: Anand Jain <anand.jain@oracle.com>
+> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+> index 764001609a15..77b52b724733 100644
+> --- a/fs/btrfs/disk-io.c
+> +++ b/fs/btrfs/disk-io.c
+> @@ -1721,7 +1721,7 @@ static int transaction_kthread(void *arg)
+>   
+>   	do {
+>   		cannot_commit = false;
+> -		delay = HZ * fs_info->commit_interval;
+> +		delay = msecs_to_jiffies(fs_info->commit_interval * 1000);
 
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
-
-Thanks,
+Since we're now doing everything in msecs, why don't we just make sure 
+->commit_interval is set to msecs, that way we don't have to carry around the * 
+1000?  If we still need the multiplication we should be using MSEC_PER_SEC.  Thanks,
 
 Josef
