@@ -2,95 +2,125 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC6DC294F12
-	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Oct 2020 16:51:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15599294F73
+	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Oct 2020 17:03:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2443493AbgJUOv3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 21 Oct 2020 10:51:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40340 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2443440AbgJUOv3 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 21 Oct 2020 10:51:29 -0400
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20D6FC0613CE
-        for <linux-btrfs@vger.kernel.org>; Wed, 21 Oct 2020 07:51:29 -0700 (PDT)
-Received: by mail-qt1-x841.google.com with SMTP id j62so2344872qtd.0
-        for <linux-btrfs@vger.kernel.org>; Wed, 21 Oct 2020 07:51:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=gBUhu4mlQ4yINNkcwiaoSBwv+Db0/osGi5DP39WcSV4=;
-        b=ykHLM+q1heuXsi79Mt4uh585YBUxNCsZQgnifbv3XFtHRVXSzO739xwPGLTW3HL1lv
-         xriDTL2xTOjCoHulO93GglF4GarQL8t4aedNuYgVcM80FXE5QCW6RnKmbPbFmLEE5i55
-         GYz95NLAbda2kSwOtNoKQx/WfYD+gsWM3IJTOA4rBKKBST2bErnIsOsYOpbO8UX+tfkC
-         iXaAR8f7pMw+d+k7fYRHzoat5e4D8l4X+4tN2KT2lg9BWYnzpdmXvzng4Wfz2FSrVzfq
-         vbl5YP3iP+YTnoKZt85otiM18/xD95zf5+CGpHVtkuYWMJVohkrTrAWxQACjiOmNfpIZ
-         UCpw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=gBUhu4mlQ4yINNkcwiaoSBwv+Db0/osGi5DP39WcSV4=;
-        b=WB4xHy/NpSUGL9uXHRwzzC8Xmv6WHHWr0X8bqoaKZuFGy1MrPicti4eKez9/zDthVH
-         3doRkC+8JX0c1GPNtUbF4/cfWQkw7v/vbw3CKFTaVPQK5SXVR02H48XSGMKlKpmmFiwW
-         zQb/DV0wIv5EXlUWsqwIqxRo45rQEyvQ791dpv7V6tyoPY6BIHoFZUNwrIsJoVyMB2yS
-         LGq4fOiIbhJ/uxy5gjOfi0pHRJBa9whxErHwmUs/2rxxm37kfisQQ16ywFHjeT54S/ze
-         1ZCVjnyrSN91UQlHu2TQTQKbKL3xW3e+T8sTP/wWbYCiWNlCLOfMPldlK1ySo5Erm9OD
-         ij7A==
-X-Gm-Message-State: AOAM532lc0Or2LG5i2v/jtUpbqgoIBKcUMNZMzRQc36WERG90ET3kLRW
-        4PVXyPw+hogofdBEeVT1N2Qq82g1ozoUO96o
-X-Google-Smtp-Source: ABdhPJzQlxvUSjvqTO6T/9q35J1DbEE4n8N55UBqMseEMJnIgAn8e0hYn9nsHn98drpbQ9ljt7nh9g==
-X-Received: by 2002:ac8:1c1b:: with SMTP id a27mr3526589qtk.157.1603291887747;
-        Wed, 21 Oct 2020 07:51:27 -0700 (PDT)
-Received: from [192.168.1.45] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id u2sm1241220qtw.40.2020.10.21.07.51.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 21 Oct 2020 07:51:27 -0700 (PDT)
+        id S2443923AbgJUPDF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 21 Oct 2020 11:03:05 -0400
+Received: from mx2.suse.de ([195.135.220.15]:57350 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2443912AbgJUPDD (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 21 Oct 2020 11:03:03 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1603292581;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=AX0gs7YrOFP01tvug84oyjagFYCFu+HklR47kXstkik=;
+        b=qSdvHYvKxjNBKFp1gpxQht+8Ccz66x9pQdPjhoHyvJOYh7q7gY/0Vz5v+wJpVE4uNoZSE2
+        x1T0rkMae84nAjf+QuYUuuYkGJhDIS4w+sxJ9K9NXAGB7drbj9hJcEVRZLaGAGsWWGZ3eO
+        FH2I8iIzqh3VMf0YApkEooqb63S+cGg=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id C085DAD03;
+        Wed, 21 Oct 2020 15:03:01 +0000 (UTC)
 Subject: Re: [PATCH 1/4] btrfs: Use helpers to convert from seconds to jiffies
  in transaction_kthread
-To:     Nikolay Borisov <nborisov@suse.com>, linux-btrfs@vger.kernel.org
+To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org
 References: <20201008122430.93433-1-nborisov@suse.com>
  <20201008122430.93433-2-nborisov@suse.com>
-From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <50566dfc-0bcd-9a71-8e53-4aac42561489@toxicpanda.com>
-Date:   Wed, 21 Oct 2020 10:51:26 -0400
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.3.2
+ <50566dfc-0bcd-9a71-8e53-4aac42561489@toxicpanda.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <4d6a4f4e-3f70-a984-f4b3-dfcd5731620c@suse.com>
+Date:   Wed, 21 Oct 2020 18:03:00 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20201008122430.93433-2-nborisov@suse.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <50566dfc-0bcd-9a71-8e53-4aac42561489@toxicpanda.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 10/8/20 8:24 AM, Nikolay Borisov wrote:
-> The kernel provides easy to understand helpers to convert from human
-> understandable units to the kernel-friendly 'jiffies'. So let's use
-> those to make the code easier to understand. No functional changes.
-> 
-> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
-> ---
->   fs/btrfs/disk-io.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-> index 764001609a15..77b52b724733 100644
-> --- a/fs/btrfs/disk-io.c
-> +++ b/fs/btrfs/disk-io.c
-> @@ -1721,7 +1721,7 @@ static int transaction_kthread(void *arg)
->   
->   	do {
->   		cannot_commit = false;
-> -		delay = HZ * fs_info->commit_interval;
-> +		delay = msecs_to_jiffies(fs_info->commit_interval * 1000);
 
-Since we're now doing everything in msecs, why don't we just make sure 
-->commit_interval is set to msecs, that way we don't have to carry around the * 
-1000?  If we still need the multiplication we should be using MSEC_PER_SEC.  Thanks,
 
-Josef
+On 21.10.20 г. 17:51 ч., Josef Bacik wrote:
+> On 10/8/20 8:24 AM, Nikolay Borisov wrote:
+>> The kernel provides easy to understand helpers to convert from human
+>> understandable units to the kernel-friendly 'jiffies'. So let's use
+>> those to make the code easier to understand. No functional changes.
+>>
+>> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
+>> ---
+>>   fs/btrfs/disk-io.c | 4 ++--
+>>   1 file changed, 2 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+>> index 764001609a15..77b52b724733 100644
+>> --- a/fs/btrfs/disk-io.c
+>> +++ b/fs/btrfs/disk-io.c
+>> @@ -1721,7 +1721,7 @@ static int transaction_kthread(void *arg)
+>>         do {
+>>           cannot_commit = false;
+>> -        delay = HZ * fs_info->commit_interval;
+>> +        delay = msecs_to_jiffies(fs_info->commit_interval * 1000);
+> 
+> Since we're now doing everything in msecs, why don't we just make sure
+> ->commit_interval is set to msecs, that way we don't have to carry
+> around the * 1000?  If we still need the multiplication we should be
+> using MSEC_PER_SEC.  Thanks,
+
+Yes, as a matter of fact I intend on making commit_interval into
+jiffies, to completely eliminate the msecs_to_jiffies helpers here.
+
+But that will be a follow on work once David merges the v2 of "Be
+smarter" patch.
+
+> 
+> Josef
+> 
