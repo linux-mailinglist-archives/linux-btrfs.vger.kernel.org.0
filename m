@@ -2,34 +2,34 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A510129484E
-	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Oct 2020 08:27:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D85829484F
+	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Oct 2020 08:28:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436497AbgJUG1w (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 21 Oct 2020 02:27:52 -0400
-Received: from mx2.suse.de ([195.135.220.15]:44422 "EHLO mx2.suse.de"
+        id S2440840AbgJUG1z (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 21 Oct 2020 02:27:55 -0400
+Received: from mx2.suse.de ([195.135.220.15]:44512 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2436568AbgJUG1w (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 21 Oct 2020 02:27:52 -0400
+        id S2436568AbgJUG1z (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 21 Oct 2020 02:27:55 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1603261670;
+        t=1603261673;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=RLtAXF9WHSiEw0hv457BhohOUxodBdrQq/83YGtEv2w=;
-        b=ioV7EDrUBGlMcHP1vpzSFgIWxlnCSsj8i9EdN695JK1zW8p5PlkQPfE3mJILqz0Wy+BnRP
-        5lyJN5Ot36DAih2i7JrJ01MzTR92WbVRUiwBuFI/uBF4wHchxAz0/G009886/bNKYygLew
-        gPkssw3H6G4+g0O6UGOD398+qFYIDuY=
+        bh=wvPHj1HR6QDL6G35iS2CD16teJ9ajGyv+jbBB1iGOKA=;
+        b=IK3OzQMELEzCkRrK1iTdnMV+wyDkODwedjVYbULMr/ogCcQ9FwwsO7YNp2ry3B9g2gkly+
+        4YS/vAXuxcuWSyh6WSRqptW9Nfe/OduRjrpE/UX7UjL3HbxMfGxdFLmSfcMc6p3iNcfjEb
+        lpceQKCU/1pABnx7w0OJ744Fvop0duY=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 576F2AC1D
-        for <linux-btrfs@vger.kernel.org>; Wed, 21 Oct 2020 06:27:50 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 519A9AC12
+        for <linux-btrfs@vger.kernel.org>; Wed, 21 Oct 2020 06:27:53 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v4 50/68] btrfs: extent_io: make lock_extent_buffer_for_io() subpage compatible
-Date:   Wed, 21 Oct 2020 14:25:36 +0800
-Message-Id: <20201021062554.68132-51-wqu@suse.com>
+Subject: [PATCH v4 51/68] btrfs: extent_io: introduce submit_btree_subpage() to submit a page for subpage metadata write
+Date:   Wed, 21 Oct 2020 14:25:37 +0800
+Message-Id: <20201021062554.68132-52-wqu@suse.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201021062554.68132-1-wqu@suse.com>
 References: <20201021062554.68132-1-wqu@suse.com>
@@ -39,121 +39,106 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-To support subpage metadata locking, the following aspects are modified:
-- Locking sequence
-  For regular sectorsize, we lock extent buffer first, then lock each
-  page.
-  For subpage sectorsize, we only lock extent buffer, but not to lock
-  the page as one page can contain multiple extent buffers.
+The new function, submit_btree_subpage(), will submit all the dirty extent
+buffers in the page.
 
-- Extent io tree locking
-  For subpage metadata, we also lock the range in btree io tree.
-  This allow the endio function to get unmerged extent_state, so that in
-  endio function we don't need to allocate memory in atomic context.
-  This also follows the behavior in metadata read path.
+The major difference between submit_btree_page() is:
+- Page locking sequence
+  Now we lock page first then lock extent buffers, thus we don't need to
+  unlock the page just after writting one extent buffer.
+  The page get unlocked after we have submitted all extent buffers.
+
+- Bio submission
+  Since one extent buffer is ensured to be contained into one page, we
+  call submit_extent_page() directly.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/extent_io.c | 44 ++++++++++++++++++++++++++++++++++++++------
- 1 file changed, 38 insertions(+), 6 deletions(-)
+ fs/btrfs/extent_io.c | 64 ++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 64 insertions(+)
 
 diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index a1e039848539..d07972f94c40 100644
+index d07972f94c40..3a2bb2656067 100644
 --- a/fs/btrfs/extent_io.c
 +++ b/fs/btrfs/extent_io.c
-@@ -3943,6 +3943,9 @@ static void end_extent_buffer_writeback(struct extent_buffer *eb)
-  * Lock extent buffer status and pages for write back.
-  *
-  * May try to flush write bio if we can't get the lock.
-+ * For subpage extent buffer, caller is responsible to lock the page, we won't
-+ * flush write bio, which can cause extent buffers in the same page submitted
-+ * to different bios.
-  *
-  * Return  0 if the extent buffer doesn't need to be submitted.
-  * (E.g. the extent buffer is not dirty)
-@@ -3953,26 +3956,41 @@ static noinline_for_stack int lock_extent_buffer_for_io(struct extent_buffer *eb
- 			  struct extent_page_data *epd)
- {
- 	struct btrfs_fs_info *fs_info = eb->fs_info;
-+	struct extent_io_tree *io_tree = info_to_btree_io_tree(fs_info);
- 	int i, num_pages, failed_page_nr;
-+	bool extent_locked = false;
- 	int flush = 0;
- 	int ret = 0;
- 
-+	if (btrfs_is_subpage(fs_info)) {
-+		/*
-+		 * Also lock the range so that endio can always get unmerged
-+		 * extent_state.
-+		 */
-+		ret = lock_extent(io_tree, eb->start, eb->start + eb->len - 1);
-+		if (ret < 0)
-+			goto out;
-+		extent_locked = true;
-+	}
-+
- 	if (!btrfs_try_tree_write_lock(eb)) {
- 		ret = flush_write_bio(epd);
- 		if (ret < 0)
--			return ret;
-+			goto out;
- 		flush = 1;
- 		btrfs_tree_lock(eb);
- 	}
- 
- 	if (test_bit(EXTENT_BUFFER_WRITEBACK, &eb->bflags)) {
- 		btrfs_tree_unlock(eb);
--		if (!epd->sync_io)
--			return 0;
-+		if (!epd->sync_io) {
-+			ret = 0;
-+			goto out;
-+		}
- 		if (!flush) {
- 			ret = flush_write_bio(epd);
- 			if (ret < 0)
--				return ret;
-+				goto out;
- 			flush = 1;
- 		}
- 		while (1) {
-@@ -3998,13 +4016,22 @@ static noinline_for_stack int lock_extent_buffer_for_io(struct extent_buffer *eb
- 					 -eb->len,
- 					 fs_info->dirty_metadata_batch);
- 		ret = 1;
-+		btrfs_tree_unlock(eb);
- 	} else {
- 		spin_unlock(&eb->refs_lock);
-+		btrfs_tree_unlock(eb);
-+		if (extent_locked)
-+			unlock_extent(io_tree, eb->start,
-+				      eb->start + eb->len - 1);
- 	}
- 
--	btrfs_tree_unlock(eb);
- 
--	if (!ret)
-+	/*
-+	 * Either the tree does not need to be submitted, or we're
-+	 * submitting subpage extent buffer.
-+	 * Either we we don't need to lock the page(s).
-+	 */
-+	if (!ret || btrfs_is_subpage(fs_info))
- 		return ret;
- 
- 	num_pages = num_extent_pages(eb);
-@@ -4046,6 +4073,11 @@ static noinline_for_stack int lock_extent_buffer_for_io(struct extent_buffer *eb
- 				 fs_info->dirty_metadata_batch);
- 	btrfs_clear_header_flag(eb, BTRFS_HEADER_FLAG_WRITTEN);
- 	btrfs_tree_unlock(eb);
-+	/* Subpage should never reach this routine */
-+	ASSERT(!btrfs_is_subpage(fs_info));
-+out:
-+	if (extent_locked)
-+		unlock_extent(io_tree, eb->start, eb->start + eb->len - 1);
+@@ -4324,6 +4324,67 @@ static noinline_for_stack int write_one_eb(struct extent_buffer *eb,
  	return ret;
  }
  
++/*
++ * A helper to submit one subpage btree page.
++ *
++ * The main difference between submit_btree_page() is:
++ * - Page locking sequence
++ *   Page are locked first, then lock extent buffers
++ *
++ * - Flush write bio
++ *   We only flush bio if we may be unable to fit current extent buffers into
++ *   current bio.
++ *
++ * Return >=0 for the number of submitted extent buffers.
++ * Return <0 for fatal error.
++ */
++static int submit_btree_subpage(struct page *page,
++				struct writeback_control *wbc,
++				struct extent_page_data *epd)
++{
++	struct btrfs_fs_info *fs_info = page_to_fs_info(page);
++	int submitted = 0;
++	u64 page_start = page_offset(page);
++	u64 page_end = page_start + PAGE_SIZE - 1;
++	u64 cur = page_start;
++	int ret;
++
++	/* Lock and write each extent buffers in the range */
++	while (cur <= page_end) {
++		struct extent_buffer *eb;
++
++		ret = btrfs_find_first_subpage_eb(fs_info, &eb, cur, page_end,
++						  EXTENT_DIRTY);
++		if (ret > 0)
++			break;
++		ret = atomic_inc_not_zero(&eb->refs);
++		if (!ret)
++			continue;
++
++		cur = eb->start + eb->len;
++		ret = lock_extent_buffer_for_io(eb, epd);
++		if (ret == 0) {
++			free_extent_buffer(eb);
++			continue;
++		}
++		if (ret < 0) {
++			free_extent_buffer(eb);
++			goto cleanup;
++		}
++		ret = write_one_eb(eb, wbc, epd);
++		free_extent_buffer(eb);
++		if (ret < 0)
++			goto cleanup;
++		submitted++;
++	}
++	return submitted;
++
++cleanup:
++	/* We hit error, end bio for the submitted extent buffers */
++	end_write_bio(epd, ret);
++	return ret;
++}
++
+ /*
+  * A helper to submit a btree page.
+  *
+@@ -4349,6 +4410,9 @@ static int submit_btree_page(struct page *page, struct writeback_control *wbc,
+ 	if (!PagePrivate(page))
+ 		return 0;
+ 
++	if (btrfs_is_subpage(page_to_fs_info(page)))
++		return submit_btree_subpage(page, wbc, epd);
++
+ 	spin_lock(&mapping->private_lock);
+ 	if (!PagePrivate(page)) {
+ 		spin_unlock(&mapping->private_lock);
 -- 
 2.28.0
 
