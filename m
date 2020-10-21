@@ -2,34 +2,34 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2D5D29483D
-	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Oct 2020 08:27:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E36CF29483E
+	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Oct 2020 08:27:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2440795AbgJUG1O (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 21 Oct 2020 02:27:14 -0400
-Received: from mx2.suse.de ([195.135.220.15]:43824 "EHLO mx2.suse.de"
+        id S2440799AbgJUG1P (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 21 Oct 2020 02:27:15 -0400
+Received: from mx2.suse.de ([195.135.220.15]:43844 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2440783AbgJUG1O (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 21 Oct 2020 02:27:14 -0400
+        id S2440793AbgJUG1P (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 21 Oct 2020 02:27:15 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1603261631;
+        t=1603261633;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Kpk4D88XxJBekl1asCbC2SL1fHRN1rz1ZqlTtNCu+Ko=;
-        b=LUSZIqGgO2iWc+Sw2pmg35tr96BD0+cIWX8W94Pu3HEZZYY4HIF2R1N/iPIJp4t1DqUCZX
-        UKHFmyfp1g4T0rEkMEuHWiZEWp6IgMRrl5czd0cyCjY0l1go+/s/Yqi6z/IzendsQUrHdu
-        gZ4PyfS/qQJoS8a9/NARr4bxme27f2I=
+        bh=FLGKZpaAbbPVK4VM1PuL7b7jn4nOQwMa4IKYX1IdJfI=;
+        b=NeZeXYV4bAPx4fUiWkPFfayxpg6kh6O6BDPpssGl98G3n0ruLMrN03Rijnx+ceQfOu/VWn
+        mdT5LjBL76y23HnE3wEGnTl5ig6zRYOCvDMKdzBGDTgwf1VFhMDNdRkRjvYaQB9ISRj83a
+        MqI2WEhEjCVIEMyytf5tftAkkoEwYlc=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 6A731AC12
-        for <linux-btrfs@vger.kernel.org>; Wed, 21 Oct 2020 06:27:11 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 42952AC1D
+        for <linux-btrfs@vger.kernel.org>; Wed, 21 Oct 2020 06:27:13 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v4 33/68] btrfs: extent-io: make type of extent_state::state to be at least 32 bits
-Date:   Wed, 21 Oct 2020 14:25:19 +0800
-Message-Id: <20201021062554.68132-34-wqu@suse.com>
+Subject: [PATCH v4 34/68] btrfs: extent_io: use extent_io_tree to handle subpage extent buffer allocation
+Date:   Wed, 21 Oct 2020 14:25:20 +0800
+Message-Id: <20201021062554.68132-35-wqu@suse.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201021062554.68132-1-wqu@suse.com>
 References: <20201021062554.68132-1-wqu@suse.com>
@@ -39,360 +39,207 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Currently we use 'unsigned' for extent_state::state, which is only ensured
-to be at least 16 bits.
+Currently btrfs uses page::private as an indicator of who owns the
+extent buffer, this method won't really work on subpage support, as one
+page can contain several tree blocks (up to 16 for 4K node size and 64K
+page size).
 
-But for incoming subpage support, we are going to introduce more bits to
-at least match the following page bits:
-- PageUptodate
-- PagePrivate2
+Instead, here we utilize btree extent io tree to handle them.
+For btree io tree, we introduce a new bit, EXTENT_HAS_TREE_BLOCK to
+indicate that we have an in-tree extent buffer for the range.
 
-Thus we will go beyond 16 bits.
+This will affects the following functions:
+- alloc_extent_buffer()
+  Now for subpage we never use page->private to grab an existing eb.
+  Instead, we rely on extra safenet in alloc_extent_buffer() to detect two
+  callers on the same eb.
 
-To support this, make extent_state::state at least 32bit and to be more
-explicit, we use "u32" to be clear about the max supported bits.
+- btrfs_release_extent_buffer_pages()
+  Now for subpage, we clear the EXTENT_HAS_TREE_BLOCK bit first, then
+  check if the remaining range in the page has EXTENT_HAS_TREE_BLOCK bit.
+  If not, then clear the private bit for the page.
 
-This doesn't increase the memory usage for x86_64, but may affect other
-architectures.
+- attach_extent_buffer_page()
+  Now we set EXTENT_HAS_TREE_BLOCK bit for the new extent buffer to be
+  attached, and set the page private, with NULL as page::private.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/extent-io-tree.h | 37 ++++++++++++++++-------------
- fs/btrfs/extent_io.c      | 50 +++++++++++++++++++--------------------
- fs/btrfs/extent_io.h      |  2 +-
- 3 files changed, 45 insertions(+), 44 deletions(-)
+ fs/btrfs/btrfs_inode.h    | 12 ++++++
+ fs/btrfs/extent-io-tree.h |  2 +-
+ fs/btrfs/extent_io.c      | 80 ++++++++++++++++++++++++++++++++++++++-
+ 3 files changed, 91 insertions(+), 3 deletions(-)
 
+diff --git a/fs/btrfs/btrfs_inode.h b/fs/btrfs/btrfs_inode.h
+index c47b6c6fea9f..cff818e0c406 100644
+--- a/fs/btrfs/btrfs_inode.h
++++ b/fs/btrfs/btrfs_inode.h
+@@ -217,6 +217,18 @@ static inline struct btrfs_inode *BTRFS_I(const struct inode *inode)
+ 	return container_of(inode, struct btrfs_inode, vfs_inode);
+ }
+ 
++static inline struct btrfs_fs_info *page_to_fs_info(struct page *page)
++{
++	ASSERT(page->mapping);
++	return BTRFS_I(page->mapping->host)->root->fs_info;
++}
++
++static inline struct extent_io_tree
++*info_to_btree_io_tree(struct btrfs_fs_info *fs_info)
++{
++	return &BTRFS_I(fs_info->btree_inode)->io_tree;
++}
++
+ static inline unsigned long btrfs_inode_hash(u64 objectid,
+ 					     const struct btrfs_root *root)
+ {
 diff --git a/fs/btrfs/extent-io-tree.h b/fs/btrfs/extent-io-tree.h
-index 48fdaf5f3a19..176e0e8e1f7c 100644
+index 176e0e8e1f7c..bdafac1bd15f 100644
 --- a/fs/btrfs/extent-io-tree.h
 +++ b/fs/btrfs/extent-io-tree.h
-@@ -22,6 +22,10 @@ struct io_failure_record;
- #define EXTENT_QGROUP_RESERVED	(1U << 12)
+@@ -23,7 +23,7 @@ struct io_failure_record;
  #define EXTENT_CLEAR_DATA_RESV	(1U << 13)
  #define EXTENT_DELALLOC_NEW	(1U << 14)
-+
-+/* For subpage btree io tree, to indicate there is an extent buffer */
-+#define EXTENT_HAS_TREE_BLOCK	(1U << 15)
-+
+ 
+-/* For subpage btree io tree, to indicate there is an extent buffer */
++/* For subpage btree io tree, indicates there is an in-tree extent buffer */
+ #define EXTENT_HAS_TREE_BLOCK	(1U << 15)
+ 
  #define EXTENT_DO_ACCOUNTING    (EXTENT_CLEAR_META_RESV | \
- 				 EXTENT_CLEAR_DATA_RESV)
- #define EXTENT_CTLBITS		(EXTENT_DO_ACCOUNTING)
-@@ -73,7 +77,7 @@ struct extent_state {
- 	/* ADD NEW ELEMENTS AFTER THIS */
- 	wait_queue_head_t wq;
- 	refcount_t refs;
--	unsigned state;
-+	u32 state;
- 
- 	struct io_failure_record *failrec;
- 
-@@ -136,19 +140,19 @@ void __cold extent_io_exit(void);
- 
- u64 count_range_bits(struct extent_io_tree *tree,
- 		     u64 *start, u64 search_end,
--		     u64 max_bytes, unsigned bits, int contig);
-+		     u64 max_bytes, u32 bits, int contig);
- 
- void free_extent_state(struct extent_state *state);
- int test_range_bit(struct extent_io_tree *tree, u64 start, u64 end,
--		   unsigned bits, int filled,
-+		   u32 bits, int filled,
- 		   struct extent_state *cached_state);
- int clear_record_extent_bits(struct extent_io_tree *tree, u64 start, u64 end,
--		unsigned bits, struct extent_changeset *changeset);
-+			     u32 bits, struct extent_changeset *changeset);
- int clear_extent_bit(struct extent_io_tree *tree, u64 start, u64 end,
--		     unsigned bits, int wake, int delete,
-+		     u32 bits, int wake, int delete,
- 		     struct extent_state **cached);
- int __clear_extent_bit(struct extent_io_tree *tree, u64 start, u64 end,
--		       unsigned bits, struct extent_state **cached_state,
-+		       u32 bits, struct extent_state **cached_state,
- 		       gfp_t mask, struct extent_io_extra_options *extra_opts);
- 
- static inline int unlock_extent(struct extent_io_tree *tree, u64 start, u64 end)
-@@ -177,7 +181,7 @@ static inline int unlock_extent_cached_atomic(struct extent_io_tree *tree,
- }
- 
- static inline int clear_extent_bits(struct extent_io_tree *tree, u64 start,
--		u64 end, unsigned bits)
-+				    u64 end, u32 bits)
- {
- 	int wake = 0;
- 
-@@ -188,15 +192,14 @@ static inline int clear_extent_bits(struct extent_io_tree *tree, u64 start,
- }
- 
- int set_record_extent_bits(struct extent_io_tree *tree, u64 start, u64 end,
--			   unsigned bits, struct extent_changeset *changeset);
-+			   u32 bits, struct extent_changeset *changeset);
- int set_extent_bit(struct extent_io_tree *tree, u64 start, u64 end,
--		   unsigned bits, struct extent_state **cached_state,
--		   gfp_t mask);
-+		   u32 bits, struct extent_state **cached_state, gfp_t mask);
- int set_extent_bits_nowait(struct extent_io_tree *tree, u64 start, u64 end,
--			   unsigned bits);
-+			   u32 bits);
- 
- static inline int set_extent_bits(struct extent_io_tree *tree, u64 start,
--		u64 end, unsigned bits)
-+		u64 end, u32 bits)
- {
- 	return set_extent_bit(tree, start, end, bits, NULL, GFP_NOFS);
- }
-@@ -223,11 +226,11 @@ static inline int clear_extent_dirty(struct extent_io_tree *tree, u64 start,
- }
- 
- int convert_extent_bit(struct extent_io_tree *tree, u64 start, u64 end,
--		       unsigned bits, unsigned clear_bits,
-+		       u32 bits, u32 clear_bits,
- 		       struct extent_state **cached_state);
- 
- static inline int set_extent_delalloc(struct extent_io_tree *tree, u64 start,
--				      u64 end, unsigned int extra_bits,
-+				      u64 end, u32 extra_bits,
- 				      struct extent_state **cached_state)
- {
- 	return set_extent_bit(tree, start, end,
-@@ -257,12 +260,12 @@ static inline int set_extent_uptodate(struct extent_io_tree *tree, u64 start,
- }
- 
- int find_first_extent_bit(struct extent_io_tree *tree, u64 start,
--			  u64 *start_ret, u64 *end_ret, unsigned bits,
-+			  u64 *start_ret, u64 *end_ret, u32 bits,
- 			  bool exact_match, struct extent_state **cached_state);
- void find_first_clear_extent_bit(struct extent_io_tree *tree, u64 start,
--				 u64 *start_ret, u64 *end_ret, unsigned bits);
-+				 u64 *start_ret, u64 *end_ret, u32 bits);
- int find_contiguous_extent_bit(struct extent_io_tree *tree, u64 start,
--			       u64 *start_ret, u64 *end_ret, unsigned bits);
-+			       u64 *start_ret, u64 *end_ret, u32 bits);
- bool btrfs_find_delalloc_range(struct extent_io_tree *tree, u64 *start,
- 			       u64 *end, u64 max_bytes,
- 			       struct extent_state **cached_state);
 diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index ea248e2689c9..a7e4d3c65162 100644
+index a7e4d3c65162..d899a75db977 100644
 --- a/fs/btrfs/extent_io.c
 +++ b/fs/btrfs/extent_io.c
-@@ -143,7 +143,7 @@ struct extent_page_data {
- 	unsigned int sync_io:1;
- };
+@@ -3163,6 +3163,18 @@ static void attach_extent_buffer_page(struct extent_buffer *eb,
+ 	if (page->mapping)
+ 		assert_spin_locked(&page->mapping->private_lock);
  
--static int add_extent_changeset(struct extent_state *state, unsigned bits,
-+static int add_extent_changeset(struct extent_state *state, u32 bits,
- 				 struct extent_changeset *changeset,
- 				 int set)
- {
-@@ -531,7 +531,7 @@ static void merge_state(struct extent_io_tree *tree,
++	if (btrfs_is_subpage(eb->fs_info) && page->mapping) {
++		struct extent_io_tree *io_tree =
++			info_to_btree_io_tree(eb->fs_info);
++
++		if (!PagePrivate(page))
++			attach_page_private(page, NULL);
++
++		set_extent_bit(io_tree, eb->start, eb->start + eb->len - 1,
++				EXTENT_HAS_TREE_BLOCK, NULL, GFP_ATOMIC);
++		return;
++	}
++
+ 	if (!PagePrivate(page))
+ 		attach_page_private(page, eb);
+ 	else
+@@ -4984,6 +4996,36 @@ int extent_buffer_under_io(const struct extent_buffer *eb)
+ 		test_bit(EXTENT_BUFFER_DIRTY, &eb->bflags));
  }
  
- static void set_state_bits(struct extent_io_tree *tree,
--			   struct extent_state *state, unsigned *bits,
-+			   struct extent_state *state, u32 *bits,
- 			   struct extent_changeset *changeset);
- 
++static void detach_extent_buffer_subpage(struct extent_buffer *eb)
++{
++	struct btrfs_fs_info *fs_info = eb->fs_info;
++	struct extent_io_tree *io_tree = info_to_btree_io_tree(fs_info);
++	struct page *page = eb->pages[0];
++	bool mapped = !test_bit(EXTENT_BUFFER_UNMAPPED, &eb->bflags);
++	int ret;
++
++	if (!page)
++		return;
++
++	if (mapped)
++		spin_lock(&page->mapping->private_lock);
++
++	__clear_extent_bit(io_tree, eb->start, eb->start + eb->len - 1,
++			   EXTENT_HAS_TREE_BLOCK, NULL, GFP_ATOMIC, NULL);
++
++	/* Test if we still have other extent buffer in the page range */
++	ret = test_range_bit(io_tree, round_down(eb->start, PAGE_SIZE),
++			     round_down(eb->start, PAGE_SIZE) + PAGE_SIZE - 1,
++			     EXTENT_HAS_TREE_BLOCK, 0, NULL);
++	if (!ret)
++		detach_page_private(eb->pages[0]);
++	if (mapped)
++		spin_unlock(&page->mapping->private_lock);
++
++	/* One for when we allocated the page */
++	put_page(page);
++}
++
  /*
-@@ -548,7 +548,7 @@ static int insert_state(struct extent_io_tree *tree,
- 			struct extent_state *state, u64 start, u64 end,
- 			struct rb_node ***p,
- 			struct rb_node **parent,
--			unsigned *bits, struct extent_changeset *changeset)
-+			u32 *bits, struct extent_changeset *changeset)
- {
- 	struct rb_node *node;
- 
-@@ -629,11 +629,11 @@ static struct extent_state *next_state(struct extent_state *state)
+  * Release all pages attached to the extent buffer.
   */
- static struct extent_state *clear_state_bit(struct extent_io_tree *tree,
- 					    struct extent_state *state,
--					    unsigned *bits, int wake,
-+					    u32 *bits, int wake,
- 					    struct extent_changeset *changeset)
- {
- 	struct extent_state *next;
--	unsigned bits_to_clear = *bits & ~EXTENT_CTLBITS;
-+	u32 bits_to_clear = *bits & ~EXTENT_CTLBITS;
+@@ -4995,6 +5037,9 @@ static void btrfs_release_extent_buffer_pages(struct extent_buffer *eb)
+ 
+ 	BUG_ON(extent_buffer_under_io(eb));
+ 
++	if (btrfs_is_subpage(eb->fs_info) && mapped)
++		return detach_extent_buffer_subpage(eb);
++
+ 	num_pages = num_extent_pages(eb);
+ 	for (i = 0; i < num_pages; i++) {
+ 		struct page *page = eb->pages[i];
+@@ -5289,6 +5334,7 @@ struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
+ 	struct extent_buffer *exists = NULL;
+ 	struct page *p;
+ 	struct address_space *mapping = fs_info->btree_inode->i_mapping;
++	bool subpage = btrfs_is_subpage(fs_info);
+ 	int uptodate = 1;
  	int ret;
  
- 	if ((bits_to_clear & EXTENT_DIRTY) && (state->state & EXTENT_DIRTY)) {
-@@ -700,7 +700,7 @@ static void extent_io_tree_panic(struct extent_io_tree *tree, int err)
-  * No error can be returned yet, the ENOMEM for memory is handled by BUG_ON().
-  */
- int __clear_extent_bit(struct extent_io_tree *tree, u64 start, u64 end,
--		       unsigned bits, struct extent_state **cached_state,
-+		       u32 bits, struct extent_state **cached_state,
- 		       gfp_t mask, struct extent_io_extra_options *extra_opts)
- {
- 	struct extent_changeset *changeset;
-@@ -881,7 +881,7 @@ static void wait_on_state(struct extent_io_tree *tree,
-  * The tree lock is taken by this function
-  */
- static void wait_extent_bit(struct extent_io_tree *tree, u64 start, u64 end,
--			    unsigned long bits)
-+			    u32 bits)
- {
- 	struct extent_state *state;
- 	struct rb_node *node;
-@@ -928,9 +928,9 @@ static void wait_extent_bit(struct extent_io_tree *tree, u64 start, u64 end,
+@@ -5321,7 +5367,12 @@ struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
+ 		}
  
- static void set_state_bits(struct extent_io_tree *tree,
- 			   struct extent_state *state,
--			   unsigned *bits, struct extent_changeset *changeset)
-+			   u32 *bits, struct extent_changeset *changeset)
- {
--	unsigned bits_to_set = *bits & ~EXTENT_CTLBITS;
-+	u32 bits_to_set = *bits & ~EXTENT_CTLBITS;
- 	int ret;
- 
- 	if (tree->private_data && is_data_inode(tree->private_data))
-@@ -977,7 +977,7 @@ static void cache_state(struct extent_state *state,
- 
- static int __must_check
- __set_extent_bit(struct extent_io_tree *tree, u64 start, u64 end,
--		 unsigned bits, struct extent_state **cached_state,
-+		 u32 bits, struct extent_state **cached_state,
- 		 gfp_t mask, struct extent_io_extra_options *extra_opts)
- {
- 	struct extent_state *state;
-@@ -1201,8 +1201,7 @@ __set_extent_bit(struct extent_io_tree *tree, u64 start, u64 end,
- }
- 
- int set_extent_bit(struct extent_io_tree *tree, u64 start, u64 end,
--		   unsigned bits, struct extent_state **cached_state,
--		   gfp_t mask)
-+		   u32 bits, struct extent_state **cached_state, gfp_t mask)
- {
- 	return __set_extent_bit(tree, start, end, bits, cached_state,
- 			        mask, NULL);
-@@ -1228,7 +1227,7 @@ int set_extent_bit(struct extent_io_tree *tree, u64 start, u64 end,
-  * All allocations are done with GFP_NOFS.
-  */
- int convert_extent_bit(struct extent_io_tree *tree, u64 start, u64 end,
--		       unsigned bits, unsigned clear_bits,
-+		       u32 bits, u32 clear_bits,
- 		       struct extent_state **cached_state)
- {
- 	struct extent_state *state;
-@@ -1429,7 +1428,7 @@ int convert_extent_bit(struct extent_io_tree *tree, u64 start, u64 end,
- 
- /* wrappers around set/clear extent bit */
- int set_record_extent_bits(struct extent_io_tree *tree, u64 start, u64 end,
--			   unsigned bits, struct extent_changeset *changeset)
-+			   u32 bits, struct extent_changeset *changeset)
- {
- 	struct extent_io_extra_options extra_opts = {
- 		.changeset = changeset,
-@@ -1448,13 +1447,13 @@ int set_record_extent_bits(struct extent_io_tree *tree, u64 start, u64 end,
- }
- 
- int set_extent_bits_nowait(struct extent_io_tree *tree, u64 start, u64 end,
--			   unsigned bits)
-+			   u32 bits)
- {
- 	return __set_extent_bit(tree, start, end, bits, NULL, GFP_NOWAIT, NULL);
- }
- 
- int clear_extent_bit(struct extent_io_tree *tree, u64 start, u64 end,
--		     unsigned bits, int wake, int delete,
-+		     u32 bits, int wake, int delete,
- 		     struct extent_state **cached)
- {
- 	struct extent_io_extra_options extra_opts = {
-@@ -1467,7 +1466,7 @@ int clear_extent_bit(struct extent_io_tree *tree, u64 start, u64 end,
- }
- 
- int clear_record_extent_bits(struct extent_io_tree *tree, u64 start, u64 end,
--		unsigned bits, struct extent_changeset *changeset)
-+		u32 bits, struct extent_changeset *changeset)
- {
- 	struct extent_io_extra_options extra_opts = {
- 		.changeset = changeset,
-@@ -1559,7 +1558,7 @@ void extent_range_redirty_for_io(struct inode *inode, u64 start, u64 end)
+ 		spin_lock(&mapping->private_lock);
+-		if (PagePrivate(p)) {
++		/*
++		 * Subpage support doesn't use page::private at all, so we
++		 * completely rely on the radix insert lock to prevent two
++		 * ebs allocated for the same bytenr.
++		 */
++		if (PagePrivate(p) && !subpage) {
+ 			/*
+ 			 * We could have already allocated an eb for this page
+ 			 * and attached one so lets see if we can get a ref on
+@@ -5362,8 +5413,21 @@ struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
+ 		 * we could crash.
+ 		 */
  	}
- }
+-	if (uptodate)
++	if (uptodate) {
+ 		set_bit(EXTENT_BUFFER_UPTODATE, &eb->bflags);
++	} else if (subpage) {
++		/*
++		 * For subpage, we must check extent_io_tree to get if the eb
++		 * is really uptodate, as the page uptodate is only set if the
++		 * whole page is uptodate.
++		 * We can still have uptodate range in the page.
++		 */
++		struct extent_io_tree *io_tree = info_to_btree_io_tree(fs_info);
++
++		if (test_range_bit(io_tree, eb->start, eb->start + eb->len - 1,
++				   EXTENT_UPTODATE, 1, NULL))
++			set_bit(EXTENT_BUFFER_UPTODATE, &eb->bflags);
++	}
+ again:
+ 	ret = radix_tree_preload(GFP_NOFS);
+ 	if (ret) {
+@@ -5402,6 +5466,18 @@ struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
+ 		if (eb->pages[i])
+ 			unlock_page(eb->pages[i]);
+ 	}
++	/*
++	 * For subpage case, btrfs_release_extent_buffer() will clear the
++	 * EXTENT_HAS_TREE_BLOCK bit if there is a page.
++	 *
++	 * Since we're here because we hit a race with another caller, who
++	 * succeeded in inserting the eb, we shouldn't clear that
++	 * EXTENT_HAS_TREE_BLOCK bit. So here we cleanup the page manually.
++	 */
++	if (subpage) {
++		put_page(eb->pages[0]);
++		eb->pages[i] = NULL;
++	}
  
--static bool match_extent_state(struct extent_state *state, unsigned bits,
-+static bool match_extent_state(struct extent_state *state, u32 bits,
- 			       bool exact_match)
- {
- 	if (exact_match)
-@@ -1579,7 +1578,7 @@ static bool match_extent_state(struct extent_state *state, unsigned bits,
-  */
- static struct extent_state *
- find_first_extent_bit_state(struct extent_io_tree *tree,
--			    u64 start, unsigned bits, bool exact_match)
-+			    u64 start, u32 bits, bool exact_match)
- {
- 	struct rb_node *node;
- 	struct extent_state *state;
-@@ -1615,7 +1614,7 @@ find_first_extent_bit_state(struct extent_io_tree *tree,
-  * Return 1 if we found nothing.
-  */
- int find_first_extent_bit(struct extent_io_tree *tree, u64 start,
--			  u64 *start_ret, u64 *end_ret, unsigned bits,
-+			  u64 *start_ret, u64 *end_ret, u32 bits,
- 			  bool exact_match, struct extent_state **cached_state)
- {
- 	struct extent_state *state;
-@@ -1667,7 +1666,7 @@ int find_first_extent_bit(struct extent_io_tree *tree, u64 start,
-  * returned will be the full contiguous area with the bits set.
-  */
- int find_contiguous_extent_bit(struct extent_io_tree *tree, u64 start,
--			       u64 *start_ret, u64 *end_ret, unsigned bits)
-+			       u64 *start_ret, u64 *end_ret, u32 bits)
- {
- 	struct extent_state *state;
- 	int ret = 1;
-@@ -1704,7 +1703,7 @@ int find_contiguous_extent_bit(struct extent_io_tree *tree, u64 start,
-  * trim @end_ret to the appropriate size.
-  */
- void find_first_clear_extent_bit(struct extent_io_tree *tree, u64 start,
--				 u64 *start_ret, u64 *end_ret, unsigned bits)
-+				 u64 *start_ret, u64 *end_ret, u32 bits)
- {
- 	struct extent_state *state;
- 	struct rb_node *node, *prev = NULL, *next;
-@@ -2085,8 +2084,7 @@ noinline_for_stack bool find_lock_delalloc_range(struct inode *inode,
- 
- void extent_clear_unlock_delalloc(struct btrfs_inode *inode, u64 start, u64 end,
- 				  struct page *locked_page,
--				  unsigned clear_bits,
--				  unsigned long page_ops)
-+				  u32 clear_bits, unsigned long page_ops)
- {
- 	clear_extent_bit(&inode->io_tree, start, end, clear_bits, 1, 0, NULL);
- 
-@@ -2102,7 +2100,7 @@ void extent_clear_unlock_delalloc(struct btrfs_inode *inode, u64 start, u64 end,
-  */
- u64 count_range_bits(struct extent_io_tree *tree,
- 		     u64 *start, u64 search_end, u64 max_bytes,
--		     unsigned bits, int contig)
-+		     u32 bits, int contig)
- {
- 	struct rb_node *node;
- 	struct extent_state *state;
-@@ -2222,7 +2220,7 @@ struct io_failure_record *get_state_failrec(struct extent_io_tree *tree, u64 sta
-  * range is found set.
-  */
- int test_range_bit(struct extent_io_tree *tree, u64 start, u64 end,
--		   unsigned bits, int filled, struct extent_state *cached)
-+		   u32 bits, int filled, struct extent_state *cached)
- {
- 	struct extent_state *state = NULL;
- 	struct rb_node *node;
-diff --git a/fs/btrfs/extent_io.h b/fs/btrfs/extent_io.h
-index 552afc1c0bbc..602d6568c8ea 100644
---- a/fs/btrfs/extent_io.h
-+++ b/fs/btrfs/extent_io.h
-@@ -288,7 +288,7 @@ void extent_range_clear_dirty_for_io(struct inode *inode, u64 start, u64 end);
- void extent_range_redirty_for_io(struct inode *inode, u64 start, u64 end);
- void extent_clear_unlock_delalloc(struct btrfs_inode *inode, u64 start, u64 end,
- 				  struct page *locked_page,
--				  unsigned bits_to_clear,
-+				  u32 bits_to_clear,
- 				  unsigned long page_ops);
- struct bio *btrfs_bio_alloc(u64 first_byte);
- struct bio *btrfs_io_bio_alloc(unsigned int nr_iovecs);
+ 	btrfs_release_extent_buffer(eb);
+ 	return exists;
 -- 
 2.28.0
 
