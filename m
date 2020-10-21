@@ -2,141 +2,145 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 838FD2954AC
-	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Oct 2020 00:11:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD3E5295501
+	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Oct 2020 01:06:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441077AbgJUWLo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 21 Oct 2020 18:11:44 -0400
-Received: from mx2.suse.de ([195.135.220.15]:60724 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2408372AbgJUWLo (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 21 Oct 2020 18:11:44 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1603318302;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=e4k94YB5A87/F/zYXrpzH/CABPi++MgOqZRODhJZUyk=;
-        b=cxb7OlNOthUVGyHvkhXuPvEGxz/Ab38ci4INdDN+f6vwYUVhD89U0ucMGzMwRs8DWIWPER
-        3V/ql8mjcUi8+o6TX6XhmFVuMYJV06ycaQr3fqNzM0s14r+x0LU6V/VS1LP5hCJLd/88JN
-        xEOfE+rB0bAH1lMcXKlCNBWyIgOeK2c=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 88F62ABD1;
-        Wed, 21 Oct 2020 22:11:42 +0000 (UTC)
-Date:   Wed, 21 Oct 2020 17:11:40 -0500
-From:   Goldwyn Rodrigues <rgoldwyn@suse.com>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v4 08/68] btrfs: inode: sink parameter @start and @len
- for check_data_csum()
-Message-ID: <20201021221140.vrp4yqnxyshx4k75@fiona>
-References: <20201021062554.68132-1-wqu@suse.com>
- <20201021062554.68132-9-wqu@suse.com>
+        id S2507013AbgJUXGz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 21 Oct 2020 19:06:55 -0400
+Received: from wout3-smtp.messagingengine.com ([64.147.123.19]:39345 "EHLO
+        wout3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2507008AbgJUXGy (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 21 Oct 2020 19:06:54 -0400
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailout.west.internal (Postfix) with ESMTP id 7519412A1;
+        Wed, 21 Oct 2020 19:06:53 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute2.internal (MEProxy); Wed, 21 Oct 2020 19:06:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=from
+        :to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm2; bh=HpF5ODtuuUMA9yniIzM7gAdfAV
+        6XFJucoEdMBZpsEo8=; b=SSkiPl7CHKcAXZuq9+gYpMyC7+kxINGeGBSJlhpY0q
+        HeS/muHO/D1zyDg9Sljxw8FOqSiPx08P5n/JJsis8fBOznBDcxgXfE3ZxzEfDa6N
+        yle7V0VUPMJJb0uF8Z7mNtEV3hie6PfvrhL6n1xrvPs6TZR0tObJ9quyoXObpfZl
+        NtXplYDHXDb1EjOSeq9S8Ye3NBE+D5DHVrj3Fw6AKE5miOUwgM8cGuUfUKPgB8hK
+        zl3khTYY9EG/1jlJxzvWJ2uqeShFaXFuwNfI3TZ5evmsPrRAlvM7QLZAERQC9i2c
+        L2aDVhTdBSMpK0ZbksJtaO7gZ6ccqCFIaWoL0gZbbQIA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=HpF5ODtuuUMA9yniI
+        zM7gAdfAV6XFJucoEdMBZpsEo8=; b=J2U0jRB/GOgucWB2vOIu4//g0CfZSC/1y
+        ArtcDV2v9wP3wDoYo0jAn+P5Ac0k2mjMYHUWeVh37m+7IOZJ1ZttFx9Q3WBhhzuz
+        2tOCGq+dAm70bm1SQe+bIJqEtntdHDnpzNWI3G85sRn6bbVO7posB2ItlgbYFUvZ
+        fTcm5t4lHcXVkqw5fE2OzvAOp+rrUk7DKpty7KLmHf2P6IWK4smX5zVa4MmjUVxz
+        rf5n3uFV4Y09AqTPLlw1jk5u/IwbUGjrHQ7NX4scIaeFjdiY/+qKO4J1RyB6pRpe
+        Zla8mhBTP/bLyPG8irrHbSXpN08qd4gcrLtCOt9BRjFRcnAtDP5Ww==
+X-ME-Sender: <xms:DL-QX7XSqzD4IYnpo__CXE_1oYB9i_of_HweRtmNIkixKOmNNTBGtQ>
+    <xme:DL-QXzlxSZWKS-BLHfnOL03ueeNYSEGD5dLhLzmoJKebSSFRNdO8ULwK6qvzW7VAe
+    lYyw5YJj2HpSc4v7rY>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrjeeigdduiecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffoggfgsedtkeertdertd
+    dtnecuhfhrohhmpeeuohhrihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhioheq
+    necuggftrfgrthhtvghrnhepudeitdelueeijeefleffveelieefgfejjeeigeekuddute
+    efkefffeethfdvjeevnecukfhppeduieefrdduudegrddufedvrdefnecuvehluhhsthgv
+    rhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsghorhhishessghurhdrih
+    ho
+X-ME-Proxy: <xmx:DL-QX3bD6lHyvwTYySYoVzwC3rm40uOhwzcxk4J5OgTce_PuwCGUkA>
+    <xmx:DL-QX2WpPJacKD0jdHOSgXFi8ZYTGIJxDl41NSysQc67W1zgdLNHFw>
+    <xmx:DL-QX1miZHNYR9QfmtGroRmxqBV3untRGuGPku-qu1UyoY8h-DcEAg>
+    <xmx:Db-QX0uZBBFtFBEZitkGUPEkbabaw27DG5j3l7liZ2rYuah3q0v9YQ>
+Received: from localhost (unknown [163.114.132.3])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 5C5FF3064680;
+        Wed, 21 Oct 2020 19:06:52 -0400 (EDT)
+From:   Boris Burkov <boris@bur.io>
+To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Cc:     Boris Burkov <boris@bur.io>
+Subject: [PATCH v4 0/8] btrfs: free space tree mounting fixes
+Date:   Wed, 21 Oct 2020 16:06:28 -0700
+Message-Id: <cover.1603318242.git.boris@bur.io>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201021062554.68132-9-wqu@suse.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-In $SUBJECT, will prefer s/sink/remove/
+This patch set cleans up issues surrounding enabling and disabling various
+free space cache features and their reporting in /proc/mounts.  Because the
+improvements became somewhat complex, the series starts by lifting rw mount
+logic into a single place.
 
-On 14:24 21/10, Qu Wenruo wrote:
-> For check_data_csum(), the page we're using is directly from inode
-> mapping, thus it has valid page_offset().
-> 
-> We can use (page_offset() + pg_off) to replace @start parameter
-> completely, while the @len should always be sectorsize.
-> 
-> Since we're here, also add some comment, as there are quite some
-> confusion in words like start/offset, without explaining whether it's
-> file_offset or logical bytenr.
-> 
-> This should not affect the existing behavior, as for current sectorsize
-> == PAGE_SIZE case, @pgoff should always be 0, and len is always
-> PAGE_SIZE (or sectorsize from the dio read path).
-> 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
+The first patch is a setup patch that unifies very similar logic between a
+normal rw mount and a ro->rw remount. This is a useful setup step for adding
+more functionality to ro->rw remounts.
 
-Reviewed-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
+The second patch fixes the omission of orphan inode cleanup on a few trees
+during ro->rw remount.
 
-> ---
->  fs/btrfs/inode.c | 27 +++++++++++++++++++--------
->  1 file changed, 19 insertions(+), 8 deletions(-)
-> 
-> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> index 2a56d3b8eff4..24fbf2c46e56 100644
-> --- a/fs/btrfs/inode.c
-> +++ b/fs/btrfs/inode.c
-> @@ -2791,17 +2791,30 @@ void btrfs_writepage_endio_finish_ordered(struct page *page, u64 start,
->  	btrfs_queue_work(wq, &ordered_extent->work);
->  }
->  
-> +/*
-> + * Verify the checksum of one sector of uncompressed data.
-> + *
-> + * @inode:	The inode.
-> + * @io_bio:	The btrfs_io_bio which contains the csum.
-> + * @icsum:	The csum offset (by number of sectors).
-> + * @page:	The page where the data to be verified is.
-> + * @pgoff:	The offset inside the page.
-> + *
-> + * The length of such check is always one sector size.
-> + */
->  static int check_data_csum(struct inode *inode, struct btrfs_io_bio *io_bio,
-> -			   int icsum, struct page *page, int pgoff, u64 start,
-> -			   size_t len)
-> +			   int icsum, struct page *page, int pgoff)
->  {
->  	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
->  	SHASH_DESC_ON_STACK(shash, fs_info->csum_shash);
->  	char *kaddr;
-> +	u32 len = fs_info->sectorsize;
->  	u16 csum_size = btrfs_super_csum_size(fs_info->super_copy);
->  	u8 *csum_expected;
->  	u8 csum[BTRFS_CSUM_SIZE];
->  
-> +	ASSERT(pgoff + len <= PAGE_SIZE);
-> +
->  	csum_expected = ((u8 *)io_bio->csum) + icsum * csum_size;
->  
->  	kaddr = kmap_atomic(page);
-> @@ -2815,8 +2828,8 @@ static int check_data_csum(struct inode *inode, struct btrfs_io_bio *io_bio,
->  	kunmap_atomic(kaddr);
->  	return 0;
->  zeroit:
-> -	btrfs_print_data_csum_error(BTRFS_I(inode), start, csum, csum_expected,
-> -				    io_bio->mirror_num);
-> +	btrfs_print_data_csum_error(BTRFS_I(inode), page_offset(page) + pgoff,
-> +				    csum, csum_expected, io_bio->mirror_num);
->  	if (io_bio->device)
->  		btrfs_dev_stat_inc_and_print(io_bio->device,
->  					     BTRFS_DEV_STAT_CORRUPTION_ERRS);
-> @@ -2855,8 +2868,7 @@ static int btrfs_readpage_end_io_hook(struct btrfs_io_bio *io_bio,
->  	}
->  
->  	phy_offset >>= inode->i_sb->s_blocksize_bits;
-> -	return check_data_csum(inode, io_bio, phy_offset, page, offset, start,
-> -			       (size_t)(end - start + 1));
-> +	return check_data_csum(inode, io_bio, phy_offset, page, offset);
->  }
->  
->  /*
-> @@ -7542,8 +7554,7 @@ static blk_status_t btrfs_check_read_dio_bio(struct inode *inode,
->  			ASSERT(pgoff < PAGE_SIZE);
->  			if (uptodate &&
->  			    (!csum || !check_data_csum(inode, io_bio, icsum,
-> -						       bvec.bv_page, pgoff,
-> -						       start, sectorsize))) {
-> +						       bvec.bv_page, pgoff))) {
->  				clean_io_failure(fs_info, failure_tree, io_tree,
->  						 start, bvec.bv_page,
->  						 btrfs_ino(BTRFS_I(inode)),
-> -- 
-> 2.28.0
-> 
+The third patch adds enabling the free space tree to ro->rw remount.
+
+The fourth patch sets up for more accurate /proc/mounts by ensuring that
+cache_generation > 0 iff space_cache is enabled.
+
+The fifth patch is the more accurate /proc/mounts logic.
+
+The sixth patch is a convenience kernel message that complains when we skip
+enabling the free space tree on remount.
+
+The seventh patch removes the space cache v1 free space item and free space
+inodes when space cache v1 is disabled (nospace_cache or space_cache=v2).
+
+The eighth patch stops re-creating the free space objects when we are not
+using space_cache=v1
+
+changes for v4:
+Patch 1/8: New
+Patch 2/8: New
+Patch 3/8: (was Patch 1) Made much simpler by lifting of Patch 1. Simply add
+           free space tree creation to lifted rw mount logic.
+Patch 4/8: Split out from old Patch 2. Add an fs_info flag to avoid surprises
+           when a different transaction updates the cache_generation.
+Patch 5/8: Split out from old Patch 2, but no change logically.
+Patch 6/8: Split out from old Patch 1. Formatting fixes.
+Patch 7/8: (was Patch 3) Rely on delayed_iput running after orphan cleanup
+           (setup in patch 2) to pull iputs out of mount path, per review.
+Patch 8/8: No change.
+
+changes for v3:
+Patch 1/4: Change failure to warning logging.
+Patch 2/4: New; fixes mount option printing.
+Patch 3/4: Fix orphan inode vs. delayed iput bug, change remove function
+           to take inode as a sink.
+Patch 4/4: No changes.
+
+changes for v2:
+Patch 1/3: made remount _only_ work in ro->rw case, added comment.
+Patch 2/3: added btrfs_ prefix to non-static function, removed bad
+           whitespace.
+
+
+Boris Burkov (8):
+  btrfs: lift rw mount setup from mount and remount
+  btrfs: cleanup all orphan inodes on ro->rw remount
+  btrfs: create free space tree on ro->rw remount
+  btrfs: keep sb cache_generation consistent with space_cache
+  btrfs: use sb state to print space_cache mount option
+  btrfs: warn when remount will not create the free space tree
+  btrfs: remove free space items when disabling space cache v1
+  btrfs: skip space_cache v1 setup when not using it
+
+ fs/btrfs/block-group.c      |  42 ++---------
+ fs/btrfs/ctree.h            |   3 +
+ fs/btrfs/disk-io.c          | 141 ++++++++++++++++++++----------------
+ fs/btrfs/disk-io.h          |   1 +
+ fs/btrfs/free-space-cache.c | 121 +++++++++++++++++++++++++++++++
+ fs/btrfs/free-space-cache.h |   6 ++
+ fs/btrfs/super.c            |  59 ++++++---------
+ fs/btrfs/transaction.c      |   2 +
+ 8 files changed, 241 insertions(+), 134 deletions(-)
 
 -- 
-Goldwyn
+2.24.1
+
