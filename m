@@ -2,172 +2,144 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0DD4295987
-	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Oct 2020 09:46:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98EF8295C1E
+	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Oct 2020 11:40:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2507206AbgJVHqH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 22 Oct 2020 03:46:07 -0400
-Received: from aserp2130.oracle.com ([141.146.126.79]:35422 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2442023AbgJVHqG (ORCPT
+        id S2509775AbgJVJkY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 22 Oct 2020 05:40:24 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:55388 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2509600AbgJVJkX (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 22 Oct 2020 03:46:06 -0400
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09M7jDRi045140;
-        Thu, 22 Oct 2020 07:46:02 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=corp-2020-01-29;
- bh=yL+W/1oeSrPtJoZ9ZhZJwhZ25qrcX1JCpaWZSqmDa+Y=;
- b=ehXDh8BQ2knhTaYUDE84pwCNmbQ7AuEBqz8lcpsNOvX2mwfGqaDFxVYNw/1mWA5fW+es
- EE5XGq8LvJWOQq9AWlmkvjpN54UCLpWdDRxTgT19ThEVLHWZMp4de+rkPd1bub0oKMz9
- KM57B61Fibqhv45tAHOMPOqLVrFlaLUll1tezslMIJQLlOAptkR0Xk9UCyFBdfgmy2Xq
- 6Yfgp5duHP6cESL8F03VpevM5dh+lrJId4QeixjhwHlWEF+DR8ak8vGYSWXQyrVc8DKm
- yw9QEnN2KMuuVm9DrjOtPE1miBFn0FekTeCF++ztvI/sm7kMphxlPEpMM4WVhkNw2hxl 7A== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2130.oracle.com with ESMTP id 347p4b4f7w-1
+        Thu, 22 Oct 2020 05:40:23 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09M9SjAJ103051;
+        Thu, 22 Oct 2020 09:40:21 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=Xdy+3ItlhStzn1CzBzxEWO/wJxwDwV+8Lpz9KfM000M=;
+ b=eSj2VbJ7QAhmmSRJjqolYxvDy6VlyRTFXeT57uTXdWKDrLo2OUzgGs1DgekqugH1fRk/
+ SceqfmMgfHxy+i21XkLsberiHXhXCnAJXIg0/OUrgCF2kGfIpYIZ28Hs1NXV4EdgNvSA
+ K0sy8oXEkRP1YwtasKH0Ib8+mP+Jd6cjAMrgTm7YBUf54wj7l5O0U3Dr1s1AmOxu8sd1
+ ISmmUkH3uSKfRWN6M4KQTT7fF1fFGKfySuF0WzPtJ6/LptEK2Ls8xbFAUZXI+O0Ch9cd
+ xgiJFyexr639OcH7VXZYI13SpCKah07cQiWtMKm8Tg+Uulz1p6K06JxXnLtof9sgL8u3 ww== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 349jrpw3y3-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 22 Oct 2020 07:46:02 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09M7a81X176548;
-        Thu, 22 Oct 2020 07:44:02 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3030.oracle.com with ESMTP id 348a6qaa7j-1
+        Thu, 22 Oct 2020 09:40:21 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09M9Thaw087103;
+        Thu, 22 Oct 2020 09:40:21 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3020.oracle.com with ESMTP id 348ah0mwwa-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 22 Oct 2020 07:44:02 +0000
-Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 09M7i1dj031272;
-        Thu, 22 Oct 2020 07:44:01 GMT
-Received: from localhost.localdomain (/39.109.231.106)
+        Thu, 22 Oct 2020 09:40:21 +0000
+Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 09M9eKZT016170;
+        Thu, 22 Oct 2020 09:40:20 GMT
+Received: from [192.168.1.102] (/39.109.231.106)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 22 Oct 2020 00:44:01 -0700
+        with ESMTP ; Thu, 22 Oct 2020 02:40:20 -0700
+Subject: Re: [PATCH RESEND v2 1/2] btrfs: drop never met condition of
+ disk_total_bytes == 0
+To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org
+References: <cover.1600940809.git.anand.jain@oracle.com>
+ <2b54dd9a6634a833cff4e4ac8ff030a6b802652e.1601988260.git.anand.jain@oracle.com>
+ <4c9e4f3a-493e-d8b1-ee26-ba78884a8743@toxicpanda.com>
 From:   Anand Jain <anand.jain@oracle.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     josef@toxicpanda.com, dsterba@suse.com
-Subject: [PATCH v9 3/3] btrfs: create read policy sysfs attribute, pid
-Date:   Thu, 22 Oct 2020 15:43:37 +0800
-Message-Id: <abd366082eeb8b289cd420cb04528a687a250433.1603347462.git.anand.jain@oracle.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1603347462.git.anand.jain@oracle.com>
-References: <cover.1603347462.git.anand.jain@oracle.com>
+Message-ID: <d15e5325-2d6f-89a7-9382-383595e26d6c@oracle.com>
+Date:   Thu, 22 Oct 2020 17:40:16 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.3
 MIME-Version: 1.0
+In-Reply-To: <4c9e4f3a-493e-d8b1-ee26-ba78884a8743@toxicpanda.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9781 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxlogscore=999
- bulkscore=0 spamscore=0 adultscore=0 suspectscore=1 mlxscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2010220049
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9781 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 priorityscore=1501
- clxscore=1015 malwarescore=0 mlxscore=0 bulkscore=0 lowpriorityscore=0
- phishscore=0 adultscore=0 mlxlogscore=999 impostorscore=0 spamscore=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxscore=0 phishscore=0
+ malwarescore=0 spamscore=0 suspectscore=0 bulkscore=0 mlxlogscore=999
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2010220050
+ definitions=main-2010220063
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9781 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 lowpriorityscore=0
+ priorityscore=1501 impostorscore=0 adultscore=0 bulkscore=0 malwarescore=0
+ mlxlogscore=999 mlxscore=0 spamscore=0 suspectscore=0 clxscore=1015
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2010220063
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Add
 
- /sys/fs/btrfs/UUID/read_policy
 
-attribute so that the read policy for the raid1, raid1c34 and raid10 can
-be tuned.
+On 21/10/20 10:35 pm, Josef Bacik wrote:
+> On 10/21/20 12:16 AM, Anand Jain wrote:
+>> btrfs_device::disk_total_bytes is set even for a seed device (the
+>> comment is wrong).
+>>
+>> The function fill_device_from_item() does the job of reading it from the
+>> item and updating btrfs_device::disk_total_bytes. So both the missing
+>> device and the seed devices do have their disk_total_bytes updated.
+>>
+>> Furthermore, while removing the device if there is a power loss, we could
+>> have a device with its total_bytes = 0, that's still valid.
+>>
+>> So this patch removes the check dev->disk_total_bytes == 0 in the
+>> function verify_one_dev_extent(), which it does nothing in it.
+>>
+>> And take this opportunity to introduce a check if the device::total_bytes
+>> is more than the max device size in read_one_dev().
+>>
+>> Signed-off-by: Anand Jain <anand.jain@oracle.com>
+>> Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+>> ---
+>> v2: add check if the total_bytes is more than the actual device size in
+>>      read_one_dev().
+>>      update change log.
+>>
+>>   fs/btrfs/volumes.c | 25 ++++++++++---------------
+>>   1 file changed, 10 insertions(+), 15 deletions(-)
+>>
+>> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+>> index 2a5397fb4175..0c6049f9ace3 100644
+>> --- a/fs/btrfs/volumes.c
+>> +++ b/fs/btrfs/volumes.c
+>> @@ -6847,6 +6847,16 @@ static int read_one_dev(struct extent_buffer 
+>> *leaf,
+>>       }
+>>       fill_device_from_item(leaf, dev_item, device);
+>> +    if (device->bdev) {
+>> +        u64 max_total_bytes = i_size_read(device->bdev->bd_inode);
+>> +
+>> +        if (device->total_bytes > max_total_bytes) {
+>> +            btrfs_err(fs_info,
+>> +            "device total_bytes should be below %llu but found %llu",
+> 
+> "should be less than or equal to"
+> 
 
-When this attribute is read, it shall show all available policies, with
-active policy being with in [ ]. The read_policy attribute can be written
-using one of the items listed in there.
+Hm. Do you mean to say..
 
-For example:
-  $cat /sys/fs/btrfs/UUID/read_policy
-  [pid]
-  $echo pid > /sys/fs/btrfs/UUID/read_policy
+-               if (device->total_bytes > max_total_bytes) {
++               if (max_total_bytes <= device->total_bytes) {
 
-Signed-off-by: Anand Jain <anand.jain@oracle.com>
----
-v9: fix C coding style, static const char*
-v5: 
-  Title rename: old: btrfs: sysfs, add read_policy attribute
-  Uses the btrfs_strmatch() helper (BTRFS_READ_POLICY_NAME_MAX dropped).
-  Use the table for the policy names.
-  Rename len to ret.
-  Use a simple logic to prefix space in btrfs_read_policy_show()
-  Reviewed-by: Josef Bacik <josef@toxicpanda.com> dropped.
+OR
 
-v4:-
-v3: rename [by_pid] to [pid]
-v2: v2: check input len before strip and kstrdup
+-               if (device->total_bytes > max_total_bytes) {
++               if (device->total_bytes <= max_total_bytes) {
 
- fs/btrfs/sysfs.c | 49 ++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 49 insertions(+)
+The former is correct.
+As device->total_bytes is the total_bytes as read from the dev_item.
+And the max_total_bytes is the actual device size.
 
-diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
-index 5ea262d289c6..e23ae3643527 100644
---- a/fs/btrfs/sysfs.c
-+++ b/fs/btrfs/sysfs.c
-@@ -883,6 +883,54 @@ static int btrfs_strmatch(const char *given, const char *golden)
- 	return -EINVAL;
- }
- 
-+static const char * const btrfs_read_policy_name[] = { "pid" };
-+
-+static ssize_t btrfs_read_policy_show(struct kobject *kobj,
-+				      struct kobj_attribute *a, char *buf)
-+{
-+	int i;
-+	ssize_t ret = 0;
-+	struct btrfs_fs_devices *fs_devices = to_fs_devs(kobj);
-+
-+	for (i = 0; i < BTRFS_NR_READ_POLICY; i++) {
-+		if (fs_devices->read_policy == i)
-+			ret += snprintf(buf + ret, PAGE_SIZE - ret, "%s[%s]",
-+					(ret == 0 ? "" : " "),
-+					btrfs_read_policy_name[i]);
-+		else
-+			ret += snprintf(buf + ret, PAGE_SIZE - ret, "%s%s",
-+					(ret == 0 ? "" : " "),
-+					btrfs_read_policy_name[i]);
-+	}
-+
-+	ret += snprintf(buf + ret, PAGE_SIZE - ret, "\n");
-+
-+	return ret;
-+}
-+
-+static ssize_t btrfs_read_policy_store(struct kobject *kobj,
-+				       struct kobj_attribute *a,
-+				       const char *buf, size_t len)
-+{
-+	int i;
-+	struct btrfs_fs_devices *fs_devices = to_fs_devs(kobj);
-+
-+	for (i = 0; i < BTRFS_NR_READ_POLICY; i++) {
-+		if (btrfs_strmatch(buf, btrfs_read_policy_name[i]) == 0) {
-+			if (i != fs_devices->read_policy) {
-+				fs_devices->read_policy = i;
-+				btrfs_info(fs_devices->fs_info,
-+					   "read policy set to '%s'",
-+					   btrfs_read_policy_name[i]);
-+			}
-+			return len;
-+		}
-+	}
-+
-+	return -EINVAL;
-+}
-+BTRFS_ATTR_RW(, read_policy, btrfs_read_policy_show, btrfs_read_policy_store);
-+
- static const struct attribute *btrfs_attrs[] = {
- 	BTRFS_ATTR_PTR(, label),
- 	BTRFS_ATTR_PTR(, nodesize),
-@@ -893,6 +941,7 @@ static const struct attribute *btrfs_attrs[] = {
- 	BTRFS_ATTR_PTR(, checksum),
- 	BTRFS_ATTR_PTR(, exclusive_operation),
- 	BTRFS_ATTR_PTR(, generation),
-+	BTRFS_ATTR_PTR(, read_policy),
- 	NULL,
- };
- 
--- 
-2.25.1
 
+
+Thanks, Anand
+
+
+
+> Thanks,
+> 
+> Josef
