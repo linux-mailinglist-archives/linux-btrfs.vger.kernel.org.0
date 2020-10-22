@@ -2,98 +2,83 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 798BB29550B
-	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Oct 2020 01:07:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDD29295889
+	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Oct 2020 08:48:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2507047AbgJUXH1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 21 Oct 2020 19:07:27 -0400
-Received: from wout3-smtp.messagingengine.com ([64.147.123.19]:56927 "EHLO
-        wout3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2507032AbgJUXH0 (ORCPT
+        id S2438937AbgJVGsK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 22 Oct 2020 02:48:10 -0400
+Received: from esa2.hgst.iphmx.com ([68.232.143.124]:48468 "EHLO
+        esa2.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2407804AbgJVGsK (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 21 Oct 2020 19:07:26 -0400
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailout.west.internal (Postfix) with ESMTP id B94F312A4;
-        Wed, 21 Oct 2020 19:07:25 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Wed, 21 Oct 2020 19:07:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=from
-        :to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm2; bh=cyLT8ihDVMziZ
-        JFq7nEmekggQ/kxhXwGRc2vSDc47tA=; b=RtPGbgd06gen2iie1bvsxqDsJ0Joq
-        V+Z/LTnGZh5fyril1sv9SCZC39btahhnsMFoUO9wy19ctbft659l1waxOWQMQNy5
-        X4TzndFHtZXeUbeoJbLOPMJ7o/neaaQ1N2/rPaSjlC/CR+zTdTOfJmvwQMWQTtGu
-        mWvRHR+ukOEcvo59UX8WImIZdQhzLlNbnrxJflt+qsV22CbeiD8+t5aSSE1sGbJd
-        qAjyewthgEXX7Lw9eMaAVnywoV7P70qiH2pkelpt2h/V3+IwkOE5hL2aMboHGp/A
-        rflVvGEkK84ikEG3uzzj3e2fi8/0EX2REbso5qmiuyFTHGS6tq6ZB1ycA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :in-reply-to:message-id:mime-version:references:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm1; bh=cyLT8ihDVMziZJFq7nEmekggQ/kxhXwGRc2vSDc47tA=; b=qvq0RmXu
-        WG66nE8X/X8MR562LSv8hb930bMI1basylox1KD9bTwavyURvWDTvRDFecNoNq8l
-        ii4kxXxOnBo5or+qLbxq2B9TCsk0z4t+2fllhn1ZioSR4KdmRC8emnvI3roGzknT
-        cBwl34IWAjTpgM84/R40wbveCI2W/cCrzIpFeCLEEYwfVwkx8NR+y0edeR2uK0og
-        4aQ6TAkJ90zMR66wtz9TTAJawpx843BUYVBv6EptcmqoIczNhSppf5/ZeewBtddS
-        zMG/P9YzpVeVWChvDtS2nFfvhc5ByWohL0K3dcNHXDZbZglhhifEj6Q26oXFlVFQ
-        Utc5jqJ3aOi1Gw==
-X-ME-Sender: <xms:Lb-QX8RSQ1Ae1dtBTQ_AlcYWph9mmtmPXDNDIdsqpBtSyaP5jfr24g>
-    <xme:Lb-QX5xxrDWZAqS0UhBuotzZkyHXjoKsAZchnr6_LwHEma4Du5vg3D6V34Oqmluyf
-    wIbVdM1WO8X1XgNUtY>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrjeeigdduiecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffojghfggfgsedtkeertd
-    ertddtnecuhfhrohhmpeeuohhrihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhi
-    oheqnecuggftrfgrthhtvghrnhepieeuffeuvdeiueejhfehiefgkeevudejjeejffevvd
-    ehtddufeeihfekgeeuheelnecukfhppeduieefrdduudegrddufedvrdefnecuvehluhhs
-    thgvrhfuihiivgepieenucfrrghrrghmpehmrghilhhfrhhomhepsghorhhishessghurh
-    drihho
-X-ME-Proxy: <xmx:Lb-QX53frsOpq1dJzGzQKy9tNyfwbSnki6Fo6WMf1-gPsAIrF5SSmg>
-    <xmx:Lb-QXwCw-_3yfzx-Vgazr6MQAEcjxUVFGJHW8ZVuldVz7wMNXHML9Q>
-    <xmx:Lb-QX1i0jcDeMgTgodctK5sYDMACYcR4yTj60k0ZZMgkgBvcTLdkUg>
-    <xmx:Lb-QX1Jza9PLnJ-9zsa2L3DHQOmvJRyguJWLLJ5wwE79ygQEd6VAQg>
-Received: from localhost (unknown [163.114.132.3])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 0EB8B3064683;
-        Wed, 21 Oct 2020 19:07:25 -0400 (EDT)
-From:   Boris Burkov <boris@bur.io>
-To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Cc:     Boris Burkov <boris@bur.io>
-Subject: [PATCH v4 8/8] btrfs: skip space_cache v1 setup when not using it
-Date:   Wed, 21 Oct 2020 16:06:36 -0700
-Message-Id: <92f5a39baff2daef37c5b5073afd5bbe876cd57b.1603318242.git.boris@bur.io>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <cover.1603318242.git.boris@bur.io>
-References: <cover.1603318242.git.boris@bur.io>
+        Thu, 22 Oct 2020 02:48:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1603349415; x=1634885415;
+  h=date:from:to:subject:message-id:references:mime-version:
+   in-reply-to;
+  bh=FlMHwlKQHkGtz11u/T63nBONh3Bzvj/xoVk3RFmnD/Q=;
+  b=kXOKTGMfdci52Ka1r1ELMErrqFfAVDAvbh2X1L2qyzh7MyL6mpPinXC6
+   CWNPeQXixXXnf9mW1A6gr/GMinGo5vT8JRiGux3yEAQc2j9Kq2K9dxu0+
+   Tt8bYzMC5FzoTVTiCZEBoFSrPh2gEpJoqafc7scChJyVhCRDsARbtK6Qc
+   3XZNGScyo3XRwteaXJYLK7NxvbYmWMdXNKHg10+QnwWhPiJjgdSHYzBV4
+   5/890ueX9KXFtp5jsi86ArQy7jgH7v8cBvBt8bBzlsThUDPKpBsSVSWn6
+   h+a7MrOnZPCMpMyvDJUUZKrq+iHBNGoGEH0RGKi0i3NQBpC9nzdQeCC0P
+   Q==;
+IronPort-SDR: /ZSUK+K/3wz51reZn5eqcNMm/2of4Rmn9Yyi57Y0V/3K6mr/urGYyLGW5dc9FCjagxQmfmA/dh
+ KvgtABfi/xzSzQfHZW+w1B6fhX2tKL5QyGjftmY5Zwufy7XAkPpttwmIFKBPmhXRkJ6EBTBi0M
+ jpRZAQE77rejWCNZw9zh7cv8vwg2EG4Cp3+zCQXS4NPpSpw7jT9MUpf4qvHgrsuwHdd6ypfnX7
+ ALJbPnj9OqPGKP2jHDY+V1k/dpl7lF+zvjZ0uLYOqTw5UMAjHn5XiluI3GcxP4PiChCkIJ0ZFg
+ VKU=
+X-IronPort-AV: E=Sophos;i="5.77,403,1596470400"; 
+   d="scan'208";a="254094978"
+Received: from uls-op-cesaip01.wdc.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
+  by ob1.hgst.iphmx.com with ESMTP; 22 Oct 2020 14:50:14 +0800
+IronPort-SDR: 2CpP3PZWJ+LPJ9WKPo9SeUJkKJ2ry68YyZaxFnOOro8D+kdpTJI39w8SYUifEvcU2AEfe09u3f
+ vT6E4Szdonp5xg5anlWEGQe+iJX6kNn6BcU/JhFlF5+gg9tCBJ8TSw3BYwO8CkiCTmBzdyfM7i
+ LBng+ePLmNPE/gK1J8G7a3/43MioZG4nTQVVQc7NYlwEGJwTLjb25gV4l6hAyQNqbPRzO4SL1r
+ gIpGfeE/cFAMWKAdQgzE31Rp2MONwQ/vlRSt7mguG8rpaYDhXscV9Ha8+PTwqvO0yCw7V07VTk
+ qll6mgv/s4bnHdhgf4Xm2Fi0
+Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Oct 2020 23:34:33 -0700
+IronPort-SDR: RFwsVhv+sbyh+pyn9f7IG+keDM0jIZBb58TCLI2b3WDs9k2bVDnhQmctfcrOozlk1uzQ/eIp0S
+ 3t9GBBmgJ2ydfw4Zzlx8ENVDUjqXZuml46PFSF34Jq51Q72+Btcv5qJLBDRsoSZfWFwaBP39Wv
+ OsrE5sC22zGojhL3egPYXs5Xc1YBuwAEKoskDgvZ995YwH/wNJgfWBgQ9Z2SXOMH2Fc21xoMgo
+ Y24bPJCivNvWYur4cdcSvVR9xPBUJu9/7+ovL64Mm1v0HGHaQCgaesoRu82urZ9kCiFRYZbzPe
+ BuA=
+WDCIronportException: Internal
+Received: from naota.dhcp.fujisawa.hgst.com ([10.149.52.155])
+  by uls-op-cesaip02.wdc.com with SMTP; 21 Oct 2020 23:48:08 -0700
+Received: (nullmailer pid 791091 invoked by uid 1000);
+        Thu, 22 Oct 2020 06:48:07 -0000
+Date:   Thu, 22 Oct 2020 15:48:07 +0900
+From:   Naohiro Aota <naohiro.aota@wdc.com>
+To:     dsterba@suse.cz, linux-btrfs@vger.kernel.org, dsterba@suse.com,
+        hare@suse.com, linux-fsdevel@vger.kernel.org,
+        Josef Bacik <josef@toxicpanda.com>
+Subject: Re: [PATCH v8 10/41] btrfs: disallow inode_cache in ZONED mode
+Message-ID: <20201022064807.am3amanzc7tzec5f@naota.dhcp.fujisawa.hgst.com>
+References: <cover.1601572459.git.naohiro.aota@wdc.com>
+ <4aad45e8c087490facbd24fc037b6ab374295cbe.1601574234.git.naohiro.aota@wdc.com>
+ <20201013154117.GD6756@twin.jikos.cz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20201013154117.GD6756@twin.jikos.cz>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-If we are not using space cache v1, we should not create the free space
-object or free space inodes. This comes up when we delete the existing
-free space objects/inodes when migrating to v2, only to see them get
-recreated for every dirtied block group.
+On Tue, Oct 13, 2020 at 05:41:17PM +0200, David Sterba wrote:
+>On Fri, Oct 02, 2020 at 03:36:17AM +0900, Naohiro Aota wrote:
+>> inode_cache use pre-allocation to write its cache data. However,
+>> pre-allocation is completely disabled in ZONED mode.
+>>
+>> We can technically enable inode_cache in the same way as relocation.
+>> However, inode_cache is rarely used and the man page discourage using it.
+>> So, let's just disable it for now.
+>
+>Don't worry about the inode_cache mount option, it's been deprecated
+>as of commit b547a88ea5776a8092f7 and will be removed in 5.11.
 
-Signed-off-by: Boris Burkov <boris@bur.io>
----
- fs/btrfs/block-group.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-index 8938b11a3339..59a130fdcd5c 100644
---- a/fs/btrfs/block-group.c
-+++ b/fs/btrfs/block-group.c
-@@ -2325,6 +2325,9 @@ static int cache_save_setup(struct btrfs_block_group *block_group,
- 	int retries = 0;
- 	int ret = 0;
- 
-+	if (!btrfs_test_opt(fs_info, SPACE_CACHE))
-+		return 0;
-+
- 	/*
- 	 * If this block group is smaller than 100 megs don't bother caching the
- 	 * block group.
--- 
-2.24.1
-
+Thanks. I'll drop this one in the next version.
