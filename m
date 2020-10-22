@@ -2,115 +2,82 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0A2A29615E
-	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Oct 2020 17:00:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B67BE2961C6
+	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Oct 2020 17:40:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2505510AbgJVPAh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 22 Oct 2020 11:00:37 -0400
-Received: from mx2.suse.de ([195.135.220.15]:44516 "EHLO mx2.suse.de"
+        id S368694AbgJVPkx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 22 Oct 2020 11:40:53 -0400
+Received: from mx2.suse.de ([195.135.220.15]:55026 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2440530AbgJVPAh (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 22 Oct 2020 11:00:37 -0400
+        id S368692AbgJVPkw (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 22 Oct 2020 11:40:52 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1603381251;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=jedhEnvGwr7hgNi6AOGCXqA9x0YVkoxOqfGf3pJNtQE=;
+        b=YeJKceVpP3x8ny5QuJAMZRqiEtZKvYKargwsZj8MrrkjvS/dLk/waREOjeSu+DyOhw1ciq
+        q53b4O8iNFD8sDjJpICSf738ubMERb2oHydgUPreHOBwW569GINez50jfznmw81txfkBcy
+        HZGyJy/WydvnDev3MUc9TxHgaOi6gaM=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id E6B82AC6D;
-        Thu, 22 Oct 2020 15:00:35 +0000 (UTC)
-Date:   Thu, 22 Oct 2020 10:00:33 -0500
-From:   Goldwyn Rodrigues <rgoldwyn@suse.de>
-To:     Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Cc:     David Sterba <dsterba@suse.cz>, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v2] btrfs: don't fallback to buffered read if we don't
- need to
-Message-ID: <20201022150033.uqvg2wqtjo5fnx5b@fiona>
-References: <0584c1f8bdbef5e56a684919df24481e90ddf334.1603375354.git.johannes.thumshirn@wdc.com>
+        by mx2.suse.de (Postfix) with ESMTP id 88DB8BA25;
+        Thu, 22 Oct 2020 15:40:51 +0000 (UTC)
+From:   Nikolay Borisov <nborisov@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     Nikolay Borisov <nborisov@suse.com>
+Subject: [PATCH] btrfs: Open code insert_orphan_item
+Date:   Thu, 22 Oct 2020 18:40:46 +0300
+Message-Id: <20201022154046.1654593-1-nborisov@suse.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0584c1f8bdbef5e56a684919df24481e90ddf334.1603375354.git.johannes.thumshirn@wdc.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 23:05 22/10, Johannes Thumshirn wrote:
-> Since we switched to the iomap infrastructure in b5ff9f1a96e8f ("btrfs:
-> switch to iomap for direct IO") we're calling generic_file_buffered_read()
-> directly and not via generic_file_read_iter() anymore.
-> 
-> If the read could read everything there is no need to bother calling
+Just open code it in its sole caller and remove a level of indirection.
 
-If the DIO read
+Signed-off-by: Nikolay Borisov <nborisov@suse.com>
+---
+ fs/btrfs/tree-log.c | 16 +++-------------
+ 1 file changed, 3 insertions(+), 13 deletions(-)
 
-> generic_file_buffered_read(), like it is handled in
-> generic_file_read_iter().
-> 
-> If we call generic_file_buffered_read() in this case we can hit a
-> situation where we do an invalid readahead and cause this UBSAN splat:
-> johannes@redsun60:linux(btrfs-misc-next)$ kasan_symbolize.py < ubsan.txt
-> rapido1:/home/johannes/src/xfstests-dev# cat results/generic/091.dmesg
-> run fstests generic/091 at 2020-10-21 10:52:32
-> ================================================================================
-> UBSAN: shift-out-of-bounds in ./include/linux/log2.h:57:13
-> shift exponent 64 is too large for 64-bit type 'long unsigned int'
-> CPU: 0 PID: 656 Comm: fsx Not tainted 5.9.0-rc7+ #821
-> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.13.0-0-gf21b5a4-rebuilt.opensuse.org 04/01/2014
-> Call Trace:
->  __dump_stack lib/dump_stack.c:77
->  dump_stack+0x57/0x70 lib/dump_stack.c:118
->  ubsan_epilogue+0x5/0x40 lib/ubsan.c:148
->  __ubsan_handle_shift_out_of_bounds.cold+0x61/0xe9 lib/ubsan.c:395
->  __roundup_pow_of_two ./include/linux/log2.h:57
->  get_init_ra_size mm/readahead.c:318
->  ondemand_readahead.cold+0x16/0x2c mm/readahead.c:530
->  generic_file_buffered_read+0x3ac/0x840 mm/filemap.c:2199
->  call_read_iter ./include/linux/fs.h:1876
->  new_sync_read+0x102/0x180 fs/read_write.c:415
->  vfs_read+0x11c/0x1a0 fs/read_write.c:481
->  ksys_read+0x4f/0xc0 fs/read_write.c:615
->  do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
->  entry_SYSCALL_64_after_hwframe+0x44/0xa9 arch/x86/entry/entry_64.S:118
-> RIP: 0033:0x7fe87fee992e
-> Code: 0f 1f 40 00 48 8b 15 a1 96 00 00 f7 d8 64 89 02 48 c7 c0 ff ff ff ff eb ba 0f 1f 00 64 8b 04 25 18 00 00 00 85 c0 75 14 0f 05 <48> 3d 00 f0 ff ff 77 5a c3 66 0f 1f 84 00 00 00 00 00 48 83 ec 28
-> RSP: 002b:00007ffe01605278 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
-> RAX: ffffffffffffffda RBX: 000000000004f000 RCX: 00007fe87fee992e
-> RDX: 0000000000004000 RSI: 0000000001677000 RDI: 0000000000000003
-> RBP: 000000000004f000 R08: 0000000000004000 R09: 000000000004f000
-> R10: 0000000000053000 R11: 0000000000000246 R12: 0000000000004000
-> R13: 0000000000000000 R14: 000000000007a120 R15: 0000000000000000
-> ================================================================================
-> BTRFS info (device nullb0): has skinny extents
-> BTRFS info (device nullb0): ZONED mode enabled, zone size 268435456 B
-> BTRFS info (device nullb0): enabling ssd optimizations
-> 
-> Fixes: b5ff9f1a96e8f ("btrfs: switch to iomap for direct IO")
-> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-
-Reviewed-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
-
-> ---
-> Changes to v1:
-> - add check for read beyond EOF (Goldwyn)
-> - Polish subject a bit
-> ---
->  fs/btrfs/file.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-> index 6f5ecba74f54..1c97e559aefb 100644
-> --- a/fs/btrfs/file.c
-> +++ b/fs/btrfs/file.c
-> @@ -3612,7 +3612,8 @@ static ssize_t btrfs_file_read_iter(struct kiocb *iocb, struct iov_iter *to)
->  		inode_lock_shared(inode);
->  		ret = btrfs_direct_IO(iocb, to);
->  		inode_unlock_shared(inode);
-> -		if (ret < 0)
-> +		if (ret < 0 || !iov_iter_count(to) ||
-> +		    iocb->ki_pos >= i_size_read(file_inode(iocb->ki_filp)))
->  			return ret;
->  	}
->  
-> -- 
-> 2.26.2
-> 
-
+diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
+index 3ec3e06783a0..71bd0f08543b 100644
+--- a/fs/btrfs/tree-log.c
++++ b/fs/btrfs/tree-log.c
+@@ -1565,18 +1565,6 @@ static noinline int add_inode_ref(struct btrfs_trans_handle *trans,
+ 	return ret;
+ }
+ 
+-static int insert_orphan_item(struct btrfs_trans_handle *trans,
+-			      struct btrfs_root *root, u64 ino)
+-{
+-	int ret;
+-
+-	ret = btrfs_insert_orphan_item(trans, root, ino);
+-	if (ret == -EEXIST)
+-		ret = 0;
+-
+-	return ret;
+-}
+-
+ static int count_inode_extrefs(struct btrfs_root *root,
+ 		struct btrfs_inode *inode, struct btrfs_path *path)
+ {
+@@ -1728,7 +1716,9 @@ static noinline int fixup_inode_link_count(struct btrfs_trans_handle *trans,
+ 			if (ret)
+ 				goto out;
+ 		}
+-		ret = insert_orphan_item(trans, root, ino);
++		ret = btrfs_insert_orphan_item(trans, root, ino);
++		if (ret == -EEXIST)
++			ret = 0;
+ 	}
+ 
+ out:
 -- 
-Goldwyn
+2.25.1
+
