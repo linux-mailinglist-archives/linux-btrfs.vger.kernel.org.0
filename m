@@ -2,57 +2,52 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDCA2297331
-	for <lists+linux-btrfs@lfdr.de>; Fri, 23 Oct 2020 18:06:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A1B629735E
+	for <lists+linux-btrfs@lfdr.de>; Fri, 23 Oct 2020 18:16:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1751297AbgJWQGw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 23 Oct 2020 12:06:52 -0400
-Received: from mx2.suse.de ([195.135.220.15]:45264 "EHLO mx2.suse.de"
+        id S1751388AbgJWQQ0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 23 Oct 2020 12:16:26 -0400
+Received: from mx2.suse.de ([195.135.220.15]:33204 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S464934AbgJWQGw (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 23 Oct 2020 12:06:52 -0400
+        id S1750251AbgJWQQ0 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 23 Oct 2020 12:16:26 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 3CDA7AFC0;
-        Fri, 23 Oct 2020 16:06:51 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id D6476AD66;
+        Fri, 23 Oct 2020 16:16:24 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 67EDDDA7F1; Fri, 23 Oct 2020 18:05:19 +0200 (CEST)
-Date:   Fri, 23 Oct 2020 18:05:19 +0200
+        id 1A2BDDA7F1; Fri, 23 Oct 2020 18:14:53 +0200 (CEST)
+Date:   Fri, 23 Oct 2020 18:14:52 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Goldwyn Rodrigues <rgoldwyn@suse.de>
-Cc:     Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        David Sterba <dsterba@suse.cz>, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v2] btrfs: don't fallback to buffered read if we don't
- need to
-Message-ID: <20201023160519.GI6756@twin.jikos.cz>
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH] btrfs: lookup global roots with our backref commit root
+ helper
+Message-ID: <20201023161452.GJ6756@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Goldwyn Rodrigues <rgoldwyn@suse.de>,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        linux-btrfs@vger.kernel.org
-References: <0584c1f8bdbef5e56a684919df24481e90ddf334.1603375354.git.johannes.thumshirn@wdc.com>
- <20201022150033.uqvg2wqtjo5fnx5b@fiona>
+Mail-Followup-To: dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
+        linux-btrfs@vger.kernel.org, kernel-team@fb.com
+References: <d9fc7a26e9424237f3174bacc3e728f966c7562f.1603468749.git.josef@toxicpanda.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201022150033.uqvg2wqtjo5fnx5b@fiona>
+In-Reply-To: <d9fc7a26e9424237f3174bacc3e728f966c7562f.1603468749.git.josef@toxicpanda.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Oct 22, 2020 at 10:00:33AM -0500, Goldwyn Rodrigues wrote:
-> > diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-> > index 6f5ecba74f54..1c97e559aefb 100644
-> > --- a/fs/btrfs/file.c
-> > +++ b/fs/btrfs/file.c
-> > @@ -3612,7 +3612,8 @@ static ssize_t btrfs_file_read_iter(struct kiocb *iocb, struct iov_iter *to)
-> >  		inode_lock_shared(inode);
-> >  		ret = btrfs_direct_IO(iocb, to);
-> >  		inode_unlock_shared(inode);
-> > -		if (ret < 0)
-> > +		if (ret < 0 || !iov_iter_count(to) ||
-> > +		    iocb->ki_pos >= i_size_read(file_inode(iocb->ki_filp)))
-> >  			return ret;
+On Fri, Oct 23, 2020 at 11:59:53AM -0400, Josef Bacik wrote:
+> I messed up with my backref commit root helper, I assumed we would only
+> ever want to look up fs roots, but the relocation code now uses the
+> backref code, and we can find data extents in the tree_root because of
+> space cache v1.  Fix this by looking up the global root first, so we
+> make sure to always find the root that we're looking for.
+> 
+> Fixes: f4f9794a5aa1 ("btrfs: add a helper to read the tree_root commit root for backref lookup")
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> ---
+> Dave, I assume you'll want to just fold this into the fixes, I just added the
+> fixes so you knew what patch to roll this into.
 
-JFYI, this conflicts with patch "btrfs: split btrfs_direct_IO to read
-and write" from your dsync/dio series it will need to be refreshed.
+Yep that works, folded, thanks.
