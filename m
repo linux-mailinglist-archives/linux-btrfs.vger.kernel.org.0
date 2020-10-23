@@ -2,52 +2,50 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A1B629735E
-	for <lists+linux-btrfs@lfdr.de>; Fri, 23 Oct 2020 18:16:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 465A1297566
+	for <lists+linux-btrfs@lfdr.de>; Fri, 23 Oct 2020 18:58:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1751388AbgJWQQ0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 23 Oct 2020 12:16:26 -0400
-Received: from mx2.suse.de ([195.135.220.15]:33204 "EHLO mx2.suse.de"
+        id S1751589AbgJWQ6A (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 23 Oct 2020 12:58:00 -0400
+Received: from mx2.suse.de ([195.135.220.15]:34396 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1750251AbgJWQQ0 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 23 Oct 2020 12:16:26 -0400
+        id S461384AbgJWQ6A (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 23 Oct 2020 12:58:00 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id D6476AD66;
-        Fri, 23 Oct 2020 16:16:24 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id C78C7AB95;
+        Fri, 23 Oct 2020 16:57:58 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 1A2BDDA7F1; Fri, 23 Oct 2020 18:14:53 +0200 (CEST)
-Date:   Fri, 23 Oct 2020 18:14:52 +0200
+        id 65831DA7F1; Fri, 23 Oct 2020 18:56:26 +0200 (CEST)
+Date:   Fri, 23 Oct 2020 18:56:26 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH] btrfs: lookup global roots with our backref commit root
- helper
-Message-ID: <20201023161452.GJ6756@twin.jikos.cz>
+To:     Davidlohr Bueso <dave@stgolabs.net>
+Cc:     dsterba@suse.com, a.darwish@linutronix.de,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Davidlohr Bueso <dbueso@suse.de>
+Subject: Re: [PATCH] btrfs: convert data_seqcount to seqcount_mutex_t
+Message-ID: <20201023165626.GK6756@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
-        linux-btrfs@vger.kernel.org, kernel-team@fb.com
-References: <d9fc7a26e9424237f3174bacc3e728f966c7562f.1603468749.git.josef@toxicpanda.com>
+Mail-Followup-To: dsterba@suse.cz, Davidlohr Bueso <dave@stgolabs.net>,
+        dsterba@suse.com, a.darwish@linutronix.de,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Davidlohr Bueso <dbueso@suse.de>
+References: <20201021201724.27213-1-dave@stgolabs.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <d9fc7a26e9424237f3174bacc3e728f966c7562f.1603468749.git.josef@toxicpanda.com>
+In-Reply-To: <20201021201724.27213-1-dave@stgolabs.net>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Oct 23, 2020 at 11:59:53AM -0400, Josef Bacik wrote:
-> I messed up with my backref commit root helper, I assumed we would only
-> ever want to look up fs roots, but the relocation code now uses the
-> backref code, and we can find data extents in the tree_root because of
-> space cache v1.  Fix this by looking up the global root first, so we
-> make sure to always find the root that we're looking for.
-> 
-> Fixes: f4f9794a5aa1 ("btrfs: add a helper to read the tree_root commit root for backref lookup")
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-> ---
-> Dave, I assume you'll want to just fold this into the fixes, I just added the
-> fixes so you knew what patch to roll this into.
+On Wed, Oct 21, 2020 at 01:17:24PM -0700, Davidlohr Bueso wrote:
+> By doing so we can associate the sequence counter to the chunk_mutex
+> for lockdep purposes (compiled-out otherwise) and also avoid
+> explicitly disabling preemption around the write region as it will now
+> be done automatically by the seqcount machinery based on the lock type.
 
-Yep that works, folded, thanks.
+Thanks, the enhanced seqlock is new to me and makes sense regarding
+lockdep. I've added a comment to mention the mutex association and added
+it to misc-next.
