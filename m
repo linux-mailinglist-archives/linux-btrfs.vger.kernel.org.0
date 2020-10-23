@@ -2,103 +2,108 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AC38296A6D
-	for <lists+linux-btrfs@lfdr.de>; Fri, 23 Oct 2020 09:43:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C863E296C84
+	for <lists+linux-btrfs@lfdr.de>; Fri, 23 Oct 2020 12:11:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S375765AbgJWHm7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 23 Oct 2020 03:42:59 -0400
-Received: from mx2.suse.de ([195.135.220.15]:57932 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S374509AbgJWHm7 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 23 Oct 2020 03:42:59 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1603438977;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=Z/l0fL5lTvaiPOGTB0dvk36l0CjFmyA+frjeMksBaeg=;
-        b=l8/WFFxAiuWC1zupIhYG98MahGpur3mEtfNXYsM8XESuLb667NZWiZwYYiIgKxZ6MmdvyB
-        6elr5G7pn7fLM8x4Cre0AKA3e7szMQNkO7bBdrQLda9lY7FzrlFXof1aYHbrAK1ooIjrVb
-        BA7yxk8twWuVQA3nCpOHrY8v79a06KA=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id A61CFAE7D;
-        Fri, 23 Oct 2020 07:42:57 +0000 (UTC)
-Subject: Re: [PATCH] btrfs: balance RAID1/RAID10 mirror selection
-To:     Wang Yugui <wangyugui@e16-tech.com>, louis@waffle.tech
-Cc:     linux-btrfs@vger.kernel.org
-References: <8541d6d7a63e470b9f4c22ba95cd64fc@waffle.tech>
- <20201023153814.643F.409509F4@e16-tech.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- mQINBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
- T7g+RbfPFlmQp+EwFWOtABXlKC54zgSf+uulGwx5JAUFVUIRBmnHOYi/lUiE0yhpnb1KCA7f
- u/W+DkwGerXqhhe9TvQoGwgCKNfzFPZoM+gZrm+kWv03QLUCr210n4cwaCPJ0Nr9Z3c582xc
- bCUVbsjt7BN0CFa2BByulrx5xD9sDAYIqfLCcZetAqsTRGxM7LD0kh5WlKzOeAXj5r8DOrU2
- GdZS33uKZI/kZJZVytSmZpswDsKhnGzRN1BANGP8sC+WD4eRXajOmNh2HL4P+meO1TlM3GLl
- EQd2shHFY0qjEo7wxKZI1RyZZ5AgJnSmehrPCyuIyVY210CbMaIKHUIsTqRgY5GaNME24w7h
- TyyVCy2qAM8fLJ4Vw5bycM/u5xfWm7gyTb9V1TkZ3o1MTrEsrcqFiRrBY94Rs0oQkZvunqia
- c+NprYSaOG1Cta14o94eMH271Kka/reEwSZkC7T+o9hZ4zi2CcLcY0DXj0qdId7vUKSJjEep
- c++s8ncFekh1MPhkOgNj8pk17OAESanmDwksmzh1j12lgA5lTFPrJeRNu6/isC2zyZhTwMWs
- k3LkcTa8ZXxh0RfWAqgx/ogKPk4ZxOXQEZetkEyTFghbRH2BIwARAQABtCNOaWtvbGF5IEJv
- cmlzb3YgPG5ib3Jpc292QHN1c2UuY29tPokCOAQTAQIAIgUCWIo48QIbAwYLCQgHAwIGFQgC
- CQoLBBYCAwECHgECF4AACgkQcb6CRuU/KFc0eg/9GLD3wTQz9iZHMFbjiqTCitD7B6dTLV1C
- ddZVlC8Hm/TophPts1bWZORAmYIihHHI1EIF19+bfIr46pvfTu0yFrJDLOADMDH+Ufzsfy2v
- HSqqWV/nOSWGXzh8bgg/ncLwrIdEwBQBN9SDS6aqsglagvwFD91UCg/TshLlRxD5BOnuzfzI
- Leyx2c6YmH7Oa1R4MX9Jo79SaKwdHt2yRN3SochVtxCyafDlZsE/efp21pMiaK1HoCOZTBp5
- VzrIP85GATh18pN7YR9CuPxxN0V6IzT7IlhS4Jgj0NXh6vi1DlmKspr+FOevu4RVXqqcNTSS
- E2rycB2v6cttH21UUdu/0FtMBKh+rv8+yD49FxMYnTi1jwVzr208vDdRU2v7Ij/TxYt/v4O8
- V+jNRKy5Fevca/1xroQBICXsNoFLr10X5IjmhAhqIH8Atpz/89ItS3+HWuE4BHB6RRLM0gy8
- T7rN6ja+KegOGikp/VTwBlszhvfLhyoyjXI44Tf3oLSFM+8+qG3B7MNBHOt60CQlMkq0fGXd
- mm4xENl/SSeHsiomdveeq7cNGpHi6i6ntZK33XJLwvyf00PD7tip/GUj0Dic/ZUsoPSTF/mG
- EpuQiUZs8X2xjK/AS/l3wa4Kz2tlcOKSKpIpna7V1+CMNkNzaCOlbv7QwprAerKYywPCoOSC
- 7P25Ag0EWIoHPgEQAMiUqvRBZNvPvki34O/dcTodvLSyOmK/MMBDrzN8Cnk302XfnGlW/YAQ
- csMWISKKSpStc6tmD+2Y0z9WjyRqFr3EGfH1RXSv9Z1vmfPzU42jsdZn667UxrRcVQXUgoKg
- QYx055Q2FdUeaZSaivoIBD9WtJq/66UPXRRr4H/+Y5FaUZx+gWNGmBT6a0S/GQnHb9g3nonD
- jmDKGw+YO4P6aEMxyy3k9PstaoiyBXnzQASzdOi39BgWQuZfIQjN0aW+Dm8kOAfT5i/yk59h
- VV6v3NLHBjHVw9kHli3jwvsizIX9X2W8tb1SefaVxqvqO1132AO8V9CbE1DcVT8fzICvGi42
- FoV/k0QOGwq+LmLf0t04Q0csEl+h69ZcqeBSQcIMm/Ir+NorfCr6HjrB6lW7giBkQl6hhomn
- l1mtDP6MTdbyYzEiBFcwQD4terc7S/8ELRRybWQHQp7sxQM/Lnuhs77MgY/e6c5AVWnMKd/z
- MKm4ru7A8+8gdHeydrRQSWDaVbfy3Hup0Ia76J9FaolnjB8YLUOJPdhI2vbvNCQ2ipxw3Y3c
- KhVIpGYqwdvFIiz0Fej7wnJICIrpJs/+XLQHyqcmERn3s/iWwBpeogrx2Lf8AGezqnv9woq7
- OSoWlwXDJiUdaqPEB/HmGfqoRRN20jx+OOvuaBMPAPb+aKJyle8zABEBAAGJAh8EGAECAAkF
- AliKBz4CGwwACgkQcb6CRuU/KFdacg/+M3V3Ti9JYZEiIyVhqs+yHb6NMI1R0kkAmzsGQ1jU
- zSQUz9AVMR6T7v2fIETTT/f5Oout0+Hi9cY8uLpk8CWno9V9eR/B7Ifs2pAA8lh2nW43FFwp
- IDiSuDbH6oTLmiGCB206IvSuaQCp1fed8U6yuqGFcnf0ZpJm/sILG2ECdFK9RYnMIaeqlNQm
- iZicBY2lmlYFBEaMXHoy+K7nbOuizPWdUKoKHq+tmZ3iA+qL5s6Qlm4trH28/fPpFuOmgP8P
- K+7LpYLNSl1oQUr+WlqilPAuLcCo5Vdl7M7VFLMq4xxY/dY99aZx0ZJQYFx0w/6UkbDdFLzN
- upT7NIN68lZRucImffiWyN7CjH23X3Tni8bS9ubo7OON68NbPz1YIaYaHmnVQCjDyDXkQoKC
- R82Vf9mf5slj0Vlpf+/Wpsv/TH8X32ajva37oEQTkWNMsDxyw3aPSps6MaMafcN7k60y2Wk/
- TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
- RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
- 5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <d4d600aa-a56b-2458-f504-afbb584f888b@suse.com>
-Date:   Fri, 23 Oct 2020 10:42:56 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S461862AbgJWKL5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 23 Oct 2020 06:11:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45946 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S374103AbgJWKL4 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 23 Oct 2020 06:11:56 -0400
+Received: from tartarus.angband.pl (tartarus.angband.pl [IPv6:2001:41d0:602:dbe::8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AA61C0613CE
+        for <linux-btrfs@vger.kernel.org>; Fri, 23 Oct 2020 03:11:56 -0700 (PDT)
+Received: from kilobyte by tartarus.angband.pl with local (Exim 4.92)
+        (envelope-from <kilobyte@angband.pl>)
+        id 1kVu2z-0006ov-58; Fri, 23 Oct 2020 12:11:45 +0200
+Date:   Fri, 23 Oct 2020 12:11:45 +0200
+From:   Adam Borowski <kilobyte@angband.pl>
+To:     Wang Yugui <wangyugui@e16-tech.com>
+Cc:     Goffredo Baroncelli <kreijack@libero.it>,
+        linux-btrfs@vger.kernel.org, Michael <mclaud@roznica.com.ua>,
+        Hugo Mills <hugo@carfax.org.uk>,
+        Martin Svec <martin.svec@zoner.cz>,
+        Goffredo Baroncelli <kreijack@inwind.it>
+Subject: Re: [PATCH] btrfs: add ssd_metadata mode
+Message-ID: <20201023101145.GB19860@angband.pl>
+References: <20200405082636.18016-1-kreijack@libero.it>
+ <20200405082636.18016-2-kreijack@libero.it>
+ <20201023152329.E7FF.409509F4@e16-tech.com>
 MIME-Version: 1.0
-In-Reply-To: <20201023153814.643F.409509F4@e16-tech.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201023152329.E7FF.409509F4@e16-tech.com>
+X-Junkbait: aaron@angband.pl, zzyx@angband.pl
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: <locally generated>
+X-SA-Exim-Mail-From: kilobyte@angband.pl
+X-SA-Exim-Scanned: No (on tartarus.angband.pl); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 23.10.20 г. 10:38 ч., Wang Yugui wrote:
-> Hi, Louis Jencka
+On Fri, Oct 23, 2020 at 03:23:30PM +0800, Wang Yugui wrote:
+> Hi, Goffredo Baroncelli 
 > 
-> Can we move 'atomic_t rr_counter' into 'struct btrfs_fs_info' to
-> support multiple mounted btrfs filesystem?
+> We can move 'rotational of struct btrfs_device_info' to  'bool rotating
+> of struct btrfs_device'.
 > 
+> 1, it will be more close to 'bool rotating of struct btrfs_fs_devices'.
+> 
+> 2, it maybe used to enhance the path of '[PATCH] btrfs: balance RAID1/RAID10 mirror selection'.
+> https://lore.kernel.org/linux-btrfs/3bddd73e-cb60-b716-4e98-61ff24beb570@oracle.com/T/#t
+
+I don't think it should be a bool -- or at least, turned into a bool
+late in the processing.
+
+There are many storage tiers; rotational applies only to one of the
+coldest.  In my use case, at least, I've added the following patchlet:
+
+-               devices_info[ndevs].rotational = !test_bit(QUEUE_FLAG_NONROT,
++               devices_info[ndevs].rotational = !test_bit(QUEUE_FLAG_DAX,
+
+Or, you may want Optane NVMe vs legacy (ie, NAND) NVMe.
+
+The tiers look like:
+* DIMM-connected Optane (dax=1)
+* NVMe-connected Optane
+* NVMe-connected flash
+* SATA-connected flash
+* SATA-connected spinning rust (rotational=1)
+* IDE-connected spinning rust (rotational=1)
+* SD cards
+* floppies?
+
+And even that is just for local storage only.
+
+Thus, please don't hardcode the notion of "rotational", what we want is
+"faster but smaller" vs "slower but bigger".
+
+> > From: Goffredo Baroncelli <kreijack@inwind.it>
+> > 
+> > When this mode is enabled, the allocation policy of the chunk
+> > is so modified:
+> > - allocation of metadata chunk: priority is given to ssd disk.
+> > - allocation of data chunk: priority is given to a rotational disk.
+> > 
+> > When a striped profile is involved (like RAID0,5,6), the logic
+> > is a bit more complex. If there are enough disks, the data profiles
+> > are stored on the rotational disks only; instead the metadata profiles
+> > are stored on the non rotational disk only.
+> > If the disks are not enough, then the profiles is stored on all
+> > the disks.
+
+And, a newer version of Goffredo's patchset already had
+"preferred_metadata".  It did not assign the preference automatically,
+but if we want god defaults, they should be smarter than just rotationality.
 
 
-And introduce constant cache line pings for every read. This thing needs
-to be tested under load with perf to see what kind of overhead the
-shared atomic_t counter adds. My hunch is this should really be a
-per-cpu variable.
-
-<snip>
+Meow!
+-- 
+⢀⣴⠾⠻⢶⣦⠀
+⣾⠁⢠⠒⠀⣿⡁ Imagine there are bandits in your house, your kid is bleeding out,
+⢿⡄⠘⠷⠚⠋⠀ the house is on fire, and seven giant trumpets are playing in the
+⠈⠳⣄⠀⠀⠀⠀ sky.  Your cat demands food.  The priority should be obvious...
