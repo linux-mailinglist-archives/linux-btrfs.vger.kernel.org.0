@@ -2,80 +2,96 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D09E297587
-	for <lists+linux-btrfs@lfdr.de>; Fri, 23 Oct 2020 19:08:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D106297690
+	for <lists+linux-btrfs@lfdr.de>; Fri, 23 Oct 2020 20:13:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1751381AbgJWRIV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 23 Oct 2020 13:08:21 -0400
-Received: from mx2.suse.de ([195.135.220.15]:39200 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S375829AbgJWRIV (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 23 Oct 2020 13:08:21 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id D15C0AB95;
-        Fri, 23 Oct 2020 17:08:19 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id EE9E9DA7F1; Fri, 23 Oct 2020 19:06:47 +0200 (CEST)
-Date:   Fri, 23 Oct 2020 19:06:47 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Nikolay Borisov <nborisov@suse.com>
-Cc:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 1/4] btrfs: Use helpers to convert from seconds to
- jiffies in transaction_kthread
-Message-ID: <20201023170647.GN6756@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
-        Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org
-References: <20201008122430.93433-1-nborisov@suse.com>
- <20201008122430.93433-2-nborisov@suse.com>
- <50566dfc-0bcd-9a71-8e53-4aac42561489@toxicpanda.com>
- <4d6a4f4e-3f70-a984-f4b3-dfcd5731620c@suse.com>
+        id S1754453AbgJWSME (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 23 Oct 2020 14:12:04 -0400
+Received: from smtp-18.italiaonline.it ([213.209.10.18]:60824 "EHLO libero.it"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1754347AbgJWSMC (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 23 Oct 2020 14:12:02 -0400
+X-Greylist: delayed 489 seconds by postgrey-1.27 at vger.kernel.org; Fri, 23 Oct 2020 14:12:01 EDT
+Received: from venice.bhome ([94.37.195.85])
+        by smtp-18.iol.local with ESMTPA
+        id W1PmkIJQgl7OPW1Pmkjxql; Fri, 23 Oct 2020 20:03:48 +0200
+x-libjamoibt: 1601
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2014;
+        t=1603476228; bh=yji1Ndhur4+Spb8cjg6vs2WJbCqk9nOmPlqWyvMTpjo=;
+        h=From;
+        b=f9+yuVpTPUkbrbE7cYKIfHot8utaKN0i0GB6NRHqj5GD0jJjJlpfJDSi3CVZfD1H+
+         QHuvZJLQ/niv8NYvhm4fUv6v+1+Jn5eM6PKf9Af28W2ELXjArdUs1TW+N9rpITrYp8
+         j8aPaGa1VJu7jGDIaAgh9RE5xAYmgyyXr7UvL6aauAMo4GqEM3K02ojKWEWmZA4jND
+         mJStiNYlZweWGGFPhdutbQnKYzbXj9XONfdJracWzAlZkF8iDOKnkP+05d49TuZUIa
+         cGHgYXbMUyIRQ9PgEo26cREdF4s3X7Mtdr5E3FjbKvDNBUCCcpvrjn9YOlLDpORcCN
+         Bqs1jwDISi0mQ==
+X-CNFS-Analysis: v=2.4 cv=VL9jI/DX c=1 sm=1 tr=0 ts=5f931b04
+ a=6i7ZtOMYC9jVyZJnprbtYA==:117 a=6i7ZtOMYC9jVyZJnprbtYA==:17
+ a=IkcTkHD0fZMA:10 a=Uq0mbvy6AAAA:8 a=sdK8d4-gv52Gl7UXjNgA:9
+ a=7Zwj6sZBwVKJAoWSPKxL6X1jA+E=:19 a=zjBGrzsAejBq38bA:21 a=MFwnZ60OhwntQLdV:21
+ a=QEXdDO2ut3YA:10 a=9nAYT2xhiIK_ZOnRzmc7:22
+Reply-To: kreijack@inwind.it
+Subject: Re: [PATCH] btrfs: add ssd_metadata mode
+To:     Wang Yugui <wangyugui@e16-tech.com>,
+        Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     Adam Borowski <kilobyte@angband.pl>, linux-btrfs@vger.kernel.org,
+        Michael <mclaud@roznica.com.ua>, Hugo Mills <hugo@carfax.org.uk>,
+        Martin Svec <martin.svec@zoner.cz>,
+        Goffredo Baroncelli <kreijack@inwind.it>
+References: <20201023101145.GB19860@angband.pl>
+ <d7ee1c25-ceea-0471-9702-0622a5ef4453@gmx.com>
+ <20201023203742.B13F.409509F4@e16-tech.com>
+From:   Goffredo Baroncelli <kreijack@libero.it>
+Message-ID: <4276e368-411e-8037-9162-c4d2b906c5d2@libero.it>
+Date:   Fri, 23 Oct 2020 20:03:45 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <4d6a4f4e-3f70-a984-f4b3-dfcd5731620c@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <20201023203742.B13F.409509F4@e16-tech.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfMecGqq/izXfdAVAAoL7B+DzyDHvec6bCxDupoqmzudTGZUAaRxdyxJcFTRAnLGDZKEiGcCIIZaNM9tgfbvkvwjQQv+gLqVEEhtuYWX9u/NVlivDTSM8
+ Sl16cBmsT6LH+m1tJQ9beMZH+rL4dDwcwOcz/VLgTcN4RBwlawSzXyZYwsOPKQWLRd3Oxb5STDtjdLqARnjy7SICjUo0CrDnpKXeXW3rokH8gJa05uX70DXW
+ +ZFpzACPpxdGPKMPocULYq3HsfVExNFrEASUpLc63MYSPBq7APxD77WlllQStc6x9xKv7yuO/+5ShEZaYZMVrYHWar2Nw4rLztMKA0EMhjq4JpVe5G7eoA3q
+ Ou2Jf9nFcbz4hQUPDq00h2r4r1tRdrBuG+st/WwIdN8fUtyeaAlg8KG55ihyHmlNr4bUzV9m
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Oct 21, 2020 at 06:03:00PM +0300, Nikolay Borisov wrote:
+On 10/23/20 2:37 PM, Wang Yugui wrote:
+> Hi,
 > 
+> Can we add the feature of 'Storage Tiering' to btrfs for these use cases?
 > 
-> On 21.10.20 г. 17:51 ч., Josef Bacik wrote:
-> > On 10/8/20 8:24 AM, Nikolay Borisov wrote:
-> >> The kernel provides easy to understand helpers to convert from human
-> >> understandable units to the kernel-friendly 'jiffies'. So let's use
-> >> those to make the code easier to understand. No functional changes.
-> >>
-> >> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
-> >> ---
-> >>   fs/btrfs/disk-io.c | 4 ++--
-> >>   1 file changed, 2 insertions(+), 2 deletions(-)
-> >>
-> >> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-> >> index 764001609a15..77b52b724733 100644
-> >> --- a/fs/btrfs/disk-io.c
-> >> +++ b/fs/btrfs/disk-io.c
-> >> @@ -1721,7 +1721,7 @@ static int transaction_kthread(void *arg)
-> >>         do {
-> >>           cannot_commit = false;
-> >> -        delay = HZ * fs_info->commit_interval;
-> >> +        delay = msecs_to_jiffies(fs_info->commit_interval * 1000);
-> > 
-> > Since we're now doing everything in msecs, why don't we just make sure
-> > ->commit_interval is set to msecs, that way we don't have to carry
-> > around the * 1000?  If we still need the multiplication we should be
-> > using MSEC_PER_SEC.  Thanks,
-> 
-> Yes, as a matter of fact I intend on making commit_interval into
-> jiffies, to completely eliminate the msecs_to_jiffies helpers here.
-> 
-> But that will be a follow on work once David merges the v2 of "Be
-> smarter" patch.
+> 1) use faster tier firstly for metadata
 
-As the commit_interval is an internal value, jiffies is ok, the
-conversions happen happen for mount option set and print only. So ok
-from me.
+My tests revealed that a BTRFS filesystem stacked over bcache has better performance. So I am not sure that putting the metadata in a dedicated storage is a good thing.
+
+> 
+> 2) only the subvol with higher tier can save data to
+>      the higher tier disk?
+> 
+> 3) use faster tier firstly for mirror selection of RAID1/RAID10
+
+If you want to put a subvolume in a "higher tier", it is more simple to use two filesystems: one in the "higher tier" and one in the "slower one".
+
+Also what should be the semantic of cp --reflink between different subvolumes of different tiers ? From a technical point of view, it is defined, but the expectation of the users can be vary...
+
+The same is true about assign different raid profile to differents subvolumes....
+
+Let the things simple.
+> 
+> Best Regards
+> Wang Yugui (wangyugui@e16-tech.com)
+> 2020/10/23
+> 
+
+BR
+GB
+> 
+
+
+-- 
+gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
+Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
