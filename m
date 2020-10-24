@@ -2,133 +2,114 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2684E297A22
-	for <lists+linux-btrfs@lfdr.de>; Sat, 24 Oct 2020 03:12:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CE82297A85
+	for <lists+linux-btrfs@lfdr.de>; Sat, 24 Oct 2020 05:39:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1757760AbgJXBMA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 23 Oct 2020 21:12:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44914 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1757755AbgJXBMA (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 23 Oct 2020 21:12:00 -0400
-Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F0D9C0613CE
-        for <linux-btrfs@vger.kernel.org>; Fri, 23 Oct 2020 18:11:56 -0700 (PDT)
-Received: by mail-qt1-x82a.google.com with SMTP id p88so2715016qtd.12
-        for <linux-btrfs@vger.kernel.org>; Fri, 23 Oct 2020 18:11:56 -0700 (PDT)
+        id S1759383AbgJXD0n (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 23 Oct 2020 23:26:43 -0400
+Received: from mail-eopbgr1360075.outbound.protection.outlook.com ([40.107.136.75]:46722
+        "EHLO AUS01-ME1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1759168AbgJXD0n (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 23 Oct 2020 23:26:43 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=BQOEadmdkyDtcs8GMW8BgqbpqMoncU5q/KNGRHtZ68meB+2rox07H5Ws5YIvO91p9yE7sr5wrP1VSXMEW4IM/GzO8yY0IW0E66SQLK5ZKs8Viqq8BP1/OL8p2vZNaBhBezuyEqYInb8sOqesxqB4E+Zoo36rb4DKebkgFg62sVj+14KPq9mheSYamiZu7AoeHm9w3d1lFCumowREjhPmbgRdNuHCARg+3O8H+ZuT3J/ErD27Rz3zCdmbdwbce5SOMb6t7FOXILJLCFRSSvL+bWm2sdvgEBAlT88sOUoq6bgSA0fa5PRY0FHNLezcUh8MnwUNY6xQ2VxdoEqxpCPSSg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=DkGBdZi5m6wRzxXKlFJhmQa4GrgpkjbKRC6Hf3kVP6U=;
+ b=nu9miQm2yUbRZIdfWt2QsZE6M0wuFRW/1AVFYmcQAUnzicPuxzw8YaOCg2vP9XZfUzKnENdFEgvmCARlkxeHCqj5BW1KudzinrFLven4diVMIx+LkPLGFAvLiXctQ99LQSJT1ErgM8QhBU8Gd54UPxLy1BjmfnsPcl7+qgY+iL+z4HDPRtMAL7mBmjwiHVF/gJ14MOr1KuHsqev+bEDrgeUWjiyA1JpeO7koLXoVczn9/J8brlj4MYK2kNktn9EL1iNiz2/6xofbqPmQj/6sOLWRu0qzYjroyNwv0j6gpIyzXSmimlxd+bfzedydVn93df57sOhVDdKaFP4LtBpJqg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=pauljones.id.au; dmarc=pass action=none
+ header.from=pauljones.id.au; dkim=pass header.d=pauljones.id.au; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:in-reply-to:references:date:message-id
-         :mime-version;
-        bh=jqTb66J1t6zwioBbcZtdu/0rKW6Jl/KdT/owbySX6pY=;
-        b=llW8JZh286Bxa/WBjD4B2fpXAYqK0/uKK1JmEftTa2a2k6RFGV8RutH5oVl/UWxEGJ
-         atIhZk0hQa7bYi18Sg13+S8J4Gwp0jiLoCQfMsupIlL1MQn/kMZonwdF6VNGcU0w8E5f
-         pTCd/iVZkoHQUKSFA/2h34WJW8kvmclxVfbULd17xTdFuVYLOfRV4W84YYTenCa7IHkJ
-         CB7aeJ7RQIqbDanH7WXYDIo7LIM3rrfyfoUxPMyY+4xuDZz9EUvpx3Exz/kgPNg0XaiG
-         1YWEAMYbWl9tAnrnd7QXoco/0zlYZ70pokw5k4DN5cFvqe4krPoCX3PdJEuJm4AmSTdp
-         iCSA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=jqTb66J1t6zwioBbcZtdu/0rKW6Jl/KdT/owbySX6pY=;
-        b=sZ+qH83jMpQG3LxrMUXo79Z6tCsQOkiUeB3jiPnZNKn48Y1k7gEjbuQuqBJiQRDuOC
-         4/nmjzle52HmBn4L3Jmx06luHfsvlBxfzWJcphqqq98/Q8WgzXl9H3raRLCd0Znl3kjE
-         c7QPmANdQyRPZpY0+8B1/NH6A1Unk1d4GiPjh2jy4y6NIm7B4aXYwTZXoG/CmW7eEstb
-         OusSpVglRxYWYo7zsfU1PZP97Btx1vvZvl5NNigq8bDDF0OGTfyY4TlUfS1GjoeNqSV2
-         PvhUAWHpQC07JnckydHX8gyJZCyfQSGY+IMI1kIPOEhDktfy/nbKa4lTWFmHk9DUgIVS
-         p13g==
-X-Gm-Message-State: AOAM5324hAlVV+mkCWEDgSihuJG7t8O24tQOOfVZKVRo1j54YQrjE2cq
-        BivFBHJOHCNR4bIpr0XiNe6KE7Ban/k=
-X-Google-Smtp-Source: ABdhPJwobLFnX0pfn75QnUZ9oC4BcWKlpH04fPRhnaHA9NVS0LaE7oR7/hd0ftirLXFbbCxPbA98kg==
-X-Received: by 2002:ac8:5903:: with SMTP id 3mr5350934qty.166.1603501915701;
-        Fri, 23 Oct 2020 18:11:55 -0700 (PDT)
-Received: from DigitalMercury.dynalias.net (bras-base-mtrlpq0313w-grc-01-65-94-13-54.dsl.bell.ca. [65.94.13.54])
-        by smtp.gmail.com with ESMTPSA id 19sm2023829qkf.93.2020.10.23.18.11.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Oct 2020 18:11:54 -0700 (PDT)
-Received: by DigitalMercury.dynalias.net (Postfix, from userid 1000)
-        id 78C882C22FB; Fri, 23 Oct 2020 21:11:53 -0400 (EDT)
-From:   Nicholas D Steeves <nsteeves@gmail.com>
-To:     J J <j333111@icloud.com>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Subject: Re: Drive won't mount, please help
-In-Reply-To: <DFA69BD3-6415-4342-B17D-2CFBF0BED53F@icloud.com>
-References: <91595165-FA0C-4BFB-BA8F-30BEAE6281A3@icloud.com> <fff0f71b-0db7-cbfc-5546-ea87f9bbf838@gmx.com> <C83FF9DC-77A2-4D21-A26A-4C2AE5255A20@icloud.com> <c992de06-0df7-4b68-2b39-d8e78332c53d@gmx.com> <33E2EE2B-38B5-49A3-AB9F-0D99886751C4@icloud.com> <CAJCQCtTjj7Q9D9uKQRPixC6MPKRbNw3xkf=xdF1yONcqR=FM6w@mail.gmail.com> <6BF631F4-3B9D-4332-AC42-2BCDE387322C@icloud.com> <CAJCQCtTvTH7XeA1F3nd011-X4vVUZJ15zRN2HK8cOL722oJ13A@mail.gmail.com> <DFA69BD3-6415-4342-B17D-2CFBF0BED53F@icloud.com>
-Date:   Fri, 23 Oct 2020 21:11:37 -0400
-Message-ID: <87sga4ctrq.fsf@DigitalMercury.dynalias.net>
+ d=oakvillepondscapes.onmicrosoft.com;
+ s=selector2-oakvillepondscapes-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=DkGBdZi5m6wRzxXKlFJhmQa4GrgpkjbKRC6Hf3kVP6U=;
+ b=r8SZiBr5adMs/j7EPvNX4p8bL1dWI+BH1ngBlEBSlblaqmDm/w+Ud3jm32hW4Cf8u8iVhTttxyvHJ0PaC4A4FzoHWnxhOaf417+g+DfXkTcu0nLr5APeMC1Clo+c1dEZjsB5d7CA8ojjE4d1RhG1SeveNYs9FTBKy2wnnIpsEao=
+Received: from SYXPR01MB1918.ausprd01.prod.outlook.com (2603:10c6:0:2b::11) by
+ SYXPR01MB0655.ausprd01.prod.outlook.com (2603:10c6:0:c::8) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3499.18; Sat, 24 Oct 2020 03:26:37 +0000
+Received: from SYXPR01MB1918.ausprd01.prod.outlook.com
+ ([fe80::c82d:72c:aa17:3bf9]) by SYXPR01MB1918.ausprd01.prod.outlook.com
+ ([fe80::c82d:72c:aa17:3bf9%11]) with mapi id 15.20.3477.028; Sat, 24 Oct 2020
+ 03:26:37 +0000
+From:   Paul Jones <paul@pauljones.id.au>
+To:     "kreijack@inwind.it" <kreijack@inwind.it>,
+        Wang Yugui <wangyugui@e16-tech.com>,
+        Qu Wenruo <quwenruo.btrfs@gmx.com>
+CC:     Adam Borowski <kilobyte@angband.pl>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        Michael <mclaud@roznica.com.ua>, Hugo Mills <hugo@carfax.org.uk>,
+        Martin Svec <martin.svec@zoner.cz>
+Subject: RE: [PATCH] btrfs: add ssd_metadata mode
+Thread-Topic: [PATCH] btrfs: add ssd_metadata mode
+Thread-Index: AQHWqQ1orAVs+dijZkOOeChAwp/e4qmk97eAgAAUgwCAABRFgIAAWxiAgACaGXA=
+Date:   Sat, 24 Oct 2020 03:26:37 +0000
+Message-ID: <SYXPR01MB1918A247417AB89140137E059E1B0@SYXPR01MB1918.ausprd01.prod.outlook.com>
+References: <20201023101145.GB19860@angband.pl>
+ <d7ee1c25-ceea-0471-9702-0622a5ef4453@gmx.com>
+ <20201023203742.B13F.409509F4@e16-tech.com>
+ <4276e368-411e-8037-9162-c4d2b906c5d2@libero.it>
+In-Reply-To: <4276e368-411e-8037-9162-c4d2b906c5d2@libero.it>
+Accept-Language: en-AU, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: inwind.it; dkim=none (message not signed)
+ header.d=none;inwind.it; dmarc=none action=none header.from=pauljones.id.au;
+x-originating-ip: [123.243.10.55]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 2cd5de59-76a7-423a-baf0-08d877cc9da5
+x-ms-traffictypediagnostic: SYXPR01MB0655:
+x-microsoft-antispam-prvs: <SYXPR01MB0655D828DEF3ED5EDD86D64E9E1B0@SYXPR01MB0655.ausprd01.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:4941;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 0Eb2gHRL6FKS5FhJsODy1i6QiWD6+HWoBCOIowbW7uR3dCDMMjKGF0d78dp9zSCJQQaR3AS3yQsU5iFGaYC4Y1wfO+V+NrBSXj/Xc9a5CPF4QM8xZT+0SRoH8LqRoHv9d+w/R+FwkBgKW3xVyx8QpdX0S1QF9Wo2uDw9TwwsgsC6pHLxqEB67JBCddYNX2gcY8lkav+m9jUsi94dhxDl3J+5gRm1UlXOMM+6NXkj4u0CddZUxG/W+aaTineqMrvMAUSFEWpJFquQWYtAUnozdHx36Gw54XuyJtMUypy2xr042havDCj4/wxKZiOyfBeR75PWA16VkZlQnidLGYxWmg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SYXPR01MB1918.ausprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(376002)(39830400003)(396003)(366004)(346002)(7696005)(2906002)(86362001)(6506007)(83380400001)(5660300002)(76116006)(52536014)(55016002)(4326008)(8676002)(64756008)(33656002)(66476007)(66446008)(53546011)(66946007)(316002)(478600001)(186003)(8936002)(71200400001)(110136005)(54906003)(9686003)(26005)(66556008);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: Km/a0J0SnCAngFGzNi1c9k0tdzktZVkbXi1XszlX6M1NUscoopxhmveD1bsVkyW8sZr/Xd1enIyp8ySuc9Vz3uYTDbmDyAL3oGjm/2AMXFTG0bm24YnmL4iq/IZJCGkvILWsHhZ29FhEE3+9ZMieX5rWxyJ6RgTPhMyyjcZ+sNo7P2TPsnnEALe5V/zhINotfvqYTScy+9bShXxwV00zV6tc2Q360pbpnvhr3wZRWvZ3ec+/upc77qpoyM77cQhhCxA9UrA+6cqOTmiv+nqTDG3iB7mfgh73kukA/rU9VNQwOgd0UjwG3Eg2eD8DhO0asow4MLEGzDYhHczVPAtyXOnBTG8oKKSP9kCsyY7xzsUqUEK0w90z6yXSSH/TdgbgDhPAQEHdQWDy+8g6HkldAXsR2l9EfHOCrg+Giz7dTrs3LyzRpCILQ4QmXc6XCoEkz/Odo66IOJ2ou1IpKqxMZY5LGG2s+tqKTZ9p+MGZAnQlPMpE70Ll/r2RBEizOI+W2haQCM4OPfy2GyhmldZ4aYFoyZX68TDiHBWE1MVpfEIq8sJcy70BI2UfljvJkkppOmMHR3wAgN49Ib5pOy33mpbfWV/cxKj1pg5GMhd7CxEL+lViQcXybEhEYjEc7KZ3SXU+2rM0YI6lIIRUAg+2Aw==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-        micalg=pgp-sha512; protocol="application/pgp-signature"
+X-OriginatorOrg: pauljones.id.au
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SYXPR01MB1918.ausprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2cd5de59-76a7-423a-baf0-08d877cc9da5
+X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Oct 2020 03:26:37.3333
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8f216723-e13f-4cce-b84c-58d8f16a0082
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: NTc+QiCtwyQNwcmSYS38vkZSRINdyRlgyKYU8FVBCHr4hvHb1bOtEORAr6pC3ISDSkqqtGx0lYdvD0i9mKNGrw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SYXPR01MB0655
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-
-Hi J J,
-
-J J <j333111@icloud.com> writes:
-
-> Thanks again Chris,=20
->
-> Its btrfs-progs 4.7
->
-> I spent an hour just trying to figure out how to update it, and still uns=
-uccessful : (
->
-> I=E2=80=99m running OMV 4, it=E2=80=99s debian.=20
->
-> Sorry for such noob questions but can you tell me simplest way to update =
-btrfs-progs?
->
-
-OMV 4 appears to be based on Debian 9 (stretch).  If it's truly Debian,
-then it should be safe to use backports.  If you s/buster/stretch/ with
-the following instructions you will have access to btrfs-progs 4.20, the
-last supported version for stretch-backports.
-
-  https://backports.debian.org/Instructions
-
-If you can upgrade to OVM 5, then you can use buster-backports and will
-have access to btrfs-progs 5.7 today, and newer versions as they pass
-migrate to testing and are then backported to buster (Debian 10).
-
-If you want to try building the buster-backport on OMV 4, try:
-
-  dget http://deb.debian.org/debian/pool/main/b/btrfs-progs/btrfs-progs_5.7=
--1~bpo10+1.dsc
-  cd btrfs-progs-5.7
-  apt-get build-dep ./
-  dpkg-buildpackage -us -uc
-
-but I haven't tested this, and it may not succeed (IIRC you'll need
-newer libzstd and other things), and of course it's easier to use recent
-live media as Chris Murphy suggested.
-
-Regards,
-Nicholas
-
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCgAdFiEE4qYmHjkArtfNxmcIWogwR199EGEFAl+Tf0kACgkQWogwR199
-EGFOLBAAxj9nP38JANb7bFsMMTuPeEqCQDAW2uNlEnfw/MZEI2LtkwiwVShvrmJe
-CZoLGYZ20VDtvV27BupSNgItU5IvHut5Fv8EssbfQ4gKq8R2k91VDoZp6A3hIyG8
-J0+AWp6kRM7tH4fhsqvmQiDTWtzezEwNCLlZJ0zwse9Y94iZmY/GYcphJYsDlEsW
-DRaogN6mvOLWOrcgVnsw9JHKJFW7nf7aUcwyLyKxRLBELN5V7ZjeuTZOMHO/+a9c
-Oo7xgGJiswIqJyE8lSXl1GI78lo1J/suWI0vqBUPYzMejumz2F1uqoACKOrW0RQM
-zcd857fR/Kpk4flg08r0Ea+ryI8iM5YwLQVdL6qeuV1iaghgsH5rLSbT/5+SNKhA
-+UV6Tu52vhFzWhbNw6A8WUBbL6idUOJd8wbHXTlBzVRKA9Cfam66km4KnQIvzTr7
-0vPNBQn2FQpurLsBAlc0kEJe6mjMFCLlMeEmj//etTP1i2vDCZ1rdwK1pHXRE1bp
-IIYPjEDfPBL2uzNu++pjEdL+P/S+HQEZj779Htme/btIlYc1bKNzeNx41hzrjyxJ
-jwpUh4QSm46sXvm4auGoxc2GDSgvOqf4hf8eTFJJWs/SNNV/PV4C3bYQIvHGY31d
-wuemu+nozLAVdCMYin1/VnE1iWMI1w9nwgUYhsvno66NhDK9BMQ=
-=UsWv
------END PGP SIGNATURE-----
---=-=-=--
+PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBHb2ZmcmVkbyBCYXJvbmNlbGxp
+IDxrcmVpamFja0BsaWJlcm8uaXQ+DQo+IFNlbnQ6IFNhdHVyZGF5LCAyNCBPY3RvYmVyIDIwMjAg
+NTowNCBBTQ0KPiBUbzogV2FuZyBZdWd1aSA8d2FuZ3l1Z3VpQGUxNi10ZWNoLmNvbT47IFF1IFdl
+bnJ1bw0KPiA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT4NCj4gQ2M6IEFkYW0gQm9yb3dza2kgPGtp
+bG9ieXRlQGFuZ2JhbmQucGw+OyBsaW51eC1idHJmc0B2Z2VyLmtlcm5lbC5vcmc7DQo+IE1pY2hh
+ZWwgPG1jbGF1ZEByb3puaWNhLmNvbS51YT47IEh1Z28gTWlsbHMgPGh1Z29AY2FyZmF4Lm9yZy51
+az47DQo+IE1hcnRpbiBTdmVjIDxtYXJ0aW4uc3ZlY0B6b25lci5jej47IEdvZmZyZWRvIEJhcm9u
+Y2VsbGkNCj4gPGtyZWlqYWNrQGlud2luZC5pdD4NCj4gU3ViamVjdDogUmU6IFtQQVRDSF0gYnRy
+ZnM6IGFkZCBzc2RfbWV0YWRhdGEgbW9kZQ0KPiANCj4gT24gMTAvMjMvMjAgMjozNyBQTSwgV2Fu
+ZyBZdWd1aSB3cm90ZToNCj4gPiBIaSwNCj4gPg0KPiA+IENhbiB3ZSBhZGQgdGhlIGZlYXR1cmUg
+b2YgJ1N0b3JhZ2UgVGllcmluZycgdG8gYnRyZnMgZm9yIHRoZXNlIHVzZSBjYXNlcz8NCj4gPg0K
+PiA+IDEpIHVzZSBmYXN0ZXIgdGllciBmaXJzdGx5IGZvciBtZXRhZGF0YQ0KPiANCj4gTXkgdGVz
+dHMgcmV2ZWFsZWQgdGhhdCBhIEJUUkZTIGZpbGVzeXN0ZW0gc3RhY2tlZCBvdmVyIGJjYWNoZSBo
+YXMgYmV0dGVyDQo+IHBlcmZvcm1hbmNlLiBTbyBJIGFtIG5vdCBzdXJlIHRoYXQgcHV0dGluZyB0
+aGUgbWV0YWRhdGEgaW4gYSBkZWRpY2F0ZWQNCj4gc3RvcmFnZSBpcyBhIGdvb2QgdGhpbmcuDQoN
+ClRoZXJlIGlzIGEgYmFsYW5jZSBiZXR3ZWVuIHVsdGltYXRlIHNwZWVkIGFuZCBzaW1wbGljaXR5
+LiBJIHVzZWQgdG8gdXNlIGRtLWNhY2hlIHVuZGVyIGJ0cmZzIHdoaWNoIHdvcmtlZCB2ZXJ5IHdl
+bGwgYnV0IGlzIGNvbXBsaWNhdGVkIGFuZCBlcnJvciBwcm9uZSB0byBzZXR1cCwgZnJhZ2lsZSwg
+YW5kIHNsb3cgdG8gcmVzdG9yZSBhZnRlciBhbiBlcnJvci4gTm93IEknbSB1c2luZyB5b3VyIHNz
+ZF9tZXRhZGF0YSBwYXRjaCB3aGljaCBpcyBhbG1vc3QgYXMgZmFzdCBidXQgZmFyIG1vcmUgcm9i
+dXN0IGFuZCBxdWljay9lYXN5IHRvIHJlc3RvcmUgYWZ0ZXIgZXJyb3JzLiBJdCdzIG5pZ2h0IGFu
+ZCBkYXkgYmV0dGVyIGltaG8sIGVzcGVjaWFsbHkgZm9yIGEgcHJvZHVjdGlvbiBzeXN0ZW0uDQoN
+ClBhdWwuDQo=
