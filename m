@@ -2,109 +2,81 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 762772994AD
-	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Oct 2020 18:59:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DAB2029951C
+	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Oct 2020 19:18:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1788957AbgJZR70 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 26 Oct 2020 13:59:26 -0400
-Received: from mx2.suse.de ([195.135.220.15]:57416 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1782044AbgJZR70 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 26 Oct 2020 13:59:26 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 5EE6BAF80;
-        Mon, 26 Oct 2020 17:59:24 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id B5D6ADA6E2; Mon, 26 Oct 2020 18:57:50 +0100 (CET)
-Date:   Mon, 26 Oct 2020 18:57:50 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Anand Jain <anand.jain@oracle.com>
-Cc:     linux-btrfs@vger.kernel.org, josef@toxicpanda.com, dsterba@suse.com
-Subject: Re: [PATCH v9 3/3] btrfs: create read policy sysfs attribute, pid
-Message-ID: <20201026175750.GT6756@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Anand Jain <anand.jain@oracle.com>,
-        linux-btrfs@vger.kernel.org, josef@toxicpanda.com, dsterba@suse.com
-References: <cover.1603347462.git.anand.jain@oracle.com>
- <abd366082eeb8b289cd420cb04528a687a250433.1603347462.git.anand.jain@oracle.com>
+        id S1784002AbgJZSSL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 26 Oct 2020 14:18:11 -0400
+Received: from mail-qk1-f195.google.com ([209.85.222.195]:33363 "EHLO
+        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1783842AbgJZSSK (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 26 Oct 2020 14:18:10 -0400
+Received: by mail-qk1-f195.google.com with SMTP id t128so4234791qke.0
+        for <linux-btrfs@vger.kernel.org>; Mon, 26 Oct 2020 11:18:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OI2m/g/c+XuiWHYN/0R5Pjng9uIV6DiSTVnQ8cvXz+0=;
+        b=JQEEgt4GXQKy3aU5Klxryjl04pW8cqXldephG/xqGfzufHOrjkNxtd4x1XzHyyGIMl
+         DESPiqkS5LSpHalnZFMnkSUS/V7+CpvBJt6uA/sa4ssKwm8YN+X0Cp8JdlRXja9upZ+n
+         FstttgyZJMbNI3CKYhcdbhKCZUP79eQWiWy7uLNcSVU+hvgd9o+w484hZ/p/p2QDhld7
+         nd2pIHF5NkEyAzuEcqbzU8vHHKAmm5NFgW7DlMwXzfp22MsmQQ6CzcAyVP0nHWHYYSbC
+         I1Y/POtI1x1tBDSYJjSN36tNJTqK6k0+jOwjM0I1AO0Ju0Llr7Qlg5oEjf9iq0yMYpAW
+         x1VQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OI2m/g/c+XuiWHYN/0R5Pjng9uIV6DiSTVnQ8cvXz+0=;
+        b=trlFhfmeJ8YawmEa6FdkoHypOv5EcqGqBP8UX+x0di6Bw75VuofgvCn21aRIlqMYOC
+         AwTtVRFV8oNdE8WQndblE1fl3SbauPBwnb3agmA7dBUWDhsk8hcI5Zw70T7UtOTHXhsI
+         xIFe7/r4DJEGduBm89/kcjyQkgxl/gr9dqGqgPBomZ6zAXyYWxxqxA5y6+CYnwMhZNcs
+         r5pLqF7aYfJqWR6E5VPxfJSDLN1kKE4BuYtWmjaFoSG5lU5Gu+S844Bz2juNP/7XdJfa
+         g4KMGcePhnrcXxPfYMXFPyXomkfMkEqodxZ3IdOw0+mfLo+VY8JKP7VYayFVKpOL7xaC
+         0zEw==
+X-Gm-Message-State: AOAM533/z65eQI5M6AyAR8NegsEVG27OMcChYucegrM08OA43gie498W
+        l5vMdi61WG+sT9vGQLcX5N4+LeeRi1J6Phf/
+X-Google-Smtp-Source: ABdhPJym/+lN7dOMwXYR9b8zE1MoIS/ZFFmeVHFVwgBxVrA9xv0U6+OEu82zRQvODk0/VWjap8RnrQ==
+X-Received: by 2002:ae9:e314:: with SMTP id v20mr19054235qkf.93.1603736288700;
+        Mon, 26 Oct 2020 11:18:08 -0700 (PDT)
+Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id i20sm5181202qtw.66.2020.10.26.11.18.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Oct 2020 11:18:08 -0700 (PDT)
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: [PATCH 0/2] Some block rsv fixes
+Date:   Mon, 26 Oct 2020 14:18:04 -0400
+Message-Id: <cover.1603736169.git.josef@toxicpanda.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <abd366082eeb8b289cd420cb04528a687a250433.1603347462.git.anand.jain@oracle.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Oct 22, 2020 at 03:43:37PM +0800, Anand Jain wrote:
-> Add
-> 
->  /sys/fs/btrfs/UUID/read_policy
-> 
-> attribute so that the read policy for the raid1, raid1c34 and raid10 can
-> be tuned.
-> 
-> When this attribute is read, it shall show all available policies, with
-> active policy being with in [ ]. The read_policy attribute can be written
-> using one of the items listed in there.
-> 
-> For example:
->   $cat /sys/fs/btrfs/UUID/read_policy
->   [pid]
->   $echo pid > /sys/fs/btrfs/UUID/read_policy
-> 
-> Signed-off-by: Anand Jain <anand.jain@oracle.com>
-> ---
-> v9: fix C coding style, static const char*
-> v5: 
->   Title rename: old: btrfs: sysfs, add read_policy attribute
->   Uses the btrfs_strmatch() helper (BTRFS_READ_POLICY_NAME_MAX dropped).
->   Use the table for the policy names.
->   Rename len to ret.
->   Use a simple logic to prefix space in btrfs_read_policy_show()
->   Reviewed-by: Josef Bacik <josef@toxicpanda.com> dropped.
-> 
-> v4:-
-> v3: rename [by_pid] to [pid]
-> v2: v2: check input len before strip and kstrdup
-> 
->  fs/btrfs/sysfs.c | 49 ++++++++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 49 insertions(+)
-> 
-> diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
-> index 5ea262d289c6..e23ae3643527 100644
-> --- a/fs/btrfs/sysfs.c
-> +++ b/fs/btrfs/sysfs.c
-> @@ -883,6 +883,54 @@ static int btrfs_strmatch(const char *given, const char *golden)
->  	return -EINVAL;
->  }
->  
-> +static const char * const btrfs_read_policy_name[] = { "pid" };
-> +
-> +static ssize_t btrfs_read_policy_show(struct kobject *kobj,
-> +				      struct kobj_attribute *a, char *buf)
-> +{
-> +	int i;
-> +	ssize_t ret = 0;
-> +	struct btrfs_fs_devices *fs_devices = to_fs_devs(kobj);
-> +
-> +	for (i = 0; i < BTRFS_NR_READ_POLICY; i++) {
-> +		if (fs_devices->read_policy == i)
-> +			ret += snprintf(buf + ret, PAGE_SIZE - ret, "%s[%s]",
+Hello,
 
-All snprintf have been upgraded to scnprintf as it does have sane
-behaviour when the buffer is not large enough.
+Nikolay has noticed that -o enospc_debug was getting some warnings in
+btrfs_use_block_rsv() on some tests.  I dug into them and one class is easy to
+fix as it's a straight regression.  The other one is going to require some more
+debugging, so in the meantime here's the two patches I have so far that can be
+merged.  The first is just to make my life easier when debugging these problems,
+and the second is the actual regression fix.  It should probably be tagged for
+stable as well since the regression was backported to stable.  Thanks,
 
-> +					(ret == 0 ? "" : " "),
-> +					btrfs_read_policy_name[i]);
-> +		else
-> +			ret += snprintf(buf + ret, PAGE_SIZE - ret, "%s%s",
-> +					(ret == 0 ? "" : " "),
-> +					btrfs_read_policy_name[i]);
-> +	}
-> +
-> +	ret += snprintf(buf + ret, PAGE_SIZE - ret, "\n");
-> +
-> +	return ret;
-> +}
+Josef
+
+Josef Bacik (2):
+  btrfs: print the block rsv type when we fail our reservation
+  btrfs: fix min reserved size calculation in merge_reloc_root
+
+ fs/btrfs/block-rsv.c  | 3 ++-
+ fs/btrfs/relocation.c | 3 ++-
+ 2 files changed, 4 insertions(+), 2 deletions(-)
+
+-- 
+2.26.2
+
