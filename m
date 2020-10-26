@@ -2,59 +2,97 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56AB72993A0
-	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Oct 2020 18:21:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ADB5B29946C
+	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Oct 2020 18:54:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1787618AbgJZRVJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 26 Oct 2020 13:21:09 -0400
-Received: from nautica.notk.org ([91.121.71.147]:35229 "EHLO nautica.notk.org"
+        id S1781286AbgJZRyE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 26 Oct 2020 13:54:04 -0400
+Received: from mx2.suse.de ([195.135.220.15]:54092 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1775598AbgJZRVI (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 26 Oct 2020 13:21:08 -0400
-X-Greylist: delayed 399 seconds by postgrey-1.27 at vger.kernel.org; Mon, 26 Oct 2020 13:21:06 EDT
-Received: by nautica.notk.org (Postfix, from userid 1001)
-        id CD1BFC009; Mon, 26 Oct 2020 18:14:25 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=codewreck.org; s=2;
-        t=1603732465; bh=k+Wgzjav+6/NLtxHMAhXa+c0i5J8LiGwvoX4SQgDuIM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=36ySKFXIu8EOdz4pHiZMhFpfhulw6/kpyKUaUlsF03SPPgyzR5z3w2Hh+ODya4gcG
-         f1o6seAenlkngQy4dueVtxStxjTxXli5CV5xYQIWKgdO+wp+KdBSvAVCtZhROk8RvX
-         0UIkbhn39BD0qO7sXVudUHVLy8uoOZ3/Lwau59TNJWcYn/ds/8a5x9Sa5WHZbKbfIo
-         nGpifs9wJ1KmOviqBozVFTLUgVG2CF87eLO5A/i/84r0YZQiMTZDo7h2U9MFgfyxQc
-         VXIg+F/IdyNJ8PO93My3tgSWYV4g/I/20FekHrlUfHX/ACmic1SV8/f8ZjWk3SNGlV
-         BglvIky8H/hrw==
-Date:   Mon, 26 Oct 2020 18:14:10 +0100
-From:   Dominique Martinet <asmadeus@codewreck.org>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     linux-fsdevel@vger.kernel.org, ericvh@gmail.com, lucho@ionkov.net,
-        viro@zeniv.linux.org.uk, jlayton@kernel.org, idryomov@gmail.com,
-        mark@fasheh.com, jlbec@evilplan.org, joseph.qi@linux.alibaba.com,
-        v9fs-developer@lists.sourceforge.net, linux-kernel@vger.kernel.org,
-        ceph-devel@vger.kernel.org, ocfs2-devel@oss.oracle.com,
-        linux-btrfs@vger.kernel.org, clm@fb.com, josef@toxicpanda.com,
-        dsterba@suse.com, stable@vger.kernel.org
-Subject: Re: [PATCH 1/7] 9P: Cast to loff_t before multiplying
-Message-ID: <20201026171410.GA31121@nautica>
-References: <20201004180428.14494-1-willy@infradead.org>
- <20201004180428.14494-2-willy@infradead.org>
+        id S1788628AbgJZRyE (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 26 Oct 2020 13:54:04 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 36E46ABCC;
+        Mon, 26 Oct 2020 17:54:02 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id B42C6DA6E2; Mon, 26 Oct 2020 18:52:28 +0100 (CET)
+Date:   Mon, 26 Oct 2020 18:52:28 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Anand Jain <anand.jain@oracle.com>
+Cc:     linux-btrfs@vger.kernel.org, josef@toxicpanda.com, dsterba@suse.com
+Subject: Re: [PATCH v9 1/3] btrfs: add btrfs_strmatch helper
+Message-ID: <20201026175228.GS6756@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Anand Jain <anand.jain@oracle.com>,
+        linux-btrfs@vger.kernel.org, josef@toxicpanda.com, dsterba@suse.com
+References: <cover.1603347462.git.anand.jain@oracle.com>
+ <75264e50d49f3c68cc14dc87510c8f3767390dcf.1603347462.git.anand.jain@oracle.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201004180428.14494-2-willy@infradead.org>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+In-Reply-To: <75264e50d49f3c68cc14dc87510c8f3767390dcf.1603347462.git.anand.jain@oracle.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Matthew Wilcox (Oracle) wrote on Sun, Oct 04, 2020:
-> On 32-bit systems, this multiplication will overflow for files larger
-> than 4GB.
+On Thu, Oct 22, 2020 at 03:43:35PM +0800, Anand Jain wrote:
+> Add a generic helper to match the golden-string in the given-string,
+> and ignore the leading and trailing whitespaces if any.
 > 
-> Cc: stable@vger.kernel.org
-> Fixes: fb89b45cdfdc ("9P: introduction of a new cache=mmap model.")
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> Signed-off-by: Anand Jain <anand.jain@oracle.com>
+> Suggested-by: David Sterba <dsterba@suse.com>
+> ---
+> v9: use Josef suggested C coding style, using single if statement.
+> v5: born
+> 
+>  fs/btrfs/sysfs.c | 20 ++++++++++++++++++++
+>  1 file changed, 20 insertions(+)
+> 
+> diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
+> index 8424f5d0e5ed..5ea262d289c6 100644
+> --- a/fs/btrfs/sysfs.c
+> +++ b/fs/btrfs/sysfs.c
+> @@ -863,6 +863,26 @@ static ssize_t btrfs_generation_show(struct kobject *kobj,
+>  }
+>  BTRFS_ATTR(, generation, btrfs_generation_show);
+>  
+> +/*
+> + * Match the %golden in the %given. Ignore the leading and trailing whitespaces
+> + * if any.
+> + */
+> +static int btrfs_strmatch(const char *given, const char *golden)
+> +{
+> +	size_t len = strlen(golden);
+> +	char *stripped;
+> +
+> +	/* strip leading whitespace */
 
-I realize I hadn't sent a mail -- FWIW this 9p patch has been merged,
-thanks!
--- 
-Dominique
+This is confusing as it's not stripping the space but merely skipping
+it.  The arguments are not changed so you also don't need the separate
+variable and just update 'given'.
+
+> +	stripped = skip_spaces(given);
+> +
+> +	/* strip trailing whitespace */
+> +	if ((strncmp(stripped, golden, len) == 0) &&
+> +	    (strlen(skip_spaces(stripped + len)) == 0))
+> +		return 0;
+
+This a bit hard to read but ok, essentially we can do the string
+comparison in a loop or use the library functions.
+
+> +
+> +	return -EINVAL;
+
+This does not make sense as it's an error code while the function is a
+predicate, without error states.
+
+> +}
+> +
+>  static const struct attribute *btrfs_attrs[] = {
+>  	BTRFS_ATTR_PTR(, label),
+>  	BTRFS_ATTR_PTR(, nodesize),
+> -- 
+> 2.25.1
