@@ -2,175 +2,153 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C324229A043
-	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Oct 2020 01:29:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 701B329A180
+	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Oct 2020 01:48:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2442736AbgJ0A3D (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 26 Oct 2020 20:29:03 -0400
-Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:59781 "EHLO
-        wout5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2409851AbgJ0A3A (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 26 Oct 2020 20:29:00 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.west.internal (Postfix) with ESMTP id 41A0AF87;
-        Mon, 26 Oct 2020 20:28:59 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Mon, 26 Oct 2020 20:28:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=
-        from:to:cc:subject:date:message-id:mime-version
-        :content-transfer-encoding; s=fm1; bh=ag8fx6fXuMSFgtUlzUz6zx5Mmh
-        caLpCPmMJGqKrcDV0=; b=V6ExEjwPq/5n83loGFSqjugWISZ/SQhDhA2ZwCXJeP
-        iqOSXlHGTV7DfhsdRCdTNyka4rFseHF2eCmPfElrYOiPFkZ+oDUZJxc5tP9AYCY4
-        oQ6rEu7fPq8RyeNSImsr/qozzO4AJcf+cj7S1BljNdSNyfZC3HEri9dDHQGrV74d
-        29SINTYAP6qHw3i7GQEEyzkKLesjyCcKnzwkxPWe5xJGoW23OEVW5SKIzuuuElTQ
-        rSxdE4fhHkLUOIeoJChneBoBX+HOsb0U5UxXPClGWgj9IezPSNqlNb4eOYTlzN86
-        30PR2Tjcfr09amtgDWmPhQ0uM3cAPfnzRPzOfV40PzSQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=ag8fx6fXuMSFgtUlz
-        Uz6zx5MmhcaLpCPmMJGqKrcDV0=; b=nmfSxgSbuVWp+Q5yFHrY90R3xfN6YkvDV
-        30YhAa6rspGVtN5hJDqndkuUOiahTzvKiT27qmMqdyfVuTi18F0f5kPtDPTl4uCE
-        DI7pnvnVRR4yGpOelxnSSFUCbMwH9PGY0/56PGwz2k1C7UnUWC/ZnQKDojibl35M
-        ViPN4yRP0A/x+LzNCdYzwjcAo+wCay0FTl7+dKIi4nlVI5QKQYwLUV4sraSq1ZMH
-        WHzPxrhWhuszu+J8pL1WqU+65VC71PGXJ41+EbOUcOat85Jq0yBxyU68xh74hn8h
-        wjuaTDkCWtlmNJPinf467DavhsXMo6gmdRe+xrQMhSZcbhdsK1qfg==
-X-ME-Sender: <xms:ymmXX-uIDRuIewCvNNYjiG98b5rYVFgvtDVu4mLFowYFZXnAWIFNEg>
-    <xme:ymmXXzeKYPiqm-LIV_1z7RJajHdMgVrDq-y2xsZdha5POnewP8SBS9Rnih8aparZt
-    Usdg4PekwgnCkowww>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrkeekgddvtdcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecufghrlhcuvffnffculdefhedmnecujfgurhephffvuf
-    ffkffoggfgsedtkeertdertddtnecuhfhrohhmpeffrghnihgvlhcuighuuceougiguhes
-    ugiguhhuuhdrgiihiieqnecuggftrfgrthhtvghrnhepffffgeejudehlefgtddukeeije
-    fggeehheejgfeijeevveetieevueekgfehkeejnecuffhomhgrihhnpehgihhthhhusgdr
-    tghomhenucfkphepudeifedruddugedrudefvddrfeenucevlhhushhtvghrufhiiigvpe
-    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegugihusegugihuuhhurdighiii
-X-ME-Proxy: <xmx:ymmXX5ybXJFYidMTPiWeknXm8cZrqMcJC0g32L8XuI1i7DbR96O7mw>
-    <xmx:ymmXX5PV7xiHjtTuBsZOyfPbTPCvPWFJbHsQ_KiTddm6F9ivC5QPUA>
-    <xmx:ymmXX-_Fx7Ex_6yWIPgd9AX_5-yiEMEVgx3nc48xVO-6lpSHJwNi4Q>
-    <xmx:ymmXX0ngJnMwi_sFxWqX_YwPiKnOz-9KzGtQMWnmdjfbZlQW1mNwlQ>
-Received: from dlxu-fedora-R90QNFJV.thefacebook.com (unknown [163.114.132.3])
-        by mail.messagingengine.com (Postfix) with ESMTPA id B132E3064682;
-        Mon, 26 Oct 2020 20:28:55 -0400 (EDT)
-From:   Daniel Xu <dxu@dxuuu.xyz>
-To:     linux-btrfs@vger.kernel.org, dsterba@suse.cz
-Cc:     Daniel Xu <dxu@dxuuu.xyz>, kernel-team@fb.com
-Subject: [PATCH] btrfs-progs: restore: Have -l display subvolume name
-Date:   Mon, 26 Oct 2020 17:28:41 -0700
-Message-Id: <547cf7d97e32b542f4a552c7319b167dd6b94403.1603758365.git.dxu@dxuuu.xyz>
-X-Mailer: git-send-email 2.26.2
+        id S2502275AbgJ0AmT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 26 Oct 2020 20:42:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51610 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2409336AbgJZXvM (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 26 Oct 2020 19:51:12 -0400
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D53E62075B;
+        Mon, 26 Oct 2020 23:51:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603756272;
+        bh=ZQ4rUae0MFq+q+xuLJba7D1u85eRkZ30SW3jH8xmVcU=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=W046cHoSC3Ov5I62XBdCKcxid8qUDspHjLObY70QsaiHQIz5fwFr5JNuPahqqXzx8
+         SwjQFyY4vFxYU/eoVxZvhBUAtG88pLNX0LpNsBG9XQY0QwW92Gqfwo4BqczYD23b0R
+         PVSXppiq24XeIan7lLqYMBL5XkUVX3GBZxiA0F7U=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Anand Jain <anand.jain@oracle.com>,
+        David Sterba <dsterba@suse.com>,
+        Sasha Levin <sashal@kernel.org>, linux-btrfs@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.9 104/147] btrfs: fix replace of seed device
+Date:   Mon, 26 Oct 2020 19:48:22 -0400
+Message-Id: <20201026234905.1022767-104-sashal@kernel.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20201026234905.1022767-1-sashal@kernel.org>
+References: <20201026234905.1022767-1-sashal@kernel.org>
 MIME-Version: 1.0
+X-stable: review
+X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This commit has `btrfs restore -l ...` display subvolume names if
-applicable. Before, it only listed subvolume IDs which are not very
-helpful for the user. A subvolume name is much more descriptive.
+From: Anand Jain <anand.jain@oracle.com>
 
-Before:
-	$ btrfs restore ~/scratch/btrfs/fs -l
-	 tree key (EXTENT_TREE ROOT_ITEM 0) 30425088 level 0
-	 tree key (DEV_TREE ROOT_ITEM 0) 30441472 level 0
-	 tree key (FS_TREE ROOT_ITEM 0) 30736384 level 0
-	 tree key (CSUM_TREE ROOT_ITEM 0) 30474240 level 0
-	 tree key (UUID_TREE ROOT_ITEM 0) 30785536 level 0
-	 tree key (256 ROOT_ITEM 0) 30818304 level 0
-	 tree key (257 ROOT_ITEM 0) 30883840 level 0
-	 tree key (DATA_RELOC_TREE ROOT_ITEM 0) 30490624 level 0
+[ Upstream commit c6a5d954950c5031444173ad2195efc163afcac9 ]
 
-After:
-	$ ./btrfs restore ~/scratch/btrfs/fs -l
-	 tree key (EXTENT_TREE ROOT_ITEM 0) 30425088 level 0
-	 tree key (DEV_TREE ROOT_ITEM 0) 30441472 level 0
-	 tree key (FS_TREE ROOT_ITEM 0) 30736384 level 0
-	 tree key (CSUM_TREE ROOT_ITEM 0) 30474240 level 0
-	 tree key (UUID_TREE ROOT_ITEM 0) 30785536 level 0
-	 tree key (256 ROOT_ITEM 0) 30818304 level 0 subvol1
-	 tree key (257 ROOT_ITEM 0) 30883840 level 0 subvol2
-	 tree key (DATA_RELOC_TREE ROOT_ITEM 0) 30490624 level 0
+If you replace a seed device in a sprouted fs, it appears to have
+successfully replaced the seed device, but if you look closely, it
+didn't.  Here is an example.
 
-Link: https://github.com/kdave/btrfs-progs/issues/289
-Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
+  $ mkfs.btrfs /dev/sda
+  $ btrfstune -S1 /dev/sda
+  $ mount /dev/sda /btrfs
+  $ btrfs device add /dev/sdb /btrfs
+  $ umount /btrfs
+  $ btrfs device scan --forget
+  $ mount -o device=/dev/sda /dev/sdb /btrfs
+  $ btrfs replace start -f /dev/sda /dev/sdc /btrfs
+  $ echo $?
+  0
+
+  BTRFS info (device sdb): dev_replace from /dev/sda (devid 1) to /dev/sdc started
+  BTRFS info (device sdb): dev_replace from /dev/sda (devid 1) to /dev/sdc finished
+
+  $ btrfs fi show
+  Label: none  uuid: ab2c88b7-be81-4a7e-9849-c3666e7f9f4f
+	  Total devices 2 FS bytes used 256.00KiB
+	  devid    1 size 3.00GiB used 520.00MiB path /dev/sdc
+	  devid    2 size 3.00GiB used 896.00MiB path /dev/sdb
+
+  Label: none  uuid: 10bd3202-0415-43af-96a8-d5409f310a7e
+	  Total devices 1 FS bytes used 128.00KiB
+	  devid    1 size 3.00GiB used 536.00MiB path /dev/sda
+
+So as per the replace start command and kernel log replace was successful.
+Now let's try to clean mount.
+
+  $ umount /btrfs
+  $ btrfs device scan --forget
+
+  $ mount -o device=/dev/sdc /dev/sdb /btrfs
+  mount: /btrfs: wrong fs type, bad option, bad superblock on /dev/sdb, missing codepage or helper program, or other error.
+
+  [  636.157517] BTRFS error (device sdc): failed to read chunk tree: -2
+  [  636.180177] BTRFS error (device sdc): open_ctree failed
+
+That's because per dev items it is still looking for the original seed
+device.
+
+ $ btrfs inspect-internal dump-tree -d /dev/sdb
+
+	item 0 key (DEV_ITEMS DEV_ITEM 1) itemoff 16185 itemsize 98
+		devid 1 total_bytes 3221225472 bytes_used 545259520
+		io_align 4096 io_width 4096 sector_size 4096 type 0
+		generation 6 start_offset 0 dev_group 0
+		seek_speed 0 bandwidth 0
+		uuid 59368f50-9af2-4b17-91da-8a783cc418d4  <--- seed uuid
+		fsid 10bd3202-0415-43af-96a8-d5409f310a7e  <--- seed fsid
+	item 1 key (DEV_ITEMS DEV_ITEM 2) itemoff 16087 itemsize 98
+		devid 2 total_bytes 3221225472 bytes_used 939524096
+		io_align 4096 io_width 4096 sector_size 4096 type 0
+		generation 0 start_offset 0 dev_group 0
+		seek_speed 0 bandwidth 0
+		uuid 56a0a6bc-4630-4998-8daf-3c3030c4256a  <- sprout uuid
+		fsid ab2c88b7-be81-4a7e-9849-c3666e7f9f4f <- sprout fsid
+
+But the replaced target has the following uuid+fsid in its superblock
+which doesn't match with the expected uuid+fsid in its devitem.
+
+  $ btrfs in dump-super /dev/sdc | egrep '^generation|dev_item.uuid|dev_item.fsid|devid'
+  generation	20
+  dev_item.uuid	59368f50-9af2-4b17-91da-8a783cc418d4
+  dev_item.fsid	ab2c88b7-be81-4a7e-9849-c3666e7f9f4f [match]
+  dev_item.devid	1
+
+So if you provide the original seed device the mount shall be
+successful.  Which so long happening in the test case btrfs/163.
+
+  $ btrfs device scan --forget
+  $ mount -o device=/dev/sda /dev/sdb /btrfs
+
+Fix in this patch:
+If a seed is not sprouted then there is no replacement of it, because of
+its read-only filesystem with a read-only device. Similarly, in the case
+of a sprouted filesystem, the seed device is still read only. So, mark
+it as you can't replace a seed device, you can only add a new device and
+then delete the seed device. If replace is attempted then returns
+-EINVAL.
+
+Signed-off-by: Anand Jain <anand.jain@oracle.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- cmds/restore.c | 46 +++++++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 45 insertions(+), 1 deletion(-)
+ fs/btrfs/dev-replace.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/cmds/restore.c b/cmds/restore.c
-index 025e99e9..218c6ec1 100644
---- a/cmds/restore.c
-+++ b/cmds/restore.c
-@@ -1197,6 +1197,41 @@ out:
- 	return ret;
- }
+diff --git a/fs/btrfs/dev-replace.c b/fs/btrfs/dev-replace.c
+index e4a1c6afe35dc..0cb36746060da 100644
+--- a/fs/btrfs/dev-replace.c
++++ b/fs/btrfs/dev-replace.c
+@@ -230,7 +230,7 @@ static int btrfs_init_dev_replace_tgtdev(struct btrfs_fs_info *fs_info,
+ 	int ret = 0;
  
-+static char *get_subvol_name(struct btrfs_root *tree_root, u64 subvol_id)
-+{
-+	struct btrfs_root_ref *ref;
-+	struct btrfs_path path;
-+	struct btrfs_key key;
-+	int namelen;
-+	int ret;
-+	char *name = NULL;
-+
-+	key.objectid = BTRFS_FS_TREE_OBJECTID;
-+	key.type = BTRFS_ROOT_REF_KEY;
-+	key.offset = subvol_id;
-+
-+	btrfs_init_path(&path);
-+	ret = btrfs_search_slot(NULL, tree_root, &key, &path, 0, 0);
-+	if (ret != 0)
-+		goto out;
-+
-+	ref = btrfs_item_ptr(path.nodes[0], path.slots[0], struct btrfs_root_ref);
-+
-+	namelen = btrfs_root_ref_name_len(path.nodes[0], ref);
-+	name = malloc(sizeof(char) * namelen + 1);
-+	if (!name) {
-+		name = ERR_PTR(-ENOMEM);
-+		goto out;
-+	}
-+
-+	read_extent_buffer(path.nodes[0], name, (unsigned long)(ref + 1), namelen);
-+	name[namelen] = 0;
-+
-+out:
-+	btrfs_release_path(&path);
-+	return name;
-+}
-+
- static int do_list_roots(struct btrfs_root *root)
- {
- 	struct btrfs_key key;
-@@ -1206,6 +1241,7 @@ static int do_list_roots(struct btrfs_root *root)
- 	struct extent_buffer *leaf;
- 	struct btrfs_root_item ri;
- 	unsigned long offset;
-+	char *name;
- 	int slot;
- 	int ret;
- 
-@@ -1244,8 +1280,16 @@ static int do_list_roots(struct btrfs_root *root)
- 		read_extent_buffer(leaf, &ri, offset, sizeof(ri));
- 		printf(" tree ");
- 		btrfs_print_key(&disk_key);
--		printf(" %Lu level %d\n", btrfs_root_bytenr(&ri),
-+		printf(" %Lu level %d", btrfs_root_bytenr(&ri),
- 		       btrfs_root_level(&ri));
-+
-+		name = get_subvol_name(root, found_key.objectid);
-+		if (name) {
-+			printf(" %s", name);
-+			free(name);
-+		}
-+
-+		printf("\n");
- 		path.slots[0]++;
+ 	*device_out = NULL;
+-	if (fs_info->fs_devices->seeding) {
++	if (srcdev->fs_devices->seeding) {
+ 		btrfs_err(fs_info, "the filesystem is a seed filesystem!");
+ 		return -EINVAL;
  	}
- 	btrfs_release_path(&path);
 -- 
-2.26.2
+2.25.1
 
