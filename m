@@ -2,153 +2,138 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 516DE299CC3
-	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Oct 2020 01:01:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA7DB299F1E
+	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Oct 2020 01:21:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437336AbgJ0ABg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 26 Oct 2020 20:01:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35522 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2411114AbgJZX4Y (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 26 Oct 2020 19:56:24 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3BCBD20882;
-        Mon, 26 Oct 2020 23:56:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603756583;
-        bh=ol2X9YMCmNw1ekZCMxAoxYUEXg/Cgz45jCCGj6GF47Y=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RtAaqPV6q99K+SBDkRFZ7URzdbBIj34jtLfV9B2U7nYu0HPsqSxPcxi+2vcPGvtws
-         BQo14QybGNmUHnM6z066ZE40BJoJmep8vlXj21C6nhc3gZMxjD4qwRiowZZrg6EBBx
-         6eOqH4ETZFHNZg6lPmBYj1jcDXWnDGkT3Bwst1io=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Anand Jain <anand.jain@oracle.com>,
-        David Sterba <dsterba@suse.com>,
-        Sasha Levin <sashal@kernel.org>, linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 56/80] btrfs: fix replace of seed device
-Date:   Mon, 26 Oct 2020 19:54:52 -0400
-Message-Id: <20201026235516.1025100-56-sashal@kernel.org>
+        id S2411000AbgJZXzz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 26 Oct 2020 19:55:55 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:49204 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2410904AbgJZXz2 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 26 Oct 2020 19:55:28 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09QNn3Jd007463;
+        Mon, 26 Oct 2020 23:55:26 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding; s=corp-2020-01-29;
+ bh=8/0gPSKV0KmfUImax6hqcL3jMFWQsE2a8ICFQIxguNs=;
+ b=GeDbRiaYfHBmLB/bG7E303ownCqAx8/HfPOcx9XM4kjfboWQ0C8zI5KY9+s/Bg7tYLTK
+ QLfFc48U++qwHTxty2fl0zSm9zbWlkurOR1kE0bBb2eOPnk+WyFduXvxWdoZiuYxERmT
+ 0wHL8s3sM4zcM8dzg6WWvWXeRQS/LwpOZaCeSOLP/j/YEuoiCuShV0cOnmkqxsLwWjG7
+ jen/fg/KPeXlQuwsgtbJUrN+/Zc0an7Gr7A/NYAc7Iy/CMHk+XbdDFljGCqtJBSBrhar
+ FD31hEulXip6eX4q3ZFsPsH0tKlMgCBB/IvGdDa1Y7lkK5CAItdM0GYFJF7EgveB0DJz yw== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 34cc7kq9jw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 26 Oct 2020 23:55:26 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09QNnxVn157963;
+        Mon, 26 Oct 2020 23:55:26 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3020.oracle.com with ESMTP id 34cx5wg49t-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 26 Oct 2020 23:55:26 +0000
+Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 09QNtPAi003347;
+        Mon, 26 Oct 2020 23:55:25 GMT
+Received: from localhost.localdomain (/39.109.231.106)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 26 Oct 2020 16:55:24 -0700
+From:   Anand Jain <anand.jain@oracle.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     linux-block@vger.kernel.org
+Subject: [PATCH RFC 2/7] block: export part_stat_read_inflight
+Date:   Tue, 27 Oct 2020 07:55:05 +0800
+Message-Id: <187d1f02f82019d48f66c97c0d1b99c9a58cd553.1603751876.git.anand.jain@oracle.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201026235516.1025100-1-sashal@kernel.org>
-References: <20201026235516.1025100-1-sashal@kernel.org>
+In-Reply-To: <cover.1603751876.git.anand.jain@oracle.com>
+References: <cover.1603751876.git.anand.jain@oracle.com>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9786 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxscore=0 mlxlogscore=999
+ suspectscore=1 bulkscore=0 malwarescore=0 spamscore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2010260155
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9786 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 adultscore=0
+ malwarescore=0 spamscore=0 clxscore=1015 mlxscore=0 suspectscore=1
+ priorityscore=1501 impostorscore=0 bulkscore=0 phishscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2010260155
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Anand Jain <anand.jain@oracle.com>
+The exported function part_in_flight() returns commands in-flight in the
+given block device.
 
-[ Upstream commit c6a5d954950c5031444173ad2195efc163afcac9 ]
-
-If you replace a seed device in a sprouted fs, it appears to have
-successfully replaced the seed device, but if you look closely, it
-didn't.  Here is an example.
-
-  $ mkfs.btrfs /dev/sda
-  $ btrfstune -S1 /dev/sda
-  $ mount /dev/sda /btrfs
-  $ btrfs device add /dev/sdb /btrfs
-  $ umount /btrfs
-  $ btrfs device scan --forget
-  $ mount -o device=/dev/sda /dev/sdb /btrfs
-  $ btrfs replace start -f /dev/sda /dev/sdc /btrfs
-  $ echo $?
-  0
-
-  BTRFS info (device sdb): dev_replace from /dev/sda (devid 1) to /dev/sdc started
-  BTRFS info (device sdb): dev_replace from /dev/sda (devid 1) to /dev/sdc finished
-
-  $ btrfs fi show
-  Label: none  uuid: ab2c88b7-be81-4a7e-9849-c3666e7f9f4f
-	  Total devices 2 FS bytes used 256.00KiB
-	  devid    1 size 3.00GiB used 520.00MiB path /dev/sdc
-	  devid    2 size 3.00GiB used 896.00MiB path /dev/sdb
-
-  Label: none  uuid: 10bd3202-0415-43af-96a8-d5409f310a7e
-	  Total devices 1 FS bytes used 128.00KiB
-	  devid    1 size 3.00GiB used 536.00MiB path /dev/sda
-
-So as per the replace start command and kernel log replace was successful.
-Now let's try to clean mount.
-
-  $ umount /btrfs
-  $ btrfs device scan --forget
-
-  $ mount -o device=/dev/sdc /dev/sdb /btrfs
-  mount: /btrfs: wrong fs type, bad option, bad superblock on /dev/sdb, missing codepage or helper program, or other error.
-
-  [  636.157517] BTRFS error (device sdc): failed to read chunk tree: -2
-  [  636.180177] BTRFS error (device sdc): open_ctree failed
-
-That's because per dev items it is still looking for the original seed
-device.
-
- $ btrfs inspect-internal dump-tree -d /dev/sdb
-
-	item 0 key (DEV_ITEMS DEV_ITEM 1) itemoff 16185 itemsize 98
-		devid 1 total_bytes 3221225472 bytes_used 545259520
-		io_align 4096 io_width 4096 sector_size 4096 type 0
-		generation 6 start_offset 0 dev_group 0
-		seek_speed 0 bandwidth 0
-		uuid 59368f50-9af2-4b17-91da-8a783cc418d4  <--- seed uuid
-		fsid 10bd3202-0415-43af-96a8-d5409f310a7e  <--- seed fsid
-	item 1 key (DEV_ITEMS DEV_ITEM 2) itemoff 16087 itemsize 98
-		devid 2 total_bytes 3221225472 bytes_used 939524096
-		io_align 4096 io_width 4096 sector_size 4096 type 0
-		generation 0 start_offset 0 dev_group 0
-		seek_speed 0 bandwidth 0
-		uuid 56a0a6bc-4630-4998-8daf-3c3030c4256a  <- sprout uuid
-		fsid ab2c88b7-be81-4a7e-9849-c3666e7f9f4f <- sprout fsid
-
-But the replaced target has the following uuid+fsid in its superblock
-which doesn't match with the expected uuid+fsid in its devitem.
-
-  $ btrfs in dump-super /dev/sdc | egrep '^generation|dev_item.uuid|dev_item.fsid|devid'
-  generation	20
-  dev_item.uuid	59368f50-9af2-4b17-91da-8a783cc418d4
-  dev_item.fsid	ab2c88b7-be81-4a7e-9849-c3666e7f9f4f [match]
-  dev_item.devid	1
-
-So if you provide the original seed device the mount shall be
-successful.  Which so long happening in the test case btrfs/163.
-
-  $ btrfs device scan --forget
-  $ mount -o device=/dev/sda /dev/sdb /btrfs
-
-Fix in this patch:
-If a seed is not sprouted then there is no replacement of it, because of
-its read-only filesystem with a read-only device. Similarly, in the case
-of a sprouted filesystem, the seed device is still read only. So, mark
-it as you can't replace a seed device, you can only add a new device and
-then delete the seed device. If replace is attempted then returns
--EINVAL.
-
+Cc: linux-block@vger.kernel.org
 Signed-off-by: Anand Jain <anand.jain@oracle.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/btrfs/dev-replace.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ block/genhd.c         | 19 +++++++++++--------
+ include/linux/genhd.h |  2 ++
+ 2 files changed, 13 insertions(+), 8 deletions(-)
 
-diff --git a/fs/btrfs/dev-replace.c b/fs/btrfs/dev-replace.c
-index 196bd241e701a..34ddf2d75c1af 100644
---- a/fs/btrfs/dev-replace.c
-+++ b/fs/btrfs/dev-replace.c
-@@ -190,7 +190,7 @@ static int btrfs_init_dev_replace_tgtdev(struct btrfs_fs_info *fs_info,
- 	int ret = 0;
+diff --git a/block/genhd.c b/block/genhd.c
+index 81b10b90de71..21876d4cf2fb 100644
+--- a/block/genhd.c
++++ b/block/genhd.c
+@@ -125,6 +125,15 @@ static unsigned int part_in_flight(struct hd_struct *part)
+ 	return inflight;
+ }
  
- 	*device_out = NULL;
--	if (fs_info->fs_devices->seeding) {
-+	if (srcdev->fs_devices->seeding) {
- 		btrfs_err(fs_info, "the filesystem is a seed filesystem!");
- 		return -EINVAL;
- 	}
++unsigned int part_stat_read_inflight(struct request_queue *q, struct hd_struct *p)
++{
++	if (queue_is_mq(q))
++		return blk_mq_in_flight(q, p);
++	else
++		return part_in_flight(p);
++}
++EXPORT_SYMBOL_GPL(part_stat_read_inflight);
++
+ static void part_in_flight_rw(struct hd_struct *part, unsigned int inflight[2])
+ {
+ 	int cpu;
+@@ -1291,10 +1300,7 @@ ssize_t part_stat_show(struct device *dev,
+ 	unsigned int inflight;
+ 
+ 	part_stat_read_all(p, &stat);
+-	if (queue_is_mq(q))
+-		inflight = blk_mq_in_flight(q, p);
+-	else
+-		inflight = part_in_flight(p);
++	inflight = part_stat_read_inflight(q, p);
+ 
+ 	return sprintf(buf,
+ 		"%8lu %8lu %8llu %8u "
+@@ -1613,10 +1619,7 @@ static int diskstats_show(struct seq_file *seqf, void *v)
+ 	disk_part_iter_init(&piter, gp, DISK_PITER_INCL_EMPTY_PART0);
+ 	while ((hd = disk_part_iter_next(&piter))) {
+ 		part_stat_read_all(hd, &stat);
+-		if (queue_is_mq(gp->queue))
+-			inflight = blk_mq_in_flight(gp->queue, hd);
+-		else
+-			inflight = part_in_flight(hd);
++		inflight = part_stat_read_inflight(gp->queue, hd);
+ 
+ 		seq_printf(seqf, "%4d %7d %s "
+ 			   "%lu %lu %lu %u "
+diff --git a/include/linux/genhd.h b/include/linux/genhd.h
+index eb77e0ac8a82..93dd7a96d444 100644
+--- a/include/linux/genhd.h
++++ b/include/linux/genhd.h
+@@ -282,6 +282,8 @@ struct disk_part_iter {
+ };
+ 
+ extern void part_stat_read_all(struct hd_struct *part, struct disk_stats *stat);
++extern unsigned int part_stat_read_inflight(struct request_queue *q,
++					    struct hd_struct *part);
+ extern void disk_part_iter_init(struct disk_part_iter *piter,
+ 				 struct gendisk *disk, unsigned int flags);
+ extern struct hd_struct *disk_part_iter_next(struct disk_part_iter *piter);
 -- 
 2.25.1
 
