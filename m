@@ -2,109 +2,82 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2646A298F02
-	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Oct 2020 15:19:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 774C3298F14
+	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Oct 2020 15:20:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1781151AbgJZOTM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 26 Oct 2020 10:19:12 -0400
-Received: from mx2.suse.de ([195.135.220.15]:57800 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1781144AbgJZOTI (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 26 Oct 2020 10:19:08 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1603721946;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=J9eIsiQ2alqBLPy8NQcPUZE//XXz7iQ2+rvkB24DWkw=;
-        b=SOib9wpko+DAaOmIJD9wl64eplaeGThfW0XJt8HzK3UPhcWpUrNxhME9VjBSAh+wcOYImi
-        8QTpA602sxjia/uk+/e7M2czaFBbaT32QrVHLuEA9vuB8EeehGygcmEjZ8iS/FLbutFrXp
-        JtnX4RFTlRn1MU7Y02wqpA9sg6d2L30=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 905EBAD07;
-        Mon, 26 Oct 2020 14:19:06 +0000 (UTC)
-Subject: Re: [PATCH 1/2] btrfs: handle ->total_bytes_pinned inside the delayed
- ref itself
-To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com
-References: <cover.1603286785.git.josef@toxicpanda.com>
- <511ea5400e68ac598aa45a9849b3088cdef23e4a.1603286785.git.josef@toxicpanda.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <11dc22df-6d53-5d0b-1332-34ea94ddca9a@suse.com>
-Date:   Mon, 26 Oct 2020 16:19:05 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1781295AbgJZOUR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 26 Oct 2020 10:20:17 -0400
+Received: from mail-qt1-f196.google.com ([209.85.160.196]:45135 "EHLO
+        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1781292AbgJZOUQ (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 26 Oct 2020 10:20:16 -0400
+Received: by mail-qt1-f196.google.com with SMTP id m14so735999qtc.12
+        for <linux-btrfs@vger.kernel.org>; Mon, 26 Oct 2020 07:20:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=WtB2wypnMgsogox+zxfd8JJo4sHANMEVHjCvcxPuk9Y=;
+        b=mdihdZm0HFuyAgrqFvs4uBTUNAgSKG1d0hFXfgNS8pL4fsswjDgdnwLef3SnPVCoYV
+         VLcyJcluJ3yKZqM3qwQeNYVViTLa4kNBgXcfUqzalVoOqILIIIqJGv+dl1F48wUmbaYW
+         Psfw90PdSaWttPtqwYrdqHZrJVXmZL/ckZ6sST+N60nITNWrpnxBMu5TWe8trJvElG7Y
+         a9OsoN7PLgKDIihBj2AUQ7CAwsmkGj0GpKp4RXI+eKwfyL0hbb0q8EWmNp1efFBfRNmr
+         2gK8OxLGP44HNhVDA5yr1ZCzufqGqgzw0JI0lhJ5IqFnAwqW40dbgbxG1AzcyEIhbvnp
+         oUcA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=WtB2wypnMgsogox+zxfd8JJo4sHANMEVHjCvcxPuk9Y=;
+        b=JEV5ScQpM7TeM/pU0Gg4CBoRid3xjjUyH+XIS6R0ywgRXKepPKgPLlPtkavgvaHECH
+         gq5H5nWcs3Vk7VwUeXJFfs70KgoWKF8M31Qy/UR5MWhoIGVMjHhuUx+B88O/5K+zuy5G
+         4dugda+QYkl3Kqb1LCwduxudGoZA1mj7eofGQl+0xeEpkCYsJMUiz/g6UNg0BS8KVY4X
+         pb17jyg9G5T4BBk523T0iRem+yHCNZq+IlkQi//QWXLpc4muNsgbHY1HWIJphg343FiM
+         XOk6S5cpNUrthp4EDpOKoc0IANxtKSW/ranWR8duQ7yEc5WVHlUBg+J+rsVM5NdqJOXu
+         L1WQ==
+X-Gm-Message-State: AOAM533TDnDaiVEebV9ArKXrLiUHbdKrSIwnnHbIKAoQ5OGMF/VQ4lbq
+        I52W4diVkrOoju72ieBWiS1ktxuiPCVTAZDM
+X-Google-Smtp-Source: ABdhPJxjNbsKfq40RHOAhFRWTXjqE9LHbDpaFuASXmB+7Z8hxYq5R1Ze1G7iQ4BcApsAOis3SRdRxA==
+X-Received: by 2002:ac8:5c82:: with SMTP id r2mr17230570qta.195.1603722014114;
+        Mon, 26 Oct 2020 07:20:14 -0700 (PDT)
+Received: from [192.168.1.45] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id y125sm6359598qkb.114.2020.10.26.07.20.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 26 Oct 2020 07:20:13 -0700 (PDT)
+Subject: Re: [PATCH 2/8] btrfs: scrub: remove the @force parameter of
+ scrub_pages()
+To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+References: <20201026071115.57225-1-wqu@suse.com>
+ <20201026071115.57225-3-wqu@suse.com>
+From:   Josef Bacik <josef@toxicpanda.com>
+Message-ID: <7eef63bf-9162-6a6c-a04d-e52c13a175b1@toxicpanda.com>
+Date:   Mon, 26 Oct 2020 10:20:12 -0400
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.4.0
 MIME-Version: 1.0
-In-Reply-To: <511ea5400e68ac598aa45a9849b3088cdef23e4a.1603286785.git.josef@toxicpanda.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20201026071115.57225-3-wqu@suse.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 21.10.20 г. 16:32 ч., Josef Bacik wrote:
-> Currently we pass things around to figure out if we maybe free'ing data
-> based on the state of the delayed refs head.  This makes the accounting
-> sort of confusing and hard to follow, as it's distinctly separate from
-> the delayed ref heads stuff, but also depends on it entirely.
+On 10/26/20 3:11 AM, Qu Wenruo wrote:
+> The @force parameter for scrub_pages() is to indicate whether we want to
+> force bio submission.
 > 
-> Fix this by explicitly adjusting the space_info->total_bytes_pinned in
-> the delayed refs code.  We now have two places where we modify this
-> counter, once where we create the delayed and destroy the delayed refs,
-> and once when we pin and unpin the extents.  This means there is a
-> slight overlap between delayed refs and the pin/unpin mechanisms, but
-> this is simply used by the ENOSPC infrastructure to determine if we need
-> to commit the transaction, so there's no adverse affect from this, we
-> might simply commit thinking it will give us enough space when it might
-> not.
+> Currently it's only used for super block scrub, and it can be easily
+> determined by the @flags.
 > 
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> So remove the parameter to make the parameter a little shorter.
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
 
-Reviewed-by: Nikolay Borisov <nborisov@suse.com
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+
+Thanks,
+
+Josef
