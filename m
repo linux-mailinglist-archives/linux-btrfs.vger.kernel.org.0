@@ -2,96 +2,88 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DD4729C3B2
-	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Oct 2020 18:49:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C78A29C247
+	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Oct 2020 18:34:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1821757AbgJ0Rqc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 27 Oct 2020 13:46:32 -0400
-Received: from out20-14.mail.aliyun.com ([115.124.20.14]:36922 "EHLO
-        out20-14.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1754085AbgJ0O0f (ORCPT
+        id S1820255AbgJ0ReM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 27 Oct 2020 13:34:12 -0400
+Received: from mail-qv1-f68.google.com ([209.85.219.68]:37227 "EHLO
+        mail-qv1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1820237AbgJ0ReG (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 27 Oct 2020 10:26:35 -0400
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.1035691|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.0185681-0.00145015-0.979982;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047202;MF=wangyugui@e16-tech.com;NM=1;PH=DS;RN=3;RT=3;SR=0;TI=SMTPD_---.Ip8ZYtq_1603808787;
-Received: from 192.168.2.112(mailfrom:wangyugui@e16-tech.com fp:SMTPD_---.Ip8ZYtq_1603808787)
-          by smtp.aliyun-inc.com(10.147.42.16);
-          Tue, 27 Oct 2020 22:26:28 +0800
-Date:   Tue, 27 Oct 2020 22:26:30 +0800
-From:   Wang Yugui <wangyugui@e16-tech.com>
-To:     louis@waffle.tech, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: balance RAID1/RAID10 mirror selection
-Cc:     anand.jain@oracle.com
-In-Reply-To: <20201023153814.643F.409509F4@e16-tech.com>
-References: <8541d6d7a63e470b9f4c22ba95cd64fc@waffle.tech> <20201023153814.643F.409509F4@e16-tech.com>
-Message-Id: <20201027222629.16D6.409509F4@e16-tech.com>
+        Tue, 27 Oct 2020 13:34:06 -0400
+Received: by mail-qv1-f68.google.com with SMTP id t6so1062528qvz.4
+        for <linux-btrfs@vger.kernel.org>; Tue, 27 Oct 2020 10:34:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=89d5DfL29eJjNJvFhHUr0ov2NLezkQ68RK9DhyCzy8U=;
+        b=KkDulwcFK6Btsy1hgj2OxxMuKkn9HAlAtA6Flrzm88AOTbnGinlpNIDg7CFlDpJA6U
+         AeA7jh4kmdVShTH27cgEY1/5Xdw5XI/hX2gpnivFPlcY8GCk9JEY5j1nI33xBpES6uig
+         1Spp1Xj7tyQH+gSrCx6u1BGG747WIiGV6xVH1llS5+GUPvnTXOXWLpsJ8d+hUWwyQXr1
+         bZakYWa30ICK5cdZxrL6Kx1tqBcWGD/7qB2gnFkpn58lsb8VFvU/ZkvSUyxxOEaaSrEn
+         wK+3TzqrulIE6VjiaT9qwmrJT+vSbGpLFSsDLO7RhvWxEEaC67I+RX+cRQydvlOfrp8b
+         NKDg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=89d5DfL29eJjNJvFhHUr0ov2NLezkQ68RK9DhyCzy8U=;
+        b=Vtd8pH4AY0DzPCh3wFpDwta7MMqKZv4gUpDSgaAsW2vOJe0pBnvMxgMo6VYnOqkfvd
+         W26CsXyyP4wkjwFAbE2d6u4W1Qe7/M97HBfzWpmI9QWOCtQ2ELpXrUHDfbkqqVtYjImz
+         AvrajPr3z0ivDorDYftmJSXUA+YZsobUGPiqgpzMkbPPAoWHMPVW7qjH0H6mQxG0Lali
+         00C+YXPsBYpEeehZVOU8IiEoQzWkzjsWrvsbkBEwnSIoU94cB36Hn8ItaZfseyT25C6z
+         WnVtdIKt5r76lNQrmpXez22eW9gvcWb/6P6yP4t5z5akeS4aJ32E4KHSDqjHWw/e0ncM
+         NCow==
+X-Gm-Message-State: AOAM5327CQY6dM4MNQnqAWbNwylPLeRBAr4auvrkAp9YkpdlbD4dtpyG
+        d0Z+NRV8wjPZTFVEmTdZZjUtBdjdeAJXYm6o
+X-Google-Smtp-Source: ABdhPJyC/ZNe176zFCpiZcOKyCao8Aci+2ZEjTuX3x4wC+1V0l1ceiKF2dE3vwcglP8xj11omHuWWw==
+X-Received: by 2002:a05:6214:4af:: with SMTP id w15mr3547238qvz.51.1603820043940;
+        Tue, 27 Oct 2020 10:34:03 -0700 (PDT)
+Received: from [192.168.1.45] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id a10sm1146429qkc.79.2020.10.27.10.34.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 27 Oct 2020 10:34:02 -0700 (PDT)
+Subject: Re: [PATCH] btrfs: do not start and wait for delalloc on snapshot
+ roots on transaction commit
+To:     fdmanana@kernel.org, linux-btrfs@vger.kernel.org
+References: <bb2b1573dc60b8e743e8675fab5a13c15e7dcc85.1603802247.git.fdmanana@suse.com>
+From:   Josef Bacik <josef@toxicpanda.com>
+Message-ID: <b251d96d-4f29-1b64-23e0-f45831c1c452@toxicpanda.com>
+Date:   Tue, 27 Oct 2020 13:34:01 -0400
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
+In-Reply-To: <bb2b1573dc60b8e743e8675fab5a13c15e7dcc85.1603802247.git.fdmanana@suse.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Mailer: Becky! ver. 2.75.01 [en]
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi, Louis Jencka
-Cc: Anand Jain
-
-Maybe we still need BTRFS_READ_POLICY_PID because of readahead.
-
-There are readahead inside OS and readahead inside some disk.
-
-For most SSD/SAS and SSD/SATA, there seems readahead inside the disk.
-But for some SSD/NVMe,  there seems NO readahead inside the disk.
-
-BTRFS_READ_POLICY_PID cooperates readahead better in some case.
-
-Best Regards
-Wang Yugui (wangyugui@e16-tech.com)
-2020/10/27
-
-> Hi, Louis Jencka
+On 10/27/20 8:40 AM, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
 > 
-> Can we move 'atomic_t rr_counter' into 'struct btrfs_fs_info' to
-> support multiple mounted btrfs filesystem?
+> We do not need anymore to start writeback for delalloc of roots that are
+> being snapshoted and wait for it to complete. This was done in commit
+> 609e804d771f59 ("Btrfs: fix file corruption after snapshotting due to mix
+> of buffered/DIO writes") to fix a type of file corruption where files in a
+> snapshot end up having their i_size updated in a non-ordered way, leaving
+> implicit file holes, when buffered IO writes that increase a file's size
+> are followed by direct IO writes that also increase the file's size.
 > 
-> Although 'readmirror feature (read_policy sysfs)'  is talked about, 
-> round-robin is a replacement for BTRFS_READ_POLICY_PID in most case, 
-> we no longer need BTRFS_READ_POLICY_PID ?
+> This is not needed anymore because we now have a more generic mechanism
+> to prevent a non-ordered i_size update since commit 9ddc959e802bf7
+> ("btrfs: use the file extent tree infrastructure"), which addresses this
+> scenario involving snapshots as well.
 > 
-> Best Regards
-> Wang Yugui (wangyugui@e16-tech.com)
-> 2020/10/23
-> 
-> > Balance RAID1/RAID10 mirror selection via plain round-robin scheduling. This should roughly double throughput for large reads.
-> > 
-> > Signed-off-by: Louis Jencka <louis@waffle.tech>
-> > ---
-> >  fs/btrfs/volumes.c | 6 +++++-
-> >  1 file changed, 5 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> > index 58b9c419a..45c581d46 100644
-> > --- a/fs/btrfs/volumes.c
-> > +++ b/fs/btrfs/volumes.c
-> > @@ -333,6 +333,9 @@ struct list_head * __attribute_const__ btrfs_get_fs_uuids(void)
-> >  	return &fs_uuids;
-> >  }
-> >  
-> > +/* Used for round-robin balancing RAID1/RAID10 reads. */
-> > +atomic_t rr_counter = ATOMIC_INIT(0);
-> > +
-> >  /*
-> >   * alloc_fs_devices - allocate struct btrfs_fs_devices
-> >   * @fsid:		if not NULL, copy the UUID to fs_devices::fsid
-> > @@ -5482,7 +5485,8 @@ static int find_live_mirror(struct btrfs_fs_info *fs_info,
-> >  	else
-> >  		num_stripes = map->num_stripes;
-> >  
-> > -	preferred_mirror = first + current->pid % num_stripes;
-> > +	preferred_mirror = first +
-> > +	    (unsigned)atomic_inc_return(&rr_counter) % num_stripes;
-> >  
-> >  	if (dev_replace_is_ongoing &&
-> >  	    fs_info->dev_replace.cont_reading_from_srcdev_mode ==
-> 
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 
+Thanks,
+
+Josef
