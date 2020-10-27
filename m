@@ -2,218 +2,96 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 912A229BD9A
-	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Oct 2020 17:50:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DD4729C3B2
+	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Oct 2020 18:49:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1811891AbgJ0QnV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 27 Oct 2020 12:43:21 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:27972 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1811884AbgJ0QnT (ORCPT
+        id S1821757AbgJ0Rqc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 27 Oct 2020 13:46:32 -0400
+Received: from out20-14.mail.aliyun.com ([115.124.20.14]:36922 "EHLO
+        out20-14.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1754085AbgJ0O0f (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 27 Oct 2020 12:43:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603816998;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc; bh=mj6uaiHROCag3uZJ/gHJroorYDnXKuN4EyYRFIYPu8Y=;
-        b=SbUT6LrPKSG/kjhEPSpbNL37X7EqS95pLWLFJN05U8T6IvmsgoI1621azrkHaUCQe2IU+4
-        A+8ip+R7TFhvfL2PFtA2YPAVSij+jMd+5zp3Ro8XdkS11BXJM1Rlv3U/dAVL3h95weU9IY
-        Ml5NELPo7a9T9EfhM60DKYJDO3/RVn0=
-Received: from mail-ot1-f69.google.com (mail-ot1-f69.google.com
- [209.85.210.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-422-Gc7zg0lYOVC6mBCMFgnbjQ-1; Tue, 27 Oct 2020 12:43:14 -0400
-X-MC-Unique: Gc7zg0lYOVC6mBCMFgnbjQ-1
-Received: by mail-ot1-f69.google.com with SMTP id r4so595854oti.16
-        for <linux-btrfs@vger.kernel.org>; Tue, 27 Oct 2020 09:43:14 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=mj6uaiHROCag3uZJ/gHJroorYDnXKuN4EyYRFIYPu8Y=;
-        b=nFK5bVaMVvt7mfwHukBCoMWz7ecHMXZ7pA2BxbpxdFNZYZzBVeGqP3908fkZbHesua
-         7LyJlTbjATjqPWaPiBunAiqaAC6qVY9y4zDE6Vy3IuhmuCD3NuEtiLdDCTpd4TAD2NEx
-         P4ESjW3HZjrlfIPPRrRpgp7Hjfjtm/I6PlAQmEc2yBdhJcJHNoMXEYG1edonJELjAKa6
-         T1eARbMDev7HVyL7dugmV4Q6hG1KB4jm5UxWOddAYM2dNE8BRIOuAAyH/DlGIthrb/ng
-         yTaXbg7ziWPdwL32ZdBtyclRWILq/0OP/ybfyhzkliiBOUNAcTwqkogm6snPbFqQEZkt
-         W7Hg==
-X-Gm-Message-State: AOAM533w3IrLJpmMvHcnkrRd9KtChVH5FK95uumga6u0+tHdgmCsiqMW
-        NfjLpVNhATg+EKUOu3iCGeMCxaQ7BnmYCLKW24f/as21S2LX8mKmw5OPeeA8jm71gCHSTaMw787
-        3Ph+jsdgGd+J1s52peQc+EOY=
-X-Received: by 2002:aca:ef03:: with SMTP id n3mr2048461oih.67.1603816993829;
-        Tue, 27 Oct 2020 09:43:13 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw7y1eCX7WfRNi9tkZnfLpiDio1qtG9FKTpwYlLMD9SlPYp6FIE57BquNUx5oTk2cs+UUc+WA==
-X-Received: by 2002:aca:ef03:: with SMTP id n3mr2048435oih.67.1603816993577;
-        Tue, 27 Oct 2020 09:43:13 -0700 (PDT)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id l89sm90968otc.6.2020.10.27.09.43.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Oct 2020 09:43:12 -0700 (PDT)
-From:   trix@redhat.com
-To:     linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
-Cc:     linux-pm@vger.kernel.org, linux-crypto@vger.kernel.org,
-        qat-linux@intel.com, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-iio@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-mmc@vger.kernel.org,
-        netdev@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        linux-amlogic@lists.infradead.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-rtc@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-aspeed@lists.ozlabs.org, linux-samsung-soc@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-nfs@vger.kernel.org,
-        tipc-discussion@lists.sourceforge.net, alsa-devel@alsa-project.org,
-        linux-rpi-kernel@lists.infradead.org, linux-tegra@vger.kernel.org,
-        =?UTF-8?q?=EF=BB=BFFrom=20=3A=20Tom=20Rix?= <trix@redhat.com>
-Subject: Subject: [RFC] clang tooling cleanups
-Date:   Tue, 27 Oct 2020 09:42:55 -0700
-Message-Id: <20201027164255.1573301-1-trix@redhat.com>
-X-Mailer: git-send-email 2.18.1
+        Tue, 27 Oct 2020 10:26:35 -0400
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.1035691|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.0185681-0.00145015-0.979982;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047202;MF=wangyugui@e16-tech.com;NM=1;PH=DS;RN=3;RT=3;SR=0;TI=SMTPD_---.Ip8ZYtq_1603808787;
+Received: from 192.168.2.112(mailfrom:wangyugui@e16-tech.com fp:SMTPD_---.Ip8ZYtq_1603808787)
+          by smtp.aliyun-inc.com(10.147.42.16);
+          Tue, 27 Oct 2020 22:26:28 +0800
+Date:   Tue, 27 Oct 2020 22:26:30 +0800
+From:   Wang Yugui <wangyugui@e16-tech.com>
+To:     louis@waffle.tech, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs: balance RAID1/RAID10 mirror selection
+Cc:     anand.jain@oracle.com
+In-Reply-To: <20201023153814.643F.409509F4@e16-tech.com>
+References: <8541d6d7a63e470b9f4c22ba95cd64fc@waffle.tech> <20201023153814.643F.409509F4@e16-tech.com>
+Message-Id: <20201027222629.16D6.409509F4@e16-tech.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Mailer: Becky! ver. 2.75.01 [en]
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This rfc will describe
-An upcoming treewide cleanup.
-How clang tooling was used to programatically do the clean up.
-Solicit opinions on how to generally use clang tooling.
+Hi, Louis Jencka
+Cc: Anand Jain
 
-The clang warning -Wextra-semi-stmt produces about 10k warnings.
-Reviewing these, a subset of semicolon after a switch looks safe to
-fix all the time.  An example problem
+Maybe we still need BTRFS_READ_POLICY_PID because of readahead.
 
-void foo(int a) {
-     switch(a) {
-     	       case 1:
-	       ...
-     }; <--- extra semicolon
-}
+There are readahead inside OS and readahead inside some disk.
 
-Treewide, there are about 100 problems in 50 files for x86_64 allyesconfig.
-These fixes will be the upcoming cleanup.
+For most SSD/SAS and SSD/SATA, there seems readahead inside the disk.
+But for some SSD/NVMe,  there seems NO readahead inside the disk.
 
-clang already supports fixing this problem. Add to your command line
+BTRFS_READ_POLICY_PID cooperates readahead better in some case.
 
-  clang -c -Wextra-semi-stmt -Xclang -fixit foo.c
+Best Regards
+Wang Yugui (wangyugui@e16-tech.com)
+2020/10/27
 
-  foo.c:8:3: warning: empty expression statement has no effect;
-    remove unnecessary ';' to silence this warning [-Wextra-semi-stmt]
-        };
-         ^
-  foo.c:8:3: note: FIX-IT applied suggested code changes
-  1 warning generated.
+> Hi, Louis Jencka
+> 
+> Can we move 'atomic_t rr_counter' into 'struct btrfs_fs_info' to
+> support multiple mounted btrfs filesystem?
+> 
+> Although 'readmirror feature (read_policy sysfs)'  is talked about, 
+> round-robin is a replacement for BTRFS_READ_POLICY_PID in most case, 
+> we no longer need BTRFS_READ_POLICY_PID ?
+> 
+> Best Regards
+> Wang Yugui (wangyugui@e16-tech.com)
+> 2020/10/23
+> 
+> > Balance RAID1/RAID10 mirror selection via plain round-robin scheduling. This should roughly double throughput for large reads.
+> > 
+> > Signed-off-by: Louis Jencka <louis@waffle.tech>
+> > ---
+> >  fs/btrfs/volumes.c | 6 +++++-
+> >  1 file changed, 5 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+> > index 58b9c419a..45c581d46 100644
+> > --- a/fs/btrfs/volumes.c
+> > +++ b/fs/btrfs/volumes.c
+> > @@ -333,6 +333,9 @@ struct list_head * __attribute_const__ btrfs_get_fs_uuids(void)
+> >  	return &fs_uuids;
+> >  }
+> >  
+> > +/* Used for round-robin balancing RAID1/RAID10 reads. */
+> > +atomic_t rr_counter = ATOMIC_INIT(0);
+> > +
+> >  /*
+> >   * alloc_fs_devices - allocate struct btrfs_fs_devices
+> >   * @fsid:		if not NULL, copy the UUID to fs_devices::fsid
+> > @@ -5482,7 +5485,8 @@ static int find_live_mirror(struct btrfs_fs_info *fs_info,
+> >  	else
+> >  		num_stripes = map->num_stripes;
+> >  
+> > -	preferred_mirror = first + current->pid % num_stripes;
+> > +	preferred_mirror = first +
+> > +	    (unsigned)atomic_inc_return(&rr_counter) % num_stripes;
+> >  
+> >  	if (dev_replace_is_ongoing &&
+> >  	    fs_info->dev_replace.cont_reading_from_srcdev_mode ==
+> 
 
-The big problem is using this treewide is it will fix all 10k problems.
-10k changes to analyze and upstream is not practical.
-
-Another problem is the generic fixer only removes the semicolon.
-So empty lines with some tabs need to be manually cleaned.
-
-What is needed is a more precise fixer.
-
-Enter clang-tidy.
-https://clang.llvm.org/extra/clang-tidy/
-
-Already part of the static checker infrastructure, invoke on the clang
-build with
-  make clang-tidy
-
-It is only a matter of coding up a specific checker for the cleanup.
-Upstream this is review is happening here
-https://reviews.llvm.org/D90180
-
-The development of a checker/fixer is
-Start with a reproducer
-
-void foo (int a) {
-  switch (a) {};
-}
-
-Generate the abstract syntax tree (AST)
-
-  clang -Xclang -ast-dump foo.c
-
-`-FunctionDecl 
-  |-ParmVarDecl 
-  `-CompoundStmt 
-    |-SwitchStmt 
-    | |-ImplicitCastExpr
-    | | `-DeclRefExpr
-    | `-CompoundStmt
-    `-NullStmt
-
-Write a matcher to get you most of the way
-
-void SwitchSemiCheck::registerMatchers(MatchFinder *Finder) {
-  Finder->addMatcher(
-      compoundStmt(has(switchStmt().bind("switch"))).bind("comp"), this);
-}
-
-The 'bind' method is important, it allows a string to be associated
-with a node in the AST.  In this case these are
-
-`-FunctionDecl 
-  |-ParmVarDecl 
-  `-CompoundStmt <-------- comp
-    |-SwitchStmt <-------- switch
-    | |-ImplicitCastExpr
-    | | `-DeclRefExpr
-    | `-CompoundStmt
-    `-NullStmt
-
-When a match is made the 'check' method will be called.
-
-  void SwitchSemiCheck::check(const MatchFinder::MatchResult &Result) {
-    auto *C = Result.Nodes.getNodeAs<CompoundStmt>("comp");
-    auto *S = Result.Nodes.getNodeAs<SwitchStmt>("switch");
-
-This is where the string in the bind calls are changed to nodes
-
-`-FunctionDecl 
-  |-ParmVarDecl 
-  `-CompoundStmt <-------- comp, C
-    |-SwitchStmt <-------- switch, S
-    | |-ImplicitCastExpr
-    | | `-DeclRefExpr
-    | `-CompoundStmt
-    `-NullStmt <---------- looking for N
-
-And then more logic to find the NullStmt
-
-  auto Current = C->body_begin();
-  auto Next = Current;
-  Next++;
-  while (Next != C->body_end()) {
-    if (*Current == S) {
-      if (const auto *N = dyn_cast<NullStmt>(*Next)) {
-
-When it is found, a warning is printed and a FixItHint is proposed.
-
-  auto H = FixItHint::CreateReplacement(
-    SourceRange(S->getBody()->getEndLoc(), N->getSemiLoc()), "}");
-  diag(N->getSemiLoc(), "unneeded semicolon") << H;
-
-This fixit replaces from the end of switch to the semicolon with a
-'}'.  Because the end of the switch is '}' this has the effect of
-removing all the whitespace as well as the semicolon.
-
-Because of the checker's placement in clang-tidy existing linuxkernel
-checkers, all that was needed to fix the tree was to add a '-fix'to the
-build's clang-tidy call.
-
-I am looking for opinions on what we want to do specifically with
-cleanups and generally about other source-to-source programmatic
-changes to the code base.
-
-For cleanups, I think we need a new toplevel target
-
-clang-tidy-fix
-
-And an explicit list of fixers that have a very high (100%?) fix rate.
-
-Ideally a bot should make the changes, but a bot could also nag folks.
-Is there interest in a bot making the changes? Does one already exist?
-
-The general source-to-source is a bit blue sky.  Ex/ could automagicly
-refactor api, outline similar cut-n-pasted functions etc. Anything on
-someone's wishlist you want to try out ?
-
-Signed-off-by: Tom Rix <trix@redhat.com>
 
