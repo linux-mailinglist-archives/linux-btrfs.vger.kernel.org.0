@@ -2,31 +2,31 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8067029A1E9
+	by mail.lfdr.de (Postfix) with ESMTP id EDB6A29A1EA
 	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Oct 2020 01:52:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2440740AbgJ0AuW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        id S2443518AbgJ0AuW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
         Mon, 26 Oct 2020 20:50:22 -0400
-Received: from mout.gmx.net ([212.227.17.21]:34819 "EHLO mout.gmx.net"
+Received: from mout.gmx.net ([212.227.17.20]:50081 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2409936AbgJ0AuV (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 26 Oct 2020 20:50:21 -0400
+        id S2438851AbgJ0AuW (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 26 Oct 2020 20:50:22 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1603759818;
-        bh=+HnbA5q95GFXYtKVW6QFaPWgq6JUBA7xakD/yrUqBqk=;
+        s=badeba3b8450; t=1603759819;
+        bh=FoRIwKcEqlze1e+IUZ/EDwtql4MFiCCUniy02Y+GMMI=;
         h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=MKdUOl5PkqFzwxHhHRjPxOxKA9d4ekXC35hLZc08pFwenZi5z6r+ufwlnh/KSEdbo
-         GK9p7rQhOjaYkiWpJrXdMevM2iOfSvN/A+2BC39yqBYbiurjHbn2GrlxNxvaWAh9MG
-         nG7ad5OPU+K/ZhL/8uK9ggOAxR3UQDwzTT9GVTyU=
+        b=NjFfhPvJGsrAOJoTBTo3/aCKSpLwOMSVdXnHy8z8JMhYWRJoCwJnK/iUyWA5duHVL
+         yQH7VeYSSuAjLfXhEua9bm1UdL8CJTCmzher+Jykvgh7nmFaFMWNHIALexqvwZ4Cg5
+         hQ66s9lT8rSWKbNBkrNydHI0CE24rDZTRHAfRWRY=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MQMyf-1kk5LU31gv-00MIwk; Tue, 27
- Oct 2020 01:50:18 +0100
-Subject: Re: [PATCH v4 10/68] btrfs: extent_io: remove the forward declaration
- and rename __process_pages_contig
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mkpap-1k7B2r32mV-00mKik; Tue, 27
+ Oct 2020 01:50:19 +0100
+Subject: Re: [PATCH v4 08/68] btrfs: inode: sink parameter @start and @len for
+ check_data_csum()
 To:     dsterba@suse.cz, linux-btrfs@vger.kernel.org
 References: <20201021062554.68132-1-wqu@suse.com>
- <20201021062554.68132-11-wqu@suse.com> <20201027002812.GY6756@twin.jikos.cz>
+ <20201021062554.68132-9-wqu@suse.com> <20201027001305.GW6756@twin.jikos.cz>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -52,94 +52,118 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
  ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
  oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <6ec61a07-1263-cd39-0e0c-6709e23abc82@gmx.com>
+Message-ID: <bb49899c-c25a-a4e4-825c-4c8a2ea4b176@gmx.com>
 Date:   Tue, 27 Oct 2020 08:50:15 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <20201027002812.GY6756@twin.jikos.cz>
+In-Reply-To: <20201027001305.GW6756@twin.jikos.cz>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="Py0MlZsLUquhhzuQRE2CtWK0cCDHefaiJ"
-X-Provags-ID: V03:K1:BOgn6yu/GZlOk0umJ9CSLhoH7zFSQv1n09AxuslpjpefwWcG8W2
- h0zi65HuLR1koTBpyGr9knPgZLoh10vZl/r+1cRqq6MJqTh4JcFam4l/biVUTM9o8AWf4cv
- 0qF0ze9C6fRM+OQl0Bb+KPmhOub7kg/ABsFD05EXGsAOYE+vBIN9SBBGTAxvpRVc+s6aaha
- mkiS84zkEeezuwvSl6lOA==
+ boundary="V8c2p4avnhCRpUQT4I7wUVpxIG0KO1G9r"
+X-Provags-ID: V03:K1:jwKpQBbDWy5Z3jkY23KhPBUFDrejm2VBf8lZHTEa9tC/oruMIjR
+ AaAW4eZ1WkrkXEiCBGiOvkwKylofknhjvuqMtRKPcygP5VA2X+M/eiMy7p32u8LRLteTWR7
+ 4Rke6vL8Aa9IWrnX6ZUNlTN+Zqo4l5SCzs/di2MwvWR6SYdMsaRAV7NR6oM58GHZRcXi/R9
+ RQ2Ni70tJE8Cs+W4oQlVA==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:JqsDPuiTOQg=:o2KitEU3pPn6MTAeaH3veL
- zdsEHTPwmDWFV7yck+QYOuGjpx4UofGyw9K1LJkAR/P0fkBogZCVotLxzoSHX7PiRkIKXqEM1
- kUcTBk8TOb4gSNalU/jU0Aq+gcQtBJhHMSna7vWURmikGnvVs4M5aGtoOTVX7S44KTFGHqS9v
- E8NNqjv5eREs4saJ0zm8tsqj3ZrDWPP7ILYGTMRwwHs7n2Sr5X2wogvhxSG9BLsrygy4mwBgB
- 3lpnIO7zYA74CSnh31CEeUirbqqTatBpRjPHlgEvBXmifbdOLOVpUJKlj9fjaOMx47z4oRQlr
- tzJKCGpaVXZ/W6o4HzJb98aTDVZgXwW/agSLVnz5RR4ndXwItfn32PVTUkS99jl/r1whW6CEA
- mWGsGX8BKBqJeDlWLx+uum8e8zO5EeFf3oT4ExfUSYUPN08UKaNyHEnXgudxjwu2DIqs52nST
- 8M+PZRsw4u9aOorMjFZGmasIpd/rxLTM6tDQNQoxdvGQlkZ3uAWiMwOkIn5HGO8ENpvkSesyG
- W1vQdotSPQOav/UQtUZPuKm1MYRaSmZXeIhJbwmtmqIWBW4JQhzkP1qeXxqSXgI1gGx/kmzoS
- PoEbELrR7oGHaeGYiMIOwHh2p2lQC6XdwUyuQ30FBlQPfG01fqPiT4cJIoNih0E8YN+nOXb9B
- +JYs3bw+tdmFz1b8ukIkUHFQlosAkKEpuhCgWaNuOty5Gc0VBAmYYL1MbXGFJejDthNAwwAwO
- q9S7lSDq/8cejBsBNVKO97KWTFtd+kAin39KHtEtptZU+OyCGbtV38xWStBRfbHEofsym6tmG
- olbKMP5DfXLMv12uk4+T1vMqsAbpjXNwkHnq8tZh3dP7rg+h9nJtsVV+2aaxyvkcYpJYaSzcp
- gMFj4/rzjthnNfza2kjw==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:TAXFGpMgGZo=:o73ftfcl1QuER1aUBY0B+J
+ xLrFRx5nl3ZXEOiGPJfKTXzg0+UBjQn6anMIimR4egICRhH/RMnsrE1ayMEHC4utc/hyA67vd
+ BNR2hXHchnBeF02Ym2I4P+RcLtOybYM9y7024pCc050a5KYpzegqXVJv9bMd7iVotip5n7tts
+ IZTDdLUeOmQoNV7Zw/8JZ6iX1utsdacXWFPFJeSnTKSEELKPR87pY2qTXZC0t3faUeNS5wTf8
+ YzNPUDO6H1oiUkbvk0AEq6Zr10ENVAWyd5JvYFFM+ghgosZNXVJZVdh+Af3o0d+7db8cSz0iP
+ R+25o69482s+4R4m5yPNWC3JLt8YIoIF8ACTskj4hqYQXHJRDiZFYsGrahPfN0r8wyzpfyGJT
+ jKGuvE75E54d9aEpnp3piI2fgDrcUqvyYe8qD2CuMhzIfiQPSzNLwfkkYUQjmKdzR/HxTZ21C
+ 9z2E8UJDYsijYyb4+kp6tw7p4CSfDeZl61ttAJJsbpNUYKcnh7kSQGS1sAy+EjI1NRTodwFoq
+ yVgyCkyTIxnjVWr6XC/eZNWVDOFYyKvCDj2Ej5bisbFX89nTTvcZhy2RJd8oYGMxkJNW/YONh
+ wqDSroRWO8DZzJYDIiNDdPXv+E4oSMKdspilCb7Wlhgw7Wb18rx9qsdEeiMtCjocH+kLLfwSh
+ UzX9H7C62xOca0qjRxNmA9x185RMh5hORA01QxUULuff4MJ/jxWMeiwQt7ZgdPuglPq8LM8m8
+ xEfB8Dg1MCvdNxTn2vCdWdQJ04fJ0h9sGgNY15dVlfSVP/yoWrzwnPQuottesKGVncX2NbIOZ
+ O31Th1LG/KWbgsh0/KFIz7bmoPd5aHcCBtMar4O0QLe0MfLuVezweDYG7le5lsHsOs/li9NoQ
+ mr9lLsVW4yMvGNk4TVDw==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---Py0MlZsLUquhhzuQRE2CtWK0cCDHefaiJ
-Content-Type: multipart/mixed; boundary="D6tviRHVpML8xVmWm6Fy48MoJvBkSGFj2"
+--V8c2p4avnhCRpUQT4I7wUVpxIG0KO1G9r
+Content-Type: multipart/mixed; boundary="zb575Pn5hPiKyVpAD6g9YePLCML9Tiian"
 
---D6tviRHVpML8xVmWm6Fy48MoJvBkSGFj2
+--zb575Pn5hPiKyVpAD6g9YePLCML9Tiian
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
 
 
 
-On 2020/10/27 =E4=B8=8A=E5=8D=888:28, David Sterba wrote:
-> On Wed, Oct 21, 2020 at 02:24:56PM +0800, Qu Wenruo wrote:
->> There is no need to do forward declaration for __process_pages_contig(=
-),
->> so move it before it get first called.
+On 2020/10/27 =E4=B8=8A=E5=8D=888:13, David Sterba wrote:
+> On Wed, Oct 21, 2020 at 02:24:54PM +0800, Qu Wenruo wrote:
+>> For check_data_csum(), the page we're using is directly from inode
+>> mapping, thus it has valid page_offset().
+>>
+>> We can use (page_offset() + pg_off) to replace @start parameter
+>> completely, while the @len should always be sectorsize.
+>>
+>> Since we're here, also add some comment, as there are quite some
+>> confusion in words like start/offset, without explaining whether it's
+>> file_offset or logical bytenr.
+>>
+>> This should not affect the existing behavior, as for current sectorsiz=
+e
+>> =3D=3D PAGE_SIZE case, @pgoff should always be 0, and len is always
+>> PAGE_SIZE (or sectorsize from the dio read path).
+>>
+>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>> ---
+>>  fs/btrfs/inode.c | 27 +++++++++++++++++++--------
+>>  1 file changed, 19 insertions(+), 8 deletions(-)
+>>
+>> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+>> index 2a56d3b8eff4..24fbf2c46e56 100644
+>> --- a/fs/btrfs/inode.c
+>> +++ b/fs/btrfs/inode.c
+>> @@ -2791,17 +2791,30 @@ void btrfs_writepage_endio_finish_ordered(stru=
+ct page *page, u64 start,
+>>  	btrfs_queue_work(wq, &ordered_extent->work);
+>>  }
+>> =20
+>> +/*
+>> + * Verify the checksum of one sector of uncompressed data.
+>> + *
+>> + * @inode:	The inode.
+>> + * @io_bio:	The btrfs_io_bio which contains the csum.
+>> + * @icsum:	The csum offset (by number of sectors).
 >=20
-> But without other good reason than prototype removal we don't want to
-> move the code.
->=20
->> Since we are here, also remove the "__" prefix since there is no speci=
-al
->> meaning for it.
->=20
-> Renaming and adding the comment is fine on itself but does not justify
-> moving the chunk of code.
->=20
-I thought the forward declaration should be something we clean up during
-development.
+> This is not true, it's the index to the checksum array, where size of
+> the element is fs_info::csum_size. The offset can be calculated but it'=
+s
+> not the thing that's passed as argument.
+> Isn't the offset by sectors the same?
 
-But it looks like it's no longer the case or my memory is just blurry.
+If it's 1, it means we need to skip 1 csum which is in csum_size.
 
-Anyway, I can definitely keep the forward declaration and just keep the
-renaming and new comments.
+Or again my bad words?
 
 Thanks,
 Qu
 
 
---D6tviRHVpML8xVmWm6Fy48MoJvBkSGFj2--
+--zb575Pn5hPiKyVpAD6g9YePLCML9Tiian--
 
---Py0MlZsLUquhhzuQRE2CtWK0cCDHefaiJ
+--V8c2p4avnhCRpUQT4I7wUVpxIG0KO1G9r
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl+XbscACgkQwj2R86El
-/qgpYwgAj8zO2pnUJ0pQNrsTZgnVT1m6Xa8QlRVQN1zL8hg0ZiKLpkpky1ZaIBh+
-g2Bxx9h8YXpkzMze1vnjVpMJGcXgdVgFcb1BYXLlx/nNyvVJNhQ+BSMYmhOENDT5
-C1WSnlhUPyAuDVqvp0z8p7gOkn+BQAErGtjgd/phC2F+Z+vQ31FBoY4V6YxZlj38
-sfeb4OT/HjZxsn6HuyF4zATr9ncyM5g2ZGzuiW3AapFNJuBr8pHzJfeukQSHG3Kn
-IUsX5PIUr2SQXwfX22Mg/zkPujdHOz9ERoVIrsNVzExL8mafsgENSW6uM6wxSfjw
-GYNue6KRZ4K+pSZfO/9g68GgP5EeUw==
-=H/z1
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl+XbsgACgkQwj2R86El
+/qgdUAgAmwKmNGYvIex4z/L2zq3obKjqp+T0eZVawgA351P4J5GgL05k7Czg4jSN
+UdawRuuXr0t127FZGHl47Tagj52+k0co6ST555gBSe5p0u+HA1yRQP8nS0uDAWw1
+Oe59bc/EcV68IjoLP9Mcm9K057T/EiDJoliV5cbPQx81DFuSAenudh6Rx8mURxev
+o9yDdoqWCq/3WqojANnxyZzomyNFu0uPCrTzOgiKKIu5hxKWSKkejj1HJ5uIvxDe
+C0+IZa0C8AdisdwKrABAUsMAm1sZJyHF24mehexbkN53cXFux6YVQbJ2l/o/ZzmZ
+KYG14mf6nY6D4xnlxJlNygENkpHA7A==
+=Ovq7
 -----END PGP SIGNATURE-----
 
---Py0MlZsLUquhhzuQRE2CtWK0cCDHefaiJ--
+--V8c2p4avnhCRpUQT4I7wUVpxIG0KO1G9r--
