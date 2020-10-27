@@ -2,145 +2,109 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1024129AC48
-	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Oct 2020 13:40:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE57229AD22
+	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Oct 2020 14:21:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2900089AbgJ0MkP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 27 Oct 2020 08:40:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44532 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2900085AbgJ0MkK (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 27 Oct 2020 08:40:10 -0400
-Received: from localhost.localdomain (bl8-197-74.dsl.telepac.pt [85.241.197.74])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5026F21D24
-        for <linux-btrfs@vger.kernel.org>; Tue, 27 Oct 2020 12:40:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603802409;
-        bh=mzIllUBEhzDbXuFkhCppl+DpxXYVdBMYtzu/WtjuHjI=;
-        h=From:To:Subject:Date:From;
-        b=SUZOtJ0DTINUaxLQfnJy3PH8sb3WQqxt/Ou4ilyQX1Srv8GQcs7Q/GVU0Cbtcaq/n
-         d5ptxgb28WQO3DlbKKQECEIM/5JQOwBWWissR67+Ys0/kkkAOYz/cIunBYRXoxwPq/
-         vlvjbdQO/5xvfjXeaBVxmd8RRaTpgXJBQHvOijhY=
-From:   fdmanana@kernel.org
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: do not start and wait for delalloc on snapshot roots on transaction commit
-Date:   Tue, 27 Oct 2020 12:40:06 +0000
-Message-Id: <bb2b1573dc60b8e743e8675fab5a13c15e7dcc85.1603802247.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.17.1
+        id S1752067AbgJ0NVt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 27 Oct 2020 09:21:49 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:56124 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1752065AbgJ0NVt (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 27 Oct 2020 09:21:49 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09RDF1Vq032486;
+        Tue, 27 Oct 2020 13:21:39 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=++kG6QTjozoOgaKltHVvb8po0NCkIQ+6d0VgBFMX2K8=;
+ b=YTDNlvHIjfNpdrQu1ho2XexlMrUDJmPP8mX3CnWKQ1NrRyfAuJBNuHZ+Fr1VSBbB9JBI
+ yH2SRdcR5HxbEtXTwGqDl49wn8hKoIbzTF+caNYL+AEnUBAk13uHdiijtY4tcrc1frOP
+ TGBsS3eNN7PO/WO1oS9yxwooyjIaif3dm4Eu3+wN8i7//cpqM+TzyPAag3A52h+TGEFC
+ LVwYO5UeSbQRuI69UHfX8RENRhoghDS2eUVMM0t5njQRo+P8hl/K7kw7MCNpO7xh4bMG
+ MHhDPeozQfy9JSQV6JldeaQgdHCX9kyXhGwy8vlpPeW3iK2i858mZm68yT5r1Dn9jGZi Tg== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2120.oracle.com with ESMTP id 34cc7ksv89-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 27 Oct 2020 13:21:39 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09RDGH22194243;
+        Tue, 27 Oct 2020 13:19:39 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3020.oracle.com with ESMTP id 34cx1qq8jr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 27 Oct 2020 13:19:38 +0000
+Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 09RDJbbb025827;
+        Tue, 27 Oct 2020 13:19:37 GMT
+Received: from [192.168.1.102] (/39.109.231.106)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 27 Oct 2020 06:19:36 -0700
+Subject: Re: [PATCH v9 1/3] btrfs: add btrfs_strmatch helper
+To:     dsterba@suse.cz, linux-btrfs@vger.kernel.org, josef@toxicpanda.com,
+        dsterba@suse.com
+References: <cover.1603347462.git.anand.jain@oracle.com>
+ <75264e50d49f3c68cc14dc87510c8f3767390dcf.1603347462.git.anand.jain@oracle.com>
+ <20201026175228.GS6756@twin.jikos.cz>
+From:   Anand Jain <anand.jain@oracle.com>
+Message-ID: <d241d508-6c7e-1624-8f04-4c234bcd6c57@oracle.com>
+Date:   Tue, 27 Oct 2020 21:19:33 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
+MIME-Version: 1.0
+In-Reply-To: <20201026175228.GS6756@twin.jikos.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9786 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0 bulkscore=0
+ suspectscore=0 malwarescore=0 mlxlogscore=999 mlxscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2010270083
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9786 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 adultscore=0
+ malwarescore=0 spamscore=0 clxscore=1015 mlxscore=0 suspectscore=0
+ priorityscore=1501 impostorscore=0 bulkscore=0 phishscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2010270083
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
 
-We do not need anymore to start writeback for delalloc of roots that are
-being snapshoted and wait for it to complete. This was done in commit
-609e804d771f59 ("Btrfs: fix file corruption after snapshotting due to mix
-of buffered/DIO writes") to fix a type of file corruption where files in a
-snapshot end up having their i_size updated in a non-ordered way, leaving
-implicit file holes, when buffered IO writes that increase a file's size
-are followed by direct IO writes that also increase the file's size.
+>> +static int btrfs_strmatch(const char *given, const char *golden)
+>> +{
+>> +	size_t len = strlen(golden);
+>> +	char *stripped;
+>> +
+>> +	/* strip leading whitespace */
+> 
+> This is confusing as it's not stripping the space but merely skipping
+> it.  The arguments are not changed so you also don't need the separate
+> variable and just update 'given'.
 
-This is not needed anymore because we now have a more generic mechanism
-to prevent a non-ordered i_size update since commit 9ddc959e802bf7
-("btrfs: use the file extent tree infrastructure"), which addresses this
-scenario involving snapshots as well.
+  ok let me update it.
 
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- fs/btrfs/transaction.c | 49 ++++++------------------------------------
- 1 file changed, 6 insertions(+), 43 deletions(-)
+> 
+>> +	stripped = skip_spaces(given);
+>> +
+>> +	/* strip trailing whitespace */
+>> +	if ((strncmp(stripped, golden, len) == 0) &&
+>> +	    (strlen(skip_spaces(stripped + len)) == 0))
+>> +		return 0;
+> 
+> This a bit hard to read but ok, essentially we can do the string
+> comparison in a loop or use the library functions.
+>
 
-diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
-index 52ada47aff50..8f70d7135497 100644
---- a/fs/btrfs/transaction.c
-+++ b/fs/btrfs/transaction.c
-@@ -1956,10 +1956,8 @@ static void btrfs_cleanup_pending_block_groups(struct btrfs_trans_handle *trans)
-        }
- }
- 
--static inline int btrfs_start_delalloc_flush(struct btrfs_trans_handle *trans)
-+static inline int btrfs_start_delalloc_flush(struct btrfs_fs_info *fs_info)
- {
--	struct btrfs_fs_info *fs_info = trans->fs_info;
--
- 	/*
- 	 * We use writeback_inodes_sb here because if we used
- 	 * btrfs_start_delalloc_roots we would deadlock with fs freeze.
-@@ -1969,50 +1967,15 @@ static inline int btrfs_start_delalloc_flush(struct btrfs_trans_handle *trans)
- 	 * from already being in a transaction and our join_transaction doesn't
- 	 * have to re-take the fs freeze lock.
- 	 */
--	if (btrfs_test_opt(fs_info, FLUSHONCOMMIT)) {
-+	if (btrfs_test_opt(fs_info, FLUSHONCOMMIT))
- 		writeback_inodes_sb(fs_info->sb, WB_REASON_SYNC);
--	} else {
--		struct btrfs_pending_snapshot *pending;
--		struct list_head *head = &trans->transaction->pending_snapshots;
--
--		/*
--		 * Flush dellaloc for any root that is going to be snapshotted.
--		 * This is done to avoid a corrupted version of files, in the
--		 * snapshots, that had both buffered and direct IO writes (even
--		 * if they were done sequentially) due to an unordered update of
--		 * the inode's size on disk.
--		 */
--		list_for_each_entry(pending, head, list) {
--			int ret;
--
--			ret = btrfs_start_delalloc_snapshot(pending->root);
--			if (ret)
--				return ret;
--		}
--	}
- 	return 0;
- }
- 
--static inline void btrfs_wait_delalloc_flush(struct btrfs_trans_handle *trans)
-+static inline void btrfs_wait_delalloc_flush(struct btrfs_fs_info *fs_info)
- {
--	struct btrfs_fs_info *fs_info = trans->fs_info;
--
--	if (btrfs_test_opt(fs_info, FLUSHONCOMMIT)) {
-+	if (btrfs_test_opt(fs_info, FLUSHONCOMMIT))
- 		btrfs_wait_ordered_roots(fs_info, U64_MAX, 0, (u64)-1);
--	} else {
--		struct btrfs_pending_snapshot *pending;
--		struct list_head *head = &trans->transaction->pending_snapshots;
--
--		/*
--		 * Wait for any dellaloc that we started previously for the roots
--		 * that are going to be snapshotted. This is to avoid a corrupted
--		 * version of files in the snapshots that had both buffered and
--		 * direct IO writes (even if they were done sequentially).
--		 */
--		list_for_each_entry(pending, head, list)
--			btrfs_wait_ordered_extents(pending->root,
--						   U64_MAX, 0, U64_MAX);
--	}
- }
- 
- int btrfs_commit_transaction(struct btrfs_trans_handle *trans)
-@@ -2150,7 +2113,7 @@ int btrfs_commit_transaction(struct btrfs_trans_handle *trans)
- 
- 	extwriter_counter_dec(cur_trans, trans->type);
- 
--	ret = btrfs_start_delalloc_flush(trans);
-+	ret = btrfs_start_delalloc_flush(fs_info);
- 	if (ret)
- 		goto cleanup_transaction;
- 
-@@ -2166,7 +2129,7 @@ int btrfs_commit_transaction(struct btrfs_trans_handle *trans)
- 	if (ret)
- 		goto cleanup_transaction;
- 
--	btrfs_wait_delalloc_flush(trans);
-+	btrfs_wait_delalloc_flush(fs_info);
- 
- 	/*
- 	 * Wait for all ordered extents started by a fast fsync that joined this
--- 
-2.28.0
+>> +
+>> +	return -EINVAL;
+> 
+> This does not make sense as it's an error code while the function is a
+> predicate, without error states.
+> 
+
+  A non zero value return will be some arbitrary number, is that OK?
+  Or the return arg can be bool instead of int.
 
