@@ -2,65 +2,65 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A85C929CAF2
-	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Oct 2020 22:08:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 93EAF29CAF3
+	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Oct 2020 22:08:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1832069AbgJ0VIm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 27 Oct 2020 17:08:42 -0400
-Received: from out5-smtp.messagingengine.com ([66.111.4.29]:33845 "EHLO
+        id S1832072AbgJ0VIr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 27 Oct 2020 17:08:47 -0400
+Received: from out5-smtp.messagingengine.com ([66.111.4.29]:37709 "EHLO
         out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1832061AbgJ0VIm (ORCPT
+        by vger.kernel.org with ESMTP id S1832061AbgJ0VIr (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 27 Oct 2020 17:08:42 -0400
+        Tue, 27 Oct 2020 17:08:47 -0400
 Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailout.nyi.internal (Postfix) with ESMTP id 3E6545C00B4;
-        Tue, 27 Oct 2020 17:08:41 -0400 (EDT)
+        by mailout.nyi.internal (Postfix) with ESMTP id 15BDA5C00CC;
+        Tue, 27 Oct 2020 17:08:46 -0400 (EDT)
 Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Tue, 27 Oct 2020 17:08:41 -0400
+  by compute2.internal (MEProxy); Tue, 27 Oct 2020 17:08:46 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=from
         :to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm2; bh=cq0c5H3Du+D0p
-        V/aMMb/8VkF09ghgdkmSv/cJcFIFtw=; b=fu7wcjB+mzS097Cfaj5rWy7a5c/Sf
-        zrULDYENW0MwpkLjKOIPvnSjv+JAozKfEcO53wGqpjUqvws6d6i4lyBClMCCe0df
-        1cfKGhoQcg3qnt/Heh/rloWhmaJUoL9U7cMP+0nK6j22VcpK+8kpF4D8M7wm21HJ
-        8v6A9wVDWSzyqt1DZTtDjPrI+jgrOL5DXt8P3QoxypD8UXpSU35rf1XmsZx0UQRf
-        CayELBOSQkuS0DS8ThwRqxVk9mxSHaYdyksrPD3uxabC4qLZ/XZ57O1yCsiRWf0E
-        02vTW7xpOt7MCAM6ZgUOK29N93Y7SdxH6afkaDFD6dD2hK8XvsKK68F0g==
+        :mime-version:content-transfer-encoding; s=fm2; bh=FQSNoiLjXzmZl
+        GOJHXQfgG1LjDqCtSU4lrhfBf8GvL8=; b=WDdZpnZrEcuH11NThV3SCS7rhfd3t
+        OLcdHCApZLgdO/tWv37bIXO4ggVop23voplxieDeA1blK9uR0MA5+ZUCi3+3wN7i
+        E5u3W3Vsg+BOLouL0NIrbUtFXILlQNnR3pIqTSD6UsAy8mCsPuprFoQfpPPcTAzZ
+        9X8A8nO1H4LfaJ8QTjNQnpBPjRH4lEuitiSne560VwtvcHn8mBgOHF/930hT6swS
+        JRsOi2EjHiGZOtNncthT1WZq7OkrxQ47CWcI0fvCuOYAP/9jrmY5Sy5coTFMMo3Y
+        InWHLw2Jwr128D3oWL2QWbdQnImIwIlJkcvfcs3olDFEp4QNV8YZRRBhQ==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-transfer-encoding:date:from
         :in-reply-to:message-id:mime-version:references:subject:to
         :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm1; bh=cq0c5H3Du+D0pV/aMMb/8VkF09ghgdkmSv/cJcFIFtw=; b=EGe3IbxX
-        uYKqA1w0opT0uKtwoG8LPrdjYv9FxEa1pUrmRBJjpEUNBk5zxPMNuYXI5CIBxmO0
-        UJ02qDZ8BanlynnfZWubsvDo+aGuysfol1Lfhs1SMaKuKKhL24y3VJLD6ZctX6e0
-        /mP9y8b2X5htOp3gRA23tT3ix92EcP9emgFxM4yu3BfrNPqE8q0VwOQhnAqwnyD0
-        xCneF3uv5zB/t1cBQA8GZYKhcO304zpvA9Dr/jkxgQlLSoAilNBjHXwr1pGE/PGD
-        Sh1jSIcRa6bboR9A4b7TcNskjEMMbJWhcVcAMlI/Z6W/AK/ajNbsNU/7H+NmDtXl
-        VKyH0/u1V8dtdA==
-X-ME-Sender: <xms:WYyYX5bP8ZHCHhDb9A4YEwaW6ZRJWgRAPGUM0WJe2t4UdUoZLDsZpg>
-    <xme:WYyYXwZDtB5Mqmr8wBLNQukxM1HGpYzALQtdo2XkKWMz3TUY0MrYWTcIqxEGWyZh5
-    xuQb5fKmq17JYXsJNw>
+        fm1; bh=FQSNoiLjXzmZlGOJHXQfgG1LjDqCtSU4lrhfBf8GvL8=; b=MqbQazA7
+        64o/+TwG3cp4Hw+GEDHydK3oN0aeRIkjRSns9soc/1K4QnlifK1nWUAfRr0x+Zc6
+        vcms3kgKDKXZyxADWakfJVsr+JxHhkdsXLisrtgysqM0XurjnsWHHNVyPlTMYX/Y
+        VqsCnido5DSzJfc2Ej9DtZ4S1cTAjPq2uB9i/TLOlEIaKU/qf2Q9qBGEH8bk8G6v
+        OEAKndQCTDL/aTD6L6NqFfRhjQHij7Di+7jdCG14s4iV+fhc2Jp6Kp/gM8uTRVir
+        4lKcgEypBJPGDQhjGKfCx+YYZfAJsu64nTQMKwwQtA1ux6eq4LKB2UMjXlgfdsYh
+        32jLj3JH/Hnz8Q==
+X-ME-Sender: <xms:XYyYX3dpqvafb6OB2oxB45TpuVnjysHrAsvnb2FoWJftpIRnv4bw7g>
+    <xme:XYyYX9Pt-dSPupbOxZ6LSGSP5lOnms_2xCY5G7c-PkGecPNUt-TCocdLjIdDHyZwF
+    mDAboVu_8d7-79h_U4>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrkeelgddugeehucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgjfhgggfestdekre
     dtredttdenucfhrhhomhepuehorhhishcuuehurhhkohhvuceosghorhhishessghurhdr
     ihhoqeenucggtffrrghtthgvrhhnpeeiueffuedvieeujefhheeigfekvedujeejjeffve
     dvhedtudefiefhkeegueehleenucfkphepudeifedruddugedrudefvddrfeenucevlhhu
-    shhtvghrufhiiigvpeefnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhrihhssegsuh
+    shhtvghrufhiiigvpeegnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhrihhssegsuh
     hrrdhioh
-X-ME-Proxy: <xmx:WYyYX79F4PsU8y7leILlDTPdUH_HXXYLg8XBgemu45cJqINSG10YZw>
-    <xmx:WYyYX3q4HvAxTqob_A3XHWYiNg7UZCzdvwedJpKzX6b_VYJYTKBCMw>
-    <xmx:WYyYX0rsje9Zncr11R9qEcDuVkulhUmGfIYWnljfGGw3n5Kid6lcSA>
-    <xmx:WYyYX7S7IqGXPCJBfB_NFt1XMIvMyxB80Gl-7H9H1roYRbZq2Sk17w>
+X-ME-Proxy: <xmx:XYyYXwgt-mkr9K5ySEnUHmbWUX5ViUltB5crmfu3a9lJvun_MBQ4vA>
+    <xmx:XYyYX4_IPZyvzMVZUcKiBwPX93ihqBTrAvGkR_jVIl28lJqC-nAwWQ>
+    <xmx:XYyYXzujlioZhxrJEZr4iTAf2LpgCcU1TOqtHoOv1RnbCpd0wEIsaA>
+    <xmx:XoyYXx3jrK2FrEOtvmepcpE50Y4VeR34nXG_J_io38UVqrDd5dpFrw>
 Received: from localhost (unknown [163.114.132.3])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 88D8A3280059;
-        Tue, 27 Oct 2020 17:08:40 -0400 (EDT)
+        by mail.messagingengine.com (Postfix) with ESMTPA id 653673280059;
+        Tue, 27 Oct 2020 17:08:45 -0400 (EDT)
 From:   Boris Burkov <boris@bur.io>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
 Cc:     Boris Burkov <boris@bur.io>
-Subject: [PATCH v5 04/10] btrfs: clear oneshot options on mount and remount
-Date:   Tue, 27 Oct 2020 14:07:58 -0700
-Message-Id: <7b316bb772e15d62df1553c50c8bb4c50cc63c51.1603828718.git.boris@bur.io>
+Subject: [PATCH v5 05/10] btrfs: clear free space tree on ro->rw remount
+Date:   Tue, 27 Oct 2020 14:07:59 -0700
+Message-Id: <273b5dee24b69ea34ef14f89343cc29eb0c9c885.1603828718.git.boris@bur.io>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <cover.1603828718.git.boris@bur.io>
 References: <cover.1603828718.git.boris@bur.io>
@@ -70,93 +70,90 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Some options only apply during mount time and are cleared at the end
-of mount. For now, the example is USEBACKUPROOT, but CLEAR_CACHE also
-fits the bill, and this is a preparation patch for also clearing that
-option.
+A user might want to revert to v1 or nospace_cache on a root filesystem,
+and much like turning on the free space tree, that can only be done
+remounting from ro->rw. Support clearing the free space tree on such
+mounts by moving it into the shared remount logic.
 
-One subtlety is that the current code only resets USEBACKUPROOT on rw
-mounts, but the option is meaningfully "consumed" by a ro mount, so it
-feels appropriate to clear in that case as well. A subsequent read-write
-remount would not go through open_ctree, which is the only place that
-checks the option, so the change should be benign.
+Since the CLEAR_CACHE option sticks around across remounts, this change
+would result in clearing the tree for ever on every remount, which is
+not desirable. To fix that, add CLEAR_CACHE to the oneshot options we
+clear at mount end, which has the other bonus of not cluttering the
+/proc/mounts output with clear_cache.
 
 Signed-off-by: Boris Burkov <boris@bur.io>
 ---
- fs/btrfs/disk-io.c | 20 +++++++++++++-------
- fs/btrfs/disk-io.h |  1 +
- fs/btrfs/super.c   |  1 +
- 3 files changed, 15 insertions(+), 7 deletions(-)
+ fs/btrfs/disk-io.c | 43 ++++++++++++++++++++++---------------------
+ 1 file changed, 22 insertions(+), 21 deletions(-)
 
 diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 5fe0a2640c8a..987e40e12bb4 100644
+index 987e40e12bb4..cf26ef5efb9f 100644
 --- a/fs/btrfs/disk-io.c
 +++ b/fs/btrfs/disk-io.c
-@@ -2814,6 +2814,16 @@ static int btrfs_check_uuid_tree(struct btrfs_fs_info *fs_info)
- 	return 0;
- }
- 
-+/*
-+ * Some options only have meaning at mount time and shouldn't persist across
-+ * remounts, or be displayed. Clear these at the end of mount and remount
-+ * code paths.
-+ */
-+void btrfs_clear_oneshot_options(struct btrfs_fs_info *fs_info)
-+{
-+	btrfs_clear_opt(fs_info->mount_opt, USEBACKUPROOT);
-+}
+@@ -2831,6 +2831,28 @@ void btrfs_clear_oneshot_options(struct btrfs_fs_info *fs_info)
+ int btrfs_mount_rw(struct btrfs_fs_info *fs_info)
+ {
+ 	int ret;
++	bool cache_opt = btrfs_test_opt(fs_info, SPACE_CACHE);
++	bool clear_free_space_tree = false;
 +
- /*
-  * Mounting logic specific to read-write file systems. Shared by open_ctree
-  * and btrfs_remount when remounting from read-only to read-write.
-@@ -3293,7 +3303,7 @@ int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_device
- 	}
++	if (btrfs_test_opt(fs_info, CLEAR_CACHE) &&
++	    btrfs_fs_compat_ro(fs_info, FREE_SPACE_TREE)) {
++		clear_free_space_tree = true;
++	} else if (btrfs_fs_compat_ro(fs_info, FREE_SPACE_TREE) &&
++		   !btrfs_fs_compat_ro(fs_info, FREE_SPACE_TREE_VALID)) {
++		btrfs_warn(fs_info, "free space tree is invalid");
++		clear_free_space_tree = true;
++	}
++
++	if (clear_free_space_tree) {
++		btrfs_info(fs_info, "clearing free space tree");
++		ret = btrfs_clear_free_space_tree(fs_info);
++		if (ret) {
++			btrfs_warn(fs_info,
++				   "failed to clear free space tree: %d", ret);
++			close_ctree(fs_info);
++			return ret;
++		}
++	}
  
+ 	ret = btrfs_cleanup_fs_roots(fs_info);
+ 	if (ret)
+@@ -2905,7 +2927,6 @@ int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_device
+ 	struct btrfs_root *chunk_root;
+ 	int ret;
+ 	int err = -EINVAL;
+-	int clear_free_space_tree = 0;
+ 	int level;
+ 
+ 	ret = init_mount_fs_info(fs_info, sb);
+@@ -3305,26 +3326,6 @@ int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_device
  	if (sb_rdonly(sb))
--		return 0;
-+		goto clear_oneshot;
+ 		goto clear_oneshot;
  
- 	if (btrfs_test_opt(fs_info, CLEAR_CACHE) &&
- 	    btrfs_fs_compat_ro(fs_info, FREE_SPACE_TREE)) {
-@@ -3337,12 +3347,8 @@ int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_device
- 	}
- 	set_bit(BTRFS_FS_OPEN, &fs_info->flags);
- 
--	/*
--	 * backuproot only affect mount behavior, and if open_ctree succeeded,
--	 * no need to keep the flag
--	 */
--	btrfs_clear_opt(fs_info->mount_opt, USEBACKUPROOT);
+-	if (btrfs_test_opt(fs_info, CLEAR_CACHE) &&
+-	    btrfs_fs_compat_ro(fs_info, FREE_SPACE_TREE)) {
+-		clear_free_space_tree = 1;
+-	} else if (btrfs_fs_compat_ro(fs_info, FREE_SPACE_TREE) &&
+-		   !btrfs_fs_compat_ro(fs_info, FREE_SPACE_TREE_VALID)) {
+-		btrfs_warn(fs_info, "free space tree is invalid");
+-		clear_free_space_tree = 1;
+-	}
 -
-+clear_oneshot:
-+	btrfs_clear_oneshot_options(fs_info);
- 	return 0;
- 
- fail_qgroup:
-diff --git a/fs/btrfs/disk-io.h b/fs/btrfs/disk-io.h
-index b3ee9c19be0c..02bee384f744 100644
---- a/fs/btrfs/disk-io.h
-+++ b/fs/btrfs/disk-io.h
-@@ -50,6 +50,7 @@ struct extent_buffer *btrfs_find_create_tree_block(
- 						struct btrfs_fs_info *fs_info,
- 						u64 bytenr);
- void btrfs_clean_tree_block(struct extent_buffer *buf);
-+void btrfs_clear_oneshot_options(struct btrfs_fs_info *fs_info);
- int btrfs_mount_rw(struct btrfs_fs_info *fs_info);
- int __cold open_ctree(struct super_block *sb,
- 	       struct btrfs_fs_devices *fs_devices,
-diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-index 56bfa23bc52f..85a0cf56cec5 100644
---- a/fs/btrfs/super.c
-+++ b/fs/btrfs/super.c
-@@ -1945,6 +1945,7 @@ static int btrfs_remount(struct super_block *sb, int *flags, char *data)
- 
- 	wake_up_process(fs_info->transaction_kthread);
- 	btrfs_remount_cleanup(fs_info, old_opts);
-+	btrfs_clear_oneshot_options(fs_info);
- 	clear_bit(BTRFS_FS_STATE_REMOUNTING, &fs_info->fs_state);
- 
- 	return 0;
+-	if (clear_free_space_tree) {
+-		btrfs_info(fs_info, "clearing free space tree");
+-		ret = btrfs_clear_free_space_tree(fs_info);
+-		if (ret) {
+-			btrfs_warn(fs_info,
+-				   "failed to clear free space tree: %d", ret);
+-			close_ctree(fs_info);
+-			return ret;
+-		}
+-	}
+-
+ 	btrfs_discard_resume(fs_info);
+ 	ret = btrfs_mount_rw(fs_info);
+ 	if (ret) {
 -- 
 2.24.1
 
