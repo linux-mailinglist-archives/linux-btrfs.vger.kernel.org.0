@@ -2,202 +2,153 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CE2C299F86
-	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Oct 2020 01:23:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C6D4299D56
+	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Oct 2020 01:06:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441373AbgJ0AXA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 26 Oct 2020 20:23:00 -0400
-Received: from aserp2130.oracle.com ([141.146.126.79]:57290 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2410919AbgJZXzg (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 26 Oct 2020 19:55:36 -0400
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09QNo3bf029885
-        for <linux-btrfs@vger.kernel.org>; Mon, 26 Oct 2020 23:55:34 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : subject :
- date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=corp-2020-01-29;
- bh=f9Xfc9DZZs+03wwRc745fik3dsA846wz/Vp6q+dlFPg=;
- b=zgpnUoqqCX/1zPsy021Id62BRfGy+2+GIsGyQt7iYZ3tlbZBRSTtjrhLxe2x/izB9vnW
- TWEh6/GYk8v3pXhlrG/84Pfm3u7YOWju7JV2Pr6B48V8RTPp4tmUjKDaEnA0jpgVicqZ
- fJBI3/dAobd+FhZhVoeS2wgpHDRhK+CvYr8p+IMj0uN8fJnqgxV0iLB9HZq6rO4zAe21
- 2FgFHInyVpR7V/Tt8T9DlMgx27byuecYICcLcbwaRWJYe8ktBDIClZf+UF19EMu/JOA+
- biaFPa+27QDHbuUoBba4r667lauFheAlbycFJtN2iNWimXKJxp8bhnjlb1Y2N1ftIeYR qA== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2130.oracle.com with ESMTP id 34c9saqe8c-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL)
-        for <linux-btrfs@vger.kernel.org>; Mon, 26 Oct 2020 23:55:34 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09QNpKM1172333
-        for <linux-btrfs@vger.kernel.org>; Mon, 26 Oct 2020 23:55:34 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3030.oracle.com with ESMTP id 34cx6vagv4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
-        for <linux-btrfs@vger.kernel.org>; Mon, 26 Oct 2020 23:55:33 +0000
-Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 09QNtX0b016050
-        for <linux-btrfs@vger.kernel.org>; Mon, 26 Oct 2020 23:55:33 GMT
-Received: from localhost.localdomain (/39.109.231.106)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 26 Oct 2020 16:55:32 -0700
-From:   Anand Jain <anand.jain@oracle.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH RFC 7/7] btrfs: introduce new read_policy round-robin
-Date:   Tue, 27 Oct 2020 07:55:10 +0800
-Message-Id: <4c4dd72374fdd51674cd1c909fe48fb6f3853d71.1603751876.git.anand.jain@oracle.com>
+        id S2389228AbgJ0AFy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 26 Oct 2020 20:05:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53948 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2438135AbgJ0AFF (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 26 Oct 2020 20:05:05 -0400
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 996AD20791;
+        Tue, 27 Oct 2020 00:05:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603757105;
+        bh=gEb+H1BIg8FCQEJHSeJMAF1UYJI6WKJ7OI5Kva1uWcs=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=RzIFBLKdi69uFJxbJOKkf+fm2oGNaWPuj1BLeVm9NOTpWX3+6irxJ2C9UcjUOgtX0
+         Q/KO54N7uHeFG6oPlt1DQ4j2y67VfOSpSsgslEO7yyUw4Gaz2EbsH47fmkMHcCo7Iw
+         c2Ivqx+HJN8GdncIfAWmYaropWC7j13GwhPE3ghU=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Anand Jain <anand.jain@oracle.com>,
+        David Sterba <dsterba@suse.com>,
+        Sasha Levin <sashal@kernel.org>, linux-btrfs@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.19 42/60] btrfs: fix replace of seed device
+Date:   Mon, 26 Oct 2020 20:03:57 -0400
+Message-Id: <20201027000415.1026364-42-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1603751876.git.anand.jain@oracle.com>
-References: <cover.1603751876.git.anand.jain@oracle.com>
+In-Reply-To: <20201027000415.1026364-1-sashal@kernel.org>
+References: <20201027000415.1026364-1-sashal@kernel.org>
 MIME-Version: 1.0
+X-stable: review
+X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9786 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 phishscore=0 spamscore=0
- bulkscore=0 malwarescore=0 mlxlogscore=999 mlxscore=0 suspectscore=3
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2010260155
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9786 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 malwarescore=0 lowpriorityscore=0 bulkscore=0
- priorityscore=1501 spamscore=0 phishscore=0 clxscore=1015 suspectscore=3
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2010260155
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Add round-robin read policy to route the read IO to the next device in the
-round-robin order. The chunk allocation and thus the stripe-index follows
-the order of free space available on devices. So to make the round-robin
-effective it shall follow the devid order instead of the stripe-index
-order.
+From: Anand Jain <anand.jain@oracle.com>
+
+[ Upstream commit c6a5d954950c5031444173ad2195efc163afcac9 ]
+
+If you replace a seed device in a sprouted fs, it appears to have
+successfully replaced the seed device, but if you look closely, it
+didn't.  Here is an example.
+
+  $ mkfs.btrfs /dev/sda
+  $ btrfstune -S1 /dev/sda
+  $ mount /dev/sda /btrfs
+  $ btrfs device add /dev/sdb /btrfs
+  $ umount /btrfs
+  $ btrfs device scan --forget
+  $ mount -o device=/dev/sda /dev/sdb /btrfs
+  $ btrfs replace start -f /dev/sda /dev/sdc /btrfs
+  $ echo $?
+  0
+
+  BTRFS info (device sdb): dev_replace from /dev/sda (devid 1) to /dev/sdc started
+  BTRFS info (device sdb): dev_replace from /dev/sda (devid 1) to /dev/sdc finished
+
+  $ btrfs fi show
+  Label: none  uuid: ab2c88b7-be81-4a7e-9849-c3666e7f9f4f
+	  Total devices 2 FS bytes used 256.00KiB
+	  devid    1 size 3.00GiB used 520.00MiB path /dev/sdc
+	  devid    2 size 3.00GiB used 896.00MiB path /dev/sdb
+
+  Label: none  uuid: 10bd3202-0415-43af-96a8-d5409f310a7e
+	  Total devices 1 FS bytes used 128.00KiB
+	  devid    1 size 3.00GiB used 536.00MiB path /dev/sda
+
+So as per the replace start command and kernel log replace was successful.
+Now let's try to clean mount.
+
+  $ umount /btrfs
+  $ btrfs device scan --forget
+
+  $ mount -o device=/dev/sdc /dev/sdb /btrfs
+  mount: /btrfs: wrong fs type, bad option, bad superblock on /dev/sdb, missing codepage or helper program, or other error.
+
+  [  636.157517] BTRFS error (device sdc): failed to read chunk tree: -2
+  [  636.180177] BTRFS error (device sdc): open_ctree failed
+
+That's because per dev items it is still looking for the original seed
+device.
+
+ $ btrfs inspect-internal dump-tree -d /dev/sdb
+
+	item 0 key (DEV_ITEMS DEV_ITEM 1) itemoff 16185 itemsize 98
+		devid 1 total_bytes 3221225472 bytes_used 545259520
+		io_align 4096 io_width 4096 sector_size 4096 type 0
+		generation 6 start_offset 0 dev_group 0
+		seek_speed 0 bandwidth 0
+		uuid 59368f50-9af2-4b17-91da-8a783cc418d4  <--- seed uuid
+		fsid 10bd3202-0415-43af-96a8-d5409f310a7e  <--- seed fsid
+	item 1 key (DEV_ITEMS DEV_ITEM 2) itemoff 16087 itemsize 98
+		devid 2 total_bytes 3221225472 bytes_used 939524096
+		io_align 4096 io_width 4096 sector_size 4096 type 0
+		generation 0 start_offset 0 dev_group 0
+		seek_speed 0 bandwidth 0
+		uuid 56a0a6bc-4630-4998-8daf-3c3030c4256a  <- sprout uuid
+		fsid ab2c88b7-be81-4a7e-9849-c3666e7f9f4f <- sprout fsid
+
+But the replaced target has the following uuid+fsid in its superblock
+which doesn't match with the expected uuid+fsid in its devitem.
+
+  $ btrfs in dump-super /dev/sdc | egrep '^generation|dev_item.uuid|dev_item.fsid|devid'
+  generation	20
+  dev_item.uuid	59368f50-9af2-4b17-91da-8a783cc418d4
+  dev_item.fsid	ab2c88b7-be81-4a7e-9849-c3666e7f9f4f [match]
+  dev_item.devid	1
+
+So if you provide the original seed device the mount shall be
+successful.  Which so long happening in the test case btrfs/163.
+
+  $ btrfs device scan --forget
+  $ mount -o device=/dev/sda /dev/sdb /btrfs
+
+Fix in this patch:
+If a seed is not sprouted then there is no replacement of it, because of
+its read-only filesystem with a read-only device. Similarly, in the case
+of a sprouted filesystem, the seed device is still read only. So, mark
+it as you can't replace a seed device, you can only add a new device and
+then delete the seed device. If replace is attempted then returns
+-EINVAL.
 
 Signed-off-by: Anand Jain <anand.jain@oracle.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/btrfs/sysfs.c   |  2 +-
- fs/btrfs/volumes.c | 68 ++++++++++++++++++++++++++++++++++++++++++++++
- fs/btrfs/volumes.h |  2 ++
- 3 files changed, 71 insertions(+), 1 deletion(-)
+ fs/btrfs/dev-replace.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
-index 677070bab1e0..45efc9755336 100644
---- a/fs/btrfs/sysfs.c
-+++ b/fs/btrfs/sysfs.c
-@@ -876,7 +876,7 @@ static int btrfs_strmatch(const char *given, const char *golden)
+diff --git a/fs/btrfs/dev-replace.c b/fs/btrfs/dev-replace.c
+index 1b9c8ffb038ff..36c0490156ac5 100644
+--- a/fs/btrfs/dev-replace.c
++++ b/fs/btrfs/dev-replace.c
+@@ -190,7 +190,7 @@ static int btrfs_init_dev_replace_tgtdev(struct btrfs_fs_info *fs_info,
+ 	int ret = 0;
  
- /* Must follow the order as in enum btrfs_read_policy */
- static const char * const btrfs_read_policy_name[] = { "pid", "latency",
--						       "device" };
-+						       "device", "roundrobin" };
- 
- static ssize_t btrfs_read_policy_show(struct kobject *kobj,
- 				      struct kobj_attribute *a, char *buf)
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index e71af8ab4ad8..d3023879bdf6 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -5466,6 +5466,69 @@ int btrfs_is_parity_mirror(struct btrfs_fs_info *fs_info, u64 logical, u64 len)
- 	return ret;
- }
- 
-+struct stripe_mirror {
-+	u64 devid;
-+	int map;
-+};
-+
-+static int btrfs_cmp_devid(const void *a, const void *b)
-+{
-+	struct stripe_mirror *s1 = (struct stripe_mirror *)a;
-+	struct stripe_mirror *s2 = (struct stripe_mirror *)b;
-+
-+	if (s1->devid < s2->devid)
-+		return -1;
-+	if (s1->devid > s2->devid)
-+		return 1;
-+	return 0;
-+}
-+
-+static int btrfs_find_read_round_robin(struct map_lookup *map, int first,
-+				       int num_stripe, char *log, int logsz)
-+{
-+	struct stripe_mirror stripes[4] = {0}; //4: for testing, works for now.
-+	struct btrfs_fs_devices *fs_devices;
-+	u64 devid;
-+	int index, j, cnt;
-+	int lognr = 0;
-+	int next_stripe;
-+
-+	index = 0;
-+	lognr += scnprintf(log + lognr, logsz - lognr, "index=map:devid [");
-+	for (j = first; j < first + num_stripe; j++) {
-+		devid = map->stripes[j].dev->devid;
-+
-+		stripes[index].devid = devid;
-+		stripes[index].map = j;
-+
-+		lognr += scnprintf(log + lognr, logsz - lognr, "%d=%d:%llu, ",
-+				  index, j, devid);
-+
-+		index++;
-+	}
-+
-+	sort(stripes, num_stripe, sizeof(struct stripe_mirror),
-+	     btrfs_cmp_devid, NULL);
-+
-+	lognr += scnprintf(log + lognr, logsz - lognr, "] sorted=[");
-+	for (index = 0; index < num_stripe; index++) {
-+		j = stripes[index].map;
-+		devid = stripes[index].devid;
-+
-+		lognr += scnprintf(log + lognr, logsz - lognr, "%d=%d:%llu, ",
-+				  index, j, devid);
-+	}
-+
-+	fs_devices = map->stripes[first].dev->fs_devices;
-+	cnt = atomic_inc_return(&fs_devices->total_reads);
-+	next_stripe = stripes[cnt % num_stripe].map;
-+
-+	lognr += scnprintf(log + lognr, logsz - lognr, "] next_stripe %d",
-+			  next_stripe);
-+
-+	return next_stripe;
-+}
-+
- static u64 btrfs_estimate_read(struct btrfs_device *device,
- 			       unsigned long *inflight)
- {
-@@ -5608,6 +5671,11 @@ static int find_live_mirror(struct btrfs_fs_info *fs_info,
- 			  first, num_stripes, current->comm, task_pid_nr(current),
- 			  preferred_mirror);
- 		break;
-+	case BTRFS_READ_POLICY_ROUND_ROBIN:
-+		preferred_mirror = btrfs_find_read_round_robin(map, first,
-+							       num_stripes, log,
-+							       logsz);
-+		break;
+ 	*device_out = NULL;
+-	if (fs_info->fs_devices->seeding) {
++	if (srcdev->fs_devices->seeding) {
+ 		btrfs_err(fs_info, "the filesystem is a seed filesystem!");
+ 		return -EINVAL;
  	}
- 
- 	/*
-diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
-index 40e56287204a..571b52afcaa1 100644
---- a/fs/btrfs/volumes.h
-+++ b/fs/btrfs/volumes.h
-@@ -220,6 +220,7 @@ enum btrfs_read_policy {
- 	BTRFS_READ_POLICY_PID,
- 	BTRFS_READ_POLICY_LATENCY,
- 	BTRFS_READ_POLICY_DEVICE,
-+	BTRFS_READ_POLICY_ROUND_ROBIN,
- 	BTRFS_NR_READ_POLICY,
- };
- 
-@@ -281,6 +282,7 @@ struct btrfs_fs_devices {
- 	 * policy used to read the mirrored stripes
- 	 */
- 	enum btrfs_read_policy read_policy;
-+	atomic_t total_reads;
- };
- 
- #define BTRFS_BIO_INLINE_CSUM_SIZE	64
 -- 
 2.25.1
 
