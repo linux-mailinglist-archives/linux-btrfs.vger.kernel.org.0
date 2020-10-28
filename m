@@ -2,118 +2,109 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33FF629DB05
-	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Oct 2020 00:42:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ACD0329E067
+	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Oct 2020 02:22:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727936AbgJ1Xmp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 28 Oct 2020 19:42:45 -0400
-Received: from out3-smtp.messagingengine.com ([66.111.4.27]:55835 "EHLO
-        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725853AbgJ1XlF (ORCPT
+        id S1729647AbgJ1WE4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 28 Oct 2020 18:04:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50702 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729482AbgJ1WBe (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 28 Oct 2020 19:41:05 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.nyi.internal (Postfix) with ESMTP id C83785C00B5;
-        Wed, 28 Oct 2020 19:41:03 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Wed, 28 Oct 2020 19:41:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=
-        mime-version:content-transfer-encoding:content-type:cc:subject
-        :from:to:date:message-id:in-reply-to; s=fm1; bh=jkOO0zzQx5z5ACd/
-        f32hxUtd46BMyxC0SJJR92tp714=; b=Pw2kO0jft/M2+0fUAsIArbdVk6RgFBn3
-        tm8kGF3PWt8p9IYoTN2DLoL9v/EmRyX4VKCuDE+buFoPpdQ1zbBd73w9pxQrdxsi
-        irpjYcj2lOmgOVXqOUMW9urxvlOS+lEMl9dLhJh++7qo6DI1d+ciGpp1Kd2F9kEV
-        Gn/S3gzmKdIt/vvKdh5/8xrzHSnJHy61oJQKhxKVbEC+UkpJ+wkcorTzZyewjY4l
-        uHqLp02MFV4jITiOmBf1IWCGtB24ou5LxeItJm9QKOOuErH6g3rhOdOBQMuIkG70
-        mAgl5ufPu6O9f+YisIhfVZ1EE0/0l52ldmoaARib+nWdIF1vn/SE3Q==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm1; bh=jkOO0zzQx5z5ACd/f32hxUtd46BMyxC0SJJR92tp714=; b=AGjiDKeK
-        c1kfM7JjN6nWI41h3EKxJvQejFehWo7MTvxazW04cDBJNSE4hWNsymQIfkBfF49y
-        NC+TIHhH3twuZIP7CQFcKd6/ZDAw8m28or7bPZN7ntM851gT2UpbtQVEfWP4nOrM
-        x5w+3iiio0uwOZJEOHBVxJbwBb6AtIoAO9enfkTZRB6WV/9zTYBgBrN4qHQ/YbdD
-        oiiFKmoEWR7HaxZY55kWlEkDhO4A5HVwUAhX+yrDxvc8CfVNwHV5O7h4UeB2vNB5
-        mQc4flbHEdeVBjDVV+ELfRICTuMWT6kqUzxDKxhI6jhuaTSurjC20Ojgxx8I4gB/
-        qEDH1AzYZaZ6kQ==
-X-ME-Sender: <xms:jwGaX-B19VWM0MNOb5hhWefmw5w3yCOLhmOcq46_8u4wxDYMYlVmuA>
-    <xme:jwGaX4iM4FPQdf8on-XP3I-ODNLIT8qKt6G3nJJm7B7PrD-mUQyFIsYknHb14meYC
-    wSWBUtQvjJGPYhynw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrledvgdegtdcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenfg
-    hrlhcuvffnffculdejtddmnecujfgurhepggfgtgfuhffvfffkjgesthhqredttddtjeen
-    ucfhrhhomhepfdffrghnihgvlhcuighufdcuoegugihusegugihuuhhurdighiiiqeenuc
-    ggtffrrghtthgvrhhnpeejfefhudeffefhjedvvefhheduledtueejvedugedvjedvjeel
-    jefggedtjeejveenucfkphepudeifedruddugedrudefvddrheenucevlhhushhtvghruf
-    hiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegugihusegugihuuhhurdighiii
-X-ME-Proxy: <xmx:jwGaXxlenumzoHOpnsXTVIlHJDeSE-c8k3gwdHA0VJ8qS7kLko-zNA>
-    <xmx:jwGaX8zy53IZjx8wsbUtpRg_9_BRRSSk7mJZew06c4-_VClkQi8Njw>
-    <xmx:jwGaXzRtOUnVdnWI4gKHdN94olk91asLqKjhM5CuEJyLfnsD3AWSgw>
-    <xmx:jwGaX-dsiezrHbPDJfA-DITP9BVd8zMvi9eoojfkZcexiAa15hIVLQ>
-Received: from localhost (unknown [163.114.132.5])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 657523064683;
-        Wed, 28 Oct 2020 19:41:02 -0400 (EDT)
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Cc:     <kernel-team@fb.com>, <osandov@fb.com>
-Subject: Re: [PATCH] btrfs-progs: restore: Have -l display subvolume name
-From:   "Daniel Xu" <dxu@dxuuu.xyz>
-To:     "Josef Bacik" <josef@toxicpanda.com>,
-        <linux-btrfs@vger.kernel.org>, <dsterba@suse.cz>
-Date:   Wed, 28 Oct 2020 16:34:51 -0700
-Message-Id: <C6OX21C3YSLT.X276V4IA7JPM@dlxu-fedora-R90QNFJV>
-In-Reply-To: <8988a20e-a3e3-6bf3-dc7a-21b2706e7cf6@toxicpanda.com>
+        Wed, 28 Oct 2020 18:01:34 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22BCAC0613CF
+        for <linux-btrfs@vger.kernel.org>; Wed, 28 Oct 2020 15:01:35 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id o9so289647plx.10
+        for <linux-btrfs@vger.kernel.org>; Wed, 28 Oct 2020 15:01:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=VNBscBROqyGL0f4jid9YWJItxWCHSstm95+t7n1tat0=;
+        b=z20uBiUIlqUK+0INnVwk08250N/wIHsu5AbNOTA3NamCfaOo4klCtuKYenC7dTCBHP
+         CJfoM036xdjcqvvfLlSxH8EHSu03yYEoaP5TwtQgU8C27wzGlKvbha4RMf4EmVIrOUUQ
+         uZQJAWh+yQJM9X9bMxUK2k9iXCnbIrCNpYHbtgoo+GHwl7L4T1F/S5RcPceovX6L7kia
+         ygjtSZI4wItJSU0/H+/4MynrEjZZGlU8z+zo+ZZtinyYLdP5OlyRmG9tM8I23zn6bJLl
+         urBT9Ujv/THuVPhTR7uBH2B4nyy6Pfr1HRIJZEwGxV5kRBLp4RYA5t/UuqAL+lb0xxcI
+         GeqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=VNBscBROqyGL0f4jid9YWJItxWCHSstm95+t7n1tat0=;
+        b=M7jimTI1xQUYr/FBSTqrhI+YdHKcdEtF3i6AMEtq2Sk6ewjIeqjdldLh9jrh2BccNj
+         QyWu9GDMxFEJef2DpGWwH/bRL9BPKRPttBGN3r9yOqiHg4pKzz+vdqBep9apqs3Gr6cP
+         YYcHpZ7JaNIcXxF/OblZah4Bc7KC4OWN9hPYnNV0Pt8xu+0ePrzlIrg4Ao8Fxypfvkyo
+         CkVWiEOzm0x3IhNXjgeG43pqkOgVXfXu4kKwTWtOqWU57/+oYkvhd5aAI+NwLZEVkpNE
+         BtbSHJLE4AMiQAX1CLbsezEzSj4HxP4iL0Y/OoxFNI6DLhMwuM4B2tqjbZY+foV405kH
+         C2OA==
+X-Gm-Message-State: AOAM531kUOBduu4laHNPuJH0sbgO3BG/QYclKP4fnH9gVCRidgBY6id5
+        z5NWRgqdCic826Mso7ip2tDdbEVbvkMEIVHa
+X-Google-Smtp-Source: ABdhPJz8oMW3thxsxsUJ2b2Um2TqGoFetLlMapjqSqj0yeAxI7xjtrIIvHk/RQQHIt9fnV98ANEqLg==
+X-Received: by 2002:a0c:b65b:: with SMTP id q27mr7654679qvf.8.1603893152640;
+        Wed, 28 Oct 2020 06:52:32 -0700 (PDT)
+Received: from [192.168.1.210] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id k15sm2888175qtq.11.2020.10.28.06.52.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 28 Oct 2020 06:52:31 -0700 (PDT)
+Subject: Re: [PATCH v5 02/10] btrfs: cleanup all orphan inodes on ro->rw
+ remount
+To:     Boris Burkov <boris@bur.io>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com
+References: <cover.1603828718.git.boris@bur.io>
+ <56e0a8c18483c395d20fc6c69a42740d19742eb1.1603828718.git.boris@bur.io>
+From:   Josef Bacik <josef@toxicpanda.com>
+Message-ID: <c59bbda1-4767-05f7-b71a-b988b3feae1a@toxicpanda.com>
+Date:   Wed, 28 Oct 2020 09:52:30 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <56e0a8c18483c395d20fc6c69a42740d19742eb1.1603828718.git.boris@bur.io>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi Josef,
+On 10/27/20 5:07 PM, Boris Burkov wrote:
+> When we mount a rw file system, we clean the orphan inodes in the
+> filesystem trees, and also on the tree_root and fs_root. However, when
+> we remount a ro file system rw, we only clean the former. Move the calls
+> to btrfs_orphan_cleanup() on tree_root and fs_root to the shared rw
+> mount routine to effectively add them on ro->rw remount.
+> 
+> Signed-off-by: Boris Burkov <boris@bur.io>
+> ---
+>   fs/btrfs/disk-io.c | 17 ++++++++---------
+>   1 file changed, 8 insertions(+), 9 deletions(-)
+> 
+> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+> index bff7a3a7be18..95b9cc5db397 100644
+> --- a/fs/btrfs/disk-io.c
+> +++ b/fs/btrfs/disk-io.c
+> @@ -2826,6 +2826,14 @@ int btrfs_mount_rw(struct btrfs_fs_info *fs_info)
+>   	if (ret)
+>   		goto out;
+>   
+> +	down_read(&fs_info->cleanup_work_sem);
+> +	if ((ret = btrfs_orphan_cleanup(fs_info->fs_root)) ||
+> +	    (ret = btrfs_orphan_cleanup(fs_info->tree_root))) {
+> +		up_read(&fs_info->cleanup_work_sem);
+> +		goto out;
+> +	}
+> +	up_read(&fs_info->cleanup_work_sem);
 
-On Tue Oct 27, 2020 at 10:37 AM PDT, Josef Bacik wrote:
-> On 10/26/20 8:28 PM, Daniel Xu wrote:
-> > This commit has `btrfs restore -l ...` display subvolume names if
-> > applicable. Before, it only listed subvolume IDs which are not very
-> > helpful for the user. A subvolume name is much more descriptive.
-> >=20
-> > Before:
-> > 	$ btrfs restore ~/scratch/btrfs/fs -l
-> > 	 tree key (EXTENT_TREE ROOT_ITEM 0) 30425088 level 0
-> > 	 tree key (DEV_TREE ROOT_ITEM 0) 30441472 level 0
-> > 	 tree key (FS_TREE ROOT_ITEM 0) 30736384 level 0
-> > 	 tree key (CSUM_TREE ROOT_ITEM 0) 30474240 level 0
-> > 	 tree key (UUID_TREE ROOT_ITEM 0) 30785536 level 0
-> > 	 tree key (256 ROOT_ITEM 0) 30818304 level 0
-> > 	 tree key (257 ROOT_ITEM 0) 30883840 level 0
-> > 	 tree key (DATA_RELOC_TREE ROOT_ITEM 0) 30490624 level 0
-> >=20
-> > After:
-> > 	$ ./btrfs restore ~/scratch/btrfs/fs -l
-> > 	 tree key (EXTENT_TREE ROOT_ITEM 0) 30425088 level 0
-> > 	 tree key (DEV_TREE ROOT_ITEM 0) 30441472 level 0
-> > 	 tree key (FS_TREE ROOT_ITEM 0) 30736384 level 0
-> > 	 tree key (CSUM_TREE ROOT_ITEM 0) 30474240 level 0
-> > 	 tree key (UUID_TREE ROOT_ITEM 0) 30785536 level 0
-> > 	 tree key (256 ROOT_ITEM 0) 30818304 level 0 subvol1
-> > 	 tree key (257 ROOT_ITEM 0) 30883840 level 0 subvol2
-> > 	 tree key (DATA_RELOC_TREE ROOT_ITEM 0) 30490624 level 0
-> >=20
->
-> Man I stared at this a few times before I realized the name came after
-> the
-> previous information. I think I'd rather move this helper into somewhere
-> that
-> it can be used by the libbtrfs stuff, I'm sure it'll be handy elsewhere.
+This triggers
 
-libbtrfsutil seems structured to work on mounted filesystem images
-whereas `btrfs restore` is for unmounted images. So I'm not sure if
-libbtrfsutil would want to share that code.
+ERROR:ASSIGN_IN_IF: do not use assignment in if condition
+#10: FILE: fs/btrfs/disk-io.c:2910:
++       if ((ret = btrfs_orphan_cleanup(fs_info->fs_root)) ||
 
-Does it make sense to put the helper in common/util.c instead?
+total: 1 errors, 0 warnings, 29 lines checked
 
-I CC'd Omar in case he has an opinion.
+I'm not sure I agree with this check, Dave what's your opinion?  Thanks,
 
-Thanks,
-Daniel
+Josef
