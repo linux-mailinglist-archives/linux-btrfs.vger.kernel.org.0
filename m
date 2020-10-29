@@ -2,181 +2,164 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D94D729E54B
+	by mail.lfdr.de (Postfix) with ESMTP id 629EA29E549
 	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Oct 2020 08:56:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732276AbgJ2Hz6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 29 Oct 2020 03:55:58 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:53130 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731522AbgJ2Hya (ORCPT
+        id S1731990AbgJ2Hz4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 29 Oct 2020 03:55:56 -0400
+Received: from aserp2130.oracle.com ([141.146.126.79]:44732 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731545AbgJ2Hyd (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 29 Oct 2020 03:54:30 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09T7n7B3143752;
-        Thu, 29 Oct 2020 07:54:26 GMT
+        Thu, 29 Oct 2020 03:54:33 -0400
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09T7nqd3191521;
+        Thu, 29 Oct 2020 07:54:28 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding; s=corp-2020-01-29;
- bh=O/qYn77Uzq6fpd0ZAVhARJ26iB2BpR8UgZlBv2/Ug/Y=;
- b=q/9a0w334DYjrADZn+PakuEfX9hbOsPwfwJrNkV08WxisGMWTAZUWG9wHjSfGwsAX71S
- fisu1Tn1R6s9TedlrOBsuBvKwOTR3ilgTZKH+2nOROymLSpdkQkUT183lWmlDTkBZfqD
- +KbNPy2zpjwkiDp5gLpoTH/6zvUPTN2roWq3Yzqbt8I2vqp5hhN7Q1PY/bUWg3nXzyAt
- A2AAuNblHdFHqkAKBlnzu4JMKfL1bfbeWwsBUYnsfz5CLd3L9embNqbAOGknXmytm18D
- bblGyQNoQHOFa90Qe42wYivR49WkdIAYsT7/cLBVYrRtcbwQgEV16TI1/8qndMHhgn3G Ew== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2120.oracle.com with ESMTP id 34cc7m38k8-1
+ bh=pTItwU2Y1igUaa3htElfHQaTdC9GCWUVYlnjExglRy8=;
+ b=rqdQlKB+hVkpJD0hg9GqYw7OLAiEUCUq9dvaQuSaCi2BMuEfBeRdq1NQY9Lf/EaftXEW
+ rPg/+0QeX3cb8WNyqIBh0QJNiIPclx3108ZI/gLgIOimNnDSo/IJoJoP8IOOLu90wOs2
+ nHuE2ld1T5dNej75DrXCe14MhsoiCAfzwhYwrrg5XOCGT+DuIVAg1DC47AIkpfyv4/OC
+ C7jj/FkiJRhwRai/91hsnq2CRTLb42PUG0wmXQ7/xBh5We0JXWGnINcPMK0DHGA1Bn5u
+ qCDE3gXJLlslXtYsIp8zJUUcBnsaz21Aty0BuWuDIPRo7uZNDCs7dtvVx9ZpqQCYBw75 IA== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2130.oracle.com with ESMTP id 34c9sb3dp9-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 29 Oct 2020 07:54:26 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09T7oOYD175494;
-        Thu, 29 Oct 2020 07:54:25 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3020.oracle.com with ESMTP id 34cx1sx006-1
+        Thu, 29 Oct 2020 07:54:28 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09T7pPSZ050377;
+        Thu, 29 Oct 2020 07:54:27 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3030.oracle.com with ESMTP id 34cx6y5y2w-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 29 Oct 2020 07:54:25 +0000
+        Thu, 29 Oct 2020 07:54:27 +0000
 Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 09T7sOKc006280;
-        Thu, 29 Oct 2020 07:54:24 GMT
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 09T7sQOJ004458;
+        Thu, 29 Oct 2020 07:54:26 GMT
 Received: from localhost.localdomain (/39.109.231.106)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 29 Oct 2020 00:54:24 -0700
+        with ESMTP ; Thu, 29 Oct 2020 00:54:26 -0700
 From:   Anand Jain <anand.jain@oracle.com>
 To:     linux-btrfs@vger.kernel.org
 Cc:     dsterba@suse.com, josef@toxicpanda.com
-Subject: [PATCH v2 1/4] btrfs: add read_policy latency
-Date:   Thu, 29 Oct 2020 15:54:08 +0800
-Message-Id: <df71f31c04177b7f5977944b0f1adcecca13391b.1603950490.git.anand.jain@oracle.com>
+Subject: [PATCH v2 2/4] btrfs: introduce new device-state read_preferred
+Date:   Thu, 29 Oct 2020 15:54:09 +0800
+Message-Id: <d68a9d2f6442c5b2d465f0f372282bc489c1df02.1603938305.git.anand.jain@oracle.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1603938304.git.anand.jain@oracle.com>
 References: <cover.1603938304.git.anand.jain@oracle.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9788 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0 bulkscore=0
- suspectscore=1 malwarescore=0 mlxlogscore=999 mlxscore=0 adultscore=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 phishscore=0 spamscore=0
+ bulkscore=0 malwarescore=0 mlxlogscore=999 mlxscore=0 suspectscore=1
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
  definitions=main-2010290056
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9788 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 adultscore=0
- malwarescore=0 spamscore=0 clxscore=1015 mlxscore=0 suspectscore=1
- priorityscore=1501 impostorscore=0 bulkscore=0 phishscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 impostorscore=0
+ mlxlogscore=999 malwarescore=0 lowpriorityscore=0 bulkscore=0
+ priorityscore=1501 spamscore=0 phishscore=0 clxscore=1015 suspectscore=1
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2009150000 definitions=main-2010290055
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The read policy type latency routes the read IO based on the historical
-average wait time experienced by the read IOs through the individual
-device. This patch obtains the historical read IO stats from the kernel
-block layer.
+This is a preparatory patch and introduces a new device flag
+'read_preferred', RW-able using sysfs interface.
 
 Signed-off-by: Anand Jain <anand.jain@oracle.com>
 ---
-v2: Use btrfs_debug_rl() instead of btrfs_info_rl()
-    It is better we have this debug until we test this on at least few
-    hardwares.
-    Drop the unrelated changes.
-    Update change log.
+v2: C style fixes. Drop space in between '! test_bit' and extra lines
+    after it.
 
-v1: Drop part_stat_read_all instead use part_stat_read
-    Drop inflight
-    
- fs/btrfs/sysfs.c   |  3 ++-
- fs/btrfs/volumes.c | 38 ++++++++++++++++++++++++++++++++++++++
+ fs/btrfs/sysfs.c   | 53 ++++++++++++++++++++++++++++++++++++++++++++++
  fs/btrfs/volumes.h |  1 +
- 3 files changed, 41 insertions(+), 1 deletion(-)
+ 2 files changed, 54 insertions(+)
 
 diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
-index 4dbf90ff088a..88cbf7b2edf0 100644
+index 88cbf7b2edf0..35f4642a0468 100644
 --- a/fs/btrfs/sysfs.c
 +++ b/fs/btrfs/sysfs.c
-@@ -906,7 +906,8 @@ static bool btrfs_strmatch(const char *given, const char *golden)
- 	return false;
+@@ -1413,11 +1413,64 @@ static ssize_t btrfs_devinfo_writeable_show(struct kobject *kobj,
  }
+ BTRFS_ATTR(devid, writeable, btrfs_devinfo_writeable_show);
  
--static const char * const btrfs_read_policy_name[] = { "pid" };
-+/* Must follow the order as in enum btrfs_read_policy */
-+static const char * const btrfs_read_policy_name[] = { "pid", "latency" };
- 
- static ssize_t btrfs_read_policy_show(struct kobject *kobj,
- 				      struct kobj_attribute *a, char *buf)
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index 6bf487626f23..bce83740ddc6 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -14,6 +14,7 @@
- #include <linux/semaphore.h>
- #include <linux/uuid.h>
- #include <linux/list_sort.h>
-+#include <linux/part_stat.h>
- #include "misc.h"
- #include "ctree.h"
- #include "extent_map.h"
-@@ -5468,6 +5469,39 @@ int btrfs_is_parity_mirror(struct btrfs_fs_info *fs_info, u64 logical, u64 len)
- 	return ret;
- }
- 
-+static int btrfs_find_best_stripe(struct btrfs_fs_info *fs_info,
-+				  struct map_lookup *map, int first,
-+				  int num_stripe)
++static ssize_t btrfs_devinfo_read_pref_show(struct kobject *kobj,
++					    struct kobj_attribute *a, char *buf)
 +{
-+	u64 est_wait = 0;
-+	int best_stripe = 0;
-+	int index;
++	int val;
++	struct btrfs_device *device = container_of(kobj, struct btrfs_device,
++						   devid_kobj);
 +
-+	for (index = first; index < first + num_stripe; index++) {
-+		u64 read_wait;
-+		u64 avg_wait = 0;
-+		unsigned long read_ios;
-+		struct btrfs_device *device = map->stripes[index].dev;
++	val = !!test_bit(BTRFS_DEV_STATE_READ_PREFERRED, &device->dev_state);
 +
-+		read_wait = part_stat_read(device->bdev->bd_part, nsecs[READ]);
-+		read_ios = part_stat_read(device->bdev->bd_part, ios[READ]);
-+
-+		if (read_wait && read_ios && read_wait >= read_ios)
-+			avg_wait = div_u64(read_wait, read_ios);
-+		else
-+			btrfs_debug_rl(device->fs_devices->fs_info,
-+			"devid: %llu avg_wait ZERO read_wait %llu read_ios %lu",
-+				       device->devid, read_wait, read_ios);
-+
-+		if (est_wait == 0 || est_wait > avg_wait) {
-+			est_wait = avg_wait;
-+			best_stripe = index;
-+		}
-+	}
-+
-+	return best_stripe;
++	return snprintf(buf, PAGE_SIZE, "%d\n", val);
 +}
 +
- static int find_live_mirror(struct btrfs_fs_info *fs_info,
- 			    struct map_lookup *map, int first,
- 			    int dev_replace_is_ongoing)
-@@ -5498,6 +5532,10 @@ static int find_live_mirror(struct btrfs_fs_info *fs_info,
- 	case BTRFS_READ_POLICY_PID:
- 		preferred_mirror = first + current->pid % num_stripes;
- 		break;
-+	case BTRFS_READ_POLICY_LATENCY:
-+		preferred_mirror = btrfs_find_best_stripe(fs_info, map, first,
-+							  num_stripes);
-+		break;
- 	}
- 
- 	if (dev_replace_is_ongoing &&
++static ssize_t btrfs_devinfo_read_pref_store(struct kobject *kobj,
++					     struct kobj_attribute *a,
++					     const char *buf, size_t len)
++{
++	int ret;
++	unsigned long val;
++	struct btrfs_device *device;
++
++	ret = kstrtoul(skip_spaces(buf), 0, &val);
++	if (ret)
++		return ret;
++
++	if (val != 0 && val != 1)
++		return -EINVAL;
++
++	/*
++	 * lock is not required, the btrfs_device struct can't be freed while
++	 * its kobject btrfs_device::devid_kobj is still open.
++	 */
++	device = container_of(kobj, struct btrfs_device, devid_kobj);
++
++	if (val &&
++	    !test_bit(BTRFS_DEV_STATE_READ_PREFERRED, &device->dev_state)) {
++		set_bit(BTRFS_DEV_STATE_READ_PREFERRED, &device->dev_state);
++		btrfs_info(device->fs_devices->fs_info,
++			   "set read preferred on devid %llu (%d)",
++			   device->devid, task_pid_nr(current));
++	} else if (!val &&
++		   test_bit(BTRFS_DEV_STATE_READ_PREFERRED, &device->dev_state)) {
++		clear_bit(BTRFS_DEV_STATE_READ_PREFERRED, &device->dev_state);
++		btrfs_info(device->fs_devices->fs_info,
++			   "reset read preferred on devid %llu (%d)",
++			   device->devid, task_pid_nr(current));
++	}
++
++	return len;
++}
++BTRFS_ATTR_RW(devid, read_preferred, btrfs_devinfo_read_pref_show,
++	      btrfs_devinfo_read_pref_store);
++
+ static struct attribute *devid_attrs[] = {
+ 	BTRFS_ATTR_PTR(devid, in_fs_metadata),
+ 	BTRFS_ATTR_PTR(devid, missing),
+ 	BTRFS_ATTR_PTR(devid, replace_target),
+ 	BTRFS_ATTR_PTR(devid, writeable),
++	BTRFS_ATTR_PTR(devid, read_preferred),
+ 	NULL
+ };
+ ATTRIBUTE_GROUPS(devid);
 diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
-index 97f075516696..24db586a9837 100644
+index 24db586a9837..f1cbbb18f5ef 100644
 --- a/fs/btrfs/volumes.h
 +++ b/fs/btrfs/volumes.h
-@@ -217,6 +217,7 @@ enum btrfs_chunk_allocation_policy {
-  */
- enum btrfs_read_policy {
- 	BTRFS_READ_POLICY_PID,
-+	BTRFS_READ_POLICY_LATENCY,
- 	BTRFS_NR_READ_POLICY,
- };
+@@ -51,6 +51,7 @@ struct btrfs_io_geometry {
+ #define BTRFS_DEV_STATE_REPLACE_TGT	(3)
+ #define BTRFS_DEV_STATE_FLUSH_SENT	(4)
+ #define BTRFS_DEV_STATE_NO_READA	(5)
++#define BTRFS_DEV_STATE_READ_PREFERRED	(6)
  
+ struct btrfs_device {
+ 	struct list_head dev_list; /* device_list_mutex */
 -- 
 2.25.1
 
