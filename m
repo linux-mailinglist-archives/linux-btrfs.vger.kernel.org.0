@@ -2,82 +2,94 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BAFC29E491
-	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Oct 2020 08:44:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7359329E4C6
+	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Oct 2020 08:47:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730146AbgJ2HkA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 29 Oct 2020 03:40:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55378 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727313AbgJ2HYs (ORCPT
+        id S2387546AbgJ2HrC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 29 Oct 2020 03:47:02 -0400
+Received: from out20-3.mail.aliyun.com ([115.124.20.3]:54385 "EHLO
+        out20-3.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1733219AbgJ2HqJ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 29 Oct 2020 03:24:48 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01C0EC0613A9
-        for <linux-btrfs@vger.kernel.org>; Wed, 28 Oct 2020 21:34:26 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id i1so1329350wro.1
-        for <linux-btrfs@vger.kernel.org>; Wed, 28 Oct 2020 21:34:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=iIafFTKTCpoQpjE3obAjnh3fVBd0XVCAififu+byI4M=;
-        b=GwBiD7G+FUYhP+AMKNM5iIBgQ1b6MjU8DR4jVZdnkqIxyXqjU87uXSLE36Bws6Z4OA
-         8g3A300ySzdbq6u+UyD4gaLQVEa5P5mXgoh+2ZLNrcxrq0r95r7LKoj2pngxawO37wdw
-         IZ3OGO0nNIFmKhzBqST4KXPhO6W24c+bqYMpKkkJ+t6SOHL3NlVqksEmfY6+WRGAzL3Q
-         NmUstuKFJF6E2YvdKZbM12W4vE7VNiV53/tPOM2Q1lQ5efI7Bi8xpQMDPDNvinoejwuu
-         EKQiWRF9y2g9ceTMSZ8x8AgkfM15bkPnUq2K2U5euf+6CW4z88f8ae0LDdtpKymyezK9
-         Ic0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=iIafFTKTCpoQpjE3obAjnh3fVBd0XVCAififu+byI4M=;
-        b=EtIxUMXJ6O8qI4GIA77G02lZHrDj1RJGvn1udgH4AsxA72A8fPlfTZaOrLWTIBnVbv
-         kOu3F1RfVc8paqkgknR9xS6j4cOSpe0aAk8nNDlkhVUfX2dpXEtiwshnflBVK4aZ2mF2
-         oB8cdd6Q+FAX5+VH0AzoWCCGF0q3YkDrQfFy94mXXldI5P8XDfpBe0FURmo4QTJrVWqL
-         b5am+tpK3vtLZu5qkgDM7ql3sWBBPE3vtw0rKTkCb83pxH3+yQRE2RY9J/AKV0DV0g1U
-         kAUSohBGh3bRCGxPXQvty15g8XrqLpwEZOuVcjdG1mqx51MJrvi/T777HfRqqPNhkasY
-         7goQ==
-X-Gm-Message-State: AOAM532WEupZtMrhizVzFCDYqa8Kww2kxNDIX8RYkuhM1ghuf1glZwp4
-        cPv2u9ar1lKGI2vNJBGBA6Tu6U8GVN0r5h/Z4CWolw==
-X-Google-Smtp-Source: ABdhPJx/gO08tec6Z9f5oRtghhVasw98weg7RxLfRxURX6wJAiNYQo8R+FqZiaL+TWcRSxSKfEnhs7pb8NXU9Aa0XOs=
-X-Received: by 2002:a5d:6ac6:: with SMTP id u6mr2979475wrw.65.1603946065554;
- Wed, 28 Oct 2020 21:34:25 -0700 (PDT)
+        Thu, 29 Oct 2020 03:46:09 -0400
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.8150549|0.07402486;CH=green;DM=|AD|false|;DS=CONTINUE|ham_system_inform|0.0379604-0.00372243-0.958317;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047194;MF=wangyugui@e16-tech.com;NM=1;PH=DS;RN=3;RT=3;SR=0;TI=SMTPD_---.IptkHuJ_1603949757;
+Received: from T640.e16-tech.com(mailfrom:wangyugui@e16-tech.com fp:SMTPD_---.IptkHuJ_1603949757)
+          by smtp.aliyun-inc.com(10.147.42.241);
+          Thu, 29 Oct 2020 13:35:57 +0800
+From:   wangyugui <wangyugui@e16-tech.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     kreijack@libero.it, wangyugui <wangyugui@e16-tech.com>
+Subject: [PATCH 0/4] btrfs: basic tier support
+Date:   Thu, 29 Oct 2020 13:35:52 +0800
+Message-Id: <20201029053556.10619-1-wangyugui@e16-tech.com>
+X-Mailer: git-send-email 2.29.1
 MIME-Version: 1.0
-References: <CAA85sZtGM1Gia7FjunVN4+r4uikQeAPTYAU53QCcT=QQTyt1bg@mail.gmail.com>
-In-Reply-To: <CAA85sZtGM1Gia7FjunVN4+r4uikQeAPTYAU53QCcT=QQTyt1bg@mail.gmail.com>
-From:   Chris Murphy <lists@colorremedies.com>
-Date:   Wed, 28 Oct 2020 22:34:09 -0600
-Message-ID: <CAJCQCtQtVvOZx9Q-YsrEN1VW_zn_1ipWCahjMAR8hx_pr6b00g@mail.gmail.com>
-Subject: Re: questions about qemu io_uring/dio
-To:     Ian Kumlien <ian.kumlien@gmail.com>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Oct 28, 2020 at 4:17 PM Ian Kumlien <ian.kumlien@gmail.com> wrote:
->
-> Hi,
->
-> From what i understand, DIO is supposed to be supported...
->
-> But when i switched qemu to use io_uring it seems like the filesystems
-> on the VM:s get silently corrupted... (they also run btrfs, and it's
-> thus detected)
->
-> The system is mounted as nodatacow, I can't set +C with chattr so I
-> assume that the images are actually noncow
->
-> Any ideas?
+Storage tier is a big feature, this is just a basic support.
 
-Could be related.
-https://bugzilla.kernel.org/show_bug.cgi?id=208875
+1) Add tier score to device
+We use a single score value to define the tier level of a device.
+Different score means different tier, and bigger score is faster.
+    DAX device(dax=1)
+    SSD device(rotational=0)
+    HDD device(rotational=1)
+TODO/FIXME: FIXME: detect bus(DIMM, NVMe, SCSI, SATA, Virtio, ...)
+TODO/FIXME: user-assigned property(refactoring the coming 'read_preferred' property?) to
+            set to the max score for some not-well-supported case.
 
-I'm not sure if the fix made it into 5.9 but pretty sure it's in 5.10
-but just haven't yet had a chance to test it.
+In most case, only 1 or 2 tiers are used at the same time, so we group them into
+top tier and other tier(s).
+
+
+2) tiering data and metadata
+This based the patch 'btrfs: add ssd_metadata mode' from Goffredo Baroncelli <kreijack@libero.it>
+
+We define a mount option to tiering data/metadata to slower/faster device(s)
+When there is only 1 tier, tiering is auto disabled.
+
+mount option: tier[={off|auto|data_tier_X/metadata_tier_Y}]
+default is 'tier[=auto]'. 'tier' is same as 'tier=auto', 'tier=OF/TF'
+the policies to use the device(s):
+    Top-tier-Only(TO)       : metadata only use top-tier device.
+    Top-tier-Firstly(TF)    : metadata use top-tier device firstly.
+    Other-tier-First(OF)    : data use other-tier device firstly.
+    Other-tier-Only(OO)     : data only use other-tier device.
+data_tier_X is the policy for data, support OF, OO.
+metadata_tier_Y is the policy for metadata and system, support TF.
+
+
+3) tier-aware mirror path select
+This feature help the read performance, so it is enabled even if tier=off.
+
+
+4) tier-aware free space cacl
+Detect some case of free space 0 because of tier policy of data.
+Full support is yet TODO/FIXME.
+
+
+5) TODO/FIXME: per-subvol tiering policy and then per-subvol profile(RAID)
+	per-subvol tiering policy and then per-subvol data profile(RAID) is needed for the full tier support.
+		data policy support TO, TF too, in addition to OF, OO.
+	But now as a workaround, we can keep them as 2 separated btrfs file system with disk partition and
+	'btrfs filesystem resize'.
+
+
+wangyugui (4):
+  btrfs: add tier score to device
+  btrfs: tiering data and metadata
+  btrfs: tier-aware mirror path select
+  btrfs: tier-aware free space cacl
+
+ fs/btrfs/ctree.h   |  17 +++++++
+ fs/btrfs/super.c   |  90 ++++++++++++++++++++++++++++++++++
+ fs/btrfs/volumes.c | 119 +++++++++++++++++++++++++++++++++++++++++++--
+ fs/btrfs/volumes.h |   5 ++
+ 4 files changed, 228 insertions(+), 3 deletions(-)
 
 -- 
-Chris Murphy
+2.29.1
+
