@@ -2,80 +2,84 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A13B29F39C
-	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Oct 2020 18:50:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FBB329F42F
+	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Oct 2020 19:37:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726445AbgJ2Ru2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 29 Oct 2020 13:50:28 -0400
-Received: from mx2.suse.de ([195.135.220.15]:55376 "EHLO mx2.suse.de"
+        id S1726060AbgJ2Shb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 29 Oct 2020 14:37:31 -0400
+Received: from mx2.suse.de ([195.135.220.15]:51220 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726090AbgJ2Ru1 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 29 Oct 2020 13:50:27 -0400
+        id S1725802AbgJ2Shb (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 29 Oct 2020 14:37:31 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 8853EAD63;
-        Thu, 29 Oct 2020 17:50:26 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 04DCBADCC;
+        Thu, 29 Oct 2020 18:37:30 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 0A5E4DA7CE; Thu, 29 Oct 2020 18:48:49 +0100 (CET)
-Date:   Thu, 29 Oct 2020 18:48:48 +0100
+        id 27E0DDA7CE; Thu, 29 Oct 2020 19:35:53 +0100 (CET)
+Date:   Thu, 29 Oct 2020 19:35:52 +0100
 From:   David Sterba <dsterba@suse.cz>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com,
-        Nikolay Borisov <nborisov@suse.com>
-Subject: Re: [PATCH v3 10/12] btrfs: implement space clamping for preemptive
- flushing
-Message-ID: <20201029174848.GQ6756@twin.jikos.cz>
+To:     Anand Jain <anand.jain@oracle.com>
+Cc:     linux-btrfs@vger.kernel.org, David Sterba <dsterba@suse.com>,
+        Josef Bacik <josef@toxicpanda.com>
+Subject: Re: [PATCH v10 1/3] btrfs: add btrfs_strmatch helper
+Message-ID: <20201029183552.GR6756@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
-        linux-btrfs@vger.kernel.org, kernel-team@fb.com,
-        Nikolay Borisov <nborisov@suse.com>
-References: <cover.1602249928.git.josef@toxicpanda.com>
- <5ddb5076afa5872f8edf3bb4ea17aacec8e079fd.1602249928.git.josef@toxicpanda.com>
+Mail-Followup-To: dsterba@suse.cz, Anand Jain <anand.jain@oracle.com>,
+        linux-btrfs@vger.kernel.org, David Sterba <dsterba@suse.com>,
+        Josef Bacik <josef@toxicpanda.com>
+References: <cover.1603884513.git.anand.jain@oracle.com>
+ <d3cfa1d20e7e0a86bbef9e078d887e90d1755b29.1603884513.git.anand.jain@oracle.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <5ddb5076afa5872f8edf3bb4ea17aacec8e079fd.1602249928.git.josef@toxicpanda.com>
+In-Reply-To: <d3cfa1d20e7e0a86bbef9e078d887e90d1755b29.1603884513.git.anand.jain@oracle.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Oct 09, 2020 at 09:28:27AM -0400, Josef Bacik wrote:
-> +static inline void maybe_clamp_preempt(struct btrfs_fs_info *fs_info,
-> +				       struct btrfs_space_info *space_info)
-> +{
-> +	u64 ordered = percpu_counter_sum_positive(&fs_info->ordered_bytes);
-> +	u64 delalloc = percpu_counter_sum_positive(&fs_info->delalloc_bytes);
-> +
-> +	/*
-> +	 * If we're heavy on ordered operations then clamping won't help us.  We
-> +	 * need to clamp specifically to keep up with dirty'ing buffered
-> +	 * writers, because there's not a 1:1 correlation of writing delalloc
-> +	 * and freeing space, like there is with flushing delayed refs or
-> +	 * delayed nodes.  If we're already more ordered than delalloc then
-> +	 * we're keeping up, otherwise we aren't and should probably clamp.
-> +	 */
-> +	if (ordered < delalloc)
-> +		space_info->clamp = min(space_info->clamp + 1, 8);
-
-So the divisor will go up to 2^8 = 256, is that intentional?
-
-> --- a/fs/btrfs/space-info.h
-> +++ b/fs/btrfs/space-info.h
-> @@ -22,6 +22,9 @@ struct btrfs_space_info {
->  				   the space info if we had an ENOSPC in the
->  				   allocator. */
+On Wed, Oct 28, 2020 at 09:14:45PM +0800, Anand Jain wrote:
+> Add a generic helper to match the golden-string in the given-string,
+> and ignore the leading and trailing whitespaces if any.
+> 
+> Signed-off-by: Anand Jain <anand.jain@oracle.com>
+> Suggested-by: David Sterba <dsterba@suse.com>
+> Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+> ---
+> v10: return bool instead of int.
+>      drop unnecessary local variable and ( ) with in if.
+> v9: use Josef suggested C coding style, using single if statement.
+> v5: born
+>  fs/btrfs/sysfs.c | 18 ++++++++++++++++++
+>  1 file changed, 18 insertions(+)
+> 
+> diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
+> index fcd6c7a9bbd1..5955379d3d9e 100644
+> --- a/fs/btrfs/sysfs.c
+> +++ b/fs/btrfs/sysfs.c
+> @@ -888,6 +888,24 @@ static ssize_t btrfs_generation_show(struct kobject *kobj,
+>  }
+>  BTRFS_ATTR(, generation, btrfs_generation_show);
 >  
-> +	int clamp;		/* Used to scale our threshold for preemptive
-> +				   flushing. */
-
-Struct comments should go on the line before so we don't have this
-awkward formatting but the rest of the struct has that so let it be. One
-thing I'm missing is that it's power of two, I'll add it there.
-
+> +/*
+> + * Match the %golden in the %given. Ignore the leading and trailing whitespaces
+> + * if any.
+> + */
+> +static bool btrfs_strmatch(const char *given, const char *golden)
+> +{
+> +	size_t len = strlen(golden);
 > +
->  	unsigned int full:1;	/* indicates that we cannot allocate any more
->  				   chunks for this space */
->  	unsigned int chunk_alloc:1;	/* set if we are allocating a chunk */
-> -- 
-> 2.26.2
+> +	/* skip leading whitespace */
+
+Comments should start with uppercase unless it's an identifier.
+
+> +	given = skip_spaces(given);
+> +
+> +	if (strncmp(given, golden, len) == 0 &&
+> +	    !strlen(skip_spaces(given + len)))
+
+You had strlen() == 0 instead of !strlen in v9, the == 0 is better here.
+
+I'll fix that locally and push to misc-next so we can proceed with the
+actual policies.
