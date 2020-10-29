@@ -2,37 +2,37 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E10DE29EE3F
-	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Oct 2020 15:29:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A37929EE40
+	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Oct 2020 15:29:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727750AbgJ2O3e (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 29 Oct 2020 10:29:34 -0400
-Received: from mx2.suse.de ([195.135.220.15]:48944 "EHLO mx2.suse.de"
+        id S1727761AbgJ2O3g (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 29 Oct 2020 10:29:36 -0400
+Received: from mx2.suse.de ([195.135.220.15]:48978 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727738AbgJ2O3d (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 29 Oct 2020 10:29:33 -0400
+        id S1727673AbgJ2O3f (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 29 Oct 2020 10:29:35 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1603981771;
+        t=1603981773;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Gk5pyXP7+g4qgTlvYWvhrQrhgwhHnDp6UOPh1WoiQ08=;
-        b=aBYrANS8Hdwcbvjvgi8EQH3c5r6vOomiOhZ6flBUxaNWSsZK7iQEkq6/7UHR8DUrzwHZYL
-        MgnG7KT9u8jbs2C/B5NdTmsPGy0lfZZ8EGafOvfVxIpJz6mCxt9AI8YB0NLmp/83OZfsto
-        vFlBEEYN5Q7FEtVxNxwVQqin2k9g5ac=
+        bh=8as2B4TcxswsJJtrGLWVOKRsQxJJmzwJw7FB7DZ3oyU=;
+        b=jx+Xoqfcj5OzVQrXNILerVXc1QWJGa/YLKS8AYsau3ZGRgNRVfXAskIHE7DhBJActEL+8I
+        EynMR1il5Up/3CIH09Km3C2Cc9d5oBr7pelCVzLkjbIY/M8He29kgdk1H3OFNExgEPW1F2
+        L4YeutxcABRi5iMtCtHFIoSUL3WGC8w=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 69C3BACA3;
-        Thu, 29 Oct 2020 14:29:31 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id BF9B4AB5C;
+        Thu, 29 Oct 2020 14:29:33 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 7DC2CDA7CE; Thu, 29 Oct 2020 15:27:56 +0100 (CET)
+        id CEE61DA7CE; Thu, 29 Oct 2020 15:27:58 +0100 (CET)
 From:   David Sterba <dsterba@suse.com>
 To:     linux-btrfs@vger.kernel.org
 Cc:     David Sterba <dsterba@suse.com>
-Subject: [PATCH 09/10] btrfs: check integrity: remove local copy of csum_size
-Date:   Thu, 29 Oct 2020 15:27:56 +0100
-Message-Id: <8005d5d4ec27e0a966e2c2dc9af73713b78ea8ca.1603981453.git.dsterba@suse.com>
+Subject: [PATCH 10/10] btrfs: scrub: remove local copy of csum_size from context
+Date:   Thu, 29 Oct 2020 15:27:58 +0100
+Message-Id: <7a311427bcb433f5ae9f84f4e07d3653e1518b1f.1603981453.git.dsterba@suse.com>
 X-Mailer: git-send-email 2.25.0
 In-Reply-To: <cover.1603981452.git.dsterba@suse.com>
 References: <cover.1603981452.git.dsterba@suse.com>
@@ -42,52 +42,107 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The state structure unnecessarily stores copy of the checksum size, that
-can be now easily obtained from fs_info.
+The context structure unnecessarily stores copy of the checksum size,
+that can be now easily obtained from fs_info.
 
 Signed-off-by: David Sterba <dsterba@suse.com>
 ---
- fs/btrfs/check-integrity.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+ fs/btrfs/scrub.c | 19 +++++++++----------
+ 1 file changed, 9 insertions(+), 10 deletions(-)
 
-diff --git a/fs/btrfs/check-integrity.c b/fs/btrfs/check-integrity.c
-index 2905fe5974e6..d9d95d4a3f12 100644
---- a/fs/btrfs/check-integrity.c
-+++ b/fs/btrfs/check-integrity.c
-@@ -233,7 +233,6 @@ struct btrfsic_stack_frame {
- struct btrfsic_state {
- 	u32 print_mask;
- 	int include_extent_data;
--	int csum_size;
- 	struct list_head all_blocks_list;
- 	struct btrfsic_block_hashtable block_hashtable;
- 	struct btrfsic_block_link_hashtable block_link_hashtable;
-@@ -660,8 +659,6 @@ static int btrfsic_process_superblock(struct btrfsic_state *state,
- 		return -1;
+diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
+index d4f693a4ca38..d1c0bfcf368b 100644
+--- a/fs/btrfs/scrub.c
++++ b/fs/btrfs/scrub.c
+@@ -161,7 +161,6 @@ struct scrub_ctx {
+ 	atomic_t		workers_pending;
+ 	spinlock_t		list_lock;
+ 	wait_queue_head_t	list_wait;
+-	u16			csum_size;
+ 	struct list_head	csum_list;
+ 	atomic_t		cancel_req;
+ 	int			readonly;
+@@ -610,7 +609,6 @@ static noinline_for_stack struct scrub_ctx *scrub_setup_ctx(
+ 	atomic_set(&sctx->bios_in_flight, 0);
+ 	atomic_set(&sctx->workers_pending, 0);
+ 	atomic_set(&sctx->cancel_req, 0);
+-	sctx->csum_size = fs_info->csum_size;
+ 
+ 	spin_lock_init(&sctx->list_lock);
+ 	spin_lock_init(&sctx->stat_lock);
+@@ -1349,7 +1347,7 @@ static int scrub_setup_recheck_block(struct scrub_block *original_sblock,
+ 			if (have_csum)
+ 				memcpy(page->csum,
+ 				       original_sblock->pagev[0]->csum,
+-				       sctx->csum_size);
++				       sctx->fs_info->csum_size);
+ 
+ 			scrub_stripe_index_and_offset(logical,
+ 						      bbio->map_type,
+@@ -1800,7 +1798,7 @@ static int scrub_checksum_data(struct scrub_block *sblock)
+ 	crypto_shash_init(shash);
+ 	crypto_shash_digest(shash, kaddr, PAGE_SIZE, csum);
+ 
+-	if (memcmp(csum, spage->csum, sctx->csum_size))
++	if (memcmp(csum, spage->csum, sctx->fs_info->csum_size))
+ 		sblock->checksum_error = 1;
+ 
+ 	return sblock->checksum_error;
+@@ -1823,7 +1821,7 @@ static int scrub_checksum_tree_block(struct scrub_block *sblock)
+ 	spage = sblock->pagev[0];
+ 	kaddr = page_address(spage->page);
+ 	h = (struct btrfs_header *)kaddr;
+-	memcpy(on_disk_csum, h->csum, sctx->csum_size);
++	memcpy(on_disk_csum, h->csum, sctx->fs_info->csum_size);
+ 
+ 	/*
+ 	 * we don't use the getter functions here, as we
+@@ -1856,7 +1854,7 @@ static int scrub_checksum_tree_block(struct scrub_block *sblock)
  	}
  
--	state->csum_size = state->fs_info->csum_size;
--
- 	for (pass = 0; pass < 3; pass++) {
- 		int num_copies;
- 		int mirror_num;
-@@ -1723,7 +1720,7 @@ static noinline_for_stack int btrfsic_test_for_metadata(
- 		crypto_shash_update(shash, data, sublen);
- 	}
- 	crypto_shash_final(shash, csum);
--	if (memcmp(csum, h->csum, state->csum_size))
-+	if (memcmp(csum, h->csum, fs_info->csum_size))
- 		return 1;
+ 	crypto_shash_final(shash, calculated_csum);
+-	if (memcmp(calculated_csum, on_disk_csum, sctx->csum_size))
++	if (memcmp(calculated_csum, on_disk_csum, sctx->fs_info->csum_size))
+ 		sblock->checksum_error = 1;
  
- 	return 0; /* is metadata */
-@@ -2797,7 +2794,6 @@ int btrfsic_mount(struct btrfs_fs_info *fs_info,
- 	state->fs_info = fs_info;
- 	state->print_mask = print_mask;
- 	state->include_extent_data = including_extent_data;
--	state->csum_size = 0;
- 	state->metablock_size = fs_info->nodesize;
- 	state->datablock_size = fs_info->sectorsize;
- 	INIT_LIST_HEAD(&state->all_blocks_list);
+ 	return sblock->header_error || sblock->checksum_error;
+@@ -1893,7 +1891,7 @@ static int scrub_checksum_super(struct scrub_block *sblock)
+ 	crypto_shash_digest(shash, kaddr + BTRFS_CSUM_SIZE,
+ 			BTRFS_SUPER_INFO_SIZE - BTRFS_CSUM_SIZE, calculated_csum);
+ 
+-	if (memcmp(calculated_csum, s->csum, sctx->csum_size))
++	if (memcmp(calculated_csum, s->csum, sctx->fs_info->csum_size))
+ 		++fail_cor;
+ 
+ 	if (fail_cor + fail_gen) {
+@@ -2198,7 +2196,7 @@ static int scrub_pages(struct scrub_ctx *sctx, u64 logical, u64 len,
+ 		spage->mirror_num = mirror_num;
+ 		if (csum) {
+ 			spage->have_csum = 1;
+-			memcpy(spage->csum, csum, sctx->csum_size);
++			memcpy(spage->csum, csum, sctx->fs_info->csum_size);
+ 		} else {
+ 			spage->have_csum = 0;
+ 		}
+@@ -2390,7 +2388,8 @@ static int scrub_find_csum(struct scrub_ctx *sctx, u64 logical, u8 *csum)
+ 	ASSERT(index < UINT_MAX);
+ 
+ 	num_sectors = sum->len >> sctx->fs_info->sectorsize_bits;
+-	memcpy(csum, sum->sums + index * sctx->csum_size, sctx->csum_size);
++	memcpy(csum, sum->sums + index * sctx->fs_info->csum_size,
++		sctx->fs_info->csum_size);
+ 	if (index == num_sectors - 1) {
+ 		list_del(&sum->list);
+ 		kfree(sum);
+@@ -2508,7 +2507,7 @@ static int scrub_pages_for_parity(struct scrub_parity *sparity,
+ 		spage->mirror_num = mirror_num;
+ 		if (csum) {
+ 			spage->have_csum = 1;
+-			memcpy(spage->csum, csum, sctx->csum_size);
++			memcpy(spage->csum, csum, sctx->fs_info->csum_size);
+ 		} else {
+ 			spage->have_csum = 0;
+ 		}
 -- 
 2.25.0
 
