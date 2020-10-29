@@ -2,33 +2,33 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B84129F94A
-	for <lists+linux-btrfs@lfdr.de>; Fri, 30 Oct 2020 00:56:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 819A929F94B
+	for <lists+linux-btrfs@lfdr.de>; Fri, 30 Oct 2020 00:57:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725811AbgJ2X4l (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 29 Oct 2020 19:56:41 -0400
-Received: from mout.gmx.net ([212.227.17.21]:38529 "EHLO mout.gmx.net"
+        id S1725828AbgJ2X5s (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 29 Oct 2020 19:57:48 -0400
+Received: from mout.gmx.net ([212.227.17.22]:54823 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725379AbgJ2X4l (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 29 Oct 2020 19:56:41 -0400
+        id S1725372AbgJ2X5s (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 29 Oct 2020 19:57:48 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1604015797;
-        bh=o1b9gvx8Qze3V19YL42nYsw2CgHJj2UzQKeB2g3Rl/4=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=ZrQLE0TwCspDrYlVOTkhUG9IGGO7jBZuknEKteLbjKGDOci4rESU/Wk6x8dBedvqn
-         w0g3LWQynj0sDVJEDpiRCrYsgi08hzjiRxQl7FKqnyPaPZjNyQfeVQO2d4IXOERfro
-         iacqDyIPHce1EcftNJTOD8520ELew8LQnkD4NPQE=
+        s=badeba3b8450; t=1604015864;
+        bh=xXeQkRI/swdyPVodUo7+l+MsLXp8Pc2GgRgjkAsbqGs=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=LdPJlnSUgGKbtblUbgk1a1mcrixi2+99PbPImZlYLGZ6Q1jHeWcGnFBX3/YyXAaRn
+         Bd2IUD7K2wNChNqHVBiQINiRMVTD1Xbq5hAtzvcswCPqhLBBv36DR8kZUFBRsGM0gX
+         N+KZVs9FQZ4zYLupmz6Qay6azOKpcq0TaZp1YGxU=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1M7K3Y-1kSm083Iaq-007klS; Fri, 30
- Oct 2020 00:56:37 +0100
-Subject: Re: [PATCH v4 42/68] btrfs: allow RO mount of 4K sector size fs on
- 64K page system
-To:     =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-References: <20201021062554.68132-1-wqu@suse.com>
- <20201021062554.68132-43-wqu@suse.com> <20201029233438.GA30165@qmqm.qmqm.pl>
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1N1wpt-1kN7jK25er-012JUc; Fri, 30
+ Oct 2020 00:57:44 +0100
+Subject: Re: [PATCH v2 1/3] btrfs: file-item: use nodesize to determine
+ whether we need readhead for btrfs_lookup_bio_sums()
+To:     Josef Bacik <josef@toxicpanda.com>, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <20201029071218.49860-1-wqu@suse.com>
+ <20201029071218.49860-2-wqu@suse.com>
+ <946ec8c3-9480-e3c3-aad7-9b97e8aedf12@toxicpanda.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -54,111 +54,136 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
  ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
  oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <d3cb9ee1-acac-fc17-1f4c-c4837d928577@gmx.com>
-Date:   Fri, 30 Oct 2020 07:56:33 +0800
+Message-ID: <a933c57a-7514-4db3-7fee-04af2e7becaf@gmx.com>
+Date:   Fri, 30 Oct 2020 07:57:40 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <20201029233438.GA30165@qmqm.qmqm.pl>
+In-Reply-To: <946ec8c3-9480-e3c3-aad7-9b97e8aedf12@toxicpanda.com>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="UvftQsiWw0ZkJ8JEWJDFdCn1fVhCBoOqZ"
-X-Provags-ID: V03:K1:qlU6+6cz7ctoEGyhb7+sIeaxWZaFju5DUYt1xfRx6WzzW7EyLxX
- jfYOJzzHg56FXHGZfIqHkIw7DpUAbtkKuEjKC2NEFqZNxthCxp23BzIWawHHwn0i2+Ip+vq
- rEzG5k35jlr++/3kqjisZF4Ob5TPF8VsA3V9D0j4o8FojdwrrGX8W/06hgM5ZaRa1pfGMNQ
- yLPZRbM6KtsDjpcs+sJ9A==
+ boundary="wIKXhbA2yST6PcSrdtGKA9jM66Ytsf7ou"
+X-Provags-ID: V03:K1:6JivSjhCfBP4jLtbjFuuC8w/65pZ3SPptCHfxhm9tT8aVD2fVL6
+ ouXAkQ1toiDKJsXRQOwTDgF24UZdScs0omFe4ID2zWmb2clN4AH4JtPkQFAMz673heYuf5N
+ VXr76FsY0VgfBbV4UbElHPGo5Ef4XymOuTzrZQJeg2x+rqxXK49MYjxOfcnP/+c2rUCkWBi
+ GmwPUNLJQ6XbNKyaZjiXw==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:vuewEznfpiw=:flScChc+QS5+tnPZkHGFsY
- yuX1kXlFBYv1GhIIu1i/dfozXIS7DYgcdPwQqNvgBS5k+11EX+CJn5xErJUJQH7d/Fwx2QxNP
- wX+twi/aatvU835MDe/vZVIsUlmNSeA7xKXr7o5ULOAxzWalcAWQVtvVhyy36eSlX8MR0cbTj
- kAfgspkeaW3m33OBLI90VxN9CHu1t2/0q89zwk0LijicCkMnnFbysoVUEmSrqsWhSD7t+KggB
- 81tl05OLCpoltEuYhhLBKEZG5dUQBz79EJBTdq/2kPdqxA9coyUrEh8lUMyhNjCscJn5BeVPi
- hRBfzUy2xFGE7aTryQyxKdWgbLj7jp5WainbhXlOkCV8tSqxd+e5Bwp0oNWqKFYDi/qJ+SxtR
- mKqxvck4CkEhq0TRufJ3AVG3c6b61JaTHqj3ArixxsEMhYdnmUptnPiTQLV7XGPLP12iC5aAp
- CWfnQ0svTzOQAk0VGw78ciXoSS4AuRorsWjJzH+unHFJ9F9i46VEshnsjr/9/EstV9OVP1IIK
- ZDlRWj8fg/S1tBXnze3P7QYE2rbd5MIiQcVldj/GaexCBmdhdVkyJNEfC6xubIxmWKeqzL+yB
- Qrx51rJ1+/+EXY1Zoge49o/S57gLIigf1ex604WUehYsa6bg6fNmeeDql764U+yqyYPlBzf3r
- r1agUdeoQ0nUKWi7q282mGYFsE/si4fu6KBD8E3k7+pQhX1zzd9fNoyLtZ0+qn8Ah/2zi1hQp
- 2lktqPViey38D8ybPn4lOfZgYF6DwpCUeKQXEgbXZ7TnmnH1V27W5xFiKWLPjsI8P0gqrhn3i
- U+GPWptDjYuw4ck5hM9fneySUh8eTqtgy+EVi7l1arEy+1AS9i+8NXJCDP5yR1nUJA33JLumn
- MNRSHWxFTU1aGILhJzaA==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:qCeBAm9bY/U=:8yva/rcfjMOrMxw58obHv5
+ YqU3KgfKo/EbY6R5YXGv7RZZ96PgPu+WZP9oTYNUd2qhXRwyycJFar/C94siG8UJQpEEFhcCF
+ lutD591tLMWBy4eGCH/YEhgoZpd1dRYx1WbAvcOKwCPogHSMwyLVVVd1y00Dp6M2dXK8JPUM2
+ 9V4O7L27Na7FhiU4tF1Mw4kCi1kWpVTeZkqgJtm5pmF9K5apQvPPmVtNgK8XDj+O/hMThkPin
+ yIGLK9nqP+F22trgSme6eQMERtDdtT3qP8B4IM1KQ1bD7Em6BPGXoccfD3qMQwiXQRgEhxasw
+ j9iTT1SgziKBp3qLtpmQ/RcwsaxE4Rx93DP4IHiFvSdW4mjXJCkP7glB/n/gRC0TyS7iC8Oay
+ VvZg6pyJ/9GjWYtoYjs1mYhDaVgW5R0TrcSTwZSOUdqKR8WKwMNtqFZI3kf74ynAN0OFgsfam
+ sbLrbIwA74VX/rPvzelXwspIfoG8QC5E4kvbCKU5aeuohF02JlMJ4drXcuTyHPp9D49i8LVfz
+ wD6au0LQ8dCdFzOqwwRIsT0vfz41Wdn2dKPi/C3zmVKp1yjqlSSVoNPI2yJjs8xqSn65A6ZlM
+ tdMFPBi4PAsQLDL99Cl5VuUNuTLLxT5chC43aKR/Ns+APqm7v1myymrIKu2lO6ETj4YCZq9ov
+ HOS/IdBz2CmLPoSUJ8e4zLQPIewlqFow8f4RnxvXoBXbQogM2MZvipyGciMdN5YEsyl9XJcLE
+ WEQmaRLu2MqGS5p35KmUz/f59Bx1k4IfUYlEf8umtASByROvl8LfoRpQaOAk+wDt5M1hAhFa5
+ iTZV4FEGzOSKKFTYRmAAGGXex/eiMkUhY8Athak1lgMpIv+PD5r+rn1TZT2YzIvu5+xc58fYh
+ NJPbqGACzASVs6PexPpg==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---UvftQsiWw0ZkJ8JEWJDFdCn1fVhCBoOqZ
-Content-Type: multipart/mixed; boundary="Z2UQTSmWVdGYSTQoIELxTTVoHNyyjTayj"
+--wIKXhbA2yST6PcSrdtGKA9jM66Ytsf7ou
+Content-Type: multipart/mixed; boundary="XcibNfDnAF504cPVDZjTjQzVEaHpzmwLh"
 
---Z2UQTSmWVdGYSTQoIELxTTVoHNyyjTayj
+--XcibNfDnAF504cPVDZjTjQzVEaHpzmwLh
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
 
 
 
-On 2020/10/30 =E4=B8=8A=E5=8D=887:34, Micha=C5=82 Miros=C5=82aw wrote:
-> On Wed, Oct 21, 2020 at 02:25:28PM +0800, Qu Wenruo wrote:
->> This adds the basic RO mount ability for 4K sector size on 64K page
->> system.
+On 2020/10/30 =E4=B8=8A=E5=8D=882:57, Josef Bacik wrote:
+> On 10/29/20 3:12 AM, Qu Wenruo wrote:
+>> In btrfs_lookup_bio_sums() if the bio is pretty large, we want to
+>> readahead the csum tree.
 >>
->> Currently we only plan to support 4K and 64K page system.
-> [...]
+>> However the threshold is an immediate number, (PAGE_SIZE * 8), from th=
+e
+>> initial btrfs merge.
+>>
+>> The value itself is pretty hard to guess the meaning, especially when
+>> the immediate number is from the age where 4K sectorsize is the defaul=
+t
+>> and only CRC32 is supported.
+>>
+>> For the most common btrfs setup, CRC32 csum algorithme 4K sectorsize,
+>> it means just 32K read would kick readahead, while the csum itself is
+>> only 32 bytes in size.
+>>
+>> Now let's be more reasonable by taking both csum size and node size in=
+to
+>> consideration.
+>>
+>> If the csum size for the bio is larger than one node, then we kick the=
+
+>> readahead.
+>> This means for current default btrfs, the threshold will be 16M.
+>>
+>> This change should not change performance observably, thus this is mos=
+tly
+>> a readability enhancement.
+>>
+>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>> ---
+>> =C2=A0 fs/btrfs/file-item.c | 6 +++++-
+>> =C2=A0 1 file changed, 5 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/fs/btrfs/file-item.c b/fs/btrfs/file-item.c
+>> index 7d5ec71615b8..fbc60948b2c4 100644
+>> --- a/fs/btrfs/file-item.c
+>> +++ b/fs/btrfs/file-item.c
+>> @@ -295,7 +295,11 @@ blk_status_t btrfs_lookup_bio_sums(struct inode
+>> *inode, struct bio *bio,
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 csum =3D dst;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
+>> =C2=A0 -=C2=A0=C2=A0=C2=A0 if (bio->bi_iter.bi_size > PAGE_SIZE * 8)
+>> +=C2=A0=C2=A0=C2=A0 /*
+>> +=C2=A0=C2=A0=C2=A0=C2=A0 * If needed csum size is larger than a node,=
+ kick the readahead for
+>> +=C2=A0=C2=A0=C2=A0=C2=A0 * csum tree would be a good idea.
+>> +=C2=A0=C2=A0=C2=A0=C2=A0 */
+>> +=C2=A0=C2=A0=C2=A0 if (nblocks * csum_size > fs_info->nodesize)
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 path->reada =3D=
+ READA_FORWARD;
 >=20
-> Why this restriction? I briefly looked at this patch and some of the
-> previous and it looks like the code doesn't really care about anything
-> more than order(PAGE_SIZE) >=3D order(sectorsize).
-
-The restriction comes from the metadata operations.
-
-Currently for subpage case, we expect one page to contain all of the
-subpage tree block.
-
-For things like 32K, 16K or 8K page size, we need more pages to handle th=
-em.
-That needs extra work to handle unaligned tree start (already done for
-current subpage support) and multi-page case (not for current subpage,
-but only for sectorsize =3D=3D PAGE_SIZE yet).
-
-Another problem is testing.
-
-Currently the only (cheap) way to test 64K page size is using ARM64 SBC.
-(My current setup is with RK3399 since it's cheap and has full x4 lane
-NVME support)
-
-For 8K or 32K, I don't find widely available device to test.
-
-Anyway, my current focus is to add balance support and remove all small
-bugs exposed so far.
-We may support 16K in the future, but only after we have finished
-current 64K subpage support.
-
-Thanks,
-Qu
-
+> Except if we have contiguous reads we could very well have all of our
+> csums in a single item.=C2=A0 It makes more sense to do something like
 >=20
-> Best Regards,
-> Micha=C5=82 Miros=C5=82aw
+> if (nblocks * csum_size > MAX_CSUM_ITEMS() * csum_size)
+
+Oh, thanks for this.
+I was looking for things like that, but didn't find a handy one.
+
+This indeed looks better.
 >=20
+> so that we're only readahead'ing when we're likely to need to look up
+> multiple items.=C2=A0 Thanks,
+>=20
+> Josef
 
 
---Z2UQTSmWVdGYSTQoIELxTTVoHNyyjTayj--
+--XcibNfDnAF504cPVDZjTjQzVEaHpzmwLh--
 
---UvftQsiWw0ZkJ8JEWJDFdCn1fVhCBoOqZ
+--wIKXhbA2yST6PcSrdtGKA9jM66Ytsf7ou
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl+bVrEACgkQwj2R86El
-/qjfvgf/UuSrHoyLukHWKcwnOBrTMmKzShvL+xkit4+KsFWvuOAWL/Ikk476Vy2c
-jIB4AvDCXiSYqToVlrn0Flojz4ABB8uD1yTRVnm+hkcPNDCiwafkHI4FfOkKLVhU
-owETbTHY0v/6f8OIgcV1sT1WaYuLMchCRXEkPrQiwNKA5xaGTX8gww2fwqps8y5W
-/Wn3fjkoMxC8wTuIpDdXioY1CwpDE5jbBKLfvCcn+A7h4QKOYQSHZySfAdsO6TJg
-N54brxzICCkwWKy9mOoQdV1JOBlsIYN+zZm1SlXh893DowqwKAxKZ5yBD2v/slWB
-IIMcroy7fu6vfCtSAj5wOoTq0k1IPg==
-=NSJz
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl+bVvQACgkQwj2R86El
+/qj6KwgAlzK/pujr/O1txdYfquddctN54fTAsJgfH6PawKIOTyB0V7Hwjm9/y0dR
+9T+DLcyBSKsm//fnouYsRUSbXhZQfvye76a7nZTBRCLbKzf88dpxjlvrXUJCMjQC
+i/0f6Dnr+W+YQex7K42GkYhrAB3ozXruC4QWk152wR5fZlkbnkgJvg4QnIVOHKQD
+6sbDok0KoWzFja14pGF/agufn7zeTVQejzTjHLdUVMwqykk0nQPMECTrU/+zDrP/
+QpkrMtXpNVgTQm+UJSnbswdu4I0mfDSgujMwK/TpZKmVX05HE0B7KmfhR8AMj06b
+W90dG/lg4UKBnPzIyalD4pUVNgbQJQ==
+=KNmR
 -----END PGP SIGNATURE-----
 
---UvftQsiWw0ZkJ8JEWJDFdCn1fVhCBoOqZ--
+--wIKXhbA2yST6PcSrdtGKA9jM66Ytsf7ou--
