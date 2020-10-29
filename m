@@ -2,144 +2,96 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87D4B29E4B4
-	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Oct 2020 08:47:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D725129E4DA
+	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Oct 2020 08:49:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732974AbgJ2HpC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 29 Oct 2020 03:45:02 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:60548 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732929AbgJ2HpA (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 29 Oct 2020 03:45:00 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09T7dOi2123915;
-        Thu, 29 Oct 2020 07:44:55 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : from : to :
- cc : references : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=gbu5ZBKxWLoxcXeHNDhrUJqg29RsgLQqREY7Qb1Xkp8=;
- b=mKeJYuOTBkksZlAPik0gvIbJO6n8tqVrVz9n8B+VtuQTzFpcMV4EK1P6zYrc0ol8sOu/
- /X1hY03S6KV7H+fmp7JVrsZDyITnEJw/W9hi3gDVco372F60rAcxldmKUFeCjGrvXIF7
- Ct/s0LLNoa5bIK14uURRHej6SKrFc1yjXN4NtUPyMbH2kwxEVCrRx5+8N6FgguYyc1E0
- StS3QtS87KFuqjfCeb3fud6IqPlmPFBABjFyQBViCcnyHJXkJIcqLbOL5Bf/ZZ5KD/Eh
- jIWp1cyMH0jTUhRArej+vAKk5hEBqXX7mhs0JhrPLAL28TcFyJ+2az/2F+wQoZ1aH42f qQ== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2120.oracle.com with ESMTP id 34dgm48up1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 29 Oct 2020 07:44:55 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09T7eNHI155897;
-        Thu, 29 Oct 2020 07:44:55 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3020.oracle.com with ESMTP id 34cx1swsv0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 29 Oct 2020 07:44:54 +0000
-Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 09T7isU5028505;
-        Thu, 29 Oct 2020 07:44:54 GMT
-Received: from [192.168.1.102] (/39.109.231.106)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 29 Oct 2020 00:44:53 -0700
-Subject: Re: [PATCH v1 0/4] btrfs: read_policy types latency, device and
- round-robin
-From:   Anand Jain <anand.jain@oracle.com>
-To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org
-Cc:     dsterba@suse.com
-References: <cover.1603884539.git.anand.jain@oracle.com>
- <ac428935-c20c-d02d-6678-d88cc5eb4b63@toxicpanda.com>
- <da5c6fc8-95ef-6272-ea2a-4929fc32c69c@oracle.com>
-Message-ID: <b45deeac-dd13-3a38-4bdf-190cfd16fe83@oracle.com>
-Date:   Thu, 29 Oct 2020 15:44:50 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S2387850AbgJ2Hr5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 29 Oct 2020 03:47:57 -0400
+Received: from mx2.suse.de ([195.135.220.15]:58638 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1733219AbgJ2HrV (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 29 Oct 2020 03:47:21 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1603957639;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=QdTWz12eSHRuhezArezhlfCEwCBrcT0EGbVekKwQN28=;
+        b=JSbPAyWn951NQI831fyj2ErisYfb/TnuY6JoiOAp3JiyXi2yZfBYKflD8YC4yi6btPZdjk
+        JMeon5gA0seKRSI6kugaQ4duF7clyHhNflWyyOafJo9cUBoagLJ0vlExuFLcewmltWRVWc
+        tv9mGgnpybGta1ef3nXLKVFxT0Rx15M=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 63519AD0B;
+        Thu, 29 Oct 2020 07:47:19 +0000 (UTC)
+Subject: Re: [PATCH v2 2/3] btrfs: file-item: remove the
+ btrfs_find_ordered_sum() call in btrfs_lookup_bio_sums()
+To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+References: <20201029071218.49860-1-wqu@suse.com>
+ <20201029071218.49860-3-wqu@suse.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ mQINBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
+ T7g+RbfPFlmQp+EwFWOtABXlKC54zgSf+uulGwx5JAUFVUIRBmnHOYi/lUiE0yhpnb1KCA7f
+ u/W+DkwGerXqhhe9TvQoGwgCKNfzFPZoM+gZrm+kWv03QLUCr210n4cwaCPJ0Nr9Z3c582xc
+ bCUVbsjt7BN0CFa2BByulrx5xD9sDAYIqfLCcZetAqsTRGxM7LD0kh5WlKzOeAXj5r8DOrU2
+ GdZS33uKZI/kZJZVytSmZpswDsKhnGzRN1BANGP8sC+WD4eRXajOmNh2HL4P+meO1TlM3GLl
+ EQd2shHFY0qjEo7wxKZI1RyZZ5AgJnSmehrPCyuIyVY210CbMaIKHUIsTqRgY5GaNME24w7h
+ TyyVCy2qAM8fLJ4Vw5bycM/u5xfWm7gyTb9V1TkZ3o1MTrEsrcqFiRrBY94Rs0oQkZvunqia
+ c+NprYSaOG1Cta14o94eMH271Kka/reEwSZkC7T+o9hZ4zi2CcLcY0DXj0qdId7vUKSJjEep
+ c++s8ncFekh1MPhkOgNj8pk17OAESanmDwksmzh1j12lgA5lTFPrJeRNu6/isC2zyZhTwMWs
+ k3LkcTa8ZXxh0RfWAqgx/ogKPk4ZxOXQEZetkEyTFghbRH2BIwARAQABtCNOaWtvbGF5IEJv
+ cmlzb3YgPG5ib3Jpc292QHN1c2UuY29tPokCOAQTAQIAIgUCWIo48QIbAwYLCQgHAwIGFQgC
+ CQoLBBYCAwECHgECF4AACgkQcb6CRuU/KFc0eg/9GLD3wTQz9iZHMFbjiqTCitD7B6dTLV1C
+ ddZVlC8Hm/TophPts1bWZORAmYIihHHI1EIF19+bfIr46pvfTu0yFrJDLOADMDH+Ufzsfy2v
+ HSqqWV/nOSWGXzh8bgg/ncLwrIdEwBQBN9SDS6aqsglagvwFD91UCg/TshLlRxD5BOnuzfzI
+ Leyx2c6YmH7Oa1R4MX9Jo79SaKwdHt2yRN3SochVtxCyafDlZsE/efp21pMiaK1HoCOZTBp5
+ VzrIP85GATh18pN7YR9CuPxxN0V6IzT7IlhS4Jgj0NXh6vi1DlmKspr+FOevu4RVXqqcNTSS
+ E2rycB2v6cttH21UUdu/0FtMBKh+rv8+yD49FxMYnTi1jwVzr208vDdRU2v7Ij/TxYt/v4O8
+ V+jNRKy5Fevca/1xroQBICXsNoFLr10X5IjmhAhqIH8Atpz/89ItS3+HWuE4BHB6RRLM0gy8
+ T7rN6ja+KegOGikp/VTwBlszhvfLhyoyjXI44Tf3oLSFM+8+qG3B7MNBHOt60CQlMkq0fGXd
+ mm4xENl/SSeHsiomdveeq7cNGpHi6i6ntZK33XJLwvyf00PD7tip/GUj0Dic/ZUsoPSTF/mG
+ EpuQiUZs8X2xjK/AS/l3wa4Kz2tlcOKSKpIpna7V1+CMNkNzaCOlbv7QwprAerKYywPCoOSC
+ 7P25Ag0EWIoHPgEQAMiUqvRBZNvPvki34O/dcTodvLSyOmK/MMBDrzN8Cnk302XfnGlW/YAQ
+ csMWISKKSpStc6tmD+2Y0z9WjyRqFr3EGfH1RXSv9Z1vmfPzU42jsdZn667UxrRcVQXUgoKg
+ QYx055Q2FdUeaZSaivoIBD9WtJq/66UPXRRr4H/+Y5FaUZx+gWNGmBT6a0S/GQnHb9g3nonD
+ jmDKGw+YO4P6aEMxyy3k9PstaoiyBXnzQASzdOi39BgWQuZfIQjN0aW+Dm8kOAfT5i/yk59h
+ VV6v3NLHBjHVw9kHli3jwvsizIX9X2W8tb1SefaVxqvqO1132AO8V9CbE1DcVT8fzICvGi42
+ FoV/k0QOGwq+LmLf0t04Q0csEl+h69ZcqeBSQcIMm/Ir+NorfCr6HjrB6lW7giBkQl6hhomn
+ l1mtDP6MTdbyYzEiBFcwQD4terc7S/8ELRRybWQHQp7sxQM/Lnuhs77MgY/e6c5AVWnMKd/z
+ MKm4ru7A8+8gdHeydrRQSWDaVbfy3Hup0Ia76J9FaolnjB8YLUOJPdhI2vbvNCQ2ipxw3Y3c
+ KhVIpGYqwdvFIiz0Fej7wnJICIrpJs/+XLQHyqcmERn3s/iWwBpeogrx2Lf8AGezqnv9woq7
+ OSoWlwXDJiUdaqPEB/HmGfqoRRN20jx+OOvuaBMPAPb+aKJyle8zABEBAAGJAh8EGAECAAkF
+ AliKBz4CGwwACgkQcb6CRuU/KFdacg/+M3V3Ti9JYZEiIyVhqs+yHb6NMI1R0kkAmzsGQ1jU
+ zSQUz9AVMR6T7v2fIETTT/f5Oout0+Hi9cY8uLpk8CWno9V9eR/B7Ifs2pAA8lh2nW43FFwp
+ IDiSuDbH6oTLmiGCB206IvSuaQCp1fed8U6yuqGFcnf0ZpJm/sILG2ECdFK9RYnMIaeqlNQm
+ iZicBY2lmlYFBEaMXHoy+K7nbOuizPWdUKoKHq+tmZ3iA+qL5s6Qlm4trH28/fPpFuOmgP8P
+ K+7LpYLNSl1oQUr+WlqilPAuLcCo5Vdl7M7VFLMq4xxY/dY99aZx0ZJQYFx0w/6UkbDdFLzN
+ upT7NIN68lZRucImffiWyN7CjH23X3Tni8bS9ubo7OON68NbPz1YIaYaHmnVQCjDyDXkQoKC
+ R82Vf9mf5slj0Vlpf+/Wpsv/TH8X32ajva37oEQTkWNMsDxyw3aPSps6MaMafcN7k60y2Wk/
+ TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
+ RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
+ 5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
+Message-ID: <12990e1a-6e59-b0e3-5d26-34c80e31b601@suse.com>
+Date:   Thu, 29 Oct 2020 09:47:18 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <da5c6fc8-95ef-6272-ea2a-4929fc32c69c@oracle.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20201029071218.49860-3-wqu@suse.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9788 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0 bulkscore=0
- suspectscore=0 malwarescore=0 mlxlogscore=999 mlxscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2010290054
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9788 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 impostorscore=0
- adultscore=0 bulkscore=0 spamscore=0 phishscore=0 mlxlogscore=999
- suspectscore=0 clxscore=1015 mlxscore=0 malwarescore=0 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2010290054
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 29/10/20 9:08 am, Anand Jain wrote:
-> 
-> 
-> On 28/10/20 10:32 pm, Josef Bacik wrote:
->> On 10/28/20 9:25 AM, Anand Jain wrote:
->>> Based on misc-next
->>>
->>> Depends on the following 3 patches in the mailing list.
->>>    btrfs: add btrfs_strmatch helper
->>>    btrfs: create read policy framework
->>>    btrfs: create read policy sysfs attribute, pid
->>>
->>> v1:
->>> Drop tracing patch
->>> Drop factoring inflight command
->>>    Here below is the performance differences, when inflight is used, 
->>> it pushed
->>>    few commands to the other device, so losing the potential merges.
->>>
->>>    with inflight:
->>>     READ: bw=195MiB/s (204MB/s), 195MiB/s-195MiB/s (204MB/s-204MB/s), 
->>> io=15.6GiB (16.8GB), run=82203-82203msec
->>> sda 256054
->>> sdc 20
->>>
->>>    without inflight:
->>>     READ: bw=192MiB/s (202MB/s), 192MiB/s-192MiB/s (202MB/s-202MB/s), 
->>> io=15.6GiB (16.8GB), run=83231-83231msec
->>> sda 141006
->>> sdc 0
->>>
->>
->> What's the baseline?  I think 3mib/s is not that big of a tradeoff for 
->> complexity, but if baseline is like 190mib/s then maybe its worth it. 
->> If baseline is 90mib/s then I say it's not worth the inflight.  Thanks,
-> 
->   Oh no I have to rerun the test cases here. As far as I remember
->   without inflight was better than with inflight. Because with
->   inflight there were fewer merges leading to more read IOs.
-> 
->   Will rerun and send the data.
-> 
-
-<raid1>
-
-With inflight: (the inflight patches were in the RFC patchset):
-pid [latency] device roundrobin ( 00)
-    READ: bw=40.3MiB/s (42.3MB/s), 40.3MiB/s-40.3MiB/s 
-(42.3MB/s-42.3MB/s), io=15.6GiB (16.8GB), run=396546-396546msec
-vdb 363575
-sda 200771
+On 29.10.20 г. 9:12 ч., Qu Wenruo wrote:
+> The function btrfs_lookup_bio_sums() is only called for read bios.
+> While btrfs_find_ordered_sum() is to search ordered extent sums, which
 
 
-Without inflight:
-pid [latency] device roundrobin ( 00)
-    READ: bw=41.7MiB/s (43.8MB/s), 41.7MiB/s-41.7MiB/s 
-(43.8MB/s-43.8MB/s), io=15.6GiB (16.8GB), run=383274-383274msec
-vdb 256238
-sda 0
-
-Without inflight is better due to lesser IO.
-
-Thanks, Anand
-
-> Thanks, Anand
-> 
->>
->> Josef
+And what if we issue a read for a region which still has in-flight
+ordered sums?
