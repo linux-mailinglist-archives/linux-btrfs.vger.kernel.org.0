@@ -2,44 +2,44 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68D7D29F94E
+	by mail.lfdr.de (Postfix) with ESMTP id D714129F94F
 	for <lists+linux-btrfs@lfdr.de>; Fri, 30 Oct 2020 00:58:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725928AbgJ2X6J (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 29 Oct 2020 19:58:09 -0400
-Received: from out1-smtp.messagingengine.com ([66.111.4.25]:36743 "EHLO
+        id S1725945AbgJ2X6M (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 29 Oct 2020 19:58:12 -0400
+Received: from out1-smtp.messagingengine.com ([66.111.4.25]:38583 "EHLO
         out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725372AbgJ2X6I (ORCPT
+        by vger.kernel.org with ESMTP id S1725372AbgJ2X6L (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 29 Oct 2020 19:58:08 -0400
+        Thu, 29 Oct 2020 19:58:11 -0400
 Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailout.nyi.internal (Postfix) with ESMTP id A01AA5C009E;
-        Thu, 29 Oct 2020 19:58:07 -0400 (EDT)
+        by mailout.nyi.internal (Postfix) with ESMTP id AF3255C009E;
+        Thu, 29 Oct 2020 19:58:10 -0400 (EDT)
 Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Thu, 29 Oct 2020 19:58:07 -0400
+  by compute2.internal (MEProxy); Thu, 29 Oct 2020 19:58:10 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=from
         :to:subject:date:message-id:in-reply-to:references:mime-version
-        :content-transfer-encoding; s=fm2; bh=nEZIWEe7CILcdCBa27Aq7QpWzY
-        w++1lEBc229Ryartw=; b=xY4ZP5vJNaOl4dHTxORrQq5Y0Q3mgs2qnNOxzfADEv
-        OAC+SOpvfqxbsR2oJJhL2N3VE9ci6dkcP8T8ZxvkoIflqinQitAFlIX7TvW++yRf
-        znDuYMB0Efamfvn/GjutYQZDgWxAo6GuW2K0GCCN+n1aGI6b8poMkxr+cBYdyQ4V
-        T0lFmKy+nV4LL23ViYSYHRp8nOvneMzcWVR+ZaCdpH3DNKjX2C1HhOpkdtqKOwnM
-        RgSweJxJA9JAuwcVBanRq7pkAkD0LJspyV+ypac9MK04OybeilG/t0aA5qqhQoaA
-        VLGlsOudNQx+C1YykLzhFHaN7s1KtomQi2xSK4C8g/NQ==
+        :content-transfer-encoding; s=fm2; bh=h7FMY6l6GhuxmnOsgSApRcJOTc
+        +8aE0nMMynJ1gceQg=; b=hc9O3n3Leo9XlIEE56OpxclDSgiySGbJMAJwMLLq6O
+        6V+YWBFzcz95MY7/b3vZBIWtA7s3OEsll7eORwbchYJLMzBjff4/39VYzyoF68tA
+        UfDpq0M0nFYDd4dgGlBJypxphAQ7DNxJJ/ibXuFBl9oR9OYJmYAFb579yIQdxcZx
+        UxOH9doPkd4LkSjBAIBG78/WL3p+zZGMMM/fjOgZH5e5K6/ty5YsYQKztFva8M1a
+        uJcad0SHH4yzN6bOzURW2Pb+bVNZHNr3uCslJIOfMznB0/4G/SRXb0FjyYocb2Lw
+        JkGTsktlNmmE09G8PRc4B5GpsuaK7wYsPnzZF64zJ6nQ==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=content-transfer-encoding:date:from
         :in-reply-to:message-id:mime-version:references:subject:to
         :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm1; bh=nEZIWEe7CILcdCBa27Aq7QpWzYw++1lEBc229Ryartw=; b=FE13fS2y
-        Z0RUNVZeKFkz7Q3fJQKo6mu6mMFjh5knNwjVGTx/WUUVF45djvN8ir4qhyJPtDCu
-        To5b8i1lzI4xuukejD3p3ni30e4Jyx8A8CKDEekW84CFEK2gwnqY4/6WAmZXUcp9
-        EewzWJGXfc3HuH2Fhe4uRRIfJTmIIBhayKBdfTpGipuHBvy6xQSpYWpidwvjAgB8
-        ivOGWATm5ZwQ7yHQ+j7yZQ1ENvKSpXo56nTrEyxBffxwlW2RANuKu2qiDaEHHRDl
-        j1YGwrzu4kwG9eqkxT4a78Oe+IdXszWMudadSnQnRO6/m4JhC866jYF7eYuC7hps
-        egRj2Oz9KCB/Dg==
-X-ME-Sender: <xms:D1ebX0WuUfSkSA_CBHZyocJbp7Zqykm21bGtQzl9PGMU1Jsgr_wfpA>
-    <xme:D1ebX4lN6y6maYrSKiQd1-pTkSbFd4PJ_5HD916Y-UsIB_O-6axrNQhH01uiYap-g
-    dtwPnx_qoGGslV1zj8>
+        fm1; bh=h7FMY6l6GhuxmnOsgSApRcJOTc+8aE0nMMynJ1gceQg=; b=G16DTQJA
+        YMx1Ix76CHEn38GW2SYJVcZGr0rh0XtZ/FM2wS6hpeyE8bjLxtdC5PuwWITxaH2W
+        wenB2fnmi4Il+1a99uAaHNyepM+ZhD83NMQx93QsQMrTt8fr/1Xn2xBvLCyT76nA
+        FYmfZ38Yl7+1KRLfe4hNK4qrlC2hQIEL90F7jIzxLmKqjOX8wMUP3+YW/BCJjOMu
+        qLAMHwijTxIxSEYNa9GdQev5AlyuDOnztAt0qNaksgqIXtFmX896mIvpCfsi5QE5
+        QkYwzNVeJjF7uW6r6m1x2hP1cZ8UJQz3DMWR2eidwH4iofkzhFaDCXulWeJP8lNQ
+        MyF6pwR/W1ZLLA==
+X-ME-Sender: <xms:ElebXw43cWhDS0kvSZQsKesd5uaUsqG2JdZ9Ci6nwdIG3-4FEFshWw>
+    <xme:ElebXx4hiVyJ9PzwLghwh3H2-d58sZjhZmbEM4oXheZXXIB8NbWyzy9wY0jT6NmZZ
+    X82B08DQY6xfqq8z0g>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrleeggdduiecutefuodetggdotefrodftvf
     curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
     uegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffojghfggfgsedtkeertd
@@ -48,18 +48,18 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrleeggdduiecutefuodetggdote
     ehtddufeeihfekgeeuheelnecukfhppeduieefrdduudegrddufedvrdefnecuvehluhhs
     thgvrhfuihiivgepudenucfrrghrrghmpehmrghilhhfrhhomhepsghorhhishessghurh
     drihho
-X-ME-Proxy: <xmx:D1ebX4ZxhaEroHWl787E3xiPrgpsW1f51zeAu0VgHgvlIKwomaXFyg>
-    <xmx:D1ebXzUmO8qzRFhYB7WG-rFyh50-9of0C9XfBjMGsh1iVvW37ec5Zw>
-    <xmx:D1ebX-mmoqq4EmdFlg6nBcpvszMPl1j_tbaSsoYEQeZR2t5lNn2QJw>
-    <xmx:D1ebX4RIDu1ZYl0Uf4a_Swv7g-DCI9pd4NrYtqwDj-INLZ646HbWoA>
+X-ME-Proxy: <xmx:ElebX_dlLB2kyRj7lrpvYQQbd2MzPJaSCsXdxzgktQOBWVLEnImBQg>
+    <xmx:ElebX1LAGsbXouTw6BnkT01HyA9XPNEU77aAxuEXIWBWzJ7qBCt5uw>
+    <xmx:ElebX0JTCQaz0w-wKgqu2lmFL9HuyXBeFfsiIRQh9F0zSltnhtJuyg>
+    <xmx:ElebX7kZWfTRdiA21o6zljyarhrhirMmSr7TzBVgEZB2mueFoAImww>
 Received: from localhost (unknown [163.114.132.3])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 3DA02328005E;
-        Thu, 29 Oct 2020 19:58:07 -0400 (EDT)
+        by mail.messagingengine.com (Postfix) with ESMTPA id 4A82A3280060;
+        Thu, 29 Oct 2020 19:58:10 -0400 (EDT)
 From:   Boris Burkov <boris@bur.io>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH v6 02/10] btrfs: cleanup all orphan inodes on ro->rw remount
-Date:   Thu, 29 Oct 2020 16:57:49 -0700
-Message-Id: <2e7a82b65f92bda808bdd6db19a7c84a779a70d3.1604015464.git.boris@bur.io>
+Subject: [PATCH v6 03/10] btrfs: create free space tree on ro->rw remount
+Date:   Thu, 29 Oct 2020 16:57:50 -0700
+Message-Id: <a1b60e506c13d9000bf0cf48b1374beb7e79056f.1604015464.git.boris@bur.io>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <cover.1604015464.git.boris@bur.io>
 References: <cover.1604015464.git.boris@bur.io>
@@ -69,48 +69,60 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-When we mount a rw file system, we clean the orphan inodes in the
-filesystem trees, and also on the tree_root and fs_root. However, when
-we remount a ro file system rw, we only clean the former. Move the calls
-to btrfs_orphan_cleanup() on tree_root and fs_root to the shared rw
-mount routine to effectively add them on ro->rw remount.
+When a user attempts to remount a btrfs filesystem with
+'mount -o remount,space_cache=v2', that operation silently succeeds.
+Unfortunately, this is misleading, because the remount does not create
+the free space tree. /proc/mounts will incorrectly show space_cache=v2,
+but on the next mount, the file system will revert to the old
+space_cache.
+
+For now, we handle only the easier case, where the existing mount is
+read-only and the new mount is read-write. In that case, we can create
+the free space tree without contending with the block groups changing
+as we go.
 
 Signed-off-by: Boris Burkov <boris@bur.io>
 ---
- fs/btrfs/disk-io.c | 17 ++++++++---------
- 1 file changed, 8 insertions(+), 9 deletions(-)
+ fs/btrfs/disk-io.c | 23 +++++++++++------------
+ 1 file changed, 11 insertions(+), 12 deletions(-)
 
 diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index b741a711bad5..e42548287161 100644
+index e42548287161..69a878d8cc79 100644
 --- a/fs/btrfs/disk-io.c
 +++ b/fs/btrfs/disk-io.c
-@@ -2906,6 +2906,14 @@ int btrfs_mount_rw(struct btrfs_fs_info *fs_info)
+@@ -2922,6 +2922,17 @@ int btrfs_mount_rw(struct btrfs_fs_info *fs_info)
+ 		goto out;
+ 	}
+ 
++	if (btrfs_test_opt(fs_info, FREE_SPACE_TREE) &&
++	    !btrfs_fs_compat_ro(fs_info, FREE_SPACE_TREE)) {
++		btrfs_info(fs_info, "creating free space tree");
++		ret = btrfs_create_free_space_tree(fs_info);
++		if (ret) {
++			btrfs_warn(fs_info,
++				"failed to create free space tree: %d", ret);
++			goto out;
++		}
++	}
++
+ 	ret = btrfs_resume_balance_async(fs_info);
  	if (ret)
  		goto out;
- 
-+	down_read(&fs_info->cleanup_work_sem);
-+	if ((ret = btrfs_orphan_cleanup(fs_info->fs_root)) ||
-+	    (ret = btrfs_orphan_cleanup(fs_info->tree_root))) {
-+		up_read(&fs_info->cleanup_work_sem);
-+		goto out;
-+	}
-+	up_read(&fs_info->cleanup_work_sem);
-+
- 	mutex_lock(&fs_info->cleaner_mutex);
- 	ret = btrfs_recover_relocation(fs_info->tree_root);
- 	mutex_unlock(&fs_info->cleaner_mutex);
-@@ -3388,15 +3396,6 @@ int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_device
+@@ -3384,18 +3395,6 @@ int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_device
  		}
  	}
  
--	down_read(&fs_info->cleanup_work_sem);
--	if ((ret = btrfs_orphan_cleanup(fs_info->fs_root)) ||
--	    (ret = btrfs_orphan_cleanup(fs_info->tree_root))) {
--		up_read(&fs_info->cleanup_work_sem);
--		close_ctree(fs_info);
--		return ret;
+-	if (btrfs_test_opt(fs_info, FREE_SPACE_TREE) &&
+-	    !btrfs_fs_compat_ro(fs_info, FREE_SPACE_TREE)) {
+-		btrfs_info(fs_info, "creating free space tree");
+-		ret = btrfs_create_free_space_tree(fs_info);
+-		if (ret) {
+-			btrfs_warn(fs_info,
+-				"failed to create free space tree: %d", ret);
+-			close_ctree(fs_info);
+-			return ret;
+-		}
 -	}
--	up_read(&fs_info->cleanup_work_sem);
 -
  	ret = btrfs_mount_rw(fs_info);
  	if (ret) {
