@@ -2,124 +2,114 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CE0729F457
-	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Oct 2020 19:57:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E936629F542
+	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Oct 2020 20:32:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725768AbgJ2S5l (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 29 Oct 2020 14:57:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50822 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725747AbgJ2S5k (ORCPT
+        id S1725996AbgJ2Tab (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 29 Oct 2020 15:30:31 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:44220 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725864AbgJ2Tab (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 29 Oct 2020 14:57:40 -0400
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B4BEC0613CF
-        for <linux-btrfs@vger.kernel.org>; Thu, 29 Oct 2020 11:57:39 -0700 (PDT)
-Received: by mail-io1-xd41.google.com with SMTP id k21so4674906ioa.9
-        for <linux-btrfs@vger.kernel.org>; Thu, 29 Oct 2020 11:57:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=p2li1fx+iVpWGtbhFkX+A5L8cbRcfiBG4jBMYbMNV20=;
-        b=wnCgsQ5PYGPlzKh23NDTti1W5PYU948Dw3rEF2U+MT/NvVEY6VoVgHYHlFBunidoJ6
-         RHVCoEErUFOl6cwcLwwdBjvdWcffS+uVJhq1Q+V/1lyLm6MkoC9lpwhupTbHIzWSyM1b
-         0BytMPH0Li+XWWqNSAz9Tq4OkcrOVdxZTNQL1eHgwraatSz0dteboCfDDyRjqDcp8pzL
-         4UUMnNSMArDHck5U5G4kLP/v6OSIUsqM19Puq12AVe4bf1W5LRuz0IWLPtmAuu1sq8Cd
-         1n3aFHgwpTcYtg9kOtbMom49Wshcrraq9x3j192qltgF3Z557s6jJnEkO+NMfEE+csV9
-         xY7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=p2li1fx+iVpWGtbhFkX+A5L8cbRcfiBG4jBMYbMNV20=;
-        b=fmk6Rdsr35Pue58L29b3mG9x/tYIdoYLnf7cd0rwVvqXnYaNh1dEo1+q9gmf2RunQM
-         9peGkAq+gyB+Y5jAAC+iWRG3olJ64TFHgblcTGV9Js4Uq63oBnjPjQM/3VYwsZiI1kGm
-         nGis6RFhZbNoeyz1g0nS7xrTpQRkkOztRzGhgmBxhPZwgYGkPGkQcu27TjP4jrCi9qxE
-         7CB+cHuglXSiTU72K7BJb70l/ZD3Zt0U67KeiWD8nuG078dj8b3ukcf3pkH7TgymGbVi
-         2FWsMx27epE7iEe4fecexWx3ZWaAiiVDdyR5pDrjFYJuCcN+sK3edx7xbnEvBk7Yz5pp
-         t56w==
-X-Gm-Message-State: AOAM532Dg8nb+foPudXaIT9oQDuUzMKPQ8bbAfHAinbgAT1W4OpOZZ56
-        k/gUPCWU0EW5iqC77eWNFJGMCUsXS2BblQ==
-X-Google-Smtp-Source: ABdhPJxf2bDl8gdalV0o267jrHfATM85ElmfH/9S8i1H2rYjtQqI1aTeuIBVYEgmNjspUe+E97EqtA==
-X-Received: by 2002:a02:b786:: with SMTP id f6mr4920831jam.75.1603997858211;
-        Thu, 29 Oct 2020 11:57:38 -0700 (PDT)
-Received: from ?IPv6:2620:10d:c0a8:11c1::1376? ([2620:10d:c091:480::1:18c8])
-        by smtp.gmail.com with ESMTPSA id e12sm2821641ilq.65.2020.10.29.11.57.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 29 Oct 2020 11:57:37 -0700 (PDT)
-Subject: Re: [PATCH v2 1/3] btrfs: file-item: use nodesize to determine
- whether we need readhead for btrfs_lookup_bio_sums()
-To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-References: <20201029071218.49860-1-wqu@suse.com>
- <20201029071218.49860-2-wqu@suse.com>
-From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <946ec8c3-9480-e3c3-aad7-9b97e8aedf12@toxicpanda.com>
-Date:   Thu, 29 Oct 2020 14:57:36 -0400
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.4.0
+        Thu, 29 Oct 2020 15:30:31 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09TJSjVS160596;
+        Thu, 29 Oct 2020 19:30:26 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=3oridU6T0mWFtEKztztevnuWpB0acWj+ZWAWpvwrArM=;
+ b=KJPw0Yv54Ys8tXZCZAjIWLaGT/YZ1lOQmLpqdGFbPsZWkAJ8f1BNCfCRMhNywZeXmLL3
+ EtYNVdHIpyY9hHElCs7RCYMBnrsf7aV5s9r19QXtxdtt1Y48Kjf/4qhJqcPiG+c2tRat
+ /NMThyaMhjvEF0W0TtTTuYLvbTVbyH1WWjwbL1nwhMunSTZ5PHoHr92QlKrGFoppp7Kt
+ 96SIhmxB9dk6NEvhZ1vJ2r9Yk3dhHEaFaeL5zAHcx3eKXkvMUa8eRwUE5hb27C2QJ1+8
+ SK5b4wfjx1xtB0T870W1cstJLvDVV2ZhX1npKLWETPQfQy/1mzGc2wMRwpvQiwj7bMhu Rg== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2120.oracle.com with ESMTP id 34dgm4c8gx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 29 Oct 2020 19:30:26 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09TJUKiC160118;
+        Thu, 29 Oct 2020 19:30:26 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3020.oracle.com with ESMTP id 34cx60vmf9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 29 Oct 2020 19:30:24 +0000
+Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 09TJUE20018432;
+        Thu, 29 Oct 2020 19:30:14 GMT
+Received: from [192.168.1.102] (/39.109.231.106)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 29 Oct 2020 12:30:13 -0700
+Subject: Re: [PATCH v10 3/3] btrfs: create read policy sysfs attribute, pid
+To:     dsterba@suse.cz, linux-btrfs@vger.kernel.org,
+        Josef Bacik <josef@toxicpanda.com>
+References: <cover.1603884513.git.anand.jain@oracle.com>
+ <52a41497534bdaa301adc57d61ea3632ab65f2c6.1603884513.git.anand.jain@oracle.com>
+ <20201029164535.GO6756@twin.jikos.cz>
+From:   Anand Jain <anand.jain@oracle.com>
+Message-ID: <a74b6fdd-55dc-e890-78df-c19d0430b4a2@oracle.com>
+Date:   Fri, 30 Oct 2020 03:30:10 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-In-Reply-To: <20201029071218.49860-2-wqu@suse.com>
+In-Reply-To: <20201029164535.GO6756@twin.jikos.cz>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9789 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxscore=0 mlxlogscore=999
+ suspectscore=0 bulkscore=0 malwarescore=0 spamscore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2010290133
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9789 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 impostorscore=0
+ adultscore=0 bulkscore=0 spamscore=0 phishscore=0 mlxlogscore=999
+ suspectscore=0 clxscore=1015 mlxscore=0 malwarescore=0 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2010290133
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 10/29/20 3:12 AM, Qu Wenruo wrote:
-> In btrfs_lookup_bio_sums() if the bio is pretty large, we want to
-> readahead the csum tree.
-> 
-> However the threshold is an immediate number, (PAGE_SIZE * 8), from the
-> initial btrfs merge.
-> 
-> The value itself is pretty hard to guess the meaning, especially when
-> the immediate number is from the age where 4K sectorsize is the default
-> and only CRC32 is supported.
-> 
-> For the most common btrfs setup, CRC32 csum algorithme 4K sectorsize,
-> it means just 32K read would kick readahead, while the csum itself is
-> only 32 bytes in size.
-> 
-> Now let's be more reasonable by taking both csum size and node size into
-> consideration.
-> 
-> If the csum size for the bio is larger than one node, then we kick the
-> readahead.
-> This means for current default btrfs, the threshold will be 16M.
-> 
-> This change should not change performance observably, thus this is mostly
-> a readability enhancement.
-> 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> ---
->   fs/btrfs/file-item.c | 6 +++++-
->   1 file changed, 5 insertions(+), 1 deletion(-)
-> 
-> diff --git a/fs/btrfs/file-item.c b/fs/btrfs/file-item.c
-> index 7d5ec71615b8..fbc60948b2c4 100644
-> --- a/fs/btrfs/file-item.c
-> +++ b/fs/btrfs/file-item.c
-> @@ -295,7 +295,11 @@ blk_status_t btrfs_lookup_bio_sums(struct inode *inode, struct bio *bio,
->   		csum = dst;
->   	}
->   
-> -	if (bio->bi_iter.bi_size > PAGE_SIZE * 8)
-> +	/*
-> +	 * If needed csum size is larger than a node, kick the readahead for
-> +	 * csum tree would be a good idea.
-> +	 */
-> +	if (nblocks * csum_size > fs_info->nodesize)
->   		path->reada = READA_FORWARD;
 
-Except if we have contiguous reads we could very well have all of our csums in a 
-single item.  It makes more sense to do something like
 
-if (nblocks * csum_size > MAX_CSUM_ITEMS() * csum_size)
+On 30/10/20 12:45 am, David Sterba wrote:
+> On Wed, Oct 28, 2020 at 09:14:47PM +0800, Anand Jain wrote:
+>> +static ssize_t btrfs_read_policy_store(struct kobject *kobj,
+>> +				       struct kobj_attribute *a,
+>> +				       const char *buf, size_t len)
+>> +{
+>> +	int i;
+>> +	struct btrfs_fs_devices *fs_devices = to_fs_devs(kobj);
+>> +
+>> +	for (i = 0; i < BTRFS_NR_READ_POLICY; i++) {
+>> +		if (btrfs_strmatch(buf, btrfs_read_policy_name[i])) {
+> 
+> Does sysfs guarantee that the buf is nul terminated string or that it
+> contains a null at all? Because if not, the skip_space step of strmatch
+> could run out of the buffer.
+> 
 
-so that we're only readahead'ing when we're likely to need to look up multiple 
-items.  Thanks,
+It does
 
-Josef
+[  173.555507]  ? btrfs_read_policy_store+0x3e/0x12d [btrfs]
+[  173.555541]  ? kobj_attr_store+0x16/0x30
+[  173.555562]  ? sysfs_kf_write+0x54/0x80
+[  173.555582]  ? kernfs_fop_write+0xfa/0x290
+[  173.555611]  ? vfs_write+0xee/0x2f0
+[  173.555641]  ? ksys_write+0x80/0x170
+[  173.555671]  ? __x64_sys_write+0x1e/0x30
+[  173.555692]  ? do_syscall_64+0x4b/0x80
+[  173.555708]  ? entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+
+static ssize_t kernfs_fop_write(struct file *file, const char __user 
+*user_buf,
+                                 size_t count, loff_t *ppos)
+{
+::
+         buf[len] = '\0';        /* guarantee string termination */
+
+
+Thanks, Anand
