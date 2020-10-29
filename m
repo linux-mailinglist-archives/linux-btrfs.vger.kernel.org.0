@@ -2,176 +2,293 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1159229F94C
-	for <lists+linux-btrfs@lfdr.de>; Fri, 30 Oct 2020 00:58:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA1B929F94D
+	for <lists+linux-btrfs@lfdr.de>; Fri, 30 Oct 2020 00:58:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725849AbgJ2X6D (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 29 Oct 2020 19:58:03 -0400
-Received: from out1-smtp.messagingengine.com ([66.111.4.25]:48939 "EHLO
+        id S1725881AbgJ2X6G (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 29 Oct 2020 19:58:06 -0400
+Received: from out1-smtp.messagingengine.com ([66.111.4.25]:40221 "EHLO
         out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725372AbgJ2X6C (ORCPT
+        by vger.kernel.org with ESMTP id S1725372AbgJ2X6G (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 29 Oct 2020 19:58:02 -0400
+        Thu, 29 Oct 2020 19:58:06 -0400
 Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailout.nyi.internal (Postfix) with ESMTP id 65ED35C00DD;
-        Thu, 29 Oct 2020 19:58:01 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Thu, 29 Oct 2020 19:58:01 -0400
+        by mailout.nyi.internal (Postfix) with ESMTP id B0C885C00AE;
+        Thu, 29 Oct 2020 19:58:04 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute2.internal (MEProxy); Thu, 29 Oct 2020 19:58:04 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=from
-        :to:subject:date:message-id:mime-version
-        :content-transfer-encoding; s=fm2; bh=yh6veElIUoQL5dMqY16CKuI2sO
-        d8qa7KgVTulaF/p9A=; b=AdjzcOh790r5BBiwyww6IZyCEpo/ETL6WU30FK6F6b
-        8ulL+hULbKQ4I4LViyoJCveHs4qXw7KibNObCFk7gU/HL8cGxLdif2hiLJCs+Ps2
-        HcMBZeqPcXbGJxzCJogdMNa4+dhyjf2Y9uL2a7Zd/UR61l0efQ/25bR6T+QTCtbH
-        LKrVx9a5eTs5hS86UITZe+4HIy0B4KVEs92phxm134rBBXrWVrrWozct1AVFQd8i
-        i/rOJ9iOJLkTtLSX8ue68//F3XjmviesjYQOZQBNgrwzPnhu3ZOYxdZ19TyTNDS5
-        6LxQsV7Up67p7Y2WqMm9wROcys3oz+95RiW8+8EgJv6w==
+        :to:subject:date:message-id:in-reply-to:references:mime-version
+        :content-transfer-encoding; s=fm2; bh=ZuO/DuznAXTj6dUlvuHz0gK2qR
+        fZJCIo5KHjwpqzhoE=; b=OwInHmBDt8339JjLXaLL0gdlrXq8t0jkb59b8CXBfV
+        LSM16e5Eq/yWpBcTSHr5qrIeBotGVftuBSqWfQ0x+3KKY1Cvh0XO3Li2ColBHbPU
+        iNXivTfzVRixWiW0lKfr5xFEtXPKLJQvXw65YqZxD93W13cAtnEtr10ojmZlf23A
+        GSbS7FhdTJy8hxmgav1+xBX7rr4PzAgJ+5jvaH8ueyBn2GUMjsDLYkh5q55WnL94
+        fu+pC9gybVqFR6WReUMpOW8ozTFqp5u38I9bmwE+gb0RPxi729F9IU0vRwcQUIER
+        e/khU6OoKj6GDU56/XWkslKD4a3OhPtWIWjkpfDYE42A==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=content-transfer-encoding:date:from
-        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=yh6veElIUoQL5dMqY
-        16CKuI2sOd8qa7KgVTulaF/p9A=; b=IfcQKAMrcydjlSBnYOfbwih5oWG54sUa2
-        oIUUhS97165jAYOfaijYUkZkqNN3mBuiHT1Z6LPMa036z+vHq4pyZokGAB5LYwXy
-        GJmBQ9B/arGlKw4pipgeNtyIWL7LywAm1H3xm8LhDmsCLGqQ2ho2aODADsKR1kmz
-        Zo5aZ/h+WDkFssoX7tAx01Ky9aJvu193nOHMhZL1hsG9i13rXyOBW8e8k6yaNTtq
-        /NtRPAUiTg4MS2FvBLI2McL71VeJX8whqDpEk/n1MipPH1nyS99H5SIArUVbyTvl
-        HWlHj/lcG5LFtPn01kvSY/qxvbIiBA/20YhdcDTClfIw5j+WkCMbg==
-X-ME-Sender: <xms:CVebX7yKMt4Pu2ZUZyKuG6LPROjsM-YC4AGBE47qeZ8KGu3uOi68iA>
-    <xme:CVebXzQWcDm_BxySJv9AYakyYltG-RG-zI1e-XMLnwTWLjA16fboWk5Ei-DQ2QAdh
-    LihFZWoOWllU5F-kXY>
+        :in-reply-to:message-id:mime-version:references:subject:to
+        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+        fm1; bh=ZuO/DuznAXTj6dUlvuHz0gK2qRfZJCIo5KHjwpqzhoE=; b=F+XiRsE6
+        G2Ch3ifvx1WK1sCNFoW2OreKLx502aD0FnR6bT78EPj3BP111lFj75PancZxEQMM
+        f9gfTsTwpOpyGCvsy4EmGDwFVWbR2WtwQjBzSG+Lxnd40gb3tOAcjMD4NGu6Nen2
+        heRczwudLXyFgpjYo+UAtELNMCAI4fQ/3oS83tcqYFEnUiImoWz8TFwNejD5zdv0
+        Bx70zMp1fAGMVojqcfxwInJFGNcsME3aQzHVMNh3N0xe+9IJhyHUabxgLDhtqV9O
+        QACdvr2Ahbznv6b320UjphRgZqOYjCHsIARkJIhCxvEqyHqEYgaiIsswCeUKTHxM
+        PfGLm0UgfUPRJg==
+X-ME-Sender: <xms:DFebXwa3aegL58MJUPDi1zAugLNntIZOv7GDOD3dEGb82YcyrzZjzA>
+    <xme:DFebX7Zt8CQmPwWTVXHihjAl3aqFXRSvY67pJGaxibKVxRZoQynqP6gNsZeooWcJW
+    U-Vd6yJyQX5bYl82kI>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrleeggdduiecutefuodetggdotefrodftvf
     curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffoggfgsedtkeertdertd
-    dtnecuhfhrohhmpeeuohhrihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhioheq
-    necuggftrfgrthhtvghrnhepudeitdelueeijeefleffveelieefgfejjeeigeekuddute
-    efkefffeethfdvjeevnecukfhppeduieefrdduudegrddufedvrdefnecuvehluhhsthgv
-    rhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsghorhhishessghurhdrih
-    ho
-X-ME-Proxy: <xmx:CVebX1WE_K_TjAACBxTNr8BJBsPT6HFht2lc9dOj4aopfKzLH2dK8Q>
-    <xmx:CVebX1giqMZUEsjFFrMSiw1o7bcNHyvhiRjlKPYwQg1PIlfSnEaMXw>
-    <xmx:CVebX9Bz1dmmr7bAm36KlZ5EA6SC40thLNQy1mHh3Ra4M3yQa69CEA>
-    <xmx:CVebX49bhfafJaOxWkND-hge7x6huCitiNF3pBNMTTbtsialXUyI0A>
+    uegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffojghfggfgsedtkeertd
+    ertddtnecuhfhrohhmpeeuohhrihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhi
+    oheqnecuggftrfgrthhtvghrnhepieeuffeuvdeiueejhfehiefgkeevudejjeejffevvd
+    ehtddufeeihfekgeeuheelnecukfhppeduieefrdduudegrddufedvrdefnecuvehluhhs
+    thgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsghorhhishessghurh
+    drihho
+X-ME-Proxy: <xmx:DFebX6-SGKxouR3xCMwUxyR6BNIL6aI52cEjN0a-uOC5G_xUzVsAhg>
+    <xmx:DFebX6oad5qOeRHXzMHK5LSvOrqc5hdhhGnnEpjcu638-7l4K44Y_w>
+    <xmx:DFebX7rapgNAhHr9tSpnNOJRbsdEmHAbljtzh86ziMkzrONcyzeRiA>
+    <xmx:DFebX1FhNGwksAQk7bnevoC_OU2eDpHgaBS9y_9rgUWEysZkitc6hw>
 Received: from localhost (unknown [163.114.132.3])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 8C94E328005E;
-        Thu, 29 Oct 2020 19:58:00 -0400 (EDT)
+        by mail.messagingengine.com (Postfix) with ESMTPA id EF4103064682;
+        Thu, 29 Oct 2020 19:58:03 -0400 (EDT)
 From:   Boris Burkov <boris@bur.io>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH v6 00/10] btrfs: free space tree mounting fixes
-Date:   Thu, 29 Oct 2020 16:57:47 -0700
-Message-Id: <cover.1604015464.git.boris@bur.io>
+Subject: [PATCH v6 01/10] btrfs: lift rw mount setup from mount and remount
+Date:   Thu, 29 Oct 2020 16:57:48 -0700
+Message-Id: <30c4efc1374a7e894e25fafb2de5781d3093519f.1604015464.git.boris@bur.io>
 X-Mailer: git-send-email 2.24.1
+In-Reply-To: <cover.1604015464.git.boris@bur.io>
+References: <cover.1604015464.git.boris@bur.io>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This patch set cleans up issues surrounding enabling and disabling various
-free space cache features and their reporting in /proc/mounts.  Because the
-improvements became somewhat complex, the series starts by lifting rw mount
-logic into a single place.
+Mounting rw and remounting from ro to rw naturally share invariants and
+functionality which result in a correctly setup rw filesystem. Luckily,
+there is even a strong unity in the code which implements them. In
+mount's open_ctree, these operations mostly happen after an early return
+for ro file systems, and in remount, they happen in a section devoted to
+remounting ro->rw, after some remount specific validation passes.
 
-The first patch is a setup patch that unifies very similar logic between a
-normal rw mount and a ro->rw remount. This is a useful setup step for adding
-more functionality to ro->rw remounts.
+However, there are unfortunately a few differences. There are small
+deviations in the order of some of the operations, remount does not
+cleanup orphan inodes in root_tree or fs_tree, remount does not create
+the free space tree, and remount does not handle "one-shot" mount
+options like clear_cache and uuid tree rescan.
 
-The second patch fixes the omission of orphan inode cleanup on a few trees
-during ro->rw remount.
+Since we want to add building the free space tree to remount, and since
+it is possible to leak orphans on a filesystem mounted as ro then
+remounted rw (common for the root filesystem when booting), we would
+benefit from unifying the logic between the two codepaths.
 
-The third patch adds enabling the free space tree to ro->rw remount.
+This patch only lifts the existing common functionality, and leaves a
+natural path for fixing the discrepancies.
 
-The fourth patch adds a method for clearing oneshot mount options after mount.
+Signed-off-by: Boris Burkov <boris@bur.io>
+---
+ fs/btrfs/disk-io.c | 91 ++++++++++++++++++++++++++--------------------
+ fs/btrfs/disk-io.h |  1 +
+ fs/btrfs/super.c   | 37 +++----------------
+ 3 files changed, 59 insertions(+), 70 deletions(-)
 
-The fifth patch adds support for clearing the free space tree on ro->rw remount.
-
-The sixth patch sets up for more accurate /proc/mounts by ensuring that
-cache_generation > 0 iff space_cache is enabled.
-
-The seventh patch is the more accurate /proc/mounts logic.
-
-The eighth patch is a convenience kernel message that complains when we skip
-changing the free space tree on remount.
-
-The ninth patch removes the space cache v1 free space item and free space
-inodes when space cache v1 is disabled (nospace_cache or space_cache=v2).
-
-The tenth patch stops re-creating the free space objects when we are not
-using space_cache=v1
-
-changes for v6:
-Rebase all patches on newer misc-next
-Patch 1/10: Fix unnecessary re-ordering of discard resume and most of mount_rw.
-Patch 2/10: No change.
-Patch 3/10: No change.
-Patch 4/10: Handle unclean rebase.
-Patch 5/10: No change.
-Patch 6/10: No change.
-Patch 7/10: No change.
-Patch 8/10: No change.
-Patch 9/10: No change.
-Patch 10/10: No change.
-
-changes for v5:
-Patch 1/10: No change.
-Patch 2/10: No change.
-Patch 3/10: No change.
-Patch 4/10: New.
-Patch 5/10: New.
-Patch 6/10: Handles remounts for no<->v1. Was Patch 4.
-Patch 7/10: No change. Was Patch 5
-Patch 8/10: Warns/undoes flags on skipped clear as well as skipped create.
-            Was Patch 6.
-Patch 9/10: No change. Was Patch 7.
-Patch 10/10: No change. Was Patch 8.
-
-changes for v4:
-Patch 1/8: New
-Patch 2/8: New
-Patch 3/8: (was Patch 1) Made much simpler by lifting of Patch 1. Simply add
-           free space tree creation to lifted rw mount logic.
-Patch 4/8: Split out from old Patch 2. Add an fs_info flag to avoid surprises
-           when a different transaction updates the cache_generation.
-Patch 5/8: Split out from old Patch 2, but no change logically.
-Patch 6/8: Split out from old Patch 1. Formatting fixes.
-Patch 7/8: (was Patch 3) Rely on delayed_iput running after orphan cleanup
-           (setup in patch 2) to pull iputs out of mount path, per review.
-Patch 8/8: No change.
-
-changes for v3:
-Patch 1/4: Change failure to warning logging.
-Patch 2/4: New; fixes mount option printing.
-Patch 3/4: Fix orphan inode vs. delayed iput bug, change remove function
-           to take inode as a sink.
-Patch 4/4: No changes.
-
-changes for v2:
-Patch 1/3: made remount _only_ work in ro->rw case, added comment.
-Patch 2/3: added btrfs_ prefix to non-static function, removed bad
-           whitespace.
-
-
-Boris Burkov (10):
-  btrfs: lift rw mount setup from mount and remount
-  btrfs: cleanup all orphan inodes on ro->rw remount
-  btrfs: create free space tree on ro->rw remount
-  btrfs: clear oneshot options on mount and remount
-  btrfs: clear free space tree on ro->rw remount
-  btrfs: keep sb cache_generation consistent with space_cache
-  btrfs: use sb state to print space_cache mount option
-  btrfs: warn when remount will not change the free space tree
-  btrfs: remove free space items when disabling space cache v1
-  btrfs: skip space_cache v1 setup when not using it
-
- fs/btrfs/block-group.c      |  42 +-------
- fs/btrfs/ctree.h            |   3 +
- fs/btrfs/disk-io.c          | 195 +++++++++++++++++++++---------------
- fs/btrfs/disk-io.h          |   2 +
- fs/btrfs/free-space-cache.c | 121 ++++++++++++++++++++++
- fs/btrfs/free-space-cache.h |   6 ++
- fs/btrfs/super.c            |  70 +++++++------
- fs/btrfs/transaction.c      |   2 +
- 8 files changed, 286 insertions(+), 155 deletions(-)
-
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index 601a7ab2adb4..b741a711bad5 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -2894,6 +2894,53 @@ static int btrfs_check_uuid_tree(struct btrfs_fs_info *fs_info)
+ 	return 0;
+ }
+ 
++/*
++ * Mounting logic specific to read-write file systems. Shared by open_ctree
++ * and btrfs_remount when remounting from read-only to read-write.
++ */
++int btrfs_mount_rw(struct btrfs_fs_info *fs_info)
++{
++	int ret;
++
++	ret = btrfs_cleanup_fs_roots(fs_info);
++	if (ret)
++		goto out;
++
++	mutex_lock(&fs_info->cleaner_mutex);
++	ret = btrfs_recover_relocation(fs_info->tree_root);
++	mutex_unlock(&fs_info->cleaner_mutex);
++	if (ret < 0) {
++		btrfs_warn(fs_info, "failed to recover relocation: %d", ret);
++		goto out;
++	}
++
++	ret = btrfs_resume_balance_async(fs_info);
++	if (ret)
++		goto out;
++
++	ret = btrfs_resume_dev_replace_async(fs_info);
++	if (ret) {
++		btrfs_warn(fs_info, "failed to resume dev_replace");
++		goto out;
++	}
++
++	btrfs_qgroup_rescan_resume(fs_info);
++
++	if (!fs_info->uuid_root) {
++		btrfs_info(fs_info, "creating UUID tree");
++		ret = btrfs_create_uuid_tree(fs_info);
++		if (ret) {
++			btrfs_warn(fs_info,
++				   "failed to create the UUID tree %d",
++				   ret);
++			goto out;
++		}
++	}
++
++out:
++	return ret;
++}
++
+ int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_devices,
+ 		      char *options)
+ {
+@@ -3298,22 +3345,6 @@ int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_device
+ 	if (ret)
+ 		goto fail_qgroup;
+ 
+-	if (!sb_rdonly(sb)) {
+-		ret = btrfs_cleanup_fs_roots(fs_info);
+-		if (ret)
+-			goto fail_qgroup;
+-
+-		mutex_lock(&fs_info->cleaner_mutex);
+-		ret = btrfs_recover_relocation(tree_root);
+-		mutex_unlock(&fs_info->cleaner_mutex);
+-		if (ret < 0) {
+-			btrfs_warn(fs_info, "failed to recover relocation: %d",
+-					ret);
+-			err = -EINVAL;
+-			goto fail_qgroup;
+-		}
+-	}
+-
+ 	fs_info->fs_root = btrfs_get_fs_root(fs_info, BTRFS_FS_TREE_OBJECTID, true);
+ 	if (IS_ERR(fs_info->fs_root)) {
+ 		err = PTR_ERR(fs_info->fs_root);
+@@ -3366,35 +3397,17 @@ int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_device
+ 	}
+ 	up_read(&fs_info->cleanup_work_sem);
+ 
+-	ret = btrfs_resume_balance_async(fs_info);
+-	if (ret) {
+-		btrfs_warn(fs_info, "failed to resume balance: %d", ret);
+-		close_ctree(fs_info);
+-		return ret;
+-	}
+-
+-	ret = btrfs_resume_dev_replace_async(fs_info);
++	ret = btrfs_mount_rw(fs_info);
+ 	if (ret) {
+-		btrfs_warn(fs_info, "failed to resume device replace: %d", ret);
+ 		close_ctree(fs_info);
+ 		return ret;
+ 	}
+-
+-	btrfs_qgroup_rescan_resume(fs_info);
+ 	btrfs_discard_resume(fs_info);
+ 
+-	if (!fs_info->uuid_root) {
+-		btrfs_info(fs_info, "creating UUID tree");
+-		ret = btrfs_create_uuid_tree(fs_info);
+-		if (ret) {
+-			btrfs_warn(fs_info,
+-				"failed to create the UUID tree: %d", ret);
+-			close_ctree(fs_info);
+-			return ret;
+-		}
+-	} else if (btrfs_test_opt(fs_info, RESCAN_UUID_TREE) ||
+-		   fs_info->generation !=
+-				btrfs_super_uuid_tree_generation(disk_super)) {
++	if (fs_info->uuid_root &&
++	    (btrfs_test_opt(fs_info, RESCAN_UUID_TREE) ||
++	     fs_info->generation !=
++			btrfs_super_uuid_tree_generation(disk_super))) {
+ 		btrfs_info(fs_info, "checking UUID tree");
+ 		ret = btrfs_check_uuid_tree(fs_info);
+ 		if (ret) {
+diff --git a/fs/btrfs/disk-io.h b/fs/btrfs/disk-io.h
+index 182540bdcea0..a4e6cdbe3a48 100644
+--- a/fs/btrfs/disk-io.h
++++ b/fs/btrfs/disk-io.h
+@@ -50,6 +50,7 @@ struct extent_buffer *btrfs_find_create_tree_block(
+ 						struct btrfs_fs_info *fs_info,
+ 						u64 bytenr);
+ void btrfs_clean_tree_block(struct extent_buffer *buf);
++int btrfs_mount_rw(struct btrfs_fs_info *fs_info);
+ int __cold open_ctree(struct super_block *sb,
+ 	       struct btrfs_fs_devices *fs_devices,
+ 	       char *options);
+diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
+index 1ffa50bae1dd..22299fc13b6d 100644
+--- a/fs/btrfs/super.c
++++ b/fs/btrfs/super.c
+@@ -1880,7 +1880,6 @@ static inline void btrfs_remount_cleanup(struct btrfs_fs_info *fs_info,
+ static int btrfs_remount(struct super_block *sb, int *flags, char *data)
+ {
+ 	struct btrfs_fs_info *fs_info = btrfs_sb(sb);
+-	struct btrfs_root *root = fs_info->tree_root;
+ 	unsigned old_flags = sb->s_flags;
+ 	unsigned long old_opts = fs_info->mount_opt;
+ 	unsigned long old_compress_type = fs_info->compress_type;
+@@ -1973,39 +1972,15 @@ static int btrfs_remount(struct super_block *sb, int *flags, char *data)
+ 			goto restore;
+ 		}
+ 
+-		ret = btrfs_cleanup_fs_roots(fs_info);
+-		if (ret)
+-			goto restore;
+-
+-		/* recover relocation */
+-		mutex_lock(&fs_info->cleaner_mutex);
+-		ret = btrfs_recover_relocation(root);
+-		mutex_unlock(&fs_info->cleaner_mutex);
+-		if (ret)
+-			goto restore;
+-
+-		ret = btrfs_resume_balance_async(fs_info);
++		/*
++		 * NOTE: when remounting with a change that does writes, don't
++		 * put it anywhere above this point, as we are not sure to be
++		 * safe to write until we pass the above checks.
++		 */
++		ret = btrfs_mount_rw(fs_info);
+ 		if (ret)
+ 			goto restore;
+ 
+-		ret = btrfs_resume_dev_replace_async(fs_info);
+-		if (ret) {
+-			btrfs_warn(fs_info, "failed to resume dev_replace");
+-			goto restore;
+-		}
+-
+-		btrfs_qgroup_rescan_resume(fs_info);
+-
+-		if (!fs_info->uuid_root) {
+-			btrfs_info(fs_info, "creating UUID tree");
+-			ret = btrfs_create_uuid_tree(fs_info);
+-			if (ret) {
+-				btrfs_warn(fs_info,
+-					   "failed to create the UUID tree %d",
+-					   ret);
+-				goto restore;
+-			}
+-		}
+ 		sb->s_flags &= ~SB_RDONLY;
+ 
+ 		set_bit(BTRFS_FS_OPEN, &fs_info->flags);
 -- 
 2.24.1
 
