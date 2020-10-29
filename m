@@ -2,104 +2,89 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D25D29E3EE
+	by mail.lfdr.de (Postfix) with ESMTP id 1061C29E3ED
 	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Oct 2020 08:24:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726665AbgJ2HXn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        id S1726655AbgJ2HXn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
         Thu, 29 Oct 2020 03:23:43 -0400
-Received: from mx2.suse.de ([195.135.220.15]:39186 "EHLO mx2.suse.de"
+Received: from mx2.suse.de ([195.135.220.15]:39160 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726041AbgJ2HXn (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 29 Oct 2020 03:23:43 -0400
+        id S1725904AbgJ2HXm (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 29 Oct 2020 03:23:42 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1603955544;
+        t=1603955546;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=O29KyhZHBatvsACMkGwT7zhnsOalLk8TW1HmD6aCzHQ=;
-        b=PSXwnSU/Dm3ByPCJLfzCxtDCG4yVTOlhWC3PymmLsNIx0vhXMypTWC6UzWMgmGphqC3sno
-        utDu4WZpHRallAir2gJa9zLiDAqyzHK2ZMzL41fgQX8ujhMMt4PpM6LkVrC+gkWhc9nTpv
-        nD7mrTYe3JCl85R7DJxtIpM5E2ji5k4=
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=sSxAAiojQg4WtgUjngHPfBfxoieX0dE2a75p6+YQCzQ=;
+        b=Lgj875w1KZbhPda6QTYqOvnnov3j2VV3E5OOZ7/Wip2aaTzZWHvxIt0d07RCnm9dJwZj85
+        34xY9xoikUFd1R4KWd2diB55wCsIxLT1nn3Nkbes5mSNuFF9BbZUXEI00S4A6MltfP/Ga+
+        RDVKoBwH8JT04Lp1qpX55UJtH4Ebn5o=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 5916EACA3
-        for <linux-btrfs@vger.kernel.org>; Thu, 29 Oct 2020 07:12:24 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 14E8AABF5
+        for <linux-btrfs@vger.kernel.org>; Thu, 29 Oct 2020 07:12:26 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 0/3] btrfs: btrfs_lookup_bio_sums() related fixes
-Date:   Thu, 29 Oct 2020 15:12:15 +0800
-Message-Id: <20201029071218.49860-1-wqu@suse.com>
+Subject: [PATCH v2 1/3] btrfs: file-item: use nodesize to determine whether we need readhead for btrfs_lookup_bio_sums()
+Date:   Thu, 29 Oct 2020 15:12:16 +0800
+Message-Id: <20201029071218.49860-2-wqu@suse.com>
 X-Mailer: git-send-email 2.29.1
+In-Reply-To: <20201029071218.49860-1-wqu@suse.com>
+References: <20201029071218.49860-1-wqu@suse.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is the final piece to make subpage read/write patchset to pass all
-fsstress tests.
+In btrfs_lookup_bio_sums() if the bio is pretty large, we want to
+readahead the csum tree.
 
-Before this 3 patches, there is a very low chance to hit the following
-errors:
-- False bad data csum error
-  The expected csum is alwasy 0x00000000, which should represents
-  something.
+However the threshold is an immediate number, (PAGE_SIZE * 8), from the
+initial btrfs merge.
 
-- WARN_ON_ONCE(count) hit
-  Something is definitely wrong in btrfs_lookup_bio_sums().
+The value itself is pretty hard to guess the meaning, especially when
+the immediate number is from the age where 4K sectorsize is the default
+and only CRC32 is supported.
 
-After more debugging, even on X86_64, there is definitely something to
-notice, the most important thing is, the bvec in btrfs_lookup_bio_sums()
-is not always in linear bytenr order:
+For the most common btrfs setup, CRC32 csum algorithme 4K sectorsize,
+it means just 32K read would kick readahead, while the csum itself is
+only 32 bytes in size.
 
-  btrfs_lookup_bio_sums: file_offset=-1 expected_bvec_offset=532480 page_offset=716800 bv_offset=0
-  btrfs_lookup_bio_sums: orig_file_offset=520192 bvec_index=3 root=259 ino=260 page_owner_ino=260
+Now let's be more reasonable by taking both csum size and node size into
+consideration.
 
-This is from x86_64 run, with extra debug info from the
-bio_for_each_segment() loop.
+If the csum size for the bio is larger than one node, then we kick the
+readahead.
+This means for current default btrfs, the threshold will be 16M.
 
-It turns out that, bio can be merged as long as their disk_bytenr can be
-merged, no need for their page offset to be adjacent.
-This means, the file_offset in btrfs_lookup_bio_sums() doesn't make much
-sense.
+This change should not change performance observably, thus this is mostly
+a readability enhancement.
 
-To address the problem, the 3rd patch is introduced to do bio unrelated
-csum search.
-This does not only simplify the main loop (just one small main loop),
-but also free us from the out-of-order bvec problems.
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ fs/btrfs/file-item.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-The other two patches are mostly small enhancement found during the
-development.
-
-With the patchset, the subpage can survive infinite fsstress
-run and the regular page size case can still pass all existing fstests.
-
-Since it has nothing special to subpage at all, and by nature they are
-mostly renames and refactor, they can be submitted right now, with or
-without subpage patches.
-
-Changelog:
-v2:
-- Remove the @file_offset parameter completely
-- Remove btrfs_find_ordered_sum() completely
-- Introduce data reloc inode specific file_offset lookup.
-
-Qu Wenruo (3):
-  btrfs: file-item: use nodesize to determine whether we need readhead
-    for btrfs_lookup_bio_sums()
-  btrfs: file-item: remove the btrfs_find_ordered_sum() call in
-    btrfs_lookup_bio_sums()
-  btrfs: file-item: refactor btrfs_lookup_bio_sums() to handle
-    out-of-order bvecs
-
- fs/btrfs/compression.c  |   4 +-
- fs/btrfs/ctree.h        |   2 +-
- fs/btrfs/file-item.c    | 274 ++++++++++++++++++++++++++--------------
- fs/btrfs/inode.c        |   5 +-
- fs/btrfs/ordered-data.c |  46 -------
- fs/btrfs/ordered-data.h |   2 -
- 6 files changed, 185 insertions(+), 148 deletions(-)
-
+diff --git a/fs/btrfs/file-item.c b/fs/btrfs/file-item.c
+index 7d5ec71615b8..fbc60948b2c4 100644
+--- a/fs/btrfs/file-item.c
++++ b/fs/btrfs/file-item.c
+@@ -295,7 +295,11 @@ blk_status_t btrfs_lookup_bio_sums(struct inode *inode, struct bio *bio,
+ 		csum = dst;
+ 	}
+ 
+-	if (bio->bi_iter.bi_size > PAGE_SIZE * 8)
++	/*
++	 * If needed csum size is larger than a node, kick the readahead for
++	 * csum tree would be a good idea.
++	 */
++	if (nblocks * csum_size > fs_info->nodesize)
+ 		path->reada = READA_FORWARD;
+ 
+ 	/*
 -- 
 2.29.1
 
