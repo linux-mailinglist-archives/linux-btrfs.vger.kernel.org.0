@@ -2,434 +2,181 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55D8029E217
-	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Oct 2020 03:06:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DB8129E221
+	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Oct 2020 03:11:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727065AbgJ2CFt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 28 Oct 2020 22:05:49 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:47080 "EHLO
+        id S1726951AbgJ2CJe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 28 Oct 2020 22:09:34 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:49660 "EHLO
         aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727069AbgJ1ViH (ORCPT
+        with ESMTP id S1727100AbgJ2CI3 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 28 Oct 2020 17:38:07 -0400
+        Wed, 28 Oct 2020 22:08:29 -0400
 Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09SDJKtG078535;
-        Wed, 28 Oct 2020 13:26:26 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding;
- s=corp-2020-01-29; bh=yhL5CAL9LT94yQPLBhueHOKKx2wAHjLKZizJaj+mDLg=;
- b=n/4BlmtqiAeTRoi4CFHsWwADHs35Iaq7skTXUhfNx5lNtt+Bp6eV+DQZ+JRrGkyITHrc
- Xij66g6oni+frgZTKdgk08fBzmdXdN8A8Tb4TXLoYgGYhoIwiqevgm84QEgFMtWz3vxV
- YcWKsQybPvIGvQdZX+FUdwRPqnIygxl/C6F5uCYx0grXNWuw1y8nHXBiV6XDqnLPkeDI
- YKFC+zGsC3FaFB7WH1rCuxoD0+AJPZVLZfX/lBbfdgFVLY08KvAbyIP4Wn06qP97p3OB
- TyTFAspVP3fY+XG3H50kGaofk836K+6IOap2pTakCHW5tdwv5c2/s6QW3ffmOB8DQKBp Ew== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2120.oracle.com with ESMTP id 34cc7kych2-1
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09T26SS8143373;
+        Thu, 29 Oct 2020 02:08:24 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=1CB5bHVYAp+K5FgfmxOkGiMgYqUK1KoIgsLFkDJEwlI=;
+ b=RR2a2c7rLm18qWXjiwP07kVCMH7r3/zzgn6ToGeztO9j7lkIBDaLhp/uqy7Pf4mO46XC
+ NLyCGUiaI56QpkeFqMt235xMspHnZLXUmmnb9lT32fcnkCPC/Xy3D4yDRQp/mOYonVJ2
+ 6C13v5HfBfb5Z1UMoYWeTGh+EGR7+wT2txsV7y3FX49fl4FzoQsPm5atiOVRkjEXQpLO
+ Ia31FfC8TKtBjpGRUNcBf52PIkTOou5eK8KX77NxWbJvitzYaYqbdLItII40nKmWzt7E
+ nhAcilnogiOM9DvLOfa9+XjbHjP5pOihWhm8Deua+c4js3x31+J6vTeAikf/WnYqcnyj tA== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2120.oracle.com with ESMTP id 34cc7m2eva-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 28 Oct 2020 13:26:25 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09SDPMPo031122;
-        Wed, 28 Oct 2020 13:26:25 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3030.oracle.com with ESMTP id 34cx6x7t16-1
+        Thu, 29 Oct 2020 02:08:24 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09T26MSi005360;
+        Thu, 29 Oct 2020 02:06:23 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3020.oracle.com with ESMTP id 34cx1sp8yf-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 28 Oct 2020 13:26:25 +0000
-Received: from abhmp0016.oracle.com (abhmp0016.oracle.com [141.146.116.22])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 09SDQOQT011660;
-        Wed, 28 Oct 2020 13:26:24 GMT
-Received: from localhost.localdomain (/39.109.231.106)
+        Thu, 29 Oct 2020 02:06:23 +0000
+Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 09T26CD8028040;
+        Thu, 29 Oct 2020 02:06:12 GMT
+Received: from [192.168.1.102] (/39.109.231.106)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 28 Oct 2020 06:26:23 -0700
+        with ESMTP ; Wed, 28 Oct 2020 19:06:12 -0700
+Subject: Re: [PATCH RFC 4/4] btrfs: introduce new read_policy round-robin
+To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org
+Cc:     dsterba@suse.com
+References: <cover.1603884539.git.anand.jain@oracle.com>
+ <3ef863dea2d61ab41e5767ee935d5411c3117fa0.1603884539.git.anand.jain@oracle.com>
+ <1c3a5069-45ce-fd91-1abd-4104095d2b12@toxicpanda.com>
 From:   Anand Jain <anand.jain@oracle.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     dsterba@suse.com, josef@toxicpanda.com
-Subject: [PATCH v1 0/4] btrfs: read_policy types latency, device and round-robin
-Date:   Wed, 28 Oct 2020 21:25:59 +0800
-Message-Id: <cover.1603884539.git.anand.jain@oracle.com>
-X-Mailer: git-send-email 2.25.1
+Message-ID: <fede66ab-5ca3-14e2-ec7e-5e14bcf011db@oracle.com>
+Date:   Thu, 29 Oct 2020 10:06:07 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
+In-Reply-To: <1c3a5069-45ce-fd91-1abd-4104095d2b12@toxicpanda.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9787 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 phishscore=0 spamscore=0
- bulkscore=0 malwarescore=0 mlxlogscore=999 mlxscore=0 suspectscore=1
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9788 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0 bulkscore=0
+ suspectscore=2 malwarescore=0 mlxlogscore=999 mlxscore=0 adultscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2010280091
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9787 signatures=668682
+ definitions=main-2010290010
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9788 signatures=668682
 X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 adultscore=0
- malwarescore=0 spamscore=0 clxscore=1015 mlxscore=0 suspectscore=1
+ malwarescore=0 spamscore=0 clxscore=1015 mlxscore=0 suspectscore=2
  priorityscore=1501 impostorscore=0 bulkscore=0 phishscore=0
  mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2010280090
+ engine=8.12.0-2009150000 definitions=main-2010290010
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Based on misc-next
 
-Depends on the following 3 patches in the mailing list.
-  btrfs: add btrfs_strmatch helper
-  btrfs: create read policy framework
-  btrfs: create read policy sysfs attribute, pid
 
-v1:
-Drop tracing patch
-Drop factoring inflight command
-  Here below is the performance differences, when inflight is used, it pushed
-  few commands to the other device, so losing the potential merges.
-
-  with inflight:
-   READ: bw=195MiB/s (204MB/s), 195MiB/s-195MiB/s (204MB/s-204MB/s), io=15.6GiB (16.8GB), run=82203-82203msec
-sda 256054
-sdc 20
-
-  without inflight:
-   READ: bw=192MiB/s (202MB/s), 192MiB/s-192MiB/s (202MB/s-202MB/s), io=15.6GiB (16.8GB), run=83231-83231msec
-sda 141006
-sdc 0
-
-Few C styles fixes.
-
-
-RFC:
-Patch 1-3 adds new read policy: latency.
-Patch 4 adds tracing function.
-Patch 5-6 were sent before they add read policy: device.
-Patch 7 adds new read policy: round-robin.
-
-I am sending this patchset to receive feedback, comments, and more test
-results. Few cleanups, optimization, and broader performance test are
-may be possible. This patchset does not alter the original default
-read_policy that is PID.
-
-This has been tested on VMs only, as my hardware based test host is
-currently down.
-
-This patchset adds read policies type latency, device, and round-robin.
-
-These policies are for the mirrored raid profiles such as raid1, raid1c3,
-raid1c4, and raid10 as they provide a choice to read from any one of the
-given devices or any one pair of devices for raid10 for a given block.
-
-Latency:
-
-Latency read policy routes the read IO based on the historical average
-wait time experienced by the read IOs on the individual device factored
-by 1/10 of inflight commands in the queue. I need to add a factor of 1/10
-because for most of the block devices the queue depth is more than 1, and
-there can be commands in the queue even before the previous commands have
-completed. However, the factor 1/10 for the inflight commands is yet to be
-fine-tuned. Suggestions are welcome.
-
-Device:
-
-With the device read policy along with the read_preferred flag, you can
-set the device to be used for reading manually. Useful to test mirrors in
-a deterministic way and helps advance system administrations.
-
-Round-robin:
-
-When set picks the next device to read in the round-robin loop. To
-achieve this first we put the stripes in an array, sort it by devid and
-pick the next device.
-
-The test results from my VM with 2 devices of type sata and 2 devices of 
-type virtio, are as below.
-
-Here below I have included a few scripts which were useful for testing.
-
--------------------8<--------------------------------
-$ cat readpolicyset
-#!/bin/bash
-
-: ${1?"arg1 <mnt> missing"}
-: ${2?"arg2 <pid|latency|device|roundrobin> missing"}
-
-mnt=$1
-policy=$2
-[ $policy == "device" ] && { : ${3?"arg3 <devid> missing"}; }
-devid=$3
-
-uuid=$(btrfs fi show -m /btrfs | grep uuid | awk '{print $4}')
-p=/sys/fs/btrfs/$uuid/read_policy
-q=/sys/fs/btrfs/$uuid/devinfo
-
-[ $policy == "device" ] && { echo 1 > ${q}/$devid/read_preferred || exit $?; }
-
-echo $policy > $p
-exit $?
--------------------8<--------------------------------
-
-$ cat readpolicy
-#!/bin/bash
-
-: ${1?"arg1 <mnt> missing"}
-mnt=$1
-
-uuid=$(btrfs fi show -m /btrfs | grep uuid | awk '{print $4}')
-p=/sys/fs/btrfs/$uuid/read_policy
-q=/sys/fs/btrfs/$uuid/devinfo
-
-policy=$(cat $p)
-echo -n "$policy ( "
-
-for i in $(find $q -type f -name read_preferred | xargs cat)
-do
-	echo -n "$i"
-done
-echo ")"
--------------------8<--------------------------------
-
-$ cat readstat 
-#!/bin/bash
-
-: ${1?"arg1 <mnt> is missing"}
-: ${2?"arg2 <cmd-to-run> is missing"}
-
-mnt=$1; shift
-mountpoint -q $mnt || { echo "ERROR: $mnt is not mounted"; exit 1; }
-
-declare -A devread
-
-for dev in $(btrfs filesystem show -m $mnt | grep devid |awk '{print $8}')
-do
-	prefix=$(echo $dev | rev | cut -d"/" -f1 | rev)
-	sysfs_path=$(find /sys | grep $prefix/stat$)
-
-	devread[$sysfs_path]=$(cat $sysfs_path | awk '{print $1}')
-done
-
-"$@" | grep "READ: bw"
-
-echo
-echo
-for sysfs_path in ${!devread[@]}
-do
-	dev=$(echo $sysfs_path | rev | cut -d"/" -f2 | rev)
-	new=$(cat $sysfs_path | awk '{print $1}')
-	old=${devread[$sysfs_path]}
-	echo "$dev $((new - old))"
-done
--------------------8<--------------------------------
-
-$ cat fioread 
-#!/bin/bash
-
-: ${1?"arg1 </mnt/file> is missing"}
-: ${2?"arg2 <1Gi|50Gi> is missing"}
-
-tf=$1
-sz=$2
-mnt=$(stat -c '%m' $tf)
-
-fio \
---filename=$tf \
---directory=$mnt \
---filesize=$sz \
---size=$sz \
---rw=randread \
---bs=64k \
---ioengine=libaio \
---direct=1 \
---numjobs=32 \
---group_reporting \
---thread \
---name iops-test-job
--------------------8<--------------------------------
-
-
-Here below are the performance results for raid1c4, raid10, and raid1.
-
-The workload is fio read 32 threads, 500m random reads.
-
-Fio is passed to the script readstat, which returns the number of read IOs
-per device sent during the fio.
-
-Few inferences:
-
-1.
-In some cases as mine, PID is also associated with the stripe 0 being
-circulating among the devices at the chunk level before moving to the next
-device. So PID is not a bad option for such configurations. However, it is
-not a good choice if the devices are heterogeneous in terms of type, speed,
-and size.
-
-2.
-Latency provides performance equal to PID on my test setup. But needs iostat
-be enabled. And there is a cost of calculating the avg wait time. (If you
-factor in the similar cost to PID using the test code [1] then latency's
-performance is better than PID. So that proves that read IO distribution
-as per latency is really working)
-
-3.
-Round robin is worst (unless there is a bug in my patch). As the total
-number of new IOs issued was almost double compared to the PID and the
-latency read_policy, that's because I think there was a fewer number of
-merges due to constant switching of devices.
-
-4.
-Device read_policy is quite useful in testing and advance sysadmin
-maintenance. When known how to use, this policy could help to avert
-too many csum errors in midest of peak production.
-
-Supporting fio logs are below. And readstat shows the number of read IOs
-issued to devices (excluding the merges).
-
-raid1c4
--------
-
-pid:
-
-$ readpolicyset /btrfs pid && readpolicy /btrfs && dropcache && readstat /btrfs fioread /btrfs/largefile 500m
-[pid] latency device roundrobin ( 0000)
- READ: bw=87.0MiB/s (91.2MB/s), 87.0MiB/s-87.0MiB/s (91.2MB/s-91.2MB/s), io=15.6GiB (16.8GB), run=183884-183884msec
-
-vdb 64060
-vdc 64053
-sdb 64072
-sda 64054
-
-
-latency:  (All devices are non-rotational, but sda and sdb are of type
-sata and vdb and vdc are of type virtio).
-
-$ readpolicyset /btrfs latency && readpolicy /btrfs && dropcache && readstat /btrfs fioread /btrfs/largefile 500m
-
-pid [latency] device roundrobin ( 0000)
- READ: bw=87.1MiB/s (91.3MB/s), 87.1MiB/s-87.1MiB/s (91.3MB/s-91.3MB/s), io=15.6GiB (16.8GB), run=183774-183774msec
-
-vdb 255844
-vdc 559
-sdb 0
-sda 93
-
-roundrobin:
-
-$ readpolicyset /btrfs roundrobin && readpolicy /btrfs && dropcache && readstat /btrfs fioread /btrfs/largefile 500m
-
-pid latency device [roundrobin] ( 0000)
- READ: bw=51.0MiB/s (54.5MB/s), 51.0MiB/s-51.0MiB/s (54.5MB/s-54.5MB/s), io=15.6GiB (16.8GB), run=307755-307755msec
-
-vdb 866859
-vdc 866651
-sdb 864139
-sda 865533
-
-
-raid10
-------
-
-pid:
-
-$ readpolicyset /btrfs pid && readpolicy /btrfs && dropcache && readstat /btrfs fioread /btrfs/largefile 500m
-[pid] latency device roundrobin ( 0000)
- READ: bw=85.2MiB/s (89.3MB/s), 85.2MiB/s-85.2MiB/s (89.3MB/s-89.3MB/s), io=15.6GiB (16.8GB), run=187864-187864msec
-
-
-sdf 64053
-sde 64036
-sdd 64043
-sdc 64038
-
-
-latency:
-
-$ readpolicyset /btrfs latency && readpolicy /btrfs && dropcache && readstat /btrfs fioread /btrfs/largefile 500m
-pid [latency] device roundrobin ( 0000)
- READ: bw=85.4MiB/s (89.5MB/s), 85.4MiB/s-85.4MiB/s (89.5MB/s-89.5MB/s), io=15.6GiB (16.8GB), run=187370-187370msec
-
-
-sdf 117494
-sde 10748
-sdd 125247
-sdc 2921
-
-roundrobin:
-
-$ readpolicyset /btrfs roundrobin && readpolicy /btrfs && dropcache && readstat /btrfs fioread /btrfs/largefile 500m
-pid latency device [roundrobin] ( 0000)
- READ: bw=55.4MiB/s (58.1MB/s), 55.4MiB/s-55.4MiB/s (58.1MB/s-58.1MB/s), io=15.6GiB (16.8GB), run=288701-288701msec
-
-sdf 617593
-sde 617381
-sdd 618486
-sdc 618633
-
-
-raid1:
-
-$ readpolicyset /btrfs pid && readpolicy /btrfs && dropcache && readstat /btrfs fioread /btrfs/largefile 500m
-[pid] latency device roundrobin ( 00)
- READ: bw=78.8MiB/s (82.6MB/s), 78.8MiB/s-78.8MiB/s (82.6MB/s-82.6MB/s), io=15.6GiB (16.8GB), run=203158-203158msec
-
-
-sdb 128087
-sda 128090
-
-$ readpolicyset /btrfs latency && readpolicy /btrfs && dropcache && readstat /btrfs fioread /btrfs/largefile 500m
-pid [latency] device roundrobin ( 00)
- READ: bw=86.5MiB/s (90.7MB/s), 86.5MiB/s-86.5MiB/s (90.7MB/s-90.7MB/s), io=15.6GiB (16.8GB), run=185023-185023msec
-
-
-sdb 567
-sda 255942
-
-
-From the latency test results we know sda is providing low latency read
-IO. So set sda as read proffered device.
-
-$ readpolicyset /btrfs device 1 && readpolicy /btrfs && dropcache && readstat /btrfs fioread /btrfs/largefile 500m
-pid latency [device] roundrobin ( 10)
- READ: bw=88.2MiB/s (92.5MB/s), 88.2MiB/s-88.2MiB/s (92.5MB/s-92.5MB/s), io=15.6GiB (16.8GB), run=181374-181374msec
-
-
-sdb 0
-sda 256191
-
-
-$ readpolicyset /btrfs roundrobin && readpolicy /btrfs && dropcache && readstat /btrfs fioread /btrfs/largefile 500m
-pid latency device [roundrobin] ( 00)
- READ: bw=54.1MiB/s (56.7MB/s), 54.1MiB/s-54.1MiB/s (56.7MB/s-56.7MB/s), io=15.6GiB (16.8GB), run=295693-295693msec
-
-
-sdb 1252584
-sda 1254258
-
+On 28/10/20 10:44 pm, Josef Bacik wrote:
+> On 10/28/20 9:26 AM, Anand Jain wrote:
+>> Add round-robin read policy to route the read IO to the next device in 
+>> the
+>> round-robin order. The chunk allocation and thus the stripe-index follows
+>> the order of free space available on devices. So to make the round-robin
+>> effective it shall follow the devid order instead of the stripe-index
+>> order.
+>>
+>> Signed-off-by: Anand Jain <anand.jain@oracle.com>
+>> ---
+>> RFC: because I am not too sure if any workload or block layer
+>> configurations shall suit round-robin read_policy.
+>>
+>>   fs/btrfs/sysfs.c   |  2 +-
+>>   fs/btrfs/volumes.c | 50 ++++++++++++++++++++++++++++++++++++++++++++++
+>>   fs/btrfs/volumes.h |  2 ++
+>>   3 files changed, 53 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
+>> index d2a974e1a1c4..293311c79321 100644
+>> --- a/fs/btrfs/sysfs.c
+>> +++ b/fs/btrfs/sysfs.c
+>> @@ -908,7 +908,7 @@ static bool btrfs_strmatch(const char *given, 
+>> const char *golden)
+>>   /* Must follow the order as in enum btrfs_read_policy */
+>>   static const char * const btrfs_read_policy_name[] = { "pid", 
+>> "latency",
+>> -                               "device" };
+>> +                               "device", "roundrobin" };
+>>   static ssize_t btrfs_read_policy_show(struct kobject *kobj,
+>>                         struct kobj_attribute *a, char *buf)
+>> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+>> index 7ac675504051..fa1b1a3ebc87 100644
+>> --- a/fs/btrfs/volumes.c
+>> +++ b/fs/btrfs/volumes.c
+>> @@ -5469,6 +5469,52 @@ int btrfs_is_parity_mirror(struct btrfs_fs_info 
+>> *fs_info, u64 logical, u64 len)
+>>       return ret;
+>>   }
+>> +struct stripe_mirror {
+>> +    u64 devid;
+>> +    int map;
+>> +};
+>> +
+>> +static int btrfs_cmp_devid(const void *a, const void *b)
+>> +{
+>> +    struct stripe_mirror *s1 = (struct stripe_mirror *)a;
+>> +    struct stripe_mirror *s2 = (struct stripe_mirror *)b;
+>> +
+>> +    if (s1->devid < s2->devid)
+>> +        return -1;
+>> +    if (s1->devid > s2->devid)
+>> +        return 1;
+>> +    return 0;
+>> +}
+>> +
+>> +static int btrfs_find_read_round_robin(struct map_lookup *map, int 
+>> first,
+>> +                       int num_stripe)
+>> +{
+>> +    struct stripe_mirror stripes[4] = {0}; //4: for testing, works 
+>> for now.
+>> +    struct btrfs_fs_devices *fs_devices;
+>> +    u64 devid;
+>> +    int index, j, cnt;
+>> +    int next_stripe;
+>> +
+>> +    index = 0;
+>> +    for (j = first; j < first + num_stripe; j++) {
+>> +        devid = map->stripes[j].dev->devid;
+>> +
+>> +        stripes[index].devid = devid;
+>> +        stripes[index].map = j;
+>> +
+>> +        index++;
+>> +    }
+>> +
+>> +    sort(stripes, num_stripe, sizeof(struct stripe_mirror),
+>> +         btrfs_cmp_devid, NULL);
+>> +
+>> +    fs_devices = map->stripes[first].dev->fs_devices;
+>> +    cnt = atomic_inc_return(&fs_devices->total_reads);
+>> +    next_stripe = stripes[cnt % num_stripe].map;
+> 
+> This is heavy handed for policy decisions, just do something like
+> 
+> stripe_nr = atomic_inc_return(&fs_devices->total_reds) % num_stripes;
+> return stripes[stripe_nr].map;
+> 
+> There's no reason to sort the stripes by devid every time we call this.  
+> Thanks,
+
+
+But that won't be round-robin at the device level, which I think we are
+trying to achieve. It shall be round-robin at the strip level. As
+stripe id isn't guaranteed to be on the same device across chunks.
+Because chunk allocation follows the device free space size order.
+
+But I agree the proposal in this patch is heavy. So I was thinking if we 
+could fix the chunk allocation to sort by devid instead of size.? Any idea?
 
 Thanks, Anand
 
-
-------------------
-[1]
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index d3023879bdf6..72ec633e9063 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -5665,6 +5665,12 @@ static int find_live_mirror(struct btrfs_fs_info *fs_info,
- fs_info->fs_devices->read_policy = BTRFS_READ_POLICY_PID;
- fallthrough;
- case BTRFS_READ_POLICY_PID:
-+ /*
-+ * Just to factor in the cost of calculating the avg wait using
-+ * iostat for testing.
-+ */
-+ btrfs_find_best_stripe(fs_info, map, first, num_stripes, log,
-+ logsz);
- preferred_mirror = first + current->pid % num_stripes;
- scnprintf(log, logsz,
- "first %d num_stripe %d %s (%d) preferred %d",
-
-
-Anand Jain (4):
-  btrfs: add read_policy latency
-  btrfs: introduce new device-state read_preferred
-  btrfs: introduce new read_policy device
-  btrfs: introduce new read_policy round-robin
-
- fs/btrfs/sysfs.c   |  59 +++++++++++++++++++++++-
- fs/btrfs/volumes.c | 111 ++++++++++++++++++++++++++++++++++++++++++++-
- fs/btrfs/volumes.h |   5 ++
- 3 files changed, 173 insertions(+), 2 deletions(-)
-
--- 
-2.25.1
-
+> 
+> Josef
