@@ -2,53 +2,63 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A34129F15C
-	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Oct 2020 17:26:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5195629F196
+	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Oct 2020 17:34:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726410AbgJ2Q0m (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 29 Oct 2020 12:26:42 -0400
-Received: from mx2.suse.de ([195.135.220.15]:56030 "EHLO mx2.suse.de"
+        id S1726925AbgJ2QeC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 29 Oct 2020 12:34:02 -0400
+Received: from mx2.suse.de ([195.135.220.15]:37324 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725764AbgJ2Q0m (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 29 Oct 2020 12:26:42 -0400
+        id S1725965AbgJ2Qcg (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 29 Oct 2020 12:32:36 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 40792ACB6;
-        Thu, 29 Oct 2020 16:26:41 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id DE6ECB2FE;
+        Thu, 29 Oct 2020 16:32:34 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id BE4ECDA7CE; Thu, 29 Oct 2020 17:25:05 +0100 (CET)
-Date:   Thu, 29 Oct 2020 17:25:05 +0100
+        id D43E0DA7CE; Thu, 29 Oct 2020 17:30:59 +0100 (CET)
+Date:   Thu, 29 Oct 2020 17:30:59 +0100
 From:   David Sterba <dsterba@suse.cz>
-To:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-Cc:     David Sterba <dsterba@suse.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH 00/10] Sectorsize, csum_size lifted to fs_info
-Message-ID: <20201029162505.GM6756@twin.jikos.cz>
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH v2 0/2] Some block rsv fixes
+Message-ID: <20201029163059.GN6756@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz,
-        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        David Sterba <dsterba@suse.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-References: <cover.1603981452.git.dsterba@suse.com>
- <SN4PR0401MB359889F68E7BF45740CE02CC9B140@SN4PR0401MB3598.namprd04.prod.outlook.com>
+Mail-Followup-To: dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
+        linux-btrfs@vger.kernel.org, kernel-team@fb.com
+References: <cover.1603745723.git.josef@toxicpanda.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <SN4PR0401MB359889F68E7BF45740CE02CC9B140@SN4PR0401MB3598.namprd04.prod.outlook.com>
+In-Reply-To: <cover.1603745723.git.josef@toxicpanda.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Oct 29, 2020 at 02:50:07PM +0000, Johannes Thumshirn wrote:
-> On 29/10/2020 15:29, David Sterba wrote:
-> > Clean up usage of multiplication or division by sectorsize by shifts,
-> > checksums per leaf are calculated once and csum_size has a copy in
-> > fs_info so we don't have to read it from raw superblocks.
+On Mon, Oct 26, 2020 at 04:57:25PM -0400, Josef Bacik wrote:
+> v1->v2:
+> - change the logic to max(1, root level), as generally we do not walk down into
+>   level 0 for the merge, with the exception for root level == 0.
 > 
-> Currently all checksum sizes are power of 2 as well. Did you check if there
-> was any benefit if we'd cache csum_size_bits and shift instead of the 
-> multiplications and divisions?
+> --- Original email ---
+> 
+> Hello,
+> 
+> Nikolay has noticed that -o enospc_debug was getting some warnings in
+> btrfs_use_block_rsv() on some tests.  I dug into them and one class is easy to
+> fix as it's a straight regression.  The other one is going to require some more
+> debugging, so in the meantime here's the two patches I have so far that can be
+> merged.  The first is just to make my life easier when debugging these problems,
+> and the second is the actual regression fix.  It should probably be tagged for
+> stable as well since the regression was backported to stable.  Thanks,
 
-I had not before, quick grep shows way more csum_size operations that
-for sectorsize, so that would be a lot of code churn.
+Yeah, for stable 5.4+.
+
+> Josef
+> 
+> Josef Bacik (2):
+>   btrfs: print the block rsv type when we fail our reservation
+>   btrfs: fix min reserved size calculation in merge_reloc_root
+
+Added to misc-next, thanks.
