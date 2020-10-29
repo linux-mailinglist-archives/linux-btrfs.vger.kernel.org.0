@@ -2,285 +2,369 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABAAB29EA0B
-	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Oct 2020 12:07:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 67CB229EAFB
+	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Oct 2020 12:50:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726885AbgJ2LHw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 29 Oct 2020 07:07:52 -0400
-Received: from out20-61.mail.aliyun.com ([115.124.20.61]:41961 "EHLO
-        out20-61.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726103AbgJ2LHv (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 29 Oct 2020 07:07:51 -0400
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.04436282|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.00786222-8.26784e-05-0.992055;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047198;MF=wangyugui@e16-tech.com;NM=1;PH=DS;RN=3;RT=3;SR=0;TI=SMTPD_---.Iq0DKdU_1603969668;
-Received: from 192.168.2.112(mailfrom:wangyugui@e16-tech.com fp:SMTPD_---.Iq0DKdU_1603969668)
-          by smtp.aliyun-inc.com(10.147.41.121);
-          Thu, 29 Oct 2020 19:07:48 +0800
-Date:   Thu, 29 Oct 2020 19:07:53 +0800
-From:   Wang Yugui <wangyugui@e16-tech.com>
-To:     Boris Burkov <boris@bur.io>
-Subject: Re: [PATCH v5 09/10] btrfs: remove free space items when disabling space cache v1
-Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-In-Reply-To: <750174b66139e105150b988b35705a1a708b2eb5.1603828718.git.boris@bur.io>
-References: <cover.1603828718.git.boris@bur.io> <750174b66139e105150b988b35705a1a708b2eb5.1603828718.git.boris@bur.io>
-Message-Id: <20201029190748.563D.409509F4@e16-tech.com>
+        id S1725815AbgJ2Luo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 29 Oct 2020 07:50:44 -0400
+Received: from mx2.suse.de ([195.135.220.15]:55044 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725385AbgJ2Luo (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 29 Oct 2020 07:50:44 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1603972242;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=lCsOLWjxqUS493XwMM4d16eXv1dv57WX3AjuwE6XbaE=;
+        b=pCqD/OhqFVJd52hQPBntXVHKEdXCWSdXvuvFVfz/BvGLYShvLqSAP9s/hgKzWz/0hFRAw3
+        MWAo780Bq/Ns+oXUVQyqRifN0P+oPmWpKqKIt0DVA82W0ntwgdjHaSTGO2HwL4vq4o15CV
+        PDTzfOi7ghjx8KDRdg037PY8L4imTGI=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 147CEACBA;
+        Thu, 29 Oct 2020 11:50:42 +0000 (UTC)
+Subject: Re: [PATCH v2 3/3] btrfs: file-item: refactor btrfs_lookup_bio_sums()
+ to handle out-of-order bvecs
+To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+References: <20201029071218.49860-1-wqu@suse.com>
+ <20201029071218.49860-4-wqu@suse.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <765375f6-7c4f-e9d9-f0f5-3de9bac74cce@suse.com>
+Date:   Thu, 29 Oct 2020 13:50:41 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Mailer: Becky! ver. 2.75.01 [en]
+In-Reply-To: <20201029071218.49860-4-wqu@suse.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi,
 
-'mkfs.btrfs -R free-space-tree'  still create 'space cache v1'?
 
-#mkfs.btrfs-5.9 -R free-space-tree /dev/sdb1 -f
-
-1st time mount
-#mount /dev/sdb1 /btrfs/
-#dmesg
-BTRFS info (device sdb1): cleaning free space cache v1
-#umount
-
-2nd time mount
-#mount /dev/sdb1 /btrfs/
-#dmesg
-NO BTRFS info (device sdb1): cleaning free space cache v1
-#umount
-
-Best Regards
-Wang Yugui (wangyugui@e16-tech.com)
-2020/10/29
-
-> When the file system transitions from space cache v1 to v2 or to
-> nospace_cache, it removes the old cached data, but does not remove
-> the FREE_SPACE items nor the free space inodes they point to. This
-> doesn't cause any issues besides being a bit inefficient, since these
-> items no longer do anything useful.
+On 29.10.20 г. 9:12 ч., Qu Wenruo wrote:
+> Refactor btrfs_lookup_bio_sums() by:
+> - Remove the @file_offset parameter
+>   There are two factors making the @file_offset parameter useless:
+>   * For csum lookup in csum tree, file offset makes no sense
+>     We only need disk_bytenr, which is unrelated to file_offset
+>   * page_offset (file offset) of each bvec is not contig
+>     bio can be merged, meaning we could have pages at different
+>     file offsets in the same bio.
+>   Thus passing file_offset makes no sense any longer.
+>   The only user of file_offset is for data reloc inode, we will use
+>   a new function, search_file_offset_in_bio(), to handle it.
 > 
-> To fix it, when we are mounting, and plan to disable the space cache,
-> destroy each block group's free space item and free space inode.
-> The code to remove the items is lifted from the existing use case of
-> removing the block group, with a light adaptation to handle whether or
-> not we have already looked up the free space inode.
+> - Extract the csum tree lookup into find_csum_tree_sums()
+>   The new function will handle the csum search in csum tree.
+>   The return value is the same as btrfs_find_ordered_sum(), returning
+>   the found number of sectors who has checksum.
 > 
-> References: https://github.com/btrfs/btrfs-todo/issues/5
-> Signed-off-by: Boris Burkov <boris@bur.io>
+> - Change how we do the main loop
+>   The only needed info from bio is:
+>   * the on-disk bytenr
+>   * the file_offset (if file_offset == (u64)-1)
+>   * the length
+> 
+>   After extracting above info, we can do the search without bio
+>   at all, which makes the main loop much simpler:
+> 
+> 	for (cur_disk_bytenr = orig_disk_bytenr;
+> 	     cur_disk_bytenr < orig_disk_bytenr + orig_len;
+> 	     cur_disk_bytenr += count * sectorsize) {
+> 
+> 		/* Lookup csum tree */
+> 		count = find_csum_tree_sums(fs_info, path, cur_disk_bytenr,
+> 					    search_len, csum_dst);
+> 		if (!count) {
+> 			/* Csum hole handling */
+> 		}
+> 	}
+> 
+> - Use single variable as core to calculate all other offsets
+>   Instead of all differnt type of variables, we use only one core
+>   variable, cur_disk_bytenr, which represents the current disk bytenr.
+> 
+>   All involves values can be calculated from that core variable, and
+>   all those variable will only be visible in the inner loop.
+> 
+> 	diff_sectors = div_u64(cur_disk_bytenr - orig_disk_bytenr,
+> 			       sectorsize);
+> 	cur_disk_bytenr = orig_disk_bytenr +
+> 			  diff_sectors * sectorsize;
+> 	csum_dst = csum + diff_sectors * csum_size;
+> 
+> All above refactor makes btrfs_lookup_bio_sums() way more robust than it
+> used to, especially related to the file offset lookup.
+> Now file_offset lookup is only related to data reloc inode, other wise
+> we don't need to bother file_offset at all.
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
 > ---
->  fs/btrfs/block-group.c      |  39 +-------------
->  fs/btrfs/free-space-cache.c | 101 ++++++++++++++++++++++++++++++++++--
->  fs/btrfs/free-space-cache.h |   3 ++
->  3 files changed, 102 insertions(+), 41 deletions(-)
+>  fs/btrfs/compression.c |   4 +-
+>  fs/btrfs/ctree.h       |   2 +-
+>  fs/btrfs/file-item.c   | 256 ++++++++++++++++++++++++++---------------
+>  fs/btrfs/inode.c       |   5 +-
+>  4 files changed, 171 insertions(+), 96 deletions(-)
 > 
-> diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-> index c0f1d6818df7..8938b11a3339 100644
-> --- a/fs/btrfs/block-group.c
-> +++ b/fs/btrfs/block-group.c
-> @@ -892,8 +892,6 @@ int btrfs_remove_block_group(struct btrfs_trans_handle *trans,
->  	struct btrfs_path *path;
->  	struct btrfs_block_group *block_group;
->  	struct btrfs_free_cluster *cluster;
-> -	struct btrfs_root *tree_root = fs_info->tree_root;
-> -	struct btrfs_key key;
->  	struct inode *inode;
->  	struct kobject *kobj = NULL;
->  	int ret;
-> @@ -971,42 +969,9 @@ int btrfs_remove_block_group(struct btrfs_trans_handle *trans,
->  	spin_unlock(&trans->transaction->dirty_bgs_lock);
->  	mutex_unlock(&trans->transaction->cache_write_mutex);
->  
-> -	if (!IS_ERR(inode)) {
-> -		ret = btrfs_orphan_add(trans, BTRFS_I(inode));
-> -		if (ret) {
-> -			btrfs_add_delayed_iput(inode);
-> -			goto out;
-> -		}
-> -		clear_nlink(inode);
-> -		/* One for the block groups ref */
-> -		spin_lock(&block_group->lock);
-> -		if (block_group->iref) {
-> -			block_group->iref = 0;
-> -			block_group->inode = NULL;
-> -			spin_unlock(&block_group->lock);
-> -			iput(inode);
-> -		} else {
-> -			spin_unlock(&block_group->lock);
-> -		}
-> -		/* One for our lookup ref */
-> -		btrfs_add_delayed_iput(inode);
-> -	}
-> -
-> -	key.objectid = BTRFS_FREE_SPACE_OBJECTID;
-> -	key.type = 0;
-> -	key.offset = block_group->start;
-> -
-> -	ret = btrfs_search_slot(trans, tree_root, &key, path, -1, 1);
-> -	if (ret < 0)
-> +	ret = btrfs_remove_free_space_inode(trans, inode, block_group);
-> +	if (ret)
->  		goto out;
-> -	if (ret > 0)
-> -		btrfs_release_path(path);
-> -	if (ret == 0) {
-> -		ret = btrfs_del_item(trans, tree_root, path);
-> -		if (ret)
-> -			goto out;
-> -		btrfs_release_path(path);
-> -	}
->  
->  	spin_lock(&fs_info->block_group_cache_lock);
->  	rb_erase(&block_group->cache_node,
-> diff --git a/fs/btrfs/free-space-cache.c b/fs/btrfs/free-space-cache.c
-> index 3acf935536ea..5d357786c9da 100644
-> --- a/fs/btrfs/free-space-cache.c
-> +++ b/fs/btrfs/free-space-cache.c
-> @@ -207,6 +207,65 @@ int create_free_space_inode(struct btrfs_trans_handle *trans,
->  					 ino, block_group->start);
+
+<snip>
+
+
+> diff --git a/fs/btrfs/file-item.c b/fs/btrfs/file-item.c
+> index acacdd0bfe2c..85e7a3618a07 100644
+> --- a/fs/btrfs/file-item.c
+> +++ b/fs/btrfs/file-item.c
+> @@ -239,39 +239,140 @@ int btrfs_lookup_file_extent(struct btrfs_trans_handle *trans,
+>  	return ret;
 >  }
 >  
 > +/*
-> + * inode is an optional sink: if it is NULL, btrfs_remove_free_space_inode
-> + * handles lookup, otherwise it takes ownership and iputs the inode.
-> + * Don't reuse an inode pointer after passing it into this function.
+> + * Helper to find csums for logical bytenr range
+> + * [disk_bytenr, disk_bytenr + len) and restore the result to @dst.
+
+nit: s/restore/store
+
+> + *
+> + * Return >0 for the number of sectors we found.
+> + * Return 0 for the range [disk_bytenr, disk_bytenr + sectorsize) has no csum
+> + * for it. Caller may want to try next sector until one range is hit.
+> + * Return <0 for fatal error.
 > + */
-> +int btrfs_remove_free_space_inode(struct btrfs_trans_handle *trans,
-> +				  struct inode *inode,
-> +				  struct btrfs_block_group *block_group)
+> +static int find_csum_tree_sums(struct btrfs_fs_info *fs_info,
+> +			       struct btrfs_path *path, u64 disk_bytenr,
+> +			       u64 len, u8 *dst)
+
+A better name would be search_csum_tree.
+
 > +{
-> +	struct btrfs_path *path;
+> +	struct btrfs_csum_item *item = NULL;
 > +	struct btrfs_key key;
+> +	u32 csum_size = btrfs_super_csum_size(fs_info->super_copy);
+
+nit: Why u32, btrfs_super_csum_size is defined as returning 'int',
+however this function is really returning u16 since "struct btrfs_csums"
+is defined as u16.
+
+> +	u32 sectorsize = fs_info->sectorsize;
+> +	int ret;
+> +	u64 csum_start;
+> +	u64 csum_len;
+> +
+> +	ASSERT(IS_ALIGNED(disk_bytenr, sectorsize) &&
+> +	       IS_ALIGNED(len, sectorsize));
+> +
+> +	/* Check if the current csum item covers disk_bytenr */
+> +	if (path->nodes[0]) {
+> +		item = btrfs_item_ptr(path->nodes[0], path->slots[0],
+> +				      struct btrfs_csum_item);
+> +		btrfs_item_key_to_cpu(path->nodes[0], &key, path->slots[0]);
+> +		csum_start = key.offset;
+> +		csum_len = btrfs_item_size_nr(path->nodes[0], path->slots[0]) /
+
+nit: put the division in brackets, it doesn't affect correctness but it
+makes it more obvious since multiplication and division have same
+precedence then associativitiy comes into play...
+
+> +			   csum_size * sectorsize;
+> +
+> +		if (csum_start <= disk_bytenr &&
+> +		    csum_start + csum_len > disk_bytenr)
+
+if (in_range(disk_bytenr, csum_start, csum_len))
+
+> +			goto found;
+> +	}
+> +
+> +	/* Current item doesn't contain the desired range, re-search */
+> +	btrfs_release_path(path);
+> +	item = btrfs_lookup_csum(NULL, fs_info->csum_root, path,
+> +				 disk_bytenr, 0);
+> +	if (IS_ERR(item)) {
+> +		ret = PTR_ERR(item);
+> +		goto out;
+> +	}
+> +found:
+
+The found label could be moved right before ret = div_u64 since if you
+go directly to it it's guaranteed you have already done the
+btrfs_item_to_key et al operations so you are simply duplicating them now.
+
+> +	btrfs_item_key_to_cpu(path->nodes[0], &key, path->slots[0]);
+> +	csum_start = key.offset;
+> +	csum_len = btrfs_item_size_nr(path->nodes[0], path->slots[0]) /
+> +		   csum_size * sectorsize;
+
+nit: put brackets around division.
+
+> +	ASSERT(csum_start <= disk_bytenr &&
+> +	       csum_start + csum_len > disk_bytenr);
+
+Use in_range macro
+
+> +
+> +	ret = div_u64(min(csum_start + csum_len, disk_bytenr + len) -
+> +		      disk_bytenr, sectorsize);
+> +	read_extent_buffer(path->nodes[0], dst, (unsigned long)item,
+> +			ret * csum_size);
+> +out:
+> +	if (ret == -ENOENT) {
+> +		ret = 0;
+> +		memset(dst, 0, csum_size);
+> +	}
+> +	return ret;
+> +}
+> +
+> +/*
+> + * A helper to locate the file_offset of @cur_disk_bytenr of a @bio.
+> + *
+> + * Bio of btrfs represents read range of
+> + * [bi_sector << 9, bi_sector << 9 + bi_size).
+> + * Knowing this, we can iterate through each bvec to locate the page belong to
+> + * @cur_disk_bytenr and get the file offset.
+> + *
+> + * @inode is used to determine the bvec page really belongs to @inode.
+> + *
+> + * Return 0 if we can't find the file offset;
+> + * Return >0 if we find the file offset and restore it to @file_offset_ret
+> + */
+> +static int search_file_offset_in_bio(struct bio *bio, struct inode *inode,
+> +				     u64 disk_bytenr, u64 *file_offset_ret)
+> +{
+> +	struct bvec_iter iter;
+> +	struct bio_vec bvec;
+> +	u64 cur = bio->bi_iter.bi_sector << 9;
 > +	int ret = 0;
 > +
-> +	path = btrfs_alloc_path();
-> +	if (!path)
-> +		return -ENOMEM;
+> +	bio_for_each_segment(bvec, bio, iter) {
+> +		struct page *page = bvec.bv_page;
 > +
-> +	if (!inode)
-> +		inode = lookup_free_space_inode(block_group, path);
-> +	if (IS_ERR(inode)) {
-> +		if (PTR_ERR(inode) != -ENOENT)
-> +			ret = PTR_ERR(inode);
-> +		goto out;
-> +	}
-> +	ret = btrfs_orphan_add(trans, BTRFS_I(inode));
-> +	if (ret) {
-> +		btrfs_add_delayed_iput(inode);
-> +		goto out;
-> +	}
-> +	clear_nlink(inode);
-> +	/* One for the block groups ref */
-> +	spin_lock(&block_group->lock);
-> +	if (block_group->iref) {
-> +		block_group->iref = 0;
-> +		block_group->inode = NULL;
-> +		spin_unlock(&block_group->lock);
-> +		iput(inode);
-> +	} else {
-> +		spin_unlock(&block_group->lock);
-> +	}
-> +	/* One for the lookup ref */
-> +	btrfs_add_delayed_iput(inode);
-> +
-> +	key.objectid = BTRFS_FREE_SPACE_OBJECTID;
-> +	key.type = 0;
-> +	key.offset = block_group->start;
-> +	ret = btrfs_search_slot(trans, trans->fs_info->tree_root, &key, path,
-> +				-1, 1);
-> +	if (ret) {
-> +		if (ret > 0)
-> +			ret = 0;
-> +		goto out;
-> +	}
-> +	ret = btrfs_del_item(trans, trans->fs_info->tree_root, path);
-> +out:
-> +	btrfs_free_path(path);
-> +	return ret;
-> +}
-> +
->  int btrfs_check_trunc_cache_free_space(struct btrfs_fs_info *fs_info,
->  				       struct btrfs_block_rsv *rsv)
->  {
-> @@ -3997,6 +4056,28 @@ bool btrfs_free_space_cache_v1_active(struct btrfs_fs_info *fs_info)
->  	return btrfs_super_cache_generation(fs_info->super_copy);
->  }
->  
-> +static int cleanup_free_space_cache_v1(struct btrfs_fs_info *fs_info,
-> +				       struct btrfs_trans_handle *trans)
-> +{
-> +	struct btrfs_block_group *block_group;
-> +	struct rb_node *node;
-> +	int ret;
-> +
-> +	btrfs_info(fs_info, "cleaning free space cache v1");
-> +
-> +	node = rb_first(&fs_info->block_group_cache_tree);
-> +	while (node) {
-> +		block_group = rb_entry(node, struct btrfs_block_group,
-> +				       cache_node);
-> +		ret = btrfs_remove_free_space_inode(trans, NULL, block_group);
-> +		if (ret)
-> +			goto out;
-> +		node = rb_next(node);
-> +	}
-> +out:
-> +	return ret;
-> +}
-> +
->  int btrfs_set_free_space_cache_v1_active(struct btrfs_fs_info *fs_info,
->  					 bool active)
->  {
-> @@ -4004,18 +4085,30 @@ int btrfs_set_free_space_cache_v1_active(struct btrfs_fs_info *fs_info,
->  	int ret;
->  
->  	/*
-> -	 * update_super_roots will appropriately set
-> -	 * fs_info->super_copy->cache_generation based on the SPACE_CACHE
-> -	 * option, so all we have to do is trigger a transaction commit.
-> +	 * update_super_roots will appropriately set or unset
-> +	 * fs_info->super_copy->cache_generation based on SPACE_CACHE and
-> +	 * BTRFS_FS_CLEANUP_SPACE_CACHE_V1. For this reason, we need a
-> +	 * transaction commit whether we are enabling space cache v1 and don't
-> +	 * have any other work to do, or are disabling it and removing free
-> +	 * space inodes.
->  	 */
->  	trans = btrfs_start_transaction(fs_info->tree_root, 0);
->  	if (IS_ERR(trans))
->  		return PTR_ERR(trans);
->  
-> -	if (!active)
-> +	if (!active) {
->  		set_bit(BTRFS_FS_CLEANUP_SPACE_CACHE_V1, &fs_info->flags);
-> +		ret = cleanup_free_space_cache_v1(fs_info, trans);
-> +		if (ret)
-> +			goto abort;
-> +	}
->  
->  	ret = btrfs_commit_transaction(trans);
-> +	goto out;
-> +abort:
-> +	btrfs_abort_transaction(trans, ret);
-> +	btrfs_end_transaction(trans);
-> +out:
->  	clear_bit(BTRFS_FS_CLEANUP_SPACE_CACHE_V1, &fs_info->flags);
->  	return ret;
->  }
-> diff --git a/fs/btrfs/free-space-cache.h b/fs/btrfs/free-space-cache.h
-> index 5c546898ded9..8df4b2925eca 100644
-> --- a/fs/btrfs/free-space-cache.h
-> +++ b/fs/btrfs/free-space-cache.h
-> @@ -84,6 +84,9 @@ struct inode *lookup_free_space_inode(struct btrfs_block_group *block_group,
->  int create_free_space_inode(struct btrfs_trans_handle *trans,
->  			    struct btrfs_block_group *block_group,
->  			    struct btrfs_path *path);
-> +int btrfs_remove_free_space_inode(struct btrfs_trans_handle *trans,
-> +				  struct inode *inode,
-> +				  struct btrfs_block_group *block_group);
->  
->  int btrfs_check_trunc_cache_free_space(struct btrfs_fs_info *fs_info,
->  				       struct btrfs_block_rsv *rsv);
-> -- 
-> 2.24.1
+> +		if (cur > disk_bytenr)
+> +			break;
+> +		if (cur + bvec.bv_len <= disk_bytenr) {
+> +			cur += bvec.bv_len;
+> +			continue;
+> +		}
+> +		ASSERT(cur <= disk_bytenr && cur + bvec.bv_len > disk_bytenr);
 
+in_range(disk_bytenr, cur, bvec.bv_len)
+
+> +		if (page && page->mapping && page->mapping->host &&
+> +		    page->mapping->host == inode) {
+We are guaranteed to always have a page, since this bvec will have been
+aded via bio_add_page, since those will be data pages we are guaranteed
+to have mapping and mapping->host, so you ought to only check if it's
+the same inode, no ?
+
+> +			ret = 1;
+> +			*file_offset_ret = page_offset(page) + bvec.bv_offset
+> +				+ disk_bytenr - cur;
+> +			break;
+> +		}
+> +	}
+> +	return ret;
+> +}
+
+> +
+<snip>
+
+> @@ -323,81 +427,53 @@ blk_status_t btrfs_lookup_bio_sums(struct inode *inode, struct bio *bio,
+>  		path->skip_locking = 1;
+>  	}
+>  
+> -	disk_bytenr = (u64)bio->bi_iter.bi_sector << 9;
+> -
+> -	bio_for_each_segment(bvec, bio, iter) {
+> -		page_bytes_left = bvec.bv_len;
+> -		if (count)
+> -			goto next;
+> -
+> -		if (page_offsets)
+> -			offset = page_offset(bvec.bv_page) + bvec.bv_offset;
+> +	for (cur_disk_bytenr = orig_disk_bytenr;
+> +	     cur_disk_bytenr < orig_disk_bytenr + orig_len;
+> +	     cur_disk_bytenr += count * sectorsize) {
+> +		int search_len = orig_disk_bytenr + orig_len - cur_disk_bytenr;
+> +		int diff_sectors;
+
+ This variable is misnamed, it's  really offset_sector or sector_offset.
+
+> +		u8 *csum_dst;> +
+> +		diff_sectors = div_u64(cur_disk_bytenr - orig_disk_bytenr,
+> +				       sectorsize);
+> +		cur_disk_bytenr = orig_disk_bytenr +
+> +				  diff_sectors * sectorsize;
+
+Since you already increment cur_disk_bytenr with count * sector size
+where count is the number of csums, why do you have recalculate it here?
+Furthermore you convert to sectors in diff_sectors and then you multiply
+it by sectorsize which gives you back just cur_disk_bytenr -
+orig_disk_bytenr so the end expression is:
+
+cur_disk_bytenr = orig_disk_bytenr + cur_disk_bytenr - orig_disk_bytenr
+=> cur_disk_bytenr = cur_disk_bytenr - am I missing something?
+
+
+> +		csum_dst = csum + diff_sectors * csum_size;
+> +
+> +		count = find_csum_tree_sums(fs_info, path, cur_disk_bytenr,
+> +					    search_len, csum_dst);
+
+Missing error handling if count is negative!
+
+> +		if (!count) {
+> +			/*
+> +			 * For not found case, the csum has been zeroed
+> +			 * in find_csum_tree_sums() already, just skip
+> +			 * to next sector.
+> +			 */
+> +			count = 1;
+
+<snip>
 
