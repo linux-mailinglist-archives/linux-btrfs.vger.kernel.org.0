@@ -2,57 +2,57 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAD692A0FDD
-	for <lists+linux-btrfs@lfdr.de>; Fri, 30 Oct 2020 22:03:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DEB32A0FDE
+	for <lists+linux-btrfs@lfdr.de>; Fri, 30 Oct 2020 22:03:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727657AbgJ3VDP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 30 Oct 2020 17:03:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39964 "EHLO
+        id S1727668AbgJ3VDR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 30 Oct 2020 17:03:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726917AbgJ3VDP (ORCPT
+        with ESMTP id S1726917AbgJ3VDQ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 30 Oct 2020 17:03:15 -0400
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F4080C0613CF
-        for <linux-btrfs@vger.kernel.org>; Fri, 30 Oct 2020 14:03:14 -0700 (PDT)
-Received: by mail-qt1-x841.google.com with SMTP id r8so5126422qtp.13
-        for <linux-btrfs@vger.kernel.org>; Fri, 30 Oct 2020 14:03:14 -0700 (PDT)
+        Fri, 30 Oct 2020 17:03:16 -0400
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D94DC0613CF
+        for <linux-btrfs@vger.kernel.org>; Fri, 30 Oct 2020 14:03:16 -0700 (PDT)
+Received: by mail-qt1-x842.google.com with SMTP id m14so5124556qtc.12
+        for <linux-btrfs@vger.kernel.org>; Fri, 30 Oct 2020 14:03:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=WauWhR/+pt1gJWtIc3vo/FkfYt8/jl6mKnEG7cOK4es=;
-        b=qGDqiKbzxY5TxLwkGQbtoDOgSfdPC41tAvvN1VcKgiCCutOOYM9NKAs27wV17e5FUe
-         +UZOEcOC5fmN+WYuB3299e3ZtfMpg9P+fgMvwaPEWj/7GKCIDUS4sRVvJGm31s7nNL0L
-         0mhCwJZkFMXbbyT0XzLN+SdpysXepW9YEsoG/Xq31cm9IS/QMCWKAkugZrO4r14Q0FrE
-         iHW4frh3ZrLfc3J5hx8AmBeVQakUpeex5WO+L2qXXpscWxd0PJA6sEUOEBBwld3aFlUA
-         /jP+6fxbzGUljOCW8mtDM9D/SMLar+3bHRX41rEfWLhDpAPRtNnqr9DMtUK/R2KZABvO
-         24VQ==
+        bh=uS1AzD48zy+/eWvlXR0+OsODxNt6ULD82nvo8FQ7Lv8=;
+        b=rTscMUjJ9mla5/IQgQfG+CzECUzxq9an/VJb0VYApBoChPvhil45yYI/C6LIIJ+Ij6
+         y+ACUXYFRLQcR/igMGME6edJypF4+sjwCaJmD5r1CWV3R/Zo0mnGkffktGd59FC2UmhM
+         zKXX1r7NR9n2DXr7dtVnO9HcO+LS1KPnd/Rqcpijf41ehXs8SCcX6IAFncCpy5TrhHDc
+         pjBXn8d855T3E/TuHbwxMKv7I582vJK/nOtaDdT3LOrXNOt1qLR6VTPipEq7np4zIbdo
+         5QExy+CvGLDf/V8Wl/YVsQxuj7L248zUKhUFEh9p8geNzcaOzbCqbnVTqCs1+KX8Oty0
+         Xv+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=WauWhR/+pt1gJWtIc3vo/FkfYt8/jl6mKnEG7cOK4es=;
-        b=F+hJs74vSmz7nj0j/PkXDpHixGL307z3o+vAezLvdA+uDnO+7Huhxwz/NXBJSCzUZY
-         JLXneAVLgRpV2HRI8GcXeeWXxctuRQQk2n9SnB7xlnCMyKc/4p6MVKfJKhdRKW1kkRF+
-         HxVYchbMLcP9HB3A9AMLUZw2c04v34/aCr6fS3FRIWqSmaNuDbq8/ALjnslyFQ0ERyvQ
-         nQ8mWuCmh6k7TkE0eEoTJLgaESownGTf4OuoepHcmst7uFv2RQAh7wc2j30gQP7YH9bc
-         0FqjFRS4OXXSSz/N5x+wu1VbaUz/eqwWrmQN0sWhya2RcL5kK/63txwnnEPPkiZq6d5G
-         oDFA==
-X-Gm-Message-State: AOAM5306mzVCKL1IeTsLoy6Diwi61TEH6NwX4tMpdoIXM+n1Auiz8HNd
-        sUfKs6V1gLgAKbdudKP63W7cOMjS3ttYTBRY
-X-Google-Smtp-Source: ABdhPJwHvbX84881scvmshQTaJfmbeDX4R2hi0CA69oo0HzCClSWCHP8k3x2x7NOpgf7Bu10fhxakw==
-X-Received: by 2002:ac8:58c8:: with SMTP id u8mr4060487qta.63.1604091793867;
-        Fri, 30 Oct 2020 14:03:13 -0700 (PDT)
+        bh=uS1AzD48zy+/eWvlXR0+OsODxNt6ULD82nvo8FQ7Lv8=;
+        b=KLuWBTopTq0i7gpVSSHk/05WgO7aEkyb1nq4QMj0ipQBSvPEWxTzKEBM6a/5AyLBM3
+         X51cxa8l3Jhyt4C1DTIqqeH+O8fWXuz0m7JsuINCa6yX7H/ZRJ54IqOCEZGP0SrqD715
+         F9GlLdAT7eeCGpZ6Iv29oZpGHg7eV2POLLoWs7IvR17r46881t0OlX7bhcbwTZ5gLPCe
+         2DFYbTThsnO5dqldqRsRDJ6IpJsakatCIuTT/u7e5GqW0nJEq0fcPQscBgCsZPNusblR
+         LzS3d+O7Yis28nyzfyaPZGSIQJTU8/UvwSXT+im6D9cJD+UiwsjAh8qkL6piNEIsfXLu
+         h0rA==
+X-Gm-Message-State: AOAM532GjlOxv4nmVQe6YmEMmNOfId32HsMb2noYcRkYAAAiY+0+Kj6d
+        9CCzJD75++2d/54lF+80L7f46TEaUEFNNeX5
+X-Google-Smtp-Source: ABdhPJyTpBVKW1Hqzh7d78NuHZiiKqmXlkaMRx1su36mZpzAcvWfrzQfJkByfH4KMd0LQY9BOLlMZQ==
+X-Received: by 2002:a05:622a:14f:: with SMTP id v15mr4177271qtw.245.1604091795514;
+        Fri, 30 Oct 2020 14:03:15 -0700 (PDT)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id r133sm1160660qke.23.2020.10.30.14.03.12
+        by smtp.gmail.com with ESMTPSA id o5sm3431220qtt.3.2020.10.30.14.03.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Oct 2020 14:03:13 -0700 (PDT)
+        Fri, 30 Oct 2020 14:03:14 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 03/14] btrfs: use btrfs_read_node_slot in btrfs_realloc_node
-Date:   Fri, 30 Oct 2020 17:02:55 -0400
-Message-Id: <2e17fbd6cb092191a3e1a87bf538375747e5dd7a.1604091530.git.josef@toxicpanda.com>
+Subject: [PATCH 04/14] btrfs: use btrfs_read_node_slot in walk_down_reloc_tree
+Date:   Fri, 30 Oct 2020 17:02:56 -0400
+Message-Id: <8c7e00e7c4aed3b97fc42b4c229c97760122685f.1604091530.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <cover.1604091530.git.josef@toxicpanda.com>
 References: <cover.1604091530.git.josef@toxicpanda.com>
@@ -62,88 +62,57 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-We have this giant open-coded nightmare in btrfs_realloc_node that does
-the same thing that the normal read path does, which is to see if we
-have the eb in memory already, and if not read it, and verify the eb is
-uptodate.  Delete this open coding and simply use btrfs_read_node_slot.
+We do not need to call read_tree_block() here, simply use the
+btrfs_read_node_slot helper.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/ctree.c | 33 +++------------------------------
- 1 file changed, 3 insertions(+), 30 deletions(-)
+ fs/btrfs/relocation.c | 15 ++-------------
+ 1 file changed, 2 insertions(+), 13 deletions(-)
 
-diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
-index f8a7416d8a24..000f18923c5a 100644
---- a/fs/btrfs/ctree.c
-+++ b/fs/btrfs/ctree.c
-@@ -1578,7 +1578,6 @@ int btrfs_realloc_node(struct btrfs_trans_handle *trans,
- 	struct btrfs_fs_info *fs_info = root->fs_info;
- 	struct extent_buffer *cur;
- 	u64 blocknr;
--	u64 gen;
- 	u64 search_start = *last_ret;
- 	u64 last_block = 0;
- 	u64 other;
-@@ -1587,7 +1586,6 @@ int btrfs_realloc_node(struct btrfs_trans_handle *trans,
+diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
+index 50ca5a4f0a96..bf31b86945d5 100644
+--- a/fs/btrfs/relocation.c
++++ b/fs/btrfs/relocation.c
+@@ -1418,10 +1418,8 @@ static noinline_for_stack
+ int walk_down_reloc_tree(struct btrfs_root *root, struct btrfs_path *path,
+ 			 int *level)
+ {
+-	struct btrfs_fs_info *fs_info = root->fs_info;
+ 	struct extent_buffer *eb = NULL;
  	int i;
- 	int err = 0;
- 	int parent_level;
--	int uptodate;
- 	u32 blocksize;
- 	int progress_passed = 0;
- 	struct btrfs_disk_key disk_key;
-@@ -1607,7 +1605,6 @@ int btrfs_realloc_node(struct btrfs_trans_handle *trans,
- 	btrfs_set_lock_blocking_write(parent);
+-	u64 bytenr;
+ 	u64 ptr_gen = 0;
+ 	u64 last_snapshot;
+ 	u32 nritems;
+@@ -1429,8 +1427,6 @@ int walk_down_reloc_tree(struct btrfs_root *root, struct btrfs_path *path,
+ 	last_snapshot = btrfs_root_last_snapshot(&root->root_item);
  
- 	for (i = start_slot; i <= end_slot; i++) {
+ 	for (i = *level; i > 0; i--) {
 -		struct btrfs_key first_key;
- 		int close = 1;
- 
- 		btrfs_node_key(parent, &disk_key, i);
-@@ -1616,8 +1613,6 @@ int btrfs_realloc_node(struct btrfs_trans_handle *trans,
- 
- 		progress_passed = 1;
- 		blocknr = btrfs_node_blockptr(parent, i);
--		gen = btrfs_node_ptr_generation(parent, i);
--		btrfs_node_key_to_cpu(parent, &first_key, i);
- 		if (last_block == 0)
- 			last_block = blocknr;
- 
-@@ -1634,31 +1629,9 @@ int btrfs_realloc_node(struct btrfs_trans_handle *trans,
- 			continue;
+-
+ 		eb = path->nodes[i];
+ 		nritems = btrfs_header_nritems(eb);
+ 		while (path->slots[i] < nritems) {
+@@ -1450,16 +1446,9 @@ int walk_down_reloc_tree(struct btrfs_root *root, struct btrfs_path *path,
+ 			return 0;
  		}
  
--		cur = find_extent_buffer(fs_info, blocknr);
--		if (cur)
--			uptodate = btrfs_buffer_uptodate(cur, gen, 0);
--		else
--			uptodate = 0;
--		if (!cur || !uptodate) {
--			if (!cur) {
--				cur = read_tree_block(fs_info, blocknr, gen,
--						      parent_level - 1,
--						      &first_key);
--				if (IS_ERR(cur)) {
--					return PTR_ERR(cur);
--				} else if (!extent_buffer_uptodate(cur)) {
--					free_extent_buffer(cur);
--					return -EIO;
--				}
--			} else if (!uptodate) {
--				err = btrfs_read_buffer(cur, gen,
--						parent_level - 1,&first_key);
--				if (err) {
--					free_extent_buffer(cur);
--					return err;
--				}
--			}
+-		bytenr = btrfs_node_blockptr(eb, path->slots[i]);
+-		btrfs_node_key_to_cpu(eb, &first_key, path->slots[i]);
+-		eb = read_tree_block(fs_info, bytenr, ptr_gen, i - 1,
+-				     &first_key);
+-		if (IS_ERR(eb)) {
++		eb = btrfs_read_node_slot(eb, path->slots[i]);
++		if (IS_ERR(eb))
+ 			return PTR_ERR(eb);
+-		} else if (!extent_buffer_uptodate(eb)) {
+-			free_extent_buffer(eb);
+-			return -EIO;
 -		}
-+		cur = btrfs_read_node_slot(parent, i);
-+		if (IS_ERR(cur))
-+			return PTR_ERR(cur);
- 		if (search_start == 0)
- 			search_start = last_block;
- 
+ 		BUG_ON(btrfs_header_level(eb) != i - 1);
+ 		path->nodes[i - 1] = eb;
+ 		path->slots[i - 1] = 0;
 -- 
 2.26.2
 
