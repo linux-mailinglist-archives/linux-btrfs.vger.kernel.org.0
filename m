@@ -2,87 +2,111 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6602D2A12E5
-	for <lists+linux-btrfs@lfdr.de>; Sat, 31 Oct 2020 03:39:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F06F2A135D
+	for <lists+linux-btrfs@lfdr.de>; Sat, 31 Oct 2020 04:40:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726155AbgJaCjK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 30 Oct 2020 22:39:10 -0400
-Received: from server.msgroupspa.com ([185.149.113.111]:35286 "EHLO
-        server.msgroupspa.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725536AbgJaCjI (ORCPT
+        id S1725832AbgJaDkL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 30 Oct 2020 23:40:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44510 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725536AbgJaDkL (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 30 Oct 2020 22:39:08 -0400
-X-Greylist: delayed 66465 seconds by postgrey-1.27 at vger.kernel.org; Fri, 30 Oct 2020 22:38:58 EDT
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=msgroupspa.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        Message-ID:Reply-To:Subject:To:From:Date:MIME-Version:Sender:Cc:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=gOeEglh1DIJatPKqyvOsPs4e0Zw8Lzg9wwjnNfQdiM8=; b=nK3IDYT+DT+afspoRk1vnh030x
-        JBANriWCpwGFqkJTHXsxgXz4zPu7XOm+ROYW+1LhSp6Xws1Wm9Gxv0Soi++3fpbt9358vEM1Vilpv
-        5xlCNIs/Y8Yak5vs3SvhE9OTE/TC6Vf04ze0iphAaRgUliWRhAsWS8s68bwFyUv4tdChHxOH/JwR2
-        Vv+jWIv637j1UH3aZ6QLvXZrjdEmRucUTVxZtH4VnCDjrc4XZi9EwE5rzVsYDmyiNG+eYB+1QY+/8
-        bPWWeacOm9DyYRD9g3bLyiVv0uincEH4/sdJ6fuUSabQfGsi095GX6rsmNCONVo4/rhE4INecsjOZ
-        9QdrBN4A==;
-Received: from [::1] (port=55352 helo=server.msgroupspa.com)
-        by server.msgroupspa.com with esmtpa (Exim 4.93)
-        (envelope-from <no-reply@msgroupspa.com>)
-        id 1kYPRU-0006Ky-OT; Fri, 30 Oct 2020 16:07:24 +0800
+        Fri, 30 Oct 2020 23:40:11 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5157BC0613D5
+        for <linux-btrfs@vger.kernel.org>; Fri, 30 Oct 2020 20:40:11 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id j5so3950996plk.7
+        for <linux-btrfs@vger.kernel.org>; Fri, 30 Oct 2020 20:40:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=9sLYZttYSBtUq0cUE26BQUvUmDdnFfSX5F3EGLpVeHI=;
+        b=Vb9aJfaxCkWdqxgNMRM99nztY7QSpYLScuaXEBOzhT6Wj69pJya8MrwTeR4Ln1zQk2
+         KdaksKI336VoSrRG8nkucwS8tpz46PQ+MwlhssJi6CreaFT77MC182G6r2o663mSqglA
+         fAowCJgHgcf3BwusFbAN9icWZszwQUjMB8wKrNhrYLm7FT2wIlpmldtej54uGap+ObBg
+         Rv/mNPuvp62uqhh6CP3dJSUtt4YNK8803GgpEogODJMl3yRfAEQTw3TT76djKi1TRaEb
+         7EOTBQjTxe5/rrBkkPdGQXAZ4NWOtRKZ8v4jrpYO6Tk4BC9NrywCdqz+q7R0A1mbIOwn
+         MUwA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=9sLYZttYSBtUq0cUE26BQUvUmDdnFfSX5F3EGLpVeHI=;
+        b=sEczMRwFqr1gMis9ygmSGOgh2FKQNSNY+ULkxmiVPde67PbSc9MSZoGWvzK8FDe1Ma
+         J2W2wsuldUyNi0OBe6cLn5ZSBm0evOTihdTuVLQa/41jaj4+8AGhLPs1QG2Z9qUpDp4/
+         KKBYzjFPw1F4YfpOD+Q5AnDIcOlO4Kgcwcw89XLZfOhBVJ9Dv0vVHWGOQw+IkrdEtgAH
+         hvG0+tcoR5y5zVuTmYkFNq7vrCLn6+S02K8V7aFfAR7spxeBNA9iPZ/qwYot1nVoNMyP
+         2LI1v6DG2plTn5CWzS0LQS1kvHGxsoIYMltHIS9j3jzteFm6jJWjSAgnNDHk1WQkv2Ow
+         4FAA==
+X-Gm-Message-State: AOAM530E5O/4vxLi8HaM0rABhF8TsdaY2ngQfLsu2S883NSZJFp3QJj5
+        7CXT8jABfJbVV0j+b1F/Qs9ebQ==
+X-Google-Smtp-Source: ABdhPJzhXFWImduSrC3p9w9T2ccj1dZUS2GmpxNoLWNF2CY7hy3HGvVsm8jH+O8R3Pum+E9poL3fNA==
+X-Received: by 2002:a17:902:d34a:b029:d3:dcb5:a84c with SMTP id l10-20020a170902d34ab02900d3dcb5a84cmr11375124plk.81.1604115610545;
+        Fri, 30 Oct 2020 20:40:10 -0700 (PDT)
+Received: from [192.168.1.134] ([66.219.217.173])
+        by smtp.gmail.com with ESMTPSA id d18sm6450097pgg.41.2020.10.30.20.40.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 30 Oct 2020 20:40:09 -0700 (PDT)
+Subject: Re: [PATCH v9 01/41] block: add bio_add_zone_append_page
+To:     Naohiro Aota <naohiro.aota@wdc.com>, linux-btrfs@vger.kernel.org,
+        dsterba@suse.com
+Cc:     hare@suse.com, linux-fsdevel@vger.kernel.org,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>
+References: <cover.1604065156.git.naohiro.aota@wdc.com>
+ <d9a0a445560db3a9eb240c6535f8dd1bbd0abd96.1604065694.git.naohiro.aota@wdc.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <a7ff7661-0a1d-a528-9b92-7b58b7c11e6b@kernel.dk>
+Date:   Fri, 30 Oct 2020 21:40:08 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Date:   Fri, 30 Oct 2020 16:07:24 +0800
-From:   "Mr. John Galvan" <no-reply@msgroupspa.com>
-To:     undisclosed-recipients:;
-Subject: Hello/Hallo
-Reply-To: galvan.johnny@outlook.com
-User-Agent: Roundcube Webmail/1.4.8
-Message-ID: <8970d4ac30f8022b0ae628d9b69a2d43@msgroupspa.com>
-X-Sender: no-reply@msgroupspa.com
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - server.msgroupspa.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - msgroupspa.com
-X-Get-Message-Sender-Via: server.msgroupspa.com: authenticated_id: no-reply@msgroupspa.com
-X-Authenticated-Sender: server.msgroupspa.com: no-reply@msgroupspa.com
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+In-Reply-To: <d9a0a445560db3a9eb240c6535f8dd1bbd0abd96.1604065694.git.naohiro.aota@wdc.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On 10/30/20 7:51 AM, Naohiro Aota wrote:
+> From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+> 
+> Add bio_add_zone_append_page(), a wrapper around bio_add_hw_page() which
+> is intended to be used by file systems that directly add pages to a bio
+> instead of using bio_iov_iter_get_pages().
 
+Not sure what this is for, since I'm only on one patch in the series...
+
+> +/**
+> + * bio_add_zone_append_page - attempt to add page to zone-append bio
+> + * @bio: destination bio
+> + * @page: page to add
+> + * @len: vec entry length
+> + * @offset: vec entry offset
+> + *
+> + * Attempt to add a page to the bio_vec maplist of a bio that will be submitted
+> + * for a zone-append request. This can fail for a number of reasons, such as the
+> + * bio being full or the target block device is not a zoned block device or
+> + * other limitations of the target block device. The target block device must
+> + * allow bio's up to PAGE_SIZE, so it is always possible to add a single page
+> + * to an empty bio.
+> + */
+
+This should include a
+
+Return value:
+
+section, explaining how it returns number of bytes added (and why 0 is thus
+a failure case).
+
+> +int bio_add_zone_append_page(struct bio *bio, struct page *page,
+> +			     unsigned int len, unsigned int offset)
+
+Should this return unsigned int? If not, how would it work if someone
+asked for INT_MAX + 4k.
 
 -- 
-Sir/Madam,
+Jens Axboe
 
-I have access to very vital information that can be used to move a huge 
-amount of money. I have done my homework very well and I have the 
-machineries in place to get it done since I am still in active service. 
-If it was possible for me to do it alone I would not have bothered 
-contacting you. Ultimately I need an honest foreigner to play an 
-important role in the completion of this business transaction. Send 
-responds to this email: galvan.johnny@outlook.com
-
-Regards,
-John Galvan
-
----------------------------------------------------------------
-
-Sir / Madam,
-
-Ich habe Zugang zu sehr wichtigen Informationen, mit denen ich eine 
-große Menge Geld bewegen kann. Ich habe meine Hausaufgaben sehr gut 
-gemacht und ich habe die Maschinen, um sie zu erledigen, da ich immer 
-noch im aktiven Dienst bin. Wenn es mir möglich gewesen wäre, es alleine 
-zu tun, hätte ich mich nicht darum gekümmert, Sie zu kontaktieren. 
-Letztendlich brauche ich einen ehrlichen Ausländer, der eine wichtige 
-Rolle beim Abschluss dieses Geschäftsvorgangs spielt. Senden Sie 
-Antworten auf diese E-Mail: galvan.johnny@outlook.com
-
-Grüße,
-John Galvan
