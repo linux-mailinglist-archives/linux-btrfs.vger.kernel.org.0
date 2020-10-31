@@ -2,111 +2,108 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F06F2A135D
-	for <lists+linux-btrfs@lfdr.de>; Sat, 31 Oct 2020 04:40:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E87BB2A1973
+	for <lists+linux-btrfs@lfdr.de>; Sat, 31 Oct 2020 19:21:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725832AbgJaDkL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 30 Oct 2020 23:40:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44510 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725536AbgJaDkL (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 30 Oct 2020 23:40:11 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5157BC0613D5
-        for <linux-btrfs@vger.kernel.org>; Fri, 30 Oct 2020 20:40:11 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id j5so3950996plk.7
-        for <linux-btrfs@vger.kernel.org>; Fri, 30 Oct 2020 20:40:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=9sLYZttYSBtUq0cUE26BQUvUmDdnFfSX5F3EGLpVeHI=;
-        b=Vb9aJfaxCkWdqxgNMRM99nztY7QSpYLScuaXEBOzhT6Wj69pJya8MrwTeR4Ln1zQk2
-         KdaksKI336VoSrRG8nkucwS8tpz46PQ+MwlhssJi6CreaFT77MC182G6r2o663mSqglA
-         fAowCJgHgcf3BwusFbAN9icWZszwQUjMB8wKrNhrYLm7FT2wIlpmldtej54uGap+ObBg
-         Rv/mNPuvp62uqhh6CP3dJSUtt4YNK8803GgpEogODJMl3yRfAEQTw3TT76djKi1TRaEb
-         7EOTBQjTxe5/rrBkkPdGQXAZ4NWOtRKZ8v4jrpYO6Tk4BC9NrywCdqz+q7R0A1mbIOwn
-         MUwA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=9sLYZttYSBtUq0cUE26BQUvUmDdnFfSX5F3EGLpVeHI=;
-        b=sEczMRwFqr1gMis9ygmSGOgh2FKQNSNY+ULkxmiVPde67PbSc9MSZoGWvzK8FDe1Ma
-         J2W2wsuldUyNi0OBe6cLn5ZSBm0evOTihdTuVLQa/41jaj4+8AGhLPs1QG2Z9qUpDp4/
-         KKBYzjFPw1F4YfpOD+Q5AnDIcOlO4Kgcwcw89XLZfOhBVJ9Dv0vVHWGOQw+IkrdEtgAH
-         hvG0+tcoR5y5zVuTmYkFNq7vrCLn6+S02K8V7aFfAR7spxeBNA9iPZ/qwYot1nVoNMyP
-         2LI1v6DG2plTn5CWzS0LQS1kvHGxsoIYMltHIS9j3jzteFm6jJWjSAgnNDHk1WQkv2Ow
-         4FAA==
-X-Gm-Message-State: AOAM530E5O/4vxLi8HaM0rABhF8TsdaY2ngQfLsu2S883NSZJFp3QJj5
-        7CXT8jABfJbVV0j+b1F/Qs9ebQ==
-X-Google-Smtp-Source: ABdhPJzhXFWImduSrC3p9w9T2ccj1dZUS2GmpxNoLWNF2CY7hy3HGvVsm8jH+O8R3Pum+E9poL3fNA==
-X-Received: by 2002:a17:902:d34a:b029:d3:dcb5:a84c with SMTP id l10-20020a170902d34ab02900d3dcb5a84cmr11375124plk.81.1604115610545;
-        Fri, 30 Oct 2020 20:40:10 -0700 (PDT)
-Received: from [192.168.1.134] ([66.219.217.173])
-        by smtp.gmail.com with ESMTPSA id d18sm6450097pgg.41.2020.10.30.20.40.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 30 Oct 2020 20:40:09 -0700 (PDT)
-Subject: Re: [PATCH v9 01/41] block: add bio_add_zone_append_page
-To:     Naohiro Aota <naohiro.aota@wdc.com>, linux-btrfs@vger.kernel.org,
-        dsterba@suse.com
-Cc:     hare@suse.com, linux-fsdevel@vger.kernel.org,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>
-References: <cover.1604065156.git.naohiro.aota@wdc.com>
- <d9a0a445560db3a9eb240c6535f8dd1bbd0abd96.1604065694.git.naohiro.aota@wdc.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <a7ff7661-0a1d-a528-9b92-7b58b7c11e6b@kernel.dk>
-Date:   Fri, 30 Oct 2020 21:40:08 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1728116AbgJaSVz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 31 Oct 2020 14:21:55 -0400
+Received: from mail.nethype.de ([5.9.56.24]:43103 "EHLO mail.nethype.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726736AbgJaSVz (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Sat, 31 Oct 2020 14:21:55 -0400
+X-Greylist: delayed 915 seconds by postgrey-1.27 at vger.kernel.org; Sat, 31 Oct 2020 14:21:53 EDT
+Received: from [10.0.0.5] (helo=doom.schmorp.de)
+        by mail.nethype.de with esmtp (Exim 4.92)
+        (envelope-from <schmorp@schmorp.de>)
+        id 1kYvGv-002r7w-07
+        for linux-btrfs@vger.kernel.org; Sat, 31 Oct 2020 18:06:37 +0000
+Received: from [10.0.0.1] (helo=cerebro.laendle)
+        by doom.schmorp.de with esmtp (Exim 4.92)
+        (envelope-from <schmorp@schmorp.de>)
+        id 1kYvGu-00084g-Rg
+        for linux-btrfs@vger.kernel.org; Sat, 31 Oct 2020 18:06:36 +0000
+Received: from root by cerebro.laendle with local (Exim 4.92)
+        (envelope-from <root@schmorp.de>)
+        id 1kYvGu-0001wU-RC
+        for linux-btrfs@vger.kernel.org; Sat, 31 Oct 2020 19:06:36 +0100
+Date:   Sat, 31 Oct 2020 19:06:36 +0100
+From:   Marc Lehmann <schmorp@schmorp.de>
+To:     linux-btrfs@vger.kernel.org
+Subject: NULL pointer exception in btrfs_compress_pages
+Message-ID: <20201031180636.GA7373@schmorp.de>
 MIME-Version: 1.0
-In-Reply-To: <d9a0a445560db3a9eb240c6535f8dd1bbd0abd96.1604065694.git.naohiro.aota@wdc.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+OpenPGP: id=904ad2f81fb16978e7536f726dea2ba30bc39eb6;
+ url=http://pgp.schmorp.de/schmorp-pgpkey.txt; preference=signencrypt
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 10/30/20 7:51 AM, Naohiro Aota wrote:
-> From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-> 
-> Add bio_add_zone_append_page(), a wrapper around bio_add_hw_page() which
-> is intended to be used by file systems that directly add pages to a bio
-> instead of using bio_iov_iter_get_pages().
+Hi!
 
-Not sure what this is for, since I'm only on one patch in the series...
+It seems some kernel newer than 5.4.55 has introduced a NULL pointer
+access in btrfs_compress_pages.
 
-> +/**
-> + * bio_add_zone_append_page - attempt to add page to zone-append bio
-> + * @bio: destination bio
-> + * @page: page to add
-> + * @len: vec entry length
-> + * @offset: vec entry offset
-> + *
-> + * Attempt to add a page to the bio_vec maplist of a bio that will be submitted
-> + * for a zone-append request. This can fail for a number of reasons, such as the
-> + * bio being full or the target block device is not a zoned block device or
-> + * other limitations of the target block device. The target block device must
-> + * allow bio's up to PAGE_SIZE, so it is always possible to add a single page
-> + * to an empty bio.
-> + */
+5.4.45 and 5.4.55 work fine on the systems in question, while 5.4.73 and
+5.8.17 both generate variations of the following oops at some point during
+runtime (usually within 1-2 hours, sometimes at boot). btrfs scrub and
+btrfsck find nothing to complain about in the filesystems, and compression
+is not globally enabled on the filesystems (but possibly enabled for some
+directories).
 
-This should include a
+[ 2735.988544] BUG: kernel NULL pointer dereference, address: 0000000000000000
+[ 2735.996149] #PF: supervisor instruction fetch in kernel mode
+[ 2736.003692] #PF: error_code(0x0010) - not-present page
+[ 2736.011098] PGD 0 P4D 0 
+[ 2736.018429] Oops: 0010 [#1] SMP NOPTI
+[ 2736.025643] CPU: 3 PID: 6853 Comm: kworker/u8:9 Not tainted 5.4.73-050473-generic #202010291054
+[ 2736.032992] Hardware name: To Be Filled By O.E.M. To Be Filled By O.E.M./C2550D4I, BIOS P2.30 01/26/2016
+[ 2736.047966] Workqueue: btrfs-delalloc btrfs_work_helper [btrfs]
+[ 2736.055481] RIP: 0010:0x0
+[ 2736.062828] Code: Bad RIP value.
+[ 2736.070001] RSP: 0018:ffffafafc389fce8 EFLAGS: 00010282
+[ 2736.077117] RAX: 0000000000000000 RBX: ffffffffc0595a60 RCX: ffff8a2995282250
+[ 2736.084345] RDX: 00000000000fc000 RSI: ffff8a29a192ec98 RDI: ffff8a2a623e37e0
+[ 2736.091651] RBP: ffffafafc389fd30 R08: ffffafafc389fda0 R09: ffffafafc389fdb0
+[ 2736.098860] R10: ffff8a2a623e37e0 R11: ffff8a2995282250 R12: ffff8a2a623e37e0
+[ 2736.105936] R13: ffff8a29a192ec98 R14: 00000000000fc000 R15: ffff8a2995282250
+[ 2736.113016] FS:  0000000000000000(0000) GS:ffff8a2a6fb80000(0000) knlGS:0000000000000000
+[ 2736.120108] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[ 2736.127049] CR2: ffffffffffffffd6 CR3: 000000026d40a000 CR4: 00000000001006e0
+[ 2736.133957] Call Trace:
+[ 2736.140687]  btrfs_compress_pages+0x6b/0xa0 [btrfs]
+[ 2736.147444]  compress_file_range+0x2e2/0x830 [btrfs]
+[ 2736.154301]  ? submit_compressed_extents+0x430/0x430 [btrfs]
+[ 2736.161085]  async_cow_start+0x16/0x40 [btrfs]
+[ 2736.167715]  btrfs_work_helper+0xc1/0x3a0 [btrfs]
+[ 2736.174166]  ? __schedule+0x2eb/0x740
+[ 2736.180473]  process_one_work+0x1eb/0x3b0
+[ 2736.186761]  worker_thread+0x4d/0x400
+[ 2736.192888]  kthread+0x104/0x140
+[ 2736.198819]  ? process_one_work+0x3b0/0x3b0
+[ 2736.204741]  ? kthread_park+0x90/0x90
+[ 2736.210660]  ret_from_fork+0x1f/0x40
+[ 2736.216421] Modules linked in: xfs dm_crypt msr bfq intel_powerclamp kvm_intel kvm crct10dif_pclmul crc32_pclmul ghash_clmulni_intel aesni_intel snd_pcm crypto_simd snd_timer cryptd glue_helper intel_cstate snd soundcore joydev pcspkr input_leds ipmi_ssif mac_hid ipmi_si ipmi_devintf ipmi_msghandler nct6775 hwmon_vid coretemp sunrpc ip_tables x_tables autofs4 btrfs zstd_compress raid10 raid456 async_raid6_recov async_memcpy async_pq async_xor async_tx xor raid6_pq libcrc32c raid1 raid0 multipath linear ses enclosure hid_generic usbkbd usbmouse usbhid hid gpio_ich i2c_ismt mpt3sas lpc_ich igb i2c_i801 i2c_algo_bit ahci dca raid_class libahci scsi_transport_sas
+[ 2736.258562] CR2: 0000000000000000
+[ 2736.264814] ---[ end trace 696b8659e073a6a0 ]---
+[ 2736.295596] RIP: 0010:0x0
+[ 2736.301519] Code: Bad RIP value.
+[ 2736.307333] RSP: 0018:ffffafafc389fce8 EFLAGS: 00010282
+[ 2736.313169] RAX: 0000000000000000 RBX: ffffffffc0595a60 RCX: ffff8a2995282250
+[ 2736.319087] RDX: 00000000000fc000 RSI: ffff8a29a192ec98 RDI: ffff8a2a623e37e0
+[ 2736.325030] RBP: ffffafafc389fd30 R08: ffffafafc389fda0 R09: ffffafafc389fdb0
+[ 2736.330974] R10: ffff8a2a623e37e0 R11: ffff8a2995282250 R12: ffff8a2a623e37e0
+[ 2736.336873] R13: ffff8a29a192ec98 R14: 00000000000fc000 R15: ffff8a2995282250
+[ 2736.342795] FS:  0000000000000000(0000) GS:ffff8a2a6fb80000(0000) knlGS:0000000000000000
+[ 2736.348832] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[ 2736.354847] CR2: ffffffffffffffd6 CR3: 000000026d40a000 CR4: 00000000001006e0
 
-Return value:
-
-section, explaining how it returns number of bytes added (and why 0 is thus
-a failure case).
-
-> +int bio_add_zone_append_page(struct bio *bio, struct page *page,
-> +			     unsigned int len, unsigned int offset)
-
-Should this return unsigned int? If not, how would it work if someone
-asked for INT_MAX + 4k.
 
 -- 
-Jens Axboe
-
+                The choice of a       Deliantra, the free code+content MORPG
+      -----==-     _GNU_              http://www.deliantra.net
+      ----==-- _       generation
+      ---==---(_)__  __ ____  __      Marc Lehmann
+      --==---/ / _ \/ // /\ \/ /      schmorp@schmorp.de
+      -=====/_/_//_/\_,_/ /_/\_\
