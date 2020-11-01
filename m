@@ -2,108 +2,137 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E87BB2A1973
-	for <lists+linux-btrfs@lfdr.de>; Sat, 31 Oct 2020 19:21:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 803882A1BC2
+	for <lists+linux-btrfs@lfdr.de>; Sun,  1 Nov 2020 04:26:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728116AbgJaSVz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 31 Oct 2020 14:21:55 -0400
-Received: from mail.nethype.de ([5.9.56.24]:43103 "EHLO mail.nethype.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726736AbgJaSVz (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 31 Oct 2020 14:21:55 -0400
-X-Greylist: delayed 915 seconds by postgrey-1.27 at vger.kernel.org; Sat, 31 Oct 2020 14:21:53 EDT
-Received: from [10.0.0.5] (helo=doom.schmorp.de)
-        by mail.nethype.de with esmtp (Exim 4.92)
-        (envelope-from <schmorp@schmorp.de>)
-        id 1kYvGv-002r7w-07
-        for linux-btrfs@vger.kernel.org; Sat, 31 Oct 2020 18:06:37 +0000
-Received: from [10.0.0.1] (helo=cerebro.laendle)
-        by doom.schmorp.de with esmtp (Exim 4.92)
-        (envelope-from <schmorp@schmorp.de>)
-        id 1kYvGu-00084g-Rg
-        for linux-btrfs@vger.kernel.org; Sat, 31 Oct 2020 18:06:36 +0000
-Received: from root by cerebro.laendle with local (Exim 4.92)
-        (envelope-from <root@schmorp.de>)
-        id 1kYvGu-0001wU-RC
-        for linux-btrfs@vger.kernel.org; Sat, 31 Oct 2020 19:06:36 +0100
-Date:   Sat, 31 Oct 2020 19:06:36 +0100
-From:   Marc Lehmann <schmorp@schmorp.de>
-To:     linux-btrfs@vger.kernel.org
-Subject: NULL pointer exception in btrfs_compress_pages
-Message-ID: <20201031180636.GA7373@schmorp.de>
+        id S1726616AbgKAD0i (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 31 Oct 2020 23:26:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37138 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726486AbgKAD0h (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Sat, 31 Oct 2020 23:26:37 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D25E5C0617A6
+        for <linux-btrfs@vger.kernel.org>; Sat, 31 Oct 2020 20:26:37 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id h6so8059554pgk.4
+        for <linux-btrfs@vger.kernel.org>; Sat, 31 Oct 2020 20:26:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=YhcmvDa00P7VgFHzLeGktWkrt1O6MPZgOnm7RyXSxsg=;
+        b=gABUnXbevMGuAVvfdCDzPAzH8a1EmTiIs/LnGpx8Z8LTlm8ZjRAMvway8UKc2XW3sv
+         H2NmvvmSolavCHD1yiioU64hQS382efCoa0wW6L7GQ8eubzFhMyEUqIo9ED5cj2a2baJ
+         3Xso63DnPwFuc4kj7Mvs34IU53yaksJj1CJf8QmWP4xmaGAaAaXh+th8V67aHvQuPsiO
+         169PuSwMAliLw06erGVRoRh2ZM4+kOyzEmoS1zzWUcH1iSyt9x5JB5hZfvOWCZ7zp3nd
+         l5haMtiuZ0AXLuwOoxeqtv/TbbSnhLSAgdL4qlBjZOdtscGnWKg/5rvp4qrft+epNgCp
+         tq9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=YhcmvDa00P7VgFHzLeGktWkrt1O6MPZgOnm7RyXSxsg=;
+        b=lE8PJnzkYbGbi7nxsV5h8B90gfFXkgL9ljPvRJs4ZhnSHGchuXHlTRjk3fA9SIsljy
+         rrtNycpeeKCWMcFJa6xoTFk5NM+Gfm+8ITg/mpD/QXDokUnxZcjNyBCR1r8Pt252esVX
+         qtg4eNfWXuPsr2T57W4r5X1sxZ2FMeSzhzwHA7QnIvGVMFhm2K9GcfIgopEGoBAv4m+f
+         wEdmqn0EUVU2BvPSOsvzgHuroJjJ/eTdcg7oOFI2x+QJzR3p1rDoorURAaxxMX2HKhx4
+         roPvsPZtfpxv47klQu3Srz9QgqKFtobAFs7A0Rc39bjqy/bTh9V4j4ZbgR+q8y7n5wDS
+         mQUg==
+X-Gm-Message-State: AOAM533mg28XQc9c5G2z11y3Zh0VYa6PkvXOh3PUJB3he5imnqWQ+7Pq
+        6KEfKe/2sqUzFIylNccflGU9hT2Ajmnw9A==
+X-Google-Smtp-Source: ABdhPJy/VP4WmFWKDDl7bcoQ+axkV08FU4HpgUI1Nwy/1NFHFnb+rM2e8vyBkRxkMrMkM8qVikQaWQ==
+X-Received: by 2002:a65:6109:: with SMTP id z9mr8692542pgu.112.1604201197322;
+        Sat, 31 Oct 2020 20:26:37 -0700 (PDT)
+Received: from realwakka ([175.195.33.253])
+        by smtp.gmail.com with ESMTPSA id s18sm9027148pgh.60.2020.10.31.20.26.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 31 Oct 2020 20:26:36 -0700 (PDT)
+Date:   Sun, 1 Nov 2020 03:26:22 +0000
+From:   Sidong Yang <realwakka@gmail.com>
+To:     dsterba@suse.cz, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v2] btrfs-progs: device stats: add json output format
+Message-ID: <20201101032622.GA1015@realwakka>
+References: <20201004112557.5568-1-realwakka@gmail.com>
+ <20201030175525.GZ6756@twin.jikos.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-OpenPGP: id=904ad2f81fb16978e7536f726dea2ba30bc39eb6;
- url=http://pgp.schmorp.de/schmorp-pgpkey.txt; preference=signencrypt
+In-Reply-To: <20201030175525.GZ6756@twin.jikos.cz>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi!
+On Fri, Oct 30, 2020 at 06:55:25PM +0100, David Sterba wrote:
+> On Sun, Oct 04, 2020 at 11:25:57AM +0000, Sidong Yang wrote:
+> > Add supports for json formatting, this patch changes hard coded printing
+> > code to formatted print with output formatter. Json output would be
+> > useful for other programs that parse output of the command. but it
+> > changes the text format.
+> > 
+> > Example text format:
+> > 
+> > device:                 /dev/vdb
+> > write_io_errs:          0
+> > read_io_errs:           0
+> > flush_io_errs:          0
+> > corruption_errs:        0
+> > generation_errs:        0
+> > 
+> > Example json format:
+> > 
+> > {
+> >   "__header": {
+> >     "version": "1"
+> >   },
+> >   "device-stats": {
+> >     "/dev/vdb": {
+> >       "device": "/dev/vdb",
+> >       "write_io_errs": "0",
+> >       "read_io_errs": "0",
+> >       "flush_io_errs": "0",
+> >       "corruption_errs": "0",
+> >       "generation_errs": "0"
+> >     }
+> >   },
+> > }
 
-It seems some kernel newer than 5.4.55 has introduced a NULL pointer
-access in btrfs_compress_pages.
+Hi David!
+Thanks for review.
 
-5.4.45 and 5.4.55 work fine on the systems in question, while 5.4.73 and
-5.8.17 both generate variations of the following oops at some point during
-runtime (usually within 1-2 hours, sometimes at boot). btrfs scrub and
-btrfsck find nothing to complain about in the filesystems, and compression
-is not globally enabled on the filesystems (but possibly enabled for some
-directories).
+> 
+> The overall structure looks good, ie. the separate object 'device-stats'
+> and then the contents. For that the device id should be either key to a
+> map, or we can put it into an array (where device id must be present
+> too).
 
-[ 2735.988544] BUG: kernel NULL pointer dereference, address: 0000000000000000
-[ 2735.996149] #PF: supervisor instruction fetch in kernel mode
-[ 2736.003692] #PF: error_code(0x0010) - not-present page
-[ 2736.011098] PGD 0 P4D 0 
-[ 2736.018429] Oops: 0010 [#1] SMP NOPTI
-[ 2736.025643] CPU: 3 PID: 6853 Comm: kworker/u8:9 Not tainted 5.4.73-050473-generic #202010291054
-[ 2736.032992] Hardware name: To Be Filled By O.E.M. To Be Filled By O.E.M./C2550D4I, BIOS P2.30 01/26/2016
-[ 2736.047966] Workqueue: btrfs-delalloc btrfs_work_helper [btrfs]
-[ 2736.055481] RIP: 0010:0x0
-[ 2736.062828] Code: Bad RIP value.
-[ 2736.070001] RSP: 0018:ffffafafc389fce8 EFLAGS: 00010282
-[ 2736.077117] RAX: 0000000000000000 RBX: ffffffffc0595a60 RCX: ffff8a2995282250
-[ 2736.084345] RDX: 00000000000fc000 RSI: ffff8a29a192ec98 RDI: ffff8a2a623e37e0
-[ 2736.091651] RBP: ffffafafc389fd30 R08: ffffafafc389fda0 R09: ffffafafc389fdb0
-[ 2736.098860] R10: ffff8a2a623e37e0 R11: ffff8a2995282250 R12: ffff8a2a623e37e0
-[ 2736.105936] R13: ffff8a29a192ec98 R14: 00000000000fc000 R15: ffff8a2995282250
-[ 2736.113016] FS:  0000000000000000(0000) GS:ffff8a2a6fb80000(0000) knlGS:0000000000000000
-[ 2736.120108] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[ 2736.127049] CR2: ffffffffffffffd6 CR3: 000000026d40a000 CR4: 00000000001006e0
-[ 2736.133957] Call Trace:
-[ 2736.140687]  btrfs_compress_pages+0x6b/0xa0 [btrfs]
-[ 2736.147444]  compress_file_range+0x2e2/0x830 [btrfs]
-[ 2736.154301]  ? submit_compressed_extents+0x430/0x430 [btrfs]
-[ 2736.161085]  async_cow_start+0x16/0x40 [btrfs]
-[ 2736.167715]  btrfs_work_helper+0xc1/0x3a0 [btrfs]
-[ 2736.174166]  ? __schedule+0x2eb/0x740
-[ 2736.180473]  process_one_work+0x1eb/0x3b0
-[ 2736.186761]  worker_thread+0x4d/0x400
-[ 2736.192888]  kthread+0x104/0x140
-[ 2736.198819]  ? process_one_work+0x3b0/0x3b0
-[ 2736.204741]  ? kthread_park+0x90/0x90
-[ 2736.210660]  ret_from_fork+0x1f/0x40
-[ 2736.216421] Modules linked in: xfs dm_crypt msr bfq intel_powerclamp kvm_intel kvm crct10dif_pclmul crc32_pclmul ghash_clmulni_intel aesni_intel snd_pcm crypto_simd snd_timer cryptd glue_helper intel_cstate snd soundcore joydev pcspkr input_leds ipmi_ssif mac_hid ipmi_si ipmi_devintf ipmi_msghandler nct6775 hwmon_vid coretemp sunrpc ip_tables x_tables autofs4 btrfs zstd_compress raid10 raid456 async_raid6_recov async_memcpy async_pq async_xor async_tx xor raid6_pq libcrc32c raid1 raid0 multipath linear ses enclosure hid_generic usbkbd usbmouse usbhid hid gpio_ich i2c_ismt mpt3sas lpc_ich igb i2c_i801 i2c_algo_bit ahci dca raid_class libahci scsi_transport_sas
-[ 2736.258562] CR2: 0000000000000000
-[ 2736.264814] ---[ end trace 696b8659e073a6a0 ]---
-[ 2736.295596] RIP: 0010:0x0
-[ 2736.301519] Code: Bad RIP value.
-[ 2736.307333] RSP: 0018:ffffafafc389fce8 EFLAGS: 00010282
-[ 2736.313169] RAX: 0000000000000000 RBX: ffffffffc0595a60 RCX: ffff8a2995282250
-[ 2736.319087] RDX: 00000000000fc000 RSI: ffff8a29a192ec98 RDI: ffff8a2a623e37e0
-[ 2736.325030] RBP: ffffafafc389fd30 R08: ffffafafc389fda0 R09: ffffafafc389fdb0
-[ 2736.330974] R10: ffff8a2a623e37e0 R11: ffff8a2995282250 R12: ffff8a2a623e37e0
-[ 2736.336873] R13: ffff8a29a192ec98 R14: 00000000000fc000 R15: ffff8a2995282250
-[ 2736.342795] FS:  0000000000000000(0000) GS:ffff8a2a6fb80000(0000) knlGS:0000000000000000
-[ 2736.348832] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[ 2736.354847] CR2: ffffffffffffffd6 CR3: 000000026d40a000 CR4: 00000000001006e0
+Thanks, You mean that devid should be key to json map? And I think that 
+using as key is better than using array. Example should be like this.
 
+{
+  "__header": {
+    "version": "1"
+  },
+  "device-stats": {
+    "1": {
+      "devid": "1",
+      "device": "/dev/vdb",
+      "write_io_errs": "0",
+      "read_io_errs": "0",
+      "flush_io_errs": "0",
+      "corruption_errs": "0",
+      "generation_errs": "0"
+    }
+  },
+}
 
--- 
-                The choice of a       Deliantra, the free code+content MORPG
-      -----==-     _GNU_              http://www.deliantra.net
-      ----==-- _       generation
-      ---==---(_)__  __ ____  __      Marc Lehmann
-      --==---/ / _ \/ // /\ \/ /      schmorp@schmorp.de
-      -=====/_/_//_/\_,_/ /_/\_\
+If so, I'll write a new patch for this.
+
+Thanks,
+Sidong
+
+> 
+> A check if the format is usable you can try to write a sample tool that
+> parses some of the data and prints them. So eg. using python or jq and
+> print stats of device 1. Which points out that device id is missing for
+> example.
