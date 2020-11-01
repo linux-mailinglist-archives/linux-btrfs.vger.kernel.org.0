@@ -2,110 +2,134 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A43442A20A3
-	for <lists+linux-btrfs@lfdr.de>; Sun,  1 Nov 2020 18:50:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB7FE2A21E1
+	for <lists+linux-btrfs@lfdr.de>; Sun,  1 Nov 2020 22:24:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727151AbgKARuM convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-btrfs@lfdr.de>); Sun, 1 Nov 2020 12:50:12 -0500
-Received: from james.kirk.hungrycats.org ([174.142.39.145]:48648 "EHLO
-        james.kirk.hungrycats.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727086AbgKARuM (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 1 Nov 2020 12:50:12 -0500
-Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
-        id 2251B881068; Sun,  1 Nov 2020 12:49:07 -0500 (EST)
-Date:   Sun, 1 Nov 2020 12:49:03 -0500
-From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-To:     waxhead <waxhead@dirtcellar.net>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Subject: Re: Switching from spacecache v1 to v2
-Message-ID: <20201101174902.GU5890@hungrycats.org>
-References: <fc45b21c-d24e-641c-efab-e1544aa98071@dirtcellar.net>
+        id S1727309AbgKAVY3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 1 Nov 2020 16:24:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60458 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727284AbgKAVY3 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 1 Nov 2020 16:24:29 -0500
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00CC8C0617A6
+        for <linux-btrfs@vger.kernel.org>; Sun,  1 Nov 2020 13:24:28 -0800 (PST)
+Received: by mail-pf1-x444.google.com with SMTP id 13so9314868pfy.4
+        for <linux-btrfs@vger.kernel.org>; Sun, 01 Nov 2020 13:24:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=kPo0oUNlxK9SIYHNl49zYd9L6Z1ZjSxWCoiFbvzOXXU=;
+        b=OU6Kl5ntKR8Yp37fhLFJDsuhwYNm3YG5JppNT7W7ZuMfeBeQamri3GjnnZnpL9Ggts
+         h428qqIPnjxTRBUN2AxR+507aEBQG7wV67gkCDRltKNzqruAI5Z3Yw1dynOi6UJi8Q1p
+         H+H3Fwdjp7N8+760yidK43UDHmKaoQqLTug6ZBfaLdqzhrjUypljtmONn9+B6Ybuw80r
+         mrRey3x8y9zzVHQqCFhjjodh0NZ5ZHNNWjWAp5MGfIoVGmIGmeVe980SziqRsSBOTuGb
+         Qte46GoxvNwrTc5z5FWVM5VnY9fisFrca+SXj6b5srWaCon/JVW1Z6f2VsrjuHtUtORG
+         mrAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=kPo0oUNlxK9SIYHNl49zYd9L6Z1ZjSxWCoiFbvzOXXU=;
+        b=V4dBvwjJYGfVdnGliKMOULjw4gsvkq4usdzopwZ1nkDznOJFKlnvS4Eglpa1Jo1M1g
+         OqZCGDmiYH1DsIH1mpD47VQT/xTgY9yxZAve8Gx3lVUzhXE5LfbJDRONuUpEofgrfzob
+         s8AokhhuB1+MmXyHmJXsQp3uIBlY8ksUFsqgt9meznCuu+UmYR34x5owjQUPThWAz4UW
+         UtO0RNsat0cFwbLsQzpxlbBO9bCBeY9Ke0ROOcpHb88ifTUR4SIY3FpD2plJx6yIF3SF
+         29nYoBEmQATMlu5p4ccvUrQq/KWwwDFiVqD+mc3v5G/wca1FLsPvVqIIjVCsvGgocOQi
+         I8Jw==
+X-Gm-Message-State: AOAM530v9qy5FMSeOQY/TcksnKm9O7XgNgDsk59qQFPSxVrNaCO7oZom
+        6ibfRwBNtbm58AprkjyPiyc=
+X-Google-Smtp-Source: ABdhPJwN1vsWzMsNAbNYhMqzMXVLGYvbIzMAvRES/6fOrCjZdiT4eAy0Xj52S2hQqoAzn0m9S2wImA==
+X-Received: by 2002:a17:90a:fb92:: with SMTP id cp18mr14429600pjb.228.1604265868520;
+        Sun, 01 Nov 2020 13:24:28 -0800 (PST)
+Received: from realwakka ([175.195.128.78])
+        by smtp.gmail.com with ESMTPSA id r8sm8492244pga.33.2020.11.01.13.24.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 01 Nov 2020 13:24:27 -0800 (PST)
+Date:   Sun, 1 Nov 2020 21:24:16 +0000
+From:   Sidong Yang <realwakka@gmail.com>
+To:     dsterba@suse.cz, linux-btrfs@vger.kernel.org
+Cc:     Sidong Yang <realwakka@gmail.com>
+Subject: Re: [PATCH v2] btrfs-progs: device stats: add json output format
+Message-ID: <20201101212416.GA2637@realwakka>
+References: <20201004112557.5568-1-realwakka@gmail.com>
+ <20201030175525.GZ6756@twin.jikos.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <fc45b21c-d24e-641c-efab-e1544aa98071@dirtcellar.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201030175525.GZ6756@twin.jikos.cz>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sat, Oct 31, 2020 at 01:27:57AM +0100, waxhead wrote:
-> A couple of months ago I asked on IRC how to properly switch from version 1
-> to version 2 of the space cache. I also asked if the space cache v2 was
-> considered stable.
-> I only remember what we talked about, and from what I understood it was not
-> as easy to switch as the wiki may seem to indicate.
+On Fri, Oct 30, 2020 at 06:55:25PM +0100, David Sterba wrote:
+> On Sun, Oct 04, 2020 at 11:25:57AM +0000, Sidong Yang wrote:
+> > Add supports for json formatting, this patch changes hard coded printing
+> > code to formatted print with output formatter. Json output would be
+> > useful for other programs that parse output of the command. but it
+> > changes the text format.
+> > 
+> > Example text format:
+> > 
+> > device:                 /dev/vdb
+> > write_io_errs:          0
+> > read_io_errs:           0
+> > flush_io_errs:          0
+> > corruption_errs:        0
+> > generation_errs:        0
+> > 
+> > Example json format:
+> > 
+> > {
+> >   "__header": {
+> >     "version": "1"
+> >   },
+> >   "device-stats": {
+> >     "/dev/vdb": {
+> >       "device": "/dev/vdb",
+> >       "write_io_errs": "0",
+> >       "read_io_errs": "0",
+> >       "flush_io_errs": "0",
+> >       "corruption_errs": "0",
+> >       "generation_errs": "0"
+> >     }
+> >   },
+> > }
 > 
-> We run a box with a btrfs filesystem at 19TB, 9 disks, 11 subvolumes that
-> contains about 6.5 million files (and this number is growing).
+> The overall structure looks good, ie. the separate object 'device-stats'
+> and then the contents. For that the device id should be either key to a
+> map, or we can put it into an array (where device id must be present
+> too).
+
+IMHO, It's okay to put 'device-stats' object into an array like below.
+
+{
+  "__header": {
+    "version": "1"
+  },
+  "device-stats": [
+    {
+      "devid": "1",
+      "device": "/dev/vdb",
+      "write_io_errs": "0",
+      "read_io_errs": "0",
+      "flush_io_errs": "0",
+      "corruption_errs": "0",
+      "generation_errs": "0"
+    }
+  ],
+}
+
+but I can't find the way to insert an object like 'fmt_start_object'.
+I think we need it for this.
+
+Thanks,
+Sidong
+
+
 > 
-> The filesystem has always been mounted with just the default options.
-> 
-> Performance is slow, and it improved when I moved the bulk of the files to
-> various subvolumes for some reason. The wiki states that performance on very
-> large filesystems (what is considered large?) may degrade drastically.
-
-The important number for space_cache=v1 performance is the number of block
-groups in which some space was allocated or deallocated per transaction
-(i.e. the number of block groups that have to be updated on disk),
-divided by the speed of the drives (i.e. the number of seeks they can
-perform per second).
-
-"Large" could be 100GB if it was on a slow disk with a highly fragmented
-workload and low latency requirement.
-
-A 19TB filesystem has up to 19000 block groups and a spinning disk can do
-maybe 150 seeks per second, so a worst-case commit could take a couple of
-minutes.  Delete a few old snapshots, and you'll add enough fragmentation
-to touch a significant portion of the block groups, and thus see a lot
-of additional latency.
-
-> I would like to try v2 of the space cache to see if that improves speed a
-> bit.
-> 
-> So is space cache v2 safe to use?!
-
-AFAIK it has been 663 days since the last bug fix specific to free space
-tree (a6d8654d885d "Btrfs: fix deadlock when using free space tree due
-to block group creation" from 5.0).  That fix was backported to earlier
-LTS kernels.
-
-We switched to space_cache=v2 for all new filesystems back in 2016, and
-upgraded our last legacy machine still running space_cache=v1 in 2019.
-
-I have never considered going back to v1:  we have no machines running
-v1, I don't run regression tests on new kernels with v1, and I've never
-seen a filesystem fail in the field due to v2 (even with the bugs we
-now know it had).
-
-IMHO the real question is "is v1 safe to use", given that its design is
-based on letting errors happen, then detecting and recovering from them
-after they occur (this is the mechanism behind the ubiquitous "failed to
-load free space cache for block group %llu, rebuilding it now" message).
-v2 prevents the errors from happening in the first place by using the
-same btrfs metadata update mechanisms that are used for everything else
-in the filesystem.
-
-The problems in v1 may be mostly theoretical.  I've never cared enough
-about v1 to try a practical experiment to see if btrfs recovers from
-these problems correctly (or not).  v2 doesn't have those problems even
-in theory, and it works, so I use v2 instead.
-
-> And
-> How do I make the switch properly?
-
-Unmount the filesystem, mount it once with -o clear_cache,space_cache=v2.
-It will take some time to create the tree.  After that, no mount option
-is needed.
-
-With current kernels it is not possible to upgrade while the filesystem is
-online, i.e. to upgrade "/" you have to set rootflags in the bootloader
-or boot from external media.  That and the long mount time to do the
-conversion (which offends systemd's default mount timeout parameters)
-are the two major gotchas.
-
-There are some patches for future kernels that will take care of details
-like deleting the v1 space cache inodes and other inert parts of the
-space_cache=v1 infrastructure.  I would not bother with these
-now, and instead let future kernels clean up automatically.
+> A check if the format is usable you can try to write a sample tool that
+> parses some of the data and prints them. So eg. using python or jq and
+> print stats of device 1. Which points out that device id is missing for
+> example.
