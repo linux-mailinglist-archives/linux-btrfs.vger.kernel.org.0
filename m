@@ -2,137 +2,86 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 803882A1BC2
-	for <lists+linux-btrfs@lfdr.de>; Sun,  1 Nov 2020 04:26:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 929CD2A1BE9
+	for <lists+linux-btrfs@lfdr.de>; Sun,  1 Nov 2020 06:22:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726616AbgKAD0i (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 31 Oct 2020 23:26:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37138 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726486AbgKAD0h (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 31 Oct 2020 23:26:37 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D25E5C0617A6
-        for <linux-btrfs@vger.kernel.org>; Sat, 31 Oct 2020 20:26:37 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id h6so8059554pgk.4
-        for <linux-btrfs@vger.kernel.org>; Sat, 31 Oct 2020 20:26:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=YhcmvDa00P7VgFHzLeGktWkrt1O6MPZgOnm7RyXSxsg=;
-        b=gABUnXbevMGuAVvfdCDzPAzH8a1EmTiIs/LnGpx8Z8LTlm8ZjRAMvway8UKc2XW3sv
-         H2NmvvmSolavCHD1yiioU64hQS382efCoa0wW6L7GQ8eubzFhMyEUqIo9ED5cj2a2baJ
-         3Xso63DnPwFuc4kj7Mvs34IU53yaksJj1CJf8QmWP4xmaGAaAaXh+th8V67aHvQuPsiO
-         169PuSwMAliLw06erGVRoRh2ZM4+kOyzEmoS1zzWUcH1iSyt9x5JB5hZfvOWCZ7zp3nd
-         l5haMtiuZ0AXLuwOoxeqtv/TbbSnhLSAgdL4qlBjZOdtscGnWKg/5rvp4qrft+epNgCp
-         tq9Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=YhcmvDa00P7VgFHzLeGktWkrt1O6MPZgOnm7RyXSxsg=;
-        b=lE8PJnzkYbGbi7nxsV5h8B90gfFXkgL9ljPvRJs4ZhnSHGchuXHlTRjk3fA9SIsljy
-         rrtNycpeeKCWMcFJa6xoTFk5NM+Gfm+8ITg/mpD/QXDokUnxZcjNyBCR1r8Pt252esVX
-         qtg4eNfWXuPsr2T57W4r5X1sxZ2FMeSzhzwHA7QnIvGVMFhm2K9GcfIgopEGoBAv4m+f
-         wEdmqn0EUVU2BvPSOsvzgHuroJjJ/eTdcg7oOFI2x+QJzR3p1rDoorURAaxxMX2HKhx4
-         roPvsPZtfpxv47klQu3Srz9QgqKFtobAFs7A0Rc39bjqy/bTh9V4j4ZbgR+q8y7n5wDS
-         mQUg==
-X-Gm-Message-State: AOAM533mg28XQc9c5G2z11y3Zh0VYa6PkvXOh3PUJB3he5imnqWQ+7Pq
-        6KEfKe/2sqUzFIylNccflGU9hT2Ajmnw9A==
-X-Google-Smtp-Source: ABdhPJy/VP4WmFWKDDl7bcoQ+axkV08FU4HpgUI1Nwy/1NFHFnb+rM2e8vyBkRxkMrMkM8qVikQaWQ==
-X-Received: by 2002:a65:6109:: with SMTP id z9mr8692542pgu.112.1604201197322;
-        Sat, 31 Oct 2020 20:26:37 -0700 (PDT)
-Received: from realwakka ([175.195.33.253])
-        by smtp.gmail.com with ESMTPSA id s18sm9027148pgh.60.2020.10.31.20.26.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 31 Oct 2020 20:26:36 -0700 (PDT)
-Date:   Sun, 1 Nov 2020 03:26:22 +0000
-From:   Sidong Yang <realwakka@gmail.com>
-To:     dsterba@suse.cz, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v2] btrfs-progs: device stats: add json output format
-Message-ID: <20201101032622.GA1015@realwakka>
-References: <20201004112557.5568-1-realwakka@gmail.com>
- <20201030175525.GZ6756@twin.jikos.cz>
+        id S1726821AbgKAFVP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 1 Nov 2020 01:21:15 -0400
+Received: from mga17.intel.com ([192.55.52.151]:16422 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726117AbgKAFVO (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Sun, 1 Nov 2020 01:21:14 -0400
+IronPort-SDR: i7s71Jn+vjY1eh0Y0KjPpqUkt5NfM5tEn9e/O1H+ZgjeAeO3Ef0UNKAsC52e54gCejqjRagnVs
+ qGG/Uwxjrilw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9791"; a="148626987"
+X-IronPort-AV: E=Sophos;i="5.77,440,1596524400"; 
+   d="scan'208";a="148626987"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Oct 2020 22:21:13 -0700
+IronPort-SDR: tN+yEUt10NvZimWqE6c6h0V94RY4AEv88O+WBSDzK1S76weZKWPjRKYVW3tV0/3cGU1XWaMrkE
+ +8+tLtIhHnCg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,440,1596524400"; 
+   d="scan'208";a="362268515"
+Received: from lkp-server02.sh.intel.com (HELO 7e23a4084293) ([10.239.97.151])
+  by FMSMGA003.fm.intel.com with ESMTP; 31 Oct 2020 22:21:12 -0700
+Received: from kbuild by 7e23a4084293 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kZ5nj-00001E-Ey; Sun, 01 Nov 2020 05:21:11 +0000
+Date:   Sun, 1 Nov 2020 13:20:51 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     kbuild-all@lists.01.org, David Sterba <dsterba@suse.com>,
+        Nikolay Borisov <nborisov@suse.com>,
+        Chris Mason <chris.mason@fusionio.com>,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] btrfs: fix boolreturn.cocci warnings
+Message-ID: <20201101052051.GA16691@39d425248bd2>
+References: <202011011347.QVW3uluR-lkp@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201030175525.GZ6756@twin.jikos.cz>
+In-Reply-To: <202011011347.QVW3uluR-lkp@intel.com>
+X-Patchwork-Hint: ignore
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Oct 30, 2020 at 06:55:25PM +0100, David Sterba wrote:
-> On Sun, Oct 04, 2020 at 11:25:57AM +0000, Sidong Yang wrote:
-> > Add supports for json formatting, this patch changes hard coded printing
-> > code to formatted print with output formatter. Json output would be
-> > useful for other programs that parse output of the command. but it
-> > changes the text format.
-> > 
-> > Example text format:
-> > 
-> > device:                 /dev/vdb
-> > write_io_errs:          0
-> > read_io_errs:           0
-> > flush_io_errs:          0
-> > corruption_errs:        0
-> > generation_errs:        0
-> > 
-> > Example json format:
-> > 
-> > {
-> >   "__header": {
-> >     "version": "1"
-> >   },
-> >   "device-stats": {
-> >     "/dev/vdb": {
-> >       "device": "/dev/vdb",
-> >       "write_io_errs": "0",
-> >       "read_io_errs": "0",
-> >       "flush_io_errs": "0",
-> >       "corruption_errs": "0",
-> >       "generation_errs": "0"
-> >     }
-> >   },
-> > }
+From: kernel test robot <lkp@intel.com>
 
-Hi David!
-Thanks for review.
+fs/btrfs/space-info.c:810:9-10: WARNING: return of 0/1 in function 'need_preemptive_reclaim' with return type bool
 
-> 
-> The overall structure looks good, ie. the separate object 'device-stats'
-> and then the contents. For that the device id should be either key to a
-> map, or we can put it into an array (where device id must be present
-> too).
+ Return statements in functions returning bool should use
+ true/false instead of 1/0.
+Generated by: scripts/coccinelle/misc/boolreturn.cocci
 
-Thanks, You mean that devid should be key to json map? And I think that 
-using as key is better than using array. Example should be like this.
+Fixes: fc96d3794eb2 ("btrfs: rename need_do_async_reclaim")
+CC: Josef Bacik <josef@toxicpanda.com>
+Signed-off-by: kernel test robot <lkp@intel.com>
+---
 
-{
-  "__header": {
-    "version": "1"
-  },
-  "device-stats": {
-    "1": {
-      "devid": "1",
-      "device": "/dev/vdb",
-      "write_io_errs": "0",
-      "read_io_errs": "0",
-      "flush_io_errs": "0",
-      "corruption_errs": "0",
-      "generation_errs": "0"
-    }
-  },
-}
+tree:   https://github.com/kdave/btrfs-devel.git for-next-20201030
+head:   757db2d191a0eb51ffb9acf023e31393d731b0a9
+commit: fc96d3794eb2f38f91dc1647ab55967190b68482 [14921/14978] btrfs: rename need_do_async_reclaim
 
-If so, I'll write a new patch for this.
+ space-info.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Thanks,
-Sidong
-
-> 
-> A check if the format is usable you can try to write a sample tool that
-> parses some of the data and prints them. So eg. using python or jq and
-> print stats of device 1. Which points out that device id is missing for
-> example.
+--- a/fs/btrfs/space-info.c
++++ b/fs/btrfs/space-info.c
+@@ -807,10 +807,10 @@ static inline bool need_preemptive_recla
+ 
+ 	/* If we're just plain full then async reclaim just slows us down. */
+ 	if ((space_info->bytes_used + space_info->bytes_reserved) >= thresh)
+-		return 0;
++		return false;
+ 
+ 	if (!btrfs_calc_reclaim_metadata_size(fs_info, space_info))
+-		return 0;
++		return false;
+ 
+ 	return (used >= thresh && !btrfs_fs_closing(fs_info) &&
+ 		!test_bit(BTRFS_FS_STATE_REMOUNTING, &fs_info->fs_state));
