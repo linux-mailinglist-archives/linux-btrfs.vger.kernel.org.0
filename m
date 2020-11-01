@@ -2,83 +2,110 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79D0A2A1F67
-	for <lists+linux-btrfs@lfdr.de>; Sun,  1 Nov 2020 17:04:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A43442A20A3
+	for <lists+linux-btrfs@lfdr.de>; Sun,  1 Nov 2020 18:50:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726915AbgKAQEF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 1 Nov 2020 11:04:05 -0500
-Received: from out20-86.mail.aliyun.com ([115.124.20.86]:56011 "EHLO
-        out20-86.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726730AbgKAQEF (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 1 Nov 2020 11:04:05 -0500
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07738414|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.0063493-0.00161519-0.992036;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047204;MF=guan@eryu.me;NM=1;PH=DS;RN=6;RT=6;SR=0;TI=SMTPD_---.IrDNSlR_1604246637;
-Received: from localhost(mailfrom:guan@eryu.me fp:SMTPD_---.IrDNSlR_1604246637)
-          by smtp.aliyun-inc.com(10.147.44.118);
-          Mon, 02 Nov 2020 00:03:57 +0800
-Date:   Mon, 2 Nov 2020 00:03:57 +0800
-From:   Eryu Guan <guan@eryu.me>
-To:     Ritesh Harjani <riteshh@linux.ibm.com>
-Cc:     fstests@vger.kernel.org, anju@linux.vnet.ibm.com,
-        linux-ext4@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        linux-xfs@vger.kernel.org
-Subject: Re: [PATCH 0/3] fstests: Fix tests which checks for swapfile support
-Message-ID: <20201101160357.GE3853@desktop>
-References: <cover.1604000570.git.riteshh@linux.ibm.com>
+        id S1727151AbgKARuM convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-btrfs@lfdr.de>); Sun, 1 Nov 2020 12:50:12 -0500
+Received: from james.kirk.hungrycats.org ([174.142.39.145]:48648 "EHLO
+        james.kirk.hungrycats.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727086AbgKARuM (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 1 Nov 2020 12:50:12 -0500
+Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
+        id 2251B881068; Sun,  1 Nov 2020 12:49:07 -0500 (EST)
+Date:   Sun, 1 Nov 2020 12:49:03 -0500
+From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+To:     waxhead <waxhead@dirtcellar.net>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Subject: Re: Switching from spacecache v1 to v2
+Message-ID: <20201101174902.GU5890@hungrycats.org>
+References: <fc45b21c-d24e-641c-efab-e1544aa98071@dirtcellar.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1604000570.git.riteshh@linux.ibm.com>
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <fc45b21c-d24e-641c-efab-e1544aa98071@dirtcellar.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Oct 30, 2020 at 01:22:50AM +0530, Ritesh Harjani wrote:
-> For more details, pls refer commit msg of each patch.
+On Sat, Oct 31, 2020 at 01:27:57AM +0100, waxhead wrote:
+> A couple of months ago I asked on IRC how to properly switch from version 1
+> to version 2 of the space cache. I also asked if the space cache v2 was
+> considered stable.
+> I only remember what we talked about, and from what I understood it was not
+> as easy to switch as the wiki may seem to indicate.
 > 
-> Patch-1: modifies _require_scratch_swapfile() to check swapon only for btrfs
-
-I don't think it's a good idea, if a new fs without swapfile support is
-tested by fstests, test would get false failure, where it should
-_notrun. And making a generic requirement check to fs-specific doesn't
-seem quite right either.
-
-> Patch-2: adds a swapfile test for fallocate files for ext4, xfs (assuming
-> both FS supports and thus should pass).
-
-As Brian mentioned in his review, we're in the process to convert all
-shared tests to generic or fs-specific tests (very slow though), that
-said we don't want new shared tests.
-
-I think we could whitelist fs types in _require_scratch_swapfile() and
-don't _notrun for such filesystems, something like what we did in
-_fstyp_has_non_default_seek_data_hole(), so that we won't miss silent
-regressions on sucn filesystems, and we'll do sanity check as well on
-other filesystems.
-
-> Patch-3: added to support tests to run when multiple config section present
-> in local.config file.
-
-I have a patch[1] that should fix the issue 3 years ago, but it never
-got reviewed, would you please check and see if it fixed the bug for you?
-
-[1] https://patchwork.kernel.org/project/fstests/patch/20171117070022.14002-1-eguan@redhat.com/
-
-Thanks,
-Eryu
-
+> We run a box with a btrfs filesystem at 19TB, 9 disks, 11 subvolumes that
+> contains about 6.5 million files (and this number is growing).
 > 
-> Ritesh Harjani (3):
->   common/rc: Make swapon check in _require_scratch_swapfile() specific to btrfs
->   shared/001: Verify swapon on fallocated files for supported FS
->   common/rc: source common/xfs and common/btrfs
+> The filesystem has always been mounted with just the default options.
 > 
->  common/rc            | 20 +++++----
->  tests/shared/001     | 97 ++++++++++++++++++++++++++++++++++++++++++++
->  tests/shared/001.out |  6 +++
->  tests/shared/group   |  1 +
->  4 files changed, 116 insertions(+), 8 deletions(-)
->  create mode 100755 tests/shared/001
->  create mode 100644 tests/shared/001.out
+> Performance is slow, and it improved when I moved the bulk of the files to
+> various subvolumes for some reason. The wiki states that performance on very
+> large filesystems (what is considered large?) may degrade drastically.
+
+The important number for space_cache=v1 performance is the number of block
+groups in which some space was allocated or deallocated per transaction
+(i.e. the number of block groups that have to be updated on disk),
+divided by the speed of the drives (i.e. the number of seeks they can
+perform per second).
+
+"Large" could be 100GB if it was on a slow disk with a highly fragmented
+workload and low latency requirement.
+
+A 19TB filesystem has up to 19000 block groups and a spinning disk can do
+maybe 150 seeks per second, so a worst-case commit could take a couple of
+minutes.  Delete a few old snapshots, and you'll add enough fragmentation
+to touch a significant portion of the block groups, and thus see a lot
+of additional latency.
+
+> I would like to try v2 of the space cache to see if that improves speed a
+> bit.
 > 
-> --
-> 2.26.2
+> So is space cache v2 safe to use?!
+
+AFAIK it has been 663 days since the last bug fix specific to free space
+tree (a6d8654d885d "Btrfs: fix deadlock when using free space tree due
+to block group creation" from 5.0).  That fix was backported to earlier
+LTS kernels.
+
+We switched to space_cache=v2 for all new filesystems back in 2016, and
+upgraded our last legacy machine still running space_cache=v1 in 2019.
+
+I have never considered going back to v1:  we have no machines running
+v1, I don't run regression tests on new kernels with v1, and I've never
+seen a filesystem fail in the field due to v2 (even with the bugs we
+now know it had).
+
+IMHO the real question is "is v1 safe to use", given that its design is
+based on letting errors happen, then detecting and recovering from them
+after they occur (this is the mechanism behind the ubiquitous "failed to
+load free space cache for block group %llu, rebuilding it now" message).
+v2 prevents the errors from happening in the first place by using the
+same btrfs metadata update mechanisms that are used for everything else
+in the filesystem.
+
+The problems in v1 may be mostly theoretical.  I've never cared enough
+about v1 to try a practical experiment to see if btrfs recovers from
+these problems correctly (or not).  v2 doesn't have those problems even
+in theory, and it works, so I use v2 instead.
+
+> And
+> How do I make the switch properly?
+
+Unmount the filesystem, mount it once with -o clear_cache,space_cache=v2.
+It will take some time to create the tree.  After that, no mount option
+is needed.
+
+With current kernels it is not possible to upgrade while the filesystem is
+online, i.e. to upgrade "/" you have to set rootflags in the bootloader
+or boot from external media.  That and the long mount time to do the
+conversion (which offends systemd's default mount timeout parameters)
+are the two major gotchas.
+
+There are some patches for future kernels that will take care of details
+like deleting the v1 space cache inodes and other inert parts of the
+space_cache=v1 infrastructure.  I would not bother with these
+now, and instead let future kernels clean up automatically.
