@@ -2,86 +2,85 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 929CD2A1BE9
-	for <lists+linux-btrfs@lfdr.de>; Sun,  1 Nov 2020 06:22:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D5A192A1F13
+	for <lists+linux-btrfs@lfdr.de>; Sun,  1 Nov 2020 16:30:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726821AbgKAFVP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 1 Nov 2020 01:21:15 -0400
-Received: from mga17.intel.com ([192.55.52.151]:16422 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726117AbgKAFVO (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 1 Nov 2020 01:21:14 -0400
-IronPort-SDR: i7s71Jn+vjY1eh0Y0KjPpqUkt5NfM5tEn9e/O1H+ZgjeAeO3Ef0UNKAsC52e54gCejqjRagnVs
- qGG/Uwxjrilw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9791"; a="148626987"
-X-IronPort-AV: E=Sophos;i="5.77,440,1596524400"; 
-   d="scan'208";a="148626987"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Oct 2020 22:21:13 -0700
-IronPort-SDR: tN+yEUt10NvZimWqE6c6h0V94RY4AEv88O+WBSDzK1S76weZKWPjRKYVW3tV0/3cGU1XWaMrkE
- +8+tLtIhHnCg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,440,1596524400"; 
-   d="scan'208";a="362268515"
-Received: from lkp-server02.sh.intel.com (HELO 7e23a4084293) ([10.239.97.151])
-  by FMSMGA003.fm.intel.com with ESMTP; 31 Oct 2020 22:21:12 -0700
-Received: from kbuild by 7e23a4084293 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kZ5nj-00001E-Ey; Sun, 01 Nov 2020 05:21:11 +0000
-Date:   Sun, 1 Nov 2020 13:20:51 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     kbuild-all@lists.01.org, David Sterba <dsterba@suse.com>,
-        Nikolay Borisov <nborisov@suse.com>,
-        Chris Mason <chris.mason@fusionio.com>,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] btrfs: fix boolreturn.cocci warnings
-Message-ID: <20201101052051.GA16691@39d425248bd2>
-References: <202011011347.QVW3uluR-lkp@intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202011011347.QVW3uluR-lkp@intel.com>
-X-Patchwork-Hint: ignore
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1726873AbgKAPaR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 1 Nov 2020 10:30:17 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:38697 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726730AbgKAPaQ (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Sun, 1 Nov 2020 10:30:16 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1604244615;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=ng2C8bOdfypGJPdZd9Hy+rwWhjBkyur/122cQ3TG0CA=;
+        b=BCk6Q6E/b3/oYXx+YMME+uAj5uOj62sjU0zUznV7DttSnYMLxSKm75XnjJJwhfw3LZIonL
+        ujC3n5V5fzw+BFHd4W6kdBczU1WYNC8msCdp+B5UBTobwcwhlSjiQaNW09vr8mg5IRX3Rx
+        wmx/6U41n93zIBFBuX0pkz5e/U4L4aE=
+Received: from mail-ot1-f70.google.com (mail-ot1-f70.google.com
+ [209.85.210.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-10-jeKAw-0NMoKjpt9YpOvtpA-1; Sun, 01 Nov 2020 10:30:14 -0500
+X-MC-Unique: jeKAw-0NMoKjpt9YpOvtpA-1
+Received: by mail-ot1-f70.google.com with SMTP id k103so4830035otk.1
+        for <linux-btrfs@vger.kernel.org>; Sun, 01 Nov 2020 07:30:14 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=ng2C8bOdfypGJPdZd9Hy+rwWhjBkyur/122cQ3TG0CA=;
+        b=JQ82YCYJfTtCIaTAgSv4HzJJATyZcBFgvMDYxm/rU/tru9ndN+WwO1Hgg9c60kWOVm
+         fsrO+G+DC48D1a29U6WiqbmfvwefWmbn7np4KJwaOlxePv/wzhKpsk/YsbwYJAJM4FVW
+         C9tx7TdPIW4JS6TCzPcojZIgK3jyw/zR21TXioX39x7JVCHvzURnWTDZBbMQrJxTjWSg
+         YPDivTTHCpKPLUXocIM2HUJj50ki8O2ZuHKAll/ZamTLB7jGaVC8Mt9OPrEeOJ9oZqLg
+         KZZ6LrKRlE03VFtNPSvkG906NUJMaNb1p569z0Bqw1oIjwLDMNOfcwmqF87d2/H1krwm
+         gWIQ==
+X-Gm-Message-State: AOAM532hbBak5Y/tab2U2WV79wuXWB+NPg4TnUmp1dK+2tvwjGvF0WRE
+        +pdxHPig8G2VpqB8Asn22r3bUlpDqmSTDuzwkvS31MRR+V9ZiVyfV3SQiWX00uUFENSxcoyuI4M
+        4FSeeyJZPo1cZE6+Ho3m4OxY=
+X-Received: by 2002:aca:1706:: with SMTP id j6mr7426079oii.82.1604244613403;
+        Sun, 01 Nov 2020 07:30:13 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyc1EOdJdxYjg8nac4JwcA5GeWvi0QxXD1i9zdWiH6oy+lfa0NghV44C+xUR40uU3g1Pgo5BA==
+X-Received: by 2002:aca:1706:: with SMTP id j6mr7426072oii.82.1604244613276;
+        Sun, 01 Nov 2020 07:30:13 -0800 (PST)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id 92sm207002otv.29.2020.11.01.07.30.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 01 Nov 2020 07:30:12 -0800 (PST)
+From:   trix@redhat.com
+To:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com
+Cc:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Tom Rix <trix@redhat.com>
+Subject: [PATCH] btrfs: sysfs: remove unneeded semicolon
+Date:   Sun,  1 Nov 2020 07:30:08 -0800
+Message-Id: <20201101153008.2291089-1-trix@redhat.com>
+X-Mailer: git-send-email 2.18.1
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: kernel test robot <lkp@intel.com>
+From: Tom Rix <trix@redhat.com>
 
-fs/btrfs/space-info.c:810:9-10: WARNING: return of 0/1 in function 'need_preemptive_reclaim' with return type bool
+A semicolon is not needed after a switch statement.
 
- Return statements in functions returning bool should use
- true/false instead of 1/0.
-Generated by: scripts/coccinelle/misc/boolreturn.cocci
-
-Fixes: fc96d3794eb2 ("btrfs: rename need_do_async_reclaim")
-CC: Josef Bacik <josef@toxicpanda.com>
-Signed-off-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Tom Rix <trix@redhat.com>
 ---
+ fs/btrfs/sysfs.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-tree:   https://github.com/kdave/btrfs-devel.git for-next-20201030
-head:   757db2d191a0eb51ffb9acf023e31393d731b0a9
-commit: fc96d3794eb2f38f91dc1647ab55967190b68482 [14921/14978] btrfs: rename need_do_async_reclaim
+diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
+index 279d9262b676..c96ecf951c86 100644
+--- a/fs/btrfs/sysfs.c
++++ b/fs/btrfs/sysfs.c
+@@ -1207,7 +1207,7 @@ static const char *alloc_name(u64 flags)
+ 	default:
+ 		WARN_ON(1);
+ 		return "invalid-combination";
+-	};
++	}
+ }
+ 
+ /*
+-- 
+2.18.1
 
- space-info.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
---- a/fs/btrfs/space-info.c
-+++ b/fs/btrfs/space-info.c
-@@ -807,10 +807,10 @@ static inline bool need_preemptive_recla
- 
- 	/* If we're just plain full then async reclaim just slows us down. */
- 	if ((space_info->bytes_used + space_info->bytes_reserved) >= thresh)
--		return 0;
-+		return false;
- 
- 	if (!btrfs_calc_reclaim_metadata_size(fs_info, space_info))
--		return 0;
-+		return false;
- 
- 	return (used >= thresh && !btrfs_fs_closing(fs_info) &&
- 		!test_bit(BTRFS_FS_STATE_REMOUNTING, &fs_info->fs_state));
