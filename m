@@ -2,14 +2,14 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53B492A2D4E
-	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Nov 2020 15:49:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F23282A2D51
+	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Nov 2020 15:49:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726285AbgKBOtO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 2 Nov 2020 09:49:14 -0500
-Received: from mx2.suse.de ([195.135.220.15]:39878 "EHLO mx2.suse.de"
+        id S1726293AbgKBOtT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 2 Nov 2020 09:49:19 -0500
+Received: from mx2.suse.de ([195.135.220.15]:39900 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726162AbgKBOtM (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        id S1726211AbgKBOtM (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
         Mon, 2 Nov 2020 09:49:12 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
@@ -18,19 +18,19 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=d1w6+8iWdBRcHwOpO+dUTW7FeB9Dlf4afugrJh4Qsxo=;
-        b=kt+3/GW10m/bsjvLTqwLsZUhE3SUuIBo7q37WqA7OrY1uZ/ggLWX2H/AuTMF+DpyGhxJ33
-        KnOJoTkZdfqk/OuGMvmRlT9T4wruShiWw05CRNbgiQILXT/uRTxJr1ApDcpqwSxV5FI/g7
-        DRU12c98WBG+51TYcUennXHlobMXjdE=
+        bh=zT7DEhHKEBZJdaMJc5yj1BShYjB8LP/s8HIhXRXm3xY=;
+        b=UQO6ZBbjFVVHwfWijxM4iKElp/pPXl2Lk2BsuQRxH8iHoNwUCZ227oJXMPa38+OOrsiLNk
+        4NfM9GKwU2ve2QkTikc6J4kf5AkvIAHnUV6np2EYGUxBAfDclxg+D2ABwN8O08zWoVKKvh
+        pJHad5XLAYEKRjLZ4ZTw28v6fIpePtM=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 48479B232;
+        by mx2.suse.de (Postfix) with ESMTP id 87243B912;
         Mon,  2 Nov 2020 14:49:10 +0000 (UTC)
 From:   Nikolay Borisov <nborisov@suse.com>
 To:     linux-btrfs@vger.kernel.org
 Cc:     Nikolay Borisov <nborisov@suse.com>
-Subject: [PATCH 08/14] btrfs: Make maybe_insert_hole take btrfs_inode
-Date:   Mon,  2 Nov 2020 16:49:00 +0200
-Message-Id: <20201102144906.3767963-9-nborisov@suse.com>
+Subject: [PATCH 09/14] btrfs: Make find_first_non_hole take btrfs_inode
+Date:   Mon,  2 Nov 2020 16:49:01 +0200
+Message-Id: <20201102144906.3767963-10-nborisov@suse.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201102144906.3767963-1-nborisov@suse.com>
 References: <20201102144906.3767963-1-nborisov@suse.com>
@@ -42,75 +42,67 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 Signed-off-by: Nikolay Borisov <nborisov@suse.com>
 ---
- fs/btrfs/inode.c | 23 ++++++++++++-----------
- 1 file changed, 12 insertions(+), 11 deletions(-)
+ fs/btrfs/file.c | 15 ++++++++-------
+ 1 file changed, 8 insertions(+), 7 deletions(-)
 
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index a82dbc683a43..6264777474ad 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -4624,10 +4624,10 @@ int btrfs_truncate_block(struct inode *inode, loff_t from, loff_t len,
- 	return ret;
- }
- 
--static int maybe_insert_hole(struct btrfs_root *root, struct inode *inode,
-+static int maybe_insert_hole(struct btrfs_root *root, struct btrfs_inode *inode,
- 			     u64 offset, u64 len)
+diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+index 56f6548da451..1baf69f012fe 100644
+--- a/fs/btrfs/file.c
++++ b/fs/btrfs/file.c
+@@ -2484,13 +2484,13 @@ static int fill_holes(struct btrfs_trans_handle *trans,
+  *	   em->start + em->len > start)
+  * When a hole extent is found, return 1 and modify start/len.
+  */
+-static int find_first_non_hole(struct inode *inode, u64 *start, u64 *len)
++static int find_first_non_hole(struct btrfs_inode *inode, u64 *start, u64 *len)
  {
 -	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
-+	struct btrfs_fs_info *fs_info = root->fs_info;
- 	struct btrfs_trans_handle *trans;
- 	int ret;
++	struct btrfs_fs_info *fs_info = inode->root->fs_info;
+ 	struct extent_map *em;
+ 	int ret = 0;
  
-@@ -4636,9 +4636,9 @@ static int maybe_insert_hole(struct btrfs_root *root, struct inode *inode,
- 	 * that any holes get logged if we fsync.
- 	 */
- 	if (btrfs_fs_incompat(fs_info, NO_HOLES)) {
--		BTRFS_I(inode)->last_trans = fs_info->generation;
--		BTRFS_I(inode)->last_sub_trans = root->log_transid;
--		BTRFS_I(inode)->last_log_commit = root->last_log_commit;
-+		inode->last_trans = fs_info->generation;
-+		inode->last_sub_trans = root->log_transid;
-+		inode->last_log_commit = root->last_log_commit;
- 		return 0;
- 	}
+-	em = btrfs_get_extent(BTRFS_I(inode), NULL, 0,
++	em = btrfs_get_extent(inode, NULL, 0,
+ 			      round_down(*start, fs_info->sectorsize),
+ 			      round_up(*len, fs_info->sectorsize));
+ 	if (IS_ERR(em))
+@@ -2780,7 +2780,8 @@ int btrfs_replace_file_extents(struct inode *inode, struct btrfs_path *path,
+ 		trans->block_rsv = rsv;
  
-@@ -4651,19 +4651,20 @@ static int maybe_insert_hole(struct btrfs_root *root, struct inode *inode,
- 	if (IS_ERR(trans))
- 		return PTR_ERR(trans);
- 
--	ret = btrfs_drop_extents(trans, root, inode, offset, offset + len, 1);
-+	ret = btrfs_drop_extents(trans, root, &inode->vfs_inode, offset,
-+				 offset + len, 1);
- 	if (ret) {
- 		btrfs_abort_transaction(trans, ret);
- 		btrfs_end_transaction(trans);
- 		return ret;
- 	}
- 
--	ret = btrfs_insert_file_extent(trans, root, btrfs_ino(BTRFS_I(inode)),
--			offset, 0, 0, len, 0, len, 0, 0, 0);
-+	ret = btrfs_insert_file_extent(trans, root, btrfs_ino(inode), offset,
-+				       0, 0, len, 0, len, 0, 0, 0);
- 	if (ret)
- 		btrfs_abort_transaction(trans, ret);
- 	else
--		btrfs_update_inode(trans, root, BTRFS_I(inode));
-+		btrfs_update_inode(trans, root, inode);
- 	btrfs_end_transaction(trans);
- 	return ret;
- }
-@@ -4719,8 +4720,8 @@ int btrfs_cont_expand(struct inode *inode, loff_t oldsize, loff_t size)
- 		if (!test_bit(EXTENT_FLAG_PREALLOC, &em->flags)) {
- 			struct extent_map *hole_em;
- 
--			err = maybe_insert_hole(root, inode, cur_offset,
--						hole_size);
-+			err = maybe_insert_hole(root, BTRFS_I(inode),
-+						cur_offset, hole_size);
- 			if (err)
+ 		if (!extent_info) {
+-			ret = find_first_non_hole(inode, &cur_offset, &len);
++			ret = find_first_non_hole(BTRFS_I(inode), &cur_offset,
++						  &len);
+ 			if (unlikely(ret < 0))
  				break;
+ 			if (ret && !len) {
+@@ -2890,7 +2891,7 @@ static int btrfs_punch_hole(struct inode *inode, loff_t offset, loff_t len)
  
+ 	inode_lock(inode);
+ 	ino_size = round_up(inode->i_size, fs_info->sectorsize);
+-	ret = find_first_non_hole(inode, &offset, &len);
++	ret = find_first_non_hole(BTRFS_I(inode), &offset, &len);
+ 	if (ret < 0)
+ 		goto out_only_mutex;
+ 	if (ret && !len) {
+@@ -2940,7 +2941,7 @@ static int btrfs_punch_hole(struct inode *inode, loff_t offset, loff_t len)
+ 		/* after truncate page, check hole again */
+ 		len = offset + len - lockstart;
+ 		offset = lockstart;
+-		ret = find_first_non_hole(inode, &offset, &len);
++		ret = find_first_non_hole(BTRFS_I(inode), &offset, &len);
+ 		if (ret < 0)
+ 			goto out_only_mutex;
+ 		if (ret && !len) {
+@@ -2954,7 +2955,7 @@ static int btrfs_punch_hole(struct inode *inode, loff_t offset, loff_t len)
+ 	tail_start = lockend + 1;
+ 	tail_len = offset + len - tail_start;
+ 	if (tail_len) {
+-		ret = find_first_non_hole(inode, &tail_start, &tail_len);
++		ret = find_first_non_hole(BTRFS_I(inode), &tail_start, &tail_len);
+ 		if (unlikely(ret < 0))
+ 			goto out_only_mutex;
+ 		if (!ret) {
 -- 
 2.25.1
 
