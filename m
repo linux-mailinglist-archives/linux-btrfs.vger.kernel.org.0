@@ -2,211 +2,135 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABCA62A2C61
-	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Nov 2020 15:16:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 656FD2A2C6A
+	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Nov 2020 15:17:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726045AbgKBOPp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 2 Nov 2020 09:15:45 -0500
-Received: from mout.gmx.net ([212.227.17.21]:59651 "EHLO mout.gmx.net"
+        id S1726128AbgKBORn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 2 Nov 2020 09:17:43 -0500
+Received: from mx2.suse.de ([195.135.220.15]:51582 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725616AbgKBOOq (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 2 Nov 2020 09:14:46 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1604326481;
-        bh=IzjcC4kATq0IqMT8QpSmgAh4+mP7mYyICjfdZT/vgb0=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=Twok+SRFzRZj3uL1WN2lTJ/INvEC5uaB0H6xwX+8MU1poFVVhPFbf3jbAFwxySvLS
-         qV8FVWuLnI/yc/oHgNRTya307mTZ7JF1vJdYy7tPVdCGSXjc2LsA6/cmwSiOQsDWit
-         2jTZ5Z8pg/4wIJNtMWJ8YTkagUMeqpT/iyDnCWEU=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MFKGP-1kXgvw0Peb-00Fh4A; Mon, 02
- Nov 2020 15:14:41 +0100
-Subject: Re: [PATCH] btrfs: fix build warning due to u64 devided by u32 for
- 32bit arch
-To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20201102073114.66750-1-wqu@suse.com>
- <20201102135409.GA6756@twin.jikos.cz>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
- PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
- 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
- D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
- efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
- ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
- BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
- 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
- 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
- EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
- 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
- ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
- oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
- fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
- 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
- ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
- oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <e2a5dd5b-a77c-1de5-08b1-67574beba5f0@gmx.com>
-Date:   Mon, 2 Nov 2020 22:14:35 +0800
+        id S1725911AbgKBORj (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 2 Nov 2020 09:17:39 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1604326658;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=1zxJPdAJWw3Oz6zTQsX5w9Gr0jB7TVFcE+pkW9Kxbh8=;
+        b=mXvz++1ef4+aoqMbNUAroxMMR4pQwkfIHaqrrSEu+pNQOmakwPSig2mpfQRmISi/oVVu5d
+        MItjwjuY2Yg7hnjXvma7Z+6dMkOhzISYA16fmnn8AX6c7I5rkN9CGHONbAXoF6tbcYbNp6
+        T1aJmGaGi7ew9t7jT7+cak7Apnfx8hA=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 2B5E9AD09;
+        Mon,  2 Nov 2020 14:17:38 +0000 (UTC)
+Subject: Re: [PATCH] btrfs: Use transid for DIR_ITEM/DIR_INDEX's location
+To:     linux-btrfs@vger.kernel.org, David Sterba <dsterba@suse.com>
+References: <20200828132010.27886-1-nborisov@suse.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <cc07a185-b00a-c1cd-fe69-49b3991e1609@suse.com>
+Date:   Mon, 2 Nov 2020 16:17:37 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20201102135409.GA6756@twin.jikos.cz>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="ruClRrklmMnEy1oSFL6nvaHH2u8ZWrX0V"
-X-Provags-ID: V03:K1:OkY9iEA2m0BPtdk9g0BZvk6Wkm9ZjjlPwW6pIlog88RNa4NtguR
- rsELymyc96Cs89/J7Wu5SW3JmZa+yzsKfT66ffsG3FXioF8DUG5uHqeo7HGuni73EKxtc5I
- bx9VFLi9KzjvJykgzOksm9tBnFDDIcWPbG+KU3xka8KxvNK6YslcsZZ7WqsjQH17LuYNXwq
- UhaHAZFGgMlZ4djsnZMAA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:FnTgFdFJPL8=:pjuzbtUgVI2HeTl2mnv4fs
- eB+a68I6EYXUh8/+kUhQ89mdUEH0a4pbm11h/MI+fdNmPNiVQCzK+wZiBTBSdrhuiOpvsDNee
- Hh8lnqmF6maRbgTxydlwhnLvJgbHigx0RCOGqngub7ZLeuJHhyiZBSJ8NwtHyN4bdIKEEomqS
- 3nTUWcAX++rMLizjCkcL2cANWTcRd7pGtcRnGxIxaJNXeGDPzwQB6mt64/7mp6kvLaSZi/ihQ
- VmI9fg/SgZHuuyPygU3VUdvnaIulYSsbGrvoerIR3yuOpik58Jym07cKZ+ueXpTyxlb3XWPYw
- WLGfQ0rRuo97PNPQKT8CKzG1EGl4zP+oBi9GJg0nfOb8MK9AFBeTSQi8jLMvFiXJGln7bgUgL
- EdTDEAXmYRNYMPEzZGOmXiELFHk51qCFsJXLLdq+8CLs8mQOwXXj14AM0CjbLpcS3o7a81FxA
- lfw7EgBOHzLVZyWu3yn7HxjLintCIqWSdBaifXLP0w67lYj+qULnpcH/QVPNJnZdVxDw6MBm1
- aIH0pAKxrKMfo2r5qFgQiDs8r2QVAm0oMWzZ0tRyfO2s7J7dkcZPva23bLMQBo7Mx8R0PdALV
- kfw2iPmwQ4mwECT06tVhGjFQrhBeWuR7SOGAQmijMRjyORfXM1my68wghH9lpNG88imzUpir7
- y/VhiHpGY18PvL/bQn0gv5ynR9kl8e7LJvNYZkkgy9abj2FLxw5rNioTcKEJichWOcbnJrO9c
- /crjxu55zCp3tge4FsYfPSpRloZhv5eRolgOniPZH+nH47bntCuArCAg75KjEDEgRVBo+oR3+
- AzGwrh4P95KhpUhtA5QYbN7H0Bj6k907AUkjwsvkzj4LtLUXF1BQB9NYCsE1FzIKBS/9dnB23
- 2MeVgi4NMaeHJYBSLiBw==
+In-Reply-To: <20200828132010.27886-1-nborisov@suse.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---ruClRrklmMnEy1oSFL6nvaHH2u8ZWrX0V
-Content-Type: multipart/mixed; boundary="DRIAMAMRzYiAkLvRwvYbb8v3Jy0QHi2m6"
-
---DRIAMAMRzYiAkLvRwvYbb8v3Jy0QHi2m6
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
 
 
-
-On 2020/11/2 =E4=B8=8B=E5=8D=889:54, David Sterba wrote:
-> On Mon, Nov 02, 2020 at 03:31:14PM +0800, Qu Wenruo wrote:
->> [BUG]
->> When building the kernel with subpage preparation patches, 32bit arche=
-s
->> will complain about the following linking error:
->>
->>    ld: fs/btrfs/extent_io.o: in function `release_extent_buffer':
->>    fs/btrfs/extent_io.c:5340: undefined reference to `__udivdi3'
->>
->> [CAUSE]
->> For 32bits, dividing u64 with u32 need to call div_u64(), not directly=
-
->> call u64 / u32.
->>
->> [FIX]
->> Instead of calling the div_u64() macros, here we introduce a helper,
->> btrfs_sector_shift(), to calculate the sector shift, and we just do bi=
-t
->> shift to avoid executing the expensive division instruction.
->=20
-> Division is expensive but ilog2 does not come without a cost either.
-> It's implemented as bsrl+cmov, which can be also considered expensive
-> for frequent use.
-
-You're right, ilog2() is also expensive.
-For our usage, what we really want is ffs(), which can be done with
-hardware support to reduce the cost.
-
-Thanks,
-Qu
->=20
->> The sector_shift may be better cached in btrfs_fs_info, but so far the=
-re
->> are only very limited callers for that, thus the fs_info::sector_shift=
-
->> can be there for further cleanup.
->>
->> David, can this patch be folded into the offending commit?
->> The patch is small enough, and doesn't change btrfs_fs_info.
->> Thus should be OK to fold.
->=20
-> I have sent my series cleaning up the simple shifts, for the sectorsize=
-
-> shift in particular see
->=20
-> https://lore.kernel.org/linux-btrfs/b38721840b8d703a29807b71460464134b9=
-ca7e1.1603981453.git.dsterba@suse.com/
->=20
->> Fixes: ef57afc454fb ("btrfs: extent_io: make btrfs_fs_info::buffer_rad=
-ix to take sector size devided values")
->> Signed-off-by: Qu Wenruo <wqu@suse.com>
->> ---
->>  fs/btrfs/ctree.h     |  5 +++++
->>  fs/btrfs/extent_io.c | 14 +++++++++-----
->>  2 files changed, 14 insertions(+), 5 deletions(-)
->>
->> diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
->> index 8a83bce3225c..eb282af985f5 100644
->> --- a/fs/btrfs/ctree.h
->> +++ b/fs/btrfs/ctree.h
->> @@ -3489,6 +3489,11 @@ static inline int __btrfs_fs_compat_ro(struct b=
-trfs_fs_info *fs_info, u64 flag)
->>  	return !!(btrfs_super_compat_ro_flags(disk_super) & flag);
->>  }
->> =20
->> +static inline u8 btrfs_sector_shift(struct btrfs_fs_info *fs_info)
->> +{
->> +	return ilog2(fs_info->sectorsize);
->=20
-> This has a runtime cost of calculating the the ilog2 each time we use
-> it.
->=20
->> +}
->> +
->>  /* acl.c */
->>  #ifdef CONFIG_BTRFS_FS_POSIX_ACL
->>  struct posix_acl *btrfs_get_acl(struct inode *inode, int type);
->> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
->> index 80b35885004a..3452019aef79 100644
->> --- a/fs/btrfs/extent_io.c
->> +++ b/fs/btrfs/extent_io.c
->> @@ -5129,10 +5129,10 @@ struct extent_buffer *find_extent_buffer(struc=
-t btrfs_fs_info *fs_info,
->>  					 u64 start)
->>  {
->>  	struct extent_buffer *eb;
->> +	u8 sector_shift =3D btrfs_sector_shift(fs_info);
->=20
-> And each use needs a temporary variable, where u8 generates worse
-> assembly and also potentially needs stack space.
->=20
+On 28.08.20 г. 16:20 ч., Nikolay Borisov wrote:
+> When a snapshot is created its root item is inserted in the root tree
+> with the 'offset' field set to the transaction id when the snapshot
+> was created. Immediately afterwards the offset is set to -1 so when
+> the same key is used to create DIR_ITEM/DIR_INDEX in the destination
+> file tree its offset is really set to -1. Root tree item:
+> 
+>     item 13 key (258 ROOT_ITEM 7) itemoff 12744 itemsize 439
+>         generation 7 root_dirid 256 bytenr 30703616 level 0 refs 1
+>         lastsnap 7 byte_limit 0 bytes_used 16384 flags 0x0(none)
+>         uuid f13abf0d-b1f5-f34b-a179-fd1c2f89e762
+>         parent_uuid 51a74677-a077-4c21-bd87-2141a147ff85
+>         ctransid 7 otransid 7 stransid 0 rtransid 0
+>         ctime 1598441149.466822752 (2020-08-26 11:25:49)
+>         otime 1598441149.467474846 (2020-08-26 11:25:49)
+>         drop key (0 UNKNOWN.0 0) level 0
+> 
+> DIR_INDEX item for the same rooti in the destination fs tree:
+> 
+> item 5 key (256 DIR_INDEX 9) itemoff 15967 itemsize 39
+>         location key (258 ROOT_ITEM 18446744073709551615) type DIR
+>         transid 7 data_len 0 name_len 9
+>         name: snapshot1
+> 
+> The location key is generally used to read the root. This is not a
+> problem per-se since the function dealing with root searching
+> (btrfs_find_root) is well equipped to deal with offset being -1, namely:
+> 
+>     If ->offset of 'search_key' is -1ULL, it means we are not sure the
+>     offset of the search key, just lookup the root with the highest
+>     offset for a given objectid.
+> 
+> However this is a needless inconcistency in the way internal data
+> structures are being created. This patch modifies the behavior so that
+> DIR_INDEX/DIR_ITEM will have the offset field of the location key set
+> to the transid. While this results in a change of the on-disk metadata,
+> it doesn't constitute a functional change since older kernels can cope
+> with both '-1' and transid as values of the offset field so no INCOMPAT
+> flags are needed.
+> 
+> Finally while at it also move the initialization of the key in
+> create_pending_snapshot closer to where it's being used for the first
+> time.
+> 
+> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
 
 
---DRIAMAMRzYiAkLvRwvYbb8v3Jy0QHi2m6--
-
---ruClRrklmMnEy1oSFL6nvaHH2u8ZWrX0V
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl+gFEsACgkQwj2R86El
-/qhaFQf/fpka+fZlR0noOYzBdFLVva/QaK6vn7D/xE8GECObVM2MmsSBfsv9SdY8
-ESiXwjtq5u95tF+8Ks5Ltsxq/swnngrNMM5AFpuQdf9xjiDe2GPJEWxSxtAh6xFf
-rgfIr5DxWWLTLrwv6xDDzqA/Oweic7qSip63+f9uDwPx+3VGXkhVgDodylwBnNfT
-+WaXDfW4SfPECUdHDARWDssdIGWQj8MTjORD8kgXtxFrW5usJQCqClItMZ53NNbO
-kqdaA82XFjK3eqTpc837bwrdmdRntkhNk/hJpoYqbhjd51BUfFNdJ269UDgrOIeB
-QXUZ6hCCIYvwT3wwgilFBq8/kNpZJQ==
-=YlQd
------END PGP SIGNATURE-----
-
---ruClRrklmMnEy1oSFL6nvaHH2u8ZWrX0V--
+Ping on that, it's been reviewed by Josef but seems to have been missed.
