@@ -2,316 +2,122 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D9962A351B
-	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Nov 2020 21:29:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 330AC2A3546
+	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Nov 2020 21:39:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726606AbgKBU3k (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 2 Nov 2020 15:29:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49110 "EHLO
+        id S1726104AbgKBUjA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 2 Nov 2020 15:39:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725801AbgKBU3k (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 2 Nov 2020 15:29:40 -0500
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01421C0617A6
-        for <linux-btrfs@vger.kernel.org>; Mon,  2 Nov 2020 12:29:40 -0800 (PST)
-Received: by mail-qt1-x844.google.com with SMTP id h12so10123720qtc.9
-        for <linux-btrfs@vger.kernel.org>; Mon, 02 Nov 2020 12:29:39 -0800 (PST)
+        with ESMTP id S1726784AbgKBUhh (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 2 Nov 2020 15:37:37 -0500
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDEABC0617A6
+        for <linux-btrfs@vger.kernel.org>; Mon,  2 Nov 2020 12:37:37 -0800 (PST)
+Received: by mail-qt1-x842.google.com with SMTP id j31so3441575qtb.8
+        for <linux-btrfs@vger.kernel.org>; Mon, 02 Nov 2020 12:37:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:from:to:cc:references:message-id:date:user-agent
+        h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=zM6uAqBl6rw0Q3KJqZDAFM+07Vrc87xlPfLVq8qQCBw=;
-        b=lh4avQu0va8TJFOYq2/w/MfEYv3k2VVUd/45sXA4QfQ6QX0jCQQOPbCvnA3ft9M7BQ
-         CYxjJH1cBbFDdSWUdJtG4ObI6DRJ1jyR35Rs1ouPwL821O3EYLaQZKBLjP2eveWzKXru
-         Ym3I34+WK5WNRtUddOVttp+Iga9GUCdrUFGK04CWitPEqbCz41hQjwTN8nJFCY0KZz0S
-         Si3bF8HTNjxBxZ299DiWFUjhviLCHp+5DsRmon0Vc+Km7cRf6rsMpVN3yop57yGX/4ou
-         mnJLX3x/Sgl/luWFyN9FF+mgi5GcviqI8tzwFp0W9XVtaGcfYHcvkEseR+aA2Gb9T2G0
-         qxpA==
+        bh=D6/J1WXU+3whBjn1wgKz6HaRQqP/dHDDkAKpZ/g3upA=;
+        b=zZomg6qNYCpVK0L2mL9DFxtUD0vE48C22eU7d1RQyYuqfe6Ux+Jlx6zZpqOkM9+E0Y
+         kjFjfMHUYkWpJjUueTHfQTVFrjnaj0laDa8/B9z7IQYZJ8LQnIKVQLL8Bd9/K46+a/7d
+         TjdRiHjR658YB7J1wh+re4Bx295Clv61lAfkMhw711alavxu3RfsIJyPa6RPjYl1eNNE
+         mcYq/0EhFcqLqPd07BFrB7t8rA02v0zHSzI4/uDgfz66hpdmz56osvsP65r8M7QjadY+
+         Q/UGldZlxQ/BZDD8BuxpiwDEM4gOfha8tjd4ZVau8qWGxraptXKgQprIZtyKrtZkEvqP
+         CWUg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=zM6uAqBl6rw0Q3KJqZDAFM+07Vrc87xlPfLVq8qQCBw=;
-        b=NkUzckK/sHZhBX1JX7B/nD80GuAsz23PczwjJt1APhoeCRoiJ7Tg88SqKKkztQHuxJ
-         ESIm1dgCMYMPUyT7JZmC7HVacTWbCk4V5evssx/JxggGcGJ0zS2o5Y1TgatugUbFDsFs
-         CvacxXcH7XCK7MlEiLECXbfA4MFzn4vWzlqJaFisuHH5FHkmd23/u7+KoWgcCO3W0iiu
-         ioMRaR1vP688d6vI/bJKHt3LceWLPJmHJEbwyzwNCge2eR5RY3qE+764p8YBKmj9aLfA
-         DcVBtuOYeJR6PTof3Qr6Om8Rck92ijXFpTSMbsSNaR30lUg6KbyASjjtr4THCKGX11mY
-         ctGA==
-X-Gm-Message-State: AOAM530S1fBFnaL2ZmrWQadUB9DYUJ83pDDpx1Q2VFNczowIeKvXc9qq
-        P7FFMMXMQ1K8IsYTvRlbgH7FpQ==
-X-Google-Smtp-Source: ABdhPJxSqWGzL+QHWlqAiSPu1PZRwJhWzY6ZuRT7/NYy5tOWYXUcD8iGgenDD5HB5Pw3oOhcCR5r+g==
-X-Received: by 2002:aed:3b7b:: with SMTP id q56mr1009879qte.377.1604348978379;
-        Mon, 02 Nov 2020 12:29:38 -0800 (PST)
+        bh=D6/J1WXU+3whBjn1wgKz6HaRQqP/dHDDkAKpZ/g3upA=;
+        b=Qfq1AO0IXMQCEpy8zkRWKWIPKMzeNXBSac9Veb5uPzSndNYMdhLU+MpnmgoQvgGi1c
+         9lorTswdS7GQ/AYCLOp4S2sxlptmK5Cw8ctbVNHWoAjhnWAmVWqWNjAapyZVwEfQTBv1
+         rwRsPNBLS4qrjdAxH4cnHsAoEKC8FADrbGAvkkOMjHSAciMN031b4BUwUaSOU9xfLByG
+         B70M/dO+mXohttNWH8faO81FK7GyLrMoYJacOOBC5usq7alXNnVEhNIPHxWx/G/LlB/Y
+         OMlLrWNcI2HwXTkRVGEkKCOcr/1M0VS6ULsb3nlTgsxRbfaKdo5IjW7dG3CXfmfstCj0
+         wQxg==
+X-Gm-Message-State: AOAM532DPgD+US9wLk1QBvU4afmh79Rbfp32unD49xusdqrvIfbzcVrE
+        JjgvPd8FD7GIJ5VaSk2n1QHouLKQoLaraqnP
+X-Google-Smtp-Source: ABdhPJwxYKxoTwYNU33P0wHi2qHo3lXQFLkf8EnVoILGqhKqBIXezvA5dQNUqiUhJOZTuNNXXW4itw==
+X-Received: by 2002:aed:32c7:: with SMTP id z65mr7306390qtd.266.1604349456946;
+        Mon, 02 Nov 2020 12:37:36 -0800 (PST)
 Received: from [192.168.1.45] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id f5sm2989015qtp.47.2020.11.02.12.29.37
+        by smtp.gmail.com with ESMTPSA id n199sm9013517qkn.77.2020.11.02.12.37.35
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 02 Nov 2020 12:29:37 -0800 (PST)
-Subject: Re: [PATCH v9 14/41] btrfs: load zone's alloction offset
-From:   Josef Bacik <josef@toxicpanda.com>
+        Mon, 02 Nov 2020 12:37:36 -0800 (PST)
+Subject: Re: [PATCH v9 15/41] btrfs: emulate write pointer for conventional
+ zones
 To:     Naohiro Aota <naohiro.aota@wdc.com>, linux-btrfs@vger.kernel.org,
         dsterba@suse.com
 Cc:     hare@suse.com, linux-fsdevel@vger.kernel.org
 References: <d9a0a445560db3a9eb240c6535f8dd1bbd0abd96.1604065694.git.naohiro.aota@wdc.com>
- <1bbbf9d4ade0c5aeeaebd0772c90f360ceafa9b3.1604065695.git.naohiro.aota@wdc.com>
- <1730f278-39d5-cd82-7cd5-a48d826df2ef@toxicpanda.com>
-Message-ID: <2201bd4a-03ee-b68b-683b-0ba079b071dc@toxicpanda.com>
-Date:   Mon, 2 Nov 2020 15:29:36 -0500
+ <af1830174f9dd9e2651dab213c0b984d90811138.1604065695.git.naohiro.aota@wdc.com>
+From:   Josef Bacik <josef@toxicpanda.com>
+Message-ID: <a96ef4d1-b020-a467-bd26-863bc7117e64@toxicpanda.com>
+Date:   Mon, 2 Nov 2020 15:37:35 -0500
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
  Gecko/20100101 Thunderbird/78.4.0
 MIME-Version: 1.0
-In-Reply-To: <1730f278-39d5-cd82-7cd5-a48d826df2ef@toxicpanda.com>
+In-Reply-To: <af1830174f9dd9e2651dab213c0b984d90811138.1604065695.git.naohiro.aota@wdc.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 11/2/20 3:25 PM, Josef Bacik wrote:
-> On 10/30/20 9:51 AM, Naohiro Aota wrote:
->> Zoned btrfs must allocate blocks at the zones' write pointer. The device's
->> write pointer position can be mapped to a logical address within a block
->> group. This commit adds "alloc_offset" to track the logical address.
->>
->> This logical address is populated in btrfs_load_block-group_zone_info()
+On 10/30/20 9:51 AM, Naohiro Aota wrote:
+> Conventional zones do not have a write pointer, so we cannot use it to
+> determine the allocation offset if a block group contains a conventional
+> zone.
 > 
-> btrfs_load_block_group_zone_info()
+> But instead, we can consider the end of the last allocated extent in the
+> block group as an allocation offset.
 > 
->> from write pointers of corresponding zones.
->>
->> For now, zoned btrfs only support the SINGLE profile. Supporting non-SINGLE
->> profile with zone append writing is not trivial. For example, in the DUP
->> profile, we send a zone append writing IO to two zones on a device. The
->> device reply with written LBAs for the IOs. If the offsets of the returned
->> addresses from the beginning of the zone are different, then it results in
->> different logical addresses.
->>
->> We need fine-grained logical to physical mapping to support such separated
->> physical address issue. Since it should require additional metadata type,
->> disable non-SINGLE profiles for now.
->>
->> Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
->> ---
->>   fs/btrfs/block-group.c |  15 ++++
->>   fs/btrfs/block-group.h |   6 ++
->>   fs/btrfs/zoned.c       | 153 +++++++++++++++++++++++++++++++++++++++++
->>   fs/btrfs/zoned.h       |   6 ++
->>   4 files changed, 180 insertions(+)
->>
->> diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
->> index e989c66aa764..920b2708c7f2 100644
->> --- a/fs/btrfs/block-group.c
->> +++ b/fs/btrfs/block-group.c
->> @@ -15,6 +15,7 @@
->>   #include "delalloc-space.h"
->>   #include "discard.h"
->>   #include "raid56.h"
->> +#include "zoned.h"
->>   /*
->>    * Return target flags in extended format or 0 if restripe for this chunk_type
->> @@ -1935,6 +1936,13 @@ static int read_one_block_group(struct btrfs_fs_info 
->> *info,
->>               goto error;
->>       }
->> +    ret = btrfs_load_block_group_zone_info(cache);
->> +    if (ret) {
->> +        btrfs_err(info, "failed to load zone info of bg %llu",
->> +              cache->start);
->> +        goto error;
->> +    }
->> +
->>       /*
->>        * We need to exclude the super stripes now so that the space info has
->>        * super bytes accounted for, otherwise we'll think we have more space
->> @@ -2161,6 +2169,13 @@ int btrfs_make_block_group(struct btrfs_trans_handle 
->> *trans, u64 bytes_used,
->>       cache->last_byte_to_unpin = (u64)-1;
->>       cache->cached = BTRFS_CACHE_FINISHED;
->>       cache->needs_free_space = 1;
->> +
->> +    ret = btrfs_load_block_group_zone_info(cache);
->> +    if (ret) {
->> +        btrfs_put_block_group(cache);
->> +        return ret;
->> +    }
->> +
->>       ret = exclude_super_stripes(cache);
->>       if (ret) {
->>           /* We may have excluded something, so call this just in case */
->> diff --git a/fs/btrfs/block-group.h b/fs/btrfs/block-group.h
->> index adfd7583a17b..14e3043c9ce7 100644
->> --- a/fs/btrfs/block-group.h
->> +++ b/fs/btrfs/block-group.h
->> @@ -183,6 +183,12 @@ struct btrfs_block_group {
->>       /* Record locked full stripes for RAID5/6 block group */
->>       struct btrfs_full_stripe_locks_tree full_stripe_locks_root;
->> +
->> +    /*
->> +     * Allocation offset for the block group to implement sequential
->> +     * allocation. This is used only with ZONED mode enabled.
->> +     */
->> +    u64 alloc_offset;
->>   };
->>   static inline u64 btrfs_block_group_end(struct btrfs_block_group *block_group)
->> diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
->> index 4411d786597a..0aa821893a51 100644
->> --- a/fs/btrfs/zoned.c
->> +++ b/fs/btrfs/zoned.c
->> @@ -3,14 +3,20 @@
->>   #include <linux/bitops.h>
->>   #include <linux/slab.h>
->>   #include <linux/blkdev.h>
->> +#include <linux/sched/mm.h>
->>   #include "ctree.h"
->>   #include "volumes.h"
->>   #include "zoned.h"
->>   #include "rcu-string.h"
->>   #include "disk-io.h"
->> +#include "block-group.h"
->>   /* Maximum number of zones to report per blkdev_report_zones() call */
->>   #define BTRFS_REPORT_NR_ZONES   4096
->> +/* Invalid allocation pointer value for missing devices */
->> +#define WP_MISSING_DEV ((u64)-1)
->> +/* Pseudo write pointer value for conventional zone */
->> +#define WP_CONVENTIONAL ((u64)-2)
->>   static int copy_zone_info_cb(struct blk_zone *zone, unsigned int idx,
->>                    void *data)
->> @@ -733,3 +739,150 @@ int btrfs_ensure_empty_zones(struct btrfs_device 
->> *device, u64 start, u64 size)
->>       return 0;
->>   }
->> +
->> +int btrfs_load_block_group_zone_info(struct btrfs_block_group *cache)
->> +{
->> +    struct btrfs_fs_info *fs_info = cache->fs_info;
->> +    struct extent_map_tree *em_tree = &fs_info->mapping_tree;
->> +    struct extent_map *em;
->> +    struct map_lookup *map;
->> +    struct btrfs_device *device;
->> +    u64 logical = cache->start;
->> +    u64 length = cache->length;
->> +    u64 physical = 0;
->> +    int ret;
->> +    int i;
->> +    unsigned int nofs_flag;
->> +    u64 *alloc_offsets = NULL;
->> +    u32 num_sequential = 0, num_conventional = 0;
->> +
->> +    if (!btrfs_is_zoned(fs_info))
->> +        return 0;
->> +
->> +    /* Sanity check */
->> +    if (!IS_ALIGNED(length, fs_info->zone_size)) {
->> +        btrfs_err(fs_info, "unaligned block group at %llu + %llu",
->> +              logical, length);
->> +        return -EIO;
->> +    }
->> +
->> +    /* Get the chunk mapping */
->> +    read_lock(&em_tree->lock);
->> +    em = lookup_extent_mapping(em_tree, logical, length);
->> +    read_unlock(&em_tree->lock);
->> +
->> +    if (!em)
->> +        return -EINVAL;
->> +
->> +    map = em->map_lookup;
->> +
->> +    /*
->> +     * Get the zone type: if the group is mapped to a non-sequential zone,
->> +     * there is no need for the allocation offset (fit allocation is OK).
->> +     */
->> +    alloc_offsets = kcalloc(map->num_stripes, sizeof(*alloc_offsets),
->> +                GFP_NOFS);
->> +    if (!alloc_offsets) {
->> +        free_extent_map(em);
->> +        return -ENOMEM;
->> +    }
->> +
->> +    for (i = 0; i < map->num_stripes; i++) {
->> +        bool is_sequential;
->> +        struct blk_zone zone;
->> +
->> +        device = map->stripes[i].dev;
->> +        physical = map->stripes[i].physical;
->> +
->> +        if (device->bdev == NULL) {
->> +            alloc_offsets[i] = WP_MISSING_DEV;
->> +            continue;
->> +        }
->> +
->> +        is_sequential = btrfs_dev_is_sequential(device, physical);
->> +        if (is_sequential)
->> +            num_sequential++;
->> +        else
->> +            num_conventional++;
->> +
->> +        if (!is_sequential) {
->> +            alloc_offsets[i] = WP_CONVENTIONAL;
->> +            continue;
->> +        }
->> +
->> +        /*
->> +         * This zone will be used for allocation, so mark this
->> +         * zone non-empty.
->> +         */
->> +        btrfs_dev_clear_zone_empty(device, physical);
->> +
->> +        /*
->> +         * The group is mapped to a sequential zone. Get the zone write
->> +         * pointer to determine the allocation offset within the zone.
->> +         */
->> +        WARN_ON(!IS_ALIGNED(physical, fs_info->zone_size));
->> +        nofs_flag = memalloc_nofs_save();
->> +        ret = btrfs_get_dev_zone(device, physical, &zone);
->> +        memalloc_nofs_restore(nofs_flag);
->> +        if (ret == -EIO || ret == -EOPNOTSUPP) {
->> +            ret = 0;
->> +            alloc_offsets[i] = WP_MISSING_DEV;
->> +            continue;
->> +        } else if (ret) {
->> +            goto out;
->> +        }
->> +
->> +        switch (zone.cond) {
->> +        case BLK_ZONE_COND_OFFLINE:
->> +        case BLK_ZONE_COND_READONLY:
->> +            btrfs_err(fs_info, "Offline/readonly zone %llu",
->> +                  physical >> device->zone_info->zone_size_shift);
->> +            alloc_offsets[i] = WP_MISSING_DEV;
->> +            break;
->> +        case BLK_ZONE_COND_EMPTY:
->> +            alloc_offsets[i] = 0;
->> +            break;
->> +        case BLK_ZONE_COND_FULL:
->> +            alloc_offsets[i] = fs_info->zone_size;
->> +            break;
->> +        default:
->> +            /* Partially used zone */
->> +            alloc_offsets[i] =
->> +                ((zone.wp - zone.start) << SECTOR_SHIFT);
->> +            break;
->> +        }
->> +    }
->> +
->> +    if (num_conventional > 0) {
->> +        /*
->> +         * Since conventional zones does not have write pointer, we
->> +         * cannot determine alloc_offset from the pointer
->> +         */
->> +        ret = -EINVAL;
->> +        goto out;
->> +    }
+> Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
+> ---
+>   fs/btrfs/zoned.c | 119 ++++++++++++++++++++++++++++++++++++++++++++---
+>   1 file changed, 113 insertions(+), 6 deletions(-)
 > 
-> Does this mean we can't have zoned with a device that has conventional and 
-> sequential zones?  I thought such things existed currently?  Thanks,
+> diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
+> index 0aa821893a51..8f58d0853cc3 100644
+> --- a/fs/btrfs/zoned.c
+> +++ b/fs/btrfs/zoned.c
+> @@ -740,6 +740,104 @@ int btrfs_ensure_empty_zones(struct btrfs_device *device, u64 start, u64 size)
+>   	return 0;
+>   }
+>   
+> +static int emulate_write_pointer(struct btrfs_block_group *cache,
+> +				 u64 *offset_ret)
+> +{
+> +	struct btrfs_fs_info *fs_info = cache->fs_info;
+> +	struct btrfs_root *root = fs_info->extent_root;
+> +	struct btrfs_path *path;
+> +	struct extent_buffer *leaf;
+> +	struct btrfs_key search_key;
+> +	struct btrfs_key found_key;
+> +	int slot;
+> +	int ret;
+> +	u64 length;
+> +
+> +	path = btrfs_alloc_path();
+> +	if (!path)
+> +		return -ENOMEM;
+> +
+> +	search_key.objectid = cache->start + cache->length;
+> +	search_key.type = 0;
+> +	search_key.offset = 0;
+> +
 
-I see this changes in a follow up patch, ignore me, you can add
+You can just use 'key', don't have to use 'search_key'.
 
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
-
-Thanks,
+Also you don't check for things like BTRFS_TREE_BLOCK_REF_KEY or whatever in the 
+case that we don't have an inline extent ref, so this could error out with a fs 
+with lots of snapshots and different references.  What you need is to search 
+back until you hit an BTRFS_METADATA_ITEM_KEY or a BTRFS_EXTENT_ITEM_KEY, and 
+then check the offset of that thing.  Otherwise this will screw up.  Thanks,
 
 Josef
