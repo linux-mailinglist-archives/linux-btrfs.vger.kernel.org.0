@@ -2,133 +2,145 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 087382A30BB
-	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Nov 2020 18:02:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C2BF2A30C9
+	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Nov 2020 18:03:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727265AbgKBRCF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 2 Nov 2020 12:02:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44608 "EHLO
+        id S1727144AbgKBRDo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 2 Nov 2020 12:03:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726613AbgKBRCF (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 2 Nov 2020 12:02:05 -0500
-Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 366D6C0617A6
-        for <linux-btrfs@vger.kernel.org>; Mon,  2 Nov 2020 09:02:05 -0800 (PST)
-Received: by mail-qv1-xf42.google.com with SMTP id q1so4319783qvn.5
-        for <linux-btrfs@vger.kernel.org>; Mon, 02 Nov 2020 09:02:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=SbL5FocLNkTRmWqA4q3jxjT0btO9zlqWVbryPohUtgk=;
-        b=TmXk96eI6gArmi7QvCieyQ3qvE5/YbAAWc2NL26GbrGmioMgWCAOwlehl5zRABt6aT
-         r55h2qm9+G/fJ3/kGt5mhstenLzbMf9jkobcd/K4VxtxTwm7RQns4L4+G15igadp8B2q
-         HgalpOIm9kapDGCB9CHwj9JEMcSav1gxj5wRMF0KkKK+R+PoDyJn+88VQ7NesqhAC5j2
-         1WaAaxNNIdVEB22NnaDvg5KMCDvNUUnBEdSTFhIPtVYrWq3Wl/gpPLvVQ6hvpf/ftf9a
-         vLDupLSamq7PaShZdK20EHOza95hrpg8E02nDXHcZCzUpPT4FT4zkWdbr5gHPPB1X+ys
-         kMHg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=SbL5FocLNkTRmWqA4q3jxjT0btO9zlqWVbryPohUtgk=;
-        b=ds+p7i2QA6ik2UvyPw94QTucRVkmWfwpsfU48ospWYF0i9BiEw/p8I/xLWsuAbpGBq
-         slhIYdiRVP0zfF71eeyF5prIOzCxzucewQg2r9J5zLDgrHPxUihSsOZQfA8TtN9ZQr3B
-         VZetQYY9pYJYks/KKvCWUW49oKM2fsknK7s4kzLp97bvKYhJVkTbjbrIj/tfRVkqbOlE
-         DqKrH9URR1Asio5p5Lm68GlybN6dSfh/+JjEumaIQRfM2BWX5me4Vxo1bwuoSaYkNdZS
-         oM4CLGLLOY+t1BWIeW+S//VImOmqz2f8gAChNgE81IABe1bWfk6Lzy93+6UiqTwmUl8i
-         at/Q==
-X-Gm-Message-State: AOAM5337fbkoWs3WEaraWdf5OrAEnWgkklqVcHJA8Lc1BP0Uiv36nCSf
-        d7JIDl/r4V6m0bTDaErRo5rq0Q==
-X-Google-Smtp-Source: ABdhPJwSTMKECFT4KP1Y3NTLQZ3rVKH9me6nQwpVZjqUiPqtluTQszOXhx7CXl8TEU8ap+WNYng2fA==
-X-Received: by 2002:a05:6214:12b4:: with SMTP id w20mr16303827qvu.12.1604336524398;
-        Mon, 02 Nov 2020 09:02:04 -0800 (PST)
-Received: from ?IPv6:2620:10d:c0a8:11d9::116a? ([2620:10d:c091:480::1:f39e])
-        by smtp.gmail.com with ESMTPSA id r16sm8343352qkm.1.2020.11.02.09.02.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 02 Nov 2020 09:02:03 -0800 (PST)
-Subject: Re: [PATCH v9 07/41] btrfs: disallow space_cache in ZONED mode
-To:     Naohiro Aota <naohiro.aota@wdc.com>, linux-btrfs@vger.kernel.org,
-        dsterba@suse.com
-Cc:     hare@suse.com, linux-fsdevel@vger.kernel.org
-References: <d9a0a445560db3a9eb240c6535f8dd1bbd0abd96.1604065694.git.naohiro.aota@wdc.com>
- <f0a4ae9168940bf1756f89a140cabedb8972e0d1.1604065695.git.naohiro.aota@wdc.com>
-From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <4a2f90c0-e595-1a0f-5373-80517f9b9843@toxicpanda.com>
-Date:   Mon, 2 Nov 2020 12:02:02 -0500
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.4.0
+        with ESMTP id S1726613AbgKBRDo (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 2 Nov 2020 12:03:44 -0500
+Received: from smtp.domeneshop.no (smtp.domeneshop.no [IPv6:2a01:5b40:0:3005::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C616C0617A6
+        for <linux-btrfs@vger.kernel.org>; Mon,  2 Nov 2020 09:03:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=dirtcellar.net; s=ds201912; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:
+        Reply-To:Sender:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=kygsC3u1vslN1C5jhdKKYVsr6eeo6Qa+nRqPFm4Qdnk=; b=kSoXbdEITfO1XJeo6nTAY44XC+
+        0RWLmATRoZjmgUOpi/KIF1/v6wdU5Y7u5OWxaYGYqmaVLnxALetU9J8e6nI4bI8Tt+y2hBoxccCtf
+        wYjM5ZHW4vpU7/dog4gUMGVsWkIWJp4yTrLpin7MevSwBRu1El6T9Nhqw3FJh+SUAWGjugDn8IaO2
+        7OQQf7wN1UIDmBQTFxMkFfl5RirpqkdwU8YycCTagufDgJC4myX50JiHs970x27/dAqJtXyqd37PX
+        KaodYTJtap/18R0r1xUDpwGRxCDGXgXpXPYWtZCePWK/+SfzNMfneHMFVwOFKGk5esToaM3w3ZbRZ
+        Bep95OYg==;
+Received: from 254.79-160-170.customer.lyse.net ([79.160.170.254]:30699 helo=[10.0.0.10])
+        by smtp.domeneshop.no with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <waxhead@dirtcellar.net>)
+        id 1kZdF6-0003SS-Bq; Mon, 02 Nov 2020 18:03:40 +0100
+Reply-To: waxhead@dirtcellar.net
+Subject: Re: Switching from spacecache v1 to v2
+To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+References: <fc45b21c-d24e-641c-efab-e1544aa98071@dirtcellar.net>
+ <20201101174902.GU5890@hungrycats.org>
+From:   waxhead <waxhead@dirtcellar.net>
+Message-ID: <b54df3c2-681b-816d-153f-1d6c265917b2@dirtcellar.net>
+Date:   Mon, 2 Nov 2020 18:03:38 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Firefox/60.0 SeaMonkey/2.53.4
 MIME-Version: 1.0
-In-Reply-To: <f0a4ae9168940bf1756f89a140cabedb8972e0d1.1604065695.git.naohiro.aota@wdc.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+In-Reply-To: <20201101174902.GU5890@hungrycats.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 10/30/20 9:51 AM, Naohiro Aota wrote:
-> As updates to the space cache v1 are in-place, the space cache cannot be
-> located over sequential zones and there is no guarantees that the device
-> will have enough conventional zones to store this cache. Resolve this
-> problem by disabling completely the space cache v1.  This does not
-> introduces any problems with sequential block groups: all the free space is
-> located after the allocation pointer and no free space before the pointer.
-> There is no need to have such cache.
+Zygo Blaxell wrote:
+> On Sat, Oct 31, 2020 at 01:27:57AM +0100, waxhead wrote:
+>> A couple of months ago I asked on IRC how to properly switch from version 1
+>> to version 2 of the space cache. I also asked if the space cache v2 was
+>> considered stable.
+>> I only remember what we talked about, and from what I understood it was not
+>> as easy to switch as the wiki may seem to indicate.
+>>
+>> We run a box with a btrfs filesystem at 19TB, 9 disks, 11 subvolumes that
+>> contains about 6.5 million files (and this number is growing).
+>>
+>> The filesystem has always been mounted with just the default options.
+>>
+>> Performance is slow, and it improved when I moved the bulk of the files to
+>> various subvolumes for some reason. The wiki states that performance on very
+>> large filesystems (what is considered large?) may degrade drastically.
 > 
-> Note: we can technically use free-space-tree (space cache v2) on ZONED
-> mode. But, since ZONED mode now always allocate extents in a block group
-> sequentially regardless of underlying device zone type, it's no use to
-> enable and maintain the tree.
+> The important number for space_cache=v1 performance is the number of block
+> groups in which some space was allocated or deallocated per transaction
+> (i.e. the number of block groups that have to be updated on disk),
+> divided by the speed of the drives (i.e. the number of seeks they can
+> perform per second).
 > 
-> For the same reason, NODATACOW is also disabled.
+> "Large" could be 100GB if it was on a slow disk with a highly fragmented
+> workload and low latency requirement.
 > 
-> Also INODE_MAP_CACHE is also disabled to avoid preallocation in the
-> INODE_MAP_CACHE inode.
+> A 19TB filesystem has up to 19000 block groups and a spinning disk can do
+> maybe 150 seeks per second, so a worst-case commit could take a couple of
+> minutes.  Delete a few old snapshots, and you'll add enough fragmentation
+> to touch a significant portion of the block groups, and thus see a lot
+> of additional latency.
 > 
-> In summary, ZONED will disable:
+>> I would like to try v2 of the space cache to see if that improves speed a
+>> bit.
+>>
+>> So is space cache v2 safe to use?!
 > 
-> | Disabled features | Reason                                              |
-> |-------------------+-----------------------------------------------------|
-> | RAID/Dup          | Cannot handle two zone append writes to different   |
-> |                   | zones                                               |
-> |-------------------+-----------------------------------------------------|
-> | space_cache (v1)  | In-place updating                                   |
-> | NODATACOW         | In-place updating                                   |
-> |-------------------+-----------------------------------------------------|
-> | fallocate         | Reserved extent will be a write hole                |
-> | INODE_MAP_CACHE   | Need pre-allocation. (and will be deprecated?)      |
-> |-------------------+-----------------------------------------------------|
-> | MIXED_BG          | Allocated metadata region will be write holes for   |
-> |                   | data writes                                         |
+> AFAIK it has been 663 days since the last bug fix specific to free space
+> tree (a6d8654d885d "Btrfs: fix deadlock when using free space tree due
+> to block group creation" from 5.0).  That fix was backported to earlier
+> LTS kernels.
 > 
-> Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
-> ---
->   fs/btrfs/super.c | 12 ++++++++++--
->   fs/btrfs/zoned.c | 18 ++++++++++++++++++
->   fs/btrfs/zoned.h |  5 +++++
->   3 files changed, 33 insertions(+), 2 deletions(-)
+> We switched to space_cache=v2 for all new filesystems back in 2016, and
+> upgraded our last legacy machine still running space_cache=v1 in 2019.
 > 
-> diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-> index 3312fe08168f..9064ca62b0a0 100644
-> --- a/fs/btrfs/super.c
-> +++ b/fs/btrfs/super.c
-> @@ -525,8 +525,14 @@ int btrfs_parse_options(struct btrfs_fs_info *info, char *options,
->   	cache_gen = btrfs_super_cache_generation(info->super_copy);
->   	if (btrfs_fs_compat_ro(info, FREE_SPACE_TREE))
->   		btrfs_set_opt(info->mount_opt, FREE_SPACE_TREE);
-> -	else if (cache_gen)
-> -		btrfs_set_opt(info->mount_opt, SPACE_CACHE);
-> +	else if (cache_gen) {
-> +		if (btrfs_is_zoned(info)) {
-> +			btrfs_info(info,
-> +			"clearring existing space cache in ZONED mode");
+> I have never considered going back to v1:  we have no machines running
+> v1, I don't run regression tests on new kernels with v1, and I've never
+> seen a filesystem fail in the field due to v2 (even with the bugs we
+> now know it had).
+> 
+> IMHO the real question is "is v1 safe to use", given that its design is
+> based on letting errors happen, then detecting and recovering from them
+> after they occur (this is the mechanism behind the ubiquitous "failed to
+> load free space cache for block group %llu, rebuilding it now" message).
+> v2 prevents the errors from happening in the first place by using the
+> same btrfs metadata update mechanisms that are used for everything else
+> in the filesystem.
+> 
+> The problems in v1 may be mostly theoretical.  I've never cared enough
+> about v1 to try a practical experiment to see if btrfs recovers from
+> these problems correctly (or not).  v2 doesn't have those problems even
+> in theory, and it works, so I use v2 instead.
+> 
+>> And
+>> How do I make the switch properly?
+> 
+> Unmount the filesystem, mount it once with -o clear_cache,space_cache=v2.
+> It will take some time to create the tree.  After that, no mount option
+> is needed.
+> 
+> With current kernels it is not possible to upgrade while the filesystem is
+> online, i.e. to upgrade "/" you have to set rootflags in the bootloader
+> or boot from external media.  That and the long mount time to do the
+> conversion (which offends systemd's default mount timeout parameters)
+> are the two major gotchas.
+> 
+> There are some patches for future kernels that will take care of details
+> like deleting the v1 space cache inodes and other inert parts of the
+> space_cache=v1 infrastructure.  I would not bother with these
+> now, and instead let future kernels clean up automatically.
+> 
 
-'clearing', and then you can add
+Well I did exactly as you said. I mounted the filesystem from a live CD 
+with -o clear_cache,space_cache=v2 and rebooted back into the system 
+(yes, the rootfs is btrfs).
 
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+Everything I am about to say is of course subjective, but the system is 
+significantly more snappy now - quite a lot too. So unless the live cd 
+with kernel 5.9 tuned something magnificent that has a nice effect on 
+5.8 as well the change to V2 space cache was significant on our box.
 
-Thanks,
-
-Josef
+So if I may summarize... COW-ABUNGA! WOW!
+Not sure why it had such a profound impact on performance, but perhaps 
+V2 should be the default?!
