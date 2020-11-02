@@ -2,66 +2,71 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B95F32A3365
-	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Nov 2020 19:54:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B7952A3385
+	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Nov 2020 20:01:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725824AbgKBSyS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 2 Nov 2020 13:54:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34140 "EHLO
+        id S1725809AbgKBTBy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 2 Nov 2020 14:01:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725797AbgKBSyR (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 2 Nov 2020 13:54:17 -0500
-Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B771C0617A6
-        for <linux-btrfs@vger.kernel.org>; Mon,  2 Nov 2020 10:54:17 -0800 (PST)
-Received: by mail-qt1-x843.google.com with SMTP id h12so9905643qtc.9
-        for <linux-btrfs@vger.kernel.org>; Mon, 02 Nov 2020 10:54:17 -0800 (PST)
+        with ESMTP id S1725801AbgKBTBy (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 2 Nov 2020 14:01:54 -0500
+Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86F05C0617A6
+        for <linux-btrfs@vger.kernel.org>; Mon,  2 Nov 2020 11:01:54 -0800 (PST)
+Received: by mail-qv1-xf43.google.com with SMTP id d1so6013971qvl.6
+        for <linux-btrfs@vger.kernel.org>; Mon, 02 Nov 2020 11:01:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=0qf/0pppkiqSMNBRb7wN9+1MMe/YWDNnrPbNfhwKg0Y=;
-        b=i5FlBipJtwa9XEzp794j/1vXx1iqSrBIaeEyvzG2xLRu1mRu46tE1Qhs54jNZCNk3U
-         O5wHTUMy5J8AmlkXEzer05sXwzdgzeqDzFb2+rAEvF4qeI7jBqXYWlYXWhl1ieAsbzxg
-         iHAiHwAI5/hCCWG+YgLdVOqAOhanb165oxNdNfH8stOZv/4Av8HkWj+kTa/Mn413jwms
-         FAKlzhRdN5BTmL4ZEcw6A2IDPWIO61Y9DBbdLQaYqqiyLGn6tSr0kEYrF8qbxQgK0u5z
-         Pb+18ukmmFxlBdzC4WsU+a95RNwbkHmdIEfa73q/WfhboqS4tl4sEmpadirgfcb/MQlP
-         TViA==
+        bh=1shGAMUSuKMtPKVl8/1J3Ou9x5keNRlS/b6bv8tJ0OE=;
+        b=mTBIVlNZncAUuD4RFIhlsEwBuJc3fjLukeJ5WOSLejyYJS7h3MTaFaGbRa6L8ZKmj0
+         JF4ygg+UFOMPVsICnxHXj0HiGBCGh+tIunDDoHqR1OR1kz9ks4HkvwGtBKv30cPkEs66
+         2he/zldCn/Nof9c0+4sd/agFj+EOmm17s69RMOtIQURI36OUCYxAGYcjLncb1AngtYI2
+         hb+dDkD0pZCb8+/3Jg5BHiJPEdhzu0Xp8hYUpCBIqjteFl56hu5aU6yznSaF2xIM26L9
+         TOeSPDaZaxpsypbuwYzEjqar2yZgw1ZtPhcR3mYRSCS3YWAW6YSqMttYKaR96H69Ylja
+         BUoA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=0qf/0pppkiqSMNBRb7wN9+1MMe/YWDNnrPbNfhwKg0Y=;
-        b=Fh8AX9Dt8CmUxNmEX95rM3QFmy2OQz3e3E/BodljAzKkdecsleIZEgJepqQv2u2hR3
-         ed98Oy2jg7N86icddRq8EURrbIihAAyIddm2YrFsH3Lp2xeUGjqthD7Zr3azDl+bKcOQ
-         9YE9Oznhwn4cEycWLiCefJVWw+aeJvOTLQb+N3fjQDHDd0dFbgaqboBQZSe51oosoyFy
-         it0SNrQt6sKWGJ0dC8Qh4+LwFPZOrDv61HlI4p91PbllXY3PCrH9dHeM2p3+fLUUD8J8
-         u/DWF8JoG4STjEoD1KBABO1QZ4FDgzchvZa7phjoNaNVz2y/gRNA0GtgfGaFYi1hVl6T
-         OYUg==
-X-Gm-Message-State: AOAM531Vma7iPB3TK4ntI8TRjIqxjsPCm/1YBlKc4iNlXilX4fHwXHF/
-        QVSiu7QaUNZZpCOlBWv9bXo5hw==
-X-Google-Smtp-Source: ABdhPJzPNVKv3AiQOfCAE4OkE8DMHtw6KIB8BfG94xlo/E93b7+eIXORokFIMg9pqRIBVUBCNCeUnw==
-X-Received: by 2002:ac8:5215:: with SMTP id r21mr15890723qtn.291.1604343256572;
-        Mon, 02 Nov 2020 10:54:16 -0800 (PST)
+        bh=1shGAMUSuKMtPKVl8/1J3Ou9x5keNRlS/b6bv8tJ0OE=;
+        b=a/9EUI1t7yJQc0oAcRtD4oxkEfUYugkz4w4FPFBYj4Pn5Bi4iSMjU2C/fdp0K6XJPs
+         i47QGULdJK/1CsUgyZ57NqO5Fn280O1GBLjtY6CdKXi0A3Lac3OE4QGI2rUdl6/gOKXz
+         KqhoGgEL43myR/cdfq1tCGUCSGlYClDS3ZbdeVl+vlSPgmUzu+VgzJulllNV4++1Iu9c
+         kQZe+Z3IUjo1D74PuZDO80zoYghLqBNJYfJXffRt6YBmpYfBqFoFljku/h5aqgK1TNEE
+         5EhMqnx1wSlPxUtz8tkDTd3RCUvH7Woc4+0Ss0wVN0ZwWuXykV+Q/qf3OVGGwFsQh8op
+         A5rQ==
+X-Gm-Message-State: AOAM531ex8QMXVNO04fsgj3YR2axNTXTuwNtTEp8QGmFfQBtyG8fTBio
+        0DMD4KdgIDwjDm1/rxh9bmPf8A==
+X-Google-Smtp-Source: ABdhPJyOAYe+HXJLpQx6UiB2/lBe/3TycB+vGrbn9zEJgTYuhyVzkjN54IqzlJdjf7Vpa8VZ/A+/PQ==
+X-Received: by 2002:a0c:bb83:: with SMTP id i3mr24128292qvg.15.1604343713709;
+        Mon, 02 Nov 2020 11:01:53 -0800 (PST)
 Received: from [192.168.1.45] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id n201sm8676395qka.32.2020.11.02.10.54.15
+        by smtp.gmail.com with ESMTPSA id f1sm1782394qtf.68.2020.11.02.11.01.52
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 02 Nov 2020 10:54:15 -0800 (PST)
+        Mon, 02 Nov 2020 11:01:53 -0800 (PST)
 Subject: Re: [PATCH v9 11/41] btrfs: implement log-structured superblock for
  ZONED mode
-To:     Naohiro Aota <naohiro.aota@wdc.com>, linux-btrfs@vger.kernel.org,
-        dsterba@suse.com
-Cc:     hare@suse.com, linux-fsdevel@vger.kernel.org
+To:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        Naohiro Aota <Naohiro.Aota@wdc.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        "dsterba@suse.com" <dsterba@suse.com>
+Cc:     "hare@suse.com" <hare@suse.com>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
 References: <d9a0a445560db3a9eb240c6535f8dd1bbd0abd96.1604065694.git.naohiro.aota@wdc.com>
  <eca26372a84d8b8ec2b59d3390f172810ed6f3e4.1604065695.git.naohiro.aota@wdc.com>
+ <0485861e-40d4-a736-fc26-fc6fdb435baa@toxicpanda.com>
+ <SN4PR0401MB3598937F8C4499BE687667A89B100@SN4PR0401MB3598.namprd04.prod.outlook.com>
 From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <b3447a50-0178-6779-060d-655d596d27a0@toxicpanda.com>
-Date:   Mon, 2 Nov 2020 13:54:14 -0500
+Message-ID: <65e72221-a9a5-f1cb-3fa5-5ffd98e45b2b@toxicpanda.com>
+Date:   Mon, 2 Nov 2020 14:01:52 -0500
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
  Gecko/20100101 Thunderbird/78.4.0
 MIME-Version: 1.0
-In-Reply-To: <eca26372a84d8b8ec2b59d3390f172810ed6f3e4.1604065695.git.naohiro.aota@wdc.com>
+In-Reply-To: <SN4PR0401MB3598937F8C4499BE687667A89B100@SN4PR0401MB3598.namprd04.prod.outlook.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -69,218 +74,33 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 10/30/20 9:51 AM, Naohiro Aota wrote:
-> Superblock (and its copies) is the only data structure in btrfs which has a
-> fixed location on a device. Since we cannot overwrite in a sequential write
-> required zone, we cannot place superblock in the zone. One easy solution is
-> limiting superblock and copies to be placed only in conventional zones.
-> However, this method has two downsides: one is reduced number of superblock
-> copies. The location of the second copy of superblock is 256GB, which is in
-> a sequential write required zone on typical devices in the market today.
-> So, the number of superblock and copies is limited to be two.  Second
-> downside is that we cannot support devices which have no conventional zones
-> at all.
+On 11/2/20 1:53 PM, Johannes Thumshirn wrote:
+> On 02/11/2020 19:23, Josef Bacik wrote:
+>>> +		/* shouldn't have super stripes in sequential zones */
+>>> +		if (zoned && nr) {
+>>> +			btrfs_err(fs_info,
+>>> +				  "Zoned btrfs's block group %llu should not have super blocks",
+>>> +				  cache->start);
+>>> +			return -EUCLEAN;
+>>> +		}
+>>> +
+>> I'm very confused about this check, namely how you've been able to test without
+>> it blowing up, which makes me feel like I'm missing something.
+>>
+>> We _always_ call exclude_super_stripes(), and we're simply looking up the bytenr
+>> for that block, which appears to not do anything special for zoned.  This should
+>> be looking up and failing whenever it looks for super stripes far enough out.
+>> How are you not failing here everytime you mount the fs?  Thanks,
 > 
-> To solve these two problems, we employ superblock log writing. It uses two
-> zones as a circular buffer to write updated superblocks. Once the first
-> zone is filled up, start writing into the second buffer. Then, when the
-> both zones are filled up and before start writing to the first zone again,
-> it reset the first zone.
-> 
-> We can determine the position of the latest superblock by reading write
-> pointer information from a device. One corner case is when the both zones
-> are full. For this situation, we read out the last superblock of each
-> zone, and compare them to determine which zone is older.
-> 
-> The following zones are reserved as the circular buffer on ZONED btrfs.
-> 
-> - The primary superblock: zones 0 and 1
-> - The first copy: zones 16 and 17
-> - The second copy: zones 1024 or zone at 256GB which is minimum, and next
->    to it
-> 
-> If these reserved zones are conventional, superblock is written fixed at
-> the start of the zone without logging.
+> Naohiro (or Josef and everyone else as well of cause), please correct me if I'm
+> wrong, but on zoned btrfs we're not supporting any RAID type. So the call to
+> btrfs_rmap_block() above will return 'nr = 0' (as we're always having
+> map->num_stripes = 1) so this won't evaluate to true.
 > 
 
-<snip>
-
->   
->   /*
->    * This is only the first step towards a full-features scrub. It reads all
-> @@ -3704,6 +3705,8 @@ static noinline_for_stack int scrub_supers(struct scrub_ctx *sctx,
->   		if (bytenr + BTRFS_SUPER_INFO_SIZE >
->   		    scrub_dev->commit_total_bytes)
->   			break;
-> +		if (!btrfs_check_super_location(scrub_dev, bytenr))
-> +			continue;
-
-Any reason in particular we're skipping scrubbing supers here?  Can't we just 
-lookup the bytenr and do the right thing here?
-
->   
->   		ret = scrub_pages(sctx, bytenr, BTRFS_SUPER_INFO_SIZE, bytenr,
->   				  scrub_dev, BTRFS_EXTENT_FLAG_SUPER, gen, i,
-> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> index 10827892c086..db884b96a5ea 100644
-> --- a/fs/btrfs/volumes.c
-> +++ b/fs/btrfs/volumes.c
-> @@ -1282,7 +1282,8 @@ void btrfs_release_disk_super(struct btrfs_super_block *super)
->   }
->   
->   static struct btrfs_super_block *btrfs_read_disk_super(struct block_device *bdev,
-> -						       u64 bytenr)
-> +						       u64 bytenr,
-> +						       u64 bytenr_orig)
->   {
->   	struct btrfs_super_block *disk_super;
->   	struct page *page;
-> @@ -1313,7 +1314,7 @@ static struct btrfs_super_block *btrfs_read_disk_super(struct block_device *bdev
->   	/* align our pointer to the offset of the super block */
->   	disk_super = p + offset_in_page(bytenr);
->   
-> -	if (btrfs_super_bytenr(disk_super) != bytenr ||
-> +	if (btrfs_super_bytenr(disk_super) != bytenr_orig ||
->   	    btrfs_super_magic(disk_super) != BTRFS_MAGIC) {
->   		btrfs_release_disk_super(p);
->   		return ERR_PTR(-EINVAL);
-> @@ -1348,7 +1349,8 @@ struct btrfs_device *btrfs_scan_one_device(const char *path, fmode_t flags,
->   	bool new_device_added = false;
->   	struct btrfs_device *device = NULL;
->   	struct block_device *bdev;
-> -	u64 bytenr;
-> +	u64 bytenr, bytenr_orig;
-> +	int ret;
->   
->   	lockdep_assert_held(&uuid_mutex);
->   
-> @@ -1358,14 +1360,18 @@ struct btrfs_device *btrfs_scan_one_device(const char *path, fmode_t flags,
->   	 * So, we need to add a special mount option to scan for
->   	 * later supers, using BTRFS_SUPER_MIRROR_MAX instead
->   	 */
-> -	bytenr = btrfs_sb_offset(0);
->   	flags |= FMODE_EXCL;
->   
->   	bdev = blkdev_get_by_path(path, flags, holder);
->   	if (IS_ERR(bdev))
->   		return ERR_CAST(bdev);
->   
-> -	disk_super = btrfs_read_disk_super(bdev, bytenr);
-> +	bytenr_orig = btrfs_sb_offset(0);
-> +	ret = btrfs_sb_log_location_bdev(bdev, 0, READ, &bytenr);
-> +	if (ret)
-> +		return ERR_PTR(ret);
-> +
-> +	disk_super = btrfs_read_disk_super(bdev, bytenr, bytenr_orig);
->   	if (IS_ERR(disk_super)) {
->   		device = ERR_CAST(disk_super);
->   		goto error_bdev_put;
-> @@ -2029,6 +2035,11 @@ void btrfs_scratch_superblocks(struct btrfs_fs_info *fs_info,
->   		if (IS_ERR(disk_super))
->   			continue;
->   
-> +		if (bdev_is_zoned(bdev)) {
-> +			btrfs_reset_sb_log_zones(bdev, copy_num);
-> +			continue;
-> +		}
-> +
->   		memset(&disk_super->magic, 0, sizeof(disk_super->magic));
->   
->   		page = virt_to_page(disk_super);
-> diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
-> index ae509699da14..d5487cba203b 100644
-> --- a/fs/btrfs/zoned.c
-> +++ b/fs/btrfs/zoned.c
-> @@ -20,6 +20,25 @@ static int copy_zone_info_cb(struct blk_zone *zone, unsigned int idx,
->   	return 0;
->   }
->   
-> +static int sb_write_pointer(struct block_device *bdev, struct blk_zone *zone,
-> +			    u64 *wp_ret);
-> +
-> +static inline u32 sb_zone_number(u8 shift, int mirror)
-> +{
-> +	ASSERT(mirror < BTRFS_SUPER_MIRROR_MAX);
-> +
-> +	switch (mirror) {
-> +	case 0:
-> +		return 0;
-> +	case 1:
-> +		return 16;
-> +	case 2:
-> +		return min(btrfs_sb_offset(mirror) >> shift, 1024ULL);
-> +	}
-> +
-
-Can we get a comment here explaining the zone numbers?
-
-> +	return 0;
-> +}
-> +
->   static int btrfs_get_dev_zones(struct btrfs_device *device, u64 pos,
->   			       struct blk_zone *zones, unsigned int *nr_zones)
->   {
-> @@ -123,6 +142,49 @@ int btrfs_get_dev_zone_info(struct btrfs_device *device)
->   		goto out;
->   	}
->   
-> +	/* validate superblock log */
-> +	nr_zones = 2;
-> +	for (i = 0; i < BTRFS_SUPER_MIRROR_MAX; i++) {
-> +		u32 sb_zone = sb_zone_number(zone_info->zone_size_shift, i);
-> +		u64 sb_wp;
-> +
-
-I'd rather see
-
-#define BTRFS_NR_ZONED_SB_ZONES 2
-
-or something equally poorly named and use that instead of our magic 2 everywhere.
-
-Then you can just do
-
-int index = i * BTRFS_NR_ZONED_SB_ZONES;
-&zone_info->sb_zones[index];
-
-<snip>
-
-> +static int sb_log_location(struct block_device *bdev, struct blk_zone *zones,
-> +			   int rw, u64 *bytenr_ret)
-> +{
-> +	u64 wp;
-> +	int ret;
-> +
-> +	if (zones[0].type == BLK_ZONE_TYPE_CONVENTIONAL) {
-> +		*bytenr_ret = zones[0].start << SECTOR_SHIFT;
-> +		return 0;
-> +	}
-> +
-> +	ret = sb_write_pointer(bdev, zones, &wp);
-> +	if (ret != -ENOENT && ret < 0)
-> +		return ret;
-> +
-> +	if (rw == WRITE) {
-> +		struct blk_zone *reset = NULL;
-> +
-> +		if (wp == zones[0].start << SECTOR_SHIFT)
-> +			reset = &zones[0];
-> +		else if (wp == zones[1].start << SECTOR_SHIFT)
-> +			reset = &zones[1];
-> +
-> +		if (reset && reset->cond != BLK_ZONE_COND_EMPTY) {
-> +			ASSERT(reset->cond == BLK_ZONE_COND_FULL);
-> +
-> +			ret = blkdev_zone_mgmt(bdev, REQ_OP_ZONE_RESET,
-> +					       reset->start, reset->len,
-> +					       GFP_NOFS);
-
-What happens if we crash right after this?  Is the WP set to the start of the 
-zone here?  Does this mean we'll simply miss the super block?  I understand 
-we're resetting one zone here, but we're doing this in order, so we'll reset one 
-and write one, then reset the other and write the next.  We don't wait until 
-we've issued the writes for everything, so it appears to me that there's a gap 
-where we could have the WP pointed at the start of the zone, which we view as an 
-invalid state and thus won't be able to mount the file system.  Or am I missing 
-something?  Thanks,
+No it should return nr == 1 in the single case.  This maps physical address to a 
+logical address in the block group, so it could be multiple, but if that bytenr 
+falls inside the block group it'll return with something set.  Hence my 
+confusion.  Thanks,
 
 Josef
