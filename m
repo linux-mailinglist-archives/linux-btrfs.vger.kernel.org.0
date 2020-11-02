@@ -2,114 +2,467 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82C1E2A35CB
-	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Nov 2020 22:10:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E4392A3666
+	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Nov 2020 23:21:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726203AbgKBVKK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 2 Nov 2020 16:10:10 -0500
-Received: from mx2.suse.de ([195.135.220.15]:59082 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725806AbgKBVKK (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 2 Nov 2020 16:10:10 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1604351408;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=3QYK/+aUlAsAHElX3gsWLQZP6tHE7OjUnJrlkBQx7Fw=;
-        b=D+Mk8gWTZnJpqj9Rs5KhfBpcb8WWAAgWbsdo9jL+sWN3WH5nk3USFkppUoSHel+7rA5xXC
-        EKFjxPeYQk1KdfJ6yDZgRzvy/52+/fhNoYkdDr4JczyK6d5ziweogPirfVAb4aZgKd10Mj
-        1SQ6SpbepchS/v6FjtQzROs97GQIU/4=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 6B178B210;
-        Mon,  2 Nov 2020 21:10:08 +0000 (UTC)
-Subject: Re: btrfs CPU usage limiting performance
-To:     Jim Erickson <jim@infegy.com>, linux-btrfs@vger.kernel.org
-References: <CAAGWYw9aA7o7yBMb7Ty9Exy7KcQQVAQtKa-xGbO=fc+axY2B5g@mail.gmail.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- mQINBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
- T7g+RbfPFlmQp+EwFWOtABXlKC54zgSf+uulGwx5JAUFVUIRBmnHOYi/lUiE0yhpnb1KCA7f
- u/W+DkwGerXqhhe9TvQoGwgCKNfzFPZoM+gZrm+kWv03QLUCr210n4cwaCPJ0Nr9Z3c582xc
- bCUVbsjt7BN0CFa2BByulrx5xD9sDAYIqfLCcZetAqsTRGxM7LD0kh5WlKzOeAXj5r8DOrU2
- GdZS33uKZI/kZJZVytSmZpswDsKhnGzRN1BANGP8sC+WD4eRXajOmNh2HL4P+meO1TlM3GLl
- EQd2shHFY0qjEo7wxKZI1RyZZ5AgJnSmehrPCyuIyVY210CbMaIKHUIsTqRgY5GaNME24w7h
- TyyVCy2qAM8fLJ4Vw5bycM/u5xfWm7gyTb9V1TkZ3o1MTrEsrcqFiRrBY94Rs0oQkZvunqia
- c+NprYSaOG1Cta14o94eMH271Kka/reEwSZkC7T+o9hZ4zi2CcLcY0DXj0qdId7vUKSJjEep
- c++s8ncFekh1MPhkOgNj8pk17OAESanmDwksmzh1j12lgA5lTFPrJeRNu6/isC2zyZhTwMWs
- k3LkcTa8ZXxh0RfWAqgx/ogKPk4ZxOXQEZetkEyTFghbRH2BIwARAQABtCNOaWtvbGF5IEJv
- cmlzb3YgPG5ib3Jpc292QHN1c2UuY29tPokCOAQTAQIAIgUCWIo48QIbAwYLCQgHAwIGFQgC
- CQoLBBYCAwECHgECF4AACgkQcb6CRuU/KFc0eg/9GLD3wTQz9iZHMFbjiqTCitD7B6dTLV1C
- ddZVlC8Hm/TophPts1bWZORAmYIihHHI1EIF19+bfIr46pvfTu0yFrJDLOADMDH+Ufzsfy2v
- HSqqWV/nOSWGXzh8bgg/ncLwrIdEwBQBN9SDS6aqsglagvwFD91UCg/TshLlRxD5BOnuzfzI
- Leyx2c6YmH7Oa1R4MX9Jo79SaKwdHt2yRN3SochVtxCyafDlZsE/efp21pMiaK1HoCOZTBp5
- VzrIP85GATh18pN7YR9CuPxxN0V6IzT7IlhS4Jgj0NXh6vi1DlmKspr+FOevu4RVXqqcNTSS
- E2rycB2v6cttH21UUdu/0FtMBKh+rv8+yD49FxMYnTi1jwVzr208vDdRU2v7Ij/TxYt/v4O8
- V+jNRKy5Fevca/1xroQBICXsNoFLr10X5IjmhAhqIH8Atpz/89ItS3+HWuE4BHB6RRLM0gy8
- T7rN6ja+KegOGikp/VTwBlszhvfLhyoyjXI44Tf3oLSFM+8+qG3B7MNBHOt60CQlMkq0fGXd
- mm4xENl/SSeHsiomdveeq7cNGpHi6i6ntZK33XJLwvyf00PD7tip/GUj0Dic/ZUsoPSTF/mG
- EpuQiUZs8X2xjK/AS/l3wa4Kz2tlcOKSKpIpna7V1+CMNkNzaCOlbv7QwprAerKYywPCoOSC
- 7P25Ag0EWIoHPgEQAMiUqvRBZNvPvki34O/dcTodvLSyOmK/MMBDrzN8Cnk302XfnGlW/YAQ
- csMWISKKSpStc6tmD+2Y0z9WjyRqFr3EGfH1RXSv9Z1vmfPzU42jsdZn667UxrRcVQXUgoKg
- QYx055Q2FdUeaZSaivoIBD9WtJq/66UPXRRr4H/+Y5FaUZx+gWNGmBT6a0S/GQnHb9g3nonD
- jmDKGw+YO4P6aEMxyy3k9PstaoiyBXnzQASzdOi39BgWQuZfIQjN0aW+Dm8kOAfT5i/yk59h
- VV6v3NLHBjHVw9kHli3jwvsizIX9X2W8tb1SefaVxqvqO1132AO8V9CbE1DcVT8fzICvGi42
- FoV/k0QOGwq+LmLf0t04Q0csEl+h69ZcqeBSQcIMm/Ir+NorfCr6HjrB6lW7giBkQl6hhomn
- l1mtDP6MTdbyYzEiBFcwQD4terc7S/8ELRRybWQHQp7sxQM/Lnuhs77MgY/e6c5AVWnMKd/z
- MKm4ru7A8+8gdHeydrRQSWDaVbfy3Hup0Ia76J9FaolnjB8YLUOJPdhI2vbvNCQ2ipxw3Y3c
- KhVIpGYqwdvFIiz0Fej7wnJICIrpJs/+XLQHyqcmERn3s/iWwBpeogrx2Lf8AGezqnv9woq7
- OSoWlwXDJiUdaqPEB/HmGfqoRRN20jx+OOvuaBMPAPb+aKJyle8zABEBAAGJAh8EGAECAAkF
- AliKBz4CGwwACgkQcb6CRuU/KFdacg/+M3V3Ti9JYZEiIyVhqs+yHb6NMI1R0kkAmzsGQ1jU
- zSQUz9AVMR6T7v2fIETTT/f5Oout0+Hi9cY8uLpk8CWno9V9eR/B7Ifs2pAA8lh2nW43FFwp
- IDiSuDbH6oTLmiGCB206IvSuaQCp1fed8U6yuqGFcnf0ZpJm/sILG2ECdFK9RYnMIaeqlNQm
- iZicBY2lmlYFBEaMXHoy+K7nbOuizPWdUKoKHq+tmZ3iA+qL5s6Qlm4trH28/fPpFuOmgP8P
- K+7LpYLNSl1oQUr+WlqilPAuLcCo5Vdl7M7VFLMq4xxY/dY99aZx0ZJQYFx0w/6UkbDdFLzN
- upT7NIN68lZRucImffiWyN7CjH23X3Tni8bS9ubo7OON68NbPz1YIaYaHmnVQCjDyDXkQoKC
- R82Vf9mf5slj0Vlpf+/Wpsv/TH8X32ajva37oEQTkWNMsDxyw3aPSps6MaMafcN7k60y2Wk/
- TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
- RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
- 5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <8f8d7b87-e752-81e9-85a3-165419e53620@suse.com>
-Date:   Mon, 2 Nov 2020 23:10:07 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726670AbgKBWVv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 2 Nov 2020 17:21:51 -0500
+Received: from esa6.hgst.iphmx.com ([216.71.154.45]:2280 "EHLO
+        esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725821AbgKBWVv (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 2 Nov 2020 17:21:51 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1604355710; x=1635891710;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=dTFvMUUMYOuHYP6C6sjwvOno8z3vF+b+NZoTf9DliaE=;
+  b=iu2IdcGHPiCkzmWm9o5c9Ylmz8uw8pwgpr+dNg+DBuaDAO+yOAx1uJnS
+   67LHkxlfigFof862lzwIKxVKbgpyHLabZM0cNHCotfgQmiXg5GcdeKkxN
+   gOyyRDewGaEIzebCE7N+Xeh4p45zv3axAxIzdyilsVmUzm6WV2gOKGxCw
+   VWJDDEvZWewnWw87Gsn/450vBi5b3MvhuvihC4Xti9KQx55UzVIlpmzCy
+   8D5XLqaAU2aYq78p11kIuGMY4YEfRg8PG6sceaJrwzHZtyBxMVtaX23EV
+   Hd8CqDgQQyJEP5semryYlsTNMVsSqskt2Z1+/sEXmvAYLPCeGavgiGjAi
+   Q==;
+IronPort-SDR: CBFDdCTJOLWtC7+tShjWXuCrb2TllQY4mXffBOyHlwRn08tn/l+mYlYW+cMX9me9Chbqt5Evcq
+ 4E6bAR3Z3uwOHOYEC8yoJi1naA9fSCzUpXb4KECLg+b7yxL1P7tVjBTPp8tIyPxbCOoq7G2s/S
+ /kgAHLoxG49n7jcI2wMyfpw0hU+iHpwQG7GQu0gUiPUYoVXP1hUW7mia+woFycMr86R1IsqbuO
+ oGEYIUSkAV7ipG0TkKeqar37I6bJGTGJ9cGjaxI/q57O5vE4G0eutlH2TWSZngjoPCzOdVkEuu
+ czU=
+X-IronPort-AV: E=Sophos;i="5.77,446,1596470400"; 
+   d="scan'208";a="152793775"
+Received: from h199-255-45-15.hgst.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
+  by ob1.hgst.iphmx.com with ESMTP; 03 Nov 2020 06:21:50 +0800
+IronPort-SDR: Yf6tTYqM2sFAr+rei6vfJw2AfVOs23sAPwjTeYAga19yxIVNdaL2yu4gMBKgERS2FKEkvmZzhV
+ h22wD8OnEVED5/ga4UHmlNNI7f9UZ/E4QhOYv3OPCsoYQG6yV+qT5hsyAWlHzsQI9/rsyuuWTo
+ WnVKimOOh51rgfNtZEwwFVZiDRm3/DT8V+r/sRqEhfBpJWD44ip2oyc2TAqIk0nf81E4CUz/iL
+ QIr9T/q4VFuv6jw3V3d5nIWKke+smbzKFy2eftkn/ChJfyQcj0FFHM5ntPGL6sOZbywCb/8VrC
+ LCSSptI3wWda7C2OK8q00h/V
+Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
+  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2020 14:06:49 -0800
+IronPort-SDR: xV3oDOPIEYBXNA0fiiiluucEd6nXOTETB8XnWSZP4w7pB/9GIa4FQcLzgQtWT8dtCFEKw8kSAh
+ iVl6JB3INjyfCpI1034uPdz4oJrjzMde1hli4te0ZJBi5F+JTsmM6p/88nFkEs0sfsAzaT5+tj
+ 05okwvq3CqMWo7HwWLIPuVltQJHVxv91pDh89UwpZ8dwp11/4obXPQVrJpiuDLiXmBVBnvK71i
+ fqGf6SBQLSLWrjb/ssVVBml/xBGewLNMuAEIFw0am6Oj0pjylnxzLgb3JPWkxcrLYqWr/Hdmt2
+ gDg=
+WDCIronportException: Internal
+Received: from naota.dhcp.fujisawa.hgst.com ([10.149.52.155])
+  by uls-op-cesaip02.wdc.com with SMTP; 02 Nov 2020 14:21:49 -0800
+Received: (nullmailer pid 3794692 invoked by uid 1000);
+        Mon, 02 Nov 2020 22:21:48 -0000
+Date:   Tue, 3 Nov 2020 07:21:48 +0900
+From:   Naohiro Aota <naohiro.aota@wdc.com>
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     linux-btrfs@vger.kernel.org, dsterba@suse.com, hare@suse.com,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v9 12/41] btrfs: implement zoned chunk allocator
+Message-ID: <20201102222148.tc4e3li6qu4gmxeh@naota.dhcp.fujisawa.hgst.com>
+References: <d9a0a445560db3a9eb240c6535f8dd1bbd0abd96.1604065694.git.naohiro.aota@wdc.com>
+ <5b9798f6e4c317e6a2c433ef88ffeabe00b93bb3.1604065695.git.naohiro.aota@wdc.com>
+ <54c78c27-37ad-7b42-7d0a-2b1b46c69dac@toxicpanda.com>
 MIME-Version: 1.0
-In-Reply-To: <CAAGWYw9aA7o7yBMb7Ty9Exy7KcQQVAQtKa-xGbO=fc+axY2B5g@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <54c78c27-37ad-7b42-7d0a-2b1b46c69dac@toxicpanda.com>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Mon, Nov 02, 2020 at 03:09:58PM -0500, Josef Bacik wrote:
+>On 10/30/20 9:51 AM, Naohiro Aota wrote:
+>>This commit implements a zoned chunk/dev_extent allocator. The zoned
+>>allocator aligns the device extents to zone boundaries, so that a zone
+>>reset affects only the device extent and does not change the state of
+>>blocks in the neighbor device extents.
+>>
+>>Also, it checks that a region allocation is not overlapping any of the
+>>super block zones, and ensures the region is empty.
+>>
+>>Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
+>>---
+>>  fs/btrfs/volumes.c | 131 +++++++++++++++++++++++++++++++++++++++++++++
+>>  fs/btrfs/volumes.h |   1 +
+>>  fs/btrfs/zoned.c   | 126 +++++++++++++++++++++++++++++++++++++++++++
+>>  fs/btrfs/zoned.h   |  30 +++++++++++
+>>  4 files changed, 288 insertions(+)
+>>
+>>diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+>>index db884b96a5ea..78c62ef02e6f 100644
+>>--- a/fs/btrfs/volumes.c
+>>+++ b/fs/btrfs/volumes.c
+>>@@ -1416,6 +1416,14 @@ static bool contains_pending_extent(struct btrfs_device *device, u64 *start,
+>>  	return false;
+>>  }
+>>+static inline u64 dev_extent_search_start_zoned(struct btrfs_device *device,
+>>+						u64 start)
+>>+{
+>>+	start = max_t(u64, start,
+>>+		      max_t(u64, device->zone_info->zone_size, SZ_1M));
+>>+	return btrfs_zone_align(device, start);
+>>+}
+>>+
+>>  static u64 dev_extent_search_start(struct btrfs_device *device, u64 start)
+>>  {
+>>  	switch (device->fs_devices->chunk_alloc_policy) {
+>>@@ -1426,11 +1434,57 @@ static u64 dev_extent_search_start(struct btrfs_device *device, u64 start)
+>>  		 * make sure to start at an offset of at least 1MB.
+>>  		 */
+>>  		return max_t(u64, start, SZ_1M);
+>>+	case BTRFS_CHUNK_ALLOC_ZONED:
+>>+		return dev_extent_search_start_zoned(device, start);
+>>  	default:
+>>  		BUG();
+>>  	}
+>>  }
+>>+static bool dev_extent_hole_check_zoned(struct btrfs_device *device,
+>>+					u64 *hole_start, u64 *hole_size,
+>>+					u64 num_bytes)
+>>+{
+>>+	u64 zone_size = device->zone_info->zone_size;
+>>+	u64 pos;
+>>+	int ret;
+>>+	int changed = 0;
+>>+
+>>+	ASSERT(IS_ALIGNED(*hole_start, zone_size));
+>>+
+>>+	while (*hole_size > 0) {
+>>+		pos = btrfs_find_allocatable_zones(device, *hole_start,
+>>+						   *hole_start + *hole_size,
+>>+						   num_bytes);
+>>+		if (pos != *hole_start) {
+>>+			*hole_size = *hole_start + *hole_size - pos;
+>>+			*hole_start = pos;
+>>+			changed = 1;
+>>+			if (*hole_size < num_bytes)
+>>+				break;
+>>+		}
+>>+
+>>+		ret = btrfs_ensure_empty_zones(device, pos, num_bytes);
+>>+
+>>+		/* range is ensured to be empty */
+>>+		if (!ret)
+>>+			return changed;
+>>+
+>>+		/* given hole range was invalid (outside of device) */
+>>+		if (ret == -ERANGE) {
+>>+			*hole_start += *hole_size;
+>>+			*hole_size = 0;
+>>+			return 1;
+>>+		}
+>>+
+>>+		*hole_start += zone_size;
+>>+		*hole_size -= zone_size;
+>>+		changed = 1;
+>>+	}
+>>+
+>>+	return changed;
+>>+}
+>>+
+>>  /**
+>>   * dev_extent_hole_check - check if specified hole is suitable for allocation
+>>   * @device:	the device which we have the hole
+>>@@ -1463,6 +1517,10 @@ static bool dev_extent_hole_check(struct btrfs_device *device, u64 *hole_start,
+>>  	case BTRFS_CHUNK_ALLOC_REGULAR:
+>>  		/* No extra check */
+>>  		break;
+>>+	case BTRFS_CHUNK_ALLOC_ZONED:
+>>+		changed |= dev_extent_hole_check_zoned(device, hole_start,
+>>+						       hole_size, num_bytes);
+>I'm confused here, we check to make sure the pending stuff doesn't 
+>overlap with non-empty zones.  However we don't ever actually mark 
+>zones as non-empty except on mount.  I realize that if we allocate 
+>this zone then it appears pending and thus we won't allocate with this 
+>zone again while the fs is mounted, but it took me a while to realize 
+>this.  Is there a reason to not mark a zone as non-empty when we 
+>allocate from it?
 
+It's marking the zones as non-empty. Allocated zones eventually
+construct a block group in btrfs_make_block_group(). The function calls
+btrfs_load_block_group_zone_info() and that will clear the empty flag.
 
-On 2.11.20 г. 21:52 ч., Jim Erickson wrote:
-> We are experimenting with btrfs on 6 NVMe devices, using raid5 (yes, I
-> know!), in comparison to xfs on mdraid5. We saw very high CPU usage
-> with btrfs, so decided to try a new filesystem with nodatacow, and
-> also nodatasum, for experimentation. In any case, in a highly-parallel
-> test, btrfs consumes all available CPU, and performance is limited.
-> 
-> In other words, nodatacow/nodatasum seems to have no impact at all on
-> CPU performance and peak read throughput. In this test, kernel 5.9
-> also made no difference at all. In every case, performance peaks at
-> the same place, CPU usage is 100%.
-> 
-> What is btrfs doing with the CPU without checksumming enabled? The
-> lack of change was surprising to me. Any thoughts on reducing CPU
-> usage?
-> 
-> When comparing the btrfs modes against md5+xfs, in the md5+xfs result,
-> the CPU is 80% idle, and the machine is IO-bound while btrfs showed
-> many live processes and consumed virtually all CPU
-> 
-> The CPU is a 2990wx (32-core Threadripper 2). The drives are 6 Samsung
-> 970 Evo 2TB units.
-> 
-> Thank you for any feedback! I am really excited by btrfs, and if we
-> can work around this ceiling somehow, it'd be just about perfect!
-> 
-Can you provide perf profiles as a start?
+>
+>
+>>+		break;
+>>  	default:
+>>  		BUG();
+>>  	}
+>>@@ -1517,6 +1575,9 @@ static int find_free_dev_extent_start(struct btrfs_device *device,
+>>  	search_start = dev_extent_search_start(device, search_start);
+>>+	WARN_ON(device->zone_info &&
+>>+		!IS_ALIGNED(num_bytes, device->zone_info->zone_size));
+>>+
+>>  	path = btrfs_alloc_path();
+>>  	if (!path)
+>>  		return -ENOMEM;
+>>@@ -4907,6 +4968,37 @@ static void init_alloc_chunk_ctl_policy_regular(
+>>  	ctl->dev_extent_min = BTRFS_STRIPE_LEN * ctl->dev_stripes;
+>>  }
+>>+static void
+>>+init_alloc_chunk_ctl_policy_zoned(struct btrfs_fs_devices *fs_devices,
+>>+				  struct alloc_chunk_ctl *ctl)
+>>+{
+>>+	u64 zone_size = fs_devices->fs_info->zone_size;
+>>+	u64 limit;
+>>+	int min_num_stripes = ctl->devs_min * ctl->dev_stripes;
+>>+	int min_data_stripes = (min_num_stripes - ctl->nparity) / ctl->ncopies;
+>>+	u64 min_chunk_size = min_data_stripes * zone_size;
+>>+	u64 type = ctl->type;
+>>+
+>>+	ctl->max_stripe_size = zone_size;
+>>+	if (type & BTRFS_BLOCK_GROUP_DATA) {
+>>+		ctl->max_chunk_size = round_down(BTRFS_MAX_DATA_CHUNK_SIZE,
+>>+						 zone_size);
+>>+	} else if (type & BTRFS_BLOCK_GROUP_METADATA) {
+>>+		ctl->max_chunk_size = ctl->max_stripe_size;
+>>+	} else if (type & BTRFS_BLOCK_GROUP_SYSTEM) {
+>>+		ctl->max_chunk_size = 2 * ctl->max_stripe_size;
+>>+		ctl->devs_max = min_t(int, ctl->devs_max,
+>>+				      BTRFS_MAX_DEVS_SYS_CHUNK);
+>>+	}
+>>+
+>>+	/* We don't want a chunk larger than 10% of writable space */
+>>+	limit = max(round_down(div_factor(fs_devices->total_rw_bytes, 1),
+>>+			       zone_size),
+>>+		    min_chunk_size);
+>>+	ctl->max_chunk_size = min(limit, ctl->max_chunk_size);
+>>+	ctl->dev_extent_min = zone_size * ctl->dev_stripes;
+>>+}
+>>+
+>>  static void init_alloc_chunk_ctl(struct btrfs_fs_devices *fs_devices,
+>>  				 struct alloc_chunk_ctl *ctl)
+>>  {
+>>@@ -4927,6 +5019,9 @@ static void init_alloc_chunk_ctl(struct btrfs_fs_devices *fs_devices,
+>>  	case BTRFS_CHUNK_ALLOC_REGULAR:
+>>  		init_alloc_chunk_ctl_policy_regular(fs_devices, ctl);
+>>  		break;
+>>+	case BTRFS_CHUNK_ALLOC_ZONED:
+>>+		init_alloc_chunk_ctl_policy_zoned(fs_devices, ctl);
+>>+		break;
+>>  	default:
+>>  		BUG();
+>>  	}
+>>@@ -5053,6 +5148,40 @@ static int decide_stripe_size_regular(struct alloc_chunk_ctl *ctl,
+>>  	return 0;
+>>  }
+>>+static int decide_stripe_size_zoned(struct alloc_chunk_ctl *ctl,
+>>+				    struct btrfs_device_info *devices_info)
+>>+{
+>>+	u64 zone_size = devices_info[0].dev->zone_info->zone_size;
+>>+	/* number of stripes that count for block group size */
+>>+	int data_stripes;
+>>+
+>>+	/*
+>>+	 * It should hold because:
+>>+	 *    dev_extent_min == dev_extent_want == zone_size * dev_stripes
+>>+	 */
+>>+	ASSERT(devices_info[ctl->ndevs - 1].max_avail == ctl->dev_extent_min);
+>>+
+>>+	ctl->stripe_size = zone_size;
+>>+	ctl->num_stripes = ctl->ndevs * ctl->dev_stripes;
+>>+	data_stripes = (ctl->num_stripes - ctl->nparity) / ctl->ncopies;
+>>+
+>>+	/*
+>>+	 * stripe_size is fixed in ZONED. Reduce ndevs instead.
+>>+	 */
+>>+	if (ctl->stripe_size * data_stripes > ctl->max_chunk_size) {
+>>+		ctl->ndevs = div_u64(div_u64(ctl->max_chunk_size * ctl->ncopies,
+>>+					     ctl->stripe_size) + ctl->nparity,
+>>+				     ctl->dev_stripes);
+>>+		ctl->num_stripes = ctl->ndevs * ctl->dev_stripes;
+>>+		data_stripes = (ctl->num_stripes - ctl->nparity) / ctl->ncopies;
+>>+		ASSERT(ctl->stripe_size * data_stripes <= ctl->max_chunk_size);
+>>+	}
+>>+
+>>+	ctl->chunk_size = ctl->stripe_size * data_stripes;
+>>+
+>>+	return 0;
+>>+}
+>>+
+>>  static int decide_stripe_size(struct btrfs_fs_devices *fs_devices,
+>>  			      struct alloc_chunk_ctl *ctl,
+>>  			      struct btrfs_device_info *devices_info)
+>>@@ -5080,6 +5209,8 @@ static int decide_stripe_size(struct btrfs_fs_devices *fs_devices,
+>>  	switch (fs_devices->chunk_alloc_policy) {
+>>  	case BTRFS_CHUNK_ALLOC_REGULAR:
+>>  		return decide_stripe_size_regular(ctl, devices_info);
+>>+	case BTRFS_CHUNK_ALLOC_ZONED:
+>>+		return decide_stripe_size_zoned(ctl, devices_info);
+>>  	default:
+>>  		BUG();
+>>  	}
+>>diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
+>>index 9c07b97a2260..0249aca668fb 100644
+>>--- a/fs/btrfs/volumes.h
+>>+++ b/fs/btrfs/volumes.h
+>>@@ -213,6 +213,7 @@ BTRFS_DEVICE_GETSET_FUNCS(bytes_used);
+>>  enum btrfs_chunk_allocation_policy {
+>>  	BTRFS_CHUNK_ALLOC_REGULAR,
+>>+	BTRFS_CHUNK_ALLOC_ZONED,
+>>  };
+>>  struct btrfs_fs_devices {
+>>diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
+>>index d5487cba203b..4411d786597a 100644
+>>--- a/fs/btrfs/zoned.c
+>>+++ b/fs/btrfs/zoned.c
+>>@@ -1,11 +1,13 @@
+>>  // SPDX-License-Identifier: GPL-2.0
+>>+#include <linux/bitops.h>
+>>  #include <linux/slab.h>
+>>  #include <linux/blkdev.h>
+>>  #include "ctree.h"
+>>  #include "volumes.h"
+>>  #include "zoned.h"
+>>  #include "rcu-string.h"
+>>+#include "disk-io.h"
+>>  /* Maximum number of zones to report per blkdev_report_zones() call */
+>>  #define BTRFS_REPORT_NR_ZONES   4096
+>>@@ -328,6 +330,7 @@ int btrfs_check_zoned_mode(struct btrfs_fs_info *fs_info)
+>>  	fs_info->zone_size = zone_size;
+>>  	fs_info->max_zone_append_size = max_zone_append_size;
+>>+	fs_info->fs_devices->chunk_alloc_policy = BTRFS_CHUNK_ALLOC_ZONED;
+>>  	btrfs_info(fs_info, "ZONED mode enabled, zone size %llu B",
+>>  		   fs_info->zone_size);
+>>@@ -607,3 +610,126 @@ int btrfs_reset_sb_log_zones(struct block_device *bdev, int mirror)
+>>  				sb_zone << zone_sectors_shift, zone_sectors * 2,
+>>  				GFP_NOFS);
+>>  }
+>>+
+>>+/*
+>>+ * btrfs_check_allocatable_zones - find allocatable zones within give region
+>>+ * @device:	the device to allocate a region
+>>+ * @hole_start: the position of the hole to allocate the region
+>>+ * @num_bytes:	the size of wanted region
+>>+ * @hole_size:	the size of hole
+>>+ *
+>>+ * Allocatable region should not contain any superblock locations.
+>>+ */
+>>+u64 btrfs_find_allocatable_zones(struct btrfs_device *device, u64 hole_start,
+>>+				 u64 hole_end, u64 num_bytes)
+>>+{
+>>+	struct btrfs_zoned_device_info *zinfo = device->zone_info;
+>>+	u8 shift = zinfo->zone_size_shift;
+>>+	u64 nzones = num_bytes >> shift;
+>>+	u64 pos = hole_start;
+>>+	u64 begin, end;
+>>+	u64 sb_pos;
+>>+	bool have_sb;
+>>+	int i;
+>>+
+>>+	ASSERT(IS_ALIGNED(hole_start, zinfo->zone_size));
+>>+	ASSERT(IS_ALIGNED(num_bytes, zinfo->zone_size));
+>>+
+>>+	while (pos < hole_end) {
+>>+		begin = pos >> shift;
+>>+		end = begin + nzones;
+>>+
+>>+		if (end > zinfo->nr_zones)
+>>+			return hole_end;
+>>+
+>>+		/* check if zones in the region are all empty */
+>>+		if (btrfs_dev_is_sequential(device, pos) &&
+>>+		    find_next_zero_bit(zinfo->empty_zones, end, begin) != end) {
+>>+			pos += zinfo->zone_size;
+>>+			continue;
+>>+		}
+>>+
+>>+		have_sb = false;
+>>+		for (i = 0; i < BTRFS_SUPER_MIRROR_MAX; i++) {
+>>+			sb_pos = sb_zone_number(zinfo->zone_size, i);
+>>+			if (!(end < sb_pos || sb_pos + 1 < begin)) {
+>>+				have_sb = true;
+>>+				pos = (sb_pos + 2) << shift;
+>>+				break;
+>>+			}
+>>+		}
+>>+		if (!have_sb)
+>>+			break;
+>>+	}
+>>+
+>>+	return pos;
+>>+}
+>>+
+>>+int btrfs_reset_device_zone(struct btrfs_device *device, u64 physical,
+>>+			    u64 length, u64 *bytes)
+>>+{
+>>+	int ret;
+>>+
+>>+	*bytes = 0;
+>>+	ret = blkdev_zone_mgmt(device->bdev, REQ_OP_ZONE_RESET,
+>>+			       physical >> SECTOR_SHIFT, length >> SECTOR_SHIFT,
+>>+			       GFP_NOFS);
+>>+	if (ret)
+>>+		return ret;
+>>+
+>>+	*bytes = length;
+>>+	while (length) {
+>>+		btrfs_dev_set_zone_empty(device, physical);
+>>+		physical += device->zone_info->zone_size;
+>>+		length -= device->zone_info->zone_size;
+>>+	}
+>>+
+>>+	return 0;
+>>+}
+>>+
+>>+int btrfs_ensure_empty_zones(struct btrfs_device *device, u64 start, u64 size)
+>>+{
+>>+	struct btrfs_zoned_device_info *zinfo = device->zone_info;
+>>+	u8 shift = zinfo->zone_size_shift;
+>>+	unsigned long begin = start >> shift;
+>>+	unsigned long end = (start + size) >> shift;
+>>+	u64 pos;
+>>+	int ret;
+>>+
+>>+	ASSERT(IS_ALIGNED(start, zinfo->zone_size));
+>>+	ASSERT(IS_ALIGNED(size, zinfo->zone_size));
+>>+
+>>+	if (end > zinfo->nr_zones)
+>>+		return -ERANGE;
+>>+
+>>+	/* all the zones are conventional */
+>>+	if (find_next_bit(zinfo->seq_zones, begin, end) == end)
+>>+		return 0;
+>>+
+>
+>This check is duplicated below.
+>
+
+This one checks if bits from begin to end is all cleared (= all zones are
+conventional). OTOH, the below checks if all the bits are set (= all zones
+are sequential).
+
+>>+	/* all the zones are sequential and empty */
+>>+	if (find_next_zero_bit(zinfo->seq_zones, begin, end) == end &&
+>>+	    find_next_zero_bit(zinfo->empty_zones, begin, end) == end)
+>>+		return 0;
+>>+
+>>+	for (pos = start; pos < start + size; pos += zinfo->zone_size) {
+>>+		u64 reset_bytes;
+>>+
+>>+		if (!btrfs_dev_is_sequential(device, pos) ||
+>>+		    btrfs_dev_is_empty_zone(device, pos))
+>>+			continue;
+>>+
+>>+		/* free regions should be empty */
+>>+		btrfs_warn_in_rcu(
+>>+			device->fs_info,
+>>+			"resetting device %s zone %llu for allocation",
+>>+			rcu_str_deref(device->name), pos >> shift);
+>>+		WARN_ON_ONCE(1);
+>>+
+>>+		ret = btrfs_reset_device_zone(device, pos, zinfo->zone_size,
+>>+					      &reset_bytes);
+>>+		if (ret)
+>>+			return ret;
+>
+>This seems bad, as we could just have corruption right?  So we're 
+>resetting the zone which could lose us data right?  Shouldn't we just 
+>bail here?  Thanks,
+>
+>Josef
+
+Yes.. This happens 1) when we freed up the region but forget to reset the
+zones, or 2) when we lost the allocation information. For the first case, it's
+OK to reset the zones here. For the second case, it's still as much
+dangerous as regular device since the regular btrfs will overwrite the
+data in that case anyway. I admit it's much safer to bail out here, so I
+can change this to error exiting.
