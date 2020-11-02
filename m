@@ -2,143 +2,285 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A50A92A335E
-	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Nov 2020 19:53:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B95F32A3365
+	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Nov 2020 19:54:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725817AbgKBSxI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 2 Nov 2020 13:53:08 -0500
-Received: from esa3.hgst.iphmx.com ([216.71.153.141]:18047 "EHLO
-        esa3.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725789AbgKBSxI (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 2 Nov 2020 13:53:08 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1604343187; x=1635879187;
-  h=from:to:cc:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=MfyU100BMtwTXUch+NQxsepxbECun/Jp06YBi9bOUU8=;
-  b=oqBe3NWnJbjzSZ8L/JuE00Ndm/ouuyjBVe/4+5f69oEjWd0BWHPgfT0p
-   JA908rq984An2QSuLLAgywejxv7vF8ipHqlzspOQCP0ItRpXblEsk3xqM
-   z1s/7xeR+SwTYYz5ahpqFlzPBJmZZRDO9+fHfbVdKM1ZP6srGbvrvAiBl
-   9cmw3VFJ6HrRq5toxKSubEjMa8723RRPRV1QvPPRzybJqEP3SmSVZTvLO
-   b2YUBsjvWeNgthaRmBYcM9VxqlpVURlPnr9YOYoXavqK1PkbEJ8U3x6hJ
-   LGCtaFrcXmwKi3OI5HG6a3HB+jUwWhGrXrEAa50SFc7tGCaFXfMjlonfy
-   Q==;
-IronPort-SDR: jgk68T5T1JN6H4umi9B1sWmr6eZwB/jj4k4i1bs6i8X7Da9ac5heh7a+DNlUwMbofC1Ci1nTQ8
- kSlQoAsIPlWPSFP606k0MTDfYr/oW26m0v0YO/G9eg8tL/DC/82Sae6/WmQPQLHOTNW0jqYOA7
- qlutksGrQTYCR377o7LKTkKsSpIdYxwIeRy1I8D7QMt7TGgBLoyYIYVzUM4fnTbYra7jEGHNaw
- KsFY6mULQGLRisWpSeS4HjWs4FDrYsxuTEIB4Rp1OpF0P/KD4Plmpph40LjkhCZbqeQcLps07s
- sGA=
-X-IronPort-AV: E=Sophos;i="5.77,445,1596470400"; 
-   d="scan'208";a="156014714"
-Received: from mail-bn8nam11lp2168.outbound.protection.outlook.com (HELO NAM11-BN8-obe.outbound.protection.outlook.com) ([104.47.58.168])
-  by ob1.hgst.iphmx.com with ESMTP; 03 Nov 2020 02:53:06 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gzdOZQ3LzTGgzWrbJbw3NRy/PN+vQmAPZPNwlYld8yzmM8bOqaEIzHvmwKddCCxJtxOeHD3wVjQ1oM5NnNNu01lcltXZfHdTfYMUg2ywsMX9zvaB7SFlY2CS94xfJgHirZx8p6k2AJoNOVYP7xEp3kqRswjHJ3FujzS4HOQmi8WaVbB/y4WylXEN/mUJ8RvQrx2hS+3iqE6wsC8MDpYIA0YKQ+ijQStNv1ivhux52pCV8hEJ+Sg2EMrlaYWN1A4QkgHAoVn7lZDpYw1sknc0fIfjcMBdFMTE0E18Dm0hYNKjIvLSc4T+p9b6QAlNqj0IE7dHwEXr9ZCku2prsD+ZLw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=AEebln42sqGA1PG7CKLeho7VkE21jISgr/xsy7X1koc=;
- b=OfSd3mV/MaB0nfwIJXrQOkO6HZ7C/yPvSu0T2IG79I+s3hvR0+ShqmhkW2N1Vf29/XiHq7YJ+YS1FpkkDm7gFRlyQ1o/rRhfkyFy6DCRFcB3zSZOYUdwL+uKRYlZ30ett+OnjDBVtijh991AV4A6uCTX9m2H7CUp4EaBs2u1VevpOengDnTlJvCz3Qpn6yJW1u3Y60eD+3wJ6EPrNaHCsT1iNAB1NHQJA6Ff6Mt7433mM7qGH78f/b32iA8X5kkpGxhCbXZ0jCzlS8Yhl0jHcYXycnHZmCBXAUl9EHFgaDumOA2Z8uSg/CbxkjNpxYpezVdVpW/yGDeuGc7O4w9wrw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
+        id S1725824AbgKBSyS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 2 Nov 2020 13:54:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34140 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725797AbgKBSyR (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 2 Nov 2020 13:54:17 -0500
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B771C0617A6
+        for <linux-btrfs@vger.kernel.org>; Mon,  2 Nov 2020 10:54:17 -0800 (PST)
+Received: by mail-qt1-x843.google.com with SMTP id h12so9905643qtc.9
+        for <linux-btrfs@vger.kernel.org>; Mon, 02 Nov 2020 10:54:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=AEebln42sqGA1PG7CKLeho7VkE21jISgr/xsy7X1koc=;
- b=IpxcmHwM+0VGq3RFrkR+3I6eaVdH3tUdVV8S+gbmbpr3xtvcmNzmapuJoireUsFk/AuxuA67Ipsvk4rRppbwbgAbGAG1Pn2RmtT+i7iwpMw/bqIn718JK7Dr2bellPirILGU0Yo5fFX4DETsts5jAIQlNWqzrCbUdihQzT2YvWg=
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
- (2603:10b6:803:47::21) by SN6PR04MB5407.namprd04.prod.outlook.com
- (2603:10b6:805:f5::29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18; Mon, 2 Nov
- 2020 18:53:04 +0000
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::619a:567c:d053:ce25]) by SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::619a:567c:d053:ce25%6]) with mapi id 15.20.3499.030; Mon, 2 Nov 2020
- 18:53:04 +0000
-From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To:     Josef Bacik <josef@toxicpanda.com>,
-        Naohiro Aota <Naohiro.Aota@wdc.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "dsterba@suse.com" <dsterba@suse.com>
-CC:     "hare@suse.com" <hare@suse.com>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=0qf/0pppkiqSMNBRb7wN9+1MMe/YWDNnrPbNfhwKg0Y=;
+        b=i5FlBipJtwa9XEzp794j/1vXx1iqSrBIaeEyvzG2xLRu1mRu46tE1Qhs54jNZCNk3U
+         O5wHTUMy5J8AmlkXEzer05sXwzdgzeqDzFb2+rAEvF4qeI7jBqXYWlYXWhl1ieAsbzxg
+         iHAiHwAI5/hCCWG+YgLdVOqAOhanb165oxNdNfH8stOZv/4Av8HkWj+kTa/Mn413jwms
+         FAKlzhRdN5BTmL4ZEcw6A2IDPWIO61Y9DBbdLQaYqqiyLGn6tSr0kEYrF8qbxQgK0u5z
+         Pb+18ukmmFxlBdzC4WsU+a95RNwbkHmdIEfa73q/WfhboqS4tl4sEmpadirgfcb/MQlP
+         TViA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=0qf/0pppkiqSMNBRb7wN9+1MMe/YWDNnrPbNfhwKg0Y=;
+        b=Fh8AX9Dt8CmUxNmEX95rM3QFmy2OQz3e3E/BodljAzKkdecsleIZEgJepqQv2u2hR3
+         ed98Oy2jg7N86icddRq8EURrbIihAAyIddm2YrFsH3Lp2xeUGjqthD7Zr3azDl+bKcOQ
+         9YE9Oznhwn4cEycWLiCefJVWw+aeJvOTLQb+N3fjQDHDd0dFbgaqboBQZSe51oosoyFy
+         it0SNrQt6sKWGJ0dC8Qh4+LwFPZOrDv61HlI4p91PbllXY3PCrH9dHeM2p3+fLUUD8J8
+         u/DWF8JoG4STjEoD1KBABO1QZ4FDgzchvZa7phjoNaNVz2y/gRNA0GtgfGaFYi1hVl6T
+         OYUg==
+X-Gm-Message-State: AOAM531Vma7iPB3TK4ntI8TRjIqxjsPCm/1YBlKc4iNlXilX4fHwXHF/
+        QVSiu7QaUNZZpCOlBWv9bXo5hw==
+X-Google-Smtp-Source: ABdhPJzPNVKv3AiQOfCAE4OkE8DMHtw6KIB8BfG94xlo/E93b7+eIXORokFIMg9pqRIBVUBCNCeUnw==
+X-Received: by 2002:ac8:5215:: with SMTP id r21mr15890723qtn.291.1604343256572;
+        Mon, 02 Nov 2020 10:54:16 -0800 (PST)
+Received: from [192.168.1.45] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id n201sm8676395qka.32.2020.11.02.10.54.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 02 Nov 2020 10:54:15 -0800 (PST)
 Subject: Re: [PATCH v9 11/41] btrfs: implement log-structured superblock for
  ZONED mode
-Thread-Topic: [PATCH v9 11/41] btrfs: implement log-structured superblock for
- ZONED mode
-Thread-Index: AQHWrsP6KGClmxP82kqQJxWMXgFaaQ==
-Date:   Mon, 2 Nov 2020 18:53:04 +0000
-Message-ID: <SN4PR0401MB3598937F8C4499BE687667A89B100@SN4PR0401MB3598.namprd04.prod.outlook.com>
+To:     Naohiro Aota <naohiro.aota@wdc.com>, linux-btrfs@vger.kernel.org,
+        dsterba@suse.com
+Cc:     hare@suse.com, linux-fsdevel@vger.kernel.org
 References: <d9a0a445560db3a9eb240c6535f8dd1bbd0abd96.1604065694.git.naohiro.aota@wdc.com>
  <eca26372a84d8b8ec2b59d3390f172810ed6f3e4.1604065695.git.naohiro.aota@wdc.com>
- <0485861e-40d4-a736-fc26-fc6fdb435baa@toxicpanda.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: toxicpanda.com; dkim=none (message not signed)
- header.d=none;toxicpanda.com; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [129.253.240.72]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: c6b0c0f9-ee61-4b30-4c1e-08d87f6087d3
-x-ms-traffictypediagnostic: SN6PR04MB5407:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <SN6PR04MB540720A81B0BD2681701D8689B100@SN6PR04MB5407.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: hfQhtA2LStKN7vde5YibWH0J094O9A+1qpaoE8kJZXAuT2u8L755QPZsMF7TGYda9vOz2+7Q6SEcESEtoEdnRjFAf3qCWPl/jBmj68ateRzOKiRZa0hBWynRuqLGELJn7lERIgOquAmfovJA1N/wuYQ8cKfELTM3WnETZ1Eic7K5ckzJw8f4+CQHLU/q1OgRAf+3FVjVlmfictuLNUejAxtCORQxr/O8h8D2a/W9bjQT1TCj8UyUgp7ns6tthlSAAqjLQFvtT0iuGUKL1NV/47UVcDa04C/02zLWKqY3I8WzH1aSo1k3RKieviZe5zKS
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR0401MB3598.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(376002)(136003)(39860400002)(396003)(366004)(2906002)(66556008)(110136005)(71200400001)(186003)(478600001)(54906003)(91956017)(76116006)(86362001)(316002)(52536014)(64756008)(66446008)(66476007)(55016002)(66946007)(7696005)(9686003)(8936002)(33656002)(53546011)(8676002)(6506007)(4326008)(5660300002)(83380400001)(26005);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: 2JjlBeVytPboVrlq309J7seFryiKCKTRCu95Cr/wM2xnHaAUFXyBQVfMCYr+z05+4DaDr0yCPqXQoq/LKs/kEF3LRBF4/zPg/fQ9c01CBnfbZgRJEYpQefQJZ0TFZ1wJUIY22umEiYJjxw9HaeMNx+iIsunvWuobhLwhAUiRbbhd5/dxURs0KRygSdEbf84c/teA5qs1BJu+tskJ0EEY0jVHahgWSQe/cT1BtUpxhx88OkEcrViF+4I62rca41O30L8mIP8/qLgDomis5MFf5Bh7Wb9Z+QqgHxPa7t4haUKQfTXoOK12kumrDi+ZZvADlUUJd8QuKwKwlKp8l5HdkuQi+BfTEIPL5nLhXdaBp3uIi3EGjPVh3yrLwzHY4hK46tMi5E3FHf5FiEfRVAcYDR3iuLa4SEEXUsM1Rb2S8dfzTcRsoPNP3zDduBGPmYkQCpyy6CmwbDToUPan7Lk3ZNUoRW/4mNWKdVsjj2diwHlLRBsLvLQ/wL5Wu+EydWJ1lIoKgs0nfA6x+dI0zNeLNhP6/zE0Ft4LRjLmvII2bUEbWOuJx+o1BvsFdjLDrEXhzO8VCoMhrREra7YfAdmEBE9Z8Q0EPNGN8gwXfxZHoAKQe0XnB5VKeTKhHfxOKwuentxqGSUQTCe92R2C3nipYw==
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+From:   Josef Bacik <josef@toxicpanda.com>
+Message-ID: <b3447a50-0178-6779-060d-655d596d27a0@toxicpanda.com>
+Date:   Mon, 2 Nov 2020 13:54:14 -0500
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.4.0
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SN4PR0401MB3598.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c6b0c0f9-ee61-4b30-4c1e-08d87f6087d3
-X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Nov 2020 18:53:04.3957
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: axiqISjcf4ZflRBREegCbzoAhEiAiegYKRv+rgmexnatq7iK9Tc4AXd/P387iQN2R5i4yvs0uzTI7baTZfGqYP+nhxIo1HQXJ0QKVALpD5Y=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR04MB5407
+In-Reply-To: <eca26372a84d8b8ec2b59d3390f172810ed6f3e4.1604065695.git.naohiro.aota@wdc.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 02/11/2020 19:23, Josef Bacik wrote:=0A=
->> +		/* shouldn't have super stripes in sequential zones */=0A=
->> +		if (zoned && nr) {=0A=
->> +			btrfs_err(fs_info,=0A=
->> +				  "Zoned btrfs's block group %llu should not have super blocks",=0A=
->> +				  cache->start);=0A=
->> +			return -EUCLEAN;=0A=
->> +		}=0A=
->> +=0A=
-> I'm very confused about this check, namely how you've been able to test w=
-ithout =0A=
-> it blowing up, which makes me feel like I'm missing something.=0A=
-> =0A=
-> We _always_ call exclude_super_stripes(), and we're simply looking up the=
- bytenr =0A=
-> for that block, which appears to not do anything special for zoned.  This=
- should =0A=
-> be looking up and failing whenever it looks for super stripes far enough =
-out. =0A=
-> How are you not failing here everytime you mount the fs?  Thanks,=0A=
-=0A=
-Naohiro (or Josef and everyone else as well of cause), please correct me if=
- I'm =0A=
-wrong, but on zoned btrfs we're not supporting any RAID type. So the call t=
-o =0A=
-btrfs_rmap_block() above will return 'nr =3D 0' (as we're always having =0A=
-map->num_stripes =3D 1) so this won't evaluate to true.=0A=
-=0A=
-Byte,=0A=
-	Johannes=0A=
+On 10/30/20 9:51 AM, Naohiro Aota wrote:
+> Superblock (and its copies) is the only data structure in btrfs which has a
+> fixed location on a device. Since we cannot overwrite in a sequential write
+> required zone, we cannot place superblock in the zone. One easy solution is
+> limiting superblock and copies to be placed only in conventional zones.
+> However, this method has two downsides: one is reduced number of superblock
+> copies. The location of the second copy of superblock is 256GB, which is in
+> a sequential write required zone on typical devices in the market today.
+> So, the number of superblock and copies is limited to be two.  Second
+> downside is that we cannot support devices which have no conventional zones
+> at all.
+> 
+> To solve these two problems, we employ superblock log writing. It uses two
+> zones as a circular buffer to write updated superblocks. Once the first
+> zone is filled up, start writing into the second buffer. Then, when the
+> both zones are filled up and before start writing to the first zone again,
+> it reset the first zone.
+> 
+> We can determine the position of the latest superblock by reading write
+> pointer information from a device. One corner case is when the both zones
+> are full. For this situation, we read out the last superblock of each
+> zone, and compare them to determine which zone is older.
+> 
+> The following zones are reserved as the circular buffer on ZONED btrfs.
+> 
+> - The primary superblock: zones 0 and 1
+> - The first copy: zones 16 and 17
+> - The second copy: zones 1024 or zone at 256GB which is minimum, and next
+>    to it
+> 
+> If these reserved zones are conventional, superblock is written fixed at
+> the start of the zone without logging.
+> 
+
+<snip>
+
+>   
+>   /*
+>    * This is only the first step towards a full-features scrub. It reads all
+> @@ -3704,6 +3705,8 @@ static noinline_for_stack int scrub_supers(struct scrub_ctx *sctx,
+>   		if (bytenr + BTRFS_SUPER_INFO_SIZE >
+>   		    scrub_dev->commit_total_bytes)
+>   			break;
+> +		if (!btrfs_check_super_location(scrub_dev, bytenr))
+> +			continue;
+
+Any reason in particular we're skipping scrubbing supers here?  Can't we just 
+lookup the bytenr and do the right thing here?
+
+>   
+>   		ret = scrub_pages(sctx, bytenr, BTRFS_SUPER_INFO_SIZE, bytenr,
+>   				  scrub_dev, BTRFS_EXTENT_FLAG_SUPER, gen, i,
+> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+> index 10827892c086..db884b96a5ea 100644
+> --- a/fs/btrfs/volumes.c
+> +++ b/fs/btrfs/volumes.c
+> @@ -1282,7 +1282,8 @@ void btrfs_release_disk_super(struct btrfs_super_block *super)
+>   }
+>   
+>   static struct btrfs_super_block *btrfs_read_disk_super(struct block_device *bdev,
+> -						       u64 bytenr)
+> +						       u64 bytenr,
+> +						       u64 bytenr_orig)
+>   {
+>   	struct btrfs_super_block *disk_super;
+>   	struct page *page;
+> @@ -1313,7 +1314,7 @@ static struct btrfs_super_block *btrfs_read_disk_super(struct block_device *bdev
+>   	/* align our pointer to the offset of the super block */
+>   	disk_super = p + offset_in_page(bytenr);
+>   
+> -	if (btrfs_super_bytenr(disk_super) != bytenr ||
+> +	if (btrfs_super_bytenr(disk_super) != bytenr_orig ||
+>   	    btrfs_super_magic(disk_super) != BTRFS_MAGIC) {
+>   		btrfs_release_disk_super(p);
+>   		return ERR_PTR(-EINVAL);
+> @@ -1348,7 +1349,8 @@ struct btrfs_device *btrfs_scan_one_device(const char *path, fmode_t flags,
+>   	bool new_device_added = false;
+>   	struct btrfs_device *device = NULL;
+>   	struct block_device *bdev;
+> -	u64 bytenr;
+> +	u64 bytenr, bytenr_orig;
+> +	int ret;
+>   
+>   	lockdep_assert_held(&uuid_mutex);
+>   
+> @@ -1358,14 +1360,18 @@ struct btrfs_device *btrfs_scan_one_device(const char *path, fmode_t flags,
+>   	 * So, we need to add a special mount option to scan for
+>   	 * later supers, using BTRFS_SUPER_MIRROR_MAX instead
+>   	 */
+> -	bytenr = btrfs_sb_offset(0);
+>   	flags |= FMODE_EXCL;
+>   
+>   	bdev = blkdev_get_by_path(path, flags, holder);
+>   	if (IS_ERR(bdev))
+>   		return ERR_CAST(bdev);
+>   
+> -	disk_super = btrfs_read_disk_super(bdev, bytenr);
+> +	bytenr_orig = btrfs_sb_offset(0);
+> +	ret = btrfs_sb_log_location_bdev(bdev, 0, READ, &bytenr);
+> +	if (ret)
+> +		return ERR_PTR(ret);
+> +
+> +	disk_super = btrfs_read_disk_super(bdev, bytenr, bytenr_orig);
+>   	if (IS_ERR(disk_super)) {
+>   		device = ERR_CAST(disk_super);
+>   		goto error_bdev_put;
+> @@ -2029,6 +2035,11 @@ void btrfs_scratch_superblocks(struct btrfs_fs_info *fs_info,
+>   		if (IS_ERR(disk_super))
+>   			continue;
+>   
+> +		if (bdev_is_zoned(bdev)) {
+> +			btrfs_reset_sb_log_zones(bdev, copy_num);
+> +			continue;
+> +		}
+> +
+>   		memset(&disk_super->magic, 0, sizeof(disk_super->magic));
+>   
+>   		page = virt_to_page(disk_super);
+> diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
+> index ae509699da14..d5487cba203b 100644
+> --- a/fs/btrfs/zoned.c
+> +++ b/fs/btrfs/zoned.c
+> @@ -20,6 +20,25 @@ static int copy_zone_info_cb(struct blk_zone *zone, unsigned int idx,
+>   	return 0;
+>   }
+>   
+> +static int sb_write_pointer(struct block_device *bdev, struct blk_zone *zone,
+> +			    u64 *wp_ret);
+> +
+> +static inline u32 sb_zone_number(u8 shift, int mirror)
+> +{
+> +	ASSERT(mirror < BTRFS_SUPER_MIRROR_MAX);
+> +
+> +	switch (mirror) {
+> +	case 0:
+> +		return 0;
+> +	case 1:
+> +		return 16;
+> +	case 2:
+> +		return min(btrfs_sb_offset(mirror) >> shift, 1024ULL);
+> +	}
+> +
+
+Can we get a comment here explaining the zone numbers?
+
+> +	return 0;
+> +}
+> +
+>   static int btrfs_get_dev_zones(struct btrfs_device *device, u64 pos,
+>   			       struct blk_zone *zones, unsigned int *nr_zones)
+>   {
+> @@ -123,6 +142,49 @@ int btrfs_get_dev_zone_info(struct btrfs_device *device)
+>   		goto out;
+>   	}
+>   
+> +	/* validate superblock log */
+> +	nr_zones = 2;
+> +	for (i = 0; i < BTRFS_SUPER_MIRROR_MAX; i++) {
+> +		u32 sb_zone = sb_zone_number(zone_info->zone_size_shift, i);
+> +		u64 sb_wp;
+> +
+
+I'd rather see
+
+#define BTRFS_NR_ZONED_SB_ZONES 2
+
+or something equally poorly named and use that instead of our magic 2 everywhere.
+
+Then you can just do
+
+int index = i * BTRFS_NR_ZONED_SB_ZONES;
+&zone_info->sb_zones[index];
+
+<snip>
+
+> +static int sb_log_location(struct block_device *bdev, struct blk_zone *zones,
+> +			   int rw, u64 *bytenr_ret)
+> +{
+> +	u64 wp;
+> +	int ret;
+> +
+> +	if (zones[0].type == BLK_ZONE_TYPE_CONVENTIONAL) {
+> +		*bytenr_ret = zones[0].start << SECTOR_SHIFT;
+> +		return 0;
+> +	}
+> +
+> +	ret = sb_write_pointer(bdev, zones, &wp);
+> +	if (ret != -ENOENT && ret < 0)
+> +		return ret;
+> +
+> +	if (rw == WRITE) {
+> +		struct blk_zone *reset = NULL;
+> +
+> +		if (wp == zones[0].start << SECTOR_SHIFT)
+> +			reset = &zones[0];
+> +		else if (wp == zones[1].start << SECTOR_SHIFT)
+> +			reset = &zones[1];
+> +
+> +		if (reset && reset->cond != BLK_ZONE_COND_EMPTY) {
+> +			ASSERT(reset->cond == BLK_ZONE_COND_FULL);
+> +
+> +			ret = blkdev_zone_mgmt(bdev, REQ_OP_ZONE_RESET,
+> +					       reset->start, reset->len,
+> +					       GFP_NOFS);
+
+What happens if we crash right after this?  Is the WP set to the start of the 
+zone here?  Does this mean we'll simply miss the super block?  I understand 
+we're resetting one zone here, but we're doing this in order, so we'll reset one 
+and write one, then reset the other and write the next.  We don't wait until 
+we've issued the writes for everything, so it appears to me that there's a gap 
+where we could have the WP pointed at the start of the zone, which we view as an 
+invalid state and thus won't be able to mount the file system.  Or am I missing 
+something?  Thanks,
+
+Josef
