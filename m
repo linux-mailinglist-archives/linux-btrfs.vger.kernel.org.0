@@ -2,62 +2,90 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28EA52A2EE6
-	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Nov 2020 17:02:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B1C482A2F67
+	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Nov 2020 17:12:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726228AbgKBQCQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 2 Nov 2020 11:02:16 -0500
-Received: from mx2.suse.de ([195.135.220.15]:42052 "EHLO mx2.suse.de"
+        id S1726741AbgKBQMg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 2 Nov 2020 11:12:36 -0500
+Received: from mx2.suse.de ([195.135.220.15]:53532 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725837AbgKBQCQ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 2 Nov 2020 11:02:16 -0500
+        id S1726734AbgKBQMf (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 2 Nov 2020 11:12:35 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 8E4E1AF37;
-        Mon,  2 Nov 2020 16:02:15 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 4C221B23B;
+        Mon,  2 Nov 2020 16:12:34 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 67CA8DA7D2; Mon,  2 Nov 2020 17:00:38 +0100 (CET)
-Date:   Mon, 2 Nov 2020 17:00:38 +0100
+        id 0613EDA7D2; Mon,  2 Nov 2020 17:10:56 +0100 (CET)
+Date:   Mon, 2 Nov 2020 17:10:56 +0100
 From:   David Sterba <dsterba@suse.cz>
-To:     dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 05/10] btrfs: precalculate checksums per leaf once
-Message-ID: <20201102160038.GH6756@twin.jikos.cz>
+To:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+Cc:     Nikolay Borisov <nborisov@suse.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH 00/14] Another batch of inode vs btrfs_inode cleanups
+Message-ID: <20201102161056.GI6756@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-References: <cover.1603981452.git.dsterba@suse.com>
- <33195f212e58bb0150017b3c1ac6df5c2d8c8dc7.1603981453.git.dsterba@suse.com>
- <037ace4b-0293-f43d-f340-68e766c6fd3b@gmx.com>
- <20201102152445.GG6756@twin.jikos.cz>
+Mail-Followup-To: dsterba@suse.cz,
+        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        Nikolay Borisov <nborisov@suse.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+References: <20201102144906.3767963-1-nborisov@suse.com>
+ <SN4PR0401MB359899B411E936800C19F9419B100@SN4PR0401MB3598.namprd04.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201102152445.GG6756@twin.jikos.cz>
+In-Reply-To: <SN4PR0401MB359899B411E936800C19F9419B100@SN4PR0401MB3598.namprd04.prod.outlook.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Nov 02, 2020 at 04:24:45PM +0100, David Sterba wrote:
-> On Mon, Nov 02, 2020 at 10:27:25PM +0800, Qu Wenruo wrote:
-> > On 2020/10/29 下午10:27, David Sterba wrote:
-> > > -	csum_size = BTRFS_MAX_ITEM_SIZE(fs_info);
-> > > -	num_csums_per_leaf = div64_u64(csum_size,
-> > > -			(u64)btrfs_super_csum_size(fs_info->super_copy));
-> > >  	num_csums = csum_bytes >> fs_info->sectorsize_bits;
-> > > -	num_csums += num_csums_per_leaf - 1;
-> > > -	num_csums = div64_u64(num_csums, num_csums_per_leaf);
-> > > -	return num_csums;
-> > > +	return DIV_ROUND_UP_ULL(num_csums, fs_info->csums_per_leaf);
+On Mon, Nov 02, 2020 at 03:48:52PM +0000, Johannes Thumshirn wrote:
+> On 02/11/2020 15:49, Nikolay Borisov wrote:
+> > Here is another batch which  gets use closer to unified btrfs_inode vs inode
+> > usage in functions.
 > > 
-> > Since it's just a DIV_ROUND_UP_ULL() call, can we make it inline?
+> > Nikolay Borisov (14):
+> >   btrfs: Make btrfs_inode_safe_disk_i_size_write take btrfs_inode
+> >   btrfs: Make insert_prealloc_file_extent take btrfs_inode
+> >   btrfs: Make btrfs_truncate_inode_items take btrfs_inode
+> >   btrfs: Make btrfs_finish_ordered_io btrfs_inode-centric
+> >   btrfs: Make btrfs_delayed_update_inode take btrfs_inode
+> >   btrfs: Make btrfs_update_inode_item take btrfs_inode
+> >   btrfs: Make btrfs_update_inode take btrfs_inode
+> >   btrfs: Make maybe_insert_hole take btrfs_inode
+> >   btrfs: Make find_first_non_hole take btrfs_inode
+> >   btrfs: Make btrfs_insert_replace_extent take btrfs_inode
+> >   btrfs: Make btrfs_truncate_block take btrfs_inode
+> >   btrfs: Make btrfs_cont_expand take btrfs_inode
+> >   btrfs: Make btrfs_drop_extents take btrfs_inode
+> >   btrfs: Make btrfs_update_inode_fallback take btrfs_inode
+> > 
+> >  fs/btrfs/block-group.c      |   2 +-
+> >  fs/btrfs/ctree.h            |  21 +--
+> >  fs/btrfs/delayed-inode.c    |  13 +-
+> >  fs/btrfs/delayed-inode.h    |   3 +-
+> >  fs/btrfs/file-item.c        |  18 +--
+> >  fs/btrfs/file.c             |  88 +++++++------
+> >  fs/btrfs/free-space-cache.c |   8 +-
+> >  fs/btrfs/inode-map.c        |   2 +-
+> >  fs/btrfs/inode.c            | 249 ++++++++++++++++++------------------
+> >  fs/btrfs/ioctl.c            |   6 +-
+> >  fs/btrfs/reflink.c          |   9 +-
+> >  fs/btrfs/transaction.c      |   3 +-
+> >  fs/btrfs/tree-log.c         |  24 ++--
+> >  fs/btrfs/xattr.c            |   4 +-
+> >  14 files changed, 233 insertions(+), 217 deletions(-)
+> > 
+> > --
+> > 2.25.1
+> > 
+> > 
 > 
-> Good point, but i'll check first if this does not bloat code due to
-> inlining. As it's called once in all callers, the overhead of call is
-> not a problem.
+> 
+> Code wise this looks good to me. FYI patches 11/14 and 12/14 don't 
+> apply cleanly on today's misc-next (at least for me).
 
-On a release config it adds about 40 bytes in resulting asm and reduces
-some stack usage due to the removed calls, I guess this speaks in favor
-of inlining so I'll switch it. Thanks.
+We're expecting conflicts, there are about 50+ patches in for-next where
+it could collide but I'd like to see what's the scope so I could
+better schedule the order.
