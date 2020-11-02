@@ -2,33 +2,32 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0F462A2C99
-	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Nov 2020 15:20:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C03E12A2CD5
+	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Nov 2020 15:26:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725933AbgKBOUf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 2 Nov 2020 09:20:35 -0500
-Received: from mout.gmx.net ([212.227.15.19]:55633 "EHLO mout.gmx.net"
+        id S1725956AbgKBOZz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 2 Nov 2020 09:25:55 -0500
+Received: from mout.gmx.net ([212.227.17.21]:37157 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726233AbgKBOSs (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 2 Nov 2020 09:18:48 -0500
+        id S1726094AbgKBOXw (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 2 Nov 2020 09:23:52 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1604326722;
-        bh=VojT1AJjYxUYWi5O4v3yrEZZluOOpDln75k8eLrnD4g=;
-        h=X-UI-Sender-Class:Subject:From:To:References:Date:In-Reply-To;
-        b=G2c3FccA88rWWzgd4ULoMkDq7GNb+g1nSngrvTkHEvfPRkaQqQGiRhwshhkKOcu9h
-         y2nzqmG6TtM5NDIMFSfIcm0P5QqSratVxRGLtUQkXzpKbHg9Awn0tANMTod2T8zTA5
-         lZbKfIUJpYU83ig8m/GetW4bRh5EbzCZETpGGtkc=
+        s=badeba3b8450; t=1604327027;
+        bh=QFkunoCEiGEtEwRLSvsohS2k03iMhthFUeOe9lmIV+g=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=I29ix1RC40qNZDqgGyzON22ZNIHZUeTHoYggNzpBOlrPXHpejO5PRmV0PrGpjcQY/
+         EGIk7TgXxX/9qgiFVgWGVf8QZWhNeBGTlvD8yYHJrgCFYqRnDqsooQS4Z0YcIOhljs
+         lTh7Q0F+nlGhhN5AHlcb+L0KweshXu9XcYu0C4mo=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MVvPD-1kjrWu2mNZ-00RsxT; Mon, 02
- Nov 2020 15:18:42 +0100
-Subject: Re: [PATCH 01/10] btrfs: use precalculated sectorsize_bits from
- fs_info
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MI5UN-1kX81l1RzD-00FBrX; Mon, 02
+ Nov 2020 15:23:47 +0100
+Subject: Re: [PATCH 03/10] btrfs: replace s_blocksize_bits with
+ fs_info::sectorsize_bits
 To:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
 References: <cover.1603981452.git.dsterba@suse.com>
- <b38721840b8d703a29807b71460464134b9ca7e1.1603981453.git.dsterba@suse.com>
- <5d586f76-7cad-b7be-60d3-44c8d3b67623@gmx.com>
+ <1021ce9995a25cca9dbfeb49ba298aaff53f0986.1603981453.git.dsterba@suse.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
  8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
@@ -53,362 +52,368 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
  ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
  oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <c798fbcc-c7e9-fca6-992b-bd006d6a61b4@gmx.com>
-Date:   Mon, 2 Nov 2020 22:18:38 +0800
+Message-ID: <8154edcf-f82f-1e1e-8313-433ff46d94c1@gmx.com>
+Date:   Mon, 2 Nov 2020 22:23:43 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <5d586f76-7cad-b7be-60d3-44c8d3b67623@gmx.com>
+In-Reply-To: <1021ce9995a25cca9dbfeb49ba298aaff53f0986.1603981453.git.dsterba@suse.com>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="plBK2Jl74BLRZxPWtthKCbPK1HzCcMgaL"
-X-Provags-ID: V03:K1:F8Yi9pLnrNMoUHSXoLXKirIlE5BdyEsM6bNp2QaE1V4i3NTmZ8A
- 9SWyq/N8JopOo4GJGDGYnIOCXyMGb1ZpKfzIgjNVt96Y3bg37RH2wIYXIfQxla6OURGD4Zm
- 6GOrLiiTsDGkIhnJLB8uNM4Wudu/A8ALhwPEPULUONI3TCNg9DboTZZldqYm79G59gxtfAM
- YQeXHaKO2rnQLsnKOxAbg==
+ boundary="hU6Xe9orWlcCFV3Uiv6uhlz5NFp0pZWlF"
+X-Provags-ID: V03:K1:5JUI3VCuh56CMsD04U7dT4nwEXvBr945f6uMg4WQ4zWx69XiAgc
+ CDtgvdbHowbybZGWMZTHc8nySSYPr2Raz99iY+y8P6Sr1Q9S+pAl+q8hOPaK18yIvMiUqmh
+ 6BOQTvC0gmAfFtwL3eZpeNxoJNuhaaYG4DkJdh8rR0Pt3P0ZsEV3ih3bBQ5yNOHbPjEL1qu
+ JFWKMer7KPcaYSl9oSubA==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:ljV+lqCHelE=:ra6xsd9BAy9CB3hOFM5J91
- piNUeAkw8905It1ctzcwdqJlqkVq3ahSrtskOppgjzLxV6OdzhuxTuR1XC8PfAyQ6j2U+ybfG
- 7jSsA7mj7O6+sM5S7s9EkpsqyYwOIOuGAYsfsjjlHPqN/vtu7W/u/IGWsv6lec5CHl2laxGsG
- LknJUwcsBcJ6FpsD/+SL7fem3TyqYyummQpK9MRJr+GHUR4erd552RkU8+O46f+uU21Ud3NzP
- Iq+3NWIPjNvvWgUcXTJT8imyD5Irx5aP4JoPPz/T3uIJVYEkm9aXwzOzFAxEPIDHfewLP3Nx4
- q+TRM4uW2uI90kBwBXYlgoSd5Wpt4XfcjD6cgCLuuAqnH8czGXKkH9Oh+IeCKUR6S1oYBQEdW
- fr37uQZdaE1VGRm7l6yebtYjVHsGwMY/zHVAidB/Rh1u2ccpnkMp0GM44x3FbTE7S3RrI7JYX
- Dgc+9lLEHulTMLW8NUgKmBnt7I3wTmpuK0J/f86biGOw1WFNtzC+kwriAYqSGmue3HGO2mg92
- n0oOkRwrVdWVdYhI8DGodvjEhW44b5iW7INsabRx9csvX5ls019UPyNs/qGYPYIxnHBzCxD3i
- pu2FuAXjjMA7KLUoPGm8wCCSsHygKjQuYG0S08IPr3KQJHM3XxrJ+ljinWsc/HXjdFqpaUjpz
- y2nzKR9Bv4aqlXhabNIBA0bOfladfnb5ZpuKMEW5Yp+Xtc0AvsQU67ErSP+nhEURUrtMe4ji2
- HNxuqEuU/UWbmHYPTY4lc5hKo87f/VtJoy7K72J7Yos2Y0VOJQgrzK7oefCc4xyDOxS997gJX
- hihDRC9o/M771KLP1OGsPW0yNBl2oLqI0yE8sO0kNKj1OfbAv09lglmKNfNltBB5KMd6NOKH1
- U48oCzJf0bZSRounoy+Q==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:9ckSS2OChGg=:pDu6fsNPvXznDkrpMFmDty
+ F54NqL5ftkOCCBZlhhxt6+itOsLV/ST+h+2mW/hOeBse3Wrl1aifLhI6nexCq54DIpmWnRa4e
+ 7V72aWk4mz7Suile9nDvOeODnXbERu1KG3oJw1LAnzezTwtCJ9PxzirhvamQjpbdabkU3BndR
+ PLl4pBrb5FvxjwVAd/Coo3Ud2e3z9Mtw6u0dr9OT+pm6l0OVbhXCo6ZjMvl2HTVSUkjLaFIqr
+ FEj8MIWTXyAP5y0oK1nR+2ZIOh198MmIrYxJoHbsI3TGli3ad2vnjU5HpC49OXROZYLz7HEWP
+ 6cieX8cwMLKRhwsKg9AgGX1vZH+dekDoz8IyimcMEb4bTtLjIuFSaGuCTgUUvBOe+u4Ft+xdL
+ E78BYKVqhx6A73VupkIyqGRQmnpZCFYRaf0NAq8InNq2fpnH9Ijc3ZR8UkbS9+8pcEWWP0OE+
+ gRRKRRDFET1GwuANJ2SZx4yxZva8zTofB45MuMXhhwY/vQR+xIQ7rDrZCcmK8UGX0X4ZA1kS/
+ OOP+mxgFaYCvbSL0GrZrFtKlnCJ3pfGPAIBaiEYx+C/r00gfH9yukE8MbPlv3s2giYc3NzJ8h
+ wZp3rQ1/5Dh5oVmteMK81+wvLbNKhVbMtn+rn6EGzElM4bRimabQbQD4r2gROBYRaqhZ8FVI/
+ bMS+rpSje82RlyEuFbYOYhhPh7L6/t2dHAP6ck9bRifUf1HQJiGHSKakBKH8SHr9PNFoBvQ8g
+ pCPnKLTUdRznh7/Z32Hp6LZqU2BaRlj0W9awgC0uncjW/XYL8kA666FtcFve5+ZmAv65/LPID
+ t4dhrlydPpwBuskdul/6/NK87b9Ht6uzJGrE1lsZDOvgiLKk1kt2S1PjYrdEVtWPq5ja9NPjo
+ lYqDttwo+BR99Ks8htgQ==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---plBK2Jl74BLRZxPWtthKCbPK1HzCcMgaL
-Content-Type: multipart/mixed; boundary="u7lsXwJW6u8eSEvQf4QwJG6PeBZU4v5Yh"
+--hU6Xe9orWlcCFV3Uiv6uhlz5NFp0pZWlF
+Content-Type: multipart/mixed; boundary="CTsif6dygMtAunEdaGiDaVvaSmiNITjqb"
 
---u7lsXwJW6u8eSEvQf4QwJG6PeBZU4v5Yh
+--CTsif6dygMtAunEdaGiDaVvaSmiNITjqb
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
 
 
 
-On 2020/11/2 =E4=B8=8B=E5=8D=8810:05, Qu Wenruo wrote:
+On 2020/10/29 =E4=B8=8B=E5=8D=8810:27, David Sterba wrote:
+> The value of super_block::s_blocksize_bits is the same as
+> fs_info::sectorsize_bits, but we don't need to do the extra dereference=
+s
+> in many functions and storing the bits as u32 (in fs_info) generates
+> shorter assembly.
 >=20
->=20
-> On 2020/10/29 =E4=B8=8B=E5=8D=8810:27, David Sterba wrote:
->> We do a lot of calculations where we divide or multiply by sectorsize.=
+> Signed-off-by: David Sterba <dsterba@suse.com>
 
->> We also know and make sure that sectorsize is a power of two, so this
->> means all divisions can be turned to shifts and avoid eg. expensive
->> u64/u32 divisions.
->>
->> The type is u32 as it's more register friendly on x86_64 compared to u=
-8
->> and the resulting assembly is smaller (movzbl vs movl).
->>
->> There's also superblock s_blocksize_bits but it's usually one more
->> pointer dereference farther than fs_info.
->>
->> Signed-off-by: David Sterba <dsterba@suse.com>
->> ---
->>  fs/btrfs/ctree.h           |  1 +
->>  fs/btrfs/disk-io.c         |  2 ++
->>  fs/btrfs/extent-tree.c     |  2 +-
->>  fs/btrfs/file-item.c       | 11 ++++++-----
->>  fs/btrfs/free-space-tree.c | 12 +++++++-----
->>  fs/btrfs/ordered-data.c    |  3 +--
->>  fs/btrfs/scrub.c           | 12 ++++++------
->>  fs/btrfs/tree-checker.c    |  3 ++-
->>  8 files changed, 26 insertions(+), 20 deletions(-)
->>
->> diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
->> index 8a83bce3225c..87c40cc5c42e 100644
->> --- a/fs/btrfs/ctree.h
->> +++ b/fs/btrfs/ctree.h
->> @@ -931,6 +931,7 @@ struct btrfs_fs_info {
->>  	/* Cached block sizes */
->>  	u32 nodesize;
->>  	u32 sectorsize;
->> +	u32 sectorsize_bits;
->=20
-> For the bit shift, it can alwasy be contained in one u8.
-> Since one u32 is only to be at most 32 bits, it can be easily contained=
+This patch is great.
 
-> in u8 whose max value is 255.
->=20
-> This should allow us to pack several u8 together to reduce some memory
-> usage.
->=20
-> Despite this, the series is pretty good.
->=20
-> Thanks,
-> Qu
->>  	u32 stripesize;
->> =20
->>  	/* Block groups and devices containing active swapfiles. */
->> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
->> index 601a7ab2adb4..4e67c122389c 100644
->> --- a/fs/btrfs/disk-io.c
->> +++ b/fs/btrfs/disk-io.c
->> @@ -2812,6 +2812,7 @@ void btrfs_init_fs_info(struct btrfs_fs_info *fs=
-_info)
->>  	/* Usable values until the real ones are cached from the superblock =
-*/
->>  	fs_info->nodesize =3D 4096;
->>  	fs_info->sectorsize =3D 4096;
->> +	fs_info->sectorsize_bits =3D ilog2(4096);
+I was just going to kill all "inode->i_sb->s_blocksize_bits" for subpage.=
 
-This may sounds like a nitpicking, but what about "ffs(4096) - 1"?
-IMHO it should be a little more faster than ilog2, especially when we
-have ensure all sector size is power of 2 already.
 
->>  	fs_info->stripesize =3D 4096;
->> =20
->>  	spin_lock_init(&fs_info->swapfile_pins_lock);
->> @@ -3076,6 +3077,7 @@ int __cold open_ctree(struct super_block *sb, st=
-ruct btrfs_fs_devices *fs_device
->>  	/* Cache block sizes */
->>  	fs_info->nodesize =3D nodesize;
->>  	fs_info->sectorsize =3D sectorsize;
->> +	fs_info->sectorsize_bits =3D ilog2(sectorsize);
+Although for subpage case, we may populate sb->s_blocksize_bits to
+PAGE_SHIFT, as current subpage doesn't support real subpage write at all.=
 
-Same here.
+Thus we want everything from DIO alignement to reflink alignment to
+still be PAGE_SIZE.
+
+With this patch, this allows us to get correct sector size from btrfs
+directly, without bothering the superblock block size.
+
+Reviewed-by: Qu Wenruo <wqu@suse.com>
 
 Thanks,
 Qu
->>  	fs_info->stripesize =3D stripesize;
->> =20
->>  	/*
->> diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
->> index 5fd60b13f4f8..29ac97248942 100644
->> --- a/fs/btrfs/extent-tree.c
->> +++ b/fs/btrfs/extent-tree.c
->> @@ -2145,7 +2145,7 @@ u64 btrfs_csum_bytes_to_leaves(struct btrfs_fs_i=
-nfo *fs_info, u64 csum_bytes)
->>  	csum_size =3D BTRFS_MAX_ITEM_SIZE(fs_info);
->>  	num_csums_per_leaf =3D div64_u64(csum_size,
->>  			(u64)btrfs_super_csum_size(fs_info->super_copy));
->> -	num_csums =3D div64_u64(csum_bytes, fs_info->sectorsize);
->> +	num_csums =3D csum_bytes >> fs_info->sectorsize_bits;
->>  	num_csums +=3D num_csums_per_leaf - 1;
->>  	num_csums =3D div64_u64(num_csums, num_csums_per_leaf);
->>  	return num_csums;
->> diff --git a/fs/btrfs/file-item.c b/fs/btrfs/file-item.c
->> index 816f57d52fc9..d8cd467b4e0c 100644
->> --- a/fs/btrfs/file-item.c
->> +++ b/fs/btrfs/file-item.c
->> @@ -119,7 +119,7 @@ static inline u32 max_ordered_sum_bytes(struct btr=
-fs_fs_info *fs_info,
->>  {
->>  	u32 ncsums =3D (PAGE_SIZE - sizeof(struct btrfs_ordered_sum)) / csum=
-_size;
->> =20
->> -	return ncsums * fs_info->sectorsize;
->> +	return ncsums << fs_info->sectorsize_bits;
->>  }
->> =20
->>  int btrfs_insert_file_extent(struct btrfs_trans_handle *trans,
->> @@ -369,7 +369,7 @@ blk_status_t btrfs_lookup_bio_sums(struct inode *i=
-node, struct bio *bio,
->>  		 * a single leaf so it will also fit inside a u32
->>  		 */
->>  		diff =3D disk_bytenr - item_start_offset;
->> -		diff =3D diff / fs_info->sectorsize;
->> +		diff =3D diff >> fs_info->sectorsize_bits;
->>  		diff =3D diff * csum_size;
->>  		count =3D min_t(int, nblocks, (item_last_offset - disk_bytenr) >>
->>  					    inode->i_sb->s_blocksize_bits);
->> @@ -465,7 +465,8 @@ int btrfs_lookup_csums_range(struct btrfs_root *ro=
+> ---
+>  fs/btrfs/ctree.h        |  2 +-
+>  fs/btrfs/extent_io.c    |  2 +-
+>  fs/btrfs/file-item.c    | 34 +++++++++++++++-------------------
+>  fs/btrfs/file.c         |  3 +--
+>  fs/btrfs/inode.c        |  6 +++---
+>  fs/btrfs/ordered-data.c |  6 +++---
+>  fs/btrfs/super.c        |  2 +-
+>  7 files changed, 25 insertions(+), 30 deletions(-)
+>=20
+> diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+> index 87c40cc5c42e..a1a0b99c3530 100644
+> --- a/fs/btrfs/ctree.h
+> +++ b/fs/btrfs/ctree.h
+> @@ -1405,7 +1405,7 @@ struct btrfs_map_token {
+>  };
+> =20
+>  #define BTRFS_BYTES_TO_BLKS(fs_info, bytes) \
+> -				((bytes) >> (fs_info)->sb->s_blocksize_bits)
+> +				((bytes) >> (fs_info)->sectorsize_bits)
+> =20
+>  static inline void btrfs_init_map_token(struct btrfs_map_token *token,=
+
+>  					struct extent_buffer *eb)
+> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+> index 14d01b76f5c9..cd27a2a4f717 100644
+> --- a/fs/btrfs/extent_io.c
+> +++ b/fs/btrfs/extent_io.c
+> @@ -2652,7 +2652,7 @@ blk_status_t btrfs_submit_read_repair(struct inod=
+e *inode,
+>  	struct extent_io_tree *tree =3D &BTRFS_I(inode)->io_tree;
+>  	struct extent_io_tree *failure_tree =3D &BTRFS_I(inode)->io_failure_t=
+ree;
+>  	struct btrfs_io_bio *failed_io_bio =3D btrfs_io_bio(failed_bio);
+> -	const int icsum =3D phy_offset >> inode->i_sb->s_blocksize_bits;
+> +	const int icsum =3D phy_offset >> fs_info->sectorsize_bits;
+>  	bool need_validation;
+>  	struct bio *repair_bio;
+>  	struct btrfs_io_bio *repair_io_bio;
+> diff --git a/fs/btrfs/file-item.c b/fs/btrfs/file-item.c
+> index d8cd467b4e0c..ed750dd8a115 100644
+> --- a/fs/btrfs/file-item.c
+> +++ b/fs/btrfs/file-item.c
+> @@ -201,7 +201,7 @@ btrfs_lookup_csum(struct btrfs_trans_handle *trans,=
+
+>  			goto fail;
+> =20
+>  		csum_offset =3D (bytenr - found_key.offset) >>
+> -				fs_info->sb->s_blocksize_bits;
+> +				fs_info->sectorsize_bits;
+>  		csums_in_item =3D btrfs_item_size_nr(leaf, path->slots[0]);
+>  		csums_in_item /=3D csum_size;
+> =20
+> @@ -279,7 +279,7 @@ blk_status_t btrfs_lookup_bio_sums(struct inode *in=
+ode, struct bio *bio,
+>  	if (!path)
+>  		return BLK_STS_RESOURCE;
+> =20
+> -	nblocks =3D bio->bi_iter.bi_size >> inode->i_sb->s_blocksize_bits;
+> +	nblocks =3D bio->bi_iter.bi_size >> fs_info->sectorsize_bits;
+>  	if (!dst) {
+>  		struct btrfs_io_bio *btrfs_bio =3D btrfs_io_bio(bio);
+> =20
+> @@ -372,7 +372,7 @@ blk_status_t btrfs_lookup_bio_sums(struct inode *in=
+ode, struct bio *bio,
+>  		diff =3D diff >> fs_info->sectorsize_bits;
+>  		diff =3D diff * csum_size;
+>  		count =3D min_t(int, nblocks, (item_last_offset - disk_bytenr) >>
+> -					    inode->i_sb->s_blocksize_bits);
+> +					    fs_info->sectorsize_bits);
+>  		read_extent_buffer(path->nodes[0], csum,
+>  				   ((unsigned long)item) + diff,
+>  				   csum_size * count);
+> @@ -436,8 +436,7 @@ int btrfs_lookup_csums_range(struct btrfs_root *roo=
+t, u64 start, u64 end,
+>  		btrfs_item_key_to_cpu(leaf, &key, path->slots[0] - 1);
+>  		if (key.objectid =3D=3D BTRFS_EXTENT_CSUM_OBJECTID &&
+>  		    key.type =3D=3D BTRFS_EXTENT_CSUM_KEY) {
+> -			offset =3D (start - key.offset) >>
+> -				 fs_info->sb->s_blocksize_bits;
+> +			offset =3D (start - key.offset) >> fs_info->sectorsize_bits;
+>  			if (offset * csum_size <
+>  			    btrfs_item_size_nr(leaf, path->slots[0] - 1))
+>  				path->slots[0]--;
+> @@ -488,10 +487,9 @@ int btrfs_lookup_csums_range(struct btrfs_root *ro=
 ot, u64 start, u64 end,
->>  			start =3D key.offset;
->> =20
->>  		size =3D btrfs_item_size_nr(leaf, path->slots[0]);
->> -		csum_end =3D key.offset + (size / csum_size) * fs_info->sectorsize;=
-
->> +		csum_end =3D key.offset +
->> +			   ((size / csum_size) >> fs_info->sectorsize_bits);
->>  		if (csum_end <=3D start) {
->>  			path->slots[0]++;
->>  			continue;
->> @@ -606,7 +607,7 @@ blk_status_t btrfs_csum_one_bio(struct btrfs_inode=
- *inode, struct bio *bio,
->> =20
->>  			data =3D kmap_atomic(bvec.bv_page);
->>  			crypto_shash_digest(shash, data + bvec.bv_offset
->> -					    + (i * fs_info->sectorsize),
->> +					    + (i << fs_info->sectorsize_bits),
->>  					    fs_info->sectorsize,
->>  					    sums->sums + index);
->>  			kunmap_atomic(data);
->> @@ -1020,7 +1021,7 @@ int btrfs_csum_file_blocks(struct btrfs_trans_ha=
-ndle *trans,
->> =20
->>  	index +=3D ins_size;
->>  	ins_size /=3D csum_size;
->> -	total_bytes +=3D ins_size * fs_info->sectorsize;
->> +	total_bytes +=3D ins_size << fs_info->sectorsize_bits;
->> =20
->>  	btrfs_mark_buffer_dirty(path->nodes[0]);
->>  	if (total_bytes < sums->len) {
->> diff --git a/fs/btrfs/free-space-tree.c b/fs/btrfs/free-space-tree.c
->> index 6b9faf3b0e96..f09f62e245a0 100644
->> --- a/fs/btrfs/free-space-tree.c
->> +++ b/fs/btrfs/free-space-tree.c
->> @@ -416,16 +416,18 @@ int convert_free_space_to_extents(struct btrfs_t=
-rans_handle *trans,
->>  	btrfs_mark_buffer_dirty(leaf);
->>  	btrfs_release_path(path);
->> =20
->> -	nrbits =3D div_u64(block_group->length, block_group->fs_info->sector=
-size);
->> +	nrbits =3D block_group->length >> block_group->fs_info->sectorsize_b=
-its;
->>  	start_bit =3D find_next_bit_le(bitmap, nrbits, 0);
->> =20
->>  	while (start_bit < nrbits) {
->>  		end_bit =3D find_next_zero_bit_le(bitmap, nrbits, start_bit);
->>  		ASSERT(start_bit < end_bit);
->> =20
->> -		key.objectid =3D start + start_bit * block_group->fs_info->sectorsi=
-ze;
->> +		key.objectid =3D start +
->> +			       (start_bit << block_group->fs_info->sectorsize_bits);
->>  		key.type =3D BTRFS_FREE_SPACE_EXTENT_KEY;
->> -		key.offset =3D (end_bit - start_bit) * block_group->fs_info->sector=
-size;
->> +		key.offset =3D (end_bit - start_bit) <<
->> +					block_group->fs_info->sectorsize_bits;
->> =20
->>  		ret =3D btrfs_insert_empty_item(trans, root, path, &key, 0);
->>  		if (ret)
->> @@ -540,8 +542,8 @@ static void free_space_set_bits(struct btrfs_block=
-_group *block_group,
->>  		end =3D found_end;
->> =20
->>  	ptr =3D btrfs_item_ptr_offset(leaf, path->slots[0]);
->> -	first =3D div_u64(*start - found_start, fs_info->sectorsize);
->> -	last =3D div_u64(end - found_start, fs_info->sectorsize);
->> +	first =3D (*start - found_start) >> fs_info->sectorsize_bits;
->> +	last =3D (end - found_start) >> fs_info->sectorsize_bits;
->>  	if (bit)
->>  		extent_buffer_bitmap_set(leaf, ptr, first, last - first);
->>  	else
->> diff --git a/fs/btrfs/ordered-data.c b/fs/btrfs/ordered-data.c
->> index 87bac9ecdf4c..7b62dcc6cd98 100644
->> --- a/fs/btrfs/ordered-data.c
->> +++ b/fs/btrfs/ordered-data.c
->> @@ -868,7 +868,6 @@ int btrfs_find_ordered_sum(struct btrfs_inode *ino=
-de, u64 offset,
->>  	struct btrfs_ordered_inode_tree *tree =3D &inode->ordered_tree;
->>  	unsigned long num_sectors;
->>  	unsigned long i;
->> -	u32 sectorsize =3D btrfs_inode_sectorsize(inode);
->>  	const u8 blocksize_bits =3D inode->vfs_inode.i_sb->s_blocksize_bits;=
-
->>  	const u16 csum_size =3D btrfs_super_csum_size(fs_info->super_copy);
->>  	int index =3D 0;
->> @@ -890,7 +889,7 @@ int btrfs_find_ordered_sum(struct btrfs_inode *ino=
-de, u64 offset,
->>  			index +=3D (int)num_sectors * csum_size;
->>  			if (index =3D=3D len)
->>  				goto out;
->> -			disk_bytenr +=3D num_sectors * sectorsize;
->> +			disk_bytenr +=3D num_sectors << fs_info->sectorsize_bits;
->>  		}
->>  	}
->>  out:
->> diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
->> index 54a4f34d4c1c..7babf670c8c2 100644
->> --- a/fs/btrfs/scrub.c
->> +++ b/fs/btrfs/scrub.c
->> @@ -2300,7 +2300,7 @@ static inline void __scrub_mark_bitmap(struct sc=
-rub_parity *sparity,
->>  	u64 offset;
->>  	u64 nsectors64;
->>  	u32 nsectors;
->> -	int sectorsize =3D sparity->sctx->fs_info->sectorsize;
->> +	u32 sectorsize_bits =3D sparity->sctx->fs_info->sectorsize_bits;
->> =20
->>  	if (len >=3D sparity->stripe_len) {
->>  		bitmap_set(bitmap, 0, sparity->nsectors);
->> @@ -2309,8 +2309,8 @@ static inline void __scrub_mark_bitmap(struct sc=
-rub_parity *sparity,
->> =20
->>  	start -=3D sparity->logic_start;
->>  	start =3D div64_u64_rem(start, sparity->stripe_len, &offset);
->> -	offset =3D div_u64(offset, sectorsize);
->> -	nsectors64 =3D div_u64(len, sectorsize);
->> +	offset =3D offset >> sectorsize_bits;
->> +	nsectors64 =3D len >> sectorsize_bits;
->> =20
->>  	ASSERT(nsectors64 < UINT_MAX);
->>  	nsectors =3D (u32)nsectors64;
->> @@ -2386,10 +2386,10 @@ static int scrub_find_csum(struct scrub_ctx *s=
-ctx, u64 logical, u8 *csum)
->>  	if (!sum)
->>  		return 0;
->> =20
->> -	index =3D div_u64(logical - sum->bytenr, sctx->fs_info->sectorsize);=
-
->> +	index =3D (logical - sum->bytenr) >> sctx->fs_info->sectorsize_bits;=
-
->>  	ASSERT(index < UINT_MAX);
->> =20
->> -	num_sectors =3D sum->len / sctx->fs_info->sectorsize;
->> +	num_sectors =3D sum->len >> sctx->fs_info->sectorsize_bits;
->>  	memcpy(csum, sum->sums + index * sctx->csum_size, sctx->csum_size);
->>  	if (index =3D=3D num_sectors - 1) {
->>  		list_del(&sum->list);
->> @@ -2776,7 +2776,7 @@ static noinline_for_stack int scrub_raid56_parit=
-y(struct scrub_ctx *sctx,
->>  	int extent_mirror_num;
->>  	int stop_loop =3D 0;
->> =20
->> -	nsectors =3D div_u64(map->stripe_len, fs_info->sectorsize);
->> +	nsectors =3D map->stripe_len >> fs_info->sectorsize_bits;
->>  	bitmap_len =3D scrub_calc_parity_bitmap_len(nsectors);
->>  	sparity =3D kzalloc(sizeof(struct scrub_parity) + 2 * bitmap_len,
->>  			  GFP_NOFS);
->> diff --git a/fs/btrfs/tree-checker.c b/fs/btrfs/tree-checker.c
->> index 8784b74f5232..c0e19917e59b 100644
->> --- a/fs/btrfs/tree-checker.c
->> +++ b/fs/btrfs/tree-checker.c
->> @@ -361,7 +361,8 @@ static int check_csum_item(struct extent_buffer *l=
-eaf, struct btrfs_key *key,
->>  		u32 prev_item_size;
->> =20
->>  		prev_item_size =3D btrfs_item_size_nr(leaf, slot - 1);
->> -		prev_csum_end =3D (prev_item_size / csumsize) * sectorsize;
->> +		prev_csum_end =3D (prev_item_size / csumsize);
->> +		prev_csum_end <<=3D fs_info->sectorsize_bits;
->>  		prev_csum_end +=3D prev_key->offset;
->>  		if (prev_csum_end > key->offset) {
->>  			generic_err(leaf, slot - 1,
->>
+>  			sums->bytenr =3D start;
+>  			sums->len =3D (int)size;
+> =20
+> -			offset =3D (start - key.offset) >>
+> -				fs_info->sb->s_blocksize_bits;
+> +			offset =3D (start - key.offset) >> fs_info->sectorsize_bits;
+>  			offset *=3D csum_size;
+> -			size >>=3D fs_info->sb->s_blocksize_bits;
+> +			size >>=3D fs_info->sectorsize_bits;
+> =20
+>  			read_extent_buffer(path->nodes[0],
+>  					   sums->sums,
+> @@ -644,11 +642,11 @@ static noinline void truncate_one_csum(struct btr=
+fs_fs_info *fs_info,
+>  	u16 csum_size =3D btrfs_super_csum_size(fs_info->super_copy);
+>  	u64 csum_end;
+>  	u64 end_byte =3D bytenr + len;
+> -	u32 blocksize_bits =3D fs_info->sb->s_blocksize_bits;
+> +	u32 blocksize_bits =3D fs_info->sectorsize_bits;
+> =20
+>  	leaf =3D path->nodes[0];
+>  	csum_end =3D btrfs_item_size_nr(leaf, path->slots[0]) / csum_size;
+> -	csum_end <<=3D fs_info->sb->s_blocksize_bits;
+> +	csum_end <<=3D blocksize_bits;
+>  	csum_end +=3D key->offset;
+> =20
+>  	if (key->offset < bytenr && csum_end <=3D end_byte) {
+> @@ -696,7 +694,7 @@ int btrfs_del_csums(struct btrfs_trans_handle *tran=
+s,
+>  	struct extent_buffer *leaf;
+>  	int ret;
+>  	u16 csum_size =3D btrfs_super_csum_size(fs_info->super_copy);
+> -	int blocksize_bits =3D fs_info->sb->s_blocksize_bits;
+> +	u32 blocksize_bits =3D fs_info->sectorsize_bits;
+> =20
+>  	ASSERT(root =3D=3D fs_info->csum_root ||
+>  	       root->root_key.objectid =3D=3D BTRFS_TREE_LOG_OBJECTID);
+> @@ -925,7 +923,7 @@ int btrfs_csum_file_blocks(struct btrfs_trans_handl=
+e *trans,
+>  	if (btrfs_leaf_free_space(leaf) >=3D csum_size) {
+>  		btrfs_item_key_to_cpu(leaf, &found_key, path->slots[0]);
+>  		csum_offset =3D (bytenr - found_key.offset) >>
+> -			fs_info->sb->s_blocksize_bits;
+> +			fs_info->sectorsize_bits;
+>  		goto extend_csum;
+>  	}
+> =20
+> @@ -943,8 +941,7 @@ int btrfs_csum_file_blocks(struct btrfs_trans_handl=
+e *trans,
+> =20
+>  	leaf =3D path->nodes[0];
+>  	btrfs_item_key_to_cpu(leaf, &found_key, path->slots[0]);
+> -	csum_offset =3D (bytenr - found_key.offset) >>
+> -			fs_info->sb->s_blocksize_bits;
+> +	csum_offset =3D (bytenr - found_key.offset) >> fs_info->sectorsize_bi=
+ts;
+> =20
+>  	if (found_key.type !=3D BTRFS_EXTENT_CSUM_KEY ||
+>  	    found_key.objectid !=3D BTRFS_EXTENT_CSUM_OBJECTID ||
+> @@ -960,7 +957,7 @@ int btrfs_csum_file_blocks(struct btrfs_trans_handl=
+e *trans,
+>  		u32 diff;
+> =20
+>  		tmp =3D sums->len - total_bytes;
+> -		tmp >>=3D fs_info->sb->s_blocksize_bits;
+> +		tmp >>=3D fs_info->sectorsize_bits;
+>  		WARN_ON(tmp < 1);
+> =20
+>  		extend_nr =3D max_t(int, 1, (int)tmp);
+> @@ -985,9 +982,9 @@ int btrfs_csum_file_blocks(struct btrfs_trans_handl=
+e *trans,
+>  		u64 tmp;
+> =20
+>  		tmp =3D sums->len - total_bytes;
+> -		tmp >>=3D fs_info->sb->s_blocksize_bits;
+> +		tmp >>=3D fs_info->sectorsize_bits;
+>  		tmp =3D min(tmp, (next_offset - file_key.offset) >>
+> -					 fs_info->sb->s_blocksize_bits);
+> +					 fs_info->sectorsize_bits);
+> =20
+>  		tmp =3D max_t(u64, 1, tmp);
+>  		tmp =3D min_t(u64, tmp, MAX_CSUM_ITEMS(fs_info, csum_size));
+> @@ -1011,8 +1008,7 @@ int btrfs_csum_file_blocks(struct btrfs_trans_han=
+dle *trans,
+>  	item =3D (struct btrfs_csum_item *)((unsigned char *)item +
+>  					  csum_offset * csum_size);
+>  found:
+> -	ins_size =3D (u32)(sums->len - total_bytes) >>
+> -		   fs_info->sb->s_blocksize_bits;
+> +	ins_size =3D (u32)(sums->len - total_bytes) >> fs_info->sectorsize_bi=
+ts;
+>  	ins_size *=3D csum_size;
+>  	ins_size =3D min_t(u32, (unsigned long)item_end - (unsigned long)item=
+,
+>  			      ins_size);
+> diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+> index 1c97e559aefb..25dc5eb495d8 100644
+> --- a/fs/btrfs/file.c
+> +++ b/fs/btrfs/file.c
+> @@ -1763,8 +1763,7 @@ static noinline ssize_t btrfs_buffered_write(stru=
+ct kiocb *iocb,
+> =20
+>  		if (num_sectors > dirty_sectors) {
+>  			/* release everything except the sectors we dirtied */
+> -			release_bytes -=3D dirty_sectors <<
+> -						fs_info->sb->s_blocksize_bits;
+> +			release_bytes -=3D dirty_sectors << fs_info->sectorsize_bits;
+>  			if (only_release_metadata) {
+>  				btrfs_delalloc_release_metadata(BTRFS_I(inode),
+>  							release_bytes, true);
+> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+> index 1dcccd212809..5582c1c9c007 100644
+> --- a/fs/btrfs/inode.c
+> +++ b/fs/btrfs/inode.c
+> @@ -2854,7 +2854,7 @@ int btrfs_verify_data_csum(struct btrfs_io_bio *i=
+o_bio, u64 phy_offset,
+>  		return 0;
+>  	}
+> =20
+> -	phy_offset >>=3D inode->i_sb->s_blocksize_bits;
+> +	phy_offset >>=3D root->fs_info->sectorsize_bits;
+>  	return check_data_csum(inode, io_bio, phy_offset, page, offset, start=
+,
+>  			       (size_t)(end - start + 1));
+>  }
+> @@ -7737,7 +7737,7 @@ static inline blk_status_t btrfs_submit_dio_bio(s=
+truct bio *bio,
+>  		u64 csum_offset;
+> =20
+>  		csum_offset =3D file_offset - dip->logical_offset;
+> -		csum_offset >>=3D inode->i_sb->s_blocksize_bits;
+> +		csum_offset >>=3D fs_info->sectorsize_bits;
+>  		csum_offset *=3D btrfs_super_csum_size(fs_info->super_copy);
+>  		btrfs_io_bio(bio)->csum =3D dip->csums + csum_offset;
+>  	}
+> @@ -7766,7 +7766,7 @@ static struct btrfs_dio_private *btrfs_create_dio=
+_private(struct bio *dio_bio,
+>  		const u16 csum_size =3D btrfs_super_csum_size(fs_info->super_copy);
+>  		size_t nblocks;
+> =20
+> -		nblocks =3D dio_bio->bi_iter.bi_size >> inode->i_sb->s_blocksize_bit=
+s;
+> +		nblocks =3D dio_bio->bi_iter.bi_size >> fs_info->sectorsize_bits;
+>  		dip_size +=3D csum_size * nblocks;
+>  	}
+> =20
+> diff --git a/fs/btrfs/ordered-data.c b/fs/btrfs/ordered-data.c
+> index 7b62dcc6cd98..ecc731a6bbae 100644
+> --- a/fs/btrfs/ordered-data.c
+> +++ b/fs/btrfs/ordered-data.c
+> @@ -868,7 +868,6 @@ int btrfs_find_ordered_sum(struct btrfs_inode *inod=
+e, u64 offset,
+>  	struct btrfs_ordered_inode_tree *tree =3D &inode->ordered_tree;
+>  	unsigned long num_sectors;
+>  	unsigned long i;
+> -	const u8 blocksize_bits =3D inode->vfs_inode.i_sb->s_blocksize_bits;
+>  	const u16 csum_size =3D btrfs_super_csum_size(fs_info->super_copy);
+>  	int index =3D 0;
+> =20
+> @@ -880,8 +879,9 @@ int btrfs_find_ordered_sum(struct btrfs_inode *inod=
+e, u64 offset,
+>  	list_for_each_entry_reverse(ordered_sum, &ordered->list, list) {
+>  		if (disk_bytenr >=3D ordered_sum->bytenr &&
+>  		    disk_bytenr < ordered_sum->bytenr + ordered_sum->len) {
+> -			i =3D (disk_bytenr - ordered_sum->bytenr) >> blocksize_bits;
+> -			num_sectors =3D ordered_sum->len >> blocksize_bits;
+> +			i =3D (disk_bytenr - ordered_sum->bytenr) >>
+> +			    fs_info->sectorsize_bits;
+> +			num_sectors =3D ordered_sum->len >> fs_info->sectorsize_bits;
+>  			num_sectors =3D min_t(int, len - index, num_sectors - i);
+>  			memcpy(sum + index, ordered_sum->sums + i * csum_size,
+>  			       num_sectors * csum_size);
+> diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
+> index 1ffa50bae1dd..87b390a5351f 100644
+> --- a/fs/btrfs/super.c
+> +++ b/fs/btrfs/super.c
+> @@ -2205,7 +2205,7 @@ static int btrfs_statfs(struct dentry *dentry, st=
+ruct kstatfs *buf)
+>  	u64 total_used =3D 0;
+>  	u64 total_free_data =3D 0;
+>  	u64 total_free_meta =3D 0;
+> -	int bits =3D dentry->d_sb->s_blocksize_bits;
+> +	u32 bits =3D fs_info->sectorsize_bits;
+>  	__be32 *fsid =3D (__be32 *)fs_info->fs_devices->fsid;
+>  	unsigned factor =3D 1;
+>  	struct btrfs_block_rsv *block_rsv =3D &fs_info->global_block_rsv;
 >=20
 
 
---u7lsXwJW6u8eSEvQf4QwJG6PeBZU4v5Yh--
+--CTsif6dygMtAunEdaGiDaVvaSmiNITjqb--
 
---plBK2Jl74BLRZxPWtthKCbPK1HzCcMgaL
+--hU6Xe9orWlcCFV3Uiv6uhlz5NFp0pZWlF
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl+gFT4ACgkQwj2R86El
-/qjYEgf+K6cee4ZaSq9qssItZmg1LpDwKtbmNiRC5mU5nP79nLIFZucoDUJajYBQ
-Y3yKnlUUoMgLEu9uO6/ZWHMFnAiQvovZyxVuv0pegJwV89pgE5e6Ztfsa+r7PTiY
-xiGIo0cQiinqmWmu2oQHFmFh0V8Ep7gNloNFUtqVsHw2XnWgN+ijWRinn6jrmoEq
-ppyPuegH4XfSNAAUTI7PQgDZ86wZVn7O4ryh7m6EOWA6At6HTHFZMfKfDXv2/Y6Z
-hGI79Iej1hy8+RX4Cw0wuwlsUdPSQu6MnGz42AemlxLKSIVIOgTsB+RyR4ikmz9L
-Zx/ey9YMfnWbBylUIYl0IJ1/522AuQ==
-=MUEN
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl+gFm8ACgkQwj2R86El
+/qhNoAf+N68BSHSX5DksZ+JY3BCaikRBYYjQd6dfKXPrfLf2SxHx2f6SINBnUTG5
+egdPYLPgb4rPGQfStU6WSu+1c1VVwP/God/7UmCVHtMH+tLfYie31NNIXM77i9py
+13aoTZUjEN8aBoxAZaAR7R7Nhidaot+hx/I9MIcamPNnQoM+Nh+9nb8RtLytjMH7
+9Bc8NB9IpP1hNaH8CTFtm6KLCESb9AyPxl/bviRrJKEntg1sF4WvPdkIdyYPZB8L
+EzUj0A8n61Y9tOjQVLrcCQapJDCKQ8Q4FDvczEvAQ2X8HPOxgzKW7Syyo7GdDzrZ
+p+cfafpcs9q0Q2ggsqar41b7Xp2rBg==
+=AG61
 -----END PGP SIGNATURE-----
 
---plBK2Jl74BLRZxPWtthKCbPK1HzCcMgaL--
+--hU6Xe9orWlcCFV3Uiv6uhlz5NFp0pZWlF--
