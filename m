@@ -2,91 +2,76 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B20C2A2D20
-	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Nov 2020 15:41:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99F392A2D48
+	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Nov 2020 15:49:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726070AbgKBOlF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 2 Nov 2020 09:41:05 -0500
-Received: from james.kirk.hungrycats.org ([174.142.39.145]:41802 "EHLO
-        james.kirk.hungrycats.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726009AbgKBOlE (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 2 Nov 2020 09:41:04 -0500
-Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
-        id A1961884500; Mon,  2 Nov 2020 09:40:50 -0500 (EST)
-Date:   Mon, 2 Nov 2020 09:40:50 -0500
-From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-To:     A L <mail@lechevalier.se>
-Cc:     waxhead <waxhead@dirtcellar.net>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Subject: Re: Switching from spacecache v1 to v2
-Message-ID: <20201102144048.GA28049@hungrycats.org>
-References: <fc45b21c-d24e-641c-efab-e1544aa98071@dirtcellar.net>
- <20201101174902.GU5890@hungrycats.org>
- <04d57bc4-c406-0d54-8299-662883fd48da@lechevalier.se>
+        id S1725960AbgKBOtJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 2 Nov 2020 09:49:09 -0500
+Received: from mx2.suse.de ([195.135.220.15]:39732 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725791AbgKBOtJ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 2 Nov 2020 09:49:09 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1604328548;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=UiJ6bkmNA67Oapbu1ZengFDsOA3y7IoIhilFmvzaUF0=;
+        b=Sf6Km9IMPZFyTlca8N2sXGFOlnEXu/fVgu/E+d++Ue2ihBvU9u+SQtlD5zGTWfjPGYP+9E
+        45q6TgI2UAFdSdITrhOCmxey/fH9kI0J8vKBTPQz7P/0a3+eiVZ0KHPva6FKkjwLRQWcBq
+        0IwErgYgCdqeqeoeelGWb2JYZpbb0RA=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 2475CAE61;
+        Mon,  2 Nov 2020 14:49:08 +0000 (UTC)
+From:   Nikolay Borisov <nborisov@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     Nikolay Borisov <nborisov@suse.com>
+Subject: [PATCH 00/14] Another batch of inode vs btrfs_inode cleanups
+Date:   Mon,  2 Nov 2020 16:48:52 +0200
+Message-Id: <20201102144906.3767963-1-nborisov@suse.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <04d57bc4-c406-0d54-8299-662883fd48da@lechevalier.se>
-User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Nov 02, 2020 at 06:48:11AM +0100, A L wrote:
-> 
-> > > And
-> > > How do I make the switch properly?
-> > Unmount the filesystem, mount it once with -o clear_cache,space_cache=v2.
-> > It will take some time to create the tree.  After that, no mount option
-> > is needed.
-> > 
-> > With current kernels it is not possible to upgrade while the filesystem is
-> > online, i.e. to upgrade "/" you have to set rootflags in the bootloader
-> > or boot from external media.  That and the long mount time to do the
-> > conversion (which offends systemd's default mount timeout parameters)
-> > are the two major gotchas.
-> > 
-> > There are some patches for future kernels that will take care of details
-> > like deleting the v1 space cache inodes and other inert parts of the
-> > space_cache=v1 infrastructure.  I would not bother with these
-> > now, and instead let future kernels clean up automatically.
-> 
-> There is also this option according to the man page of btrfs-check:
-> https://btrfs.wiki.kernel.org/index.php/Manpage/btrfs-check
-> 
-> --clear-space-cache v1|v2
->     completely wipe all free space cache of given type
->     For free space cache v1, the clear_cache kernel mount option only
-> rebuilds the free space cache for block groups that are modified while the
-> filesystem is mounted with that option. Thus, using this option with v1
-> makes it possible to actually clear the entire free space cache.
->     For free space cache v2, the clear_cache kernel mount option destroys
-> the entire free space cache. This option, with v2 provides an alternative
-> method of clearing the free space cache that doesn’t require mounting the
-> filesystem.
-> 
-> Is there any practical difference to clearing the space cache using mount
-> options? 
+Here is another batch which  gets use closer to unified btrfs_inode vs inode
+usage in functions.
 
-It's easier, because mount requires only setting flags.  It doesn't
-require the additional separate step of running btrfs check.
+Nikolay Borisov (14):
+  btrfs: Make btrfs_inode_safe_disk_i_size_write take btrfs_inode
+  btrfs: Make insert_prealloc_file_extent take btrfs_inode
+  btrfs: Make btrfs_truncate_inode_items take btrfs_inode
+  btrfs: Make btrfs_finish_ordered_io btrfs_inode-centric
+  btrfs: Make btrfs_delayed_update_inode take btrfs_inode
+  btrfs: Make btrfs_update_inode_item take btrfs_inode
+  btrfs: Make btrfs_update_inode take btrfs_inode
+  btrfs: Make maybe_insert_hole take btrfs_inode
+  btrfs: Make find_first_non_hole take btrfs_inode
+  btrfs: Make btrfs_insert_replace_extent take btrfs_inode
+  btrfs: Make btrfs_truncate_block take btrfs_inode
+  btrfs: Make btrfs_cont_expand take btrfs_inode
+  btrfs: Make btrfs_drop_extents take btrfs_inode
+  btrfs: Make btrfs_update_inode_fallback take btrfs_inode
 
-The kernel will currently recreate parts of the v1 structures when
-space_cache=v2 is used, so it will partially cancel out the work btrfs
-check does.  There is a patch out there to fix that, see "btrfs: skip
-space_cache v1 setup when not using it").
+ fs/btrfs/block-group.c      |   2 +-
+ fs/btrfs/ctree.h            |  21 +--
+ fs/btrfs/delayed-inode.c    |  13 +-
+ fs/btrfs/delayed-inode.h    |   3 +-
+ fs/btrfs/file-item.c        |  18 +--
+ fs/btrfs/file.c             |  88 +++++++------
+ fs/btrfs/free-space-cache.c |   8 +-
+ fs/btrfs/inode-map.c        |   2 +-
+ fs/btrfs/inode.c            | 249 ++++++++++++++++++------------------
+ fs/btrfs/ioctl.c            |   6 +-
+ fs/btrfs/reflink.c          |   9 +-
+ fs/btrfs/transaction.c      |   3 +-
+ fs/btrfs/tree-log.c         |  24 ++--
+ fs/btrfs/xattr.c            |   4 +-
+ 14 files changed, 233 insertions(+), 217 deletions(-)
 
-> For example, would a lot of old space_cache=v1 data remain on-disk
-> after mounting -o clear_cache,space_cache=v2 ? 
+--
+2.25.1
 
-It does, but the space used is negligible.  Future kernels will clean
-it up automatically, assuming the patch set lands.
-
-> Would that affect performance in any way?
-
-Unused space cache is inert.  It only takes up space, and not very much
-of that.
-
-> Thanks.
-> 
