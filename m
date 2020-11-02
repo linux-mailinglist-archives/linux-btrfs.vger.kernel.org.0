@@ -2,174 +2,161 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C88B2A260F
-	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Nov 2020 09:24:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C3092A2993
+	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Nov 2020 12:32:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728191AbgKBIYx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 2 Nov 2020 03:24:53 -0500
-Received: from esa6.hgst.iphmx.com ([216.71.154.45]:51761 "EHLO
-        esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727806AbgKBIYw (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 2 Nov 2020 03:24:52 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1604305492; x=1635841492;
-  h=from:to:cc:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=XExKqJhFVyXKK/hq+RVqi0g7JdzATrG4t4DyY0DurEw=;
-  b=LBnK97xHClMwsfMkucrmgzPrMP5kNUbfmTohX99Lvezs1phF1MxfbwXb
-   O3ZH/XVId+k0kn//kxxqY6aq0ATi3W7syZRzFpMGKWyChZpioHrNwQO5C
-   VOAdDF3MVqKYCSD4TH4WSzdMD3CYPc0gMggxV53sG3lkRpygbLE6/qZWr
-   afcYrbqSXIoUk13DzO9PhhCm7cOl3XttW8Yl3hmkLVDg/eCS8EAIWNsbv
-   iiOm5vXw5lzEFoIVDbPwjIPC3Vt4xDVcJ7TagHUALnqc6i2VjwuYYwboy
-   G6AZfqTSbkAap7TvbpRKizDJL5KDgY8BnkhlTBGBIo6BCxhY2bzJnZnQ7
-   Q==;
-IronPort-SDR: DBl3YZ2VHZsImheoDQbCW9oR/3q9CycEMxRO4w01fkuTCiy/vYknK53TtUIyqtq7LIlgE1cMt3
- b35lIslbt+q+KPdjE7Pzg6dX035cWPpmATRBQP+tQbkL32TI5BV22WdPWfJYeXTOn7m/sST1WG
- Ghuy0RGqFKt/Hj449fzy/D3BFUmoAtzTtIjH257No6F1csq5XfTnmPT8DS3XGdU2F4gxi+3oKu
- EIBGtkX7EvBHehHadLxt2xfXuBXL7FDN5YGCD+GAe0IrRm0JrzfRzeL6IBX6tONiCiWJNO0mlV
- Xrc=
-X-IronPort-AV: E=Sophos;i="5.77,444,1596470400"; 
-   d="scan'208";a="152740449"
-Received: from mail-bl2nam02lp2059.outbound.protection.outlook.com (HELO NAM02-BL2-obe.outbound.protection.outlook.com) ([104.47.38.59])
-  by ob1.hgst.iphmx.com with ESMTP; 02 Nov 2020 16:24:48 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=E7tUwXtsvXrzChYia1NQJ8hFyMZle9CMo2kS0fz5LOHAleF9Cte8ft+Sd3G0Nru4j1IS5b55pLooXWDE7V7Q//s4Wlh3eqApCzrCZ/gf7f9Vm0BP3mk7dFXK5FgNrSwLYthlf18frJn8RlHbaZp8VpkV52jbFSLDQyVr9XHF9VfHOoiAxy1xlCX1ibA2VAIv46aevwnQABNuA8qZ9cMAXfWFb+CFgGPMxFdFZw2bTelIldMbTMDBLJu8ouujyL5b90fdtgKdVBLHRY73KnN+i+oAcRSb36MbB/ltb56Us45QYzPJeMi0nY9D1Jg54fdKfOf67uaO33Te6/OOvYvKrQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Benz8kreer96CG9ICghOdmXh7A0K4Gbb+NEuS0icL8U=;
- b=JJbyFXc/x4cEywT6KRUPW9wJYsrJQQbHsZgnElZiZ10akFclLTSMOBZOll9ct+WgHEO+ImYunQzsH1Lwb5c5SAKNWjHwmZnHb9yTGfRbHElVKoTgZaxnfGgp4F63yhI3Grj0TaRJW1IOfx7wmxT5OiB4n69FYOMIZ6mCPqQcLsYzo8PLKbcSeETsI5TB/uG3OusJpzRq/wucnhQy8OglB+O7ukKNe+3xgtgycdPmQMRsMUffLuGRdT7aAOvynTPQhYAUwveyvUkx/3J5EAVTbuD6PMfF90LndfXXMJrR2cSp5vNpYjw5b8gt+eJaiSQVy8LUvguQeHt+FQnpu7U4xw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Benz8kreer96CG9ICghOdmXh7A0K4Gbb+NEuS0icL8U=;
- b=sDYC/Xt2EAnFxxqH8PmAQ5yIvHxikYWGH4Dbq8chIBudMGBSGnNuX4GfK3AwPNMDCxTTF5dvQiVWUH+VkDMB3+mFTrXUY9+d41bZDsBueWQNhUrEblZRVNXGL7BEWqQ3/r2zz/kWOGmw2oAT5w5owTe5q7F5Qc5O1QjkH8M5bA4=
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
- (2603:10b6:803:47::21) by SN6PR04MB4925.namprd04.prod.outlook.com
- (2603:10b6:805:91::18) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.29; Mon, 2 Nov
- 2020 08:24:46 +0000
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::619a:567c:d053:ce25]) by SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::619a:567c:d053:ce25%6]) with mapi id 15.20.3499.030; Mon, 2 Nov 2020
- 08:24:46 +0000
-From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To:     Jens Axboe <axboe@kernel.dk>, Naohiro Aota <Naohiro.Aota@wdc.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "dsterba@suse.com" <dsterba@suse.com>
-CC:     "hare@suse.com" <hare@suse.com>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
-Subject: Re: [PATCH v9 01/41] block: add bio_add_zone_append_page
-Thread-Topic: [PATCH v9 01/41] block: add bio_add_zone_append_page
-Thread-Index: AQHWrsPlMvbVgwDO5EWuAg6yg7PLwg==
-Date:   Mon, 2 Nov 2020 08:24:45 +0000
-Message-ID: <SN4PR0401MB359867C01FC69DB4125818029B100@SN4PR0401MB3598.namprd04.prod.outlook.com>
-References: <cover.1604065156.git.naohiro.aota@wdc.com>
- <d9a0a445560db3a9eb240c6535f8dd1bbd0abd96.1604065694.git.naohiro.aota@wdc.com>
- <a7ff7661-0a1d-a528-9b92-7b58b7c11e6b@kernel.dk>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: kernel.dk; dkim=none (message not signed)
- header.d=none;kernel.dk; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [129.253.240.72]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: bea01220-7040-4cdc-d795-08d87f08c1d5
-x-ms-traffictypediagnostic: SN6PR04MB4925:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <SN6PR04MB49259D5FAE456051BFF7C27C9B100@SN6PR04MB4925.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:8273;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: kK+g8neg33REzuBxTrdxZg6l0WNG4Cw6vBplXeJsO8mCwdEiEXAMJIcMhch/OaX+hdwNpShh+yrVJ5OgEEagiYzHJhe5jXHpS7dIEDRvysYXyjcsdGBiFHmHwDaFMq1kzCTvrNvn9pig0iVCmGdPmDO5S/1agbuQH2Xv0Dsz7zFUOJl7eN0+ZIn5rzHxjTrbGdCvtDNMlAgbAjTE7L4nGTTRV0JCJ8egWtzUEVPlwyeWLAaAMfxKFTwmal1FsP4SW+t8jy73C8ibhodBGN+yt+C9I+S2EWqlXpSodTidUK/29cCN3lq6A+hIwxbNFSWdMWPyrnke1u9pXdGIOk2ZTw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR0401MB3598.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(366004)(376002)(136003)(346002)(39860400002)(7696005)(6506007)(53546011)(4326008)(186003)(26005)(8936002)(478600001)(71200400001)(54906003)(110136005)(8676002)(33656002)(316002)(76116006)(91956017)(66946007)(66476007)(66556008)(66446008)(5660300002)(52536014)(64756008)(9686003)(83380400001)(86362001)(55016002)(2906002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: kcgGvEsaAgqSPfdFiv/I1l3mVwQJ4/w0sOyrwF1naBFeP+vDymAX2YZRfcPqWCKreMHWuDNihd3dRS6i+qDKoUr7vJG8DNS9GTyt6W98Me8g8hEEtCEHfhSxRMQveJEWdqwh7wP7q4J/DsgH8+tEF9YC1LdYMItOTuiGF9T6k9W85F3B1VebNoU8RoUDs7FXgFPWXbdqyi5exzdxuTILw+jw31+6sTLI4rnECx+Jx8Fy7yj4eigZ9R8rtXyTQyN9E71Fwpvt6yk/6ZrY1WG6WGfNY68RB8COWbyHk6olNzQninZyaHoiSoTauS25DYtXqDq1CohfQGpZer6kUF/2XkiSmDFXnBzxWyNdkqpWrVjRbaXB4K+aTKSd7+gPDSWJl9kGdOWgbSjV7sjPJH5wJeowNDExhc2b6eJ659EYUBpjyrzsMdu4XGkPy8nFYj7I5DW3HDSUh6K1zZeVO43McjKKv/sMOKUBWuqq1ROmwxMnUxpke1vUnpqHgX7v/xprbW+6V61T0wt2+Y1eYKuVIxjZNom3QeAspAlgdiA0uL4ysgJQi1Vl75jXXVyvGbA/SiFqkr2uZpzXV+TyPXInywvMaKXUl42l2xXeBBsmNrzLJ8/BWtiEGoo6/PzmoOHJeOU6I2laxNlvmEKEzzFRzA==
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1728537AbgKBLcV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 2 Nov 2020 06:32:21 -0500
+Received: from mo4-p00-ob.smtp.rzone.de ([85.215.255.20]:31971 "EHLO
+        mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728288AbgKBLcV (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 2 Nov 2020 06:32:21 -0500
+X-Greylist: delayed 723 seconds by postgrey-1.27 at vger.kernel.org; Mon, 02 Nov 2020 06:32:18 EST
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1604316737;
+        s=strato-dkim-0002; d=schmidt-vach.de;
+        h=Date:Message-ID:Subject:From:To:X-RZG-CLASS-ID:X-RZG-AUTH:From:
+        Subject:Sender;
+        bh=faA52agqLCqRiNG+fN0HTwrei/w9zDP1gEcwAUvNUQY=;
+        b=FmvKDiMQ2Yza9Gn7sZjbc1IPfqaj9YooGLJmHlvCvfV9vt1NgX3YcxB0HdZo2lPGNm
+        hUJOVI/c0fN2f/0h2kVmjjjcVAgKjw15U13ZD14BG9CTrTidjHQP0VyyR17iWiGBD53Z
+        h0kYeqcEWoiqNt0Fx+tw1eVajTnCZ56b1yUNO6+BJtfnpYmfxw5m9ihJ4UcMLSwVZje4
+        3buUNABlterXM6pmUuNd2iwClhbWBXao/NbzA7DNs4J+7khQJK29Qmeo/e69JlJ21Fsa
+        dp7pylRNYsZvy/wssE7KtQyYqoVpnSyFaH6+W3XSlBQYsi6joZFuPSROXnxKMJD65QBR
+        0m3A==
+X-RZG-AUTH: ":L2QWfFO8cv5iX0TTKLPqtaFoDurlTeEw+AuF6GGvwDaT3+Tt3P/srPzkuRlzM4xq9oAbh18mcNkplog9o8AMuVtzsTaNOEssi4eLYh8OSN1kJ7HUiA=="
+X-RZG-CLASS-ID: mo00
+Received: from [IPv6:2001:16b8:3f21:1b00:3076:2184:e50e:f42e]
+        by smtp.strato.de (RZmta 47.3.0 AUTH)
+        with ESMTPSA id q0a5ebwA2BKEEV4
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate)
+        for <linux-btrfs@vger.kernel.org>;
+        Mon, 2 Nov 2020 12:20:14 +0100 (CET)
+To:     linux-btrfs@vger.kernel.org
+From:   Christian <btrfs@schmidt-vach.de>
+Subject: damaged filesystem - how to continue
+Message-ID: <d59bc5b1-a90f-fca9-f9d0-554a4d03ee03@schmidt-vach.de>
+Date:   Mon, 2 Nov 2020 12:20:13 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SN4PR0401MB3598.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: bea01220-7040-4cdc-d795-08d87f08c1d5
-X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Nov 2020 08:24:45.9766
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: kmwFIeQhhg2D4SMyvB2NrAZE0l9Nq6OEnS/BLoX4sL5hTsS3vmASmS2swTE1/rUdH9KsRwmEUjcHrgqIyT/D4R2rPyBA5Ll5UnyK2Is0YYc=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR04MB4925
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 31/10/2020 04:40, Jens Axboe wrote:=0A=
-> On 10/30/20 7:51 AM, Naohiro Aota wrote:=0A=
->> From: Johannes Thumshirn <johannes.thumshirn@wdc.com>=0A=
->>=0A=
->> Add bio_add_zone_append_page(), a wrapper around bio_add_hw_page() which=
-=0A=
->> is intended to be used by file systems that directly add pages to a bio=
-=0A=
->> instead of using bio_iov_iter_get_pages().=0A=
-> =0A=
-> Not sure what this is for, since I'm only on one patch in the series...=
-=0A=
-=0A=
-Sorry, we'll Cc you on the whole series.=0A=
-=0A=
-> =0A=
->> +/**=0A=
->> + * bio_add_zone_append_page - attempt to add page to zone-append bio=0A=
->> + * @bio: destination bio=0A=
->> + * @page: page to add=0A=
->> + * @len: vec entry length=0A=
->> + * @offset: vec entry offset=0A=
->> + *=0A=
->> + * Attempt to add a page to the bio_vec maplist of a bio that will be s=
-ubmitted=0A=
->> + * for a zone-append request. This can fail for a number of reasons, su=
-ch as the=0A=
->> + * bio being full or the target block device is not a zoned block devic=
-e or=0A=
->> + * other limitations of the target block device. The target block devic=
-e must=0A=
->> + * allow bio's up to PAGE_SIZE, so it is always possible to add a singl=
-e page=0A=
->> + * to an empty bio.=0A=
->> + */=0A=
-> =0A=
-> This should include a=0A=
-> =0A=
-> Return value:=0A=
-> =0A=
-> section, explaining how it returns number of bytes added (and why 0 is th=
-us=0A=
-> a failure case).=0A=
-=0A=
-=0A=
-I'll update the comment to include the return value. It was just a copy and=
- paste=0A=
-of bio_add_page() and it didn't have the return value documented, so this i=
-s why=0A=
-I missed it here.=0A=
-=0A=
-I'll probably should document the existing functions as well.=0A=
-=0A=
->> +int bio_add_zone_append_page(struct bio *bio, struct page *page,=0A=
->> +			     unsigned int len, unsigned int offset)=0A=
-> =0A=
-> Should this return unsigned int? If not, how would it work if someone=0A=
-> asked for INT_MAX + 4k.=0A=
-> =0A=
-=0A=
-I don't think this is needed as we can't go over 2G anyways, can't we? bio_=
-add_page() =0A=
-also returns an int and I wanted to have a consistent interface here.=0A=
-=0A=
+Hello,
+how can I bring my filesystem into a healthy state again?
+
+I have all details so far collected on
+
+https://superuser.com/questions/1597946/btrfs-damaged-filesystem-how-to-continue
+
+# uname -a ; btrfs --version ; btrfs fi show ; dmesg | grep -i btrfs
+Linux openmediavault.local 5.8.0-0.bpo.2-amd64 #1 SMP Debian 
+5.8.10-1~bpo10+1 (2020-09-26) x86_64 GNU/Linux
+btrfs-progs v4.20.1
+Label: none  uuid: dc7ca9ad-6af0-47e9-9c3a-860127d2c362
+         Total devices 5 FS bytes used 17.24TiB
+         devid    1 size 7.28TiB used 7.15TiB path /dev/sdf
+         devid    2 size 7.28TiB used 7.17TiB path /dev/sdg
+         devid    3 size 7.28TiB used 7.16TiB path /dev/sdd
+         devid    4 size 7.28TiB used 7.16TiB path /dev/sde
+         devid    5 size 7.28TiB used 7.17TiB path /dev/sdc
+
+[    3.750273] Btrfs loaded, crc32c=crc32c-generic
+[    3.938726] BTRFS: device fsid dc7ca9ad-6af0-47e9-9c3a-860127d2c362 
+devid 5 transid 899698 /dev/sdc scanned by btrfs (230)
+[    3.938869] BTRFS: device fsid dc7ca9ad-6af0-47e9-9c3a-860127d2c362 
+devid 3 transid 899698 /dev/sdd scanned by btrfs (230)
+[    3.939023] BTRFS: device fsid dc7ca9ad-6af0-47e9-9c3a-860127d2c362 
+devid 4 transid 899698 /dev/sde scanned by btrfs (230)
+[    3.939171] BTRFS: device fsid dc7ca9ad-6af0-47e9-9c3a-860127d2c362 
+devid 1 transid 899698 /dev/sdf scanned by btrfs (230)
+[    3.939324] BTRFS: device fsid dc7ca9ad-6af0-47e9-9c3a-860127d2c362 
+devid 2 transid 899698 /dev/sdg scanned by btrfs (230)
+[   12.944790] BTRFS info (device sdf): force zstd compression, level 3
+[   12.944794] BTRFS info (device sdf): disk space caching is enabled
+[   12.944796] BTRFS info (device sdf): has skinny extents
+[   15.830946] BTRFS info (device sdf): bdev /dev/sdf errs: wr 0, rd 2, 
+flush 0, corrupt 0, gen 0
+[   15.830954] BTRFS info (device sdf): bdev /dev/sde errs: wr 0, rd 5, 
+flush 0, corrupt 0, gen 0
+[   64.976120] BTRFS info (device sdf): checking UUID tree
+[  101.407155] WARNING: CPU: 3 PID: 1377 at fs/btrfs/extent-tree.c:3060 
+__btrfs_free_extent.isra.51+0x681/0x980 [btrfs]
+[  101.407156] Modules linked in: softdog xt_nat xt_tcpudp veth 
+xt_conntrack xt_MASQUERADE nf_conntrack_netlink xfrm_user xfrm_algo 
+nft_counter xt_addrtype nft_compat nft_chain_nat nf_nat nf_conntrack 
+nf_defrag_ipv6 nf_defrag_ipv4 br_netfilter bridge stp llc nf_tables 
+nfnetlink cpufreq_userspace cpufreq_conservative cpufreq_powersave 
+overlay zram zsmalloc radeon ttm drm_kms_helper iTCO_wdt intel_pmc_bxt 
+cec iTCO_vendor_support drm watchdog i2c_algo_bit at24 kvm_intel sg 
+rng_core i3000_edac kvm irqbypass pcspkr serio_raw evdev button 
+acpi_cpufreq nfsd auth_rpcgss w83793 w83627hf nfs_acl lockd hwmon_vid 
+coretemp grace sunrpc ip_tables x_tables autofs4 ext4 crc16 mbcache jbd2 
+btrfs blake2b_generic zstd_decompress zstd_compress raid10 raid456 
+async_raid6_recov async_memcpy async_pq async_xor async_tx xor raid6_pq 
+libcrc32c crc32c_generic raid1 raid0 multipath linear md_mod sd_mod 
+t10_pi crc_t10dif crct10dif_generic sr_mod cdrom ata_generic 
+crct10dif_common ehci_pci uhci_hcd ahci libahci ehci_hcd
+[  101.407222] CPU: 3 PID: 1377 Comm: btrfs-transacti Not tainted 
+5.8.0-0.bpo.2-amd64 #1 Debian 5.8.10-1~bpo10+1
+[  101.407254] RIP: 0010:__btrfs_free_extent.isra.51+0x681/0x980 [btrfs]
+[  101.407322]  ? btrfs_merge_delayed_refs+0x356/0x3c0 [btrfs]
+[  101.407352]  __btrfs_run_delayed_refs+0x6ac/0x1000 [btrfs]
+[  101.407394]  ? btrfs_create_pending_block_groups+0x147/0x240 [btrfs]
+[  101.407425]  btrfs_run_delayed_refs+0x64/0x1f0 [btrfs]
+[  101.407464]  btrfs_write_dirty_block_groups+0x18d/0x3d0 [btrfs]
+[  101.407495]  ? btrfs_run_delayed_refs+0x90/0x1f0 [btrfs]
+[  101.407529]  commit_cowonly_roots+0x232/0x2f0 [btrfs]
+[  101.407564]  btrfs_commit_transaction+0x4ef/0xa60 [btrfs]
+[  101.407600]  ? start_transaction+0xd5/0x540 [btrfs]
+[  101.407633]  transaction_kthread+0x144/0x170 [btrfs]
+[  101.407667]  ? btrfs_cleanup_transaction+0x590/0x590 [btrfs]
+[  101.407687] BTRFS info (device sdf): leaf 36126720 gen 899699 total 
+ptrs 243 free space 1262 owner 2
+[  101.408999] BTRFS error (device sdf): unable to find ref byte nr 
+1407768248320 parent 0 root 2  owner 0 offset 0
+[  101.409319] BTRFS: Transaction aborted (error -2)
+[  101.409368] WARNING: CPU: 3 PID: 1377 at fs/btrfs/extent-tree.c:3066 
+__btrfs_free_extent.isra.51+0x6dd/0x980 [btrfs]
+[  101.409369] Modules linked in: softdog xt_nat xt_tcpudp veth 
+xt_conntrack xt_MASQUERADE nf_conntrack_netlink xfrm_user xfrm_algo 
+nft_counter xt_addrtype nft_compat nft_chain_nat nf_nat nf_conntrack 
+nf_defrag_ipv6 nf_defrag_ipv4 br_netfilter bridge stp llc nf_tables 
+nfnetlink cpufreq_userspace cpufreq_conservative cpufreq_powersave 
+overlay zram zsmalloc radeon ttm drm_kms_helper iTCO_wdt intel_pmc_bxt 
+cec iTCO_vendor_support drm watchdog i2c_algo_bit at24 kvm_intel sg 
+rng_core i3000_edac kvm irqbypass pcspkr serio_raw evdev button 
+acpi_cpufreq nfsd auth_rpcgss w83793 w83627hf nfs_acl lockd hwmon_vid 
+coretemp grace sunrpc ip_tables x_tables autofs4 ext4 crc16 mbcache jbd2 
+btrfs blake2b_generic zstd_decompress zstd_compress raid10 raid456 
+async_raid6_recov async_memcpy async_pq async_xor async_tx xor raid6_pq 
+libcrc32c crc32c_generic raid1 raid0 multipath linear md_mod sd_mod 
+t10_pi crc_t10dif crct10dif_generic sr_mod cdrom ata_generic 
+crct10dif_common ehci_pci uhci_hcd ahci libahci ehci_hcd
+[  101.409420] CPU: 3 PID: 1377 Comm: btrfs-transacti Tainted: G 
+W         5.8.0-0.bpo.2-amd64 #1 Debian 5.8.10-1~bpo10+1
+[  101.409451] RIP: 0010:__btrfs_free_extent.isra.51+0x6dd/0x980 [btrfs]
+[  101.409513]  ? btrfs_merge_delayed_refs+0x356/0x3c0 [btrfs]
+[  101.409543]  __btrfs_run_delayed_refs+0x6ac/0x1000 [btrfs]
+[  101.409583]  ? btrfs_create_pending_block_groups+0x147/0x240 [btrfs]
+[  101.409613]  btrfs_run_delayed_refs+0x64/0x1f0 [btrfs]
+[  101.409653]  btrfs_write_dirty_block_groups+0x18d/0x3d0 [btrfs]
+[  101.409683]  ? btrfs_run_delayed_refs+0x90/0x1f0 [btrfs]
+[  101.409717]  commit_cowonly_roots+0x232/0x2f0 [btrfs]
+[  101.409752]  btrfs_commit_transaction+0x4ef/0xa60 [btrfs]
+[  101.409786]  ? start_transaction+0xd5/0x540 [btrfs]
+[  101.409820]  transaction_kthread+0x144/0x170 [btrfs]
+[  101.409854]  ? btrfs_cleanup_transaction+0x590/0x590 [btrfs]
+[  101.409869] BTRFS: error (device sdf) in __btrfs_free_extent:3066: 
+errno=-2 No such entry
+[  101.410110] BTRFS info (device sdf): forced readonly
+[  101.410113] BTRFS: error (device sdf) in btrfs_run_delayed_refs:2173: 
+errno=-2 No such entry
+[  101.410407] BTRFS warning (device sdf): Skipping commit of aborted 
+transaction.
+[  101.410414] BTRFS: error (device sdf) in cleanup_transaction:1898: 
+errno=-2 No such entry
