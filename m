@@ -2,323 +2,155 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2FB02A36C0
-	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Nov 2020 23:43:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 186432A3770
+	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Nov 2020 01:06:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726026AbgKBWng (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 2 Nov 2020 17:43:36 -0500
-Received: from esa6.hgst.iphmx.com ([216.71.154.45]:33558 "EHLO
-        esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725807AbgKBWng (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 2 Nov 2020 17:43:36 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1604357016; x=1635893016;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=tWe+dyLxd4iMFXH1BvPUbQnGkRfrfcdf20UTPtSwdPM=;
-  b=Zqzs8ytjYFBUR33y3g7NRZgq4kvobMdZQufCeg9Y7l9CQ1SqJP/ihuvl
-   uDN3hjyCK+bvEHJfbeLuWYQ68Ie2jrwNhRaXsoK3oQZgFxZOIH6lwP9qK
-   krOm4wQU1D6YeRt3MypDx0GFKDLPuxBMB2JwdtNgSM3bn5SWVQb9J+zr3
-   1dWkbLxTIwgm7FbOwy7FyxJ8YJtZLE4f/0c+gNH5YoNNTDjZvg782p/E1
-   wG6GB+S42ojVdI0DC53XZB4vDEyYz1xwxSLcT9O9/K2KlaiqhYQ7Q6W/+
-   iE4ATV/XZP7qd/oq6OIa0npwS4KKdLgA+EKFrCMisOKiM+IsFFX/3dP6d
-   Q==;
-IronPort-SDR: PCosnRj8VSQWXda6CaNtQqumc1yG2CRnoitLyqx5bcO5TqXd2FMeIXkJzj7HxB73lRHq6XZWa0
- 6Ve4C1CN7BSftFDTdIpgKJ5MgczuKodTXbhWYH+HWe0/vNERhTX5xiFL5pgcoF40KuhesqMhI2
- bOvW6U1zebboDCfrHWx9ry/EIZZun9GkUaq6p5m/Ls9GVdHkxruITI9RQIf9YrpCP4bpovUMpX
- P9VtUTT06Ts7WgUFI1lKFA1hbuBILOPJkRMTRLDSeqnDHil/DPwiaR2TBEwauwEYt0a1GwWL4g
- XTE=
-X-IronPort-AV: E=Sophos;i="5.77,446,1596470400"; 
-   d="scan'208";a="152795130"
-Received: from uls-op-cesaip01.wdc.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 03 Nov 2020 06:43:36 +0800
-IronPort-SDR: 9mf/rKcmF0EedOjcwpZRLVV3T3WUjp9910w9CXzQ/rywp1wb3TkKLo++Gxe+Imm/2G3hztSwxT
- XYxsju14eZjBak6SUYqvriUuONnAmpHO74rcxVxM0tuiNztE4tJTsRCD0mtHwa9Db959jHw1P1
- 9EVYe3wHXkB+TFSOO2kIPSAeMzovMA+67xqV8qzkGbpYQnHAutmjCdzm5C8Tb/fGJm11NDVQxC
- gvrQekGjkoMGhOQShJDWKf0z2SAAiYULT3Mim58mEy3nzS9MVvBcvv8usIIwFk9dhL7l2SN50N
- 2gmt5lDcYw0xtySjU85UL9l/
-Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2020 14:29:45 -0800
-IronPort-SDR: WqYxEqqwYqFXyE/eiDnx9yIG/VnqVJs69yXspQWfXweO2ZSHof4tTF88jHgy+v0s1i+PDDCR+e
- uaTXvV0poAPUx7HuEsEsszWPXu7IMiBYeeqJHBBzTK1+p71CirOa+RKcu8nyqmSw7tQmhca2PY
- /SPwgIdIysUMciPlmFzNK2AgOZtMEtY9cBXmZJIgyCfxeg+27qs3nV9zXbVU54aJPXUIjYRSYs
- cfV1iiNgp7RLpgJuYxQlNH9UEYhAMkOp41UX6WAwuPiU+juhQgLVuM5aEQktVMGMXlHq9rAnHG
- sFc=
-WDCIronportException: Internal
-Received: from naota.dhcp.fujisawa.hgst.com ([10.149.52.155])
-  by uls-op-cesaip01.wdc.com with SMTP; 02 Nov 2020 14:43:34 -0800
-Received: (nullmailer pid 3856759 invoked by uid 1000);
-        Mon, 02 Nov 2020 22:43:33 -0000
-Date:   Tue, 3 Nov 2020 07:43:33 +0900
-From:   Naohiro Aota <naohiro.aota@wdc.com>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-btrfs@vger.kernel.org, dsterba@suse.com, hare@suse.com,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v9 14/41] btrfs: load zone's alloction offset
-Message-ID: <20201102224333.cjcd4hzjteyf4rz4@naota.dhcp.fujisawa.hgst.com>
-References: <d9a0a445560db3a9eb240c6535f8dd1bbd0abd96.1604065694.git.naohiro.aota@wdc.com>
- <1bbbf9d4ade0c5aeeaebd0772c90f360ceafa9b3.1604065695.git.naohiro.aota@wdc.com>
- <1730f278-39d5-cd82-7cd5-a48d826df2ef@toxicpanda.com>
- <2201bd4a-03ee-b68b-683b-0ba079b071dc@toxicpanda.com>
+        id S1726492AbgKCAGX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 2 Nov 2020 19:06:23 -0500
+Received: from mout.gmx.net ([212.227.17.21]:60987 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725910AbgKCAGX (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 2 Nov 2020 19:06:23 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1604361979;
+        bh=nkxkJafDZBXHqtt338UjYsqWGmJW8lyLGVNxTSKxmXI=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=GVuAOTSCf9wpCYdrM+ZTxJ8P4hGFbu1AdfQXam/Qm952aaCR4t7gtBZP9djQEiIw0
+         nNwAD+iD6ijmCaBfbf44VTDVIk+yXMpIbE3PfvWj6SKlopO66vx1tMNiJzmaL6l76y
+         T2GoeLR6WHuKeXHDhqwWOUynQe3AAxts76K7Y8e0=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MbAgq-1k2asU3suu-00bZVe; Tue, 03
+ Nov 2020 01:06:19 +0100
+Subject: Re: [PATCH v4 00/68] btrfs: add basic rw support for subpage sector
+ size
+To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <20201021062554.68132-1-wqu@suse.com>
+ <20201102145624.GB6756@twin.jikos.cz>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
+ mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
+ PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
+ 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
+ D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
+ efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
+ ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
+ BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
+ 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
+ 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
+ EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
+ 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
+ ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
+ oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
+ fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
+ 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
+ ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
+ oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
+Message-ID: <1573fb7c-a54b-c1e1-1b60-8306db85a87d@gmx.com>
+Date:   Tue, 3 Nov 2020 08:06:15 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <2201bd4a-03ee-b68b-683b-0ba079b071dc@toxicpanda.com>
+In-Reply-To: <20201102145624.GB6756@twin.jikos.cz>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="eYk8jbVEjw9wfXU3uwHQXP1SmAvE36cwn"
+X-Provags-ID: V03:K1:KiUl1pJbQWGnZ6MrMssj3kQsxp600RmqqptuBwcXpXMu+wMizga
+ wTIJpL0WZgEf3AvZwrz9XKzKIEa8TPNzBF2rb33bh/UHZOr7fD/RvA5zEyMmmejozJBdcUA
+ u0Eh9Mq1DFYt+dYLBta1UwdlDVN8hf2cQ+qUiXS5383V/TFsNYn49wmRsf58TCDK2uSdYc6
+ SyIo2PBeNa5u5NOU7lpSA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:2ITEbXoYe1A=:RKZPMV1a92OxDVYcKfPJgS
+ zCfJuDYbVnklwz0G9zhAPLjSjXMau4oTIZdrA5MQDBPpoaPV9srERPCqZaa9HEz+Bf1jdb8GB
+ 0CWzYYPM346+CKIKtraNOZs1tMFyE/oYP/WSiGSuastizG5n50YFr6BsVk3c9g572jb92Eg9n
+ pdJFyIk85dNRjh9mUxV6XurtcogIKGk1C08nvNGx27yyeoEd9xG8Bmgm/iA0U6n28RmnHbuBl
+ 7d47P2Q21rJnV7gg8KBM9C4Nt6PiJMh634R2jpAnkNaI9KAFhqP2DOa1AKvDhjJOo7bO+L95H
+ +Atlj/NHe4puBfXmwIPw/Vrs+Q008WYPda+v873ZeQhsxrjICW7EOhbhNvFgvBg8GQFlTBGLF
+ 4Kkp5JbZqRwB1iQpEiHsuXYoHklF8Ry+4RA4sr9VvF/KvXmMRZknGQ8xr7GHFqzMOhFLV9hVd
+ gSWmmgzl562TMVZ+FbH6Lsb72J8U/Q4ZIaDM8tYk1TDR/ZiaEuGJfx/REjtOKfpnmhtJ347Lt
+ 4x7i0DqKsXiMWZqS/4dQ7s8jekT3nieQDt8t1xU6vs7/0GzS4RfPWxoqtzh+udXjd9ni3tObP
+ 93wIrvmGCpZ37wVf8PRrHLicekdedZjJRScpa4yzgGbW92qBC0a0jSnxZQmvVJc9sskZnRoQa
+ e5kcNQqTXp/6fDx92pp8LXRECfmNFChcZp7FVCoLzss7CKYB7tyU/w9Ehe+f0zTJf0KAvQVw7
+ xpMKRNcqAiq3rrB2x+QCcpdkg/wJIpnTb2jSBvPZSGBQEBK0mHjKKbNPDWjpWN2RjA8I8v8f5
+ VM4nhsXBOzzUOjlW2qMWoSILEktZ4rTgyEjrvU+Uc5qLgWMxCKg/RhHo2YMlge7kxQpIlR1vS
+ CppYq6dQkb1UizURVM3Q==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Nov 02, 2020 at 03:29:36PM -0500, Josef Bacik wrote:
->On 11/2/20 3:25 PM, Josef Bacik wrote:
->>On 10/30/20 9:51 AM, Naohiro Aota wrote:
->>>Zoned btrfs must allocate blocks at the zones' write pointer. The device's
->>>write pointer position can be mapped to a logical address within a block
->>>group. This commit adds "alloc_offset" to track the logical address.
->>>
->>>This logical address is populated in btrfs_load_block-group_zone_info()
->>
->>btrfs_load_block_group_zone_info()
->>
->>>from write pointers of corresponding zones.
->>>
->>>For now, zoned btrfs only support the SINGLE profile. Supporting non-SINGLE
->>>profile with zone append writing is not trivial. For example, in the DUP
->>>profile, we send a zone append writing IO to two zones on a device. The
->>>device reply with written LBAs for the IOs. If the offsets of the returned
->>>addresses from the beginning of the zone are different, then it results in
->>>different logical addresses.
->>>
->>>We need fine-grained logical to physical mapping to support such separated
->>>physical address issue. Since it should require additional metadata type,
->>>disable non-SINGLE profiles for now.
->>>
->>>Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
->>>---
->>>  fs/btrfs/block-group.c |  15 ++++
->>>  fs/btrfs/block-group.h |   6 ++
->>>  fs/btrfs/zoned.c       | 153 +++++++++++++++++++++++++++++++++++++++++
->>>  fs/btrfs/zoned.h       |   6 ++
->>>  4 files changed, 180 insertions(+)
->>>
->>>diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
->>>index e989c66aa764..920b2708c7f2 100644
->>>--- a/fs/btrfs/block-group.c
->>>+++ b/fs/btrfs/block-group.c
->>>@@ -15,6 +15,7 @@
->>>  #include "delalloc-space.h"
->>>  #include "discard.h"
->>>  #include "raid56.h"
->>>+#include "zoned.h"
->>>  /*
->>>   * Return target flags in extended format or 0 if restripe for this chunk_type
->>>@@ -1935,6 +1936,13 @@ static int read_one_block_group(struct 
->>>btrfs_fs_info *info,
->>>              goto error;
->>>      }
->>>+    ret = btrfs_load_block_group_zone_info(cache);
->>>+    if (ret) {
->>>+        btrfs_err(info, "failed to load zone info of bg %llu",
->>>+              cache->start);
->>>+        goto error;
->>>+    }
->>>+
->>>      /*
->>>       * We need to exclude the super stripes now so that the space info has
->>>       * super bytes accounted for, otherwise we'll think we have more space
->>>@@ -2161,6 +2169,13 @@ int btrfs_make_block_group(struct 
->>>btrfs_trans_handle *trans, u64 bytes_used,
->>>      cache->last_byte_to_unpin = (u64)-1;
->>>      cache->cached = BTRFS_CACHE_FINISHED;
->>>      cache->needs_free_space = 1;
->>>+
->>>+    ret = btrfs_load_block_group_zone_info(cache);
->>>+    if (ret) {
->>>+        btrfs_put_block_group(cache);
->>>+        return ret;
->>>+    }
->>>+
->>>      ret = exclude_super_stripes(cache);
->>>      if (ret) {
->>>          /* We may have excluded something, so call this just in case */
->>>diff --git a/fs/btrfs/block-group.h b/fs/btrfs/block-group.h
->>>index adfd7583a17b..14e3043c9ce7 100644
->>>--- a/fs/btrfs/block-group.h
->>>+++ b/fs/btrfs/block-group.h
->>>@@ -183,6 +183,12 @@ struct btrfs_block_group {
->>>      /* Record locked full stripes for RAID5/6 block group */
->>>      struct btrfs_full_stripe_locks_tree full_stripe_locks_root;
->>>+
->>>+    /*
->>>+     * Allocation offset for the block group to implement sequential
->>>+     * allocation. This is used only with ZONED mode enabled.
->>>+     */
->>>+    u64 alloc_offset;
->>>  };
->>>  static inline u64 btrfs_block_group_end(struct btrfs_block_group *block_group)
->>>diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
->>>index 4411d786597a..0aa821893a51 100644
->>>--- a/fs/btrfs/zoned.c
->>>+++ b/fs/btrfs/zoned.c
->>>@@ -3,14 +3,20 @@
->>>  #include <linux/bitops.h>
->>>  #include <linux/slab.h>
->>>  #include <linux/blkdev.h>
->>>+#include <linux/sched/mm.h>
->>>  #include "ctree.h"
->>>  #include "volumes.h"
->>>  #include "zoned.h"
->>>  #include "rcu-string.h"
->>>  #include "disk-io.h"
->>>+#include "block-group.h"
->>>  /* Maximum number of zones to report per blkdev_report_zones() call */
->>>  #define BTRFS_REPORT_NR_ZONES   4096
->>>+/* Invalid allocation pointer value for missing devices */
->>>+#define WP_MISSING_DEV ((u64)-1)
->>>+/* Pseudo write pointer value for conventional zone */
->>>+#define WP_CONVENTIONAL ((u64)-2)
->>>  static int copy_zone_info_cb(struct blk_zone *zone, unsigned int idx,
->>>                   void *data)
->>>@@ -733,3 +739,150 @@ int btrfs_ensure_empty_zones(struct 
->>>btrfs_device *device, u64 start, u64 size)
->>>      return 0;
->>>  }
->>>+
->>>+int btrfs_load_block_group_zone_info(struct btrfs_block_group *cache)
->>>+{
->>>+    struct btrfs_fs_info *fs_info = cache->fs_info;
->>>+    struct extent_map_tree *em_tree = &fs_info->mapping_tree;
->>>+    struct extent_map *em;
->>>+    struct map_lookup *map;
->>>+    struct btrfs_device *device;
->>>+    u64 logical = cache->start;
->>>+    u64 length = cache->length;
->>>+    u64 physical = 0;
->>>+    int ret;
->>>+    int i;
->>>+    unsigned int nofs_flag;
->>>+    u64 *alloc_offsets = NULL;
->>>+    u32 num_sequential = 0, num_conventional = 0;
->>>+
->>>+    if (!btrfs_is_zoned(fs_info))
->>>+        return 0;
->>>+
->>>+    /* Sanity check */
->>>+    if (!IS_ALIGNED(length, fs_info->zone_size)) {
->>>+        btrfs_err(fs_info, "unaligned block group at %llu + %llu",
->>>+              logical, length);
->>>+        return -EIO;
->>>+    }
->>>+
->>>+    /* Get the chunk mapping */
->>>+    read_lock(&em_tree->lock);
->>>+    em = lookup_extent_mapping(em_tree, logical, length);
->>>+    read_unlock(&em_tree->lock);
->>>+
->>>+    if (!em)
->>>+        return -EINVAL;
->>>+
->>>+    map = em->map_lookup;
->>>+
->>>+    /*
->>>+     * Get the zone type: if the group is mapped to a non-sequential zone,
->>>+     * there is no need for the allocation offset (fit allocation is OK).
->>>+     */
->>>+    alloc_offsets = kcalloc(map->num_stripes, sizeof(*alloc_offsets),
->>>+                GFP_NOFS);
->>>+    if (!alloc_offsets) {
->>>+        free_extent_map(em);
->>>+        return -ENOMEM;
->>>+    }
->>>+
->>>+    for (i = 0; i < map->num_stripes; i++) {
->>>+        bool is_sequential;
->>>+        struct blk_zone zone;
->>>+
->>>+        device = map->stripes[i].dev;
->>>+        physical = map->stripes[i].physical;
->>>+
->>>+        if (device->bdev == NULL) {
->>>+            alloc_offsets[i] = WP_MISSING_DEV;
->>>+            continue;
->>>+        }
->>>+
->>>+        is_sequential = btrfs_dev_is_sequential(device, physical);
->>>+        if (is_sequential)
->>>+            num_sequential++;
->>>+        else
->>>+            num_conventional++;
->>>+
->>>+        if (!is_sequential) {
->>>+            alloc_offsets[i] = WP_CONVENTIONAL;
->>>+            continue;
->>>+        }
->>>+
->>>+        /*
->>>+         * This zone will be used for allocation, so mark this
->>>+         * zone non-empty.
->>>+         */
->>>+        btrfs_dev_clear_zone_empty(device, physical);
->>>+
->>>+        /*
->>>+         * The group is mapped to a sequential zone. Get the zone write
->>>+         * pointer to determine the allocation offset within the zone.
->>>+         */
->>>+        WARN_ON(!IS_ALIGNED(physical, fs_info->zone_size));
->>>+        nofs_flag = memalloc_nofs_save();
->>>+        ret = btrfs_get_dev_zone(device, physical, &zone);
->>>+        memalloc_nofs_restore(nofs_flag);
->>>+        if (ret == -EIO || ret == -EOPNOTSUPP) {
->>>+            ret = 0;
->>>+            alloc_offsets[i] = WP_MISSING_DEV;
->>>+            continue;
->>>+        } else if (ret) {
->>>+            goto out;
->>>+        }
->>>+
->>>+        switch (zone.cond) {
->>>+        case BLK_ZONE_COND_OFFLINE:
->>>+        case BLK_ZONE_COND_READONLY:
->>>+            btrfs_err(fs_info, "Offline/readonly zone %llu",
->>>+                  physical >> device->zone_info->zone_size_shift);
->>>+            alloc_offsets[i] = WP_MISSING_DEV;
->>>+            break;
->>>+        case BLK_ZONE_COND_EMPTY:
->>>+            alloc_offsets[i] = 0;
->>>+            break;
->>>+        case BLK_ZONE_COND_FULL:
->>>+            alloc_offsets[i] = fs_info->zone_size;
->>>+            break;
->>>+        default:
->>>+            /* Partially used zone */
->>>+            alloc_offsets[i] =
->>>+                ((zone.wp - zone.start) << SECTOR_SHIFT);
->>>+            break;
->>>+        }
->>>+    }
->>>+
->>>+    if (num_conventional > 0) {
->>>+        /*
->>>+         * Since conventional zones does not have write pointer, we
->>>+         * cannot determine alloc_offset from the pointer
->>>+         */
->>>+        ret = -EINVAL;
->>>+        goto out;
->>>+    }
->>
->>Does this mean we can't have zoned with a device that has 
->>conventional and sequential zones?  I thought such things existed 
->>currently?  Thanks,
->
->I see this changes in a follow up patch, ignore me, you can add
->
->Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--eYk8jbVEjw9wfXU3uwHQXP1SmAvE36cwn
+Content-Type: multipart/mixed; boundary="USQT7OruuQA3V5YzsSa3rf3tFi6wYAWIe"
 
-Thanks. I have added a comment mentioning that the next patch will handle
-the case, just in case.
+--USQT7OruuQA3V5YzsSa3rf3tFi6wYAWIe
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
->
->Thanks,
->
->Josef
+
+
+On 2020/11/2 =E4=B8=8B=E5=8D=8810:56, David Sterba wrote:
+> On Wed, Oct 21, 2020 at 02:24:46PM +0800, Qu Wenruo wrote:
+>> Patches can be fetched from github:
+>> https://github.com/adam900710/linux/tree/subpage_data_fullpage_write
+>>
+>> Qu Wenruo (67):
+>=20
+> So far I've merged
+>=20
+>       btrfs: extent_io: fix the comment on lock_extent_buffer_for_io()
+>       btrfs: extent_io: update the comment for find_first_extent_bit()
+>       btrfs: extent_io: sink the failed_start parameter to set_extent_b=
+it()
+>       btrfs: disk-io: replace fs_info and private_data with inode for b=
+trfs_wq_submit_bio()
+>       btrfs: inode: sink parameter start and len to check_data_csum()
+>       btrfs: extent_io: rename pages_locked in process_pages_contig()
+>       btrfs: extent_io: only require sector size alignment for page rea=
+d
+>       btrfs: extent_io: rename page_size to io_size in submit_extent_pa=
+ge()
+>=20
+> to misc-next.  This is from the first 20, the easy and safe changes.
+> There are few more that need more explanation or another look.
+>=20
+That's great.
+
+BTW, for next update, I should rebase all patches to current misc-next
+right?
+Especially to take advantage of things like sectorsize_bits.
+
+BTW, for next round patches, should I send all the patches in a huge
+batch, or just send the safe refactors (with comments addresses)?
+
+THanks,
+Qu
+
+
+--USQT7OruuQA3V5YzsSa3rf3tFi6wYAWIe--
+
+--eYk8jbVEjw9wfXU3uwHQXP1SmAvE36cwn
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl+gnvcACgkQwj2R86El
+/qiRhwf/RaxeIruoywXx6mFEKeHREQ9yBVosX8ub8Ax6trUXl0nMfl5D8HqZIIPH
+0uwciXEGiz9LbHnFVzKVMzMOwFQs5s+o/K+whtnJaO+ChiuScIrT14ovubxDW5eG
+DNAvIuPLu9mP9p0pGt0+hVq77GFTVmYYIjiZHqMl9WU+OUTKfmxtiJ5pRnPRmzDz
+uWDKdPNOJLSO+Z7DLlmUXYtVR4nueN1mXN7tiOEZT3kFxRqfnbFqTj+MdXB7jX0x
+3o4JZtOD8PQQQKNkhhRPH4ENcDAB7oX3ORKMW1h/UdAvvRL37cUq1uuGCBDRmAXe
+BYrvN7Dh4U2KUtbIQkXSolUTp0x0Pw==
+=H46e
+-----END PGP SIGNATURE-----
+
+--eYk8jbVEjw9wfXU3uwHQXP1SmAvE36cwn--
