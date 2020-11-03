@@ -2,35 +2,34 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 198032A467B
+	by mail.lfdr.de (Postfix) with ESMTP id 88E1D2A467C
 	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Nov 2020 14:31:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729258AbgKCNb3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 3 Nov 2020 08:31:29 -0500
-Received: from mx2.suse.de ([195.135.220.15]:44204 "EHLO mx2.suse.de"
+        id S1729277AbgKCNbb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 3 Nov 2020 08:31:31 -0500
+Received: from mx2.suse.de ([195.135.220.15]:44232 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729244AbgKCNb3 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 3 Nov 2020 08:31:29 -0500
+        id S1729244AbgKCNba (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 3 Nov 2020 08:31:30 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1604410287;
+        t=1604410289;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
+         to:to:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=iL/ii7FmWgOH+BAuQhWp0bAfvUzdkiPvm8dMgrzrFeo=;
-        b=nokx8q5aS/0t+aVobezeMBfckIM/J9edI5dgVQo8dZNSSi4UJ37lqgsKxdR0CQGQNf23ug
-        5MKk1CqOq2u/jywC+JQFX/5OCjIp2/ScLyhCLqDFlROSeDb66n5hfvKq8FLM4gj36G8rzu
-        aC8ioG2fpTvuTWl2v/OIVFr/p62XnOI=
+        bh=gpFE8oGKjNhFNSUbDpxsQVFqw9g+A6pSux2uUhMC+HE=;
+        b=jJqV7KJ8R8FTC1ngfLGKwc7PYLw9xbngGfDnwhr9MyU3plw5hwvVLlZwpdXErAaS5phOsE
+        qEHxOucss3EkSzVKKvgYNjStITBzpqJbKmQY/k06fekBTloWiJsQ7cdhIrJpRPYXJt3j8n
+        oYK3/J4+kOgwYolGkhagRD67iGrilsg=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id AE490ACC0;
-        Tue,  3 Nov 2020 13:31:27 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 9F16DABF4
+        for <linux-btrfs@vger.kernel.org>; Tue,  3 Nov 2020 13:31:29 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Cc:     David Sterba <dsterba@suse.com>
-Subject: [PATCH 04/32] btrfs: extent_io: extract the btree page submission code into its own helper function
-Date:   Tue,  3 Nov 2020 21:30:40 +0800
-Message-Id: <20201103133108.148112-5-wqu@suse.com>
+Subject: [PATCH 05/32] btrfs: extent-io-tests: remove invalid tests
+Date:   Tue,  3 Nov 2020 21:30:41 +0800
+Message-Id: <20201103133108.148112-6-wqu@suse.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201103133108.148112-1-wqu@suse.com>
 References: <20201103133108.148112-1-wqu@suse.com>
@@ -40,169 +39,126 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-In btree_write_cache_pages() we have a btree page submission routine
-buried deeply into a nested loop.
+In extent-io-test, there are two invalid tests:
+- Invalid nodesize for test_eb_bitmaps()
+  Instead of the sectorsize and nodesize combination passed in, we're
+  always using hand-crafted nodesize, e.g:
 
-This patch will extract that part of code into a helper function,
-submit_btree_page(), to do the same work.
+	len = (sectorsize < BTRFS_MAX_METADATA_BLOCKSIZE)
+		? sectorsize * 4 : sectorsize;
 
-Also, since submit_btree_page() now can return >0 for successfull extent
-buffer submission, remove the "ASSERT(ret <= 0);" line.
+  In above case, if we have 32K page size, then we will get a length of
+  128K, which is beyond max node size, and obviously invalid.
+
+  Thankfully most machines are either 4K or 64K page size, thus we
+  haven't yet hit such case.
+
+- Invalid extent buffer bytenr
+  For 64K page size, the only combination we're going to test is
+  sectorsize = nodesize = 64K.
+  However in that case, we will try to test an eb which bytenr is not
+  sectorsize aligned:
+
+	/* Do it over again with an extent buffer which isn't page-aligned. */
+	eb = __alloc_dummy_extent_buffer(fs_info, nodesize / 2, len);
+
+  Sector alignedment is a hard requirement for any sector size.
+  The only exception is superblock. But anything else should follow
+  sector size alignment.
+
+  This is definitely an invalid test case.
+
+This patch will fix both problems by:
+- Honor the sectorsize/nodesize combination
+  Now we won't bother to hand-craft a strange length and use it as
+  nodesize.
+
+- Use sectorsize as the 2nd run extent buffer start
+  This would test the case where extent buffer is aligned to sectorsize
+  but not always aligned to nodesize.
+
+Please note that, later subpage related cleanup will reduce
+extent_buffer::pages[] to exact what we need, making the sector
+unaligned extent buffer operations to cause problem.
+
+Since only extent_io self tests utilize this invalid feature, this
+patch is required for all later cleanup/refactors.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
 ---
- fs/btrfs/extent_io.c | 116 +++++++++++++++++++++++++------------------
- 1 file changed, 69 insertions(+), 47 deletions(-)
+ fs/btrfs/tests/extent-io-tests.c | 26 +++++++++++---------------
+ 1 file changed, 11 insertions(+), 15 deletions(-)
 
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 9cbce0b74db7..ac396d8937b9 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -3935,10 +3935,75 @@ static noinline_for_stack int write_one_eb(struct extent_buffer *eb,
- 	return ret;
- }
+diff --git a/fs/btrfs/tests/extent-io-tests.c b/fs/btrfs/tests/extent-io-tests.c
+index df7ce874a74b..73e96d505f4f 100644
+--- a/fs/btrfs/tests/extent-io-tests.c
++++ b/fs/btrfs/tests/extent-io-tests.c
+@@ -379,54 +379,50 @@ static int __test_eb_bitmaps(unsigned long *bitmap, struct extent_buffer *eb,
+ static int test_eb_bitmaps(u32 sectorsize, u32 nodesize)
+ {
+ 	struct btrfs_fs_info *fs_info;
+-	unsigned long len;
+ 	unsigned long *bitmap = NULL;
+ 	struct extent_buffer *eb = NULL;
+ 	int ret;
  
-+/*
-+ * A helper to submit a btree page.
-+ *
-+ * This function is not always submitting the page, as we only submit the full
-+ * extent buffer in a batch.
-+ *
-+ * @page:	The btree page
-+ * @prev_eb:	Previous extent buffer, to determine if we need to submit
-+ * 		this page.
-+ *
-+ * Return >0 if we have submitted the extent buffer successfully.
-+ * Return 0 if we don't need to do anything for the page.
-+ * Return <0 for fatal error.
-+ */
-+static int submit_btree_page(struct page *page, struct writeback_control *wbc,
-+			     struct extent_page_data *epd,
-+			     struct extent_buffer **prev_eb)
-+{
-+	struct address_space *mapping = page->mapping;
-+	struct extent_buffer *eb;
-+	int ret;
-+
-+	if (!PagePrivate(page))
-+		return 0;
-+
-+	spin_lock(&mapping->private_lock);
-+	if (!PagePrivate(page)) {
-+		spin_unlock(&mapping->private_lock);
-+		return 0;
-+	}
-+
-+	eb = (struct extent_buffer *)page->private;
+ 	test_msg("running extent buffer bitmap tests");
+ 
+-	/*
+-	 * In ppc64, sectorsize can be 64K, thus 4 * 64K will be larger than
+-	 * BTRFS_MAX_METADATA_BLOCKSIZE.
+-	 */
+-	len = (sectorsize < BTRFS_MAX_METADATA_BLOCKSIZE)
+-		? sectorsize * 4 : sectorsize;
+-
+-	fs_info = btrfs_alloc_dummy_fs_info(len, len);
++	fs_info = btrfs_alloc_dummy_fs_info(nodesize, sectorsize);
+ 	if (!fs_info) {
+ 		test_std_err(TEST_ALLOC_FS_INFO);
+ 		return -ENOMEM;
+ 	}
+ 
+-	bitmap = kmalloc(len, GFP_KERNEL);
++	bitmap = kmalloc(nodesize, GFP_KERNEL);
+ 	if (!bitmap) {
+ 		test_err("couldn't allocate test bitmap");
+ 		ret = -ENOMEM;
+ 		goto out;
+ 	}
+ 
+-	eb = __alloc_dummy_extent_buffer(fs_info, 0, len);
++	eb = __alloc_dummy_extent_buffer(fs_info, 0, nodesize);
+ 	if (!eb) {
+ 		test_std_err(TEST_ALLOC_ROOT);
+ 		ret = -ENOMEM;
+ 		goto out;
+ 	}
+ 
+-	ret = __test_eb_bitmaps(bitmap, eb, len);
++	ret = __test_eb_bitmaps(bitmap, eb, nodesize);
+ 	if (ret)
+ 		goto out;
+ 
+-	/* Do it over again with an extent buffer which isn't page-aligned. */
+ 	free_extent_buffer(eb);
+-	eb = __alloc_dummy_extent_buffer(fs_info, nodesize / 2, len);
 +
 +	/*
-+	 * Shouldn't happen and normally this would be a BUG_ON but no sense
-+	 * in crashing the users box for something we can survive anyway.
++	 * Test again for case where the tree block is sectorsize aligned but
++	 * not nodesize aligned.
 +	 */
-+	if (WARN_ON(!eb)) {
-+		spin_unlock(&mapping->private_lock);
-+		return 0;
-+	}
-+
-+	if (eb == *prev_eb) {
-+		spin_unlock(&mapping->private_lock);
-+		return 0;
-+	}
-+	ret = atomic_inc_not_zero(&eb->refs);
-+	spin_unlock(&mapping->private_lock);
-+	if (!ret)
-+		return 0;
-+
-+	*prev_eb = eb;
-+
-+	ret = lock_extent_buffer_for_io(eb, epd);
-+	if (ret <= 0) {
-+		free_extent_buffer(eb);
-+		return ret;
-+	}
-+	ret = write_one_eb(eb, wbc, epd);
-+	free_extent_buffer(eb);
-+	if (ret < 0)
-+		return ret;
-+	return 1;
-+}
-+
- int btree_write_cache_pages(struct address_space *mapping,
- 				   struct writeback_control *wbc)
- {
--	struct extent_buffer *eb, *prev_eb = NULL;
-+	struct extent_buffer *prev_eb = NULL;
- 	struct extent_page_data epd = {
- 		.bio = NULL,
- 		.extent_locked = 0,
-@@ -3984,55 +4049,13 @@ int btree_write_cache_pages(struct address_space *mapping,
- 		for (i = 0; i < nr_pages; i++) {
- 			struct page *page = pvec.pages[i];
- 
--			if (!PagePrivate(page))
--				continue;
--
--			spin_lock(&mapping->private_lock);
--			if (!PagePrivate(page)) {
--				spin_unlock(&mapping->private_lock);
--				continue;
--			}
--
--			eb = (struct extent_buffer *)page->private;
--
--			/*
--			 * Shouldn't happen and normally this would be a BUG_ON
--			 * but no sense in crashing the users box for something
--			 * we can survive anyway.
--			 */
--			if (WARN_ON(!eb)) {
--				spin_unlock(&mapping->private_lock);
--				continue;
--			}
--
--			if (eb == prev_eb) {
--				spin_unlock(&mapping->private_lock);
--				continue;
--			}
--
--			ret = atomic_inc_not_zero(&eb->refs);
--			spin_unlock(&mapping->private_lock);
--			if (!ret)
--				continue;
--
--			prev_eb = eb;
--			ret = lock_extent_buffer_for_io(eb, &epd);
--			if (!ret) {
--				free_extent_buffer(eb);
-+			ret = submit_btree_page(page, wbc, &epd, &prev_eb);
-+			if (ret == 0)
- 				continue;
--			} else if (ret < 0) {
--				done = 1;
--				free_extent_buffer(eb);
--				break;
--			}
--
--			ret = write_one_eb(eb, wbc, &epd);
--			if (ret) {
-+			if (ret < 0) {
- 				done = 1;
--				free_extent_buffer(eb);
- 				break;
- 			}
--			free_extent_buffer(eb);
- 
- 			/*
- 			 * the filesystem may choose to bump up nr_to_write.
-@@ -4053,7 +4076,6 @@ int btree_write_cache_pages(struct address_space *mapping,
- 		index = 0;
- 		goto retry;
++	eb = __alloc_dummy_extent_buffer(fs_info, sectorsize, nodesize);
+ 	if (!eb) {
+ 		test_std_err(TEST_ALLOC_ROOT);
+ 		ret = -ENOMEM;
+ 		goto out;
  	}
--	ASSERT(ret <= 0);
- 	if (ret < 0) {
- 		end_write_bio(&epd, ret);
- 		return ret;
+ 
+-	ret = __test_eb_bitmaps(bitmap, eb, len);
++	ret = __test_eb_bitmaps(bitmap, eb, nodesize);
+ out:
+ 	free_extent_buffer(eb);
+ 	kfree(bitmap);
 -- 
 2.29.2
 
