@@ -2,51 +2,51 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BD392A3C5E
-	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Nov 2020 07:02:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 655332A3C67
+	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Nov 2020 07:02:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726018AbgKCGBz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 3 Nov 2020 01:01:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52740 "EHLO
+        id S1727300AbgKCGB7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 3 Nov 2020 01:01:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725958AbgKCGBz (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 3 Nov 2020 01:01:55 -0500
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5B0CC0617A6;
-        Mon,  2 Nov 2020 22:01:54 -0800 (PST)
-Received: by mail-pf1-x444.google.com with SMTP id 13so13254865pfy.4;
-        Mon, 02 Nov 2020 22:01:54 -0800 (PST)
+        with ESMTP id S1725958AbgKCGB6 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 3 Nov 2020 01:01:58 -0500
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5298CC0617A6;
+        Mon,  2 Nov 2020 22:01:58 -0800 (PST)
+Received: by mail-pg1-x531.google.com with SMTP id t14so12861031pgg.1;
+        Mon, 02 Nov 2020 22:01:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ATBwi5kMk4dnFL0BTH/YCxihOEL41DZqtucRP8ITe7M=;
-        b=YdKFiYlrGwxVTZvauLFgQkDZmA9dKicywfwye9P/xJLneoKN+KQIkHsY7BjluLxCF9
-         vTpviXkK20cJGSQRwATi3z7mHbSfh9LNOXlGGK7J8xwIcqUJAqv/meo8qfDDjhU2UrK8
-         deNCKy0j5aQcxvwCc/eedROAxA57oS9rcF3yu1L6bVOUv4MfnllxVrspHUttQdZ8MRMw
-         XpUb+UG2iZDC2aK7+Bj1EtBQbbPs6+W+rILVz/XXGdlQcBmXLNmNzl/nghMQmgcfNZX6
-         hxVW1vSNgae5yoaH+hqYXobpIjkekRcGdQaRR0yQ1GqfPOBC8UAy0NwcCqO+O6v1J4zB
-         g/GA==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=ZZoF2o+tkvuq8VLagQ9LAmpzy23c60yClvw8C48QvBI=;
+        b=SZLN3AN3zm5xSLI7gILhRwa4u4suQzvPFE4pgpPMr5FgJ0vG3RZy88QSEOkqeB+6Yl
+         2QdMYXxgCBmjKWX42O/b1TOeojmNLpi+rTZPMxuDQD5FrilB8+uF8CoqAudsyvkZSe36
+         Ug/dsQiTJ77rHm60rNXQlElI6m+dvHfF/sMMlgVzHwvzi8sQP6ErS+F6oj5xKIQMrVQn
+         QrNGSpRXsfHay5qzCJpd++YBiFs0rCfESLninzIJQxHH5Uzy8jiqmGlSJtfu3kFdZe9e
+         8olBkN9BFBn7iOI8cFuklSu/ZKvZy+4o+nqUz3ohnGLI0IZMfbuVGzjXwmZCSLyjzrG9
+         1q1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ATBwi5kMk4dnFL0BTH/YCxihOEL41DZqtucRP8ITe7M=;
-        b=Pat034GLkGzDJZDOgBw4qBfvgaphAtwsA3TDfLu/eEw+9AIa6oxOg1JnmRhHvhVVLN
-         YFYXQjE4ujifOKv2fMisNxtDbZVdIvtyCofvPAxKlGthVmCxLJcT/ny5p7GbC7v33D/H
-         wZSnU6qLbzl1804/KOA0ic251pAtgyhkH42yhHmZQmCSuRDleN4vdcjoOKC9QVjGZ8TD
-         PxSR6qaFF6a1UVDaaaczdhxAaq3QulQ1XT8jH96dU+nLea7PgGnJVkvB6d7gCjNtJ4OM
-         B0q8lz+a3B2BUXh/6gWctISxpoohtFGz3Ga878jJkldzXSgl/fUGJN0JWOwuFtR16LDw
-         ucKQ==
-X-Gm-Message-State: AOAM531VuJKrTtvt1Dpot86BrLkLKeBQIBIaPEGN4n55ehatcznvNEQf
-        oZAAcAfNjazRlwBldFN1Mu5fB/d2tTQ=
-X-Google-Smtp-Source: ABdhPJz7vjEAEdfbluj+D0qsOJnpLqDWhU/zLoKGG93Zqj5O5RYSlbRSfo0jQCyW3fbI6s+9KkAFLA==
-X-Received: by 2002:a63:4546:: with SMTP id u6mr16239443pgk.311.1604383314055;
-        Mon, 02 Nov 2020 22:01:54 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=ZZoF2o+tkvuq8VLagQ9LAmpzy23c60yClvw8C48QvBI=;
+        b=SUTKURbwP75gu3VMR5eqhfItEkFX9f6+1zTlZ8Oyw3AJAXIh3b6qbwiqMtHG82OD8C
+         P9ShdHi5+P2TBszNoYJvxFrtN7g+TX0Y2rAO593mLv5qO6wA06VXNluk9YRUqTlrkvfA
+         tLd0wkTw3IZ4SbkBf4iveuQ2zl9bbfRzuPA4W5pYIqmdOPgqbPB+Kv96iMveZ12jPWtc
+         cDZN8PycqsbAGDj2Byo/YKRJStNIYPcvt9h8xanmygRlS+NbTpjijdocEsekAoLpqF4l
+         kXQ0uozW7R18iRjeyQ8tAFBkzcXvAzh3i4Y+iYIpYorNAQpgZuGuW0bcd7fFnK23SQgh
+         fMmA==
+X-Gm-Message-State: AOAM532tBTV+snRiQ2uxMH6a7xEiko3gI1IdSefrngL5Hx7FWvCcYvCR
+        9/Wu/jjzuG4JnSFURJcWDXQ=
+X-Google-Smtp-Source: ABdhPJxBVpR2ptBmfVgx2wM9Fvv6dTERN3mGOPced1qq0T1brHonHs8ZDXE7a7s2aGOjMj7K6tTx8g==
+X-Received: by 2002:a62:de44:0:b029:18a:ae59:4d74 with SMTP id h65-20020a62de440000b029018aae594d74mr13143074pfg.72.1604383317751;
+        Mon, 02 Nov 2020 22:01:57 -0800 (PST)
 Received: from nickserv.localdomain (c-98-33-101-203.hsd1.ca.comcast.net. [98.33.101.203])
-        by smtp.gmail.com with ESMTPSA id b16sm15647269pfp.195.2020.11.02.22.01.52
+        by smtp.gmail.com with ESMTPSA id b16sm15647269pfp.195.2020.11.02.22.01.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Nov 2020 22:01:53 -0800 (PST)
+        Mon, 02 Nov 2020 22:01:57 -0800 (PST)
 From:   Nick Terrell <nickrterrell@gmail.com>
 To:     Herbert Xu <herbert@gondor.apana.org.au>
 Cc:     linux-crypto@vger.kernel.org, linux-btrfs@vger.kernel.org,
@@ -57,10 +57,12 @@ Cc:     linux-crypto@vger.kernel.org, linux-btrfs@vger.kernel.org,
         Nick Terrell <terrelln@fb.com>, Chris Mason <clm@fb.com>,
         Petr Malat <oss@malat.biz>, Johannes Weiner <jweiner@fb.com>,
         Niket Agarwal <niketa@fb.com>, Yann Collet <cyan@fb.com>
-Subject: [GIT PULL][PATCH v5 0/9] Update to zstd-1.4.6
-Date:   Mon,  2 Nov 2020 22:05:26 -0800
-Message-Id: <20201103060535.8460-1-nickrterrell@gmail.com>
+Subject: [PATCH v5 1/9] lib: zstd: Add zstd compatibility wrapper
+Date:   Mon,  2 Nov 2020 22:05:27 -0800
+Message-Id: <20201103060535.8460-2-nickrterrell@gmail.com>
 X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20201103060535.8460-1-nickrterrell@gmail.com>
+References: <20201103060535.8460-1-nickrterrell@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -69,275 +71,216 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Nick Terrell <terrelln@fb.com>
 
-Please pull from
+Adds zstd_compat.h which provides the necessary functions from the
+current zstd.h API. It is only active for zstd versions 1.4.6 and newer.
+That means it is disabled currently, but will become active when a later
+patch in this series updates the zstd library in the kernel to 1.4.6.
 
-  git@github.com:terrelln/linux.git tags/v5-zstd-1.4.6
+This header allows the zstd upgrade to 1.4.6 without changing any
+callers, since they all include zstd through the compatibility wrapper.
+Later patches in this series transition each caller away from the
+compatibility wrapper. After all the callers have been transitioned away
+from the compatibility wrapper, the final patch in this series deletes
+it.
 
-to get these changes. Alternatively the patchset is included.
+Signed-off-by: Nick Terrell <terrelln@fb.com>
+---
+ crypto/zstd.c               |   2 +-
+ fs/btrfs/zstd.c             |   2 +-
+ fs/f2fs/compress.c          |   2 +-
+ fs/squashfs/zstd_wrapper.c  |   2 +-
+ include/linux/zstd_compat.h | 116 ++++++++++++++++++++++++++++++++++++
+ lib/decompress_unzstd.c     |   2 +-
+ 6 files changed, 121 insertions(+), 5 deletions(-)
+ create mode 100644 include/linux/zstd_compat.h
 
-This patchset upgrades the zstd library to the latest upstream release. The
-current zstd version in the kernel is a modified version of upstream zstd-1.3.1.
-At the time it was integrated, zstd wasn't ready to be used in the kernel as-is.
-But, it is now possible to use upstream zstd directly in the kernel.
-
-I have not yet release zstd-1.4.6 upstream. I want the zstd version in the kernel
-to match up with a known upstream release, so we know exactly what code is
-running. Whenever this patchset is ready for merge, I will cut a release at the
-upstream commit that gets merged. This should not be necessary for future
-releases.
-
-The kernel zstd library is automatically generated from upstream zstd. A script
-makes the necessary changes and imports it into the kernel. The changes are:
-
-1. Replace all libc dependencies with kernel replacements and rewrite includes.
-2. Remove unncessary portability macros like: #if defined(_MSC_VER).
-3. Use the kernel xxhash instead of bundling it.
-
-This automation gets tested every commit by upstream's continuous integration.
-When we cut a new zstd release, we will submit a patch to the kernel to update
-the zstd version in the kernel.
-
-I've updated zstd to upstream with one big patch because every commit must build,
-so that precludes partial updates. Since the commit is 100% generated, I hope the
-review burden is lightened. I considered replaying upstream commits, but that is
-not possible because there have been ~3500 upstream commits since the last zstd
-import, and the commits don't all build individually. The bulk update preserves
-bisectablity because bugs can be bisected to the zstd version update. At that
-point the update can be reverted, and we can work with upstream to find and fix
-the bug. After this big switch in how the kernel consumes zstd, future patches
-will be smaller, because they will only have one upstream release worth of
-changes each.
-
-This patchset changes the zstd API from a custom kernel API to the upstream API.
-I considered wrapping the upstream API with a wrapper that is closer to the
-kernel style guide. Following advise from https://lkml.org/lkml/2020/9/17/814
-I've chosen to use the upstream API directly, to minimize opportunities to
-introduce bugs, and because using the upstream API directly makes debugging and
-communication with upstream easier.
-
-This patchset comes in 3 parts:
-1. The first 2 patches prepare for the zstd upgrade. The first patch adds a
-   compatibility wrapper so zstd can be upgraded without modifying any callers.
-   The second patch adds an indirection for the lib/decompress_unzstd.c including
-   of all decompression source files.
-2. Import zstd-1.4.6. This patch is completely generated from upstream using
-   automated tooling.
-3. Update all callers to the zstd-1.4.6 API then delete the compatibility
-   wrapper.
-
-I tested every caller of zstd on x86_64. I tested both after the 1.4.6 upgrade
-using the compatibility wrapper, and after the final patch in this series. 
-
-I tested kernel and initramfs decompression in i386 and arm.
-
-I ran benchmarks to compare the current zstd in the kernel with zstd-1.4.6.
-I benchmarked on x86_64 using QEMU with KVM enabled on an Intel i9-9900k.
-I found:
-* BtrFS zstd compression at levels 1 and 3 is 5% faster
-* BtrFS zstd decompression+read is 15% faster
-* SquashFS zstd decompression+read is 15% faster
-* F2FS zstd compression+write at level 3 is 8% faster
-* F2FS zstd decompression+read is 20% faster
-* ZRAM decompression+read is 30% faster
-* Kernel zstd decompression is 35% faster
-* Initramfs zstd decompression+build is 5% faster
-
-The latest zstd also offers bug fixes and a 1 KB reduction in stack uage during
-compression. For example the recent problem with large kernel decompression has
-been fixed upstream for over 2 years https://lkml.org/lkml/2020/9/29/27.
-
-Please let me know if there is anything that I can do to ease the way for these
-patches. I think it is important because it gets large performance improvements,
-contains bug fixes, and is switching to a more maintainable model of consuming
-upstream zstd directly, making it easy to keep up to date.
-
-Best,
-Nick Terrell
-
-v1 -> v2:
-* Successfully tested F2FS with help from Chao Yu to fix my test.
-* (1/9) Fix ZSTD_initCStream() wrapper to handle pledged_src_size=0 means unknown.
-  This fixes F2FS with the zstd-1.4.6 compatibility wrapper, exposed by the test.
-
-v2 -> v3:
-* (3/9) Silence warnings by Kernel Test Robot:
-  https://github.com/facebook/zstd/pull/2324
-  Stack size warnings remain, but these aren't new, and the functions it warns on
-  are either unused or not in the maximum stack path. This patchset reduces zstd
-  compression stack usage by 1 KB overall. I've gotten the low hanging fruit, and
-  more stack reduction would require significant changes that have the potential
-  to introduce new bugs. However, I do hope to continue to reduce zstd stack
-  usage in future versions.
-
-v3 -> v4:
-* (3/9) Fix errors and warnings reported by Kernel Test Robot:
-  https://github.com/facebook/zstd/pull/2326
-  - Replace mem.h with a custom kernel implementation that matches the current
-    lib/zstd/mem.h in the kernel. This avoids calls to __builtin_bswap*() which
-    don't work on certain architectures, as exposed by the Kernel Test Robot.
-  - Remove ASAN/MSAN (un)poisoning code which doesn't work in the kernel, as
-    exposed by the Kernel Test Robot.
-  - I've fixed all of the valid cppcheck warnings reported, but there were many
-    false positives, where cppcheck was incorrectly analyzing the situation,
-    which I did not fix. I don't believe it is reasonable to expect that upstream
-    zstd silences all the static analyzer false positives. Upstream zstd uses
-    clang scan-build for its static analysis. We find that supporting multiple
-    static analysis tools multiplies the burden of silencing false positives,
-    without providing enough marginal value over running a single static analysis
-    tool.
-
-v4 -> v5:
-* Rebase onto v5.10-rc2
-* (6/9) Merge with other F2FS changes (no functional change in patch).
-
-Nick Terrell (9):
-  lib: zstd: Add zstd compatibility wrapper
-  lib: zstd: Add decompress_sources.h for decompress_unzstd
-  lib: zstd: Upgrade to latest upstream zstd version 1.4.6
-  crypto: zstd: Switch to zstd-1.4.6 API
-  btrfs: zstd: Switch to the zstd-1.4.6 API
-  f2fs: zstd: Switch to the zstd-1.4.6 API
-  squashfs: zstd: Switch to the zstd-1.4.6 API
-  lib: unzstd: Switch to the zstd-1.4.6 API
-  lib: zstd: Remove zstd compatibility wrapper
-
- crypto/zstd.c                                 |   22 +-
- fs/btrfs/zstd.c                               |   46 +-
- fs/f2fs/compress.c                            |   99 +-
- fs/squashfs/zstd_wrapper.c                    |    7 +-
- include/linux/zstd.h                          | 3021 ++++++++----
- include/linux/zstd_errors.h                   |   76 +
- lib/decompress_unzstd.c                       |   44 +-
- lib/zstd/Makefile                             |   35 +-
- lib/zstd/bitstream.h                          |  379 --
- lib/zstd/common/bitstream.h                   |  437 ++
- lib/zstd/common/compiler.h                    |  150 +
- lib/zstd/common/cpu.h                         |  194 +
- lib/zstd/common/debug.c                       |   24 +
- lib/zstd/common/debug.h                       |  101 +
- lib/zstd/common/entropy_common.c              |  355 ++
- lib/zstd/common/error_private.c               |   55 +
- lib/zstd/common/error_private.h               |   66 +
- lib/zstd/common/fse.h                         |  709 +++
- lib/zstd/common/fse_decompress.c              |  380 ++
- lib/zstd/common/huf.h                         |  352 ++
- lib/zstd/common/mem.h                         |  258 +
- lib/zstd/common/zstd_common.c                 |   83 +
- lib/zstd/common/zstd_deps.h                   |  124 +
- lib/zstd/common/zstd_internal.h               |  438 ++
- lib/zstd/compress.c                           | 3485 --------------
- lib/zstd/compress/fse_compress.c              |  625 +++
- lib/zstd/compress/hist.c                      |  165 +
- lib/zstd/compress/hist.h                      |   75 +
- lib/zstd/compress/huf_compress.c              |  764 +++
- lib/zstd/compress/zstd_compress.c             | 4157 +++++++++++++++++
- lib/zstd/compress/zstd_compress_internal.h    | 1103 +++++
- lib/zstd/compress/zstd_compress_literals.c    |  158 +
- lib/zstd/compress/zstd_compress_literals.h    |   29 +
- lib/zstd/compress/zstd_compress_sequences.c   |  433 ++
- lib/zstd/compress/zstd_compress_sequences.h   |   54 +
- lib/zstd/compress/zstd_compress_superblock.c  |  849 ++++
- lib/zstd/compress/zstd_compress_superblock.h  |   32 +
- lib/zstd/compress/zstd_cwksp.h                |  465 ++
- lib/zstd/compress/zstd_double_fast.c          |  521 +++
- lib/zstd/compress/zstd_double_fast.h          |   32 +
- lib/zstd/compress/zstd_fast.c                 |  496 ++
- lib/zstd/compress/zstd_fast.h                 |   31 +
- lib/zstd/compress/zstd_lazy.c                 | 1138 +++++
- lib/zstd/compress/zstd_lazy.h                 |   61 +
- lib/zstd/compress/zstd_ldm.c                  |  619 +++
- lib/zstd/compress/zstd_ldm.h                  |  104 +
- lib/zstd/compress/zstd_opt.c                  | 1200 +++++
- lib/zstd/compress/zstd_opt.h                  |   50 +
- lib/zstd/decompress.c                         | 2531 ----------
- lib/zstd/decompress/huf_decompress.c          | 1205 +++++
- lib/zstd/decompress/zstd_ddict.c              |  241 +
- lib/zstd/decompress/zstd_ddict.h              |   44 +
- lib/zstd/decompress/zstd_decompress.c         | 1836 ++++++++
- lib/zstd/decompress/zstd_decompress_block.c   | 1540 ++++++
- lib/zstd/decompress/zstd_decompress_block.h   |   62 +
- .../decompress/zstd_decompress_internal.h     |  195 +
- lib/zstd/decompress_sources.h                 |   18 +
- lib/zstd/entropy_common.c                     |  243 -
- lib/zstd/error_private.h                      |   53 -
- lib/zstd/fse.h                                |  575 ---
- lib/zstd/fse_compress.c                       |  795 ----
- lib/zstd/fse_decompress.c                     |  325 --
- lib/zstd/huf.h                                |  212 -
- lib/zstd/huf_compress.c                       |  772 ---
- lib/zstd/huf_decompress.c                     |  960 ----
- lib/zstd/mem.h                                |  151 -
- lib/zstd/zstd_common.c                        |   75 -
- lib/zstd/zstd_compress_module.c               |   79 +
- lib/zstd/zstd_decompress_module.c             |   79 +
- lib/zstd/zstd_internal.h                      |  273 --
- lib/zstd/zstd_opt.h                           | 1014 ----
- 71 files changed, 24367 insertions(+), 13012 deletions(-)
- create mode 100644 include/linux/zstd_errors.h
- delete mode 100644 lib/zstd/bitstream.h
- create mode 100644 lib/zstd/common/bitstream.h
- create mode 100644 lib/zstd/common/compiler.h
- create mode 100644 lib/zstd/common/cpu.h
- create mode 100644 lib/zstd/common/debug.c
- create mode 100644 lib/zstd/common/debug.h
- create mode 100644 lib/zstd/common/entropy_common.c
- create mode 100644 lib/zstd/common/error_private.c
- create mode 100644 lib/zstd/common/error_private.h
- create mode 100644 lib/zstd/common/fse.h
- create mode 100644 lib/zstd/common/fse_decompress.c
- create mode 100644 lib/zstd/common/huf.h
- create mode 100644 lib/zstd/common/mem.h
- create mode 100644 lib/zstd/common/zstd_common.c
- create mode 100644 lib/zstd/common/zstd_deps.h
- create mode 100644 lib/zstd/common/zstd_internal.h
- delete mode 100644 lib/zstd/compress.c
- create mode 100644 lib/zstd/compress/fse_compress.c
- create mode 100644 lib/zstd/compress/hist.c
- create mode 100644 lib/zstd/compress/hist.h
- create mode 100644 lib/zstd/compress/huf_compress.c
- create mode 100644 lib/zstd/compress/zstd_compress.c
- create mode 100644 lib/zstd/compress/zstd_compress_internal.h
- create mode 100644 lib/zstd/compress/zstd_compress_literals.c
- create mode 100644 lib/zstd/compress/zstd_compress_literals.h
- create mode 100644 lib/zstd/compress/zstd_compress_sequences.c
- create mode 100644 lib/zstd/compress/zstd_compress_sequences.h
- create mode 100644 lib/zstd/compress/zstd_compress_superblock.c
- create mode 100644 lib/zstd/compress/zstd_compress_superblock.h
- create mode 100644 lib/zstd/compress/zstd_cwksp.h
- create mode 100644 lib/zstd/compress/zstd_double_fast.c
- create mode 100644 lib/zstd/compress/zstd_double_fast.h
- create mode 100644 lib/zstd/compress/zstd_fast.c
- create mode 100644 lib/zstd/compress/zstd_fast.h
- create mode 100644 lib/zstd/compress/zstd_lazy.c
- create mode 100644 lib/zstd/compress/zstd_lazy.h
- create mode 100644 lib/zstd/compress/zstd_ldm.c
- create mode 100644 lib/zstd/compress/zstd_ldm.h
- create mode 100644 lib/zstd/compress/zstd_opt.c
- create mode 100644 lib/zstd/compress/zstd_opt.h
- delete mode 100644 lib/zstd/decompress.c
- create mode 100644 lib/zstd/decompress/huf_decompress.c
- create mode 100644 lib/zstd/decompress/zstd_ddict.c
- create mode 100644 lib/zstd/decompress/zstd_ddict.h
- create mode 100644 lib/zstd/decompress/zstd_decompress.c
- create mode 100644 lib/zstd/decompress/zstd_decompress_block.c
- create mode 100644 lib/zstd/decompress/zstd_decompress_block.h
- create mode 100644 lib/zstd/decompress/zstd_decompress_internal.h
- create mode 100644 lib/zstd/decompress_sources.h
- delete mode 100644 lib/zstd/entropy_common.c
- delete mode 100644 lib/zstd/error_private.h
- delete mode 100644 lib/zstd/fse.h
- delete mode 100644 lib/zstd/fse_compress.c
- delete mode 100644 lib/zstd/fse_decompress.c
- delete mode 100644 lib/zstd/huf.h
- delete mode 100644 lib/zstd/huf_compress.c
- delete mode 100644 lib/zstd/huf_decompress.c
- delete mode 100644 lib/zstd/mem.h
- delete mode 100644 lib/zstd/zstd_common.c
- create mode 100644 lib/zstd/zstd_compress_module.c
- create mode 100644 lib/zstd/zstd_decompress_module.c
- delete mode 100644 lib/zstd/zstd_internal.h
- delete mode 100644 lib/zstd/zstd_opt.h
-
+diff --git a/crypto/zstd.c b/crypto/zstd.c
+index 1a3309f066f7..dcda3cad3b5c 100644
+--- a/crypto/zstd.c
++++ b/crypto/zstd.c
+@@ -11,7 +11,7 @@
+ #include <linux/module.h>
+ #include <linux/net.h>
+ #include <linux/vmalloc.h>
+-#include <linux/zstd.h>
++#include <linux/zstd_compat.h>
+ #include <crypto/internal/scompress.h>
+ 
+ 
+diff --git a/fs/btrfs/zstd.c b/fs/btrfs/zstd.c
+index 9a4871636c6c..a7367ff573d4 100644
+--- a/fs/btrfs/zstd.c
++++ b/fs/btrfs/zstd.c
+@@ -16,7 +16,7 @@
+ #include <linux/refcount.h>
+ #include <linux/sched.h>
+ #include <linux/slab.h>
+-#include <linux/zstd.h>
++#include <linux/zstd_compat.h>
+ #include "misc.h"
+ #include "compression.h"
+ #include "ctree.h"
+diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
+index 14262e0f1cd6..57a6360b9827 100644
+--- a/fs/f2fs/compress.c
++++ b/fs/f2fs/compress.c
+@@ -11,7 +11,7 @@
+ #include <linux/backing-dev.h>
+ #include <linux/lzo.h>
+ #include <linux/lz4.h>
+-#include <linux/zstd.h>
++#include <linux/zstd_compat.h>
+ 
+ #include "f2fs.h"
+ #include "node.h"
+diff --git a/fs/squashfs/zstd_wrapper.c b/fs/squashfs/zstd_wrapper.c
+index b7cb1faa652d..f8c512a6204e 100644
+--- a/fs/squashfs/zstd_wrapper.c
++++ b/fs/squashfs/zstd_wrapper.c
+@@ -11,7 +11,7 @@
+ #include <linux/mutex.h>
+ #include <linux/bio.h>
+ #include <linux/slab.h>
+-#include <linux/zstd.h>
++#include <linux/zstd_compat.h>
+ #include <linux/vmalloc.h>
+ 
+ #include "squashfs_fs.h"
+diff --git a/include/linux/zstd_compat.h b/include/linux/zstd_compat.h
+new file mode 100644
+index 000000000000..cda9208bf04a
+--- /dev/null
++++ b/include/linux/zstd_compat.h
+@@ -0,0 +1,116 @@
++/*
++ * Copyright (c) 2016-present, Facebook, Inc.
++ * All rights reserved.
++ *
++ * This source code is licensed under the BSD-style license found in the
++ * LICENSE file in the root directory of https://github.com/facebook/zstd.
++ * An additional grant of patent rights can be found in the PATENTS file in the
++ * same directory.
++ *
++ * This program is free software; you can redistribute it and/or modify it under
++ * the terms of the GNU General Public License version 2 as published by the
++ * Free Software Foundation. This program is dual-licensed; you may select
++ * either version 2 of the GNU General Public License ("GPL") or BSD license
++ * ("BSD").
++ */
++
++#ifndef ZSTD_COMPAT_H
++#define ZSTD_COMPAT_H
++
++#include <linux/zstd.h>
++
++#if defined(ZSTD_VERSION_NUMBER) && (ZSTD_VERSION_NUMBER >= 10406)
++/*
++ * This header provides backwards compatibility for the zstd-1.4.6 library
++ * upgrade. This header allows us to upgrade the zstd library version without
++ * modifying any callers. Then we will migrate callers from the compatibility
++ * wrapper one at a time until none remain. At which point we will delete this
++ * header.
++ *
++ * It is temporary and will be deleted once the upgrade is complete.
++ */
++
++#include <linux/zstd_errors.h>
++
++static inline size_t ZSTD_CCtxWorkspaceBound(ZSTD_compressionParameters compression_params)
++{
++    return ZSTD_estimateCCtxSize_usingCParams(compression_params);
++}
++
++static inline size_t ZSTD_CStreamWorkspaceBound(ZSTD_compressionParameters compression_params)
++{
++    return ZSTD_estimateCStreamSize_usingCParams(compression_params);
++}
++
++static inline size_t ZSTD_DCtxWorkspaceBound(void)
++{
++    return ZSTD_estimateDCtxSize();
++}
++
++static inline size_t ZSTD_DStreamWorkspaceBound(unsigned long long window_size)
++{
++    return ZSTD_estimateDStreamSize(window_size);
++}
++
++static inline ZSTD_CCtx* ZSTD_initCCtx(void* wksp, size_t wksp_size)
++{
++    if (wksp == NULL)
++        return NULL;
++    return ZSTD_initStaticCCtx(wksp, wksp_size);
++}
++
++static inline ZSTD_CStream* ZSTD_initCStream_compat(ZSTD_parameters params, uint64_t pledged_src_size, void* wksp, size_t wksp_size)
++{
++    ZSTD_CStream* cstream;
++    size_t ret;
++
++    if (wksp == NULL)
++        return NULL;
++
++    cstream = ZSTD_initStaticCStream(wksp, wksp_size);
++    if (cstream == NULL)
++        return NULL;
++
++    /* 0 means unknown in old API but means 0 in new API */
++    if (pledged_src_size == 0)
++        pledged_src_size = ZSTD_CONTENTSIZE_UNKNOWN;
++
++    ret = ZSTD_initCStream_advanced(cstream, NULL, 0, params, pledged_src_size);
++    if (ZSTD_isError(ret))
++        return NULL;
++
++    return cstream;
++}
++#define ZSTD_initCStream ZSTD_initCStream_compat
++
++static inline ZSTD_DCtx* ZSTD_initDCtx(void* wksp, size_t wksp_size)
++{
++    if (wksp == NULL)
++        return NULL;
++    return ZSTD_initStaticDCtx(wksp, wksp_size);
++}
++
++static inline ZSTD_DStream* ZSTD_initDStream_compat(unsigned long long window_size, void* wksp, size_t wksp_size)
++{
++    if (wksp == NULL)
++        return NULL;
++    (void)window_size;
++    return ZSTD_initStaticDStream(wksp, wksp_size);
++}
++#define ZSTD_initDStream ZSTD_initDStream_compat
++
++typedef ZSTD_frameHeader ZSTD_frameParams;
++
++static inline size_t ZSTD_getFrameParams(ZSTD_frameParams* frame_params, const void* src, size_t src_size)
++{
++    return ZSTD_getFrameHeader(frame_params, src, src_size);
++}
++
++static inline size_t ZSTD_compressCCtx_compat(ZSTD_CCtx* cctx, void* dst, size_t dst_capacity, const void* src, size_t src_size, ZSTD_parameters params)
++{
++    return ZSTD_compress_advanced(cctx, dst, dst_capacity, src, src_size, NULL, 0, params);
++}
++#define ZSTD_compressCCtx ZSTD_compressCCtx_compat
++
++#endif /* ZSTD_VERSION_NUMBER >= 10406 */
++#endif /* ZSTD_COMPAT_H */
+diff --git a/lib/decompress_unzstd.c b/lib/decompress_unzstd.c
+index 790abc472f5b..6bb805aeec08 100644
+--- a/lib/decompress_unzstd.c
++++ b/lib/decompress_unzstd.c
+@@ -77,7 +77,7 @@
+ 
+ #include <linux/decompress/mm.h>
+ #include <linux/kernel.h>
+-#include <linux/zstd.h>
++#include <linux/zstd_compat.h>
+ 
+ /* 128MB is the maximum window size supported by zstd. */
+ #define ZSTD_WINDOWSIZE_MAX	(1 << ZSTD_WINDOWLOG_MAX)
 -- 
 2.28.0
 
