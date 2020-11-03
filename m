@@ -2,34 +2,34 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3502A2A469B
+	by mail.lfdr.de (Postfix) with ESMTP id A27402A469C
 	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Nov 2020 14:33:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729322AbgKCNcc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 3 Nov 2020 08:32:32 -0500
-Received: from mx2.suse.de ([195.135.220.15]:45490 "EHLO mx2.suse.de"
+        id S1729410AbgKCNch (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 3 Nov 2020 08:32:37 -0500
+Received: from mx2.suse.de ([195.135.220.15]:45694 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729405AbgKCNcc (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 3 Nov 2020 08:32:32 -0500
+        id S1729241AbgKCNcg (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 3 Nov 2020 08:32:36 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1604410350;
+        t=1604410354;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=GbHH2JHPNEM+uYbLlCAM8NRsL65dfAtsCgryFGF7fbA=;
-        b=rLNuR96dlIWZUK4GIl69NGwvVqfxGGL2qSCfglxfhJfF48YiprI+1O3e4pe63ZgH3+X+5a
-        8B8AkfFBsnT733ZTc8P9K1QyPLz8KN021JAlCfiAHkSNAhpaoKH2Ojm4975ycjVxVtS44q
-        YqPmbhwkj/S90uC6KiLETQfvX6vEjew=
+        bh=ByGIUyylibMsyIBJzc36esKtRTYItUVstBNjFG4mu7k=;
+        b=YLwNzcFFX11Oani3J2oRscydmOQt8zkcTwohQPYhGGevpvmiJCnVXhLBqhOl5ydcj4rQdf
+        0TQxdT0C99kUrc5GbqTqVARaFJguZQehkudEWsjrBSZIzFcGoeaphDLIuTlxkgvgcwBU6N
+        72tl0YmkYNrb9N5dSjn16KWSGeXpQ+0=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 90F5FAFAA
-        for <linux-btrfs@vger.kernel.org>; Tue,  3 Nov 2020 13:32:30 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id D48BDAFFD
+        for <linux-btrfs@vger.kernel.org>; Tue,  3 Nov 2020 13:32:34 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 27/32] btrfs: scrub: use flexible array for scrub_page::csums
-Date:   Tue,  3 Nov 2020 21:31:03 +0800
-Message-Id: <20201103133108.148112-28-wqu@suse.com>
+Subject: [PATCH 28/32] btrfs: scrub: refactor scrub_find_csum()
+Date:   Tue,  3 Nov 2020 21:31:04 +0800
+Message-Id: <20201103133108.148112-29-wqu@suse.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201103133108.148112-1-wqu@suse.com>
 References: <20201103133108.148112-1-wqu@suse.com>
@@ -39,146 +39,119 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-There are several factors affecting how many checksum bytes are needed
-for one scrub_page:
+Function scrub_find_csum() is to locate the csum for bytenr @logical
+from sctx->csum_list.
 
-- Sector size and page size
-  For subpage case, one page can contain several sectors, thus the csum
-  size will differ.
+However it lacks a lot of comments to explaining things like how the
+csum_list is organized and why we need to drop csum range which is
+before us.
 
-- Checksum size
-  Since btrfs supports different csum size now, which can vary from 4
-  bytes for CRC32 to 32 bytes for SHA256.
-
-So instead of using fixed BTRFS_CSUM_SIZE, now use flexible array for
-scrub_page::csums, and determine the size at scrub_page allocation time.
-
-This does not only provide the basis for later subpage scrub support,
-but also reduce the memory usage for default btrfs on x86_64.
-As the default CRC32 only uses 4 bytes, thus we can save 28 bytes for
-each scrub page.
+Refactor the function by:
+- Add more comment explaining the behavior
+- Add comment explaining why we need to drop the csum range
+- Put the csum copy in the main loop
+  This is mostly for the incoming patches to make scrub_find_csum() able
+  to find multiple checksums.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/scrub.c | 41 ++++++++++++++++++++++++++++++-----------
- 1 file changed, 30 insertions(+), 11 deletions(-)
+ fs/btrfs/scrub.c | 71 ++++++++++++++++++++++++++++++++++--------------
+ 1 file changed, 51 insertions(+), 20 deletions(-)
 
 diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
-index 7e6ed0b79006..cabc030d4bf9 100644
+index cabc030d4bf9..e4f73dfc3516 100644
 --- a/fs/btrfs/scrub.c
 +++ b/fs/btrfs/scrub.c
-@@ -76,9 +76,14 @@ struct scrub_page {
- 		unsigned int	have_csum:1;
- 		unsigned int	io_error:1;
- 	};
--	u8			csum[BTRFS_CSUM_SIZE];
--
- 	struct scrub_recover	*recover;
-+
-+	/*
-+	 * The csums size for the page is deteremined by page size,
-+	 * sector size and csum size.
-+	 * Thus the length has to be determined at runtime.
-+	 */
-+	u8			csums[];
- };
+@@ -2384,38 +2384,69 @@ static void scrub_block_complete(struct scrub_block *sblock)
+ 	}
+ }
  
- struct scrub_bio {
-@@ -206,6 +211,19 @@ struct full_stripe_lock {
- 	struct mutex mutex;
- };
- 
-+static struct scrub_page *alloc_scrub_page(struct scrub_ctx *sctx, gfp_t mask)
++static void drop_csum_range(struct scrub_ctx *sctx,
++			    struct btrfs_ordered_sum *sum)
 +{
 +	u32 sectorsize = sctx->fs_info->sectorsize;
-+	size_t size;
 +
-+	/* No support for multi-page sector size yet */
-+	ASSERT(PAGE_SIZE >= sectorsize && IS_ALIGNED(PAGE_SIZE, sectorsize));
-+
-+	size = sizeof(struct scrub_page);
-+	size += (PAGE_SIZE / sectorsize) * sctx->fs_info->csum_size;
-+	return kzalloc(size, mask);
++	sctx->stat.csum_discards += sum->len / sectorsize;
++	list_del(&sum->list);
++	kfree(sum);
 +}
 +
- static void scrub_pending_bio_inc(struct scrub_ctx *sctx);
- static void scrub_pending_bio_dec(struct scrub_ctx *sctx);
- static int scrub_handle_errored_block(struct scrub_block *sblock_to_check);
-@@ -1328,7 +1346,7 @@ static int scrub_setup_recheck_block(struct scrub_block *original_sblock,
- 			sblock = sblocks_for_recheck + mirror_index;
- 			sblock->sctx = sctx;
++/*
++ * Find the desired csum for range [@logical, @logical + sectorsize), and
++ * store the csum into @csum.
++ *
++ * The search source is sctx->csum_list, which is a pre-populated list
++ * storing bytenr ordered csum ranges.
++ * We're reponsible to cleanup any range that is before @logical.
++ *
++ * Return 0 if there is no csum for the range.
++ * Return 1 if there is csum for the range and copied to @csum.
++ */
+ static int scrub_find_csum(struct scrub_ctx *sctx, u64 logical, u8 *csum)
+ {
+-	struct btrfs_ordered_sum *sum = NULL;
+-	unsigned long index;
+-	unsigned long num_sectors;
++	bool found = false;
  
--			spage = kzalloc(sizeof(*spage), GFP_NOFS);
-+			spage = alloc_scrub_page(sctx, GFP_NOFS);
- 			if (!spage) {
- leave_nomem:
- 				spin_lock(&sctx->stat_lock);
-@@ -1345,8 +1363,8 @@ static int scrub_setup_recheck_block(struct scrub_block *original_sblock,
- 			spage->logical = logical;
- 			spage->have_csum = have_csum;
- 			if (have_csum)
--				memcpy(spage->csum,
--				       original_sblock->pagev[0]->csum,
-+				memcpy(spage->csums,
-+				       original_sblock->pagev[0]->csums,
- 				       sctx->fs_info->csum_size);
- 
- 			scrub_stripe_index_and_offset(logical,
-@@ -1798,7 +1816,7 @@ static int scrub_checksum_data(struct scrub_block *sblock)
- 	crypto_shash_init(shash);
- 	crypto_shash_digest(shash, kaddr, PAGE_SIZE, csum);
- 
--	if (memcmp(csum, spage->csum, sctx->fs_info->csum_size))
-+	if (memcmp(csum, spage->csums, sctx->fs_info->csum_size))
- 		sblock->checksum_error = 1;
- 
- 	return sblock->checksum_error;
-@@ -2178,7 +2196,7 @@ static int scrub_pages(struct scrub_ctx *sctx, u64 logical, u64 len,
- 		struct scrub_page *spage;
- 		u64 l = min_t(u64, len, PAGE_SIZE);
- 
--		spage = kzalloc(sizeof(*spage), GFP_KERNEL);
-+		spage = alloc_scrub_page(sctx, GFP_KERNEL);
- 		if (!spage) {
- leave_nomem:
- 			spin_lock(&sctx->stat_lock);
-@@ -2200,7 +2218,7 @@ static int scrub_pages(struct scrub_ctx *sctx, u64 logical, u64 len,
- 		spage->mirror_num = mirror_num;
- 		if (csum) {
- 			spage->have_csum = 1;
--			memcpy(spage->csum, csum, sctx->fs_info->csum_size);
-+			memcpy(spage->csums, csum, sctx->fs_info->csum_size);
- 		} else {
- 			spage->have_csum = 0;
- 		}
-@@ -2486,7 +2504,9 @@ static int scrub_pages_for_parity(struct scrub_parity *sparity,
- 		struct scrub_page *spage;
- 		u64 l = min_t(u64, len, PAGE_SIZE);
- 
--		spage = kzalloc(sizeof(*spage), GFP_KERNEL);
-+		BUG_ON(index >= SCRUB_MAX_PAGES_PER_BLOCK);
+ 	while (!list_empty(&sctx->csum_list)) {
++		struct btrfs_ordered_sum *sum = NULL;
++		unsigned long index;
++		unsigned long num_sectors;
 +
-+		spage = alloc_scrub_page(sctx, GFP_KERNEL);
- 		if (!spage) {
- leave_nomem:
- 			spin_lock(&sctx->stat_lock);
-@@ -2495,7 +2515,6 @@ static int scrub_pages_for_parity(struct scrub_parity *sparity,
- 			scrub_block_put(sblock);
- 			return -ENOMEM;
- 		}
--		BUG_ON(index >= SCRUB_MAX_PAGES_PER_BLOCK);
- 		/* For scrub block */
- 		scrub_page_get(spage);
- 		sblock->pagev[index] = spage;
-@@ -2511,7 +2530,7 @@ static int scrub_pages_for_parity(struct scrub_parity *sparity,
- 		spage->mirror_num = mirror_num;
- 		if (csum) {
- 			spage->have_csum = 1;
--			memcpy(spage->csum, csum, sctx->fs_info->csum_size);
-+			memcpy(spage->csums, csum, sctx->fs_info->csum_size);
- 		} else {
- 			spage->have_csum = 0;
- 		}
+ 		sum = list_first_entry(&sctx->csum_list,
+ 				       struct btrfs_ordered_sum, list);
++		/* The current csum range is beyond our range, no csum found */
+ 		if (sum->bytenr > logical)
+-			return 0;
+-		if (sum->bytenr + sum->len > logical)
+ 			break;
+ 
+-		++sctx->stat.csum_discards;
+-		list_del(&sum->list);
+-		kfree(sum);
+-		sum = NULL;
+-	}
+-	if (!sum)
+-		return 0;
++		/*
++		 * The current sum is before our bytenr, since scrub is
++		 * always done in bytenr order, the csum will never be used
++		 * anymore, clean it up so that later calls won't bother the
++		 * range, and continue search the next range.
++		 */
++		if (sum->bytenr + sum->len <= logical) {
++			drop_csum_range(sctx, sum);
++			continue;
++		}
+ 
+-	index = (logical - sum->bytenr) >> sctx->fs_info->sectorsize_bits;
+-	ASSERT(index < UINT_MAX);
++		/* Now the csum range covers our bytenr, copy the csum */
++		found = true;
++		index = (logical - sum->bytenr) >>
++			sctx->fs_info->sectorsize_bits;
++		num_sectors = sum->len >> sctx->fs_info->sectorsize_bits;
+ 
+-	num_sectors = sum->len >> sctx->fs_info->sectorsize_bits;
+-	memcpy(csum, sum->sums + index * sctx->fs_info->csum_size,
+-		sctx->fs_info->csum_size);
+-	if (index == num_sectors - 1) {
+-		list_del(&sum->list);
+-		kfree(sum);
++		memcpy(csum, sum->sums + index * sctx->fs_info->csum_size,
++		       sctx->fs_info->csum_size);
++
++		/* Cleanup the range if we're at the end of the csum range */
++		if (index == num_sectors - 1)
++			drop_csum_range(sctx, sum);
++		break;
+ 	}
++	if (!found)
++		return 0;
+ 	return 1;
+ }
+ 
 -- 
 2.29.2
 
