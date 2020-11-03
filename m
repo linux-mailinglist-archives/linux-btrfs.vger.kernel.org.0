@@ -2,153 +2,360 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9C372A504A
-	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Nov 2020 20:41:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 13A4E2A5067
+	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Nov 2020 20:48:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727901AbgKCTli convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-btrfs@lfdr.de>); Tue, 3 Nov 2020 14:41:38 -0500
-Received: from james.kirk.hungrycats.org ([174.142.39.145]:48370 "EHLO
-        james.kirk.hungrycats.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725997AbgKCTli (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 3 Nov 2020 14:41:38 -0500
-Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
-        id 961DF88B602; Tue,  3 Nov 2020 14:41:04 -0500 (EST)
-Date:   Tue, 3 Nov 2020 14:40:53 -0500
-From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-To:     Hendrik Friedel <hendrik@friedels.name>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Subject: Re: parent transid verify failed: Fixed but re-appearing
-Message-ID: <20201103194045.GB28049@hungrycats.org>
-References: <em2ffec6ef-fe64-4239-b238-ae962d1826f6@ryzen>
- <20201021134635.GT5890@hungrycats.org>
- <em85884e42-e959-40f1-9eae-cd818450c26d@ryzen>
- <20201021193246.GE21815@hungrycats.org>
- <em33511ef4-7da1-4e7c-8b0c-8b8d7043164c@desktop-g0r648m>
- <20201021212229.GF21815@hungrycats.org>
- <emeabab400-3f6d-4105-a4fd-67b0b832f97a@desktop-g0r648m>
- <20201021213854.GG21815@hungrycats.org>
- <em26d5dfe8-37cb-454c-9c03-a69cfb035949@desktop-g0r648m>
- <emf9252c3e-00b0-4c4a-a607-b61df779742f@desktop-g0r648m>
+        id S1729796AbgKCTsd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 3 Nov 2020 14:48:33 -0500
+Received: from mx2.suse.de ([195.135.220.15]:50996 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729789AbgKCTsb (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 3 Nov 2020 14:48:31 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 2CC79AF84;
+        Tue,  3 Nov 2020 19:48:29 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 62E00DA7D2; Tue,  3 Nov 2020 20:46:51 +0100 (CET)
+Date:   Tue, 3 Nov 2020 20:46:51 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 3/3] btrfs: file-item: refactor btrfs_lookup_bio_sums()
+ to handle out-of-order bvecs
+Message-ID: <20201103194650.GD6756@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <20201028072432.86907-1-wqu@suse.com>
+ <20201028072432.86907-4-wqu@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <emf9252c3e-00b0-4c4a-a607-b61df779742f@desktop-g0r648m>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201028072432.86907-4-wqu@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Nov 03, 2020 at 06:19:41PM +0000, Hendrik Friedel wrote:
-> Hello Zygo,
-> 
-> can you further me help on this?
-> 
-> Regards,
-> Hendrik
-> 
-> ------ Originalnachricht ------
-> Von: "Hendrik Friedel" <hendrik@friedels.name>
-> An: "Zygo Blaxell" <ce3g8jdj@umail.furryterror.org>
-> Cc: "Btrfs BTRFS" <linux-btrfs@vger.kernel.org>
-> Gesendet: 22.10.2020 21:30:14
-> Betreff: Re[2]: parent transid verify failed: Fixed but re-appearing
-> 
-> > Hello Zygo,
-> > 
-> > thanks for your reply.
-> > 
-> > > >  [/dev/sda1].generation_errs  1
-> > > >  [/dev/sdj1].generation_errs  0
-> > > >  >
-> > > >  So, on one of the drives only.
-> > > 
-> > > If one drive is silently dropping writes then it would explain the
-> > > behavior so far; however, it's relatively rare to have a drive fail
-> > > that specifically and quietly (and only when you use one particular
-> > > application).
-> > Well, we do not know that it occurs when I use one particular application. It could also occur a before and just become visible when using dduper.
-> > 
-> > > >  > scrub already reports pretty much everything it finds.  'btrfs scrub
-> > > >  > start -Bd' will present a per-disk error count at the end.
-> > > >  >
-> > > > 
-> > > >  So, should I do that now/next?
-> > > 
-> > > Sure, more scrubs are better.  They are supposed to be run regularly
-> > > to detect drives going bad.
-> > btrfs scrub start -Bd /dev/sda1
-> > 
-> > 
-> > scrub device /dev/sda1 (id 1) done
-> >         scrub started at Wed Oct 21 23:38:36 2020 and finished after 13:45:29
-> >         total bytes scrubbed: 6.56TiB with 0 errors
-> > 
-> > But then again:
-> > dduper --device /dev/sda1 --dir /srv/dev-disk-by-label-DataPool1/dduper_test/testfiles -r --dry-run
-> > parent transid verify failed on 16500741947392 wanted 358407 found 358409
-> > Ignoring transid failure
+On Wed, Oct 28, 2020 at 03:24:32PM +0800, Qu Wenruo wrote:
+>  
+> +/*
+> + * Helper to find csums for logical bytenr range
 
-Wait...is that the kernel log, or the output of the dduper command?
+    * Find checksums for logical bytenr range
 
-commit 3e5f67f45b553045a34113cafb3c22180210a19f (tag: v0.04, origin/dockerbuild)
-Author: Lakshmipathi <lakshmipathi.ganapathi@collabora.com>
-Date:   Fri Sep 18 11:51:42 2020 +0530
+'Helper' or 'This function' are redundant
 
-file deduper:
+> + * [disk_bytenr, disk_bytenr + len) and restore the result to @dst.
+                                           ^^^^^^^
+					   store
 
-    194 def btrfs_dump_csum(filename):
-    195     global device_name
-    196 
-    197     btrfs_bin = "/usr/sbin/btrfs.static"
-    198     if os.path.exists(btrfs_bin) is False:
-    199         btrfs_bin = "btrfs"
-    200 
-    201     out = subprocess.Popen(
-    202         [btrfs_bin, 'inspect-internal', 'dump-csum', filename, device_name],
-    203         stdout=subprocess.PIPE,
-    204         close_fds=True).stdout.readlines()
-    205     return out
+So this replaces the individual parameter description and is better
+readable, ok.
 
-OK there's the problem:  it's dumping csums from a mounted filesystem by
-reading the block device instead of using the TREE_SEARCH_V2 ioctl.
-Don't do that, because it won't work.  ;)
+> + *
+> + * Return >0 for the number of sectors we found.
+> + * Return 0 for the range [disk_bytenr, disk_bytenr + sectorsize) has no csum
+> + * for it. Caller may want to try next sector until one range is hit.
+> + * Return <0 for fatal error.
+> + */
+> +static int find_csum_tree_sums(struct btrfs_fs_info *fs_info,
+> +			       struct btrfs_path *path, u64 disk_bytenr,
+> +			       u64 len, u8 *dst)
+> +{
+> +	struct btrfs_csum_item *item = NULL;
+> +	struct btrfs_key key;
+> +	u32 csum_size = btrfs_super_csum_size(fs_info->super_copy);
 
-The "parent transid verify failed" errors are harmless.  They are due
-to the fact that a process reading the raw block device can never build
-an accurate model of a live filesystem that is changing underneathi it.
+This could use the fs_info->csum_size now that we have it
 
-If you manage to get some dedupe to happen, then that's a bonus.
+> +	u32 sectorsize = fs_info->sectorsize;
+> +	int ret;
+> +	u64 csum_start;
+> +	u64 csum_len;
+> +
+> +	ASSERT(IS_ALIGNED(disk_bytenr, sectorsize) &&
+> +	       IS_ALIGNED(len, sectorsize));
+> +
+> +	/* Check if the current csum item covers disk_bytenr */
+> +	if (path->nodes[0]) {
+> +		item = btrfs_item_ptr(path->nodes[0], path->slots[0],
+> +				      struct btrfs_csum_item);
+> +		btrfs_item_key_to_cpu(path->nodes[0], &key, path->slots[0]);
+> +		csum_start = key.offset;
+> +		csum_len = btrfs_item_size_nr(path->nodes[0], path->slots[0]) /
+> +			   csum_size * sectorsize;
 
+			path->slots[0]) / csum_size * sectorsize
 
-> > 
-> > > >  Anything else, I can do?
-> > > 
-> > > It looks like sda1 might be bad and it is working by replacing lost
-> > > data from the mirror on sdj.  But this replacement should be happening
-> > > automatically on read (and definitely on scrub), so you shouldn't ever
-> > > see the same error twice, but it seems that you do.
-> > 
-> > Well, it is not the same error twice.
+This expresission would be better on one line
 
-Earlier you quoted some duplicate lines.  Normally those get fixed after the
-first line, so you never see the second.
+> +		if (csum_start <= disk_bytenr &&
+> +		    csum_start + csum_len > disk_bytenr)
+> +			goto found;
+> +	}
+> +
+> +	/* Current item doesn't contain the desired range, re-search */
+                                                           ^^^^^^^^^
+							   search again
 
-> > Both the first ("on") value as well as the following two values change each time.
-> > What's consistent is, that the wanted vs found always differ by two.
-> > Here some samples:
-> > parent transid verify failed on 9332119748608 wanted 204976 found 204978
-> > parent transid verify failed on 9332147879936 wanted 204979 found 204981
-> > parent transid verify failed on 16465691033600 wanted 352083 found 352085
-> > parent transid verify failed on 16500741947392 wanted 358407 found 358409
-> > 
-> > > That makes it sound more like you've found a kernel bug.
-> > 
-> > And what do we do in order to narrow it down?
-> > 
-> > Regards,
-> > Hendrik
-> > 
-> > > 
-> 
-> 
+> +	btrfs_release_path(path);
+> +	item = btrfs_lookup_csum(NULL, fs_info->csum_root, path,
+> +				 disk_bytenr, 0);
+> +	if (IS_ERR(item)) {
+> +		ret = PTR_ERR(item);
+> +		goto out;
+> +	}
+> +found:
+> +	btrfs_item_key_to_cpu(path->nodes[0], &key, path->slots[0]);
+> +	csum_start = key.offset;
+> +	csum_len = btrfs_item_size_nr(path->nodes[0], path->slots[0]) /
+> +		   csum_size * sectorsize;
+
+same, on one line
+
+> +	ASSERT(csum_start <= disk_bytenr &&
+> +	       csum_start + csum_len > disk_bytenr);
+> +
+> +	ret = div_u64(min(csum_start + csum_len, disk_bytenr + len) -
+> +		      disk_bytenr, sectorsize);
+
+This can use the sectorsize_bits
+
+> +	read_extent_buffer(path->nodes[0], dst, (unsigned long)item,
+> +			ret * csum_size);
+> +out:
+> +	if (ret == -ENOENT) {
+> +		ret = 0;
+> +		memset(dst, 0, csum_size);
+> +	}
+> +	return ret;
+> +}
+> +
+>  /**
+>   * btrfs_lookup_bio_sums - Look up checksums for a bio.
+> - * @inode: inode that the bio is for.
+> - * @bio: bio to look up.
+> - * @offset: Unless (u64)-1, look up checksums for this offset in the file.
+> - *          If (u64)-1, use the page offsets from the bio instead.
+> - * @dst: Buffer of size nblocks * btrfs_super_csum_size() used to return
+> - *       checksum (nblocks = bio->bi_iter.bi_size / fs_info->sectorsize). If
+> - *       NULL, the checksum buffer is allocated and returned in
+> - *       btrfs_io_bio(bio)->csum instead.
+> + * @inode:		Inode that the bio is for.
+> + * @bio:		Bio to look up.
+> + *			NOTE: The bio is only used to determine the file_offset
+> + *			and length.
+> + * @file_offset:	File offset of the bio.
+> + * 			If (u64)-1, will use the bio to determine the
+> + * 			file offset.
+> + * @dst:		Csum destination.
+> + * 			Should be at least (bio->bi_iter.bi_size /
+> + * 			fs_info->sectorsize * csum_size) bytes in size.
+
+This is wasting too much vertical space, please align the descriptions
+by @file_offset: + 1 space after
+
+>   *
+>   * Return: BLK_STS_RESOURCE if allocating memory fails, BLK_STS_OK otherwise.
+>   */
+>  blk_status_t btrfs_lookup_bio_sums(struct inode *inode, struct bio *bio,
+> -				   u64 offset, u8 *dst)
+> +				   u64 file_offset, u8 *dst)
+>  {
+>  	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
+> -	struct bio_vec bvec;
+> -	struct bvec_iter iter;
+> -	struct btrfs_csum_item *item = NULL;
+>  	struct extent_io_tree *io_tree = &BTRFS_I(inode)->io_tree;
+>  	struct btrfs_path *path;
+> -	const bool page_offsets = (offset == (u64)-1);
+> +	u32 csum_size = btrfs_super_csum_size(fs_info->super_copy);
+
+fs_info->csum_size
+
+> +	u32 sectorsize = fs_info->sectorsize;
+> +	u64 orig_file_offset;
+> +	u64 orig_len;
+> +	u64 orig_disk_bytenr = bio->bi_iter.bi_sector << 9;
+> +	/* Current file offset, is used to calculate all other values */
+> +	u64 cur_offset;
+>  	u8 *csum;
+> -	u64 item_start_offset = 0;
+> -	u64 item_last_offset = 0;
+> -	u64 disk_bytenr;
+> -	u64 page_bytes_left;
+> -	u32 diff;
+>  	int nblocks;
+>  	int count = 0;
+> -	u16 csum_size = btrfs_super_csum_size(fs_info->super_copy);
+> +
+> +	if (file_offset == (u64)-1)
+> +		orig_file_offset = page_offset(bio_first_page_all(bio)) +
+> +				   bio_first_bvec_all(bio)->bv_offset;
+> +	else
+> +		orig_file_offset = file_offset;
+> +
+> +	orig_len = bio->bi_iter.bi_size;
+> +	nblocks = orig_len >> inode->i_sb->s_blocksize_bits;
+>  
+>  	path = btrfs_alloc_path();
+>  	if (!path)
+>  		return BLK_STS_RESOURCE;
+>  
+> -	nblocks = bio->bi_iter.bi_size >> inode->i_sb->s_blocksize_bits;
+>  	if (!dst) {
+>  		struct btrfs_io_bio *btrfs_bio = btrfs_io_bio(bio);
+>  
+> @@ -313,85 +386,60 @@ blk_status_t btrfs_lookup_bio_sums(struct inode *inode, struct bio *bio,
+>  		path->skip_locking = 1;
+>  	}
+>  
+> -	disk_bytenr = (u64)bio->bi_iter.bi_sector << 9;
+> -
+> -	bio_for_each_segment(bvec, bio, iter) {
+> -		page_bytes_left = bvec.bv_len;
+> -		if (count)
+> -			goto next;
+> -
+> -		if (page_offsets)
+> -			offset = page_offset(bvec.bv_page) + bvec.bv_offset;
+> -		count = btrfs_find_ordered_sum(inode, offset, disk_bytenr,
+> -					       csum, nblocks);
+> +	/*
+> +	 * In fact, for csum lookup we don't really need bio at all.
+> +	 *
+> +	 * We know the on-disk bytenr, the file_offset, and length.
+> +	 * That's enough to search csum. The bio is in fact just a distraction
+> +	 * and following bio bvec would make thing much hard to go.
+> +	 * As we could have subpage bvec (with different bv_len) and non-linear
+> +	 * bvec.
+> +	 *
+> +	 * So here we don't bother bio at all, just use @cur_offset to do the
+> +	 * iteration.
+
+This comment style is maybe more suitable for changelog but in the code
+it comes in the context of the code so I'd expect something like:
+
+	We don't need to use bio because we already know the on-disk
+	bytenr, file_offset and length. For subpage bvec we can even
+	have different bv_len than PAGE_SIZE or non-linear bvec.
+
+Though, if there's redundant information in the bio it can be
+cross-checked by asserts.
+
+> +	 */
+> +	for (cur_offset = orig_file_offset; cur_offset < orig_file_offset + orig_len;
+> +	     cur_offset += count * sectorsize) {
+> +		u64 cur_disk_bytenr;
+> +		int search_len = orig_file_offset + orig_len - cur_offset;
+> +		int diff_sectors;
+
+Int types mixed with u64
+
+> +		u8 *csum_dst;
+> +
+> +		diff_sectors = div_u64(cur_offset - orig_file_offset,
+> +				       sectorsize);
+> +		cur_disk_bytenr = orig_disk_bytenr +
+> +				  diff_sectors * sectorsize;
+> +		csum_dst = csum + diff_sectors * csum_size;
+> +
+> +		count = btrfs_find_ordered_sum(inode, cur_offset,
+> +					       cur_disk_bytenr, csum_dst,
+> +					       search_len / sectorsize);
+>  		if (count)
+> -			goto found;
+> -
+> -		if (!item || disk_bytenr < item_start_offset ||
+> -		    disk_bytenr >= item_last_offset) {
+> -			struct btrfs_key found_key;
+> -			u32 item_size;
+> -
+> -			if (item)
+> -				btrfs_release_path(path);
+> -			item = btrfs_lookup_csum(NULL, fs_info->csum_root,
+> -						 path, disk_bytenr, 0);
+> -			if (IS_ERR(item)) {
+> -				count = 1;
+> -				memset(csum, 0, csum_size);
+> -				if (BTRFS_I(inode)->root->root_key.objectid ==
+> -				    BTRFS_DATA_RELOC_TREE_OBJECTID) {
+> -					set_extent_bits(io_tree, offset,
+> -						offset + fs_info->sectorsize - 1,
+> -						EXTENT_NODATASUM);
+> -				} else {
+> -					btrfs_info_rl(fs_info,
+> -						   "no csum found for inode %llu start %llu",
+> -					       btrfs_ino(BTRFS_I(inode)), offset);
+> -				}
+> -				item = NULL;
+> -				btrfs_release_path(path);
+> -				goto found;
+> +			continue;
+> +		count = find_csum_tree_sums(fs_info, path, cur_disk_bytenr,
+> +					    search_len, csum_dst);
+> +		if (!count) {
+> +			/*
+> +			 * For not found case, the csum has been zeroed
+> +			 * in find_csum_tree_sums() already, just skip
+> +			 * to next sector.
+> +			 */
+> +			count = 1;
+> +			if (BTRFS_I(inode)->root->root_key.objectid ==
+> +			    BTRFS_DATA_RELOC_TREE_OBJECTID) {
+> +				set_extent_bits(io_tree, cur_offset,
+> +					cur_offset + sectorsize - 1,
+> +					EXTENT_NODATASUM);
+> +			} else {
+> +				btrfs_warn_rl(fs_info,
+> +		"csum hole found for root %lld inode %llu range [%llu, %llu)",
+> +				BTRFS_I(inode)->root->root_key.objectid,
+> +				btrfs_ino(BTRFS_I(inode)),
+> +				cur_offset, cur_offset + sectorsize);
+>  			}
+> -			btrfs_item_key_to_cpu(path->nodes[0], &found_key,
+> -					      path->slots[0]);
+> -
+> -			item_start_offset = found_key.offset;
+> -			item_size = btrfs_item_size_nr(path->nodes[0],
+> -						       path->slots[0]);
+> -			item_last_offset = item_start_offset +
+> -				(item_size / csum_size) *
+> -				fs_info->sectorsize;
+> -			item = btrfs_item_ptr(path->nodes[0], path->slots[0],
+> -					      struct btrfs_csum_item);
+> -		}
+> -		/*
+> -		 * this byte range must be able to fit inside
+> -		 * a single leaf so it will also fit inside a u32
+> -		 */
+> -		diff = disk_bytenr - item_start_offset;
+> -		diff = diff / fs_info->sectorsize;
+> -		diff = diff * csum_size;
+> -		count = min_t(int, nblocks, (item_last_offset - disk_bytenr) >>
+> -					    inode->i_sb->s_blocksize_bits);
+> -		read_extent_buffer(path->nodes[0], csum,
+> -				   ((unsigned long)item) + diff,
+> -				   csum_size * count);
+> -found:
+> -		csum += count * csum_size;
+> -		nblocks -= count;
+> -next:
+> -		while (count > 0) {
+> -			count--;
+> -			disk_bytenr += fs_info->sectorsize;
+> -			offset += fs_info->sectorsize;
+> -			page_bytes_left -= fs_info->sectorsize;
+> -			if (!page_bytes_left)
+> -				break; /* move to next bio */
+>  		}
+>  	}
+>  
+> -	WARN_ON_ONCE(count);
+>  	btrfs_free_path(path);
+>  	return BLK_STS_OK;
+>  }
+> -- 
+> 2.29.1
