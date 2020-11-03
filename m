@@ -2,128 +2,196 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB7CD2A4E41
-	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Nov 2020 19:19:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 637E72A4F03
+	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Nov 2020 19:38:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729162AbgKCSTg convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-btrfs@lfdr.de>); Tue, 3 Nov 2020 13:19:36 -0500
-Received: from mout.kundenserver.de ([217.72.192.73]:45673 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729072AbgKCSTg (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 3 Nov 2020 13:19:36 -0500
-Received: from [192.168.177.174] ([91.63.191.240]) by mrelayeu.kundenserver.de
- (mreue106 [213.165.67.113]) with ESMTPSA (Nemesis) id
- 1N7AAk-1kHFcc1iou-017Sve; Tue, 03 Nov 2020 19:19:30 +0100
-From:   "Hendrik Friedel" <hendrik@friedels.name>
-To:     "Zygo Blaxell" <ce3g8jdj@umail.furryterror.org>
-Subject: Re[3]: parent transid verify failed: Fixed but re-appearing
-Cc:     "Btrfs BTRFS" <linux-btrfs@vger.kernel.org>
-Date:   Tue, 03 Nov 2020 18:19:41 +0000
-Message-Id: <emf9252c3e-00b0-4c4a-a607-b61df779742f@desktop-g0r648m>
-In-Reply-To: <em26d5dfe8-37cb-454c-9c03-a69cfb035949@desktop-g0r648m>
-References: <em2ffec6ef-fe64-4239-b238-ae962d1826f6@ryzen>
- <20201021134635.GT5890@hungrycats.org>
- <em85884e42-e959-40f1-9eae-cd818450c26d@ryzen>
- <20201021193246.GE21815@hungrycats.org>
- <em33511ef4-7da1-4e7c-8b0c-8b8d7043164c@desktop-g0r648m>
- <20201021212229.GF21815@hungrycats.org>
- <emeabab400-3f6d-4105-a4fd-67b0b832f97a@desktop-g0r648m>
- <20201021213854.GG21815@hungrycats.org>
- <em26d5dfe8-37cb-454c-9c03-a69cfb035949@desktop-g0r648m>
-Reply-To: "Hendrik Friedel" <hendrik@friedels.name>
-User-Agent: eM_Client/8.0.3385.0
-Mime-Version: 1.0
-Content-Type: text/plain; format=flowed; charset=utf-8
-Content-Transfer-Encoding: 8BIT
-X-Provags-ID: V03:K1:PURi95mYqRqJGs4/qj0KVaF5QIwVJ1FJcaCmtnElQ05OLC6hnvw
- qeav8L/H2pSRMjorF4hXjNE8PkStsTc1FA6Mwvst2Lu9r/WwQIjTD8EajGj8oa9BmyqOPMr
- 97QprZnSO3+FkRkEJhCUVB/OQIM435nFoRS4BI0BjGSSBWzZXDgbozYktavR8h0cjGr/HXp
- L4mtM+rhpmBctQOOlOckw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:EsqsLODb+Xo=:HBVZj2iCSX85Lj1eZtIuNc
- dQZeUdAASb3Wt7Wrx+ed6WuX7cK1dDRGdUHWuhOdWswgLotdT5yTcRc8OP9LR8x9OYR3jV3/z
- vQo2Z9LYovrAj/68h06Mc78zYAZ6pILblDxoPk5qY32v72Rrgf/K6yQBZ/xh7ok8FhuQGGhuS
- fZEEJhQNbby689R+J4iIn++KuzCf2F1kXErN5D2KLVWRXnKORWovcmThCASVulkZj2mmnnpf9
- WQ75+dp505I9BkhNT3L6M3BmQKz61Ud9bcDQwyXVfFPgtdRnm1sv9qOEbMu5yyHV/AtnR8k7L
- JCQXU80Z2K1zGAiU1oDIQ7aQsFI+OT/VnrUfL1abvqOsVh0VffSricHJYtbI/lyqSBmFp12GK
- tjJ0U/UJqgVYHgoT6Gj7VmRpWEmLxD/jhib0scOCs8UiXyj9829LyNK2+EX80vpr0gtYzZqZK
- LiV4BTVNUQ==
+        id S1728767AbgKCSiA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 3 Nov 2020 13:38:00 -0500
+Received: from mx2.suse.de ([195.135.220.15]:47938 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725892AbgKCSh7 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 3 Nov 2020 13:37:59 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id CEC8DAB8F;
+        Tue,  3 Nov 2020 18:37:57 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 318BBDA7D2; Tue,  3 Nov 2020 19:36:18 +0100 (CET)
+Date:   Tue, 3 Nov 2020 19:36:18 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Anand Jain <anand.jain@oracle.com>
+Cc:     linux-btrfs@vger.kernel.org, dsterba@suse.com,
+        josef@toxicpanda.com,
+        syzbot+4cfe71a4da060be47502@syzkaller.appspotmail.com
+Subject: Re: [PATCH RESEND v2] btrfs: fix devid 0 without a replace item by
+ failing the mount
+Message-ID: <20201103183618.GA6756@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Anand Jain <anand.jain@oracle.com>,
+        linux-btrfs@vger.kernel.org, dsterba@suse.com, josef@toxicpanda.com,
+        syzbot+4cfe71a4da060be47502@syzkaller.appspotmail.com
+References: <cover.1604009248.git.anand.jain@oracle.com>
+ <d0b5790792b8b826504dd239ad9efc514f3d9109.1604009248.git.anand.jain@oracle.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d0b5790792b8b826504dd239ad9efc514f3d9109.1604009248.git.anand.jain@oracle.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello Zygo,
+On Fri, Oct 30, 2020 at 06:53:56AM +0800, Anand Jain wrote:
+> If there is a BTRFS_DEV_REPLACE_DEVID without a replace item, then
+> it means some device is trying to attack or may be corrupted. Fail the
+> mount so that the user can remove the attacking or fix the corrupted
+> device.
+> 
+> As of now if BTRFS_DEV_REPLACE_DEVID is present without the replace
+> item, in __btrfs_free_extra_devids() we determine that there is an
+> extra device, and free those extra devices but continue to mount the
+> device.
+> However, we were wrong in keeping tack of the rw_devices so the syzbot
+> testcase failed as below [1].
+> 
+> [1]
+> WARNING: CPU: 1 PID: 3612 at fs/btrfs/volumes.c:1166 close_fs_devices.part.0+0x607/0x800 fs/btrfs/volumes.c:1166
+> Kernel panic - not syncing: panic_on_warn set ...
+> CPU: 1 PID: 3612 Comm: syz-executor.2 Not tainted 5.9.0-rc4-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> Call Trace:
+>  __dump_stack lib/dump_stack.c:77 [inline]
+>  dump_stack+0x198/0x1fd lib/dump_stack.c:118
+>  panic+0x347/0x7c0 kernel/panic.c:231
+>  __warn.cold+0x20/0x46 kernel/panic.c:600
+>  report_bug+0x1bd/0x210 lib/bug.c:198
+>  handle_bug+0x38/0x90 arch/x86/kernel/traps.c:234
+>  exc_invalid_op+0x14/0x40 arch/x86/kernel/traps.c:254
+>  asm_exc_invalid_op+0x12/0x20 arch/x86/include/asm/idtentry.h:536
+> RIP: 0010:close_fs_devices.part.0+0x607/0x800 fs/btrfs/volumes.c:1166
+> Code: 0f b6 04 02 84 c0 74 02 7e 33 48 8b 44 24 18 c6 80 30 01 00 00 00 48 83 c4 30 5b 5d 41 5c 41 5d 41 5e 41 5f c3 e8 99 ce 6a fe <0f> 0b e9 71 ff ff ff e8 8d ce 6a fe 0f 0b e9 20 ff ff ff e8 d1 d5
 
-can you further me help on this?
+Unless we need the Code: line to understand what happend, you can remove
+it from the changelog
 
-Regards,
-Hendrik
+> RSP: 0018:ffffc900091777e0 EFLAGS: 00010246
+> RAX: 0000000000040000 RBX: ffffffffffffffff RCX: ffffc9000c8b7000
+> RDX: 0000000000040000 RSI: ffffffff83097f47 RDI: 0000000000000007
+> RBP: dffffc0000000000 R08: 0000000000000001 R09: ffff8880988a187f
+> R10: 0000000000000000 R11: 0000000000000001 R12: ffff88809593a130
+> R13: ffff88809593a1ec R14: ffff8880988a1908 R15: ffff88809593a050
+>  close_fs_devices fs/btrfs/volumes.c:1193 [inline]
+>  btrfs_close_devices+0x95/0x1f0 fs/btrfs/volumes.c:1179
+>  open_ctree+0x4984/0x4a2d fs/btrfs/disk-io.c:3434
+>  btrfs_fill_super fs/btrfs/super.c:1316 [inline]
+>  btrfs_mount_root.cold+0x14/0x165 fs/btrfs/super.c:1672
+> 
+> The fix here is, when we determine that there isn't a replace item
+> then fail the mount if there is a replace target device (devid 0).
+> 
+> Cc: josef@toxicpanda.com
+> Reported-by: syzbot+4cfe71a4da060be47502@syzkaller.appspotmail.com
+> Signed-off-by: Anand Jain <anand.jain@oracle.com>
+> ---
+> Depends on the patches
+>  btrfs: drop never met condition of disk_total_bytes == 0
+>  btrfs: fix btrfs_find_device unused arg seed
 
------- Originalnachricht ------
-Von: "Hendrik Friedel" <hendrik@friedels.name>
-An: "Zygo Blaxell" <ce3g8jdj@umail.furryterror.org>
-Cc: "Btrfs BTRFS" <linux-btrfs@vger.kernel.org>
-Gesendet: 22.10.2020 21:30:14
-Betreff: Re[2]: parent transid verify failed: Fixed but re-appearing
+As this is a fix that could go to the master, the cleanups should
+follow.
 
->Hello Zygo,
->
->thanks for your reply.
->
->>>  [/dev/sda1].generation_errs  1
->>>  [/dev/sdj1].generation_errs  0
->>>  >
->>>  So, on one of the drives only.
->>
->>If one drive is silently dropping writes then it would explain the
->>behavior so far; however, it's relatively rare to have a drive fail
->>that specifically and quietly (and only when you use one particular
->>application).
->Well, we do not know that it occurs when I use one particular application. It could also occur a before and just become visible when using dduper.
->
->>>  > scrub already reports pretty much everything it finds.  'btrfs scrub
->>>  > start -Bd' will present a per-disk error count at the end.
->>>  >
->>>
->>>  So, should I do that now/next?
->>
->>Sure, more scrubs are better.  They are supposed to be run regularly
->>to detect drives going bad.
->btrfs scrub start -Bd /dev/sda1
->
->
->scrub device /dev/sda1 (id 1) done
->         scrub started at Wed Oct 21 23:38:36 2020 and finished after 13:45:29
->         total bytes scrubbed: 6.56TiB with 0 errors
->
->But then again:
->dduper --device /dev/sda1 --dir /srv/dev-disk-by-label-DataPool1/dduper_test/testfiles -r --dry-run
->parent transid verify failed on 16500741947392 wanted 358407 found 358409
->Ignoring transid failure
->
->
->>>  Anything else, I can do?
->>
->>It looks like sda1 might be bad and it is working by replacing lost
->>data from the mirror on sdj.  But this replacement should be happening
->>automatically on read (and definitely on scrub), so you shouldn't ever
->>see the same error twice, but it seems that you do.
->
->Well, it is not the same error twice.
->Both the first ("on") value as well as the following two values change each time.
->What's consistent is, that the wanted vs found always differ by two.
->Here some samples:
->parent transid verify failed on 9332119748608 wanted 204976 found 204978
->parent transid verify failed on 9332147879936 wanted 204979 found 204981
->parent transid verify failed on 16465691033600 wanted 352083 found 352085
->parent transid verify failed on 16500741947392 wanted 358407 found 358409
->
->>That makes it sound more like you've found a kernel bug.
->
->And what do we do in order to narrow it down?
->
->Regards,
->Hendrik
->
->>
+> If these patches aren't integrated yet, then please add the last arg in
+> the function btrfs_find_device(). Any value is fine as it doesn't care.
 
+Ok, fixed.
+
+> fstest case will follow.
+> 
+> v2: changed title
+>     old: btrfs: fix rw_devices count in __btrfs_free_extra_devids
+> 
+>     In btrfs_init_dev_replace() try to match the presence of replace_item
+>     to the BTRFS_DEV_REPLACE_DEVID device. If fails then fail the
+>     mount. So drop the similar check in __btrfs_free_extra_devids().
+> 
+>  fs/btrfs/dev-replace.c | 26 ++++++++++++++++++++++++--
+>  fs/btrfs/volumes.c     | 26 +++++++-------------------
+>  2 files changed, 31 insertions(+), 21 deletions(-)
+> 
+> diff --git a/fs/btrfs/dev-replace.c b/fs/btrfs/dev-replace.c
+> index ffab2758f991..8b3935757dc1 100644
+> --- a/fs/btrfs/dev-replace.c
+> +++ b/fs/btrfs/dev-replace.c
+> @@ -91,6 +91,17 @@ int btrfs_init_dev_replace(struct btrfs_fs_info *fs_info)
+>  	ret = btrfs_search_slot(NULL, dev_root, &key, path, 0, 0);
+>  	if (ret) {
+>  no_valid_dev_replace_entry_found:
+> +		/*
+> +		 * We don't have a replace item or it's corrupted.
+> +		 * If there is a replace target, fail the mount.
+> +		 */
+> +		if (btrfs_find_device(fs_info->fs_devices,
+> +				      BTRFS_DEV_REPLACE_DEVID, NULL, NULL)) {
+> +			btrfs_err(fs_info,
+> +			"found replace target device without a replace item");
+> +			ret = -EIO;
+
+This IMHO qualifies as a corruption so it should be EUCLEAN. The rest of
+the function used EIO for error state but the code is from 2012 and we
+used EIO instead.
+
+> +			goto out;
+> +		}
+>  		ret = 0;
+>  		dev_replace->replace_state =
+>  			BTRFS_IOCTL_DEV_REPLACE_STATE_NEVER_STARTED;
+> @@ -143,8 +154,19 @@ int btrfs_init_dev_replace(struct btrfs_fs_info *fs_info)
+>  	case BTRFS_IOCTL_DEV_REPLACE_STATE_NEVER_STARTED:
+>  	case BTRFS_IOCTL_DEV_REPLACE_STATE_FINISHED:
+>  	case BTRFS_IOCTL_DEV_REPLACE_STATE_CANCELED:
+> -		dev_replace->srcdev = NULL;
+> -		dev_replace->tgtdev = NULL;
+> +		/*
+> +		 * We don't have an active replace item but if there is a
+> +		 * replace target, fail the mount.
+> +		 */
+> +		if (btrfs_find_device(fs_info->fs_devices,
+> +				      BTRFS_DEV_REPLACE_DEVID, NULL, NULL)) {
+> +			btrfs_err(fs_info,
+> +			"replace devid present without an active replace item");
+> +			ret = -EIO;
+
+Same here.
+
+> +		} else {
+> +			dev_replace->srcdev = NULL;
+> +			dev_replace->tgtdev = NULL;
+> +		}
+>  		break;
+>  	case BTRFS_IOCTL_DEV_REPLACE_STATE_STARTED:
+>  	case BTRFS_IOCTL_DEV_REPLACE_STATE_SUSPENDED:
+> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+> index 1b2742da5d4a..bb6f067f2fb9 100644
+> --- a/fs/btrfs/volumes.c
+> +++ b/fs/btrfs/volumes.c
+> @@ -1056,22 +1056,13 @@ static void __btrfs_free_extra_devids(struct btrfs_fs_devices *fs_devices,
+>  			continue;
+>  		}
+>  
+> -		if (device->devid == BTRFS_DEV_REPLACE_DEVID) {
+> -			/*
+> -			 * In the first step, keep the device which has
+> -			 * the correct fsid and the devid that is used
+> -			 * for the dev_replace procedure.
+> -			 * In the second step, the dev_replace state is
+> -			 * read from the device tree and it is known
+> -			 * whether the procedure is really active or
+> -			 * not, which means whether this device is
+> -			 * used or whether it should be removed.
+> -			 */
+> -			if (step == 0 || test_bit(BTRFS_DEV_STATE_REPLACE_TGT,
+
+This removes the use of step parameter so it can be removed from the
+call chain too (separate patch).
+
+Patch added to misc-next, thanks.
