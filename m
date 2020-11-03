@@ -2,167 +2,104 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7E0A2A5652
-	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Nov 2020 22:28:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 48FB02A5853
+	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Nov 2020 22:52:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387767AbgKCV0I (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 3 Nov 2020 16:26:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56024 "EHLO
+        id S1731371AbgKCUrm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 3 Nov 2020 15:47:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388606AbgKCV0C (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 3 Nov 2020 16:26:02 -0500
-Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76561C0613D1
-        for <linux-btrfs@vger.kernel.org>; Tue,  3 Nov 2020 13:26:02 -0800 (PST)
-Received: by mail-oi1-x243.google.com with SMTP id t16so2551669oie.11
-        for <linux-btrfs@vger.kernel.org>; Tue, 03 Nov 2020 13:26:02 -0800 (PST)
+        with ESMTP id S1731366AbgKCUrg (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 3 Nov 2020 15:47:36 -0500
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB98DC0613D1
+        for <linux-btrfs@vger.kernel.org>; Tue,  3 Nov 2020 12:47:36 -0800 (PST)
+Received: by mail-qk1-x741.google.com with SMTP id a64so13118367qkc.5
+        for <linux-btrfs@vger.kernel.org>; Tue, 03 Nov 2020 12:47:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ccx5+HrCJ+fYJ57tBxwZFr348bROpMJBjzsEfdiKCEs=;
-        b=IlOQ2z1EvhAe8YEoZ7AuWiv2cLPzvjTFkIM/rostH/SeA419sDWkVCQWz0dTeegATB
-         6fVcsY4PSbkTcUw5Tgg45ZBxVTn94NGowRzNEotkDFCfCrNg9IoCf+ZINXGJdwe/hWjP
-         84ATVbsXcrqb9k7d2uHHfRWSaFpWuo1KW4dc+KVaw4wnavB/y1Hfribf2NgP13nBQjZV
-         0ojKuziBwljgeAK/qbXjFszeUQMhuENv2rCVAyAiHBWQZxdXquzlRbC9WkPIxRvVv5wa
-         3AkE+BOZVL8Ka+ejZA4/CDba+Q2sHYJPrZAJPnQMKelgBLuSiLOVICpxLbTCZIT7vuTv
-         0M1Q==
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=7QsKfQ5N4ZcMiNYAkjVMD30fYGq7/BZLzRY1r2X5Hcw=;
+        b=nQF8eY3elgrJuAG8MRt94bVptdrsLTckbLoJpbxNPPUlPdmIKEGwacSy5ak3isk6oJ
+         TCPhsXKPC1oOdZm47/r6NDRBYYPbqmRQrKiF0iCY66m1+d3gvqOdSYtRsFPDDcTg+GHy
+         RwqjDHsv2ZB5Guptu2kj6ClgegJ08b7/nygB5OdWwKX2Y3Ywr9EoLjCF2xM5uK9UhVDR
+         4RhgSJ8GWm9OZzbdlLrVQeMi2KiqhXPr6Wnw8ZGx6EKJwW67uF1G/PbbRZnmLMrQjzIT
+         Je0dxhPYVuxLdih3CpTa4BmndW01u+Dsjc828t3C620SwpVelVHLwhivHyKb2SHGHQft
+         2Y1A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ccx5+HrCJ+fYJ57tBxwZFr348bROpMJBjzsEfdiKCEs=;
-        b=o0KpKg2mWIX0vxfnCsZwpapjb61C6jhHwmBXo+/weK2IlXLxyAyau8zW17RHm9sMO8
-         4mrHnsedNTqV9vmLoCQ+UikrGtDNiWwj5tCnv9elYldsOOwd0T5/1r5hSAPq4KbxCTzT
-         pAgwd3yDRYXexQr5Rli34Ky0L3HaTMHEoaUTvTQnyVTfrcJPf+lj16MsGXJRqr4wIEij
-         v+21cxDYw0iK+apBwJ0EqJL+cIaoNqeh9RrXLGoVnvWJ+gX4BuwQqy1UVC5yA5d6kWvt
-         CZCotYdPFZ1q4X8HYEIhIvhkPYPvmFEGzQTmfiN4LCxmhkK2p3Bfw3OAFEm3S+0jh3Zz
-         hfTQ==
-X-Gm-Message-State: AOAM5315JUfu+rFLAnSNmRNgb+zQ69tZCNNrL1g0xFd/y3cJXq6wWVCg
-        xJDWNeVESHStLuguikTGmzhhiKD9qcGz7TncMmUoDd70LPI=
-X-Google-Smtp-Source: ABdhPJz8DcaQTPE7kRP0w/8Ri19f03Az5qVFlPJwyak1QGndkaJfe9yFj9oZzgITKQiThgFBaZMTlZA0skSaS1z/x/k=
-X-Received: by 2002:aca:2111:: with SMTP id 17mr684720oiz.139.1604438761916;
- Tue, 03 Nov 2020 13:26:01 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=7QsKfQ5N4ZcMiNYAkjVMD30fYGq7/BZLzRY1r2X5Hcw=;
+        b=QY2x4kERi3gwvxJDk3tFyVd2YMdWfAwordQlydaw2dCDT78C89ublhpkatzsFuTHVW
+         a5S+XQIW34TjL5XDkyS7RPnPFBEsbG8ZO5EOad7IUXgcClr4L9l4HB4atmtgQWlTFuLV
+         dojcgajAuYRix3Tks2dYYHxXlbu7SHjatz4wFh80cht0jN4GOKu45A+0HdVoeASpbrua
+         MsOUaxYDOJ9Bgrsbb7X1qHVdVreH5GcIlk9tCJqAwtXoaL/vqu6tZHH64H2Y9rTX6LnZ
+         eIOxnlV+eGYcW07weWngHJJ4K9QBIfa70KqpAhS2RfchnGjducJpIriOUWz2XpWPyywE
+         hf/A==
+X-Gm-Message-State: AOAM531FR0p3Y1BjotLvtJJY24uevI/+TcUZ1SjnJ5C3JzF8WDkh7+Tl
+        77N8kCPzir/K6Dc5f3Dqp+HdF1AhAqMCbW72
+X-Google-Smtp-Source: ABdhPJyRqhbGopF1G8UeFVbOfglEgfNHge082uHU3G4lkllJXMPNyw61GQ98Q6A258+namBYawfOEg==
+X-Received: by 2002:ae9:ef56:: with SMTP id d83mr22017290qkg.83.1604436455833;
+        Tue, 03 Nov 2020 12:47:35 -0800 (PST)
+Received: from [192.168.1.45] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id j17sm9610007qke.49.2020.11.03.12.47.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 03 Nov 2020 12:47:34 -0800 (PST)
+Subject: Re: [PATCH v9 38/41] btrfs: extend zoned allocator to use dedicated
+ tree-log block group
+To:     Naohiro Aota <naohiro.aota@wdc.com>, linux-btrfs@vger.kernel.org,
+        dsterba@suse.com
+Cc:     hare@suse.com, linux-fsdevel@vger.kernel.org,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>
+References: <d9a0a445560db3a9eb240c6535f8dd1bbd0abd96.1604065694.git.naohiro.aota@wdc.com>
+ <6640d3c034c9c347958860743501aff59da7a5a0.1604065695.git.naohiro.aota@wdc.com>
+From:   Josef Bacik <josef@toxicpanda.com>
+Message-ID: <eb8f83f2-fb59-2b65-66e2-18cd0ecd1e02@toxicpanda.com>
+Date:   Tue, 3 Nov 2020 15:47:33 -0500
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.4.0
 MIME-Version: 1.0
-References: <20201103211101.4221-1-dsterba@suse.com>
-In-Reply-To: <20201103211101.4221-1-dsterba@suse.com>
-From:   Amy Parker <enbyamy@gmail.com>
-Date:   Tue, 3 Nov 2020 13:25:50 -0800
-Message-ID: <CAE1WUT7pS_T0AkV_KiTpnAXOPEP2-8e4+d6t9KgSqaMXUsEdaw@mail.gmail.com>
-Subject: Re: [PATCH] btrfs: reorder extent buffer members for better packing
-To:     David Sterba <dsterba@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <6640d3c034c9c347958860743501aff59da7a5a0.1604065695.git.naohiro.aota@wdc.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Nov 3, 2020 at 1:18 PM David Sterba <dsterba@suse.com> wrote:
->
-> After the rwsem replaced the tree lock implementation, the extent buffer
-> got smaller but leaving some holes behind. By changing log_index type
-> and reordering, we can squeeze the size further to 240 bytes, measured on
-> release config on x86_64. Log_index spans only 3 values and needs to be
-> signed.
->
+On 10/30/20 9:51 AM, Naohiro Aota wrote:
+> This is the 1/3 patch to enable tree log on ZONED mode.
+> 
+> The tree-log feature does not work on ZONED mode as is. Blocks for a
+> tree-log tree are allocated mixed with other metadata blocks, and btrfs
+> writes and syncs the tree-log blocks to devices at the time of fsync(),
+> which is different timing from a global transaction commit. As a result,
+> both writing tree-log blocks and writing other metadata blocks become
+> non-sequential writes that ZONED mode must avoid.
+> 
+> We can introduce a dedicated block group for tree-log blocks so that
+> tree-log blocks and other metadata blocks can be separated write streams.
+> As a result, each write stream can now be written to devices separately.
+> "fs_info->treelog_bg" tracks the dedicated block group and btrfs assign
+> "treelog_bg" on-demand on tree-log block allocation time.
+> 
+> This commit extends the zoned block allocator to use the block group.
+> 
+> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+> Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
 
-Sounds great!
+If you're going to remove an entire block group from being allowed to be used 
+for metadata you are going to need to account for it in the space_info, 
+otherwise we're going to end up with nasty ENOSPC corners here.
 
-> Before:
->
-> struct extent_buffer {
->         u64                        start;                /*     0     8 */
->         long unsigned int          len;                  /*     8     8 */
->         long unsigned int          bflags;               /*    16     8 */
->         struct btrfs_fs_info *     fs_info;              /*    24     8 */
->         spinlock_t                 refs_lock;            /*    32     4 */
->         atomic_t                   refs;                 /*    36     4 */
->         atomic_t                   io_pages;             /*    40     4 */
->         int                        read_mirror;          /*    44     4 */
->         struct callback_head       callback_head __attribute__((__aligned__(8))); /*    48    16 */
->         /* --- cacheline 1 boundary (64 bytes) --- */
->         pid_t                      lock_owner;           /*    64     4 */
->         bool                       lock_recursed;        /*    68     1 */
->
->         /* XXX 3 bytes hole, try to pack */
->
->         struct rw_semaphore        lock;                 /*    72    40 */
->         short int                  log_index;            /*   112     2 */
->
->         /* XXX 6 bytes hole, try to pack */
->
->         struct page *              pages[16];            /*   120   128 */
->
->         /* size: 248, cachelines: 4, members: 14 */
->         /* sum members: 239, holes: 2, sum holes: 9 */
->         /* forced alignments: 1 */
->         /* last cacheline: 56 bytes */
-> } __attribute__((__aligned__(8)));
->
-> After:
->
-> struct extent_buffer {
->         u64                        start;                /*     0     8 */
->         long unsigned int          len;                  /*     8     8 */
->         long unsigned int          bflags;               /*    16     8 */
->         struct btrfs_fs_info *     fs_info;              /*    24     8 */
->         spinlock_t                 refs_lock;            /*    32     4 */
->         atomic_t                   refs;                 /*    36     4 */
->         atomic_t                   io_pages;             /*    40     4 */
->         int                        read_mirror;          /*    44     4 */
->         struct callback_head       callback_head __attribute__((__aligned__(8))); /*    48    16 */
->         /* --- cacheline 1 boundary (64 bytes) --- */
->         pid_t                      lock_owner;           /*    64     4 */
->         bool                       lock_recursed;        /*    68     1 */
->         s8                         log_index;            /*    69     1 */
->
->         /* XXX 2 bytes hole, try to pack */
->
->         struct rw_semaphore        lock;                 /*    72    40 */
->         struct page *              pages[16];            /*   112   128 */
->
->         /* size: 240, cachelines: 4, members: 14 */
->         /* sum members: 238, holes: 1, sum holes: 2 */
->         /* forced alignments: 1 */
->         /* last cacheline: 48 bytes */
-> } __attribute__((__aligned__(8)));
+But this begs the question, do we want the tree log for zoned?  We could just 
+commit the transaction and call it good enough.  We lose performance, but zoned 
+isn't necessarily about performance.
 
-Looks alright, although based on the rest of the value types,
-you may want to leave a comment for new btrfs devs about
-the change, as well as a reference to this thread.
+If we do then at a minimum we're going to need to remove this block group from 
+the space info counters for metadata.  Thanks,
 
->
-> Signed-off-by: David Sterba <dsterba@suse.com>
-> ---
->  fs/btrfs/extent_io.h | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
->
-> diff --git a/fs/btrfs/extent_io.h b/fs/btrfs/extent_io.h
-> index 5403354de0e1..3c2bf21c54eb 100644
-> --- a/fs/btrfs/extent_io.h
-> +++ b/fs/btrfs/extent_io.h
-> @@ -88,10 +88,10 @@ struct extent_buffer {
->         struct rcu_head rcu_head;
->         pid_t lock_owner;
->         bool lock_recursed;
-> -       struct rw_semaphore lock;
-> -
->         /* >= 0 if eb belongs to a log tree, -1 otherwise */
-> -       short log_index;
-> +       s8 log_index;
-> +
-> +       struct rw_semaphore lock;
->
->         struct page *pages[INLINE_EXTENT_BUFFER_PAGES];
->  #ifdef CONFIG_BTRFS_DEBUG
-> --
-> 2.25.0
->
-
-Functional-wise, everything seems great here. Again, as mentioned,
-you may want to include a comment explaining the change and the
-divergence from other types used in the code above.
-
-Best regards,
-Amy Parker
-(they/them)
+Josef
