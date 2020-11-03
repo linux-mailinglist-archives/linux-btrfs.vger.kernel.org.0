@@ -2,92 +2,204 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83B072A46A0
-	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Nov 2020 14:33:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C30BE2A46A5
+	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Nov 2020 14:34:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729417AbgKCNcs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 3 Nov 2020 08:32:48 -0500
-Received: from mx2.suse.de ([195.135.220.15]:46022 "EHLO mx2.suse.de"
+        id S1729210AbgKCNeE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 3 Nov 2020 08:34:04 -0500
+Received: from mx2.suse.de ([195.135.220.15]:46550 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729414AbgKCNcs (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 3 Nov 2020 08:32:48 -0500
+        id S1729200AbgKCNeE (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 3 Nov 2020 08:34:04 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1604410366;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ReCnin450+o8Y1L+TErRvh3LWhDgG9HrvPVoYKSx8Qc=;
-        b=YBOzUGAdWcbedHdYC/RQQe7zkeZbVx0Gusgbxs/Bm9CPh0ZW4nq04QBRGNg+H2+zPL4ScS
-        XIgmr3xSNr9BFml4KbYLQWQHW7qmLkCMeoRwxKDqtn2fgt6yWtgCPTXNb2wCyM6U7UcMDX
-        D3/oZMgrlxR4+3rV2YibSbr3OHBPTaU=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 34BA4AFB0
-        for <linux-btrfs@vger.kernel.org>; Tue,  3 Nov 2020 13:32:46 +0000 (UTC)
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 32/32] btrfs: scrub: support subpage data scrub
-Date:   Tue,  3 Nov 2020 21:31:08 +0800
-Message-Id: <20201103133108.148112-33-wqu@suse.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201103133108.148112-1-wqu@suse.com>
-References: <20201103133108.148112-1-wqu@suse.com>
+        by mx2.suse.de (Postfix) with ESMTP id C7420ABF4;
+        Tue,  3 Nov 2020 13:34:01 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 05A7ADA7D2; Tue,  3 Nov 2020 14:32:23 +0100 (CET)
+Date:   Tue, 3 Nov 2020 14:32:23 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Naohiro Aota <naohiro.aota@wdc.com>
+Cc:     linux-btrfs@vger.kernel.org, dsterba@suse.com, hare@suse.com,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v9 15/41] btrfs: emulate write pointer for conventional
+ zones
+Message-ID: <20201103133223.GY6756@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Naohiro Aota <naohiro.aota@wdc.com>,
+        linux-btrfs@vger.kernel.org, dsterba@suse.com, hare@suse.com,
+        linux-fsdevel@vger.kernel.org
+References: <cover.1604065156.git.naohiro.aota@wdc.com>
+ <af1830174f9dd9e2651dab213c0b984d90811138.1604065695.git.naohiro.aota@wdc.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <af1830174f9dd9e2651dab213c0b984d90811138.1604065695.git.naohiro.aota@wdc.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Btrfs scrub is in fact much more flex than buffered data write path, as
-we can read an unaligned subpage data into page offset 0.
+On Fri, Oct 30, 2020 at 10:51:22PM +0900, Naohiro Aota wrote:
+> +	struct btrfs_key found_key;
+> +	int slot;
+> +	int ret;
+> +	u64 length;
+> +
+> +	path = btrfs_alloc_path();
+> +	if (!path)
+> +		return -ENOMEM;
+> +
+> +	search_key.objectid = cache->start + cache->length;
+> +	search_key.type = 0;
+> +	search_key.offset = 0;
+> +
+> +	ret = btrfs_search_slot(NULL, root, &search_key, path, 0, 0);
+> +	if (ret < 0)
+> +		goto out;
+> +	ASSERT(ret != 0);
 
-This ability makes subpage support much easier, we just need to check
-each scrub_page::page_len and ensure we only calculate hash for [0,
-page_len) of a page, and call it a day for subpage scrub support.
+This should be a runtime check not an assert, if this happens it's
+likely a corruption
 
-There is a small thing to notice, for subpage case, we still do sector
-by sector scrub.
-This means we will submit a read bio for each sector to scrub, resulting
-the same amount of read bios, just like the 4K page systems.
+> +	slot = path->slots[0];
+> +	leaf = path->nodes[0];
+> +	ASSERT(slot != 0);
 
-This behavior can be considered as a good thing, if we want everything
-to be the same as 4K page systems.
-But this also means, we're wasting the ability to submit larger bio
-using 64K page size.
-This is another problem to consider in the future.
+Same
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/scrub.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+> +	slot--;
+> +	btrfs_item_key_to_cpu(leaf, &found_key, slot);
+> +
+> +	if (found_key.objectid < cache->start) {
+> +		*offset_ret = 0;
+> +	} else if (found_key.type == BTRFS_BLOCK_GROUP_ITEM_KEY) {
+> +		struct btrfs_key extent_item_key;
+> +
+> +		if (found_key.objectid != cache->start) {
+> +			ret = -EUCLEAN;
+> +			goto out;
+> +		}
+> +
+> +		length = 0;
+> +
+> +		/* metadata may have METADATA_ITEM_KEY */
 
-diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
-index deee5c9bd442..d1cbea7a6db0 100644
---- a/fs/btrfs/scrub.c
-+++ b/fs/btrfs/scrub.c
-@@ -1822,15 +1822,19 @@ static int scrub_checksum_data(struct scrub_block *sblock)
- 	if (!spage->have_csum)
- 		return 0;
- 
-+	/*
-+	 * In scrub_pages() and scrub_pages_for_parity() we ensure
-+	 * each spage only contains just one sector of data.
-+	 */
-+	ASSERT(spage->page_len == sctx->fs_info->sectorsize);
- 	kaddr = page_address(spage->page);
- 
- 	shash->tfm = fs_info->csum_shash;
- 	crypto_shash_init(shash);
--	crypto_shash_digest(shash, kaddr, PAGE_SIZE, csum);
-+	crypto_shash_digest(shash, kaddr, spage->page_len, csum);
- 
- 	if (memcmp(csum, spage->csums, sctx->fs_info->csum_size))
- 		sblock->checksum_error = 1;
--
- 	return sblock->checksum_error;
- }
- 
--- 
-2.29.2
+		/* Metadata ... */
 
+> +		if (slot == 0) {
+> +			btrfs_set_path_blocking(path);
+> +			ret = btrfs_prev_leaf(root, path);
+> +			if (ret < 0)
+> +				goto out;
+> +			if (ret == 0) {
+> +				slot = btrfs_header_nritems(leaf) - 1;
+> +				btrfs_item_key_to_cpu(leaf, &extent_item_key,
+> +						      slot);
+> +			}
+> +		} else {
+> +			btrfs_item_key_to_cpu(leaf, &extent_item_key, slot - 1);
+> +			ret = 0;
+> +		}
+> +
+> +		if (ret == 0 &&
+> +		    extent_item_key.objectid == cache->start) {
+> +			if (extent_item_key.type == BTRFS_METADATA_ITEM_KEY)
+
+			if (...) {
+
+> +				length = fs_info->nodesize;
+
+			} else if (...) {
+
+> +			else if (extent_item_key.type == BTRFS_EXTENT_ITEM_KEY)
+> +				length = extent_item_key.offset;
+
+			} else {
+
+> +			else {
+> +				ret = -EUCLEAN;
+> +				goto out;
+> +			}
+> +		}
+> +
+> +		*offset_ret = length;
+> +	} else if (found_key.type == BTRFS_EXTENT_ITEM_KEY ||
+> +		   found_key.type == BTRFS_METADATA_ITEM_KEY) {
+> +
+> +		if (found_key.type == BTRFS_EXTENT_ITEM_KEY)
+> +			length = found_key.offset;
+> +		else
+> +			length = fs_info->nodesize;
+> +
+> +		if (!(found_key.objectid >= cache->start &&
+> +		       found_key.objectid + length <=
+> +		       cache->start + cache->length)) {
+> +			ret = -EUCLEAN;
+> +			goto out;
+> +		}
+> +		*offset_ret = found_key.objectid + length - cache->start;
+> +	} else {
+> +		ret = -EUCLEAN;
+> +		goto out;
+> +	}
+> +	ret = 0;
+> +
+> +out:
+> +	btrfs_free_path(path);
+> +	return ret;
+> +}
+> +
+>  int btrfs_load_block_group_zone_info(struct btrfs_block_group *cache)
+>  {
+>  	struct btrfs_fs_info *fs_info = cache->fs_info;
+> @@ -754,6 +852,7 @@ int btrfs_load_block_group_zone_info(struct btrfs_block_group *cache)
+>  	int i;
+>  	unsigned int nofs_flag;
+>  	u64 *alloc_offsets = NULL;
+> +	u64 emulated_offset = 0;
+>  	u32 num_sequential = 0, num_conventional = 0;
+>  
+>  	if (!btrfs_is_zoned(fs_info))
+> @@ -854,12 +953,12 @@ int btrfs_load_block_group_zone_info(struct btrfs_block_group *cache)
+>  	}
+>  
+>  	if (num_conventional > 0) {
+> -		/*
+> -		 * Since conventional zones does not have write pointer, we
+> -		 * cannot determine alloc_offset from the pointer
+> -		 */
+> -		ret = -EINVAL;
+> -		goto out;
+> +		ret = emulate_write_pointer(cache, &emulated_offset);
+> +		if (ret || map->num_stripes == num_conventional) {
+> +			if (!ret)
+> +				cache->alloc_offset = emulated_offset;
+> +			goto out;
+> +		}
+>  	}
+>  
+>  	switch (map->type & BTRFS_BLOCK_GROUP_PROFILE_MASK) {
+> @@ -881,6 +980,14 @@ int btrfs_load_block_group_zone_info(struct btrfs_block_group *cache)
+>  	}
+>  
+>  out:
+> +	/* an extent is allocated after the write pointer */
+
+	/* An ... */
+
+> +	if (num_conventional && emulated_offset > cache->alloc_offset) {
+> +		btrfs_err(fs_info,
+> +			  "got wrong write pointer in BG %llu: %llu > %llu",
+
+		"zoned: got wrong write pointer in block group %llu found %llu emulated %llu"
+
+> +			  logical, emulated_offset, cache->alloc_offset);
+> +		ret = -EIO;
+> +	}
+> +
+>  	kfree(alloc_offsets);
+>  	free_extent_map(em);
+>  
+> -- 
+> 2.27.0
