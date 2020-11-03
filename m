@@ -2,155 +2,202 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 186432A3770
-	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Nov 2020 01:06:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 676AB2A39BD
+	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Nov 2020 02:27:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726492AbgKCAGX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 2 Nov 2020 19:06:23 -0500
-Received: from mout.gmx.net ([212.227.17.21]:60987 "EHLO mout.gmx.net"
+        id S1727518AbgKCB1f (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 2 Nov 2020 20:27:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60770 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725910AbgKCAGX (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 2 Nov 2020 19:06:23 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1604361979;
-        bh=nkxkJafDZBXHqtt338UjYsqWGmJW8lyLGVNxTSKxmXI=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=GVuAOTSCf9wpCYdrM+ZTxJ8P4hGFbu1AdfQXam/Qm952aaCR4t7gtBZP9djQEiIw0
-         nNwAD+iD6ijmCaBfbf44VTDVIk+yXMpIbE3PfvWj6SKlopO66vx1tMNiJzmaL6l76y
-         T2GoeLR6WHuKeXHDhqwWOUynQe3AAxts76K7Y8e0=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MbAgq-1k2asU3suu-00bZVe; Tue, 03
- Nov 2020 01:06:19 +0100
-Subject: Re: [PATCH v4 00/68] btrfs: add basic rw support for subpage sector
- size
-To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20201021062554.68132-1-wqu@suse.com>
- <20201102145624.GB6756@twin.jikos.cz>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
- PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
- 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
- D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
- efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
- ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
- BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
- 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
- 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
- EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
- 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
- ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
- oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
- fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
- 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
- ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
- oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <1573fb7c-a54b-c1e1-1b60-8306db85a87d@gmx.com>
-Date:   Tue, 3 Nov 2020 08:06:15 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1726773AbgKCBTF (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 2 Nov 2020 20:19:05 -0500
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2A15122403;
+        Tue,  3 Nov 2020 01:19:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604366344;
+        bh=Iz+JLNJgmDLZjp5vlBNCDt510Qp8YB7z/1lRTcyYMi0=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=KElz1JYungqd3t5IMoAESLbWu9yS3u1xz5Gy4VIFr+MNvc4MxMKjYRAnPgmk1ekvI
+         5qbkZN23TXwW7EPfLfrey9mHNTiFHcDnUyrFUc+pSgDOPKW2jcZXosBCFhl4uvJfMo
+         Uiq7kaKtnzV6DzWCdq7/rGbfq9oRQg3dRxH+E/qc=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Filipe Manana <fdmanana@suse.com>,
+        Sasha Levin <sashal@kernel.org>, linux-btrfs@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.9 18/35] btrfs: drop the path before adding qgroup items when enabling qgroups
+Date:   Mon,  2 Nov 2020 20:18:23 -0500
+Message-Id: <20201103011840.182814-18-sashal@kernel.org>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20201103011840.182814-1-sashal@kernel.org>
+References: <20201103011840.182814-1-sashal@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20201102145624.GB6756@twin.jikos.cz>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="eYk8jbVEjw9wfXU3uwHQXP1SmAvE36cwn"
-X-Provags-ID: V03:K1:KiUl1pJbQWGnZ6MrMssj3kQsxp600RmqqptuBwcXpXMu+wMizga
- wTIJpL0WZgEf3AvZwrz9XKzKIEa8TPNzBF2rb33bh/UHZOr7fD/RvA5zEyMmmejozJBdcUA
- u0Eh9Mq1DFYt+dYLBta1UwdlDVN8hf2cQ+qUiXS5383V/TFsNYn49wmRsf58TCDK2uSdYc6
- SyIo2PBeNa5u5NOU7lpSA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:2ITEbXoYe1A=:RKZPMV1a92OxDVYcKfPJgS
- zCfJuDYbVnklwz0G9zhAPLjSjXMau4oTIZdrA5MQDBPpoaPV9srERPCqZaa9HEz+Bf1jdb8GB
- 0CWzYYPM346+CKIKtraNOZs1tMFyE/oYP/WSiGSuastizG5n50YFr6BsVk3c9g572jb92Eg9n
- pdJFyIk85dNRjh9mUxV6XurtcogIKGk1C08nvNGx27yyeoEd9xG8Bmgm/iA0U6n28RmnHbuBl
- 7d47P2Q21rJnV7gg8KBM9C4Nt6PiJMh634R2jpAnkNaI9KAFhqP2DOa1AKvDhjJOo7bO+L95H
- +Atlj/NHe4puBfXmwIPw/Vrs+Q008WYPda+v873ZeQhsxrjICW7EOhbhNvFgvBg8GQFlTBGLF
- 4Kkp5JbZqRwB1iQpEiHsuXYoHklF8Ry+4RA4sr9VvF/KvXmMRZknGQ8xr7GHFqzMOhFLV9hVd
- gSWmmgzl562TMVZ+FbH6Lsb72J8U/Q4ZIaDM8tYk1TDR/ZiaEuGJfx/REjtOKfpnmhtJ347Lt
- 4x7i0DqKsXiMWZqS/4dQ7s8jekT3nieQDt8t1xU6vs7/0GzS4RfPWxoqtzh+udXjd9ni3tObP
- 93wIrvmGCpZ37wVf8PRrHLicekdedZjJRScpa4yzgGbW92qBC0a0jSnxZQmvVJc9sskZnRoQa
- e5kcNQqTXp/6fDx92pp8LXRECfmNFChcZp7FVCoLzss7CKYB7tyU/w9Ehe+f0zTJf0KAvQVw7
- xpMKRNcqAiq3rrB2x+QCcpdkg/wJIpnTb2jSBvPZSGBQEBK0mHjKKbNPDWjpWN2RjA8I8v8f5
- VM4nhsXBOzzUOjlW2qMWoSILEktZ4rTgyEjrvU+Uc5qLgWMxCKg/RhHo2YMlge7kxQpIlR1vS
- CppYq6dQkb1UizURVM3Q==
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---eYk8jbVEjw9wfXU3uwHQXP1SmAvE36cwn
-Content-Type: multipart/mixed; boundary="USQT7OruuQA3V5YzsSa3rf3tFi6wYAWIe"
+From: Josef Bacik <josef@toxicpanda.com>
 
---USQT7OruuQA3V5YzsSa3rf3tFi6wYAWIe
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+[ Upstream commit 5223cc60b40ae525ae6c94e98824129f1a5b4ae5 ]
 
+When enabling qgroups we walk the tree_root and then add a qgroup item
+for every root that we have.  This creates a lock dependency on the
+tree_root and qgroup_root, which results in the following lockdep splat
+(with tree locks using rwsem), eg. in tests btrfs/017 or btrfs/022:
 
+  ======================================================
+  WARNING: possible circular locking dependency detected
+  5.9.0-default+ #1299 Not tainted
+  ------------------------------------------------------
+  btrfs/24552 is trying to acquire lock:
+  ffff9142dfc5f630 (btrfs-quota-00){++++}-{3:3}, at: __btrfs_tree_read_lock+0x35/0x1c0 [btrfs]
 
-On 2020/11/2 =E4=B8=8B=E5=8D=8810:56, David Sterba wrote:
-> On Wed, Oct 21, 2020 at 02:24:46PM +0800, Qu Wenruo wrote:
->> Patches can be fetched from github:
->> https://github.com/adam900710/linux/tree/subpage_data_fullpage_write
->>
->> Qu Wenruo (67):
->=20
-> So far I've merged
->=20
->       btrfs: extent_io: fix the comment on lock_extent_buffer_for_io()
->       btrfs: extent_io: update the comment for find_first_extent_bit()
->       btrfs: extent_io: sink the failed_start parameter to set_extent_b=
-it()
->       btrfs: disk-io: replace fs_info and private_data with inode for b=
-trfs_wq_submit_bio()
->       btrfs: inode: sink parameter start and len to check_data_csum()
->       btrfs: extent_io: rename pages_locked in process_pages_contig()
->       btrfs: extent_io: only require sector size alignment for page rea=
-d
->       btrfs: extent_io: rename page_size to io_size in submit_extent_pa=
-ge()
->=20
-> to misc-next.  This is from the first 20, the easy and safe changes.
-> There are few more that need more explanation or another look.
->=20
-That's great.
+  but task is already holding lock:
+  ffff9142dfc5d0b0 (btrfs-root-00){++++}-{3:3}, at: __btrfs_tree_read_lock+0x35/0x1c0 [btrfs]
 
-BTW, for next update, I should rebase all patches to current misc-next
-right?
-Especially to take advantage of things like sectorsize_bits.
+  which lock already depends on the new lock.
 
-BTW, for next round patches, should I send all the patches in a huge
-batch, or just send the safe refactors (with comments addresses)?
+  the existing dependency chain (in reverse order) is:
 
-THanks,
-Qu
+  -> #1 (btrfs-root-00){++++}-{3:3}:
+	 __lock_acquire+0x3fb/0x730
+	 lock_acquire.part.0+0x6a/0x130
+	 down_read_nested+0x46/0x130
+	 __btrfs_tree_read_lock+0x35/0x1c0 [btrfs]
+	 __btrfs_read_lock_root_node+0x3a/0x50 [btrfs]
+	 btrfs_search_slot_get_root+0x11d/0x290 [btrfs]
+	 btrfs_search_slot+0xc3/0x9f0 [btrfs]
+	 btrfs_insert_item+0x6e/0x140 [btrfs]
+	 btrfs_create_tree+0x1cb/0x240 [btrfs]
+	 btrfs_quota_enable+0xcd/0x790 [btrfs]
+	 btrfs_ioctl_quota_ctl+0xc9/0xe0 [btrfs]
+	 __x64_sys_ioctl+0x83/0xa0
+	 do_syscall_64+0x2d/0x70
+	 entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
+  -> #0 (btrfs-quota-00){++++}-{3:3}:
+	 check_prev_add+0x91/0xc30
+	 validate_chain+0x491/0x750
+	 __lock_acquire+0x3fb/0x730
+	 lock_acquire.part.0+0x6a/0x130
+	 down_read_nested+0x46/0x130
+	 __btrfs_tree_read_lock+0x35/0x1c0 [btrfs]
+	 __btrfs_read_lock_root_node+0x3a/0x50 [btrfs]
+	 btrfs_search_slot_get_root+0x11d/0x290 [btrfs]
+	 btrfs_search_slot+0xc3/0x9f0 [btrfs]
+	 btrfs_insert_empty_items+0x58/0xa0 [btrfs]
+	 add_qgroup_item.part.0+0x72/0x210 [btrfs]
+	 btrfs_quota_enable+0x3bb/0x790 [btrfs]
+	 btrfs_ioctl_quota_ctl+0xc9/0xe0 [btrfs]
+	 __x64_sys_ioctl+0x83/0xa0
+	 do_syscall_64+0x2d/0x70
+	 entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
---USQT7OruuQA3V5YzsSa3rf3tFi6wYAWIe--
+  other info that might help us debug this:
 
---eYk8jbVEjw9wfXU3uwHQXP1SmAvE36cwn
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+   Possible unsafe locking scenario:
 
------BEGIN PGP SIGNATURE-----
+	 CPU0                    CPU1
+	 ----                    ----
+    lock(btrfs-root-00);
+				 lock(btrfs-quota-00);
+				 lock(btrfs-root-00);
+    lock(btrfs-quota-00);
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl+gnvcACgkQwj2R86El
-/qiRhwf/RaxeIruoywXx6mFEKeHREQ9yBVosX8ub8Ax6trUXl0nMfl5D8HqZIIPH
-0uwciXEGiz9LbHnFVzKVMzMOwFQs5s+o/K+whtnJaO+ChiuScIrT14ovubxDW5eG
-DNAvIuPLu9mP9p0pGt0+hVq77GFTVmYYIjiZHqMl9WU+OUTKfmxtiJ5pRnPRmzDz
-uWDKdPNOJLSO+Z7DLlmUXYtVR4nueN1mXN7tiOEZT3kFxRqfnbFqTj+MdXB7jX0x
-3o4JZtOD8PQQQKNkhhRPH4ENcDAB7oX3ORKMW1h/UdAvvRL37cUq1uuGCBDRmAXe
-BYrvN7Dh4U2KUtbIQkXSolUTp0x0Pw==
-=H46e
------END PGP SIGNATURE-----
+   *** DEADLOCK ***
 
---eYk8jbVEjw9wfXU3uwHQXP1SmAvE36cwn--
+  5 locks held by btrfs/24552:
+   #0: ffff9142df431478 (sb_writers#10){.+.+}-{0:0}, at: mnt_want_write_file+0x22/0xa0
+   #1: ffff9142f9b10cc0 (&fs_info->subvol_sem){++++}-{3:3}, at: btrfs_ioctl_quota_ctl+0x7b/0xe0 [btrfs]
+   #2: ffff9142f9b11a08 (&fs_info->qgroup_ioctl_lock){+.+.}-{3:3}, at: btrfs_quota_enable+0x3b/0x790 [btrfs]
+   #3: ffff9142df431698 (sb_internal#2){.+.+}-{0:0}, at: start_transaction+0x406/0x510 [btrfs]
+   #4: ffff9142dfc5d0b0 (btrfs-root-00){++++}-{3:3}, at: __btrfs_tree_read_lock+0x35/0x1c0 [btrfs]
+
+  stack backtrace:
+  CPU: 1 PID: 24552 Comm: btrfs Not tainted 5.9.0-default+ #1299
+  Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.12.0-59-gc9ba527-rebuilt.opensuse.org 04/01/2014
+  Call Trace:
+   dump_stack+0x77/0x97
+   check_noncircular+0xf3/0x110
+   check_prev_add+0x91/0xc30
+   validate_chain+0x491/0x750
+   __lock_acquire+0x3fb/0x730
+   lock_acquire.part.0+0x6a/0x130
+   ? __btrfs_tree_read_lock+0x35/0x1c0 [btrfs]
+   ? lock_acquire+0xc4/0x140
+   ? __btrfs_tree_read_lock+0x35/0x1c0 [btrfs]
+   down_read_nested+0x46/0x130
+   ? __btrfs_tree_read_lock+0x35/0x1c0 [btrfs]
+   __btrfs_tree_read_lock+0x35/0x1c0 [btrfs]
+   ? btrfs_root_node+0xd9/0x200 [btrfs]
+   __btrfs_read_lock_root_node+0x3a/0x50 [btrfs]
+   btrfs_search_slot_get_root+0x11d/0x290 [btrfs]
+   btrfs_search_slot+0xc3/0x9f0 [btrfs]
+   btrfs_insert_empty_items+0x58/0xa0 [btrfs]
+   add_qgroup_item.part.0+0x72/0x210 [btrfs]
+   btrfs_quota_enable+0x3bb/0x790 [btrfs]
+   btrfs_ioctl_quota_ctl+0xc9/0xe0 [btrfs]
+   __x64_sys_ioctl+0x83/0xa0
+   do_syscall_64+0x2d/0x70
+   entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+Fix this by dropping the path whenever we find a root item, add the
+qgroup item, and then re-lookup the root item we found and continue
+processing roots.
+
+Reported-by: David Sterba <dsterba@suse.com>
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+Reviewed-by: David Sterba <dsterba@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ fs/btrfs/qgroup.c | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
+
+diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
+index c0f350c3a0cf4..db953cb947bc4 100644
+--- a/fs/btrfs/qgroup.c
++++ b/fs/btrfs/qgroup.c
+@@ -1026,6 +1026,10 @@ int btrfs_quota_enable(struct btrfs_fs_info *fs_info)
+ 		btrfs_item_key_to_cpu(leaf, &found_key, slot);
+ 
+ 		if (found_key.type == BTRFS_ROOT_REF_KEY) {
++
++			/* Release locks on tree_root before we access quota_root */
++			btrfs_release_path(path);
++
+ 			ret = add_qgroup_item(trans, quota_root,
+ 					      found_key.offset);
+ 			if (ret) {
+@@ -1044,6 +1048,20 @@ int btrfs_quota_enable(struct btrfs_fs_info *fs_info)
+ 				btrfs_abort_transaction(trans, ret);
+ 				goto out_free_path;
+ 			}
++			ret = btrfs_search_slot_for_read(tree_root, &found_key,
++							 path, 1, 0);
++			if (ret < 0) {
++				btrfs_abort_transaction(trans, ret);
++				goto out_free_path;
++			}
++			if (ret > 0) {
++				/*
++				 * Shouldn't happen, but in case it does we
++				 * don't need to do the btrfs_next_item, just
++				 * continue.
++				 */
++				continue;
++			}
+ 		}
+ 		ret = btrfs_next_item(tree_root, path);
+ 		if (ret < 0) {
+-- 
+2.27.0
+
