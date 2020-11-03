@@ -2,51 +2,51 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB4DA2A3C6D
-	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Nov 2020 07:02:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70EFF2A3C77
+	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Nov 2020 07:02:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727449AbgKCGCD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 3 Nov 2020 01:02:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52762 "EHLO
+        id S1727527AbgKCGCU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 3 Nov 2020 01:02:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725958AbgKCGCB (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 3 Nov 2020 01:02:01 -0500
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85069C061A47;
-        Mon,  2 Nov 2020 22:02:01 -0800 (PST)
-Received: by mail-pl1-x644.google.com with SMTP id z1so8037691plo.12;
-        Mon, 02 Nov 2020 22:02:01 -0800 (PST)
+        with ESMTP id S1727497AbgKCGCO (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 3 Nov 2020 01:02:14 -0500
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E97FC0617A6;
+        Mon,  2 Nov 2020 22:02:14 -0800 (PST)
+Received: by mail-pg1-x544.google.com with SMTP id z24so12854388pgk.3;
+        Mon, 02 Nov 2020 22:02:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=MWygwZ+ivEMIi25OaiUo1Zam2MncVHjO+BypAFXIYAo=;
-        b=JM0TrRYa221OBNL+3xlD+e2qFNGW+oJCIa+nKENT/oK16ai1/3ZwfwHdCCnZqVlMYB
-         E0bGwvZgYl0/v8cs1ZNEUjKZc35gP7wC+1gzWp/U5+9lLGjpLQwLbinx7EZOVtka9aqh
-         uQqpNedOzM3YjO3AHViLpvAbo41ENlIS7TKOXGaXRMlaAuIHQnyQoVyML0Ukr6m10WHW
-         GBDilgXFImL026l/ZahUnhrUvoCkxVD564hJ5CkoXicJDznfLp7wcpKbh2r71vd9Movt
-         O8FkIttZkOI+aw3Oc6SekaaFb+q4R+5M5dK9b/qwhKYJfzeyE2SOubJ+2H5qtH+wPbug
-         uZQg==
+        bh=5fKNeZSsXX3F75uWAvoclig0FCLwLLfStaZMUpC2Nwo=;
+        b=GSRu5L2PQk84FeCeKEGbNFwcDIBC6ksTVwVMkVAwC2zdttpARRdY3h/s02DkFGdSf3
+         U4YQHvfYMojAb/457zl23L8sA37nL6Yqn5R3z0ncxLK/N7++XALuwmkNb7ElqwXGCAP2
+         r2fh/EEUiGZWmoaA/+dcWcsgN1dtNlGnBrUUTW4y9WHccgqneHCy0J5DL3FOQutjw0Ka
+         f4xtF2vwzCiAST4tV0jiyRWkzymUmtgoL75rmdrjwpBHkXQfHDTMUPWcMIgyhBxoJmD7
+         J7NTYfM1tOsWVBzHQ6RSyLnDdYIacl8FDoad984Ey8Q3T3r66tnozU+RsMOLOenx1hiL
+         YDeA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=MWygwZ+ivEMIi25OaiUo1Zam2MncVHjO+BypAFXIYAo=;
-        b=Iz009n+22Dw4LL/qVlMF7XOBOrUh52jxofvSVDa7ZgudubUeVipdcuXNvrqLLJDY1/
-         5GSawlG7bvtjbpsdhG0M7HDmD/ZVf5Wlj/7aE+jyVx4kGmR/UhBQprX+MoBHkWSqTxdu
-         My/GPGr/21ITYQGWgKZnqjE7IVZvTkKf1ndPIY1/h4EYhfGAomClZOLVm+tNEPMIVf5V
-         JrAjJ27QX+9y3xa3Qjm52W+IlAsis/DeSforYtVJds1A6iDJ9WY4Vjo1fQJmt/dwMkMq
-         0x8CmyAi6ACN1X8KHZItgpyNUnC0NJTomhN0IzV2+8M7m0xRkKCoJb+Ie4DCC2Azkr57
-         4y7g==
-X-Gm-Message-State: AOAM532uMoGup6OrdPf0G1TzHSCCmUE0PyaqzqoWPZk22F9FmRau55mG
-        7mSWGJ8RxGmlDNHebhBnNGg=
-X-Google-Smtp-Source: ABdhPJwtMrMHoYdikDXTZBypvBnbSnctOVijmsKBxGO4u9Ixf+hOMd80RN9SqJluxhfUII1McD2Y7Q==
-X-Received: by 2002:a17:902:8693:b029:d5:d861:6f03 with SMTP id g19-20020a1709028693b02900d5d8616f03mr23725211plo.19.1604383320987;
-        Mon, 02 Nov 2020 22:02:00 -0800 (PST)
+        bh=5fKNeZSsXX3F75uWAvoclig0FCLwLLfStaZMUpC2Nwo=;
+        b=GVZAzRsInAWuDvB7ABhzm4G3LZcsdYZLaYx/8lfgwTqrXaBWtzapdsygVht+Ng/L/Z
+         N6RU2hMEepafWutf4ItlM+6BMTZxQwxmbIYTrG5twdKYXST+29ei1IWajMvXjXWzPx8N
+         r9+eXDXKzee175HPwe8rFogWphwo1c0rHXSJzHd/pAgPvtvCMAjgZQIPN/0KYIohaEvN
+         OfDYYMIaixY9q8AqSx+/qkSnXmbs1u2H4vHRNRQemVT65mI1iVfkh1WEHSeefyWLHlhj
+         kvMabaNwMLmlXqz0RLef0LJgOYRjgul9kVwFhEMI3SbhMCTltsW2ULeMFOGYTT3oXMSN
+         8ioQ==
+X-Gm-Message-State: AOAM531PlobBUvRVtLmg34nLhbs7lTdf02gOxlXzbrtF5mZFqEtzssXu
+        HSm37OCG7TE63FepA+UdPic=
+X-Google-Smtp-Source: ABdhPJydR/DseP0askKzZQYnimEkOFv3IDptlJLuF0BOY15TFxBu7o2wi88ZbnWG/atOCo+bJ49RYA==
+X-Received: by 2002:a63:174a:: with SMTP id 10mr16371117pgx.212.1604383333550;
+        Mon, 02 Nov 2020 22:02:13 -0800 (PST)
 Received: from nickserv.localdomain (c-98-33-101-203.hsd1.ca.comcast.net. [98.33.101.203])
-        by smtp.gmail.com with ESMTPSA id b16sm15647269pfp.195.2020.11.02.22.01.59
+        by smtp.gmail.com with ESMTPSA id b16sm15647269pfp.195.2020.11.02.22.02.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Nov 2020 22:02:00 -0800 (PST)
+        Mon, 02 Nov 2020 22:02:12 -0800 (PST)
 From:   Nick Terrell <nickrterrell@gmail.com>
 To:     Herbert Xu <herbert@gondor.apana.org.au>
 Cc:     linux-crypto@vger.kernel.org, linux-btrfs@vger.kernel.org,
@@ -57,9 +57,9 @@ Cc:     linux-crypto@vger.kernel.org, linux-btrfs@vger.kernel.org,
         Nick Terrell <terrelln@fb.com>, Chris Mason <clm@fb.com>,
         Petr Malat <oss@malat.biz>, Johannes Weiner <jweiner@fb.com>,
         Niket Agarwal <niketa@fb.com>, Yann Collet <cyan@fb.com>
-Subject: [PATCH v5 2/9] lib: zstd: Add decompress_sources.h for decompress_unzstd
-Date:   Mon,  2 Nov 2020 22:05:28 -0800
-Message-Id: <20201103060535.8460-3-nickrterrell@gmail.com>
+Subject: [PATCH v5 4/9] crypto: zstd: Switch to zstd-1.4.6 API
+Date:   Mon,  2 Nov 2020 22:05:30 -0800
+Message-Id: <20201103060535.8460-5-nickrterrell@gmail.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201103060535.8460-1-nickrterrell@gmail.com>
 References: <20201103060535.8460-1-nickrterrell@gmail.com>
@@ -71,57 +71,88 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Nick Terrell <terrelln@fb.com>
 
-Adds decompress_sources.h which includes every .c file necessary for
-zstd decompression. This is used in decompress_unzstd.c so the internal
-structure of the library isn't exposed.
-
-This allows us to upgrade the zstd library version without modifying any
-callers. Instead we just need to update decompress_sources.h.
+Move away from the compatibility wrapper to the zstd-1.4.6 API. This
+code is functionally equivalent.
 
 Signed-off-by: Nick Terrell <terrelln@fb.com>
 ---
- lib/decompress_unzstd.c       |  6 +-----
- lib/zstd/decompress_sources.h | 14 ++++++++++++++
- 2 files changed, 15 insertions(+), 5 deletions(-)
- create mode 100644 lib/zstd/decompress_sources.h
+ crypto/zstd.c | 24 +++++++++++-------------
+ 1 file changed, 11 insertions(+), 13 deletions(-)
 
-diff --git a/lib/decompress_unzstd.c b/lib/decompress_unzstd.c
-index 6bb805aeec08..3c6ad01ffcd5 100644
---- a/lib/decompress_unzstd.c
-+++ b/lib/decompress_unzstd.c
-@@ -68,11 +68,7 @@
- #ifdef STATIC
- # define UNZSTD_PREBOOT
- # include "xxhash.c"
--# include "zstd/entropy_common.c"
--# include "zstd/fse_decompress.c"
--# include "zstd/huf_decompress.c"
--# include "zstd/zstd_common.c"
--# include "zstd/decompress.c"
-+# include "zstd/decompress_sources.h"
- #endif
+diff --git a/crypto/zstd.c b/crypto/zstd.c
+index dcda3cad3b5c..767fe2fbe009 100644
+--- a/crypto/zstd.c
++++ b/crypto/zstd.c
+@@ -11,7 +11,7 @@
+ #include <linux/module.h>
+ #include <linux/net.h>
+ #include <linux/vmalloc.h>
+-#include <linux/zstd_compat.h>
++#include <linux/zstd.h>
+ #include <crypto/internal/scompress.h>
  
- #include <linux/decompress/mm.h>
-diff --git a/lib/zstd/decompress_sources.h b/lib/zstd/decompress_sources.h
-new file mode 100644
-index 000000000000..ccb4960ea0cd
---- /dev/null
-+++ b/lib/zstd/decompress_sources.h
-@@ -0,0 +1,14 @@
-+// SPDX-License-Identifier: GPL-2.0-only
+ 
+@@ -24,16 +24,15 @@ struct zstd_ctx {
+ 	void *dwksp;
+ };
+ 
+-static ZSTD_parameters zstd_params(void)
+-{
+-	return ZSTD_getParams(ZSTD_DEF_LEVEL, 0, 0);
+-}
+-
+ static int zstd_comp_init(struct zstd_ctx *ctx)
+ {
+ 	int ret = 0;
+-	const ZSTD_parameters params = zstd_params();
+-	const size_t wksp_size = ZSTD_CCtxWorkspaceBound(params.cParams);
++	const size_t wksp_size = ZSTD_estimateCCtxSize(ZSTD_DEF_LEVEL);
 +
-+/*
-+ * This file includes every .c file needed for decompression.
-+ * It is used by lib/decompress_unzstd.c to include the decompression
-+ * source into the translation-unit, so it can be used for kernel
-+ * decompression.
-+ */
-+
-+#include "entropy_common.c"
-+#include "fse_decompress.c"
-+#include "huf_decompress.c"
-+#include "zstd_common.c"
-+#include "decompress.c"
++	if (ZSTD_isError(wksp_size)) {
++		ret = -EINVAL;
++		goto out_free;
++	}
+ 
+ 	ctx->cwksp = vzalloc(wksp_size);
+ 	if (!ctx->cwksp) {
+@@ -41,7 +40,7 @@ static int zstd_comp_init(struct zstd_ctx *ctx)
+ 		goto out;
+ 	}
+ 
+-	ctx->cctx = ZSTD_initCCtx(ctx->cwksp, wksp_size);
++	ctx->cctx = ZSTD_initStaticCCtx(ctx->cwksp, wksp_size);
+ 	if (!ctx->cctx) {
+ 		ret = -EINVAL;
+ 		goto out_free;
+@@ -56,7 +55,7 @@ static int zstd_comp_init(struct zstd_ctx *ctx)
+ static int zstd_decomp_init(struct zstd_ctx *ctx)
+ {
+ 	int ret = 0;
+-	const size_t wksp_size = ZSTD_DCtxWorkspaceBound();
++	const size_t wksp_size = ZSTD_estimateDCtxSize();
+ 
+ 	ctx->dwksp = vzalloc(wksp_size);
+ 	if (!ctx->dwksp) {
+@@ -64,7 +63,7 @@ static int zstd_decomp_init(struct zstd_ctx *ctx)
+ 		goto out;
+ 	}
+ 
+-	ctx->dctx = ZSTD_initDCtx(ctx->dwksp, wksp_size);
++	ctx->dctx = ZSTD_initStaticDCtx(ctx->dwksp, wksp_size);
+ 	if (!ctx->dctx) {
+ 		ret = -EINVAL;
+ 		goto out_free;
+@@ -152,9 +151,8 @@ static int __zstd_compress(const u8 *src, unsigned int slen,
+ {
+ 	size_t out_len;
+ 	struct zstd_ctx *zctx = ctx;
+-	const ZSTD_parameters params = zstd_params();
+ 
+-	out_len = ZSTD_compressCCtx(zctx->cctx, dst, *dlen, src, slen, params);
++	out_len = ZSTD_compressCCtx(zctx->cctx, dst, *dlen, src, slen, ZSTD_DEF_LEVEL);
+ 	if (ZSTD_isError(out_len))
+ 		return -EINVAL;
+ 	*dlen = out_len;
 -- 
 2.28.0
 
