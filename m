@@ -2,65 +2,66 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E94382A49B3
-	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Nov 2020 16:30:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 194EC2A49E9
+	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Nov 2020 16:32:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728800AbgKCPaI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 3 Nov 2020 10:30:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56802 "EHLO
+        id S1727961AbgKCPcX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 3 Nov 2020 10:32:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727323AbgKCP3z (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 3 Nov 2020 10:29:55 -0500
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D8A7C0613D1
-        for <linux-btrfs@vger.kernel.org>; Tue,  3 Nov 2020 07:29:54 -0800 (PST)
-Received: by mail-qk1-x741.google.com with SMTP id x20so14998184qkn.1
-        for <linux-btrfs@vger.kernel.org>; Tue, 03 Nov 2020 07:29:54 -0800 (PST)
+        with ESMTP id S1728162AbgKCPcX (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 3 Nov 2020 10:32:23 -0500
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49112C0613D1
+        for <linux-btrfs@vger.kernel.org>; Tue,  3 Nov 2020 07:32:23 -0800 (PST)
+Received: by mail-qk1-x743.google.com with SMTP id p3so14977150qkk.7
+        for <linux-btrfs@vger.kernel.org>; Tue, 03 Nov 2020 07:32:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=rDy+4hiGDxtdOSRTNU5o17IXr2TBxPd1FRxO1D+8IuU=;
-        b=X1vSy/tY1leHmnR6JJ3E0t3XezmXNznfMNUqZICWe90nnAcauuaOBbwbDiV7y9M0eh
-         x2BmsVS70rSOnCRhk9IUrj1rZDHoY1rDNVdsIXNRWEmoCIAlIgD7pj9DfSYQ7nSBci83
-         tv4Vg2gwCyE5Mlp5Uof2TJtlpgBDNEauLE3Ds+5+bJybxGVHvFfy75h4ueTqjGxMKOzY
-         TQWB3Z9234XgjTYQn0k63Oz+NpS4ZPb5cgddkSnOdSZ1R5FJfpSgAKeUV9JpqIepDoAZ
-         fUCsK9e1xHCGxAZQfR3J3Gn86PN35QgJY9P12hdMSflOt1md885NzcSR05hrtIQbzanN
-         byKg==
+        bh=ZxnXLf7sJ0xkjjSNcmBC2OBmDjq/tyI0zR1blQeODc0=;
+        b=qjyumjThmmi1ab3jOoBqxuRaykrcqsoj3yDp6IEd1Lie2vHcuBvTPVtMUZU9uNjLkJ
+         y0bbc1AfpljfH3NxFd6jc4x1Zcc9HExk+tYAV3/ozTe81hBjAyyiolfcopytSDX/qDah
+         OgqpWXeEm1fOnF7Ra8xBQpp71nScAnyY4skZtwIZHzAD7DLX3KYPmaZyX9H+EwdkX3Ml
+         T3/JQvkHz44Y50mnNpT6abFeiLIUJoRUd+vezyLn5yLIWM4sbLyQyakc3sFVZnKwLK3T
+         sJDIuzPEuKwbIiI1H1lEylobjUXXpZWaHBINVvYuFqfnK4xq9WHUppVhGwr5d/KAOc8H
+         gCiQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=rDy+4hiGDxtdOSRTNU5o17IXr2TBxPd1FRxO1D+8IuU=;
-        b=LwK2IChVPiemY/WemhlvC/biKb+c4/7y0gSPsPD6JHtOki39gCWLgtxfbfBsmAxUUj
-         RPbe3lw2lIlV7edtfajBkXa91nZ53mS8YW12PfsB0oI4MsNpAyW9eIC+rRBHFqwN1M9/
-         Ubu/v7RbA8KdkzA0y/UGrdHB+l9/TR01xsI/7ZJgXdo5obGsq3N/M/pjY/CDYIG7vsmY
-         EuE1d8mvtVj/PWaaAn/bfCPb9pVKCokd4nZ0aaFwkuPguztKzLZKmU8JJ/2GStoS99oz
-         yf2+8lSQR8bvRGE9ziadDygJKXomhTCHUxmDWBcqv9qAu/0xrSdzc/iL4IZNkLS7jWDD
-         dJHw==
-X-Gm-Message-State: AOAM532Dmmq44dnKuxuyEg7Qi+Wv/Lc56sTb2Epv41I8zDDIAnl4EWtl
-        TpL+n1iOaqtIJzsAxOJ5HrZhJg==
-X-Google-Smtp-Source: ABdhPJzWYYFc7hlhngWETqYzUXx5dOJ/uoWuu20Y+bYhAmpirN17KgEaWBM+tM3wU6gCHzotEjK3pw==
-X-Received: by 2002:ae9:ebca:: with SMTP id b193mr8120713qkg.235.1604417393547;
-        Tue, 03 Nov 2020 07:29:53 -0800 (PST)
+        bh=ZxnXLf7sJ0xkjjSNcmBC2OBmDjq/tyI0zR1blQeODc0=;
+        b=ucjvqZxYZdI1nvGWYtTo81V+mxW/LrxK75r/E7/6F9hAYMhUZ4QBGvkl20mPOQLGWj
+         RswMUhaQ4aHoSj85pW8l1EzbIbNo9qgEZCScIzTGEX+FvVcXr9CmML2MsgjDCuLA1UBC
+         5IbULLSiRuwBFSkflhTUgzSkVOAYycYALZk8VHOaZ0C7GjDdnowcsvOVAT9iR18WtDI7
+         UzoFpObxDWZ34SawkT9xYVlxmp+HKC1xISIZ3Oj9a6Cn+WafmDW4kHVv3q+6KFk9eicJ
+         7gDVzXydEOSrsazbr7LlleA+vBoYDG1+it5TSa462SkYfXd7t7cgBNjc3nVcix9Fd4Sh
+         Ul9g==
+X-Gm-Message-State: AOAM533EMP3tSQzNjbpA+HzdrAB4Yz8YfEHmJwDNGAC87MswJAFD0fIe
+        SaGBD4Sz1EQMFdgTY6ttvu5CpA==
+X-Google-Smtp-Source: ABdhPJxziVJaNrqG+tdSPa8tVAI4mqiw52WQVnNW/XPvpfKWGs8Ek9q7P6IKaYBOlqpQ41bdvQHTiw==
+X-Received: by 2002:a05:620a:b13:: with SMTP id t19mr19188744qkg.3.1604417542469;
+        Tue, 03 Nov 2020 07:32:22 -0800 (PST)
 Received: from [192.168.1.45] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id i20sm10377335qtw.66.2020.11.03.07.29.52
+        by smtp.gmail.com with ESMTPSA id k145sm10218012qke.79.2020.11.03.07.32.21
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 03 Nov 2020 07:29:52 -0800 (PST)
-Subject: Re: [PATCH v9 23/41] btrfs: split ordered extent when bio is sent
+        Tue, 03 Nov 2020 07:32:21 -0800 (PST)
+Subject: Re: [PATCH v9 24/41] btrfs: extend btrfs_rmap_block for specifying a
+ device
 To:     Naohiro Aota <naohiro.aota@wdc.com>, linux-btrfs@vger.kernel.org,
         dsterba@suse.com
 Cc:     hare@suse.com, linux-fsdevel@vger.kernel.org
 References: <d9a0a445560db3a9eb240c6535f8dd1bbd0abd96.1604065694.git.naohiro.aota@wdc.com>
- <003ea43d3ee954cdb95efa0638a3fdc289cb34c0.1604065695.git.naohiro.aota@wdc.com>
+ <3ee4958e7ebcc06973ed2d7c84a9cf9240d6e7d7.1604065695.git.naohiro.aota@wdc.com>
 From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <ca7b858d-0acf-2f2c-a8d2-f18f5d03cfab@toxicpanda.com>
-Date:   Tue, 3 Nov 2020 10:29:51 -0500
+Message-ID: <d1636237-79d2-e13a-060f-6a9a6764da4c@toxicpanda.com>
+Date:   Tue, 3 Nov 2020 10:32:20 -0500
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
  Gecko/20100101 Thunderbird/78.4.0
 MIME-Version: 1.0
-In-Reply-To: <003ea43d3ee954cdb95efa0638a3fdc289cb34c0.1604065695.git.naohiro.aota@wdc.com>
+In-Reply-To: <3ee4958e7ebcc06973ed2d7c84a9cf9240d6e7d7.1604065695.git.naohiro.aota@wdc.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -69,90 +70,23 @@ List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 On 10/30/20 9:51 AM, Naohiro Aota wrote:
-> For a zone append write, the device decides the location the data is
-> written to. Therefore we cannot ensure that two bios are written
-> consecutively on the device. In order to ensure that a ordered extent maps
-> to a contiguous region on disk, we need to maintain a "one bio == one
-> ordered extent" rule.
+> btrfs_rmap_block currently reverse-maps the physical addresses on all
+> devices to the corresponding logical addresses.
 > 
-> This commit implements the splitting of an ordered extent and extent map
-> on bio submission to adhere to the rule.
+> This commit extends the function to match to a specified device. The old
+> functionality of querying all devices is left intact by specifying NULL as
+> target device.
+> 
+> We pass block_device instead of btrfs_device to __btrfs_rmap_block. This
+> function is intended to reverse-map the result of bio, which only have
+> block_device.
+> 
+> This commit also exports the function for later use.
 > 
 > Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
-> ---
->   fs/btrfs/inode.c        | 89 +++++++++++++++++++++++++++++++++++++++++
->   fs/btrfs/ordered-data.c | 76 +++++++++++++++++++++++++++++++++++
->   fs/btrfs/ordered-data.h |  2 +
->   3 files changed, 167 insertions(+)
-> 
-> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> index 591ca539e444..6b2569dfc3bd 100644
-> --- a/fs/btrfs/inode.c
-> +++ b/fs/btrfs/inode.c
-> @@ -2158,6 +2158,86 @@ static blk_status_t btrfs_submit_bio_start(void *private_data, struct bio *bio,
->   	return btrfs_csum_one_bio(BTRFS_I(inode), bio, 0, 0);
->   }
->   
-> +int extract_ordered_extent(struct inode *inode, struct bio *bio,
-> +			   loff_t file_offset)
-> +{
-> +	struct btrfs_ordered_extent *ordered;
-> +	struct extent_map *em = NULL, *em_new = NULL;
-> +	struct extent_map_tree *em_tree = &BTRFS_I(inode)->extent_tree;
-> +	u64 start = (u64)bio->bi_iter.bi_sector << SECTOR_SHIFT;
-> +	u64 len = bio->bi_iter.bi_size;
-> +	u64 end = start + len;
-> +	u64 ordered_end;
-> +	u64 pre, post;
-> +	int ret = 0;
-> +
-> +	ordered = btrfs_lookup_ordered_extent(BTRFS_I(inode), file_offset);
-> +	if (WARN_ON_ONCE(!ordered))
-> +		return -EIO;
-> +
-> +	/* no need to split */
-> +	if (ordered->disk_num_bytes == len)
-> +		goto out;
-> +
-> +	/* cannot split once end_bio'd ordered extent */
-> +	if (WARN_ON_ONCE(ordered->bytes_left != ordered->disk_num_bytes)) {
-> +		ret = -EINVAL;
-> +		goto out;
-> +	}
-> +
-> +	/* we cannot split compressed ordered extent */
-> +	if (WARN_ON_ONCE(ordered->disk_num_bytes != ordered->num_bytes)) {
-> +		ret = -EINVAL;
-> +		goto out;
-> +	}
-> +
-> +	/* cannot split waietd ordered extent */
-> +	if (WARN_ON_ONCE(wq_has_sleeper(&ordered->wait))) {
-> +		ret = -EINVAL;
-> +		goto out;
-> +	}
 
-This is bad, we could choose any moment to wait on an ordered extent, and then 
-this will break.
-
-In fact I'm not a fan of any of this code.  I assume we only know at 
-bio_add_zone_append_page time how much we'll be able to shove into a bio?  Then 
-I think the best/cleanest approach here is going to be to add something like 
-what compressed does, an entire alternate way to allocate and submit extents.
-
-It would look something like
-
-->lock pages
-->reserve space
-
-loop until all pages are submitted
-	->build bio
-	->add ordered extent for the bio
-
-->unlock pages
-
-Then the ordered extents are their correct size and you don't have to worry 
-about arbitrary waiters on ordered extents screwing things up, and you don't 
-have to split ordered extents after the fact.  Thanks,
+Since there's only one caller of btrfs_rmap_block() in this file, and the rest 
+are for tests, you might as well just make btrfs_rmap_block() exported with the 
+device, and switch the existing callers to use NULL for the device.  Thanks,
 
 Josef
