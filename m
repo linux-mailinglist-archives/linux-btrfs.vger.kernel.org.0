@@ -2,160 +2,96 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A24842A43D1
-	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Nov 2020 12:14:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D5E72A43DE
+	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Nov 2020 12:15:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728299AbgKCLNt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 3 Nov 2020 06:13:49 -0500
-Received: from mx2.suse.de ([195.135.220.15]:52838 "EHLO mx2.suse.de"
+        id S1728404AbgKCLPn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 3 Nov 2020 06:15:43 -0500
+Received: from mx2.suse.de ([195.135.220.15]:59014 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725988AbgKCLNt (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 3 Nov 2020 06:13:49 -0500
+        id S1728100AbgKCLPm (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 3 Nov 2020 06:15:42 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id D6E17ACC6;
-        Tue,  3 Nov 2020 11:13:46 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id BD055ACD8;
+        Tue,  3 Nov 2020 11:15:40 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id D95E0DA7D2; Tue,  3 Nov 2020 12:12:08 +0100 (CET)
-Date:   Tue, 3 Nov 2020 12:12:08 +0100
+        id 1E1E2DA7D2; Tue,  3 Nov 2020 12:14:03 +0100 (CET)
+Date:   Tue, 3 Nov 2020 12:14:02 +0100
 From:   David Sterba <dsterba@suse.cz>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linuxfoundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Paul McKenney <paulmck@kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Benjamin LaHaise <bcrl@kvack.org>,
-        linux-fsdevel@vger.kernel.org, linux-aio@kvack.org,
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        lkft-triage@lists.linaro.org,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
         Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        x86@kernel.org, Vineet Gupta <vgupta@synopsys.com>,
-        linux-snps-arc@lists.infradead.org,
-        Russell King <linux@armlinux.org.uk>,
-        Arnd Bergmann <arnd@arndb.de>,
-        linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
-        Michal Simek <monstr@monstr.eu>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org, Nick Hu <nickhu@andestech.com>,
-        Greentime Hu <green.hu@gmail.com>,
-        Vincent Chen <deanbo422@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        linuxppc-dev@lists.ozlabs.org,
-        "David S. Miller" <davem@davemloft.net>,
-        sparclinux@vger.kernel.org, Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        linux-xtensa@linux-xtensa.org, Ingo Molnar <mingo@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Christian Koenig <christian.koenig@amd.com>,
-        Huang Rui <ray.huang@amd.com>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org,
-        VMware Graphics <linux-graphics-maintainer@vmware.com>,
-        Roland Scheidegger <sroland@vmware.com>,
-        Dave Airlie <airlied@redhat.com>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        virtualization@lists.linux-foundation.org,
-        spice-devel@lists.freedesktop.org, Ben Skeggs <bskeggs@redhat.com>,
-        nouveau@lists.freedesktop.org,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        intel-gfx@lists.freedesktop.org
-Subject: Re: [patch V3 03/37] fs: Remove asm/kmap_types.h includes
-Message-ID: <20201103111208.GL6756@suse.cz>
+        David Sterba <dsterba@suse.com>
+Subject: Re: ERROR: modpost: "__udivdi3" [fs/btrfs/btrfs.ko] undefined!
+Message-ID: <20201103111402.GM6756@suse.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linuxfoundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Paul McKenney <paulmck@kernel.org>, Christoph Hellwig <hch@lst.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Benjamin LaHaise <bcrl@kvack.org>, linux-fsdevel@vger.kernel.org,
-        linux-aio@kvack.org, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
-        linux-btrfs@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        x86@kernel.org, Vineet Gupta <vgupta@synopsys.com>,
-        linux-snps-arc@lists.infradead.org,
-        Russell King <linux@armlinux.org.uk>, Arnd Bergmann <arnd@arndb.de>,
-        linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
-        Michal Simek <monstr@monstr.eu>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org, Nick Hu <nickhu@andestech.com>,
-        Greentime Hu <green.hu@gmail.com>,
-        Vincent Chen <deanbo422@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>, linuxppc-dev@lists.ozlabs.org,
-        "David S. Miller" <davem@davemloft.net>, sparclinux@vger.kernel.org,
-        Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>,
-        linux-xtensa@linux-xtensa.org, Ingo Molnar <mingo@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Christian Koenig <christian.koenig@amd.com>,
-        Huang Rui <ray.huang@amd.com>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, dri-devel@lists.freedesktop.org,
-        VMware Graphics <linux-graphics-maintainer@vmware.com>,
-        Roland Scheidegger <sroland@vmware.com>,
-        Dave Airlie <airlied@redhat.com>, Gerd Hoffmann <kraxel@redhat.com>,
-        virtualization@lists.linux-foundation.org,
-        spice-devel@lists.freedesktop.org, Ben Skeggs <bskeggs@redhat.com>,
-        nouveau@lists.freedesktop.org,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        intel-gfx@lists.freedesktop.org
-References: <20201103092712.714480842@linutronix.de>
- <20201103095856.870272797@linutronix.de>
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        lkft-triage@lists.linaro.org,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>
+References: <CA+G9fYsqbbtYXaw3=upAMnhccjLezaN7RUjysEF4QhS6TfRr-A@mail.gmail.com>
+ <CAMuHMdV2A21oMcA9=rQVfL9xJfRZpV__87byMo4GsXH2i7Y2uQ@mail.gmail.com>
+ <7cf2cee6-3a15-b4d4-d0cc-ebc828ec0f56@gmx.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201103095856.870272797@linutronix.de>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <7cf2cee6-3a15-b4d4-d0cc-ebc828ec0f56@gmx.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Nov 03, 2020 at 10:27:15AM +0100, Thomas Gleixner wrote:
-> Historical leftovers from the time where kmap() had fixed slots.
+On Tue, Nov 03, 2020 at 06:21:06PM +0800, Qu Wenruo wrote:
 > 
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Alexander Viro <viro@zeniv.linux.org.uk>
-> Cc: Benjamin LaHaise <bcrl@kvack.org>
-> Cc: linux-fsdevel@vger.kernel.org
-> Cc: linux-aio@kvack.org
-> Cc: Chris Mason <clm@fb.com>
-> Cc: Josef Bacik <josef@toxicpanda.com>
-> Cc: David Sterba <dsterba@suse.com>
+> 
+> On 2020/11/3 下午5:47, Geert Uytterhoeven wrote:
+> > On Tue, Nov 3, 2020 at 10:43 AM Naresh Kamboju
+> > <naresh.kamboju@linaro.org> wrote:
+> >> Linux next 20201103 tag make modules failed for i386 and arm
+> >> architecture builds.
+> >>
+> >> Error log:
+> >>   LD [M]  fs/btrfs/btrfs.o
+> >>   MODPOST Module.symvers
+> >> ERROR: modpost: "__udivdi3" [fs/btrfs/btrfs.ko] undefined!
+> >> scripts/Makefile.modpost:111: recipe for target 'Module.symvers' failed
+> >> make[2]: *** [Module.symvers] Error 1
+> >>
+> >> Full build log,
+> >> https://ci.linaro.org/view/lkft/job/openembedded-lkft-linux-next/DISTRO=lkft,MACHINE=intel-core2-32,label=docker-lkft/891/consoleText
+> >> https://ci.linaro.org/view/lkft/job/openembedded-lkft-linux-next/DISTRO=lkft,MACHINE=am57xx-evm,label=docker-lkft/891/consoleText
+> >>
+> >> --
+> >> Linaro LKFT
+> >> https://lkft.linaro.org
+> > 
+> > Yeah, I had a look earlier today, thanks to the kisskb builder, and
+> > the btrfs people are working on a fix.
+> > Interestingly, the issue was reported in September, and still entered
+> > linux-next, so we all had a great time to look into it ;-)
+> 
+> Yeah, we all know that and how to fix it (just call do_div64() for u64 /
+> u32).
+> But at that time we're already working on a better solution, other than
+> using do_div64(), we use sectorsize_bits shift to replace the division,
+> and unfortunately the bit shift fix didn't get merged until recently.
+> 
+> Considering that patch is only designed to be merged after the bit shift
+> fix patch, we're not that concerned. (Until some other guys are
+> complaining about the linux-next branch).
 
-Acked-by: David Sterba <dsterba@suse.com>
-
-For the btrfs bits
-
->  fs/btrfs/ctree.h |    1 -
-
-> --- a/fs/btrfs/ctree.h
-> +++ b/fs/btrfs/ctree.h
-> @@ -17,7 +17,6 @@
->  #include <linux/wait.h>
->  #include <linux/slab.h>
->  #include <trace/events/btrfs.h>
-> -#include <asm/kmap_types.h>
->  #include <asm/unaligned.h>
->  #include <linux/pagemap.h>
->  #include <linux/btrfs.h>
+I've pushed updated for-next that uses the sectorsize_bits.
