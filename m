@@ -2,44 +2,57 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A2D32A3FDF
-	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Nov 2020 10:22:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B5642A4057
+	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Nov 2020 10:33:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726864AbgKCJVp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 3 Nov 2020 04:21:45 -0500
-Received: from smtp105.iad3a.emailsrvr.com ([173.203.187.105]:45020 "EHLO
-        smtp105.iad3a.emailsrvr.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726126AbgKCJVp (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 3 Nov 2020 04:21:45 -0500
-X-Greylist: delayed 508 seconds by postgrey-1.27 at vger.kernel.org; Tue, 03 Nov 2020 04:21:45 EST
-X-Auth-ID: a.isaev@rqc.ru
-Received: by smtp14.relay.iad3a.emailsrvr.com (Authenticated sender: a.isaev-AT-rqc.ru) with ESMTPSA id D771A2392A
-        for <linux-btrfs@vger.kernel.org>; Tue,  3 Nov 2020 04:13:16 -0500 (EST)
-From:   Alexey Isaev <a.isaev@rqc.ru>
-To:     linux-btrfs@vger.kernel.org
-Subject: Restore btrfs partition
-Message-ID: <ddaef86e-3487-369d-5528-2e2f0e0e9ba4@rqc.ru>
-Date:   Tue, 3 Nov 2020 12:13:15 +0300
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S1727948AbgKCJdF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 3 Nov 2020 04:33:05 -0500
+Received: from mx2.suse.de ([195.135.220.15]:42620 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727933AbgKCJdF (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 3 Nov 2020 04:33:05 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id E96FFADC5;
+        Tue,  3 Nov 2020 09:33:03 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 66056DA7D2; Tue,  3 Nov 2020 10:31:26 +0100 (CET)
+Date:   Tue, 3 Nov 2020 10:31:26 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     David Sterba <dsterba@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 01/10] btrfs: use precalculated sectorsize_bits from
+ fs_info
+Message-ID: <20201103093126.GK6756@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, David Sterba <dsterba@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <cover.1603981452.git.dsterba@suse.com>
+ <b38721840b8d703a29807b71460464134b9ca7e1.1603981453.git.dsterba@suse.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: ru
-X-Classification-ID: bbb5476c-593c-4aca-8055-68367483d28d-1-1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b38721840b8d703a29807b71460464134b9ca7e1.1603981453.git.dsterba@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello!
+I got some comments,
 
-I have accidentally overwritten partition table on hdd with btfs 
-filesystem. Is it possible to restore it?
-There was only one partition on disk with btrfs.
+On Thu, Oct 29, 2020 at 03:27:37PM +0100, David Sterba wrote:
+> -	return ncsums * fs_info->sectorsize;
+> +	return ncsums << fs_info->sectorsize_bits;
 
--- 
-Best Regards,
-Aleksey Isaev,
-RQC
+I'll restore all multiplications back, the shifts make it slightly worse
+to read
 
+> @@ -465,7 +465,8 @@ int btrfs_lookup_csums_range(struct btrfs_root *root, u64 start, u64 end,
+>  			start = key.offset;
+>  
+>  		size = btrfs_item_size_nr(leaf, path->slots[0]);
+> -		csum_end = key.offset + (size / csum_size) * fs_info->sectorsize;
+> +		csum_end = key.offset +
+> +			   ((size / csum_size) >> fs_info->sectorsize_bits);
+
+And this was buggy as I've been told, shift wrong way
