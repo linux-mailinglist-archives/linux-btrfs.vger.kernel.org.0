@@ -2,202 +2,172 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5372A2A5A6A
-	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Nov 2020 00:06:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B49B2A5A9B
+	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Nov 2020 00:36:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729575AbgKCXFy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 3 Nov 2020 18:05:54 -0500
-Received: from james.kirk.hungrycats.org ([174.142.39.145]:40696 "EHLO
-        james.kirk.hungrycats.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729275AbgKCXFy (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 3 Nov 2020 18:05:54 -0500
-Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
-        id EF1F788C37C; Tue,  3 Nov 2020 18:05:51 -0500 (EST)
-Date:   Tue, 3 Nov 2020 18:05:51 -0500
-From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-To:     Hendrik Friedel <hendrik@friedels.name>
-Cc:     lakshmipathi.ganapathi@collabora.com,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Subject: Re: parent transid verify failed: Fixed but re-appearing
-Message-ID: <20201103230550.GC28049@hungrycats.org>
-References: <em85884e42-e959-40f1-9eae-cd818450c26d@ryzen>
- <20201021193246.GE21815@hungrycats.org>
- <em33511ef4-7da1-4e7c-8b0c-8b8d7043164c@desktop-g0r648m>
- <20201021212229.GF21815@hungrycats.org>
- <emeabab400-3f6d-4105-a4fd-67b0b832f97a@desktop-g0r648m>
- <20201021213854.GG21815@hungrycats.org>
- <em26d5dfe8-37cb-454c-9c03-a69cfb035949@desktop-g0r648m>
- <emf9252c3e-00b0-4c4a-a607-b61df779742f@desktop-g0r648m>
- <20201103194045.GB28049@hungrycats.org>
- <em37950c9c-2dbf-41b9-89cd-2390bc503bd1@desktop-g0r648m>
+        id S1729403AbgKCXgr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 3 Nov 2020 18:36:47 -0500
+Received: from mout.gmx.net ([212.227.17.20]:60401 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728675AbgKCXgq (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 3 Nov 2020 18:36:46 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1604446601;
+        bh=3PDn03w37ReFeksPWh1DTqzgoAoGZz4IP5jKQDMBF+w=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=Zujlfi+3Jar/26BoMhXrZYHymnAEuAct+3yU2j1+XKhaBpA82q6FWchogYtYn5vBu
+         8w8UlzIFWELB7pFCRbwwA+cBV4lyiWUwz2nzQ1IqiQvEiXPUZFKi7md3GiwKuBKBEu
+         EoTca1GovYr2ycHFeG8D6Xoc+xg3oHviqbh7oB0Y=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1M6UZl-1kgQRl3ReL-006vZM; Wed, 04
+ Nov 2020 00:36:41 +0100
+Subject: Re: [PATCH 2/3] btrfs: ordered-data: rename parameter @len to
+ @nr_sectors
+To:     Amy Parker <enbyamy@gmail.com>, dsterba@suse.cz,
+        Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+References: <20201028072432.86907-1-wqu@suse.com>
+ <20201028072432.86907-3-wqu@suse.com> <20201103191609.GC6756@twin.jikos.cz>
+ <CAE1WUT75ZSbnb=VVONYbreVOjzZs6_ZhL+RKf9Zot0QYp3jtsw@mail.gmail.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
+ mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
+ PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
+ 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
+ D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
+ efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
+ ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
+ BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
+ 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
+ 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
+ EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
+ 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
+ ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
+ oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
+ fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
+ 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
+ ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
+ oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
+Message-ID: <efb63a0d-ff2c-dc89-f0ec-fe42d45a9c61@gmx.com>
+Date:   Wed, 4 Nov 2020 07:36:35 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <em37950c9c-2dbf-41b9-89cd-2390bc503bd1@desktop-g0r648m>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CAE1WUT75ZSbnb=VVONYbreVOjzZs6_ZhL+RKf9Zot0QYp3jtsw@mail.gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="LkMNUTsE1YGGd0zEz4JCmaWJyoSWJIEbj"
+X-Provags-ID: V03:K1:B3tOdVyBDyZXpHm1O8w1GHi3R0CzcqYFWLHWn3qQtRB5anRAto7
+ kIhWzSRkAd/RC17tdTftYTqvmYD91Qswl+tvQUhvWJwLniF5TJFfIMeUZXvjmBT/KnWafVe
+ jIv+6dg6RFlSd/PzYF+wt1aLeOgQFk8U1Tz3ExMthvISx1oa74csBnAssuWHpCfUHNTCaux
+ cHBYBL6iYu8A1WI4rwt+A==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:HRDRb0XPCGA=:PJhBbutJeZPoeBtoNZPM/9
+ d3k5OMAa+Ik5JMihVgWl0uAwS+gDhNaVcmq8fggU6I5tRtJV3GPjWZCq/LduoL0MFxQTgMCt4
+ 9WfuPsWjHDolbpT9wQCBFJVTQ9/YWqVdVowFNCjpQ38XzAHU3nKzFqz8EwRyuoqWKRtuN3iT9
+ HC7oTP5g01BFE66sqUI+t3h/erhRSGCWJjn5t2zvYpPaGvVjmOnATmy+QVqcuwsKvU+WSoJbh
+ OFDUNdA9hx/ofj+Ca75bTdHb3gg9ruPBvmkvQueaSnWwHntjIlupyiN7pekDIkNAdQPDPPzWS
+ SJm/pBz7Tp/OCnNx8998SAYrvs3nkOMwR14gBuEeTT1RMbpEEcRiKRh65BSTAJqN9KjwTzlzP
+ JPLmTHU1pm3TSxQC4X/2zZ2mO0o2f34mPx0WF8rDRmOM1KAl13oQxcR9SsllRmVoHkQHloJnu
+ Gv1YhQTSbiPQN+4XJJTE70ZXCV6woeYjpXtGBF8Km1Rbikn/W0mPKgJx5FvG7zZpCmS5PiM12
+ Ld9uR/1FG8zwH0rAsUwMS9oKNXsF+Rc1LhGYCs4j6dOUnKPv9FgFddWbWQdmDSPVFiffvmjcF
+ erR18i2vmYALOUlHRxnW43RGouNe2JpRa4w7kKNUcjvGQR28chPxMe8RW0tt98J9ui0SYuLSA
+ TpCzvk7uF0GBkRGuoBiVb0Y9Fa0plfXk670PWaZ2lr/mveTY9bvrz0QzfLH/MHWmI3uoZZx0k
+ HmQGK90kymyQ4rFGc6b3kXuwJaSgbyHCc+H6FWRFO7jeiM4q5Tp+8LyLGPAdDixifOIB0QJzy
+ +I6gnOVPUZ4I0uxDE7PAPOoFAySy/4dQz//79egNYvnH+rBMmjGpU3QUECG0MQWRtOVaoJAEJ
+ dKAelhFcuOzF2bFeRElg==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Nov 03, 2020 at 08:40:40PM +0000, Hendrik Friedel wrote:
-> Hello Zygo, hello Lakshmipathi,
-> 
-> @Lakshmipathi: as you suggested I consulted the BTRFS-Mailing list on this
-> issue:
-> https://github.com/Lakshmipathi/dduper/issues/39
-> 
-> Zygo was so kind to help me and he suspects the error to lie within dduper.
-> > >  > > Sure, more scrubs are better.  They are supposed to be run regularly
-> > >  > > to detect drives going bad.
-> > >  > btrfs scrub start -Bd /dev/sda1
-> > >  >
-> > >  >
-> > >  > scrub device /dev/sda1 (id 1) done
-> > >  >         scrub started at Wed Oct 21 23:38:36 2020 and finished after 13:45:29
-> > >  >         total bytes scrubbed: 6.56TiB with 0 errors
-> > >  >
-> > >  > But then again:
-> > >  > dduper --device /dev/sda1 --dir /srv/dev-disk-by-label-DataPool1/dduper_test/testfiles -r --dry-run
-> > >  > parent transid verify failed on 16500741947392 wanted 358407 found 358409
-> > >  > Ignoring transid failure
-> > 
-> > Wait...is that the kernel log, or the output of the dduper command?
-> > 
-> It is on the commandline once I run the command; thus I suspect it is the
-> dduper output. But of course sometimes the Kernel-Messages appear directly
-> on the commandline. I do not know how to tell.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--LkMNUTsE1YGGd0zEz4JCmaWJyoSWJIEbj
+Content-Type: multipart/mixed; boundary="6reZOYAo5J9f926nPCS0IDVOEuUk4d0dm"
 
-Kernel logs usually have timestamps, and will also be logged in files
-like /var/log/kern.log and /var/log/dmesg (depending on the distro).
-You can also review past kernel logs with the 'dmesg' utility.
+--6reZOYAo5J9f926nPCS0IDVOEuUk4d0dm
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-The output of the command will just appear in the terminal window, or a
-log file if you redirect stdout and stderr to a file.
 
-> > commit 3e5f67f45b553045a34113cafb3c22180210a19f (tag: v0.04, origin/dockerbuild)
-> > Author: Lakshmipathi <lakshmipathi.ganapathi@collabora.com>
-> > Date:   Fri Sep 18 11:51:42 2020 +0530
-> > 
-> > file deduper:
-> > 
-> >     194 def btrfs_dump_csum(filename):
-> >     195     global device_name
-> >     196
-> >     197     btrfs_bin = "/usr/sbin/btrfs.static"
-> >     198     if os.path.exists(btrfs_bin) is False:
-> >     199         btrfs_bin = "btrfs"
-> >     200
-> >     201     out = subprocess.Popen(
-> >     202         [btrfs_bin, 'inspect-internal', 'dump-csum', filename, device_name],
-> >     203         stdout=subprocess.PIPE,
-> >     204         close_fds=True).stdout.readlines()
-> >     205     return out
-> > 
-> > OK there's the problem:  it's dumping csums from a mounted filesystem by
-> > reading the block device instead of using the TREE_SEARCH_V2 ioctl.
-> > Don't do that, because it won't work.  ;)
-> I trust you on this ;-) But I am surprised I am the only one reporting this
-> issue. 
 
-It means the code isn't being adequately tested by anyone who is currently
-using it.  A common problem for new software projects.
+On 2020/11/4 =E4=B8=8A=E5=8D=883:23, Amy Parker wrote:
+> On Tue, Nov 3, 2020 at 11:18 AM David Sterba <dsterba@suse.cz> wrote:
+>>
+>> On Wed, Oct 28, 2020 at 03:24:31PM +0800, Qu Wenruo wrote:
+>>> The parameter is the number of sectors of the range to search.
+>>> While most "len" we used in other locations are in byte size, this ca=
+n
+>>> lead to confusion.
+>>>
+>>> Rename @len to @nr_sectors to make it more clear and avoid confusion.=
 
-The text "never run this" and "don't run this" appears in several places
-in dduper's README.md, along with "Please be aware that dduper is largely
-un-tesed tool." After reading advice like that, if I had stumbled across
-this behavior myself, I wouldn't have bothered to report it--I'd say to
-myself "hey, the README was right!" and then I'd move on to the next
-candidate project on my list.  If other people do the same, that may
-account for the low defect report rate.
+>>>
+>>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>>> ---
+>>>  fs/btrfs/ordered-data.c | 9 ++++++---
+>>>  fs/btrfs/ordered-data.h | 2 +-
+>>>  2 files changed, 7 insertions(+), 4 deletions(-)
+>>>
+>>> diff --git a/fs/btrfs/ordered-data.c b/fs/btrfs/ordered-data.c
+>>> index ebac13389e7e..10c13f8a1603 100644
+>>> --- a/fs/btrfs/ordered-data.c
+>>> +++ b/fs/btrfs/ordered-data.c
+>>> @@ -802,9 +802,11 @@ btrfs_lookup_first_ordered_extent(struct inode *=
+inode, u64 file_offset)
+>>>   * search the ordered extents for one corresponding to 'offset' and
+>>>   * try to find a checksum.  This is used because we allow pages to
+>>>   * be reclaimed before their checksum is actually put into the btree=
 
-I was able to quickly reproduce the parent transid verify failure by
-running dduper on a test VM:
+>>> + *
+>>> + * @nr_sectors:      The length of the search range, in sectors.
+>>
+>> Please add all parameters
+>=20
+> Yeah, having all parameters will be important for documentation
+> purposes. Shouldn't need too much effort, just quick descriptions
+> of the parameters.
 
-	# dduper -p /dev/vgtest/tvdb -r -s -d /media/testfs
-	parent transid verify failed on 35179391188992 wanted 3743662 found 3743762
-	parent transid verify failed on 35179391188992 wanted 3743662 found 3743762
-	parent transid verify failed on 35179391188992 wanted 3743662 found 3743762
-	Ignoring transid failure
-	ERROR: child eb corrupted: parent bytenr=4414666997760 item=278 parent level=2 child level=0
-	ERROR: failed to read block groups: Input/output error
-	unable to open /dev/vgtest/tvdb
-	Traceback (most recent call last):
-	  File "./dduper", line 594, in <module>
-	    main(results)
-	  File "./dduper", line 465, in main
-	    dedupe_dir(results.dir_path, results.dry_run, results.recurse)
-	  File "./dduper", line 456, in dedupe_dir
-	    dedupe_files(file_list, dry_run)
-	  File "./dduper", line 410, in dedupe_files
-	    ret = do_dedupe(src_file, dst_file, dry_run)
-	  File "./dduper", line 224, in do_dedupe
-	    assert len(out1) != 0
-	AssertionError
+No need anymore, as the function will be removed completely.
 
-The test VM runs 100 rsync processes, balance, snapshot create and
-delete, scrub and bees continuously.  dduper survived almost 10 minutes.
+Thanks,
+Qu
+>=20
+> Best regards,
+> Amy Parker
+> (they/them)
+>=20
+>>
+>>>   */
+>>>  int btrfs_find_ordered_sum(struct inode *inode, u64 offset, u64 disk=
+_bytenr,
+>>> -                        u8 *sum, int len)
+>>> +                        u8 *sum, int nr_sectors)
 
-Nothing else in the VM was disturbed by the test, which confirms that
-the "parent transid verify failure" messages are not indicative of a
-filesystem failure, and only dduper is affected by them.
 
-> Will it *always* not work, or does it not work in some cases and my
-> situation is making it extremely unlikely to work?
+--6reZOYAo5J9f926nPCS0IDVOEuUk4d0dm--
 
-A short run (e.g. a small file on a small filesystem) could extract all
-the needed data from the csum tree before a transaction commit removes
-old parts of the csum tree from the filesystem.  dduper seems to invoke
-dump-csum on every individual input file, so it is probably avoiding the
-issue most of the time.  By starting over for every new file, the amount
-of time that stale pages are held in dump-csum's memory is minimized.
+--LkMNUTsE1YGGd0zEz4JCmaWJyoSWJIEbj
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
-dump-csum will always fail if it runs too long and there are concurrent
-filesystem updates (including the changes dduper makes to the filesystem
-itself).  It will fail more often on larger files than on smaller ones
-(they take longer to read), and also more often on files that straddle
-metadata page boundaries (they require more tree searches and validate
-more tree node parents) or have data blocks scattered across the
-disk (these will require reading more metadata tree interior nodes).
-You might see some semi-repeatable behavior that seems data-dependent
-(and is in fact dependent on the structure of the data on disk), but
-it'll break eventually no matter what you do.
+-----BEGIN PGP SIGNATURE-----
 
-The kernel provides TREE_SEARCH_V2, an ioctl which can provide a map
-from file to extent address, and also retrieve the csum tree items by
-extent address from a mounted filesystem.  Accessing the csums through the
-filesystem's ioctl interface instead of the block device will eliminate
-the race condition leading to parent transid verify failure.  Switching to
-this ioctl in dduper would also remove the dependency on non-upstream
-btrfs-progs and probably make it run considerably faster, especially on
-filesystems with many small files.  I'd recommend using python-btrfs for
-that--no need to invent the wheel twice in the same programming language.
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl+h6YMACgkQwj2R86El
+/qhTWwgAppCk2st+4WYhACTNSN+LdIf21DvMUEM8fhQ3aXJMO7YvgAD/W7l4VyRQ
+34JNTjDqtocpDB7cSr9kK3YAAkKIf/zoH3cOf2x4zfz/rbxaPLQ4B5fdINCvE2KP
+zGXKPBHlVlD2wu0lNRuorMNHIl/gAIF6/APkuH5OlWiIXJzEyzvt00mRQptKvkwv
+IwOpWHFmr9OoTjFTgI1PfMUBabf8N6n2F0OZCnloUbfzOFgZbWHohV/uu2uGqgPN
+A3OCYhm4Pm9A10OceZB8y682EPsLNjJRCLxglaMqqNH0VsDAid3Y4WoMxFCJTzWU
+w4UV+B+L7PZr1ERNvPwfDjdS1YFdgg==
+=gBTN
+-----END PGP SIGNATURE-----
 
-> > The "parent transid verify failed" errors are harmless.  They are due
-> > to the fact that a process reading the raw block device can never build
-> > an accurate model of a live filesystem that is changing underneathi it.
-
-Well, almost harmless.  It seems dduper will abort as soon as it sees
-a dump-csum error, without doing any further dedupe.
-
-> > If you manage to get some dedupe to happen, then that's a bonus.
-> > 
-> > 
-> > >  >
-> > >  > > >  Anything else, I can do?
-> > >  > >
-> > >  > > It looks like sda1 might be bad and it is working by replacing lost
-> > >  > > data from the mirror on sdj.  But this replacement should be happening
-> > >  > > automatically on read (and definitely on scrub), so you shouldn't ever
-> > >  > > see the same error twice, but it seems that you do.
-> > >  >
-> > >  > Well, it is not the same error twice.
-> > 
-> > Earlier you quoted some duplicate lines.  Normally those get fixed after the
-> > first line, so you never see the second.
-> > 
-> I see.
-> 
-> Regards,
-> Hendrik
-> 
-> 
+--LkMNUTsE1YGGd0zEz4JCmaWJyoSWJIEbj--
