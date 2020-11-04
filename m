@@ -2,191 +2,214 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A54522A6BEE
-	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Nov 2020 18:42:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C26C62A6C32
+	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Nov 2020 18:50:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731779AbgKDRmc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 4 Nov 2020 12:42:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48008 "EHLO
+        id S1730781AbgKDRur (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 4 Nov 2020 12:50:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730564AbgKDRmc (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 4 Nov 2020 12:42:32 -0500
-Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DD36C0613D3
-        for <linux-btrfs@vger.kernel.org>; Wed,  4 Nov 2020 09:42:32 -0800 (PST)
-Received: by mail-oi1-x243.google.com with SMTP id 9so23004089oir.5
-        for <linux-btrfs@vger.kernel.org>; Wed, 04 Nov 2020 09:42:32 -0800 (PST)
+        with ESMTP id S1726152AbgKDRur (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 4 Nov 2020 12:50:47 -0500
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3D7CC0613D3
+        for <linux-btrfs@vger.kernel.org>; Wed,  4 Nov 2020 09:50:46 -0800 (PST)
+Received: by mail-wr1-x442.google.com with SMTP id n15so23058929wrq.2
+        for <linux-btrfs@vger.kernel.org>; Wed, 04 Nov 2020 09:50:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=BW/LMfF+1FqMkqjmN+XfkeasbRI7j1OiAR3z8Mi2j3M=;
-        b=Psi3Q/fbbTO5x9lzBgEFSedg7XetgkWshqAYYmfNxv1jYVveGuWaUb+nISTsxfYzLg
-         hE2jGlxFxlSihAIw6LvzlYmx9p2HjlFH+dieNQBC7dVSD58298N/6yyq/8l5ANliST7h
-         u6i3JGf+bXawzkVAdN/jfz4fXbFeXK/wX/KzLS+osN6vxqzC7UwOdLUBhAsR1Jihtb4O
-         6N5c0JlFNfnziPbD2fCJcPIuoTAeuGgf2iiW8n9ydZ/5bWOXi6ge6c50RPOEDavo7No4
-         759VakAedLuVfmwAd+VpGB4U8Dohx2CQLebPgo30PFtIAHQqYzgiO01/uHGOofqxM7Cr
-         SHag==
+        h=to:cc:references:from:autocrypt:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=GDRrZ9Sx8/aHvKG0oueYi1mgnBT2pKVFKxpwets2bgU=;
+        b=LyqQ2nhEJ2+Al8IXiIAdLoQWr6U7XNqG+cQBfeDTUV97DLpjVyGBspRcrEx9gaOdS+
+         W+0zkImYYP4iUBNKobZPXZr6rKZgdqksd+Z7p/ftcuAVNeHhDgNuJrr0WEWD5beUTZc9
+         neayidGikBmi1RY43thkBMq2x0Zo3xBesZbLPO+AdkuRlFEBSD6lcfcZfa/6aAGOhAz6
+         wH8NZmnl1bg2OD20zV0cBKKpnfm6sAwxKrQoivgJ+Y0oHswTlmUwzSkDcIgWePQxPM5V
+         NBW9C2zQLdoLDko29ZlrOcN/Ugykld3CzPgkQ0fmaDOJYBqf2cCTzrFSFN3ZUwcZVtnA
+         to7Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:content-transfer-encoding;
-        bh=BW/LMfF+1FqMkqjmN+XfkeasbRI7j1OiAR3z8Mi2j3M=;
-        b=RNqPNHxlLh3p9bvL+1Srh4JAWiW8rwwPXDbZcCWcMvYam8PpxbAElM5yFCmvO7vOrR
-         zq39T4ayID2w5cjUEy0YO9UcQ+Dbm/bdVYTt5ds0fLcb5GAtZriPEDmpPBjasJQ5W8jv
-         7YAupqOVfojfl1nXSQLO8r4Llm7moA4oi59ekcmfBBtOsO3d2knmRBJAk9/sHnlIjaZw
-         923bdFNS5XQWZ87gAnhKq+whMpdL2VGVh50vke+2RC3ZzsGCT1/wARg4Wu+gNcZkKXK0
-         fBb1ZhcDXIRE22rQ16y0KQ3x9jTzPwnyBa7XyMCIdBIMGG4a6dMj1YNYjIUGZBsnv/HH
-         VnsQ==
-X-Gm-Message-State: AOAM532AB4kHBf4xZF23d0HbLjb3hWLTmeuUKI9ZD4UcsemDpfOSMP8i
-        JVELrnEZk4z5NetSg6zGHIUkhTlWvtw9fnWtQKpu1a27Xio=
-X-Google-Smtp-Source: ABdhPJyTwCYWOPujWRk0Urod73YlTVQO+uMSphJuT5nhHHH9QygY4CRpwLTwgvYLEqZtbRiMKlq+bTCKRgyLKDRA048=
-X-Received: by 2002:aca:cc08:: with SMTP id c8mr3039885oig.161.1604511751508;
- Wed, 04 Nov 2020 09:42:31 -0800 (PST)
-MIME-Version: 1.0
-References: <20201103211101.4221-1-dsterba@suse.com> <96d4080f-38cd-d49b-ebb1-72de8ae43c34@gmx.com>
- <20201104155354.GG6756@twin.jikos.cz>
-In-Reply-To: <20201104155354.GG6756@twin.jikos.cz>
-From:   Amy Parker <enbyamy@gmail.com>
-Date:   Wed, 4 Nov 2020 09:42:20 -0800
-Message-ID: <CAE1WUT5xuR--a=0QdK=nG7NpW6=nX=JvcOUik1c-RO5XaqNCeA@mail.gmail.com>
-Subject: Re: [PATCH] btrfs: reorder extent buffer members for better packing
-To:     dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        h=x-gm-message-state:to:cc:references:from:autocrypt:subject
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=GDRrZ9Sx8/aHvKG0oueYi1mgnBT2pKVFKxpwets2bgU=;
+        b=ajmG+QpUpxhmUGN+C5ogd+R+2cdUo8ey+UNpJHVHfikr0v3gVop25QpSi+MpXt7Avh
+         uA17VfMS+mCAopK+yy98FNiuH3Dk5WZQ4HlPzN2g3+AYa/inFu9JE63bHKIQ30HQre9o
+         FJmCjIlKgLZjJWz9Y2Katkq+0dIexud/m+eNpbR0l9tPllfcncnGArlovOoebfjKSXiW
+         10icX7J/BOPperM5x4AUUMCBaJU7ZZRrNtSpgP8EddbLap44+iI9JoG2HafH3hzea2gn
+         6CZp29t35yeLh1L5s6f6O7lyQ+oGH1JhUHfEy9VHu/Y0wUIhARlVzJrKPVnHjEKe3hct
+         2sRA==
+X-Gm-Message-State: AOAM530EbocXkx8Lg4lUREQYPm5nEVL9Exr0fN38G/zQvwopp9+/NQcO
+        R5+25Fo6A7uPvcr20bRtj047IpUk6TYAQw==
+X-Google-Smtp-Source: ABdhPJy9DMobqz8vbFMAb1CVxcu+QpOuTw9AQ9n0YWE41rKiQVpZFE27hfslXBQYiOelxwVEmFUbMQ==
+X-Received: by 2002:adf:e384:: with SMTP id e4mr33672280wrm.227.1604512245481;
+        Wed, 04 Nov 2020 09:50:45 -0800 (PST)
+Received: from [192.168.1.121] (host109-152-100-164.range109-152.btcentralplus.com. [109.152.100.164])
+        by smtp.gmail.com with ESMTPSA id e7sm4070369wrm.6.2020.11.04.09.50.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 04 Nov 2020 09:50:44 -0800 (PST)
+To:     Amy Parker <enbyamy@gmail.com>
+Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>,
         Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+References: <cover.1604444952.git.asml.silence@gmail.com>
+ <2a3d84dfc9384eed8659963d1dafedabb3f17c75.1604444952.git.asml.silence@gmail.com>
+ <CAE1WUT5+3xLHe54Mk0wEmp1GtbRhkMkdSi=QPERZegphk=ecLw@mail.gmail.com>
+ <2be31971-da4f-1a39-cb01-0c13b35cf2aa@gmail.com>
+ <CAE1WUT4HtRLs+-7T825akYVBwCtugcnXZ3J4XvaL0_b5F9G18Q@mail.gmail.com>
+From:   Pavel Begunkov <asml.silence@gmail.com>
+Autocrypt: addr=asml.silence@gmail.com; prefer-encrypt=mutual; keydata=
+ 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 bA==
+Subject: Re: [PATCH 1/4] btrfs: discard: speed up discard up to iops_limit
+Message-ID: <4484059b-1e9a-995c-1632-b0ee81eaf605@gmail.com>
+Date:   Wed, 4 Nov 2020 17:47:44 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.3.0
+MIME-Version: 1.0
+In-Reply-To: <CAE1WUT4HtRLs+-7T825akYVBwCtugcnXZ3J4XvaL0_b5F9G18Q@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Nov 4, 2020 at 7:59 AM David Sterba <dsterba@suse.cz> wrote:
->
-> On Wed, Nov 04, 2020 at 07:44:33AM +0800, Qu Wenruo wrote:
-> > On 2020/11/4 =E4=B8=8A=E5=8D=885:11, David Sterba wrote:
-> > > After the rwsem replaced the tree lock implementation, the extent buf=
-fer
-> > > got smaller but leaving some holes behind. By changing log_index type
-> > > and reordering, we can squeeze the size further to 240 bytes, measure=
-d on
-> > > release config on x86_64. Log_index spans only 3 values and needs to =
-be
-> > > signed.
-> > >
-> > > Before:
-> > >
-> > > struct extent_buffer {
-> > >         u64                        start;                /*     0    =
- 8 */
-> > >         long unsigned int          len;                  /*     8    =
- 8 */
-> > >         long unsigned int          bflags;               /*    16    =
- 8 */
-> > >         struct btrfs_fs_info *     fs_info;              /*    24    =
- 8 */
-> > >         spinlock_t                 refs_lock;            /*    32    =
- 4 */
-> > >         atomic_t                   refs;                 /*    36    =
- 4 */
-> > >         atomic_t                   io_pages;             /*    40    =
- 4 */
-> > >         int                        read_mirror;          /*    44    =
- 4 */
-> > >         struct callback_head       callback_head __attribute__((__ali=
-gned__(8))); /*    48    16 */
-> > >         /* --- cacheline 1 boundary (64 bytes) --- */
-> > >         pid_t                      lock_owner;           /*    64    =
- 4 */
-> > >         bool                       lock_recursed;        /*    68    =
- 1 */
-> > >
-> > >         /* XXX 3 bytes hole, try to pack */
-> > >
-> > >         struct rw_semaphore        lock;                 /*    72    =
-40 */
-> >
-> > An off-topic question, for things like aotmic_t/spinlock_t and
-> > rw_semaphore, wouldn't various DEBUG options change their size?
->
-> Yes they do. For example spinlock_t is 4 bytes on release config and 72
-> on debug. Semaphore is 40 vs 168. Atomic_t is 4 bytes always, it's just
-> an int.
+On 04/11/2020 17:33, Amy Parker wrote:
+> On Wed, Nov 4, 2020 at 9:22 AM Pavel Begunkov <asml.silence@gmail.com> wrote:
+>>
+>> On 04/11/2020 15:29, Amy Parker wrote:
+>>> On Wed, Nov 4, 2020 at 1:50 AM Pavel Begunkov <asml.silence@gmail.com> wrote:
+>>>>
+>>>> Instead of using iops_limit only for cutting off extremes, calculate the
+>>>> discard delay directly from it, so it closely follows iops_limit and
+>>>> doesn't under-discarding even though quotas are not saturated.
+>>>
+>>> This sounds like it potentially be a great performance boost, do you
+>>> have any performance metrics regarding this patch?
+>>
+>> Boosting the discard rate and so reaping stalling blocks may be nice, but
+>> unless it holds too much memory creating lack of space it shouldn't affect
+>> throughput. Though, it's better to ask people with deeper understanding
+>> of the fs.
+> 
+> Alright, thanks for the clarification.
+> 
+>> What I've seen is that in some cases there are extents staying queued for
+>> discarding for _too_ long. E.g. reaping a small number of very fat extents
+>> keeps delay at max and doesn't allow to reap them effectively. That could
+>> be a problem with fast drives.
+> 
+> Ah, yep. Seen this personally to a smaller extent.
+> 
+>>
+>>>
+>>>>
+>>>> Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
+>>>> ---
+>>>>  fs/btrfs/discard.c | 10 +++++-----
+>>>>  1 file changed, 5 insertions(+), 5 deletions(-)
+>>>>
+>>>> diff --git a/fs/btrfs/discard.c b/fs/btrfs/discard.c
+>>>> index 741c7e19c32f..76796a90e88d 100644
+>>>> --- a/fs/btrfs/discard.c
+>>>> +++ b/fs/btrfs/discard.c
+>>>> @@ -519,7 +519,6 @@ void btrfs_discard_calc_delay(struct btrfs_discard_ctl *discard_ctl)
+>>>>         s64 discardable_bytes;
+>>>>         u32 iops_limit;
+>>>>         unsigned long delay;
+>>>> -       unsigned long lower_limit = BTRFS_DISCARD_MIN_DELAY_MSEC;
+>>>>
+>>>>         discardable_extents = atomic_read(&discard_ctl->discardable_extents);
+>>>>         if (!discardable_extents)
+>>>> @@ -550,11 +549,12 @@ void btrfs_discard_calc_delay(struct btrfs_discard_ctl *discard_ctl)
+>>>>
+>>>>         iops_limit = READ_ONCE(discard_ctl->iops_limit);
+>>>>         if (iops_limit)
+>>>> -               lower_limit = max_t(unsigned long, lower_limit,
+>>>> -                                   MSEC_PER_SEC / iops_limit);
+>>>> +               delay = MSEC_PER_SEC / iops_limit;
+>>>> +       else
+>>>> +               delay = BTRFS_DISCARD_TARGET_MSEC / discardable_extents;
+>>>
+>>> Looks good to me. I wonder why there wasn't handling of if iops_limit
+>>> was unfindable
+>>> before?
+>>
+>> Not sure what you mean by unfindable, but async discard is relatively new,
+>> might be that everyone just have their hands full.
+> 
+> By unfindable I mean if iops_limit turned up as null when reading it
+> from discard_ctl.
 
-These are pretty big differences in byte size. Probably not worth
-shifting everything
-just for debug configs.
+Ahh, ok. It's handled and I left it as it was, that BTW is still a problem.
 
->
-> > Do we need to consider such case, by moving them to the end of the
-> > structure, or we only consider production build for pa_hole?
->
-> We should optimize for the release build for structure layout or
-> cacheline occupation, the debugging options make it unpredictable and it
-> affects only development. There are way more deployments without
-> debugging options enabled anyway.
+First it calculates a delay based on number of queued extents and than clamps
+it to (BTRFS_DISCARD_MIN_DELAY_MSEC, BTRFS_DISCARD_MAX_DELAY_MSEC). Without
+this patch it did the same but the lower bound was calculated from iops_limit.
 
-We could always just leave a comment there noting that it's unpredictable
-under debug, and that debugging will require a temporary user-end shift.
-Optimizing for production is best, yep.
+> Async discard was added in 5.6, correct? So yeah, makes sense then that people
+> just had their hands full. Thanks for adding it.
 
->
-> The resulting size of the structures is also bigger so this has
-> completely different slab allocation pattern and performance
-> characteristics.
+b0643e59cfa609c4b5f ("btrfs: add the beginning of async discard, discard
+workqueue"). Dec 2019, so less than a year
 
-Yeah, another reason we should just focus on production.
+> 
+>>
+>>>
+>>>>
+>>>> -       delay = BTRFS_DISCARD_TARGET_MSEC / discardable_extents;
+>>>> -       delay = clamp(delay, lower_limit, BTRFS_DISCARD_MAX_DELAY_MSEC);
+>>>> +       delay = clamp(delay, BTRFS_DISCARD_MIN_DELAY_MSEC,
+>>>> +                     BTRFS_DISCARD_MAX_DELAY_MSEC);
+>>>>         discard_ctl->delay = msecs_to_jiffies(delay);
+>>>>
+>>>>         spin_unlock(&discard_ctl->lock);
+>>>> --
+>>>> 2.24.0
+>>>>
+>>>
+>>> This patch looks all great to me.
 
->
-> Here's the layout of eb on the debug config I use:
->
-> struct extent_buffer {
->         u64                        start;                /*     0     8 *=
-/
->         long unsigned int          len;                  /*     8     8 *=
-/
->         long unsigned int          bflags;               /*    16     8 *=
-/
->         struct btrfs_fs_info *     fs_info;              /*    24     8 *=
-/
->         spinlock_t                 refs_lock;            /*    32    72 *=
-/
->         /* --- cacheline 1 boundary (64 bytes) was 40 bytes ago --- */
->         atomic_t                   refs;                 /*   104     4 *=
-/
->         atomic_t                   io_pages;             /*   108     4 *=
-/
->         int                        read_mirror;          /*   112     4 *=
-/
->
->         /* XXX 4 bytes hole, try to pack */
->
->         struct callback_head       callback_head __attribute__((__aligned=
-__(8))); /*   120    16 */
->         /* --- cacheline 2 boundary (128 bytes) was 8 bytes ago --- */
->         pid_t                      lock_owner;           /*   136     4 *=
-/
->         bool                       lock_recursed;        /*   140     1 *=
-/
->         s8                         log_index;            /*   141     1 *=
-/
->
->         /* XXX 2 bytes hole, try to pack */
->
->         struct rw_semaphore        lock;                 /*   144   168 *=
-/
->         /* --- cacheline 4 boundary (256 bytes) was 56 bytes ago --- */
->         struct page *              pages[16];            /*   312   128 *=
-/
->         /* --- cacheline 6 boundary (384 bytes) was 56 bytes ago --- */
->         struct list_head           leak_list;            /*   440    16 *=
-/
->
->         /* size: 456, cachelines: 8, members: 15 */
->         /* sum members: 450, holes: 2, sum holes: 6 */
->         /* forced alignments: 1, forced holes: 1, sum forced holes: 4 */
->         /* last cacheline: 8 bytes */
-> } __attribute__((__aligned__(8)));
-
-Best regards,
-Amy Parker
-(they/them)
+-- 
+Pavel Begunkov
