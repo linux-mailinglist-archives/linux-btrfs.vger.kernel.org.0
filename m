@@ -2,165 +2,191 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E03E2A6A38
-	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Nov 2020 17:48:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05CA72A6B8E
+	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Nov 2020 18:22:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731212AbgKDQsP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 4 Nov 2020 11:48:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39486 "EHLO
+        id S1731179AbgKDRWr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 4 Nov 2020 12:22:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730924AbgKDQsP (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 4 Nov 2020 11:48:15 -0500
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89156C0613D4
-        for <linux-btrfs@vger.kernel.org>; Wed,  4 Nov 2020 08:48:15 -0800 (PST)
-Received: by mail-qk1-x744.google.com with SMTP id b18so19867272qkc.9
-        for <linux-btrfs@vger.kernel.org>; Wed, 04 Nov 2020 08:48:15 -0800 (PST)
+        with ESMTP id S1726604AbgKDRWr (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 4 Nov 2020 12:22:47 -0500
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF89AC0613D3
+        for <linux-btrfs@vger.kernel.org>; Wed,  4 Nov 2020 09:22:46 -0800 (PST)
+Received: by mail-wm1-x341.google.com with SMTP id c9so3125090wml.5
+        for <linux-btrfs@vger.kernel.org>; Wed, 04 Nov 2020 09:22:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
+        d=gmail.com; s=20161025;
+        h=to:cc:references:from:autocrypt:subject:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=kUS3XTLjRL4r+DDiJpZewdtOiODbkPkVa7NDwxrrZWk=;
-        b=2ReE8EtMLCH34nii75jF2gflJkSNbO7DmPLxyjONRJioHrCxAz1XujaukebTaIy8DU
-         o/PKUHBzu++M0+2/H08igiFg+p1fMcgVglEeNGhCe3/PDs55yvYwsSIpRQOyrby9VUX+
-         ikV7MCQq6VZvb/SAS3Z6hWtao5rZAcvkzIEAbeOifBp5KPQf6elm5oOktcVS/LdRUkOD
-         Pq7EnWkVYPmV1JnBuqG7jCwHs3ycIh2TDJuytdmC70Fm4diNBNLKFJhZ/+GRDGv9IhaM
-         dtTwwXIIOULq7thfdjQtnmrTaZF0U2dbveINpCmpTcH/D8QY79yfRsKUseB4AC4HmvGW
-         BRAg==
+        bh=BkNkEbxQfAYhRKuxcublC9y3+vugxwjCkxs4Zpl2lbQ=;
+        b=vLNqzKFmM8Cngq9ywvdPgokn+ivAA8DYx6HqLELDXOsIgGlymeeZofCLp5C1qQUA/z
+         Nzc8LHDNeAOF31wAhno5QiH1DwRpcaQNVS1wab37OMNnDI+nzqKueR6wRxE89t0Lyh/+
+         Mr18dZJcvo4TeQRfQtNRTX98HhX+gbK6vscvw6MbqXbFPGCzwpgRy1V76gWpMq0iRT5o
+         YFga013y73zFaGXSN7JqvhYTiWt3bdS7IyakMiTwnY+OWEqk7tXm3PTt2CpgthhRwyWn
+         G0Vx15BEo2V8KHZ3TTzCCidsftmhoohqfqTH3bOhkOCC2gtYYwMI0eJxdJZ6nzensvHi
+         Mdqw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=kUS3XTLjRL4r+DDiJpZewdtOiODbkPkVa7NDwxrrZWk=;
-        b=ZYTM68y4V9LPfgkgkWtjOrjUhuRn6tEwlRQvY0rBZUM0kv2e8mjwKjWRHmJnhxYQxR
-         ynfo3szaOBw1ZZBN+q8LIkiwXFe7jJQfeD2qflQYUHZ7YWnvd7owiQuwGZNohmW9rPGF
-         X3g8b2qWNzIpwkE7ENFx6DayFL4Kbafi14J33fzdqJWJGAcs6YuKePzi7d2+VayzvDaQ
-         oE6dLKoR+P9Wg4k1wW9eOovVixccfHqJbXpAtWU4tH2BmDdRKOLffpNXLYnOTlE21Mtx
-         NUumm5HNs8jTtYzm/NM5B8d5p2sic+fM/tCZs3X5ut8cWJXBazeSp+ztvHud36/LowaE
-         J0YQ==
-X-Gm-Message-State: AOAM5328MxLmob/0YcsgFS8dO/rtvUW/OlL4t878Ad1iXmuumkqjblrX
-        92yZKv1YPI0PIWsrLWNrjCqDMOmTob9fwg==
-X-Google-Smtp-Source: ABdhPJw2C2lckas80g3x/zgFby+RxpCVCVCMdOPgrH0yc0yFBg4uciTURIkJAo02Y0Oe3hJFRqhKKw==
-X-Received: by 2002:a37:4796:: with SMTP id u144mr409153qka.235.1604508494095;
-        Wed, 04 Nov 2020 08:48:14 -0800 (PST)
-Received: from ?IPv6:2620:10d:c0a8:11c1::1180? ([2620:10d:c091:480::1:c888])
-        by smtp.gmail.com with ESMTPSA id y187sm2841690qka.116.2020.11.04.08.48.12
+        h=x-gm-message-state:to:cc:references:from:autocrypt:subject
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=BkNkEbxQfAYhRKuxcublC9y3+vugxwjCkxs4Zpl2lbQ=;
+        b=XrRyZHiI1/HAqv8wpUgKJ/gZQmkbM6q1ZP5o4/nngjMU3anR1U5su+Hwu6YyueI/qA
+         sNacN3pd+PFVgtam9Xp094W9N85H0SbSOnJoa0GV0CrAJY+pVv8HHiuYxQCCTGBpxnX4
+         qVXKKuyBheZAKPqiN48qMVB6lWOLnv0TLOM75FR3O/syyqjdyy0pyUzNRtCN5cktpH4y
+         t/7xIWgzbKnLhvwmcgZb4sX+Vms1m+ciQNpKDm3WfG3dhW5MkkfaAhAzzpSoZT1kBZTC
+         2uCJco9tTzLCPpa5hzpw4Ze0pcX7NFxECYzUUl4x+yw0P571hcYpG5bErcVKzIsvWNY5
+         Np3A==
+X-Gm-Message-State: AOAM532jqGclClgjGYoMzim2oRk4vtbklz+fD/vOl+aKCkzSQMNqP/pz
+        XTC1SPisoFqL/GlBHnekc95JYLP3lPG2Jg==
+X-Google-Smtp-Source: ABdhPJy9GGV3NdPWKOkSl3dOy33DCrK61gXPsRvYe/O+SiJJYt0T01IB/sxyxN9W6vmii/9QxhSyxQ==
+X-Received: by 2002:a1c:5605:: with SMTP id k5mr5368929wmb.99.1604510565253;
+        Wed, 04 Nov 2020 09:22:45 -0800 (PST)
+Received: from [192.168.1.121] (host109-152-100-164.range109-152.btcentralplus.com. [109.152.100.164])
+        by smtp.gmail.com with ESMTPSA id t199sm3072785wmt.46.2020.11.04.09.22.44
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 04 Nov 2020 08:48:13 -0800 (PST)
-Subject: Re: [btrfs] 96bed17ad9: fio.write_iops -59.7% regression
-To:     kernel test robot <oliver.sang@intel.com>
-Cc:     David Sterba <dsterba@suse.com>,
-        Nikolay Borisov <nborisov@suse.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        lkp@lists.01.org, lkp@intel.com, ying.huang@intel.com,
-        feng.tang@intel.com, zhengjun.xing@intel.com,
-        linux-btrfs@vger.kernel.org
-References: <20201104061657.GB15746@xsang-OptiPlex-9020>
-From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <ec5733c4-9d02-5057-3040-8dcf566efd83@toxicpanda.com>
-Date:   Wed, 4 Nov 2020 11:48:11 -0500
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.4.0
+        Wed, 04 Nov 2020 09:22:44 -0800 (PST)
+To:     Amy Parker <enbyamy@gmail.com>
+Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+References: <cover.1604444952.git.asml.silence@gmail.com>
+ <2a3d84dfc9384eed8659963d1dafedabb3f17c75.1604444952.git.asml.silence@gmail.com>
+ <CAE1WUT5+3xLHe54Mk0wEmp1GtbRhkMkdSi=QPERZegphk=ecLw@mail.gmail.com>
+From:   Pavel Begunkov <asml.silence@gmail.com>
+Autocrypt: addr=asml.silence@gmail.com; prefer-encrypt=mutual; keydata=
+ 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 bA==
+Subject: Re: [PATCH 1/4] btrfs: discard: speed up discard up to iops_limit
+Message-ID: <2be31971-da4f-1a39-cb01-0c13b35cf2aa@gmail.com>
+Date:   Wed, 4 Nov 2020 17:19:44 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.3.0
 MIME-Version: 1.0
-In-Reply-To: <20201104061657.GB15746@xsang-OptiPlex-9020>
-Content-Type: text/plain; charset=windows-1252; format=flowed
+In-Reply-To: <CAE1WUT5+3xLHe54Mk0wEmp1GtbRhkMkdSi=QPERZegphk=ecLw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 11/4/20 1:16 AM, kernel test robot wrote:
-> Greeting,
+On 04/11/2020 15:29, Amy Parker wrote:
+> On Wed, Nov 4, 2020 at 1:50 AM Pavel Begunkov <asml.silence@gmail.com> wrote:
+>>
+>> Instead of using iops_limit only for cutting off extremes, calculate the
+>> discard delay directly from it, so it closely follows iops_limit and
+>> doesn't under-discarding even though quotas are not saturated.
 > 
-> FYI, we noticed a -59.7% regression of fio.write_iops due to commit:
+> This sounds like it potentially be a great performance boost, do you
+> have any performance metrics regarding this patch?
+
+Boosting the discard rate and so reaping stalling blocks may be nice, but
+unless it holds too much memory creating lack of space it shouldn't affect
+throughput. Though, it's better to ask people with deeper understanding
+of the fs.
+What I've seen is that in some cases there are extents staying queued for
+discarding for _too_ long. E.g. reaping a small number of very fat extents
+keeps delay at max and doesn't allow to reap them effectively. That could
+be a problem with fast drives.
+
 > 
+>>
+>> Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
+>> ---
+>>  fs/btrfs/discard.c | 10 +++++-----
+>>  1 file changed, 5 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/fs/btrfs/discard.c b/fs/btrfs/discard.c
+>> index 741c7e19c32f..76796a90e88d 100644
+>> --- a/fs/btrfs/discard.c
+>> +++ b/fs/btrfs/discard.c
+>> @@ -519,7 +519,6 @@ void btrfs_discard_calc_delay(struct btrfs_discard_ctl *discard_ctl)
+>>         s64 discardable_bytes;
+>>         u32 iops_limit;
+>>         unsigned long delay;
+>> -       unsigned long lower_limit = BTRFS_DISCARD_MIN_DELAY_MSEC;
+>>
+>>         discardable_extents = atomic_read(&discard_ctl->discardable_extents);
+>>         if (!discardable_extents)
+>> @@ -550,11 +549,12 @@ void btrfs_discard_calc_delay(struct btrfs_discard_ctl *discard_ctl)
+>>
+>>         iops_limit = READ_ONCE(discard_ctl->iops_limit);
+>>         if (iops_limit)
+>> -               lower_limit = max_t(unsigned long, lower_limit,
+>> -                                   MSEC_PER_SEC / iops_limit);
+>> +               delay = MSEC_PER_SEC / iops_limit;
+>> +       else
+>> +               delay = BTRFS_DISCARD_TARGET_MSEC / discardable_extents;
 > 
-> commit: 96bed17ad9d425ff6958a2e6f87179453a3d76f2 ("btrfs: simplify the logic in need_preemptive_flushing")
-> https://git.kernel.org/cgit/linux/kernel/git/next/linux-next.git master
+> Looks good to me. I wonder why there wasn't handling of if iops_limit
+> was unfindable
+> before?
+
+Not sure what you mean by unfindable, but async discard is relatively new,
+might be that everyone just have their hands full.
+
 > 
+>>
+>> -       delay = BTRFS_DISCARD_TARGET_MSEC / discardable_extents;
+>> -       delay = clamp(delay, lower_limit, BTRFS_DISCARD_MAX_DELAY_MSEC);
+>> +       delay = clamp(delay, BTRFS_DISCARD_MIN_DELAY_MSEC,
+>> +                     BTRFS_DISCARD_MAX_DELAY_MSEC);
+>>         discard_ctl->delay = msecs_to_jiffies(delay);
+>>
+>>         spin_unlock(&discard_ctl->lock);
+>> --
+>> 2.24.0
+>>
 > 
-> in testcase: fio-basic
-> on test machine: 192 threads Intel(R) Xeon(R) CPU @ 2.20GHz with 192G memory
-> with following parameters:
+> This patch looks all great to me.
 > 
-> 	disk: 1SSD
-> 	fs: btrfs
-> 	runtime: 300s
-> 	nr_task: 8
-> 	rw: write
-> 	bs: 4k
-> 	ioengine: sync
-> 	test_size: 256g
-> 	cpufreq_governor: performance
-> 	ucode: 0x4002f01
-> 
-> test-description: Fio is a tool that will spawn a number of threads or processes doing a particular type of I/O action as specified by the user.
-> test-url: https://github.com/axboe/fio
+> Best regards,
+> Amy Parker
+> (they/them)
 > 
 
-I generally ignore these reports, but since it's FIO I figured at least the test 
-itself was valid.  However once again I'm unable to reproduce the results
-
-linus master:
-
-task_0: (groupid=0, jobs=8): err= 0: pid=38586: Wed Nov  4 08:13:36 2020
-   write: IOPS=168k, BW=655MiB/s (687MB/s)(192GiB/300001msec); 0 zone resets
-     clat (usec): min=26, max=786, avg=47.15, stdev= 7.21
-      lat (usec): min=26, max=786, avg=47.21, stdev= 7.21
-     clat percentiles (nsec):
-      |  1.00th=[31872],  5.00th=[35584], 10.00th=[37632], 20.00th=[40704],
-      | 30.00th=[43264], 40.00th=[45312], 50.00th=[47360], 60.00th=[48896],
-      | 70.00th=[50944], 80.00th=[52992], 90.00th=[56064], 95.00th=[59136],
-      | 99.00th=[65280], 99.50th=[68096], 99.90th=[74240], 99.95th=[77312],
-      | 99.99th=[88576]
-    bw (  KiB/s): min=63752, max=112864, per=12.50%, avg=83810.53, 
-stdev=3403.48, samples=4792
-    iops        : min=15938, max=28216, avg=20952.61, stdev=850.87, samples=4792
-   lat (usec)   : 50=65.73%, 100=34.27%, 250=0.01%, 500=0.01%, 750=0.01%
-   lat (usec)   : 1000=0.01%
-   cpu          : usr=2.22%, sys=97.77%, ctx=5054, majf=0, minf=63
-   IO depths    : 1=100.0%, 2=0.0%, 4=0.0%, 8=0.0%, 16=0.0%, 32=0.0%, >=64=0.0%
-      submit    : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, >=64=0.0%
-      complete  : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, >=64=0.0%
-      issued rwts: total=0,50298940,0,0 short=0,0,0,0 dropped=0,0,0,0
-      latency   : target=0, window=0, percentile=100.00%, depth=32
-
-Run status group 0 (all jobs):
-   WRITE: bw=655MiB/s (687MB/s), 655MiB/s-655MiB/s (687MB/s-687MB/s), io=192GiB 
-(206GB), run=300001-300001msec
-
-kdave/for-next-20201104
-task_0: (groupid=0, jobs=8): err= 0: pid=6652: Wed Nov  4 08:41:52 2020
-   write: IOPS=180k, BW=705MiB/s (739MB/s)(207GiB/300001msec); 0 zone resets
-     clat (usec): min=17, max=10603, avg=43.91, stdev= 9.62
-      lat (usec): min=17, max=10603, avg=43.98, stdev= 9.62
-     clat percentiles (nsec):
-      |  1.00th=[25984],  5.00th=[31104], 10.00th=[33536], 20.00th=[37120],
-      | 30.00th=[39168], 40.00th=[41216], 50.00th=[43264], 60.00th=[45824],
-      | 70.00th=[47872], 80.00th=[50944], 90.00th=[54528], 95.00th=[57600],
-      | 99.00th=[64768], 99.50th=[68096], 99.90th=[74240], 99.95th=[78336],
-      | 99.99th=[90624]
-    bw (  KiB/s): min=66760, max=123160, per=12.50%, avg=90221.11, 
-stdev=9052.52, samples=4792
-    iops        : min=16690, max=30790, avg=22555.24, stdev=2263.14, samples=4792
-   lat (usec)   : 20=0.01%, 50=77.24%, 100=22.75%, 250=0.01%, 500=0.01%
-   lat (usec)   : 750=0.01%, 1000=0.01%
-   lat (msec)   : 2=0.01%, 4=0.01%, 20=0.01%
-   cpu          : usr=1.67%, sys=98.31%, ctx=4806, majf=0, minf=68
-   IO depths    : 1=100.0%, 2=0.0%, 4=0.0%, 8=0.0%, 16=0.0%, 32=0.0%, >=64=0.0%
-      submit    : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, >=64=0.0%
-      complete  : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, >=64=0.0%
-      issued rwts: total=0,54134917,0,0 short=0,0,0,0 dropped=0,0,0,0
-      latency   : target=0, window=0, percentile=100.00%, depth=32
-
-Run status group 0 (all jobs):
-   WRITE: bw=705MiB/s (739MB/s), 705MiB/s-705MiB/s (739MB/s-739MB/s), io=207GiB 
-(222GB), run=300001-300001msec
-
-So instead of -60% iops regression, I'm seeing a 7% iops improvement.  The only 
-difference is that my machine doesn't have 192 threads, it has 80.  Thanks,
-
-Josef
+-- 
+Pavel Begunkov
