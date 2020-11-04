@@ -2,289 +2,240 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE6142A6C5C
-	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Nov 2020 19:03:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B72A32A6C7F
+	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Nov 2020 19:10:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732215AbgKDSDA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 4 Nov 2020 13:03:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51196 "EHLO
+        id S1730697AbgKDSJt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 4 Nov 2020 13:09:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726608AbgKDSC7 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 4 Nov 2020 13:02:59 -0500
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A130C0613D3
-        for <linux-btrfs@vger.kernel.org>; Wed,  4 Nov 2020 10:02:57 -0800 (PST)
-Received: by mail-qt1-x844.google.com with SMTP id c5so12838131qtw.3
-        for <linux-btrfs@vger.kernel.org>; Wed, 04 Nov 2020 10:02:57 -0800 (PST)
+        with ESMTP id S1730576AbgKDSJt (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 4 Nov 2020 13:09:49 -0500
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBF5DC0613D3
+        for <linux-btrfs@vger.kernel.org>; Wed,  4 Nov 2020 10:09:48 -0800 (PST)
+Received: by mail-wr1-x444.google.com with SMTP id 33so12276821wrl.7
+        for <linux-btrfs@vger.kernel.org>; Wed, 04 Nov 2020 10:09:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc:content-transfer-encoding;
-        bh=UkbkfyRBZQc3MW3y6YEDmDNnks5GmqKUpLiXx2BAzx8=;
-        b=Vi8PgYjauV1JE7l4+IFJtI6APUP2+ehI2v8NyOKiTVO6kt/a7kO5SZy7mqa0ljwNrd
-         Sp5p3X29YthqIBYdMmP4t+KJWSzND+1j2G0NL6mK2PBbDACUEF0OXYHsr2EkkdUGZkWO
-         j56mPgXI2jkVy4V7kmtMYlnSNBPMIyggtJuSjSlmmhjhysqRvmmWPQbhPLND/mrK2OH3
-         WpjjeXDlaiwLEdxWFQq1+naRHp6v9h8h7/prvVBxPArjOoUtBvpdQXveELI8CGXRNlzD
-         2qVejQx2evvHTVD81+RdpHGYZfvKQfd35Wfo4yWyxTkQt+2ZB8zDd/TNUUplFaHB2Eb1
-         PAvQ==
+        h=subject:to:cc:references:from:autocrypt:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=D4Ucewew/YQR3KqUdqE49B0xybd2O+sztbow7iMC+Vg=;
+        b=q90S+089RDSXSTrb+kigp7pvzVUWYzrCLgEE0jb9EqkxwPBtDms808Y3+p0+grWqo3
+         We2X+N/huFXPRr+KtUdomQktWiX7Cgg40U32u8ewLk9t7BdpJHsxa9PHgA0hujbf2sD9
+         ywTM2sEhgBFyGGztvbXXCWO9cNGm9UNtlqBgCxMGLkPKY7wH0awL6OEhEiFE4OhbsQtc
+         cXm69pBST8qMmjLDQ73mxXp112HQ7capLYLI+hIPjuhfEmBd9ugDDEG8aZoxHpFL7KhH
+         6G6MdPZWTqxm+b/CSS4iO2ijkXDDuV1L5mIDICf4ZSDM8nETVrn+DY2TW9xygg/FGZad
+         n6hA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc:content-transfer-encoding;
-        bh=UkbkfyRBZQc3MW3y6YEDmDNnks5GmqKUpLiXx2BAzx8=;
-        b=TntEi3naV7GR9jaKvazRSFo9LdWjDyvgbjgL9WPzhXyS8grGXmpu0ieU8Rf38f0MsO
-         A4cEQROy5feR/xZ3UgnO/fpgmB2V3WcWKjeHzfbTBQKjQOYjV7QD7AAAMVi2NmYabG5F
-         kjbuzwle8pLh0WwQHr91XPbzVIjTv5Nf/KRRkiDVrZiJjlGmZYbBi8bC8hD2Jh46Bpzf
-         FNJ3rM1GtAKJuxpZeTcS7Woz3ZkMeMQ0CLf/cg7kX7r+RXNkeMbs/pLOTeCi8wJYqaQ7
-         99UpZ8YfZRMUI6eNxQ+m/8Dy0H1m73hKsfhQPA4A30R94bVs298Tv921wS8VS6ybRKkc
-         iiRw==
-X-Gm-Message-State: AOAM530yKPLrxLW+ksc/VtLcdHCqTkdDiT5TKRfBQHrbIxmzMZbevgTF
-        6A98PfMnd1yMkOsBCNjNQtRXOC0xDV0XE/0Jfqizn+kqQYg=
-X-Google-Smtp-Source: ABdhPJwQYHlTi8rn195QXzJFHPU/9kubJarnePyYIc7+zdLdhzShMRwFvL+9MoKZJjqJGALgdpSAdMgvxmCG7D1VOq0=
-X-Received: by 2002:aed:2321:: with SMTP id h30mr20256418qtc.213.1604512976565;
- Wed, 04 Nov 2020 10:02:56 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=D4Ucewew/YQR3KqUdqE49B0xybd2O+sztbow7iMC+Vg=;
+        b=QQIkyJQbT9d3mQMGUrXjNpwxmTMCEluILPbXpfYnAIixK09SP/AfmZEUIVH4OEpTm6
+         W4ezj64O8/jE4/VAV4pSqm8ThO7mLRkjOtDCeE07pKD2SZ6in9lHDspbTHB5iTHB8Tyt
+         aYWyhMbyRg+airrO5fsVSL+yYvCYnUzLMKt9sF9RTbjpRMQMprFsfP4rYNhrSzCknOLE
+         qNsp7cCGWQEtevFjaJJQ6TeXD983PFFljrdcpycXj1RoTbs2cp1zsVQhT/yh4Xu6KdB5
+         mNKvY5Yg7ASgEva6eQFC3eEHUOd1PHmiqg6e0ijDR/KqttdydZjcmJoAVa9DA99GSNGk
+         AtIQ==
+X-Gm-Message-State: AOAM531U6yVOXqnfubjif1Usv25hOBrV3bM++6c1rQUeItryihTOrch9
+        LKSk0DZtkanZDaI6gEWxitb1z7hk7qKZjg==
+X-Google-Smtp-Source: ABdhPJzDMmhnEezalm4UdWrDfeQJJDip70kOvl4J2wU8fdurVdzjQiv12hXkbyz5X9w5aMRwVzV74w==
+X-Received: by 2002:a5d:4701:: with SMTP id y1mr1462539wrq.292.1604513387333;
+        Wed, 04 Nov 2020 10:09:47 -0800 (PST)
+Received: from [192.168.1.121] (host109-152-100-164.range109-152.btcentralplus.com. [109.152.100.164])
+        by smtp.gmail.com with ESMTPSA id 15sm3176236wmg.1.2020.11.04.10.09.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 04 Nov 2020 10:09:46 -0800 (PST)
+Subject: Re: [PATCH 1/4] btrfs: discard: speed up discard up to iops_limit
+To:     Amy Parker <enbyamy@gmail.com>
+Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+References: <cover.1604444952.git.asml.silence@gmail.com>
+ <2a3d84dfc9384eed8659963d1dafedabb3f17c75.1604444952.git.asml.silence@gmail.com>
+ <CAE1WUT5+3xLHe54Mk0wEmp1GtbRhkMkdSi=QPERZegphk=ecLw@mail.gmail.com>
+ <2be31971-da4f-1a39-cb01-0c13b35cf2aa@gmail.com>
+ <CAE1WUT4HtRLs+-7T825akYVBwCtugcnXZ3J4XvaL0_b5F9G18Q@mail.gmail.com>
+ <4484059b-1e9a-995c-1632-b0ee81eaf605@gmail.com>
+ <CAE1WUT6WudydeAyXLKaJBQeaouFb3Sx42euekDHGR9tD61nm3Q@mail.gmail.com>
+From:   Pavel Begunkov <asml.silence@gmail.com>
+Autocrypt: addr=asml.silence@gmail.com; prefer-encrypt=mutual; keydata=
+ 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 bA==
+Message-ID: <36897f55-26cf-4814-8549-9392a6e9e4b1@gmail.com>
+Date:   Wed, 4 Nov 2020 18:06:46 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.3.0
 MIME-Version: 1.0
-References: <cover.1603460665.git.josef@toxicpanda.com> <e18fae96f7718557e766edf282a6d8f4dfe7f139.1603460665.git.josef@toxicpanda.com>
-In-Reply-To: <e18fae96f7718557e766edf282a6d8f4dfe7f139.1603460665.git.josef@toxicpanda.com>
-Reply-To: fdmanana@gmail.com
-From:   Filipe Manana <fdmanana@gmail.com>
-Date:   Wed, 4 Nov 2020 18:02:45 +0000
-Message-ID: <CAL3q7H74F8bXoS9rHXru76bc-OrcemxFmf-jE+cdj4mwgoR=8w@mail.gmail.com>
-Subject: Re: [PATCH 7/8] btrfs: async load free space cache
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>, kernel-team@fb.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAE1WUT6WudydeAyXLKaJBQeaouFb3Sx42euekDHGR9tD61nm3Q@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Oct 23, 2020 at 5:13 PM Josef Bacik <josef@toxicpanda.com> wrote:
->
-> While documenting the usage of the commit_root_sem, I noticed that we do
-> not actually take the commit_root_sem in the case of the free space
-> cache.  This is problematic because we're supposed to hold that sem
-> while we're reading the commit roots, which is what we do for the free
-> space cache.
->
-> The reason I did it inline when I originally wrote the code was because
-> there's the case of unpinning where we need to make sure that the free
-> space cache is loaded if we're going to use the free space cache.  But
-> we can accomplish the same thing by simply waiting for the cache to be
-> loaded.
->
-> Rework this code to load the free space cache asynchronously.  This
-> allows us to greatly cleanup the caching code because now it's all
-> shared by the various caching methods.  We also are now in a position to
-> have the commit_root semaphore held while we're loading the free space
-> cache.  And finally our modification of ->last_byte_to_unpin is removed
-> because it can be handled in the proper way on commit.
->
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+On 04/11/2020 17:55, Amy Parker wrote:
+> On Wed, Nov 4, 2020 at 9:50 AM Pavel Begunkov <asml.silence@gmail.com> wrote:
+>>
+>> On 04/11/2020 17:33, Amy Parker wrote:
+>>> On Wed, Nov 4, 2020 at 9:22 AM Pavel Begunkov <asml.silence@gmail.com> wrote:
+>>>>
+>>>> On 04/11/2020 15:29, Amy Parker wrote:
+>>>>> On Wed, Nov 4, 2020 at 1:50 AM Pavel Begunkov <asml.silence@gmail.com> wrote:
+>>>>>>
+>>>>>> Instead of using iops_limit only for cutting off extremes, calculate the
+>>>>>> discard delay directly from it, so it closely follows iops_limit and
+>>>>>> doesn't under-discarding even though quotas are not saturated.
+>>>>>
+>>>>> This sounds like it potentially be a great performance boost, do you
+>>>>> have any performance metrics regarding this patch?
+>>>>
+>>>> Boosting the discard rate and so reaping stalling blocks may be nice, but
+>>>> unless it holds too much memory creating lack of space it shouldn't affect
+>>>> throughput. Though, it's better to ask people with deeper understanding
+>>>> of the fs.
+>>>
+>>> Alright, thanks for the clarification.
+>>>
+>>>> What I've seen is that in some cases there are extents staying queued for
+>>>> discarding for _too_ long. E.g. reaping a small number of very fat extents
+>>>> keeps delay at max and doesn't allow to reap them effectively. That could
+>>>> be a problem with fast drives.
+>>>
+>>> Ah, yep. Seen this personally to a smaller extent.
+>>>
+>>>>
+>>>>>
+>>>>>>
+>>>>>> Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
+>>>>>> ---
+>>>>>>  fs/btrfs/discard.c | 10 +++++-----
+>>>>>>  1 file changed, 5 insertions(+), 5 deletions(-)
+>>>>>>
+>>>>>> diff --git a/fs/btrfs/discard.c b/fs/btrfs/discard.c
+>>>>>> index 741c7e19c32f..76796a90e88d 100644
+>>>>>> --- a/fs/btrfs/discard.c
+>>>>>> +++ b/fs/btrfs/discard.c
+>>>>>> @@ -519,7 +519,6 @@ void btrfs_discard_calc_delay(struct btrfs_discard_ctl *discard_ctl)
+>>>>>>         s64 discardable_bytes;
+>>>>>>         u32 iops_limit;
+>>>>>>         unsigned long delay;
+>>>>>> -       unsigned long lower_limit = BTRFS_DISCARD_MIN_DELAY_MSEC;
+>>>>>>
+>>>>>>         discardable_extents = atomic_read(&discard_ctl->discardable_extents);
+>>>>>>         if (!discardable_extents)
+>>>>>> @@ -550,11 +549,12 @@ void btrfs_discard_calc_delay(struct btrfs_discard_ctl *discard_ctl)
+>>>>>>
+>>>>>>         iops_limit = READ_ONCE(discard_ctl->iops_limit);
+>>>>>>         if (iops_limit)
+>>>>>> -               lower_limit = max_t(unsigned long, lower_limit,
+>>>>>> -                                   MSEC_PER_SEC / iops_limit);
+>>>>>> +               delay = MSEC_PER_SEC / iops_limit;
+>>>>>> +       else
+>>>>>> +               delay = BTRFS_DISCARD_TARGET_MSEC / discardable_extents;
+>>>>>
+>>>>> Looks good to me. I wonder why there wasn't handling of if iops_limit
+>>>>> was unfindable
+>>>>> before?
+>>>>
+>>>> Not sure what you mean by unfindable, but async discard is relatively new,
+>>>> might be that everyone just have their hands full.
+>>>
+>>> By unfindable I mean if iops_limit turned up as null when reading it
+>>> from discard_ctl.
+>>
+>> Ahh, ok. It's handled and I left it as it was, that BTW is still a problem.
+> 
+> How often is iops_limit unfindable?
 
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
+I don't know, but the default is 10, so shouldn't be too ubiquitous.
+Maybe someone here knows statistics.
 
-Looks good, thanks.
+> 
+>>
+>> First it calculates a delay based on number of queued extents and than clamps
+>> it to (BTRFS_DISCARD_MIN_DELAY_MSEC, BTRFS_DISCARD_MAX_DELAY_MSEC). Without
+>> this patch it did the same but the lower bound was calculated from iops_limit.
+> 
+> Thanks for clarifying.
+> 
+>>
+>>> Async discard was added in 5.6, correct? So yeah, makes sense then that people
+>>> just had their hands full. Thanks for adding it.
+>>
+>> b0643e59cfa609c4b5f ("btrfs: add the beginning of async discard, discard
+>> workqueue"). Dec 2019, so less than a year
+> 
+> Thanks for finding the commit.
+> 
+>>
+>>>
+>>>>
+>>>>>
+>>>>>>
+>>>>>> -       delay = BTRFS_DISCARD_TARGET_MSEC / discardable_extents;
+>>>>>> -       delay = clamp(delay, lower_limit, BTRFS_DISCARD_MAX_DELAY_MSEC);
+>>>>>> +       delay = clamp(delay, BTRFS_DISCARD_MIN_DELAY_MSEC,
+>>>>>> +                     BTRFS_DISCARD_MAX_DELAY_MSEC);
+>>>>>>         discard_ctl->delay = msecs_to_jiffies(delay);
+>>>>>>
+>>>>>>         spin_unlock(&discard_ctl->lock);
+>>>>>> --
+>>>>>> 2.24.0
+>>>>>>
+>>>>>
+>>>>> This patch looks all great to me.
+>>
+>> --
+>> Pavel Begunkov
+> 
+> Best regards,
+> Amy Parker
+> (they/them)
+> 
 
-> ---
->  fs/btrfs/block-group.c | 123 ++++++++++++++++++-----------------------
->  1 file changed, 53 insertions(+), 70 deletions(-)
->
-> diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-> index adbd18dc08a1..ba6564f67d9a 100644
-> --- a/fs/btrfs/block-group.c
-> +++ b/fs/btrfs/block-group.c
-> @@ -424,6 +424,23 @@ int btrfs_wait_block_group_cache_done(struct btrfs_b=
-lock_group *cache)
->         return ret;
->  }
->
-> +static bool space_cache_v1_done(struct btrfs_block_group *cache)
-> +{
-> +       bool ret;
-> +
-> +       spin_lock(&cache->lock);
-> +       ret =3D cache->cached !=3D BTRFS_CACHE_FAST;
-> +       spin_unlock(&cache->lock);
-> +
-> +       return ret;
-> +}
-> +
-> +static void btrfs_wait_space_cache_v1_finished(struct btrfs_block_group =
-*cache,
-> +                               struct btrfs_caching_control *caching_ctl=
-)
-> +{
-> +       wait_event(caching_ctl->wait, space_cache_v1_done(cache));
-> +}
-> +
->  #ifdef CONFIG_BTRFS_DEBUG
->  static void fragment_free_space(struct btrfs_block_group *block_group)
->  {
-> @@ -639,11 +656,28 @@ static noinline void caching_thread(struct btrfs_wo=
-rk *work)
->         mutex_lock(&caching_ctl->mutex);
->         down_read(&fs_info->commit_root_sem);
->
-> +       if (btrfs_test_opt(fs_info, SPACE_CACHE)) {
-> +               ret =3D load_free_space_cache(block_group);
-> +               if (ret =3D=3D 1) {
-> +                       ret =3D 0;
-> +                       goto done;
-> +               }
-> +
-> +               /*
-> +                * We failed to load the space cache, set ourselves to
-> +                * CACHE_STARTED and carry on.
-> +                */
-> +               spin_lock(&block_group->lock);
-> +               block_group->cached =3D BTRFS_CACHE_STARTED;
-> +               spin_unlock(&block_group->lock);
-> +               wake_up(&caching_ctl->wait);
-> +       }
-> +
->         if (btrfs_fs_compat_ro(fs_info, FREE_SPACE_TREE))
->                 ret =3D load_free_space_tree(caching_ctl);
->         else
->                 ret =3D load_extent_tree_free(caching_ctl);
-> -
-> +done:
->         spin_lock(&block_group->lock);
->         block_group->caching_ctl =3D NULL;
->         block_group->cached =3D ret ? BTRFS_CACHE_ERROR : BTRFS_CACHE_FIN=
-ISHED;
-> @@ -679,7 +713,7 @@ int btrfs_cache_block_group(struct btrfs_block_group =
-*cache, int load_cache_only
->  {
->         DEFINE_WAIT(wait);
->         struct btrfs_fs_info *fs_info =3D cache->fs_info;
-> -       struct btrfs_caching_control *caching_ctl;
-> +       struct btrfs_caching_control *caching_ctl =3D NULL;
->         int ret =3D 0;
->
->         caching_ctl =3D kzalloc(sizeof(*caching_ctl), GFP_NOFS);
-> @@ -691,84 +725,28 @@ int btrfs_cache_block_group(struct btrfs_block_grou=
-p *cache, int load_cache_only
->         init_waitqueue_head(&caching_ctl->wait);
->         caching_ctl->block_group =3D cache;
->         caching_ctl->progress =3D cache->start;
-> -       refcount_set(&caching_ctl->count, 1);
-> +       refcount_set(&caching_ctl->count, 2);
->         btrfs_init_work(&caching_ctl->work, caching_thread, NULL, NULL);
->
->         spin_lock(&cache->lock);
->         if (cache->cached !=3D BTRFS_CACHE_NO) {
-> -               spin_unlock(&cache->lock);
->                 kfree(caching_ctl);
-> -               return 0;
-> +
-> +               caching_ctl =3D cache->caching_ctl;
-> +               if (caching_ctl)
-> +                       refcount_inc(&caching_ctl->count);
-> +               spin_unlock(&cache->lock);
-> +               goto out;
->         }
->         WARN_ON(cache->caching_ctl);
->         cache->caching_ctl =3D caching_ctl;
-> -       cache->cached =3D BTRFS_CACHE_FAST;
-> +       if (btrfs_test_opt(fs_info, SPACE_CACHE))
-> +               cache->cached =3D BTRFS_CACHE_FAST;
-> +       else
-> +               cache->cached =3D BTRFS_CACHE_STARTED;
-> +       cache->has_caching_ctl =3D 1;
->         spin_unlock(&cache->lock);
->
-> -       if (btrfs_test_opt(fs_info, SPACE_CACHE)) {
-> -               mutex_lock(&caching_ctl->mutex);
-> -               ret =3D load_free_space_cache(cache);
-> -
-> -               spin_lock(&cache->lock);
-> -               if (ret =3D=3D 1) {
-> -                       cache->caching_ctl =3D NULL;
-> -                       cache->cached =3D BTRFS_CACHE_FINISHED;
-> -                       cache->last_byte_to_unpin =3D (u64)-1;
-> -                       caching_ctl->progress =3D (u64)-1;
-> -               } else {
-> -                       if (load_cache_only) {
-> -                               cache->caching_ctl =3D NULL;
-> -                               cache->cached =3D BTRFS_CACHE_NO;
-> -                       } else {
-> -                               cache->cached =3D BTRFS_CACHE_STARTED;
-> -                               cache->has_caching_ctl =3D 1;
-> -                       }
-> -               }
-> -               spin_unlock(&cache->lock);
-> -#ifdef CONFIG_BTRFS_DEBUG
-> -               if (ret =3D=3D 1 &&
-> -                   btrfs_should_fragment_free_space(cache)) {
-> -                       u64 bytes_used;
-> -
-> -                       spin_lock(&cache->space_info->lock);
-> -                       spin_lock(&cache->lock);
-> -                       bytes_used =3D cache->length - cache->used;
-> -                       cache->space_info->bytes_used +=3D bytes_used >> =
-1;
-> -                       spin_unlock(&cache->lock);
-> -                       spin_unlock(&cache->space_info->lock);
-> -                       fragment_free_space(cache);
-> -               }
-> -#endif
-> -               mutex_unlock(&caching_ctl->mutex);
-> -
-> -               wake_up(&caching_ctl->wait);
-> -               if (ret =3D=3D 1) {
-> -                       btrfs_put_caching_control(caching_ctl);
-> -                       btrfs_free_excluded_extents(cache);
-> -                       return 0;
-> -               }
-> -       } else {
-> -               /*
-> -                * We're either using the free space tree or no caching a=
-t all.
-> -                * Set cached to the appropriate value and wakeup any wai=
-ters.
-> -                */
-> -               spin_lock(&cache->lock);
-> -               if (load_cache_only) {
-> -                       cache->caching_ctl =3D NULL;
-> -                       cache->cached =3D BTRFS_CACHE_NO;
-> -               } else {
-> -                       cache->cached =3D BTRFS_CACHE_STARTED;
-> -                       cache->has_caching_ctl =3D 1;
-> -               }
-> -               spin_unlock(&cache->lock);
-> -               wake_up(&caching_ctl->wait);
-> -       }
-> -
-> -       if (load_cache_only) {
-> -               btrfs_put_caching_control(caching_ctl);
-> -               return 0;
-> -       }
-> -
->         down_write(&fs_info->commit_root_sem);
->         refcount_inc(&caching_ctl->count);
->         list_add_tail(&caching_ctl->list, &fs_info->caching_block_groups)=
-;
-> @@ -777,6 +755,11 @@ int btrfs_cache_block_group(struct btrfs_block_group=
- *cache, int load_cache_only
->         btrfs_get_block_group(cache);
->
->         btrfs_queue_work(fs_info->caching_workers, &caching_ctl->work);
-> +out:
-> +       if (load_cache_only && caching_ctl)
-> +               btrfs_wait_space_cache_v1_finished(cache, caching_ctl);
-> +       if (caching_ctl)
-> +               btrfs_put_caching_control(caching_ctl);
->
->         return ret;
->  }
-> --
-> 2.26.2
->
-
-
---=20
-Filipe David Manana,
-
-=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
- right.=E2=80=9D
+-- 
+Pavel Begunkov
