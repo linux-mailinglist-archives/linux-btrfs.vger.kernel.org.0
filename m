@@ -2,33 +2,33 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F6122A6307
-	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Nov 2020 12:13:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BDCA2A630C
+	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Nov 2020 12:14:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729136AbgKDLNq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 4 Nov 2020 06:13:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54178 "EHLO mail.kernel.org"
+        id S1729362AbgKDLN7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 4 Nov 2020 06:13:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54300 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726344AbgKDLNp (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 4 Nov 2020 06:13:45 -0500
+        id S1729243AbgKDLN6 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 4 Nov 2020 06:13:58 -0500
 Received: from debian8.Home (bl8-197-74.dsl.telepac.pt [85.241.197.74])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2446121556;
-        Wed,  4 Nov 2020 11:13:43 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AE3FC223BD;
+        Wed,  4 Nov 2020 11:13:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604488424;
-        bh=rgHl1wCbLFW7G9jYHhhzzPLH0vXrYyHOigkIv81RW8Q=;
+        s=default; t=1604488437;
+        bh=HtXdWfFcyRmD3RvV/2gEjC0LEMcnPqdV9QsZoJ3asFc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VL1WjIB5plrGRjf5XV70VkKj9vA5Q4PvnHk0bLwA0CnrKsP/oAtsGvxYpVPA2ljuV
-         //+4TIpeBgtZDLVMNNd1Ble0wa8bq0babVLcuxVH1fr42SkH8yFuL2zOAklNE9jrPS
-         J3mTljN8zroE1ZZzg+J+bewHuc9B7XW1wxmpHVKY=
+        b=0x+ZJiQ68LF5oT01cwT14m86puv63Ctl6ljpDbpLXzwCyX71/MSLva8q/jQmBUx/3
+         VoOuCIuIVKiNY6mqMQD3YLAxXC1+1IDsyKC1Noyb8oanIZHNZ2YsN9ZsNNcJhxmEbr
+         3P6s63bS4SaMdUpmX06am0Uvf1d60QXzlnLRtCSg=
 From:   fdmanana@kernel.org
 To:     fstests@vger.kernel.org
 Cc:     linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
-Subject: [PATCH 1/2] generic: test number of blocks used by a file after mwrite into a hole
-Date:   Wed,  4 Nov 2020 11:13:37 +0000
-Message-Id: <289e1444dc95cb86945126b2677ca25879fdb8dd.1604487838.git.fdmanana@suse.com>
+Subject: [PATCH 2/2] generic: test for non-zero used blocks while writing into a file
+Date:   Wed,  4 Nov 2020 11:13:53 +0000
+Message-Id: <97125f898446b152fd759eba2f2c5963d3daadc0.1604487838.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <cover.1604487838.git.fdmanana@suse.com>
 References: <cover.1604487838.git.fdmanana@suse.com>
@@ -40,38 +40,42 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-Test that after doing a memory mapped write to an empty file, a call to
-stat(2) reports a non-zero number of used blocks.
+Test that if we keep overwriting an entire file, either with buffered
+writes or direct IO writes, the number of used blocks reported by stat(2)
+is never zero while the writes and writeback are in progress.
 
-This is motivated by a bug in btrfs where the number of blocks used does
-not change. It currenly fails on btrfs and it is fixed by a patch that
-has the following subject:
+This is motivated by a bug in btrfs and currently fails on btrfs only. It
+is fixed a patchset for btrfs that has the following patches:
 
-  "btrfs: fix missing delalloc new bit for new delalloc ranges"
+  btrfs: fix missing delalloc new bit for new delalloc ranges
+  btrfs: refactor btrfs_drop_extents() to make it easier to extend
+  btrfs: fix race when defragging that leads to unnecessary IO
+  btrfs: update the number of bytes used by an inode atomically
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- tests/generic/614     | 50 +++++++++++++++++++++++++++++++++++++++++++
- tests/generic/614.out |  2 ++
+ tests/generic/615     | 77 +++++++++++++++++++++++++++++++++++++++++++
+ tests/generic/615.out |  3 ++
  tests/generic/group   |  1 +
- 3 files changed, 53 insertions(+)
- create mode 100755 tests/generic/614
- create mode 100644 tests/generic/614.out
+ 3 files changed, 81 insertions(+)
+ create mode 100755 tests/generic/615
+ create mode 100644 tests/generic/615.out
 
-diff --git a/tests/generic/614 b/tests/generic/614
+diff --git a/tests/generic/615 b/tests/generic/615
 new file mode 100755
-index 00000000..80edf9cd
+index 00000000..e392c4a5
 --- /dev/null
-+++ b/tests/generic/614
-@@ -0,0 +1,50 @@
++++ b/tests/generic/615
+@@ -0,0 +1,77 @@
 +#! /bin/bash
 +# SPDX-License-Identifier: GPL-2.0
 +# Copyright (C) 2020 SUSE Linux Products GmbH. All Rights Reserved.
 +#
-+# FS QA Test No. 614
++# FS QA Test No. 615
 +#
-+# Test that after doing a memory mapped write to an empty file, a call to
-+# stat(2) reports a non-zero number of used blocks.
++# Test that if we keep overwriting an entire file, either with buffered writes
++# or direct IO writes, the number of used blocks reported by stat(2) is never
++# zero while the writes and writeback are in progress.
 +#
 +seq=`basename $0`
 +seqres=$RESULT_DIR/$seq
@@ -93,44 +97,71 @@ index 00000000..80edf9cd
 +# real QA test starts here
 +_supported_fs generic
 +_require_scratch
++_require_odirect
 +
 +rm -f $seqres.full
++
++stat_loop()
++{
++	trap "wait; exit" SIGTERM
++	local filepath=$1
++	local blocks
++
++	while :; do
++		blocks=$(stat -c %b $filepath)
++		if [ $blocks -eq 0 ]; then
++		    echo "error: stat(2) reported zero blocks"
++		fi
++	done
++}
 +
 +_scratch_mkfs >>$seqres.full 2>&1
 +_scratch_mount
 +
-+$XFS_IO_PROG -f -c "truncate 64K"      \
-+	     -c "mmap -w 0 64K"        \
-+	     -c "mwrite -S 0xab 0 64K" \
-+	     -c "munmap"               \
-+	     $SCRATCH_MNT/foobar | _filter_xfs_io
++$XFS_IO_PROG -f -s -c "pwrite -b 64K 0 64K" $SCRATCH_MNT/foo >>$seqres.full
 +
-+blocks_used=$(stat -c %b $SCRATCH_MNT/foobar)
-+if [ $blocks_used -eq 0 ]; then
-+    echo "error: stat(2) reported 0 used blocks"
-+fi
++stat_loop $SCRATCH_MNT/foo &
++loop_pid=$!
 +
-+echo "Silence is golden"
++echo "Testing buffered writes"
++
++# Now keep overwriting the entire file, triggering writeback after each write,
++# while another process is calling stat(2) on the file. We expect the number of
++# used blocks reported by stat(2) to be always greater than 0.
++for ((i = 0; i < 5000; i++)); do
++	$XFS_IO_PROG -s -c "pwrite -b 64K 0 64K" $SCRATCH_MNT/foo >>$seqres.full
++done
++
++echo "Testing direct IO writes"
++
++# Now similar to what we did before but for direct IO writes.
++for ((i = 0; i < 5000; i++)); do
++	$XFS_IO_PROG -d -c "pwrite -b 64K 0 64K" $SCRATCH_MNT/foo >>$seqres.full
++done
++
++kill $loop_pid &> /dev/null
++wait
 +
 +status=0
 +exit
-diff --git a/tests/generic/614.out b/tests/generic/614.out
+diff --git a/tests/generic/615.out b/tests/generic/615.out
 new file mode 100644
-index 00000000..3db70236
+index 00000000..3b549e96
 --- /dev/null
-+++ b/tests/generic/614.out
-@@ -0,0 +1,2 @@
-+QA output created by 614
-+Silence is golden
++++ b/tests/generic/615.out
+@@ -0,0 +1,3 @@
++QA output created by 615
++Testing buffered writes
++Testing direct IO writes
 diff --git a/tests/generic/group b/tests/generic/group
-index 31057ac8..ab8ae74e 100644
+index ab8ae74e..fb3c638c 100644
 --- a/tests/generic/group
 +++ b/tests/generic/group
-@@ -616,3 +616,4 @@
- 611 auto quick attr
+@@ -617,3 +617,4 @@
  612 auto quick clone
  613 auto quick encrypt
-+614 auto quick rw
+ 614 auto quick rw
++615 auto rw
 -- 
 2.28.0
 
