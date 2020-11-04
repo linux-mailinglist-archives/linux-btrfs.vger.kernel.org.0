@@ -2,54 +2,54 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59A1E2A67A3
-	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Nov 2020 16:29:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 830A42A67CD
+	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Nov 2020 16:35:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730245AbgKDP3Q (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 4 Nov 2020 10:29:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55090 "EHLO
+        id S1730614AbgKDPfs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 4 Nov 2020 10:35:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730196AbgKDP3P (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 4 Nov 2020 10:29:15 -0500
-Received: from mail-oo1-xc41.google.com (mail-oo1-xc41.google.com [IPv6:2607:f8b0:4864:20::c41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2B5AC0613D3
-        for <linux-btrfs@vger.kernel.org>; Wed,  4 Nov 2020 07:29:14 -0800 (PST)
-Received: by mail-oo1-xc41.google.com with SMTP id l4so601815oos.7
-        for <linux-btrfs@vger.kernel.org>; Wed, 04 Nov 2020 07:29:14 -0800 (PST)
+        with ESMTP id S1730450AbgKDPfl (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 4 Nov 2020 10:35:41 -0500
+Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DB14C0613D3
+        for <linux-btrfs@vger.kernel.org>; Wed,  4 Nov 2020 07:35:40 -0800 (PST)
+Received: by mail-oi1-x242.google.com with SMTP id w145so16896589oie.9
+        for <linux-btrfs@vger.kernel.org>; Wed, 04 Nov 2020 07:35:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=KMJnWqVtiUqJyCWV1g8Xa59THK5Gud7UZMLHyBYsRO8=;
-        b=E8GlDDUpTa2xu4DAlUG+8mHM+Zdu+N9oWUMzNN4z2kQIc0kJh28nfKsohswQg3kAyU
-         rKxFRwJPR6hQrl5a0x/tAljNAo9asFwpnDJqQmqrkuusd62hEGNPjeSsHVaKAw5jLrzL
-         2CvYNfGtDAlpN08blm80Hzbhrhm2ncT0ZCUY+jveRFiMlqcaj6YgyRKZbPwCbS+UVcH0
-         5DYORLuZXlLR4UWAHrzhb+2qdD8/9WGxH6HGTiEU5M5HetfBsbKWa7cPYUOB4dVSx4x7
-         Xm+954FQ85elgWDmuXiLbBYqLW9cWP+gOTVK/cSKhtF2QJ2pgAV1Vny+AdF6WHUbM5Z+
-         PQTQ==
+        bh=wikYiBq4R/aR+EqEQM/XKTaOxfr2LwRQ1S/9Oy97+Bc=;
+        b=XCcB/4U86saZSi2ci/Mo5YuX4CdSCxuQ8n8feRZRWcjBJ5OMZLrX5JH2Q7rAl9CqOK
+         hwtyEpHCEsT2xxdVM7+ODSLlV8EwFS8d/w9velanZzaYfWAO4cQETKt1k0pRJ3yP0sbB
+         2UGajnqJpFXfT/jf9QLYE7AGwxXd+QVKC+ycJIveI7XW9m2GvT1ZhYbGQbG+liHb0m7m
+         jFYawPYjvm2q65rEntcw/0x32fpRhiNQr7IW+zkIwmaSZP8vCLjduHCr4VKv3kc7WjYk
+         HcGpVW8ZoewUlcMPjV/byI2hiJ7nzT7FIASaTkdwVkkL9U+oJ75fTamgoAjbiTQd2Tht
+         0mbw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=KMJnWqVtiUqJyCWV1g8Xa59THK5Gud7UZMLHyBYsRO8=;
-        b=T1Z9dRLvMo8PMZOIC5vtwG1tt4D+L2VneQZTIByWd1nr8hu6CVhHBwufYznjFWyMvl
-         sc469qGgzTIN9pXqrm50HHnmwVPXRtXV8j9JFBHWS+Kt56vDbQLKQoWa2v9rbPH5sP8w
-         fha1X0MWrylcQ5+MSO+KGE6Xt0kNSCeQoMu0P9fGCSBcVKxr5oA3KxP071I/lZwHfowB
-         yVYeymlRQB74xNPZtd0tvndyNthXobIdR6t3FcyJ3ZdoQuThc/BfDiIGzJ9/MhRnchrj
-         SDSX8ZnB00sz8TxvyfteJfCSxEUb6lNPVUejhxvs1Gub8oCi389k0AO45mk/FGiAvkQM
-         Z71w==
-X-Gm-Message-State: AOAM533wWweFZtdf7Iud1/0d7dMQz/rIe04gSX/6ueHZVnqGqzAYc8pm
-        6bq/Rr1bQKuRSNFeP3MmbNft4dwlkpZDj1SESWc=
-X-Google-Smtp-Source: ABdhPJwkFxgQrr9244Ca9+onYd2xF7krojzy1ZOFF+ucI/EU8j848Z3meekwsNIsg/4sJfvhrdSDTiIyj/MAF6kYS14=
-X-Received: by 2002:a4a:9cc3:: with SMTP id d3mr19072528ook.4.1604503754239;
- Wed, 04 Nov 2020 07:29:14 -0800 (PST)
+        bh=wikYiBq4R/aR+EqEQM/XKTaOxfr2LwRQ1S/9Oy97+Bc=;
+        b=tbSOG9PnDtowgrGbZJ0bCRF3TIjupFCFLUCUbuTplbjf9q/O7T6km7Uy5iK/WWV1fo
+         vsYlst3e+rcayZ42+loELXP94fXyS4xpZe45RzoJxt5++Vb3SXvLUoW52u30bjG8f/io
+         RVcRdH2k3jrtx9s7+duTbZ9H0bkcN3sp4+OadpLDx7AtW0q4kL8SOsTBWfNpZqmbDy1R
+         8G9dmXRdkUC5s7hheYa9DHl1mxH8e52GibnLiDV05+ybrqDmATfNcB/Ng52n7AuvnJcE
+         Zy2CZDd6qJe1pzpj1IaCWKiTMpmWSFMmhUWanIXwIRSCY0v5aP0c+4jEp6qLh3N0cpSu
+         mmlQ==
+X-Gm-Message-State: AOAM530d4HGx+6IlhD8Tt62X7mXFZKkQmeXyuZc8gzjzCC/rwLRTxm1Z
+        ct6W++d8/6DI/Ab3AsyGO1TGwnSGY54vBwMKcJ0=
+X-Google-Smtp-Source: ABdhPJy2oPq4CYrgRmKIAvlgtg0l5a2WNVb2J4WQ0s5lAH11PEx4HaVpTzx1BmgUa52EUQScZEc+bz/TVzGmK1sFdzQ=
+X-Received: by 2002:aca:cc08:: with SMTP id c8mr2718950oig.161.1604504140013;
+ Wed, 04 Nov 2020 07:35:40 -0800 (PST)
 MIME-Version: 1.0
-References: <cover.1604444952.git.asml.silence@gmail.com> <2a3d84dfc9384eed8659963d1dafedabb3f17c75.1604444952.git.asml.silence@gmail.com>
-In-Reply-To: <2a3d84dfc9384eed8659963d1dafedabb3f17c75.1604444952.git.asml.silence@gmail.com>
+References: <cover.1604444952.git.asml.silence@gmail.com> <5be2ccce4a6ebe7c96274f63091a04aeba9af9d8.1604444952.git.asml.silence@gmail.com>
+In-Reply-To: <5be2ccce4a6ebe7c96274f63091a04aeba9af9d8.1604444952.git.asml.silence@gmail.com>
 From:   Amy Parker <enbyamy@gmail.com>
-Date:   Wed, 4 Nov 2020 07:29:03 -0800
-Message-ID: <CAE1WUT5+3xLHe54Mk0wEmp1GtbRhkMkdSi=QPERZegphk=ecLw@mail.gmail.com>
-Subject: Re: [PATCH 1/4] btrfs: discard: speed up discard up to iops_limit
+Date:   Wed, 4 Nov 2020 07:35:29 -0800
+Message-ID: <CAE1WUT5k8e_twhb8yZX7=kYFX-ikzUuQwunRkPCCH-zJ80Q6TA@mail.gmail.com>
+Subject: Re: [PATCH 2/4] btrfs: discard: save discard delay as ns not jiffy
 To:     Pavel Begunkov <asml.silence@gmail.com>
 Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>,
@@ -59,60 +59,107 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Nov 4, 2020 at 1:50 AM Pavel Begunkov <asml.silence@gmail.com> wrote:
+On Wed, Nov 4, 2020 at 1:52 AM Pavel Begunkov <asml.silence@gmail.com> wrote:
 >
-> Instead of using iops_limit only for cutting off extremes, calculate the
-> discard delay directly from it, so it closely follows iops_limit and
-> doesn't under-discarding even though quotas are not saturated.
+> Most of calculations are done in ns or ms, so store discard_ctl->delay
+> in ms and convert the final delay to jiffies only in the end.
 
-This sounds like it potentially be a great performance boost, do you
-have any performance metrics regarding this patch?
+Great idea.
 
 >
 > Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
 > ---
->  fs/btrfs/discard.c | 10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
+>  fs/btrfs/ctree.h   |  2 +-
+>  fs/btrfs/discard.c | 14 +++++++-------
+>  2 files changed, 8 insertions(+), 8 deletions(-)
 >
+> diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+> index aac3d6f4e35b..d43a82dcdfc0 100644
+> --- a/fs/btrfs/ctree.h
+> +++ b/fs/btrfs/ctree.h
+> @@ -472,7 +472,7 @@ struct btrfs_discard_ctl {
+>         atomic_t discardable_extents;
+>         atomic64_t discardable_bytes;
+>         u64 max_discard_size;
+> -       unsigned long delay;
+> +       u64 delay_ms;
+
+Thanks for converting this from the ambiguous unsigned long to the
+more specific u64.
+
+>         u32 iops_limit;
+>         u32 kbps_limit;
+>         u64 discard_extent_bytes;
 > diff --git a/fs/btrfs/discard.c b/fs/btrfs/discard.c
-> index 741c7e19c32f..76796a90e88d 100644
+> index 76796a90e88d..b6c68e5711f0 100644
 > --- a/fs/btrfs/discard.c
 > +++ b/fs/btrfs/discard.c
-> @@ -519,7 +519,6 @@ void btrfs_discard_calc_delay(struct btrfs_discard_ctl *discard_ctl)
->         s64 discardable_bytes;
->         u32 iops_limit;
->         unsigned long delay;
-> -       unsigned long lower_limit = BTRFS_DISCARD_MIN_DELAY_MSEC;
+> @@ -355,7 +355,7 @@ void btrfs_discard_schedule_work(struct btrfs_discard_ctl *discard_ctl,
 >
->         discardable_extents = atomic_read(&discard_ctl->discardable_extents);
->         if (!discardable_extents)
-> @@ -550,11 +549,12 @@ void btrfs_discard_calc_delay(struct btrfs_discard_ctl *discard_ctl)
->
->         iops_limit = READ_ONCE(discard_ctl->iops_limit);
->         if (iops_limit)
-> -               lower_limit = max_t(unsigned long, lower_limit,
-> -                                   MSEC_PER_SEC / iops_limit);
-> +               delay = MSEC_PER_SEC / iops_limit;
-> +       else
-> +               delay = BTRFS_DISCARD_TARGET_MSEC / discardable_extents;
+>         block_group = find_next_block_group(discard_ctl, now);
+>         if (block_group) {
+> -               unsigned long delay = discard_ctl->delay;
+> +               u64 delay = discard_ctl->delay_ms * NSEC_PER_MSEC;
 
-Looks good to me. I wonder why there wasn't handling of if iops_limit
-was unfindable
-before?
+I worry about a potential performance impact with this, but it should be
+minimal at most.
 
+>                 u32 kbps_limit = READ_ONCE(discard_ctl->kbps_limit);
 >
-> -       delay = BTRFS_DISCARD_TARGET_MSEC / discardable_extents;
-> -       delay = clamp(delay, lower_limit, BTRFS_DISCARD_MAX_DELAY_MSEC);
-> +       delay = clamp(delay, BTRFS_DISCARD_MIN_DELAY_MSEC,
-> +                     BTRFS_DISCARD_MAX_DELAY_MSEC);
->         discard_ctl->delay = msecs_to_jiffies(delay);
+>                 /*
+> @@ -366,9 +366,9 @@ void btrfs_discard_schedule_work(struct btrfs_discard_ctl *discard_ctl,
+>                 if (kbps_limit && discard_ctl->prev_discard) {
+>                         u64 bps_limit = ((u64)kbps_limit) * SZ_1K;
+>                         u64 bps_delay = div64_u64(discard_ctl->prev_discard *
+> -                                                 MSEC_PER_SEC, bps_limit);
+> +                                                 NSEC_PER_SEC, bps_limit);
+>
+> -                       delay = max(delay, msecs_to_jiffies(bps_delay));
+> +                       delay = max(delay, bps_delay);
+
+Great that we got this down to just passing max() a value. Same thing on
+the instance below.
+
+>                 }
+>
+>                 /*
+> @@ -378,11 +378,11 @@ void btrfs_discard_schedule_work(struct btrfs_discard_ctl *discard_ctl,
+>                 if (now < block_group->discard_eligible_time) {
+>                         u64 bg_timeout = block_group->discard_eligible_time - now;
+>
+> -                       delay = max(delay, nsecs_to_jiffies(bg_timeout));
+> +                       delay = max(delay, bg_timeout);
+>                 }
+>
+>                 mod_delayed_work(discard_ctl->discard_workers,
+> -                                &discard_ctl->work, delay);
+> +                                &discard_ctl->work, nsecs_to_jiffies(delay));
+>         }
+>  out:
+>         spin_unlock(&discard_ctl->lock);
+> @@ -555,7 +555,7 @@ void btrfs_discard_calc_delay(struct btrfs_discard_ctl *discard_ctl)
+>
+>         delay = clamp(delay, BTRFS_DISCARD_MIN_DELAY_MSEC,
+>                       BTRFS_DISCARD_MAX_DELAY_MSEC);
+> -       discard_ctl->delay = msecs_to_jiffies(delay);
+> +       discard_ctl->delay_ms = delay;
 >
 >         spin_unlock(&discard_ctl->lock);
+>  }
+> @@ -687,7 +687,7 @@ void btrfs_discard_init(struct btrfs_fs_info *fs_info)
+>         atomic_set(&discard_ctl->discardable_extents, 0);
+>         atomic64_set(&discard_ctl->discardable_bytes, 0);
+>         discard_ctl->max_discard_size = BTRFS_ASYNC_DISCARD_DEFAULT_MAX_SIZE;
+> -       discard_ctl->delay = BTRFS_DISCARD_MAX_DELAY_MSEC;
+> +       discard_ctl->delay_ms = BTRFS_DISCARD_MAX_DELAY_MSEC;
+>         discard_ctl->iops_limit = BTRFS_DISCARD_MAX_IOPS;
+>         discard_ctl->kbps_limit = 0;
+>         discard_ctl->discard_extent_bytes = 0;
 > --
 > 2.24.0
 >
 
-This patch looks all great to me.
+Looks all fine to me.
 
 Best regards,
 Amy Parker
