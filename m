@@ -2,166 +2,115 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BDCA2A630C
-	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Nov 2020 12:14:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA7332A6559
+	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Nov 2020 14:38:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729362AbgKDLN7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 4 Nov 2020 06:13:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54300 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729243AbgKDLN6 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 4 Nov 2020 06:13:58 -0500
-Received: from debian8.Home (bl8-197-74.dsl.telepac.pt [85.241.197.74])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AE3FC223BD;
-        Wed,  4 Nov 2020 11:13:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604488437;
-        bh=HtXdWfFcyRmD3RvV/2gEjC0LEMcnPqdV9QsZoJ3asFc=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0x+ZJiQ68LF5oT01cwT14m86puv63Ctl6ljpDbpLXzwCyX71/MSLva8q/jQmBUx/3
-         VoOuCIuIVKiNY6mqMQD3YLAxXC1+1IDsyKC1Noyb8oanIZHNZ2YsN9ZsNNcJhxmEbr
-         3P6s63bS4SaMdUpmX06am0Uvf1d60QXzlnLRtCSg=
-From:   fdmanana@kernel.org
-To:     fstests@vger.kernel.org
-Cc:     linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
-Subject: [PATCH 2/2] generic: test for non-zero used blocks while writing into a file
-Date:   Wed,  4 Nov 2020 11:13:53 +0000
-Message-Id: <97125f898446b152fd759eba2f2c5963d3daadc0.1604487838.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <cover.1604487838.git.fdmanana@suse.com>
-References: <cover.1604487838.git.fdmanana@suse.com>
+        id S1730029AbgKDNix (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 4 Nov 2020 08:38:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36788 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726350AbgKDNiw (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 4 Nov 2020 08:38:52 -0500
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9390FC0613D3
+        for <linux-btrfs@vger.kernel.org>; Wed,  4 Nov 2020 05:38:52 -0800 (PST)
+Received: by mail-qt1-x842.google.com with SMTP id h12so12141854qtc.9
+        for <linux-btrfs@vger.kernel.org>; Wed, 04 Nov 2020 05:38:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc:content-transfer-encoding;
+        bh=Yu8hLa3QRkn1pfPsAWrHhuqsiI/crQLSOechx4OBg78=;
+        b=u/StCwBG/8dUSEjnOOFh6s9PzZ2+1F5h7KjP9OYT8GR7b0oC414kPvZvokjbXe7M/8
+         uPzp2fOATIuqJy2b9jeRUFIH9YxP/jIKMvAT7g5pMLvSLTyMICgPzLym3LomSc5nMkam
+         NxpUSWtDRa3L7ulFnBA0cbBuvpVkOOP6YFZSxPmDsCfcnp/CCbhOAK1KKu4xyMsCKcHe
+         T5yJzbWE2fYOB37Nya6PiEP8YemBrm5+AE0Tqq0bdzlkFfdyTPyTgmtaKtGVHa/YcUh2
+         hG6Y2PnjGKV4iPRNW41Dzpj3tbkbM2F9cthVoss8nlTk4X0VF+LK/DSRffMgm980g2ms
+         cNEw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc:content-transfer-encoding;
+        bh=Yu8hLa3QRkn1pfPsAWrHhuqsiI/crQLSOechx4OBg78=;
+        b=bCWg3nk0hCTRAeQFNdpD6QMLAoGHgkzA5YTSkAesowb39BFbjGdAmhG5ckPs5QhCxj
+         KDuPxpPnyMDTBRNTGmxHC9JvpQDxOXIUQjO49LVBNwe2iUM0Nf6QgH4N2bg03VS7Rgfy
+         CCMbIqzVAy3Bs/YlKBAkCIuPOAXjUScGRVroDkhB3OKTSSgl/cyRKLc6x9D1X71Jqh6z
+         vwAQM4d77IeEkE2fdP/FNwSol6Syq+T+ZVH6wo0YgRgWjX7RpnG5ypKzrzYJ5UYdomBF
+         hKUp8OgeBQ7Y+A6guwlaDVsBDqiGZ2z+kKOkqnmkY3kBJhW4+RBZIiaCizPzLUXhi5qY
+         bGYg==
+X-Gm-Message-State: AOAM531hBdkiubOsisT3zdlq7LRl0N970HWUEZg5gkWw6Q4zF1es0lgD
+        ft7fSCXI8jw26eVp18tFxaRy1MZfCwT6efYpb4I=
+X-Google-Smtp-Source: ABdhPJz2viX0iikR1hDEzovok2i+zkad5mgQpT9rWPVGa8EMqDWYi13AFEg/7f2z5xdrVrT0skl4VcyUlELgUXSPf64=
+X-Received: by 2002:aed:2321:: with SMTP id h30mr19181058qtc.213.1604497131844;
+ Wed, 04 Nov 2020 05:38:51 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <cover.1603460665.git.josef@toxicpanda.com> <1e88615a596a6d811954832a744d105f94e42645.1603460665.git.josef@toxicpanda.com>
+In-Reply-To: <1e88615a596a6d811954832a744d105f94e42645.1603460665.git.josef@toxicpanda.com>
+Reply-To: fdmanana@gmail.com
+From:   Filipe Manana <fdmanana@gmail.com>
+Date:   Wed, 4 Nov 2020 13:38:40 +0000
+Message-ID: <CAL3q7H60udtDb6vjSVf3ZNnqLqK4_iPg7_9bKLyQokY4rRgryw@mail.gmail.com>
+Subject: Re: [PATCH 1/8] btrfs: do not shorten unpin len for caching block groups
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>, kernel-team@fb.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
+On Fri, Oct 23, 2020 at 7:16 PM Josef Bacik <josef@toxicpanda.com> wrote:
+>
+> While fixing up our ->last_byte_to_unpin locking I noticed that we will
+> shorten len based on ->last_byte_to_unpin if we're caching when we're
+> adding back the free space.  This is correct for the free space, as we
+> cannot unpin more than ->last_byte_to_unpin, however we use len to
+> adjust the ->bytes_pinned counters and such, which need to track the
+> actual pinned usage.  This could result in
+> WARN_ON(space_info->bytes_pinned) triggering at unmount time.  Fix this
+> by using a local variable for the amount to add to free space cache, and
+> leave len untouched in this case.
+>
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 
-Test that if we keep overwriting an entire file, either with buffered
-writes or direct IO writes, the number of used blocks reported by stat(2)
-is never zero while the writes and writeback are in progress.
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
 
-This is motivated by a bug in btrfs and currently fails on btrfs only. It
-is fixed a patchset for btrfs that has the following patches:
+Looks good, thanks.
 
-  btrfs: fix missing delalloc new bit for new delalloc ranges
-  btrfs: refactor btrfs_drop_extents() to make it easier to extend
-  btrfs: fix race when defragging that leads to unnecessary IO
-  btrfs: update the number of bytes used by an inode atomically
+> ---
+>  fs/btrfs/extent-tree.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+>
+> diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
+> index 5fd60b13f4f8..a98f484a2fc1 100644
+> --- a/fs/btrfs/extent-tree.c
+> +++ b/fs/btrfs/extent-tree.c
+> @@ -2816,10 +2816,10 @@ static int unpin_extent_range(struct btrfs_fs_inf=
+o *fs_info,
+>                 len =3D cache->start + cache->length - start;
+>                 len =3D min(len, end + 1 - start);
+>
+> -               if (start < cache->last_byte_to_unpin) {
+> -                       len =3D min(len, cache->last_byte_to_unpin - star=
+t);
+> -                       if (return_free_space)
+> -                               btrfs_add_free_space(cache, start, len);
+> +               if (start < cache->last_byte_to_unpin && return_free_spac=
+e) {
+> +                       u64 add_len =3D min(len,
+> +                                         cache->last_byte_to_unpin - sta=
+rt);
+> +                       btrfs_add_free_space(cache, start, add_len);
+>                 }
+>
+>                 start +=3D len;
+> --
+> 2.26.2
+>
 
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- tests/generic/615     | 77 +++++++++++++++++++++++++++++++++++++++++++
- tests/generic/615.out |  3 ++
- tests/generic/group   |  1 +
- 3 files changed, 81 insertions(+)
- create mode 100755 tests/generic/615
- create mode 100644 tests/generic/615.out
 
-diff --git a/tests/generic/615 b/tests/generic/615
-new file mode 100755
-index 00000000..e392c4a5
---- /dev/null
-+++ b/tests/generic/615
-@@ -0,0 +1,77 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright (C) 2020 SUSE Linux Products GmbH. All Rights Reserved.
-+#
-+# FS QA Test No. 615
-+#
-+# Test that if we keep overwriting an entire file, either with buffered writes
-+# or direct IO writes, the number of used blocks reported by stat(2) is never
-+# zero while the writes and writeback are in progress.
-+#
-+seq=`basename $0`
-+seqres=$RESULT_DIR/$seq
-+echo "QA output created by $seq"
-+tmp=/tmp/$$
-+status=1	# failure is the default!
-+trap "_cleanup; exit \$status" 0 1 2 3 15
-+
-+_cleanup()
-+{
-+	cd /
-+	rm -f $tmp.*
-+}
-+
-+# get standard environment, filters and checks
-+. ./common/rc
-+. ./common/filter
-+
-+# real QA test starts here
-+_supported_fs generic
-+_require_scratch
-+_require_odirect
-+
-+rm -f $seqres.full
-+
-+stat_loop()
-+{
-+	trap "wait; exit" SIGTERM
-+	local filepath=$1
-+	local blocks
-+
-+	while :; do
-+		blocks=$(stat -c %b $filepath)
-+		if [ $blocks -eq 0 ]; then
-+		    echo "error: stat(2) reported zero blocks"
-+		fi
-+	done
-+}
-+
-+_scratch_mkfs >>$seqres.full 2>&1
-+_scratch_mount
-+
-+$XFS_IO_PROG -f -s -c "pwrite -b 64K 0 64K" $SCRATCH_MNT/foo >>$seqres.full
-+
-+stat_loop $SCRATCH_MNT/foo &
-+loop_pid=$!
-+
-+echo "Testing buffered writes"
-+
-+# Now keep overwriting the entire file, triggering writeback after each write,
-+# while another process is calling stat(2) on the file. We expect the number of
-+# used blocks reported by stat(2) to be always greater than 0.
-+for ((i = 0; i < 5000; i++)); do
-+	$XFS_IO_PROG -s -c "pwrite -b 64K 0 64K" $SCRATCH_MNT/foo >>$seqres.full
-+done
-+
-+echo "Testing direct IO writes"
-+
-+# Now similar to what we did before but for direct IO writes.
-+for ((i = 0; i < 5000; i++)); do
-+	$XFS_IO_PROG -d -c "pwrite -b 64K 0 64K" $SCRATCH_MNT/foo >>$seqres.full
-+done
-+
-+kill $loop_pid &> /dev/null
-+wait
-+
-+status=0
-+exit
-diff --git a/tests/generic/615.out b/tests/generic/615.out
-new file mode 100644
-index 00000000..3b549e96
---- /dev/null
-+++ b/tests/generic/615.out
-@@ -0,0 +1,3 @@
-+QA output created by 615
-+Testing buffered writes
-+Testing direct IO writes
-diff --git a/tests/generic/group b/tests/generic/group
-index ab8ae74e..fb3c638c 100644
---- a/tests/generic/group
-+++ b/tests/generic/group
-@@ -617,3 +617,4 @@
- 612 auto quick clone
- 613 auto quick encrypt
- 614 auto quick rw
-+615 auto rw
--- 
-2.28.0
+--=20
+Filipe David Manana,
 
+=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
+ right.=E2=80=9D
