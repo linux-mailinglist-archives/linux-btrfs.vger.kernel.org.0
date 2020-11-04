@@ -2,80 +2,104 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6494B2A60E0
+	by mail.lfdr.de (Postfix) with ESMTP id D17A82A60E1
 	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Nov 2020 10:49:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728387AbgKDJtJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 4 Nov 2020 04:49:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57740 "EHLO
+        id S1728687AbgKDJtL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 4 Nov 2020 04:49:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726564AbgKDJtI (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 4 Nov 2020 04:49:08 -0500
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15D6FC0613D3
-        for <linux-btrfs@vger.kernel.org>; Wed,  4 Nov 2020 01:49:08 -0800 (PST)
-Received: by mail-wm1-x341.google.com with SMTP id h22so1726460wmb.0
-        for <linux-btrfs@vger.kernel.org>; Wed, 04 Nov 2020 01:49:07 -0800 (PST)
+        with ESMTP id S1726564AbgKDJtJ (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 4 Nov 2020 04:49:09 -0500
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D7F0C0613D3
+        for <linux-btrfs@vger.kernel.org>; Wed,  4 Nov 2020 01:49:09 -0800 (PST)
+Received: by mail-wm1-x344.google.com with SMTP id p22so1719985wmg.3
+        for <linux-btrfs@vger.kernel.org>; Wed, 04 Nov 2020 01:49:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:subject:date:message-id:mime-version
+        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=OqlgeG5PMY1fCKRWEP+B9ZVotNTjqilRPUFt0ZjjI48=;
-        b=tmKeQ6ETWEcFaTRck95ZxpXO9OVXVhkugV9sd6x29ZURk45kf9AsfEjN8PqCKO9C2X
-         sunxurPYifzS03ChRj1QzT8RSYWX3BAtk58KX7vu87THG+wFn1YWKUvXd56+mUE7ry71
-         yYg7TQSv1O3sCU/5doCmyaQxdUJryk7oZ/NYZF4reO5Td4Pkjlxtw2N+hSCktgpAyOR6
-         kHK2VbO2pDcZ0U2MlmgGxAR+Cc7923r0+Ztmh6Z/+GBsIIcS1To351rA81vdF5Zhh+lc
-         Y5HWeAPimdLDI07Z2eE3anUoh5u+55RKyTU9E45bfcHUENklufogdwpli7SDT11g3WG8
-         4J6Q==
+        bh=dpDzE2UyGfIguEs3GGU0K39vcuPe/uRjpnfE0e+NLNE=;
+        b=hWzZtVHtC2R+1k6U/MDX70yiuF/g8wZO3wMwJswgV9io0RImWBMKVw2gDzlDXd7M9s
+         Zu6afGQCJeOOjLTPCKUxBY2LQej6B1wNDZrMWlJIHf/W3KKMFFRth6+1/1WIZrfNbF2J
+         m8H6BauKQ+TpvHOVXSemePAXyQRiLhJywqAAMuA05zAQq3FQkBEGSqmr+VrjN4S0YDY/
+         jQqUVFm90ByWWTfvgNOykDErEwm9iMCC0xl7zVitK8znCkNB5fACsSc1n4fBo4SuJWTZ
+         inmGkFDWJenvdVbMy55t1b/Z5EIMUgGJlEuCj+lcNEq46PTBH6SdhM4cFU+YhTA7/O+R
+         LgzA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=OqlgeG5PMY1fCKRWEP+B9ZVotNTjqilRPUFt0ZjjI48=;
-        b=NYnRgVHJetzomm2KC27jPtnJ1d0jELEZCZmuCHLxleyHADwGs3RZS2zNB1UtYIwFJ3
-         2WPiGoOsQcB88YtL844PO6azLKLJoF9o6g8WWf10PHo+cd8vroWhMXk6IirHmUj0/YuY
-         Kh0lwzCQTAD7Zs+RF7/23YJ/kfKPWr2uICotsCgQeEG42uO3O/fuapbloKW6X/55gZpx
-         2p0cAIcVuKYcNg8fn9rj/umrqLcyKJ1yihLvamwTs5rdhYg8ExdfApvCjOym3zjJ30IW
-         y+vTAhbp8o7/NMb6OzvolHn8IxU1cNxeIZpzlXGrQZBSHzndBlCIwc0SO5oACNmRDoEH
-         VIKA==
-X-Gm-Message-State: AOAM531Hw6xlBhVdrPaJXnEeUjXiNO9zoi9NqezADi6sYEDA4IkjVB3B
-        /C8EBbYLM3fzBOHlZV3CHWjNeY1Kyz3q7Q==
-X-Google-Smtp-Source: ABdhPJwkIvfY7IdKi4vrAENvvJJyMyXe5oNkakVIPVAQcy1tIZGYF8950B46u5s0FVdwUP5oqv/XtQ==
-X-Received: by 2002:a1c:6405:: with SMTP id y5mr3642350wmb.150.1604483346747;
-        Wed, 04 Nov 2020 01:49:06 -0800 (PST)
+        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=dpDzE2UyGfIguEs3GGU0K39vcuPe/uRjpnfE0e+NLNE=;
+        b=QUfueNmnEnxY5whq3LIjWFzjCSbjBXPoptJCu7o0Uoc8QOwHXDnhS8IHXnEFmZ1l2x
+         booEHPm/cldP5oxzbKQTkUzUEWaRqlm2bto8MmBs1vKdUDEYDDpZcqOOYifQm0cPdhyx
+         GfR/Ges8LF2i9hMKJ8nsYTIQl6tvXp3znC83uTNLkVZDY2SIevQB465UtPBWIOt9tkNm
+         vo/uw9Y9eiaMdr6clLUJuILON5HwzHHtuMHT7YEc2MtkmUG+VM88hKmZXfE+tTFzFwtg
+         /JpbXhq5O13DimWceBZ7pZwV8GBViHIbGj8+gevFFPUx+/dQHd+0tFO0gB91bx8R93cS
+         a0Eg==
+X-Gm-Message-State: AOAM533KZLSp4QIFuMMx20B9T2BFZb6b4aH+YkXm1fMb1mqeiifmVqgb
+        6oKlkxMiYenpfQGKNo8Ulr9ym5G1DwUWPw==
+X-Google-Smtp-Source: ABdhPJz9rI25H1azGMRvCsacin2WjRIAZ8zdxa2SWXRPBUf7BhOPEmetJElJEl+07kH50HlL+2wM8w==
+X-Received: by 2002:a1c:1d92:: with SMTP id d140mr3631150wmd.48.1604483347872;
+        Wed, 04 Nov 2020 01:49:07 -0800 (PST)
 Received: from localhost.localdomain (host109-152-100-228.range109-152.btcentralplus.com. [109.152.100.228])
-        by smtp.gmail.com with ESMTPSA id 3sm1478081wmd.19.2020.11.04.01.49.05
+        by smtp.gmail.com with ESMTPSA id 3sm1478081wmd.19.2020.11.04.01.49.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Nov 2020 01:49:06 -0800 (PST)
+        Wed, 04 Nov 2020 01:49:07 -0800 (PST)
 From:   Pavel Begunkov <asml.silence@gmail.com>
 To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-Subject: [PATCH 0/4] fixes for btrfs async discards
-Date:   Wed,  4 Nov 2020 09:45:50 +0000
-Message-Id: <cover.1604444952.git.asml.silence@gmail.com>
+Subject: [PATCH 1/4] btrfs: discard: speed up discard up to iops_limit
+Date:   Wed,  4 Nov 2020 09:45:51 +0000
+Message-Id: <2a3d84dfc9384eed8659963d1dafedabb3f17c75.1604444952.git.asml.silence@gmail.com>
 X-Mailer: git-send-email 2.24.0
+In-Reply-To: <cover.1604444952.git.asml.silence@gmail.com>
+References: <cover.1604444952.git.asml.silence@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Several fixes for async discards. The first patch might increase discard
-rate, drastically in some cases. That may be a suprise for those
-assuming that hitting iops_limit is rare and rarther outliers. Though,
-it still stays in allowed range, so should be fine.
+Instead of using iops_limit only for cutting off extremes, calculate the
+discard delay directly from it, so it closely follows iops_limit and
+doesn't under-discarding even though quotas are not saturated.
 
-Pavel Begunkov (4):
-  btrfs: discard: speed up discard up to iops_limit
-  btrfs: discard: save discard delay as ns not jiffy
-  btrfs: don't miss discards after override-schedule
-  btrfs: discard: reschedule work after param update
+Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
+---
+ fs/btrfs/discard.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
- fs/btrfs/ctree.h   |  3 ++-
- fs/btrfs/discard.c | 35 +++++++++++++++++++++++------------
- fs/btrfs/sysfs.c   |  5 +++--
- 3 files changed, 28 insertions(+), 15 deletions(-)
-
+diff --git a/fs/btrfs/discard.c b/fs/btrfs/discard.c
+index 741c7e19c32f..76796a90e88d 100644
+--- a/fs/btrfs/discard.c
++++ b/fs/btrfs/discard.c
+@@ -519,7 +519,6 @@ void btrfs_discard_calc_delay(struct btrfs_discard_ctl *discard_ctl)
+ 	s64 discardable_bytes;
+ 	u32 iops_limit;
+ 	unsigned long delay;
+-	unsigned long lower_limit = BTRFS_DISCARD_MIN_DELAY_MSEC;
+ 
+ 	discardable_extents = atomic_read(&discard_ctl->discardable_extents);
+ 	if (!discardable_extents)
+@@ -550,11 +549,12 @@ void btrfs_discard_calc_delay(struct btrfs_discard_ctl *discard_ctl)
+ 
+ 	iops_limit = READ_ONCE(discard_ctl->iops_limit);
+ 	if (iops_limit)
+-		lower_limit = max_t(unsigned long, lower_limit,
+-				    MSEC_PER_SEC / iops_limit);
++		delay = MSEC_PER_SEC / iops_limit;
++	else
++		delay = BTRFS_DISCARD_TARGET_MSEC / discardable_extents;
+ 
+-	delay = BTRFS_DISCARD_TARGET_MSEC / discardable_extents;
+-	delay = clamp(delay, lower_limit, BTRFS_DISCARD_MAX_DELAY_MSEC);
++	delay = clamp(delay, BTRFS_DISCARD_MIN_DELAY_MSEC,
++		      BTRFS_DISCARD_MAX_DELAY_MSEC);
+ 	discard_ctl->delay = msecs_to_jiffies(delay);
+ 
+ 	spin_unlock(&discard_ctl->lock);
 -- 
 2.24.0
 
