@@ -2,244 +2,190 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C27832A6BDB
-	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Nov 2020 18:37:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A54522A6BEE
+	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Nov 2020 18:42:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730533AbgKDRgq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 4 Nov 2020 12:36:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47138 "EHLO
+        id S1731779AbgKDRmc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 4 Nov 2020 12:42:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730254AbgKDRgq (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 4 Nov 2020 12:36:46 -0500
-Received: from mail-oo1-xc42.google.com (mail-oo1-xc42.google.com [IPv6:2607:f8b0:4864:20::c42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09B00C0613D3
-        for <linux-btrfs@vger.kernel.org>; Wed,  4 Nov 2020 09:36:46 -0800 (PST)
-Received: by mail-oo1-xc42.google.com with SMTP id o129so5251196ooo.11
-        for <linux-btrfs@vger.kernel.org>; Wed, 04 Nov 2020 09:36:46 -0800 (PST)
+        with ESMTP id S1730564AbgKDRmc (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 4 Nov 2020 12:42:32 -0500
+Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DD36C0613D3
+        for <linux-btrfs@vger.kernel.org>; Wed,  4 Nov 2020 09:42:32 -0800 (PST)
+Received: by mail-oi1-x243.google.com with SMTP id 9so23004089oir.5
+        for <linux-btrfs@vger.kernel.org>; Wed, 04 Nov 2020 09:42:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=Jfl6pFhKpce4uT4ixb8fnp2LkzNG9KNTLwgoyo2OTKE=;
-        b=GTzKXXphh4t+wkRp6MEQRRlvU/17f1IU0jjtxhvMfe8JWfS7hmqYJWAvYk6Fj8uO+e
-         NCxE+fGCC92fSl9Lr1xqaToyiibJsD6NoBBgeYv2bULB/T6z8LLqDu3108ctQz98hCSA
-         XNWQIKQnYz1a+IJ8eOkwZPsyTvY4IGd/Hcf1a0UzHbHukEqVWOvH5CyVtQkFiJlGOigy
-         vHw9F+7axGAEcmpXXzNBnLbJuWICSZO6AmYvusA6gvnThe/AtuRD2X2xgx4KOKPxEcji
-         vtnO5FpeLgmLq/VEX26TlwY5XQ5HlPhYlt4bBFFYem6Tlk51kh0QyaN7y1WMhGZtlJfb
-         lmVQ==
+         :content-transfer-encoding;
+        bh=BW/LMfF+1FqMkqjmN+XfkeasbRI7j1OiAR3z8Mi2j3M=;
+        b=Psi3Q/fbbTO5x9lzBgEFSedg7XetgkWshqAYYmfNxv1jYVveGuWaUb+nISTsxfYzLg
+         hE2jGlxFxlSihAIw6LvzlYmx9p2HjlFH+dieNQBC7dVSD58298N/6yyq/8l5ANliST7h
+         u6i3JGf+bXawzkVAdN/jfz4fXbFeXK/wX/KzLS+osN6vxqzC7UwOdLUBhAsR1Jihtb4O
+         6N5c0JlFNfnziPbD2fCJcPIuoTAeuGgf2iiW8n9ydZ/5bWOXi6ge6c50RPOEDavo7No4
+         759VakAedLuVfmwAd+VpGB4U8Dohx2CQLebPgo30PFtIAHQqYzgiO01/uHGOofqxM7Cr
+         SHag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Jfl6pFhKpce4uT4ixb8fnp2LkzNG9KNTLwgoyo2OTKE=;
-        b=Sxi+6IfUJ+wcl8bVDSwdxpLKd61kICMh/PiBvccAUfuaoSxPypJsJ4YvBi/onU57JH
-         zBGQ3BRQDQco7TW4daUfVxPOHPRFDBAxRe+9fkAiH7TJTiylkD9lWXYuEdfEDM6Srtlh
-         P4vhnciTWHUoG4BDadhGC3er1913OLcuerVLihPF2vnqUoMjq2NwgvD1OfTe6SApGPGK
-         dbB/XVGQmiAiiivv/LPa5KfTMvs0DHfMEG+o8EYTi0UvUpJc3NIYJhOQAalP+s6nFosR
-         AO2LsPkge6V/LBIJ0nc4YtTqQtcN0l6hsFthMumJUc1AlElrfo/49TS3lX4UkBAvOCT5
-         rPbw==
-X-Gm-Message-State: AOAM533ivgCGHl9G7o5ecn/+pWAqacXELffUVh7qMmy7aFT0XJyyqHq8
-        Oq13mqOr4gsV62cZ6KK50oiVt20HXwn/IG7KmJa64aHixEU=
-X-Google-Smtp-Source: ABdhPJwfNGJqQYi9icJE6tdAObR4x5e8qggX2x6ydIMxT7OUPxP6g9pmKjIXcCVSmNKQmnm1419Agx1QITqN1zNqqT8=
-X-Received: by 2002:a4a:9cc3:: with SMTP id d3mr19435785ook.4.1604511405347;
- Wed, 04 Nov 2020 09:36:45 -0800 (PST)
+         :message-id:subject:to:content-transfer-encoding;
+        bh=BW/LMfF+1FqMkqjmN+XfkeasbRI7j1OiAR3z8Mi2j3M=;
+        b=RNqPNHxlLh3p9bvL+1Srh4JAWiW8rwwPXDbZcCWcMvYam8PpxbAElM5yFCmvO7vOrR
+         zq39T4ayID2w5cjUEy0YO9UcQ+Dbm/bdVYTt5ds0fLcb5GAtZriPEDmpPBjasJQ5W8jv
+         7YAupqOVfojfl1nXSQLO8r4Llm7moA4oi59ekcmfBBtOsO3d2knmRBJAk9/sHnlIjaZw
+         923bdFNS5XQWZ87gAnhKq+whMpdL2VGVh50vke+2RC3ZzsGCT1/wARg4Wu+gNcZkKXK0
+         fBb1ZhcDXIRE22rQ16y0KQ3x9jTzPwnyBa7XyMCIdBIMGG4a6dMj1YNYjIUGZBsnv/HH
+         VnsQ==
+X-Gm-Message-State: AOAM532AB4kHBf4xZF23d0HbLjb3hWLTmeuUKI9ZD4UcsemDpfOSMP8i
+        JVELrnEZk4z5NetSg6zGHIUkhTlWvtw9fnWtQKpu1a27Xio=
+X-Google-Smtp-Source: ABdhPJyTwCYWOPujWRk0Urod73YlTVQO+uMSphJuT5nhHHH9QygY4CRpwLTwgvYLEqZtbRiMKlq+bTCKRgyLKDRA048=
+X-Received: by 2002:aca:cc08:: with SMTP id c8mr3039885oig.161.1604511751508;
+ Wed, 04 Nov 2020 09:42:31 -0800 (PST)
 MIME-Version: 1.0
-References: <cover.1603460665.git.josef@toxicpanda.com> <afb3c72b04191707f96001bc3698e14b4d3400a8.1603460665.git.josef@toxicpanda.com>
- <CAL3q7H5ddLEFbisuFmauK9=XX+sEPy-O4R7X1kp67YH4N1hfcw@mail.gmail.com>
-In-Reply-To: <CAL3q7H5ddLEFbisuFmauK9=XX+sEPy-O4R7X1kp67YH4N1hfcw@mail.gmail.com>
+References: <20201103211101.4221-1-dsterba@suse.com> <96d4080f-38cd-d49b-ebb1-72de8ae43c34@gmx.com>
+ <20201104155354.GG6756@twin.jikos.cz>
+In-Reply-To: <20201104155354.GG6756@twin.jikos.cz>
 From:   Amy Parker <enbyamy@gmail.com>
-Date:   Wed, 4 Nov 2020 09:36:33 -0800
-Message-ID: <CAE1WUT48tsn4KXqzi_YbbFC7f3PnpdEbjO=rvnRJcSVdMBuODw@mail.gmail.com>
-Subject: Re: [PATCH 4/8] btrfs: cleanup btrfs_discard_update_discardable usage
-To:     fdmanana@gmail.com
-Cc:     Josef Bacik <josef@toxicpanda.com>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>, kernel-team@fb.com
+Date:   Wed, 4 Nov 2020 09:42:20 -0800
+Message-ID: <CAE1WUT5xuR--a=0QdK=nG7NpW6=nX=JvcOUik1c-RO5XaqNCeA@mail.gmail.com>
+Subject: Re: [PATCH] btrfs: reorder extent buffer members for better packing
+To:     dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        David Sterba <dsterba@suse.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Nov 4, 2020 at 7:56 AM Filipe Manana <fdmanana@gmail.com> wrote:
+On Wed, Nov 4, 2020 at 7:59 AM David Sterba <dsterba@suse.cz> wrote:
 >
-> On Fri, Oct 23, 2020 at 5:12 PM Josef Bacik <josef@toxicpanda.com> wrote:
+> On Wed, Nov 04, 2020 at 07:44:33AM +0800, Qu Wenruo wrote:
+> > On 2020/11/4 =E4=B8=8A=E5=8D=885:11, David Sterba wrote:
+> > > After the rwsem replaced the tree lock implementation, the extent buf=
+fer
+> > > got smaller but leaving some holes behind. By changing log_index type
+> > > and reordering, we can squeeze the size further to 240 bytes, measure=
+d on
+> > > release config on x86_64. Log_index spans only 3 values and needs to =
+be
+> > > signed.
+> > >
+> > > Before:
+> > >
+> > > struct extent_buffer {
+> > >         u64                        start;                /*     0    =
+ 8 */
+> > >         long unsigned int          len;                  /*     8    =
+ 8 */
+> > >         long unsigned int          bflags;               /*    16    =
+ 8 */
+> > >         struct btrfs_fs_info *     fs_info;              /*    24    =
+ 8 */
+> > >         spinlock_t                 refs_lock;            /*    32    =
+ 4 */
+> > >         atomic_t                   refs;                 /*    36    =
+ 4 */
+> > >         atomic_t                   io_pages;             /*    40    =
+ 4 */
+> > >         int                        read_mirror;          /*    44    =
+ 4 */
+> > >         struct callback_head       callback_head __attribute__((__ali=
+gned__(8))); /*    48    16 */
+> > >         /* --- cacheline 1 boundary (64 bytes) --- */
+> > >         pid_t                      lock_owner;           /*    64    =
+ 4 */
+> > >         bool                       lock_recursed;        /*    68    =
+ 1 */
+> > >
+> > >         /* XXX 3 bytes hole, try to pack */
+> > >
+> > >         struct rw_semaphore        lock;                 /*    72    =
+40 */
 > >
-> > This passes in the block_group and the free_space_ctl, but we can get
-> > this from the block group itself.  Part of this is because we call it
-> > from __load_free_space_cache, which can be called for the inode cache a=
-s
-> > well.  Move that call into the block group specific load section, wrap
-> > it in the right lock that we need, and fix up the arguments to only tak=
-e
-> > the block group.  Add a lockdep_assert as well for good measure to make
-> > sure we don't mess up the locking again.
+> > An off-topic question, for things like aotmic_t/spinlock_t and
+> > rw_semaphore, wouldn't various DEBUG options change their size?
 >
-> So this is actually 2 different things in one patch:
->
-> 1) A cleanup to remove an unnecessary argument to
-> btrfs_discard_update_discardable();
->
-> 2) A bug because btrfs_discard_update_discardable() is not being
-> called with the lock ->tree_lock held in one specific context.
->
-> Shouldn't we really have this split in two patches?
+> Yes they do. For example spinlock_t is 4 bytes on release config and 72
+> on debug. Semaphore is 40 vs 168. Atomic_t is 4 bytes always, it's just
+> an int.
 
-Absolutely, yes. We should split this into two patches.
+These are pretty big differences in byte size. Probably not worth
+shifting everything
+just for debug configs.
 
 >
-> Other than that, it looks good. Thanks.
+> > Do we need to consider such case, by moving them to the end of the
+> > structure, or we only consider production build for pa_hole?
 >
-> >
-> > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-> > ---
-> >  fs/btrfs/discard.c          |  7 ++++---
-> >  fs/btrfs/discard.h          |  3 +--
-> >  fs/btrfs/free-space-cache.c | 14 ++++++++------
-> >  3 files changed, 13 insertions(+), 11 deletions(-)
-> >
-> > diff --git a/fs/btrfs/discard.c b/fs/btrfs/discard.c
-> > index 741c7e19c32f..5a88b584276f 100644
-> > --- a/fs/btrfs/discard.c
-> > +++ b/fs/btrfs/discard.c
-> > @@ -563,15 +563,14 @@ void btrfs_discard_calc_delay(struct btrfs_discar=
-d_ctl *discard_ctl)
-> >  /**
-> >   * btrfs_discard_update_discardable - propagate discard counters
-> >   * @block_group: block_group of interest
-> > - * @ctl: free_space_ctl of @block_group
-> >   *
-> >   * This propagates deltas of counters up to the discard_ctl.  It maint=
-ains a
-> >   * current counter and a previous counter passing the delta up to the =
-global
-> >   * stat.  Then the current counter value becomes the previous counter =
-value.
-> >   */
-> > -void btrfs_discard_update_discardable(struct btrfs_block_group *block_=
-group,
-> > -                                     struct btrfs_free_space_ctl *ctl)
-> > +void btrfs_discard_update_discardable(struct btrfs_block_group *block_=
-group)
-> >  {
-> > +       struct btrfs_free_space_ctl *ctl;
-> >         struct btrfs_discard_ctl *discard_ctl;
-> >         s32 extents_delta;
-> >         s64 bytes_delta;
-> > @@ -581,8 +580,10 @@ void btrfs_discard_update_discardable(struct btrfs=
-_block_group *block_group,
-> >             !btrfs_is_block_group_data_only(block_group))
-> >                 return;
-> >
-> > +       ctl =3D block_group->free_space_ctl;
-> >         discard_ctl =3D &block_group->fs_info->discard_ctl;
-> >
-> > +       lockdep_assert_held(&ctl->tree_lock);
-> >         extents_delta =3D ctl->discardable_extents[BTRFS_STAT_CURR] -
-> >                         ctl->discardable_extents[BTRFS_STAT_PREV];
-> >         if (extents_delta) {
-> > diff --git a/fs/btrfs/discard.h b/fs/btrfs/discard.h
-> > index 353228d62f5a..57b9202f427f 100644
-> > --- a/fs/btrfs/discard.h
-> > +++ b/fs/btrfs/discard.h
-> > @@ -28,8 +28,7 @@ bool btrfs_run_discard_work(struct btrfs_discard_ctl =
-*discard_ctl);
-> >
-> >  /* Update operations */
-> >  void btrfs_discard_calc_delay(struct btrfs_discard_ctl *discard_ctl);
-> > -void btrfs_discard_update_discardable(struct btrfs_block_group *block_=
-group,
-> > -                                     struct btrfs_free_space_ctl *ctl)=
-;
-> > +void btrfs_discard_update_discardable(struct btrfs_block_group *block_=
-group);
-> >
-> >  /* Setup/cleanup operations */
-> >  void btrfs_discard_punt_unused_bgs_list(struct btrfs_fs_info *fs_info)=
-;
-> > diff --git a/fs/btrfs/free-space-cache.c b/fs/btrfs/free-space-cache.c
-> > index 5ea36a06e514..0787339c7b93 100644
-> > --- a/fs/btrfs/free-space-cache.c
-> > +++ b/fs/btrfs/free-space-cache.c
-> > @@ -828,7 +828,6 @@ static int __load_free_space_cache(struct btrfs_roo=
-t *root, struct inode *inode,
-> >         merge_space_tree(ctl);
-> >         ret =3D 1;
-> >  out:
-> > -       btrfs_discard_update_discardable(ctl->private, ctl);
-> >         io_ctl_free(&io_ctl);
-> >         return ret;
-> >  free_cache:
-> > @@ -929,6 +928,9 @@ int load_free_space_cache(struct btrfs_block_group =
-*block_group)
-> >                            block_group->start);
-> >         }
-> >
-> > +       spin_lock(&ctl->tree_lock);
-> > +       btrfs_discard_update_discardable(block_group);
-> > +       spin_unlock(&ctl->tree_lock);
-> >         iput(inode);
-> >         return ret;
-> >  }
-> > @@ -2508,7 +2510,7 @@ int __btrfs_add_free_space(struct btrfs_fs_info *=
-fs_info,
-> >         if (ret)
-> >                 kmem_cache_free(btrfs_free_space_cachep, info);
-> >  out:
-> > -       btrfs_discard_update_discardable(block_group, ctl);
-> > +       btrfs_discard_update_discardable(block_group);
-> >         spin_unlock(&ctl->tree_lock);
-> >
-> >         if (ret) {
-> > @@ -2643,7 +2645,7 @@ int btrfs_remove_free_space(struct btrfs_block_gr=
-oup *block_group,
-> >                 goto again;
-> >         }
-> >  out_lock:
-> > -       btrfs_discard_update_discardable(block_group, ctl);
-> > +       btrfs_discard_update_discardable(block_group);
-> >         spin_unlock(&ctl->tree_lock);
-> >  out:
-> >         return ret;
-> > @@ -2779,7 +2781,7 @@ void __btrfs_remove_free_space_cache(struct btrfs=
-_free_space_ctl *ctl)
-> >         spin_lock(&ctl->tree_lock);
-> >         __btrfs_remove_free_space_cache_locked(ctl);
-> >         if (ctl->private)
-> > -               btrfs_discard_update_discardable(ctl->private, ctl);
-> > +               btrfs_discard_update_discardable(ctl->private);
-> >         spin_unlock(&ctl->tree_lock);
-> >  }
-> >
-> > @@ -2801,7 +2803,7 @@ void btrfs_remove_free_space_cache(struct btrfs_b=
-lock_group *block_group)
-> >                 cond_resched_lock(&ctl->tree_lock);
-> >         }
-> >         __btrfs_remove_free_space_cache_locked(ctl);
-> > -       btrfs_discard_update_discardable(block_group, ctl);
-> > +       btrfs_discard_update_discardable(block_group);
-> >         spin_unlock(&ctl->tree_lock);
-> >
-> >  }
-> > @@ -2885,7 +2887,7 @@ u64 btrfs_find_space_for_alloc(struct btrfs_block=
-_group *block_group,
-> >                         link_free_space(ctl, entry);
-> >         }
-> >  out:
-> > -       btrfs_discard_update_discardable(block_group, ctl);
-> > +       btrfs_discard_update_discardable(block_group);
-> >         spin_unlock(&ctl->tree_lock);
-> >
-> >         if (align_gap_len)
-> > --
-> > 2.26.2
-> >
+> We should optimize for the release build for structure layout or
+> cacheline occupation, the debugging options make it unpredictable and it
+> affects only development. There are way more deployments without
+> debugging options enabled anyway.
+
+We could always just leave a comment there noting that it's unpredictable
+under debug, and that debugging will require a temporary user-end shift.
+Optimizing for production is best, yep.
+
 >
+> The resulting size of the structures is also bigger so this has
+> completely different slab allocation pattern and performance
+> characteristics.
+
+Yeah, another reason we should just focus on production.
+
 >
-> --
-> Filipe David Manana,
+> Here's the layout of eb on the debug config I use:
 >
-> =E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you'=
-re right.=E2=80=9D
+> struct extent_buffer {
+>         u64                        start;                /*     0     8 *=
+/
+>         long unsigned int          len;                  /*     8     8 *=
+/
+>         long unsigned int          bflags;               /*    16     8 *=
+/
+>         struct btrfs_fs_info *     fs_info;              /*    24     8 *=
+/
+>         spinlock_t                 refs_lock;            /*    32    72 *=
+/
+>         /* --- cacheline 1 boundary (64 bytes) was 40 bytes ago --- */
+>         atomic_t                   refs;                 /*   104     4 *=
+/
+>         atomic_t                   io_pages;             /*   108     4 *=
+/
+>         int                        read_mirror;          /*   112     4 *=
+/
+>
+>         /* XXX 4 bytes hole, try to pack */
+>
+>         struct callback_head       callback_head __attribute__((__aligned=
+__(8))); /*   120    16 */
+>         /* --- cacheline 2 boundary (128 bytes) was 8 bytes ago --- */
+>         pid_t                      lock_owner;           /*   136     4 *=
+/
+>         bool                       lock_recursed;        /*   140     1 *=
+/
+>         s8                         log_index;            /*   141     1 *=
+/
+>
+>         /* XXX 2 bytes hole, try to pack */
+>
+>         struct rw_semaphore        lock;                 /*   144   168 *=
+/
+>         /* --- cacheline 4 boundary (256 bytes) was 56 bytes ago --- */
+>         struct page *              pages[16];            /*   312   128 *=
+/
+>         /* --- cacheline 6 boundary (384 bytes) was 56 bytes ago --- */
+>         struct list_head           leak_list;            /*   440    16 *=
+/
+>
+>         /* size: 456, cachelines: 8, members: 15 */
+>         /* sum members: 450, holes: 2, sum holes: 6 */
+>         /* forced alignments: 1, forced holes: 1, sum forced holes: 4 */
+>         /* last cacheline: 8 bytes */
+> } __attribute__((__aligned__(8)));
 
 Best regards,
 Amy Parker
