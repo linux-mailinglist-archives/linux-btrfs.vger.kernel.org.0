@@ -2,115 +2,79 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA7332A6559
-	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Nov 2020 14:38:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 629342A6644
+	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Nov 2020 15:21:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730029AbgKDNix (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 4 Nov 2020 08:38:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36788 "EHLO
+        id S1726952AbgKDOVl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 4 Nov 2020 09:21:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43520 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726350AbgKDNiw (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 4 Nov 2020 08:38:52 -0500
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9390FC0613D3
-        for <linux-btrfs@vger.kernel.org>; Wed,  4 Nov 2020 05:38:52 -0800 (PST)
-Received: by mail-qt1-x842.google.com with SMTP id h12so12141854qtc.9
-        for <linux-btrfs@vger.kernel.org>; Wed, 04 Nov 2020 05:38:52 -0800 (PST)
+        with ESMTP id S1726636AbgKDOVk (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 4 Nov 2020 09:21:40 -0500
+Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BFD4C061A4A
+        for <linux-btrfs@vger.kernel.org>; Wed,  4 Nov 2020 06:21:40 -0800 (PST)
+Received: by mail-yb1-xb43.google.com with SMTP id f140so18184732ybg.3
+        for <linux-btrfs@vger.kernel.org>; Wed, 04 Nov 2020 06:21:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc:content-transfer-encoding;
-        bh=Yu8hLa3QRkn1pfPsAWrHhuqsiI/crQLSOechx4OBg78=;
-        b=u/StCwBG/8dUSEjnOOFh6s9PzZ2+1F5h7KjP9OYT8GR7b0oC414kPvZvokjbXe7M/8
-         uPzp2fOATIuqJy2b9jeRUFIH9YxP/jIKMvAT7g5pMLvSLTyMICgPzLym3LomSc5nMkam
-         NxpUSWtDRa3L7ulFnBA0cbBuvpVkOOP6YFZSxPmDsCfcnp/CCbhOAK1KKu4xyMsCKcHe
-         T5yJzbWE2fYOB37Nya6PiEP8YemBrm5+AE0Tqq0bdzlkFfdyTPyTgmtaKtGVHa/YcUh2
-         hG6Y2PnjGKV4iPRNW41Dzpj3tbkbM2F9cthVoss8nlTk4X0VF+LK/DSRffMgm980g2ms
-         cNEw==
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=gZNQx1uqmcU7QdFoormB4JV3Z5vFGL+mFso4K56neqk=;
+        b=n+MgxAcqIJ3et1aSC5MvhIBv50bvzwjplj+wpod64xlf0i20dm7LpLMC3Y8fikci4u
+         KEz7JgzZP/Ts6p7FmjQ4zazOnXGBZuwFW4x+QMTKUKKXrw0XNLAMgWtkRV6bcj/Htglp
+         AOGJgqbKY8Oyh3IKovSezpmLx0RSnN4hi7G6ncLxHa9WfFPzZLgryrhIn+ui4+NPES3v
+         kxk2yZcTBDUl7NCEWEErnnvVzWRPV00VhShHPcbq1VYktuKJtvDgHc+oJ7baDr0t3w2B
+         4fcs3HdZxOqMBRzjgAfwP7zuaztHLpwvpmXGhOjy0lMyDG1O57DEU0VrQSAC8dxUJRF6
+         V/2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc:content-transfer-encoding;
-        bh=Yu8hLa3QRkn1pfPsAWrHhuqsiI/crQLSOechx4OBg78=;
-        b=bCWg3nk0hCTRAeQFNdpD6QMLAoGHgkzA5YTSkAesowb39BFbjGdAmhG5ckPs5QhCxj
-         KDuPxpPnyMDTBRNTGmxHC9JvpQDxOXIUQjO49LVBNwe2iUM0Nf6QgH4N2bg03VS7Rgfy
-         CCMbIqzVAy3Bs/YlKBAkCIuPOAXjUScGRVroDkhB3OKTSSgl/cyRKLc6x9D1X71Jqh6z
-         vwAQM4d77IeEkE2fdP/FNwSol6Syq+T+ZVH6wo0YgRgWjX7RpnG5ypKzrzYJ5UYdomBF
-         hKUp8OgeBQ7Y+A6guwlaDVsBDqiGZ2z+kKOkqnmkY3kBJhW4+RBZIiaCizPzLUXhi5qY
-         bGYg==
-X-Gm-Message-State: AOAM531hBdkiubOsisT3zdlq7LRl0N970HWUEZg5gkWw6Q4zF1es0lgD
-        ft7fSCXI8jw26eVp18tFxaRy1MZfCwT6efYpb4I=
-X-Google-Smtp-Source: ABdhPJz2viX0iikR1hDEzovok2i+zkad5mgQpT9rWPVGa8EMqDWYi13AFEg/7f2z5xdrVrT0skl4VcyUlELgUXSPf64=
-X-Received: by 2002:aed:2321:: with SMTP id h30mr19181058qtc.213.1604497131844;
- Wed, 04 Nov 2020 05:38:51 -0800 (PST)
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=gZNQx1uqmcU7QdFoormB4JV3Z5vFGL+mFso4K56neqk=;
+        b=kWL78ZCsxeId9CvhdIr/WAo2Zg4gzn1pyrFmi1mgikh8ICqEencFhCCagxTOLBmJf/
+         J6dxJqyZpmEJrCF+M3RoIHC4j7XdKMrjvoCLRQBFE1ZkiI74WTbiC0roLFQTd36to9K1
+         swfdifTdIAkVrky1taNpJU5VVyPQaM5QTp7qpW/dmf+Sn6GxS43nM+K9fbulHAuc41tQ
+         HpTBvQYbAUM1dEhoJly/oLSSkOySilO4OVDfSQYN6qMgEou023KmSwP4FyD5stYu/HcZ
+         /PxiHX63bIxe/CqBQaCbwWf7fKkjxX94FEdHgm871SGek66Pk6hIOX94B5XsuyV9iSZp
+         wB9g==
+X-Gm-Message-State: AOAM531pku/Tv4gAY44GhKCBjs3v2KzkRGlQfvvbYQeVx9gVZI5GyXk1
+        /prb3+gmrBbemG5aKvIa5ALy/eJZZtLR3aJfFP4=
+X-Google-Smtp-Source: ABdhPJywL/o1bbg6cVXKkk2r3T96Rl0GwweDIj9FidJmJXnhg1wbbzvq9y+N+S955MiQQBJkGMG/7yLTU6X+40Lyq94=
+X-Received: by 2002:a25:d2c5:: with SMTP id j188mr34615740ybg.32.1604499699579;
+ Wed, 04 Nov 2020 06:21:39 -0800 (PST)
 MIME-Version: 1.0
-References: <cover.1603460665.git.josef@toxicpanda.com> <1e88615a596a6d811954832a744d105f94e42645.1603460665.git.josef@toxicpanda.com>
-In-Reply-To: <1e88615a596a6d811954832a744d105f94e42645.1603460665.git.josef@toxicpanda.com>
-Reply-To: fdmanana@gmail.com
-From:   Filipe Manana <fdmanana@gmail.com>
-Date:   Wed, 4 Nov 2020 13:38:40 +0000
-Message-ID: <CAL3q7H60udtDb6vjSVf3ZNnqLqK4_iPg7_9bKLyQokY4rRgryw@mail.gmail.com>
-Subject: Re: [PATCH 1/8] btrfs: do not shorten unpin len for caching block groups
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>, kernel-team@fb.com
+Received: by 2002:a05:7110:a044:b029:2b:64da:a21f with HTTP; Wed, 4 Nov 2020
+ 06:21:39 -0800 (PST)
+Reply-To: aadt19@o2.pl
+From:   Mrs Evelyn Thompson <mrs.nefisetu@gmail.com>
+Date:   Wed, 4 Nov 2020 06:21:39 -0800
+Message-ID: <CANyAxob4QdF8H2ihOJJqV=MO-PyEzgeEYw5++jbvS-xhyHOd1A@mail.gmail.com>
+Subject: Good Morning,
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Oct 23, 2020 at 7:16 PM Josef Bacik <josef@toxicpanda.com> wrote:
->
-> While fixing up our ->last_byte_to_unpin locking I noticed that we will
-> shorten len based on ->last_byte_to_unpin if we're caching when we're
-> adding back the free space.  This is correct for the free space, as we
-> cannot unpin more than ->last_byte_to_unpin, however we use len to
-> adjust the ->bytes_pinned counters and such, which need to track the
-> actual pinned usage.  This could result in
-> WARN_ON(space_info->bytes_pinned) triggering at unmount time.  Fix this
-> by using a local variable for the amount to add to free space cache, and
-> leave len untouched in this case.
->
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+-- 
+I am Mrs Evelyn Thompson, from the United States. I am the managing
+director of The Thomson Corporation - Company. my husband was a
+formerly co-head of JP Morgan Chase's investment and also
+Member-Market Monitoring Group at The Institute of International
+Finance, Inc. and the board of 5 other companies.
 
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
+I want to hand over this project to you. I am sending this message to
+your notice with trust and honesty. I want to make a transfer into
+your account. please I want you to assure me before I proceed with the
+transfer. I'm written you this message herein the Hospital bed. I lost
+my Dear Beloved husband with our only Child for Deadly Coronavirus. I
+want to make a transfer to the less privileged through your receiving
+nominated bank account. I need your help with genuine trust please. do
+not hesitate to get back to me immediately you receive this email.
+failure for me to reply back your message please contact the Doctor
+with this WhatsApp Number: +13019692737 ask after Mrs Evelyn Thompson.
+I need to know what you do for a living: and your State Country:
+please awaiting your Reply now.
 
-Looks good, thanks.
-
-> ---
->  fs/btrfs/extent-tree.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
->
-> diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-> index 5fd60b13f4f8..a98f484a2fc1 100644
-> --- a/fs/btrfs/extent-tree.c
-> +++ b/fs/btrfs/extent-tree.c
-> @@ -2816,10 +2816,10 @@ static int unpin_extent_range(struct btrfs_fs_inf=
-o *fs_info,
->                 len =3D cache->start + cache->length - start;
->                 len =3D min(len, end + 1 - start);
->
-> -               if (start < cache->last_byte_to_unpin) {
-> -                       len =3D min(len, cache->last_byte_to_unpin - star=
-t);
-> -                       if (return_free_space)
-> -                               btrfs_add_free_space(cache, start, len);
-> +               if (start < cache->last_byte_to_unpin && return_free_spac=
-e) {
-> +                       u64 add_len =3D min(len,
-> +                                         cache->last_byte_to_unpin - sta=
-rt);
-> +                       btrfs_add_free_space(cache, start, add_len);
->                 }
->
->                 start +=3D len;
-> --
-> 2.26.2
->
-
-
---=20
-Filipe David Manana,
-
-=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
- right.=E2=80=9D
+Thanks
+Mrs Evelyn Thompson
