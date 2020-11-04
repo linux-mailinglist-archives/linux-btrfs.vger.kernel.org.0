@@ -2,97 +2,325 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 240E12A6C98
-	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Nov 2020 19:21:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ABCEA2A6CA6
+	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Nov 2020 19:27:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730259AbgKDSVY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 4 Nov 2020 13:21:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54060 "EHLO
+        id S1732361AbgKDS1U (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 4 Nov 2020 13:27:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729488AbgKDSVY (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 4 Nov 2020 13:21:24 -0500
-Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62E16C0613D3
-        for <linux-btrfs@vger.kernel.org>; Wed,  4 Nov 2020 10:21:24 -0800 (PST)
-Received: by mail-qv1-xf43.google.com with SMTP id g19so159937qvy.2
-        for <linux-btrfs@vger.kernel.org>; Wed, 04 Nov 2020 10:21:24 -0800 (PST)
+        with ESMTP id S1730833AbgKDS1T (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 4 Nov 2020 13:27:19 -0500
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43674C0613D3
+        for <linux-btrfs@vger.kernel.org>; Wed,  4 Nov 2020 10:27:19 -0800 (PST)
+Received: by mail-qk1-x743.google.com with SMTP id a65so17986103qkg.13
+        for <linux-btrfs@vger.kernel.org>; Wed, 04 Nov 2020 10:27:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=FPi3rQ5ogFLVuztxsExOPFUO9rfq3ZO0dNDZ3zTGAiY=;
-        b=jeMLS5k6b/QcPV5dtAoguRqGbe4jeItv4jj4T03rLdN9avjG4WN+8xfoO1D7xCZDwP
-         q7t70IAHmC+p29h+knH6V09Li/OHI2L/Y/IZnQmFc1LL4VMbfYN7tEyYemtGd8q0neBd
-         wFncxyIFtCZFCoGvkHt02JFHzoktNSLWx3i7Ese/b9jvKq2bxiAoO8qwtZscGrX9hXJG
-         PjcLQDIeOdiffxA9LXVizET40aUEi7wBaQPKytoOwlFAVFQ/XPSH0wHvxQToBcT/omB5
-         tdwEl8rh5uv1zQYq1RSnwNlMPqE0/PjTrPbHwvvF8lfeuwXlD+vhgcwGhfAwn263RL7m
-         rK7A==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc:content-transfer-encoding;
+        bh=wlXDskYBFeMqpODx0Fqifjhpi2TS+M0BjpLUTT70XI4=;
+        b=W3enVZXuajR5zGBx13+39sZdNpKKXmnEKndPyzHTtsvCSIdSsVAFksKEIHpf6mcas8
+         pcBbLUvdjxQlNcfWp1BoGuTHlRCq3RVfwrfaD8HmLlYUva790LkY97xqTHepfSXQ0NrI
+         5truad3eQd1ud70huoF2PrSC5we26p7T8aNVD2tNZ5B3XPGtQUh4wYjbhQFXBTtFgQ1i
+         m3jgf2kaUB8Md9hwplUKhKr/lSMaBlRcaMo2oRuEfrKI2gCoKlXUZrazdi53SBI7V9NW
+         9qcjvZl40aNAA1a75dCr08EQmwSPaAjAbHBuMSP+zjdZz2E1ZP7MB5h81AVJZnW79ETt
+         bfvQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=FPi3rQ5ogFLVuztxsExOPFUO9rfq3ZO0dNDZ3zTGAiY=;
-        b=PNDpnwvqHzWfguvN3aEX5IAPJIvwePzNVWDraBzPFiZqaN8bRMBn0XvM+hrJF9Gr2y
-         XZMShrqDuNuAyddUicQd5P7Srn6RFECEMDUTFN2PyAWNb+8CKy11K66uXd3B2J4hznQe
-         sWVxe+iPssgBQ+Q5slig5b7aGa6QI+/3o5GZDl/xUD/Q6oWRhX68IP+KZUO/PNo0XSsk
-         08TPAgugFdWEGC4jQluap/KOPhFAFFS5nODAfXBUCvpUQ+PBEQm4CLksTS6iA5H2tj4B
-         9UKl9LL1pN3RyBRCC5HfGOoukZw/XtLR1aZlUMaViWIZrhZNdEXkr4VHHLUYUywkfNIA
-         EuSw==
-X-Gm-Message-State: AOAM530ihRNultTzd/FZr/7xS08tpsIdt8n0C9v4kP+gXz8RX9JCfj/t
-        nL/9Zy0/JxNx1Nc6rx7SFwjkUmCJVZilGw==
-X-Google-Smtp-Source: ABdhPJwQGWGoh7RbgWVpXrZTHiRszH2VGQwOg44zkek3vVAK+7K8ush8BFlTWZJR227HrWxcz/jYvA==
-X-Received: by 2002:a0c:f205:: with SMTP id h5mr25411812qvk.27.1604514083443;
-        Wed, 04 Nov 2020 10:21:23 -0800 (PST)
-Received: from ?IPv6:2620:10d:c0a8:11c1::1180? ([2620:10d:c091:480::1:8f29])
-        by smtp.gmail.com with ESMTPSA id o8sm750055qtm.9.2020.11.04.10.21.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 04 Nov 2020 10:21:22 -0800 (PST)
-Subject: Re: [PATCH 4/8] btrfs: cleanup btrfs_discard_update_discardable usage
-To:     fdmanana@gmail.com
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>, kernel-team@fb.com
-References: <cover.1603460665.git.josef@toxicpanda.com>
- <afb3c72b04191707f96001bc3698e14b4d3400a8.1603460665.git.josef@toxicpanda.com>
- <CAL3q7H5ddLEFbisuFmauK9=XX+sEPy-O4R7X1kp67YH4N1hfcw@mail.gmail.com>
-From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <fd63e33b-49ea-2150-eaef-e3fd19e5372a@toxicpanda.com>
-Date:   Wed, 4 Nov 2020 13:21:21 -0500
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.4.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc:content-transfer-encoding;
+        bh=wlXDskYBFeMqpODx0Fqifjhpi2TS+M0BjpLUTT70XI4=;
+        b=k+38ESlwcXcQ4YvGffIUqegKz8m4wCtKE9zVhpSDanYluS4HKHJ4dswjyr7CesHiRB
+         nwO8/oKIIHvhRHf/TwPDJ4zaarLZBbZDvyO1Pw4kdsKZEZeCglLg3AWkf/CaXjJwwF1Y
+         QFQz05YRqbFQ98VuaT6i8UZPTsQGdYZVuZ9AFje4IthFMdeIssTaXyqcsXu03LPlIfpE
+         9o4yCinClZ2dvpcNm4HkRg6FKY7Xg3Jo2Tw/vYNmDsNlPIuC0m2ex2XdKtvilDYXOpMY
+         7Snm1DJ9gsffmUQpvH80wjqNy6NqjSBGy2cvIEbHk4aBkZv/Vrj9Znf9UT9NEP0/Yqfn
+         dGyA==
+X-Gm-Message-State: AOAM531jNHoxNwYk3VSNXjOJK16wYOgNOhl74ZknLaGx++Or26zIyK6R
+        JRIDDMrduUwAKzYUfyzujNUAns9pR7yCkVuQ05g=
+X-Google-Smtp-Source: ABdhPJyZXpRAJts/bHXTTSAn9FT6ht7mZTlkS3HpHyBWp5Tgjc4yeT6Q4masQUXEzfuOcV+lWpSWGRyfxElfvgoMEi4=
+X-Received: by 2002:a37:9cd3:: with SMTP id f202mr26140953qke.479.1604514437883;
+ Wed, 04 Nov 2020 10:27:17 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CAL3q7H5ddLEFbisuFmauK9=XX+sEPy-O4R7X1kp67YH4N1hfcw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <cover.1603460665.git.josef@toxicpanda.com> <7f656118637ade71f45d1a3faca617ccbea9f61f.1603460665.git.josef@toxicpanda.com>
+In-Reply-To: <7f656118637ade71f45d1a3faca617ccbea9f61f.1603460665.git.josef@toxicpanda.com>
+Reply-To: fdmanana@gmail.com
+From:   Filipe Manana <fdmanana@gmail.com>
+Date:   Wed, 4 Nov 2020 18:27:06 +0000
+Message-ID: <CAL3q7H4bxVp_=mfz+5F6pwLuRHferY=o5gytL7cxkU68cqGNaw@mail.gmail.com>
+Subject: Re: [PATCH 8/8] btrfs: protect the fs_info->caching_block_groups differently
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>, kernel-team@fb.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 11/4/20 10:54 AM, Filipe Manana wrote:
-> On Fri, Oct 23, 2020 at 5:12 PM Josef Bacik <josef@toxicpanda.com> wrote:
->>
->> This passes in the block_group and the free_space_ctl, but we can get
->> this from the block group itself.  Part of this is because we call it
->> from __load_free_space_cache, which can be called for the inode cache as
->> well.  Move that call into the block group specific load section, wrap
->> it in the right lock that we need, and fix up the arguments to only take
->> the block group.  Add a lockdep_assert as well for good measure to make
->> sure we don't mess up the locking again.
-> 
-> So this is actually 2 different things in one patch:
-> 
-> 1) A cleanup to remove an unnecessary argument to
-> btrfs_discard_update_discardable();
-> 
-> 2) A bug because btrfs_discard_update_discardable() is not being
-> called with the lock ->tree_lock held in one specific context.
+On Fri, Oct 23, 2020 at 5:13 PM Josef Bacik <josef@toxicpanda.com> wrote:
+>
+> I got the following lockdep splat
+>
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D
+> WARNING: possible circular locking dependency detected
+> 5.9.0+ #101 Not tainted
+> ------------------------------------------------------
+> btrfs-cleaner/3445 is trying to acquire lock:
+> ffff89dbec39ab48 (btrfs-root-00){++++}-{3:3}, at: __btrfs_tree_read_lock+=
+0x32/0x170
+>
+> but task is already holding lock:
+> ffff89dbeaf28a88 (&fs_info->commit_root_sem){++++}-{3:3}, at: btrfs_find_=
+all_roots+0x41/0x80
+>
+> which lock already depends on the new lock.
+>
+> the existing dependency chain (in reverse order) is:
+>
+> -> #2 (&fs_info->commit_root_sem){++++}-{3:3}:
+>        down_write+0x3d/0x70
+>        btrfs_cache_block_group+0x2d5/0x510
+>        find_free_extent+0xb6e/0x12f0
+>        btrfs_reserve_extent+0xb3/0x1b0
+>        btrfs_alloc_tree_block+0xb1/0x330
+>        alloc_tree_block_no_bg_flush+0x4f/0x60
+>        __btrfs_cow_block+0x11d/0x580
+>        btrfs_cow_block+0x10c/0x220
+>        commit_cowonly_roots+0x47/0x2e0
+>        btrfs_commit_transaction+0x595/0xbd0
+>        sync_filesystem+0x74/0x90
+>        generic_shutdown_super+0x22/0x100
+>        kill_anon_super+0x14/0x30
+>        btrfs_kill_super+0x12/0x20
+>        deactivate_locked_super+0x36/0xa0
+>        cleanup_mnt+0x12d/0x190
+>        task_work_run+0x5c/0xa0
+>        exit_to_user_mode_prepare+0x1df/0x200
+>        syscall_exit_to_user_mode+0x54/0x280
+>        entry_SYSCALL_64_after_hwframe+0x44/0xa9
+>
+> -> #1 (&space_info->groups_sem){++++}-{3:3}:
+>        down_read+0x40/0x130
+>        find_free_extent+0x2ed/0x12f0
+>        btrfs_reserve_extent+0xb3/0x1b0
+>        btrfs_alloc_tree_block+0xb1/0x330
+>        alloc_tree_block_no_bg_flush+0x4f/0x60
+>        __btrfs_cow_block+0x11d/0x580
+>        btrfs_cow_block+0x10c/0x220
+>        commit_cowonly_roots+0x47/0x2e0
+>        btrfs_commit_transaction+0x595/0xbd0
+>        sync_filesystem+0x74/0x90
+>        generic_shutdown_super+0x22/0x100
+>        kill_anon_super+0x14/0x30
+>        btrfs_kill_super+0x12/0x20
+>        deactivate_locked_super+0x36/0xa0
+>        cleanup_mnt+0x12d/0x190
+>        task_work_run+0x5c/0xa0
+>        exit_to_user_mode_prepare+0x1df/0x200
+>        syscall_exit_to_user_mode+0x54/0x280
+>        entry_SYSCALL_64_after_hwframe+0x44/0xa9
+>
+> -> #0 (btrfs-root-00){++++}-{3:3}:
+>        __lock_acquire+0x1167/0x2150
+>        lock_acquire+0xb9/0x3d0
+>        down_read_nested+0x43/0x130
+>        __btrfs_tree_read_lock+0x32/0x170
+>        __btrfs_read_lock_root_node+0x3a/0x50
+>        btrfs_search_slot+0x614/0x9d0
+>        btrfs_find_root+0x35/0x1b0
+>        btrfs_read_tree_root+0x61/0x120
+>        btrfs_get_root_ref+0x14b/0x600
+>        find_parent_nodes+0x3e6/0x1b30
+>        btrfs_find_all_roots_safe+0xb4/0x130
+>        btrfs_find_all_roots+0x60/0x80
+>        btrfs_qgroup_trace_extent_post+0x27/0x40
+>        btrfs_add_delayed_data_ref+0x3fd/0x460
+>        btrfs_free_extent+0x42/0x100
+>        __btrfs_mod_ref+0x1d7/0x2f0
+>        walk_up_proc+0x11c/0x400
+>        walk_up_tree+0xf0/0x180
+>        btrfs_drop_snapshot+0x1c7/0x780
+>        btrfs_clean_one_deleted_snapshot+0xfb/0x110
+>        cleaner_kthread+0xd4/0x140
+>        kthread+0x13a/0x150
+>        ret_from_fork+0x1f/0x30
+>
+> other info that might help us debug this:
+>
+> Chain exists of:
+>   btrfs-root-00 --> &space_info->groups_sem --> &fs_info->commit_root_sem
+>
+>  Possible unsafe locking scenario:
+>
+>        CPU0                    CPU1
+>        ----                    ----
+>   lock(&fs_info->commit_root_sem);
+>                                lock(&space_info->groups_sem);
+>                                lock(&fs_info->commit_root_sem);
+>   lock(btrfs-root-00);
+>
+>  *** DEADLOCK ***
+>
+> 3 locks held by btrfs-cleaner/3445:
+>  #0: ffff89dbeaf28838 (&fs_info->cleaner_mutex){+.+.}-{3:3}, at: cleaner_=
+kthread+0x6e/0x140
+>  #1: ffff89dbeb6c7640 (sb_internal){.+.+}-{0:0}, at: start_transaction+0x=
+40b/0x5c0
+>  #2: ffff89dbeaf28a88 (&fs_info->commit_root_sem){++++}-{3:3}, at: btrfs_=
+find_all_roots+0x41/0x80
+>
+> stack backtrace:
+> CPU: 0 PID: 3445 Comm: btrfs-cleaner Not tainted 5.9.0+ #101
+> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-2.fc32=
+ 04/01/2014
+> Call Trace:
+>  dump_stack+0x8b/0xb0
+>  check_noncircular+0xcf/0xf0
+>  __lock_acquire+0x1167/0x2150
+>  ? __bfs+0x42/0x210
+>  lock_acquire+0xb9/0x3d0
+>  ? __btrfs_tree_read_lock+0x32/0x170
+>  down_read_nested+0x43/0x130
+>  ? __btrfs_tree_read_lock+0x32/0x170
+>  __btrfs_tree_read_lock+0x32/0x170
+>  __btrfs_read_lock_root_node+0x3a/0x50
+>  btrfs_search_slot+0x614/0x9d0
+>  ? find_held_lock+0x2b/0x80
+>  btrfs_find_root+0x35/0x1b0
+>  ? do_raw_spin_unlock+0x4b/0xa0
+>  btrfs_read_tree_root+0x61/0x120
+>  btrfs_get_root_ref+0x14b/0x600
+>  find_parent_nodes+0x3e6/0x1b30
+>  btrfs_find_all_roots_safe+0xb4/0x130
+>  btrfs_find_all_roots+0x60/0x80
+>  btrfs_qgroup_trace_extent_post+0x27/0x40
+>  btrfs_add_delayed_data_ref+0x3fd/0x460
+>  btrfs_free_extent+0x42/0x100
+>  __btrfs_mod_ref+0x1d7/0x2f0
+>  walk_up_proc+0x11c/0x400
+>  walk_up_tree+0xf0/0x180
+>  btrfs_drop_snapshot+0x1c7/0x780
+>  ? btrfs_clean_one_deleted_snapshot+0x73/0x110
+>  btrfs_clean_one_deleted_snapshot+0xfb/0x110
+>  cleaner_kthread+0xd4/0x140
+>  ? btrfs_alloc_root+0x50/0x50
+>  kthread+0x13a/0x150
+>  ? kthread_create_worker_on_cpu+0x40/0x40
+>  ret_from_fork+0x1f/0x30
+>
+> while testing another lockdep fix.  This happens because we're using the
+> commit_root_sem to protect fs_info->caching_block_groups, which creates
+> a dependency on the groups_sem -> commit_root_sem, which is problematic
+> because we will allocate blocks while holding tree roots.  Fix this by
+> making the list itself protected by the fs_info->block_group_cache_lock.
+>
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 
-Yeah but the specific context is on load, so we won't have concurrent modifiers 
-to the tree until _after_ the cache is successfully loaded.  Of course this 
-patchset changes that so it's important now, but prior to this we didn't 
-necessarily need the lock, so it's not really a bug fix, just an adjustment.
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
 
-However I'm always happy to inflate my patch counts, makes me look good at 
-performance review time ;).  I'm happy to respin with it broken out.  Thanks,
+Looks good, thanks.
 
-Josef
+> ---
+>  fs/btrfs/block-group.c | 12 ++++++------
+>  fs/btrfs/transaction.c |  2 ++
+>  2 files changed, 8 insertions(+), 6 deletions(-)
+>
+> diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+> index ba6564f67d9a..f19fabae4754 100644
+> --- a/fs/btrfs/block-group.c
+> +++ b/fs/btrfs/block-group.c
+> @@ -747,10 +747,10 @@ int btrfs_cache_block_group(struct btrfs_block_grou=
+p *cache, int load_cache_only
+>         cache->has_caching_ctl =3D 1;
+>         spin_unlock(&cache->lock);
+>
+> -       down_write(&fs_info->commit_root_sem);
+> +       spin_lock(&fs_info->block_group_cache_lock);
+>         refcount_inc(&caching_ctl->count);
+>         list_add_tail(&caching_ctl->list, &fs_info->caching_block_groups)=
+;
+> -       up_write(&fs_info->commit_root_sem);
+> +       spin_unlock(&fs_info->block_group_cache_lock);
+>
+>         btrfs_get_block_group(cache);
+>
+> @@ -999,7 +999,7 @@ int btrfs_remove_block_group(struct btrfs_trans_handl=
+e *trans,
+>         if (block_group->cached =3D=3D BTRFS_CACHE_STARTED)
+>                 btrfs_wait_block_group_cache_done(block_group);
+>         if (block_group->has_caching_ctl) {
+> -               down_write(&fs_info->commit_root_sem);
+> +               spin_lock(&fs_info->block_group_cache_lock);
+>                 if (!caching_ctl) {
+>                         struct btrfs_caching_control *ctl;
+>
+> @@ -1013,7 +1013,7 @@ int btrfs_remove_block_group(struct btrfs_trans_han=
+dle *trans,
+>                 }
+>                 if (caching_ctl)
+>                         list_del_init(&caching_ctl->list);
+> -               up_write(&fs_info->commit_root_sem);
+> +               spin_unlock(&fs_info->block_group_cache_lock);
+>                 if (caching_ctl) {
+>                         /* Once for the caching bgs list and once for us.=
+ */
+>                         btrfs_put_caching_control(caching_ctl);
+> @@ -3311,14 +3311,14 @@ int btrfs_free_block_groups(struct btrfs_fs_info =
+*info)
+>         struct btrfs_caching_control *caching_ctl;
+>         struct rb_node *n;
+>
+> -       down_write(&info->commit_root_sem);
+> +       spin_lock(&info->block_group_cache_lock);
+>         while (!list_empty(&info->caching_block_groups)) {
+>                 caching_ctl =3D list_entry(info->caching_block_groups.nex=
+t,
+>                                          struct btrfs_caching_control, li=
+st);
+>                 list_del(&caching_ctl->list);
+>                 btrfs_put_caching_control(caching_ctl);
+>         }
+> -       up_write(&info->commit_root_sem);
+> +       spin_unlock(&info->block_group_cache_lock);
+>
+>         spin_lock(&info->unused_bgs_lock);
+>         while (!list_empty(&info->unused_bgs)) {
+> diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
+> index 9ef6cba1eb59..a0cf0e0c4085 100644
+> --- a/fs/btrfs/transaction.c
+> +++ b/fs/btrfs/transaction.c
+> @@ -208,6 +208,7 @@ static noinline void switch_commit_roots(struct btrfs=
+_trans_handle *trans)
+>          * the caching thread will re-start it's search from 3, and thus =
+find
+>          * the hole from [4,6) to add to the free space cache.
+>          */
+> +       spin_lock(&fs_info->block_group_cache_lock);
+>         list_for_each_entry_safe(caching_ctl, next,
+>                                  &fs_info->caching_block_groups, list) {
+>                 struct btrfs_block_group *cache =3D caching_ctl->block_gr=
+oup;
+> @@ -219,6 +220,7 @@ static noinline void switch_commit_roots(struct btrfs=
+_trans_handle *trans)
+>                         cache->last_byte_to_unpin =3D caching_ctl->progre=
+ss;
+>                 }
+>         }
+> +       spin_unlock(&fs_info->block_group_cache_lock);
+>         up_write(&fs_info->commit_root_sem);
+>  }
+>
+> --
+> 2.26.2
+>
+
+
+--=20
+Filipe David Manana,
+
+=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
+ right.=E2=80=9D
