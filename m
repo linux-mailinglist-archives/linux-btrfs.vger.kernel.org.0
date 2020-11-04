@@ -2,120 +2,231 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55ACB2A68C3
-	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Nov 2020 16:57:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E7FE2A68B3
+	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Nov 2020 16:56:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730625AbgKDPzo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 4 Nov 2020 10:55:44 -0500
-Received: from mx2.suse.de ([195.135.220.15]:38774 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730589AbgKDPzf (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 4 Nov 2020 10:55:35 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id B8983ADD9;
-        Wed,  4 Nov 2020 15:55:32 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 7E7CBDA6E3; Wed,  4 Nov 2020 16:53:54 +0100 (CET)
-Date:   Wed, 4 Nov 2020 16:53:54 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: reorder extent buffer members for better packing
-Message-ID: <20201104155354.GG6756@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-References: <20201103211101.4221-1-dsterba@suse.com>
- <96d4080f-38cd-d49b-ebb1-72de8ae43c34@gmx.com>
+        id S1731341AbgKDPzM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 4 Nov 2020 10:55:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59242 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731226AbgKDPzK (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 4 Nov 2020 10:55:10 -0500
+Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 556EFC0613D3
+        for <linux-btrfs@vger.kernel.org>; Wed,  4 Nov 2020 07:55:10 -0800 (PST)
+Received: by mail-qv1-xf42.google.com with SMTP id r12so383932qvq.13
+        for <linux-btrfs@vger.kernel.org>; Wed, 04 Nov 2020 07:55:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc:content-transfer-encoding;
+        bh=vUb5mnDZyUaPB/Te7/z8laR/Nhqi8wKLY7AjT1MD+hk=;
+        b=jIDhY/ZVLwyQq7Zv5AmBWmvwCo4+Il1f3X4ydQOs7i4LE12XvwT+FyJhmIme0NjWJR
+         lWG3N1CzROJjFfAi1U1G7x/+T299ZE/fhtpuXbrpL2kMSuX5rFfIou6V6NqmYEC2HzmH
+         cMGNudcntwNN5YJc4g/Q1oVLSIayAIYez9YAs3Mji56HqZixO2SOdAKc01NO6SmuFC5a
+         zG96drhIN5q4IY7bY3I+jU34JWBpTD5t8j9V0kRySOLcy3R85X84OhqQV8ayluWvKER/
+         XvYO86i+TVsnlPNnwSNLalWupZx7045AP0vm7dhEDfuW/EYdjaaxvX0PlhFZaL+63D1I
+         z5BA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc:content-transfer-encoding;
+        bh=vUb5mnDZyUaPB/Te7/z8laR/Nhqi8wKLY7AjT1MD+hk=;
+        b=D6cBqZb7c52HTVIuvk/MNK2vc8ETLboOBsbc4MJ9C0I4DhR8s0MlWto5IrtoynbZRt
+         HJ5wHeeavDRNpNdpSpth/RshTLGzdvxn990n3XqkV1gLXmk+Ana2D3kVOHXetreaB3Ro
+         yf8/NRUxLUwuC0eEGR2ehAvK9NNhv4qy1e4ncNthMUybD5MEUoXgSyKDNQGVuoXtzbgd
+         upmRFtOZaaA0AykwjdQnWwVabaJ8LRz2IqllpNxJ5YaL/pSHfIJNwVPdjBNz7WNVT7h2
+         F2R7QjMi5+bRzsvrqKkifPFjFriws5COV0Ik8c2drJDuEyp5EhkODgluh0PNFpnhzNHY
+         q9+w==
+X-Gm-Message-State: AOAM530vAIivauBT7GMbn+EHDzGyVsxQpBYjI6xX3peD3Wwe2Xzoyz5P
+        oa+q3641qAjoh/yjAjE6kVPVAOOZsgQ/oJ7+J8g=
+X-Google-Smtp-Source: ABdhPJxSQuhG7FYHgpCJ6s7QVfWEF69DILvuVESeYHv3STMEPatJI3Br3glspKKfOQcarEIAgXl1h1VS8zOavB6m1/o=
+X-Received: by 2002:a0c:f70f:: with SMTP id w15mr32241289qvn.45.1604505309574;
+ Wed, 04 Nov 2020 07:55:09 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <96d4080f-38cd-d49b-ebb1-72de8ae43c34@gmx.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+References: <cover.1603460665.git.josef@toxicpanda.com> <afb3c72b04191707f96001bc3698e14b4d3400a8.1603460665.git.josef@toxicpanda.com>
+In-Reply-To: <afb3c72b04191707f96001bc3698e14b4d3400a8.1603460665.git.josef@toxicpanda.com>
+Reply-To: fdmanana@gmail.com
+From:   Filipe Manana <fdmanana@gmail.com>
+Date:   Wed, 4 Nov 2020 15:54:58 +0000
+Message-ID: <CAL3q7H5ddLEFbisuFmauK9=XX+sEPy-O4R7X1kp67YH4N1hfcw@mail.gmail.com>
+Subject: Re: [PATCH 4/8] btrfs: cleanup btrfs_discard_update_discardable usage
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>, kernel-team@fb.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Nov 04, 2020 at 07:44:33AM +0800, Qu Wenruo wrote:
-> On 2020/11/4 上午5:11, David Sterba wrote:
-> > After the rwsem replaced the tree lock implementation, the extent buffer
-> > got smaller but leaving some holes behind. By changing log_index type
-> > and reordering, we can squeeze the size further to 240 bytes, measured on
-> > release config on x86_64. Log_index spans only 3 values and needs to be
-> > signed.
-> > 
-> > Before:
-> > 
-> > struct extent_buffer {
-> >         u64                        start;                /*     0     8 */
-> >         long unsigned int          len;                  /*     8     8 */
-> >         long unsigned int          bflags;               /*    16     8 */
-> >         struct btrfs_fs_info *     fs_info;              /*    24     8 */
-> >         spinlock_t                 refs_lock;            /*    32     4 */
-> >         atomic_t                   refs;                 /*    36     4 */
-> >         atomic_t                   io_pages;             /*    40     4 */
-> >         int                        read_mirror;          /*    44     4 */
-> >         struct callback_head       callback_head __attribute__((__aligned__(8))); /*    48    16 */
-> >         /* --- cacheline 1 boundary (64 bytes) --- */
-> >         pid_t                      lock_owner;           /*    64     4 */
-> >         bool                       lock_recursed;        /*    68     1 */
-> > 
-> >         /* XXX 3 bytes hole, try to pack */
-> > 
-> >         struct rw_semaphore        lock;                 /*    72    40 */
-> 
-> An off-topic question, for things like aotmic_t/spinlock_t and
-> rw_semaphore, wouldn't various DEBUG options change their size?
+On Fri, Oct 23, 2020 at 5:12 PM Josef Bacik <josef@toxicpanda.com> wrote:
+>
+> This passes in the block_group and the free_space_ctl, but we can get
+> this from the block group itself.  Part of this is because we call it
+> from __load_free_space_cache, which can be called for the inode cache as
+> well.  Move that call into the block group specific load section, wrap
+> it in the right lock that we need, and fix up the arguments to only take
+> the block group.  Add a lockdep_assert as well for good measure to make
+> sure we don't mess up the locking again.
 
-Yes they do. For example spinlock_t is 4 bytes on release config and 72
-on debug. Semaphore is 40 vs 168. Atomic_t is 4 bytes always, it's just
-an int.
+So this is actually 2 different things in one patch:
 
-> Do we need to consider such case, by moving them to the end of the
-> structure, or we only consider production build for pa_hole?
+1) A cleanup to remove an unnecessary argument to
+btrfs_discard_update_discardable();
 
-We should optimize for the release build for structure layout or
-cacheline occupation, the debugging options make it unpredictable and it
-affects only development. There are way more deployments without
-debugging options enabled anyway.
+2) A bug because btrfs_discard_update_discardable() is not being
+called with the lock ->tree_lock held in one specific context.
 
-The resulting size of the structures is also bigger so this has
-completely different slab allocation pattern and performance
-characteristics.
+Shouldn't we really have this split in two patches?
 
-Here's the layout of eb on the debug config I use:
+Other than that, it looks good. Thanks.
 
-struct extent_buffer {
-        u64                        start;                /*     0     8 */
-        long unsigned int          len;                  /*     8     8 */
-        long unsigned int          bflags;               /*    16     8 */
-        struct btrfs_fs_info *     fs_info;              /*    24     8 */
-        spinlock_t                 refs_lock;            /*    32    72 */
-        /* --- cacheline 1 boundary (64 bytes) was 40 bytes ago --- */
-        atomic_t                   refs;                 /*   104     4 */
-        atomic_t                   io_pages;             /*   108     4 */
-        int                        read_mirror;          /*   112     4 */
+>
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> ---
+>  fs/btrfs/discard.c          |  7 ++++---
+>  fs/btrfs/discard.h          |  3 +--
+>  fs/btrfs/free-space-cache.c | 14 ++++++++------
+>  3 files changed, 13 insertions(+), 11 deletions(-)
+>
+> diff --git a/fs/btrfs/discard.c b/fs/btrfs/discard.c
+> index 741c7e19c32f..5a88b584276f 100644
+> --- a/fs/btrfs/discard.c
+> +++ b/fs/btrfs/discard.c
+> @@ -563,15 +563,14 @@ void btrfs_discard_calc_delay(struct btrfs_discard_=
+ctl *discard_ctl)
+>  /**
+>   * btrfs_discard_update_discardable - propagate discard counters
+>   * @block_group: block_group of interest
+> - * @ctl: free_space_ctl of @block_group
+>   *
+>   * This propagates deltas of counters up to the discard_ctl.  It maintai=
+ns a
+>   * current counter and a previous counter passing the delta up to the gl=
+obal
+>   * stat.  Then the current counter value becomes the previous counter va=
+lue.
+>   */
+> -void btrfs_discard_update_discardable(struct btrfs_block_group *block_gr=
+oup,
+> -                                     struct btrfs_free_space_ctl *ctl)
+> +void btrfs_discard_update_discardable(struct btrfs_block_group *block_gr=
+oup)
+>  {
+> +       struct btrfs_free_space_ctl *ctl;
+>         struct btrfs_discard_ctl *discard_ctl;
+>         s32 extents_delta;
+>         s64 bytes_delta;
+> @@ -581,8 +580,10 @@ void btrfs_discard_update_discardable(struct btrfs_b=
+lock_group *block_group,
+>             !btrfs_is_block_group_data_only(block_group))
+>                 return;
+>
+> +       ctl =3D block_group->free_space_ctl;
+>         discard_ctl =3D &block_group->fs_info->discard_ctl;
+>
+> +       lockdep_assert_held(&ctl->tree_lock);
+>         extents_delta =3D ctl->discardable_extents[BTRFS_STAT_CURR] -
+>                         ctl->discardable_extents[BTRFS_STAT_PREV];
+>         if (extents_delta) {
+> diff --git a/fs/btrfs/discard.h b/fs/btrfs/discard.h
+> index 353228d62f5a..57b9202f427f 100644
+> --- a/fs/btrfs/discard.h
+> +++ b/fs/btrfs/discard.h
+> @@ -28,8 +28,7 @@ bool btrfs_run_discard_work(struct btrfs_discard_ctl *d=
+iscard_ctl);
+>
+>  /* Update operations */
+>  void btrfs_discard_calc_delay(struct btrfs_discard_ctl *discard_ctl);
+> -void btrfs_discard_update_discardable(struct btrfs_block_group *block_gr=
+oup,
+> -                                     struct btrfs_free_space_ctl *ctl);
+> +void btrfs_discard_update_discardable(struct btrfs_block_group *block_gr=
+oup);
+>
+>  /* Setup/cleanup operations */
+>  void btrfs_discard_punt_unused_bgs_list(struct btrfs_fs_info *fs_info);
+> diff --git a/fs/btrfs/free-space-cache.c b/fs/btrfs/free-space-cache.c
+> index 5ea36a06e514..0787339c7b93 100644
+> --- a/fs/btrfs/free-space-cache.c
+> +++ b/fs/btrfs/free-space-cache.c
+> @@ -828,7 +828,6 @@ static int __load_free_space_cache(struct btrfs_root =
+*root, struct inode *inode,
+>         merge_space_tree(ctl);
+>         ret =3D 1;
+>  out:
+> -       btrfs_discard_update_discardable(ctl->private, ctl);
+>         io_ctl_free(&io_ctl);
+>         return ret;
+>  free_cache:
+> @@ -929,6 +928,9 @@ int load_free_space_cache(struct btrfs_block_group *b=
+lock_group)
+>                            block_group->start);
+>         }
+>
+> +       spin_lock(&ctl->tree_lock);
+> +       btrfs_discard_update_discardable(block_group);
+> +       spin_unlock(&ctl->tree_lock);
+>         iput(inode);
+>         return ret;
+>  }
+> @@ -2508,7 +2510,7 @@ int __btrfs_add_free_space(struct btrfs_fs_info *fs=
+_info,
+>         if (ret)
+>                 kmem_cache_free(btrfs_free_space_cachep, info);
+>  out:
+> -       btrfs_discard_update_discardable(block_group, ctl);
+> +       btrfs_discard_update_discardable(block_group);
+>         spin_unlock(&ctl->tree_lock);
+>
+>         if (ret) {
+> @@ -2643,7 +2645,7 @@ int btrfs_remove_free_space(struct btrfs_block_grou=
+p *block_group,
+>                 goto again;
+>         }
+>  out_lock:
+> -       btrfs_discard_update_discardable(block_group, ctl);
+> +       btrfs_discard_update_discardable(block_group);
+>         spin_unlock(&ctl->tree_lock);
+>  out:
+>         return ret;
+> @@ -2779,7 +2781,7 @@ void __btrfs_remove_free_space_cache(struct btrfs_f=
+ree_space_ctl *ctl)
+>         spin_lock(&ctl->tree_lock);
+>         __btrfs_remove_free_space_cache_locked(ctl);
+>         if (ctl->private)
+> -               btrfs_discard_update_discardable(ctl->private, ctl);
+> +               btrfs_discard_update_discardable(ctl->private);
+>         spin_unlock(&ctl->tree_lock);
+>  }
+>
+> @@ -2801,7 +2803,7 @@ void btrfs_remove_free_space_cache(struct btrfs_blo=
+ck_group *block_group)
+>                 cond_resched_lock(&ctl->tree_lock);
+>         }
+>         __btrfs_remove_free_space_cache_locked(ctl);
+> -       btrfs_discard_update_discardable(block_group, ctl);
+> +       btrfs_discard_update_discardable(block_group);
+>         spin_unlock(&ctl->tree_lock);
+>
+>  }
+> @@ -2885,7 +2887,7 @@ u64 btrfs_find_space_for_alloc(struct btrfs_block_g=
+roup *block_group,
+>                         link_free_space(ctl, entry);
+>         }
+>  out:
+> -       btrfs_discard_update_discardable(block_group, ctl);
+> +       btrfs_discard_update_discardable(block_group);
+>         spin_unlock(&ctl->tree_lock);
+>
+>         if (align_gap_len)
+> --
+> 2.26.2
+>
 
-        /* XXX 4 bytes hole, try to pack */
 
-        struct callback_head       callback_head __attribute__((__aligned__(8))); /*   120    16 */
-        /* --- cacheline 2 boundary (128 bytes) was 8 bytes ago --- */
-        pid_t                      lock_owner;           /*   136     4 */
-        bool                       lock_recursed;        /*   140     1 */
-        s8                         log_index;            /*   141     1 */
+--=20
+Filipe David Manana,
 
-        /* XXX 2 bytes hole, try to pack */
-
-        struct rw_semaphore        lock;                 /*   144   168 */
-        /* --- cacheline 4 boundary (256 bytes) was 56 bytes ago --- */
-        struct page *              pages[16];            /*   312   128 */
-        /* --- cacheline 6 boundary (384 bytes) was 56 bytes ago --- */
-        struct list_head           leak_list;            /*   440    16 */
-
-        /* size: 456, cachelines: 8, members: 15 */
-        /* sum members: 450, holes: 2, sum holes: 6 */
-        /* forced alignments: 1, forced holes: 1, sum forced holes: 4 */
-        /* last cacheline: 8 bytes */
-} __attribute__((__aligned__(8)));
+=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
+ right.=E2=80=9D
