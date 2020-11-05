@@ -2,62 +2,64 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBE192A85CC
-	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Nov 2020 19:13:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A589E2A861C
+	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Nov 2020 19:29:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731558AbgKESM6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 5 Nov 2020 13:12:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51568 "EHLO
+        id S1731234AbgKES3R (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 5 Nov 2020 13:29:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731103AbgKESM5 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 5 Nov 2020 13:12:57 -0500
-Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 215F2C0613CF
-        for <linux-btrfs@vger.kernel.org>; Thu,  5 Nov 2020 10:12:57 -0800 (PST)
-Received: by mail-qt1-x843.google.com with SMTP id i12so1767473qtj.0
-        for <linux-btrfs@vger.kernel.org>; Thu, 05 Nov 2020 10:12:57 -0800 (PST)
+        with ESMTP id S1726996AbgKES3R (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 5 Nov 2020 13:29:17 -0500
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75A23C0613CF
+        for <linux-btrfs@vger.kernel.org>; Thu,  5 Nov 2020 10:29:15 -0800 (PST)
+Received: by mail-qk1-x743.google.com with SMTP id 12so2094638qkl.8
+        for <linux-btrfs@vger.kernel.org>; Thu, 05 Nov 2020 10:29:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=subject:to:references:from:message-id:date:user-agent:mime-version
          :in-reply-to:content-language:content-transfer-encoding;
-        bh=65Xy42dlr+q8dsSXSG5YNCEFPJbGdLzIg/nTMEEIsz0=;
-        b=D4B/mOYR4X0V1bWJ8vJB+BhuAkuj8u6M8p8tnDHj0UkpetqyIZZlBxbD3u8DDVH9NY
-         Z2slAU6vbtM9GYqX1U6wfa2CA28aJ1xdfasnGU9SoWlIpyO0+hEwHrW3udNVxepeXKxE
-         /ljccw4KWbgwS+3hFSiWIt9KOMDoe8dAJJSHvXIpwItWI9JOG4okq4Nk6DH4cnC3Piss
-         IOT6pZpjdEdGVT+0rakIFSFSvyqlftT9p18jPQGpWCTbwnh/HIlYyabjl3bLLCAOVEoC
-         i1Ixj+uxLII9hlZKP9yrTiNstf8VQoCW+7yU0l73qvJCLLMp7JzcJFCaqDFn1Ox5RhPj
-         f+Og==
+        bh=DU4DkwGWJf7f38OBQ6CNv+cBvGZEPRo+TkkHlUqdZ70=;
+        b=Rl7cCDctpPInymeI12gGFrUGySt5+22X8mV+/BoAIe6XhhOv+l2iq9zeuG0/DmWotg
+         ERNdUOV21OXJHkhpcLQqnlC8IoQwpJJOsS8VRpPTVQ0USPyjfoUnPpctbjIrvLzQo7KT
+         vziqHuR6W9Ji3Y/Ztxfu1qixXZ59ADwzuCz4HMQ9ry3Yy4mF1bTneWPLgQjL1wAH3SvF
+         K0DD9Be5svYY5j/AtyEHr6IDNN8YsSDYor4DHQJq+Cxc+eVlC8Uj7OmtEElz+D8DScQq
+         NQnwag67CHEa2ZjZCKhpwEF57S8cX0/kocNPgucKji0Ke8M7ag2L0K9vhgyKIVgYNeBb
+         9qQA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=65Xy42dlr+q8dsSXSG5YNCEFPJbGdLzIg/nTMEEIsz0=;
-        b=YDkmTjG64qu6QCTIySxXgvDx7rehEUzdzvMbObpLIQSo3tJwBWHJ4qOfLjf04bWhrJ
-         YSPVAL3bAdIXpJgZwcPjrSiLmspuKW8uc0X9liy1JZbYS3tSiQ9LHV7NMpVv7pelqyNQ
-         QpWLygqS5yROsmfS1YA3lA9flxGyZSxOqx91vzF0MN8bEgFp/ylxG6LF6dvGn83yyTtc
-         yjVWtdDSDewDJuTONRzD2nhrPfXm/cqviQX9HKwwiFBOPGt2U6kzn10m/HL0OO5FL5zR
-         FMhvLOF/BTubBbXwGUuN5BASsr0JCmRb3l2h3ehVH2OtHinwwSgXLswna79NPYAG4z6q
-         n3Wg==
-X-Gm-Message-State: AOAM533LElUQQeNUmWsEuoZsx7rOhP9V298DHvhygsYBMM7PmEUkHoF4
-        B2FgFfTMiCB+zaCC3V/SBzPs7YrE6rSLfI+8
-X-Google-Smtp-Source: ABdhPJw/NvdivGnvlBygQaN570eyRlFVrMWZ0ziKkkFsujgpm3+zdla7PHxuWg3ByplzF3UIyCv64Q==
-X-Received: by 2002:ac8:4808:: with SMTP id g8mr3078353qtq.18.1604599975771;
-        Thu, 05 Nov 2020 10:12:55 -0800 (PST)
+        bh=DU4DkwGWJf7f38OBQ6CNv+cBvGZEPRo+TkkHlUqdZ70=;
+        b=XnH5D99FiwQDzRpbSkwmdvv5cO0zzFJfWnDbOILlbFmYFQvdQFw2v2jTnFcZb6wbrv
+         1Vv5zG/aHEMI+N6hiipfKiLyRTRyFNF6PfANEC69t7Geb3VpLam4wfVUWN+6w65G//8S
+         z63ALD8Lf6ZwJlkLqPXuW4vQujxd8LzGSXKS14OXcQINPTKglQB7o3RvkcZ7tGaEs0mo
+         cXBS0dDgCORokbCDHc3wdXuvaq9vMnrDwdCX1RzPrLA2wW6EprnzeFi+VTAuSr1fHkay
+         JJcWv91AqfR8RNWwxkIlqFY+Sbf64HNhkDZ6x3wDNg34IdVos9JRWDebGZPRbsjtubbb
+         Y9Yg==
+X-Gm-Message-State: AOAM532TJ6r8RGM8VUUuIv1RfyDTJjpQrF8A9E0uNRdLQYzrL2oJFiKt
+        3e+Cdhf01mHe/jOXx2O05fbcw25DM8lRbFGK
+X-Google-Smtp-Source: ABdhPJz5HAV8YkDdQ21kAnPs4ZiQ9E/5r9xMBHcb3rGEvgDPr1jt0XuNMc6h4a27T8cZJKO7jcqQEA==
+X-Received: by 2002:a37:a857:: with SMTP id r84mr3498184qke.11.1604600954360;
+        Thu, 05 Nov 2020 10:29:14 -0800 (PST)
 Received: from [192.168.1.45] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id p5sm1457880qtu.13.2020.11.05.10.12.54
+        by smtp.gmail.com with ESMTPSA id p48sm1142649qtp.67.2020.11.05.10.29.13
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 05 Nov 2020 10:12:54 -0800 (PST)
-Subject: Re: [PATCH] btrfs: reorder extent buffer members for better packing
-To:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-References: <20201103211101.4221-1-dsterba@suse.com>
+        Thu, 05 Nov 2020 10:29:13 -0800 (PST)
+Subject: Re: [PATCH 1/4] btrfs: fix missing delalloc new bit for new delalloc
+ ranges
+To:     fdmanana@kernel.org, linux-btrfs@vger.kernel.org
+References: <cover.1604486892.git.fdmanana@suse.com>
+ <7f215e2509aa557504a5d352ff4371f2e2606f59.1604486892.git.fdmanana@suse.com>
 From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <dfebd678-a204-3ec2-9ea0-da49af3aedc0@toxicpanda.com>
-Date:   Thu, 5 Nov 2020 13:12:53 -0500
+Message-ID: <196ad815-4fd4-6218-83a2-0c5f44ce3940@toxicpanda.com>
+Date:   Thu, 5 Nov 2020 13:29:12 -0500
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
  Gecko/20100101 Thunderbird/78.4.0
 MIME-Version: 1.0
-In-Reply-To: <20201103211101.4221-1-dsterba@suse.com>
+In-Reply-To: <7f215e2509aa557504a5d352ff4371f2e2606f59.1604486892.git.fdmanana@suse.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -65,73 +67,82 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 11/3/20 4:11 PM, David Sterba wrote:
-> After the rwsem replaced the tree lock implementation, the extent buffer
-> got smaller but leaving some holes behind. By changing log_index type
-> and reordering, we can squeeze the size further to 240 bytes, measured on
-> release config on x86_64. Log_index spans only 3 values and needs to be
-> signed.
+On 11/4/20 6:07 AM, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
 > 
-> Before:
+> When doing a buffered write, through one of the write family syscalls, we
+> look for ranges which currenly don't have allocated extents and set the
+> 'delalloc new' bit on them, so that we can report a correct number of used
+> blocks to the stat(2) syscall until delalloc is flushed and ordered extents
+> complete.
 > 
-> struct extent_buffer {
->          u64                        start;                /*     0     8 */
->          long unsigned int          len;                  /*     8     8 */
->          long unsigned int          bflags;               /*    16     8 */
->          struct btrfs_fs_info *     fs_info;              /*    24     8 */
->          spinlock_t                 refs_lock;            /*    32     4 */
->          atomic_t                   refs;                 /*    36     4 */
->          atomic_t                   io_pages;             /*    40     4 */
->          int                        read_mirror;          /*    44     4 */
->          struct callback_head       callback_head __attribute__((__aligned__(8))); /*    48    16 */
->          /* --- cacheline 1 boundary (64 bytes) --- */
->          pid_t                      lock_owner;           /*    64     4 */
->          bool                       lock_recursed;        /*    68     1 */
+> However there are a few other places where we can do a buffered write
+> against a range that is mapped to a hole (no extent allocated) and where
+> we do not set the 'new delalloc' bit. Those places are:
 > 
->          /* XXX 3 bytes hole, try to pack */
+> - Doing a memory mapped write against a hole;
 > 
->          struct rw_semaphore        lock;                 /*    72    40 */
->          short int                  log_index;            /*   112     2 */
+> - Cloning an inline extent into a hole starting at file offset 0;
 > 
->          /* XXX 6 bytes hole, try to pack */
+> - Calling btrfs_cont_expand() when the i_size of the file is not aligned
+>    to the sector size and is located in a hole. For example when cloning
+>    to a destination offset beyond eof.
 > 
->          struct page *              pages[16];            /*   120   128 */
+> So after such cases, until the corresponding delalloc range is flushed and
+> the respective ordered extents complete, we can report an incorrect number
+> of blocks used through the stat(2) syscall.
 > 
->          /* size: 248, cachelines: 4, members: 14 */
->          /* sum members: 239, holes: 2, sum holes: 9 */
->          /* forced alignments: 1 */
->          /* last cacheline: 56 bytes */
-> } __attribute__((__aligned__(8)));
+> In some cases we can end up reporting 0 used blocks to stat(2), which is a
+> particular bad value to report as it may mislead tools to think a file is
+> completely sparse when its i_size is not zero, making them skip reading
+> any data, an undesired consequence for tools such as archivers and other
+> backup tools, as reported a long time ago in the following thread (and
+> other past threads):
 > 
-> After:
+>    https://lists.gnu.org/archive/html/bug-tar/2016-07/msg00001.html
 > 
-> struct extent_buffer {
->          u64                        start;                /*     0     8 */
->          long unsigned int          len;                  /*     8     8 */
->          long unsigned int          bflags;               /*    16     8 */
->          struct btrfs_fs_info *     fs_info;              /*    24     8 */
->          spinlock_t                 refs_lock;            /*    32     4 */
->          atomic_t                   refs;                 /*    36     4 */
->          atomic_t                   io_pages;             /*    40     4 */
->          int                        read_mirror;          /*    44     4 */
->          struct callback_head       callback_head __attribute__((__aligned__(8))); /*    48    16 */
->          /* --- cacheline 1 boundary (64 bytes) --- */
->          pid_t                      lock_owner;           /*    64     4 */
->          bool                       lock_recursed;        /*    68     1 */
->          s8                         log_index;            /*    69     1 */
+> Example reproducer:
 > 
->          /* XXX 2 bytes hole, try to pack */
+>    $ cat reproducer.sh
+>    #!/bin/bash
 > 
->          struct rw_semaphore        lock;                 /*    72    40 */
->          struct page *              pages[16];            /*   112   128 */
+>    MNT=/mnt/sdi
+>    DEV=/dev/sdi
 > 
->          /* size: 240, cachelines: 4, members: 14 */
->          /* sum members: 238, holes: 1, sum holes: 2 */
->          /* forced alignments: 1 */
->          /* last cacheline: 48 bytes */
-> } __attribute__((__aligned__(8)));
+>    mkfs.btrfs -f $DEV > /dev/null
+>    # mkfs.xfs -f $DEV > /dev/null
+>    # mkfs.ext4 -F $DEV > /dev/null
+>    # mkfs.f2fs -f $DEV > /dev/null
+>    mount $DEV $MNT
 > 
-> Signed-off-by: David Sterba <dsterba@suse.com>
+>    xfs_io -f -c "truncate 64K"   \
+>        -c "mmap -w 0 64K"        \
+>        -c "mwrite -S 0xab 0 64K" \
+>        -c "munmap"               \
+>        $MNT/foo
+> 
+>    blocks_used=$(stat -c %b $MNT/foo)
+>    echo "blocks used: $blocks_used"
+> 
+>    if [ $blocks_used -eq 0 ]; then
+>        echo "ERROR: blocks used is 0"
+>    fi
+> 
+>    umount $DEV
+> 
+>    $ ./reproducer.sh
+>    blocks used: 0
+>    ERROR: blocks used is 0
+> 
+> So move the logic that decides to set the 'delalloc bit' bit into the
+> function btrfs_set_extent_delalloc(), since that is what we use for all
+> those missing cases as well as for the cases that currently work well.
+> 
+> This change is also preparatory work for an upcoming patch that fixes
+> other problems related to tracking and reporting the number of bytes used
+> by an inode.
+> 
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
 Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 
