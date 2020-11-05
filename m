@@ -2,35 +2,37 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F0ED2A7BB0
-	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Nov 2020 11:26:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 59D312A7BE0
+	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Nov 2020 11:32:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729887AbgKEK0H (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 5 Nov 2020 05:26:07 -0500
-Received: from mx2.suse.de ([195.135.220.15]:49650 "EHLO mx2.suse.de"
+        id S1729555AbgKEKcE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 5 Nov 2020 05:32:04 -0500
+Received: from mx2.suse.de ([195.135.220.15]:36106 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729898AbgKEK0G (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 5 Nov 2020 05:26:06 -0500
+        id S1726152AbgKEKcD (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 5 Nov 2020 05:32:03 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1604571965;
+        t=1604572322;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=r45+z2V3GRQKeTtqylG818xlZUdP/kAo7vkAKYV7u2M=;
-        b=ZaqoFEF9J0i3oBiAe6RloBW2YIgM6jbY6OitjJ0qwYbjA+p89/5OARWdGy7qbHbcnAfz4B
-        ObbkTYQNQV5dM4voKEHl3Vx7TblUUIK7+3AQY4J8+zhDXGKbBJoHcaP3UeIURAvMSGY0Mc
-        bScFfxaydNaRtHorMRjIqI8/3LqaauM=
+        bh=wjqbqqetuIHOmU+FIVSIojfVedIb2TITcOV/xDSp+WU=;
+        b=RLY+nHo8DlknxfwpbJKlTVMg2F/3RcYdf5409VKRiW5+yNVkgLUF5S98rFLEYhiCnvT1N4
+        5TErYh26M7ldyq9FJLJQXiOdapo3ljuEXCUf+WmXzlDpgFUXYxWISydClKFs+WzMviZgEf
+        AvDNcA5/ufllfoKX9o0CkWuL/kfAI2E=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 14A3FAF1A;
-        Thu,  5 Nov 2020 10:26:05 +0000 (UTC)
-Subject: Re: [PATCH 02/32] btrfs: extent_io: integrate page status update into
- endio_readpage_release_extent()
+        by mx2.suse.de (Postfix) with ESMTP id 5EDEEAAF1;
+        Thu,  5 Nov 2020 10:32:02 +0000 (UTC)
+Subject: Re: [PATCH 01/32] btrfs: extent_io: remove the
+ extent_start/extent_len for end_bio_extent_readpage()
 To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
 Cc:     David Sterba <dsterba@suse.com>
 References: <20201103133108.148112-1-wqu@suse.com>
- <20201103133108.148112-3-wqu@suse.com>
+ <20201103133108.148112-2-wqu@suse.com>
+ <831ff919-f4f4-7f1b-1e60-ce8df4697651@suse.com>
+ <1e7bf8d5-30d0-a944-c400-b5fe870f1cb5@suse.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  mQINBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -74,12 +76,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
  RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
  5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <425a0a98-82d8-35ce-1d56-48af0a62546c@suse.com>
-Date:   Thu, 5 Nov 2020 12:26:04 +0200
+Message-ID: <07ee7ff2-e2b1-5318-b72e-8bff87231036@suse.com>
+Date:   Thu, 5 Nov 2020 12:32:01 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20201103133108.148112-3-wqu@suse.com>
+In-Reply-To: <1e7bf8d5-30d0-a944-c400-b5fe870f1cb5@suse.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -89,89 +91,96 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 3.11.20 г. 15:30 ч., Qu Wenruo wrote:
-> In end_bio_extent_readpage(), we set page uptodate or error according to
-> the bio status.  However that assumes all submitted reads are in page
-> size.
+On 5.11.20 г. 12:15 ч., Qu Wenruo wrote:
 > 
-> To support case like subpage read, we should only set the whole page
-> uptodate if all data in the page have been read from disk.
 > 
-> This patch will integrate the page status update into
-> endio_readpage_release_extent() for end_bio_extent_readpage().
-> 
-> Now in endio_readpage_release_extent() we will set the page uptodate if:
-> 
-> - start/end range covers the full page
->   This is the existing behavior already.
-> 
-> - the whole page range is already uptodate
->   This adds the support for subpage read.
-> 
-> And for the error path, we always clear the page uptodate and set the
-> page error.
-> 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> Signed-off-by: David Sterba <dsterba@suse.com>
-> ---
->  fs/btrfs/extent_io.c | 38 ++++++++++++++++++++++++++++----------
->  1 file changed, 28 insertions(+), 10 deletions(-)
-> 
-> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-> index 58dc55e1429d..228bf0c5f7a0 100644
-> --- a/fs/btrfs/extent_io.c
-> +++ b/fs/btrfs/extent_io.c
-> @@ -2779,13 +2779,35 @@ static void end_bio_extent_writepage(struct bio *bio)
->  	bio_put(bio);
->  }
->  
-> -static void endio_readpage_release_extent(struct extent_io_tree *tree, u64 start,
-> -					  u64 end, int uptodate)
-> +static void endio_readpage_release_extent(struct extent_io_tree *tree,
-> +		struct page *page, u64 start, u64 end, int uptodate)
->  {
->  	struct extent_state *cached = NULL;
->  
-> -	if (uptodate && tree->track_uptodate)
-> -		set_extent_uptodate(tree, start, end, &cached, GFP_ATOMIC);
-> +	if (uptodate) {
-> +		u64 page_start = page_offset(page);
-> +		u64 page_end = page_offset(page) + PAGE_SIZE - 1;
-> +
-> +		if (tree->track_uptodate) {
-> +			/*
-> +			 * The tree has EXTENT_UPTODATE bit tracking, update
-> +			 * extent io tree, and use it to update the page if
-> +			 * needed.
-> +			 */
-> +			set_extent_uptodate(tree, start, end, &cached, GFP_NOFS);
-> +			check_page_uptodate(tree, page);
-> +		} else if (start <= page_start && end >= page_end) {
-
-'start' is 'page_offset(page) + bvec->bv_offset' from
-end_bio_extent_readpage, this means it's either equal to 'page_start' in
-endio_readpage_release_extent or different, you are effectively checking
-if bvec->bv_offset is non zero. As such the '<' condition can never
-trigger. So simplify this check to start == page_start
-
-For 'end' it makes sense to check for end >= becuase of multipage bvec I
-guess.
-
-Also the only relevant portion in this function is really
-check_page_uptodate  I don't see a reason why you actually put the page
-uptodate into this function and not simply adjust the endio handler?
-
-
-
-> +			/* We have covered the full page, set it uptodate */
-> +			SetPageUptodate(page);
-> +		}
-> +	} else if (!uptodate){
-> +		if (tree->track_uptodate)
-> +			clear_extent_uptodate(tree, start, end, &cached);
-> +
-> +		/* Any error in the page range would invalid the uptodate bit */
-
-nit: invalidate the whole page
 
 <snip>
+
+>>
+>> The endio routine cares about logical file contiguity as evidenced by
+>> the fact it uses page_offset() to calculate 'start', however our recent
+>> discussion on irc with the contiguity in csums bios clearly showed that
+>> we can have bios which contains pages that are contiguous in their disk
+>> byte nr but not in their logical offset, in fact Josef even mentioned on
+>> slack that a single bio can contain pages for different inodes so long
+>> as their logical disk byte nr are contiguous. I think this is not an
+>> issue in this case because you are doing the unlock on a bvec
+>> granularity but just the above statement is somewhat misleading.
+> 
+> Right, forgot the recent discovered bvec contig problem.
+> 
+> But still, the contig check condition is still correct, just the commit
+> message needs some update.
+> 
+> Another off-topic question is, should we allow such on-disk bytenr only
+> merge (to improve the IO output), or don't allow them to provide a
+> simpler endio function?
+
+Can't answer that without quantifying what the performance impact is so
+we can properly judge complexity/performance trade-off!
+
+<snip>
+
+>> I suspect for large bios with a lot of bvecs this would likely increase
+>> latency because we will now invoke endio_readpage_release_extent
+>> proportionally to the number of bvecs.
+> 
+> I believe the same situation.
+> 
+> Now we need to do extent_io tree operations for each bvec.
+> We can slightly reduce the overhead if we have something like globally
+> cached extent_state.
+> 
+> Your comment indeed implies we should do better extent contig cache,
+> other than completely relying on extent io tree.
+> 
+> Maybe I could find some good way to improve the situation, while still
+> avoid doing the existing dancing.
+
+First I'd like to have numbers showing what the overhead otherwise it
+will be impossible to tell if whatever approach you choose brings any
+improvements.
+
+<snip>
+
+>> Also bear in mind that this happens in a critical endio context, which
+>> uses GFP_ATOMIC allocations so if we get ENOSPC it would be rather bad.
+> 
+> I know you mean -ENOMEM.
+
+Yep, my bad.
+
+> 
+> But the true is, except the leading/tailing sector of the extent, we
+> shouldn't really cause extra split/allocation.
+
+That's something you assume so the real behavior might be different,
+again I think we need to experiment to better understand the behavior.
+
+<snip>
+
+>> I definitely like the new code however without quantifying what's the
+>> increase of number of calls of endio_readpage_release_extent I'd rather
+>> not merge it.
+> 
+> Your point stands.
+> 
+> I could add a new wrapper to do the same thing, but with a small help
+> from some new structure to really record the
+> inode/extent_start/extent_len internally.
+> 
+> The end result should be the same in the endio function, but much easier
+> to read. (The complex part would definite have more comment)
+> 
+> What about this solution?
+
+IMO the best course of action is to measure the length of extents being
+unlocked in the old version of the code and the number of bvecs in a
+bio. That way you would be able to extrapolate with the new version of
+the code how many more calls to extent unlock would have been made. This
+will tell you how effective this optimisation really is and if it's
+worth keeping around.
+
+<snip>
+
