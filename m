@@ -2,34 +2,34 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11BBB2A7FBB
-	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Nov 2020 14:35:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DACEB2A7FD4
+	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Nov 2020 14:45:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730660AbgKENfG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 5 Nov 2020 08:35:06 -0500
-Received: from mx2.suse.de ([195.135.220.15]:52662 "EHLO mx2.suse.de"
+        id S1730501AbgKENpO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 5 Nov 2020 08:45:14 -0500
+Received: from mx2.suse.de ([195.135.220.15]:58946 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726067AbgKENfG (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 5 Nov 2020 08:35:06 -0500
+        id S1725468AbgKENpO (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 5 Nov 2020 08:45:14 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1604583304;
+        t=1604583912;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=+j0RKOFbmgGu98xboH5jGWdAbMGnV2EioM8tsggDUBM=;
-        b=NIWOwk0a4OdDweXa1IwEs/NoZEFJaBXadRL2v+iZGaSGuMQey76vx3KtHnOCMJK5R89Vyl
-        rwAvsvCkwa8MceE3Fkx4/PaGjMVOX0QEKhWtSPjqezUQMerzU3qCy5RVKXlfPRvqK2YzPr
-        6r72PV5fS3gg0SXJlHq21LOZ8AEi9X0=
+        bh=yFHfaOWfupi0uxgtmzfey/FuSZUjkNbBxqV+TQlOOmc=;
+        b=SnrYETpA/Jv2IoIhkElTY8NOcVwHgO0L13NRmGm7kh7Gtk9ERhLp2fX5R2K1C99tx7N7QP
+        mE0ocKSt4dL2Ap8f2Vdqsb/pN7j4pKfA0fbtehvt/0achfpBSCbcdCvmmt+TIULGZTvhzD
+        W2MiZ3MyhzWLGQ4U2GGVYuKsOEh/Vb8=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 72EE6AC0C;
-        Thu,  5 Nov 2020 13:35:04 +0000 (UTC)
-Subject: Re: [PATCH 08/32] btrfs: extent_io: sink less common parameters for
- __set_extent_bit()
+        by mx2.suse.de (Postfix) with ESMTP id 4F338AAF1;
+        Thu,  5 Nov 2020 13:45:12 +0000 (UTC)
+Subject: Re: [PATCH 10/32] btrfs: disk_io: grab fs_info from
+ extent_buffer::fs_info directly for btrfs_mark_buffer_dirty()
 To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
 References: <20201103133108.148112-1-wqu@suse.com>
- <20201103133108.148112-9-wqu@suse.com>
+ <20201103133108.148112-11-wqu@suse.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  mQINBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -73,12 +73,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
  RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
  5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <9ad4bb74-a6b0-1a15-a515-e765949bbfbe@suse.com>
-Date:   Thu, 5 Nov 2020 15:35:03 +0200
+Message-ID: <dd362775-0f9b-f6c8-4af2-379850e9bf23@suse.com>
+Date:   Thu, 5 Nov 2020 15:45:11 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20201103133108.148112-9-wqu@suse.com>
+In-Reply-To: <20201103133108.148112-11-wqu@suse.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -89,88 +89,12 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 3.11.20 г. 15:30 ч., Qu Wenruo wrote:
-> For __set_extent_bit(), those parameter are less common for most
-> callers:
-> - exclusive_bits
-> - failed_start
->   Mostly for extent locking.
+> Since commit f28491e0a6c4 ("Btrfs: move the extent buffer radix tree into
+> the fs_info"), fs_info can be grabbed from extent_buffer directly.
 > 
-> - extent_changeset
->   For qgroup usage.
-> 
-> As a common design principle, less common parameters should have their
-> default values and only callers really need them will set the parameters
-> to non-default values.
-> 
-> Sink those parameters into a new structure, extent_io_extra_options.
-> So most callers won't bother those less used parameters, and make later
-> expansion easier.
+> So use that extent_buffer::fs_info directly in btrfs_mark_buffer_dirty()
+> to make things a little easier.
 > 
 > Signed-off-by: Qu Wenruo <wqu@suse.com>
 
-IMO I feel this is an overkill, __set_extent_Bit is really some
-low-level, hidden interface which is being wrapped around by other
-high-level extent bit manipulation functions. Following this logic I did
-send today a patch renaming __set_extent_bit to set_extent_bit,
-essentially removing a level of indirection.
-
-Having said that what you are doing right now might make more sense for
-future changes since you state it's preparatory anyway. But in any case
-I believe the interface for this function is just broken if we have to
-resort to such type of refactoring.
-
-See below for one idea of extent bits handling.
-
-> ---
->  fs/btrfs/extent-io-tree.h | 22 ++++++++++++++
->  fs/btrfs/extent_io.c      | 61 ++++++++++++++++++++++++---------------
->  2 files changed, 59 insertions(+), 24 deletions(-)
-> 
-> diff --git a/fs/btrfs/extent-io-tree.h b/fs/btrfs/extent-io-tree.h
-> index cab4273ff8d3..c93065794567 100644
-> --- a/fs/btrfs/extent-io-tree.h
-> +++ b/fs/btrfs/extent-io-tree.h
-> @@ -82,6 +82,28 @@ struct extent_state {
->  #endif
->  };
->  
-> +/*
-> + * Extra options for extent io tree operations.
-> + *
-> + * All of these options are initialized to 0/false/NULL by default,
-> + * and most callers should utilize the wrappers other than the extra options.
-> + */
-> +struct extent_io_extra_options {
-> +	/*
-> +	 * For __set_extent_bit(), to return -EEXIST when hit an extent with
-> +	 * @excl_bits set, and update @excl_failed_start.
-> +	 * Utizlied by EXTENT_LOCKED wrappers.
-
-nit: excl_bits can be removed if we simply check for the presence of
-EXTENT_LOCKED in 'bits' and if the result is true then also check if the
-found extent has EXTENT_LOCKED if it does -> return the failure_start,
-that we we can get rid of 'excl_bits'. All uses of EXTENT_LOCKED is via
-lock_extent_range except the one in the private failure tree but I
-believe it should be ok.
-
-I had a crazy idea to overload cached_state to return the failure range
-and use it in lock_extent_bit but that makes it rather messy. ...
-
-> +	 */
-> +	u32 excl_bits;
-> +	u64 excl_failed_start;
-> +
-> +	/*
-> +	 * For __set/__clear_extent_bit() to record how many bytes is modified.
-> +	 * For qgroup related functions.
-> +	 */
-> +	struct extent_changeset *changeset;
-> +};
-> +
->  int __init extent_state_cache_init(void);
->  void __cold extent_state_cache_exit(void);
->  
-
-<snip>
-
-
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
