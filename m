@@ -2,111 +2,122 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 148842A81CA
-	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Nov 2020 16:03:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DEF72A827C
+	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Nov 2020 16:45:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731125AbgKEPDw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 5 Nov 2020 10:03:52 -0500
-Received: from mx2.suse.de ([195.135.220.15]:41370 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730465AbgKEPDv (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 5 Nov 2020 10:03:51 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1604588630;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=IrthLEPJSo8wynTfkgfpXAj8luWi7qTkjOVx124cDOw=;
-        b=U03vYUzY8uIz4gTA3f2KQE3dNq2j++e0BeG4N8C0yku9mh5kI9b8uSXUTbHMR6mjZXV8kU
-        sAd7vzQmsnHH98888slY2PbQK+OzVkxBV60xxWOC82Ne47psRoh0s8N1rHxSdEAl2e9Hp4
-        1fr02TMRRXMq99YfnnzJHcQtn+VJU4k=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 13387AAF1;
-        Thu,  5 Nov 2020 15:03:50 +0000 (UTC)
-Subject: Re: [PATCH 16/32] btrfs: extent_io: allow find_first_extent_bit() to
- find a range with exact bits match
-To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-References: <20201103133108.148112-1-wqu@suse.com>
- <20201103133108.148112-17-wqu@suse.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- mQINBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
- T7g+RbfPFlmQp+EwFWOtABXlKC54zgSf+uulGwx5JAUFVUIRBmnHOYi/lUiE0yhpnb1KCA7f
- u/W+DkwGerXqhhe9TvQoGwgCKNfzFPZoM+gZrm+kWv03QLUCr210n4cwaCPJ0Nr9Z3c582xc
- bCUVbsjt7BN0CFa2BByulrx5xD9sDAYIqfLCcZetAqsTRGxM7LD0kh5WlKzOeAXj5r8DOrU2
- GdZS33uKZI/kZJZVytSmZpswDsKhnGzRN1BANGP8sC+WD4eRXajOmNh2HL4P+meO1TlM3GLl
- EQd2shHFY0qjEo7wxKZI1RyZZ5AgJnSmehrPCyuIyVY210CbMaIKHUIsTqRgY5GaNME24w7h
- TyyVCy2qAM8fLJ4Vw5bycM/u5xfWm7gyTb9V1TkZ3o1MTrEsrcqFiRrBY94Rs0oQkZvunqia
- c+NprYSaOG1Cta14o94eMH271Kka/reEwSZkC7T+o9hZ4zi2CcLcY0DXj0qdId7vUKSJjEep
- c++s8ncFekh1MPhkOgNj8pk17OAESanmDwksmzh1j12lgA5lTFPrJeRNu6/isC2zyZhTwMWs
- k3LkcTa8ZXxh0RfWAqgx/ogKPk4ZxOXQEZetkEyTFghbRH2BIwARAQABtCNOaWtvbGF5IEJv
- cmlzb3YgPG5ib3Jpc292QHN1c2UuY29tPokCOAQTAQIAIgUCWIo48QIbAwYLCQgHAwIGFQgC
- CQoLBBYCAwECHgECF4AACgkQcb6CRuU/KFc0eg/9GLD3wTQz9iZHMFbjiqTCitD7B6dTLV1C
- ddZVlC8Hm/TophPts1bWZORAmYIihHHI1EIF19+bfIr46pvfTu0yFrJDLOADMDH+Ufzsfy2v
- HSqqWV/nOSWGXzh8bgg/ncLwrIdEwBQBN9SDS6aqsglagvwFD91UCg/TshLlRxD5BOnuzfzI
- Leyx2c6YmH7Oa1R4MX9Jo79SaKwdHt2yRN3SochVtxCyafDlZsE/efp21pMiaK1HoCOZTBp5
- VzrIP85GATh18pN7YR9CuPxxN0V6IzT7IlhS4Jgj0NXh6vi1DlmKspr+FOevu4RVXqqcNTSS
- E2rycB2v6cttH21UUdu/0FtMBKh+rv8+yD49FxMYnTi1jwVzr208vDdRU2v7Ij/TxYt/v4O8
- V+jNRKy5Fevca/1xroQBICXsNoFLr10X5IjmhAhqIH8Atpz/89ItS3+HWuE4BHB6RRLM0gy8
- T7rN6ja+KegOGikp/VTwBlszhvfLhyoyjXI44Tf3oLSFM+8+qG3B7MNBHOt60CQlMkq0fGXd
- mm4xENl/SSeHsiomdveeq7cNGpHi6i6ntZK33XJLwvyf00PD7tip/GUj0Dic/ZUsoPSTF/mG
- EpuQiUZs8X2xjK/AS/l3wa4Kz2tlcOKSKpIpna7V1+CMNkNzaCOlbv7QwprAerKYywPCoOSC
- 7P25Ag0EWIoHPgEQAMiUqvRBZNvPvki34O/dcTodvLSyOmK/MMBDrzN8Cnk302XfnGlW/YAQ
- csMWISKKSpStc6tmD+2Y0z9WjyRqFr3EGfH1RXSv9Z1vmfPzU42jsdZn667UxrRcVQXUgoKg
- QYx055Q2FdUeaZSaivoIBD9WtJq/66UPXRRr4H/+Y5FaUZx+gWNGmBT6a0S/GQnHb9g3nonD
- jmDKGw+YO4P6aEMxyy3k9PstaoiyBXnzQASzdOi39BgWQuZfIQjN0aW+Dm8kOAfT5i/yk59h
- VV6v3NLHBjHVw9kHli3jwvsizIX9X2W8tb1SefaVxqvqO1132AO8V9CbE1DcVT8fzICvGi42
- FoV/k0QOGwq+LmLf0t04Q0csEl+h69ZcqeBSQcIMm/Ir+NorfCr6HjrB6lW7giBkQl6hhomn
- l1mtDP6MTdbyYzEiBFcwQD4terc7S/8ELRRybWQHQp7sxQM/Lnuhs77MgY/e6c5AVWnMKd/z
- MKm4ru7A8+8gdHeydrRQSWDaVbfy3Hup0Ia76J9FaolnjB8YLUOJPdhI2vbvNCQ2ipxw3Y3c
- KhVIpGYqwdvFIiz0Fej7wnJICIrpJs/+XLQHyqcmERn3s/iWwBpeogrx2Lf8AGezqnv9woq7
- OSoWlwXDJiUdaqPEB/HmGfqoRRN20jx+OOvuaBMPAPb+aKJyle8zABEBAAGJAh8EGAECAAkF
- AliKBz4CGwwACgkQcb6CRuU/KFdacg/+M3V3Ti9JYZEiIyVhqs+yHb6NMI1R0kkAmzsGQ1jU
- zSQUz9AVMR6T7v2fIETTT/f5Oout0+Hi9cY8uLpk8CWno9V9eR/B7Ifs2pAA8lh2nW43FFwp
- IDiSuDbH6oTLmiGCB206IvSuaQCp1fed8U6yuqGFcnf0ZpJm/sILG2ECdFK9RYnMIaeqlNQm
- iZicBY2lmlYFBEaMXHoy+K7nbOuizPWdUKoKHq+tmZ3iA+qL5s6Qlm4trH28/fPpFuOmgP8P
- K+7LpYLNSl1oQUr+WlqilPAuLcCo5Vdl7M7VFLMq4xxY/dY99aZx0ZJQYFx0w/6UkbDdFLzN
- upT7NIN68lZRucImffiWyN7CjH23X3Tni8bS9ubo7OON68NbPz1YIaYaHmnVQCjDyDXkQoKC
- R82Vf9mf5slj0Vlpf+/Wpsv/TH8X32ajva37oEQTkWNMsDxyw3aPSps6MaMafcN7k60y2Wk/
- TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
- RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
- 5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <7ea00bd2-73c2-130d-3e8a-f721a0a7af2b@suse.com>
-Date:   Thu, 5 Nov 2020 17:03:49 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1731374AbgKEPp0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 5 Nov 2020 10:45:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56386 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731202AbgKEPpZ (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 5 Nov 2020 10:45:25 -0500
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B99B5C0613CF
+        for <linux-btrfs@vger.kernel.org>; Thu,  5 Nov 2020 07:45:24 -0800 (PST)
+Received: by mail-qt1-x843.google.com with SMTP id h12so1381958qtu.1
+        for <linux-btrfs@vger.kernel.org>; Thu, 05 Nov 2020 07:45:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=piSdBnZCrszfvY8in2Nvg8FRvTWECZlr9sLroYUDhjQ=;
+        b=GWA1He3/WBp2XB5HyVxiGDLPHHvpGpsxdPPSQcmhepAQvO5EPHI3DLfmYhZ882xmWR
+         MLxfGwLKlw4/KMQoMRgQE3/2fx7DU6oTijCaEE6IY6Ria9XFwtysWNh6KRLvfZ+RvC1B
+         SyotWZTPCauf07zltLkwUFoFnsxPD+wreyiQl1q1h7l53Ri5zXkotc80PrPCIBiQdDvZ
+         CjZCeX2a+mccbLtDteX/3t87UqIvykA4EWlf87pDj6vaKBBUyf75sCvIPv/r4joFAuAy
+         TJ0LvtpTuCGETDMi1XDe4nT2gpTHg6WVqPVKdECjXgaHXd0zB9qcp1BiEmVukFuSN1xn
+         PTDA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=piSdBnZCrszfvY8in2Nvg8FRvTWECZlr9sLroYUDhjQ=;
+        b=CrmXOlSM4KSi2XKM+54yxaM+D1jBbRFUlxyKqJs6NJUKlqsyOxdeJYH0Y7wa0ZXZzl
+         i9QtbOEBQO9HqczVvSlXKTiuw0dWA9Hc74ZVQqY8a4OHI8lmODqsGXwFJMsePnbA9DL7
+         75AtpQWqE12f1lxdz0GXxhMgPw+idlJeZAupvsZrf4NeLz140ejvs9c0lI3AVob4GOqs
+         Az8tXlQHvUgk3TVxzpXGuHhcALJxxJr7pnK8wT3bJu++GMPdVJ+b7mriWzCLduN+gl7L
+         rHNqnjOzFE0aEwAHkWGzXp66oG5OyoLTrV8Elek6Z7qlESLsrVnoqQnRGdKkeOuDaOk+
+         Gkyw==
+X-Gm-Message-State: AOAM532thTJGwCflSKPTo0CLwoJ65C1Jl/SjFFV4arB4XYZt3zvX3iMa
+        YS0/6u/WF6BHgwG1zrBKeGwI+SB0Bz55AoMJ
+X-Google-Smtp-Source: ABdhPJwMIEu3QEOTjTh84ei5vevjYK6kPcNI4O8LLlmbfxUx8aOMRwwycbWJsCVJCnus39dqtv6ajw==
+X-Received: by 2002:ac8:1206:: with SMTP id x6mr2611065qti.165.1604591123555;
+        Thu, 05 Nov 2020 07:45:23 -0800 (PST)
+Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id u21sm1285851qkm.93.2020.11.05.07.45.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Nov 2020 07:45:22 -0800 (PST)
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: [PATCH 00/14][REBASED] Set the lockdep class on eb's at allocation time
+Date:   Thu,  5 Nov 2020 10:45:07 -0500
+Message-Id: <cover.1604591048.git.josef@toxicpanda.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <20201103133108.148112-17-wqu@suse.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+- no change, simply rebased onto the lastest misc-next
 
+Hello,
 
-On 3.11.20 г. 15:30 ч., Qu Wenruo wrote:
-> Currently if we pass mutliple @bits to find_first_extent_bit(), it will
-> return the first range with one or more bits matching @bits.
-> 
-> This is fine for current code, since most of them are just doing their
-> own extra checks, and all existing callers only call it with 1 or 2
-> bits.
-> 
-> But for the incoming subpage support, we want the ability to return range
-> with exact match, so that caller can skip some extra checks.
-> 
-> So this patch will add a new bool parameter, @exact_match, to
-> find_first_extent_bit() and its callees.
-> Currently all callers just pass 'false' to the new parameter, thus no
-> functional change is introduced.
-> 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
+We've had a lockdep splat show up a few times recently where the extent buffer
+doesn't have it's lockdep class set properly.  This can happen if you have
+concurrent readers hitting the same block that's not in cache.
 
-What's the problem of callers doing their own checks, given every one
-will have different requirements? The interface should be generic enough
-to satisfy every user and then any specific processing should be
-performed by the respective user.
+This is sort of straightforward to fix, but unfortunately requires quite a bit
+of code churn to do it cleanly.  The bulck of these patches are replacing open
+coded calls of btrfs_read_node_slot() with the helper to cut down on the number
+of people directly calling read_tree_block().  I also cleaned up the readahead
+helpers because passing all these arguments around would be unweildy.  The last
+patch in the series is the actual fix for what Filipe and Fedora QA saw.
+
+The patches that actually have meaningful changes are
+
+  btrfs: remove lockdep classes for the fs tree
+  btrfs: cleanup extent buffer readahead
+  btrfs: set the lockdep class for ebs on creation
+
+The rest are cleanups or adding arguments to various functions, so aren't too
+tricky.  I've put this through a quick xfstest run for sanity sake, it didn't
+appear to break anything, but the full run is still going.  Thanks,
+
+Josef
+
+Josef Bacik (14):
+  btrfs: remove lockdep classes for the fs tree
+  btrfs: cleanup extent buffer readahead
+  btrfs: use btrfs_read_node_slot in btrfs_realloc_node
+  btrfs: use btrfs_read_node_slot in walk_down_reloc_tree
+  btrfs: use btrfs_read_node_slot in do_relocation
+  btrfs: use btrfs_read_node_slot in replace_path
+  btrfs: use btrfs_read_node_slot in walk_down_tree
+  btrfs: use btrfs_read_node_slot in qgroup_trace_extent_swap
+  btrfs: use btrfs_read_node_slot in qgroup_trace_new_subtree_blocks
+  btrfs: use btrfs_read_node_slot in btrfs_qgroup_trace_subtree
+  btrfs: pass root owner to read_tree_block
+  btrfs: pass the root owner and level around for reada
+  btrfs: pass the owner_root and level to alloc_extent_buffer
+  btrfs: set the lockdep class for ebs on creation
+
+ fs/btrfs/backref.c     |  6 +--
+ fs/btrfs/ctree.c       | 86 +++++++++---------------------------------
+ fs/btrfs/disk-io.c     | 41 +++++++-------------
+ fs/btrfs/disk-io.h     |  8 ++--
+ fs/btrfs/extent-tree.c | 20 ++++++----
+ fs/btrfs/extent_io.c   | 55 ++++++++++++++++++++++++++-
+ fs/btrfs/extent_io.h   |  6 ++-
+ fs/btrfs/print-tree.c  |  1 +
+ fs/btrfs/qgroup.c      | 43 ++++-----------------
+ fs/btrfs/reada.c       | 32 +++++++++++-----
+ fs/btrfs/ref-verify.c  | 18 +--------
+ fs/btrfs/relocation.c  | 45 +++++-----------------
+ fs/btrfs/tree-log.c    |  4 +-
+ fs/btrfs/volumes.c     | 12 ++----
+ 14 files changed, 157 insertions(+), 220 deletions(-)
+
+-- 
+2.26.2
+
